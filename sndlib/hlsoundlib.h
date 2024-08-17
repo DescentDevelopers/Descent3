@@ -285,8 +285,6 @@ public:
   void SetLLSoundQuantity(int n_sounds);
   int GetLLSoundQuantity();
 
-  bool SetLLevelType(); // These are
-
   // Pause and Resume the library
   void PauseSounds(bool f_all_sounds = false);
   void ResumeSounds();

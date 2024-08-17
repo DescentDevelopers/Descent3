@@ -199,7 +199,6 @@ public:
   void Send(oms_q_evt *evt);               // sends an event to the stream.
   void Reset(OutrageMusicSeq *seq = NULL); // reset stream.
   void SetVolume(float vol);               // volume.
-  int GetPlayRequestCount();               // tells how many play events send are pending processing.
 
   // event senders
 public:

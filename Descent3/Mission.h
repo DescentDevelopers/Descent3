@@ -307,9 +307,6 @@ bool LoadMissionLevel(int level);
 //	initializes the mission script
 bool InitMissionScript();
 
-//	Objectives
-void CompletedPrimaryObjective();
-
 // Shows text on a background
 void ShowProgressScreen(const char *str, const char *str2 = NULL, bool flip = true);
 

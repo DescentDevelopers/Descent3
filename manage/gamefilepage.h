@@ -66,9 +66,4 @@ void mng_LoadLocalGamefilePage(CFILE *);
 // Reads in a page off the net
 void mng_LoadNetGamefilePage(CFILE *, bool overlay = false);
 
-// First searches through the gamefile index to see if the gamefile is already
-// loaded.  If not, searches in the table file and loads it.
-// Returns index of gamefile if found, -1 if not
-int mng_GetGuaranteedGamefilePage(char *name, CFILE *infile = NULL);
-
 #endif

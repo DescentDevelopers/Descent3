@@ -1117,7 +1117,6 @@ public:
   //	gadget management
   void AddGadget(UIGadget *gadget);    //	adds a gadget to the gadget list
   void RemoveGadget(UIGadget *gadget); // removes a gadget from the list.
-  UIGadget *GetGadgetFromID(int id);   // returns the gadget pointer given an id if in window
   void SetFocusOnGadget(UIGadget *gadget, bool key = false);
 
   UIGadget *GetFocus() { return m_GadgetCur; };

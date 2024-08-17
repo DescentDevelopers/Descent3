@@ -35,8 +35,4 @@ struct saved_move {
 extern saved_move SavedMoves[];
 extern int Current_saved_move;
 
-// Alloc and free saved move
-extern int MultiAllocSavedMove();
-extern void MultiFreeSavedMove(int);
-
 #endif

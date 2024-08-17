@@ -232,33 +232,4 @@ bool ddgr_surf_FlipVideo(ddgr_surface *sf);
 void ddgr_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, int h);
 bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh);
 
-/*
-        8-bit palette surface structures
-*/
-struct ddgr_rgb {
-  uint8_t r, g, b; // RGB triplet
-  uint8_t x;       // reserved...
-};
-
-struct ddgr_palette {
-  void *obj;         // internal object
-  ddgr_rgb rgb[256]; // rgb values for palette.
-};
-
-//	attaches a palette to an 8-bit surface only.
-bool ddgr_surf_AttachPalette(ddgr_surface *surf, ddgr_palette *pal);
-
-//	grabs a palette.
-bool ddgr_surf_GetPalette(ddgr_surface *surf, ddgr_palette *pal);
-
-//	creates and destroys palette objects.
-bool ddgr_8bit_CreatePalette(ddgr_palette *pal);
-bool ddgr_8bit_DestroyPalette(ddgr_palette *pal);
-
-//	loads a palette with specified entriyes
-bool ddgr_8bit_LoadPalette(ddgr_palette *pal, int start, int count);
-
-//	returns an index into the palette
-int ddgr_8bit_FindClosestColor(ddgr_palette *pal, ddgr_color col);
-
 #endif

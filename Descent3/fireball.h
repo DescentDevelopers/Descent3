@@ -212,9 +212,6 @@ void DoDebrisFrame(object *obj);
 // Process a dying object for one frame
 void DoDyingFrame(object *objp);
 
-// A quick way to see where a weapon hits.  Weapons make debris.
-void CreateWeaponDebris(object *obj);
-
 // Creates a concussive blast (physics based -- no visuals)
 void MakeShockwave(object *explode_obj_ptr, int parent_handle);
 

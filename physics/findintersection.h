@@ -398,9 +398,6 @@ int fvi_QuickDistObjectList(vector *pos, int init_roomnum, float rad, int16_t *o
 // fills in u & v. if l is non-NULL fills it in also
 // extern void fvi_FindHitpointUV(float *u,float *v,float *l, vector *pnt,segment *seg,int sidenum,int facenum);
 
-// Returns true if the object is through any walls
-extern int fvi_ObjectIntersectsWall(object *objp);
-
 extern int FVI_counter;
 extern int FVI_room_counter;
 

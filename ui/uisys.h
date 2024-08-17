@@ -148,7 +148,4 @@ bool ui_IsCursorVisible(); // is the cursor visible?
 //	frees ui input cache
 void ui_Flush();
 
-// does screen shot
-void ui_DoScreenshot();
-
 #endif

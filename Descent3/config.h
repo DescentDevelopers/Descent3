@@ -173,8 +173,6 @@ struct tDetailSettings {
 
 // Call this with one of the above defines to set the detail level to a predefined set (custom level is ignored)
 void ConfigSetDetailLevel(int level);
-// returns the current detail level that the given tDetailSettings is at
-int ConfigGetDetailLevel(tDetailSettings *ds);
 
 #define DETAIL_LEVEL_LOW 0
 #define DETAIL_LEVEL_MED 1

@@ -766,9 +766,6 @@ void ObjDoFrameAll();
 // set viewer object to next object in array
 void ObjGotoNextViewer();
 
-// move an object for the current frame
-void ObjMoveOne(object *obj);
-
 // Sets the position of an object.  This should be called whenever an object moves.
 // Parameters:	obj - the object being moved
 //					pos - the new position

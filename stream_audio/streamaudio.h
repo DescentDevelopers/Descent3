@@ -271,11 +271,8 @@ private:
   friend int ADecodeFileRead(void *data, void *buf, uint32_t qty);
   void *StreamCallback(int *size);        // invoked by omsStreamCB.
   int ReadFileData(int buf, int len);     // reads in decompressed raw data.
-  int ReadFileDirect(char *buf, int len); // reads in decompressed raw data.
   void UpdateData();                      // updates file buffers
-  void End();                             // cleans up after a stop.
   void Reset();                           // resets to start of stream.
-  bool OpenDigitalStream();               // opens and prepares a digital stream
   bool ReopenDigitalStream(uint8_t fbufidx, int nbufs);
 
 private:
@@ -333,7 +330,6 @@ public:
   int CurrentMeasure() const { // returns current measure.
     return m_curmeasure;
   };
-  int TotalMeasures() const;   // total measure count
   int GetSoundHandle() const { // returns the sound library handle for this stream.
     return m_llshandle;
   };

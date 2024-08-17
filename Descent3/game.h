@@ -331,13 +331,6 @@ extern int Missile_camera_window;
 //	contains all relevent information for gamemode pertaining to d3x system.
 extern gamemode Gamemode_info;
 
-// Starts the game-engine "cutscene"
-// Puts the player in AI mode, sets the view to an external camera, switches to letterbox, & puts the player on a path
-// Parameters:	camera - the camera for the view
-//					pathnum - the path the player should follow
-//					time - if > 0.0, how long the sequence plays before the level ends
-void StartEndlevelSequence(object *camera, int pathnum, float time);
-
 inline void ResetGamemode() {
   Gamemode_info.scriptname[0] = 0;
   Gamemode_info.requested_num_teams = 1;
