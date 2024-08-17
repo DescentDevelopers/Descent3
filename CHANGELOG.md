@@ -1,5 +1,7 @@
 # Descent 3 Open Source - Changelog
 
+## 1.6.0 - TBD
+
 ## 1.5.0 - August 2024
 
 This is the first release of the community port of Descent 3, release as open source software under the GPLv3 license on April 16th 2024.
