@@ -33,6 +33,5 @@ struct saved_move {
 };
 
 extern saved_move SavedMoves[];
-extern int Current_saved_move;
 
 #endif
