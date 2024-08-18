@@ -1335,7 +1335,7 @@ void CheckHogfile() {
 ///////////////////////////////////////////////////////////////////////////////
 //	quickly sets up a mission of 1 level, and doesn't do any
 //	fancy intro stuff
-bool SimpleStartLevel(char *level_name) {
+bool SimpleStartLevel(const std::filesystem::path& level_name) {
   //	this initializes a mini one level mission with no frills.
 
   Current_mission.cur_level = 1;
@@ -1343,8 +1343,8 @@ bool SimpleStartLevel(char *level_name) {
   Current_mission.levels = (tLevelNode *)mem_malloc(sizeof(tLevelNode));
   memset(Current_mission.levels, 0, sizeof(tLevelNode));
 
-  Current_level = NULL;
-  Current_mission.levels[0].filename = mem_strdup(level_name);
+  Current_level = nullptr;
+  Current_mission.levels[0].filename = mem_strdup(level_name.u8string().c_str());
   InitMissionScript();
 
   return true;

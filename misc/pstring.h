@@ -39,9 +39,17 @@
 #define PSTRING_H
 
 #include <cstring>
+#include <string>
+#include <vector>
 
 // CleanupStr
 //    This function strips all leading and trailing spaces, keeping internal spaces. This goes for tabs too.
 std::size_t CleanupStr(char *dest, const char *src, std::size_t destlen);
+
+/** Joins a vector of strings into a single string */
+std::string StringJoin(const std::vector<std::string> &strs, const std::string &delim);
+
+/** Splits str into vector of substrings */
+std::vector<std::string> StringSplit(std::string str, const std::string &delim);
 
 #endif

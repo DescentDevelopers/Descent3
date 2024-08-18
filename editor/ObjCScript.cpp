@@ -115,6 +115,9 @@
  * $NoKeywords: $
  */
 
+#include <filesystem>
+#include <regex>
+
 #include "stdafx.h"
 #include "ObjCScript.h"
 #include "editor.h"
@@ -543,27 +546,6 @@ char *GotoScriptInText(char *text, const char *script) {
   return NULL;
 }
 
-//	These functions manage enumeration of all script files located in the script directory
-static int hGameFile = -1, hInitialFile = -1;
-static char TempStr[256];
-
-char *StartScriptFileList() {
-  char path[_MAX_PATH];
-  ddio_MakePath(path, LocalLevelsDir, "*.scr", NULL);
-  if (!ddio_FindFileStart(path, TempStr))
-    return NULL;
-
-  return TempStr;
-}
-
-char *GetNextScriptFile() {
-  if (!ddio_FindNextFile(TempStr))
-    return NULL;
-  return TempStr;
-}
-
-void EndScriptFileList() { ddio_FindFileClose(); }
-
 //////////////////////////////////////////////////////////////////////////////
 //	Script source management
 
@@ -706,28 +688,18 @@ char *AddEventBlockToScript(char *script, const char *evtname, const char *scrip
 
 //	generates script list from all script files.
 void GenerateScriptListFromAllFiles(int mask) {
-  char *filename;
-  //@@	tD3XProgram *m_ScriptCode;
-
-  //@@	m_ScriptCode = D3XReallocProgram(NULL, 0, 0, 0);
-
   //	initialize script list.
   ResetScriptList();
 
+  std::filesystem::path dir = std::filesystem::path(LocalLevelsDir);
   //	compile all script files and place into script list.
-  filename = StartScriptFileList();
-  while (filename) {
-    //	compile script first.  if we failed, then display a messagebox giving the warning
-    if (!stricmp(filename, DEFAULT_SCRIPT_NAME) && (mask & DEFAULT_SCRIPT_MASK))
-      GenerateScriptListFromFile(filename);
-    else if ((mask & CUSTOM_SCRIPT_MASK) && stricmp(filename, DEFAULT_SCRIPT_NAME))
-      GenerateScriptListFromFile(filename);
-
-    filename = GetNextScriptFile();
-  }
-  EndScriptFileList();
-
-  //@@	D3XFreeProgram(m_ScriptCode);
+  ddio_DoForeachFile(dir, std::regex(".+\\.scr"), [&mask](const std::filesystem::path& path){
+    std::filesystem::path file = path.filename();
+    if (!stricmp(file.u8string().c_str(), DEFAULT_SCRIPT_NAME) && (mask & DEFAULT_SCRIPT_MASK))
+      GenerateScriptListFromFile(file.u8string().c_str());
+    else if ((mask & CUSTOM_SCRIPT_MASK) && stricmp(file.u8string().c_str(), DEFAULT_SCRIPT_NAME))
+      GenerateScriptListFromFile(file.u8string().c_str());
+  });
 }
 
 //	generates script list from one file

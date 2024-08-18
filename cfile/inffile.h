@@ -27,10 +27,11 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
+#include <filesystem>
+
+#include "cfile.h"
 #include "pstypes.h"
 #include "psclass.h"
-
-struct CFILE;
 
 enum InfFileError {
   INFFILE_LINELEN = 256,
@@ -49,7 +50,7 @@ public:
   //	opens an inf file, pass in a lexical analyzer that will return a command index.
   //	tag_check is a string that must appear at the very beginning of the file.
   //	lexfn is a function to match a command to a number.   num <= 0 and num >=1024 are taken.
-  bool Open(const char *filename, const char *tag_check, int (*lexfn)(const char *command));
+  bool Open(const std::filesystem::path &filename, const char *tag_check, int (*lexfn)(const char *command));
 
   //	closes the file
   void Close();

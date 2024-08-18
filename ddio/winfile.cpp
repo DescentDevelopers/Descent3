@@ -279,64 +279,6 @@ bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filenam
     return true;
 }
 
-//	These functions allow one to find a file
-//		You use FindFileStart by giving it a wildcard (like *.*, *.txt, u??.*, whatever).  It returns
-//		a filename in namebuf.
-//		Use FindNextFile to get the next file found with the wildcard given in FindFileStart.
-//		Use FindFileClose to end your search.
-static HANDLE hFindFile = INVALID_HANDLE_VALUE;
-static WIN32_FIND_DATA FindFileData;
-
-bool ddio_FindFileStart(const char *wildcard, char *namebuf) {
-  if (hFindFile != INVALID_HANDLE_VALUE)
-    ddio_FindFileClose();
-
-  hFindFile = FindFirstFile(wildcard, &FindFileData);
-  if (hFindFile != INVALID_HANDLE_VALUE) {
-    strcpy(namebuf, FindFileData.cFileName);
-    return true;
-  } else {
-    namebuf[0] = 0;
-    return false;
-  }
-}
-
-bool ddio_FindNextFile(char *namebuf) {
-
-  if (!hFindFile)
-    return false;
-
-  if (FindNextFile(hFindFile, &FindFileData)) {
-    strcpy(namebuf, FindFileData.cFileName);
-    return true;
-  } else {
-    namebuf[0] = 0;
-    return false;
-  }
-}
-
-void ddio_FindFileClose() {
-  if (hFindFile != INVALID_HANDLE_VALUE)
-    FindClose(hFindFile);
-  hFindFile = INVALID_HANDLE_VALUE;
-}
-
-//	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
-void ddio_GetRootFromPath(const char *srcPath, char *root_path) {
-  assert(root_path);
-  assert(srcPath);
-
-  // the first char should be drive letter, second char should be a :
-  if ((isalpha(srcPath[0])) && (srcPath[1] == ':')) {
-    // everything is ok
-    strncpy(root_path, srcPath, 2);
-    root_path[2] = '\0';
-  } else {
-    // invalid path (no root)
-    root_path[0] = '\0';
-  }
-}
-
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots) {
   char buffer[100];
@@ -375,6 +317,42 @@ int ddio_GetFileSysRoots(char **roots, int max_roots) {
   }
   return count;
 }
+
+std::vector<std::filesystem::path> ddio_GetSysRoots() {
+  std::vector<std::filesystem::path> result = {};
+  char buffer[100];
+
+  int ret = GetLogicalDriveStrings(100, buffer);
+  if (ret == 0 || ret > 100) {
+    // there was an error
+    return result;
+  }
+
+  bool done = false;
+  char *strptr = buffer;
+  char *string;
+  int strsize;
+
+  while (!done) {
+    if (*strptr != 0) {
+      strsize = strlen(strptr);
+      string = (char *)mem_malloc(strsize);
+      if (!string)
+        break;
+      // remove the trailing \ from windows
+      strncpy(string, strptr, strsize - 1);
+      string[strsize - 1] = '\0';
+
+      strptr += (strsize + 1);
+      result.push_back(string);
+      mem_free(string);
+    } else {
+      done = true;
+    }
+  }
+
+  return result;
+};
 
 //	given a path, it cleans it up (if the path is c:\windows\..\dos it would make it c:\dos)
 //	srcPath is the original path
@@ -509,25 +487,6 @@ bool ddio_GetParentPath(char *dest, const char *srcPath) {
   ddio_CleanPath(dest, temp);
   mem_free(temp);
   return true;
-}
-
-// Finds a full path from a relative path
-// Parameters:	full_path - filled in with the fully-specified path.  Buffer must be at least _MAX_PATH bytes long
-//					rel_path - a path specification, either relative or absolute
-// Returns TRUE if successful, FALSE if an error
-bool ddio_GetFullPath(char *full_path, const char *rel_path) {
-  char old_path[_MAX_PATH];
-
-  ddio_GetWorkingDir(old_path, sizeof(old_path)); // save old directory
-
-  if (!ddio_SetWorkingDir(rel_path)) // try switching to new directory
-    return 0;                        // couldn't switch, so return error
-
-  ddio_GetWorkingDir(full_path, _MAX_PATH); // get path from the OS
-
-  ddio_SetWorkingDir(old_path); // now restore old path
-
-  return 1;
 }
 
 bool ddio_CheckProcess(int pid) {

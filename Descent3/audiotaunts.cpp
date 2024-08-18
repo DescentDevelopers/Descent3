@@ -59,7 +59,7 @@ struct tWaveFile {
 //	8: invalid samples
 //	9: invalid bit (8 or 16)
 //	10: no data
-static char taunt_LoadWaveFile(char *filename, tWaveFile *wave);
+static char taunt_LoadWaveFile(const char *filename, tWaveFile *wave);
 
 static int TauntLastError = TAUNTIMPERR_NOERROR;
 bool Audio_taunts_enabled = true;
@@ -214,7 +214,7 @@ const char *taunt_GetErrorString(int error) {
 //	qualified outputfilename (where the .osf is to go), it will convert and
 //	compress the wav file.
 #define FILEBUFFER_LENGTH (4 * 1024)
-bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
+bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   ASSERT(wave_filename);
   ASSERT(outputfilename);
   bool ret = true;
@@ -489,7 +489,7 @@ error:
 }
 
 #define SOUND_FILE_SAMPLE_ALIGNMENT 4
-char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
+char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   // File pointer to sound file
   CFILE *cfptr;
 

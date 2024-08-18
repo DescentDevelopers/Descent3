@@ -98,9 +98,7 @@ void RestartD3();
 
 void InitMessage(const char *c, float progress = -1);
 
-/**
- * Save game variables to the registry
- */
-void SaveGameSettings();
+// Returns true if Mercenary is installed (inits the Black Pyro and Red GB)
+bool MercInstalled();
 
 #endif

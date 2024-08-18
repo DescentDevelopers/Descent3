@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -193,6 +193,8 @@
 #include <cstdio>
 #include <cstdint>
 #include <filesystem>
+#include <functional>
+#include <regex>
 
 #include "chrono_timer.h"
 #include "ddio_common.h"
@@ -337,11 +339,15 @@ void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem:
 //	The path in splitpath is in the *LOCAL* file system's syntax
 void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext);
 
-//	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
-void ddio_GetRootFromPath(const char *srcPath, char *root_path);
-
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots);
+
+/**
+ * Retrieve root names (i.e. drive letters in Windows).
+ * On Unix systems always returns list with only one ("/") element.
+ * @return list of discovered names
+ */
+std::vector<std::filesystem::path> ddio_GetSysRoots();
 
 // Constructs a path in the local file system's syntax
 // 	builtPath: stores the constructed path
@@ -352,14 +358,15 @@ int ddio_GetFileSysRoots(char **roots, int max_roots);
 //		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
 void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
 
-//	These functions allow one to find a file
-//		You use FindFileStart by giving it a wildcard (like *.*, *.txt, u??.*, whatever).  It returns
-//		a filename in namebuf.
-//		Use FindNextFile to get the next file found with the wildcard given in FindFileStart.
-//		Use FindFileClose to end your search.
-bool ddio_FindFileStart(const char *wildcard, char *namebuf);
-bool ddio_FindNextFile(char *namebuf);
-void ddio_FindFileClose();
+/**
+ * Execute function for each file that matches to regex
+ * @param search_path base directory
+ * @param regex regular expression for matching
+ * @param func function callback
+ * @return number of processed files
+ */
+void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
+                       const std::function<void(std::filesystem::path)> &func);
 
 //	given a path (with no filename), it will return the parent path
 //	srcPath is the source given path
@@ -373,12 +380,6 @@ bool ddio_GetParentPath(char *dest, const char *srcPath);
 //	dest is the finished cleaned path.
 //		dest should be at least _MAX_PATH in size
 void ddio_CleanPath(char *dest, const char *srcPath);
-
-// Finds a full path from a relative path
-// Parameters:	full_path - filled in with the fully-specified path.  Buffer must be at least _MAX_PATH bytes long
-//					rel_path - a path specification, either relative or absolute
-// Returns TRUE if successful, FALSE if an error
-bool ddio_GetFullPath(char *full_path, const char *rel_path);
 
 // Generates a temporary filename based on the prefix, and basedir
 // Parameters:
@@ -409,13 +410,13 @@ int ddio_GetPID();
  * @return true if lock file successfully created, false otherwise (unable to
  * create, lock file already created by another process etc).
  */
-bool ddio_CreateLockFile(const std::filesystem::path& dir);
+bool ddio_CreateLockFile(const std::filesystem::path &dir);
 
 /**
  * Deletes a lock file (for the current process) in the specified directory
  * @param dir Directory for which the lock file should be deleted from
  * @return true if lock file successfully deleted, false otherwise
  */
-bool ddio_DeleteLockFile(const std::filesystem::path& dir);
+bool ddio_DeleteLockFile(const std::filesystem::path &dir);
 
 #endif

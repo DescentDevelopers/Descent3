@@ -433,9 +433,9 @@ void GetMultiAPI(multi_api *api) {
   api->fp[33] = (int *)rend_GetRenderState;
   api->fp[34] = (int *)LoadMission;
   api->fp[35] = (int *)ddio_MakePath;
-  api->fp[36] = (int *)ddio_FindFileStart;
-  api->fp[37] = (int *)ddio_FindFileClose;
-  api->fp[38] = (int *)ddio_FindNextFile;
+  api->fp[36] = (int *)nullptr; // ddio_FindFileStart;
+  api->fp[37] = (int *)nullptr; // ddio_FindFileClose;
+  api->fp[38] = (int *)nullptr; // ddio_FindNextFile;
   api->fp[39] = (int *)MultiStartServer;
   api->fp[40] = (int *)ShowProgressScreen;
   api->fp[41] = (int *)SearchForLocalGamesTCP;
@@ -519,6 +519,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[108] = (int *)ShowNetgameInfo;
   api->fp[109] = (int *)GetRankIndex;
   api->fp[110] = (int *)CheckGetD3M;
+  api->fp[111] = (int *)ddio_DoForeachFile;
 
   // Variable pointers
   api->vp[0] = (int *)&Player_num;
@@ -590,15 +591,21 @@ int LoadMultiDLL(const char *name) {
   char lib_name[_MAX_PATH * 2];
   char dll_name[_MAX_PATH * 2];
   char tmp_dll_name[_MAX_PATH * 2];
-  char dll_path_name[_MAX_PATH * 2];
   MultiFlushAllIncomingBuffers();
 
   // Delete old dlls
   if (MultiDLLHandle.handle)
     FreeMultiDLL();
 
-  ddio_MakePath(dll_path_name, Base_directory, "online", "*.tmp", NULL);
-  ddio_DeleteFile(dll_path_name);
+  std::filesystem::path dll_path_name = std::filesystem::path(Base_directory) / "online";
+  ddio_DoForeachFile(dll_path_name, std::regex(".+\\.tmp"), [](const std::filesystem::path& path, ...) {
+    std::error_code ec;
+    std::filesystem::remove(path, ec);
+    if (ec) {
+      mprintf(0, "Unable to remove temporary file %s: %s\n", path.u8string().c_str(), ec.message().c_str());
+    }
+  });
+
   // Make the hog filename
   ddio_MakePath(lib_name, Base_directory, "online", name, NULL);
   strcat(lib_name, ".d3c");
