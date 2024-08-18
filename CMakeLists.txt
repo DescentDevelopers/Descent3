@@ -37,7 +37,7 @@ endif()
 
 project(Descent3
   LANGUAGES C CXX
-  VERSION 1.5.0
+  VERSION 1.6.0
 )
 
 set(CMAKE_CXX_STANDARD 17)
