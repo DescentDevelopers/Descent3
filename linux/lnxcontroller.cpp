@@ -558,7 +558,7 @@ bool lnxgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
       val = 0.0f;
     }
 
-    if (std::abs(val) < FLT_EPSILON)
+    if (std::abs(val) > FLT_EPSILON)
       break;
   }
 
