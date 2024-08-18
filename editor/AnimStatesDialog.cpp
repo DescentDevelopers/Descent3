@@ -608,19 +608,19 @@ void CAnimStatesDialog::UpdateDialog() {
   if (!m_setup_sound_dialogs) {
     m_setup_sound_dialogs = true;
 
-    for (i = 0; i < max_states; i++) {
+    for (int i = 0; i < max_states; i++) {
       SendDlgItemMessage(anim_sounds[i], CB_RESETCONTENT, 0, 0);
     }
-    for (i = 0; i < MAX_SOUNDS; i++) {
-      if (Sounds[i].used) {
+    for (auto & Sound : Sounds) {
+      if (Sound.used) {
         for (int j = 0; j < max_states; j++) {
-          SendDlgItemMessage(anim_sounds[j], CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Sounds[i].name);
+          SendDlgItemMessage(anim_sounds[j], CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Sound.name);
         }
       }
     }
   }
 
-  for (i = 0; i < max_states; i++) {
+  for (int i = 0; i < max_states; i++) {
     if (m_anim[mc].elem[i].anim_sound_index >= 0 && m_anim[mc].elem[i].anim_sound_index < MAX_SOUNDS &&
         Sounds[m_anim[mc].elem[i].anim_sound_index].used != 0)
       SendDlgItemMessage(anim_sounds[i], CB_SELECTSTRING, 0,
@@ -630,14 +630,14 @@ void CAnimStatesDialog::UpdateDialog() {
   }
 
   SendDlgItemMessage(IDC_CURRENT_STATE_PULLDOWN, CB_RESETCONTENT, 0, 0);
-  for (i = 0; i < NUM_MOVEMENT_CLASSES; i++)
+  for (int i = 0; i < NUM_MOVEMENT_CLASSES; i++)
     SendDlgItemMessage(IDC_CURRENT_STATE_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Movement_class_names[i]);
 
   SendDlgItemMessage(IDC_CURRENT_STATE_PULLDOWN, CB_SELECTSTRING, 0,
                      (LPARAM)(LPCTSTR)Movement_class_names[m_current_state]);
 
   SendDlgItemMessage(IDC_CURRENT_ANIMATION_PULLDOWN, CB_RESETCONTENT, 0, 0);
-  for (i = 0; i < NUM_ANIMS_PER_CLASS; i++)
+  for (int i = 0; i < NUM_ANIMS_PER_CLASS; i++)
     SendDlgItemMessage(IDC_CURRENT_ANIMATION_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Anim_state_names[i]);
 
   SendDlgItemMessage(IDC_CURRENT_ANIMATION_PULLDOWN, CB_SELECTSTRING, 0,
