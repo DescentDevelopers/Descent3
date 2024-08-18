@@ -271,37 +271,8 @@ bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx,
   return success;
 }
 
-//	returns internal information about an ddgr_surface (only to low level libraries, on par with the ddgr
-//	library).
-void ddgr_surf_GetPrivateData(ddgr_surface *sf, bool *ddraw_surf, uint32_t *object_ptr) {
-  switch (LIB_DATA(subsystem)) {
-  case DDGR_DX_SUBSYSTEM: {
-    tDXSurface *bm = (tDXSurface *)sf->obj;
-    *ddraw_surf = true;
-    *object_ptr = (bm->backbuffer == true) ? (uint32_t)(bm->lpddsback) : (uint32_t)(bm->lpdds);
-    break;
-  }
-  default:
-    Int3();
-  }
-}
-
 //	returns aspect ratio of current display.
 float ddgr_GetAspectRatio() {
   float aspect_ratio = (float)((3.0 * GetSystemMetrics(SM_CXSCREEN)) / (4.0 * GetSystemMetrics(SM_CYSCREEN)));
   return aspect_ratio;
-}
-
-unsigned ddgr_GetDDrawObject() {
-  switch (LIB_DATA(subsystem)) {
-  case DDGR_GDIX_SUBSYSTEM:
-  case DDGR_GDI_SUBSYSTEM:
-    return (unsigned)(GDI_DATA(lpDD));
-  case DDGR_DX_SUBSYSTEM:
-    return (unsigned)(DX_DATA(lpDD));
-  default:
-    Int3();
-  }
-
-  return 0;
 }

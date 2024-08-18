@@ -172,17 +172,6 @@ struct ddgr_surface {
   int locks;               // lock count.
 };
 
-#if defined(WIN32)
-/*
-        ddraw_surf = true	if this is a true DirectDraw surface, false if a GDI surface
-        object_ptr = DirectDraw object if ddraw_surf = true, a HDC if a GDI surface.
-*/
-void ddgr_surf_GetPrivateData(ddgr_surface *sf, bool *ddraw_surf, uint32_t *object_ptr);
-
-//	you must typecase this return value to LPDIRECTDRAW
-unsigned ddgr_GetDDrawObject();
-#endif // WIN32
-
 /*	Surface Functions
  */
 
