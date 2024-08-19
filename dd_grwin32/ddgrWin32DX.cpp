@@ -35,8 +35,8 @@
 
 #include "ddgrWin32.h"
 #include "ddgrWin32DX.h"
-#include "Application.h"
-#include "mono.h"
+#include "application.h"
+#include "log.h"
 #include "pserror.h"
 
 tDDGRDXInternalData DDGR_DX_lib_data;
@@ -67,7 +67,7 @@ bool ddgr_dx_Init(oeApplication *app) {
   DX_DATA(vidrefs) = 0; // reset video reference count.
   DX_DATA(init) = true;
 
-  mprintf(0, "DX system initialized.\n");
+  LOG_DEBUG << "DX system initialized.";
 
   return true;
 }
@@ -84,7 +84,7 @@ void ddgr_dx_Close() {
   DX_DATA(hPrimaryWnd) = NULL;
   DX_DATA(init) = false;
 
-  mprintf(0, "DX system closed.\n");
+  LOG_DEBUG << "DX system closed.";
 }
 
 //	Initializes the display for use with the DX subsystem.
