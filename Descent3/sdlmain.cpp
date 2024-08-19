@@ -32,23 +32,32 @@
 #include <csignal>
 #endif
 
-#include <SDL.h>
+#ifdef WIN32
+#include <cstdio>
+#include <windows.h>
+#endif
 
-#include "program.h"
-#include "dedicated_server.h"
-#include "descent.h"
+#include <SDL.h>
+// We use direct plog includes instead of log.h for logger instance initialization
+#include <plog/Log.h>
+#include <plog/Appenders/ColorConsoleAppender.h>
+#include <plog/Initializers/RollingFileInitializer.h>
+
+#include "appdatabase.h"
 #include "ddio.h"
 #include "application.h"
-#include "appdatabase.h"
 #include "args.h"
+#include "d3_version.h"
+#include "ddio.h"
+#include "descent.h"
+#include "dedicated_server.h"
 #include "init.h"
-#include "debug.h"
-
 #include "osiris_dll.h"
 
 std::filesystem::path orig_pwd;
 
 static volatile char already_tried_signal_cleanup = 0;
+
 
 void just_exit(void) {
   ddio_InternalClose(); // try to reset serial port.
@@ -75,10 +84,10 @@ void fatal_signal_handler(int signum) {
   case SIGVTALRM:
   case SIGINT:
     if (already_tried_signal_cleanup)
-      fprintf(stderr, "Recursive signal cleanup! Hard exit! AHHGGGG!\n");
+      LOG_WARNING << "Recursive signal cleanup! Hard exit! AHHGGGG!";
     else {
       already_tried_signal_cleanup = 1;
-      fprintf(stderr, "SIGNAL %d caught, aborting\n", signum);
+      LOG_WARNING.printf("SIGNAL %d caught, aborting", signum);
       just_exit();
     } // else
     break;
@@ -93,7 +102,7 @@ void fatal_signal_handler(int signum) {
 void safe_signal_handler(int signum) {}
 
 void install_signal_handlers() {
-  struct sigaction sact, fact;
+  struct sigaction sact{}, fact{};
 
   memset(&sact, 0, sizeof(sact));
   memset(&fact, 0, sizeof(fact));
@@ -215,6 +224,38 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
   return (1);
 }
 
+/**
+ * Initialize logger facility.
+ * @param log_level desired log level (for example, plog::debug)
+ * @param enable_filelog enable logging into Descent.log
+ * @param enable_win_console enable console windows for WIN32 (no-op for POSIX systems)
+ */
+void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_console) {
+  std::filesystem::path log_file = "Descent3.log";
+  static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
+  static plog::RollingFileAppender<plog::TxtFormatter> fileAppender(log_file.u8string().c_str());
+
+#ifdef WIN32
+  if (enable_win_console) {
+    // Open console window
+    AllocConsole();
+    freopen("CONIN$", "r", stdin);
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+  }
+#endif
+
+  plog::init(log_level, &consoleAppender);
+  if (enable_filelog) {
+    if (std::filesystem::is_regular_file(log_file)) {
+      // Delete old log
+      std::error_code ec;
+      std::filesystem::remove(log_file, ec);
+      plog::get()->addAppender(&fileAppender);
+    }
+  }
+}
+
 //	---------------------------------------------------------------------------
 //	Main
 //		creates all the OS objects and then runs Descent 3.
@@ -224,15 +265,29 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
 int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine, int nCmdShow) {
   strupr(szCmdLine);
   GatherArgs(szCmdLine);
+  bool enable_winconsole = FindArg("-winconsole");
 #else
 int main(int argc, char *argv[]) {
   GatherArgs(argv);
+  bool enable_winconsole = true;
 #endif
 
   orig_pwd = std::filesystem::current_path();
 
-  setbuf(stdout, NULL);
-  setbuf(stderr, NULL);
+  /* Set up the logging system */
+#ifdef RELEASE
+  plog::Severity log_level = plog::info;
+#else
+  plog::Severity log_level = plog::debug;
+#endif
+
+  int loglevel_farg = FindArg("-loglevel");
+  if (loglevel_farg) {
+    log_level = plog::severityFromString(GameArgs[loglevel_farg + 1]);
+  }
+  InitLog(log_level, FindArg("-logfile"), enable_winconsole);
+
+  LOG_INFO.printf("Welcome to Descent 3 v%d.%d.%d %s", D3_MAJORVER, D3_MINORVER, D3_BUILD, D3_GIT_HASH);
 
 #ifdef DEDICATED
   setenv("SDL_VIDEODRIVER", "dummy", 1);
@@ -240,8 +295,7 @@ int main(int argc, char *argv[]) {
 
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (rc != 0) {
-    fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
-    fprintf(stderr, "SDL_GetError() reports \"%s\".\n", SDL_GetError());
+    LOG_FATAL.printf("SDL: SDL_Init() failed: %d: %s!", rc, SDL_GetError());
     return (0);
   }
 
@@ -253,7 +307,7 @@ int main(int argc, char *argv[]) {
   int fsArg = FindArgChar("-fullscreen", 'f');
 
   if ((fsArg) && (winArg)) {
-    fprintf(stderr, "ERROR: %s AND %s specified!\n", GameArgs[winArg], GameArgs[fsArg]);
+    LOG_FATAL.printf("ERROR: %s AND %s specified!", GameArgs[winArg], GameArgs[fsArg]);
     return (0);
   } // if
 
@@ -277,11 +331,6 @@ int main(int argc, char *argv[]) {
 #ifndef DEDICATED
       // check for a renderer
 
-      if ((FindArgChar("-windowed", 'w')) && (FindArgChar("-fullscreen", 'f'))) {
-        fprintf(stderr, "Error: Both windowed and fullscreen mode requested.");
-        return 0;
-      }
-
       if (FindArgChar("-nomousegrab", 'm')) {
         flags |= APPFLAG_NOMOUSECAPTURE;
         ddio_MouseSetGrab(false);
@@ -293,7 +342,7 @@ int main(int argc, char *argv[]) {
       }
       flags |= APPFLAG_WINDOWEDMODE;
 #else
-      fprintf(stderr, "Error: \"--dedicated\" or \"-d\" flag required\n");
+      LOG_FATAL << "Error: \"--dedicated\" or \"-d\" flag required";
       return 0;
 #endif
 
@@ -313,13 +362,13 @@ int main(int argc, char *argv[]) {
       run_d3 = false;
       pid_t np = fork();
       if (np == -1) {
-        fprintf(stderr, "Unable to fork process\n");
+        LOG_WARNING << "Unable to fork process";
       }
       if (np == 0) {
         run_d3 = true;
         np = setsid();
         pid_t pp = getpid();
-        printf("Successfully forked process [new sid=%d pid=%d]\n", np, pp);
+        LOG_INFO.printf("Successfully forked process [new sid=%d pid=%d]", np, pp);
       }
     }
 #endif

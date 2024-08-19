@@ -1049,12 +1049,7 @@ void PreInitD3Systems() {
   bool debugging = false;
 
 #ifndef RELEASE
-
   debugging = (FindArg("-debug") != 0);
-
-  if (FindArg("-logfile"))
-    Debug_Logfile("d3.log");
-
 #endif
 
 #ifdef DAJ_DEBUG
