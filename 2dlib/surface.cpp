@@ -745,8 +745,6 @@ void grSurface::add_to_list(ddgr_surface *sf) {
     node->prev = grSurface::surf_list_cur;
     grSurface::surf_list_cur = node;
   }
-
-  //	mprintf(0, "Allocated surface %s [%d].\n", sf->name, DDData.surfs_alloc);
 }
 
 void grSurface::remove_from_list(ddgr_surface *sf) {
@@ -776,6 +774,4 @@ void grSurface::remove_from_list(ddgr_surface *sf) {
       node = node->prev;
     }
   }
-
-  //	mprintf(0, "Freed surface %s [%d].\n", sf->name, DDData.surfs_alloc);
 }

@@ -73,6 +73,7 @@
 
 #include "bitmap.h"
 #include "lib2d.h"
+#include "log.h"
 #include "mem.h"
 
 //	----------------------------------------------------------------------------
@@ -172,7 +173,7 @@ bool gr_mem_surf_Create(ddgr_surface *sf) {
 
   bm->data = (char *)mem_malloc(bm->rowsize * sf->h);
   if (!bm->data) {
-    mprintf(0, "mem_Create malloc fail <%s>\n", sf->name);
+    LOG_WARNING.printf("mem_Create malloc fail <%s>\n", sf->name);
     delete bm;
     return false;
   }
