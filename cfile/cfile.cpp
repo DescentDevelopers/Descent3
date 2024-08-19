@@ -70,11 +70,6 @@ std::map<std::filesystem::path, std::filesystem::path> extensions;
 
 #define MAX_PATHS 100
 
-static path_entry paths[MAX_PATHS];
-static int N_paths = 0;
-#define MAX_EXTENSIONS 100
-static ext_entry extensions[MAX_EXTENSIONS];
-static int N_extensions;
 static std::shared_ptr<library> Libraries;
 static int lib_handle = 0;
 
