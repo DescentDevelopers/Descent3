@@ -11,6 +11,7 @@ set(CPPS
 add_library(AudioEncode STATIC ${HEADERS} ${CPPS})
 target_link_libraries(AudioEncode PRIVATE
   libacm
+  plog::plog
 )
 target_include_directories(AudioEncode PUBLIC
   $<BUILD_INTERFACE:

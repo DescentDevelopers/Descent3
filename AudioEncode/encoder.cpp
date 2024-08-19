@@ -21,7 +21,7 @@
 
 #include "aencode.h"
 #include "audio_encode.h"
-#include "mono.h"
+#include "log.h"
 
 int32_t aenc_ReadSamp(void *data) {
   FILE *f = (FILE *)data;
@@ -50,40 +50,34 @@ bool aenc_Compress(char *input_filename, char *output_filename, const int *input
 
   in = fopen(input_filename, "rb");
   if (!in) {
-    mprintf(0, "AENC: Unable to open %s for input.\n", input_filename);
+    LOG_WARNING.printf("AENC: Unable to open %s for input.", input_filename);
     return false;
   }
 
   if (input_levels) {
     levels = *input_levels; // Levels (default 7 or for 2k total)
     levels_set = 1;
-    if (levels < 0 || levels > 16) {
-      mprintf(0, "AENC: Warning: levels outside of the range 0 to 16\n");
-    }
+    LOG_WARNING_IF(levels < 0 || levels > 16) << "AENC: Warning: levels outside of the range 0 to 16";
   }
 
   if (input_samples) {
     samples_per_subband = *input_samples; // Samples per subband (default 16 or for 2k total)
     samples_per_subband_set = 1;
-    if (samples_per_subband < 1 || samples_per_subband > 1024) {
-      mprintf(0, "AENC: Warning: samples per subband not in the range 1 to 1024\n");
-    }
+    LOG_WARNING_IF(samples_per_subband < 1 || samples_per_subband > 1024)
+        << "AENC: Warning: samples per subband not in the range 1 to 1024";
   }
 
   if (input_rate) {
     sample_rate = *input_rate; // Sample rate (default 22K)
     sample_rate_set = 1;
-    if (sample_rate != 11025 && sample_rate != 22050 && sample_rate != 44100) {
-      mprintf(0, "AENC: Warning: sample rate not 11025, 22050, or 44100\n");
-    }
+    LOG_WARNING_IF(sample_rate != 11025 && sample_rate != 22050 && sample_rate != 44100)
+        << "AENC: Warning: sample rate not 11025, 22050, or 44100";
   }
 
   if (input_channels) {
     channels = *input_channels;
     channels_set = 1;
-    if (channels != 1 && channels != 2) {
-      mprintf(0, "AENC: Warning: /C channels not 1 or 2\n");
-    }
+    LOG_WARNING_IF(channels != 1 && channels != 2) << "AENC: Warning: /C channels not 1 or 2";
   }
 
   if (input_factor) {
@@ -94,7 +88,7 @@ bool aenc_Compress(char *input_filename, char *output_filename, const int *input
       factor = 1.0f / factor;
 
     if (factor <= 0.0f) {
-      mprintf(0, "AENC: Warning: compression factor <= 0.0\n");
+      LOG_WARNING << "AENC: Warning: compression factor <= 0.0";
       factor = 1.0f;
     }
   }
@@ -130,7 +124,7 @@ bool aenc_Compress(char *input_filename, char *output_filename, const int *input
 
   out = fopen(output_filename, "wb");
   if (!out) {
-    mprintf(0, "AENC: Unable to open %s for output.\n", output_filename);
+    LOG_WARNING.printf("AENC: Unable to open %s for output.", output_filename);
     return false;
   }
 
