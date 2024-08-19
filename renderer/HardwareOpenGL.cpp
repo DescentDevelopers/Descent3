@@ -379,7 +379,8 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
         gl_library[0] = 0;
     }
 
-    mprintf(0, "OpenGL: Attempting to use \"%s\" for OpenGL\n", gl_library[0] ? gl_library : "[system default library]");
+    LOG_INFO.printf("OpenGL: Attempting to use \"%s\" for OpenGL",
+                    gl_library[0] ? gl_library : "[system default library]");
 
     // ryan's adds. 04/18/2000...SDL stuff on 04/25/2000
     bool success = true;
@@ -516,7 +517,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     Uint16 ramp[256];
     SDL_CalculateGammaRamp(Render_preferred_state.gamma, ramp);
     SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp);
-  } // else
+  }
 
   if (ParentApplication) {
     reinterpret_cast<oeLnxApplication *>(ParentApplication)->set_sizepos(0, 0, *width, *height);

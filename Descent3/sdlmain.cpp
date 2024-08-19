@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <map>
 
 #ifndef WIN32
 #include <unistd.h>
@@ -52,14 +53,12 @@
 #include "descent.h"
 #include "dedicated_server.h"
 #include "init.h"
-#include "osiris_dll.h"
 
 std::filesystem::path orig_pwd;
 
 static volatile char already_tried_signal_cleanup = 0;
 
-
-void just_exit(void) {
+void just_exit() {
   ddio_InternalClose(); // try to reset serial port.
 
   SDL_Quit();
@@ -91,55 +90,43 @@ void fatal_signal_handler(int signum) {
       just_exit();
     } // else
     break;
-  case SIGXCPU:
-  case SIGXFSZ:
+  default:
     break;
   }
 
   _exit(-10);
 }
 
-void safe_signal_handler(int signum) {}
-
 void install_signal_handlers() {
-  struct sigaction sact{}, fact{};
+  struct sigaction fact{};
 
-  memset(&sact, 0, sizeof(sact));
   memset(&fact, 0, sizeof(fact));
-  sact.sa_handler = safe_signal_handler;
   fact.sa_handler = fatal_signal_handler;
 
-  if (sigaction(SIGHUP, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGHUP\n");
-  if (sigaction(SIGABRT, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGABRT\n");
-  if (sigaction(SIGINT, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGINT\n");
-  if (sigaction(SIGBUS, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGBUS\n");
-  if (sigaction(SIGFPE, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGFPE\n");
-  if (sigaction(SIGILL, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGILL\n");
-  if (sigaction(SIGQUIT, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGQUIT\n");
-  if (sigaction(SIGSEGV, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGSEGV\n");
-  if (sigaction(SIGTERM, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGTERM\n");
-  if (sigaction(SIGXCPU, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGXCPU\n");
-  if (sigaction(SIGXFSZ, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGXFSZ\n");
-  if (sigaction(SIGVTALRM, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGVTALRM\n");
-  if (sigaction(SIGTRAP, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGTRAP\n");
+  const std::map<int, std::string> signals = {
+      {SIGHUP, "SIGHUP"},
+      {SIGABRT, "SIGABRT"},
+      {SIGINT, "SIGINT"},
+      {SIGBUS, "SIGBUS"},
+      {SIGFPE, "SIGFPE"},
+      {SIGILL, "SIGILL"},
+      {SIGQUIT, "SIGQUIT"},
+      {SIGSEGV, "SIGSEGV"},
+      {SIGTERM, "SIGTERM"},
+      {SIGXCPU, "SIGXCPU"},
+      {SIGXFSZ, "SIGXFSZ"},
+      {SIGVTALRM, "SIGVTALRM"},
+      {SIGTRAP, "SIGTRAP"},
+  };
+
+  for (const auto &signal : signals) {
+    if (sigaction(signal.first, &fact, nullptr) != 0) {
+      LOG_WARNING << "SIG: Unable to install " << signal.second;
+    }
+  }
 }
 #else
-void install_signal_handlers() {
-  SetUnhandledExceptionFilter(RecordExceptionInfo);
-}
+void install_signal_handlers() { SetUnhandledExceptionFilter(RecordExceptionInfo); }
 #endif
 
 //	---------------------------------------------------------------------------
@@ -300,7 +287,7 @@ int main(int argc, char *argv[]) {
   }
 
   // !!! FIXME: Don't use an event filter!
-  SDL_SetEventFilter(d3SDLEventFilter, NULL);
+  SDL_SetEventFilter(d3SDLEventFilter, nullptr);
   install_signal_handlers();
 
   int winArg = FindArgChar("-windowed", 'w');
@@ -309,79 +296,68 @@ int main(int argc, char *argv[]) {
   if ((fsArg) && (winArg)) {
     LOG_FATAL.printf("ERROR: %s AND %s specified!", GameArgs[winArg], GameArgs[fsArg]);
     return (0);
-  } // if
+  }
 
-  if (FindArg("-game_checksum")) {
-    extern tOSIRISModuleInit Osiris_module_init;
-    extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit * st);
-    extern uint32_t Osiris_CreateGameChecksum(void);
+  // Initialize our OS Object.  This could be a game dependant OS object, or a default OS object.
+  // Once we create it, if successful, we can start the game.
+  int flags = 0;
 
-    Osiris_CreateModuleInitStruct(&Osiris_module_init);
-    uint32_t checksum = Osiris_CreateGameChecksum();
-    printf("Descent 3\n");
-    printf("Game Checksum: %u\n", checksum);
-    return (0);
-  } else {
-    /*initialize our OS Object.  This could be a game dependant OS object, or a default OS object.
-    once we create it, if successful, we can start the game.
-    */
-    int flags = 0;
-
-    if (!FindArgChar("-dedicated", 'd')) {
+  if (!FindArgChar("-dedicated", 'd')) {
 #ifndef DEDICATED
-      // check for a renderer
+    // check for a renderer
 
-      if (FindArgChar("-nomousegrab", 'm')) {
-        flags |= APPFLAG_NOMOUSECAPTURE;
-        ddio_MouseSetGrab(false);
+    if (FindArgChar("-nomousegrab", 'm')) {
+      flags |= APPFLAG_NOMOUSECAPTURE;
+    ddio_MouseSetGrab(false);
       }
-      SDL_SetRelativeMouseMode(ddio_MouseGetGrab() ? SDL_TRUE : SDL_FALSE);
+    SDL_SetRelativeMouseMode(ddio_MouseGetGrab() ? SDL_TRUE : SDL_FALSE);
 
-      if (!FindArg("-sharedmemory")) {
-        flags |= APPFLAG_NOSHAREDMEMORY;
-      }
-      flags |= APPFLAG_WINDOWEDMODE;
+    if (!FindArg("-sharedmemory")) {
+      flags |= APPFLAG_NOSHAREDMEMORY;
+    }
+    flags |= APPFLAG_WINDOWEDMODE;
+
+
 #else
-      LOG_FATAL << "Error: \"--dedicated\" or \"-d\" flag required";
-      return 0;
+    LOG_FATAL << "Error: \"--dedicated\" or \"-d\" flag required";
+    return 0;
 #endif
 
-    } else {
-      // Dedicated Server Mode
-      flags |= OEAPP_CONSOLE;
+  } else {
+    // Dedicated Server Mode
+    flags |= OEAPP_CONSOLE;
 
-      // service flag overrides others here in the group
-      if (FindArg("-service")) {
-        flags |= APPFLAG_USESERVICE;
-      }
+    // service flag overrides others here in the group
+    if (FindArg("-service")) {
+      flags |= APPFLAG_USESERVICE;
     }
+  }
 
-    bool run_d3 = true;
+  bool run_d3 = true;
 #if defined(POSIX)
-    if (flags & APPFLAG_USESERVICE) {
-      run_d3 = false;
-      pid_t np = fork();
-      if (np == -1) {
-        LOG_WARNING << "Unable to fork process";
-      }
-      if (np == 0) {
-        run_d3 = true;
-        np = setsid();
-        pid_t pp = getpid();
-        LOG_INFO.printf("Successfully forked process [new sid=%d pid=%d]", np, pp);
-      }
+  if (flags & APPFLAG_USESERVICE) {
+    run_d3 = false;
+    pid_t np = fork();
+    if (np == -1) {
+      LOG_WARNING << "Unable to fork process";
     }
+    if (np == 0) {
+      run_d3 = true;
+      np = setsid();
+      pid_t pp = getpid();
+      LOG_INFO.printf("Successfully forked process [new sid=%d pid=%d]", np, pp);
+    }
+  }
 #endif
 
-    if (run_d3) {
-      oeD3LnxApp d3(flags);
-      oeD3LnxDatabase dbase;
-      StartDedicatedServer();
-      PreInitD3Systems();
+  if (run_d3) {
+    oeD3LnxApp d3(flags);
+    oeD3LnxDatabase dbase;
+    StartDedicatedServer();
+    PreInitD3Systems();
 
-      d3.init();
-      d3.run();
-    }
+    d3.init();
+    d3.run();
   }
 
   just_exit();
