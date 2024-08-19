@@ -675,6 +675,7 @@
 #include "terrain.h"
 #include "multi.h"
 #include "hud.h"
+#include "menu.h"
 //	---------------------------------------------------------------------------
 //	Data
 //	---------------------------------------------------------------------------
@@ -692,16 +693,17 @@ extern msn_urls Net_msn_URLs;
 bool InitMissionScript();
 void DoEndMission();
 void DoMissionMovie(const char *movie);
-void FreeMission();
+static void FreeMission();
+// FIXME: MTS: unused?
 // used in load level callback
 void LoadLevelCB(const char *chunk, int curlen, int filelen);
 //	MN3 based mission functions.
 // loads the msn file from the mn3 file specified, specifies the hog and table file.
-bool mn3_Open(const char *mn3file);
-// returns mission information given the mn3 file.
-bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn);
+//bool mn3_Open(const char *mn3file);
+/// Returns mission information given the mn3 file.
+static bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn);
 // closes the current mn3 file
-void mn3_Close();
+//void mn3_Close();
 
 static inline bool IS_MN3_FILE(const char *fname) {
   char name[PSFILENAME_LEN + 1];
@@ -1314,7 +1316,7 @@ bool started_page = 0;
 /*
 $$TABLE_GAMEFILE "tunnelload.ogf"
 */
-bool Progress_screen_loaded = false;
+static bool Progress_screen_loaded = false;
 void LoadLevelProgress(int step, float percent, const char *chunk) {
   static tLargeBitmap level_bmp;
   static bool level_bmp_loaded = false;
@@ -1634,8 +1636,8 @@ bool DoMissionBriefing(int level) {
     ret = !TelComShow(TS_MISSION, false, true);
   return ret;
 }
-extern bool FirstGame;
 
+bool Skip_next_movie = false;
 //	---------------------------------------------------------------------------
 //	 play movie
 void DoMissionMovie(const char *movie) {
@@ -1682,7 +1684,7 @@ bool InitMissionScript() {
   //@@	}
   return true;
 }
-extern bool IsRestoredGame;
+
 void InitLevelScript() {
   if (Current_level->filename) {
     char filename[_MAX_PATH], ext[_MAX_EXT];
@@ -1800,6 +1802,7 @@ bool IsMissionMultiPlayable(const char *mission) {
   }
   return false;
 }
+// TODO: MTS: unused function?
 bool IsMissionSinglePlayable(const char *mission) {
   tMissionInfo msninfo;
   if (GetMissionInfo(mission, &msninfo)) {
@@ -1807,7 +1810,7 @@ bool IsMissionSinglePlayable(const char *mission) {
   }
   return false;
 }
-int Mission_voice_hog_handle = 0;
+static int Mission_voice_hog_handle = 0;
 //	MN3 based mission functions.
 // loads the msn file from the mn3 file specified, specifies the hog and table file.
 bool mn3_Open(const char *mn3file) {

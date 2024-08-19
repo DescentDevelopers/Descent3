@@ -112,6 +112,7 @@
 extern std::filesystem::path Demo_fname;
 
 extern uint32_t Demo_flags;
+extern bool Demo_looping;
 extern bool Demo_paused;
 extern bool Demo_do_one_frame;
 extern bool Demo_restart;

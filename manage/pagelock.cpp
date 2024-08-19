@@ -193,7 +193,6 @@
 #endif
 
 #define CURRENT_TABLE_VERSION 22
-extern const char *PageNames[];
 
 void mng_InitPagelocks() {
   // If there is not a pagelock file, create one with a dummy header.

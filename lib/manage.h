@@ -144,6 +144,8 @@ extern std::filesystem::path LockerFile;
 extern std::filesystem::path VersionFile;
 extern mngs_Pagelock GlobalPagelocks[];
 extern mngs_track_lock GlobalTrackLocks[];
+extern char *TablefileNameOverride;
+extern const char *const PageNames[];
 
 int mng_InitTableFiles();
 

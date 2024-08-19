@@ -3062,7 +3062,7 @@ int InitModels() {
   return 1;
 }
 
-// MTS: used only in this file.
+// FIXME: MTS: used only in this file.
 // Given an actual keyframe number, returns the normalized (0 to 1) position of that
 // keyframe
 // Handle is an index into the Poly_models array
@@ -3099,7 +3099,7 @@ void RemapPolyModels() {
   }
 }
 
-// MTS: not used?
+// TODO: MTS: unused?
 // Returns the total number of faces in a model
 int CountFacesInPolymodel(poly_model *pm) {
   int i;

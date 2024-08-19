@@ -2,7 +2,8 @@ set(HEADERS
   linux_fix.h
   lnxapp.h
   lnxcontroller.h
-  registry.h)
+  registry.h
+  lnxcon.hpp)
 set(CPPS
   lnxcon.cpp
   lnxcon_raw.cpp
