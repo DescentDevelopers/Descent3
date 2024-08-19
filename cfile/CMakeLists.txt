@@ -13,6 +13,7 @@ target_link_libraries(cfile PRIVATE
   ddio
   mem
   misc
+  plog::plog
 )
 target_include_directories(cfile PUBLIC
   $<BUILD_INTERFACE:
