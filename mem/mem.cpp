@@ -197,9 +197,9 @@
 #else
 #include <malloc.h>
 #endif
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 #ifdef WIN32
 // Non-Linux Includes
 #include <windows.h>
@@ -208,6 +208,7 @@
 #endif
 #include <cstdint>
 
+#include "log.h"
 #include "mem.h"
 #include "pserror.h"
 
@@ -260,7 +261,7 @@ int mem_GetTotalMemoryUsed() { return LnxTotalMemUsed; }
 void *mem_malloc_sub(int size, const char *file, int line) {
   void *new_mem = malloc(size);
   if (!new_mem) {
-    mprintf(0, "Out of memory allocating %d bytes: line %d in %s\n", size, line, file);
+    LOG_ERROR.printf("Out of memory allocating %d bytes: line %d in %s", size, line, file);
     Int3();
     return nullptr;
   }
@@ -280,14 +281,14 @@ void mem_free_sub(void *memblock) {
 }
 
 void mem_error_msg(const char *file, int line, int size) {
-  mprintf(0, "Memory error (size=%d) line %d in %s\n", size, line, file);
+  LOG_ERROR.printf("Memory error (size=%d) line %d in %s", size, line, file);
   Int3();
 }
 
 char *mem_strdup_sub(const char *string, const char *file, int line) {
   char *ret = strdup(string);
   if (!ret) {
-    mprintf(0, "Out of memory allocating %d bytes: line %d in %s\n", strlen(string) + 1, line, file);
+    LOG_ERROR.printf("Out of memory allocating %d bytes: line %d in %s", strlen(string) + 1, line, file);
     Int3();
     return nullptr;
   }
@@ -391,16 +392,16 @@ void mem_Init() {
   GlobalMemoryStatus(&ms);
   Heap = HeapCreate(HEAP_NO_SERIALIZE, 16000000, 0); // GetProcessHeap();
   if (!Heap) {
-    mprintf(0, "Unable to create memory heap! error: %d\n", GetLastError());
+    LOG_ERROR.printf("Unable to create memory heap! error: %d", GetLastError());
     Error("Unable to create memory heap; your system may not have enough memory to run.");
   }
   ASSERT(Heap);
   HeapCompact(Heap, 0);
-  mprintf(0, "System Memory Status:\n");
-  mprintf(0, "Percent of memory in use: %d\n", ms.dwMemoryLoad);
-  mprintf(0, "Bytes of physical memory : %d\n", ms.dwTotalPhys);
-  mprintf(0, "Free physical memory bytes  : %d\n", ms.dwAvailPhys);
-  mprintf(0, "Available virtual memory : %d\n", ms.dwAvailPageFile);
+  LOG_DEBUG.printf("System Memory Status:");
+  LOG_DEBUG.printf("Percent of memory in use: %d", ms.dwMemoryLoad);
+  LOG_DEBUG.printf("Bytes of physical memory : %d", ms.dwTotalPhys);
+  LOG_DEBUG.printf("Free physical memory bytes  : %d", ms.dwAvailPhys);
+  LOG_DEBUG.printf("Available virtual memory : %d", ms.dwAvailPageFile);
 
   // See if there is enough memory to run
   if (((int64_t)ms.dwAvailPageFile + ms.dwAvailPhys) < (50 * 1024 * 1024)) {
@@ -410,11 +411,11 @@ void mem_Init() {
           ms.dwTotalPhys, ms.dwAvailPhys, ms.dwAvailPageFile);
     return;
   } else if ((ms.dwTotalPhys) < (62 * 1024 * 1024)) {
-    mprintf(0, "Using low memory mode!\n");
+    LOG_DEBUG << "Using low memory mode!";
     Mem_low_memory_mode = true;
     return;
   } else if ((ms.dwTotalPhys) < (46 * 1024 * 1024)) {
-    mprintf(0, "Using super low memory mode!\n");
+    LOG_DEBUG << "Using super low memory mode!";
     Mem_low_memory_mode = true;
     Mem_superlow_memory_mode = true;
     return;
@@ -474,12 +475,12 @@ void *mem_malloc_sub(int size, const char *file, int line) {
   }
 #endif
   if (size < 0) {
-    mprintf(0, "Some bozo is trying to allocate a negative length of memory!\n");
-    mprintf(0, "Offending file: %s line: %d\n", file, line);
+    LOG_ERROR << "Some bozo is trying to allocate a negative length of memory!";
+    LOG_ERROR.printf("Offending file: %s line: %d", file, line);
     Int3();
     return NULL;
   } else if (size == 0) {
-    mprintf(0, "Warning: Zero byte malloc in %s line %d!\n", file, line);
+    LOG_ERROR.printf("Warning: Zero byte malloc in %s line %d!", file, line);
     Int3();
     return (void *)MEM_NO_MEMORY_PTR;
   }
@@ -515,7 +516,7 @@ void *mem_malloc_sub(int size, const char *file, int line) {
     if (bail_now == false) {
       track_node = false;
 #ifdef MEM_DEBUG
-      mprintf(0, "Out of memory tracking slots!!!!\n");
+      LOG_DEBUG << "Out of memory tracking slots!!!!";
 #endif
     }
     bail_now = true;
@@ -542,7 +543,7 @@ void *mem_malloc_sub(int size, const char *file, int line) {
   int errors;
   if (mi->ptr == NULL) {
     errors = GetLastError();
-    mprintf(0, "Unable to alloc memory in mem_malloc_sub()!\n");
+    LOG_DEBUG << "Unable to alloc memory in mem_malloc_sub()!");
     Int3();
     ASSERT(mi->ptr);
     Error("Out of memory, unable to continue.");
@@ -594,7 +595,7 @@ void mem_free_sub(void *memblock) {
     uint16_t mem_sig = MEM_GAURDIAN_SIG;
     if (memcmp((char *)memblock + freemem->len, &mem_sig, 2) != 0) {
       // Corrupted memory found when we went to free it.
-      mprintf(0, "Memory block found to be damaged when it was freed!\n");
+      LOG_ERROR << "Memory block found to be damaged when it was freed!";
       Int3();
     }
     Total_mem_used -= freemem->len;
@@ -602,7 +603,7 @@ void mem_free_sub(void *memblock) {
     deleteNode(mynode->data);
     return;
   } else {
-    mprintf(0, "Warning, hash lookup of memory block failed!\n");
+    LOG_WARNING << "Warning, hash lookup of memory block failed!";
     HeapFree(Heap, HEAP_NO_SERIALIZE, memblock);
     return;
   }
@@ -695,7 +696,7 @@ MemClass::~MemClass() { mem_shutdown(); }
 //	memory routines
 void mem_shutdown() {
   //	free failsafe memory block.
-  mprintf(0, "Shutting down memory system.\n");
+  LOG_DEBUG << "Shutting down memory system.";
   if (Mem_failsafe_block) {
     mem_free(Mem_failsafe_block);
     Mem_failsafe_block = NULL;
@@ -703,14 +704,14 @@ void mem_shutdown() {
 #ifdef MEM_DEBUG
   free(hashTable);
   if (Total_mem_used)
-    mprintf(0, "%d bytes leaked in mem_malloc heap!\n", Total_mem_used);
+    LOG_WARNING.printf("%d bytes leaked in mem_malloc heap!", Total_mem_used);
 #ifdef MEM_LOGFILE
   fclose(mem_out);
 #endif
-  mprintf(0, "Looking for memory leaks.\n");
+  LOG_DEBUG << "Looking for memory leaks.";
   for (int i = 0; i < MEM_MAX_MALLOCS; i++) {
     if (mem_info[i].ptr != (void *)MEM_NO_MEMORY_PTR) {
-      mprintf(0, "Memory leaked from %s line %d length %d.\n", mem_info[i].file, mem_info[i].line, mem_info[i].len);
+      LOG_WARNING.printf("Memory leaked from %s line %d length %d.", mem_info[i].file, mem_info[i].line, mem_info[i].len);
       /*
       //mprintf(0,"%d\n",strdup_malloc_line);
       if( (strcmp(mem_info[i].file,"main\\mem\\mem.cpp")==0) && (mem_info[i].line==(strdup_malloc_line+1)) )
@@ -721,8 +722,8 @@ void mem_shutdown() {
       */
     }
   }
-  mprintf(0, "Done looking for memory leaks.\n");
-  mprintf(0, "Memory library high water mark: %d\n", Mem_high_water_mark);
+  LOG_DEBUG << "Done looking for memory leaks.";
+  LOG_DEBUG.printf("Memory library high water mark: %d", Mem_high_water_mark);
   Mem_next_slot = 0;
 #endif
   if (Heap) {
@@ -868,8 +869,8 @@ void mem_heapcheck(void) {
     freemem = &mem_info[i];
     uint16_t mem_sig = MEM_GAURDIAN_SIG;
     if (memcmp((char *)freemem->ptr + freemem->len, &mem_sig, 2) != 0) {
-      mprintf(0, "Memory block found to be damaged in mem_heapcheck()!\n");
-      mprintf(0, "Originally allocated from file %s, line %d\n", freemem->file, freemem->line);
+      LOG_ERROR << "Memory block found to be damaged in mem_heapcheck()!";
+      LOG_ERROR.printf("Originally allocated from file %s, line %d", freemem->file, freemem->line);
       Int3();
     }
   }
