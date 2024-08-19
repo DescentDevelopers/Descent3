@@ -67,9 +67,9 @@
 
 #define MIN_COMPRESS_WIDTH 65 // don't compress if less than this wide
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "mem.h"
 #include "iff.h"
@@ -78,7 +78,7 @@
 #include "pserror.h"
 #include "pstypes.h"
 #include "bitmap.h"
-#include "mono.h"
+#include "log.h"
 #include "grdefs.h"
 
 // Internal constants and structures for this library
@@ -515,7 +515,7 @@ int bm_iff_alloc_file(CFILE *ifile) {
     cur_sig[i] = cf_ReadByte(ifile);
 
   if (strncmp("PBM ", cur_sig, 4)) {
-    mprintf(0, "IFF file isn't a PBM...aborting.\n");
+    LOG_ERROR << "IFF file isn't a PBM...aborting.";
     return -1;
   }
   if (!strncmp("PBM ", cur_sig, 4))
@@ -526,7 +526,7 @@ int bm_iff_alloc_file(CFILE *ifile) {
   ret = bm_iff_parse_file(ifile, &bmheader, NULL);
 
   if (ret != IFF_NO_ERROR) {
-    mprintf(0, "Couldn't load IFF file.\n");
+    LOG_ERROR << "Couldn't load IFF file.";
     return -1;
   }
 
@@ -565,7 +565,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
   form_len = cf_ReadInt(ifile, false);
 
   if (sig != IFF_SIG_FORM) {
-    mprintf(0, "Not a valid IFF file.\n");
+    LOG_ERROR << "Not a valid IFF file.";
     cfclose(ifile);
     return -1;
   }

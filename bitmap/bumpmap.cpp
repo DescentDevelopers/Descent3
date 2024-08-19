@@ -16,13 +16,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
+
 #include "bumpmap.h"
-#include "pstypes.h"
-#include "pserror.h"
-#include "mono.h"
+#include "log.h"
 #include "mem.h"
+#include "mono.h"
+#include "pserror.h"
 
 static int Num_of_bumpmaps = 0;
 static uint16_t Free_bumpmap_list[MAX_BUMPMAPS];
@@ -46,7 +47,7 @@ void bump_InitBumpmaps() {
 void bump_ShutdownBumpmaps(void) {
   int i;
 
-  mprintf(0, "Freeing all bumpmap memory.\n");
+  LOG_DEBUG << "Freeing all bumpmap memory.";
 
   for (i = 0; i < MAX_BUMPMAPS; i++) {
     while (GameBumpmaps[i].flags & BUMPF_USED)
@@ -72,7 +73,7 @@ int bump_AllocBumpmap(int w, int h) {
 
   GameBumpmaps[n].data = (uint16_t *)mem_malloc(w * h * 2);
   if (!GameBumpmaps[n].data) {
-    mprintf(0, "NOT ENOUGHT MEMORY FOR BUMPMAP!\n");
+    LOG_ERROR << "NOT ENOUGH MEMORY FOR BUMPMAP!";
     Int3();
     return BAD_BUMP_INDEX;
   }

@@ -132,18 +132,17 @@
  * $NoKeywords: $
  */
 
-#include "cfile.h"
-#include "pserror.h"
-#include "pstypes.h"
-#include "bitmap.h"
-#include "mono.h"
-#include "grdefs.h"
-#include "byteswap.h"
-#include <string.h>
-#include "mem.h"
-#include "gamesequence.h"
+#include <cstdlib>
+#include <cstring>
 
-#include <stdlib.h>
+#include "bitmap.h"
+#include "byteswap.h"
+#include "cfile.h"
+#include "gamesequence.h"
+#include "grdefs.h"
+#include "log.h"
+#include "mem.h"
+#include "pserror.h"
 
 static char *Tga_file_data = NULL;
 static int Fake_pos = 0;
@@ -340,7 +339,7 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
       (image_type != 10 && image_type != 2 && image_type != OUTRAGE_TGA_TYPE && image_type != OUTRAGE_COMPRESSED_OGF &&
        image_type != OUTRAGE_COMPRESSED_MIPPED && image_type != OUTRAGE_NEW_COMPRESSED_MIPPED &&
        image_type != OUTRAGE_1555_COMPRESSED_MIPPED && image_type != OUTRAGE_4444_COMPRESSED_MIPPED)) {
-    mprintf(0, "bm_tga: Can't read this type of TGA.\n");
+    LOG_ERROR << "bm_tga: Can't read this type of TGA.";
     return -1;
   }
 
@@ -376,13 +375,13 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
   pixsize = cf_ReadByte(infile);
 
   if (pixsize != 32 && pixsize != 24) {
-    mprintf(0, "bm_tga: This file has a pixsize of field of %d, it should be 32. ", pixsize);
+    LOG_ERROR.printf("bm_tga: This file has a pixsize of field of %d, it should be 32.", pixsize);
     return -1;
   }
 
   descriptor = cf_ReadByte(infile);
   if (((descriptor & 0x0F) != 8) && ((descriptor & 0x0F) != 0)) {
-    mprintf(0, "bm_tga: Descriptor field & 0x0F must be 8 or 0, but this is %d.", descriptor & 0x0F);
+    LOG_ERROR.printf("bm_tga: Descriptor field & 0x0F must be 8 or 0, but this is %d.", descriptor & 0x0F);
     return -1;
   }
 
@@ -401,7 +400,7 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
     GameBitmaps[n].flags |= BF_MIPMAPPED;
 
   if (n < 0) {
-    mprintf(0, "bm_tga: Failed to allocate memory.\n");
+    LOG_ERROR << "bm_tga: Failed to allocate memory.";
     Int3();
     return -1;
   }
@@ -549,7 +548,7 @@ int bm_page_in_file(int n) {
 
   infile = (CFILE *)cfopen(GameBitmaps[n].name, "rb");
   if (!infile) {
-    mprintf(0, "Couldn't page in bitmap %s!\n", GameBitmaps[n].name);
+    LOG_ERROR.printf("Couldn't page in bitmap %s!", GameBitmaps[n].name);
     return 0;
   }
   // Used for progress bar when loading the level
@@ -563,7 +562,7 @@ int bm_page_in_file(int n) {
       (image_type != 10 && image_type != 2 && image_type != OUTRAGE_TGA_TYPE && image_type != OUTRAGE_COMPRESSED_OGF &&
        image_type != OUTRAGE_COMPRESSED_MIPPED && image_type != OUTRAGE_NEW_COMPRESSED_MIPPED &&
        image_type != OUTRAGE_1555_COMPRESSED_MIPPED && image_type != OUTRAGE_4444_COMPRESSED_MIPPED)) {
-    mprintf(0, "bm_tga: Can't read this type of TGA.\n");
+    LOG_ERROR << "bm_tga: Can't read this type of TGA.";
     return -1;
   }
 
@@ -599,13 +598,13 @@ int bm_page_in_file(int n) {
   pixsize = cf_ReadByte(infile);
 
   if (pixsize != 32 && pixsize != 24) {
-    mprintf(0, "bm_tga: This file has a pixsize of field of %d, it should be 32. ", pixsize);
+    LOG_ERROR.printf("bm_tga: This file has a pixsize of field of %d, it should be 32. ", pixsize);
     return 0;
   }
 
   descriptor = cf_ReadByte(infile);
   if (((descriptor & 0x0F) != 8) && ((descriptor & 0x0F) != 0)) {
-    mprintf(0, "bm_tga: Descriptor field & 0x0F must be 8 or 0, but this is %d.", descriptor & 0x0F);
+    LOG_ERROR.printf("bm_tga: Descriptor field & 0x0F must be 8 or 0, but this is %d.", descriptor & 0x0F);
     return 0;
   }
 
@@ -618,7 +617,7 @@ int bm_page_in_file(int n) {
   int size = (width * height * 2) + (mipped * ((width * height * 2) / 3)) + 2;
   GameBitmaps[n].data16 = (uint16_t *)mem_malloc(size);
   if (!GameBitmaps[n].data16) {
-    mprintf(0, "Out of memory in bm_page_in_file!\n");
+    LOG_ERROR << "Out of memory in bm_page_in_file!";
     return 0;
   }
 
@@ -639,7 +638,7 @@ int bm_page_in_file(int n) {
 
   strcpy(GameBitmaps[n].name, name);
 
-  mprintf(0, "Paging in bitmap %s!\n", GameBitmaps[n].name);
+  LOG_DEBUG.printf("Paging in bitmap %s!", GameBitmaps[n].name);
 
   if (file_mipped)
     GameBitmaps[n].flags |= BF_MIPMAPPED;

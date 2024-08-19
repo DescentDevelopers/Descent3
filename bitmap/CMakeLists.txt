@@ -17,6 +17,7 @@ target_link_libraries(bitmap PRIVATE
   ddio
   mem
   misc
+  plog::plog
   stb
 )
 target_include_directories(bitmap PUBLIC
