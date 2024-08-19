@@ -68,7 +68,7 @@
 
 #include "application.h"
 #include "ddio.h"
-#include "pserror.h"
+#include "log.h"
 
 bool DDIO_init = false;
 oeLnxApplication *Lnx_app_obj = NULL;
@@ -78,21 +78,21 @@ oeLnxApplication *Lnx_app_obj = NULL;
 // ----------------------------------------------------------------------------
 
 bool ddio_InternalInit(ddio_init_info *init_info) {
-  mprintf(0, "DDIO: ddio_InternalInit() called.");
+  LOG_DEBUG << "DDIO: ddio_InternalInit() called.";
   Lnx_app_obj = (oeLnxApplication *)init_info->obj;
   DDIO_init = true;
   return true;
 }
 
 void ddio_InternalClose() {
-  mprintf(0, "DDIO: ddio_InternalClose() called.");
+  LOG_DEBUG << "DDIO: ddio_InternalClose() called.";
 
   if (DDIO_init) {
     DDIO_init = false;
     Lnx_app_obj = NULL;
   } // if
 
-  mprintf(0, "DDIO: ddio_InternalClose() returning.");
+  LOG_DEBUG << "DDIO: ddio_InternalClose() returning.";
 }
 
 void ddio_DebugMessage(unsigned err, char *fmt, ...) {
@@ -103,20 +103,20 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
   std::vsnprintf(buf, sizeof(buf), fmt, arglist);
   va_end(arglist);
 
-  mprintf(0, "%s\n", buf);
+  LOG_DEBUG << buf;
 }
 
 bool ddio_GetBinaryPath(char *exec_path, size_t len) {
 #ifdef MACOSX
   if (exec_path == NULL || len == 0) {
-   fprintf(stderr, "Invalid arguments\n");
-   return false;
+    LOG_ERROR << "Invalid arguments";
+    return false;
   }
 
   uint32_t size = (uint32_t)len;
   if (_NSGetExecutablePath(exec_path, &size) != 0) {
-   fprintf(stderr, "Buffer too small; need size %u\n", size);
-   return false;
+    LOG_ERROR.printf("Buffer too small; need size %u", size);
+    return false;
   }
 #elif defined(__LINUX__)
   if (realpath("/proc/self/exe", exec_path) == NULL) {
@@ -125,14 +125,14 @@ bool ddio_GetBinaryPath(char *exec_path, size_t len) {
   }
 #else
   if (GetModuleFileName(NULL, exec_path, len) == 0) {
-  DWORD error = GetLastError();
-  Error("GetModuleFileName failed!");
-  return false;
+    DWORD error = GetLastError();
+    LOG_ERROR << "GetModuleFileName failed!";
+    return false;
   }
   exec_path[len - 1] = '\0';
   return true;
 
 #endif
- exec_path[len - 1] = '\0';
- return true;
+  exec_path[len - 1] = '\0';
+  return true;
 }
