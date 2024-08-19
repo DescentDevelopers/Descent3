@@ -1062,13 +1062,13 @@ bool ProcessCommandLine() {
 
 /**
  * Count singleplayer missions in directory. Mission should have .mn3 extension.
- * @param base_directory where to search missions. Should be a valid directory.
+ * @param missions_directory where to search missions. Should be a valid directory.
  * @return count of found missions
  */
-static inline int count_missions(const std::filesystem::path &base_directory) {
+static inline int count_missions(const std::filesystem::path &missions_directory) {
   int c = 0;
 
-  ddio_DoForeachFile(base_directory, std::regex(".*\\.mn3"), [&c](const std::filesystem::path &path) {
+  ddio_DoForeachFile(missions_directory, std::regex(".*\\.mn3"), [&c](const std::filesystem::path &path) {
     if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
       return;
     LOG_DEBUG.printf("Mission path: %s", path.u8string().c_str());
@@ -1089,10 +1089,10 @@ static inline int count_missions(const std::filesystem::path &base_directory) {
 }
 
 static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, char **filelist,
-                                           const std::filesystem::path &base_directory) {
+                                           const std::filesystem::path &missions_directory) {
   int c = 0;
   ddio_DoForeachFile(
-      base_directory, std::regex(".*\\.mn3"), [&c, &lb, &n_maxfiles, &filelist](const std::filesystem::path &path) {
+      missions_directory, std::regex(".*\\.mn3"), [&c, &lb, &n_maxfiles, &filelist](const std::filesystem::path &path) {
         tMissionInfo msninfo{};
         if (c < n_maxfiles) {
           if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
