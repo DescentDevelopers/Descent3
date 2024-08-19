@@ -11,6 +11,7 @@ target_link_libraries(model PRIVATE
   mem
   misc
   physics
+  plog::plog
 )
 target_include_directories(model PUBLIC
   $<BUILD_INTERFACE:

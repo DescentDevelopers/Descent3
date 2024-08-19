@@ -607,8 +607,8 @@
 #include "cfile.h"
 #include "game.h"
 #include "gamesequence.h"
+#include "log.h"
 #include "mem.h"
-#include "mono.h"
 #include "objinfo.h"
 #include "polymodel.h"
 #include "pserror.h"
@@ -1286,12 +1286,12 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
   version = cf_ReadInt(infile);
   if (version < 18) {
-    mprintf(0, "Old POF Version of %d fixed up to %d\n", version, version * 100);
+    LOG_WARNING.printf("Old POF Version of %d fixed up to %d", version, version * 100);
     version *= 100;
   }
 
   if (version < PM_COMPATIBLE_VERSION || version > PM_OBJFILE_VERSION) {
-    mprintf(0, "Bad version (%d) in model file!\n", version);
+    LOG_ERROR.printf("Bad version (%d) in model file!", version);
     Int3();
     return 0;
   }
@@ -1661,7 +1661,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       if (pm->n_attach == (num_normals = cf_ReadInt(infile)))
         f_uvec = true;
       else {
-        mprintf(0, "WARNING: Ingoring ATTACH normals - total number doesn't match number of attach points\n");
+        LOG_WARNING << "Ingoring ATTACH normals - total number doesn't match number of attach points";
         // Int3();
         DataError("Model <%s> specifies %d attach points but only contains %d attach normals\n", pm->name, pm->n_attach,
                   num_normals);
@@ -1952,10 +1952,10 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     }
 
     if (pm->submodel[i].num_key_angles == 0 && (pm->submodel[i].flags & SOF_ROTATE)) {
-      mprintf(0, "You have a rotator that has no keyframe on model %s.\n", pm->name);
+      LOG_WARNING.printf("You have a rotator that has no keyframe on model %s.", pm->name);
       pm->submodel[i].flags &= ~SOF_ROTATE;
     } else if (pm->submodel[i].num_key_angles == 0 && (pm->submodel[i].flags & SOF_TURRET)) {
-      mprintf(0, "You have a turret that has no keyframe on model %s.\n", pm->name);
+      LOG_WARNING.printf("You have a turret that has no keyframe on model %s.", pm->name);
       pm->submodel[i].flags &= ~SOF_TURRET;
     }
 
@@ -2001,7 +2001,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         }
 
         if (done == 0) {
-          mprintf(0, "Couldn't get a good keyframe!\n");
+          LOG_ERROR << "Couldn't get a good keyframe!";
           Int3();
         }
       }
@@ -2021,7 +2021,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         }
 
         if (done == 0) {
-          mprintf(0, "Couldn't get a good keyframe!\n");
+          LOG_ERROR << "Couldn't get a good keyframe!";
           Int3();
         }
       }
@@ -2042,7 +2042,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
   pm->new_style = 1;
 
   if (pm->n_models > MAX_SUBOBJECTS) {
-    mprintf(0, "This model has more than the max number of subobjects! (%d)\n", MAX_SUBOBJECTS);
+    LOG_ERROR.printf("This model has more than the max number of subobjects! (%d)", MAX_SUBOBJECTS);
     Int3();
     FreePolyModel(pm - Poly_models);
     return 0;
@@ -2077,7 +2077,7 @@ int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
     if (Poly_models[i].flags & PMF_NOT_RESIDENT)
       not_res = 1;
 
-    mprintf(1, "Model '%s' usage count is now %d.\n", Poly_models[i].name, Poly_models[i].used + 1);
+    LOG_DEBUG.printf("Model '%s' usage count is now %d.", Poly_models[i].name, Poly_models[i].used + 1);
 
     Poly_models[i].used = 1;
     FreePolyModel(i);
@@ -2156,7 +2156,7 @@ void PageInPolymodel(int polynum, int type, float *size_ptr) {
     return;
   }
 
-  mprintf(0, "Paging in polymodel %s.\n", Poly_models[polynum].name);
+  LOG_DEBUG.printf("Paging in polymodel %s.", Poly_models[polynum].name);
 
   CFILE *infile;
   infile = (CFILE *)cfopen(Poly_models[polynum].name, "rb");
@@ -2199,7 +2199,7 @@ void PageInPolymodel(int polynum, int type, float *size_ptr) {
 
   if (remap == 1) {
     // remap the damn textures
-    mprintf(0, "Remapping model textures for model %s.\n", Poly_models[polynum].name);
+    LOG_DEBUG.printf("Remapping model textures for model %s.", Poly_models[polynum].name);
     ReloadModelTextures(polynum);
   }
 
@@ -3093,7 +3093,7 @@ void RemapPolyModels() {
 
     if (remap == 1) {
       // remap the damn textures
-      mprintf(0, "Remapping model textures for model %s.\n", Poly_models[i].name);
+      LOG_DEBUG.printf("Remapping model textures for model %s.", Poly_models[i].name);
       ReloadModelTextures(i);
     }
   }
