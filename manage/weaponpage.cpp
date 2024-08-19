@@ -294,13 +294,12 @@
 #include "manage.h"
 #include "weapon.h"
 #include "weaponpage.h"
-#include "mono.h"
+#include "log.h"
 #include "pserror.h"
 #include "vclip.h"
 #include "polymodel.h"
 #include "soundpage.h"
 #include "soundload.h"
-#include "ddio.h"
 #include "gametexture.h"
 #include "texpage.h"
 #include "sounds.h"
@@ -755,7 +754,7 @@ void mng_WriteNewWeaponPage(CFILE *outfile, mngs_weapon_page *weaponpage) {
 #ifdef OEM
 void DoOEMNapalmBarrelHack(mngs_weapon_page *weaponpage) {
   if (!strcmp(weaponpage->weapon_struct.name, "NapalmBarrelPart2")) {
-    mprintf(0, "BASHING NAPALMBARRELPART2!!!!!!\n");
+    LOG_DEBUG << "BASHING NAPALMBARRELPART2!!!!!!";
     weaponpage->weapon_struct.flags |= (WF_SATURATE | WF_NO_ROTATE | WF_CUSTOM_SIZE | WF_NAPALM);
     weaponpage->weapon_struct.custom_size = 6.0f;
     weaponpage->weapon_struct.phys_info.mass = 0.6f;
@@ -767,7 +766,7 @@ void DoOEMNapalmBarrelHack(mngs_weapon_page *weaponpage) {
     weaponpage->weapon_struct.phys_info.velocity.z = 50.0f;
 
   } else {
-    mprintf(0, "BASHING NAPALMBARREL!!!!!!\n");
+    LOG_DEBUG << "BASHING NAPALMBARREL!!!!!!";
     weaponpage->weapon_struct.flags |= (WF_INVISIBLE | WF_CUSTOM_SIZE | WF_NAPALM);
     weaponpage->weapon_struct.custom_size = 1.0f;
     weaponpage->weapon_struct.phys_info.flags |= PF_USES_PARENT_VELOCITY;
@@ -1193,7 +1192,7 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage) {
   }
 
   if (!infile) {
-    mprintf(0, "Couldn't open table file to find weapon!\n");
+    LOG_ERROR << "Couldn't open table file to find weapon!";
     Int3();
     return 0;
   }
@@ -1270,7 +1269,7 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage, int off
   }
 
   if (!infile) {
-    mprintf(0, "Couldn't open table file to find weapon!\n");
+    LOG_ERROR << "Couldn't open table file to find weapon!";
     Int3();
     return 0;
   }
@@ -1405,7 +1404,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = bm_AllocLoadFileBitmap(weaponpage->hud_image_name, 0);
 
   if (img_handle < 0) {
-    mprintf(0, "Couldn't load bitmap '%s' in AssignWeaponPage...\n", weaponpage->hud_image_name);
+    LOG_ERROR.printf("Couldn't load bitmap '%s' in AssignWeaponPage...", weaponpage->hud_image_name);
     weaponpointer->hud_image_handle = -1;
     Weapon_error = "Can't load HUD image";
     Weapon_error_filename = weaponpage->hud_image_name;
@@ -1421,7 +1420,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = LoadPolyModel(weaponpage->fire_image_name, 1);
 
   if (img_handle < 0) {
-    mprintf(0, "Couldn't load bitmap/model '%s' in AssignWeaponPage...\n", weaponpage->fire_image_name);
+    LOG_ERROR.printf("Couldn't load bitmap/model '%s' in AssignWeaponPage...", weaponpage->fire_image_name);
     weaponpointer->fire_image_handle = -1;
     Weapon_error = "Can't load fire image";
     Weapon_error_filename = weaponpage->fire_image_name;
@@ -1443,7 +1442,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedTexturePage(weaponpage->explode_image_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load bitmap/model '%s' in AssignWeaponPage...\n", weaponpage->explode_image_name);
+      LOG_ERROR.printf("Couldn't load bitmap/model '%s' in AssignWeaponPage...", weaponpage->explode_image_name);
       weaponpointer->explode_image_handle = -1;
     } else
       weaponpointer->explode_image_handle = img_handle;
@@ -1455,7 +1454,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedTexturePage(weaponpage->particle_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load bitmap/model '%s' in AssignWeaponPage...\n", weaponpage->particle_name);
+      LOG_ERROR.printf("Couldn't load bitmap/model '%s' in AssignWeaponPage...", weaponpage->particle_name);
       weaponpointer->particle_handle = -1;
     } else
       weaponpointer->particle_handle = img_handle;
@@ -1467,7 +1466,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedWeaponPage(weaponpage->spawn_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load spawn weapon '%s' in AssignWeaponPage...\n", weaponpage->spawn_name);
+      LOG_ERROR.printf("Couldn't load spawn weapon '%s' in AssignWeaponPage...", weaponpage->spawn_name);
       weaponpointer->spawn_handle = -1;
     } else
       weaponpointer->spawn_handle = img_handle;
@@ -1478,7 +1477,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedWeaponPage(weaponpage->alternate_spawn_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load alternate spawn weapon '%s' in AssignWeaponPage...\n",
+      LOG_ERROR.printf("Couldn't load alternate spawn weapon '%s' in AssignWeaponPage...",
               weaponpage->alternate_spawn_name);
       weaponpointer->alternate_spawn_handle = -1;
     } else
@@ -1491,7 +1490,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedGenericPage(weaponpage->robot_spawn_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load robot spawn weapon '%s' in AssignWeaponPage...\n", weaponpage->robot_spawn_name);
+      LOG_WARNING.printf("Couldn't load robot spawn weapon '%s' in AssignWeaponPage...", weaponpage->robot_spawn_name);
       weaponpointer->robot_spawn_handle = -1;
     } else
       weaponpointer->robot_spawn_handle = img_handle;
@@ -1503,7 +1502,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedTexturePage(weaponpage->smoke_image_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load smoke trail file '%s' in AssignWeaponPage...\n", weaponpage->smoke_image_name);
+      LOG_WARNING.printf("Couldn't load smoke trail file '%s' in AssignWeaponPage...", weaponpage->smoke_image_name);
       weaponpointer->flags &= ~WF_SMOKE;
       weaponpointer->smoke_handle = -1;
 
@@ -1519,7 +1518,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedTexturePage(weaponpage->scorch_image_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load scorch file '%s' in AssignWeaponPage...\n", weaponpage->scorch_image_name);
+      LOG_WARNING.printf("Couldn't load scorch file '%s' in AssignWeaponPage...", weaponpage->scorch_image_name);
       weaponpointer->scorch_handle = -1;
 
     } else
@@ -1533,7 +1532,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedTexturePage(weaponpage->icon_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load icon file '%s' in AssignWeaponPage...\n", weaponpage->icon_name);
+      LOG_WARNING.printf("Couldn't load icon file '%s' in AssignWeaponPage...", weaponpage->icon_name);
       weaponpointer->icon_handle = -1;
 
     } else
@@ -1548,7 +1547,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
       sound_handle = mng_GetGuaranteedSoundPage(weaponpage->sound_name[i]);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load sound file '%s' in AssignWeaponPage.  Weapon=%s\n", weaponpage->sound_name[i],
+        LOG_WARNING.printf("Couldn't load sound file '%s' in AssignWeaponPage. Weapon=%s", weaponpage->sound_name[i],
                 weaponpage->weapon_struct.name);
         weaponpointer->sounds[i] = SOUND_NONE_INDEX;
       } else
@@ -1654,7 +1653,7 @@ void mng_LoadNetWeaponPage(CFILE *infile, bool overlay) {
     int n = FindWeaponName(weaponpage.weapon_struct.name);
     if (n != -1) {
       if (overlay) {
-        mprintf(0, "OVERLAYING WEAPON %s\n", weaponpage.weapon_struct.name);
+        LOG_DEBUG.printf("OVERLAYING WEAPON %s", weaponpage.weapon_struct.name);
         mng_FreePagetypePrimitives(PAGETYPE_WEAPON, weaponpage.weapon_struct.name, 0);
         mng_AssignWeaponPageToWeapon(&weaponpage, n);
       }
@@ -1665,7 +1664,7 @@ void mng_LoadNetWeaponPage(CFILE *infile, bool overlay) {
     int ret = mng_SetAndLoadWeapon(&weaponpage, infile);
     ASSERT(ret >= 0);
   } else
-    mprintf(0, "Could not load weaponpage named %s!\n", weaponpage.weapon_struct.name);
+    LOG_WARNING.printf("Could not load weaponpage named %s!", weaponpage.weapon_struct.name);
 }
 
 // Reads a weapon page from a local table file.  It then allocs a weapon and
@@ -1708,7 +1707,7 @@ void mng_LoadLocalWeaponPage(CFILE *infile) {
           if (addon->Addon_tracklocks[tidx].pagetype == PAGETYPE_WEAPON &&
               !stricmp(addon->Addon_tracklocks[tidx].name, weaponpage.weapon_struct.name)) {
             // found it!!
-            mprintf(0, "WeaponPage: %s previously loaded\n", weaponpage.weapon_struct.name);
+            LOG_DEBUG.printf("WeaponPage: %s previously loaded", weaponpage.weapon_struct.name);
             need_to_load_page = false;
             break;
           }
@@ -1769,5 +1768,5 @@ void mng_LoadLocalWeaponPage(CFILE *infile) {
       mng_AllocTrackLock(weaponpage.weapon_struct.name, PAGETYPE_WEAPON);
   } else
 
-    mprintf(0, "Could not load weaponpage named %s!\n", weaponpage.weapon_struct.name);
+    LOG_WARNING.printf("Could not load weaponpage named %s!", weaponpage.weapon_struct.name);
 }

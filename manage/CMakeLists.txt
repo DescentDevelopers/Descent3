@@ -30,4 +30,5 @@ target_link_libraries(manage PRIVATE
   model
   sndlib
   stream_audio
+  plog::plog
 )

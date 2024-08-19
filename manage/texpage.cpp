@@ -262,13 +262,13 @@
 
 #include "cfile.h"
 #include "manage.h"
+#include "mem.h"
 #include "gametexture.h"
 #include "bitmap.h"
-#include "mono.h"
+#include "log.h"
 #include "pserror.h"
 #include "texpage.h"
 #include "vclip.h"
-#include "ddio.h"
 #include "args.h"
 #include "sounds.h"
 #include "soundpage.h"
@@ -712,7 +712,7 @@ int mng_ReadNewTexturePage(CFILE *infile, mngs_texture_page *texpage) {
     texpage->num_proc_elements = cf_ReadShort(infile);
 
     if (texpage->num_proc_elements > MAX_PROC_ELEMENTS) {
-      mprintf(0, "Warning!  Too many procedural elements!\n");
+      LOG_ERROR << "Warning! Too many procedural elements!";
       Int3();
     }
 
@@ -773,7 +773,7 @@ int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
     infile = cfopen(TableFilename, "rb");
 
   if (!infile) {
-    mprintf(0, "Couldn't open table file to delete texture!\n");
+    LOG_ERROR << "Couldn't open table file to delete texture!";
     Int3();
     return 0;
   }
@@ -784,7 +784,7 @@ int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
     outfile = cfopen(TempTableFilename, "wb");
 
   if (!outfile) {
-    mprintf(0, "Couldn't open temp table file to delete texture!\n");
+    LOG_ERROR << "Couldn't open temp table file to delete texture!";
     cfclose(infile);
     Int3();
     return 0;
@@ -817,7 +817,7 @@ int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
     {
       mng_WriteNewTexturePage(outfile, &texpage1);
     } else
-      mprintf(0, "Deleting %s (%s).\n", names[found], local ? "locally" : "on network");
+      LOG_DEBUG.printf("Deleting %s (%s).", names[found], local ? "locally" : "on network");
   }
 
   cfclose(infile);
@@ -871,7 +871,7 @@ int mng_FindSpecificTexPage(char *name, mngs_texture_page *texpage, int offset) 
   }
 
   if (!infile) {
-    mprintf(0, "Couldn't open table file to find texture!\n");
+    LOG_ERROR << "Couldn't open table file to find texture!";
     Int3();
     return 0;
   }
@@ -990,7 +990,7 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
     bm_handle = LoadTextureImage(texpage->bitmap_name, NULL, NORMAL_TEXTURE, mipped, pageable);
 
   if (bm_handle < 0) {
-    mprintf(0, "Couldn't load bitmap '%s' in AssignTexPage...\n", texpage->bitmap_name);
+    LOG_ERROR.printf("Couldn't load bitmap '%s' in AssignTexPage...", texpage->bitmap_name);
     tex->bm_handle = 0;
     return 0;
   } else
@@ -1122,7 +1122,7 @@ void mng_LoadNetTexturePage(CFILE *infile, bool overlay) {
     n = FindTextureName(texpage1.tex_struct.name);
     if (n != -1) {
       if (overlay) {
-        mprintf(0, "OVERLAYING TEXTURE %s\n", texpage1.tex_struct.name);
+        LOG_DEBUG.printf("OVERLAYING TEXTURE %s", texpage1.tex_struct.name);
         mng_FreePagetypePrimitives(PAGETYPE_TEXTURE, texpage1.tex_struct.name, 0);
         mng_AssignTexPageToTexture(&texpage1, n);
       }
@@ -1132,7 +1132,7 @@ void mng_LoadNetTexturePage(CFILE *infile, bool overlay) {
     int ret = mng_SetAndLoadTexture(&texpage1, infile);
     ASSERT(ret >= 0);
   } else
-    mprintf(0, "Could not load texpage named %s!\n", texpage1.tex_struct.name);
+    LOG_WARNING.printf("Could not load texpage named %s!", texpage1.tex_struct.name);
 }
 
 // Loads in a texture page from a file, superseding any texture with that name
@@ -1173,7 +1173,7 @@ void mng_LoadLocalTexturePage(CFILE *infile) {
           if (addon->Addon_tracklocks[tidx].pagetype == PAGETYPE_TEXTURE &&
               !stricmp(addon->Addon_tracklocks[tidx].name, texpage1.tex_struct.name)) {
             // found it!!
-            mprintf(0, "TexturePage: %s previously loaded\n", texpage1.tex_struct.name);
+            LOG_DEBUG.printf("TexturePage: %s previously loaded", texpage1.tex_struct.name);
             need_to_load_page = false;
             break;
           }
@@ -1233,10 +1233,8 @@ void mng_LoadLocalTexturePage(CFILE *infile) {
       mng_AllocTrackLock(texpage1.tex_struct.name, PAGETYPE_TEXTURE);
 
   } else
-    mprintf(0, "Could not load texpage named %s!\n", texpage1.tex_struct.name);
+    LOG_WARNING.printf("Could not load texpage named %s!", texpage1.tex_struct.name);
 }
-
-#include "mem.h"
 
 // First searches through the texture index to see if the texture is already
 // loaded.  If not, searches in the table file and loads it.

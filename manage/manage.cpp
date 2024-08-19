@@ -453,7 +453,7 @@
 #include "shippage.h"
 #include "weaponpage.h"
 #include "gamefilepage.h"
-#include "mono.h"
+#include "log.h"
 #include "object.h"
 #include "ddio.h"
 #include "cfile.h"
@@ -461,12 +461,12 @@
 #include "genericpage.h"
 #include "mem.h"
 #include "dedicated_server.h"
-#include "AppConsole.h"
 #include "init.h"
 #include "stringtable.h"
 #include "args.h"
 #include "vclip.h"
 #include "polymodel.h"
+
 int Old_table_method = 0;
 void mng_WriteNewUnknownPage(CFILE *outfile);
 //	This is for levels
@@ -597,7 +597,7 @@ int mng_InitTableFiles() {
 #endif
     }
   } else {
-    mprintf(0, "Network is down...\n");
+    LOG_WARNING << "Network is down...";
     Network_up = 0;
   }
 
@@ -674,7 +674,7 @@ int mng_LoadTableFiles(int show_progress) {
 int mng_InitLocalTables() {
   // Set the local table directory from the base directory
   strcpy(LocalD3Dir, Base_directory);
-  mprintf(1, "Local dir:%s\n", LocalD3Dir);
+  LOG_INFO << "Local dir: " << LocalD3Dir;
 
   // Make the CFILE system first look at our local directories.  If the goods aren't
   // found there, try out on the network
@@ -729,7 +729,7 @@ int mng_InitNetTables() {
     Error("D3_DIR environment variable not set.");
 
   strcpy(NetD3Dir, dir);
-  mprintf(1, "Net dir:%s\n", NetD3Dir);
+  LOG_INFO << "Net dir: " << NetD3Dir;
   // TODO: temp variable until NetD3Dir will be std::fs::path
   std::filesystem::path netdir = std::filesystem::path(NetD3Dir);
 
@@ -772,14 +772,14 @@ void mng_CheckToCreateNetTables() {
     if (errno == ENOENT) {
       outfile = (CFILE *)cfopen(TableFilename, "wb");
       if (!outfile) {
-        mprintf(0, "Error creating table file! The network must be down...\n");
+        LOG_WARNING << "Error creating table file! The network must be down...";
         Network_up = 0;
       } else {
         mng_WriteNewUnknownPage(outfile);
         cfclose(outfile);
       }
     } else {
-      mprintf(0, "Error creating table file! The network must be down...\n");
+      LOG_WARNING << "Error creating table file! The network must be down...";
       Network_up = 0;
     }
   }
@@ -793,7 +793,7 @@ void mng_CheckToCreateLocalTables() {
 
   if (!Network_up) {
     strcpy(TableFilename, NET_TABLE);
-    mprintf(0, "table filename = %s\n", TableFilename);
+    LOG_DEBUG << "table filename = " << TableFilename;
     return;
   }
 
@@ -885,7 +885,7 @@ void mng_BackupTableFile() {
   }
 
   if (!cfexist(str) || cf_Diff(str, TableFilename)) {
-    mprintf(0, "Making local copy of table file.\n");
+    LOG_INFO << "Making local copy of table file.";
 
     if (!cf_CopyFile(str, TableFilename, 1))
       Error("There was an error making a backup copy of the table file.\n");
@@ -893,7 +893,7 @@ void mng_BackupTableFile() {
     if (!cf_CopyFile(str, TableLockFilename, 1))
       Error("There was an error making a backup copy of the locker table file.\n");
   } else {
-    mprintf(0, "Local table file same as network copy.\n");
+    LOG_INFO << "Local table file same as network copy.";
     TableTimeThreshold.dwHighDateTime = -1;
     Fast_load_trick = 1;
   }
@@ -937,7 +937,7 @@ int mng_AllocTrackLock(char *name, int pagetype) {
       strcpy(GlobalTrackLocks[i].name, name);
       GlobalTrackLocks[i].pagetype = pagetype;
       GlobalTrackLocks[i].used = 1;
-      mprintf(0, "Tracklock %s allocated.\n", name);
+      LOG_DEBUG.printf("Tracklock %s allocated.", name);
       return i;
     }
   Error("Couldn't get a free tracklock!");
@@ -945,7 +945,7 @@ int mng_AllocTrackLock(char *name, int pagetype) {
 }
 // Frees a tracklock
 void mng_FreeTrackLock(int n) {
-  mprintf(0, "Tracklock %s freed.\n", GlobalTrackLocks[n].name);
+  LOG_DEBUG.printf("Tracklock %s freed.", GlobalTrackLocks[n].name);
   GlobalTrackLocks[n].pagetype = PAGETYPE_UNKNOWN;
   GlobalTrackLocks[n].used = 0;
   GlobalTrackLocks[n].name[0] = 0;
@@ -1100,7 +1100,7 @@ int mng_RenamePage(char *oldname, char *newname, int pagetype) {
   mngs_Pagelock pl;
   char oname[PAGENAME_LEN];
 
-  mprintf(0, "Renaming %s to %s...\n", oldname, newname);
+  LOG_INFO.printf("Renaming %s to %s...", oldname, newname);
   strcpy(oname, oldname);
   strcpy(pl.name, oname);
   pl.pagetype = pagetype;
@@ -1218,7 +1218,7 @@ int mng_LoadNetPages(int show_progress) {
   int int_progress = 0;
   int len;
 
-  mprintf(0, "Loading pages...");
+  LOG_INFO << "Loading pages...";
   if (Dedicated_server)
     show_progress = 0; // turn off progress meter for dedicated server
   // If the network is up we still want to read from the local table because it
@@ -1234,7 +1234,7 @@ int mng_LoadNetPages(int show_progress) {
   } else
     infile = cfopen(TableFilename, "rb");
   if (!infile) {
-    mprintf(0, "Couldn't open table file (%s) to read pages!\n", TableFilename);
+    LOG_ERROR.printf("Couldn't open table file (%s) to read pages!\n", TableFilename);
     Error("Cannot open table file <%s>", TableFilename);
     return 0;
   }
@@ -1263,9 +1263,6 @@ int mng_LoadNetPages(int show_progress) {
       len = cf_ReadInt(infile);
     switch (pagetype) {
     case PAGETYPE_TEXTURE:
-      mprintf(0, "T");
-
-      PrintDedicatedMessage("T");
       mng_LoadNetTexturePage(infile);
       break;
     case PAGETYPE_POWERUP:
@@ -1273,42 +1270,27 @@ int mng_LoadNetPages(int show_progress) {
       Error("Your local table file is invalid.  You must update from the network.");
       break;
     case PAGETYPE_DOOR:
-      mprintf(0, "D");
-      PrintDedicatedMessage("D");
       mng_LoadNetDoorPage(infile);
       break;
     case PAGETYPE_GENERIC:
-      mprintf(0, "G");
-      PrintDedicatedMessage("G");
       mng_LoadNetGenericPage(infile);
       break;
     case PAGETYPE_GAMEFILE:
-      mprintf(0, "F");
-      PrintDedicatedMessage("F");
       mng_LoadNetGamefilePage(infile);
       break;
     case PAGETYPE_SOUND:
-      mprintf(0, "S");
-      PrintDedicatedMessage("S");
       mng_LoadNetSoundPage(infile);
       break;
     case PAGETYPE_SHIP:
-      mprintf(0, "P");
-      PrintDedicatedMessage("P");
       mng_LoadNetShipPage(infile);
       break;
     case PAGETYPE_WEAPON:
-      mprintf(0, "W");
-      PrintDedicatedMessage("W");
       mng_LoadNetWeaponPage(infile);
       break;
     case PAGETYPE_MEGACELL:
-      mprintf(0, "M");
-      PrintDedicatedMessage("M");
       mng_LoadNetMegacellPage(infile);
       break;
     case PAGETYPE_UNKNOWN:
-      mprintf(0, "?");
       break;
     default:
       Int3(); // Unrecognized pagetype, possible corrupt data following
@@ -1317,9 +1299,7 @@ int mng_LoadNetPages(int show_progress) {
     }
     n_pages++;
   }
-  mprintf(0, "\n%d pages read in %.1f seconds.\n", n_pages, timer_GetTime() - start_time);
-  mprintf(0, "\n");
-  PrintDedicatedMessage((0, "\nPage reading completed.\n"));
+  LOG_INFO.printf("%d pages read in %.1f seconds.", n_pages, timer_GetTime() - start_time);
 
   cfclose(infile);
 
@@ -1330,10 +1310,7 @@ int mng_LoadNetPages(int show_progress) {
   if (!infile)
     return 1;
 
-  mprintf(0, "==================================================\n");
-  mprintf(0, "              Loading extra.gam                   \n");
-  mprintf(0, "==================================================\n");
-  PrintDedicatedMessage("\nLoading extra.gam.....\n");
+  LOG_INFO << "Loading extra.gam";
   n_pages = 0;
 
   TablefileNameOverride = name_override;
@@ -1343,42 +1320,27 @@ int mng_LoadNetPages(int show_progress) {
     len = cf_ReadInt(infile);
     switch (pagetype) {
     case PAGETYPE_TEXTURE:
-      mprintf(0, "T");
-      PrintDedicatedMessage("T");
       mng_LoadNetTexturePage(infile, true);
       break;
     case PAGETYPE_DOOR:
-      mprintf(0, "D");
-      PrintDedicatedMessage("D");
       mng_LoadNetDoorPage(infile, true);
       break;
     case PAGETYPE_GENERIC:
-      mprintf(0, "G");
-      PrintDedicatedMessage("G");
       mng_LoadNetGenericPage(infile, true);
       break;
     case PAGETYPE_GAMEFILE:
-      mprintf(0, "F");
-      PrintDedicatedMessage("F");
       mng_LoadNetGamefilePage(infile, true);
       break;
     case PAGETYPE_SOUND:
-      mprintf(0, "S");
-      PrintDedicatedMessage("S");
       mng_LoadNetSoundPage(infile, true);
       break;
     case PAGETYPE_SHIP:
-      mprintf(0, "P");
-      PrintDedicatedMessage("P");
       mng_LoadNetShipPage(infile, true);
       break;
     case PAGETYPE_WEAPON:
-      mprintf(0, "W");
-      PrintDedicatedMessage("W");
       mng_LoadNetWeaponPage(infile, true);
       break;
     case PAGETYPE_UNKNOWN:
-      mprintf(0, "?");
       break;
     default:
       Int3(); // Unrecognized pagetype, possible corrupt data following
@@ -1389,7 +1351,7 @@ int mng_LoadNetPages(int show_progress) {
     }
     n_pages++;
   }
-  mprintf(0, "\n%d extra pages read.\n", n_pages);
+  LOG_INFO.printf("%d extra pages read.", n_pages);
   TablefileNameOverride = NULL;
   cfclose(infile);
   return 1;
@@ -1400,10 +1362,10 @@ int mng_LoadLocalPages() {
   uint8_t pagetype;
   int len;
 
-  mprintf(0, "Overlaying local pages...");
+  LOG_INFO << "Overlaying local pages...";
   infile = cfopen(LocalTableFilename, "rb");
   if (!infile) {
-    mprintf(0, "Couldn't open local table file (%s) to read pages!\n", LocalTableFilename);
+    LOG_WARNING.printf("Couldn't open local table file (%s) to read pages!", LocalTableFilename);
     return 1;
   }
   Loading_locals = 1;
@@ -1413,7 +1375,6 @@ int mng_LoadLocalPages() {
     pagetype = cf_ReadByte(infile);
     if (!Old_table_method)
       len = cf_ReadInt(infile);
-    mprintf(0, ".");
     switch (pagetype) {
     case PAGETYPE_TEXTURE:
       mng_LoadLocalTexturePage(infile);
@@ -1451,7 +1412,6 @@ int mng_LoadLocalPages() {
       break;
     }
   }
-  mprintf(0, "\n");
   cfclose(infile);
   Loading_locals = 0;
   return 1;
@@ -1496,13 +1456,13 @@ void mng_TransferPages() {
   CFILE *infile, *outfile;
   int pagetype;
   int num_tracklocks = 0;
-  mprintf(0, "Transferring pages, please wait...\n");
+  LOG_INFO << "Transferring pages, please wait...";
   if (!mng_MakeLocker())
     return;
   infile = cfopen(TableFilename, "rb");
 
   if (!infile) {
-    mprintf(0, "Couldn't open table file to transfer!\n");
+    LOG_ERROR << "Couldn't open table file to transfer!";
     Int3();
     return;
   }
@@ -1597,7 +1557,7 @@ void mng_TransferPages() {
       if (found != -1)
         mng_WritePagelock(outfile, &temp_pl);
       else {
-        mprintf(0, "Found unused lock file %s\n", temp_pl.name);
+        LOG_WARNING.printf("Found unused lock file %s", temp_pl.name);
       }
 
     } else
@@ -1616,7 +1576,7 @@ void mng_TransferPages() {
     goto done;
   }
   mng_EraseLocker();
-  mprintf(0, "Done transferring pages...good luck!\n");
+  LOG_INFO << "Done transferring pages...good luck!";
 done:;
   mem_free(local_tracklocks);
 }
@@ -1653,7 +1613,7 @@ void ReorderPages(int local) {
   ReorderPagelocks();
   return;
 #endif
-  mprintf(0, "Reordering pages, please wait...\n");
+  LOG_INFO << "Reordering pages, please wait...";
   if (local)
     infile = cfopen(LocalTableFilename, "rb");
   else {
@@ -1662,7 +1622,7 @@ void ReorderPages(int local) {
     infile = cfopen(TableFilename, "rb");
   }
   if (!infile) {
-    mprintf(0, "Couldn't open table file to reorder!\n");
+    LOG_ERROR << "Couldn't open table file to reorder!";
     Int3();
     return;
   }
@@ -1671,7 +1631,7 @@ void ReorderPages(int local) {
   else
     outfile = cfopen(TempTableFilename, "wb");
   if (!outfile) {
-    mprintf(0, "Couldn't open temp table file to reorder!\n");
+    LOG_ERROR << "Couldn't open temp table file to reorder!";
     cfclose(infile);
     Int3();
     return;
@@ -1954,7 +1914,7 @@ void BuildOldFilesForDirectory(const std::filesystem::path& path, FILETIME thres
 // Searches through all our netdirectories for old files
 void BuildOldFileList(FILETIME threshold) {
   char str[_MAX_PATH];
-  mprintf(0, "Building old files list!\n");
+  LOG_INFO << "Building old files list!";
   BuildOldFilesForDirectory(NetModelsDir, threshold);
   BuildOldFilesForDirectory(NetSoundsDir, threshold);
   BuildOldFilesForDirectory(NetMiscDir, threshold);
@@ -1968,7 +1928,7 @@ void BuildOldFileList(FILETIME threshold) {
   BuildOldFilesForDirectory(str, threshold);
   ddio_MakePath(str, NetD3Dir, "data", "scripts", NULL);
   BuildOldFilesForDirectory(str, threshold);
-  mprintf(0, "Found %d old files.\n", Num_old_files);
+  LOG_INFO.printf("Found %d old files.", Num_old_files);
 }
 #endif
 
@@ -2002,7 +1962,7 @@ void UpdatePrimitive(const std::filesystem::path &localname, const std::filesyst
     temp_pl.pagetype = pagetype;
     strcpy(temp_pl.name, pagename);
     if (!InLockList(&temp_pl)) {
-      mprintf(0, "Making a local copy of %s for next time.\n", primname);
+      LOG_DEBUG.printf("Making a local copy of %s for next time.", primname);
       if (!cf_CopyFile(localname, netname, 1)) {
         Int3(); // get Jason
         return;
@@ -2077,14 +2037,14 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
   CFILE *infile, *outfile;
   uint8_t pagetype, replaced = 0;
   int done = 0, len;
-  mprintf(0, "Replacing '%s' with '%s' (%s).\n", srcname, destname, local ? "locally" : "to network");
+  LOG_DEBUG.printf("Replacing '%s' with '%s' (%s).", srcname, destname, local ? "locally" : "to network");
 
   if (local)
     infile = cfopen(LocalTableFilename, "rb");
   else
     infile = cfopen(TableFilename, "rb");
   if (!infile) {
-    mprintf(0, "Couldn't open table file to replace page %s!\n", srcname);
+    LOG_ERROR.printf("Couldn't open table file to replace page %s!", srcname);
     Int3();
     return 0;
   }
@@ -2093,7 +2053,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
   else
     outfile = cfopen(TempTableFilename, "wb");
   if (!outfile) {
-    mprintf(0, "Couldn't open temp table file to replace page %s!\n", srcname);
+    LOG_ERROR.printf("Couldn't open temp table file to replace page %s!", srcname);
     cfclose(infile);
     Int3();
     return 0;
@@ -2101,7 +2061,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
   // Allocate memory for copying
   uint8_t *copybuffer = (uint8_t *)mem_malloc(COPYBUFFER_SIZE);
   if (!copybuffer) {
-    mprintf(0, "Couldn't allocate memory to replace page %s!\n", srcname);
+    LOG_ERROR.printf("Couldn't allocate memory to replace page %s!", srcname);
     cfclose(infile);
     cfclose(outfile);
     Int3();
@@ -2224,9 +2184,9 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     mng_AssignAndWritePage(handle, dest_pagetype, outfile);
   }
   if (replaced)
-    mprintf(0, "Page replaced.\n");
+    LOG_DEBUG << "Page replaced.";
   else
-    mprintf(0, "New page added.\n");
+    LOG_DEBUG << "New page added.";
   cfclose(infile);
   cfclose(outfile);
   mem_free(copybuffer);
@@ -2247,14 +2207,14 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
   int done = 0;
   int deleted = 0;
 
-  mprintf(0, "Deleting %s (%s).\n", name, local ? "locally" : "on network");
+  LOG_DEBUG.printf("Deleting %s (%s).", name, local ? "locally" : "on network");
 
   if (local)
     infile = cfopen(LocalTableFilename, "rb");
   else
     infile = cfopen(TableFilename, "rb");
   if (!infile) {
-    mprintf(0, "Couldn't open table file to delete page!\n");
+    LOG_ERROR << "Couldn't open table file to delete page!";
     Int3();
     return 0;
   }
@@ -2263,7 +2223,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
   else
     outfile = cfopen(TempTableFilename, "wb");
   if (!outfile) {
-    mprintf(0, "Couldn't open temp table file to delete page!\n");
+    LOG_ERROR << "Couldn't open temp table file to delete page!";
     cfclose(infile);
     Int3();
     return 0;
@@ -2271,7 +2231,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
   // Allocate memory for copying
   uint8_t *copybuffer = (uint8_t *)mem_malloc(COPYBUFFER_SIZE);
   if (!copybuffer) {
-    mprintf(0, "Couldn't allocate memory to delete page!\n");
+    LOG_ERROR << "Couldn't allocate memory to delete page!";
     cfclose(infile);
     cfclose(outfile);
     Int3();
@@ -2376,7 +2336,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
     ASSERT(deleted == 1);
   } else {
     if (!deleted) {
-      mprintf(0, "Not found locally?!\n");
+      LOG_ERROR << "Not found locally?!";
     }
   }
   cfclose(infile);
@@ -2636,7 +2596,7 @@ void mng_PopAddonPages() {
   AddOnTablefile *addondata = &AddOnDataTables[Num_addon_tables];
 
   for (i = 0; i < addondata->Num_addon_tracklocks; i++) {
-    mprintf(0, "Freeing addon page %s [%s].\n", addondata->Addon_tracklocks[i].name, addondata->AddOnTableFilename);
+    LOG_DEBUG.printf("Freeing addon page %s [%s].", addondata->Addon_tracklocks[i].name, addondata->AddOnTableFilename);
 
     // set the Loading_addon_table to the appropriate value...
     // it depends on if we are overlaying from a previous tablefile
@@ -2802,7 +2762,7 @@ void mng_PushAddonPage(int pagetype, char *name, int overlay) {
       }
     }
   }
-  mprintf(0, "Adding addon page %s [%s] to list.\n", name, addon->AddOnTableFilename);
+  LOG_DEBUG.printf("Adding addon page %s [%s] to list.", name, addon->AddOnTableFilename);
   addon->Addon_tracklocks[addon->Num_addon_tracklocks].used = 1;
   addon->Addon_tracklocks[addon->Num_addon_tracklocks].pagetype = pagetype;
   addon->Addon_tracklocks[addon->Num_addon_tracklocks].overlay = overlay;
@@ -2830,10 +2790,10 @@ void mng_CompileAddonPages(void) {
     // overlay > 1 (from addontable[overlay-2]
     if (curr_tablefile == 1) {
       file = cfopen(TableFilename, "rb");
-      mprintf(0, "Compiling addon pages of %s\n", TableFilename);
+      LOG_DEBUG << "Compiling addon pages of " << TableFilename;
     } else {
       file = cfopen(AddOnDataTables[curr_tablefile - 2].AddOnTableFilename, "rb");
-      mprintf(0, "Compiling addon pages of %s\n", AddOnDataTables[curr_tablefile - 2].AddOnTableFilename);
+      LOG_DEBUG << "Compiling addon pages of " << AddOnDataTables[curr_tablefile - 2].AddOnTableFilename;
     }
     ASSERT(file != NULL);
 
@@ -2900,7 +2860,7 @@ void mng_CompileAddonPages(void) {
             continue;
 
           // this is it!
-          mprintf(0, "***Compiling: %s[%s] to %d\n", AddOnDataTables[tf].Addon_tracklocks[i].name,
+          LOG_INFO.printf("Compiling: %s[%s] to %d", AddOnDataTables[tf].Addon_tracklocks[i].name,
                   (curr_tablefile == 1) ? TableFilename : AddOnDataTables[curr_tablefile - 2].AddOnTableFilename,
                   page_pos);
           ASSERT(AddOnDataTables[tf].Addon_tracklocks[i].stack_filepos == 0);
@@ -2949,11 +2909,11 @@ void mng_LoadAddonPages() {
   for (c = 0; c < Num_addon_tables; c++) {
     addon = &AddOnDataTables[c];
 
-    mprintf(0, "------------------------------------\nLoading addon pages for %s....\n", addon->AddOnTableFilename);
+    LOG_INFO.printf("Loading addon pages for %s...", addon->AddOnTableFilename);
     Addon_filename = addon->AddOnTableFilename;
     infile = cfopen(addon->AddOnTableFilename, "rb");
     if (!infile) {
-      mprintf(0, "Couldn't addon table file (%s) to read pages!\n", addon->AddOnTableFilename);
+      LOG_ERROR.printf("Couldn't addon table file (%s) to read pages!\n", addon->AddOnTableFilename);
       return;
     }
     Loading_addon_table = c;
@@ -2962,7 +2922,6 @@ void mng_LoadAddonPages() {
       pagetype = cf_ReadByte(infile);
       len = cf_ReadInt(infile);
 
-      mprintf(0, ".");
       switch (pagetype) {
       case PAGETYPE_TEXTURE:
         mng_LoadLocalTexturePage(infile);
@@ -2999,7 +2958,6 @@ void mng_LoadAddonPages() {
         break;
       }
     }
-    mprintf(0, "------------------------------------\n");
     cfclose(infile);
   }
 

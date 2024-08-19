@@ -147,17 +147,16 @@
 #include <cstring>
 #include <filesystem>
 
+#include "args.h"
 #include "cfile.h"
-#include "manage.h"
 #include "door.h"
 #include "doorpage.h"
-#include "mono.h"
-#include "pserror.h"
+#include "log.h"
+#include "manage.h"
 #include "polymodel.h"
-#include "ddio.h"
+#include "pserror.h"
 #include "soundload.h"
 #include "soundpage.h"
-#include "args.h"
 
 // doorpage commands that are read/written
 // A command is followed by a byte count describing how many bytes
@@ -397,7 +396,7 @@ int mng_FindSpecificDoorPage(char *name, mngs_door_page *doorpage, int offset) {
   }
 
   if (!infile) {
-    mprintf(0, "Couldn't open table file to find door!\n");
+    LOG_ERROR << "Couldn't open table file to find door!";
     Int3();
     return 0;
   }
@@ -479,7 +478,7 @@ int mng_AssignDoorPageToDoor(mngs_door_page *doorpage, int n) {
   doorpointer->close_sound = mng_GetGuaranteedSoundPage(doorpage->close_sound_name);
 
   if (img_handle < 0) {
-    mprintf(0, "Couldn't load file '%s' in AssignDoorPage...\n", doorpage->image_name);
+    LOG_ERROR.printf("Couldn't load file '%s' in AssignDoorPage...", doorpage->image_name);
     doorpointer->model_handle = -1;
     return 0;
   } else
@@ -525,7 +524,7 @@ void mng_LoadNetDoorPage(CFILE *infile, bool overlay) {
     n = FindDoorName(doorpage.door_struct.name);
     if (n != -1) {
       if (overlay) {
-        mprintf(0, "OVERLAYING DOOR %s\n", doorpage.door_struct.name);
+        LOG_DEBUG.printf("OVERLAYING DOOR %s\n", doorpage.door_struct.name);
         mng_FreePagetypePrimitives(PAGETYPE_DOOR, doorpage.door_struct.name, 0);
         mng_AssignDoorPageToDoor(&doorpage, n);
       }
@@ -535,7 +534,7 @@ void mng_LoadNetDoorPage(CFILE *infile, bool overlay) {
     int ret = mng_SetAndLoadDoor(&doorpage);
     ASSERT(ret >= 0);
   } else
-    mprintf(0, "Could not load doorpage named %s!\n", doorpage.door_struct.name);
+    LOG_ERROR.printf("Could not load doorpage named %s!", doorpage.door_struct.name);
 }
 
 // Reads a door page from a local table file.  It then allocs a door and
@@ -580,7 +579,7 @@ void mng_LoadLocalDoorPage(CFILE *infile) {
           if (addon->Addon_tracklocks[tidx].pagetype == PAGETYPE_DOOR &&
               !stricmp(addon->Addon_tracklocks[tidx].name, doorpage.door_struct.name)) {
             // found it!!
-            mprintf(0, "DoorPage: %s previously loaded\n", doorpage.door_struct.name);
+            LOG_DEBUG.printf("DoorPage: %s previously loaded", doorpage.door_struct.name);
             need_to_load_page = false;
             break;
           }
@@ -637,7 +636,7 @@ void mng_LoadLocalDoorPage(CFILE *infile) {
 
     if (Loading_addon_table == -1)
       mng_AllocTrackLock(doorpage.door_struct.name, PAGETYPE_DOOR);
-  } else
-
-    mprintf(0, "Could not load doorpage named %s!\n", doorpage.door_struct.name);
+  } else {
+    LOG_ERROR.printf("Could not load doorpage named %s!", doorpage.door_struct.name);
+  }
 }
