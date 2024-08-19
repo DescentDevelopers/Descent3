@@ -217,7 +217,7 @@
 #include "cockpit.h"
 #include "hud.h"
 #include "menu.h"
-#include "PHYSICS.H"
+#include "physics.h"
 
 #include <algorithm>
 

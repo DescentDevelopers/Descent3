@@ -299,7 +299,7 @@
 #include "marker.h"
 #include "d3music.h"
 #include "weather.h"
-#include "PHYSICS.H"
+#include "physics.h"
 
 // function prototypes.
 
