@@ -4,7 +4,7 @@ set(HEADERS
   mono.h)
 set(CPPS
   debug.cpp
-  $<$<PLATFORM_ID:Darwin,Linux>:
+  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
     lnxdebug.cpp
     lnxmono.cpp
   >
