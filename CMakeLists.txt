@@ -5,11 +5,12 @@ if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
 endif()
 
-option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
-option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
+option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
-option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
+option(FATAL_GL_ERRORS "Check OpenGL calls and raise exceptions on errors." OFF)
+option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
+option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
 set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
 set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
 
@@ -131,6 +132,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
   add_compile_options("-Wno-multichar;-Wall")
 endif()
 
+find_package(glm REQUIRED)
 find_package(SDL2 REQUIRED)
 # Some versions of the SDL2 find_package set SDL2_INCLUDE_DIR and some set a plural SDL2_INCLUDE_DIRS. Check both.
 message("SDL2 Include Dir is ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS}")
@@ -194,6 +196,11 @@ find_package(ZLIB REQUIRED)
 if(ENABLE_LOGGER)
   message("Enabling Logging")
   add_compile_definitions(LOGGER)
+endif()
+
+if(FATAL_GL_ERRORS)
+  message("Raising exceptions on OpenGL errors")
+  add_compile_definitions(FATAL_GL_ERRORS)
 endif()
 
 include_directories(

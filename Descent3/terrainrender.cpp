@@ -1406,15 +1406,11 @@ void RenderTerrain(uint8_t from_mine, int left, int top, int right, int bot) {
 
 #ifndef NEWEDITOR
   if ((Terrain_sky.flags & TF_FOG) && (UseHardware || (!UseHardware && Lighting_on))) {
-    rend_SetZValues(0, VisibleTerrainZ);
     rend_SetFogState(1);
     rend_SetFogBorders(VisibleTerrainZ * Terrain_sky.fog_scalar, Far_fog_border);
     rend_SetFogColor(Terrain_sky.fog_color);
-  } else
-#endif
-  {
-    rend_SetZValues(0, 5000);
   }
+#endif
 
   // And display!
   if (nt > 0) {
@@ -2586,8 +2582,7 @@ void DisplayTerrainList(int cellcount, bool from_automap) {
     rend_SetTextureType(TT_LINEAR);
     rend_SetAlphaType(ATF_CONSTANT + ATF_TEXTURE);
     rend_SetLighting(LS_NONE);
-    if (!StateLimited || UseMultitexture)
-      draw_lightmap = true;
+    draw_lightmap = true;
   }
   RotateTerrainList(cellcount, from_automap);
   if (!UseHardware) {
