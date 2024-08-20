@@ -313,7 +313,6 @@ extern int Num_textures;
 
 // Inits the texture system, returning 1 if successful
 int InitTextures();
-void ShutdownTextures();
 
 // Set aside a texture for use
 int AllocTexture(void);

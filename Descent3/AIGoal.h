@@ -113,10 +113,6 @@ void GoalClearAll(object *obj);
 int GoalAddGoal(object *obj, uint32_t goal_type, void *args, int level = 0, float influence = 1.0f, int f_goal = 0,
                 int guid = -1, char subtype = 0);
 
-// Adds a ending condition to a goal
-int GoalAddDisabler(object *obj, int goal_index, uint8_t ender_type, void *args, float percent = 1.0f,
-                    float interval = 0.0f);
-
 // Adds a enabler condition to a goal
 int GoalAddEnabler(object *obj, int goal_index, uint8_t enabler_type, void *arg_struct, float percent, float interval);
 

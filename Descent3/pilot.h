@@ -192,7 +192,7 @@
 //	Brings up a window where you can select a pilot to use
 void PilotSelect();
 
-// creates a new pilot (and pilot file) (if you call this you should call PilotConfig() after it)
+// creates a new pilot (and pilot file)
 // Returns: true on success
 // Pilot: pointer to pilot structure to be filled in with name and filename (should then configure the rest)
 bool PilotCreate(pilot *Pilot, bool dontallowcancel);

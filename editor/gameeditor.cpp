@@ -501,7 +501,6 @@
 #include "object.h"
 #include "slew.h"
 #include "hlsoundlib.h" //chrishack
-#include "ds3dlib.h"    // chrishack
 #include "HView.h"
 #include "player.h"
 #include "loadlevel.h"

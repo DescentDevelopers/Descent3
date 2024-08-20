@@ -70,7 +70,7 @@ void mng_WriteNewTexturePage(CFILE *outfile, mngs_texture_page *texpage);
 
 // Given a texture page, allocs a texture and loads that textures associated bitmap
 // returns texture handle on success, -1 if fail
-int mng_SetAndLoadTexture(mngs_texture_page *texpage);
+int mng_SetAndLoadTexture(mngs_texture_page *texpage, CFILE *infile);
 
 // Reads in a texture page from the local table file, superseding any texture
 // already in RAM with that same name

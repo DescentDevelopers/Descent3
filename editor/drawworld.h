@@ -57,8 +57,6 @@
 #include "vecmat.h"
 
 void DrawWorld(grViewport *vp, vector *view_target, matrix *view_orient, float view_dist, int start_room, float rad);
-void DrawWorldRoom(grViewport *vp, vector *view_target, matrix *view_orient, float view_dist, int start_room,
-                   int depth);
 
 void DrawTerrainWorld(grViewport *vp, vector *view_target, matrix *view_orient, float view_dist);
 

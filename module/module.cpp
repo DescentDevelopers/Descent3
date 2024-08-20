@@ -500,9 +500,6 @@ int mod_GetLastError(void) {
 
 void dd_GetWorkingDir(char *path, int len);
 bool dd_SetWorkingDir(const char *path);
-bool dd_FindFileStart(const char *wildcard, char *namebuf);
-bool dd_FindNextFile(char *namebuf);
-void dd_FindFileClose();
 
 //	retrieve the current working folder where file operation will occur.
 void dd_GetWorkingDir(char *path, int len) { getcwd(path, len); }

@@ -193,24 +193,6 @@ void grtext_Flush();
 //	renders all text but DOESN'T flush buffer
 void grtext_Render();
 
-// gets character information for the current string
-//		ch is a SINGLE CHARACTER
-//		col is the color of the current string as reported through formatting, or GR_NULL if no info
-//		x is the old x before call and the new potential adjusted x after the call.
-//		newline if it's a newline.
-//		line start x;
-struct tGetCharInfo {
-  int sx; // this will not be modified. the initial x on the same line as the string
-
-  ddgr_color col; // these values will be modified
-  int x, w;       // x of char, and width of char.
-  bool newline;   // reached a newline?
-  bool font_char; // character exists in font?
-  char ch;
-};
-
-const char *grtext_GetChar(const char *str, tGetCharInfo *ci);
-
 //////////////////////////////////////////////////////////////////////////////
 //	font functions!
 

@@ -380,10 +380,6 @@ void RemapWeapons();
 // and changes the old index to the new index
 void RemapAllWeaponObjects(int old_index, int new_index);
 
-// Creates a weapon
-// Returns the objnum of the weapon object
-int CreateWeaponObject(int weapon_num, int segnum, vector *position, int flags);
-
 // Creates an weapon and sends it speeding on its way
 // returns the objnum of the weapon
 int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num);
@@ -418,9 +414,6 @@ bool WeaponCalcGun(vector *gun_point, vector *gun_normal, object *obj, int gun_n
 
 // Checks for relation between weapons and other objects
 extern bool ObjectsAreRelated(int o1, int o2);
-
-// A quick way to see where a weapon hits.  Weapons make debris.
-void CreateWeaponDebris(object *obj);
 
 // Selects a weapon
 void SelectWeapon(int slot);

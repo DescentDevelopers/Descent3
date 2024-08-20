@@ -50,8 +50,6 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format = 0);
 // Loads a pcx file and converts it to 16 bit.  Returns bitmap handle or -1 on error
 int bm_pcx_alloc_file(CFILE *infile);
 
-int bm_tga_load_short_file(CFILE *infile, char *name);
-
 // Pages in bitmap index n.  Returns 1 if successful, 0 if not
 int bm_page_in_file(int n);
 

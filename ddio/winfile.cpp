@@ -143,7 +143,6 @@
  */
 
 #include "ddio.h"
-#include "ddio_win.h"
 #include "pserror.h"
 #include "mem.h"
 #include <stdarg.h>

@@ -393,11 +393,6 @@ uint16_t nw_CalculateChecksum(void *vptr, int len);
 // Sends data on an unreliable socket
 int nw_Send(network_address *who_to, void *data, int len, int flags);
 
-// nw_ReceiveFromSocket will get data out of the socket and stuff it into the packet_buffers
-// nw_Receive now calls this function, then determines which of the packet buffers
-// to package up and use
-void nw_ReceiveFromSocket();
-
 // routine to "free" a packet buffer
 void nw_FreePacket(int id);
 
@@ -413,23 +408,8 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent = 
 // and this may be a source of bugs).
 int nw_ReceiveReliable(SOCKET socket, uint8_t *buffer, int max_len);
 
-// Returns the current protocol in use
-int nw_GetProtocolType();
-
 // Copies my address into the passed argument
 void nw_GetMyAddress(network_address *addr);
-
-// Sends a packet to the game tracker
-int nw_SendGameTrackerPacker(void *packet);
-
-// Checks for an incoming game tracker packet.
-int nw_ReceiveGameTracker(void *packet);
-
-// Send a packet to the pilot tracker
-int nw_SendPilotTrackerPacket(void *packet);
-
-// Checks for an incoming pilot tracker packet.
-int nw_ReceivePilotTracker(void *packet);
 
 int nw_PingCompare(const void *arg1, const void *arg2);
 

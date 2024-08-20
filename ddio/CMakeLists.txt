@@ -2,8 +2,7 @@ set(HEADERS
   chrono_timer.h
   ddio.h
   ddio_common.h
-  ddio_lnx.h
-  ddio_win.h)
+  ddio_lnx.h)
 set(CPPS
   chrono_timer.cpp
   ddio.cpp

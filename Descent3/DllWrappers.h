@@ -40,8 +40,6 @@ void D3W_TouchSound(int sound_index);
 void MonoPrintf(int n, char *format, ...);
 // checks a players inventory for an object type/id
 bool InvCheckItem(int playernum, int type, int id);
-// adds an object to a player inventory
-bool InvAdd(int playernum, object *obj, bool remove = true);
 // adds a type/id to a player inventory
 bool InvAddTypeID(int playernum, int type, int id, int aux_type = -1, int aux_id = -1, int flags = 0, const char *description = NULL);
 // removes a type/id from a players inventory

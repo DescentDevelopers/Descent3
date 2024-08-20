@@ -74,28 +74,11 @@ void ClearDynamicLightmaps();
 void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float red_scale, float green_scale,
                             float blue_scale, vector *light_direction = NULL, float dot_range = 0);
 
-// Gets the viewable lightmap elements
-void FindValidLightmapElements(face *fp, dynamic_face *dynamic_fp, vector *light_pos, float light_dist);
-// Does a quad tree algo to find what lightmap elements are viewable from our lightsource
-int SearchLightQuadTree(face *fp, vector *rvec, vector *uvec, dynamic_face *dynamic_fp, vector *light_pos,
-                        float light_dist);
-
 // Given a float, returns the index into the Ubyte_float_table that this number
 // corresponds to
 uint8_t Float_to_ubyte(float fnum);
 
 extern float Ubyte_to_float[];
-
-// Draws the shadows that happen to be falling on a particular face
-void DoShadowsForFace(room *rp, int facenum);
-
-// Sets the num_timer_faces field in Room structure to correspond to the number of faces
-// that have flickering lights
-void CountFaceLights();
-
-// Goes through all rooms and all faces and lights any faces that have their timer values
-// set
-void DoFaceLighting();
 
 // Sets pulse parameters for an entire room
 void SetRoomPulse(room *rp, uint8_t pulse_time, uint8_t pulse_offset);

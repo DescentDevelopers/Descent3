@@ -102,10 +102,6 @@ struct menu {
 //	this displays the main menu options and runs the menu system
 int MainMenu();
 
-//	opens options menu.
-// ingame = true (if calling while playing the game)
-void MenuOptions(bool ingame);
-
 // DisplayLevelWarpDlg
 //	pass in the max level allowed to be chosen, if -1, than all levels are allowed (a.k.a level warp cheat)
 int DisplayLevelWarpDlg(int max_level);

@@ -187,8 +187,6 @@
 #include "grdefs.h"
 #include "float.h"
 
-extern int g3d_interp_outline; // if on, polygon models outlined in white
-
 extern vector Matrix_scale; // how the matrix is currently scaled
 
 // Structure for storing u,v,light values.  This structure doesn't have a
@@ -294,24 +292,11 @@ void g3_DoneInstance();
 
 // Misc utility functions:
 
-// get current field of view.  Fills in angle for x & y
-void g3_GetFOV(float *fov_x, float *fov_y);
-
-// get zoom.  For a given window size, return the zoom which will achieve
-// the given FOV along the given axis.
-float g3_GetZoom(char axis, float fov, int16_t window_width, int16_t window_height);
-
-// returns the normalized, unscaled view vectors
-void g3_GetViewVectors(vector *forward, vector *up, vector *right);
-
 // returns true if a plane is facing the viewer. takes the unrotated surface
 // normal of the plane, and a point on it.  The normal need not be normalized
 bool g3_CheckNormalFacing(vector *v, vector *norm);
 
 // Point definition and rotation functions:
-
-// returns codes_and & codes_or of a list of points numbers
-g3Codes g3_CheckCodes(int nv, g3Point **pointlist);
 
 // rotates a point. returns codes.  does not check if already rotated
 uint8_t g3_RotatePoint(g3Point *dest, vector *src);
@@ -362,25 +347,6 @@ void g3_DrawBitmap(vector *pos, float width, float height, int bm, int color = -
 
 // Draws a bitmap that has been rotated about its center.  Angle of rotation is passed as 'rot_angle'
 void g3_DrawRotatedBitmap(vector *pos, angle rot_angle, float width, float height, int bm, int color = -1);
-
-// specifies 2d drawing routines to use instead of defaults.  Passing
-// NULL for either or both restores defaults
-void g3_SetSpecialRender(void (*tmap_drawer)(), void (*flat_drawer)(), int (*line_drawer)());
-
-// Object functions:
-
-// init code for bitmap models
-void g3_InitPolygonModel(void *model_ptr);
-
-// un-initialize, i.e., convert color entries back to RGB15
-void g3_UninitPolygonModel(void *model_ptr);
-
-// alternate interpreter for morphing object
-void g3_DrawMorphingModel(void *model_ptr, int *model_bitmaps, angvec *anim_angles, float light, vector *new_points);
-
-// this remaps the 15bpp colors for the models into a new palette.  It should
-// be called whenever the palette changes
-void g3_RemapInterpColors(void);
 
 // Draw a wireframe box aligned with the screen.  Used for the editor.
 // Parameters:	color - the color to draw the lines

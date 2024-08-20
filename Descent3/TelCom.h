@@ -31,9 +31,6 @@
 // inits the Telcom system...needs to be called before anything else, only needs to be called once
 void TelComInit(void);
 
-// handles input processing, etc
-void TelComDefer(void);
-
 //	Pages in all the necessary bitmaps, textures & sounds for the TelCom so that they are in memory
 void TelcomPageAllIn(void);
 
@@ -150,17 +147,6 @@ int HotSpotL(int hotspot);
 int HotSpotR(int hotspot);
 int HotSpotT(int hotspot);
 int HotSpotB(int hotspot);
-/*
-void TCStartPowerupSound(void);
-void TCStopPowerupSound(void);
-void TCStartPowerDownSound(void);
-void TCStopPowerDownSound(void);
-void TCStartRunningSound(void);
-void TCStopRunningSound(void);
-void TCStartStaticSound(float amp);
-*/
-void TCStartBulbSound(void);
-void DoCursor(void);
 
 extern hotspotmap_t hotspotmap;
 extern windowmap_t windowmap;

@@ -125,11 +125,6 @@ struct tJoyInfo {
 #define JOY_INFO "INFO"
 #define JOY_POLL "POLL"
 
-struct tJoyPacket {
-  char coda[4]; // used to identify packet
-  char buf[128];
-};
-
 struct tJoyPos {
   int x;
   int y;

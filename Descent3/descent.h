@@ -214,16 +214,6 @@ void D3DeferHandler(bool is_active);
 void SetFunctionMode(function_mode mode);
 function_mode GetFunctionMode();
 
-//	these functions create viewports from the game screen in a 'nice' C way
-void CreateGameViewport(grViewport **vp);
-void DestroyGameViewport(grViewport *vp);
-
-inline void CREATE_VIEWPORT(grViewport **vp) { CreateGameViewport(vp); }
-
-inline void DESTROY_VIEWPORT(grViewport *vp) { DestroyGameViewport(vp); }
-
-inline void DELAY(float secs) { Descent->delay(secs); }
-
 #ifndef RELEASE
 //	this is called when you hit a debug break!
 void D3DebugStopHandler();

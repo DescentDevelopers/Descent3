@@ -1,3 +1,5 @@
+set(CMAKE_FOLDER "tests")
+
 add_executable(cfile_tests
   cfile_tests.cpp
 )

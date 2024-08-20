@@ -424,10 +424,8 @@ class grViewport {
   tCharProperties char_Props;
 
 private:
-  void draw_text(grTextAlign align, int x, int y, char *str);
   void draw_text_line(int x, int y, char *str);
   void draw_text_line_clip(int x, int y, char *str);
-  int clip_line(int &l, int &t, int &r, int &b);
   int clip_rect(int &x1, int &y1, int &x2, int &y2);
 
 protected:
@@ -486,10 +484,6 @@ public:
 public:
   grSurface *lock(); // lock and
   void unlock();     // unlock  (implicitly locks surface)
-
-  friend grSurface *VP_GET_DRAWING_SURFACE();
-  friend void VP_BEGIN_DRAWING(grViewport *vp);
-  friend void VP_END_DRAWING();
 
   //	these functions only work on locked surfaces.
   void hline(ddgr_color, int x1, int x2, int y1);

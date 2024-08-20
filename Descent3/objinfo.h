@@ -552,10 +552,6 @@ int GetObjectImage(int handle);
 // Given an object, renders the representation of this object
 void DrawObject(object *obj);
 
-// Moves an object from a given index into a new one (above MAX_STATIC_IDS)
-// returns new index
-int MoveObjectFromIndex(int index);
-
 // Remap all the static object ids (objects that must have a specific index) into their assigned slots.
 void RemapStaticIDs();
 

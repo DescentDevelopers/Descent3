@@ -151,7 +151,6 @@ float Last_weapons_load_update_time = 0;
 
 // Setup saved moves
 saved_move SavedMoves[MAX_SAVED_MOVES];
-int Current_saved_move = 0;
 
 extern int Use_file_xfer;
 
@@ -503,8 +502,6 @@ void MultiStartClient(char *scriptname) {
 
   for (i = 0; i < MAX_SAVED_MOVES; i++)
     SavedMoves[i].timestamp = 0;
-
-  Current_saved_move = 0;
 
   // Temporary name fix
   Current_pilot.get_name(Players[Player_num].callsign);

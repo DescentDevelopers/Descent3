@@ -187,9 +187,6 @@ extern void vm_MatrixMul(matrix *, matrix *, matrix *);
 // Multiply a matrix times the transpose of a matrix
 void vm_MatrixMulTMatrix(matrix *dest, matrix *src0, matrix *src1);
 
-// Computes all math look up tables, must be called before any vector stuff is used
-extern void vm_InitMathTables();
-
 // Given a vector, returns the magnitude.  Uses sqrt so it's slow
 extern float vm_GetMagnitude(vector *);
 

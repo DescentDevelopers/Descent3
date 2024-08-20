@@ -110,9 +110,6 @@ extern float UI_aspect_y;
 #define UI_X(_x) ((int)(UI_aspect_x * (_x)))
 #define UI_Y(_y) ((int)(UI_aspect_y * (_y)))
 
-//	retrieves input for user interface
-bool ui_Poll();
-
 //	flushes out key input info currently in ui.
 void ui_KeyFlush();
 

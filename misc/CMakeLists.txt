@@ -1,5 +1,4 @@
 set(HEADERS
-  log.h
   logfile.h
   pserror.h
   psglob.h
@@ -8,7 +7,6 @@ set(HEADERS
 set(CPPS
   error.cpp
   logfile.cpp
-  log.cpp
   psglob.cpp
   psrand.cpp
   pstring.cpp

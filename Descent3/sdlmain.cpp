@@ -45,8 +45,6 @@
 
 #include "osiris_dll.h"
 
-#include "log.h"
-
 extern bool ddio_mouseGrabbed;
 
 std::filesystem::path orig_pwd;
@@ -237,9 +235,6 @@ int main(int argc, char *argv[]) {
 #endif
 
   orig_pwd = std::filesystem::current_path();
-
-  /* Setup the logging system */
-  InitLog();
 
   setbuf(stdout, NULL);
   setbuf(stderr, NULL);

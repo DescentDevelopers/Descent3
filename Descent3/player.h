@@ -467,7 +467,7 @@ void InitiatePlayerDeath(object *playerobj, bool melee = false, int fate = -1);
 void EndPlayerDeath(int slot);
 
 //	Detaches a subobject from the player ship
-void DeadPlayerShipHit(object *obj, vector *hitpt, float magnitude);
+void DeadPlayerShipHit(object *obj, int hit_room, vector *hitpt, float magnitude);
 
 //	Do actions for the player each frame
 void DoPlayerFrame();
