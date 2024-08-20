@@ -162,8 +162,6 @@ int Debug_ErrorBox(int type, const char *topstring, const char *title, const cha
 int Debug_MessageBox(int type, const char *title, const char *str);
 
 // these functions deal with debug spew support
-bool Debug_Logfile(const char *filename);
-void Debug_LogWrite(const char *str);
 void Debug_ConsolePrintf(int n, const char *format, ...);
 void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...);
 
