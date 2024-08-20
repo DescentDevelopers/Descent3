@@ -7,7 +7,7 @@ set(HEADERS
   osiris_import.h
   osiris_vector.h)
 set(CPPS
-  $<$<PLATFORM_ID:Darwin,Linux>:
+  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
     linux_lib.cpp
   >
 )
@@ -87,7 +87,7 @@ foreach(SCRIPT ${SCRIPTS})
   endif()
 endforeach()
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   set(HOG_NAME "linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(HOG_NAME "osx")
