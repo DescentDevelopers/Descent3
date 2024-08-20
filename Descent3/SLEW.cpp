@@ -199,13 +199,13 @@
 #include "editor\d3edit.h"
 #endif
 
-#include <stdlib.h>
-#include "descent.h"
+#include <cstdlib>
+
 #include "slew.h"
 #include "vecmat.h"
 #include "ddio.h"
 #include "object.h"
-#include "mono.h"
+#include "log.h"
 #include "game.h"
 #include "joystick.h"
 #include "findintersection.h"
@@ -307,17 +307,10 @@ int SlewFrame(object *obj, int movement_limitations) {
   if (key_timep1 || key_timep0 || key_timeh1 || key_timeh0 || key_timeb1 || key_timeb0)
     ret_flags |= SLEW_KEY;
 
-  if (key_timez0 || key_timez1) {
-    mprintf_at(1, 0, 0, "Timez0: %.2f  ", key_timez0);
-    mprintf_at(1, 1, 0, "Timez1: %.2f  ", key_timez1);
-  }
-
   //	adjust physics info of object accordingly to keyboard input.
   obj->mtype.phys_info.velocity.x += VEL_SPEED * (key_timex1 - key_timex0) * Slew_key_speed;
   obj->mtype.phys_info.velocity.y += VEL_SPEED * (key_timey1 - key_timey0) * Slew_key_speed;
   obj->mtype.phys_info.velocity.z += VEL_SPEED * (key_timez1 - key_timez0) * Slew_key_speed;
-
-  // mprintf(0,"<%x %x %x>",obj->mtype.phys_info.velocity.x,obj->mtype.phys_info.velocity.y,obj->mtype.phys_info.velocity.z));
 
   rottime.x = key_timep1 - key_timep0;
   rottime.y = key_timeh1 - key_timeh0;
@@ -339,8 +332,6 @@ int SlewFrame(object *obj, int movement_limitations) {
     joy_x = joystate.x;
     joy_y = joystate.y;
     btns = joystate.buttons;
-    mprintf_at(2, 1, 0, "JoyX: %d   ", joy_x);
-    mprintf_at(2, 2, 0, "JoyY: %d   ", joy_y);
 
     if (abs(joy_x) < JOY_NULL)
       joy_x = 0;
@@ -349,11 +340,6 @@ int SlewFrame(object *obj, int movement_limitations) {
 
     joyx_moved = (abs(joy_x - old_joy_x) > JOY_NULL);
     joyy_moved = (abs(joy_y - old_joy_y) > JOY_NULL);
-
-    //@@		if (joyx_moved)
-    //@@			mprintf(1,"SLEW: Joy X moved\n");
-    //@@		if (joyy_moved)
-    //@@			mprintf(1,"SLEW: Joy Y moved\n");
 
     if (btns) {
       if (!rotang.p)
@@ -401,7 +387,7 @@ int SlewFrame(object *obj, int movement_limitations) {
   if (ret_flags & SLEW_MOVE) { // Get the new room
     bool outside_mine = ((obj->flags & OF_OUTSIDE_MINE) != 0);
 
-    mprintf(1, "SLEW: Moved\n");
+    LOG_DEBUG << "SLEW: Moved";
 
 #ifdef EDITOR
     if (Editor_view_mode == VM_ROOM) {
@@ -417,7 +403,7 @@ int SlewFrame(object *obj, int movement_limitations) {
 
         if (new_room != -1) { // back in the mine
           outside_mine = 0;
-          mprintf(0, "SLEW: Re-entered mine at room %d\n", new_room);
+          LOG_DEBUG.printf("SLEW: Re-entered mine at room %d", new_room);
         } else // not back in the mine
           new_room = obj->roomnum;
       } else {
@@ -456,30 +442,30 @@ int SlewFrame(object *obj, int movement_limitations) {
         if (fate == HIT_WALL) {
           int t;
 
-          mprintf(0, "SLEW: hit wall\n");
+          LOG_DEBUG << "SLEW: hit wall";
 
           // Check if we're in a room
           t = FindPointRoom(&new_pos);
 
           if (t != -1) { // We're in a room
             new_room = t;
-            mprintf(0, "SLEW: still in mine in room %d\n", new_room);
+            LOG_DEBUG.printf("SLEW: still in mine in room %d", new_room);
           } else { // Not in a room.  Set a special flag
             outside_mine = 1;
-            mprintf(0, "SLEW: left mine from room %d\n", new_room);
+            LOG_DEBUG.printf("SLEW: left mine from room %d", new_room);
           }
         }
 
         if (new_room != obj->roomnum) { // if we've changed rooms, say so
           if (ROOMNUM_OUTSIDE(new_room))
             if (was_outside)
-              mprintf(0, "SLEW: Moved to cell %d, BOA TR %d\n", CELLNUM(new_room), TERRAIN_REGION(new_room));
+              LOG_DEBUG.printf("SLEW: Moved to cell %d, BOA TR %d", CELLNUM(new_room), TERRAIN_REGION(new_room));
             else
-              mprintf(0, "SLEW: Moved outside to cell %d\n", CELLNUM(new_room));
+              LOG_DEBUG.printf("SLEW: Moved outside to cell %d", CELLNUM(new_room));
           else if (was_outside)
-            mprintf(0, "SLEW: Moved inside to room %d\n", new_room);
+            LOG_DEBUG.printf("SLEW: Moved inside to room %d", new_room);
           else
-            mprintf(0, "SLEW: Moved into room %d\n", new_room);
+            LOG_DEBUG.printf("SLEW: Moved into room %d", new_room);
         }
       }
 

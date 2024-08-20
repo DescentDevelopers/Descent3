@@ -430,10 +430,11 @@
  *
  * $NoKeywords: $
  */
-#include <stdarg.h>
+#include <cstdarg>
+
 #include "osiris_predefs.h"
 #include "object.h"
-#include "mono.h"
+#include "log.h"
 #include "trigger.h"
 #include "pstypes.h"
 #include "pserror.h"
@@ -451,7 +452,6 @@
 #include "matcen.h"
 #include "findintersection.h"
 #include "controls.h"
-#include "Controller.h"
 #include "ship.h"
 #include "Mission.h"
 #include "osiris_share.h"
@@ -556,19 +556,19 @@ int osipf_AIGoalFollowPathSimple(int objhandle, int path_id, int guid, int flags
   path_information path_info;
 
   if (!obj) {
-    mprintf(0, "Illegal object passed to AIGoalFollowPathSimple\n");
+    LOG_ERROR << "Illegal object passed to AIGoalFollowPathSimple";
     return -1;
   }
 
   if (path_id == -1) {
-    mprintf(0, "Illegal Path Id Passed To AIGoalFollowPathSimple\n");
+    LOG_FATAL << "Illegal Path Id Passed To AIGoalFollowPathSimple";
     Int3();
     return -1;
   }
 
   if (obj->control_type != CT_AI) {
     // Can happen if e.g. the object died this tick, and Osiris was called with EVT_INTERNAL in the same tick.
-    mprintf(0, "Object with illegal CT passed to AIGoalFollowPathSimple: handle=%u type=%u name=%s\n", obj->handle, obj->type, obj->name);
+    LOG_ERROR << "Illegal Object CT Passed To AIGoalFollowPathSimple";
     return -1;
   }
 
@@ -588,7 +588,7 @@ int osipf_AIGoalFollowPathSimple(int objhandle, int path_id, int guid, int flags
 int osipf_AIPowerSwitch(int objhandle, uint8_t f_power_on) {
   object *obj = ObjGet(objhandle);
   if (!obj) {
-    mprintf(0, "Illegal Object passed to AIPowerSwitch\n");
+    LOG_ERROR << "Illegal Object passed to AIPowerSwitch";
     return -1;
   }
 
@@ -605,7 +605,7 @@ void osipf_SoundTouch(char *str) {
   int id = FindSoundName(IGNORE_TABLE(str));
 
   if (id == -1) {
-    mprintf(0, "Sound %s was not found. Unable to touch.\n", str);
+    LOG_FATAL.printf("Sound %s was not found. Unable to touch.", str);
     Int3();
   } else
     Sound_system.CheckAndForceSoundDataAlloc(id);
@@ -617,7 +617,7 @@ void osipf_RoomValue(int roomnum, char op, char vtype, void *ptr, int index) {
     if (vtype == RMV_C_USED)
       *(char *)ptr = 0;
     else
-      mprintf(0, "RoomValue: Illegal Room Passed\n");
+      LOG_ERROR << "RoomValue: Illegal Room Passed";
 
     return;
   }
@@ -742,7 +742,7 @@ void osipf_PlayerValue(int obj_handle, char op, char vhandle, void *ptr, int ind
     objp = ObjGet(obj_handle);
 
     if (!objp || (!(objp->type == OBJ_PLAYER || objp->type == OBJ_GHOST || objp->type == OBJ_OBSERVER))) {
-      mprintf(0, "Player Value: Illegal Object Passed\n");
+      LOG_ERROR << "Player Value: Illegal Object Passed";
       return;
     }
 
@@ -891,7 +891,7 @@ void osipf_ObjectCustomAnim(int handle, float start, float end, float time, char
   object *objp = ObjGet(handle);
 
   if (!objp) {
-    mprintf(0, "AIValue: Illegal Object Passed\n");
+    LOG_ERROR << "AIValue: Illegal Object Passed";
     return;
   }
 
@@ -907,7 +907,7 @@ void osipf_ObjectCustomAnim(int handle, float start, float end, float time, char
   if (objp->ai_info)
     objp->ai_info->next_animation_type = AS_CUSTOM;
   else
-    mprintf(0, "ERROR: Changing animation for non-AI object.\n");
+    LOG_ERROR << "ERROR: Changing animation for non-AI object.";
 
   if (flags & AIAF_IMMEDIATE) {
     AIUpdateAnim(objp);
@@ -936,7 +936,7 @@ float osipf_ObjectGetTimeLived(int objhandle) {
   object *objp = ObjGet(objhandle);
 
   if (!objp) {
-    mprintf(0, "Illegal object passed to ObjectGetTimeLived\n");
+    LOG_ERROR << "Illegal object passed to ObjectGetTimeLived";
     return 0;
   }
 
@@ -947,12 +947,12 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
   object *objp = ObjGet(objhandle);
 
   if (!objp) {
-    mprintf(0, "AIValue: Illegal Object Passed\n");
+    LOG_ERROR << "AIValue: Illegal Object Passed";
     return;
   }
 
   if ((objp->control_type != CT_AI) && (objp->control_type != CT_DYING_AND_AI)) {
-    mprintf(0, "AIValue: Illegal Object CT Passed\n");
+    LOG_ERROR << "AIValue: Illegal Object CT Passed";
     return;
   }
 
@@ -1636,12 +1636,12 @@ uint8_t osipf_AITurnTowardsVectors(int objhandle, vector *fvec, vector *uvec) {
   object *objp = ObjGet(objhandle);
 
   if (!objp) {
-    mprintf(0, "AITurnTowardsVectors: Illegal Object Passed\n");
+    LOG_ERROR << "AITurnTowardsVectors: Illegal Object Passed";
     return 0;
   }
 
   if (objp->control_type != CT_AI) {
-    mprintf(0, "AITurnTowardsVectors: Illegal Object CT Passed\n");
+    LOG_ERROR << "AITurnTowardsVectors: Illegal Object CT Passed";
     return 0;
   }
 
@@ -1655,12 +1655,12 @@ void osipf_AISetType(int objhandle, int type) {
   object *objp = ObjGet(objhandle);
 
   if (!objp) {
-    mprintf(0, "AISetType: Illegal Object Passed\n");
+    LOG_ERROR << "AISetType: Illegal Object Passed";
     return;
   }
 
   if (objp->control_type != CT_AI) {
-    mprintf(0, "AISetType: Illegal Object CT Passed\n");
+    LOG_ERROR << "AISetType: Illegal Object CT Passed";
     return;
   }
 
@@ -1678,28 +1678,28 @@ vector osipf_AIFindHidePos(int hideobjhandle, int viewobjhandle, float time, int
   int hroom;
 
   if (hide_obj == NULL) {
-    mprintf(0, "Illegal Hide Object Passed To AIFindHidePos\n");
+    LOG_ERROR << "Illegal Hide Object Passed To AIFindHidePos";
     *hide_room = -1;
     return Zero_vector;
   }
 
   if (hide_obj->control_type != CT_AI) {
-    mprintf(0, "Illegal Object CT Passed To AIFindHidePos\n");
+    LOG_ERROR << "Illegal Object CT Passed To AIFindHidePos";
     *hide_room = -1;
     return Zero_vector;
   }
 
   if (view_obj == NULL) {
-    mprintf(0, "Illegal View Object Passed To AIFindHidePos\n");
+    LOG_ERROR << "Illegal View Object Passed To AIFindHidePos";
     *hide_room = hide_obj->roomnum;
     return hide_obj->pos;
   }
 
   if (time <= 0.0) {
-    mprintf(0, "AIFindHidePos: Illegal Time Passed bashing to 1sec\n");
+    LOG_ERROR << "AIFindHidePos: Illegal Time Passed bashing to 1sec";
     time = 1.0f;
   } else if (time > 15.0) {
-    mprintf(0, "AIFindHidePos: Illegal Time Passed bashing to 15sec\n");
+    LOG_ERROR << "AIFindHidePos: Illegal Time Passed bashing to 15sec";
     time = 15.0f;
   }
 
@@ -1716,7 +1716,7 @@ int osipf_AIGoalAddEnabler(int objhandle, int goal_index, int enabler_type, floa
   obj = ObjGet(objhandle);
 
   if (obj == NULL || obj->ai_info == NULL) {
-    mprintf(0, "Illegal object passed to AIGoalAddEnabler\n");
+    LOG_ERROR << "Illegal object passed to AIGoalAddEnabler";
     return -1;
   }
 
@@ -1733,7 +1733,7 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
 
   obj = ObjGet(objhandle);
   if (obj == NULL || obj->ai_info == NULL) {
-    mprintf(0, "Illegal object passed to AIGoalAdd\n");
+    LOG_ERROR << "Illegal object passed to AIGoalAdd";
     return -1;
   }
 
@@ -1896,7 +1896,7 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
   } break;
 
   default:
-    mprintf(0, "AIGoalAdd Error: Get chris - goal %d is not available of scripting\n", goal_type);
+    LOG_ERROR.printf("AIGoalAdd Error: Get chris - goal %d is not available of scripting", goal_type);
   }
 
   return -1;
@@ -1906,12 +1906,12 @@ void osipf_AIGoalClear(int objhandle, int goal_index) {
   object *obj = ObjGet(objhandle);
 
   if (obj == NULL) {
-    mprintf(0, "Invalid Object Passed To AIGoalClear\n");
+    LOG_ERROR << "Invalid Object Passed To AIGoalClear";
     return;
   }
 
   if (obj->control_type != CT_AI) {
-    mprintf(0, "AIGoalClear: Illegal Object CT Passed\n");
+    LOG_ERROR << "AIGoalClear: Illegal Object CT Passed";
     return;
   }
 
@@ -1927,7 +1927,7 @@ int osipf_AIFindObjOfType(int objhandle, int type, int id, bool f_ignore_init_ro
   object *f_obj;
 
   if (obj == NULL) {
-    mprintf(0, "Illegal Object Passed To AIFindObjOfType\n");
+    LOG_ERROR << "Illegal Object Passed To AIFindObjOfType";
     return OBJECT_HANDLE_NONE;
   }
 
@@ -1945,7 +1945,7 @@ int osipf_ObjMakeListOfType(int objhandle, int type, int id, bool f_ignore_init_
   int i;
 
   if (obj == NULL) {
-    mprintf(0, "Illegal Object Passed To Obj_MakeListOfType\n");
+    LOG_ERROR << "Illegal Object Passed To Obj_MakeListOfType";
     return OBJECT_HANDLE_NONE;
   }
 
@@ -2001,7 +2001,7 @@ int osipf_AIFindEnergyCenter(int objhandle) {
   object *obj = ObjGet(objhandle);
 
   if (obj == NULL) {
-    mprintf(0, "Illegal Object Passed To AIFindEnergyCenter\n");
+    LOG_ERROR << "Illegal Object Passed To AIFindEnergyCenter";
     return -1;
   }
 
@@ -2016,12 +2016,12 @@ float osipf_AIGetDistToObj(int objhandle, int otherobjhandle) {
   float dist;
 
   if (obj == NULL) {
-    mprintf(0, "Illegal Object Passed To AIGetDistToObj\n");
+    LOG_ERROR << "Illegal Object Passed To AIGetDistToObj";
     return 0;
   }
 
   if (fobj == NULL) {
-    mprintf(0, "Illegal Find Object Passed To AIGetDistToObj\n");
+    LOG_ERROR << "Illegal Find Object Passed To AIGetDistToObj";
     return 0;
   }
 
@@ -2034,12 +2034,12 @@ int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, uint8_t f_en
   object *obj = ObjGet(objhandle);
 
   if (obj == NULL) {
-    mprintf(0, "Illegal Object Passed To AISetGoalFlags\n");
+    LOG_ERROR << "Illegal Object Passed To AISetGoalFlags";
     return 0;
   }
 
   if (obj->control_type != CT_AI) {
-    mprintf(0, "Non-AI Object Passed To AISetGoalFlags\n");
+    LOG_ERROR << "Non-AI Object Passed To AISetGoalFlags";
     return 0;
   }
 
@@ -2059,12 +2059,12 @@ void osipf_AISetGoalCircleDist(int objhandle, int goal_handle, float dist) {
   object *obj = ObjGet(objhandle);
 
   if (obj == NULL) {
-    mprintf(0, "Illegal Object Passed To AISetGoalCircleDist\n");
+    LOG_ERROR << "Illegal Object Passed To AISetGoalCircleDist";
     return;
   }
 
   if (obj->control_type != CT_AI) {
-    mprintf(0, "Non-AI Object Passed To AISetGoalCircleDist\n");
+    LOG_ERROR << "Non-AI Object Passed To AISetGoalCircleDist";
     return;
   }
 
@@ -2079,7 +2079,7 @@ void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun
   object *obj = ObjGet(objhandle);
 
   if (obj == NULL) {
-    mprintf(0, "Illegal Object Passed To AIGetGunPosition\n");
+    LOG_ERROR << "Illegal Object Passed To AIGetGunPosition";
     *gun_pnt = Zero_vector;
     *gun_normal = Zero_vector;
     return;
@@ -2092,7 +2092,7 @@ void osipf_GetGroundPos(int objhandle, int ground_number, vector *ground_pnt, ve
   object *obj = ObjGet(objhandle);
 
   if (obj == NULL) {
-    mprintf(0, "Illegal Object Passed To Obj_GetGroundPos\n");
+    LOG_ERROR << "Illegal Object Passed To Obj_GetGroundPos";
     *ground_pnt = Zero_vector;
     *ground_normal = Zero_vector;
     return;
@@ -2402,7 +2402,7 @@ int osipf_RayCast(int objhandle, vector *p0, vector *p1, int start_roomnum, floa
   int *ilist = hack_ilist;
   object *obj = ObjGet(objhandle);
   if (!obj && objhandle != OBJECT_HANDLE_NONE) {
-    mprintf(0, "Invalid object passed to RayCast\n");
+    LOG_ERROR << "Invalid object passed to RayCast";
     return 0;
   }
 
@@ -2638,12 +2638,12 @@ void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *
   object *objp = ObjGet(obj_handle);
 
   if (!objp) {
-    mprintf(0, "Obj_WBValue: Illegal Object Passed\n");
+    LOG_ERROR << "Obj_WBValue: Illegal Object Passed";
     return;
   }
 
   if (objp->control_type != CT_AI && objp->type != OBJ_PLAYER && objp->type != OBJ_OBSERVER) {
-    mprintf(0, "Obj_WBValue: Illegal Object CT Passed\n");
+    LOG_ERROR << "Obj_WBValue: Illegal Object CT Passed";
     return;
   }
 
@@ -2794,7 +2794,7 @@ void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *
 //	value is 0 to clear, or 1 to set
 void osipf_MissionFlagSet(int flag, uint8_t value) {
   if (flag < 1 && flag > 32) {
-    mprintf(0, "Invalid flag passed to osipf_MissionFlagSet(%d)\n", flag);
+    LOG_ERROR.printf("Invalid flag passed to osipf_MissionFlagSet(%d)", flag);
     return;
   }
 
@@ -2813,7 +2813,7 @@ void osipf_MissionFlagSet(int flag, uint8_t value) {
 //	flag is what mission flag to get.  Returns 1 if set, 0 if not.
 int osipf_MissionFlagGet(int flag) {
   if (flag < 1 && flag > 32) {
-    mprintf(0, "Invalid flag passed to osipf_MissionFlagGet(%d)\n", flag);
+    LOG_ERROR.printf("Invalid flag passed to osipf_MissionFlagGet(%d)\n", flag);
     return 0;
   }
 
@@ -3696,7 +3696,7 @@ void osipf_PathValue(int path_id, int node_id, char op, int changes, void *ptr) 
   }
 
   if (path_id < 0 || path_id >= Num_game_paths) {
-    mprintf(0, "Invalid Path\n");
+    LOG_FATAL << "Invalid Path";
     Int3();
     return;
   }
@@ -3710,7 +3710,7 @@ void osipf_PathValue(int path_id, int node_id, char op, int changes, void *ptr) 
   if (op == VF_GET) {
     if (changes & PV_ALL) {
       if (node_id < 0 || node_id >= cpath->num_nodes) {
-        mprintf(0, "Invalid node on path\n");
+        LOG_FATAL << "Invalid node on path";
         Int3();
         return;
       }
@@ -3752,7 +3752,7 @@ void osipf_PathValue(int path_id, int node_id, char op, int changes, void *ptr) 
   } else if (op == VF_SET) {
     if (changes & PV_ALL) {
       if (node_id < 0 || node_id >= cpath->num_nodes) {
-        mprintf(0, "Invalid node on path\n");
+        LOG_FATAL << "Invalid node on path";
         Int3();
         return;
       }

@@ -19,6 +19,7 @@
 #include "pstypes.h"
 #include "pserror.h"
 #include "game.h"
+#include "log.h"
 #include "multi.h"
 #include "multisafe.h"
 #include "multi_server.h"
@@ -244,11 +245,11 @@ void MultiDoMSafeFunction(uint8_t *data) {
     mstruct->lifetime = MultiGetFloat(data, &count);
     mstruct->size = MultiGetFloat(data, &count);
     mstruct->speed = MultiGetFloat(data, &count);
-    mprintf(0, "Got a START SPEW.  Index=%d\n", mstruct->id);
+    LOG_DEBUG.printf("Got a START SPEW.  Index=%d", mstruct->id);
     break;
   case MSAFE_OBJECT_STOP_SPEW:
     mstruct->id = MultiGetUbyte(data, &count);
-    mprintf(0, "Got STOP SPEW. index=%d\n", mstruct->id);
+    LOG_DEBUG.printf("Got STOP SPEW. index=%d", mstruct->id);
     mstruct->id = Server_spew_list[mstruct->id];
     ASSERT(mstruct->id != 65535);
     break;
@@ -1086,7 +1087,7 @@ void MultiSendMSafeFunction(uint8_t type, msafe_struct *mstruct) {
     break;
 
   default:
-    mprintf(0, "Type %d is not handled in multisafe server...fix me!!\n", type);
+    LOG_FATAL.printf("Type %d is not handled in multisafe server...fix me!!", type);
     Int3(); // Illegal type passed to multisafe function
     break;
   }
@@ -1157,7 +1158,7 @@ void MultiSendMSafePowerup(msafe_struct *mstruct) {
 
   size_offset = START_DATA(MP_MSAFE_POWERUP, data, &count);
 
-  mprintf(0, "Sending powerup objnum of %d\n", mstruct->objhandle & HANDLE_OBJNUM_MASK);
+  LOG_DEBUG.printf("Sending powerup objnum of %d", mstruct->objhandle & HANDLE_OBJNUM_MASK);
   MultiAddUshort(mstruct->objhandle & HANDLE_OBJNUM_MASK, data, &count);
   MultiAddUshort(mstruct->ithandle & HANDLE_OBJNUM_MASK, data, &count);
 

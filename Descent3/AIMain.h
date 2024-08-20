@@ -161,10 +161,8 @@ extern int AI_RenderedList[MAX_OBJECTS];
 
 extern int AI_NumHostileAlert; // A rough number of alert/hostile robots
                                // that have seen the player recently
-#ifdef _DEBUG
 extern bool AI_debug_robot_do;
 extern int AI_debug_robot_index;
-#endif
 
 // Is my buddy in the level? (no if the handle is invalid)
 extern int Buddy_handle[MAX_PLAYERS];

@@ -16,12 +16,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdlib>
+
 #include "robotfire.h"
 #include "object.h"
 #include "objinfo.h"
 
 #include "config.h" // for game toggles.
-#include "objinfo.h"
+#include "log.h"
 #include "weapon.h"
 #include "ship.h"
 #include "game.h"
@@ -34,10 +36,8 @@
 #include "SmallViews.h"
 #include "physics.h"
 #include "AIMain.h"
-
-#include <stdlib.h>
-
 #include "psrand.h"
+
 // Fires a multiplayer and AI on/off weapon
 void FireOnOffWeapon(object *objp) {
   if (objp->type == OBJ_PLAYER) {
@@ -52,7 +52,7 @@ void FireOnOffWeapon(object *objp) {
   } else if (objp->ai_info) {
     char wb_index = objp->ai_info->last_special_wb_firing;
     if (wb_index > MAX_WBS_PER_OBJ) { // DAJ
-      mprintf(2, "FireOnOffWeapon wb_index %d > MAX_WBS_PER_OBJ\n", wb_index);
+      LOG_WARNING.printf("FireOnOffWeapon wb_index %d > MAX_WBS_PER_OBJ", wb_index);
       return;
     }
 

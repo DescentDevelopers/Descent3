@@ -1084,29 +1084,27 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
 #include <cmath>
+#include <cstdlib>
 
 #include "pserror.h"
 #include "player.h"
 #include "game.h"
 #include "hud.h"
-#include "gauges.h"
-#include "Mission.h"
 #include "vecmat.h"
 #include "fireball.h"
 #include "polymodel.h"
 #include "findintersection.h"
-#include "hud.h"
-#include "splinter.h"
 #include "physics.h"
 #include "viseffect.h"
 #include "damage.h"
+#include "log.h"
 #include "multi.h"
 #include "ship.h"
 #include "gameevent.h"
 #include "gameloop.h"
 #include "descent.h"
-#include "cockpit.h"
 #include "game2dll.h"
 #include "robotfire.h"
 #include "robot.h"
@@ -1120,9 +1118,6 @@
 #include "stringtable.h"
 #include "pilot.h"
 #include "vclip.h"
-#include <stdlib.h>
-#include "objinit.h"
-#include "difficulty.h"
 #include "ddio.h"
 #include "ObjScript.h"
 #include "gamecinematics.h"
@@ -1133,8 +1128,6 @@
 #include "osiris_dll.h"
 #include "gamesequence.h"
 #include "init.h"
-
-#include <algorithm>
 
 player Players[MAX_PLAYERS];
 int Player_num;
@@ -1238,7 +1231,7 @@ void FindPlayerStarts() {
       unique++;
     }
 
-  mprintf(0, "There are %d unique start positions in this level\n", unique);
+  LOG_DEBUG.printf("There are %d unique start positions in this level", unique);
 
   // Now create the extra players
   if (Game_mode & GM_MULTI) {
@@ -1307,7 +1300,7 @@ int PlayerGetRandomStartPosition(int slot) {
   if (Team_game) {
 
     int team = PlayerGetTeam(slot);
-    mprintf(0, "Picking team start position, team=%d.\n", team);
+    LOG_DEBUG.printf("Picking team start position, team=%d.", team);
     int num_avail = 0;
     int avail_array[MAX_PLAYERS];
 
@@ -1333,7 +1326,7 @@ int PlayerGetRandomStartPosition(int slot) {
   int num;
   int done = 0;
   int badcount = 0;
-  mprintf(0, "Picking non-team start position.\n");
+  LOG_DEBUG << "Picking non-team start position.";
   while (!done) {
     num = ps_rand() % (Highest_player_start + 1);
     if (Players[num].start_roomnum != -1) {
@@ -1355,7 +1348,7 @@ int PlayerGetRandomStartPosition(int slot) {
         badcount++;
         if (badcount >= 15) // give up after fifteen tries
         {
-          mprintf(0, "Stopping cuz I couldn't find a valid player position!\n");
+          LOG_WARNING << "Stopping cuz I couldn't find a valid player position!";
           done = 1;
         }
       } else
@@ -1363,7 +1356,7 @@ int PlayerGetRandomStartPosition(int slot) {
     }
   }
 
-  mprintf(0, "Picked index for start position %d\n", num);
+  LOG_DEBUG.printf("Picked index for start position %d", num);
 
   return num;
 }
@@ -2047,13 +2040,13 @@ static tDeathSeq Death[MAX_NET_PLAYERS];
 
 void debug_deathtype(int slot, int damage) {
   if (Death[slot].fate == DEATH_INSTANT)
-    mprintf(0, "INSTANT DEATH ");
+    LOG_DEBUG << "INSTANT DEATH ";
   else if (Death[slot].fate == DEATH_FALL)
-    mprintf(0, "FALLING DEATH ");
+    LOG_DEBUG << "FALLING DEATH ";
   else if (Death[slot].fate == DEATH_BREAKUP)
-    mprintf(0, "BREAKUP DEATH ");
+    LOG_DEBUG << "BREAKUP DEATH ";
   else
-    mprintf(0, "UNKNOWN DEATH ");
+    LOG_DEBUG << "UNKNOWN DEATH ";
 }
 
 float MoveDeathCam(int slot, vector *vec, float distance);
@@ -2137,7 +2130,7 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
   if (slot == Player_num) {
     objnum = ObjCreate(OBJ_CAMERA, 0, playerobj->roomnum, &playerobj->pos, &playerobj->orient);
     if (objnum == -1) {
-      mprintf(0, "Failed to create death cam.\n");
+      LOG_FATAL << "Failed to create death cam.";
       Int3();
     } else {
       Death[slot].camera = &Objects[objnum];
@@ -2185,7 +2178,6 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
     Death[slot].dying_model = GetPolymodelPointer(playerobj->rtype.pobj_info.model_num);
     playerobj->rtype.pobj_info.subobj_flags = 0xffffffff;
     //		playerobj->rtype.pobj_info.subobj_flags = ~(0xffffffff << (Death[slot].dying_model->n_models));
-    //		mprintf(0, "initflags=%08x\n", playerobj->rtype.pobj_info.subobj_flags);
   } else {
     // This ship has no dying model so dont break up
     if (Death[slot].fate == DEATH_BREAKUP)
@@ -2341,7 +2333,6 @@ void DoNewPlayerDeathFrame(int slot) {
 
       if (hit_data.hit_type[0] == HIT_WALL) {
         //	death camera's view is obstructed, move the death cam
-        //	mprintf(0, "Death cam view obstructed, changing view...\n");
         vm_MakeRandomVector(&directional);
         MoveDeathCam(slot, &directional, MEDIAN_DEATHCAM_DIST);
       }
@@ -2369,7 +2360,6 @@ void DoNewPlayerDeathFrame(int slot) {
           } else {
             PlayerShipBreakup(playerobj, 20.0f + (ps_rand() % 10));
             Death[slot].breakup_count++;
-            //	mprintf(0, "Breakup!\n");
           }
         }
       }
@@ -2412,7 +2402,6 @@ void DoNewPlayerDeathFrame(int slot) {
     }
   }
 
-  // mprintf(0,"Playerobj size=%f\n",playerobj->size);
 }
 
 #define TARGET_DEGREE (170 / 2)
@@ -2754,7 +2743,7 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
   objnum = ObjCreate(OBJ_DEBRIS, 0, parent->roomnum, &parent->pos, &parent->orient);
 
   if (objnum < 0 || objnum > Highest_object_index) {
-    mprintf(0, "WARNING: No object slots.  Dead GB not created!\n");
+    LOG_WARNING.printf("WARNING: No object slots. Dead GB not created!");
     return;
   }
 
@@ -2845,7 +2834,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
   int objnum = ObjCreate(type, id, parent->roomnum, &parent->pos, NULL, parent->handle);
 
   if (objnum < 0) {
-    mprintf(0, "Couldn't spew object!\n");
+    LOG_DEBUG.printf("Couldn't spew object!");
     return -1;
   }
 
@@ -3229,13 +3218,11 @@ void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
       VisEffects[visnum].lifeleft *= 2.0f;
       rand_vec = (-rand_vec) * (magnitude * 25.0f);
       phys_apply_force(obj, &rand_vec);
-      // mprintf(0, "Breakoff fireball size: %f, lifeleft: %f\n", Objects[objnum].size, Objects[objnum].lifeleft);
     }
   }
 
   //	mark subobject dead
   obj->rtype.pobj_info.subobj_flags &= (~(1 << subobjnum));
-  // mprintf(0, "%d:sobj=%08x\n", subobjnum, obj->rtype.pobj_info.subobj_flags);
 }
 
 //	Moves death camera a certain distance based off of direction from vec from
@@ -3544,7 +3531,7 @@ void PlayerSwitchToObserver(int slot, int observer_mode, int piggy_objnum) {
     SetObjectControlType(obj, CT_NONE);
     Players[slot].piggy_objnum = piggy_objnum;
     Players[slot].piggy_sig = Objects[piggy_objnum].handle & HANDLE_COUNT_MASK;
-    mprintf(0, "Object %d is observing object %d!\n", obj - Objects, piggy_objnum);
+    LOG_DEBUG.printf("Object %d is observing object %d!", obj - Objects, piggy_objnum);
   }
 }
 
@@ -3668,7 +3655,7 @@ bool PlayerResetShipPermissions(int pnum, bool set_default) {
 
   int perm;
 
-  mprintf(0, "Reseting ship permissions\n");
+  LOG_DEBUG << "Reseting ship permissions";
 
   if (set_default)
     perm = Default_ship_permission;
@@ -3759,7 +3746,7 @@ void DoEnergyToShields(int pnum) {
 // Sets the start position that the player will respawn at
 void PlayerAddWaypoint(int index) {
   ASSERT(Players[index].start_roomnum != -1); // Invalid start position specified
-  mprintf(0, "Current waypoint is now %d\n", index);
+  LOG_DEBUG.printf("Current waypoint is now %d", index);
   Current_waypoint = index;
 
   // A manual waypoint blows away all auto-waypoints
@@ -3828,7 +3815,7 @@ void SetAutoWaypoint(object *objp) {
   if (!OBJECT_OUTSIDE(objp)) {
     // delete the next two lines
     if (pp->current_auto_waypoint_room != objp->roomnum) {
-      mprintf(0, "Setting auto-waypoint in room %d\n", objp->roomnum);
+      LOG_DEBUG.printf("Setting auto-waypoint in room %d", objp->roomnum);
     }
     pp->current_auto_waypoint_room = objp->roomnum;
   }
@@ -3855,7 +3842,7 @@ void MovePlayerToWaypoint(object *objp) {
   } else {
     ASSERT(Current_waypoint != -1);
 
-    mprintf(0, "Resetting player ship to waypoint %d\n", Current_waypoint);
+    LOG_DEBUG.printf("Resetting player ship to waypoint %d", Current_waypoint);
     ObjSetPos(objp, &Players[Current_waypoint].start_pos, Players[Current_waypoint].start_roomnum,
               &Players[Current_waypoint].start_orient, false);
   }

@@ -16,9 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstring>
+
 #include "args.h"
-#include "mono.h"
-#include <string.h>
+#include "log.h"
 
 #if defined(_WIN32)
 #define strcasecmp stricmp
@@ -30,7 +31,7 @@ char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
 
 const char *GetArg(int index) {
   if (index >= TotalArgs || index == 0)
-    return NULL;
+    return nullptr;
   return GameArgs[index];
 }
 
@@ -71,19 +72,19 @@ void GatherArgs(const char *str) {
   TotalArgs = curarg;
 
   for (int q = 0; q < TotalArgs; q++)
-    mprintf(0, "GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]);
+    LOG_DEBUG.printf("GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]);
 }
 
 void GatherArgs(char **argv) {
   TotalArgs = 0;
 
-  for (int i = 0; ((i < MAX_ARGS) && (argv[i] != NULL)); i++) {
+  for (int i = 0; ((i < MAX_ARGS) && (argv[i] != nullptr)); i++) {
     TotalArgs++;
     strncpy(GameArgs[i], argv[i], MAX_CHARS_PER_ARG);
   } // for
 
   for (int q = 0; q < TotalArgs; q++)
-    mprintf(0, "GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]);
+    LOG_DEBUG.printf("GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]);
 } // GatherArgs
 
 // Strip '-', '--', and '+' flag prefix, so --foo, -foo, +foo => foo, but pass through - -- + ++
@@ -113,12 +114,12 @@ int FindArg(const char *which) {
 
   for (int i = 1; i <= TotalArgs; i++) {
     if (which_matches(GameArgs[i])) {
-      mprintf(0, "FindArg: Found [%s] at argument index (%d).", which, i);
+      LOG_INFO.printf("FindArg: Found [%s] at argument index (%d).", which, i);
       return i;
     }
   }
 
-  mprintf(0, "FindArg: Did not find [%s] on command line.", which);
+  LOG_VERBOSE.printf("FindArg: Did not find [%s] on command line.", which);
   return 0;
 }
 
@@ -127,7 +128,7 @@ int FindArgChar(const char *which, char singleCharArg) {
   for (int i = 1; i <= TotalArgs; i++) {
     char *str = GameArgs[i];
     if (str[0] == '-' && str[1] == singleCharArg && str[2] == '\0') {
-      mprintf(0, "FindArg: Found [-%c] at argument index (%d).", singleCharArg, i);
+      LOG_INFO.printf("FindArg: Found [-%c] at argument index (%d).", singleCharArg, i);
       return i;
     }
   }

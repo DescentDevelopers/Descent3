@@ -1507,7 +1507,8 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
+#include <cstdlib>
+
 #include "AIMain.h"
 #include "mono.h"
 #include "game.h"
@@ -1519,22 +1520,19 @@
 #include "hlsoundlib.h"
 #include "sounds.h"
 #include "aiterrain.h"
-#include "weapon.h"
 #include "objinfo.h"
 #include "polymodel.h"
 #include "robotfire.h"
 #include "BOA.h"
 #include "player.h"
-#include "memory.h"
 #include "gamepath.h"
 #include "soundload.h"
 #include "damage.h"
 #include "aipath.h"
-#include "robot.h"
+#include "log.h"
 #include "attach.h"
 #include "demofile.h"
 #include "matcen.h"
-#include "physics.h"
 #include "difficulty.h"
 #include "osiris_dll.h"
 #include "multi.h"
@@ -1542,7 +1540,6 @@
 #include "room.h"
 #include "psrand.h"
 #include "gametexture.h"
-#include "difficulty.h"
 
 // Define's
 #define MAX_SEE_TARGET_DIST 500.0f
@@ -1558,10 +1555,8 @@
 float AI_last_time_room_noise_alert_time[MAX_ROOMS + 8];
 int AI_unique_goal_id = 0;
 
-#ifdef _DEBUG
 bool AI_debug_robot_do = false;
 int AI_debug_robot_index = -2;
-#endif
 
 static bool compute_dodge_dir(vector *movement_dir, object *obj, object *dodge_obj);
 static float AIDetermineObjVisLevel(object *obj, object *target);
@@ -2066,11 +2061,8 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
 
           if (GameTextures[Terrain_tex_seg[tseg->texseg_index].tex_index].flags &
               (TF_VOLATILE | TF_FORCEFIELD | TF_LAVA)) {
-#ifdef _DEBUG
-            if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-              mprintf(0, "AI Note: Danger - NEAR FORCEFIELD, VOLATILE, OR LAVA\n");
-            }
-#endif
+            LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index))
+                << "AI Note: Danger - NEAR FORCEFIELD, VOLATILE, OR LAVA";
             f_danger = true;
           }
 
@@ -2103,11 +2095,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
       }
     }
 
-#ifdef _DEBUG
-    if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-      mprintf(0, "AI Note: Avoid wall %f\n", scale);
-    }
-#endif
+    LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)).printf("AI Note: Avoid wall %f", scale);
 
     return true;
   }
@@ -2519,7 +2507,7 @@ void AIUpdateAnim(object *obj) {
     p_info->anim_flags &= ~AIAF_NOTIFY;
 
     if (!(p_info->multi_anim_info.flags & FMA_VALID)) {
-      mprintf(0, "Update Anim: Earily bail\n");
+      LOG_DEBUG << "Update Anim: Early bail";
       return;
     }
 
@@ -3264,7 +3252,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
     ei.extra_info = info;
     break;
   default:
-    mprintf(0, "Warning, %d has been notified with an unhandled notification %d\n", OBJNUM(obj), notify_type);
+    LOG_WARNING.printf("%d has been notified with an unhandled notification %d", OBJNUM(obj), notify_type);
     return true;
   }
 
@@ -3440,7 +3428,7 @@ start_loop:
   ASSERT(from <= to);
 
   if (*anim_frame < from || *anim_frame > to) {
-    mprintf(0, "AI/Animation: Correcting for an incorrect frame number\n");
+    LOG_DEBUG << "AI/Animation: Correcting for an incorrect frame number";
     *anim_frame = from;
   }
 
@@ -3475,7 +3463,7 @@ start_loop:
   }
 
   if (obj->rtype.pobj_info.anim_frame + 0.001 < from || obj->rtype.pobj_info.anim_frame > to) {
-    mprintf(2, "AI ANIM from %0.6f (%0.6f) to %0.6f\n", from, obj->rtype.pobj_info.anim_frame, to);
+    LOG_DEBUG.printf("AI ANIM from %0.6f (%0.6f) to %0.6f", from, obj->rtype.pobj_info.anim_frame, to);
   }
   if (obj->rtype.pobj_info.anim_frame < from) {
     obj->rtype.pobj_info.anim_frame = from;
@@ -3571,7 +3559,7 @@ int AIFindRandomRoom(object *obj, ai_frame *ai_info, goal *goal_ptr, int avoid_r
     }
 
     if (!valid) {
-      mprintf(0, "AI:  Wander is generating the same room  :(\n");
+      LOG_DEBUG << "AI:  Wander is generating the same room :(";
       random_room = obj->roomnum;
     }
   }
@@ -3592,11 +3580,7 @@ int AIFindRandomRoom(object *obj, ai_frame *ai_info, goal *goal_ptr, int avoid_r
 void AIDestroyObj(object *obj) {
   ai_frame *ai_info = obj->ai_info;
 
-#ifdef _DEBUG
-  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf(0, "AI Note: In free path\n");
-  }
-#endif
+  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: In free path";
   AIPathFreePath(&ai_info->path);
 }
 
@@ -3825,22 +3809,20 @@ bool AIInit(object *obj, uint8_t ai_class, uint8_t ai_type, uint8_t ai_movement)
 void AISetDefault(t_ai_info *ai_info_ptr) {}
 
 void AIInitAll() {
-  int i;
-
-  mprintf(0, "Initializing AI systems\n");
+  LOG_DEBUG << "Initializing AI systems";
 
   // Initialize the terrain AI system
   ait_Init();
 
   // Make sure that the buddies are located
-  for (i = 0; i < MAX_PLAYERS; i++) {
-    Buddy_handle[i] = OBJECT_HANDLE_NONE;
+  for (int &i : Buddy_handle) {
+    i = OBJECT_HANDLE_NONE;
   }
 
   // Initialize the room AI system
 
   // Now, initialize each AI object
-  for (i = 0; i <= Highest_object_index; i++)
+  for (int i = 0; i <= Highest_object_index; i++)
     if (Objects[i].type != OBJ_NONE && Objects[i].control_type == CT_AI) {
       ASSERT(Objects[i].ai_info);
       AIInit(&Objects[i], Objects[i].ai_info->ai_class, Objects[i].ai_info->ai_type, Objects[i].ai_info->movement_type);
@@ -3857,9 +3839,7 @@ void AIInitAll() {
       ObjGhostObject(objnum);
     }
   } else if (Netgame.flags & NF_ALLOWGUIDEBOT) {
-    int i;
-
-    for (i = 0; i < MAX_PLAYERS; i++) {
+    for (int i = 0; i < MAX_PLAYERS; i++) {
       if (Netgame.local_role == LR_CLIENT) {
         Buddy_handle[i] = OBJECT_HANDLE_NONE;
       } else {
@@ -3883,18 +3863,14 @@ void AIInitAll() {
     }
   }
 
-  mprintf(0, "Done Initializing AI systems\n");
+  LOG_DEBUG << "Done Initializing AI systems";
 }
 
 void AICheckTargetVis(object *obj) {
   ai_frame *ai_info = obj->ai_info;
   object *target = ObjGet(ai_info->target_handle);
 
-#ifdef _DEBUG
-  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf(0, "AI Note: Vis 1\n");
-  }
-#endif
+  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 1";
 
 #ifdef _DEBUG
   if (!Game_do_ai_vis) {
@@ -3910,22 +3886,14 @@ void AICheckTargetVis(object *obj) {
     return;
   }
 
-#ifdef _DEBUG
-  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf(0, "AI Note: Vis 2\n");
-  }
-#endif
+  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 2";
 
   if (!BOA_IsVisible(obj->roomnum, target->roomnum)) {
     ai_info->status_reg &= ~AISR_SEES_GOAL;
     return;
   }
 
-#ifdef _DEBUG
-  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf(0, "AI Note: Vis 3\n");
-  }
-#endif
+  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 3";
 
   vector pos;
   AIDetermineAimPoint(obj, target, &pos);
@@ -3943,11 +3911,7 @@ void AICheckTargetVis(object *obj) {
     return;
   }
 
-#ifdef _DEBUG
-  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf(0, "AI Note: Vis 4\n");
-  }
-#endif
+  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 4";
 
   if (ai_info->dist_to_target_actual > MAX_TRACK_TARGET_DIST * Diff_ai_vis_dist[DIFF_LEVEL] &&
       (!ObjGet(ai_info->target_handle) || (obj->roomnum != ObjGet(ai_info->target_handle)->roomnum))) {
@@ -3955,11 +3919,7 @@ void AICheckTargetVis(object *obj) {
     return;
   }
 
-#ifdef _DEBUG
-  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf(0, "AI Note: Vis 5\n");
-  }
-#endif
+  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 5";
 
   if (ai_info->awareness == AWARE_NONE && (target->roomnum != obj->roomnum) &&
       ai_info->dist_to_target_actual > MAX_SEE_TARGET_DIST * Diff_ai_vis_dist[DIFF_LEVEL]) {
@@ -3967,11 +3927,7 @@ void AICheckTargetVis(object *obj) {
     return;
   }
 
-#ifdef _DEBUG
-  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf(0, "AI Note: Vis 6\n");
-  }
-#endif
+  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 6";
 
   if ((ai_info->dist_to_target_actual > MAX_SEE_TARGET_DIST * Diff_ai_vis_dist[DIFF_LEVEL] &&
        ai_info->awareness <= AWARE_BARELY && (target->roomnum != obj->roomnum)) ||
@@ -3982,11 +3938,7 @@ void AICheckTargetVis(object *obj) {
     return;
   }
 
-#ifdef _DEBUG
-  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf(0, "AI Note: Vis 7\n");
-  }
-#endif
+  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 7";
 
   // Can I see the target?
   if (Gametime - ai_info->last_see_target_time > MIN_VIS_RECENT_CHECK_INTERVAL) {
@@ -4033,11 +3985,7 @@ void AICheckTargetVis(object *obj) {
 
       fate = fvi_FindIntersection(&fq, &hit_info);
 
-#ifdef _DEBUG
-      if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-        mprintf(0, "AI Note: Vis 8\n");
-      }
-#endif
+      LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 8";
 
       if (((fate == HIT_OBJECT || fate == HIT_SPHERE_2_POLY_OBJECT) && hit_info.hit_object[0] == OBJNUM(target)) ||
           (fate == HIT_NONE)) {
@@ -4046,11 +3994,7 @@ void AICheckTargetVis(object *obj) {
 
         AINotify(obj, AIN_SEE_TARGET, target);
 
-#ifdef _DEBUG
-        if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-          mprintf(0, "AI Note: Vis SEE TARGET\n");
-        }
-#endif
+        LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis SEE TARGET";
       }
 
       if ((ai_info->status_reg & AISR_SEES_GOAL) ||
@@ -4676,22 +4620,14 @@ void ai_move(object *obj) {
                   f_dodge = true;
                   AIDetermineSpeed(obj, ai_info->goals[i].flags, &highest_speed);
 
-#ifdef _DEBUG
-                  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-                    mprintf(0, "AI Note: Dodging\n");
-                  }
-#endif
+                  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Dodging";
                 }
               } else if (ai_info->goals[i].type == AIG_MELEE_TARGET) {
                 f_goal_found = true;
                 AiMelee(obj);
                 AIDetermineSpeed(obj, ai_info->goals[i].flags, &highest_speed);
 
-#ifdef _DEBUG
-                if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-                  mprintf(0, "AI Note: Melee\n");
-                }
-#endif
+                LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Melee";
               } else if (ai_info->goals[i].type == AIG_GET_AROUND_OBJ) {
                 f_goal_found = true;
 
@@ -4716,11 +4652,7 @@ void ai_move(object *obj) {
                 float scale = cur_goal->influence * ((dist - cur_dist) / dist);
 
                 if (AiGoalAvoid(&adir, obj, g_obj, dist)) {
-#ifdef _DEBUG
-                  if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-                    mprintf(0, "AI Note: Avoiding object\n");
-                  }
-#endif
+                  LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Avoiding object";
 
                   ai_info->movement_dir += (adir * scale);
                   f_avoid = true;
@@ -4775,11 +4707,7 @@ void ai_move(object *obj) {
               f_avoid = true;
               AIDetermineSpeed(obj, GF_SPEED_NORMAL, &highest_speed);
 
-#ifdef _DEBUG
-              if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-                mprintf(0, "AI Note: Auto avoid friends.\n");
-              }
-#endif
+              LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Auto avoid friends";
             }
           }
         }
@@ -4789,11 +4717,7 @@ void ai_move(object *obj) {
             f_avoid = true;
             AIDetermineSpeed(obj, GF_SPEED_NORMAL, &highest_speed);
 
-#ifdef _DEBUG
-            if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-              mprintf(0, "AI Note: Avoiding walls\n");
-            }
-#endif
+            LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Avoiding walls";
           }
         }
 
@@ -4968,10 +4892,10 @@ void ai_move(object *obj) {
                 AIMoveTowardsPosition(obj, &g_obj->pos, 1.0f, false, &goal_mdir, &goal_f_moved);
                 goal_mset = true;
               } else {
-                mprintf(0, "AIG Warning: No obj for GetToObj.\n");
+                LOG_DEBUG << "AIG Warning: No obj for GetToObj.";
               }
             } else if (cur_goal->type == AIG_FOLLOW_PATH) {
-              mprintf(0, "AIG Warning: Follow path has no path\n");
+              LOG_DEBUG << "AIG Warning: Follow path has no path";
             }
           } break;
 
@@ -4998,7 +4922,7 @@ void ai_move(object *obj) {
                 vec = &goal_obj->orient.uvec;
                 break;
               default:
-                mprintf(0, "Invalid vec in AIG_MOVE_RELATIVE_OBJ_VEC bashing to fvec\n");
+                LOG_DEBUG << "Invalid vec in AIG_MOVE_RELATIVE_OBJ_VEC bashing to fvec";
                 cur_goal->subtype = GST_FVEC | (int)f_toward;
                 vec_id = GST_FVEC;
               }
@@ -5141,7 +5065,7 @@ void ai_move(object *obj) {
           } break;
 
           default: {
-            mprintf(0, "AI ERROR: Object %d trying a non-implemented goal\n", OBJNUM(obj));
+            LOG_WARNING.printf("AI ERROR: Object %d trying a non-implemented goal", OBJNUM(obj));
             AIMoveTowardsPosition(obj, &ai_info->last_see_target_pos, 1.0f, true, &goal_mdir, &goal_f_moved);
             goal_mset = true;
           }
@@ -5587,11 +5511,7 @@ static inline void ai_decrease_awareness(object *obj) {
   ai_frame *ai_info = obj->ai_info;
 
   if (ai_info->awareness == AWARE_NONE && !(ai_info->flags & AIF_PERSISTANT)) {
-#ifdef _DEBUG
-    if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-      mprintf(0, "AI Note: In free path\n");
-    }
-#endif
+    LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: In free path";
     AIPathFreePath(&ai_info->path);
   }
 
@@ -6014,7 +5934,7 @@ void AIDoFreud(object *obj) {
       GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
-      mprintf(0, "Fear!!!!\n");
+      LOG_DEBUG << "Fear!!!!";
       return;
     }
 
@@ -6028,7 +5948,7 @@ void AIDoFreud(object *obj) {
       GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
-      mprintf(0, "Fear!!!!\n");
+      LOG_DEBUG << "Fear!!!!";
       return;
     }
 
@@ -6040,7 +5960,7 @@ void AIDoFreud(object *obj) {
       GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
-      mprintf(0, "Fear!!!!\n");
+      LOG_DEBUG << "Fear!!!!";
       return;
     }
   }

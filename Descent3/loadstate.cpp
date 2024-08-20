@@ -179,14 +179,17 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <cstring>
+
 #include "gamesave.h"
-#include "descent.h"
 #include "cfile.h"
 #include "Mission.h"
 #include "gamesequence.h"
 #include "gameevent.h"
 #include "gameloop.h"
 #include "game.h"
+#include "log.h"
 #include "object.h"
 #include "objinfo.h"
 #include "gametexture.h"
@@ -194,7 +197,6 @@
 #include "ship.h"
 #include "door.h"
 #include "stringtable.h"
-#include "soar.h"
 #include "weapon.h"
 #include "vclip.h"
 #include "viseffect.h"
@@ -206,7 +208,6 @@
 #include "mem.h"
 #include "osiris_dll.h"
 #include "terrain.h"
-#include <string.h>
 #include "levelgoal.h"
 #include "aistruct.h"
 #include "matcen.h"
@@ -216,8 +217,6 @@
 #include "weather.h"
 #include "cockpit.h"
 #include "hud.h"
-
-#include <algorithm>
 
 extern void PageInAllData();
 
@@ -1294,7 +1293,7 @@ int LGSObjects(CFILE *fp, int version) {
       poly_model *pm = &Poly_models[op->rtype.pobj_info.model_num];
 
       if (pm->n_attach) {
-        mprintf(0, "*Object %d has %d attach points.\n", i, pm->n_attach);
+        LOG_DEBUG.printf("*Object %d has %d attach points.", i, pm->n_attach);
       }
 
       polyobj_info *p_info = &op->rtype.pobj_info;
@@ -1399,7 +1398,8 @@ int LGSObjects(CFILE *fp, int version) {
       ObjLink(OBJNUM(op), newroom);
       ObjSetOrient(op, &objmat[i]);
       if (op->type == OBJ_ROOM) {
-        mprintf(0, "Object %d is a room and Is%s a big object. Size=%f\n", i, (op->flags & OF_BIG_OBJECT) ? "" : "n't", op->size);
+        LOG_DEBUG.printf("Object %d is a room and Is%s a big object. Size=%f",
+                         i, (op->flags & OF_BIG_OBJECT) ? "" : "n't", op->size);
         if ((op->size >= ((TERRAIN_SIZE * (float)1))) && !(op->flags & OF_BIG_OBJECT)) {
           BigObjAdd(i);
         }
@@ -1424,9 +1424,9 @@ int LGSObjects(CFILE *fp, int version) {
     }
     */
   }
-  mprintf(0, "Objects[121].prev=%d\n", Objects[121].prev);
+  LOG_DEBUG.printf("Objects[121].prev=%d", Objects[121].prev);
   ResetFreeObjects();
-  mprintf(0, "highest obj index = %d, ", Highest_object_index);
+  LOG_DEBUG.printf("highest obj index = %d, ", Highest_object_index);
   ObjReInitPositionHistory();
 
   END_VERIFY_SAVEFILE(fp, "Objects load");

@@ -16,17 +16,16 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <string.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
 
-#include "mono.h"
 #include "debug.h"
 #include "pserror.h"
-#include "pstypes.h"
 #include "audiotaunts.h"
 #include "cfile.h"
 #include "audio_encode.h"
 #include "byteswap.h"
+#include "log.h"
 #include "mem.h"
 #include "ddio.h"
 #include "manage.h"
@@ -109,7 +108,7 @@ bool taunt_PlayPlayerTaunt(int pnum, int index) {
     return false;
 
   if (index < 0 || index > 3) {
-    mprintf(0, "TAUNT: invalid index %d\n", index);
+    LOG_WARNING.printf("TAUNT: invalid index %d", index);
     return false;
   }
 
@@ -134,7 +133,7 @@ bool taunt_PlayPlayerTaunt(int pnum, int index) {
     ddio_MakePath(fullpath, LocalCustomSoundsDir, file, NULL);
 
     if (!cfexist(fullpath)) {
-      mprintf(0, "TAUNT: file %s doesn't exist (pnum=%d)\n", fullpath, pnum);
+      LOG_WARNING.printf("TAUNT: file %s doesn't exist (pnum=%d)", fullpath, pnum);
       return false;
     }
 
@@ -238,14 +237,14 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   // first make sure the wave file exists
   if (!cfexist(wave_filename)) {
-    mprintf(0, "AudioTaunt: Can't Import wav, missing %s\n", wave_filename);
+    LOG_WARNING.printf("AudioTaunt: Can't Import wav, missing %s", wave_filename);
     TauntLastError = TAUNTIMPERR_NOTFOUND;
     return false;
   }
 
   // make sure the output file doesn't exist so we don't overwrite
   if (cfexist(outputfilename)) {
-    mprintf(0, "AudioTaunt: Can't Import wav, %s already exists\n", outputfilename);
+    LOG_WARNING.printf("AudioTaunt: Can't Import wav, %s already exists", outputfilename);
     TauntLastError = TAUNTIMPERR_OSFEXISTS;
     return false;
   }
@@ -253,7 +252,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   // Open the file and import
   char wave_ret = taunt_LoadWaveFile(wave_filename, &wavdata);
   if (wave_ret != 0) {
-    mprintf(0, "TAUNT: Unable to load wave\n");
+    LOG_WARNING << "TAUNT: Unable to load wave";
     switch (wave_ret) {
     case 1:
       TauntLastError = TAUNTIMPERR_NOTFOUND;
@@ -293,7 +292,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   // file.
 
   if (!ddio_GetTempFileName(Descent3_temp_directory, "d3o", temp_filename)) {
-    mprintf(0, "TAUNT: Unable to create temp filename\n");
+    LOG_WARNING << "TAUNT: Unable to create temp filename";
     ret = false;
     TauntLastError = TAUNTIMPERR_INTERNALERR;
     goto error;
@@ -301,7 +300,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   file = cfopen(temp_filename, "wb");
   if (!file) {
-    mprintf(0, "TAUNT: Unable to open temp filename\n");
+    LOG_WARNING << "TAUNT: Unable to open temp filename";
     ret = false;
     TauntLastError = TAUNTIMPERR_INTERNALERR;
     goto error;
@@ -348,7 +347,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   chan = wavdata.number_channels;
 
   if (!ddio_GetTempFileName(Descent3_temp_directory, "d3o", osftemp_filename)) {
-    mprintf(0, "TAUNT: Unable to create osftemp filename\n");
+    LOG_WARNING << "TAUNT: Unable to create osftemp filename";
     TauntLastError = TAUNTIMPERR_INTERNALERR;
     ret = false;
     goto error;
@@ -356,7 +355,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   if (!aenc_Compress(temp_filename, osftemp_filename, NULL, &samples, &rate, &chan, NULL, NULL)) {
     // unable to compress
-    mprintf(0, "Unable to compress\n");
+    LOG_WARNING << "Unable to compress";
     ret = false;
     TauntLastError = TAUNTIMPERR_COMPRESSIONFAILURE;
     goto error;
@@ -372,14 +371,14 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   StaticFileBuffer = (uint8_t *)mem_malloc(FILEBUFFER_LENGTH);
   if (!StaticFileBuffer) {
     ret = false;
-    mprintf(0, "Out of memory\n");
+    LOG_ERROR << "Out of memory";
     TauntLastError = TAUNTIMPERR_OUTOFMEM;
     goto error;
   }
 
   fpin = cfopen(osftemp_filename, "rb");
   if (!fpin) {
-    mprintf(0, "Unable to open temp file to make osf\n");
+    LOG_WARNING << "Unable to open temp file to make osf";
     ret = false;
     TauntLastError = TAUNTIMPERR_INTERNALERR;
     goto error;
@@ -390,7 +389,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   if (!osf.Open(outputfilename, true)) {
     ret = false;
-    mprintf(0, "Unable to open osf to write\n");
+    LOG_WARNING << "Unable to open osf to write";
     TauntLastError = TAUNTIMPERR_NOOPENOSF;
     goto error;
   }
@@ -399,13 +398,13 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   //	write out data.
   for (i = 0; i < nblocks; i++) {
     if (!cf_ReadBytes(StaticFileBuffer, FILEBUFFER_LENGTH, fpin)) {
-      mprintf(0, "Error reading from osf temp\n");
+      LOG_WARNING << "Error reading from osf temp";
       ret = false;
       TauntLastError = TAUNTIMPERR_INTERNALERR;
       goto error;
     }
     if (!osf.WriteBlock(StaticFileBuffer, FILEBUFFER_LENGTH)) {
-      mprintf(0, "Error writing to osf\n");
+      LOG_WARNING << "Error writing to osf";
       TauntLastError = TAUNTIMPERR_INTERNALERR;
       ret = false;
       goto error;
@@ -414,13 +413,13 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   if (filelen % FILEBUFFER_LENGTH) {
     if (!cf_ReadBytes(StaticFileBuffer, filelen % FILEBUFFER_LENGTH, fpin)) {
-      mprintf(0, "Error reading from osf temp\n");
+      LOG_WARNING << "Error reading from osf temp";
       TauntLastError = TAUNTIMPERR_INTERNALERR;
       ret = false;
       goto error;
     }
     if (!osf.WriteBlock(StaticFileBuffer, filelen % FILEBUFFER_LENGTH)) {
-      mprintf(0, "Error writing to osf\n");
+      LOG_WARNING << "Error writing to osf";
       TauntLastError = TAUNTIMPERR_INTERNALERR;
       ret = false;
       goto error;
@@ -447,7 +446,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   ddio_SplitPath(outputfilename, NULL, osftitle, NULL);
 
   if (!osf.SaveHeader(OSF_DIGITAL_STRM, OSF_DIGIACM_STRM, format, samples, filelen, &digihdr, osftitle)) {
-    mprintf(0, "Failed to write out OSF header info.");
+    LOG_WARNING << "Failed to write out OSF header info.";
     TauntLastError = TAUNTIMPERR_INTERNALERR;
     ret = false;
     goto error;
@@ -525,7 +524,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   // Open the wave file
   if ((cfptr = cfopen(filename, "rb")) == NULL) {
     error_code = 1;
-    mprintf(0, "TAUNT: Wav %s not found\n", filename);
+    LOG_WARNING.printf("TAUNT: Wav %s not found", filename);
     goto error_state;
   }
 
@@ -533,7 +532,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   temp_long = (uint32_t)cf_ReadInt(cfptr);
   if (temp_long != 0x46464952) {
     error_code = 2;
-    mprintf(0, "TAUNT: Wav Load: %s is not a RIFF format file\n", filename);
+    LOG_WARNING.printf("TAUNT: Wav Load: %s is not a RIFF format file", filename);
     goto error_state;
   }
 
@@ -545,7 +544,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   temp_long = (uint32_t)cf_ReadInt(cfptr);
   if (temp_long != 0x45564157) {
     error_code = 3;
-    mprintf(0, "TAUNT: Wav Load:  %s is not a WAVE file\n", filename);
+    LOG_WARNING.printf("TAUNT: Wav Load:  %s is not a WAVE file", filename);
     goto error_state;
   }
   nextseek = cftell(cfptr);
@@ -561,7 +560,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
     cksize = cf_ReadInt(cfptr);
     if (cksize <= 0) {
       error_code = 4;
-      mprintf(0, "TAUNT: Wav Load: %s has an invalid block length\n", filename);
+      LOG_WARNING.printf("TAUNT: Wav Load: %s has an invalid block length", filename);
       goto error_state;
     }
 
@@ -574,7 +573,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
       // Make sure that this format was not preceeded by another format without data inbetween them.
       if (f_fmt) {
         error_code = 5;
-        mprintf(0, "TAUNT: Wav Load: Found 2 formats in a row in file %s\n", filename);
+        LOG_WARNING.printf("TAUNT: Wav Load: Found 2 formats in a row in file %s", filename);
         goto error_state;
       }
 
@@ -646,8 +645,8 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
       // Currently, we only support PCM wave files
       if (fmttag != 0x0001) {
         error_code = 6;
-        mprintf(0, "TAUNT Wav Load: %s is a type %s wavefile, we only support WAVE_FORMAT_PCM waves.\n",
-                filename,format_type);
+        LOG_WARNING.printf("TAUNT Wav Load: %s is a type %s wavefile, we only support WAVE_FORMAT_PCM waves.",
+                           filename,format_type);
         goto error_state;
       }
 
@@ -655,8 +654,8 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
       number_channels = cf_ReadShort(cfptr);
       if (number_channels != 1) {
         error_code = 7;
-        mprintf(0, "TAUNT Wav Load: Invalid number of channels(%d)in %s, we want mono samples only.\n",
-                number_channels, filename);
+        LOG_WARNING.printf("TAUNT Wav Load: Invalid number of channels(%d)in %s, we want mono samples only.",
+                           number_channels, filename);
         goto error_state;
       }
 
@@ -664,8 +663,8 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
       samples_per_second = cf_ReadInt(cfptr);
       if (samples_per_second != 22050) {
         error_code = 8;
-        mprintf(0, "TAUNT Wav Load: Invalid sample per second(%d)in %s, we want 22k samples only.\n",
-                samples_per_second, filename);
+        LOG_WARNING.printf("TAUNT Wav Load: Invalid sample per second(%d)in %s, we want 22k samples only.",
+                           samples_per_second, filename);
         goto error_state;
       }
 
@@ -679,8 +678,8 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
       bits_per_sample = cf_ReadShort(cfptr);
       if (bits_per_sample != 8 && bits_per_sample != 16) {
         error_code = 9;
-        mprintf(0, "TAUNT Wav Load: Invalid bits per sample(%d)in %s, we want 8 or 16 bit samples only.\n",
-                bits_per_sample, filename);
+        LOG_WARNING.printf("TAUNT Wav Load: Invalid bits per sample(%d)in %s, we want 8 or 16 bit samples only.",
+                           bits_per_sample, filename);
         goto error_state;
       }
 
@@ -693,7 +692,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
     case 0x61746164:
       if (!f_fmt) {
         error_code = 5;
-        mprintf(0, "TAUNT Wav Load: Format Chunk not defined before Data Chunk\n");
+        LOG_WARNING << "TAUNT Wav Load: Format Chunk not defined before Data Chunk";
         goto error_state;
       }
 

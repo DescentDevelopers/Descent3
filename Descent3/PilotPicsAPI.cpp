@@ -58,19 +58,19 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <algorithm>
+#include <cstdlib>
+#include <cstdio>
+
 #include "bitmap.h"
 #include "player.h"
 #include "pilot.h"
 #include "cfile.h"
-#include "mono.h"
+#include "log.h"
 #include "ddio.h"
 #include "manage.h"
 #include "PilotPicsAPI.h"
 #include "mem.h"
-
-#include <algorithm>
 
 #define PILOTPIC_DATABASE_HOG "PPics.Hog"
 #define PILOTPIC_DATABASE_INDEX "PPics.idx"
@@ -126,7 +126,7 @@ static int PPic_GetOffsetByID(uint16_t pilot_id);
 // ---------------------------------------------------------
 bool PPic_InitDatabase(void) {
   if (PilotPic_init) {
-    mprintf(0, "PPIC: InitDatabase already called\n");
+    LOG_DEBUG << "PPIC: InitDatabase already called";
     return true;
   }
 
@@ -139,7 +139,7 @@ bool PPic_InitDatabase(void) {
   if (PilotPic_database_hog_handle == 0) {
     // there was an error opening the hog database
     // -----------------------------------------
-    mprintf(0, "PPIC: Error opening %s database\n", PILOTPIC_DATABASE_HOG);
+    LOG_WARNING.printf("PPIC: Error opening %s database", PILOTPIC_DATABASE_HOG);
     PilotPic_database_index_handle = NULL;
     return false;
   }
@@ -151,7 +151,7 @@ bool PPic_InitDatabase(void) {
   if (PilotPic_database_index_handle == NULL) {
     // there was an error opening the database index
     // ---------------------------------------------
-    mprintf(0, "PPIC: Error opening database index '%s'\n", PILOTPIC_DATABASE_INDEX);
+    LOG_WARNING.printf("PPIC: Error opening database index '%s'", PILOTPIC_DATABASE_INDEX);
     cf_CloseLibrary(PilotPic_database_hog_handle);
     PilotPic_database_hog_handle = 0;
     return false;
@@ -163,7 +163,7 @@ bool PPic_InitDatabase(void) {
   if (!PPic_BuildDatabases()) {
     // there was an error building the databases
     // -----------------------------------------
-    mprintf(0, "PPIC: Error building databases\n");
+    LOG_WARNING << "PPIC: Error building databases";
     cfclose(PilotPic_database_index_handle);
     PilotPic_database_index_handle = NULL;
     cf_CloseLibrary(PilotPic_database_hog_handle);
@@ -499,7 +499,7 @@ bool PPic_BuildDatabases(void) {
   PilotPic_count = cf_ReadInt(file);
   if (PilotPic_count < 0) {
     // hmm a negative!
-    mprintf(0, "PPIC: Invalid number of pilot pictures (%d)\n", PilotPic_count);
+    LOG_FATAL.printf("PPIC: Invalid number of pilot pictures (%d)", PilotPic_count);
     Int3();
     PilotPic_count = 0;
     cf_Rewind(file);
@@ -507,7 +507,7 @@ bool PPic_BuildDatabases(void) {
   }
   if (PilotPic_count > 65535) {
     // too many!!!!
-    mprintf(0, "PPIC: Invalid number of pilot pictures (%d)\n", PilotPic_count);
+    LOG_FATAL.printf("PPIC: Invalid number of pilot pictures (%d)", PilotPic_count);
     Int3();
     PilotPic_count = 0;
     cf_Rewind(file);
@@ -520,7 +520,7 @@ bool PPic_BuildDatabases(void) {
   Sorted_Pilot_id_to_offset = (uint16_t *)mem_malloc(sizeof(uint16_t) * PilotPic_count);
   if (!Pilot_id_to_offset) {
     // out of memory!!!
-    mprintf(0, "PPIC: Out of memory allocating index database\n");
+    LOG_FATAL << "PPIC: Out of memory allocating index database";
     Int3();
     PilotPic_count = 0;
     cf_Rewind(file);
@@ -547,7 +547,7 @@ bool PPic_BuildDatabases(void) {
     cf_ReadBytes((uint8_t *)name_buffer, name_size, file);
     name_buffer[name_size] = '\0';
     if (name_size >= PILOT_STRING_SIZE) {
-      mprintf(0, "PPIC: Too big: (%s)%d %d", name_buffer, count, name_size);
+      LOG_DEBUG.printf("PPIC: Too big: (%s)%d %d", name_buffer, count, name_size);
     }
 
     // next read in pilot_id

@@ -103,7 +103,7 @@
 
 #include "crossplat.h"
 #include "module.h"
-#include "pserror.h"
+#include "mono.h"
 
 /**
  * Returns fixed case file name to actual case on disk for case-sensitive filesystems (Linux).

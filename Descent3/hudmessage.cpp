@@ -324,22 +324,22 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
 
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 #include "grdefs.h"
 #include "hud.h"
 #include "game.h"
 #include "ddio.h"
 #include "gamefont.h"
 #include "newui.h"
+#include "log.h"
 #include "multi.h"
 #include "player.h"
 #include "game2dll.h"
 #include "stringtable.h"
 #include "dedicated_server.h"
-#include "AppConsole.h"
 #include "demofile.h"
 #include "mem.h"
 #include "textaux.h"
@@ -689,7 +689,7 @@ void CorrectHudMessage(char *str) {
   if (grtext_GetTextLineWidth(str) <= Game_window_w)
     return;
 
-  mprintf(0, "Message '%s' is too long!\n", str);
+  LOG_WARNING.printf("Message '%s' is too long!", str);
   // the line is too long, we need to shorten it, but when we do, we need to make sure that it isn't in the middle
   // of a color (0x01 0xFF 0xFF 0xFF)
   str[HUD_MESSAGE_LENGTH - 1] = '\0';
@@ -1826,7 +1826,7 @@ void MsgListConsole::DoInput() {
       m_bufline = m_bufline + offset_count;
 
       if (offset_count < 0) {
-        mprintf(0, "bufline=%d\n", m_bufline);
+        LOG_DEBUG.printf("bufline=%d", m_bufline);
       }
 
       while (offset_count < 0) {
@@ -1847,7 +1847,7 @@ void MsgListConsole::DoInput() {
       m_bufline = m_bufline + offset_count;
 
       if (offset_count > 0) {
-        mprintf(0, "bufline=%d\n", m_bufline);
+        LOG_DEBUG.printf("bufline=%d", m_bufline);
       }
 
       while (offset_count > 0) {

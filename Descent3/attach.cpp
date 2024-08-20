@@ -16,10 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
 #include "attach.h"
 #include "terrain.h"
+#include "log.h"
 #include "multi.h"
 #include "game.h"
 #include "demofile.h"
@@ -155,7 +154,7 @@ static bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *att
   pm = &Poly_models[obj->rtype.pobj_info.model_num];
 
   if (ap < 0 || ap >= pm->n_attach) {
-    mprintf(0, "WARNING: No ap %d on object %d.\n", ap, OBJNUM(obj));
+    LOG_WARNING.printf("WARNING: No ap %d on object %d.", ap, OBJNUM(obj));
     return false;
   }
 
@@ -167,14 +166,11 @@ static bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *att
 
   if (f_compute_fvec) {
     normal = pm->attach_slots[ap].norm;
-    //	mprintf(0, "Original fvec is %f long.\n", vm_GetMagnitude(&normal));
   }
 
   if (pm->attach_slots[ap].f_uvec && attach_uvec && f_computed_uvec) {
     *f_computed_uvec = true;
     uvec = pm->attach_slots[ap].uvec;
-
-    //	mprintf(0, "Original uvec is %f long.\n", vm_GetMagnitude(&uvec));
   } else if (f_computed_uvec) {
     *f_computed_uvec = false;
   }
@@ -213,12 +209,10 @@ static bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *att
 
   if (f_compute_fvec) {
     *attach_fvec = normal * m;
-    //	mprintf(0, "Rotated fvec is %f long.\n", vm_GetMagnitude(attach_fvec));
   }
 
   if (f_computed_uvec && *f_computed_uvec) {
     *attach_uvec = uvec * m;
-    //	mprintf(0, "Rotated uvec is %f long.\n", vm_GetMagnitude(attach_uvec));
   }
 
   if (f_compute_pos)
@@ -478,12 +472,12 @@ bool AttachObject(object *parent, char parent_ap, object *child, char child_ap, 
   poly_model *child_pm = &Poly_models[child->rtype.pobj_info.model_num];
 
   if (parent_ap < 0 || parent_ap >= parent_pm->n_attach) {
-    mprintf(0, "ATTACH: Parent AP invalid\n");
+    LOG_WARNING << "ATTACH: Parent AP invalid";
     return false;
   }
 
   if (child->flags & OF_ATTACHED) {
-    mprintf(0, "ATTACH: Child already attached to someone\n");
+    LOG_WARNING << "ATTACH: Child already attached to someone";
     return false;
   }
 
@@ -511,11 +505,11 @@ bool AttachObject(object *parent, char parent_ap, object *child, char child_ap, 
       return true;
     }
 
-    mprintf(0, "ATTACH: AP attach failed\n");
+    LOG_WARNING << "ATTACH: AP attach failed";
     return false;
   }
 
-  mprintf(0, "ATTACH: Child AP (%d) - child only has %d attach points\n", child_ap, child_pm->n_attach);
+  LOG_DEBUG.printf("ATTACH: Child AP (%d) - child only has %d attach points", child_ap, child_pm->n_attach);
   return false;
 }
 
@@ -529,12 +523,12 @@ bool AttachObject(object *parent, char parent_ap, object *child, float percent_r
   poly_model *child_pm = &Poly_models[parent->rtype.pobj_info.model_num];
 
   if (parent_ap < 0 || parent_ap >= parent_pm->n_attach) {
-    mprintf(0, "ATTACH: Parent AP invalid\n");
+    LOG_WARNING << "ATTACH: Parent AP invalid";
     return false;
   }
 
   if (child->flags & OF_ATTACHED) {
-    mprintf(0, "ATTACH: Child already attached to someone\n");
+    LOG_WARNING << "ATTACH: Child already attached to someone";
     return false;
   }
 
@@ -573,11 +567,11 @@ bool AttachObject(object *parent, char parent_ap, object *child, float percent_r
       return true;
     }
 
-    mprintf(0, "ATTACH: RAD attach failed\n");
+    LOG_WARNING << "ATTACH: RAD attach failed";
     return false;
   }
 
-  mprintf(0, "ATTACH: Child percent rad is invalid\n");
+  LOG_WARNING << "ATTACH: Child percent rad is invalid";
   return false;
 }
 

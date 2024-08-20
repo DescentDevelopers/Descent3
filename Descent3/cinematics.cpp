@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstring>
+
 #include "cinematics.h"
 #include "d3movie.h"
 #include "game.h"
@@ -23,12 +25,11 @@
 #include "descent.h"
 #include "gamefont.h"
 #include "hlsoundlib.h"
+#include "log.h"
 #include "subtitles.h"
 #include "dedicated_server.h"
 #include "appdatabase.h"
 #include "bitmap.h"
-
-#include <cstring>
 
 static bool Cinematic_lib_init = false;
 static int Cinematic_x = 0, Cinematic_y = 0, Cinematic_w = 0, Cinematic_h = 0;
@@ -91,7 +92,7 @@ bool PlayMovie(const std::filesystem::path &moviename) {
 
   bool retval = true;
   if (mveerr != MVELIB_NOERROR) {
-    mprintf(1, "Movie error %d.\n", mveerr);
+    LOG_ERROR.printf("Movie error %d.", mveerr);
     retval = false;
   }
 

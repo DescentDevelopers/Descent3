@@ -19,11 +19,15 @@
 #ifdef NEWEDITOR
 #include "neweditor\globals.h"
 #else
-#include <stdlib.h>
+#include <cstdlib>
 #endif
+
+#include <algorithm>
+#include <cstring>
+
 #include "vecmat.h"
 #include "object.h"
-#include "mono.h"
+#include "log.h"
 #include "terrain.h"
 #include "pserror.h"
 #include "bitmap.h"
@@ -31,15 +35,12 @@
 #include "lighting.h"
 #include "lightmap.h"
 #include "weather.h"
-#include <string.h>
 #include "mem.h"
 #include "dedicated_server.h"
 #include "psrand.h"
 #ifdef EDITOR
 #include "editor\d3edit.h"
 #endif
-
-#include <algorithm>
 
 #define SKY_RADIUS 2500.0
 #define DEFAULT_LIGHT_SOURCE                                                                                           \
@@ -309,7 +310,7 @@ void BuildMinMaxTerrain() {
   int row_width, xoffset, yoffset, total_rows;
   int minheight, maxheight, cellheight;
 
-  mprintf(0, "Building min/max terrain table.\n");
+  LOG_INFO << "Building min/max terrain table.";
 
   // Calculate our integer y positions (0-255)
   for (i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++) {
@@ -819,7 +820,7 @@ int LoadPCXTerrain(char *filename) {
 
   lando = (uint8_t *)mem_malloc(total);
 
-  mprintf(0, "Heightmap is %d x %d\n", width, height);
+  LOG_DEBUG.printf("Heightmap is %d x %d", width, height);
 
   while (run < total) {
     buf = cf_ReadByte(infile);

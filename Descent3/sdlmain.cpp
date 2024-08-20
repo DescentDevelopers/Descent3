@@ -36,6 +36,7 @@
 #ifdef WIN32
 #include <cstdio>
 #include <windows.h>
+#include "debug.h"
 #endif
 
 #include <SDL.h>

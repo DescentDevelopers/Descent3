@@ -397,20 +397,18 @@
  */
 
 #include <cstddef>
+#include <cstdlib>
+#include <cstring>
+
+#include "bnode.h"
 #include "room.h"
-#include "mono.h"
+#include "log.h"
 #include "vecmat.h"
 #include "gametexture.h"
 #include "manage.h"
-#include "renderer.h"
 #include "game.h"
-#include "render.h"
-#include "grdefs.h"
-#include <stdlib.h>
-#include <string.h>
 #include "terrain.h"
 #include "findintersection.h"
-#include "lightmap.h"
 #include "lightmap_info.h"
 #include "special_face.h"
 #include "mem.h"
@@ -424,7 +422,6 @@
 #ifdef NEWEDITOR
 #include "neweditor\editor_lighting.h"
 #endif
-#include "bnode.h"
 
 // Global array of rooms
 room Rooms[MAX_ROOMS + MAX_PALETTE_ROOMS];
@@ -714,7 +711,7 @@ void FreeRoom(room *rp) {
 void FreeAllRooms() {
   int rn;
   room *rp;
-  mprintf(1, "Freeing rooms...Higest_room_index %d\n", Highest_room_index);
+  LOG_DEBUG.printf("Freeing rooms... Higest_room_index %d", Highest_room_index);
   for (rn = 0, rp = Rooms; rn <= Highest_room_index; rn++, rp++) {
     if (rp->used) {
       //			mprintf(2, "rn %d\n", rn);
@@ -804,7 +801,7 @@ bool ComputeFaceNormal(room *rp, int facenum) {
   ok = ComputeNormal(&fp->normal, fp->num_verts, fp->face_verts, rp->verts);
 
   if (!ok) {
-    mprintf(1, "Warning: Low precision normal for room:face = %d:%d\n", ROOMNUM(rp), facenum);
+    LOG_WARNING.printf("Warning: Low precision normal for room:face = %d:%d", ROOMNUM(rp), facenum);
   }
 
   return ok;
@@ -840,14 +837,14 @@ bool ComputeNormal(vector *normal, int num_verts, short *vertnum_list, vector *v
   }
 
   if (largest_mag < MIN_NORMAL_MAG) {
-    mprintf(1, "Warning: Normal has low precision. mag = %f, norm =  %f,%f,%f\n",
+    LOG_WARNING.printf("Warning: Normal has low precision. mag = %f, norm =  %f,%f,%f",
             largest_mag,
             normal->x,
             normal->y,
             normal->z);
-    return 0;
+    return false;
   } else
-    return 1;
+    return true;
 }
 
 // Computes the center point on a face by averaging the points in the portal
@@ -1096,7 +1093,7 @@ int CheckTransparentPoint(const vector *pnt, const room *rp, const int facenum) 
 
 // Computes a bounding sphere for the current room
 // Parameters: center - filled in with the center point of the sphere
-//		rp - the room we’re bounding
+//		rp - the room we're bounding
 // Returns: the radius of the bounding sphere
 float ComputeRoomBoundingSphere(vector *center, room *rp) {
   // This algorithm is from Graphics Gems I.  There's a better algorithm in Graphics Gems III that
@@ -1241,7 +1238,7 @@ int FindFirstUsedRoom() {
 //	returns true on successs
 bool ChangeRoomFaceTexture(int room_num, int face_num, int texture) {
   if ((room_num < 0) || (room_num > Highest_room_index) || ROOMNUM_OUTSIDE(room_num) || (!Rooms[room_num].used)) {
-    mprintf(0, "Invalid room passed to ChangeRoomFaceTexture\n");
+    LOG_FATAL << "Invalid room passed to ChangeRoomFaceTexture";
     Int3();
     return false;
   }
@@ -1249,15 +1246,15 @@ bool ChangeRoomFaceTexture(int room_num, int face_num, int texture) {
   room *rp = &Rooms[room_num];
 
   if (face_num < 0 || face_num >= rp->num_faces) {
-    mprintf(0, "Invalid face number passed to ChangeRoomFaceTexture."
-               "  Room=%d, you gave face #%d, there are only %d in the room\n",
+    LOG_FATAL.printf("Invalid face number passed to ChangeRoomFaceTexture."
+               "  Room=%d, you gave face #%d, there are only %d in the room",
              room_num, face_num, rp->num_faces);
     Int3();
     return false;
   }
 
   if (texture == -1) {
-    mprintf(0, "not a valid texture, passed to ChangeRoomFaceTexture\n");
+    LOG_FATAL << "not a valid texture, passed to ChangeRoomFaceTexture";
     Int3();
     return false;
   }

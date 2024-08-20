@@ -60,18 +60,18 @@
  *
  * $NoKeywords: $
  */
+
+#include <cctype>
+#include <cstdlib>
+#include <cstring>
+
 #include "BriefingParse.h"
 #include "TelComEffects.h"
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 #include "cfile.h"
-#include "pserror.h"
-#include "game.h"
+#include "log.h"
 #include "mem.h"
+#include "pserror.h"
 #include "voice.h"
-#include "streamaudio.h"
-#include "ddio.h"
 
 //	constructor
 CBriefParse::CBriefParse() {
@@ -323,7 +323,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
 
   strcpy(title, " ");
 
-  mprintf(0, "Parsing <%s>\n", filename);
+  LOG_DEBUG << "Parsing " << filename;
 
   // Open the file
   ifile = cfopen(filename, "rt");
@@ -822,12 +822,12 @@ int CBriefParse::ParseBriefing(const char *filename) {
 done_parsing:;
 
   if (abort) {
-    mprintf(0, "Parse aborted\n");
+    LOG_WARNING << "Parse aborted";
   } else if (!parse_error) {
     if (reading_text) {
       ParseError("Missing '$endtext'");
     } else {
-      mprintf(0, "Parse sucessful\n");
+      LOG_DEBUG << "Parse successful";
     }
   }
 
@@ -1185,9 +1185,9 @@ done_parsing:
 
 // Generates an parsing error
 void CBriefParse::ParseError(const char *msg, const char *p) {
-  mprintf(0, "ERROR, line %d: %s\n", linenum, msg);
+  LOG_WARNING.printf("ERROR, line %d: %s", linenum, msg);
   if (p) {
-    mprintf(0, "  %s\n", p);
+    LOG_WARNING.printf("  %s", p);
   }
 
   parse_error = 1;

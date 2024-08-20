@@ -297,6 +297,11 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdlib>
+#include <cstring>
+
+#include "log.h"
 #include "newui.h"
 #include "game.h"
 #include "descent.h"
@@ -309,10 +314,6 @@
 #include "newui_core.h"
 #include "hlsoundlib.h"
 #include "dedicated_server.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
 
 #define MSGBOX_HEIGHT msgbox.H()
 #define BTN_WIDTH 96
@@ -753,7 +754,7 @@ bool DoEditDialog(const char *title, char *buffer, int buflen, bool showcancel) 
   if (res != UID_CANCEL && res != NEWUIRES_FORCEQUIT) {
     if (strcmp(edit, NEWUI_EDIT_CANCELED_STR) != 0) {
       strcpy(buffer, edit);
-      mprintf(0, "editdialog=%s\n", buffer);
+      LOG_DEBUG.printf("editdialog=%s", buffer);
     } else {
       res = UID_CANCEL;
     }

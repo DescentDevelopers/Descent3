@@ -286,14 +286,13 @@
 #include "multi_client.h"
 #include "Mission.h"
 #include "pilot.h"
-#include "pstypes.h"
 #include "pserror.h"
 #include "descent.h"
 #include "room.h"
 #include "object.h"
 #include "terrain.h"
 #include "player.h"
-#include "mono.h"
+#include "log.h"
 #include "hud.h"
 #include "Inventory.h"
 #include "multi_server.h"
@@ -578,7 +577,7 @@ void FreeMultiDLL() {
   mod_FreeModule(&MultiDLLHandle);
   // Try deleting the file now!
   if (!ddio_DeleteFile(Multi_conn_dll_name)) {
-    mprintf(0, "Couldn't delete the tmp dll");
+    LOG_WARNING << "Couldn't delete the tmp dll";
   }
   DLLMultiCall = NULL;
   DLLMultiInit = NULL;
@@ -601,7 +600,7 @@ int LoadMultiDLL(const char *name) {
     std::error_code ec;
     std::filesystem::remove(path, ec);
     if (ec) {
-      mprintf(0, "Unable to remove temporary file %s: %s\n", path.u8string().c_str(), ec.message().c_str());
+      LOG_ERROR.printf("Unable to remove temporary file %s: %s", path.u8string().c_str(), ec.message().c_str());
     }
   });
 
@@ -631,7 +630,7 @@ int LoadMultiDLL(const char *name) {
   // Copy the DLL
   //	ddio_MakePath(dll_path_name,Base_directory,"online",tmp_dll_name,NULL);
   if (!cf_CopyFile(tmp_dll_name, dll_name)) {
-    mprintf(0, "DLL copy failed!\n");
+    LOG_WARNING << "DLL copy failed!";
     return 0;
   }
   strcpy(Multi_conn_dll_name, tmp_dll_name);
@@ -639,14 +638,14 @@ loaddll:
 
   if (!mod_LoadModule(&MultiDLLHandle, tmp_dll_name)) {
     int err = mod_GetLastError();
-    mprintf(0, "You are missing the DLL %s!\n", name);
+    LOG_WARNING.printf("You are missing the DLL %s!", name);
     return 0;
   }
 
   DLLMultiInit = (DLLMultiInit_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiInit", 4);
   if (!DLLMultiInit) {
     int err = mod_GetLastError();
-    mprintf(0, "Couldn't get a handle to the dll function DLLMultiInit!\n");
+    LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiInit!";
     Int3();
     FreeMultiDLL();
     return 0;
@@ -654,7 +653,7 @@ loaddll:
   DLLMultiCall = (DLLMultiCall_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiCall", 4);
   if (!DLLMultiCall) {
     int err = mod_GetLastError();
-    mprintf(0, "Couldn't get a handle to the dll function DLLMultiCall!\n");
+    LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiCall!";
     Int3();
     FreeMultiDLL();
     return 0;
@@ -662,7 +661,7 @@ loaddll:
   DLLMultiClose = (DLLMultiClose_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiClose", 0);
   if (!DLLMultiClose) {
     int err = mod_GetLastError();
-    mprintf(0, "Couldn't get a handle to the dll function DLLMultiClose!\n");
+    LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiClose!";
     Int3();
     FreeMultiDLL();
     return 0;
@@ -694,7 +693,7 @@ loaddll:
 
     if (!DLLMultiScoreCall) {
       int err = mod_GetLastError();
-      mprintf(0, "Couldn't get a handle to the dll function DLLMultiScoreCall!\n");
+      LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiScoreCall!";
       Int3();
       Supports_score_api = false;
     }
@@ -759,7 +758,7 @@ const char *ListGetItem(UIListBox *item, int index) {
   if (ui_item)
     return ui_item->GetBuffer();
   else {
-    mprintf(0, "No listbox item found for index %d\n", index);
+    LOG_WARNING.printf("No listbox item found for index %d", index);
     return "";
   }
 }
@@ -769,10 +768,10 @@ void DatabaseRead(const char *label, char *entry, int *entrylen) { Database->rea
 void DatabaseWrite(const char *label, const char *entry, int entrylen) { Database->write(label, entry, entrylen); }
 void DatabaseReadInt(const char *label, int *val) {
   Database->read_int(label, val);
-  mprintf(0, "Read int: %s:%d\n", label, *val);
+  LOG_DEBUG.printf("Read int: %s:%d", label, *val);
 }
 void DatabaseWriteInt(const char *label, int val) {
-  mprintf(0, "Writing int: %s:%d\n", label, val);
+  LOG_DEBUG.printf("Writing int: %s:%d", label, val);
   Database->write(label, val);
 }
 void DescentDefer(void) { Descent->defer(); }
@@ -938,7 +937,7 @@ const char *OldListGetItem(UIListBox *item, int index) {
   if (ti)
     return ti->GetBuffer();
   else {
-    mprintf(0, "No listbox item found for index %d\n", index);
+    LOG_WARNING.printf("No listbox item found for index %d", index);
     return "";
   }
 }

@@ -52,22 +52,16 @@
  * $NoKeywords: $
  */
 
-#include "help.h"
-#include "mono.h"
-#include "renderer.h"
-#include "render.h"
+#include <cstring>
+
+#include "log.h"
 #include "ddio.h"
-#include "descent.h"
 #include "game.h"
-#include "cfile.h"
-#include "application.h"
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
 #include "newui.h"
 #include "grtext.h"
 #include "gamefont.h"
 #include "AIMain.h"
+#include "pserror.h"
 #include "robot.h"
 #include "hud.h"
 #include "stringtable.h"
@@ -75,7 +69,6 @@
 #include "multi.h"
 
 #include "osiris_share.h"
-#include "multi.h"
 
 #define GB_MENU_REQ_TEXT 1
 #define GB_MENU_REQ_SELECT 2
@@ -363,7 +356,7 @@ void MultiDoGuidebotMenuData(uint8_t *data) {
 
   Guidebot_data_download_status = 1;
   Multi_bail_ui_menu = true;
-  mprintf(0, "Recieved Guidebot data from server\n");
+  LOG_DEBUG << "Received Guidebot data from server";
 }
 
 // downloads data for the buddybot

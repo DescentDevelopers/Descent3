@@ -27,21 +27,16 @@
  * $NoKeywords: $
  */
 
-#include "pstypes.h"
-#include "pserror.h"
+#include <cstdlib>
+#include <cstring>
+
+#include "mem.h"
 #include "object.h"
 #include "objinfo.h"
-#include "3d.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
 #include "polymodel.h"
+#include "pserror.h"
 #include "robotfire.h"
-#include "AIMain.h"
 #include "sounds.h"
-#include "stringtable.h"
-#include "mem.h"
 
 // The array with information for robots, powerups, buildings, etc.
 object_info Object_info[MAX_OBJECT_IDS];
@@ -117,7 +112,6 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
 
   for (int i = NUM_STATIC_OBJECTS; i < MAX_OBJECT_IDS; i++) {
     if (Object_info[i].type == OBJ_NONE) {
-      mprintf(1, "%d ", type);
       memset(&Object_info[i], 0, sizeof(*Object_info));
 
       extern void AISetDefault(t_ai_info * ai_info_ptr);

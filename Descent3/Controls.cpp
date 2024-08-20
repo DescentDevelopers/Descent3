@@ -404,6 +404,8 @@
  * $NoKeywords: $
  */
 
+#include <cstdlib>
+
 #include "controls.h"
 
 #include "object.h"
@@ -412,26 +414,18 @@
 #include "ddio.h"
 #include "joystick.h"
 #include "descent.h"
-#include "mono.h"
+#include "log.h"
 #include "weapon.h"
 #include "Controller.h"
-#include "Macros.h"
 #include "gamesequence.h"
 #include "pilot.h"
 #include "hud.h"
 #include "stringtable.h"
-#include "TelCom.h"
 #include "multi.h"
 #include "args.h"
-
 #include "player.h"
-
 #include "hlsoundlib.h"
 #include "sounds.h"
-#include "soundload.h"
-
-#include <stdlib.h>
-#include <memory.h>
 
 float Key_ramp_speed = 0.5f;
 
@@ -620,7 +614,7 @@ void InitControls() {
   Key_ramp.oz = Key_ramp.z = 0.0f;
 
   //	Initialize preemptive controller system for non-positonal data.
-  mprintf(0, "Initialized control system.\n");
+  LOG_INFO << "Initialized control system.";
 }
 
 void CloseControls() {
@@ -629,7 +623,7 @@ void CloseControls() {
   ResumeControls();
   DestroyController(Controller);
   Controller = NULL;
-  mprintf(0, "Closing control system.\n");
+  LOG_INFO << "Closing control system.";
   Control_system_init = false;
 }
 
@@ -805,11 +799,6 @@ void DoMovement(game_controls *controls) {
     controls->afterburn_thrust = LIMIT_FORWARD;
   if (controls->afterburn_thrust < -LIMIT_FORWARD)
     controls->afterburn_thrust = -LIMIT_FORWARD;
-
-  mprintf_at(1, 5, 30, "ch:%.2f ", controls->heading_thrust);
-
-  //	if (controls->pitch_thrust || controls->heading_thrust)
-  //		mprintf(0, "p:%.2f h:%.2f\n", controls->pitch_thrust, controls->heading_thrust);
 }
 
 void DoKeyboardMovement(game_controls *controls) {
@@ -911,10 +900,6 @@ void DoControllerMovement(game_controls *controls) {
   Controller->get_packet(ctfBANK_LEFTBUTTON, &ctl_blb);
   Controller->get_packet(ctfBANK_RIGHTBUTTON, &ctl_brb);
 
-  // check for joystick movement
-  // mprintf(0, "p:%f  h:%f  b:%f\n", ctl_p.value, ctl_h.value, ctl_b.value);
-  // mprintf(0, "u:%d  d:%d  l:%d  r:%d\n", (int)ctl_povu.value, (int)ctl_povd.value, (int)ctl_povl.value, (int)ctl_povr.value);
-
   //	do x and y thrust
   controls->sideways_thrust += ctl_x.value;
   controls->vertical_thrust += -ctl_y.value;
@@ -947,7 +932,6 @@ void DoControllerMovement(game_controls *controls) {
 
   //	do afterburn button control
   if (!controls->afterburn_thrust) {
-    //		mprintf(0, "aft=%.4f\n", ctl_afterburn.value);
     controls->afterburn_thrust = ((ctl_afterburn.value) / Frametime);
   }
 

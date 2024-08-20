@@ -27,6 +27,7 @@
 #include "game.h"
 #include "gamefont.h"
 #include "grtext.h"
+#include "log.h"
 #include "mem.h"
 #include "mvelib.h"
 #include "pserror.h"
@@ -108,7 +109,7 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
 #if defined(POSIX)
   real_name = mve_FindMovieFileRealName(pMovieName);
   if (real_name.empty()) {
-    mprintf(0, "MOVIE: No such file %s\n", pMovieName.u8string().c_str());
+    LOG_WARNING.printf("MOVIE: No such file %s", pMovieName.u8string().c_str());
     return MVELIB_FILE_ERROR;
   }
 #else
@@ -117,7 +118,7 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
   // open movie file.
   FILE *hFile = fopen(real_name.u8string().c_str(), "rb");
   if (hFile == nullptr) {
-    mprintf(0, "MOVIE: Unable to open %s\n", real_name.u8string().c_str());
+    LOG_ERROR.printf("MOVIE: Unable to open %s", real_name.u8string().c_str());
     return MVELIB_FILE_ERROR;
   }
 
@@ -130,14 +131,14 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
   Movie_bm_handle = -1;
 
   if (!mve_InitSound()) {
-    mprintf(0, "Failed to initialize sound\n");
+    LOG_ERROR << "Failed to initialize sound";
     fclose(hFile);
     return MVELIB_INIT_ERROR;
   }
 
   MVESTREAM *mve = MVE_rmPrepMovie(hFile, -1, -1, 0);
   if (mve == nullptr) {
-    mprintf(0, "Failed to prepMovie %s\n", pMovieName.u8string().c_str());
+    LOG_ERROR.printf("Failed to prepMovie %s", pMovieName.u8string().c_str());
     fclose(hFile);
     mve_CloseSound();
     return MVELIB_INIT_ERROR;
@@ -360,7 +361,7 @@ intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *ap
 #if defined(POSIX)
   real_name = mve_FindMovieFileRealName(mvename);
   if (real_name.empty()) {
-    mprintf(0, "MOVIE: No such file %s\n", mvename);
+    LOG_WARNING.printf("MOVIE: No such file %s", mvename);
     fhandle = nullptr;
     return 0;
   }
@@ -370,7 +371,7 @@ intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *ap
   fhandle = fopen(real_name.u8string().c_str(), "rb");
 
   if (fhandle == nullptr) {
-    mprintf(1, "MOVIE: Unable to open %s\n", real_name.u8string().c_str());
+    LOG_WARNING.printf("MOVIE: Unable to open %s", real_name.u8string().c_str());
     return 0;
   }
 
@@ -388,7 +389,7 @@ intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *ap
 
   MVESTREAM *mve = MVE_rmPrepMovie(fhandle, -1, -1, 0);
   if (mve == nullptr) {
-    mprintf(0, "Failed to PrepMovie %s\n", mvename);
+    LOG_ERROR.printf("Failed to PrepMovie %s", mvename);
     fclose((FILE *)fhandle);
     return MVELIB_INIT_ERROR;
   }

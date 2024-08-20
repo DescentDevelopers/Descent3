@@ -58,12 +58,15 @@
  *
  * $NoKeywords: $
  */
-#include "voice.h"
-#include "streamaudio.h"
+
+#include <cstdlib>
+#include <cstring>
+
 #include "hlsoundlib.h"
+#include "log.h"
+#include "streamaudio.h"
 #include "soundload.h"
-#include <stdlib.h>
-#include <string.h>
+#include "voice.h"
 
 #define MOTHERLOAD_STRING "Cheater!"
 #define MOTHERLOAD_FLAGS VF_POWERUP | VF_PLAYTABLE
@@ -104,7 +107,7 @@ VoiceQueue vq;
 void StartVoice(char *filename, int flags);
 
 bool InitVoices(void) {
-  mprintf(0, "Voice System: Init\n");
+  LOG_INFO << "Voice System: Init";
   CurrentVoiceHandle.handle = -1;
   CurrentVoiceHandle.flags = 0;
   CurrentVoiceHandle.chandle = -1;
@@ -116,7 +119,7 @@ bool InitVoices(void) {
 }
 
 void CloseVoices(void) {
-  mprintf(0, "Voice System: Shutdown\n");
+  LOG_INFO << "Voice System: Shutdown";
   StopVoice();
 }
 
@@ -200,7 +203,7 @@ void UpdateVoices(void) {
   if (!CurrentVoiceHandle.inuse) {
     // see if we have something waiting
     if (vq.GetNextVoice(filename, &flags)) {
-      mprintf(0, "Playing queued voice %s\n", filename);
+      LOG_INFO.printf("Playing queued voice %s", filename);
       StartVoice(filename, flags);
       return;
     }
@@ -214,7 +217,7 @@ void UpdateVoices(void) {
   // it isn't, so stop it and play the next voice in the queue if any
   StopVoice();
   if (vq.GetNextVoice(filename, &flags)) {
-    mprintf(0, "Playing queued voice %s\n", filename);
+    LOG_INFO.printf("Playing queued voice %s", filename);
     StartVoice(filename, flags);
   }
 }
@@ -249,7 +252,7 @@ void VoiceQueue::AddVoice(char *fn, int flg) {
   int nextpos = (pos + 1) % QUEUE_SIZE;
   if ((nextpos == currvoice + 1) && (inuse[nextpos])) {
     // this really shouldn't be since it was reported that the queue isn't full
-    mprintf(0, "Voice Queue full, missed full bool (this shouldn't happen)\n");
+    LOG_WARNING << "Voice Queue full, missed full bool (this shouldn't happen)";
     // since the queue is full, remove everything and add just the "mother load" voice
     Clear();
     pos = 1;
@@ -317,7 +320,7 @@ void VoiceQueue::Clear(bool onlypowerups) {
     if (realp == QUEUE_SIZE) {
       // we're still full :(
       full = true;
-      mprintf(0, "Voice Warning: Buffer still full after clean (All Non-powerups voices in queue?)\n");
+      LOG_WARNING << "Voice Warning: Buffer still full after clean (All Non-powerups voices in queue?)";
     }
   } else {
     motherloadat = -1;

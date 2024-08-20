@@ -155,16 +155,15 @@
  *
  */
 
+#include <cstring>
+
 #include "levelgoal.h"
+#include "log.h"
 #include "mem.h"
-#include "string.h"
 #include "hud.h"
 #include "game.h"
-#include "gamesequence.h"
 #include "stringtable.h"
-#include <stdarg.h>
 #include "pstring.h"
-#include "hlsoundlib.h"
 #include "sounds.h"
 #include "osiris_dll.h"
 #include "room.h"
@@ -175,7 +174,6 @@
 #include "demofile.h"
 #include "osiris_share.h"
 #include "multisafe.h"
-#include "multi.h"
 #include "multi_world_state.h"
 
 #define GOAL_MESSAGE_TIME 10.0
@@ -561,7 +559,7 @@ void lgoal::SendStateToPlayer(int index, int pnum) {
   if (!(NetPlayers[pnum].flags & NPF_CONNECTED && NetPlayers[pnum].sequence == NETSEQ_PLAYING))
     return;
 
-  mprintf(0, "Sending modified LevelGoal %d to player %d\n", index, pnum);
+  LOG_DEBUG.printf("Sending modified LevelGoal %d to player %d", index, pnum);
 
   // now update the buddy handle list of the clients
   int count = 0;

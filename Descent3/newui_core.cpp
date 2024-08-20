@@ -184,23 +184,22 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <cstring>
 
 #include "newui_core.h"
 #include "bitmap.h"
+#include "log.h"
 #include "mem.h"
 #include "pserror.h"
 #include "game.h"
 #include "ddio.h"
 #include "renderer.h"
 #include "descent.h"
-#include "application.h"
 #include "stringtable.h"
 #include "gamefont.h"
 #include "textaux.h"
 #include "d3music.h"
 #include "hlsoundlib.h"
-
-#include <string.h>
 
 extern void ui_DoCursor();
 
@@ -2242,9 +2241,7 @@ void newuiMenuOptionButton::OnMouseBtnDown(int btn) {
     if ((m_State != UI_BTS_ACTIVATED) && PT_IN_GADGET(m_Wnd, this, UI_input.mx, UI_input.my)) {
       m_State = UI_BTS_ACTIVATED;
       LOCK_FOCUS(this);
-      //	mprintf(0, "mouse down in button gadget (%d)\n", GetID());
       if (m_mono_press) {
-        //	mprintf(0, "selected button gadget (%d)\n", GetID());
         OnSelect();
         m_State = UI_BTS_HILITE;
       }
@@ -2893,7 +2890,7 @@ void newuiListBox::RemoveItem(const char *name) {
     }
   }
   if (found == -1) {
-    mprintf(0, "newuiListBox:: Didn't find item to remove!\n");
+    LOG_WARNING << "newuiListBox:: Didn't find item to remove!";
     return;
   }
 
@@ -3050,7 +3047,7 @@ bool newuiListBox::SetCurrentItem(const char *name) {
   }
 
   if (!found) {
-    mprintf(0, "newuiListBox::SelectItem item not found!\n");
+    LOG_WARNING << "newuiListBox::SelectItem item not found!";
     return false;
   }
 
@@ -3256,9 +3253,7 @@ void newuiListBox::OnMouseBtnDown(int btn) {
     if (m_nclicks == 0) {
       LOCK_FOCUS(this);
       m_nclicks = 1;
-      //	mprintf(0, "click 1\n");
     } else if (m_nclicks == 2) {
-      //	mprintf(0, "click 2\n");
       LOCK_FOCUS(this);
       if (((m_click_time - old_click_time) < UI_DBLCLICK_DELAY)) {
         if (abs(m_mse_x - m_last_mse_x) < UI_DBLCLICK_MSEDELTA && abs(m_mse_y - m_last_mse_y) < UI_DBLCLICK_MSEDELTA) {
@@ -3271,7 +3266,6 @@ void newuiListBox::OnMouseBtnDown(int btn) {
               if (m_mse_y >= y && m_mse_y <= (y + item.height() - 1)) {
                 if (m_mse_x > m_boffs && m_mse_x < (m_W - m_boffs - 12)) {
                   OnSelect();
-                  //	mprintf(0, "select!\n");
                   m_nclicks = 0;
                   break;
                 }
@@ -3634,7 +3628,7 @@ void newuiComboBox::RemoveItem(const char *name) {
     }
   }
   if (found == -1) {
-    mprintf(0, "newuiComboBox:: Didn't find item to remove!\n");
+    LOG_WARNING << "newuiComboBox:: Didn't find item to remove!";
     return;
   }
 
@@ -3761,7 +3755,7 @@ bool newuiComboBox::SetCurrentItem(const char *name) {
   }
 
   if (!found) {
-    mprintf(0, "newuiComboBox::SelectItem item not found!\n");
+    LOG_WARNING << "newuiComboBox::SelectItem item not found!";
     return false;
   }
 

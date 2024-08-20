@@ -79,7 +79,7 @@
 
 #include <cstring>
 
-#include "mono.h"
+#include "log.h"
 #include "pstypes.h"
 #include "crossplat.h"
 #include "ddio.h"
@@ -158,7 +158,7 @@ static int Credits_ParseLine(char *line, creditline *credit) {
 
     int num_found = sscanf(line, "*%d %d %d %d %f", &x1, &y1, &x2, &y2, &timedelay);
     if (num_found != 5) {
-      mprintf(0, "Bad movement data in credit text (%s)\n", line);
+      LOG_WARNING.printf("Bad movement data in credit text (%s)", line);
       return 0;
     } else {
       CreditStartX = x1;
@@ -182,7 +182,7 @@ static int Credits_ParseLine(char *line, creditline *credit) {
     credit->endx = CreditEndX;
     credit->endy = CreditEndY;
     credit->displaytime = CreditDisplayTime;
-    mprintf(0, "Read header %s\n", line);
+    LOG_DEBUG.printf("Read header %s", line);
 
     credit->color = CreditHeadingColor;
     credit->type = CLTYPE_HEADING;
@@ -193,7 +193,7 @@ static int Credits_ParseLine(char *line, creditline *credit) {
     int r, g, b;
     int num_found = sscanf(line, "$%d %d %d", &r, &g, &b);
     if (num_found != 3) {
-      mprintf(0, "Bad color in credit text (%s)\n", line);
+      LOG_WARNING.printf("Bad color in credit text (%s)", line);
       return 0;
     } else {
       CreditTextColor = GR_RGB(r, g, b);
@@ -204,7 +204,7 @@ static int Credits_ParseLine(char *line, creditline *credit) {
     int r, g, b;
     int num_found = sscanf(line, "^%d %d %d", &r, &g, &b);
     if (num_found != 3) {
-      mprintf(0, "Bad color in credit text (%s)\n", line);
+      LOG_WARNING.printf("Bad color in credit text (%s)", line);
       return 0;
     } else {
       CreditHeadingColor = GR_RGB(r, g, b);
@@ -252,7 +252,7 @@ static bool Credits_LoadCredits(const char *filename) {
   infile = cfopen(filename, "rt");
 
   if (!infile) {
-    mprintf(0, "Couldn't open credit file to read credits!\n");
+    LOG_ERROR << "Couldn't open credit file to read credits!";
     return false;
   }
 
@@ -314,7 +314,7 @@ void Credits_Display(void) {
   int bm_handle = bm_AllocLoadFileBitmap("CreditsBackground.tga", 0);
 
   if (bm_handle < 0) {
-    mprintf(0, "Failed to load background credit screen!\n");
+    LOG_WARNING << "Failed to load background credit screen!";
     return;
   }
 
@@ -328,11 +328,11 @@ void Credits_Display(void) {
   D3MusicStart("credits.omf");
   D3MusicSetRegion(CREDITS1_MUSIC_REGION);
 
-  mprintf(0, "Chillin in credits\n");
+  LOG_INFO << "Chillin in credits";
 
   // Load our credits
   if (!Credits_LoadCredits("GameCredits.txt")) {
-    mprintf(0, "There was an error loading game credits!\n");
+    LOG_WARNING << "There was an error loading game credits!";
   } else {
     // First count how many headers there are so we know how many to allocate
     int count = 0;

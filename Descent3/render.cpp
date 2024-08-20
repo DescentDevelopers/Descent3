@@ -28,9 +28,11 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstdlib>
+#include <cstring>
+
 #include "render.h"
-#include <stdlib.h>
-#include <string.h>
 #include "3d.h"
 #include "mono.h"
 #include "gametexture.h"
@@ -42,8 +44,8 @@
 #include "room.h"
 #include "lighting.h"
 #include "lightmap.h"
-#include "limits.h"
 #include "lightmap_info.h"
+#include "log.h"
 #include "viseffect.h"
 #include "weapon.h"
 #include "fireball.h"
@@ -753,7 +755,7 @@ void CheckFogPortalExtents(int roomnum, int portalnum) {
   if (found_room == -1) {
     // Couldn't find this room in our list, so make a new one
     if (Num_fogged_rooms_this_frame >= MAX_FOGGED_ROOMS_PER_FRAME) {
-      mprintf(0, "Too many fogged rooms in view cone!\n");
+      LOG_WARNING << "Too many fogged rooms in view cone!";
       return;
     }
 
@@ -3637,7 +3639,7 @@ void SortStates(state_limited_element *state_array, int cellcount) {
 // Builds a list of mirror faces for each room and allocs memory accordingly
 void ConsolidateMineMirrors() {
   int i, t;
-  mprintf(0, "Consolidating mine mirrors!\n");
+  LOG_DEBUG << "Consolidating mine mirrors!";
   for (i = 0; i < MAX_ROOMS; i++) {
     room *rp = &Rooms[i];
     if (!rp->used)

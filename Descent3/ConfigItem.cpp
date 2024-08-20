@@ -86,23 +86,16 @@
  * $NoKeywords: $
  */
 
-#include "ConfigItem.h"
-#include "ddio.h"
-#include "newui.h"
-#include "application.h"
-#include "descent.h"
-#include "mono.h"
-#include "ddio.h"
-#include "gamefont.h"
-#include "multi_ui.h"
-#include "cfile.h"
-#include "mem.h"
-#include "game.h"
-#include "stringtable.h"
+#include <cstdarg>
+#include <cstdlib>
+#include <cstring>
 
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include "ConfigItem.h"
+#include "newui.h"
+#include "descent.h"
+#include "log.h"
+#include "gamefont.h"
+#include "mem.h"
 #include "stringtable.h"
 
 #define UI_CHECKBOX_OFF_CHAR 28
@@ -166,7 +159,7 @@ bool ConfigItem::Create(NewUIGameWindow *parentwnd, int type, int flags, int x, 
     m_iType = type;
     break;
   default:
-    mprintf(0, "Bad config item type in Create\n");
+    LOG_WARNING << "Bad config item type in Create";
     return false;
   }
   if (!label)
@@ -177,7 +170,7 @@ bool ConfigItem::Create(NewUIGameWindow *parentwnd, int type, int flags, int x, 
 
   if ((m_iFlags & CIF_USEGROUP) && (type != CIT_RADIOBUTTON)) {
     // only radiobutton items support the CIF_USEGROUP
-    mprintf(0, "CONFIGITEM: Only CIT_RADIOBUTTON supports CIF_USEGROUP flag\n");
+    LOG_DEBUG << "CONFIGITEM: Only CIT_RADIOBUTTON supports CIF_USEGROUP flag";
     m_iFlags &= ~CIF_USEGROUP;
     Int3();
   }
@@ -558,7 +551,7 @@ void ConfigItem::Update(int result) {
     UpdateCheckBox(index);
     break;
   default:
-    mprintf(0, "Bad ConfigItem Type in Update\n");
+    LOG_WARNING << "Bad ConfigItem Type in Update";
   }
 }
 
@@ -1012,7 +1005,7 @@ void ConfigItem::Add(int count, ...) {
     m_rbList[m_iInitial]->Activate();
     break;
   default:
-    mprintf(0, "Bad ConfigItem Type in Add\n");
+    LOG_WARNING << "Bad ConfigItem Type in Add";
   }
   va_end(marker);
 }

@@ -496,14 +496,13 @@
 #include <cstring>
 
 #include "chrono_timer.h"
-#include "mono.h"
+#include "log.h"
 #include "renderer.h"
 #include "render.h"
 #include "ddio.h"
 #include "descent.h"
 #include "game.h"
 #include "cfile.h"
-#include "application.h"
 #include "TelCom.h"
 #include "TelComEffects.h"
 #include "Briefing.h"
@@ -565,11 +564,11 @@ static int Telcom_mouse_x, Telcom_mouse_y;
 
 // Initializes the TelCom system, only to be called once during game initialization
 void TelComInit(void) {
-  mprintf(0, "Initializing TelCom System\n");
+  LOG_DEBUG << "Initializing TelCom System";
 
   // load background screens
   if (!(cfexist(TELCOM_DISPLAY_OGF))) {
-    mprintf(0, "%s file not found, exiting TelCom Init\n", TELCOM_DISPLAY_OGF);
+    LOG_WARNING.printf("%s file not found, exiting TelCom Init", TELCOM_DISPLAY_OGF);
     return;
   }
 
@@ -801,7 +800,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
   uint8_t oldbil = Render_preferred_state.filtering;
 
   if (!TelCom_init) {
-    mprintf(0, "TELCOM SYSTEM WARNING: TelComInit() error!\n");
+    LOG_WARNING << "TELCOM SYSTEM WARNING: TelComInit() error!";
     return false;
   }
 
@@ -813,9 +812,9 @@ bool TelComShow(bool ingame, bool ShipSelect) {
 
   int TelCom_bitmap = bm_AllocLoadFileBitmap(IGNORE_TABLE(TELCOM_DISPLAY_OGF), 0);
   if (!cfexist(HOTSPOT_DISPLAY)) {
-    mprintf(0, "Couldn't find HotSpot map, so I'm going to make one\n");
+    LOG_DEBUG << "Couldn't find HotSpot map, so I'm going to make one";
     if (!cfexist(TELCOM_DISPLAY_TGA)) {
-      mprintf(0, "Unable to find %s to extract HotSqpots...skipping TelCom System\n", TELCOM_DISPLAY_TGA);
+      LOG_DEBUG.printf("Unable to find %s to extract HotSqpots...skipping TelCom System", TELCOM_DISPLAY_TGA);
       FreeViewports();
       if (windowmap.wm)
         mem_free(windowmap.wm);
@@ -941,7 +940,7 @@ void FreeTelComOnBitmaps(chunked_bitmap *array) {
 
 // This deactivates the TelCom system
 void TelComDeactivate(void) {
-  mprintf(0, "TelCom System being deactivated\n");
+  LOG_DEBUG << "TelCom System being deactivated";
   FreeTelComOnBitmaps(hotspot_bitmaps);
   FreeHotSpotMapInternals(&hotspotmap);
   FreeViewports();
@@ -1555,7 +1554,7 @@ void TelcomRenderSetScreen(int screen) {
   ASSERT(screen >= 0 && screen < MAX_TELCOM_SCREENS);
 
   if (Telcom_system.Screen_state[screen] != SS_READY) {
-    mprintf(0, "Telcom Warning: Trying to set screen %d active when it isn't ready\n", screen);
+    LOG_DEBUG.printf("Telcom Warning: Trying to set screen %d active when it isn't ready", screen);
     return;
   }
   TC_current_screen = screen;
@@ -1973,7 +1972,7 @@ void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) 
 
   TelcomHiLites[monitor] = (int *)mem_malloc(sizeof(int) * TelcomHiLiteCount[monitor]);
   if (!TelcomHiLites[monitor]) {
-    mprintf(0, "Unable to allocate memory for hilights monitor=%d\n", monitor);
+    LOG_DEBUG.printf("Unable to allocate memory for hilights monitor=%d", monitor);
     TelcomHiLiteCount[monitor] = 0;
     return;
   }
@@ -2471,7 +2470,7 @@ void TelComSendEvent(int event_num, int parm1, int parm2) {
     }
   }
 
-  mprintf(0, "Warning: TelCom Event Queue Overflow\n");
+  LOG_WARNING << "Warning: TelCom Event Queue Overflow";
 }
 
 /*
@@ -2572,7 +2571,7 @@ void TelComHandleAllEvents(tTelComInfo *tcs) {
     // handle the event
     switch (event.id) {
     case -1:
-      mprintf(0, "TelCom Error: Trying to process an event of type -1\n");
+      LOG_FATAL << "TelCom Error: Trying to process an event of type -1";
       Int3(); // Hey!! How'd we pop off a -1!!! Get Jeff
       break;
     case TEVT_TCQUIT: {
@@ -2581,7 +2580,7 @@ void TelComHandleAllEvents(tTelComInfo *tcs) {
     } break;
     case TEVT_SCREENSHOT: {
       // take a screenshot
-      mprintf(0, "Taking Screenshot\n");
+      LOG_INFO << "Taking Screenshot";
       DoScreenshot();
     } break;
     case TEVT_TCNEXT: {
@@ -2606,7 +2605,7 @@ void TelComHandleAllEvents(tTelComInfo *tcs) {
       TelComHandleKeyPress(event.parms[0], true, TC_current_screen);
     } break;
     default:
-      mprintf(0, "TelCom System Warning: Unhandled event %d\n", event.id);
+      LOG_WARNING.printf("TelCom System Warning: Unhandled event %d", event.id);
       break;
     }
   }
@@ -3078,7 +3077,7 @@ void TelComHandleKeyPress(int key, bool click, int screen_id) {
     break;
   }
   default:
-    mprintf(0, "TelCom Warning: Keypressed not valid\n");
+    LOG_WARNING << "TelCom Warning: Keypressed not valid";
   }
 }
 
@@ -3315,11 +3314,11 @@ void TelcomStartSound(int sid) {
 
   // make sure the handle is there
   if (TelcomSounds[sid].handle == -1) {
-    mprintf(0, "TelCom Sound Warning: '%s' hasn't been loaded yet, trying to load\n", TCSoundFiles[sid]);
+    LOG_DEBUG.printf("TelCom Sound Warning: '%s' hasn't been loaded yet, trying to load", TCSoundFiles[sid]);
     TelcomSounds[sid].handle = FindSoundName(IGNORE_TABLE(TCSoundFiles[sid]));
 
     if (TelcomSounds[sid].handle == -1) {
-      mprintf(0, "TelCom Sound Warning: 2nd try failed, bailing\n");
+      LOG_WARNING << "TelCom Sound Warning: 2nd try failed, bailing";
       return;
     }
   }
@@ -3475,7 +3474,7 @@ void TelComSingleShipSelect(tTelComInfo *tcs) {
   int found_ships = TCSSCollectInfo();
   if (found_ships < 2 || found_ships > 3) {
     // not supported
-    mprintf(0, "Skipping Single Player Ship Selecting, %d ships found\n", found_ships);
+    LOG_DEBUG.printf("Skipping Single Player Ship Selecting, %d ships found", found_ships);
 
     int ship_index_to_use = 0;
     int bit = 0x01;
@@ -3566,7 +3565,7 @@ void TelComSingleShipSelect(tTelComInfo *tcs) {
   int focus_ship = -1;
   for (int j = 0; j < MAX_NUM_SHIPS; j++) {
     if (SSShips[j].found && SSShips[j].ship_index == Players[Player_num].ship_index) {
-      mprintf(0, "Current Ship: %s\n", Ships[SSShips[j].ship_index].name);
+      LOG_DEBUG.printf("Current Ship: %s", Ships[SSShips[j].ship_index].name);
       focus_ship = SSShips[j].efxnum;
       break;
     }
@@ -3626,7 +3625,7 @@ void TelComSingleShipSelect(tTelComInfo *tcs) {
   TelcomRenderSetCallback(NULL);
 
   int ship_index_to_use = TCSSGetSelectedShipIndex();
-  mprintf(0, "Selected: %s\n", Ships[ship_index_to_use].name);
+  LOG_DEBUG.printf("Selected: %s", Ships[ship_index_to_use].name);
   Players[Player_num].ship_index = ship_index_to_use;
 
   TelCom_ClearCustomKeyEvents();
@@ -3675,7 +3674,7 @@ int TCSSCollectInfo(void) {
     }
   }
 
-  mprintf(0, "Collecting Ship Info: %d ships available\n", found);
+  LOG_DEBUG.printf("Collecting Ship Info: %d ships available", found);
   TCShipSelect.ShipCount = found;
 
   return found;
@@ -3708,7 +3707,7 @@ void TCSSButtonCallback(int efxnum) {
   }
 
   if (selected_id == -1) {
-    mprintf(0, "Invalid selected id for efxnum %d\n", efxnum);
+    LOG_WARNING.printf("Invalid selected id for efxnum %d", efxnum);
     return;
   }
 
@@ -3728,7 +3727,7 @@ void TCSSButtonCallback(int efxnum) {
   float size;
   TCShipSelect.ship_model = Ships[SSShips[selected_id].ship_index].model_handle;
   if (TCShipSelect.ship_model == -1) {
-    mprintf(0, "ship_model is -1\n");
+    LOG_FATAL << "ship_model is -1";
     Int3();
   }
 
@@ -4008,7 +4007,7 @@ void TelCom_SendSystemEvent(int event_num, int parm1, int parm2) {
     }
   }
 
-  mprintf(0, "Warning: TelCom System Event Queue Overflow\n");
+  LOG_WARNING << "Warning: TelCom System Event Queue Overflow";
 }
 
 /*

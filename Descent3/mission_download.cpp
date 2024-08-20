@@ -118,7 +118,7 @@
  *
  */
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "pstypes.h"
 #include "mem.h"
@@ -126,17 +126,16 @@
 #include "descent.h"
 #include "networking.h"
 #include "multi.h"
+#include "log.h"
 #include "ui.h"
 #include "newui.h"
 #include "ddio.h"
 #include "stringtable.h"
 #include "multi_dll_mgr.h"
-// #include "inetgetfile.h"
 #include "grtext.h"
 #include "Mission.h"
 #include "mission_download.h"
 #include "renderer.h"
-
 #include "unzip.h"
 
 int Got_url;
@@ -615,7 +614,7 @@ int msn_CheckGetMission(network_address *net_addr, char *filename) {
     int sel = msn_ShowDownloadChoices(murls);
     if (sel != -1) {
       // Get the item that was selected!
-      mprintf(0, "Downloading missions file from %s\n", murls->URL[sel]);
+      LOG_DEBUG.printf("Downloading missions file from %s", murls->URL[sel]);
       if (msn_DownloadWithStatus(murls->URL[sel], filename)) {
         return 1;
       }
@@ -691,9 +690,9 @@ void _get_zipfilename(char *output, char *directory, char *zipfilename) {
 // return 1 on success
 int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
 
-  mprintf(0, "Extracting ZIP File (%s) to missions directory\n", zipfilename);
+  LOG_DEBUG.printf("Extracting ZIP File (%s) to missions directory", zipfilename);
   if (!cfexist(zipfilename)) {
-    mprintf(0, "Zip file doesn't exist\n");
+    LOG_WARNING << "Zip file doesn't exist";
     return 0;
   }
 
@@ -708,7 +707,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
   zipentry *ze;
 
   if (!zfile.OpenZip(zipfilename)) {
-    mprintf(0, "Unable to open zip file\n");
+    LOG_WARNING << "Unable to open zip file";
     return 0;
   }
 
@@ -730,7 +729,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
     Descent->defer();
     process_file = true;
 
-    mprintf(0, "Processesing: %s\n", ze->name);
+    LOG_DEBUG.printf("Processesing: %s", ze->name);
 
     if (ze->compression_method == 0x0000 || ze->compression_method == 0x0008) {
       char *rfile = strrchr(ze->name, '/');
@@ -750,7 +749,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
         snprintf(buffer, sizeof(buffer), "%s already exists. Overwrite?", output_filename);
         if (DoMessageBox("Confirm", buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
           // delete the file
-          mprintf(0, "Deleting %s\n", zipfilename);
+          LOG_DEBUG.printf("Deleting %s", zipfilename);
           if (!ddio_DeleteFile(output_filename)) {
             process_file = false;
             console.puts(GR_GREEN, "[Unable to Write] ");
@@ -772,10 +771,10 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
         int ret = zfile.ExtractFile(ze, output_filename);
         if (ret < 0) {
           if (ret == -9) {
-            mprintf(0, " Error writing to file\n");
+            LOG_WARNING << " Error writing to file";
             snprintf(buffer, sizeof(buffer), "\nError writing to file (Out of space?)");
           } else {
-            mprintf(0, " Error %d extracting file\n", ret);
+            LOG_WARNING.printf(" Error %d extracting file", ret);
             snprintf(buffer, sizeof(buffer), "\nError %d extracting file", ret);
           }
           console.puts(GR_GREEN, buffer);
@@ -800,7 +799,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
       }
 
     } else {
-      mprintf(0, "Unsupported compression for file (%s)\n", ze->name);
+      LOG_WARNING.printf("Unsupported compression for file (%s)", ze->name);
       console.puts(GR_GREEN, "Unsupported compression!!");
     }
 
@@ -813,7 +812,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
   if (DoMessageBox("Confirm", "Do you want to delete the zip file? It is no longer needed.", MSGBOX_YESNO,
                    UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
     // delete the file
-    mprintf(0, "Deleting %s\n", zipfilename);
+    LOG_DEBUG.printf("Deleting %s", zipfilename);
     ddio_DeleteFile(zipfilename);
   }
 
@@ -872,7 +871,7 @@ int CheckGetD3M(char *d3m) {
   strcat(modurl, fixedd3m);
 
   lowurl = mem_strdup(_strlwr(modurl));
-  mprintf(0, "Downloading mod file from %s\n", modurl);
+  LOG_DEBUG.printf("Downloading mod file from %s", modurl);
 
   if (ModDownloadWithStatus(modurl, d3m)) {
     mem_free(fixedd3m);

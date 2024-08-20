@@ -1425,7 +1425,6 @@ void RenderTerrain(uint8_t from_mine, int left, int top, int right, int bot) {
     RenderAllTerrainObjects();
   }
 
-  mprintf_at(2, 5, 0, "Objs Drawn=%5d", Terrain_objects_drawn);
   Last_terrain_render_time = Gametime;
 }
 
@@ -2697,10 +2696,6 @@ void DisplayTerrainList(int cellcount, bool from_automap) {
 
   rend_SetOverlayType(OT_NONE);
   rend_SetWrapType(WT_WRAP);
-
-  mprintf_at(2, 1, 0, "%5d cells", cellcount);
-  mprintf_at(2, 2, 0, "%5d trans", GlobalTransCount);
-  mprintf_at(2, 3, 0, "Tdepth=%5d", TotalDepth);
 }
 // Arrays for drawing
 static int src[256];

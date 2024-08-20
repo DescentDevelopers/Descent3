@@ -200,6 +200,7 @@
 #include "stringtable.h"
 #include "dedicated_server.h"
 #include "levelgoal.h"
+#include "log.h"
 #include "sounds.h"
 #include "pilot.h"
 #include "joystick.h"
@@ -600,7 +601,7 @@ void PaintPLRSinglePlayerText() {
 
   if (all_done_painting) {
     if (paint_in_sound_handle != -1) {
-      mprintf(0, "Stopping paint in sound\n");
+      LOG_WARNING << "Stopping paint in sound";
       Sound_system.StopSoundImmediate(paint_in_sound_handle);
       paint_in_sound_handle = -1;
     }

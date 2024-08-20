@@ -1035,16 +1035,13 @@
 #include "BOA.h"
 #include "gameevent.h"
 #include "AIMain.h"
-
 #include "soar_helpers.h"
-
 #include "terrain.h"
 #include "hlsoundlib.h"
 #include "SmallViews.h"
 #include "polymodel.h"
 #include "gametexture.h"
 #include "hud.h"
-#include "findintersection.h"
 #include "menu.h"
 #include "newui.h"
 #include "cockpit.h"
@@ -1069,8 +1066,8 @@
 #include "doorway.h"
 #include "matcen.h"
 #include "dedicated_server.h"
-#include "networking.h"
 #include "levelgoal.h"
+#include "log.h"
 #include "demofile.h"
 #include "lightmap_info.h"
 #include "lightmap.h"
@@ -1086,11 +1083,8 @@
 #include "multi_dll_mgr.h"
 #include "multi_ui.h"
 #include "gamepath.h"
-#include "vclip.h"
 #include "bsp.h"
-
 #include "args.h"
-void ResetHudMessages(void);
 
 //	Variables
 tGameState Game_state = GAMESTATE_IDLE;      // current game state.
@@ -1302,7 +1296,7 @@ bool GameSequencer() {
 // Make sure we have the correct hogfile
 void CheckHogfile() {
   char hogpath[_MAX_PATH * 2];
-  mprintf(0, "Checking to see if we need to open another hog off of disk or CDROM\n");
+  LOG_DEBUG << "Checking to see if we need to open another hog off of disk or CDROM";
 
   if (Current_mission.filename && (stricmp(Current_mission.filename, "d3.mn3") == 0) &&
       (Current_mission.cur_level > 4)) {
@@ -1387,7 +1381,7 @@ bool StartNewGame() {
 bool DoLevelIntro() {
   tLevelNode *lvl = Current_level;
 
-  mprintf(0, "In DoLevelIntro()\n");
+  LOG_DEBUG << "In DoLevelIntro()";
 
   // multiplayer stuff (we skip the movie and briefings)
   if (Game_mode & GM_MULTI) {
@@ -1440,7 +1434,7 @@ void ClearViewerObjects() {
 
   for (i = 0, objp = Objects; i <= Highest_object_index; i++, objp++)
     if (objp->type == OBJ_VIEWER) {
-      mprintf(0, "Deleting viewer object %d\n", i);
+      LOG_DEBUG.printf("Deleting viewer object %d", i);
       ObjDelete(i);
     }
 }
@@ -1542,7 +1536,7 @@ void StartLevel() {
         Players[Player_num].ship_index = FindShipName(ship_model);
         ASSERT(Players[Player_num].ship_index != -1); // DAJ -1FIX
       } else {
-        mprintf(0, "Player %d wanted to use a ship (%s) which wasn't allowed.\n", Player_num, ship_model);
+        LOG_DEBUG.printf("Player %d wanted to use a ship (%s) which wasn't allowed.", Player_num, ship_model);
         int i;
         bool found_one = false;
 
@@ -1877,7 +1871,7 @@ void FlushDataCache() {
     }
   }
 
-  mprintf(0, "Freed %d textures, %d models, and %d sounds.\n", texfreed, modelsfreed, soundsfreed);
+  LOG_DEBUG.printf("Freed %d textures, %d models, and %d sounds.", texfreed, modelsfreed, soundsfreed);
   // the renderer is never initialized in dedicated server mode, so don't try to reset things either
   if (!Dedicated_server) {
     rend_ResetCache();
@@ -1947,7 +1941,7 @@ void EndLevel(int state) {
       if ((NetPlayers[i].flags & NPF_CONNECTED) && (NetPlayers[i].sequence >= NETSEQ_PLAYING)) {
         // check to see if player is dying
         if ((Players[i].flags & PLAYER_FLAGS_DYING) || (Players[i].flags & PLAYER_FLAGS_DEAD)) {
-          mprintf(0, "Prematurely ending death for player %d\n", i);
+          LOG_DEBUG.printf("Prematurely ending death for player %d", i);
           EndPlayerDeath(i);
         }
       }
@@ -1956,7 +1950,7 @@ void EndLevel(int state) {
   } else {
     // in single player, check Player_num
     if ((Players[Player_num].flags & PLAYER_FLAGS_DYING) || (Players[Player_num].flags & PLAYER_FLAGS_DEAD)) {
-      mprintf(0, "Prematurely ending death for player\n");
+      LOG_DEBUG.printf("Prematurely ending death for player");
       EndPlayerDeath(Player_num);
     }
   }
@@ -1984,7 +1978,7 @@ void SetNextLevel() {
     Multi_next_level = -1;
   } else if (lvl->flags & LVLFLAG_BRANCH) {
     //	jump to brached level
-    mprintf(0, "Branching...\n");
+    LOG_DEBUG << "Branching...";
     Current_mission.cur_level = lvl->lvlbranch0;
     SetCurrentLevel(Current_mission.cur_level);
   } else if ((Current_mission.cur_level == Current_mission.num_levels) || (lvl->flags & LVLFLAG_FINAL)) {
@@ -2351,7 +2345,7 @@ void PageInShip(int id) {
     // Create bumps if neccessary
     if (rend_SupportsBumpmapping()) {
       if (GameTextures[pm->textures[t]].bumpmap == -1) {
-        mprintf(0, "Trying to make bumpmap!\n");
+        LOG_DEBUG << "Trying to make bumpmap!";
         BuildTextureBumpmaps(pm->textures[t]);
       }
     }

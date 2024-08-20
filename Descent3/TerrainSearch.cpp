@@ -216,17 +216,16 @@
  * $NoKeywords: $
  */
 
+#include <cstdlib>
+
 #include "terrain.h"
 #include "3d.h"
-#include "mono.h"
+#include "log.h"
 #include "vecmat.h"
 #include "pserror.h"
-#include "pstypes.h"
 #include "descent.h"
 #include "game.h"
 #include "gameloop.h"
-#include <memory.h>
-#include <stdlib.h>
 #include "config.h"
 #include "dedicated_server.h"
 
@@ -437,7 +436,7 @@ __inline void CheckCellOccupancy(int x, int y, int *ccount, uint8_t lod) {
   int n, simplemul, i;
 
   if (*ccount >= MAX_CELLS_TO_RENDER) {
-    mprintf(0, "Trying to render too many cells!  Cell limit=%d\n", MAX_CELLS_TO_RENDER);
+    LOG_WARNING.printf("Trying to render too many cells!  Cell limit=%d", MAX_CELLS_TO_RENDER);
 #ifndef NEWEDITOR
     Detail_settings.Terrain_render_distance = 80.0 * TERRAIN_SIZE;
 #endif

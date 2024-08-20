@@ -88,12 +88,12 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "forcefeedback.h"
 #include "D3ForceFeedback.h"
 #include "pserror.h"
-#include "mono.h"
+#include "log.h"
 #include "weapon.h"
 #include "ddio.h"
 #include "psrand.h"
@@ -143,12 +143,12 @@ void ForceInit(void) {
     D3Force_init = true;
     D3Force_pause = false;
 
-    mprintf(0, "Force: High Level Force Feedback system initialized\n");
+    LOG_INFO << "Force: High Level Force Feedback system initialized";
   } else {
     D3Force_init = false;
     D3Force_pause = false;
 
-    mprintf(0, "Force: Force Feedback System Not Found\n");
+    LOG_WARNING << "Force: Force Feedback System Not Found";
   }
 
   for (int i = 0; i < DDIO_FF_MAXEFFECTS; i++) {
@@ -195,7 +195,7 @@ void ForceClose(void) {
   D3Force_pause = false;
   D3Force_init = false;
 
-  mprintf(0, "Force: Shutting down high level force feedback\n");
+  LOG_INFO << "Force: Shutting down high level force feedback";
   ForceEffectsClose();
 
   for (int i = 0; i < DDIO_FF_MAXEFFECTS; i++) {
@@ -214,7 +214,7 @@ void ForceShutdown(void) {
 
   ForceClose();
   if (D3Force_init) {
-    mprintf(0, "Force: Shutting down Force Feedback System\n");
+    LOG_INFO << "Force: Shutting down Force Feedback System";
     ddio_ffb_Pause(kJoy1);
   }
 }
@@ -229,7 +229,7 @@ void ForceRestart(void) {
   D3Force_pause = false;
 
   if (D3Force_init) {
-    mprintf(0, "Force: Restarting Force Feedback System\n");
+    LOG_INFO << "Force: Restarting Force Feedback System";
     ddio_ff_Acquire(kJoy1);
     ddio_ffb_Continue(kJoy1);
 
@@ -262,7 +262,7 @@ void ForceRestart(void) {
 // ------------------------------------------------------------------
 void ForceDisable(void) {
   if (D3Force_init) {
-    mprintf(0, "Force: Disabling Force Feedback System\n");
+    LOG_INFO << "Force: Disabling Force Feedback System";
     //@@ddio_ffb_Disable(kJoy1);
     D3Use_force_feedback = false;
   }
@@ -275,7 +275,7 @@ void ForceDisable(void) {
 // ------------------------------------------------------------------
 void ForceEnable(void) {
   if (D3Force_init) {
-    mprintf(0, "Force: Enabling Force Feedback System\n");
+    LOG_INFO << "Force: Enabling Force Feedback System";
     //@@ddio_ffb_Enable(kJoy1);
     D3Use_force_feedback = true;
   }
