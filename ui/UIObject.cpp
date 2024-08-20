@@ -39,6 +39,7 @@
  */
 
 #include "UIlib.h"
+#include "log.h"
 
 UIObject::UIObject() {
   m_X = m_Y = 0;
@@ -65,7 +66,7 @@ void UIObject::Move(int x, int y, int w, int h) {
   m_Y = y;
   m_W = w;
   m_H = h;
-  mprintf(0, "new [%d,%d]\n", m_X, m_Y);
+  LOG_DEBUG.printf("new [%d,%d]", m_X, m_Y);
 }
 
 //@@

@@ -151,6 +151,7 @@
 
 #include "UIlib.h"
 #include "Macros.h"
+#include "log.h"
 
 //	the window font for all windows
 int UIWindow::m_WindowFont = 0;
@@ -576,7 +577,7 @@ void UIWindow::Render() {
       gadget->OnDraw();
       ui_EndDraw();
     } else {
-      mprintf(0, "WINDOW: Gadget clipped on screen border (%d,%d,%d,%d)\n", l, t, r, b);
+      LOG_DEBUG.printf("WINDOW: Gadget clipped on screen border (%d,%d,%d,%d)", l, t, r, b);
       //			Int3();
     }
 
