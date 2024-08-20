@@ -19,7 +19,7 @@
 #include <cstdlib>
 #include <memory.h>
 
-#include "mono.h"
+#include "log.h"
 #include "ssl_lib.h"
 #include "mixer.h"
 #include "pserror.h"
@@ -50,7 +50,7 @@ software_mixer::~software_mixer() {
 
 bool software_mixer::Initialize(tMixerInit *mi) {
   if (m_init) {
-    mprintf(0, "Mixer: Already Init\n");
+    LOG_ERROR << "Mixer: Already Init";
     Int3();
     return false;
   }
@@ -58,7 +58,7 @@ bool software_mixer::Initialize(tMixerInit *mi) {
   // Sam 6/29 - When using SDL, there's no primary buffer
   // if(!mi->primary_buffer || !mi->ll_sound_ptr)
   if (!mi->ll_sound_ptr) {
-    mprintf(0, "Mixer: Bad Value passed on init\n");
+    LOG_ERROR << "Mixer: Bad Value passed on init";
     Int3();
     return false;
   }
@@ -113,7 +113,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
 
   // this code will assure that this function will not be called when  sound system is in error mode.
   if (*m_error_code != SSL_OK) {
-    mprintf(0, "MIX: Mixer in error code %d\n", *m_error_code);
+    LOG_ERROR.printf("MIX: Mixer in error code %d", *m_error_code);
     return;
   }
 
@@ -121,7 +121,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
   ASSERT(ptr && len >= 0);
 
   if ((len % m_primary_alignment) != 0) {
-    mprintf(0, "MIX:Len is not aligned!\n");
+    LOG_ERROR << "MIX:Len is not aligned!";
     (*m_fpSetError)(SSL_ERROR_STREAMMIXER);
     (*m_fpErrorText)("ASSERT((len % ll_sound_ptr->m_primary_alignment) == 0)\nLen:%d PrA:%d", len, m_primary_alignment);
     return;
@@ -190,7 +190,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
         loop_start = Sounds[sound_index].loop_start;
         loop_end = Sounds[sound_index].loop_end;
         if (!sample_16bit && !sample_8bit) {
-          mprintf(0, "sound file %s didn't have data for samples.\n", snd_file->name);
+          LOG_WARNING.printf("sound file %s didn't have data for samples.\n", snd_file->name);
         }
       }
 
@@ -198,7 +198,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
       //	ASSERT(sample_16bit || sample_8bit);
       if (!sample_16bit && !sample_8bit) {
         sound_file_info *snd_file = &SoundFiles[Sounds[cur_buf->m_sound_index].sample_index];
-        mprintf(0, "MIX: No data for %s\n", snd_file->name);
+        LOG_WARNING.printf("MIX: No data for %s\n", snd_file->name);
         (*m_fpSetError)(SSL_ERROR_SAMPLE_NODATA);
         (*m_fpErrorText)("ASSERT(sample_16bit || sample_8bit)\nNo data found for sound file: %s", snd_file->name);
         cur_buf->m_status = SSF_UNUSED;
@@ -264,7 +264,6 @@ void software_mixer::StreamMixer(char *ptr, int len) {
 
         if (num_write <= 0) {
           num_write = 0;
-          mprintf(0, "d");
           goto stream_done;
         }
       } else {
@@ -286,7 +285,6 @@ void software_mixer::StreamMixer(char *ptr, int len) {
       if ((num_write < 0) || (num_write > num_samples)) // this was an assert
       {
         num_write = 0;
-        mprintf(0, "D");
         goto done;
       }
 
@@ -455,12 +453,12 @@ void software_mixer::StreamMixer(char *ptr, int len) {
               }
               loop_end -= 1;
             } else {
-              mprintf(0, "SE: Data is NULL\n");
+              LOG_WARNING << "SE: Data is NULL";
               cur_buf->m_status &= ~SSF_PLAY_STREAMING;
               f_loop = false;
             }
           } else {
-            mprintf(0, "SE: Callback/data is NULL\n");
+            LOG_WARNING << "SE: Callback/data is NULL";
             cur_buf->m_status &= ~SSF_PLAY_STREAMING;
             f_loop = false;
           }

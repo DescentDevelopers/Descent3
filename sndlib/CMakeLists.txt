@@ -26,6 +26,7 @@ target_link_libraries(sndlib PRIVATE
   stream_audio
   physics
   SDL2::SDL2
+  plog::plog
 )
 target_include_directories(sndlib PUBLIC
   $<BUILD_INTERFACE:
