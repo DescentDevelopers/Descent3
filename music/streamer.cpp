@@ -60,6 +60,7 @@
  * $NoKeywords: $
  */
 
+#include "log.h"
 #include "music.h"
 #include "streamaudio.h"
 
@@ -125,7 +126,7 @@ void oms_stream::Process(float frmtime) {
   case OMS_STRM_SWITCH:
     STREAM_COMMANDP(OMS_STRM_SWITCH, evt.parm.p);
     m_stream.Stop(true, &m_data.i);
-    mprintf(0, "%d-%d ", m_data.i, m_stream.State());
+    LOG_DEBUG.printf("%d-%d", m_data.i, m_stream.State());
     break;
 
   case OMS_STRM_NEXT:
@@ -243,7 +244,7 @@ void oms_stream::processQLoad(const char *fname) {
     STREAM_COMMANDP(OMS_STRM_LOAD, (void *)fname);
     m_data.p = (void *)fname;
   } else {
-    mprintf(0, "OMS: Couldn't load song %s.\n", fname);
+    LOG_WARNING.printf("OMS: Couldn't load song %s.", fname);
 
     STREAM_COMMANDI(OMS_STRM_FREE);
     m_valid_result = true;
