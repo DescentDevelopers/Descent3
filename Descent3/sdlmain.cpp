@@ -48,8 +48,6 @@
 
 std::filesystem::path orig_pwd;
 
-bool linux_permit_gamma = false;
-
 static volatile char already_tried_signal_cleanup = 0;
 
 void just_exit(void) {

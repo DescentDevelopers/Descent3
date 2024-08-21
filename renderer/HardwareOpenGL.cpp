@@ -54,8 +54,6 @@
 #include "win/arb_extensions.h"
 #endif
 
-int FindArg(const char *);
-
 // General renderer states
 extern int gpu_Overlay_map;
 int Bump_map = 0;
@@ -341,9 +339,7 @@ void opengl_SetDefaults() {
   dglActiveTexture(GL_TEXTURE0_ARB + 0);
 }
 
-extern bool linux_permit_gamma;
 extern renderer_preferred_state Render_preferred_state;
-int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event);
 
 int opengl_Setup(oeApplication *app, int *width, int *height) {
   int winw = Video_res_list[Game_video_resolution].width;
@@ -362,8 +358,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     }
   }
 
-  SDL_SetEventFilter(d3SDLEventFilter, NULL);
-
   bool fullscreen = true;
 
   if (FindArgChar("-fullscreen", 'f')) {
@@ -373,10 +367,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   }
 
   if (!Already_loaded) {
-#define MAX_ARGS 30
-#define MAX_CHARS_PER_ARG 100
-    extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
-
     char gl_library[256];
     int arg;
     arg = FindArgChar("-gllibrary", 'g');
@@ -519,12 +509,10 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 
   // rcg09182000 gamma fun.
   // rcg01112000 --nogamma fun.
-  if (FindArgChar("-nogamma", 'M')) {
-    linux_permit_gamma = false;
-  } else {
+  if (!FindArgChar("-nogamma", 'M')) {
     Uint16 ramp[256];
     SDL_CalculateGammaRamp(Render_preferred_state.gamma, ramp);
-    linux_permit_gamma = (SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp) == 0);
+    SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp);
   } // else
 
   if (ParentApplication) {
