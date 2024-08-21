@@ -343,16 +343,12 @@ void opengl_SetDefaults() {
 
 extern bool linux_permit_gamma;
 extern renderer_preferred_state Render_preferred_state;
-extern bool ddio_mouseGrabbed;
 int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event);
 
 int opengl_Setup(oeApplication *app, int *width, int *height) {
   int winw = Video_res_list[Game_video_resolution].width;
   int winh = Video_res_list[Game_video_resolution].height;
 
-  // rcg09182000 don't need to quitsubsystem anymore...
-  //    SDL_QuitSubSystem(SDL_INIT_VIDEO);  // here goes nothing...
-  //    Already_loaded = false;
   SDL_ClearError();
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {
     const int rc = SDL_Init(SDL_INIT_VIDEO);
@@ -520,12 +516,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
       GSDLWindow = NULL;
       return 0;
   }
-
-  if (!FindArg("-nomousegrab")) {
-    ddio_mouseGrabbed = true;
-  }
-
-  SDL_SetRelativeMouseMode(ddio_mouseGrabbed ? SDL_TRUE : SDL_FALSE);
 
   // rcg09182000 gamma fun.
   // rcg01112000 --nogamma fun.
