@@ -18,13 +18,15 @@
 
 // TODO: This is missing a good way of overriding base behavior (like, you know, method overrides...)
 
+#include <algorithm>
+#include <cstring>
+
 #include "pserror.h"
 #include "mono.h"
 #include "3d.h"
 #include "renderer.h"
 #include "bitmap.h"
 #include "grdefs.h"
-#include <cstring>
 
 #include "HardwareInternal.h"
 #include "lightmap.h"
@@ -72,7 +74,7 @@ float rend_GetAlphaMultiplier() {
   case AT_SATURATE_VERTEX:
   case AT_SATURATE_TEXTURE_VERTEX:
   case AT_SPECULAR:
-    return 1.0;
+    return 1.0f;
   case AT_CONSTANT:
   case AT_CONSTANT_TEXTURE:
   case AT_CONSTANT_TEXTURE_VERTEX:
@@ -81,10 +83,10 @@ float rend_GetAlphaMultiplier() {
   case AT_LIGHTMAP_BLEND_SATURATE:
   case AT_SATURATE_TEXTURE:
   case AT_SATURATE_CONSTANT_VERTEX:
-    return gpu_state.cur_alpha / 255.0;
+    return gpu_state.cur_alpha / 255.0f;
   default:
     // Int3();		// no type defined,get jason
-    return 0;
+    return 0.0f;
   }
 }
 
@@ -146,20 +148,20 @@ void rend_DrawFontCharacter(int bm_handle, int x1, int y1, int x2, int y2, float
     pnts[i].p3_flags = PF_PROJECTED;
     ptr_pnts[i] = &pnts[i];
   }
-  pnts[0].p3_sx = x1;
-  pnts[0].p3_sy = y1;
+  pnts[0].p3_sx = (float)x1;
+  pnts[0].p3_sy = (float)y1;
   pnts[0].p3_u = u;
   pnts[0].p3_v = v;
-  pnts[1].p3_sx = x2;
-  pnts[1].p3_sy = y1;
+  pnts[1].p3_sx = (float)x2;
+  pnts[1].p3_sy = (float)y1;
   pnts[1].p3_u = u + w;
   pnts[1].p3_v = v;
-  pnts[2].p3_sx = x2;
-  pnts[2].p3_sy = y2;
+  pnts[2].p3_sx = (float)x2;
+  pnts[2].p3_sy = (float)y2;
   pnts[2].p3_u = u + w;
   pnts[2].p3_v = v + h;
-  pnts[3].p3_sx = x1;
-  pnts[3].p3_sy = y2;
+  pnts[3].p3_sx = (float)x1;
+  pnts[3].p3_sy = (float)y2;
   pnts[3].p3_u = u;
   pnts[3].p3_v = v + h;
   rend_DrawPolygon2D(bm_handle, ptr_pnts, 4);
@@ -188,15 +190,11 @@ void rend_SetZBias(float z_bias) {
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
 // usefull for motion blur effect
 void rend_SetAlphaFactor(float val) {
-  if (val < 0.0f)
-    val = 0.0f;
-  if (val > 1.0f)
-    val = 1.0f;
-  gpu_Alpha_factor = val;
+  gpu_Alpha_factor = std::clamp(val, 0.0f, 1.0f);
 }
 
 // Returns the current Alpha factor
-float rend_GetAlphaFactor(void) { return gpu_Alpha_factor; }
+float rend_GetAlphaFactor() { return gpu_Alpha_factor; }
 
 // Gets a pointer to a linear frame buffer
 void rend_GetLFBLock(renderer_lfb *lfb) {}
@@ -218,7 +216,7 @@ void rend_GetProjectionScreenParameters(int &screenLX, int &screenTY, int &scree
 }
 
 // Returns the aspect ratio of the physical screen
-float rend_GetAspectRatio(void) {
+float rend_GetAspectRatio() {
   float aspect_ratio = (float)((3.0f * gpu_state.screen_width) / (4.0f * gpu_state.screen_height));
   return aspect_ratio;
 }
@@ -228,14 +226,14 @@ void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, uint16_t *
 
 // draws a scaled 2d bitmap to our buffer
 void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, float v0, float u1, float v1, int color,
-                           float *alphas) {
+                           const float *alphas) {
   g3Point *ptr_pnts[4];
   g3Point pnts[4];
   float r, g, b;
   if (color != -1) {
-    r = GR_COLOR_RED(color) / 255.0;
-    g = GR_COLOR_GREEN(color) / 255.0;
-    b = GR_COLOR_BLUE(color) / 255.0;
+    r = GR_COLOR_RED(color) / 255.0f;
+    g = GR_COLOR_GREEN(color) / 255.0f;
+    b = GR_COLOR_BLUE(color) / 255.0f;
   }
   for (int i = 0; i < 4; i++) {
     if (color == -1)
@@ -253,20 +251,20 @@ void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, flo
     pnts[i].p3_flags = PF_PROJECTED;
   }
 
-  pnts[0].p3_sx = x1;
-  pnts[0].p3_sy = y1;
+  pnts[0].p3_sx = (float)x1;
+  pnts[0].p3_sy = (float)y1;
   pnts[0].p3_u = u0;
   pnts[0].p3_v = v0;
-  pnts[1].p3_sx = x2;
-  pnts[1].p3_sy = y1;
+  pnts[1].p3_sx = (float)x2;
+  pnts[1].p3_sy = (float)y1;
   pnts[1].p3_u = u1;
   pnts[1].p3_v = v0;
-  pnts[2].p3_sx = x2;
-  pnts[2].p3_sy = y2;
+  pnts[2].p3_sx = (float)x2;
+  pnts[2].p3_sy = (float)y2;
   pnts[2].p3_u = u1;
   pnts[2].p3_v = v1;
-  pnts[3].p3_sx = x1;
-  pnts[3].p3_sy = y2;
+  pnts[3].p3_sx = (float)x1;
+  pnts[3].p3_sy = (float)y2;
   pnts[3].p3_u = u0;
   pnts[3].p3_v = v1;
   ptr_pnts[0] = &pnts[0];
@@ -408,10 +406,10 @@ void rend_PreUploadTextureToCard(int handle, int map_type) {}
 void rend_FreePreUploadedTexture(int handle, int map_type) {}
 
 // Returns 1 if there is mid video memory, 2 if there is low vid memory, or 0 if there is large vid memory
-int rend_LowVidMem(void) { return 0; }
+int rend_LowVidMem() { return 0; }
 
 // Returns 1 if the renderer supports bumpmapping
-int rend_SupportsBumpmapping(void) { return 0; }
+int rend_SupportsBumpmapping() { return 0; }
 
 // Sets a bumpmap to be rendered, or turns off bumpmapping altogether
 void rend_SetBumpmapReadyState(int state, int map) {}
@@ -453,8 +451,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   PosColorUVVertex *vData = &vArray[0];
 
   // Specify our coordinates
-  int i;
-  for (i = 0; i < nv; ++i, ++vData) {
+  for (int i = 0; i < nv; ++i, ++vData) {
     g3Point *pnt = p[i];
 
     vData->color = DeterminePointColor(pnt, false, true);
@@ -498,9 +495,6 @@ color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud, bool ch
 // Uses bitmap "handle" as a texture
 void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
   g3Point *pnt;
-  int i;
-  float fr, fg, fb;
-  float alpha;
 
   ASSERT(nv < 100);
 
@@ -523,7 +517,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
   PosColorUVVertex *vData = &vArray[0];
 
   // Specify our coordinates
-  for (i = 0; i < nv; i++, vData++) {
+  for (int i = 0; i < nv; i++, vData++) {
     pnt = p[i];
 
     // all points should be original
@@ -556,9 +550,8 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
 // as a texture
 void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_type) {
   g3Point *pnt;
-  int i;
 
-  float one_over_square_res = 1.0 / GameLightmaps[gpu_Overlay_map].square_res;
+  float one_over_square_res = 1.0f / GameLightmaps[gpu_Overlay_map].square_res;
   float xscalar = (float)GameLightmaps[gpu_Overlay_map].width * one_over_square_res;
   float yscalar = (float)GameLightmaps[gpu_Overlay_map].height * one_over_square_res;
 
@@ -567,7 +560,7 @@ void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_typ
   PosColorUV2Vertex *vData = &vArray2[0];
 
   // Specify our coordinates
-  for (i = 0; i < nv; i++, vData++) {
+  for (int i = 0; i < nv; i++, vData++) {
     pnt = p[i];
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
