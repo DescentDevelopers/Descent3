@@ -54,6 +54,8 @@
 #ifndef PSCLASS_H
 #define PSCLASS_H
 
+#include <cstdint>
+
 //	a universal list node to use with the list type
 template <class T> struct tListNode {
   T t;
@@ -83,7 +85,7 @@ template <class T> class tList {
 
 public:
   tList() {
-    m_link = m_mark = NULL;
+    m_link = m_mark = nullptr;
     m_length = 0;
   };
   ~tList() { tList::free(); };
@@ -101,14 +103,14 @@ public:
   };
 
   //	returns the node at the current link location in iteration.
-  tListNode<T> *get() const { return m_mark ? m_mark : NULL; };
+  tListNode<T> *get() const { return m_mark ? m_mark : nullptr; };
 
   //	length
   int length() const { return m_length; };
 
   //	frees list
   void free() {
-    m_link = m_mark = NULL;
+    m_link = m_mark = nullptr;
     m_length = 0;
   };
 
@@ -119,7 +121,7 @@ public:
       m_mark->next = node;
     } else {
       m_link = node;
-      node->next = NULL;
+      node->next = nullptr;
     }
     m_mark = node;
     m_length++;
@@ -129,7 +131,7 @@ public:
   tListNode<T> *unlink() {
     tListNode<T> *freenode, *node;
     if (!m_link)
-      return NULL;
+      return nullptr;
     if (m_link == m_mark) {
       freenode = m_mark;
       m_mark = m_link = m_link->next;
@@ -140,7 +142,7 @@ public:
       freenode = m_mark;
       node->next = m_mark->next;
     }
-    freenode->next = NULL;
+    freenode->next = nullptr;
     return freenode;
   };
 };

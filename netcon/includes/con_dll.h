@@ -270,13 +270,9 @@
 #include <regex>
 #include <string>
 
+#include "crossplat.h"
 #include "ship.h"
 #include "pstypes.h"
-
-#if defined(POSIX)
-#include <cstring>
-#include "linux_fix.h"
-#endif
 
 // Uncomment out this line of code to build the demo version of the multiplayer connection dlls
 // #define DEMO	1
@@ -659,8 +655,7 @@ MultiGameOptionsMenu_fp DLLMultiGameOptionsMenu;
 
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
-// typedef bool (*mod_LoadModule_fp)(module *handle,const char *modfilename,int flags=MODF_NOW);
-typedef bool (*mod_LoadModule_fp)(module *handle, const char *modfilename, int flags);
+typedef bool (*mod_LoadModule_fp)(module *handle, const std::filesystem::path &modfilename, int flags);
 mod_LoadModule_fp DLLmod_LoadModule;
 
 // Frees a previously loaded module from memory, it can no longer be used
@@ -761,8 +756,6 @@ struct vmt_descent3_struct {
 #endif
 
 uint32_t MTClientVer = 100;
-
-char MTUpdateURL[300] = "";
 
 multi_api API;
 

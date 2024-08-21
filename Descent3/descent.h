@@ -132,6 +132,7 @@
 #include <filesystem>
 
 #include "application.h"
+#include "crossplat.h"
 
 // The name of this product
 #ifdef DEMO

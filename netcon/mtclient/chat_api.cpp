@@ -29,6 +29,7 @@
 #endif
 
 #include "chat_api.h"
+#include "crossplat.h"
 #include "grdefs.h"
 #include "mtstrings.h"
 #include "networking.h"

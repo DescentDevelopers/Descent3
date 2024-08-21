@@ -269,14 +269,9 @@
 
 #include <cstdint>
 
-#if defined(POSIX)
-#include "linux_fix.h" //for stricmp's through code
-#endif
-
-#include "uires.h"
-
-#include "pserror.h"
 #include "grdefs.h"
+#include "pserror.h"
+#include "uires.h"
 
 //	Class identification
 

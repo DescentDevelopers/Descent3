@@ -441,9 +441,7 @@
 #include <cstring>
 #include <filesystem>
 
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
+#include "chrono_timer.h"
 #include "descent.h"
 #include "manage.h"
 #include "pserror.h"
@@ -1470,7 +1468,7 @@ int SwitcherooFiles(const char *name, char *tempname) {
   }*/
   int num_tries = 0;
   while (!ddio_DeleteFile(name) && num_tries < MAX_TRIES) {
-    Sleep(100);
+    D3::ChronoTimer::SleepMS(100);
     num_tries++;
   }
   if (num_tries >= MAX_TRIES) {
@@ -1481,7 +1479,7 @@ int SwitcherooFiles(const char *name, char *tempname) {
   }
   num_tries = 0;
   while ((rename(tempname, name)) && num_tries <= MAX_TRIES) {
-    Sleep(100);
+    D3::ChronoTimer::SleepMS(100);
     num_tries++;
   }
   if (num_tries >= MAX_TRIES) {

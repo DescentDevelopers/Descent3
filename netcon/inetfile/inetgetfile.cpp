@@ -80,6 +80,7 @@
 #include "inetgetfile.h"
 #include "CFtp.h"
 #include "Chttpget.h"
+#include "chrono_timer.h"
 
 extern char *Proxy_server;
 extern int16_t Proxy_port;
@@ -160,7 +161,7 @@ InetGetFile::InetGetFile(char *URL, char *localfile, char *proxyip, int16_t prox
   } else {
     m_HardError = INET_ERROR_CANT_PARSE_URL;
   }
-  Sleep(1000);
+  D3::ChronoTimer::SleepMS(1000);
 }
 
 InetGetFile::InetGetFile(char *URL, char *localfile) {
@@ -193,7 +194,7 @@ InetGetFile::InetGetFile(char *URL, char *localfile) {
   } else {
     m_HardError = INET_ERROR_CANT_PARSE_URL;
   }
-  Sleep(1000);
+  D3::ChronoTimer::SleepMS(1000);
 }
 
 InetGetFile::~InetGetFile() {

@@ -112,31 +112,25 @@
 typedef int socklen_t;
 #endif
 
-#include "pstypes.h"
+#include "crossplat.h"
 #include "pserror.h"
 #include "pstring.h"
-#include "cfile.h"
 #include "inffile.h"
 #include "dedicated_server.h"
 #include "multi.h"
 #include "args.h"
 #include "AppConsole.h"
 #include "ddio.h"
-#include "newui.h"
-#include "ui.h"
 #include "multi_dll_mgr.h"
 #include "multi_ui.h"
 #include "Mission.h"
 #include "multi_server.h"
-#include "Macros.h"
-#include "game.h"
 #include "mem.h"
 #include "stringtable.h"
 #include "multi_save_settings.h"
 #include "objinfo.h"
 #include "rtperformance.h"
 #include "player.h"
-#include "stringtable.h"
 #include "init.h"
 #include "ship.h"
 #include "hud.h"
@@ -794,7 +788,6 @@ void PrintDedicatedMessage(const char *fmt, ...) {
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "linux_fix.h"
 #include "errno.h"
 #define BOOL bool
 #ifndef SOCKET

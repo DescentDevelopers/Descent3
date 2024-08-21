@@ -77,8 +77,11 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+
 #include "mono.h"
 #include "pstypes.h"
+#include "crossplat.h"
 #include "ddio.h"
 #include "grtext.h"
 #include "renderer.h"
@@ -87,16 +90,9 @@
 #include "bitmap.h"
 #include "descent.h"
 #include "mem.h"
-#include "3d.h"
 #include "d3music.h"
 #include "hlsoundlib.h"
-#include <string.h>
-#include <math.h>
 #include "psrand.h"
-
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
 
 /*
 $$TABLE_GAMEFILE "GameCredits.txt"

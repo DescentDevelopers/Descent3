@@ -1,5 +1,4 @@
 set(HEADERS
-  linux_fix.h
   lnxapp.h
   lnxcontroller.h
   registry.h)

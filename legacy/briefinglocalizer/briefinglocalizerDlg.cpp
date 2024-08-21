@@ -23,9 +23,7 @@
 #include "briefinglocalizer.h"
 #include "briefinglocalizerDlg.h"
 
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
+#include "crossplat.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

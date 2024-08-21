@@ -22,17 +22,9 @@
 #include <cstdlib>
 #include <cstdint>
 
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
-
 // The maximum length for a file name, including extension.  It *does not* include the
 // terminating NULL, so a buffer to hold a filename needs to be PSFILENAME_LEN+1 bytes long.
 #define PSFILENAME_LEN 35
-
-// The maximum length of a path (or path+filename).  The seems (from looking at the code) to
-// include the terminating NULL. lengthened to 512 to prevent problems with some long pathnames.
-#define PSPATHNAME_LEN _MAX_PATH
 
 #if !defined(__APPLE__)
 #define HOST_BIGENDIAN @HOST_BIGENDIAN @

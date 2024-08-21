@@ -71,6 +71,7 @@
 #define __DLMODULE_H_
 
 #include <cstdint>
+#include <filesystem>
 
 #ifdef __cplusplus
 #define CPPEXTERN extern "C"
@@ -92,6 +93,17 @@
 
 # define DLLFUNCCALL STDCALL
 # define DLLFUNCCALLPTR STDCALLPTR
+
+// Platform-specific library extensions
+#if defined(WIN32)
+#define MODULE_EXT ".dll"
+#elif defined(__LINUX__)
+#define MODULE_EXT ".so"
+#elif defined(MACOSX)
+#define MODULE_EXT ".dylib"
+#else
+#error Unsupported platform!
+#endif
 
 #ifdef WIN32
 //=========================Windows Definition============================
@@ -133,15 +145,19 @@ struct module {
 #define MODF_NOW 0x002    // Resolve all symbols before returning
 #define MODF_GLOBAL 0x200 //
 
-//	Returns the real name of the module.  If a given file has an extension, it will
-//	just return that filename.  If the given file has no given extension, the
-//	system specific extension is concatted and returned.
-void mod_GetRealModuleName(const char *modfilename, char *realmodfilename);
+/**
+ * Returns real name of the module. If a given file has an extension, it will just return that filename.
+ * If the given file has no extension or has extension from another platform,
+ * the system specific extension is added/replaced and returned.
+ * @param mod_filename input module filename
+ * @return resolved filename
+ */
+std::filesystem::path mod_GetRealModuleName(const std::filesystem::path &mod_filename);
 
 // Loads a dynamic module into memory for use.  If no extension is given, the default
 //	system specific extension is used.
 // Returns true on success, false otherwise
-bool mod_LoadModule(module *handle, const char *modfilename, int flags = MODF_LAZY);
+bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, int flags = MODF_LAZY);
 
 // Frees a previously loaded module from memory, it can no longer be used
 // Returns true on success, false otherwise
@@ -155,6 +171,6 @@ MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, uint8_t parmbyt
 // Returns an error code to what the last error was.  When this function is called the last error is cleared, so by
 // calling this function it not only returns the last error, but it removes it, so if you were to call this function
 // again, it would return no error
-int mod_GetLastError(void);
+int mod_GetLastError();
 
 #endif

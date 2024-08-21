@@ -20,7 +20,7 @@
 #include <windows.h>
 #include "ddraw.h"
 #elif defined(POSIX)
-#include "linux_fix.h"
+#include "crossplat.h"
 #include "lnxscreenmode.h"
 #else
 #endif
