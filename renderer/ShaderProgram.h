@@ -54,15 +54,16 @@ template <typename V>
 struct VertexBuffer {
   VertexBuffer(GLuint program,
                std::vector<VertexAttrib<V>> attribs,
-               size_t vertex_count,
+               size_t vertexCount,
                GLenum bufferType,
                V const* initialData = nullptr)
     : vao_{outval(dglGenVertexArrays)},
       vbo_{outval(dglGenBuffers)} {
     dglBindVertexArray(vao_);
-    dglBindBuffer(GL_ARRAY_BUFFER, vbo_);
+
+    bind();
     dglBufferData(GL_ARRAY_BUFFER,
-                  vertex_count * sizeof(PosColorUV2Vertex),
+                  vertexCount * sizeof(V),
                   initialData,
                   bufferType);
 
@@ -78,9 +79,14 @@ struct VertexBuffer {
     }
   }
 
-  void UpdateData(size_t vtx_offset, size_t vtx_count, V const* vertices) const {
-    dglBindBuffer(GL_ARRAY_BUFFER, vbo_);
+  void UpdateData(size_t vtx_offset, size_t vtx_count, V const* vertices) {
+    bind();
     dglBufferSubData(GL_ARRAY_BUFFER, vtx_offset * sizeof(V), vtx_count * sizeof(V), vertices);
+  }
+
+protected:
+  void bind() {
+    dglBindBuffer(GL_ARRAY_BUFFER, vbo_);
   }
 
 private:
@@ -99,6 +105,41 @@ private:
 
   MoveOnlyHolder<GLuint, DeleteVertexArray> vao_;
   MoveOnlyHolder<GLuint, DeleteBuffer> vbo_;
+};
+
+// https://www.khronos.org/opengl/wiki/Buffer_Object_Streaming#Buffer_update
+template <typename V>
+struct OrphaningVertexBuffer : VertexBuffer<V> {
+  OrphaningVertexBuffer(GLuint program, std::vector<VertexAttrib<V>> attribs)
+    : VertexBuffer<V>{program, std::move(attribs), kVertexCount, kBufferType} {}
+
+  template <typename VertexIter,
+            typename = std::enable_if<std::is_convertible_v<typename std::iterator_traits<VertexIter>::value_type, V>>>
+  size_t AddVertexData(VertexIter begin, VertexIter end) {
+    this->bind();
+
+    auto dist = std::distance(begin, end);
+    if (nextVertex_ + dist >= kVertexCount) {
+      dglBufferData(GL_ARRAY_BUFFER,
+              kVertexCount * sizeof(V),
+              nullptr,
+              kBufferType);
+      nextVertex_ = 0;
+    }
+
+    auto start = nextVertex_;
+    V* mapped = reinterpret_cast<V*>(dglMapBufferRange(GL_ARRAY_BUFFER, start * sizeof(V), dist * sizeof(V), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT));
+    std::copy(begin, end, mapped);
+    dglUnmapBuffer(GL_ARRAY_BUFFER);
+
+    nextVertex_ += dist;
+    return start;
+  }
+
+private:
+  static constexpr size_t kVertexCount{1 << 16};
+  static constexpr GLenum kBufferType{GL_STREAM_DRAW};
+  size_t nextVertex_{};
 };
 
 template <GLenum kType>
@@ -141,7 +182,7 @@ private:
 template <typename V>
 struct ShaderProgram {
   explicit ShaderProgram(std::string_view vertexSrc, std::string_view fragmentSrc, std::vector<VertexAttrib<V>> attribs)
-    : id_{dglCreateProgram()}, vertex_{vertexSrc}, fragment_{fragmentSrc}, vbo_{id_, std::move(attribs), MAX_POINTS_IN_POLY, GL_DYNAMIC_DRAW} {
+    : id_{dglCreateProgram()}, vertex_{vertexSrc}, fragment_{fragmentSrc}, vbo_{id_, std::move(attribs)} {
     if (id_ == 0) {
       throw std::runtime_error("error creating GL program");
     }
@@ -170,8 +211,10 @@ struct ShaderProgram {
     dglUseProgram(0);
   }
 
-  void setVertexData(size_t offset, size_t count, PosColorUV2Vertex const* vertices) {
-    vbo_.UpdateData(offset, count, vertices);
+  template <typename VertexIter,
+            typename = std::enable_if<std::is_convertible_v<typename std::iterator_traits<VertexIter>::value_type, V>>>
+  size_t addVertexData(VertexIter begin, VertexIter end) {
+    return vbo_.AddVertexData(begin, end);
   }
 
   void setUniformMat4f(std::string const& name, glm::mat4x4 const& matrix) {
@@ -212,6 +255,6 @@ private:
   MoveOnlyHolder<GLuint, DeleteProgram> id_;
   Shader<GL_VERTEX_SHADER> vertex_;
   Shader<GL_FRAGMENT_SHADER> fragment_;
-  VertexBuffer<V> vbo_;
+  OrphaningVertexBuffer<V> vbo_;
   std::unordered_map<std::string, GLint> uniform_cache_;
 };

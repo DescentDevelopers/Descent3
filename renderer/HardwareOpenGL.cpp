@@ -111,16 +111,21 @@ struct Renderer {
     shader_.setUniform1i("u_texture_enable", texture_enable_);
   }
 
-  void setVertexData(size_t offset, size_t count, PosColorUV2Vertex const* vertices) {
-    shader_.setVertexData(offset, count, vertices);
+  template <typename VertexIter,
+            typename = std::enable_if_t<std::is_same_v<typename std::iterator_traits<VertexIter>::value_type, PosColorUV2Vertex>>>
+  size_t addVertexData(VertexIter begin, VertexIter end) {
+    return shader_.addVertexData(begin, end);
   }
 
-  void setVertexData(size_t offset, size_t count, PosColorUVVertex const* vertices) {
+  struct PosColorUVVertex_tag {};
+  template <typename VertexIter,
+            typename = std::enable_if_t<std::is_same_v<typename std::iterator_traits<VertexIter>::value_type, PosColorUVVertex>>>
+  size_t addVertexData(VertexIter begin, VertexIter end, PosColorUVVertex_tag = {}) {
     std::array<PosColorUV2Vertex, MAX_POINTS_IN_POLY> converted;
-    std::transform(vertices, vertices + count, converted.begin(), [](auto const& vtx) {
+    std::transform(begin, end, converted.begin(), [](auto const& vtx) {
       return PosColorUV2Vertex{vtx.pos, vtx.color, vtx.uv, {}};
     });
-    setVertexData(offset, count, converted.data());
+    return shader_.addVertexData(converted.cbegin(), converted.cend());
   }
 
   void setFogEnabled(bool enabled) {
@@ -1332,8 +1337,6 @@ void gpu_BindTexture(int handle, int map_type, int slot) {
 }
 
 void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
-  gRenderer->setVertexData(0, nv, vData);
-
   if (gpu_state.cur_texture_quality == 0) {
     // force disable textures
     gRenderer->setTextureEnabled(0, false);
@@ -1342,7 +1345,7 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
   gRenderer->setTextureEnabled(1, false);
 
   // draw the data in the arrays
-  dglDrawArrays(GL_TRIANGLE_FAN, 0, nv);
+  dglDrawArrays(GL_TRIANGLE_FAN, gRenderer->addVertexData(vData, vData + nv), nv);
 
   if (gpu_state.cur_texture_quality == 0) {
     // re-enable textures
@@ -1355,9 +1358,8 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
 
 void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
   gRenderer->setTextureEnabled(1, true);
-  gRenderer->setVertexData(0, nv, vData);
 
-  dglDrawArrays(GL_TRIANGLE_FAN, 0, nv);
+  dglDrawArrays(GL_TRIANGLE_FAN, gRenderer->addVertexData(vData, vData + nv), nv);
   OpenGL_polys_drawn++;
   OpenGL_verts_processed += nv;
 
@@ -1598,8 +1600,7 @@ void rend_SetPixel(ddgr_color color, int x, int y) {
       {},
       {}
   };
-  gRenderer->setVertexData(0, 1, &vtx);
-  dglDrawArrays(GL_POINTS, 0, 1);
+  dglDrawArrays(GL_POINTS, gRenderer->addVertexData(&vtx, &vtx + 1), 1);
 }
 
 // Sets a pixel on the display
@@ -1645,8 +1646,7 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
       }
   };
 
-  gRenderer->setVertexData(0, vertices.size(), vertices.data());
-  dglDrawArrays(GL_LINES, 0, vertices.size());
+  dglDrawArrays(GL_LINES, gRenderer->addVertexData(vertices.begin(), vertices.end()), vertices.size());
 
   rend_SetAlphaType(atype);
   rend_SetLighting(ltype);
@@ -1726,8 +1726,7 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
                              {}};
   });
 
-  gRenderer->setVertexData(0, vertices.size(), vertices.data());
-  dglDrawArrays(GL_LINES, 0, vertices.size());
+  dglDrawArrays(GL_LINES, gRenderer->addVertexData(vertices.begin(), vertices.end()), vertices.size());
 }
 
 // Takes a screenshot of the current frame and puts it into the handle passed
