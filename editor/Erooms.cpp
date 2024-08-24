@@ -561,6 +561,7 @@
 #include "lighting.h"
 #include "trigger.h"
 #include "mem.h"
+#include "mono.h"
 #include "doorway.h"
 
 #ifndef NEWEDITOR

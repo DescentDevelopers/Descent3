@@ -34,6 +34,7 @@
 #include "bitmap.h"
 #include "ddio.h"
 #include "mem.h"
+#include "mono.h"
 #include "EditLineDialog.h"
 
 #ifdef _DEBUG

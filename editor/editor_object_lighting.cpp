@@ -30,6 +30,7 @@
 #include "lightmap_info.h"
 #include "object_lighting.h"
 #include "mem.h"
+#include "mono.h"
 
 void ComputeObjectSurfaceRes(rad_surface *surf, object *obj, int subnum, int facenum) {
   int i;

@@ -159,6 +159,7 @@
 #include "gr.h"
 #include "descent.h"
 #include "erooms.h"
+#include "mono.h"
 #include "room.h"
 #include "terrain.h"
 

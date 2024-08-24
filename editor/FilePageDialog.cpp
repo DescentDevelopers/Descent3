@@ -28,6 +28,7 @@
 #include "EditLineDialog.h"
 #include "pserror.h"
 #include "mem.h"
+#include "mono.h"
 #include "FilePageAddDlg.h"
 
 #ifdef _DEBUG

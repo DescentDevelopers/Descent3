@@ -127,6 +127,7 @@
 #include "soundload.h"
 #include "soundpage.h"
 #include "manage.h"
+#include "mono.h"
 #include "hlsoundlib.h"
 #include "ddio.h"
 

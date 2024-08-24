@@ -407,6 +407,7 @@
 #include "group.h"
 #include "door.h"
 #include "doorway.h"
+#include "mono.h"
 #include "terrain.h"
 #include "HTexture.h"
 #include "trigger.h"

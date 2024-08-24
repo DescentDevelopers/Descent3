@@ -266,8 +266,8 @@
 #include "EditLineDialog.h"
 #include "hlsoundlib.h"
 #include "mem.h"
+#include "mono.h"
 #include "damage_external.h"
-#include "boa.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

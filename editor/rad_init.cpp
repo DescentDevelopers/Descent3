@@ -29,6 +29,7 @@
 #include "vecmat.h"
 #include <stdlib.h>
 #include "mem.h"
+#include "mono.h"
 
 // Some radiosity globals
 int Shoot_method = SM_HEMICUBE;
