@@ -73,7 +73,7 @@
 #include <windows.h>
 #include <assert.h>
 
-#include "mono.h"
+#include "log.h"
 #include "pserror.h"
 
 //	Construction and destruction.
@@ -91,7 +91,7 @@ oeWin32AppDatabase::oeWin32AppDatabase() {
   if (!res) {
     res = create_record(m_Basepath);
     if (!res) {
-      mprintf(1, "Unable to create registry directory.\n");
+      LOG_WARNING << "Unable to create registry directory.";
     }
   }
 }
@@ -120,7 +120,7 @@ bool oeWin32AppDatabase::create_record(const char *pathname) {
 
   lres = RegCreateKeyEx((HKEY)hBaseKey, pathname, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &disp);
   if (lres != ERROR_SUCCESS) {
-    mprintf(1, "Unable to create key %s (%x)\n", pathname, lres);
+    LOG_WARNING.printf("Unable to create key %s (%x)", pathname, lres);
     return 0;
   }
 
@@ -142,7 +142,7 @@ bool oeWin32AppDatabase::lookup_record(const char *pathname) {
 
   lres = RegOpenKeyEx((HKEY)hBaseKey, pathname, 0, KEY_READ | KEY_WRITE | KEY_EXECUTE, &hkey);
   if (lres != ERROR_SUCCESS) {
-    mprintf(1, "Unable to open key %s (%x)\n", pathname, lres);
+    LOG_WARNING.printf("Unable to open key %s (%x)", pathname, lres);
     return 0;
   }
 
@@ -166,7 +166,7 @@ bool oeWin32AppDatabase::read(const char *label, char *entry, int *entrylen) {
   assert(type != REG_DWORD);
 
   if (lres != ERROR_SUCCESS) {
-    mprintf(1, "Unable to query str key %s (%x)\n", label, lres);
+    LOG_WARNING.printf("Unable to query str key %s (%x)", label, lres);
     return 0;
   }
   return 1;
@@ -188,7 +188,7 @@ bool oeWin32AppDatabase::read(const char *label, void *entry, int wordsize) {
   assert(len == 4);
 
   if (lres != ERROR_SUCCESS) {
-    mprintf(1, "Unable to query int key %s (%x)\n", label, lres);
+    LOG_WARNING.printf("Unable to query int key %s (%x)", label, lres);
     return 0;
   }
 
@@ -234,7 +234,7 @@ bool oeWin32AppDatabase::write(const char *label, const char *entry, int entryle
   lres = RegSetValueEx((HKEY)hCurKey, label, 0, REG_SZ, (LPBYTE)entry, entrylen);
 
   if (lres != ERROR_SUCCESS) {
-    mprintf(1, "Unable to write str key %s (%x)\n", label, lres);
+    LOG_WARNING.printf("Unable to write str key %s (%x)", label, lres);
     return 0;
   }
   return 1;
@@ -249,7 +249,7 @@ bool oeWin32AppDatabase::write(const char *label, int entry) {
   lres = RegSetValueEx((HKEY)hCurKey, label, 0, REG_DWORD, (LPBYTE)&entry, sizeof(int));
 
   if (lres != ERROR_SUCCESS) {
-    mprintf(1, "Unable to write int key %s (%x)\n", label, lres);
+    LOG_WARNING.printf("Unable to write int key %s (%x)", label, lres);
     return 0;
   }
 
