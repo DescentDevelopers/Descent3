@@ -477,7 +477,7 @@ void rend_Close();
 // Draws a scaled 2d bitmap to our buffer
 // NOTE: scripts are expecting the old prototype that has a zvalue (which is ignored) before color
 void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, float v0, float u1, float v1,
-                           int color = -1, float *alphas = NULL);
+                           int color = -1, const float *alphas = nullptr);
 
 // Sets the state of bilinear filtering for our textures
 void rend_SetFiltering(int8_t state);
@@ -535,7 +535,7 @@ void rend_SetAlphaValue(uint8_t val);
 void rend_SetAlphaFactor(float val);
 
 // Returns the current Alpha factor
-float rend_GetAlphaFactor(void);
+float rend_GetAlphaFactor();
 
 // Sets the wrap parameter
 void rend_SetWrapType(wrap_type val);

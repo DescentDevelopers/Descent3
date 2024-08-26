@@ -37,6 +37,7 @@
 #include "program.h"
 #include "dedicated_server.h"
 #include "descent.h"
+#include "ddio.h"
 #include "application.h"
 #include "appdatabase.h"
 #include "args.h"
@@ -45,15 +46,9 @@
 
 #include "osiris_dll.h"
 
-extern bool ddio_mouseGrabbed;
-
 std::filesystem::path orig_pwd;
 
-bool linux_permit_gamma = false;
-
 static volatile char already_tried_signal_cleanup = 0;
-
-void ddio_InternalClose(); // needed for emergency cleanup.
 
 void just_exit(void) {
   ddio_InternalClose(); // try to reset serial port.
@@ -289,18 +284,14 @@ int main(int argc, char *argv[]) {
 
       if (FindArgChar("-nomousegrab", 'm')) {
         flags |= APPFLAG_NOMOUSECAPTURE;
+        ddio_MouseSetGrab(false);
       }
-
-      ddio_mouseGrabbed = (FindArgChar("-nomousegrab", 'm') == 0);
+      SDL_SetRelativeMouseMode(ddio_MouseGetGrab() ? SDL_TRUE : SDL_FALSE);
 
       if (!FindArg("-sharedmemory")) {
         flags |= APPFLAG_NOSHAREDMEMORY;
       }
       flags |= APPFLAG_WINDOWEDMODE;
-
-      if (!FindArg("-nodgamouse")) {
-        flags |= APPFLAG_DGAMOUSE;
-      }
 #else
       fprintf(stderr, "Error: \"--dedicated\" or \"-d\" flag required\n");
       return 0;

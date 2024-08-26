@@ -105,11 +105,7 @@ FnPtr<Ret(Args...)>::FnPtr(std::string_view name, bool optional) : fn_{} {
 
 static module *LoadOpenGLDLL(const char *dllname) {
   mprintf(0, "Loading OpenGL dll...\n");
-
-  std::filesystem::path tmp = std::filesystem::current_path();
-  std::filesystem::current_path(orig_pwd);
   int rc = SDL_GL_LoadLibrary(dllname[0] ? dllname : nullptr);
-  std::filesystem::current_path(tmp);
 
   if (rc < 0) {
     const char *sdlErr = SDL_GetError();

@@ -70,8 +70,6 @@
 #include "pserror.h"
 
 
-extern bool ddio_mouseGrabbed;
-
 extern volatile struct tLnxKeys {
   union {
     int up_ticks;
@@ -354,8 +352,9 @@ int sdlKeyFilter(const SDL_Event *event) {
     if (event->key.keysym.mod & KMOD_CTRL) {
       switch (kc) {
       case KEY_G: // toggle grabbed input.
-        ddio_mouseGrabbed = !ddio_mouseGrabbed;
-        SDL_SetRelativeMouseMode(ddio_mouseGrabbed ? SDL_TRUE : SDL_FALSE);
+        bool grab = !ddio_MouseGetGrab();
+        ddio_MouseSetGrab(grab);
+        SDL_SetRelativeMouseMode((SDL_bool)grab);
         return 0;
       } // switch
     }   // if

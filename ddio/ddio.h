@@ -257,6 +257,12 @@ void ddio_InternalResetKey(uint8_t key);
 bool ddio_MouseInit();
 void ddio_MouseClose();
 
+/// Get mouse grab state
+bool ddio_MouseGetGrab();
+
+/// Set mouse grab state
+void ddio_MouseSetGrab(bool grab);
+
 // get device caps
 int ddio_MouseGetCaps(int *btn, int *axis);
 

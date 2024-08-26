@@ -54,8 +54,6 @@
 #include "win/arb_extensions.h"
 #endif
 
-int FindArg(const char *);
-
 // General renderer states
 extern int gpu_Overlay_map;
 int Bump_map = 0;
@@ -65,7 +63,6 @@ float Z_bias = 0.0f;
 uint8_t Renderer_close_flag = 0;
 extern uint8_t Renderer_initted;
 renderer_type Renderer_type = RENDERER_OPENGL;
-int WindowGL = 0;
 
 struct Renderer {
   Renderer() : shader_{shaders::vertex, shaders::fragment, {
@@ -156,26 +153,25 @@ std::optional<Renderer> gRenderer;
 
 #define CHECK_ERROR(x)
 
-SDL_Window *GSDLWindow = NULL;
-SDL_GLContext GSDLGLContext = NULL;
+SDL_Window *GSDLWindow = nullptr;
+SDL_GLContext GSDLGLContext = nullptr;
 char loadedLibrary[_MAX_PATH];
 
-#define GET_WRAP_STATE(x) (x >> 4)
-#define GET_FILTER_STATE(x) (x & 0x0f)
+#define GET_WRAP_STATE(x) ((x) >> 4)
+#define GET_FILTER_STATE(x) ((x) & 0x0f)
 
 #define SET_WRAP_STATE(x, s)                                                                                           \
   {                                                                                                                    \
-    x &= 0x0F;                                                                                                         \
-    x |= (s << 4);                                                                                                     \
+    (x) &= 0x0F;                                                                                                       \
+    (x) |= ((s) << 4);                                                                                                 \
   }
 #define SET_FILTER_STATE(x, s)                                                                                         \
   {                                                                                                                    \
-    x &= 0xF0;                                                                                                         \
-    x |= (s);                                                                                                          \
+    (x) &= 0xF0;                                                                                                       \
+    (x) |= (s);                                                                                                        \
   }
 
 //	OpenGL Stuff
-static int OpenGL_window_initted = 0;
 static int OpenGL_polys_drawn = 0;
 static int OpenGL_verts_processed = 0;
 static int OpenGL_uploads = 0;
@@ -192,28 +188,28 @@ extern int gpu_last_uploaded;
 extern float gpu_Alpha_factor;
 extern float gpu_Alpha_multiplier;
 
-uint16_t *OpenGL_bitmap_remap = NULL;
-uint16_t *OpenGL_lightmap_remap = NULL;
-uint8_t *OpenGL_bitmap_states = NULL;
-uint8_t *OpenGL_lightmap_states = NULL;
+uint16_t *OpenGL_bitmap_remap = nullptr;
+uint16_t *OpenGL_lightmap_remap = nullptr;
+uint8_t *OpenGL_bitmap_states = nullptr;
+uint8_t *OpenGL_lightmap_states = nullptr;
 
-uint32_t *opengl_Upload_data = NULL;
-uint32_t *opengl_Translate_table = NULL;
-uint32_t *opengl_4444_translate_table = NULL;
+uint32_t *opengl_Upload_data = nullptr;
+uint32_t *opengl_Translate_table = nullptr;
+uint32_t *opengl_4444_translate_table = nullptr;
 
-uint16_t *opengl_packed_Upload_data = NULL;
-uint16_t *opengl_packed_Translate_table = NULL;
-uint16_t *opengl_packed_4444_translate_table = NULL;
+uint16_t *opengl_packed_Upload_data = nullptr;
+uint16_t *opengl_packed_Translate_table = nullptr;
+uint16_t *opengl_packed_4444_translate_table = nullptr;
 
 extern rendering_state gpu_state;
 extern renderer_preferred_state gpu_preferred_state;
 
 bool OpenGL_multitexture_state = false;
-module *OpenGLDLLHandle = NULL;
+module *OpenGLDLLHandle = nullptr;
 int Already_loaded = 0;
-bool opengl_Blending_on = 0;
+bool opengl_Blending_on = false;
 
-static oeApplication *ParentApplication = NULL;
+static oeApplication *ParentApplication = nullptr;
 
 static GLuint GOpenGLFBO = 0;
 static GLuint GOpenGLRBOColor = 0;
@@ -264,7 +260,7 @@ int opengl_MakeTextureObject(int tn) {
   return num;
 }
 
-int opengl_InitCache(void) {
+int opengl_InitCache() {
 
   OpenGL_bitmap_remap = (uint16_t *)mem_malloc(MAX_BITMAPS * 2);
   ASSERT(OpenGL_bitmap_remap);
@@ -341,18 +337,12 @@ void opengl_SetDefaults() {
   dglActiveTexture(GL_TEXTURE0_ARB + 0);
 }
 
-extern bool linux_permit_gamma;
 extern renderer_preferred_state Render_preferred_state;
-extern bool ddio_mouseGrabbed;
-int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event);
 
-int opengl_Setup(oeApplication *app, int *width, int *height) {
+int opengl_Setup(oeApplication *app, const int *width, const int *height) {
   int winw = Video_res_list[Game_video_resolution].width;
   int winh = Video_res_list[Game_video_resolution].height;
 
-  // rcg09182000 don't need to quitsubsystem anymore...
-  //    SDL_QuitSubSystem(SDL_INIT_VIDEO);  // here goes nothing...
-  //    Already_loaded = false;
   SDL_ClearError();
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {
     const int rc = SDL_Init(SDL_INIT_VIDEO);
@@ -366,8 +356,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     }
   }
 
-  SDL_SetEventFilter(d3SDLEventFilter, NULL);
-
   bool fullscreen = true;
 
   if (FindArgChar("-fullscreen", 'f')) {
@@ -377,10 +365,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   }
 
   if (!Already_loaded) {
-#define MAX_ARGS 30
-#define MAX_CHARS_PER_ARG 100
-    extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
-
     char gl_library[256];
     int arg;
     arg = FindArgChar("-gllibrary", 'g');
@@ -448,7 +432,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     if (!GSDLGLContext) {
       mprintf(0, "OpenGL: OpenGL context creation failed: %s", SDL_GetError());
       SDL_DestroyWindow(GSDLWindow);
-      GSDLWindow = NULL;
+      GSDLWindow = nullptr;
       return 0;
     }
   }
@@ -516,25 +500,17 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
       GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
       SDL_GL_DeleteContext(GSDLGLContext);
       SDL_DestroyWindow(GSDLWindow);
-      GSDLGLContext = NULL;
-      GSDLWindow = NULL;
+      GSDLGLContext = nullptr;
+      GSDLWindow = nullptr;
       return 0;
   }
 
-  if (!FindArg("-nomousegrab")) {
-    ddio_mouseGrabbed = true;
-  }
-
-  SDL_SetRelativeMouseMode(ddio_mouseGrabbed ? SDL_TRUE : SDL_FALSE);
-
   // rcg09182000 gamma fun.
   // rcg01112000 --nogamma fun.
-  if (FindArgChar("-nogamma", 'M')) {
-    linux_permit_gamma = false;
-  } else {
+  if (!FindArgChar("-nogamma", 'M')) {
     Uint16 ramp[256];
     SDL_CalculateGammaRamp(Render_preferred_state.gamma, ramp);
-    linux_permit_gamma = (SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp) == 0);
+    SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp);
   } // else
 
   if (ParentApplication) {
@@ -560,11 +536,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     gpu_preferred_state = *pref_state;
   }
 
-  if (app != NULL) {
+  if (app != nullptr) {
     ParentApplication = app;
   }
-
-  int windowX = 0, windowY = 0;
 
   /***********************************************************
    *               LINUX OPENGL
@@ -728,15 +702,15 @@ void opengl_Close(const bool just_resizing) {
   gRenderer.reset();
 
   if (GSDLGLContext) {
-      SDL_GL_MakeCurrent(NULL, NULL);
+      SDL_GL_MakeCurrent(nullptr, nullptr);
       SDL_GL_DeleteContext(GSDLGLContext);
-      GSDLGLContext = NULL;
+      GSDLGLContext = nullptr;
       GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
   }
 
   if (!just_resizing && GSDLWindow) {
       SDL_DestroyWindow(GSDLWindow);
-      GSDLWindow = NULL;
+      GSDLWindow = nullptr;
   }
 
 
@@ -750,9 +724,9 @@ void opengl_Close(const bool just_resizing) {
     if (opengl_packed_4444_translate_table) {
       mem_free(opengl_packed_4444_translate_table);
     }
-    opengl_packed_Upload_data = NULL;
-    opengl_packed_Translate_table = NULL;
-    opengl_packed_4444_translate_table = NULL;
+    opengl_packed_Upload_data = nullptr;
+    opengl_packed_Translate_table = nullptr;
+    opengl_packed_4444_translate_table = nullptr;
   } else {
     if (opengl_Upload_data)
       mem_free(opengl_Upload_data);
@@ -760,9 +734,9 @@ void opengl_Close(const bool just_resizing) {
       mem_free(opengl_Translate_table);
     if (opengl_4444_translate_table)
       mem_free(opengl_4444_translate_table);
-    opengl_Upload_data = NULL;
-    opengl_Translate_table = NULL;
-    opengl_4444_translate_table = NULL;
+    opengl_Upload_data = nullptr;
+    opengl_Translate_table = nullptr;
+    opengl_4444_translate_table = nullptr;
   }
 
   if (OpenGL_cache_initted) {
@@ -813,8 +787,6 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
     OpenGL_last_bound[tn] = texnum;
   }
 
-  int i;
-
   if (OpenGL_packed_pixels) {
     if (map_type == MAP_TYPE_LIGHTMAP) {
       uint16_t *left_data = (uint16_t *)opengl_packed_Upload_data;
@@ -863,10 +835,10 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
         if (bm_format(bm_handle) == BITMAP_FORMAT_4444) {
           // Do 4444
           if (bm_mipped(bm_handle)) {
-            for (i = 0; i < w * h; i++)
+            for (int i = 0; i < w * h; i++)
               opengl_packed_Upload_data[i] = 0xf | (opengl_packed_4444_translate_table[bm_ptr[i]]);
           } else {
-            for (i = 0; i < w * h; i++)
+            for (int i = 0; i < w * h; i++)
               opengl_packed_Upload_data[i] = opengl_packed_4444_translate_table[bm_ptr[i]];
           }
 
@@ -879,7 +851,7 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
           }
         } else {
           // Do 1555
-          for (i = 0; i < w * h; i++) {
+          for (int i = 0; i < w * h; i++) {
             opengl_packed_Upload_data[i] = opengl_packed_Translate_table[bm_ptr[i]];
           }
 
@@ -929,16 +901,16 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
           // Do 4444
 
           if (bm_mipped(bm_handle)) {
-            for (i = 0; i < w * h; i++)
+            for (int i = 0; i < w * h; i++)
               opengl_Upload_data[i] = INTEL_INT((255 << 24)) | opengl_4444_translate_table[bm_ptr[i]];
           } else {
-            for (i = 0; i < w * h; i++)
+            for (int i = 0; i < w * h; i++)
               opengl_Upload_data[i] = opengl_4444_translate_table[bm_ptr[i]];
           }
         } else {
           // Do 1555
 
-          for (i = 0; i < w * h; i++)
+          for (int i = 0; i < w * h; i++)
             opengl_Upload_data[i] = opengl_Translate_table[bm_ptr[i]];
         }
 
@@ -1151,15 +1123,12 @@ void gpu_DrawFlatPolygon3D(g3Point **p, int nv) {
 
 // Sets the gamma correction value
 void rend_SetGammaValue(float val) {
-  //	if( WindowGL )
-  //		return;
-
   gpu_preferred_state.gamma = val;
   mprintf(0, "Setting gamma to %f\n", val);
 }
 
 // Resets the texture cache
-void opengl_ResetCache(void) {
+void opengl_ResetCache() {
   if (OpenGL_cache_initted) {
     mem_free(OpenGL_lightmap_remap);
     mem_free(OpenGL_bitmap_remap);
@@ -1272,8 +1241,8 @@ void rend_SetMipState(int8_t mipstate) {}
 
 // Init our renderer
 int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state *pref_state) {
-#ifndef DEDICATED_ONLY
   int retval = 0;
+#ifndef DEDICATED_ONLY
   rend_SetRendererType(state);
   if (!Renderer_initted) {
     if (!Renderer_close_flag) {
@@ -1284,41 +1253,21 @@ int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state 
     Renderer_initted = 1;
   }
 
-  if (OpenGL_window_initted) {
-    rend_CloseOpenGLWindow();
-    OpenGL_window_initted = 0;
-  }
-
   mprintf(0, "Renderer init is set to %d\n", Renderer_initted);
 
 #ifndef OEM_V3
-  int flags = app->flags();
-  if (flags & OEAPP_WINDOWED) {
-    // initialize for windowed
-    retval = rend_InitOpenGLWindow(app, pref_state);
-  } else {
-    // initialize for full screen
-    retval = opengl_Init(app, pref_state);
-  }
+  retval = opengl_Init(app, pref_state);
 #endif
 
-  return retval;
-#else
-  return 0;
 #endif // #ifdef DEDICATED_ONLY
+
+  return retval;
 }
 
-void rend_Close(void) {
+void rend_Close() {
   mprintf(0, "CLOSE:Renderer init is set to %d\n", Renderer_initted);
   if (!Renderer_initted)
     return;
-
-  if (OpenGL_window_initted) {
-    if (Renderer_type == RENDERER_OPENGL) {
-      rend_CloseOpenGLWindow();
-    }
-    OpenGL_window_initted = 0;
-  }
 
   opengl_Close();
 
@@ -1462,7 +1411,7 @@ void rend_StartFrame(int x1, int y1, int x2, int y2, int clear_flags) {
 
 
 // Flips the screen
-void rend_Flip(void) {
+void rend_Flip() {
 #ifndef RELEASE
   int i;
 
@@ -1522,7 +1471,7 @@ void rend_Flip(void) {
   }
 }
 
-void rend_EndFrame(void) {}
+void rend_EndFrame() {}
 
 // Sets the state of z-buffering to on or off
 void rend_SetZBufferState(int8_t state) {
@@ -1556,10 +1505,10 @@ void rend_ClearScreen(ddgr_color color) {
 }
 
 // Clears the zbuffer for the screen
-void rend_ClearZBuffer(void) { dglClear(GL_DEPTH_BUFFER_BIT); }
+void rend_ClearZBuffer() { dglClear(GL_DEPTH_BUFFER_BIT); }
 
 // Clears the zbuffer for the screen
-void rend_ResetCache(void) {
+void rend_ResetCache() {
   mprintf(0, "Resetting texture cache!\n");
   opengl_ResetCache();
 }
@@ -1578,7 +1527,7 @@ void rend_FillRect(ddgr_color color, int x1, int y1, int x2, int y2) {
 
   dglEnable(GL_SCISSOR_TEST);
   dglScissor(x1, gpu_state.screen_height - (height + y1), width, height);
-  dglClearColor((float)r / 255.0, (float)g / 255.0, (float)b / 255.0, 0);
+  dglClearColor((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 0);
   dglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   width = gpu_state.clip_x2 - gpu_state.clip_x1;
@@ -1786,7 +1735,7 @@ void rend_SetZBufferWriteMask(int state) {
 
 int rend_ReInit() {
   opengl_Close(true);
-  return opengl_Init(NULL, &gpu_preferred_state);
+  return opengl_Init(nullptr, &gpu_preferred_state);
 }
 
 // Takes a bitmap and blits it to the screen using linear frame buffer stuff
@@ -1822,15 +1771,12 @@ void rend_SetFrameBufferCopyState(bool state) {
 
 // Gets OpenGL ready to work in a window
 int rend_InitOpenGLWindow(oeApplication *app, renderer_preferred_state *pref_state) {
-  WindowGL = 1;
   return opengl_Init(app, pref_state);
 }
 
 // Shuts down OpenGL in a window
-void rend_CloseOpenGLWindow(void) {
+void rend_CloseOpenGLWindow() {
   opengl_Close();
-  WindowGL = 0;
-  OpenGL_window_initted = 0;
   mprintf(1, "SHUTTING DOWN WINDOWED OPENGL!");
 }
 
@@ -1847,12 +1793,12 @@ void rend_SetCoplanarPolygonOffset(float factor) {
 
 // returns the direct draw object
 void *rend_RetrieveDirectDrawObj(void **frontsurf, void **backsurf) {
-  *frontsurf = NULL;
-  *backsurf = NULL;
-  return NULL;
+  *frontsurf = nullptr;
+  *backsurf = nullptr;
+  return nullptr;
 }
 
-void rend_TransformSetToPassthru(void) {
+void rend_TransformSetToPassthru() {
   int width = gpu_state.screen_width;
   int height = gpu_state.screen_height;
 
