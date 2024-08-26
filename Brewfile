@@ -1,5 +1,8 @@
 # Homebrew dependencies to build Descent3
 
+brew "glm"
+brew "plog"
+
 # SDL
 brew "sdl2"
 
@@ -9,5 +12,3 @@ brew "ninja"
 
 # zlib
 brew "zlib"
-
-brew "glm"

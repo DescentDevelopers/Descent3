@@ -68,13 +68,13 @@ Once CMake finishes, the built files will be put in `builds\win\Descent3\Debug` 
         You will need `$VCPKG_ROOT` defined in the environment for all build runs. It is a good idea to set this in your `.bashrc` or equivalent.
     * If you would like to manage the code dependencies yourself:
         ```sh
-        brew install sdl2 zlib googletest
+        brew bundle install
         ```
 
 3. **Clone the Descent3 source code.**
 
     ```sh
-    git clone https://github.com/DescentDevelopers/Descent3
+    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
     ```
 
 4. **Build Descent3.**
@@ -158,13 +158,14 @@ cmake --preset linux -DENABLE_LOGGER=ON
 
 **NOTE:** CMake variables, or more technically _CMake cache entries_, will persist in their values until they are explicitly cleared. So, if you set a variable and then run another CMake command _without_ that variable specified, the variable will still be set. Variables must be explicitly unset, or the `builds/` directory cleaned, in order to be cleared.
 
-| Option | Description | Default |
-| ------ | ----------- | ------- |
-| `CMAKE_BUILD_TYPE`<br/>(or just [`--config`](https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-build-config), without the `-D` syntax) | <p>`Debug` builds are generally larger, slower and contain extra correctness checks that will validate game data and interrupt gameplay when problems are detected.</p><p>`Release` builds are optimized for size and speed and do not include debugging information, which makes it harder to find problems.</p> | `Debug` |
-| `BUILD_EDITOR` | _(Windows-only)_ Build internal editor. | `OFF` |
-| `BUILD_TESTING` | Enable testing. Requires GTest. | `OFF` |
-| `ENABLE_LOGGER` | Enable logging to the terminal. | `OFF` |
-| `ENABLE_MEM_RTL` | Enable Real-time library memory management functions (disable to verbose memory allocations). | `ON` |
-| `FORCE_COLORED_OUTPUT` | Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja). | `OFF` |
-| `FORCE_PORTABLE_INSTALL` | Install all files into local directory defined by `CMAKE_INSTALL_PREFIX`. | `ON` |
-| `USE_VCPKG` | Explicitly control whether or not to use vcpkg for dependency resolution. `ON` requires the environment variable `VCPKG_ROOT` to be set. | Determined by the existence of `VCPKG_ROOT` in the environment: If it exists, vcpkg is used. |
+| Option                   | Description                                                                                                                                                                                                                                                                                             | Default                                                                                      |
+|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| `CMAKE_BUILD_TYPE`       | `Debug` builds are generally larger, slower and contain extra correctness checks that will validate game data and interrupt gameplay when problems are detected.<br>`Release` builds are optimized for size and speed and do not include debugging information, which makes it harder to find problems. | `Debug`                                                                                      |
+| `BUILD_EDITOR`           | _(Windows-only)_ Build internal editor.                                                                                                                                                                                                                                                                 | `OFF`                                                                                        |
+| `BUILD_TESTING`          | Enable testing. Requires GTest.                                                                                                                                                                                                                                                                         | `OFF`                                                                                        |
+| `ENABLE_LOGGER`          | Enable logging to the terminal.                                                                                                                                                                                                                                                                         | `OFF`                                                                                        |
+| `ENABLE_MEM_RTL`         | Enable Real-time library memory management functions (disable to verbose memory allocations).                                                                                                                                                                                                           | `ON`                                                                                         |
+| `FORCE_COLORED_OUTPUT`   | Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja).                                                                                                                                                                                                          | `OFF`                                                                                        |
+| `FORCE_PORTABLE_INSTALL` | Install all files into local directory defined by `CMAKE_INSTALL_PREFIX`.                                                                                                                                                                                                                               | `ON`                                                                                         |
+| `USE_EXTERNAL_PLOG`      | Use system plog library.                                                                                                                                                                                                                                                                                | `OFF`                                                                                        |
+| `USE_VCPKG`              | Explicitly control whether or not to use vcpkg for dependency resolution. `ON` requires the environment variable `VCPKG_ROOT` to be set.                                                                                                                                                                | Determined by the existence of `VCPKG_ROOT` in the environment: If it exists, vcpkg is used. |
