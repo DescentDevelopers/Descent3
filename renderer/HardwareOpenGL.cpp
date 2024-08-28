@@ -119,7 +119,9 @@ struct Renderer {
             typename = std::enable_if_t<std::is_same_v<typename std::iterator_traits<VertexIter>::value_type, PosColorUVVertex>>>
   size_t addVertexData(VertexIter begin, VertexIter end, PosColorUVVertex_tag = {}) {
     std::array<PosColorUV2Vertex, MAX_POINTS_IN_POLY> converted;
-    std::transform(begin, end, converted.begin(), [](auto const& vtx) {
+    ASSERT(std::distance(begin, end) <= converted.size());
+    // note: funny &* here is to convert the iterators into plain pointers, so MSVC's Debug STL doesn't slow this down
+    std::transform(&*begin, &*end, &*converted.begin(), [](auto const& vtx) {
       return PosColorUV2Vertex{vtx.pos, vtx.color, vtx.uv, {}};
     });
     return shader_.addVertexData(converted.cbegin(), converted.cend());
