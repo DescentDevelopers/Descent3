@@ -139,7 +139,7 @@ void SortPostrenders() {
         while (Postrender_list[++i].z < v.z)
           ;
 
-        while (Postrender_list[--j].z > v.z)
+        while (j > 0 && Postrender_list[--j].z > v.z)
           ;
 
         if (i >= j)
