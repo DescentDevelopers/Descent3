@@ -29,6 +29,8 @@ protected:
   bool m_is_compressed = false;
 
 public:
+  virtual ~ISoundDevice() = default;
+
   /// Play stream
   virtual void Play() {};
   /// Stop stream

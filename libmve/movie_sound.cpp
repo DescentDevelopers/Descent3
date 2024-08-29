@@ -16,21 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <functional>
 #include "movie_sound.h"
 
 namespace D3 {
 
-MovieSoundDevice::MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_t channels, uint32_t buf_size,
-                                   bool is_compressed) {
-  SDL_AudioFormat format = (sample_size == 2) ? AUDIO_S16LSB : AUDIO_U8;
-  SDL_AudioSpec spec;
+MovieSoundDevice::MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_t channels, bool is_compressed) {
+  SDL_AudioSpec spec{};
   spec.freq = sample_rate;
-  spec.format = format;
+  spec.format = (sample_size == 2) ? AUDIO_S16LSB : AUDIO_U8;
   spec.channels = channels;
-  spec.size = buf_size;
-  spec.callback = nullptr;
-  spec.userdata = this;
 
   m_device_id = SDL_OpenAudioDevice(nullptr, 0, &spec, nullptr, 0);
   m_is_compressed = is_compressed;

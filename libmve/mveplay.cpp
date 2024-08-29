@@ -184,7 +184,7 @@ static int create_audiobuf_handler(unsigned char major, unsigned char minor, uns
     is_compressed = true;
   }
 
-  snd_ds = std::make_unique<D3::MovieSoundDevice>(sample_rate, sample_size, channels, 4096, is_compressed);
+  snd_ds = std::make_unique<D3::MovieSoundDevice>(sample_rate, sample_size, channels, is_compressed);
 #endif
 
   return 1;
