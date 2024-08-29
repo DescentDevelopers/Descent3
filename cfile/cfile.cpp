@@ -851,9 +851,10 @@ bool cf_CopyFile(const std::filesystem::path &dest, const std::filesystem::path 
     // c=cf_ReadByte (infile);
     // cf_WriteByte (outfile,c);
   }
+  bool nlo = !infile->lib_offset;
   cfclose(infile);
   cfclose(outfile);
-  if (!infile->lib_offset && copytime) {
+  if (nlo && copytime) {
     cf_CopyFileTime(dest, src);
   }
   return true;
