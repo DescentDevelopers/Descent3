@@ -752,7 +752,7 @@ void GoalDoFrame(object *obj) {
           posp = &goal_obj->pos;
           roomnum = goal_obj->roomnum;
 
-          float dist = vm_VectorDistance(
+          float dist = ai_info->path.num_paths == 0 ? 0.0f : vm_VectorDistance(
               &AIDynamicPath[ai_info->path.num_paths - 1].pos[ai_info->path.path_end_node[ai_info->path.num_paths - 1]],
               posp);
 
