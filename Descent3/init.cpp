@@ -944,6 +944,7 @@
 #include "room.h"
 #include "game.h"
 #include "gamefile.h"
+#include "gamespy.h"
 #include "TelCom.h"
 #include "objinfo.h"
 #include "cinematics.h"
@@ -1880,6 +1881,8 @@ void InitD3Systems1(bool editor) {
     ServerTimeout = atoi(GameArgs[timeoutarg + 1]);
     LastPacketReceived = timer_GetTime();
   }
+
+  gspy_Init();
 
   // Sound initialization
   int soundres = Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);

@@ -1661,6 +1661,7 @@
 #include "damage.h"
 #include "gamesequence.h"
 #include "objinfo.h"
+#include "gamespy.h"
 #include "gametexture.h"
 #include "room.h"
 #include "game2dll.h"
@@ -3453,7 +3454,7 @@ void MultiLeaveGame() {
 
   SetFunctionMode(MENU_MODE);
   if (Netgame.local_role == LR_SERVER) {
-    //		gspy_EndGame();
+    gspy_EndGame();
   }
 
   ScoreAPIGameOver();

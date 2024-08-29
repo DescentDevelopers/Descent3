@@ -816,6 +816,7 @@
 #include "damage.h"
 #include "ship.h"
 #include "gameevent.h"
+#include "gamespy.h"
 #include "gametexture.h"
 #include "AIMain.h"
 #include "ddio.h"
@@ -3043,6 +3044,9 @@ void GameFrame(void) {
   RTP_tSTARTTIME(multiframe_time, curr_time);
   MultiDoFrame();
   RTP_tENDTIME(multiframe_time, curr_time);
+
+  // Do Gamespy stuff
+  gspy_DoFrame();
 
 #ifdef USE_RTP
   RTP_GETCLOCK(curr_time); // update the current time, since something has happened since ENDFTIME
