@@ -672,7 +672,7 @@ void OutrageMusicSeq::FreeList() {
 
   while ((node = m_music_list.start())) {
     node = m_music_list.unlink();
-    delete[] node;
+    delete node;
   }
 
   m_music_list.free();
