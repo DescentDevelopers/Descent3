@@ -404,7 +404,7 @@ bool CFilePageAddDlg::Quit(void) {
     m_SelectedFiles = NULL;
   } else {
 
-    m_SelectedFiles = (char **)mem_malloc(m_NumberOfSelectedFiles * sizeof(char *));
+    m_SelectedFiles = mem_rmalloc<char *>(m_NumberOfSelectedFiles);
     if (!m_SelectedFiles) {
       m_SelectedFiles = NULL;
       m_NumberOfSelectedFiles = 0;

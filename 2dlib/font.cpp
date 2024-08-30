@@ -416,7 +416,7 @@ void grFont::load(char *filename, int slot) {
   int bytesize = READ_FONT_INT(ff);
 
   ft->raw_data = (uint8_t *)mem_malloc(bytesize);
-  ft->char_data = (uint8_t **)mem_malloc(num_char * sizeof(uint8_t *));
+  ft->char_data = mem_rmalloc<uint8_t *>(num_char);
 
   READ_FONT_DATA(ff, ft->raw_data, bytesize, 1);
 

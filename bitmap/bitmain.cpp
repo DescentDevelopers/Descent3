@@ -342,7 +342,7 @@ static void bm_DeleteHashTable();
 static int bm_TestName(const char *src);
 
 void bm_InitHashTable() {
-  bm_hashTable = (bm_Node **)mem_malloc(bm_hashTableSize * sizeof(bm_Node *));
+  bm_hashTable = mem_rmalloc<bm_Node *>(bm_hashTableSize);
   for (int a = 0; a < bm_hashTableSize; a++) {
     bm_hashTable[a] = NULL;
   }

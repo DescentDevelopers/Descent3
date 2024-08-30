@@ -2410,7 +2410,7 @@ void ComputeAABB(bool f_full) {
 
         // temporary malloc
         rp->num_bbf_regions = 27 + num_structs_per_room[i] - 1;
-        rp->bbf_list = (int16_t **)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(int16_t *));
+        rp->bbf_list = mem_rmalloc<int16_t *>(MAX_REGIONS_PER_ROOM);
         for (x = 0; x < MAX_REGIONS_PER_ROOM; x++) {
           rp->bbf_list[x] = mem_rmalloc<int16_t>(rp->num_faces);
         }

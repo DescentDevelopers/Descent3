@@ -226,7 +226,7 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
   ASSERT(bnlist);
   ASSERT(i >= 0 && i < bnlist->num_nodes && j >= 0 && j < bnlist->num_nodes);
 
-  node_list = (pq_item **)mem_malloc(bnlist->num_nodes * sizeof(pq_item *));
+  node_list = mem_rmalloc<pq_item *>(bnlist->num_nodes);
   memset(node_list, 0, bnlist->num_nodes * sizeof(pq_item *));
 
   PQPath.push(start_node);
