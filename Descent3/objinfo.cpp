@@ -116,7 +116,7 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
 
       extern void AISetDefault(t_ai_info * ai_info_ptr);
       if (f_ai) {
-        Object_info[i].ai_info = (t_ai_info *)mem_malloc(sizeof(t_ai_info));
+        Object_info[i].ai_info = mem_rmalloc<t_ai_info>();
         memset(Object_info[i].ai_info, 0, sizeof(t_ai_info));
         AISetDefault(Object_info[i].ai_info);
       }

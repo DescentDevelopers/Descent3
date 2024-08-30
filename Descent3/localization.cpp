@@ -664,7 +664,7 @@ void GrowString::operator+=(char *str) {
     return;
   if (root.string_data) {
     tbufferinfo *node;
-    node = (tbufferinfo *)mem_malloc(sizeof(tbufferinfo));
+    node = mem_rmalloc<tbufferinfo>();
     if (!node)
       return;
     node->string_data = (char *)mem_malloc(strlen(str) + 2);

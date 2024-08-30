@@ -24,7 +24,7 @@
 listnode *NewListNode(void) {
   listnode *node;
 
-  node = (listnode *)mem_malloc(sizeof(listnode));
+  node = mem_rmalloc<listnode>();
   if (node == NULL) {
     LOG_FATAL << "Not enough memory for a new listnode!";
     Int3();

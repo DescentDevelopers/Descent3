@@ -416,7 +416,7 @@ int AllocateProceduralForTexture(int handle) {
     w = h = 128;
   }
 
-  GameTextures[handle].procedural = (proc_struct *)mem_malloc(sizeof(proc_struct));
+  GameTextures[handle].procedural = mem_rmalloc<proc_struct>();
   ASSERT(GameTextures[handle].procedural);
 
   GameTextures[handle].procedural->proc1 = NULL;

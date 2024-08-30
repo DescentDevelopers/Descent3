@@ -2000,7 +2000,7 @@ void QuickStartMission() {
   //	this initializes a mini one level mission with no frills.
   Current_mission.cur_level = 1;
   Current_mission.num_levels = 1;
-  Current_mission.levels = (tLevelNode *)mem_malloc(sizeof(tLevelNode));
+  Current_mission.levels = mem_rmalloc<tLevelNode>();
   memset(Current_mission.levels, 0, sizeof(tLevelNode));
   Current_level = Current_mission.levels;
   if (Editor_quickplay_levelname[0] != '\0')

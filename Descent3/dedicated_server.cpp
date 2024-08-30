@@ -884,7 +884,7 @@ void ListenDedicatedSocket(void) {
     PrintDedicatedMessage(TXT_DS_NEWCONNECT, inet_ntoa(conn_addr.sin_addr));
     PrintDedicatedMessage("\n");
     dedicated_socket *new_socket;
-    new_socket = (dedicated_socket *)mem_malloc(sizeof(dedicated_socket));
+    new_socket = mem_rmalloc<dedicated_socket>();
     if (Head_sock)
       Head_sock->prev = new_socket;
     new_socket->next = Head_sock;

@@ -1041,7 +1041,7 @@ void DoRadiosityForRooms() {
     Light_surfaces[surface_index].verts = (vector *)mem_malloc(sizeof(vector) * 3);
     ASSERT(Light_surfaces[surface_index].verts != NULL);
 
-    Light_surfaces[surface_index].elements = (rad_element *)mem_malloc(sizeof(rad_element));
+    Light_surfaces[surface_index].elements = mem_rmalloc<rad_element>();
     ASSERT(Light_surfaces[surface_index].elements != NULL);
 
     Light_surfaces[surface_index].elements[0].verts = (vector *)mem_malloc(sizeof(vector) * 3);
@@ -1911,7 +1911,7 @@ void DoRadiosityForTerrain() {
       }
 
       // Do upper left triangle
-      Light_surfaces[i * 2].elements = (rad_element *)mem_malloc(sizeof(rad_element));
+      Light_surfaces[i * 2].elements = mem_rmalloc<rad_element>();
       ASSERT(Light_surfaces[i * 2].elements != NULL);
 
       Light_surfaces[i * 2].elements[0].verts = (vector *)mem_malloc(sizeof(vector) * 3);
@@ -1951,7 +1951,7 @@ void DoRadiosityForTerrain() {
 
       // Now do lower right
 
-      Light_surfaces[i * 2 + 1].elements = (rad_element *)mem_malloc(sizeof(rad_element));
+      Light_surfaces[i * 2 + 1].elements = mem_rmalloc<rad_element>();
       ASSERT(Light_surfaces[i * 2 + 1].elements != NULL);
 
       Light_surfaces[i * 2 + 1].elements[0].verts = (vector *)mem_malloc(sizeof(vector) * 3);
@@ -1996,7 +1996,7 @@ void DoRadiosityForTerrain() {
     Light_surfaces[surf_index].verts = (vector *)mem_malloc(sizeof(vector) * 3);
     ASSERT(Light_surfaces[surf_index].verts != NULL);
 
-    Light_surfaces[surf_index].elements = (rad_element *)mem_malloc(sizeof(rad_element));
+    Light_surfaces[surf_index].elements = mem_rmalloc<rad_element>();
     ASSERT(Light_surfaces[surf_index].elements != NULL);
 
     Light_surfaces[surf_index].elements[0].verts = (vector *)mem_malloc(sizeof(vector) * 3);

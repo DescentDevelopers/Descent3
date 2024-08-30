@@ -1500,7 +1500,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
       LOG_ERROR.printf("OSIRIS: Unable to load module (%s) to bind to object (%s)", default_module_name, page_name);
     } else {
       // allocate the memory for the object's scripts
-      obj->osiris_script = (tOSIRISScript *)mem_malloc(sizeof(tOSIRISScript));
+      obj->osiris_script = mem_rmalloc<tOSIRISScript>();
       if (!obj->osiris_script) {
         // out of memory
         LOG_ERROR << "OSIRIS: Out of memory trying to bind script";
@@ -1543,12 +1543,12 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
           tRefObj *node;
           if (OSIRIS_loaded_modules[dll_id].RefRoot == NULL) {
-            node = OSIRIS_loaded_modules[dll_id].RefRoot = (tRefObj *)mem_malloc(sizeof(tRefObj));
+            node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
           } else {
             node = OSIRIS_loaded_modules[dll_id].RefRoot;
             while (node->next)
               node = node->next;
-            node->next = (tRefObj *)mem_malloc(sizeof(tRefObj));
+            node->next = mem_rmalloc<tRefObj>();
             node = node->next;
           }
           node->objnum = OBJNUM(obj);
@@ -1578,7 +1578,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
         if (gos_id != -1) {
           if (!obj->osiris_script) {
             // we need to allocate memory for a script
-            obj->osiris_script = (tOSIRISScript *)mem_malloc(sizeof(tOSIRISScript));
+            obj->osiris_script = mem_rmalloc<tOSIRISScript>();
             if (!obj->osiris_script) {
               // out of memory
               LOG_ERROR << "OSIRIS: Out of memory trying to bind script";
@@ -1607,12 +1607,12 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
             tRefObj *node;
             if (OSIRIS_loaded_modules[dll_id].RefRoot == NULL) {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot = (tRefObj *)mem_malloc(sizeof(tRefObj));
+              node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
             } else {
               node = OSIRIS_loaded_modules[dll_id].RefRoot;
               while (node->next)
                 node = node->next;
-              node->next = (tRefObj *)mem_malloc(sizeof(tRefObj));
+              node->next = mem_rmalloc<tRefObj>();
               node = node->next;
             }
             node->objnum = OBJNUM(obj);
@@ -1635,7 +1635,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
 
             if (!obj->osiris_script) {
               // we need to allocate memory for a script
-              obj->osiris_script = (tOSIRISScript *)mem_malloc(sizeof(tOSIRISScript));
+              obj->osiris_script = mem_rmalloc<tOSIRISScript>();
               if (!obj->osiris_script) {
                 // out of memory
                 LOG_ERROR << "OSIRIS: Out of memory trying to bind script";
@@ -1664,12 +1664,12 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
               tRefObj *node;
               if (OSIRIS_loaded_modules[dll_id].RefRoot == NULL) {
-                node = OSIRIS_loaded_modules[dll_id].RefRoot = (tRefObj *)mem_malloc(sizeof(tRefObj));
+                node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
               } else {
                 node = OSIRIS_loaded_modules[dll_id].RefRoot;
                 while (node->next)
                   node = node->next;
-                node->next = (tRefObj *)mem_malloc(sizeof(tRefObj));
+                node->next = mem_rmalloc<tRefObj>();
                 node = node->next;
               }
               node->objnum = OBJNUM(obj);
@@ -1705,7 +1705,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
         if (gos_id != -1) {
           if (!obj->osiris_script) {
             // we need to allocate memory for a script
-            obj->osiris_script = (tOSIRISScript *)mem_malloc(sizeof(tOSIRISScript));
+            obj->osiris_script = mem_rmalloc<tOSIRISScript>();
             if (!obj->osiris_script) {
               // out of memory
               LOG_ERROR << "OSIRIS: Out of memory trying to bind script";
@@ -1734,12 +1734,12 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
             tRefObj *node;
             if (OSIRIS_loaded_modules[dll_id].RefRoot == NULL) {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot = (tRefObj *)mem_malloc(sizeof(tRefObj));
+              node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
             } else {
               node = OSIRIS_loaded_modules[dll_id].RefRoot;
               while (node->next)
                 node = node->next;
-              node->next = (tRefObj *)mem_malloc(sizeof(tRefObj));
+              node->next = mem_rmalloc<tRefObj>();
               node = node->next;
             }
             node->objnum = OBJNUM(obj);
@@ -2856,7 +2856,7 @@ void *Osiris_AllocateMemory(tOSIRISMEMCHUNK *mc) {
 
   if (!Osiris_mem_root) {
     // it'll be the first node
-    Osiris_mem_root = (tOSIRISMEMNODE *)mem_malloc(sizeof(tOSIRISMEMNODE));
+    Osiris_mem_root = mem_rmalloc<tOSIRISMEMNODE>();
     if (!Osiris_mem_root)
       return NULL;
 
@@ -2869,7 +2869,7 @@ void *Osiris_AllocateMemory(tOSIRISMEMCHUNK *mc) {
       curr = curr->next;
     }
 
-    curr->next = (tOSIRISMEMNODE *)mem_malloc(sizeof(tOSIRISMEMNODE));
+    curr->next = mem_rmalloc<tOSIRISMEMNODE>();
     if (!curr->next)
       return NULL;
     error_node = &curr->next;
@@ -3042,7 +3042,7 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
       done = true;
     } else {
       // handle this node
-      memchunk = (tOSIRISMEMNODE *)mem_malloc(sizeof(tOSIRISMEMNODE));
+      memchunk = mem_rmalloc<tOSIRISMEMNODE>();
       if (!memchunk) {
         Error("Out of memory");
       }
@@ -3481,9 +3481,9 @@ void Osiris_RestoreOMMS(CFILE *file) {
   // we have to rebuild the nodes
   while (cf_ReadByte(file)) {
     if (!currhash) {
-      currhash = OMMS_Hash_node_root = (tOMMSHashNode *)mem_malloc(sizeof(tOMMSHashNode));
+      currhash = OMMS_Hash_node_root = mem_rmalloc<tOMMSHashNode>();
     } else {
-      currhash->next = (tOMMSHashNode *)mem_malloc(sizeof(tOMMSHashNode));
+      currhash->next = mem_rmalloc<tOMMSHashNode>();
       currhash = currhash->next;
     }
 
@@ -3511,9 +3511,9 @@ void Osiris_RestoreOMMS(CFILE *file) {
     // now go through all the nodes and right their data
     while (cf_ReadByte(file)) {
       if (!node) {
-        node = currhash->root = (tOMMSNode *)mem_malloc(sizeof(tOMMSNode));
+        node = currhash->root = mem_rmalloc<tOMMSNode>();
       } else {
-        node->next = (tOMMSNode *)mem_malloc(sizeof(tOMMSNode));
+        node->next = mem_rmalloc<tOMMSNode>();
         node = node->next;
       }
 
@@ -3550,7 +3550,7 @@ tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate) {
     if (!autocreate)
       return NULL;
 
-    curr = OMMS_Hash_node_root = (tOMMSHashNode *)mem_malloc(sizeof(tOMMSHashNode));
+    curr = OMMS_Hash_node_root = mem_rmalloc<tOMMSHashNode>();
   } else {
     if (curr->script_name && !stricmp(curr->script_name, script_name)) {
       // the root node matches
@@ -3571,7 +3571,7 @@ tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate) {
     if (!autocreate)
       return NULL;
 
-    curr->next = (tOMMSHashNode *)mem_malloc(sizeof(tOMMSHashNode));
+    curr->next = mem_rmalloc<tOMMSHashNode>();
     curr = curr->next;
   }
 
@@ -3619,7 +3619,7 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
     if (!autocreate)
       return NULL;
 
-    curr = root->root = (tOMMSNode *)mem_malloc(sizeof(tOMMSNode));
+    curr = root->root = mem_rmalloc<tOMMSNode>();
   } else {
     if (curr->unique_id == uid) {
       // the root node matches
@@ -3640,7 +3640,7 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
     if (!autocreate)
       return NULL;
 
-    curr->next = (tOMMSNode *)mem_malloc(sizeof(tOMMSNode));
+    curr->next = mem_rmalloc<tOMMSNode>();
     curr = curr->next;
   }
 

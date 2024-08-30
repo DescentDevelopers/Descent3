@@ -1181,7 +1181,7 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
       // mprintf(0,"Sending in nw_SendReliable() %d bytes seq=%d.\n",length,rsocket->theirsequence);
 
       rsocket->send_len[i] = length;
-      rsocket->sbuffers[i] = (reliable_net_sendbuffer *)mem_malloc(sizeof(reliable_net_sendbuffer));
+      rsocket->sbuffers[i] = mem_rmalloc<reliable_net_sendbuffer>();
 
       memcpy(rsocket->sbuffers[i]->buffer, data, length);
 
@@ -1507,7 +1507,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
                 rsocket->recv_len[i] = max_len; // INTEL_SHORT(rcv_buff.data_len);
               else
                 rsocket->recv_len[i] = INTEL_SHORT(rcv_buff.data_len);
-              rsocket->rbuffers[i] = (reliable_net_rcvbuffer *)mem_malloc(sizeof(reliable_net_rcvbuffer));
+              rsocket->rbuffers[i] = mem_rmalloc<reliable_net_rcvbuffer>();
               memcpy(rsocket->rbuffers[i]->buffer, rcv_buff.data, rsocket->recv_len[i]);
               rsocket->rsequence[i] = INTEL_SHORT(rcv_buff.seq);
               // mprintf(0,"Adding packet to receive buffer in nw_ReceiveReliable().\n");
@@ -2134,7 +2134,7 @@ int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
 
 #if (!defined(POSIX))
     async_dns_lookup *newaslu;
-    newaslu = (async_dns_lookup *)mem_malloc(sizeof(async_dns_lookup));
+    newaslu = mem_rmalloc<async_dns_lookup>();
     memset(&newaslu->ip, 0, sizeof(uint32_t));
     newaslu->host = hostname;
     newaslu->done = false;

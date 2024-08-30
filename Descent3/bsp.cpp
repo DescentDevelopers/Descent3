@@ -135,7 +135,7 @@ int BSPGetMineChecksum() {
 bspnode *NewBSPNode(void) {
   bspnode *node;
 
-  if ((node = (bspnode *)mem_malloc(sizeof(bspnode))) == NULL) {
+  if ((node = mem_rmalloc<bspnode>()) == NULL) {
     return NULL;
   }
 
@@ -164,7 +164,7 @@ bsppolygon *NewPolygon(int roomnum, int facenum, int numverts) {
   bsppolygon *newpoly;
   vector *verts;
 
-  newpoly = (bsppolygon *)mem_malloc(sizeof(bsppolygon));
+  newpoly = mem_rmalloc<bsppolygon>();
 
   if (newpoly == NULL) {
     LOG_ERROR << "NewPolygon: Couldn't allocate polygon";
@@ -396,7 +396,7 @@ int SplitPolygon(bspplane *plane, bsppolygon *testpoly, bsppolygon **frontpoly, 
 
     vertptr2 = polyvert[(i + 1) % numvert];
     t = dists[i] / (dists[i] - dists[i + 1]);
-    newvert[num_new_verts] = (vector *)mem_malloc(sizeof(vector));
+    newvert[num_new_verts] = mem_rmalloc<vector>();
 
     /* Now we must generate the split point. This is simply
      * an equation in the form Origin + t*Direction

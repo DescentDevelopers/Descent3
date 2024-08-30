@@ -390,7 +390,7 @@ bm_Node *bm_insertNode(bm_T data) {
    ************************************************/
   /* insert bm_Node at beginning of list */
   bucket = bm_hash(data);
-  if ((p = (bm_Node *)mem_malloc(sizeof(bm_Node))) == 0) {
+  if ((p = mem_rmalloc<bm_Node>()) == 0) {
     exit(1);
   }
   p0 = bm_hashTable[bucket];

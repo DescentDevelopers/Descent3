@@ -624,7 +624,7 @@ void ObjCreateEffectInfo(object *objp) {
   if (objp->effect_info)
     mem_free(objp->effect_info);
 
-  objp->effect_info = (effect_info_s *)mem_malloc(sizeof(effect_info_s));
+  objp->effect_info = mem_rmalloc<effect_info_s>();
   memset(objp->effect_info, 0, sizeof(effect_info_s));
   ASSERT(objp->effect_info);
   objp->effect_info->sound_handle = SOUND_NONE_INDEX;

@@ -450,7 +450,7 @@ bool Inventory::AddObject(int object_handle, int flags, const char *description)
   if (Object_info[newnode->oid].description) {
     newnode->description = mem_strdup(Object_info[newnode->oid].description);
   } else {
-    newnode->description = (char *)mem_malloc(sizeof(char));
+    newnode->description = mem_rmalloc<char>();
     newnode->description[0] = 0;
   }
 
@@ -650,7 +650,7 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
       newnode->description = (char *)mem_malloc(strlen(Object_info[oid].description) + 1);
       strcpy(newnode->description, Object_info[oid].description);
     } else {
-      newnode->description = (char *)mem_malloc(sizeof(char));
+      newnode->description = mem_rmalloc<char>();
       newnode->description[0] = 0;
     }
 

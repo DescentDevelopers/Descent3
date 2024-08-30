@@ -3338,7 +3338,7 @@ void SetObjectControlType(object *obj, int control_type) {
     int count = 0;
     int i;
 
-    obj->ai_info = (ai_frame *)mem_malloc(sizeof(ai_frame));
+    obj->ai_info = mem_rmalloc<ai_frame>();
     memset(obj->ai_info, 0x00, sizeof(ai_frame)); // DAJ clear the baby
 
     for (i = 0; i < num_wbs; i++) {

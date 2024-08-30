@@ -4060,12 +4060,12 @@ void TelCom_AddCustomKeyEvent(int key_id, int event_id) {
   tCustomKeyEventID *curr = Telcom_custom_key_event_root;
 
   if (!curr) {
-    curr = Telcom_custom_key_event_root = (tCustomKeyEventID *)mem_malloc(sizeof(tCustomKeyEventID));
+    curr = Telcom_custom_key_event_root = mem_rmalloc<tCustomKeyEventID>();
   } else {
     while (curr->next) {
       curr = curr->next;
     }
-    curr->next = (tCustomKeyEventID *)mem_malloc(sizeof(tCustomKeyEventID));
+    curr->next = mem_rmalloc<tCustomKeyEventID>();
     curr = curr->next;
   }
 

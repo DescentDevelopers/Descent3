@@ -1087,7 +1087,7 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
     subobj->flags |= SOF_GLOW;
 
     if (subobj->glow_info == nullptr) // DAJ may already exist
-      subobj->glow_info = (glowinfo *)mem_malloc(sizeof(glowinfo));
+      subobj->glow_info = mem_rmalloc<glowinfo>();
 
     subobj->glow_info->glow_r = r;
     subobj->glow_info->glow_g = g;
@@ -1111,7 +1111,7 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
     subobj->flags |= SOF_THRUSTER;
 
     if (subobj->glow_info == nullptr) // DAJ may already exist
-      subobj->glow_info = (glowinfo *)mem_malloc(sizeof(glowinfo));
+      subobj->glow_info = mem_rmalloc<glowinfo>();
 
     subobj->glow_info->glow_r = r;
     subobj->glow_info->glow_g = g;
