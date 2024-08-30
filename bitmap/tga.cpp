@@ -188,7 +188,7 @@ inline int16_t tga_read_short() {
     return 0;
   }
 
-  i = *(int16_t *)(Tga_file_data + Fake_pos);
+  memcpy(&i, Tga_file_data + Fake_pos, sizeof(i));
   Fake_pos += 2;
 
   return INTEL_SHORT(i);
