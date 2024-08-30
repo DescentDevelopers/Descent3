@@ -34,7 +34,7 @@ void _splitpath(const char *srcPath, char *drive, char *path, char *filename, ch
   // Check for an extension
   ///////////////////////////////////////
   int t = totalLen - 1;
-  while ((srcPath[t] != '.') && (srcPath[t] != '/') && (t >= 0))
+  while (t >= 0 && (srcPath[t] != '.') && (srcPath[t] != '/') && (t >= 0))
     t--;
   // see if we are at an extension
   if ((t >= 0) && (srcPath[t] == '.')) {
@@ -54,7 +54,7 @@ void _splitpath(const char *srcPath, char *drive, char *path, char *filename, ch
   // Check for file name
   ////////////////////////////////////
   int temp = (extStart != -1) ? (extStart) : (totalLen - 1);
-  while ((srcPath[temp] != '/') && (temp >= 0))
+  while (temp >= 0 && (srcPath[temp] != '/') && (temp >= 0))
     temp--;
   if (temp < 0)
     temp = 0;
