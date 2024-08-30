@@ -3171,7 +3171,7 @@ void CMainFrame::OnHotspotTga() {
     return;
   }
 
-  buffer = (char *)mem_malloc(strlen(tga_path.GetBuffer(1)) + 1);
+  buffer = mem_rmalloc<char>(strlen(tga_path.GetBuffer(1)) + 1);
   if (!buffer) {
     Int3(); // find Jeff
     return;

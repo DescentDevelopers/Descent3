@@ -739,7 +739,7 @@ void BEAddTextEffect(TCTEXTDESC *desc, char *text, char *description, int id) {
     mem_free(befx->text);
     befx->text = NULL;
   }
-  befx->text = (char *)mem_malloc(strlen(text) + 1);
+  befx->text = mem_rmalloc<char>(strlen(text) + 1);
   ASSERT(befx->text);
   strcpy(befx->text, text);
 
@@ -1407,7 +1407,7 @@ void CBriefEdit::OnBriefEffectEdit() {
       if (Briefing_screens[scr_index].effects[efx_index].text)
         mem_free(Briefing_screens[scr_index].effects[efx_index].text);
 
-      Briefing_screens[scr_index].effects[efx_index].text = (char *)mem_malloc(dlg.m_Text.GetLength() + 1);
+      Briefing_screens[scr_index].effects[efx_index].text = mem_rmalloc<char>(dlg.m_Text.GetLength() + 1);
       ASSERT(Briefing_screens[scr_index].effects[efx_index].text);
 
       if (Briefing_screens[scr_index].effects[efx_index].text) {
@@ -1651,7 +1651,7 @@ void CBriefEdit::OnBriefEffectText() {
     if (Briefing_screens[c_scr].effects[c_eff].text)
       mem_free(Briefing_screens[c_scr].effects[c_eff].text);
 
-    Briefing_screens[c_scr].effects[c_eff].text = (char *)mem_malloc(dlg.m_Text.GetLength() + 1);
+    Briefing_screens[c_scr].effects[c_eff].text = mem_rmalloc<char>(dlg.m_Text.GetLength() + 1);
     ASSERT(Briefing_screens[c_scr].effects[c_eff].text);
 
     if (Briefing_screens[c_scr].effects[c_eff].text) {

@@ -581,7 +581,7 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
 
     if (Weapons[id].icon_handle >= 0) {
       newnode->icon_name =
-          (char *)mem_malloc(strlen(GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name) + 1);
+          mem_rmalloc<char>(strlen(GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name) + 1);
       strcpy(newnode->icon_name, GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name);
     } else {
       newnode->icon_name = nullptr;
@@ -647,7 +647,7 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
     newnode->oid = oauxi;
 
     if (Object_info[oid].description) {
-      newnode->description = (char *)mem_malloc(strlen(Object_info[oid].description) + 1);
+      newnode->description = mem_rmalloc<char>(strlen(Object_info[oid].description) + 1);
       strcpy(newnode->description, Object_info[oid].description);
     } else {
       newnode->description = mem_rmalloc<char>();
@@ -672,7 +672,7 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
     if (flags & INVAF_LEVELLAST)
       newnode->iflags |= INVAF_LEVELLAST;
 
-    newnode->icon_name = (char *)mem_malloc(strlen(Object_info[oid].icon_name) + 1);
+    newnode->icon_name = mem_rmalloc<char>(strlen(Object_info[oid].icon_name) + 1);
     strcpy(newnode->icon_name, Object_info[oid].icon_name);
 
     if (description) {

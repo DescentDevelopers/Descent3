@@ -239,7 +239,7 @@ char *LoadScript(const char *filename) {
 
   cfclose(file);
 
-  source = (char *)mem_malloc(strlen(temp.GetBuffer(1)) + 1);
+  source = mem_rmalloc<char>(strlen(temp.GetBuffer(1)) + 1);
   if (!source)
     return false;
   strcpy(source, temp.GetBuffer(1));
@@ -604,7 +604,7 @@ char *AddScriptBlockToScript(char *script, const char *newname, const char *type
   sprintf(newhdr, SCRHDR_FORMAT, type_str, newname);
   sprintf(newblk, SCRIPT_FORMAT, newname, newhdr);
 
-  newsrc = (char *)mem_malloc(strlen(script) + strlen(newblk) + 1);
+  newsrc = mem_rmalloc<char>(strlen(script) + strlen(newblk) + 1);
   if (!newsrc) {
     mprintf(1, "Allocation failure in creating new script buffer.\n");
     return NULL;
@@ -668,7 +668,7 @@ char *AddEventBlockToScript(char *script, const char *evtname, const char *scrip
           postblk[postlen] = 0;
           sprintf(evtblk, EVT_STATEMENT, evtname);
 
-          newtxt = (char *)mem_malloc(strlen(preblk) + strlen(postblk) + strlen(evtblk) + 1);
+          newtxt = mem_rmalloc<char>(strlen(preblk) + strlen(postblk) + strlen(evtblk) + 1);
           sprintf(newtxt, "%s%s%s", preblk, evtblk, postblk);
 
           delete[] postblk;

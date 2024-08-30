@@ -840,7 +840,7 @@ void InitHUDItem(int new_item, tHUDItem *item) {
     break;
 
   case HUD_ITEM_CUSTOMTEXT2:  // malloc buffer to be updated later
-    HUD_array[new_item].data.text = (char *)mem_malloc(item->buffer_size);
+    HUD_array[new_item].data.text = mem_rmalloc<char>(item->buffer_size);
     HUD_array[new_item].data.text[0] = 0;
     HUD_array[new_item].buffer_size = item->buffer_size;
     stat = STAT_CUSTOM;
@@ -998,7 +998,7 @@ bool LGSHudState(CFILE *fp) {
       huditem.render_fn = NULL; // use pointer to function void (*fn)(struct tHUDItem *)
       AddHUDItem(&huditem);
 
-      buffer = (char *)mem_malloc(huditem.buffer_size);
+      buffer = mem_rmalloc<char>(huditem.buffer_size);
       cf_ReadString(buffer, huditem.buffer_size, fp);
       UpdateCustomtext2HUDItem(buffer);
       mem_free(buffer);

@@ -721,7 +721,7 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
       // left top
       size = ((wndmap->wm[count].l_end_x) - (wndmap->wm[count].l_start_x)) *
              ((wndmap->wm[count].t_bottom_y) - (wndmap->wm[count].t_top_y));
-      wndmap->wm[count].lt = (char *)mem_malloc(size);
+      wndmap->wm[count].lt = mem_rmalloc<char>(size);
       for (index = 0; index < size; index++) {
         wndmap->wm[count].lt[index] = cf_ReadByte(infile);
       }
@@ -729,7 +729,7 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
       // right top
       size = ((wndmap->wm[count].r_end_x) - (wndmap->wm[count].r_start_x)) *
              ((wndmap->wm[count].t_bottom_y) - (wndmap->wm[count].t_top_y));
-      wndmap->wm[count].rt = (char *)mem_malloc(size);
+      wndmap->wm[count].rt = mem_rmalloc<char>(size);
       for (index = 0; index < size; index++) {
         wndmap->wm[count].rt[index] = cf_ReadByte(infile);
       }
@@ -739,14 +739,14 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
       // left bottom
       size = ((wndmap->wm[count].l_end_x) - (wndmap->wm[count].l_start_x)) *
              ((wndmap->wm[count].b_bottom_y) - (wndmap->wm[count].b_top_y));
-      wndmap->wm[count].lb = (char *)mem_malloc(size);
+      wndmap->wm[count].lb = mem_rmalloc<char>(size);
       for (index = 0; index < size; index++) {
         wndmap->wm[count].lb[index] = cf_ReadByte(infile);
       }
       // right bottom
       size = ((wndmap->wm[count].r_end_x) - (wndmap->wm[count].r_start_x)) *
              ((wndmap->wm[count].b_bottom_y) - (wndmap->wm[count].b_top_y));
-      wndmap->wm[count].rb = (char *)mem_malloc(size);
+      wndmap->wm[count].rb = mem_rmalloc<char>(size);
       for (index = 0; index < size; index++) {
         wndmap->wm[count].rb[index] = cf_ReadByte(infile);
       }
@@ -872,7 +872,7 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
   }
 
   int size = strlen(filename) + 5;
-  menu_filename = (char *)mem_malloc(size);
+  menu_filename = mem_rmalloc<char>(size);
   strcpy(menu_filename, filename);
   strcat(menu_filename, ".HSM"); // Hot Spot Map
   LOG_DEBUG.printf("HSM=%s", menu_filename);

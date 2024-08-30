@@ -282,7 +282,7 @@ inline void CFileList::setPath(CString path) {
   if (temp.Right(1) != "\\")
     temp += "\\";
 
-  buffer = (char *)mem_malloc(temp.GetLength() + 1);
+  buffer = mem_rmalloc<char>(temp.GetLength() + 1);
 
   if (!buffer)
     return;

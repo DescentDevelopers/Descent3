@@ -371,7 +371,7 @@ skip_combine:;
     }
 
     ASSERT(rp->name == NULL);
-    rp->name = (char *)mem_malloc(strlen(roomname) + 1);
+    rp->name = mem_rmalloc<char>(strlen(roomname) + 1);
     strcpy(rp->name, roomname);
 
     // Save it out to disk (locally)

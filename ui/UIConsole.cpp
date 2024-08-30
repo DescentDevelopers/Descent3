@@ -110,7 +110,7 @@ void UIConsoleGadget::Create(UIWindow *parent, int id, int x, int y, int font, i
   // extra 32 bytes per row for color coding.
   m_ConsoleBuffer = (char *)mem_malloc(m_Rows * m_Rowsize);
   m_PutsBufLen = 512;
-  m_PutsBuffer = (char *)mem_malloc(m_PutsBufLen);
+  m_PutsBuffer = mem_rmalloc<char>(m_PutsBufLen);
 
   m_ColorRows = new ddgr_color[m_Rows];
   memset(m_ConsoleBuffer, 0, m_Rows * m_Rowsize);
@@ -141,7 +141,7 @@ void UIConsoleGadget::puts(ddgr_color col, const char *str) {
   if (len >= m_PutsBufLen) {
     mem_free(m_PutsBuffer);
     m_PutsBufLen = len + 1;
-    m_PutsBuffer = (char *)mem_malloc(m_PutsBufLen);
+    m_PutsBuffer = mem_rmalloc<char>(m_PutsBufLen);
   }
 
   textaux_WordWrap(str, m_PutsBuffer, m_W - 2 * m_OffX, m_ConsoleFont);

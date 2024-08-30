@@ -1693,7 +1693,7 @@ void DemoReadPersistantHUDMessage() {
   flags = cf_ReadInt(Demo_cfp);
   sound_index = cf_ReadInt(Demo_cfp);
   int msglen = cf_ReadShort(Demo_cfp);
-  fmt = (char *)mem_malloc(msglen);
+  fmt = mem_rmalloc<char>(msglen);
   cf_ReadBytes((uint8_t *)fmt, msglen, Demo_cfp);
   AddPersistentHUDMessage(color, x, y, time, flags, sound_index, fmt);
   mem_free(fmt);

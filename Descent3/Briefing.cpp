@@ -305,7 +305,7 @@ bool ParseForHotTags(const char *src, char **dest) {
   int curr_size = length;
   int curr_index = 0;
 
-  dest_ptr = *dest = (char *)mem_malloc(length);
+  dest_ptr = *dest = mem_rmalloc<char>(length);
   if (!dest_ptr)
     return false;
   char replacement[256];

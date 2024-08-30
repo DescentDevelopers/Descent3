@@ -1269,7 +1269,7 @@ try_again:;
   }
 
   if (strlen(tempname)) {
-    Curroomp->name = (char *)mem_malloc(strlen(tempname) + 1);
+    Curroomp->name = mem_rmalloc<char>(strlen(tempname) + 1);
     strcpy(Curroomp->name, tempname);
   }
 

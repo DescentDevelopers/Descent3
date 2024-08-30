@@ -302,7 +302,7 @@ int ddio_GetFileSysRoots(char **roots, int max_roots) {
   while ((count < max_roots) && (!done)) {
     if (*strptr != 0) {
       strsize = strlen(strptr);
-      string = roots[count] = (char *)mem_malloc(strsize);
+      string = roots[count] = mem_rmalloc<char>(strsize);
       if (!string)
         break;
       // remove the trailing \ from windows
@@ -336,7 +336,7 @@ std::vector<std::filesystem::path> ddio_GetSysRoots() {
   while (!done) {
     if (*strptr != 0) {
       strsize = strlen(strptr);
-      string = (char *)mem_malloc(strsize);
+      string = mem_rmalloc<char>(strsize);
       if (!string)
         break;
       // remove the trailing \ from windows

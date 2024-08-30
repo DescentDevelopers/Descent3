@@ -1144,7 +1144,7 @@ int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
     cf_ReadString(tempbuf, 1024, infile);
     size_t slen = strlen(tempbuf) + 1;
 
-    genericpage->objinfo_struct.description = (char *)mem_malloc(slen);
+    genericpage->objinfo_struct.description = mem_rmalloc<char>(slen);
     ASSERT(genericpage->objinfo_struct.description);
     strcpy(genericpage->objinfo_struct.description, tempbuf);
   } else

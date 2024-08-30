@@ -1628,7 +1628,7 @@ bool MsgListConsole::Open(const char *title, int x, int y, int w, int h) {
   m_buflen = 2048;
 
 redo_copy:
-  m_buffer = (char *)mem_malloc(m_buflen);
+  m_buffer = mem_rmalloc<char>(m_buflen);
   if (m_buffer) {
     m_buffer[0] = 0;
     m_opened = true;

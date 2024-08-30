@@ -503,7 +503,7 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
 
     cfseek(infile, savepos, SEEK_SET);
 
-    Tga_file_data = (char *)mem_malloc(numleft);
+    Tga_file_data = mem_rmalloc<char>(numleft);
     ASSERT(Tga_file_data != NULL);
     Fake_pos = 0;
     Bad_tga = 0;
@@ -661,7 +661,7 @@ int bm_page_in_file(int n) {
 
     cfseek(infile, savepos, SEEK_SET);
 
-    Tga_file_data = (char *)mem_malloc(numleft);
+    Tga_file_data = mem_rmalloc<char>(numleft);
     ASSERT(Tga_file_data != NULL);
     Fake_pos = 0;
     Bad_tga = 0;
