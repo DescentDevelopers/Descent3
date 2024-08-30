@@ -46,35 +46,27 @@
 
 #include <cstdlib>
 #include <memory.h>
-#include <sys/types.h>  // POSIX/Linux
-#include <sys/socket.h> // POSIX/Linux
 
-#include "crossplat.h"
-#include "gamespy.h"
-#include "gamespyutils.h"
-#include "pserror.h"
-#include "player.h"
-#include "multi.h"
-#include "networking.h"
-#include "descent.h"
-#include "ddio.h"
 #include "args.h"
 #include "cfile.h"
+#include "crossplat.h"
+#include "ddio.h"
+#include "descent.h"
+#include "gamespy.h"
+#include "gamespyutils.h"
+#include "mono.h"
+#include "multi.h"
+#include "networking.h"
+#include "player.h"
+#include "pserror.h"
 #include "program.h"
 
-extern short Multi_kills[MAX_NET_PLAYERS];
-extern short Multi_deaths[MAX_NET_PLAYERS];
-// Secret code... encrypted using some really high-tech method...
-char gspy_d3_secret[10]; // = "feWh2G";
-const char origstring[] = {(const char)0x50, (const char)0xf8, (const char)0xa4,
-                           (const char)0xba, (const char)0xc7, (const char)0x7c};
 #define MAX_GAMESPY_SERVERS 5
 #define MAX_GAMESPY_BUFFER 1400
 #define MAX_HOSTNAMELEN 300
 #define GSPY_HEARBEAT_INTERVAL 300 // Seconds between heartbeats.
 #define GAMESPY_PORT 27900
 #define GAMESPY_LISTENPORT 20142
-#define VALIDATE_SIZE 6
 #define THISGAMENAME "descent3"
 #ifdef DEMO
 #define THISGAMEVER "Demo2"
@@ -83,10 +75,17 @@ const char origstring[] = {(const char)0x50, (const char)0xf8, (const char)0xa4,
 #else
 #define THISGAMEVER "Retail"
 #endif
+#define VALIDATE_SIZE 6
+
+
+extern short Multi_kills[MAX_NET_PLAYERS];
+extern short Multi_deaths[MAX_NET_PLAYERS];
+// Secret code... no more so secret
+const uint8_t gspy_d3_secret[VALIDATE_SIZE + 1] = "feWh2G";
 
 SOCKET gspy_socket;
 SOCKADDR_IN gspy_server[MAX_GAMESPY_SERVERS];
-extern ushort Gameport;
+extern uint16_t Gameport;
 int gspy_region = 0;
 char gspy_outgoingbuffer[MAX_GAMESPY_BUFFER] = "";
 float gspy_last_heartbeat;
@@ -94,7 +93,7 @@ bool gspy_game_running = false;
 int gspy_packetnumber = 0;
 int gspy_queryid = 0;
 char gspy_validate[MAX_GAMESPY_BUFFER] = "";
-unsigned short gspy_listenport;
+uint16_t gspy_listenport;
 
 void gspy_StartGame(char *name) {
   gspy_last_heartbeat = timer_GetTime() - GSPY_HEARBEAT_INTERVAL;
@@ -115,19 +114,11 @@ int gspy_Init() {
   }
 
   for (auto &a : gspy_server) {
-    // gspy_server[a].sin_addr.S_un.S_addr = INADDR_NONE;
     INADDR_SET_SUN_SADDR(&a.sin_addr, INADDR_NONE);
     a.sin_port = htons(GAMESPY_PORT);
     a.sin_family = AF_INET;
   }
-  unsigned char keychars[] = {0x36, 0x9d, 0xf3, 0xd2, 0xf5, 0x3b, 0x42, 0xcc, 0x58};
-  for (int i = 0; i < 6; i++) {
-    gspy_d3_secret[i] = (char)(origstring[i] ^ keychars[i]);
-  }
-  gspy_d3_secret[6] = '\0';
-  gspy_d3_secret[7] = '\0';
 
-  // strcpy(gspy_d3_secret,"feWh2G\0\0");
   // Read the config, resolve the name if needed and setup the server addresses
   cfgpath = std::filesystem::path(Base_directory) / gspy_cfgfilename;
 
@@ -159,13 +150,13 @@ int gspy_Init() {
     return 0;
   }
   // make the socket non-blocking
-  int error = make_nonblocking(gspy_socket);
+  make_nonblocking(gspy_socket);
   CFILE *cfp = cfopen(cfgpath, "rt");
   if (cfp) {
     mprintf(0, "Found a gamespy config file!\n");
     char hostn[MAX_HOSTNAMELEN];
 
-    for (int i = 0; i < MAX_GAMESPY_SERVERS; i++) {
+    for (auto &server : gspy_server) {
 
       // First in the config file is the region, which is a number from 0-12 (currently)
       if (cf_ReadString(hostn, MAX_HOSTNAMELEN - 1, cfp)) {
@@ -188,7 +179,7 @@ int gspy_Init() {
           // Increment to the first character of the port name
           port++;
           // get the port number
-          gspy_server[i].sin_port = htons(atoi(port));
+          server.sin_port = htons(atoi(port));
         }
         if (INADDR_NONE == inet_addr(hostn)) {
           // This is a name we must resolve
@@ -198,24 +189,21 @@ int gspy_Init() {
           if (!he) {
             mprintf(0, "Unable to resolve %s\n", hostn);
             // gspy_server[i].sin_addr.S_un.S_addr = INADDR_NONE;
-            INADDR_SET_SUN_SADDR(&gspy_server[i].sin_addr, INADDR_NONE);
+            INADDR_SET_SUN_SADDR(&server.sin_addr, INADDR_NONE);
           } else {
-            // memcpy(&gspy_server[i].sin_addr.S_un.S_addr,he->h_addr_list[0],sizeof(unsigned int));
-            memcpy(&gspy_server[i].sin_addr, he->h_addr_list[0], sizeof(unsigned int));
+            memcpy(&server.sin_addr, he->h_addr_list[0], sizeof(unsigned int));
           }
         } else {
           // This is just a number
-          // gspy_server[i].sin_addr.S_un.S_addr = inet_addr(hostn);
-          INADDR_SET_SUN_SADDR(&gspy_server[i].sin_addr, inet_addr(hostn));
-          // break;
+          INADDR_SET_SUN_SADDR(&server.sin_addr, inet_addr(hostn));
         }
       }
 
       uint32_t resolved_addr;
-      INADDR_GET_SUN_SADDR(&gspy_server[i].sin_addr, &resolved_addr);
+      INADDR_GET_SUN_SADDR(&server.sin_addr, &resolved_addr);
       if (resolved_addr != INADDR_NONE) {
-        mprintf(0, "Sending gamespy heartbeats to %s:%d\n", inet_ntoa(gspy_server[i].sin_addr),
-                htons(gspy_server[i].sin_port));
+        mprintf(0, "Sending gamespy heartbeats to %s:%d\n", inet_ntoa(server.sin_addr),
+                htons(server.sin_port));
       }
     }
   }
@@ -233,7 +221,7 @@ bool gpsy_ValidateString(char *str, char *crypt) {
 
   if (crypt) {
     strcpy((char *)encrypted_val, crypt);
-    gs_encrypt((unsigned char *)gspy_d3_secret, encrypted_val, VALIDATE_SIZE);
+    gs_encrypt(gspy_d3_secret, encrypted_val, VALIDATE_SIZE);
     gs_encode(encrypted_val, VALIDATE_SIZE, (unsigned char *)encoded_val);
     sprintf(keyvalue, "\\validate\\%s", encoded_val);
     strcat(str, keyvalue);
@@ -334,25 +322,24 @@ char *gspy_GetSecure(char *req) {
 }
 
 int gspy_ContainsKey(char *buffer, const char *key) {
-  char str[MAX_GAMESPY_BUFFER];
-  char lowkey[MAX_GAMESPY_BUFFER];
-  strcpy(str, buffer);
-  int len = strlen(str);
-  int i;
   // If it's an empty string return 0
   if (*buffer == '\0')
     return 0;
-  for (i = 0; i < len; i++)
-    tolower(str[i]);
-  strcpy(lowkey, key);
-  len = strlen(str);
-  for (i = 0; i < len; i++)
-    tolower(lowkey[i]);
-  if (strstr(str, lowkey)) {
-    return 1;
-  } else {
-    return 0;
+
+  char str[MAX_GAMESPY_BUFFER];
+  char lowkey[MAX_GAMESPY_BUFFER];
+  strcpy(str, buffer);
+  size_t len = strlen(str);
+
+  for (size_t i = 0; i < len; i++) {
+    str[i] = (char)tolower(str[i]);
   }
+  strcpy(lowkey, key);
+  len = strlen(lowkey);
+  for (size_t i = 0; i < len; i++) {
+    lowkey[i] = (char)tolower(lowkey[i]);
+  }
+  return strstr(str, lowkey) ? 1 : 0;
 }
 
 int gspy_ParseReq(char *buffer, SOCKADDR_IN *addr) {
