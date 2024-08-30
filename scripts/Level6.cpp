@@ -1553,6 +1553,7 @@ const char *Object_names[NUM_OBJECT_NAMES] = {"DummyFlag",
                                         "BuilderPuzzUFO1",
                                         "BuilderPuzzUFO2",
                                         "BuilderPuzzUFO3",
+                                        // Spelling mistake is what it is (forced by d3_2.mn3 contents)
                                         "CollectorNomad2",
                                         "CollectorsNomad1",
                                         "VolcanoSpew",

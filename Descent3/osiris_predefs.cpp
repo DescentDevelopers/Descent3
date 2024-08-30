@@ -567,8 +567,8 @@ int osipf_AIGoalFollowPathSimple(int objhandle, int path_id, int guid, int flags
   }
 
   if (obj->control_type != CT_AI) {
-    mprintf(0, "Illegal Object CT Passed To AIGoalFollowPathSimple\n");
-    Int3();
+    // Can happen if e.g. the object died this tick, and Osiris was called with EVT_INTERNAL in the same tick.
+    mprintf(0, "Object with illegal CT passed to AIGoalFollowPathSimple: handle=%u type=%u name=%s\n", obj->handle, obj->type, obj->name);
     return -1;
   }
 
