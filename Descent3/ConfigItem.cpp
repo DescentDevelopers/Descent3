@@ -672,7 +672,7 @@ void ConfigItem::Add(int count, ...) {
     m_rbCount = count;
     m_rbList = (UIRadioButton **)mem_malloc(sizeof(UIRadioButton *) * m_rbCount);
     m_iNumIDs = count;
-    m_iID = (int *)mem_malloc(sizeof(int) * m_iNumIDs);
+    m_iID = mem_rmalloc<int>(m_iNumIDs);
     // make sure mallocs are ok
     ASSERT((m_tiList) && (m_rbList) && (m_iID));
     // initialize variables
@@ -723,7 +723,7 @@ void ConfigItem::Add(int count, ...) {
     m_sCount = 1;
     m_sList = (NewUISlider **)mem_malloc(sizeof(NewUISlider *) * 1);
     m_iNumIDs = 1;
-    m_iID = (int *)mem_malloc(sizeof(int) * 1);
+    m_iID = mem_rmalloc<int>(1);
     // make sure mallocs are ok
     ASSERT((m_sList) && (m_iID));
     // get unique ID
@@ -765,7 +765,7 @@ void ConfigItem::Add(int count, ...) {
     m_tiCount = 2;
     m_tiList = (UITextItem **)mem_malloc(sizeof(UITextItem *) * 2);
     m_iNumIDs = 1;
-    m_iID = (int *)mem_malloc(sizeof(int) * 1);
+    m_iID = mem_rmalloc<int>(1);
     // make sure mallocs mallocs are ok
     ASSERT((m_tiList) && (m_bList) && (m_iID));
     // adjust the curr x/y for the button
@@ -802,7 +802,7 @@ void ConfigItem::Add(int count, ...) {
     m_tiCount = count;
     m_tiList = (UITextItem **)mem_malloc(sizeof(UITextItem *) * m_tiCount);
     m_iNumIDs = 1;
-    m_iID = (int *)mem_malloc(sizeof(int) * 1);
+    m_iID = mem_rmalloc<int>(1);
     // make sure mallocs ok
     ASSERT((m_lbList) && (m_tiList) && (m_iID));
     // adjust the curr x/y for the listbox
@@ -842,7 +842,7 @@ void ConfigItem::Add(int count, ...) {
     m_tiCount = 2;
     m_tiList = (UITextItem **)mem_malloc(sizeof(UITextItem *) * 2);
     m_iNumIDs = 1;
-    m_iID = (int *)mem_malloc(sizeof(int) * 1);
+    m_iID = mem_rmalloc<int>(1);
     // make sure mallocs mallocs are ok
     ASSERT((m_tiList) && (m_bList) && (m_iID));
     // adjust the curr x/y for the button
@@ -879,7 +879,7 @@ void ConfigItem::Add(int count, ...) {
     m_tiCount = 4;
     m_tiList = (UITextItem **)mem_malloc(sizeof(UITextItem *) * 4);
     m_iNumIDs = 1;
-    m_iID = (int *)mem_malloc(sizeof(int) * 1);
+    m_iID = mem_rmalloc<int>(1);
     // make sure mallocs are ok
     ASSERT((m_hsList) && (m_tiList) && (m_iID));
     // adjust the curr x/y for the checkbox
@@ -923,7 +923,7 @@ void ConfigItem::Add(int count, ...) {
     m_rbCount = count;
     m_rbList = (UIRadioButton **)mem_malloc(sizeof(UIRadioButton *) * m_rbCount);
     m_iNumIDs = count;
-    m_iID = (int *)mem_malloc(sizeof(int) * m_iNumIDs);
+    m_iID = mem_rmalloc<int>(m_iNumIDs);
     // make sure mallocs are ok
     ASSERT((m_tiList) && (m_rbList) && (m_iID));
     // adjust the curr x/y for the list of radio buttons

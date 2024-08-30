@@ -333,7 +333,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
   // now the fun part, figure out the correct order of the directories
   int *dir_order;
 
-  dir_order = (int *)mem_malloc(sizeof(int) * dirs);
+  dir_order = mem_rmalloc<int>(dirs);
   if (!dir_order) {
     strcpy(dest, srcPath);
     return;

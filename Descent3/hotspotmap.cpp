@@ -175,7 +175,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
   if (!num_hs)
     return -1;
 
-  hsmap->hs = (hotspot *)mem_malloc(sizeof(hotspot) * num_hs);
+  hsmap->hs = mem_rmalloc<hotspot>(num_hs);
   ASSERT(hsmap->hs);
   for (count = 0; count < num_hs; count++) {
     if (whats_there[count] == HOTSPOT_THERE) {
@@ -220,7 +220,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
       // fill in the struct with the start and end values for each scanline
       hsmap->hs[count].scanlines = sl_count;
       if (sl_count) {
-        hsmap->hs[count].x = (scanline *)mem_malloc(sizeof(scanline) * sl_count);
+        hsmap->hs[count].x = mem_rmalloc<scanline>(sl_count);
         ASSERT(hsmap->hs[count].x);
         memset(hsmap->hs[count].x, 0, sizeof(scanline) * sl_count);
         y = hsmap->hs[count].starting_y;
@@ -268,7 +268,7 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
   uint8_t alpha;
   bool newline = true;
 
-  wndmap->wm = (window_box *)mem_malloc(sizeof(window_box) * wndmap->num_of_windows);
+  wndmap->wm = mem_rmalloc<window_box>(wndmap->num_of_windows);
   ASSERT(wndmap->wm);
 
   for (int index = 0; index < wndmap->num_of_windows; index++) {
@@ -681,13 +681,13 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
 
   int curr_hs, curr_sl, num_sl;
 
-  hsmap->hs = (hotspot *)mem_malloc(sizeof(hotspot) * hsmap->num_of_hotspots);
+  hsmap->hs = mem_rmalloc<hotspot>(hsmap->num_of_hotspots);
   memset(hsmap->hs, 0, sizeof(hotspot) * hsmap->num_of_hotspots);
   for (curr_hs = 0; curr_hs < hsmap->num_of_hotspots; curr_hs++) {
     hsmap->hs[curr_hs].starting_y = cf_ReadInt(infile);
     num_sl = hsmap->hs[curr_hs].scanlines = cf_ReadInt(infile);
     if (num_sl) {
-      hsmap->hs[curr_hs].x = (scanline *)mem_malloc(sizeof(scanline) * hsmap->hs[curr_hs].scanlines);
+      hsmap->hs[curr_hs].x = mem_rmalloc<scanline>(hsmap->hs[curr_hs].scanlines);
       memset(hsmap->hs[curr_hs].x, 0, sizeof(scanline) * hsmap->hs[curr_hs].scanlines);
       for (curr_sl = 0; curr_sl < hsmap->hs[curr_hs].scanlines; curr_sl++) {
         hsmap->hs[curr_hs].x[curr_sl].start = cf_ReadInt(infile);
@@ -702,7 +702,7 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
   wndmap->num_of_windows = cf_ReadInt(infile);
   LOG_DEBUG.printf("Loading hotspotmap %s Contains: (%d hotspots) (%d Windows)",
                    filename, hsmap->num_of_hotspots, wndmap->num_of_windows);
-  wndmap->wm = (window_box *)mem_malloc(sizeof(window_box) * wndmap->num_of_windows);
+  wndmap->wm = mem_rmalloc<window_box>(wndmap->num_of_windows);
   for (count = 0; count < wndmap->num_of_windows; count++) {
     wndmap->wm[count].x = cf_ReadInt(infile);
     wndmap->wm[count].y = cf_ReadInt(infile);

@@ -1279,7 +1279,7 @@ void pilot::read_mission_data(CFILE *file, bool skip) {
       mem_free(mission_data);
       mission_data = NULL;
     }
-    mission_data = (tMissionData *)mem_malloc(sizeof(tMissionData) * num_missions_flown);
+    mission_data = mem_rmalloc<tMissionData>(num_missions_flown);
     if (!mission_data) {
       // out of memory
       num_missions_flown = 0;

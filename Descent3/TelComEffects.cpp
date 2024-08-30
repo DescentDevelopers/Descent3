@@ -1202,7 +1202,7 @@ bool CreateBmpStretch(tceffect *tce, const char *filename) {
     int total = w_count * h_count;
     int index;
     tce->bmpinfo.bm_count = total;
-    tce->bmpinfo.bitmaps = (int *)mem_malloc(sizeof(int) * total);
+    tce->bmpinfo.bitmaps = mem_rmalloc<int>(total);
     if (!tce->bmpinfo.bitmaps)
       return false;
 

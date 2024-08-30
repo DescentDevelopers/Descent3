@@ -171,7 +171,7 @@ bsppolygon *NewPolygon(int roomnum, int facenum, int numverts) {
     return NULL;
   }
 
-  verts = (vector *)mem_malloc(sizeof(vector) * numverts);
+  verts = mem_rmalloc<vector>(numverts);
   ASSERT(verts != NULL);
 
   newpoly->nv = numverts;

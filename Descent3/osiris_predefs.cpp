@@ -3324,7 +3324,7 @@ int osipf_AIGetNearbyObjs(vector *pos, int init_roomnum, float rad, int *object_
   int i;
   int count = 0;
 
-  s_list = (int16_t *)mem_malloc(sizeof(int16_t) * max_elements);
+  s_list = mem_rmalloc<int16_t>(max_elements);
 
   num_close = fvi_QuickDistObjectList(pos, init_roomnum, rad, s_list, max_elements, f_lightmap_only,
                                       f_only_players_and_ais, f_include_non_collide_objects, f_stop_at_closed_doors);

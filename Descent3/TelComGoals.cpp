@@ -188,9 +188,9 @@ void TCGoalsBuildLineData(void) {
   //'count' goals are what we have to display
   // allocate memory needed and start filling in
   if (count) {
-    TG_Lines = (tGoalLineInfo *)mem_malloc(sizeof(tGoalLineInfo) * count);
+    TG_Lines = mem_rmalloc<tGoalLineInfo>(count);
     TG_NumLines = count;
-    TG_SortedList = (int *)mem_malloc(sizeof(int) * count);
+    TG_SortedList = mem_rmalloc<int>(count);
     if (!TG_SortedList || !TG_Lines) {
       // out of memory
       Telcom_system.current_status = TS_OFF;

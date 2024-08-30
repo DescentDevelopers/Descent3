@@ -1038,13 +1038,13 @@ void DoRadiosityForRooms() {
 
   // Setup satellites
   for (i = 0; i < Terrain_sky.num_satellites; i++, surface_index++) {
-    Light_surfaces[surface_index].verts = (vector *)mem_malloc(sizeof(vector) * 3);
+    Light_surfaces[surface_index].verts = mem_rmalloc<vector>(3);
     ASSERT(Light_surfaces[surface_index].verts != NULL);
 
     Light_surfaces[surface_index].elements = mem_rmalloc<rad_element>();
     ASSERT(Light_surfaces[surface_index].elements != NULL);
 
-    Light_surfaces[surface_index].elements[0].verts = (vector *)mem_malloc(sizeof(vector) * 3);
+    Light_surfaces[surface_index].elements[0].verts = mem_rmalloc<vector>(3);
     ASSERT(Light_surfaces[surface_index].elements[0].verts);
 
     Light_surfaces[surface_index].surface_type = ST_SATELLITE;
@@ -1558,7 +1558,7 @@ void ClipSurfaceElement(vector *surf_verts, rad_element *ep, vector *clip_verts,
   if (ep->num_verts == 0)
     ep->flags |= EF_IGNORE;
   else {
-    ep->verts = (vector *)mem_malloc(sizeof(vector) * nnv);
+    ep->verts = mem_rmalloc<vector>(nnv);
     ASSERT(ep->verts);
 
     for (i = 0; i < nnv; i++) {
@@ -1914,10 +1914,10 @@ void DoRadiosityForTerrain() {
       Light_surfaces[i * 2].elements = mem_rmalloc<rad_element>();
       ASSERT(Light_surfaces[i * 2].elements != NULL);
 
-      Light_surfaces[i * 2].elements[0].verts = (vector *)mem_malloc(sizeof(vector) * 3);
+      Light_surfaces[i * 2].elements[0].verts = mem_rmalloc<vector>(3);
       ASSERT(Light_surfaces[i * 2].elements[0].verts);
 
-      Light_surfaces[i * 2].verts = (vector *)mem_malloc(sizeof(vector) * 3);
+      Light_surfaces[i * 2].verts = mem_rmalloc<vector>(3);
       ASSERT(Light_surfaces[i * 2].verts != NULL);
 
       Light_surfaces[i * 2].normal = TerrainNormals[MAX_TERRAIN_LOD - 1][seg].normal1;
@@ -1954,10 +1954,10 @@ void DoRadiosityForTerrain() {
       Light_surfaces[i * 2 + 1].elements = mem_rmalloc<rad_element>();
       ASSERT(Light_surfaces[i * 2 + 1].elements != NULL);
 
-      Light_surfaces[i * 2 + 1].elements[0].verts = (vector *)mem_malloc(sizeof(vector) * 3);
+      Light_surfaces[i * 2 + 1].elements[0].verts = mem_rmalloc<vector>(3);
       ASSERT(Light_surfaces[i * 2 + 1].elements[0].verts);
 
-      Light_surfaces[i * 2 + 1].verts = (vector *)mem_malloc(sizeof(vector) * 3);
+      Light_surfaces[i * 2 + 1].verts = mem_rmalloc<vector>(3);
       ASSERT(Light_surfaces[i * 2 + 1].verts != NULL);
 
       Light_surfaces[i * 2 + 1].normal = TerrainNormals[MAX_TERRAIN_LOD - 1][seg].normal2;
@@ -1993,13 +1993,13 @@ void DoRadiosityForTerrain() {
 
   // Setup satellites
   for (i = 0; i < Terrain_sky.num_satellites; i++, surf_index++) {
-    Light_surfaces[surf_index].verts = (vector *)mem_malloc(sizeof(vector) * 3);
+    Light_surfaces[surf_index].verts = mem_rmalloc<vector>(3);
     ASSERT(Light_surfaces[surf_index].verts != NULL);
 
     Light_surfaces[surf_index].elements = mem_rmalloc<rad_element>();
     ASSERT(Light_surfaces[surf_index].elements != NULL);
 
-    Light_surfaces[surf_index].elements[0].verts = (vector *)mem_malloc(sizeof(vector) * 3);
+    Light_surfaces[surf_index].elements[0].verts = mem_rmalloc<vector>(3);
     ASSERT(Light_surfaces[surf_index].elements[0].verts);
 
     Light_surfaces[surf_index].surface_type = ST_SATELLITE;
@@ -3312,7 +3312,7 @@ void SetupSpecularLighting(int external) {
       room *rp = &Rooms[i];
 
       // Calculate vertex normals for this room
-      vector *vertnorms = (vector *)mem_malloc(sizeof(vector) * rp->num_verts);
+      vector *vertnorms = mem_rmalloc<vector>(rp->num_verts);
       ASSERT(vertnorms);
       for (t = 0; t < rp->num_verts; t++) {
         int total = 0;
@@ -3336,7 +3336,7 @@ void SetupSpecularLighting(int external) {
       }
 
       for (t = 0; t < 4; t++) {
-        Room_strongest_value[i][t] = (float *)mem_malloc(sizeof(float) * rp->num_faces);
+        Room_strongest_value[i][t] = mem_rmalloc<float>(rp->num_faces);
         ASSERT(Room_strongest_value[i][t]);
         memset(Room_strongest_value[i][t], 0, sizeof(float) * rp->num_faces);
       }

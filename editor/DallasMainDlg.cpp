@@ -3525,7 +3525,7 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   max_size = GetChildCount(TVI_ROOT);
   if (max_size == 0)
     return (lowest_id);
-  list = (int *)mem_malloc(sizeof(int) * max_size);
+  list = mem_rmalloc<int>(max_size);
   if (list == NULL)
     return (m_NextScriptID);
 
@@ -7502,7 +7502,7 @@ int CDallasMainDlg::AddNodeToScriptOwnerGroup(int pos, HTREEITEM script_node) {
 
   // Add this node to the appropriate event section list
   if (event_section->num_script_nodes == 0)
-    event_section->script_node_list = (HTREEITEM *)mem_malloc(sizeof(HTREEITEM) * 1);
+    event_section->script_node_list = mem_rmalloc<HTREEITEM>(1);
   else
     event_section->script_node_list = (HTREEITEM *)mem_realloc(
         event_section->script_node_list, sizeof(HTREEITEM) * (event_section->num_script_nodes + 1));
@@ -7552,7 +7552,7 @@ int CDallasMainDlg::AddNodeToScriptGroupingList(HTREEITEM script_node) {
 
   // Since owner does not exist, create a new Script Group entry
   if (m_NumScriptGroups == 0)
-    m_ScriptGroupingList = (tScriptOwnerGroup *)mem_malloc(sizeof(tScriptOwnerGroup) * 1);
+    m_ScriptGroupingList = mem_rmalloc<tScriptOwnerGroup>(1);
   else
     m_ScriptGroupingList =
         (tScriptOwnerGroup *)mem_realloc(m_ScriptGroupingList, sizeof(tScriptOwnerGroup) * (m_NumScriptGroups + 1));

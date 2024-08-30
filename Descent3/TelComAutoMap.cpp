@@ -269,7 +269,7 @@ bool TelComAutoMap(tTelComInfo *tcs) {
   bool done = false;
 
   if (!AM_rotated_points) {
-    AM_rotated_points = (g3Point *)mem_malloc(sizeof(g3Point) * MAX_VERTS_PER_ROOM);
+    AM_rotated_points = mem_rmalloc<g3Point>(MAX_VERTS_PER_ROOM);
   }
   AM_tcs = tcs;
   AM_current_marker = -1;

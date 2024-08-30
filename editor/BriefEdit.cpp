@@ -1915,7 +1915,7 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename) {
     return;
   }
 
-  layouts = (tLayoutScreen *)mem_malloc(sizeof(tLayoutScreen) * num_layouts);
+  layouts = mem_rmalloc<tLayoutScreen>(num_layouts);
   if (!layouts) {
     mprintf(0, "Out of memory loading layout screens...trying to load %d screens\n", num_layouts);
     num_layouts = 0;

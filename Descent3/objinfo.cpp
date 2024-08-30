@@ -122,13 +122,13 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
       }
       // Make sure the weapon battery info is cleared for a new object
       if (f_weapons) {
-        Object_info[i].static_wb = (otype_wb_info *)mem_malloc(sizeof(otype_wb_info) * MAX_WBS_PER_OBJ);
+        Object_info[i].static_wb = mem_rmalloc<otype_wb_info>(MAX_WBS_PER_OBJ);
         memset(Object_info[i].static_wb, 0, sizeof(otype_wb_info) * MAX_WBS_PER_OBJ);
         WBClearInfo(Object_info[i].static_wb);
       }
 
       if (f_anim) {
-        Object_info[i].anim = (anim_elem *)mem_malloc(sizeof(anim_elem) * NUM_MOVEMENT_CLASSES);
+        Object_info[i].anim = mem_rmalloc<anim_elem>(NUM_MOVEMENT_CLASSES);
         memset(Object_info[i].anim, 0, sizeof(anim_elem) * NUM_MOVEMENT_CLASSES);
         for (j = 0; j < NUM_MOVEMENT_CLASSES; j++)
           for (k = 0; k < NUM_ANIMS_PER_CLASS; k++) {

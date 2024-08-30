@@ -331,7 +331,7 @@ int grfont_Load(const char *fname) {
 
   //	Read in all widths
   if (fnt.flags & FT_PROPORTIONAL) {
-    fnt.char_widths = (uint8_t *)mem_malloc(sizeof(uint8_t) * num_char);
+    fnt.char_widths = mem_rmalloc<uint8_t>(num_char);
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
   } else {
@@ -578,7 +578,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
 
   //	Read in all widths
   if (fnt.flags & FT_PROPORTIONAL) {
-    fnt.char_widths = (uint8_t *)mem_malloc(sizeof(uint8_t) * num_char);
+    fnt.char_widths = mem_rmalloc<uint8_t>(num_char);
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ffin);
   } else {

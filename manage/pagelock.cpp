@@ -661,7 +661,7 @@ int mng_DeleteDuplicatePagelocks() {
   mngs_Pagelock *already_read;
   int num = 0, duplicates = 0, i;
 
-  already_read = (mngs_Pagelock *)mem_malloc(sizeof(mngs_Pagelock) * 8000);
+  already_read = mem_rmalloc<mngs_Pagelock>(8000);
   ASSERT(already_read);
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");

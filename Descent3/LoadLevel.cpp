@@ -2978,7 +2978,7 @@ void ReadBNodeChunk(CFILE *fp, int version) {
       ASSERT(!(i <= Highest_room_index && (Rooms[i].flags & RF_EXTERNAL) && bnlist->num_nodes > 0));
 
       if (bnlist->num_nodes) {
-        bnlist->nodes = (bn_node *)mem_malloc(sizeof(bn_node) * bnlist->num_nodes);
+        bnlist->nodes = mem_rmalloc<bn_node>(bnlist->num_nodes);
         for (j = 0; j < bnlist->num_nodes; j++) {
           bnlist->nodes[j].pos.x = cf_ReadFloat(fp);
           bnlist->nodes[j].pos.y = cf_ReadFloat(fp);
@@ -2986,7 +2986,7 @@ void ReadBNodeChunk(CFILE *fp, int version) {
 
           bnlist->nodes[j].num_edges = cf_ReadShort(fp);
           if (bnlist->nodes[j].num_edges) {
-            bnlist->nodes[j].edges = (bn_edge *)mem_malloc(sizeof(bn_edge) * bnlist->nodes[j].num_edges);
+            bnlist->nodes[j].edges = mem_rmalloc<bn_edge>(bnlist->nodes[j].num_edges);
             for (k = 0; k < bnlist->nodes[j].num_edges; k++) {
               bnlist->nodes[j].edges[k].end_room = cf_ReadShort(fp);
               bnlist->nodes[j].edges[k].end_index = cf_ReadByte(fp);
@@ -3134,15 +3134,15 @@ void ReadRoomAABBChunk(CFILE *fp, int version) {
       Rooms[i].bbf_max_xyz.z = cf_ReadFloat(fp);
 
       Rooms[i].num_bbf_regions = cf_ReadShort(fp);
-      Rooms[i].num_bbf = (int16_t *)mem_malloc(sizeof(int16_t) * Rooms[i].num_bbf_regions);
+      Rooms[i].num_bbf = mem_rmalloc<int16_t>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list = (int16_t **)mem_malloc(sizeof(int16_t *) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_min_xyz = (vector *)mem_malloc(sizeof(vector) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_max_xyz = (vector *)mem_malloc(sizeof(vector) * Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_min_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_max_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_sector = (uint8_t *)mem_malloc(sizeof(char) * Rooms[i].num_bbf_regions);
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
         Rooms[i].num_bbf[j] = cf_ReadShort(fp);
-        Rooms[i].bbf_list[j] = (int16_t *)mem_malloc(sizeof(int16_t) * Rooms[i].num_bbf[j]);
+        Rooms[i].bbf_list[j] = mem_rmalloc<int16_t>(Rooms[i].num_bbf[j]);
       }
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {

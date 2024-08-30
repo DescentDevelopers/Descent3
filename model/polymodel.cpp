@@ -1330,7 +1330,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->n_models = cf_ReadInt(infile);
       pm->rad = cf_ReadFloat(infile);
 
-      pm->submodel = (bsp_info *)mem_malloc(sizeof(bsp_info) * pm->n_models);
+      pm->submodel = mem_rmalloc<bsp_info>(pm->n_models);
       ASSERT(pm->submodel != nullptr);
       memset(pm->submodel, 0, sizeof(bsp_info) * pm->n_models);
 
@@ -1494,7 +1494,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       int *start_index;
 
       if (nfaces) {
-        start_index = (int *)mem_malloc(sizeof(int) * nfaces);
+        start_index = mem_rmalloc<int>(nfaces);
         ASSERT(start_index);
       } else
         start_index = nullptr;
@@ -1617,7 +1617,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_GPNT:
       pm->n_guns = cf_ReadInt(infile);
-      pm->gun_slots = (w_bank *)mem_malloc(sizeof(w_bank) * pm->n_guns);
+      pm->gun_slots = mem_rmalloc<w_bank>(pm->n_guns);
       ASSERT(pm->gun_slots != nullptr);
 
       for (i = 0; i < pm->n_guns; i++) {
@@ -1638,7 +1638,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_ATTACH:
       pm->n_attach = cf_ReadInt(infile);
       if (pm->n_attach) {
-        pm->attach_slots = (a_bank *)mem_malloc(sizeof(a_bank) * pm->n_attach);
+        pm->attach_slots = mem_rmalloc<a_bank>(pm->n_attach);
         ASSERT(pm->attach_slots != nullptr);
 
         for (i = 0; i < pm->n_attach; i++) {
@@ -1691,7 +1691,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->num_wbs = cf_ReadInt(infile);
 
       if (pm->num_wbs) {
-        pm->poly_wb = (poly_wb_info *)mem_malloc(sizeof(poly_wb_info) * pm->num_wbs);
+        pm->poly_wb = mem_rmalloc<poly_wb_info>(pm->num_wbs);
 
         // Get each individual wb info struct
         for (i = 0; i < pm->num_wbs; i++) {
@@ -1725,7 +1725,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_GROUND:
       pm->n_ground = cf_ReadInt(infile);
-      pm->ground_slots = (w_bank *)mem_malloc(sizeof(w_bank) * pm->n_ground);
+      pm->ground_slots = mem_rmalloc<w_bank>(pm->n_ground);
       ASSERT(pm->ground_slots != nullptr);
 
       for (i = 0; i < pm->n_ground; i++) {

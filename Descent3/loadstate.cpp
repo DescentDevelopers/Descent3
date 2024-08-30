@@ -1125,7 +1125,7 @@ int LGSObjects(CFILE *fp, int version) {
 
       if (f_allocated) {
         // mprintf(0,"Object %d has %d attach points.\n",i,nattach);
-        op->attach_children = (int *)mem_malloc(sizeof(int) * nattach);
+        op->attach_children = mem_rmalloc<int>(nattach);
         for (j = 0; j < nattach; j++)
           gs_ReadInt(fp, op->attach_children[j]);
       }
@@ -1310,8 +1310,8 @@ int LGSObjects(CFILE *fp, int version) {
         int cur = 0;
 
         p_info->multi_turret_info.time = 0;
-        p_info->multi_turret_info.keyframes = (float *)mem_malloc(sizeof(float) * count);
-        p_info->multi_turret_info.last_keyframes = (float *)mem_malloc(sizeof(float) * count);
+        p_info->multi_turret_info.keyframes = mem_rmalloc<float>(count);
+        p_info->multi_turret_info.last_keyframes = mem_rmalloc<float>(count);
         p_info->multi_turret_info.flags = 0;
       }
       // Do Animation stuff
@@ -1548,7 +1548,7 @@ int LGSObjWB(CFILE *fp, object *op) {
   if (!num_wbs)
     return LGS_OK;
 
-  dwba = (dynamic_wb_info *)mem_malloc(sizeof(dynamic_wb_info) * num_wbs);
+  dwba = mem_rmalloc<dynamic_wb_info>(num_wbs);
 
   for (i = 0; i < num_wbs; i++) {
     dynamic_wb_info *dwb = &dwba[i];

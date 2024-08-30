@@ -178,7 +178,7 @@ bool OutrageMusicSeq::Init(const char *theme_file) {
   Stop();
 
   // initialize memory buffers
-  m_ins_buffer = (music_ins *)mem_malloc(sizeof(music_ins) * MAX_MUSIC_INSTRUCTIONS);
+  m_ins_buffer = mem_rmalloc<music_ins>(MAX_MUSIC_INSTRUCTIONS);
   m_str_buffer = (char *)mem_malloc(MAX_MUSIC_STRLEN);
   m_ins_curptr = m_ins_buffer;
   m_str_curptr = m_str_buffer;

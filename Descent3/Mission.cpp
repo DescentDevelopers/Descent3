@@ -773,7 +773,7 @@ void ResetMission() {
 #if (defined(OEM) || defined(DEMO))
 bool DemoMission(int mode = 0) {
   tMission *msn = &Current_mission;
-  tLevelNode *lvls = (tLevelNode *)mem_malloc(sizeof(tLevelNode) * 5);
+  tLevelNode *lvls = mem_rmalloc<tLevelNode>(5);
   msn->cur_level = 1;
   msn->num_levels = 1;
   msn->levels = lvls;
@@ -1071,7 +1071,7 @@ bool LoadMission(const char *mssn) {
             strcpy(errtext, TXT_MSN_LVLNUMINVALID);
             goto msnfile_error;
           }
-          lvls = (tLevelNode *)mem_malloc(sizeof(tLevelNode) * value);
+          lvls = mem_rmalloc<tLevelNode>(value);
           memset(lvls, 0, sizeof(tLevelNode) * value);
           numlevels = value;
         }

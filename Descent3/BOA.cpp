@@ -2243,8 +2243,8 @@ void ComputeAABB(bool f_full) {
 
         int n_new;
 
-        nfaces = (int16_t *)mem_malloc(sizeof(int16_t) * rp->num_faces);
-        used = (bool *)mem_malloc(sizeof(bool) * rp->num_faces);
+        nfaces = mem_rmalloc<int16_t>(rp->num_faces);
+        used = mem_rmalloc<bool>(rp->num_faces);
 
         for (count1 = 0; count1 < rp->num_faces; count1++) {
           used[count1] = false;

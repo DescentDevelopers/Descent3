@@ -2359,7 +2359,7 @@ bool PltSelectShip(pilot *Pilot) {
     if (Ships[i].used)
       count++;
   }
-  ship_info.idlist = (int *)mem_malloc(sizeof(int) * count);
+  ship_info.idlist = mem_rmalloc<int>(count);
   if (!ship_info.idlist)
     goto ship_id_err;
 

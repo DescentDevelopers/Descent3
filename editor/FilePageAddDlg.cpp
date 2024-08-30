@@ -411,7 +411,7 @@ bool CFilePageAddDlg::Quit(void) {
       return true;
     }
 
-    int *sel_items = (int *)mem_malloc(sizeof(int) * m_NumberOfSelectedFiles);
+    int *sel_items = mem_rmalloc<int>(m_NumberOfSelectedFiles);
     if (!sel_items) {
       mem_free(m_SelectedFiles);
       m_SelectedFiles = NULL;
