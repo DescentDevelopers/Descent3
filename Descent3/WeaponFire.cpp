@@ -2127,7 +2127,7 @@ void DrawElectricalWeapon(object *obj) {
   center_vecs[0] = src_vector; // Set first one equal to our origin
   center_vecs[num_segments - 1] = dest_vector;
   vector from = src_vector;
-  int cur_sin = FrameCount * 5000;
+  auto cur_sin = static_cast<unsigned int>(FrameCount) * 5000;
 
   for (i = 1; i < num_segments - 1; i++, from += line_norm, cur_sin += 8000) {
     center_vecs[i] = from;
