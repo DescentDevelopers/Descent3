@@ -457,7 +457,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
 
   } else if (SoundFiles[sound_file_index].sample_16bit == NULL && f_high_quality) {
     SoundFiles[sound_file_index].sample_16bit =
-        (int16_t *)mem_malloc(SoundFiles[sound_file_index].sample_length * sizeof(int16_t));
+        mem_rmalloc<int16_t>(SoundFiles[sound_file_index].sample_length);
 
     // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
     // (+128 biase).

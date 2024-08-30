@@ -1239,7 +1239,7 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
       // Allocate memory for our new faces
       int nfaces = rp->num_faces + num_new_faces;
 
-      newfaces = (face *)mem_malloc(nfaces * sizeof(face));
+      newfaces = mem_rmalloc<face>(nfaces);
       ASSERT(newfaces != NULL);
 
       // Copy all the faces into our new array
@@ -1248,9 +1248,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         if (t != facelist[i]) {
           int nverts = rp->faces[t].num_verts;
 
-          newfaces[t].face_verts = (int16_t *)mem_malloc(nverts * sizeof(int16_t));
+          newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
           ASSERT(newfaces[t].face_verts != NULL);
-          newfaces[t].face_uvls = (roomUVL *)mem_malloc(nverts * sizeof(roomUVL));
+          newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
           ASSERT(newfaces[t].face_uvls != NULL);
 
           newfaces[t].normal = rp->faces[t].normal;
@@ -1268,9 +1268,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         {
           int nverts = 3;
 
-          newfaces[t].face_verts = (int16_t *)mem_malloc(nverts * sizeof(int16_t));
+          newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
           ASSERT(newfaces[t].face_verts != NULL);
-          newfaces[t].face_uvls = (roomUVL *)mem_malloc(nverts * sizeof(roomUVL));
+          newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
           ASSERT(newfaces[t].face_uvls != NULL);
 
           newfaces[t].tmap = rp->faces[t].tmap;

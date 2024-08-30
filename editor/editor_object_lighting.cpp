@@ -314,7 +314,7 @@ int ComputeSurfacesForObjects(int surface_index, int terrain) {
           ComputeObjectSurfaceRes(&Light_surfaces[surface_index], &Objects[i], t, j);
 
           if (sm->faces[j].nverts > 0) {
-            Light_surfaces[surface_index].verts = (vector *)mem_malloc(sm->faces[j].nverts * sizeof(vector));
+            Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
             ASSERT(Light_surfaces[surface_index].verts != NULL);
           } else
             Light_surfaces[surface_index].verts = NULL;
@@ -400,7 +400,7 @@ int ComputeSurfacesForObjectsForSingleRoom(int surface_index, int roomnum) {
           ComputeObjectSurfaceRes(&Light_surfaces[surface_index], &Objects[i], t, j);
 
           if (sm->faces[j].nverts > 0) {
-            Light_surfaces[surface_index].verts = (vector *)mem_malloc(sm->faces[j].nverts * sizeof(vector));
+            Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
             ASSERT(Light_surfaces[surface_index].verts != NULL);
           } else
             Light_surfaces[surface_index].verts = NULL;

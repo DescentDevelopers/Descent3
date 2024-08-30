@@ -204,8 +204,8 @@ int Read3DSMaxFile(char *filename) {
   Nest_level = 0;
 
   // Alloc space for reading stuff in
-  Reading_room.faces = (reading_face *)mem_malloc(MAX_READING_ROOM_FACES * sizeof(reading_face));
-  Reading_room.verts = (vector *)mem_malloc(MAX_VERTS_PER_ROOM * sizeof(vector));
+  Reading_room.faces = mem_rmalloc<reading_face>(MAX_READING_ROOM_FACES);
+  Reading_room.verts = mem_rmalloc<vector>(MAX_VERTS_PER_ROOM);
 
   Reading_room.num_faces = 0;
   Reading_room.num_verts = 0;

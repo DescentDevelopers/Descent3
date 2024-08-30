@@ -56,7 +56,7 @@ int AllocSpecialFace(int type, int num, bool vertnorms, int num_vertnorms) {
 
   memset(&SpecialFaces[n], 0, sizeof(special_face));
 
-  SpecialFaces[n].spec_instance = (specular_instance *)mem_malloc(num * sizeof(specular_instance));
+  SpecialFaces[n].spec_instance = mem_rmalloc<specular_instance>(num);
   ASSERT(SpecialFaces[n].spec_instance);
 
   SpecialFaces[n].type = type;
@@ -65,7 +65,7 @@ int AllocSpecialFace(int type, int num, bool vertnorms, int num_vertnorms) {
   SpecialFaces[n].used = 1;
 
   if (vertnorms) {
-    SpecialFaces[n].vertnorms = (vector *)mem_malloc(num_vertnorms * sizeof(vector));
+    SpecialFaces[n].vertnorms = mem_rmalloc<vector>(num_vertnorms);
     ASSERT(SpecialFaces[n].vertnorms);
     SpecialFaces[n].flags |= SFF_SPEC_SMOOTH;
   }

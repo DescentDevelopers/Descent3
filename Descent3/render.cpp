@@ -3658,7 +3658,7 @@ void ConsolidateMineMirrors() {
       rp->mirror_face = 0;
       continue;
     }
-    rp->mirror_faces_list = (uint16_t *)mem_malloc(num_mirror_faces * sizeof(uint16_t));
+    rp->mirror_faces_list = mem_rmalloc<uint16_t>(num_mirror_faces);
     ASSERT(rp->mirror_faces_list);
     rp->num_mirror_faces = num_mirror_faces;
     // Now go through and fill in our list

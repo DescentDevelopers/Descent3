@@ -1419,9 +1419,9 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       ASSERT(nverts < MAX_POLYGON_VECS);
 
       if (nverts) {
-        pm->submodel[n].verts = (vector *)mem_malloc(nverts * sizeof(vector));
-        pm->submodel[n].vertnorms = (vector *)mem_malloc(nverts * sizeof(vector));
-        pm->submodel[n].alpha = (float *)mem_malloc(nverts * sizeof(float));
+        pm->submodel[n].verts = mem_rmalloc<vector>(nverts);
+        pm->submodel[n].vertnorms = mem_rmalloc<vector>(nverts);
+        pm->submodel[n].alpha = mem_rmalloc<float>(nverts);
         ASSERT(pm->submodel[n].verts);
         ASSERT(pm->submodel[n].vertnorms);
         ASSERT(pm->submodel[n].alpha);
@@ -1474,9 +1474,9 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->submodel[n].num_faces = nfaces;
 
       if (nfaces) {
-        pm->submodel[n].faces = (polyface *)mem_malloc(nfaces * sizeof(polyface));
-        pm->submodel[n].face_min = (vector *)mem_malloc(nfaces * sizeof(vector));
-        pm->submodel[n].face_max = (vector *)mem_malloc(nfaces * sizeof(vector));
+        pm->submodel[n].faces = mem_rmalloc<polyface>(nfaces);
+        pm->submodel[n].face_min = mem_rmalloc<vector>(nfaces);
+        pm->submodel[n].face_max = mem_rmalloc<vector>(nfaces);
         ASSERT(pm->submodel[n].faces);
       } else {
         pm->submodel[n].faces = nullptr;
@@ -1524,13 +1524,13 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       // Allocate our space
       if (current_count) {
-        sm->vertnum_memory = (int16_t *)mem_malloc(current_count * sizeof(int16_t));
+        sm->vertnum_memory = mem_rmalloc<int16_t>(current_count);
         ASSERT(sm->vertnum_memory);
 
-        sm->u_memory = (float *)mem_malloc(current_count * sizeof(float));
+        sm->u_memory = mem_rmalloc<float>(current_count);
         ASSERT(sm->u_memory);
 
-        sm->v_memory = (float *)mem_malloc(current_count * sizeof(float));
+        sm->v_memory = mem_rmalloc<float>(current_count);
         ASSERT(sm->v_memory);
       } else {
         sm->vertnum_memory = nullptr;

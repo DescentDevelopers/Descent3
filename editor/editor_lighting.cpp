@@ -952,7 +952,7 @@ void DoRadiosityForRooms() {
 
   // Allocate enough memory to hold all surfaces
 
-  Light_surfaces = (rad_surface *)mem_malloc(facecount * sizeof(rad_surface));
+  Light_surfaces = mem_rmalloc<rad_surface>(facecount);
   ASSERT(Light_surfaces != NULL);
 
   // Set initial surface properties
@@ -968,7 +968,7 @@ void DoRadiosityForRooms() {
         ComputeSurfaceRes(&Light_surfaces[surface_index], &Rooms[i], t);
 
         if (Rooms[i].faces[t].num_verts) {
-          Light_surfaces[surface_index].verts = (vector *)mem_malloc(Rooms[i].faces[t].num_verts * sizeof(vector));
+          Light_surfaces[surface_index].verts = mem_rmalloc<vector>(Rooms[i].faces[t].num_verts);
           ASSERT(Light_surfaces[surface_index].verts != NULL);
         } else {
           Light_surfaces[surface_index].verts = NULL;
@@ -1205,7 +1205,7 @@ void DoRadiosityForCurrentRoom(room *rp) {
 
   // Allocate enough memory to hold all surfaces
 
-  Light_surfaces = (rad_surface *)mem_malloc(facecount * sizeof(rad_surface));
+  Light_surfaces = mem_rmalloc<rad_surface>(facecount);
   ASSERT(Light_surfaces != NULL);
 
   // Set initial surface properties
@@ -1215,7 +1215,7 @@ void DoRadiosityForCurrentRoom(room *rp) {
     ComputeSurfaceRes(&Light_surfaces[surface_index], rp, t);
 
     if (rp->faces[t].num_verts) {
-      Light_surfaces[surface_index].verts = (vector *)mem_malloc(rp->faces[t].num_verts * sizeof(vector));
+      Light_surfaces[surface_index].verts = mem_rmalloc<vector>(rp->faces[t].num_verts);
       ASSERT(Light_surfaces[surface_index].verts != NULL);
     } else {
       Light_surfaces[surface_index].verts = NULL;
@@ -1877,7 +1877,7 @@ void DoRadiosityForTerrain() {
   terrain_sums[1] = (spectra *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(spectra));
   ASSERT(terrain_sums[0] && terrain_sums[1]);
 
-  Light_surfaces = (rad_surface *)mem_malloc(total_surfaces * sizeof(rad_surface));
+  Light_surfaces = mem_rmalloc<rad_surface>(total_surfaces);
   ASSERT(Light_surfaces != NULL);
 
   // Setup radiosity surfaces
@@ -2041,7 +2041,7 @@ void DoRadiosityForTerrain() {
 
         ComputeSurfaceRes(&Light_surfaces[surf_index], &Rooms[i], t);
 
-        Light_surfaces[surf_index].verts = (vector *)mem_malloc(Rooms[i].faces[t].num_verts * sizeof(vector));
+        Light_surfaces[surf_index].verts = mem_rmalloc<vector>(Rooms[i].faces[t].num_verts);
         ASSERT(Light_surfaces[surf_index].verts != NULL);
 
         Light_surfaces[surf_index].elements = (rad_element *)mem_malloc(

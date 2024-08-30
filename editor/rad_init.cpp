@@ -125,7 +125,7 @@ void InitRadiosityRun() {
 void SetupFormFactors() {
   ASSERT(rad_NumElements > 0);
 
-  rad_FormFactors = (float *)mem_malloc(rad_NumElements * sizeof(float));
+  rad_FormFactors = mem_rmalloc<float>(rad_NumElements);
   ASSERT(rad_FormFactors != NULL);
 }
 

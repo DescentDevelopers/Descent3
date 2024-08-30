@@ -1249,7 +1249,7 @@ bool CScriptLevelInterface::DeleteLevel() {
 
   if (list_size == 0)
     return false;
-  int *index_map = (int *)mem_malloc(list_size * sizeof(int));
+  int *index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return false;
 
@@ -1394,7 +1394,7 @@ bool CScriptLevelInterface::DeleteScript() {
 
   if (list_size == 0)
     return false;
-  int *index_map = (int *)mem_malloc(list_size * sizeof(int));
+  int *index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return false;
 
@@ -1511,7 +1511,7 @@ bool CScriptLevelInterface::CheckInScripts() {
 
   if (list_size == 0)
     return false;
-  int *index_map = (int *)mem_malloc(list_size * sizeof(int));
+  int *index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return false;
 
@@ -1619,7 +1619,7 @@ bool CScriptLevelInterface::CheckInLevels() {
 
   if (list_size == 0)
     return false;
-  int *index_map = (int *)mem_malloc(list_size * sizeof(int));
+  int *index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return false;
 
@@ -1759,7 +1759,7 @@ bool CScriptLevelInterface::CheckOutScripts() {
 
   if (list_size == 0)
     return false;
-  int *index_map = (int *)mem_malloc(list_size * sizeof(int));
+  int *index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return false;
 
@@ -1871,7 +1871,7 @@ bool CScriptLevelInterface::CheckOutLevels() {
 
   if (list_size == 0)
     return false;
-  int *index_map = (int *)mem_malloc(list_size * sizeof(int));
+  int *index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return false;
 
@@ -2015,7 +2015,7 @@ bool CScriptLevelInterface::UndoCheckOutScripts() {
 
   if (list_size == 0)
     return false;
-  int *index_map = (int *)mem_malloc(list_size * sizeof(int));
+  int *index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return false;
 
@@ -2126,7 +2126,7 @@ bool CScriptLevelInterface::UndoCheckOutLevels() {
 
   if (list_size == 0)
     return false;
-  int *index_map = (int *)mem_malloc(list_size * sizeof(int));
+  int *index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return false;
 

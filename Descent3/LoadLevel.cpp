@@ -2661,7 +2661,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
     return;
   }
 
-  uint16_t *lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * sizeof(uint16_t));
+  uint16_t *lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
 
   nummaps = cf_ReadInt(fp);
 
@@ -2897,7 +2897,7 @@ void ReadGamePathsChunk(CFILE *fp, int version) {
   for (i = 0; i < Num_game_paths; i++) {
     GamePaths[i].used = 1;
     GamePaths[i].name[0] = 0;
-    GamePaths[i].pathnodes = (node *)mem_malloc(MAX_NODES_PER_PATH * sizeof(node));
+    GamePaths[i].pathnodes = mem_rmalloc<node>(MAX_NODES_PER_PATH);
     GamePaths[i].flags = 0;
 
     // Read in the path's info
@@ -4884,7 +4884,7 @@ void WriteLightmapChunk(CFILE *fp) {
   int lightmap_info_count = 0;
   int lightmap_count = 0;
 
-  uint16_t *lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * sizeof(uint16_t));
+  uint16_t *lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
   uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
 
   ASSERT(lightmap_remap);

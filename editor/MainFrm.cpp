@@ -3456,7 +3456,7 @@ void CMainFrame::OnShowAllCheckedOut() {
   char text_buf[10000], *t;
 
   // Get all locked pages
-  mngs_Pagelock *LockList = (mngs_Pagelock *)mem_malloc(MAX_LOCKLIST_ELEMENTS * sizeof(mngs_Pagelock));
+  mngs_Pagelock *LockList = mem_rmalloc<mngs_Pagelock>(MAX_LOCKLIST_ELEMENTS);
   int n = mng_GetListOfLocks(LockList, MAX_LOCKLIST_ELEMENTS, NULL);
 
   // ASSERT(n >= 1);		//always dummy page?

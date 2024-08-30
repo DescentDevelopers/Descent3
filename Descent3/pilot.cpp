@@ -3165,7 +3165,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
   // Initialize PPicDlgInfo data
   // ---------------------------
   uint16_t *id_list;
-  id_list = (uint16_t *)mem_malloc(num_pilots * sizeof(uint16_t));
+  id_list = mem_rmalloc<uint16_t>(num_pilots);
 
   if (!id_list) {
     // out of memory

@@ -756,7 +756,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   if (wave->sample_16bit == NULL) {
     ASSERT(wave->sample_8bit);
 
-    wave->sample_16bit = (int16_t *)mem_malloc(wave->sample_length * sizeof(int16_t));
+    wave->sample_16bit = mem_rmalloc<int16_t>(wave->sample_length);
 
     // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
     // (+128 biase).

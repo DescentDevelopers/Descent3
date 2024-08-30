@@ -540,7 +540,7 @@ void SetupObjectLightmapMemory(object *obj) {
 
     obj->lm_object.num_faces[Mnum] = pm->submodel[Mnum].num_faces;
     obj->lm_object.lightmap_faces[Mnum] =
-        (lightmap_object_face *)mem_malloc(obj->lm_object.num_faces[Mnum] * sizeof(lightmap_object_face));
+        mem_rmalloc<lightmap_object_face>(obj->lm_object.num_faces[Mnum]);
     ASSERT(obj->lm_object.lightmap_faces[Mnum]);
 
     for (Fnum = 0; Fnum < pm->submodel[Mnum].num_faces; Fnum++) {
