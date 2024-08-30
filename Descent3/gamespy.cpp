@@ -61,6 +61,10 @@
 #include "pserror.h"
 #include "program.h"
 
+#ifdef WIN32
+typedef int socklen_t;
+#endif
+
 #define MAX_GAMESPY_SERVERS 5
 #define MAX_GAMESPY_BUFFER 1400
 #define MAX_HOSTNAMELEN 300
@@ -136,7 +140,7 @@ int gspy_Init() {
   unsigned int my_ip;
 
   my_ip = nw_GetThisIP();
-  memcpy(&sock_addr.sin_addr.s_addr, &my_ip, sizeof(uint));
+  memcpy(&sock_addr.sin_addr.s_addr, &my_ip, sizeof(uint32_t));
   int portarg = FindArg("-gamespyport");
   if (portarg) {
     gspy_listenport = atoi(GameArgs[portarg + 1]);
