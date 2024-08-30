@@ -9442,7 +9442,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
       ClearCustomScriptStorage();
       m_MaxNumCustomScriptLines = CountCustomScriptLines(infile);
       if (m_MaxNumCustomScriptLines > 0) {
-        m_CustomScriptLines = (char **)mem_malloc(sizeof(char *) * m_MaxNumCustomScriptLines);
+        m_CustomScriptLines = mem_rmalloc<char *>(m_MaxNumCustomScriptLines);
         if (m_CustomScriptLines == NULL) {
           MessageBox("ERROR: Ran out of memory allocating custom script block", "Custom Script Parse Error",
                      MB_OK | MB_ICONEXCLAMATION);

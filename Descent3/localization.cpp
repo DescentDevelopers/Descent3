@@ -180,7 +180,7 @@ int LoadStringTables(void) {
   String_table_size = 0;
 
   // malloc our array of char *
-  String_table = (char **)mem_malloc(sizeof(char *) * string_count);
+  String_table = mem_rmalloc<char *>(string_count);
   if (!String_table) {
     Localization_language = old_language;
     return 0;
@@ -324,7 +324,7 @@ try_english:
   char **strtable;
 
   // malloc our array of char *
-  *table = (char **)mem_malloc(sizeof(char *) * scount);
+  *table = mem_rmalloc<char *>(scount);
   if (!*table) {
     if (table)
       *table = NULL;

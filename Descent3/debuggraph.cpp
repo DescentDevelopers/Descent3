@@ -480,7 +480,7 @@ void DebugGraph_DisplayOptions(void) {
   bool exit_menu = false;
   tGraphNode *node;
 
-  bool_values = (bool **)mem_malloc(sizeof(bool *) * graph_num_nodes);
+  bool_values = mem_rmalloc<bool *>(graph_num_nodes);
   if (!bool_values)
     return;
 

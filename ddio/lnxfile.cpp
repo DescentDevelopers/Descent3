@@ -315,7 +315,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
   }
 
   // allocate the memory needed for the separate strings of each directory
-  directories = (char **)mem_malloc(sizeof(char *) * dirs);
+  directories = mem_rmalloc<char *>(dirs);
   if (!directories) {
     strcpy(dest, srcPath);
     return;
