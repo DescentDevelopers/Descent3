@@ -808,12 +808,19 @@ bool Inventory::Use(int type, int id, object *parent) {
 
     tOSIRISEventInfo ei;
     ei.evt_use.it_handle = player->handle;
+
+    // Osiris_CallEvent can trigger deletion of node (cf. GuideBot::SetMode GBM_BIRTH)
+    auto saved_node_type   = node->type;
+    auto saved_node_id     = node->id;
+    auto saved_node_iflags = node->iflags;
+    node = nullptr;
+
     if (Osiris_CallEvent(&Objects[objnum], EVT_USE, &ei)) {
       // if we're the server tell the clients to remove this item from their inventory
-      Remove(node->type, node->id);
+      Remove(saved_node_type, saved_node_id);
       ret = true;
     } else {
-      if (node->iflags & INVF_OBJECT)
+      if (saved_node_iflags & INVF_OBJECT)
         Objects[objnum].flags |= OF_INPLAYERINVENTORY; // mark as being in inventory
     }
 
