@@ -2986,11 +2986,13 @@ void RenderRoom(room *rp) {
 }
 
 #define MAX_OBJECTS_PER_ROOM 2000
+namespace {
 struct obj_sort_item {
   int vis_effect;
   int objnum;
   float dist;
 };
+}
 obj_sort_item obj_sort_list[MAX_OBJECTS_PER_ROOM];
 // Compare function for room face sort
 static int obj_sort_func(const obj_sort_item *a, const obj_sort_item *b) {

@@ -940,11 +940,13 @@ float GetTerrainDynamicScalar(vector *pos, int seg) {
 }
 // Takes a min,max vector and makes a surrounding cube from it
 void MakePointsFromMinMax(vector *corners, vector *minp, vector *maxp);
+namespace {
 struct obj_sort_item {
   int objnum;
   float dist;
   int vis_effect;
 };
+}
 // Compare function for room face sort
 static int obj_sort_func(const obj_sort_item *a, const obj_sort_item *b) {
   if (a->dist < b->dist)
