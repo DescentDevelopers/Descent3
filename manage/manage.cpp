@@ -2059,7 +2059,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     return 0;
   }
   // Allocate memory for copying
-  uint8_t *copybuffer = (uint8_t *)mem_malloc(COPYBUFFER_SIZE);
+  uint8_t *copybuffer = mem_rmalloc<uint8_t>(COPYBUFFER_SIZE);
   if (!copybuffer) {
     LOG_ERROR.printf("Couldn't allocate memory to replace page %s!", srcname);
     cfclose(infile);
@@ -2229,7 +2229,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
     return 0;
   }
   // Allocate memory for copying
-  uint8_t *copybuffer = (uint8_t *)mem_malloc(COPYBUFFER_SIZE);
+  uint8_t *copybuffer = mem_rmalloc<uint8_t>(COPYBUFFER_SIZE);
   if (!copybuffer) {
     LOG_ERROR << "Couldn't allocate memory to delete page!";
     cfclose(infile);

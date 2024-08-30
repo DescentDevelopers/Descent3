@@ -422,7 +422,7 @@ void SqueezeLightmaps(int external, int target_roomnum) {
   int i, t, k;
   mprintf(0, "Squeezing %s lightmaps, please wait...\n", external ? "external" : "internal");
 
-  Lmi_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAP_INFOS);
+  Lmi_spoken_for = mem_rmalloc<uint8_t>(MAX_LIGHTMAP_INFOS);
   Lightmap_mask = (uint8_t *)mem_malloc(128 * 128);
   Squeeze_lightmap_handle = -1;
 
@@ -2927,7 +2927,7 @@ void ComputeAllRoomLightmapUVs(int external) {
       if (!external && (Rooms[i].flags & RF_EXTERNAL))
         continue;
 
-      RoomsAlreadyCombined[i] = (uint8_t *)mem_malloc(Rooms[i].num_faces);
+      RoomsAlreadyCombined[i] = mem_rmalloc<uint8_t>(Rooms[i].num_faces);
       ASSERT(RoomsAlreadyCombined[i]);
       for (k = 0; k < Rooms[i].num_faces; k++)
         RoomsAlreadyCombined[i][k] = 0;

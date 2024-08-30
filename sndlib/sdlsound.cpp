@@ -174,7 +174,7 @@ bool lnxsound::SetSoundQuality(char quality) {
         int count;
 
         ASSERT(SoundFiles[j].sample_8bit == nullptr);
-        SoundFiles[j].sample_8bit = (uint8_t *)mem_malloc(SoundFiles[j].sample_length);
+        SoundFiles[j].sample_8bit = mem_rmalloc<uint8_t>(SoundFiles[j].sample_length);
 
         // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
         // (+128 biase).

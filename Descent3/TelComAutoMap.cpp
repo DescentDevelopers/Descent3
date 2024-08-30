@@ -207,7 +207,7 @@ void ClassifyAMFaces() {
   int i = 0;
   for (i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used) {
-      Small_faces[i] = (uint8_t *)mem_malloc(Rooms[i].num_faces);
+      Small_faces[i] = mem_rmalloc<uint8_t>(Rooms[i].num_faces);
       ASSERT(Small_faces[i]);
 
       memset(Small_faces[i], 0, Rooms[i].num_faces);

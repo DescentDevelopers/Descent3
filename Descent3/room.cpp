@@ -496,7 +496,7 @@ void RoomMemInit(int nverts, int nfaces, int nfaceverts, int nportals) {
   if (Room_mem_buf)
     mem_free(Room_mem_buf);
 
-  Room_mem_buf = (uint8_t *)mem_malloc(size);
+  Room_mem_buf = mem_rmalloc<uint8_t>(size);
   Room_mem_size = size;
 
   Room_mem_ptr = Room_mem_buf;

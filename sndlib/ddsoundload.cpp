@@ -371,7 +371,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
         SoundFiles[sound_file_index].sample_length = aligned_size;
         SoundFiles[sound_file_index].np_sample_length = cksize;
 
-        SoundFiles[sound_file_index].sample_8bit = (uint8_t *)mem_malloc(aligned_size);
+        SoundFiles[sound_file_index].sample_8bit = mem_rmalloc<uint8_t>(aligned_size);
 
         cf_ReadBytes((uint8_t *)SoundFiles[sound_file_index].sample_8bit, cksize, cfptr);
 
@@ -438,7 +438,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   } else if (SoundFiles[sound_file_index].sample_8bit == NULL && !f_high_quality) {
 
     SoundFiles[sound_file_index].sample_8bit =
-        (uint8_t *)mem_malloc(SoundFiles[sound_file_index].sample_length);
+        mem_rmalloc<uint8_t>(SoundFiles[sound_file_index].sample_length);
 
     // Do the volume clipping with the high quality sound
     for (count = 0; count < (int)SoundFiles[sound_file_index].sample_length; count++) {

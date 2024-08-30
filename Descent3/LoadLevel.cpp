@@ -2568,7 +2568,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
 
       if (size) {
 
-        rp->volume_lights = (uint8_t *)mem_malloc(size);
+        rp->volume_lights = mem_rmalloc<uint8_t>(size);
         ASSERT(rp->volume_lights); // ran out of memory!
       } else
         rp->volume_lights = NULL;
@@ -3138,7 +3138,7 @@ void ReadRoomAABBChunk(CFILE *fp, int version) {
       Rooms[i].bbf_list = mem_rmalloc<int16_t *>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_min_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_max_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_sector = (uint8_t *)mem_malloc(sizeof(char) * Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_sector = mem_rmalloc<uint8_t>(sizeof(char) * Rooms[i].num_bbf_regions);
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
         Rooms[i].num_bbf[j] = cf_ReadShort(fp);
@@ -4079,8 +4079,8 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
   // share 1 lightmap
 
   if (version >= 34 && !Dedicated_server) {
-    uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
-    uint8_t *free_lightmap_info = (uint8_t *)mem_malloc(MAX_LIGHTMAP_INFOS);
+    uint8_t *lightmap_spoken_for = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
+    uint8_t *free_lightmap_info = mem_rmalloc<uint8_t>(MAX_LIGHTMAP_INFOS);
     ASSERT(lightmap_spoken_for);
     memset(lightmap_spoken_for, 0, MAX_LIGHTMAPS);
 
@@ -4885,7 +4885,7 @@ void WriteLightmapChunk(CFILE *fp) {
   int lightmap_count = 0;
 
   uint16_t *lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
-  uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
+  uint8_t *lightmap_spoken_for = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
 
   ASSERT(lightmap_remap);
   ASSERT(lightmap_spoken_for);

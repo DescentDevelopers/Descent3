@@ -959,7 +959,7 @@ void CombineObjectLightmapUVs(object *obj, int lmi_type) {
     if (IsNonRenderableSubmodel(pm, i))
       continue;
 
-    ObjectsAlreadyCombined[i] = (uint8_t *)mem_malloc(sm->num_faces);
+    ObjectsAlreadyCombined[i] = mem_rmalloc<uint8_t>(sm->num_faces);
     ASSERT(ObjectsAlreadyCombined[i]);
     for (k = 0; k < sm->num_faces; k++)
       ObjectsAlreadyCombined[i][k] = 0;

@@ -823,7 +823,7 @@ int LoadPCXTerrain(char *filename) {
 
   total = width * height;
 
-  lando = (uint8_t *)mem_malloc(total);
+  lando = mem_rmalloc<uint8_t>(total);
 
   LOG_DEBUG.printf("Heightmap is %d x %d", width, height);
 
