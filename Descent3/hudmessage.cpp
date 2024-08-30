@@ -484,8 +484,9 @@ bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color) {
     if (p) {
       strcpy(nextword, p);
       if ((grtext_GetTextLineWidth(thisline) + grtext_GetTextLineWidth(nextword)) > (Game_window_w * .7)) {
-        if (thisline[strlen(thisline) - 1] == ' ')
-          thisline[strlen(thisline) - 1] = '\0';
+        auto z = strlen(thisline);
+        if (z > 0 && thisline[z - 1] == ' ')
+          thisline[z - 1] = '\0';
         added |= AddLineToHUDMessages(thisline, color);
 
         // Scan for color information in the string we just added
@@ -505,8 +506,9 @@ bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color) {
       p = nextword;
     }
   }
-  if (thisline[strlen(thisline) - 1] == ' ')
-    thisline[strlen(thisline) - 1] = '\0';
+  auto z = strlen(thisline);
+  if (z > 0 && thisline[z - 1] == ' ')
+    thisline[z - 1] = '\0';
   if (thisline[0])
     added |= AddLineToHUDMessages(thisline, color);
 
