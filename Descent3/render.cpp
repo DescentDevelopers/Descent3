@@ -3604,7 +3604,7 @@ void SortStates(state_limited_element *state_array, int cellcount) {
       while (1) {
         while (state_array[++i].sort_key < v.sort_key)
           ;
-        while (state_array[--j].sort_key > v.sort_key)
+        while (j > 0 && state_array[--j].sort_key > v.sort_key)
           ;
         if (i >= j)
           break;
