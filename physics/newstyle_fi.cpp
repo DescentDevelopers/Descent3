@@ -362,12 +362,13 @@ bool PolyCollideObject(object *obj) {
   ASSERT(obj >= Objects && obj <= &Objects[Highest_object_index]);
 
 #ifndef NED_PHYSICS
-  if ((Game_mode & GM_MULTI) && !(Netgame.flags & NF_USE_ACC_WEAP) && Objects[fvi_moveobj].type == OBJ_WEAPON &&
+  if ((Game_mode & GM_MULTI) && !(Netgame.flags & NF_USE_ACC_WEAP) &&
+      fvi_moveobj >= 0 && Objects[fvi_moveobj].type == OBJ_WEAPON &&
       obj->type == OBJ_PLAYER)
     f_use_big_sphere = true;
 #endif
 
-  fvi_do_orient = (Objects[fvi_moveobj].type == OBJ_WEAPON);
+  fvi_do_orient = fvi_moveobj >= 0 && Objects[fvi_moveobj].type == OBJ_WEAPON;
 
 #ifndef NED_PHYSICS
   if (f_use_big_sphere) {
@@ -375,7 +376,7 @@ bool PolyCollideObject(object *obj) {
 
     if (addition < MULTI_ADD_SPHERE_MIN) {
       addition = MULTI_ADD_SPHERE_MIN;
-      if (Objects[fvi_moveobj].mtype.phys_info.flags & PF_NEVER_USE_BIG_SPHERE)
+      if (fvi_moveobj >= 0 && Objects[fvi_moveobj].mtype.phys_info.flags & PF_NEVER_USE_BIG_SPHERE)
         addition /= 2;
     } else if (addition > MULTI_ADD_SPHERE_MAX)
       addition = MULTI_ADD_SPHERE_MAX;
@@ -384,7 +385,7 @@ bool PolyCollideObject(object *obj) {
   }
 #endif
 
-  if (fvi_do_orient) {
+  if (fvi_do_orient && fvi_moveobj >= 0) {
     fvi_move_fvec = Objects[fvi_moveobj].orient.fvec;
     fvi_move_uvec = Objects[fvi_moveobj].orient.uvec;
   }
