@@ -1653,8 +1653,8 @@ redo_copy:
 
     // append newline character if there are more messages.
     if (i < (m_list->m_nmsg - 1)) {
-      *bufptr = '\n';
-      bufptr++;
+      *bufptr++ = '\n';
+      *bufptr = '\0';
     }
   }
 
