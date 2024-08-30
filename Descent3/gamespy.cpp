@@ -68,13 +68,13 @@ extern short Multi_deaths[MAX_NET_PLAYERS];
 char gspy_d3_secret[10]; // = "feWh2G";
 const char origstring[] = {(const char)0x50, (const char)0xf8, (const char)0xa4,
                            (const char)0xba, (const char)0xc7, (const char)0x7c};
-char gspy_cfgfilename[_MAX_PATH];
 #define MAX_GAMESPY_SERVERS 5
 #define MAX_GAMESPY_BUFFER 1400
 #define MAX_HOSTNAMELEN 300
 #define GSPY_HEARBEAT_INTERVAL 300 // Seconds between heartbeats.
 #define GAMESPY_PORT 27900
 #define GAMESPY_LISTENPORT 20142
+#define VALIDATE_SIZE 6
 #define THISGAMENAME "descent3"
 #ifdef DEMO
 #define THISGAMEVER "Demo2"
@@ -101,18 +101,17 @@ void gspy_StartGame(char *name) {
   gspy_game_running = true;
 }
 
-void gspy_EndGame() {
-  gspy_game_running = false;
-}
+void gspy_EndGame() { gspy_game_running = false; }
 
 int gspy_Init() {
 #ifndef OEM
-  char cfgpath[_MAX_PATH * 2];
+  std::filesystem::path cfgpath;
+  std::filesystem::path gspy_cfgfilename;
   int argnum = FindArg("-gspyfile");
   if (argnum) {
-    strcpy(gspy_cfgfilename, GameArgs[argnum + 1]);
+    gspy_cfgfilename = GameArgs[argnum + 1];
   } else {
-    strcpy(gspy_cfgfilename, "gamespy.cfg");
+    gspy_cfgfilename = "gamespy.cfg";
   }
 
   for (auto &a : gspy_server) {
@@ -130,7 +129,7 @@ int gspy_Init() {
 
   // strcpy(gspy_d3_secret,"feWh2G\0\0");
   // Read the config, resolve the name if needed and setup the server addresses
-  ddio_MakePath(cfgpath, Base_directory, gspy_cfgfilename, nullptr);
+  cfgpath = std::filesystem::path(Base_directory) / gspy_cfgfilename;
 
   gspy_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
@@ -211,24 +210,18 @@ int gspy_Init() {
           // break;
         }
       }
-#if defined(WIN32)
-      if (gspy_server[i].sin_addr.S_un.S_addr != INADDR_NONE) {
+
+      uint32_t resolved_addr;
+      INADDR_GET_SUN_SADDR(&gspy_server[i].sin_addr, &resolved_addr);
+      if (resolved_addr != INADDR_NONE) {
         mprintf(0, "Sending gamespy heartbeats to %s:%d\n", inet_ntoa(gspy_server[i].sin_addr),
-                 htons(gspy_server[i].sin_port));
+                htons(gspy_server[i].sin_port));
       }
-#elif defined(POSIX)
-      if (gspy_server[i].sin_addr.s_addr != INADDR_NONE) {
-        mprintf(0, "Sending gamespy heartbeats to %s:%d\n", inet_ntoa(gspy_server[i].sin_addr),
-                 htons(gspy_server[i].sin_port));
-      }
-#endif
     }
   }
-#endif
+#endif // #ifndef OEM
   return 1;
 }
-
-#define VALIDATE_SIZE 6
 
 // Takes a gspy response and puts the appropriate validation code to the end
 // Of the string. If crypt is something besides NULL, create and tack the proper
@@ -245,7 +238,7 @@ bool gpsy_ValidateString(char *str, char *crypt) {
     sprintf(keyvalue, "\\validate\\%s", encoded_val);
     strcat(str, keyvalue);
   }
-  sprintf(keyvalue, "\\final\\");
+  sprintf(keyvalue, "\\final");
   strcat(str, keyvalue);
   return false;
 }
@@ -261,27 +254,22 @@ void gspy_DoFrame() {
     return;
   // If it's time, send the heartbeat
   if ((timer_GetTime() - gspy_last_heartbeat) > GSPY_HEARBEAT_INTERVAL) {
-    for (int a = 0; a < MAX_GAMESPY_SERVERS; a++) {
-#if defined(WIN32)
-      if (INADDR_NONE != gspy_server[a].sin_addr.S_un.S_addr) {
-        mprintf(0, "Sending heartbeat to %s:%d\n", inet_ntoa(gspy_server[a].sin_addr), htons(gspy_server[a].sin_port));
-        gspy_DoHeartbeat(&gspy_server[a]);
+    for (auto &server : gspy_server) {
+      uint32_t resolved_addr;
+      INADDR_GET_SUN_SADDR(&server.sin_addr, &resolved_addr);
+      if (resolved_addr != INADDR_NONE) {
+        mprintf(0, "Sending heartbeat to %s:%d\n", inet_ntoa(server.sin_addr), htons(server.sin_port));
+        gspy_DoHeartbeat(&server);
       }
-#elif defined(__LINUX__)
-      if (INADDR_NONE != gspy_server[a].sin_addr.s_addr) {
-        mprintf(0, "Sending heartbeat to %s:%d\n", inet_ntoa(gspy_server[a].sin_addr), htons(gspy_server[a].sin_port));
-        gspy_DoHeartbeat(&gspy_server[a]);
-      }
-#endif
     }
     gspy_last_heartbeat = timer_GetTime();
   }
   // Look for incoming network data
   do {
-    bytesin = recvfrom(gspy_socket, inbuffer, MAX_GAMESPY_BUFFER, 0, (SOCKADDR *)&fromaddr, &fromsize);
+    bytesin = (int)recvfrom(gspy_socket, inbuffer, MAX_GAMESPY_BUFFER, 0, (SOCKADDR *)&fromaddr, &fromsize);
     if (bytesin > 0) {
       *(inbuffer + bytesin) = '\0';
-      mprintf(0, "Got a gamespy request:\n%s\n", inbuffer);
+      mprintf(0, "GSPYIN: %s\n", inbuffer);
       gspy_ParseReq(inbuffer, &fromaddr);
     } else if (bytesin == SOCKET_ERROR) {
       int lerror = WSAGetLastError();
@@ -297,15 +285,18 @@ void gspy_DoFrame() {
 int gspy_SendPacket(SOCKADDR_IN *addr) {
   gspy_packetnumber++; // packet numbers start at 1
   char keyvalue[80];
+
+  /* FIXME: WH: this prevents to validate 'secure' requests
   if (!*gspy_outgoingbuffer) {
     // It's an empty buffer, so don't send anything!!
     return 0;
   }
+  */
   gpsy_ValidateString(gspy_outgoingbuffer, *gspy_validate ? gspy_validate : nullptr);
   sprintf(keyvalue, "\\queryid\\%d.%d", gspy_queryid, gspy_packetnumber);
   strcat(gspy_outgoingbuffer, keyvalue);
 
-  mprintf(0, "GSPYOUT:%s\n", gspy_outgoingbuffer);
+  mprintf(0, "GSPYOUT: %s\n", gspy_outgoingbuffer);
   sendto(gspy_socket, gspy_outgoingbuffer, strlen(gspy_outgoingbuffer) + 1, 0, (SOCKADDR *)addr, sizeof(SOCKADDR_IN));
   *gspy_outgoingbuffer = '\0';
   return 0;
@@ -501,7 +492,7 @@ int gspy_DoPlayers(SOCKADDR_IN *addr) {
 int gspy_DoGameInfo(SOCKADDR_IN *addr) {
   char buf[MAX_GAMESPY_BUFFER];
   int curplayers = 0;
-  for (auto & NetPlayer : NetPlayers) {
+  for (auto &NetPlayer : NetPlayers) {
     if (NetPlayer.flags & NPF_CONNECTED)
       curplayers++;
   }
@@ -527,7 +518,7 @@ int gspy_DoGameInfo(SOCKADDR_IN *addr) {
 int gspy_DoHeartbeat(SOCKADDR_IN *addr) {
   char buf[MAX_GAMESPY_BUFFER];
   sprintf(buf, "\\heartbeat\\%d\\gamename\\%s", gspy_listenport, THISGAMENAME);
-  mprintf(0, "GSPYOUT:%s\n", buf);
+  mprintf(0, "GSPYOUT: %s\n", buf);
   sendto(gspy_socket, buf, strlen(buf) + 1, 0, (SOCKADDR *)addr, sizeof(SOCKADDR_IN));
 
   return 0;
