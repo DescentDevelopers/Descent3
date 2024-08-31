@@ -66,7 +66,10 @@ void DrawSplinterObject(object *obj) {
     pnts[i].p3_v = sm->faces[facenum].v[i];
   }
 
-  int bm_handle = GetTextureBitmap(pm->textures[sm->faces[facenum].texnum], 0);
+  int texnum = sm->faces[facenum].texnum;
+  if (texnum < 0)
+    return;
+  int bm_handle = GetTextureBitmap(pm->textures[texnum], 0);
   g3_DrawPoly(limit, pntlist, bm_handle);
 }
 
