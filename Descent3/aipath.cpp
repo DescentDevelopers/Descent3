@@ -651,6 +651,8 @@ static inline bool AIPathAddDPathNode(ai_path_info *aip, int *slot, int *cur_nod
     status = AIPathAddDPath(aip, handle);
     if (!status)
       Int3(); // chrishack -- out of dynamic paths
+    if (aip->num_paths < 1)
+      return false;
 
     AIDynamicPath[*slot].num_nodes = MAX_NODES;
     *cur_node = 0;
@@ -660,7 +662,8 @@ static inline bool AIPathAddDPathNode(ai_path_info *aip, int *slot, int *cur_nod
   AIDynamicPath[*slot].pos[*cur_node] = *pos;
   AIDynamicPath[*slot].roomnum[(*cur_node)++] = room;
 
-  aip->path_end_node[aip->num_paths - 1] = *cur_node - 1;
+  if (aip->num_paths >= 0)
+    aip->path_end_node[aip->num_paths - 1] = *cur_node - 1;
 
   return true;
 }
