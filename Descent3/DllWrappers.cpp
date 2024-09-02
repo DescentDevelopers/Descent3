@@ -26,7 +26,7 @@
 #include "grdefs.h"
 #include "descent.h"
 #include "ddio.h"
-#include "movie.h"
+#include "d3movie.h"
 #include "program.h"
 #include "object.h"
 #include "objinit.h"
@@ -100,7 +100,9 @@ void InvReset(int playernum, bool reset_all) {
 void MonoPrintf(int n, char *format, ...) {}
 
 // wrapper for cfopen
-void OpenCFILE(CFILE **handle, const char *filename, const char *mode) { *handle = cfopen(filename, mode); }
+void OpenCFILE(CFILE **handle, const std::filesystem::path &filename, const char *mode) {
+  *handle = cfopen(filename, mode);
+}
 
 // wrapper for ObjGetUltimateParent
 void GetUltimateParentForObject(object **parent, object *child) { *parent = ObjGetUltimateParent(child); }

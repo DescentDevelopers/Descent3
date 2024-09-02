@@ -321,7 +321,7 @@ static inline int GAUGE_INDEX(tStatMask mask) {
 //	Initialization routines
 
 //	initializes cockpit gauges
-void InitGauges(uint16_t gauge_mask) {
+void InitGauges(tStatMask gauge_mask) {
   Gauge_mask = gauge_mask;
   Gauge_mask_modified = Gauge_mask;
   int gauge = 0;

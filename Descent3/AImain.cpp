@@ -1534,7 +1534,7 @@
 #include "attach.h"
 #include "demofile.h"
 #include "matcen.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "difficulty.h"
 #include "osiris_dll.h"
 #include "multi.h"
@@ -1563,7 +1563,7 @@ bool AI_debug_robot_do = false;
 int AI_debug_robot_index = -2;
 #endif
 
-static bool compute_dodge_dir(/* vector *dodge_dir, */ object *obj, object *dodge_obj);
+static bool compute_dodge_dir(vector *movement_dir, object *obj, object *dodge_obj);
 static float AIDetermineObjVisLevel(object *obj, object *target);
 static bool move_relative_object_vec(object *obj, vector *vec, object *target, float circle_dist, float scalar,
                                      bool f_toward, vector *mdir, bool *f_moved);

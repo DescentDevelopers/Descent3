@@ -728,21 +728,6 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
       DLLPollUI();
       if (MT_Initialized) {
         DLLPollUI();
-        if (!MTVersionCheck()) {
-          if (Login_aborted) {
-            MT_Initialized = 0;
-          } else {
-            // If the first call fails, try again
-            DLLPollUI();
-            if (!MTVersionCheck()) {
-              DLLPollUI();
-              if (!MTVersionCheck()) {
-                // If this call fails, we have a problem, and when MT_EVT_LOGIN is called we will let the user know.
-                UnvalidatedDLL = 1;
-              }
-            }
-          }
-        }
       }
       DLLCloseSplashScreen();
       if (!MT_Initialized) {
@@ -2147,10 +2132,8 @@ void CheckPXOForAnomalies() {
       if (stricmp(DLLMPlayers[i].tracker_id, DLLMPlayers[j].tracker_id) == 0) {
         // Ok, what we have here is multiple users with the same tracker ID.
         // This is bad. It could be user error, but it could be something worse.
-        FILE *errfile;
-        char errfilepath[_MAX_PATH];
-        DLLddio_MakePath(errfilepath, DLLLocalD3Dir, "pxo.err", NULL);
-        errfile = fopen(errfilepath, "at");
+        std::filesystem::path errfilepath = std::filesystem::path(DLLLocalD3Dir) / "pxo.err";
+        FILE *errfile = fopen(errfilepath.u8string().c_str(), "at");
         if (errfile) {
           fprintf(errfile, "Dup TID: %s & %s / %s\n", DLLMPlayers[j].callsign, DLLMPlayers[i].callsign,
                   DLLMPlayers[i].tracker_id);
@@ -2315,121 +2298,6 @@ void DoMTGameOver(void) {
   DLLShowProgressScreen(TXT_PXO_SENDINGGAMEOVER, nullptr);
   while (!SendGameOver())
     DLLDescentDefer();
-}
-
-int MTVersionCheck() {
-#ifdef WIN32
-  int rcode;
-  InetGetFile *inetfile;
-  char sznewdll[_MAX_PATH], szolddll[_MAX_PATH], szbakdll[_MAX_PATH];
-  char fulldllpath[_MAX_PATH * 2];
-  // char dllpath[_MAX_PATH];
-  DLLAVInit = NULL;
-  DLLAVCall = NULL;
-  DLLAVClose = NULL;
-  DLLAVGetVersion = NULL;
-  DLLRunCheck = NULL;
-  // Start by getting the current MT version and see if a newer is needed
-  // Load the DLL and get it's version
-
-  // Specify the correct path
-  DLLddio_MakePath(fulldllpath, DLLLocalD3Dir, "mtav.dll", NULL);
-  if (!DLLmod_LoadModule(&MTAVDLLHandle, fulldllpath, MODF_LAZY)) {
-    DLLmprintf(0, "Unable to load Mastertracker Auto version update DLL (mtav.dll)\n");
-    // Try restoring a backup of the DLL
-    DLLddio_MakePath(szolddll, DLLLocalD3Dir, "mtav.dll", NULL);
-    DLLddio_MakePath(szbakdll, DLLLocalD3Dir, "mtav.bak", NULL);
-    CopyFile(szbakdll, szolddll, FALSE);
-    return 0;
-  }
-  DLLAVInit = (DLLAVInit_fp *)DLLmod_GetSymbol(&MTAVDLLHandle, "DLLAVInit", 4);
-  if (!DLLAVInit) {
-    DLLmprintf(0, "Unable to Find DLLAVInit() function in mtav.dll\n");
-    DLLmod_FreeModule(&MTAVDLLHandle);
-    // Try restoring a backup of the DLL
-    DLLddio_MakePath(szolddll, DLLLocalD3Dir, "mtav.dll", NULL);
-    DLLddio_MakePath(szbakdll, DLLLocalD3Dir, "mtav.bak", NULL);
-    CopyFile(szbakdll, szolddll, FALSE);
-    return 0;
-  }
-  DLLAVGetVersion = (DLLAVGetVersion_fp *)DLLmod_GetSymbol(&MTAVDLLHandle, "DLLAVGetVersion", 4);
-  if (!DLLAVGetVersion) {
-    DLLmprintf(0, "Unable to Find DLLAVGetVersion() function in mtav.dll\n");
-    DLLmod_FreeModule(&MTAVDLLHandle);
-    // Try restoring a backup of the DLL
-    DLLddio_MakePath(szolddll, DLLLocalD3Dir, "mtav.dll", NULL);
-    DLLddio_MakePath(szbakdll, DLLLocalD3Dir, "mtav.bak", NULL);
-    CopyFile(szbakdll, szolddll, FALSE);
-    return 0;
-  }
-  DLLRunCheck = (DLLRunCheck_fp *)DLLmod_GetSymbol(&MTAVDLLHandle, "DLLRunCheck", 4);
-  if (!DLLRunCheck) {
-    DLLmprintf(0, "Unable to Find DLLRunCheck() function in mtav.dll\n");
-    DLLmod_FreeModule(&MTAVDLLHandle);
-    // Try restoring a backup of the DLL
-    DLLddio_MakePath(szolddll, DLLLocalD3Dir, "mtav.dll", NULL);
-    DLLddio_MakePath(szbakdll, DLLLocalD3Dir, "mtav.bak", NULL);
-    CopyFile(szbakdll, szolddll, FALSE);
-    return 0;
-  }
-  uint32_t mtver;
-  DLLAVGetVersion((int *)&mtver);
-  if (MTAVersionCheck(mtver, MTUpdateURL)) {
-    DLLmprintf(0, "VersionCheck() returned an unexpected return code!\n");
-    DLLmod_FreeModule(&MTAVDLLHandle);
-    return 0;
-  }
-  DLLmprintf(0, "Getting Version # from Mastertracker.\n");
-  do {
-    //
-    rcode = MTAVersionCheck(0, NULL);
-  } while (rcode == 0);
-
-  if (rcode == -2) {
-    // Don't try anymore... it timed out.
-    Login_aborted = true;
-  }
-  if (rcode == 1) {
-    if (MTUpdateURL[0]) {
-      // We need to get a new DLL
-      DLLmprintf(0, "Mastertracker says we need a new version, which is at %s.\n", MTUpdateURL);
-      sprintf(sznewdll, "%s\\newmtav.dll", DLLLocalD3Dir);
-      DLLddio_MakePath(sznewdll, DLLLocalD3Dir, "newmtav.dll", NULL);
-      inetfile = new InetGetFile(MTUpdateURL, sznewdll);
-      while (1) {
-        DLLPollUI();
-        if (inetfile->IsFileError()) {
-          // Error here
-          DLLmprintf(0, "Mastertracker update DLL not received. Error code: %d.\n", inetfile->GetErrorCode());
-          DLLmod_FreeModule(&MTAVDLLHandle);
-          return 0;
-        }
-        if (inetfile->IsFileReceived()) {
-          DLLmprintf(0, "Mastertracker update DLL received.\n");
-          DLLmod_FreeModule(&MTAVDLLHandle);
-          DLLddio_MakePath(szolddll, DLLLocalD3Dir, "mtav.dll", NULL);
-          DLLddio_MakePath(szbakdll, DLLLocalD3Dir, "mtav.bak", NULL);
-
-          // We have the file, now backup & copy it and try to reload.
-          CopyFile(szolddll, szbakdll, FALSE);
-          CopyFile(sznewdll, szolddll, FALSE);
-          return 0;
-        }
-      };
-    } else {
-      DLLmprintf(0, "Mastertracker says we are up to date\n");
-      // Here is where we call into the DLL so it can do it's magic
-      DLLAVInit(0);
-      DLLmod_FreeModule(&MTAVDLLHandle);
-      return 1;
-    }
-  } else {
-    DLLmprintf(0, "Mastertracker timeout while getting version\n");
-    DLLmod_FreeModule(&MTAVDLLHandle);
-    return 0;
-  }
-#endif
-  return 1;
 }
 
 int JoinNewLobby(const char *lobby) {

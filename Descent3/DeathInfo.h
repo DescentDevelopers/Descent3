@@ -52,9 +52,6 @@
 #ifndef _DEATHINFO_H
 #define _DEATHINFO_H
 
-// Get the death delay type
-#define DEATH_DELAY(f) (f & DF_DELAY_MASK)
-
 // Get the explosion size
 #define DEATH_EXPL_SIZE(f) (f & DF_EXPL_SIZE_MASK)
 

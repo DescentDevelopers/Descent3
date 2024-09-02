@@ -610,7 +610,6 @@ void CTextureGrWnd::TexGrStartOpenGL() {
     // rend_SetOpenGLWindowState (1,Descent,NULL); // LGT: not defined anymore
     rend_ClearScreen(0);
     StateLimited = 1;
-    UseMultitexture = 0;
     NoLightmaps = false;
   }
 }

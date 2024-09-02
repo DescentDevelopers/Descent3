@@ -86,7 +86,7 @@
 
 // At the end of this file is an example of usage
 
-#if defined(__LINUX__)
+#if defined(POSIX)
 #include <ctype.h>
 #include <errno.h>
 #include <netinet/in.h>
@@ -97,10 +97,9 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include "linux_fix.h"
 
 // Linux includes/defines
-#if !MACOSX
+#if defined(__LINUX__)
 #include <linux/types.h>
 // #include <linux/if.h>
 #endif

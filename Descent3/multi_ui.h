@@ -24,7 +24,6 @@
 // Returns true if we're starting a multiplayer game
 int MainMultiplayerMenu();
 int SearchMasterTrackerGameMenu();
-int LoginMasterTrackerGameMenu();
 int AutoConnectPXO();
 int AutoConnectLANIP();
 int AutoConnectHeat();

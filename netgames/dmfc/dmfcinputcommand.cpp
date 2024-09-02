@@ -120,11 +120,7 @@
 
 #include <algorithm>
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
 
 bool StringParseWord(const char *string, char *word, int size, const char **newpos) {
   *newpos = string;

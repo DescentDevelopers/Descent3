@@ -77,29 +77,20 @@
  *
  */
 
-#include "pserror.h"
-#include "pstypes.h"
+#include <cstdlib>
 
 #include "3d.h"
-#include "vecmat.h"
-#include "grdefs.h"
-#include "polymodel.h"
-#include "gametexture.h"
-#include "byteswap.h"
-#include "renderer.h"
-#include "lighting.h"
-#include "game.h"
-#include "render.h"
-#include "fireball.h"
-#include "lightmap_info.h"
-#include "lightmap.h"
-#include "lighting.h"
 #include "findintersection.h"
-
-#include <stdlib.h>
-#include <string.h>
-
+#include "fireball.h"
+#include "game.h"
+#include "lighting.h"
+#include "lightmap.h"
+#include "lightmap_info.h"
+#include "polymodel.h"
+#include "pserror.h"
 #include "psrand.h"
+#include "render.h"
+#include "vecmat.h"
 
 static float face_depth[MAX_POLYGON_VECS];
 static uint8_t triangulated_faces[MAX_FACES_PER_ROOM];
@@ -186,7 +177,7 @@ inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
   int smooth = 0;
   polyface *fp = &sm->faces[facenum];
   int modelnum = sm - pm->submodel;
-  texture *texp = NULL;
+  texture *texp = nullptr;
   int t;
   int custom = 0;
   g3Codes face_cc;
@@ -800,26 +791,6 @@ void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
       int facenum = State_elements[i].facenum;
       RenderSubmodelFace(pm, sm, facenum);
     }
-
-    if (!NoLightmaps) {
-      if (!UseMultitexture && Polymodel_light_type == POLYMODEL_LIGHTING_LIGHTMAP) {
-        rend_SetAlphaType(AT_LIGHTMAP_BLEND);
-        rend_SetLighting(LS_GOURAUD);
-        rend_SetColorModel(CM_MONO);
-        rend_SetOverlayType(OT_NONE);
-        rend_SetTextureType(TT_PERSPECTIVE);
-        rend_SetWrapType(WT_CLAMP);
-        rend_SetMipState(0);
-
-        for (i = rcount - 1; i >= 0; i--) {
-          int facenum = State_elements[i].facenum;
-          RenderSubmodelLightmapFace(pm, sm, facenum);
-        }
-
-        rend_SetWrapType(WT_WRAP);
-        rend_SetMipState(1);
-      }
-    }
   }
 
   // Now render all alpha faces
@@ -1036,8 +1007,7 @@ void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
     // Turn off bumpmapping if not needed
     rend_SetBumpmapReadyState(0, 0);
   } else {
-    if (!StateLimited || UseMultitexture)
-      rend_SetOverlayType(OT_BLEND);
+    rend_SetOverlayType(OT_BLEND);
   }
 
   if (Multicolor_texture == -1 && Polymodel_use_effect && (Polymodel_effect.type & PEF_CUSTOM_COLOR))
@@ -1320,7 +1290,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
 }
 
 float ComputeDefaultSize(int type, int handle, float *size_ptr) {
-  float size = ComputeDefaultSizeFunc(handle, size_ptr, NULL, true);
+  float size = ComputeDefaultSizeFunc(handle, size_ptr, nullptr, true);
 
   if (type != OBJ_WEAPON && type != OBJ_DEBRIS && type != OBJ_POWERUP) {
     ComputeDefaultSizeFunc(handle, &Poly_models[handle].wall_size, &Poly_models[handle].wall_size_offset, false);

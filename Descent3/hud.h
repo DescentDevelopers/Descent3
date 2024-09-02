@@ -358,16 +358,9 @@ bool AddBlinkingHUDMessage(const char *format, ...);
 // a "-playermessages" command line.
 bool AddFilteredHUDMessage(const char *format, ...);
 
-//	initializes other hud stuff
-void SetHUDEnergyImage(const char *energy_img);
-void SetHUDAfterburnImage(const char *afterburn_img);
-
 // Renders all the messages we have in the message list.  If HUD_MESSAGE_TIME has
 // elapsed, then punt the oldest message and move the others up one
 void RenderHUDMessages();
-
-//	renders ship stats
-void RenderHUDStats(tStatMask stat_mask);
 
 // Handles all incoming keys for an inputted hud message
 void DoHUDInputMessageKey(int key);

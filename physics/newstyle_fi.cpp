@@ -1,30 +1,27 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-#include "pserror.h"
-#include "pstypes.h"
-#include "vecmat.h"
-#include "polymodel.h"
 #include "findintersection.h"
 #include "game.h"
+#include "polymodel.h"
+#include "pserror.h"
+#include "vecmat.h"
 
-#include <stdlib.h>
-#include <string.h>
 #ifndef NED_PHYSICS
 #include "multi.h"
 #endif
@@ -55,7 +52,7 @@ static struct instance_context instance_stack[MAX_INSTANCE_DEPTH];
 
 static int instance_depth = 0;
 
-static inline void ns_compute_movement_AABB(void);
+static inline void ns_compute_movement_AABB();
 static inline bool ns_movement_manual_AABB(vector *min_xyz, vector *max_xyz);
 static void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm);
 
@@ -69,7 +66,8 @@ static void newstyle_StartInstanceAngles(vector *pos, angvec *angles);
 /// pops the old context
 static void newstyle_DoneInstance();
 static void CollideSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub);
-static void CollidePolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, uint32_t f_render_sub);
+static void CollidePolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time,
+                                uint32_t f_render_sub);
 
 static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
   float x, y, z;
@@ -96,24 +94,13 @@ static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
   mat->fvec.z = t * z * z + c;
 }
 
-////rotates a point. returns codes.  does not check if already rotated
-// static inline void collide_RotatePoint(g3Point *dest,vector *src)
-//{
-// vector tempv;
-//
-//	tempv = *src - View_position;
-//
-//	dest->p3_vec = tempv * View_matrix;
-//
-//}
-
 float fvi_hit_param;
 bool fvi_check_param;
 
 static vector ns_min_xyz;
 static vector ns_max_xyz;
 
-inline void ns_compute_movement_AABB(void) {
+inline void ns_compute_movement_AABB() {
   vector delta_movement = *fvi_query_ptr->p1 - *fvi_query_ptr->p0;
   vector offset_vec;
 
@@ -289,8 +276,8 @@ void newstyle_StartInstanceMatrix(vector *pos, matrix *orient) {
 static void newstyle_StartInstanceAngles(vector *pos, angvec *angles) {
   matrix tm;
 
-  if (angles == NULL) {
-    newstyle_StartInstanceMatrix(pos, NULL);
+  if (angles == nullptr) {
+    newstyle_StartInstanceMatrix(pos, nullptr);
     return;
   }
 
@@ -375,12 +362,13 @@ bool PolyCollideObject(object *obj) {
   ASSERT(obj >= Objects && obj <= &Objects[Highest_object_index]);
 
 #ifndef NED_PHYSICS
-  if ((Game_mode & GM_MULTI) && !(Netgame.flags & NF_USE_ACC_WEAP) && Objects[fvi_moveobj].type == OBJ_WEAPON &&
+  if ((Game_mode & GM_MULTI) && !(Netgame.flags & NF_USE_ACC_WEAP) &&
+      fvi_moveobj >= 0 && Objects[fvi_moveobj].type == OBJ_WEAPON &&
       obj->type == OBJ_PLAYER)
     f_use_big_sphere = true;
 #endif
 
-  fvi_do_orient = (Objects[fvi_moveobj].type == OBJ_WEAPON);
+  fvi_do_orient = fvi_moveobj >= 0 && Objects[fvi_moveobj].type == OBJ_WEAPON;
 
 #ifndef NED_PHYSICS
   if (f_use_big_sphere) {
@@ -388,7 +376,7 @@ bool PolyCollideObject(object *obj) {
 
     if (addition < MULTI_ADD_SPHERE_MIN) {
       addition = MULTI_ADD_SPHERE_MIN;
-      if (Objects[fvi_moveobj].mtype.phys_info.flags & PF_NEVER_USE_BIG_SPHERE)
+      if (fvi_moveobj >= 0 && Objects[fvi_moveobj].mtype.phys_info.flags & PF_NEVER_USE_BIG_SPHERE)
         addition /= 2;
     } else if (addition > MULTI_ADD_SPHERE_MAX)
       addition = MULTI_ADD_SPHERE_MAX;
@@ -397,7 +385,7 @@ bool PolyCollideObject(object *obj) {
   }
 #endif
 
-  if (fvi_do_orient) {
+  if (fvi_do_orient && fvi_moveobj >= 0) {
     fvi_move_fvec = Objects[fvi_moveobj].orient.fvec;
     fvi_move_uvec = Objects[fvi_moveobj].orient.uvec;
   }
@@ -416,7 +404,7 @@ bool PolyCollideObject(object *obj) {
     CollidePolygonModel(&obj->pos, &obj->orient, obj->rtype.pobj_info.model_num, normalized_time,
                         obj->rtype.pobj_info.subobj_flags);
   } else {
-    CollidePolygonModel(&obj->pos, &obj->orient, obj->rtype.pobj_info.model_num, NULL,
+    CollidePolygonModel(&obj->pos, &obj->orient, obj->rtype.pobj_info.model_num, nullptr,
                         obj->rtype.pobj_info.subobj_flags);
   }
 #else

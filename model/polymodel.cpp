@@ -598,25 +598,20 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <filesystem>
+
+#include "3d.h"
+#include "cfile.h"
+#include "game.h"
+#include "gamesequence.h"
+#include "mem.h"
+#include "mono.h"
 #include "objinfo.h"
 #include "polymodel.h"
 #include "pserror.h"
-#include "3d.h"
-#include "mono.h"
-#include "bitmap.h"
-#include "renderer.h"
-#include "manage.h"
-#include "gametexture.h"
-#include "lighting.h"
-#include "ddio.h"
-#include "game.h"
-#include <stdlib.h>
-#include <string.h>
-#include "robotfire.h"
-#include "mem.h"
-#include "gamesequence.h"
-
-#include <algorithm>
 
 int Num_poly_models = 0;
 poly_model Poly_models[MAX_POLY_MODELS];
@@ -629,7 +624,7 @@ int Instance_vec_cnt = 0;
 
 #ifdef _DEBUG
 // Flag to draw an outline around the faces
-bool Polymodel_outline_mode = 0;
+bool Polymodel_outline_mode = false;
 #endif
 
 #define ID_OHDR 'RDHO'           // POF file header
@@ -653,7 +648,6 @@ polymodel_light_type Polymodel_light_type = POLYMODEL_LIGHTING_STATIC;
 float Polylighting_static_red;
 float Polylighting_static_green;
 float Polylighting_static_blue;
-uint8_t *Polylighting_gouraud;
 lightmap_object *Polylighting_lightmap_object;
 
 vector *Polymodel_light_direction, Polymodel_fog_plane, Polymodel_specular_pos, Polymodel_fog_portal_vert,
@@ -680,9 +674,6 @@ static void FreeAllModels();
 /// position/angle of each corresponding subobject.
 static void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t subobj_flags);
 static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis);
-
-int findtextbmpname = 0;
-int findtextname = 0;
 
 void WBClearInfo(poly_model *pm) { pm->num_wbs = 0; }
 
@@ -756,91 +747,91 @@ void FreePolymodelData(int i) {
     if (Poly_models[i].submodel) {
       if (Poly_models[i].submodel[t].keyframe_axis) {
         mem_free(Poly_models[i].submodel[t].keyframe_axis);
-        Poly_models[i].submodel[t].keyframe_axis = NULL;
+        Poly_models[i].submodel[t].keyframe_axis = nullptr;
       }
 
       if (Poly_models[i].submodel[t].tick_pos_remap) {
         mem_free(Poly_models[i].submodel[t].tick_pos_remap);
-        Poly_models[i].submodel[t].tick_pos_remap = NULL;
+        Poly_models[i].submodel[t].tick_pos_remap = nullptr;
       }
 
       if (Poly_models[i].submodel[t].tick_ang_remap) {
         mem_free(Poly_models[i].submodel[t].tick_ang_remap);
-        Poly_models[i].submodel[t].tick_ang_remap = NULL;
+        Poly_models[i].submodel[t].tick_ang_remap = nullptr;
       }
 
       if (Poly_models[i].submodel[t].keyframe_angles) {
         mem_free(Poly_models[i].submodel[t].keyframe_angles);
-        Poly_models[i].submodel[t].keyframe_angles = NULL;
+        Poly_models[i].submodel[t].keyframe_angles = nullptr;
       }
       if (Poly_models[i].submodel[t].keyframe_matrix) {
         mem_free(Poly_models[i].submodel[t].keyframe_matrix);
-        Poly_models[i].submodel[t].keyframe_matrix = NULL;
+        Poly_models[i].submodel[t].keyframe_matrix = nullptr;
       }
 
       if (Poly_models[i].submodel[t].keyframe_pos) {
         mem_free(Poly_models[i].submodel[t].keyframe_pos);
-        Poly_models[i].submodel[t].keyframe_pos = NULL;
+        Poly_models[i].submodel[t].keyframe_pos = nullptr;
       }
 
       if (Poly_models[i].submodel[t].verts) {
         mem_free(Poly_models[i].submodel[t].verts);
-        Poly_models[i].submodel[t].verts = NULL;
+        Poly_models[i].submodel[t].verts = nullptr;
       }
 
       if (Poly_models[i].submodel[t].vertnorms) {
         mem_free(Poly_models[i].submodel[t].vertnorms);
-        Poly_models[i].submodel[t].vertnorms = NULL;
+        Poly_models[i].submodel[t].vertnorms = nullptr;
       }
 
       if (Poly_models[i].submodel[t].alpha) {
         mem_free(Poly_models[i].submodel[t].alpha);
-        Poly_models[i].submodel[t].alpha = NULL;
+        Poly_models[i].submodel[t].alpha = nullptr;
       }
 
       if (Poly_models[i].submodel[t].vertnum_memory) {
         mem_free(Poly_models[i].submodel[t].vertnum_memory);
-        Poly_models[i].submodel[t].vertnum_memory = NULL;
+        Poly_models[i].submodel[t].vertnum_memory = nullptr;
       }
 
       if (Poly_models[i].submodel[t].u_memory) {
         mem_free(Poly_models[i].submodel[t].u_memory);
-        Poly_models[i].submodel[t].u_memory = NULL;
+        Poly_models[i].submodel[t].u_memory = nullptr;
       }
 
       if (Poly_models[i].submodel[t].v_memory) {
         mem_free(Poly_models[i].submodel[t].v_memory);
-        Poly_models[i].submodel[t].v_memory = NULL;
+        Poly_models[i].submodel[t].v_memory = nullptr;
       }
 
       if (Poly_models[i].flags & PMF_TIMED) {
         if (Poly_models[i].submodel[t].rot_start_time) {
           mem_free(Poly_models[i].submodel[t].rot_start_time);
-          Poly_models[i].submodel[t].rot_start_time = NULL;
+          Poly_models[i].submodel[t].rot_start_time = nullptr;
         }
 
         if (Poly_models[i].submodel[t].pos_start_time) {
           mem_free(Poly_models[i].submodel[t].pos_start_time);
-          Poly_models[i].submodel[t].pos_start_time = NULL;
+          Poly_models[i].submodel[t].pos_start_time = nullptr;
         }
       }
 
       if (Poly_models[i].submodel[t].flags & (SOF_GLOW | SOF_THRUSTER)) {
         mem_free(Poly_models[i].submodel[t].glow_info);
-        Poly_models[i].submodel[t].glow_info = NULL;
+        Poly_models[i].submodel[t].glow_info = nullptr;
       }
 
       if (Poly_models[i].submodel[t].faces) {
         mem_free(Poly_models[i].submodel[t].faces);
-        Poly_models[i].submodel[t].faces = NULL;
+        Poly_models[i].submodel[t].faces = nullptr;
 
         if (Poly_models[i].submodel[t].face_min) {
           mem_free(Poly_models[i].submodel[t].face_min);
-          Poly_models[i].submodel[t].face_min = NULL;
+          Poly_models[i].submodel[t].face_min = nullptr;
         }
         if (Poly_models[i].submodel[t].face_max) {
           mem_free(Poly_models[i].submodel[t].face_max);
-          Poly_models[i].submodel[t].face_max = NULL;
+          Poly_models[i].submodel[t].face_max = nullptr;
         }
       }
     }
@@ -848,28 +839,28 @@ void FreePolymodelData(int i) {
 
   if (Poly_models[i].model_data) {
     mem_free(Poly_models[i].model_data);
-    Poly_models[i].model_data = NULL;
+    Poly_models[i].model_data = nullptr;
   }
   if (Poly_models[i].gun_slots) {
     mem_free(Poly_models[i].gun_slots);
-    Poly_models[i].gun_slots = NULL;
+    Poly_models[i].gun_slots = nullptr;
   }
   if (Poly_models[i].poly_wb) {
     mem_free(Poly_models[i].poly_wb);
-    Poly_models[i].poly_wb = NULL;
+    Poly_models[i].poly_wb = nullptr;
   }
   if (Poly_models[i].attach_slots) {
     mem_free(Poly_models[i].attach_slots);
-    Poly_models[i].attach_slots = NULL;
+    Poly_models[i].attach_slots = nullptr;
   }
 
   if (Poly_models[i].ground_slots) {
     mem_free(Poly_models[i].ground_slots);
-    Poly_models[i].ground_slots = NULL;
+    Poly_models[i].ground_slots = nullptr;
   }
   if (Poly_models[i].submodel) {
     mem_free(Poly_models[i].submodel);
-    Poly_models[i].submodel = NULL;
+    Poly_models[i].submodel = nullptr;
   }
 
   Poly_models[i].flags |= PMF_NOT_RESIDENT;
@@ -1095,7 +1086,7 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
 
     subobj->flags |= SOF_GLOW;
 
-    if (subobj->glow_info == NULL) // DAJ may already exist
+    if (subobj->glow_info == nullptr) // DAJ may already exist
       subobj->glow_info = (glowinfo *)mem_malloc(sizeof(glowinfo));
 
     subobj->glow_info->glow_r = r;
@@ -1119,7 +1110,7 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
 
     subobj->flags |= SOF_THRUSTER;
 
-    if (subobj->glow_info == NULL) // DAJ may already exist
+    if (subobj->glow_info == nullptr) // DAJ may already exist
       subobj->glow_info = (glowinfo *)mem_malloc(sizeof(glowinfo));
 
     subobj->glow_info->glow_r = r;
@@ -1157,13 +1148,13 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
     if (reaction_time < 0.0f || reaction_time > 10.0f) {
       // Bad data
       ASSERT(0);
-      reaction_time = 10.0;
+      reaction_time = 10.0f;
     }
 
     subobj->flags |= SOF_TURRET;
     subobj->fov = fov_angle / 720.0f; // 720 = 360 * 2 and we want to make fov the amount we can move in either
                                       // direction it has a minimum value of (0.0) to [0.5]
-    subobj->rps = 1.0 / turret_spr;   // convert spr to rps (rotations per second)
+    subobj->rps = 1.0f / turret_spr;  // convert spr to rps (rotations per second)
     subobj->think_interval = reaction_time;
 
     return;
@@ -1340,7 +1331,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->rad = cf_ReadFloat(infile);
 
       pm->submodel = (bsp_info *)mem_malloc(sizeof(bsp_info) * pm->n_models);
-      ASSERT(pm->submodel != NULL);
+      ASSERT(pm->submodel != nullptr);
       memset(pm->submodel, 0, sizeof(bsp_info) * pm->n_models);
 
       ReadModelVector(&pm->mins, infile);
@@ -1436,11 +1427,11 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         ASSERT(pm->submodel[n].alpha);
       } else {
         // Let me take a moment right here to say how annoying it is that I can't
-        // set all these pointers to NULL with one assignment on the same line due
+        // set all these pointers to nullptr with one assignment on the same line due
         // to the stupid strong typying they've added to C.
-        pm->submodel[n].verts = NULL;
-        pm->submodel[n].vertnorms = NULL;
-        pm->submodel[n].alpha = NULL;
+        pm->submodel[n].verts = nullptr;
+        pm->submodel[n].vertnorms = nullptr;
+        pm->submodel[n].alpha = nullptr;
       }
 
       pm->submodel[n].nverts = nverts;
@@ -1488,9 +1479,9 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         pm->submodel[n].face_max = (vector *)mem_malloc(nfaces * sizeof(vector));
         ASSERT(pm->submodel[n].faces);
       } else {
-        pm->submodel[n].faces = NULL;
-        pm->submodel[n].face_max = NULL;
-        pm->submodel[n].face_min = NULL;
+        pm->submodel[n].faces = nullptr;
+        pm->submodel[n].face_max = nullptr;
+        pm->submodel[n].face_min = nullptr;
       }
 
       // Find out how much space we'll need
@@ -1506,7 +1497,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         start_index = (int *)mem_malloc(sizeof(int) * nfaces);
         ASSERT(start_index);
       } else
-        start_index = NULL;
+        start_index = nullptr;
 
       uint8_t tempbuf[2000];
 
@@ -1542,9 +1533,9 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         sm->v_memory = (float *)mem_malloc(current_count * sizeof(float));
         ASSERT(sm->v_memory);
       } else {
-        sm->vertnum_memory = NULL;
-        sm->u_memory = NULL;
-        sm->v_memory = NULL;
+        sm->vertnum_memory = nullptr;
+        sm->u_memory = nullptr;
+        sm->v_memory = nullptr;
       }
 
       // Now go through and set up our fake pointers
@@ -1627,7 +1618,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_GPNT:
       pm->n_guns = cf_ReadInt(infile);
       pm->gun_slots = (w_bank *)mem_malloc(sizeof(w_bank) * pm->n_guns);
-      ASSERT(pm->gun_slots != NULL);
+      ASSERT(pm->gun_slots != nullptr);
 
       for (i = 0; i < pm->n_guns; i++) {
         w_bank *bank = &pm->gun_slots[i];
@@ -1648,7 +1639,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->n_attach = cf_ReadInt(infile);
       if (pm->n_attach) {
         pm->attach_slots = (a_bank *)mem_malloc(sizeof(a_bank) * pm->n_attach);
-        ASSERT(pm->attach_slots != NULL);
+        ASSERT(pm->attach_slots != nullptr);
 
         for (i = 0; i < pm->n_attach; i++) {
           a_bank *bank = &pm->attach_slots[i];
@@ -1659,7 +1650,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           bank->f_uvec = false;
         }
       } else {
-        pm->attach_slots = NULL;
+        pm->attach_slots = nullptr;
       }
       break;
 
@@ -1687,7 +1678,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           bank->f_uvec = f_uvec;
         }
       } else {
-        pm->attach_slots = NULL;
+        pm->attach_slots = nullptr;
       }
       break;
     }
@@ -1726,7 +1717,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
             pm->poly_wb[i].num_turrets = 8;
         }
       } else {
-        pm->poly_wb = NULL;
+        pm->poly_wb = nullptr;
       }
 
       break;
@@ -1735,7 +1726,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_GROUND:
       pm->n_ground = cf_ReadInt(infile);
       pm->ground_slots = (w_bank *)mem_malloc(sizeof(w_bank) * pm->n_ground);
-      ASSERT(pm->ground_slots != NULL);
+      ASSERT(pm->ground_slots != nullptr);
 
       for (i = 0; i < pm->n_ground; i++) {
         w_bank *bank = &pm->ground_slots[i];
@@ -1788,7 +1779,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_ROT_ANIM:
     case ID_ANIM: {
-      int nframes;
+      int nframes = 0;
       // mprintf(0,"ROT ANIM chunk!!!\n");
 
       if (!timed) {
@@ -1796,7 +1787,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         pm->num_key_angles = nframes;
       }
 
-      for (int i = 0; i < pm->n_models; i++) {
+      for (i = 0; i < pm->n_models; i++) {
 
         if (timed) {
           pm->submodel[i].num_key_angles = cf_ReadInt(infile);
@@ -1816,7 +1807,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         pm->submodel[i].keyframe_matrix = (matrix *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(matrix));
         if (timed) {
           pm->submodel[i].rot_start_time = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
-          ASSERT(pm->submodel[i].rot_start_time != NULL);
+          ASSERT(pm->submodel[i].rot_start_time != nullptr);
 
           int num_ticks = (pm->submodel[i].rot_track_max - pm->submodel[i].rot_track_min);
 
@@ -1824,15 +1815,15 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
             pm->submodel[i].tick_ang_remap = (uint16_t *)mem_malloc(num_ticks * 2);
             ASSERT(pm->submodel[i].tick_ang_remap);
           } else {
-            pm->submodel[i].tick_ang_remap = NULL;
+            pm->submodel[i].tick_ang_remap = nullptr;
           }
         }
 
-        ASSERT(pm->submodel[i].keyframe_axis != NULL);
-        ASSERT(pm->submodel[i].keyframe_angles != NULL);
-        ASSERT(pm->submodel[i].keyframe_matrix != NULL);
+        ASSERT(pm->submodel[i].keyframe_axis != nullptr);
+        ASSERT(pm->submodel[i].keyframe_angles != nullptr);
+        ASSERT(pm->submodel[i].keyframe_matrix != nullptr);
 
-        for (int t = 0; t < pm->submodel[i].num_key_angles; t++) {
+        for (t = 0; t < pm->submodel[i].num_key_angles; t++) {
           vector *axis;
           float mag;
 
@@ -1870,7 +1861,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     }
 
     case ID_POS_ANIM: {
-      int nframes;
+      int nframes = 0;
 
       // mprintf(0,"POS ANIM chunk!!!\n");
       if (!timed) {
@@ -1878,7 +1869,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         pm->num_key_pos = nframes;
       }
 
-      for (int i = 0; i < pm->n_models; i++) {
+      for (i = 0; i < pm->n_models; i++) {
         if (timed) {
           pm->submodel[i].num_key_pos = cf_ReadInt(infile);
           pm->submodel[i].pos_track_min = cf_ReadInt(infile);
@@ -1895,21 +1886,21 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
             pm->submodel[i].tick_pos_remap = (uint16_t *)mem_malloc(num_ticks * 2);
             ASSERT(pm->submodel[i].tick_pos_remap);
           } else {
-            pm->submodel[i].tick_pos_remap = NULL;
+            pm->submodel[i].tick_pos_remap = nullptr;
           }
 
         } else
           pm->submodel[i].num_key_pos = nframes;
 
         pm->submodel[i].keyframe_pos = (vector *)mem_malloc((pm->submodel[i].num_key_pos + 1) * sizeof(vector));
-        ASSERT(pm->submodel[i].keyframe_pos != NULL);
+        ASSERT(pm->submodel[i].keyframe_pos != nullptr);
 
         if (timed) {
           pm->submodel[i].pos_start_time = (int *)mem_malloc((pm->submodel[i].num_key_pos + 1) * sizeof(int));
-          ASSERT(pm->submodel[i].pos_start_time != NULL);
+          ASSERT(pm->submodel[i].pos_start_time != nullptr);
         }
 
-        for (int t = 0; t < pm->submodel[i].num_key_pos; t++) {
+        for (t = 0; t < pm->submodel[i].num_key_pos; t++) {
           if (timed)
             pm->submodel[i].pos_start_time[t] = cf_ReadInt(infile);
 
@@ -1940,8 +1931,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     bsp_info *sm = &pm->submodel[i];
 
-    int newt;
-    for (newt = 0; newt < sm->num_key_angles; newt++) {
+    for (int newt = 0; newt < sm->num_key_angles; newt++) {
       cur_angle = sm->keyframe_angles[newt];
       BuildModelAngleMatrix(&temp_matrix, cur_angle, &sm->keyframe_axis[newt]);
       vm_MakeIdentity(&dest_matrix);
@@ -1975,8 +1965,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       vector vecs[30];
       vector avg;
 
-      int newt;
-      for (newt = 0; newt < pm->submodel[i].faces[0].nverts; newt++) {
+      for (int newt = 0; newt < pm->submodel[i].faces[0].nverts; newt++) {
         vecs[newt] = pm->submodel[i].verts[pm->submodel[i].faces[0].vertnums[newt]];
       }
 
@@ -2064,17 +2053,15 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
 // given a filename, reads in a POF and returns an index into the Poly_models array
 // returns -1 if something is wrong
-int LoadPolyModel(const char *filename, int pageable) {
-  char name[256];
-  char fname[256], pname[256], extname[256];
+int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
   int i, polynum = -1;
-  CFILE *infile = NULL;
+  CFILE *infile = nullptr;
   int overlay = 0;
 
   ASSERT(Num_poly_models >= 0);
   ASSERT(Num_poly_models < MAX_POLY_MODELS);
 
-  ChangePolyModelName(filename, name);
+  std::filesystem::path name = ChangePolyModelName(filename);
 
   // If this polymodel is already in memory, just use that index
   i = FindPolyModelName(name);
@@ -2107,8 +2094,6 @@ int LoadPolyModel(const char *filename, int pageable) {
 
   // Not in memory, so we must load it
 
-  ddio_SplitPath(filename, pname, fname, extname);
-
   if (!pageable) {
     infile = cfopen(filename, "rb");
     if (!infile)
@@ -2137,13 +2122,12 @@ int LoadPolyModel(const char *filename, int pageable) {
   }
 
   // if this is an oof instead of a pof, flag it as such
-  if (!stricmp(".OOF", extname)) {
+  if (!stricmp(".oof", filename.extension().u8string().c_str())) {
     Poly_models[polynum].new_style = 1;
   } else
     Poly_models[polynum].new_style = 0;
 
-  // mprintf(0,"Loading model %s\n",name);
-  strcpy(Poly_models[polynum].name, name);
+  strcpy(Poly_models[polynum].name, name.u8string().c_str());
 
   int ret = 0;
   if (!pageable)
@@ -2232,29 +2216,22 @@ poly_model *GetPolymodelPointer(int polynum) {
   return (&Poly_models[polynum]);
 }
 
-// MTS: only used in this file.
 // gets the filename from a path
-void ChangePolyModelName(const char *src, char *dest) {
-  int limit;
-  char path[256], ext[256], filename[256];
-
-  limit = PAGENAME_LEN - 5;
-
-  ddio_SplitPath(src, path, filename, ext);
-
+std::filesystem::path ChangePolyModelName(const std::filesystem::path &src) {
   // Make sure we don't go over our name length limit
-  strncpy(dest, filename, limit);
-
-  strcat(dest, ext);
+  std::string dest = src.stem().string().substr(0, PAGENAME_LEN - 5);
+  std::filesystem::path filename = std::filesystem::path(dest).replace_extension(src.extension());
+  return filename;
 }
+
 // Searches thru all polymodels for a specific name, returns -1 if not found
 // or index of polymodel with name
-int FindPolyModelName(const char *name) {
-  int i;
-
-  for (i = 0; i < MAX_POLY_MODELS; i++)
-    if (Poly_models[i].used && !stricmp(Poly_models[i].name, name))
+int FindPolyModelName(const std::filesystem::path &name) {
+  for (int i = 0; i < MAX_POLY_MODELS; i++) {
+    if (Poly_models[i].used && !stricmp(Poly_models[i].name, name.u8string().c_str())) {
       return i;
+    }
+  }
 
   return -1;
 }
@@ -2437,7 +2414,7 @@ void SetNormalizedTimeAnim(float anim_frame, float *normalized_time, poly_model 
 
 // Given a model pointer and an array of floats that go from 0..1, calculate the angles of each
 // corresponding subobject
-void SetModelAngles(poly_model *po, float *normalized_angles) {
+void SetModelAngles(poly_model *po, const float *normalized_angles) {
   int i;
 
   ASSERT(!(po->flags & PMF_NOT_RESIDENT));
@@ -2554,7 +2531,7 @@ void SetModelAngles(poly_model *po, float *normalized_angles) {
 
 // Given a model pointer and an array of floats that go from 0..1, calculate the interpolated
 // position of each corresponding subobject
-void SetModelInterpPos(poly_model *po, float *normalized_pos) {
+void SetModelInterpPos(poly_model *po, const float *normalized_pos) {
   int i;
 
   ASSERT(!(po->flags & PMF_NOT_RESIDENT));
@@ -2893,13 +2870,10 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
     for (i = 0; i < po->n_models; i++) {
       if ((f_render_sub & (1 << i))) {
         if (i != 0) {
-          vector ofs;
-          vector save_offset;
-
           // if submodel, rotate around its center point, not pivot point
 
-          ofs = (po->submodel[i].min + po->submodel[i].max) / 2;
-          save_offset = po->submodel[i].offset;
+          vector ofs = (po->submodel[i].min + po->submodel[i].max) / 2;
+          vector save_offset = po->submodel[i].offset;
           vm_MakeZero(&po->submodel[i].offset);
           vm_MakeZero(&po->submodel[i].mod_pos);
           memset(&po->submodel[i].angs, 0, sizeof(angvec));
@@ -2973,13 +2947,10 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
     for (i = 0; i < po->n_models; i++) {
       if ((f_render_sub & (1 << i))) {
         if (i != 0) {
-          vector ofs;
-          vector save_offset;
-
           // if submodel, rotate around its center point, not pivot point
 
-          ofs = (po->submodel[i].min + po->submodel[i].max) / 2;
-          save_offset = po->submodel[i].offset;
+          vector ofs = (po->submodel[i].min + po->submodel[i].max) / 2;
+          vector save_offset = po->submodel[i].offset;
           vm_MakeZero(&po->submodel[i].offset);
           vm_MakeZero(&po->submodel[i].mod_pos);
           memset(&po->submodel[i].angs, 0, sizeof(angvec));
@@ -3045,13 +3016,10 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
     for (i = 0; i < po->n_models; i++) {
       if ((f_render_sub & (1 << i))) {
         if (i != 0) {
-          vector ofs;
-          vector save_offset;
-
           // if submodel, rotate around its center point, not pivot point
 
-          ofs = (po->submodel[i].min + po->submodel[i].max) / 2;
-          save_offset = po->submodel[i].offset;
+          vector ofs = (po->submodel[i].min + po->submodel[i].max) / 2;
+          vector save_offset = po->submodel[i].offset;
           vm_MakeZero(&po->submodel[i].offset);
           vm_MakeZero(&po->submodel[i].mod_pos);
           memset(&po->submodel[i].angs, 0, sizeof(angvec));
@@ -3084,9 +3052,9 @@ void FreeAllModels() {
 
 // Inits our models array and loads our ship pof
 int InitModels() {
-  for (int i = 0; i < MAX_POLY_MODELS; i++) {
-    memset(&Poly_models[i], 0, sizeof(poly_model));
-    Poly_models[i].used = 0;
+  for (auto &Poly_model : Poly_models) {
+    memset(&Poly_model, 0, sizeof(poly_model));
+    Poly_model.used = 0;
   }
 
   atexit(FreeAllModels);
@@ -3172,7 +3140,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
   int mn = subnum;
   vector cur_norm;
 
-  if (norm != NULL)
+  if (norm != nullptr)
     cur_norm = *norm;
 
   matrix m;
@@ -3186,7 +3154,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
 
     tpnt = pnt * m;
 
-    if (norm != NULL)
+    if (norm != nullptr)
       cur_norm = cur_norm * m;
 
     pnt = tpnt + pm->submodel[mn].offset + pm->submodel[mn].mod_pos;
@@ -3198,7 +3166,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
   m = *orient;
   vm_TransposeMatrix(&m);
 
-  if (norm != NULL)
+  if (norm != nullptr)
     *norm = (cur_norm * m);
   *dest = pnt * m;
   *dest += (*wpos);
@@ -3219,7 +3187,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
   int mn = subnum;
   vector cur_norm;
 
-  if (norm != NULL)
+  if (norm != nullptr)
     cur_norm = *norm;
 
   matrix m;
@@ -3233,7 +3201,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
 
     tpnt = pnt * m;
 
-    if (norm != NULL)
+    if (norm != nullptr)
       cur_norm = cur_norm * m;
 
     pnt = tpnt + pm->submodel[mn].offset + pm->submodel[mn].mod_pos;
@@ -3245,7 +3213,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
   m = *orient;
   vm_TransposeMatrix(&m);
 
-  if (norm != NULL)
+  if (norm != nullptr)
     *norm = (cur_norm * m);
   *dest = pnt * m;
   *dest += (*wpos);

@@ -188,7 +188,7 @@
  *
  * $NoKeywords: $
  */
-#ifndef __LINUX__
+#if !defined(POSIX)
 #include <new.h>
 #endif
 #if defined(MACOSX)
@@ -247,7 +247,7 @@ bool Mem_superlow_memory_mode = false;
 // If this is set, the mem library ignores mem_free() calls.  All the memory is then freed at once on exit.
 bool Mem_quick_exit = false;
 
-#if defined(__LINUX__)
+#if defined(POSIX)
 // Linux memory management
 int LnxTotalMemUsed;
 
@@ -308,7 +308,7 @@ bool mem_dumpmallocstofile(char *filename) { return false; }
 
 #pragma mark -
 
-#else // defined(__LINUX__)
+#else // defined(POSIX)
 // Windows memory management
 
 // Uncomment this to detect memory leaks and memory overwrites. Slows down mallocs and frees a little.
@@ -368,7 +368,7 @@ void operator delete(void *ptr)
 int handle_program_memory_depletion(size_t size);
 HANDLE Heap;
 void mem_Init() {
-#if defined(WIN32) || defined(__LINUX__)
+#if defined(WIN32) || defined(POSIX)
   //	allocate failsafe block for memory used by any functions after we run out of memory.
   // (printf for instance needs heap memory, as well as our error library.)
   MEMORYSTATUS ms;
@@ -443,7 +443,7 @@ void mem_Init() {
   }
   return;
 #endif
-#if defined(WIN32) || defined(__LINUX__)
+#if defined(WIN32) || defined(POSIX)
   Mem_failsafe_block = mem_malloc(128);
   if (!Mem_failsafe_block) {
     Error("No available heap memory.");

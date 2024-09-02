@@ -37,15 +37,9 @@
 * $NoKeywords: $
 */
 
-#include "pstypes.h"
 #include "pserror.h"
-#include "terrain.h"
-#include "texture.h"
-#include "gametexture.h"
 #include "megacell.h"
 #include "bitmap.h"
-#include <stdlib.h>
-#include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 

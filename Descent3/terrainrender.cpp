@@ -801,7 +801,6 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain, b
 #include "descent.h"
 #include "render.h"
 #include "game.h"
-#include "texture.h"
 #include "ddio.h"
 #include "polymodel.h"
 #include "lighting.h"
@@ -815,12 +814,10 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain, b
 #include "editor\d3edit.h"
 #endif
 #include "fireball.h"
-#include <string.h>
 #include <stdlib.h>
 #include "config.h"
 #include "gameloop.h"
 #include "postrender.h"
-#include "Macros.h"
 #include "psrand.h"
 #include "player.h"
 
@@ -1409,15 +1406,11 @@ void RenderTerrain(uint8_t from_mine, int left, int top, int right, int bot) {
 
 #ifndef NEWEDITOR
   if ((Terrain_sky.flags & TF_FOG) && (UseHardware || (!UseHardware && Lighting_on))) {
-    rend_SetZValues(0, VisibleTerrainZ);
     rend_SetFogState(1);
     rend_SetFogBorders(VisibleTerrainZ * Terrain_sky.fog_scalar, Far_fog_border);
     rend_SetFogColor(Terrain_sky.fog_color);
-  } else
-#endif
-  {
-    rend_SetZValues(0, 5000);
   }
+#endif
 
   // And display!
   if (nt > 0) {
@@ -2589,8 +2582,7 @@ void DisplayTerrainList(int cellcount, bool from_automap) {
     rend_SetTextureType(TT_LINEAR);
     rend_SetAlphaType(ATF_CONSTANT + ATF_TEXTURE);
     rend_SetLighting(LS_NONE);
-    if (!StateLimited || UseMultitexture)
-      draw_lightmap = true;
+    draw_lightmap = true;
   }
   RotateTerrainList(cellcount, from_automap);
   if (!UseHardware) {
@@ -2717,7 +2709,7 @@ static g3Point *slist[256];
 // Draws the 2 triangles of the Terrainlist[index] (software)
 int DrawTerrainTrianglesSoftware(int index, int bm_handle, int upper_left, int lower_right) {
   /*
-  #ifndef __LINUX__
+  #if !defined(POSIX)
           int i,tlist[4],close=0,lit=0;
           float closest_z=9999;
           int color;

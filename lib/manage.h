@@ -26,10 +26,6 @@
 #include "bitmap.h"
 #include "manage_external.h"
 
-#if defined(__LINUX__)
-#include "linux_fix.h" //for strnicmp,etc.
-#endif
-
 #define LOCAL_TABLE "Table.loc"
 #define TEMP_LOCAL_TABLE "Tablr.loc"
 

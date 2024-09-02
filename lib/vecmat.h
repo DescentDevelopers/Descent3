@@ -148,19 +148,12 @@
  * $NoKeywords: $
  */
 
-#ifndef _VECMAT_H
-#define _VECMAT_H
+#ifndef VECMAT_H
+#define VECMAT_H
 
-#include "pstypes.h"
-#include "math.h"
+#include <cmath>
+
 #include "fix.h"
-
-// what does this do?  Why didn't Jason put a comment here?
-// Jason replies: This pragma disables the "possible loss of data" warning that
-// is generated when converting doubles to floats
-// A thousand pardons for the confusion
-
-#pragma warning(disable : 4244)
 
 // All structs, defines and inline functions are located in vecmat_external.h
 // vecmat_external.h is where anything that can be used by DLLs should be.
@@ -193,9 +186,6 @@ extern void vm_MatrixMul(matrix *, matrix *, matrix *);
 
 // Multiply a matrix times the transpose of a matrix
 void vm_MatrixMulTMatrix(matrix *dest, matrix *src0, matrix *src1);
-
-// Computes all math look up tables, must be called before any vector stuff is used
-extern void vm_InitMathTables();
 
 // Given a vector, returns the magnitude.  Uses sqrt so it's slow
 extern float vm_GetMagnitude(vector *);
@@ -253,7 +243,7 @@ void vm_Orthogonalize(matrix *m);
 // Parameters:	m - filled in with the orienation matrix
 //					fvec,uvec,rvec - pointers to vectors that determine the matrix.
 //						One or two of these must be specified, with the other(s) set to NULL.
-void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec = NULL, vector *rvec = NULL);
+void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec = nullptr, vector *rvec = nullptr);
 
 // Computes a matrix from a vector and and angle of rotation around that vector
 // Parameters:	m - filled in with the computed matrix

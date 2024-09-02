@@ -1,7 +1,28 @@
 set(HEADERS
-  aiambient.h
   AIGoal.h
   AIMain.h
+  BOA.h
+  Briefing.h
+  BriefingParse.h
+  ConfigItem.h
+  CtlCfgElem.h
+  D3ForceFeedback.h
+  DeathInfo.h
+  DllWrappers.h
+  Inventory.h
+  LoadLevel.h
+  Mission.h
+  NewPyroGauges.h
+  ObjScript.h
+  PilotPicsAPI.h
+  SmallViews.h
+  TelCom.h
+  TelComAutoMap.h
+  TelComCargo.h
+  TelComEffects.h
+  TelComEfxStructs.h
+  TelComGoals.h
+  aiambient.h
   aipath.h
   aistruct.h
   aistruct_external.h
@@ -11,31 +32,25 @@ set(HEADERS
   attach.h
   audiotaunts.h
   bnode.h
-  BOA.h
-  Briefing.h
-  BriefingParse.h
   bsp.h
   buddymenu.h
   cinematics.h
   cockpit.h
   config.h
-  ConfigItem.h
   controls.h
   credits.h
-  CtlCfgElem.h
   ctlconfig.h
   ctlconfigtxt.h
-  D3ForceFeedback.h
+  d3movie.h
+  d3music.h
   d3serial.h
   damage.h
   damage_external.h
-  DeathInfo.h
   deathinfo_external.h
   debuggraph.h
   descent.h
   difficulty.h
   difficulty_external.h
-  DllWrappers.h
   door.h
   doorway.h
   fireball.h
@@ -50,29 +65,27 @@ set(HEADERS
   gamepath.h
   gamesave.h
   gamesequence.h
+  gamespy.h
+  gamespyutils.h
   gametexture.h
   gauges.h
   help.h
   hotspotmap.h
   hud.h
   init.h
-  Inventory.h
   levelgoal.h
   levelgoal_external.h
   lighting.h
   lightmap_info.h
   list.h
-  LoadLevel.h
   localization.h
   marker.h
   matcen.h
   matcen_external.h
   menu.h
-  Mission.h
   mission_download.h
   mmItem.h
   multi.h
-  multisafe.h
   multi_client.h
   multi_dll_mgr.h
   multi_external.h
@@ -80,21 +93,18 @@ set(HEADERS
   multi_server.h
   multi_ui.h
   multi_world_state.h
-  NewPyroGauges.h
+  multisafe.h
   newui.h
   newui_core.h
   object.h
   object_external.h
-  object_external_struct.h
   object_lighting.h
   objinfo.h
   objinit.h
-  ObjScript.h
   osiris_dll.h
   osiris_predefs.h
   osiris_share.h
   pilot.h
-  PilotPicsAPI.h
   pilot_class.h
   player.h
   player_external.h
@@ -108,15 +118,12 @@ set(HEADERS
   resource.h
   robot.h
   robotfire.h
-  robotfirestruct.h
-  robotfirestruct_external.h
   room.h
   room_external.h
   scorch.h
   screens.h
   ship.h
   slew.h
-  SmallViews.h
   soar.h
   soar_helpers.h
   sounds.h
@@ -125,12 +132,6 @@ set(HEADERS
   splinter.h
   stringtable.h
   subtitles.h
-  TelCom.h
-  TelComAutoMap.h
-  TelComCargo.h
-  TelComEffects.h
-  TelComEfxStructs.h
-  TelComGoals.h
   terrain.h
   trigger.h
   vclip.h
@@ -166,6 +167,8 @@ set(CPPS
   CtlCfgElem.cpp
   ctlconfig.cpp
   D3ForceFeedback.cpp
+  d3movie.cpp
+  d3music.cpp
   d3serial.cpp
   damage.cpp
   debuggraph.cpp
@@ -188,6 +191,8 @@ set(CPPS
   gamepath.cpp
   gamesave.cpp
   gamesequence.cpp
+  gamespy.cpp
+  gamespyutils.cpp
   gametexture.cpp
   gauges.cpp
   help.cpp
@@ -269,12 +274,26 @@ set(CPPS
   weapon.cpp
   WeaponFire.cpp
   weather.cpp
-  loki_utils.c
   sdlmain.cpp)
 
 if(WIN32)
   set(PLATFORM_LIBS wsock32.lib winmm.lib)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /NODEFAULTLIB:LIBC")
+
+  set(MANIFEST ${CMAKE_CURRENT_BINARY_DIR}/Descent3.exe.manifest)
+  configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Descent3.exe.manifest.in
+    ${MANIFEST}
+    @ONLY
+    NEWLINE_STYLE WIN32
+  )
+  set(RC_FILE ${CMAKE_CURRENT_BINARY_DIR}/Descent3.rc)
+  configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Descent3.rc.in
+    ${RC_FILE}
+    @ONLY
+    NEWLINE_STYLE WIN32
+  )
 endif()
 
 if(UNIX AND NOT APPLE)
@@ -284,19 +303,28 @@ endif()
 if(APPLE)
   set(PLATFORM_LIBS)
   set(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
+
+  # Set app icon
+  set(MACOSX_BUNDLE_ICON_FILE Descent3.icns)
+  set(D3Icon ${CMAKE_CURRENT_SOURCE_DIR}/Descent3.icns)
+  set_source_files_properties(${D3Icon} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
 file(GLOB_RECURSE INCS "../lib/*.h")
 
-add_executable(Descent3 WIN32 ${HEADERS} ${CPPS} ${INCS})
+add_executable(Descent3 WIN32 MACOSX_BUNDLE ${D3Icon} ${HEADERS} ${CPPS} ${INCS} ${MANIFEST} ${RC_FILE})
 target_link_libraries(Descent3 PRIVATE
-  2dlib AudioEncode bitmap cfile czip d3music dd_video ddebug ddio libmve libacm
-  fix grtext manage mem misc model module movie stream_audio linux SDL2::SDL2
+  2dlib AudioEncode bitmap cfile dd_video ddebug ddio libmve libacm
+  fix grtext manage mem misc model module stream_audio linux SDL2::SDL2
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
+target_link_options(Descent3 PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)
 add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull NetgamesDir Parallax_Online_Hog)
-install(TARGETS Descent3 RUNTIME)
+install(TARGETS Descent3 RUNTIME BUNDLE DESTINATION .)
+if(MSVC)
+  install(FILES $<TARGET_PDB_FILE:Descent3> DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 
 if(BUILD_TESTING)
   add_subdirectory(tests)

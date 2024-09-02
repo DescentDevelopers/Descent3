@@ -935,16 +935,16 @@ void CWorldWeaponsDialog::UpdateDialog() {
 
   SendDlgItemMessage(IDC_WEAPON_PULLDOWN, CB_RESETCONTENT, 0, 0);
 
-  for (int i = 0; i < MAX_WEAPONS; i++) {
-    if (Weapons[i].used)
-      SendDlgItemMessage(IDC_WEAPON_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Weapons[i].name);
+  for (auto & Weapon : Weapons) {
+    if (Weapon.used)
+      SendDlgItemMessage(IDC_WEAPON_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Weapon.name);
   }
   SendDlgItemMessage(IDC_WEAPON_PULLDOWN, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Weapons[n].name);
 
   SendDlgItemMessage(IDC_FIRE_SOUND_PULLDOWN, CB_RESETCONTENT, 0, 0);
-  for (int i = 0; i < MAX_SOUNDS; i++) {
-    if (Sounds[i].used)
-      SendDlgItemMessage(IDC_FIRE_SOUND_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Sounds[i].name);
+  for (auto & Sound : Sounds) {
+    if (Sound.used)
+      SendDlgItemMessage(IDC_FIRE_SOUND_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Sound.name);
   }
   if (Weapons[n].sounds[WSI_FIRE] >= 0 && Weapons[n].sounds[WSI_FIRE] < MAX_SOUNDS &&
       Sounds[Weapons[n].sounds[WSI_FIRE]].used != 0)
@@ -954,9 +954,9 @@ void CWorldWeaponsDialog::UpdateDialog() {
     SendDlgItemMessage(IDC_FIRE_SOUND_PULLDOWN, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "\0");
 
   SendDlgItemMessage(IDC_WEAPON_BOUNCE_SOUND_COMBO, CB_RESETCONTENT, 0, 0);
-  for (int i = 0; i < MAX_SOUNDS; i++) {
-    if (Sounds[i].used)
-      SendDlgItemMessage(IDC_WEAPON_BOUNCE_SOUND_COMBO, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Sounds[i].name);
+  for (auto & Sound : Sounds) {
+    if (Sound.used)
+      SendDlgItemMessage(IDC_WEAPON_BOUNCE_SOUND_COMBO, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Sound.name);
   }
   if (Weapons[n].sounds[WSI_BOUNCE] >= 0 && Weapons[n].sounds[WSI_BOUNCE] < MAX_SOUNDS &&
       Sounds[Weapons[n].sounds[WSI_BOUNCE]].used != 0)
@@ -966,9 +966,9 @@ void CWorldWeaponsDialog::UpdateDialog() {
     SendDlgItemMessage(IDC_WEAPON_BOUNCE_SOUND_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "\0");
 
   SendDlgItemMessage(IDC_WEAPON_WALL_SOUND_PULLDOWN, CB_RESETCONTENT, 0, 0);
-  for (int i = 0; i < MAX_SOUNDS; i++) {
-    if (Sounds[i].used)
-      SendDlgItemMessage(IDC_WEAPON_WALL_SOUND_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Sounds[i].name);
+  for (auto & Sound : Sounds) {
+    if (Sound.used)
+      SendDlgItemMessage(IDC_WEAPON_WALL_SOUND_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Sound.name);
   }
   if (Weapons[n].sounds[WSI_IMPACT_WALL] >= 0 && Weapons[n].sounds[WSI_IMPACT_WALL] < MAX_SOUNDS &&
       Sounds[Weapons[n].sounds[WSI_IMPACT_WALL]].used != 0)
@@ -980,9 +980,9 @@ void CWorldWeaponsDialog::UpdateDialog() {
   SendDlgItemMessage(IDC_SMOKE_PULLDOWN, CB_RESETCONTENT, 0, 0);
 
   if (Weapons[n].flags & WF_SMOKE) {
-    for (int i = 0; i < MAX_TEXTURES; i++) {
-      if (GameTextures[i].used)
-        SendDlgItemMessage(IDC_SMOKE_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTextures[i].name);
+    for (auto & GameTexture : GameTextures) {
+      if (GameTexture.used)
+        SendDlgItemMessage(IDC_SMOKE_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTexture.name);
     }
   }
 
@@ -995,9 +995,9 @@ void CWorldWeaponsDialog::UpdateDialog() {
   // Do scorch pulldown
   SendDlgItemMessage(IDC_SCORCH_PULLDOWN, CB_RESETCONTENT, 0, 0);
   SendDlgItemMessage(IDC_SCORCH_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)NULL_NAME);
-  for (int i = 0; i < MAX_TEXTURES; i++) {
-    if (GameTextures[i].used)
-      SendDlgItemMessage(IDC_SCORCH_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTextures[i].name);
+  for (auto & GameTexture : GameTextures) {
+    if (GameTexture.used)
+      SendDlgItemMessage(IDC_SCORCH_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTexture.name);
   }
 
   if ((Weapons[n].scorch_handle >= 0) && GameTextures[Weapons[n].scorch_handle].used)
@@ -1009,9 +1009,9 @@ void CWorldWeaponsDialog::UpdateDialog() {
   // Do icon pulldown
   SendDlgItemMessage(IDC_SMALLIMG_PULLDOWN, CB_RESETCONTENT, 0, 0);
   SendDlgItemMessage(IDC_SMALLIMG_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)NULL_NAME);
-  for (int i = 0; i < MAX_TEXTURES; i++) {
-    if (GameTextures[i].used)
-      SendDlgItemMessage(IDC_SMALLIMG_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTextures[i].name);
+  for (auto & GameTexture : GameTextures) {
+    if (GameTexture.used)
+      SendDlgItemMessage(IDC_SMALLIMG_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTexture.name);
   }
 
   if ((Weapons[n].icon_handle >= 0) && GameTextures[Weapons[n].icon_handle].used)
@@ -1021,9 +1021,9 @@ void CWorldWeaponsDialog::UpdateDialog() {
     SendDlgItemMessage(IDC_SMALLIMG_PULLDOWN, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)NULL_NAME);
 
   SendDlgItemMessage(IDC_EXPLODE_PULLDOWN, CB_RESETCONTENT, 0, 0);
-  for (int i = 0; i < MAX_TEXTURES; i++) {
-    if (GameTextures[i].used)
-      SendDlgItemMessage(IDC_EXPLODE_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTextures[i].name);
+  for (auto & GameTexture : GameTextures) {
+    if (GameTexture.used)
+      SendDlgItemMessage(IDC_EXPLODE_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTexture.name);
   }
 
   if (Weapons[n].explode_image_handle >= 0 && GameTextures[Weapons[n].explode_image_handle].used)
@@ -1036,9 +1036,9 @@ void CWorldWeaponsDialog::UpdateDialog() {
 
   // Do particle handle
   SendDlgItemMessage(IDC_PARTICLE_PULLDOWN, CB_RESETCONTENT, 0, 0);
-  for (int i = 0; i < MAX_TEXTURES; i++) {
-    if (GameTextures[i].used)
-      SendDlgItemMessage(IDC_PARTICLE_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTextures[i].name);
+  for (auto & GameTexture : GameTextures) {
+    if (GameTexture.used)
+      SendDlgItemMessage(IDC_PARTICLE_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)GameTexture.name);
   }
 
   if (Weapons[n].particle_handle >= 0 && GameTextures[Weapons[n].particle_handle].used)
@@ -1052,10 +1052,10 @@ void CWorldWeaponsDialog::UpdateDialog() {
   // Do spawn handles
   SendDlgItemMessage(IDC_WEAPON_SPAWN_PULLDOWN, CB_RESETCONTENT, 0, 0);
   SendDlgItemMessage(IDC_SPAWN2_PULLDOWN, CB_RESETCONTENT, 0, 0);
-  for (int i = 0; i < MAX_WEAPONS; i++) {
-    if (Weapons[i].used) {
-      SendDlgItemMessage(IDC_WEAPON_SPAWN_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Weapons[i].name);
-      SendDlgItemMessage(IDC_SPAWN2_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Weapons[i].name);
+  for (auto & Weapon : Weapons) {
+    if (Weapon.used) {
+      SendDlgItemMessage(IDC_WEAPON_SPAWN_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Weapon.name);
+      SendDlgItemMessage(IDC_SPAWN2_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Weapon.name);
     }
   }
 

@@ -189,7 +189,7 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_
   *s_b4 = st->S_un.S_un_b.s_b4;
 }
 
-#elif defined(__LINUX__)
+#elif defined(POSIX)
 // Linux includes/defines
 
 #include <sys/types.h>
@@ -211,8 +211,6 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_
 // rcg06212000 my SDL adds.
 #include "SDL.h"
 #include "SDL_thread.h"
-
-#include "linux_fix.h"
 
 #define SOCKET int
 #define BOOL bool
@@ -393,11 +391,6 @@ uint16_t nw_CalculateChecksum(void *vptr, int len);
 // Sends data on an unreliable socket
 int nw_Send(network_address *who_to, void *data, int len, int flags);
 
-// nw_ReceiveFromSocket will get data out of the socket and stuff it into the packet_buffers
-// nw_Receive now calls this function, then determines which of the packet buffers
-// to package up and use
-void nw_ReceiveFromSocket();
-
 // routine to "free" a packet buffer
 void nw_FreePacket(int id);
 
@@ -413,23 +406,8 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent = 
 // and this may be a source of bugs).
 int nw_ReceiveReliable(SOCKET socket, uint8_t *buffer, int max_len);
 
-// Returns the current protocol in use
-int nw_GetProtocolType();
-
 // Copies my address into the passed argument
 void nw_GetMyAddress(network_address *addr);
-
-// Sends a packet to the game tracker
-int nw_SendGameTrackerPacker(void *packet);
-
-// Checks for an incoming game tracker packet.
-int nw_ReceiveGameTracker(void *packet);
-
-// Send a packet to the pilot tracker
-int nw_SendPilotTrackerPacket(void *packet);
-
-// Checks for an incoming pilot tracker packet.
-int nw_ReceivePilotTracker(void *packet);
 
 int nw_PingCompare(const void *arg1, const void *arg2);
 
@@ -490,7 +468,7 @@ struct async_dns_lookup {
   bool abort;      // read only to worker thread. If this is set, don't fill in the struct.
 
   // rcg06212000 added to let us join the thread at completion...
-#ifdef __LINUX__
+#if defined(POSIX)
   SDL_Thread *threadId;
 #endif
 };
@@ -500,7 +478,7 @@ struct async_dns_lookup {
 #else
 #define CDECLCALL
 #endif
-#ifdef __LINUX__
+#if defined(POSIX)
 // rcg06192000 used to return void *.
 int CDECLCALL gethostbynameworker(void *parm);
 #else

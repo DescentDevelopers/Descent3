@@ -49,10 +49,10 @@
  * $NoKeywords: $
  */
 
+#include <cstdio>
+#include <cstring>
+
 #include "grtext.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 //	textaux_WordWrap
 //
@@ -127,14 +127,14 @@ const char *textaux_CopyTextLine(const char *src, char *dest) {
   if (!src) {
     if (dest)
       dest[0] = '\0';
-    return NULL;
+    return nullptr;
   }
   if (!dest)
-    return NULL;
+    return nullptr;
   // see if we are at the end of the src
   if (src[0] == '\0') {
     dest[0] = '\0';
-    return NULL;
+    return nullptr;
   }
   int i;
   i = 0;
@@ -145,7 +145,7 @@ const char *textaux_CopyTextLine(const char *src, char *dest) {
     // no more lines left after this
     strncpy(dest, src, i);
     dest[i] = '\0';
-    return NULL;
+    return nullptr;
   } else {
     // we hit a newline char
     strncpy(dest, src, i);

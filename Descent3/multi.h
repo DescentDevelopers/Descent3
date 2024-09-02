@@ -498,10 +498,6 @@
 #include "object_external.h"
 #include "player_external.h"
 
-#if defined(__LINUX__)
-#include "linux_fix.h"
-#endif
-
 #include "multi_external.h" //defines and structs are in here
 
 extern bool Multi_bail_ui_menu;
@@ -910,12 +906,6 @@ void MultiMakeMatrix(multi_orientation *dest, matrix *src);
 void MultiExtractMatrix(matrix *dest, multi_orientation *src);
 
 void MultiSendBlowupBuilding(int, int, float);
-
-// Return index of powerup that has matching table entry
-int MultiMatchPowerup(int unique_id);
-
-// Return index of robot that has matching table entry
-int MultiMatchRobot(int unique_id);
 
 // Builds the tables for uniquely identifying powerups and robots
 void MultiBuildMatchTables();

@@ -1,28 +1,27 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <cstdint>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+
+#include "aencode.h"
 #include "audio_encode.h"
 #include "mono.h"
-#include "Aencode.h"
 
 int32_t aenc_ReadSamp(void *data) {
   FILE *f = (FILE *)data;
@@ -37,14 +36,15 @@ int32_t aenc_ReadSamp(void *data) {
   return (b << 8) | a;
 }
 
-bool aenc_Compress(char *input_filename, char *output_filename, int *input_levels, int *input_samples, int *input_rate,
-                  int *input_channels, float *input_factor, float *input_volscale) {
+bool aenc_Compress(char *input_filename, char *output_filename, const int *input_levels, const int *input_samples,
+                   const int *input_rate, const int *input_channels, const float *input_factor,
+                   const float *input_volscale) {
   FILE *in, *out;
   int32_t result;
 
-  int levels, samples_per_subband;
-  unsigned sample_rate, channels;
-  float factor, volume_scale;
+  int levels = 0, samples_per_subband = 0;
+  unsigned sample_rate = 0, channels = 0;
+  float factor = 0, volume_scale = 0;
   int levels_set = 0, samples_per_subband_set = 0, sample_rate_set = 0, channels_set = 0, factor_set = 0,
       volume_scale_set = 0;
 
@@ -90,7 +90,7 @@ bool aenc_Compress(char *input_filename, char *output_filename, int *input_level
     factor = *input_factor; // Factor of compression (default 4 for 22K, 8 for 44K)
     factor_set = 1;
 
-    if (factor < 1.0f && factor)
+    if (factor != 0.0f && factor < 1.0f)
       factor = 1.0f / factor;
 
     if (factor <= 0.0f) {
@@ -105,7 +105,8 @@ bool aenc_Compress(char *input_filename, char *output_filename, int *input_level
   }
 
   if (!levels_set && !samples_per_subband_set) {
-    levels = 7, samples_per_subband = 16;
+    levels = 7;
+    samples_per_subband = 16;
   } else if (!samples_per_subband_set) {
     samples_per_subband = 2048 / (1 << levels);
 
@@ -114,9 +115,7 @@ bool aenc_Compress(char *input_filename, char *output_filename, int *input_level
   } else if (!levels_set) {
     unsigned subbands = (2048 / samples_per_subband) >> 1;
 
-    for (levels = 0; subbands; subbands >>= 1, ++levels)
-    {
-
+    for (levels = 0; subbands; subbands >>= 1, ++levels) {
     }
   }
 

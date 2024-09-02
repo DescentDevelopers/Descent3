@@ -152,10 +152,8 @@
 #include "debug.h"
 #include "mono.h"
 
-extern int no_debug_dialog;
-
 //	initializes error handler.
-bool error_Init(bool debugger, bool mono_debug, const char *app_title);
+bool error_Init(bool debugger, const char *app_title);
 //	exits the application and prints out a standard error message
 void Error(const char *fmt, ...);
 //	prints out an assertion error
@@ -234,7 +232,7 @@ static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
     if (_heapchk() != _HEAPOK)                                                                                         \
       Int3();                                                                                                          \
   } while (0)
-#elif defined(__LINUX__)
+#elif defined(POSIX)
 #include "SDL.h"
 // For some reason Linux doesn't like the \ continuation character, so I have to uglify this
 #define DEBUG_BREAK()                                                                                                  \

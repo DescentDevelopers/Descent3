@@ -43,9 +43,11 @@
 #ifndef _MULTI_SAVE_SETTINGS_HEADER
 #define _MULTI_SAVE_SETTINGS_HEADER
 
+#include <filesystem>
+
 #define MAX_MPS_LINE_LEN 200
 
-int MultiSaveSettings(const char *filename);
-int MultiLoadSettings(const char *filename);
+int MultiSaveSettings(const std::filesystem::path &filename);
+int MultiLoadSettings(const std::filesystem::path &filename);
 
 #endif

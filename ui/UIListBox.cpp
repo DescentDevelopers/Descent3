@@ -157,10 +157,10 @@
  * $NoKeywords: $
  */
 
-#include "UIlib.h"
+#include <cstdlib>
+#include <cstring>
 
-#include <stdlib.h>
-#include <string.h>
+#include "UIlib.h"
 
 #define SCROLL_BUTTON_GAP 4
 

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -187,10 +187,6 @@
 #ifndef NEWUI_H
 #define NEWUI_H
 
-#if defined(__LINUX__)
-#include "linux_fix.h" //fix some of the stricmp's
-#endif
-
 #include "newui_core.h"
 
 // flags for creating a newui window
@@ -310,10 +306,6 @@ void NewUIInit();
 //	closes New UI system
 void NewUIClose();
 
-//	shows or hides windows
-void OpenUIWindow(UIWindow *wnd);
-void CloseUIWindow(UIWindow *wnd);
-
 //////////////////////////////////////////////////////////////////////////////
 //	quick and dirty functions
 
@@ -343,19 +335,21 @@ int DoMessageBoxAdvanced(const char *title, const char *msg, const char *btn0_ti
 // edit dialog.
 bool DoEditDialog(const char *title, char *buffer, int buflen, bool showcancel = true);
 
-// puts up a file selector box
-// Parameters:	max_filename_len - the max length for the filename. filebuf have a length of at least max_filename_len+1
-bool DoFileDialog(const char *title, const char *search_path, const char *ext, char *filebuf,
-                  unsigned max_filename_len);
-
 #define PFDF_FILEMUSTEXIST 0x0001
-//	Displays a file dialog that is very much like a Windows file dialog (you can move around directories)
-//	save_dialog = is this dialog being used to save file, or load a file.  If save, than pass true
-//	path =	on entry is the initial path to start in (must be set...set to 0 length string to go to root directory)
-//			on exit it is the absolute path to selected file on return (if return is true) must be at least
-//_MAX_PATH in size 	title = Title of the dialog 	wildc = semicolon seperated list of wildcards
-//("*.txt;*.doc;*.exe")
-bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const char *wildc, int flags);
+
+/**
+ * Displays a file dialog that is very much like a Windows file dialog (you can move around directories)
+ * @param save_dialog is this dialog being used to save file, or load a file. If save, than pass true
+ * @param path on entry is the initial path to start in (set to empty string to go to root directory)
+ * on exit it is the absolute path to selected file on return (if return is true)
+ * @param title Title of the dialog
+ * @param wildc vector of strings of wildcards ({"*.txt", "*.doc", "*.exe"}).
+ * Please note, DoPathFileDialog matches files by extension (i.e. ".txt") not by globbing (*.txt").
+ * @param flags
+ * @return
+ */
+bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char *title,
+                      const std::vector<std::string> &wildc, int flags);
 
 //////////////////////////////////////////////////////////////////////////////
 //	quick and dirty functions
@@ -523,38 +517,6 @@ public:
 protected:
   virtual void OnDraw();   // overridable draws the background first
   virtual void OnFormat(); // override: called when resized or before drawing.
-};
-
-//	NewUIFileDialog
-//		this draws a file lister.
-
-class NewUIFileDialog : public NewUIGameWindow {
-  NewUIListBox m_ListBox;
-  NewUIButton m_Ok;
-  NewUIButton m_Cancel;
-  UIText m_TitleStr;
-
-  UITextItem *m_FileItems; // file item array.
-
-  char m_SearchPath[_MAX_PATH];
-  char m_SearchExt[PSFILENAME_LEN + 1];
-  char m_NewPath[_MAX_PATH];
-
-private:
-  void UpdateList();
-
-public:
-  void Create(const char *title, int x, int y, int w, int h, const char *path, const char *filecard);
-
-  void SetSearchPath(const char *path);
-  const char *GetFilename();
-
-public:
-  //	call this function to execute dialog.
-  virtual bool DoModal();
-
-protected:
-  virtual void OnDestroy();
 };
 
 #endif

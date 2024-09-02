@@ -146,13 +146,12 @@ void ResetScorches() { Scorch_start = Scorch_end = -1; }
 // Delete the specified scorch mark
 void DeleteScorch(int index) {
   int roomface = Scorches[index].roomface;
-  scorch *sp;
-  int i;
 
   // mprintf(0,"Deleting scorch %d\n",index);
 
   // Look through all the scorches to see if there are other scorches on the same face
-  for (i = Scorch_start, sp = &Scorches[Scorch_start];;) {
+  for (int i = Scorch_start; i >= 0; ) {
+    auto sp = &Scorches[Scorch_start];
 
     if ((sp->roomface == roomface) && (i != index)) // Found another scorch
       return;
@@ -195,9 +194,8 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
 
   // Count the number of scorches on this face, and bail if already at max
   int count = 0;
-  int i;
-  scorch *sp;
-  for (i = Scorch_start, sp = &Scorches[Scorch_start];;) {
+  for (int i = Scorch_start; i >= 0; ) {
+    auto sp = &Scorches[Scorch_start];
     float size = (float)sp->size / 16.0;
 
     // Increment count, and stop drawing if hit limit
@@ -252,7 +250,7 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
     Scorch_start = 0;
 
   // Get a pointer to our struct
-  sp = &Scorches[Scorch_end];
+  auto sp = &Scorches[Scorch_end];
 
   // Fill in the data
   sp->roomface = roomface;
@@ -326,7 +324,8 @@ void DrawScorches(int roomnum, int facenum) {
   ASSERT(Scorch_end != -1);
 
   // Loop through all the scorches, and draw the ones for this face
-  for (i = Scorch_start, sp = &Scorches[Scorch_start];;) {
+  for (int i = Scorch_start; i >= 0; ) {
+    auto sp = &Scorches[Scorch_start];
 
     if (sp->roomface == roomface) { // Found one!
       vector right, up;

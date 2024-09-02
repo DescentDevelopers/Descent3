@@ -107,18 +107,18 @@
  * $NoKeywords: $
  */
 
-#include "grtextlib.h"
-#include "cfile.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+
 #include "bitmap.h"
+#include "cfile.h"
+#include "ddio.h"
+#include "grtextlib.h"
+#include "mem.h"
 #include "pserror.h"
 #include "renderer.h"
-#include "mem.h"
-#include "ddio.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
 
 const int MAX_FONTS = 16, MAX_FONT_BITMAPS = 32;
 
@@ -185,7 +185,7 @@ inline FONTFILE OPEN_FONT(const char *filename) {
 
   fp = (FONTFILE)cfopen(filename, "rb");
   if (!fp)
-    return NULL;
+    return nullptr;
 
   file_id = READ_FONT_INT(fp);
   if (file_id != 0xfeedbaba)
@@ -225,7 +225,7 @@ inline FONTFILE2 OPEN_FONT2(const char *filename) {
 
   fp = (FONTFILE2)fopen(filename, "wb");
   if (!fp)
-    return NULL;
+    return nullptr;
 
   return fp;
 }
@@ -333,9 +333,8 @@ int grfont_Load(const char *fname) {
     fnt.char_widths = (uint8_t *)mem_malloc(sizeof(uint8_t) * num_char);
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
-    //		mprintf(0, "::proportional");
   } else {
-    fnt.char_widths = NULL;
+    fnt.char_widths = nullptr;
   }
 
   //	Read in kerning data
@@ -351,7 +350,7 @@ int grfont_Load(const char *fname) {
     fnt.kern_data[i * 3 + 1] = 255;
     fnt.kern_data[i * 3 + 2] = 0;
   } else {
-    fnt.kern_data = NULL;
+    fnt.kern_data = nullptr;
   }
 
   //	Read in pixel data.
@@ -490,7 +489,7 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
     for (i = 0; i < num_char; i++)
       ft->ch_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
   } else {
-    ft->ch_widths = NULL;
+    ft->ch_widths = nullptr;
   }
 
   if (ft_flags & FT_KERNED) {
@@ -529,11 +528,11 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
 void grfont_FreeTemplate(tFontTemplate *ft) {
   if (ft->kern_data) {
     mem_free(ft->kern_data);
-    ft->kern_data = NULL;
+    ft->kern_data = nullptr;
   }
   if (ft->ch_widths) {
     mem_free(ft->ch_widths);
-    ft->ch_widths = NULL;
+    ft->ch_widths = nullptr;
   }
 }
 
@@ -582,7 +581,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ffin);
   } else {
-    fnt.char_widths = NULL;
+    fnt.char_widths = nullptr;
   }
 
   //	Read in kerning data
@@ -598,7 +597,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
     fnt.kern_data[i * 3 + 1] = 255;
     fnt.kern_data[i * 3 + 2] = 0;
   } else {
-    fnt.kern_data = NULL;
+    fnt.kern_data = nullptr;
   }
 
   //	Read in pixel data.
@@ -655,7 +654,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
 
   //	Write widths now if necessary.(FT_PROPORTIONAL)
   if (fnt.flags & FT_PROPORTIONAL) {
-    for (int i = 0; i < num_char; i++)
+    for (i = 0; i < num_char; i++)
       WRITE_FONT_SHORT(ffout, (int16_t)fnt.char_widths[i]);
   }
 
@@ -698,7 +697,7 @@ bool grfont_SetKerning(int font, uint8_t *kern_data) {
   // reset kerning...
   if (oldft->font.kern_data) {
     mem_free(oldft->font.kern_data);
-    oldft->font.kern_data = NULL;
+    oldft->font.kern_data = nullptr;
   }
 
   if (kern_data) {
@@ -914,7 +913,7 @@ void grfont_TranslateToBitmaps(int handle) {
 //	Font translation routines
 void grfont_XlateMonoChar(int bmp_handle, int x, int y, int index, tFontFileInfo *ft, int width) {
   int row, col; // byte width of char
-  uint8_t bit_mask = 0, byte;
+  uint8_t bit_mask = 0, byte = 0;
   uint8_t *fp;
 
   fp = ft->char_data[index];
@@ -1087,7 +1086,7 @@ uint16_t *grfont_GetRawCharacterData(int font, int ch, int *w, int *h, bool *mon
   }
 
   if ((ch < fnt->font.min_ascii) || (ch > fnt->font.max_ascii))
-    return NULL;
+    return nullptr;
 
   ch = ch - fnt->font.min_ascii;
   *mono = !(fnt->font.flags & FT_COLOR);

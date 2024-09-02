@@ -1,13 +1,18 @@
+set(HEADERS
+  logfile.h
+  pserror.h
+  psglob.h
+  psrand.h
+  pstring.h)
 set(CPPS
   error.cpp
   logfile.cpp
-  log.cpp
   psglob.cpp
   psrand.cpp
   pstring.cpp
 )
 
-add_library(misc STATIC ${CPPS})
+add_library(misc STATIC ${HEADERS} ${CPPS})
 target_link_libraries(misc PRIVATE
   ddebug
   SDL2::SDL2

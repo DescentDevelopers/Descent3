@@ -399,8 +399,10 @@ void SaveGameDialog() {
   // create savegame directory if it didn't exist before.
   std::error_code ec;
   if (!std::filesystem::create_directories(savegame_dir, ec)) {
-    DoMessageBox(TXT_ERROR, TXT_ERRCREATEDIR, MSGBOX_OK);
-    return;
+    if (ec) {
+      DoMessageBox(TXT_ERROR, TXT_ERRCREATEDIR, MSGBOX_OK);
+      return;
+    }
   }
 
   // open window
@@ -511,7 +513,7 @@ struct tLoadGameDialogData {
   chunked_bitmap chunk;
 };
 
-#if defined(__LINUX__)
+#if defined(POSIX)
 void LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 #else
 void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
@@ -620,7 +622,7 @@ bool LoadGameDialog() {
 
     fp = fopen(pathname, "rb");
     if (fp) {
-      int bm_handle;
+      int bm_handle = -1;
       int *pbm_handle;
       fclose(fp);
 
@@ -1119,11 +1121,11 @@ void SGSObjects(CFILE *fp) {
     gs_WriteInt(fp, op->attach_parent_handle);
     if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_ultimate_handle)) {
       mprintf(0, "Object %d has an ultimate parent of %d (%d)\n", i, OBJNUM(ObjGet(op->attach_ultimate_handle)),
-               op->attach_parent_handle);
+              op->attach_parent_handle);
     }
     if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_parent_handle)) {
       mprintf(0, "Object %d has a parent of %d (%d)\n", i, OBJNUM(ObjGet(op->attach_parent_handle)),
-               op->attach_parent_handle);
+              op->attach_parent_handle);
     }
 
     gs_WriteInt(fp, pm->n_attach);

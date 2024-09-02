@@ -23,12 +23,13 @@
 #include <cstdio>
 #include <cstring>
 
-#ifdef __LINUX__
+#if defined(POSIX)
 #include <sys/time.h>
 #include <unistd.h>
 #endif
 
 #include "chat_api.h"
+#include "crossplat.h"
 #include "grdefs.h"
 #include "mtstrings.h"
 #include "networking.h"
@@ -202,7 +203,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
 
     if (SOCKET_ERROR == connect(Chatsock, (SOCKADDR *)&Chataddr, sizeof(SOCKADDR_IN))) {
       int ret = WSAGetLastError();
-#ifndef __LINUX__
+#if !defined(POSIX)
       if (WSAEWOULDBLOCK == WSAGetLastError())
 #else
       if (EINPROGRESS == ret || 0 == ret)
@@ -456,7 +457,7 @@ const char *ChatGetString() {
     bytesread = recv(Chatsock, ch, 1, 0);
     if (bytesread == SOCKET_ERROR) {
       uint32_t lerror = WSAGetLastError();
-#ifndef __LINUX__
+#if !defined(POSIX)
       if (WSAEWOULDBLOCK != lerror)
 #else
       if (WSAEWOULDBLOCK != lerror && 0 != lerror)

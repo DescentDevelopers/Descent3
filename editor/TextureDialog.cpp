@@ -155,7 +155,6 @@
 #include "TextureDialog.h"
 
 #include "HTexture.h"
-#include "texture.h"
 #include "gametexture.h"
 #include "gr.h"
 #include "descent.h"

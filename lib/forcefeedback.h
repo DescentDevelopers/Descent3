@@ -426,28 +426,6 @@ bool ddio_ffjoy_SupportAutoCenter(tDevice dev);
                         Private Functions
 ===========================================================================
 */
-#if defined(WIN32)
-// -------------------------------------------------------------------
-// ddio_ffjoy_AcquireErr
-// Purpose:
-//    Handle success/err reporting
-// -------------------------------------------------------------------
-static int ddio_ffjoy_AcquireErr(HRESULT res, int dev_num);
-// -------------------------------------------------------------------
-// FFEnumCallback
-// Purpose:
-//    Initialize all connected joysticks.
-//
-// Input:
-//    pdinst   info about the current joystick being enumed.
-//    pvRef    the direct input object that was passed in before
-//             starting the enum process.
-// Return:
-//   DIENUM_CONTINUE    continue calling us with any more devices
-//   DIENUM_STOP        all done, don't call us back anymore, go away.
-// -------------------------------------------------------------------
-BOOL CALLBACK FFEnumCallback(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef);
-#endif
 //	Given a filename resource, this loads the file and creates a resource
 //	for it.  It returns a handle to that resource.
 //	If it returns NULL, then it couldn't load the project.

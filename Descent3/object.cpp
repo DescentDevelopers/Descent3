@@ -1144,7 +1144,7 @@
 #include "slew.h"
 #include "game.h"
 #include "trigger.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "collide.h"
 #include "door.h"
 #include "controls.h"
@@ -1646,7 +1646,7 @@ void ObjFree(int objnum) {
   ASSERT(Num_objects >= 0);
 
   if (objnum == Highest_object_index)
-    while (Objects[--Highest_object_index].type == OBJ_NONE)
+    while (Highest_object_index > 0 && Objects[--Highest_object_index].type == OBJ_NONE)
       ;
 }
 

@@ -22,21 +22,13 @@
 #include <cstring>
 #include <cstdarg>
 #include <cerrno>
-#include <cctype>
 #include <filesystem>
 #include <map>
 #include <memory>
 #include <vector>
 
-#ifndef __LINUX__
-// Non-Linux Build Includes
-#include <io.h>
-#else
-// Linux Build Includes
-#include "linux_fix.h"
-#endif
-
 #include "byteswap.h"
+#include "crossplat.h"
 #include "pserror.h"
 #include "ddio.h"
 #include "psglob.h"
@@ -425,7 +417,7 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   fp = fopen(using_filename.u8string().c_str(), tmode);
 
   if (!fp) {
-#ifdef __LINUX__
+#if defined(POSIX)
     // If we tried to open file for reading, assume there maybe case-sensitive files
     if (tmode[0] == 'r') {
       // Try different cases of the filename
@@ -859,9 +851,10 @@ bool cf_CopyFile(const std::filesystem::path &dest, const std::filesystem::path 
     // c=cf_ReadByte (infile);
     // cf_WriteByte (outfile,c);
   }
+  bool nlo = !infile->lib_offset;
   cfclose(infile);
   cfclose(outfile);
-  if (!infile->lib_offset && copytime) {
+  if (nlo && copytime) {
     cf_CopyFileTime(dest, src);
   }
   return true;

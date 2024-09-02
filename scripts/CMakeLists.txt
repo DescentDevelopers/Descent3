@@ -1,7 +1,13 @@
 set(CMAKE_FOLDER "scripts")
 
+set(HEADERS
+  AIGame3_External.h
+  linux_lib.h
+  osiris_common.h
+  osiris_import.h
+  osiris_vector.h)
 set(CPPS
-  $<$<PLATFORM_ID:Darwin,Linux>:
+  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
     linux_lib.cpp
   >
 )
@@ -69,7 +75,7 @@ set(SCRIPTS
 #)
 
 foreach(SCRIPT ${SCRIPTS})
-  add_library(${SCRIPT} MODULE ${CPPS} "${SCRIPT}.cpp")
+  add_library(${SCRIPT} MODULE ${CPPS} ${HEADERS} "${SCRIPT}.cpp")
   target_link_libraries(${SCRIPT}
     fix
     misc
@@ -81,7 +87,7 @@ foreach(SCRIPT ${SCRIPTS})
   endif()
 endforeach()
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   set(HOG_NAME "linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(HOG_NAME "osx")

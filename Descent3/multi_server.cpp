@@ -647,7 +647,7 @@
 
 #include "dedicated_server.h"
 #include "damage.h"
-// #include "gamespy.h"
+#include "gamespy.h"
 #include "multi_world_state.h"
 #include "ObjScript.h"
 #include "marker.h"
@@ -810,7 +810,7 @@ void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_te
   dp_StartGame(Netgame.name);
 #endif
 
-  // gspy_StartGame(Netgame.name);
+  gspy_StartGame(Netgame.name);
   // We use this to identify clients....
   ps_srand(timer_GetTime());
   Secret_net_id = ps_rand() * ps_rand();

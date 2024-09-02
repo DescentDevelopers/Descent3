@@ -211,14 +211,12 @@
 
 #include "descent.h"
 #include "d3edit.h"
-#include "render.h"
 #include "selectedroom.h"
 #include "terrain.h"
-#include "texture.h"
-#include "gametexture.h"
 #include "object.h"
 #include "erooms.h"
 #include "group.h"
+#include "renderer.h"
 
 int Draw_all_rooms = 1;
 

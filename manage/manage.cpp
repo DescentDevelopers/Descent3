@@ -441,9 +441,7 @@
 #include <cstring>
 #include <filesystem>
 
-#if defined(__LINUX__)
-#include "linux_fix.h"
-#endif
+#include "chrono_timer.h"
 #include "descent.h"
 #include "manage.h"
 #include "pserror.h"
@@ -817,7 +815,6 @@ void mng_InitLocalDirectories() {
   std::filesystem::create_directories(dir / "custom", ec);
   std::filesystem::create_directories(dir / "custom" / "graphics", ec);
   std::filesystem::create_directories(dir / "custom" / "sounds", ec);
-  std::filesystem::create_directories(dir / "custom" / "cache", ec);
   std::filesystem::create_directories(dir / "custom" / "settings", ec);
 
   cf_SetSearchPath(LocalCustomGraphicsDir);
@@ -1471,7 +1468,7 @@ int SwitcherooFiles(const char *name, char *tempname) {
   }*/
   int num_tries = 0;
   while (!ddio_DeleteFile(name) && num_tries < MAX_TRIES) {
-    Sleep(100);
+    D3::ChronoTimer::SleepMS(100);
     num_tries++;
   }
   if (num_tries >= MAX_TRIES) {
@@ -1482,7 +1479,7 @@ int SwitcherooFiles(const char *name, char *tempname) {
   }
   num_tries = 0;
   while ((rename(tempname, name)) && num_tries <= MAX_TRIES) {
-    Sleep(100);
+    D3::ChronoTimer::SleepMS(100);
     num_tries++;
   }
   if (num_tries >= MAX_TRIES) {

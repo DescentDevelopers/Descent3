@@ -76,11 +76,9 @@
 #define mprintf(...) Debug_ConsolePrintf(__VA_ARGS__)
 // Prints a formatted string on window n at row, col.
 #define mprintf_at(...) Debug_ConsolePrintfAt(__VA_ARGS__)
-#define DebugBlockPrint(...)
 #else // ifdef _DEBUG
 // DAJ defined in target headers
 #define mprintf(...)
 #define mprintf_at(...)
-#define DebugBlockPrint(...)
 #endif // ifdef _DEBUG
 #endif

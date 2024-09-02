@@ -98,7 +98,7 @@ struct windowmap_t {
 };
 
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
-int menutga_alloc_file(const char *name, char *hsmap[], int *w, int *h);
+int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h);
 // Given a filename and a HotSpotMap structure, it saves it to disk (.HSM)
 void menutga_SaveHotSpotMap(const std::filesystem::path &filename, hotspotmap_t *hsmap, windowmap_t *wndmap);
 // Given a filename and a HotSpotMap structure, it loads the hotspot map (.HSM)

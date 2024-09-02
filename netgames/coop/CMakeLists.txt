@@ -1,4 +1,6 @@
-set(HEADERS coop.h)
+set(HEADERS
+  coop.h
+  coopstr.h)
 set(CPPS coop.cpp)
 
 set(NETGAME_MODULE coop)
@@ -10,6 +12,5 @@ set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3m")
 
 target_link_libraries(${NETGAME_MODULE} PRIVATE
   dmfc
-  misc
 )
 install(TARGETS "${NETGAME_MODULE}" DESTINATION ${CMAKE_INSTALL_LIBDIR}/netgames)

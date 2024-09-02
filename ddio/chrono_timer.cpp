@@ -17,6 +17,8 @@
  */
 
 #include <chrono>
+#include <thread>
+
 #include "chrono_timer.h"
 
 namespace D3 {
@@ -31,6 +33,15 @@ float ChronoTimer::GetTime() {
 int64_t ChronoTimer::GetTimeMS() {
   return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - m_start_tstamp)
       .count();
+}
+
+int64_t ChronoTimer::GetTimeUS() {
+  return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - m_start_tstamp)
+      .count();
+}
+
+void ChronoTimer::SleepMS(int delay) {
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 }
 
 } // namespace D3

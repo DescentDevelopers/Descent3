@@ -118,14 +118,14 @@
 #define CLIP_BOTTOM (vp_InitTop + vp_Bottom)
 
 int grViewport::vp_Locked = 0;
-grViewport *grViewport::vp_Current_VP = NULL;
+grViewport *grViewport::vp_Current_VP = nullptr;
 
 //	---------------------------------------------------------------------------
 //	grViewport constructor and destructor
 //	---------------------------------------------------------------------------
 
 grViewport::grViewport(grScreen *scr_parent) {
-  ASSERT(scr_parent != NULL);
+  ASSERT(scr_parent != nullptr);
 
   sf_Parent = scr_parent;    // screen is a child of grSurface, so we
                              // can do this.
@@ -148,7 +148,7 @@ grViewport::grViewport(grScreen *scr_parent) {
 }
 
 grViewport::grViewport(grSurface *sf_parent) {
-  ASSERT(sf_parent != NULL);
+  ASSERT(sf_parent != nullptr);
 
   sf_Parent = sf_parent;
 
@@ -288,11 +288,11 @@ void grViewport::unlock() {
   sf_Parent->unlock();
   vp_Locked = 0;
 
-  grViewport::vp_Current_VP = NULL;
+  grViewport::vp_Current_VP = nullptr;
 
-  pen_Obj.data = NULL;
+  pen_Obj.data = nullptr;
   pen_Obj.rowsize = 0;
-  pen_Obj.sf = NULL;
+  pen_Obj.sf = nullptr;
 }
 
 //	---------------------------------------------------------------------------

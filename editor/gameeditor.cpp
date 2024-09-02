@@ -484,42 +484,34 @@
  * $NoKeywords: $
  */
 
+#include <string>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "MainFrm.h"
 
 #include "ui.h"
-#include "render.h"
 #include "pserror.h"
 #include "gr.h"
 #include "mono.h"
-#include "init.h"
 #include "game.h"
 #include "descent.h"
-#include "Application.h"
-#include "AppDatabase.h"
 #include "program.h"
 #include "ddio.h"
 #include "object.h"
 #include "slew.h"
 #include "hlsoundlib.h" //chrishack
-#include "ds3dlib.h"    // chrishack
 #include "HView.h"
 #include "player.h"
 #include "loadlevel.h"
 #include "renderer.h"
-#include "BOA.h"
-//@@#include "d3x.h"
-//@@#include "d3xdebug.h"
 #include "ObjScript.h"
 #include "controls.h"
-#include "multi.h"
 #include "3d.h"
 #include "ddvid.h"
 #include "gamefont.h"
 #include "newui.h"
 #include "pilot.h"
-#include "streamaudio.h"
 #include "D3ForceFeedback.h"
 #include "d3music.h"
 #include "osiris_dll.h"
@@ -938,20 +930,18 @@ void InitEditGameSystems() {
     Current_pilot.set_filename(Default_pilot);
     PltReadFile(&Current_pilot, true, true);
   } else {
-    strcpy(Default_pilot, " ");
+    Default_pilot = " ";
     Current_pilot.set_filename("");
   }
 }
 
 void InitGameEditSystems() {
   // UnLoad the pilot and fill in the default
-  char p_fname[_MAX_FNAME];
-
-  Current_pilot.get_filename(p_fname);
-  if (p_fname[0] != '\0')
-    strcpy(Default_pilot, p_fname);
+  std::string p_fname = Current_pilot.get_filename();
+  if (p_fname.empty())
+    Default_pilot = " ";
   else
-    strcpy(Default_pilot, " ");
+    Default_pilot = p_fname;
 
   // reset ship permissions
   PlayerResetShipPermissions(-1, true);

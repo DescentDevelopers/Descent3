@@ -224,11 +224,9 @@ void CAmbientSoundPattern::OnASPNewElement() {
     mem_free(asp->sounds);
 
     asp->sounds = new_sounds;
-    asp->sounds[s] = new_element;
+    asp->sounds[asp->num_sounds++] = new_element;
 
-    asp->num_sounds++;
-
-    m_current_element = s;
+    m_current_element = asp->num_sounds;
 
     UpdateDialog();
   }
@@ -258,7 +256,7 @@ void CAmbientSoundPattern::OnASPDeleteElement() {
       for (int s = 0; s < m_current_element; s++)
         new_sounds[s] = asp->sounds[s];
 
-      for (; s < asp->num_sounds - 1; s++)
+      for (int s = m_current_element; s < asp->num_sounds - 1; s++)
         new_sounds[s] = asp->sounds[s + 1];
 
       mem_free(asp->sounds);

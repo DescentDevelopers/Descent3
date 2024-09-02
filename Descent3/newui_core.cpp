@@ -3227,7 +3227,8 @@ void newuiListBox::OnKeyDown(int key) {
           new_selected_index = m_NumItems - 1;
       }
     }
-    newuiListBox::SetCurrentIndex((m_Real2Virt) ? m_Real2Virt[new_selected_index] : 0);
+    if (new_selected_index >= 0)
+      newuiListBox::SetCurrentIndex((m_Real2Virt) ? m_Real2Virt[new_selected_index] : 0);
   }
 }
 

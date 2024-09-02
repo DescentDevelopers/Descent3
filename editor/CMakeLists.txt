@@ -50,6 +50,8 @@ set(HEADERS
     ../descent3/gamepath.h
     ../descent3/gamesave.h
     ../descent3/gamesequence.h
+    ../descent3/gamespy.h
+    ../descent3/gamespyutils.h
     ../descent3/gametexture.h
     ../descent3/gauges.h
     ../descent3/help.h
@@ -85,7 +87,6 @@ set(HEADERS
     ../descent3/newui_core.h
     ../descent3/object.h
     ../descent3/object_external.h
-    ../descent3/object_external_struct.h
     ../descent3/object_lighting.h
     ../descent3/objinfo.h
     ../descent3/objinit.h
@@ -108,8 +109,6 @@ set(HEADERS
     ../descent3/resource.h
     ../descent3/robot.h
     ../descent3/robotfire.h
-    ../descent3/robotfirestruct.h
-    ../descent3/robotfirestruct_external.h
     ../descent3/room.h
     ../descent3/room_external.h
     ../descent3/scorch.h
@@ -312,6 +311,8 @@ set(SOURCE
     ../descent3/CtlCfgElem.cpp
     ../descent3/ctlconfig.cpp
     ../descent3/D3ForceFeedback.cpp
+    ../Descent3/d3movie.cpp
+    ../Descent3/d3music.cpp
     ../descent3/d3serial.cpp
     ../descent3/damage.cpp
     ../descent3/debuggraph.cpp
@@ -334,6 +335,8 @@ set(SOURCE
     ../descent3/gamepath.cpp
     ../descent3/gamesave.cpp
     ../descent3/gamesequence.cpp
+    ../descent3/gamespy.cpp
+    ../descent3/gamespyutils.cpp
     ../descent3/gametexture.cpp
     ../descent3/gauges.cpp
     ../descent3/help.cpp
@@ -559,25 +562,65 @@ set(SOURCE
     WorldTexturesDialog.cpp
     WorldWeaponsDialog.cpp
     editor.rc
-    ../Descent3/loki_utils.c
-    ../Descent3/sdlmain.cpp
 )
+set(CMAKE_MFC_FLAG 1)
 
 # Editor only works in Windows, because of MFC and DirectX dependencies
 set(PLATFORM_LIBS linux wsock32.lib winmm.lib dd_grwin32 win32 SDL2::SDL2)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /NODEFAULTLIB:LIBC")
 
+
 add_executable(Descent3Editor WIN32 ${HEADERS} ${SOURCE})
+target_include_directories(Descent3Editor PRIVATE
+  ${PROJECT_SOURCE_DIR}/lib
+  ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}/manage
+  ${PROJECT_BINARY_DIR}/lib
+)
 
-target_include_directories(Descent3Editor PRIVATE ../lib ../ ../manage/ ${PROJECT_BINARY_DIR}/lib)
 target_compile_definitions(Descent3Editor PUBLIC _AFXDLL EDITOR)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} /Zc:forScope-")
 
-target_link_libraries(Descent3Editor PRIVATE
-  2dlib AudioEncode bitmap cfile czip d3music dd_video ddebug ddio libmve libacm
-  fix grtext manage mem misc model module movie stream_audio
-  music networking physics renderer rtperformance sndlib ui unzip vecmat md5
-  ${PLATFORM_LIBS})
+# Link libraries
+target_link_libraries(Descent3Editor
+    2dlib
+    AudioEncode
+    bitmap
+    cfile
+
+    dd_video
+    ddio
+    ddebug
+    libmve
+    libacm
+    fix
+    grtext
+    manage
+    mem
+    misc
+    model
+    module
+
+    stream_audio
+    music
+    networking
+    physics
+    renderer
+    rtperformance
+    sndlib
+    ui
+    unzip
+    vecmat
+    md5
+    ${PLATFORM_LIBS}
+)
+
+target_link_options(Descent3Editor PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)
 
 add_dependencies(Descent3Editor get_git_hash)
-install(TARGETS Descent3Editor RUNTIME)
+
+# FIXME: enable installation again when the editor is stable/usable
+# install(TARGETS Descent3Editor RUNTIME)
+# if(MSVC)
+#   install(FILES $<TARGET_PDB_FILE:Descent3Editor> DESTINATION ${CMAKE_INSTALL_BINDIR})
+# endif()
+

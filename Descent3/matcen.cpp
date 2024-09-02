@@ -165,7 +165,7 @@
 #include "viseffect.h"
 #include "viseffect_external.h"
 #include "damage.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "mem.h"
 #include "ObjScript.h"
 #ifndef NEWEDITOR
@@ -810,6 +810,10 @@ void matcen::SaveData(CFILE *fp) {
 
   // Convert these to names
   for (i = 0; i < MAX_MATCEN_SOUNDS; i++) {
+    if (m_sounds[i] < 0) {
+      cf_WriteShort(fp, 0);
+      continue;
+    }
     len = strlen(Sounds[m_sounds[i]].name) + 1; // Accounts for NULL charactor
     cf_WriteShort(fp, len);
     for (j = 0; j < len; j++) {
@@ -1904,7 +1908,7 @@ void InitMatcens() {
   atexit(DestroyAllMatcens);
 }
 
-#if defined(__LINUX__)
+#if defined(POSIX)
 void DestroyAllMatcens()
 #else
 void __cdecl DestroyAllMatcens()

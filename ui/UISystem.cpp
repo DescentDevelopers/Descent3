@@ -165,16 +165,17 @@
  *
  * $NoKeywords: $
  */
+
 #include "UIlib.h"
 #include "application.h"
 #include "bitmap.h"
 #include "ddvid.h"
 #include "renderer.h"
-#include "psclass.h"
 #include "Macros.h"
+
 #define UI_MOUSE_HOTX 2
 #define UI_MOUSE_HOTY 2
-#define UI_FRAMETIME 0.05
+constexpr int ui_FrameTimeMS = 50;
 //////////////////////////////////////////////////////////////////////////////
 //	VARIABLES
 struct tUIWindowNode {
@@ -501,9 +502,9 @@ int ui_DoFrame(bool input) {
     ui_DoWindowFocus();              //	determine window with current input focus.
     res = ui_ProcessFocusedWindow(); //	process focused window
 
-    //		int64_t cur_time = timer_GetMSTime();
-    while ((timer_GetTime() - UI_input.cur_time) < UI_FRAMETIME) {
-    };
+    const float elapsedTimeS = timer_GetTime() - UI_input.cur_time;
+    const int waitTimeMS = ui_FrameTimeMS - static_cast<int>(elapsedTimeS * 1000.0f);
+    D3::ChronoTimer::SleepMS(waitTimeMS);
 
     float temp_time = timer_GetTime();
     UIFrameTime = temp_time - UI_input.cur_time;

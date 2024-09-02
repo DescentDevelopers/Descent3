@@ -912,6 +912,7 @@
 #include <cstring>
 #include <ctime>
 #include <filesystem>
+#include <regex>
 
 #include "mono.h"
 #include "gametexture.h"
@@ -943,6 +944,7 @@
 #include "room.h"
 #include "game.h"
 #include "gamefile.h"
+#include "gamespy.h"
 #include "TelCom.h"
 #include "objinfo.h"
 #include "cinematics.h"
@@ -953,7 +955,7 @@
 #include "pilot.h"
 #include "gameloop.h"
 #include "trigger.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "special_face.h"
 #include "voice.h"
 #include "localization.h"
@@ -1003,8 +1005,8 @@ static bool Init_in_editor = false;
 static void SetInitMessageLength(const char *c, float amount); // portion of total bar to fill (0 to 1)
 extern void UpdateInitMessage(float amount);                   // amount is 0 to 1
 static void SetupTempDirectory(void);
-static void DeleteTempFiles(void);
-static void PreGameCdCheck();
+// Delete all temp files with regex "d3[smocti].+\\.tmp"
+static void DeleteTempFiles();
 static void InitIOSystems(bool editor);
 static void InitStringTable();
 static void InitGraphics(bool editor);
@@ -1059,7 +1061,7 @@ void PreInitD3Systems() {
   debugging = true;
 #endif
 
-  error_Init(debugging, false, PRODUCT_NAME);
+  error_Init(debugging, PRODUCT_NAME);
 
   if (FindArg("-lowmem"))
     Mem_low_memory_mode = true;
@@ -1117,9 +1119,6 @@ void PreInitD3Systems() {
 #endif
 }
 
-/*
-        Save game variables to the registry
-*/
 void SaveGameSettings() {
   char tempbuffer[TEMPBUFFERSIZE];
   int tempint;
@@ -1196,8 +1195,8 @@ void SaveGameSettings() {
 
   Database->write("SoundQuantity", Sound_system.GetLLSoundQuantity());
 
-  if (Default_pilot[0] != '\0')
-    Database->write("Default_pilot", Default_pilot, strlen(Default_pilot) + 1);
+  if (!Default_pilot.empty())
+    Database->write("Default_pilot", Default_pilot.c_str(), strlen(Default_pilot.c_str()) + 1);
   else
     Database->write("Default_pilot", " ", 2);
 }
@@ -1354,7 +1353,9 @@ void LoadGameSettings() {
   }
 
   int len = _MAX_PATH;
-  Database->read("Default_pilot", Default_pilot, &len);
+  char temp_str[_MAX_PATH];
+  Database->read("Default_pilot", temp_str, &len);
+  Default_pilot = temp_str;
 
   // Now that we have read in all the data, set the detail level if it is a predef setting (custom is ignored in
   // function)
@@ -1387,15 +1388,7 @@ void LoadGameSettings() {
   if (Katmai && !FindArg("-nosparkles")) {
     Render_powerup_sparkles = true;
   }
-
 }
-
-struct tTempFileInfo {
-  const char *wildcard;
-};
-static const tTempFileInfo temp_file_wildcards[] = {{"d3s*.tmp"}, {"d3m*.tmp"}, {"d3o*.tmp"},
-                                                    {"d3c*.tmp"}, {"d3t*.tmp"}, {"d3i*.tmp"}};
-static const int num_temp_file_wildcards = sizeof(temp_file_wildcards) / sizeof(tTempFileInfo);
 
 /*
         I/O systems initialization
@@ -1414,17 +1407,17 @@ void InitIOSystems(bool editor) {
     memset(exec_path, 0, sizeof(exec_path));
     // Populate exec_path with the executable path
     if (!ddio_GetBinaryPath(exec_path, sizeof(exec_path))) {
-    Error("Failed to get executable path\n");
+      Error("Failed to get executable path\n");
     } else {
-       std::filesystem::path executablePath(exec_path);
-       std::string baseDirectoryString = executablePath.parent_path().string();
-       strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
-       Base_directory[sizeof(Base_directory) - 1] = '\0';
-       mprintf(0, "Using working directory of %s\n", Base_directory);
-      }
-    } else {
-       ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
-      }
+      std::filesystem::path executablePath(exec_path);
+      std::string baseDirectoryString = executablePath.parent_path().string();
+      strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
+      Base_directory[sizeof(Base_directory) - 1] = '\0';
+      mprintf(0, "Using working directory of %s\n", Base_directory);
+    }
+  } else {
+    ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
+  }
 
   ddio_SetWorkingDir(Base_directory);
 
@@ -1558,7 +1551,6 @@ void InitIOSystems(bool editor) {
   Osiris_ExtractScriptsFromHog(d3_hid, false);
 }
 
-// Returns true if Mercenary is installed (inits the Black Pyro and Red GB)
 bool MercInstalled() { return merc_hid > 0; }
 
 extern int Num_languages;
@@ -1667,13 +1659,6 @@ void UpdateInitMessage(float amount) {
   if (Init_in_editor)
     return;
   InitMessage(Init_messagebar_text, (amount * Init_messagebar_portion) + Init_messagebar_offset);
-/*
-  mprintf(0, "amt=%.2f, portion=%.2f offs=%.2f, prog=%.2f\n",
-          amount,
-          Init_messagebar_portion,
-          Init_messagebar_offset,
-          (amount*Init_messagebar_portion)+Init_messagebar_offset);
-*/
 }
 
 void InitMessage(const char *c, float progress) {
@@ -1897,12 +1882,13 @@ void InitD3Systems1(bool editor) {
     LastPacketReceived = timer_GetTime();
   }
 
+  gspy_Init();
+
   // Sound initialization
   int soundres = Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
 
   //	Initialize Cinematics system
   InitCinematics();
-
 }
 
 // Initialize rest of stuff
@@ -1988,8 +1974,21 @@ void SetupTempDirectory(void) {
   if (t_arg) {
     strcpy(Descent3_temp_directory, GameArgs[t_arg + 1]);
   } else {
-    // initialize it to custom/cache
-    ddio_MakePath(Descent3_temp_directory, Base_directory, "custom", "cache", NULL);
+    std::error_code ec;
+    std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
+    if (ec) {
+      Error("Could not find temporary directory: \"%s\"", ec.message().c_str() );
+      exit(1);
+    }
+    ddio_MakePath(Descent3_temp_directory, tempPath.u8string().c_str(), "Descent3",
+                  "cache", NULL);
+  }
+
+  std::error_code ec;
+  std::filesystem::create_directories(Descent3_temp_directory, ec);
+  if (ec) {
+    Error("Could not create temporary directory: \"%s\"", Descent3_temp_directory);
+    exit(1);
   }
 
   // verify that temp directory exists
@@ -2055,24 +2054,14 @@ void SetupTempDirectory(void) {
   ddio_SetWorkingDir(Base_directory);
 }
 
-void DeleteTempFiles(void) {
-  char filename[_MAX_PATH];
-
-  // delete the d3 temp files in the temp directory
-  if (ddio_SetWorkingDir(Descent3_temp_directory)) {
-    int i;
-    for (i = 0; i < num_temp_file_wildcards; i++) {
-      if (ddio_FindFileStart(temp_file_wildcards[i].wildcard, filename)) {
-        do {
-          ddio_DeleteFile(filename);
-        } while (ddio_FindNextFile(filename));
-      }
-      ddio_FindFileClose();
+void DeleteTempFiles() {
+  ddio_DoForeachFile(Descent3_temp_directory, std::regex("d3[smocti].+\\.tmp"), [](const std::filesystem::path &path) {
+    std::error_code ec;
+    std::filesystem::remove(path, ec);
+    if (ec) {
+      mprintf(0, "Unable to remove temporary file %s: %s\n", path.u8string().c_str(), ec.message().c_str());
     }
-  }
-
-  // restore directory
-  ddio_SetWorkingDir(Base_directory);
+  });
 }
 
 /*

@@ -63,9 +63,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <csignal>
-#include <dirent.h>
 #include <fcntl.h>
-#include <glob.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <utime.h>
@@ -75,8 +73,9 @@
 #endif
 
 #include "ddio.h"
-#include "pserror.h"
+#include "crossplat.h"
 #include "mem.h"
+#include "pserror.h"
 
 #define _MAX_DIR 256
 
@@ -132,7 +131,7 @@ void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext) 
   // Check for an extension
   ///////////////////////////////////////
   int t = totalLen - 1;
-  while ((srcPath[t] != '.') && (srcPath[t] != '/') && (t >= 0))
+  while (t >= 0 && (srcPath[t] != '.') && (srcPath[t] != '/') && (t >= 0))
     t--;
   // see if we are at an extension
   if ((t >= 0) && (srcPath[t] == '.')) {
@@ -211,9 +210,6 @@ void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem:
 // deletes a file.  Returns 1 if successful, 0 on failure
 int ddio_DeleteFile(const char *name) { return (!unlink(name)); }
 
-// rcg06192000 extern "C" is my add, so nettest would link.
-// extern "C"
-//{
 // Constructs a path in the local file system's syntax
 // 	newPath: stores the constructed path
 //  absolutePathHeader: absolute path on which the sub directories will be appended
@@ -255,243 +251,10 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
   va_end(args);
 }
 
-//}
-
-// These functions allow one to find a file
-// You use FindFileStart by giving it a wildcard (like *.*, *.txt, u??.*, whatever).  It returns
-// a filename in namebuf.
-// Use FindNextFile to get the next file found with the wildcard given in FindFileStart.
-// Use FindFileClose to end your search.
-glob_t ffres = {0, NULL, 0};
-int globindex = -1;
-static int globerrfn(const char *path, int err) {
-  mprintf(0, "Error accessing %s: %s .... \n", path, strerror(err));
-  return 0;
-}
-
-#if MACOSX
-int noglob_findnext(struct find_t *f);
-struct find_t {
-  DIR *dir;
-  char pattern[_MAX_PATH];
-  char name[_MAX_PATH];
+std::vector<std::filesystem::path> ddio_GetSysRoots() {
+  // In Linux assume that all other mount points are accessible via root mount point
+  return std::vector<std::filesystem::path> { "/" };
 };
-
-static find_t finder;
-
-int noglob_findfirst(char *filename, int x, struct find_t *f) {
-  char *ptr;
-
-  if (strlen(filename) >= sizeof(f->pattern))
-    return (1);
-
-  strcpy(f->pattern, filename);
-  // FixFilePath(f->pattern);
-  ptr = strrchr(f->pattern, '/');
-
-  if (ptr == NULL) {
-    ptr = filename;
-    f->dir = opendir(".");
-  } else {
-    *ptr = '\0';
-    f->dir = opendir(f->pattern);
-    memmove(f->pattern, ptr + 1, strlen(ptr + 1) + 1);
-  }
-
-  return (noglob_findnext(f));
-}
-
-static int check_pattern_nocase(const char *x, const char *y) {
-  if ((x == NULL) || (y == NULL))
-    return (0); /* not a match. */
-
-  while ((*x) && (*y)) {
-    if (*x == '*') {
-      x++;
-      while (*y != '\0') {
-        if (toupper((int)*x) == toupper((int)*y))
-          break;
-        y++;
-      }
-    }
-
-    else if (*x == '?') {
-      if (*y == '\0')
-        return (0); /* anything but EOS is okay. */
-    }
-
-    else {
-      if (toupper((int)*x) != toupper((int)*y))
-        return (0); /* not a match. */
-    }
-
-    x++;
-    y++;
-  }
-
-  return (*x == *y); /* it's a match (both should be EOS). */
-}
-
-int noglob_findnext(struct find_t *f) {
-  struct dirent *dent;
-
-  if (f->dir == NULL)
-    return (1); /* no such dir or we're just done searching. */
-
-  while ((dent = readdir(f->dir)) != NULL) {
-    if (check_pattern_nocase(f->pattern, dent->d_name)) {
-      if (strlen(dent->d_name) < sizeof(f->name)) {
-        strcpy(f->name, dent->d_name);
-        return (0); /* match. */
-      }
-    }
-  }
-
-  // closedir(f->dir);
-  // f->dir = NULL;
-  return (1); /* no match in whole directory. */
-}
-#endif
-
-bool ddio_FindFileStart(const char *wildcard, char *namebuf) {
-  ASSERT(wildcard);
-  ASSERT(namebuf);
-  if (globindex != -1)
-    ddio_FindFileClose();
-
-#if MACOSX
-  if (noglob_findfirst((char *)wildcard, 0, &finder) == 0) {
-    strcpy(namebuf, finder.name);
-    return true;
-  }
-  return false;
-#else
-  int rc, flags;
-  flags = GLOB_MARK | GLOB_TILDE;
-  rc = glob(wildcard, flags, globerrfn, &ffres);
-  if (rc == GLOB_NOSPACE) {
-    mprintf(0, "Out of space during glob\n");
-    globindex = -1;
-    return false;
-  }
-  if (!ffres.gl_pathc) {
-    globindex = -1;
-    return false;
-  }
-
-  globindex = 0;
-
-  // if the last character is a / then we are to return that last section (it is a directory and
-  // ddio_splitpath can't handle that).
-  int gllen = strlen(ffres.gl_pathv[0]);
-  if (ffres.gl_pathv[0][gllen - 1] == '/') {
-    // directory to return!
-    char *ptr = &ffres.gl_pathv[0][gllen - 2];
-    char *start = &ffres.gl_pathv[0][0];
-    char *end = ptr;
-    while (ptr >= start) {
-      if (*ptr == '/') {
-        // stop! it's the end of the directory
-        break;
-      }
-      ptr--;
-    }
-    if (ptr < start)
-      ptr = start;
-    if (*ptr == '/')
-      ptr++;
-
-    start = namebuf;
-    while (ptr <= end) {
-      *start = *ptr;
-      start++;
-      ptr++;
-    }
-    *start = '\0';
-  } else {
-    // filename to return
-    char ext[256];
-    ddio_SplitPath(ffres.gl_pathv[0], NULL, namebuf, ext);
-    strcat(namebuf, ext);
-  }
-  return true;
-#endif
-}
-
-bool ddio_FindNextFile(char *namebuf) {
-  ASSERT(namebuf);
-#if MACOSX
-  if (noglob_findnext(&finder) == 0) {
-    strcpy(namebuf, finder.name);
-    return true;
-  }
-  return false;
-#else
-  if (globindex == -1)
-    return false;
-  globindex++;
-  if (globindex >= ffres.gl_pathc)
-    return false;
-
-  // if the last character is a / then we are to return that last section (it is a directory and
-  // ddio_splitpath can't handle that).
-  int gllen = strlen(ffres.gl_pathv[globindex]);
-  if (ffres.gl_pathv[globindex][gllen - 1] == '/') {
-    // directory to return!
-    char *ptr = &ffres.gl_pathv[globindex][gllen - 2];
-    char *start = &ffres.gl_pathv[globindex][0];
-    char *end = ptr;
-    while (ptr >= start) {
-      if (*ptr == '/') {
-        // stop! it's the end of the directory
-        break;
-      }
-      ptr--;
-    }
-    if (ptr < start)
-      ptr = start;
-    if (*ptr == '/')
-      ptr++;
-
-    start = namebuf;
-    while (ptr <= end) {
-      *start = *ptr;
-      start++;
-      ptr++;
-    }
-    *start = '\0';
-  } else {
-    // filename to return
-    char ext[256];
-    ddio_SplitPath(ffres.gl_pathv[globindex], NULL, namebuf, ext);
-    strcat(namebuf, ext);
-  }
-
-  return true;
-#endif
-}
-
-void ddio_FindFileClose() {
-#if MACOSX
-  if (finder.dir != NULL) {
-    closedir(finder.dir);
-    finder.dir = NULL;
-  }
-#else
-  if (globindex == -1)
-    return;
-  globindex = -1;
-  globfree(&ffres);
-#endif
-}
-
-//	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
-void ddio_GetRootFromPath(const char *srcPath, char *root_path) {
-  assert(root_path);
-  assert(srcPath);
-
-  strcpy(root_path, "/");
-}
 
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots) {
@@ -644,25 +407,6 @@ bool ddio_GetParentPath(char *dest, const char *srcPath) {
   ddio_CleanPath(dest, temp);
   mem_free(temp);
   return true;
-}
-
-// Finds a full path from a relative path
-// Parameters:	full_path - filled in with the fully-specified path.  Buffer must be at least _MAX_PATH bytes long
-//					rel_path - a path specification, either relative or absolute
-// Returns TRUE if successful, FALSE if an error
-bool ddio_GetFullPath(char *full_path, const char *rel_path) {
-  char old_path[_MAX_PATH];
-
-  ddio_GetWorkingDir(old_path, sizeof(old_path)); // save old directory
-
-  if (!ddio_SetWorkingDir(rel_path)) // try switching to new directory
-    return 0;                        // couldn't switch, so return error
-
-  ddio_GetWorkingDir(full_path, _MAX_PATH); // get path from the OS
-
-  ddio_SetWorkingDir(old_path); // now restore old path
-
-  return 1;
 }
 
 // Generates a temporary filename based on the prefix, and basedir

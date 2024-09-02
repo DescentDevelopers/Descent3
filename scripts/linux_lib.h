@@ -22,7 +22,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstdarg>
-#include "linux_fix.h"
+
+#include "crossplat.h"  // for stricmp
 
 void _splitpath(const char *path, char *drive, char *dir, char *fname, char *ext);
 

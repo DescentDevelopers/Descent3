@@ -1098,7 +1098,7 @@
 #include "findintersection.h"
 #include "hud.h"
 #include "splinter.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "viseffect.h"
 #include "damage.h"
 #include "multi.h"
@@ -1132,6 +1132,7 @@
 #include "config.h"
 #include "osiris_dll.h"
 #include "gamesequence.h"
+#include "init.h"
 
 #include <algorithm>
 
@@ -2744,7 +2745,6 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
 
   if (stricmp(Ships[Players[parent->id].ship_index].name, "Black Pyro") == 0) {
     // Only spew red GB if merc is installed
-    extern bool MercInstalled();
     if (MercInstalled())
       model_num = Object_info[ROBOT_GUIDEBOTRED].render_handle;
   }

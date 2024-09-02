@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -658,12 +658,12 @@
 #include "menu.h"
 #include "mmItem.h"
 #include "game.h"
-#include "gamesequence.h"
 #include "Mission.h"
 #include "multi_ui.h"
 #include "ctlconfig.h"
 #include "config.h"
 #include "gamesave.h"
+#include "gamesequence.h"
 #include "demofile.h"
 #include "pilot.h"
 #include "LoadLevel.h"
@@ -671,6 +671,8 @@
 #include "mem.h"
 #include "args.h"
 #include "cinematics.h"
+#include "multi_dll_mgr.h"
+#include "newui_core.h"
 
 #ifdef _WIN32
 #define USE_DIRECTPLAY
@@ -681,9 +683,6 @@
 #else
 bool Directplay_lobby_launched_game = false;
 #endif
-#include "multi_dll_mgr.h"
-#include "d3music.h"
-#include "newui_core.h"
 
 #define IDV_QUIT 0xff
 //	Menu Item Defines
@@ -702,8 +701,7 @@ bool MenuLoadLevel(void);
 #endif
 // for command line joining of games
 bool Auto_connected = false;
-// externed from init.cpp
-extern void SaveGameSettings();
+
 //	runs command line options.
 bool ProcessCommandLine();
 // new game selection
@@ -715,7 +713,6 @@ extern bool Demo_looping;
 bool FirstGame = false;
 
 int MainMenu() {
-  extern void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
   mmInterface main_menu;
   bool exit_game = false;
   bool exit_menu = false;
@@ -759,18 +756,15 @@ int MainMenu() {
       pilotarg = FindArg("-pilot");
     }
     if (pilotarg) {
-      char pfilename[_MAX_FNAME];
-      strcpy(pfilename, GameArgs[pilotarg + 1]);
-      strcat(pfilename, ".plt");
+      std::string pfilename = std::string(GameArgs[pilotarg + 1]) + ".plt";
       Current_pilot.set_filename(pfilename);
       PltReadFile(&Current_pilot, true);
     }
     first_time = false;
   }
-  char pfilename[_MAX_FNAME];
-  Current_pilot.get_filename(pfilename);
+  std::string pfilename = Current_pilot.get_filename();
 
-  if ((pfilename[0] == '\0') || (strlen(pfilename) == 0) || (!strcmp(pfilename, " ")))
+  if (pfilename.empty())
     PilotSelect();
 
   //	always enforce that in main menu we are in normal game mode.
@@ -1065,36 +1059,32 @@ bool ProcessCommandLine() {
 #define UID_LVLB 100
 #define UID_MSNINFO 0x1000
 #define TRAINING_MISSION_NAME "Pilot Training"
-static inline int count_missions(const char *pathname, const char *wildcard) {
+
+/**
+ * Count singleplayer missions in directory. Mission should have .mn3 extension.
+ * @param base_directory where to search missions. Should be a valid directory.
+ * @return count of found missions
+ */
+static inline int count_missions(const std::filesystem::path &base_directory) {
   int c = 0;
-  char fullpath[_MAX_PATH];
-  char filename[_MAX_PATH];
-  tMissionInfo msninfo;
-  filename[0] = 0;
-  ddio_MakePath(fullpath, pathname, wildcard, NULL);
 
-  if (ddio_FindFileStart(fullpath, filename)) {
-    do {
-      const char *name;
-      ddio_MakePath(fullpath, pathname, filename, NULL);
+  ddio_DoForeachFile(base_directory, std::regex(".*\\.mn3"), [&c](const std::filesystem::path &path) {
+    if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
+      return;
+    mprintf(0, "Mission path: %s\n", path.u8string().c_str());
+    tMissionInfo msninfo{};
+    GetMissionInfo(path.filename().u8string().c_str(), &msninfo);
 
-      if (stricmp("d3_2.mn3", filename) == 0)
-        continue;
-      mprintf(0, "Mission path:%s\n", fullpath);
-      name = GetMissionName(filename);
-      GetMissionInfo(filename, &msninfo);
-      if (name && name[0] && msninfo.single) {
-        mprintf(0, "Name:%s\n", name);
-        c++;
-        if (!(c % 2))
-          DoWaitMessage(true);
-      } else {
-        mprintf(0, "Illegal mission:%s\n", fullpath);
-      }
-      filename[0] = 0;
-    } while (ddio_FindNextFile(filename));
-    ddio_FindFileClose();
-  }
+    if (msninfo.name[0] && msninfo.single) {
+      mprintf(0, "Name: %s\n", msninfo.name);
+      c++;
+      if (!(c % 2))
+        DoWaitMessage(true);
+    } else {
+      mprintf(0, "Illegal or multiplayer mission: %s\n", path.u8string().c_str());
+    }
+  });
+
   return c;
 }
 static inline int generate_special_mission_listbox(newuiListBox *lb, int n_maxfiles, char **filelist, const char *pathname,
@@ -1168,21 +1158,20 @@ static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, cha
             DoWaitMessage(true);
           //}
         }
-      }
-    } while (ddio_FindNextFile(filename));
-    ddio_FindFileClose();
-  }
+      });
+
   return c;
 }
-extern bool Skip_next_movie;
+
 #define OEM_TRAINING_FILE "training.mn3"
 #define OEM_MISSION_FILE "d3oem.mn3"
+
 bool MenuNewGame() {
   newuiTiledWindow menu;
   newuiSheet *select_sheet;
   newuiListBox *msn_lb;
-  char **filelist = NULL;
-  int n_missions, i, res; //,k
+  char **filelist = nullptr;
+  int n_missions, i, res;
   bool found = false;
   bool do_menu = true, load_mission = false, retval = true;
 #ifdef DEMO
@@ -1197,17 +1186,9 @@ bool MenuNewGame() {
     return false;
   }
 #else
-#ifdef RELEASE
   if ((!FindArg("-mission")) && (!FirstGame) && (-1 == Current_pilot.find_mission_data(TRAINING_MISSION_NAME))) {
 
     FirstGame = true;
-
-    char moviepath[_MAX_PATH];
-    ddio_MakePath(moviepath, LocalD3Dir, "movies", "level1.mve", nullptr);
-    if (cfexist(moviepath)) {
-      PlayMovie(moviepath);
-    }
-    Skip_next_movie = true;
 
     if (LoadMission("training.mn3")) {
       CurrentPilotUpdateMissionStatus(true);
@@ -1237,7 +1218,7 @@ bool MenuNewGame() {
       return false;
     }
   }
-#endif
+
   // create menu.
   menu.Create(TXT_MENUNEWGAME, 0, 0, 448, 384);
 
@@ -1255,10 +1236,7 @@ bool MenuNewGame() {
   // count valid mission files.
   // add a please wait dialog here.
   n_missions = 0;
-#ifndef RELEASE
-  n_missions = count_missions(LocalLevelsDir, "*.msn");
-#endif
-  n_missions += count_missions(D3MissionsDir, "*.mn3");
+  n_missions += count_missions(D3MissionsDir);
   if (n_missions) {
     // allocate extra mission slot because of check below which adds a name to the filelist.
     filelist = (char **)mem_malloc(sizeof(char *) * (n_missions + 1));
@@ -1385,7 +1363,7 @@ redo_newgame_menu:
           goto redo_newgame_menu;
         } else {
           Current_mission.cur_level = start_level;
-          // pull out the ship permssions and use them
+          // pull out the ship permissions and use them
           Players[0].ship_permissions = GetPilotShipPermissions(&Current_pilot, Current_mission.name);
         }
       }
@@ -1523,9 +1501,8 @@ int DisplayLevelSelectDlg(int max_level, const char* msnname) {
 #ifdef _DEBUG
 // Loads a level and starts the game
 bool MenuLoadLevel(void) {
-  char buffer[_MAX_PATH];
-  buffer[0] = '\0';
-  if (DoPathFileDialog(false, buffer, "Load Level", "*.d3l", PFDF_FILEMUSTEXIST)) {
+  std::filesystem::path buffer;
+  if (DoPathFileDialog(false, buffer, "Load Level", {"*.d3l"}, PFDF_FILEMUSTEXIST)) {
     SimpleStartLevel(buffer);
     SetFunctionMode(GAME_MODE);
     return true;

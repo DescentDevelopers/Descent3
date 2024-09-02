@@ -85,7 +85,6 @@ static struct {
   tJoyInfo caps;
 } Joysticks[MAX_JOYSTICKS];
 void joy_Close();
-void joy_GetState(tJoystick stick, tJoyPos *pos);
 static int joyGetNumDevs(void);
 //	closes a stick
 //		closes connection with controller.

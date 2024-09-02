@@ -276,13 +276,14 @@
  *
  * $NoKeywords: $
  */
+
+#include "chrono_timer.h"
 #include "ui.h"
 #include "newui.h"
 #include "game.h"
 #include "gamefont.h"
 #include "multi.h"
 #include "multi_client.h"
-#include "manage.h"
 #include "Mission.h"
 #include "pilot.h"
 #include "pstypes.h"
@@ -298,8 +299,6 @@
 #include "multi_server.h"
 #include "multi_ui.h"
 #include "ship.h"
-#include "soundload.h"
-#include "spew.h"
 #include "DllWrappers.h"
 #include "appdatabase.h"
 #include "module.h"
@@ -328,7 +327,7 @@ extern bool Multi_Gamelist_changed;
 int CheckMissionForScript(char *mission, char *script, int dedicated_server_num_teams);
 void ShowNetgameInfo(network_game *game);
 // The exported DLL function call prototypes
-#if defined(__LINUX__)
+#if defined(POSIX)
 typedef void DLLFUNCCALL (*DLLMultiCall_fp)(int eventnum);
 typedef void DLLFUNCCALL (*DLLMultiScoreCall_fp)(int eventnum, void *data);
 typedef void DLLFUNCCALL (*DLLMultiInit_fp)(int *api_fp);
@@ -395,7 +394,7 @@ void GetMultiAPI(multi_api *api) {
   api->netplayers = (int *)&NetPlayers;
   api->ships = (int *)Ships;
   // Fill in function pointers here.  The order here must match the order on the
-  // DLL side
+  // DLL side (netcon/includes/mdllinit.h)
 
   api->fp[0] = (int *)SetUITextItemText;
   api->fp[1] = (int *)NewUIWindowCreate;
@@ -433,9 +432,9 @@ void GetMultiAPI(multi_api *api) {
   api->fp[33] = (int *)rend_GetRenderState;
   api->fp[34] = (int *)LoadMission;
   api->fp[35] = (int *)ddio_MakePath;
-  api->fp[36] = (int *)ddio_FindFileStart;
-  api->fp[37] = (int *)ddio_FindFileClose;
-  api->fp[38] = (int *)ddio_FindNextFile;
+  api->fp[36] = (int *)nullptr; // ddio_FindFileStart;
+  api->fp[37] = (int *)nullptr; // ddio_FindFileClose;
+  api->fp[38] = (int *)nullptr; // ddio_FindNextFile;
   api->fp[39] = (int *)MultiStartServer;
   api->fp[40] = (int *)ShowProgressScreen;
   api->fp[41] = (int *)SearchForLocalGamesTCP;
@@ -519,6 +518,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[108] = (int *)ShowNetgameInfo;
   api->fp[109] = (int *)GetRankIndex;
   api->fp[110] = (int *)CheckGetD3M;
+  api->fp[111] = (int *)ddio_DoForeachFile;
 
   // Variable pointers
   api->vp[0] = (int *)&Player_num;
@@ -590,21 +590,29 @@ int LoadMultiDLL(const char *name) {
   char lib_name[_MAX_PATH * 2];
   char dll_name[_MAX_PATH * 2];
   char tmp_dll_name[_MAX_PATH * 2];
-  char dll_path_name[_MAX_PATH * 2];
   MultiFlushAllIncomingBuffers();
 
   // Delete old dlls
   if (MultiDLLHandle.handle)
     FreeMultiDLL();
 
-  ddio_MakePath(dll_path_name, Base_directory, "online", "*.tmp", NULL);
-  ddio_DeleteFile(dll_path_name);
+  std::filesystem::path dll_path_name = std::filesystem::path(Base_directory) / "online";
+  ddio_DoForeachFile(dll_path_name, std::regex(".+\\.tmp"), [](const std::filesystem::path& path, ...) {
+    std::error_code ec;
+    std::filesystem::remove(path, ec);
+    if (ec) {
+      mprintf(0, "Unable to remove temporary file %s: %s\n", path.u8string().c_str(), ec.message().c_str());
+    }
+  });
+
   // Make the hog filename
   ddio_MakePath(lib_name, Base_directory, "online", name, NULL);
   strcat(lib_name, ".d3c");
 // Make the dll filename
 #if defined(WIN32)
   snprintf(dll_name, sizeof(dll_name), "%s.dll", name);
+#elif defined(MACOSX)
+  snprintf(dll_name, sizeof(dll_name), "%s.dylib", name);
 #else
   snprintf(dll_name, sizeof(dll_name), "%s.so", name);
 #endif
@@ -806,7 +814,7 @@ int PollUI(void) {
   // Limit this to a fixed framerate
   if (UI_LastPoll) {
     if ((timer_GetTime() - UI_LastPoll) < MIN_FRAMETIME)
-      Sleep((timer_GetTime() - UI_LastPoll) * 1000);
+      D3::ChronoTimer::SleepMS((timer_GetTime() - UI_LastPoll) * 1000);
   }
 
   UI_LastPoll = timer_GetTime();

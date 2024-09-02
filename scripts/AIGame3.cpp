@@ -18,7 +18,6 @@
 
 // AIGame3.cpp
 // 0.1
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "osiris_import.h"
@@ -29,7 +28,6 @@
 #include "AIGame3_External.h"
 
 #include "module.h"
-#include "psrand.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -2565,7 +2563,7 @@ void AlienOrganism::UpdateEnergyEffect(int me) {
     // See if it's time to create the next energy effect
     if (memory->next_update_energy_time <= Game_GetTime()) {
       float slow_down = 0.5f * (ALIEN_MAX_ENERGY_CHARGES - memory->energy_charges) / ALIEN_MAX_ENERGY_CHARGES;
-      memory->next_update_energy_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 0.1f + 0.05f + slow_down;
+      memory->next_update_energy_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 0.1f + 0.05f + slow_down;
 
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
@@ -2785,7 +2783,7 @@ void AlienOrganism::SetMode(int me, char mode) {
 
     // Set the next activity time
     if (mode == ALIEN_LANDED_RESTING) {
-      memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 3.0f + 2.0f;
+      memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 3.0f + 2.0f;
       memory->ok_to_deposit = true;
     } else {
       memory->next_activity_time = Game_GetTime() + ALIEN_LANDED_ACTION_TIME;
@@ -2846,7 +2844,7 @@ void AlienOrganism::SetMode(int me, char mode) {
     memory->next_activity_time = 0.0f;
 
     // Set the max time to wander between 20 and 40 seconds
-    memory->max_wander_time = ((float)rand() / (float)D3_RAND_MAX) * 20.0f + 40.0f;
+    memory->max_wander_time = ((float)rand() / (float)RAND_MAX) * 20.0f + 40.0f;
   } break;
 
   case ALIEN_SCAVENGING: {
@@ -2897,10 +2895,10 @@ void AlienOrganism::SetMode(int me, char mode) {
     SetMaxSpeed(me, memory->base_speed * ALIEN_SCAV_SPEED_MOD);
 
     // Set the next activity check to happen within .4 to .8 seconds
-    memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 3.0f + 3.0f;
+    memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 3.0f + 3.0f;
 
     // Set the max time to wander between 20 and 40 seconds
-    memory->max_wander_time = ((float)rand() / (float)D3_RAND_MAX) * 10.0f + 10.0f;
+    memory->max_wander_time = ((float)rand() / (float)RAND_MAX) * 10.0f + 10.0f;
   } break;
 
   case ALIEN_ATTACKING_MELEE: {
@@ -2949,7 +2947,7 @@ void AlienOrganism::SetMode(int me, char mode) {
     }
 
     // Clear the next activity time
-    memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 0.5f + 0.7f;
+    memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 0.5f + 0.7f;
 
     // Clear the next wander time
     memory->max_wander_time = 0.0f;
@@ -3046,7 +3044,7 @@ void AlienOrganism::SetMode(int me, char mode) {
     Obj_Value(me, VF_GET, OBJV_F_SHIELDS, &curr_shields);
     percent_damaged = (memory->base_shields - curr_shields) / memory->base_shields;
 
-    memory->max_wander_time = ((float)rand() / (float)D3_RAND_MAX) * 3.0f + 3.0f + (percent_damaged * 6.0f);
+    memory->max_wander_time = ((float)rand() / (float)RAND_MAX) * 3.0f + 3.0f + (percent_damaged * 6.0f);
   } break;
 
   default:
@@ -3075,7 +3073,7 @@ void AlienOrganism::DoTakeoff(int me, float takeoff_speed, float speed_variance)
     vector vel;
 
     Obj_Value(me, VF_GET, OBJV_V_VELOCITY, &vel);
-    vel += (memory->home_uvec * (takeoff_speed + ((float)rand() / (float)D3_RAND_MAX) * speed_variance));
+    vel += (memory->home_uvec * (takeoff_speed + ((float)rand() / (float)RAND_MAX) * speed_variance));
     Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &vel);
 
     // Play the takeoff anim and tell it to go to alert next
@@ -3128,7 +3126,7 @@ void AlienOrganism::DoInit(int me) {
   memory->num_teammates = 0;
 
   // .1 to 1.1 seconds into the level, do the first squad matching
-  memory->next_update_squad_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 2.0f + 0.1f;
+  memory->next_update_squad_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 2.0f + 0.1f;
 
   // Update the energy effect as soon as charge exists
   memory->next_update_energy_time = Game_GetTime();
@@ -3141,8 +3139,8 @@ void AlienOrganism::DoInit(int me) {
   memory->next_special_damage_time = Game_GetTime();
 
   // Set the next generic check time
-  memory->next_generic_check_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 1.0f + 0.5f;
-  memory->next_vis_check_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 2.0f + 1.0f;
+  memory->next_generic_check_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 1.0f + 0.5f;
+  memory->next_vis_check_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 2.0f + 1.0f;
 
   // Init other times
   memory->next_activity_time = Game_GetTime();
@@ -3230,8 +3228,8 @@ bool AlienOrganism::FindHome(int me) {
   while (!home_found && num_attempts < MAX_HOME_FINDING_ATTEMPTS) {
     // Determine ray angle
     home_dir = start_orient.fvec;
-    home_dir += start_orient.uvec * (HOME_LOOK_OFFSET - ((float)rand() / (float)D3_RAND_MAX) * 2.0f * HOME_LOOK_OFFSET);
-    home_dir += start_orient.rvec * (HOME_LOOK_OFFSET - ((float)rand() / (float)D3_RAND_MAX) * 2.0f * HOME_LOOK_OFFSET);
+    home_dir += start_orient.uvec * (HOME_LOOK_OFFSET - ((float)rand() / (float)RAND_MAX) * 2.0f * HOME_LOOK_OFFSET);
+    home_dir += start_orient.rvec * (HOME_LOOK_OFFSET - ((float)rand() / (float)RAND_MAX) * 2.0f * HOME_LOOK_OFFSET);
 
     // Cast home-finding ray
     target_pos = start_pos + (home_dir * MAX_HOME_FINDING_DIST);
@@ -3422,13 +3420,13 @@ void AlienOrganism::DoFrame(int me) {
 
   // Periodically update the squad information (remove dead teammates and/or recruit new ones)
   if (memory->next_update_squad_time <= Game_GetTime()) {
-    memory->next_update_squad_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 3.0f + 3.0f;
+    memory->next_update_squad_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 3.0f + 3.0f;
     UpdateSquad(me);
   }
 
   // Periodically update the squad visibility information
   if (memory->next_vis_check_time <= Game_GetTime()) {
-    memory->next_vis_check_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 1.0f + 1.0f;
+    memory->next_vis_check_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 1.0f + 1.0f;
 
     // If we're leading, update the squad's visibility flags
     if (memory->squad_flags & ALIEN_LEADER) {
@@ -3446,7 +3444,7 @@ void AlienOrganism::DoFrame(int me) {
 
   // Handle generic checks (pertains to more than 1 mode)
   if (memory->next_generic_check_time <= Game_GetTime()) {
-    memory->next_generic_check_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 1.4f + 0.6f;
+    memory->next_generic_check_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 1.4f + 0.6f;
 
     // If we're not already landed, or heading home to heal, see if we should
     if (!IsLandedMode(memory->mode) && memory->mode != ALIEN_LANDING_AT_HOME &&
@@ -3486,7 +3484,7 @@ void AlienOrganism::DoFrame(int me) {
     // See if it should consider doing something spontaneously
     if (Game_GetTime() >= memory->next_activity_time) {
       // Set the next time to think about doing something (4-6 seconds)
-      memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 1.0f + 0.5f;
+      memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 1.0f + 0.5f;
 
       // If alien has a target, decide whether it should go hunt it down
       if (last_perceive_time < 3.0f) {
@@ -3739,7 +3737,7 @@ void AlienOrganism::DoFrame(int me) {
     // See if it is time to go home
     if (memory->mode_time >= memory->max_wander_time) {
       // Set the next max wander time
-      memory->max_wander_time = ((float)rand() / (float)D3_RAND_MAX) * 10.0f + 10.0f;
+      memory->max_wander_time = ((float)rand() / (float)RAND_MAX) * 10.0f + 10.0f;
 
       // If not a squadie, decide to go home
       if (!(memory->squad_flags & ALIEN_SQUADIE)) {
@@ -3764,7 +3762,7 @@ void AlienOrganism::DoFrame(int me) {
     // See if it is time to go home
     if (memory->mode_time >= memory->max_wander_time) {
       // Set the next max wander time
-      memory->max_wander_time = ((float)rand() / (float)D3_RAND_MAX) * 10.0f + 10.0f;
+      memory->max_wander_time = ((float)rand() / (float)RAND_MAX) * 10.0f + 10.0f;
 
       // If not a squadie, decide to go home
       if (!(memory->squad_flags & ALIEN_SQUADIE)) {
@@ -3852,7 +3850,7 @@ void AlienOrganism::DoFrame(int me) {
     // See if we should decide whether to do any charge related activities
     if (Game_GetTime() >= memory->next_activity_time) {
       // Set the next time to do something
-      memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 0.6f + 0.8f;
+      memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 0.6f + 0.8f;
 
       // If we have some charges, see if we should do something with it
       if (memory->energy_charges > 0.0f) {
@@ -4014,7 +4012,7 @@ void AlienOrganism::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
     damage_data->damage *= 0.9f;
 
     if (Game_GetTime() >= memory->next_special_damage_time) {
-      memory->next_special_damage_time = Game_GetTime() + 0.8f + ((float)rand() / (float)D3_RAND_MAX) * 0.5f;
+      memory->next_special_damage_time = Game_GetTime() + 0.8f + ((float)rand() / (float)RAND_MAX) * 0.5f;
 
       // Create a frag burst effect
       vector pos;
@@ -4032,7 +4030,7 @@ void AlienOrganism::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
       Game_GetTime() >= memory->next_special_damage_time) {
     // Check if we're currently doing energy transfer or healing
     if (IsEnergyRelatedLandedMode(memory->mode)) {
-      memory->next_special_damage_time = Game_GetTime() + 0.1f + ((float)rand() / (float)D3_RAND_MAX) * 0.2f;
+      memory->next_special_damage_time = Game_GetTime() + 0.1f + ((float)rand() / (float)RAND_MAX) * 0.2f;
 
       // Do double damage
       damage_data->damage *= 3.0f;
@@ -4042,7 +4040,7 @@ void AlienOrganism::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
       vector pos;
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
-      Game_CreateRandomSparks(30 + int(((float)rand() / (float)D3_RAND_MAX) * 10.0f), &pos, room);
+      Game_CreateRandomSparks(30 + int(((float)rand() / (float)RAND_MAX) * 10.0f), &pos, room);
 
       return;
     }
@@ -4404,8 +4402,8 @@ void HeavyTrooper::DoInit(int me) {
   // Init to no charge
   memory->charge = 0.0f;
 
-  memory->max_charge = HT_MAX_CHARGE + ((float)rand() / (float)D3_RAND_MAX) * HT_MAX_CHARGE_VARIANCE;
-  memory->curlup_dist = HT_CURLUP_DIST + ((float)rand() / (float)D3_RAND_MAX) * HT_CURLUP_DIST_VARIANCE;
+  memory->max_charge = HT_MAX_CHARGE + ((float)rand() / (float)RAND_MAX) * HT_MAX_CHARGE_VARIANCE;
+  memory->curlup_dist = HT_CURLUP_DIST + ((float)rand() / (float)RAND_MAX) * HT_CURLUP_DIST_VARIANCE;
 
   // Check for a grenade shot as soon as possible
   memory->next_grenade_check_time = Game_GetTime();
@@ -4499,7 +4497,7 @@ void HeavyTrooper::DoFrame(int me) {
     // Decide if we should switch into grenade mode
     if (Game_GetTime() >= memory->next_grenade_check_time) {
       memory->next_grenade_check_time =
-          Game_GetTime() + HT_GRENADE_CHECK_INTERVAL + ((float)rand() / (float)D3_RAND_MAX) * HT_GRENADE_CHECK_VARIANCE;
+          Game_GetTime() + HT_GRENADE_CHECK_INTERVAL + ((float)rand() / (float)RAND_MAX) * HT_GRENADE_CHECK_VARIANCE;
 
       // Make sure enough time has gone by since we last fired
       if ((Game_GetTime() - memory->last_grenade_time) >= HT_GRENADE_RELOAD_TIME) {
@@ -4936,7 +4934,7 @@ void Lifter::ReleaseTarget(int me) {
 
   // Set the next pull check time for a nice delay
   memory->next_pull_check_time =
-      Game_GetTime() + LIFTER_NEXT_PULL_DELAY + (((float)rand() / (float)D3_RAND_MAX) * LIFTER_NEXT_PULL_VARIANCE);
+      Game_GetTime() + LIFTER_NEXT_PULL_DELAY + (((float)rand() / (float)RAND_MAX) * LIFTER_NEXT_PULL_VARIANCE);
 
   mprintf(0, "Target released.\n");
 }
@@ -5925,7 +5923,7 @@ void AlienBoss::SetMode(int me, char mode) {
     }
 
     // Set the next activity check to happen within .4 to .8 seconds
-    memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 3.0f + 3.0f;
+    memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 3.0f + 3.0f;
   } break;
 
   case AB_ATTACKING: {
@@ -5957,7 +5955,7 @@ void AlienBoss::SetMode(int me, char mode) {
     SetMaxSpeed(me, memory->base_speed * AB_ATTACK_SPEED_MOD);
 
     // Set the next activity time
-    memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 1.0f;
+    memory->next_activity_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 1.0f;
 
     // Clear the next wander time
     memory->max_wander_time = 0.0f;
@@ -6047,7 +6045,7 @@ void AlienBoss::SetMode(int me, char mode) {
 
     // Set the max time to flee (base time somewhat off of damage)
     float time_percent = (float(memory->fire_flee_chance) / 100.0f);
-    memory->max_wander_time = ((float)rand() / (float)D3_RAND_MAX) * 2.0f + AB_MAX_FLEE_TIME * time_percent;
+    memory->max_wander_time = ((float)rand() / (float)RAND_MAX) * 2.0f + AB_MAX_FLEE_TIME * time_percent;
 
     // Decrease the flee chance for next time
     memory->fire_flee_chance -= AB_FLEE_CHANCE_DECREMENT;
@@ -6156,7 +6154,7 @@ void AlienBoss::DoTakeoff(int me, float takeoff_speed, float speed_variance) {
     int flags;
 
     Obj_Value(me, VF_GET, OBJV_V_VELOCITY, &vel);
-    vel += (memory->home_uvec * (takeoff_speed + ((float)rand() / (float)D3_RAND_MAX) * speed_variance));
+    vel += (memory->home_uvec * (takeoff_speed + ((float)rand() / (float)RAND_MAX) * speed_variance));
     Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &vel);
 
     // Play the takeoff anim and tell it to go to alert next
@@ -6223,7 +6221,7 @@ void AlienBoss::DoInit(int me) {
   memory->next_melee_attack_time = Game_GetTime();
 
   // Set the next generic check time
-  memory->next_generic_check_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 1.0f + 0.5f;
+  memory->next_generic_check_time = Game_GetTime() + ((float)rand() / (float)RAND_MAX) * 1.0f + 0.5f;
 
   // Init other times
   memory->next_activity_time = Game_GetTime();
@@ -6609,7 +6607,7 @@ void AlienBoss::DoFrame(int me) {
           aSoundPlayObject(boss_see_id, me, 1.0f);
 
           memory->next_special_attack_time =
-              Game_GetTime() + AB_SPECIAL_ATTACK_DELAY + ((float)rand() / (float)D3_RAND_MAX) * AB_SPECIAL_ATTACK_VARIANCE;
+              Game_GetTime() + AB_SPECIAL_ATTACK_DELAY + ((float)rand() / (float)RAND_MAX) * AB_SPECIAL_ATTACK_VARIANCE;
 
           SetMode(me, AB_PREPARE_SPECIAL_ATTACK);
           break;
@@ -6657,7 +6655,7 @@ void AlienBoss::DoFrame(int me) {
     // Wait until the melee attack time has expired
     if (memory->mode_time > AB_MAX_MELEE_TIME) {
       memory->next_melee_attack_time =
-          Game_GetTime() + AB_MELEE_ATTACK_DELAY + ((float)rand() / (float)D3_RAND_MAX) * AB_MELEE_ATTACK_VARIANCE;
+          Game_GetTime() + AB_MELEE_ATTACK_DELAY + ((float)rand() / (float)RAND_MAX) * AB_MELEE_ATTACK_VARIANCE;
 
       SetMode(me, AB_ATTACKING);
       break;
@@ -6881,7 +6879,7 @@ void AlienBoss::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
     memory->damage += (damage_data->damage * 0.7f);
 
     if (Game_GetTime() >= memory->next_special_damage_time) {
-      memory->next_special_damage_time = Game_GetTime() + 0.8f + ((float)rand() / (float)D3_RAND_MAX) * 0.5f;
+      memory->next_special_damage_time = Game_GetTime() + 0.8f + ((float)rand() / (float)RAND_MAX) * 0.5f;
 
       // Create a frag burst effect
       vector pos;
@@ -6899,7 +6897,7 @@ void AlienBoss::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
       Game_GetTime() >= memory->next_special_damage_time) {
     // Check if we're currently susceptible to energy damage
     if (false) {
-      memory->next_special_damage_time = Game_GetTime() + 0.1f + ((float)rand() / (float)D3_RAND_MAX) * 0.2f;
+      memory->next_special_damage_time = Game_GetTime() + 0.1f + ((float)rand() / (float)RAND_MAX) * 0.2f;
 
       // Do double damage
       memory->damage += (damage_data->damage * 1.5f);
@@ -6909,7 +6907,7 @@ void AlienBoss::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
       vector pos;
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
-      Game_CreateRandomSparks(30 + int(((float)rand() / (float)D3_RAND_MAX) * 10.0f), &pos, room);
+      Game_CreateRandomSparks(30 + int(((float)rand() / (float)RAND_MAX) * 10.0f), &pos, room);
 
       return;
     } else {

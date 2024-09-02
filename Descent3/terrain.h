@@ -205,7 +205,7 @@ extern uint8_t Terrain_from_mine;
 
 extern float Last_terrain_render_time;
 
-extern terrain_segment Terrain_seg[TERRAIN_WIDTH * TERRAIN_DEPTH];
+extern terrain_segment Terrain_seg[(TERRAIN_WIDTH+1) * (TERRAIN_DEPTH+1)];
 extern terrain_tex_segment Terrain_tex_seg[TERRAIN_TEX_WIDTH * TERRAIN_TEX_DEPTH];
 
 // first object to render after cell has been rendered (only used for SW renderer)
@@ -286,7 +286,6 @@ void GenerateTerrainLight();
 void BuildMinMaxTerrain();
 void BuildTerrainNormals();
 
-int DrawTerrainTriangles(int n);
 int LoadPCXTerrain(char *);
 
 // Given a position, returns the terrain segment that that position is in/over
@@ -296,11 +295,6 @@ int GetTerrainCellFromPos(vector *pos);
 // Given a position, returns the terrain segment that that position is in/over
 // The return value is a valid room number, meaning it has the outside flag set
 int GetTerrainRoomFromPos(vector *pos);
-
-// Given a position, returns the collision terrain segment that that position is in/over
-int GetColTerrainSegFromPos(vector *pos);
-// Given a terrain cell, returns the collision terrain segment that that position is in/over
-int GetColTerrainSegFromTerrainSeg(int cell_index);
 
 // Computes the center of the segment in x,z and also sets y touching the ground
 void ComputeTerrainSegmentCenter(vector *pos, int segnum);
@@ -322,10 +316,6 @@ void GetSpecialRotatedPoint(g3Point *dest, int x, int z, float yvalue);
 // Takes our light angle and fills in the appropriate values in the lightsource vector
 void GenerateLightSource();
 
-// Returns the terrain segment index of the farthest point that mine segment "mine_seg"
-// touches.  Based on Camera_direction
-int GetFurthestMineSegment(int mine_seg);
-
 // codes a point for visibility in the window passed to RenderTerrain()
 uint8_t CodeTerrainPoint(g3Point *p);
 
@@ -334,9 +324,6 @@ void GenerateLODDeltas();
 
 // Generates lightmaps based on the info given by the .light field of each Terrain_seg
 void UpdateTerrainLightmaps();
-
-// Makes a four sided rectangle pinched into a triangle
-void MakePinchBitmap(int dest_bm, int src_bm);
 
 // Gets the dynamic light value for this position
 float GetTerrainDynamicScalar(vector *pos, int seg);

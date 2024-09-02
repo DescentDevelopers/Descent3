@@ -285,12 +285,6 @@
 #include "DMFC.h"
 #include "dmfcinternal.h"
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
-extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
-
 #define SND_MYTEAM_TEAMMATE_KILLED "PlayerDeath"
 #define SND_NONTEAM_KILL "PlayerDeath"
 

@@ -22,10 +22,7 @@
 #include <filesystem>
 
 #include "cfile.h"
-
-#ifdef __LINUX__
-#include "linux_fix.h" //needed for stricmp's throughout bitmap lib
-#endif
+#include "crossplat.h" //needed for stricmp's throughout bitmap lib
 
 #define MAX_BITMAPS 5000
 #define NUM_MIP_LEVELS 5

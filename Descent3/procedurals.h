@@ -45,6 +45,8 @@
 #define PROC_WATER_RAINDROPS 3
 #define PROC_WATER_BLOBDROPS 4
 
+struct static_proc_element;
+
 struct dynamic_proc_element {
   uint8_t type;
   fix dx, dy;
@@ -71,7 +73,7 @@ void InitProcedurals();
 void FadeProcTexture(int tex_handle);
 
 // Draws lightning into a bitmap
-void AddProcLightning(int x1, int y1, int x2, int y2);
+void AddProcLightning(int x1, int y1, int x2, int y2, uint8_t color, static_proc_element *proc);
 
 // link the procedural into the list for its texture
 void ProcElementLink(int index, int texnum);

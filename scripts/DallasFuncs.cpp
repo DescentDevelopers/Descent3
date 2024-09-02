@@ -714,6 +714,7 @@
 #include <cfloat>
 
 #include "osiris_vector.h"
+#include "psrand.h"
 
 // These should really be included, I think, but there's a problem with osiris_import.h being included twice
 // #include "osiris_import.h"
@@ -1451,7 +1452,7 @@ void aLightningTurnOn(float check_delay, float prob) {
 
   mstruct.state = true;
   mstruct.scalar = check_delay;
-  mstruct.randval = static_cast<int>(prob * static_cast<float>(RAND_MAX));
+  mstruct.randval = static_cast<int>(prob * static_cast<float>(D3_RAND_MAX));
 
   MSafe_CallFunction(MSAFE_WEATHER_LIGHTNING, &mstruct);
 }

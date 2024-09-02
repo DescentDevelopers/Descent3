@@ -305,9 +305,7 @@
 #include <filesystem>
 
 #include "cfile.h"
-#include "texture.h"
 #include "bitmap.h"
-#include "pstypes.h"
 #include "pserror.h"
 #include "mono.h"
 #include "iff.h"
@@ -316,6 +314,7 @@
 #include "bumpmap.h"
 #include "mem.h"
 #include "psrand.h"
+#include "grdefs.h"
 
 #define BM_FILETYPE_TGA 1
 #define BM_FILETYPE_PCX 2
@@ -330,7 +329,7 @@ typedef int bm_hashTableIndex; /* index into hash table */
 #define compEQ(a, b) (stricmp((a)->name, (b)->name) == 0)
 struct bm_Node {
   struct bm_Node *next; /* next bm_Node */
-  bm_T data;             /* data stored in bm_Node */
+  bm_T data;            /* data stored in bm_Node */
 };
 static bm_Node *bm_findNode(bm_T data);
 static void bm_deleteNode(bm_T data);
@@ -511,7 +510,7 @@ int bm_AllocateMemoryForIndex(int n, int w, int h, int add_mem) {
 // If add_mem is nonzero, adds that to the amount alloced
 // Returns bitmap handle if successful, -1 if otherwise
 int bm_AllocBitmap(int w, int h, int add_mem) {
-  int n, i;
+  int n = 0, i;
   if (!Bitmaps_initted) {
     Int3();
     mprintf(0, "Bitmaps not initted!!!\n");
@@ -540,7 +539,7 @@ int bm_AllocBitmap(int w, int h, int add_mem) {
 }
 // Just like bm_AllocBitmap but doesn't actually allocate memory.  Useful for paging!
 int bm_AllocNoMemBitmap(int w, int h) {
-  int n, i;
+  int n = 0, i;
   if (!Bitmaps_initted) {
     Int3();
     mprintf(0, "Bitmaps not initted!!!\n");
@@ -655,7 +654,7 @@ void bm_ChangeEndName(const char *src, char *dest) {
   uint32_t i, limit;
   int last = -1;
   int curnum = -1;
-  char namedest[256+16];
+  char namedest[256 + 16];
   char path[256], ext[256], filename[256];
 
   ddio_SplitPath(src, path, filename, ext);
@@ -1080,7 +1079,7 @@ int bm_MakeBitmapResident(int handle) {
 }
 // Saves a bitmap to a file.  Saves the bitmap as an OUTRAGE_COMPRESSED_OGF.
 // Returns -1 if something is wrong.
-int bm_SaveFileBitmap(const std::filesystem::path& filename, int handle) {
+int bm_SaveFileBitmap(const std::filesystem::path &filename, int handle) {
   int ret;
   CFILE *fp;
   if (!GameBitmaps[handle].used) {

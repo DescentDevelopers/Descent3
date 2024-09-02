@@ -69,12 +69,6 @@
 #include "ddio.h"
 #include "pserror.h"
 
-#ifdef __PERMIT_GL_LOGGING
-void DGL_EnableLogging(int enable);
-extern bool __glLog;
-#endif
-
-extern bool ddio_mouseGrabbed;
 
 extern volatile struct tLnxKeys {
   union {
@@ -358,27 +352,10 @@ int sdlKeyFilter(const SDL_Event *event) {
     if (event->key.keysym.mod & KMOD_CTRL) {
       switch (kc) {
       case KEY_G: // toggle grabbed input.
-        ddio_mouseGrabbed = !ddio_mouseGrabbed;
-        SDL_SetRelativeMouseMode(ddio_mouseGrabbed ? SDL_TRUE : SDL_FALSE);
+        bool grab = !ddio_MouseGetGrab();
+        ddio_MouseSetGrab(grab);
+        SDL_SetRelativeMouseMode((SDL_bool)grab);
         return 0;
-
-#ifdef __PERMIT_GL_LOGGING
-      case KEY_INSERT:
-        if (__glLog == false) {
-          DGL_EnableLogging(1);
-          __glLog = true;
-          mprintf(0, "OpenGL: Logging enabled.");
-        } // if
-        return (0);
-
-      case KEY_DELETE:
-        if (__glLog == true) {
-          DGL_EnableLogging(0);
-          __glLog = false;
-          mprintf(0, "OpenGL: Logging disabled.");
-        } // if
-        return (0);
-#endif
       } // switch
     }   // if
 

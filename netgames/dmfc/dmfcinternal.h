@@ -577,8 +577,6 @@ struct tHostsNode {
 // DMFCBase class
 //     This is the base class that the DMFCApp class is based off of.  This just handles general
 //     functions, and handling default events.
-extern DMFCBase *basethis;
-
 class DMFCBase : public IDMFC {
 public:
   DMFCBase(void);
@@ -2391,6 +2389,8 @@ private:
 #define DMFC_PRF_NOWAITFORPLAYERS                                                                                      \
   0x00004000 // Enabled: DMFC should NOT display the wait for players dialog on startup of a single player game
 #define DMFC_PRF_PAUSETIME 0x00008000 // Enabled: Real game time (used for endlevel) is not updated
+
+const char *DMFCGetString(int d);
 
 ///////////////////////////////////////////////
 // localization info

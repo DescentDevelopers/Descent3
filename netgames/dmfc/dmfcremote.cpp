@@ -56,11 +56,7 @@
 #include <stdlib.h>
 #include <memory.h>
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
 
 struct tRemotePlayerData {
   bool authorized;   // whether the player is authorized

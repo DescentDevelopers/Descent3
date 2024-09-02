@@ -343,7 +343,6 @@
 #include "args.h"
 
 #include "terrain.h"
-#include "texture.h"
 
 #include "mem.h"
 

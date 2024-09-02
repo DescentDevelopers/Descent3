@@ -89,7 +89,7 @@
 #include "ddio.h"
 #include "ddio_lnx.h"
 
-bool ddio_mouseGrabbed = false;
+static bool ddio_mouseGrabbed = true;
 static bool DDIO_mouse_init = false;
 
 static struct mses_state {
@@ -125,6 +125,14 @@ bool ddio_MouseInit(void) {
   return true;
 }
 
+bool ddio_MouseGetGrab() {
+  return ddio_mouseGrabbed;
+}
+
+void ddio_MouseSetGrab(bool grab) {
+  ddio_mouseGrabbed = grab;
+}
+
 int ddio_MouseGetCaps(int *buttons, int *axes) {
   *buttons = 6;
   *axes = 2;
@@ -158,22 +166,6 @@ void ddio_MouseReset() {
 
   // reset button states
   ddio_MouseQueueFlush();
-
-  /*
-          if(Mouse_mode==MOUSE_STANDARD_MODE)
-                  return;
-          bool use_dga = false;
-
-          if(Lnx_app_obj && Lnx_app_obj->m_Flags&APPFLAG_DGAMOUSE)
-                  use_dga = true;
-
-          //	warp the mouse.
-          if(!use_dga)
-          {
-                  XWarpPointer(Lnx_app_obj->m_Display, None, Lnx_app_obj->m_Window,
-                          0,0,0,0, Lnx_app_obj->m_W/2, Lnx_app_obj->m_H/2);
-          }
-  */
 
   DDIO_mouse_state.x = DDIO_mouse_state.cx = Lnx_app_obj->m_W / 2;
   DDIO_mouse_state.y = DDIO_mouse_state.cy = Lnx_app_obj->m_H / 2;
@@ -395,68 +387,6 @@ int sdlMouseWheelFilter(SDL_Event const *event) {
 }
 
 int sdlMouseMotionFilter(SDL_Event const *event) {
-  /*
-          int oldmx, oldmy;
-          int deltamx,deltamy;
-          oldmx = DDIO_mouse_state.cx;
-          oldmy = DDIO_mouse_state.cy;
-          deltamx = deltamy = 0;
-
-          bool use_dga = false;
-
-          if(Lnx_app_obj->m_Flags&APPFLAG_DGAMOUSE)
-                  use_dga = true;
-
-          if(Mouse_mode==MOUSE_STANDARD_MODE)
-                  return;
-
-          while (XCheckMaskEvent(Lnx_app_obj->m_Display, PointerMotionMask | ButtonPressMask | ButtonReleaseMask, &evt))
-          {
-                  switch (evt.type)
-                  {
-                  case MotionNotify:
-                          if(use_dga)
-                          {
-
-                                  deltamx += event->motion.x;  //evt.xmotion.x_root;
-                                  deltamy += event->motion.y;  //evt.xmotion.y_root;
-
-                          }else
-                          {
-                          if ((evt.xmotion.x != DDIO_mouse_state.cx)  && (evt.xmotion.y != DDIO_mouse_state.cy)) {
-                                          deltamx += (evt.xmotion.x - oldmx);
-                                          deltamy += (evt.xmotion.y - oldmy);
-                                          oldmx = evt.xmotion.x;
-                                          oldmy = evt.xmotion.y;
-                  }
-                          }
-                          break;
-                  case ButtonPress:
-                  case ButtonRelease:
-                          break;
-                  }
-          }
-
-      if( (deltamx) || (deltamy) )
-          {
-                  DDIO_mouse_state.dx = deltamx;
-                  DDIO_mouse_state.dy = deltamy;
-                  DDIO_mouse_state.x += deltamx;
-                  DDIO_mouse_state.y += deltamy;
-                  if (DDIO_mouse_state.x < DDIO_mouse_state.l) DDIO_mouse_state.x = DDIO_mouse_state.l;
-                  if (DDIO_mouse_state.x >= DDIO_mouse_state.r) DDIO_mouse_state.x = DDIO_mouse_state.r-1;
-                  if (DDIO_mouse_state.y < DDIO_mouse_state.t) DDIO_mouse_state.y = DDIO_mouse_state.t;
-                  if (DDIO_mouse_state.y >= DDIO_mouse_state.b) DDIO_mouse_state.y = DDIO_mouse_state.b-1;
-
-                  //	warp the mouse.
-                  if(!use_dga)
-                  {
-                          XWarpPointer(Lnx_app_obj->m_Display, None, Lnx_app_obj->m_Window,
-                                  0,0,0,0, Lnx_app_obj->m_W/2, Lnx_app_obj->m_H/2);
-                  }
-          }
-  */
-
   if (event->type == SDL_JOYBALLMOTION) {
     DDIO_mouse_state.dx = event->jball.xrel / 100;
     DDIO_mouse_state.dy = event->jball.yrel / 100;

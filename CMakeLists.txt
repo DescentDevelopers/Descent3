@@ -5,20 +5,41 @@ if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
 endif()
 
-project(Descent3
-  LANGUAGES C CXX
-  VERSION 1.5.0
-)
-
-option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
-option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
+option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
-option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
+option(FATAL_GL_ERRORS "Check OpenGL calls and raise exceptions on errors." OFF)
+option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
+option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
+set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
+set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(BUILD_EDITOR "Build internal editor" OFF)
 endif()
+
+if(USE_VCPKG)
+  if(DEFINED ENV{VCPKG_ROOT})
+    if (CMAKE_TOOLCHAIN_FILE)
+      cmake_path(ABSOLUTE_PATH CMAKE_TOOLCHAIN_FILE NORMALIZE OUTPUT_VARIABLE VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+    endif()
+
+    set(VCPKG_TOOLCHAIN_FILE "scripts/buildsystems/vcpkg.cmake")
+    cmake_path(ABSOLUTE_PATH VCPKG_TOOLCHAIN_FILE BASE_DIRECTORY $ENV{VCPKG_ROOT} NORMALIZE OUTPUT_VARIABLE CMAKE_TOOLCHAIN_FILE)
+
+    if(CMAKE_TOOLCHAIN_FILE STREQUAL VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+      # prevent endless recursion
+      unset(VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+    endif()
+  elseif(NOT USE_VCPKG STREQUAL "DEFAULT")
+    message(WARNING "USE_VCPKG=${USE_VCPKG} but ENV{VCPKG_ROOT} not set; will use system-provided libraries. Did you forget to set VCPKG_ROOT in your environment?")
+  endif()
+endif()
+
+project(Descent3
+  LANGUAGES C CXX
+  VERSION 1.6.0
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -27,6 +48,21 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+if(MSVC)
+  add_compile_options(/source-charset:UTF-8 /execution-charset:UTF-8)
+else()
+  add_compile_options(-finput-charset=UTF-8)
+  # Unfortunately, Clang doesn’t support -fexec-charset yet so this next part
+  # is GCC only. Luckily, Clang defaults to using UTF-8 for the execution
+  # character set [1], so we’re fine. Once Clang gets support for
+  # -fexec-charset, we should probably start using it.
+  #
+  # [1]: <https://discourse.llvm.org/t/rfc-enabling-fexec-charset-support-to-llvm-and-clang-reposting/71512>
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options(-fexec-charset=UTF-8)
+  endif()
+endif()
 
 if(FORCE_COLORED_OUTPUT)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
@@ -88,7 +124,7 @@ add_custom_command(
 )
 
 install(
-  FILES LICENSE README.md THIRD_PARTY.md
+  FILES CHANGELOG.md USAGE.md README.md BUILD.md LICENSE THIRD_PARTY.md
   DESTINATION ${CMAKE_INSTALL_DOCDIR}
 )
 
@@ -96,18 +132,19 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
   add_compile_options("-Wno-multichar;-Wall")
 endif()
 
+find_package(glm REQUIRED)
 find_package(SDL2 REQUIRED)
 # Some versions of the SDL2 find_package set SDL2_INCLUDE_DIR and some set a plural SDL2_INCLUDE_DIRS. Check both.
 message("SDL2 Include Dir is ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS}")
 
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   message("Building for Linux")
-  add_compile_definitions(__LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
+  add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
   set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for MAC OSX")
-  add_compile_definitions(__LINUX__ MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
+  add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
   set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   # Windows.h defines to avoid as many issues as possible.
@@ -119,9 +156,10 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_compile_options("$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
   add_compile_options("$<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:/GL;/FD;/EHsc;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
 
-  string(APPEND CMAKE_EXE_LINKER_FLAGS " /SAFESEH:NO /NODEFAULTLIB:LIBC")
-  set(CMAKE_MODULE_LINKER_FLAGS "/SAFESEH:NO /NODEFAULTLIB:LIBC")
-  add_compile_definitions(IS_WINDOWS _CRT_SECURE_NO_WARNINGS WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
+  add_link_options("/SAFESEH:NO;/NODEFAULTLIB:LIBC")
+  add_link_options("$<$<CONFIG:Release>:/LTCG>")
+
+  add_compile_definitions(WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
 
   set(PLATFORM_INCLUDES "lib/win/DirectX" "lib/win")
 
@@ -160,6 +198,11 @@ if(ENABLE_LOGGER)
   add_compile_definitions(LOGGER)
 endif()
 
+if(FATAL_GL_ERRORS)
+  message("Raising exceptions on OpenGL errors")
+  add_compile_definitions(FATAL_GL_ERRORS)
+endif()
+
 include_directories(
   "cfile"   # TODO: Remove after untying all modules
   "ddebug"  # -*-
@@ -176,8 +219,6 @@ add_subdirectory(2dlib)
 add_subdirectory(AudioEncode)
 add_subdirectory(bitmap)
 add_subdirectory(cfile)
-add_subdirectory(czip)
-add_subdirectory(d3music)
 add_subdirectory(ddebug)
 
 if(BUILD_EDITOR AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -196,7 +237,6 @@ add_subdirectory(mem)
 add_subdirectory(misc)
 add_subdirectory(model)
 add_subdirectory(module)
-add_subdirectory(movie)
 add_subdirectory(music)
 add_subdirectory(networking)
 add_subdirectory(physics)
@@ -209,8 +249,6 @@ add_subdirectory(unzip)
 add_subdirectory(vecmat)
 add_subdirectory(libmve)
 add_subdirectory(md5)
-add_subdirectory(libacm)
-
 
 if(BUILD_EDITOR AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(editor)
@@ -222,3 +260,17 @@ add_subdirectory(tools)
 add_subdirectory(netcon)
 add_subdirectory(netgames)
 add_subdirectory(scripts)
+
+# Packaging stuff
+set(CPACK_SOURCE_GENERATOR "TXZ")
+set(CPACK_SOURCE_IGNORE_FILES
+  ".git/"
+  ".github/"
+  ".idea"
+  build[s]/
+  cmake-build-*
+  ".*~$"
+)
+set(CPACK_VERBATIM_VARIABLES YES)
+include(CPack)
+

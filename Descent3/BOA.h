@@ -252,8 +252,6 @@ void MakeBOAVisTable(bool from_lighting = 0);
 void ComputeAABB(bool f_full);
 
 bool BOA_ComputeMinDist(int start_room, int end_room, float max_check_dist, float *dist, int *num_blockages = NULL);
-bool BOA_ComputePropDist(int start_room, vector *start_pos, int end_room, vector *end_pos, float *dist,
-                         int *num_blockages);
 bool BOA_IsSoundAudible(int start_room, int end_room);
 bool BOA_IsVisible(int start_room, int end_room);
 bool BOA_HasPossibleBlockage(int start_room, int end_room);

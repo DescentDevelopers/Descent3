@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -35,15 +35,14 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
 
 #include <zlib.h>
 
 #include "unzip.h"
-
-#include <algorithm>
 
 #define INFLATE_INPUT_BUFFER_MAX 16384
 #define DATA_CHUNK_SIZE 1024
@@ -123,11 +122,11 @@ bool ZIP::FindECDSignature(char *buffer, int buflen, int *offset) {
   return false;
 }
 
-int ZIP::ReadECD(void) {
+int ZIP::ReadECD() {
   char *buf;
   int buf_length = 1024;
 
-  while (1) {
+  while (true) {
     int offset;
 
     if (buf_length > m_length)
@@ -247,7 +246,7 @@ bool ZIP::OpenZip(const char *zipfile) {
   }
 
   // reset zip entry
-  m_ent.name = NULL;
+  m_ent.name = nullptr;
 
   // rewind to the begining of central dir
   m_cd_pos = 0;
@@ -266,7 +265,7 @@ bool ZIP::OpenZip(const char *zipfile) {
 }
 
 // closes an open zip file
-void ZIP::CloseZip(void) {
+void ZIP::CloseZip() {
   if (!m_open)
     return;
 
@@ -286,13 +285,13 @@ void ZIP::CloseZip(void) {
 
 // Reads the current zip entry from the zip file (and moves
 // to the next entry).  Returns NULL if there are no more entries
-zipentry *ZIP::ReadNextZipEntry(void) {
+zipentry *ZIP::ReadNextZipEntry() {
   if (!m_open)
-    return NULL;
+    return nullptr;
 
   // make sure we aren't at the end
   if (m_cd_pos >= m_size_of_cent_dir)
-    return NULL;
+    return nullptr;
 
   m_ent.cent_file_header_sig = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CENSIG);
   m_ent.version_made_by = *(m_cd + m_cd_pos + ZIPCD_CVER);
@@ -316,14 +315,14 @@ zipentry *ZIP::ReadNextZipEntry(void) {
 
   // Make sure the filename isn't too long
   if (m_cd_pos + ZIPCD_CFN + m_ent.filename_length > m_size_of_cent_dir) {
-    return NULL;
+    return nullptr;
   }
 
   if (m_ent.name)
     free(m_ent.name);
   m_ent.name = (char *)malloc(m_ent.filename_length + 1);
   if (!m_ent.name)
-    return NULL;
+    return nullptr;
   memcpy(m_ent.name, m_cd + m_cd_pos + ZIPCD_CFN, m_ent.filename_length);
   m_ent.name[m_ent.filename_length] = '\0';
 
@@ -334,7 +333,7 @@ zipentry *ZIP::ReadNextZipEntry(void) {
 }
 
 // Resets a ZIP file to the first entry
-void ZIP::Rewind(void) {
+void ZIP::Rewind() {
   if (!m_open)
     return;
   m_cd_pos = 0;
@@ -531,11 +530,11 @@ int ZIP::InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigne
   uint8_t *in_buffer;
   z_stream d_stream;
 
-  d_stream.zalloc = 0;
-  d_stream.zfree = 0;
-  d_stream.opaque = 0;
+  d_stream.zalloc = nullptr;
+  d_stream.zfree = nullptr;
+  d_stream.opaque = nullptr;
 
-  d_stream.next_in = 0;
+  d_stream.next_in = nullptr;
   d_stream.avail_in = 0;
   d_stream.next_out = out_data;
   d_stream.avail_out = out_size;
@@ -598,13 +597,13 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
   uint8_t *next_out;
   z_stream d_stream;
 
-  d_stream.zalloc = 0;
-  d_stream.zfree = 0;
-  d_stream.opaque = 0;
+  d_stream.zalloc = nullptr;
+  d_stream.zfree = nullptr;
+  d_stream.opaque = nullptr;
 
-  d_stream.next_in = NULL;
+  d_stream.next_in = nullptr;
   d_stream.avail_in = 0;
-  d_stream.next_out = NULL;
+  d_stream.next_out = nullptr;
   d_stream.avail_out = 0;
   d_stream.total_out = 0;
   d_stream.total_in = 0;

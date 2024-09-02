@@ -116,16 +116,16 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+#include <cstdlib>
+
+#include "bitmap.h"
+#include "cfile.h"
+#include "gr.h"
+#include "mem.h"
+#include "mono.h"
 #include "pserror.h"
 #include "renderer.h"
-#include "gr.h"
-#include "mono.h"
-#include "cfile.h"
-#include "bitmap.h"
-#include "mem.h"
-
-#include <string.h>
-#include <stdlib.h>
 
 #define FT_COLOR 1
 #define FT_PROPORTIONAL 2
@@ -554,7 +554,7 @@ void grFont::translate_to_surfaces(int slot) {
 void grFont::translate_mono_char(grSurface *sf, int x, int y, int index, gr_font_file_record *ft, int width) {
   int row, col; // byte width of char
   int rowsize;
-  uint8_t bit_mask = 0, byte;
+  uint8_t bit_mask = 0, byte = 0;
   uint8_t *fp;
 
   fp = ft->char_data[index];

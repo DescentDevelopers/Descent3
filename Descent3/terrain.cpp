@@ -26,7 +26,6 @@
 #include "mono.h"
 #include "terrain.h"
 #include "pserror.h"
-#include "texture.h"
 #include "bitmap.h"
 #include "gametexture.h"
 #include "lighting.h"
@@ -34,7 +33,6 @@
 #include "weather.h"
 #include <string.h>
 #include "mem.h"
-#include "Macros.h"
 #include "dedicated_server.h"
 #include "psrand.h"
 #ifdef EDITOR
@@ -50,7 +48,7 @@
 // How far we can see (in world coordinates)
 float VisibleTerrainZ;
 
-terrain_segment Terrain_seg[TERRAIN_WIDTH * TERRAIN_DEPTH];
+terrain_segment Terrain_seg[(TERRAIN_WIDTH+1) * (TERRAIN_DEPTH+1)];
 terrain_tex_segment Terrain_tex_seg[TERRAIN_TEX_WIDTH * TERRAIN_TEX_DEPTH];
 terrain_sky Terrain_sky;
 

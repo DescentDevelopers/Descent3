@@ -69,23 +69,21 @@
  */
 
 #include <cstdlib>
-#include <cctype>
-#ifdef __LINUX__
-#include <sys/time.h>
-#include <term.h>
+#if defined(POSIX)
 #include <termios.h>
 #else
 #include "winsock.h"
 #endif
 
 #include "application.h"
+#include "chrono_timer.h"
 #include "lnxapp.h"
 
 #ifdef buttons // termios.h defines buttons, but SDL's headers use that symbol.
 #undef buttons
 #endif
 
-#ifdef __LINUX__
+#if defined(POSIX)
 static struct termios Linux_initial_terminal_settings;
 #endif
 
@@ -95,21 +93,6 @@ bool oeLnxApplication::first_time = true;
 bool con_Create(int flags);
 void con_Destroy();
 void con_Defer();
-
-void Sleep(int millis) {
-  struct timeval tv{};
-  tv.tv_sec = 0;
-  tv.tv_usec = millis * 1000;
-  select(0, nullptr, nullptr, nullptr, &tv);
-}
-
-char *strupr(char *string) {
-  while (string && *string) {
-    *string = toupper(*string);
-    string++;
-  }
-  return string;
-}
 
 static uint32_t LinuxAppFlags = 0;
 // static Display *LinuxAppDisplay=NULL;
@@ -122,7 +105,7 @@ void LnxAppShutdown() {
   LinuxAppDontCallShutdown = true;
   if (LinuxAppFlags & OEAPP_CONSOLE) {
     con_Destroy();
-#ifdef __LINUX__
+#if defined(POSIX)
     tcsetattr(0, TCSANOW, &Linux_initial_terminal_settings);
 #endif
   }
@@ -134,7 +117,7 @@ oeLnxApplication::oeLnxApplication(unsigned flags) {
   m_AppActive = true;
 
   if (flags & OEAPP_CONSOLE) {
-#ifdef __LINUX__
+#if defined(POSIX)
     tcgetattr(0, &Linux_initial_terminal_settings);
 #endif
     con_Create(m_Flags);
@@ -150,7 +133,7 @@ oeLnxApplication::oeLnxApplication(unsigned flags) {
 
 //	Create object with a premade info
 oeLnxApplication::oeLnxApplication(tLnxAppInfo *appinfo) {
-#ifdef __LINUX__
+#if defined(POSIX)
   tcgetattr(0, &Linux_initial_terminal_settings);
 #endif
   m_Flags = appinfo->flags;
@@ -212,7 +195,7 @@ void oeLnxApplication::set_defer_handler(void (*func)(bool)) { m_DeferFunc = fun
 //	delays app for a certain amount of time
 void oeLnxApplication::delay(float secs) {
   int msecs = (int)(secs * 1000.0f);
-  Sleep(msecs);
+  D3::ChronoTimer::SleepMS(msecs);
 }
 
 //	Function to get the flags

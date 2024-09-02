@@ -134,6 +134,7 @@
  *
  */
 
+#include "chrono_timer.h"
 #include "multi.h"
 #include "multi_client.h"
 #include "game.h"
@@ -151,7 +152,6 @@ float Last_weapons_load_update_time = 0;
 
 // Setup saved moves
 saved_move SavedMoves[MAX_SAVED_MOVES];
-int Current_saved_move = 0;
 
 extern int Use_file_xfer;
 
@@ -298,7 +298,7 @@ int ServerTimedOut() {
   if (!nw_CheckReliableSocket(NetPlayers[Player_num].reliable_socket)) {
     mprintf(0, "Reliable connection to the server was broken. Disconnecting.\n");
     ShowProgressScreen(TXT_RELIABLE_OVERRUN);
-    Sleep(1000);
+    D3::ChronoTimer::SleepMS(1000);
     return 1;
   }
   if ((timer_GetTime() - Netgame.last_server_time) > SERVER_DISCONNECT_TIME)
@@ -346,7 +346,7 @@ void MultiDoClientFrame() {
         mprintf(0, "Server disconnected while waiting for gametime!\n");
         MultiLeaveGame();
         ShowProgressScreen(TXT_MLTDISCFRMSERV);
-        Sleep(2000);
+        D3::ChronoTimer::SleepMS(2000);
       } else if ((timer_GetTime() - Last_gametime_req) > NET_CLIENT_GAMETIME_REQ_RETRY) {
         NetPlayers[Player_num].sequence = NETSEQ_NEED_GAMETIME;
       }
@@ -487,7 +487,7 @@ void MultiDoClientFrame() {
       mprintf(0, "Server disconnected!\n");
       MultiLeaveGame();
       ShowProgressScreen(TXT_MLTDISCFRMSERV);
-      Sleep(2000);
+      D3::ChronoTimer::SleepMS(2000);
     }
   }
 }
@@ -503,8 +503,6 @@ void MultiStartClient(char *scriptname) {
 
   for (i = 0; i < MAX_SAVED_MOVES; i++)
     SavedMoves[i].timestamp = 0;
-
-  Current_saved_move = 0;
 
   // Temporary name fix
   Current_pilot.get_name(Players[Player_num].callsign);

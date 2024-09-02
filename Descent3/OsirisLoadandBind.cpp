@@ -438,7 +438,7 @@ bool Show_osiris_debug = false;
        // 0, only when the level ends
 
 // The exported DLL function call prototypes
-#if defined(__LINUX__)
+#if defined(POSIX)
 typedef char DLLFUNCCALL (*InitializeDLL_fp)(tOSIRISModuleInit *function_list);
 typedef void DLLFUNCCALL (*ShutdownDLL_fp)(void);
 typedef int DLLFUNCCALL (*GetGOScriptID_fp)(const char *name, uint8_t isdoor);
@@ -883,7 +883,6 @@ void Osiris_UnloadLevelModule(void) {
 //				-1 if it is in data\scripts
 //				0-x which extracted script id it is
 int _get_full_path_to_module(char *module_name, char *fullpath, char *basename) {
-  char modfilename[_MAX_PATH];
   char ppath[_MAX_PATH], pext[256];
   char adjusted_name[_MAX_PATH], adjusted_fname[_MAX_PATH];
   char *p;
@@ -911,12 +910,12 @@ int _get_full_path_to_module(char *module_name, char *fullpath, char *basename) 
   }
 
   // determine real name of script
-  mod_GetRealModuleName(adjusted_name, modfilename);
+  std::filesystem::path modfilename = mod_GetRealModuleName(adjusted_name);
 
   int exist = cfexist(modfilename);
   switch (exist) {
   case CFES_ON_DISK:
-    ddio_MakePath(fullpath, LocalScriptDir, modfilename, NULL);
+    ddio_MakePath(fullpath, LocalScriptDir, modfilename.u8string().c_str(), NULL);
     return -1;
     break;
   case CFES_IN_LIBRARY: {
@@ -3133,7 +3132,6 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   if (!OSIRIS_Extracted_script_dir) {
     strcpy(tempdir, Descent3_temp_directory);
-    // ddio_MakePath(tempdir,LocalD3Dir,"custom","cache",NULL);	//TODO: make real path here
     OSIRIS_Extracted_script_dir = mem_strdup(tempdir);
     if (!OSIRIS_Extracted_script_dir)
       Error("Out of memory");
@@ -3144,14 +3142,14 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
   int count = 0;
 
   const char *script_extension;
-#if defined(__LINUX__)
 #if defined(MACOSX)
   script_extension = "*.dylib";
-#else
+#elif defined(__LINUX__)
   script_extension = "*.so";
-#endif
-#else
+#elif defined(WIN32)
   script_extension = "*.dll";
+#else
+  #error Unsupported platform!
 #endif
 
   int index;
@@ -4037,4 +4035,3 @@ void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
     mi->fp[i] = NULL;
   }
 }
-

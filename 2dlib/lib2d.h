@@ -39,15 +39,6 @@ struct mem_bitmap {
 #define MEMFLAG_TRANSBLT 1
 
 //	---------------------------------------------------------------------------
-//	Line Drawing Functions
-
-void gr_Line(gr_pen *pen, int x1, int y1, int x2, int y2);
-void gr_HLine(gr_pen *pen, int x1, int x2, int y);
-void gr_VLine(gr_pen *pen, int y1, int y2, int x);
-void gr_Rect(gr_pen *pen, int l, int t, int r, int b);
-void gr_FillRect(gr_pen *pen, int l, int t, int r, int b);
-
-//	---------------------------------------------------------------------------
 //	Memory surface functions
 
 bool gr_mem_surf_Create(ddgr_surface *sf);

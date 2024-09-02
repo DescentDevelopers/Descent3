@@ -31,13 +31,9 @@
 #include "render.h"
 #include <stdlib.h>
 #include <string.h>
-#include "descent.h"
 #include "3d.h"
 #include "mono.h"
 #include "gametexture.h"
-#include "texture.h"
-#include "vclip.h"
-#include "program.h"
 #include "game.h"
 #include "renderobject.h"
 #include "door.h"
@@ -54,14 +50,12 @@
 #include "scorch.h"
 #include "findintersection.h"
 #include "special_face.h"
-#include "BOA.h"
 #include "config.h"
 #include "gameloop.h"
 #include "doorway.h"
 #include "TelComAutoMap.h"
 #include "postrender.h"
 #include "mem.h"
-#include "Macros.h"
 #include "psrand.h"
 #include "player.h"
 #include "args.h"
@@ -252,7 +246,7 @@ static inline int GetFaceAlpha(face *fp, int bm_handle) {
       ret |= ATF_CONSTANT;
 
     // Check for transparency
-    if (GameBitmaps[bm_handle].format != BITMAP_FORMAT_4444 && GameTextures[fp->tmap].flags & TF_TMAP2)
+    if (bm_handle >= 0 && GameBitmaps[bm_handle].format != BITMAP_FORMAT_4444 && GameTextures[fp->tmap].flags & TF_TMAP2)
       ret |= ATF_TEXTURE;
   }
   return ret;
@@ -1911,7 +1905,7 @@ void RenderFace(room *rp, int facenum) {
   else
     rend_SetColorModel(CM_RGB);
   // Set lighting map
-  if ((fp->flags & FF_LIGHTMAP) && (!StateLimited || UseMultitexture)) {
+  if ((fp->flags & FF_LIGHTMAP) != 0) {
     if (GameTextures[fp->tmap].flags & TF_SATURATE)
       rend_SetOverlayType(OT_NONE);
     else
@@ -2350,23 +2344,6 @@ void RenderRoomUnsorted(room *rp) {
     int i;
     for (i = rcount - 1; i >= 0; i--) {
       RenderFace(rp, State_elements[i].facenum);
-    }
-
-    if (!UseMultitexture) {
-      // Since we're state limited, we have to render lightmap faces completely separate
-      // Now render lightmap faces
-      rend_SetAlphaType(AT_LIGHTMAP_BLEND);
-      rend_SetLighting(LS_GOURAUD);
-      rend_SetColorModel(CM_MONO);
-      rend_SetOverlayType(OT_NONE);
-      rend_SetTextureType(TT_PERSPECTIVE);
-      rend_SetWrapType(WT_CLAMP);
-      rend_SetMipState(0);
-      for (i = rcount - 1; i >= 0; i--) {
-        RenderLightmapFace(rp, State_elements[i].facenum);
-      }
-      rend_SetWrapType(WT_WRAP);
-      rend_SetMipState(1);
     }
   }
 }
@@ -3468,12 +3445,10 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain) {
     g3_SetFarClipZ(VisibleTerrainZ);
 
     if ((Terrain_sky.flags & TF_FOG) && (UseHardware || (!UseHardware && Lighting_on))) {
-      rend_SetZValues(0, VisibleTerrainZ);
       rend_SetFogState(1);
       rend_SetFogBorders(VisibleTerrainZ * .85, VisibleTerrainZ);
       rend_SetFogColor(Terrain_sky.fog_color);
-    } else
-      rend_SetZValues(0, 5000);
+    }
   }
 
   // First render mirrored rooms
@@ -3629,7 +3604,7 @@ void SortStates(state_limited_element *state_array, int cellcount) {
       while (1) {
         while (state_array[++i].sort_key < v.sort_key)
           ;
-        while (state_array[--j].sort_key > v.sort_key)
+        while (j > 0 && state_array[--j].sort_key > v.sort_key)
           ;
         if (i >= j)
           break;

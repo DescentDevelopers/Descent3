@@ -264,13 +264,15 @@
  */
 ///////////////////////////////////////////////
 
+#include <filesystem>
+#include <functional>
+#include <map>
+#include <regex>
+#include <string>
+
+#include "crossplat.h"
 #include "ship.h"
 #include "pstypes.h"
-
-#ifdef __LINUX__
-#include <string.h>
-#include "linux_fix.h"
-#endif
 
 // Uncomment out this line of code to build the demo version of the multiplayer connection dlls
 // #define DEMO	1
@@ -446,15 +448,6 @@ LoadMission_fp DLLLoadMission;
 typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
 ddio_MakePath_fp DLLddio_MakePath;
 
-typedef bool (*ddio_FindFileStart_fp)(const char *wildcard, char *namebuf);
-ddio_FindFileStart_fp DLLddio_FindFileStart;
-
-typedef void (*ddio_FindFileClose_fp)();
-ddio_FindFileClose_fp DLLddio_FindFileClose;
-
-typedef bool (*ddio_FindNextFile_fp)(char *namebuf);
-ddio_FindNextFile_fp DLLddio_FindNextFile;
-
 // typedef void( *MultiStartServer_fp) (int playing,char *scriptname,int dedicated_num_teams=-1);
 typedef void (*MultiStartServer_fp)(int playing, char *scriptname, int dedicated_num_teams);
 MultiStartServer_fp DLLMultiStartServerFP;
@@ -602,7 +595,7 @@ DatabaseWriteInt_fp DLLDatabaseWriteInt;
 typedef void (*DoScreenshot_fp)();
 DoScreenshot_fp DLLDoScreenshot;
 
-typedef bool (*IsMissionMultiPlayable_fp)(char *mission);
+typedef bool (*IsMissionMultiPlayable_fp)(const char *mission);
 IsMissionMultiPlayable_fp DLLIsMissionMultiPlayable;
 
 //	returns width of text in current font.
@@ -635,7 +628,7 @@ MultiDoConfigSave_fp DLLMultiDoConfigSave;
 typedef void (*MultiDoConfigLoad_fp)(void);
 MultiDoConfigLoad_fp DLLMultiDoConfigLoad;
 
-typedef int (*MultiLoadSettings_fp)(const char *filename);
+typedef int (*MultiLoadSettings_fp)(const std::filesystem::path &filename);
 MultiLoadSettings_fp DLLMultiLoadSettings;
 
 typedef void *(*NetworkReceiveCallback)(uint8_t *data, int len, network_address *from);
@@ -662,8 +655,7 @@ MultiGameOptionsMenu_fp DLLMultiGameOptionsMenu;
 
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
-// typedef bool (*mod_LoadModule_fp)(module *handle,const char *modfilename,int flags=MODF_NOW);
-typedef bool (*mod_LoadModule_fp)(module *handle, const char *modfilename, int flags);
+typedef bool (*mod_LoadModule_fp)(module *handle, const std::filesystem::path &modfilename, int flags);
 mod_LoadModule_fp DLLmod_LoadModule;
 
 // Frees a previously loaded module from memory, it can no longer be used
@@ -704,6 +696,10 @@ ShowNetgameInfo_fp DLLShowNetgameInfo;
 
 typedef int (*CheckGetD3M_fp)(char *d3m);
 CheckGetD3M_fp DLLCheckGetD3M;
+
+typedef void (*ddio_DoForeachFile_fp)(const std::filesystem::path &search_path, const std::regex &regex,
+const std::function<void(std::filesystem::path)> &func);
+ddio_DoForeachFile_fp DLLddio_DoForeachFile;
 
 int DLLUIClass_CurrID = 0xD0;
 
@@ -760,8 +756,6 @@ struct vmt_descent3_struct {
 #endif
 
 uint32_t MTClientVer = 100;
-
-char MTUpdateURL[300] = "";
 
 multi_api API;
 
@@ -827,7 +821,7 @@ typedef void(DLLFUNCCALL DLLAVCall_fp)(int eventnum);
 typedef void(DLLFUNCCALL DLLAVClose_fp)();
 typedef void(DLLFUNCCALL DLLAVGetVersion_fp)(int *version);
 typedef void(DLLFUNCCALL DLLRunCheck_fp)(char *d3_path);
-#elif defined(__LINUX__)
+#elif defined(POSIX)
 typedef void DLLFUNCCALL(DLLAVInit_fp)(int *ptr);
 typedef void DLLFUNCCALL(DLLAVCall_fp)(int eventnum);
 typedef void DLLFUNCCALL(DLLAVClose_fp)();
@@ -934,15 +928,12 @@ int StartMultiplayerGameMenu() {
   void *start_text = DLLCreateNewUITextItem(TXT(13), UICOL_WINDOW_TITLE, DLL_BIG_BRIEFING_FONT);
 
   void *blank_text = DLLCreateNewUITextItem("", GR_BLACK, -1);
-  void *dll_txt_items[MAX_DLLS];
-  int a;
-  for (a = 0; a < MAX_DLLS; a++)
-    dll_txt_items[a] = NULL;
+  // Name -> UI item
+  std::map<std::string, void *> dll_ui_items;
   char str[100];
   int exit_menu = 0;
   int cury = 40;
   int ret = 0;
-  int dllcount = 0;
   int id = 100;
 
   rendering_state rs;
@@ -966,7 +957,7 @@ int StartMultiplayerGameMenu() {
 
   void *list_1 = DLLListCreate(main_wnd, id++, 40, cury, 200, 100, 0);
 
-  // Back up the the same line!
+  // Back up the same line!
   cury -= 15;
 
   // Script box
@@ -1003,98 +994,50 @@ int StartMultiplayerGameMenu() {
   void *cancel_hs = DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, exit_off_text, exit_on_text, 10, cury, 180, 30,
                                      UIF_FIT | UIF_CENTER);
   // put the multiplayer dll's into the listbox
-  dllcount = 1;
   char buffer[_MAX_PATH];
 
-#if (!(defined(OEM) || defined(DEMO)))
-  char search[256];
-  DLLddio_MakePath(search, DLLLocalD3Dir, "netgames", "*.d3m", NULL);
-  if (DLLddio_FindFileStart(search, buffer)) {
-    dllcount = 1;
-    buffer[strlen(buffer) - 4] = '\0'; // Strip out the extention
-    strcpy(dll_text[dllcount - 1], buffer);
-    while ((DLLddio_FindNextFile(buffer)) && (dllcount < MAX_DLLS)) {
-      buffer[strlen(buffer) - 4] = '\0'; // Strip out the extention
-      strcpy(dll_text[dllcount], buffer);
-      dllcount++;
-    }
-  } else {
-    dllcount = 0;
-  }
-  DLLddio_FindFileClose();
-#else
-  strcpy(dll_text[0], "Anarchy");
-  strcpy(dll_text[1], "Capture The Flag");
-  dllcount = 2;
-#endif
   DLLListRemoveAll(script_list);
+#if (!(defined(OEM) || defined(DEMO)))
+  DLLddio_DoForeachFile(std::filesystem::path(DLLLocalD3Dir) / "netgames", std::regex(".+\\.d3m"),
+                        [&dll_ui_items](const std::filesystem::path& path){
+                          dll_ui_items.insert_or_assign(
+                              path.stem().u8string(),
+                              DLLCreateNewUITextItem(path.stem().u8string().c_str(), UICOL_LISTBOX_LO, -1)
+                              );
+  } );
+#else
+  dll_ui_items.insert_or_assign("Anarchy", DLLCreateNewUITextItem("Anarchy", UICOL_LISTBOX_LO, -1));
+  dll_ui_items.insert_or_assign("Capture The Flag", DLLCreateNewUITextItem("Capture The Flag", UICOL_LISTBOX_LO, -1));
+#endif
 
-  int index;
-
-  for (index = 0; index < dllcount; index++) {
-    dll_txt_items[index] = DLLCreateNewUITextItem(dll_text[index], UICOL_LISTBOX_LO, -1);
-    DLLListAddItem(script_list, dll_txt_items[index]);
+  for (auto const &item : dll_ui_items) {
+    DLLListAddItem(script_list, item.second);
   }
+
 #if (!(defined(OEM) || defined(DEMO)))
   msn_list *mi;
 
-  DLLddio_MakePath(search, DLLLocalD3Dir, "data", "levels", "*.msn", NULL);
-  // DLLmprintf((0,search));
-  if (DLLddio_FindFileStart(search, buffer)) {
-    if (DLLIsMissionMultiPlayable(buffer)) {
-      DLLmprintf(0, "Found a mission: %s\n", buffer);
-      mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
-      strcpy(mi->msn_name, DLLGetMissionName(buffer));
-      strcpy(mi->msn_file, buffer);
-      mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
-      AddMsnItem(mi);
-      DLLListAddItem(list_1, mi->ti);
-    }
-    while (DLLddio_FindNextFile(buffer)) {
-      if (DLLIsMissionMultiPlayable(buffer)) {
-        DLLmprintf(0, "Found a mission: %s\n", buffer);
+  const std::vector<std::pair<std::filesystem::path, std::regex>> search_paths = {
+    {std::filesystem::path(DLLLocalD3Dir) / "data" / "levels", std::regex(".+\\.msn")},
+    {std::filesystem::path(DLLLocalD3Dir) / "missions", std::regex(".+\\.mn3")}
+  };
+
+  for (auto const &i : search_paths) {
+    DLLddio_DoForeachFile(i.first, i.second, [&mi, &list_1](const std::filesystem::path &path) {
+      std::filesystem::path mission_name = path.filename();
+      if (DLLIsMissionMultiPlayable(mission_name.u8string().c_str()) &&
+          (stricmp("d3_2.mn3", mission_name.u8string().c_str()) != 0)) {
+        DLLmprintf(0, "Found a mission: %s\n", mission_name.u8string().c_str());
         mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
-        strcpy(mi->msn_name, DLLGetMissionName(buffer));
-        strcpy(mi->msn_file, buffer);
+        strcpy(mi->msn_name, DLLGetMissionName(mission_name.u8string().c_str()));
+        strcpy(mi->msn_file, mission_name.u8string().c_str());
         mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
         AddMsnItem(mi);
         DLLListAddItem(list_1, mi->ti);
       }
-    }
+    });
   }
-  DLLddio_FindFileClose();
 
-  // char mn3_path[_MAX_PATH*2];
-  DLLddio_MakePath(search, DLLLocalD3Dir, "missions", "*.mn3", NULL);
-  // DLLmprintf(0,search);
-  if (DLLddio_FindFileStart(search, buffer)) {
-    // DLLddio_MakePath(mn3_path,DLLLocalD3Dir,"missions",buffer,NULL);
-
-    if (DLLIsMissionMultiPlayable(buffer) && (stricmp("d3_2.mn3", buffer) != 0)) {
-      DLLmprintf(0, "Found a mission: %s\n", buffer);
-      mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
-      strcpy(mi->msn_name, DLLGetMissionName(buffer));
-      strcpy(mi->msn_file, buffer);
-      mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
-      AddMsnItem(mi);
-      DLLListAddItem(list_1, mi->ti);
-    }
-    while (DLLddio_FindNextFile(buffer)) {
-      if (stricmp("d3_2.mn3", buffer) == 0)
-        continue;
-      // DLLddio_MakePath(mn3_path,DLLLocalD3Dir,"missions",buffer,NULL);
-      if (DLLIsMissionMultiPlayable(buffer)) {
-        DLLmprintf(0, "Found a mission: %s\n", buffer);
-        mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
-        strcpy(mi->msn_name, DLLGetMissionName(buffer));
-        strcpy(mi->msn_file, buffer);
-        mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
-        AddMsnItem(mi);
-        DLLListAddItem(list_1, mi->ti);
-      }
-    }
-  }
-  DLLddio_FindFileClose();
 #ifdef RELEASE
   // TODO: Make sure the main mission is always listed -- even on a minimal install
   if (!FindMsnItem("Descent 3: Retribution")) {
@@ -1131,9 +1074,7 @@ int StartMultiplayerGameMenu() {
   DLLNetgame->flags = NF_RANDOMIZE_RESPAWN;
   DLLNewUIWindowLoadBackgroundImage(main_wnd, "multimain.ogf");
   DLLNewUIWindowOpen(main_wnd);
-  char dftset[_MAX_PATH * 2];
-  DLLddio_MakePath(dftset, DLLLocalD3Dir, "custom", "settings", "default.mps", NULL);
-  if (DLLMultiLoadSettings(dftset)) {
+  if (DLLMultiLoadSettings(std::filesystem::path(DLLLocalD3Dir) / "custom" / "settings" / "default.mps")) {
     DLLEditSetText(mission_name_edit, DLLNetgame->name);
 #if (!(defined(OEM) || defined(DEMO)))
     p = DLLGetMissionName(DLLNetgame->mission);
@@ -1142,9 +1083,9 @@ int StartMultiplayerGameMenu() {
     if (mi)
       DLLListSelectItem(list_1, mi->ti);
 #endif
-    for (index = 0; index < dllcount; index++) {
-      if (stricmp(dll_text[index], DLLNetgame->scriptname) == 0) {
-        DLLListSelectItem(script_list, dll_txt_items[index]);
+    for (auto const &item : dll_ui_items) {
+      if (stricmp(item.first.c_str(), DLLNetgame->scriptname) == 0) {
+        DLLListSelectItem(script_list, item.second);
         break;
       }
     }
@@ -1297,9 +1238,9 @@ int StartMultiplayerGameMenu() {
       if (mi)
         DLLListSelectItem(list_1, mi->ti);
 #endif
-      for (index = 0; index < dllcount; index++) {
-        if (stricmp(dll_text[index], DLLNetgame->scriptname) == 0) {
-          DLLListSelectItem(script_list, dll_txt_items[index]);
+      for (auto const &item : dll_ui_items) {
+        if (stricmp(item.first.c_str(), DLLNetgame->scriptname) == 0) {
+          DLLListSelectItem(script_list, item.second);
           break;
         }
       }
@@ -1308,9 +1249,11 @@ int StartMultiplayerGameMenu() {
 
   DLLNewUIWindowClose(main_wnd);
   DLLNewUIWindowDestroy(main_wnd);
-  for (a = 0; a < MAX_DLLS; a++)
-    if (dll_txt_items[a])
-      DLLRemoveUITextItem(dll_txt_items[a]);
+  for (auto const &item : dll_ui_items) {
+    if (item.second) {
+      DLLRemoveUITextItem(item.second);
+    }
+  }
   RemoveAllMsnItems();
   // cleanup
 #ifdef DEMO
