@@ -25,7 +25,7 @@ This is the first release of the Descent 3 open source engine, that should be co
 11. Run the game:
     - On Windows, run `D3-open-source\Descent3.exe` from a command-line or double-click on the `Descent3` executable.
     - On Linux, `cd` to `D3-open-source` and run `./Descent3`. Wayland users may need to set environement variable `SDL_VIDEODRIVER=wayland` before launching the game.
-    - On MacOS, the `.app` bundle is currently not signed, so your operating system will not let you run it by double-clicking it. To remediate that, open your terminal and `cd` to `D3-open-source`. Run `chmod +x ./Descent3.app/Content/MacOS/Descent3`, then run the game using `./Descent3.app/Content/MacOS/Descent3`
+    - On MacOS, the `.app` bundle is currently not signed, so your operating system will not let you run it by double-clicking it. To remediate that, open your terminal and `cd` to `D3-open-source`. Run `xattr -c ./Descent3.app` and then `chmod +x ./Descent3.app/Content/MacOS/Descent3`, then run the game using `./Descent3.app/Content/MacOS/Descent3`
 
 ## Troubleshooting
 
@@ -34,4 +34,3 @@ Descent 3 Message(Error: Couldn't find the string table.)
 ```
 
 This error means that game data could not be found. Make sure you copied all game files to the `D3-open-source` folder, and that you're running the game from this same folder.
-
