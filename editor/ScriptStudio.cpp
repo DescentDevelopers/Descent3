@@ -34,7 +34,7 @@
  * , mem_free and mem_strdup
  *
  * 15    7/13/98 11:13a Chris
- * Fixed the 65535 charactor limit with Kevin's help
+ * Fixed the 65535 character limit with Kevin's help
  *
  * 14    6/23/98 2:43p Matt
  * Changed calls to OutrageMessageBox() & Debug_MessageBox() to deal with

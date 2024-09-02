@@ -431,7 +431,7 @@ int LoadSoundFile(const char *filename, float import_volume, bool f_get_data) {
 
   len = strlen(filename);
   if (len < 4) {
-    mprintf(0, "SOUND LOADER: %s does not have a 3 charactor extension.\n", filename);
+    mprintf(0, "SOUND LOADER: %s does not have a 3 character extension.\n", filename);
     Int3(); // Get chris
     goto error_state;
   }

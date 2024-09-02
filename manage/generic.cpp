@@ -716,7 +716,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
 
   for (i = 0; i < MAX_DSPEW_TYPES; i++) {
     cf_WriteByte(outfile, GENERICPAGE_COMMAND_DSPEW_INFO);
-    cf_WriteByte(outfile, strlen(genericpage->dspew_name[i]) + 9); // 1 for null charactor
+    cf_WriteByte(outfile, strlen(genericpage->dspew_name[i]) + 9); // 1 for null character
     cf_WriteByte(outfile, i);
     cf_WriteByte(outfile, genericpage->objinfo_struct.f_dspew);
     cf_WriteFloat(outfile, genericpage->objinfo_struct.dspew_percent[i]);
@@ -798,7 +798,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
     int j;
     for (j = 0; j < MAX_WB_GUNPOINTS; j++) {
       cf_WriteByte(outfile, GENERICPAGE_COMMAND_WB_WEAPON);
-      size = strlen(genericpage->weapon_name[i][j]) + 1 + 2; // 1 for the null charactor and 2 for the 2 indices
+      size = strlen(genericpage->weapon_name[i][j]) + 1 + 2; // 1 for the null character and 2 for the 2 indices
 
       cf_WriteByte(outfile, size);
 
@@ -818,7 +818,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
     int j;
     for (j = 0; j < MAX_WB_FIRING_MASKS; j++) {
       cf_WriteByte(outfile, GENERICPAGE_COMMAND_WB_FIRE_SOUND);
-      size = strlen(genericpage->fire_sound_name[i][j]) + 1 + 2; // 1 for the null charactor and 2 for the 2 indices
+      size = strlen(genericpage->fire_sound_name[i][j]) + 1 + 2; // 1 for the null character and 2 for the 2 indices
 
       cf_WriteByte(outfile, size);
 
@@ -832,7 +832,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
     int j;
     for (j = 0; j < NUM_ANIMS_PER_CLASS; j++) {
       cf_WriteByte(outfile, GENERICPAGE_COMMAND_ANIM_SOUND_NAME);
-      size = strlen(genericpage->anim_sound_name[i][j]) + 1 + 2; // 1 for the null charactor and 2 for the 2 indices
+      size = strlen(genericpage->anim_sound_name[i][j]) + 1 + 2; // 1 for the null character and 2 for the 2 indices
 
       cf_WriteByte(outfile, size);
 

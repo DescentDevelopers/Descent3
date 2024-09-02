@@ -404,7 +404,7 @@ void mng_WriteShipPage(CFILE *outfile, mngs_ship_page *shippage) {
   for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
     for (j = 0; j < MAX_WB_GUNPOINTS; j++) {
       cf_WriteByte(outfile, SHIPPAGE_COMMAND_WB_WEAPON);
-      size = strlen(shippage->weapon_name[i][j]) + 1 + 2; // 1 for the null charactor and 2 for the 2 indices
+      size = strlen(shippage->weapon_name[i][j]) + 1 + 2; // 1 for the null character and 2 for the 2 indices
 
       cf_WriteByte(outfile, size);
 
@@ -417,7 +417,7 @@ void mng_WriteShipPage(CFILE *outfile, mngs_ship_page *shippage) {
   for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
     for (j = 0; j < MAX_WB_FIRING_MASKS; j++) {
       cf_WriteByte(outfile, SHIPPAGE_COMMAND_WB_FIRE_SOUND);
-      size = strlen(shippage->fire_sound_name[i][j]) + 1 + 2; // 1 for the null charactor and 2 for the 2 indices
+      size = strlen(shippage->fire_sound_name[i][j]) + 1 + 2; // 1 for the null character and 2 for the 2 indices
 
       cf_WriteByte(outfile, size);
 
@@ -447,7 +447,7 @@ void mng_WriteShipPage(CFILE *outfile, mngs_ship_page *shippage) {
   for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
     if (shippage->firing_sound_name[i][0] != 0) {
       cf_WriteByte(outfile, SHIPPAGE_COMMAND_FIRING_SOUND);
-      size = strlen(shippage->firing_sound_name[i]) + 1 + 1; // 1 for the null charactor and 1 for the index
+      size = strlen(shippage->firing_sound_name[i]) + 1 + 1; // 1 for the null character and 1 for the index
       cf_WriteByte(outfile, size);
       cf_WriteByte(outfile, i);
       cf_WriteString(outfile, shippage->firing_sound_name[i]);
@@ -456,7 +456,7 @@ void mng_WriteShipPage(CFILE *outfile, mngs_ship_page *shippage) {
   for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
     if (shippage->release_sound_name[i][0] != 0) {
       cf_WriteByte(outfile, SHIPPAGE_COMMAND_RELEASE_SOUND);
-      size = strlen(shippage->release_sound_name[i]) + 1 + 1; // 1 for the null charactor and 1 for the index
+      size = strlen(shippage->release_sound_name[i]) + 1 + 1; // 1 for the null character and 1 for the index
       cf_WriteByte(outfile, size);
       cf_WriteByte(outfile, i);
       cf_WriteString(outfile, shippage->release_sound_name[i]);
@@ -465,7 +465,7 @@ void mng_WriteShipPage(CFILE *outfile, mngs_ship_page *shippage) {
   for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
     if (shippage->spew_powerup_name[i][0] != 0) {
       cf_WriteByte(outfile, SHIPPAGE_COMMAND_SPEW_POWERUP);
-      size = strlen(shippage->spew_powerup_name[i]) + 1 + 1; // 1 for the null charactor and 1 for the index
+      size = strlen(shippage->spew_powerup_name[i]) + 1 + 1; // 1 for the null character and 1 for the index
       cf_WriteByte(outfile, size);
       cf_WriteByte(outfile, i);
       cf_WriteString(outfile, shippage->spew_powerup_name[i]);
