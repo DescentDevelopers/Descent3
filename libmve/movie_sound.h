@@ -37,11 +37,10 @@ public:
    * @param sample_rate sample rate in Hz (22050, 44100...)
    * @param sample_size sample size (8, 16)
    * @param channels count of channels (1 for mono, 2 for stereo)
-   * @param buf_size buffer size for SDL audio device
    * @param is_compressed mark stream as compressed (on streaming will be used decompression functions)
    */
-  MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_t channels, uint32_t buf_size, bool is_compressed);
-  ~MovieSoundDevice();
+  MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_t channels, bool is_compressed);
+  ~MovieSoundDevice() override;
 
   /**
    * Check if sound device is properly initialized
