@@ -396,6 +396,7 @@
  * $NoKeywords: $
  */
 
+#include <cstddef>
 #include "room.h"
 #include "mono.h"
 #include "vecmat.h"
@@ -488,9 +489,12 @@ void RoomMemInit(int nverts, int nfaces, int nfaceverts, int nportals) {
   if (nverts == 0) // We don't know how much mem the room will use, so do the old way
     return;
 
-  int size = (nfaces * (sizeof(*Rooms[0].faces))) + (nverts * sizeof(*Rooms[0].verts)) +
-             (nportals * sizeof(*Rooms[0].portals)) +
-             (nfaceverts * (sizeof(*Rooms[0].faces[0].face_verts) + sizeof(*Rooms[0].faces[0].face_uvls)));
+  size_t size = 0;
+  size += nfaces * (sizeof(*Rooms[0].faces) + sizeof(std::max_align_t));
+  size += nverts * (sizeof(*Rooms[0].verts) + sizeof(std::max_align_t));
+  size += nportals * (sizeof(*Rooms[0].portals) + sizeof(std::max_align_t));
+  size += nfaceverts * (sizeof(*Rooms[0].faces[0].face_verts) + sizeof(std::max_align_t) +
+          sizeof(*Rooms[0].faces[0].face_uvls) + sizeof(std::max_align_t));
 
   if (Room_mem_buf)
     mem_free(Room_mem_buf);
@@ -502,14 +506,15 @@ void RoomMemInit(int nverts, int nfaces, int nfaceverts, int nportals) {
 }
 
 // Allocates memory for a room or face
-void *RoomMemAlloc(int size) {
+template<typename T> static T *RoomMemAlloc(size_t nelem) {
+  static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
   if (Room_mem_buf) {
-    void *p = Room_mem_ptr;
-    Room_mem_ptr += size;
+    uint8_t *p = reinterpret_cast<uint8_t *>((reinterpret_cast<uintptr_t>(Room_mem_ptr) + alignof(T) - 1) / alignof(T) * alignof(T));
+    Room_mem_ptr = p + nelem * sizeof(T);
     ASSERT(Room_mem_ptr <= (Room_mem_buf + Room_mem_size));
-    return p;
+    return static_cast<T *>(static_cast<void *>(p));
   } else
-    return mem_malloc(size);
+    return static_cast<T *>(mem_malloc(nelem * sizeof(T)));
 }
 
 // Frees memory in a room
@@ -556,12 +561,12 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->fog_g = 1.0;
   rp->fog_b = 1.0;
 
-  rp->faces = (face *)RoomMemAlloc(nfaces * sizeof(*rp->faces));
+  rp->faces = RoomMemAlloc<face>(nfaces);
   ASSERT(rp->faces != NULL);
 
   rp->num_bbf_regions = 0;
 
-  rp->verts = (vector *)RoomMemAlloc(nverts * sizeof(*rp->verts));
+  rp->verts = RoomMemAlloc<vector>(nverts);
   ASSERT(rp->verts != NULL);
 
   if (Katmai) {
@@ -573,7 +578,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->pulse_offset = 0;
 
   if (nportals) {
-    rp->portals = (portal *)RoomMemAlloc(nportals * sizeof(*rp->portals));
+    rp->portals = RoomMemAlloc<portal>(nportals);
     ASSERT(rp->portals != NULL);
   } else
     rp->portals = NULL;
@@ -618,9 +623,9 @@ void InitRoomFace(face *fp, int nverts) {
   fp->special_handle = BAD_SPECIAL_FACE_INDEX;
   fp->light_multiple = 4;
 
-  fp->face_verts = (short *)RoomMemAlloc(nverts * sizeof(*fp->face_verts));
+  fp->face_verts = RoomMemAlloc<short>(nverts);
   ASSERT(fp->face_verts != NULL);
-  fp->face_uvls = (roomUVL *)RoomMemAlloc(nverts * sizeof(*fp->face_uvls));
+  fp->face_uvls = RoomMemAlloc<roomUVL>(nverts);
   ASSERT(fp->face_uvls != NULL);
 
   ASSERT(fp->face_verts);
