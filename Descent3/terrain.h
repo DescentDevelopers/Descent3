@@ -205,7 +205,7 @@ extern uint8_t Terrain_from_mine;
 
 extern float Last_terrain_render_time;
 
-extern terrain_segment Terrain_seg[TERRAIN_WIDTH * TERRAIN_DEPTH];
+extern terrain_segment Terrain_seg[(TERRAIN_WIDTH+1) * (TERRAIN_DEPTH+1)];
 extern terrain_tex_segment Terrain_tex_seg[TERRAIN_TEX_WIDTH * TERRAIN_TEX_DEPTH];
 
 // first object to render after cell has been rendered (only used for SW renderer)

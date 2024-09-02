@@ -246,7 +246,7 @@ static inline int GetFaceAlpha(face *fp, int bm_handle) {
       ret |= ATF_CONSTANT;
 
     // Check for transparency
-    if (GameBitmaps[bm_handle].format != BITMAP_FORMAT_4444 && GameTextures[fp->tmap].flags & TF_TMAP2)
+    if (bm_handle >= 0 && GameBitmaps[bm_handle].format != BITMAP_FORMAT_4444 && GameTextures[fp->tmap].flags & TF_TMAP2)
       ret |= ATF_TEXTURE;
   }
   return ret;
@@ -3604,7 +3604,7 @@ void SortStates(state_limited_element *state_array, int cellcount) {
       while (1) {
         while (state_array[++i].sort_key < v.sort_key)
           ;
-        while (state_array[--j].sort_key > v.sort_key)
+        while (j > 0 && state_array[--j].sort_key > v.sort_key)
           ;
         if (i >= j)
           break;

@@ -581,9 +581,13 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
 
     newnode->iflags |= INVF_SELECTABLE | INVF_USEABLE | INVF_MISSIONITEM | INVF_TIMEOUTONSPEW;
 
-    newnode->icon_name =
-        (char *)mem_malloc(strlen(GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name) + 1);
-    strcpy(newnode->icon_name, GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name);
+    if (Weapons[id].icon_handle >= 0) {
+      newnode->icon_name =
+          (char *)mem_malloc(strlen(GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name) + 1);
+      strcpy(newnode->icon_name, GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name);
+    } else {
+      newnode->icon_name = nullptr;
+    }
 
     if (description) {
       newnode->name = mem_strdup(description);

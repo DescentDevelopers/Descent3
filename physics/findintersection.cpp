@@ -2193,7 +2193,7 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
       if (num_objects >= max_elements)
         break;
 
-      if ((f_include_non_collide_objects) || CollisionRayResult[Objects[x].type] != RESULT_NOTHING) {
+      if ((f_include_non_collide_objects) || (Objects[x].type < MAX_OBJECT_TYPES && CollisionRayResult[Objects[x].type] != RESULT_NOTHING)) {
         if (!f_only_players_and_ais || Objects[x].type == OBJ_PLAYER || Objects[x].ai_info) {
           if (!(f_lightmap_only && (Objects[BigObjectList[x]].lighting_render_type != LRT_LIGHTMAPS) &&
                 Objects[BigObjectList[x]].type != OBJ_ROOM)) {

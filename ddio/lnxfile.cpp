@@ -131,7 +131,7 @@ void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext) 
   // Check for an extension
   ///////////////////////////////////////
   int t = totalLen - 1;
-  while ((srcPath[t] != '.') && (srcPath[t] != '/') && (t >= 0))
+  while (t >= 0 && (srcPath[t] != '.') && (srcPath[t] != '/') && (t >= 0))
     t--;
   // see if we are at an extension
   if ((t >= 0) && (srcPath[t] == '.')) {
