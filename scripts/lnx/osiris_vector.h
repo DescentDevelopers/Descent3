@@ -53,15 +53,7 @@ float FixSin(angle a);
 // Returns the cosine of the given angle.  Linearly interpolates between two entries in a 256-entry table
 float FixCos(angle a);
 
-// Returns the sine of the given angle, but does no interpolation
-float FixSinFast(angle a);
-
-// Returns the cosine of the given angle, but does no interpolation
-float FixCosFast(angle a);
-
 #define Round(x) ((int)(x + 0.5))
-
-fix FloatToFixFast(float num);
 
 // Conversion macros
 //??#define FloatToFix(num) Round((num) * FLOAT_SCALER)
@@ -70,7 +62,6 @@ fix FloatToFixFast(float num);
 #define ShortToFix(num) (((int32_t)(num)) << FIX_SHIFT)
 #define FixToFloat(num) (((float)(num)) / FLOAT_SCALER)
 #define FixToInt(num) ((num) >> FIX_SHIFT)
-#define FixToShort(num) ((int16_t)((num) >> FIX_SHIFT))
 
 // Tables for trig functions
 float sincos_table[321]; // 256 entries + 64 sin-only + 1 for interpolation
@@ -130,46 +121,6 @@ float FixCos(angle a) {
   c0 = sincos_table[i + 64];
   c1 = sincos_table[i + 64 + 1];
   return (float)(c0 + ((c1 - c0) * (double)f / 256.0));
-}
-
-// Returns the sine of the given angle, but does no interpolation
-float FixSinFast(angle a) {
-  int i;
-
-  i = ((a + 0x80) >> 8) & 0xff;
-
-  return sincos_table[i];
-}
-
-// Returns the cosine of the given angle, but does no interpolation
-float FixCosFast(angle a) {
-  int i;
-
-  i = ((a + 0x80) >> 8) & 0xff;
-
-  return sincos_table[i + 64];
-}
-
-// use this instead of:
-// for:  (int)floor(x+0.5f) use FloatRound(x)
-//       (int)ceil(x-0.5f)  use FloatRound(x)
-//       (int)floor(x-0.5f) use FloatRound(x-1.0f)
-//       (int)floor(x)      use FloatRound(x-0.5f)
-// for values in the range -2048 to 2048
-
-// Set a vector to {0,0,0}
-int FloatRound(float x) {
-  float nf;
-  nf = x + 8390656.0f;
-  return ((*((int *)&nf)) & 0x7FFFFF) - 2048;
-}
-
-// A fast way to convert floats to fix
-fix FloatToFixFast(float x) {
-
-  float nf;
-  nf = x * 65536.0f + 8390656.0f;
-  return ((*((int *)&nf)) & 0x7FFFFF) - 2048;
 }
 
 // Get rid of the "no return value" warnings in the next three functions
@@ -253,46 +204,9 @@ angle FixAtan2(float cos, float sin) {
   }
 }
 
-// Does a ceiling operation on a fixed number
-fix FixCeil(fix num) {
-  int int_num;
-  fix new_num;
-
-  int_num = FixToInt(num);
-
-  if (num & 0xFFFF) {
-    new_num = IntToFix(int_num + 1);
-    return new_num;
-  }
-
-  new_num = IntToFix(int_num);
-  return (new_num);
-}
-
-// Floors a fixed number
-fix FixFloor(fix num) {
-  int int_num = FixToInt(num);
-
-  return (IntToFix(int_num));
-}
-
-// use this instead of:
-// for:  (int)floor(x+0.5f) use FloatRound(x)
-//       (int)ceil(x-0.5f)  use FloatRound(x)
-//       (int)floor(x-0.5f) use FloatRound(x-1.0f)
-//       (int)floor(x)      use FloatRound(x-0.5f)
-// for values in the range -2048 to 2048
-int FloatRound(float x);
-
 angle FixAtan2(float cos, float sin);
 angle FixAsin(float v);
 angle FixAcos(float v);
-
-// Does a ceiling operation on a fixed number
-fix FixCeil(fix num);
-
-// Floors a fixed number
-fix FixFloor(fix num);
 
 // Used for debugging.  It is used in printf's so we do not have to write out the structure 3 times
 // to print all the coordinates.
