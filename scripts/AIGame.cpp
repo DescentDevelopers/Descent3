@@ -3342,7 +3342,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
     flags = AIF_FIRE;
     AI_Value(me, VF_CLEAR_FLAGS, AIV_I_FLAGS, &flags);
 
-    // Guarentee no wall hits or mid damage stuff after the fake death
+    // Guarantee no wall hits or mid damage stuff after the fake death
     memory->flags |= (HF_HIT_WALL_ASSIGNED | HF_MID_DAMAGE_ASSIGNED);
 
     vector dpos;

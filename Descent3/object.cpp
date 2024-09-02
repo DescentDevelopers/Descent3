@@ -2160,7 +2160,7 @@ void DoCycledAnim(object *obj) {
 
     if (obj->rtype.pobj_info.anim_frame >= to) {
 
-      // We are guarenteed that this is between 'to' and 'from' from the above asserts()  :)
+      // We are guaranteed that this is between 'to' and 'from' from the above asserts()  :)
       obj->rtype.pobj_info.anim_frame -= delta;
     }
   } else {

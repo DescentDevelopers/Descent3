@@ -293,7 +293,7 @@ bool matcen::StartObjProd() {
   if (m_cached_prod_index < 0)
     return false;
 
-  // Guarentees against designer error
+  // Guarantees against designer error
   pos_state pos;
   matrix idmat = Identity_matrix;
 
