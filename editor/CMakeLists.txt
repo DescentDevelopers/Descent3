@@ -50,6 +50,8 @@ set(HEADERS
     ../descent3/gamepath.h
     ../descent3/gamesave.h
     ../descent3/gamesequence.h
+    ../descent3/gamespy.h
+    ../descent3/gamespyutils.h
     ../descent3/gametexture.h
     ../descent3/gauges.h
     ../descent3/help.h
@@ -333,6 +335,8 @@ set(SOURCE
     ../descent3/gamepath.cpp
     ../descent3/gamesave.cpp
     ../descent3/gamesequence.cpp
+    ../descent3/gamespy.cpp
+    ../descent3/gamespyutils.cpp
     ../descent3/gametexture.cpp
     ../descent3/gauges.cpp
     ../descent3/help.cpp

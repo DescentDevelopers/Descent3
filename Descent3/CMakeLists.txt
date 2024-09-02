@@ -65,6 +65,8 @@ set(HEADERS
   gamepath.h
   gamesave.h
   gamesequence.h
+  gamespy.h
+  gamespyutils.h
   gametexture.h
   gauges.h
   help.h
@@ -189,6 +191,8 @@ set(CPPS
   gamepath.cpp
   gamesave.cpp
   gamesequence.cpp
+  gamespy.cpp
+  gamespyutils.cpp
   gametexture.cpp
   gauges.cpp
   help.cpp
