@@ -1,7 +1,35 @@
 #pragma once
+#include <variant>
+#include <initializer_list>
+#include <vector>
+
+class user_var : public std::variant<float, int32_t> {
+	private:
+	using VarT = std::variant<float, int32_t>;
+
+	public:
+	// For compatibility with existing code, override op= with one that
+	// retains the active type, requiring instead set_type<> to change it.
+	template<typename T> void operator=(T &&v) noexcept {
+		VarT &self = *this;
+		if (std::get_if<float>(this))
+			self = static_cast<float>(v);
+		else
+			self = static_cast<int32_t>(v);
+	}
+	template<typename T> void set_type() noexcept { static_cast<VarT &>(*this) = T{}; }
+	void operator++(int) noexcept { std::visit([](auto &&uv) { ++uv; }, *this); }
+	void operator--(int) noexcept { std::visit([](auto &&uv) { ++uv; }, *this); }
+	template<typename T> void operator+=(T &&r) noexcept { std::visit([&](auto &&uv) { uv += std::forward<T>(r); }, *this); }
+	template<typename T> void operator-=(T &&r) noexcept { std::visit([&](auto &&uv) { uv -= std::forward<T>(r); }, *this); }
+	template<typename T> bool operator==(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv == std::forward<T>(r); }, *this); }
+	template<typename T> bool operator!=(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv != std::forward<T>(r); }, *this); }
+	template<typename T> bool operator<(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv < std::forward<T>(r); }, *this); }
+	template<typename T> bool operator>(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv > std::forward<T>(r); }, *this); }
+};
 
 #define MAX_USER_VARS 25 // make sure this value matches the USERTYPE definition
-extern float User_vars[MAX_USER_VARS];
+extern std::vector<user_var> User_vars;
 
 #define MAX_SPEW_HANDLES 50 // make sure this value matches the USERTYPE definition
 extern int Spew_handles[MAX_SPEW_HANDLES];
@@ -13,7 +41,7 @@ extern int Saved_object_handles[MAX_SAVED_OBJECT_HANDLES];
 //  System functions
 //
 
-extern void dfInit();
+extern void dfInit(const std::initializer_list<int> & = {});
 extern void dfSave(void *fileptr);
 extern void dfRestore(void *fileptr);
 

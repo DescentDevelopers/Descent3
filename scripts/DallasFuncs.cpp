@@ -708,6 +708,9 @@
  *
  */
 
+#include <algorithm>
+#include <climits>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
@@ -913,7 +916,7 @@ $$END
 //  Variables
 //
 
-float User_vars[MAX_USER_VARS];
+std::vector<user_var> User_vars(MAX_USER_VARS);
 int Spew_handles[MAX_SPEW_HANDLES];
 
 #define MAX_SOUND_HANDLES 10 // make sure this value matches the USERTYPE definition
@@ -955,7 +958,7 @@ $$USERTYPE SavedObjectSlot:19
 //
 
 // Initialize vars
-void dfInit() {
+void dfInit(const std::initializer_list<int> &uv_int) {
   int i;
 
   for (i = 0; i < MAX_SPEW_HANDLES; i++)
@@ -966,6 +969,8 @@ void dfInit() {
 
   for (i = 0; i < MAX_USER_VARS; i++)
     User_vars[i] = 0.0;
+  for (auto idx : uv_int)
+    User_vars[idx].set_type<int32_t>();
 
   for (i = 0; i < MAX_SAVED_OBJECT_HANDLES; i++)
     Saved_object_handles[i] = OBJECT_HANDLE_NONE;
@@ -983,8 +988,12 @@ void dfSave(void *fileptr) {
   for (i = 0; i < MAX_SOUND_HANDLES; i++)
     File_WriteInt(Sound_handles[i], fileptr);
 
-  for (i = 0; i < MAX_USER_VARS; i++)
-    File_WriteFloat(User_vars[i], fileptr);
+  for (i = 0; i < MAX_USER_VARS; i++) {
+    if (const auto *value = std::get_if<float>(&User_vars[i]))
+      File_WriteFloat(*value, fileptr);
+    else
+      File_WriteInt(std::get<int32_t>(User_vars[i]), fileptr);
+  }
 
   for (i = 0; i < MAX_SAVED_OBJECT_HANDLES; i++)
     File_WriteInt(Saved_object_handles[i], fileptr);
@@ -1018,7 +1027,10 @@ void dfRestore(void *fileptr) {
     Sound_handles[i] = File_ReadInt(fileptr);
 
   for (i = 0; i < MAX_USER_VARS; i++)
-    User_vars[i] = File_ReadFloat(fileptr);
+    if (std::get_if<int32_t>(&User_vars[i]))
+      User_vars[i] = File_ReadInt(fileptr);
+    else
+      User_vars[i] = File_ReadFloat(fileptr);
 
   for (i = 0; i < MAX_SAVED_OBJECT_HANDLES; i++)
     Saved_object_handles[i] = File_ReadInt(fileptr);
@@ -5514,10 +5526,11 @@ Parameters:
 $$END
 */
 float qUserVarValue(int varnum) {
-  if ((varnum >= 0) && (varnum < MAX_USER_VARS))
-    return User_vars[varnum];
-  else
-    return 0.0;
+  if (varnum < 0 || varnum >= MAX_USER_VARS)
+    return 0;
+  if (const auto *value = std::get_if<int32_t>(&User_vars[varnum]))
+    return *value;
+  return std::get<float>(User_vars[varnum]);
 }
 
 /*
@@ -5533,10 +5546,17 @@ Parameters:
 $$END
 */
 int qUserVarValueInt(int varnum) {
-  if ((varnum >= 0) && (varnum < MAX_USER_VARS))
-    return (User_vars[varnum] + 0.5);
-  else
-    return 0.0;
+  if (varnum < 0 || varnum >= MAX_USER_VARS)
+    return 0;
+  if (const auto *value = std::get_if<int32_t>(&User_vars[varnum]))
+    return *value;
+  auto value = std::get<float>(User_vars[varnum]);
+  // Check boundaries first, else float=>int conversion is UB
+  if (value < std::nexttoward(INT_MIN, 0))
+    return INT_MIN;
+  if (value >= std::nexttoward(INT_MAX, 0))
+    return INT_MAX;
+  return value + 0.5;
 }
 
 /*
