@@ -2083,7 +2083,7 @@ int fvi_QuickDistCellList(int init_cell_index, vector *pos, float rad, int *quic
   if (yend >= TERRAIN_DEPTH)
     yend = TERRAIN_DEPTH - 1;
 
-  // This should be a faster interative why to do a square with center at original position
+  // This should be a faster iterative way to do a square with center at original position
   cur_node = TERRAIN_WIDTH * ystart + xstart;
   next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 
@@ -2150,7 +2150,7 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
     if (yend >= TERRAIN_DEPTH)
       yend = TERRAIN_DEPTH - 1;
 
-    // This should be a faster interative why to do a square with center at original position
+    // This should be a faster iterative way to do a square with center at original position
     cur_node = TERRAIN_WIDTH * ystart + xstart;
     next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 
@@ -4075,7 +4075,7 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
     if (yend >= TERRAIN_DEPTH)
       yend = TERRAIN_DEPTH - 1;
 
-    // This should be a faster interative why to do a square with center at original position
+    // This should be a faster iterative way to do a square with center at original position
     new_node = TERRAIN_WIDTH * ystart + xstart;
     next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 
@@ -4136,7 +4136,7 @@ inline void check_square_node(int x, int y, int width)
                 if(ystart < 0) ystart = 0;
                 if(yend >= TERRAIN_DEPTH) yend = TERRAIN_DEPTH - 1;
 
-                // This should be a faster interative why to do a square with center at original position
+                // This should be a faster iterative way to do a square with center at original position
                 new_node = TERRAIN_WIDTH * ystart + xstart;
                 next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 

@@ -142,7 +142,7 @@ static void ai_check_terrain_node(int cur_node, int f_check_local_nodes) {
     if (yend >= TERRAIN_DEPTH)
       yend = TERRAIN_DEPTH - 1;
 
-    // This should be a faster interative why to do a square with center at original position
+    // This should be a faster iterative way to do a square with center at original position
     new_node = TERRAIN_WIDTH * ystart + xstart;
     next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 

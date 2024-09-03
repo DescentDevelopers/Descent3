@@ -677,7 +677,7 @@ void add_terrain_cell(int cell, int t_region, char *checked) {
     if (yend >= TERRAIN_DEPTH)
       yend = TERRAIN_DEPTH - 1;
 
-    // This should be a faster interative why to do a square with center at original position
+    // This should be a faster iterative way to do a square with center at original position
     int cur_node = TERRAIN_WIDTH * ystart + xstart;
     int next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 
