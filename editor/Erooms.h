@@ -55,7 +55,7 @@
  * wrong way.
  *
  * 41    2/03/99 1:10p Matt
- * Changed the paletted room current faces to be stored in a seperate
+ * Changed the paletted room current faces to be stored in a separate
  * array, instead of in the room structure.
  *
  * 40    10/03/98 8:05p Matt

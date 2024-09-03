@@ -61,7 +61,7 @@
  * Added debug options to limit rendering
  *
  * 27    10/03/98 11:21p Matt
- * Added system to seperately control outline mode for mine, terrain, sky,
+ * Added system to separately control outline mode for mine, terrain, sky,
  * & objects
  *
  * 26    9/24/98 12:57p Jason

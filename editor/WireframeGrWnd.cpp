@@ -36,7 +36,7 @@
  * added/fixed features for the designers
  *
  * 26    2/03/99 1:11p Matt
- * Changed the paletted room current faces to be stored in a seperate
+ * Changed the paletted room current faces to be stored in a separate
  * array, instead of in the room structure.
  *
  * 25    1/20/99 10:50a Jason
@@ -79,7 +79,7 @@
  * did a HUGE overhaul of the bitmap system
  *
  * 12    10/03/97 3:39p Matt
- * Added seperate sets of wireframe view variables for mine & room views
+ * Added separate sets of wireframe view variables for mine & room views
  *
  * 11    9/17/97 11:34a Matt
  * Ripped out segment code

@@ -249,7 +249,7 @@
  * added table file parser macros
  *
  * 104   2/03/99 4:09p Jeff
- * moved function pointers to seperate file. created autoexec.dmfc
+ * moved function pointers to separate file. created autoexec.dmfc
  *
  * 103   2/02/99 8:43a Chris
  * I made buildings with AI work correctly (ie really big robots should be
@@ -4733,7 +4733,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       if (strlen(ptr) > 15)
         goto error_parse;
 
-      // break up the string into seperate strings
+      // break up the string into separate strings
       while (*ptr) {
         if (*ptr == '.')
           *ptr = '\0';

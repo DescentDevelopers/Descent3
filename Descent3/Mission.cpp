@@ -118,7 +118,7 @@
  * changes to verify level completeness
  *
  * 164   4/25/99 2:18p Kevin
- * moved d3 main mission voice files into seperate hogs
+ * moved d3 main mission voice files into separate hogs
  *
  * 163   4/23/99 10:34p Kevin
  * fixed bad things with multiple CD code
@@ -318,7 +318,7 @@
  *
  * 96    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,

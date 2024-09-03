@@ -6006,7 +6006,7 @@
 !/!The following lines are for the descriptions of the ships in the single player
 !/!ship selection screen.  Please note that the lines that have \1\XX\XX\XX are colors
 !/!please leave them in through localization.  For reference \1 notes the start of a 
-!/!color sequence, the next number (they are seperated by \) is the red component, followed
+!/!color sequence, the next number (they are separated by \) is the red component, followed
 !/!by green then blue.
 
 !/!Pyro-GL (850-857)

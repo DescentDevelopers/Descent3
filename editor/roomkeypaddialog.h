@@ -109,7 +109,7 @@
  *
  * 9     9/06/97 3:14p Matt
  * Added button to go to next portal
- * Added seperate face & vert count displays for current room & cur
+ * Added separate face & vert count displays for current room & cur
  * palette room
  * Use new PrintToDsgItem() function
  *

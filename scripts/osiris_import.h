@@ -571,7 +571,7 @@ typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint32_t *mem_size, uint32_t 
 OSIRISEXTERN OMMS_GetInfo_fp OMMS_GetInfo;
 
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed
-//	use pipes (|) to seperate lines.
+//	use pipes (|) to separate lines.
 typedef bool (*Cine_Start_fp)(tGameCinematic *info, const char *text_string);
 OSIRISEXTERN Cine_Start_fp Cine_Start;
 

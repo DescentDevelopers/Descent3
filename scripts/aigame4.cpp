@@ -554,7 +554,7 @@ bool MercEndBoss::DoNotify(int me, tOSIRISEventInfo *data) {
     }
   } break;
   case MERCENDBOSS_DEATH: {
-    // NOTE:  I am also doing the rotational stuff here...  So, no need to make a seperate AIN_SCRIPTED_ORIENT event
+    // NOTE:  I am also doing the rotational stuff here...  So, no need to make a separate AIN_SCRIPTED_ORIENT event
     if (data->evt_ai_notify.goal_num == 0 && data->evt_ai_notify.notify_type == AIN_SCRIPTED_GOAL) {
       vector rvel;
       Obj_Value(me, VF_GET, OBJV_V_ROTVELOCITY, &rvel);

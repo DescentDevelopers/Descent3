@@ -73,7 +73,7 @@ void Cinematic_Close(void);
 //	Cinematic_Start
 //
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed
-//	use pipes (|) to seperate lines.
+//	use pipes (|) to separate lines.
 bool Cinematic_Start(tGameCinematic *info, char *text_string);
 
 //	Cinematic_Stop

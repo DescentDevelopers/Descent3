@@ -98,7 +98,7 @@
  * and changing a few others
  *
  * 4     4/01/97 11:00p Matt
- * Changed editor to keep a viewer object (type camera) seperate from the
+ * Changed editor to keep a viewer object (type camera) separate from the
  * player object.  This camera, and not the player, is now moved by
  * slewing, the C key, etc.  When going into the game, the viewer position
  * & orientation are copied to the player.  When going back to the editor,
@@ -405,7 +405,7 @@ void DeleteViewer() {
 }
 
 // Sets the viewer object for the editor, creating if not already in mine
-// Keeps seperate viewer objects for mine & terrain views
+// Keeps separate viewer objects for mine & terrain views
 void SetEditorViewer() {
   int objnum, roomnum;
 

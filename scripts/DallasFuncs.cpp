@@ -3796,7 +3796,7 @@ Cinematics
 Simple letterbox format cinematic, using path [h:CameraPath], with text [s:Text] targeting [o:Target] for
 [f:Seconds=10.0f] has fade in [b:FadeIn] aCinematicSimple CinematicSimple This creates a simple cinematic, in Letterbox
 mode.  The camera will follow the given path. And the given text will be shown at the bottom of the screen.  There is no
-'quick exit' by keypress.  To do more than one line of text, seperate each line of text using a pipe ('|').
+'quick exit' by keypress.  To do more than one line of text, separate each line of text using a pipe ('|').
 
 Parameters:
         CameraPath: The path the camera should follow
@@ -3839,7 +3839,7 @@ Introduction fly-in using path [h:CameraPath], with text [s:Text] following play
 [h:PlayerPath] for [f:Seconds=10.0f]. aCinematicIntro CinematicIntro THE TARGET IS NOT USED, IT'S HERE FOR BACKWARD
 COMPATIBILITY This starts a level introduction cinematic. The camera will follow the given path. And the given text will
 be shown at the bottom of the screen.  There is a 'quick exit' by keypress, after the first quarter of the cinematic is
-done.  To do more than one line of text, seperate each line of text using a pipe ('|').
+done.  To do more than one line of text, separate each line of text using a pipe ('|').
 
 Parameters:
 ONCE AGAIN, THE TARGET IS NOT USED, IT'S HERE FOR BACKWARD COMPATIBILITY

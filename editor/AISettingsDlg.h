@@ -61,7 +61,7 @@ public:
   float m_ai_flock_alignment;
   float m_ai_flock_cohesion;
   BOOL m_ai_flock_member_check;
-  float m_ai_flock_seperation;
+  float m_ai_flock_separation;
   float m_ai_fov;
   CString m_initial_action;
   BOOL m_ai_uses_thrust_check;

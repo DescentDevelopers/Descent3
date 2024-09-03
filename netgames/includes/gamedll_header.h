@@ -118,7 +118,7 @@ struct tDLLOptions {
   // gives the full name of the game (must be set)
   char game_name[MAX_GAMENAME_LEN];
 
-  // this is an array of semicolor seperated 'string identifiers' that serve as requirements
+  // this is an array of semicolor separated 'string identifiers' that serve as requirements
   // the mission needs to support in order for it to be playable with the game.
   // this parameter must be set (even it is just a '\0' for the first character..aka no requirements)
   char requirements[MAX_REQUIREMENT_LEN];

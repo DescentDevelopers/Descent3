@@ -90,7 +90,7 @@
  *
  * 62    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -270,7 +270,7 @@
  * Added support for floating segments
  *
  * 22    5/08/97 7:29p Matt
- * Made seperate viewers for mine & terrain, and cleaned up code the
+ * Made separate viewers for mine & terrain, and cleaned up code the
  * switched between modes
  *
  * 21    5/06/97 2:30p Jason
@@ -287,7 +287,7 @@
  * changed.
  *
  * 18    4/01/97 11:00p Matt
- * Changed editor to keep a viewer object (type camera) seperate from the
+ * Changed editor to keep a viewer object (type camera) separate from the
  * player object.  This camera, and not the player, is now moved by
  * slewing, the C key, etc.  When going into the game, the viewer position
  * & orientation are copied to the player.  When going back to the editor,

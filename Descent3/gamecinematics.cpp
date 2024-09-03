@@ -470,7 +470,7 @@ static inline int Cinematics_CreateCamera(void) {
 //	Cinematic_Start
 //
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed
-//	use pipes (|) to seperate lines. (calls demo routines to record)
+//	use pipes (|) to separate lines. (calls demo routines to record)
 bool Cinematic_Start(tGameCinematic *info, char *text_string) {
   if (Demo_flags == DF_PLAYBACK)
     return true; // demo system calls Cinematic_StartCine itself
@@ -518,7 +518,7 @@ static inline void Cinematic_DeleteCamera(int objhandle) {
 //	Cinematic_StartCine
 //
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed
-//	use pipes (|) to seperate lines. (does not call demo routines)
+//	use pipes (|) to separate lines. (does not call demo routines)
 bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int camera_objhandle) {
   ASSERT(info != NULL);
   ASSERT(text_string != NULL);

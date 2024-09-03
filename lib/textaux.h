@@ -49,7 +49,7 @@
 //	textaux_WordWrap
 //
 //		Given a buffer of text, and an empty buffer of same size
-//	it will break the source buffer up into lines (seperated by /n) of size width or smaller (in pixels).
+//	it will break the source buffer up into lines (separated by /n) of size width or smaller (in pixels).
 //	All /n within the source buffer are preserved.  Source buffer is also not changed.
 void textaux_WordWrap(const char *src, char *dest, int width, int font);
 

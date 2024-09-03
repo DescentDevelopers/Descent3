@@ -379,7 +379,7 @@
  * Moved structures to hotspotmap.h
  *
  * 42    3/23/98 11:08a Jeff
- * Moved monitor and input stuff to seperate file
+ * Moved monitor and input stuff to separate file
  *
  * 41    3/23/98 9:55a Jeff
  * Made changes to remove old telcom
@@ -1456,7 +1456,7 @@ void TelcomRenderInit(void) {
     Telcom_system.Monitor_coords[monitor].right = windowmap.wm[monitor].x + windowmap.wm[monitor].width;
     Telcom_system.Monitor_coords[monitor].bottom = windowmap.wm[monitor].y + windowmap.wm[monitor].height;
 
-    // Do we want to save these seperatly?
+    // Do we want to save these separatly?
     Telcom_system.Monitor_coords[monitor].left += windowmap.wm[monitor].l_start_x - windowmap.wm[monitor].x;
     Telcom_system.Monitor_coords[monitor].right -=
         windowmap.wm[monitor].x + windowmap.wm[monitor].width - windowmap.wm[monitor].r_end_x;

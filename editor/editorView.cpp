@@ -89,7 +89,7 @@
  * Disable z-buffer button if OpenGL is being used in the editor.
  *
  * 52    2/03/99 1:10p Matt
- * Changed the paletted room current faces to be stored in a seperate
+ * Changed the paletted room current faces to be stored in a separate
  * array, instead of in the room structure.
  *
  * 51    1/25/99 11:12a Matt
@@ -97,7 +97,7 @@
  *
  * 50    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -116,7 +116,7 @@
  * Use windows function to get cursor position instead of ddio function.
  *
  * 45    10/03/98 11:21p Matt
- * Added system to seperately control outline mode for mine, terrain, sky,
+ * Added system to separately control outline mode for mine, terrain, sky,
  * & objects
  *
  * 44    10/03/98 8:31p Matt
@@ -259,7 +259,7 @@
  * Added editor button to toggle lighting
  *
  * 26    5/08/97 7:29p Matt
- * Made seperate viewers for mine & terrain, and cleaned up code the
+ * Made separate viewers for mine & terrain, and cleaned up code the
  * switched between modes
  *
  * 25    5/06/97 3:49p Matt

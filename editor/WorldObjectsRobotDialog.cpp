@@ -38,7 +38,7 @@
  * fixed potential memory bug
  *
  * 5     8/06/97 1:32p Matt
- * Ripped out a bunch of stuff, and added seperate physics and ai dialogs
+ * Ripped out a bunch of stuff, and added separate physics and ai dialogs
  *
  * 4     7/24/97 6:11p Matt
  * Created symbolic constant for default zoom, and used it every place

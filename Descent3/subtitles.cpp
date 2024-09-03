@@ -128,7 +128,7 @@ char *parse_int(char *buf, int *d) {
     return NULL;
   }
 
-  // Check for valid seperator, and convert
+  // Check for valid separator, and convert
   if ((*t == 0) || isspace(*t) || (*t == ',')) { // valid number
     *d = atoi(buf);
     return t;

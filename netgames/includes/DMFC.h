@@ -110,7 +110,7 @@
  * EVT_GAMEOBJDESTROYED
  *
  * 102   2/03/99 4:09p Jeff
- * moved function pointers to seperate file. created autoexec.dmfc
+ * moved function pointers to separate file. created autoexec.dmfc
  *
  * 101   1/31/99 7:25p Matt
  * Renamed a bunch of functions to have HUD capitalized
@@ -613,7 +613,7 @@ struct tDmfcStatsColumnInfo {
 //=====================================================================
 // tDmfcStatsInit flags
 #define DSIF_SEPERATE_BY_TEAM                                                                                          \
-  0x00000001 // this tells the stats manager to seperate the players by
+  0x00000001 // this tells the stats manager to separate the players by
              // team (useful only in a team game).  By default it will
              // list all the players in a straight list
 #define DSIF_SHOW_PIC                                                                                                  \

@@ -42,7 +42,7 @@
  * is low it was getting checked.
  *
  * 32    2/03/99 1:10p Matt
- * Changed the paletted room current faces to be stored in a seperate
+ * Changed the paletted room current faces to be stored in a separate
  * array, instead of in the room structure.
  *
  * 31    12/01/98 11:17p Matt

@@ -218,7 +218,7 @@
  * fixed lighting on the terrain
  *
  * 178   10/03/98 11:21p Matt
- * Added system to seperately control outline mode for mine, terrain, sky,
+ * Added system to separately control outline mode for mine, terrain, sky,
  * & objects
  *
  * 177   10/02/98 5:31p Jason

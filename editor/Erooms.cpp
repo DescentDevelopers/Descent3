@@ -186,7 +186,7 @@
  * Fix up triggers when deleting a face
  *
  * 117   2/03/99 1:10p Matt
- * Changed the paletted room current faces to be stored in a seperate
+ * Changed the paletted room current faces to be stored in a separate
  * array, instead of in the room structure.
  *
  * 116   1/29/99 12:48p Matt

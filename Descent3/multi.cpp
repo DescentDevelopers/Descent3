@@ -627,7 +627,7 @@
  *
  * 345   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -1888,7 +1888,7 @@ int MultiStuffPosition(int slot, uint8_t *data) {
 
   if (slot == Player_num) {
     // tell the reciever to expect fire information, only if
-    // we fired this frame and it isn't going to be a seperate packet
+    // we fired this frame and it isn't going to be a separate packet
     // (like secondaries in a non-peer to peer, are sent reliably)
     if (Player_fire_packet[slot].fired_on_this_frame == PFP_FIRED)
       flags |= MPF_FIRED;

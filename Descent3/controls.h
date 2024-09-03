@@ -118,7 +118,7 @@
  * Added functions to save controller state.
  *
  * 8     2/12/98 8:48p Matt
- * Changed controls system to keep the reading of the controls seperate
+ * Changed controls system to keep the reading of the controls separate
  * from using the results.  Got rid of the Controls global.
  *
  * 7     1/12/98 6:28p Samir
