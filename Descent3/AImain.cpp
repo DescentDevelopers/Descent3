@@ -4019,7 +4019,7 @@ void AICheckTargetVis(object *obj) {
       int num_ignored = 1;
       int i;
 
-      // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECERSIVE
+      // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECURSIVE
       for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
         object *child;
 
@@ -5477,7 +5477,7 @@ void ai_fire(object *obj) {
               int num_ignored = 1;
               int i;
 
-              // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECERSIVE
+              // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECURSIVE
               for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
                 object *child;
 
@@ -5886,7 +5886,7 @@ void AITargetCheck(object *obj, object *target, object **best_obj, float *best_d
     int num_ignored = 1;
     int i;
 
-    // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECERSIVE
+    // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECURSIVE
     for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
       object *child;
 
