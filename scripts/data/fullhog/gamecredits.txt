@@ -545,4 +545,38 @@ Matt "JJJ_Shabadoo" Matthews
 The #loki gang at irc.openprojects.net
 Bofa and Wendy from down at The Center
 
+
+*320 100 320 100 8
+!OPEN SOURCE CONTRIBUTORS
+Andrew "ei-grad" Grigorev
+Azamat H. "winterheart" Hackimov
+Bryan Perris
+C.W. "Madd The Sane" Betts
+Chris "tophyr" Sarbora
+Dan "danra" Raviv
+Daniel Gibson
+Edu "Arcnor" Garcia
+Eric Slutz
+GravisZro
+InsanityBringer
+Jacob "jcoby"
+Jan Engelhardt
+Jason "Jayman2000" Yundt
+JeodC
+Kevin "Talon1024" Caccamo
+Kevin Bentley
+Kreeblah
+Louis "Lgt2x" Gombert
+Matt "mstephenson6" Stephenson
+Nakhr11n
+Peter "petesimard" Simard
+rfht
+Ryan C. Gordon
+scivision
+Taylor "notimaginative" Richards
+Thomas "pzychotic" Ross
+Thomas "th1000s" Otto
+vlohacks
+ziplantil
+
 END
