@@ -442,7 +442,7 @@
  *
  * $NoKeywords: $
  */
-// High level sound object.  This code is 100% machine independant and
+// High level sound object.  This code is 100% machine independent and
 // completely encapsulates the lowel-level machine-dependant sound code.
 
 #include <cstring>
@@ -568,7 +568,7 @@ void hlsSystem::KillSoundLib(bool f_kill_sound_list) {
     delete m_ll_sound_ptr;
     m_ll_sound_ptr = NULL;
   }
-  // This is independant of the actual sound_lib status.  It happened because sounds
+  // This is independent of the actual sound_lib status.  It happened because sounds
   // use the manage system.
   // moved this from beginning of function because won't the data freed here screw up streaming/looping sounds?
   // before the sound library is closed?

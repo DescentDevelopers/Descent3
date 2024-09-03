@@ -33,7 +33,7 @@
  * Deleted sounds array from the object struct, since it was never used.
  *
  * 17    4/21/99 12:41p Jason
- * make explosion system framerate independant
+ * make explosion system framerate independent
  *
  * 16    4/18/99 8:13p Chris
  * Fixed the floating flare problems (where windows where broken out and

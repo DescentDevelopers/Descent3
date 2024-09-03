@@ -96,7 +96,7 @@
  * get_mouse_raw_values now returns screen coords, not deltas.
  *
  * 60    4/24/99 5:39p Samir
- * mouse control now framerate independant.
+ * mouse control now framerate independent.
  *
  * 59    4/21/99 10:58a Samir
  * set sensitivity for all controllers, not just active ones.

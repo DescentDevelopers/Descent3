@@ -229,7 +229,7 @@
  * added memory lib
  *
  * 39    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 38    3/13/98 5:55p Chris
  * Added the new collision spheres

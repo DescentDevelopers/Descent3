@@ -266,7 +266,7 @@
  * added assert
  *
  * 78    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 77    3/19/98 4:30p Samir
  * added ability to mark subobjects as layered.
@@ -545,7 +545,7 @@
  * fixed bug with animation rotation keyframes
  *
  * 21    5/08/97 1:16p Jason
- * made ChangeEndName work with device independant calls
+ * made ChangeEndName work with device independent calls
  *
  * 20    4/30/97 5:43p Jason
  * remap polymodels when pagefile is done loading

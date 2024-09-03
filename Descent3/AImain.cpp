@@ -1048,7 +1048,7 @@
  * other.   I found a temp solution
  *
  * 157   5/26/98 9:45a Chris
- * DIstance and vec_to_target are independant
+ * DIstance and vec_to_target are independent
  *
  * 156   5/26/98 9:34a Chris
  * Added XZ distances for circle dist.  :)
@@ -1219,7 +1219,7 @@
  * added some soar_helpers and some debug mprintf's
  *
  * 100   3/23/98 10:01a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 99    3/17/98 11:27a Chris
  * Added object bump notifies for AI
@@ -6226,7 +6226,7 @@ void AIDoFrame(object *obj) {
 
         speed = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
 
-        // Removes the framerate independance from objects moving within 2x of there normal max speed
+        // Removes the framerate independence from objects moving within 2x of there normal max speed
         if (speed > 0.1f && speed <= ai_info->max_velocity * 2.0) {
           if (obj->mtype.phys_info.drag > 0.0f && obj->mtype.phys_info.mass > 0.0f) {
             obj->mtype.phys_info.flags |= PF_USES_THRUST;

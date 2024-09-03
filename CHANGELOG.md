@@ -40,7 +40,7 @@ Descent 3 now runs on 64-bit Linux, Windows and MacOS using SDL2, on AMD64 as we
  - Modernize build system: require CMake 3.20, use present-day CMake practices (#20, #63, #77, #86, #99, #104, #127, #131, #144, #220, #225, #227, #235, #256, #318, #340, #400, #407, #422, #460, #463, #482, #504)
  - Ensure compatibility with popular compilers, convert misc. pieces of code to modern C++ (#17, #20, #23, #40, #54, #58, #70, #108, #304, #328, #344, #358, #388, #405, #416)
  - Mark relevant variables and functions as static (#185)
- - Update the module system: isolate code for independant sub-modules in separate directories and CMake targets (#76, #89, #91, #195, #367, #374, #448, #470, #502)
+ - Update the module system: isolate code for independent sub-modules in separate directories and CMake targets (#76, #89, #91, #195, #367, #374, #448, #470, #502)
  - Document build procedure and usage on all platforms (#116, #118, #119, #124, #147, #154, #170, #174, #175, #184, #190, #204, #210, #211, #222, #259, #261, #270, #285, #297, #384, #413, #435)
  - Unifiy Windows & Unix command line arguments: --foo, -foo and +foo is accepted on any OS (#199)
  - Refactor CleanupStr in misc/pstring.cpp (#207)

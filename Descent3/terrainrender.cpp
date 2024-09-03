@@ -379,7 +379,7 @@
  * Added an editor bool to skip Terrain object rendering
  *
  * 125   3/26/98 10:54a Jason
- * tweaked some stuff for size independant terrain
+ * tweaked some stuff for size independent terrain
  *
  * 124   3/17/98 5:02p Jason
  * sped up rendering the terrain from the mine by a large amount

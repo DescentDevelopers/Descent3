@@ -71,7 +71,7 @@
  * I added support of random next firing masks
  *
  * 19    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 18    2/09/98 11:12a Chris
  * Allowed for the edititng of multiple weapon batteries

@@ -373,7 +373,7 @@
  * correctly in init local table files
  *
  * 40    5/13/97 3:41p Jason
- * made all manage code work with the new device independant database
+ * made all manage code work with the new device independent database
  *
  * 39    5/08/97 12:41p Jason
  * made manage system work with device dependant path names

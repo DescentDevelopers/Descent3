@@ -1091,8 +1091,8 @@ static const int ij_table[3][2] = {
 
 // see if a point in inside a face by projecting into 2d
 uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list) {
-  vector_array *colp_array; // Axis-independant version of the collision point
-  vector_array *norm;       // Axis-independant version of the plane's normal
+  vector_array *colp_array; // Axis-independent version of the collision point
+  vector_array *norm;       // Axis-independent version of the plane's normal
   vector t;                 // Temporary vector that holds the magnatude of the normal's x,y,z components (ABS)
   int biggest;              // Index of the largest of the three components (0-x, 1-y, 2-z)  Axis to ignore :)
   int i, j, edge;           // Index for i-axis, Index for j-axis, and the current edge

@@ -120,7 +120,7 @@
  * flag in the dying info.
  *
  * 138   4/21/99 12:40p Jason
- * made explosion system framerate independant
+ * made explosion system framerate independent
  *
  * 137   4/21/99 12:22p Matt
  * Added extra time to delay-from-anim time to allow object to finish its

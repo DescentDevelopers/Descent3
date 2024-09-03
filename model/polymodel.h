@@ -165,7 +165,7 @@
  * upped polyvecs for that fucker brent
  *
  * 41    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 40    3/19/98 4:30p Samir
  * added ability to mark subobjects as layered.

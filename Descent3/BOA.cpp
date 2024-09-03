@@ -2234,7 +2234,7 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    // Determine number of independant structures and classify each face
+    // Determine number of independent structures and classify each face
     for (i = 0; i <= Highest_room_index; i++) {
       if (Rooms[i].used) {
         room *rp = &Rooms[i];

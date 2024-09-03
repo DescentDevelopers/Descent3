@@ -260,7 +260,7 @@
  * Saves us alot of memory
  *
  * 41    5/08/97 1:16p Jason
- * made ChangeEndName work with device independant calls
+ * made ChangeEndName work with device independent calls
  *
  * 40    5/02/97 5:22p Jason
  * added bm_rowsize to return bytes per row

@@ -274,7 +274,7 @@
  * version 1.0 of the new AI ranged firing code.
  *
  * 37    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 36    3/17/98 12:14p Chris
  * Fixed bug with bumping player causing awareness

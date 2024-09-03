@@ -116,7 +116,7 @@
  * flag in the dying info.
  *
  * 214   4/21/99 12:41p Jason
- * make explosion system framerate independant
+ * make explosion system framerate independent
  *
  * 213   4/21/99 11:05a Kevin
  * new ps_rand and ps_srand to replace rand & srand
