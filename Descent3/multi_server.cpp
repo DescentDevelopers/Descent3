@@ -1882,7 +1882,7 @@ void MultiFlushAllIncomingBuffers() {
   }
 }
 
-// Checks to see if its any powerups need repositioning on the client machine
+// Checks to see if it is any powerup needing repositioning on the client machine
 void MultiCheckToRepositionPowerups() {
   int i;
   static int invis_id = -2;
@@ -1934,7 +1934,7 @@ void MultiCheckToRepositionPowerups() {
   }
 }
 
-// Checks to see if its time to respawn any powerups
+// Checks to see if it is time to respawn any powerups
 void MultiCheckToRespawnPowerups() {
   int i, t;
 

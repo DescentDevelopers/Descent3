@@ -407,7 +407,7 @@ int IsNonRenderableSubmodel(poly_model *pm, int submodelnum);
 // Sets the effect used by a polymodel
 void SetPolymodelEffect(polymodel_effect *);
 
-// Pages in a polymodel if its not already in memory
+// Pages in a polymodel if it is not already in memory
 void PageInPolymodel(int polynum, int type = -1, float *size_ptr = nullptr);
 
 // Gets a pointer to a polymodel.  Pages it in if neccessary

@@ -1935,7 +1935,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
   strcpy(objinfopointer->icon_name, genericpage->objinfo_struct.icon_name);
   // First see if our image differs from the one on the net
   // If it is, make a copy
-  // If its a release version, don't do any of this
+  // If it is a release version, don't do any of this
 
 #ifndef RELEASE
   if (Network_up) {
@@ -2324,7 +2324,7 @@ int mng_GetGuaranteedGenericPage(char *name, CFILE *infile) {
   int i;
   mngs_generic_page page;
 
-  // See if its in memory
+  // See if it is in memory
   i = FindObjectIDName(name);
   if (i != -1)
     return i;

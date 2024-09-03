@@ -1994,7 +1994,7 @@ bool Osiris_CallLevelEvent(int event, tOSIRISEventInfo *data) {
     void *instance = tOSIRISCurrentLevel.instance;
 
     if (instance) {
-      data->me_handle = OBJECT_HANDLE_NONE; // its a level script!...no me
+      data->me_handle = OBJECT_HANDLE_NONE; // it is a level script!...no me
       int16_t ret;
 
       ret = OSIRIS_loaded_modules[dll_id].CallInstanceEvent(0, instance, event, data);

@@ -564,7 +564,7 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
     }
   }
 
-  // its a new item type/id, so fill in its info
+  // it is a new item type/id, so fill in its info
   if (newnode->count == 1) {
     newnode->type = OBJ_WEAPON;
     newnode->id = id;
@@ -640,7 +640,7 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
     }
   }
 
-  // its a new item type/id, so fill in its info
+  // it is a new item type/id, so fill in its info
   if (newnode->count == 1) {
     newnode->type = otype;
     newnode->id = oid;
@@ -1393,7 +1393,7 @@ void CounterMeasuresSwitch(bool forward) {
   }
 }
 
-// repositions the pos so its in the correct spot
+// repositions the pos so it is in the correct spot
 void Inventory::ValidatePos(bool forward) {
   if (!pos)
     return;

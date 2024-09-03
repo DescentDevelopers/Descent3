@@ -1738,7 +1738,7 @@ DMFCDLLOUT(dInven_UsePos_fp Inven_UsePos;)
 typedef int (*dInven_GetPos_fp)(Inventory *inven);
 DMFCDLLOUT(dInven_GetPos_fp Inven_GetPos;)
 
-// checks the pos, if its on a nonselectable item it will move to the next selectable (NULL if none)
+// checks the pos, if it is on a nonselectable item, it will move to the next selectable (NULL if none)
 // typedef void (*dInven_ValidatePos_fp)(Inventory *inven,bool forward=true);
 typedef void (*dInven_ValidatePos_fp)(Inventory *inven, bool forward);
 DMFCDLLOUT(dInven_ValidatePos_fp Inven_ValidatePos;)

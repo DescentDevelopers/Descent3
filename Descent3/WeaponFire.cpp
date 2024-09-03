@@ -1305,7 +1305,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
     obj->mtype.phys_info.velocity *= Players[parent->id].weapon_speed_scalar;
 
   // Set initial velocity to that of the firing object
-  // Don't do it though if its a spawned weapon
+  // Don't do it though if it is a spawned weapon
   if ((obj->mtype.phys_info.flags & PF_USES_PARENT_VELOCITY) && parent->type != OBJ_WEAPON) {
 
     float fdot = (parent->mtype.phys_info.velocity * parent->orient.fvec);
@@ -3088,7 +3088,7 @@ void DoWeaponExploded(object *obj, vector *norm, vector *collision_point, object
                        obj->parent_handle);
 
   if (hit_object == Viewer_object && !(Weapons[obj->id].flags & WF_MATTER_WEAPON))
-    return; // Don't draw if its viewer who is getting hit
+    return; // Don't draw if it is the viewer who is getting hit
 
   if (Weapons[obj->id].flags & WF_PLANAR_BLAST) {
     if (Weapons[obj->id].flags & WF_BLAST_RING) {

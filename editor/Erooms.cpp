@@ -793,7 +793,7 @@ void SaveRoom(int n, char *filename) {
   int16_t Room_to_texture[MAX_TEXTURES];
   int t, found_it = 0;
 
-  // Make sure its in use!
+  // Make sure it is in use!
   ASSERT(Rooms[n].used);
 
   outfile = (CFILE *)cfopen(filename, "wb");

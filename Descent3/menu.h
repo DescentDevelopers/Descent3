@@ -35,7 +35,7 @@
  * (not hooked up) and level warp cheat.
  *
  * 3     5/24/98 2:58a Jeff
- * Options menu changes.  MenuOptions now takes a parameter, whether its
+ * Options menu changes.  MenuOptions now takes a parameter, whether it is
  * being called from the game or not
  *
  * 2     3/02/98 5:53p Samir

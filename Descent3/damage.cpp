@@ -867,7 +867,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
         KillPlayer(playerobj, killer, damage_amount, weapon_id);
       }
     } else {
-      // If this is a peer to peer game, and its me taking damage, then ask the server to damage me!
+      // If this is a peer to peer game, and it is me taking damage, then ask the server to damage me!
       if (Netgame.local_role == LR_CLIENT && (Netgame.flags & NF_PEER_PEER) && !server_says) {
         if (playerobj->id == Player_num) {
           MultiSendRequestPeerDamage(killer, weapon_id, damage_type, damage_amount);

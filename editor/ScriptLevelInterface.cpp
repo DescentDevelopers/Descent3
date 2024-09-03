@@ -997,7 +997,7 @@ bool DeleteGamefile(char *tempbuffer) {
     } else {
       removed = true;
     }
-  } else { // if its network, delete it from both the net and local drives
+  } else { // if it is network, delete it from both the net and local drives
     mng_FreeTrackLock(tl);
     mng_DeletePage(tempbuffer, PAGETYPE_GAMEFILE, 1);
     mng_DeletePage(tempbuffer, PAGETYPE_GAMEFILE, 0);
@@ -1094,7 +1094,7 @@ bool CheckInGamefile(char *tempbuffer, bool show_ok_confirmation) {
 
         cf_CopyFile(destname, srcname);
 
-        // Delete it from local pagefile if its there
+        // Delete it from local pagefile if it is there
         int dret = mng_DeletePage(Gamefiles[n].name, PAGETYPE_GAMEFILE, 1);
         ASSERT(dret == 1);
 
@@ -1106,7 +1106,7 @@ bool CheckInGamefile(char *tempbuffer, bool show_ok_confirmation) {
         if (show_ok_confirmation)
           OutrageMessageBox("%s checked in.", tempbuffer);
 
-        // Make sure its checked in
+        // Make sure it is checked in
         if (cf_Diff(destname, srcname)) {
           ASSERT(1);                      // Get Jason! File didn't check in correctly!
           cf_CopyFile(destname, srcname); // Do this so we can trace whats happening
@@ -1205,7 +1205,7 @@ bool UndoCheckOutGamefile(char *tempbuffer) {
   if ((tl = mng_FindTrackLock(Gamefiles[n].name, PAGETYPE_GAMEFILE)) == -1)
     return false;
 
-  // Make sure its to be deleted
+  // Make sure it is to be deleted
   if (OutrageMessageBox(MBOX_YESNO,
                         "Are you sure you want to undo your lock on %s and lose any changes you may have made?",
                         tempbuffer) != IDYES)

@@ -82,7 +82,7 @@ extern dllinfo DLLInfo;
 // The chokepoint function to call the dll function
 void CallGameDLL(int eventnum, dllinfo *data);
 
-// Frees the dll if its in memory
+// Frees the dll if it is in memory
 void FreeGameDLL();
 
 // Loads the game dll.  Returns 1 on success, else 0 on failure

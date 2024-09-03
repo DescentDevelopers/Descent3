@@ -752,7 +752,7 @@ void DrawFireballObject(object *obj) {
   norm_time = time_live / obj->lifetime;
   if (norm_time >= 1)
     norm_time = .99999f;            // don't go over!
-  if (obj->id == SMOKE_TRAIL_INDEX) // If its a smoke trail, get image from texture
+  if (obj->id == SMOKE_TRAIL_INDEX) // If it is a smoke trail, get image from texture
   {
     int texnum = obj->ctype.blast_info.bm_handle;
     if (GameTextures[texnum].flags & TF_ANIMATED) {
@@ -1409,7 +1409,7 @@ void DestroyObject(object *objp, float explosion_mag, int death_flags) {
     float fireball_lifeleft = (fireball_visnum != -1) ? VisEffects[fireball_visnum].lifeleft : 2.0;
     CreateSplintersFromBody(objp, explosion_mag, OBJECT_OUTSIDE(objp) ? fireball_lifeleft : (fireball_lifeleft / 2.0));
   }
-  // Make sure its ok to delete if this is a netplayer game
+  // Make sure it is ok to delete if this is a netplayer game
   if ((Game_mode & GM_MULTI) && (Netgame.local_role == LR_CLIENT) && (objp->flags & OF_SERVER_OBJECT))
     ASSERT(objp->flags & OF_SERVER_SAYS_DELETE);
   // Make object go away or become inert

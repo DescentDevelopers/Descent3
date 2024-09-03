@@ -1359,7 +1359,7 @@ int LGSObjects(CFILE *fp, int version) {
       goto lgsobjs_fail;
 
     // link into mine.
-    // turn off big object flags if its a big object. (ObjLink will take care of this.)
+    // turn off big object flags if it is a big object. (ObjLink will take care of this.)
     if (op->flags & OF_BIG_OBJECT)
       op->flags &= (~OF_BIG_OBJECT);
 

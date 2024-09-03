@@ -1761,7 +1761,7 @@ void PltMakeFNValid(char *name) {
 
 ////////////////////////////////////////////////////////
 // Copies the key/joy config of a pilot to another (src must exist!) (Keep up to date with Read/Write file)
-// this will also save out the dest, so make sure its filled in before calling function
+// this will also save out the dest, so make sure it is filled in before calling function
 bool PltCopyKeyConfig(pilot *src, pilot *dest) {
   // check to make sure src exists
   ASSERT(src);

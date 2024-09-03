@@ -2422,7 +2422,7 @@ void DMFCBase::DisplayOutrageLogo(void) {
     time = 0;
   }
 
-  // draw the Outrage Logo if its time
+  // draw the Outrage Logo if it is time
   if (time < 5.0) {
     int x, y;
     x = (*Game_window_w) - bmp.pw;
@@ -3255,7 +3255,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   curr = m_AllowList;
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
-      // its a match
+      // it is a match
       mprintf(0, "Player not banned\n");
       return false;
     }
@@ -3267,7 +3267,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   curr = m_DenyList;
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
-      // its a match
+      // it is a match
       mprintf(0, "Player IS banned\n");
       return true;
     }
@@ -4715,7 +4715,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       // attempt to parse the dotted ip address (only 0-9,'.' and '*' allowed)
       char *start = ptr;
 
-      // check to make sure its in a valid form
+      // check to make sure it is in a valid form
 
       int dot_count = 0;
       while (*ptr) {

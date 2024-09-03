@@ -956,7 +956,7 @@ void SGSHudState(CFILE *fp) {
         cf_WriteInt(fp, huditem->data.timer_handle);
         mprintf(0, "sg: restored timer (%x,%x,timer_hndl=%d)\n", huditem->x, huditem->y, huditem->data.timer_handle);
       } else if (huditem->type == HUD_ITEM_CUSTOMTEXT) {
-        // commented out because persistent hud messages are custom text, and its a mess to save the current
+        // commented out because persistent hud messages are custom text, and it is a mess to save the current
         // state of hud persistent messages.
         //	cf_WriteShort(fp, (int16_t)huditem->stat);
         //	cf_WriteByte(fp, (int8_t)huditem->type);

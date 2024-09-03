@@ -146,7 +146,7 @@
  * warnings)
  *
  * 135   2/12/99 3:38p Jason
- * added client-side interpolation...its not fully debugged though.
+ * added client-side interpolation...it is not fully debugged though.
  *
  * 134   2/09/99 6:52p Jeff
  * implemented 'typing inidcator' in multiplayer...players that are typing
@@ -527,7 +527,7 @@ extern bool Multi_bail_ui_menu;
 #define MP_ENTERING_GAME 9        // I'm entering the game
 #define MP_DISCONNECT 10          // A player has disconnected
 #define MP_PLAYER_FIRE 11         // A player is firing
-#define MP_ASK_TO_JOIN 12         // Asking if its ok to join
+#define MP_ASK_TO_JOIN 12         // Asking if it is ok to join
 #define MP_JOIN_RESPONSE 13       // Answering MP_ASK_TO_JOIN
 #define MP_SERVER_QUIT 14         // Server is quitting
 #define MP_LEAVE_GAME 15          // A client is leaving the game

@@ -2085,7 +2085,7 @@ void DrawPlayerTypingIndicator(object *obj) {
   float IndicatorTan;
   float rad = (float)(3.14 * (float)(10) / 180.0);
   IndicatorTan = tan(rad);
-  // See if its in our viewcone
+  // See if it is in our viewcone
   vector subvec = obj->pos - Player_object->pos;
   vm_NormalizeVectorFast(&subvec);
   if ((vm_DotProduct(&subvec, &Player_object->orient.fvec)) < IndicatorTan)
@@ -2188,7 +2188,7 @@ void DrawPlayerNameOnHud(object *obj) {
   if (color < 0)
     return;
 
-  // See if its in our viewcone
+  // See if it is in our viewcone
   vector subvec = obj->pos - Player_object->pos;
   vm_NormalizeVectorFast(&subvec);
   if ((vm_DotProduct(&subvec, &Player_object->orient.fvec)) < HudNameTan)

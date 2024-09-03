@@ -253,7 +253,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
     }
   }
 
-  // Don't do any of this if its the local client and a permissable netgame
+  // Don't do any of this if it is the local client and a permissable netgame
   if (!((Game_mode & GM_MULTI) && obj->type == OBJ_PLAYER && obj->id == Player_num && Netgame.flags & NF_PERMISSABLE)) {
     p_dwb->last_fire_time = Gametime;
 

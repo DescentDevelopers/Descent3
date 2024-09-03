@@ -4918,10 +4918,10 @@ bool GuideBot::InitExtinguish(bool f_player_on_fire) {
       break;
 
     if (Obj_IsEffect(scan_objs[i], EF_NAPALMED)) {
-      //			mprintf(0, "its on fire\n");
+      //			mprintf(0, "it is on fire\n");
       if (scan_objs[i] != memory->me) {
         if (!AI_IsObjEnemy(memory->me, scan_objs[i])) {
-          //					mprintf(0, "its not a enemy\n");
+          //					mprintf(0, "it is not a enemy\n");
           memory->extinguish_obj_list[memory->num_extinguish_objs++] = scan_objs[i];
         }
       }

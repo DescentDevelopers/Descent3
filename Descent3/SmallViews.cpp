@@ -424,7 +424,7 @@ void DrawSmallViews() {
     object *viewer = ObjGet(svp->objhandle);
     bool kill_viewer = false;
 
-    // Bail if object not around any more, or if its gone too high
+    // Bail if object not around any more, or if it has gone too high
     if (!viewer || (viewer->type == OBJ_DUMMY))
       kill_viewer = true;
 

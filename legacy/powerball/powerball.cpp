@@ -931,7 +931,7 @@ void GetGameStartPacket(uint8_t *data) {
     UpdatePowerBallEffectOnPlayer(WhoHasPowerBall, true);
   }
 
-  // we need to find the objnum of the PowerBall...its there somewhere
+  // we need to find the objnum of the PowerBall...it is there somewhere
   DLLmprintf(0, "Looking for powerball in level\n");
   for (int i = 0; i < MAX_OBJECTS; i++) {
     if ((PBall.Objects[i].type == OBJ_POWERUP) && (PBall.Objects[i].id == PowerBallID)) {

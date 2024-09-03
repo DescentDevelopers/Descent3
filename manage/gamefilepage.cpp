@@ -223,7 +223,7 @@ int mng_AssignGamefilePageToGamefile(mngs_gamefile_page *gamefilepage, int n) {
 
   // First see if our image differs from the one on the net
   // If it is, make a copy
-  // If its a release version, don't do any of this
+  // If it is a release version, don't do any of this
 
 #ifndef RELEASE
   if (Network_up) {

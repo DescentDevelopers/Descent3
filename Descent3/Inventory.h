@@ -302,7 +302,7 @@ public:
   bool UsePos(object *parent = NULL);
   // returns the 'index' position of the current position
   int GetPos(void);
-  // checks the pos, if its on a nonselectable item it will move to the next selectable (NULL if none)
+  // checks the pos, if it is on a nonselectable item, it will move to the next selectable (NULL if none)
   void ValidatePos(bool forward = true);
   // returns whether an item is selectable
   bool IsSelectable(void);

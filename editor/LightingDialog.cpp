@@ -1572,7 +1572,7 @@ void ResaveBitmap(const char *name) {
   if (bm_handle >= 0) {
     char search[256];
 
-    // Make sure its paged in
+    // Make sure it is paged in
     bm_data(bm_handle, 0);
 
     ddio_MakePath(search, LocalD3Dir, "data", "graphics", GameBitmaps[bm_handle].name, NULL);
@@ -1586,7 +1586,7 @@ void ResaveBitmap(const char *name) {
 
     bm_handle = bm_AllocLoadFileBitmap(search, 0);
     if (bm_handle >= 0) {
-      // Make sure its paged in
+      // Make sure it is paged in
       bm_data(bm_handle, 0);
 
       mprintf(0, "Resaving bitmap %s.\n", search);

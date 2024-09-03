@@ -520,7 +520,7 @@
  *
  * 29    5/16/97 1:24p Jason
  * changed the way models work their angle magic
- * Now its much more intuitive
+ * Now it is much more intuitive
  *
  * 28    5/16/97 12:04p Jason
  * better memory use for rotational keyframes
@@ -948,7 +948,7 @@ int ReloadModelTextures(int modelnum) {
         strcat(temp, ".OGF");
         ret = FindTextureBitmapName(temp);
         if (ret == -1) {
-          // See if its already in memory
+          // See if it is already in memory
           ret = FindTextureName(name_buf);
           if (ret == -1) {
             ret = 0;
@@ -1761,7 +1761,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
         ret = FindTextureBitmapName(temp);
         if (ret == -1) {
-          // See if its already in memory
+          // See if it is already in memory
           ret = FindTextureName(name_buf);
           if (ret == -1) {
             ret = 0;
@@ -2146,7 +2146,7 @@ int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
   return -1; // damn, didn't load
 }
 
-// Pages in a polymodel if its not already in memory
+// Pages in a polymodel if it is not already in memory
 void PageInPolymodel(int polynum, int type, float *size_ptr) {
   if (!(Poly_models[polynum].flags & PMF_NOT_RESIDENT)) {
     if (!(Poly_models[polynum].flags & PMF_SIZE_COMPUTED))

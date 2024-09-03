@@ -732,9 +732,9 @@ void RemapWeapons() {
 
         new_index = MoveWeaponFromIndex(i);
         RemapAllWeaponObjects(i, new_index);
-      } else // this weapon is a static weapon, make sure its in its place
+      } else // this weapon is a static weapon, make sure it is in its place
       {
-        if (i != match) // its not where it belongs, move it
+        if (i != match) // it is not where it belongs, move it
         {
           int new_index;
 

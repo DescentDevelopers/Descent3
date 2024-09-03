@@ -531,7 +531,7 @@
  * first pass at getting multiplayer deaths working
  *
  * 28    1/15/98 11:10a Jeff
- * Added call to set font color before 'loading level' so its white, also
+ * Added call to set font color before 'loading level' so it is white; also
  * turned back on Telcom
  *
  * 27    1/08/98 12:32p Samir

@@ -680,7 +680,7 @@ Start:
 int bm_GetFileType(CFILE *infile, const char *dest) {
   char iffcheck[4];
   int i;
-  // First, check if its a pcx
+  // First, check if it is a PCX
   i = strlen(dest);
   if (dest[i - 4] == '.' && (dest[i - 3] == 'p' || dest[i - 3] == 'P') && (dest[i - 2] == 'c' || dest[i - 2] == 'C') &&
       (dest[i - 1] == 'x' || dest[i - 1] == 'X'))

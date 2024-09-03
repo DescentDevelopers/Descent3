@@ -161,7 +161,7 @@ void dInven_GotoPosTypeID(Inventory *inven, int type, int id);
 bool dInven_UsePos(Inventory *inven, object *parent = NULL);
 // returns the 'index' position of the current position
 int dInven_GetPos(Inventory *inven);
-// checks the pos, if its on a nonselectable item it will move to the next selectable (NULL if none)
+// checks the pos, if it is on a nonselectable item, it will move to the next selectable (NULL if none)
 void dInven_ValidatePos(Inventory *inven, bool forward = true);
 // returns whether an item is selectable
 bool dInven_IsSelectable(Inventory *inven);

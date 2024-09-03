@@ -942,7 +942,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
 
   // First see if our image differs from the one on the net
   // If it is, make a copy
-  // If its a release version, don't do any of this
+  // If it is a release version, don't do any of this
 
 #ifndef RELEASE
   if (Network_up) {

@@ -378,7 +378,7 @@ int TryToJoinServer(network_address *addr) {
       }
       return 0;
     } else
-      mprintf(0, "Server says its ok to join!\n");
+      mprintf(0, "Server says it is ok to join!\n");
 
     nw_ConnectToServer(&sock, addr);
     if (sock != INVALID_SOCKET && sock != 0) {

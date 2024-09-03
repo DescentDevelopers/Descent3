@@ -425,7 +425,7 @@
  * display mission menu.
  *
  * 71    5/24/98 2:58a Jeff
- * Options menu changes.  MenuOptions now takes a parameter, whether its
+ * Options menu changes.  MenuOptions now takes a parameter, whether it is
  * being called from the game or not
  *
  * 70    5/23/98 6:33p Jeff

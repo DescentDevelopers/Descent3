@@ -163,7 +163,7 @@
 #define RELEASE_VERSION 0x2     // final release candidate: no debug, beta, editor
 
 #define BETA_VERSION 0x1000 // beta modifier.
-#define DEMO_VERSION 0x2000 // same as release, but its the demo.
+#define DEMO_VERSION 0x2000 // same as release, but it is the demo.
 
 struct program_version {
   int version_type;

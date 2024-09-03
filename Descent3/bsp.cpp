@@ -655,7 +655,7 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
       numback++;
     } else if (fate == BSP_COINCIDENT) {
       // Test to see if this plane is exactly the same as the partition plane
-      // If so, remove it from the list.  If its facing the other way, send it down the back list
+      // If so, remove it from the list. If it is facing the other way, send it down the back list.
       float dot = testpoly->plane.a * partition_plane.a + testpoly->plane.b * partition_plane.b +
                   testpoly->plane.c * partition_plane.c;
 

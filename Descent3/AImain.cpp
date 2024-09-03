@@ -204,7 +204,7 @@
  * Fixed AI_SEE_SOUND playing too often (like all the time...)
  *
  * 425   4/27/99 4:41a Jeff
- * only create guidebots if a single player game, or if its a multiplayer
+ * only create guidebots if a single player game, or if it is a multiplayer
  * game and the correct netflag is set
  *
  * 424   4/26/99 11:11a Chris
@@ -5713,7 +5713,7 @@ bool AIObjFriend(object *obj, object *target) {
     return false;
   }
 
-  // If its neutral and not targeting you -- its not an enemy (unless your hostile)
+  // If it is neutral and not targeting you -- it is not an enemy (unless you are hostile)
   if (team == AIF_TEAM_HOSTILE)
     return false;
 
@@ -5782,7 +5782,7 @@ bool AIObjEnemy(object *obj, object *target) {
     return false;
   }
 
-  // If its neutral and not targeting you -- its not an enemy (unless your hostile)
+  // If it is neutral and not targeting you -- it is not an enemy (unless you are hostile)
   if ((team != AIF_TEAM_HOSTILE) && (t_team == AIF_TEAM_NEUTRAL && target->ai_info->target_handle != obj->handle)) {
     return false;
   }

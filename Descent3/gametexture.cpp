@@ -63,7 +63,7 @@
  * added new procedural effect
  *
  * 45    2/12/99 3:37p Jason
- * added client-side interpolation...its not fully debugged though.
+ * added client-side interpolation...it is not fully debugged though.
  *
  * 44    2/10/99 3:38p Jason
  * table file filter fixups

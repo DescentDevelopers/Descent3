@@ -569,7 +569,7 @@ void GetMultiAPI(multi_api *api) {
   // anyway.
   // atexit(FreeMultiDLL);
 }
-// Frees the dll if its in memory
+// Frees the dll if it is in memory
 void FreeMultiDLL() {
   if (!MultiDLLHandle.handle)
     return;

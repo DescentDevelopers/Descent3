@@ -3551,7 +3551,7 @@ $$END
 void aAIFlags(int set, int flags, int handle) {
   bool f_team = false;
 
-  // Because its a bitfield, I had to hack a team value...  Team PTMC was 0; so, it was
+  // Because it is a bitfield, I had to hack a team value...  Team PTMC was 0; so, it was
   // impossible to set...  32768 wasn't used, so I hacked it here.  O' The shame...  :(
 
   if (!set)

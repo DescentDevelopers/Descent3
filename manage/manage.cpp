@@ -1245,7 +1245,7 @@ int mng_LoadNetPages(int show_progress) {
   }
   start_time = timer_GetTime();
   while (!cfeof(infile)) {
-    // Read in a pagetype.  If its a page we recognize, load it
+    // Read in a pagetype. If it is a page we recognize, load it.
     //		mprintf(0,".");
     if (show_progress) {
 
@@ -1408,7 +1408,7 @@ int mng_LoadLocalPages() {
   }
   Loading_locals = 1;
   while (!cfeof(infile)) {
-    // Read in a pagetype.  If its a page we recognize, load it
+    // Read in a pagetype. If it is a page we recognize, load it.
 
     pagetype = cf_ReadByte(infile);
     if (!Old_table_method)
@@ -2841,7 +2841,7 @@ void mng_CompileAddonPages(void) {
     // as we come across each page, check to see if it was
     // ever overlayed.
     while (!cfeof(file)) {
-      // Read in a pagetype.  If its a page we recognize, load it
+      // Read in a pagetype. If it is a page we recognize, load it.
       page_pos = cftell(file);
       pagetype = cf_ReadByte(file);
       len = cf_ReadInt(file);
@@ -2958,7 +2958,7 @@ void mng_LoadAddonPages() {
     }
     Loading_addon_table = c;
     while (!cfeof(infile)) {
-      // Read in a pagetype.  If its a page we recognize, load it
+      // Read in a pagetype. If it is a page we recognize, load it.
       pagetype = cf_ReadByte(infile);
       len = cf_ReadInt(infile);
 

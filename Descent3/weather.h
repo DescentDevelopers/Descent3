@@ -30,7 +30,7 @@ struct weather {
   int flags; // see weather flags, above
 
   float snow_intensity_scalar; // how hard it is snowing
-  float rain_intensity_scalar; // how hard its raining
+  float rain_intensity_scalar; // how hard it is raining
   int rain_color;              // the color of the rain
   int lightning_color;         // the color of the lightning
   int sky_flash_color;         // the color of the sky when lightning occurs

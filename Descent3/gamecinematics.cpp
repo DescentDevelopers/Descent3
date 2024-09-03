@@ -1041,7 +1041,7 @@ void Cinematic_Frame(void) {
           }
 #endif
 
-          // its a target on a path
+          // it is a target on a path
           matrix orient;
           vector pos;
           int room;
@@ -1726,7 +1726,7 @@ void CannedCinematicIntroCallback(int type) {
       vector fvec = GamePaths[pathnum].pathnodes[1].pos - GamePaths[pathnum].pathnodes[0].pos;
       vm_VectorToMatrix(&orient, &fvec, NULL, NULL);
 
-      // see if it is a hacked 2 node path (i.e. its such a small distance he should move
+      // see if it is a hacked 2 node path (i.e. it is such a small distance it should move)
       if (GamePaths[pathnum].num_nodes == 2) {
         if (fabs(vm_VectorDistance(&GamePaths[pathnum].pathnodes[1].pos, &GamePaths[pathnum].pathnodes[0].pos)) >
             30.0f) {
