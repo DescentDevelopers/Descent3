@@ -554,7 +554,7 @@
  * added RenderOBject abstraction layer
  *
  * 9     7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 8     7/15/97 5:32p Jason
  * got simple static lighting working with objects

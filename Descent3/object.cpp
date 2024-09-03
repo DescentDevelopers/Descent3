@@ -490,7 +490,7 @@
  * Fixed error handling for when an object can't be initialized.
  *
  * 173   10/13/98 1:08p Chris
- * Greatly improved the AI's use of paths.  Improved visability checking
+ * Greatly improved the AI's use of paths.  Improved visibility checking
  * algorithm.   Probably needs a second pass for further cleanup.
  *
  * 172   10/11/98 10:53p Matt
@@ -992,7 +992,7 @@
  * added RenderOBject abstraction layer
  *
  * 14    7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 13    7/16/97 4:09p Jason
  * ripped out temporary object lighting

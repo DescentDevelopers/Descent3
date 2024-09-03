@@ -160,7 +160,7 @@
  * auto level end
  *
  * 74    10/13/98 1:08p Chris
- * Greatly improved the AI's use of paths.  Improved visability checking
+ * Greatly improved the AI's use of paths.  Improved visibility checking
  * algorithm.   Probably needs a second pass for further cleanup.
  *
  * 73    10/09/98 7:47p Chris
@@ -338,7 +338,7 @@
  * Major update to the AI system.
  *
  * 18    1/20/98 4:40p Chris
- * Fixed some visability stuff.
+ * Fixed some visibility stuff.
  *
  * 17    1/19/98 10:04a Matt
  * Added new object handle system

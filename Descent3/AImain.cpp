@@ -771,7 +771,7 @@
  * Improved robot dodging and firing
  *
  * 253   10/13/98 1:08p Chris
- * Greatly improved the AI's use of paths.  Improved visability checking
+ * Greatly improved the AI's use of paths.  Improved visibility checking
  * algorithm.   Probably needs a second pass for further cleanup.
  *
  * 252   10/09/98 4:01p Chris
@@ -1368,13 +1368,13 @@
  * 50    1/21/98 3:54p Chris
  *
  * 49    1/20/98 4:40p Chris
- * Fixed some visability stuff.
+ * Fixed some visibility stuff.
  *
  * 48    1/20/98 12:21p Chris
  * Removed some printf's
  *
  * 47    1/20/98 11:34a Chris
- * Fixed problems with player visability and thus problems with awareness
+ * Fixed problems with player visibility and thus problems with awareness
  *
  * 46    1/19/98 10:04a Matt
  * Added new object handle system
@@ -2872,7 +2872,7 @@ void AISeeTarget(object *obj, bool f_see) {
   if (ai_info->awareness < AWARE_MOSTLY)
     ai_info->awareness = AWARE_MOSTLY;
 
-  // Note:  Player position is also updated in the visability test function
+  // Note:  Player position is also updated in the visibility test function
   //        for MIN_VIS_RECENT_CHECK_INTERVAL seconds
   object *targetptr;
   object *other_obj = targetptr = ObjGet(ai_info->target_handle);
@@ -2989,7 +2989,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
     f_it_set = true;
     break;
 
-  case AIN_OBJ_FIRED: // All visable  (obj fired, AIN_OBJFIRED, obj who fired) -- all rendered bots
+  case AIN_OBJ_FIRED: // All visible  (obj fired, AIN_OBJFIRED, obj who fired) -- all rendered bots
   {
     int i;
     other_obj = (object *)info;

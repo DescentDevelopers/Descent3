@@ -680,7 +680,7 @@
  * added features to lod engine - namely dynamic texture generation
  *
  * 27    7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 26    7/25/97 5:25p Jason
  * fixed multiple bugs in terrain LOD engine

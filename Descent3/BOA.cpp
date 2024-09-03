@@ -1508,7 +1508,7 @@ void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *x
 #include "neweditor/resource.h"
 #include "neweditor/ProgressDialog.h"
 
-// Displays/Updates the Visability Progress bar
+// Displays/Updates the Visibility Progress bar
 // state = 0 //create
 // state = 1 //update
 // state = 2 //destroy

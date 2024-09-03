@@ -282,7 +282,7 @@
  * AIGetToObj is not enabled when the target is NULL or OBJ_GHOST
  *
  * 61    10/13/98 1:08p Chris
- * Greatly improved the AI's use of paths.  Improved visability checking
+ * Greatly improved the AI's use of paths.  Improved visibility checking
  * algorithm.   Probably needs a second pass for further cleanup.
  *
  * 60    10/07/98 3:37p Chris
@@ -1304,7 +1304,7 @@ void GoalInitTypeGoals(object *obj, int ai_type) {
 
   GoalClearAll(obj);
 
-  // This goal has a proirity of 50.  Mabye I should split up intermediate goals
+  // This goal has a priority of 50.  Mabye I should split up intermediate goals
   // and long term goals.  -- Wander around within 2000 units of your starting
   // position (goal has priority of 100)  The AI type decides what to do with
   // a goal when it is done.

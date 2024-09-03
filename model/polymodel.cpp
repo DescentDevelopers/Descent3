@@ -488,7 +488,7 @@
  * made polymodels use less memory
  *
  * 7     7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 6     7/23/97 11:48a Jason
  * added support for newstyle pof format

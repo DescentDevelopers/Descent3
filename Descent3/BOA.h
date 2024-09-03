@@ -199,7 +199,7 @@ public:
 
 #define BOA_NEXT_ROOM(a, b) (BOA_Array[a][b] & BOA_ROOM_MASK)
 
-// Visability Info
+// Visibility Info
 
 #define BOAF_VIS 0x0400
 
