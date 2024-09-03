@@ -284,7 +284,7 @@
  * tweaked it
  *
  * 161   11/19/98 4:21p Chris
- * Got rid of some wierd rotation cases with slow deaths from being killed
+ * Got rid of some weird rotation cases with slow deaths from being killed
  * with the mass driver
  *
  * 160   11/19/98 12:22p Jason

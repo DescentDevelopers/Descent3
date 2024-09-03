@@ -1819,7 +1819,7 @@ void MakeBOAVisTable(bool from_lighting) {
                   fq.ignore_obj_list = NULL;
                   fq.flags =
                       FQ_BACKFACE |
-                      FQ_IGNORE_RENDER_THROUGH_PORTALS; // Gaurentees in wierd geometry cases (as the ray will hit as it
+                      FQ_IGNORE_RENDER_THROUGH_PORTALS; // Gaurentees in weird geometry cases (as the ray will hit as it
                                                         // comes back in the mine) that the ray cannot start outside the
                                                         // mine like with a slightly non-planar portal or other non-nice
                                                         // situations like zero-width door portal/room-face combos
