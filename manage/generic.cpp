@@ -487,7 +487,7 @@ void mng_InitGenericPage(mngs_generic_page *genericpage) {
   genericpage->ai_info.fire_spread = 0.0f;
   genericpage->ai_info.fight_team = 0.15f;
   genericpage->ai_info.fight_same = 0.8f;
-  genericpage->ai_info.agression = 0.5f;
+  genericpage->ai_info.aggression = 0.5f;
   genericpage->ai_info.hearing = 1.0f;
   genericpage->ai_info.frustration = 0.5f;
   genericpage->ai_info.roaming = 0.5f;
@@ -734,7 +734,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
   cf_WriteFloat(outfile, genericpage->ai_info.fire_spread);
   cf_WriteFloat(outfile, genericpage->ai_info.fight_team);
   cf_WriteFloat(outfile, genericpage->ai_info.fight_same);
-  cf_WriteFloat(outfile, genericpage->ai_info.agression);
+  cf_WriteFloat(outfile, genericpage->ai_info.aggression);
   cf_WriteFloat(outfile, genericpage->ai_info.hearing);
   cf_WriteFloat(outfile, genericpage->ai_info.frustration);
   cf_WriteFloat(outfile, genericpage->ai_info.roaming);
@@ -954,7 +954,7 @@ void mng_WriteNewGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
   cf_WriteFloat(outfile, genericpage->ai_info.fire_spread);
   cf_WriteFloat(outfile, genericpage->ai_info.fight_team);
   cf_WriteFloat(outfile, genericpage->ai_info.fight_same);
-  cf_WriteFloat(outfile, genericpage->ai_info.agression);
+  cf_WriteFloat(outfile, genericpage->ai_info.aggression);
   cf_WriteFloat(outfile, genericpage->ai_info.hearing);
   cf_WriteFloat(outfile, genericpage->ai_info.frustration);
   cf_WriteFloat(outfile, genericpage->ai_info.roaming);
@@ -1208,7 +1208,7 @@ int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
   genericpage->ai_info.fire_spread = cf_ReadFloat(infile);
   genericpage->ai_info.fight_team = cf_ReadFloat(infile);
   genericpage->ai_info.fight_same = cf_ReadFloat(infile);
-  genericpage->ai_info.agression = cf_ReadFloat(infile);
+  genericpage->ai_info.aggression = cf_ReadFloat(infile);
   genericpage->ai_info.hearing = cf_ReadFloat(infile);
   genericpage->ai_info.frustration = cf_ReadFloat(infile);
   genericpage->ai_info.roaming = cf_ReadFloat(infile);
@@ -1436,7 +1436,7 @@ int mng_ReadGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
       genericpage->ai_info.fire_spread = cf_ReadFloat(infile);
       genericpage->ai_info.fight_team = cf_ReadFloat(infile);
       genericpage->ai_info.fight_same = cf_ReadFloat(infile);
-      genericpage->ai_info.agression = cf_ReadFloat(infile);
+      genericpage->ai_info.aggression = cf_ReadFloat(infile);
       genericpage->ai_info.hearing = cf_ReadFloat(infile);
       genericpage->ai_info.frustration = cf_ReadFloat(infile);
       genericpage->ai_info.roaming = cf_ReadFloat(infile);

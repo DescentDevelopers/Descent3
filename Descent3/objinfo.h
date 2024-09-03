@@ -430,7 +430,7 @@ struct t_ai_info {
   float frustration;
   float curiousity;
   float life_preservation;
-  float agression;
+  float aggression;
 
   float fire_spread;
   float night_vision;

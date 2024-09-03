@@ -186,7 +186,7 @@ void CAISettingsDlg::DoDataExchange(CDataExchange *pDX) {
   DDX_Control(pDX, IDC_AI_FIGHT_TEAM_SLIDER, m_fight_team_slider);
   DDX_Control(pDX, IDC_AI_FIGHT_SAME_SLIDER, m_fight_same_slider);
   DDX_Control(pDX, IDC_AI_CURIOUSITY_SLIDER, m_curiousity_slider);
-  DDX_Control(pDX, IDC_AI_AGRESSION_SLIDER, m_agression_slider);
+  DDX_Control(pDX, IDC_AI_AGRESSION_SLIDER, m_aggression_slider);
   DDX_Control(pDX, IDC_AI_FIRE_SPREAD_SLIDER, m_fire_spread_slider);
   DDX_Check(pDX, IDC_AI_FIRE_WEAPON_1_CHECK, m_fire_weapon1);
   DDX_Check(pDX, IDC_AI_FIRE_WEAPON_2_CHECK, m_fire_weapon2);
@@ -396,8 +396,8 @@ BOOL CAISettingsDlg::OnInitDialog() {
   m_fight_same_slider.SetRange(0, MAX_SLIDER_RANGE);
   m_fight_same_slider.SetPos((int)(m_ai_info->fight_same * MAX_SLIDER_RANGE));
 
-  m_agression_slider.SetRange(0, MAX_SLIDER_RANGE);
-  m_agression_slider.SetPos((int)(m_ai_info->agression * MAX_SLIDER_RANGE));
+  m_aggression_slider.SetRange(0, MAX_SLIDER_RANGE);
+  m_aggression_slider.SetPos((int)(m_ai_info->aggression * MAX_SLIDER_RANGE));
 
   m_hearing_slider.SetRange(0, MAX_SLIDER_RANGE);
   m_hearing_slider.SetPos((int)(m_ai_info->hearing * MAX_SLIDER_RANGE));
@@ -693,7 +693,7 @@ void CAISettingsDlg::OnOK() {
   m_ai_info->lead_varience = m_tlv_slider.GetPos() / (float)MAX_SLIDER_RANGE;
   m_ai_info->fight_team = m_fight_team_slider.GetPos() / (float)MAX_SLIDER_RANGE;
   m_ai_info->fight_same = m_fight_same_slider.GetPos() / (float)MAX_SLIDER_RANGE;
-  m_ai_info->agression = m_agression_slider.GetPos() / (float)MAX_SLIDER_RANGE;
+  m_ai_info->aggression = m_aggression_slider.GetPos() / (float)MAX_SLIDER_RANGE;
   m_ai_info->hearing = m_hearing_slider.GetPos() / (float)MAX_SLIDER_RANGE;
   m_ai_info->frustration = m_frustration_slider.GetPos() / (float)MAX_SLIDER_RANGE;
   m_ai_info->roaming = m_roaming_slider.GetPos() / (float)MAX_SLIDER_RANGE;

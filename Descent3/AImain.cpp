@@ -3648,7 +3648,7 @@ void ObjSetAIInfo(object *objp) {
   dest->frustration = src->frustration;
   dest->curiousity = src->curiousity;
   dest->life_preservation = src->life_preservation;
-  dest->agression = src->agression;
+  dest->aggression = src->aggression;
 
   dest->fire_spread = src->fire_spread;
   dest->night_vision = src->night_vision;
@@ -4008,7 +4008,7 @@ void AICheckTargetVis(object *obj) {
 
       fq.rad = 0.0f;
       fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_NO_RELINK /* | FQ_IGNORE_MOVING_OBJECTS*/;
-      if (ai_info->agression > .7f) {
+      if (ai_info->aggression > .7f) {
         fq.flags |= FQ_IGNORE_MOVING_OBJECTS;
       }
 
@@ -4424,8 +4424,8 @@ void AIDoOrientDefault(object *obj) {
   }
 
   // The aware barely stuff can be improved by using emotional sliders to determine if the robot will
-  // 'lose track' of its target -- chrishack -- also use last see target time with the agression slider
-  if ((ai_info->flags & AIF_ORIENT_TO_VEL) || (ai_info->awareness <= AWARE_BARELY && ai_info->agression < 0.4f) ||
+  // 'lose track' of its target -- chrishack -- also use last see target time with the aggression slider
+  if ((ai_info->flags & AIF_ORIENT_TO_VEL) || (ai_info->awareness <= AWARE_BARELY && ai_info->aggression < 0.4f) ||
       !ObjGet(ai_info->target_handle)) {
     AIDoOrientVelocity(obj);
   } else {
@@ -5463,7 +5463,7 @@ void ai_fire(object *obj) {
           bool f_no_fire = false;
           int anim_type = obj_info->static_wb[i].flags & WBF_ANIM_MASKS;
 
-          if (ai_info->agression == 0.0f && ai_info->memory[0].num_times_hit == 0) {
+          if (ai_info->aggression == 0.0f && ai_info->memory[0].num_times_hit == 0) {
             // Assume no fire
             f_no_fire = true;
 
@@ -5928,7 +5928,7 @@ void AIDetermineTarget(object *obj) {
         Gametime + 2.0f * MIN_TARGET_UPDATE_INTERVAL +
         ((float)ps_rand() / (float)D3_RAND_MAX) * 2.0f * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
 
-  // Chrishack -- if agression is over a value, NO switching targets!!!!!!!!!  Need to implement
+  // Chrishack -- if aggression is over a value, NO switching targets!!!!!!!!!  Need to implement
   // Chrishack -- if frustration is over a value, act as hostile -- temp stuff AIF_TEAM_HOSTILE
 
   // They forget their enemies after a few seconds
@@ -5958,7 +5958,7 @@ void AIDetermineTarget(object *obj) {
 
       if ((t) && (t->control_type == CT_AI) && ((t->ai_info->flags & AIF_TEAM_MASK) == AIF_TEAM_PTMC)) {
         // Do the divide because we don't want D3_RAND_MAX to go too high
-        if (ps_rand() / AI_FORGIVE_AGRESSION_MULTIPLIER > ai_info->agression * D3_RAND_MAX) {
+        if (ps_rand() / AI_FORGIVE_AGRESSION_MULTIPLIER > ai_info->aggression * D3_RAND_MAX) {
           f_forgive_friend = true;
         }
       }
@@ -5993,7 +5993,7 @@ void AIDoFreud(object *obj) {
   ai_mem *mem = ai_info->memory;
 
   int fear_depth = (ai_info->life_preservation) * (AI_MEM_DEPTH - 1) + 1;
-  int anger_depth = (ai_info->agression) * (AI_MEM_DEPTH - 1) + 1;
+  int anger_depth = (ai_info->aggression) * (AI_MEM_DEPTH - 1) + 1;
   int frust_depth = (ai_info->frustration) * (AI_MEM_DEPTH - 1) + 1;
 
   if (fear_depth >= AI_MEM_DEPTH)

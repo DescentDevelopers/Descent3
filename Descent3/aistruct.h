@@ -812,13 +812,13 @@ struct ai_frame {
   float frustration;
   float curiousity;
   float life_preservation;
-  float agression;
+  float aggression;
 
   // Current emotional levels
   float cur_frustration;
   float cur_curiousity;
   float cur_life_preservation;
-  float cur_agression;
+  float cur_aggression;
 
   // X Second memory
   float mem_time_till_next_update;

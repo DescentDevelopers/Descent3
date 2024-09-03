@@ -50,7 +50,7 @@ public:
   CSliderCtrl m_fight_team_slider;
   CSliderCtrl m_fight_same_slider;
   CSliderCtrl m_curiousity_slider;
-  CSliderCtrl m_agression_slider;
+  CSliderCtrl m_aggression_slider;
   CSliderCtrl m_fire_spread_slider;
   BOOL m_fire_weapon1;
   BOOL m_fire_weapon2;

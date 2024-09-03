@@ -1553,7 +1553,7 @@ void SGSSnapshot(CFILE *fp) {
 //@@	gs_WriteFloat(fp, ai->frustration);
 //@@	gs_WriteFloat(fp, ai->curiousity);
 //@@	gs_WriteFloat(fp, ai->fire_spread);
-//@@	gs_WriteFloat(fp, ai->agression);
+//@@	gs_WriteFloat(fp, ai->aggression);
 //@@	gs_WriteFloat(fp, ai->night_vision);
 //@@	gs_WriteFloat(fp, ai->fog_vision);
 //@@	gs_WriteFloat(fp, ai->lead_accuracy);

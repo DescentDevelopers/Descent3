@@ -1701,8 +1701,7 @@ struct thief_data {
   inv_item stolen_inv[MAX_STOLEN_INV];
 
   float fear;
-  float agression;
-
+  float aggression;
 };
 
 class Thief : public BaseObjScript {

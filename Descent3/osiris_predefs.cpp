@@ -1230,9 +1230,9 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
     break;
   case AIV_F_AGRESSION:
     if (op == VF_SET) {
-      ai_info->agression = *((float *)ptr);
+      ai_info->aggression = *((float *)ptr);
     } else {
-      *((float *)ptr) = ai_info->agression;
+      *((float *)ptr) = ai_info->aggression;
     }
     break;
   case AIV_F_NIGHT_VISION:

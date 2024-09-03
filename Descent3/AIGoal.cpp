@@ -1494,7 +1494,7 @@ bool GoalIsGoalEnabled(object *obj, int goal_index) {
       f_enabled = e_info->float_value <= ai_info->cur_life_preservation;
     } break;
     case (AIE_ANGRY): {
-      f_enabled = e_info->float_value <= ai_info->cur_agression;
+      f_enabled = e_info->float_value <= ai_info->cur_aggression;
     } break;
     case (AIE_CURIOUS): {
       f_enabled = e_info->float_value <= ai_info->cur_curiousity;

@@ -2656,7 +2656,7 @@ void PlayerSetControlToAI(int slot, float velocity) {
   pobj->ai_info->dodge_vel_percent = 1.0f;
   pobj->ai_info->attack_vel_percent = 1.0f;
   pobj->ai_info->fight_same = 0.0f;
-  pobj->ai_info->agression = 0.0f;
+  pobj->ai_info->aggression = 0.0f;
   pobj->ai_info->avoid_friends_distance = 0.0f;
   pobj->ai_info->biased_flight_importance = 0.0f;
   pobj->ai_info->circle_distance = 10.0f;

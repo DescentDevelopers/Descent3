@@ -1860,7 +1860,7 @@ int LGSSnapshot(CFILE *fp) {
 //@@	gs_ReadFloat(fp, ai->frustration);
 //@@	gs_ReadFloat(fp, ai->curiousity);
 //@@	gs_ReadFloat(fp, ai->fire_spread);
-//@@	gs_ReadFloat(fp, ai->agression);
+//@@	gs_ReadFloat(fp, ai->aggression);
 //@@	gs_ReadFloat(fp, ai->night_vision);
 //@@	gs_ReadFloat(fp, ai->fog_vision);
 //@@	gs_ReadFloat(fp, ai->lead_accuracy);
