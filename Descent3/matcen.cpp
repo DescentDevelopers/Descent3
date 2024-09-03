@@ -1383,7 +1383,7 @@ void matcen::DoThinkFrame() {
   if ((!(m_status & MSTAT_NOT_HURT_PLAYER)) && (m_prod_mode == MMODE_PREPROD || m_prod_mode == MMODE_POSTPROD)) {
     float damage = MATCEN_DAMAGE_PER_SECOND * Frametime;
     if (Game_mode & GM_MULTI) {
-      // Multiplayer targetting (Major difference is that robot will ignore players while infighting in single player)
+      // Multiplayer targeting (Major difference is that robot will ignore players while infighting in single player)
       for (int i = 0; i < MAX_PLAYERS; ++i) {
         if (!((NetPlayers[i].flags & NPF_CONNECTED) && (NetPlayers[i].sequence >= NETSEQ_PLAYING)))
           continue;

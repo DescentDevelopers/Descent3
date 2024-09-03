@@ -36,7 +36,7 @@
  * Bail from anim update if no anim data.
  *
  * 477   11/02/99 12:17p Chris
- * Improved the targetting code (no max dist when in the same room as
+ * Improved the targeting code (no max dist when in the same room as
  * target)
  *
  * 476   10/24/99 10:46p Chris
@@ -81,7 +81,7 @@
  * He now only dodges player shots
  *
  * 463   7/26/99 1:16p Chris
- * GB now dodges player (and targetted robot) shots
+ * GB now dodges player (and targeted robot) shots
  *
  * 462   5/24/99 3:23p Chris
  * Fixed team anarchy bug.
@@ -114,7 +114,7 @@
  *
  * 453   5/20/99 1:15a Chris
  * Improved BNode Path Following for end points on the path.  Fixed bugs
- * with non-auto targetting
+ * with non-auto targeting
  *
  * 452   5/19/99 2:16a Chris
  * Fixed gunboys in coop (will not fire on teammates now)
@@ -627,7 +627,7 @@
  *
  * 298   12/03/98 2:31p Chris
  * The auto-avoid friends flag is now cooler now (they avoid at greater
- * distances when they are within thier circle distance from a targetted
+ * distances when they are within thier circle distance from a targeted
  * enemy)
  *
  * 297   12/03/98 12:24p Chris
@@ -814,7 +814,7 @@
  * 239   9/30/98 4:40p Chris
  *
  * 238   9/30/98 4:36p Chris
- * Fixed a targetting bug
+ * Fixed a targeting bug
  *
  * 237   9/30/98 3:49p Chris
  * Changed comment
@@ -825,7 +825,7 @@
  * same as prev
  *
  * 234   9/28/98 7:03p Chris
- * Improved targetting of objects by AIs
+ * Improved targeting of objects by AIs
  *
  * 233   9/28/98 6:23p Chris
  * Changed multi_anim to custom_anim
@@ -834,7 +834,7 @@
  * Added birth animations
  *
  * 231   9/28/98 1:15p Chris
- * Fixed the targetting of parents(oops) after parent-collide-timeout
+ * Fixed the targeting of parents(oops) after parent-collide-timeout
  *
  * 230   9/28/98 10:34a Chris
  * Fixed a semi-colon bug
@@ -905,7 +905,7 @@
  * 208   7/28/98 5:41p Chris
  *
  * 207   7/28/98 5:04p Chris
- * Added some new multiplayer support (for dodging and targetting)
+ * Added some new multiplayer support (for dodging and targeting)
  *
  * 206   7/24/98 6:06p Chris
  * Initial robot leading code  -- needs multiple wb support
@@ -1075,7 +1075,7 @@
  * Print the notify number a robot gets when it is invalid
  *
  * 148   5/20/98 10:22a Chris
- * Improved targetting stuff
+ * Improved targeting stuff
  *
  * 147   5/20/98 10:19a Chris
  * Fixed some bugs with status_reg's and circle distance
@@ -5708,12 +5708,12 @@ bool AIObjFriend(object *obj, object *target) {
   int team = AIGetTeam(obj);
   int t_team = AIGetTeam(target);
 
-  // If this object is targetting you - it is your enemy
+  // If this object is targeting you - it is your enemy
   if ((target->control_type == CT_AI) && (target->ai_info->target_handle == obj->handle)) {
     return false;
   }
 
-  // If its neutral and not targetting you -- its not an enemy (unless your hostile)
+  // If its neutral and not targeting you -- its not an enemy (unless your hostile)
   if (team == AIF_TEAM_HOSTILE)
     return false;
 
@@ -5772,7 +5772,7 @@ bool AIObjEnemy(object *obj, object *target) {
   int team = AIGetTeam(obj);
   int t_team = AIGetTeam(target);
 
-  // If this object is targetting you - it is your enemy
+  // If this object is targeting you - it is your enemy
   if ((target->control_type == CT_AI) && (target->ai_info->target_handle == obj->handle)) {
     return true;
   }
@@ -5782,7 +5782,7 @@ bool AIObjEnemy(object *obj, object *target) {
     return false;
   }
 
-  // If its neutral and not targetting you -- its not an enemy (unless your hostile)
+  // If its neutral and not targeting you -- its not an enemy (unless your hostile)
   if ((team != AIF_TEAM_HOSTILE) && (t_team == AIF_TEAM_NEUTRAL && target->ai_info->target_handle != obj->handle)) {
     return false;
   }
@@ -5944,7 +5944,7 @@ void AIDetermineTarget(object *obj) {
   } else // Team PTMC  :)
   {
     if (Game_mode & GM_MULTI) {
-      // Multiplayer targetting (Major difference is that robot will ignore players while infighting in single player)
+      // Multiplayer targeting (Major difference is that robot will ignore players while infighting in single player)
       for (i = 0; i < MAX_PLAYERS; i++) {
         if ((NetPlayers[i].flags & NPF_CONNECTED) && (NetPlayers[i].sequence >= NETSEQ_PLAYING)) {
           object *target = &Objects[Players[i].objnum];

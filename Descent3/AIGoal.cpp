@@ -64,7 +64,7 @@
  *
  * 125   5/20/99 1:15a Chris
  * Improved BNode Path Following for end points on the path.  Fixed bugs
- * with non-auto targetting
+ * with non-auto targeting
  *
  * 124   5/18/99 10:57a Chris
  * Various bug fixes

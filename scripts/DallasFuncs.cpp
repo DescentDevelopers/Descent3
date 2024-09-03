@@ -3365,7 +3365,7 @@ Sets the target for an AI object
 
 Parameters:
   Object - the object whose AI target is being set
-  Target - the object to be targetted for attack
+  Target - the object to be targeted for attack
 $$END
 */
 void aAISetTarget(int objhandle, int targethandle) { AI_Value(objhandle, VF_SET, AIV_I_TARGET_HANDLE, &targethandle); }

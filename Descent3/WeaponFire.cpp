@@ -96,7 +96,7 @@
  * Tweaked min fire spread for diff levels
  *
  * 258   5/10/99 11:57p Chris
- * Now related objects are not targetted by an omega cannon (I.e. things
+ * Now related objects are not targeted by an omega cannon (I.e. things
  * like a flag or something attached)
  *
  * 257   5/09/99 11:57p Jason

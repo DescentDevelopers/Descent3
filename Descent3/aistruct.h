@@ -179,7 +179,7 @@
  * Added 13 new fields.  AI fire spread works.
  *
  * 68    7/28/98 5:04p Chris
- * Added some new multiplayer support (for dodging and targetting)
+ * Added some new multiplayer support (for dodging and targeting)
  *
  * 67    7/24/98 6:06p Chris
  * Initial robot leading code  -- needs multiple wb support
