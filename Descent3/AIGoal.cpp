@@ -591,7 +591,7 @@ float GoalDetermineTrackDist(object *obj) {
           dist = cur_goal->ramp_influence_dists[3];
         }
       } else {
-        // Influence isn't distnace based; so, check out to max dist
+        // Influence isn't distance based; so, check out to max dist
         dist = MAX_NEAR_OBJ_SEARCH_DIST;
       }
     }

@@ -111,7 +111,7 @@
  * added prototypes for vm_MakeInverseMatrix and vm_SinCosToMatrix
  *
  * 28    2/27/97 5:23p Chris
- * Removed the remainding extern inline
+ * Removed the remaining extern inline
  *
  * 27    2/27/97 4:56p Samir
  * took out ifndef MAC stuff

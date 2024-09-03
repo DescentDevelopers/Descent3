@@ -4600,7 +4600,7 @@ void ai_move(object *obj) {
       ai_info->flags |= AIF_DODGE;
   }
   // int num_objects;
-  // object *g_objs[5]; // 1 target + 2 enemies + 2 freinds
+  // object *g_objs[5]; // 1 target + 2 enemies + 2 friends
 
   object *targetptr = ObjGet(ai_info->target_handle); // The target of this AI
   ai_info->movement_dir = Zero_vector;
@@ -4709,7 +4709,7 @@ void ai_move(object *obj) {
                 if (cur_dist > dist)
                   continue;
 
-                // Scale the life perservation too (if enemy DAMN GOOD IDEA - expand AVOID SIZE too)   -- chrishack
+                // Scale the life preservation too (if enemy DAMN GOOD IDEA - expand AVOID SIZE too)   -- chrishack
                 // Linear scale by distance
                 float scale = cur_goal->influence * ((dist - cur_dist) / dist);
 
@@ -6092,7 +6092,7 @@ void AIDoMemFrame(object *obj) {
 
     // Reset the accumulators
 
-    // These are imcremented as this memory time slice is active
+    // These are incremented as this memory time slice is active
     ai_info->memory[0].num_enemy_shots_dodged = 0;
     ai_info->memory[0].num_enemy_shots_fired = 0;
     ai_info->memory[0].num_hit_enemy = 0;

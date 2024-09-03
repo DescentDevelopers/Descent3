@@ -2691,7 +2691,7 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    // Remove unneccessary groups
+    // Remove unnecessary groups
     for (count = 0; count <= Highest_room_index; count++) {
       if (Rooms[count].used) {
         //			mprintf(0, "==================\n", count);
@@ -2825,7 +2825,7 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    // Remove unneccessary groups
+    // Remove unnecessary groups
     for (count = 0; count <= Highest_room_index; count++) {
       if (Rooms[count].used) {
         //			mprintf(0, "==================\n", count);
@@ -2973,7 +2973,7 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    //	// Print out remainding groups
+    //	// Print out remaining groups
     //	for(count = 0; count <= Highest_room_index; count++)
     //	{
     //		if(Rooms[count].used)

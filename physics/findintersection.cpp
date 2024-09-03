@@ -151,7 +151,7 @@
  * Massive AI, OSIRIS update
  *
  * 190   1/01/99 4:53p Chris
- * Fixed a problem with long-rays causing unneccessary asserts
+ * Fixed a problem with long-rays causing unnecessary asserts
  *
  * 189   1/01/99 4:10p Chris
  * Added some const parameters, improved ray cast object collide/rejection
