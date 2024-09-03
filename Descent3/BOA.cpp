@@ -437,7 +437,7 @@ bool BOA_ComputeMinDist(int start_room, int end_room, float max_check_dist, floa
     if (last_room == end_room) {
       int this_portal = BOA_DetermineStartRoomPortal(cur_room, NULL, last_room, NULL);
 
-      if (cur_room != start_room)
+      if (cur_room != start_room && this_portal >= 0)
         *dist += BOA_cost_array[cur_room][this_portal];
       if (max_check_dist > 0.0 && max_check_dist < *dist)
         return false;
