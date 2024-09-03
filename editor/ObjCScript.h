@@ -167,7 +167,7 @@ void EndScriptFileList();
 // identify indices into script names array from the name.
 int FindScriptIDFromName(const char *name);
 
-//	find event id from it's name or vice-versa
+//	find event id from its name or vice-versa
 char *FindEventNameFromID(int id);
 int FindEventIDFromName(const char *name);
 

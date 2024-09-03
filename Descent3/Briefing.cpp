@@ -63,7 +63,7 @@
  *
  * 45    7/11/98 9:16p Jeff
  * moved automatically drawing monitor overlay graphics from update() to a
- * function of it's own, that way the TelCom API can be avoided if needed
+ * function of its own, that way the TelCom API can be avoided if needed
  *
  * 44    7/09/98 8:33p Samir
  * changes for new streaming interface.

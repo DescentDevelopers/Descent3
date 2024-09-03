@@ -174,7 +174,7 @@
  * added ObjUnlink call.
  *
  * 130   8/12/98 6:37p Jeff
- * added functions to ghost an object (make it's type to OBJ_DUMMY) and
+ * added functions to ghost an object (make its type to OBJ_DUMMY) and
  * unghost
  *
  * 129   8/12/98 12:04p Chris
@@ -807,7 +807,7 @@ object *ObjGetUltimateParent(object *child);
 // Sets an object to a type OBJ_DUMMY (saves its old type) so it won't be renderered, etc, but still alive
 void ObjGhostObject(int objnum);
 
-// Restores a ghosted object back to it's old type
+// Restores a ghosted object back to its old type
 void ObjUnGhostObject(int objnum);
 
 /////////////////////////////////

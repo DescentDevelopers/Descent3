@@ -1876,7 +1876,7 @@ bool DMFCBase::GetScoreLimit(int *limit) {
 // DMFCBase::AutoTimeLimit
 //
 //    Server Only.  This turns off or on the automatic level ending by DMFC of a timed multiplayer game.
-//    If you turn it off, it is your responsibility to end a time multiplayer game when it's time
+//    If you turn it off, it is your responsibility to end a time multiplayer game when its time
 //    is up.  If it is turned on, DMFC will automatically handle ending the game.  By default it is on.
 void DMFCBase::AutoTimeLimit(bool turnon) {
   if (GetLocalRole() != LR_SERVER)
@@ -2536,7 +2536,7 @@ bool DMFCBase::ShouldIDisplayHUDName(int pnum) {
 // DMFCBase::GetCounterMeasureOwner
 //
 //
-//	Given a counter measure it will determine the pnum of it's owner...if it can't find it, it returns -1
+//	Given a counter measure it will determine the pnum of its owner...if it can't find it, it returns -1
 int DMFCBase::GetCounterMeasureOwner(object *robot) {
   if (!robot)
     return -1;
@@ -5535,7 +5535,7 @@ int DMFCBase::GetCameraViewType(int window) {
 }
 
 // Given a generic object (OBJ_POWERUP,OBJ_ROBOT,OBJ_BUILDING or OBJ_CLUTTER) id
-// in the range of 0 to MAX_OBJECT_IDS, this returns a pointer to it's information (see objinfo.h)
+// in the range of 0 to MAX_OBJECT_IDS, this returns a pointer to its information (see objinfo.h)
 //	It returns NULL if an invalid id is given (or it's not used)
 object_info *DMFCBase::GetObjectInfo(int objinfo_id) {
   if (objinfo_id < 0 || objinfo_id >= MAX_OBJECT_IDS)

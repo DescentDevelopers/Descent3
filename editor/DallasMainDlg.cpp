@@ -6597,7 +6597,7 @@ void CDallasMainDlg::ParseOutActionVarTypes(char *new_desc, char *old_desc) {
   new_desc_text = "";
   while ((*old_desc) != '\0') {
 
-    // If it's start of a param block, extract the param name
+    // If it's the start of a param block, extract the param name
     if ((*old_desc) == '[') {
       ParseParamBlock(old_desc, name_text, default_text, range_text);
       new_desc_text += '[';
@@ -15950,7 +15950,7 @@ bool CDallasMainDlg::ExportScriptToFile(char *filename, char *script_name) {
               return FALSE;
             }
 
-            // Copy the new script into it's place
+            // Copy the new script into its place
             O(("%s", script_name));
             O(("VERSION		%d", DALLAS_SAVE_VERSION));
 

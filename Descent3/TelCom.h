@@ -242,7 +242,7 @@ bool TelComJumpScreen(int screen);
  */
 void TelComInitEventManager(void);
 /*
- *	Calling this sends an event message to the TelCom, adding it to it's event queue
+ *	Calling this sends an event message to the TelCom, adding it to its event queue
  *
  */
 void TelComSendEvent(int event_num, int parm1 = 0, int parm2 = 0);

@@ -976,7 +976,7 @@ int LGSObjects(CFILE *fp, int version) {
     uint8_t l_rend_type;
     gs_ReadByte(fp, l_rend_type);
 
-    // See if the object has changed from it's original lightmap type
+    // See if the object has changed from its original lightmap type
     // DAJ added check for type
     if ((Objects[i].type != OBJ_NONE) && (Objects[i].lighting_render_type == LRT_LIGHTMAPS) &&
         (l_rend_type != LRT_LIGHTMAPS)) {

@@ -2612,7 +2612,7 @@ bool PltSelectShip(pilot *Pilot) {
       break;
     }
     case ID_IMPORTSOUND: {
-      // Import the sound, set it's sample to xx.xKhz and xbit depth, attach the CRC to the filename
+      // Import the sound, set its sample to xx.xKhz and xbit depth, attach the CRC to the filename
       // and place in custom/sounds.  Then update the audio taunt combo boxes
       std::filesystem::path path;
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.wav"}, PFDF_FILEMUSTEXIST)) {

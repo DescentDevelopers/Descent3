@@ -399,7 +399,7 @@ void pilot::verify(void) {
   */
 }
 
-// This function makes the pilot file so it's write pending, meaning that
+// This function makes the pilot file so its write is pending, meaning that
 // on the next call to flush, it will actually write out the data.  There is
 // no need to constantly do file access unless it's really needed
 void pilot::write(void) { write_pending = true; }

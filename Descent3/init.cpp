@@ -776,7 +776,7 @@
  * Added Terrain casting to config
  *
  * 82    5/06/98 4:32p Samir
- * moved ui init back to it's proper place.
+ * moved ui init back to its proper place.
  *
  * 81    5/06/98 12:44p Jeff
  * added saving/restoring video resolution
@@ -1532,12 +1532,12 @@ void InitIOSystems(bool editor) {
     }
   }
 
-  // Initialize debug graph early incase any system uses it in it's init
+  // Initialize debug graph early incase any system uses it in its init
   INIT_MESSAGE(("Initializing debug graph."));
   DebugGraph_Initialize();
 
   //	initialize all the OSIRIS systems
-  //	extract from extra.hog first, so it's dll files are listed ahead of d3.hog's
+  //	extract from extra.hog first, so its DLL files are listed ahead of d3.hog's
   INIT_MESSAGE(("Initializing OSIRIS."));
   Osiris_InitModuleLoader();
   if (extra13_hid != -1)

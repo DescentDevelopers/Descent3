@@ -4356,7 +4356,7 @@ typedef void (WINAPI* LPFNSHOWJOYCPL)( HWND hWnd );
 /*
  * Hardware Setting indicating that VJoyD should not load this
  * driver, it will be loaded externally and will register with
- * VJoyD of it's own accord.
+ * VJoyD of its own accord.
  */
 #define JOY_HWS_AUTOLOAD            0x10000000l
 

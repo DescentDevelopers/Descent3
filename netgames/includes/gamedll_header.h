@@ -526,7 +526,7 @@ DMFCDLLOUT(nw_GetThisIP_fp DLLnw_GetThisIP;)
 typedef bool (*CreateStringTable_fp)(const char *filename, char ***table, int *size);
 DMFCDLLOUT(CreateStringTable_fp DLLCreateStringTable;)
 
-// Given a string table and it's count of strings, it will free up it's memory
+// Given a string table and its count of strings, it will free up its memory
 typedef void (*DestroyStringTable_fp)(char **table, int size);
 DMFCDLLOUT(DestroyStringTable_fp DLLDestroyStringTable;)
 
@@ -1614,7 +1614,7 @@ typedef bool (*dInven_Add_fp)(Inventory *inven, int type, int id, object *parent
                               char *description);
 DMFCDLLOUT(dInven_Add_fp Inven_Add;)
 
-// adds an object to the inventory (marked by it's objhandle)
+// adds an object to the inventory (marked by its objhandle)
 // typedef bool (*dInven_AddObject_fp)(Inventory *inven,int object_handle,int flags=0,char *description=NULL);
 typedef bool (*dInven_AddObject_fp)(Inventory *inven, int object_handle, int flags, char *description);
 DMFCDLLOUT(dInven_AddObject_fp Inven_AddObject;)
@@ -1626,7 +1626,7 @@ typedef bool (*dInven_AddCounterMeasure_fp)(Inventory *inven, int id, int aux_ty
                                             char *description);
 DMFCDLLOUT(dInven_AddCounterMeasure_fp Inven_AddCounterMeasure;)
 
-//	removes an item from the inventory (reduces it's count by one...if there is no more, then it goes bye-bye)
+//	removes an item from the inventory (reduces its count by one...if there is no more, then it goes bye-bye)
 //	to remove an object that was added via objhandle, then pass the objhandle
 //	in the 'type' parameter, and don't pass in an id.
 // typedef bool (*dInven_Remove_fp)(Inventory *inven,int type,int id=-1);
@@ -1638,7 +1638,7 @@ DMFCDLLOUT(dInven_Remove_fp Inven_Remove;)
 typedef bool (*dInven_Use_fp)(Inventory *inven, int type, int id, object *parent);
 DMFCDLLOUT(dInven_Use_fp Inven_Use;)
 
-// uses an item in the inventory (given it's objhandle).
+// uses an item in the inventory (given its objhandle).
 // typedef bool (*dInven_UseObjHandle_fp)(Inventory *inven,int objhandle,object *parent=NULL);
 typedef bool (*dInven_UseObjHandle_fp)(Inventory *inven, int objhandle, object *parent);
 DMFCDLLOUT(dInven_UseObjHandle_fp Inven_UseObjHandle;)
@@ -1723,7 +1723,7 @@ DMFCDLLOUT(dInven_AtEnd_fp Inven_AtEnd;)
 typedef void (*dInven_GotoPos_fp)(Inventory *inven, int newpos);
 DMFCDLLOUT(dInven_GotoPos_fp Inven_GotoPos;)
 
-// jump right to an item in the inventory give it's type and id
+// jump right to an item in the inventory give its type and id
 // to jump to an item that was added via object handle, pass the object
 // handle in as the type, and make id -1.
 typedef void (*dInven_GotoPosTypeID_fp)(Inventory *inven, int type, int id);

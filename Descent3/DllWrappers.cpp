@@ -243,7 +243,7 @@ bool dInven_Add(Inventory *inven, int type, int id, object *parent, int aux_type
   return inven->Add(type, id, parent, aux_type, aux_id, flags, description);
 }
 
-// adds an object to the inventory (marked by it's objhandle)
+// adds an object to the inventory (marked by its objhandle)
 bool dInven_AddObject(Inventory *inven, int object_handle, int flags, char *description) {
   return inven->AddObject(object_handle, flags, description);
 }
@@ -253,7 +253,7 @@ bool dInven_AddCounterMeasure(Inventory *inven, int id, int aux_type, int aux_id
   return inven->AddCounterMeasure(id, aux_type, aux_id, flags, description);
 }
 
-//	removes an item from the inventory (reduces it's count by one...if there is no more, then it goes bye-bye)
+//	removes an item from the inventory (reduces its count by one...if there is no more, then it goes bye-bye)
 //	to remove an object that was added via objhandle, then pass the objhandle
 //	in the 'type' parameter, and don't pass in an id.
 bool dInven_Remove(Inventory *inven, int type, int id) { return inven->Remove(type, id); }
@@ -261,7 +261,7 @@ bool dInven_Remove(Inventory *inven, int type, int id) { return inven->Remove(ty
 // uses an item in the inventory (also reduces its count by one...if there is no more, then it goes bye-bye)
 bool dInven_Use(Inventory *inven, int type, int id, object *parent) { return inven->Use(type, id, parent); }
 
-// uses an item in the inventory (given it's objhandle).
+// uses an item in the inventory (given its objhandle).
 bool dInven_UseObjHandle(Inventory *inven, int objhandle, object *parent) { return inven->Use(objhandle, parent); }
 
 // returns how many unique type/ids are in the inventory
@@ -325,7 +325,7 @@ bool dInven_AtEnd(Inventory *inven) { return inven->AtEnd(); }
 // jump right to an item in the inventory
 void dInven_GotoPos(Inventory *inven, int newpos) { inven->GotoPos(newpos); }
 
-// jump right to an item in the inventory give it's type and id
+// jump right to an item in the inventory given its type and id
 // to jump to an item that was added via object handle, pass the object
 // handle in as the type, and make id -1.
 void dInven_GotoPosTypeID(Inventory *inven, int type, int id) { inven->GotoPos(type, id); }

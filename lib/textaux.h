@@ -33,7 +33,7 @@
  * added textaux_ClipString
  *
  * 2     7/14/98 11:53a Samir
- * moved textaux to it's own library again.
+ * moved textaux to its own library again.
  *
  * 1     7/13/98 4:41p Samir
  *

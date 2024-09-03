@@ -31,7 +31,7 @@
  *
  * 15    9/14/99 7:49p Jeff
  * added cf_OpenFileInLibrary() to force a file to be opened from a
- * specific library.  Added a way to get a crc of a file given it's CFILE
+ * specific library.  Added a way to get a CRC of a file given its CFILE
  * *.
  *
  * 14    5/20/99 5:32p Matt

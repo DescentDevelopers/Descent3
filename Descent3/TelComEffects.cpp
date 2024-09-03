@@ -394,7 +394,7 @@ void EfxFreeEffect(tceffect *tce) {
   tce->monitor = -1;
 }
 
-// Initializes an effect based on it's type
+// Initializes an effect based on its type
 void EfxInit(tceffect *tce, bool tab_stop, bool gets_focus) {
 
   ASSERT(tce);

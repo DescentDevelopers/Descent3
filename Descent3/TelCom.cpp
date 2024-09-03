@@ -286,7 +286,7 @@
  *
  * 72    7/11/98 9:16p Jeff
  * moved automatically drawing monitor overlay graphics from update() to a
- * function of it's own, that way the TelCom API can be avoided if needed
+ * function of its own, that way the TelCom API can be avoided if needed
  *
  * 71    7/08/98 8:06p Jeff
  * Initial creation of TelComCargo
@@ -1273,7 +1273,7 @@ bool TelComMainMenu(tTelComInfo *tcs) {
 
     strcpy(MMButtons[mm].text, TXT(TCMMButtonDesc[mm]));
 
-    // now if it's enabled,fill in it's info
+    // now if it's enabled, fill in its info
     // create the button
     if (MMButtons[mm].enabled) {
       buttdesc.x = mm_x;
@@ -2457,7 +2457,7 @@ void TelComEnableSystemKey(int key, bool enable) {
 }
 
 /*
- *	Calling this sends an event message to the TelCom, adding it to it's event queue
+ *	Calling this sends an event message to the TelCom, adding it to its event queue
  *
  */
 void TelComSendEvent(int event_num, int parm1, int parm2) {
@@ -2967,7 +2967,7 @@ void TelComHandleKeyPress(int key, bool click, int screen_id) {
       curr_focus = found;
     }
 
-    // if the effect to use (curr_focus) is a button, than get it's parent ID, make sure it is a text effect
+    // if the effect to use (curr_focus) is a button, than get its parent ID, make sure it is a text effect
     if (TCEffects[curr_focus].type == EFX_BUTTON) {
       int parent_id = TCEffects[curr_focus].buttoninfo.parent;
       if (parent_id == -1 ||
@@ -3994,7 +3994,7 @@ void TelCom_ClearSystemQueue(void) {
 }
 
 /*
- *	Calling this sends an event message to the TelCom System Queue, adding it to it's event queue
+ *	Calling this sends an event message to the TelCom System Queue, adding it to its event queue
  *
  */
 void TelCom_SendSystemEvent(int event_num, int parm1, int parm2) {

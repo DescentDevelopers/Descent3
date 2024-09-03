@@ -914,10 +914,10 @@ void osipf_ObjectCustomAnim(int handle, float start, float end, float time, char
   }
 }
 
-// searches for an object id given it's name
+// searches for an object id given its name
 int osipf_ObjectFindID(const char *name) { return FindObjectIDName(IGNORE_TABLE(name)); }
 
-// searches for an object id given it's name
+// searches for an object id given its name
 int osipf_ObjectFindType(const char *name) {
   int id = FindObjectIDName(IGNORE_TABLE(name));
 
@@ -3682,7 +3682,7 @@ int osipf_GetLanguageSetting(void) {
 }
 
 // Sets/Gets information about a path.
-// If you change is PV_ALL (or any of it's individual components), pass in a pointer to an
+// If you change is PV_ALL (or any of its individual components), pass in a pointer to an
 // osiris_path_node_info struct.  For the others, you must pass in an appropriate pointer
 // (i.e. an int* for PV_I_NUMNODES).  You can only set PV_ALL components.
 //	for PV_I_NUMNODES, path_id MUST be specified, node_id is ignored

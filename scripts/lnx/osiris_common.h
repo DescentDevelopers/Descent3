@@ -372,11 +372,11 @@
 #define EVT_LEVELSTART EVT_CREATED //
 #define EVT_LEVELEND EVT_DESTROY   // called when level is started and ended.
 #define EVT_CHANGESEG 0x115        // called when object changes room
-#define EVT_SAVESTATE 0x117        // called when the script should save it's state
-#define EVT_RESTORESTATE 0x118     // called when the script should restore it's state
+#define EVT_SAVESTATE 0x117        // called when the script should save its state
+#define EVT_RESTORESTATE 0x118     // called when the script should restore its state
 #define EVT_MEMRESTORE                                                                                                 \
   0x119 // called when the script should restore a pointer to the special auto-save memory it allocated
-#define EVT_TIMERCANCEL 0x11A // called when a timer is canceled (either by function call or from it's object detonator)
+#define EVT_TIMERCANCEL 0x11A // called when a timer is canceled (either by function call or from its object detonator)
 #define EVT_AIN_OBJKILLED 0x11B          // child event of EVT_AI_NOTIFY
 #define EVT_AIN_SEEPLAYER 0x11C          // child event of EVT_AI_NOTIFY
 #define EVT_AIN_WHITOBJECT 0x11D         // child event of EVT_AI_NOTIFY

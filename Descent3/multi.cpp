@@ -5363,7 +5363,7 @@ void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record) {
 
   MultiAddByte(obj->type, data, &count);
   MultiAddUint(index, data, &count);
-  // If it's a ghost object (type==OBJ_DUMMY) send it's old type
+  // If it's a ghost object (type==OBJ_DUMMY) send its old type
   if (obj->type == OBJ_DUMMY)
     MultiAddByte(obj->dummy_type, data, &count);
 

@@ -443,7 +443,7 @@ bool ScriptCreateEmptyLevelScript(char *filename) {
 
   O(("//	GetGOScriptID"));
   O(("//	Purpose:"));
-  O(("//		Given the name of the object (from it's pagename), this function will search through it's"));
+  O(("//		Given the name of the object (from its pagename), this function will search through its"));
   O(("//	list of General Object Scripts for a script with a matching name (to see if there is a script"));
   O(("//	for that type/id of object within this DLL).  If a matching scriptname is found, a UNIQUE ID"));
   O(("//	is to be returned back to Descent 3.  This ID will be used from here on out for all future"));
@@ -645,7 +645,7 @@ bool ScriptCreateEmptyGameScript(char *filename) {
 
   O(("//	GetGOScriptID"));
   O(("//	Purpose:"));
-  O(("//		Given the name of the object (from it's pagename), this function will search through it's"));
+  O(("//		Given the name of the object (from its pagename), this function will search through its"));
   O(("//	list of General Object Scripts for a script with a matching name (to see if there is a script"));
   O(("//	for that type/id of object within this DLL).  If a matching scriptname is found, a UNIQUE ID"));
   O(("//	is to be returned back to Descent 3.  This ID will be used from here on out for all future"));

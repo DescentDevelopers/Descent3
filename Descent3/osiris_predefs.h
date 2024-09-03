@@ -189,7 +189,7 @@ bool osipf_CallTriggerEvent(int trignum, int event, tOSIRISEventInfo *ei);
 // Touches a sound file so it loads into memory
 void osipf_SoundTouch(char *str);
 
-// searches for an object id given it's name
+// searches for an object id given its name
 int osipf_ObjectFindID(const char *name);
 
 int osipf_ObjectFindType(const char *name);
@@ -440,7 +440,7 @@ char osipf_GameGetDiffLevel(void);
 int osipf_GetLanguageSetting(void);
 
 // Sets/Gets information about a path.
-// If you change is PV_ALL (or any of it's individual components), pass in a pointer to an
+// If you change is PV_ALL (or any of its individual components), pass in a pointer to an
 // osiris_path_node_info struct.  For the others, you must pass in an appropriate pointer
 // (i.e. an int* for PV_I_NUMNODES).  You can only set PV_ALL components.
 //	for PV_I_NUMNODES, path_id MUST be specified, node_id is ignored

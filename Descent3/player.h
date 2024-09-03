@@ -481,7 +481,7 @@ void ResetPlayerObject(int slot, bool f_reset_pos = true);
 // Makes the player into an AI controlled physics object
 void PlayerSetControlToAI(int slot, float velocity = 75.0f);
 
-// Resets a player's control type back to it's default setting
+// Resets a player's control type back to its default setting
 void ResetPlayerControlType(int slot);
 
 void InitPlayerNewGame(int slot);

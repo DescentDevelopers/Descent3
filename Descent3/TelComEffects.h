@@ -307,7 +307,7 @@ void EfxDestroyScreen(int screen);
 // Frees up any memory allocated for effect, sets type to EFX_NONE
 void EfxFreeEffect(tceffect *tce);
 
-// Initializes an effect based on it's type
+// Initializes an effect based on its type
 void EfxInit(tceffect *tce, bool tab_stop, bool gets_focus);
 
 // Renders a Monitor

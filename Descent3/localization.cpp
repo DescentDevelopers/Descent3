@@ -424,7 +424,7 @@ try_english:
   return (scount == (*size));
 }
 
-// Given a string table and it's count of strings, it will free up it's memory
+// Given a string table and its count of strings, it will free up its memory
 void DestroyStringTable(char **table, int size) {
   if ((size > 0) && (table)) {
     for (int i = 0; i < size; i++) {

@@ -94,7 +94,7 @@
  * intro cams are letterbox
  *
  * 28    3/10/99 6:44p Jeff
- * fixed exported game cinematic function for canned cinematics, so it's
+ * fixed exported game cinematic function for canned cinematics, so its
  * prototype doesn't change (oem patch friendly)
  *
  * 27    3/10/99 6:20p Jeff

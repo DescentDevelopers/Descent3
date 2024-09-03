@@ -1772,7 +1772,7 @@ int nw_Compress(void *srcdata, void *destdata, int count) {
   uint8_t *curr_src = (uint8_t *)srcdata;
   uint8_t *currp = (uint8_t *)destdata;
   for (i = 0; i < count; i++) {
-    // Woops, we have a char that matches our compress key, so add it as it's own type
+    // Woops, we have a char that matches our compress key, so add it as its own type
     if (curr_src[i] == COMPRESS_KEY) {
       *currp = COMPRESS_KEY;
       currp++;

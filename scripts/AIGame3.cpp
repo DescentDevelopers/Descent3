@@ -1517,7 +1517,7 @@ void STDCALL ShutdownDLL(void) {}
 
 //	GetGOScriptID
 //	Purpose:
-//		Given the name of the object (from it's pagename), this function will search through it's
+//		Given the name of the object (from its pagename), this function will search through its
 //	list of General Object Scripts for a script with a matching name (to see if there is a script
 //	for that type/id of object within this DLL).  If a matching scriptname is found, a UNIQUE ID
 //	is to be returned back to Descent 3.  This ID will be used from here on out for all future
@@ -1751,7 +1751,7 @@ bool AlienOrganism::ReceiveCommand(int me, int it, char command, void *ptr) {
     }
   } break;
 
-  // Squadie is asking for it's formation position
+  // Squadie is asking for its formation position
   case ALIEN_COM_GET_GOAL_POS: {
     int tm_id = FindTeammateID(it);
     if (tm_id >= 0) {
@@ -1760,7 +1760,7 @@ bool AlienOrganism::ReceiveCommand(int me, int it, char command, void *ptr) {
     }
   } break;
 
-  // Squadie is asking for it's formation goal room
+  // Squadie is asking for its formation goal room
   case ALIEN_COM_GET_GOAL_ROOM: {
     Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, (int *)ptr);
     return true;
@@ -6953,7 +6953,7 @@ int16_t AlienBoss::CallEvent(int event, tOSIRISEventInfo *data) {
   case EVT_DAMAGED: {
     DoDamage(data->me_handle, &data->evt_damaged);
 
-    // If boss is slightly damaged, restore it's hitpoints (so it can never die!)
+    // If boss is slightly damaged, restore its hitpoints (so it can never die!)
     float curr_shields;
     Obj_Value(data->me_handle, VF_GET, OBJV_F_SHIELDS, &curr_shields);
     if (curr_shields < memory->base_shields * 0.75f) {

@@ -294,7 +294,7 @@
  *
  * 109   10/11/98 3:03a Jeff
  * made the game handle the Multiplayer D3M file refusing to load (because
- * it's init failed for some reason)
+ * its init failed for some reason)
  *
  * 108   10/08/98 7:28p Samir
  * revamped sequencing.
@@ -1262,7 +1262,7 @@ void EndFrame() {
 
   FramePop(&x1, &y1, &x2, &y2, &clear); // pop off frame just ending
 
-  // see if there is a frame on the stack...if so, restore it's settings
+  // see if there is a frame on the stack...if so, restore its settings
   if (FramePeek(&x1, &y1, &x2, &y2, &clear)) {
     // restore this frame
     StartFrame(x1, y1, x2, y2, clear, false);

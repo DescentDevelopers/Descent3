@@ -81,10 +81,10 @@
 #define SOF_TURRET 0x02    // This subobject is a turret that tracks
 #define SOF_SHELL 0x04     // This subobject is a door housing
 #define SOF_FRONTFACE 0x08 // This subobject contains the front face for the door
-#define SOF_MONITOR1 0x010 // This subobject contains it's first monitor
-#define SOF_MONITOR2 0x020 // This subobject contains it's second monitor
-#define SOF_MONITOR3 0x040 // This subobject contains it's third monitor
-#define SOF_MONITOR4 0x080 // This subobject contains it's fourth monitor
+#define SOF_MONITOR1 0x010 // This subobject contains its first monitor
+#define SOF_MONITOR2 0x020 // This subobject contains its second monitor
+#define SOF_MONITOR3 0x040 // This subobject contains its third monitor
+#define SOF_MONITOR4 0x080 // This subobject contains its fourth monitor
 #define SOF_MONITOR5 0x0100
 #define SOF_MONITOR6 0x0200
 #define SOF_MONITOR7 0x0400

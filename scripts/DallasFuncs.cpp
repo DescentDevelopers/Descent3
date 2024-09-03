@@ -4215,7 +4215,7 @@ Mission
 Enable the given ship [a:Ship], so it can be chosen in single player
 aEnableShip
 EnableShip
-        Enables a ship (given it's name) so it can be chosen in
+        Enables a ship (given its name) so it can be chosen in
 single player ship selection dialog.
 
 Parameters:
@@ -4234,7 +4234,7 @@ Mission
 Disable the given ship [a:Ship], so it can't be chosen in single player
 aDisableShip
 DisableShip
-        Disables a ship (given it's name) so it can't be chosen in
+        Disables a ship (given its name) so it can't be chosen in
 single player ship selection dialog.
 
 Parameters:

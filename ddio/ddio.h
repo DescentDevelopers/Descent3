@@ -54,7 +54,7 @@
  * high level key flush.
  *
  * 22    2/04/99 11:19a Kevin
- * Added function to find a CD drive letter based on it's volume name
+ * Added function to find a CD drive letter based on its volume name
  *
  * 21    1/25/99 6:47p Samir
  * allow slow keyboard

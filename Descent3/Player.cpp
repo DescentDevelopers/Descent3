@@ -2576,7 +2576,7 @@ void ResetPlayerObject(int slot, bool f_reset_pos) {
   ResetReticle();
 }
 
-// Resets a player's control type back to it's default setting
+// Resets a player's control type back to its default setting
 void ResetPlayerControlType(int slot) {
   ASSERT(slot >= 0 && slot < MAX_PLAYERS);
 

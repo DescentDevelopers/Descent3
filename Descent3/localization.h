@@ -64,7 +64,7 @@ const char *GetStringFromTable(int index);
 // it will load the string table and fill in the information
 // returns true on success
 bool CreateStringTable(const char *filename, char ***table, int *size);
-// Given a string table and it's count of strings, it will free up it's memory
+// Given a string table and its count of strings, it will free up its memory
 void DestroyStringTable(char **table, int size);
 
 // GrowString class

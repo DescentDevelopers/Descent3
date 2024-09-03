@@ -1165,7 +1165,7 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   return edgemask;
 }
 
-// decide it it's close enough to hit
+// decide if it's close enough to hit
 // determine if and where a vector intersects with a sphere
 // vector defined by p0,p1
 // if there is an intersection this function returns 1, fills in intp, and col_dist else it returns 0
@@ -1546,7 +1546,7 @@ float rad, vector *ep0, vector *ep1)
                         end_pnt = *p1;
                 }
 
-        // decide it it's close enough to hit
+        // decide if it's close enough to hit
         // determine if and where a vector intersects with a sphere
         // vector defined by p0,p1
         // if there is an intersection this function returns 1, fills in intp, and col_dist else it returns 0

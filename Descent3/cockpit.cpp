@@ -247,7 +247,7 @@ static float KeyframeAnimateCockpit();
 //	loads cockpit. model_name = NULL, then will not load in model name.
 static void LoadCockpitInfo(const char *ckt_file, tCockpitCfgInfo *info);
 //////////////////////////////////////////////////////////////////////////////
-//	Initializes the cockpit by loading it in and initializing all it's gauges.
+//	Initializes the cockpit by loading it in and initializing all its gauges.
 //	initialization of cockpit.
 void InitCockpit(int ship_index) {
   tCockpitCfgInfo cfginfo;

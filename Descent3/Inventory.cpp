@@ -391,7 +391,7 @@ void Inventory::Reset(bool in_game, int reset_stage) {
   ValidatePos(true);
 }
 
-// adds an object to the inventory (marked by it's objhandle)
+// adds an object to the inventory (marked by its objhandle)
 bool Inventory::AddObject(int object_handle, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS) {
@@ -558,7 +558,7 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
 
       newnode->count = 1;
     } else {
-      // there is an item of that type/id already, just increase it's count
+      // there is an item of that type/id already, just increase its count
       newnode->count++;
       // mprintf(0,"Inventory: Item #%d (%s) Count increased to %d\n",count,newnode->name,newnode->count);
     }
@@ -635,7 +635,7 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
 
       newnode->count = 1;
     } else {
-      // there is an item of that type/id already, just increase it's count
+      // there is an item of that type/id already, just increase its count
       newnode->count++;
     }
   }
