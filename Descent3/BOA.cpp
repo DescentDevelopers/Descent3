@@ -329,6 +329,8 @@ int BOA_DetermineStartRoomPortal(int start_room, vector *start_pos, int end_room
                                  bool f_making_robot_path_invalid_list, int *blocked_portal) {
   int i;
 
+  if (start_room == -1 || end_room == -1)
+    return -1;
   if (start_room > Highest_room_index && end_room > Highest_room_index)
     return -1;
 
@@ -566,12 +568,12 @@ int BOA_GetNextRoom(int start_room, int end_room) {
   int e_index = end_room;
 
   if (start_room == -1 || end_room == -1) {
-    return false;
+    return BOA_NO_PATH;
   }
 
   if ((!ROOMNUM_OUTSIDE(s_index)) && s_index <= Highest_room_index) {
     if (!Rooms[s_index].used) {
-      return false;
+      return BOA_NO_PATH;
     }
   } else if (ROOMNUM_OUTSIDE(s_index)) {
     s_index = TERRAIN_REGION(start_room) + Highest_room_index + 1;
@@ -581,7 +583,7 @@ int BOA_GetNextRoom(int start_room, int end_room) {
 
   if ((!ROOMNUM_OUTSIDE(e_index)) && e_index <= Highest_room_index) {
     if (!Rooms[e_index].used) {
-      return false;
+      return BOA_NO_PATH;
     }
   } else if (ROOMNUM_OUTSIDE(e_index)) {
     e_index = TERRAIN_REGION(end_room) + Highest_room_index + 1;

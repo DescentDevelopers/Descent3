@@ -60,6 +60,8 @@ static void AIUpdatePathInfo(q_item **node_list, int start, int end) {
 
 // Ok to use Highest_room_index offset stuff
 bool AIFindAltPath(object *obj, int i, int j, float *dist) {
+  if (i == -1 || j == -1)
+    return false;
   i = BOA_INDEX(i);
   j = BOA_INDEX(j);
 
