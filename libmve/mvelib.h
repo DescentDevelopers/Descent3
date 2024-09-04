@@ -23,7 +23,7 @@
 
 /* callback for reading stream */
 typedef unsigned int (*mve_cb_Read)(void *stream, void *buffer, unsigned int count);
-/* callback for memore allocating */
+/* callback for memory allocating */
 typedef void *(*mve_cb_Alloc)(unsigned int size);
 /* callback for memory freeing */
 typedef void (*mve_cb_Free)(void *ptr);
@@ -76,7 +76,7 @@ void MVE_rmEndMovie(MVESTREAM *mve);
 void MVE_getVideoSpec(MVE_videoSpec *vSpec);
 
 // Initialize MVE sound. Set `enable` to false if sound should not be enabled.
-void MVE_sndInit(const bool enable);
+void MVE_sndInit(bool enable);
 
 void MVE_ioCallbacks(mve_cb_Read io_read);
 void MVE_memCallbacks(mve_cb_Alloc mem_alloc, mve_cb_Free mem_free);
