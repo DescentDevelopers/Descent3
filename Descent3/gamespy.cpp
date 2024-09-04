@@ -210,6 +210,8 @@ int gspy_Init() {
                 htons(server.sin_port));
       }
     }
+
+    cfclose(cfp);
   }
 #endif // #ifndef OEM
   return 1;
