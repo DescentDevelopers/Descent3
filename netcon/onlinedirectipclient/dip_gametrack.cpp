@@ -69,9 +69,9 @@ void AddApiHostToDirectIpList(const std::string &str) {
     ipbuf[15] = '\0';
   }
 
-  int iaddr = inet_addr(ipbuf);
+  uint32_t iaddr = inet_addr(ipbuf);
 
-  if (iaddr != -1) {
+  if (iaddr != INADDR_NONE) {
     apiServerEntry entry = {iaddr, htons(iport)};
     directIpHostList.push(entry);
   }
