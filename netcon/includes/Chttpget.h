@@ -66,6 +66,7 @@
 
 #include <cstdint>
 #include "networking.h"
+#include "crossplat.h"
 
 #define HTTP_STATE_INTERNAL_ERROR 0
 #define HTTP_STATE_SOCKET_ERROR 1
@@ -114,7 +115,7 @@ protected:
   char m_szPassword[100];
   char m_szHost[200];
   char m_szDir[200];
-  char m_szFilename[100];
+  char m_szFilename[_MAX_PATH];
 
   bool m_Aborting;
 

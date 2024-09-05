@@ -1,0 +1,241 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !=!  == English version of string
+!/!	  !G!  == German version of string
+!/!	  !S!  == Spanish version of string
+!/!	  !I!  == Italian version of string
+!/!	  !F!  == French version of string
+!/!
+!/!	THERE MUST BE ENGLISH VERSIONS OF EACH STRING
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!0:Online Direct TCP-IP is a Free Service where you
+!=!Online Direct TCP-IP is a Free Service where you
+
+!/!1:can find people to play Descent 3 against.
+!=!can find people to play Descent 3 against.
+
+!/!2:Return to main menu
+!=!Return to main menu
+
+!/!3:Game Name\002\43Game Type\02\69Mission\02\96Level\02\109Players\02\126Ping
+!=!Game Name\002\43Game Type\02\69Mission\02\96Level\02\109Players\02\126Ping
+
+!/!4:
+!=!
+
+!/!5:Exit
+!=!Exit
+
+!/!6:Join Selected
+!=!Join Selected
+
+!/!7:Start a New Game
+!=!Start a New Game
+
+!/!8:Search for Games at Address:
+!=!Search for Games at Address:
+
+!/!9:Scan for Local Games
+!=!Scan for Local Games
+
+!/!10:Game Name:
+!=!Game Name:
+
+!/!11:Mission Name:
+!=!Mission Name:
+
+!/!12:Game Type:
+!=!Game Type:
+
+!/!13:Start game
+!=!Start game
+
+!/!14:Multiplayer Options
+!=!Multiplayer Options
+
+!/!15:Done
+!=!Done
+
+!/!16:Time Limit
+!=!Time Limit
+
+!/!17:Goal Limit
+!=!Goal Limit
+
+!/!18:Packets per second
+!=!Packets per second
+
+!/!19:Configure Allowed Ships/Items
+!=!Configure Allowed Ships/Items
+
+!/!20:Server mode
+!=!Server mode
+
+!/!21:Client/Server
+!=!Client/Server
+
+!/!22:Peer-Peer
+!=!Peer-Peer
+
+!/!23:Ships Allowed:
+!=!Ships Allowed:
+
+!/!24:Respawn Rate:
+!=!Respawn Rate:
+
+!/!25:You can also chat with them.
+!=!You can also chat with them.
+
+!/!26:Connecting...
+!=!Connecting...
+
+!/!27:Unable to connect.
+!=!Unable to connect.
+
+!/!28:Online Direct TCP-IP
+!=!Online Direct TCP-IP
+
+!/!29:Cancel
+!=!Cancel
+
+!/!30:Send Private Message
+!=!Send Private Message
+
+!/!31:Join Private Lobby
+!=!Join Private Lobby
+
+!/!32:Join Lobby
+!=!Join Lobby
+
+!/!33:Find Pilot
+!=!Find Pilot
+
+!/!34:Go to Games
+!=!Go to Games
+
+!/!35:Entered lobby %s!
+!=!Entered lobby %s!
+
+!/!36:Entering Lobby...
+!=!Entering Lobby...
+
+!/!37:Unable to join lobby %s!
+!=!Unable to join lobby %s!
+
+!/!38:Private Message
+!=!Private Message
+
+!/!39:Send
+!=!Send
+
+!/!40:Pilot name:
+!=!Pilot name:
+
+!/!41:Message:
+!=!Message:
+
+!/!42:Join
+!=!Join
+
+!/!43:Lobby name:
+!=!Lobby name:
+
+!/!44:Search
+!=!Search
+
+!/!45:Searching for pilot...
+!=!Searching for pilot...
+
+!/!46:\1\255\1\1**%s can be found in %s
+!=!**%s can be found in %s
+
+!/!47:\1\255\1\1**Error: %s is not on chat.
+!=!\1\255\1\1**Error: %s is not on chat.
+
+!/!48:\1\255\0\0Your nickname contains invalid characters
+!=!\1\255\0\0Your nickname contains invalid characters
+
+!/!49:\1\255\255\1Private Message to <%s>: %s
+!=!\1\255\255\1Private Message to <%s>: %s
+
+!/!50:\1\255\255\1Private Message from <%s>: %s
+!=!\1\255\255\1Private Message from <%s>: %s
+
+!/!51:Connection to the chat server has been lost!
+!=!Connection to the chat server has been lost!
+
+!/!52:You are in lobby %s.
+!=!You are in lobby %s.
+
+!/!53:%c Make this screen the default
+!=!%c Make this screen the default
+
+!/!54:Return to the chat screen
+!=!Return to the chat screen
+
+!/!55:TCP/IP is not active on your system!
+!=!TCP/IP is not active on your system!
+
+!/!56:Error
+!=!Error
+
+!/!57:Save Settings
+!=!Save Settings
+
+!/!58:Load Settings
+!=!Load Settings
+
+!/!59:Use rotational velocity
+!=!Use rotational velocity
+
+!/!60:Movement averaging
+!=!Movement averaging
+
+!/!61:Online Games
+!=!Online Games
+
+!/!62:No game was selected to join!
+!=!No game was selected to join!
+
+!/!63:Max. Players
+!=!Max. Players
+
+!/!64:%c Use Accurate weapon collisions
+!=!%c Use Accurate weapon collisions
+
+!/!65:Bright player ships
+!=!Bright player ships
+
+!/!66:Game Name
+!=!Game Name
+
+!/!67:Game Type
+!=!Game Type
+
+!/!68:Mission
+!=!Mission
+
+!/!69:Level
+!=!Level
+
+!/!70:Players
+!=!Players
+
+!/!71:Ping
+!=!Ping
