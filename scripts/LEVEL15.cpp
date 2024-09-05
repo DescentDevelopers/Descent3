@@ -769,8 +769,6 @@ $$ENUM Region
 $$END
 */
 
-void aUserFlagSet(int flagnum, bool state);
-bool qUserFlag(int flagnum);
 const char *GetMessage(const char *name);
 
 #define MatCenSwitchAON 0
