@@ -151,7 +151,7 @@ void DeleteScorch(int index) {
 
   // Look through all the scorches to see if there are other scorches on the same face
   for (int i = Scorch_start; i >= 0; ) {
-    auto sp = &Scorches[Scorch_start];
+    const auto sp = &Scorches[i];
 
     if ((sp->roomface == roomface) && (i != index)) // Found another scorch
       return;
@@ -161,11 +161,8 @@ void DeleteScorch(int index) {
       break;
 
     // Increment & wrap
-    if (++i == MAX_SCORCHES) {
+    if (++i == MAX_SCORCHES)
       i = 0;
-      sp = Scorches;
-    } else
-      sp++;
   }
 
   // If we're here, there are no other scorches on the face, so clear the flag
@@ -195,7 +192,7 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
   // Count the number of scorches on this face, and bail if already at max
   int count = 0;
   for (int i = Scorch_start; i >= 0; ) {
-    auto sp = &Scorches[Scorch_start];
+    const auto sp = &Scorches[i];
     float size = (float)sp->size / 16.0;
 
     // Increment count, and stop drawing if hit limit
@@ -210,11 +207,8 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
       break;
 
     // Increment & wrap
-    if (++i == MAX_SCORCHES) {
+    if (++i == MAX_SCORCHES)
       i = 0;
-      sp = Scorches;
-    } else
-      sp++;
   }
 
   // Check for scorch going off the edge of the face, and bail if does
@@ -250,7 +244,7 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
     Scorch_start = 0;
 
   // Get a pointer to our struct
-  auto sp = &Scorches[Scorch_end];
+  const auto sp = &Scorches[Scorch_end];
 
   // Fill in the data
   sp->roomface = roomface;
@@ -325,7 +319,7 @@ void DrawScorches(int roomnum, int facenum) {
 
   // Loop through all the scorches, and draw the ones for this face
   for (int i = Scorch_start; i >= 0; ) {
-    auto sp = &Scorches[Scorch_start];
+    const auto sp = &Scorches[i];
 
     if (sp->roomface == roomface) { // Found one!
       vector right, up;
@@ -379,11 +373,8 @@ void DrawScorches(int roomnum, int facenum) {
       break;
 
     // Increment & wrap
-    if (++i == MAX_SCORCHES) {
+    if (++i == MAX_SCORCHES)
       i = 0;
-      sp = Scorches;
-    } else
-      sp++;
   }
 
   // Reset rendering states
