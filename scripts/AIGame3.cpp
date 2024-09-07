@@ -49,8 +49,8 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 static std::vector<std::string> String_table;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
-const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table.size()))
+const char *GetStringFromTable(uint32_t index) {
+  if (index >= String_table.size())
     return _Error_string;
   if (String_table[index].empty())
     return _Empty_string;

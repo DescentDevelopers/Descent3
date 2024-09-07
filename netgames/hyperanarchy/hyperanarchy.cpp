@@ -113,11 +113,11 @@ static void OnClientPlayerEntersGame(int player_num);
 // localization info
 static std::vector<std::string> StringTable;
 static const char *_ErrorString = "Missing String";
-const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTable.size()))
+const char *GetStringFromTable(uint32_t index) {
+  if (index >= StringTable.size())
     return _ErrorString;
   else
-    return StringTable[d].c_str();
+    return StringTable[index].c_str();
 }
 ///////////////////////////////////////////////
 

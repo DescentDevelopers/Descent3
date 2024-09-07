@@ -59,7 +59,7 @@ void FreeStringTables();
 
 // Returns a pointer to the string at the index location from the string table
 // if it is a bad index given, then the pointer to the error string "ERROR MISSING STRING" is given
-const char *GetStringFromTable(int index);
+const char *GetStringFromTable(uint32_t index);
 
 /**
  * Creates table of strings from given filename
