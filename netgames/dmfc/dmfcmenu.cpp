@@ -214,8 +214,10 @@ MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
     m_iState = va_arg(marker, int);
     if ((SubMenuCount > 0) && (SubMenuCount < MAX_STATE_SUBMENUS)) {
       SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * SubMenuCount);
-      if (!SubMenus)
+      if (!SubMenus) {
+        va_end(marker);
         return;
+      }
       char *string;
       for (int i = 0; i < SubMenuCount; i++) {
         string = va_arg(marker, char *);
@@ -873,8 +875,10 @@ bool MenuItem::SetStateItemList(int count, ...) {
 
   if ((SubMenuCount > 0) && (SubMenuCount < MAX_STATE_SUBMENUS)) {
     SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * SubMenuCount);
-    if (!SubMenus)
+    if (!SubMenus) {
+      va_end(marker);
       return false;
+    }
     char *string;
     for (int i = 0; i < SubMenuCount; i++) {
       string = va_arg(marker, char *);
