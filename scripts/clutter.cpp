@@ -43,7 +43,6 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 }
 #endif
 
-static int String_table_size = 0;
 static std::vector<std::string> String_table;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
@@ -143,7 +142,6 @@ public:
 //	Returns 1 if initialization went ok, 0 if there was an error and the DLL should not be loaded.
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   osicommon_Initialize((tOSIRISModuleInit *)func_list);
-  String_table_size = func_list->string_count;
   String_table = func_list->string_table;
   if (func_list->game_checksum != CHECKSUM) {
     mprintf(0, "Game-Checksum FAIL!!! (%ul!=%ul)\n", func_list->game_checksum, CHECKSUM);

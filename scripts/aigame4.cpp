@@ -44,12 +44,11 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 }
 #endif
 
-int String_table_size = 0;
 std::vector<std::string> String_table;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table_size))
+  if ((index < 0) || (index >= String_table.size()))
     return _Error_string;
   if (String_table[index].empty())
     return _Empty_string;
@@ -303,7 +302,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
     return 0;
   }
   aigame_mod_id = func_list->module_identifier;
-  String_table_size = func_list->string_count;
   String_table = func_list->string_table;
 
   return 1;

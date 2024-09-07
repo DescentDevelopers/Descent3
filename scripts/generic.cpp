@@ -43,7 +43,6 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 }
 #endif
 
-int String_table_size = 0;
 std::vector<std::string> String_table;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
@@ -152,14 +151,11 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
     return 0;
   }
 
-  String_table_size = func_list->string_count;
   String_table = func_list->string_table;
 
-  int i;
-
   // initialize rapid fire script data
-  for (i = 0; i < MAX_PLAYERS; i++) {
-    RapidFirePlayerTimers[i].timer_handle = -1;
+  for (auto & RapidFirePlayerTimer : RapidFirePlayerTimers) {
+    RapidFirePlayerTimer.timer_handle = -1;
   }
 
   return 1;

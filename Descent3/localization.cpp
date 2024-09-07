@@ -118,7 +118,6 @@ namespace {
 // Assume that we on English locale
 int Localization_language = LANGUAGE_ENGLISH;
 
-int String_table_size = 0;
 std::vector<std::string> String_table;
 
 // list of the string table files, they will be loaded in the order they are listed
@@ -175,8 +174,6 @@ int LoadStringTables() {
     }
   }
 
-  String_table_size = 0;
-
   String_table = std::vector<std::string>(string_count);
 
   int runcount = 0;
@@ -199,11 +196,10 @@ int LoadStringTables() {
     return 0;
   }
 
-  String_table_size = runcount;
   Localization_language = old_language;
 
   atexit(FreeStringTables);
-  return String_table_size;
+  return runcount;
 }
 
 // Deallocates all the memory used for the string tables
@@ -212,7 +208,7 @@ void FreeStringTables() {
 }
 
 const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table_size))
+  if ((index < 0) || (index >= String_table.size()))
     return Error_string;
 
   if (String_table[index].empty())
