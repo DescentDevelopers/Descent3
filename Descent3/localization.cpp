@@ -121,7 +121,7 @@ int Localization_language = LANGUAGE_ENGLISH;
 std::vector<std::string> String_table;
 
 // list of the string table files, they will be loaded in the order they are listed
-constexpr const std::vector<std::string> String_table_list = {"D3.STR"};
+const std::vector<std::string> String_table_list = {"D3.STR"};
 
 const char *Error_string = "!!ERROR MISSING STRING!!";
 const char *Empty_string = "\0";
@@ -207,8 +207,8 @@ void FreeStringTables() {
   String_table.clear();
 }
 
-const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table.size()))
+const char *GetStringFromTable(uint32_t index) {
+  if (index >= String_table.size())
     return Error_string;
 
   if (String_table[index].empty())
