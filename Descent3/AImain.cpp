@@ -4439,6 +4439,8 @@ void AIDoOrientDefault(object *obj) {
 
 void AIDoOrient(object *obj, int g_index) {
   ai_frame *ai_info = obj->ai_info;
+  if (g_index < 0)
+    return;
   goal *goal_ptr = &ai_info->goals[g_index];
 
   if ((obj->movement_type != MT_WALKING && obj->movement_type != MT_PHYSICS) || !(ai_info)) {

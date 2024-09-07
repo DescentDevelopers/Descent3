@@ -1324,11 +1324,12 @@ bool AutoSelectWeapon(int weapon_type, int new_wpn) {
 
   while (1) {
     uint16_t index = sel_list[list_index];
-    otype_wb_info *wb = &ship->static_wb[index];
 
-    if (index == SELLIST_START) {
+    if (index == SELLIST_START || index == SELLIST_END) {
       break;
-    } else {
+    }
+    otype_wb_info *wb = &ship->static_wb[index];
+    {
       //	we have a real weapon coming up, lets see if we have it, and if we do, then do we have
       //	ammo
       if (!(index & WPNSEL_SKIP)) {

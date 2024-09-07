@@ -163,7 +163,7 @@ static void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
       if (ns_movement_manual_AABB(&sm->face_min[i], &sm->face_max[i])) {
         polyface *fp = &sm->faces[i];
 
-        if ((GameTextures[pm->textures[fp->texnum]].flags & (TF_FLY_THRU | TF_PASS_THRU)) == 0) {
+        if (fp->texnum >= 0 && (GameTextures[pm->textures[fp->texnum]].flags & (TF_FLY_THRU | TF_PASS_THRU)) == 0) {
           ASSERT(fp->nverts <= 32);
 
           for (j = 0; j < fp->nverts; j++) {
