@@ -207,8 +207,8 @@ void FreeStringTables() {
   String_table.clear();
 }
 
-const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table.size()))
+const char *GetStringFromTable(uint32_t index) {
+  if (index >= String_table.size())
     return Error_string;
 
   if (String_table[index].empty())
