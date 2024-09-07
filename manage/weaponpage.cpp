@@ -1317,7 +1317,7 @@ int mng_GetGuaranteedWeaponPage(char *name, CFILE *infile) {
   int i;
   mngs_weapon_page weaponpage;
 
-  // See if its in memory
+  // See if it is in memory
   i = FindWeaponName(name);
   if (i != -1)
     return i;
@@ -1376,7 +1376,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
 
   // First see if our image differs from the one on the net
   // If it is, make a copy
-  // If its a release version, don't do any of this
+  // If it is a release version, don't do any of this
 
 #ifndef RELEASE
   if (Network_up) {
@@ -1386,7 +1386,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     UpdatePrimitive(str / weaponpage->hud_image_name, netstr / weaponpage->hud_image_name, weaponpage->hud_image_name,
                     PAGETYPE_WEAPON, weaponpointer->name);
 
-    // Now copy the discharge image, depending on whether or not its a model
+    // Now copy the discharge image, depending on whether or not it is a model
     if (!((weaponpage->weapon_struct.flags & WF_IMAGE_BITMAP) || (weaponpage->weapon_struct.flags & WF_IMAGE_VCLIP))) {
       str = LocalModelsDir;
       netstr = NetModelsDir;

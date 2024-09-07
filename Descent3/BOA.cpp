@@ -677,7 +677,7 @@ void add_terrain_cell(int cell, int t_region, char *checked) {
     if (yend >= TERRAIN_DEPTH)
       yend = TERRAIN_DEPTH - 1;
 
-    // This should be a faster interative why to do a square with center at original position
+    // This should be a faster iterative way to do a square with center at original position
     int cur_node = TERRAIN_WIDTH * ystart + xstart;
     int next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 
@@ -1508,7 +1508,7 @@ void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *x
 #include "neweditor/resource.h"
 #include "neweditor/ProgressDialog.h"
 
-// Displays/Updates the Visability Progress bar
+// Displays/Updates the Visibility Progress bar
 // state = 0 //create
 // state = 1 //update
 // state = 2 //destroy
@@ -1819,7 +1819,7 @@ void MakeBOAVisTable(bool from_lighting) {
                   fq.ignore_obj_list = NULL;
                   fq.flags =
                       FQ_BACKFACE |
-                      FQ_IGNORE_RENDER_THROUGH_PORTALS; // Gaurentees in wierd geometry cases (as the ray will hit as it
+                      FQ_IGNORE_RENDER_THROUGH_PORTALS; // Gaurentees in weird geometry cases (as the ray will hit as it
                                                         // comes back in the mine) that the ray cannot start outside the
                                                         // mine like with a slightly non-planar portal or other non-nice
                                                         // situations like zero-width door portal/room-face combos
@@ -2234,7 +2234,7 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    // Determine number of independant structures and classify each face
+    // Determine number of independent structures and classify each face
     for (i = 0; i <= Highest_room_index; i++) {
       if (Rooms[i].used) {
         room *rp = &Rooms[i];
@@ -2691,7 +2691,7 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    // Remove unneccessary groups
+    // Remove unnecessary groups
     for (count = 0; count <= Highest_room_index; count++) {
       if (Rooms[count].used) {
         //			mprintf(0, "==================\n", count);
@@ -2825,7 +2825,7 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    // Remove unneccessary groups
+    // Remove unnecessary groups
     for (count = 0; count <= Highest_room_index; count++) {
       if (Rooms[count].used) {
         //			mprintf(0, "==================\n", count);
@@ -2973,7 +2973,7 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    //	// Print out remainding groups
+    //	// Print out remaining groups
     //	for(count = 0; count <= Highest_room_index; count++)
     //	{
     //		if(Rooms[count].used)

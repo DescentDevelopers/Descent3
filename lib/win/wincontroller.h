@@ -47,7 +47,7 @@
  * get_mouse_raw_values now returns screen coords, not deltas.
  *
  * 21    4/24/99 5:39p Samir
- * mouse control now framerate independant.
+ * mouse control now framerate independent.
  *
  * 20    4/16/99 2:02p Kevin
  * Added mouselook support

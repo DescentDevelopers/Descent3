@@ -163,7 +163,7 @@
  *
  * 129   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -550,7 +550,7 @@
  * structure
  *
  * 7     7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 6     7/15/97 7:29p Chris
  * Added a sound for helicopter blades.

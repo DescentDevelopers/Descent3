@@ -2471,7 +2471,7 @@ void collide_two_objects(object *A, object *B, vector *collision_point, vector *
     }
   }
 
-  // Call script only if its ok to
+  // Call script only if it is ok to
   int ok_to_call_script = 1;
   if (A->type == OBJ_PLAYER && (Players[A->id].flags & (PLAYER_FLAGS_DYING | PLAYER_FLAGS_DEAD)))
     ok_to_call_script = 0;

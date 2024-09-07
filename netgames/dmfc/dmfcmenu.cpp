@@ -352,7 +352,7 @@ bool MenuItem::Forward(void) {
       }
       return true;
     }
-    // This submenu doesn't have input focus, so move to it's currently selected submenu and
+    // This submenu doesn't have input focus, so move to its currently selected submenu and
     // Tell it to go forward if it can
     if (CurrSubMenu != -1)
       return SubMenus[CurrSubMenu]->Forward();
@@ -370,7 +370,7 @@ bool MenuItem::Back(void) {
         HasInputFocus = true;
         return true;
       }
-      // The next submenu doesn't have focus, but one of it's submenus might (they better),
+      // The next submenu doesn't have focus, but one of its submenus might (they better),
       // so move on to the next submenu and call Back()
       return SubMenus[CurrSubMenu]->Back();
     }
@@ -413,17 +413,17 @@ void MenuItem::Execute(void) {
   switch (m_cType) {
   case MIT_NORMAL: {
     // We need to go through the Submenus and check to see if the submenu has focus
-    // if it does, than we need to execute it's function
+    // if it does, than we need to execute its function
     if (SubMenuCount > 0) {
       if (CurrSubMenu != -1) {
         if (HasInputFocus) {
-          // The submenu has focus, so call it's handler as long as it's not a plist type
+          // The submenu has focus, so call its handler as long as it's not a plist type
           char type = SubMenus[CurrSubMenu]->GetType();
           if ((type != MIT_PLIST) && (type != MIT_STATE) && (type != MIT_CUSTOM))
             SubMenus[CurrSubMenu]->CallFunc(CurrSubMenu);
           return;
         }
-        // The next submenu doesn't have focus, so move on and check it's submenu to see if we
+        // The next submenu doesn't have focus, so move on and check its submenu to see if we
         // can Execute() that
         SubMenus[CurrSubMenu]->Execute();
       }
@@ -434,7 +434,7 @@ void MenuItem::Execute(void) {
   } break;
   case MIT_PLIST: {
     // We need to go through the Submenus and check to see if the submenu has focus
-    // if it does, than we need to execute it's function
+    // if it does, than we need to execute its function
     if ((SubMenuCount > 0) && (CurrSubMenu != -1) && (HasInputFocus)) {
       if (m_iFlags & MIF_INCLUDENONE) {
         // there is a <None> so take that into consideration
@@ -445,14 +445,14 @@ void MenuItem::Execute(void) {
         }
 
         if (basethis->CheckPlayerNum(Pnums[CurrSubMenu - 1])) {
-          // The submenu has focus, so call it's handler
+          // The submenu has focus, so call its handler
           CallFunc(Pnums[CurrSubMenu - 1]);
           return;
         }
       } else {
         // a regular plist
         if (basethis->CheckPlayerNum(Pnums[CurrSubMenu])) {
-          // The submenu has focus, so call it's handler
+          // The submenu has focus, so call its handler
           CallFunc(Pnums[CurrSubMenu]);
           return;
         }
@@ -461,12 +461,12 @@ void MenuItem::Execute(void) {
   } break;
   case MIT_CUSTOM: {
     // We need to go through the Submenus and check to see if the submenu has focus
-    // if it does, than we need to execute it's function
+    // if it does, than we need to execute its function
     int count = (m_cmInfo.GetListCount) ? (*m_cmInfo.GetListCount)() : 0;
     if (count > 0) {
       if (CurrSubMenu != -1) {
         if (HasInputFocus) {
-          // The submenu has focus, so call it's handler
+          // The submenu has focus, so call its handler
           CallFunc(CurrSubMenu);
           return;
         }
@@ -475,11 +475,11 @@ void MenuItem::Execute(void) {
   }
   case MIT_STATE: {
     // We need to go through the Submenus and check to see if the submenu has focus
-    // if it does, than we need to execute it's function
+    // if it does, than we need to execute its function
     if (SubMenuCount > 0) {
       if (CurrSubMenu != -1) {
         if (HasInputFocus) {
-          // The submenu has focus, so call it's handler
+          // The submenu has focus, so call its handler
           CallFunc(CurrSubMenu);
           m_iState = CurrSubMenu;
           return;
@@ -810,7 +810,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
 }
 const char *MenuItem::GetTitle(void) { return m_sTitle; }
 void MenuItem::SetInputFocus(void) {
-  // Sets this MenuItem with Input focus, reseting it's Current Sub Menu to 0 if it has a SubMenu
+  // Sets this MenuItem with Input focus, reseting its Current Sub Menu to 0 if it has a SubMenu
   HasInputFocus = true;
   if (SubMenuCount > 0)
     CurrSubMenu = (m_iTopIndex == 0) ? 0 : m_iTopIndex + 1;
@@ -818,7 +818,7 @@ void MenuItem::SetInputFocus(void) {
     CurrSubMenu = -1;
 }
 void MenuItem::LoseInputFocus(void) {
-  // Make this guy lose focus, Set it's Current Submenu to -1
+  // Make this guy lose focus, Set its Current Submenu to -1
   HasInputFocus = false;
   CurrSubMenu = -1;
 }

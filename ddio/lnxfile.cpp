@@ -290,7 +290,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
     path_length++;
   }
 
-  // now divide the full path into seperate NULL terminated strings,counting the number
+  // now divide the full path into separate NULL terminated strings,counting the number
   // of directories in the process
   dirs = 0;
   char *strptr;
@@ -313,7 +313,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
     return;
   }
 
-  // allocate the memory needed for the seperate strings of each directory
+  // allocate the memory needed for the separate strings of each directory
   directories = (char **)mem_malloc(sizeof(char *) * dirs);
   if (!directories) {
     strcpy(dest, srcPath);
@@ -352,7 +352,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
         curr_index = 0;           // can't go further than root
       dir_order[curr_index] = -1; // invalidate current slot
     } else if (stricmp(directories[count], ".")) {
-      // we have a normal directory, add it's index
+      // we have a normal directory, add its index
       dir_order[curr_index] = count;
       curr_index++;
     }

@@ -60,7 +60,7 @@
  *
  * 13    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -193,9 +193,9 @@ extern void Osiris_UnloadMissionModule(void);
 //	Osiris_BindScriptsToObject
 //	Purpose:
 //		Call this function after an object has been created to bind all the scripts associated
-//	with it to the object.  This function must be called near the end of it's initialization,
+//	with it to the object.  This function must be called near the end of its initialization,
 //	to make sure that all fields have been filled in.  This function does not call any events.
-//	This function will also load any dll's needed for it's game script.
+//	This function will also load any dll's needed for its game script.
 //	returns false if nothing was bound.
 extern bool Osiris_BindScriptsToObject(object *obj);
 
@@ -210,7 +210,7 @@ extern void Osiris_DetachScriptsFromObject(object *obj);
 //		Triggers an event for an object.  Pass in the event number and the associated
 //	structure of data.  All events will be chained through the associated scripts of the
 //	object (as long as they are available) in the order: custom script, level script,
-//	mission script, and finally it's default script.  The chain breaks if one of the scripts
+//	mission script, and finally its default script.  The chain breaks if one of the scripts
 //	returns false on the call to their CallInstanceEvent().
 extern bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data);
 
@@ -244,7 +244,7 @@ extern void Osiris_ResetAllTimers(void);
 
 //	Osiris_CancelTimer
 //	Purpose:
-//		Cancels a timer thats in use, given it's ID
+//		Cancels a timer thats in use, given its ID
 extern void Osiris_CancelTimer(int handle);
 
 //	Osiris_TimerExists

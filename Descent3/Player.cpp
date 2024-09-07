@@ -373,7 +373,7 @@
  *
  * 225   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -2576,7 +2576,7 @@ void ResetPlayerObject(int slot, bool f_reset_pos) {
   ResetReticle();
 }
 
-// Resets a player's control type back to it's default setting
+// Resets a player's control type back to its default setting
 void ResetPlayerControlType(int slot) {
   ASSERT(slot >= 0 && slot < MAX_PLAYERS);
 
@@ -2656,7 +2656,7 @@ void PlayerSetControlToAI(int slot, float velocity) {
   pobj->ai_info->dodge_vel_percent = 1.0f;
   pobj->ai_info->attack_vel_percent = 1.0f;
   pobj->ai_info->fight_same = 0.0f;
-  pobj->ai_info->agression = 0.0f;
+  pobj->ai_info->aggression = 0.0f;
   pobj->ai_info->avoid_friends_distance = 0.0f;
   pobj->ai_info->biased_flight_importance = 0.0f;
   pobj->ai_info->circle_distance = 10.0f;

@@ -42,7 +42,7 @@
  * removed int3 in CopyFileTime
  *
  * 22    2/04/99 11:19a Kevin
- * Added function to find a CD drive letter based on it's volume name
+ * Added function to find a CD drive letter based on its volume name
  *
  * 21    12/08/98 12:17p Jeff
  * added 3 functions (similar to ddio_FindFiles) for finding directories
@@ -374,7 +374,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
     path_length++;
   }
 
-  // now divide the full path into seperate NULL terminated strings,counting the number
+  // now divide the full path into separate NULL terminated strings,counting the number
   // of directories in the process
   dirs = 0;
   char *strptr = dest;
@@ -392,7 +392,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
     return;
   }
 
-  // allocate the memory needed for the seperate strings of each directory
+  // allocate the memory needed for the separate strings of each directory
   directories = (char **)mem_malloc(sizeof(char *) * dirs);
   if (!directories) {
     strcpy(dest, srcPath);
@@ -431,7 +431,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
         curr_index = 0;           // can't go further than root
       dir_order[curr_index] = -1; // invalidate current slot
     } else if (stricmp(directories[count], ".")) {
-      // we have a normal directory, add it's index
+      // we have a normal directory, add its index
       dir_order[curr_index] = count;
       curr_index++;
     }

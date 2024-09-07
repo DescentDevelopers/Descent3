@@ -159,7 +159,7 @@ void CWorldObjectsPowerupDialog::OnAddNewPowerup() {
 	
 	strcpy (Powerups[powerup_handle].name,cur_name);
 
-	// If its a 3d model instead of an animation, flag it
+	// If it is a 3d model instead of an animation, flag it
 
 	if (!model)
 		Powerups[powerup_handle].flags|=PF_IMAGE_BITMAP;
@@ -260,7 +260,7 @@ void CWorldObjectsPowerupDialog::OnCheckin() {
 
 				OutrageMessageBox ("Powerup checked in.");
 
-				// Delete it from local pagefile if its there
+				// Delete it from local pagefile if it is there
 				int dret=mng_DeletePowPage (Powerups[n].name,1);
 				ASSERT (dret==1);
 				mng_EraseLocker();
@@ -278,7 +278,7 @@ void CWorldObjectsPowerupDialog::OnCheckin() {
 
 // Deletes the current powerup
 // If the user has it checked out, will delete it from the net pagefile
-// If its local only, it will get deleted from the local pagefile
+// If it is local only, it will get deleted from the local pagefile
 void CWorldObjectsPowerupDialog::OnDeletePowerup() {
 #if 0
 	int answer,tl;
@@ -295,7 +295,7 @@ void CWorldObjectsPowerupDialog::OnDeletePowerup() {
 		return;
 	}
 
-	//Make sure its to be deleted
+	//  Make sure it is to be deleted
 	answer=MessageBox ("Are you sure you want to delete this powerup?",Powerups[n].name,MB_YESNO);
 	if (answer==IDNO)
 		return;
@@ -316,7 +316,7 @@ void CWorldObjectsPowerupDialog::OnDeletePowerup() {
 			Int3();
 		}
 	}
-	else // if its network, delete it from both the net and local drives
+	else // if it is network, delete it from both the net and local drives
 	{
 		mng_FreeTrackLock (tl);
 		mng_DeletePowPage (Powerups[n].name,1);
@@ -836,7 +836,7 @@ void CWorldObjectsPowerupDialog::OnLoadImage() {
 		return;
 	}
 
-	// If its a 3d model instead of an animation, flag it
+	// If it is a 3d model instead of an animation, flag it
 	
 	powerup_handle=D3EditState.current_powerup;
 

@@ -160,7 +160,7 @@
  * auto level end
  *
  * 74    10/13/98 1:08p Chris
- * Greatly improved the AI's use of paths.  Improved visability checking
+ * Greatly improved the AI's use of paths.  Improved visibility checking
  * algorithm.   Probably needs a second pass for further cleanup.
  *
  * 73    10/09/98 7:47p Chris
@@ -179,7 +179,7 @@
  * Added 13 new fields.  AI fire spread works.
  *
  * 68    7/28/98 5:04p Chris
- * Added some new multiplayer support (for dodging and targetting)
+ * Added some new multiplayer support (for dodging and targeting)
  *
  * 67    7/24/98 6:06p Chris
  * Initial robot leading code  -- needs multiple wb support
@@ -274,7 +274,7 @@
  * version 1.0 of the new AI ranged firing code.
  *
  * 37    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 36    3/17/98 12:14p Chris
  * Fixed bug with bumping player causing awareness
@@ -338,7 +338,7 @@
  * Major update to the AI system.
  *
  * 18    1/20/98 4:40p Chris
- * Fixed some visability stuff.
+ * Fixed some visibility stuff.
  *
  * 17    1/19/98 10:04a Matt
  * Added new object handle system
@@ -812,13 +812,13 @@ struct ai_frame {
   float frustration;
   float curiousity;
   float life_preservation;
-  float agression;
+  float aggression;
 
   // Current emotional levels
   float cur_frustration;
   float cur_curiousity;
   float cur_life_preservation;
-  float cur_agression;
+  float cur_aggression;
 
   // X Second memory
   float mem_time_till_next_update;

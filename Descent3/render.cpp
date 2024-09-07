@@ -1924,7 +1924,7 @@ void RenderFace(room *rp, int facenum) {
     rend_SetTextureType(tt);
   } else
     rend_SetTextureType(TT_PERSPECTIVE);
-  if (face_cc.cc_or) // Possible triangulate this face cuz its off screen somewhat
+  if (face_cc.cc_or) // Possible triangulate this face because it is off screen somewhat
   {
     if (Room_light_val < 1.0)
       do_triangle_test = 1;
@@ -3302,7 +3302,7 @@ void RenderMirrorRooms() {
     Render_mirror_for_room = false;
     bool do_mirror_face = false;
     rp->flags &= ~RF_MIRROR_VISIBLE;
-    // Make sure its really ok to render this mirrored room
+    // Make sure it is really ok to render this mirrored room
     if (rp->mirror_face != -1)
       do_mirror_face = true;
     if (rp->mirror_face >= rp->num_faces)

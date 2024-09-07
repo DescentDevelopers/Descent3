@@ -1305,7 +1305,7 @@ const char *CBriefParse::ParseInt(const char *p, int *i) {
   if (!got_digit)
     ParseError("Expecting digit", p);
 
-  // Check for valid seperator, and convert
+  // Check for valid separator, and convert
   if ((*t == 0) || isspace(*t) || (*t == ',')) { // valid number
     *i = atoi(p);
     return t;
@@ -1349,7 +1349,7 @@ const char *CBriefParse::ParseFloat(const char *p, float *f) {
     return NULL;
   }
 
-  // Check for valid seperator, and convert
+  // Check for valid separator, and convert
   if ((*t == 0) || isspace(*t) || (*t == ',')) { // valid number
     *f = atof(p);
     return t;

@@ -345,7 +345,7 @@ int LoadTextureImage(const char *filename, int *type, int texture_size, int mipp
 // Goes through and marks a texture as a tmap2 if its bitmap(s) have transparency
 bool CheckIfTextureIsTmap2(int texnum);
 
-// Touches a texture, makes sure its in memory
+// Touches a texture, makes sure it is in memory
 void TouchTexture(int n);
 
 // Builds the bumpmaps for the texture

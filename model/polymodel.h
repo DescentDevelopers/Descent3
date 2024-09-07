@@ -37,7 +37,7 @@
  *
  * 80    1/21/99 11:16p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -165,7 +165,7 @@
  * upped polyvecs for that fucker brent
  *
  * 41    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 40    3/19/98 4:30p Samir
  * added ability to mark subobjects as layered.
@@ -407,7 +407,7 @@ int IsNonRenderableSubmodel(poly_model *pm, int submodelnum);
 // Sets the effect used by a polymodel
 void SetPolymodelEffect(polymodel_effect *);
 
-// Pages in a polymodel if its not already in memory
+// Pages in a polymodel if it is not already in memory
 void PageInPolymodel(int polynum, int type = -1, float *size_ptr = nullptr);
 
 // Gets a pointer to a polymodel.  Pages it in if neccessary

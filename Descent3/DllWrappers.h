@@ -95,18 +95,18 @@ void ChangePlayerShipIndex(int pnum, int ship_index);
 // adds a type/id item to the inventory (returns true on success)
 bool dInven_Add(Inventory *inven, int type, int id, object *parent = NULL, int aux_type = -1, int aux_id = -1,
                 int flags = 0, char *description = NULL);
-// adds an object to the inventory (marked by it's objhandle)
+// adds an object to the inventory (marked by its objhandle)
 bool dInven_AddObject(Inventory *inven, int object_handle, int flags = 0, char *description = NULL);
 // adds a special cased CounterMeasure into the inventory
 bool dInven_AddCounterMeasure(Inventory *inven, int id, int aux_type = -1, int aux_id = -1, int flags = 0,
                               char *description = NULL);
-//	removes an item from the inventory (reduces it's count by one...if there is no more, then it goes bye-bye)
+//	removes an item from the inventory (reduces its count by one...if there is no more, then it goes bye-bye)
 //	to remove an object that was added via objhandle, then pass the objhandle
 //	in the 'type' parameter, and don't pass in an id.
 bool dInven_Remove(Inventory *inven, int type, int id = -1);
 // uses an item in the inventory (also reduces its count by one...if there is no more, then it goes bye-bye)
 bool dInven_Use(Inventory *inven, int type, int id, object *parent = NULL);
-// uses an item in the inventory (given it's objhandle).
+// uses an item in the inventory (given its objhandle).
 bool dInven_UseObjHandle(Inventory *inven, int objhandle, object *parent = NULL);
 // returns how many unique type/ids are in the inventory
 int dInven_Size(Inventory *inven);
@@ -153,7 +153,7 @@ bool dInven_AtBeginning(Inventory *inven);
 bool dInven_AtEnd(Inventory *inven);
 // jump right to an item in the inventory
 void dInven_GotoPos(Inventory *inven, int newpos);
-// jump right to an item in the inventory give it's type and id
+// jump right to an item in the inventory given its type and id
 // to jump to an item that was added via object handle, pass the object
 // handle in as the type, and make id -1.
 void dInven_GotoPosTypeID(Inventory *inven, int type, int id);
@@ -161,7 +161,7 @@ void dInven_GotoPosTypeID(Inventory *inven, int type, int id);
 bool dInven_UsePos(Inventory *inven, object *parent = NULL);
 // returns the 'index' position of the current position
 int dInven_GetPos(Inventory *inven);
-// checks the pos, if its on a nonselectable item it will move to the next selectable (NULL if none)
+// checks the pos, if it is on a nonselectable item, it will move to the next selectable (NULL if none)
 void dInven_ValidatePos(Inventory *inven, bool forward = true);
 // returns whether an item is selectable
 bool dInven_IsSelectable(Inventory *inven);

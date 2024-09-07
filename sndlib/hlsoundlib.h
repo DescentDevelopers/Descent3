@@ -22,7 +22,7 @@
  * $Date: 3/20/00 12:26p $
  * $Author: Matt $
  *
- * Descent III Device-independant sound library
+ * Descent III Device-independent sound library
  *
  * $Log: /DescentIII/Main/lib/hlsoundlib.h $
  *

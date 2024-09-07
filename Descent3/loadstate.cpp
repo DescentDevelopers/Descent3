@@ -976,7 +976,7 @@ int LGSObjects(CFILE *fp, int version) {
     uint8_t l_rend_type;
     gs_ReadByte(fp, l_rend_type);
 
-    // See if the object has changed from it's original lightmap type
+    // See if the object has changed from its original lightmap type
     // DAJ added check for type
     if ((Objects[i].type != OBJ_NONE) && (Objects[i].lighting_render_type == LRT_LIGHTMAPS) &&
         (l_rend_type != LRT_LIGHTMAPS)) {
@@ -1359,7 +1359,7 @@ int LGSObjects(CFILE *fp, int version) {
       goto lgsobjs_fail;
 
     // link into mine.
-    // turn off big object flags if its a big object. (ObjLink will take care of this.)
+    // turn off big object flags if it is a big object. (ObjLink will take care of this.)
     if (op->flags & OF_BIG_OBJECT)
       op->flags &= (~OF_BIG_OBJECT);
 
@@ -1860,7 +1860,7 @@ int LGSSnapshot(CFILE *fp) {
 //@@	gs_ReadFloat(fp, ai->frustration);
 //@@	gs_ReadFloat(fp, ai->curiousity);
 //@@	gs_ReadFloat(fp, ai->fire_spread);
-//@@	gs_ReadFloat(fp, ai->agression);
+//@@	gs_ReadFloat(fp, ai->aggression);
 //@@	gs_ReadFloat(fp, ai->night_vision);
 //@@	gs_ReadFloat(fp, ai->fog_vision);
 //@@	gs_ReadFloat(fp, ai->lead_accuracy);

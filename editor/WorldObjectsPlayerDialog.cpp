@@ -326,7 +326,7 @@ void CWorldObjectsPlayerDialog::OnPshipCheckin() {
 
         OutrageMessageBox("Ship checked in.");
 
-        // Delete it from local pagefile if its there
+        // Delete it from local pagefile if it is there
         int dret = mng_DeletePage(Ships[n].name, PAGETYPE_SHIP, 1);
         ASSERT(dret == 1);
         mng_EraseLocker();
@@ -357,7 +357,7 @@ void CWorldObjectsPlayerDialog::OnPshipDelete() {
     return;
   }
 
-  // Make sure its to be deleted
+  // Make sure it is to be deleted
   answer = MessageBox("Are you sure you want to delete this ship?", Ships[n].name, MB_YESNO);
   if (answer == IDNO)
     return;
@@ -375,7 +375,7 @@ void CWorldObjectsPlayerDialog::OnPshipDelete() {
       mprintf(0, ErrorString);
       Int3();
     }
-  } else // if its network, delete it from both the net and local drives
+  } else // if it is network, delete it from both the net and local drives
   {
 
     mng_FreeTrackLock(tl);

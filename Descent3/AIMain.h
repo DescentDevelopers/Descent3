@@ -76,7 +76,7 @@
  * Improved the object linking system and AI and physics
  *
  * 25    10/13/98 1:08p Chris
- * Greatly improved the AI's use of paths.  Improved visability checking
+ * Greatly improved the AI's use of paths.  Improved visibility checking
  * algorithm.   Probably needs a second pass for further cleanup.
  *
  * 24    10/06/98 6:19p Chris

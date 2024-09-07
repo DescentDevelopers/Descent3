@@ -116,7 +116,7 @@
  * flag in the dying info.
  *
  * 214   4/21/99 12:41p Jason
- * make explosion system framerate independant
+ * make explosion system framerate independent
  *
  * 213   4/21/99 11:05a Kevin
  * new ps_rand and ps_srand to replace rand & srand
@@ -251,7 +251,7 @@
  *
  * 170   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -284,7 +284,7 @@
  * tweaked it
  *
  * 161   11/19/98 4:21p Chris
- * Got rid of some wierd rotation cases with slow deaths from being killed
+ * Got rid of some weird rotation cases with slow deaths from being killed
  * with the mass driver
  *
  * 160   11/19/98 12:22p Jason
@@ -752,7 +752,7 @@ void DrawFireballObject(object *obj) {
   norm_time = time_live / obj->lifetime;
   if (norm_time >= 1)
     norm_time = .99999f;            // don't go over!
-  if (obj->id == SMOKE_TRAIL_INDEX) // If its a smoke trail, get image from texture
+  if (obj->id == SMOKE_TRAIL_INDEX) // If it is a smoke trail, get image from texture
   {
     int texnum = obj->ctype.blast_info.bm_handle;
     if (GameTextures[texnum].flags & TF_ANIMATED) {
@@ -1409,7 +1409,7 @@ void DestroyObject(object *objp, float explosion_mag, int death_flags) {
     float fireball_lifeleft = (fireball_visnum != -1) ? VisEffects[fireball_visnum].lifeleft : 2.0;
     CreateSplintersFromBody(objp, explosion_mag, OBJECT_OUTSIDE(objp) ? fireball_lifeleft : (fireball_lifeleft / 2.0));
   }
-  // Make sure its ok to delete if this is a netplayer game
+  // Make sure it is ok to delete if this is a netplayer game
   if ((Game_mode & GM_MULTI) && (Netgame.local_role == LR_CLIENT) && (objp->flags & OF_SERVER_OBJECT))
     ASSERT(objp->flags & OF_SERVER_SAYS_DELETE);
   // Make object go away or become inert

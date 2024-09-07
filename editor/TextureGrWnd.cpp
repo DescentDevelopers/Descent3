@@ -99,7 +99,7 @@
  * first pass at new indoor engine
  *
  * 99    2/03/99 1:10p Matt
- * Changed the paletted room current faces to be stored in a seperate
+ * Changed the paletted room current faces to be stored in a separate
  * array, instead of in the room structure.
  *
  * 98    2/01/99 5:47p Nate
@@ -1349,7 +1349,7 @@ bool CTextureGrWnd::SetupPopup(CMenu *popup, char *title) {
   }
   if (!popup->AppendMenu(MF_SEPARATOR)) {
     ret = false;
-    mprintf(0, "Warning: Could not add seperator to popup\n");
+    mprintf(0, "Warning: Could not add separator to popup\n");
   }
   if (!popup->AppendMenu(MF_STRING, POPUP_COPY, "Copy")) {
     ret = false;
@@ -1369,7 +1369,7 @@ bool CTextureGrWnd::SetupPopup(CMenu *popup, char *title) {
   }
   if (!popup->AppendMenu(MF_SEPARATOR)) {
     ret = false;
-    mprintf(0, "Warning: Could not add seperator to popup\n");
+    mprintf(0, "Warning: Could not add separator to popup\n");
   }
   if (!popup->AppendMenu(MF_STRING, POPUP_EDITNAME, "Edit Name")) {
     ret = false;

@@ -50,7 +50,7 @@ public:
   CSliderCtrl m_fight_team_slider;
   CSliderCtrl m_fight_same_slider;
   CSliderCtrl m_curiousity_slider;
-  CSliderCtrl m_agression_slider;
+  CSliderCtrl m_aggression_slider;
   CSliderCtrl m_fire_spread_slider;
   BOOL m_fire_weapon1;
   BOOL m_fire_weapon2;
@@ -61,7 +61,7 @@ public:
   float m_ai_flock_alignment;
   float m_ai_flock_cohesion;
   BOOL m_ai_flock_member_check;
-  float m_ai_flock_seperation;
+  float m_ai_flock_separation;
   float m_ai_fov;
   CString m_initial_action;
   BOOL m_ai_uses_thrust_check;

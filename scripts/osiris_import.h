@@ -61,12 +61,12 @@ typedef void (*Sound_TouchFile_fp)(char *sound_name);
 OSIRISEXTERN Sound_TouchFile_fp Sound_TouchFile;
 
 //	int Obj_FindID(const char *object_name);
-//	searches for an object id given it's name
+//	searches for an object id given its name
 typedef int (*Obj_FindID_fp)(const char *object_name);
 OSIRISEXTERN Obj_FindID_fp Obj_FindID;
 
 //	int Obj_FindType(const char *object_name);
-//	searches for an object type given it's name
+//	searches for an object type given its name
 typedef int (*Obj_FindType_fp)(const char *object_name);
 OSIRISEXTERN Obj_FindType_fp Obj_FindType;
 
@@ -138,12 +138,12 @@ typedef int (*Obj_AttachObjectRad_fp)(int parenthandle, char parent_ap, int chil
 OSIRISEXTERN Obj_AttachObjectRad_fp Obj_AttachObjectRad;
 
 //	void Obj_UnattachFromParent(int objhandle);
-//	Detaches an object from it's parent
+//	Detaches an object from its parent
 typedef void (*Obj_UnattachFromParent_fp)(int objhandle);
 OSIRISEXTERN Obj_UnattachFromParent_fp Obj_UnattachFromParent;
 
 //	void Obj_UnattachChild(int objhandle,char parent_ap);
-//	Detaches a child object from it's parent
+//	Detaches a child object from its parent
 typedef void (*Obj_UnattachChild_fp)(int objhandle, char parent_ap);
 OSIRISEXTERN Obj_UnattachChild_fp Obj_UnattachChild;
 
@@ -153,7 +153,7 @@ typedef void (*Obj_UnattachChildren_fp)(int objhandle);
 OSIRISEXTERN Obj_UnattachChildren_fp Obj_UnattachChildren;
 
 //	int FVI_RayCast(int objhandle,vector *p0,vector *p1,int start_roomnum,float rad,int flags,ray_info *ri);
-//	Shoots out a ray, returns it's fate
+//	Shoots out a ray, returns its fate
 typedef int (*FVI_RayCast_fp)(int objhandle, vector *p0, vector *p1, int start_roomnum, float rad, int flags,
                               ray_info *ri);
 OSIRISEXTERN FVI_RayCast_fp FVI_RayCast;
@@ -369,7 +369,7 @@ typedef void (*Scrpt_MemFree_fp)(void *memory_ptr);
 OSIRISEXTERN Scrpt_MemFree_fp Scrpt_MemFree;
 
 //	void Scrpt_CancelTimer(int timer_id);
-//		Cancels a timer thats in use, given it's ID
+//		Cancels a timer thats in use, given its ID
 typedef void (*Scrpt_CancelTimer_fp)(int timer_id);
 OSIRISEXTERN Scrpt_CancelTimer_fp Scrpt_CancelTimer;
 
@@ -563,7 +563,7 @@ OSIRISEXTERN OMMS_Free_fp OMMS_Free;
 typedef OMMSHANDLE (*OMMS_Find_fp)(uint32_t unique_identifier, char *script_identifier);
 OSIRISEXTERN OMMS_Find_fp OMMS_Find;
 
-//	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
+//	Returns information about the OMMS memory given its handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
 typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,
@@ -571,7 +571,7 @@ typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint32_t *mem_size, uint32_t 
 OSIRISEXTERN OMMS_GetInfo_fp OMMS_GetInfo;
 
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed
-//	use pipes (|) to seperate lines.
+//	use pipes (|) to separate lines.
 typedef bool (*Cine_Start_fp)(tGameCinematic *info, const char *text_string);
 OSIRISEXTERN Cine_Start_fp Cine_Start;
 
@@ -684,7 +684,7 @@ typedef int (*Game_GetLanguage_fp)(void);
 OSIRISEXTERN Game_GetLanguage_fp Game_GetLanguage;
 
 // Sets/Gets information about a path.
-// If you change is PV_ALL (or any of it's individual components), pass in a pointer to an
+// If you change is PV_ALL (or any of its individual components), pass in a pointer to an
 // osiris_path_node_info struct.  For the others, you must pass in an appropriate pointer
 // (i.e. an int* for PV_I_NUMNODES).  You can only set PV_ALL components.
 //	for PV_I_NUMNODES, path_id MUST be specified, node_id is ignored

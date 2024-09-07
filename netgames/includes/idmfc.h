@@ -672,7 +672,7 @@ public:
   // DMFCBase::AutoTimeLimit
   //
   //    Server Only.  This turns off or on the automatic level ending by DMFC of a timed multiplayer game.
-  //    If you turn it off, it is your responsibility to end a time multiplayer game when it's time
+  //    If you turn it off, it is your responsibility to end a time multiplayer game when its time
   //    is up.  If it is turned on, DMFC will automatically handle ending the game.  By default it is on.
   virtual void AutoTimeLimit(bool turnon) = 0;
 
@@ -718,7 +718,7 @@ public:
 
   // DMFCBase::RegisterPacketReceiver
   //
-  // Sets up a handler for a Special Packet ID.  When a special packet is recieved it's ID is compared
+  // Sets up a handler for a Special Packet ID.  When a special packet is recieved, its ID is compared
   // to the ID's given to this function.  If any match than it calls the handler given to process
   // the packet.
   // id = ID of the packet
@@ -922,7 +922,7 @@ public:
   // DMFCBase::GetCounterMeasureOwner
   //
   //
-  //	Given a counter measure it will determine the pnum of it's owner...if it can't find it, it returns -1
+  //	Given a counter measure it will determine the pnum of its owner...if it can't find it, it returns -1
   virtual int GetCounterMeasureOwner(object *robot) = 0;
 
   // DMFCBase::CFGOpen
@@ -1644,7 +1644,7 @@ public:
   // returns the current state of the camera window
   virtual int GetCameraViewType(int window) = 0;
   // Given a generic object (OBJ_POWERUP,OBJ_ROBOT,OBJ_BUILDING or OBJ_CLUTTER) id
-  // in the range of 0 to MAX_OBJECT_IDS, this returns a pointer to it's information (see objinfo.h)
+  // in the range of 0 to MAX_OBJECT_IDS, this returns a pointer to its information (see objinfo.h)
   //	It returns NULL if an invalid id is given (or it's not used)
   virtual object_info *GetObjectInfo(int objinfo_id) = 0;
   virtual ~IDMFC() = default;

@@ -459,7 +459,7 @@ void CAmbientSoundPattern::OnASPCheckIn() {
 
         OutrageMessageBox("File checked in.");
 
-        // Delete it from local pagefile if its there
+        // Delete it from local pagefile if it is there
         int dret = mng_DeletePage(Gamefiles[n].name, PAGETYPE_GAMEFILE, 1);
         ASSERT(dret == 1);
         mng_EraseLocker();

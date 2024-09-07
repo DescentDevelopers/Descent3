@@ -582,7 +582,7 @@ dp_GetModemChoices_fp DLLdp_GetModemChoices;
 typedef bool (*CreateStringTable_fp)(const char *filename, char ***table, int *size);
 CreateStringTable_fp DLLCreateStringTable;
 
-// Given a string table and it's count of strings, it will free up it's memory
+// Given a string table and its count of strings, it will free up its memory
 typedef void (*DestroyStringTable_fp)(char **table, int size);
 DestroyStringTable_fp DLLDestroyStringTable;
 

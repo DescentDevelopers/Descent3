@@ -113,7 +113,7 @@
  * Saves us alot of memory
  *
  * 14    5/08/97 1:16p Jason
- * made ChangeEndName work with device independant calls
+ * made ChangeEndName work with device independent calls
  *
  * 13    5/01/97 1:05p Mark
  * FROM JASON: Fixed stupid =/== bug in vclip loading

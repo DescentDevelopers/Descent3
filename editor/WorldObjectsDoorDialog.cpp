@@ -31,7 +31,7 @@
  *
  * 25    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -548,7 +548,7 @@ void CWorldObjectsDoorDialog::OnCheckinDoor() {
 
         OutrageMessageBox("Door checked in.");
 
-        // Delete it from local pagefile if its there
+        // Delete it from local pagefile if it is there
         int dret = mng_DeletePage(Doors[n].name, PAGETYPE_DOOR, 1);
 
         ASSERT(dret == 1);
@@ -591,7 +591,7 @@ void CWorldObjectsDoorDialog::OnDeleteDoor() {
     return;
   }
 
-  // Make sure its to be deleted
+  // Make sure it is to be deleted
   answer = MessageBox("Are you sure you want to delete this door?", Doors[n].name, MB_YESNO);
   if (answer == IDNO)
     return;
@@ -609,7 +609,7 @@ void CWorldObjectsDoorDialog::OnDeleteDoor() {
       mprintf(0, ErrorString);
       Int3();
     }
-  } else // if its network, delete it from both the net and local drives
+  } else // if it is network, delete it from both the net and local drives
   {
 
     mng_FreeTrackLock(tl);

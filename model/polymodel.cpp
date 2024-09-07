@@ -266,7 +266,7 @@
  * added assert
  *
  * 78    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 77    3/19/98 4:30p Samir
  * added ability to mark subobjects as layered.
@@ -488,7 +488,7 @@
  * made polymodels use less memory
  *
  * 7     7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 6     7/23/97 11:48a Jason
  * added support for newstyle pof format
@@ -520,7 +520,7 @@
  *
  * 29    5/16/97 1:24p Jason
  * changed the way models work their angle magic
- * Now its much more intuitive
+ * Now it is much more intuitive
  *
  * 28    5/16/97 12:04p Jason
  * better memory use for rotational keyframes
@@ -545,7 +545,7 @@
  * fixed bug with animation rotation keyframes
  *
  * 21    5/08/97 1:16p Jason
- * made ChangeEndName work with device independant calls
+ * made ChangeEndName work with device independent calls
  *
  * 20    4/30/97 5:43p Jason
  * remap polymodels when pagefile is done loading
@@ -948,7 +948,7 @@ int ReloadModelTextures(int modelnum) {
         strcat(temp, ".OGF");
         ret = FindTextureBitmapName(temp);
         if (ret == -1) {
-          // See if its already in memory
+          // See if it is already in memory
           ret = FindTextureName(name_buf);
           if (ret == -1) {
             ret = 0;
@@ -1761,7 +1761,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
         ret = FindTextureBitmapName(temp);
         if (ret == -1) {
-          // See if its already in memory
+          // See if it is already in memory
           ret = FindTextureName(name_buf);
           if (ret == -1) {
             ret = 0;
@@ -2146,7 +2146,7 @@ int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
   return -1; // damn, didn't load
 }
 
-// Pages in a polymodel if its not already in memory
+// Pages in a polymodel if it is not already in memory
 void PageInPolymodel(int polynum, int type, float *size_ptr) {
   if (!(Poly_models[polynum].flags & PMF_NOT_RESIDENT)) {
     if (!(Poly_models[polynum].flags & PMF_SIZE_COMPUTED))

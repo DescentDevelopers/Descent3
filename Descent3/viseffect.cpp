@@ -203,7 +203,7 @@
  *
  * 87    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -1493,7 +1493,7 @@ void DrawVisAxisBillboard(vis_effect *vis) {
   if (norm_time >= 1)
     norm_time = 0.99999f; // don't go over!
 
-  if (vis->billboard_info.texture) // If its a texture, get image from texture
+  if (vis->billboard_info.texture) // If it is a texture, get image from texture
   {
     int texnum = vis->custom_handle;
     if (GameTextures[texnum].flags & TF_ANIMATED) {
@@ -1891,7 +1891,7 @@ void DrawVisEffect(vis_effect *vis) {
     size = (vis->size / 2) + ((vis->size * norm_time) / 2);
   }
 
-  if (vis->id == SMOKE_TRAIL_INDEX) // If its a smoke trail, get image from texture
+  if (vis->id == SMOKE_TRAIL_INDEX) // If it is a smoke trail, get image from texture
   {
     int texnum = vis->custom_handle;
     if (GameTextures[texnum].flags & TF_ANIMATED) {

@@ -555,7 +555,7 @@
  * temp hacks for permissable client server
  *
  * 367   2/12/99 3:37p Jason
- * added client-side interpolation...its not fully debugged though.
+ * added client-side interpolation...it is not fully debugged though.
  *
  * 366   2/10/99 3:48p Jason
  * table filter changes
@@ -627,7 +627,7 @@
  *
  * 345   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -1293,7 +1293,7 @@
  *
  * 130   7/08/98 11:27a Jeff
  * removed yesterdays inventory functions, since inventory.cpp has been
- * rolled back...its outdated now
+ * rolled back...it is outdated now
  *
  * 129   7/07/98 7:33p Jeff
  * changes made for inventory use
@@ -1888,7 +1888,7 @@ int MultiStuffPosition(int slot, uint8_t *data) {
 
   if (slot == Player_num) {
     // tell the reciever to expect fire information, only if
-    // we fired this frame and it isn't going to be a seperate packet
+    // we fired this frame and it isn't going to be a separate packet
     // (like secondaries in a non-peer to peer, are sent reliably)
     if (Player_fire_packet[slot].fired_on_this_frame == PFP_FIRED)
       flags |= MPF_FIRED;
@@ -2929,7 +2929,7 @@ void MultiMakePlayerReal(int slot) {
   }
 }
 
-// Server is telling us that its done sending players
+// Server is telling us that it is done sending players
 void MultiDoDonePlayers(uint8_t *data) {
   int count = 0;
 
@@ -2946,7 +2946,7 @@ void MultiDoDonePlayers(uint8_t *data) {
   NetPlayers[Player_num].sequence = NETSEQ_REQUEST_BUILDINGS;
 }
 
-// Server is telling us that its done sending buildings
+// Server is telling us that it is done sending buildings
 void MultiDoDoneBuildings(uint8_t *data) {
   MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
 
@@ -2957,7 +2957,7 @@ void MultiDoDoneBuildings(uint8_t *data) {
   NetPlayers[Player_num].sequence = NETSEQ_REQUEST_OBJECTS;
 }
 
-// Server is telling us that its done sending objects
+// Server is telling us that it is done sending objects
 void MultiDoDoneObjects(uint8_t *data) {
   MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
 
@@ -2989,7 +2989,7 @@ void MultiDoDoneObjects(uint8_t *data) {
         found = 1;
     }
 
-    // If its not in the server list, delete it!
+    // If it is not in the server list, delete it!
     if (!found) {
       Objects[objnum].flags |= OF_SERVER_SAYS_DELETE;
       ObjDelete(objnum);
@@ -2997,7 +2997,7 @@ void MultiDoDoneObjects(uint8_t *data) {
   }
 }
 
-// Server is telling us that its done sending objects
+// Server is telling us that it is done sending objects
 void MultiDoDoneWorldStates(uint8_t *data) {
   MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
 
@@ -3052,7 +3052,7 @@ void MultiDoPlayerPos(uint8_t *data) {
 
   uint8_t slot = MultiGetByte(data, &count);
 
-  // Make sure its not out of order
+  // Make sure it is not out of order
   float packet_time = MultiGetFloat(data, &count);
   if (packet_time < NetPlayers[slot].packet_time)
     return;
@@ -3749,7 +3749,7 @@ void MultiDoServerRejectedChecksum(uint8_t *data) {
   D3::ChronoTimer::SleepMS(2000);
 }
 
-// Lets us know if the server says its ok to join
+// Lets us know if the server says it is ok to join
 void MultiDoJoinResponse(uint8_t *data) {
   int count = 0;
 
@@ -3777,7 +3777,7 @@ int MultiFindFreeSlot() {
 }
 
 // Someone is asking to join our game
-// Tell them if its ok
+// Tell them if it is ok
 void MultiDoAskToJoin(uint8_t *data, network_address *from_addr) {
   uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -4160,7 +4160,7 @@ void MultiDoBuilding(uint8_t *data) {
   for (int i = 0; i < num; i++) {
     uint16_t objnum = MultiGetUshort(data, &count);
     if (Objects[objnum].type != OBJ_BUILDING) {
-      mprintf(0, "Error! Server says objnum %d is a building and its not!\n", objnum);
+      mprintf(0, "Error! Server says objnum %d is a building and it is not!\n", objnum);
     } else {
       Multi_building_states[objnum] = 1;
 
@@ -5363,7 +5363,7 @@ void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record) {
 
   MultiAddByte(obj->type, data, &count);
   MultiAddUint(index, data, &count);
-  // If it's a ghost object (type==OBJ_DUMMY) send it's old type
+  // If it's a ghost object (type==OBJ_DUMMY) send its old type
   if (obj->type == OBJ_DUMMY)
     MultiAddByte(obj->dummy_type, data, &count);
 
@@ -9453,7 +9453,7 @@ void MultiDoBashPlayerShip(uint8_t *data) {
     SetHUDMode(HUD_FULLSCREEN);
 }
 
-// If its been x seconds since we've sent a heartbeat, send another!
+// If it has been x seconds since we've sent a heartbeat, send another!
 
 #define HEARTBEAT_INTERVAL 10.0f
 void MultiSendHeartbeat() {

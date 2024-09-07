@@ -310,7 +310,7 @@
  *
  * 228   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -490,7 +490,7 @@
  * Fixed error handling for when an object can't be initialized.
  *
  * 173   10/13/98 1:08p Chris
- * Greatly improved the AI's use of paths.  Improved visability checking
+ * Greatly improved the AI's use of paths.  Improved visibility checking
  * algorithm.   Probably needs a second pass for further cleanup.
  *
  * 172   10/11/98 10:53p Matt
@@ -566,7 +566,7 @@
  * Added another safety check for docycledanim
  *
  * 149   8/12/98 6:37p Jeff
- * added functions to ghost an object (make it's type to OBJ_DUMMY) and
+ * added functions to ghost an object (make its type to OBJ_DUMMY) and
  * unghost
  *
  * 148   8/12/98 12:04p Chris
@@ -779,7 +779,7 @@
  * subobjects.  Also update newstyle_fi.cpp
  *
  * 82    2/12/98 8:48p Matt
- * Changed controls system to keep the reading of the controls seperate
+ * Changed controls system to keep the reading of the controls separate
  * from using the results.  Got rid of the Controls global.
  *
  * 81    2/11/98 2:04p Jason
@@ -992,7 +992,7 @@
  * added RenderOBject abstraction layer
  *
  * 14    7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 13    7/16/97 4:09p Jason
  * ripped out temporary object lighting
@@ -2160,7 +2160,7 @@ void DoCycledAnim(object *obj) {
 
     if (obj->rtype.pobj_info.anim_frame >= to) {
 
-      // We are guarenteed that this is between 'to' and 'from' from the above asserts()  :)
+      // We are guaranteed that this is between 'to' and 'from' from the above asserts()  :)
       obj->rtype.pobj_info.anim_frame -= delta;
     }
   } else {
@@ -3465,7 +3465,7 @@ object *ObjGetUltimateParent(object *child) {
   return ret;
 }
 
-// Sets an object to a type OBJ_DUMMY (saves it's old type) so it won't be renderered, etc, but still alive
+// Sets an object to a type OBJ_DUMMY (saves its old type) so it won't be renderered, etc, but still alive
 void ObjGhostObject(int objnum) {
   ASSERT(objnum >= 0 && objnum < MAX_OBJECTS);
   if (objnum < 0 || objnum >= MAX_OBJECTS)
@@ -3485,7 +3485,7 @@ void ObjGhostObject(int objnum) {
   obj->type = OBJ_DUMMY;
 }
 
-// Restores a ghosted object back to it's old type
+// Restores a ghosted object back to its old type
 void ObjUnGhostObject(int objnum) {
   ASSERT(objnum >= 0 && objnum < MAX_OBJECTS);
   if (objnum < 0 || objnum >= MAX_OBJECTS)

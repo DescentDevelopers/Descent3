@@ -113,7 +113,7 @@
 
 // DMFCBase::RegisterPacketReceiver
 //
-// Sets up a handler for a Special Packet ID.  When a special packet is recieved it's ID is compared
+// Sets up a handler for a Special Packet ID.  When a special packet is recieved, its ID is compared
 // to the ID's given to this function.  If any match than it calls the handler given to process
 // the packet.
 // id = ID of the packet
@@ -214,7 +214,7 @@ void DMFCBase::SendPacket(uint8_t *data, int size, int destination) {
     return;
   }
 
-  // we can safely send this packet out to it's appropriate destination
+  // we can safely send this packet out to its appropriate destination
 
   // see if we are trying to send to the server, it's specially handled
   if (destination == SP_SERVER) {

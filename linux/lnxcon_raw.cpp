@@ -49,7 +49,7 @@
 
 static char *Con_raw_read_buf = nullptr; // The next buffer of text from user input
 static char *Con_raw_inp_buf = nullptr,
-            Con_raw_inp_pos = 0;                     // Currently updating input buffer of text (and it's position)
+            Con_raw_inp_pos = 0;                     // Currently updating input buffer of text (and its position)
 static char Con_raw_last_command[CON_MAX_STRINGLEN]; // The last command entered by the user
 static int Con_raw_cols = 0, Con_raw_rows = 0;       // The size of the main window (input window is (1 row, Con_cols))
 

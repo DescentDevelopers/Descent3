@@ -243,7 +243,7 @@
  *
  * 104   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -1761,7 +1761,7 @@ void PltMakeFNValid(char *name) {
 
 ////////////////////////////////////////////////////////
 // Copies the key/joy config of a pilot to another (src must exist!) (Keep up to date with Read/Write file)
-// this will also save out the dest, so make sure its filled in before calling function
+// this will also save out the dest, so make sure it is filled in before calling function
 bool PltCopyKeyConfig(pilot *src, pilot *dest) {
   // check to make sure src exists
   ASSERT(src);
@@ -2612,7 +2612,7 @@ bool PltSelectShip(pilot *Pilot) {
       break;
     }
     case ID_IMPORTSOUND: {
-      // Import the sound, set it's sample to xx.xKhz and xbit depth, attach the CRC to the filename
+      // Import the sound, set its sample to xx.xKhz and xbit depth, attach the CRC to the filename
       // and place in custom/sounds.  Then update the audio taunt combo boxes
       std::filesystem::path path;
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.wav"}, PFDF_FILEMUSTEXIST)) {

@@ -1350,7 +1350,7 @@ void EvaluateProcedural(int handle) {
 
   int dest_bitmap = procedural->procedural_bitmap;
   if (bm_w(dest_bitmap, 0) != PROC_SIZE) {
-    mprintf(0, "Couldn't evaluate procedural because its not %d x %d!\n", PROC_SIZE, PROC_SIZE);
+    mprintf(0, "Couldn't evaluate procedural because it is not %d x %d!\n", PROC_SIZE, PROC_SIZE);
     return;
   }
   if (GameTextures[handle].flags & TF_WATER_PROCEDURAL)

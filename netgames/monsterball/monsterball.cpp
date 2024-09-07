@@ -1776,7 +1776,7 @@ void GetGameStartPacket(uint8_t *data) {
   temp = (int8_t)MultiGetByte(data, &count);
   NumOfTeams = temp;
 
-  // we need to find the objnum of the Monsterball...its there somewhere
+  // we need to find the objnum of the Monsterball...it is there somewhere
   DLLmprintf(0, "Looking for Monsterball in level\n");
   int objnum = -1;
 

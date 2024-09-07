@@ -249,7 +249,7 @@
  * added table file parser macros
  *
  * 104   2/03/99 4:09p Jeff
- * moved function pointers to seperate file. created autoexec.dmfc
+ * moved function pointers to separate file. created autoexec.dmfc
  *
  * 103   2/02/99 8:43a Chris
  * I made buildings with AI work correctly (ie really big robots should be
@@ -1876,7 +1876,7 @@ bool DMFCBase::GetScoreLimit(int *limit) {
 // DMFCBase::AutoTimeLimit
 //
 //    Server Only.  This turns off or on the automatic level ending by DMFC of a timed multiplayer game.
-//    If you turn it off, it is your responsibility to end a time multiplayer game when it's time
+//    If you turn it off, it is your responsibility to end a time multiplayer game when its time
 //    is up.  If it is turned on, DMFC will automatically handle ending the game.  By default it is on.
 void DMFCBase::AutoTimeLimit(bool turnon) {
   if (GetLocalRole() != LR_SERVER)
@@ -2422,7 +2422,7 @@ void DMFCBase::DisplayOutrageLogo(void) {
     time = 0;
   }
 
-  // draw the Outrage Logo if its time
+  // draw the Outrage Logo if it is time
   if (time < 5.0) {
     int x, y;
     x = (*Game_window_w) - bmp.pw;
@@ -2536,7 +2536,7 @@ bool DMFCBase::ShouldIDisplayHUDName(int pnum) {
 // DMFCBase::GetCounterMeasureOwner
 //
 //
-//	Given a counter measure it will determine the pnum of it's owner...if it can't find it, it returns -1
+//	Given a counter measure it will determine the pnum of its owner...if it can't find it, it returns -1
 int DMFCBase::GetCounterMeasureOwner(object *robot) {
   if (!robot)
     return -1;
@@ -3255,7 +3255,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   curr = m_AllowList;
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
-      // its a match
+      // it is a match
       mprintf(0, "Player not banned\n");
       return false;
     }
@@ -3267,7 +3267,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   curr = m_DenyList;
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
-      // its a match
+      // it is a match
       mprintf(0, "Player IS banned\n");
       return true;
     }
@@ -4715,7 +4715,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       // attempt to parse the dotted ip address (only 0-9,'.' and '*' allowed)
       char *start = ptr;
 
-      // check to make sure its in a valid form
+      // check to make sure it is in a valid form
 
       int dot_count = 0;
       while (*ptr) {
@@ -4733,7 +4733,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       if (strlen(ptr) > 15)
         goto error_parse;
 
-      // break up the string into seperate strings
+      // break up the string into separate strings
       while (*ptr) {
         if (*ptr == '.')
           *ptr = '\0';
@@ -5535,7 +5535,7 @@ int DMFCBase::GetCameraViewType(int window) {
 }
 
 // Given a generic object (OBJ_POWERUP,OBJ_ROBOT,OBJ_BUILDING or OBJ_CLUTTER) id
-// in the range of 0 to MAX_OBJECT_IDS, this returns a pointer to it's information (see objinfo.h)
+// in the range of 0 to MAX_OBJECT_IDS, this returns a pointer to its information (see objinfo.h)
 //	It returns NULL if an invalid id is given (or it's not used)
 object_info *DMFCBase::GetObjectInfo(int objinfo_id) {
   if (objinfo_id < 0 || objinfo_id >= MAX_OBJECT_IDS)

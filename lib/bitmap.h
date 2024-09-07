@@ -27,7 +27,7 @@
 #define MAX_BITMAPS 5000
 #define NUM_MIP_LEVELS 5
 
-// It really doesn't matter what these are, as long as its above 10
+// It really doesn't matter what these are, as long as it is above 10
 #define OUTRAGE_4444_COMPRESSED_MIPPED 121
 #define OUTRAGE_1555_COMPRESSED_MIPPED 122
 #define OUTRAGE_NEW_COMPRESSED_MIPPED 123

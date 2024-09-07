@@ -1701,8 +1701,7 @@ struct thief_data {
   inv_item stolen_inv[MAX_STOLEN_INV];
 
   float fear;
-  float agression;
-
+  float aggression;
 };
 
 class Thief : public BaseObjScript {
@@ -3342,7 +3341,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
     flags = AIF_FIRE;
     AI_Value(me, VF_CLEAR_FLAGS, AIV_I_FLAGS, &flags);
 
-    // Guarentee no wall hits or mid damage stuff after the fake death
+    // Guarantee no wall hits or mid damage stuff after the fake death
     memory->flags |= (HF_HIT_WALL_ASSIGNED | HF_MID_DAMAGE_ASSIGNED);
 
     vector dpos;
@@ -4919,10 +4918,10 @@ bool GuideBot::InitExtinguish(bool f_player_on_fire) {
       break;
 
     if (Obj_IsEffect(scan_objs[i], EF_NAPALMED)) {
-      //			mprintf(0, "its on fire\n");
+      //			mprintf(0, "it is on fire\n");
       if (scan_objs[i] != memory->me) {
         if (!AI_IsObjEnemy(memory->me, scan_objs[i])) {
-          //					mprintf(0, "its not a enemy\n");
+          //					mprintf(0, "it is not a enemy\n");
           memory->extinguish_obj_list[memory->num_extinguish_objs++] = scan_objs[i];
         }
       }
@@ -8430,7 +8429,7 @@ int16_t GBPowerup::CallEvent(int event, tOSIRISEventInfo *data) {
 //------------------
 
 bool Sparky::DoNotify(int me_handle, tOSIRISEventInfo *data) {
-  // NOTE:  I am also doing the rotational stuff here...  So, no need to make a seperate AIN_SCRIPTED_ORIENT event
+  // NOTE:  I am also doing the rotational stuff here...  So, no need to make a separate AIN_SCRIPTED_ORIENT event
   if (data->evt_ai_notify.goal_num == 0 && data->evt_ai_notify.notify_type == AIN_SCRIPTED_GOAL) {
     vector rvel;
     Obj_Value(me_handle, VF_GET, OBJV_V_ROTVELOCITY, &rvel);

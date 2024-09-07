@@ -70,7 +70,7 @@
  *
  * 7     2/04/97 11:14a Samir
  * Improved clipping system by adding a separate clipport based off of the
- * viewport's rectangle in it's parent surface
+ * viewport's rectangle in its parent surface
  *
  * 6     2/03/97 3:00p Samir
  * Fixed x updating problem in draw_text_line

@@ -347,7 +347,7 @@
  *
  * 26    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -914,10 +914,10 @@ void osipf_ObjectCustomAnim(int handle, float start, float end, float time, char
   }
 }
 
-// searches for an object id given it's name
+// searches for an object id given its name
 int osipf_ObjectFindID(const char *name) { return FindObjectIDName(IGNORE_TABLE(name)); }
 
-// searches for an object id given it's name
+// searches for an object id given its name
 int osipf_ObjectFindType(const char *name) {
   int id = FindObjectIDName(IGNORE_TABLE(name));
 
@@ -1230,9 +1230,9 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
     break;
   case AIV_F_AGRESSION:
     if (op == VF_SET) {
-      ai_info->agression = *((float *)ptr);
+      ai_info->aggression = *((float *)ptr);
     } else {
-      *((float *)ptr) = ai_info->agression;
+      *((float *)ptr) = ai_info->aggression;
     }
     break;
   case AIV_F_NIGHT_VISION:
@@ -3682,7 +3682,7 @@ int osipf_GetLanguageSetting(void) {
 }
 
 // Sets/Gets information about a path.
-// If you change is PV_ALL (or any of it's individual components), pass in a pointer to an
+// If you change is PV_ALL (or any of its individual components), pass in a pointer to an
 // osiris_path_node_info struct.  For the others, you must pass in an appropriate pointer
 // (i.e. an int* for PV_I_NUMNODES).  You can only set PV_ALL components.
 //	for PV_I_NUMNODES, path_id MUST be specified, node_id is ignored

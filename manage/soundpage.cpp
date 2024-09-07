@@ -405,7 +405,7 @@ int mng_AssignSoundPageToSound(mngs_sound_page *soundpage, int n) {
   strcpy(soundpointer->name, soundpage->sound_struct.name);
 // First see if our raw differs from the one on the net
 // If it is, make a copy
-// If its a release version, don't do any of this
+// If it is a release version, don't do any of this
 #ifndef RELEASE
   if (Network_up) {
     UpdatePrimitive(LocalSoundsDir / soundpage->raw_name, NetSoundsDir / soundpage->raw_name, soundpage->raw_name,
@@ -560,7 +560,7 @@ void mng_LoadLocalSoundPage(CFILE *infile) {
 int mng_GetGuaranteedSoundPage(char *name, CFILE *infile) {
   int i;
   mngs_sound_page soundpage;
-  // See if its in memory
+  // See if it is in memory
   i = FindSoundName(name);
   if (i != -1)
     return i;

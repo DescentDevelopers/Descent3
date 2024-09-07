@@ -99,7 +99,7 @@
  *
  * 60    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -391,7 +391,7 @@ void Inventory::Reset(bool in_game, int reset_stage) {
   ValidatePos(true);
 }
 
-// adds an object to the inventory (marked by it's objhandle)
+// adds an object to the inventory (marked by its objhandle)
 bool Inventory::AddObject(int object_handle, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS) {
@@ -558,13 +558,13 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
 
       newnode->count = 1;
     } else {
-      // there is an item of that type/id already, just increase it's count
+      // there is an item of that type/id already, just increase its count
       newnode->count++;
       // mprintf(0,"Inventory: Item #%d (%s) Count increased to %d\n",count,newnode->name,newnode->count);
     }
   }
 
-  // its a new item type/id, so fill in its info
+  // it is a new item type/id, so fill in its info
   if (newnode->count == 1) {
     newnode->type = OBJ_WEAPON;
     newnode->id = id;
@@ -635,12 +635,12 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
 
       newnode->count = 1;
     } else {
-      // there is an item of that type/id already, just increase it's count
+      // there is an item of that type/id already, just increase its count
       newnode->count++;
     }
   }
 
-  // its a new item type/id, so fill in its info
+  // it is a new item type/id, so fill in its info
   if (newnode->count == 1) {
     newnode->type = otype;
     newnode->id = oid;
@@ -1393,7 +1393,7 @@ void CounterMeasuresSwitch(bool forward) {
   }
 }
 
-// repositions the pos so its in the correct spot
+// repositions the pos so it is in the correct spot
 void Inventory::ValidatePos(bool forward) {
   if (!pos)
     return;

@@ -57,7 +57,7 @@
  *
  * 7     10/06/97 1:03p Samir
  * Took out script name.  Doorways are objects, and if there is a custom
- * script for a doorway, we look at it's object.
+ * script for a doorway, we look at its object.
  *
  * 6     10/06/97 1:01p Jason
  * made doors work with scripts (sort of)

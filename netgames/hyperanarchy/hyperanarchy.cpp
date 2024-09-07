@@ -146,7 +146,7 @@ static void CreateHyperOrbInRoom(int room);
 static void MoveHyperOrbToRoomCenter(int objnum, int room);
 // handles a Hyper Anarchy Object Placement packet
 static void ReceiveHyperPos(uint8_t *data);
-// Searches through all the objects and looks for the HyperOrb, returns it's objnum. -1 if it doesn't exist
+// Searches through all the objects and looks for the HyperOrb, returns its objnum. -1 if it doesn't exist
 static int FindHyperObjectNum(void);
 // Searches through all the player's inventory, returns the pnum of the player who has the HyperOrb, -1
 // if no one does.
@@ -1443,7 +1443,7 @@ void ReceiveHyperPos(uint8_t *data) {
   MoveHyperOrbToRoomCenter(objnum, room);
 }
 
-// Searches through all the objects and looks for the HyperOrb, returns it's objnum. -1 if it doesn't exist
+// Searches through all the objects and looks for the HyperOrb, returns its objnum. -1 if it doesn't exist
 int FindHyperObjectNum(void) {
   // go through all the objects until we find it
   for (int i = 0; i < MAX_OBJECTS; i++) {

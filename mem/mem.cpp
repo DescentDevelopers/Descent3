@@ -807,7 +807,7 @@ bool mem_dumpmallocstofile(char *filename) {
       mem_alloc_info *last_alloc;
       last_alloc = (mem_alloc_info *)allocs[sorted_allocs[last_unique]].data;
       if ((!strcmp(last_alloc->file, alloc_info->file)) && (last_alloc->line == alloc_info->line)) {
-        // its the same!
+        // it is the same!
         continue;
       }
     }

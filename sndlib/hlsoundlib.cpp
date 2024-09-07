@@ -131,7 +131,7 @@
  * from the center of the room to the center of the portal.  It was this +
  * the dist to the next room's center.  The reason for this change was it
  * makes it easier to compute the exact BOA_DIST for sounds.  This is
- * because the two distances are seperated (so from the start pos, we do a
+ * because the two distances are separated (so from the start pos, we do a
  * vm_Vect dist from the start point to the portal)...  Hmmm....
  *
  * 84    2/09/99 12:40p Chris
@@ -442,7 +442,7 @@
  *
  * $NoKeywords: $
  */
-// High level sound object.  This code is 100% machine independant and
+// High level sound object.  This code is 100% machine independent and
 // completely encapsulates the lowel-level machine-dependant sound code.
 
 #include <cstring>
@@ -568,7 +568,7 @@ void hlsSystem::KillSoundLib(bool f_kill_sound_list) {
     delete m_ll_sound_ptr;
     m_ll_sound_ptr = NULL;
   }
-  // This is independant of the actual sound_lib status.  It happened because sounds
+  // This is independent of the actual sound_lib status.  It happened because sounds
   // use the manage system.
   // moved this from beginning of function because won't the data freed here screw up streaming/looping sounds?
   // before the sound library is closed?

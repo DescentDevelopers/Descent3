@@ -34,7 +34,7 @@
  *
  * 30    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -655,7 +655,7 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
       numback++;
     } else if (fate == BSP_COINCIDENT) {
       // Test to see if this plane is exactly the same as the partition plane
-      // If so, remove it from the list.  If its facing the other way, send it down the back list
+      // If so, remove it from the list. If it is facing the other way, send it down the back list.
       float dot = testpoly->plane.a * partition_plane.a + testpoly->plane.b * partition_plane.b +
                   testpoly->plane.c * partition_plane.c;
 

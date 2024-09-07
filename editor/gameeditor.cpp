@@ -425,7 +425,7 @@
  * make player/viewer object switch flags if over terrain
  *
  * 17    4/01/97 11:00p Matt
- * Changed editor to keep a viewer object (type camera) seperate from the
+ * Changed editor to keep a viewer object (type camera) separate from the
  * player object.  This camera, and not the player, is now moved by
  * slewing, the C key, etc.  When going into the game, the viewer position
  * & orientation are copied to the player.  When going back to the editor,

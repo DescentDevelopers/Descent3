@@ -605,7 +605,7 @@ loaddll:
   }
   return true;
 }
-// Frees the dll if its in memory
+// Frees the dll if it is in memory
 void FreeGameDLL() {
   if (!GameDLLHandle.handle)
     return;

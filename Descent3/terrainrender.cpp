@@ -218,7 +218,7 @@
  * fixed lighting on the terrain
  *
  * 178   10/03/98 11:21p Matt
- * Added system to seperately control outline mode for mine, terrain, sky,
+ * Added system to separately control outline mode for mine, terrain, sky,
  * & objects
  *
  * 177   10/02/98 5:31p Jason
@@ -379,7 +379,7 @@
  * Added an editor bool to skip Terrain object rendering
  *
  * 125   3/26/98 10:54a Jason
- * tweaked some stuff for size independant terrain
+ * tweaked some stuff for size independent terrain
  *
  * 124   3/17/98 5:02p Jason
  * sped up rendering the terrain from the mine by a large amount
@@ -680,7 +680,7 @@
  * added features to lod engine - namely dynamic texture generation
  *
  * 27    7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 26    7/25/97 5:25p Jason
  * fixed multiple bugs in terrain LOD engine

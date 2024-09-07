@@ -56,7 +56,7 @@
  *
  * 165   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -174,7 +174,7 @@
  * added ObjUnlink call.
  *
  * 130   8/12/98 6:37p Jeff
- * added functions to ghost an object (make it's type to OBJ_DUMMY) and
+ * added functions to ghost an object (make its type to OBJ_DUMMY) and
  * unghost
  *
  * 129   8/12/98 12:04p Chris
@@ -554,7 +554,7 @@
  * added RenderOBject abstraction layer
  *
  * 9     7/28/97 1:14p Chris
- * Added support for sub-object visability.  Plus, debris.
+ * Added support for sub-object visibility.  Plus, debris.
  *
  * 8     7/15/97 5:32p Jason
  * got simple static lighting working with objects
@@ -807,7 +807,7 @@ object *ObjGetUltimateParent(object *child);
 // Sets an object to a type OBJ_DUMMY (saves its old type) so it won't be renderered, etc, but still alive
 void ObjGhostObject(int objnum);
 
-// Restores a ghosted object back to it's old type
+// Restores a ghosted object back to its old type
 void ObjUnGhostObject(int objnum);
 
 /////////////////////////////////

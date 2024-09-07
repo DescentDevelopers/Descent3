@@ -906,7 +906,7 @@ void OnClientCollide(uint8_t *data) {
             LoseFlagForPlayer(pnum, i);
 
             if (DMFCBase->GetLocalRole() == LR_SERVER) {
-              // if we are the server create the object and send it on it's way to the player's
+              // if we are the server, create the object and send it on its way to the players
               DLLComputeRoomCenter(&fpos, &dRooms[groom]);
               int objnum = DLLObjCreate(OBJ_POWERUP, FlagIDs[i], groom, &fpos, NULL, OBJECT_HANDLE_NONE);
               DLLMultiSendObject(&dObjects[objnum], 1, true);

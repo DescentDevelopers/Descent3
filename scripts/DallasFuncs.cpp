@@ -3365,7 +3365,7 @@ Sets the target for an AI object
 
 Parameters:
   Object - the object whose AI target is being set
-  Target - the object to be targetted for attack
+  Target - the object to be targeted for attack
 $$END
 */
 void aAISetTarget(int objhandle, int targethandle) { AI_Value(objhandle, VF_SET, AIV_I_TARGET_HANDLE, &targethandle); }
@@ -3551,7 +3551,7 @@ $$END
 void aAIFlags(int set, int flags, int handle) {
   bool f_team = false;
 
-  // Because its a bitfield, I had to hack a team value...  Team PTMC was 0; so, it was
+  // Because it is a bitfield, I had to hack a team value...  Team PTMC was 0; so, it was
   // impossible to set...  32768 wasn't used, so I hacked it here.  O' The shame...  :(
 
   if (!set)
@@ -3796,7 +3796,7 @@ Cinematics
 Simple letterbox format cinematic, using path [h:CameraPath], with text [s:Text] targeting [o:Target] for
 [f:Seconds=10.0f] has fade in [b:FadeIn] aCinematicSimple CinematicSimple This creates a simple cinematic, in Letterbox
 mode.  The camera will follow the given path. And the given text will be shown at the bottom of the screen.  There is no
-'quick exit' by keypress.  To do more than one line of text, seperate each line of text using a pipe ('|').
+'quick exit' by keypress.  To do more than one line of text, separate each line of text using a pipe ('|').
 
 Parameters:
         CameraPath: The path the camera should follow
@@ -3839,7 +3839,7 @@ Introduction fly-in using path [h:CameraPath], with text [s:Text] following play
 [h:PlayerPath] for [f:Seconds=10.0f]. aCinematicIntro CinematicIntro THE TARGET IS NOT USED, IT'S HERE FOR BACKWARD
 COMPATIBILITY This starts a level introduction cinematic. The camera will follow the given path. And the given text will
 be shown at the bottom of the screen.  There is a 'quick exit' by keypress, after the first quarter of the cinematic is
-done.  To do more than one line of text, seperate each line of text using a pipe ('|').
+done.  To do more than one line of text, separate each line of text using a pipe ('|').
 
 Parameters:
 ONCE AGAIN, THE TARGET IS NOT USED, IT'S HERE FOR BACKWARD COMPATIBILITY
@@ -4215,7 +4215,7 @@ Mission
 Enable the given ship [a:Ship], so it can be chosen in single player
 aEnableShip
 EnableShip
-        Enables a ship (given it's name) so it can be chosen in
+        Enables a ship (given its name) so it can be chosen in
 single player ship selection dialog.
 
 Parameters:
@@ -4234,7 +4234,7 @@ Mission
 Disable the given ship [a:Ship], so it can't be chosen in single player
 aDisableShip
 DisableShip
-        Disables a ship (given it's name) so it can't be chosen in
+        Disables a ship (given its name) so it can't be chosen in
 single player ship selection dialog.
 
 Parameters:

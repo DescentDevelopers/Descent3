@@ -41,7 +41,7 @@
  * B.A. Macintosh code merge
  *
  * 13    4/17/99 1:53a Jeff
- * made platform 'independant' so other low-level sound libs can include
+ * made platform 'independent' so other low-level sound libs can include
  * without having to double code
  *
  * 12    4/06/99 8:29p Samir

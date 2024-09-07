@@ -293,7 +293,7 @@ bool matcen::StartObjProd() {
   if (m_cached_prod_index < 0)
     return false;
 
-  // Guarentees against designer error
+  // Guarantees against designer error
   pos_state pos;
   matrix idmat = Identity_matrix;
 
@@ -742,7 +742,7 @@ void matcen::SaveData(CFILE *fp) {
   cf_WriteShort(fp, MAX_PROD_TYPES);
   cf_WriteShort(fp, MAX_MATCEN_SOUNDS);
 
-  len = strlen(m_name) + 1; // Accounts for NULL charactor
+  len = strlen(m_name) + 1; // Accounts for NULL character
   cf_WriteShort(fp, len);
   for (i = 0; i < len; i++) {
     cf_WriteByte(fp, m_name[i]);
@@ -782,7 +782,7 @@ void matcen::SaveData(CFILE *fp) {
     int type = m_prod_type[i];
 
     if (type >= 0) {
-      len = strlen(Object_info[type].name) + 1; // Accounts for NULL charactor
+      len = strlen(Object_info[type].name) + 1; // Accounts for NULL character
       cf_WriteShort(fp, len);
       for (j = 0; j < len; j++) {
         cf_WriteByte(fp, Object_info[type].name[j]);
@@ -814,7 +814,7 @@ void matcen::SaveData(CFILE *fp) {
       cf_WriteShort(fp, 0);
       continue;
     }
-    len = strlen(Sounds[m_sounds[i]].name) + 1; // Accounts for NULL charactor
+    len = strlen(Sounds[m_sounds[i]].name) + 1; // Accounts for NULL character
     cf_WriteShort(fp, len);
     for (j = 0; j < len; j++) {
       cf_WriteByte(fp, Sounds[m_sounds[i]].name[j]);
@@ -1383,7 +1383,7 @@ void matcen::DoThinkFrame() {
   if ((!(m_status & MSTAT_NOT_HURT_PLAYER)) && (m_prod_mode == MMODE_PREPROD || m_prod_mode == MMODE_POSTPROD)) {
     float damage = MATCEN_DAMAGE_PER_SECOND * Frametime;
     if (Game_mode & GM_MULTI) {
-      // Multiplayer targetting (Major difference is that robot will ignore players while infighting in single player)
+      // Multiplayer targeting (Major difference is that robot will ignore players while infighting in single player)
       for (int i = 0; i < MAX_PLAYERS; ++i) {
         if (!((NetPlayers[i].flags & NPF_CONNECTED) && (NetPlayers[i].sequence >= NETSEQ_PLAYING)))
           continue;

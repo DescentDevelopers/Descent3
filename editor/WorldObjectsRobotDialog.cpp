@@ -38,7 +38,7 @@
  * fixed potential memory bug
  *
  * 5     8/06/97 1:32p Matt
- * Ripped out a bunch of stuff, and added seperate physics and ai dialogs
+ * Ripped out a bunch of stuff, and added separate physics and ai dialogs
  *
  * 4     7/24/97 6:11p Matt
  * Created symbolic constant for default zoom, and used it every place
@@ -239,7 +239,7 @@ void CWorldObjectsRobotDialog::OnCheckinRobot() {
 				
 				OutrageMessageBox ("Robot checked in.");
 
-				// Delete it from local pagefile if its there
+				// Delete it from local pagefile if it is there
 				int dret=mng_DeleteRobotPage (Robots[n].name,1);
 				ASSERT (dret==1);
 				mng_EraseLocker();
@@ -271,7 +271,7 @@ void CWorldObjectsRobotDialog::OnDeleteRobot() {
 		return;
 	}
 
-	//Make sure its to be deleted
+	// Make sure it is to be deleted
 	answer=MessageBox ("Are you sure you want to delete this robot?",Robots[n].name,MB_YESNO);
 	if (answer==IDNO)
 		return;
@@ -296,7 +296,7 @@ void CWorldObjectsRobotDialog::OnDeleteRobot() {
 			Int3();
 		}
 	}
-	else // if its network, delete it from both the net and local drives
+	else // if it is network, delete it from both the net and local drives
 	{
 		
 		mng_FreeTrackLock (tl);

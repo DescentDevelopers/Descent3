@@ -22,7 +22,7 @@
 // DMFCApp Class
 //    This is the class you actually make an instance of.
 //    It will handle processing of events, calling defaults where needed, or calling your overrides
-//    To create an event handler override, add it's prototype to this class, and then define the function
+//    To create an event handler override, add its prototype to this class, and then define the function
 //    in your multiplayer source file.  See examples to do this.  The prototype must be exactly the same
 //    as it is in DMFCBase class.
 class DMFCApp : public DMFCBase {
@@ -118,7 +118,7 @@ void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data) {
 
 //	GetGOScriptID
 //	Purpose:
-//		Given the name of the object (from it's pagename), this function will search through it's
+//		Given the name of the object (from its pagename), this function will search through its
 //	list of General Object Scripts for a script with a matching name (to see if there is a script
 //	for that type/id of object within this DLL).  If a matching scriptname is found, a UNIQUE ID
 //	is to be returned back to Descent 3.  This ID will be used from here on out for all future

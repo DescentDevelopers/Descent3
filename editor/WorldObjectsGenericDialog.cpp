@@ -817,7 +817,7 @@ void CWorldObjectsGenericDialog::OnGenericCheckIn() {
 
         OutrageMessageBox("Object checked in.");
 
-        // Delete it from local pagefile if its there
+        // Delete it from local pagefile if it is there
         int dret = mng_DeletePage(Object_info[m_current].name, PAGETYPE_GENERIC, 1);
 
         ASSERT(dret == 1);
@@ -859,7 +859,7 @@ void CWorldObjectsGenericDialog::OnGenericDelete() {
     return;
   }
 
-  // Make sure its to be deleted
+  // Make sure it is to be deleted
   answer = MessageBox("Are you sure you want to delete this object?", Object_info[m_current].name, MB_YESNO);
   if (answer == IDNO)
     return;
@@ -877,7 +877,7 @@ void CWorldObjectsGenericDialog::OnGenericDelete() {
       mprintf(0, ErrorString);
       Int3();
     }
-  } else // if its network, delete it from both the net and local drives
+  } else // if it is network, delete it from both the net and local drives
   {
 
     mng_FreeTrackLock(tl);
@@ -1381,7 +1381,7 @@ void CWorldObjectsGenericDialog::OnGenericUndoLock() {
   if ((tl = mng_FindTrackLock(Object_info[m_current].name, PAGETYPE_GENERIC)) == -1)
     return;
 
-  // Make sure its to be deleted
+  // Make sure it is to be deleted
   if (OutrageMessageBox(MBOX_YESNO,
                         "Are you sure you want to undo your lock and lose any changes you may have made?") != IDYES)
     return;

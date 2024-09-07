@@ -112,7 +112,7 @@
  * created RenderHUDGetTextLineWidth and RenderHUDGetTextHeight
  *
  * 2     2/03/99 4:09p Jeff
- * moved function pointers to seperate file. created autoexec.dmfc
+ * moved function pointers to separate file. created autoexec.dmfc
  *
  * $NoKeywords: $
  */

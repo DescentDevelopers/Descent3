@@ -46,7 +46,7 @@
  *
  * 19    1/21/99 11:16p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -461,7 +461,7 @@ int mng_AssignDoorPageToDoor(mngs_door_page *doorpage, int n) {
 
   // First see if our image differs from the one on the net
   // If it is, make a copy
-  // If its a release version, don't do any of this
+  // If it is a release version, don't do any of this
 
 #ifndef RELEASE
   if (Network_up) {

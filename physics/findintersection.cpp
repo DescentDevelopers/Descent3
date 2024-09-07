@@ -151,7 +151,7 @@
  * Massive AI, OSIRIS update
  *
  * 190   1/01/99 4:53p Chris
- * Fixed a problem with long-rays causing unneccessary asserts
+ * Fixed a problem with long-rays causing unnecessary asserts
  *
  * 189   1/01/99 4:10p Chris
  * Added some const parameters, improved ray cast object collide/rejection
@@ -1091,8 +1091,8 @@ static const int ij_table[3][2] = {
 
 // see if a point in inside a face by projecting into 2d
 uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list) {
-  vector_array *colp_array; // Axis-independant version of the collision point
-  vector_array *norm;       // Axis-independant version of the plane's normal
+  vector_array *colp_array; // Axis-independent version of the collision point
+  vector_array *norm;       // Axis-independent version of the plane's normal
   vector t;                 // Temporary vector that holds the magnatude of the normal's x,y,z components (ABS)
   int biggest;              // Index of the largest of the three components (0-x, 1-y, 2-z)  Axis to ignore :)
   int i, j, edge;           // Index for i-axis, Index for j-axis, and the current edge
@@ -1165,7 +1165,7 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   return edgemask;
 }
 
-// decide it it's close enough to hit
+// decide if it's close enough to hit
 // determine if and where a vector intersects with a sphere
 // vector defined by p0,p1
 // if there is an intersection this function returns 1, fills in intp, and col_dist else it returns 0
@@ -1546,7 +1546,7 @@ float rad, vector *ep0, vector *ep1)
                         end_pnt = *p1;
                 }
 
-        // decide it it's close enough to hit
+        // decide if it's close enough to hit
         // determine if and where a vector intersects with a sphere
         // vector defined by p0,p1
         // if there is an intersection this function returns 1, fills in intp, and col_dist else it returns 0
@@ -2083,7 +2083,7 @@ int fvi_QuickDistCellList(int init_cell_index, vector *pos, float rad, int *quic
   if (yend >= TERRAIN_DEPTH)
     yend = TERRAIN_DEPTH - 1;
 
-  // This should be a faster interative why to do a square with center at original position
+  // This should be a faster iterative way to do a square with center at original position
   cur_node = TERRAIN_WIDTH * ystart + xstart;
   next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 
@@ -2150,7 +2150,7 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
     if (yend >= TERRAIN_DEPTH)
       yend = TERRAIN_DEPTH - 1;
 
-    // This should be a faster interative why to do a square with center at original position
+    // This should be a faster iterative way to do a square with center at original position
     cur_node = TERRAIN_WIDTH * ystart + xstart;
     next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 
@@ -4075,7 +4075,7 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
     if (yend >= TERRAIN_DEPTH)
       yend = TERRAIN_DEPTH - 1;
 
-    // This should be a faster interative why to do a square with center at original position
+    // This should be a faster iterative way to do a square with center at original position
     new_node = TERRAIN_WIDTH * ystart + xstart;
     next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 
@@ -4136,7 +4136,7 @@ inline void check_square_node(int x, int y, int width)
                 if(ystart < 0) ystart = 0;
                 if(yend >= TERRAIN_DEPTH) yend = TERRAIN_DEPTH - 1;
 
-                // This should be a faster interative why to do a square with center at original position
+                // This should be a faster iterative way to do a square with center at original position
                 new_node = TERRAIN_WIDTH * ystart + xstart;
                 next_y_delta = TERRAIN_WIDTH - (xend - xstart) - 1;
 

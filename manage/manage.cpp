@@ -114,7 +114,7 @@
  *
  * 76    1/21/99 11:16p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -373,7 +373,7 @@
  * correctly in init local table files
  *
  * 40    5/13/97 3:41p Jason
- * made all manage code work with the new device independant database
+ * made all manage code work with the new device independent database
  *
  * 39    5/08/97 12:41p Jason
  * made manage system work with device dependant path names
@@ -1245,7 +1245,7 @@ int mng_LoadNetPages(int show_progress) {
   }
   start_time = timer_GetTime();
   while (!cfeof(infile)) {
-    // Read in a pagetype.  If its a page we recognize, load it
+    // Read in a pagetype. If it is a page we recognize, load it.
     //		mprintf(0,".");
     if (show_progress) {
 
@@ -1408,7 +1408,7 @@ int mng_LoadLocalPages() {
   }
   Loading_locals = 1;
   while (!cfeof(infile)) {
-    // Read in a pagetype.  If its a page we recognize, load it
+    // Read in a pagetype. If it is a page we recognize, load it.
 
     pagetype = cf_ReadByte(infile);
     if (!Old_table_method)
@@ -2841,7 +2841,7 @@ void mng_CompileAddonPages(void) {
     // as we come across each page, check to see if it was
     // ever overlayed.
     while (!cfeof(file)) {
-      // Read in a pagetype.  If its a page we recognize, load it
+      // Read in a pagetype. If it is a page we recognize, load it.
       page_pos = cftell(file);
       pagetype = cf_ReadByte(file);
       len = cf_ReadInt(file);
@@ -2958,7 +2958,7 @@ void mng_LoadAddonPages() {
     }
     Loading_addon_table = c;
     while (!cfeof(infile)) {
-      // Read in a pagetype.  If its a page we recognize, load it
+      // Read in a pagetype. If it is a page we recognize, load it.
       pagetype = cf_ReadByte(infile);
       len = cf_ReadInt(infile);
 

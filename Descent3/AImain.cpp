@@ -36,7 +36,7 @@
  * Bail from anim update if no anim data.
  *
  * 477   11/02/99 12:17p Chris
- * Improved the targetting code (no max dist when in the same room as
+ * Improved the targeting code (no max dist when in the same room as
  * target)
  *
  * 476   10/24/99 10:46p Chris
@@ -81,7 +81,7 @@
  * He now only dodges player shots
  *
  * 463   7/26/99 1:16p Chris
- * GB now dodges player (and targetted robot) shots
+ * GB now dodges player (and targeted robot) shots
  *
  * 462   5/24/99 3:23p Chris
  * Fixed team anarchy bug.
@@ -114,7 +114,7 @@
  *
  * 453   5/20/99 1:15a Chris
  * Improved BNode Path Following for end points on the path.  Fixed bugs
- * with non-auto targetting
+ * with non-auto targeting
  *
  * 452   5/19/99 2:16a Chris
  * Fixed gunboys in coop (will not fire on teammates now)
@@ -204,7 +204,7 @@
  * Fixed AI_SEE_SOUND playing too often (like all the time...)
  *
  * 425   4/27/99 4:41a Jeff
- * only create guidebots if a single player game, or if its a multiplayer
+ * only create guidebots if a single player game, or if it is a multiplayer
  * game and the correct netflag is set
  *
  * 424   4/26/99 11:11a Chris
@@ -521,7 +521,7 @@
  *
  * 329   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -627,7 +627,7 @@
  *
  * 298   12/03/98 2:31p Chris
  * The auto-avoid friends flag is now cooler now (they avoid at greater
- * distances when they are within thier circle distance from a targetted
+ * distances when they are within thier circle distance from a targeted
  * enemy)
  *
  * 297   12/03/98 12:24p Chris
@@ -771,7 +771,7 @@
  * Improved robot dodging and firing
  *
  * 253   10/13/98 1:08p Chris
- * Greatly improved the AI's use of paths.  Improved visability checking
+ * Greatly improved the AI's use of paths.  Improved visibility checking
  * algorithm.   Probably needs a second pass for further cleanup.
  *
  * 252   10/09/98 4:01p Chris
@@ -814,7 +814,7 @@
  * 239   9/30/98 4:40p Chris
  *
  * 238   9/30/98 4:36p Chris
- * Fixed a targetting bug
+ * Fixed a targeting bug
  *
  * 237   9/30/98 3:49p Chris
  * Changed comment
@@ -825,7 +825,7 @@
  * same as prev
  *
  * 234   9/28/98 7:03p Chris
- * Improved targetting of objects by AIs
+ * Improved targeting of objects by AIs
  *
  * 233   9/28/98 6:23p Chris
  * Changed multi_anim to custom_anim
@@ -834,7 +834,7 @@
  * Added birth animations
  *
  * 231   9/28/98 1:15p Chris
- * Fixed the targetting of parents(oops) after parent-collide-timeout
+ * Fixed the targeting of parents(oops) after parent-collide-timeout
  *
  * 230   9/28/98 10:34a Chris
  * Fixed a semi-colon bug
@@ -905,7 +905,7 @@
  * 208   7/28/98 5:41p Chris
  *
  * 207   7/28/98 5:04p Chris
- * Added some new multiplayer support (for dodging and targetting)
+ * Added some new multiplayer support (for dodging and targeting)
  *
  * 206   7/24/98 6:06p Chris
  * Initial robot leading code  -- needs multiple wb support
@@ -1048,7 +1048,7 @@
  * other.   I found a temp solution
  *
  * 157   5/26/98 9:45a Chris
- * DIstance and vec_to_target are independant
+ * DIstance and vec_to_target are independent
  *
  * 156   5/26/98 9:34a Chris
  * Added XZ distances for circle dist.  :)
@@ -1075,7 +1075,7 @@
  * Print the notify number a robot gets when it is invalid
  *
  * 148   5/20/98 10:22a Chris
- * Improved targetting stuff
+ * Improved targeting stuff
  *
  * 147   5/20/98 10:19a Chris
  * Fixed some bugs with status_reg's and circle distance
@@ -1219,7 +1219,7 @@
  * added some soar_helpers and some debug mprintf's
  *
  * 100   3/23/98 10:01a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 99    3/17/98 11:27a Chris
  * Added object bump notifies for AI
@@ -1368,13 +1368,13 @@
  * 50    1/21/98 3:54p Chris
  *
  * 49    1/20/98 4:40p Chris
- * Fixed some visability stuff.
+ * Fixed some visibility stuff.
  *
  * 48    1/20/98 12:21p Chris
  * Removed some printf's
  *
  * 47    1/20/98 11:34a Chris
- * Fixed problems with player visability and thus problems with awareness
+ * Fixed problems with player visibility and thus problems with awareness
  *
  * 46    1/19/98 10:04a Matt
  * Added new object handle system
@@ -2872,7 +2872,7 @@ void AISeeTarget(object *obj, bool f_see) {
   if (ai_info->awareness < AWARE_MOSTLY)
     ai_info->awareness = AWARE_MOSTLY;
 
-  // Note:  Player position is also updated in the visability test function
+  // Note:  Player position is also updated in the visibility test function
   //        for MIN_VIS_RECENT_CHECK_INTERVAL seconds
   object *targetptr;
   object *other_obj = targetptr = ObjGet(ai_info->target_handle);
@@ -2989,7 +2989,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
     f_it_set = true;
     break;
 
-  case AIN_OBJ_FIRED: // All visable  (obj fired, AIN_OBJFIRED, obj who fired) -- all rendered bots
+  case AIN_OBJ_FIRED: // All visible  (obj fired, AIN_OBJFIRED, obj who fired) -- all rendered bots
   {
     int i;
     other_obj = (object *)info;
@@ -3648,7 +3648,7 @@ void ObjSetAIInfo(object *objp) {
   dest->frustration = src->frustration;
   dest->curiousity = src->curiousity;
   dest->life_preservation = src->life_preservation;
-  dest->agression = src->agression;
+  dest->aggression = src->aggression;
 
   dest->fire_spread = src->fire_spread;
   dest->night_vision = src->night_vision;
@@ -4008,7 +4008,7 @@ void AICheckTargetVis(object *obj) {
 
       fq.rad = 0.0f;
       fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_NO_RELINK /* | FQ_IGNORE_MOVING_OBJECTS*/;
-      if (ai_info->agression > .7f) {
+      if (ai_info->aggression > .7f) {
         fq.flags |= FQ_IGNORE_MOVING_OBJECTS;
       }
 
@@ -4019,7 +4019,7 @@ void AICheckTargetVis(object *obj) {
       int num_ignored = 1;
       int i;
 
-      // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECERSIVE
+      // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECURSIVE
       for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
         object *child;
 
@@ -4424,8 +4424,8 @@ void AIDoOrientDefault(object *obj) {
   }
 
   // The aware barely stuff can be improved by using emotional sliders to determine if the robot will
-  // 'lose track' of its target -- chrishack -- also use last see target time with the agression slider
-  if ((ai_info->flags & AIF_ORIENT_TO_VEL) || (ai_info->awareness <= AWARE_BARELY && ai_info->agression < 0.4f) ||
+  // 'lose track' of its target -- chrishack -- also use last see target time with the aggression slider
+  if ((ai_info->flags & AIF_ORIENT_TO_VEL) || (ai_info->awareness <= AWARE_BARELY && ai_info->aggression < 0.4f) ||
       !ObjGet(ai_info->target_handle)) {
     AIDoOrientVelocity(obj);
   } else {
@@ -4600,7 +4600,7 @@ void ai_move(object *obj) {
       ai_info->flags |= AIF_DODGE;
   }
   // int num_objects;
-  // object *g_objs[5]; // 1 target + 2 enemies + 2 freinds
+  // object *g_objs[5]; // 1 target + 2 enemies + 2 friends
 
   object *targetptr = ObjGet(ai_info->target_handle); // The target of this AI
   ai_info->movement_dir = Zero_vector;
@@ -4709,7 +4709,7 @@ void ai_move(object *obj) {
                 if (cur_dist > dist)
                   continue;
 
-                // Scale the life perservation too (if enemy DAMN GOOD IDEA - expand AVOID SIZE too)   -- chrishack
+                // Scale the life preservation too (if enemy DAMN GOOD IDEA - expand AVOID SIZE too)   -- chrishack
                 // Linear scale by distance
                 float scale = cur_goal->influence * ((dist - cur_dist) / dist);
 
@@ -5463,7 +5463,7 @@ void ai_fire(object *obj) {
           bool f_no_fire = false;
           int anim_type = obj_info->static_wb[i].flags & WBF_ANIM_MASKS;
 
-          if (ai_info->agression == 0.0f && ai_info->memory[0].num_times_hit == 0) {
+          if (ai_info->aggression == 0.0f && ai_info->memory[0].num_times_hit == 0) {
             // Assume no fire
             f_no_fire = true;
 
@@ -5477,7 +5477,7 @@ void ai_fire(object *obj) {
               int num_ignored = 1;
               int i;
 
-              // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECERSIVE
+              // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECURSIVE
               for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
                 object *child;
 
@@ -5708,12 +5708,12 @@ bool AIObjFriend(object *obj, object *target) {
   int team = AIGetTeam(obj);
   int t_team = AIGetTeam(target);
 
-  // If this object is targetting you - it is your enemy
+  // If this object is targeting you - it is your enemy
   if ((target->control_type == CT_AI) && (target->ai_info->target_handle == obj->handle)) {
     return false;
   }
 
-  // If its neutral and not targetting you -- its not an enemy (unless your hostile)
+  // If it is neutral and not targeting you -- it is not an enemy (unless you are hostile)
   if (team == AIF_TEAM_HOSTILE)
     return false;
 
@@ -5772,7 +5772,7 @@ bool AIObjEnemy(object *obj, object *target) {
   int team = AIGetTeam(obj);
   int t_team = AIGetTeam(target);
 
-  // If this object is targetting you - it is your enemy
+  // If this object is targeting you - it is your enemy
   if ((target->control_type == CT_AI) && (target->ai_info->target_handle == obj->handle)) {
     return true;
   }
@@ -5782,7 +5782,7 @@ bool AIObjEnemy(object *obj, object *target) {
     return false;
   }
 
-  // If its neutral and not targetting you -- its not an enemy (unless your hostile)
+  // If it is neutral and not targeting you -- it is not an enemy (unless you are hostile)
   if ((team != AIF_TEAM_HOSTILE) && (t_team == AIF_TEAM_NEUTRAL && target->ai_info->target_handle != obj->handle)) {
     return false;
   }
@@ -5886,7 +5886,7 @@ void AITargetCheck(object *obj, object *target, object **best_obj, float *best_d
     int num_ignored = 1;
     int i;
 
-    // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECERSIVE
+    // CHRISHACK - ONLY IGNORES FIRST LEVEL OF CHILDREN - DO RECURSIVE
     for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
       object *child;
 
@@ -5928,7 +5928,7 @@ void AIDetermineTarget(object *obj) {
         Gametime + 2.0f * MIN_TARGET_UPDATE_INTERVAL +
         ((float)ps_rand() / (float)D3_RAND_MAX) * 2.0f * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
 
-  // Chrishack -- if agression is over a value, NO switching targets!!!!!!!!!  Need to implement
+  // Chrishack -- if aggression is over a value, NO switching targets!!!!!!!!!  Need to implement
   // Chrishack -- if frustration is over a value, act as hostile -- temp stuff AIF_TEAM_HOSTILE
 
   // They forget their enemies after a few seconds
@@ -5944,7 +5944,7 @@ void AIDetermineTarget(object *obj) {
   } else // Team PTMC  :)
   {
     if (Game_mode & GM_MULTI) {
-      // Multiplayer targetting (Major difference is that robot will ignore players while infighting in single player)
+      // Multiplayer targeting (Major difference is that robot will ignore players while infighting in single player)
       for (i = 0; i < MAX_PLAYERS; i++) {
         if ((NetPlayers[i].flags & NPF_CONNECTED) && (NetPlayers[i].sequence >= NETSEQ_PLAYING)) {
           object *target = &Objects[Players[i].objnum];
@@ -5958,7 +5958,7 @@ void AIDetermineTarget(object *obj) {
 
       if ((t) && (t->control_type == CT_AI) && ((t->ai_info->flags & AIF_TEAM_MASK) == AIF_TEAM_PTMC)) {
         // Do the divide because we don't want D3_RAND_MAX to go too high
-        if (ps_rand() / AI_FORGIVE_AGRESSION_MULTIPLIER > ai_info->agression * D3_RAND_MAX) {
+        if (ps_rand() / AI_FORGIVE_AGRESSION_MULTIPLIER > ai_info->aggression * D3_RAND_MAX) {
           f_forgive_friend = true;
         }
       }
@@ -5993,7 +5993,7 @@ void AIDoFreud(object *obj) {
   ai_mem *mem = ai_info->memory;
 
   int fear_depth = (ai_info->life_preservation) * (AI_MEM_DEPTH - 1) + 1;
-  int anger_depth = (ai_info->agression) * (AI_MEM_DEPTH - 1) + 1;
+  int anger_depth = (ai_info->aggression) * (AI_MEM_DEPTH - 1) + 1;
   int frust_depth = (ai_info->frustration) * (AI_MEM_DEPTH - 1) + 1;
 
   if (fear_depth >= AI_MEM_DEPTH)
@@ -6092,7 +6092,7 @@ void AIDoMemFrame(object *obj) {
 
     // Reset the accumulators
 
-    // These are imcremented as this memory time slice is active
+    // These are incremented as this memory time slice is active
     ai_info->memory[0].num_enemy_shots_dodged = 0;
     ai_info->memory[0].num_enemy_shots_fired = 0;
     ai_info->memory[0].num_hit_enemy = 0;
@@ -6226,7 +6226,7 @@ void AIDoFrame(object *obj) {
 
         speed = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
 
-        // Removes the framerate independance from objects moving within 2x of there normal max speed
+        // Removes the framerate independence from objects moving within 2x of there normal max speed
         if (speed > 0.1f && speed <= ai_info->max_velocity * 2.0) {
           if (obj->mtype.phys_info.drag > 0.0f && obj->mtype.phys_info.mass > 0.0f) {
             obj->mtype.phys_info.flags |= PF_USES_THRUST;

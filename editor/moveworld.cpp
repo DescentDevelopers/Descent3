@@ -32,7 +32,7 @@
  * Moved mine origin to the center of the terrain
  *
  * 4     10/03/97 3:39p Matt
- * Added seperate sets of wireframe view variables for mine & room views
+ * Added separate sets of wireframe view variables for mine & room views
  *
  * 3     7/22/97 7:08p Matt
  * Cleaned up D3EditState, moving some vars in and some out, and renaming

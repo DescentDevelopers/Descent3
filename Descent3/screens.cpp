@@ -256,7 +256,7 @@ void PLResultsFrame() {
   // Right now we don't want you to do anything
   if (background_loaded)
     DrawLargeBitmap(&level_bmp, 0, 0, 1.0f);
-  // Call the DLL so it can do it's thing
+  // Call the DLL so it can do its thing
   if (Game_mode & GM_MULTI) {
     CallGameDLL(EVT_CLIENT_GAMEPOSTLEVELRESULTS, &DLLInfo);
   } else {

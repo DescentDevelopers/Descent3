@@ -6597,7 +6597,7 @@ void CDallasMainDlg::ParseOutActionVarTypes(char *new_desc, char *old_desc) {
   new_desc_text = "";
   while ((*old_desc) != '\0') {
 
-    // If it's start of a param block, extract the param name
+    // If it's the start of a param block, extract the param name
     if ((*old_desc) == '[') {
       ParseParamBlock(old_desc, name_text, default_text, range_text);
       new_desc_text += '[';
@@ -6681,7 +6681,7 @@ void CDallasMainDlg::ParseOutQueryVarTypes(char *new_desc, char *old_desc)
 }
 */
 
-// Validates an action node by conforming its parameters to what they should be
+// Validates an action node by confirming its parameters to what they should be
 // returns FALSE if node was modified significantly, otherwise TRUE
 bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum) {
   CString name_text, default_text, range_text;
@@ -6748,7 +6748,7 @@ bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum) {
 }
 
 /* OLD VERSION
-// Validates an action node by conforming its parameters to what they should be
+// Validates an action node by confirming its parameters to what they should be
 // returns FALSE if node was modified significantly, otherwise TRUE
 bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum)
 {
@@ -6955,7 +6955,7 @@ bool CDallasMainDlg::ConformParamNode(HTREEITEM parent_node, HTREEITEM &param_no
   return TRUE;
 }
 
-// Validates a query node by conforming its parameters to what they should be
+// Validates a query node by confirming its parameters to what they should be
 // returns FALSE if node was modified significantly, otherwise TRUE
 bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum) {
   CString name_text, default_text, range_text;
@@ -7022,7 +7022,7 @@ bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum) {
 }
 
 /* OLD VERSION
-// Validates a query node by conforming its parameters to what they should be
+// Validates a query node by confirming its parameters to what they should be
 // returns FALSE if node was modified significantly, otherwise TRUE
 bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum)
 {
@@ -9235,7 +9235,7 @@ void CDallasMainDlg::SpecialScriptFileParseError(int linenum, int script_ID, cha
   MessageBox(err_msg, "Script File Parse Error", MB_OK | MB_ICONEXCLAMATION);
 }
 
-// Validates a function node by conforming its parameters to what they should be
+// Validates a function node by confirming its parameters to what they should be
 // returns FALSE if node was modified significantly, otherwise TRUE
 bool CDallasMainDlg::ValidateFunctionNode(HTREEITEM node, int linenum) {
   tTreeNodeData *data;
@@ -15950,7 +15950,7 @@ bool CDallasMainDlg::ExportScriptToFile(char *filename, char *script_name) {
               return FALSE;
             }
 
-            // Copy the new script into it's place
+            // Copy the new script into its place
             O(("%s", script_name));
             O(("VERSION		%d", DALLAS_SAVE_VERSION));
 

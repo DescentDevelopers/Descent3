@@ -96,7 +96,7 @@
  * Tweaked min fire spread for diff levels
  *
  * 258   5/10/99 11:57p Chris
- * Now related objects are not targetted by an omega cannon (I.e. things
+ * Now related objects are not targeted by an omega cannon (I.e. things
  * like a flag or something attached)
  *
  * 257   5/09/99 11:57p Jason
@@ -272,7 +272,7 @@
  *
  * 203   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -723,7 +723,7 @@
  * instructions.
  *
  * 59    2/12/98 8:48p Matt
- * Changed controls system to keep the reading of the controls seperate
+ * Changed controls system to keep the reading of the controls separate
  * from using the results.  Got rid of the Controls global.
  *
  * 58    2/11/98 4:10p Jason
@@ -1305,7 +1305,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
     obj->mtype.phys_info.velocity *= Players[parent->id].weapon_speed_scalar;
 
   // Set initial velocity to that of the firing object
-  // Don't do it though if its a spawned weapon
+  // Don't do it though if it is a spawned weapon
   if ((obj->mtype.phys_info.flags & PF_USES_PARENT_VELOCITY) && parent->type != OBJ_WEAPON) {
 
     float fdot = (parent->mtype.phys_info.velocity * parent->orient.fvec);
@@ -3088,7 +3088,7 @@ void DoWeaponExploded(object *obj, vector *norm, vector *collision_point, object
                        obj->parent_handle);
 
   if (hit_object == Viewer_object && !(Weapons[obj->id].flags & WF_MATTER_WEAPON))
-    return; // Don't draw if its viewer who is getting hit
+    return; // Don't draw if it is the viewer who is getting hit
 
   if (Weapons[obj->id].flags & WF_PLANAR_BLAST) {
     if (Weapons[obj->id].flags & WF_BLAST_RING) {

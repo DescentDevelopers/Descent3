@@ -181,7 +181,7 @@
  * object info.)
  *
  * 117   2/03/99 1:10p Matt
- * Changed the paletted room current faces to be stored in a seperate
+ * Changed the paletted room current faces to be stored in a separate
  * array, instead of in the room structure.
  *
  * 116   2/03/99 1:20a Matt
@@ -196,7 +196,7 @@
  *
  * 113   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -382,7 +382,7 @@
  * did a HUGE overhaul of the bitmap system
  *
  * 58    10/03/97 3:39p Matt
- * Added seperate sets of wireframe view variables for mine & room views
+ * Added separate sets of wireframe view variables for mine & room views
  *
  * 57    9/23/97 10:38a Jason
  * Took out OnTerrain
@@ -608,7 +608,7 @@
  * option
  *
  * 65    4/01/97 11:00p Matt
- * Changed editor to keep a viewer object (type camera) seperate from the
+ * Changed editor to keep a viewer object (type camera) separate from the
  * player object.  This camera, and not the player, is now moved by
  * slewing, the C key, etc.  When going into the game, the viewer position
  * & orientation are copied to the player.  When going back to the editor,

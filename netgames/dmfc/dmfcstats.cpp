@@ -576,7 +576,7 @@ redisplay_list:
       continue;
 
     if (m_flags & DSIF_SEPERATE_BY_TEAM) {
-      // for team games we seperate disconnected and ingame people
+      // for team games we separate disconnected and ingame people
       if (displaying_in_game_players) {
         // filter out non-ingame players
         if (pr->state != STATE_INGAME)

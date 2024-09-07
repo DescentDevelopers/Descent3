@@ -28,7 +28,7 @@
  *
  * 21    1/21/99 11:16p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -111,7 +111,7 @@
  * added prototypes for vm_MakeInverseMatrix and vm_SinCosToMatrix
  *
  * 28    2/27/97 5:23p Chris
- * Removed the remainding extern inline
+ * Removed the remaining extern inline
  *
  * 27    2/27/97 4:56p Samir
  * took out ifndef MAC stuff

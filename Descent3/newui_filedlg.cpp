@@ -69,7 +69,7 @@
  *
  * 9     1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -124,7 +124,7 @@ std::filesystem::path NewuiFileDlg_lastpath;
 // border size of the UI window
 #define UI_BORDERSIZE 20
 
-// Updates the given listbox with the directories and files that match wildcards (each wildcard seperates by a ;)
+// Updates the given listbox with the directories and files that match wildcards (each wildcard separates by a ;)
 void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const std::vector<std::string> &wildcards);
 
 // Callback function for listbox
@@ -467,7 +467,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
   return ret;
 }
 
-// Updates the given listbox with the directories and files that match wildcards (each wildcard seperates by a ;)
+// Updates the given listbox with the directories and files that match wildcards (each wildcard separates by a ;)
 void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const std::vector<std::string> &wildcards) {
   FDlg_EnableWaitMessage(true);
   lb->RemoveAll();

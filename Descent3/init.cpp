@@ -460,7 +460,7 @@
  *
  * 185   1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -628,7 +628,7 @@
  * fixed some defaults
  *
  * 130   10/03/98 11:21p Matt
- * Added system to seperately control outline mode for mine, terrain, sky,
+ * Added system to separately control outline mode for mine, terrain, sky,
  * & objects
  *
  * 129   10/01/98 11:57a Matt
@@ -776,7 +776,7 @@
  * Added Terrain casting to config
  *
  * 82    5/06/98 4:32p Samir
- * moved ui init back to it's proper place.
+ * moved ui init back to its proper place.
  *
  * 81    5/06/98 12:44p Jeff
  * added saving/restoring video resolution
@@ -1532,12 +1532,12 @@ void InitIOSystems(bool editor) {
     }
   }
 
-  // Initialize debug graph early incase any system uses it in it's init
+  // Initialize debug graph early incase any system uses it in its init
   INIT_MESSAGE(("Initializing debug graph."));
   DebugGraph_Initialize();
 
   //	initialize all the OSIRIS systems
-  //	extract from extra.hog first, so it's dll files are listed ahead of d3.hog's
+  //	extract from extra.hog first, so its DLL files are listed ahead of d3.hog's
   INIT_MESSAGE(("Initializing OSIRIS."));
   Osiris_InitModuleLoader();
   if (extra13_hid != -1)

@@ -144,7 +144,7 @@ void ambient_life::SaveData(CFILE *fp) {
     int type = m_type[i];
 
     if (type >= 0) {
-      len = strlen(Object_info[type].name) + 1; // Accounts for NULL charactor
+      len = strlen(Object_info[type].name) + 1; // Accounts for NULL character
       cf_WriteShort(fp, len);
       for (j = 0; j < len; j++) {
         cf_WriteByte(fp, Object_info[type].name[j]);

@@ -1244,7 +1244,7 @@ void mng_LoadLocalTexturePage(CFILE *infile) {
 int mng_GetGuaranteedTexturePage(char *name, CFILE *infile) {
   int i;
 
-  // See if its in memory
+  // See if it is in memory
   i = FindTextureName(name);
   if (i != -1)
     return i;

@@ -1068,7 +1068,7 @@ public:
   // DMFCBase::AutoTimeLimit
   //
   //    Server Only.  This turns off or on the automatic level ending by DMFC of a timed multiplayer game.
-  //    If you turn it off, it is your responsibility to end a time multiplayer game when it's time
+  //    If you turn it off, it is your responsibility to end a time multiplayer game when its time
   //    is up.  If it is turned on, DMFC will automatically handle ending the game.  By default it is on.
   void AutoTimeLimit(bool turnon);
 
@@ -1114,7 +1114,7 @@ public:
 
   // DMFCBase::RegisterPacketReceiver
   //
-  // Sets up a handler for a Special Packet ID.  When a special packet is recieved it's ID is compared
+  // Sets up a handler for a Special Packet ID.  When a special packet is recieved, its ID is compared
   // to the ID's given to this function.  If any match than it calls the handler given to process
   // the packet.
   // id = ID of the packet
@@ -1338,7 +1338,7 @@ public:
   // DMFCBase::GetCounterMeasureOwner
   //
   //
-  //	Given a counter measure it will determine the pnum of it's owner...if it can't find it, it returns -1
+  //	Given a counter measure it will determine the pnum of its owner...if it can't find it, it returns -1
   int GetCounterMeasureOwner(object *robot);
 
   // DMFCBase::CFGOpen

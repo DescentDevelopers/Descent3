@@ -115,7 +115,7 @@
  *
  * 74    1/21/99 11:16p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -229,7 +229,7 @@
  * added memory lib
  *
  * 39    3/23/98 10:03a Chris
- * Added independant wb animations
+ * Added independent wb animations
  *
  * 38    3/13/98 5:55p Chris
  * Added the new collision spheres
@@ -487,7 +487,7 @@ void mng_InitGenericPage(mngs_generic_page *genericpage) {
   genericpage->ai_info.fire_spread = 0.0f;
   genericpage->ai_info.fight_team = 0.15f;
   genericpage->ai_info.fight_same = 0.8f;
-  genericpage->ai_info.agression = 0.5f;
+  genericpage->ai_info.aggression = 0.5f;
   genericpage->ai_info.hearing = 1.0f;
   genericpage->ai_info.frustration = 0.5f;
   genericpage->ai_info.roaming = 0.5f;
@@ -716,7 +716,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
 
   for (i = 0; i < MAX_DSPEW_TYPES; i++) {
     cf_WriteByte(outfile, GENERICPAGE_COMMAND_DSPEW_INFO);
-    cf_WriteByte(outfile, strlen(genericpage->dspew_name[i]) + 9); // 1 for null charactor
+    cf_WriteByte(outfile, strlen(genericpage->dspew_name[i]) + 9); // 1 for null character
     cf_WriteByte(outfile, i);
     cf_WriteByte(outfile, genericpage->objinfo_struct.f_dspew);
     cf_WriteFloat(outfile, genericpage->objinfo_struct.dspew_percent[i]);
@@ -734,7 +734,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
   cf_WriteFloat(outfile, genericpage->ai_info.fire_spread);
   cf_WriteFloat(outfile, genericpage->ai_info.fight_team);
   cf_WriteFloat(outfile, genericpage->ai_info.fight_same);
-  cf_WriteFloat(outfile, genericpage->ai_info.agression);
+  cf_WriteFloat(outfile, genericpage->ai_info.aggression);
   cf_WriteFloat(outfile, genericpage->ai_info.hearing);
   cf_WriteFloat(outfile, genericpage->ai_info.frustration);
   cf_WriteFloat(outfile, genericpage->ai_info.roaming);
@@ -798,7 +798,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
     int j;
     for (j = 0; j < MAX_WB_GUNPOINTS; j++) {
       cf_WriteByte(outfile, GENERICPAGE_COMMAND_WB_WEAPON);
-      size = strlen(genericpage->weapon_name[i][j]) + 1 + 2; // 1 for the null charactor and 2 for the 2 indices
+      size = strlen(genericpage->weapon_name[i][j]) + 1 + 2; // 1 for the null character and 2 for the 2 indices
 
       cf_WriteByte(outfile, size);
 
@@ -818,7 +818,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
     int j;
     for (j = 0; j < MAX_WB_FIRING_MASKS; j++) {
       cf_WriteByte(outfile, GENERICPAGE_COMMAND_WB_FIRE_SOUND);
-      size = strlen(genericpage->fire_sound_name[i][j]) + 1 + 2; // 1 for the null charactor and 2 for the 2 indices
+      size = strlen(genericpage->fire_sound_name[i][j]) + 1 + 2; // 1 for the null character and 2 for the 2 indices
 
       cf_WriteByte(outfile, size);
 
@@ -832,7 +832,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
     int j;
     for (j = 0; j < NUM_ANIMS_PER_CLASS; j++) {
       cf_WriteByte(outfile, GENERICPAGE_COMMAND_ANIM_SOUND_NAME);
-      size = strlen(genericpage->anim_sound_name[i][j]) + 1 + 2; // 1 for the null charactor and 2 for the 2 indices
+      size = strlen(genericpage->anim_sound_name[i][j]) + 1 + 2; // 1 for the null character and 2 for the 2 indices
 
       cf_WriteByte(outfile, size);
 
@@ -954,7 +954,7 @@ void mng_WriteNewGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
   cf_WriteFloat(outfile, genericpage->ai_info.fire_spread);
   cf_WriteFloat(outfile, genericpage->ai_info.fight_team);
   cf_WriteFloat(outfile, genericpage->ai_info.fight_same);
-  cf_WriteFloat(outfile, genericpage->ai_info.agression);
+  cf_WriteFloat(outfile, genericpage->ai_info.aggression);
   cf_WriteFloat(outfile, genericpage->ai_info.hearing);
   cf_WriteFloat(outfile, genericpage->ai_info.frustration);
   cf_WriteFloat(outfile, genericpage->ai_info.roaming);
@@ -1208,7 +1208,7 @@ int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
   genericpage->ai_info.fire_spread = cf_ReadFloat(infile);
   genericpage->ai_info.fight_team = cf_ReadFloat(infile);
   genericpage->ai_info.fight_same = cf_ReadFloat(infile);
-  genericpage->ai_info.agression = cf_ReadFloat(infile);
+  genericpage->ai_info.aggression = cf_ReadFloat(infile);
   genericpage->ai_info.hearing = cf_ReadFloat(infile);
   genericpage->ai_info.frustration = cf_ReadFloat(infile);
   genericpage->ai_info.roaming = cf_ReadFloat(infile);
@@ -1436,7 +1436,7 @@ int mng_ReadGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
       genericpage->ai_info.fire_spread = cf_ReadFloat(infile);
       genericpage->ai_info.fight_team = cf_ReadFloat(infile);
       genericpage->ai_info.fight_same = cf_ReadFloat(infile);
-      genericpage->ai_info.agression = cf_ReadFloat(infile);
+      genericpage->ai_info.aggression = cf_ReadFloat(infile);
       genericpage->ai_info.hearing = cf_ReadFloat(infile);
       genericpage->ai_info.frustration = cf_ReadFloat(infile);
       genericpage->ai_info.roaming = cf_ReadFloat(infile);
@@ -1935,7 +1935,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
   strcpy(objinfopointer->icon_name, genericpage->objinfo_struct.icon_name);
   // First see if our image differs from the one on the net
   // If it is, make a copy
-  // If its a release version, don't do any of this
+  // If it is a release version, don't do any of this
 
 #ifndef RELEASE
   if (Network_up) {
@@ -2324,7 +2324,7 @@ int mng_GetGuaranteedGenericPage(char *name, CFILE *infile) {
   int i;
   mngs_generic_page page;
 
-  // See if its in memory
+  // See if it is in memory
   i = FindObjectIDName(name);
   if (i != -1)
     return i;

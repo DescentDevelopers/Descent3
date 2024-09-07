@@ -75,7 +75,7 @@
  * Added functions to create a face
  *
  * 32    10/03/98 11:22p Matt
- * Added system to seperately control outline mode for mine, terrain, sky,
+ * Added system to separately control outline mode for mine, terrain, sky,
  * & objects
  *
  * 31    10/03/98 8:31p Matt

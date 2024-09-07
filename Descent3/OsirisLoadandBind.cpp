@@ -97,7 +97,7 @@
  * scripts are not really used in demos)
  *
  * 94    3/10/99 6:44p Jeff
- * fixed exported game cinematic function for canned cinematics, so it's
+ * fixed exported game cinematic function for canned cinematics, so its
  * prototype doesn't change (oem patch friendly)
  *
  * 93    3/10/99 6:21p Jeff
@@ -254,7 +254,7 @@
  *
  * 43    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
- * into seperate header files so that multiplayer dlls don't require major
+ * into separate header files so that multiplayer dlls don't require major
  * game headers, just those new headers.  Side effect is a shorter build
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
@@ -1427,9 +1427,9 @@ void Osiris_UnloadMissionModule(void) {
 //	Osiris_BindScriptsToObject
 //	Purpose:
 //		Call this function after an object has been created to bind all the scripts associated
-//	with it to the object.  This function must be called near the end of it's initialization,
+//	with it to the object.  This function must be called near the end of its initialization,
 //	to make sure that all fields have been filled in.  This function does not call any events.
-//	This function will also load any dll's needed for it's game script.
+//	This function will also load any dll's needed for its game script.
 //	returns false if nothing was bound.
 bool Osiris_BindScriptsToObject(object *obj) {
   ASSERT(obj->osiris_script == NULL);
@@ -1520,7 +1520,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
       obj->osiris_script->level_script.script_instance = NULL;
       os = obj->osiris_script;
 
-      // we have the module loaded for the object, now we need to setup it's default script
+      // we have the module loaded for the object, now we need to setup its default script
       gos_id = OSIRIS_loaded_modules[dll_id].GetGOScriptID(page_name, isdoor);
 
       if (gos_id == -1) {
@@ -1795,7 +1795,7 @@ void Osiris_DetachScriptsFromObject(object *obj) {
 
   os = obj->osiris_script;
 
-  // free up the scripts for the object, starting with it's default script
+  // free up the scripts for the object, starting with its default script
   if (os->default_script.script_instance) {
     // first we need to free the instance
     dll_id = os->default_script.DLLID;
@@ -1989,12 +1989,12 @@ bool Osiris_CallLevelEvent(int event, tOSIRISEventInfo *data) {
   }
 
   if (tOSIRISCurrentLevel.level_loaded) {
-    // there is a loaded level, get it's dll id and call it's event
+    // there is a loaded level, get its dll id and call its event
     int dll_id = tOSIRISCurrentLevel.dll_id;
     void *instance = tOSIRISCurrentLevel.instance;
 
     if (instance) {
-      data->me_handle = OBJECT_HANDLE_NONE; // its a level script!...no me
+      data->me_handle = OBJECT_HANDLE_NONE; // it is a level script!...no me
       int16_t ret;
 
       ret = OSIRIS_loaded_modules[dll_id].CallInstanceEvent(0, instance, event, data);
@@ -2116,7 +2116,7 @@ bool Osiris_IsEventEnabled(int event) {
 //		Triggers an event for an object.  Pass in the event number and the associated
 //	structure of data.  All events will be chained through the associated scripts of the
 //	object (as long as they are available) in the order: custom script, level script,
-//	mission script, and finally it's default script.  The chain breaks if one of the scripts
+//	mission script, and finally its default script.  The chain breaks if one of the scripts
 //	returns false on the call to their CallInstanceEvent().
 bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data) {
   if ((Game_mode & GM_MULTI) && (Netgame.local_role != LR_SERVER)) {
@@ -3291,7 +3291,7 @@ to OMMS_Attach() and OMMS_Detach().  ALWAYS make sure that you detach before you
 
 // Allocates a block of global memory for this module, of size amount_of_memory.
 // unique_identfier is the script provided unique ID which is used throughout.
-// script_identifier is the pointer of data provided to the script in it's InitializeDLL function (really the name of
+// script_identifier is the pointer of data provided to the script in its InitializeDLL function (really the name of
 the script)
 // Returns -1 if there isn't enough available memory
 // Returns -2 if the unique identifier passed in is already used, but the requested amount_of_memory is different
@@ -3324,7 +3324,7 @@ subtracts).
 //	Returns -1 if the module was never OMMS_Malloc()'d.
 OMMSHANDLE OMMS_Find(uint32_t unique_identifier,char *script_identifier);
 
-//	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
+//	Returns information about the OMMS memory given its handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
 char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,uint16_t *reference_count,uint8_t *has_free_been_called);
@@ -3375,7 +3375,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash = NULL
 
 // Allocates a block of global memory for this module, of size amount_of_memory.
 // unique_identfier is the script provided unique ID which is used throughout.
-// script_identifier is the pointer of data provided to the script in it's InitializeDLL function (really the name of
+// script_identifier is the pointer of data provided to the script in its InitializeDLL function (really the name of
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different Returns -3 if the unique identifier passed in is
 // already used, same size requested
@@ -3407,7 +3407,7 @@ static void Osiris_OMMS_Free(OMMSHANDLE handle);
 //	Returns -1 if the module was never OMMS_Malloc()'d.
 static OMMSHANDLE Osiris_OMMS_Find(uint32_t unique_identifier, char *script_identifier);
 
-//	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
+//	Returns information about the OMMS memory given its handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
 static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,
@@ -3765,7 +3765,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
 
 // Allocates a block of global memory for this module, of size amount_of_memory.
 // unique_identfier is the script provided unique ID which is used throughout.
-// script_identifier is the pointer of data provided to the script in it's InitializeDLL function (really the name of
+// script_identifier is the pointer of data provided to the script in its InitializeDLL function (really the name of
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different If the memory has already been allocated, it will
 // return the handle.
@@ -3865,7 +3865,7 @@ OMMSHANDLE Osiris_OMMS_Find(uint32_t unique_identifier, char *script_identifier)
   return ((hash->base_id << 16) | (node->id));
 }
 
-//	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
+//	Returns information about the OMMS memory given its handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
 char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,

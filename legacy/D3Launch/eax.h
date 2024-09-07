@@ -94,7 +94,7 @@ struct EAXBUFFER_REVERBPROPERTIES {
 #define EAX_REVERBMIX_USEDISTANCE                                                                                      \
   -1.0F // out of normal range
         // signifies the reverb engine should
-        // calculate it's own reverb mix value
+        // calculate its own reverb mix value
         // based on distance
 
 #ifdef __cplusplus
