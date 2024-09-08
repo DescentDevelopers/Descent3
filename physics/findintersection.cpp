@@ -4708,8 +4708,8 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
           // If we hit the face...
           if (face_hit_type) {
             if ((fvi_query_ptr->flags & FQ_RECORD) && (face_info & FPF_RECORD) &&
-                Fvi_num_recorded_faces > 0 &&
-                !(Fvi_recorded_faces[Fvi_num_recorded_faces - 1].face_index == i &&
+                !(Fvi_num_recorded_faces > 0 &&
+                  Fvi_recorded_faces[Fvi_num_recorded_faces - 1].face_index == i &&
                   Fvi_recorded_faces[Fvi_num_recorded_faces - 1].room_index == room_index)) {
               ASSERT(Fvi_num_recorded_faces < MAX_RECORDED_FACES);
               if (Fvi_num_recorded_faces < MAX_RECORDED_FACES) {
