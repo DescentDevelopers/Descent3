@@ -1710,13 +1710,15 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     spew.speed = mstruct->speed;
     if ((Game_mode & GM_MULTI) && Netgame.local_role == LR_CLIENT) {
       int spewnum = SpewCreate(&spew);
-      ASSERT(spewnum != -1); // DAJ -1FIX
+      if (spewnum < 0)
+        return;
       spewnum &= 0xFF;
 
       Server_spew_list[mstruct->id] = spewnum;
     } else {
       mstruct->id = SpewCreate(&spew);
-      ASSERT(mstruct->id != -1); // DAJ -1FIX
+      if (mstruct->id < 0)
+        return;
     }
     break;
   }
