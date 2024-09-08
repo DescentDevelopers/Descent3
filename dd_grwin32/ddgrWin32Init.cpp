@@ -191,7 +191,7 @@ void ddgr_FatalError(const char *fmt, ...) {
   std::vsnprintf(buf, 768, fmt, arglist);
   va_end(arglist);
 
-  if (DDGR_subsystems[i] = !-1) {
+  if (DDGR_subsystems[i] != -1) {
     strcat(buf, "\n\nSubsystem:  ");
     strcat(buf, DDGR_subsystem_names[i]);
   }
