@@ -957,7 +957,7 @@ void InitTerrain(void) {
     Terrain_rotate_list = (uint16_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(uint16_t));
     ASSERT(Terrain_rotate_list);
 
-    World_point_buffer = (g3Point *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(g3Point));
+    World_point_buffer = mem_rmalloc<g3Point>(TERRAIN_WIDTH * TERRAIN_DEPTH);
     ASSERT(World_point_buffer);
 
     // Allocate space for lod delta tree and unique texture IDs
@@ -975,7 +975,7 @@ void InitTerrain(void) {
     w = TERRAIN_WIDTH >> ((MAX_TERRAIN_LOD - 1) - i);
     h = TERRAIN_DEPTH >> ((MAX_TERRAIN_LOD - 1) - i);
 
-    TerrainNormals[i] = (terrain_normals *)mem_malloc(w * h * sizeof(terrain_normals));
+    TerrainNormals[i] = mem_rmalloc<terrain_normals>(w * h);
     memset(TerrainNormals[i], 0, w * h * sizeof(terrain_normals));
   }
 

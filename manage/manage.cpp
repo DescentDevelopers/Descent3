@@ -1466,7 +1466,7 @@ void mng_TransferPages() {
     Int3();
     return;
   }
-  mngs_track_lock *local_tracklocks = (mngs_track_lock *)mem_malloc(sizeof(*local_tracklocks) * 5000);
+  auto local_tracklocks = mem_rmalloc<mngs_track_lock>(5000);
   // Do textures
   int done = 0;
   while (!done) {

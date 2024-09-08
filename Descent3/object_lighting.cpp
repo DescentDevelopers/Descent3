@@ -630,7 +630,7 @@ void ObjSetLocalLighting(object *objp) {
            (objp->type == OBJ_BUILDING));
 
     // allocate a light info for this object
-    objp->lighting_info = (light_info *)mem_malloc(sizeof(*objp->lighting_info));
+    objp->lighting_info = mem_rmalloc<light_info>();
 
     // copy the lighting info from the type for this object
     *objp->lighting_info = Object_info[objp->id].lighting_info;

@@ -567,7 +567,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   ASSERT(rp->verts != NULL);
 
   if (Katmai) {
-    rp->verts4 = (vector4 *)mem_malloc(nverts * sizeof(*rp->verts4));
+    rp->verts4 = mem_rmalloc<vector4>(nverts);
     ASSERT(rp->verts4 != NULL);
   }
 
@@ -667,7 +667,7 @@ void FreeRoom(room *rp) {
   RoomMemFree(rp->portals);
   RoomMemFree(rp->verts);
 
-  if (Katmai)
+  if (Katmai )
     mem_free(rp->verts4);
 
   if (rp->num_bbf_regions) {

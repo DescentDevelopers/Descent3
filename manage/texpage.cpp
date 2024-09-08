@@ -1247,7 +1247,7 @@ int mng_GetGuaranteedTexturePage(char *name, CFILE *infile) {
   if (i != -1)
     return i;
 
-  mngs_texture_page *texpage = (mngs_texture_page *)mem_malloc(sizeof(*texpage));
+  auto texpage = mem_rmalloc<mngs_texture_page>();
 
   // Not in memory.  Load it from the table file.  Start searching from the
   // current spot in the open table file

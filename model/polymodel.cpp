@@ -1802,9 +1802,9 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           pm->submodel[i].num_key_angles = nframes;
         }
 
-        pm->submodel[i].keyframe_axis = (vector *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(vector));
+        pm->submodel[i].keyframe_axis = mem_rmalloc<vector>(pm->submodel[i].num_key_angles + 1);
         pm->submodel[i].keyframe_angles = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
-        pm->submodel[i].keyframe_matrix = (matrix *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(matrix));
+        pm->submodel[i].keyframe_matrix = mem_rmalloc<matrix>(pm->submodel[i].num_key_angles + 1);
         if (timed) {
           pm->submodel[i].rot_start_time = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
           ASSERT(pm->submodel[i].rot_start_time != nullptr);
@@ -1892,7 +1892,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         } else
           pm->submodel[i].num_key_pos = nframes;
 
-        pm->submodel[i].keyframe_pos = (vector *)mem_malloc((pm->submodel[i].num_key_pos + 1) * sizeof(vector));
+        pm->submodel[i].keyframe_pos = mem_rmalloc<vector>(pm->submodel[i].num_key_pos + 1);
         ASSERT(pm->submodel[i].keyframe_pos != nullptr);
 
         if (timed) {

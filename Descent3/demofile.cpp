@@ -785,7 +785,7 @@ int DemoReadHeader() {
 
   if (gs_Xlates)
     mem_free(gs_Xlates);
-  gs_Xlates = (struct gs_tables *)mem_malloc(sizeof(gs_tables));
+  gs_Xlates = mem_rmalloc<gs_tables>();
 
   try {
     LGSXlateTables(Demo_cfp);

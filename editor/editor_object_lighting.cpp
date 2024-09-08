@@ -321,8 +321,8 @@ int ComputeSurfacesForObjects(int surface_index, int terrain) {
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
             Light_surfaces[surface_index].elements =
-                (rad_element *)mem_malloc(Light_surfaces[surface_index].xresolution *
-                                          Light_surfaces[surface_index].yresolution * sizeof(rad_element));
+                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
+                                         Light_surfaces[surface_index].yresolution);
             ASSERT(Light_surfaces[surface_index].elements != NULL);
           } else
             Light_surfaces[surface_index].elements = NULL;
@@ -407,8 +407,8 @@ int ComputeSurfacesForObjectsForSingleRoom(int surface_index, int roomnum) {
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
             Light_surfaces[surface_index].elements =
-                (rad_element *)mem_malloc(Light_surfaces[surface_index].xresolution *
-                                          Light_surfaces[surface_index].yresolution * sizeof(rad_element));
+                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
+                                         Light_surfaces[surface_index].yresolution);
             ASSERT(Light_surfaces[surface_index].elements != NULL);
           } else
             Light_surfaces[surface_index].elements = NULL;

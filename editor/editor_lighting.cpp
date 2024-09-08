@@ -903,7 +903,7 @@ void DoRadiosityForRooms() {
       Rooms[roomnum].volume_lights = (uint8_t *)mem_malloc(vw * vh * vd);
       ASSERT(Rooms[roomnum].volume_lights);
 
-      Volume_elements[roomnum] = (volume_element *)mem_malloc((vw * vh * vd) * sizeof(volume_element));
+      Volume_elements[roomnum] = mem_rmalloc<volume_element>(vw * vh * vd);
       ASSERT(Volume_elements[roomnum]);
 
       // Now go through and find all the valid spectra points
@@ -977,8 +977,8 @@ void DoRadiosityForRooms() {
 
         if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution) {
           Light_surfaces[surface_index].elements =
-              (rad_element *)mem_malloc(Light_surfaces[surface_index].xresolution *
-                                        Light_surfaces[surface_index].yresolution * sizeof(rad_element));
+               mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
+                                        Light_surfaces[surface_index].yresolution);
           ASSERT(Light_surfaces[surface_index].elements != NULL);
         } else {
           Light_surfaces[surface_index].elements = NULL;
@@ -1223,8 +1223,8 @@ void DoRadiosityForCurrentRoom(room *rp) {
     }
 
     if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution) {
-      Light_surfaces[surface_index].elements = (rad_element *)mem_malloc(
-          Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution * sizeof(rad_element));
+      Light_surfaces[surface_index].elements = mem_rmalloc<rad_element>(
+          Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution);
       ASSERT(Light_surfaces[surface_index].elements != NULL);
     } else {
       Light_surfaces[surface_index].elements = NULL;
@@ -1873,8 +1873,8 @@ void DoRadiosityForTerrain() {
   ClearAllObjectLightmaps(1);
 
   // Allocate memory
-  terrain_sums[0] = (spectra *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(spectra));
-  terrain_sums[1] = (spectra *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(spectra));
+  terrain_sums[0] = mem_rmalloc<spectra>(TERRAIN_WIDTH * TERRAIN_DEPTH);
+  terrain_sums[1] = mem_rmalloc<spectra>(TERRAIN_WIDTH * TERRAIN_DEPTH);
   ASSERT(terrain_sums[0] && terrain_sums[1]);
 
   Light_surfaces = mem_rmalloc<rad_surface>(total_surfaces);
@@ -2044,8 +2044,8 @@ void DoRadiosityForTerrain() {
         Light_surfaces[surf_index].verts = mem_rmalloc<vector>(Rooms[i].faces[t].num_verts);
         ASSERT(Light_surfaces[surf_index].verts != NULL);
 
-        Light_surfaces[surf_index].elements = (rad_element *)mem_malloc(
-            Light_surfaces[surf_index].xresolution * Light_surfaces[surf_index].yresolution * sizeof(rad_element));
+        Light_surfaces[surf_index].elements = mem_rmalloc<rad_element>(
+            Light_surfaces[surf_index].xresolution * Light_surfaces[surf_index].yresolution);
         ASSERT(Light_surfaces[surf_index].elements != NULL);
 
         if (Rooms[i].faces[t].portal_num != -1 &&

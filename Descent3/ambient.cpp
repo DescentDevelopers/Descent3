@@ -256,7 +256,7 @@ void ReadAmbientData() {
     asp->num_sounds = cf_ReadInt(ifile);
 
     if (asp->num_sounds > 0)
-      asp->sounds = (ase *)mem_malloc(sizeof(*asp->sounds) * asp->num_sounds);
+      asp->sounds = mem_rmalloc<ase>(asp->num_sounds);
     else
       asp->sounds = NULL;
 
