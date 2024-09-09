@@ -346,7 +346,8 @@ int LoadServerConfigFile() {
   while (inf.ReadLine()) {
     int cmd;
 
-    while ((cmd = inf.ParseLine(operand, INFFILE_LINELEN)) > INFFILE_ERROR) {
+    while ((cmd = inf.ParseLine(operand, INFFILE_LINELEN)) > INFFILE_ERROR &&
+           cmd != INFFILE_SYMBOL) {
       SetCVar(CVars[cmd].varname, operand, true);
     }
   }
