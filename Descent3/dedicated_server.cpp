@@ -311,7 +311,6 @@ int LoadServerConfigFile() {
   char operand[INFFILE_LINELEN]; // operand
   int t = FindArgChar("-dedicated", 'd');
 
-  //	int t=FindArg ("-dedicated");
   if (!t) {
     PrintDedicatedMessage(TXT_DS_BADCOMMANDLINE);
     PrintDedicatedMessage("\n");
@@ -322,9 +321,9 @@ int LoadServerConfigFile() {
   MultiResetSettings();
 
   // Make all ships available
-  for (int i = 0; i < MAX_SHIPS; i++) {
-    if (Ships[i].used)
-      PlayerSetShipPermission(-1, Ships[i].name, true);
+  for (auto const &Ship : Ships) {
+    if (Ship.used)
+      PlayerSetShipPermission(-1, Ship.name, true);
   }
 
   if (GameArgs[t + 1][0]) {

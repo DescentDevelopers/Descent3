@@ -3629,7 +3629,7 @@ int PlayerSetCustomTexture(int slot, char *filename) {
 //	Sets/Clears a permission for a ship on a given player
 //	if pnum is -1 then all players will be set, else player is the player number
 //	returns true on success
-bool PlayerSetShipPermission(int pnum, char *ship_name, bool allowed) {
+bool PlayerSetShipPermission(int pnum, const char *ship_name, bool allowed) {
   ASSERT(ship_name);
 
   if (pnum < -1 || pnum >= MAX_PLAYERS) // illegal value
@@ -3645,11 +3645,11 @@ bool PlayerSetShipPermission(int pnum, char *ship_name, bool allowed) {
 
   if (pnum == -1) {
     // go through everyone
-    for (int i = 0; i < MAX_PLAYERS; i++) {
+    for (auto &Player : Players) {
       if (allowed)
-        Players[i].ship_permissions |= bit;
+        Player.ship_permissions |= bit;
       else
-        Players[i].ship_permissions &= ~bit;
+        Player.ship_permissions &= ~bit;
     }
   } else {
     if (allowed)

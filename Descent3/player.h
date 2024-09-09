@@ -547,7 +547,7 @@ int PlayerChooseDeathFate(int slot, float damage, bool melee);
 //	Sets/Clears a permission for a ship on a given player
 //	if pnum is -1 then all players will be set, else player is the player number
 //	returns true on success
-bool PlayerSetShipPermission(int pnum, char *ship_name, bool allowed);
+bool PlayerSetShipPermission(int pnum, const char *ship_name, bool allowed);
 
 //	Resets the ship permissions for a given player
 //	pass false for set_default if you don't want the default ship allowed
