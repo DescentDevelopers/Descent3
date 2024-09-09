@@ -74,7 +74,7 @@ set(SCRIPTS
 #	COMMENT "Copy script/data/demohog directory"
 #)
 
-add_library(dallas STATIC osiris_vector.cpp)
+add_library(dallas STATIC osiris_import.cpp osiris_vector.cpp)
 target_link_libraries(dallas fix misc)
 
 foreach(SCRIPT ${SCRIPTS})

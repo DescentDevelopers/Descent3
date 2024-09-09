@@ -715,10 +715,8 @@
 
 #include "osiris_vector.h"
 #include "psrand.h"
-
-// These should really be included, I think, but there's a problem with osiris_import.h being included twice
-// #include "osiris_import.h"
-// #include "osiris_common.h"
+#include "osiris_import.h"
+#include "osiris_common.h"
 
 /*
 
