@@ -74,9 +74,13 @@ set(SCRIPTS
 #	COMMENT "Copy script/data/demohog directory"
 #)
 
+add_library(dallas STATIC osiris_vector.cpp)
+target_link_libraries(dallas fix misc)
+
 foreach(SCRIPT ${SCRIPTS})
   add_library(${SCRIPT} MODULE ${CPPS} ${HEADERS} "${SCRIPT}.cpp")
   target_link_libraries(${SCRIPT}
+    dallas
     fix
     misc
   )
