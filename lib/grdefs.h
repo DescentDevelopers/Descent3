@@ -50,7 +50,7 @@
 #ifndef GRDEFS_H
 #define GRDEFS_H
 
-#include "pstypes.h"
+#include <cstdint>
 
 //	bit depth info
 #define BPP_TO_BYTESPP(x) (((x) + 7) >> 3)
@@ -82,9 +82,9 @@ static const ddgr_color GR_NULL = 0xffffffff, // don't do a thing with this.
 #define GR_COLOR_CHAR 1 // ASCII 1 and (r,g,b) changes current text color in string.
 
 //	MACROS
-static inline ddgr_color GR_RGB(int r, int g, int b) { return ((r << 16) + (g << 8) + b); }
+static inline ddgr_color GR_RGB(uint8_t r, uint8_t g, uint8_t b) { return ((r << 16) + (g << 8) + b); }
 
-static inline uint16_t GR_RGB16(int r, int g, int b) { return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3)); }
+static inline uint16_t GR_RGB16(uint8_t r, uint8_t g, uint8_t b) { return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3)); }
 
 static inline uint16_t GR_COLOR_TO_16(ddgr_color c) {
   int r, g, b;
