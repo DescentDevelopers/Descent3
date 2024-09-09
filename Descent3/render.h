@@ -239,6 +239,12 @@ struct state_limited_element {
   int sort_key;
 };
 
+struct obj_sort_item {
+  int vis_effect;
+  int objnum;
+  float dist;
+};
+
 #define MAX_STATE_ELEMENTS 8000
 extern state_limited_element State_elements[MAX_STATE_ELEMENTS];
 
