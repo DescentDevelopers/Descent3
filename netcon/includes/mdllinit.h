@@ -311,8 +311,8 @@ DLLNum_modems_found = (int *)API.vp[24];
 DLLUse_DirectPlay = (bool *)API.vp[22];
 #endif
 DLLDedicated_server = (bool *)API.vp[25];
-DLLTCP_active = (BOOL)*API.vp[26];
-DLLIPX_active = (BOOL)*API.vp[27];
+DLLTCP_active = *(bool *)API.vp[26];
+DLLIPX_active = *(bool *)API.vp[27];
 DLLnw_ListenPort = (uint16_t)((size_t)API.vp[28] & 0xffff);
 DLLMulti_Gamelist_changed = (bool *)API.vp[29];
 DLLPXO_hosted_lobby_name = (char *)API.vp[30];
