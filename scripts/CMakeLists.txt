@@ -80,6 +80,9 @@ foreach(SCRIPT ${SCRIPTS})
     fix
     misc
   )
+  if(SANITIZERS_ENABLED)
+    add_sanitizers(${SCRIPT})
+  endif()
   set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
   set_target_properties(${SCRIPT} PROPERTIES CXX_VISIBILITY_PRESET "hidden")
   if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")

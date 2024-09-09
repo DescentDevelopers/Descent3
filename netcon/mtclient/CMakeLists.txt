@@ -14,6 +14,9 @@ set(CPPS
 )
 
 add_library(Parallax_Online MODULE ${HEADERS} ${CPPS})
+if(SANITIZERS_ENABLED)
+  add_sanitizers(Parallax_Online)
+endif()
 set_target_properties(Parallax_Online PROPERTIES PREFIX "")
 set_target_properties(Parallax_Online PROPERTIES CXX_VISIBILITY_PRESET "hidden")
 set_target_properties(Parallax_Online PROPERTIES OUTPUT_NAME "Parallax Online")

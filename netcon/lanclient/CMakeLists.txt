@@ -4,6 +4,9 @@ set(HEADERS
 set(CPPS lanclient.cpp)
 
 add_library(Direct_TCP_IP MODULE ${HEADERS} ${CPPS})
+if(SANITIZERS_ENABLED)
+  add_sanitizers(Direct_TCP_IP)
+endif()
 set_target_properties(Direct_TCP_IP PROPERTIES PREFIX "")
 set_target_properties(Direct_TCP_IP PROPERTIES CXX_VISIBILITY_PRESET "hidden")
 set_target_properties(Direct_TCP_IP PROPERTIES OUTPUT_NAME "Direct TCP~IP")
