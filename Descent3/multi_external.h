@@ -121,6 +121,7 @@ typedef int HANDLE;
 #include "descent.h" //for MSN_NAMELEN
 #include "byteswap.h"
 #include <cassert>
+#include <filesystem>
 
 #define NETGAME_NAME_LEN 32
 #define NETGAME_SCRIPT_LEN 32
@@ -249,7 +250,7 @@ struct netgame_info {
   char mission[MSN_NAMELEN];
   char mission_name[MISSION_NAME_LEN];
   char scriptname[NETGAME_SCRIPT_LEN];
-  char server_config_name[PAGENAME_LEN];
+  std::filesystem::path server_config_name;
   char connection_name[PAGENAME_LEN];
   network_address server_address; // The address of the server that we're talking to - not used if we are the server
 

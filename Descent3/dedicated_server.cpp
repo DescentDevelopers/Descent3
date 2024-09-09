@@ -328,7 +328,7 @@ int LoadServerConfigFile() {
   }
 
   if (GameArgs[t + 1][0]) {
-    strcpy(Netgame.server_config_name, GameArgs[t + 1]);
+    Netgame.server_config_name = GameArgs[t + 1];
   } else {
     PrintDedicatedMessage(TXT_DS_MISSINGCONFIG);
     PrintDedicatedMessage("\n");
@@ -337,7 +337,7 @@ int LoadServerConfigFile() {
 
   //	open file
   if (!inf.Open(Netgame.server_config_name, "[server config file]", DedicatedServerLex)) {
-    PrintDedicatedMessage(TXT_DS_BADCONFIG, Netgame.server_config_name);
+    PrintDedicatedMessage(TXT_DS_BADCONFIG, Netgame.server_config_name.u8string().c_str());
     PrintDedicatedMessage("\n");
     return 0;
   }
@@ -346,7 +346,8 @@ int LoadServerConfigFile() {
   while (inf.ReadLine()) {
     int cmd;
 
-    while ((cmd = inf.ParseLine(operand, INFFILE_LINELEN)) > INFFILE_ERROR) {
+    while ((cmd = inf.ParseLine(operand, INFFILE_LINELEN)) > INFFILE_ERROR &&
+           cmd != INFFILE_SYMBOL) {
       SetCVar(CVars[cmd].varname, operand, true);
     }
   }
