@@ -940,11 +940,13 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
           dist = vm_NormalizeVector(&dir_to_sound);
         } else if ((cur_room != last_room) && (cur_room != BOA_NO_PATH)) {
           int this_portal = BOA_DetermineStartRoomPortal(cur_room, NULL, last_room, NULL);
-          dist = BOA_cost_array[cur_room][this_portal];
+          dist = this_portal >= 0 ? BOA_cost_array[cur_room][this_portal] : 0;
 
           if (last_room > Highest_room_index) {
-            vector pnt = Rooms[cur_room].portals[this_portal].path_pnt;
-            dist += vm_VectorDistance(&sound_pos, &pnt);
+            if (this_portal >= 0) {
+              vector pnt = Rooms[cur_room].portals[this_portal].path_pnt;
+              dist += vm_VectorDistance(&sound_pos, &pnt);
+            }
           } else {
             dist += vm_VectorDistance(&sound_pos, &Rooms[last_room].portals[last_portal].path_pnt);
           }
