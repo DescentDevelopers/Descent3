@@ -325,12 +325,15 @@ void software_mixer::StreamMixer(char *ptr, int len) {
               } else
                 sample = sample_16bit[samples_played];
             } else {
+              // Can't left-shift negative values without UB,
+              // so we'll use multiply to the same effect.
               if (samples_played & 0x0001) {
                 // Notes: (<<7) is from a (<<8) - (>>1)
                 // Notes: (-256) is from (-128) + (-128)
-                sample = ((int)sample_8bit[samples_played ^ 0x0001] + (int)sample_8bit[samples_played + 1] - 256) << 7;
+                sample = (sample_8bit[samples_played ^ 0x0001] - 128 +
+                          sample_8bit[samples_played + 1] - 128) * 0x80;
               } else
-                sample = (((int)sample_8bit[samples_played]) - (int)128) << 8;
+                sample = (sample_8bit[samples_played] - 128) * 0x100;
             }
 
             samples_played++;
@@ -375,21 +378,21 @@ void software_mixer::StreamMixer(char *ptr, int len) {
             } else {
               switch (mod_pos) {
               case 0:
-                sample = ((((int)sample_8bit[samples_played]) - 128) << 8);
+                sample = (sample_8bit[samples_played] - 128) * 0x100;
                 break;
               case 1:
-                sample = (((((int)sample_8bit[samples_played - 1]) - 128) << 8) * 3 +
-                          ((((int)sample_8bit[samples_played + 3]) - 128) << 8)) >>
+                sample = ((sample_8bit[samples_played - 1] - 128) * 0x100 * 3 +
+                          (sample_8bit[samples_played + 3] - 128) * 0x100) >>
                          2;
                 break;
               case 2:
-                sample = (((((int)sample_8bit[samples_played - 2]) - 128) << 8) +
-                          ((((int)sample_8bit[samples_played + 2]) - 128) << 8)) >>
+                sample = ((sample_8bit[samples_played - 2] - 128) * 0x100 +
+                          (sample_8bit[samples_played + 2] - 128) * 0x100) >>
                          1;
                 break;
               case 3:
-                sample = (((((int)sample_8bit[samples_played - 3]) - 128) << 8) +
-                          ((((int)sample_8bit[samples_played + 1]) - 128) << 8) * 3) >>
+                sample = (((sample_8bit[samples_played - 3] - 128) * 0x100) +
+                          ((sample_8bit[samples_played + 1] - 128) * 0x100) * 3) >>
                          2;
                 break;
               }
@@ -489,11 +492,9 @@ inline void opti_8m_mix(uint8_t *cur_sample_8bit, const int num_write, int &samp
   int16_t *mb = mixer_buffer16;
 
   for (i = 0; i < (num_write << 1); i += 2) {
-    int16_t sample;
     int l_sample;
     int r_sample;
-
-    sample = (((int16_t)(*cur_sample_8bit)) - (int16_t)128) << 8;
+    int16_t sample = (*cur_sample_8bit - 128) * 0x100;
     cur_sample_8bit++;
 
     l_sample = *mb + (sample * l_volume);
