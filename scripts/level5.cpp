@@ -22,13 +22,14 @@
 // Filename:	level5.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
+#include <cmath>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include "osiris_import.h"
 #include "osiris_common.h"
-#include "DallasFuncs.cpp"
+#include "DallasFuncs.h"
 
 #include "module.h"
 

@@ -74,7 +74,9 @@ set(SCRIPTS
 #	COMMENT "Copy script/data/demohog directory"
 #)
 
-add_library(dallas STATIC osiris_import.cpp osiris_vector.cpp)
+add_library(dallas STATIC DallasFuncs.cpp osiris_import.cpp osiris_vector.cpp)
+set_target_properties(dallas PROPERTIES PREFIX "")
+set_target_properties(dallas PROPERTIES CXX_VISIBILITY_PRESET "hidden")
 target_link_libraries(dallas fix misc)
 
 foreach(SCRIPT ${SCRIPTS})

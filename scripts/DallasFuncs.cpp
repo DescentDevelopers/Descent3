@@ -717,6 +717,7 @@
 #include "psrand.h"
 #include "osiris_import.h"
 #include "osiris_common.h"
+#include "DallasFuncs.h"
 
 /*
 
@@ -912,18 +913,13 @@ $$END
 //  Variables
 //
 
-#define MAX_USER_VARS 25 // make sure this value matches the USERTYPE definition
 float User_vars[MAX_USER_VARS];
-
-#define MAX_SPEW_HANDLES 50 // make sure this value matches the USERTYPE definition
 int Spew_handles[MAX_SPEW_HANDLES];
 
 #define MAX_SOUND_HANDLES 10 // make sure this value matches the USERTYPE definition
 int Sound_handles[MAX_SOUND_HANDLES];
 
-#define MAX_SAVED_OBJECT_HANDLES 20 // make sure this value matches the USERTYPE definition
 int Saved_object_handles[MAX_SAVED_OBJECT_HANDLES];
-
 int User_flags;
 
 class cPositionClipboard {
@@ -2796,20 +2792,6 @@ void aSoundPlaySteaming(const char *soundname, float volume) {
   MSafe_CallFunction(MSAFE_SOUND_STREAMING, &mstruct);
 }
 
-/*
-$$ACTION
-Sound && Music
-Play streaming sound [a:SoundName] for all players, volume = [p:Volume=1.0:0.0|1.0]  (TEXT NAME VERSION)
-aSoundPlaySteamingText
-Play Steaming Sound
-  Plays a streaming sound sample
-
-Parameters:
-  SoundName: the sound to play
-  Volume: how loud to play the sound
-$$END
-*/
-#define aSoundPlaySteamingText aSoundPlaySteaming
 
 /*
 $$ACTION
@@ -3641,7 +3623,7 @@ Parameters:
   Priority - The priority of the goal
 $$END
 */
-void aAIGoalFollowPathSimple(int objhandle, int pathid, int flags, int goalid, int priority = 0) {
+void aAIGoalFollowPathSimple(int objhandle, int pathid, int flags, int goalid, int priority) {
   //!!GoalID not used yet
 
   if (pathid != -1)
@@ -3805,7 +3787,7 @@ Parameters:
 
 $$END
 */
-void aCinematicSimple(int pathid, const char *Text, int Target, float Seconds, bool FadeIn = false) {
+void aCinematicSimple(int pathid, const char *Text, int Target, float Seconds, bool FadeIn) {
   tGameCinematic info;
 
   info.flags = 0;
@@ -4510,21 +4492,6 @@ void aObjFireWeapon(const char *weapon_name, int gun_num, int objhandle) {
 
   MSafe_CallFunction(MSAFE_OBJECT_FIRE_WEAPON, &mstruct);
 }
-
-/*
-$$ACTION
-Objects
-Fire flare from gun number [i:GunNum] of object [o:Object]
-aObjFireFlare
-Fire flare
-  Fires a flare from the given gun number of an object
-
-Parameters:
-  GunNum - the gun number to fire from, or -1 to fire from the object's center
-  Object - the object to fire the flare
-$$END
-*/
-#define aObjFireFlare(gun_num, objhandle) aObjFireWeapon("Yellow flare", gun_num, objhandle)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // The following code is to handle a 'kill all object except these' Dallas command sequence.
@@ -6513,50 +6480,6 @@ int qObjCountTypeID(int type, const char *idname) {
   } else
     return 0;
 }
-
-/*
-$$ACTION
-Misc
-Show HUD message [s:Message] [f:Float]
-aShowHUDMessageF
-Show HUD message
-  Shows a HUD message for all players with a float parameter
-
-Parameters:
-  Message:  The message to show, with %f marking where the number should go
-$$END
-*/
-#define aShowHUDMessageF aShowHUDMessage
-
-/*
-$$ACTION
-Misc
-Show HUD message [s:Message] for player [o:PlayerObject=IT] with parm [f:Float]
-aShowHUDMessageObjF
-Show HUD message to one player
-  Shows a HUD message for one players with a float parameter
-
-Parameters:
-  Message:  The message to show, with %f marking where the number should go
-  PlayerObject: the player who sees the message
-  Float: the number to show
-$$END
-*/
-#define aShowHUDMessageObjF aShowHUDMessageObj
-
-/*
-$$ACTION
-Misc
-Show HUD message [s:Message] [i:Integer]
-aShowHUDMessageI
-Show HUD message
-  Shows a HUD message for all players with an integer parameter
-
-Parameters:
-  Message:  The message to show, with %d marking where the number should go
-$$END
-*/
-#define aShowHUDMessageI aShowHUDMessage
 
 /*
 $$QUERY
