@@ -60,7 +60,7 @@ void InfFile::FreeSymbols() {
   while ((sym = m_sym_list.start()) != 0) {
     sym = m_sym_list.unlink();
     if (sym->t.text)
-      delete sym->t.text;
+      delete[] sym->t.text;
     delete sym;
   }
 }
