@@ -167,10 +167,11 @@ const uint8_t CT_X_AXIS = 1, // AXIS constants for ctAxis
     CT_Y_AXIS = 2, CT_Z_AXIS = 3, CT_R_AXIS = 4, CT_U_AXIS = 5, CT_V_AXIS = 6,
             CT_NUM_AXES = 6; // number of axes
 
-#define makeword(_h, _l) (((_h) << 16) + ((_l) & 0xffff))
+static inline uint32_t makeword(uint16_t h, uint16_t l) { return static_cast<uint32_t>(h << 16) | l; }
 #define hiword(_v) ((_v) >> 16)
 #define loword(_v) ((_v) & 0x0000ffff)
-#define makeshort(_h, _l) (((_h) << 8) + ((_l) & 0x00ff))
+
+static inline uint16_t makeshort(uint8_t h, uint8_t l) { return static_cast<uint16_t>(h << 8) | l; }
 #define hibyte(_w) ((_w) >> 8)
 #define lobyte(_w) ((_w) & 0x00ff)
 

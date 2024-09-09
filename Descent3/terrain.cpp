@@ -293,13 +293,18 @@ void GenerateLODDeltas() {
 }
 
 // Returns a unique checksum for the current terrain geometry
+//
+// The checksum (or rather, an affine modification of it known as
+// occlusion_checksum) is stored in the level's map files, so any modification
+// here ought to not alter the output value, for all imaginable inputs.
 int GetTerrainGeometryChecksum() {
-  int total = 0;
+  unsigned int total = 0;
 
   for (int i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++) {
     total += (Terrain_seg[i].ypos + i);
   }
 
+  // convert to signed now
   return total;
 }
 

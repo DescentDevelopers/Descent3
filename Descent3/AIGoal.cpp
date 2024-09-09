@@ -934,7 +934,7 @@ int GoalAllocSlot(object *obj, int level, float influence) {
     }
   }
 
-  if (cur_slot < MAX_GOALS) {
+  if (cur_slot >= 0 && cur_slot < MAX_GOALS) {
     ai_info->goals[cur_slot].used = true;
   } else {
     cur_slot = AI_INVALID_INDEX;

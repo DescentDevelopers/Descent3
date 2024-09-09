@@ -447,10 +447,12 @@ bool BOA_ComputeMinDist(int start_room, int end_room, float max_check_dist, floa
         return false;
     } else if ((cur_room != last_room) && (cur_room != BOA_NO_PATH)) {
       int this_portal = BOA_DetermineStartRoomPortal(cur_room, NULL, last_room, NULL);
+      if (last_portal >= 0 && this_portal >= 0) {
 
-      *dist += BOA_cost_array[last_room][last_portal] + BOA_cost_array[cur_room][this_portal];
-      if (max_check_dist > 0.0f && max_check_dist < *dist)
-        return false;
+        *dist += BOA_cost_array[last_room][last_portal] + BOA_cost_array[cur_room][this_portal];
+        if (max_check_dist > 0.0f && max_check_dist < *dist)
+          return false;
+      }
     }
 
   } while ((cur_room != start_room) && (cur_room != last_room) && (cur_room != BOA_NO_PATH));
