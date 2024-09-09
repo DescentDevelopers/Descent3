@@ -1,6 +1,6 @@
 /*
  * Descent 3
- * Copyright (C) 2024 Parallax Software
+ * Copyright (C) 2024 Descent Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,29 +41,8 @@
 #define MAXLISTS 20
 
 #include "con_dll.h"
-/*
-#define MAX_GAME_NAME_LEN 100
-#define MAX_MISSION_NAME_LEN 100
-#define MAX_MISSION_FILE_LEN 40
-#define MAX_SCRIPT_LEN 40
-#define MAX_FORMAT_STRING 300*/
 
 typedef struct s_server_game_list {
-  /*
-  char name[MAX_GAME_NAME_LEN];
-  network_address address;
-  char mission_name[MAX_MISSION_NAME_LEN];
-  char mission_file[MAX_MISSION_FILE_LEN];
-  char script[MAX_SCRIPT_LEN];
-  int16_t level;
-  int16_t curr_players;
-  int16_t max_players;
-  float ping;
-  uint32_t flags;
-  char format_string[MAX_FORMAT_STRING];
-
-  bool dedicated;
-  */
   bool used;
   uint32_t handle;
   void *ti;

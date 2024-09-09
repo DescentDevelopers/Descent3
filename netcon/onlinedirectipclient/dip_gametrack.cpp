@@ -1,6 +1,6 @@
 /*
  * Descent 3
- * Copyright (C) 2024 Parallax Software
+ * Copyright (C) 2024 Descent Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,10 @@
 #endif
 
 #include <string>
-#include "dip_gametrack.h"
-#include "inetgetfile.h"
 #include <sstream>
 #include <thread>
-#include <mono.h>
+#include "dip_gametrack.h"
+#include "inetgetfile.h"
 
 #if (defined(LOGGER) && (!defined(RELEASE)))
 #define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)

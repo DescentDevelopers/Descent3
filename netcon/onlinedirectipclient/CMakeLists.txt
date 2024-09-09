@@ -7,7 +7,6 @@ set(HEADERS
 set(CPPS
   chat_api.cpp
   odtclient.cpp
-  ../inetfile/inetgetfile.cpp
   dip_gametrack.cpp
 )
 
