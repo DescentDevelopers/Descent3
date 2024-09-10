@@ -71,10 +71,12 @@
 #include <filesystem>
 
 #include "cfile.h"
+#include "log.h"
 #include "multi.h"
+#include "multi_save_settings.h"
 #include "objinfo.h"
 #include "ship.h"
-#include "multi_save_settings.h"
+
 
 int MultiSaveSettings(const std::filesystem::path &filename) {
   CFILE *cf;
@@ -263,7 +265,7 @@ int MultiLoadSettings(const std::filesystem::path &filename) {
       if ((Netgame.difficulty > 4) || (Netgame.difficulty < 0))
         Netgame.difficulty = 0;
     } else {
-      mprintf(0, "Unknown line in multiplayer config file %s\t%s\n", toklabel, tokval);
+      LOG_WARNING.printf("Unknown line in multiplayer config file %s\t%s", toklabel, tokval);
     }
   };
   return 1;

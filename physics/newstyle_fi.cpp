@@ -18,6 +18,7 @@
 
 #include "findintersection.h"
 #include "game.h"
+#include "log.h"
 #include "polymodel.h"
 #include "pserror.h"
 #include "vecmat.h"
@@ -197,7 +198,7 @@ static void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
               fvi_hit_param = (newp - *fvi_query_ptr->p0) * x;
 
               if (!(fvi_hit_param > -10000000.0 && fvi_hit_param < 10000000.0)) {
-                mprintf(0, "FVI Warning: fvi_hit_param seems yucky!\n");
+                LOG_WARNING << "FVI Warning: fvi_hit_param seems yucky!";
               }
 
               fvi_collision_dist = col_dist;

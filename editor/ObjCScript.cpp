@@ -129,6 +129,7 @@
 #include "gamefile.h"
 #include "pserror.h"
 #include "mem.h"
+#include "mono.h"
 
 #include <stdlib.h>
 #include <stdio.h>

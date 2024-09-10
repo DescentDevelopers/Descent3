@@ -279,47 +279,29 @@
  * $NoKeywords: $
  */
 
-#include "ConfigItem.h"
-#include "player.h"
+#include <cstring>
+
 #include "config.h"
-#include "ddio.h"
 #include "newui.h"
 #include "3d.h"
-#include "polymodel.h"
-#include "application.h"
 #include "descent.h"
-#include "mono.h"
-#include "Mission.h"
-#include "ddio.h"
-#include "gamefont.h"
-#include "multi_ui.h"
+#include "log.h"
 #include "cinematics.h"
 #include "hlsoundlib.h"
 #include "terrain.h"
-#include "cfile.h"
-#include "mem.h"
-#include "lighting.h"
 #include "physics.h"
 #include "pilot.h"
 #include "hud.h"
-#include "voice.h"
 #include "bitmap.h"
 #include "game.h"
-#include "render.h"
 #include "stringtable.h"
 #include "SmallViews.h"
 #include "D3ForceFeedback.h"
-#include "descent.h"
 #include "appdatabase.h"
-#include "hlsoundlib.h"
 #include "soundload.h"
 #include "sounds.h"
 #include "ctlconfig.h"
 #include "d3music.h"
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
 
 #define STAT_SCORE STAT_TIMER
 
@@ -899,7 +881,7 @@ struct sound_menu {
     D3MusicSetVolume((*musicvolume) / 10.0f);
 
     if (fxquantity) {
-      mprintf(1, "oldquant %d newquant %d\n", old_fxquantity, *fxquantity);
+      LOG_DEBUG.printf("oldquant %d newquant %d", old_fxquantity, *fxquantity);
       if (old_fxquantity != (*fxquantity)) {
         Sound_system.SetLLSoundQuantity((*fxquantity) + MIN_SOUNDS_MIXED);
       }
@@ -1162,9 +1144,6 @@ struct hud_menu {
 
     Current_pilot.set_hud_data(NULL, &hud_new_stat, &hud_new_grstat);
 
-    // mprintf(0, "pilot hud stat=%x\n", Current_pilot.hud_stat);
-    // mprintf(0, "pilot hud grstat=%x\n", Current_pilot.hud_graphical_stat);
-
     // modify current hud stats if in game.
     if ((GetFunctionMode() == EDITOR_GAME_MODE || GetFunctionMode() == GAME_MODE) && GetHUDMode() == HUD_FULLSCREEN) {
       SetHUDState(hud_new_stat | STAT_SCORE | (Hud_stat_mask & STAT_FPS), hud_new_grstat);
@@ -1365,7 +1344,7 @@ void OptionsMenu() {
   while (state != 2) {
     if (state == 1) {
       // enter controller config menu
-      mprintf(0, "CONTROLLER CONFIG MENU HERE!\n");
+      LOG_DEBUG << "CONTROLLER CONFIG MENU HERE!";
       CtlConfig(CTLCONFIG_KEYBOARD);
       state = 0; // goto options menu.
     } else {

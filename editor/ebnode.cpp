@@ -131,7 +131,7 @@
 #include "bnode.h"
 #include "room.h"
 #include "mem.h"
-#include "memory.h"
+#include "mono.h"
 #include "vecmat.h"
 #include "object.h"
 #include "3d.h"

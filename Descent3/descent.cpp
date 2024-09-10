@@ -388,7 +388,7 @@
 
 #include "pserror.h"
 #include "grdefs.h"
-#include "mono.h"
+#include "log.h"
 #include "cfile.h"
 
 #include "init.h"
@@ -403,7 +403,6 @@
 #include "networking.h"
 #include "hlsoundlib.h"
 #include "player.h"
-#include "newui.h"
 #include "credits.h"
 #include "cinematics.h"
 #include "args.h"
@@ -509,7 +508,7 @@ void Descent3() {
 
     // delete the lock file in the temp directory (as long as it belongs to us)
     if (!ddio_DeleteLockFile(std::filesystem::path(Descent3_temp_directory))) {
-      mprintf(0, "Cannot delete lock file in temp dir %s!\n", Descent3_temp_directory);
+      LOG_WARNING << "Cannot delete lock file in temp dir " << Descent3_temp_directory;
     };
 
     // Save settings to registry
@@ -642,7 +641,7 @@ void ShowStaticScreen(char *bitmap_filename, bool timed, float delay_time) {
 
     bm_DestroyChunkedBitmap(&splash_bm);
   } else {
-    mprintf(0, "Couldn't load %s.\n", bitmap_filename);
+    LOG_WARNING << "Couldn't load " << bitmap_filename;
   }
 
   ui_SetScreenMode(Max_window_w, Max_window_h);

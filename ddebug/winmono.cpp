@@ -22,7 +22,6 @@
 #include <cstdio>
 
 #include <windows.h>
-#include <fcntl.h>
 
 #include "debug.h"
 #include "mono.h"
@@ -43,8 +42,6 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
   if (strlen(ptr) >= MAX_MONO_LENGTH) {
     return;
   }
-
-  Debug_LogWrite(Mono_buffer);
 
   if (n == 0) {
     OutputDebugString(Mono_buffer);

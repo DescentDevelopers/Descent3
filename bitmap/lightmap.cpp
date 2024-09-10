@@ -16,19 +16,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-#include <string.h>
-#include "lightmap.h"
-#include "pstypes.h"
-#include "pserror.h"
-#include "bitmap.h"
-#include "mono.h"
-#include "mem.h"
-#if !defined(POSIX)
-#include "Macros.h"
-#endif
-
 #include <algorithm>
+#include <cstdlib>
+#include <cstring>
+
+#include "lightmap.h"
+#include "log.h"
+#include "mem.h"
+#include "pserror.h"
 
 static int Num_of_lightmaps = 0;
 static uint16_t Free_lightmap_list[MAX_LIGHTMAPS];
@@ -48,7 +43,7 @@ void lm_InitLightmaps() {
 }
 void lm_ShutdownLightmaps(void) {
   int i;
-  mprintf(0, "Freeing all lightmap memory.\n");
+  LOG_DEBUG << "Freeing all lightmap memory.";
   for (i = 0; i < MAX_LIGHTMAPS; i++) {
     while (GameLightmaps[i].used > 0)
       lm_FreeLightmap(i);
@@ -68,7 +63,7 @@ int lm_AllocLightmap(int w, int h) {
   memset(&GameLightmaps[n], 0, sizeof(bms_lightmap));
   GameLightmaps[n].data = (uint16_t *)mem_malloc((w * h * 2));
   if (!GameLightmaps[n].data) {
-    mprintf(0, "NOT ENOUGHT MEMORY FOR LIGHTMAP!\n");
+    LOG_DEBUG << "NOT ENOUGH MEMORY FOR LIGHTMAP!";
     Int3();
     return BAD_LM_INDEX;
   }

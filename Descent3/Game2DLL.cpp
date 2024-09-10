@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
+
 #include "pstypes.h"
 #include "pserror.h"
 #include "game.h"
@@ -24,7 +26,7 @@
 #include "object.h"
 #include "terrain.h"
 #include "player.h"
-#include "mono.h"
+#include "log.h"
 #include "hud.h"
 #include "Inventory.h"
 #include "multi_server.h"
@@ -36,7 +38,6 @@
 #include "module.h"
 #include "localization.h"
 #include "weapon.h"
-#include "voice.h"
 #include "gametexture.h"
 #include "Mission.h"
 #include "damage.h"
@@ -47,7 +48,6 @@
 #include "gameloop.h"
 #include "gamesequence.h"
 #include "dedicated_server.h"
-#include "attach.h"
 #include "PilotPicsAPI.h"
 #include "vclip.h"
 #include "osiris_dll.h"
@@ -61,8 +61,6 @@
 #include "viseffect.h"
 #include "ObjScript.h"
 #include "args.h"
-
-#include <algorithm>
 
 void SelectNextCameraView(int window);
 #define NUM_CAMERA_VIEWS 3
@@ -556,7 +554,7 @@ void CloseGameModule(module *mod) {
   if (Multi_game_dll_name[0] != '\0') {
     // Try deleting the file now!
     if (!ddio_DeleteFile(Multi_game_dll_name)) {
-      mprintf(0, "Couldn't delete the tmp dll");
+      LOG_WARNING << "Couldn't delete the tmp dll";
     }
   }
   mod->handle = NULL;
@@ -591,7 +589,7 @@ bool InitGameModule(const char *name, module *mod) {
   }
   // Copy the DLL
   if (!cf_CopyFile(tmp_dll_name, dll_name)) {
-    mprintf(0, "DLL copy failed!\n");
+    LOG_WARNING << "DLL copy failed!";
     return false;
   }
   strcpy(Multi_game_dll_name, tmp_dll_name);
@@ -600,7 +598,7 @@ loaddll:
   mod_GetLastError();
   if (!mod_LoadModule(mod, tmp_dll_name)) {
     int err = mod_GetLastError();
-    mprintf(0, "You are missing the DLL %s!\n", name);
+    LOG_WARNING.printf("You are missing the DLL %s!", name);
     return false;
   }
   return true;
@@ -639,7 +637,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
       num_teams_to_use = 1;
     }
   }
-  mprintf(0, "Loading '%s', setting up for %d teams\n", name, num_teams_to_use);
+  LOG_DEBUG.printf("Loading '%s', setting up for %d teams", name, num_teams_to_use);
   if (!InitGameModule(name, &GameDLLHandle))
     return 0;
 
@@ -648,7 +646,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   DLLGameInit = (DLLGameInit_fp)mod_GetSymbol(&GameDLLHandle, "DLLGameInit", 12);
   if (!DLLGameInit) {
     int err = mod_GetLastError();
-    mprintf(0, "Couldn't get a handle to the dll function DLLGameInit!\n");
+    LOG_FATAL << "Couldn't get a handle to the dll function DLLGameInit!";
     Int3();
     FreeGameDLL();
     return 0;
@@ -658,7 +656,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   DLLGameCall = (DLLGameCall_fp)mod_GetSymbol(&GameDLLHandle, "DLLGameCall", 8);
   if (!DLLGameCall) {
     int err = mod_GetLastError();
-    mprintf(0, "Couldn't get a handle to the dll function DLLGameCall!\n");
+    LOG_FATAL << "Couldn't get a handle to the dll function DLLGameCall!";
     Int3();
     FreeGameDLL();
     return 0;
@@ -668,7 +666,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   DLLGameClose = (DLLGameClose_fp)mod_GetSymbol(&GameDLLHandle, "DLLGameClose", 0);
   if (!DLLGameClose) {
     int err = mod_GetLastError();
-    mprintf(0, "Couldn't get a handle to the dll function DLLGameClose!\n");
+    LOG_FATAL << "Couldn't get a handle to the dll function DLLGameClose!";
     Int3();
     FreeGameDLL();
     return 0;
@@ -678,7 +676,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   DLLGetGameInfo = (DLLGetGameInfo_fp)mod_GetSymbol(&GameDLLHandle, "DLLGetGameInfo", 4);
   if (!DLLGetGameInfo) {
     int err = mod_GetLastError();
-    mprintf(0, "Couldn't get a handle to the dll function DLLGetGameInfo!\n");
+    LOG_FATAL << "Couldn't get a handle to the dll function DLLGetGameInfo!";
     Int3();
     FreeGameDLL();
     return 0;
@@ -697,7 +695,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   DLLGameInit((int *)api_fp, &ok, num_teams_to_use);
   if (!ok) {
     // The DLL said no to the load
-    mprintf(0, "DLLGameInit returned false, couldn't init DLL\n");
+    LOG_FATAL << "DLLGameInit returned false, couldn't init DLL";
     Int3();
     FreeGameDLL();
     return 0;
@@ -709,10 +707,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
 // If this function is called than the DLL is to be closed, because there was an error running it
 // if reason is not NULL than that is the reason why
 void DLLFatalError(const char *reason) {
-  mprintf(0, "============================\n");
-  mprintf(0, "= DLL Fatal Error          =\n");
-  mprintf(0, "============================\n");
-  mprintf(0, "%s\n", (reason) ? reason : "<No Reason Given>");
+  LOG_FATAL.printf("DLL Fatal Error: %s", (reason) ? reason : "<No Reason Given>");
   Netgame.flags |= NF_EXIT_NOW;
   Int3();
 }
@@ -764,7 +759,7 @@ bool GetDLLGameInfo(const char *name, tDLLOptions *options) {
   modGetGameInfo = (DLLGetGameInfo_fp)mod_GetSymbol(&mod, "DLLGetGameInfo", 4);
   if (!modGetGameInfo) {
     int err = mod_GetLastError();
-    mprintf(0, "Couldn't get a handle to the dll function DLLGetGameInfo!\n");
+    LOG_FATAL << "Couldn't get a handle to the dll function DLLGetGameInfo!";
     Int3();
     CloseGameModule(&mod);
     return false;
@@ -780,7 +775,7 @@ int GetDLLRequirements(const char *name, char *requirements, int buflen) {
   ASSERT(requirements);
   tDLLOptions opt;
   if (!GetDLLGameInfo(name, &opt)) {
-    mprintf(0, "Unable to get %s's requirements\n", name);
+    LOG_WARNING.printf("Unable to get %s's requirements", name);
     return -1;
   }
   strncpy(requirements, opt.requirements, buflen - 1);
@@ -788,7 +783,7 @@ int GetDLLRequirements(const char *name, char *requirements, int buflen) {
   uint32_t opt_req_len = strlen(opt.requirements);
   if (opt_req_len > strlen(requirements)) {
     // too small of a buffer!
-    mprintf(0, "Too small of a buffer to fill in all requirements!...need %d\n", opt_req_len + 1);
+    LOG_FATAL.printf("Too small of a buffer to fill in all requirements!...need %d", opt_req_len + 1);
     Int3();
     // cut off last requirement (which is shortened)
     char *p = strrchr(requirements, ',');

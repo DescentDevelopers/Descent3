@@ -113,10 +113,11 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
+#include <cstdlib>
+
 #include "gamefont.h"
-#include "game.h"
 #include "grtext.h"
+#include "log.h"
 #include "pserror.h"
 #include "stringtable.h"
 
@@ -149,7 +150,7 @@ int LoadFont(const char *font_name) {
   if (handle == -1)
     Error(TXT_ERRNOFONT, font_name);
 
-  mprintf(0, "Font <%s> height = %d\n", font_name, grfont_GetHeight(handle));
+  LOG_INFO.printf("Font <%s> height = %d", font_name, grfont_GetHeight(handle));
 
   return handle;
 }

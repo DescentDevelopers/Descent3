@@ -199,7 +199,7 @@
  */
 
 #include <stdlib.h>
-#include <memory.h>
+#include "mono.h"
 #include "radiosity.h"
 #include "rad_cast.h"
 #include "terrain.h"

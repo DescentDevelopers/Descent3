@@ -26,31 +26,40 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <map>
 
 #ifndef WIN32
 #include <unistd.h>
 #include <csignal>
 #endif
 
-#include <SDL.h>
+#ifdef WIN32
+#include <cstdio>
+#include <windows.h>
+#include "debug.h"
+#endif
 
-#include "program.h"
-#include "dedicated_server.h"
-#include "descent.h"
+#include <SDL.h>
+// We use direct plog includes instead of log.h for logger instance initialization
+#include <plog/Log.h>
+#include <plog/Appenders/ColorConsoleAppender.h>
+#include <plog/Initializers/RollingFileInitializer.h>
+
+#include "appdatabase.h"
 #include "ddio.h"
 #include "application.h"
-#include "appdatabase.h"
 #include "args.h"
+#include "d3_version.h"
+#include "ddio.h"
+#include "descent.h"
+#include "dedicated_server.h"
 #include "init.h"
-#include "debug.h"
-
-#include "osiris_dll.h"
 
 std::filesystem::path orig_pwd;
 
 static volatile char already_tried_signal_cleanup = 0;
 
-void just_exit(void) {
+void just_exit() {
   ddio_InternalClose(); // try to reset serial port.
 
   SDL_Quit();
@@ -75,62 +84,50 @@ void fatal_signal_handler(int signum) {
   case SIGVTALRM:
   case SIGINT:
     if (already_tried_signal_cleanup)
-      fprintf(stderr, "Recursive signal cleanup! Hard exit! AHHGGGG!\n");
+      LOG_WARNING << "Recursive signal cleanup! Hard exit! AHHGGGG!";
     else {
       already_tried_signal_cleanup = 1;
-      fprintf(stderr, "SIGNAL %d caught, aborting\n", signum);
+      LOG_WARNING.printf("SIGNAL %d caught, aborting", signum);
       just_exit();
     } // else
     break;
-  case SIGXCPU:
-  case SIGXFSZ:
+  default:
     break;
   }
 
   _exit(-10);
 }
 
-void safe_signal_handler(int signum) {}
-
 void install_signal_handlers() {
-  struct sigaction sact, fact;
+  struct sigaction fact{};
 
-  memset(&sact, 0, sizeof(sact));
   memset(&fact, 0, sizeof(fact));
-  sact.sa_handler = safe_signal_handler;
   fact.sa_handler = fatal_signal_handler;
 
-  if (sigaction(SIGHUP, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGHUP\n");
-  if (sigaction(SIGABRT, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGABRT\n");
-  if (sigaction(SIGINT, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGINT\n");
-  if (sigaction(SIGBUS, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGBUS\n");
-  if (sigaction(SIGFPE, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGFPE\n");
-  if (sigaction(SIGILL, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGILL\n");
-  if (sigaction(SIGQUIT, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGQUIT\n");
-  if (sigaction(SIGSEGV, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGSEGV\n");
-  if (sigaction(SIGTERM, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGTERM\n");
-  if (sigaction(SIGXCPU, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGXCPU\n");
-  if (sigaction(SIGXFSZ, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGXFSZ\n");
-  if (sigaction(SIGVTALRM, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGVTALRM\n");
-  if (sigaction(SIGTRAP, &fact, NULL))
-    fprintf(stderr, "SIG: Unable to install SIGTRAP\n");
+  const std::map<int, std::string> signals = {
+      {SIGHUP, "SIGHUP"},
+      {SIGABRT, "SIGABRT"},
+      {SIGINT, "SIGINT"},
+      {SIGBUS, "SIGBUS"},
+      {SIGFPE, "SIGFPE"},
+      {SIGILL, "SIGILL"},
+      {SIGQUIT, "SIGQUIT"},
+      {SIGSEGV, "SIGSEGV"},
+      {SIGTERM, "SIGTERM"},
+      {SIGXCPU, "SIGXCPU"},
+      {SIGXFSZ, "SIGXFSZ"},
+      {SIGVTALRM, "SIGVTALRM"},
+      {SIGTRAP, "SIGTRAP"},
+  };
+
+  for (const auto &signal : signals) {
+    if (sigaction(signal.first, &fact, nullptr) != 0) {
+      LOG_WARNING << "SIG: Unable to install " << signal.second;
+    }
+  }
 }
 #else
-void install_signal_handlers() {
-  SetUnhandledExceptionFilter(RecordExceptionInfo);
-}
+void install_signal_handlers() { SetUnhandledExceptionFilter(RecordExceptionInfo); }
 #endif
 
 //	---------------------------------------------------------------------------
@@ -215,6 +212,38 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
   return (1);
 }
 
+/**
+ * Initialize logger facility.
+ * @param log_level desired log level (for example, plog::debug)
+ * @param enable_filelog enable logging into Descent.log
+ * @param enable_win_console enable console windows for WIN32 (no-op for POSIX systems)
+ */
+void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_console) {
+  std::filesystem::path log_file = "Descent3.log";
+  static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
+  static plog::RollingFileAppender<plog::TxtFormatter> fileAppender(log_file.u8string().c_str());
+
+#ifdef WIN32
+  if (enable_win_console) {
+    // Open console window
+    AllocConsole();
+    freopen("CONIN$", "r", stdin);
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+  }
+#endif
+
+  plog::init(log_level, &consoleAppender);
+  if (enable_filelog) {
+    if (std::filesystem::is_regular_file(log_file)) {
+      // Delete old log
+      std::error_code ec;
+      std::filesystem::remove(log_file, ec);
+      plog::get()->addAppender(&fileAppender);
+    }
+  }
+}
+
 //	---------------------------------------------------------------------------
 //	Main
 //		creates all the OS objects and then runs Descent 3.
@@ -224,15 +253,29 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
 int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine, int nCmdShow) {
   strupr(szCmdLine);
   GatherArgs(szCmdLine);
+  bool enable_winconsole = FindArg("-winconsole");
 #else
 int main(int argc, char *argv[]) {
   GatherArgs(argv);
+  bool enable_winconsole = true;
 #endif
 
   orig_pwd = std::filesystem::current_path();
 
-  setbuf(stdout, NULL);
-  setbuf(stderr, NULL);
+  /* Set up the logging system */
+#ifdef RELEASE
+  plog::Severity log_level = plog::info;
+#else
+  plog::Severity log_level = plog::debug;
+#endif
+
+  int loglevel_farg = FindArg("-loglevel");
+  if (loglevel_farg) {
+    log_level = plog::severityFromString(GameArgs[loglevel_farg + 1]);
+  }
+  InitLog(log_level, FindArg("-logfile"), enable_winconsole);
+
+  LOG_INFO.printf("Welcome to Descent 3 v%d.%d.%d %s", D3_MAJORVER, D3_MINORVER, D3_BUILD, D3_GIT_HASH);
 
 #ifdef DEDICATED
   setenv("SDL_VIDEODRIVER", "dummy", 1);
@@ -240,99 +283,82 @@ int main(int argc, char *argv[]) {
 
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (rc != 0) {
-    fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
-    fprintf(stderr, "SDL_GetError() reports \"%s\".\n", SDL_GetError());
+    LOG_FATAL.printf("SDL: SDL_Init() failed: %d: %s!", rc, SDL_GetError());
     return (0);
   }
 
   // !!! FIXME: Don't use an event filter!
-  SDL_SetEventFilter(d3SDLEventFilter, NULL);
+  SDL_SetEventFilter(d3SDLEventFilter, nullptr);
   install_signal_handlers();
 
   int winArg = FindArgChar("-windowed", 'w');
   int fsArg = FindArgChar("-fullscreen", 'f');
 
   if ((fsArg) && (winArg)) {
-    fprintf(stderr, "ERROR: %s AND %s specified!\n", GameArgs[winArg], GameArgs[fsArg]);
+    LOG_FATAL.printf("ERROR: %s AND %s specified!", GameArgs[winArg], GameArgs[fsArg]);
     return (0);
-  } // if
+  }
 
-  if (FindArg("-game_checksum")) {
-    extern tOSIRISModuleInit Osiris_module_init;
-    extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit * st);
-    extern uint32_t Osiris_CreateGameChecksum(void);
+  // Initialize our OS Object.  This could be a game dependant OS object, or a default OS object.
+  // Once we create it, if successful, we can start the game.
+  int flags = 0;
 
-    Osiris_CreateModuleInitStruct(&Osiris_module_init);
-    uint32_t checksum = Osiris_CreateGameChecksum();
-    printf("Descent 3\n");
-    printf("Game Checksum: %u\n", checksum);
-    return (0);
-  } else {
-    /*initialize our OS Object.  This could be a game dependant OS object, or a default OS object.
-    once we create it, if successful, we can start the game.
-    */
-    int flags = 0;
-
-    if (!FindArgChar("-dedicated", 'd')) {
+  if (!FindArgChar("-dedicated", 'd')) {
 #ifndef DEDICATED
-      // check for a renderer
+    // check for a renderer
 
-      if ((FindArgChar("-windowed", 'w')) && (FindArgChar("-fullscreen", 'f'))) {
-        fprintf(stderr, "Error: Both windowed and fullscreen mode requested.");
-        return 0;
+    if (FindArgChar("-nomousegrab", 'm')) {
+      flags |= APPFLAG_NOMOUSECAPTURE;
+    ddio_MouseSetGrab(false);
       }
+    SDL_SetRelativeMouseMode(ddio_MouseGetGrab() ? SDL_TRUE : SDL_FALSE);
 
-      if (FindArgChar("-nomousegrab", 'm')) {
-        flags |= APPFLAG_NOMOUSECAPTURE;
-        ddio_MouseSetGrab(false);
-      }
-      SDL_SetRelativeMouseMode(ddio_MouseGetGrab() ? SDL_TRUE : SDL_FALSE);
+    if (!FindArg("-sharedmemory")) {
+      flags |= APPFLAG_NOSHAREDMEMORY;
+    }
+    flags |= APPFLAG_WINDOWEDMODE;
 
-      if (!FindArg("-sharedmemory")) {
-        flags |= APPFLAG_NOSHAREDMEMORY;
-      }
-      flags |= APPFLAG_WINDOWEDMODE;
+
 #else
-      fprintf(stderr, "Error: \"--dedicated\" or \"-d\" flag required\n");
-      return 0;
+    LOG_FATAL << "Error: \"--dedicated\" or \"-d\" flag required";
+    return 0;
 #endif
 
-    } else {
-      // Dedicated Server Mode
-      flags |= OEAPP_CONSOLE;
+  } else {
+    // Dedicated Server Mode
+    flags |= OEAPP_CONSOLE;
 
-      // service flag overrides others here in the group
-      if (FindArg("-service")) {
-        flags |= APPFLAG_USESERVICE;
-      }
+    // service flag overrides others here in the group
+    if (FindArg("-service")) {
+      flags |= APPFLAG_USESERVICE;
     }
+  }
 
-    bool run_d3 = true;
+  bool run_d3 = true;
 #if defined(POSIX)
-    if (flags & APPFLAG_USESERVICE) {
-      run_d3 = false;
-      pid_t np = fork();
-      if (np == -1) {
-        fprintf(stderr, "Unable to fork process\n");
-      }
-      if (np == 0) {
-        run_d3 = true;
-        np = setsid();
-        pid_t pp = getpid();
-        printf("Successfully forked process [new sid=%d pid=%d]\n", np, pp);
-      }
+  if (flags & APPFLAG_USESERVICE) {
+    run_d3 = false;
+    pid_t np = fork();
+    if (np == -1) {
+      LOG_WARNING << "Unable to fork process";
     }
+    if (np == 0) {
+      run_d3 = true;
+      np = setsid();
+      pid_t pp = getpid();
+      LOG_INFO.printf("Successfully forked process [new sid=%d pid=%d]", np, pp);
+    }
+  }
 #endif
 
-    if (run_d3) {
-      oeD3LnxApp d3(flags);
-      oeD3LnxDatabase dbase;
-      StartDedicatedServer();
-      PreInitD3Systems();
+  if (run_d3) {
+    oeD3LnxApp d3(flags);
+    oeD3LnxDatabase dbase;
+    StartDedicatedServer();
+    PreInitD3Systems();
 
-      d3.init();
-      d3.run();
-    }
+    d3.init();
+    d3.run();
   }
 
   just_exit();

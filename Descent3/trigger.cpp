@@ -113,16 +113,16 @@
  * $NoKeywords: $
  */
 
+#include <cstdlib>
+#include <cstring>
+
 #include "trigger.h"
 #include "room.h"
 #include "object.h"
-//@$-#include "d3x.h"
 #include "pserror.h"
 #include "osiris_dll.h"
 #include "levelgoal.h"
-
-#include <stdlib.h>
-#include <string.h>
+#include "log.h"
 
 // The maximum number of triggers that can be in the mine
 #define MAX_TRIGGERS 100
@@ -238,7 +238,7 @@ void CheckTrigger(int roomnum, int facenum, object *objp, int event_type) {
 
     // Check if this object is a valid activator for this trigger
     if (tp->activator & type) {
-      mprintf(0, "Hit trigger %d\n", tp - Triggers);
+      LOG_DEBUG.printf("Hit trigger %d", tp - Triggers);
 
       // Execute this trigger's script
       tOSIRISEventInfo ei;

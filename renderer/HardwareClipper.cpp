@@ -19,6 +19,7 @@
 #include "pserror.h"
 #include "3d.h"
 #include "HardwareInternal.h"
+#include "log.h"
 
 static int free_point_num = -1;
 static g3Point temp_points[MAX_POINTS_IN_POLY];
@@ -44,7 +45,7 @@ g3Point *GetTempPoint(void) {
 
 void FreeTempPoint(g3Point *p) {
   if (free_point_num < 1) {
-    mprintf(1, "clipper: no temp points to free\n");
+    LOG_FATAL << "clipper: no temp points to free";
     free_point_num = 1;
     Int3();
   }
@@ -349,7 +350,7 @@ g3Point **g3_ClipPolygon(g3Point **pointlist, int *nv, g3Codes *cc) {
 
   //&	ASSERT(free_point_num == 0);	//DAJ UTB CMO
   if (free_point_num != 0) {
-    mprintf(1, "clipper: leftover temp point\n");
+    LOG_FATAL << "clipper: leftover temp point";
     free_point_num = 0;
     Int3();
   }

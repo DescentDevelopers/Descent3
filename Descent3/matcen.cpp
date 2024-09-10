@@ -144,11 +144,15 @@
 #include "globals.h"
 #endif
 
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+
+#include "log.h"
 #include "matcen.h"
 #include "game.h"
 #include "sounds.h"
 #include "ssl_lib.h"
-#include "string.h"
 #include "soundload.h"
 #include "room.h"
 #include "object.h"
@@ -156,8 +160,9 @@
 #include "findintersection.h"
 #ifndef NEWEDITOR
 #include "multi.h"
+#include "player.h"
+#include "osiris_dll.h"
 #endif
-#include <stdlib.h>
 #include "fireball.h"
 #include "weapon.h"
 #include "polymodel.h"
@@ -168,15 +173,8 @@
 #include "physics.h"
 #include "mem.h"
 #include "ObjScript.h"
-#ifndef NEWEDITOR
-#include "player.h"
-#include "osiris_dll.h"
-#endif
 #include "psrand.h"
 #include "demofile.h"
-
-
-#include <algorithm>
 
 // Beginning of the real file
 #define LEVEL_DATA_MATCEN_VERSION 1
@@ -285,7 +283,7 @@ bool matcen::StartObjProd() {
     return false;
 
   if (m_max_prod <= m_num_prod && m_max_prod != -1) {
-    mprintf(0, "MATCEN: Done\n");
+    LOG_DEBUG << "MATCEN: Done";
     m_status |= MSTAT_DONE_PROD;
     return false;
   }
@@ -1056,7 +1054,7 @@ bool matcen::ComputeNextProdInfo() {
   m_status &= ~MSTAT_DONE_PROD;
 
   if (m_max_prod <= m_num_prod && m_max_prod != -1) {
-    mprintf(0, "MATCEN: Done\n");
+    LOG_DEBUG << "MATCEN: Done";
     m_status |= MSTAT_DONE_PROD;
     return false;
   }

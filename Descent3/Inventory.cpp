@@ -290,7 +290,7 @@
 
 #include "Inventory.h"
 
-#include "mono.h"
+#include "log.h"
 #include "player.h"
 #include "pserror.h"
 #include "objinfo.h"
@@ -311,7 +311,6 @@
 
 // constructor
 Inventory::Inventory(void) {
-  // mprintf(0,"Inventory System: Initialize\n");
   root = NULL;
   count = 0;
   pos = NULL;
@@ -395,13 +394,13 @@ void Inventory::Reset(bool in_game, int reset_stage) {
 bool Inventory::AddObject(int object_handle, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS) {
-    mprintf(0, "Max unique count hit on add to inventory\n");
+    LOG_DEBUG << "Max unique count hit on add to inventory";
     return false;
   }
 
   object *obj = ObjGet(object_handle);
   if (!obj) {
-    mprintf(0, "INVEN: Invalid object trying to be added\n");
+    LOG_DEBUG << "INVEN: Invalid object trying to be added";
     return false;
   }
 
@@ -503,12 +502,12 @@ bool Inventory::AddObject(int object_handle, int flags, const char *description)
 bool Inventory::Add(int type, int id, object *parent, int aux_type, int aux_id, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS) {
-    mprintf(0, "Max unique count hit on add to inventory\n");
+    LOG_WARNING << "Max unique count hit on add to inventory";
     return false;
   }
 
   if ((type < 0) || (type == OBJ_NONE)) {
-    mprintf(0, "Invalid type on add to inventory\n");
+    LOG_WARNING << "Invalid type on add to inventory";
     return false;
   }
 
@@ -528,7 +527,7 @@ bool Inventory::Add(int type, int id, object *parent, int aux_type, int aux_id, 
 bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS) {
-    mprintf(0, "Hit max unique in counter measure add\n");
+    LOG_WARNING << "Hit max unique in counter measure add";
     return false;
   }
 
@@ -560,7 +559,6 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
     } else {
       // there is an item of that type/id already, just increase its count
       newnode->count++;
-      // mprintf(0,"Inventory: Item #%d (%s) Count increased to %d\n",count,newnode->name,newnode->count);
     }
   }
 
@@ -596,7 +594,6 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
     }
 
     count++;
-    // mprintf(0,"Inventory: Item #%d Added Countermeasure (%s) ID=%d\n",count,newnode->name,newnode->id);
   }
 
   pos = newnode;
@@ -744,13 +741,13 @@ bool Inventory::Use(int type, int id, object *parent) {
 
   // if type is OBJ_WEAPON then it's a countermeasure
   if (type == OBJ_WEAPON) {
-    mprintf(0, "CounterMeasures: Use\n");
+    LOG_DEBUG << "CounterMeasures: Use";
     // countermeasure
     CreateCountermeasureFromObject(player, id);
     Remove(node->type, node->id);
     ret = true;
   } else {
-    mprintf(0, "Inventory: Use\n");
+    LOG_DEBUG << "Inventory: Use";
     // regular
     // recreate the object
     int objnum;
@@ -838,12 +835,11 @@ bool Inventory::Use(int type, int id, object *parent) {
 
 // sends a request to the server to use a particular item in the inventory
 void Inventory::SendRequestToServerToUse(int type, int id) {
-  // mprintf(0,"Sending request to server for T=%d ID=%d\n",type,id);
   inven_item *node = FindItem(type, id);
   if (node) {
     MultiSendClientInventoryUseItem(type, id);
   } else {
-    mprintf(0, "Sorry couldn't find it in your inventory\n");
+    LOG_DEBUG << "Sorry couldn't find it in your inventory";
   }
 }
 
@@ -899,7 +895,7 @@ bool Inventory::Remove(int type, int id) {
     RemoveNode(node);
   } else {
     node->count--;
-    mprintf(0, "Inventory System: Remove\n");
+    LOG_DEBUG << "Inventory System: Remove";
 
     if (node->count <= 0)
       RemoveNode(node);
@@ -969,7 +965,6 @@ inven_item *Inventory::FindItem(int type, int id) {
   while (counter) {
     if ((current->type == type) && (current->id == id)) // we got a match
     {
-      // mprintf(0,"Inventory: FindItem found Type(%d) ID(%d)\n",type,id);
       return current;
     }
 
@@ -977,19 +972,16 @@ inven_item *Inventory::FindItem(int type, int id) {
     counter--;
   }
 
-  // mprintf(0,"Inventory: FindItem couldn't find Type(%d) ID(%d)\n",type,id);
   return NULL;
 }
 
 // returns how many items are in the inventory
 int Inventory::Size(void) {
-  // mprintf(0,"Inventory System: Size\n");
   return count;
 }
 
 // returns true if there is an item in the inventory with the given type/id
 bool Inventory::CheckItem(int type, int id) {
-  // mprintf(0,"Inventory System: CheckItem\n");
   if (FindItem(type, id))
     return true;
   else
@@ -1020,7 +1012,7 @@ int Inventory::SaveInventory(CFILE *file) {
         object *obj = ObjGet(curr->type);
         ASSERT(obj);
         if (!obj) {
-          mprintf(0, "Invalid object saving inventory\n");
+          LOG_DEBUG << "Invalid object saving inventory";
           curr = curr->next;
           num_items--;
           pos_count++;
@@ -1089,7 +1081,7 @@ int Inventory::ReadInventory(CFILE *file) {
         object *obj = ObjGet(t);
         ASSERT(obj);
         if (!obj) {
-          mprintf(0, "Invalid object restoring inventory\n");
+          LOG_WARNING << "Invalid object restoring inventory";
           // skip this object
           cf_ReadInt(file);
           cf_ReadInt(file);
@@ -1240,7 +1232,6 @@ bool Inventory::GetAuxPosTypeID(int &type, int &id) {
 
 // returns the description of the item at the current position
 char *Inventory::GetPosDescription(void) {
-  // mprintf(0,"Getting Pos Description (%s)\n",pos->description);
   if (!pos)
     return NULL;
   return pos->description;
@@ -1262,7 +1253,6 @@ char *Inventory::GetPosIconName(void) {
 
 // returns the count of the item at the current position
 int Inventory::GetPosCount(void) {
-  // mprintf(0,"Getting Pos Count (%d)\n",pos->count);
   if (!pos)
     return 0;
 
@@ -1293,7 +1283,6 @@ bool Inventory::GetPosInfo(uint16_t &iflags, int &flags) {
 
 // goes to a position in the list
 void Inventory::GotoPos(int newpos) {
-  // mprintf(0,"Going to Pos (%d)\n",newpos);
   ResetPos();
   int i;
   for (i = 0; i < newpos; i++) {
@@ -1538,7 +1527,7 @@ void InventoryRemoveObject(int objhandle) {
   for (int i = 0; i < MAX_PLAYERS; i++) {
     if (Players[i].inventory.CheckItem(objhandle, -1)) {
       // this player has it!!
-      mprintf(0, "INVEN: Removing dead object from %d\n", i);
+      LOG_DEBUG.printf("INVEN: Removing dead object from %d", i);
       Players[i].inventory.Remove(objhandle, -1);
       return;
     }

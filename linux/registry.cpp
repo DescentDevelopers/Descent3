@@ -47,13 +47,13 @@
  * $NoKeywords: $
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-// #include "local_malloc.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+
+#include "log.h"
 #include "registry.h"
-#include "mono.h"
 
 #if defined(_WIN32)
 #define strcasecmp stricmp
@@ -244,10 +244,10 @@ bool CRegistry::Import() {
   char *ptr;
   file = fopen(name, "rt");
   if (!file) {
-    mprintf(0, "REGISTRY: Unable to import %s\n", name);
+    LOG_ERROR.printf("REGISTRY: Unable to import %s", name);
     return false;
   }
-  mprintf(0, "REGISTRY: Importing %s\n", name);
+  LOG_INFO.printf("REGISTRY: Importing %s", name);
   Destroy();
 
   bool oktocreate;

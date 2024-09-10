@@ -16,28 +16,20 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cstdarg>
-#include <cstdio>
-
 #include "DllWrappers.h"
 #include "pserror.h"
 #include "cfile.h"
-#include "gamefont.h"
 #include "grdefs.h"
 #include "descent.h"
-#include "ddio.h"
-#include "d3movie.h"
-#include "program.h"
 #include "object.h"
-#include "objinit.h"
 #include "player.h"
+#include "log.h"
 #include "newui.h"
 #include "hlsoundlib.h"
 #include "appdatabase.h"
 #include "attach.h"
 #include "game.h"
 #include "demofile.h"
-#include "pilot.h"
 #include "audiotaunts.h"
 #include "ship.h"
 #include "hud.h"
@@ -114,7 +106,7 @@ void SetObjectDeadFlagDLL(object *obj, bool tell_clients_to_remove, bool tell_cl
 void assertdll(int x, const char *expression, const char *file, int line) {
 #ifndef RELEASE
   if (!(unsigned)(x)) {
-    mprintf(0, "Assertion failed (%s) in %s line %d.\n", expression, file, line);
+    LOG_ERROR.printf("Assertion failed (%s) in %s line %d.", expression, file, line);
     if (Debug_break)
       DEBUG_BREAK();
     else

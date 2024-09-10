@@ -11,6 +11,7 @@ target_link_libraries(stream_audio PRIVATE
   mem
   misc
   sndlib
+  plog::plog
 )
 target_link_libraries(stream_audio PUBLIC
   AudioEncode

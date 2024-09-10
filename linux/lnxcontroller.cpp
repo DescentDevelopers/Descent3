@@ -50,6 +50,7 @@
 #include "joystick.h"
 #include "inffile.h"
 #include "lnxcontroller.h"
+#include "log.h"
 
 // Sorry! This is needed for the semi-hacky mouselook support
 #include "descent.h"
@@ -919,7 +920,7 @@ bool lnxgameController::enum_controllers() {
         m_ControlList[num_devs].sensmod[i] = 1.0f;
       }
       m_ControlList[num_devs].deadzone = JOY_DEADZONE;
-      mprintf(0, "Controller %s found.\n", jc.name);
+      LOG_DEBUG.printf("Controller %s found.\n", jc.name);
 
       // okay, now search for a "****.ctl" file in the current directory
       parse_ctl_file(num_devs, jc.name);
@@ -1103,7 +1104,7 @@ float lnxgameController::get_button_value(int8_t controller, ct_format format, u
     break;
 
   default:
-    mprintf(1, "gameController::button unsupported format for function\n");
+    LOG_WARNING << "gameController::button unsupported format for function";
   }
 
   return val;
@@ -1203,7 +1204,7 @@ float lnxgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
     val = val - 1.0f;
   } else {
     val = 0.0f;
-    mprintf(1, "gameController::axis unsupported format for function.\n");
+    LOG_WARNING << "gameController::axis unsupported format for function.";
   }
 
   ct_packet key_slide1, key_bank;
@@ -1337,7 +1338,7 @@ float lnxgameController::get_pov_value(int8_t controller, ct_format format, uint
     break;
 
   default:
-    mprintf(1, "gameController::pov unsupported format for function\n");
+    LOG_WARNING << "gameController::pov unsupported format for function";
   }
 
   return val;
@@ -1365,7 +1366,7 @@ float lnxgameController::get_key_value(int key, ct_format format) {
     break;
 
   default:
-    mprintf(1, "gameController::key unsupported format for function\n");
+    LOG_WARNING << "gameController::key unsupported format for function";
   }
 
   return val;

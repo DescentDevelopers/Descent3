@@ -845,7 +845,7 @@
 #include "levelgoal.h"
 #include "lighting.h"
 #include "marker.h"
-#include "mono.h"
+#include "log.h"
 #include "multi.h"
 #include "object.h"
 #include "osiris_dll.h"
@@ -2696,7 +2696,7 @@ bool collide_object_with_wall(object *A, float hitspeed, int hitseg, int hitwall
     break;
 
   default:
-    mprintf(0, "Unhandled collision of object type %d and wall\n", A->type);
+    LOG_WARNING.printf("Unhandled collision of object type %d and wall\n", A->type);
     //		Error( "Unhandled object type hit wall in collide.c\n" );
   }
 

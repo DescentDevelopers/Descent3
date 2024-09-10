@@ -73,6 +73,7 @@
 #endif
 
 #include "ddio.h"
+#include "log.h"
 #include "crossplat.h"
 #include "mem.h"
 #include "pserror.h"
@@ -111,7 +112,7 @@ int ddio_GetFileLength(FILE *filePtr) {
     fstat(filedes, &info);
     size = info.st_size;
   } else {
-    mprintf(0, "Tried getting length of NULL fileptr!\n");
+    LOG_FATAL << "Tried getting length of NULL fileptr!";
     Int3();
   }
   return size;
@@ -477,10 +478,8 @@ bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filenam
 
 bool ddio_CheckProcess(int pid) {
   if (kill(pid, 0) == -1) {
-    if (errno != ESRCH) {
-      /* some other error, log it */
-      mprintf(0, "Error sending signal to PID for lock check (%d)\n", pid);
-    }
+    /* some other error, log it */
+    LOG_WARNING_IF(errno != ESRCH).printf("Error sending signal to PID for lock check (%d)", pid);
     return false;
   } else {
     /* process exists */

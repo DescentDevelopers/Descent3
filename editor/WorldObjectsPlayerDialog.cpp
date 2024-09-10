@@ -129,6 +129,7 @@
 #include "shippage.h"
 #include "ship.h"
 #include "manage.h"
+#include "mono.h"
 #include "polymodel.h"
 #include "PhysicsDlg.h"
 #include "PlayerWeaponsDialog.h"

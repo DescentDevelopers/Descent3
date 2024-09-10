@@ -41,6 +41,7 @@
 #include "stdafx.h"
 #include "editor.h"
 #include "ViewerPropDlg.h"
+#include "mono.h"
 #include "object.h"
 
 #ifdef _DEBUG

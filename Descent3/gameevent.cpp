@@ -62,14 +62,15 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+
 #include "object.h"
 #include "game.h"
 #include "gameevent.h"
+#include "log.h"
 #include "descent.h"
 #include "gameloop.h"
 #include "spew.h"
-#include <string.h>
-// #include <malloc.h>
 #include "mem.h"
 #include "player.h"
 
@@ -155,7 +156,7 @@ void ProcessNormalEvents() {
           // the object has died, kill the event
           FreeEvent(i);
           skip_event = true;
-          mprintf(0, "Game Event %d cancelled\n", i);
+          LOG_DEBUG.printf("Game Event %d cancelled", i);
         }
       }
 
@@ -208,7 +209,7 @@ int CreateNewEvent(int type, int id, float length, void *data, int size, void (*
 
   num = AllocEvent();
   if (num == -1) {
-    mprintf(0, "WARNING: Event (type %d, id %d) did not get allocated\n", type, id);
+    LOG_WARNING.printf("WARNING: Event (type %d, id %d) did not get allocated", type, id);
     return -1; // couldn't do this event, no slots free
   }
 

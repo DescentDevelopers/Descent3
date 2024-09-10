@@ -116,6 +116,7 @@
 #include "cfile.h"
 #include "ddio.h"
 #include "grtextlib.h"
+#include "log.h"
 #include "mem.h"
 #include "pserror.h"
 #include "renderer.h"
@@ -296,7 +297,7 @@ int grfont_Load(const char *fname) {
   if (!ff) {
     return false;
   } else if (ff == (FONTFILE)0xffffffff) {
-    mprintf(0, "Illegal font file: %s.\n", fname);
+    LOG_ERROR.printf("Illegal font file: %s.\n", fname);
     return false;
   }
 
@@ -552,7 +553,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   if (!ffin) {
     return false;
   } else if (ffin == (FONTFILE)0xffffffff) {
-    mprintf(0, "Illegal font file %s\n", pathname);
+    LOG_ERROR.printf("Illegal font file %s\n", pathname);
     return false;
   }
 

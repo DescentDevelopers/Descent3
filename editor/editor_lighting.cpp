@@ -47,11 +47,11 @@
 #include "bsp.h"
 #include "Application.h"
 #include "AppDatabase.h"
-#include "program.h"
 #include "loadlevel.h"
 #include "special_face.h"
 #include "boa.h"
 #include "mem.h"
+#include "mono.h"
 
 struct spec_vertex {
   float x, y;

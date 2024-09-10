@@ -35,6 +35,7 @@ target_include_directories(renderer PRIVATE ${GENERATED_HEADERS})
 target_link_libraries(renderer PRIVATE
   glm::glm
   SDL2::SDL2
+  plog::plog
   bitmap
   ddio
   mem

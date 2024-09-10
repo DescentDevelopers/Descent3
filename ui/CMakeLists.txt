@@ -28,6 +28,7 @@ target_link_libraries(ui PRIVATE
   grtext
   mem
   misc
+  plog::plog
 )
 target_include_directories(ui PUBLIC
   $<BUILD_INTERFACE:

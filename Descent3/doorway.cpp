@@ -129,6 +129,7 @@
 #include "doorway.h"
 #include "door.h"
 #include "pserror.h"
+#include "log.h"
 #include "mem.h"
 #include "room.h"
 #include "polymodel.h"
@@ -174,7 +175,7 @@ void RemoveActiveDoorway(int adway) {
 
   Num_active_doorways--;
 
-  mprintf(0, "ActiveDoorways = %d\n", Num_active_doorways);
+  LOG_DEBUG.printf("ActiveDoorways = %d", Num_active_doorways);
 }
 
 void AddActiveDoorway(int roomnum) {
@@ -193,7 +194,7 @@ void AddActiveDoorway(int roomnum) {
     dp->activenum = Num_active_doorways++;
   }
 
-  mprintf(0, "ActiveDoorways = %d\n", Num_active_doorways);
+  LOG_DEBUG.printf("ActiveDoorways = %d", Num_active_doorways);
 }
 
 // Given an object handle, returns the doorway number

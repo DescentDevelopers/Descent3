@@ -59,16 +59,8 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
   std::vsnprintf(Mono_buffer, MAX_MONO_LENGTH, format, marker);
   va_end(marker);
 
-  Debug_LogWrite(Mono_buffer);
-
   if (n == 0) {
     printf("%s", Mono_buffer);
-
-    int end = strlen(Mono_buffer) - 1;
-    if ((end > 1) && (Mono_buffer[end] != 0x0a) && (Mono_buffer[end] != 0x0d)) {
-      printf("\n");
-      Debug_LogWrite("\n");
-    }
   }
 }
 

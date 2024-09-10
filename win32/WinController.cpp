@@ -320,6 +320,7 @@
 #include "joystick.h"
 #include "Macros.h"
 #include "inffile.h"
+#include "log.h"
 
 // Sorry! This is needed for the semi-hacky mouselook support
 #include "descent.h"
@@ -536,7 +537,6 @@ ct_config_data gameWinController::get_controller_value(ct_type type_req) {
   case ctMouseButton:
     for (j = 0; j < CT_MAX_BUTTONS; j++) {
       if (ddio_MouseBtnUpCount(j)) {
-        //	mprintf(0, "MseBtn %d down\n", j);
         val = MAKE_CONFIG_DATA(CONTROLLER_CTL_INFO(1, NULL_CONTROLLER), CONTROLLER_CTL_VALUE(j + 1, NULL_BINDING));
         return val;
       }
@@ -554,7 +554,7 @@ ct_config_data gameWinController::get_controller_value(ct_type type_req) {
                 : (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.0f) ? 0.80f
                                                                 : (m_ControlList[i].sens[CT_V_AXIS - 1] / 2);
         pos = get_axis_value(i, CT_V_AXIS, ctAnalog);
-        mprintf(0, "pos=%.2f\n", pos);
+        LOG_DEBUG.printf("pos=%.2f", pos);
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_V_AXIS, NULL_BINDING));
       }
@@ -629,13 +629,11 @@ ct_config_data gameWinController::get_controller_value(ct_type type_req) {
     }
     if (m_ControlList[i].flags & CTF_Y_AXIS) {
       pos = get_axis_value(i, CT_Y_AXIS, ctAnalog);
-      //	mprintf(0, "y=%.2f   ", pos);
       if (fabs(pos) >= 0.90f)
         val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_Y_AXIS, NULL_BINDING));
     }
     if (m_ControlList[i].flags & CTF_X_AXIS) {
       pos = get_axis_value(i, CT_X_AXIS, ctAnalog);
-      //	mprintf(0, "x=%.2f\n", pos);
       if (fabs(pos) >= 0.90f)
         val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_X_AXIS, NULL_BINDING));
     }
@@ -903,7 +901,7 @@ float gameWinController::get_axis_value(int8_t controller, uint8_t axis, ct_form
     val -= 1.0f;
   } else {
     val = 0.0f;
-    mprintf(1, "gameController::axis unsupported format for function.\n");
+    LOG_DEBUG << "gameController::axis unsupported format for function.";
   }
 
   ct_packet key_slide1, key_bank;
@@ -1046,7 +1044,7 @@ float gameWinController::get_button_value(int8_t controller, ct_format format, u
     break;
 
   default:
-    mprintf(1, "gameController::button unsupported format for function\n");
+    LOG_WARNING << "gameController::button unsupported format for function";
   }
 
   return val;
@@ -1113,7 +1111,7 @@ float gameWinController::get_pov_value(int8_t controller, ct_format format, uint
     break;
 
   default:
-    mprintf(1, "gameController::pov unsupported format for function\n");
+    LOG_WARNING << "gameController::pov unsupported format for function";
   }
 
   return val;
@@ -1141,7 +1139,7 @@ float gameWinController::get_key_value(int key, ct_format format) {
     break;
 
   default:
-    mprintf(1, "gameController::key unsupported format for function\n");
+    LOG_WARNING << "gameController::key unsupported format for function";
   }
 
   return val;
@@ -1381,7 +1379,7 @@ bool gameWinController::enum_controllers(char *remote_adr) {
       }
       m_ControlList[num_devs].deadzone = JOY_DEADZONE;
 
-      mprintf(0, "Controller %s found.\n", jc.name);
+      LOG_INFO.printf("Controller %s found.", jc.name);
 
       // okay, now search for a '****.ctl' file in the current directory.
       parse_ctl_file(num_devs, jc.name);
@@ -1454,7 +1452,6 @@ void gameWinController::extctl_getpos(int id) {
     if ((ji.buttons & (1 << i)) && !(m_ExtCtlStates[id].buttons & (1 << i))) {
       m_ExtCtlStates[id].btnpresses[i]++;
       m_ExtCtlStates[id].btnstarts[i] = timer_val;
-      //	mprintf(0, "Start time for %d = %f\n", i, timer_val);
     }
 
     if (ji.buttons & (1 << i)) // if button is down
@@ -1484,8 +1481,6 @@ void gameWinController::mouse_geteval() {
   m_MseState.m_absX = x;
   m_MseState.m_absY = y;
   m_MseState.m_buttonMask = btnmask;
-
-  mprintf_at(1, 5, 30, "btnmask=%08d\n", btnmask);
 }
 
 // gets sensitivity of axis item

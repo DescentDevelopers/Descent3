@@ -98,17 +98,14 @@
  * $NoKeywords: $
  */
 
-#include "mono.h"
-#include "renderer.h"
-#include "render.h"
+#include <cstdlib>
+#include <cstring>
+
+#include "log.h"
 #include "grdefs.h"
 #include "ddio.h"
-#include "descent.h"
 #include "game.h"
 #include "cfile.h"
-#include "application.h"
-#include <stdlib.h>
-#include <string.h>
 #include "hotspotmap.h"
 #include "mem.h"
 #include "bitmap.h"
@@ -242,10 +239,10 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
     } // end ifelse (hotspot_there)
   }   // end for (count)
 
-  mprintf(0, "Hunting down empty hotspots....\n");
+  LOG_DEBUG << "Hunting down empty hotspots....";
   for (count = 0; count < num_hs; count++) {
     if (whats_there[count] == NOTHING_THERE) {
-      mprintf(0, "Notice: HotSpot %d is empty\n", count);
+      LOG_DEBUG.printf("Notice: HotSpot %d is empty", count);
       hsmap->hs[count].scanlines = 0;
       hsmap->hs[count].starting_y = 0;
       if (hsmap->hs[count].x) {
@@ -255,18 +252,18 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
     }
   }
 
-  mprintf(0, "Finding window count...");
+  LOG_DEBUG << "Finding window count...";
   window_count = 0;
   for (count = 0; count < 256; count++) {
     if (whats_there[count] == WINDOW_THERE)
       window_count++;
   }
-  mprintf(0, "%d windows found\n", window_count);
+  LOG_DEBUG.printf("%d windows found", window_count);
   return window_count;
 }
 
 void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap) {
-  mprintf(0, "Processing %d windows\n", wndmap->num_of_windows);
+  LOG_DEBUG.printf("Processing %d windows", wndmap->num_of_windows);
   int x, y, count;
   uint8_t alpha;
   bool newline = true;
@@ -493,16 +490,16 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
   }
 
   for (count = 0; count < wndmap->num_of_windows; count++) {
-    mprintf(0, "Window #%d: Left/Top=(%d,%d) Width=%d Height=%d\n", count, wndmap->wm[count].x, wndmap->wm[count].y,
-             wndmap->wm[count].width, wndmap->wm[count].height);
-    mprintf(0, "---L.T. (%d,%d)->(%d,%d)\n", wndmap->wm[count].l_start_x, wndmap->wm[count].t_top_y,
-             wndmap->wm[count].l_end_x, wndmap->wm[count].t_bottom_y);
-    mprintf(0, "---R.T. (%d,%d)->(%d,%d)\n", wndmap->wm[count].r_start_x, wndmap->wm[count].t_top_y,
-             wndmap->wm[count].r_end_x, wndmap->wm[count].t_bottom_y);
-    mprintf(0, "---L.B. (%d,%d)->(%d,%d)\n", wndmap->wm[count].l_start_x, wndmap->wm[count].b_top_y,
-             wndmap->wm[count].l_end_x, wndmap->wm[count].b_bottom_y);
-    mprintf(0, "---R.B. (%d,%d)->(%d,%d)\n", wndmap->wm[count].r_start_x, wndmap->wm[count].b_top_y,
-             wndmap->wm[count].r_end_x, wndmap->wm[count].b_bottom_y);
+    LOG_DEBUG.printf("Window #%d: Left/Top=(%d,%d) Width=%d Height=%d", count, wndmap->wm[count].x,
+                     wndmap->wm[count].y, wndmap->wm[count].width, wndmap->wm[count].height);
+    LOG_DEBUG.printf("---L.T. (%d,%d)->(%d,%d)", wndmap->wm[count].l_start_x, wndmap->wm[count].t_top_y,
+                     wndmap->wm[count].l_end_x, wndmap->wm[count].t_bottom_y);
+    LOG_DEBUG.printf("---R.T. (%d,%d)->(%d,%d)", wndmap->wm[count].r_start_x, wndmap->wm[count].t_top_y,
+                     wndmap->wm[count].r_end_x, wndmap->wm[count].t_bottom_y);
+    LOG_DEBUG.printf("---L.B. (%d,%d)->(%d,%d)", wndmap->wm[count].l_start_x, wndmap->wm[count].b_top_y,
+                     wndmap->wm[count].l_end_x, wndmap->wm[count].b_bottom_y);
+    LOG_DEBUG.printf("---R.B. (%d,%d)->(%d,%d)", wndmap->wm[count].r_start_x, wndmap->wm[count].b_top_y,
+                     wndmap->wm[count].r_end_x, wndmap->wm[count].b_bottom_y);
   }
 }
 
@@ -530,7 +527,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   image_type = cf_ReadByte(infile);
 
   if (color_map_type != 0 || (image_type != 2)) {
-    mprintf(0, "menutga: Can't read this type of TGA.\n");
+    LOG_DEBUG << "menutga: Can't read this type of TGA.";
     return -1;
   }
 
@@ -546,13 +543,13 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   ASSERT(hsmap);
 
   if (pixsize != 32) {
-    mprintf(0, "menutga: This file has a pixsize of field of %d, it should be 32. ", pixsize);
+    LOG_DEBUG.printf("menutga: This file has a pixsize of field of %d, it should be 32. ", pixsize);
     return -1;
   }
 
   descriptor = cf_ReadByte(infile);
   if ((descriptor & 0x0F) != 8) {
-    mprintf(0, "menutga: Descriptor field & 0x0F must be 8, but this is %d.", descriptor & 0x0F);
+    LOG_DEBUG.printf("menutga: Descriptor field & 0x0F must be 8, but this is %d.", descriptor & 0x0F);
     return -1;
   }
 
@@ -562,7 +559,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   n = bm_AllocBitmap(width, height, 0);
 
   if (n < 0) {
-    mprintf(0, "menutga: Failed to allocate memory.\n");
+    LOG_FATAL << "menutga: Failed to allocate memory.";
     Int3();
   }
 
@@ -596,7 +593,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
 // Given a filename and a hotspotmap structure, it saves it to disk (.HSM)
 void menutga_SaveHotSpotMap(const std::filesystem::path &filename, hotspotmap_t *hsmap, windowmap_t *wndmap) {
   CFILE *file;
-  mprintf(0, "Saving HotSpotMap %s ", filename.u8string().c_str());
+  LOG_DEBUG.printf("Saving HotSpotMap %s", filename.u8string().c_str());
   file = (CFILE *)cfopen(filename, "wb");
   if (!file) {
     Int3(); // get jeff!
@@ -604,7 +601,7 @@ void menutga_SaveHotSpotMap(const std::filesystem::path &filename, hotspotmap_t 
   }
 
   int curr_hs, curr_sl;
-  mprintf(0, "Number of HotSpots=%d\n", hsmap->num_of_hotspots);
+  LOG_DEBUG.printf("Number of HotSpots=%d", hsmap->num_of_hotspots);
   cf_WriteByte(file, hsmap->num_of_hotspots);
 
   for (curr_hs = 0; curr_hs < hsmap->num_of_hotspots; curr_hs++) {
@@ -673,8 +670,6 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
     FreeHotSpotMapInternals(hsmap);
   }
 
-  mprintf(0, "Loading hotspotmap %s ", filename);
-
   CFILE *infile;
   infile = (CFILE *)cfopen(filename, "rb");
   if (!infile) {
@@ -683,8 +678,6 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
   }
 
   hsmap->num_of_hotspots = cf_ReadByte(infile);
-
-  mprintf(0, "Contains: (%d hotspots) ", hsmap->num_of_hotspots);
 
   int curr_hs, curr_sl, num_sl;
 
@@ -707,7 +700,8 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
 
   int count, index, size;
   wndmap->num_of_windows = cf_ReadInt(infile);
-  mprintf(0, "(%d Windows)\n", wndmap->num_of_windows);
+  LOG_DEBUG.printf("Loading hotspotmap %s Contains: (%d hotspots) (%d Windows)",
+                   filename, hsmap->num_of_hotspots, wndmap->num_of_windows);
   wndmap->wm = (window_box *)mem_malloc(sizeof(window_box) * wndmap->num_of_windows);
   for (count = 0; count < wndmap->num_of_windows; count++) {
     wndmap->wm[count].x = cf_ReadInt(infile);
@@ -828,7 +822,7 @@ void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, in
 
 // This function frees up the allocated memory within a hotspotmap struct.  It does not free up the struct though.
 void FreeHotSpotMapInternals(hotspotmap_t *hsmap) {
-  mprintf(0, "Freeing HSM internals\n");
+  LOG_DEBUG << "Freeing HSM internals";
 
   ASSERT(hsmap);
 
@@ -857,7 +851,7 @@ void FreeHotSpotMapInternals(hotspotmap_t *hsmap) {
 bool menutga_ConvertTGAtoHSM(const char *fpath) {
   char path[255], filename[255], ext[8];
   ddio_SplitPath(fpath, path, filename, ext);
-  mprintf(0, "Extracting hotspots from %s\n", filename);
+  LOG_DEBUG.printf("Extracting hotspots from %s", filename);
 
   // strip file name
   int index, width = 0, height = 0;
@@ -881,7 +875,7 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
   menu_filename = (char *)mem_malloc(size);
   strcpy(menu_filename, filename);
   strcat(menu_filename, ".HSM"); // Hot Spot Map
-  mprintf(0, "HSM=%s\n", menu_filename);
+  LOG_DEBUG.printf("HSM=%s", menu_filename);
 
   std::filesystem::path save_path = LocalManageGraphicsDir / menu_filename;
 

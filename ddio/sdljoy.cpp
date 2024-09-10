@@ -70,11 +70,10 @@
 #include <cstring>
 #include <SDL.h>
 
-#include "joystick.h"
-#include "pserror.h"
-
 // rcg06182000 need this for specific joystick stuff.
 #include "args.h"
+#include "joystick.h"
+#include "log.h"
 
 //	---------------------------------------------------------------------------
 //	globals
@@ -199,8 +198,8 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
     }
     Joysticks[joy].caps = caps;
 
-    mprintf(0, "JOYSTICK: Initialized stick named [%s].", caps.name);
-    mprintf(0, "JOYSTICK: (%d) axes, (%d) hats, and (%d) buttons.", axes, hats, caps.num_btns);
+    LOG_DEBUG.printf("JOYSTICK: Initialized stick named [%s].", caps.name);
+    LOG_DEBUG.printf("JOYSTICK: (%d) axes, (%d) hats, and (%d) buttons.", axes, hats, caps.num_btns);
   }
 
   return (Joysticks[joy].handle != NULL);
@@ -333,7 +332,7 @@ static int joyGetNumDevs(void) {
     found = SDL_NumJoysticks();
   }
 
-  mprintf(0, "Joystick: Found %d joysticks.", found);
+  LOG_INFO.printf("Joystick: Found %d joysticks.", found);
   return found;
 }
 

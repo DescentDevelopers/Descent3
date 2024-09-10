@@ -68,11 +68,12 @@
  * $NoKeywords: $
  */
 
+#include <cstdlib>
+#include <cstring>
+
 #include "gamepath.h"
-#include <stdlib.h>
-#include <string.h>
-#include "pserror.h"
-#include "pstypes.h"
+#include "log.h"
+#include "mem.h"
 
 game_path GamePaths[MAX_GAME_PATHS];
 int Num_game_paths = 0;
@@ -83,7 +84,7 @@ void FreeGamePath(int n) {
     return;
 
   mem_free(GamePaths[n].pathnodes);
-  mprintf(0, "Path %d lost some\n", n);
+  LOG_DEBUG.printf("Path %d lost some", n);
 
   GamePaths[n].num_nodes = 0;
   GamePaths[n].used = 0;

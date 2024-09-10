@@ -86,7 +86,7 @@
 #include "OsirisStatusDlg.h"
 #include "ObjCScript.h"
 #include "mem.h"
-
+#include "mono.h"
 #include "pserror.h"
 #include "d3x.h"
 #include "ddio.h"

@@ -142,15 +142,16 @@
  * $NoKeywords: $
  */
 
-#include "ddio.h"
-#include "pserror.h"
-#include "mem.h"
-#include <stdarg.h>
+#include <cstdarg>
+#include <cstdio>
 #include <sys/stat.h>
 #include <io.h>
 #include <fcntl.h>
-#include <stdio.h>
-#include <errno.h>
+
+#include "ddio.h"
+#include "log.h"
+#include "mem.h"
+#include "pserror.h"
 
 //	---------------------------------------------------------------------------
 //	File operations
@@ -191,7 +192,7 @@ void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext) 
 void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src) {
   HANDLE desthandle, srchandle;
   FILETIME a, b, c;
-  bool first_time = 1;
+  bool first_time = true;
 
 try_again:;
 
@@ -199,7 +200,7 @@ try_again:;
   srchandle = CreateFile(src.u8string().c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
   if (desthandle == INVALID_HANDLE_VALUE || srchandle == INVALID_HANDLE_VALUE) {
-    mprintf(0, "Couldn't copy file time for %s! Error=%d\n", dest.u8string().c_str(), GetLastError());
+    LOG_WARNING.printf("Couldn't copy file time for %s! Error=%d", dest.u8string().c_str(), GetLastError());
 
     if (desthandle != INVALID_HANDLE_VALUE)
       CloseHandle(desthandle);
@@ -208,7 +209,7 @@ try_again:;
       CloseHandle(srchandle);
 
     if (first_time) {
-      first_time = 0;
+      first_time = false;
       Sleep(500);
       goto try_again;
     }

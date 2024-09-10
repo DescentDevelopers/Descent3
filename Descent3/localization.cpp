@@ -84,17 +84,18 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <ctype.h>
-#include "game.h"
-#include "descent.h"
-#include "mono.h"
+#include <cctype>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+
 #include "cfile.h"
-#include "localization.h"
-#include "mem.h"
 #include "ddio.h"
+#include "descent.h"
+#include "game.h"
+#include "localization.h"
+#include "log.h"
+#include "mem.h"
 
 struct tLangTag {
   const char *tag;
@@ -313,7 +314,7 @@ try_english:
 
     // no strings found
     Localization_language = old_language;
-    mprintf(0, "Localization: Warning, 0 strings found in %s\n", filename);
+    LOG_WARNING << "Localization: Warning, 0 strings found in " << filename;
     *table = NULL;
     *size = 0;
     return true;
@@ -418,7 +419,7 @@ try_english:
 
   cfclose(file);
 
-  mprintf(0, "String Table (%s) loaded with %d strings\n", filename, *size);
+  LOG_INFO.printf("String Table (%s) loaded with %d strings", filename, *size);
   Localization_language = old_language;
 
   return (scount == (*size));

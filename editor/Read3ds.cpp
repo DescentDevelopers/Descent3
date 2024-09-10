@@ -110,6 +110,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "mem.h"
+#include "mono.h"
 #include "vecmat.h"
 
 // 3ds MAX id's

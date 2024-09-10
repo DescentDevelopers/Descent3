@@ -26,6 +26,7 @@
 #include "d3edit.h"
 #include "ddio.h"
 #include "mem.h"
+#include "mono.h"
 
 #include <stdlib.h>
 #include <algorithm>

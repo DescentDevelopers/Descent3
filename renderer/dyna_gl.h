@@ -28,6 +28,7 @@
 #include <SDL_opengl.h>
 
 #include "descent.h"
+#include "log.h"
 #include "module.h"
 #include "pserror.h"
 
@@ -104,19 +105,19 @@ FnPtr<Ret(Args...)>::FnPtr(std::string_view name, bool optional) : fn_{} {
 }
 
 static module *LoadOpenGLDLL(const char *dllname) {
-  mprintf(0, "Loading OpenGL dll...\n");
+  LOG_INFO << "Loading OpenGL dll...";
   int rc = SDL_GL_LoadLibrary(dllname[0] ? dllname : nullptr);
 
   if (rc < 0) {
     const char *sdlErr = SDL_GetError();
-    mprintf(0, "OpenGL: Couldn't open library [%s].\n", dllname[0] ? dllname : "system default");
-    mprintf(0, "OpenGL:  SDL error is [%s].", sdlErr);
+    LOG_ERROR.printf("OpenGL: Couldn't open library [%s]: SDL error [%s].",
+                     dllname[0] ? dllname : "system default", sdlErr);
     return NULL;
   }
 
   strcpy(loadedLibrary, dllname);
 
-  mprintf(0, "OpenGL dll loading successful.\n");
+  LOG_INFO << "OpenGL dll loading successful.";
 
   return &OpenGLDLLInst;
 }

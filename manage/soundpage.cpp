@@ -124,10 +124,9 @@
 #include "cfile.h"
 #include "manage.h"
 #include "soundpage.h"
-#include "mono.h"
+#include "log.h"
 #include "pserror.h"
 #include "soundload.h"
-#include "ddio.h"
 #include "args.h"
 
 // soundpage commands that are read/written
@@ -349,7 +348,7 @@ int mng_FindSpecificSoundPage(char *name, mngs_sound_page *soundpage, int offset
     }
   }
   if (!infile) {
-    mprintf(0, "Couldn't open table file to find sound!\n");
+    LOG_ERROR << "Couldn't open table file to find sound!";
     Int3();
     return 0;
   }
@@ -415,7 +414,7 @@ int mng_AssignSoundPageToSound(mngs_sound_page *soundpage, int n) {
   // Try and load our sound raw from the disk
   raw_handle = LoadSoundFile(soundpage->raw_name, Sounds[n].import_volume, false);
   if (raw_handle < 0) {
-    mprintf(0, "Couldn't load file '%s' in AssignSoundPage...\n", soundpage->raw_name);
+    LOG_ERROR.printf("Couldn't load file '%s' in AssignSoundPage...", soundpage->raw_name);
     soundpointer->sample_index = -1;
     return 0;
   } else
@@ -445,7 +444,7 @@ void mng_LoadNetSoundPage(CFILE *infile, bool overlay) {
     int n = FindSoundName(soundpage.sound_struct.name);
     if (n != -1) {
       if (overlay) {
-        mprintf(0, "OVERLAYING SOUND %s\n", soundpage.sound_struct.name);
+        LOG_DEBUG.printf("OVERLAYING SOUND %s", soundpage.sound_struct.name);
         mng_FreePagetypePrimitives(PAGETYPE_SOUND, soundpage.sound_struct.name, 0);
         mng_AssignSoundPageToSound(&soundpage, n);
       }
@@ -454,7 +453,7 @@ void mng_LoadNetSoundPage(CFILE *infile, bool overlay) {
     int ret = mng_SetAndLoadSound(&soundpage);
     ASSERT(ret >= 0);
   } else
-    mprintf(0, "Could not load soundpage named %s!\n", soundpage.sound_struct.name);
+    LOG_WARNING.printf("Could not load soundpage named %s!", soundpage.sound_struct.name);
 }
 // Reads a sound page from a local table file.  It then allocs a sound and
 // loads any raws associated with that sound
@@ -495,7 +494,7 @@ void mng_LoadLocalSoundPage(CFILE *infile) {
           if (addon->Addon_tracklocks[tidx].pagetype == PAGETYPE_SOUND &&
               !stricmp(addon->Addon_tracklocks[tidx].name, soundpage.sound_struct.name)) {
             // found it!!
-            mprintf(0, "SoundPage: %s previously loaded\n", soundpage.sound_struct.name);
+            LOG_DEBUG.printf("SoundPage: %s previously loaded", soundpage.sound_struct.name);
             need_to_load_page = false;
             break;
           }
@@ -552,7 +551,7 @@ void mng_LoadLocalSoundPage(CFILE *infile) {
     if (Loading_addon_table == -1)
       mng_AllocTrackLock(soundpage.sound_struct.name, PAGETYPE_SOUND);
   } else
-    mprintf(0, "Could not load soundpage named %s!\n", soundpage.sound_struct.name);
+    LOG_WARNING.printf("Could not load soundpage named %s!", soundpage.sound_struct.name);
 }
 // First searches through the sound index to see if the sound is already
 // loaded.  If not, searches in the table file and loads it.

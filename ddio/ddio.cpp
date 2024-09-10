@@ -87,10 +87,14 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstdlib>
+
 #include "ddio.h"
 #include "joystick.h"
+#include "log.h"
 #include "pserror.h"
-#include <stdlib.h>
+
 static bool DDIO_initialized = false;
 // ----------------------------------------------------------------------------
 //	Common initialization
@@ -103,7 +107,7 @@ bool ddio_Init(ddio_init_info *init_info) {
   if (first_time) {
     atexit(ddio_Close);
   }
-  mprintf(0, "DDIO system initializing...\n");
+  LOG_DEBUG << "DDIO system initializing...";
   res = ddio_InternalInit(init_info);
   if (res) {
     if (first_time) { // initialize once and only once.
@@ -124,7 +128,7 @@ void ddio_Close() {
     ddio_MouseClose();
     ddio_KeyClose();
     ddio_InternalClose();
-    mprintf(0, "DDIO system closed.\n");
+    LOG_DEBUG << "DDIO system closed.";
     DDIO_initialized = false;
   }
 }

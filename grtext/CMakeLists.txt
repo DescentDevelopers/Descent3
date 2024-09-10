@@ -12,6 +12,7 @@ target_link_libraries(grtext PRIVATE
   ddio
   mem
   misc
+  plog::plog
 )
 target_include_directories(grtext PUBLIC
   $<BUILD_INTERFACE:

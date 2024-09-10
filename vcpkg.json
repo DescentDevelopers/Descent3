@@ -3,6 +3,7 @@
   "dependencies": [
     "glm",
     "gtest",
+    "plog",
     "zlib",
     {
       "name": "sdl2",

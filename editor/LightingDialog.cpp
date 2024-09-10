@@ -264,6 +264,7 @@
 #include "lighting.h"
 #include "bsp.h"
 #include "ddio.h"
+#include "mono.h"
 #include "vclip.h"
 
 #ifdef _DEBUG

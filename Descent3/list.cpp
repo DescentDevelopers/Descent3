@@ -17,7 +17,7 @@
 */
 
 #include "list.h"
-// #include <malloc.h>
+#include "log.h"
 #include "mem.h"
 
 // Allocates space for a new list node, returning the pointer to it
@@ -26,7 +26,7 @@ listnode *NewListNode(void) {
 
   node = (listnode *)mem_malloc(sizeof(listnode));
   if (node == NULL) {
-    mprintf(0, "Not enough memory for a new listnode!\n");
+    LOG_FATAL << "Not enough memory for a new listnode!";
     Int3();
     return NULL;
   }
@@ -46,7 +46,7 @@ int AddListItem(listnode **listp, void *item) {
   newnode = NewListNode();
 
   if (newnode == NULL) {
-    mprintf(0, "There was a problem mallocing list node memory!\n");
+    LOG_FATAL << "There was a problem mallocing list node memory!";
     Int3();
     return 0;
   }
@@ -88,7 +88,7 @@ int RemoveListItem(listnode **listp, void *item) {
   }
 
   if (!inlist) {
-    mprintf(0, "RemoveItem: Warning, item not found in list\n");
+    LOG_WARNING << "RemoveItem: Warning, item not found in list";
     return 0;
   }
 

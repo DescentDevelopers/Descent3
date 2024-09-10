@@ -17,6 +17,7 @@ target_link_libraries(physics PRIVATE
   model
   rtperformance
   sndlib
+  plog::plog
 )
 target_include_directories(physics PUBLIC
   $<BUILD_INTERFACE:

@@ -161,6 +161,7 @@
 #include <cstring>
 
 #include "UIlib.h"
+#include "log.h"
 
 #define SCROLL_BUTTON_GAP 4
 
@@ -422,7 +423,7 @@ void UIListBox::RemoveItem(const UIItem *item) {
     }
   }
   if (found == -1) {
-    mprintf(0, "UIListBox:: Didn't find item to remove!\n");
+    LOG_DEBUG << "UIListBox:: Didn't find item to remove!";
     return;
   }
 
@@ -486,7 +487,7 @@ void UIListBox::SelectItem(const UIItem *item) {
     }
   }
   if (!found) {
-    mprintf(0, "UIListBox::SelectItem item not found!\n");
+    LOG_DEBUG << "UIListBox::SelectItem item not found!";
   }
 }
 

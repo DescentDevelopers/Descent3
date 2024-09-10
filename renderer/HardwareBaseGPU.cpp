@@ -22,6 +22,7 @@
 #include <cstring>
 
 #include "pserror.h"
+#include "log.h"
 #include "mono.h"
 #include "3d.h"
 #include "renderer.h"
@@ -362,7 +363,7 @@ int rend_SetPreferredState(renderer_preferred_state *pref_state) {
   gpu_preferred_state = *pref_state;
   if (gpu_state.initted) {
     int reinit = 0;
-    mprintf(0, "Inside pref state!\n");
+    LOG_DEBUG << "Inside pref state!";
 
     // Change gamma if needed
     if (pref_state->width != gpu_state.screen_width || pref_state->height != gpu_state.screen_height ||

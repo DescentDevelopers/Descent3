@@ -246,7 +246,7 @@
 #include "physics.h"
 #include "door.h"
 #include "mem.h"
-
+#include "mono.h"
 #include "PowerupPropDialog.h"
 
 #ifdef _DEBUG

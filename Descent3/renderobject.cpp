@@ -577,9 +577,14 @@
  *
  * $NoKeywords: $
  */
+
+#include <algorithm>
+#include <cstring>
+
 #include "object.h"
 #include "object_lighting.h"
 #include "3d.h"
+#include "log.h"
 #include "polymodel.h"
 #include "renderer.h"
 #include "weapon.h"
@@ -589,8 +594,6 @@
 #include "AIMain.h"
 #include "objinfo.h"
 #include "splinter.h"
-#include "fireball.h"
-#include "descent.h"
 #include "render.h"
 #include "gametexture.h"
 #include "game.h"
@@ -607,12 +610,9 @@
 #include "ship.h"
 #include "psrand.h"
 
-#include <string.h>
 #ifdef EDITOR
 #include "editor\d3edit.h"
 #endif
-
-#include <algorithm>
 
 // what darkening level to use when cloaked
 #define CLOAKED_FADE_LEVEL 28
@@ -726,7 +726,7 @@ static void DrawNumber(int num, vector pos, float size, ddgr_color c1) {
   }
   int num_numbers = (int)(log10f((float)num) + 1);
   if (num_numbers > 10) {
-    mprintf(0, "Cannot represent a number with over 10 digits\n");
+    LOG_FATAL << "Cannot represent a number with over 10 digits";
     Int3();
     return;
   }
@@ -1207,7 +1207,7 @@ void RenderObject(object *obj) {
   float normalized_time[MAX_SUBOBJECTS];
   bool render_it = false;
   if (obj->type == OBJ_NONE) {
-    mprintf(1, "ERROR!!!! Bogus obj %d in room %d is rendering!\n", OBJNUM(obj), obj->roomnum);
+    LOG_FATAL.printf("ERROR!!! Bogus obj %d in room %d is rendering!", OBJNUM(obj), obj->roomnum);
     Int3();
     return;
   }
@@ -1447,7 +1447,7 @@ void RenderObject(object *obj) {
     if (rend_GetPixel(TSearch_x, TSearch_y) != oldcolor) {
       TSearch_found_type = TSEARCH_FOUND_OBJECT;
       TSearch_seg = obj - Objects;
-      mprintf(0, "TR:objnum=%d\n", obj - Objects);
+      LOG_DEBUG.printf("TR:objnum=%d", obj - Objects);
     }
   }
 #endif

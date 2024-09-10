@@ -19,14 +19,13 @@
 #include <cstring>
 #include <filesystem>
 
+#include "args.h"
 #include "cfile.h"
-#include "manage.h"
-#include "mono.h"
-#include "pserror.h"
-#include "ddio.h"
 #include "gamefile.h"
 #include "gamefilepage.h"
-#include "args.h"
+#include "log.h"
+#include "manage.h"
+#include "pserror.h"
 
 // gamefilepage commands that are read/written
 // A command is followed by a byte count describing how many bytes
@@ -270,7 +269,7 @@ void mng_LoadNetGamefilePage(CFILE *infile, bool overlay) {
     int n = FindGamefileName(gamefilepage.gamefile_struct.name);
     if (n != -1) {
       if (overlay) {
-        mprintf(0, "OVERLAYING GAMEFILE %s\n", gamefilepage.gamefile_struct.name);
+        LOG_DEBUG.printf("OVERLAYING GAMEFILE %s", gamefilepage.gamefile_struct.name);
         mng_FreePagetypePrimitives(PAGETYPE_GAMEFILE, gamefilepage.gamefile_struct.name, 0);
         mng_AssignGamefilePageToGamefile(&gamefilepage, n);
       }
@@ -279,8 +278,9 @@ void mng_LoadNetGamefilePage(CFILE *infile, bool overlay) {
 
     int ret = mng_SetAndLoadGamefile(&gamefilepage);
     ASSERT(ret >= 0);
-  } else
-    mprintf(0, "Could not load gamefilepage named %s!\n", gamefilepage.gamefile_struct.name);
+  } else {
+    LOG_ERROR.printf("Could not load gamefilepage named %s!", gamefilepage.gamefile_struct.name);
+  }
 }
 
 // Reads a gamefile page from a local table file.  It then allocs a gamefile and
@@ -324,7 +324,7 @@ void mng_LoadLocalGamefilePage(CFILE *infile) {
           if (addon->Addon_tracklocks[tidx].pagetype == PAGETYPE_GAMEFILE &&
               !stricmp(addon->Addon_tracklocks[tidx].name, gamefilepage.gamefile_struct.name)) {
             // found it!!
-            mprintf(0, "GamefilePage: %s previously loaded\n", gamefilepage.gamefile_struct.name);
+            LOG_DEBUG.printf("GamefilePage: %s previously loaded", gamefilepage.gamefile_struct.name);
             need_to_load_page = false;
             break;
           }
@@ -381,6 +381,7 @@ void mng_LoadLocalGamefilePage(CFILE *infile) {
     if (Loading_addon_table == -1)
       mng_AllocTrackLock(gamefilepage.gamefile_struct.name, PAGETYPE_GAMEFILE);
 
-  } else
-    mprintf(0, "Could not load gamefilepage named %s!\n", gamefilepage.gamefile_struct.name);
+  } else {
+    LOG_ERROR.printf("Could not load gamefilepage named %s!", gamefilepage.gamefile_struct.name);
+  }
 }

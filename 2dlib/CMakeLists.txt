@@ -17,6 +17,7 @@ target_link_libraries(2dlib PRIVATE
   cfile
   mem
   misc
+  plog::plog
 )
 target_include_directories(2dlib PUBLIC
   $<BUILD_INTERFACE:

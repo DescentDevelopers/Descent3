@@ -277,20 +277,22 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstring>
+
 #include "ctlconfig.h"
 #include "CtlCfgElem.h"
 #include "ctlconfigtxt.h"
 #include "game.h"
+#include "log.h"
 #include "weapon.h"
 #include "pilot.h"
-#include "bitmap.h"
-#include "multi.h"
 #include "gameloop.h"
 #include "gamefont.h"
 #include "D3ForceFeedback.h"
 #include "hlsoundlib.h"
 #include "ddio.h"
-#include <string.h>
+
 //////////////////////////////////////////////////////////////////////////////
 #define IDV_KCONFIG 10
 #define IDV_CCONFIG 11
@@ -693,7 +695,7 @@ void wpnsel_cfg_screen::finish() {}
 void wpnsel_cfg_screen::process(int res) {
   int slot, i;
   bool is_secondary = false, do_swap_ui = false, do_disable_ui = false, update_buttons = false;
-  mprintf(0, "res=%d\n", res);
+  LOG_DEBUG.printf("res=%d", res);
   if (m_selection_status == -1) {
     if (res == UID_RESETDEFAULTS) {
       for (i = 0; i < MAX_PRIMARY_WEAPONS; i++)
@@ -732,7 +734,7 @@ void wpnsel_cfg_screen::process(int res) {
     is_secondary = true;
     do_disable_ui = true;
   }
-  mprintf(0, "slot=%d\n", slot);
+  LOG_DEBUG.printf("slot=%d", slot);
 
   // do different uis
   if (do_disable_ui) {

@@ -310,6 +310,7 @@
 #include "GenericLightDialog.h"
 #include "ddio.h"
 #include "mem.h"
+#include "mono.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

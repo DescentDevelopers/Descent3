@@ -107,7 +107,7 @@
 #include "cfile.h"
 #include "ddio.h"
 #include "game.h"
-#include "mono.h"
+#include "log.h"
 #include "newui.h"
 #include "pstring.h"
 #include "renderer.h"
@@ -195,7 +195,7 @@ void FileSelectCallback(int index) {
 
   strncpy(path_edit, (working_listpath / working_filename).u8string().c_str(), _MAX_PATH - 1);
   path_edit[_MAX_PATH - 1] = '\0';
-  mprintf(0, "New Path: %s\n", path_edit);
+  LOG_DEBUG.printf("New Path: %s", path_edit);
   fdlg_working_sheet->UpdateChanges();
 }
 
@@ -446,14 +446,14 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
       }
     } break;
     default:
-      mprintf(0, "No operation in DoPathFileDialog()!\n");
+      LOG_WARNING << "No operation in DoPathFileDialog()!";
     }
   }
 
   if (ret) {
-    mprintf(0, "Selected Filename: %s\n", path.u8string().c_str());
+    LOG_DEBUG.printf("Selected Filename: %s", path.u8string().c_str());
   } else {
-    mprintf(0, "Cancel!\n");
+    LOG_DEBUG << "Cancel!";
   }
 
   window.Close();
@@ -498,7 +498,7 @@ void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const s
     }
   } catch (std::exception &e) {
     DoMessageBox(TXT_ERROR, TXT_ERRPATHNOTVALID, MSGBOX_OK);
-    mprintf(0, "Error iterating directory %s: %s\n", path.u8string().c_str(), e.what());
+    LOG_ERROR.printf("Error iterating directory %s: %s", path.u8string().c_str(), e.what());
   }
 
   if (dirs.size() + files.size() == 0) {

@@ -7,6 +7,7 @@ target_compile_definitions(mem PUBLIC
 )
 target_link_libraries(mem PRIVATE
   misc
+  plog::plog
 )
 target_include_directories(mem PUBLIC
   $<BUILD_INTERFACE:

@@ -55,6 +55,7 @@
 
 #include "args.h"
 #include "d3movie.h"
+#include "log.h"
 #include "manage.h"
 #include "mem.h"
 #include "pserror.h"
@@ -171,13 +172,13 @@ void SubtParseSubtitles(CFILE *file) {
     // starting frame number
     p = parse_int(p, &first_frame);
     if (!p) {
-      mprintf(0, "Couldn't parse first_frame\n");
+      LOG_WARNING << "Couldn't parse first_frame";
       goto subt_parse_error;
     }
 
     p = parse_int(p, &last_frame);
     if (!p) {
-      mprintf(0, "Couldn't parse last_frame\n");
+      LOG_WARNING << "Couldn't parse last_frame";
       goto subt_parse_error;
     }
 
@@ -196,7 +197,7 @@ void SubtParseSubtitles(CFILE *file) {
   }
   return;
 subt_parse_error:
-  mprintf(0, "Error Parsing SubTitle File!\n");
+  LOG_WARNING << "Error Parsing SubTitle File!";
   SubtResetSubTitles();
 }
 
@@ -224,11 +225,11 @@ void SubtInitSubtitles(const std::filesystem::path &filename) {
   std::filesystem::path subtitle_path = std::filesystem::path(LocalArtDir) / "movies" / filename;
   subtitle_path.replace_extension(MOVIE_SUBTITLE_EXTENSION);
 
-  mprintf(0, "Looking for the subtitle file %s\n", subtitle_path.u8string().c_str());
+  LOG_DEBUG << "Looking for the subtitle file " << subtitle_path;
 
   CFILE *ifile = cfopen(subtitle_path, "rt");
   if (!ifile) {
-    mprintf(0, "Movie: Couldn't find subtitle file %s\n", subtitle_path.u8string().c_str());
+    LOG_WARNING << "Movie: Couldn't find subtitle file " << subtitle_path;
     return;
   }
 

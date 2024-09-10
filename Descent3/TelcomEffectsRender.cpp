@@ -48,13 +48,15 @@
  *
  * $NoKeywords: $
  */
-#include "TelComEffects.h"
-#include "textaux.h"
-#include "mem.h"
-#include "hlsoundlib.h"
-#include <string.h>
 
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
+
+#include "TelComEffects.h"
+#include "hlsoundlib.h"
+#include "log.h"
+#include "mem.h"
+#include "textaux.h"
 
 int glitch_dx = 0, glitch_dy = 0;
 #define DISABLED_TEXT_COLOR GR_RGB(180, 180, 180);
@@ -83,21 +85,16 @@ void RenderTextStatic(tceffect *tce, float frametime, int xoff, int yoff, bool o
     switch (evt.id) {
     case TEVT_SCROLLDOWN:
       if (tce->textinfo.scroll_d) {
-        // mprintf(0,"Down Baby Down!\n");
         tce->textinfo.line_index++;
       }
       break;
     case TEVT_SCROLLUP:
       if (tce->textinfo.line_index > 0) {
-        // mprintf(0,"Up Baby Up!\n");
         tce->textinfo.line_index--;
       }
       break;
-    case TEVT_GAINFOCUS: {
-      // mprintf(0,"Text %d Gain Focus\n",tce-TCEffects);
-    } break;
+    case TEVT_GAINFOCUS:
     case TEVT_LOSTFOCUS: {
-      // mprintf(0,"Text %d Lost Focus\n",tce-TCEffects);
     } break;
     }
   }
@@ -159,21 +156,16 @@ void RenderTextType(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
     switch (evt.id) {
     case TEVT_SCROLLDOWN:
       if (tce->textinfo.scroll_d) {
-        // mprintf(0,"Down Baby Down!\n");
         tce->textinfo.line_index++;
       }
       break;
     case TEVT_SCROLLUP:
       if (tce->textinfo.line_index > 0) {
-        // mprintf(0,"Up Baby Up!\n");
         tce->textinfo.line_index--;
       }
       break;
-    case TEVT_GAINFOCUS: {
-      // mprintf(0,"Text %d Gain Focus\n",tce-TCEffects);
-    } break;
+    case TEVT_GAINFOCUS:
     case TEVT_LOSTFOCUS: {
-      // mprintf(0,"Text %d Lost Focus\n",tce-TCEffects);
     } break;
     }
   }
@@ -300,21 +292,16 @@ void RenderTextFade(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
     switch (evt.id) {
     case TEVT_SCROLLDOWN:
       if (tce->textinfo.scroll_d) {
-        // mprintf(0,"Down Baby Down!\n");
         tce->textinfo.line_index++;
       }
       break;
     case TEVT_SCROLLUP:
       if (tce->textinfo.line_index > 0) {
-        // mprintf(0,"Up Baby Up!\n");
         tce->textinfo.line_index--;
       }
       break;
-    case TEVT_GAINFOCUS: {
-      // mprintf(0,"Text %d Gain Focus\n",tce-TCEffects);
-    } break;
+    case TEVT_GAINFOCUS:
     case TEVT_LOSTFOCUS: {
-      // mprintf(0,"Text %d Lost Focus\n",tce-TCEffects);
     } break;
     }
   }
@@ -634,7 +621,7 @@ void RenderBmpInvert(tceffect *tce, float frametime, int xoff, int yoff, bool ok
     k = 1.0;
     changed = false;
   } else if (k < 0) {
-    mprintf(0, "k<0 on inverse bitmap...bashing (%.2f/%.2f)\n", tce->age, tce->speed);
+    LOG_WARNING.printf("k<0 on inverse bitmap...bashing (%.2f/%.2f)", tce->age, tce->speed);
     if (tce->age < 0)
       Int3();
     if (tce->speed < 0)
@@ -896,11 +883,9 @@ void RenderButton(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to
     switch (evt.id) {
     case TEVT_GAINFOCUS: {
       int num = tce - TCEffects;
-      // mprintf(0,"Button: Recv'd GAIN FOCUS Event (%d)\n",num);
     } break;
     case TEVT_LOSTFOCUS: {
       int num = tce - TCEffects;
-      // mprintf(0,"Button: Recv'd LOST FOCUS Event (%d)\n",num);
     } break;
     case TEVT_MOUSEOVER: {
       if (tce->flags & OBF_GLOW) {
@@ -931,48 +916,41 @@ void RenderButton(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to
       // send out the event to the appropriate system/effect
       switch (tce->buttoninfo.button_type) {
       case BUTT_UPARROW: {
-        // mprintf(0,"Button: Telling Text to Scroll Up\n");
         int efxnum = GetEfxNumFromID(tce->buttoninfo.parent, tce->screen);
         if (efxnum != -1) {
           SendEventToEffect(efxnum, TEVT_SCROLLUP);
         }
       } break;
       case BUTT_DOWNARROW: {
-        // mprintf(0,"Button: Telling Text to Scroll Down\n");
         int efxnum = GetEfxNumFromID(tce->buttoninfo.parent, tce->screen);
         if (efxnum != -1) {
           SendEventToEffect(efxnum, TEVT_SCROLLDOWN);
         }
       } break;
       case BUTT_NEXTPAGE:
-        // mprintf(0,"Button: Telling TelCom to go to Next Page\n");
         TelComSendEvent(TEVT_TCNEXT);
         break;
       case BUTT_PREVPAGE:
-        // mprintf(0,"Button: Telling TelCom to go to Prev Page\n");
         TelComSendEvent(TEVT_TCPREV);
         break;
       case BUTT_QUIT:
-        // mprintf(0,"Button: Telling TelCom to go to Quit\n");
         TelComSendEvent(TEVT_TCQUIT);
         break;
       case BUTT_JUMP:
-        // mprintf(0,"Button: Telling TelCom to jump to %d\n",tce->buttoninfo.jump_page);
         TelComSendEvent(TEVT_TCJUMP, tce->buttoninfo.jump_page);
         break;
       case BUTT_INTERNAL:
-        // mprintf(0,"Button: Calling internal callback\n");
         if (tce->buttoninfo.internal)
           tce->buttoninfo.internal((int)(tce - TCEffects));
         break;
       default:
-        mprintf(0, "Button: Invalid Button Type\n");
+        LOG_FATAL << "Button: Invalid Button Type";
         Int3(); // invalid button type
         // missing JUMP!!!!!!!!!!!!!!!!
       };
     } break;
     default: {
-      mprintf(0, "Button: Recv'd Evt %d\n", evt.id);
+      LOG_WARNING.printf("Button: Recv'd Evt %d", evt.id);
     } break;
     };
   }

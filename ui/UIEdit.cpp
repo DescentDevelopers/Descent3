@@ -138,6 +138,7 @@
 
 #include "UIlib.h"
 #include "grtext.h"
+#include "log.h"
 #include "Macros.h"
 #include "mem.h"
 
@@ -387,7 +388,7 @@ void UIEdit::OnKeyDown(int key) {
         for (i = len; i >= m_CurPos; i--)
           m_TextBuf[i + 1] = m_TextBuf[i];
         // adjust scroll region if cursor will go out of visible region.
-        mprintf(0, "scroll=%d, curpos=%d\n", m_ScrollThresh, m_CurPos);
+        LOG_DEBUG.printf("scroll=%d, curpos=%d", m_ScrollThresh, m_CurPos);
         //				if (m_ScrollThresh<=m_CurPos && m_ScrollThresh)
         //					m_StartPos++;
         m_TextBuf[m_CurPos++] = (char)ascii;

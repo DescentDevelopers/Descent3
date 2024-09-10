@@ -228,6 +228,7 @@
 #include "findintersection.h"
 #include "config.h"
 #include "mem.h"
+#include "mono.h"
 #include "gr.h"
 
 #ifdef _DEBUG

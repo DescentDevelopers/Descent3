@@ -463,12 +463,14 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
+#include <cstdlib>
+
 #include "AIGoal.h"
 #include "aistruct.h"
 #include "aipath.h"
 #include "object.h"
 #include "game.h"
+#include "log.h"
 #include "terrain.h"
 #include "objinfo.h"
 #include "AIMain.h"
@@ -561,11 +563,7 @@ void GoalClearGoal(object *obj, goal *cur_goal, int reason) {
   cur_goal->used = false;
 
   if (obj->ai_info->path.goal_uid == cur_goal->goal_uid) {
-#ifdef _DEBUG
-    if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-      mprintf(0, "AI Note: In free path\n");
-    }
-#endif
+    LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: In free path";
     AIPathFreePath(&ai_info->path);
   }
 
@@ -610,11 +608,7 @@ void GoalDoFrame(object *obj) {
 
   goal *cur_task_goal = GoalGetCurrentGoal(obj);
   if (ai_info->path.num_paths > 0 && (cur_task_goal == NULL || (cur_task_goal->goal_uid != ai_info->path.goal_uid))) {
-#ifdef _DEBUG
-    if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-      mprintf(0, "AI Note: In free path\n");
-    }
-#endif
+    LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: In free path";
     AIPathFreePath(&ai_info->path);
   }
 
@@ -774,7 +768,7 @@ void GoalDoFrame(object *obj) {
               fq.flags = FQ_CHECK_OBJS | FQ_NO_RELINK | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
 
               if (fvi_FindIntersection(&fq, &hit_info) == HIT_NONE) {
-                mprintf(0, "AI OBJ Path: No need to update the path for obj %d\n", OBJNUM(obj));
+                LOG_DEBUG.printf("AI OBJ Path: No need to update the path for obj %d", OBJNUM(obj));
                 f_make_path = false;
               }
             }
@@ -811,7 +805,7 @@ void GoalDoFrame(object *obj) {
             fq.flags = FQ_CHECK_OBJS | FQ_NO_RELINK | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
 
             if (fvi_FindIntersection(&fq, &hit_info) == HIT_NONE) {
-              mprintf(0, "AI POS Path: No need to update the path for obj %d\n", OBJNUM(obj));
+              LOG_DEBUG.printf("AI POS Path: No need to update the path for obj %d", OBJNUM(obj));
               f_make_path = false;
             }
           }
@@ -880,10 +874,10 @@ int GoalAllocSlot(object *obj, int level, float influence) {
   ASSERT((level >= 0 && level < NUM_ACTIVATION_LEVELS) || (level == ACTIVATION_BLEND_LEVEL));
 
   if (influence > MAX_INFLUENCE) {
-    mprintf(0, "Goal added with too much influence -- bashing down\n");
+    LOG_DEBUG << "Goal added with too much influence -- bashing down";
     influence = MAX_INFLUENCE;
   } else if (influence < 0.0f) {
-    mprintf(0, "Goal added with negative influence -- bashing to zero\n");
+    LOG_DEBUG << "Goal added with negative influence -- bashing to zero";
     influence = 0.0f;
   }
 
@@ -891,7 +885,7 @@ int GoalAllocSlot(object *obj, int level, float influence) {
     cur_slot = level;
 
     if (level < 0) {
-      mprintf(0, "AI: Bashed an invalid activation level to zero\n");
+      LOG_DEBUG << "AI: Bashed an invalid activation level to zero";
       level = 0;
     }
 
@@ -906,7 +900,7 @@ int GoalAllocSlot(object *obj, int level, float influence) {
     goal *cur_goal = &ai_info->goals[cur_slot];
 
     if (level != ACTIVATION_BLEND_LEVEL) {
-      mprintf(0, "AI: Bashed an invalid activation blend level to blend level\n");
+      LOG_DEBUG << "AI: Bashed an invalid activation blend level to blend level";
       level = ACTIVATION_BLEND_LEVEL;
     }
 
@@ -1075,7 +1069,7 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
   case AIG_FIRE_AT_OBJ: {
     gi_fire *attack_info = (gi_fire *)arg_struct;
     if (attack_info->cur_wb > MAX_WBS_PER_OBJ) { // DAJ
-      mprintf(2, "GoalAddGoal wb_index %d > MAX_WBS_PER_OBJ\n", attack_info->cur_wb);
+      LOG_DEBUG.printf("GoalAddGoal wb_index %d > MAX_WBS_PER_OBJ", attack_info->cur_wb);
       return 0;
     }
     if ((ai_info->animation_type == AS_ALERT && !(ai_info->next_animation_type == AS_FLINCH)) ||
@@ -1239,7 +1233,7 @@ int GoalAddEnabler(object *obj, int goal_index, uint8_t enabler_type, void *arg_
   int enabler_index = ai_info->goals[goal_index].num_enablers;
 
   if (ai_info->goals[goal_index].num_enablers >= MAX_ENABLERS_PER_GOAL) {
-    mprintf(0, "Object %d with goal %d has to many enablers\n", OBJNUM(obj), goal_index);
+    LOG_DEBUG.printf("Object %d with goal %d has to many enablers", OBJNUM(obj), goal_index);
     return AI_INVALID_INDEX;
   }
 

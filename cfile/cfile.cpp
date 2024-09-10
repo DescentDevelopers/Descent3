@@ -29,12 +29,13 @@
 
 #include "byteswap.h"
 #include "crossplat.h"
-#include "pserror.h"
-#include "ddio.h"
-#include "psglob.h"
 #include "cfile.h"
+#include "ddio.h"
 #include "hogfile.h" //info about library file
+#include "log.h"
 #include "mem.h"
+#include "pserror.h"
+#include "psglob.h"
 
 // Library structures
 struct library_entry {
@@ -275,8 +276,8 @@ CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle
   } else {
     fp = fopen(lib->name.u8string().c_str(), "rb");
     if (!fp) {
-      mprintf(1, "Error opening library <%s> when opening file <%s>; errno=%d.",
-              lib->name.u8string().c_str(), filename.u8string().c_str(), errno);
+      LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.",
+                       lib->name.u8string().c_str(), filename.u8string().c_str(), errno);
       Int3();
       return nullptr;
     }
@@ -328,8 +329,8 @@ CFILE *open_file_in_lib(const char *filename) {
       } else {
         fp = fopen(lib->name.u8string().c_str(), "rb");
         if (!fp) {
-          mprintf(1, "Error opening library <%s> when opening file <%s>; errno=%d.", lib->name.u8string().c_str(),
-                  filename, errno);
+          LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.",
+                           lib->name.u8string().c_str(), filename, errno);
           Int3();
           return nullptr;
         }
@@ -657,7 +658,8 @@ int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp) {
     if (!feof(cfp->file))
       error_msg = strerror(errno);
   }
-  mprintf(1, "Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name, errno);
+  LOG_ERROR.printf("Error reading %d bytes from position %d of file <%s>; errno=%d.",
+                   count, cfp->position, cfp->name, errno);
   return 0;
 }
 // The following functions read numeric vales from a CFILE.  All values are

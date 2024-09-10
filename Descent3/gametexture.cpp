@@ -265,17 +265,16 @@
  * $NoKeywords: $
  */
 
-#include "grdefs.h"
-#include "pstypes.h"
+#include <cstdlib>
+#include <cstring>
+
 #include "gametexture.h"
-#include "mono.h"
+#include "log.h"
 #include "bitmap.h"
 #include "pserror.h"
 #include "vclip.h"
 #include "game.h"
 #include "bumpmap.h"
-#include <stdlib.h>
-#include <string.h>
 #include "procedurals.h"
 #include "ddio.h"
 #include "config.h"
@@ -302,7 +301,7 @@ int InitTextures() {
 
   int i, tex;
 
-  mprintf(0, "Initializing texture system.\n");
+  LOG_INFO << "Initializing texture system.";
   for (i = 0; i < MAX_TEXTURES; i++)
     GameTextures[i].used = 0;
 
@@ -592,8 +591,8 @@ int LoadTextureImage(const char *filename, int *type, int texture_size, int mipp
     if (!pageable && (w != bm_w(bm_handle, 0) || h != bm_h(bm_handle, 0))) {
       int dest_bm;
 
-      mprintf(0, "WARNING: Resizing bitmap %s from %d x %d to %d x %d!\n", GameBitmaps[bm_handle].name,
-               bm_w(bm_handle, 0), bm_h(bm_handle, 0), w, h);
+      LOG_WARNING.printf("WARNING: Resizing bitmap %s from %d x %d to %d x %d!",
+                         GameBitmaps[bm_handle].name, bm_w(bm_handle, 0), bm_h(bm_handle, 0), w, h);
 
       dest_bm = bm_AllocBitmap(w, h, mipped * ((w * h * 2) / 3));
       ASSERT(dest_bm >= 0);
@@ -696,8 +695,8 @@ void PageInTexture(int n, bool resize) {
 
         Total_memory_saved += saved;
 
-        mprintf(0, "Low mem: Resizing bitmap %s to %d x %d!\n", GameBitmaps[bm_handle].name, w, h);
-        mprintf(0, "Total memory saved=%d\n", Total_memory_saved);
+        LOG_DEBUG.printf("Low mem: Resizing bitmap %s to %d x %d!", GameBitmaps[bm_handle].name, w, h);
+        LOG_DEBUG.printf("Total memory saved=%d", Total_memory_saved);
 
         dest_bm = bm_AllocBitmap(w, h, mipped * ((w * h * 2) / 3));
         ASSERT(dest_bm >= 0);
@@ -743,7 +742,7 @@ void BuildTextureBumpmaps(int texhandle) {
   if (GameTextures[texhandle].flags & TF_ANIMATED)
     return; // No bumps for animated textures
 
-  mprintf(0, "Calculating bumpmap for texture named %s.\n", GameTextures[texhandle].name);
+  LOG_DEBUG.printf("Calculating bumpmap for texture named %s.", GameTextures[texhandle].name);
 
   // Make sure there is no bump already
   ASSERT(GameTextures[texhandle].bumpmap == -1);

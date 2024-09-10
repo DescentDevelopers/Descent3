@@ -3,7 +3,6 @@ set(HEADERS
   debugbreak.h
   mono.h)
 set(CPPS
-  debug.cpp
   $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
     lnxdebug.cpp
     lnxmono.cpp

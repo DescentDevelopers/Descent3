@@ -50,10 +50,12 @@
  * $NoKeywords: $
  */
 
-#include "streamaudio.h"
+#include <cstring>
+
 #include "cfile.h"
+#include "log.h"
 #include "pserror.h"
-#include <string.h>
+#include "streamaudio.h"
 
 OSFArchive::OSFArchive() {
   m_fp = NULL;
@@ -97,7 +99,7 @@ bool OSFArchive::Open(const char *filename, bool write) {
     cfseek(m_fp, -OSF_HDR_SIZE, SEEK_END);
     cf_ReadBytes((uint8_t *)tag, strlen(OSF_TAG), m_fp);
     if (strcmp(OSF_TAG, tag) != 0) {
-      mprintf(0, "Illegal OSF file format for %s.\n", filename);
+      LOG_WARNING.printf("Illegal OSF file format for %s.", filename);
       cfclose(m_fp);
       m_fp = NULL;
       return false;
@@ -120,7 +122,7 @@ bool OSFArchive::Open(const char *filename, bool write) {
       //	read in aux header based off of type.
       m_hdr.digi.measure = (uint32_t)cf_ReadInt(m_fp);
     } else {
-      mprintf(0, "Unsupported OSF file type in %s!\n", filename);
+      LOG_WARNING.printf("Unsupported OSF file type in %s!", filename);
       cfclose(m_fp);
       m_fp = NULL;
       return false;
@@ -131,7 +133,7 @@ bool OSFArchive::Open(const char *filename, bool write) {
 
     cfseek(m_fp, -OSF_HDR_TITLE_OFS, SEEK_END);
     if (!cf_ReadBytes((uint8_t *)m_name, OSF_HDR_TITLE_LEN, m_fp)) {
-      mprintf(0, "Stream title not found for %s.\n", filename);
+      LOG_WARNING.printf("Stream title not found for %s.", filename);
       cfclose(m_fp);
       m_fp = NULL;
       return false;
@@ -208,7 +210,7 @@ bool OSFArchive::SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t 
     hdrcur = cftell(m_fp);
 
     if ((hdrcur - hdrstart) > OSF_HDR_TITLE_OFS) {
-      mprintf(0, "stream header too big for title!\n");
+      LOG_WARNING << "Stream header too big for title!";
       return false;
     }
 

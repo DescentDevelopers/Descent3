@@ -205,11 +205,9 @@
 #include "manage.h"
 #include "ship.h"
 #include "shippage.h"
-#include "mono.h"
+#include "log.h"
 #include "pserror.h"
 #include "polymodel.h"
-#include "ddio.h"
-#include "robotfire.h"
 #include "weaponpage.h"
 #include "soundload.h"
 #include "sounds.h"
@@ -868,7 +866,7 @@ int mng_FindSpecificShipPage(char *name, mngs_ship_page *shippage, int offset) {
   }
 
   if (!infile) {
-    mprintf(0, "Couldn't open table file to find ship!\n");
+    LOG_ERROR << "Couldn't open table file to find ship!";
     Int3();
     return 0;
   }
@@ -971,7 +969,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
   img_handle = LoadPolyModel(shippage->image_name, 1);
 
   if (img_handle < 0) {
-    mprintf(0, "Couldn't load file '%s' in AssignShipPage...\n", shippage->image_name);
+    LOG_ERROR.printf("Couldn't load file '%s' in AssignShipPage...", shippage->image_name);
     shippointer->model_handle = -1;
     return 0;
   } else
@@ -981,7 +979,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
     img_handle = LoadPolyModel(shippage->dying_image_name, 1);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load file '%s' in AssignShipPage...\n", shippage->dying_image_name);
+      LOG_ERROR.printf("Couldn't load file '%s' in AssignShipPage...", shippage->dying_image_name);
       shippointer->dying_model_handle = -1;
       return 0;
     } else
@@ -994,7 +992,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
     img_handle = LoadPolyModel(shippage->med_image_name, 1);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load file '%s' in AssignShipPage...\n", shippage->med_image_name);
+      LOG_ERROR.printf("Couldn't load file '%s' in AssignShipPage...", shippage->med_image_name);
       shippointer->med_render_handle = -1;
       return 0;
     } else
@@ -1006,7 +1004,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
     img_handle = LoadPolyModel(shippage->lo_image_name, 1);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load file '%s' in AssignGenericPage...\n", shippage->lo_image_name);
+      LOG_ERROR.printf("Couldn't load file '%s' in AssignGenericPage...", shippage->lo_image_name);
       shippointer->lo_render_handle = -1;
       return 0;
     } else
@@ -1021,7 +1019,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
         int weapon_handle = mng_GetGuaranteedWeaponPage(shippage->weapon_name[i][j], infile);
 
         if (weapon_handle < 0) {
-          mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n", shippage->weapon_name[i][j],
+          LOG_WARNING.printf("Couldn't load weapon file '%s' in AssignPowPage %s...", shippage->weapon_name[i][j],
                   shippage->ship_struct.name);
           shippointer->static_wb[i].gp_weapon_index[j] = LASER_INDEX;
         } else
@@ -1038,8 +1036,8 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
         int fire_sound_handle = mng_GetGuaranteedSoundPage(shippage->fire_sound_name[i][j], infile);
 
         if (fire_sound_handle < 0) {
-          mprintf(0, "Couldn't load fire_sound file '%s' in AssignPowPage %s...\n", shippage->fire_sound_name[i][j],
-                  shippage->ship_struct.name);
+          LOG_WARNING.printf("Couldn't load fire_sound file '%s' in AssignPowPage %s...",
+                             shippage->fire_sound_name[i][j], shippage->ship_struct.name);
           shippointer->static_wb[i].fm_fire_sound_index[j] = SOUND_NONE_INDEX;
         } else
           shippointer->static_wb[i].fm_fire_sound_index[j] = fire_sound_handle;
@@ -1053,8 +1051,8 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
       int sound_handle = mng_GetGuaranteedSoundPage(shippage->firing_sound_name[i], infile);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n", shippage->firing_sound_name[i],
-                shippage->ship_struct.name);
+        LOG_WARNING.printf("Couldn't load firing_sound file '%s' in AssignPowPage %s...",
+                           shippage->firing_sound_name[i], shippage->ship_struct.name);
         shippointer->firing_sound[i] = SOUND_NONE_INDEX;
       } else
         shippointer->firing_sound[i] = sound_handle;
@@ -1065,8 +1063,8 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
       int sound_handle = mng_GetGuaranteedSoundPage(shippage->release_sound_name[i], infile);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n", shippage->release_sound_name[i],
-                shippage->ship_struct.name);
+        LOG_WARNING.printf("Couldn't load firing_sound file '%s' in AssignPowPage %s...",
+                           shippage->release_sound_name[i], shippage->ship_struct.name);
         shippointer->firing_release_sound[i] = SOUND_NONE_INDEX;
       } else
         shippointer->firing_release_sound[i] = sound_handle;
@@ -1077,7 +1075,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
       shippointer->spew_powerup[i] = mng_GetGuaranteedGenericPage(shippage->spew_powerup_name[i], infile);
       if (shippointer->spew_powerup[i] > -1 &&
           Object_info[shippointer->spew_powerup[i]].type != OBJ_POWERUP) { // DAJ -1FIX
-        mprintf(1, "Spew powerup is not a powerup!  Setting to none.\n");
+        LOG_WARNING << "Spew powerup is not a powerup!  Setting to none.";
         shippointer->spew_powerup[i] = -1;
       }
     } else
@@ -1149,7 +1147,7 @@ void mng_AssignShipToShipPage(int n, mngs_ship_page *shippage) {
 
     if (shippointer->spew_powerup[i] != -1) {
       if (Object_info[shippointer->spew_powerup[i]].type != OBJ_POWERUP) {
-        mprintf(1, "Spew powerup is not a powerup!  Setting to none.\n");
+        LOG_WARNING << "Spew powerup is not a powerup!  Setting to none.";
         shippage->spew_powerup_name[i][0] = 0;
       } else
         strcpy(shippage->spew_powerup_name[i], Object_info[shippointer->spew_powerup[i]].name);
@@ -1171,7 +1169,7 @@ void mng_LoadNetShipPage(CFILE *infile, bool overlay) {
     int n = FindShipName(shippage.ship_struct.name);
     if (n != -1) {
       if (overlay) {
-        mprintf(0, "OVERLAYING SHIP %s\n", shippage.ship_struct.name);
+        LOG_DEBUG.printf("OVERLAYING SHIP %s", shippage.ship_struct.name);
         mng_FreePagetypePrimitives(PAGETYPE_SHIP, shippage.ship_struct.name, 0);
         mng_AssignShipPageToShip(&shippage, n);
       }
@@ -1180,7 +1178,7 @@ void mng_LoadNetShipPage(CFILE *infile, bool overlay) {
     int ret = mng_SetAndLoadShip(&shippage, infile);
     ASSERT(ret >= 0);
   } else
-    mprintf(0, "Could not load shippage named %s!\n", shippage.ship_struct.name);
+    LOG_WARNING.printf("Could not load shippage named %s!", shippage.ship_struct.name);
 }
 
 // Reads a ship page from a local table file.  It then allocs a ship and
@@ -1225,7 +1223,7 @@ void mng_LoadLocalShipPage(CFILE *infile) {
           if (addon->Addon_tracklocks[tidx].pagetype == PAGETYPE_SHIP &&
               !stricmp(addon->Addon_tracklocks[tidx].name, shippage.ship_struct.name)) {
             // found it!!
-            mprintf(0, "ShipPage: %s previously loaded\n", shippage.ship_struct.name);
+            LOG_DEBUG.printf("ShipPage: %s previously loaded\n", shippage.ship_struct.name);
             need_to_load_page = false;
             break;
           }
@@ -1292,6 +1290,5 @@ void mng_LoadLocalShipPage(CFILE *infile) {
           Ships[i].model_handle); // Unload the data so it will get loaded later after the textures are in memory
     }
   } else
-
-    mprintf(0, "Could not load shippage named %s!\n", shippage.ship_struct.name);
+    LOG_WARNING.printf("Could not load shippage named %s!", shippage.ship_struct.name);
 }

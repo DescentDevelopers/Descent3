@@ -54,12 +54,14 @@
  * $NoKeywords: $
  */
 
-#include "mem.h"
+#include <cstdlib>
+
 #include "bitmap.h"
-#include "pserror.h"
-#include "pstypes.h"
+#include "cfile.h"
 #include "grdefs.h"
-#include <stdlib.h>
+#include "log.h"
+#include "mem.h"
+#include "pserror.h"
 
 // load an 8bit pcx image
 static int bm_pcx_8bit_alloc_file(CFILE *infile);
@@ -190,13 +192,13 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
 
   if (temp[1] < 5) {
     // need at least version 5.0f
-    mprintf(0, "PCXLoad: PCX Not version 5.0 or greater\n");
+    LOG_ERROR << "PCXLoad: PCX Not version 5.0 or greater";
     return -1;
   }
 
   if (temp[3] != 8) {
     // need 8 bits per pixel
-    mprintf(0, "PCXLoad: PCX Not 8 bpp\n");
+    LOG_ERROR << "PCXLoad: PCX Not 8 bpp";
     return -1; // nope...bail
   }
 
@@ -211,7 +213,7 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
 
   if (temp[65 - PCXHEADER_OFFSET] != 3) {
     // Must have 3 planes
-    mprintf(0, "PCXLoad: PCX Not 3 Planes for 24bit encoding\n");
+    LOG_ERROR << "PCXLoad: PCX Not 3 Planes for 24bit encoding";
     return -1;
   }
 
@@ -228,7 +230,7 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
 
   uint8_t *rawdata = (uint8_t *)mem_malloc(total * height);
   if (!rawdata) {
-    mprintf(0, "PCXLoad: Out of memory\n");
+    LOG_ERROR << "PCXLoad: Out of memory";
     return -1; // no memory!
   }
 

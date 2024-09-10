@@ -16,6 +16,7 @@ target_link_libraries(music
   misc
   sndlib
   stream_audio
+  plog::plog
 )
 target_include_directories(music PUBLIC
   $<BUILD_INTERFACE:

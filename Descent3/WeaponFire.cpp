@@ -901,32 +901,29 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+
 #include "weapon.h"
 #include "descent.h"
-#include "weapon.h"
 #include "polymodel.h"
 #include "room.h"
 #include "object.h"
-#include "terrain.h"
 #include "player.h"
 #include "hud.h"
 #include "hlsoundlib.h"
 #include "gameevent.h"
-#include "polymodel.h"
-#include "lighting.h"
 #include "fireball.h"
-#include <string.h>
-#include <stdlib.h>
 #include "findintersection.h"
+#include "log.h"
 #include "robotfire.h"
 #include "AIMain.h"
-#include "controls.h"
 #include "damage.h"
 #include "sounds.h"
 #include "viseffect.h"
 #include "vclip.h"
 #include "SmallViews.h"
-#include "hlsoundlib.h"
 #include "soundload.h"
 #include "stringtable.h"
 #include "multi.h"
@@ -942,7 +939,6 @@
 #include "psrand.h"
 #include "BOA.h"
 
-#include <algorithm>
 
 static bool AreObjectsAttached(const object *obj1, const object *obj2) {
   const bool f_o1_a = (obj1->flags & OF_ATTACHED) != 0;
@@ -1242,14 +1238,15 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
 
   fate = fvi_FindIntersection(&fq, &hit_data);
   if (fate != HIT_NONE) {
-    mprintf(0, "Warning: Laser from parent=%d weapon point is in a wall or object, didn't fire!\n", OBJNUM(parent));
+    LOG_WARNING.printf("Warning: Laser from parent=%d weapon point is in a wall or object, didn't fire!",
+                       OBJNUM(parent));
     return -1;
   }
 
   objnum = ObjCreate(OBJ_WEAPON, weapon_num, hit_data.hit_room, pos, NULL, parent->handle);
 
   if (objnum < 0) {
-    mprintf(1, "Can't create laser - Out of objects!\n");
+    LOG_WARNING << "Can't create laser - Out of objects!";
     return -1;
   }
 
@@ -1751,7 +1748,7 @@ bool WeaponCalcGun(vector *gun_point, vector *gun_normal, object *obj, int gun_n
   pm = &Poly_models[obj->rtype.pobj_info.model_num];
 
   if (pm->n_guns == 0) {
-    mprintf(0, "WARNING: Object with no weapons is firing.\n", gun_num);
+    LOG_WARNING.printf("WARNING: Object with no weapons is firing.", gun_num);
 
     if (gun_point)
       *gun_point = obj->pos;
@@ -1765,7 +1762,7 @@ bool WeaponCalcGun(vector *gun_point, vector *gun_normal, object *obj, int gun_n
   SetModelAnglesAndPos(pm, normalized_time);
 
   if (gun_num < 0 || gun_num >= pm->n_guns) {
-    mprintf(0, "WARNING: Bashing gun num %d to 0.\n", gun_num);
+    LOG_WARNING.printf("WARNING: Bashing gun num %d to 0.", gun_num);
     if (gun_point)
       *gun_point = obj->pos;
     if (gun_normal)
@@ -1841,7 +1838,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
 
     if (gun_num >= pm->n_guns) {
       // We don't have a gun point for this gun!
-      mprintf(0, "Trying to fire from gun %d...we don't have that gun!\n", gun_num);
+      LOG_WARNING.printf("Trying to fire from gun %d...we don't have that gun!", gun_num);
       laser_pos = obj->pos;
       laser_dir = obj->orient.fvec;
     } else {
@@ -3220,7 +3217,7 @@ void CreateRobotSpawnFromWeapon(object *obj) {
     return; // clients do not create robots without the servers permission
 
   if (wp->robot_spawn_handle == -1) {
-    mprintf(0, "Trying to create an invalid robot spawn!\n");
+    LOG_WARNING << "Trying to create an invalid robot spawn!";
     return;
   }
   object *parent_obj = ObjGetUltimateParent(obj);

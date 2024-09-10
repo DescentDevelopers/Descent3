@@ -170,6 +170,7 @@
 #include "application.h"
 #include "bitmap.h"
 #include "ddvid.h"
+#include "log.h"
 #include "renderer.h"
 #include "Macros.h"
 
@@ -376,7 +377,7 @@ void ui_RemoveAllWindows() {
     ASSERT(count < 50);
   }
   if (count) {
-    mprintf(0, "%d UI windows left open.  Closed them!\n", count);
+    LOG_DEBUG.printf("%d UI windows left open. Closed them!", count);
   }
 }
 //	removes a window from ui list.

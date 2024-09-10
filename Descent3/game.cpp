@@ -655,13 +655,13 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+
 #include "game.h"
 #include "ddvid.h"
 #include "ddio.h"
 #include "pserror.h"
-#include "program.h"
 #include "descent.h"
-#include "object.h"
 #include "trigger.h"
 #include "player.h"
 #include "slew.h"
@@ -669,6 +669,7 @@
 #include "renderer.h"
 #include "doorway.h"
 #include "hud.h"
+#include "log.h"
 #include "multi.h"
 #include "gamefont.h"
 #include "newui.h"
@@ -682,18 +683,10 @@
 #include "game2dll.h"
 #include "config.h"
 #include "stringtable.h"
-#include "ship.h"
 #include "pilot.h"
 #include "args.h"
-#include "gamepath.h"
-#include "AIGoal.h"
-#include "aipath.h"
 #include "dedicated_server.h"
-#include "objinfo.h"
-#include <string.h>
-#include "osiris_share.h"
 #include "demofile.h"
-
 #include <NewBitmap.h>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -989,7 +982,7 @@ void SetScreenMode(int sm, bool force_res_change) {
       if (rend_initted == -1) {
         // We're using the default, so change some values for the menus
         rend_initted = 1;
-        mprintf(0, "Changing menu settings to default!\n");
+        LOG_INFO << "Changing menu settings to default!";
         Game_video_resolution = RES_640X480;
         Render_preferred_state.bit_depth = 32;
         scr_width = 640;
@@ -1001,13 +994,13 @@ void SetScreenMode(int sm, bool force_res_change) {
         Render_preferred_state.height = scr_height;
         Render_preferred_state.bit_depth = scr_bitdepth;
 
-        mprintf(0, "Setting rend_width=%d height=%d\n", scr_width, scr_height);
+        LOG_INFO.printf("Setting rend_width=%d height=%d", scr_width, scr_height);
         int retval = rend_SetPreferredState(&Render_preferred_state);
 
         if (retval == -1) {
           // We're using the default, so change some values for the menus
           rend_initted = 1;
-          mprintf(0, "Changing menu settings to default!\n");
+          LOG_INFO << "Changing menu settings to default!";
           Game_video_resolution = RES_640X480;
           Render_preferred_state.bit_depth = 32;
           scr_width = 640;
@@ -1052,7 +1045,7 @@ void SetScreenMode(int sm, bool force_res_change) {
     //	initialize ui system again
     ui_SetScreenMode(Max_window_w, Max_window_h);
 
-    mprintf(0, "rend_width=%d height=%d\n", Max_window_w, Max_window_h);
+    LOG_INFO.printf("rend_width=%d height=%d", Max_window_w, Max_window_h);
   }
 
   //	assign current screen mode
@@ -1095,7 +1088,7 @@ void SetScreenMode(int sm, bool force_res_change) {
   }
   }
 
-  mprintf(0, "NEW rend_width=%d height=%d\n", Max_window_w, Max_window_h);
+  LOG_INFO.printf("NEW rend_width=%d height=%d", Max_window_w, Max_window_h);
 
   //	mark res change as false.
 
@@ -1159,14 +1152,14 @@ void FramePush(int x1, int y1, int x2, int y2, bool clear) {
   FrameStackDepth++;
   // DAJ
   if (FrameStackDepth > 7) {
-    mprintf(2, "FrameStack Overflow\n");
+    LOG_FATAL << "FrameStack Overflow";
     Int3();
   }
 }
 
 void FramePop(int *x1, int *y1, int *x2, int *y2, bool *clear) {
   if (!FrameStackRoot || !FrameStackPtr) {
-    mprintf(0, "StartFrame/EndFrame mismatch\n");
+    LOG_FATAL << "StartFrame/EndFrame mismatch";
     Int3();
     *clear = true;
     *x1 = Game_window_x;

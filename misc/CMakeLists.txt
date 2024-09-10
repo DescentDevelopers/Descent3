@@ -1,12 +1,10 @@
 set(HEADERS
-  logfile.h
   pserror.h
   psglob.h
   psrand.h
   pstring.h)
 set(CPPS
   error.cpp
-  logfile.cpp
   psglob.cpp
   psrand.cpp
   pstring.cpp

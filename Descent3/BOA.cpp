@@ -119,6 +119,9 @@
  * $NoKeywords: $
  */
 
+#include <cstdlib>
+#include <cstring>
+
 #ifdef EDITOR
 #include "editor\d3edit.h"
 #endif
@@ -129,15 +132,12 @@
 #include "BOA.h"
 #include "vecmat.h"
 #include "room.h"
-#include <string.h>
-#include <stdlib.h>
 #include "object.h"
-#include "bsp.h"
 #include "pserror.h"
 #include "findintersection.h"
+#include "log.h"
 #include "mem.h"
 #include "doorway.h"
-#include "string.h"
 
 #define BOA_VERSION 25
 
@@ -934,8 +934,6 @@ void FindPath(int i, int j) {
 
   q_item *node_list[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 
-  //	mprintf(0, "Find path for %d to %d\n", i, j);
-
   if (i == -1 || j == -1) {
     delete start_node;
     return;
@@ -1080,8 +1078,6 @@ void FindPath(int i, int j) {
 
   // Mark as an impossible path.
   BOA_Array[i][j] = BOA_NO_PATH;
-
-  //	mprintf(0, "Found an impossible path\n");
 
 done:
   for (counter = 0; counter <= Highest_room_index + MAX_BOA_TERRAIN_REGIONS; counter++) {
@@ -1248,7 +1244,7 @@ int BOAGetMineChecksum() {
 
   total += BOA_VERSION << 24;
 
-  mprintf(0, "Computed Checksum is %d\n", (int)total);
+  LOG_INFO.printf("Computed Checksum is %d", (int)total);
   return total;
 }
 
@@ -1359,7 +1355,7 @@ void ValidateRoomPathPoint(int room, char *message, int len) {
   }
 
   if (!message)
-    mprintf(0, "Room %d has a bad center point\n", room);
+    LOG_WARNING.printf("Room %d has a bad center point", room);
   else {
     char new_message[300];
     snprintf(new_message, sizeof(new_message), "Room %d has a bad center point\n", room);
@@ -1587,7 +1583,7 @@ void MakeBOAVisTable(bool from_lighting) {
   // Now compute all room to room visibility stuff
   int i, t, j;
 
-  mprintf(0, "Computing visibility for %d rooms.\n", Highest_room_index);
+  LOG_DEBUG.printf("Computing visibility for %d rooms.", Highest_room_index);
 
   for (i = 0; i <= Highest_room_index + MAX_BOA_TERRAIN_REGIONS; i++) {
     for (t = 0; t <= Highest_room_index + MAX_BOA_TERRAIN_REGIONS; t++) {
@@ -1611,8 +1607,6 @@ void MakeBOAVisTable(bool from_lighting) {
 #ifdef NEWEDITOR
     DoBOAVisProgressDialog((float)(i + 1) / (float)(Highest_room_index + 1), 1);
 #endif
-    mprintf_at(2, 4, 0, "Room=%d   ", i);
-
     if (rp->flags & RF_EXTERNAL)
       continue;
 
@@ -1968,7 +1962,7 @@ void find_small_portals() {
     }
   }
 
-  mprintf(0, "   Found %d small portals...  :)\n", counter);
+  LOG_DEBUG.printf("   Found %d small portals...  :)\n", counter);
 }
 
 void compute_robot_path_info() {
@@ -2040,46 +2034,46 @@ void MakeBOA(void) {
   BOA_mine_checksum = cur_check;
   BOA_f_making_boa = true;
 
-  mprintf(0, "Making BOA and friends\n");
+  LOG_INFO << "Making BOA and friends";
 
-  mprintf(0, "Finding small portals\n");
+  LOG_DEBUG << "Finding small portals";
   find_small_portals();
-  mprintf(0, "Done Finding small portals\n");
+  LOG_DEBUG << "Done Finding small portals";
 
-  mprintf(0, "  Start computing path points.\n");
+  LOG_DEBUG << "  Start computing path points.";
   BOA_ComputePathPoints();
-  mprintf(0, "  Done computing path points.\n");
+  LOG_DEBUG << "  Done computing path points.";
 
   clear_BOA();
   compute_costs();
 
-  mprintf(0, "  Start computing mines.\n");
+  LOG_DEBUG << "  Start computing mines.";
   compute_mine_info();
-  mprintf(0, "  Done computing %d mines.\n", BOA_num_mines);
+  LOG_DEBUG.printf("  Done computing %d mines.", BOA_num_mines);
 
-  mprintf(0, "  Start computing terrain regions.\n");
+  LOG_DEBUG << "  Start computing terrain regions.";
   compute_terrain_region_info();
-  mprintf(0, "  Done computing %d terrain regions.\n", BOA_num_terrain_regions);
+  LOG_DEBUG.printf("  Done computing %d terrain regions.", BOA_num_terrain_regions);
 
-  mprintf(0, "  Making designers wait for no particular reason...\n");
+  LOG_DEBUG << "  Making designers wait for no particular reason...";
   compute_next_segs();
-  mprintf(0, "  Done with the sodomy...\n");
+  LOG_DEBUG << "  Done with the sodomy...";
 
-  mprintf(0, "  Start computing blockage info.\n");
+  LOG_DEBUG << "  Start computing blockage info.";
   compute_blockage_info();
-  mprintf(0, "  Done computing blockage info.\n");
+  LOG_DEBUG << "  Done computing blockage info.";
 
-  mprintf(0, "  Start computing sound prop.\n");
+  LOG_DEBUG << "  Start computing sound prop.";
   compute_sound_dist_info();
-  mprintf(0, "  Done computing sound prop.\n");
+  LOG_DEBUG << "  Done computing sound prop.";
 
-  mprintf(0, "  Start computing invalid robot path info.\n");
+  LOG_DEBUG << "  Start computing invalid robot path info.";
   compute_robot_path_info();
-  mprintf(0, "  Done computing invalid robot path info.\n");
+  LOG_DEBUG << "  Done computing invalid robot path info.";
 
-  mprintf(0, "  Verifying connections\n");
+  LOG_DEBUG << "  Verifying connections";
   verify_connections();
-  mprintf(0, "  Done with verification\n");
+  LOG_DEBUG << "  Done with verification";
 
   //	{
   //		int cur_seg = 0;
@@ -2097,7 +2091,7 @@ void MakeBOA(void) {
   //	}
 
   BOA_f_making_boa = false;
-  mprintf(0, "BOA is done\n");
+  LOG_INFO << "BOA is done";
 }
 
 static int Current_sort_room;
@@ -2129,13 +2123,11 @@ void ComputeAABB(bool f_full) {
 
   int computed_room_check[MAX_ROOMS];
 
-  mprintf(0, "Computing AABB's");
-
   // Determines the room and face min/max information
   int cur_check = BOAGetMineChecksum();
 
   if (cur_check == BOA_AABB_checksum && !f_full) {
-    mprintf(0, " (partial)!\n");
+    LOG_DEBUG << "Computing AABB's (partial)!";
   } else {
     for (i = 0; i < MAX_ROOMS; i++) {
       if (Rooms[i].used) {
@@ -2162,7 +2154,7 @@ void ComputeAABB(bool f_full) {
     int16_t count;
 
     BOA_AABB_checksum = cur_check;
-    mprintf(0, " (full)!\n");
+    LOG_DEBUG << "Computing AABB's (full)!";
 
     for (i = 0; i <= Highest_room_index; i++) {
       Current_sort_room = i;
@@ -2308,7 +2300,6 @@ void ComputeAABB(bool f_full) {
 
         ASSERT(num_struct < MAX_REGIONS_PER_ROOM); // get chris
         num_structs_per_room[i] = num_struct;
-        //			mprintf(0, "%d structs in r %d\n", num_struct, i);
       }
     }
 
@@ -2375,7 +2366,6 @@ void ComputeAABB(bool f_full) {
           }
         }
 
-        //			mprintf(0, "Room %d Best Shell is %d\n", i, best);
         if (best != 0) {
           for (count = 0; count < rp->num_faces; count++) {
             if (r_struct_list[i][count] == 0) {
@@ -2696,16 +2686,11 @@ void ComputeAABB(bool f_full) {
     // Remove unnecessary groups
     for (count = 0; count <= Highest_room_index; count++) {
       if (Rooms[count].used) {
-        //			mprintf(0, "==================\n", count);
-        //			mprintf(0, "Room %d\n", count);
-
         if (BOA_AABB_ROOM_checksum[count] != 0 && BOA_AABB_ROOM_checksum[count] == computed_room_check[count])
           continue;
 
         room *rp = &Rooms[count];
         for (i = 0; i < rp->num_bbf_regions; i++) {
-          //				mprintf(0, "Region %d has %d faces in it.\n", i, rp->num_bbf[i]);
-
           if (rp->num_bbf[i] == 0) {
             for (j = i + 1; j < rp->num_bbf_regions; j++) {
               int16_t *temp = rp->bbf_list[j - 1];
@@ -2766,10 +2751,7 @@ void ComputeAABB(bool f_full) {
             }
 
             int diff[3];
-            // mprintf(0, "Split plane results r %d s %d n %d\n", i, j, rp->num_bbf[j]);
             for (sp = 0; sp < 3; sp++) {
-              // mprintf(0, "%d %d %d\n", num_faces[sp][0], num_faces[sp][1], num_faces[sp][2]);
-
               if (abs(num_faces[sp][0] - num_faces[sp][1]) > abs(num_faces[sp][1] - num_faces[sp][2]))
                 diff[sp] = abs(num_faces[sp][0] - num_faces[sp][1]);
               else
@@ -2785,8 +2767,6 @@ void ComputeAABB(bool f_full) {
                 b_diff = diff[sp];
               }
             }
-
-            //					mprintf(0, "Split Plane is %d\n", best);
 
             if (rp->num_bbf_regions <= MAX_REGIONS_PER_ROOM - 2) {
               rp->num_bbf[rp->num_bbf_regions] = 0;
@@ -2830,15 +2810,11 @@ void ComputeAABB(bool f_full) {
     // Remove unnecessary groups
     for (count = 0; count <= Highest_room_index; count++) {
       if (Rooms[count].used) {
-        //			mprintf(0, "==================\n", count);
-        //			mprintf(0, "Room %d\n", count);
         if (BOA_AABB_ROOM_checksum[count] != 0 && BOA_AABB_ROOM_checksum[count] == computed_room_check[count])
           continue;
 
         room *rp = &Rooms[count];
         for (i = 0; i < rp->num_bbf_regions; i++) {
-          //				mprintf(0, "Region %d has %d faces in it.\n", i, rp->num_bbf[i]);
-
           if (rp->num_bbf[i] == 0) {
             for (j = i + 1; j < rp->num_bbf_regions; j++) {
               int16_t *temp = rp->bbf_list[j - 1];
@@ -3044,5 +3020,5 @@ void ComputeAABB(bool f_full) {
     }
   }
 
-  mprintf(0, "Done Computing AABB's.\n");
+  LOG_DEBUG << "Done Computing AABB's.";
 }
