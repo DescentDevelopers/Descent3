@@ -8,10 +8,10 @@ set(CPPS
 add_library(stream_audio STATIC ${HEADERS} ${CPPS})
 target_link_libraries(stream_audio PRIVATE
   ddio
+  logger
   mem
   misc
   sndlib
-  plog::plog
 )
 target_link_libraries(stream_audio PUBLIC
   AudioEncode

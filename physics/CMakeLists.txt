@@ -12,13 +12,13 @@ set(CPPS
 add_library(physics STATIC ${HEADERS} ${CPPS})
 target_link_libraries(physics PRIVATE
   ddio
+  logger
   mem
   misc
   model
   module
   rtperformance
   sndlib
-  plog::plog
 )
 target_include_directories(physics PUBLIC
   $<BUILD_INTERFACE:

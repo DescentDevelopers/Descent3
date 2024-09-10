@@ -12,6 +12,6 @@ target_compile_definitions(win32 PRIVATE DX_APP)
 target_link_libraries(win32 PRIVATE
   ddebug
   ddio
+  logger
   misc
-  plog::plog
 )

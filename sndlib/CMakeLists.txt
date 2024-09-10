@@ -21,12 +21,12 @@ add_library(sndlib STATIC ${HEADERS} ${CPPS})
 target_link_libraries(sndlib PRIVATE
   cfile
   ddio
+  logger
   mem
   misc
   stream_audio
   physics
   SDL2::SDL2
-  plog::plog
 )
 target_include_directories(sndlib PUBLIC
   $<BUILD_INTERFACE:

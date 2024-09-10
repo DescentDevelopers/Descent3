@@ -33,20 +33,9 @@
 #include <csignal>
 #endif
 
-#ifdef WIN32
-#include <cstdio>
-#include <windows.h>
-#include "debug.h"
-#endif
-
 #include <SDL.h>
-// We use direct plog includes instead of log.h for logger instance initialization
-#include <plog/Log.h>
-#include <plog/Appenders/ColorConsoleAppender.h>
-#include <plog/Initializers/RollingFileInitializer.h>
 
 #include "appdatabase.h"
-#include "ddio.h"
 #include "application.h"
 #include "args.h"
 #include "d3_version.h"
@@ -54,6 +43,7 @@
 #include "descent.h"
 #include "dedicated_server.h"
 #include "init.h"
+#include "log.h"
 
 #ifdef WIN32
 #include "debug.h"
@@ -214,38 +204,6 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
   } // switch
 
   return (1);
-}
-
-/**
- * Initialize logger facility.
- * @param log_level desired log level (for example, plog::debug)
- * @param enable_filelog enable logging into Descent.log
- * @param enable_win_console enable console windows for WIN32 (no-op for POSIX systems)
- */
-void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_console) {
-  std::filesystem::path log_file = "Descent3.log";
-  static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
-  static plog::RollingFileAppender<plog::TxtFormatter> fileAppender(log_file.u8string().c_str());
-
-#ifdef WIN32
-  if (enable_win_console) {
-    // Open console window
-    AllocConsole();
-    freopen("CONIN$", "r", stdin);
-    freopen("CONOUT$", "w", stdout);
-    freopen("CONOUT$", "w", stderr);
-  }
-#endif
-
-  plog::init(log_level, &consoleAppender);
-  if (enable_filelog) {
-    if (std::filesystem::is_regular_file(log_file)) {
-      // Delete old log
-      std::error_code ec;
-      std::filesystem::remove(log_file, ec);
-      plog::get()->addAppender(&fileAppender);
-    }
-  }
 }
 
 //	---------------------------------------------------------------------------

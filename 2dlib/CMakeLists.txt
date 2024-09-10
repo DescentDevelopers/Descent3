@@ -15,9 +15,9 @@ set(CPPS
 add_library(2dlib STATIC ${HEADERS} ${CPPS})
 target_link_libraries(2dlib PRIVATE
   cfile
+  logger
   mem
   misc
-  plog::plog
 )
 target_include_directories(2dlib PUBLIC
   $<BUILD_INTERFACE:

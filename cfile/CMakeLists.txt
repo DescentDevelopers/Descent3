@@ -11,9 +11,9 @@ set(CPPS
 add_library(cfile STATIC ${HEADERS} ${CPPS})
 target_link_libraries(cfile PRIVATE
   ddio
+  logger
   mem
   misc
-  plog::plog
 )
 target_include_directories(cfile PUBLIC
   $<BUILD_INTERFACE:

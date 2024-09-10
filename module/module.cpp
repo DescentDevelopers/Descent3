@@ -102,8 +102,8 @@
 #endif
 
 #include "crossplat.h"
+#include "log.h"
 #include "module.h"
-#include "mono.h"
 
 /**
  * Returns fixed case file name to actual case on disk for case-sensitive filesystems (Linux).
@@ -231,18 +231,18 @@ bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, i
     std::filesystem::path new_filename = mod_FindRealFileNameCaseInsensitive(parent_path, modfilename.filename());
 
     if (new_filename.empty()) {
-      mprintf(0, "Module Load Err: %s\n", dlerror());
+      LOG_ERROR.printf("Module Load Err: %s", dlerror());
       ModLastError = MODERR_MODNOTFOUND;
       return false;
     }
 
     // ok we have a different filename
-    mprintf(0, "MOD: Attempting to open %s instead of %s\n", new_filename.u8string().c_str(),
-            modfilename.u8string().c_str());
+    LOG_DEBUG.printf("MOD: Attempting to open %s instead of %s", new_filename.u8string().c_str(),
+                     modfilename.u8string().c_str());
     modfilename = parent_path / new_filename;
     handle->handle = dlopen(modfilename.u8string().c_str(), f);
     if (!handle->handle) {
-      mprintf(0, "Module Load Err: %s\n", dlerror());
+      LOG_ERROR.printf("Module Load Err: %s", dlerror());
       ModLastError = MODERR_MODNOTFOUND;
       return false;
     }
