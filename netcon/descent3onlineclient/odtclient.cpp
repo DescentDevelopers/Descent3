@@ -52,7 +52,6 @@
 
 #include "odtclient.h"
 #include "dip_gametrack.h"
-#include "DLLUiItems.h"
 
 char Ourlobby[50] = "";
 bool Auto_start = false;
@@ -219,10 +218,6 @@ void UpdateGamelist(void *lb) {
   }
 }
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
-
 // These next two function prototypes MUST appear in the extern "C" block if called
 // from a CPP file.
 extern "C" {
@@ -236,11 +231,8 @@ bool MT_Sock_inited = false;
 
 // Initializes the game function pointers
 void DLLFUNCCALL DLLMultiInit(int *api_func) {
-  Use_netgame_flags = 1;
-#ifdef MACINTOSH
-  InitOTSockets();
-#endif
-#include "mdllinit.h"
+  Use_netgame_flags = true;
+  CommonDLLInit(api_func);
 
   DLLmprintf(0, "Inside DLLMultiInit...\n");
   *DLLUse_DirectPlay = false;
@@ -261,9 +253,6 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 void DLLFUNCCALL DLLMultiClose() {
   DLLmprintf(0, "Closing down Online Direct TCP-IP DLL\n");
   DLLDestroyStringTable(StringTable, StringTableSize);
-#ifdef MACINTOSH
-  ShutdownOTSockets();
-#endif
 }
 
 // The main entry point where the game calls the dll
@@ -338,11 +327,6 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
     break;
   }
 }
-
-#ifdef MACINTOSH
-#pragma export off
-#endif
-
 
 #define CONNECT_IRC_TIMEOUT 30.0
 #define MAX_CHAT_SEND_LEN 200
