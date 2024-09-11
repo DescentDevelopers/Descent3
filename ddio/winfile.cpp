@@ -271,14 +271,6 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
   va_end(args);
 }
 
-bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filename) {
-
-  if (!GetTempFileName(basedir, prefix, 0, filename))
-    return false;
-  else
-    return true;
-}
-
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots) {
   char buffer[100];

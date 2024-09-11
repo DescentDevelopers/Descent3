@@ -374,15 +374,6 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
                        const std::function<void(std::filesystem::path)> &func);
 
-// Generates a temporary filename based on the prefix, and basedir
-// Parameters:
-//		basedir - directory to put the files
-//		prefix - prefix for the temp filename
-//		filename - buffer to hold generated filename (must be at least _MAX_PATH in length)
-//
-// Returns TRUE if successful, FALSE if an error
-bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filename);
-
 /**
  * Generates a temporary filename based on the prefix in basedir. Function ensures that generated
  * filename does not exists in basedir directory.
