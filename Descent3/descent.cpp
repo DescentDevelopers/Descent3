@@ -427,7 +427,7 @@ bool Descent_overrided_intro = false;
 
 bool Katmai = true;
 
-char Descent3_temp_directory[_MAX_PATH]; // temp directory to put temp files
+std::filesystem::path Descent3_temp_directory; // temp directory to put temp files
 //	---------------------------------------------------------------------------
 //	Descent3: Choke 1
 //		Initializes game elements and invokes the MainLoop

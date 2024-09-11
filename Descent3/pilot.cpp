@@ -1965,10 +1965,10 @@ bool ImportGraphic(const char *pathname, char *newfile) {
 
   bm_ChangeSize(bm_handle, 64, 64);
 
-  char tempfilename[_MAX_PATH];
+  std::filesystem::path tempfilename = ddio_GetTmpFileName(Descent3_temp_directory, "d3i");
 
   // Create a temporary filename, so that we can temporarily save the graphic to this file
-  if (!ddio_GetTempFileName(Descent3_temp_directory, "d3i", tempfilename)) {
+  if (tempfilename.empty()) {
     // there was an error trying to create a temporary filename
     bm_FreeBitmap(bm_handle);
     LOG_WARNING << "Error creating temp filename";
@@ -2004,7 +2004,7 @@ bool ImportGraphic(const char *pathname, char *newfile) {
 
   // p contains the real filename
   // tempfilename contains old filename
-  bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(tempfilename), 0);
+  bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(tempfilename.u8string().c_str()), 0);
   if (bm_handle <= BAD_BITMAP_HANDLE) {
     LOG_WARNING << "Error reloading bitmap for rename";
     std::filesystem::remove(tempfilename, ec);

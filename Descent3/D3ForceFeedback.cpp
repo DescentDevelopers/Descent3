@@ -645,10 +645,10 @@ void ForceEffectsInit(void) {
   int lowid;
   Force_time_since_last_shake = 0;
   FORCEPROJECT prj;
-  char path[_MAX_PATH];
+  std::filesystem::path path;
 
   if (cfexist("D3Force.ifr")) {
-    ddio_MakePath(path, Descent3_temp_directory, "D3Force.ifr", NULL);
+    path = Descent3_temp_directory / "D3Force.ifr";
     cf_CopyFile(path, "D3Force.ifr", 0);
     prj = ddio_ForceLoadProject(IGNORE_TABLE(path), kJoy1);
   } else {
@@ -708,6 +708,6 @@ void ForceEffectsInit(void) {
 
   ddio_ForceUnloadProject(prj);
   if (cfexist(path)) {
-    ddio_DeleteFile(path);
+    std::filesystem::remove(path);
   }
 }

@@ -277,6 +277,8 @@
  * $NoKeywords: $
  */
 
+#include <filesystem>
+
 #include "chrono_timer.h"
 #include "ui.h"
 #include "newui.h"
@@ -370,7 +372,7 @@ char Auto_login_name[MAX_AUTO_LOGIN_STUFF_LEN];
 char Auto_login_pass[MAX_AUTO_LOGIN_STUFF_LEN];
 char Auto_login_addr[MAX_AUTO_LOGIN_STUFF_LEN];
 char Auto_login_port[MAX_AUTO_LOGIN_STUFF_LEN];
-char Multi_conn_dll_name[_MAX_PATH * 2] = "";
+std::filesystem::path Multi_conn_dll_name;
 char PXO_hosted_lobby_name[100] = "global";
 bool Supports_score_api = false;
 #ifdef USE_DIRECTPLAY
@@ -576,19 +578,20 @@ void FreeMultiDLL() {
     DLLMultiClose();
   mod_FreeModule(&MultiDLLHandle);
   // Try deleting the file now!
-  if (!ddio_DeleteFile(Multi_conn_dll_name)) {
+  if (!std::filesystem::remove(Multi_conn_dll_name)) {
     LOG_WARNING << "Couldn't delete the tmp dll";
   }
   DLLMultiCall = NULL;
   DLLMultiInit = NULL;
   DLLMultiClose = NULL;
 }
+
 // Loads the Multi dll.  Returns 1 on success, else 0 on failure
 int LoadMultiDLL(const char *name) {
   static int first = 1;
-  char lib_name[_MAX_PATH * 2];
-  char dll_name[_MAX_PATH * 2];
-  char tmp_dll_name[_MAX_PATH * 2];
+  std::filesystem::path lib_name;
+  std::filesystem::path dll_name;
+  std::filesystem::path tmp_dll_name;
   MultiFlushAllIncomingBuffers();
 
   // Delete old dlls
@@ -605,35 +608,30 @@ int LoadMultiDLL(const char *name) {
   });
 
   // Make the hog filename
-  ddio_MakePath(lib_name, Base_directory, "online", name, NULL);
-  strcat(lib_name, ".d3c");
-// Make the dll filename
-#if defined(WIN32)
-  snprintf(dll_name, sizeof(dll_name), "%s.dll", name);
-#elif defined(MACOSX)
-  snprintf(dll_name, sizeof(dll_name), "%s.dylib", name);
-#else
-  snprintf(dll_name, sizeof(dll_name), "%s.so", name);
-#endif
+  lib_name = std::filesystem::path(Base_directory) / "online" / name;
+  lib_name.replace_extension(".d3c");
+  // Make the dll filename
+  dll_name = name;
+  dll_name.replace_extension(MODULE_EXT);
 
   // Open the hog file
   if (!cf_OpenLibrary(lib_name)) {
-    ddio_MakePath(tmp_dll_name, Base_directory, "online", name, NULL);
-    strcat(tmp_dll_name, ".d3c");
-    Multi_conn_dll_name[0] = 0;
+    tmp_dll_name = std::filesystem::path(Base_directory) / "online" / name;
+    tmp_dll_name.replace_extension(".d3c");
+    Multi_conn_dll_name.clear();
     goto loaddll;
   }
   // get a temp file name
-  if (!ddio_GetTempFileName(Descent3_temp_directory, "d3c", tmp_dll_name)) {
+  tmp_dll_name = ddio_GetTmpFileName(Descent3_temp_directory, "d3c");
+  if (tmp_dll_name.empty()) {
     return 0;
   }
   // Copy the DLL
-  //	ddio_MakePath(dll_path_name,Base_directory,"online",tmp_dll_name,NULL);
   if (!cf_CopyFile(tmp_dll_name, dll_name)) {
     LOG_WARNING << "DLL copy failed!";
     return 0;
   }
-  strcpy(Multi_conn_dll_name, tmp_dll_name);
+  Multi_conn_dll_name = tmp_dll_name;
 loaddll:
 
   if (!mod_LoadModule(&MultiDLLHandle, tmp_dll_name)) {
@@ -700,6 +698,7 @@ loaddll:
   }
   return 1;
 }
+
 // The chokepoint function to call the dll function
 void CallMultiDLL(int eventnum) {
   if (MultiDLLHandle.handle && DLLMultiCall)

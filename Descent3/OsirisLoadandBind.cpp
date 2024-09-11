@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -425,7 +425,6 @@
 #define OSIRISDEBUG
 #endif
 
-
 bool Show_osiris_debug = false;
 
 #define MAX_LOADED_MODULES 96 // maximum number of dlls that can be loaded at a time
@@ -772,13 +771,12 @@ void Osiris_DumpLoadedObjects(char *file) {
 int Osiris_FindLoadedModule(char *module_name) {
   // search through the list of loaded modules and see if we can find a match
   // strip off the extension
-  char real_name[_MAX_PATH];
-  ddio_SplitPath(module_name, NULL, real_name, NULL);
+  std::filesystem::path real_name = std::filesystem::path(module_name).stem();
 
-  int i;
-  for (i = 0; i < MAX_LOADED_MODULES; i++) {
+  for (int i = 0; i < MAX_LOADED_MODULES; i++) {
     if (OSIRIS_loaded_modules[i].flags & OSIMF_INUSE) {
-      if (OSIRIS_loaded_modules[i].module_name && (!stricmp(OSIRIS_loaded_modules[i].module_name, real_name))) {
+      if (OSIRIS_loaded_modules[i].module_name &&
+          (stricmp(OSIRIS_loaded_modules[i].module_name, real_name.u8string().c_str()) == 0)) {
         // we found a match
         return i;
       }
@@ -797,8 +795,8 @@ void Osiris_UnloadModule(int module_id) {
     return;
   if (OSIRIS_loaded_modules[module_id].flags & OSIMF_INUSE) {
     // the module is in use
-    LOG_DEBUG_IF(Show_osiris_debug).printf("OSIRIS: Decrementing reference count for module (%s)",
-                                           OSIRIS_loaded_modules[module_id].module_name);
+    LOG_DEBUG_IF(Show_osiris_debug)
+        .printf("OSIRIS: Decrementing reference count for module (%s)", OSIRIS_loaded_modules[module_id].module_name);
     OSIRIS_loaded_modules[module_id].reference_count--;
 
     ASSERT(OSIRIS_loaded_modules[module_id].reference_count >= 0);
@@ -815,8 +813,9 @@ void Osiris_UnloadModule(int module_id) {
                            OSIRIS_loaded_modules[module_id].module_name);
       } else {
         // time to unload this module
-        LOG_DEBUG_IF(Show_osiris_debug).printf("OSIRIS: Module (%s) reference count is at 0, unloading",
-                                               OSIRIS_loaded_modules[module_id].module_name);
+        LOG_DEBUG_IF(Show_osiris_debug)
+            .printf("OSIRIS: Module (%s) reference count is at 0, unloading",
+                    OSIRIS_loaded_modules[module_id].module_name);
         Osiris_FreeModule(module_id);
       }
     }
@@ -964,8 +963,9 @@ int Osiris_LoadLevelModule(char *module_name) {
   if (loaded_id != -1) {
     // the module is already loaded
     OSIRIS_loaded_modules[loaded_id].reference_count++;
-    LOG_DEBUG_IF(Show_osiris_debug).printf("OSIRIS: Level Module (%s) reference count increased to %d",
-                                           module_name, OSIRIS_loaded_modules[loaded_id].reference_count);
+    LOG_DEBUG_IF(Show_osiris_debug)
+        .printf("OSIRIS: Level Module (%s) reference count increased to %d", module_name,
+                OSIRIS_loaded_modules[loaded_id].reference_count);
     return loaded_id;
   }
 
@@ -1134,7 +1134,7 @@ int Osiris_LoadLevelModule(char *module_name) {
       OSIRIS_loaded_modules[loaded_id].CreateInstance(0); // level scripts always have id of 0 in a level dll
 
   LOG_INFO.printf("OSIRIS: Level Module (%s) loaded successfully (%d custom handles)", basename,
-           tOSIRISCurrentLevel.num_customs);
+                  tOSIRISCurrentLevel.num_customs);
   Osiris_level_script_loaded = true;
   return loaded_id;
 }
@@ -1158,7 +1158,7 @@ int Osiris_LoadGameModule(char *module_name) {
     OSIRIS_loaded_modules[loaded_id].reference_count++;
     if (Show_osiris_debug) {
       LOG_DEBUG.printf("OSIRIS: Game Module (%s) reference count increased to %d", module_name,
-               OSIRIS_loaded_modules[loaded_id].reference_count);
+                       OSIRIS_loaded_modules[loaded_id].reference_count);
     }
     return loaded_id;
   }
@@ -1653,7 +1653,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
             if (!gos_instance) {
               // we had an error obtaining the instance of the COS...doh!
               LOG_FATAL.printf("OSIRIS: Unable to create COS instance from level dll for (%s)",
-                       (page_name) ? (page_name) : "<No Name>");
+                               (page_name) ? (page_name) : "<No Name>");
               Int3();
             } else {
               // ok, everything is valid
@@ -2740,9 +2740,9 @@ bool Osiris_RestoreSystemState(CFILE *file) {
     // when the state was saved.  This means that things are not going to be restored exactly for
     // sure.  We'll skip over those that are not loaded.  We're int3 here because I want to know
     // when this happens.
-    LOG_ERROR.printf(
-        "OSIRIS: Restoring global state, the number of loaded modules is not the same as the restored count (%d vs. %d)",
-        loaded_module_count, read_module_count);
+    LOG_ERROR.printf("OSIRIS: Restoring global state, the number of loaded modules is not the same as the restored "
+                     "count (%d vs. %d)",
+                     loaded_module_count, read_module_count);
     if (Demo_flags != DF_PLAYBACK) {
       Int3();
     }
@@ -3098,7 +3098,9 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
   }
 }
 
-void _extractscript(char *script, char *tempfilename) { cf_CopyFile(tempfilename, script); }
+void _extractscript(const std::filesystem::path &script, const std::filesystem::path &tempfilename) {
+  cf_CopyFile(tempfilename, script);
+}
 
 int _getfreeextractslot(void) {
   // find a free slot
@@ -3118,17 +3120,19 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   LOG_INFO << "OSIRIS: Extracting Scripts From Hog";
 
-  char filename[_MAX_PATH], temp_filename[_MAX_PATH];
-  char tempdir[_MAX_PATH], temp_file[_MAX_PATH], temp_fileext[_MAX_EXT];
-  char temp_realname[_MAX_PATH];
+  char filename[_MAX_PATH];
+  std::filesystem::path temp_filename;
+  std::filesystem::path tempdir;
+  std::filesystem::path temp_file;
+  std::filesystem::path temp_realname;
 
   if (!OSIRIS_Extracted_script_dir) {
-    strcpy(tempdir, Descent3_temp_directory);
-    OSIRIS_Extracted_script_dir = mem_strdup(tempdir);
+    tempdir = Descent3_temp_directory;
+    OSIRIS_Extracted_script_dir = mem_strdup(Descent3_temp_directory.u8string().c_str());
     if (!OSIRIS_Extracted_script_dir)
       Error("Out of memory");
   } else {
-    strcpy(tempdir, OSIRIS_Extracted_script_dir);
+    tempdir = OSIRIS_Extracted_script_dir;
   }
 
   int count = 0;
@@ -3141,7 +3145,7 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 #elif defined(WIN32)
   script_extension = "*.dll";
 #else
-  #error Unsupported platform!
+#error Unsupported platform!
 #endif
 
   int index;
@@ -3154,25 +3158,26 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   LOG_DEBUG << "Search started";
   if (cf_LibraryFindFirst(library_handle, script_extension, filename)) {
-    if (!ddio_GetTempFileName(tempdir, "d3s", temp_filename))
+    temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
+    if (temp_filename.empty())
       Int3();
     else {
-      ddio_SplitPath(temp_filename, NULL, temp_file, temp_fileext);
-      strcat(temp_file, temp_fileext);
+      // extract it out
+      _extractscript(filename, temp_filename);
+
+      temp_file = temp_filename.filename();
 
       OSIRIS_Extracted_scripts[index].flags = OESF_USED;
-      OSIRIS_Extracted_scripts[index].temp_filename = mem_strdup(temp_file);
+      OSIRIS_Extracted_scripts[index].temp_filename = mem_strdup(temp_file.u8string().c_str());
 
-      ddio_SplitPath(filename, NULL, temp_realname, NULL);
-      OSIRIS_Extracted_scripts[index].real_filename = mem_strdup(temp_realname);
+      temp_realname = std::filesystem::path(filename).stem();
+      OSIRIS_Extracted_scripts[index].real_filename = mem_strdup(temp_realname.u8string().c_str());
 
       if (is_mission_hog) {
         OSIRIS_Extracted_scripts[index].flags |= OESF_MISSION;
       }
 
-      // extract it out
-      _extractscript(filename, temp_filename);
-      LOG_DEBUG.printf("Extracted %s as %s", filename, temp_filename);
+      LOG_DEBUG.printf("Extracted %s as %s", filename, temp_filename.u8string().c_str());
 
       count++;
 
@@ -3185,25 +3190,25 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
         }
 
         // generate temp filename
-        if (!ddio_GetTempFileName(tempdir, "d3s", temp_filename))
+        temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
+        if (temp_filename.empty())
           Int3();
         else {
-          ddio_SplitPath(temp_filename, NULL, temp_file, temp_fileext);
-          strcat(temp_file, temp_fileext);
+          // extract it out
+          _extractscript(filename, temp_filename);
+          temp_file = temp_filename.filename();
 
           OSIRIS_Extracted_scripts[index].flags = OESF_USED;
-          OSIRIS_Extracted_scripts[index].temp_filename = mem_strdup(temp_file);
+          OSIRIS_Extracted_scripts[index].temp_filename = mem_strdup(temp_file.u8string().c_str());
 
-          ddio_SplitPath(filename, NULL, temp_realname, NULL);
-          OSIRIS_Extracted_scripts[index].real_filename = mem_strdup(temp_realname);
+          temp_realname = std::filesystem::path(filename).stem();
+          OSIRIS_Extracted_scripts[index].real_filename = mem_strdup(temp_realname.u8string().c_str());
 
           if (is_mission_hog) {
             OSIRIS_Extracted_scripts[index].flags |= OESF_MISSION;
           }
 
-          // extract it out
-          _extractscript(filename, temp_filename);
-          LOG_DEBUG.printf("Extracted %s as %s", filename, temp_filename);
+          LOG_DEBUG.printf("Extracted %s as %s", filename, temp_filename.u8string().c_str());
 
           count++;
         }
@@ -3211,7 +3216,7 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
     }
   }
 
-  LOG_DEBUG << "Done Extracting";
+  LOG_DEBUG.printf("Extracted %d scripts", count);
 
 ex_error:
   cf_LibraryFindClose();
@@ -3229,29 +3234,27 @@ ex_error:
 void Osiris_ClearExtractedScripts(bool mission_only) {
   LOG_DEBUG << "OSIRIS: Removing Extracted DLLs";
 
-  char fullpath[_MAX_PATH];
   if (!OSIRIS_Extracted_script_dir) {
     return;
   }
 
-  for (int i = 0; i < MAX_LOADED_MODULES; i++) {
-    if (OSIRIS_Extracted_scripts[i].flags & OESF_USED) {
-      if (mission_only && (!(OSIRIS_Extracted_scripts[i].flags & OESF_MISSION)))
+  for (auto &item : OSIRIS_Extracted_scripts) {
+    if (item.flags & OESF_USED) {
+      if (mission_only && (!(item.flags & OESF_MISSION)))
         continue;
 
-      ASSERT(OSIRIS_Extracted_scripts[i].temp_filename);
-      ASSERT(OSIRIS_Extracted_scripts[i].real_filename);
-      if (!(OSIRIS_Extracted_scripts[i].temp_filename && OSIRIS_Extracted_scripts[i].real_filename))
+      ASSERT(item.temp_filename);
+      ASSERT(item.real_filename);
+      if (!(item.temp_filename && item.real_filename))
         continue;
 
-      ddio_MakePath(fullpath, OSIRIS_Extracted_script_dir, OSIRIS_Extracted_scripts[i].temp_filename, NULL);
-      ddio_DeleteFile(fullpath);
+      std::filesystem::remove(std::filesystem::path(OSIRIS_Extracted_script_dir) / item.temp_filename);
 
-      mem_free(OSIRIS_Extracted_scripts[i].temp_filename);
-      mem_free(OSIRIS_Extracted_scripts[i].real_filename);
-      OSIRIS_Extracted_scripts[i].temp_filename = NULL;
-      OSIRIS_Extracted_scripts[i].real_filename = NULL;
-      OSIRIS_Extracted_scripts[i].flags &= ~OESF_USED;
+      mem_free(item.temp_filename);
+      mem_free(item.real_filename);
+      item.temp_filename = NULL;
+      item.real_filename = NULL;
+      item.flags &= ~OESF_USED;
     }
   }
 
@@ -3313,7 +3316,8 @@ OMMSHANDLE OMMS_Find(uint32_t unique_identifier,char *script_identifier);
 //	Returns information about the OMMS memory given its handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,uint16_t *reference_count,uint8_t *has_free_been_called);
+char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,uint16_t *reference_count,uint8_t
+*has_free_been_called);
 
 
 ******************************************************************************
@@ -3537,7 +3541,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
         cf_ReadBytes((uint8_t *)node->memory_ptr, node->size_of_memory, file);
       }
     } // end reading nodes
-  }   // end reading hash nodes
+  } // end reading hash nodes
 }
 
 //	Searches through the hash nodes and looks for the one associated with
