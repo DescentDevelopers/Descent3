@@ -374,13 +374,6 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
                        const std::function<void(std::filesystem::path)> &func);
 
-//	given a path (with no filename), it will return the parent path
-//	srcPath is the source given path
-//	dest is where the parent path will be placed
-//	returns true on success
-//		dest should be at least _MAX_PATH in length
-bool ddio_GetParentPath(char *dest, const char *srcPath);
-
 //	given a path, it cleans it up (if the path is c:\windows\..\dos it would make it c:\dos)
 //	srcPath is the original path
 //	dest is the finished cleaned path.

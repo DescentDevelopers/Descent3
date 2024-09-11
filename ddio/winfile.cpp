@@ -465,30 +465,6 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
     mem_free(dir_order);
 }
 
-//	given a path (with no filename), it will return the parent path
-//	srcPath is the source given path
-//	dest is where the parent path will be placed
-//	returns true on success
-//		dest should be at least _MAX_PATH in length
-bool ddio_GetParentPath(char *dest, const char *srcPath) {
-  assert(srcPath);
-  assert(dest);
-
-#define PARENT_DELIM ".."
-  int spath_len = strlen(srcPath);
-  char *temp;
-
-  temp = (char *)mem_malloc(spath_len + strlen(PARENT_DELIM) + 3);
-  if (!temp) {
-    return false;
-  }
-
-  ddio_MakePath(temp, srcPath, PARENT_DELIM, NULL);
-  ddio_CleanPath(dest, temp);
-  mem_free(temp);
-  return true;
-}
-
 bool ddio_CheckProcess(int pid) {
   HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
   if (proc) {
