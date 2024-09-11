@@ -384,6 +384,15 @@ void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::reg
 bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filename);
 
 /**
+ * Generates a temporary filename based on the prefix in basedir. Function ensures that generated
+ * filename does not exists in basedir directory.
+ * @param basedir directory to put the files
+ * @param prefix prefix for the temp filename
+ * @return generated filename with ".tmp" extension in basedir directory or empty path on failure
+ */
+std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, const char *prefix);
+
+/**
  * Check process existence by PID
  * @param pid PID of requested process
  * @return true if process exists, false otherwise

@@ -35,3 +35,7 @@ target_include_directories(ddio PUBLIC
   ${PROJECT_SOURCE_DIR}/ddio
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
