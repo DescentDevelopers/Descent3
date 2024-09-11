@@ -374,12 +374,6 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
                        const std::function<void(std::filesystem::path)> &func);
 
-//	given a path, it cleans it up (if the path is c:\windows\..\dos it would make it c:\dos)
-//	srcPath is the original path
-//	dest is the finished cleaned path.
-//		dest should be at least _MAX_PATH in size
-void ddio_CleanPath(char *dest, const char *srcPath);
-
 // Generates a temporary filename based on the prefix, and basedir
 // Parameters:
 //		basedir - directory to put the files
