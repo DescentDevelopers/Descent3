@@ -37,7 +37,7 @@ The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja
 
     Open a "x64 Native Tools Command Prompt" or "x64 Native Tools PowerShell" and run:
     ```batch
-    git clone https://github.com/DescentDevelopers/Descent3
+    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
     ```
 
 4. **Build Descent3.**
@@ -135,7 +135,7 @@ Once CMake finishes, the built files will be put in `builds/mac/Descent3/Debug` 
 3. **Clone the Descent3 source code.**
 
     ```sh
-    git clone https://github.com/DescentDevelopers/Descent3
+    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
     ```
 
 4. **Build Descent3.**
