@@ -1,8 +1,16 @@
-set(HEADERS)
+set(HEADERS
+  module.h
+)
 set(CPPS
-  module.cpp)
+  module.cpp
+)
 
 add_library(module STATIC ${HEADERS} ${CPPS})
 target_link_libraries(module PRIVATE
   ddebug
+)
+target_include_directories(module PUBLIC
+  $<BUILD_INTERFACE:
+  ${PROJECT_SOURCE_DIR}/module
+  >
 )

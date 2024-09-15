@@ -11,6 +11,7 @@ target_link_libraries(Direct_TCP_IP PRIVATE
   ddio
   inetfile
   misc
+  module
   ui
   $<$<PLATFORM_ID:Windows>:ws2_32>
 )

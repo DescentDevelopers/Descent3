@@ -79,6 +79,7 @@ foreach(SCRIPT ${SCRIPTS})
   target_link_libraries(${SCRIPT}
     fix
     misc
+    module
   )
   set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
   set_target_properties(${SCRIPT} PROPERTIES CXX_VISIBILITY_PRESET "hidden")

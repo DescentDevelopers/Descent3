@@ -15,6 +15,7 @@ target_link_libraries(physics PRIVATE
   mem
   misc
   model
+  module
   rtperformance
   sndlib
   plog::plog

@@ -55,6 +55,10 @@
 #include "dedicated_server.h"
 #include "init.h"
 
+#ifdef WIN32
+#include "debug.h"
+#endif
+
 std::filesystem::path orig_pwd;
 
 static volatile char already_tried_signal_cleanup = 0;

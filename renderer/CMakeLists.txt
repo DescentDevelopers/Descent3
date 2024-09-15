@@ -40,5 +40,6 @@ target_link_libraries(renderer PRIVATE
   ddio
   mem
   misc
+  module
   rtperformance
 )

@@ -15,6 +15,7 @@ target_link_libraries(networking PRIVATE
   ddio
   mem
   misc
+  module
   ${PLATFORM_LIBS}
   plog::plog
 )
