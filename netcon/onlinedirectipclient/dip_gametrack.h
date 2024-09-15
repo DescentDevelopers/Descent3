@@ -25,6 +25,6 @@ struct apiServerEntry {
   uint16_t port;
 };
 
-int RequestDIPGameList(char *tmppath);
+void RequestDIPGameList();
 void RequestDIPShutdown();
 std::queue<apiServerEntry> GetDIpGameList();

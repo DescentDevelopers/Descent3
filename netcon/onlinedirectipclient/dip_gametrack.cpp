@@ -20,6 +20,7 @@
 #include <windows.h>
 #endif
 
+#include <filesystem>
 #include <string>
 #include <sstream>
 #include <thread>
@@ -32,8 +33,13 @@
 #define DLLmprintf(...)
 #endif
 
+#define DLLddio_MakePath(...) DLLddio_MakePath(__VA_ARGS__)
+
 typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
+
+typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
+extern ddio_MakePath_fp DLLddio_MakePath;
 
 char tempTrackerFilename[500];
 std::queue<apiServerEntry> directIpHostList;
@@ -98,7 +104,6 @@ void FetchApi() {
 
   while (true) {
     if (getfile->IsFileReceived()) {
-      delete getfile;
       DLLmprintf(0, "got api gameserver list.\n");
       break;
     } else if (getfile->IsFileError()) {
@@ -107,6 +112,8 @@ void FetchApi() {
       break;
     }
   }
+
+  delete getfile;
 
   if (failed)
     return;
@@ -134,16 +141,21 @@ void FetchApi() {
 
 std::thread trackthread;
 
-int RequestDIPGameList(char *tmppath) {
-  sprintf(tempTrackerFilename, "%s\\online_dt.tmp", tmppath);
+void RequestDIPGameList() {
+  std::error_code ec;
+  std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
+  if (ec) {
+    DLLmprintf(0, "Could not find temporary directory: \"%s\"", ec.message().c_str());
+    return;
+  }
+
+  DLLddio_MakePath(tempTrackerFilename, tempPath.u8string().c_str(), "Descent3", "cache", "odt.tmp", NULL);
 
   if (trackthread.joinable())
     trackthread.join();
 
   trackthread = std::thread(FetchApi);
   trackthread.detach();
-
-  return 0;
 }
 
 void RequestDIPShutdown() {

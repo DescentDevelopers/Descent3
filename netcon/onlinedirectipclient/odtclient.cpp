@@ -770,7 +770,7 @@ int MainMultiplayerMenu() {
       // Join Mastertracker game
       {
         DLLmprintf(0, "Sending Mastertracker game list request.\n");
-        RequestDIPGameList(DLLLocalD3Dir);
+        RequestDIPGameList();
         DLLmprintf(0, "Calling SearchMasterTrackerGameMenu().\n");
         DLLNewUIWindowClose(main_wnd);
         *DLLGame_is_master_tracker_game = 0;
@@ -830,7 +830,7 @@ int MainMultiplayerMenu() {
       break;
     case 11: {
       DLLmprintf(0, "Sending Mastertracker game list request.\n");
-      RequestDIPGameList(DLLLocalD3Dir);
+      RequestDIPGameList();
 
       DLLmprintf(0, "Calling SearchMasterTrackerGameMenu().\n");
       DLLNewUIWindowClose(main_wnd);
@@ -1177,7 +1177,7 @@ int SearchMasterTrackerGameMenu() {
   last_master_req_time = DLLtimer_GetTime();
 
   // request master
-  RequestDIPGameList(DLLLocalD3Dir);
+  RequestDIPGameList();
   *DLLNum_network_games_known = 0;
   DLLmprintf(0, "Waiting for Mastertracker response.\n");
 
@@ -1248,7 +1248,7 @@ int SearchMasterTrackerGameMenu() {
       DLLmprintf(0, "request master\n");
 
       // re request master
-      RequestDIPGameList(DLLLocalD3Dir);
+      RequestDIPGameList();
     }
 
     if ((DLLtimer_GetTime() - last_req_time) > REQ_GAME_LIST_INTERVAL) {
