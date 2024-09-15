@@ -101,54 +101,10 @@
 #include <dlfcn.h>
 #endif
 
+#include "cfile.h"
 #include "crossplat.h"
 #include "log.h"
 #include "module.h"
-
-/**
- * Returns fixed case file name to actual case on disk for case-sensitive filesystems (Linux).
- * This is actually copy of cf_FindRealFileNameCaseInsensitive() from CFILE.
- * @param fname the fixed case name to map to reality
- * @param directory optional directory to search within (default - current path)
- * @return filename with actual case name or empty path if there no mapping in filesystem
- * @note This function returns only filename without directory part, i.e.
- * mod_FindRealFileNameCaseInsensitive("test/test.txt") will return only "test.txt" on success.
- */
-std::filesystem::path mod_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
-                                                          const std::filesystem::path &directory = ".") {
-  // Dumb check, maybe there already all ok?
-  if (std::filesystem::exists((directory / fname))) {
-    return fname.filename();
-  }
-
-  std::filesystem::path result, search_path, search_file;
-
-  search_path = directory / fname.parent_path();
-  search_file = fname.filename();
-
-  // If directory does not exist, nothing to search.
-  if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
-    return {};
-  }
-
-  // Search component in search_path
-  auto const &it = std::filesystem::directory_iterator(search_path);
-
-  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto &dir_entry) {
-    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
-  });
-
-  if (found != end(it)) {
-    // Match, append to result
-    result = found->path();
-    search_path = result;
-  } else {
-    // Component not found, mission failed
-    return {};
-  }
-
-  return result.filename();
-}
 
 int ModLastError = MODERR_NOERROR;
 
@@ -228,7 +184,7 @@ bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, i
   if (!handle->handle) {
     // ok we couldn't find the given name...try other ways
     std::filesystem::path parent_path = modfilename.parent_path();
-    std::filesystem::path new_filename = mod_FindRealFileNameCaseInsensitive(parent_path, modfilename.filename());
+    std::filesystem::path new_filename = cf_FindRealFileNameCaseInsensitive(modfilename.filename(), parent_path);
 
     if (new_filename.empty()) {
       LOG_ERROR.printf("Module Load Err: %s", dlerror());
