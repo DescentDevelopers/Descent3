@@ -24,8 +24,8 @@
 !/!	\n	= force a newline
 !/!	\0-\255 = insert the number directly into byte
 
-!/!0:Online Direct TCP-IP is a Free Service where you
-!=!Online Direct TCP-IP is a Free Service where you
+!/!0:Descent3 Online is a Free Service where you
+!=!Descent3 Online is a Free Service where you
 
 !/!1:can find people to play Descent 3 against.
 !=!can find people to play Descent 3 against.
@@ -108,8 +108,8 @@
 !/!27:Unable to connect.
 !=!Unable to connect.
 
-!/!28:Online Direct TCP-IP
-!=!Online Direct TCP-IP
+!/!28:Descent3 Online
+!=!Descent3 Online
 
 !/!29:Cancel
 !=!Cancel

@@ -1,6 +1,0 @@
-onlinedirectip.str
-Online Direct TCP~IP.so
-Online Direct TCP~IP.dll
-Online Direct TCP~IP.dylib
-onlinedipmain.ogf
-onlinedipgame.ogf

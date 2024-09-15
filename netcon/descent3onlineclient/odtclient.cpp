@@ -247,7 +247,7 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
   Auto_start = false;
 
   DLLmprintf(0, "About to create string table...\n");
-  DLLCreateStringTable("onlinedirectip.str", &StringTable, &StringTableSize);
+  DLLCreateStringTable("d3online.str", &StringTable, &StringTableSize);
   DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     All_ok = false;
@@ -466,8 +466,8 @@ int MainMultiplayerMenu() {
 
   // Edit box for typing in chat, id # 15
   void *send_edit = DLLOldEditCreate(main_wnd, 15, colx2 + 10, 372, 390, 20, UIED_AUTOSELECT);
-  
-  DLLNewUIWindowLoadBackgroundImage(main_wnd, "onlinedipmain.ogf");
+
+  DLLNewUIWindowLoadBackgroundImage(main_wnd, "d3online_main.ogf");
 
   DLLSetOldEditBufferLen(send_edit, 100);
   void *console_item = DLLUIConsoleGadgetCreate(main_wnd, 16, colx2, 165, 0, 51, 16, 0);
@@ -1167,7 +1167,7 @@ int SearchMasterTrackerGameMenu() {
 
   void *info_hs = DLLHotSpotCreate(main_wnd, GET_INFO_ID, KEY_I, info_off_text, info_on_text, 1, 1, 1, 1, 0);
 
-  DLLNewUIWindowLoadBackgroundImage(main_wnd, "onlinedipgame.ogf");
+  DLLNewUIWindowLoadBackgroundImage(main_wnd, "d3online_game.ogf");
 
   DLLNewUIWindowOpen(main_wnd);
   *DLLNum_network_games_known = 0;
