@@ -1,5 +1,6 @@
 # Homebrew dependencies to build Descent3
 
+brew "cpp-httplib"
 brew "glm"
 brew "plog"
 
