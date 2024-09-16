@@ -670,10 +670,6 @@ void GameToEditor(bool set_viewer_from_player) {
     SetWindowLong(theApp.main_frame->m_hWnd, GWL_STYLE, EditorWndStyle);
   }
 
-  //	this uses information defined above
-  io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0);
-  io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
-
   ddio_Init(&io_info);
 
   Cinematic_Init();
@@ -871,8 +867,6 @@ void EditorToGame() {
 
   //	Initialize IO System for child window
   io_info.obj = Descent;
-  io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0);
-  io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
   ddio_Init(&io_info);
 
   // Init force feedback

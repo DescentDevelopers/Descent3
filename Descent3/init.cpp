@@ -1433,8 +1433,7 @@ void InitIOSystems(bool editor) {
 
   //	do io init stuff
   io_info.obj = Descent;
-  io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
-  io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0); WIN95: DirectInput is flaky for some keys.
+
   INIT_MESSAGE(("Initializing DDIO systems."));
   if (!ddio_Init(&io_info)) {
     Error("I/O initialization failed.");
@@ -2136,8 +2135,6 @@ void RestartD3() {
 
   // startup io
   io_info.obj = Descent;
-  io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0);
-  io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
   if (!ddio_Init(&io_info)) {
     Error("I/O initialization failed.");
   }

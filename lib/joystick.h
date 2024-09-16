@@ -138,7 +138,7 @@ struct tJoyPos {
 };
 
 //	joystick system initialization
-bool joy_Init(bool emulation);
+bool joy_Init();
 void joy_Close();
 
 //	retreive information about joystick.

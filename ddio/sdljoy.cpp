@@ -97,7 +97,7 @@ static bool joy_InitStick(tJoystick joy, char *server_adr);
 //	functions
 
 //	joystick system initialization
-bool joy_Init(bool remote) {
+bool joy_Init() {
   //	reinitialize joystick if already initialized.
   joy_Close();
   if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0) {
@@ -106,7 +106,7 @@ bool joy_Init(bool remote) {
   }
 
   //	check if this OS supports joysticks
-  if (!joyGetNumDevs() && !remote) {
+  if (!joyGetNumDevs()) {
     return false;
   }
 
