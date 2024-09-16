@@ -1914,6 +1914,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
   }
 
   if (!*parse_keys) {
+    mem_free(parse_keys);
     return MAX_NET_PLAYERS;
   }
   // Break up the mod keywords into an array

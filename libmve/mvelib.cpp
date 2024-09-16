@@ -33,8 +33,8 @@ mve_cb_SetPalette mve_setpalette;
 /*
  * private utility functions
  */
-static short _mve_get_short(unsigned char *data);
-static unsigned short _mve_get_ushort(unsigned char *data);
+static short _mve_get_short(const unsigned char *data);
+static unsigned short _mve_get_ushort(const unsigned char *data);
 
 /*
  * private functions for mvefile
@@ -318,6 +318,8 @@ static void _mvefile_free(MVEFILE *movie) {
  * open the file stream in thie object
  */
 static int _mvefile_open(MVEFILE *file, void *stream) {
+  if (!file)
+    return 0;
   file->stream = stream;
   if (!file->stream)
     return 0;
@@ -343,7 +345,7 @@ static int _mvefile_read_header(MVEFILE *movie) {
   unsigned char buffer[26];
 
   /* check the file is open */
-  if (!movie->stream)
+  if (!movie || !movie->stream)
     return 0;
 
   /* check the file is long enough */
@@ -351,7 +353,7 @@ static int _mvefile_read_header(MVEFILE *movie) {
     return 0;
 
   /* check the signature */
-  if (memcmp(buffer, MVE_HEADER, 20))
+  if (memcmp(buffer, MVE_HEADER, 20) != 0)
     return 0;
 
   /* check the hard-coded constants */
@@ -366,6 +368,9 @@ static int _mvefile_read_header(MVEFILE *movie) {
 }
 
 static void _mvefile_set_buffer_size(MVEFILE *movie, int buf_size) {
+  if (!movie)
+    return;
+
   unsigned char *new_buffer;
   int new_len;
 
@@ -384,7 +389,7 @@ static void _mvefile_set_buffer_size(MVEFILE *movie, int buf_size) {
   /* free old buffer */
   if (movie->cur_chunk) {
     mve_free(movie->cur_chunk);
-    movie->cur_chunk = 0;
+    movie->cur_chunk = nullptr;
   }
 
   /* install new buffer */
@@ -397,7 +402,7 @@ static int _mvefile_fetch_next_chunk(MVEFILE *movie) {
   unsigned short length;
 
   /* fail if not open */
-  if (!movie->stream)
+  if (!movie || !movie->stream)
     return 0;
 
   /* fail if we can't read the next segment descriptor */
@@ -419,13 +424,13 @@ static int _mvefile_fetch_next_chunk(MVEFILE *movie) {
   return 1;
 }
 
-static short _mve_get_short(unsigned char *data) {
+static short _mve_get_short(const unsigned char *data) {
   short value;
   value = data[0] | (data[1] << 8);
   return value;
 }
 
-static unsigned short _mve_get_ushort(unsigned char *data) {
+static unsigned short _mve_get_ushort(const unsigned char *data) {
   unsigned short value;
   value = data[0] | (data[1] << 8);
   return value;
@@ -440,7 +445,7 @@ static MVESTREAM *_mvestream_alloc() {
   /* allocate and zero-initialize everything */
   movie = (MVESTREAM *)mve_alloc(sizeof(MVESTREAM));
   movie->movie = nullptr;
-  movie->context = 0;
+  movie->context = nullptr;
   memset(movie->handlers, 0, sizeof(movie->handlers));
 
   return movie;
@@ -469,6 +474,8 @@ static void _mvestream_free(MVESTREAM *movie) {
  * open an MVESTREAM object
  */
 static int _mvestream_open(MVESTREAM *movie, void *stream) {
+  if (!movie)
+    return 0;
   movie->movie = mvefile_open(stream);
 
   return (movie->movie == nullptr) ? 0 : 1;
