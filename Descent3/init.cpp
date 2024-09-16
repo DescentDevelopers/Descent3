@@ -1601,11 +1601,6 @@ void InitGraphics(bool editor) {
 }
 
 void InitGameSystems(bool editor) {
-  //	initialize possible remote controller.
-  int adr = FindArg("-rjoy");
-  if (adr)
-    Controller_ip = &GameArgs[adr + 1][1];
-
   //	do other joint editor/game initialization.
   SetInitMessageLength(TXT_INITCOLLATING, 0.4f);
   TelComInit();

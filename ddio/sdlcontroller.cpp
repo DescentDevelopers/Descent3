@@ -707,7 +707,7 @@ unsigned sdlgameController::get_joy_raw_values(int *x, int *y) {
   return 0;
 }
 
-gameController *CreateController(int num_funcs, ct_function *funcs, char *remote_ip) {
+gameController *CreateController(int num_funcs, ct_function *funcs) {
   return new sdlgameController(num_funcs, funcs);
 }
 

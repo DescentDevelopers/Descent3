@@ -239,9 +239,6 @@ struct game_controls {
   bool rearview_down_state = false;
 };
 
-//	This value should be set at initialization time.  Use for remote controlling.
-extern char *Controller_ip;
-
 //	Controller object.
 extern gameController *Controller;
 

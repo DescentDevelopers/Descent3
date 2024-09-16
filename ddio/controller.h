@@ -262,7 +262,7 @@ public:
   void toggle_controller_axis(int ctl, int axis, bool toggle){};
 };
 
-gameController *CreateController(int num_funcs, ct_function *funcs, char *remote_ip);
+gameController *CreateController(int num_funcs, ct_function *funcs);
 void DestroyController(gameController *ctl);
 
 
