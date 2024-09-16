@@ -592,6 +592,7 @@ target_link_libraries(Descent3Editor
     ddebug
     libmve
     libacm
+    inetfile
     fix
     grtext
     manage

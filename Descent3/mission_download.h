@@ -62,7 +62,7 @@ void msn_DoAskForURL(uint8_t *indata, network_address *net_addr);
 void msn_DoCurrMsnURLs(uint8_t *data, network_address *net_addr);
 int msn_CheckGetMission(network_address *net_addr, char *filename);
 int msn_ShowDownloadChoices(msn_urls *urls);
-int msn_DownloadWithStatus(char *url, char *filename);
+int msn_DownloadWithStatus(const char *url, const char *filename);
 void msn_ClipURLToWidth(int width, char *string);
 char *msn_SecondsToString(int time_sec);
 
