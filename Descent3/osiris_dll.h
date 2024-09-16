@@ -139,7 +139,7 @@ extern void Osiris_ShutdownModuleLoader(void);
 //	Osiris_FindLoadedModule
 //	Purpose:
 //		Given the name of a module, it returns the id of a loaded OSIRIS module.  -1 if it isn't loaded.
-extern int Osiris_FindLoadedModule(char *filename);
+extern int Osiris_FindLoadedModule(const std::filesystem::path &module_name);
 
 //	Osiris_LoadLevelModule
 //	Purpose:
@@ -148,7 +148,7 @@ extern int Osiris_FindLoadedModule(char *filename);
 //	before calling this function, it will return the id to where the module is, and will not reload
 //	the module.  Returns -1 if the module does not exist.  Returns -2 if the module couldn't initialize.
 //	Returns -3 if the module is not a level module. Returns -4 if no module slots are available.
-extern int Osiris_LoadLevelModule(char *module_name);
+extern int Osiris_LoadLevelModule(const std::filesystem::path &module_name);
 
 //	Osiris_UnloadLevelModule
 //	Purpose:
@@ -164,7 +164,7 @@ extern void Osiris_UnloadLevelModule(void);
 //	before calling this function, it will return the id to where the module is, and will not reload
 //	the module.  Returns -1 if the module does not exist.  Returns -2 if the module couldn't initialize.
 //	Returns -3 if the module is not a game module. Returns -4 if no module slots are available.
-extern int Osiris_LoadGameModule(char *module_name);
+extern int Osiris_LoadGameModule(const std::filesystem::path &module_name);
 
 //	Osiris_UnloadModule
 //	Purpose:
