@@ -18,9 +18,9 @@
 
 #pragma once
 
+#include <istream>
 #include <memory>
 #include <string>
-#include <sstream>
 
 // Include httplib.h before windows.h
 #include <httplib.h>
@@ -45,7 +45,9 @@ public:
    * @param receiver input where body of response will be stored
    * @return standard HTTP code. 200 means is OK.
    */
-  int Get(const std::string &URIPath, std::stringstream &receiver);
+  int Get(const std::string &URIPath, std::iostream &receiver, httplib::Progress progress = nullptr);
+
+  void SetProxy(const std::string &proxy_host, uint16_t port);
 
 private:
   std::unique_ptr<httplib::Client> m_client;

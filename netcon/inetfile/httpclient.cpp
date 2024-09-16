@@ -25,8 +25,8 @@ HttpClient::HttpClient(const std::string &URL) {
   m_client->set_follow_location(true);  // Follow redirects
 }
 
-int HttpClient::Get(const std::string &URIPath, std::stringstream &receiver) {
-  if (auto res = m_client->Get(URIPath)) {
+int HttpClient::Get(const std::string &URIPath, std::iostream &receiver, httplib::Progress progress) {
+  if (auto res = m_client->Get(URIPath, progress)) {
     if (res->status == httplib::StatusCode::OK_200) {
       receiver << res->body;
     }
@@ -36,6 +36,10 @@ int HttpClient::Get(const std::string &URIPath, std::stringstream &receiver) {
     // std::cout << "HTTP error: " << httplib::to_string(err) << std::endl;
     return static_cast<int>(res.error());
   }
+}
+
+void HttpClient::SetProxy(const std::string &proxy_host, uint16_t port) {
+  m_client->set_proxy(proxy_host, port);
 }
 
 }
