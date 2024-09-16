@@ -19,7 +19,7 @@
 #ifndef __LNXCONTROLLER_H_
 #define __LNXCONTROLLER_H_
 
-#include "Controller.h"
+#include "controller.h"
 #include "joystick.h"
 
 #define NULL_LNXCONTROLLER ((int8_t)NULL_CONTROLLER)
@@ -49,10 +49,10 @@ const int CTID_KEYBOARD = -1, // always -1 for keyboards
 
 const int CTID_EXTCONTROL0 = 0;
 
-class lnxgameController : public gameController {
+class sdlgameController : public gameController {
 public:
-  lnxgameController(int num_funcs, ct_function *funcs);
-  ~lnxgameController();
+  sdlgameController(int num_funcs, ct_function *funcs);
+  ~sdlgameController();
 
   //	these functions suspend or resume any controller reading.  this is really only useful for
   //	preemptive controller polling, but they should be used to activate and deactivate controller

@@ -17,7 +17,7 @@
 
 --- HISTORICAL COMMENTS FOLLOW ---
 
- * $Logfile: /DescentIII/Main/lnxcontroller/lnxcontroller.cpp $
+ * $Logfile: /DescentIII/Main/sdlcontroller/sdlcontroller.cpp $
  * $Revision: 1.1.1.1 $
  * $Date: 2003/08/26 03:58:14 $
  * $Author: kevinb $
@@ -44,12 +44,12 @@
 #include <algorithm>
 #include <cstring>
 
-#include "Controller.h"
+#include "controller.h"
 #include "ddio.h"
 #include "pserror.h"
 #include "joystick.h"
 #include "inffile.h"
-#include "lnxcontroller.h"
+#include "sdlcontroller.h"
 #include "log.h"
 
 // Sorry! This is needed for the semi-hacky mouselook support
@@ -68,7 +68,7 @@ static float WinControllerTimer = 0.0f;
 static int64_t g_last_frame_timer_ms = -1;
 static float g_accum_frame_time = 0.0f;
 
-lnxgameController::lnxgameController(int num_funcs, ct_function *funcs) : gameController(num_funcs, funcs) {
+sdlgameController::sdlgameController(int num_funcs, ct_function *funcs) : gameController(num_funcs, funcs) {
   enum_controllers();
 
   for (int i = 0; i < num_funcs; i++)
@@ -80,16 +80,16 @@ lnxgameController::lnxgameController(int num_funcs, ct_function *funcs) : gameCo
   g_last_frame_timer_ms = -1;
   g_accum_frame_time = 0.0f;
 
-  lnxgameController::flush();
+  sdlgameController::flush();
 }
 
-lnxgameController::~lnxgameController() {}
+sdlgameController::~sdlgameController() {}
 
 //	these functions suspend or resume any controller reading.  this is really only useful for
 //	preemptive controller polling, but they should be used to activate and deactivate controller
 //	reading.
-void lnxgameController::suspend() { m_Suspended = 1; }
-void lnxgameController::resume() {
+void sdlgameController::suspend() { m_Suspended = 1; }
+void sdlgameController::resume() {
   m_Suspended = 0;
   m_frame_timer_ms = -1;
   m_frame_time = 1.0f;
@@ -100,7 +100,7 @@ void lnxgameController::resume() {
 
 //	this functions polls the controllers if needed.  some systems may not need to implement
 //	this function.
-void lnxgameController::poll() {
+void sdlgameController::poll() {
   int64_t cur_frame_timer_ms;
 
   if (m_Suspended)
@@ -137,7 +137,7 @@ void lnxgameController::poll() {
 
 // toggles use of deadzone for controllers. ctl can be 0 to ???
 // dead zone is from 0.0 to 0.5
-void lnxgameController::set_controller_deadzone(int ctl, float deadzone) {
+void sdlgameController::set_controller_deadzone(int ctl, float deadzone) {
   if (ctl < 0 || ctl >= (m_NumControls - 2)) {
     return;
   }
@@ -163,7 +163,7 @@ char Ctltext_PovBindings[][16] = {"", "pov-U", "pov-R", "pov-D", "pov-L"};
 #define NUM_BTNBINDSTRINGS (sizeof(Ctltext_BtnBindings) / sizeof(Ctltext_AxisBindings[0]))
 
 // retrieves binding text for desired function, binding, etc.
-const char *lnxgameController::get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind) {
+const char *sdlgameController::get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind) {
   static char binding_text[32];
   const char *str;
 
@@ -256,7 +256,7 @@ const char *lnxgameController::get_binding_text(ct_type type, uint8_t ctrl, uint
 }
 
 //	flushes all controller information
-void lnxgameController::flush() {
+void sdlgameController::flush() {
   bool old_mse = m_MouseActive, old_joy = m_JoyActive;
 
   ddio_KeyFlush();
@@ -268,7 +268,7 @@ void lnxgameController::flush() {
 }
 
 //	returns the value of a requested controller type. make sure you flush the controller before polling.
-ct_config_data lnxgameController::get_controller_value(ct_type type_req) {
+ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
   //	will return the current value of a requested control type.
   ct_config_data val = MAKE_CONFIG_DATA(INVALID_CONTROLLER_INFO, NULL_BINDING);
   int i, j;
@@ -442,7 +442,7 @@ ct_config_data lnxgameController::get_controller_value(ct_type type_req) {
 }
 
 //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
-void lnxgameController::set_controller_function(int id, const ct_type *type, ct_config_data value,
+void sdlgameController::set_controller_function(int id, const ct_type *type, ct_config_data value,
                                                 const uint8_t *flags) {
   ct_element elem;
 
@@ -479,7 +479,7 @@ void lnxgameController::set_controller_function(int id, const ct_type *type, ct_
 }
 
 //	returns information about a requested function (type must be of an array == CTLBINDS_PER_FUNC)
-void lnxgameController::get_controller_function(int id, ct_type *type, ct_config_data *value, uint8_t *flags) {
+void sdlgameController::get_controller_function(int id, ct_type *type, ct_config_data *value, uint8_t *flags) {
   type[0] = m_ElementList[id].ctype[0];
   type[1] = m_ElementList[id].ctype[1];
   *value = makeword(CONTROLLER_CTL_INFO(m_ElementList[id].ctl[0], m_ElementList[id].ctl[1]),
@@ -489,10 +489,10 @@ void lnxgameController::get_controller_function(int id, ct_type *type, ct_config
 }
 
 //	temporarily enables or disables a function
-void lnxgameController::enable_function(int id, bool enable) { m_ElementList[id].enabled = enable; }
+void sdlgameController::enable_function(int id, bool enable) { m_ElementList[id].enabled = enable; }
 
 //	all systems need to implement this function.  this returns information about the controller
-bool lnxgameController::get_packet(int id, ct_packet *packet, ct_format alt_format) {
+bool sdlgameController::get_packet(int id, ct_packet *packet, ct_format alt_format) {
   float val = 0.0f;
   int i;
 
@@ -573,7 +573,7 @@ skip_packet_read:
 }
 
 // gets sensitivity of axis item
-float lnxgameController::get_axis_sensitivity(ct_type axis_type, uint8_t axis) {
+float sdlgameController::get_axis_sensitivity(ct_type axis_type, uint8_t axis) {
   axis--;
   ASSERT(axis < CT_NUM_AXES);
 
@@ -592,7 +592,7 @@ float lnxgameController::get_axis_sensitivity(ct_type axis_type, uint8_t axis) {
 }
 
 // sets sensitivity of axis item
-void lnxgameController::set_axis_sensitivity(ct_type axis_type, uint8_t axis, float val) {
+void sdlgameController::set_axis_sensitivity(ct_type axis_type, uint8_t axis, float val) {
   int i;
 
   axis--;
@@ -612,7 +612,7 @@ void lnxgameController::set_axis_sensitivity(ct_type axis_type, uint8_t axis, fl
 }
 
 // assigns an individual function
-int lnxgameController::assign_function(ct_function *func) {
+int sdlgameController::assign_function(ct_function *func) {
   //	for now this is a straight forward translation (that is, no mapping of needs to controller
   //	list to create elements.
   ct_element elem;
@@ -676,7 +676,7 @@ int lnxgameController::assign_function(ct_function *func) {
 }
 
 // get raw values for the controllers
-int lnxgameController::get_mouse_raw_values(int *x, int *y) {
+int sdlgameController::get_mouse_raw_values(int *x, int *y) {
   if (m_Suspended)
     return 0;
 
@@ -686,7 +686,7 @@ int lnxgameController::get_mouse_raw_values(int *x, int *y) {
   return m_MseState.btnmask;
 }
 
-unsigned lnxgameController::get_joy_raw_values(int *x, int *y) {
+unsigned sdlgameController::get_joy_raw_values(int *x, int *y) {
   unsigned btn = 0;
 
   if (m_Suspended)
@@ -708,7 +708,7 @@ unsigned lnxgameController::get_joy_raw_values(int *x, int *y) {
 }
 
 gameController *CreateController(int num_funcs, ct_function *funcs, char *remote_ip) {
-  return new lnxgameController(num_funcs, funcs);
+  return new sdlgameController(num_funcs, funcs);
 }
 
 void DestroyController(gameController *ctl) {
@@ -716,7 +716,7 @@ void DestroyController(gameController *ctl) {
 }
 
 // activates or deactivates mouse and or controller
-void lnxgameController::mask_controllers(bool joystick, bool mouse) {
+void sdlgameController::mask_controllers(bool joystick, bool mouse) {
   int i, j;
 
   m_JoyActive = joystick;
@@ -767,7 +767,7 @@ void lnxgameController::mask_controllers(bool joystick, bool mouse) {
 //	---------------------------------------------------------------------------
 //	controller functions
 
-void lnxgameController::extctl_getpos(int id) {
+void sdlgameController::extctl_getpos(int id) {
   tJoyPos ji;
   float timer_val;
   int i;
@@ -830,7 +830,7 @@ void lnxgameController::extctl_getpos(int id) {
   m_ExtCtlStates[id].buttons = ji.buttons;
 }
 
-void lnxgameController::mouse_geteval() {
+void sdlgameController::mouse_geteval() {
   int x, y, dx, dy; //,z;
   unsigned btnmask;
 
@@ -853,7 +853,7 @@ void lnxgameController::mouse_geteval() {
 }
 
 //	enumerate all controllers on system
-bool lnxgameController::enum_controllers() {
+bool sdlgameController::enum_controllers() {
   int num_devs = 0, dev;
   int i;
 
@@ -936,13 +936,13 @@ bool lnxgameController::enum_controllers() {
 
   m_NumControls = num_devs;
 
-  lnxgameController::flush();
+  sdlgameController::flush();
 
   return true;
 }
 
 //	returns the controller with a pov hat
-int8_t lnxgameController::get_pov_controller(uint8_t pov) {
+int8_t sdlgameController::get_pov_controller(uint8_t pov) {
   //	start from controller 2 because 0, and 1 are reserved for keyboard and mouse
   uint16_t pov_flag = CTF_POV << (pov);
 
@@ -953,7 +953,7 @@ int8_t lnxgameController::get_pov_controller(uint8_t pov) {
   return NULL_LNXCONTROLLER;
 }
 
-int8_t lnxgameController::get_button_controller(uint8_t btn) {
+int8_t sdlgameController::get_button_controller(uint8_t btn) {
   unsigned mask;
 
   //	buttons range from 1-CT_MAX_BUTTONS
@@ -976,7 +976,7 @@ int8_t lnxgameController::get_button_controller(uint8_t btn) {
   return NULL_LNXCONTROLLER;
 }
 
-int8_t lnxgameController::get_axis_controller(uint8_t axis) {
+int8_t sdlgameController::get_axis_controller(uint8_t axis) {
   //	start from controller 2 because 0, and 1 are reserved for keyboard and mouse
   if (axis == NULL_BINDING)
     return NULL_LNXCONTROLLER;
@@ -988,7 +988,7 @@ int8_t lnxgameController::get_axis_controller(uint8_t axis) {
   return NULL_LNXCONTROLLER;
 }
 
-void lnxgameController::assign_element(int id, ct_element *elem) {
+void sdlgameController::assign_element(int id, ct_element *elem) {
   //	assign element, check to see if valid.
   int i;
 
@@ -1038,7 +1038,7 @@ void lnxgameController::assign_element(int id, ct_element *elem) {
   }
 }
 
-float lnxgameController::get_button_value(int8_t controller, ct_format format, uint8_t button) {
+float sdlgameController::get_button_value(int8_t controller, ct_format format, uint8_t button) {
   float val = 0.0f;
 
   if (controller <= NULL_LNXCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
@@ -1111,8 +1111,8 @@ float lnxgameController::get_button_value(int8_t controller, ct_format format, u
 }
 
 //	note controller is index into ControlList.
-float lnxgameController::get_axis_value(int8_t controller, uint8_t axis, ct_format format, bool invert) {
-  struct lnxgameController::t_controller *ctldev;
+float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_format format, bool invert) {
+  struct sdlgameController::t_controller *ctldev;
   float val = 0.0f;
   float normalizer, axisval = 0, nullzone; //, senszone;
 
@@ -1278,7 +1278,7 @@ float lnxgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
 }
 
 //	do some pov stuff
-float lnxgameController::get_pov_value(int8_t controller, ct_format format, uint8_t pov_number, uint8_t pov) {
+float sdlgameController::get_pov_value(int8_t controller, ct_format format, uint8_t pov_number, uint8_t pov) {
   float val = 0.0f;
 
   if (controller <= NULL_LNXCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
@@ -1345,7 +1345,7 @@ float lnxgameController::get_pov_value(int8_t controller, ct_format format, uint
 }
 
 //	get keyboard info
-float lnxgameController::get_key_value(int key, ct_format format) {
+float sdlgameController::get_key_value(int key, ct_format format) {
   float val = 0.0f;
 
   ASSERT(key < DDIO_MAX_KEYS);
@@ -1398,7 +1398,7 @@ int CTLLex(const char *command) {
 }
 
 // okay, now search for a '****.ctl' file in the current directory.
-void lnxgameController::parse_ctl_file(int devnum, const char *ctlname) {
+void sdlgameController::parse_ctl_file(int devnum, const char *ctlname) {
   // parse each file until we find a name match, no name match, just return
   ddio_DoForeachFile(
       Base_directory, std::regex(".*\\.ctl"), [this, &devnum, &ctlname](const std::filesystem::path &path) {

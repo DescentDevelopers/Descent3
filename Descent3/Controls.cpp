@@ -416,7 +416,7 @@
 #include "descent.h"
 #include "log.h"
 #include "weapon.h"
-#include "Controller.h"
+#include "controller.h"
 #include "gamesequence.h"
 #include "pilot.h"
 #include "hud.h"

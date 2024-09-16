@@ -17,14 +17,14 @@
 
 --- HISTORICAL COMMENTS FOLLOW ---
 
- * $Logfile: /DescentIII/Main/lib/Controller.h $
+ * $Logfile: /DescentIII/Main/lib/controller.h $
  * $Revision: 21 $
  * $Date: 3/20/00 12:25p $
  * $Author: Matt $
  *
  * Universal controller header
  *
- * $Log: /DescentIII/Main/lib/Controller.h $
+ * $Log: /DescentIII/Main/lib/controller.h $
  *
  * 21    3/20/00 12:25p Matt
  * Merge of Duane's post-1.3 changes.
@@ -92,7 +92,7 @@
  * changed ct_need to ct_function
  *
  * 7     5/12/97 4:39 PM Jeremy
- * #include of macController.h on Macintosh
+ * #include of maccontroller.h on Macintosh
  *
  * 6     5/12/97 1:21p Samir
  * Added suspend and resume functions.
@@ -266,9 +266,9 @@ gameController *CreateController(int num_funcs, ct_function *funcs, char *remote
 void DestroyController(gameController *ctl);
 
 #if defined(DX_APP)
-#include "win\WinController.h"
+#include "win\Wincontroller.h"
 #else
-#include "lnxcontroller.h"
+#include "sdlcontroller.h"
 #endif
 
 #endif

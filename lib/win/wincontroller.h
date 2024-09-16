@@ -17,14 +17,14 @@
 
 --- HISTORICAL COMMENTS FOLLOW ---
 
- * $Logfile: /DescentIII/Main/Lib/Win/WinController.h $
+ * $Logfile: /DescentIII/Main/Lib/Win/Wincontroller.h $
  * $Revision: 27 $
  * $Date: 7/26/99 12:00p $
  * $Author: Samir $
  *
  * Win32 controller header.
  *
- * $Log: /DescentIII/Main/Lib/Win/WinController.h $
+ * $Log: /DescentIII/Main/Lib/Win/Wincontroller.h $
  *
  * 27    7/26/99 12:00p Samir
  * added code to read config files for different controllers.
@@ -132,7 +132,7 @@
 #ifndef WINCONTROLLER_H
 #define WINCONTROLLER_H
 
-#include "Controller.h"
+#include "controller.h"
 #include "joystick.h"
 
 #define NULL_WINCONTROLLER ((int8_t)NULL_CONTROLLER)
