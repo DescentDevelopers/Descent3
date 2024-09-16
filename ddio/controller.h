@@ -265,10 +265,5 @@ public:
 gameController *CreateController(int num_funcs, ct_function *funcs, char *remote_ip);
 void DestroyController(gameController *ctl);
 
-#if defined(DX_APP)
-#include "win\Wincontroller.h"
-#else
-#include "sdlcontroller.h"
-#endif
 
 #endif
