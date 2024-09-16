@@ -59,6 +59,17 @@
 #define CTLCONFIG_CONTROLLER 1
 #define CTLCONFIG_WPNSEL 2
 
+#define CTLCONFIG_CONNECTION_SPEED_DB_KEY "ConnectionSpeed"
+
+struct t_cfg_connection_speed {
+  int pps;
+  const char *name;
+};
+
+#define CTLCONFIG_CONNECTION_SPEED_LIST_SIZE 5
+static const t_cfg_connection_speed Cfg_Connection_Speed_List[CTLCONFIG_CONNECTION_SPEED_LIST_SIZE] = {
+    {7, "56K"}, {8, "ISDN"}, {12, "Fast"}, {20, "Lan"}, {30, "Lan+"}};
+
 struct t_cfg_element {
   int16_t fn_id; // -1 = group start
   int16_t text;  // text string id.
@@ -76,5 +87,6 @@ void CtlConfig(int mode);
 // opens the settings dialogs.
 void joystick_settings_dialog();
 void key_settings_dialog();
+void net_settings_dialog();
 
 #endif

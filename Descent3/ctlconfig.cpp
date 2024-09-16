@@ -292,6 +292,8 @@
 #include "D3ForceFeedback.h"
 #include "hlsoundlib.h"
 #include "ddio.h"
+#include "networking.h"
+#include "appdatabase.h"
 
 //////////////////////////////////////////////////////////////////////////////
 #define IDV_KCONFIG 10
@@ -1288,6 +1290,62 @@ void key_settings_dialog() {
   wnd.Close();
   wnd.Destroy();
 }
+
+void net_settings_dialog() {
+  newuiTiledWindow wnd;
+  newuiSheet *sheet;
+  int res;
+  int *connectionSpeedIndex;
+  int nwRecommendPPS = nw_ReccomendPPS();
+
+  LOG_DEBUG.printf("Load network settings. PPS:%d.", nwRecommendPPS);
+
+  // Create window
+  wnd.Create("Network Settings", 0, 0, 384, 256);
+
+  // add group "Connection Speed"
+  sheet = wnd.GetSheet();
+  sheet->NewGroup("Connection Speed", 0, 0);
+
+  connectionSpeedIndex = sheet->AddFirstRadioButton(Cfg_Connection_Speed_List[0].name);
+  for (int i = 1; i < CTLCONFIG_CONNECTION_SPEED_LIST_SIZE; i++) {
+    sheet->AddRadioButton(Cfg_Connection_Speed_List[i].name);
+  }
+
+  // pre-select connection speed button
+  for (int i = 0; i < CTLCONFIG_CONNECTION_SPEED_LIST_SIZE; i++) {
+    if (Cfg_Connection_Speed_List[i].pps == nwRecommendPPS) {
+      *connectionSpeedIndex = i;
+      break;
+    }
+  }
+
+  // add group "window ctrl buttons"
+  sheet->NewGroup(NULL, 180, 160, NEWUI_ALIGN_HORIZ);
+  sheet->AddButton(TXT_OK, UID_OK);
+  sheet->AddButton(TXT_CANCEL, UID_CANCEL);
+
+  // render
+  wnd.Open();
+  do {
+    res = wnd.DoUI();
+
+    if (res == NEWUIRES_FORCEQUIT) {
+      break;
+    }
+  } while (res != UID_OK && res != UID_CANCEL);
+
+  if (res == UID_OK) {
+    // save changes
+    LOG_DEBUG.printf("Write Connection Speed: %s, PPS:%d.", Cfg_Connection_Speed_List[*connectionSpeedIndex].name,
+                     Cfg_Connection_Speed_List[*connectionSpeedIndex].pps);
+    Database->write(CTLCONFIG_CONNECTION_SPEED_DB_KEY, Cfg_Connection_Speed_List[*connectionSpeedIndex].name,
+                    strlen(Cfg_Connection_Speed_List[*connectionSpeedIndex].name));
+  }
+  wnd.Close();
+  wnd.Destroy();
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // configure controller new way
 struct t_ctlcfgswitchcb_data {
