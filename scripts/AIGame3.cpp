@@ -18,12 +18,13 @@
 
 // AIGame3.cpp
 // 0.1
+#include <cfloat>
 #include <stdlib.h>
 #include <string.h>
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "osiris_vector.h"
-#include "DallasFuncs.cpp"
+#include "DallasFuncs.h"
 
 #include "AIGame3_External.h"
 

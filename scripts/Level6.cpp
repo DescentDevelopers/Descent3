@@ -28,7 +28,7 @@
 #include <ctype.h>
 #include "osiris_import.h"
 #include "osiris_common.h"
-#include "DallasFuncs.cpp"
+#include "DallasFuncs.h"
 
 #include "module.h"
 
@@ -907,10 +907,10 @@ int PriestClueSound = -1;
 int DummyObject = -1;
 int DummyDefaultPos = -1;
 
-#define Var_ThereIsPlayerInPriestKeyPuzzle (*((int *)(&User_vars[7])))
-#define Var_PriestPlayerCurrentRoom (*((int *)(&User_vars[8])))
-#define Var_PriestPlayerCurrNode (*((int *)(&User_vars[9])))
-#define Var_PriestPuzzleCurrSoundNode (*((int *)(&User_vars[10])))
+#define Var_ThereIsPlayerInPriestKeyPuzzle User_vars[7]
+#define Var_PriestPlayerCurrentRoom User_vars[8]
+#define Var_PriestPlayerCurrNode User_vars[9]
+#define Var_PriestPuzzleCurrSoundNode User_vars[10]
 #define Var_PriestPuzzleCompleted User_vars[11]
 #define Var_PriestPuzzleGoofed User_vars[12]
 #define Var_SavedObject Saved_object_handles[1]
@@ -1189,11 +1189,12 @@ void aPriestKeyRoomChange(void) {
   int GoodRoom;
   int num_BadRooms = 0;
   int curr_x, curr_y;
-  curr_x = PriestCorrectPath[Var_PriestPlayerCurrNode].x;
-  curr_y = PriestCorrectPath[Var_PriestPlayerCurrNode].y;
+  auto cn = std::get<int32_t>(Var_PriestPlayerCurrNode);
+  curr_x = PriestCorrectPath[cn].x;
+  curr_y = PriestCorrectPath[cn].y;
 
-  GoodRoom = PriestKeyRoomMap[PriestCorrectPath[Var_PriestPlayerCurrNode + 1].y]
-                             [PriestCorrectPath[Var_PriestPlayerCurrNode + 1].x];
+  GoodRoom = PriestKeyRoomMap[PriestCorrectPath[cn + 1].y]
+                             [PriestCorrectPath[cn + 1].x];
 
   // check room to left
   if (curr_x > 0) {
@@ -1261,11 +1262,12 @@ void aPriestKeyRoomChange(void) {
     // the player moved into a good room
     Var_PriestPlayerCurrNode += 1;
     Var_PriestPlayerCurrentRoom = Player_room;
-    if (Var_PriestPlayerCurrNode == 16) {
+    cn = std::get<int32_t>(Var_PriestPlayerCurrNode);
+    if (cn == 16) {
       PriestPlayerSolvesPuzzle();
     } else {
       // adjust sound Position
-      PriestPlaySoundAtNode(Var_PriestPlayerCurrNode + 1);
+      PriestPlaySoundAtNode(cn + 1);
     }
   } break;
   }
@@ -1687,6 +1689,8 @@ const char *Message_strings[NUM_MESSAGE_NAMES];
 // ===============
 // InitializeDLL()
 // ===============
+static constexpr std::initializer_list<int> uservars_as_int = {7, 8, 9, 10};
+
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   osicommon_Initialize((tOSIRISModuleInit *)func_list);
   if (func_list->game_checksum != CHECKSUM) {
@@ -1696,7 +1700,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   }
 
   ClearGlobalActionCtrs();
-  dfInit();
+  dfInit(uservars_as_int);
   InitMessageList();
 
   // Build the filename of the message file
@@ -2483,7 +2487,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
 
     ClearGlobalActionCtrs();
-    dfInit();
+    dfInit(uservars_as_int);
 
     // Script 006: LevelStart
     if (1) {

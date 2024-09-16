@@ -28,7 +28,7 @@
 #include <ctype.h>
 #include "osiris_import.h"
 #include "osiris_common.h"
-#include "DallasFuncs.cpp"
+#include "DallasFuncs.h"
 
 #include "module.h"
 
@@ -769,8 +769,6 @@ $$ENUM Region
 $$END
 */
 
-void aUserFlagSet(int flagnum, bool state);
-bool qUserFlag(int flagnum);
 const char *GetMessage(const char *name);
 
 #define MatCenSwitchAON 0
@@ -830,12 +828,12 @@ const char *GetMessage(const char *name);
 #define MatCenSwitchAOn 13
 #define MatCenSwitchAOff 14
 
-#define MagicMatCenSwitchSequence (*((int *)(&User_vars[17])))
-#define MatCenStateA (*((int *)(&User_vars[0])))
-#define MatCenStateB (*((int *)(&User_vars[1])))
-#define MatCenStateC (*((int *)(&User_vars[2])))
-#define MatCenStateD (*((int *)(&User_vars[3])))
-#define MatCenStateE (*((int *)(&User_vars[4])))
+#define MagicMatCenSwitchSequence User_vars[17]
+#define MatCenStateA User_vars[0]
+#define MatCenStateB User_vars[1]
+#define MatCenStateC User_vars[2]
+#define MatCenStateD User_vars[3]
+#define MatCenStateE User_vars[4]
 
 struct tMyHandle {
   const char *name;
@@ -1055,7 +1053,11 @@ void aMatCenPuzzleInit(void) {
   PlayOffAnimation(MatCenSwitchG);
 
   MagicMatCenSwitchSequence = 0;
-  MatCenStateA = MatCenStateB = MatCenStateC = MatCenStateD = MatCenStateE = 1;
+  MatCenStateA = 1;
+  MatCenStateB = 1;
+  MatCenStateC = 1;
+  MatCenStateD = 1;
+  MatCenStateE = 1;
 
   aObjPlayAnim(GetMyObject(MatCenResetSwitch), 0, 4, 4.000000f, 0);
 }
@@ -1121,7 +1123,11 @@ void aMatCenPuzzleReset(void) {
   SetMatCenToLevel1(MatCen5);
 
   MagicMatCenSwitchSequence = 0;
-  MatCenStateA = MatCenStateB = MatCenStateC = MatCenStateD = MatCenStateE = 1;
+  MatCenStateA = 1;
+  MatCenStateB = 1;
+  MatCenStateC = 1;
+  MatCenStateD = 1;
+  MatCenStateE = 1;
 
   aObjPlayAnim(GetMyObject(MatCenResetSwitch), 0, 4, 4.000000f, 0);
 }
@@ -1748,6 +1754,8 @@ const char *Message_strings[NUM_MESSAGE_NAMES];
 // ===============
 // InitializeDLL()
 // ===============
+static constexpr std::initializer_list<int> uservars_as_int = {17, 0, 1, 2, 3, 4};
+
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   osicommon_Initialize((tOSIRISModuleInit *)func_list);
   if (func_list->game_checksum != CHECKSUM) {
@@ -1757,7 +1765,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   }
 
   ClearGlobalActionCtrs();
-  dfInit();
+  dfInit(uservars_as_int);
   InitMessageList();
 
   // Build the filename of the message file
@@ -2469,7 +2477,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
 
     ClearGlobalActionCtrs();
-    dfInit();
+    dfInit(uservars_as_int);
 
     // Script 034: Level Start Initialization
     if (1) {

@@ -89,15 +89,7 @@ float FixSin(angle a);
 // Returns the cosine of the given angle.  Linearly interpolates between two entries in a 256-entry table
 float FixCos(angle a);
 
-// Returns the sine of the given angle, but does no interpolation
-float FixSinFast(angle a);
-
-// Returns the cosine of the given angle, but does no interpolation
-float FixCosFast(angle a);
-
 #define Round(x) ((int)(x + 0.5))
-
-fix FloatToFixFast(float num);
 
 // Conversion macros
 //??#define FloatToFix(num) Round((num) * FLOAT_SCALER)
@@ -106,24 +98,9 @@ fix FloatToFixFast(float num);
 #define ShortToFix(num) (((int32_t)(num)) << FIX_SHIFT)
 #define FixToFloat(num) (((float)(num)) / FLOAT_SCALER)
 #define FixToInt(num) ((num) >> FIX_SHIFT)
-#define FixToShort(num) ((int16_t)((num) >> FIX_SHIFT))
-
-// use this instead of:
-// for:  (int)floor(x+0.5f) use FloatRound(x)
-//       (int)ceil(x-0.5f)  use FloatRound(x)
-//       (int)floor(x-0.5f) use FloatRound(x-1.0f)
-//       (int)floor(x)      use FloatRound(x-0.5f)
-// for values in the range -2048 to 2048
-int FloatRound(float x);
 
 angle FixAtan2(float cos, float sin);
 angle FixAsin(float v);
 angle FixAcos(float v);
-
-// Does a ceiling operation on a fixed number
-fix FixCeil(fix num);
-
-// Floors a fixed number
-fix FixFloor(fix num);
 
 #endif

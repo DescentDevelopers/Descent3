@@ -125,46 +125,6 @@ float FixCos(angle a) {
   return (float)(c0 + ((c1 - c0) * (double)f / 256.0));
 }
 
-// Returns the sine of the given angle, but does no interpolation
-float FixSinFast(angle a) {
-  int i;
-
-  i = ((a + 0x80) >> 8) & 0xff;
-
-  return sincos_table[i];
-}
-
-// Returns the cosine of the given angle, but does no interpolation
-float FixCosFast(angle a) {
-  int i;
-
-  i = ((a + 0x80) >> 8) & 0xff;
-
-  return sincos_table[i + 64];
-}
-
-// use this instead of:
-// for:  (int)floor(x+0.5f) use FloatRound(x)
-//       (int)ceil(x-0.5f)  use FloatRound(x)
-//       (int)floor(x-0.5f) use FloatRound(x-1.0f)
-//       (int)floor(x)      use FloatRound(x-0.5f)
-// for values in the range -2048 to 2048
-
-// Set a vector to {0,0,0}
-int FloatRound(float x) {
-  float nf;
-  nf = x + 8390656.0f;
-  return ((*((int *)&nf)) & 0x7FFFFF) - 2048;
-}
-
-// A fast way to convert floats to fix
-fix FloatToFixFast(float x) {
-
-  float nf;
-  nf = x * 65536.0f + 8390656.0f;
-  return ((*((int *)&nf)) & 0x7FFFFF) - 2048;
-}
-
 // Get rid of the "no return value" warnings in the next three functions
 #pragma warning(disable : 4035)
 
@@ -244,27 +204,4 @@ angle FixAtan2(float cos, float sin) {
 
     return t;
   }
-}
-
-// Does a ceiling operation on a fixed number
-fix FixCeil(fix num) {
-  int int_num;
-  fix new_num;
-
-  int_num = FixToInt(num);
-
-  if (num & 0xFFFF) {
-    new_num = IntToFix(int_num + 1);
-    return new_num;
-  }
-
-  new_num = IntToFix(int_num);
-  return (new_num);
-}
-
-// Floors a fixed number
-fix FixFloor(fix num) {
-  int int_num = FixToInt(num);
-
-  return (IntToFix(int_num));
 }
