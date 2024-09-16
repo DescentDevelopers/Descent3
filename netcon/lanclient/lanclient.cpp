@@ -272,8 +272,6 @@
 #include "module.h"
 #include "ddio_common.h"
 
-#include "inetgetfile.h"
-
 #ifdef __STATIC_NETWORK_CLIENTS
 #define DLLMultiCall DLLMultiCall_LAN
 #define DLLMultiInit DLLMultiInit_LAN

@@ -421,7 +421,6 @@
 #include "mt_net.h"
 #include "mtgametrack.h"
 #include "module.h"
-#include "inetgetfile.h"
 #include "chat_api.h"
 #include "mtstrings.h"
 
