@@ -24,7 +24,6 @@
 #include "pilot.h"
 #include "ddio_common.h"
 #include "module.h"
-#include "inetgetfile.h"
 #include "chat_api.h"
 #include "odtstrings.h"
 
