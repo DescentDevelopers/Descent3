@@ -510,9 +510,9 @@ struct {
 #define OESF_USED 0x0001
 #define OESF_MISSION 0x0002 // mission dlls
 struct tExtractedScriptInfo {
-  uint8_t flags;
-  char *temp_filename;
-  char *real_filename;
+  uint8_t flags = 0;
+  std::filesystem::path temp_filename;
+  std::filesystem::path real_filename;
 };
 static tExtractedScriptInfo OSIRIS_Extracted_scripts[MAX_LOADED_MODULES];
 static std::filesystem::path OSIRIS_Extracted_script_dir;
@@ -917,7 +917,7 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
     // search through our list of extracted files to find it...
     for (int i = 0; i < MAX_LOADED_MODULES; i++) {
       if (OSIRIS_Extracted_scripts[i].flags & OESF_USED) {
-        if (!stricmp(basename.u8string().c_str(), OSIRIS_Extracted_scripts[i].real_filename)) {
+        if (!stricmp(basename.u8string().c_str(), OSIRIS_Extracted_scripts[i].real_filename.u8string().c_str())) {
           // this is it
           fullpath = OSIRIS_Extracted_script_dir / OSIRIS_Extracted_scripts[i].temp_filename;
           return i;
@@ -3161,10 +3161,10 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
       temp_file = temp_filename.filename();
 
       OSIRIS_Extracted_scripts[index].flags = OESF_USED;
-      OSIRIS_Extracted_scripts[index].temp_filename = mem_strdup(temp_file.u8string().c_str());
+      OSIRIS_Extracted_scripts[index].temp_filename = temp_file;
 
       temp_realname = std::filesystem::path(filename).stem();
-      OSIRIS_Extracted_scripts[index].real_filename = mem_strdup(temp_realname.u8string().c_str());
+      OSIRIS_Extracted_scripts[index].real_filename = temp_realname;
 
       if (is_mission_hog) {
         OSIRIS_Extracted_scripts[index].flags |= OESF_MISSION;
@@ -3192,10 +3192,10 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
           temp_file = temp_filename.filename();
 
           OSIRIS_Extracted_scripts[index].flags = OESF_USED;
-          OSIRIS_Extracted_scripts[index].temp_filename = mem_strdup(temp_file.u8string().c_str());
+          OSIRIS_Extracted_scripts[index].temp_filename = temp_file;
 
           temp_realname = std::filesystem::path(filename).stem();
-          OSIRIS_Extracted_scripts[index].real_filename = mem_strdup(temp_realname.u8string().c_str());
+          OSIRIS_Extracted_scripts[index].real_filename = temp_realname;
 
           if (is_mission_hog) {
             OSIRIS_Extracted_scripts[index].flags |= OESF_MISSION;
@@ -3236,17 +3236,15 @@ void Osiris_ClearExtractedScripts(bool mission_only) {
       if (mission_only && (!(item.flags & OESF_MISSION)))
         continue;
 
-      ASSERT(item.temp_filename);
-      ASSERT(item.real_filename);
-      if (!(item.temp_filename && item.real_filename))
+      ASSERT(!item.temp_filename.empty());
+      ASSERT(!item.real_filename.empty());
+      if (!(item.temp_filename.empty() && item.real_filename.empty()))
         continue;
 
       std::filesystem::remove(OSIRIS_Extracted_script_dir / item.temp_filename);
 
-      mem_free(item.temp_filename);
-      mem_free(item.real_filename);
-      item.temp_filename = NULL;
-      item.real_filename = NULL;
+      item.temp_filename.clear();
+      item.real_filename.clear();
       item.flags &= ~OESF_USED;
     }
   }
