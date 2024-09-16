@@ -515,7 +515,7 @@ struct tExtractedScriptInfo {
   char *real_filename;
 };
 static tExtractedScriptInfo OSIRIS_Extracted_scripts[MAX_LOADED_MODULES];
-static char *OSIRIS_Extracted_script_dir = NULL;
+static std::filesystem::path OSIRIS_Extracted_script_dir;
 
 //	Osiris_CreateModuleInitStruct
 //	Purpose:
@@ -618,7 +618,7 @@ void Osiris_InitModuleLoader(void) {
   Osiris_InitMemoryManager();
   Osiris_InitOMMS();
 
-  OSIRIS_Extracted_script_dir = NULL;
+  OSIRIS_Extracted_script_dir.clear();
 
   atexit(Osiris_ShutdownModuleLoader);
 }
@@ -910,8 +910,8 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
     return -1;
     break;
   case CFES_IN_LIBRARY: {
-    ASSERT(OSIRIS_Extracted_script_dir);
-    if (!OSIRIS_Extracted_script_dir)
+    ASSERT(!OSIRIS_Extracted_script_dir.empty());
+    if (OSIRIS_Extracted_script_dir.empty())
       return -2;
 
     // search through our list of extracted files to find it...
@@ -919,7 +919,7 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
       if (OSIRIS_Extracted_scripts[i].flags & OESF_USED) {
         if (!stricmp(basename.u8string().c_str(), OSIRIS_Extracted_scripts[i].real_filename)) {
           // this is it
-          fullpath = std::filesystem::path(OSIRIS_Extracted_script_dir) / OSIRIS_Extracted_scripts[i].temp_filename;
+          fullpath = OSIRIS_Extracted_script_dir / OSIRIS_Extracted_scripts[i].temp_filename;
           return i;
         }
       }
@@ -3121,11 +3121,9 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
   std::filesystem::path temp_file;
   std::filesystem::path temp_realname;
 
-  if (!OSIRIS_Extracted_script_dir) {
+  if (OSIRIS_Extracted_script_dir.empty()) {
     tempdir = Descent3_temp_directory;
-    OSIRIS_Extracted_script_dir = mem_strdup(Descent3_temp_directory.u8string().c_str());
-    if (!OSIRIS_Extracted_script_dir)
-      Error("Out of memory");
+    OSIRIS_Extracted_script_dir = Descent3_temp_directory;
   } else {
     tempdir = OSIRIS_Extracted_script_dir;
   }
@@ -3229,7 +3227,7 @@ ex_error:
 void Osiris_ClearExtractedScripts(bool mission_only) {
   LOG_DEBUG << "OSIRIS: Removing Extracted DLLs";
 
-  if (!OSIRIS_Extracted_script_dir) {
+  if (OSIRIS_Extracted_script_dir.empty()) {
     return;
   }
 
@@ -3243,7 +3241,7 @@ void Osiris_ClearExtractedScripts(bool mission_only) {
       if (!(item.temp_filename && item.real_filename))
         continue;
 
-      std::filesystem::remove(std::filesystem::path(OSIRIS_Extracted_script_dir) / item.temp_filename);
+      std::filesystem::remove(OSIRIS_Extracted_script_dir / item.temp_filename);
 
       mem_free(item.temp_filename);
       mem_free(item.real_filename);
@@ -3254,8 +3252,7 @@ void Osiris_ClearExtractedScripts(bool mission_only) {
   }
 
   if (!mission_only) {
-    mem_free(OSIRIS_Extracted_script_dir);
-    OSIRIS_Extracted_script_dir = NULL;
+    OSIRIS_Extracted_script_dir.clear();
   }
 }
 
