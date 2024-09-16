@@ -813,9 +813,6 @@ int MainMultiplayerMenu() {
       FindPilot();
       break;
     case 11: {
-      DLLmprintf(0, "Sending Mastertracker game list request.\n");
-      RequestDIPGameList();
-
       DLLmprintf(0, "Calling SearchMasterTrackerGameMenu().\n");
       DLLNewUIWindowClose(main_wnd);
       *DLLGame_is_master_tracker_game = 0;
@@ -1473,8 +1470,6 @@ int SearchMasterTrackerGameMenu() {
     ChatStarted = 1;
     ret = MainMultiplayerMenu();
   }
-
-  RequestDIPShutdown();
 
   return ret;
 }

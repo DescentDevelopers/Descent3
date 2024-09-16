@@ -20,12 +20,12 @@
 #include <windows.h>
 #endif
 
-#include <filesystem>
 #include <string>
 #include <sstream>
 #include <thread>
+
 #include "dip_gametrack.h"
-#include "inetgetfile.h"
+#include "httpclient.h"
 
 #if (defined(LOGGER) && (!defined(RELEASE)))
 #define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
@@ -33,15 +33,9 @@
 #define DLLmprintf(...)
 #endif
 
-#define DLLddio_MakePath(...) DLLddio_MakePath(__VA_ARGS__)
-
 typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 
-typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
-extern ddio_MakePath_fp DLLddio_MakePath;
-
-char tempTrackerFilename[500];
 std::queue<apiServerEntry> directIpHostList;
 
 std::queue<apiServerEntry> GetDIpGameList() {
@@ -82,83 +76,28 @@ void AddApiHostToDirectIpList(const std::string &str) {
   }
 }
 
-void DecodeApiAnswer(const std::string &data) {
+void DecodeApiAnswer(std::stringstream &data) {
   while (!directIpHostList.empty())
     directIpHostList.pop();
 
-  std::stringstream ss(data);
-  while (!ss.eof()) {
+  while (!data.eof()) {
     std::string s1;
-    getline(ss, s1, '\n');
+    getline(data, s1, '\n');
     AddApiHostToDirectIpList(s1);
   }
 }
 
 void FetchApi() {
   DLLmprintf(0, "fetch api.\n");
-
-  InetGetFile *getfile;
-  getfile = new InetGetFile(TSETSEFLYAPIURL, tempTrackerFilename);
-
-  bool failed = false;
-
-  while (true) {
-    if (getfile->IsFileReceived()) {
-      DLLmprintf(0, "got api gameserver list.\n");
-      break;
-    } else if (getfile->IsFileError()) {
-      failed = true;
-      DLLmprintf(0, "api download failed.\n");
-      break;
-    }
+  D3::HttpClient http_client(TSETSEFLYAPI_HOST);
+  std::stringstream input;
+  int result = http_client.Get(TSETSEFLYAPI_URI, input);
+  if (result == 200) {
+    DecodeApiAnswer(input);
   }
-
-  delete getfile;
-
-  if (failed)
-    return;
-
-  std::string filecontents;
-  FILE *fp = fopen(tempTrackerFilename, "rb");
-  if (!fp)
-    return;
-
-  fseek(fp, 0, SEEK_END);
-  long lengthhack = ftell(fp);
-  filecontents.resize(lengthhack);
-  fseek(fp, 0, SEEK_SET);
-
-  if (fread((void *)filecontents.data(), 1, lengthhack, fp) != lengthhack) {
-    fclose(fp);
-    return;
-  }
-  fclose(fp);
-
-  DecodeApiAnswer(filecontents);
-
-  return;
 }
-
-std::thread trackthread;
 
 void RequestDIPGameList() {
-  std::error_code ec;
-  std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
-  if (ec) {
-    DLLmprintf(0, "Could not find temporary directory: \"%s\"", ec.message().c_str());
-    return;
-  }
-
-  DLLddio_MakePath(tempTrackerFilename, tempPath.u8string().c_str(), "Descent3", "cache", "odt.tmp", NULL);
-
-  if (trackthread.joinable())
-    trackthread.join();
-
-  trackthread = std::thread(FetchApi);
-  trackthread.detach();
-}
-
-void RequestDIPShutdown() {
-  if (trackthread.joinable())
+  std::thread trackthread = std::thread(FetchApi);
   trackthread.join();
 }
