@@ -1,7 +1,6 @@
 set(CPPS
   winapp.cpp
   wincon.cpp
-  WinController.cpp
   windata.cpp
 )
 

@@ -2,7 +2,10 @@ set(HEADERS
   chrono_timer.h
   ddio.h
   ddio_common.h
-  ddio_lnx.h)
+  ddio_lnx.h
+  Controller.h
+  lnxcontroller.h
+)
 set(CPPS
   chrono_timer.cpp
   ddio.cpp
@@ -15,6 +18,7 @@ set(CPPS
   lnxkey_null.cpp
   lnxmouse.cpp
   lnxkey_sdl.cpp
+  controller.cpp
   $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
     lnxfile.cpp
   >
