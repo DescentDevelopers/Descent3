@@ -83,11 +83,12 @@ static struct {
   SDL_Joystick *handle;
   tJoyInfo caps;
 } Joysticks[MAX_JOYSTICKS];
-void joy_Close();
+
 static int joyGetNumDevs(void);
-//	closes a stick
+
 //		closes connection with controller.
 static void joy_CloseStick(tJoystick joy);
+
 //	initializes a joystick
 //		if server_adr is valid, a link is opened to another machine with a controller.
 static bool joy_InitStick(tJoystick joy, char *server_adr);
@@ -100,7 +101,7 @@ bool joy_Init(bool remote) {
   //	reinitialize joystick if already initialized.
   joy_Close();
   if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0) {
-    // FIXME: report an error?
+    LOG_ERROR << "Could not initialize Joystick";
     return false;
   }
 
@@ -111,12 +112,12 @@ bool joy_Init(bool remote) {
 
   // rcg06182000 specific joystick support.
   if (specificJoy >= 0) {
-    joy_InitStick((tJoystick)specificJoy, NULL);
+    joy_InitStick((tJoystick)specificJoy, nullptr);
   } // if
   else {
     //	initialize joystick list
     for (int i = 0; i < MAX_JOYSTICKS; i++) {
-      joy_InitStick((tJoystick)i, NULL);
+      joy_InitStick((tJoystick)i, nullptr);
     }
   } // else
   return true;
@@ -133,8 +134,6 @@ void joy_Close() {
 //	initializes a joystick
 //		if server_adr is valid, a link is opened to another machine with a controller.
 static bool joy_InitStick(tJoystick joy, char *server_adr) {
-  SDL_Joystick *stick;
-
   //	close down already open joystick.
   joy_CloseStick(joy);
 
@@ -142,12 +141,12 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
   if (server_adr) {
     return false;
   }
-  stick = SDL_JoystickOpen(joy);
+  SDL_Joystick *stick = SDL_JoystickOpen(joy);
   Joysticks[joy].handle = stick;
   if (stick) {
     tJoyInfo caps;
 
-    memset(&caps, 0, (sizeof caps));
+    memset(&caps, 0, (sizeof(caps)));
     strncpy(caps.name, SDL_JoystickNameForIndex(joy), sizeof(caps.name) - 1);
     caps.num_btns = SDL_JoystickNumButtons(stick);
     int axes = SDL_JoystickNumAxes(stick);
@@ -205,12 +204,10 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
   return (Joysticks[joy].handle != NULL);
 }
 
-//	closes a stick
-//		closes connection with controller.
+//  closes connection with controller.
 static void joy_CloseStick(tJoystick joy) {
-  // CLOSE joystick here
   SDL_JoystickClose(Joysticks[joy].handle);
-  Joysticks[joy].handle = 0;
+  Joysticks[joy].handle = nullptr;
 }
 
 //	returns true if joystick valid
@@ -279,7 +276,7 @@ void joy_GetPos(tJoystick joy, tJoyPos *pos) {
   SDL_Joystick *stick;
   int i;
 
-  memset(pos, 0, (sizeof *pos));
+  memset(pos, 0, (sizeof(*pos)));
 
   //	retrieve joystick info from the net, or locally.
   stick = Joysticks[joy].handle;
