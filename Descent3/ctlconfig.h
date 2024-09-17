@@ -68,7 +68,7 @@ struct t_cfg_connection_speed {
 
 #define CTLCONFIG_CONNECTION_SPEED_LIST_SIZE 5
 static const t_cfg_connection_speed Cfg_Connection_Speed_List[CTLCONFIG_CONNECTION_SPEED_LIST_SIZE] = {
-    {7, "56K"}, {8, "ISDN"}, {12, "Fast"}, {20, "Lan"}, {30, "Lan+"}};
+    {7, "56K"}, {8, "ISDN"}, {12, "ADSL"}, {20, "Lan"}, {30, "Lan+"}};
 
 struct t_cfg_element {
   int16_t fn_id; // -1 = group start
