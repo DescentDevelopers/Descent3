@@ -400,6 +400,8 @@
  */
 
 #include <cstdlib>
+#include <filesystem>
+#include <map>
 
 #include "osiris_dll.h"
 #include "pserror.h"
@@ -509,12 +511,13 @@ struct {
 
 #define OESF_USED 0x0001
 #define OESF_MISSION 0x0002 // mission dlls
+
 struct tExtractedScriptInfo {
   uint8_t flags = 0;
   std::filesystem::path temp_filename;
-  std::filesystem::path real_filename;
 };
-static tExtractedScriptInfo OSIRIS_Extracted_scripts[MAX_LOADED_MODULES];
+
+static std::map<std::filesystem::path, tExtractedScriptInfo> OSIRIS_Extracted_scripts;
 static std::filesystem::path OSIRIS_Extracted_script_dir;
 
 //	Osiris_CreateModuleInitStruct
@@ -889,7 +892,7 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
 
   // make sure filename/ext is all lowercase, requirement for Linux, doesn't hurt Windows
   std::string p = adjusted_fname.u8string();
-  std::transform(p.begin(), p.end(), p.begin(), [](unsigned char c){ return std::tolower(c); });
+  std::transform(p.begin(), p.end(), p.begin(), [](unsigned char c) { return std::tolower(c); });
   adjusted_fname = p;
 
   basename = adjusted_fname.stem();
@@ -915,14 +918,9 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
       return -2;
 
     // search through our list of extracted files to find it...
-    for (int i = 0; i < MAX_LOADED_MODULES; i++) {
-      if (OSIRIS_Extracted_scripts[i].flags & OESF_USED) {
-        if (!stricmp(basename.u8string().c_str(), OSIRIS_Extracted_scripts[i].real_filename.u8string().c_str())) {
-          // this is it
-          fullpath = OSIRIS_Extracted_script_dir / OSIRIS_Extracted_scripts[i].temp_filename;
-          return i;
-        }
-      }
+    if (OSIRIS_Extracted_scripts.find(std::filesystem::path(basename)) != OSIRIS_Extracted_scripts.end()) {
+      fullpath = OSIRIS_Extracted_script_dir / OSIRIS_Extracted_scripts[basename].temp_filename;
+      return 0;
     }
     Int3(); // this file was supposed to exist
   } break;
@@ -993,7 +991,8 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     break;
   default:
     // the module was an extracted file
-    LOG_DEBUG.printf("OSIRIS: Found module (%s) in a temp file", basename.u8string().c_str());
+    LOG_DEBUG.printf("OSIRIS: Found module (%s) in a temp file (%s)", basename.u8string().c_str(),
+                     fullpath.u8string().c_str());
     OSIRIS_loaded_modules[loaded_id].flags |= OSIMF_INTEMPDIR;
     OSIRIS_loaded_modules[loaded_id].extracted_id = ret_val;
     break;
@@ -1065,8 +1064,8 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     // there is a string table, load it up
     bool ret = CreateStringTable(stringtablename, &osm->string_table, &osm->strings_loaded);
     if (!ret) {
-      LOG_ERROR.printf("OSIRIS: Unable to load string table (%s) for (%s)",
-                       stringtablename, basename.u8string().c_str());
+      LOG_ERROR.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
+                       basename.u8string().c_str());
       Int3();
       osm->string_table = NULL;
       osm->strings_loaded = 0;
@@ -1257,7 +1256,8 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
     // there is a string table, load it up
     bool ret = CreateStringTable(stringtablename, &osm->string_table, &osm->strings_loaded);
     if (!ret) {
-      LOG_FATAL.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename, basename.u8string().c_str());
+      LOG_FATAL.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
+                       basename.u8string().c_str());
       Int3();
       osm->string_table = nullptr;
       osm->strings_loaded = 0;
@@ -3093,20 +3093,6 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
   }
 }
 
-void _extractscript(const std::filesystem::path &script, const std::filesystem::path &tempfilename) {
-  cf_CopyFile(tempfilename, script);
-}
-
-int _getfreeextractslot(void) {
-  // find a free slot
-  for (int q = 0; q < MAX_LOADED_MODULES; q++) {
-    if (!(OSIRIS_Extracted_scripts[q].flags & OESF_USED)) {
-      return q;
-    }
-  }
-  return -1;
-}
-
 void _clearextractedall(void) { Osiris_ClearExtractedScripts(false); }
 
 int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
@@ -3119,7 +3105,8 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
   std::filesystem::path temp_filename;
   std::filesystem::path tempdir;
   std::filesystem::path temp_file;
-  std::filesystem::path temp_realname;
+  std::string temp_realname;
+  tExtractedScriptInfo t;
 
   if (OSIRIS_Extracted_script_dir.empty()) {
     tempdir = Descent3_temp_directory;
@@ -3141,14 +3128,6 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 #error Unsupported platform!
 #endif
 
-  int index;
-  index = _getfreeextractslot();
-  if (index == -1) {
-    LOG_FATAL << "OSIRIS: Out of slots extracting scripts!";
-    Int3();
-    goto ex_error;
-  }
-
   LOG_DEBUG << "Search started";
   if (cf_LibraryFindFirst(library_handle, script_extension, filename)) {
     temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
@@ -3156,52 +3135,48 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
       Int3();
     else {
       // extract it out
-      _extractscript(filename, temp_filename);
+      cf_CopyFile(temp_filename, filename);
 
       temp_file = temp_filename.filename();
-
-      OSIRIS_Extracted_scripts[index].flags = OESF_USED;
-      OSIRIS_Extracted_scripts[index].temp_filename = temp_file;
-
-      temp_realname = std::filesystem::path(filename).stem();
-      OSIRIS_Extracted_scripts[index].real_filename = temp_realname;
+      temp_realname = std::filesystem::path(filename).stem().u8string();
+      // Lowercase for optimized search
+      std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(), [](unsigned char c) {
+        return std::tolower(c);
+      });
 
       if (is_mission_hog) {
-        OSIRIS_Extracted_scripts[index].flags |= OESF_MISSION;
+        t.flags = OESF_MISSION;
       }
+      t.temp_filename = temp_file;
+      OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
 
-      LOG_DEBUG.printf("Extracted %s as %s", filename, temp_filename.u8string().c_str());
+      LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
 
       count++;
 
       while (cf_LibraryFindNext(filename)) {
-        index = _getfreeextractslot();
-        if (index == -1) {
-          LOG_FATAL << "OSIRIS: Out of slots extracting scripts!";
-          Int3();
-          goto ex_error;
-        }
-
         // generate temp filename
         temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
         if (temp_filename.empty())
           Int3();
         else {
           // extract it out
-          _extractscript(filename, temp_filename);
+          cf_CopyFile(temp_filename, filename);
+
           temp_file = temp_filename.filename();
-
-          OSIRIS_Extracted_scripts[index].flags = OESF_USED;
-          OSIRIS_Extracted_scripts[index].temp_filename = temp_file;
-
-          temp_realname = std::filesystem::path(filename).stem();
-          OSIRIS_Extracted_scripts[index].real_filename = temp_realname;
+          temp_realname = std::filesystem::path(filename).stem().u8string();
+          // Lowercase for optimized search
+          std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(), [](unsigned char c) {
+            return std::tolower(c);
+          });
 
           if (is_mission_hog) {
-            OSIRIS_Extracted_scripts[index].flags |= OESF_MISSION;
+            t.flags = OESF_MISSION;
           }
+          t.temp_filename = temp_file;
+          OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
 
-          LOG_DEBUG.printf("Extracted %s as %s", filename, temp_filename.u8string().c_str());
+          LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
 
           count++;
         }
@@ -3211,15 +3186,9 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   LOG_DEBUG.printf("Extracted %d scripts", count);
 
-ex_error:
   cf_LibraryFindClose();
 
-  static bool atex = false;
-
-  if (!atex) {
-    atexit(_clearextractedall);
-    atex = true;
-  }
+  atexit(_clearextractedall);
 
   return count;
 }
@@ -3231,22 +3200,12 @@ void Osiris_ClearExtractedScripts(bool mission_only) {
     return;
   }
 
-  for (auto &item : OSIRIS_Extracted_scripts) {
-    if (item.flags & OESF_USED) {
-      if (mission_only && (!(item.flags & OESF_MISSION)))
-        continue;
+  for (auto it = OSIRIS_Extracted_scripts.begin(); it != OSIRIS_Extracted_scripts.end(); ++it) {
+    if (mission_only && (!(it->second.flags & OESF_MISSION)))
+      continue;
 
-      ASSERT(!item.temp_filename.empty());
-      ASSERT(!item.real_filename.empty());
-      if (!(item.temp_filename.empty() && item.real_filename.empty()))
-        continue;
-
-      std::filesystem::remove(OSIRIS_Extracted_script_dir / item.temp_filename);
-
-      item.temp_filename.clear();
-      item.real_filename.clear();
-      item.flags &= ~OESF_USED;
-    }
+    std::filesystem::remove(OSIRIS_Extracted_script_dir / it->second.temp_filename);
+    OSIRIS_Extracted_scripts.erase(it);
   }
 
   if (!mission_only) {
