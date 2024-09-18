@@ -8,6 +8,15 @@ class user_var : public std::variant<float, int32_t> {
 	using VarT = std::variant<float, int32_t>;
 
 	public:
+	// Required for compatibility with GCC 9/Ubuntu 20.04 that does not implement P2162R2,
+	// using std::visit on classes inheriting from std::variant
+	// (see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90943)
+	// Move back to std::visit when we drop compatibility
+	template <typename F>
+	decltype(auto) visit(F&& f) & {
+		return std::visit(std::forward<F>(f), static_cast<VarT&>(*this));
+	}
+
 	// For compatibility with existing code, override op= with one that
 	// retains the active type, requiring instead set_type<> to change it.
 	template<typename T> void operator=(T &&v) noexcept {
@@ -18,14 +27,16 @@ class user_var : public std::variant<float, int32_t> {
 			self = static_cast<int32_t>(v);
 	}
 	template<typename T> void set_type() noexcept { static_cast<VarT &>(*this) = T{}; }
-	void operator++(int) noexcept { std::visit([](auto &&uv) { ++uv; }, *this); }
-	void operator--(int) noexcept { std::visit([](auto &&uv) { ++uv; }, *this); }
-	template<typename T> void operator+=(T &&r) noexcept { std::visit([&](auto &&uv) { uv += std::forward<T>(r); }, *this); }
-	template<typename T> void operator-=(T &&r) noexcept { std::visit([&](auto &&uv) { uv -= std::forward<T>(r); }, *this); }
-	template<typename T> bool operator==(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv == std::forward<T>(r); }, *this); }
-	template<typename T> bool operator!=(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv != std::forward<T>(r); }, *this); }
-	template<typename T> bool operator<(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv < std::forward<T>(r); }, *this); }
-	template<typename T> bool operator>(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv > std::forward<T>(r); }, *this); }
+	void operator++(int) noexcept { this->visit([](auto &&uv) { ++uv; }); }
+	void operator--(int) noexcept { this->visit([](auto &&uv) { ++uv; }); }
+	template<typename T> void operator+=(T &&r) noexcept { this->visit([&](auto &&uv) { uv += std::forward<T>(r); }); }
+	template<typename T> void operator-=(T &&r) noexcept { this->visit([&](auto &&uv) { uv -= std::forward<T>(r); }); }
+	template<typename T> bool operator==(T &&r) noexcept { return this->visit([&](auto &&uv) { return uv == std::forward<T>(r); }); }
+	template<typename T> bool operator!=(T &&r) noexcept { return this->visit([&](auto &&uv) { return uv != std::forward<T>(r); }); }
+	template<typename T> bool operator<(T &&r) noexcept { return this->visit([&](auto &&uv) { return uv < std::forward<T>(r); }); }
+	template<typename T> bool operator>(T &&r) noexcept { return this->visit([&](auto &&uv) { return uv > std::forward<T>(r); }); }
+
+
 };
 
 #define MAX_USER_VARS 25 // make sure this value matches the USERTYPE definition
