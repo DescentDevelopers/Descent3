@@ -1998,7 +1998,7 @@ void CWorldTexturesDialog::OnPingPong() {
 // Returns true if got new name, false if cancelled.
 // the data in buf not changed if cancel is pressed
 bool InputTextureName(char *buf, int len, char *title, char *prompt, CWnd *wnd) {
-  char *tempbuf = (char *)mem_malloc(len);
+  char *tempbuf = mem_rmalloc<char>(len);
 
   strcpy(tempbuf, buf);
 

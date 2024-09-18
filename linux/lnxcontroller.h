@@ -105,28 +105,28 @@ public:
   void set_controller_deadzone(int ctl, float deadzone);
 
 private:
-  int m_NumControls;               // number of controllers available
-  int m_Suspended;                 // is controller polling suspended?
-  bool m_JoyActive, m_MouseActive; // enables or disables mouse, joystick control
+  int m_NumControls = 0;           // number of controllers available
+  int m_Suspended = 0;             // is controller polling suspended?
+  bool m_JoyActive = false, m_MouseActive = false; // enables or disables mouse, joystick control
 
   struct t_controller {
-    int id;
-    uint16_t flags;
-    uint16_t buttons;
-    unsigned btnmask;
-    float normalizer[CT_NUM_AXES];
-    float sens[CT_NUM_AXES];
-    float sensmod[CT_NUM_AXES];
-    float deadzone;
+    int id = 0;
+    uint16_t flags = 0;
+    uint16_t buttons = 0;
+    unsigned btnmask = 0;
+    float normalizer[CT_NUM_AXES]{};
+    float sens[CT_NUM_AXES]{};
+    float sensmod[CT_NUM_AXES]{};
+    float deadzone = 0;
   } m_ControlList[CT_MAX_CONTROLLERS]; // the control list.
 
   struct ct_element {
-    ct_format format;
-    int8_t ctl[CTLBINDS_PER_FUNC];
-    uint8_t value[CTLBINDS_PER_FUNC];
-    ct_type ctype[CTLBINDS_PER_FUNC];
-    uint8_t flags[2];
-    bool enabled;
+    ct_format format{};
+    int8_t ctl[CTLBINDS_PER_FUNC]{};
+    uint8_t value[CTLBINDS_PER_FUNC]{};
+    ct_type ctype[CTLBINDS_PER_FUNC]{};
+    uint8_t flags[2]{};
+    bool enabled = false;
   } m_ElementList[CT_MAX_ELEMENTS];
 
   bool enum_controllers();
@@ -159,27 +159,27 @@ private:
 
 private:
   struct t_msestate {
-    int x, y, z;
-    int mx, my;
-    unsigned btnmask;
+    int x = 0, y = 0, z = 0;
+    int mx = 0, my = 0;
+    unsigned btnmask = 0;
   } m_MseState;
 
   struct t_extctlstate {
-    int x, y, z, r, u, v;
-    int pov[JOYPOV_NUM];
-    int last_pov[JOYPOV_NUM];
-    float povstarts[JOYPOV_NUM][JOYPOV_DIR];
-    float povtimes[JOYPOV_NUM][JOYPOV_DIR];
-    uint8_t povpresses[JOYPOV_NUM][JOYPOV_DIR];
-    unsigned buttons;
-    uint8_t btnpresses[CT_MAX_BUTTONS];
-    float btnstarts[CT_MAX_BUTTONS];
-    float btntimes[CT_MAX_BUTTONS];
+    int x = 0, y = 0, z = 0, r = 0, u = 0, v = 0;
+    int pov[JOYPOV_NUM]{};
+    int last_pov[JOYPOV_NUM]{};
+    float povstarts[JOYPOV_NUM][JOYPOV_DIR]{};
+    float povtimes[JOYPOV_NUM][JOYPOV_DIR]{};
+    uint8_t povpresses[JOYPOV_NUM][JOYPOV_DIR]{};
+    unsigned buttons = 0;
+    uint8_t btnpresses[CT_MAX_BUTTONS]{};
+    float btnstarts[CT_MAX_BUTTONS]{};
+    float btntimes[CT_MAX_BUTTONS]{};
   } m_ExtCtlStates[CT_MAX_EXTCTLS];
 
   //	thread info.
-  int64_t m_frame_timer_ms;
-  float m_frame_time;
+  int64_t m_frame_timer_ms = 0;
+  float m_frame_time = 0;
 
   //	note id is id value from controller in control list.
   void extctl_getpos(int id);

@@ -184,7 +184,7 @@ int CFilePageDialog::CreateIndexMap(int **index_map, int listbox_id) {
 
   int *map;
 
-  map = *index_map = (int *)mem_malloc(sizeof(int) * listbox_count);
+  map = *index_map = mem_rmalloc<int>(listbox_count);
   if (!map)
     return 0;
   n = 0;

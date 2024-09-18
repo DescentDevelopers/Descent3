@@ -831,7 +831,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
   if (hotspotmap.num_of_hotspots) {
     int TelCom_onbmp = bm_AllocLoadFileBitmap(IGNORE_TABLE(TELCOM_DISPLAY_OGF_ON), 0);
     if (TelCom_onbmp != -1) {
-      hotspot_bitmaps = (chunked_bitmap *)mem_malloc(sizeof(chunked_bitmap) * hotspotmap.num_of_hotspots);
+      hotspot_bitmaps = mem_rmalloc<chunked_bitmap>(hotspotmap.num_of_hotspots);
       ASSERT(hotspot_bitmaps);
       CompressTelComOnImage(TelCom_onbmp, hotspot_bitmaps);
       bm_FreeBitmap(TelCom_onbmp);
@@ -1970,7 +1970,7 @@ void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) 
   if (!TelcomHiLiteCount[monitor])
     TelcomHiLites[monitor] = NULL;
 
-  TelcomHiLites[monitor] = (int *)mem_malloc(sizeof(int) * TelcomHiLiteCount[monitor]);
+  TelcomHiLites[monitor] = mem_rmalloc<int>(TelcomHiLiteCount[monitor]);
   if (!TelcomHiLites[monitor]) {
     LOG_DEBUG.printf("Unable to allocate memory for hilights monitor=%d", monitor);
     TelcomHiLiteCount[monitor] = 0;
@@ -4060,12 +4060,12 @@ void TelCom_AddCustomKeyEvent(int key_id, int event_id) {
   tCustomKeyEventID *curr = Telcom_custom_key_event_root;
 
   if (!curr) {
-    curr = Telcom_custom_key_event_root = (tCustomKeyEventID *)mem_malloc(sizeof(tCustomKeyEventID));
+    curr = Telcom_custom_key_event_root = mem_rmalloc<tCustomKeyEventID>();
   } else {
     while (curr->next) {
       curr = curr->next;
     }
-    curr->next = (tCustomKeyEventID *)mem_malloc(sizeof(tCustomKeyEventID));
+    curr->next = mem_rmalloc<tCustomKeyEventID>();
     curr = curr->next;
   }
 

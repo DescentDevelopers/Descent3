@@ -73,6 +73,19 @@
 
 #ifndef MEM_H
 #define MEM_H
+#include <cstdlib>
+#include <type_traits>
+
+template<typename T> static inline T *mem_rmalloc()
+{
+	static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
+	return static_cast<T *>(std::malloc(sizeof(T)));
+}
+template<typename T> static inline T *mem_rmalloc(std::size_t nelem)
+{
+	static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
+	return static_cast<T *>(std::malloc(nelem * sizeof(T)));
+}
 
 // Memory management debugging
 #ifdef MEM_USE_RTL

@@ -368,7 +368,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   uint32_t filelen, nblocks, i;
   int format;
 
-  StaticFileBuffer = (uint8_t *)mem_malloc(FILEBUFFER_LENGTH);
+  StaticFileBuffer = mem_rmalloc<uint8_t>(FILEBUFFER_LENGTH);
   if (!StaticFileBuffer) {
     ret = false;
     LOG_ERROR << "Out of memory";
@@ -710,7 +710,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
 
         wave->sample_length = aligned_size;
         wave->np_sample_length = cksize;
-        wave->sample_8bit = (uint8_t *)mem_malloc(aligned_size);
+        wave->sample_8bit = mem_rmalloc<uint8_t>(aligned_size);
 
         cf_ReadBytes((uint8_t *)wave->sample_8bit, cksize, cfptr);
 
@@ -756,7 +756,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   if (wave->sample_16bit == NULL) {
     ASSERT(wave->sample_8bit);
 
-    wave->sample_16bit = (int16_t *)mem_malloc(wave->sample_length * sizeof(int16_t));
+    wave->sample_16bit = mem_rmalloc<int16_t>(wave->sample_length);
 
     // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
     // (+128 biase).

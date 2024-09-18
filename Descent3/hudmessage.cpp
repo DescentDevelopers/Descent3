@@ -1556,7 +1556,7 @@ bool tMsgList::add(const char *msg, uint8_t lvl, uint8_t hr, uint8_t min, uint8_
     m_limit = 64;
 
   if (m_msg == NULL) {
-    m_msg = (char **)mem_malloc(sizeof(char *) * m_limit);
+    m_msg = mem_rmalloc<char *>(m_limit);
     m_nmsg = 0;
   }
 
@@ -1628,7 +1628,7 @@ bool MsgListConsole::Open(const char *title, int x, int y, int w, int h) {
   m_buflen = 2048;
 
 redo_copy:
-  m_buffer = (char *)mem_malloc(m_buflen);
+  m_buffer = mem_rmalloc<char>(m_buflen);
   if (m_buffer) {
     m_buffer[0] = 0;
     m_opened = true;
@@ -1669,7 +1669,7 @@ redo_copy:
   }
 
   ASSERT(c > 0);
-  m_conlines = (char **)mem_malloc(sizeof(char *) * c);
+  m_conlines = mem_rmalloc<char *>(c);
   n_conlines = c;
   memset(m_conlines, 0, sizeof(char *) * c);
 

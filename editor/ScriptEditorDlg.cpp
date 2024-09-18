@@ -246,7 +246,7 @@ bool CScriptEditorDlg::FindNext(char *w) {
 
   // Make a copy of the script to work with
   char *text;
-  text = (char *)mem_malloc(GetScriptLength());
+  text = mem_rmalloc<char>(GetScriptLength());
   strcpy(text, GetScript());
   max = GetScriptLength();
 

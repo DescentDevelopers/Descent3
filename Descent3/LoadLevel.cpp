@@ -1686,7 +1686,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
 
   // Set the name
   if (tempname[0]) {
-    objp->name = (char *)mem_malloc(strlen(tempname) + 1);
+    objp->name = mem_rmalloc<char>(strlen(tempname) + 1);
     strcpy(objp->name, tempname);
   }
 
@@ -2446,7 +2446,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
     char tempname[ROOM_NAME_LEN + 1];
     cf_ReadString(tempname, sizeof(tempname), ifile);
     if (strlen(tempname)) {
-      rp->name = (char *)mem_malloc(strlen(tempname) + 1);
+      rp->name = mem_rmalloc<char>(strlen(tempname) + 1);
       strcpy(rp->name, tempname);
     }
   }
@@ -2568,7 +2568,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
 
       if (size) {
 
-        rp->volume_lights = (uint8_t *)mem_malloc(size);
+        rp->volume_lights = mem_rmalloc<uint8_t>(size);
         ASSERT(rp->volume_lights); // ran out of memory!
       } else
         rp->volume_lights = NULL;
@@ -2661,7 +2661,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
     return;
   }
 
-  uint16_t *lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * sizeof(uint16_t));
+  uint16_t *lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
 
   nummaps = cf_ReadInt(fp);
 
@@ -2897,7 +2897,7 @@ void ReadGamePathsChunk(CFILE *fp, int version) {
   for (i = 0; i < Num_game_paths; i++) {
     GamePaths[i].used = 1;
     GamePaths[i].name[0] = 0;
-    GamePaths[i].pathnodes = (node *)mem_malloc(MAX_NODES_PER_PATH * sizeof(node));
+    GamePaths[i].pathnodes = mem_rmalloc<node>(MAX_NODES_PER_PATH);
     GamePaths[i].flags = 0;
 
     // Read in the path's info
@@ -2978,7 +2978,7 @@ void ReadBNodeChunk(CFILE *fp, int version) {
       ASSERT(!(i <= Highest_room_index && (Rooms[i].flags & RF_EXTERNAL) && bnlist->num_nodes > 0));
 
       if (bnlist->num_nodes) {
-        bnlist->nodes = (bn_node *)mem_malloc(sizeof(bn_node) * bnlist->num_nodes);
+        bnlist->nodes = mem_rmalloc<bn_node>(bnlist->num_nodes);
         for (j = 0; j < bnlist->num_nodes; j++) {
           bnlist->nodes[j].pos.x = cf_ReadFloat(fp);
           bnlist->nodes[j].pos.y = cf_ReadFloat(fp);
@@ -2986,7 +2986,7 @@ void ReadBNodeChunk(CFILE *fp, int version) {
 
           bnlist->nodes[j].num_edges = cf_ReadShort(fp);
           if (bnlist->nodes[j].num_edges) {
-            bnlist->nodes[j].edges = (bn_edge *)mem_malloc(sizeof(bn_edge) * bnlist->nodes[j].num_edges);
+            bnlist->nodes[j].edges = mem_rmalloc<bn_edge>(bnlist->nodes[j].num_edges);
             for (k = 0; k < bnlist->nodes[j].num_edges; k++) {
               bnlist->nodes[j].edges[k].end_room = cf_ReadShort(fp);
               bnlist->nodes[j].edges[k].end_index = cf_ReadByte(fp);
@@ -3134,15 +3134,15 @@ void ReadRoomAABBChunk(CFILE *fp, int version) {
       Rooms[i].bbf_max_xyz.z = cf_ReadFloat(fp);
 
       Rooms[i].num_bbf_regions = cf_ReadShort(fp);
-      Rooms[i].num_bbf = (int16_t *)mem_malloc(sizeof(int16_t) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list = (int16_t **)mem_malloc(sizeof(int16_t *) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_min_xyz = (vector *)mem_malloc(sizeof(vector) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_max_xyz = (vector *)mem_malloc(sizeof(vector) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_sector = (uint8_t *)mem_malloc(sizeof(char) * Rooms[i].num_bbf_regions);
+      Rooms[i].num_bbf = mem_rmalloc<int16_t>(Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list = mem_rmalloc<int16_t *>(Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_min_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_max_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_sector = mem_rmalloc<uint8_t>(sizeof(char) * Rooms[i].num_bbf_regions);
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
         Rooms[i].num_bbf[j] = cf_ReadShort(fp);
-        Rooms[i].bbf_list[j] = (int16_t *)mem_malloc(sizeof(int16_t) * Rooms[i].num_bbf[j]);
+        Rooms[i].bbf_list[j] = mem_rmalloc<int16_t>(Rooms[i].num_bbf[j]);
       }
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
@@ -4079,8 +4079,8 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
   // share 1 lightmap
 
   if (version >= 34 && !Dedicated_server) {
-    uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
-    uint8_t *free_lightmap_info = (uint8_t *)mem_malloc(MAX_LIGHTMAP_INFOS);
+    uint8_t *lightmap_spoken_for = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
+    uint8_t *free_lightmap_info = mem_rmalloc<uint8_t>(MAX_LIGHTMAP_INFOS);
     ASSERT(lightmap_spoken_for);
     memset(lightmap_spoken_for, 0, MAX_LIGHTMAPS);
 
@@ -4884,8 +4884,8 @@ void WriteLightmapChunk(CFILE *fp) {
   int lightmap_info_count = 0;
   int lightmap_count = 0;
 
-  uint16_t *lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * sizeof(uint16_t));
-  uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
+  uint16_t *lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
+  uint8_t *lightmap_spoken_for = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
 
   ASSERT(lightmap_remap);
   ASSERT(lightmap_spoken_for);

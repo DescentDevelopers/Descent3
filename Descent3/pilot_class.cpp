@@ -899,7 +899,7 @@ void pilot::add_mission_data(tMissionData *mdata) {
 
   LOG_DEBUG.printf("Adding new mission data for (%s)", mdata->mission_name);
 
-  tMissionData *new_data = (tMissionData *)mem_malloc((num_missions_flown + 1) * sizeof(tMissionData));
+  auto new_data = mem_rmalloc<tMissionData>(num_missions_flown + 1);
   if (!new_data) {
     LOG_WARNING << "Out of memory";
     return;
@@ -1279,7 +1279,7 @@ void pilot::read_mission_data(CFILE *file, bool skip) {
       mem_free(mission_data);
       mission_data = NULL;
     }
-    mission_data = (tMissionData *)mem_malloc(sizeof(tMissionData) * num_missions_flown);
+    mission_data = mem_rmalloc<tMissionData>(num_missions_flown);
     if (!mission_data) {
       // out of memory
       num_missions_flown = 0;

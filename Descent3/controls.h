@@ -213,30 +213,30 @@ const int ctfFORWARD_THRUSTAXIS = 0, ctfFORWARD_THRUSTKEY = 1, ctfREVERSE_THRUST
 struct game_controls {
   //	movement values
   //	these values are from -1.0 to 1.0.-
-  float pitch_thrust;
-  float heading_thrust;
-  float bank_thrust;
-  float vertical_thrust;
-  float sideways_thrust;
-  float forward_thrust;
-  float afterburn_thrust;
+  float pitch_thrust = 0;
+  float heading_thrust = 0;
+  float bank_thrust = 0;
+  float vertical_thrust = 0;
+  float sideways_thrust = 0;
+  float forward_thrust = 0;
+  float afterburn_thrust = 0;
 
   // these values modify thrust
-  bool toggle_slide;
-  bool toggle_bank;
+  bool toggle_slide = false;
+  bool toggle_bank = false;
 
   //	this is for weapon control
-  int fire_primary_down_count;
-  bool fire_primary_down_state;
-  float fire_primary_down_time;
-  int fire_secondary_down_count;
-  bool fire_secondary_down_state;
-  float fire_secondary_down_time;
+  int fire_primary_down_count = 0;
+  bool fire_primary_down_state = false;
+  float fire_primary_down_time = 0;
+  int fire_secondary_down_count = 0;
+  bool fire_secondary_down_state = false;
+  float fire_secondary_down_time = 0;
 
   // The flare
-  int fire_flare_down_count;
-  int rearview_down_count;
-  bool rearview_down_state;
+  int fire_flare_down_count = 0;
+  int rearview_down_count = 0;
+  bool rearview_down_state = false;
 };
 
 //	This value should be set at initialization time.  Use for remote controlling.

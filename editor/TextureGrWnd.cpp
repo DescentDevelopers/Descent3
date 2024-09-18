@@ -1548,7 +1548,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
       }
 
       if (strlen(tempname)) {
-        curobj->name = (char *)mem_malloc(strlen(tempname) + 1);
+        curobj->name = mem_rmalloc<char>(strlen(tempname) + 1);
         strcpy(curobj->name, tempname);
       }
 
@@ -1586,14 +1586,14 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
 
         if (!dlg.m_Module.IsEmpty()) {
           char module_name[MAX_MODULENAME_LEN];
-          curobj->custom_default_module_name = (char *)mem_malloc(dlg.m_Module.GetLength() + 1);
+          curobj->custom_default_module_name = mem_rmalloc<char>(dlg.m_Module.GetLength() + 1);
 
           ddio_SplitPath(dlg.m_Module.GetBuffer(0), NULL, module_name, NULL);
           strcpy(curobj->custom_default_module_name, module_name);
         }
 
         if (!dlg.m_Name.IsEmpty()) {
-          curobj->custom_default_script_name = (char *)mem_malloc(dlg.m_Name.GetLength() + 1);
+          curobj->custom_default_script_name = mem_rmalloc<char>(dlg.m_Name.GetLength() + 1);
           strcpy(curobj->custom_default_script_name, dlg.m_Name.GetBuffer(0));
         }
       }

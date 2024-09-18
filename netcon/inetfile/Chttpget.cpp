@@ -663,7 +663,7 @@ int http_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
       http_lastaslu->abort = true;
 
     async_dns_lookup *newaslu;
-    newaslu = (async_dns_lookup *)mem_malloc(sizeof(async_dns_lookup));
+    newaslu = mem_rmalloc<async_dns_lookup>();
     memset(&newaslu->ip, 0, sizeof(uint32_t));
     newaslu->host = hostname;
     newaslu->done = false;

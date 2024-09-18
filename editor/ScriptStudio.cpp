@@ -463,7 +463,7 @@ bool CScriptStudio::FindNext(char *w) {
 
   // Make a copy of the script to work with
   char *text;
-  text = (char *)mem_malloc(m_EditText.GetLength() + 1);
+  text = mem_rmalloc<char>(m_EditText.GetLength() + 1);
   if (!text)
     Int3();
   strcpy(text, (LPCSTR)m_EditText);

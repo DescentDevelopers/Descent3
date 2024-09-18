@@ -920,7 +920,7 @@ void matcen::LoadData(CFILE *fp) {
   m_max_alive_children = cf_ReadShort(fp);
   if (m_max_alive_children > 0) {
     m_num_alive = cf_ReadShort(fp);
-    m_alive_list = (int *)mem_malloc(sizeof(int) * m_max_alive_children);
+    m_alive_list = mem_rmalloc<int>(m_max_alive_children);
 
     for (i = 0; i < m_num_alive; i++) {
       m_alive_list[i] = cf_ReadInt(fp);
@@ -1784,7 +1784,7 @@ bool matcen::SetMaxAliveChildren(int max_alive) {
 
     // Allocate the alive children list
     if (max_alive > 0) {
-      temp = (int *)mem_malloc(sizeof(int) * max_alive);
+      temp = mem_rmalloc<int>(max_alive);
     } else {
       temp = NULL;
     }

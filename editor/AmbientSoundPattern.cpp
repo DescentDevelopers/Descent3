@@ -217,7 +217,7 @@ void CAmbientSoundPattern::OnASPNewElement() {
 
   if (new_element.handle != -1) {
 
-    ase *new_sounds = (ase *)mem_malloc(sizeof(*new_sounds) * (asp->num_sounds + 1));
+    auto new_sounds = mem_rmalloc<ase>(asp->num_sounds + 1);
 
     for (int s = 0; s < asp->num_sounds; s++)
       new_sounds[s] = asp->sounds[s];
@@ -252,7 +252,7 @@ void CAmbientSoundPattern::OnASPDeleteElement() {
   if (m_current_element > -1) {
     if (OutrageMessageBox(MBOX_YESNO, "Do you really want to delete sound '%s' from pattern '%s'?",
                           Sounds[asp->sounds[m_current_element].handle].name, asp->name) == IDYES) {
-      new_sounds = (ase *)mem_malloc(sizeof(*new_sounds) * (asp->num_sounds - 1));
+      new_sounds = mem_rmalloc<ase>(asp->num_sounds - 1);
 
       for (int s = 0; s < m_current_element; s++)
         new_sounds[s] = asp->sounds[s];

@@ -180,7 +180,7 @@ int LoadStringTables(void) {
   String_table_size = 0;
 
   // malloc our array of char *
-  String_table = (char **)mem_malloc(sizeof(char *) * string_count);
+  String_table = mem_rmalloc<char *>(string_count);
   if (!String_table) {
     Localization_language = old_language;
     return 0;
@@ -324,7 +324,7 @@ try_english:
   char **strtable;
 
   // malloc our array of char *
-  *table = (char **)mem_malloc(sizeof(char *) * scount);
+  *table = mem_rmalloc<char *>(scount);
   if (!*table) {
     if (table)
       *table = NULL;
@@ -664,10 +664,10 @@ void GrowString::operator+=(char *str) {
     return;
   if (root.string_data) {
     tbufferinfo *node;
-    node = (tbufferinfo *)mem_malloc(sizeof(tbufferinfo));
+    node = mem_rmalloc<tbufferinfo>();
     if (!node)
       return;
-    node->string_data = (char *)mem_malloc(strlen(str) + 2);
+    node->string_data = mem_rmalloc<char>(strlen(str) + 2);
     if (!node->string_data) {
       mem_free(node);
       return;
@@ -677,7 +677,7 @@ void GrowString::operator+=(char *str) {
     node->next = NULL;
     curr = node;
   } else {
-    root.string_data = (char *)mem_malloc(strlen(str) + 1);
+    root.string_data = mem_rmalloc<char>(strlen(str) + 1);
     if (!root.string_data)
       return;
     strcpy(root.string_data, str);

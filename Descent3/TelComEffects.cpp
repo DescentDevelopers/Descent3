@@ -1030,13 +1030,13 @@ bool CreateTextStatic(tceffect *tce, const char *text) {
   if (!text)
     return false;
 
-  tce->text_buffer = (char *)mem_malloc(strlen(text) + 10);
+  tce->text_buffer = mem_rmalloc<char>(strlen(text) + 10);
   if (!tce->text_buffer)
     return false;
 
   tce->alpha = 255;
 
-  char *tempbuffer = (char *)mem_malloc(strlen(text) + 10);
+  char *tempbuffer = mem_rmalloc<char>(strlen(text) + 10);
   if (!tempbuffer)
     return false;
   strcpy(tempbuffer, text);
@@ -1053,11 +1053,11 @@ bool CreateTextFade(tceffect *tce, const char *text) {
   ASSERT(text);
   if (!text || text[0] == '\0')
     return false;
-  tce->text_buffer = (char *)mem_malloc(strlen(text) + 10);
+  tce->text_buffer = mem_rmalloc<char>(strlen(text) + 10);
   if (!tce->text_buffer)
     return false;
 
-  char *tempbuffer = (char *)mem_malloc(strlen(text) + 10);
+  char *tempbuffer = mem_rmalloc<char>(strlen(text) + 10);
   if (!tempbuffer)
     return false;
   strcpy(tempbuffer, text);
@@ -1084,11 +1084,11 @@ bool CreateTextType(tceffect *tce, const char *text) {
   ASSERT(text);
   if (!text || text[0] == '\0')
     return false;
-  tce->text_buffer = (char *)mem_malloc(strlen(text) + 10);
+  tce->text_buffer = mem_rmalloc<char>(strlen(text) + 10);
   if (!tce->text_buffer)
     return false;
 
-  char *tempbuffer = (char *)mem_malloc(strlen(text) + 10);
+  char *tempbuffer = mem_rmalloc<char>(strlen(text) + 10);
   if (!tempbuffer)
     return false;
   strcpy(tempbuffer, text);
@@ -1202,7 +1202,7 @@ bool CreateBmpStretch(tceffect *tce, const char *filename) {
     int total = w_count * h_count;
     int index;
     tce->bmpinfo.bm_count = total;
-    tce->bmpinfo.bitmaps = (int *)mem_malloc(sizeof(int) * total);
+    tce->bmpinfo.bitmaps = mem_rmalloc<int>(total);
     if (!tce->bmpinfo.bitmaps)
       return false;
 
@@ -1252,7 +1252,7 @@ bool CreateMovie(tceffect *tce, const char *filename) {
   tce->movieinfo.filename = NULL;
   tce->w = tce->h = 100;
 
-  tce->movieinfo.filename = (char *)mem_malloc(strlen(filename) + 1);
+  tce->movieinfo.filename = mem_rmalloc<char>(strlen(filename) + 1);
   if (!tce->movieinfo.filename)
     return false;
   strcpy(tce->movieinfo.filename, filename);

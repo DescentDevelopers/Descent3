@@ -1123,7 +1123,7 @@ void FramePush(int x1, int y1, int x2, int y2, bool clear) {
     ASSERT(!FrameStackRoot);
 
     // we need to allocate for the root
-    //		curr = FrameStackRoot = FrameStackPtr = (tFrameStackFrame *)mem_malloc(sizeof(tFrameStackFrame));
+    //		curr = FrameStackRoot = FrameStackPtr = mem_rmalloc<tFrameStackFrame>();
     curr = FrameStackRoot = FrameStackPtr = &FrameStack[0];
     if (!curr) {
       Error("Out of memory\n");
@@ -1134,7 +1134,7 @@ void FramePush(int x1, int y1, int x2, int y2, bool clear) {
   } else {
     // add on to the end of the list
     curr->next = FrameStackPtr = &FrameStack[FrameStackDepth];
-    //		curr->next = FrameStackPtr = (tFrameStackFrame *)mem_malloc(sizeof(tFrameStackFrame));
+    //		curr->next = FrameStackPtr = mem_rmalloc<tFrameStackFrame>();
     if (!curr->next) {
       Error("Out of memory\n");
     }

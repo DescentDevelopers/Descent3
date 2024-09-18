@@ -2147,7 +2147,7 @@ void ComputeAABB(bool f_full) {
         if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
           continue;
 
-        r_struct_list[i] = (int16_t *)mem_malloc(Rooms[i].num_faces * sizeof(int16_t));
+        r_struct_list[i] = mem_rmalloc<int16_t>(Rooms[i].num_faces);
       }
     }
 
@@ -2243,8 +2243,8 @@ void ComputeAABB(bool f_full) {
 
         int n_new;
 
-        nfaces = (int16_t *)mem_malloc(sizeof(int16_t) * rp->num_faces);
-        used = (bool *)mem_malloc(sizeof(bool) * rp->num_faces);
+        nfaces = mem_rmalloc<int16_t>(rp->num_faces);
+        used = mem_rmalloc<bool>(rp->num_faces);
 
         for (count1 = 0; count1 < rp->num_faces; count1++) {
           used[count1] = false;
@@ -2318,8 +2318,8 @@ void ComputeAABB(bool f_full) {
         //
         //			continue;
 
-        vector *s_max_xyz = (vector *)mem_malloc(num_structs_per_room[i] * sizeof(vector));
-        vector *s_min_xyz = (vector *)mem_malloc(num_structs_per_room[i] * sizeof(vector));
+        vector *s_max_xyz = mem_rmalloc<vector>(num_structs_per_room[i]);
+        vector *s_min_xyz = mem_rmalloc<vector>(num_structs_per_room[i]);
 
         for (count = 0; count < num_structs_per_room[i]; count++) {
 
@@ -2410,14 +2410,14 @@ void ComputeAABB(bool f_full) {
 
         // temporary malloc
         rp->num_bbf_regions = 27 + num_structs_per_room[i] - 1;
-        rp->bbf_list = (int16_t **)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(int16_t *));
+        rp->bbf_list = mem_rmalloc<int16_t *>(MAX_REGIONS_PER_ROOM);
         for (x = 0; x < MAX_REGIONS_PER_ROOM; x++) {
-          rp->bbf_list[x] = (int16_t *)mem_malloc(rp->num_faces * sizeof(int16_t));
+          rp->bbf_list[x] = mem_rmalloc<int16_t>(rp->num_faces);
         }
-        rp->num_bbf = (int16_t *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(int16_t));
-        rp->bbf_list_min_xyz = (vector *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(vector));
-        rp->bbf_list_max_xyz = (vector *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(vector));
-        rp->bbf_list_sector = (uint8_t *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(uint8_t));
+        rp->num_bbf = mem_rmalloc<int16_t>(MAX_REGIONS_PER_ROOM);
+        rp->bbf_list_min_xyz = mem_rmalloc<vector>(MAX_REGIONS_PER_ROOM);
+        rp->bbf_list_max_xyz = mem_rmalloc<vector>(MAX_REGIONS_PER_ROOM);
+        rp->bbf_list_sector = mem_rmalloc<uint8_t>(MAX_REGIONS_PER_ROOM);
 
         for (x = 0; x < 27; x++) {
           rp->bbf_list_sector[x] = bbf_lookup[x];

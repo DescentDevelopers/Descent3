@@ -416,7 +416,7 @@ int AllocateProceduralForTexture(int handle) {
     w = h = 128;
   }
 
-  GameTextures[handle].procedural = (proc_struct *)mem_malloc(sizeof(proc_struct));
+  GameTextures[handle].procedural = mem_rmalloc<proc_struct>();
   ASSERT(GameTextures[handle].procedural);
 
   GameTextures[handle].procedural->proc1 = NULL;
@@ -452,7 +452,7 @@ int AllocateProceduralForTexture(int handle) {
 // Allocates the memory needed for static elements for a procedural texture
 void AllocateStaticProceduralsForTexture(int handle, int num_elements) {
   GameTextures[handle].procedural->static_proc_elements =
-      (static_proc_element *)mem_malloc(sizeof(static_proc_element) * num_elements);
+      mem_rmalloc<static_proc_element>(num_elements);
   ASSERT(GameTextures[handle].procedural->static_proc_elements);
 }
 

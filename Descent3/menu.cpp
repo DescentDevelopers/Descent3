@@ -1217,7 +1217,7 @@ bool MenuNewGame() {
 #define OEM_MISSION_NAME "Descent 3: Sol Ascent"
 #define OEM_TRAINING_NAME "Pilot Training "
   n_missions = 2;
-  filelist = (char **)mem_malloc(sizeof(char *) * 2);
+  filelist = mem_rmalloc<char *>(2);
   filelist[0] = mem_strdup(OEM_MISSION_FILE);
   ;
   msn_lb->AddItem(OEM_MISSION_NAME);

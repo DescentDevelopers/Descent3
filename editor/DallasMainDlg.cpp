@@ -3525,7 +3525,7 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   max_size = GetChildCount(TVI_ROOT);
   if (max_size == 0)
     return (lowest_id);
-  list = (int *)mem_malloc(sizeof(int) * max_size);
+  list = mem_rmalloc<int>(max_size);
   if (list == NULL)
     return (m_NextScriptID);
 
@@ -4980,7 +4980,7 @@ int CDallasMainDlg::AddDoorToList(char *name) {
     return FALSE;
 
   int pos = m_DoorListSize;
-  m_DoorList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_DoorList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_DoorList[pos] == NULL) {
     MessageBox("Out of memory in AddDoorToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5018,7 +5018,7 @@ int CDallasMainDlg::AddObjectToList(char *name) {
     return FALSE;
 
   int pos = m_ObjectListSize;
-  m_ObjectList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_ObjectList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_ObjectList[pos] == NULL) {
     MessageBox("Out of memory in AddObjectToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5056,7 +5056,7 @@ int CDallasMainDlg::AddRoomToList(char *name) {
     return FALSE;
 
   int pos = m_RoomListSize;
-  m_RoomList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_RoomList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_RoomList[pos] == NULL) {
     MessageBox("Out of memory in AddRoomToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5094,7 +5094,7 @@ int CDallasMainDlg::AddTriggerToList(char *name) {
     return FALSE;
 
   int pos = m_TriggerListSize;
-  m_TriggerList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_TriggerList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_TriggerList[pos] == NULL) {
     MessageBox("Out of memory in AddTriggerToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5132,7 +5132,7 @@ int CDallasMainDlg::AddSoundToList(char *name) {
     return FALSE;
 
   int pos = m_SoundListSize;
-  m_SoundList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_SoundList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_SoundList[pos] == NULL) {
     MessageBox("Out of memory in AddSoundToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5170,7 +5170,7 @@ int CDallasMainDlg::AddTextureToList(char *name) {
     return FALSE;
 
   int pos = m_TextureListSize;
-  m_TextureList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_TextureList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_TextureList[pos] == NULL) {
     MessageBox("Out of memory in AddTextureToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5208,7 +5208,7 @@ int CDallasMainDlg::AddSpecnameToList(char *name) {
     return FALSE;
 
   int pos = m_SpecnameListSize;
-  m_SpecnameList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_SpecnameList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_SpecnameList[pos] == NULL) {
     MessageBox("Out of memory in AddSpecnameToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5246,7 +5246,7 @@ int CDallasMainDlg::AddPathToList(char *name) {
     return FALSE;
 
   int pos = m_PathListSize;
-  m_PathList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_PathList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_PathList[pos] == NULL) {
     MessageBox("Out of memory in AddPathToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5284,7 +5284,7 @@ int CDallasMainDlg::AddMatcenToList(char *name) {
     return FALSE;
 
   int pos = m_MatcenListSize;
-  m_MatcenList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_MatcenList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_MatcenList[pos] == NULL) {
     MessageBox("Out of memory in AddMatcenToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5322,7 +5322,7 @@ int CDallasMainDlg::AddGoalToList(char *name) {
     return FALSE;
 
   int pos = m_GoalListSize;
-  m_GoalList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_GoalList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_GoalList[pos] == NULL) {
     MessageBox("Out of memory in AddGoalToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5360,7 +5360,7 @@ int CDallasMainDlg::AddStrmAudioToList(char *name) {
     return FALSE;
 
   int pos = m_StrmAudioListSize;
-  m_StrmAudioList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_StrmAudioList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_StrmAudioList[pos] == NULL) {
     MessageBox("Out of memory in AddStrmAudioToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5398,7 +5398,7 @@ int CDallasMainDlg::AddMessageNameToList(char *name) {
     return FALSE;
 
   int pos = m_MessageNameListSize;
-  m_MessageNameList[pos] = (char *)mem_malloc(strlen(name) + 1);
+  m_MessageNameList[pos] = mem_rmalloc<char>(strlen(name) + 1);
   if (m_MessageNameList[pos] == NULL) {
     MessageBox("Out of memory in AddMessageNameToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -5512,7 +5512,7 @@ int CDallasMainDlg::AddUserTypeValue(char *utype_name, char *value_name) {
   // Store the new value at the current position
   tEnumValueEntry *value_entry = &entry->values[j];
   value_entry->value = new_value;
-  value_entry->name = (char *)mem_malloc(strlen(value_name) + 1);
+  value_entry->name = mem_rmalloc<char>(strlen(value_name) + 1);
   if (value_entry->name == NULL) {
     MessageBox("ERROR: Out of mem in AddUserTypeValue()!", "Error!");
     return (-1);
@@ -5582,7 +5582,7 @@ int CDallasMainDlg::ChangeValueName(char *utype_name, char *old_name, char *new_
       mem_free(value_entry->name);
 
       // Add the new name
-      value_entry->name = (char *)mem_malloc(strlen(new_name) + 1);
+      value_entry->name = mem_rmalloc<char>(strlen(new_name) + 1);
       if (value_entry->name == NULL) {
         MessageBox("ERROR: Out of mem in ChangeValueName()!", "Error!");
         return FALSE;
@@ -6185,7 +6185,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
           done = 1;
         else if (m_NumFunctionCategories < MAX_CATEGORIES) {
           if (GetFunctionCategoryID(line) == INVALID_CATEGORY) { // don't add duplicate categories
-            m_FunctionCategories[m_NumFunctionCategories] = (char *)mem_malloc(strlen(line) + 1);
+            m_FunctionCategories[m_NumFunctionCategories] = mem_rmalloc<char>(strlen(line) + 1);
             if (m_FunctionCategories[m_NumFunctionCategories] == NULL) {
               FunctionFileParseError(NO_MEM_ERR, linenum, filename);
               cfclose(ifile);
@@ -6222,7 +6222,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         enum_entry = NULL;
       } else {
         enum_entry = &m_EnumDatabase[m_NumEnums++];
-        enum_entry->name = (char *)mem_malloc(strlen(enum_name) + 1);
+        enum_entry->name = mem_rmalloc<char>(strlen(enum_name) + 1);
         if (enum_entry->name == NULL) {
           FunctionFileParseError(NO_MEM_ERR, linenum, filename);
           cfclose(ifile);
@@ -6240,7 +6240,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         // Add the default (-1:None) value
         tEnumValueEntry *value_entry;
         value_entry = &enum_entry->values[enum_entry->num_values++];
-        value_entry->name = (char *)mem_malloc(strlen(USERTYPE_NONE) + 1);
+        value_entry->name = mem_rmalloc<char>(strlen(USERTYPE_NONE) + 1);
         if (value_entry->name == NULL) {
           FunctionFileParseError(NO_MEM_ERR, linenum, filename);
           cfclose(ifile);
@@ -6266,7 +6266,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         enum_entry = NULL;
       } else {
         enum_entry = &m_EnumDatabase[m_NumEnums++];
-        enum_entry->name = (char *)mem_malloc(strlen(enum_name) + 1);
+        enum_entry->name = mem_rmalloc<char>(strlen(enum_name) + 1);
         if (enum_entry->name == NULL) {
           FunctionFileParseError(NO_MEM_ERR, linenum, filename);
           cfclose(ifile);
@@ -6313,7 +6313,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
             value_entry = NULL;
           } else {
             value_entry = &enum_entry->values[enum_entry->num_values++];
-            value_entry->name = (char *)mem_malloc(strlen(enum_value_name) + 1);
+            value_entry->name = mem_rmalloc<char>(strlen(enum_value_name) + 1);
             if (value_entry->name == NULL) {
               FunctionFileParseError(NO_MEM_ERR, linenum, filename);
               cfclose(ifile);
@@ -6345,7 +6345,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         flag_entry = NULL;
       } else {
         flag_entry = &m_FlagDatabase[m_NumFlags++];
-        flag_entry->name = (char *)mem_malloc(strlen(flag_name) + 1);
+        flag_entry->name = mem_rmalloc<char>(strlen(flag_name) + 1);
         if (flag_entry->name == NULL) {
           FunctionFileParseError(NO_MEM_ERR, linenum, filename);
           cfclose(ifile);
@@ -6390,7 +6390,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
             value_entry = NULL;
           } else {
             value_entry = &flag_entry->values[flag_entry->num_values++];
-            value_entry->name = (char *)mem_malloc(strlen(flag_value_name) + 1);
+            value_entry->name = mem_rmalloc<char>(strlen(flag_value_name) + 1);
             if (value_entry->name == NULL) {
               FunctionFileParseError(NO_MEM_ERR, linenum, filename);
               cfclose(ifile);
@@ -6439,7 +6439,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      action->desc = (char *)mem_malloc(strlen(line) + 1);
+      action->desc = mem_rmalloc<char>(strlen(line) + 1);
       if (action->desc == NULL) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
@@ -6455,7 +6455,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      action->func = (char *)mem_malloc(strlen(line) + 1);
+      action->func = mem_rmalloc<char>(strlen(line) + 1);
       if (action->func == NULL) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
@@ -6487,7 +6487,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       if (!done)
         FunctionFileParseError(UEOF_ERR, linenum, filename);
 
-      action->help = (char *)mem_malloc(strlen(helpbuf) + 1);
+      action->help = mem_rmalloc<char>(strlen(helpbuf) + 1);
       if (action->help == NULL) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
@@ -6528,7 +6528,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      query->desc = (char *)mem_malloc(strlen(line) + 1);
+      query->desc = mem_rmalloc<char>(strlen(line) + 1);
       if (query->desc == NULL) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
@@ -6544,7 +6544,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      query->func = (char *)mem_malloc(strlen(line) + 1);
+      query->func = mem_rmalloc<char>(strlen(line) + 1);
       if (query->func == NULL) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
@@ -6576,7 +6576,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       if (!done)
         FunctionFileParseError(UEOF_ERR, linenum, filename);
 
-      query->help = (char *)mem_malloc(strlen(helpbuf) + 1);
+      query->help = mem_rmalloc<char>(strlen(helpbuf) + 1);
       if (query->help == NULL) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
@@ -6772,7 +6772,7 @@ bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum)
         child_node=m_ScriptTree.GetChildItem(node);
 
         // Make a copy of description (so null chars can be added)
-        desc_copy=(char *)mem_malloc(strlen(desc)+1);
+        desc_copy=mem_rmalloc<char>(strlen(desc)+1);
         if(desc_copy==NULL) {
                 MessageBox("ERROR: Out of memory in ValidateActionNode()!","Out of Memory
 Error!",MB_OK|MB_ICONEXCLAMATION); return FALSE;
@@ -7047,7 +7047,7 @@ bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum)
         child_node=m_ScriptTree.GetChildItem(node);
 
         // Make a copy of description (so null chars can be added)
-        desc_copy=(char *)mem_malloc(strlen(desc)+1);
+        desc_copy=mem_rmalloc<char>(strlen(desc)+1);
         if(desc_copy==NULL) {
                 MessageBox("ERROR: Out of memory in ValidateQueryNode()!","Out of Memory
 Error!",MB_OK|MB_ICONEXCLAMATION); return FALSE;
@@ -7137,7 +7137,7 @@ void CDallasMainDlg::FillActionMenu(CMenu *action_menu, int command_offset) {
     // Scan the list, adding Actions that match the current category
     for (k = 0; k < m_NumActions; k++)
       if (m_ActionDatabase[k].category == j) {
-        char *temp_desc = (char *)mem_malloc(strlen(m_ActionDatabase[k].desc) + 1);
+        char *temp_desc = mem_rmalloc<char>(strlen(m_ActionDatabase[k].desc) + 1);
         if (temp_desc == NULL) {
           MessageBox("Out of memory error in FillActionMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
           return;
@@ -7175,7 +7175,7 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
     // Scan the list, adding queries that match the current category
     for (k = 0; k < m_NumActions; k++)
       if (m_QueryDatabase[k].category == j) {
-        char *temp_desc = (char *)mem_malloc(strlen(m_QueryDatabase[k].desc) + 1);
+        char *temp_desc = mem_rmalloc<char>(strlen(m_QueryDatabase[k].desc) + 1);
         if (temp_desc == NULL) {
           MessageBox("Out of memory error in FillQueryMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
           return;
@@ -7502,7 +7502,7 @@ int CDallasMainDlg::AddNodeToScriptOwnerGroup(int pos, HTREEITEM script_node) {
 
   // Add this node to the appropriate event section list
   if (event_section->num_script_nodes == 0)
-    event_section->script_node_list = (HTREEITEM *)mem_malloc(sizeof(HTREEITEM) * 1);
+    event_section->script_node_list = mem_rmalloc<HTREEITEM>(1);
   else
     event_section->script_node_list = (HTREEITEM *)mem_realloc(
         event_section->script_node_list, sizeof(HTREEITEM) * (event_section->num_script_nodes + 1));
@@ -7552,7 +7552,7 @@ int CDallasMainDlg::AddNodeToScriptGroupingList(HTREEITEM script_node) {
 
   // Since owner does not exist, create a new Script Group entry
   if (m_NumScriptGroups == 0)
-    m_ScriptGroupingList = (tScriptOwnerGroup *)mem_malloc(sizeof(tScriptOwnerGroup) * 1);
+    m_ScriptGroupingList = mem_rmalloc<tScriptOwnerGroup>(1);
   else
     m_ScriptGroupingList =
         (tScriptOwnerGroup *)mem_realloc(m_ScriptGroupingList, sizeof(tScriptOwnerGroup) * (m_NumScriptGroups + 1));
@@ -7848,7 +7848,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
                 value_entry = NULL;
               } else {
                 value_entry = &enum_entry->values[enum_entry->num_values++];
-                value_entry->name = (char *)mem_malloc(strlen(enum_value_name) + 1);
+                value_entry->name = mem_rmalloc<char>(strlen(enum_value_name) + 1);
                 if (value_entry->name == NULL) {
                   FunctionFileParseError(NO_MEM_ERR, linenum, filename);
                   cfclose(infile);
@@ -9442,7 +9442,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
       ClearCustomScriptStorage();
       m_MaxNumCustomScriptLines = CountCustomScriptLines(infile);
       if (m_MaxNumCustomScriptLines > 0) {
-        m_CustomScriptLines = (char **)mem_malloc(sizeof(char *) * m_MaxNumCustomScriptLines);
+        m_CustomScriptLines = mem_rmalloc<char *>(m_MaxNumCustomScriptLines);
         if (m_CustomScriptLines == NULL) {
           MessageBox("ERROR: Ran out of memory allocating custom script block", "Custom Script Parse Error",
                      MB_OK | MB_ICONEXCLAMATION);
@@ -9466,7 +9466,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
 
         // Store this line
         if (m_NumCustomScriptLines < m_MaxNumCustomScriptLines) {
-          m_CustomScriptLines[m_NumCustomScriptLines] = (char *)mem_malloc(strlen(linebuf) + 1);
+          m_CustomScriptLines[m_NumCustomScriptLines] = mem_rmalloc<char>(strlen(linebuf) + 1);
           if (m_CustomScriptLines[m_NumCustomScriptLines] == NULL) {
             MessageBox("ERROR: Ran out of memory parsing custom script block", "Custom Script Parse Error",
                        MB_OK | MB_ICONEXCLAMATION);
@@ -13737,7 +13737,7 @@ void CDallasMainDlg::AddActionParameterNodes(HTREEITEM action_node)
         if(desc==NULL) return;
 
         // Make a copy of description (so null chars can be added)
-        desc_copy=(char *)mem_malloc(strlen(desc)+1);
+        desc_copy=mem_rmalloc<char>(strlen(desc)+1);
         if(desc_copy==NULL) {
                 MessageBox("ERROR: Out of memory adding action parameter node!","Out of Memory
 Error!",MB_OK|MB_ICONEXCLAMATION); return;
@@ -13857,7 +13857,7 @@ void CDallasMainDlg::AddQueryParameterNodes(HTREEITEM query_node)
         if(desc==NULL) return;
 
         // Make a copy of description (so null chars can be added)
-        desc_copy=(char *)mem_malloc(strlen(desc)+1);
+        desc_copy=mem_rmalloc<char>(strlen(desc)+1);
         if(desc_copy==NULL) {
                 MessageBox("ERROR: Out of memory adding query parameter node!","Out of Memory
 Error!",MB_OK|MB_ICONEXCLAMATION); return;

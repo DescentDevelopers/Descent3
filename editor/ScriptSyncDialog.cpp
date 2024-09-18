@@ -308,7 +308,7 @@ void CScriptSyncDialog::BuildList(void) {
   if (m_NumFiles == 0)
     return;
 
-  m_Files = (tFileInfo *)mem_malloc(sizeof(tFileInfo) * m_NumFiles);
+  m_Files = mem_rmalloc<tFileInfo>(m_NumFiles);
   m_NumFiles = 0;
 
   if (ManageFindFirst(buffer, "*.cpp")) {

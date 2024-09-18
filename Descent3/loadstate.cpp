@@ -838,7 +838,7 @@ int LGSObjects(CFILE *fp, int version) {
   int i, j, highest_index;
   int max_terr;
 
-  matrix *objmat = (matrix *)mem_malloc(sizeof(*objmat) * MAX_OBJECTS);
+  auto objmat = mem_rmalloc<matrix>(MAX_OBJECTS);
 
   Osiris_DisableCreateEvents();
   // we must reset some data before continuing.
@@ -992,7 +992,7 @@ int LGSObjects(CFILE *fp, int version) {
     gs_ReadByte(fp, has_lightinfo);
     if (has_lightinfo) {
       if (!op->lighting_info) {
-        op->lighting_info = (light_info *)mem_malloc(sizeof(*op->lighting_info));
+        op->lighting_info = mem_rmalloc<light_info>();
       }
       cf_ReadBytes((uint8_t *)op->lighting_info, sizeof(*op->lighting_info), fp);
     }
@@ -1125,7 +1125,7 @@ int LGSObjects(CFILE *fp, int version) {
 
       if (f_allocated) {
         // mprintf(0,"Object %d has %d attach points.\n",i,nattach);
-        op->attach_children = (int *)mem_malloc(sizeof(int) * nattach);
+        op->attach_children = mem_rmalloc<int>(nattach);
         for (j = 0; j < nattach; j++)
           gs_ReadInt(fp, op->attach_children[j]);
       }
@@ -1310,8 +1310,8 @@ int LGSObjects(CFILE *fp, int version) {
         int cur = 0;
 
         p_info->multi_turret_info.time = 0;
-        p_info->multi_turret_info.keyframes = (float *)mem_malloc(sizeof(float) * count);
-        p_info->multi_turret_info.last_keyframes = (float *)mem_malloc(sizeof(float) * count);
+        p_info->multi_turret_info.keyframes = mem_rmalloc<float>(count);
+        p_info->multi_turret_info.last_keyframes = mem_rmalloc<float>(count);
         p_info->multi_turret_info.flags = 0;
       }
       // Do Animation stuff
@@ -1443,7 +1443,6 @@ done:;
 
 //	loads ai
 int LGSObjAI(CFILE *fp, ai_frame **pai) {
-  ai_frame *ai;
   int16_t size;
   int8_t read_ai;
 
@@ -1457,9 +1456,7 @@ int LGSObjAI(CFILE *fp, ai_frame **pai) {
   if (size != sizeof(ai_frame))
     return LGS_OUTDATEDVER;
 
-  *pai = (ai_frame *)mem_malloc(size);
-  ai = *pai;
-
+  auto ai = *pai = mem_rmalloc<ai_frame>();
   cf_ReadBytes((uint8_t *)ai, size, fp);
 
   return LGS_OK;
@@ -1478,9 +1475,7 @@ int LGSObjEffects(CFILE *fp, object *op) {
     if (size != sizeof(effect_info_s))
       return LGS_OUTDATEDVER;
 
-    op->effect_info = (effect_info_s *)mem_malloc(size);
-    effect_info_s *ei = op->effect_info;
-
+    auto ei = op->effect_info = mem_rmalloc<effect_info_s>();
     cf_ReadBytes((uint8_t *)ei, size, fp);
   }
 
@@ -1548,7 +1543,7 @@ int LGSObjWB(CFILE *fp, object *op) {
   if (!num_wbs)
     return LGS_OK;
 
-  dwba = (dynamic_wb_info *)mem_malloc(sizeof(dynamic_wb_info) * num_wbs);
+  dwba = mem_rmalloc<dynamic_wb_info>(num_wbs);
 
   for (i = 0; i < num_wbs; i++) {
     dynamic_wb_info *dwb = &dwba[i];

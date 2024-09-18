@@ -1203,7 +1203,7 @@ void newuiSheet::Create(UIWindow *menu, const char *title, int n_items, int sx, 
   m_gadgetlimit = n_items;
   m_ngadgets = 0;
   if (n_items) {
-    m_gadgetlist = (newuiSheet::t_gadget_desc *)mem_malloc(n_items * sizeof(newuiSheet::t_gadget_desc));
+    m_gadgetlist = mem_rmalloc<t_gadget_desc>(n_items);
   } else {
     m_gadgetlist = NULL;
   }

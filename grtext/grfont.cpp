@@ -331,7 +331,7 @@ int grfont_Load(const char *fname) {
 
   //	Read in all widths
   if (fnt.flags & FT_PROPORTIONAL) {
-    fnt.char_widths = (uint8_t *)mem_malloc(sizeof(uint8_t) * num_char);
+    fnt.char_widths = mem_rmalloc<uint8_t>(num_char);
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
   } else {
@@ -341,7 +341,7 @@ int grfont_Load(const char *fname) {
   //	Read in kerning data
   if (fnt.flags & FT_KERNED) {
     int n_pairs = (int)READ_FONT_SHORT(ff);
-    fnt.kern_data = (uint8_t *)mem_malloc(sizeof(uint8_t) * 3 * (n_pairs + 1));
+    fnt.kern_data = mem_rmalloc<uint8_t>(sizeof(uint8_t) * 3 * (n_pairs + 1));
     for (i = 0; i < n_pairs; i++) {
       fnt.kern_data[i * 3] = READ_FONT_BYTE(ff);
       fnt.kern_data[i * 3 + 1] = READ_FONT_BYTE(ff);
@@ -361,8 +361,8 @@ int grfont_Load(const char *fname) {
   //		generate character data pointer table
   int bytesize = READ_FONT_INT(ff);
 
-  fnt.raw_data = (uint8_t *)mem_malloc(bytesize);
-  fnt.char_data = (uint8_t **)mem_malloc(num_char * sizeof(uint8_t *));
+  fnt.raw_data = mem_rmalloc<uint8_t>(bytesize);
+  fnt.char_data = mem_rmalloc<uint8_t *>(num_char);
 
   READ_FONT_DATA(ff, fnt.raw_data, bytesize, 1);
 
@@ -486,7 +486,7 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
 
   //	Read in all widths
   if (ft_flags & FT_PROPORTIONAL) {
-    ft->ch_widths = (uint8_t *)mem_malloc(num_char);
+    ft->ch_widths = mem_rmalloc<uint8_t>(num_char);
     for (i = 0; i < num_char; i++)
       ft->ch_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
   } else {
@@ -495,7 +495,7 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
 
   if (ft_flags & FT_KERNED) {
     int n_pairs = (int)READ_FONT_SHORT(ff);
-    ft->kern_data = (uint8_t *)mem_malloc(sizeof(uint8_t) * 3 * (n_pairs + 1));
+    ft->kern_data = mem_rmalloc<uint8_t>(sizeof(uint8_t) * 3 * (n_pairs + 1));
     for (i = 0; i < n_pairs; i++) {
       ft->kern_data[i * 3] = READ_FONT_BYTE(ff);
       ft->kern_data[i * 3 + 1] = READ_FONT_BYTE(ff);
@@ -578,7 +578,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
 
   //	Read in all widths
   if (fnt.flags & FT_PROPORTIONAL) {
-    fnt.char_widths = (uint8_t *)mem_malloc(sizeof(uint8_t) * num_char);
+    fnt.char_widths = mem_rmalloc<uint8_t>(num_char);
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ffin);
   } else {
@@ -588,7 +588,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   //	Read in kerning data
   if (fnt.flags & FT_KERNED) {
     int n_pairs = (int)READ_FONT_SHORT(ffin);
-    fnt.kern_data = (uint8_t *)mem_malloc(sizeof(uint8_t) * 3 * (n_pairs + 1));
+    fnt.kern_data = mem_rmalloc<uint8_t>(sizeof(uint8_t) * 3 * (n_pairs + 1));
     for (i = 0; i < n_pairs; i++) {
       fnt.kern_data[i * 3] = READ_FONT_BYTE(ffin);
       fnt.kern_data[i * 3 + 1] = READ_FONT_BYTE(ffin);
@@ -604,7 +604,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   //	Read in pixel data.
   int bytesize = READ_FONT_INT(ffin);
 
-  fnt.raw_data = (uint8_t *)mem_malloc(bytesize);
+  fnt.raw_data = mem_rmalloc<uint8_t>(bytesize);
 
   READ_FONT_DATA(ffin, fnt.raw_data, bytesize, 1);
 

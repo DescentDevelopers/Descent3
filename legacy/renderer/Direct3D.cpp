@@ -1021,7 +1021,7 @@ int d3d_TextureCacheInit() {
   }
 
   // Allocate room to hold all our surfaces
-  UploadSurfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(NUM_TEXTURE_CLASSES * sizeof(LPDIRECTDRAWSURFACE4));
+  UploadSurfaces = mem_rmalloc<LPDIRECTDRAWSURFACE4>(NUM_TEXTURE_CLASSES);
   if (UploadSurfaces == NULL) {
     mprintf(0, "Couldn't allocate memory for UploadSurfaces!\n");
 
@@ -1030,7 +1030,7 @@ int d3d_TextureCacheInit() {
   }
 
   // Allocate room to hold all our 4444 surfaces
-  Upload4444Surfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(NUM_TEXTURE_CLASSES * sizeof(LPDIRECTDRAWSURFACE4));
+  Upload4444Surfaces = mem_rmalloc<LPDIRECTDRAWSURFACE4>(NUM_TEXTURE_CLASSES);
   if (Upload4444Surfaces == NULL) {
     mprintf(0, "Couldn't allocate memory for Upload4444Surfaces!\n");
 
@@ -1038,7 +1038,7 @@ int d3d_TextureCacheInit() {
     return 0;
   }
 
-  BitmapTextureSurfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(MAX_BITMAPS * sizeof(LPDIRECTDRAWSURFACE4));
+  BitmapTextureSurfaces = mem_rmalloc<LPDIRECTDRAWSURFACE4>(MAX_BITMAPS);
   if (BitmapTextureSurfaces == NULL) {
     mprintf(0, "Couldn't allocate memory for BitmapTextureSurfaces!\n");
 
@@ -1047,7 +1047,7 @@ int d3d_TextureCacheInit() {
   }
 
   // Allocate room to hold all our surfaces
-  LightmapTextureSurfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(MAX_LIGHTMAPS * sizeof(LPDIRECTDRAWSURFACE4));
+  LightmapTextureSurfaces = mem_rmalloc<LPDIRECTDRAWSURFACE4>(MAX_LIGHTMAPS);
   if (LightmapTextureSurfaces == NULL) {
     mprintf(0, "Couldn't allocate memory for LightmapTextureSurfaces!\n");
     rend_SetErrorMessage("Couldn't alloc mem for LightmapTextureSurfaces!");
@@ -1055,7 +1055,7 @@ int d3d_TextureCacheInit() {
   }
 
   if (d3d_CanBumpmap) {
-    BumpmapTextureSurfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(MAX_BUMPMAPS * sizeof(LPDIRECTDRAWSURFACE4));
+    BumpmapTextureSurfaces = mem_rmalloc<LPDIRECTDRAWSURFACE4>(MAX_BUMPMAPS);
     if (BumpmapTextureSurfaces == NULL) {
       mprintf(0, "Couldn't allocate memory for BumpmapTextureSurfaces!\n");
       rend_SetErrorMessage("Couldn't alloc mem for BumpmapTextureSurfaces!");

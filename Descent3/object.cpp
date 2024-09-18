@@ -3338,7 +3338,7 @@ void SetObjectControlType(object *obj, int control_type) {
     int count = 0;
     int i;
 
-    obj->ai_info = (ai_frame *)mem_malloc(sizeof(ai_frame));
+    obj->ai_info = mem_rmalloc<ai_frame>();
     memset(obj->ai_info, 0x00, sizeof(ai_frame)); // DAJ clear the baby
 
     for (i = 0; i < num_wbs; i++) {
@@ -3352,8 +3352,8 @@ void SetObjectControlType(object *obj, int control_type) {
       int cur = 0;
 
       p_info->multi_turret_info.time = 0;
-      p_info->multi_turret_info.keyframes = (float *)mem_malloc(sizeof(float) * count);
-      p_info->multi_turret_info.last_keyframes = (float *)mem_malloc(sizeof(float) * count);
+      p_info->multi_turret_info.keyframes = mem_rmalloc<float>(count);
+      p_info->multi_turret_info.last_keyframes = mem_rmalloc<float>(count);
       p_info->multi_turret_info.flags = 0;
     }
   }
@@ -3366,10 +3366,10 @@ void SetObjectControlType(object *obj, int control_type) {
 
     if (obj->dynamic_wb == NULL) {
       if (obj->type == OBJ_PLAYER) {
-        obj->dynamic_wb = (dynamic_wb_info *)mem_malloc(sizeof(dynamic_wb_info) * MAX_WBS_PER_OBJ);
+        obj->dynamic_wb = mem_rmalloc<dynamic_wb_info>(MAX_WBS_PER_OBJ);
       } else {
         if (num_wbs)
-          obj->dynamic_wb = (dynamic_wb_info *)mem_malloc(sizeof(dynamic_wb_info) * num_wbs);
+          obj->dynamic_wb = mem_rmalloc<dynamic_wb_info>(num_wbs);
       }
     }
   }

@@ -236,16 +236,15 @@ void FreeGroup(group *g) {
 //					attachroom, attachface - where group attaches when pasted
 // Returns:		pointer to group
 group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
-  group *g;
   int r;
   int room_xlate[MAX_ROOMS];
   int n_objects = 0, n_triggers = 0, n_doors = 0;
 
   // Allocate group & room arrays
-  g = (group *)mem_malloc(sizeof(*g));
+  auto g = mem_rmalloc<group>();
   ASSERT(g != NULL);
   g->nrooms = nrooms;
-  g->rooms = (room *)mem_malloc(sizeof(*g->rooms) * nrooms);
+  g->rooms = mem_rmalloc<room>(nrooms);
   ASSERT(g->rooms != NULL);
 
   // Initialize xlate list
@@ -296,7 +295,7 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
     int objnum = 0;
 
     // Get memory for objects
-    g->objects = (object *)mem_malloc(sizeof(*g->objects) * n_objects);
+    g->objects = mem_rmalloc<object>(n_objects);
 
     // Go through list of rooms & copy the objects
     for (r = 0; r < nrooms; r++) {
@@ -344,7 +343,7 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
     int trignum = 0;
 
     // Get memory for triggers
-    g->triggers = (trigger *)mem_malloc(sizeof(*g->triggers) * n_triggers);
+    g->triggers = mem_rmalloc<trigger>(n_triggers);
 
     for (int t = 0; t < Num_triggers; t++)
       if (room_xlate[Triggers[t].roomnum] != -1) {
@@ -754,7 +753,6 @@ group *LoadGroup(char *filename) {
   CFILE *ifile;
   char tag[4];
   int version, level_version;
-  group *g;
   int i;
 
   ifile = cfopen(filename, "rb");
@@ -794,7 +792,7 @@ group *LoadGroup(char *filename) {
   ReadTextureList(ifile);
 
   // Allocate group
-  g = (group *)mem_malloc(sizeof(*g));
+  auto g = mem_rmalloc<group>();
 
   // Read group info
   g->nrooms = cf_ReadInt(ifile);
@@ -810,7 +808,7 @@ group *LoadGroup(char *filename) {
     g->nobjects = g->ndoors = g->ntriggers = 0;
 
   // Allocate room and vertex arrays
-  g->rooms = (room *)mem_malloc(sizeof(*g->rooms) * g->nrooms);
+  g->rooms = mem_rmalloc<room>(g->nrooms);
 
   // Read rooms
   for (i = 0; i < g->nrooms; i++) {
@@ -825,11 +823,11 @@ group *LoadGroup(char *filename) {
 
     // Allocate objects array
     if (g->nobjects)
-      g->objects = (object *)mem_malloc(sizeof(*g->objects) * g->nobjects);
+      g->objects = mem_rmalloc<object>(g->nobjects);
 
     // Allocate triggers array
     if (g->ntriggers)
-      g->triggers = (trigger *)mem_malloc(sizeof(*g->triggers) * g->ntriggers);
+      g->triggers = mem_rmalloc<trigger>(g->ntriggers);
 
     // Read objects
     for (i = 0; i < g->nobjects; i++)

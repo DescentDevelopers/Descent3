@@ -375,7 +375,7 @@ void CMegacellDialog::OnDeleteMegacell() {
     uint16_t texindices[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
 
     for (i = 0; i < MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT; i++) {
-      texnames[i] = (char *)mem_malloc(PAGENAME_LEN);
+      texnames[i] = mem_rmalloc<char>(PAGENAME_LEN);
       ASSERT(texnames[i]);
       if (!can_delete[i])
         continue;

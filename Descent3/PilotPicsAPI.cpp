@@ -516,8 +516,8 @@ bool PPic_BuildDatabases(void) {
 
   // allocate all the memory we're going to need
   // -------------------------------------------
-  Pilot_id_to_offset = (tPilotPicIdOffset *)mem_malloc(sizeof(tPilotPicIdOffset) * PilotPic_count);
-  Sorted_Pilot_id_to_offset = (uint16_t *)mem_malloc(sizeof(uint16_t) * PilotPic_count);
+  Pilot_id_to_offset = mem_rmalloc<tPilotPicIdOffset>(PilotPic_count);
+  Sorted_Pilot_id_to_offset = mem_rmalloc<uint16_t>(PilotPic_count);
   if (!Pilot_id_to_offset) {
     // out of memory!!!
     LOG_FATAL << "PPIC: Out of memory allocating index database";

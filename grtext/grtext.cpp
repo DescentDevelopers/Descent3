@@ -461,7 +461,7 @@ void grtext_Puts(int x, int y, const char *str) {
 
   if (grtext_FilterProfanity) {
     // DAJ changed to local to reduce memory thrashing
-    // DAJ		char *lowerstr = (char *)mem_malloc(strlen(str)+1);
+    // DAJ		char *lowerstr = mem_rmalloc<char>(strlen(str)+1);
     char lowerstr[GR_STR_LEN];
 
     int slen = strlen(str);
