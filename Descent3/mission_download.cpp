@@ -149,7 +149,7 @@ msn_urls Net_msn_URLs;
 extern char Proxy_server[200];
 extern int16_t Proxy_port;
 
-int msn_ExtractZipFile(const char *zipfilename, const char *mn3name);
+int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name);
 
 // Request a URL structure from a server containing a list of download locations
 // For the current mission being played
@@ -304,11 +304,7 @@ int msn_ShowDownloadChoices(msn_urls *urls) {
 
 #define MSN_MAX_STRING_LEN 100
 
-// Start downloading the file at the url specifies, showing a status screen
-// Return codes:
-// 0 Failed or cancelled
-// 1 Success
-int msn_DownloadWithStatus(const char *url, const char *filename) {
+bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filename) {
   float last_refresh;
   uint64_t total_bytes = 0;
   uint64_t received_bytes = 0;
@@ -321,7 +317,7 @@ int msn_DownloadWithStatus(const char *url, const char *filename) {
   std::vector<std::string> url_parts = StringSplit(url, "/");
   if (!(stricmp("http:", url_parts.front().c_str()) == 0 || stricmp("https:", url_parts.front().c_str()) == 0)) {
     LOG_WARNING.printf("'%s' scheme is not supported, no download!", url_parts.front().c_str());
-    return 0;
+    return false;
   }
   std::filesystem::path download_file = std::filesystem::path(url_parts.back());
   if (stricmp(download_file.extension().u8string().c_str(), ".zip") == 0) {
@@ -416,7 +412,7 @@ int msn_DownloadWithStatus(const char *url, const char *filename) {
 
       if (status == 200) {
         // File transfer successful!
-        LOG_INFO << "Successfully received the file!";
+        LOG_INFO.printf("Successfully received the file (%d bytes)!", total_bytes);
         exit_menu = 1;
 
         if (file_is_zip) {
@@ -490,7 +486,7 @@ int msn_DownloadWithStatus(const char *url, const char *filename) {
   menu_wnd.Close();
   menu_wnd.Destroy();
 
-  return ret;
+  return (ret > 0);
 }
 
 void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
@@ -664,9 +660,9 @@ void _get_zipfilename(char *output, char *directory, char *zipfilename) {
 
 // return 0 on failure
 // return 1 on success
-int msn_ExtractZipFile(const char *zipfilename, const char *mn3name) {
+int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name) {
 
-  LOG_DEBUG.printf("Extracting ZIP File (%s) to missions directory", zipfilename);
+  LOG_DEBUG.printf("Extracting ZIP File (%s) to missions directory", zipfilename.u8string().c_str());
   if (!cfexist(zipfilename)) {
     LOG_WARNING << "Zip file doesn't exist";
     return 0;
@@ -682,7 +678,7 @@ int msn_ExtractZipFile(const char *zipfilename, const char *mn3name) {
   ZIP zfile;
   zipentry *ze;
 
-  if (!zfile.OpenZip(zipfilename)) {
+  if (!zfile.OpenZip(zipfilename.u8string().c_str())) {
     LOG_WARNING << "Unable to open zip file";
     return 0;
   }
@@ -725,7 +721,7 @@ int msn_ExtractZipFile(const char *zipfilename, const char *mn3name) {
         snprintf(buffer, sizeof(buffer), "%s already exists. Overwrite?", output_filename);
         if (DoMessageBox("Confirm", buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
           // delete the file
-          LOG_DEBUG.printf("Deleting %s", zipfilename);
+          LOG_DEBUG.printf("Deleting %s", zipfilename.u8string().c_str());
           if (!ddio_DeleteFile(output_filename)) {
             process_file = false;
             console.puts(GR_GREEN, "[Unable to Write] ");
@@ -764,7 +760,7 @@ int msn_ExtractZipFile(const char *zipfilename, const char *mn3name) {
             console.puts(GR_GREEN, "CRC OK");
 
             // check to see if we extracted our mn3
-            if (CompareZipFileName(ze->name, mn3name)) {
+            if (CompareZipFileName(ze->name, mn3name.u8string().c_str())) {
               found_mn3 = true;
             }
           } else {
@@ -788,8 +784,9 @@ int msn_ExtractZipFile(const char *zipfilename, const char *mn3name) {
   if (DoMessageBox("Confirm", "Do you want to delete the zip file? It is no longer needed.", MSGBOX_YESNO,
                    UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
     // delete the file
-    LOG_DEBUG.printf("Deleting %s", zipfilename);
-    ddio_DeleteFile(zipfilename);
+    LOG_DEBUG.printf("Deleting %s", zipfilename.u8string().c_str());
+    std::error_code ec;
+    std::filesystem::remove(zipfilename);
   }
 
   window.Close();
