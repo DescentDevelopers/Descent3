@@ -18,14 +18,17 @@ class user_var : public std::variant<float, int32_t> {
 			self = static_cast<int32_t>(v);
 	}
 	template<typename T> void set_type() noexcept { static_cast<VarT &>(*this) = T{}; }
-	void operator++(int) noexcept { std::visit([](auto &&uv) { ++uv; }, *this); }
-	void operator--(int) noexcept { std::visit([](auto &&uv) { ++uv; }, *this); }
-	template<typename T> void operator+=(T &&r) noexcept { std::visit([&](auto &&uv) { uv += std::forward<T>(r); }, *this); }
-	template<typename T> void operator-=(T &&r) noexcept { std::visit([&](auto &&uv) { uv -= std::forward<T>(r); }, *this); }
-	template<typename T> bool operator==(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv == std::forward<T>(r); }, *this); }
-	template<typename T> bool operator!=(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv != std::forward<T>(r); }, *this); }
-	template<typename T> bool operator<(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv < std::forward<T>(r); }, *this); }
-	template<typename T> bool operator>(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv > std::forward<T>(r); }, *this); }
+
+	// The explicit cast to base type is for the sake of older compilers
+	// like GCC 9 which is missing a deduction guide or so (cf. P2162R2).
+	void operator++(int) noexcept { std::visit([](auto &&uv) { ++uv; }, static_cast<VarT &>(*this)); }
+	void operator--(int) noexcept { std::visit([](auto &&uv) { ++uv; }, static_cast<VarT &>(*this)); }
+	template<typename T> void operator+=(T &&r) noexcept { std::visit([&](auto &&uv) { uv += std::forward<T>(r); }, static_cast<VarT &>(*this)); }
+	template<typename T> void operator-=(T &&r) noexcept { std::visit([&](auto &&uv) { uv -= std::forward<T>(r); }, static_cast<VarT &>(*this)); }
+	template<typename T> bool operator==(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv == std::forward<T>(r); }, static_cast<VarT &>(*this)); }
+	template<typename T> bool operator!=(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv != std::forward<T>(r); }, static_cast<VarT &>(*this)); }
+	template<typename T> bool operator<(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv < std::forward<T>(r); }, static_cast<VarT &>(*this)); }
+	template<typename T> bool operator>(T &&r) noexcept { return std::visit([&](auto &&uv) { return uv > std::forward<T>(r); }, static_cast<VarT &>(*this)); }
 };
 
 #define MAX_USER_VARS 25 // make sure this value matches the USERTYPE definition
