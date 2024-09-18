@@ -32,3 +32,11 @@ In case of swapping to another solution here should be redefined following macro
 #define LOG_FATAL                       PLOG(plog::fatal)
 
 */
+
+/**
+ * Initialize logger facility.
+ * @param log_level desired log level (for example, plog::debug)
+ * @param enable_filelog enable logging into Descent.log
+ * @param enable_win_console enable console windows for WIN32 (no-op for POSIX systems)
+ */
+void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_console);

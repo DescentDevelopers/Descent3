@@ -290,6 +290,11 @@
 #include <process.h>
 #include <wsipx.h>
 #include <ras.h>
+
+#include "directplay.h"
+#include "dplay.h"
+#include "dplobby.h"
+
 typedef int socklen_t;
 #endif
 #include <stdlib.h>
@@ -311,35 +316,22 @@ typedef int socklen_t;
 #define LPSTR char *
 #endif
 
-#ifdef WIN32
-#include "dplay.h"
-#include "dplobby.h"
-#endif
-
 #include "descent.h"
 #include "appdatabase.h"
-
-#include "pstypes.h"
 #include "pserror.h"
 #include "log.h"
 #include "networking.h"
 #include "ddio.h"
 #include "mem.h"
+#include "module.h"
 #include "game.h"
 #include "args.h"
 #include "byteswap.h"
-
-#ifdef WIN32
-#include "directplay.h"
-#endif
-
 #include "pstring.h"
 
 #ifndef WIN32
 bool Use_DirectPlay = false;
 #endif
-
-#include "module.h" //for some nice defines to use below
 
 #define MAX_CONNECT_TRIES 50
 #define MAX_RECEIVE_BUFSIZE 32768

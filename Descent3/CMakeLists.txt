@@ -314,9 +314,36 @@ file(GLOB_RECURSE INCS "../lib/*.h")
 
 add_executable(Descent3 WIN32 MACOSX_BUNDLE ${D3Icon} ${HEADERS} ${CPPS} ${INCS} ${MANIFEST} ${RC_FILE})
 target_link_libraries(Descent3 PRIVATE
-  2dlib AudioEncode bitmap cfile dd_video ddebug ddio libmve libacm
-  fix grtext manage mem misc model module stream_audio linux SDL2::SDL2 plog::plog
-  music networking physics renderer rtperformance sndlib ui unzip vecmat md5
+  SDL2::SDL2
+  2dlib
+  AudioEncode
+  bitmap
+  cfile
+  dd_video
+  ddebug
+  ddio
+  fix
+  grtext
+  libmve
+  libacm
+  linux
+  logger
+  manage
+  mem
+  md5
+  misc
+  model
+  module
+  music
+  networking
+  physics
+  renderer
+  rtperformance
+  sndlib
+  stream_audio
+  ui
+  unzip
+  vecmat
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
 target_link_options(Descent3 PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)

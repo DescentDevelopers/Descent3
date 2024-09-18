@@ -85,6 +85,7 @@ foreach(SCRIPT ${SCRIPTS})
     dallas
     fix
     misc
+    module
   )
   set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
   set_target_properties(${SCRIPT} PROPERTIES CXX_VISIBILITY_PRESET "hidden")

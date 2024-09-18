@@ -13,7 +13,7 @@ set(CPPS
 add_library(linux STATIC ${HEADERS} ${CPPS})
 target_link_libraries(linux PRIVATE
   cfile
-  plog::plog
+  logger
 )
 target_include_directories(linux PUBLIC
   $<BUILD_INTERFACE:

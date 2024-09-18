@@ -15,9 +15,9 @@ target_link_libraries(bitmap PRIVATE
   cfile
   ddebug
   ddio
+  logger
   mem
   misc
-  plog::plog
   stb
 )
 target_include_directories(bitmap PUBLIC

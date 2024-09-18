@@ -12,11 +12,11 @@ target_link_libraries(music
   AudioEncode
   cfile
   ddio
+  logger
   mem
   misc
   sndlib
   stream_audio
-  plog::plog
 )
 target_include_directories(music PUBLIC
   $<BUILD_INTERFACE:

@@ -7,6 +7,7 @@ add_executable(
 
 target_link_libraries(
   porting-tests
+  module
   GTest::gtest_main
 )
 

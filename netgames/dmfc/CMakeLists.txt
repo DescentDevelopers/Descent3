@@ -30,6 +30,7 @@ add_library(dmfc STATIC ${HEADERS} ${CPPS})
 target_link_libraries(dmfc PUBLIC
   grtext
   misc
+  module
   physics
   ddio
 )
