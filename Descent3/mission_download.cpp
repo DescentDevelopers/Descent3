@@ -140,6 +140,8 @@
 #include "renderer.h"
 #include "unzip.h"
 
+#define MOD_URL_BASEPATH "http://www.descent3.com/mods/" // WAS: "http://www.pxo.net/descent3/mods/"
+
 int Got_url;
 msn_urls msn_URL = {"", {"", "", "", "", ""}};
 msn_urls Net_msn_URLs;
@@ -798,19 +800,6 @@ int msn_ExtractZipFile(const char *zipfilename, const char *mn3name) {
 
   return 1;
 }
-
-#if defined(POSIX)
-char *_strlwr(char *string) {
-  char *ptr = string;
-  while (*ptr) {
-    *ptr = tolower(*ptr);
-    ptr++;
-  }
-  return string;
-}
-#endif
-
-#define MOD_URL_BASEPATH "http://www.descent3.com/mods/" // WAS: "http://www.pxo.net/descent3/mods/"
 
 int CheckGetD3M(char *d3m) {
 #if !defined(OEM)
