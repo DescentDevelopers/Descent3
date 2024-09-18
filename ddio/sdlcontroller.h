@@ -57,52 +57,52 @@ public:
   //	these functions suspend or resume any controller reading.  this is really only useful for
   //	preemptive controller polling, but they should be used to activate and deactivate controller
   //	reading.
-  virtual void suspend();
-  virtual void resume();
+  void suspend() override;
+  void resume() override;
 
   //	this functions polls the controllers if needed.  some systems may not need to implement
   //	this function.
-  virtual void poll();
+  void poll();
 
   //	flushes all controller information
-  virtual void flush();
+  void flush() override;
 
   //	returns the value of a requested controller type. make sure you flush the controller before polling.
-  virtual ct_config_data get_controller_value(ct_type type_req);
+  ct_config_data get_controller_value(ct_type type_req) override;
 
   //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
-  virtual void set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags);
+  void set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags) override;
 
   //	returns information about a requested function (type must be of an array == CTLBINDS_PER_FUNC)
-  virtual void get_controller_function(int id, ct_type *type, ct_config_data *value, uint8_t *flags);
+  void get_controller_function(int id, ct_type *type, ct_config_data *value, uint8_t *flags) override;
 
   //	temporarily enables or disables a function
-  virtual void enable_function(int id, bool enable);
+  void enable_function(int id, bool enable) override;
 
   //	all systems need to implement this function.  this returns information about the controller
-  virtual bool get_packet(int id, ct_packet *packet, ct_format alt_format = ctNoFormat);
+  bool get_packet(int id, ct_packet *packet, ct_format alt_format = ctNoFormat) override;
 
   // gets sensitivity of axis item
-  virtual float get_axis_sensitivity(ct_type axis_type, uint8_t axis);
+  float get_axis_sensitivity(ct_type axis_type, uint8_t axis) override;
 
   // sets sensitivity of axis item
-  virtual void set_axis_sensitivity(ct_type axis_type, uint8_t axis, float val);
+  void set_axis_sensitivity(ct_type axis_type, uint8_t axis, float val) override;
 
   // assigns an individual function
-  virtual int assign_function(ct_function *fn);
+  int assign_function(ct_function *fn) override;
 
   // activates or deactivates mouse and or controller
-  virtual void mask_controllers(bool joystick, bool mouse);
+  void mask_controllers(bool joystick, bool mouse) override;
 
   // get raw values for the controllers
-  virtual int get_mouse_raw_values(int *x, int *y);
-  virtual unsigned get_joy_raw_values(int *x, int *y);
+  int get_mouse_raw_values(int *x, int *y) override;
+  unsigned get_joy_raw_values(int *x, int *y) override;
 
   // retrieves binding text for desired function, binding, etc.
-  virtual const char *get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind);
+  const char *get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind) override;
 
   // toggles use of deadzone for controllers
-  void set_controller_deadzone(int ctl, float deadzone);
+  void set_controller_deadzone(int ctl, float deadzone) override;
 
 private:
   int m_NumControls = 0;           // number of controllers available
