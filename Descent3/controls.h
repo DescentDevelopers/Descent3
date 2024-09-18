@@ -169,7 +169,7 @@
 #define CONTROLS_H
 
 #include "object.h"
-#include "Controller.h"
+#include "controller.h"
 
 class gameController;
 class pilot;
@@ -238,9 +238,6 @@ struct game_controls {
   int rearview_down_count = 0;
   bool rearview_down_state = false;
 };
-
-//	This value should be set at initialization time.  Use for remote controlling.
-extern char *Controller_ip;
 
 //	Controller object.
 extern gameController *Controller;

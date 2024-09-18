@@ -31,4 +31,5 @@ target_link_libraries(dmfc PUBLIC
   grtext
   misc
   physics
+  ddio
 )

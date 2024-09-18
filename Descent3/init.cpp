@@ -1433,8 +1433,7 @@ void InitIOSystems(bool editor) {
 
   //	do io init stuff
   io_info.obj = Descent;
-  io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
-  io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0); WIN95: DirectInput is flaky for some keys.
+
   INIT_MESSAGE(("Initializing DDIO systems."));
   if (!ddio_Init(&io_info)) {
     Error("I/O initialization failed.");
@@ -1602,11 +1601,6 @@ void InitGraphics(bool editor) {
 }
 
 void InitGameSystems(bool editor) {
-  //	initialize possible remote controller.
-  int adr = FindArg("-rjoy");
-  if (adr)
-    Controller_ip = &GameArgs[adr + 1][1];
-
   //	do other joint editor/game initialization.
   SetInitMessageLength(TXT_INITCOLLATING, 0.4f);
   TelComInit();
@@ -2136,8 +2130,6 @@ void RestartD3() {
 
   // startup io
   io_info.obj = Descent;
-  io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0);
-  io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
   if (!ddio_Init(&io_info)) {
     Error("I/O initialization failed.");
   }

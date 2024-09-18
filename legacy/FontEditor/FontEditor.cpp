@@ -181,8 +181,6 @@ void InitIO(oeApplication *app) {
 
   ddio_init_data.obj = app;
   ddio_init_data.use_lo_res_time = true;
-  ddio_init_data.key_emulation = true;
-  ddio_init_data.joy_emulation = true;
   ddio_Init(&ddio_init_data);
 
   GetCurrentDirectory(sizeof(path), path);

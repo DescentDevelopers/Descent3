@@ -1,11 +1,9 @@
 set(HEADERS
   lnxapp.h
-  lnxcontroller.h
   registry.h)
 set(CPPS
   lnxcon.cpp
   lnxcon_raw.cpp
-  lnxcontroller.cpp
   lnxapp.cpp
   lnxcon_null.cpp
   lnxdata.cpp

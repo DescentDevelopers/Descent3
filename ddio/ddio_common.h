@@ -124,8 +124,6 @@
 
 struct ddio_init_info {
   oeApplication *obj; // App object used to initialize to IO system
-  bool key_emulation; // keyboard emulation
-  bool joy_emulation; // joystick emulation
 };
 
 // ----------------------------------------------------------------------------

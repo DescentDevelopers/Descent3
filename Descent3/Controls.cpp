@@ -416,7 +416,7 @@
 #include "descent.h"
 #include "log.h"
 #include "weapon.h"
-#include "Controller.h"
+#include "controller.h"
 #include "gamesequence.h"
 #include "pilot.h"
 #include "hud.h"
@@ -446,7 +446,6 @@ struct tSensitivity {
 
 //	GLOBALS
 
-char *Controller_ip = NULL; // IP of controller, if any.
 gameController *Controller = NULL;
 bool Control_poll_flag = false; // determines if system is polling controls now.
 
@@ -571,7 +570,7 @@ void InitControls() {
 
   Control_system_init = true;
 
-  Controller = CreateController(NUM_CONTROLLER_FUNCTIONS, Controller_needs, Controller_ip);
+  Controller = CreateController(NUM_CONTROLLER_FUNCTIONS, Controller_needs);
   if (Controller == NULL)
     Error(TXT_ERRUNINITCNT);
   Controller->mask_controllers(false, false);
@@ -631,7 +630,7 @@ void CloseControls() {
 void RestoreDefaultControls() {
   ResumeControls();
   DestroyController(Controller);
-  Controller = CreateController(NUM_CONTROLLER_FUNCTIONS, Controller_needs, Controller_ip);
+  Controller = CreateController(NUM_CONTROLLER_FUNCTIONS, Controller_needs);
   if (Controller == NULL)
     Error(TXT_ERRUNINITCNT);
   SuspendControls();
