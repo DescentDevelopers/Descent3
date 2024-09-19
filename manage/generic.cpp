@@ -1142,9 +1142,9 @@ int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
     char tempbuf[1024];
 
     cf_ReadString(tempbuf, 1024, infile);
-    int slen = strlen(tempbuf) + 1;
+    size_t slen = strlen(tempbuf) + 1;
 
-    genericpage->objinfo_struct.description = (char *)mem_malloc(slen);
+    genericpage->objinfo_struct.description = mem_rmalloc<char>(slen);
     ASSERT(genericpage->objinfo_struct.description);
     strcpy(genericpage->objinfo_struct.description, tempbuf);
   } else
@@ -1927,10 +1927,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
   if (objinfopointer->ai_info)
     memcpy(objinfopointer->ai_info, &genericpage->ai_info, sizeof(genericpage->ai_info));
 
-  objinfopointer->multi_allowed = 1;
-
-  // since the description pointer was just copied over, no need to malloc mem, copy and then free old, just move ptr
-  genericpage->objinfo_struct.description = NULL;
+  objinfopointer->multi_allowed = true;
 
   strcpy(objinfopointer->icon_name, genericpage->objinfo_struct.icon_name);
   // First see if our image differs from the one on the net
@@ -2195,7 +2192,7 @@ void mng_AssignObjInfoToGenericPage(int n, mngs_generic_page *genericpage) {
 // then calls SetAndLoadgeneric to actually load in any images/models associated
 // with it
 void mng_LoadNetGenericPage(CFILE *infile, bool overlay) {
-  mngs_generic_page genericpage;
+  mngs_generic_page genericpage{};
   memset(&genericpage, 0, sizeof(mngs_generic_page));
 
   if (mng_ReadNewGenericPage(infile, &genericpage)) {
@@ -2206,11 +2203,21 @@ void mng_LoadNetGenericPage(CFILE *infile, bool overlay) {
         mng_FreePagetypePrimitives(PAGETYPE_GENERIC, genericpage.objinfo_struct.name, 0);
         mng_AssignGenericPageToObjInfo(&genericpage, n);
       }
+      // Free allocated memory
+      if (genericpage.objinfo_struct.description) {
+        mem_free(genericpage.objinfo_struct.description);
+        genericpage.objinfo_struct.description = nullptr;
+      }
       return; // A weapon has already loaded this generic
     }
 
     int ret = mng_SetAndLoadGeneric(&genericpage, infile);
     ASSERT(ret >= 0);
+    // Free allocated memory
+    if (genericpage.objinfo_struct.description) {
+      mem_free(genericpage.objinfo_struct.description);
+      genericpage.objinfo_struct.description = nullptr;
+    }
   } else
     LOG_ERROR.printf("Could not load genericpage named %s!", genericpage.objinfo_struct.name);
 }

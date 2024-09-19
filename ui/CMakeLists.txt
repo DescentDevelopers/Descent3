@@ -26,9 +26,9 @@ add_library(ui STATIC ${HEADERS} ${CPPS})
 target_link_libraries(ui PRIVATE
   ddio
   grtext
+  logger
   mem
   misc
-  plog::plog
 )
 target_include_directories(ui PUBLIC
   $<BUILD_INTERFACE:

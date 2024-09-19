@@ -8,10 +8,10 @@ set(CPPS
 add_library(model STATIC ${HEADERS} ${CPPS})
 target_link_libraries(model PRIVATE
   cfile
+  logger
   mem
   misc
   physics
-  plog::plog
 )
 target_include_directories(model PUBLIC
   $<BUILD_INTERFACE:

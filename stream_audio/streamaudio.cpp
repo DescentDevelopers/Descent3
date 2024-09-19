@@ -538,7 +538,7 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
       if (m_buffer[m_fbufidx].data) {
         mem_free(m_buffer[m_fbufidx].data);
       }
-      m_buffer[m_fbufidx].data = (uint8_t *)mem_malloc(m_bufsize);
+      m_buffer[m_fbufidx].data = mem_rmalloc<uint8_t>(m_bufsize);
     }
     m_buffer[m_fbufidx].nbytes = AudioStream::ReadFileData(m_fbufidx, m_bufsize);
     m_buffer[m_fbufidx].flags = 0;
@@ -857,7 +857,7 @@ void AudioStream::UpdateData() {
       if (m_buffer[m_fbufidx].data) {
         mem_free(m_buffer[m_fbufidx].data);
       }
-      m_buffer[m_fbufidx].data = (uint8_t *)mem_malloc(m_bufsize);
+      m_buffer[m_fbufidx].data = mem_rmalloc<uint8_t>(m_bufsize);
     }
     m_buffer[m_fbufidx].nbytes = AudioStream::ReadFileData(m_fbufidx, m_bufsize);
     m_buffer[m_fbufidx].flags = 0;

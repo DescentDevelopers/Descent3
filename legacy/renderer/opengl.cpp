@@ -281,9 +281,9 @@ int opengl_InitCache() {
   OpenGL_lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * 2);
   ASSERT(OpenGL_lightmap_remap);
 
-  OpenGL_bitmap_states = (uint8_t *)mem_malloc(MAX_BITMAPS);
+  OpenGL_bitmap_states = mem_rmalloc<uint8_t>(MAX_BITMAPS);
   ASSERT(OpenGL_bitmap_states);
-  OpenGL_lightmap_states = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
+  OpenGL_lightmap_states = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
   ASSERT(OpenGL_lightmap_states);
 
   Cur_texture_object_num = 1;

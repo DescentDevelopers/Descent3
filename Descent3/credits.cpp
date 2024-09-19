@@ -260,7 +260,7 @@ static bool Credits_LoadCredits(const char *filename) {
     // Generate blank lines for the start
     cur_credit->text = NULL;
     cur_credit->type = CLTYPE_BLANK;
-    cur_credit->next = (creditline *)mem_malloc(sizeof(creditline));
+    cur_credit->next = mem_rmalloc<creditline>();
     ASSERT(cur_credit->next);
     cur_credit = cur_credit->next;
     cur_credit->next = NULL;
@@ -286,7 +286,7 @@ static bool Credits_LoadCredits(const char *filename) {
 
     if (Credits_ParseLine(curline, cur_credit)) {
       // Make a new line
-      cur_credit->next = (creditline *)mem_malloc(sizeof(creditline));
+      cur_credit->next = mem_rmalloc<creditline>();
       ASSERT(cur_credit->next);
       cur_credit = cur_credit->next;
       cur_credit->next = NULL;

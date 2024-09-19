@@ -28,7 +28,8 @@
 #include <ctype.h>
 #include "osiris_import.h"
 #include "osiris_common.h"
-#include "DallasFuncs.cpp"
+#include "osiris_vector.h"
+#include "DallasFuncs.h"
 
 #include "module.h"
 

@@ -1239,7 +1239,7 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
       // Allocate memory for our new faces
       int nfaces = rp->num_faces + num_new_faces;
 
-      newfaces = (face *)mem_malloc(nfaces * sizeof(face));
+      newfaces = mem_rmalloc<face>(nfaces);
       ASSERT(newfaces != NULL);
 
       // Copy all the faces into our new array
@@ -1248,9 +1248,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         if (t != facelist[i]) {
           int nverts = rp->faces[t].num_verts;
 
-          newfaces[t].face_verts = (int16_t *)mem_malloc(nverts * sizeof(int16_t));
+          newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
           ASSERT(newfaces[t].face_verts != NULL);
-          newfaces[t].face_uvls = (roomUVL *)mem_malloc(nverts * sizeof(roomUVL));
+          newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
           ASSERT(newfaces[t].face_uvls != NULL);
 
           newfaces[t].normal = rp->faces[t].normal;
@@ -1268,9 +1268,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         {
           int nverts = 3;
 
-          newfaces[t].face_verts = (int16_t *)mem_malloc(nverts * sizeof(int16_t));
+          newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
           ASSERT(newfaces[t].face_verts != NULL);
-          newfaces[t].face_uvls = (roomUVL *)mem_malloc(nverts * sizeof(roomUVL));
+          newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
           ASSERT(newfaces[t].face_uvls != NULL);
 
           newfaces[t].tmap = rp->faces[t].tmap;
@@ -1343,7 +1343,7 @@ void ReInitRoomFace(face *fp, int nverts) {
 
   fp->face_verts = (int16_t *)mem_malloc(nverts * sizeof(*fp->face_verts));
   ASSERT(fp->face_verts != NULL);
-  fp->face_uvls = (roomUVL *)mem_malloc(nverts * sizeof(*fp->face_uvls));
+  fp->face_uvls = mem_rmalloc<roomUVL>(nverts);
   ASSERT(fp->face_uvls != NULL);
 }
 
@@ -1395,7 +1395,7 @@ int RoomAddVertices(room *rp, int num_new_verts) {
   if (num_new_verts == 0)
     return 0;
 
-  vector *newverts = (vector *)mem_malloc((rp->num_verts + num_new_verts) * sizeof(*newverts));
+  auto newverts = mem_rmalloc<vector>(rp->num_verts + num_new_verts);
 
   ASSERT(newverts != NULL);
 
@@ -1422,7 +1422,7 @@ int RoomAddFaces(room *rp, int num_new_faces) {
   if (num_new_faces == 0)
     return 0;
 
-  face *newfaces = (face *)mem_malloc((rp->num_faces + num_new_faces) * sizeof(*newfaces));
+  auto newfaces = mem_rmalloc<face>(rp->num_faces + num_new_faces);
 
   ASSERT(newfaces != NULL);
 
@@ -1635,7 +1635,7 @@ void DeleteRoomVert(room *rp, int vertnum) {
         fp->face_verts[v]--;
 
   // malloc new list
-  newverts = (vector *)mem_malloc(sizeof(*newverts) * (rp->num_verts - 1));
+  newverts = mem_rmalloc<vector>(rp->num_verts - 1);
   ASSERT(newverts != NULL);
 
   // Copy verts to new list
@@ -1717,7 +1717,7 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
   }
 
   // Allocate new face list
-  newfaces = (face *)mem_malloc(sizeof(*newfaces) * (rp->num_faces - 1));
+  newfaces = mem_rmalloc<face>(rp->num_faces - 1);
   ASSERT(newfaces != NULL);
 
   // Copy faces over
@@ -1810,7 +1810,7 @@ void DeleteRoomPortal(room *rp, int portalnum) {
   if (rp->num_portals == 1)
     newportals = NULL;
   else {
-    newportals = (portal *)mem_malloc(sizeof(*newportals) * (rp->num_portals - 1));
+    newportals = mem_rmalloc<portal>(rp->num_portals - 1);
     ASSERT(newportals != NULL);
   }
 
@@ -1956,7 +1956,7 @@ void CopyRoom(room *destp, room *srcp) {
 
   // Copy doorway info
   if (srcp->doorway_data) {
-    destp->doorway_data = (doorway *)mem_malloc(sizeof(*destp->doorway_data));
+    destp->doorway_data = mem_rmalloc<doorway>();
     *destp->doorway_data = *srcp->doorway_data;
   }
 
@@ -1973,9 +1973,7 @@ void CopyRoom(room *destp, room *srcp) {
 // Adds a new portal for this room.  Returns the portal number.
 // Initializes the flags
 int AddPortal(room *rp) {
-  portal *newlist;
-
-  newlist = (portal *)mem_malloc(sizeof(*newlist) * (rp->num_portals + 1));
+  auto newlist = mem_rmalloc<portal>(rp->num_portals + 1);
 
   // Copy from old list to new list, and free old list
   if (rp->num_portals) {

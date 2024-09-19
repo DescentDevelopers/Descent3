@@ -282,7 +282,7 @@ inline void CFileList::setPath(CString path) {
   if (temp.Right(1) != "\\")
     temp += "\\";
 
-  buffer = (char *)mem_malloc(temp.GetLength() + 1);
+  buffer = mem_rmalloc<char>(temp.GetLength() + 1);
 
   if (!buffer)
     return;
@@ -404,14 +404,14 @@ bool CFilePageAddDlg::Quit(void) {
     m_SelectedFiles = NULL;
   } else {
 
-    m_SelectedFiles = (char **)mem_malloc(m_NumberOfSelectedFiles * sizeof(char *));
+    m_SelectedFiles = mem_rmalloc<char *>(m_NumberOfSelectedFiles);
     if (!m_SelectedFiles) {
       m_SelectedFiles = NULL;
       m_NumberOfSelectedFiles = 0;
       return true;
     }
 
-    int *sel_items = (int *)mem_malloc(sizeof(int) * m_NumberOfSelectedFiles);
+    int *sel_items = mem_rmalloc<int>(m_NumberOfSelectedFiles);
     if (!sel_items) {
       mem_free(m_SelectedFiles);
       m_SelectedFiles = NULL;

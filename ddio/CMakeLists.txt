@@ -2,7 +2,10 @@ set(HEADERS
   chrono_timer.h
   ddio.h
   ddio_common.h
-  ddio_lnx.h)
+  ddio_lnx.h
+  controller.h
+  sdlcontroller.h
+)
 set(CPPS
   chrono_timer.cpp
   ddio.cpp
@@ -15,6 +18,7 @@ set(CPPS
   lnxkey_null.cpp
   lnxmouse.cpp
   lnxkey_sdl.cpp
+  sdlcontroller.cpp
   $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
     lnxfile.cpp
   >
@@ -25,8 +29,8 @@ set(CPPS
 add_library(ddio STATIC ${HEADERS} ${CPPS})
 target_link_libraries(ddio PRIVATE
   SDL2::SDL2
-  plog::plog
   ddebug
+  logger
   mem
   misc
 )

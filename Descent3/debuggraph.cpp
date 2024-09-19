@@ -132,12 +132,12 @@ tGraphNode *DebugGraph_AddNode(void) {
   tDebugGraphNode *curr = DebugGraphNode_root;
 
   if (!curr) {
-    curr = DebugGraphNode_root = (tDebugGraphNode *)mem_malloc(sizeof(tDebugGraphNode));
+    curr = DebugGraphNode_root = mem_rmalloc<tDebugGraphNode>();
   } else {
     while (curr->next) {
       curr = curr->next;
     }
-    curr->next = (tDebugGraphNode *)mem_malloc(sizeof(tDebugGraphNode));
+    curr->next = mem_rmalloc<tDebugGraphNode>();
     curr = curr->next;
   }
 
@@ -480,7 +480,7 @@ void DebugGraph_DisplayOptions(void) {
   bool exit_menu = false;
   tGraphNode *node;
 
-  bool_values = (bool **)mem_malloc(sizeof(bool *) * graph_num_nodes);
+  bool_values = mem_rmalloc<bool *>(graph_num_nodes);
   if (!bool_values)
     return;
 

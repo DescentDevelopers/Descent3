@@ -725,7 +725,7 @@ void DoMultiAllowed(void) {
   bool objsallowed[MAX_OBJECTS];
   ConfigItem **ship_list = NULL;
   size_t strMax = std::max(strlen(TXT_ALLOW), strlen(TXT_DISALLOW)) + 3;
-  char *str = (char *)mem_malloc(strMax);
+  char *str = mem_rmalloc<char>(strMax);
 
   // Create Text Items and Window
   UITextItem cancel_on_text(TXT_CANCEL, UICOL_HOTSPOT_HI);

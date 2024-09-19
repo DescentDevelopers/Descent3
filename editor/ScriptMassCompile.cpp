@@ -145,7 +145,7 @@ void CScriptMassCompile::OnBuild() {
 
   if (list_size == 0)
     return;
-  index_map = (int *)mem_malloc(list_size * sizeof(int));
+  index_map = mem_rmalloc<int>(list_size);
   if (!index_map)
     return;
 

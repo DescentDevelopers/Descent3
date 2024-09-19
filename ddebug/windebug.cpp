@@ -239,7 +239,7 @@ int Debug_ErrorBox(int type, const char *title, const char *topstring, const cha
   else
     debug_break();
 
-  char *tmpbuf = (char *)mem_malloc(strlen(topstring) + strlen(bottomstring) + 5);
+  char *tmpbuf = mem_rmalloc<char>(strlen(topstring) + strlen(bottomstring) + 5);
   wsprintf(tmpbuf, "%s\r\n\r\n%s", topstring, bottomstring);
 
   ShowCursor(TRUE);

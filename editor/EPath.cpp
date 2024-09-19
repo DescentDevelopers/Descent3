@@ -101,7 +101,7 @@ int AllocGamePath() {
       GamePaths[i].num_nodes = 0;
       GamePaths[i].flags = 0;
 
-      GamePaths[i].pathnodes = (node *)mem_malloc(MAX_NODES_PER_PATH * sizeof(node));
+      GamePaths[i].pathnodes = mem_rmalloc<node>(MAX_NODES_PER_PATH);
       mprintf(0, "Path %d got some\n", i);
 
       Num_game_paths++;

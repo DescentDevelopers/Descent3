@@ -629,9 +629,9 @@ int mng_InitTableFiles() {
 // Loads our tables
 int mng_LoadTableFiles(int show_progress) {
   if (Network_up) {
-    LockList = (mngs_Pagelock *)mem_malloc(MAX_LOCKLIST_ELEMENTS * sizeof(mngs_Pagelock));
+    LockList = mem_rmalloc<mngs_Pagelock>(MAX_LOCKLIST_ELEMENTS);
     Num_locklist = mng_GetListOfLocks(LockList, MAX_LOCKLIST_ELEMENTS, TableUser);
-    OldFiles = (old_file *)mem_malloc(MAX_OLDFILE_ELEMENTS * sizeof(old_file));
+    OldFiles = mem_rmalloc<old_file>(MAX_OLDFILE_ELEMENTS);
     Num_old_files = 0;
     ASSERT(OldFiles);
 #if defined(WIN32)
@@ -1466,7 +1466,7 @@ void mng_TransferPages() {
     Int3();
     return;
   }
-  mngs_track_lock *local_tracklocks = (mngs_track_lock *)mem_malloc(sizeof(*local_tracklocks) * 5000);
+  auto local_tracklocks = mem_rmalloc<mngs_track_lock>(5000);
   // Do textures
   int done = 0;
   while (!done) {
@@ -2059,7 +2059,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     return 0;
   }
   // Allocate memory for copying
-  uint8_t *copybuffer = (uint8_t *)mem_malloc(COPYBUFFER_SIZE);
+  uint8_t *copybuffer = mem_rmalloc<uint8_t>(COPYBUFFER_SIZE);
   if (!copybuffer) {
     LOG_ERROR.printf("Couldn't allocate memory to replace page %s!", srcname);
     cfclose(infile);
@@ -2229,7 +2229,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
     return 0;
   }
   // Allocate memory for copying
-  uint8_t *copybuffer = (uint8_t *)mem_malloc(COPYBUFFER_SIZE);
+  uint8_t *copybuffer = mem_rmalloc<uint8_t>(COPYBUFFER_SIZE);
   if (!copybuffer) {
     LOG_ERROR << "Couldn't allocate memory to delete page!";
     cfclose(infile);
@@ -2735,7 +2735,7 @@ bool mng_SetAddonTable(char *name) {
 
   strcpy(AddOnDataTables[Num_addon_tables].AddOnTableFilename, name);
   AddOnDataTables[Num_addon_tables].Addon_tracklocks =
-      (mngs_track_lock *)mem_malloc(MAX_ADDON_TRACKLOCKS * sizeof(mngs_track_lock));
+      mem_rmalloc<mngs_track_lock>(MAX_ADDON_TRACKLOCKS);
   AddOnDataTables[Num_addon_tables].Num_addon_tracklocks = 0;
   ASSERT(AddOnDataTables[Num_addon_tables].Addon_tracklocks);
   memset(AddOnDataTables[Num_addon_tables].Addon_tracklocks, 0, MAX_ADDON_TRACKLOCKS * sizeof(mngs_track_lock));

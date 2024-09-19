@@ -612,7 +612,7 @@ bool InputObjectName(char *buf, int len, char *title, char *prompt, CWnd *wnd) {
   if (len > (PAGENAME_LEN - 1))
     len = PAGENAME_LEN - 1;
 
-  char *tempbuf = (char *)mem_malloc(len);
+  char *tempbuf = mem_rmalloc<char>(len);
 
   strncpy(tempbuf, buf, len - 1);
   tempbuf[len - 1] = '\0';

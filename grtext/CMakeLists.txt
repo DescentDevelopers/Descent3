@@ -10,9 +10,9 @@ set(CPPS
 add_library(grtext STATIC ${HEADERS} ${CPPS})
 target_link_libraries(grtext PRIVATE
   ddio
+  logger
   mem
   misc
-  plog::plog
 )
 target_include_directories(grtext PUBLIC
   $<BUILD_INTERFACE:

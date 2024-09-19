@@ -207,7 +207,7 @@ void ClassifyAMFaces() {
   int i = 0;
   for (i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used) {
-      Small_faces[i] = (uint8_t *)mem_malloc(Rooms[i].num_faces);
+      Small_faces[i] = mem_rmalloc<uint8_t>(Rooms[i].num_faces);
       ASSERT(Small_faces[i]);
 
       memset(Small_faces[i], 0, Rooms[i].num_faces);
@@ -269,7 +269,7 @@ bool TelComAutoMap(tTelComInfo *tcs) {
   bool done = false;
 
   if (!AM_rotated_points) {
-    AM_rotated_points = (g3Point *)mem_malloc(sizeof(g3Point) * MAX_VERTS_PER_ROOM);
+    AM_rotated_points = mem_rmalloc<g3Point>(MAX_VERTS_PER_ROOM);
   }
   AM_tcs = tcs;
   AM_current_marker = -1;

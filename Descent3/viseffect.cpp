@@ -499,9 +499,9 @@ void InitVisEffects() {
     VisDeadList = (uint16_t *)mem_realloc(VisDeadList, sizeof(uint16_t) * max_vis_effects);
     Vis_free_list = (int16_t *)mem_realloc(Vis_free_list, sizeof(int16_t) * max_vis_effects);
   } else if (VisEffects == NULL) {
-    VisEffects = (vis_effect *)mem_malloc(sizeof(vis_effect) * max_vis_effects);
-    VisDeadList = (uint16_t *)mem_malloc(sizeof(uint16_t) * max_vis_effects);
-    Vis_free_list = (int16_t *)mem_malloc(sizeof(int16_t) * max_vis_effects);
+    VisEffects = mem_rmalloc<vis_effect>(max_vis_effects);
+    VisDeadList = mem_rmalloc<uint16_t>(max_vis_effects);
+    Vis_free_list = mem_rmalloc<int16_t>(max_vis_effects);
   }
   for (int i = 0; i < max_vis_effects; i++) {
     VisEffects[i].type = VIS_NONE;

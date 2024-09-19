@@ -19,7 +19,7 @@
 #ifndef __LNXCONTROLLER_H_
 #define __LNXCONTROLLER_H_
 
-#include "Controller.h"
+#include "controller.h"
 #include "joystick.h"
 
 #define NULL_LNXCONTROLLER ((int8_t)NULL_CONTROLLER)
@@ -49,84 +49,84 @@ const int CTID_KEYBOARD = -1, // always -1 for keyboards
 
 const int CTID_EXTCONTROL0 = 0;
 
-class lnxgameController : public gameController {
+class sdlgameController : public gameController {
 public:
-  lnxgameController(int num_funcs, ct_function *funcs);
-  ~lnxgameController();
+  sdlgameController(int num_funcs, ct_function *funcs);
+  ~sdlgameController();
 
   //	these functions suspend or resume any controller reading.  this is really only useful for
   //	preemptive controller polling, but they should be used to activate and deactivate controller
   //	reading.
-  virtual void suspend();
-  virtual void resume();
+  void suspend() override;
+  void resume() override;
 
   //	this functions polls the controllers if needed.  some systems may not need to implement
   //	this function.
-  virtual void poll();
+  void poll();
 
   //	flushes all controller information
-  virtual void flush();
+  void flush() override;
 
   //	returns the value of a requested controller type. make sure you flush the controller before polling.
-  virtual ct_config_data get_controller_value(ct_type type_req);
+  ct_config_data get_controller_value(ct_type type_req) override;
 
   //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
-  virtual void set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags);
+  void set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags) override;
 
   //	returns information about a requested function (type must be of an array == CTLBINDS_PER_FUNC)
-  virtual void get_controller_function(int id, ct_type *type, ct_config_data *value, uint8_t *flags);
+  void get_controller_function(int id, ct_type *type, ct_config_data *value, uint8_t *flags) override;
 
   //	temporarily enables or disables a function
-  virtual void enable_function(int id, bool enable);
+  void enable_function(int id, bool enable) override;
 
   //	all systems need to implement this function.  this returns information about the controller
-  virtual bool get_packet(int id, ct_packet *packet, ct_format alt_format = ctNoFormat);
+  bool get_packet(int id, ct_packet *packet, ct_format alt_format = ctNoFormat) override;
 
   // gets sensitivity of axis item
-  virtual float get_axis_sensitivity(ct_type axis_type, uint8_t axis);
+  float get_axis_sensitivity(ct_type axis_type, uint8_t axis) override;
 
   // sets sensitivity of axis item
-  virtual void set_axis_sensitivity(ct_type axis_type, uint8_t axis, float val);
+  void set_axis_sensitivity(ct_type axis_type, uint8_t axis, float val) override;
 
   // assigns an individual function
-  virtual int assign_function(ct_function *fn);
+  int assign_function(ct_function *fn) override;
 
   // activates or deactivates mouse and or controller
-  virtual void mask_controllers(bool joystick, bool mouse);
+  void mask_controllers(bool joystick, bool mouse) override;
 
   // get raw values for the controllers
-  virtual int get_mouse_raw_values(int *x, int *y);
-  virtual unsigned get_joy_raw_values(int *x, int *y);
+  int get_mouse_raw_values(int *x, int *y) override;
+  unsigned get_joy_raw_values(int *x, int *y) override;
 
   // retrieves binding text for desired function, binding, etc.
-  virtual const char *get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind);
+  const char *get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind) override;
 
   // toggles use of deadzone for controllers
-  void set_controller_deadzone(int ctl, float deadzone);
+  void set_controller_deadzone(int ctl, float deadzone) override;
 
 private:
-  int m_NumControls;               // number of controllers available
-  int m_Suspended;                 // is controller polling suspended?
-  bool m_JoyActive, m_MouseActive; // enables or disables mouse, joystick control
+  int m_NumControls = 0;           // number of controllers available
+  int m_Suspended = 0;             // is controller polling suspended?
+  bool m_JoyActive = false, m_MouseActive = false; // enables or disables mouse, joystick control
 
   struct t_controller {
-    int id;
-    uint16_t flags;
-    uint16_t buttons;
-    unsigned btnmask;
-    float normalizer[CT_NUM_AXES];
-    float sens[CT_NUM_AXES];
-    float sensmod[CT_NUM_AXES];
-    float deadzone;
+    int id = 0;
+    uint16_t flags = 0;
+    uint16_t buttons = 0;
+    unsigned btnmask = 0;
+    float normalizer[CT_NUM_AXES]{};
+    float sens[CT_NUM_AXES]{};
+    float sensmod[CT_NUM_AXES]{};
+    float deadzone = 0;
   } m_ControlList[CT_MAX_CONTROLLERS]; // the control list.
 
   struct ct_element {
-    ct_format format;
-    int8_t ctl[CTLBINDS_PER_FUNC];
-    uint8_t value[CTLBINDS_PER_FUNC];
-    ct_type ctype[CTLBINDS_PER_FUNC];
-    uint8_t flags[2];
-    bool enabled;
+    ct_format format{};
+    int8_t ctl[CTLBINDS_PER_FUNC]{};
+    uint8_t value[CTLBINDS_PER_FUNC]{};
+    ct_type ctype[CTLBINDS_PER_FUNC]{};
+    uint8_t flags[2]{};
+    bool enabled = false;
   } m_ElementList[CT_MAX_ELEMENTS];
 
   bool enum_controllers();
@@ -159,27 +159,27 @@ private:
 
 private:
   struct t_msestate {
-    int x, y, z;
-    int mx, my;
-    unsigned btnmask;
+    int x = 0, y = 0, z = 0;
+    int mx = 0, my = 0;
+    unsigned btnmask = 0;
   } m_MseState;
 
   struct t_extctlstate {
-    int x, y, z, r, u, v;
-    int pov[JOYPOV_NUM];
-    int last_pov[JOYPOV_NUM];
-    float povstarts[JOYPOV_NUM][JOYPOV_DIR];
-    float povtimes[JOYPOV_NUM][JOYPOV_DIR];
-    uint8_t povpresses[JOYPOV_NUM][JOYPOV_DIR];
-    unsigned buttons;
-    uint8_t btnpresses[CT_MAX_BUTTONS];
-    float btnstarts[CT_MAX_BUTTONS];
-    float btntimes[CT_MAX_BUTTONS];
+    int x = 0, y = 0, z = 0, r = 0, u = 0, v = 0;
+    int pov[JOYPOV_NUM]{};
+    int last_pov[JOYPOV_NUM]{};
+    float povstarts[JOYPOV_NUM][JOYPOV_DIR]{};
+    float povtimes[JOYPOV_NUM][JOYPOV_DIR]{};
+    uint8_t povpresses[JOYPOV_NUM][JOYPOV_DIR]{};
+    unsigned buttons = 0;
+    uint8_t btnpresses[CT_MAX_BUTTONS]{};
+    float btnstarts[CT_MAX_BUTTONS]{};
+    float btntimes[CT_MAX_BUTTONS]{};
   } m_ExtCtlStates[CT_MAX_EXTCTLS];
 
   //	thread info.
-  int64_t m_frame_timer_ms;
-  float m_frame_time;
+  int64_t m_frame_timer_ms = 0;
+  float m_frame_time = 0;
 
   //	note id is id value from controller in control list.
   void extctl_getpos(int id);

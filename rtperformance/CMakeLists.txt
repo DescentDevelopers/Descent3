@@ -6,7 +6,7 @@ set(CPPS
 add_library(rtperformance STATIC ${HEADERS} ${CPPS})
 target_link_libraries(rtperformance PRIVATE
   ddio
-  plog::plog
+  logger
 )
 target_include_directories(rtperformance PUBLIC
   $<BUILD_INTERFACE:

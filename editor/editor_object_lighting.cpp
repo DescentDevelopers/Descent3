@@ -314,15 +314,15 @@ int ComputeSurfacesForObjects(int surface_index, int terrain) {
           ComputeObjectSurfaceRes(&Light_surfaces[surface_index], &Objects[i], t, j);
 
           if (sm->faces[j].nverts > 0) {
-            Light_surfaces[surface_index].verts = (vector *)mem_malloc(sm->faces[j].nverts * sizeof(vector));
+            Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
             ASSERT(Light_surfaces[surface_index].verts != NULL);
           } else
             Light_surfaces[surface_index].verts = NULL;
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
             Light_surfaces[surface_index].elements =
-                (rad_element *)mem_malloc(Light_surfaces[surface_index].xresolution *
-                                          Light_surfaces[surface_index].yresolution * sizeof(rad_element));
+                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
+                                         Light_surfaces[surface_index].yresolution);
             ASSERT(Light_surfaces[surface_index].elements != NULL);
           } else
             Light_surfaces[surface_index].elements = NULL;
@@ -400,15 +400,15 @@ int ComputeSurfacesForObjectsForSingleRoom(int surface_index, int roomnum) {
           ComputeObjectSurfaceRes(&Light_surfaces[surface_index], &Objects[i], t, j);
 
           if (sm->faces[j].nverts > 0) {
-            Light_surfaces[surface_index].verts = (vector *)mem_malloc(sm->faces[j].nverts * sizeof(vector));
+            Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
             ASSERT(Light_surfaces[surface_index].verts != NULL);
           } else
             Light_surfaces[surface_index].verts = NULL;
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
             Light_surfaces[surface_index].elements =
-                (rad_element *)mem_malloc(Light_surfaces[surface_index].xresolution *
-                                          Light_surfaces[surface_index].yresolution * sizeof(rad_element));
+                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
+                                         Light_surfaces[surface_index].yresolution);
             ASSERT(Light_surfaces[surface_index].elements != NULL);
           } else
             Light_surfaces[surface_index].elements = NULL;
@@ -959,7 +959,7 @@ void CombineObjectLightmapUVs(object *obj, int lmi_type) {
     if (IsNonRenderableSubmodel(pm, i))
       continue;
 
-    ObjectsAlreadyCombined[i] = (uint8_t *)mem_malloc(sm->num_faces);
+    ObjectsAlreadyCombined[i] = mem_rmalloc<uint8_t>(sm->num_faces);
     ASSERT(ObjectsAlreadyCombined[i]);
     for (k = 0; k < sm->num_faces; k++)
       ObjectsAlreadyCombined[i][k] = 0;

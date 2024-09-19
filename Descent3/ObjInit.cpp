@@ -624,7 +624,7 @@ void ObjCreateEffectInfo(object *objp) {
   if (objp->effect_info)
     mem_free(objp->effect_info);
 
-  objp->effect_info = (effect_info_s *)mem_malloc(sizeof(effect_info_s));
+  objp->effect_info = mem_rmalloc<effect_info_s>();
   memset(objp->effect_info, 0, sizeof(effect_info_s));
   ASSERT(objp->effect_info);
   objp->effect_info->sound_handle = SOUND_NONE_INDEX;
@@ -652,7 +652,7 @@ void ObjSetRenderPolyobj(object *objp, int model_num, int dying_model_num) {
       objp->attach_children = NULL;
     }
     if ((objp->attach_children == NULL) && pm->n_attach) {
-      objp->attach_children = (int *)mem_malloc(sizeof(int) * pm->n_attach);
+      objp->attach_children = mem_rmalloc<int>(pm->n_attach);
       if (objp->type == OBJ_PLAYER)
         ASSERT(pm->n_attach >= NUM_PLAYER_ATTACH_POINTS);
       for (int i = 0; i < pm->n_attach; i++)
@@ -710,7 +710,7 @@ int ObjInitPlayer(object *objp) {
   // These are always set for a player
   objp->mtype.phys_info.num_bounces = PHYSICS_UNLIMITED_BOUNCE;
   if (objp->dynamic_wb == NULL) {
-    objp->dynamic_wb = (dynamic_wb_info *)mem_malloc(sizeof(dynamic_wb_info) * MAX_WBS_PER_OBJ);
+    objp->dynamic_wb = mem_rmalloc<dynamic_wb_info>(MAX_WBS_PER_OBJ);
   }
   WBClearInfo(objp);
   // Set a few misc things
@@ -820,7 +820,7 @@ int ObjInitGeneric(object *objp, bool reinit) {
       objp->dynamic_wb = NULL;
     }
     if ((objp->dynamic_wb == NULL) && num_wbs) {
-      objp->dynamic_wb = (dynamic_wb_info *)mem_malloc(sizeof(dynamic_wb_info) * num_wbs);
+      objp->dynamic_wb = mem_rmalloc<dynamic_wb_info>(num_wbs);
     }
     // Setup the weapon batteries (must be after polymodel stuff)
     WBClearInfo(objp);

@@ -302,7 +302,7 @@ int ddio_GetFileSysRoots(char **roots, int max_roots) {
   while ((count < max_roots) && (!done)) {
     if (*strptr != 0) {
       strsize = strlen(strptr);
-      string = roots[count] = (char *)mem_malloc(strsize);
+      string = roots[count] = mem_rmalloc<char>(strsize);
       if (!string)
         break;
       // remove the trailing \ from windows
@@ -336,7 +336,7 @@ std::vector<std::filesystem::path> ddio_GetSysRoots() {
   while (!done) {
     if (*strptr != 0) {
       strsize = strlen(strptr);
-      string = (char *)mem_malloc(strsize);
+      string = mem_rmalloc<char>(strsize);
       if (!string)
         break;
       // remove the trailing \ from windows
@@ -394,7 +394,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
   }
 
   // allocate the memory needed for the separate strings of each directory
-  directories = (char **)mem_malloc(sizeof(char *) * dirs);
+  directories = mem_rmalloc<char *>(dirs);
   if (!directories) {
     strcpy(dest, srcPath);
     return;
@@ -412,7 +412,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
   // now the fun part, figure out the correct order of the directories
   int *dir_order;
 
-  dir_order = (int *)mem_malloc(sizeof(int) * dirs);
+  dir_order = mem_rmalloc<int>(dirs);
   if (!dir_order) {
     strcpy(dest, srcPath);
     return;

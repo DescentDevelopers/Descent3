@@ -315,7 +315,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
   }
 
   // allocate the memory needed for the separate strings of each directory
-  directories = (char **)mem_malloc(sizeof(char *) * dirs);
+  directories = mem_rmalloc<char *>(dirs);
   if (!directories) {
     strcpy(dest, srcPath);
     return;
@@ -333,7 +333,7 @@ void ddio_CleanPath(char *dest, const char *srcPath) {
   // now the fun part, figure out the correct order of the directories
   int *dir_order;
 
-  dir_order = (int *)mem_malloc(sizeof(int) * dirs);
+  dir_order = mem_rmalloc<int>(dirs);
   if (!dir_order) {
     strcpy(dest, srcPath);
     return;

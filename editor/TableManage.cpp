@@ -393,7 +393,7 @@ void GenericPageList::SaveSelected(CEdit *description) {
 
   // Get Copy of new Description text
   description->GetWindowText(new_descrip);
-  new_text = (char *)mem_malloc(strlen(new_descrip.GetBuffer(0)) + 1);
+  new_text = mem_rmalloc<char>(strlen(new_descrip.GetBuffer(0)) + 1);
   ASSERT(new_text); // out of memory!
   sprintf(new_text, "%s", new_descrip.GetBuffer(0));
 

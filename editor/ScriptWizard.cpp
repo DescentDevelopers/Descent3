@@ -317,7 +317,7 @@ void CScriptWizard::OnEditScript() {
 
     FreeScript(m_ScriptSource);
     studio.GetText(tempstr);
-    m_ScriptSource = (char *)mem_malloc(tempstr.GetLength() + 1);
+    m_ScriptSource = mem_rmalloc<char>(tempstr.GetLength() + 1);
 
     if (m_ScriptSource) {
       strcpy(m_ScriptSource, (LPCSTR)tempstr);

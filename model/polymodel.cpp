@@ -1087,7 +1087,7 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
     subobj->flags |= SOF_GLOW;
 
     if (subobj->glow_info == nullptr) // DAJ may already exist
-      subobj->glow_info = (glowinfo *)mem_malloc(sizeof(glowinfo));
+      subobj->glow_info = mem_rmalloc<glowinfo>();
 
     subobj->glow_info->glow_r = r;
     subobj->glow_info->glow_g = g;
@@ -1111,7 +1111,7 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
     subobj->flags |= SOF_THRUSTER;
 
     if (subobj->glow_info == nullptr) // DAJ may already exist
-      subobj->glow_info = (glowinfo *)mem_malloc(sizeof(glowinfo));
+      subobj->glow_info = mem_rmalloc<glowinfo>();
 
     subobj->glow_info->glow_r = r;
     subobj->glow_info->glow_g = g;
@@ -1330,7 +1330,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->n_models = cf_ReadInt(infile);
       pm->rad = cf_ReadFloat(infile);
 
-      pm->submodel = (bsp_info *)mem_malloc(sizeof(bsp_info) * pm->n_models);
+      pm->submodel = mem_rmalloc<bsp_info>(pm->n_models);
       ASSERT(pm->submodel != nullptr);
       memset(pm->submodel, 0, sizeof(bsp_info) * pm->n_models);
 
@@ -1419,9 +1419,9 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       ASSERT(nverts < MAX_POLYGON_VECS);
 
       if (nverts) {
-        pm->submodel[n].verts = (vector *)mem_malloc(nverts * sizeof(vector));
-        pm->submodel[n].vertnorms = (vector *)mem_malloc(nverts * sizeof(vector));
-        pm->submodel[n].alpha = (float *)mem_malloc(nverts * sizeof(float));
+        pm->submodel[n].verts = mem_rmalloc<vector>(nverts);
+        pm->submodel[n].vertnorms = mem_rmalloc<vector>(nverts);
+        pm->submodel[n].alpha = mem_rmalloc<float>(nverts);
         ASSERT(pm->submodel[n].verts);
         ASSERT(pm->submodel[n].vertnorms);
         ASSERT(pm->submodel[n].alpha);
@@ -1474,9 +1474,9 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->submodel[n].num_faces = nfaces;
 
       if (nfaces) {
-        pm->submodel[n].faces = (polyface *)mem_malloc(nfaces * sizeof(polyface));
-        pm->submodel[n].face_min = (vector *)mem_malloc(nfaces * sizeof(vector));
-        pm->submodel[n].face_max = (vector *)mem_malloc(nfaces * sizeof(vector));
+        pm->submodel[n].faces = mem_rmalloc<polyface>(nfaces);
+        pm->submodel[n].face_min = mem_rmalloc<vector>(nfaces);
+        pm->submodel[n].face_max = mem_rmalloc<vector>(nfaces);
         ASSERT(pm->submodel[n].faces);
       } else {
         pm->submodel[n].faces = nullptr;
@@ -1494,7 +1494,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       int *start_index;
 
       if (nfaces) {
-        start_index = (int *)mem_malloc(sizeof(int) * nfaces);
+        start_index = mem_rmalloc<int>(nfaces);
         ASSERT(start_index);
       } else
         start_index = nullptr;
@@ -1524,13 +1524,13 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       // Allocate our space
       if (current_count) {
-        sm->vertnum_memory = (int16_t *)mem_malloc(current_count * sizeof(int16_t));
+        sm->vertnum_memory = mem_rmalloc<int16_t>(current_count);
         ASSERT(sm->vertnum_memory);
 
-        sm->u_memory = (float *)mem_malloc(current_count * sizeof(float));
+        sm->u_memory = mem_rmalloc<float>(current_count);
         ASSERT(sm->u_memory);
 
-        sm->v_memory = (float *)mem_malloc(current_count * sizeof(float));
+        sm->v_memory = mem_rmalloc<float>(current_count);
         ASSERT(sm->v_memory);
       } else {
         sm->vertnum_memory = nullptr;
@@ -1617,7 +1617,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_GPNT:
       pm->n_guns = cf_ReadInt(infile);
-      pm->gun_slots = (w_bank *)mem_malloc(sizeof(w_bank) * pm->n_guns);
+      pm->gun_slots = mem_rmalloc<w_bank>(pm->n_guns);
       ASSERT(pm->gun_slots != nullptr);
 
       for (i = 0; i < pm->n_guns; i++) {
@@ -1638,7 +1638,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_ATTACH:
       pm->n_attach = cf_ReadInt(infile);
       if (pm->n_attach) {
-        pm->attach_slots = (a_bank *)mem_malloc(sizeof(a_bank) * pm->n_attach);
+        pm->attach_slots = mem_rmalloc<a_bank>(pm->n_attach);
         ASSERT(pm->attach_slots != nullptr);
 
         for (i = 0; i < pm->n_attach; i++) {
@@ -1691,7 +1691,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->num_wbs = cf_ReadInt(infile);
 
       if (pm->num_wbs) {
-        pm->poly_wb = (poly_wb_info *)mem_malloc(sizeof(poly_wb_info) * pm->num_wbs);
+        pm->poly_wb = mem_rmalloc<poly_wb_info>(pm->num_wbs);
 
         // Get each individual wb info struct
         for (i = 0; i < pm->num_wbs; i++) {
@@ -1725,7 +1725,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_GROUND:
       pm->n_ground = cf_ReadInt(infile);
-      pm->ground_slots = (w_bank *)mem_malloc(sizeof(w_bank) * pm->n_ground);
+      pm->ground_slots = mem_rmalloc<w_bank>(pm->n_ground);
       ASSERT(pm->ground_slots != nullptr);
 
       for (i = 0; i < pm->n_ground; i++) {
@@ -1802,9 +1802,9 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           pm->submodel[i].num_key_angles = nframes;
         }
 
-        pm->submodel[i].keyframe_axis = (vector *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(vector));
+        pm->submodel[i].keyframe_axis = mem_rmalloc<vector>(pm->submodel[i].num_key_angles + 1);
         pm->submodel[i].keyframe_angles = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
-        pm->submodel[i].keyframe_matrix = (matrix *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(matrix));
+        pm->submodel[i].keyframe_matrix = mem_rmalloc<matrix>(pm->submodel[i].num_key_angles + 1);
         if (timed) {
           pm->submodel[i].rot_start_time = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
           ASSERT(pm->submodel[i].rot_start_time != nullptr);
@@ -1892,7 +1892,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         } else
           pm->submodel[i].num_key_pos = nframes;
 
-        pm->submodel[i].keyframe_pos = (vector *)mem_malloc((pm->submodel[i].num_key_pos + 1) * sizeof(vector));
+        pm->submodel[i].keyframe_pos = mem_rmalloc<vector>(pm->submodel[i].num_key_pos + 1);
         ASSERT(pm->submodel[i].keyframe_pos != nullptr);
 
         if (timed) {

@@ -470,7 +470,7 @@ void MVE_rmEndMovie(MVESTREAM *mve) {
 
 void MVE_rmHoldMovie() { timer_started = 0; }
 
-void MVE_sndInit(const bool enable) {
+void MVE_sndInit(bool enable) {
 #ifdef AUDIO
   if (enable) {
     mve_audio_enabled = 1;

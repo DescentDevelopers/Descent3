@@ -209,6 +209,8 @@ int gspy_Init() {
         LOG_INFO.printf("Sending gamespy heartbeats to %s:%d", inet_ntoa(server.sin_addr), htons(server.sin_port));
       }
     }
+
+    cfclose(cfp);
   }
 #endif // #ifndef OEM
   return 1;

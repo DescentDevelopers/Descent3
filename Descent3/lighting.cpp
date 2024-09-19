@@ -140,7 +140,7 @@ void InitDynamicLighting() {
   Dynamic_lightmap_memory = (uint16_t *)mem_malloc(DYNAMIC_LIGHTMAP_MEMORY);
 
   // Init our records list
-  Dynamic_lightmaps = (dynamic_lightmap *)mem_malloc(sizeof(dynamic_lightmap) * MAX_DYNAMIC_LIGHTMAPS);
+  Dynamic_lightmaps = mem_rmalloc<dynamic_lightmap>(MAX_DYNAMIC_LIGHTMAPS);
   ASSERT(Dynamic_lightmaps);
 
   for (i = 0; i < MAX_DYNAMIC_LIGHTMAPS; i++) {

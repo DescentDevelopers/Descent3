@@ -773,7 +773,7 @@ void ResetMission() {
 #if (defined(OEM) || defined(DEMO))
 bool DemoMission(int mode = 0) {
   tMission *msn = &Current_mission;
-  tLevelNode *lvls = (tLevelNode *)mem_malloc(sizeof(tLevelNode) * 5);
+  tLevelNode *lvls = mem_rmalloc<tLevelNode>(5);
   msn->cur_level = 1;
   msn->num_levels = 1;
   msn->levels = lvls;
@@ -1071,7 +1071,7 @@ bool LoadMission(const char *mssn) {
             strcpy(errtext, TXT_MSN_LVLNUMINVALID);
             goto msnfile_error;
           }
-          lvls = (tLevelNode *)mem_malloc(sizeof(tLevelNode) * value);
+          lvls = mem_rmalloc<tLevelNode>(value);
           memset(lvls, 0, sizeof(tLevelNode) * value);
           numlevels = value;
         }
@@ -1914,6 +1914,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
   }
 
   if (!*parse_keys) {
+    mem_free(parse_keys);
     return MAX_NET_PLAYERS;
   }
   // Break up the mod keywords into an array
@@ -1999,7 +2000,7 @@ void QuickStartMission() {
   //	this initializes a mini one level mission with no frills.
   Current_mission.cur_level = 1;
   Current_mission.num_levels = 1;
-  Current_mission.levels = (tLevelNode *)mem_malloc(sizeof(tLevelNode));
+  Current_mission.levels = mem_rmalloc<tLevelNode>();
   memset(Current_mission.levels, 0, sizeof(tLevelNode));
   Current_level = Current_mission.levels;
   if (Editor_quickplay_levelname[0] != '\0')

@@ -708,6 +708,9 @@
  *
  */
 
+#include <algorithm>
+#include <climits>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
@@ -715,10 +718,9 @@
 
 #include "osiris_vector.h"
 #include "psrand.h"
-
-// These should really be included, I think, but there's a problem with osiris_import.h being included twice
-// #include "osiris_import.h"
-// #include "osiris_common.h"
+#include "osiris_import.h"
+#include "osiris_common.h"
+#include "DallasFuncs.h"
 
 /*
 
@@ -914,18 +916,13 @@ $$END
 //  Variables
 //
 
-#define MAX_USER_VARS 25 // make sure this value matches the USERTYPE definition
-float User_vars[MAX_USER_VARS];
-
-#define MAX_SPEW_HANDLES 50 // make sure this value matches the USERTYPE definition
+std::vector<user_var> User_vars(MAX_USER_VARS);
 int Spew_handles[MAX_SPEW_HANDLES];
 
 #define MAX_SOUND_HANDLES 10 // make sure this value matches the USERTYPE definition
 int Sound_handles[MAX_SOUND_HANDLES];
 
-#define MAX_SAVED_OBJECT_HANDLES 20 // make sure this value matches the USERTYPE definition
 int Saved_object_handles[MAX_SAVED_OBJECT_HANDLES];
-
 int User_flags;
 
 class cPositionClipboard {
@@ -961,7 +958,7 @@ $$USERTYPE SavedObjectSlot:19
 //
 
 // Initialize vars
-void dfInit() {
+void dfInit(const std::initializer_list<int> &uv_int) {
   int i;
 
   for (i = 0; i < MAX_SPEW_HANDLES; i++)
@@ -972,6 +969,8 @@ void dfInit() {
 
   for (i = 0; i < MAX_USER_VARS; i++)
     User_vars[i] = 0.0;
+  for (auto idx : uv_int)
+    User_vars[idx].set_type<int32_t>();
 
   for (i = 0; i < MAX_SAVED_OBJECT_HANDLES; i++)
     Saved_object_handles[i] = OBJECT_HANDLE_NONE;
@@ -989,8 +988,12 @@ void dfSave(void *fileptr) {
   for (i = 0; i < MAX_SOUND_HANDLES; i++)
     File_WriteInt(Sound_handles[i], fileptr);
 
-  for (i = 0; i < MAX_USER_VARS; i++)
-    File_WriteFloat(User_vars[i], fileptr);
+  for (i = 0; i < MAX_USER_VARS; i++) {
+    if (const auto *value = std::get_if<float>(&User_vars[i]))
+      File_WriteFloat(*value, fileptr);
+    else
+      File_WriteInt(std::get<int32_t>(User_vars[i]), fileptr);
+  }
 
   for (i = 0; i < MAX_SAVED_OBJECT_HANDLES; i++)
     File_WriteInt(Saved_object_handles[i], fileptr);
@@ -1024,7 +1027,10 @@ void dfRestore(void *fileptr) {
     Sound_handles[i] = File_ReadInt(fileptr);
 
   for (i = 0; i < MAX_USER_VARS; i++)
-    User_vars[i] = File_ReadFloat(fileptr);
+    if (std::get_if<int32_t>(&User_vars[i]))
+      User_vars[i] = File_ReadInt(fileptr);
+    else
+      User_vars[i] = File_ReadFloat(fileptr);
 
   for (i = 0; i < MAX_SAVED_OBJECT_HANDLES; i++)
     Saved_object_handles[i] = File_ReadInt(fileptr);
@@ -2798,20 +2804,6 @@ void aSoundPlaySteaming(const char *soundname, float volume) {
   MSafe_CallFunction(MSAFE_SOUND_STREAMING, &mstruct);
 }
 
-/*
-$$ACTION
-Sound && Music
-Play streaming sound [a:SoundName] for all players, volume = [p:Volume=1.0:0.0|1.0]  (TEXT NAME VERSION)
-aSoundPlaySteamingText
-Play Steaming Sound
-  Plays a streaming sound sample
-
-Parameters:
-  SoundName: the sound to play
-  Volume: how loud to play the sound
-$$END
-*/
-#define aSoundPlaySteamingText aSoundPlaySteaming
 
 /*
 $$ACTION
@@ -3643,7 +3635,7 @@ Parameters:
   Priority - The priority of the goal
 $$END
 */
-void aAIGoalFollowPathSimple(int objhandle, int pathid, int flags, int goalid, int priority = 0) {
+void aAIGoalFollowPathSimple(int objhandle, int pathid, int flags, int goalid, int priority) {
   //!!GoalID not used yet
 
   if (pathid != -1)
@@ -3807,7 +3799,7 @@ Parameters:
 
 $$END
 */
-void aCinematicSimple(int pathid, const char *Text, int Target, float Seconds, bool FadeIn = false) {
+void aCinematicSimple(int pathid, const char *Text, int Target, float Seconds, bool FadeIn) {
   tGameCinematic info;
 
   info.flags = 0;
@@ -4512,21 +4504,6 @@ void aObjFireWeapon(const char *weapon_name, int gun_num, int objhandle) {
 
   MSafe_CallFunction(MSAFE_OBJECT_FIRE_WEAPON, &mstruct);
 }
-
-/*
-$$ACTION
-Objects
-Fire flare from gun number [i:GunNum] of object [o:Object]
-aObjFireFlare
-Fire flare
-  Fires a flare from the given gun number of an object
-
-Parameters:
-  GunNum - the gun number to fire from, or -1 to fire from the object's center
-  Object - the object to fire the flare
-$$END
-*/
-#define aObjFireFlare(gun_num, objhandle) aObjFireWeapon("Yellow flare", gun_num, objhandle)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // The following code is to handle a 'kill all object except these' Dallas command sequence.
@@ -5549,10 +5526,11 @@ Parameters:
 $$END
 */
 float qUserVarValue(int varnum) {
-  if ((varnum >= 0) && (varnum < MAX_USER_VARS))
-    return User_vars[varnum];
-  else
-    return 0.0;
+  if (varnum < 0 || varnum >= MAX_USER_VARS)
+    return 0;
+  if (const auto *value = std::get_if<int32_t>(&User_vars[varnum]))
+    return *value;
+  return std::get<float>(User_vars[varnum]);
 }
 
 /*
@@ -5568,10 +5546,17 @@ Parameters:
 $$END
 */
 int qUserVarValueInt(int varnum) {
-  if ((varnum >= 0) && (varnum < MAX_USER_VARS))
-    return (User_vars[varnum] + 0.5);
-  else
-    return 0.0;
+  if (varnum < 0 || varnum >= MAX_USER_VARS)
+    return 0;
+  if (const auto *value = std::get_if<int32_t>(&User_vars[varnum]))
+    return *value;
+  auto value = std::get<float>(User_vars[varnum]);
+  // Check boundaries first, else float=>int conversion is UB
+  if (value < std::nexttoward(INT_MIN, 0))
+    return INT_MIN;
+  if (value >= std::nexttoward(INT_MAX, 0))
+    return INT_MAX;
+  return value + 0.5;
 }
 
 /*
@@ -6515,50 +6500,6 @@ int qObjCountTypeID(int type, const char *idname) {
   } else
     return 0;
 }
-
-/*
-$$ACTION
-Misc
-Show HUD message [s:Message] [f:Float]
-aShowHUDMessageF
-Show HUD message
-  Shows a HUD message for all players with a float parameter
-
-Parameters:
-  Message:  The message to show, with %f marking where the number should go
-$$END
-*/
-#define aShowHUDMessageF aShowHUDMessage
-
-/*
-$$ACTION
-Misc
-Show HUD message [s:Message] for player [o:PlayerObject=IT] with parm [f:Float]
-aShowHUDMessageObjF
-Show HUD message to one player
-  Shows a HUD message for one players with a float parameter
-
-Parameters:
-  Message:  The message to show, with %f marking where the number should go
-  PlayerObject: the player who sees the message
-  Float: the number to show
-$$END
-*/
-#define aShowHUDMessageObjF aShowHUDMessageObj
-
-/*
-$$ACTION
-Misc
-Show HUD message [s:Message] [i:Integer]
-aShowHUDMessageI
-Show HUD message
-  Shows a HUD message for all players with an integer parameter
-
-Parameters:
-  Message:  The message to show, with %d marking where the number should go
-$$END
-*/
-#define aShowHUDMessageI aShowHUDMessage
 
 /*
 $$QUERY

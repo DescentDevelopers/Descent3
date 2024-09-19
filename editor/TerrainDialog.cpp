@@ -1750,7 +1750,7 @@ void CTerrainDialog::OnTerrainOcclusion() {
 
   for (int i = 0; i < 256; i++) {
     memset(Terrain_occlusion_map[i], 0, 32);
-    touch_buffer[i] = (uint8_t *)mem_malloc(256);
+    touch_buffer[i] = mem_rmalloc<uint8_t>(256);
     ASSERT(touch_buffer[i]);
     memset(touch_buffer[i], 255, 256);
   }

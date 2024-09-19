@@ -119,7 +119,7 @@ bool ddio_Init(ddio_init_info *init_info) {
   }
   first_time = false;
   DDIO_initialized = true;
-  joy_Init(init_info->joy_emulation);
+  joy_Init();
   return res;
 }
 void ddio_Close() {

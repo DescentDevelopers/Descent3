@@ -646,7 +646,7 @@ doorway *DoorwayAdd(room *rp, int doornum) {
 
   rp->flags |= RF_DOOR;
 
-  doorway *dp = rp->doorway_data = (doorway *)mem_malloc(sizeof(*rp->doorway_data));
+  auto dp = rp->doorway_data = mem_rmalloc<doorway>();
 
   // Initialize
   dp->doornum = doornum;

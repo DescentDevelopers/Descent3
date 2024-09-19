@@ -1,7 +1,6 @@
 set(CPPS
   winapp.cpp
   wincon.cpp
-  WinController.cpp
   windata.cpp
 )
 
@@ -12,6 +11,6 @@ target_compile_definitions(win32 PRIVATE DX_APP)
 target_link_libraries(win32 PRIVATE
   ddebug
   ddio
+  logger
   misc
-  plog::plog
 )

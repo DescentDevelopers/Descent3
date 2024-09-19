@@ -24,7 +24,7 @@
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "osiris_vector.h"
-#include "DallasFuncs.cpp"
+#include "DallasFuncs.h"
 
 #include "module.h"
 

@@ -44,8 +44,11 @@
 #ifndef _OUTRAGE_DIRECTPLAY_HEADER
 #define _OUTRAGE_DIRECTPLAY_HEADER
 
+#include <cstdint>
+
 #include "dplay.h"
 #include "dplobby.h"
+#include "networking.h"
 
 struct modem_list {
   char name[200];
@@ -80,7 +83,7 @@ int dp_DirectPlaySend(network_address *who_to, uint8_t *data, int len, bool reli
 void dp_DirectPlayDispatch();
 
 // Initialize stuff
-int dp_InitDirectPlay(char *conn_name, void *parms = NULL, int num_elements = 0);
+int dp_InitDirectPlay(char *conn_name, void *parms = nullptr, int num_elements = 0);
 
 // Shutdown things
 void dp_ShutdownDirectPlay();

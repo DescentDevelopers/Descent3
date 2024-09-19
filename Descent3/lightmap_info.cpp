@@ -56,9 +56,9 @@ void InitLightmapInfo(int nummaps) {
     return;
 
   if (nummaps == 0) {
-    LightmapInfo = (lightmap_info *)mem_malloc(MAX_LIGHTMAP_INFOS * sizeof(lightmap_info));
+    LightmapInfo = mem_rmalloc<lightmap_info>(MAX_LIGHTMAP_INFOS);
     ASSERT(LightmapInfo);
-    Free_lmi_list = (uint16_t *)mem_malloc(MAX_LIGHTMAP_INFOS * sizeof(uint16_t));
+    Free_lmi_list = mem_rmalloc<uint16_t>(MAX_LIGHTMAP_INFOS);
     ASSERT(Free_lmi_list);
 
     for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
