@@ -39,13 +39,19 @@ public:
    */
   explicit HttpClient(const std::string &URL);
 
+  httplib::Result Get(const std::string &URIPath);
+
   /**
    * Get data from URIPath
    * @param URIPath requested path (for example, "/some_dir/my_file.txt")
-   * @param receiver input where body of response will be stored
    * @return standard HTTP code. 200 means is OK.
    */
-  int Get(const std::string &URIPath, std::iostream &receiver, httplib::Progress progress = nullptr);
+  httplib::Result Get(const std::string &URIPath, const httplib::Progress &progress);
+
+  httplib::Result Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver);
+
+  httplib::Result Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver,
+                      const httplib::Progress &progress);
 
   void SetProxy(const std::string &proxy_host, uint16_t port);
 
