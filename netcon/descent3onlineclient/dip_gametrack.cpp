@@ -91,8 +91,9 @@ void FetchApi() {
   DLLmprintf(0, "fetch api.\n");
   D3::HttpClient http_client(TSETSEFLYAPI_HOST);
   std::stringstream input;
-  int result = http_client.Get(TSETSEFLYAPI_URI, input);
-  if (result == 200) {
+  auto result = http_client.Get(TSETSEFLYAPI_URI);
+  if (result->status == 200) {
+    input << result->body;
     DecodeApiAnswer(input);
   }
 }

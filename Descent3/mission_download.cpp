@@ -119,8 +119,8 @@
  */
 
 #include <cstdio>
+#include <future>
 
-#include "pstypes.h"
 #include "mem.h"
 #include "args.h"
 #include "descent.h"
@@ -347,11 +347,6 @@ bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filena
 
   std::string download_url = StringJoin(std::vector<std::string>(url_parts.begin(), url_parts.begin() + 3), "/");
 
-  std::unique_ptr<D3::HttpClient> http_client = std::make_unique<D3::HttpClient>(download_url);
-  if (Proxy_server[0]) {
-    http_client->SetProxy(Proxy_server, Proxy_port);
-  }
-
   UITextItem title_text(TXT_MD_DOWNLOADSTATUS, UICOL_TEXT_NORMAL);
 
   UIHotspot cancel_hot;
@@ -369,7 +364,7 @@ bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filena
   UIText texts[10];
   UIProgress progress;
 
-  int exit_menu = 0;
+  bool exit_menu = false;
   int ret = 0;
 
   menu_wnd.Create(10, 10, MSN_DWNLD_STATUS_W, MSN_DWNLD_STATUS_H, UIF_PROCESS_ALL | UIF_CENTER);
@@ -396,89 +391,115 @@ bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filena
 
   std::string download_uri = "/" + StringJoin(std::vector<std::string>(url_parts.begin() + 3, url_parts.end()), "/");
 
+  D3::HttpClient http_client(download_url);
+  if (Proxy_server[0]) {
+    http_client.SetProxy(Proxy_server, Proxy_port);
+  }
+
+  httplib::Result (D3::HttpClient::*hcg)(const std::string &, const httplib::ContentReceiver &,
+                                         const httplib::Progress &) = &D3::HttpClient::Get;
+  std::fstream in(qualfile, std::ios::binary | std::ios::trunc | std::ios::out);
+  auto async_task = std::async(
+      std::launch::async, hcg, &http_client, download_uri,
+      [&in](const char *buf, size_t len) {
+        // Content receiver
+        in.write(buf, len);
+        return true;
+      },
+      [&received_bytes, &total_bytes, &exit_menu](uint64_t len, uint64_t total) {
+        // Progress updater
+        received_bytes = len;
+        total_bytes = total;
+        return !exit_menu; // return false on cancel
+      });
+
   while (!exit_menu) {
-    int res;
+    D3::ChronoTimer::SleepMS(500);
+    // We cannot check status of async process until we get() it, so let's assume that we're done when
+    // received_bytes equals total_bytes on progress updater. If both are zero, then something bad happen;
+    // check result.error() in this case.
+    if (received_bytes == total_bytes) {
+      auto result = async_task.get();
+      if (result.error() == httplib::Error::Success) {
+        if (result->status == 200) {
+          LOG_INFO.printf("Successfully received the file (%d bytes)!", total_bytes);
+          in.close();
+          exit_menu = true;
 
-    std::fstream in;
-    in.open(qualfile, std::ios::binary | std::ios::trunc | std::ios::out);
-    int status = http_client->Get(download_uri, in, [&received_bytes, &total_bytes](uint64_t len, uint64_t total) {
-      received_bytes = len;
-      total_bytes = total;
-      return true;
-    });
-    in.close();
-
-    if ((timer_GetTime() - last_refresh) > MSN_REFRESH_INTERVAL) {
-
-      if (status == 200) {
-        // File transfer successful!
-        LOG_INFO.printf("Successfully received the file (%d bytes)!", total_bytes);
-        exit_menu = 1;
-
-        if (file_is_zip) {
-          // now we gotta handle the zip file
-          ret = msn_ExtractZipFile(qualfile.u8string().c_str(), filename);
+          if (file_is_zip) {
+            // now we gotta handle the zip file
+            ret = msn_ExtractZipFile(qualfile.u8string().c_str(), filename);
+          } else {
+            ret = 1;
+          }
         } else {
-          ret = 1;
-        }
-      }
+          // File transfer Error!
+          LOG_WARNING.printf("Couldn't download the file %s! Response from server: \"%s\" (%d)", url,
+                             httplib::status_message(result->status), result->status);
+          in.close();
+          std::filesystem::remove(qualfile);
 
-      if (status != 200) {
-        // File transfer Error!
-        DoMessageBox(TXT_ERROR, TXT_FMTCANTDNLD, MSGBOX_OK);
-        // Delete the file that didn't finish!
+          DoMessageBox(TXT_ERROR, TXT_FMTCANTDNLD, MSGBOX_OK); // TODO: add error message from server here
+          exit_menu = true;
+          ret = 0;
+        }
+      } else {
+        // We failed, and this is not our fault!
+        LOG_WARNING << "Couldn't download the file! Error from httpclient: " << result.error();
+        in.close();
         std::filesystem::remove(qualfile);
-        LOG_WARNING.printf("Couldn't download the file! Error: %d", status);
-        exit_menu = 1;
+
+        DoMessageBox(TXT_ERROR, TXT_FMTCANTDNLD, MSGBOX_OK); // TODO: add error message from httpclient here
+        exit_menu = true;
         ret = 0;
       }
-
-      last_refresh = timer_GetTime();
-      time_elapsed = timer_GetTime() - starttime;
-
-      if (total_bytes) {
-        time_remain = ((float)(total_bytes - received_bytes)) / ((float)(received_bytes / time_elapsed));
-      }
-      if (time_elapsed && received_bytes) {
-        xfer_rate = ((float)(received_bytes / time_elapsed));
-      }
-      texts[1].Destroy();
-      texts[2].Destroy();
-      texts[3].Destroy();
-      texts[4].Destroy();
-      texts[5].Destroy();
-      texts[6].Destroy();
-
-      sprintf(fmturl, DOWNLOAD_STATUS_URL_TEXT, url);
-      msn_ClipURLToWidth(MSN_DWNLD_STATUS_W - (MSN_COL_1 + MSN_BORDER_W), fmturl);
-      sprintf(fmtrcvd, DOWNLOAD_STATUS_RCVD_TEXT, received_bytes);
-      sprintf(fmttotal, DOWNLOAD_STATUS_TOTAL_TEXT, total_bytes);
-      sprintf(fmtelaps, DOWNLOAD_STATUS_ELAPS_TEXT, msn_SecondsToString(time_elapsed));
-      sprintf(fmttimer, DOWNLOAD_STATUS_TIME_R_TEXT, msn_SecondsToString(time_remain));
-      msn_ClipURLToWidth(MSN_DWNLD_STATUS_W - (MSN_COL_2 + MSN_BORDER_W), fmttimer);
-      sprintf(fmtrate, DOWNLOAD_STATUS_XFERRATE_TEXT, xfer_rate);
-
-      download_text = UITextItem(fmturl, UICOL_TEXT_NORMAL);
-
-      rcvd_text = UITextItem(fmtrcvd, UICOL_TEXT_NORMAL);
-      total_text = UITextItem(fmttotal, UICOL_TEXT_NORMAL);
-      elaps_text = UITextItem(fmtelaps, UICOL_TEXT_NORMAL);
-      time_r_text = UITextItem(fmttimer, UICOL_TEXT_NORMAL);
-      rate_text = UITextItem(fmtrate, UICOL_TEXT_NORMAL);
-
-      texts[1].Create(&menu_wnd, &download_text, MSN_COL_1, MSN_ROW_1, 0);
-      texts[2].Create(&menu_wnd, &rcvd_text, MSN_COL_1, MSN_ROW_2, 0);
-      texts[3].Create(&menu_wnd, &total_text, MSN_COL_2, MSN_ROW_2, 0);
-      texts[4].Create(&menu_wnd, &elaps_text, MSN_COL_1, MSN_ROW_3, 0);
-      texts[5].Create(&menu_wnd, &time_r_text, MSN_COL_2, MSN_ROW_3, 0);
-      texts[6].Create(&menu_wnd, &rate_text, MSN_COL_1, MSN_ROW_4, 0);
-
-      progress.Update(((float)((float)received_bytes)/((float)total_bytes)));
     }
-    res = PollUI();
-    if (res == UID_CANCEL) {
+
+    last_refresh = timer_GetTime();
+    time_elapsed = timer_GetTime() - starttime;
+
+    if (total_bytes) {
+      time_remain = ((float)(total_bytes - received_bytes)) / ((float)(received_bytes / time_elapsed));
+    }
+    if (time_elapsed && received_bytes) {
+      xfer_rate = ((float)(received_bytes / time_elapsed));
+    }
+    texts[1].Destroy();
+    texts[2].Destroy();
+    texts[3].Destroy();
+    texts[4].Destroy();
+    texts[5].Destroy();
+    texts[6].Destroy();
+
+    sprintf(fmturl, DOWNLOAD_STATUS_URL_TEXT, url);
+    msn_ClipURLToWidth(MSN_DWNLD_STATUS_W - (MSN_COL_1 + MSN_BORDER_W), fmturl);
+    sprintf(fmtrcvd, DOWNLOAD_STATUS_RCVD_TEXT, received_bytes);
+    sprintf(fmttotal, DOWNLOAD_STATUS_TOTAL_TEXT, total_bytes);
+    sprintf(fmtelaps, DOWNLOAD_STATUS_ELAPS_TEXT, msn_SecondsToString(time_elapsed));
+    sprintf(fmttimer, DOWNLOAD_STATUS_TIME_R_TEXT, msn_SecondsToString(time_remain));
+    msn_ClipURLToWidth(MSN_DWNLD_STATUS_W - (MSN_COL_2 + MSN_BORDER_W), fmttimer);
+    sprintf(fmtrate, DOWNLOAD_STATUS_XFERRATE_TEXT, xfer_rate);
+
+    download_text = UITextItem(fmturl, UICOL_TEXT_NORMAL);
+
+    rcvd_text = UITextItem(fmtrcvd, UICOL_TEXT_NORMAL);
+    total_text = UITextItem(fmttotal, UICOL_TEXT_NORMAL);
+    elaps_text = UITextItem(fmtelaps, UICOL_TEXT_NORMAL);
+    time_r_text = UITextItem(fmttimer, UICOL_TEXT_NORMAL);
+    rate_text = UITextItem(fmtrate, UICOL_TEXT_NORMAL);
+
+    texts[1].Create(&menu_wnd, &download_text, MSN_COL_1, MSN_ROW_1, 0);
+    texts[2].Create(&menu_wnd, &rcvd_text, MSN_COL_1, MSN_ROW_2, 0);
+    texts[3].Create(&menu_wnd, &total_text, MSN_COL_2, MSN_ROW_2, 0);
+    texts[4].Create(&menu_wnd, &elaps_text, MSN_COL_1, MSN_ROW_3, 0);
+    texts[5].Create(&menu_wnd, &time_r_text, MSN_COL_2, MSN_ROW_3, 0);
+    texts[6].Create(&menu_wnd, &rate_text, MSN_COL_1, MSN_ROW_4, 0);
+
+    progress.Update(((float)((float)received_bytes) / ((float)total_bytes)));
+
+    if (PollUI() == UID_CANCEL) {
       std::filesystem::remove(qualfile);
-      exit_menu = 1;
+      exit_menu = true;
       ret = 0;
     }
   }

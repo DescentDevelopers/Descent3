@@ -23,19 +23,24 @@ namespace D3 {
 HttpClient::HttpClient(const std::string &URL) {
   m_client = std::make_unique<httplib::Client>(URL);
   m_client->set_follow_location(true);  // Follow redirects
+  m_client->set_connection_timeout(5, 0); // 5 sec timeout
 }
 
-int HttpClient::Get(const std::string &URIPath, std::iostream &receiver, httplib::Progress progress) {
-  if (auto res = m_client->Get(URIPath, progress)) {
-    if (res->status == httplib::StatusCode::OK_200) {
-      receiver << res->body;
-    }
-    return res->status;
-  } else {
-    // auto err = res.error();
-    // std::cout << "HTTP error: " << httplib::to_string(err) << std::endl;
-    return static_cast<int>(res.error());
-  }
+httplib::Result HttpClient::Get(const std::string &URIPath) {
+    return m_client->Get(URIPath);
+}
+
+httplib::Result HttpClient::Get(const std::string &URIPath, const httplib::Progress &progress) {
+  return m_client->Get(URIPath, progress);
+}
+
+httplib::Result HttpClient::Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver) {
+  return m_client->Get(URIPath, content_receiver);
+}
+
+httplib::Result HttpClient::Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver,
+                    const httplib::Progress &progress) {
+  return m_client->Get(URIPath, content_receiver, progress);
 }
 
 void HttpClient::SetProxy(const std::string &proxy_host, uint16_t port) {
