@@ -363,17 +363,17 @@ CFILE *open_file_in_lib(const char *filename) {
   return nullptr;
 }
 
-std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
-                                                         const std::filesystem::path &directory) {
+std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &relative_path,
+                                                         const std::filesystem::path &starting_dir) {
   // Dumb check, maybe there already all ok?
-  if (exists((directory / fname))) {
-    return fname.filename();
+  if (exists((starting_dir / relative_path))) {
+    return relative_path.filename();
   }
 
   std::filesystem::path result, search_path, search_file;
 
-  search_path = directory / fname.parent_path();
-  search_file = fname.filename();
+  search_path = starting_dir / relative_path.parent_path();
+  search_file = relative_path.filename();
 
   // If directory does not exist, nothing to search.
   if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
