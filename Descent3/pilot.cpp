@@ -846,13 +846,13 @@ void PilotListSelectChangeCallback(int index) {
     // save out old Pilot file so we can load up the new one
     std::string filename = working_pilot.get_filename();
 
+    // only save if the file is already there
+    // which keeps us from bringing deleted pilots
+    // back from the dead.
     if (cfexist(filename)) {
       if (in_edit)
         PilotChooseDialogInfo.edit->sheet->UpdateReturnValues();
 
-      // only save if the file is already there
-      // which keeps us from bringing deleted pilots
-      // back from the dead.
       difficulty = *PilotChooseDialogInfo.edit->difficulty;
       profanity = *PilotChooseDialogInfo.edit->profanity;
       audiotaunts = *PilotChooseDialogInfo.edit->audiotaunts;
@@ -860,6 +860,9 @@ void PilotListSelectChangeCallback(int index) {
       Pilot->set_profanity_filter(profanity);
       Pilot->set_difficulty(difficulty);
       Pilot->set_audiotaunts(audiotaunts);
+      if (Pilot->get_filename().empty()) {
+        Pilot->set_filename(filename);
+      }
       PltWriteFile(&working_pilot);
       LOG_INFO << "Pilot saved";
     } else {
