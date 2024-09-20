@@ -186,6 +186,7 @@
 #include <cstdio>
 #include <cstring>
 
+#include "args.h"
 #include "newui_core.h"
 #include "bitmap.h"
 #include "log.h"
@@ -616,7 +617,7 @@ void DoUIFrame() {
     if (UI_callback)
       (*UI_callback)();
 
-    if (GetFunctionMode() == MENU_MODE) {
+    if (GetFunctionMode() == MENU_MODE && !FindArg("-nosound")) {
       tMusicSeqInfo music_info;
 
       Sound_system.BeginSoundFrame(false);
