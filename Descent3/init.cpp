@@ -1349,9 +1349,10 @@ void LoadGameSettings() {
   }
 
   int len = _MAX_PATH;
-  char temp_str[_MAX_PATH];
-  Database->read("Default_pilot", temp_str, &len);
-  Default_pilot = temp_str;
+  char temp_str[_MAX_PATH] = "";
+  if (Database->read("Default_pilot", temp_str, &len)) {
+    Default_pilot = temp_str;
+  }
 
   // Now that we have read in all the data, set the detail level if it is a predef setting (custom is ignored in
   // function)
