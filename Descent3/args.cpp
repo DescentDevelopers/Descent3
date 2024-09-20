@@ -114,12 +114,10 @@ int FindArg(const char *which) {
 
   for (int i = 1; i <= TotalArgs; i++) {
     if (which_matches(GameArgs[i])) {
-      LOG_INFO.printf("FindArg: Found [%s] at argument index (%d).", which, i);
       return i;
     }
   }
 
-  LOG_VERBOSE.printf("FindArg: Did not find [%s] on command line.", which);
   return 0;
 }
 
@@ -128,7 +126,6 @@ int FindArgChar(const char *which, char singleCharArg) {
   for (int i = 1; i <= TotalArgs; i++) {
     char *str = GameArgs[i];
     if (str[0] == '-' && str[1] == singleCharArg && str[2] == '\0') {
-      LOG_INFO.printf("FindArg: Found [-%c] at argument index (%d).", singleCharArg, i);
       return i;
     }
   }
