@@ -98,6 +98,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>
+#include <functional>
 #include <vector>
 
 #include "pstypes.h"
@@ -142,14 +143,14 @@ enum CFileExitStatus {
 };
 
 // See if a file is in a hog
-bool cf_IsFileInHog(const std::filesystem::path& filename, const std::filesystem::path& hogname);
+bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem::path &hogname);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
 // Parameters:  libname - the path & filename of the HOG file
 // NOTE:	libname must be valid for the entire execution of the program.  Therefore, it should either
 //			be a fully-specified path name, or the current directory must not change.
 // Returns: 0 if error, else library handle that can be used to close the library
-int cf_OpenLibrary(const std::filesystem::path& libname);
+int cf_OpenLibrary(const std::filesystem::path &libname);
 
 // Closes a library file.
 // Parameters:  handle: the handle returned by cf_OpenLibrary()
@@ -176,7 +177,7 @@ std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::
  * false: path is not a real directory;
  * true: path was successfully added.
  */
-bool cf_SetSearchPath(const std::filesystem::path& path, const std::vector<std::filesystem::path>& ext_list = {});
+bool cf_SetSearchPath(const std::filesystem::path &path, const std::vector<std::filesystem::path> &ext_list = {});
 
 // Removes all search paths that have been added by cf_SetSearchPath
 void cf_ClearAllSearchPaths();
@@ -187,13 +188,13 @@ void cf_ClearAllSearchPaths();
 // Parameters:	filename - the name if the file, with or without a path
 //					mode - the standard C mode string
 // Returns:		the CFile handle, or NULL if file not opened
-CFILE *cfopen(const std::filesystem::path& filename, const char *mode);
+CFILE *cfopen(const std::filesystem::path &filename, const char *mode);
 
 // Opens a file for reading in a library, given the library id.
 // Works just like cfopen, except it assumes "rb" mode and forces the file to be
 // opened from the given library.  Returns the CFILE handle or NULL if file
 // couldn't be found or open.
-CFILE *cf_OpenFileInLibrary(const std::filesystem::path& filename, int libhandle);
+CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle);
 
 // Returns the length of the specified file
 // Parameters: cfp - the file pointer returned by cfopen()
@@ -219,7 +220,7 @@ int cfeof(CFILE *cfp);
 // Tells if the file exists
 // Returns non-zero if file exists.  Also tells if the file is on disk
 //	or in a hog -  See return values in cfile.h
-int cfexist(const std::filesystem::path& filename);
+int cfexist(const std::filesystem::path &filename);
 
 // Reads the specified number of bytes from a file into the buffer
 // DO NOT USE THIS TO READ STRUCTURES.  This function is for byte
@@ -324,7 +325,7 @@ void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::p
 void cf_Rewind(CFILE *fp);
 
 // Calculates a 32 bit CRC
-uint32_t cf_GetfileCRC(const std::filesystem::path& src);
+uint32_t cf_GetfileCRC(const std::filesystem::path &src);
 uint32_t cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
 
 // the following cf_LibraryFind function are similar to the ddio_Find functions as they look
@@ -332,5 +333,15 @@ uint32_t cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works 
 bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer);
 bool cf_LibraryFindNext(char *buffer);
 void cf_LibraryFindClose();
+
+/**
+ * Execute function for each file in lib that matches to extension.
+ * @param handle library handle where to search
+ * @param ext filtering extension
+ * @param func function callback
+ * @return count of applied files
+ */
+int cf_DoForeachFileInLibrary(int handle, const std::filesystem::path &ext,
+                               const std::function<void(std::filesystem::path)> &func);
 
 #endif
