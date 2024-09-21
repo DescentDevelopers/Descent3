@@ -59,16 +59,11 @@
 #define CTLCONFIG_CONTROLLER 1
 #define CTLCONFIG_WPNSEL 2
 
-#define CTLCONFIG_CONNECTION_SPEED_DB_KEY "ConnectionSpeed"
+#define CTLCONFIG_PPS_CLIENT_DB_KEY "ClientPPS"
 
-struct t_cfg_connection_speed {
-  int pps;
-  const char *name;
-};
 
-#define CTLCONFIG_CONNECTION_SPEED_LIST_SIZE 5
-static const t_cfg_connection_speed Cfg_Connection_Speed_List[CTLCONFIG_CONNECTION_SPEED_LIST_SIZE] = {
-    {7, "56K"}, {8, "ISDN"}, {12, "ADSL"}, {20, "Lan"}, {30, "Lan+"}};
+#define CFG_NETWORK_CLIENT_PPS_MIN 7
+#define CFG_NETWORK_CLIENT_PPS_MAX 30
 
 struct t_cfg_element {
   int16_t fn_id; // -1 = group start

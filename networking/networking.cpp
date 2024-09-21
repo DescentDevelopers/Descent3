@@ -328,6 +328,7 @@ typedef int socklen_t;
 #include "args.h"
 #include "byteswap.h"
 #include "pstring.h"
+#include "ctlconfig.h"
 
 #ifndef WIN32
 bool Use_DirectPlay = false;
@@ -2268,17 +2269,10 @@ void CDECLCALL gethostbynameworker(void *parm)
 }
 
 int nw_ReccomendPPS() {
-  static char szconnspeed[100];
-  int len = 99;
-  strcpy(szconnspeed, "");
-  Database->read(CTLCONFIG_CONNECTION_SPEED_DB_KEY, szconnspeed, &len);
+  int clientPPS = CFG_NETWORK_CLIENT_PPS_MAX;
+  Database->read_int(CTLCONFIG_PPS_CLIENT_DB_KEY, &clientPPS);
 
-  for (int i = 0; i < CTLCONFIG_CONNECTION_SPEED_LIST_SIZE; i++) {
-    if (stricmp(szconnspeed, Cfg_Connection_Speed_List[i].name) == 0)
-      return Cfg_Connection_Speed_List[i].pps;
-  }
-
-  return 8;
+  return clientPPS;
 }
 
 // Register the networking library to call your function back
