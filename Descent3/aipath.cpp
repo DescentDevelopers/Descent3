@@ -626,7 +626,7 @@ static inline bool AIPathAddDPathNode(ai_path_info *aip, int *slot, int *cur_nod
   AIDynamicPath[*slot].pos[*cur_node] = *pos;
   AIDynamicPath[*slot].roomnum[(*cur_node)++] = room;
 
-  if (aip->num_paths >= 0)
+  if (aip->num_paths > 0)
     aip->path_end_node[aip->num_paths - 1] = *cur_node - 1;
 
   return true;
