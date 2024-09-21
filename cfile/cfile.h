@@ -320,9 +320,6 @@ bool cf_Diff(const std::filesystem::path &a, const std::filesystem::path &b);
 // Copies the file time from one file to another
 void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src);
 
-// Changes a files attributes (ie read/write only)
-void cf_ChangeFileAttributes(const char *name, int attr);
-
 // rewinds cfile position
 void cf_Rewind(CFILE *fp);
 

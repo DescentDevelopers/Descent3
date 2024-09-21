@@ -871,12 +871,6 @@ void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::p
   ddio_CopyFileTime(dest, src);
 }
 
-// Changes a files attributes (ie read/write only)
-void cf_ChangeFileAttributes(const char *name, int attr) {
-  if (_chmod(name, attr) == -1)
-    Int3(); // Get Jason or Matt, file not found!
-}
-
 //	rewinds cfile position
 void cf_Rewind(CFILE *fp) {
   if (fp->lib_offset) {
