@@ -942,7 +942,7 @@ void DoControllerMovement(game_controls *controls) {
 
   //	do button pitch
   if (ctl_pub.value > 0.0f)
-    controls->pitch_thrust -= ctl_pub.value;
+    controls->pitch_thrust -= ctl_pub.value; 
   if (ctl_pdb.value > 0.0f)
     controls->pitch_thrust += ctl_pdb.value;
 
