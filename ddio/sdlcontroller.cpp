@@ -305,59 +305,13 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
     break;
 
   case ctAxis:
-    for (i = 2; i < m_NumControls; i++) {
-      float pos;
-      float limit;
-      unsigned ctl = CONTROLLER_CTL_INFO(i, NULL_CONTROLLER);
-
-      if ((m_ControlList[i].flags & CTF_V_AXIS) && !(m_ControlList[i].axis_is_trigger & CTF_V_AXIS)) {
-        limit = (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.5f)   ? 0.95f
-                : (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.0f) ? 0.80f
-                                                                : (m_ControlList[i].sens[CT_V_AXIS - 1] / 2);
-        pos = get_axis_value(i, CT_V_AXIS, ctAnalog);
-        if (fabs(pos) > limit)
-          val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_V_AXIS, NULL_BINDING));
-      }
-      if (m_ControlList[i].flags & CTF_U_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_U_AXIS)) {
-        limit = (m_ControlList[i].sens[CT_U_AXIS - 1] > 1.5f)   ? 0.95f
-                : (m_ControlList[i].sens[CT_U_AXIS - 1] > 1.0f) ? 0.80f
-                                                                : (m_ControlList[i].sens[CT_U_AXIS - 1] / 2);
-        pos = get_axis_value(i, CT_U_AXIS, ctAnalog);
-        if (fabs(pos) > limit)
-          val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_U_AXIS, NULL_BINDING));
-      }
-      if (m_ControlList[i].flags & CTF_R_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_R_AXIS)) {
-        limit = (m_ControlList[i].sens[CT_R_AXIS - 1] > 1.5f)   ? 0.95f
-                : (m_ControlList[i].sens[CT_R_AXIS - 1] > 1.0f) ? 0.80f
-                                                                : (m_ControlList[i].sens[CT_R_AXIS - 1] / 2);
-        pos = get_axis_value(i, CT_R_AXIS, ctAnalog);
-        if (fabs(pos) > limit)
-          val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_R_AXIS, NULL_BINDING));
-      }
-      if (m_ControlList[i].flags & CTF_Z_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_Z_AXIS)) {
-        limit = (m_ControlList[i].sens[CT_Z_AXIS - 1] > 1.5f)   ? 0.95f
-                : (m_ControlList[i].sens[CT_Z_AXIS - 1] > 1.0f) ? 0.80f
-                                                                : (m_ControlList[i].sens[CT_Z_AXIS - 1] / 2);
-        pos = get_axis_value(i, CT_Z_AXIS, ctAnalog);
-        if (fabs(pos) > limit)
-          val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_Z_AXIS, NULL_BINDING));
-      }
-      if (m_ControlList[i].flags & CTF_Y_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_Y_AXIS)) {
-        limit = (m_ControlList[i].sens[CT_Y_AXIS - 1] > 1.5f)   ? 0.95f
-                : (m_ControlList[i].sens[CT_Y_AXIS - 1] > 1.0f) ? 0.80f
-                                                                : (m_ControlList[i].sens[CT_Y_AXIS - 1] / 2);
-        pos = get_axis_value(i, CT_Y_AXIS, ctAnalog);
-        if (fabs(pos) > limit)
-          val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_Y_AXIS, NULL_BINDING));
-      }
-      if (m_ControlList[i].flags & CTF_X_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_X_AXIS)) {
-        limit = (m_ControlList[i].sens[CT_X_AXIS - 1] > 1.5f)   ? 0.95f
-                : (m_ControlList[i].sens[CT_X_AXIS - 1] > 1.0f) ? 0.80f
-                                                                : (m_ControlList[i].sens[CT_X_AXIS - 1] / 2);
-        pos = get_axis_value(i, CT_X_AXIS, ctAnalog);
-        if (fabs(pos) > limit)
-          val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_X_AXIS, NULL_BINDING));
-      }
+    for (int controllerId = 2; controllerId < m_NumControls; controllerId++) {
+      get_controller_axis_value(controllerId, CTF_V_AXIS, CT_V_AXIS, &val);
+      get_controller_axis_value(controllerId, CTF_U_AXIS, CT_U_AXIS, &val);
+      get_controller_axis_value(controllerId, CTF_R_AXIS, CT_R_AXIS, &val);
+      get_controller_axis_value(controllerId, CTF_Z_AXIS, CT_Z_AXIS, &val);
+      get_controller_axis_value(controllerId, CTF_Y_AXIS, CT_Y_AXIS, &val);
+      get_controller_axis_value(controllerId, CTF_X_AXIS, CT_X_AXIS, &val);
     }
     break;
 
@@ -439,6 +393,18 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
   }
 
   return val;
+}
+
+void sdlgameController::get_controller_axis_value(int controllerId, unsigned int axis_ctf_flag, uint8_t axis_ct_flag, ct_config_data* val) {
+
+  if ((m_ControlList[controllerId].flags & axis_ctf_flag) && !(m_ControlList[controllerId].axis_is_trigger & axis_ctf_flag)) {
+    float limit = (m_ControlList[controllerId].sens[axis_ct_flag - 1] > 1.5f)   ? 0.95f
+            : (m_ControlList[controllerId].sens[axis_ct_flag - 1] > 1.0f) ? 0.80f
+                                                            : (m_ControlList[controllerId].sens[axis_ct_flag - 1] / 2);
+    float pos = get_axis_value(controllerId, axis_ct_flag, ctAnalog);
+    if (fabs(pos) > limit)
+      *val = MAKE_CONFIG_DATA(CONTROLLER_CTL_INFO(controllerId, NULL_CONTROLLER), CONTROLLER_CTL_VALUE(axis_ct_flag, NULL_BINDING));
+  }
 }
 
 //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
@@ -707,13 +673,9 @@ unsigned sdlgameController::get_joy_raw_values(int *x, int *y) {
   return 0;
 }
 
-gameController *CreateController(int num_funcs, ct_function *funcs) {
-  return new sdlgameController(num_funcs, funcs);
-}
+gameController *CreateController(int num_funcs, ct_function *funcs) { return new sdlgameController(num_funcs, funcs); }
 
-void DestroyController(gameController *ctl) {
-  delete ctl;
-}
+void DestroyController(gameController *ctl) { delete ctl; }
 
 // activates or deactivates mouse and or controller
 void sdlgameController::mask_controllers(bool joystick, bool mouse) {
@@ -909,14 +871,13 @@ bool sdlgameController::enum_controllers() {
           ((jc.axes_mask & JOYFLAG_POV2VALID) ? CTF_POV2 : 0) | ((jc.axes_mask & JOYFLAG_POV3VALID) ? CTF_POV3 : 0) |
           ((jc.axes_mask & JOYFLAG_POV4VALID) ? CTF_POV4 : 0);
 
-      m_ControlList[num_devs].axis_is_trigger =
-          ((jc.trigger_axis_mask & JOYFLAG_XVALID) ? CTF_X_AXIS : 0) |
-          ((jc.trigger_axis_mask & JOYFLAG_YVALID) ? CTF_Y_AXIS : 0) |
-          ((jc.trigger_axis_mask & JOYFLAG_ZVALID) ? CTF_Z_AXIS : 0) |
-          ((jc.trigger_axis_mask & JOYFLAG_RVALID) ? CTF_R_AXIS : 0) |
-          ((jc.trigger_axis_mask & JOYFLAG_UVALID) ? CTF_U_AXIS : 0) |
-          ((jc.trigger_axis_mask & JOYFLAG_VVALID) ? CTF_V_AXIS : 0);
-  
+      m_ControlList[num_devs].axis_is_trigger = ((jc.trigger_axis_mask & JOYFLAG_XVALID) ? CTF_X_AXIS : 0) |
+                                                ((jc.trigger_axis_mask & JOYFLAG_YVALID) ? CTF_Y_AXIS : 0) |
+                                                ((jc.trigger_axis_mask & JOYFLAG_ZVALID) ? CTF_Z_AXIS : 0) |
+                                                ((jc.trigger_axis_mask & JOYFLAG_RVALID) ? CTF_R_AXIS : 0) |
+                                                ((jc.trigger_axis_mask & JOYFLAG_UVALID) ? CTF_U_AXIS : 0) |
+                                                ((jc.trigger_axis_mask & JOYFLAG_VVALID) ? CTF_V_AXIS : 0);
+
       int minV = -32768, maxV = 32768;
       m_ControlList[num_devs].normalizer[0] = (maxV - minV) / 2.0f;
       m_ControlList[num_devs].normalizer[1] = (maxV - minV) / 2.0f;
