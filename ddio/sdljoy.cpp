@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -67,7 +67,9 @@
  */
 
 #include <cstdlib>
+#include <cstdint>
 #include <cstring>
+#include <array>
 #include <SDL.h>
 
 // rcg06182000 need this for specific joystick stuff.
@@ -150,36 +152,28 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
     strncpy(caps.name, SDL_JoystickNameForIndex(joy), sizeof(caps.name) - 1);
     caps.num_btns = SDL_JoystickNumButtons(stick);
     int axes = SDL_JoystickNumAxes(stick);
-    switch (axes) {
-    default:
-      // Fall through to 6 axes
-    case 6:
-      caps.axes_mask |= JOYFLAG_VVALID;
-      caps.minv = -32767;
-      caps.maxv = 32768;
-    case 5:
-      caps.axes_mask |= JOYFLAG_UVALID;
-      caps.minu = -32767;
-      caps.maxu = 32768;
-    case 4:
-      caps.axes_mask |= JOYFLAG_RVALID;
-      caps.minr = -32767;
-      caps.maxr = 32768;
-    case 3:
-      caps.axes_mask |= JOYFLAG_ZVALID;
-      caps.minz = -32767;
-      caps.maxz = 32768;
-    case 2:
-      caps.axes_mask |= JOYFLAG_YVALID;
-      caps.miny = -32767;
-      caps.maxy = 32768;
-    case 1:
-      caps.axes_mask |= JOYFLAG_XVALID;
-      caps.minx = -32767;
-      caps.maxx = 32768;
-    case 0:
-      break;
+
+
+
+    std::array<uint16_t, 6> axis_flags{JOYFLAG_XVALID, JOYFLAG_YVALID, JOYFLAG_ZVALID,
+                                       JOYFLAG_RVALID, JOYFLAG_UVALID, JOYFLAG_VVALID};
+    for (int axis = 0; axis < SDL_JoystickNumAxes(stick); axis++) {
+      caps.axes_mask |= axis_flags[axis];
+
+      int16_t initialVal = 0;
+      SDL_JoystickGetAxisInitialState(stick, axis, &initialVal);
+      LOG_DEBUG << "Initial axis " << axis << " value is " << initialVal;
+
+      if (initialVal < -32768 * 0.75) {
+        // Axis is an analog button/trigger, because it's initial value
+        // is at the start of the range and not in the middle
+        LOG_DEBUG << "Axis " << axis << " is an analog button";
+        caps.trigger_axis_mask |= axis_flags[axis];
+      } else {
+        LOG_DEBUG << "Axis " << axis << " is a bidirectional axis";
+      }
     }
+
     int hats = SDL_JoystickNumHats(stick);
     switch (hats) {
     default:

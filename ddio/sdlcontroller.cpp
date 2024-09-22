@@ -908,12 +908,14 @@ bool sdlgameController::enum_controllers() {
           ((jc.axes_mask & JOYFLAG_VVALID) ? CTF_V_AXIS : 0) | ((jc.axes_mask & JOYFLAG_POVVALID) ? CTF_POV : 0) |
           ((jc.axes_mask & JOYFLAG_POV2VALID) ? CTF_POV2 : 0) | ((jc.axes_mask & JOYFLAG_POV3VALID) ? CTF_POV3 : 0) |
           ((jc.axes_mask & JOYFLAG_POV4VALID) ? CTF_POV4 : 0);
-      m_ControlList[num_devs].normalizer[0] = (jc.maxx - jc.minx) / 2.0f;
-      m_ControlList[num_devs].normalizer[1] = (jc.maxy - jc.miny) / 2.0f;
-      m_ControlList[num_devs].normalizer[2] = (jc.maxz - jc.minz) / 2.0f;
-      m_ControlList[num_devs].normalizer[3] = (jc.maxr - jc.minr) / 2.0f;
-      m_ControlList[num_devs].normalizer[4] = (jc.maxu - jc.minu) / 2.0f;
-      m_ControlList[num_devs].normalizer[5] = (jc.maxv - jc.minv) / 2.0f;
+  
+      int minV = -32768, maxV = 32768;
+      m_ControlList[num_devs].normalizer[0] = (maxV - minV) / 2.0f;
+      m_ControlList[num_devs].normalizer[1] = (maxV - minV) / 2.0f;
+      m_ControlList[num_devs].normalizer[2] = (maxV - minV) / 2.0f;
+      m_ControlList[num_devs].normalizer[3] = (maxV - minV) / 2.0f;
+      m_ControlList[num_devs].normalizer[4] = (maxV - minV) / 2.0f;
+      m_ControlList[num_devs].normalizer[5] = (maxV - minV) / 2.0f;
 
       for (i = 0; i < CT_NUM_AXES; i++) {
         m_ControlList[num_devs].sens[i] = 1.0f;
