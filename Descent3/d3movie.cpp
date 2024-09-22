@@ -23,14 +23,12 @@
 #include "bitmap.h"
 #include "d3movie.h"
 #include "ddio.h"
-#include "ddvid.h"
 #include "game.h"
 #include "gamefont.h"
 #include "grtext.h"
 #include "log.h"
 #include "mem.h"
 #include "mvelib.h"
-#include "pserror.h"
 #include "renderer.h"
 
 namespace {

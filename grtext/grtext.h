@@ -110,7 +110,7 @@
 
 #include <cstdint>
 
-#include "ddvid.h"
+#include "grdefs.h"
 
 #define GRTEXT_BUFLEN 16384
 #define GRTEXT_FORMAT_CHAR 0x2

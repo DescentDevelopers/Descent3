@@ -1590,11 +1590,6 @@ void InitGraphics(bool editor) {
 #else
   strcpy(App_ddvid_subsystem, "GDIX");
 
-  if (!Dedicated_server) {
-    if (!ddvid_Init(Descent, App_ddvid_subsystem))
-      Error("Graphics initialization failed.\n");
-  }
-
   INIT_MESSAGE("Loading fonts.");
   LoadAllFonts();
 #endif
@@ -2105,7 +2100,6 @@ void ShutdownD3() {
   Init_old_screen_mode = GetScreenMode();
   Init_old_ui_callback = GetUICallback();
   SetScreenMode(SM_NULL);
-  ddvid_Close();
 
   // shutdown IO
   ddio_Close();
@@ -2136,7 +2130,6 @@ void RestartD3() {
   }
 
   //	startup screen.
-  ddvid_Init(Descent, App_ddvid_subsystem);
   ddio_KeyFlush();
   SetScreenMode(Init_old_screen_mode);
   SetUICallback(Init_old_ui_callback);

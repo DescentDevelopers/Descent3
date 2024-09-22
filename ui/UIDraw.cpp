@@ -81,7 +81,6 @@
 #include "3d.h"
 #include "bitmap.h"
 #include "grtext.h"
-#include "ddvid.h"
 #include "renderer.h"
 
 //////////////////////////////////////////////////////////////////////////////
