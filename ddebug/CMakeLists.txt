@@ -1,8 +1,10 @@
 set(HEADERS
   debug.h
   debugbreak.h
-  mono.h)
+  mono.h
+)
 set(CPPS
+  debug.cpp
   $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
     lnxdebug.cpp
     lnxmono.cpp
@@ -22,8 +24,9 @@ target_include_directories(ddebug PUBLIC
   PRIVATE ${PROJECT_BINARY_DIR}/lib   # For d3_version.h
 )
 target_link_libraries(ddebug PRIVATE
-  mem
+  logger
   $<$<PLATFORM_ID:Windows>:
+    mem
     misc
   >
 )

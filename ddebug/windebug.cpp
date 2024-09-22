@@ -199,26 +199,6 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Debug_break = false;
-
-///////////////////////////////////////////////////////////////////////////////
-
-bool Debug_Init(bool debugger) {
-  // initialization of debugging consoles.
-
-#ifndef RELEASE
-
-  Debug_break = debugger;
-
-  if (Debug_break) {
-    mprintf(0, "Debug Break enabled.\n");
-  }
-
-#endif // ifndef RELEASE
-
-  return true;
-}
-
 /*	Message Box functions  */
 
 // Does a messagebox with a stack dump
