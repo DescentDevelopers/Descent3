@@ -26,7 +26,6 @@ set(HEADERS
     ../descent3/ctlconfig.h
     ../descent3/ctlconfigtxt.h
     ../descent3/D3ForceFeedback.h
-    ../descent3/d3serial.h
     ../descent3/damage.h
     ../descent3/damage_external.h
     ../descent3/DeathInfo.h
@@ -313,7 +312,6 @@ set(SOURCE
     ../descent3/D3ForceFeedback.cpp
     ../Descent3/d3movie.cpp
     ../Descent3/d3music.cpp
-    ../descent3/d3serial.cpp
     ../descent3/damage.cpp
     ../descent3/debuggraph.cpp
     ../descent3/dedicated_server.cpp
