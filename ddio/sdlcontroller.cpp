@@ -304,14 +304,13 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
     }
     break;
 
-  case ctAnalogTrigger:
   case ctAxis:
     for (i = 2; i < m_NumControls; i++) {
       float pos;
       float limit;
       unsigned ctl = CONTROLLER_CTL_INFO(i, NULL_CONTROLLER);
 
-      if (m_ControlList[i].flags & CTF_V_AXIS) {
+      if ((m_ControlList[i].flags & CTF_V_AXIS) && !(m_ControlList[i].axis_is_trigger & CTF_V_AXIS)) {
         limit = (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.5f)   ? 0.95f
                 : (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.0f) ? 0.80f
                                                                 : (m_ControlList[i].sens[CT_V_AXIS - 1] / 2);
@@ -319,7 +318,7 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_V_AXIS, NULL_BINDING));
       }
-      if (m_ControlList[i].flags & CTF_U_AXIS) {
+      if (m_ControlList[i].flags & CTF_U_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_U_AXIS)) {
         limit = (m_ControlList[i].sens[CT_U_AXIS - 1] > 1.5f)   ? 0.95f
                 : (m_ControlList[i].sens[CT_U_AXIS - 1] > 1.0f) ? 0.80f
                                                                 : (m_ControlList[i].sens[CT_U_AXIS - 1] / 2);
@@ -327,7 +326,7 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_U_AXIS, NULL_BINDING));
       }
-      if (m_ControlList[i].flags & CTF_R_AXIS) {
+      if (m_ControlList[i].flags & CTF_R_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_R_AXIS)) {
         limit = (m_ControlList[i].sens[CT_R_AXIS - 1] > 1.5f)   ? 0.95f
                 : (m_ControlList[i].sens[CT_R_AXIS - 1] > 1.0f) ? 0.80f
                                                                 : (m_ControlList[i].sens[CT_R_AXIS - 1] / 2);
@@ -335,7 +334,7 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_R_AXIS, NULL_BINDING));
       }
-      if (m_ControlList[i].flags & CTF_Z_AXIS) {
+      if (m_ControlList[i].flags & CTF_Z_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_Z_AXIS)) {
         limit = (m_ControlList[i].sens[CT_Z_AXIS - 1] > 1.5f)   ? 0.95f
                 : (m_ControlList[i].sens[CT_Z_AXIS - 1] > 1.0f) ? 0.80f
                                                                 : (m_ControlList[i].sens[CT_Z_AXIS - 1] / 2);
@@ -343,7 +342,7 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_Z_AXIS, NULL_BINDING));
       }
-      if (m_ControlList[i].flags & CTF_Y_AXIS) {
+      if (m_ControlList[i].flags & CTF_Y_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_Y_AXIS)) {
         limit = (m_ControlList[i].sens[CT_Y_AXIS - 1] > 1.5f)   ? 0.95f
                 : (m_ControlList[i].sens[CT_Y_AXIS - 1] > 1.0f) ? 0.80f
                                                                 : (m_ControlList[i].sens[CT_Y_AXIS - 1] / 2);
@@ -351,7 +350,7 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_Y_AXIS, NULL_BINDING));
       }
-      if (m_ControlList[i].flags & CTF_X_AXIS) {
+      if (m_ControlList[i].flags & CTF_X_AXIS && !(m_ControlList[i].axis_is_trigger & CTF_X_AXIS)) {
         limit = (m_ControlList[i].sens[CT_X_AXIS - 1] > 1.5f)   ? 0.95f
                 : (m_ControlList[i].sens[CT_X_AXIS - 1] > 1.0f) ? 0.80f
                                                                 : (m_ControlList[i].sens[CT_X_AXIS - 1] / 2);
