@@ -1169,9 +1169,6 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       m_frame_time = 0.005f; // to trap potential errors.
     normalizer = ctldev->normalizer[axis] * m_frame_time;
     nullzone = MOUSE_DEADZONE;
-    if (axis == CT_X_AXIS) {
-      // mprintf_at(4, 4, 0, "m_dX:%03d  normal:%03.2f", (int)axisval, normalizer);
-    }
 
   } else {
     normalizer = ctldev->normalizer[axis];

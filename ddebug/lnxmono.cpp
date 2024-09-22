@@ -63,5 +63,3 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
     printf("%s", Mono_buffer);
   }
 }
-
-void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...) {}

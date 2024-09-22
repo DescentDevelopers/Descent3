@@ -1427,7 +1427,6 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
 
           qsort(sort_ping, MAX_PING_HISTORY, sizeof(float), nw_PingCompare);
           rsocket->mean_ping = ((sort_ping[MAX_PING_HISTORY / 2] + sort_ping[(MAX_PING_HISTORY / 2) + 1])) / 2;
-          // mprintf_at(2,i+1,0,"Ping: %f  ",rsocket->mean_ping);
         }
         rsocket->ping_pos++;
         if (rsocket->ping_pos >= MAX_PING_HISTORY) {
@@ -2382,7 +2381,6 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
 
   int my_comp_ratio = (float) ((float)Uncompressed_outgoing_data_len/(float)Compressed_outgoing_data_len);
 
-  mprintf_at(2,1,0,"Compression: %d%%  ",my_comp_ratio);
   */
   if (!Sockets_initted) {
     LOG_ERROR << "Network ==> Socket not inited in nw_Send";

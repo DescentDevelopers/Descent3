@@ -1861,11 +1861,6 @@ void opengl_Flip() {
   RTP_INCRVALUE(texture_uploads, OpenGL_uploads);
   RTP_INCRVALUE(polys_drawn, OpenGL_polys_drawn);
 
-  mprintf_at(1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d   ", OpenGL_uploads, OpenGL_polys_drawn,
-             OpenGL_verts_processed);
-  mprintf_at(1, 2, 0, "Sets= 0:%d   1:%d   2:%d   3:%d   ", OpenGL_sets_this_frame[0], OpenGL_sets_this_frame[1],
-             OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]);
-  mprintf_at(1, 3, 0, "Sets= 4:%d   5:%d  ", OpenGL_sets_this_frame[4], OpenGL_sets_this_frame[5]);
   for (i = 0; i < 10; i++)
     OpenGL_sets_this_frame[i] = 0;
 #endif

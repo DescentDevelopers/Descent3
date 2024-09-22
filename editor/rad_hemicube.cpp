@@ -361,9 +361,6 @@ void EndHemicubeDrawing(int face) {
 
   EndEditorFrame();
 
-  mprintf_at(2, 4, 0, "CTF=%d    ", Cracks_this_frame);
-  mprintf_at(2, 5, 0, "CTS=%d    ", Cracks_this_side);
-
   if (Show_rad_progress) {
     int i, t;
     int key;

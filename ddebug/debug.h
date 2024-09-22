@@ -163,7 +163,6 @@ int Debug_MessageBox(int type, const char *title, const char *str);
 
 // these functions deal with debug spew support
 void Debug_ConsolePrintf(int n, const char *format, ...);
-void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...);
 
 // DEBUGGING MACROS
 // Break into the debugger, if this feature was enabled in Debug_init()
