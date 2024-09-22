@@ -1005,6 +1005,7 @@ void ctl_cfg_element_options_dialog(int16_t fnid) {
   case ctPOV2:
   case ctPOV3:
   case ctPOV4:
+  case ctAnalogTrigger:
     strcpy(str, TXT_CFGHELP_BTNS);
     break;
   default:
