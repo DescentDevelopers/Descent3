@@ -70,8 +70,11 @@ public:
   //	returns the value of a requested controller type. make sure you flush the controller before polling.
   ct_config_data get_controller_value(ct_type type_req) override;
 
-  // return the value associated of a controller axis, when active
+  // fill `val` with the axis and controller values if axis value is over a threshold. Used for control mapping.
   void get_controller_axis_value(int controllerId, unsigned int axis_ctf_flag, uint8_t axis_ct_flag, ct_config_data* val);
+
+  // fill `val` with the axis and controller values if trigger value is over a threshold
+  void get_trigger_value(int controllerId, unsigned int axis_ctf_flag, uint8_t axis_ct_flag, ct_config_data* val);
 
   //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
   void set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags) override;

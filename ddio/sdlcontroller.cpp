@@ -241,6 +241,9 @@ const char *sdlgameController::get_binding_text(ct_type type, uint8_t ctrl, uint
     }
     break;
   }
+  case ctAnalogTrigger:
+    snprintf(binding_text, sizeof(binding_text), "J%d:trig%d", (ctrl - 2) + 1, bind);
+    break;
 
   case ctKey:
     break;
@@ -314,7 +317,16 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
       get_controller_axis_value(controllerId, CTF_X_AXIS, CT_X_AXIS, &val);
     }
     break;
-
+  case ctAnalogTrigger:
+    for (int controllerId = 2; controllerId < m_NumControls; controllerId++) {
+      get_trigger_value(controllerId, CTF_V_AXIS, CT_V_AXIS, &val);
+      get_trigger_value(controllerId, CTF_U_AXIS, CT_U_AXIS, &val);
+      get_trigger_value(controllerId, CTF_R_AXIS, CT_R_AXIS, &val);
+      get_trigger_value(controllerId, CTF_Z_AXIS, CT_Z_AXIS, &val);
+      get_trigger_value(controllerId, CTF_Y_AXIS, CT_Y_AXIS, &val);
+      get_trigger_value(controllerId, CTF_X_AXIS, CT_X_AXIS, &val);
+    }
+    break;
   case ctMouseAxis: {
     float pos = 0.0f;
     int ctl = CONTROLLER_CTL_INFO(1, NULL_CONTROLLER), i = 1;
@@ -407,6 +419,17 @@ void sdlgameController::get_controller_axis_value(int controllerId, unsigned int
   }
 }
 
+void sdlgameController::get_trigger_value(int controllerId, unsigned int axis_ctf_flag, uint8_t axis_ct_flag, ct_config_data* val) {
+  if ((m_ControlList[controllerId].flags & axis_ctf_flag) && (m_ControlList[controllerId].axis_is_trigger & axis_ctf_flag)) {
+    float limit = (m_ControlList[controllerId].sens[axis_ct_flag - 1] > 1.5f)   ? 0.5f
+            : (m_ControlList[controllerId].sens[axis_ct_flag - 1] > 1.0f) ? 0.3f
+                                                            : (m_ControlList[controllerId].sens[axis_ct_flag - 1] / 4);
+    float pos = get_axis_value(controllerId, axis_ct_flag, ctAnalog);
+    if (pos > limit)
+      *val = MAKE_CONFIG_DATA(CONTROLLER_CTL_INFO(controllerId, NULL_CONTROLLER), CONTROLLER_CTL_VALUE(axis_ct_flag, NULL_BINDING));
+  }
+}
+
 //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
 void sdlgameController::set_controller_function(int id, const ct_type *type, ct_config_data value,
                                                 const uint8_t *flags) {
@@ -495,6 +518,7 @@ bool sdlgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
     case ctMouseAxis:
       packet->flags |= CTPK_MOUSE;
     case ctAxis:
+    case ctAnalogTrigger:
       val = get_axis_value(controller, value, alt_format, (m_ElementList[id].flags[i] & CTFNF_INVERT) ? true : false);
       if (m_ElementList[id].flags[i] & CTFNF_INVERT) {
         if (alt_format == ctDigital) {
@@ -503,8 +527,7 @@ bool sdlgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
           val = -val;
         }
       }
-      break;
-
+      break;      
     case ctMouseButton:
       packet->flags |= CTPK_MOUSE;
     case ctButton:
@@ -594,6 +617,7 @@ int sdlgameController::assign_function(ct_function *func) {
     case ctKey:
       elem.ctl[i] = 0;
       break;
+    case ctAnalogTrigger:
     case ctAxis:
       elem.ctl[i] = get_axis_controller(func->value[i]);
       break;
@@ -994,6 +1018,7 @@ void sdlgameController::assign_element(int id, ct_element *elem) {
       case ctPOV2:
       case ctPOV3:
       case ctPOV4:
+      case ctAnalogTrigger:
         //					if (!(m_ControlList[elem->ctl[i]].flags & CTF_POV))
         //						m_ElementList[id].ctl[i] = NULL_WINCONTROLLER;
         break;
