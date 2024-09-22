@@ -74,7 +74,7 @@ public:
   void get_controller_axis_value(int controllerId, unsigned int axis_ctf_flag, uint8_t axis_ct_flag, ct_config_data* val);
 
   // fill `val` with the axis and controller values if trigger value is over a threshold
-  void get_trigger_value(int controllerId, unsigned int axis_ctf_flag, uint8_t axis_ct_flag, ct_config_data* val);
+  void get_controller_trigger_value(int controllerId, unsigned int axis_ctf_flag, uint8_t axis_ct_flag, ct_config_data* val);
 
   //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
   void set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags) override;
@@ -152,6 +152,9 @@ private:
 
   //	note controller is index into ControlList.
   float get_axis_value(int8_t controller, uint8_t axis, ct_format format, bool invert = false);
+
+  // get value of analog button/trigger
+  float get_trigger_value(int8_t controller, uint8_t axis, ct_format format);
 
   //	get value of button in  seconds, presses, etc.
   float get_button_value(int8_t controller, ct_format format, uint8_t button);
