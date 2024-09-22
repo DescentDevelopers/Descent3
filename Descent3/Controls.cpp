@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -879,25 +879,25 @@ void DoControllerMovement(game_controls *controls) {
   ct_packet ctl_pub, ctl_pdb, ctl_hlb, ctl_hrb, ctl_blb, ctl_brb;
 
   //	read controls
-  Controller->get_packet(ctfFORWARD_THRUSTAXIS, &ctl_z);
-  Controller->get_packet(ctfUP_THRUSTAXIS, &ctl_y);
-  Controller->get_packet(ctfRIGHT_THRUSTAXIS, &ctl_x);
-  Controller->get_packet(ctfPITCH_DOWNAXIS, &ctl_p);
-  Controller->get_packet(ctfBANK_RIGHTAXIS, &ctl_b);
-  Controller->get_packet(ctfHEADING_RIGHTAXIS, &ctl_h);
-  Controller->get_packet(ctfUP_BUTTON, &ctl_povu);
-  Controller->get_packet(ctfDOWN_BUTTON, &ctl_povd);
-  Controller->get_packet(ctfRIGHT_BUTTON, &ctl_povr);
-  Controller->get_packet(ctfLEFT_BUTTON, &ctl_povl);
-  Controller->get_packet(ctfFORWARD_BUTTON, &ctl_fb);
-  Controller->get_packet(ctfREVERSE_BUTTON, &ctl_rb);
-  Controller->get_packet(ctfAFTERBURN_BUTTON, &ctl_afterburn);
-  Controller->get_packet(ctfHEADING_LEFTBUTTON, &ctl_hlb);
-  Controller->get_packet(ctfHEADING_RIGHTBUTTON, &ctl_hrb);
-  Controller->get_packet(ctfPITCH_UPBUTTON, &ctl_pub);
-  Controller->get_packet(ctfPITCH_DOWNBUTTON, &ctl_pdb);
-  Controller->get_packet(ctfBANK_LEFTBUTTON, &ctl_blb);
-  Controller->get_packet(ctfBANK_RIGHTBUTTON, &ctl_brb);
+  Controller->get_packet(ctfFORWARD_THRUSTAXIS, &ctl_z, ctAnalog);
+  Controller->get_packet(ctfUP_THRUSTAXIS, &ctl_y, ctAnalog);
+  Controller->get_packet(ctfRIGHT_THRUSTAXIS, &ctl_x, ctAnalog);
+  Controller->get_packet(ctfPITCH_DOWNAXIS, &ctl_p, ctAnalog);
+  Controller->get_packet(ctfBANK_RIGHTAXIS, &ctl_b, ctAnalog);
+  Controller->get_packet(ctfHEADING_RIGHTAXIS, &ctl_h, ctAnalog);
+  Controller->get_packet(ctfUP_BUTTON, &ctl_povu, ctAnalog);
+  Controller->get_packet(ctfDOWN_BUTTON, &ctl_povd, ctAnalog);
+  Controller->get_packet(ctfRIGHT_BUTTON, &ctl_povr, ctAnalog);
+  Controller->get_packet(ctfLEFT_BUTTON, &ctl_povl, ctAnalog);
+  Controller->get_packet(ctfFORWARD_BUTTON, &ctl_fb, ctAnalog);
+  Controller->get_packet(ctfREVERSE_BUTTON, &ctl_rb, ctAnalog);
+  Controller->get_packet(ctfAFTERBURN_BUTTON, &ctl_afterburn, ctAnalog);
+  Controller->get_packet(ctfHEADING_LEFTBUTTON, &ctl_hlb, ctAnalog);
+  Controller->get_packet(ctfHEADING_RIGHTBUTTON, &ctl_hrb, ctAnalog);
+  Controller->get_packet(ctfPITCH_UPBUTTON, &ctl_pub, ctAnalog);
+  Controller->get_packet(ctfPITCH_DOWNBUTTON, &ctl_pdb, ctAnalog);
+  Controller->get_packet(ctfBANK_LEFTBUTTON, &ctl_blb, ctAnalog);
+  Controller->get_packet(ctfBANK_RIGHTBUTTON, &ctl_brb, ctAnalog);
 
   //	do x and y thrust
   controls->sideways_thrust += ctl_x.value;
@@ -935,40 +935,40 @@ void DoControllerMovement(game_controls *controls) {
   }
 
   //	do button heading
-  if (ctl_hlb.value)
-    controls->heading_thrust += (-1.0f);
-  if (ctl_hrb.value)
-    controls->heading_thrust += (1.0f);
+  if (ctl_hlb.value > 0.0f)
+    controls->heading_thrust += ctl_hlb.value;
+  if (ctl_hrb.value > 0.0f)
+    controls->heading_thrust -= ctl_hlb.value;
 
   //	do button pitch
-  if (ctl_pub.value)
-    controls->pitch_thrust += (-1.0f);
-  if (ctl_pdb.value)
-    controls->pitch_thrust += (1.0f);
+  if (ctl_pub.value > 0.0f)
+    controls->pitch_thrust -= ctl_pub.value;
+  if (ctl_pdb.value > 0.0f)
+    controls->pitch_thrust += ctl_pdb.value;
 
   //	do forward thrust based off of button values.
   controls->forward_thrust += ((ctl_fb.value - ctl_rb.value) / Frametime);
 
   //	do button banking
-  if (ctl_blb.value)
-    controls->bank_thrust += (1.0f);
-  if (ctl_brb.value)
-    controls->bank_thrust += (-1.0f);
+  if (ctl_blb.value > 0.0f)
+    controls->bank_thrust += ctl_blb.value;
+  if (ctl_brb.value > 0.0f)
+    controls->bank_thrust -= ctl_blb.value;
 
   // do button sliding.  use control frametime to set sliding times per frame.
   //	note that vertical and sideways thrusts are dependent on what the keyboard controller
   //	set these values to.  so we save our own slidetimes.
-  if (ctl_povu.value) {
-    controls->vertical_thrust += (1.0f);
+  if (ctl_povu.value > 0.0f) {
+    controls->vertical_thrust += ctl_povu.value;
   }
-  if (ctl_povd.value) {
-    controls->vertical_thrust -= (1.0f);
+  if (ctl_povd.value > 0.0f) {
+    controls->vertical_thrust -= ctl_povd.value;
   }
-  if (ctl_povr.value) {
-    controls->sideways_thrust += (1.0f);
+  if (ctl_povr.value > 0.0f) {
+    controls->sideways_thrust += ctl_povr.value;
   }
-  if (ctl_povl.value) {
-    controls->sideways_thrust -= (1.0f);
+  if (ctl_povl.value > 0.0f) {
+    controls->sideways_thrust -= ctl_povl.value;
   }
 }
 
