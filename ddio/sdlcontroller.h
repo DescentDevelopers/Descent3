@@ -112,6 +112,7 @@ private:
   struct t_controller {
     int id = 0;
     uint16_t flags = 0;
+    uint16_t axis_is_trigger = 0;
     uint16_t buttons = 0;
     unsigned btnmask = 0;
     float normalizer[CT_NUM_AXES]{};

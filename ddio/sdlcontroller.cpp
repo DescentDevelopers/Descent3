@@ -304,6 +304,7 @@ ct_config_data sdlgameController::get_controller_value(ct_type type_req) {
     }
     break;
 
+  case ctAnalogTrigger:
   case ctAxis:
     for (i = 2; i < m_NumControls; i++) {
       float pos;
@@ -908,6 +909,14 @@ bool sdlgameController::enum_controllers() {
           ((jc.axes_mask & JOYFLAG_VVALID) ? CTF_V_AXIS : 0) | ((jc.axes_mask & JOYFLAG_POVVALID) ? CTF_POV : 0) |
           ((jc.axes_mask & JOYFLAG_POV2VALID) ? CTF_POV2 : 0) | ((jc.axes_mask & JOYFLAG_POV3VALID) ? CTF_POV3 : 0) |
           ((jc.axes_mask & JOYFLAG_POV4VALID) ? CTF_POV4 : 0);
+
+      m_ControlList[num_devs].axis_is_trigger =
+          ((jc.trigger_axis_mask & JOYFLAG_XVALID) ? CTF_X_AXIS : 0) |
+          ((jc.trigger_axis_mask & JOYFLAG_YVALID) ? CTF_Y_AXIS : 0) |
+          ((jc.trigger_axis_mask & JOYFLAG_ZVALID) ? CTF_Z_AXIS : 0) |
+          ((jc.trigger_axis_mask & JOYFLAG_RVALID) ? CTF_R_AXIS : 0) |
+          ((jc.trigger_axis_mask & JOYFLAG_UVALID) ? CTF_U_AXIS : 0) |
+          ((jc.trigger_axis_mask & JOYFLAG_VVALID) ? CTF_V_AXIS : 0);
   
       int minV = -32768, maxV = 32768;
       m_ControlList[num_devs].normalizer[0] = (maxV - minV) / 2.0f;
