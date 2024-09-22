@@ -153,6 +153,7 @@
 #include "musiclib.h"
 #include "pserror.h"
 #include "streamaudio.h"
+#include "args.h"
 
 OutrageMusicSeq::OutrageMusicSeq() {
   m_sequencer_run = false;
@@ -340,7 +341,7 @@ void OutrageMusicSeq::Frame(float frame_time) {
 
 // music kernal.
 void OutrageMusicSeq::ExecScript(music_stream *strm) {
-  if (!strm)
+  if (!strm || FindArg("-nosound"))
     return;
 
 // get command
