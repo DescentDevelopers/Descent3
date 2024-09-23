@@ -217,7 +217,7 @@ int Debug_ErrorBox(int type, const char *title, const char *topstring, const cha
   else if (type == OSMBOX_OKCANCEL)
     flags = MB_OKCANCEL;
   else
-    debug_break();
+    DEBUG_BREAK();
 
   char *tmpbuf = mem_rmalloc<char>(strlen(topstring) + strlen(bottomstring) + 5);
   wsprintf(tmpbuf, "%s\r\n\r\n%s", topstring, bottomstring);

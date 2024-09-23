@@ -164,24 +164,12 @@ int Debug_MessageBox(int type, const char *title, const char *str);
 // these functions deal with debug spew support
 void Debug_ConsolePrintf(int n, const char *format, ...);
 
-// DEBUGGING MACROS
-// Break into the debugger, if this feature was enabled in Debug_init()
-#if !defined(RELEASE)
-#include "debugbreak.h"
-#if defined(WIN32)
-#elif defined(POSIX)
-void ddio_InternalKeyClose();
-#else
-#define debug_break()
-#endif
-#else
-#define debug_break()
-#endif
-
 #if defined(WIN32)
 
 #include <windows.h>
 
 long WINAPI RecordExceptionInfo(PEXCEPTION_POINTERS data);
+
 #endif
+
 #endif

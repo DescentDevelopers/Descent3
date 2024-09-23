@@ -149,9 +149,9 @@
 
 #include "Application.h"
 #include "AppConsole.h"
-#include "debugbreak.h"
 #include "log.h"
 #include "networking.h"
+#include "pserror.h"
 
 #include <shellapi.h>
 #include <mmsystem.h>
@@ -639,7 +639,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
       if (Win32_AppObjects[i].hWnd == NULL)
         break;
     if (i == MAX_WIN32APPS)
-      debug_break();
+      Int3();
     Win32_AppObjects[i].hWnd = hWnd;
     Win32_AppObjects[i].app = (oeWin32Application *)lpCreateStruct->lpCreateParams;
 

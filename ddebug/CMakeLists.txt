@@ -1,6 +1,5 @@
 set(HEADERS
   debug.h
-  debugbreak.h
   mono.h
   pserror.h
 )
@@ -31,5 +30,6 @@ target_link_libraries(ddebug PRIVATE
     misc
   >
   PUBLIC
+  SDL2::SDL2
   logger
 )

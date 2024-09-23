@@ -66,20 +66,17 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include <stdlib.h>
-#include <string.h>
-
-#include "mono.h"
-#include "pserror.h"
 #include "debug.h"
-#include "application.h"
+#include "pserror.h"
 
 #define MAX_MSG_LEN 2000
 
 //	Debug break chain handlers
-void (*DebugBreak_callback_stop)() = NULL;
-void (*DebugBreak_callback_resume)() = NULL;
+void (*DebugBreak_callback_stop)() = nullptr;
+void (*DebugBreak_callback_resume)() = nullptr;
 
 //	library initialized flag
 static bool Error_initialized = false;
@@ -115,17 +112,16 @@ bool error_Init(bool debugger, const char *app_title) {
 //	exits the application and prints out a standard error message
 void Error(const char *fmt, ...) {
   std::va_list arglist;
-  int exit_msg_len;
 
   strcpy(Exit_message, "Error: ");
 
   va_start(arglist, fmt);
-  exit_msg_len = strlen(Exit_message);
+  size_t exit_msg_len = strlen(Exit_message);
   std::vsnprintf(Exit_message + exit_msg_len, MAX_MSG_LEN - exit_msg_len, fmt, arglist);
   va_end(arglist);
 
   snprintf(Exit_title_str, sizeof(Exit_title_str), "%s Error", App_title);
-  mprintf(0, "%s\n", Exit_message);
+  LOG_ERROR.printf("%s", Exit_message);
 
 #ifdef _DEBUG
   int answer = IDOK;
@@ -141,7 +137,7 @@ void Error(const char *fmt, ...) {
 
   switch (answer) {
   case IDRETRY:
-    debug_break(); // Step Out of this function to see where Error() was called
+    SDL_TriggerBreakpoint(); // Step Out of this function to see where Error() was called
     // fall into ignore/cancel case
   case IDIGNORE:
   case IDCANCEL:
@@ -162,7 +158,7 @@ void Error(const char *fmt, ...) {
 #endif
 
   // Clear the DEBUG_BREAK() callbacks
-  SetDebugBreakHandlers(NULL, NULL);
+  SetDebugBreakHandlers(nullptr, nullptr);
 
   // Leave the program
   exit(0);
@@ -175,7 +171,7 @@ void Int3MessageBox(const char *file, int line) {
   int answer;
 
   snprintf(title, sizeof(title), "%s Debug Break", App_title);
-  snprintf(message, sizeof(message), "Int3 in %s at line %d.", file, line);
+  snprintf(message, sizeof(message), "Int3 in %s:%d.", file, line);
 
   if (DebugBreak_callback_stop)
     (*DebugBreak_callback_stop)();
@@ -183,7 +179,7 @@ void Int3MessageBox(const char *file, int line) {
   answer = Debug_ErrorBox(OSMBOX_YESNO, title, message, "It's probably safe to continue.  Continue?");
 
   if (answer == IDNO) {
-    SetDebugBreakHandlers(NULL, NULL);
+    SetDebugBreakHandlers(nullptr, nullptr);
     exit(1);
   }
 
@@ -207,7 +203,7 @@ void AssertionFailed(const char *expstr, const char *file, int line) {
   answer = Debug_ErrorBox(OSMBOX_YESNO, title, message, "Continue?");
 
   if (answer == IDNO) {
-    SetDebugBreakHandlers(NULL, NULL);
+    SetDebugBreakHandlers(nullptr, nullptr);
     exit(1);
   }
 

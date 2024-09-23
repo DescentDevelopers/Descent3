@@ -39,6 +39,7 @@
  */
 
 #include <cstdio>
+#include <SDL_assert.h>
 
 #include "debug.h"
 
@@ -50,9 +51,9 @@
 int Debug_ErrorBox(int type, const char *topstring, const char *title, const char *bottomstring) {
   int answer = 0;
 
-  fprintf(stderr, "\n%s(%s)\n\n%s\n\n%s\n", title, topstring, "System Error", bottomstring);
+  fprintf(stderr, "\n%s (%s)\n\n%s\n\n%s\n", topstring, title, "System Error", bottomstring);
 
-  debug_break();
+  SDL_TriggerBreakpoint();
 
   return answer;
 }
