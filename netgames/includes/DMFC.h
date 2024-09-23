@@ -288,19 +288,17 @@
 #ifndef __DMFC_H__
 #define __DMFC_H__
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdarg>
+#include <ctime>
+#include <SDL_assert.h>
+
 #include "gamedll_header.h"
 #include "DMFCKeyCodes.h"
 
-#if ((defined POSIX) && (!defined __i386__))
-#include <signal.h>
-#endif
-
 #ifndef RELEASE
 
-#ifdef WIN32
+// Debug macros. Keep in sync with ddebug module (pserror.h)
 #ifdef DEBUG_BREAK
 #undef DEBUG_BREAK
 #endif
@@ -308,22 +306,9 @@
   do {                                                                                                                 \
     if (DLLDebugBreak_callback_stop)                                                                                   \
       DLLDebugBreak_callback_stop();                                                                                   \
-    debug_break();                                                                                                     \
-    if (DebugBreak_callback_resume)                                                                                    \
-      DebugBreak_callback_resume();                                                                                    \
-  } while (0)
-
-#define DLLASSERT(x)                                                                                                   \
-  do {                                                                                                                 \
-    DLLassert(x, #x, __FILE__, __LINE__);                                                                              \
-  } while (0)
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-#ifdef ASSERT
-#undef ASSERT
-#endif
-#define ASSERT(x)                                                                                                      \
-  do {                                                                                                                 \
-    DLLassert(x, #x, __FILE__, __LINE__);                                                                              \
+    SDL_assert(false);                                                                                                 \
+    if (DLLDebugBreak_callback_resume)                                                                                 \
+      DLLDebugBreak_callback_resume();                                                                                 \
   } while (0)
 
 #ifdef Int3
@@ -331,73 +316,35 @@
 #endif
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                         \
-    if (DLLDebugBreak_callback_stop)                                                                                   \
-      DLLDebugBreak_callback_stop();                                                                                   \
-    debug_break();                                                                                                     \
-    if (DLLDebugBreak_callback_resume)                                                                                 \
-      DLLDebugBreak_callback_resume();                                                                                 \
-  } while (0)
-#elif defined(POSIX)
-// For some reason Linux doesn't like the \ continuation character, so I have to uglify this
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-#ifdef DEBUG_BREAK
-#undef DEBUG_BREAK
-#endif
-#if (defined __i386__) || defined(__x86_64__)
-#define DEBUG_BREAK()                                                                                                  \
-  do {                                                                                                                 \
-    if (DLLDebugBreak_callback_stop)                                                                                   \
-      DLLDebugBreak_callback_stop();                                                                                   \
-    __asm__ __volatile__("int $3");                                                                                    \
-    if (DLLDebugBreak_callback_resume)                                                                                 \
-      DLLDebugBreak_callback_resume();                                                                                 \
-  } while (0)
-#else
-#define DEBUG_BREAK()                                                                                                  \
-  do {                                                                                                                 \
-    if (DLLDebugBreak_callback_stop)                                                                                   \
-      DLLDebugBreak_callback_stop();                                                                                   \
-    raise(SIGTRAP);                                                                                                    \
-    if (DLLDebugBreak_callback_resume)                                                                                 \
-      DLLDebugBreak_callback_resume();                                                                                 \
-  } while (0)
-#endif
-
-#ifdef ASSERT
-#undef ASSERT
-#endif
-#define ASSERT(x)                                                                                                      \
-  do {                                                                                                                 \
-    DLLassert(x, #x, __FILE__, __LINE__);                                                                              \
-  } while (0)
-#define DLLASSERT(x) ASSERT(x)
-#ifdef Int3
-#undef Int3
-#endif
-#define Int3()                                                                                                         \
-  do {                                                                                                                 \
-    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                         \
+    mprintf(0, "Int3 at %s:%d.\n", __FILE__, __LINE__);                                                                \
     DEBUG_BREAK();                                                                                                     \
   } while (0)
-#define HEAPCHECK()
-#else
-#ifdef DEBUG_BREAK
-#undef DEBUG_BREAK
-#define DEBUG_BREAK()
-#endif
-#define DLLASSERT(x)
-#define DLLmprintf(...)
-#ifdef Int3
-#undef Int3
-#define Int3()
-#endif
-#define Int3()
+
 #ifdef ASSERT
 #undef ASSERT
-#define ASSERT(x)
 #endif
-#endif // OS check
+#define ASSERT(x)                                                                                                      \
+  do {                                                                                                                 \
+    DLLassert(x, #x, __FILE__, __LINE__);                                                                              \
+  } while (0)
+
+#define DLLASSERT(x) ASSERT(x)
+
+#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
+
+#if defined(WIN32)
+
+#define HEAPCHECK()                                                                                                    \
+  do {                                                                                                                 \
+    if (_heapchk() != _HEAPOK)                                                                                         \
+      Int3();                                                                                                          \
+  } while (0)
+
+#elif defined(POSIX)
+
+#define HEAPCHECK()
+
+#endif
 
 #else // Release build
 
