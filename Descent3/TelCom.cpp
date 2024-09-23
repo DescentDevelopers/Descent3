@@ -519,6 +519,7 @@
 #include "hlsoundlib.h"
 #include "soundload.h"
 #include "textaux.h"
+#include "pserror.h"
 #include "psrand.h"
 #include "controls.h"
 #include "d3music.h"

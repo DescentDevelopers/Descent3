@@ -861,6 +861,7 @@
 #include "gamefont.h"
 #include "renderobject.h"
 #include "buddymenu.h"
+#include "pserror.h"
 
 #ifdef EDITOR
 #include "editor\d3edit.h"

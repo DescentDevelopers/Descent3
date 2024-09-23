@@ -200,6 +200,7 @@
 #include "ship.h"
 #include "3d.h"
 #include "weapon.h"
+#include "pserror.h"
 #include "stringtable.h"
 
 //////////////////////////////////////////////////////////////////////////////

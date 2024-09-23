@@ -170,6 +170,7 @@
 #include "application.h"
 #include "bitmap.h"
 #include "log.h"
+#include "pserror.h"
 #include "renderer.h"
 #include "Macros.h"
 

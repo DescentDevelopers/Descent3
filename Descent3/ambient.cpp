@@ -82,6 +82,7 @@
 
 #include "room.h"
 #include "game.h"
+#include "pserror.h"
 #include "psrand.h"
 
 #define MAX_AMBIENT_SOUND_PATTERNS 100

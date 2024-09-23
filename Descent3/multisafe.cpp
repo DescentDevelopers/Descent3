@@ -657,6 +657,7 @@
 #include "sounds.h"
 #include "ship.h"
 #include "player.h"
+#include "pserror.h"
 #include "object_lighting.h"
 #include "soundload.h"
 #include "streamaudio.h"

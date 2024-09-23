@@ -400,22 +400,26 @@
 #endif // OS check
 
 #else // Release build
+
 #ifdef DEBUG_BREAK
 #undef DEBUG_BREAK
-#define DEBUG_BREAK()
 #endif
+#define DEBUG_BREAK()
+
 #define DLLASSERT(x)
 #define DLLmprintf(...)
+
 #ifdef Int3
 #undef Int3
-#define Int3()
 #endif
 #define Int3()
+
 #ifdef ASSERT
 #undef ASSERT
+#endif
 #define ASSERT(x)
-#endif
-#endif
+
+#endif // #ifndef RELEASE
 
 #ifdef mprintf // undefine mprintf and redirect it to use DLLmprintf
 #undef mprintf

@@ -294,6 +294,7 @@
 #include "osiris_dll.h"
 #include "args.h"
 #include "gamecinematics.h"
+#include "pserror.h"
 #include "psrand.h"
 #include "cockpit.h"
 // We borrow a lot of code from the savegame system

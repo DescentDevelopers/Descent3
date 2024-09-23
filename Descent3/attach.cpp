@@ -24,6 +24,7 @@
 #include "demofile.h"
 #include "polymodel.h"
 #include "objinfo.h"
+#include "pserror.h"
 
 /*	// Determines the necessary orientation and position of the moving object
         f_use_uvec = true;

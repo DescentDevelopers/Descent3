@@ -92,6 +92,7 @@
 #include "mem.h"
 #include "d3music.h"
 #include "hlsoundlib.h"
+#include "pserror.h"
 #include "psrand.h"
 
 /*

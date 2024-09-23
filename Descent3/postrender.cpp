@@ -76,13 +76,13 @@
 #include "..\neweditor\globals.h"
 #endif
 
-#include <stdlib.h>
 #include "object.h"
 #include "viseffect.h"
 #include "render.h"
 #include "renderobject.h"
 #include "room.h"
 #include "postrender.h"
+#include "pserror.h"
 #include "config.h"
 #include "terrain.h"
 #include "renderer.h"

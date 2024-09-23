@@ -304,7 +304,6 @@
 #include "log.h"
 #include "newui.h"
 #include "game.h"
-#include "descent.h"
 #include "renderer.h"
 #include "3d.h"
 #include "gamefont.h"
@@ -314,6 +313,7 @@
 #include "newui_core.h"
 #include "hlsoundlib.h"
 #include "dedicated_server.h"
+#include "pserror.h"
 
 #define MSGBOX_HEIGHT msgbox.H()
 #define BTN_WIDTH 96

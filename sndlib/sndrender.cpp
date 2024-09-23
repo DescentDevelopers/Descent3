@@ -59,7 +59,7 @@
 #include "application.h"
 #include "soundload.h"
 #include "gametexture.h"
-
+#include "pserror.h"
 
 static llsGeometry *Geometry = NULL;
 static int16_t Sound_room_list[SOUND_RENDER_ROOM_LIMIT + 1];

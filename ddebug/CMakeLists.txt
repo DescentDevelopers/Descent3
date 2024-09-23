@@ -26,9 +26,10 @@ target_include_directories(ddebug PUBLIC
   PRIVATE ${PROJECT_BINARY_DIR}/lib   # For d3_version.h
 )
 target_link_libraries(ddebug PRIVATE
-  logger
   $<$<PLATFORM_ID:Windows>:
     mem
     misc
   >
+  PUBLIC
+  logger
 )

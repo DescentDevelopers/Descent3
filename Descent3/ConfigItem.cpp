@@ -92,10 +92,10 @@
 
 #include "ConfigItem.h"
 #include "newui.h"
-#include "descent.h"
 #include "log.h"
 #include "gamefont.h"
 #include "mem.h"
+#include "pserror.h"
 #include "stringtable.h"
 
 #define UI_CHECKBOX_OFF_CHAR 28

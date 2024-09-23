@@ -586,6 +586,7 @@
 #include "DeathInfo.h"
 #include "AIGoal.h"
 #include "viseffect.h"
+#include "pserror.h"
 #include "psrand.h"
 
 

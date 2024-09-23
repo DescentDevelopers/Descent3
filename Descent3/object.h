@@ -632,7 +632,6 @@
 
 #include "object_external_struct.h"
 #include "object_external.h"
-#include "pserror.h"
 
 /*
  *		CONSTANTS
@@ -706,24 +705,7 @@ extern int16_t BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
  */
 
 // Set the dead flag for an object
-static inline void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove = false, bool play_sound_on_clients = false);
-static inline void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove, bool play_sound_on_clients) {
-  int objnum = OBJNUM(obj);
-  ASSERT(objnum != -1);
-  ASSERT(objnum != 0);
-  ASSERT(obj->type != OBJ_NONE);
-  ASSERT(obj != Player_object);
-
-  obj->flags |= OF_DEAD;
-
-  if (tell_clients_to_remove) {
-    if (play_sound_on_clients) {
-      obj->flags |= OF_SEND_MULTI_REMOVE_ON_DEATHWS;
-    } else {
-      obj->flags |= OF_SEND_MULTI_REMOVE_ON_DEATH;
-    }
-  }
-}
+void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove = false, bool play_sound_on_clients = false);
 
 void SetObjectControlType(object *obj, int control_type);
 

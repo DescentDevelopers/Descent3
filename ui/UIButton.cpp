@@ -123,7 +123,9 @@
 
 #include <cstring>
 
+#include "pserror.h"
 #include "UIlib.h"
+#include "ui.h"
 
 #if defined(POSIX)
 int UIButton::m_ButtonFont;
@@ -161,6 +163,11 @@ void UIButton::Create(UIWindow *parent, int id, UIItem *item, int x, int y, int 
   UIGadget::Create(parent, id, x, y, w, h, flags);
 }
 
+UIItem *UIButton::GetStateItem(int state) {
+  ASSERT(state < UI_BTS_NUM);
+  return m_Items[state];
+};
+
 // sets the background bitmap for a specified button state
 void UIButton::SetStateItem(int state, UIItem *item) {
   ASSERT(state < UI_BTS_NUM);
@@ -171,6 +178,11 @@ void UIButton::SetStateItem(int state, UIItem *item) {
   if (item)
     m_Items[state] = item->CopyUIItem();
 }
+
+int UIButton::GetColor(int state) const {
+  ASSERT(state < UI_BTS_NUM);
+  return m_Colors[state];
+};
 
 // sets the background color for a specified button state
 void UIButton::SetColor(int state, ddgr_color col) {

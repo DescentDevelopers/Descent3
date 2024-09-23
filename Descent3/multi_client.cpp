@@ -142,6 +142,7 @@
 #include "player.h"
 #include "ddio.h"
 #include "pilot.h"
+#include "pserror.h"
 #include "Mission.h"
 #include "stringtable.h"
 #include "ship.h"

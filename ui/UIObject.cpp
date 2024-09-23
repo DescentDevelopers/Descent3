@@ -40,6 +40,7 @@
 
 #include "UIlib.h"
 #include "log.h"
+#include "pserror.h"
 
 UIObject::UIObject() {
   m_X = m_Y = 0;

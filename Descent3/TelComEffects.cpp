@@ -143,6 +143,7 @@
 #include "vecmat.h"
 #include "textaux.h"
 #include "hlsoundlib.h"
+#include "pserror.h"
 #include "soundload.h"
 
 tceffect TCEffects[MAX_TCEFFECTS];

@@ -109,6 +109,7 @@
 #include "game.h"
 #include "log.h"
 #include "newui.h"
+#include "pserror.h"
 #include "pstring.h"
 #include "renderer.h"
 #include "stringtable.h"

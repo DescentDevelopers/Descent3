@@ -416,6 +416,7 @@
 #include "multi_world_state.h"
 #include "damage_external.h"
 #include "descent.h"
+#include "pserror.h"
 #ifdef EDITOR
 #include "editor\editor_lighting.h"
 #endif

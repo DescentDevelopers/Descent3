@@ -331,6 +331,7 @@
 #include "manage.h"
 #include "menu.h"
 #include "pilot.h"
+#include "pserror.h"
 #include "ddio.h"
 #include "objinfo.h"
 #include "ship.h"

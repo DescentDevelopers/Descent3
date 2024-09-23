@@ -141,7 +141,7 @@
 #include "log.h"
 #include "Macros.h"
 #include "mem.h"
-
+#include "pserror.h"
 
 static UIEdit *UI_current_editbox = NULL;
 

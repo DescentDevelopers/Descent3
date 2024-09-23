@@ -597,6 +597,7 @@
 #include "newui.h"
 #include "pilot.h"
 #include "polymodel.h"
+#include "pserror.h"
 #include "pstring.h"
 #include "renderer.h"
 #include "render.h"

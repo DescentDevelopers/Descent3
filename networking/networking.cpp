@@ -294,6 +294,7 @@
 #include "directplay.h"
 #include "dplay.h"
 #include "dplobby.h"
+#include "module.h"
 
 typedef int socklen_t;
 #endif

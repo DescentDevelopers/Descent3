@@ -104,9 +104,9 @@
 #include "mem.h"
 #include "vecmat.h"
 #include "terrain.h"
-#include "room.h"
 #include "findintersection.h"
 #include "BOA.h"
+#include "pserror.h"
 #include "psrand.h"
 
 bn_list BNode_terrain_list[8];
