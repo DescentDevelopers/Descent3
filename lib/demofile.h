@@ -109,6 +109,8 @@
 #include <cstdint>
 #include <filesystem>
 
+#include "object_external_struct.h"
+
 extern std::filesystem::path Demo_fname;
 
 extern uint32_t Demo_flags;

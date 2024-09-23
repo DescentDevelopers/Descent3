@@ -403,25 +403,26 @@
 #include <filesystem>
 #include <map>
 
-#include "osiris_dll.h"
-#include "pserror.h"
 #include "cfile.h"
 #include "ddio.h"
+#include "demofile.h"
+#include "DllWrappers.h"
+#include "door.h"
+#include "game.h"
+#include "gamecinematics.h"
+#include "osiris_dll.h"
+#include "localization.h"
 #include "log.h"
 #include "manage.h"
 #include "mem.h"
-#include "DllWrappers.h"
-#include "objinfo.h"
-#include "multisafe.h"
-#include "osiris_predefs.h"
-#include "trigger.h"
-#include "game.h"
+#include "module.h"
 #include "multi.h"
-#include "door.h"
-#include "localization.h"
+#include "multisafe.h"
+#include "objinfo.h"
+#include "osiris_predefs.h"
 #include "player.h"
-#include "gamecinematics.h"
-#include "demofile.h"
+#include "pserror.h"
+#include "trigger.h"
 
 #ifdef _DEBUG
 #define OSIRISDEBUG
@@ -3101,12 +3102,7 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   LOG_INFO << "OSIRIS: Extracting Scripts From Hog";
 
-  char filename[_MAX_PATH];
-  std::filesystem::path temp_filename;
   std::filesystem::path tempdir;
-  std::filesystem::path temp_file;
-  std::string temp_realname;
-  tExtractedScriptInfo t;
 
   if (OSIRIS_Extracted_script_dir.empty()) {
     tempdir = Descent3_temp_directory;
@@ -3115,61 +3111,23 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
     tempdir = OSIRIS_Extracted_script_dir;
   }
 
-  int count = 0;
-
-  const char *script_extension;
-#if defined(MACOSX)
-  script_extension = "*.dylib";
-#elif defined(__LINUX__)
-  script_extension = "*.so";
-#elif defined(WIN32)
-  script_extension = "*.dll";
-#else
-#error Unsupported platform!
-#endif
-
   LOG_DEBUG << "Search started";
-  if (cf_LibraryFindFirst(library_handle, script_extension, filename)) {
-    temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
-    if (temp_filename.empty())
-      Int3();
-    else {
-      // extract it out
-      cf_CopyFile(temp_filename, filename);
 
-      temp_file = temp_filename.filename();
-      temp_realname = std::filesystem::path(filename).stem().u8string();
-      // Lowercase for optimized search
-      std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(), [](unsigned char c) {
-        return std::tolower(c);
-      });
-
-      if (is_mission_hog) {
-        t.flags = OESF_MISSION;
-      }
-      t.temp_filename = temp_file;
-      OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
-
-      LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
-
-      count++;
-
-      while (cf_LibraryFindNext(filename)) {
-        // generate temp filename
-        temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
-        if (temp_filename.empty())
+  int count = cf_DoForeachFileInLibrary(
+      library_handle, MODULE_EXT, [&tempdir, &is_mission_hog](const std::filesystem::path &filename) {
+        std::filesystem::path temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
+        if (temp_filename.empty()) {
           Int3();
-        else {
+        } else {
           // extract it out
           cf_CopyFile(temp_filename, filename);
 
-          temp_file = temp_filename.filename();
-          temp_realname = std::filesystem::path(filename).stem().u8string();
+          std::filesystem::path temp_file = temp_filename.filename();
+          std::string temp_realname = std::filesystem::path(filename).stem().u8string();
           // Lowercase for optimized search
-          std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(), [](unsigned char c) {
-            return std::tolower(c);
-          });
-
+          std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(),
+                         [](unsigned char c) { return std::tolower(c); });
+          tExtractedScriptInfo t;
           if (is_mission_hog) {
             t.flags = OESF_MISSION;
           }
@@ -3177,16 +3135,10 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
           OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
 
           LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
-
-          count++;
         }
-      }
-    }
-  }
+      });
 
   LOG_DEBUG.printf("Extracted %d scripts", count);
-
-  cf_LibraryFindClose();
 
   atexit(_clearextractedall);
 
