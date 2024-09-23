@@ -2,9 +2,11 @@ set(HEADERS
   debug.h
   debugbreak.h
   mono.h
+  pserror.h
 )
 set(CPPS
   debug.cpp
+  error.cpp
   $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
     lnxdebug.cpp
     lnxmono.cpp

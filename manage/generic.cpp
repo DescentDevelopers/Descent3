@@ -363,8 +363,6 @@
 #include "log.h"
 #include "pserror.h"
 #include "polymodel.h"
-#include "ddio.h"
-#include "robotfire.h"
 #include "weapon.h"
 #include "sounds.h"
 #include "mem.h"

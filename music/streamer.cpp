@@ -63,6 +63,7 @@
 #include "log.h"
 #include "music.h"
 #include "streamaudio.h"
+#include "pserror.h"
 
 oms_stream::oms_stream() {}
 

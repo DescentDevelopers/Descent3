@@ -36,6 +36,7 @@ target_link_libraries(renderer PRIVATE
   glm::glm
   SDL2::SDL2
   bitmap
+  ddebug
   ddio
   logger
   mem

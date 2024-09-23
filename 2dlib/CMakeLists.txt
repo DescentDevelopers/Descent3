@@ -1,6 +1,7 @@
 set(HEADERS
   gr.h
-  lib2d.h)
+  lib2d.h
+)
 set(CPPS
   font.cpp
   hardsurf.cpp
@@ -15,9 +16,9 @@ set(CPPS
 add_library(2dlib STATIC ${HEADERS} ${CPPS})
 target_link_libraries(2dlib PRIVATE
   cfile
+  ddebug
   logger
   mem
-  misc
 )
 target_include_directories(2dlib PUBLIC
   $<BUILD_INTERFACE:

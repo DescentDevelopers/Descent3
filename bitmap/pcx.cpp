@@ -61,7 +61,6 @@
 #include "grdefs.h"
 #include "log.h"
 #include "mem.h"
-#include "pserror.h"
 
 // load an 8bit pcx image
 static int bm_pcx_8bit_alloc_file(CFILE *infile);

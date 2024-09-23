@@ -57,7 +57,6 @@
 
 #include "appdatabase.h"
 #include "linux/lnxdatabase.h"
-#include "pserror.h"
 #include "log.h"
 #include "pserror.h"
 #include "registry.h"

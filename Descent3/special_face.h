@@ -19,8 +19,8 @@
 #ifndef SPECIAL_FACE_H
 #define SPECIAL_FACE_H
 
-#include "pstypes.h"
-#include "pserror.h"
+#include <cstdint>
+
 #include "vecmat.h"
 
 #define BAD_SPECIAL_FACE_INDEX -1

@@ -12,5 +12,4 @@ target_link_libraries(win32 PRIVATE
   ddebug
   ddio
   logger
-  misc
 )

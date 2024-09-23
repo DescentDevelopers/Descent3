@@ -10,6 +10,7 @@ set(CPPS
 
 add_library(cfile STATIC ${HEADERS} ${CPPS})
 target_link_libraries(cfile PRIVATE
+  ddebug
   ddio
   logger
   mem

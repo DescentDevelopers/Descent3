@@ -32,7 +32,6 @@ target_link_libraries(ddio PRIVATE
   ddebug
   logger
   mem
-  misc
 )
 target_include_directories(ddio PUBLIC
   $<BUILD_INTERFACE:

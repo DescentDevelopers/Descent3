@@ -1,6 +1,7 @@
 set(HEADERS
   grtext.h
-  grtextlib.h)
+  grtextlib.h
+)
 set(CPPS
   grfont.cpp
   grtext.cpp
@@ -9,10 +10,10 @@ set(CPPS
 
 add_library(grtext STATIC ${HEADERS} ${CPPS})
 target_link_libraries(grtext PRIVATE
+  ddebug
   ddio
   logger
   mem
-  misc
 )
 target_include_directories(grtext PUBLIC
   $<BUILD_INTERFACE:

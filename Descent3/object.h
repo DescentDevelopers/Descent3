@@ -628,10 +628,11 @@
 #ifndef _OBJECT_H
 #define _OBJECT_H
 
-#include "pstypes.h"
-#include "pserror.h"
+#include <cstdint>
+
 #include "object_external_struct.h"
 #include "object_external.h"
+#include "pserror.h"
 
 /*
  *		CONSTANTS

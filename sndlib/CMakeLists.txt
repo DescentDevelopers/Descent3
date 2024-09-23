@@ -20,10 +20,10 @@ set(CPPS
 add_library(sndlib STATIC ${HEADERS} ${CPPS})
 target_link_libraries(sndlib PRIVATE
   cfile
+  ddebug
   ddio
   logger
   mem
-  misc
   stream_audio
   physics
   SDL2::SDL2

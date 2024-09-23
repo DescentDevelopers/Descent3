@@ -323,11 +323,9 @@ typedef int socklen_t;
 #include "networking.h"
 #include "ddio.h"
 #include "mem.h"
-#include "module.h"
 #include "game.h"
 #include "args.h"
 #include "byteswap.h"
-#include "pstring.h"
 
 #ifndef WIN32
 bool Use_DirectPlay = false;
