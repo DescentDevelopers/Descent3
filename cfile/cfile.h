@@ -101,8 +101,6 @@
 #include <functional>
 #include <vector>
 
-#include "pstypes.h"
-
 struct library;
 
 // The structure for a CFILE
@@ -327,12 +325,6 @@ void cf_Rewind(CFILE *fp);
 // Calculates a 32 bit CRC
 uint32_t cf_GetfileCRC(const std::filesystem::path &src);
 uint32_t cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
-
-// the following cf_LibraryFind function are similar to the ddio_Find functions as they look
-// for files that match the wildcard passed in, however, this is to be used for hog files.
-bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer);
-bool cf_LibraryFindNext(char *buffer);
-void cf_LibraryFindClose();
 
 /**
  * Execute function for each file in lib that matches to extension.

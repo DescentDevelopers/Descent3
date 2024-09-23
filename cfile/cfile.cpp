@@ -35,7 +35,6 @@
 #include "log.h"
 #include "mem.h"
 #include "pserror.h"
-#include "psglob.h"
 
 // Library structures
 struct library_entry {
@@ -941,81 +940,6 @@ uint32_t cf_GetfileCRC(const std::filesystem::path &src) {
   cfclose(infile);
 
   return crc;
-}
-
-char cfile_search_wildcard[256];
-std::shared_ptr<library> cfile_search_library;
-int cfile_search_curr_index = 0;
-bool cfile_search_ispattern = false;
-//	the following cf_LibraryFind function are similar to the ddio_Find functions as they look
-//	for files that match the wildcard passed in, however, this is to be used for hog files.
-bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer) {
-  ASSERT(wildcard);
-  ASSERT(buffer);
-  if (!wildcard || !buffer)
-    return false;
-  *buffer = '\0';
-  if (cfile_search_library)
-    cf_LibraryFindClose();
-  // find the library
-  cfile_search_library = Libraries;
-  while (cfile_search_library && cfile_search_library->handle != handle) {
-    cfile_search_library = cfile_search_library->next;
-  }
-  if (!cfile_search_library)
-    return false;
-  // now find the first matching file
-  strncpy(cfile_search_wildcard, wildcard, 255);
-  cfile_search_wildcard[255] = '\0';
-  cfile_search_ispattern = (bool)(PSGlobHasPattern(cfile_search_wildcard) != 0);
-  cfile_search_curr_index = 0;
-
-  while (cfile_search_curr_index < cfile_search_library->nfiles) {
-    if (cfile_search_ispattern) {
-      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index]->name, 0, 0)) {
-        // it's a match
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    } else {
-      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index]->name, cfile_search_wildcard)) {
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    }
-    cfile_search_curr_index++;
-  }
-  // we didn't find a match
-  return false;
-}
-
-bool cf_LibraryFindNext(char *buffer) {
-  while (cfile_search_curr_index < cfile_search_library->nfiles) {
-    if (cfile_search_ispattern) {
-      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index]->name, 0, 0)) {
-        // it's a match
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    } else {
-      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index]->name, cfile_search_wildcard)) {
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    }
-    cfile_search_curr_index++;
-  }
-  return false;
-}
-
-void cf_LibraryFindClose() {
-  cfile_search_library = nullptr;
-  cfile_search_curr_index = 0;
-  cfile_search_ispattern = false;
 }
 
 int cf_DoForeachFileInLibrary(int handle, const std::filesystem::path &ext,
