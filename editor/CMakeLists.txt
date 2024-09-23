@@ -587,7 +587,6 @@ target_link_libraries(Descent3Editor
     bitmap
     cfile
 
-    dd_video
     ddio
     ddebug
     libmve

@@ -319,7 +319,6 @@ target_link_libraries(Descent3 PRIVATE
   AudioEncode
   bitmap
   cfile
-  dd_video
   ddebug
   ddio
   fix

@@ -508,7 +508,6 @@
 #include "ObjScript.h"
 #include "controls.h"
 #include "3d.h"
-#include "ddvid.h"
 #include "gamefont.h"
 #include "newui.h"
 #include "pilot.h"
@@ -635,9 +634,6 @@ void GameToEditor(bool set_viewer_from_player) {
 
   //	Reset previous working directory
   ddio_SetWorkingDir(Editor_dir);
-
-  //	close down video system only!
-  ddvid_Close();
 
   ASSERT((OBJECT_OUTSIDE(Viewer_object) != 0) == (Editor_view_mode == VM_TERRAIN));
 
@@ -819,10 +815,6 @@ void EditorToGame() {
     Saved_editor_app->defer();
     Descent->defer();
 
-    //	Initialize graphics and sound this must be done after initialization of new window and
-    //	after deferring to OS.
-    if (!ddvid_Init(Descent, subsystem))
-      Error("Graphics initialization failed.\n");
   } else if (D3EditState.fullscreen_debug_state) {
     CMenu *menu = theApp.main_frame->GetMenu();
 
@@ -840,11 +832,6 @@ void EditorToGame() {
     Saved_editor_app->defer();
     Descent->defer();
 
-    //	Initialize graphics and sound this must be done after initialization of new window and
-    //	after deferring to OS.
-    if (!ddvid_Init(Saved_editor_app, subsystem))
-      Error("Graphics initialization failed.\n");
-
     //	force application to think it's active.
     SetActiveWindow((HWND)hGameWnd);
     //	Descent->activate();
@@ -859,10 +846,6 @@ void EditorToGame() {
     SetWindowLong(theApp.main_frame->m_hWnd, GWL_STYLE, EditorWndStyle & ~(WS_CAPTION | WS_THICKFRAME | WS_BORDER));
     SetClassLong(theApp.main_frame->m_hWnd, GCL_HBRBACKGROUND, (DWORD)GetStockObject(HOLLOW_BRUSH));
 
-    //	Initialize graphics and sound this must be done after initialization of new window and
-    //	after deferring to OS.
-    if (!ddvid_Init(Descent, subsystem))
-      Error("Graphics initialization failed.\n");
   }
 
   //	Initialize IO System for child window
@@ -871,9 +854,6 @@ void EditorToGame() {
 
   // Init force feedback
   ForceInit();
-
-  //	Create game screen and clear it.
-  ddvid_SetVideoHandle(hGameWnd);
 
   //	Initialize everything else.
   InitEditGameSystems();

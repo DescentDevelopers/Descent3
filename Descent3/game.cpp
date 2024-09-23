@@ -658,7 +658,6 @@
 #include <cstring>
 
 #include "game.h"
-#include "ddvid.h"
 #include "ddio.h"
 #include "pserror.h"
 #include "descent.h"
@@ -1024,15 +1023,6 @@ void SetScreenMode(int sm, bool force_res_change) {
     rend_width = rs.screen_width;
     rend_height = rs.screen_height;
 
-    //	sets up the screen resolution for the system
-    if (!UseHardware) {
-      ddvid_SetVideoMode(rend_width, rend_height, BPP_16, true);
-    } else {
-      if (PreferredRenderer == RENDERER_OPENGL) {
-        ddvid_SetVideoMode(rend_width, rend_height, BPP_16, false);
-      }
-    }
-
     //	chose font.
     SelectHUDFont(rend_width);
 
@@ -1099,8 +1089,6 @@ void SetScreenMode(int sm, bool force_res_change) {
   //	the editor window, the screen would belong to the editor window.
   tLnxAppInfo appinfo;
   Descent->get_info(&appinfo);
-  // LGT - Disabled: not using ddvid
-  // ddvid_SetVideoHandle(hGameWnd);
 #endif
 }
 
