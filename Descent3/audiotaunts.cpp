@@ -221,10 +221,9 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   int amount_to_flush;
   tWaveFile wavdata;
   int samples, rate, chan;
-  char temp_filename[_MAX_PATH];
-  char osftemp_filename[_MAX_PATH];
+  std::filesystem::path temp_filename;
+  std::filesystem::path osftemp_filename;
   uint8_t *StaticFileBuffer = NULL;
-  *temp_filename = *osftemp_filename = '\0';
   OSFArchive osf;
   CFILE *fpin = NULL;
   bool osfopened;
@@ -291,7 +290,8 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   // now we need to compress it, first it must be written as raw data to a temp
   // file.
 
-  if (!ddio_GetTempFileName(Descent3_temp_directory, "d3o", temp_filename)) {
+  temp_filename = ddio_GetTmpFileName(Descent3_temp_directory, "d3o");
+  if (temp_filename.empty()) {
     LOG_WARNING << "TAUNT: Unable to create temp filename";
     ret = false;
     TauntLastError = TAUNTIMPERR_INTERNALERR;
@@ -346,14 +346,15 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   rate = wavdata.samples_per_second;
   chan = wavdata.number_channels;
 
-  if (!ddio_GetTempFileName(Descent3_temp_directory, "d3o", osftemp_filename)) {
+  osftemp_filename = ddio_GetTmpFileName(Descent3_temp_directory, "d3o");
+  if (osftemp_filename.empty()) {
     LOG_WARNING << "TAUNT: Unable to create osftemp filename";
     TauntLastError = TAUNTIMPERR_INTERNALERR;
     ret = false;
     goto error;
   }
 
-  if (!aenc_Compress(temp_filename, osftemp_filename, NULL, &samples, &rate, &chan, NULL, NULL)) {
+  if (!aenc_Compress(temp_filename.u8string().c_str(), osftemp_filename.u8string().c_str(), NULL, &samples, &rate, &chan, NULL, NULL)) {
     // unable to compress
     LOG_WARNING << "Unable to compress";
     ret = false;
@@ -467,11 +468,11 @@ error:
   }
 
   if (cfexist(osftemp_filename)) {
-    ddio_DeleteFile(osftemp_filename);
+    std::filesystem::remove(osftemp_filename);
   }
 
   if (cfexist(temp_filename)) {
-    ddio_DeleteFile(temp_filename);
+    std::filesystem::remove(temp_filename);
   }
 
   if (StaticFileBuffer) {

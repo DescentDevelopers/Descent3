@@ -287,7 +287,6 @@ inline void CFileList::setPath(CString path) {
   if (!buffer)
     return;
 
-  // ddio_CleanPath(buffer,temp.GetBuffer(0));
   strcpy(buffer, temp.GetBuffer(0));
 
   m_csPath = buffer;

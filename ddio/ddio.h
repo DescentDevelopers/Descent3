@@ -374,27 +374,14 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
                        const std::function<void(std::filesystem::path)> &func);
 
-//	given a path (with no filename), it will return the parent path
-//	srcPath is the source given path
-//	dest is where the parent path will be placed
-//	returns true on success
-//		dest should be at least _MAX_PATH in length
-bool ddio_GetParentPath(char *dest, const char *srcPath);
-
-//	given a path, it cleans it up (if the path is c:\windows\..\dos it would make it c:\dos)
-//	srcPath is the original path
-//	dest is the finished cleaned path.
-//		dest should be at least _MAX_PATH in size
-void ddio_CleanPath(char *dest, const char *srcPath);
-
-// Generates a temporary filename based on the prefix, and basedir
-// Parameters:
-//		basedir - directory to put the files
-//		prefix - prefix for the temp filename
-//		filename - buffer to hold generated filename (must be at least _MAX_PATH in length)
-//
-// Returns TRUE if successful, FALSE if an error
-bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filename);
+/**
+ * Generates a temporary filename based on the prefix in basedir. Function ensures that generated
+ * filename does not exists in basedir directory.
+ * @param basedir directory to put the files
+ * @param prefix prefix for the temp filename
+ * @return generated filename with ".tmp" extension in basedir directory or empty path on failure
+ */
+std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, const char *prefix);
 
 /**
  * Check process existence by PID

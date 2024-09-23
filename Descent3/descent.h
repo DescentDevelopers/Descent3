@@ -193,7 +193,7 @@ extern std::filesystem::path orig_pwd;
 extern grScreen *Game_screen;                   // The Descent 3 screen.
 extern oeApplication *Descent;                  // The Descent object
 extern oeAppDatabase *Database;                 // The Database
-extern char Descent3_temp_directory[_MAX_PATH]; // temp directory to put temp files
+extern std::filesystem::path Descent3_temp_directory; // temp directory to put temp files
 extern bool Katmai;                             // whether or not katmai is detected
 //	---------------------------------------------------------------------------
 //	Functions
