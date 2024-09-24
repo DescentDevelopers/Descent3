@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
-
+#include <sstream>
 #include "log.h"
 #include "registry.h"
 
@@ -60,19 +60,11 @@
 #endif
 
 // Convert a string that represents a hex value into an int
-int hextoi(char *p) {
-  int value = 0;
-  while ((p) && (*p) && isalnum(*p)) {
-    *p = toupper(*p);
-    if ((*p >= '0') && (*p <= '9'))
-      value = (value * 16) + ((*p) - '0');
-    else if ((*p >= 'A') && (*p <= 'F'))
-      value = (value * 16) + ((*p) - 'A');
-    else
-      return value;
-
-    p++;
-  }
+int hextoi(char *hexstring) {
+  int value;
+  std::stringstream ss;
+  ss << std::hex << hexstring;
+  ss >> value;
   return value;
 }
 
@@ -289,7 +281,6 @@ bool CRegistry::Import() {
         }
         // now we "SHOULD" know the type, parse the info
         char data[300];
-        int idata;
         switch (type) {
         case REGT_STRING:
           PARSE_STRING(newbuff);
@@ -310,7 +301,7 @@ bool CRegistry::Import() {
           PARSE_STRING(newbuff);
           ptr += 7; // blow by =dword:
           PARSE_TOKEN(data);
-          idata = hextoi(data);
+          int idata = hextoi(data);
           if (!CreateRecord(newbuff, REGT_DWORD, &idata)) {
             // mprintf(0,"Unable to create dword record: %s\n",newbuff);
           } else {
