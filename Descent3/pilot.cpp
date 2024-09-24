@@ -964,14 +964,12 @@ void PilotSelect() {
   NewPltUpdate(select.pilot_list, 0, pfilename);
 
   // if we get here than there is at least one pilot already
-  char old_file[_MAX_FNAME];
+  std::filesystem::path old_file;
 
   // use this in case they cancel out
   pfilename = Current_pilot.get_filename();
   if (cfexist(pfilename) != CFES_NOT_FOUND) {
-    strcpy(old_file, pfilename.c_str());
-  } else {
-    old_file[0] = '\0';
+    old_file =  std::filesystem::u8path(pfilename);
   }
 
   DoWaitMessage(false);
@@ -1023,7 +1021,7 @@ void PilotSelect() {
 
     case UID_CANCEL: {
       // Cancel out
-      bool found_old = (cfexist(old_file) != CFES_NOT_FOUND);
+      bool found_old = !old_file.empty();
       bool display_error;
 
       if (filecount && found_old)
@@ -1036,7 +1034,7 @@ void PilotSelect() {
         PilotListSelectChangeCallback(index);
 
         if (found_old) {
-          Current_pilot.set_filename(old_file);
+          Current_pilot.set_filename(old_file.u8string());
           PltReadFile(&Current_pilot, true, true);
 
           char pname[PILOT_STRING_SIZE];
@@ -1053,7 +1051,7 @@ void PilotSelect() {
       }
 
       if (display_error) {
-        if (filecount > 0 && old_file[0] != '\0') {
+        if (filecount > 0 && !old_file.empty()) {
           DoMessageBox(TXT_PLTERROR, TXT_OLDPILOTNOEXIST, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
         } else {
           DoMessageBox(TXT_PLTERROR, TXT_NEEDTOCREATE, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
