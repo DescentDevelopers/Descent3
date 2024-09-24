@@ -131,6 +131,7 @@ static inline void parse_config_data(tCfgDataParts *parts, ct_type type0, ct_typ
   case ctPOV:
   case ctPOV2:
   case ctPOV3:
+  case ctAnalogTrigger:
   case ctPOV4:
     parts->bind_0 = CONTROLLER_CTL1_VALUE(CONTROLLER_VALUE(cfgdata));
     break;
@@ -150,6 +151,7 @@ static inline void parse_config_data(tCfgDataParts *parts, ct_type type0, ct_typ
   case ctPOV2:
   case ctPOV3:
   case ctPOV4:
+  case ctAnalogTrigger:
     parts->bind_1 = CONTROLLER_CTL2_VALUE(CONTROLLER_VALUE(cfgdata));
     break;
   default:
