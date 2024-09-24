@@ -1349,9 +1349,10 @@ void LoadGameSettings() {
   }
 
   int len = _MAX_PATH;
-  char temp_str[_MAX_PATH];
-  Database->read("Default_pilot", temp_str, &len);
-  Default_pilot = temp_str;
+  char temp_str[_MAX_PATH] = "";
+  if (Database->read("Default_pilot", temp_str, &len)) {
+    Default_pilot = temp_str;
+  }
 
   // Now that we have read in all the data, set the detail level if it is a predef setting (custom is ignored in
   // function)
@@ -1467,7 +1468,7 @@ void InitIOSystems(bool editor) {
 
   // Init hogfiles
   INIT_MESSAGE(("Checking for HOG files."));
-  int d3_hid = -1, extra_hid = -1, sys_hid = -1, extra13_hid = -1;
+  int d3_hid, extra_hid, sys_hid, extra13_hid;
   char fullname[_MAX_PATH];
 
 #ifdef DEMO
@@ -1535,14 +1536,10 @@ void InitIOSystems(bool editor) {
   //	extract from extra.hog first, so its DLL files are listed ahead of d3.hog's
   INIT_MESSAGE(("Initializing OSIRIS."));
   Osiris_InitModuleLoader();
-  if (extra13_hid != -1)
-    Osiris_ExtractScriptsFromHog(extra13_hid, false);
-  if (extra_hid != -1)
-    Osiris_ExtractScriptsFromHog(extra_hid, false);
-  if (merc_hid != -1)
-    Osiris_ExtractScriptsFromHog(merc_hid, false);
-  if (sys_hid != -1)
-    Osiris_ExtractScriptsFromHog(sys_hid, false);
+  Osiris_ExtractScriptsFromHog(extra13_hid, false);
+  Osiris_ExtractScriptsFromHog(extra_hid, false);
+  Osiris_ExtractScriptsFromHog(merc_hid, false);
+  Osiris_ExtractScriptsFromHog(sys_hid, false);
   Osiris_ExtractScriptsFromHog(d3_hid, false);
 }
 
@@ -1588,11 +1585,6 @@ void InitGraphics(bool editor) {
   Desktop_surf = new grSurface(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
 #else
   strcpy(App_ddvid_subsystem, "GDIX");
-
-  if (!Dedicated_server) {
-    if (!ddvid_Init(Descent, App_ddvid_subsystem))
-      Error("Graphics initialization failed.\n");
-  }
 
   INIT_MESSAGE("Loading fonts.");
   LoadAllFonts();
@@ -1962,7 +1954,7 @@ void SetupTempDirectory(void) {
 
   int t_arg = FindArg("-tempdir");
   if (t_arg) {
-    strcpy(Descent3_temp_directory, GameArgs[t_arg + 1]);
+    Descent3_temp_directory = GameArgs[t_arg + 1];
   } else {
     std::error_code ec;
     std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
@@ -1970,29 +1962,22 @@ void SetupTempDirectory(void) {
       Error("Could not find temporary directory: \"%s\"", ec.message().c_str() );
       exit(1);
     }
-    ddio_MakePath(Descent3_temp_directory, tempPath.u8string().c_str(), "Descent3",
-                  "cache", NULL);
+    Descent3_temp_directory = tempPath / "Descent3" / "cache";
   }
 
   std::error_code ec;
   std::filesystem::create_directories(Descent3_temp_directory, ec);
   if (ec) {
-    Error("Could not create temporary directory: \"%s\"", Descent3_temp_directory);
+    Error("Could not create temporary directory: \"%s\"", Descent3_temp_directory.u8string().c_str());
     exit(1);
   }
 
-  // verify that temp directory exists
-  if (!ddio_SetWorkingDir(Descent3_temp_directory)) {
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
-    exit(1);
-  }
-
-  char tempfilename[_MAX_PATH];
+  std::filesystem::path tempfilename = ddio_GetTmpFileName(Descent3_temp_directory, "d3t");
 
   // verify that we can write to the temp directory
-  if (!ddio_GetTempFileName(Descent3_temp_directory, "d3t", tempfilename)) {
+  if (tempfilename.empty()) {
     LOG_WARNING << "Unable to get temp file name";
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
+    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
     exit(1);
   }
 
@@ -2001,7 +1986,7 @@ void SetupTempDirectory(void) {
   if (!file) {
     // unable to open file for writing
     LOG_WARNING << "Unable to open temp file name for writing";
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
+    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
     exit(1);
   }
 
@@ -2013,8 +1998,8 @@ void SetupTempDirectory(void) {
   if (!file) {
     // unable to open file for reading
     LOG_WARNING << "Unable to open temp file name for reading";
-    ddio_DeleteFile(tempfilename);
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
+    std::filesystem::remove(tempfilename);
+    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
     exit(1);
   }
 
@@ -2022,22 +2007,23 @@ void SetupTempDirectory(void) {
     // verify failed
     LOG_WARNING << "Temp file verify failed";
     cfclose(file);
-    ddio_DeleteFile(tempfilename);
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
+    std::filesystem::remove(tempfilename);
+    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
     exit(1);
   }
 
   cfclose(file);
 
   // temp directory is valid!
-  ddio_DeleteFile(tempfilename);
+  std::filesystem::remove(tempfilename);
 
   LOG_INFO << "Temp directory set to: " << Descent3_temp_directory;
 
   // Lock the directory
   if (!ddio_CreateLockFile(std::filesystem::path(Descent3_temp_directory))) {
     LOG_WARNING << "Lock file NOT created in temp dir " << Descent3_temp_directory;
-    Error("Unable to set temporary directory to: \"%s\"\nUnable to create lock file", Descent3_temp_directory);
+    Error("Unable to set temporary directory to: \"%s\"\nUnable to create lock file",
+          Descent3_temp_directory.u8string().c_str());
     exit(1);
   }
   // restore working dir
@@ -2104,7 +2090,6 @@ void ShutdownD3() {
   Init_old_screen_mode = GetScreenMode();
   Init_old_ui_callback = GetUICallback();
   SetScreenMode(SM_NULL);
-  ddvid_Close();
 
   // shutdown IO
   ddio_Close();
@@ -2135,7 +2120,6 @@ void RestartD3() {
   }
 
   //	startup screen.
-  ddvid_Init(Descent, App_ddvid_subsystem);
   ddio_KeyFlush();
   SetScreenMode(Init_old_screen_mode);
   SetUICallback(Init_old_ui_callback);

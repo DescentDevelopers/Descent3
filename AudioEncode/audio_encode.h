@@ -40,7 +40,7 @@
 // input_channels (default 1)
 // input_factor (compression factor) (default 4 for 22K, 8 for 44K)
 // input_volscale (Volume scaling) (slightly <= 1.0, default ,97)
-bool aenc_Compress(char *input_filename, char *output_filename, const int *input_levels = nullptr,
+bool aenc_Compress(const char *input_filename, const char *output_filename, const int *input_levels = nullptr,
                    const int *input_samples = nullptr, const int *input_rate = nullptr,
                    const int *input_channels = nullptr, const float *input_factor = nullptr,
                    const float *input_volscale = nullptr);

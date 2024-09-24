@@ -40,6 +40,7 @@
  * $NoKeywords: $
  */
 
+#include <filesystem>
 #include "pstring.h"
 #include "forcefeedback.h"
 
@@ -286,7 +287,7 @@ bool ddio_ffjoy_SupportAutoCenter(tDevice) { return false; }
 //	for it.  It returns a handle to that resource.
 //	If it returns NULL, then it couldn't load the project.
 //	Make sure device is aquired before calling.
-FORCEPROJECT ddio_ForceLoadProject(char *filename, tDevice dev) { return NULL; }
+FORCEPROJECT ddio_ForceLoadProject(std::filesystem::path &filename, tDevice dev) { return NULL; }
 
 //	Unloads a FORCEPROJECT file
 void ddio_ForceUnloadProject(FORCEPROJECT prj) {}

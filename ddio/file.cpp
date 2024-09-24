@@ -17,13 +17,16 @@
  */
 
 #include <array>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iterator>
 #include <regex>
 
 #include "IOOps.h"
+#include "chrono_timer.h"
 #include "ddio.h"
+#include "mem.h"
 #include "pserror.h"
 
 const std::array<char, 4> LOCK_TAG = {'L', 'O', 'C', 'K'};
@@ -155,4 +158,37 @@ void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::reg
       }
     }
   }
+}
+
+std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, const char *prefix) {
+  static const char alphanum[] =
+      "0123456789"
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      "abcdefghijklmnopqrstuvwxyz";
+  // size of random part
+  const int len = 10;
+  const char *ext = ".tmp";
+  std::filesystem::path result;
+  size_t len_result = strlen((basedir / prefix).u8string().c_str());
+  char *random_name = (char *)mem_malloc(len_result + len + strlen(ext) + 1);
+  strncpy(random_name, (basedir / prefix).u8string().c_str(), len_result);
+
+  srand(D3::ChronoTimer::GetTimeMS());
+
+  int tries = 20;
+  while (tries > 0) {
+    for (size_t i = len_result; i < len_result + len; i++) {
+      random_name[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+    random_name[len_result + len] = '\0';
+    strcat(random_name, ext);
+    if (!std::filesystem::exists(random_name)) {
+      // Found unique name, break the loop
+      result = random_name;
+      break;
+    }
+    tries--;
+  }
+  mem_free(random_name);
+  return result;
 }

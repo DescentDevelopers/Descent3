@@ -111,7 +111,7 @@ DLLGameClose_fp DLLGameClose = NULL;
 DLLGetGameInfo_fp DLLGetGameInfo = NULL;
 dllinfo DLLInfo;
 tOSIRISModuleInit Multi_d3m_osiris_funcs;
-char Multi_game_dll_name[_MAX_PATH * 2];
+std::filesystem::path Multi_game_dll_name;
 
 static void DUMMYrend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, float v0, float u1, float v1,
                                        float zval, int color, float *alphas) {
@@ -551,9 +551,9 @@ void CloseGameModule(module *mod) {
   // Clear out error queue
   mod_GetLastError();
   mod_FreeModule(mod);
-  if (Multi_game_dll_name[0] != '\0') {
+  if (Multi_game_dll_name.empty()) {
     // Try deleting the file now!
-    if (!ddio_DeleteFile(Multi_game_dll_name)) {
+    if (!std::filesystem::remove(Multi_game_dll_name)) {
       LOG_WARNING << "Couldn't delete the tmp dll";
     }
   }
@@ -561,30 +561,26 @@ void CloseGameModule(module *mod) {
 }
 // this function will load up the DLL, but not get any symbols
 bool InitGameModule(const char *name, module *mod) {
-  char lib_name[_MAX_PATH * 2];
-  char dll_name[_MAX_PATH * 2];
-  char tmp_dll_name[_MAX_PATH * 2];
+  std::filesystem::path lib_name;
+  std::filesystem::path dll_name;
+  std::filesystem::path tmp_dll_name;
   // Make the hog filename
-  ddio_MakePath(lib_name, Base_directory, "netgames", name, NULL);
-  strcat(lib_name, ".d3m");
-// Make the dll filename
-#if defined(WIN32)
-  snprintf(dll_name, sizeof(dll_name), "%s.dll", name);
-#elif defined(MACOSX)
-  snprintf(dll_name, sizeof(dll_name), "%s.dylib", name);
-#else
-  snprintf(dll_name, sizeof(dll_name), "%s.so", name);
-#endif
+  lib_name = std::filesystem::path(Base_directory) / "netgames" / name;
+  lib_name.replace_extension(".d3m");
+  // Make the dll filename
+  dll_name = name;
+  dll_name.replace_extension(MODULE_EXT);
 
   // Open the hog file
   if (!cf_OpenLibrary(lib_name)) {
-    ddio_MakePath(tmp_dll_name, Base_directory, "netgames", name, NULL);
-    strcat(tmp_dll_name, ".d3m");
-    Multi_game_dll_name[0] = '\0';
+    tmp_dll_name = std::filesystem::path(Base_directory) / "netgames" / name;
+    tmp_dll_name.replace_extension(".d3m");
+    Multi_game_dll_name.clear();
     goto loaddll;
   }
   // get a temp file name
-  if (!ddio_GetTempFileName(Descent3_temp_directory, "d3m", tmp_dll_name)) {
+  tmp_dll_name = ddio_GetTmpFileName(Descent3_temp_directory, "d3m");
+  if (tmp_dll_name.empty()) {
     return false;
   }
   // Copy the DLL
@@ -592,7 +588,7 @@ bool InitGameModule(const char *name, module *mod) {
     LOG_WARNING << "DLL copy failed!";
     return false;
   }
-  strcpy(Multi_game_dll_name, tmp_dll_name);
+  Multi_game_dll_name = tmp_dll_name;
 loaddll:
   // Clear out error queue
   mod_GetLastError();

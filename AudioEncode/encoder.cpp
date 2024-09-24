@@ -36,7 +36,7 @@ int32_t aenc_ReadSamp(void *data) {
   return (b << 8) | a;
 }
 
-bool aenc_Compress(char *input_filename, char *output_filename, const int *input_levels, const int *input_samples,
+bool aenc_Compress(const char *input_filename, const char *output_filename, const int *input_levels, const int *input_samples,
                    const int *input_rate, const int *input_channels, const float *input_factor,
                    const float *input_volscale) {
   FILE *in, *out;

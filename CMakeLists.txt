@@ -232,7 +232,6 @@ endif()
 add_subdirectory(linux)
 
 add_subdirectory(ddio)
-add_subdirectory(dd_video)
 add_subdirectory(fix)
 add_subdirectory(logger)
 add_subdirectory(manage)
