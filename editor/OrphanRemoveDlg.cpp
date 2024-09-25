@@ -57,6 +57,7 @@
 #include "weaponpage.h"
 #include "ddio.h"
 #include "mem.h"
+#include "pserror.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

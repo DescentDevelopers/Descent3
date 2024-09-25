@@ -88,6 +88,7 @@
 #include "ddio.h"
 #include "manage.h"
 #include "DallasMainDlg.h"
+#include "pserror.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

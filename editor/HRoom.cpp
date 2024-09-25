@@ -411,6 +411,7 @@
 #include "terrain.h"
 #include "HTexture.h"
 #include "trigger.h"
+#include "pserror.h"
 
 // Make the Marked room/face the current room/face
 void SetMarkedRoom() {

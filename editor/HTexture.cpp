@@ -169,6 +169,7 @@
 #include "room.h"
 #include "descent.h"
 #include "erooms.h"
+#include "pserror.h"
 
 #define HTEX_CALIB_VAL ((float)(1.0 / 128.0))
 

@@ -651,7 +651,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
   case WM_DESTROY:
     //	get window handle and clear it.
     if (i == MAX_WIN32APPS)
-      debug_break();
+      DEBUG_BREAK();
     Win32_AppObjects[i].hWnd = NULL;
     Win32_AppObjects[i].app = NULL;
     i = -1;
