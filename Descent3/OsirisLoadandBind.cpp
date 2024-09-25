@@ -3136,25 +3136,35 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
       if (temp_filename.empty())
         Int3();
       else {
-        // extract it out
-        cf_CopyFile(temp_filename, filename);
-
-        temp_file = temp_filename.filename();
         temp_realname = std::filesystem::path(filename).stem().u8string();
         // Lowercase for optimized search
         std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(), [](unsigned char c) {
           return std::tolower(c);
         });
 
-        if (is_mission_hog) {
-          t.flags = OESF_MISSION;
+        /* Scripts embedded in .mn3 files are not allowed to override scripts
+         * embedded in .hog files. This is necessary in order to prevent users
+         * from running old code. For example, if the scripts in training.mn3
+         * were allowed to override the scripts that were in d3-win.hog, then
+         * the game would try to load code that was compiled in 1999 instead of
+         * trying to load code that was compiled recently.
+         */
+        if (!is_mission_hog || OSIRIS_Extracted_scripts.count(temp_realname) == 0) {
+          // extract it out
+          cf_CopyFile(temp_filename, filename);
+
+          temp_file = temp_filename.filename();
+
+          if (is_mission_hog) {
+            t.flags = OESF_MISSION;
+          }
+          t.temp_filename = temp_file;
+          OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
+
+          LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
+
+          count++;
         }
-        t.temp_filename = temp_file;
-        OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
-
-        LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
-
-        count++;
       }
     } while (cf_LibraryFindNext(filename));
   }
