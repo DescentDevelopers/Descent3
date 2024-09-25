@@ -918,7 +918,7 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
       return -2;
 
     // search through our list of extracted files to find it...
-    if (OSIRIS_Extracted_scripts.find(std::filesystem::path(basename)) != OSIRIS_Extracted_scripts.end()) {
+    if (OSIRIS_Extracted_scripts.find(basename) != OSIRIS_Extracted_scripts.end()) {
       fullpath = OSIRIS_Extracted_script_dir / OSIRIS_Extracted_scripts[basename].temp_filename;
       return 0;
     }
@@ -3200,12 +3200,14 @@ void Osiris_ClearExtractedScripts(bool mission_only) {
     return;
   }
 
-  for (auto it = OSIRIS_Extracted_scripts.begin(); it != OSIRIS_Extracted_scripts.end(); ++it) {
-    if (mission_only && (!(it->second.flags & OESF_MISSION)))
-      continue;
-
-    std::filesystem::remove(OSIRIS_Extracted_script_dir / it->second.temp_filename);
-    OSIRIS_Extracted_scripts.erase(it);
+  for (auto it = OSIRIS_Extracted_scripts.begin(); it != OSIRIS_Extracted_scripts.end();) {
+    if (mission_only && (!(it->second.flags & OESF_MISSION))) {
+      ++it;
+    }
+    else {
+      std::filesystem::remove(OSIRIS_Extracted_script_dir / it->second.temp_filename);
+      it = OSIRIS_Extracted_scripts.erase(it);
+    }
   }
 
   if (!mission_only) {
