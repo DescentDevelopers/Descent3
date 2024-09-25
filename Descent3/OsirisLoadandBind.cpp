@@ -918,7 +918,7 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
       return -2;
 
     // search through our list of extracted files to find it...
-    if (OSIRIS_Extracted_scripts.find(std::filesystem::path(basename)) != OSIRIS_Extracted_scripts.end()) {
+    if (OSIRIS_Extracted_scripts.find(basename) != OSIRIS_Extracted_scripts.end()) {
       fullpath = OSIRIS_Extracted_script_dir / OSIRIS_Extracted_scripts[basename].temp_filename;
       return 0;
     }
