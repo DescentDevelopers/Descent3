@@ -3200,12 +3200,14 @@ void Osiris_ClearExtractedScripts(bool mission_only) {
     return;
   }
 
-  for (auto it = OSIRIS_Extracted_scripts.begin(); it != OSIRIS_Extracted_scripts.end(); ++it) {
-    if (mission_only && (!(it->second.flags & OESF_MISSION)))
-      continue;
-
-    std::filesystem::remove(OSIRIS_Extracted_script_dir / it->second.temp_filename);
-    OSIRIS_Extracted_scripts.erase(it);
+  for (auto it = OSIRIS_Extracted_scripts.begin(); it != OSIRIS_Extracted_scripts.end();) {
+    if (mission_only && (!(it->second.flags & OESF_MISSION))) {
+      ++it;
+    }
+    else {
+      std::filesystem::remove(OSIRIS_Extracted_script_dir / it->second.temp_filename);
+      it = OSIRIS_Extracted_scripts.erase(it);
+    }
   }
 
   if (!mission_only) {
