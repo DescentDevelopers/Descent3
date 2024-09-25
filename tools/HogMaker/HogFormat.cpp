@@ -36,7 +36,7 @@ HogFileEntry::HogFileEntry(const std::filesystem::path &input) {
   m_real_path = input;
   m_flags = 0;
   m_len = (uint32_t)file_size(input);
-  m_timestamp = (uint32_t)to_time_t(last_write_time(input));
+  m_timestamp = 0;
   auto name = input.filename().u8string();
   std::copy(name.begin(), name.end(), m_name.begin());
 }
