@@ -3130,58 +3130,33 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   LOG_DEBUG << "Search started";
   if (cf_LibraryFindFirst(library_handle, script_extension, filename)) {
-    temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
-    if (temp_filename.empty())
-      Int3();
-    else {
-      // extract it out
-      cf_CopyFile(temp_filename, filename);
+    do {
+      // generate temp filename
+      temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
+      if (temp_filename.empty())
+        Int3();
+      else {
+        // extract it out
+        cf_CopyFile(temp_filename, filename);
 
-      temp_file = temp_filename.filename();
-      temp_realname = std::filesystem::path(filename).stem().u8string();
-      // Lowercase for optimized search
-      std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(), [](unsigned char c) {
-        return std::tolower(c);
-      });
+        temp_file = temp_filename.filename();
+        temp_realname = std::filesystem::path(filename).stem().u8string();
+        // Lowercase for optimized search
+        std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(), [](unsigned char c) {
+          return std::tolower(c);
+        });
 
-      if (is_mission_hog) {
-        t.flags = OESF_MISSION;
-      }
-      t.temp_filename = temp_file;
-      OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
-
-      LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
-
-      count++;
-
-      while (cf_LibraryFindNext(filename)) {
-        // generate temp filename
-        temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
-        if (temp_filename.empty())
-          Int3();
-        else {
-          // extract it out
-          cf_CopyFile(temp_filename, filename);
-
-          temp_file = temp_filename.filename();
-          temp_realname = std::filesystem::path(filename).stem().u8string();
-          // Lowercase for optimized search
-          std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(), [](unsigned char c) {
-            return std::tolower(c);
-          });
-
-          if (is_mission_hog) {
-            t.flags = OESF_MISSION;
-          }
-          t.temp_filename = temp_file;
-          OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
-
-          LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
-
-          count++;
+        if (is_mission_hog) {
+          t.flags = OESF_MISSION;
         }
+        t.temp_filename = temp_file;
+        OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
+
+        LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
+
+        count++;
       }
-    }
+    } while (cf_LibraryFindNext(filename));
   }
 
   LOG_DEBUG.printf("Extracted %d scripts", count);
