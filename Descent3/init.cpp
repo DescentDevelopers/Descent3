@@ -1501,8 +1501,6 @@ void InitIOSystems(bool editor) {
   ddio_MakePath(fullname, LocalD3Dir, "extra13.hog", NULL);
   extra13_hid = cf_OpenLibrary(fullname);
 
-  // last library opened is the first to be searched for dynamic libs, so put
-  // this one at the end to find our newly build script libraries first
   ddio_MakePath(fullname, LocalD3Dir, PRIMARY_HOG, NULL);
   sys_hid = cf_OpenLibrary(fullname);
 
@@ -1528,19 +1526,15 @@ void InitIOSystems(bool editor) {
     }
   }
 
-  // Initialize debug graph early incase any system uses it in its init
+  // Initialize debug graph early in case any system uses it in its init
   INIT_MESSAGE(("Initializing debug graph."));
   DebugGraph_Initialize();
 
-  //	initialize all the OSIRIS systems
-  //	extract from extra.hog first, so its DLL files are listed ahead of d3.hog's
+  // initialize all the OSIRIS systems
+  // extract only DLL files from our own build hog file, everything else is outdated code from original game data
   INIT_MESSAGE(("Initializing OSIRIS."));
   Osiris_InitModuleLoader();
-  Osiris_ExtractScriptsFromHog(extra13_hid, false);
-  Osiris_ExtractScriptsFromHog(extra_hid, false);
-  Osiris_ExtractScriptsFromHog(merc_hid, false);
   Osiris_ExtractScriptsFromHog(sys_hid, false);
-  Osiris_ExtractScriptsFromHog(d3_hid, false);
 }
 
 bool MercInstalled() { return merc_hid > 0; }

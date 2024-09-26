@@ -1811,7 +1811,6 @@ bool mn3_Open(const char *mn3file) {
   char pathname[_MAX_PATH];
   char filename[PSFILENAME_LEN + 1];
   char ext[PSFILENAME_LEN];
-  int mn3_handle;
   // concatanate the mn3 extension if it isn't there.
   char tempMn3File[_MAX_PATH];
   if (!IS_MN3_FILE(mn3file)) {
@@ -1823,11 +1822,9 @@ bool mn3_Open(const char *mn3file) {
 
   ddio_MakePath(pathname, D3MissionsDir, mn3file, NULL);
   // open MN3 HOG.
-  mn3_handle = cf_OpenLibrary(mn3file);
+  int mn3_handle = cf_OpenLibrary(mn3file);
   if (mn3_handle == 0) {
     return false;
-  } else {
-    Osiris_ExtractScriptsFromHog(mn3_handle, true);
   }
   // do table file stuff.
   ddio_SplitPath(mn3file, NULL, filename, ext);
