@@ -429,15 +429,13 @@
 
 bool Show_osiris_debug = false;
 
-#define MAX_LOADED_MODULES 96 // maximum number of dlls that can be loaded at a time
+#define MAX_LOADED_MODULES 64 // maximum number of dlls that can be loaded at a time
 
 #define OSIMF_INUSE 0x1        // slot in use
 #define OSIMF_LEVEL 0x2        // level module
 #define OSIMF_DLLELSEWHERE 0x4 // mission module
 #define OSIMF_INTEMPDIR 0x8    // the dll was extracted from a hog and it is in a temp file
-#define OSIMF_NOUNLOAD                                                                                                 \
-  0x10 // the dll should not be unloaded if the reference count is
-       // 0, only when the level ends
+#define OSIMF_NOUNLOAD 0x10    // the dll should not be unloaded if the reference count is 0, only when the level ends
 
 // The exported DLL function call prototypes
 #if defined(POSIX)
