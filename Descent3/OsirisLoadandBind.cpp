@@ -3119,26 +3119,29 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
         if (temp_filename.empty()) {
           Int3();
         } else {
-          // extract it out
-          cf_CopyFile(temp_filename, filename);
-
-          std::filesystem::path temp_file = temp_filename.filename();
           std::string temp_realname = std::filesystem::path(filename).stem().u8string();
           // Lowercase for optimized search
           std::transform(temp_realname.begin(), temp_realname.end(), temp_realname.begin(),
                          [](unsigned char c) { return std::tolower(c); });
-          tExtractedScriptInfo t;
-          if (is_mission_hog) {
-            t.flags = OESF_MISSION;
-          }
-          t.temp_filename = temp_file;
-          OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
+          // Check if we already extracted script earlier from newer HOGs
+          if (OSIRIS_Extracted_scripts.count(temp_realname) == 0) {
+            // extract it out
+            cf_CopyFile(temp_filename, filename);
+            tExtractedScriptInfo t;
+            if (is_mission_hog) {
+              t.flags = OESF_MISSION;
+            }
+            t.temp_filename = temp_filename.filename();
+            OSIRIS_Extracted_scripts.insert_or_assign(temp_realname, t);
 
-          LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
+            LOG_DEBUG.printf("Extracted %s as %s", temp_realname.c_str(), temp_filename.u8string().c_str());
+          } else {
+            LOG_DEBUG.printf("Skipped %s (already extracted)", temp_realname.c_str());
+          }
         }
       });
 
-  LOG_DEBUG.printf("Extracted %d scripts", count);
+  LOG_DEBUG.printf("Processed %d scripts", count);
 
   atexit(_clearextractedall);
 
