@@ -826,7 +826,7 @@ void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_te
 //-1 Not compatible!
 //>=0 Number of teams supported for this mod & level
 
-#define SCRIPTBADFORMISSION -1
+#define SCRIPTBADFORMISSION (-1)
 
 int CheckMissionForScript(char *mission, char *script, int dedicated_server_num_teams) {
   char mod_keys[MAX_KEYWORDLEN];
