@@ -1536,11 +1536,9 @@ void InitIOSystems(bool editor) {
   //	extract from extra.hog first, so its DLL files are listed ahead of d3.hog's
   INIT_MESSAGE(("Initializing OSIRIS."));
   Osiris_InitModuleLoader();
-  Osiris_ExtractScriptsFromHog(extra13_hid, false);
-  Osiris_ExtractScriptsFromHog(extra_hid, false);
-  Osiris_ExtractScriptsFromHog(merc_hid, false);
+  // Scripts from original HOGs are outdated and useless.
+  // Just extracting our compiled scripts from platform-dependent HOG.
   Osiris_ExtractScriptsFromHog(sys_hid, false);
-  Osiris_ExtractScriptsFromHog(d3_hid, false);
 }
 
 bool MercInstalled() { return merc_hid > 0; }

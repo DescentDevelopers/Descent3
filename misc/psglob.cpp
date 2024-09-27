@@ -43,33 +43,6 @@
 #include <ctype.h>
 #endif
 
-// Returns 1 if string contains globbing characters in it
-int PSGlobHasPattern(char *string) {
-  char *p = string;
-  char c;
-  int open = 0;
-
-  while ((c = *p++) != '\0') {
-    switch (c) {
-    case '?':
-    case '*':
-      return 1;
-    case '[': // Open brackets must have a matching close bracket in order to be a glob
-      open++;
-      continue;
-    case ']':
-      if (open)
-        return 1;
-      continue;
-    case '\\':
-      if (*p++ == '\0')
-        return 0;
-    }
-  }
-
-  return 0;
-}
-
 //	PSGlobMatch
 //	Matches the pattern passed in to the string in text.  If the pattern matches
 //	it returns 1, if not, it returns 0. In order to have a match, the following

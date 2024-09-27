@@ -35,7 +35,6 @@
 #include "log.h"
 #include "mem.h"
 #include "pserror.h"
-#include "psglob.h"
 
 // Library structures
 struct library_entry {
@@ -276,8 +275,8 @@ CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle
   } else {
     fp = fopen(lib->name.u8string().c_str(), "rb");
     if (!fp) {
-      LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.",
-                       lib->name.u8string().c_str(), filename.u8string().c_str(), errno);
+      LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.", lib->name.u8string().c_str(),
+                       filename.u8string().c_str(), errno);
       Int3();
       return nullptr;
     }
@@ -329,8 +328,8 @@ CFILE *open_file_in_lib(const char *filename) {
       } else {
         fp = fopen(lib->name.u8string().c_str(), "rb");
         if (!fp) {
-          LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.",
-                           lib->name.u8string().c_str(), filename, errno);
+          LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.", lib->name.u8string().c_str(),
+                           filename, errno);
           Int3();
           return nullptr;
         }
@@ -355,7 +354,7 @@ CFILE *open_file_in_lib(const char *filename) {
 }
 
 std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
-                                                             const std::filesystem::path &directory) {
+                                                         const std::filesystem::path &directory) {
   // Dumb check, maybe there already all ok?
   if (exists((directory / fname))) {
     return fname.filename();
@@ -371,11 +370,10 @@ std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::
     return {};
   }
 
-
   // Search component in search_path
   auto const &it = std::filesystem::directory_iterator(search_path);
 
-  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
+  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto &dir_entry) {
     return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
   });
 
@@ -658,8 +656,8 @@ int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp) {
     if (!feof(cfp->file))
       error_msg = strerror(errno);
   }
-  LOG_ERROR.printf("Error reading %d bytes from position %d of file <%s>; errno=%d.",
-                   count, cfp->position, cfp->name, errno);
+  LOG_ERROR.printf("Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name,
+                   errno);
   return 0;
 }
 // The following functions read numeric vales from a CFILE.  All values are
@@ -871,12 +869,6 @@ void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::p
   ddio_CopyFileTime(dest, src);
 }
 
-// Changes a files attributes (ie read/write only)
-void cf_ChangeFileAttributes(const char *name, int attr) {
-  if (_chmod(name, attr) == -1)
-    Int3(); // Get Jason or Matt, file not found!
-}
-
 //	rewinds cfile position
 void cf_Rewind(CFILE *fp) {
   if (fp->lib_offset) {
@@ -950,79 +942,23 @@ uint32_t cf_GetfileCRC(const std::filesystem::path &src) {
   return crc;
 }
 
-char cfile_search_wildcard[256];
-std::shared_ptr<library> cfile_search_library;
-int cfile_search_curr_index = 0;
-bool cfile_search_ispattern = false;
-//	the following cf_LibraryFind function are similar to the ddio_Find functions as they look
-//	for files that match the wildcard passed in, however, this is to be used for hog files.
-bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer) {
-  ASSERT(wildcard);
-  ASSERT(buffer);
-  if (!wildcard || !buffer)
-    return false;
-  *buffer = '\0';
-  if (cfile_search_library)
-    cf_LibraryFindClose();
-  // find the library
-  cfile_search_library = Libraries;
-  while (cfile_search_library && cfile_search_library->handle != handle) {
-    cfile_search_library = cfile_search_library->next;
+int cf_DoForeachFileInLibrary(int handle, const std::filesystem::path &ext,
+                               const std::function<void(std::filesystem::path)> &func) {
+  auto search_library = Libraries;
+  while (search_library && search_library->handle != handle) {
+    search_library = search_library->next;
   }
-  if (!cfile_search_library)
-    return false;
-  // now find the first matching file
-  strncpy(cfile_search_wildcard, wildcard, 255);
-  cfile_search_wildcard[255] = '\0';
-  cfile_search_ispattern = (bool)(PSGlobHasPattern(cfile_search_wildcard) != 0);
-  cfile_search_curr_index = 0;
-
-  while (cfile_search_curr_index < cfile_search_library->nfiles) {
-    if (cfile_search_ispattern) {
-      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index]->name, 0, 0)) {
-        // it's a match
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    } else {
-      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index]->name, cfile_search_wildcard)) {
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
+  if (!search_library)
+    return 0;
+  // Iterate entries on found library
+  int result = 0;
+  for (const auto &item : search_library->entries) {
+    if (stricmp(std::filesystem::path(item->name).extension().u8string().c_str(), ext.u8string().c_str()) == 0) {
+      func(item->name);
+      result++;
     }
-    cfile_search_curr_index++;
   }
-  // we didn't find a match
-  return false;
-}
-
-bool cf_LibraryFindNext(char *buffer) {
-  while (cfile_search_curr_index < cfile_search_library->nfiles) {
-    if (cfile_search_ispattern) {
-      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index]->name, 0, 0)) {
-        // it's a match
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    } else {
-      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index]->name, cfile_search_wildcard)) {
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    }
-    cfile_search_curr_index++;
-  }
-  return false;
-}
-
-void cf_LibraryFindClose() {
-  cfile_search_library = nullptr;
-  cfile_search_curr_index = 0;
-  cfile_search_ispattern = false;
+  return result;
 }
 
 bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem::path &hogname) {
