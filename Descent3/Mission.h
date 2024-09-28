@@ -167,6 +167,8 @@
 #ifndef MISSION_H
 #define MISSION_H
 
+#include <vector>
+
 #include "pstypes.h"
 #include "descent.h"
 
@@ -209,22 +211,22 @@ extern level_info Level_info;
 
 //	level information
 struct tLevelNode {
-  //	level flags
-  unsigned flags;           // level flags
-  unsigned objective_flags; // level objective flags
+  // Level flags
+  uint32_t flags;           // level flags
+  uint32_t objective_flags; // level objective flags
 
-  //	movies
+  // Movies
   char *moviename;
   char *endmovie;
 
-  //	level filename
+  // Level filename
   char *filename;  // mine filename.
   char *briefname; // briefing filename
   char *hog;       // hog file name for this level
   char *score;     // music score of level
   char *progress;  // File name containing the progress background screen
 
-  //	level branching
+  // Level branching
   uint8_t lvlbranch0, lvlbranch1; // FORK or BRANCH command
   uint8_t secretlvl;              // SECRET command
   uint8_t pad;
@@ -251,7 +253,7 @@ struct tMission {
   //	listing of levels.
   int num_levels;     // number of levels
   int cur_level;      // current level playing.
-  tLevelNode *levels; // array of levels
+  std::vector<tLevelNode> levels; // array of levels
 };
 
 // structure used to get information about a mission
