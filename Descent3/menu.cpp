@@ -655,6 +655,7 @@
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
+#include <sstream>
 #include <vector>
 
 #include "log.h"
@@ -1038,6 +1039,7 @@ bool ProcessCommandLine() {
 #define MSNBTN_X2 ((3 * MSNDLG_WIDTH / 4) - (MSNBTN_W / 2))
 #define MSNBTN_Y (MSNDLG_HEIGHT - 64)
 #define UID_MSNLB 100
+#define UID_LVLB 101
 #define UID_MSNINFO 0x1000
 #define TRAINING_MISSION_NAME "Pilot Training"
 
@@ -1080,7 +1082,7 @@ static inline int generate_mission_listbox(newuiListBox *lb, std::vector<std::fi
           tMissionInfo msninfo{};
           if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
           return;
-        if (GetMissionInfo(path, &msninfo) && msninfo.name[0] && msninfo.single) {
+        if (GetMissionInfo(path.filename(), &msninfo) && msninfo.name[0] && msninfo.single) {
           filelist.push_back(path.filename());
           lb->AddItem(msninfo.name);
           c++;
@@ -1163,7 +1165,7 @@ bool MenuNewGame() {
 #endif
 #ifndef OEM
   // generate real listbox now.
-  n_missions = generate_mission_listbox(msn_lb, filelist, D3MissionsDir);
+  n_missions = generate_mission_listbox(msn_lb, filelist, cf_LocateMultiplePaths("missions"));
 
   if (n_missions == 0) {
     DoMessageBox(TXT_ERROR, TXT_NOMISSIONS, MSGBOX_OK);
@@ -1281,42 +1283,73 @@ redo_newgame_menu:
 // DisplayLevelWarpDlg
 //	pass in the max level allowed to be chosen, if -1, than all levels are allowed (a.k.a level warp cheat)
 int DisplayLevelWarpDlg(int max_level) {
-  newuiMessageBox hwnd;
-  newuiSheet *sheet;
+  newuiTiledWindow menu;
+  newuiSheet *select_sheet;
+  newuiListBox *level_listbox;
+
   int chosen_level = 1, res;
   int highest_allowed;
-  char buffer[128];
-  char *input_text;
-  // creates a sheet
-  sheet = hwnd.GetSheet();
+
+  // Create UI
+  menu.Create(Current_mission.name, 0, 0, 448, 384);
+  select_sheet = menu.GetSheet();
+  select_sheet->NewGroup(nullptr, 10, 0);
+  level_listbox = select_sheet->AddListBox(352, 256, UID_LVLB, UILB_NOSORT);
+  select_sheet->NewGroup(nullptr, 160, 280, NEWUI_ALIGN_HORIZ);
+  select_sheet->AddButton(TXT_OK, UID_OK);
+  select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
+
   if (max_level != -1) {
-    hwnd.Create(TXT_LEVELSELECT, MSGBOX_OKCANCEL);
     highest_allowed = max_level;
-    snprintf(buffer, sizeof(buffer), TXT_LEVELSELECTB, highest_allowed);
   } else {
     // level warp
-    hwnd.Create(TXT_LEVELWARP, MSGBOX_OKCANCEL);
     highest_allowed = Current_mission.num_levels;
-    snprintf(buffer, sizeof(buffer), TXT_LEVELWARPB, Current_mission.num_levels);
   }
-  sheet->NewGroup(buffer, 0, 0);
-  input_text = sheet->AddEditBox(nullptr, 4, 64, IDV_QUIT, UIED_NUMBERS);
-  sprintf(input_text, "%d", chosen_level);
-redo_level_choose:
-  hwnd.Open();
-  res = hwnd.DoUI();
-  hwnd.Close();
-  if (res == UID_OK || res == IDV_QUIT) {
-    chosen_level = atoi(input_text);
-    if (chosen_level < 1 || chosen_level > highest_allowed) {
-      snprintf(buffer, sizeof(buffer), TXT_CHOOSELEVEL, highest_allowed);
-      DoMessageBox(TXT_ERROR, buffer, MSGBOX_OK);
-      goto redo_level_choose;
+
+  int mn3_handle = -1;
+
+  // Because of D3: Retribution split mission nature we have to load library early
+  if (stricmp(Current_mission.filename, "d3.mn3") == 0) {
+    mn3_handle = cf_OpenLibrary(std::filesystem::path("missions") / "d3_2.mn3");
+  }
+  if (stricmp(Current_mission.filename, "d3_2.mn3") == 0) {
+    mn3_handle = cf_OpenLibrary(std::filesystem::path("missions") / "d3.mn3");
+  }
+
+  for (int i = 0; i < highest_allowed; i++) {
+    std::stringstream ss;
+    level_info info{};
+
+    LoadLevelInfo(Current_mission.levels[i].filename, info);
+    ss << std::setw(2) << std::setfill('0') << i + 1 << ". " << info.name;
+    level_listbox->AddItem(ss.str().c_str());
+  }
+
+  if (mn3_handle != -1) {
+    cf_CloseLibrary(mn3_handle);
+  }
+
+  // Main UI loop
+  menu.Open();
+  do {
+    res = menu.DoUI();
+    if (res == UID_OK || res == UID_LVLB) {
+      int index = level_listbox->GetCurrentIndex();
+      chosen_level = index + 1; // Levels are 1-based
+      if (chosen_level < 1 || chosen_level > highest_allowed) {
+        DoMessageBox(TXT_ERROR, TXT_CHOOSELEVEL, MSGBOX_OK);
+        continue; // Allow another selection
+      }
+      if (res == UID_LVLB) {
+        res = UID_OK;
+      }
+    } else if (res == UID_CANCEL) {
+      chosen_level = -1;
     }
-  } else {
-    chosen_level = -1;
-  }
-  hwnd.Destroy();
+  } while (res != UID_OK && res != UID_CANCEL);
+
+  menu.Close();
+  menu.Destroy();
   return chosen_level;
 }
 
