@@ -3588,6 +3588,86 @@ static inline char* GetCurrentSumString() {
   return output_buf;
 }
 
+bool LoadLevelInfo(const std::filesystem::path &filename, level_info &info) {
+  CFILE *ifile = cfopen(filename, "rb");
+  bool found = false;
+
+  if (!ifile) {
+    LOG_ERROR.printf("Failed to open mission file %s", filename.u8string().c_str());
+    return false;
+  }
+
+  try {
+    // catch cfile errors
+
+    // Read & check tag
+    char tag[4];
+    cf_ReadBytes((uint8_t *)tag, 4, ifile);
+    if (strncmp(tag, LEVEL_FILE_TAG, 4)) {
+      LOG_ERROR.printf("%s is not a level file (tag %c%c%c%c)",
+                       filename.u8string().c_str(), tag[0], tag[1], tag[2], tag[3]);
+      cfclose(ifile);
+      return false;
+    }
+
+    // Read & check version number
+    int version = cf_ReadInt(ifile);
+
+    // Check for too-new version
+    if (version > LEVEL_FILE_VERSION) {
+      LOG_ERROR.printf("Mission file %s too new (version %d)", filename.u8string().c_str(), version);
+      cfclose(ifile);
+      return false;
+    }
+    if (version < LEVEL_FILE_OLDEST_COMPATIBLE_VERSION) {
+      LOG_ERROR.printf("Mission file %s too old (version %d)", filename.u8string().c_str(), version);
+      cfclose(ifile);
+      return false;
+    }
+
+
+    // Init level info
+    strcpy(info.name, "Unnamed");
+    strcpy(info.designer, "Anonymous");
+    strcpy(info.copyright, "");
+    strcpy(info.notes, "");
+
+
+    while (!cfeof(ifile)) {
+      char chunk_name[4];
+
+      cf_ReadBytes((uint8_t *)chunk_name, 4, ifile);
+      chunk_start = cftell(ifile);
+      chunk_size = cf_ReadInt(ifile);
+
+      if (ISCHUNK(CHUNK_LEVEL_INFO)) {
+        cf_ReadString(info.name, sizeof(info.name), ifile);
+
+        // Localize level name here...
+        strcpy(info.name, LocalizeLevelName(info.name));
+
+        cf_ReadString(info.designer, sizeof(info.designer), ifile);
+        cf_ReadString(info.copyright, sizeof(info.copyright), ifile);
+        cf_ReadString(info.notes, sizeof(info.notes), ifile);
+        found = true;
+        break;
+      } else {
+        cfseek(ifile, chunk_start + chunk_size, SEEK_SET);
+      }
+    }
+
+  } catch (cfile_error *cfe) {
+    LOG_FATAL.printf("Error reading: file = <%s>, error = \"%s\"", cfe->file->name, cfe->msg);
+    ASSERT(cfe->read_write == CFE_READING);
+    cfclose(ifile);
+    return false;
+  }
+
+  cfclose(ifile);
+  return found;
+}
+
+
 extern bool Disable_editor_rendering;
 
 #define LEVEL_LOADED_PCT_CALC (filelen) ? (float)(chunk_size + chunk_start) / (float)filelen : 0.0f
