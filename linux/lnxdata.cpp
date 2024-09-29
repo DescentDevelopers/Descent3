@@ -42,8 +42,9 @@
  */
 
 #include <cstring>
-#include <cstdio>
-#include <sys/types.h>
+#include <filesystem>
+
+#include <SDL.h>
 
 #if defined(POSIX)
 #include <unistd.h>
@@ -53,11 +54,8 @@
 #include <Lmcons.h>
 #endif
 
-#include <SDL.h>
-
 #include "appdatabase.h"
 #include "linux/lnxdatabase.h"
-#include "pserror.h"
 #include "log.h"
 #include "pserror.h"
 #include "registry.h"
@@ -70,20 +68,17 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   // Open up the database file, for reading, read in all data and keep it in memory
   // then close the database
 
-  char const* prefPath = SDL_GetPrefPath("Outrage Entertainment", "Descent 3");
-  if (prefPath == NULL) {
-    fprintf(stderr, "ERROR: Couldn't find preference directory!\n");
+  const char* prefPath = SDL_GetPrefPath("Outrage Entertainment", "Descent 3");
+  if (prefPath == nullptr) {
+    LOG_FATAL << "Couldn't find preference directory!";
     exit(43);
   }
+  std::filesystem::path fileName = std::filesystem::path(prefPath) / REGISTRY_FILENAME;
+  SDL_free((void *)prefPath);
 
-  const size_t fileLen = strlen(prefPath) + strlen(REGISTRY_FILENAME) + 2;
-  char* fileName = new char[fileLen];
-  snprintf(fileName, fileLen, "%s/%s", prefPath, REGISTRY_FILENAME);
-
-  database = new CRegistry(fileName);
+  database = new CRegistry(fileName.u8string().c_str());
   database->Import();
   create_record("Version");
-  delete [] fileName;
 }
 
 oeLnxAppDatabase::oeLnxAppDatabase(oeLnxAppDatabase *parent) {
