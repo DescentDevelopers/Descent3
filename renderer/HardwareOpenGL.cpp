@@ -1277,6 +1277,7 @@ void rend_Close() {
     return;
 
   opengl_Close();
+  SDL_GL_UnloadLibrary();
 
   Renderer_initted = 0;
 }
