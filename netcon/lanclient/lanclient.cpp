@@ -272,8 +272,6 @@
 #include "module.h"
 #include "ddio_common.h"
 
-#include "inetgetfile.h"
-
 #ifdef __STATIC_NETWORK_CLIENTS
 #define DLLMultiCall DLLMultiCall_LAN
 #define DLLMultiInit DLLMultiInit_LAN
@@ -309,16 +307,12 @@
 #define MULTI_USE_ALL_OPTIONS 1
 
 #include "lanclient.h"
-#include "DLLUiItems.h"
 
 using namespace lanclient;
 
 // int DLLUIClass_CurrID = 0xD0;
 
 #define MAX_NET_GAMES 100
-#define JEFF_RED GR_RGB(255, 40, 40)
-#define JEFF_BLUE GR_RGB(40, 40, 255)
-#define JEFF_GREEN GR_RGB(40, 255, 40)
 #define NETPOLLINTERVAL 10.0
 
 extern int MTAVersionCheck(uint32_t oldver, char *URL);
@@ -336,8 +330,8 @@ DLLEXPORT void DLLFUNCCALL DLLMultiClose();
 static bool All_ok = true;
 // Initializes the game function pointers
 void DLLFUNCCALL DLLMultiInit(int *api_func) {
-  Use_netgame_flags = 1;
-#include "mdllinit.h"
+  Use_netgame_flags = true;
+  CommonDLLInit(api_func);
   DLLCreateStringTable("lanclient.str", &StringTable, &StringTableSize);
   DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {

@@ -182,6 +182,7 @@
 #include <filesystem>
 
 #include "cfile.h"
+#include "crossplat.h"
 #include "manage.h"
 #include "pstypes.h"
 #include "pserror.h"
@@ -284,7 +285,7 @@ int mng_MakeLocker() {
   do {
     locker = mng_CheckIfLockerPresent();
     if (locker) {
-      strupr(locker);
+      _strupr(locker);
       if (OutrageMessageBox(MBOX_YESNO,
                             "The network database is already locked by %s.\nIt will probably become available if you "
                             "wait a few moments.\n\nWould you like to try again?",

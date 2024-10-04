@@ -24,17 +24,26 @@
 
 #if defined(WIN32)
 
-#include <cstring> // strupr, stricmp, strnicmp
+#include <cstring> // _strlwr, _strupr, stricmp, strnicmp
 #include <cstdlib> // _MAX_PATH, _MAX_FNAME, _MAX_EXT for WIN32
 #include <io.h>    // _chmod
 
 #elif defined(POSIX)
 
-#include <cctype>      // toupper
+#include <cctype>      // tolower, toupper
 #include <cstring>     // strcasecmp, strncasecmp
 #include <sys/stat.h>  // chmod
 
-inline char *strupr(char *string) {
+inline char *_strlwr(char *string) {
+  char *ptr = string;
+  while (*ptr) {
+    *ptr = tolower(*ptr);
+    ptr++;
+  }
+  return string;
+}
+
+inline char *_strupr(char *string) {
   while (string && *string) {
     *string = toupper(*string);
     string++;

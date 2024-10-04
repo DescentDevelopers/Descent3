@@ -323,6 +323,7 @@ target_link_libraries(Descent3 PRIVATE
   ddio
   fix
   grtext
+  inetfile
   libmve
   libacm
   linux

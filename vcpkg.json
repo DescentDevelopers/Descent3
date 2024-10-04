@@ -1,6 +1,7 @@
 {
   "builtin-baseline": "198d68dbcc6c907cb3d0b9b1d93c3df6ecf93c62",
   "dependencies": [
+    "cpp-httplib",
     "glm",
     "gtest",
     "plog",
