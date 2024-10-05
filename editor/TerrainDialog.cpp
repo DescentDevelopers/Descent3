@@ -1788,8 +1788,6 @@ void CTerrainDialog::OnTerrainOcclusion() {
           int end_x = dest_x * OCCLUSION_SIZE;
           int dest_occlusion_index = dest_z * OCCLUSION_SIZE + dest_x;
 
-          mprintf_at(2, 5, 0, "Count=%7d", count++);
-
           if (dest_occlusion_index == src_occlusion_index) {
             // This is us!
             int occ_byte = dest_occlusion_index / 8;

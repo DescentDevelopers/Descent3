@@ -110,6 +110,7 @@
 #include "mem.h"
 #include "bitmap.h"
 #include "manage.h"
+#include "pserror.h"
 
 static void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, int r, int b);
 static int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap);

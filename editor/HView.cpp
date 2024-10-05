@@ -122,6 +122,7 @@
 #include "terrain.h"
 #include "erooms.h"
 #include "editor.h"
+#include "pserror.h"
 
 #define FACE_VIEW_DIST 5.0
 

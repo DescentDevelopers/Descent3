@@ -17,16 +17,15 @@
 */
 
 // Lightmap info
-#include "pstypes.h"
+#include <cstdlib>
+#include <cstring>
 
 #include "lightmap_info.h"
 #include "lightmap.h"
 #include "mono.h"
-#include "Ddgr.h"
 #include "grdefs.h"
+#include "pserror.h"
 #include "renderer.h"
-#include <stdlib.h>
-#include <string.h>
 #include "mem.h"
 #include "dedicated_server.h"
 

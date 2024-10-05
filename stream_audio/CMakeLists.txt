@@ -7,10 +7,10 @@ set(CPPS
 
 add_library(stream_audio STATIC ${HEADERS} ${CPPS})
 target_link_libraries(stream_audio PRIVATE
+  ddebug
   ddio
   logger
   mem
-  misc
   sndlib
 )
 target_link_libraries(stream_audio PUBLIC

@@ -203,6 +203,7 @@
 #include "log.h"
 #include "sounds.h"
 #include "pilot.h"
+#include "pserror.h"
 #include "joystick.h"
 
 #define LVLRES_FADEIN_TIME 0.50f

@@ -175,6 +175,7 @@
 #include "osiris_share.h"
 #include "multisafe.h"
 #include "multi_world_state.h"
+#include "pserror.h"
 
 #define GOAL_MESSAGE_TIME 10.0
 #define GOAL_MESSAGE_COLOR GR_RGB(0, 242, 148)

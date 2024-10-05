@@ -1562,11 +1562,9 @@ void CMainFrame::OnActivateApp(BOOL bActive, HTASK hTask) {
 	
 	if (bActive) {
 		theApp.resume();
-		mprintf_at(2,0,0, "App Active  ");
 	}
 	else {
 		theApp.pause();
-		mprintf_at(2,0,0, "App Inactive");
 	}
 
   ((oeLnxApplication *)Descent)->run_handler(this->m_hWnd, WM_ACTIVATEAPP, (unsigned)bActive, 0);

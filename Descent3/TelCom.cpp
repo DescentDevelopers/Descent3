@@ -519,6 +519,7 @@
 #include "hlsoundlib.h"
 #include "soundload.h"
 #include "textaux.h"
+#include "pserror.h"
 #include "psrand.h"
 #include "controls.h"
 #include "d3music.h"
@@ -3213,55 +3214,6 @@ void TelcomEndScreen(void) {
 }
 
 float myrand(float max) { return (max * (((float)ps_rand()) / ((float)D3_RAND_MAX))); }
-
-/////////////////////////////////////////////////////////////////////////////
-//	These are the functions used for serialization, yes they are out of place,
-//	But that is to keep them away from other parts of the code that has
-//	the rest of the serialization.  These probably can be moved to some other
-//	file....if this function returns:
-//	1 : than it's a serialized exe, num will be given the serial num
-//	0 : than it isn't a serialized exe
-//	-1 : detected a hacked exe
-#define INTERNAL_SERIALNUM_TAG "XFCABBFFAX"
-char GetInternalSerializationNumber(int *num) {
-  static char mydata[] = INTERNAL_SERIALNUM_TAG;
-
-  // first check to see if the value is the same (non-serialized EXE)
-  if (mydata[0] == 'X' && ((mydata[9] + 2) == 'Z')) {
-    int value = 0;
-    char c;
-    for (int i = 0; i < 8; i++) {
-      c = mydata[i + 1];
-      if (c >= 'A' && c <= 'F') {
-        value = value * 16 + (c - 'A' + 10);
-      } else
-        goto get_num;
-    }
-
-    if (value == 0xFCABBFFA)
-      return 0;
-  }
-
-get_num:
-  // we got to get the serial num if we can
-  int value = 0;
-  char c;
-  for (int i = 0; i < 8; i++) {
-    c = mydata[i + 1];
-    if (c >= '0' && c <= '9') {
-      value = value * 16 + c - '0';
-    } else if (c >= 'A' && c <= 'F') {
-      value = value * 16 + c - 'A' + 10;
-    } else
-      return -1;
-  }
-
-  // now byte swap the value to get it to it's original value
-  value = (((value & 0xFF000000) >> 24) | ((value & 0xFF0000) >> 8) | ((value & 0xFF) << 24) | ((value & 0xFF00) << 8));
-
-  *num = value;
-  return 1;
-}
 
 /*
  ****************************************************************

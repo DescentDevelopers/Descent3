@@ -109,6 +109,8 @@
  *
  */
 
+#include <cstring>
+
 #include "mmItem.h"
 #include "game.h"
 #include "program.h"
@@ -117,12 +119,9 @@
 #include "hlsoundlib.h"
 #include "soundload.h"
 #include "d3music.h"
-
 #include "ddio.h"
-// #include <malloc.h>
 #include "mem.h"
-
-#include <string.h>
+#include "pserror.h"
 
 // externed from newui.cpp
 extern int UI_frame_result;

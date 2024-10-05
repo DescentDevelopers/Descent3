@@ -108,6 +108,17 @@ int Terrain_checksum = -1;
 uint8_t Terrain_occlusion_map[256][32];
 int Terrain_occlusion_checksum = -2;
 
+#ifndef RELEASE
+int TERRAIN_REGION(int x) {
+  ASSERT(x != -1 && "invalid/unset room number (-1)!");
+  // Note: due to the 0x7FFFFFFF mask, terrSegIdx will be >= 0
+  int terrSegIdx = 0x7FFFFFFF & x;
+  // catch other invalid cell/segment numbers than -1 as well
+  ASSERT((terrSegIdx < TERRAIN_WIDTH * TERRAIN_DEPTH) && "invalid cellnum!");
+  return (Terrain_seg[terrSegIdx].flags & TFM_REGION_MASK) >> 5;
+}
+#endif
+
 // returns the index of the highest float
 int GetHighestDelta(float *deltas, int count) {
   int high_index = -999;

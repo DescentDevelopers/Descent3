@@ -104,6 +104,7 @@
 #include "PreferencesDialog.h"
 #include "game.h"
 #include "pilot.h"
+#include "pserror.h"
 #include "slew.h"
 
 #ifdef _DEBUG

@@ -183,7 +183,6 @@
 #ifndef _GAME_H
 #define _GAME_H
 
-#include "pserror.h"
 #include "renderer.h"
 #include "object.h"
 

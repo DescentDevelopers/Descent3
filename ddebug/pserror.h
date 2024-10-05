@@ -148,9 +148,11 @@
 
 #ifndef PSERROR_H
 #define PSERROR_H
-#include <cassert>
+
+#include <SDL_assert.h>
+
 #include "debug.h"
-#include "mono.h"
+#include "log.h"
 
 //	initializes error handler.
 bool error_Init(bool debugger, const char *app_title);
@@ -161,10 +163,12 @@ void AssertionFailed(const char *expstr, const char *file, int line);
 // Brings up an error message for an int3
 void Int3MessageBox(const char *file, int line);
 //	Message box functions
+
 #define MBOX_OK 1
 #define MBOX_YESNO 2
 #define MBOX_YESNOCANCEL 3
 #define MBOX_ABORTRETRYIGNORE 4
+
 //	prints out a standard OS messagebox
 void OutrageMessageBox(const char *str, ...);
 int OutrageMessageBox(int type, const char *str, ...);
@@ -172,6 +176,7 @@ int OutrageMessageBox(int type, const char *str, ...);
 void SetMessageBoxTitle(const char *title);
 // Write a block of text to the system clipboard
 void DumpTextToClipboard(char *text);
+
 //////////////////////////////////////////////////////////////////////////////
 //	development debugging functions
 //	adds a function to be called when a debug break occurs.
@@ -179,77 +184,53 @@ void DumpTextToClipboard(char *text);
 #ifdef ASSERT
 #undef ASSERT
 #endif
+
 //	this callback is invoked when a DEBUG_BREAK macro is used.
 //		arguments
 //			style = 1 if ASSERT
 //					= 0 if Int3 debugger break.
 extern void (*DebugBreak_callback_stop)();
 extern void (*DebugBreak_callback_resume)();
+
 //	set DEBUG_BREAK callback
 static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
   DebugBreak_callback_stop = stop;
   DebugBreak_callback_resume = resume;
 }
-// DEBUG_BREAK()
-// Calls the debug_break() macro surrounded by calls to the debug callbacks (to turn off & on graphics)
-// ASSERT()
-// Like the standard C assert(), but if the condition failed and debugging on,
-// does a DEBUG_BREAK().  If debugging on, brings up a dialog.
-// Int3()
-// Does a DEBUG_BREAK() if debugging is turned on.  Also does an mprintf().
-//	Define the macros
+
 #ifndef RELEASE
 
 #include <cstdlib>
 
+// Calls the SDL_assert(false) macro surrounded by calls to the debug callbacks (to turn off & on graphics)
 #define DEBUG_BREAK()                                                                                                  \
   do {                                                                                                                 \
     if (DebugBreak_callback_stop)                                                                                      \
       (*DebugBreak_callback_stop)();                                                                                   \
-    debug_break();                                                                                                     \
+    SDL_assert(false);                                                                                                 \
     if (DebugBreak_callback_resume)                                                                                    \
       (*DebugBreak_callback_resume)();                                                                                 \
   } while (0)
 
+// Does a DEBUG_BREAK() if debugging is turned on.
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                           \
-    if (Debug_break)                                                                                                   \
-      DEBUG_BREAK();                                                                                                   \
-    else                                                                                                               \
-      Int3MessageBox(__FILE__, __LINE__);                                                                              \
+    LOG_ERROR.printf("Fatal error at %s:%d.", __FILE__, __LINE__);                                                     \
+    DEBUG_BREAK();                                                                                                     \
   } while (0)
 
-#if defined(WIN32)
-
+// Like the standard C assert(), but if the condition failed and debugging on does a SDL_assert() with debug window.
 #define ASSERT(x)                                                                                                      \
   do {                                                                                                                 \
     if (!(x)) {                                                                                                        \
-      mprintf(0, "Assertion failed (%s) in %s line %d.\n", #x, __FILE__, __LINE__);                                    \
-      if (Debug_break)                                                                                                 \
-        DEBUG_BREAK();                                                                                                 \
-      else                                                                                                             \
-        AssertionFailed(#x, __FILE__, __LINE__);                                                                       \
+      LOG_ERROR.printf("Assertion failed (%s) in %s:%d.", #x, __FILE__, __LINE__);                                     \
+      SDL_assert(x);                                                                                                   \
     }                                                                                                                  \
   } while (0)
-#define HEAPCHECK()                                                                                                    \
-  do {                                                                                                                 \
-    if (_heapchk() != _HEAPOK)                                                                                         \
-      Int3();                                                                                                          \
-  } while (0)
-#elif defined(POSIX)
-
-#include <SDL.h>
-
-#define ASSERT(x) SDL_assert(x)
-#define HEAPCHECK()
-
-#endif
 
 #else
 #define DEBUG_BREAK()
 #define ASSERT(x)
 #define Int3()
-#define HEAPCHECK()
 #endif
 #endif

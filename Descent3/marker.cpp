@@ -23,6 +23,7 @@
 #include "player.h"
 #include "multi.h"
 #include "game.h"
+#include "pserror.h"
 #ifdef _DEBUG
 #include "AIMain.h"
 #endif

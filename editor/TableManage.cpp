@@ -40,6 +40,7 @@
 #include "cfile.h"
 // #include "AppDatabase.h"
 #include "mem.h"
+#include "pserror.h"
 
 ////////////////////////////////////////////////////////////////
 // GenericPageNode Class Members

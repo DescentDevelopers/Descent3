@@ -146,9 +146,8 @@
  * $NoKeywords: $
  */
 
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cmath>
+#include <cstring>
 
 #include "vecmat.h"
 #include "mono.h"
@@ -160,7 +159,7 @@ const matrix Identity_matrix = IDENTITY_MATRIX;
 
 void vm_AverageVector(vector *a, int num) {
   // Averages a vector.  ie divides each component of vector a by num
-  assert(num != 0);
+  ASSERT(num != 0);
   a->x = a->x / (float)num;
   a->y = a->y / (float)num;
   a->z = a->z / (float)num;
@@ -254,7 +253,7 @@ void vm_DivVector(vector *dest, vector *src, float n) {
   // Divides a vector into n portions
   // Dest can equal src
 
-  assert(n != 0);
+  ASSERT(n != 0);
   dest->x = src->x / n;
   dest->y = src->y / n;
   dest->z = src->z / n;
@@ -325,7 +324,7 @@ void vm_TransposeMatrix(matrix *m) {
 void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
   // Rotates a vector thru a matrix
 
-  assert(result != v);
+  ASSERT(result != v);
 
   result->x = *v * m->rvec;
   result->y = *v * m->uvec;
@@ -334,7 +333,7 @@ void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
 
 // Multiply a vector times the transpose of a matrix
 void vm_VectorMulTMatrix(vector *result, vector *v, matrix *m) {
-  assert(result != v);
+  ASSERT(result != v);
 
   result->x = vm_Dot3Vector(m->rvec.x, m->uvec.x, m->fvec.x, v);
   result->y = vm_Dot3Vector(m->rvec.y, m->uvec.y, m->fvec.y, v);
@@ -344,7 +343,7 @@ void vm_VectorMulTMatrix(vector *result, vector *v, matrix *m) {
 void vm_MatrixMul(matrix *dest, matrix *src0, matrix *src1) {
   // For multiplying two 3x3 matrices together
 
-  assert((dest != src0) && (dest != src1));
+  ASSERT((dest != src0) && (dest != src1));
 
   dest->rvec.x = vm_Dot3Vector(src0->rvec.x, src0->uvec.x, src0->fvec.x, &src1->rvec);
   dest->uvec.x = vm_Dot3Vector(src0->rvec.x, src0->uvec.x, src0->fvec.x, &src1->uvec);
@@ -363,7 +362,7 @@ void vm_MatrixMul(matrix *dest, matrix *src0, matrix *src1) {
 void vm_MatrixMulTMatrix(matrix *dest, matrix *src0, matrix *src1) {
   // For multiplying two 3x3 matrices together
 
-  assert((dest != src0) && (dest != src1));
+  ASSERT((dest != src0) && (dest != src1));
 
   dest->rvec.x = src0->rvec.x * src1->rvec.x + src0->uvec.x * src1->uvec.x + src0->fvec.x * src1->fvec.x;
   dest->uvec.x = src0->rvec.x * src1->rvec.y + src0->uvec.x * src1->uvec.y + src0->fvec.x * src1->fvec.y;

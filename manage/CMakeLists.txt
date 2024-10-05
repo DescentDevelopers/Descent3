@@ -24,10 +24,10 @@ set(CPPS
 add_library(manage STATIC ${HEADERS} ${CPPS})
 target_link_libraries(manage PRIVATE
   cfile
+  ddebug
   ddio
   logger
   mem
-  misc
   model
   sndlib
   stream_audio

@@ -431,6 +431,7 @@
 #include "d3music.h"
 #include "demofile.h"
 #include "stringtable.h"
+#include "pserror.h"
 #include "pstring.h"
 #include "config.h"
 #include "gamecinematics.h"

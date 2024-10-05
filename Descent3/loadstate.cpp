@@ -217,6 +217,7 @@
 #include "weather.h"
 #include "cockpit.h"
 #include "hud.h"
+#include "pserror.h"
 
 extern void PageInAllData();
 

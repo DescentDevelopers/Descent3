@@ -108,6 +108,7 @@
 #include "hlsoundlib.h"
 #include "soundload.h"
 #include "hud.h"
+#include "pserror.h"
 #include "stringtable.h"
 
 // How far the headlight casts light

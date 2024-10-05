@@ -3327,6 +3327,24 @@ bool ObjGetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info) {
   return false;
 }
 
+void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove, bool play_sound_on_clients) {
+  int objnum = OBJNUM(obj);
+  ASSERT(objnum != -1);
+  ASSERT(objnum != 0);
+  ASSERT(obj->type != OBJ_NONE);
+  ASSERT(obj != Player_object);
+
+  obj->flags |= OF_DEAD;
+
+  if (tell_clients_to_remove) {
+    if (play_sound_on_clients) {
+      obj->flags |= OF_SEND_MULTI_REMOVE_ON_DEATHWS;
+    } else {
+      obj->flags |= OF_SEND_MULTI_REMOVE_ON_DEATH;
+    }
+  }
+}
+
 void SetObjectControlType(object *obj, int control_type) {
   ASSERT(obj);
   ASSERT(OBJNUM(obj) >= 0 && OBJNUM(obj) < MAX_OBJECTS);

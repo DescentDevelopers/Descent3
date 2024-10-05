@@ -63,13 +63,13 @@
 #include <cstdio>
 
 #include "bitmap.h"
-#include "player.h"
 #include "pilot.h"
 #include "cfile.h"
 #include "log.h"
 #include "ddio.h"
 #include "manage.h"
 #include "PilotPicsAPI.h"
+#include "pserror.h"
 #include "mem.h"
 
 #define PILOTPIC_DATABASE_HOG "PPics.Hog"

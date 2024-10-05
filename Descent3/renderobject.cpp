@@ -608,6 +608,7 @@
 #include "game2dll.h"
 #include "marker.h"
 #include "ship.h"
+#include "pserror.h"
 #include "psrand.h"
 
 #ifdef EDITOR

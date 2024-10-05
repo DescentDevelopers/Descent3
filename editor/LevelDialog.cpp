@@ -27,6 +27,7 @@
 #include "room.h"
 #include "ambient.h"
 #include "hlsoundlib.h"
+#include "pserror.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

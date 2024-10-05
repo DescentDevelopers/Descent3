@@ -11,6 +11,7 @@ set(CPPS
 
 add_library(physics STATIC ${HEADERS} ${CPPS})
 target_link_libraries(physics PRIVATE
+  ddebug
   ddio
   logger
   mem

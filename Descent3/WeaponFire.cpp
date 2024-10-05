@@ -936,6 +936,7 @@
 #include "config.h"
 #include "ObjScript.h"
 #include "doorway.h"
+#include "pserror.h"
 #include "psrand.h"
 #include "BOA.h"
 

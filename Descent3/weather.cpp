@@ -17,7 +17,6 @@
 */
 
 #include "pserror.h"
-#include "pstypes.h"
 #include "fireball.h"
 #include "weather.h"
 #include "viseffect.h"
@@ -28,10 +27,8 @@
 #include "soundload.h"
 #include "hlsoundlib.h"
 #include "sounds.h"
-
-#include <stdlib.h>
-
 #include "psrand.h"
+
 weather Weather = {0};
 
 int ThunderA_sound_handle = -1;

@@ -291,6 +291,7 @@
 #include "terrain.h"
 #include "physics.h"
 #include "pilot.h"
+#include "pserror.h"
 #include "hud.h"
 #include "bitmap.h"
 #include "game.h"

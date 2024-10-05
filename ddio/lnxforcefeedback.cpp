@@ -41,7 +41,6 @@
  */
 
 #include <filesystem>
-#include "pstring.h"
 #include "forcefeedback.h"
 
 bool ddForce_found;   // a Force Feedback device was found

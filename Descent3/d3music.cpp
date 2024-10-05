@@ -19,6 +19,7 @@
 #include "d3music.h"
 #include "log.h"
 #include "music.h"
+#include "pserror.h"
 
 // generic constants
 #define MUSIC_IDLE_TIME 240.0f // how many seconds before background music silences.

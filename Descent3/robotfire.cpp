@@ -36,6 +36,7 @@
 #include "SmallViews.h"
 #include "physics.h"
 #include "AIMain.h"
+#include "pserror.h"
 #include "psrand.h"
 
 // Fires a multiplayer and AI on/off weapon

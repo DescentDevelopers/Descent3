@@ -106,11 +106,8 @@ void SetObjectDeadFlagDLL(object *obj, bool tell_clients_to_remove, bool tell_cl
 void assertdll(int x, const char *expression, const char *file, int line) {
 #ifndef RELEASE
   if (!(unsigned)(x)) {
-    LOG_ERROR.printf("Assertion failed (%s) in %s line %d.", expression, file, line);
-    if (Debug_break)
-      DEBUG_BREAK();
-    else
-      AssertionFailed(expression, file, line);
+    LOG_ERROR.printf("Assertion failed (%s) in %s:%d.", expression, file, line);
+    SDL_assert(x);
   }
 #endif
 }

@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "editor.h"
+#include "pserror.h"
 #include "SelectRangeDialog.h"
 #include "terrain.h"
 

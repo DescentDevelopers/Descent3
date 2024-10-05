@@ -1772,7 +1772,6 @@ void DoTerrainDynamicTable() {
 
         for (j = 0; j < Terrain_sky.num_satellites; j++) {
           raynum++;
-          mprintf_at(2, 4, 0, "Ray=%d      ", raynum);
 
           if (gp.y > pos.y)
             continue;
@@ -1804,8 +1803,6 @@ void ComputeTerrainSpeedTable() {
       pos.y = (Terrain_seg[tseg].y) + .001;
 
       raynum++;
-      if ((raynum % 1000) == 0)
-        mprintf_at(2, 4, 0, "Ray=%d      ", raynum);
 
       for (j = 0; j < Terrain_sky.num_satellites; j++)
         TerrainLightSpeedup[j][tseg] = ShootRayForTerrainLight(&pos, &Terrain_sky.satellite_vectors[j], tseg);
@@ -2279,7 +2276,6 @@ Dynamic lighting takes a long time)","Question",MB_YESNO))==IDYES) do_dynamic=1;
                         for (j=0;j<Terrain_sky.num_satellites;j++)
                         {
                                 raynum++;
-                                mprintf_at(2,4,0,"Ray=%d      ",raynum);
 
                                 int answer1,answer2;
                                 answer1=ShootRayForTerrainLight (&pos1,&Terrain_sky.satellite_vectors[j],tseg);

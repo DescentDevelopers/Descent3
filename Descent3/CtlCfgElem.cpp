@@ -113,18 +113,18 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+
 #include "CtlCfgElem.h"
 #include "descent.h"
 
 #include "Macros.h"
 #include "ddio.h"
-#include "application.h"
 #include "renderer.h"
 #include "stringtable.h"
 #include "gamefont.h"
 #include "localization.h"
-
-#include <string.h>
+#include "pserror.h"
 #include "joystick.h"
 
 // all controller binding texts

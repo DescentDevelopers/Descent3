@@ -39,8 +39,7 @@
 #define LIGHTMAP_INFO_H
 // Lightmap info header
 
-#include "pstypes.h"
-#include "pserror.h"
+#include <cstdint>
 #include "vecmat.h"
 
 #define BAD_LMI_INDEX 65535

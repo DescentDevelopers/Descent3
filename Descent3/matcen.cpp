@@ -175,6 +175,7 @@
 #include "ObjScript.h"
 #include "psrand.h"
 #include "demofile.h"
+#include "pserror.h"
 
 // Beginning of the real file
 #define LEVEL_DATA_MATCEN_VERSION 1

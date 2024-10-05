@@ -170,6 +170,7 @@
 #include "application.h"
 #include "bitmap.h"
 #include "log.h"
+#include "pserror.h"
 #include "renderer.h"
 #include "Macros.h"
 
@@ -480,7 +481,6 @@ void ui_DoCursor() {
       u0 = (float)(UI_MOUSE_HOTX - UI_input.mx) / (float)cur_w;
     if (UI_input.my < UI_MOUSE_HOTY)
       v0 = (float)(UI_MOUSE_HOTY - UI_input.my) / (float)cur_h;
-    //	mprintf_at(1,5,30,"mx=%d my=%d   ", UI_input.mx,UI_input.my);
     rend_DrawScaledBitmap(UI_input.mx - UI_MOUSE_HOTX, UI_input.my - UI_MOUSE_HOTY,
                           UI_input.mx + (int)((float)cur_w * u1) - UI_MOUSE_HOTX,
                           UI_input.my + (int)((float)cur_h * v1) - UI_MOUSE_HOTY, UI_cursor_bm, u0, v0, u1, v1);

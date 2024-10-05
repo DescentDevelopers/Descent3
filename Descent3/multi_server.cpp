@@ -639,6 +639,7 @@
 #include "LoadLevel.h"
 #include "Mission.h"
 #include "game2dll.h"
+#include "pserror.h"
 #include "stringtable.h"
 
 // #define USE_DIRECTPLAY

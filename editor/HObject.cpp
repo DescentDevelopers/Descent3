@@ -233,6 +233,7 @@
 
 #include "d3edit.h"
 #include "mono.h"
+#include "pserror.h"
 #include "vclip.h"
 #include "terrain.h"
 #include "player.h"

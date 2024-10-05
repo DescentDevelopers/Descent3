@@ -11,10 +11,10 @@ add_library(music STATIC ${HEADERS} ${CPPS})
 target_link_libraries(music
   AudioEncode
   cfile
+  ddebug
   ddio
   logger
   mem
-  misc
   sndlib
   stream_audio
 )

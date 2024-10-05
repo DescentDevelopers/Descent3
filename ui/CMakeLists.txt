@@ -3,7 +3,8 @@ set(HEADERS
   ui.h
   uidraw.h
   uires.h
-  uisys.h)
+  uisys.h
+)
 set(CPPS
   UIButton.cpp
   UICombo.cpp
@@ -24,11 +25,11 @@ set(CPPS
 
 add_library(ui STATIC ${HEADERS} ${CPPS})
 target_link_libraries(ui PRIVATE
+  ddebug
   ddio
   grtext
   logger
   mem
-  misc
 )
 target_include_directories(ui PUBLIC
   $<BUILD_INTERFACE:
