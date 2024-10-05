@@ -1,6 +1,7 @@
 /*
  * Descent 3
  * Copyright (C) 2024 Parallax Software
+ * Copyright (C) 2024–2025 Descent Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +31,7 @@
 #include "byteswap.h"
 #include "crossplat.h"
 #include "cfile.h"
+#include "default_base_directories.h"
 #include "ddio.h"
 #include "hogfile.h" //info about library file
 #include "log.h"
@@ -74,6 +76,17 @@ int lib_handle = 0;
 cfile_error cfe;
 // The message for unexpected end of file
 const char *eof_error = "Unexpected end of file";
+
+/* The user can specify a list of default read-only base directories by setting
+ * the -DDEFAULT_ADDITIONAL_DIRS CMake option. This function adds those base
+ * directories to the list of base directories that the game is currently
+ * using.
+ */
+void cf_AddDefaultBaseDirectories() {
+  for (const auto &base_directory : D3::Default_read_only_base_directories) {
+    cf_AddBaseDirectory(base_directory);
+  }
+}
 
 /* This function should be called at least once before you use anything else
  * from this module.
