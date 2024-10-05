@@ -215,7 +215,7 @@ static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
 // Does a DEBUG_BREAK() if debugging is turned on.
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    LOG_ERROR.printf("Int3 at %s:%d.", __FILE__, __LINE__);                                                            \
+    LOG_ERROR.printf("Fatal error at %s:%d.", __FILE__, __LINE__);                                                     \
     DEBUG_BREAK();                                                                                                     \
   } while (0)
 

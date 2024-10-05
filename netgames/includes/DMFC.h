@@ -316,7 +316,7 @@
 #endif
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf(0, "Int3 at %s:%d.\n", __FILE__, __LINE__);                                                                \
+    mprintf(0, "Fatal error at %s:%d.\n", __FILE__, __LINE__);                                                         \
     DEBUG_BREAK();                                                                                                     \
   } while (0)
 
