@@ -1414,6 +1414,9 @@ void InitIOSystems(bool editor) {
   ddio_SetWorkingDir(writable_base_directory.u8string().c_str());
   cf_AddBaseDirectory(writable_base_directory);
 
+  // Set the default base directories
+  cf_AddDefaultBaseDirectories();
+
   // Set any additional base directories
   auto additionaldirarg = 0;
   while (0 != (additionaldirarg = FindArg("-additionaldir", additionaldirarg))) {
