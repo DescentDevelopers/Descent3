@@ -1645,6 +1645,7 @@ void DoMissionMovie(const char *movie) {
   return;
 #endif
   if (movie && *movie) {
+    SetScreenMode(SM_CINEMATIC);
     PlayMovie(movie);
   }
 }
