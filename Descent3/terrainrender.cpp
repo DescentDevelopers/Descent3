@@ -1372,7 +1372,7 @@ void RenderTerrain(uint8_t from_mine, int left, int top, int right, int bot) {
 #else
   const float kTerrainRenderDistance = 1200.0f;
 #endif
-  VisibleTerrainZ = kTerrainRenderDistance * Matrix_scale.z;
+  VisibleTerrainZ = kTerrainRenderDistance;
   Far_fog_border = VisibleTerrainZ;
 
   // Set up our z wall
