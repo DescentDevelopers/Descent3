@@ -228,24 +228,9 @@ static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
     }                                                                                                                  \
   } while (0)
 
-#if defined(WIN32)
-
-#define HEAPCHECK()                                                                                                    \
-  do {                                                                                                                 \
-    if (_heapchk() != _HEAPOK)                                                                                         \
-      Int3();                                                                                                          \
-  } while (0)
-
-#elif defined(POSIX)
-
-#define HEAPCHECK()
-
-#endif
-
 #else
 #define DEBUG_BREAK()
 #define ASSERT(x)
 #define Int3()
-#define HEAPCHECK()
 #endif
 #endif

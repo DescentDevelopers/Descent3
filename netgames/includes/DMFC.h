@@ -332,20 +332,6 @@
 
 #define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 
-#if defined(WIN32)
-
-#define HEAPCHECK()                                                                                                    \
-  do {                                                                                                                 \
-    if (_heapchk() != _HEAPOK)                                                                                         \
-      Int3();                                                                                                          \
-  } while (0)
-
-#elif defined(POSIX)
-
-#define HEAPCHECK()
-
-#endif
-
 #else // Release build
 
 #ifdef DEBUG_BREAK
