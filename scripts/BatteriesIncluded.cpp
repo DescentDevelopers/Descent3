@@ -22,10 +22,10 @@
 // Filename:	BatteriesIncluded.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -489,185 +489,6 @@ void RestoreGlobalActionCtrs(void *file_ptr) {
 // End of Custom Script Block - DO NOT EDIT ANYTHING AFTER THIS
 // ============================================================
 
-// =================
-// Message File Data
-// =================
-
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
-// Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
-
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
-
 //======================
 // Name List Arrays
 //======================
@@ -719,11 +540,12 @@ int *Matcen_indexes = NULL;
 const char **Goal_names = NULL;
 int *Goal_indexes = NULL;
 
-#define NUM_MESSAGE_NAMES 17
-const char *Message_names[NUM_MESSAGE_NAMES] = {"Chris", "Kevin", "JeffNate", "Matt",  "Jay",      "Jerry",
-                                          "Long",  "Andy",  "Claflin",  "Mea",   "LukeJosh", "Interplay",
-                                          "Hayes", "Sean",  "Doug",     "Samir", "Mark"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
+// Global storage for level script messages
+std::map<std::string, std::string> Messages;
+
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 // ===============
 // InitializeDLL()
@@ -738,37 +560,19 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
-  char english_filename[(_MAX_PATH + 32) * 2];
-  int lang_type;
-  if (func_list->script_identifier != NULL) {
-    _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    snprintf(english_filename, sizeof(english_filename), "%s.msg", filename);
-    lang_type = Game_GetLanguage();
-    if (lang_type == LANGUAGE_FRENCH)
-      strcat(filename, "_FRN");
-    else if (lang_type == LANGUAGE_GERMAN)
-      strcat(filename, "_GER");
-    else if (lang_type == LANGUAGE_ITALIAN)
-      strcat(filename, "_ITN");
-    else if (lang_type == LANGUAGE_SPANISH)
-      strcat(filename, "_SPN");
-    else if (lang_type == LANGUAGE_POLISH)
-      strcat(filename, "_POL");
+  if (func_list->script_identifier != nullptr) {
+    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
+    int lang_type = Game_GetLanguage();
+    strcat(filename, lang_suffixes[lang_type].c_str());
     strcat(filename, ".msg");
   } else {
     strcpy(filename, "BatteriesIncluded.msg");
-    lang_type = LANGUAGE_ENGLISH;
   }
   if (!ReadMessageFile(filename)) {
-    if (lang_type == LANGUAGE_ENGLISH) {
-      mprintf(0, "ERROR: Could not load message file - %s\n", filename);
-    } else if (!ReadMessageFile(english_filename)) {
-      mprintf(0, "ERROR: Could not load message file - %s\n", english_filename);
-    }
+    mprintf(0, "ERROR: Could not load message file - %s\n", filename);
   }
 
   int j;
@@ -811,10 +615,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -1351,7 +1151,7 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 003: Chris'Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[0], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Chris"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1370,7 +1170,7 @@ int16_t TriggerScript_0003::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 004: Kevin's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[1], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Kevin"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1389,7 +1189,7 @@ int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 006: Jeff & Nate's Office 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[2], event_data->it_handle);
+      aShowHUDMessageObj(TXT("JeffNate"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1408,7 +1208,7 @@ int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 005: Jeff & Nate's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[2], event_data->it_handle);
+      aShowHUDMessageObj(TXT("JeffNate"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1427,7 +1227,7 @@ int16_t TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 007: Matt's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[3], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Matt"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1446,7 +1246,7 @@ int16_t TriggerScript_001C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 029: Jay's Office 4
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[4], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Jay"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1465,7 +1265,7 @@ int16_t TriggerScript_001B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 028: Jay's Office 3
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[4], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Jay"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1484,7 +1284,7 @@ int16_t TriggerScript_001A::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 027: Jay's Office 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[4], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Jay"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1503,7 +1303,7 @@ int16_t TriggerScript_0019::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 026: Jay's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[4], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Jay"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1522,7 +1322,7 @@ int16_t TriggerScript_0018::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 025: Jerry's Office 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[5], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Jerry"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1541,7 +1341,7 @@ int16_t TriggerScript_0017::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 024: Jerry's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[5], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Jerry"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1560,7 +1360,7 @@ int16_t TriggerScript_0016::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 023: Long's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[6], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Long"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1579,7 +1379,7 @@ int16_t TriggerScript_0015::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 022: Andy's Lab 4
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[7], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Andy"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1598,7 +1398,7 @@ int16_t TriggerScript_0014::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 021: Andy's Lab 3
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[7], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Andy"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1617,7 +1417,7 @@ int16_t TriggerScript_0013::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 020: Andy's Lab 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[7], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Andy"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1636,7 +1436,7 @@ int16_t TriggerScript_0012::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 019: Andy's Lab
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[7], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Andy"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1655,7 +1455,7 @@ int16_t TriggerScript_0011::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 018: Claflin's Office 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[8], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Claflin"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1674,7 +1474,7 @@ int16_t TriggerScript_0010::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 017: Claflin's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[8], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Claflin"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1693,7 +1493,7 @@ int16_t TriggerScript_000E::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 016: Mea's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[9], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Mea"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1712,7 +1512,7 @@ int16_t TriggerScript_000D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 015: Luke & Josh's Office 3
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[10], event_data->it_handle);
+      aShowHUDMessageObj(TXT("LukeJosh"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1731,7 +1531,7 @@ int16_t TriggerScript_000C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 014: Luke & Josh's Office 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[10], event_data->it_handle);
+      aShowHUDMessageObj(TXT("LukeJosh"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1750,7 +1550,7 @@ int16_t TriggerScript_0025::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 039: Interplay Lab 3
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[11], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Interplay"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1769,7 +1569,7 @@ int16_t TriggerScript_0024::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 038: Interplay Lab 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[11], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Interplay"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1788,7 +1588,7 @@ int16_t TriggerScript_0023::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 037: Interplay Lab
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[11], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Interplay"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1807,7 +1607,7 @@ int16_t TriggerScript_000B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 013: Luke & Josh's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[10], event_data->it_handle);
+      aShowHUDMessageObj(TXT("LukeJosh"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1826,7 +1626,7 @@ int16_t TriggerScript_000A::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 012: Hayes' Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[12], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Hayes"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1845,7 +1645,7 @@ int16_t TriggerScript_0009::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 011: Sean's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[13], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Sean"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1864,7 +1664,7 @@ int16_t TriggerScript_0008::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 010: Doug's Office 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[14], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Doug"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1883,7 +1683,7 @@ int16_t TriggerScript_0007::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 009: Doug's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[14], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Doug"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -1902,7 +1702,7 @@ int16_t TriggerScript_0006::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 008: Samir's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[15], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Samir"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -2029,7 +1829,7 @@ int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 002: Mark's Office
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[16], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Mark"), event_data->it_handle);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter

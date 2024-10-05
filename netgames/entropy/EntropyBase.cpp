@@ -95,8 +95,11 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+#include <string>
+#include <vector>
+
 #include "gamedll_header.h" //included by all mods, it includes all needed headers, etc.
-#include <string.h>
 #include "idmfc.h" //dmfc! (required)
 #include "Entropy.h"
 #include "Entropystr.h" //our string table for Entropy
@@ -209,14 +212,13 @@ static void OnPrintScores(int level);
 
 ///////////////////////////////////////////////
 // localization info
-static char **StringTable;
-static int StringTableSize = 0;
+static std::vector<std::string> StringTable;
 static const char *_ErrorString = "Missing String";
-const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
+const char *GetStringFromTable(uint32_t index) {
+  if (index >= StringTable.size())
     return _ErrorString;
   else
-    return StringTable[d];
+    return StringTable[index].c_str();
 }
 ///////////////////////////////////////////////
 
@@ -297,9 +299,9 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   Netgame->flags |= (NF_TRACK_RANK);
 
   DMFCBase->GameInit(NUM_TEAMS);
-  DLLCreateStringTable("entropy.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("entropy.str", StringTable);
+  DLLmprintf(0, "%d strings loaded from string table\n", StringTable.size());
+  if (StringTable.empty()) {
     *all_ok = 0;
     return;
   }
@@ -417,7 +419,7 @@ void DLLFUNCCALL DLLGameClose() {
     RoomList = NULL;
   }
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  DLLDestroyStringTable(StringTable);
 
   if (dstat) {
     dstat->DestroyPointer();

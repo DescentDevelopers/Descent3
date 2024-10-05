@@ -22,10 +22,10 @@
 // Filename:	Level2.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -1018,180 +1018,12 @@ $$END
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -1369,44 +1201,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"Gain entry to the Supply Hangar",
                                     "Destroy all Prison Records Databanks"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 35
-const char *Message_names[NUM_MESSAGE_NAMES] = {"OneTurretDown",
-                                          "IncomingMessage",
-                                          "AnotherTurretGone",
-                                          "InnerTowerForcefields",
-                                          "Empty",
-                                          "EndLevel",
-                                          "X1OldSecurityPassD",
-                                          "R1MaxSecurityPassC",
-                                          "G1MinSecurityPassB",
-                                          "Y1MedSecurityPassA",
-                                          "SupplyAlarm",
-                                          "1stInvalidPassOffense",
-                                          "2ndInvalidPassOffense",
-                                          "SecurityPassNotUsableHere",
-                                          "MaximumSecurityClearance",
-                                          "MediumSecurityClearance",
-                                          "MinimumSecurityClearance",
-                                          "IntroMessage",
-                                          "DontShootMe",
-                                          "SPUDisBorn",
-                                          "ChemicalReactionSwitches",
-                                          "SPUDkilled",
-                                          "SPUDscores",
-                                          "SPUDhasTheBall",
-                                          "ChemicalReactionAlert",
-                                          "WhatTheHell",
-                                          "SweitzerMINLockedOut",
-                                          "SweitzerMAX",
-                                          "ShuttleUnderAttack",
-                                          "LoadingSweitzer",
-                                          "LoadedSweitzer",
-                                          "RecordsNodeDestroyed",
-                                          "ComputerDestroyed",
-                                          "ShuttleMoveToTower",
-                                          "EscortShuttle"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -1420,26 +1214,16 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
-  int lang_type;
-  if (func_list->script_identifier != NULL) {
-    _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    lang_type = Game_GetLanguage();
-    if (lang_type == LANGUAGE_FRENCH)
-      strcat(filename, "_FRN");
-    else if (lang_type == LANGUAGE_GERMAN)
-      strcat(filename, "_GER");
-    else if (lang_type == LANGUAGE_ITALIAN)
-      strcat(filename, "_ITN");
-    else if (lang_type == LANGUAGE_SPANISH)
-      strcat(filename, "_SPN");
+  if (func_list->script_identifier != nullptr) {
+    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
+    int lang_type = Game_GetLanguage();
+    strcat(filename, lang_suffixes[lang_type].c_str());
     strcat(filename, ".msg");
   } else {
     strcpy(filename, "Level2.msg");
-    lang_type = LANGUAGE_ENGLISH;
   }
   if (!ReadMessageFile(filename)) {
     mprintf(0, "ERROR: Could not load message file - %s\n", filename);
@@ -1485,10 +1269,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -2201,7 +1981,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         ((qObjCanSeePlayerAdvancedWithStore(3, 360, Object_handles[61], 80.000000f, 1048585) == true) &&
          (qUserFlag(7) == true) &&
          (qObjCanSeeObjAdvanced(Object_handles[61], 60, qObjSavedHandle(3), 1048585) == true))) {
-      aAddGameMessage(Message_strings[26], Message_strings[1]);
+      aAddGameMessage(TXT("SweitzerMINLockedOut"), TXT("IncomingMessage"));
       aUserFlagSet(9, 1);
       aRoomSetLightingPulse(Room_indexes[54], 3.000000f, 0.000000f);
       aGoalCompleted(Goal_indexes[13], 1);
@@ -2218,7 +1998,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         ((qObjCanSeePlayerAdvancedWithStore(2, 360, Object_handles[60], 80.000000f, 1048585) == true) &&
          (qUserFlag(5) == true) &&
          (qObjCanSeeObjAdvanced(Object_handles[60], 60, qObjSavedHandle(2), 1048585) == true))) {
-      aAddGameMessage(Message_strings[27], Message_strings[1]);
+      aAddGameMessage(TXT("SweitzerMAX"), TXT("IncomingMessage"));
       aRoomSetLightingPulse(Room_indexes[47], 3.000000f, 0.000000f);
       aGoalCompleted(Goal_indexes[12], 1);
       aGoalEnableDisable(1, Goal_indexes[14]);
@@ -2257,7 +2037,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 057: End Level Sequence
     if ((ScriptActionCtr_057 < 1) && ((qUserFlag(13) == true) && (qUserFlag(14) == true) && (1 == false))) {
-      aStartEndlevelSequencePath(Path_indexes[17], Path_indexes[18], 10.000000f, Message_strings[5]);
+      aStartEndlevelSequencePath(Path_indexes[17], Path_indexes[18], 10.000000f, TXT("EndLevel"));
 
       // Increment the script action counter
       if (ScriptActionCtr_057 < MAX_ACTION_CTR_VALUE)
@@ -2330,7 +2110,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 020: Intro Camera Sequence
     if (1) {
-      aCinematicIntro(Path_indexes[13], Message_strings[17], Object_handles[21], Path_indexes[14], 10.000000f);
+      aCinematicIntro(Path_indexes[13], TXT("IntroMessage"), Object_handles[21], Path_indexes[14], 10.000000f);
       aSetLevelTimer(15.000000f, 9);
 
       // Increment the script action counter
@@ -2474,7 +2254,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aDestroyAllRobotsSpareHandle(Object_handles[10]);
       aDestroyAllRobotsSpareHandle(Object_handles[11]);
       aDestroyAllRobotsEnd();
-      aCinematicSimple(Path_indexes[1], Message_strings[4], Object_handles[12], 12.000000f, 1);
+      aCinematicSimple(Path_indexes[1], TXT("Empty"), Object_handles[12], 12.000000f, 1);
       aSetLevelTimer(2.000000f, 16);
 
       // Increment the script action counter
@@ -2537,7 +2317,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjGhostSet(0, Object_handles[57]);
       aObjGhostSet(0, Object_handles[58]);
       aObjGhostSet(0, Object_handles[59]);
-      aAddGameMessage(Message_strings[25], Message_strings[1]);
+      aAddGameMessage(TXT("WhatTheHell"), TXT("IncomingMessage"));
       aGoalEnableDisable(1, Goal_indexes[13]);
       aGoalCompleted(Goal_indexes[14], 1);
       aSetLevelTimer(3.000000f, 11);
@@ -2598,7 +2378,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[3], Object_handles[0], 1.000000f);
       aObjPlayAnim(Object_handles[0], 0, 2, 3.000000f, 0);
       aSetLevelTimer(7.300000f, 5);
-      aShowHUDMessage(Message_strings[29]);
+      aShowHUDMessage(TXT("LoadingSweitzer"));
 
       // Increment the script action counter
       if (ScriptActionCtr_052 < MAX_ACTION_CTR_VALUE)
@@ -2609,7 +2389,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     if (5 == event_data->id) {
       aSoundPlayObject(Sound_indexes[3], Object_handles[0], 1.000000f);
       aObjPlayAnim(Object_handles[0], 2, 4, 3.000000f, 0);
-      aShowHUDMessage(Message_strings[30]);
+      aShowHUDMessage(TXT("LoadedSweitzer"));
       aSetLevelTimer(3.000000f, 6);
       aObjGhostSet(1, Object_handles[11]);
       aUnAttachObject(Object_handles[0]);
@@ -2632,7 +2412,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 101: Perimeter Secure Forcefield Down
     if (7 == event_data->id) {
-      aAddGameMessage(Message_strings[33], Message_strings[1]);
+      aAddGameMessage(TXT("ShuttleMoveToTower"), TXT("IncomingMessage"));
 
       // Increment the script action counter
       if (ScriptActionCtr_101 < MAX_ACTION_CTR_VALUE)
@@ -2641,7 +2421,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 102: ESCORT SHUTTLE WARNING!
     if ((qAIIsObjectAware(Object_handles[0]) == false) && (8 == event_data->id)) {
-      aShowHUDMessage(Message_strings[34]);
+      aShowHUDMessage(TXT("EscortShuttle"));
       aSetLevelTimer(5.000000f, 8);
 
       // Increment the script action counter
@@ -2699,7 +2479,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 014: Supply Hangar Alarm Switch
     if (6 == event_data->goal_uid) {
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("SupplyAlarm"));
       aMatcenSetState(1, Matcen_indexes[1]);
       aSetLevelTimer(9.000000f, 14);
 
@@ -2716,7 +2496,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aMatcenSetState(0, Matcen_indexes[6]);
       aObjDelete(qObjSavedHandle(1));
       aObjDelete(qObjSavedHandle(0));
-      aShowHUDMessage(Message_strings[22]);
+      aShowHUDMessage(TXT("SPUDscores"));
 
       // Increment the script action counter
       if (ScriptActionCtr_027 < MAX_ACTION_CTR_VALUE)
@@ -2726,7 +2506,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 026: Chemical Droid Ball Pickup
     if (0 == event_data->goal_uid) {
       aAIGoalGotoRoom(event_data->it_handle, Room_indexes[9], 3, 4352, 1);
-      aShowHUDMessage(Message_strings[23]);
+      aShowHUDMessage(TXT("SPUDhasTheBall"));
 
       // Increment the script action counter
       if (ScriptActionCtr_026 < MAX_ACTION_CTR_VALUE)
@@ -2856,9 +2636,9 @@ int16_t CustomObjectScript_082D::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalCompleted(Goal_indexes[1], 1);
       } else {
         if (qUserVarValue(0) == 1.000000f) {
-          aAddGameMessage(Message_strings[0], Message_strings[1]);
+          aAddGameMessage(TXT("OneTurretDown"), TXT("IncomingMessage"));
         } else {
-          aShowHUDMessage(Message_strings[2]);
+          aShowHUDMessage(TXT("AnotherTurretGone"));
         }
       }
 
@@ -2892,9 +2672,9 @@ int16_t CustomObjectScript_082E::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalCompleted(Goal_indexes[1], 1);
       } else {
         if (qUserVarValue(0) == 1.000000f) {
-          aAddGameMessage(Message_strings[0], Message_strings[1]);
+          aAddGameMessage(TXT("OneTurretDown"), TXT("IncomingMessage"));
         } else {
-          aShowHUDMessage(Message_strings[2]);
+          aShowHUDMessage(TXT("AnotherTurretGone"));
         }
       }
 
@@ -2928,9 +2708,9 @@ int16_t CustomObjectScript_082F::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalCompleted(Goal_indexes[1], 1);
       } else {
         if (qUserVarValue(0) == 1.000000f) {
-          aAddGameMessage(Message_strings[0], Message_strings[1]);
+          aAddGameMessage(TXT("OneTurretDown"), TXT("IncomingMessage"));
         } else {
-          aShowHUDMessage(Message_strings[2]);
+          aShowHUDMessage(TXT("AnotherTurretGone"));
         }
       }
 
@@ -2964,9 +2744,9 @@ int16_t CustomObjectScript_0830::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalCompleted(Goal_indexes[1], 1);
       } else {
         if (qUserVarValue(0) == 1.000000f) {
-          aAddGameMessage(Message_strings[0], Message_strings[1]);
+          aAddGameMessage(TXT("OneTurretDown"), TXT("IncomingMessage"));
         } else {
-          aShowHUDMessage(Message_strings[2]);
+          aShowHUDMessage(TXT("AnotherTurretGone"));
         }
       }
 
@@ -3000,9 +2780,9 @@ int16_t CustomObjectScript_0831::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalCompleted(Goal_indexes[1], 1);
       } else {
         if (qUserVarValue(0) == 1.000000f) {
-          aAddGameMessage(Message_strings[0], Message_strings[1]);
+          aAddGameMessage(TXT("OneTurretDown"), TXT("IncomingMessage"));
         } else {
-          aShowHUDMessage(Message_strings[2]);
+          aShowHUDMessage(TXT("AnotherTurretGone"));
         }
       }
 
@@ -3032,7 +2812,7 @@ int16_t CustomObjectScript_2112::CallEvent(int event, tOSIRISEventInfo *data) {
           aObjPlayAnim(Object_handles[7], 0, 2, 2.000000f, 0);
           aPortalRenderSet(0, 0, Room_indexes[1], 1);
           aPortalRenderSet(0, 1, Room_indexes[1], 1);
-          aShowHUDMessage(Message_strings[3]);
+          aShowHUDMessage(TXT("InnerTowerForcefields"));
           aUserFlagSet(0, 1);
         }
         aSetLevelTimer(2.000000f, 15);
@@ -3062,7 +2842,7 @@ int16_t CustomObjectScript_11F2::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjGhostSet(0, Object_handles[0]);
       aAISetMaxSpeed(Object_handles[0], 16.000000f);
       aAIGoalFollowPath(Object_handles[0], Path_indexes[2], 11, 17, 11, 3, 1048832, -1);
-      aCinematicSimple(Path_indexes[3], Message_strings[4], Object_handles[14], 9.000000f, 1);
+      aCinematicSimple(Path_indexes[3], TXT("Empty"), Object_handles[14], 9.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_115 < MAX_ACTION_CTR_VALUE)
@@ -3085,7 +2865,7 @@ int16_t CustomObjectScript_11F4::CallEvent(int event, tOSIRISEventInfo *data) {
       aMoveObjectToPositionClipboard(Object_handles[0]);
       aObjGhostSet(0, Object_handles[0]);
       aAIGoalFollowPath(Object_handles[0], Path_indexes[2], 32, 34, 32, 3, 1048832, 3);
-      aCinematicSimple(Path_indexes[4], Message_strings[4], Object_handles[16], 10.000000f, 1);
+      aCinematicSimple(Path_indexes[4], TXT("Empty"), Object_handles[16], 10.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_117 < MAX_ACTION_CTR_VALUE)
@@ -3108,7 +2888,7 @@ int16_t CustomObjectScript_11F6::CallEvent(int event, tOSIRISEventInfo *data) {
       aAISetState(1, Object_handles[8]);
       aObjSetMovementType(Object_handles[8], 0);
       aObjPlayAnim(Object_handles[8], 60, 88, 4.000000f, 0);
-      aCinematicSimple(Path_indexes[5], Message_strings[4], Object_handles[17], 6.000000f, 1);
+      aCinematicSimple(Path_indexes[5], TXT("Empty"), Object_handles[17], 6.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_116 < MAX_ACTION_CTR_VALUE)
@@ -3129,7 +2909,7 @@ int16_t CustomObjectScript_19F7::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjSetMovementType(Object_handles[8], 2);
       aObjPlayAnim(Object_handles[8], 0, 9, 2.000000f, 0);
       aAIGoalFollowPathSimple(Object_handles[8], Path_indexes[6], 4352, 7, 3);
-      aCinematicSimple(Path_indexes[7], Message_strings[4], Object_handles[18], 3.700000f, 1);
+      aCinematicSimple(Path_indexes[7], TXT("Empty"), Object_handles[18], 3.700000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_122 < MAX_ACTION_CTR_VALUE)
@@ -3167,7 +2947,7 @@ int16_t CustomObjectScript_1211::CallEvent(int event, tOSIRISEventInfo *data) {
     if (1) {
       aObjGhostSet(1, Object_handles[8]);
       aAISetMaxSpeed(Object_handles[0], 10.000000f);
-      aCinematicSimple(Path_indexes[8], Message_strings[4], Object_handles[0], 10.000000f, 1);
+      aCinematicSimple(Path_indexes[8], TXT("Empty"), Object_handles[0], 10.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_118 < MAX_ACTION_CTR_VALUE)
@@ -3185,7 +2965,7 @@ int16_t CustomObjectScript_0885::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 021: Rescue Shuttle Don't Shoot Me!
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[18]);
+      aShowHUDMessage(TXT("DontShootMe"));
       aObjSetShields(Object_handles[0], 9999999.000000f);
 
       // Increment the script action counter
@@ -3195,7 +2975,7 @@ int16_t CustomObjectScript_0885::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 040: Shuttle Taking Enemy Fire
     if ((qObjIsType(event_data->it_handle, 5) == true) && (qObjIsType(qObjParent(event_data->it_handle), 2) == true)) {
-      aShowHUDMessage(Message_strings[28]);
+      aShowHUDMessage(TXT("ShuttleUnderAttack"));
       aObjSetShields(Object_handles[0], 9999999.000000f);
 
       // Increment the script action counter
@@ -3242,7 +3022,7 @@ int16_t CustomObjectScript_0885::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjGhostSet(0, Object_handles[0]);
       aAISetMaxSpeed(Object_handles[0], 44.000000f);
       aAIGoalFollowPath(Object_handles[0], Path_indexes[9], 1, 8, 1, 3, 1048832, -1);
-      aStartEndlevelSequencePath(Path_indexes[10], Path_indexes[11], 15.000000f, Message_strings[5]);
+      aStartEndlevelSequencePath(Path_indexes[10], Path_indexes[11], 15.000000f, TXT("EndLevel"));
 
       // Increment the script action counter
       if (ScriptActionCtr_119 < MAX_ACTION_CTR_VALUE)
@@ -3285,7 +3065,7 @@ int16_t CustomObjectScript_09EC::CallEvent(int event, tOSIRISEventInfo *data) {
         aObjPlayAnim(Object_handles[7], 0, 2, 2.000000f, 0);
         aPortalRenderSet(0, 0, Room_indexes[1], 1);
         aPortalRenderSet(0, 1, Room_indexes[1], 1);
-        aShowHUDMessage(Message_strings[3]);
+        aShowHUDMessage(TXT("InnerTowerForcefields"));
         aUserFlagSet(0, 1);
         aSetLevelTimer(7.000000f, 14);
       }
@@ -3306,7 +3086,7 @@ int16_t CustomObjectScript_11EB::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 011: X-1 Old Security Pass D
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[6]);
+      aShowHUDMessage(TXT("X1OldSecurityPassD"));
       aAddObjectToInventory(Object_handles[21], event_data->it_handle, 0);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
       aGoalEnableDisable(1, Goal_indexes[4]);
@@ -3324,7 +3104,7 @@ int16_t CustomObjectScript_11EB::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if ((qObjRoom(event_data->it_handle) == Room_indexes[3]) && (qUserFlag(5) == false)) {
         if (qUserVarValue(3) < 1.000000f) {
-          aShowHUDMessage(Message_strings[11]);
+          aShowHUDMessage(TXT("1stInvalidPassOffense"));
           aRoomSetFaceTexture(Room_indexes[3], 30, Texture_indexes[1]);
           aAISetState(1, Object_handles[28]);
           aPortalRenderSet(0, 2, Room_indexes[4], 1);
@@ -3334,7 +3114,7 @@ int16_t CustomObjectScript_11EB::CallEvent(int event, tOSIRISEventInfo *data) {
           aAddObjectToInventory(Object_handles[21], event_data->it_handle, 0);
           aSoundPlaySteaming("VoxL02SpecificC.osf", 1.000000f);
         } else {
-          aShowHUDMessage(Message_strings[12]);
+          aShowHUDMessage(TXT("2ndInvalidPassOffense"));
           aRoomSetFaceTexture(Room_indexes[3], 30, Texture_indexes[2]);
           aMatcenSetState(1, Matcen_indexes[2]);
           aUserFlagSet(12, 1);
@@ -3346,7 +3126,7 @@ int16_t CustomObjectScript_11EB::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         if ((qObjRoom(event_data->it_handle) == Room_indexes[5]) && (qUserFlag(4) == false)) {
           if (qUserVarValue(2) < 1.000000f) {
-            aShowHUDMessage(Message_strings[11]);
+            aShowHUDMessage(TXT("1stInvalidPassOffense"));
             aRoomSetFaceTexture(Room_indexes[5], 30, Texture_indexes[1]);
             aAISetState(1, Object_handles[27]);
             aPortalRenderSet(0, 2, Room_indexes[6], 1);
@@ -3356,7 +3136,7 @@ int16_t CustomObjectScript_11EB::CallEvent(int event, tOSIRISEventInfo *data) {
             aAddObjectToInventory(Object_handles[21], event_data->it_handle, 0);
             aSoundPlaySteaming("VoxL02SpecificC.osf", 1.000000f);
           } else {
-            aShowHUDMessage(Message_strings[12]);
+            aShowHUDMessage(TXT("2ndInvalidPassOffense"));
             aRoomSetFaceTexture(Room_indexes[5], 30, Texture_indexes[2]);
             aMatcenSetState(1, Matcen_indexes[3]);
             aUserFlagSet(11, 1);
@@ -3368,7 +3148,7 @@ int16_t CustomObjectScript_11EB::CallEvent(int event, tOSIRISEventInfo *data) {
         } else {
           aObjGhostSet(0, Object_handles[21]);
           aAddObjectToInventory(Object_handles[21], event_data->it_handle, 0);
-          aShowHUDMessage(Message_strings[13]);
+          aShowHUDMessage(TXT("SecurityPassNotUsableHere"));
         }
       }
 
@@ -3388,7 +3168,7 @@ int16_t CustomObjectScript_19E9::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 010: R-1 Maximum Security Pass C
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[7]);
+      aShowHUDMessage(TXT("R1MaxSecurityPassC"));
       aAddObjectToInventory(Object_handles[22], event_data->it_handle, 0);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
       aGoalCompleted(Goal_indexes[6], 1);
@@ -3405,7 +3185,7 @@ int16_t CustomObjectScript_19E9::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 018: R-1 Security Pass Useage Matrix
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if (qObjRoom(event_data->it_handle) == Room_indexes[3]) {
-        aShowHUDMessage(Message_strings[14]);
+        aShowHUDMessage(TXT("MaximumSecurityClearance"));
         aPortalRenderSet(0, 0, Room_indexes[4], 1);
         aRoomSetFaceTexture(Room_indexes[3], 30, Texture_indexes[3]);
         aUserFlagSet(5, 1);
@@ -3416,7 +3196,7 @@ int16_t CustomObjectScript_19E9::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         if ((qObjRoom(event_data->it_handle) == Room_indexes[5]) && (qUserFlag(4) == false)) {
           if (qUserVarValue(2) < 1.000000f) {
-            aShowHUDMessage(Message_strings[11]);
+            aShowHUDMessage(TXT("1stInvalidPassOffense"));
             aRoomSetFaceTexture(Room_indexes[5], 30, Texture_indexes[1]);
             aAISetState(1, Object_handles[27]);
             aPortalRenderSet(0, 2, Room_indexes[6], 1);
@@ -3426,7 +3206,7 @@ int16_t CustomObjectScript_19E9::CallEvent(int event, tOSIRISEventInfo *data) {
             aAddObjectToInventory(Object_handles[22], event_data->it_handle, 0);
             aSoundPlaySteaming("VoxL02SpecificC.osf", 1.000000f);
           } else {
-            aShowHUDMessage(Message_strings[12]);
+            aShowHUDMessage(TXT("2ndInvalidPassOffense"));
             aRoomSetFaceTexture(Room_indexes[5], 30, Texture_indexes[2]);
             aMatcenSetState(1, Matcen_indexes[3]);
             aUserFlagSet(11, 1);
@@ -3438,7 +3218,7 @@ int16_t CustomObjectScript_19E9::CallEvent(int event, tOSIRISEventInfo *data) {
         } else {
           if ((qObjRoom(event_data->it_handle) == Room_indexes[7]) && (qUserFlag(3) == false)) {
             if (qUserVarValue(1) < 1.000000f) {
-              aShowHUDMessage(Message_strings[11]);
+              aShowHUDMessage(TXT("1stInvalidPassOffense"));
               aRoomSetFaceTexture(Room_indexes[7], 30, Texture_indexes[1]);
               aAISetState(1, Object_handles[26]);
               aPortalRenderSet(0, 2, Room_indexes[8], 1);
@@ -3448,7 +3228,7 @@ int16_t CustomObjectScript_19E9::CallEvent(int event, tOSIRISEventInfo *data) {
               aAddObjectToInventory(Object_handles[22], event_data->it_handle, 0);
               aSoundPlaySteaming("VoxL02SpecificC.osf", 1.000000f);
             } else {
-              aShowHUDMessage(Message_strings[12]);
+              aShowHUDMessage(TXT("2ndInvalidPassOffense"));
               aRoomSetFaceTexture(Room_indexes[7], 30, Texture_indexes[2]);
               aMatcenSetState(1, Matcen_indexes[4]);
               aUserFlagSet(10, 1);
@@ -3460,7 +3240,7 @@ int16_t CustomObjectScript_19E9::CallEvent(int event, tOSIRISEventInfo *data) {
           } else {
             aObjGhostSet(0, Object_handles[22]);
             aAddObjectToInventory(Object_handles[22], event_data->it_handle, 0);
-            aShowHUDMessage(Message_strings[13]);
+            aShowHUDMessage(TXT("SecurityPassNotUsableHere"));
           }
         }
       }
@@ -3481,7 +3261,7 @@ int16_t CustomObjectScript_19E8::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 009: G-1 Minimum Security Pass B
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[8]);
+      aShowHUDMessage(TXT("G1MinSecurityPassB"));
       aAddObjectToInventory(Object_handles[23], event_data->it_handle, 0);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
       aGoalEnableDisable(1, Goal_indexes[8]);
@@ -3498,7 +3278,7 @@ int16_t CustomObjectScript_19E8::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 016: G-1 Security Pass Useage Matrix
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if (qObjRoom(event_data->it_handle) == Room_indexes[7]) {
-        aShowHUDMessage(Message_strings[16]);
+        aShowHUDMessage(TXT("MinimumSecurityClearance"));
         aPortalRenderSet(0, 0, Room_indexes[8], 1);
         aRoomSetFaceTexture(Room_indexes[7], 30, Texture_indexes[3]);
         aUserFlagSet(3, 1);
@@ -3510,7 +3290,7 @@ int16_t CustomObjectScript_19E8::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         aObjGhostSet(0, Object_handles[23]);
         aAddObjectToInventory(Object_handles[23], event_data->it_handle, 0);
-        aShowHUDMessage(Message_strings[13]);
+        aShowHUDMessage(TXT("SecurityPassNotUsableHere"));
       }
 
       // Increment the script action counter
@@ -3529,7 +3309,7 @@ int16_t CustomObjectScript_19EA::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 008: Y-1 Medium Security Pass A
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[9]);
+      aShowHUDMessage(TXT("Y1MedSecurityPassA"));
       aAddObjectToInventory(Object_handles[24], event_data->it_handle, 0);
       aSoundPlay2DObj(Sound_indexes[0], event_data->it_handle, 1.000000f);
       aGoalEnableDisable(1, Goal_indexes[4]);
@@ -3546,7 +3326,7 @@ int16_t CustomObjectScript_19EA::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 017: Y-1 Security Pass Useage Matrix
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if (qObjRoom(event_data->it_handle) == Room_indexes[5]) {
-        aShowHUDMessage(Message_strings[15]);
+        aShowHUDMessage(TXT("MediumSecurityClearance"));
         aPortalRenderSet(0, 0, Room_indexes[6], 1);
         aRoomSetFaceTexture(Room_indexes[5], 30, Texture_indexes[3]);
         aUserFlagSet(4, 1);
@@ -3557,7 +3337,7 @@ int16_t CustomObjectScript_19EA::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         aObjGhostSet(0, Object_handles[24]);
         aAddObjectToInventory(Object_handles[24], event_data->it_handle, 0);
-        aShowHUDMessage(Message_strings[13]);
+        aShowHUDMessage(TXT("SecurityPassNotUsableHere"));
       }
 
       // Increment the script action counter
@@ -3577,14 +3357,14 @@ int16_t CustomObjectScript_09E7::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 022: Chemical Droid Start Switch
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
       if ((qUserFlag(6) == false) && (qUserFlag(7) == false)) {
-        aShowHUDMessage(Message_strings[19]);
+        aShowHUDMessage(TXT("SPUDisBorn"));
         aObjPlayAnim(Object_handles[35], 0, 10, 1.000000f, 0);
         aMatcenSetState(1, Matcen_indexes[5]);
         aMatcenSetState(1, Matcen_indexes[6]);
         aUserFlagSet(6, 1);
       } else {
         if (qUserFlag(7) == true) {
-          aShowHUDMessage(Message_strings[20]);
+          aShowHUDMessage(TXT("ChemicalReactionSwitches"));
         } else {
         }
       }
@@ -3606,7 +3386,7 @@ int16_t CustomObjectScript_09E6::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 023: Chemical Droid KILL Switch
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
       if ((qUserFlag(6) == true) && (qUserFlag(7) == false)) {
-        aShowHUDMessage(Message_strings[21]);
+        aShowHUDMessage(TXT("SPUDkilled"));
         aObjPlayAnim(Object_handles[36], 0, 20, 1.000000f, 0);
         aMatcenSetState(0, Matcen_indexes[5]);
         aMatcenSetState(0, Matcen_indexes[6]);
@@ -3615,7 +3395,7 @@ int16_t CustomObjectScript_09E6::CallEvent(int event, tOSIRISEventInfo *data) {
         aObjPlayAnim(Object_handles[35], 10, 20, 1.000000f, 0);
       } else {
         if (qUserFlag(7) == true) {
-          aShowHUDMessage(Message_strings[20]);
+          aShowHUDMessage(TXT("ChemicalReactionSwitches"));
         } else {
         }
       }
@@ -3640,7 +3420,7 @@ int16_t CustomObjectScript_11BB::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 088: Novak Prison Records Node H Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(5);
       aUserVarInc(4);
       if (qUserVarValue(5) > 7.000000f) {
@@ -3671,7 +3451,7 @@ int16_t CustomObjectScript_09BC::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 087: Novak Prison Records Node G Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(5);
       aUserVarInc(4);
       if (qUserVarValue(5) > 7.000000f) {
@@ -3702,7 +3482,7 @@ int16_t CustomObjectScript_09BD::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 086: Novak Prison Records Node F Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(5);
       aUserVarInc(4);
       if (qUserVarValue(5) > 7.000000f) {
@@ -3733,7 +3513,7 @@ int16_t CustomObjectScript_09BE::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 085: Novak Prison Records Node E Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(5);
       aUserVarInc(4);
       if (qUserVarValue(5) > 7.000000f) {
@@ -3764,7 +3544,7 @@ int16_t CustomObjectScript_11BF::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 084: Novak Prison Records Node D Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(5);
       aUserVarInc(4);
       if (qUserVarValue(5) > 7.000000f) {
@@ -3795,7 +3575,7 @@ int16_t CustomObjectScript_09C0::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 083: Novak Prison Records Node C Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(5);
       aUserVarInc(4);
       if (qUserVarValue(5) > 7.000000f) {
@@ -3826,7 +3606,7 @@ int16_t CustomObjectScript_11C1::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 082: Novak Prison Records Node B Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(5);
       aUserVarInc(4);
       if (qUserVarValue(5) > 7.000000f) {
@@ -3857,7 +3637,7 @@ int16_t CustomObjectScript_11BA::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 044: Novak Prison Records Node A Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(5);
       aUserVarInc(4);
       if (qUserVarValue(5) > 7.000000f) {
@@ -3888,7 +3668,7 @@ int16_t CustomObjectScript_09C9::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 096: Novak Prison Records Node P Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(6);
       aUserVarInc(4);
       if (qUserVarValue(6) > 7.000000f) {
@@ -3919,7 +3699,7 @@ int16_t CustomObjectScript_09C8::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 095: Novak Prison Records Node O Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(6);
       aUserVarInc(4);
       if (qUserVarValue(6) > 7.000000f) {
@@ -3950,7 +3730,7 @@ int16_t CustomObjectScript_09C7::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 094: Novak Prison Records Node N Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(6);
       aUserVarInc(4);
       if (qUserVarValue(6) > 7.000000f) {
@@ -3981,7 +3761,7 @@ int16_t CustomObjectScript_09C6::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 093: Novak Prison Records Node M Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(6);
       aUserVarInc(4);
       if (qUserVarValue(6) > 7.000000f) {
@@ -4012,7 +3792,7 @@ int16_t CustomObjectScript_09C5::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 092: Novak Prison Records Node L Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(6);
       aUserVarInc(4);
       if (qUserVarValue(6) > 7.000000f) {
@@ -4043,7 +3823,7 @@ int16_t CustomObjectScript_09C4::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 091: Novak Prison Records Node K Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(6);
       aUserVarInc(4);
       if (qUserVarValue(6) > 7.000000f) {
@@ -4074,7 +3854,7 @@ int16_t CustomObjectScript_09C3::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 090: Novak Prison Records Node J Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(6);
       aUserVarInc(4);
       if (qUserVarValue(6) > 7.000000f) {
@@ -4105,7 +3885,7 @@ int16_t CustomObjectScript_09C2::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 089: Novak Prison Records Node I Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("RecordsNodeDestroyed"));
       aUserVarInc(6);
       aUserVarInc(4);
       if (qUserVarValue(6) > 7.000000f) {
@@ -4136,7 +3916,7 @@ int16_t CustomObjectScript_094E::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 043: Novak Super Computer Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[32]);
+      aShowHUDMessage(TXT("ComputerDestroyed"));
       aUserFlagSet(15, 1);
       aRoomSetFaceTexture(Room_indexes[57], 158, Texture_indexes[11]);
       aRoomSetFaceTexture(Room_indexes[57], 157, Texture_indexes[11]);
@@ -4277,7 +4057,7 @@ int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
       aMatcenSetState(1, Matcen_indexes[11]);
       aMatcenSetState(1, Matcen_indexes[12]);
       aSetLevelTimer(10.000000f, 0);
-      aShowHUDMessage(Message_strings[24]);
+      aShowHUDMessage(TXT("ChemicalReactionAlert"));
       aObjMakeVulnerable(Object_handles[40]);
       aSetLevelTimer(3.000000f, 10);
 

@@ -19,9 +19,11 @@
 // generic.cpp
 // 0.1
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <cstdarg>
+#include <string>
+#include <vector>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 
@@ -41,16 +43,15 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 }
 #endif
 
-int String_table_size = 0;
-char **String_table = NULL;
+std::vector<std::string> String_table;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
-const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table_size))
+const char *GetStringFromTable(uint32_t index) {
+  if (index >= String_table.size())
     return _Error_string;
-  if (!String_table[index])
+  if (String_table[index].empty())
     return _Empty_string;
-  return String_table[index];
+  return String_table[index].c_str();
 }
 #define TXT(x) GetStringFromTable(x)
 #define TXT_DOORLOCKED TXT(0)     //"Door Locked!"
@@ -150,14 +151,11 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
     return 0;
   }
 
-  String_table_size = func_list->string_count;
   String_table = func_list->string_table;
 
-  int i;
-
   // initialize rapid fire script data
-  for (i = 0; i < MAX_PLAYERS; i++) {
-    RapidFirePlayerTimers[i].timer_handle = -1;
+  for (auto & RapidFirePlayerTimer : RapidFirePlayerTimers) {
+    RapidFirePlayerTimer.timer_handle = -1;
   }
 
   return 1;

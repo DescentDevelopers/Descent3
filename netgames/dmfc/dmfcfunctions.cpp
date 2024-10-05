@@ -118,10 +118,9 @@
  */
 
 #include <filesystem>
+#include <string>
+#include <vector>
 
-#include "DMFC.h"
-#include "dmfcinternal.h"
-#include "dmfcinputcommands.h"
 #include "gamedll_header.h"
 
 void (*DLLGetGameAPI)(game_api *);
@@ -212,8 +211,8 @@ bool (*DLLcf_Diff)(const char *a, const char *b);
 void (*DLLMultiDisconnectPlayer)(int slot);
 void (*DLLnw_GetNumbersFromHostAddress)(network_address *address, char *str);
 int (*DLLnw_GetThisIP)(void);
-bool (*DLLCreateStringTable)(const char *filename, char ***table, int *size);
-void (*DLLDestroyStringTable)(char **table, int size);
+bool (*DLLCreateStringTable)(const std::filesystem::path &filename, std::vector<std::string> &table);
+void (*DLLDestroyStringTable)(std::vector<std::string> &table);
 void (*DLLRenderHUDTextFlags)(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 void (*DLLPlayerSetHUDNameFOV)(int fov);
 void (*DLLGetUltimateParentForObject)(object **parent, object *child);

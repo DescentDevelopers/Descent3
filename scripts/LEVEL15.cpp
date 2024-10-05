@@ -22,10 +22,10 @@
 // Filename:	Level15.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -769,7 +769,8 @@ $$ENUM Region
 $$END
 */
 
-const char *GetMessage(const char *name);
+void aUserFlagSet(int flagnum, bool state);
+bool qUserFlag(int flagnum);
 
 #define MatCenSwitchAON 0
 #define MatCenSwitchBON 1
@@ -863,6 +864,17 @@ tMyMessage MyMessages[] = {{"MagicMatCenSwitches", NULL}, {"MatCenSwitchDOn", NU
                            {"MatCenSwitchBOn", NULL},     {"MatCenSwitchBOff", NULL}, {"MatCenSwitchFOn", NULL},
                            {"MatCenSwitchFOff", NULL},    {"MatCenSwitchAOn", NULL},  {"MatCenSwitchAOff", NULL}};
 
+// =================
+// Message File Data
+// =================
+
+// Global storage for level script messages
+std::map<std::string, std::string> Messages;
+
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
+
 int GetMyMatCen(int id) {
   if (MyMatcens[id].handle == -1)
     MyMatcens[id].handle = Scrpt_FindMatcenName(MyMatcens[id].name);
@@ -886,7 +898,7 @@ int GetMyRoom(int id) {
 
 const char *GetMyMessage(int id) {
   if (MyMessages[id].mem == NULL)
-    MyMessages[id].mem = GetMessage(MyMessages[id].name);
+    MyMessages[id].mem = TXT(MyMessages[id].name);
 
   return MyMessages[id].mem;
 }
@@ -1447,185 +1459,6 @@ void aMatCenPuzzleSwitchG(int Player) {
 // End of Custom Script Block - DO NOT EDIT ANYTHING AFTER THIS
 // ============================================================
 
-// =================
-// Message File Data
-// =================
-
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
-// Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
-
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
-
 //======================
 // Name List Arrays
 //======================
@@ -1726,31 +1559,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"Locate the Inner Stronghold Passkey",
                                     "Locate Dravis' secret stronghold"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 22
-const char *Message_names[NUM_MESSAGE_NAMES] = {"InnerDoorsUnlock",
-                                          "InnerStrongholdKey",
-                                          "LeftLavaCrank",
-                                          "CenterLavaCrank",
-                                          "RightLavaCrank",
-                                          "EnergyCentersOnline",
-                                          "PowerRestored",
-                                          "FuseFound",
-                                          "ReactorBroken",
-                                          "EnergyCenterBroken",
-                                          "InnerDoorsDenied",
-                                          "TNTDispenserCenter",
-                                          "TNTDispenserRight",
-                                          "TNTDispenserLeft",
-                                          "TNTDispenserLeftBroken",
-                                          "TNTRockwalldestroyed",
-                                          "TNTRockWall",
-                                          "DravisDoor",
-                                          "End",
-                                          "IntroCameraText",
-                                          "BLANK",
-                                          "HellionIntroduction"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -1766,26 +1574,16 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit(uservars_as_int);
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
-  int lang_type;
-  if (func_list->script_identifier != NULL) {
-    _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    lang_type = Game_GetLanguage();
-    if (lang_type == LANGUAGE_FRENCH)
-      strcat(filename, "_FRN");
-    else if (lang_type == LANGUAGE_GERMAN)
-      strcat(filename, "_GER");
-    else if (lang_type == LANGUAGE_ITALIAN)
-      strcat(filename, "_ITN");
-    else if (lang_type == LANGUAGE_SPANISH)
-      strcat(filename, "_SPN");
+  if (func_list->script_identifier != nullptr) {
+    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
+    int lang_type = Game_GetLanguage();
+    strcat(filename, lang_suffixes[lang_type].c_str());
     strcat(filename, ".msg");
   } else {
     strcpy(filename, "Level15.msg");
-    lang_type = LANGUAGE_ENGLISH;
   }
   if (!ReadMessageFile(filename)) {
     mprintf(0, "ERROR: Could not load message file - %s\n", filename);
@@ -1831,10 +1629,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -2612,7 +2406,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 052: Intro Camera
     if (1) {
-      aCinematicIntro(Path_indexes[7], Message_strings[19], Object_handles[32], Path_indexes[8], 8.000000f);
+      aCinematicIntro(Path_indexes[7], TXT("IntroCameraText"), Object_handles[32], Path_indexes[8], 8.000000f);
       aSoundPlaySteaming("VoxL15StartLevel.osf", 1.000000f);
 
       // Increment the script action counter
@@ -2664,7 +2458,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 053: Energy Centers Repaired Timer
     if (event_data->id == 2) {
-      aShowHUDMessage(Message_strings[5]);
+      aShowHUDMessage(TXT("EnergyCentersOnline"));
 
       // Increment the script action counter
       if (ScriptActionCtr_053 < MAX_ACTION_CTR_VALUE)
@@ -2708,7 +2502,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 079: Pre-Boss Cinematic Finished
     if (qUserFlag(19) == true) {
       aUserFlagSet(19, 0);
-      aCinematicSimple(Path_indexes[11], Message_strings[21], Object_handles[32], 12.000000f, 1);
+      aCinematicSimple(Path_indexes[11], TXT("HellionIntroduction"), Object_handles[32], 12.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_079 < MAX_ACTION_CTR_VALUE)
@@ -2726,9 +2520,9 @@ int16_t CustomObjectScript_10FD::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 000: Inner Stronghold Passkey
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("InnerDoorsUnlock"));
       aCreatePopupView(0, Object_handles[1], 10.000000f, 1.000000f);
-      aObjectPlayerGiveKey(event_data->it_handle, Object_handles[0], 1, Message_strings[1], 0);
+      aObjectPlayerGiveKey(event_data->it_handle, Object_handles[0], 1, TXT("InnerStrongholdKey"), 0);
       aGoalCompleted(Goal_indexes[0], 1);
 
       // Increment the script action counter
@@ -2749,7 +2543,7 @@ int16_t CustomObjectScript_084D::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qUserFlag(7) == false)) {
       aAIGoalFollowPath(Object_handles[2], Path_indexes[0], 1, 2, 1, 3, 19005696, -1);
       aObjPlayAnim(Object_handles[5], 0, 20, 2.000000f, 0);
-      aShowHUDMessage(Message_strings[2]);
+      aShowHUDMessage(TXT("LeftLavaCrank"));
       aUserFlagSet(7, 1);
       aDoorSetPos(Door_handles[1], 1.000000f);
 
@@ -2771,7 +2565,7 @@ int16_t CustomObjectScript_084E::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qUserFlag(8) == false)) {
       aAIGoalFollowPath(Object_handles[4], Path_indexes[2], 1, 2, 1, 3, 19005696, -1);
       aObjPlayAnim(Object_handles[6], 0, 20, 2.000000f, 0);
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("CenterLavaCrank"));
       aUserFlagSet(8, 1);
       aDoorSetPos(Door_handles[2], 1.000000f);
 
@@ -2793,7 +2587,7 @@ int16_t CustomObjectScript_084F::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qUserFlag(9) == false)) {
       aAIGoalFollowPath(Object_handles[3], Path_indexes[1], 1, 2, 1, 3, 19005696, -1);
       aObjPlayAnim(Object_handles[7], 0, 20, 2.000000f, 0);
-      aShowHUDMessage(Message_strings[4]);
+      aShowHUDMessage(TXT("RightLavaCrank"));
       aUserFlagSet(9, 1);
       aDoorSetPos(Door_handles[0], 1.000000f);
 
@@ -2815,7 +2609,7 @@ int16_t CustomObjectScript_084C::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_003 < 1) &&
         ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qObjExists(Object_handles[9]) == false))) {
       aObjPlayAnim(Object_handles[8], 0, 20, 2.000000f, 0);
-      aShowHUDMessage(Message_strings[6]);
+      aShowHUDMessage(TXT("PowerRestored"));
       aRoomSetLightingStrobe(0, Room_indexes[0]);
       aRoomSetFuelcen(1, Room_indexes[0]);
       aRoomSetLightingFlicker(0, Room_indexes[1]);
@@ -2839,7 +2633,7 @@ int16_t CustomObjectScript_084C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 005: Backup Reactor Broken
     if ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qObjExists(Object_handles[9]) == true)) {
-      aShowHUDMessage(Message_strings[8]);
+      aShowHUDMessage(TXT("ReactorBroken"));
       aGoalEnableDisable(1, Goal_indexes[3]);
       aGoalEnableDisable(1, Goal_indexes[1]);
 
@@ -2861,7 +2655,7 @@ int16_t CustomObjectScript_1913::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjDelete(Object_handles[9]);
       aGoalEnableDisable(1, Goal_indexes[2]);
-      aShowHUDMessage(Message_strings[7]);
+      aShowHUDMessage(TXT("FuseFound"));
       aGoalCompleted(Goal_indexes[3], 1);
 
       // Increment the script action counter
@@ -3103,7 +2897,7 @@ int16_t CustomObjectScript_2801::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 033: Inner Stronghold Door E
     if ((qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) &&
         (qDoorOpenable(data->me_handle, event_data->it_handle) == false)) {
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("InnerDoorsDenied"));
       if (qUserFlag(13) == false) {
         aUserFlagSet(13, 1);
         aGoalEnableDisable(1, Goal_indexes[0]);
@@ -3126,7 +2920,7 @@ int16_t CustomObjectScript_1828::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 032: Inner Stronghold Door D
     if ((qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) &&
         (qDoorOpenable(data->me_handle, event_data->it_handle) == false)) {
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("InnerDoorsDenied"));
       if (qUserFlag(13) == false) {
         aUserFlagSet(13, 1);
         aGoalEnableDisable(1, Goal_indexes[0]);
@@ -3149,7 +2943,7 @@ int16_t CustomObjectScript_1015::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 031: Inner Stronghold Door C
     if ((qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) &&
         (qDoorOpenable(data->me_handle, event_data->it_handle) == false)) {
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("InnerDoorsDenied"));
       if (qUserFlag(13) == false) {
         aUserFlagSet(13, 1);
         aGoalEnableDisable(1, Goal_indexes[0]);
@@ -3173,7 +2967,7 @@ int16_t CustomObjectScript_0848::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
       if (qUserFlag(16) == false) {
         aObjPlayAnim(Object_handles[27], 0, 10, 1.000000f, 0);
-        aShowHUDMessage(Message_strings[11]);
+        aShowHUDMessage(TXT("TNTDispenserCenter"));
         aMatcenSetState(1, Matcen_indexes[0]);
         aUserFlagSet(16, 1);
         aSetObjectTimer(Object_handles[27], 1.000000f, 1);
@@ -3212,7 +3006,7 @@ int16_t CustomObjectScript_0849::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
       if (qUserFlag(17) == false) {
         aObjPlayAnim(Object_handles[28], 0, 10, 1.000000f, 0);
-        aShowHUDMessage(Message_strings[12]);
+        aShowHUDMessage(TXT("TNTDispenserRight"));
         aMatcenSetState(1, Matcen_indexes[1]);
         aUserFlagSet(17, 1);
         aSetObjectTimer(Object_handles[28], 1.000000f, 0);
@@ -3250,7 +3044,7 @@ int16_t CustomObjectScript_0847::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 037: Left TNT Dispenser Switch
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
       if (qUserFlag(15) == false) {
-        aShowHUDMessage(Message_strings[13]);
+        aShowHUDMessage(TXT("TNTDispenserLeft"));
         aTurnOnSpew(Object_handles[30], -1, 8, 0.000000f, 0.000000f, 65536, 0, 0.750000f, 0.100000f, -1.000000f,
                     2.000000f, 10.000000f, 1, 5);
         aUserFlagSet(15, 1);
@@ -3258,7 +3052,7 @@ int16_t CustomObjectScript_0847::CallEvent(int event, tOSIRISEventInfo *data) {
         aMiscViewerShake(40.000000f);
         aSoundPlayObject(Sound_indexes[1], Object_handles[30], 1.000000f);
       } else {
-        aShowHUDMessage(Message_strings[14]);
+        aShowHUDMessage(TXT("TNTDispenserLeftBroken"));
       }
 
       // Increment the script action counter
@@ -3277,7 +3071,7 @@ int16_t CustomObjectScript_3831::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 041: TNT Rock Wall hit with player weapon
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[16], event_data->it_handle);
+      aShowHUDMessageObj(TXT("TNTRockWall"), event_data->it_handle);
 
       // Increment the script action counter
       if (ScriptActionCtr_041 < MAX_ACTION_CTR_VALUE)
@@ -3293,7 +3087,7 @@ int16_t CustomObjectScript_3831::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 051: TNT Rock wall destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[15]);
+      aShowHUDMessage(TXT("TNTRockwalldestroyed"));
 
       // Increment the script action counter
       if (ScriptActionCtr_051 < MAX_ACTION_CTR_VALUE)
@@ -3316,7 +3110,7 @@ int16_t CustomObjectScript_2111::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 045: Boss Death Dravis Door
     if (1) {
       aDoorSetPos(Door_handles[9], 1.000000f);
-      aShowHUDMessage(Message_strings[17]);
+      aShowHUDMessage(TXT("DravisDoor"));
       aGoalCompleted(Goal_indexes[4], 1);
 
       // Increment the script action counter
@@ -3369,7 +3163,7 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 015: Backup Energy Center Broken
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[9]);
+      aShowHUDMessage(TXT("EnergyCenterBroken"));
 
       // Increment the script action counter
       if (ScriptActionCtr_015 < MAX_ACTION_CTR_VALUE)
@@ -3387,7 +3181,7 @@ int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 016: C Shaped Energy Center Broken
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[9]);
+      aShowHUDMessage(TXT("EnergyCenterBroken"));
       aGoalEnableDisable(1, Goal_indexes[2]);
 
       // Increment the script action counter
@@ -3406,7 +3200,7 @@ int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 017: Secret Energy Center Broken
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[9]);
+      aShowHUDMessage(TXT("EnergyCenterBroken"));
       aGoalEnableDisable(1, Goal_indexes[2]);
 
       // Increment the script action counter
@@ -3564,7 +3358,7 @@ int16_t TriggerScript_000B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 046: End Level Sequence
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aStartEndlevelSequence(Object_handles[33], Path_indexes[6], 10.000000f, Message_strings[18]);
+      aStartEndlevelSequence(Object_handles[33], Path_indexes[6], 10.000000f, TXT("End"));
 
       // Increment the script action counter
       if (ScriptActionCtr_046 < MAX_ACTION_CTR_VALUE)
@@ -3907,7 +3701,7 @@ int16_t TriggerScript_000A::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 078: Pre-Boss Player Cinematic
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aUserFlagSet(19, 1);
-      aCinematicIntro(Path_indexes[9], Message_strings[20], Object_handles[0], Path_indexes[10], 15.000000f);
+      aCinematicIntro(Path_indexes[9], TXT("BLANK"), Object_handles[0], Path_indexes[10], 15.000000f);
 
       // Increment the script action counter
       if (ScriptActionCtr_078 < MAX_ACTION_CTR_VALUE)

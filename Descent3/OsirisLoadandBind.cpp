@@ -398,6 +398,10 @@
  *
  * $NoKeywords: $
  */
+#include <cstdlib>
+#include <string>
+#include <vector>
+
 
 #include <cstdlib>
 #include <filesystem>
@@ -483,7 +487,7 @@ struct tOSIRISModule {
   SaveRestoreState_fp SaveRestoreState;
   module mod;
   char *module_name;
-  char **string_table;
+  std::vector<std::string> string_table;
   int strings_loaded;
 
 #ifdef OSIRISDEBUG
@@ -594,7 +598,7 @@ void Osiris_InitModuleLoader(void) {
     OSIRIS_loaded_modules[i].GetTriggerScriptID = NULL;
     OSIRIS_loaded_modules[i].InitializeDLL = NULL;
     OSIRIS_loaded_modules[i].SaveRestoreState = NULL;
-    OSIRIS_loaded_modules[i].string_table = NULL;
+    OSIRIS_loaded_modules[i].string_table = std::vector<std::string>(0);
     OSIRIS_loaded_modules[i].strings_loaded = 0;
 
 #ifdef OSIRISDEBUG
@@ -630,12 +634,13 @@ void Osiris_InitModuleLoader(void) {
 //		Generates a checksum of the game's structures, to give to the modules
 //	so they can use to compare to the time when they were compiled, to see
 //	if they are compatible.
-uint32_t Osiris_CreateGameChecksum(void) {
+uint32_t Osiris_CreateGameChecksum() {
   uint32_t value = 0xe1e1b0b0;
+  tOSIRISModuleInit tmp;
 
   value += sizeof(object);
   value += sizeof(player) * 2;
-  value += sizeof(tOSIRISModuleInit) * 3;
+  value += tmp.serial_version * 3;
   value += sizeof(tOSIRISEventInfo) * 5;
   value += sizeof(tOSIRISTIMER) * 7;
   value += sizeof(tOSIRISSCRIPTID) * 11;
@@ -689,8 +694,8 @@ void Osiris_FreeModule(int id) {
         OSIRIS_loaded_modules[id].ShutdownDLL();
       }
 
-      if (OSIRIS_loaded_modules[id].string_table != NULL) {
-        DestroyStringTable(OSIRIS_loaded_modules[id].string_table, OSIRIS_loaded_modules[id].strings_loaded);
+      if (!OSIRIS_loaded_modules[id].string_table.empty()) {
+        DestroyStringTable(OSIRIS_loaded_modules[id].string_table);
       }
       mod_FreeModule(&OSIRIS_loaded_modules[id].mod);
     }
@@ -709,7 +714,7 @@ void Osiris_FreeModule(int id) {
     OSIRIS_loaded_modules[id].GetTriggerScriptID = NULL;
     OSIRIS_loaded_modules[id].InitializeDLL = NULL;
     OSIRIS_loaded_modules[id].SaveRestoreState = NULL;
-    OSIRIS_loaded_modules[id].string_table = NULL;
+    OSIRIS_loaded_modules[id].string_table.clear();
     OSIRIS_loaded_modules[id].strings_loaded = 0;
     OSIRIS_loaded_modules[id].flags = 0;
     OSIRIS_loaded_modules[id].reference_count = 0;
@@ -1055,22 +1060,22 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   }
 
   // check to see if there is a corresponding string table to load
-  char stringtablename[_MAX_PATH];
-  strcpy(stringtablename, basename.u8string().c_str());
-  strcat(stringtablename, ".str");
+  std::filesystem::path stringtablename = basename;
+  stringtablename.replace_extension(".str");
 
   if (cfexist(stringtablename)) {
     // there is a string table, load it up
-    bool ret = CreateStringTable(stringtablename, &osm->string_table, &osm->strings_loaded);
+    bool ret = CreateStringTable(stringtablename, osm->string_table);
+    osm->strings_loaded = osm->string_table.size();
     if (!ret) {
-      LOG_ERROR.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
+      LOG_ERROR.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename.u8string().c_str(),
                        basename.u8string().c_str());
       Int3();
-      osm->string_table = NULL;
+      osm->string_table.clear();
       osm->strings_loaded = 0;
     }
   } else {
-    osm->string_table = NULL;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
   }
 
@@ -1084,14 +1089,14 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   if (!osm->InitializeDLL(&Osiris_module_init)) {
     // there was an error initializing the module
     LOG_ERROR.printf("OSIRIS: Osiris_LoadLevelModule(%s) error initializing module.", basename.u8string().c_str());
-    if (osm->string_table) {
-      DestroyStringTable(osm->string_table, osm->strings_loaded);
+    if (!osm->string_table.empty()) {
+      DestroyStringTable(osm->string_table);
     }
     osm->flags = 0;
     if (osm->module_name)
       mem_free(osm->module_name);
     osm->module_name = NULL;
-    osm->string_table = NULL;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
     mod_FreeModule(mod);
     return -2;
@@ -1247,22 +1252,22 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   }
 
   // check to see if there is a corresponding string table to load
-  char stringtablename[_MAX_PATH];
-  strcpy(stringtablename, basename.u8string().c_str());
-  strcat(stringtablename, ".str");
+  std::filesystem::path stringtablename = basename;
+  stringtablename.replace_extension(".str");
 
   if (cfexist(stringtablename)) {
     // there is a string table, load it up
-    bool ret = CreateStringTable(stringtablename, &osm->string_table, &osm->strings_loaded);
+    bool ret = CreateStringTable(stringtablename, osm->string_table);
+    osm->strings_loaded = osm->string_table.size();
     if (!ret) {
-      LOG_FATAL.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
+      LOG_FATAL.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename.u8string().c_str(),
                        basename.u8string().c_str());
       Int3();
-      osm->string_table = nullptr;
+      osm->string_table.clear();
       osm->strings_loaded = 0;
     }
   } else {
-    osm->string_table = nullptr;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
   }
   Osiris_module_init.string_count = osm->strings_loaded;
@@ -1275,10 +1280,10 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   if (!osm->InitializeDLL(&Osiris_module_init)) {
     // there was an error initializing the module
     LOG_ERROR.printf("OSIRIS: Osiris_LoadGameModule(%s) error initializing module.", basename.u8string().c_str());
-    if (osm->string_table) {
-      DestroyStringTable(osm->string_table, osm->strings_loaded);
+    if (!osm->string_table.empty()) {
+      DestroyStringTable(osm->string_table);
     }
-    osm->string_table = NULL;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
     osm->flags = 0;
     if (osm->module_name)
@@ -3796,136 +3801,137 @@ char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, u
 //		This function initializes a Module Init Struct with all the needed data to get sent
 //	to the module during initialization.
 void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
-  int i = 0;
+  // fill in with NULL
+  for (auto & i : mi->fp) {
+    i = nullptr;
+  }
 
   // fill in function pointers here
-  mi->fp[i++] = (int *)MonoPrintf;
-  mi->fp[i++] = (int *)msafe_CallFunction;
-  mi->fp[i++] = (int *)msafe_GetValue;
-  mi->fp[i++] = (int *)osipf_CallObjectEvent;
-  mi->fp[i++] = (int *)osipf_CallTriggerEvent;
-  mi->fp[i++] = (int *)osipf_SoundTouch;
-  mi->fp[i++] = (int *)osipf_ObjectFindID;
-  mi->fp[i++] = (int *)osipf_WeaponFindID;
-  mi->fp[i++] = (int *)osipf_ObjectGetTimeLived;
-  mi->fp[i++] = (int *)osipf_GetGunPos;
-  mi->fp[i++] = (int *)osipf_RoomValue;
-  mi->fp[i++] = (int *)osipf_IsRoomValid;
-  mi->fp[i++] = (int *)osipf_GetAttachParent;
-  mi->fp[i++] = (int *)osipf_GetNumAttachSlots;
-  mi->fp[i++] = (int *)osipf_GetAttachChildHandle;
-  mi->fp[i++] = (int *)osipf_AttachObjectAP;
-  mi->fp[i++] = (int *)osipf_AttachObjectRad;
-  mi->fp[i++] = (int *)osipf_UnattachFromParent;
-  mi->fp[i++] = (int *)osipf_UnattachChild;
-  mi->fp[i++] = (int *)osipf_UnattachChildren;
-  mi->fp[i++] = (int *)osipf_RayCast;
-  mi->fp[i++] = (int *)osipf_AIGetPathID;
-  mi->fp[i++] = (int *)osipf_AIGoalFollowPathSimple;
-  mi->fp[i++] = (int *)osipf_AIPowerSwitch;
-  mi->fp[i++] = (int *)osipf_AITurnTowardsVectors;
-  mi->fp[i++] = (int *)osipf_AISetType;
-  mi->fp[i++] = (int *)osipf_AIFindHidePos;
-  mi->fp[i++] = (int *)osipf_AIGoalAddEnabler;
-  mi->fp[i++] = (int *)osipf_AIGoalAdd;
-  mi->fp[i++] = (int *)osipf_AIGoalClear;
-  mi->fp[i++] = (int *)osipf_AIValue;
-  mi->fp[i++] = (int *)osipf_AIFindObjOfType;
-  mi->fp[i++] = (int *)osipf_AIGetRoomPathPoint;
-  mi->fp[i++] = (int *)osipf_AIFindEnergyCenter;
-  mi->fp[i++] = (int *)osipf_AIGetDistToObj;
-  mi->fp[i++] = (int *)osipf_AISetGoalFlags;
-  mi->fp[i++] = (int *)osipf_AISetGoalCircleDist;
-  mi->fp[i++] = (int *)osipf_CFReadBytes;
-  mi->fp[i++] = (int *)osipf_CFReadInt;
-  mi->fp[i++] = (int *)osipf_CFReadShort;
-  mi->fp[i++] = (int *)osipf_CFReadByte;
-  mi->fp[i++] = (int *)osipf_CFReadFloat;
-  mi->fp[i++] = (int *)osipf_CFReadDouble;
-  mi->fp[i++] = (int *)osipf_CFReadString;
-  mi->fp[i++] = (int *)osipf_CFWriteBytes;
-  mi->fp[i++] = (int *)osipf_CFWriteString;
-  mi->fp[i++] = (int *)osipf_CFWriteInt;
-  mi->fp[i++] = (int *)osipf_CFWriteShort;
-  mi->fp[i++] = (int *)osipf_CFWriteByte;
-  mi->fp[i++] = (int *)osipf_CFWriteFloat;
-  mi->fp[i++] = (int *)osipf_CFWriteDouble;
-  mi->fp[i++] = (int *)Osiris_AllocateMemory;
-  mi->fp[i++] = (int *)Osiris_FreeMemory;
-  mi->fp[i++] = (int *)Osiris_CancelTimer;
-  mi->fp[i++] = (int *)Osiris_CreateTimer;
-  mi->fp[i++] = (int *)msafe_DoPowerup;
-  mi->fp[i++] = (int *)osipf_ObjCreate;
-  mi->fp[i++] = (int *)osipf_GameTime;
-  mi->fp[i++] = (int *)osipf_FrameTime;
-  mi->fp[i++] = (int *)osipf_ObjWBValue;
-  mi->fp[i++] = (int *)Osiris_TimerExists;
-  mi->fp[i++] = (int *)osipf_ObjectValue;
-  mi->fp[i++] = (int *)osipf_MatcenValue;
-  mi->fp[i++] = (int *)osipf_MatcenReset;
-  mi->fp[i++] = (int *)osipf_MatcenCopy;
-  mi->fp[i++] = (int *)osipf_MatcenCreate;
-  mi->fp[i++] = (int *)osipf_MatcenFindId;
-  mi->fp[i++] = (int *)osipf_MissionFlagSet;
-  mi->fp[i++] = (int *)osipf_MissionFlagGet;
-  mi->fp[i++] = (int *)osipf_PlayerValue;
-  mi->fp[i++] = (int *)osipf_ObjectCustomAnim;
-  mi->fp[i++] = (int *)osipf_PlayerAddHudMessage;
-  mi->fp[i++] = (int *)osipf_ObjGhost;
-  mi->fp[i++] = (int *)osipf_ObjBurning;
-  mi->fp[i++] = (int *)osipf_ObjIsEffect;
-  mi->fp[i++] = (int *)osipf_CFopen;
-  mi->fp[i++] = (int *)osipf_CFclose;
-  mi->fp[i++] = (int *)osipf_CFtell;
-  mi->fp[i++] = (int *)osipf_CFeof;
-  mi->fp[i++] = (int *)osipf_SoundStop;
-  mi->fp[i++] = (int *)osipf_SoundPlay2d;
-  mi->fp[i++] = (int *)osipf_SoundPlay3d;
-  mi->fp[i++] = (int *)osipf_SoundFindId;
-  mi->fp[i++] = (int *)osipf_AIIsObjFriend;
-  mi->fp[i++] = (int *)osipf_AIIsObjEnemy;
-  mi->fp[i++] = (int *)osipf_AIGoalValue;
-  mi->fp[i++] = (int *)osipf_AIGetNearbyObjs;
-  mi->fp[i++] = (int *)osipf_AIGetCurGoalIndex;
-  mi->fp[i++] = (int *)Osiris_OMMS_Malloc;
-  mi->fp[i++] = (int *)Osiris_OMMS_Attach;
-  mi->fp[i++] = (int *)Osiris_OMMS_Detach;
-  mi->fp[i++] = (int *)Osiris_OMMS_Free;
-  mi->fp[i++] = (int *)Osiris_OMMS_Find;
-  mi->fp[i++] = (int *)Osiris_OMMS_GetInfo;
-  mi->fp[i++] = (int *)Cinematic_Start;
-  mi->fp[i++] = (int *)Cinematic_Stop;
-  mi->fp[i++] = (int *)osipf_FindSoundName;
-  mi->fp[i++] = (int *)osipf_FindRoomName;
-  mi->fp[i++] = (int *)osipf_FindTriggerName;
-  mi->fp[i++] = (int *)osipf_FindObjectName;
-  mi->fp[i++] = (int *)osipf_GetTriggerRoom;
-  mi->fp[i++] = (int *)osipf_GetTriggerFace;
-  mi->fp[i++] = (int *)osipf_FindDoorName;
-  mi->fp[i++] = (int *)osipf_FindTextureName;
-  mi->fp[i++] = (int *)osipf_CreateRandomSparks;
-  mi->fp[i++] = (int *)Osiris_CancelTimerID;
-  mi->fp[i++] = (int *)osipf_GetGroundPos;
-  mi->fp[i++] = (int *)osipf_EnableShip;
-  mi->fp[i++] = (int *)osipf_IsShipEnabled;
-  mi->fp[i++] = (int *)osipf_PathGetInformation;
-  mi->fp[i++] = (int *)Cinematic_StartCannedScript;
-  mi->fp[i++] = (int *)osipf_FindMatcenName;
-  mi->fp[i++] = (int *)osipf_FindPathName;
-  mi->fp[i++] = (int *)osipf_FindLevelGoalName;
-  mi->fp[i++] = (int *)osipf_ObjectFindType;
-  mi->fp[i++] = (int *)osipf_LGoalValue;
-  mi->fp[i++] = (int *)osipf_ObjMakeListOfType;
-  mi->fp[i++] = (int *)osipf_ObjKill;
-  //	mi->fp[i++] = (int *)osipf_AIAreRoomsReachable;
-  mi->fp[i++] = (int *)osipf_AIIsDestReachable;
-  mi->fp[i++] = (int *)osipf_AIIsObjReachable;
-  mi->fp[i++] = (int *)osipf_GameGetDiffLevel;
-  mi->fp[i++] = (int *)osipf_GetLanguageSetting;
-  mi->fp[i++] = (int *)osipf_PathValue;
-
-  // fill in the remaining with NULL
-  for (; i < MAX_MODULEFUNCS; i++) {
-    mi->fp[i] = NULL;
-  }
+  // Keep it in sync with scripts/osiris_import.h
+  mi->fp[0] = (int *)MonoPrintf;
+  mi->fp[1] = (int *)msafe_CallFunction;
+  mi->fp[2] = (int *)msafe_GetValue;
+  mi->fp[3] = (int *)osipf_CallObjectEvent;
+  mi->fp[4] = (int *)osipf_CallTriggerEvent;
+  mi->fp[5] = (int *)osipf_SoundTouch;
+  mi->fp[6] = (int *)osipf_ObjectFindID;
+  mi->fp[7] = (int *)osipf_WeaponFindID;
+  mi->fp[8] = (int *)osipf_ObjectGetTimeLived;
+  mi->fp[9] = (int *)osipf_GetGunPos;
+  mi->fp[10] = (int *)osipf_RoomValue;
+  mi->fp[11] = (int *)osipf_IsRoomValid;
+  mi->fp[12] = (int *)osipf_GetAttachParent;
+  mi->fp[13] = (int *)osipf_GetNumAttachSlots;
+  mi->fp[14] = (int *)osipf_GetAttachChildHandle;
+  mi->fp[15] = (int *)osipf_AttachObjectAP;
+  mi->fp[16] = (int *)osipf_AttachObjectRad;
+  mi->fp[17] = (int *)osipf_UnattachFromParent;
+  mi->fp[18] = (int *)osipf_UnattachChild;
+  mi->fp[19] = (int *)osipf_UnattachChildren;
+  mi->fp[20] = (int *)osipf_RayCast;
+  mi->fp[21] = (int *)osipf_AIGetPathID;
+  mi->fp[22] = (int *)osipf_AIGoalFollowPathSimple;
+  mi->fp[23] = (int *)osipf_AIPowerSwitch;
+  mi->fp[24] = (int *)osipf_AITurnTowardsVectors;
+  mi->fp[25] = (int *)osipf_AISetType;
+  mi->fp[26] = (int *)osipf_AIFindHidePos;
+  mi->fp[27] = (int *)osipf_AIGoalAddEnabler;
+  mi->fp[28] = (int *)osipf_AIGoalAdd;
+  mi->fp[29] = (int *)osipf_AIGoalClear;
+  mi->fp[30] = (int *)osipf_AIValue;
+  mi->fp[31] = (int *)osipf_AIFindObjOfType;
+  mi->fp[32] = (int *)osipf_AIGetRoomPathPoint;
+  mi->fp[33] = (int *)osipf_AIFindEnergyCenter;
+  mi->fp[34] = (int *)osipf_AIGetDistToObj;
+  mi->fp[35] = (int *)osipf_AISetGoalFlags;
+  mi->fp[36] = (int *)osipf_AISetGoalCircleDist;
+  mi->fp[37] = (int *)osipf_CFReadBytes;
+  mi->fp[38] = (int *)osipf_CFReadInt;
+  mi->fp[39] = (int *)osipf_CFReadShort;
+  mi->fp[40] = (int *)osipf_CFReadByte;
+  mi->fp[41] = (int *)osipf_CFReadFloat;
+  mi->fp[42] = (int *)osipf_CFReadDouble;
+  mi->fp[43] = (int *)osipf_CFReadString;
+  mi->fp[44] = (int *)osipf_CFWriteBytes;
+  mi->fp[45] = (int *)osipf_CFWriteString;
+  mi->fp[46] = (int *)osipf_CFWriteInt;
+  mi->fp[47] = (int *)osipf_CFWriteShort;
+  mi->fp[48] = (int *)osipf_CFWriteByte;
+  mi->fp[49] = (int *)osipf_CFWriteFloat;
+  mi->fp[50] = (int *)osipf_CFWriteDouble;
+  mi->fp[51] = (int *)Osiris_AllocateMemory;
+  mi->fp[52] = (int *)Osiris_FreeMemory;
+  mi->fp[53] = (int *)Osiris_CancelTimer;
+  mi->fp[54] = (int *)Osiris_CreateTimer;
+  mi->fp[55] = (int *)msafe_DoPowerup;
+  mi->fp[56] = (int *)osipf_ObjCreate;
+  mi->fp[57] = (int *)osipf_GameTime;
+  mi->fp[58] = (int *)osipf_FrameTime;
+  mi->fp[59] = (int *)osipf_ObjWBValue;
+  mi->fp[60] = (int *)Osiris_TimerExists;
+  mi->fp[61] = (int *)osipf_ObjectValue;
+  mi->fp[62] = (int *)osipf_MatcenValue;
+  mi->fp[63] = (int *)osipf_MatcenReset;
+  mi->fp[64] = (int *)osipf_MatcenCopy;
+  mi->fp[65] = (int *)osipf_MatcenCreate;
+  mi->fp[66] = (int *)osipf_MatcenFindId;
+  mi->fp[67] = (int *)osipf_MissionFlagSet;
+  mi->fp[68] = (int *)osipf_MissionFlagGet;
+  mi->fp[69] = (int *)osipf_PlayerValue;
+  mi->fp[70] = (int *)osipf_ObjectCustomAnim;
+  mi->fp[71] = (int *)osipf_PlayerAddHudMessage;
+  mi->fp[72] = (int *)osipf_ObjGhost;
+  mi->fp[73] = (int *)osipf_ObjBurning;
+  mi->fp[74] = (int *)osipf_ObjIsEffect;
+  mi->fp[75] = (int *)osipf_CFopen;
+  mi->fp[76] = (int *)osipf_CFclose;
+  mi->fp[77] = (int *)osipf_CFtell;
+  mi->fp[78] = (int *)osipf_CFeof;
+  mi->fp[79] = (int *)osipf_SoundStop;
+  mi->fp[80] = (int *)osipf_SoundPlay2d;
+  mi->fp[81] = (int *)osipf_SoundPlay3d;
+  mi->fp[82] = (int *)osipf_SoundFindId;
+  mi->fp[83] = (int *)osipf_AIIsObjFriend;
+  mi->fp[84] = (int *)osipf_AIIsObjEnemy;
+  mi->fp[85] = (int *)osipf_AIGoalValue;
+  mi->fp[86] = (int *)osipf_AIGetNearbyObjs;
+  mi->fp[87] = (int *)osipf_AIGetCurGoalIndex;
+  mi->fp[88] = (int *)Osiris_OMMS_Malloc;
+  mi->fp[89] = (int *)Osiris_OMMS_Attach;
+  mi->fp[90] = (int *)Osiris_OMMS_Detach;
+  mi->fp[91] = (int *)Osiris_OMMS_Free;
+  mi->fp[92] = (int *)Osiris_OMMS_Find;
+  mi->fp[93] = (int *)Osiris_OMMS_GetInfo;
+  mi->fp[94] = (int *)Cinematic_Start;
+  mi->fp[95] = (int *)Cinematic_Stop;
+  mi->fp[96] = (int *)osipf_FindSoundName;
+  mi->fp[97] = (int *)osipf_FindRoomName;
+  mi->fp[98] = (int *)osipf_FindTriggerName;
+  mi->fp[99] = (int *)osipf_FindObjectName;
+  mi->fp[100] = (int *)osipf_GetTriggerRoom;
+  mi->fp[101] = (int *)osipf_GetTriggerFace;
+  mi->fp[102] = (int *)osipf_FindDoorName;
+  mi->fp[103] = (int *)osipf_FindTextureName;
+  mi->fp[104] = (int *)osipf_CreateRandomSparks;
+  mi->fp[105] = (int *)Osiris_CancelTimerID;
+  mi->fp[106] = (int *)osipf_GetGroundPos;
+  mi->fp[107] = (int *)osipf_EnableShip;
+  mi->fp[108] = (int *)osipf_IsShipEnabled;
+  mi->fp[109] = (int *)osipf_PathGetInformation;
+  mi->fp[110] = (int *)Cinematic_StartCannedScript;
+  mi->fp[111] = (int *)osipf_FindMatcenName;
+  mi->fp[112] = (int *)osipf_FindPathName;
+  mi->fp[113] = (int *)osipf_FindLevelGoalName;
+  mi->fp[114] = (int *)osipf_ObjectFindType;
+  mi->fp[115] = (int *)osipf_LGoalValue;
+  mi->fp[116] = (int *)osipf_ObjMakeListOfType;
+  mi->fp[117] = (int *)osipf_ObjKill;
+  mi->fp[118] = (int *)osipf_AIIsDestReachable;
+  mi->fp[119] = (int *)osipf_AIIsObjReachable;
+  mi->fp[120] = (int *)osipf_GameGetDiffLevel;
+  mi->fp[121] = (int *)osipf_GetLanguageSetting;
+  mi->fp[122] = (int *)osipf_PathValue;
+  mi->fp[123] = (int *)CreateMessageMap;
+  mi->fp[124] = (int *)DestroyMessageMap;
+  mi->fp[125] = (int *)GetMessageMap;
 }

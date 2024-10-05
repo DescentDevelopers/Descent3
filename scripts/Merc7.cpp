@@ -22,10 +22,10 @@
 // Filename:	Merc7.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -2001,180 +2001,12 @@ void dsCustomRestore(void *fileptr) {
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -2407,13 +2239,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {
     "Place Bomb on Delivery Pad",   "Get a Safe Distance from Bomb",         "Assasinate President Suzuki of PTMC"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 14
-const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "EmptyMessage",  "BombInventory", "FiremenSummoning",
-                                          "FiremenDone",     "DroidOnlyDoor", "DeliveryReady", "BombPadFull",
-                                          "BombDropSuccess", "BombDropFail",  "BossName",      "SafeFromBomb",
-                                          "ActivateBomb",    "SuzukiDead"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -2427,37 +2252,19 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
-  char english_filename[(_MAX_PATH + 32) * 2];
-  int lang_type;
-  if (func_list->script_identifier != NULL) {
-    _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    snprintf(english_filename, sizeof(english_filename), "%s.msg", filename);
-    lang_type = Game_GetLanguage();
-    if (lang_type == LANGUAGE_FRENCH)
-      strcat(filename, "_FRN");
-    else if (lang_type == LANGUAGE_GERMAN)
-      strcat(filename, "_GER");
-    else if (lang_type == LANGUAGE_ITALIAN)
-      strcat(filename, "_ITN");
-    else if (lang_type == LANGUAGE_SPANISH)
-      strcat(filename, "_SPN");
-    else if (lang_type == LANGUAGE_POLISH)
-      strcat(filename, "_POL");
+  if (func_list->script_identifier != nullptr) {
+    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
+    int lang_type = Game_GetLanguage();
+    strcat(filename, lang_suffixes[lang_type].c_str());
     strcat(filename, ".msg");
   } else {
     strcpy(filename, "Merc7.msg");
-    lang_type = LANGUAGE_ENGLISH;
   }
   if (!ReadMessageFile(filename)) {
-    if (lang_type == LANGUAGE_ENGLISH) {
-      mprintf(0, "ERROR: Could not load message file - %s\n", filename);
-    } else if (!ReadMessageFile(english_filename)) {
-      mprintf(0, "ERROR: Could not load message file - %s\n", english_filename);
-    }
+    mprintf(0, "ERROR: Could not load message file - %s\n", filename);
   }
 
   int j;
@@ -2500,10 +2307,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -3339,7 +3142,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_037 < 1) && ((qUserFlag(7) == true) && (qRoomHasPlayer(Room_indexes[11]) == true))) {
       aGoalCompleted(Goal_indexes[4], 1);
       aDoorSetPos(Door_handles[1], 0.000000f);
-      aShowHUDMessage(Message_strings[12]);
+      aShowHUDMessage(TXT("ActivateBomb"));
       aSetLevelTimer(3.000000f, 12);
 
       // Increment the script action counter
@@ -3363,7 +3166,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
                   30.000000f, 0, -1);
       aTurnOnSpew(Object_handles[3], 0, 7, 0.000000f, 0.000000f, 65536, 0, 1.300000f, 0.120000f, -1.000000f, 5.000000f,
                   30.000000f, 0, -1);
-      aCinematicSimple(Path_indexes[0], Message_strings[0], Object_handles[4], 9.000000f, 1);
+      aCinematicSimple(Path_indexes[0], TXT("IntroMessage"), Object_handles[4], 9.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_074 < MAX_ACTION_CTR_VALUE)
@@ -3400,7 +3203,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aUserFlagSet(7, 0);
       aUserFlagSet(0, 0);
       aUserVarSet(0, 0.000000f);
-      aAddObjectToInventoryNamed(Object_handles[8], qPlayerClosest(Object_handles[8], -1), Message_strings[2], 0);
+      aAddObjectToInventoryNamed(Object_handles[8], qPlayerClosest(Object_handles[8], -1), TXT("BombInventory"), 0);
       aUserFlagSet(2, 0);
       aUserFlagSet(3, 0);
       aUserFlagSet(4, 0);
@@ -3525,7 +3328,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aLightningCreate(Object_handles[114], Object_handles[115], 99999.000000f, 2.000000f, 1, Texture_indexes[1],
                        0.400000f, 3, 200, 255, 150, 0);
       aObjPlayAnim(Object_handles[116], 0, 54, 6.000000f, 0);
-      aCinematicSimple(Path_indexes[41], Message_strings[1], Object_handles[117], 6.000000f, 1);
+      aCinematicSimple(Path_indexes[41], TXT("EmptyMessage"), Object_handles[117], 6.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_045 < MAX_ACTION_CTR_VALUE)
@@ -3670,7 +3473,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         if (qUserFlag(4) == true) {
           aUserFlagSet(7, 1);
-          aShowHUDMessage(Message_strings[6]);
+          aShowHUDMessage(TXT("DeliveryReady"));
           aAIGoalPickUpObjectRad(event_data->it_handle, 0, Object_handles[104], 0.600000f, 3, 256, 20);
         } else {
           aAIGoalFollowPathSimple(event_data->it_handle, Path_indexes[39], 4352, 22, 3);
@@ -3887,7 +3690,7 @@ int16_t CustomObjectScript_0885::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 088: IntroCam-2
     if ((ScriptActionCtr_088 < 1) && (1)) {
-      aCinematicSimple(Path_indexes[1], Message_strings[1], Object_handles[5], 9.000000f, 1);
+      aCinematicSimple(Path_indexes[1], TXT("EmptyMessage"), Object_handles[5], 9.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_088 < MAX_ACTION_CTR_VALUE)
@@ -3909,7 +3712,7 @@ int16_t CustomObjectScript_0884::CallEvent(int event, tOSIRISEventInfo *data) {
                   25.000000f, 0, -1);
       aTurnOnSpew(Object_handles[7], -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.100000f, 0.100000f, -1.000000f, 3.000000f,
                   25.000000f, 0, -1);
-      aCinematicIntro(Path_indexes[2], Message_strings[1], data->me_handle, Path_indexes[3], 8.000000f);
+      aCinematicIntro(Path_indexes[2], TXT("EmptyMessage"), data->me_handle, Path_indexes[3], 8.000000f);
 
       // Increment the script action counter
       if (ScriptActionCtr_089 < MAX_ACTION_CTR_VALUE)
@@ -4519,7 +4322,7 @@ int16_t CustomObjectScript_0995::CallEvent(int event, tOSIRISEventInfo *data) {
         ((ScriptActionCtr_025 > 0) == true) && ((ScriptActionCtr_023 > 0) == true)) {
       aGoalCompleted(Goal_indexes[1], 1);
       aSoundPlayObject(Sound_indexes[0], data->me_handle, 1.000000f);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[3]);
+      aShowColoredHUDMessage(255, 0, 0, TXT("FiremenSummoning"));
       aAIGoalFollowPathSimple(Object_handles[66], Path_indexes[32], 4352, 11, 3);
       aAIGoalFollowPathSimple(Object_handles[67], Path_indexes[32], 4352, 12, 3);
       aObjSetMovementType(data->me_handle, 1);
@@ -4733,7 +4536,7 @@ int16_t CustomObjectScript_097A::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 112: FireOut!
     if (1) {
       aSoundStopObj(Object_handles[68]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[4]);
+      aShowColoredHUDMessage(255, 0, 0, TXT("FiremenDone"));
       aRoomChangeFog(Room_indexes[10], 0.300000f, 0.300000f, 0.300000f, 300.000000f, 10.000000f);
 
       // Increment the script action counter
@@ -4883,7 +4686,7 @@ int16_t CustomObjectScript_0805::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalCompleted(Goal_indexes[2], 1);
         aDoorSetPos(data->me_handle, 1.000000f);
       } else {
-        aShowHUDMessageObj(Message_strings[5], event_data->it_handle);
+        aShowHUDMessageObj(TXT("DroidOnlyDoor"), event_data->it_handle);
       }
 
       // Increment the script action counter
@@ -4908,7 +4711,7 @@ int16_t CustomObjectScript_0804::CallEvent(int event, tOSIRISEventInfo *data) {
           ((ScriptActionCtr_031 > 0) == true)) {
         aDoorSetPos(data->me_handle, 1.000000f);
       } else {
-        aShowHUDMessageObj(Message_strings[5], event_data->it_handle);
+        aShowHUDMessageObj(TXT("DroidOnlyDoor"), event_data->it_handle);
       }
 
       // Increment the script action counter
@@ -5002,7 +4805,7 @@ int16_t CustomObjectScript_087E::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 131: PICKUP Bomb
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, Message_strings[2], 0);
+      aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, TXT("BombInventory"), 0);
 
       // Increment the script action counter
       if (ScriptActionCtr_131 < MAX_ACTION_CTR_VALUE)
@@ -5016,8 +4819,8 @@ int16_t CustomObjectScript_087E::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if (qObjGetDistance(event_data->it_handle, Object_handles[104]) <= 50.000000f) {
         if (((qObjExists(qObjSavedHandle(4)) == true) && (qUserFlag(2) == false)) || (qUserFlag(8) == true)) {
-          aShowHUDMessageObj(Message_strings[7], event_data->it_handle);
-          aAddObjectToInventoryNamed(Object_handles[8], event_data->it_handle, Message_strings[2], 0);
+          aShowHUDMessageObj(TXT("BombPadFull"), event_data->it_handle);
+          aAddObjectToInventoryNamed(Object_handles[8], event_data->it_handle, TXT("BombInventory"), 0);
         } else {
           aGoalCompleted(Goal_indexes[3], 1);
           aMusicSetRegionAll(5);
@@ -5025,12 +4828,12 @@ int16_t CustomObjectScript_087E::CallEvent(int event, tOSIRISEventInfo *data) {
           aObjGhostSet(0, Object_handles[104]);
           aObjSpark(Object_handles[104], 50.000000f, 3.000000f);
           aEmitSparks(70.000000f, Object_handles[104]);
-          aShowHUDMessageObj(Message_strings[8], event_data->it_handle);
+          aShowHUDMessageObj(TXT("BombDropSuccess"), event_data->it_handle);
           aUserFlagSet(4, 1);
         }
       } else {
-        aShowHUDMessageObj(Message_strings[9], event_data->it_handle);
-        aAddObjectToInventoryNamed(Object_handles[8], event_data->it_handle, Message_strings[2], 0);
+        aShowHUDMessageObj(TXT("BombDropFail"), event_data->it_handle);
+        aAddObjectToInventoryNamed(Object_handles[8], event_data->it_handle, TXT("BombInventory"), 0);
       }
 
       // Increment the script action counter
@@ -5068,7 +4871,7 @@ int16_t CustomObjectScript_1834::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 022: End Boss - Cinematic End
     if ((ScriptActionCtr_022 < 1) && (1)) {
-      aShowHUDMessage(Message_strings[11]);
+      aShowHUDMessage(TXT("SafeFromBomb"));
       aRoomFogSetState(0, Room_indexes[0]);
 
       // Increment the script action counter
@@ -5088,7 +4891,7 @@ int16_t CustomObjectScript_1877::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 046: Suzuki Cam 3
     if ((ScriptActionCtr_046 < 1) && (1)) {
       aObjPlayAnim(Object_handles[116], 0, 54, 6.000000f, 0);
-      aCinematicSimple(Path_indexes[42], Message_strings[1], Object_handles[119], 5.000000f, 1);
+      aCinematicSimple(Path_indexes[42], TXT("EmptyMessage"), Object_handles[119], 5.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_046 < MAX_ACTION_CTR_VALUE)
@@ -5109,7 +4912,7 @@ int16_t CustomObjectScript_1078::CallEvent(int event, tOSIRISEventInfo *data) {
       aStoreObjectInPositionClipboard(Object_handles[120]);
       aMoveObjectToPositionClipboard(qObjSavedHandle(11));
       aAIGoalFollowPathSimple(qObjSavedHandle(11), Path_indexes[43], 4352, -1, 3);
-      aCinematicSimple(Path_indexes[44], Message_strings[1], Object_handles[118], 7.000000f, 1);
+      aCinematicSimple(Path_indexes[44], TXT("EmptyMessage"), Object_handles[118], 7.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_049 < MAX_ACTION_CTR_VALUE)
@@ -5139,7 +4942,7 @@ int16_t CustomObjectScript_1070::CallEvent(int event, tOSIRISEventInfo *data) {
       aSetObjectTimer(Object_handles[114], 7.000000f, -1);
       aSetObjectTimer(Object_handles[122], 8.500000f, -1);
       aObjPlayAnim(Object_handles[116], 54, 55, 1.000000f, 0);
-      aCinematicSimple(Path_indexes[46], Message_strings[1], Object_handles[123], 10.000000f, 1);
+      aCinematicSimple(Path_indexes[46], TXT("EmptyMessage"), Object_handles[123], 10.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_048 < MAX_ACTION_CTR_VALUE)
@@ -5293,7 +5096,7 @@ int16_t CustomObjectScript_1079::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjSetLightingDist(Object_handles[109], 200.000000f);
       aObjSetLightingColor(Object_handles[109], 1.000000f, 0.500000f, 0.250000f);
       aObjPlayAnim(Object_handles[116], 55, 74, 3.500000f, 0);
-      aCinematicSimple(Path_indexes[47], Message_strings[1], Object_handles[135], 5.000000f, 1);
+      aCinematicSimple(Path_indexes[47], TXT("EmptyMessage"), Object_handles[135], 5.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_047 < MAX_ACTION_CTR_VALUE)
@@ -5416,7 +5219,7 @@ int16_t CustomObjectScript_1071::CallEvent(int event, tOSIRISEventInfo *data) {
       aRoomChangeFog(Room_indexes[14], 0.800000f, 0.400000f, 0.100000f, 150.000000f, 9.000000f);
       aRoomChangeFog(Room_indexes[15], 0.800000f, 0.400000f, 0.100000f, 150.000000f, 9.000000f);
       aObjDelete(Object_handles[109]);
-      aCinematicSimple(Path_indexes[48], Message_strings[1], Object_handles[147], 9.000000f, 1);
+      aCinematicSimple(Path_indexes[48], TXT("EmptyMessage"), Object_handles[147], 9.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_051 < MAX_ACTION_CTR_VALUE)
@@ -5644,7 +5447,7 @@ int16_t CustomObjectScript_286E::CallEvent(int event, tOSIRISEventInfo *data) {
     if (1) {
       aGoalCompleted(Goal_indexes[5], 1);
       aDoorLockUnlock(0, Door_handles[0]);
-      aShowHUDMessage(Message_strings[13]);
+      aShowHUDMessage(TXT("SuzukiDead"));
       aRoomSetFog(Room_indexes[16], 0.200000f, 0.150000f, 0.100000f, 400.000000f);
       aRoomSetFog(Room_indexes[10], 0.200000f, 0.150000f, 0.100000f, 400.000000f);
       aRoomSetFog(Room_indexes[17], 0.200000f, 0.150000f, 0.100000f, 400.000000f);
@@ -5754,7 +5557,7 @@ int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
       aGoalEnableDisable(1, Goal_indexes[0]);
       aCancelTimer(0);
       aRoomChangeFog(Room_indexes[0], 0.000000f, 0.000000f, 0.000000f, 800.000000f, 9.000000f);
-      aCinematicSimple(Path_indexes[40], Message_strings[10], Object_handles[105], 8.000000f, 1);
+      aCinematicSimple(Path_indexes[40], TXT("BossName"), Object_handles[105], 8.000000f, 1);
       aDoorSetPos(Door_handles[0], 0.000000f);
       aDoorLockUnlock(1, Door_handles[0]);
 

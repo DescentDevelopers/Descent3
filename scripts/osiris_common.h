@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -335,10 +335,13 @@
 #define __OSIRIS_COMMON_H_
 
 #include <cstdint>
+#include <string>
+#include <vector>
 
 #include "vecmat_external.h"
 #include "aistruct_external.h"
 #include "object_external.h"
+#include "localization_external.h"
 #include "matcen_external.h"
 #include "robotfirestruct_external.h"
 #include "findintersection_external.h"
@@ -405,16 +408,6 @@
 #define MAX_MODULEFUNCS 256 // maximum number of functions imported to OSIRIS
 
 typedef int OMMSHANDLE;
-
-// =======================================================================
-// Language defines
-// =======================================================================
-#define LANGUAGE_ENGLISH 0
-#define LANGUAGE_GERMAN 1
-#define LANGUAGE_SPANISH 2
-#define LANGUAGE_ITALIAN 3
-#define LANGUAGE_FRENCH 4
-#define LANGUAGE_POLISH 5
 
 // Player Accessories indices (for Player_Value function)
 #define ACCESSORY_CLOAK 0
@@ -976,8 +969,12 @@ struct gb_menu {
 // =======================================================================
 
 struct tOSIRISModuleInit {
+  // IMPORTANT! Increment serial each time when tOSIRISModuleInit is changed
+  // (and update CHECKSUM define accordingly).
+  uint32_t serial_version = 1;
+
   int32_t *fp[MAX_MODULEFUNCS];
-  char **string_table;
+  std::vector<std::string> string_table;
   int32_t string_count;
   int32_t module_identifier;
 
@@ -1003,8 +1000,7 @@ struct tOSIRISEVTINTERVAL {
   float game_time;
 }; // struct for EVT_INTERVAL data
 
-struct tOSIRISIEVTAIFRAME {
-}; // struct for EVT_AI_FRAME data
+struct tOSIRISIEVTAIFRAME {}; // struct for EVT_AI_FRAME data
 
 struct tOSIRISEVTDAMAGED {
   float damage;
@@ -1017,12 +1013,11 @@ struct tOSIRISEVTCOLLIDE {
   int32_t it_handle;
 }; // struct for EVT_COLLIDE data
 
-struct tOSIRISEVTCREATED {
-}; // struct for EVT_CREATED data
+struct tOSIRISEVTCREATED {}; // struct for EVT_CREATED data
 
 struct tOSIRISEVTDESTROY {
-  uint8_t is_dying;  // if this is !=0 than the event is coming because it is
-                     // really being destroyed.  Else it is due to the level ending.
+  uint8_t is_dying; // if this is !=0 than the event is coming because it is
+                    // really being destroyed.  Else it is due to the level ending.
 }; // struct for EVT_DESTROY data
 
 struct tOSIRISEVTTIMER {
@@ -1053,14 +1048,11 @@ struct tOSIRISEVTAINOTIFY {
   };
 }; // struct for EVT_AI_NOTIFY data
 
-struct tOSIRISEVTAIINIT {
-}; // struct for EVT_AI_INIT data
+struct tOSIRISEVTAIINIT {}; // struct for EVT_AI_INIT data
 
-struct tOSIRISEVTLEVELSTART {
-}; // struct for EVT_LEVELSTART data
+struct tOSIRISEVTLEVELSTART {}; // struct for EVT_LEVELSTART data
 
-struct tOSIRISEVTLEVELEND {
-}; // struct for EVT_LEVELEND data
+struct tOSIRISEVTLEVELEND {}; // struct for EVT_LEVELEND data
 
 struct tOSIRISEVTCHANGESEG {
   int32_t room_num;
@@ -1085,11 +1077,9 @@ struct tOSIRISEVTMATCENCREATE {
   int32_t id;
 }; // struct for EVT_MATCEN_CREATE data
 
-struct tOSIRISEVTDOORACTIVATE {
-}; // struct for EVT_DOOR_ACTIVATE data
+struct tOSIRISEVTDOORACTIVATE {}; // struct for EVT_DOOR_ACTIVATE data
 
-struct tOSIRISEVTDOORCLOSE {
-}; // struct for EVT_DOOR_CLOSE data
+struct tOSIRISEVTDOORCLOSE {}; // struct for EVT_DOOR_CLOSE data
 
 struct tOSIRISEVTLEVELGOALCOMPLETE {
   int32_t level_goal_index;
@@ -1099,14 +1089,11 @@ struct tOSIRISEVTLEVELGOALITEMCOMPLETE {
   int32_t level_goal_index;
 };
 
-struct tOSIRISEVTALLLEVELGOALSCOMPLETE {
-};
+struct tOSIRISEVTALLLEVELGOALSCOMPLETE {};
 
-struct tOSIRISEVTPLAYERMOVIESTART {
-};
+struct tOSIRISEVTPLAYERMOVIESTART {};
 
-struct tOSIRISEVTPLAYERMOVIEEND {
-};
+struct tOSIRISEVTPLAYERMOVIEEND {};
 
 struct tOSIRISEVTPLAYERRESPAWN {
   int32_t it_handle; // player respawning
@@ -1163,7 +1150,7 @@ struct tOSIRISEventInfo {
   int32_t me_handle;
   void *extra_info;
 }; // contains the necessary data for all events
-                    // to pass what they need to their event handlers.
+   // to pass what they need to their event handlers.
 
 #define OTF_REPEATER 0x0001 // this timer is to repeat repeat_count times
 #define OTF_TRIGGER 0x0002  // this timer is for a trigger, use trigger_number
@@ -1313,7 +1300,6 @@ struct msafe_struct {
 
   // Second message
   char message2[MSAFE_MESSAGE_LENGTH];
-
 };
 
 struct ray_info {

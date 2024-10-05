@@ -269,6 +269,7 @@
 #include <map>
 #include <regex>
 #include <string>
+#include <vector>
 
 #include "crossplat.h"
 #include "ship.h"
@@ -278,14 +279,13 @@
 // #define DEMO	1
 
 // localization info
-char **StringTable;
-int StringTableSize = 0;
+std::vector<std::string> StringTable;
 const char *_ErrorString = "Missing String";
 const char *GetString(int d) {
-  if ((d < 0) || (d >= StringTableSize))
+  if ((d < 0) || (d >= StringTable.size()))
     return _ErrorString;
   else
-    return StringTable[d];
+    return StringTable[d].c_str();
 }
 #define TXT(d) GetString(d)
 ///////////////////////////////////////////////
@@ -576,14 +576,10 @@ typedef int (*dp_GetModemChoices_fp)(char *buffer, uint32_t *size);
 dp_GetModemChoices_fp DLLdp_GetModemChoices;
 #endif
 
-// Given a filename, pointer to a char * array and a pointer to an int,
-// it will load the string table and fill in the information
-// returns true on success
-typedef bool (*CreateStringTable_fp)(const char *filename, char ***table, int *size);
+typedef bool (*CreateStringTable_fp)(const std::filesystem::path &filename, std::vector<std::string> &table);
 CreateStringTable_fp DLLCreateStringTable;
 
-// Given a string table and its count of strings, it will free up its memory
-typedef void (*DestroyStringTable_fp)(char **table, int size);
+typedef void (*DestroyStringTable_fp)(std::vector<std::string> &table);
 DestroyStringTable_fp DLLDestroyStringTable;
 
 typedef void (*DatabaseReadInt_fp)(const char *label, int *val);

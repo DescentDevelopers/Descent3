@@ -22,10 +22,10 @@
 // Filename:	level13.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -1297,180 +1297,12 @@ $$END
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -1646,17 +1478,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"ShutdownEngineCore", "Disable Aft Mat
                                     "Eliminate Remaining StormTroopers", "Reduce Infected Robot Threat"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 39
-const char *Message_names[NUM_MESSAGE_NAMES] = {
-    "PplDoors1",      "Bay62Lance",        "EngineDown",   "NoEntry",        "EngineMisfire",  "SecondaryObjective",
-    "EngineTakover",  "PrimerDamage",      "CoreRads",     "LevelObjA",      "NoEntry62",      "CoreInfo2",
-    "CoreInfo1",      "BayInfoGame",       "BayInfoHud",   "MainDeckGame",   "MainDeckHud",    "Bay62Game",
-    "Bay62Hud",       "ShipInfo2",         "ShipInfo1",    "AftMatcenCheck", "AuxCoreDoor",    "CoreAccFF",
-    "EndMission",     "GotReconInterface", "RobotCount",   "EndCine",        "LevelObjtives1", "LevelObjtives2",
-    "LevelObjtives3", "LeaderTaunt1",      "LeaderTaunt2", "LeaderTaunt3",   "LeaderTaunt4",   "LeaderTaunt5",
-    "IntroText",      "Bay62Fuse",         "SpyPlead"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -1670,7 +1491,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
@@ -1678,14 +1498,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
     lang_type = Game_GetLanguage();
-    if (lang_type == LANGUAGE_FRENCH)
-      strcat(filename, "_FRN");
-    else if (lang_type == LANGUAGE_GERMAN)
-      strcat(filename, "_GER");
-    else if (lang_type == LANGUAGE_ITALIAN)
-      strcat(filename, "_ITN");
-    else if (lang_type == LANGUAGE_SPANISH)
-      strcat(filename, "_SPN");
+    strcat(filename, lang_suffixes[lang_type].c_str());
     strcat(filename, ".msg");
   } else {
     strcpy(filename, "level13.msg");
@@ -1735,10 +1548,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -2860,7 +2669,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 062: IntroLevel
     if ((ScriptActionCtr_062 < 1) && (1)) {
-      aCinematicIntro(Path_indexes[10], Message_strings[36], Object_handles[75], Path_indexes[11], 20.000000f);
+      aCinematicIntro(Path_indexes[10], TXT("IntroText"), Object_handles[75], Path_indexes[11], 20.000000f);
 
       // Increment the script action counter
       if (ScriptActionCtr_062 < MAX_ACTION_CTR_VALUE)
@@ -2922,9 +2731,9 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((2 == event_data->id) && (qObjExists(Object_handles[16]) == true) && (qUserFlag(0) == false)) {
       aMiscViewerShake(100.000000f);
       aSetLevelTimer(1.000000f, 0);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[4]);
+      aShowColoredHUDMessage(255, 0, 0, TXT("EngineMisfire"));
       aCreatePopupView(0, Object_handles[17], 8.000000f, 1.000000f);
-      aAddGameMessage(Message_strings[5], Message_strings[6]);
+      aAddGameMessage(TXT("SecondaryObjective"), TXT("EngineTakover"));
       aGoalEnableDisable(1, Goal_indexes[0]);
 
       // Increment the script action counter
@@ -2955,7 +2764,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
                       qObjCountTypeID(2, "stormtroopergreen")) <= 3) {
         aGoalCompleted(Goal_indexes[3], 1);
         aGoalCompleted(Goal_indexes[4], 1);
-        aShowColoredHUDMessage(0, 255, 232, Message_strings[24]);
+        aShowColoredHUDMessage(0, 255, 232, TXT("EndMission"));
         aSetLevelTimer(10.000000f, 6);
       } else {
         aSetLevelTimer(2.000000f, 5);
@@ -2968,7 +2777,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 053: End level Timer
     if (event_data->id == 6) {
-      aStartEndlevelSequencePath(Path_indexes[1], Path_indexes[2], 9.000000f, Message_strings[27]);
+      aStartEndlevelSequencePath(Path_indexes[1], Path_indexes[2], 9.000000f, TXT("EndCine"));
 
       // Increment the script action counter
       if (ScriptActionCtr_053 < MAX_ACTION_CTR_VALUE)
@@ -3019,7 +2828,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 049: Start Level Objectives Messege
     if ((ScriptActionCtr_049 < 1) && (1)) {
-      aCinematicSimple(Path_indexes[7], Message_strings[28], Object_handles[30], 10.000000f, 1);
+      aCinematicSimple(Path_indexes[7], TXT("LevelObjtives1"), Object_handles[30], 10.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_049 < MAX_ACTION_CTR_VALUE)
@@ -3037,7 +2846,7 @@ int16_t CustomObjectScript_1074::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 001: Bay 62 Fusable Link
     if ((ScriptActionCtr_001 < 1) && (qObjIsPlayerWeapon(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[1]);
+      aShowHUDMessage(TXT("Bay62Lance"));
       aObjDestroy(data->me_handle);
       aAISetState(0, Object_handles[1]);
       aAISetState(0, Object_handles[2]);
@@ -3061,7 +2870,7 @@ int16_t CustomObjectScript_0878::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjPlayAnim(data->me_handle, 0, 2, 2.000000f, 0);
       if (((ScriptActionCtr_006 > 0) == true) && ((ScriptActionCtr_011 > 0) == true)) {
         aSetLevelTimer(0.000000f, 3);
-        aShowHUDMessage(Message_strings[2]);
+        aShowHUDMessage(TXT("EngineDown"));
       }
 
       // Increment the script action counter
@@ -3083,7 +2892,7 @@ int16_t CustomObjectScript_0877::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjPlayAnim(data->me_handle, 0, 2, 2.000000f, 0);
       if (((ScriptActionCtr_006 > 0) == true) && ((ScriptActionCtr_012 > 0) == true)) {
         aSetLevelTimer(0.000000f, 3);
-        aShowHUDMessage(Message_strings[2]);
+        aShowHUDMessage(TXT("EngineDown"));
       }
 
       // Increment the script action counter
@@ -3105,7 +2914,7 @@ int16_t CustomObjectScript_0879::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjPlayAnim(data->me_handle, 0, 2, 2.000000f, 0);
       if (((ScriptActionCtr_011 > 0) == true) && ((ScriptActionCtr_012 > 0) == true)) {
         aSetLevelTimer(0.000000f, 3);
-        aShowHUDMessage(Message_strings[2]);
+        aShowHUDMessage(TXT("EngineDown"));
       }
 
       // Increment the script action counter
@@ -3124,7 +2933,7 @@ int16_t CustomObjectScript_6813::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 021: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_021 < MAX_ACTION_CTR_VALUE)
@@ -3144,7 +2953,7 @@ int16_t CustomObjectScript_083A::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 008: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_008 < MAX_ACTION_CTR_VALUE)
@@ -3262,7 +3071,7 @@ int16_t CustomObjectScript_9021::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_031 < 1) && (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true)) {
       aGoalCompleted(Goal_indexes[1], 1);
       aObjPlayAnim(data->me_handle, 0, 2, 1.000000f, 0);
-      aShowColoredHUDMessage(0, 150, 255, Message_strings[9]);
+      aShowColoredHUDMessage(0, 150, 255, TXT("LevelObjA"));
       aMatcenSetValues(Matcen_indexes[0], 0, 1.000000f, 1);
       aMatcenSetValues(Matcen_indexes[1], 0, 1.000000f, 1);
       aMatcenSetValues(Matcen_indexes[2], 0, 1.000000f, 1);
@@ -3277,7 +3086,7 @@ int16_t CustomObjectScript_9021::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 056: Start Level Objectives Messege 2
     if ((ScriptActionCtr_056 < 1) && (1)) {
-      aCinematicSimple(Path_indexes[8], Message_strings[29], Object_handles[16], 10.000000f, 1);
+      aCinematicSimple(Path_indexes[8], TXT("LevelObjtives2"), Object_handles[16], 10.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_056 < MAX_ACTION_CTR_VALUE)
@@ -3295,7 +3104,7 @@ int16_t CustomObjectScript_282A::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 024: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_024 < MAX_ACTION_CTR_VALUE)
@@ -3315,7 +3124,7 @@ int16_t CustomObjectScript_0838::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 018: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_018 < MAX_ACTION_CTR_VALUE)
@@ -3335,7 +3144,7 @@ int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 037: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_037 < MAX_ACTION_CTR_VALUE)
@@ -3355,7 +3164,7 @@ int16_t CustomObjectScript_084E::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 038: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_038 < MAX_ACTION_CTR_VALUE)
@@ -3375,7 +3184,7 @@ int16_t CustomObjectScript_085F::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 039: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_039 < MAX_ACTION_CTR_VALUE)
@@ -3395,7 +3204,7 @@ int16_t CustomObjectScript_085D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 042: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_042 < MAX_ACTION_CTR_VALUE)
@@ -3415,7 +3224,7 @@ int16_t CustomObjectScript_085A::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 043: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_043 < MAX_ACTION_CTR_VALUE)
@@ -3435,7 +3244,7 @@ int16_t CustomObjectScript_0844::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 044: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_044 < MAX_ACTION_CTR_VALUE)
@@ -3455,7 +3264,7 @@ int16_t CustomObjectScript_0835::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 045: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_045 < MAX_ACTION_CTR_VALUE)
@@ -3475,7 +3284,7 @@ int16_t CustomObjectScript_1816::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 063: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_063 < MAX_ACTION_CTR_VALUE)
@@ -3495,7 +3304,7 @@ int16_t CustomObjectScript_0825::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 066: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_066 < MAX_ACTION_CTR_VALUE)
@@ -3515,7 +3324,7 @@ int16_t CustomObjectScript_084B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 120: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_120 < MAX_ACTION_CTR_VALUE)
@@ -3535,7 +3344,7 @@ int16_t CustomObjectScript_0839::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 003: NonPlayer Entry
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("NoEntry"));
 
       // Increment the script action counter
       if (ScriptActionCtr_003 < MAX_ACTION_CTR_VALUE)
@@ -3556,7 +3365,7 @@ int16_t CustomObjectScript_1847::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 025: NonPlayer Entry - 62 Acc Door
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
       aSoundPlayObject(Sound_indexes[1], Object_handles[45], 1.000000f);
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("NoEntry62"));
 
       // Increment the script action counter
       if (ScriptActionCtr_025 < MAX_ACTION_CTR_VALUE)
@@ -3577,7 +3386,7 @@ int16_t CustomObjectScript_10C6::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 030: Core Hall Data Link
     if ((ScriptActionCtr_030 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
-      aAddGameMessage(Message_strings[11], Message_strings[12]);
+      aAddGameMessage(TXT("CoreInfo2"), TXT("CoreInfo1"));
 
       // Increment the script action counter
       if (ScriptActionCtr_030 < MAX_ACTION_CTR_VALUE)
@@ -3596,7 +3405,7 @@ int16_t CustomObjectScript_11F6::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 085: Bay 36 Data Link
     if ((ScriptActionCtr_085 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
-      aAddGameMessage(Message_strings[13], Message_strings[14]);
+      aAddGameMessage(TXT("BayInfoGame"), TXT("BayInfoHud"));
 
       // Increment the script action counter
       if (ScriptActionCtr_085 < MAX_ACTION_CTR_VALUE)
@@ -3615,7 +3424,7 @@ int16_t CustomObjectScript_0A24::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 087: Main Deck Data Link
     if ((ScriptActionCtr_087 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
-      aAddGameMessage(Message_strings[15], Message_strings[16]);
+      aAddGameMessage(TXT("MainDeckGame"), TXT("MainDeckHud"));
 
       // Increment the script action counter
       if (ScriptActionCtr_087 < MAX_ACTION_CTR_VALUE)
@@ -3634,7 +3443,7 @@ int16_t CustomObjectScript_0A23::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 086: Bay 62 Data Link
     if ((ScriptActionCtr_086 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
-      aAddGameMessage(Message_strings[17], Message_strings[18]);
+      aAddGameMessage(TXT("Bay62Game"), TXT("Bay62Hud"));
 
       // Increment the script action counter
       if (ScriptActionCtr_086 < MAX_ACTION_CTR_VALUE)
@@ -3653,7 +3462,7 @@ int16_t CustomObjectScript_18A0::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 077: Aft Matcen Data Link
     if ((ScriptActionCtr_077 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
-      aAddGameMessage(Message_strings[19], Message_strings[20]);
+      aAddGameMessage(TXT("ShipInfo2"), TXT("ShipInfo1"));
 
       // Increment the script action counter
       if (ScriptActionCtr_077 < MAX_ACTION_CTR_VALUE)
@@ -3672,7 +3481,7 @@ int16_t CustomObjectScript_1090::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 033: Stern Data Link
     if ((ScriptActionCtr_033 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
-      aCinematicSimple(Path_indexes[0], Message_strings[21], Object_handles[30], 8.000000f, 1);
+      aCinematicSimple(Path_indexes[0], TXT("AftMatcenCheck"), Object_handles[30], 8.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_033 < MAX_ACTION_CTR_VALUE)
@@ -3867,8 +3676,8 @@ int16_t CustomObjectScript_295F::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 069: Leader Taunt Cam
     if ((ScriptActionCtr_069 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[33]);
-      aShowHUDMessage(Message_strings[34]);
+      aShowHUDMessage(TXT("LeaderTaunt3"));
+      aShowHUDMessage(TXT("LeaderTaunt4"));
 
       // Increment the script action counter
       if (ScriptActionCtr_069 < MAX_ACTION_CTR_VALUE)
@@ -3906,7 +3715,7 @@ int16_t CustomObjectScript_2023::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 034: Aux Core Access
     if ((ScriptActionCtr_034 < 1) &&
         ((qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) && (qUserFlag(0) == false))) {
-      aShowHUDMessage(Message_strings[22]);
+      aShowHUDMessage(TXT("AuxCoreDoor"));
 
       // Increment the script action counter
       if (ScriptActionCtr_034 < MAX_ACTION_CTR_VALUE)
@@ -3965,7 +3774,7 @@ int16_t CustomObjectScript_30C7::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 073: Start Level Objectives Messege 3
     if ((ScriptActionCtr_073 < 1) && (1)) {
       aSoundPlaySteaming("VoxL13StartLevel.osf", 1.000000f);
-      aCinematicSimple(Path_indexes[9], Message_strings[30], Object_handles[65], 10.000000f, 1);
+      aCinematicSimple(Path_indexes[9], TXT("LevelObjtives3"), Object_handles[65], 10.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_073 < MAX_ACTION_CTR_VALUE)
@@ -3983,7 +3792,7 @@ int16_t CustomObjectScript_0A5C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 089: Picked Up Recon Interface
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessageObj(Message_strings[25], event_data->it_handle);
+      aShowHUDMessageObj(TXT("GotReconInterface"), event_data->it_handle);
       aSoundPlayObject(Sound_indexes[2], event_data->it_handle, 1.000000f);
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
 
@@ -3999,7 +3808,7 @@ int16_t CustomObjectScript_0A5C::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjGhostSet(0, data->me_handle);
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
-      aShowHUDMessageI(Message_strings[26], qMathAddInt(qMathAddInt(qObjCountTypeID(2, "stormtrooperred"),
+      aShowHUDMessageI(TXT("RobotCount"), qMathAddInt(qMathAddInt(qObjCountTypeID(2, "stormtrooperred"),
                                                                     qObjCountTypeID(2, "stormtroopergreen")),
                                                         qObjCountTypeID(2, "stormtrooperwhite")));
       aSoundPlay2D(Sound_indexes[3], 1.000000f);
@@ -4020,8 +3829,8 @@ int16_t CustomObjectScript_1134::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 058: Leader Taunt Cam
     if ((ScriptActionCtr_058 < 2) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[31]);
-      aShowHUDMessage(Message_strings[32]);
+      aShowHUDMessage(TXT("LeaderTaunt1"));
+      aShowHUDMessage(TXT("LeaderTaunt2"));
 
       // Increment the script action counter
       if (ScriptActionCtr_058 < MAX_ACTION_CTR_VALUE)
@@ -4039,8 +3848,8 @@ int16_t CustomObjectScript_0887::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 059: Leader Taunt Cam
     if ((ScriptActionCtr_059 < 2) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[33]);
-      aShowHUDMessage(Message_strings[34]);
+      aShowHUDMessage(TXT("LeaderTaunt3"));
+      aShowHUDMessage(TXT("LeaderTaunt4"));
 
       // Increment the script action counter
       if (ScriptActionCtr_059 < MAX_ACTION_CTR_VALUE)
@@ -4058,8 +3867,8 @@ int16_t CustomObjectScript_095B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 068: Leader Taunt Cam
     if ((ScriptActionCtr_068 < 4) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[33]);
-      aShowHUDMessage(Message_strings[34]);
+      aShowHUDMessage(TXT("LeaderTaunt3"));
+      aShowHUDMessage(TXT("LeaderTaunt4"));
 
       // Increment the script action counter
       if (ScriptActionCtr_068 < MAX_ACTION_CTR_VALUE)
@@ -4077,8 +3886,8 @@ int16_t CustomObjectScript_295E::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 070: Leader Taunt Cam
     if ((ScriptActionCtr_070 < 2) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[31]);
-      aShowHUDMessage(Message_strings[33]);
+      aShowHUDMessage(TXT("LeaderTaunt1"));
+      aShowHUDMessage(TXT("LeaderTaunt3"));
 
       // Increment the script action counter
       if (ScriptActionCtr_070 < MAX_ACTION_CTR_VALUE)
@@ -4096,7 +3905,7 @@ int16_t CustomObjectScript_09F0::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 071: Leader Taunt Cam
     if ((ScriptActionCtr_071 < 2) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[33]);
+      aShowHUDMessage(TXT("LeaderTaunt3"));
 
       // Increment the script action counter
       if (ScriptActionCtr_071 < MAX_ACTION_CTR_VALUE)
@@ -4114,8 +3923,8 @@ int16_t CustomObjectScript_09D3::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 060: Leader Taunt Cam
     if ((ScriptActionCtr_060 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[31]);
-      aShowHUDMessage(Message_strings[34]);
+      aShowHUDMessage(TXT("LeaderTaunt1"));
+      aShowHUDMessage(TXT("LeaderTaunt4"));
 
       // Increment the script action counter
       if (ScriptActionCtr_060 < MAX_ACTION_CTR_VALUE)
@@ -4133,7 +3942,7 @@ int16_t CustomObjectScript_087D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 067: Leader Taunt Cam
     if ((ScriptActionCtr_067 < 2) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[33]);
+      aShowHUDMessage(TXT("LeaderTaunt3"));
 
       // Increment the script action counter
       if (ScriptActionCtr_067 < MAX_ACTION_CTR_VALUE)
@@ -4151,7 +3960,7 @@ int16_t CustomObjectScript_0869::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 048: Leader Taunt Cam
     if ((ScriptActionCtr_048 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[35]);
+      aShowHUDMessage(TXT("LeaderTaunt5"));
 
       // Increment the script action counter
       if (ScriptActionCtr_048 < MAX_ACTION_CTR_VALUE)
@@ -4169,8 +3978,8 @@ int16_t CustomObjectScript_09F9::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 057: Leader Taunt Cam
     if ((ScriptActionCtr_057 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[31]);
-      aShowHUDMessage(Message_strings[32]);
+      aShowHUDMessage(TXT("LeaderTaunt1"));
+      aShowHUDMessage(TXT("LeaderTaunt2"));
 
       // Increment the script action counter
       if (ScriptActionCtr_057 < MAX_ACTION_CTR_VALUE)
@@ -4190,7 +3999,7 @@ int16_t CustomObjectScript_193B::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
       aMatcenSetEnableState(0, Matcen_indexes[3]);
       aMatcenSetEnableState(0, Matcen_indexes[6]);
-      aShowHUDMessage(Message_strings[37]);
+      aShowHUDMessage(TXT("Bay62Fuse"));
       aObjDestroy(data->me_handle);
 
       // Increment the script action counter
@@ -4234,7 +4043,7 @@ int16_t CustomObjectScript_0A08::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 083: SpyHunter_Plead
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aAISetMode(data->me_handle, 1);
-      aShowHUDMessage(Message_strings[38]);
+      aShowHUDMessage(TXT("SpyPlead"));
 
       // Increment the script action counter
       if (ScriptActionCtr_083 < MAX_ACTION_CTR_VALUE)
@@ -4473,7 +4282,7 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 036: Personell Acc Doors
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowColoredHUDMessage(100, 100, 255, Message_strings[0]);
+      aShowColoredHUDMessage(100, 100, 255, TXT("PplDoors1"));
 
       // Increment the script action counter
       if (ScriptActionCtr_036 < MAX_ACTION_CTR_VALUE)
@@ -4491,7 +4300,7 @@ int16_t TriggerScript_000B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 017: Personell Acc Doors
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowColoredHUDMessage(100, 100, 255, Message_strings[0]);
+      aShowColoredHUDMessage(100, 100, 255, TXT("PplDoors1"));
 
       // Increment the script action counter
       if (ScriptActionCtr_017 < MAX_ACTION_CTR_VALUE)
@@ -4509,7 +4318,7 @@ int16_t TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 078: Personell Acc Doors
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowColoredHUDMessage(100, 100, 255, Message_strings[0]);
+      aShowColoredHUDMessage(100, 100, 255, TXT("PplDoors1"));
 
       // Increment the script action counter
       if (ScriptActionCtr_078 < MAX_ACTION_CTR_VALUE)
@@ -4527,7 +4336,7 @@ int16_t TriggerScript_000C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 000: Personell Acc Doors
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowColoredHUDMessage(100, 100, 255, Message_strings[0]);
+      aShowColoredHUDMessage(100, 100, 255, TXT("PplDoors1"));
 
       // Increment the script action counter
       if (ScriptActionCtr_000 < MAX_ACTION_CTR_VALUE)
@@ -4546,7 +4355,7 @@ int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 015: PrimerDamage
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjApplyDamage(event_data->it_handle, 33.330002f);
-      aShowHUDMessage(Message_strings[7]);
+      aShowHUDMessage(TXT("PrimerDamage"));
 
       // Increment the script action counter
       if (ScriptActionCtr_015 < MAX_ACTION_CTR_VALUE)
@@ -4567,7 +4376,7 @@ int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 020: CoreRoom Microwave Effect
     if ((ScriptActionCtr_020 < 15) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjDeform(event_data->it_handle, 0.300000f, 2.500000f);
-      aShowColoredHUDMessage(255, 25, 0, Message_strings[8]);
+      aShowColoredHUDMessage(255, 25, 0, TXT("CoreRads"));
       aObjApplyDamage(event_data->it_handle, 5.000000f);
 
       // Increment the script action counter
@@ -4604,7 +4413,7 @@ int16_t TriggerScript_000A::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 047: Core Acc Forcefield
     if ((ScriptActionCtr_047 < 1) && (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[23]);
+      aShowHUDMessage(TXT("CoreAccFF"));
 
       // Increment the script action counter
       if (ScriptActionCtr_047 < MAX_ACTION_CTR_VALUE)

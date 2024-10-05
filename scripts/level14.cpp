@@ -22,10 +22,10 @@
 // Filename:	level14.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -837,180 +837,12 @@ void aUpdateBypassConnDisplay(const char *text, int level) {
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -1147,64 +979,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"Find Three Bypass Connectors",
                                     "Broadcast the Anti-Virus Program"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 55
-const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
-                                          "Empty",
-                                          "BypassConnDisplay",
-                                          "PowerOffline",
-                                          "PowerOnline",
-                                          "FoundAllBypassConns",
-                                          "FoundBypassConn",
-                                          "FoundEquipRmKey",
-                                          "DataLinkAlreadyActive",
-                                          "DataLinkFixed",
-                                          "SystemStarting",
-                                          "DataLinkError",
-                                          "GotCoreMaterial",
-                                          "UploadStarted",
-                                          "UploadError",
-                                          "UseCoreMaterialFailed",
-                                          "SystemStarted",
-                                          "OmnicronDisplayed",
-                                          "BumpDialError",
-                                          "DialCodeEntered",
-                                          "DialCodeIncorrect",
-                                          "DialSwitchError",
-                                          "ShieldCodeSeqStart",
-                                          "ShieldCodeSeqReset",
-                                          "ShieldDeactivated",
-                                          "ShieldCodeIncorrect",
-                                          "ShuttleFreed",
-                                          "BeamIgnited",
-                                          "BeamIgniteError6",
-                                          "BeamIgniteError5",
-                                          "BeamIgniteError4",
-                                          "BeamIgniteError3",
-                                          "BeamIgniteError2",
-                                          "BeamIgniteError1",
-                                          "LensRobotWarning",
-                                          "LensDestroyed",
-                                          "GotSpareLens",
-                                          "UseLensCompleted",
-                                          "UseLensFailed2",
-                                          "UseLensFailed1",
-                                          "MirrorNodesUnaligned",
-                                          "PowerInsufficient",
-                                          "TransmissionComplete",
-                                          "JournalBeamGame",
-                                          "JournalBeamHUD",
-                                          "JournalShieldGame",
-                                          "JournalShieldHUD",
-                                          "JournalVirusGame",
-                                          "JournalVirusHUD",
-                                          "JournalPowerGame",
-                                          "JournalPowerHUD",
-                                          "JournalRobotGame",
-                                          "JournalRobotHUD",
-                                          "JournalDialGame",
-                                          "JournalDialHUD"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -1218,26 +992,16 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
-  int lang_type;
-  if (func_list->script_identifier != NULL) {
-    _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    lang_type = Game_GetLanguage();
-    if (lang_type == LANGUAGE_FRENCH)
-      strcat(filename, "_FRN");
-    else if (lang_type == LANGUAGE_GERMAN)
-      strcat(filename, "_GER");
-    else if (lang_type == LANGUAGE_ITALIAN)
-      strcat(filename, "_ITN");
-    else if (lang_type == LANGUAGE_SPANISH)
-      strcat(filename, "_SPN");
+  if (func_list->script_identifier != nullptr) {
+    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
+    int lang_type = Game_GetLanguage();
+    strcat(filename, lang_suffixes[lang_type].c_str());
     strcat(filename, ".msg");
   } else {
     strcpy(filename, "level14.msg");
-    lang_type = LANGUAGE_ENGLISH;
   }
   if (!ReadMessageFile(filename)) {
     mprintf(0, "ERROR: Could not load message file - %s\n", filename);
@@ -1283,10 +1047,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -1800,9 +1560,9 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qUserVarValue(0) != qUserVarValue(12)) {
       aUserVarSet(12, qUserVarValue(0));
       if (qUserVarValue(12) == 0.000000f) {
-        aUpdateBypassConnDisplay(Message_strings[1], 0);
+        aUpdateBypassConnDisplay(TXT("Empty"), 0);
       } else {
-        aUpdateBypassConnDisplay(Message_strings[2], qUserVarValueInt(12));
+        aUpdateBypassConnDisplay(TXT("BypassConnDisplay"), qUserVarValueInt(12));
       }
 
       // Increment the script action counter
@@ -1869,7 +1629,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 038: Level Start - Intro Cinematic
     if (1 == true) {
-      aCinematicIntro(Path_indexes[0], Message_strings[0], Object_handles[3], Path_indexes[1], 20.000000f);
+      aCinematicIntro(Path_indexes[0], TXT("IntroText"), Object_handles[3], Path_indexes[1], 20.000000f);
       aSoundPlaySteaming("VoxLev14StartLevel.osf", 1.000000f);
 
       // Increment the script action counter
@@ -1911,7 +1671,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       }
       if (ScriptActionCtr_008 == 2) {
         aSetTextureForMonitors(Texture_indexes[2]);
-        aShowHUDMessage(Message_strings[16]);
+        aShowHUDMessage(TXT("SystemStarted"));
         aUserFlagSet(14, 1);
         aGoalCompleted(Goal_indexes[2], 1);
       }
@@ -1960,7 +1720,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 010: Process System Omnicron Sequence
     if (event_data->id == 3) {
       aSetTextureForMonitors(Texture_indexes[10]);
-      aShowHUDMessage(Message_strings[17]);
+      aShowHUDMessage(TXT("OmnicronDisplayed"));
       aUserFlagSet(15, 1);
       aGoalCompleted(Goal_indexes[3], 1);
 
@@ -1995,7 +1755,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
           aSoundPlayObject(Sound_indexes[0], Object_handles[19], 1.000000f);
           aUserFlagSet(6, 0);
         }
-        aShowHUDMessage(Message_strings[23]);
+        aShowHUDMessage(TXT("ShieldCodeSeqReset"));
       }
 
       // Increment the script action counter
@@ -2070,7 +1830,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         }
       } else {
         if ((qGoalCompleted(Goal_indexes[6]) == true) && (qUserFlag(17) == false)) {
-          aShowHUDMessage(Message_strings[40]);
+          aShowHUDMessage(TXT("MirrorNodesUnaligned"));
           aGoalCompleted(Goal_indexes[6], 0);
         }
       }
@@ -2081,7 +1841,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         if ((qGoalEnabled(Goal_indexes[9]) == true) && (qGoalCompleted(Goal_indexes[9]) == true) &&
             (qUserFlag(17) == false)) {
-          aShowHUDMessage(Message_strings[41]);
+          aShowHUDMessage(TXT("PowerInsufficient"));
           aGoalCompleted(Goal_indexes[9], 0);
         }
       }
@@ -2094,7 +1854,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 040: Transmission Completed
     if (event_data->id == 6) {
       if (qObjExists(Object_handles[31]) == true) {
-        aShowHUDMessage(Message_strings[42]);
+        aShowHUDMessage(TXT("TransmissionComplete"));
         aGoalCompleted(Goal_indexes[12], 1);
         aSetLevelTimer(5.000000f, 9);
       }
@@ -2106,7 +1866,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 046: New Transmission Completed
     if (event_data->id == 8) {
-      aShowHUDMessage(Message_strings[42]);
+      aShowHUDMessage(TXT("TransmissionComplete"));
       aGoalCompleted(Goal_indexes[12], 1);
       aSetLevelTimer(5.000000f, 9);
 
@@ -2118,7 +1878,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 047: Start End Level Sequence
     if (event_data->id == 9) {
       aGoalCompleted(Goal_indexes[13], 1);
-      aStartEndlevelSequencePath(Path_indexes[5], Path_indexes[6], 20.000000f, Message_strings[1]);
+      aStartEndlevelSequencePath(Path_indexes[5], Path_indexes[6], 20.000000f, TXT("Empty"));
 
       // Increment the script action counter
       if (ScriptActionCtr_047 < MAX_ACTION_CTR_VALUE)
@@ -2186,7 +1946,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     if (event_data->goal_uid == 1) {
       aObjKill(qObjSavedHandle(3), 0, 1, 65760, 0.000000f, 0.000000f);
       aObjDestroy(Object_handles[31]);
-      aShowHUDMessage(Message_strings[35]);
+      aShowHUDMessage(TXT("LensDestroyed"));
       aGoalEnableDisable(1, Goal_indexes[10]);
       aGoalEnableDisable(1, Goal_indexes[11]);
 
@@ -2203,7 +1963,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjSaveHandle(event_data->it_handle, 3);
       aAIFlags(0, 33554432, event_data->it_handle);
       aAIGoalFollowPathSimple(event_data->it_handle, Path_indexes[4], 4352, 1, 3);
-      aShowHUDMessage(Message_strings[34]);
+      aShowHUDMessage(TXT("LensRobotWarning"));
 
       // Increment the script action counter
       if (ScriptActionCtr_042 < MAX_ACTION_CTR_VALUE)
@@ -2223,7 +1983,7 @@ int16_t CustomObjectScript_10B8::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aShowHUDMessageObj(Message_strings[12], event_data->it_handle);
+      aShowHUDMessageObj(TXT("GotCoreMaterial"), event_data->it_handle);
 
       // Increment the script action counter
       if (ScriptActionCtr_006 < MAX_ACTION_CTR_VALUE)
@@ -2249,37 +2009,37 @@ int16_t CustomObjectScript_10B8::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((qObjIsPlayer(event_data->it_handle) == true) && (qUserFlag(15) == false)) {
       if (qObjGetDistance(event_data->it_handle, Object_handles[11]) < 25.000000f) {
         if (qUserFlag(14) == true) {
-          aShowHUDMessage(Message_strings[13]);
+          aShowHUDMessage(TXT("UploadStarted"));
           aSetLevelTimer(0.100000f, 2);
         } else {
           aObjGhostSet(0, data->me_handle);
           aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
-          aShowHUDMessage(Message_strings[14]);
+          aShowHUDMessage(TXT("UploadError"));
         }
       } else {
         if (qObjGetDistance(event_data->it_handle, Object_handles[12]) < 25.000000f) {
           if (qUserFlag(14) == true) {
-            aShowHUDMessage(Message_strings[13]);
+            aShowHUDMessage(TXT("UploadStarted"));
             aSetLevelTimer(0.100000f, 2);
           } else {
             aObjGhostSet(0, data->me_handle);
             aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
-            aShowHUDMessage(Message_strings[14]);
+            aShowHUDMessage(TXT("UploadError"));
           }
         } else {
           if (qObjGetDistance(event_data->it_handle, Object_handles[13]) < 25.000000f) {
             if (qUserFlag(14) == true) {
-              aShowHUDMessage(Message_strings[13]);
+              aShowHUDMessage(TXT("UploadStarted"));
               aSetLevelTimer(0.100000f, 2);
             } else {
               aObjGhostSet(0, data->me_handle);
               aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
-              aShowHUDMessage(Message_strings[14]);
+              aShowHUDMessage(TXT("UploadError"));
             }
           } else {
             aObjGhostSet(0, data->me_handle);
             aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
-            aShowHUDMessageObj(Message_strings[15], event_data->it_handle);
+            aShowHUDMessageObj(TXT("UseCoreMaterialFailed"), event_data->it_handle);
           }
         }
       }
@@ -2364,7 +2124,7 @@ int16_t CustomObjectScript_08A8::CallEvent(int event, tOSIRISEventInfo *data) {
           aUserFlagSet(11, 1);
           aObjGhostSet(1, qObjSavedHandle(0));
           aMatcenGroupASetEnableState(0);
-          aShowHUDMessageI(Message_strings[3], 1);
+          aShowHUDMessageI(TXT("PowerOffline"), 1);
         }
       } else {
         if (qObjAnimFrame(data->me_handle) == 1.000000f) {
@@ -2373,7 +2133,7 @@ int16_t CustomObjectScript_08A8::CallEvent(int event, tOSIRISEventInfo *data) {
           aUserFlagSet(11, 0);
           aObjGhostSet(0, qObjSavedHandle(0));
           aMatcenGroupASetEnableState(1);
-          aShowHUDMessageI(Message_strings[4], 1);
+          aShowHUDMessageI(TXT("PowerOnline"), 1);
         }
       }
 
@@ -2400,7 +2160,7 @@ int16_t CustomObjectScript_08A7::CallEvent(int event, tOSIRISEventInfo *data) {
           aUserFlagSet(12, 1);
           aObjGhostSet(1, qObjSavedHandle(1));
           aMatcenGroupBSetEnableState(0);
-          aShowHUDMessageI(Message_strings[3], 2);
+          aShowHUDMessageI(TXT("PowerOffline"), 2);
         }
       } else {
         if (qObjAnimFrame(data->me_handle) == 1.000000f) {
@@ -2409,7 +2169,7 @@ int16_t CustomObjectScript_08A7::CallEvent(int event, tOSIRISEventInfo *data) {
           aUserFlagSet(12, 0);
           aObjGhostSet(0, qObjSavedHandle(1));
           aMatcenGroupBSetEnableState(1);
-          aShowHUDMessageI(Message_strings[4], 2);
+          aShowHUDMessageI(TXT("PowerOnline"), 2);
         }
       }
 
@@ -2436,7 +2196,7 @@ int16_t CustomObjectScript_180F::CallEvent(int event, tOSIRISEventInfo *data) {
           aUserFlagSet(13, 1);
           aObjGhostSet(1, qObjSavedHandle(2));
           aMatcenGroupCSetEnableState(0);
-          aShowHUDMessageI(Message_strings[3], 3);
+          aShowHUDMessageI(TXT("PowerOffline"), 3);
         }
       } else {
         if (qObjAnimFrame(data->me_handle) == 1.000000f) {
@@ -2445,7 +2205,7 @@ int16_t CustomObjectScript_180F::CallEvent(int event, tOSIRISEventInfo *data) {
           aUserFlagSet(13, 0);
           aObjGhostSet(0, qObjSavedHandle(2));
           aMatcenGroupCSetEnableState(1);
-          aShowHUDMessageI(Message_strings[4], 3);
+          aShowHUDMessageI(TXT("PowerOnline"), 3);
         }
       }
 
@@ -2469,10 +2229,10 @@ int16_t CustomObjectScript_1081::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
       aUserVarInc(0);
       if (qMathAddInt(qUserVarValueInt(0), qUserVarValueInt(1)) >= 3) {
-        aShowHUDMessage(Message_strings[5]);
+        aShowHUDMessage(TXT("FoundAllBypassConns"));
         aGoalCompleted(Goal_indexes[0], 1);
       } else {
-        aShowHUDMessage(Message_strings[6]);
+        aShowHUDMessage(TXT("FoundBypassConn"));
       }
 
       // Increment the script action counter
@@ -2495,10 +2255,10 @@ int16_t CustomObjectScript_186D::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
       aUserVarInc(0);
       if (qMathAddInt(qUserVarValueInt(0), qUserVarValueInt(1)) >= 3) {
-        aShowHUDMessage(Message_strings[5]);
+        aShowHUDMessage(TXT("FoundAllBypassConns"));
         aGoalCompleted(Goal_indexes[0], 1);
       } else {
-        aShowHUDMessage(Message_strings[6]);
+        aShowHUDMessage(TXT("FoundBypassConn"));
       }
 
       // Increment the script action counter
@@ -2521,10 +2281,10 @@ int16_t CustomObjectScript_08D3::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
       aUserVarInc(0);
       if (qMathAddInt(qUserVarValueInt(0), qUserVarValueInt(1)) >= 3) {
-        aShowHUDMessage(Message_strings[5]);
+        aShowHUDMessage(TXT("FoundAllBypassConns"));
         aGoalCompleted(Goal_indexes[0], 1);
       } else {
-        aShowHUDMessage(Message_strings[6]);
+        aShowHUDMessage(TXT("FoundBypassConn"));
       }
 
       // Increment the script action counter
@@ -2546,7 +2306,7 @@ int16_t CustomObjectScript_188F::CallEvent(int event, tOSIRISEventInfo *data) {
       aDoorLockUnlock(0, Door_handles[0]);
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aShowHUDMessage(Message_strings[7]);
+      aShowHUDMessage(TXT("FoundEquipRmKey"));
       aGoalCompleted(Goal_indexes[1], 1);
 
       // Increment the script action counter
@@ -2566,22 +2326,22 @@ int16_t CustomObjectScript_0888::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 005: Bumped Emitter Room Data Link
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if (qUserFlag(7) == true) {
-        aShowHUDMessageObj(Message_strings[8], event_data->it_handle);
+        aShowHUDMessageObj(TXT("DataLinkAlreadyActive"), event_data->it_handle);
       } else {
         if (qUserVarValue(0) > 0.000000f) {
           aGoalItemCompleted(Goal_indexes[2], 3, 1);
           aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
           aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
-          aShowHUDMessageObj(Message_strings[9], event_data->it_handle);
+          aShowHUDMessageObj(TXT("DataLinkFixed"), event_data->it_handle);
           aUserVarInc(1);
           aUserVarDec(0);
           aUserFlagSet(7, 1);
           if (qUserVarValue(1) == 3.000000f) {
-            aShowHUDMessage(Message_strings[10]);
+            aShowHUDMessage(TXT("SystemStarting"));
             aSetLevelTimer(0.100000f, 1);
           }
         } else {
-          aShowHUDMessageObj(Message_strings[11], event_data->it_handle);
+          aShowHUDMessageObj(TXT("DataLinkError"), event_data->it_handle);
         }
       }
 
@@ -2602,22 +2362,22 @@ int16_t CustomObjectScript_204F::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 036: Bumped West Dock Data Link
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if (qUserFlag(8) == true) {
-        aShowHUDMessageObj(Message_strings[8], event_data->it_handle);
+        aShowHUDMessageObj(TXT("DataLinkAlreadyActive"), event_data->it_handle);
       } else {
         if (qUserVarValue(0) > 0.000000f) {
           aGoalItemCompleted(Goal_indexes[2], 1, 1);
           aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
           aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
-          aShowHUDMessageObj(Message_strings[9], event_data->it_handle);
+          aShowHUDMessageObj(TXT("DataLinkFixed"), event_data->it_handle);
           aUserVarInc(1);
           aUserVarDec(0);
           aUserFlagSet(8, 1);
           if (qUserVarValue(1) == 3.000000f) {
-            aShowHUDMessage(Message_strings[10]);
+            aShowHUDMessage(TXT("SystemStarting"));
             aSetLevelTimer(0.100000f, 1);
           }
         } else {
-          aShowHUDMessageObj(Message_strings[11], event_data->it_handle);
+          aShowHUDMessageObj(TXT("DataLinkError"), event_data->it_handle);
         }
       }
 
@@ -2638,22 +2398,22 @@ int16_t CustomObjectScript_2870::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 037: Bumped Control Room Data Link
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if (qUserFlag(9) == true) {
-        aShowHUDMessageObj(Message_strings[8], event_data->it_handle);
+        aShowHUDMessageObj(TXT("DataLinkAlreadyActive"), event_data->it_handle);
       } else {
         if (qUserVarValue(0) > 0.000000f) {
           aGoalItemCompleted(Goal_indexes[2], 2, 1);
           aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
           aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
-          aShowHUDMessageObj(Message_strings[9], event_data->it_handle);
+          aShowHUDMessageObj(TXT("DataLinkFixed"), event_data->it_handle);
           aUserVarInc(1);
           aUserVarDec(0);
           aUserFlagSet(9, 1);
           if (qUserVarValue(1) == 3.000000f) {
-            aShowHUDMessage(Message_strings[10]);
+            aShowHUDMessage(TXT("SystemStarting"));
             aSetLevelTimer(0.100000f, 1);
           }
         } else {
-          aShowHUDMessageObj(Message_strings[11], event_data->it_handle);
+          aShowHUDMessageObj(TXT("DataLinkError"), event_data->it_handle);
         }
       }
 
@@ -2701,7 +2461,7 @@ int16_t CustomObjectScript_1025::CallEvent(int event, tOSIRISEventInfo *data) {
           aUserVarSet(3, 1.000000f);
         }
       } else {
-        aShowHUDMessageObj(Message_strings[18], event_data->it_handle);
+        aShowHUDMessageObj(TXT("BumpDialError"), event_data->it_handle);
       }
 
       // Increment the script action counter
@@ -2725,15 +2485,15 @@ int16_t CustomObjectScript_08A0::CallEvent(int event, tOSIRISEventInfo *data) {
             (qUserFlag(10) == false)) {
           aObjPlayAnim(data->me_handle, 0, 4, 2.000000f, 0);
           aSoundPlayObject(Sound_indexes[0], data->me_handle, 1.000000f);
-          aShowHUDMessage(Message_strings[19]);
+          aShowHUDMessage(TXT("DialCodeEntered"));
           aSetTextureForMonitors(Texture_indexes[11]);
           aUserFlagSet(10, 1);
           aGoalCompleted(Goal_indexes[4], 1);
         } else {
-          aShowHUDMessageObj(Message_strings[20], event_data->it_handle);
+          aShowHUDMessageObj(TXT("DialCodeIncorrect"), event_data->it_handle);
         }
       } else {
-        aShowHUDMessageObj(Message_strings[21], event_data->it_handle);
+        aShowHUDMessageObj(TXT("DialSwitchError"), event_data->it_handle);
       }
 
       // Increment the script action counter
@@ -2756,7 +2516,7 @@ int16_t CustomObjectScript_189E::CallEvent(int event, tOSIRISEventInfo *data) {
           ((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 20.000000f))) {
         if (qUserFlag(0) == 0) {
           aUserFlagSet(0, 1);
-          aShowHUDMessage(Message_strings[22]);
+          aShowHUDMessage(TXT("ShieldCodeSeqStart"));
           aSetLevelTimer(15.000000f, 0);
         }
         aObjPlayAnim(data->me_handle, 0, 10, 2.000000f, 0);
@@ -2788,7 +2548,7 @@ int16_t CustomObjectScript_109B::CallEvent(int event, tOSIRISEventInfo *data) {
           ((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 20.000000f))) {
         if (qUserFlag(0) == 0) {
           aUserFlagSet(0, 1);
-          aShowHUDMessage(Message_strings[22]);
+          aShowHUDMessage(TXT("ShieldCodeSeqStart"));
           aSetLevelTimer(15.000000f, 0);
         }
         aObjPlayAnim(data->me_handle, 0, 10, 2.000000f, 0);
@@ -2820,7 +2580,7 @@ int16_t CustomObjectScript_109D::CallEvent(int event, tOSIRISEventInfo *data) {
           ((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 20.000000f))) {
         if (qUserFlag(0) == 0) {
           aUserFlagSet(0, 1);
-          aShowHUDMessage(Message_strings[22]);
+          aShowHUDMessage(TXT("ShieldCodeSeqStart"));
           aSetLevelTimer(15.000000f, 0);
         }
         aObjPlayAnim(data->me_handle, 0, 10, 2.000000f, 0);
@@ -2852,7 +2612,7 @@ int16_t CustomObjectScript_409A::CallEvent(int event, tOSIRISEventInfo *data) {
           ((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 20.000000f))) {
         if (qUserFlag(0) == 0) {
           aUserFlagSet(0, 1);
-          aShowHUDMessage(Message_strings[22]);
+          aShowHUDMessage(TXT("ShieldCodeSeqStart"));
           aSetLevelTimer(15.000000f, 0);
         }
         aObjPlayAnim(data->me_handle, 0, 10, 2.000000f, 0);
@@ -2886,10 +2646,10 @@ int16_t CustomObjectScript_309C::CallEvent(int event, tOSIRISEventInfo *data) {
         aSoundPlayObject(Sound_indexes[0], data->me_handle, 1.000000f);
         aUserFlagSet(2, 1);
         aUserFlagSet(0, 0);
-        aShowHUDMessage(Message_strings[24]);
+        aShowHUDMessage(TXT("ShieldDeactivated"));
         aGoalCompleted(Goal_indexes[5], 1);
       } else {
-        aShowHUDMessageObj(Message_strings[25], event_data->it_handle);
+        aShowHUDMessageObj(TXT("ShieldCodeIncorrect"), event_data->it_handle);
       }
 
       // Increment the script action counter
@@ -3214,7 +2974,7 @@ int16_t CustomObjectScript_2880::CallEvent(int event, tOSIRISEventInfo *data) {
       aRoomSetWind(Room_indexes[2], 0.000000f, 0.000000f, -1.000000f, 0.000000f);
       aAIGoalFollowPath(Object_handles[27], Path_indexes[3], 1, 4, 1, 3, 131332, 2);
       aAISetMaxSpeed(Object_handles[27], 100.000000f);
-      aShowHUDMessage(Message_strings[26]);
+      aShowHUDMessage(TXT("ShuttleFreed"));
       aMiscShakeArea(Object_handles[27], 100.000000f, 500.000000f);
       aGoalCompleted(Goal_indexes[7], 1);
 
@@ -3281,27 +3041,27 @@ int16_t CustomObjectScript_4089::CallEvent(int event, tOSIRISEventInfo *data) {
                   aGoalCompleted(Goal_indexes[8], 1);
                   aSetLevelTimer(60.000000f, 6);
                   aSetLevelTimer(10.000000f, 7);
-                  aShowHUDMessage(Message_strings[27]);
+                  aShowHUDMessage(TXT("BeamIgnited"));
                   aUserFlagSet(17, 1);
                 } else {
-                  aShowHUDMessage(Message_strings[28]);
+                  aShowHUDMessage(TXT("BeamIgniteError6"));
                 }
               } else {
-                aShowHUDMessage(Message_strings[29]);
+                aShowHUDMessage(TXT("BeamIgniteError5"));
               }
             } else {
-              aShowHUDMessage(Message_strings[30]);
+              aShowHUDMessage(TXT("BeamIgniteError4"));
             }
           } else {
-            aShowHUDMessage(Message_strings[31]);
+            aShowHUDMessage(TXT("BeamIgniteError3"));
             aGoalCompleted(Goal_indexes[9], 0);
             aGoalEnableDisable(1, Goal_indexes[9]);
           }
         } else {
-          aShowHUDMessage(Message_strings[32]);
+          aShowHUDMessage(TXT("BeamIgniteError2"));
         }
       } else {
-        aShowHUDMessage(Message_strings[33]);
+        aShowHUDMessage(TXT("BeamIgniteError1"));
       }
 
       // Increment the script action counter
@@ -3322,7 +3082,7 @@ int16_t CustomObjectScript_406F::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((qObjIsPlayer(event_data->it_handle) == true) && (qUserFlag(16) == false)) {
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aShowHUDMessageObj(Message_strings[36], event_data->it_handle);
+      aShowHUDMessageObj(TXT("GotSpareLens"), event_data->it_handle);
       aGoalCompleted(Goal_indexes[10], 1);
 
       // Increment the script action counter
@@ -3341,18 +3101,18 @@ int16_t CustomObjectScript_406F::CallEvent(int event, tOSIRISEventInfo *data) {
           aMoveObjectToPositionClipboard(data->me_handle);
           aObjGhostSet(0, data->me_handle);
           aSetLevelTimer(15.000000f, 8);
-          aShowHUDMessage(Message_strings[37]);
+          aShowHUDMessage(TXT("UseLensCompleted"));
           aUserFlagSet(16, 1);
           aGoalCompleted(Goal_indexes[11], 1);
         } else {
           aObjGhostSet(0, data->me_handle);
           aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
-          aShowHUDMessageObj(Message_strings[38], event_data->it_handle);
+          aShowHUDMessageObj(TXT("UseLensFailed2"), event_data->it_handle);
         }
       } else {
         aObjGhostSet(0, data->me_handle);
         aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
-        aShowHUDMessageObj(Message_strings[39], event_data->it_handle);
+        aShowHUDMessageObj(TXT("UseLensFailed1"), event_data->it_handle);
       }
 
       // Increment the script action counter
@@ -3373,7 +3133,7 @@ int16_t CustomObjectScript_1082::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjDelete(data->me_handle);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aAddGameMessage(Message_strings[43], Message_strings[44]);
+      aAddGameMessage(TXT("JournalBeamGame"), TXT("JournalBeamHUD"));
 
       // Increment the script action counter
       if (ScriptActionCtr_058 < MAX_ACTION_CTR_VALUE)
@@ -3393,7 +3153,7 @@ int16_t CustomObjectScript_10D5::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjDelete(data->me_handle);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aAddGameMessage(Message_strings[45], Message_strings[46]);
+      aAddGameMessage(TXT("JournalShieldGame"), TXT("JournalShieldHUD"));
 
       // Increment the script action counter
       if (ScriptActionCtr_059 < MAX_ACTION_CTR_VALUE)
@@ -3413,7 +3173,7 @@ int16_t CustomObjectScript_10D4::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjDelete(data->me_handle);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aAddGameMessage(Message_strings[47], Message_strings[48]);
+      aAddGameMessage(TXT("JournalVirusGame"), TXT("JournalVirusHUD"));
 
       // Increment the script action counter
       if (ScriptActionCtr_060 < MAX_ACTION_CTR_VALUE)
@@ -3433,7 +3193,7 @@ int16_t CustomObjectScript_10D6::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjDelete(data->me_handle);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aAddGameMessage(Message_strings[49], Message_strings[50]);
+      aAddGameMessage(TXT("JournalPowerGame"), TXT("JournalPowerHUD"));
 
       // Increment the script action counter
       if (ScriptActionCtr_061 < MAX_ACTION_CTR_VALUE)
@@ -3453,7 +3213,7 @@ int16_t CustomObjectScript_0917::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjDelete(data->me_handle);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aAddGameMessage(Message_strings[51], Message_strings[52]);
+      aAddGameMessage(TXT("JournalRobotGame"), TXT("JournalRobotHUD"));
 
       // Increment the script action counter
       if (ScriptActionCtr_062 < MAX_ACTION_CTR_VALUE)
@@ -3473,7 +3233,7 @@ int16_t CustomObjectScript_10D7::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aObjDelete(data->me_handle);
       aSoundPlayObject(Sound_indexes[1], event_data->it_handle, 1.000000f);
-      aAddGameMessage(Message_strings[53], Message_strings[54]);
+      aAddGameMessage(TXT("JournalDialGame"), TXT("JournalDialHUD"));
 
       // Increment the script action counter
       if (ScriptActionCtr_063 < MAX_ACTION_CTR_VALUE)

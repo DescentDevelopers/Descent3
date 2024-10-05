@@ -22,10 +22,10 @@
 // Filename:	Merc5.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -993,180 +993,12 @@ void dsCustomRestore(void *fileptr) {}
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -1403,14 +1235,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"Blast Into the Laboratory",       "In
                                     "Escape Before the System Reboots"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 16
-const char *Message_names[NUM_MESSAGE_NAMES] = {
-    "VirusDeviceName",    "IntroMessage",      "EmptyMessage",    "Watchout",
-    "LeftLabInitData",    "LeftLabInfected",   "LeftLabNotReady", "RightLabInfected",
-    "LeftLabVirusPlaced", "VirusInfectFail",   "GetToPower",      "RechargeSucceed",
-    "RechargeFail",       "DeactivateSucceed", "DeactivateFail",  "10Seconds"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -1424,37 +1248,19 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
-  char english_filename[(_MAX_PATH + 32) * 2];
-  int lang_type;
-  if (func_list->script_identifier != NULL) {
-    _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    snprintf(english_filename, sizeof(english_filename), "%s.msg", filename);
-    lang_type = Game_GetLanguage();
-    if (lang_type == LANGUAGE_FRENCH)
-      strcat(filename, "_FRN");
-    else if (lang_type == LANGUAGE_GERMAN)
-      strcat(filename, "_GER");
-    else if (lang_type == LANGUAGE_ITALIAN)
-      strcat(filename, "_ITN");
-    else if (lang_type == LANGUAGE_SPANISH)
-      strcat(filename, "_SPN");
-    else if (lang_type == LANGUAGE_POLISH)
-      strcat(filename, "_POL");
+  if (func_list->script_identifier != nullptr) {
+    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
+    int lang_type = Game_GetLanguage();
+    strcat(filename, lang_suffixes[lang_type].c_str());
     strcat(filename, ".msg");
   } else {
     strcpy(filename, "Merc5.msg");
-    lang_type = LANGUAGE_ENGLISH;
   }
   if (!ReadMessageFile(filename)) {
-    if (lang_type == LANGUAGE_ENGLISH) {
-      mprintf(0, "ERROR: Could not load message file - %s\n", filename);
-    } else if (!ReadMessageFile(english_filename)) {
-      mprintf(0, "ERROR: Could not load message file - %s\n", english_filename);
-    }
+    mprintf(0, "ERROR: Could not load message file - %s\n", filename);
   }
 
   int j;
@@ -1497,10 +1303,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -2126,8 +1928,8 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 010: Level INIT (Player Inventory)
     if ((ScriptActionCtr_010 < 1) && (1)) {
-      aAddObjectToInventoryNamed(Object_handles[10], qPlayerClosest(Object_handles[11], 0), Message_strings[0], 0);
-      aAddObjectToInventoryNamed(Object_handles[12], qPlayerClosest(Object_handles[11], 0), Message_strings[0], 0);
+      aAddObjectToInventoryNamed(Object_handles[10], qPlayerClosest(Object_handles[11], 0), TXT("VirusDeviceName"), 0);
+      aAddObjectToInventoryNamed(Object_handles[12], qPlayerClosest(Object_handles[11], 0), TXT("VirusDeviceName"), 0);
 
       // Increment the script action counter
       if (ScriptActionCtr_010 < MAX_ACTION_CTR_VALUE)
@@ -2165,7 +1967,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     if (1 == true) {
       aObjGhostSet(1, Object_handles[15]);
       aLightningTurnOn(0.100000f, 0.080000f);
-      aCinematicSimple(Path_indexes[2], Message_strings[1], Object_handles[16], 8.000000f, 1);
+      aCinematicSimple(Path_indexes[2], TXT("IntroMessage"), Object_handles[16], 8.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_072 < MAX_ACTION_CTR_VALUE)
@@ -2382,7 +2184,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 034: End Level in 10 seconds!
     if (event_data->id == 14) {
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[15]);
+      aShowColoredHUDMessage(255, 0, 0, TXT("10Seconds"));
 
       // Increment the script action counter
       if (ScriptActionCtr_034 < MAX_ACTION_CTR_VALUE)
@@ -2402,7 +2204,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 039: End Level Failure
     if ((ScriptActionCtr_039 < 1) && (event_data->id == 16)) {
       aSetLevelTimer(3.800000f, 23);
-      aFadeWhiteAndEndlevel(4.000000f, Message_strings[2]);
+      aFadeWhiteAndEndlevel(4.000000f, TXT("EmptyMessage"));
 
       // Increment the script action counter
       if (ScriptActionCtr_039 < MAX_ACTION_CTR_VALUE)
@@ -2424,7 +2226,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 041: Both Hubs Infected
     if ((ScriptActionCtr_041 < 1) && ((qUserFlag(1) == 1) && (qUserFlag(0) == 1))) {
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("GetToPower"));
       aDoorSetPos(Door_handles[0], 0.800000f);
 
       // Increment the script action counter
@@ -2446,7 +2248,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjSpark(Object_handles[171], 30.000000f, 10.000000f);
       aObjSpark(Object_handles[172], 30.000000f, 10.000000f);
       aObjSpark(Object_handles[173], 30.000000f, 10.000000f);
-      aStartEndlevelSequencePath(Path_indexes[12], Path_indexes[13], 8.000000f, Message_strings[2]);
+      aStartEndlevelSequencePath(Path_indexes[12], Path_indexes[13], 8.000000f, TXT("EmptyMessage"));
 
       // Increment the script action counter
       if (ScriptActionCtr_026 < MAX_ACTION_CTR_VALUE)
@@ -2472,7 +2274,7 @@ int16_t CustomObjectScript_11C4::CallEvent(int event, tOSIRISEventInfo *data) {
                   5.000000f, 30.000000f, 0, -1);
       aTurnOnSpew(Object_handles[20], -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.100000f, 10.000000f,
                   5.000000f, 30.000000f, 0, -1);
-      aCinematicSimple(Path_indexes[4], Message_strings[2], Object_handles[21], 8.000000f, 1);
+      aCinematicSimple(Path_indexes[4], TXT("EmptyMessage"), Object_handles[21], 8.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_073 < MAX_ACTION_CTR_VALUE)
@@ -2512,7 +2314,7 @@ int16_t CustomObjectScript_09C6::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 074: IntroCam-3
     if (1) {
-      aCinematicSimple(Path_indexes[5], Message_strings[2], Object_handles[24], 9.000000f, 1);
+      aCinematicSimple(Path_indexes[5], TXT("EmptyMessage"), Object_handles[24], 9.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_074 < MAX_ACTION_CTR_VALUE)
@@ -2534,7 +2336,7 @@ int16_t CustomObjectScript_11C5::CallEvent(int event, tOSIRISEventInfo *data) {
       aAISetState(0, Object_handles[25]);
       aObjSetVelocity(Object_handles[25], 0.000000f, 0.000000f, -1.000000f, 120.000000f);
       aPhysFlags(1, 58787840, Object_handles[25]);
-      aCinematicSimple(Path_indexes[6], Message_strings[2], Object_handles[26], 8.000000f, 1);
+      aCinematicSimple(Path_indexes[6], TXT("EmptyMessage"), Object_handles[26], 8.000000f, 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_075 < MAX_ACTION_CTR_VALUE)
@@ -2947,7 +2749,7 @@ int16_t CustomObjectScript_2885::CallEvent(int event, tOSIRISEventInfo *data) {
       aTurnOnSpew(Object_handles[78], 0, 7, 0.000000f, 0.000000f, 65536, 0, 1.200000f, 0.100000f, 3.000000f, 3.000000f,
                   15.000000f, 0, -1);
       aObjDelete(Object_handles[79]);
-      aShowHUDMessage(Message_strings[4]);
+      aShowHUDMessage(TXT("LeftLabInitData"));
       aSoundPlayObject(Sound_indexes[7], data->me_handle, 1.000000f);
       aObjPlayAnim(data->me_handle, 1, 5, 4.000000f, 0);
 
@@ -3024,9 +2826,9 @@ int16_t CustomObjectScript_2885::CallEvent(int event, tOSIRISEventInfo *data) {
                     4.000000f, 20.000000f, 1, 9);
         aTurnOnSpew(Object_handles[110], -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.150000f, -1.000000f,
                     4.000000f, 20.000000f, 1, 10);
-        aShowHUDMessage(Message_strings[5]);
+        aShowHUDMessage(TXT("LeftLabInfected"));
       } else {
-        aShowHUDMessage(Message_strings[6]);
+        aShowHUDMessage(TXT("LeftLabNotReady"));
       }
 
       // Increment the script action counter
@@ -3052,7 +2854,7 @@ int16_t CustomObjectScript_107E::CallEvent(int event, tOSIRISEventInfo *data) {
       aTurnOnSpew(Object_handles[112], 0, 7, 0.000000f, 0.000000f, 65536, 0, 1.200000f, 0.100000f, 3.000000f, 3.000000f,
                   15.000000f, 0, -1);
       aObjDelete(Object_handles[77]);
-      aShowHUDMessage(Message_strings[4]);
+      aShowHUDMessage(TXT("LeftLabInitData"));
       aSoundPlayObject(Sound_indexes[7], data->me_handle, 1.000000f);
       aObjPlayAnim(data->me_handle, 1, 5, 4.000000f, 0);
 
@@ -3125,9 +2927,9 @@ int16_t CustomObjectScript_107E::CallEvent(int event, tOSIRISEventInfo *data) {
                     4.000000f, 20.000000f, 1, 22);
         aTurnOnSpew(Object_handles[138], -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.150000f, -1.000000f,
                     4.000000f, 20.000000f, 1, 23);
-        aShowHUDMessage(Message_strings[7]);
+        aShowHUDMessage(TXT("RightLabInfected"));
       } else {
-        aShowHUDMessage(Message_strings[6]);
+        aShowHUDMessage(TXT("LeftLabNotReady"));
       }
 
       // Increment the script action counter
@@ -3146,7 +2948,7 @@ int16_t CustomObjectScript_1185::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 036: PICKUP Virus
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, Message_strings[0], 0);
+      aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, TXT("VirusDeviceName"), 0);
 
       // Increment the script action counter
       if (ScriptActionCtr_036 < MAX_ACTION_CTR_VALUE)
@@ -3160,7 +2962,7 @@ int16_t CustomObjectScript_1185::CallEvent(int event, tOSIRISEventInfo *data) {
     if (1) {
       if ((qObjGetDistance(event_data->it_handle, Object_handles[80]) < 40.000000f) && (qUserFlag(14) == false) &&
           ((ScriptActionCtr_078 > 0) == true)) {
-        aShowHUDMessage(Message_strings[8]);
+        aShowHUDMessage(TXT("LeftLabVirusPlaced"));
         aUserFlagSet(14, 1);
         aSoundPlayObject(Sound_indexes[8], Object_handles[80], 1.000000f);
         aObjGhostSet(0, Object_handles[80]);
@@ -3168,15 +2970,15 @@ int16_t CustomObjectScript_1185::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         if ((qObjGetDistance(event_data->it_handle, Object_handles[81]) < 40.000000f) && (qUserFlag(15) == false) &&
             ((ScriptActionCtr_013 > 0) == true)) {
-          aShowHUDMessage(Message_strings[8]);
+          aShowHUDMessage(TXT("LeftLabVirusPlaced"));
           aUserFlagSet(15, 1);
           aSoundPlayObject(Sound_indexes[8], Object_handles[81], 1.000000f);
           aObjGhostSet(0, Object_handles[81]);
           aEmitSparks(80.000000f, Object_handles[81]);
         } else {
           aObjGhostSet(0, data->me_handle);
-          aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, Message_strings[0], 0);
-          aShowColoredHUDMessageObj(255, 0, 0, Message_strings[9], event_data->it_handle);
+          aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, TXT("VirusDeviceName"), 0);
+          aShowColoredHUDMessageObj(255, 0, 0, TXT("VirusInfectFail"), event_data->it_handle);
         }
       }
 
@@ -3196,7 +2998,7 @@ int16_t CustomObjectScript_21B2::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 050: PICKUP Virus 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, Message_strings[0], 0);
+      aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, TXT("VirusDeviceName"), 0);
 
       // Increment the script action counter
       if (ScriptActionCtr_050 < MAX_ACTION_CTR_VALUE)
@@ -3210,7 +3012,7 @@ int16_t CustomObjectScript_21B2::CallEvent(int event, tOSIRISEventInfo *data) {
     if (1) {
       if ((qObjGetDistance(event_data->it_handle, Object_handles[80]) < 40.000000f) && (qUserFlag(14) == false) &&
           ((ScriptActionCtr_078 > 0) == true)) {
-        aShowHUDMessage(Message_strings[8]);
+        aShowHUDMessage(TXT("LeftLabVirusPlaced"));
         aUserFlagSet(14, 1);
         aSoundPlayObject(Sound_indexes[8], Object_handles[80], 1.000000f);
         aObjGhostSet(0, Object_handles[80]);
@@ -3218,15 +3020,15 @@ int16_t CustomObjectScript_21B2::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         if ((qObjGetDistance(event_data->it_handle, Object_handles[81]) < 40.000000f) && (qUserFlag(15) == false) &&
             ((ScriptActionCtr_013 > 0) == true)) {
-          aShowHUDMessage(Message_strings[8]);
+          aShowHUDMessage(TXT("LeftLabVirusPlaced"));
           aUserFlagSet(15, 1);
           aSoundPlayObject(Sound_indexes[8], Object_handles[81], 1.000000f);
           aObjGhostSet(0, Object_handles[81]);
           aEmitSparks(80.000000f, Object_handles[81]);
         } else {
           aObjGhostSet(0, data->me_handle);
-          aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, Message_strings[0], 0);
-          aShowColoredHUDMessageObj(255, 0, 0, Message_strings[9], event_data->it_handle);
+          aAddObjectToInventoryNamed(data->me_handle, event_data->it_handle, TXT("VirusDeviceName"), 0);
+          aShowColoredHUDMessageObj(255, 0, 0, TXT("VirusInfectFail"), event_data->it_handle);
         }
       }
 
@@ -3447,12 +3249,12 @@ int16_t CustomObjectScript_09A1::CallEvent(int event, tOSIRISEventInfo *data) {
         aObjPlayAnim(Object_handles[4], 2, 3, 1.000000f, 0);
         aGoalCompleted(Goal_indexes[3], 1);
         aUserFlagSet(7, 1);
-        aShowHUDMessage(Message_strings[11]);
+        aShowHUDMessage(TXT("RechargeSucceed"));
         aSoundPlayObject(Sound_indexes[10], data->me_handle, 1.000000f);
         aObjPlayAnim(data->me_handle, 0, 3, 3.000000f, 0);
       } else {
         if (qUserFlag(7) == false) {
-          aShowHUDMessage(Message_strings[12]);
+          aShowHUDMessage(TXT("RechargeFail"));
         }
       }
 
@@ -3534,14 +3336,14 @@ int16_t CustomObjectScript_19A0::CallEvent(int event, tOSIRISEventInfo *data) {
         aObjDelete(Object_handles[148]);
         aObjSpark(Object_handles[150], 30.000000f, 99999.000000f);
         aObjSpark(Object_handles[147], 30.000000f, 99999.000000f);
-        aShowHUDMessage(Message_strings[13]);
+        aShowHUDMessage(TXT("DeactivateSucceed"));
         aSoundPlayObject(Sound_indexes[4], Object_handles[158], 1.000000f);
         aSoundPlayObject(Sound_indexes[4], Object_handles[157], 1.000000f);
         aSoundPlayObject(Sound_indexes[10], data->me_handle, 1.000000f);
         aObjPlayAnim(data->me_handle, 0, 3, 3.000000f, 0);
       } else {
         if (qUserFlag(6) == false) {
-          aShowHUDMessage(Message_strings[14]);
+          aShowHUDMessage(TXT("DeactivateFail"));
         }
       }
 
@@ -3589,7 +3391,7 @@ int16_t CustomObjectScript_09C9::CallEvent(int event, tOSIRISEventInfo *data) {
                   4.000000f, 30.000000f, 0, -1);
       aTurnOnSpew(Object_handles[168], -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.200000f, 0.100000f, 3.000000f,
                   3.000000f, 20.000000f, 0, -1);
-      aCinematicIntro(Path_indexes[10], Message_strings[2], Object_handles[39], Path_indexes[11], 8.000000f);
+      aCinematicIntro(Path_indexes[10], TXT("EmptyMessage"), Object_handles[39], Path_indexes[11], 8.000000f);
 
       // Increment the script action counter
       if (ScriptActionCtr_025 < MAX_ACTION_CTR_VALUE)
@@ -3649,7 +3451,7 @@ int16_t TriggerScript_000F::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 001: Rolling Ball Initiator
     if ((ScriptActionCtr_001 < 1) && (1)) {
-      aShowHUDMessageObj(Message_strings[3], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Watchout"), event_data->it_handle);
       aSoundPlayObject(Sound_indexes[0], Object_handles[14], 1.000000f);
       aMiscViewerShake(60.000000f);
       aSetLevelTimer(1.000000f, 13);
