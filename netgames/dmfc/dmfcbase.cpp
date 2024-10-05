@@ -1207,7 +1207,7 @@ void DMFCBase::GameInit(int teams) {
   Remote_Initialize();
 
   // see if we should display Outrage logo at all
-  if (DLLFindArg("-nooutragelogo"))
+  if (DLLFindArg("-nooutragelogo", 1))
     m_bDisplayOutrageLogo = false;
   else
     m_bDisplayOutrageLogo = true;
@@ -4916,7 +4916,7 @@ void DMFCBase::ParseStartupScript(void) {
 
   int autoexec_arg = -1;
 
-  if ((autoexec_arg = DLLFindArg("-autoexec")) != 0) {
+  if ((autoexec_arg = DLLFindArg("-autoexec", 1)) != 0) {
     // a specific autoexec.dmfc file was specified, use that
     strcpy(path, GetGameArg(autoexec_arg + 1));
     mprintf(0, "Override AUTOEXEC.DMFC to %s\n", path);

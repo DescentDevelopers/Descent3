@@ -124,7 +124,7 @@ int gspy_Init() {
   }
 
   // Read the config, resolve the name if needed and setup the server addresses
-  cfgpath = std::filesystem::path(Base_directory) / gspy_cfgfilename;
+  cfgpath = cf_LocatePath(gspy_cfgfilename);
 
   gspy_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 

@@ -701,6 +701,15 @@ typedef void (*ddio_DoForeachFile_fp)(const std::filesystem::path &search_path, 
 const std::function<void(std::filesystem::path)> &func);
 ddio_DoForeachFile_fp DLLddio_DoForeachFile;
 
+typedef decltype(&cf_LocatePath) cf_LocatePath_fp;
+cf_LocatePath_fp DLLcf_LocatePath;
+
+typedef decltype(&cf_LocateMultiplePaths) cf_LocateMultiplePaths_fp;
+cf_LocateMultiplePaths_fp DLLcf_LocateMultiplePaths;
+
+typedef decltype(&cf_GetWritableBaseDirectory) cf_GetWritableBaseDirectory_fp;
+cf_GetWritableBaseDirectory_fp DLLcf_GetWritableBaseDirectory;
+
 int DLLUIClass_CurrID = 0xD0;
 
 #define MAX_NET_GAMES 100
@@ -768,7 +777,6 @@ int DLLGame_mode;
 char *DLLTracker_id;
 int *DLLNum_directplay_games;
 netgame_info *DLLNetgame;
-char *DLLLocalD3Dir;
 int *DLLMultiGameStarting;
 netplayer *DLLMNetPlayers;
 int MTWritingPilot, MTReadingPilot;
@@ -998,13 +1006,15 @@ int StartMultiplayerGameMenu() {
 
   DLLListRemoveAll(script_list);
 #if (!(defined(OEM) || defined(DEMO)))
-  DLLddio_DoForeachFile(std::filesystem::path(DLLLocalD3Dir) / "netgames", std::regex(".+\\.d3m"),
-                        [&dll_ui_items](const std::filesystem::path& path){
-                          dll_ui_items.insert_or_assign(
-                              path.stem().u8string(),
-                              DLLCreateNewUITextItem(path.stem().u8string().c_str(), UICOL_LISTBOX_LO, -1)
-                              );
-  } );
+  for (const auto &netgames_directory : DLLcf_LocateMultiplePaths("netgames")) {
+    DLLddio_DoForeachFile(netgames_directory, std::regex(".+\\.d3m"),
+                          [&dll_ui_items](const std::filesystem::path& path){
+                            dll_ui_items.insert_or_assign(
+                                path.stem().u8string(),
+                                DLLCreateNewUITextItem(path.stem().u8string().c_str(), UICOL_LISTBOX_LO, -1)
+                                );
+    } );
+  }
 #else
   dll_ui_items.insert_or_assign("Anarchy", DLLCreateNewUITextItem("Anarchy", UICOL_LISTBOX_LO, -1));
   dll_ui_items.insert_or_assign("Capture The Flag", DLLCreateNewUITextItem("Capture The Flag", UICOL_LISTBOX_LO, -1));
@@ -1017,10 +1027,13 @@ int StartMultiplayerGameMenu() {
 #if (!(defined(OEM) || defined(DEMO)))
   msn_list *mi;
 
-  const std::vector<std::pair<std::filesystem::path, std::regex>> search_paths = {
-    {std::filesystem::path(DLLLocalD3Dir) / "data" / "levels", std::regex(".+\\.msn")},
-    {std::filesystem::path(DLLLocalD3Dir) / "missions", std::regex(".+\\.mn3")}
-  };
+  std::vector<std::pair<std::filesystem::path, std::regex>> search_paths = { };
+  for (const auto &levels_directory : DLLcf_LocateMultiplePaths(std::filesystem::path("data") / "levels")) {
+    search_paths.push_back({levels_directory, std::regex(".+\\.msn")});
+  }
+  for (const auto &missions_directory : DLLcf_LocateMultiplePaths("missions")) {
+    search_paths.push_back({missions_directory, std::regex(".+\\.mn3")});
+  }
 
   for (auto const &i : search_paths) {
     DLLddio_DoForeachFile(i.first, i.second, [&mi, &list_1](const std::filesystem::path &path) {
@@ -1074,7 +1087,7 @@ int StartMultiplayerGameMenu() {
   DLLNetgame->flags = NF_RANDOMIZE_RESPAWN;
   DLLNewUIWindowLoadBackgroundImage(main_wnd, "multimain.ogf");
   DLLNewUIWindowOpen(main_wnd);
-  if (DLLMultiLoadSettings(std::filesystem::path(DLLLocalD3Dir) / "custom" / "settings" / "default.mps")) {
+  if (DLLMultiLoadSettings(DLLcf_GetWritableBaseDirectory() / "custom" / "settings" / "default.mps")) {
     DLLEditSetText(mission_name_edit, DLLNetgame->name);
 #if (!(defined(OEM) || defined(DEMO)))
     p = DLLGetMissionName(DLLNetgame->mission);

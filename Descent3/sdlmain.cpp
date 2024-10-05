@@ -160,7 +160,7 @@ public:
     char *netdir = getenv("D3_DIR");
 
     if (!dir)
-      strcpy(path, Base_directory);
+      strcpy(path, "");
     else
       strcpy(path, dir);
 

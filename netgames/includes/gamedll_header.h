@@ -1591,7 +1591,7 @@ typedef void (*PlayerStopSounds_fp)(int slot);
 DMFCDLLOUT(PlayerStopSounds_fp DLLPlayerStopSounds;)
 
 // Returns index of argument sought, or 0 if not found
-typedef int (*FindArg_fp)(const char *which);
+typedef decltype(&FindArg) FindArg_fp;
 DMFCDLLOUT(FindArg_fp DLLFindArg;)
 
 // Given an object and a weapon, fires a shot from that object

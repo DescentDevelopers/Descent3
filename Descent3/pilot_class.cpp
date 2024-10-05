@@ -415,7 +415,7 @@ int pilot::flush(bool new_file) {
   }
 
   CFILE *file;
-  std::filesystem::path real_filename = std::filesystem::path(Base_directory) / filename;
+  std::filesystem::path real_filename = cf_GetWritableBaseDirectory() / filename;
 
   if (new_file && cfexist(real_filename)) {
     // the file already exists, we can't write out
@@ -497,7 +497,7 @@ int pilot::read(bool skip_config, bool skip_mission_data) {
   }
 
   CFILE *file;
-  std::filesystem::path real_filename = std::filesystem::path(Base_directory) / filename;
+  std::filesystem::path real_filename = cf_GetWritableBaseDirectory() / filename;
 
   if (!cfexist(real_filename)) {
     // the file already exists, we can't write out

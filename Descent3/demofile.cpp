@@ -359,7 +359,7 @@ void DemoToggleRecording() {
     if (stricmp(szfile + (strlen(szfile) - 4), ".dem") != 0) {
       strcat(szfile, ".dem");
     }
-    Demo_fname = std::filesystem::path(Base_directory) / "demo" / szfile;
+    Demo_fname = cf_GetWritableBaseDirectory() / "demo" / szfile;
     LOG_INFO.printf("Saving demo to file: %s", Demo_fname.u8string().c_str());
     // Try to create the file
     Demo_cfp = cfopen(Demo_fname, "wb");
@@ -1408,7 +1408,7 @@ bool LoadDemoDialog() {
   //	return false;
   // #else
 
-  std::filesystem::path file = std::filesystem::path(Base_directory) / "demo";
+  std::filesystem::path file = cf_GetWritableBaseDirectory() / "demo";
 
   if (DoPathFileDialog(false, file, TXT_VIEWDEMO, {"*.dem"}, PFDF_FILEMUSTEXIST)) {
     Demo_fname = file;
