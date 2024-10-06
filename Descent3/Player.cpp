@@ -1336,7 +1336,7 @@ int PlayerGetRandomStartPosition(int slot) {
         room *rp = &Rooms[Players[num].start_roomnum];
         objnum = rp->objects;
       } else {
-        objnum = Terrain_seg[Players[num].start_roomnum].objects;
+        objnum = Terrain_seg[CELLNUM(Players[num].start_roomnum)].objects;
       }
       int bad = 0;
       for (; objnum != -1 && !bad; objnum = Objects[objnum].next) {
