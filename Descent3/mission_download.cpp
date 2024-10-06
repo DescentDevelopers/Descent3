@@ -602,8 +602,8 @@ int msn_CheckGetMission(network_address *net_addr, char *filename) {
   return 1;
 #else
   // Don't download local missions
-  char pathname[_MAX_PATH];
-  ddio_MakePath(pathname, D3MissionsDir, filename, NULL);
+  std::filesystem::path pathname;
+  pathname = D3MissionsDir / filename;
   if (cfexist(filename) || cfexist(pathname)) {
     return 1;
   }

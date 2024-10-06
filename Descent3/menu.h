@@ -55,7 +55,8 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "pstypes.h"
+#include <cstdint>
+
 #include "grdefs.h"
 
 #define MAX_MENUS 5

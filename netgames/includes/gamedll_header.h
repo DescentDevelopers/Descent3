@@ -928,7 +928,7 @@ typedef void (*TableFilesClear_fp)(void);
 DMFCDLLOUT(TableFilesClear_fp TableFilesClear;)
 
 //	Adds a table file into the manage system for add-on data
-typedef bool (*TableFileAdd_fp)(char *filename);
+typedef bool (*TableFileAdd_fp)(const char *filename);
 DMFCDLLOUT(TableFileAdd_fp TableFileAdd;)
 
 // Debugger interaction
