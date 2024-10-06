@@ -39,13 +39,13 @@ This error means that game data could not be found. Make sure you copied all gam
 
 Here brief usage of command line options, supported by game.
 
-| Option               | Type    | Default                             | Platform | Description                                                       |
-|----------------------|---------|-------------------------------------|----------|-------------------------------------------------------------------|
-| `-dedicated`, `-d`   | boolean | Off                                 | all      | Run game in dedicated mode                                        |
-| `-fullscreen`, `-f`  | boolean | On                                  | all      | Run game in fullscreen mode                                       |
-| `-logfile`           | boolean | Off                                 | all      | Enable file logging to Descent3.log                               |
-| `-loglevel <LEVEL>`  | string  | INFO (on Release), DEBUG (on Debug) | all      | Set log level (NONE, VERBOSE, DEBUG, INFO, WARNING, ERROR, FATAL) |
-| `-nomousegrab`, `-m` | boolean | Off                                 | all      | Disable mouse capture                                             |
-| `-service`           | boolean | Off                                 | all      | Run game in service mode                                          |
-| `-winconsole`        | boolean | Off                                 | WIN      | Enable windows console (off by default)                           |
-| `-windowed`, `-w`    | boolean | Off                                 | all      | Run game in windowed mode                                         |
+| Option                                         | Type    | Default                             | Platform | Description                                                       |
+|------------------------------------------------|---------|-------------------------------------|----------|-------------------------------------------------------------------|
+| `-dedicated <config file>`, `-d <config file>` | path    | None                                | all      | Run game in dedicated mode                                        |
+| `-fullscreen`, `-f`                            | boolean | On                                  | all      | Run game in fullscreen mode                                       |
+| `-logfile`                                     | boolean | Off                                 | all      | Enable file logging to Descent3.log                               |
+| `-loglevel <LEVEL>`                            | string  | INFO (on Release), DEBUG (on Debug) | all      | Set log level (NONE, VERBOSE, DEBUG, INFO, WARNING, ERROR, FATAL) |
+| `-nomousegrab`, `-m`                           | boolean | Off                                 | all      | Disable mouse capture                                             |
+| `-service`                                     | boolean | Off                                 | all      | Run game in service mode                                          |
+| `-winconsole`                                  | boolean | Off                                 | WIN      | Enable windows console (off by default)                           |
+| `-windowed`, `-w`                              | boolean | Off                                 | all      | Run game in windowed mode                                         |
