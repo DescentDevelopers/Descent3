@@ -455,7 +455,7 @@ The following command-line options are available in Descent 3. You can set comma
     <td>boolean</td>
     <td>Off</td>
     <td>all</td>
-    <td>Generates a logfile `d3.log` if using the Debug build. All `mprintf` statements output to the logfile.</td>
+    <td>Generates a logfile <code>d3.log</code> if using the Debug build. All <code>mprintf</code> statements output to the logfile.</td>
   </tr>
   <tr>
     <td><code>-loglevel &lt;LEVEL&gt;</code></td>
