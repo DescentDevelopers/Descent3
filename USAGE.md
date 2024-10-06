@@ -172,13 +172,6 @@ The following command-line options are available in Descent 3. You can set comma
     <td>all</td>
     <td>Runs the game in a window.</td>
   </tr>
-  <tr>
-    <td><code>-z32bit</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>WIN</td>
-    <td>Enables the 32-bit z-buffer on cards that support it, such as the Matrox G400.</td>
-  </tr>
 
   <tr>
     <th colspan="5">Audio Options</th>
@@ -202,20 +195,6 @@ The following command-line options are available in Descent 3. You can set comma
     <th colspan="5">Input Options</th>
   </tr>
   <tr>
-    <td><code>-alternatejoy</code> or <code>-directinput</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>WIN</td>
-    <td>Causes DirectInput to be used for the joystick or other game controller, instead of standard Windows API.</td>
-  </tr>
-  <tr>
-    <td><code>-chpro</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Enables a CH Flightstick Pro or compatible joystick.</td>
-  </tr>
-  <tr>
     <td><code>-deadzone# &lt;k&gt;</code></td>
     <td><code>#</code> is either the character <code>0</code> or the character <code>1</code>. <code>k</code> is a floating-point number.</td>
     <td>0.2</td>
@@ -228,13 +207,6 @@ The following command-line options are available in Descent 3. You can set comma
     <td>9.102</td>
     <td>all</td>
     <td>Determines how much the player moves when the mouse is moved.</td>
-  </tr>
-  <tr>
-    <td><code>-mouseman</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Enables special handling for the Logitech MouseMan.</td>
   </tr>
   <tr>
     <td><code>-mousesens &lt;scale&gt;</code></td>
@@ -275,27 +247,6 @@ The following command-line options are available in Descent 3. You can set comma
     <td>Limits the framerate to the number of frames per second specified.</td>
   </tr>
   <tr>
-    <td><code>-highvidmem</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Causes 2 MB Voodoo 1 cards to behave as if they had more memory.</td>
-  </tr>
-  <tr>
-    <td><code>-nocompress</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Turns off S3TC texture compression for cards that support it.</td>
-  </tr>
-  <tr>
-    <td><code>-nolightmaps</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Disables lightmaps. This will improve performance on low-end video cards.</td>
-  </tr>
-  <tr>
     <td><code>-nomotionblur</code></td>
     <td>boolean</td>
     <td>Off</td>
@@ -303,39 +254,11 @@ The following command-line options are available in Descent 3. You can set comma
     <td>Disables motion blur on robots (Pentium III only).</td>
   </tr>
   <tr>
-    <td><code>-nomultitexture</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Disables single-pass multitexturing. This option could fix problems due to buggy drivers on future video cards.</td>
-  </tr>
-  <tr>
-    <td><code>-nooutdoorfog</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Disables fog on the terrain under Direct3D. This may improve performance on some cards.</td>
-  </tr>
-  <tr>
-    <td><code>-nopentium3</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Disables detection of the Pentium III processor.</td>
-  </tr>
-  <tr>
     <td><code>-nosatomega</code></td>
     <td>boolean</td>
     <td>Off</td>
     <td>all</td>
     <td>Disables alpha saturation on the omega cannon effect.</td>
-  </tr>
-  <tr>
-    <td><code>-subpixelcorrect</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Adjusts for subpixel correction under Direct3D for cards that do not support it.</td>
   </tr>
   <tr>
     <td><code>-nosparkles</code></td>
@@ -477,13 +400,6 @@ The following command-line options are available in Descent 3. You can set comma
     <td>None</td>
     <td>all</td>
     <td>Loads the specified mission file at startup.</td>
-  </tr>
-  <tr>
-    <td><code>-nocrashbox</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Disables the error dialog displayed if Descent3 crashes.</td>
   </tr>
   <tr>
     <td><code>-pilot &lt;name&gt;</code></td>
