@@ -80,6 +80,37 @@ This error means that game data could not be found. Make sure you copied all
 game files to the `D3-open-source` folder, and that you're running the game
 from this same folder.
 
+## Base directories
+
+A base directory is a directory that Descent 3 expects game files to be in. When you run Descent 3, it will try to access many different files. Most of those files need to be stored in a base directory. There are two different types of files that are stored in base directories:
+
+- Read-write files are files that can change while you play Descent 3. Examples: `<you name>.plt` and files in the `savegame/` directory.
+- Read-only files are files that do not change while you play Descent 3. Examples: `d3.hog` and files in the `movies/` directory.
+
+Descent 3 has two types of base directories:
+
+- The writable base directory can contain both read-write files and read-only files. There is only one writeable base directory. By default, the writable base directory gets set to the current working directory.
+- The read-only base directories can only contain read-only files. There can be any number of read-only base directories. By default, Descent 3 uses zero read-only base directories.
+
+You can set the writable base directory and the list of read-only base directories using the `-setdir`, `-useexedir` and `-additionaldir` command-line options (see [the next section](#command-line-options)).
+
+When Descent 3 tries to find a read-only file, then it will look through the list of base directories in this order:
+
+- the last read-only base directory that was specified on the command-line,
+- the second-to-last read-only base directory that was specified on the command-line,
+- the third-to-last read-only base directory that was specified on the command-line,
+- …
+- the first read-only base directory that was specified on the command-line and, finally,
+- the writable base directory.
+
+Files that are in base directories that are higher on that list will override files that are in base directories that are lower on that list. For example, lets say that you run Descent 3 like this:
+
+```
+Descent3 -setdir /home/user/my-writable-base-directory -additionaldir /home/user/my-read-only-base-directory
+```
+
+Let’s also say that both `my-writable-base-directory` and `my-read-only-base-directory` contain a file named `d3.hog`. In this example, Descent 3 will load `/home/user/my-read-only-base-directory/d3.hog` because read-only directories have a higher precedence than the writable base directory. Descent 3 will ignore `/home/user/my-writable-base-directory/d3.hog`.
+
 ## Command-Line Options
 
 The following command-line options are available in Descent 3. You can set command-line options on the Misc. tab of the Setup section of the Descent 3 launcher or by creating a shortcut to `Descent3.exe`. Case is not significant in command-line options, and `-`, `--`, and `+` are all accepted.
@@ -371,6 +402,31 @@ The following command-line options are available in Descent 3. You can set comma
   </tr>
 
   <tr>
+    <th colspan="5">Base Directory Options</th>
+  </tr>
+  <tr>
+    <td><code>-additionaldir &lt;path&gt;</code></td>
+    <td>path</td>
+    <td>None</td>
+    <td>all</td>
+    <td>Adds a directory to the list of read-only base directories. This options can be used multiple times to add multiple directories to the list.</td>
+  </tr>
+  <tr>
+    <td><code>-setdir &lt;path&gt;</code></td>
+    <td>path</td>
+    <td>.</td>
+    <td>all</td>
+    <td>Sets the writable base directory.</td>
+  </tr>
+  <tr>
+    <td><code>-useexedir</code></td>
+    <td>boolean</td>
+    <td>Off</td>
+    <td>all</td>
+    <td>Tells Descent 3 to use the directory in which the executable is located as the writable base directory.</td>
+  </tr>
+
+  <tr>
     <th colspan="5">Other Options</th>
   </tr>
   <tr>
@@ -414,20 +470,6 @@ The following command-line options are available in Descent 3. You can set comma
     <td>Off</td>
     <td>all</td>
     <td>Run game in service mode.</td>
-  </tr>
-  <tr>
-    <td><code>-setdir &lt;path&gt;</code></td>
-    <td>path</td>
-    <td>.</td>
-    <td>all</td>
-    <td>Specifies the working directory for Descent 3.</td>
-  </tr>
-  <tr>
-    <td><code>-useexedir</code></td>
-    <td>boolean</td>
-    <td>Off</td>
-    <td>all</td>
-    <td>Tells Descent 3 to use the directory in which the executable is located as the working directory.</td>
   </tr>
   <tr>
     <td><code>-winconsole</code></td>
