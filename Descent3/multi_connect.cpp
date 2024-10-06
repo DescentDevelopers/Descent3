@@ -263,6 +263,7 @@
 #include "Mission.h"
 #include "stringtable.h"
 #include "pilot.h"
+#include "pserror.h"
 #include "ship.h"
 #include "args.h"
 #include "ui.h"

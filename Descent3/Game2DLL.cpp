@@ -565,7 +565,7 @@ bool InitGameModule(const char *name, module *mod) {
   std::filesystem::path dll_name;
   std::filesystem::path tmp_dll_name;
   // Make the hog filename
-  lib_name = std::filesystem::path(Base_directory) / "netgames" / name;
+  lib_name = std::filesystem::path("netgames") / name;
   lib_name.replace_extension(".d3m");
   // Make the dll filename
   dll_name = name;
@@ -573,8 +573,7 @@ bool InitGameModule(const char *name, module *mod) {
 
   // Open the hog file
   if (!cf_OpenLibrary(lib_name)) {
-    tmp_dll_name = std::filesystem::path(Base_directory) / "netgames" / name;
-    tmp_dll_name.replace_extension(".d3m");
+    tmp_dll_name = cf_LocatePath(lib_name).u8string().c_str();
     Multi_game_dll_name.clear();
     goto loaddll;
   }

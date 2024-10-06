@@ -121,6 +121,7 @@
 
 #include "UIlib.h"
 #include "Macros.h"
+#include "pserror.h"
 
 int UIGadget::m_LastKey = 0;
 int UIGadget::m_LastKeyCount = 0;

@@ -277,8 +277,6 @@ void UpdateUnsentValues() {
   else
     rad_Convergence = 0.0;
 
-  mprintf_at(2, 3, 0, "Left=%f  ", rad_Convergence);
-
   if (timer_GetTime() - last_report_time > 10.0) {
     mprintf(0, "Percentage left=%f\n", rad_Convergence);
     last_report_time = timer_GetTime();
@@ -312,7 +310,6 @@ void CalculateRadiosity() {
       rad_DoneCalculating = 1;
       break;
     }
-    mprintf_at(2, 2, 0, "Lightcount=%d   ", rad_StepCount);
 
     DoRadiosityIteration();
 

@@ -16,10 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstring>
+
 #include "3d.h"
-#include "pserror.h"
 #include "HardwareInternal.h"
 #include "renderer.h"
 

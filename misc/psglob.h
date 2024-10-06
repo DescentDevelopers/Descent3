@@ -37,9 +37,6 @@
 #ifndef __PSGLOB_H_
 #define __PSGLOB_H_
 
-// Returns 1 if string contains globbing characters in it
-int PSGlobHasPattern(char *string);
-
 //	PSGlobMatch
 //	Matches the pattern passed in to the string in text.  If the pattern matches
 //	it returns 1, if not, it returns 0. In order to have a match, the following

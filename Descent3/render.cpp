@@ -29,6 +29,7 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 
@@ -58,14 +59,13 @@
 #include "TelComAutoMap.h"
 #include "postrender.h"
 #include "mem.h"
+#include "pserror.h"
 #include "psrand.h"
 #include "player.h"
 #include "args.h"
 #ifdef EDITOR
 #include "editor\d3edit.h"
 #endif
-
-#include <algorithm>
 
 // #define KATMAI
 

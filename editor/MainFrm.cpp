@@ -1460,7 +1460,7 @@ void InitCScripts() {
   CreateNewMine();
 
   //	Setup include directories for OSIRIS
-  ddio_MakePath(path, Base_directory, "data", "levels", NULL);
+  ddio_MakePath(path, cf_GetWritableBaseDirectory().u8string().c_str(), "data", "levels", NULL);
 }
 
 // Copied from winmain.cpp
@@ -1562,11 +1562,9 @@ void CMainFrame::OnActivateApp(BOOL bActive, HTASK hTask) {
 	
 	if (bActive) {
 		theApp.resume();
-		mprintf_at(2,0,0, "App Active  ");
 	}
 	else {
 		theApp.pause();
-		mprintf_at(2,0,0, "App Inactive");
 	}
 
   ((oeLnxApplication *)Descent)->run_handler(this->m_hWnd, WM_ACTIVATEAPP, (unsigned)bActive, 0);

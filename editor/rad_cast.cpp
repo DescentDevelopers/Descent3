@@ -1031,11 +1031,6 @@ void CalculateFormFactorsRaycast() {
     for (t = 0; t < dest_num_elements; t++) {
       rad_element *dest_element = &dest_surf->elements[t];
 
-      if ((raycount % 1000) == 0) {
-        mprintf_at(2, 4, 0, "Ray=%d      ", raycount);
-        mprintf_at(2, 5, 0, "Ignore=%d    ", Rays_ignored);
-      }
-
       raycount++;
 
       if (ignore)
@@ -1104,8 +1099,5 @@ void CalculateFormFactorsRaycast() {
 
     if (rad_MaxSurface->surface_type == ST_ROOM && Calculate_specular_lighting)
       CheckToUpdateSpecularFace(dest_surf, &Current_max_specular_color, NULL);
-
-    // mprintf_at(2,4,0,"Ray=%d      ",raycount);
-    // mprintf_at(2,5,0,"Ignore=%d    ",Rays_ignored);
   }
 }

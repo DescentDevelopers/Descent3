@@ -43,6 +43,7 @@
 #include "config.h"
 #include "dedicated_server.h"
 #include "objinfo.h"
+#include "pserror.h"
 
 #define NUM_DYNAMIC_CLASSES 7
 #define MAX_DYNAMIC_FACES 2000

@@ -62,6 +62,7 @@
  */
 
 #include "UIlib.h"
+#include "pserror.h"
 
 //	Construction and destruction
 

@@ -350,6 +350,7 @@
 #include "sounds.h"
 #include "hlsoundlib.h"
 #include "args.h"
+#include "pserror.h"
 
 #define HUD_MESSAGE_NORMAL 0
 #define HUD_MESSAGE_BLINKING 1

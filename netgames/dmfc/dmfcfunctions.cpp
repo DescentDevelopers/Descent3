@@ -483,7 +483,7 @@ void (*DLLg3_DrawSpecialLine)(g3Point *p0, g3Point *p1);
 void (*DLLg3_DrawPlanarRotatedBitmap)(vector *pos, vector *norm, angle rot_angle, float width,
                                                    float height, int bm);
 void (*DLLPlayerStopSounds)(int slot);
-int (*DLLFindArg)(const char *which);
+int (*DLLFindArg)(const char *which, int start);
 int (*DLLFireWeaponFromObject)(object *obj, int weapon_num, int gun_num, bool f_force_forward,
                                             bool f_force_target);
 int (*DLLCreateAndFireWeapon)(vector *pos, vector *dir, object *parent, int weapon_num);

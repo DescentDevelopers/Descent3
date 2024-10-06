@@ -475,6 +475,7 @@
 #include "objinfo.h"
 #include "AIMain.h"
 #include "room.h"
+#include "pserror.h"
 #include "psrand.h"
 #include "BOA.h"
 #include "findintersection.h"

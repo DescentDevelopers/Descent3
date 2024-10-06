@@ -1026,9 +1026,6 @@ static bool Graphics_init = false;
 static bool Title_bitmap_init = false;
 uint8_t Use_motion_blur = 0;
 
-// The "root" directory of the D3 file tree
-char Base_directory[_MAX_PATH];
-
 extern int Min_allowed_frametime;
 
 extern bool Render_powerup_sparkles;
@@ -1393,12 +1390,12 @@ void LoadGameSettings() {
 void InitIOSystems(bool editor) {
   ddio_init_info io_info;
 
-  // Set the base directory
+  // Set the writable base directory
   int dirarg = FindArg("-setdir");
   int exedirarg = FindArg("-useexedir");
+  std::filesystem::path writable_base_directory;
   if (dirarg) {
-    strncpy(Base_directory, GameArgs[dirarg + 1], sizeof(Base_directory) - 1);
-    Base_directory[sizeof(Base_directory) - 1] = '\0';
+    writable_base_directory = GameArgs[dirarg + 1];
   } else if (exedirarg) {
     char exec_path[_MAX_PATH];
     memset(exec_path, 0, sizeof(exec_path));
@@ -1407,16 +1404,28 @@ void InitIOSystems(bool editor) {
       Error("Failed to get executable path\n");
     } else {
       std::filesystem::path executablePath(exec_path);
-      std::string baseDirectoryString = executablePath.parent_path().string();
-      strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
-      Base_directory[sizeof(Base_directory) - 1] = '\0';
-      LOG_INFO << "Using working directory of " << Base_directory;
+      writable_base_directory = executablePath.parent_path();
+      LOG_INFO << "Using working directory of " << writable_base_directory;
     }
   } else {
-    ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
+    writable_base_directory = std::filesystem::current_path();
   }
 
-  ddio_SetWorkingDir(Base_directory);
+  ddio_SetWorkingDir(writable_base_directory.u8string().c_str());
+  cf_AddBaseDirectory(writable_base_directory);
+
+  // Set any additional base directories
+  auto additionaldirarg = 0;
+  while (0 != (additionaldirarg = FindArg("-additionaldir", additionaldirarg))) {
+    const auto dir_to_add = GetArg(additionaldirarg + 1);
+    if (dir_to_add == NULL) {
+      LOG_WARNING << "-additionaldir was at the end of the argument list. It should never be at the end of the argument list.";
+      break;
+    } else {
+      cf_AddBaseDirectory(std::filesystem::path(dir_to_add));
+      additionaldirarg += 2;
+    }
+  }
 
   Descent->set_defer_handler(D3DeferHandler);
 
@@ -1469,42 +1478,36 @@ void InitIOSystems(bool editor) {
   // Init hogfiles
   INIT_MESSAGE(("Checking for HOG files."));
   int d3_hid, extra_hid, sys_hid, extra13_hid;
-  char fullname[_MAX_PATH];
+  std::filesystem::path hog_name;
 
 #ifdef DEMO
   // DAJ	d3_hid = cf_OpenLibrary("d3demo.hog");
-  ddio_MakePath(fullname, LocalD3Dir, "d3demo.hog", NULL);
+  hog_name = "d3demo.hog";
 #else
-  ddio_MakePath(fullname, LocalD3Dir, "d3.hog", NULL);
+  hog_name = "d3.hog";
 #endif
-  d3_hid = cf_OpenLibrary(fullname);
+  d3_hid = cf_OpenLibrary(hog_name);
 
   // JC: Steam release uses extra1.hog instead of extra.hog, so try loading it first
   // Open this file if it's present for stuff we might add later
-  ddio_MakePath(fullname, LocalD3Dir, "extra1.hog", NULL);
-  extra_hid = cf_OpenLibrary(fullname);
+  extra_hid = cf_OpenLibrary("extra1.hog");
   if (extra_hid == 0) {
-    ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
-    extra_hid = cf_OpenLibrary(fullname);
+    extra_hid = cf_OpenLibrary("extra.hog");
   }
 
   // JC: Steam release uses extra.hog instead of merc.hog, so try loading it last (so we don't conflict with the above)
   // Open mercenary hog if it exists
-  ddio_MakePath(fullname, LocalD3Dir, "merc.hog", NULL);
-  merc_hid = cf_OpenLibrary(fullname);
+  merc_hid = cf_OpenLibrary("merc.hog");
   if (merc_hid == 0) {
-    ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
-    merc_hid = cf_OpenLibrary(fullname);
+    merc_hid = cf_OpenLibrary("extra.hog");
   }
 
   // Open this for extra 1.3 code (Black Pyro, etc)
-  ddio_MakePath(fullname, LocalD3Dir, "extra13.hog", NULL);
-  extra13_hid = cf_OpenLibrary(fullname);
+  extra13_hid = cf_OpenLibrary("extra13.hog");
 
   // last library opened is the first to be searched for dynamic libs, so put
   // this one at the end to find our newly build script libraries first
-  ddio_MakePath(fullname, LocalD3Dir, PRIMARY_HOG, NULL);
-  sys_hid = cf_OpenLibrary(fullname);
+  sys_hid = cf_OpenLibrary(PRIMARY_HOG);
 
   // Check to see if there is a -mission command line option
   // if there is, attempt to open that hog/mn3 so it can override such
@@ -1536,11 +1539,9 @@ void InitIOSystems(bool editor) {
   //	extract from extra.hog first, so its DLL files are listed ahead of d3.hog's
   INIT_MESSAGE(("Initializing OSIRIS."));
   Osiris_InitModuleLoader();
-  Osiris_ExtractScriptsFromHog(extra13_hid, false);
-  Osiris_ExtractScriptsFromHog(extra_hid, false);
-  Osiris_ExtractScriptsFromHog(merc_hid, false);
+  // Scripts from original HOGs are outdated and useless.
+  // Just extracting our compiled scripts from platform-dependent HOG.
   Osiris_ExtractScriptsFromHog(sys_hid, false);
-  Osiris_ExtractScriptsFromHog(d3_hid, false);
 }
 
 bool MercInstalled() { return merc_hid > 0; }
@@ -2027,7 +2028,7 @@ void SetupTempDirectory(void) {
     exit(1);
   }
   // restore working dir
-  ddio_SetWorkingDir(Base_directory);
+  ddio_SetWorkingDir(cf_GetWritableBaseDirectory().u8string().c_str());
 }
 
 void DeleteTempFiles() {

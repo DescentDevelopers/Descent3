@@ -193,6 +193,7 @@
 #include "fireball.h"
 #include "mem.h"
 #include "polymodel.h"
+#include "pserror.h"
 #include "ddio.h"
 #include "DallasUtilities.h"
 #include "matcen.h"

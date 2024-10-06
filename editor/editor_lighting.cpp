@@ -870,7 +870,7 @@ void DoRadiosityForRooms() {
 
   if (save_after_bsp) {
     char filename[_MAX_PATH];
-    ddio_MakePath(filename, Base_directory, "BSPSave.D3L", NULL);
+    ddio_MakePath(filename, cf_GetWritableBaseDirectory().u8string().c_str(), "BSPSave.D3L", NULL);
 
     // Save the level to
     SaveLevel(filename);
@@ -1140,7 +1140,7 @@ void DoRadiosityForRooms() {
   SqueezeLightmaps(0, -1);
 
   char filename[_MAX_PATH + 1];
-  ddio_MakePath(filename, Base_directory, "LightSave.D3L", NULL);
+  ddio_MakePath(filename, cf_GetWritableBaseDirectory().u8string().c_str(), "LightSave.D3L", NULL);
 
   // Save the level to disk
   SaveLevel(filename);
@@ -1772,7 +1772,6 @@ void DoTerrainDynamicTable() {
 
         for (j = 0; j < Terrain_sky.num_satellites; j++) {
           raynum++;
-          mprintf_at(2, 4, 0, "Ray=%d      ", raynum);
 
           if (gp.y > pos.y)
             continue;
@@ -1804,8 +1803,6 @@ void ComputeTerrainSpeedTable() {
       pos.y = (Terrain_seg[tseg].y) + .001;
 
       raynum++;
-      if ((raynum % 1000) == 0)
-        mprintf_at(2, 4, 0, "Ray=%d      ", raynum);
 
       for (j = 0; j < Terrain_sky.num_satellites; j++)
         TerrainLightSpeedup[j][tseg] = ShootRayForTerrainLight(&pos, &Terrain_sky.satellite_vectors[j], tseg);
@@ -2279,7 +2276,6 @@ Dynamic lighting takes a long time)","Question",MB_YESNO))==IDYES) do_dynamic=1;
                         for (j=0;j<Terrain_sky.num_satellites;j++)
                         {
                                 raynum++;
-                                mprintf_at(2,4,0,"Ray=%d      ",raynum);
 
                                 int answer1,answer2;
                                 answer1=ShootRayForTerrainLight (&pos1,&Terrain_sky.satellite_vectors[j],tseg);

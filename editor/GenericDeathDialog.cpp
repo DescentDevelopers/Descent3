@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "editor.h"
 #include "GenericDeathDialog.h"
+#include "pserror.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

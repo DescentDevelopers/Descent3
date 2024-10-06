@@ -136,6 +136,7 @@
 #include "FindIntersection.h"
 #include "erooms.h"
 #include "mono.h"
+#include "pserror.h"
 
 #include "DallasMainDlg.h"
 

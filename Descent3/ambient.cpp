@@ -82,6 +82,7 @@
 
 #include "room.h"
 #include "game.h"
+#include "pserror.h"
 #include "psrand.h"
 
 #define MAX_AMBIENT_SOUND_PATTERNS 100
@@ -293,7 +294,7 @@ void WriteAmbientData() {
   CFILE *ofile;
 
 #ifndef NEWEDITOR
-  ddio_MakePath(filename, Base_directory, "data", "misc", AMBIENT_FILE_NAME, NULL);
+  ddio_MakePath(filename, cf_GetWritableBaseDirectory().u8string().c_str(), "data", "misc", AMBIENT_FILE_NAME, NULL);
 #else
   ddio_MakePath(filename, D3HogDir, "data", "misc", AMBIENT_FILE_NAME, NULL);
 #endif

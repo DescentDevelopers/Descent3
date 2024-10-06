@@ -1,5 +1,6 @@
 set(HEADERS 
-  polymodel.h)
+  polymodel.h
+)
 set(CPPS
   newstyle.cpp
   polymodel.cpp
@@ -8,6 +9,7 @@ set(CPPS
 add_library(model STATIC ${HEADERS} ${CPPS})
 target_link_libraries(model PRIVATE
   cfile
+  ddebug
   logger
   mem
   misc

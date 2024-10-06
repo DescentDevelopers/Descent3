@@ -53,8 +53,7 @@ static bool mve_InitSound();
 static void mve_CloseSound();
 #endif
 
-// sets the directory where movies are stored
-int mve_Init(const char *dir, const char *sndcard) {
+int mve_Init() {
 #ifndef NO_MOVIES
   return MVELIB_NOERROR;
 #else
@@ -72,47 +71,11 @@ void mve_SetCallback(MovieFrameCallback_fp callBack) {
 // used to tell movie library how to render movies.
 void mve_SetRenderProperties(int16_t x, int16_t y, int16_t w, int16_t h, renderer_type type, bool hicolor) {}
 
-#if defined(POSIX)
-// locates the case-sensitive movie file name
-std::filesystem::path mve_FindMovieFileRealName(const std::filesystem::path &movie) {
-  // split into directory and file...
-  std::filesystem::path t_file = movie.filename();
-  std::filesystem::path t_dir = movie.parent_path();
-  std::filesystem::path t_out;
-
-  // found a directory?
-  if (!t_dir.empty()) {
-    // map the bits (or fail)
-    t_out = cf_FindRealFileNameCaseInsensitive(t_file, t_dir);
-    if (t_out.empty())
-      return t_out;
-    // re-assemble
-    return (t_dir / t_out);
-  } else {
-    // just a file, map that
-    t_out = cf_FindRealFileNameCaseInsensitive(t_file);
-    if (t_out.empty())
-      return t_out;
-    // re-assemble
-    return t_out;
-  }
-}
-#endif
-
 // plays a movie using the current screen.
 int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) {
 #ifndef NO_MOVIES
   // first, find that movie..
-  std::filesystem::path real_name;
-#if defined(POSIX)
-  real_name = mve_FindMovieFileRealName(pMovieName);
-  if (real_name.empty()) {
-    LOG_WARNING.printf("MOVIE: No such file %s", pMovieName.u8string().c_str());
-    return MVELIB_FILE_ERROR;
-  }
-#else
-  real_name = pMovieName;
-#endif
+  std::filesystem::path real_name = cf_LocatePath("movies" / pMovieName);
   // open movie file.
   FILE *hFile = fopen(real_name.u8string().c_str(), "rb");
   if (hFile == nullptr) {
@@ -355,17 +318,7 @@ void CallbackShowFrameNoFlip(unsigned char *buf, unsigned int bufw, unsigned int
 intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *app, bool looping) {
 #ifndef NO_MOVIES
   // first, find that movie..
-  std::filesystem::path real_name;
-#if defined(POSIX)
-  real_name = mve_FindMovieFileRealName(mvename);
-  if (real_name.empty()) {
-    LOG_WARNING.printf("MOVIE: No such file %s", mvename);
-    fhandle = nullptr;
-    return 0;
-  }
-#else
-  real_name = mvename;
-#endif
+  std::filesystem::path real_name = cf_LocatePath(std::filesystem::path("movies") / mvename);
   fhandle = fopen(real_name.u8string().c_str(), "rb");
 
   if (fhandle == nullptr) {

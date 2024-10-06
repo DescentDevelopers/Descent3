@@ -794,16 +794,12 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain, b
 #include "terrain.h"
 #include "grdefs.h"
 #include "3d.h"
-#include "pstypes.h"
 #include "pserror.h"
 #include "renderer.h"
 #include "gametexture.h"
 #include "descent.h"
 #include "render.h"
 #include "game.h"
-#include "ddio.h"
-#include "polymodel.h"
-#include "lighting.h"
 #include "vecmat.h"
 #include "renderobject.h"
 #include "findintersection.h"
@@ -1372,7 +1368,7 @@ void RenderTerrain(uint8_t from_mine, int left, int top, int right, int bot) {
 #else
   const float kTerrainRenderDistance = 1200.0f;
 #endif
-  VisibleTerrainZ = kTerrainRenderDistance * Matrix_scale.z;
+  VisibleTerrainZ = kTerrainRenderDistance;
   Far_fog_border = VisibleTerrainZ;
 
   // Set up our z wall

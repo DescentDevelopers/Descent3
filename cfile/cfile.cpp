@@ -35,7 +35,6 @@
 #include "log.h"
 #include "mem.h"
 #include "pserror.h"
-#include "psglob.h"
 
 // Library structures
 struct library_entry {
@@ -55,6 +54,16 @@ struct library {
   FILE *file = nullptr; // pointer to file for this lib, if no one using it
 };
 
+/* The "root" directories of the D3 file tree
+ *
+ * Directories that come later in the list override directories that come
+ * earlier in the list. For example, if Base_directories[0] / "d3.hog" exists
+ * and Base_directories[1] / "d3.hog" also exists, then the one in
+ * Base_directories[1] will get used. The one in Base_directories[0] will be
+ * ignored.
+ */
+std::vector<std::filesystem::path> Base_directories = {};
+
 // Map of paths. If value of entry is true, path is only for specific extensions
 std::map<std::filesystem::path, bool> paths;
 
@@ -68,6 +77,133 @@ int lib_handle = 0;
 cfile_error cfe;
 // The message for unexpected end of file
 const char *eof_error = "Unexpected end of file";
+
+/* This function should be called at least once before you use anything else
+ * from this module.
+ */
+void cf_AddBaseDirectory(const std::filesystem::path &base_directory) {
+  if (std::filesystem::exists(base_directory)) {
+    Base_directories.push_back(base_directory);
+  } else {
+    LOG_WARNING << "Ignoring nonexistent base directory: " << base_directory;
+  }
+}
+
+/* After you call this function, you must call cf_AddBaseDirectory() at least
+ * once before you use anything else from this module.
+ */
+void cf_ClearBaseDirectories() {
+  Base_directories.clear();
+}
+
+
+std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::path &relative_path,
+                                                         const std::filesystem::path &starting_dir) {
+#ifdef WIN32
+  std::filesystem::path result = starting_dir / relative_path;
+  if (std::filesystem::exists(result)) {
+    return result;
+  } else {
+    return {};
+  }
+#else
+  // Dumb check, maybe there already all ok?
+  if (exists((starting_dir / relative_path))) {
+    return starting_dir / relative_path;
+  }
+
+  std::filesystem::path result, search_path, search_file;
+
+  search_path = starting_dir / relative_path.parent_path();
+  search_file = relative_path.filename();
+
+  // If directory does not exist, nothing to search.
+  if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
+    return {};
+  }
+
+
+  // Search component in search_path
+  auto const &it = std::filesystem::directory_iterator(search_path);
+
+  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
+    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
+  });
+
+  if (found != end(it)) {
+    // Match, append to result
+    result = found->path();
+    search_path = result;
+  } else {
+    // Component not found, mission failed
+    return {};
+  }
+
+  return result;
+#endif
+}
+
+std::vector<std::filesystem::path> cf_LocatePathMultiplePathsHelper(const std::filesystem::path &relative_path,
+                                                                    bool stop_after_first_result) {
+  ASSERT(("realative_path should be a relative path.", relative_path.is_relative()));
+  std::vector<std::filesystem::path> return_value = { };
+  for (auto base_directories_iterator = Base_directories.rbegin();
+       base_directories_iterator != Base_directories.rend();
+       ++base_directories_iterator) {
+    ASSERT(("base_directory should be an absolute path.", base_directories_iterator->is_absolute()));
+    auto to_append = cf_LocatePathCaseInsensitiveHelper(relative_path, *base_directories_iterator);
+    ASSERT(("to_append should be either empty or an absolute path.", to_append.empty() || to_append.is_absolute()));
+    if (std::filesystem::exists(to_append)) {
+      return_value.insert(return_value.begin(), to_append);
+      if (stop_after_first_result) {
+        break;
+      }
+    }
+  }
+  return return_value;
+}
+
+/**
+ * Tries to find a relative path inside of one of the Base_directories.
+ *
+ * @param relative_path A relative path that we’ll hopefully find in
+ *                      one of the Base_directories. You don’t have to get the
+ *                      capitalization of relative_path correct, even on macOS
+ *                      and Linux.
+ *
+ * @return Either an absolute path that’s inside a base directory or an empty
+ *         path if nothing is found.
+ */
+std::filesystem::path cf_LocatePath(const std::filesystem::path &relative_path) {
+  auto return_value_list = cf_LocatePathMultiplePathsHelper(relative_path, true);
+  if (return_value_list.empty()) {
+    return "";
+  } else {
+    return return_value_list.front();
+  }
+}
+
+/**
+ * Tries to find multiple relative paths inside of the Base_directories.
+ *
+ * @param relative_path A relative path that we’ll hopefully find in
+ *                      one or more of the Base_directories. You don’t have to
+ *                      get the capitalization of relative_path correct, even on
+ *                      macOS and Linux.
+ *
+ * @return A list of absolute paths. Each path will be inside one of the
+ *         Base_directories.
+ */
+std::vector<std::filesystem::path> cf_LocateMultiplePaths(const std::filesystem::path &relative_path) {
+  return cf_LocatePathMultiplePathsHelper(relative_path, false);
+}
+
+/* Not all Base_directories are necessarily writable, but this function will
+ * return one that should be writable.
+ */
+std::filesystem::path cf_GetWritableBaseDirectory() {
+  return Base_directories.front();
+}
 
 // Generates a cfile error
 void ThrowCFileError(int type, CFILE *file, const char *msg) {
@@ -83,9 +219,9 @@ static void cf_Close();
 static CFILE *open_file_in_lib(const char *filename);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
-// Parameters:  libname - the path & filename of the HOG file
-// NOTE:	libname must be valid for the entire execution of the program.  Therefore, it should either
-//			be a fully-specified path name, or the current directory must not change.
+// Parameters:  libname - path to the HOG file, relative to one of the Base_directories.
+// NOTE:	libname must be valid for the entire execution of the program.  Therefore, Base_directories
+// 			must not change.
 // Returns: 0 if error, else library handle that can be used to close the library
 int cf_OpenLibrary(const std::filesystem::path &libname) {
   FILE *fp;
@@ -97,25 +233,7 @@ int cf_OpenLibrary(const std::filesystem::path &libname) {
 
   // allocation library structure
   std::shared_ptr<library> lib = std::make_shared<library>();
-
-  // resolve library name
-  std::filesystem::path resolve_dir = libname.parent_path();
-  std::filesystem::path resolve_name = libname;
-
-  if (!resolve_dir.empty()) {
-    resolve_name = libname.filename();
-  }
-
-  std::filesystem::path t_out = cf_FindRealFileNameCaseInsensitive(resolve_name, resolve_dir);
-  if (t_out.empty()) {
-    return 0; // CF_NO_FILE
-  }
-  // re-assemble
-  if (!resolve_dir.empty())
-    lib->name = resolve_dir / t_out;
-  else
-    lib->name = t_out;
-
+  lib->name = cf_LocatePath(libname);
   fp = fopen(lib->name.u8string().c_str(), "rb");
   if (fp == nullptr) {
     return 0; // CF_NO_FILE;
@@ -276,8 +394,8 @@ CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle
   } else {
     fp = fopen(lib->name.u8string().c_str(), "rb");
     if (!fp) {
-      LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.",
-                       lib->name.u8string().c_str(), filename.u8string().c_str(), errno);
+      LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.", lib->name.u8string().c_str(),
+                       filename.u8string().c_str(), errno);
       Int3();
       return nullptr;
     }
@@ -329,8 +447,8 @@ CFILE *open_file_in_lib(const char *filename) {
       } else {
         fp = fopen(lib->name.u8string().c_str(), "rb");
         if (!fp) {
-          LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.",
-                           lib->name.u8string().c_str(), filename, errno);
+          LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.", lib->name.u8string().c_str(),
+                           filename, errno);
           Int3();
           return nullptr;
         }
@@ -354,43 +472,6 @@ CFILE *open_file_in_lib(const char *filename) {
   return nullptr;
 }
 
-std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
-                                                             const std::filesystem::path &directory) {
-  // Dumb check, maybe there already all ok?
-  if (exists((directory / fname))) {
-    return fname.filename();
-  }
-
-  std::filesystem::path result, search_path, search_file;
-
-  search_path = directory / fname.parent_path();
-  search_file = fname.filename();
-
-  // If directory does not exist, nothing to search.
-  if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
-    return {};
-  }
-
-
-  // Search component in search_path
-  auto const &it = std::filesystem::directory_iterator(search_path);
-
-  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
-    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
-  });
-
-  if (found != end(it)) {
-    // Match, append to result
-    result = found->path();
-    search_path = result;
-  } else {
-    // Component not found, mission failed
-    return {};
-  }
-
-  return result.filename();
-}
-
 // look for the file in the specified directory
 static CFILE *open_file_in_directory(const std::filesystem::path &filename, const char *mode,
                                      const std::filesystem::path &directory);
@@ -405,9 +486,12 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   if (std::filesystem::is_directory(directory)) {
     // Make a full path
     using_filename = directory / filename;
-  } else {
-    // no directory specified, so just use filename passed
+  } else if (filename.is_absolute()) {
+    // no directory specified, and filename is an absolute path
     using_filename = filename;
+  } else {
+    // no directory specified, and filename is a relative path
+    using_filename = cf_LocatePath(filename);
   }
 
   // set read or write mode
@@ -418,34 +502,8 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   fp = fopen(using_filename.u8string().c_str(), tmode);
 
   if (!fp) {
-#if defined(POSIX)
-    // If we tried to open file for reading, assume there maybe case-sensitive files
-    if (tmode[0] == 'r') {
-      // Try different cases of the filename
-      using_filename = cf_FindRealFileNameCaseInsensitive(filename, directory);
-      if (using_filename.empty()) {
-        // just give up
-        return nullptr;
-      }
-
-      if (std::filesystem::is_directory(directory)) {
-        // Make a full path
-        using_filename = directory / using_filename;
-      }
-
-      fp = fopen(using_filename.u8string().c_str(), tmode);
-      if (!fp) {
-        // no dice
-        return nullptr;
-      }
-    } else {
-      // Error on writing file
-      return nullptr;
-    }
-#else
-    // We on incase-sensitive filesystem, no file means no file.
+    // File not found
     return nullptr;
-#endif
   } else {
     using_filename = filename;
   }
@@ -658,8 +716,8 @@ int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp) {
     if (!feof(cfp->file))
       error_msg = strerror(errno);
   }
-  LOG_ERROR.printf("Error reading %d bytes from position %d of file <%s>; errno=%d.",
-                   count, cfp->position, cfp->name, errno);
+  LOG_ERROR.printf("Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name,
+                   errno);
   return 0;
 }
 // The following functions read numeric vales from a CFILE.  All values are
@@ -871,12 +929,6 @@ void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::p
   ddio_CopyFileTime(dest, src);
 }
 
-// Changes a files attributes (ie read/write only)
-void cf_ChangeFileAttributes(const char *name, int attr) {
-  if (_chmod(name, attr) == -1)
-    Int3(); // Get Jason or Matt, file not found!
-}
-
 //	rewinds cfile position
 void cf_Rewind(CFILE *fp) {
   if (fp->lib_offset) {
@@ -950,79 +1002,23 @@ uint32_t cf_GetfileCRC(const std::filesystem::path &src) {
   return crc;
 }
 
-char cfile_search_wildcard[256];
-std::shared_ptr<library> cfile_search_library;
-int cfile_search_curr_index = 0;
-bool cfile_search_ispattern = false;
-//	the following cf_LibraryFind function are similar to the ddio_Find functions as they look
-//	for files that match the wildcard passed in, however, this is to be used for hog files.
-bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer) {
-  ASSERT(wildcard);
-  ASSERT(buffer);
-  if (!wildcard || !buffer)
-    return false;
-  *buffer = '\0';
-  if (cfile_search_library)
-    cf_LibraryFindClose();
-  // find the library
-  cfile_search_library = Libraries;
-  while (cfile_search_library && cfile_search_library->handle != handle) {
-    cfile_search_library = cfile_search_library->next;
+int cf_DoForeachFileInLibrary(int handle, const std::filesystem::path &ext,
+                               const std::function<void(std::filesystem::path)> &func) {
+  auto search_library = Libraries;
+  while (search_library && search_library->handle != handle) {
+    search_library = search_library->next;
   }
-  if (!cfile_search_library)
-    return false;
-  // now find the first matching file
-  strncpy(cfile_search_wildcard, wildcard, 255);
-  cfile_search_wildcard[255] = '\0';
-  cfile_search_ispattern = (bool)(PSGlobHasPattern(cfile_search_wildcard) != 0);
-  cfile_search_curr_index = 0;
-
-  while (cfile_search_curr_index < cfile_search_library->nfiles) {
-    if (cfile_search_ispattern) {
-      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index]->name, 0, 0)) {
-        // it's a match
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    } else {
-      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index]->name, cfile_search_wildcard)) {
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
+  if (!search_library)
+    return 0;
+  // Iterate entries on found library
+  int result = 0;
+  for (const auto &item : search_library->entries) {
+    if (stricmp(std::filesystem::path(item->name).extension().u8string().c_str(), ext.u8string().c_str()) == 0) {
+      func(item->name);
+      result++;
     }
-    cfile_search_curr_index++;
   }
-  // we didn't find a match
-  return false;
-}
-
-bool cf_LibraryFindNext(char *buffer) {
-  while (cfile_search_curr_index < cfile_search_library->nfiles) {
-    if (cfile_search_ispattern) {
-      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index]->name, 0, 0)) {
-        // it's a match
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    } else {
-      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index]->name, cfile_search_wildcard)) {
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
-        cfile_search_curr_index++;
-        return true;
-      }
-    }
-    cfile_search_curr_index++;
-  }
-  return false;
-}
-
-void cf_LibraryFindClose() {
-  cfile_search_library = nullptr;
-  cfile_search_curr_index = 0;
-  cfile_search_ispattern = false;
+  return result;
 }
 
 bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem::path &hogname) {

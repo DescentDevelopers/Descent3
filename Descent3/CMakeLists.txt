@@ -43,7 +43,6 @@ set(HEADERS
   ctlconfigtxt.h
   d3movie.h
   d3music.h
-  d3serial.h
   damage.h
   damage_external.h
   deathinfo_external.h
@@ -169,7 +168,6 @@ set(CPPS
   D3ForceFeedback.cpp
   d3movie.cpp
   d3music.cpp
-  d3serial.cpp
   damage.cpp
   debuggraph.cpp
   dedicated_server.cpp

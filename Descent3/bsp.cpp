@@ -52,6 +52,7 @@
 #include "mem.h"
 #include "polymodel.h"
 #include "object.h"
+#include "pserror.h"
 #include "psrand.h"
 
 #define BSP_TREE_VERSION 10003

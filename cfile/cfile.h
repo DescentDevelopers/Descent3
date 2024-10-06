@@ -98,9 +98,8 @@
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>
+#include <functional>
 #include <vector>
-
-#include "pstypes.h"
 
 struct library;
 
@@ -141,30 +140,70 @@ enum CFileExitStatus {
   CFES_IN_LIBRARY,
 };
 
+/* The "root" directories of the D3 file tree
+ *
+ * Directories that come later in the list override directories that come
+ * earlier in the list. For example, if Base_directories[0] / "d3.hog" exists
+ * and Base_directories[1] / "d3.hog" also exists, then the one in
+ * Base_directories[1] will get used. The one in Base_directories[0] will be
+ * ignored.
+ */
+extern std::vector<std::filesystem::path> Base_directories;
+
+/* This function should be called at least once before you use anything else
+ * from this module.
+ */
+void cf_AddBaseDirectory(const std::filesystem::path &base_directory);
+
+/* After you call this function, you must call cf_AddBaseDirectory() at least
+ * once before you use anything else from this module.
+ */
+void cf_ClearBaseDirectories();
+
+/**
+ * Tries to find a relative path inside of one of the Base_directories.
+ *
+ * @param relative_path A relative path that we’ll hopefully find in
+ *                      one of the Base_directories. You don’t have to get the
+ *                      capitalization of relative_path correct, even on macOS
+ *                      and Linux.
+ *
+ * @return Either an absolute path that’s inside Base_directory or an empty path
+ *         if nothing is found.
+ */
+std::filesystem::path cf_LocatePath(const std::filesystem::path &relative_path);
+
+/**
+ * Tries to find multiple relative paths inside of the Base_directories.
+ *
+ * @param relative_path A relative path that we’ll hopefully find in
+ *                      one or more of the Base_directories. You don’t have to
+ *                      get the capitalization of relative_path correct, even on
+ *                      macOS and Linux.
+ *
+ * @return A list of absolute paths. Each path will be inside one of the
+ *         Base_directories.
+ */
+std::vector<std::filesystem::path> cf_LocateMultiplePaths(const std::filesystem::path &relative_path);
+
+/* Not all Base_directories are necessarily writable, but this function will
+ * return one that should be writable.
+ */
+std::filesystem::path cf_GetWritableBaseDirectory();
+
 // See if a file is in a hog
-bool cf_IsFileInHog(const std::filesystem::path& filename, const std::filesystem::path& hogname);
+bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem::path &hogname);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
-// Parameters:  libname - the path & filename of the HOG file
-// NOTE:	libname must be valid for the entire execution of the program.  Therefore, it should either
-//			be a fully-specified path name, or the current directory must not change.
+// Parameters:  libname - path to the HOG file, relative to one of the Base_directories.
+// NOTE:	libname must be valid for the entire execution of the program.  Therefore, Base_directories
+// 			must not change.
 // Returns: 0 if error, else library handle that can be used to close the library
-int cf_OpenLibrary(const std::filesystem::path& libname);
+int cf_OpenLibrary(const std::filesystem::path &libname);
 
 // Closes a library file.
 // Parameters:  handle: the handle returned by cf_OpenLibrary()
 void cf_CloseLibrary(int handle);
-
-/**
- * Returns fixed case file name to actual case on disk for case-sensitive filesystems (Linux).
- * @param fname the fixed case name to map to reality
- * @param directory optional directory to search within (default - current path)
- * @return filename with actual case name or empty path if there no mapping in filesystem
- * @note This function returns only filename without directory part, i.e.
- * cf_FindRealFileNameCaseInsensitive("test/test.txt") will return only "test.txt" on success.
- */
-std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
-                                                         const std::filesystem::path &directory = ".");
 
 /**
  * Add directory path into paths to look in for files. If ext_list is empty,
@@ -176,7 +215,7 @@ std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::
  * false: path is not a real directory;
  * true: path was successfully added.
  */
-bool cf_SetSearchPath(const std::filesystem::path& path, const std::vector<std::filesystem::path>& ext_list = {});
+bool cf_SetSearchPath(const std::filesystem::path &path, const std::vector<std::filesystem::path> &ext_list = {});
 
 // Removes all search paths that have been added by cf_SetSearchPath
 void cf_ClearAllSearchPaths();
@@ -187,13 +226,13 @@ void cf_ClearAllSearchPaths();
 // Parameters:	filename - the name if the file, with or without a path
 //					mode - the standard C mode string
 // Returns:		the CFile handle, or NULL if file not opened
-CFILE *cfopen(const std::filesystem::path& filename, const char *mode);
+CFILE *cfopen(const std::filesystem::path &filename, const char *mode);
 
 // Opens a file for reading in a library, given the library id.
 // Works just like cfopen, except it assumes "rb" mode and forces the file to be
 // opened from the given library.  Returns the CFILE handle or NULL if file
 // couldn't be found or open.
-CFILE *cf_OpenFileInLibrary(const std::filesystem::path& filename, int libhandle);
+CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle);
 
 // Returns the length of the specified file
 // Parameters: cfp - the file pointer returned by cfopen()
@@ -219,7 +258,7 @@ int cfeof(CFILE *cfp);
 // Tells if the file exists
 // Returns non-zero if file exists.  Also tells if the file is on disk
 //	or in a hog -  See return values in cfile.h
-int cfexist(const std::filesystem::path& filename);
+int cfexist(const std::filesystem::path &filename);
 
 // Reads the specified number of bytes from a file into the buffer
 // DO NOT USE THIS TO READ STRUCTURES.  This function is for byte
@@ -320,20 +359,21 @@ bool cf_Diff(const std::filesystem::path &a, const std::filesystem::path &b);
 // Copies the file time from one file to another
 void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src);
 
-// Changes a files attributes (ie read/write only)
-void cf_ChangeFileAttributes(const char *name, int attr);
-
 // rewinds cfile position
 void cf_Rewind(CFILE *fp);
 
 // Calculates a 32 bit CRC
-uint32_t cf_GetfileCRC(const std::filesystem::path& src);
+uint32_t cf_GetfileCRC(const std::filesystem::path &src);
 uint32_t cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
 
-// the following cf_LibraryFind function are similar to the ddio_Find functions as they look
-// for files that match the wildcard passed in, however, this is to be used for hog files.
-bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer);
-bool cf_LibraryFindNext(char *buffer);
-void cf_LibraryFindClose();
+/**
+ * Execute function for each file in lib that matches to extension.
+ * @param handle library handle where to search
+ * @param ext filtering extension
+ * @param func function callback
+ * @return count of applied files
+ */
+int cf_DoForeachFileInLibrary(int handle, const std::filesystem::path &ext,
+                               const std::function<void(std::filesystem::path)> &func);
 
 #endif

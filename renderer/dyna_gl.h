@@ -30,7 +30,6 @@
 #include "descent.h"
 #include "log.h"
 #include "module.h"
-#include "pserror.h"
 
 #if defined(WIN32)
 #define GLFUNCCALL __stdcall

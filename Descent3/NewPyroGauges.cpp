@@ -61,15 +61,8 @@
  */
 
 #include "NewPyroGauges.h"
-#include "gauges.h"
-#include "gamefont.h"
-#include "game.h"
-#include "hud.h"
-#include "grdefs.h"
-#include "bitmap.h"
-#include "player.h"
-#include "polymodel.h"
 #include "3d.h"
+#include "pserror.h"
 #include "renderer.h"
 #include "gametexture.h"
 

@@ -56,6 +56,7 @@
 #include "hlsoundlib.h"
 #include "log.h"
 #include "mem.h"
+#include "pserror.h"
 #include "textaux.h"
 
 int glitch_dx = 0, glitch_dy = 0;

@@ -270,7 +270,6 @@
 #include <cstdint>
 
 #include "grdefs.h"
-#include "pserror.h"
 #include "uires.h"
 
 //	Class identification
@@ -554,15 +553,9 @@ private:
 protected:
   int m_State; // state of button
 
-  UIItem *GetStateItem(int state) {
-    ASSERT(state < UI_BTS_NUM);
-    return m_Items[state];
-  };
+  UIItem *GetStateItem(int state);
 
-  int GetColor(int state) const {
-    ASSERT(state < UI_BTS_NUM);
-    return m_Colors[state];
-  };
+  int GetColor(int state) const;
 
 public:
   static void SetDefaultFont(int font) { // sets the button font

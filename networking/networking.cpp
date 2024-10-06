@@ -294,6 +294,7 @@
 #include "directplay.h"
 #include "dplay.h"
 #include "dplobby.h"
+#include "module.h"
 
 typedef int socklen_t;
 #endif
@@ -323,11 +324,9 @@ typedef int socklen_t;
 #include "networking.h"
 #include "ddio.h"
 #include "mem.h"
-#include "module.h"
 #include "game.h"
 #include "args.h"
 #include "byteswap.h"
-#include "pstring.h"
 #include "ctlconfig.h"
 
 #ifndef WIN32
@@ -1428,7 +1427,6 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
 
           qsort(sort_ping, MAX_PING_HISTORY, sizeof(float), nw_PingCompare);
           rsocket->mean_ping = ((sort_ping[MAX_PING_HISTORY / 2] + sort_ping[(MAX_PING_HISTORY / 2) + 1])) / 2;
-          // mprintf_at(2,i+1,0,"Ping: %f  ",rsocket->mean_ping);
         }
         rsocket->ping_pos++;
         if (rsocket->ping_pos >= MAX_PING_HISTORY) {
@@ -2369,7 +2367,6 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
 
   int my_comp_ratio = (float) ((float)Uncompressed_outgoing_data_len/(float)Compressed_outgoing_data_len);
 
-  mprintf_at(2,1,0,"Compression: %d%%  ",my_comp_ratio);
   */
   if (!Sockets_initted) {
     LOG_ERROR << "Network ==> Socket not inited in nw_Send";

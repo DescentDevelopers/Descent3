@@ -92,7 +92,6 @@
 #include "ssl_lib.h"
 #include "cfile.h"
 #include "mem.h"
-#include "pserror.h"
 #include "byteswap.h"
 #include "gamesequence.h"
 #include "log.h"

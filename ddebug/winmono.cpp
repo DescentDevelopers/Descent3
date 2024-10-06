@@ -48,6 +48,4 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
   }
 }
 
-void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...) {}
-
 #endif

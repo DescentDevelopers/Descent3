@@ -292,6 +292,7 @@
 #include "D3ForceFeedback.h"
 #include "hlsoundlib.h"
 #include "ddio.h"
+#include "pserror.h"
 #include "networking.h"
 #include "appdatabase.h"
 

@@ -454,6 +454,7 @@
 #include "physics.h"
 #include "player.h"
 #include "polymodel.h"
+#include "pserror.h"
 #include "psrand.h"
 #include "room.h"
 #include "terrain.h"

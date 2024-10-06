@@ -63,13 +63,13 @@
 #include <cstdio>
 
 #include "bitmap.h"
-#include "player.h"
 #include "pilot.h"
 #include "cfile.h"
 #include "log.h"
 #include "ddio.h"
 #include "manage.h"
 #include "PilotPicsAPI.h"
+#include "pserror.h"
 #include "mem.h"
 
 #define PILOTPIC_DATABASE_HOG "PPics.Hog"
@@ -132,9 +132,7 @@ bool PPic_InitDatabase(void) {
 
   // attempt to open the hog database
   // --------------------------------
-  char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalD3Dir, PILOTPIC_DATABASE_HOG, NULL);
-  PilotPic_database_hog_handle = cf_OpenLibrary(fullpath);
+  PilotPic_database_hog_handle = cf_OpenLibrary(PILOTPIC_DATABASE_HOG);
 
   if (PilotPic_database_hog_handle == 0) {
     // there was an error opening the hog database

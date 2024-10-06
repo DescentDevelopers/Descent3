@@ -672,8 +672,13 @@ int mng_LoadTableFiles(int show_progress) {
 // This is for initting tables on STAND_ALONE, if the network is down, or if
 // the user doesn't want network support
 int mng_InitLocalTables() {
-  // Set the local table directory from the base directory
-  strcpy(LocalD3Dir, Base_directory);
+  // Set the local table directory from the base directory.
+  auto writable_base_directory_string = cf_GetWritableBaseDirectory().u8string();
+  strncpy(LocalD3Dir, writable_base_directory_string.c_str(), sizeof LocalD3Dir);
+  LocalD3Dir[sizeof LocalD3Dir - 1] = '\0';
+  if (strlen(LocalD3Dir) != strlen(writable_base_directory_string.c_str())) {
+    LOG_WARNING << "cf_GetWritableBaseDirectory() is too long to fit in LocalD3Dir, so LocalD3Dir was truncated.";
+  }
   LOG_INFO << "Local dir: " << LocalD3Dir;
 
   // Make the CFILE system first look at our local directories.  If the goods aren't

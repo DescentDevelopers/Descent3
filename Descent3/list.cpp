@@ -19,6 +19,7 @@
 #include "list.h"
 #include "log.h"
 #include "mem.h"
+#include "pserror.h"
 
 // Allocates space for a new list node, returning the pointer to it
 listnode *NewListNode(void) {

@@ -60,6 +60,7 @@
 #include "UIlib.h"
 #include "grtext.h"
 #include "mem.h"
+#include "pserror.h"
 #include "textaux.h"
 
 #define CONSOLE_LINE_FILLER 128

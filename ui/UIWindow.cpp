@@ -152,6 +152,7 @@
 #include "UIlib.h"
 #include "Macros.h"
 #include "log.h"
+#include "pserror.h"
 
 //	the window font for all windows
 int UIWindow::m_WindowFont = 0;

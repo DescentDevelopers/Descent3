@@ -142,9 +142,9 @@
 #include "player.h"
 #include "ddio.h"
 #include "pilot.h"
+#include "pserror.h"
 #include "Mission.h"
 #include "stringtable.h"
-#include "d3serial.h"
 #include "ship.h"
 
 #define WEAPONS_LOAD_UPDATE_INTERVAL 2.0
@@ -193,9 +193,8 @@ void MultiSendMyInfo() {
     memcpy(&data[count], Players[Player_num].tracker_id, len);
     count += len;
   }
-  int ser = 0;
-  GetInternalSerializationNumber(&ser);
-  MultiAddInt(ser, data, &count);
+  // Was serial
+  MultiAddInt(0, data, &count);
 
   // Send packets per second
   int pps = nw_ReccomendPPS();

@@ -12,10 +12,10 @@ endif()
 
 add_library(networking STATIC ${HEADERS} ${CPPS})
 target_link_libraries(networking PRIVATE
+  ddebug
   ddio
   logger
   mem
-  misc
   module
   ${PLATFORM_LIBS}
 )

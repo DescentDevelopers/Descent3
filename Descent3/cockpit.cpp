@@ -200,6 +200,7 @@
 #include "log.h"
 #include "ship.h"
 #include "player.h"
+#include "pserror.h"
 #include "room.h"
 #include "hlsoundlib.h"
 #include "sounds.h"

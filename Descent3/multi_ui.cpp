@@ -331,6 +331,7 @@
 #include "manage.h"
 #include "menu.h"
 #include "pilot.h"
+#include "pserror.h"
 #include "ddio.h"
 #include "objinfo.h"
 #include "ship.h"
@@ -442,11 +443,12 @@ int MainMultiplayerMenu() {
 
   std::vector<std::string> dllnames;
 
-  ddio_DoForeachFile(std::filesystem::path(Base_directory) / "online", std::regex(".*\\.d3c"),
-                     [&dllnames](const std::filesystem::path &path) {
-                       std::string filename = path.stem().string();
+  for (const auto &online_directory : cf_LocateMultiplePaths("online")) {
+    ddio_DoForeachFile(online_directory, std::regex(".*\\.d3c"),
+                       [&dllnames](const std::filesystem::path &path) {
+                         std::string filename = path.stem().string();
 
-                       std::replace(filename.begin(), filename.end(), '~', '/');
+                         std::replace(filename.begin(), filename.end(), '~', '/');
 
                        // Place PXO_NAME first in list
                        if (stricmp(filename.c_str(), PXO_NAME) == 0) {
@@ -455,6 +457,7 @@ int MainMultiplayerMenu() {
                          dllnames.push_back(filename);
                        }
                      });
+  }
 
   for (auto const &name : dllnames) {
     lists->AddItem(name.c_str());
@@ -989,7 +992,7 @@ void DoMultiAllowed(void) {
 }
 
 void MultiDoConfigSave() {
-  std::filesystem::path file = std::filesystem::path(Base_directory) / "custom" / "settings";
+  std::filesystem::path file = cf_GetWritableBaseDirectory() / "custom" / "settings";
   if (DoPathFileDialog(true, file, TXT_MULTISAVESET, {"*.mps"}, 0)) {
     file.replace_extension(".mps");
     MultiSaveSettings(file);
@@ -997,7 +1000,7 @@ void MultiDoConfigSave() {
 }
 
 void MultiDoConfigLoad() {
-  std::filesystem::path file = std::filesystem::path(Base_directory) / "custom" / "settings";
+  std::filesystem::path file = cf_GetWritableBaseDirectory() / "custom" / "settings";
   if (DoPathFileDialog(false, file, TXT_MULTILOADSET, {"*.mps"}, PFDF_FILEMUSTEXIST))
     MultiLoadSettings(file);
 }

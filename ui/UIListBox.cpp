@@ -162,6 +162,7 @@
 
 #include "UIlib.h"
 #include "log.h"
+#include "pserror.h"
 
 #define SCROLL_BUTTON_GAP 4
 

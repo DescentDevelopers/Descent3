@@ -597,6 +597,7 @@
 #include "newui.h"
 #include "pilot.h"
 #include "polymodel.h"
+#include "pserror.h"
 #include "pstring.h"
 #include "renderer.h"
 #include "render.h"
@@ -1581,7 +1582,7 @@ bool PltDelete(pilot *Pilot) {
   std::string pfilename = Pilot->get_filename();
   std::error_code ec;
   if (!pfilename.empty()) {
-    return std::filesystem::remove(std::filesystem::path(Base_directory) / pfilename, ec);
+    return std::filesystem::remove(cf_GetWritableBaseDirectory() / pfilename, ec);
   } else {
     Int3(); // this is odd
 
@@ -1595,7 +1596,7 @@ bool PltDelete(pilot *Pilot) {
     PltMakeFNValid(pname);
 
     pfilename = std::string(pname) + PLTEXTENSION;
-    return std::filesystem::remove(std::filesystem::path(Base_directory) / pfilename, ec);
+    return std::filesystem::remove(cf_GetWritableBaseDirectory() / pfilename, ec);
   }
 }
 
@@ -1634,7 +1635,7 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
     return;
 
   // open and process file
-  std::filesystem::path filename = std::filesystem::path(Base_directory) / pfilename;
+  std::filesystem::path filename = cf_GetWritableBaseDirectory() / pfilename;
   try {
     file = cfopen(filename, "rb");
     if (!file)
@@ -1677,7 +1678,6 @@ std::vector<std::string> PltGetPilots(std::string ignore_filename, int display_d
   // clear list
   PltClearList();
 
-  std::filesystem::path search = std::filesystem::path(Base_directory);
   std::regex wildcard;
   std::vector<std::string> result;
 
@@ -1699,7 +1699,7 @@ std::vector<std::string> PltGetPilots(std::string ignore_filename, int display_d
       break;
     }
 
-    ddio_DoForeachFile(search, wildcard, [&ignore_filename, &result](const std::filesystem::path &path) {
+    ddio_DoForeachFile(cf_GetWritableBaseDirectory(), wildcard, [&ignore_filename, &result](const std::filesystem::path &path) {
       std::string pilot = path.filename().u8string();
       if (!ignore_filename.empty() && stricmp(ignore_filename.c_str(), pilot.c_str()) == 0) {
         LOG_INFO.printf("Getting Pilots... found %s, but ignoring", pilot.c_str());
@@ -3275,7 +3275,7 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   std::string pfilename = Pilot->get_filename();
 
   // open and process file
-  std::filesystem::path filename = std::filesystem::path(Base_directory) / pfilename;
+  std::filesystem::path filename = cf_GetWritableBaseDirectory() / pfilename;
   CFILE *file = cfopen(filename, "rb");
   if (!file)
     return;

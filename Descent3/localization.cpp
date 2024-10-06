@@ -96,6 +96,7 @@
 #include "localization.h"
 #include "log.h"
 #include "mem.h"
+#include "pserror.h"
 
 struct tLangTag {
   const char *tag;

@@ -29,6 +29,7 @@
 #include "aiambient.h"
 #include "objinfo.h"
 #include "game.h"
+#include "pserror.h"
 #include "soundload.h"
 
 #ifdef _DEBUG

@@ -109,6 +109,8 @@
  *
  */
 
+#include <cstring>
+
 #include "mmItem.h"
 #include "game.h"
 #include "program.h"
@@ -117,12 +119,9 @@
 #include "hlsoundlib.h"
 #include "soundload.h"
 #include "d3music.h"
-
 #include "ddio.h"
-// #include <malloc.h>
 #include "mem.h"
-
-#include <string.h>
+#include "pserror.h"
 
 // externed from newui.cpp
 extern int UI_frame_result;
@@ -330,9 +329,7 @@ void mmInterface::Create() {
     m_movie = NULL;
     static_menu_background = true;
   } else {
-    char filename[_MAX_PATH];
-    ddio_MakePath(filename, Base_directory, "movies", "mainmenu", NULL);
-    m_movie = StartMovie(filename, true);
+    m_movie = StartMovie("mainmenu", true);
 
     if (!m_movie) //[ISB] Didn't find the menu movie?
     {

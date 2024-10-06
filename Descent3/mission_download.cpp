@@ -135,6 +135,7 @@
 #include "grtext.h"
 #include "Mission.h"
 #include "mission_download.h"
+#include "pserror.h"
 #include "renderer.h"
 #include "unzip.h"
 

@@ -183,8 +183,8 @@ bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, i
   handle->handle = dlopen(modfilename.u8string().c_str(), f);
   if (!handle->handle) {
     // ok we couldn't find the given name...try other ways
-    std::filesystem::path parent_path = modfilename.parent_path();
-    std::filesystem::path new_filename = cf_FindRealFileNameCaseInsensitive(modfilename.filename(), parent_path);
+    std::filesystem::path parent_path = modfilename.parent_path().filename();
+    std::filesystem::path new_filename = cf_LocatePath(parent_path / modfilename.filename());
 
     if (new_filename.empty()) {
       LOG_ERROR.printf("Module Load Err: %s", dlerror());

@@ -33,6 +33,7 @@
 #include "physics.h"
 #include "player.h"
 #include "polymodel.h"
+#include "pserror.h"
 #include "terrain.h"
 #include "vecmat.h"
 #include "viseffect.h"

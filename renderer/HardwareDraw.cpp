@@ -18,6 +18,7 @@
 
 #include "3d.h"
 #include "HardwareInternal.h"
+#include "pserror.h"
 #include "renderer.h"
 
 #define round(v) ((int)(((v) + 0.5f)))

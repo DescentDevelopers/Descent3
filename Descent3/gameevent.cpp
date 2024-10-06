@@ -73,6 +73,7 @@
 #include "spew.h"
 #include "mem.h"
 #include "player.h"
+#include "pserror.h"
 
 int Num_events = 0;
 game_event GameEvent[MAX_EVENTS];
