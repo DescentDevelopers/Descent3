@@ -2840,7 +2840,6 @@ void ShipSelectDeleteTaunt(pilot *Pilot, newuiComboBox *lb, tAudioTauntComboBoxe
   ASSERT(taunt_boxes);
 
   int selected_index = lb->GetCurrentIndex();
-  char custom_filename[384];
   char custom_logoname[384];
 
   // check for None selected
@@ -2849,7 +2848,7 @@ void ShipSelectDeleteTaunt(pilot *Pilot, newuiComboBox *lb, tAudioTauntComboBoxe
     return;
   }
 
-  lb->GetItem(selected_index, custom_logoname, 384);
+  lb->GetItem(selected_index, custom_logoname, sizeof(custom_logoname));
 
   if ((selected_index - 1) >= (int)Audio_taunts.size()) {
     LOG_FATAL << "Listbox selected item not found";
@@ -2858,21 +2857,21 @@ void ShipSelectDeleteTaunt(pilot *Pilot, newuiComboBox *lb, tAudioTauntComboBoxe
   }
 
   // Get the filename
-  std::filesystem::path p = Audio_taunts[selected_index - 1];
+  std::filesystem::path custom_filename = Audio_taunts[selected_index - 1];
 
   // delete custom_filename, we don't want it....
   char buffer[512];
   snprintf(buffer, sizeof(buffer), TXT_PLTOKDEL, custom_logoname);
   if (DoMessageBox(TXT_PLTDELCONF, buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
-    LOG_INFO.printf("Deleting audio taunt %s (%s)", custom_logoname, custom_filename);
+    LOG_INFO.printf("Deleting audio taunt %s (%s)", custom_logoname, custom_filename.u8string().c_str());
 
     std::error_code ec;
-    if (std::filesystem::remove(LocalCustomSoundsDir / p, ec)) {
+    if (std::filesystem::remove(LocalCustomSoundsDir / custom_filename, ec)) {
       // Update the list boxes, select none
       UpdateAudioTauntBoxes(taunt_boxes->taunt_a, taunt_boxes->taunt_b, taunt_boxes->taunt_c, taunt_boxes->taunt_d,
                             Pilot);
     } else {
-      LOG_FATAL.printf("Unable to delete file %s", custom_filename);
+      LOG_FATAL.printf("Unable to delete file %s", custom_filename.u8string().c_str());
       Int3();
     }
   }
