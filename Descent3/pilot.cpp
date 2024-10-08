@@ -2798,7 +2798,6 @@ void ShipSelectDeleteLogo(newuiListBox *lb) {
   ASSERT(lb);
 
   int selected_index = lb->GetCurrentIndex();
-  char custom_filename[384];
   char custom_logoname[384];
 
   // check for None selected
@@ -2807,7 +2806,7 @@ void ShipSelectDeleteLogo(newuiListBox *lb) {
     return;
   }
 
-  lb->GetItem(selected_index, custom_logoname, 384);
+  lb->GetItem(selected_index, custom_logoname, sizeof(custom_logoname));
 
   if ((selected_index - 1) >= (int)Custom_images.size()) {
     LOG_FATAL << "Listbox selected item not found";
@@ -2816,20 +2815,20 @@ void ShipSelectDeleteLogo(newuiListBox *lb) {
   }
 
   // Get the filename
-  std::filesystem::path p = Custom_images[selected_index - 1];
+  std::filesystem::path custom_filename = Custom_images[selected_index - 1];
 
   // delete custom_filename, we don't want it....
   char buffer[512];
   snprintf(buffer, sizeof(buffer), TXT_PLTOKDEL, custom_logoname);
   if (DoMessageBox(TXT_PLTDELCONF, buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
-    LOG_INFO.printf("Deleting pilot logo %s (%s)", custom_logoname, custom_filename);
+    LOG_INFO.printf("Deleting pilot logo %s (%s)", custom_logoname, custom_filename.u8string().c_str());
 
     std::error_code ec;
-    if (std::filesystem::remove(LocalCustomGraphicsDir / p, ec)) {
+    if (std::filesystem::remove(LocalCustomGraphicsDir / custom_filename, ec)) {
       // Update the list box, select none
       UpdateGraphicsListbox(lb);
     } else {
-      LOG_FATAL.printf("Unable to delete file %s", custom_filename);
+      LOG_FATAL.printf("Unable to delete file %s", custom_filename.u8string().c_str());
       Int3();
     }
   }
