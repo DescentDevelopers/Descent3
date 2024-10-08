@@ -655,38 +655,40 @@
  * $NoKeywords: $
  */
 
+#include <chrono>
 #include <cstring>
+#include <sstream>
+#include <filesystem>
 
-#include "game.h"
-#include "ddio.h"
-#include "pserror.h"
-#include "descent.h"
-#include "trigger.h"
-#include "player.h"
-#include "slew.h"
-#include "controls.h"
-#include "renderer.h"
-#include "doorway.h"
-#include "hud.h"
-#include "log.h"
-#include "multi.h"
-#include "gamefont.h"
-#include "newui.h"
-#include "gamesequence.h"
-#include "cinematics.h"
-#include "SmallViews.h"
-#include "Mission.h"
-#include "cfile.h"
-#include "gameloop.h"
-#include "cockpit.h"
-#include "game2dll.h"
-#include "config.h"
-#include "stringtable.h"
-#include "pilot.h"
 #include "args.h"
+#include "cfile.h"
+#include "cinematics.h"
+#include "cockpit.h"
+#include "config.h"
+#include "controls.h"
 #include "dedicated_server.h"
 #include "demofile.h"
-#include <NewBitmap.h>
+#include "descent.h"
+#include "doorway.h"
+#include "game.h"
+#include "game2dll.h"
+#include "gamefont.h"
+#include "gameloop.h"
+#include "gamesequence.h"
+#include "hud.h"
+#include "log.h"
+#include "Mission.h"
+#include "multi.h"
+#include "NewBitmap.h"
+#include "newui.h"
+#include "pilot.h"
+#include "player.h"
+#include "pserror.h"
+#include "render.h"
+#include "renderer.h"
+#include "slew.h"
+#include "SmallViews.h"
+#include "stringtable.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 //	Variables
@@ -728,17 +730,10 @@ int Game_do_ai_movement = 1;
 int Game_do_ai_vis = 1;
 #endif
 
-//	How much of the mine has been explored?
-int Num_rooms_explored = 0;
-
-//	Save and restores per level
-int Num_player_saves = 0;
-int Num_player_restores = 0;
-
 // Missile camera
 int Missile_camera_window = SVW_LEFT; // will default to -1 when interface is in
 
-//	contains all relevent information for gamemode pertaining to d3x system.
+// Contains all relevant information for gamemode pertaining to d3x system.
 gamemode Gamemode_info;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -752,7 +747,7 @@ float GetFPS() {
   if (Frametime == 0.0f) {
     Frametime = 0.1f;
   }
-  return 1.0 / Frametime;
+  return 1.0f / Frametime;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -822,7 +817,7 @@ void QuickPlayGame() {
 void PlayGame() {
   //	Initialize misc game
   if (InitGame()) {
-    //	Run the game (note, if this call returns false, we couldn't play a level. Display an error maybe?
+    //	Run the game (note, if this call returns false, we couldn't play a level. Display an error maybe?)
     GameSequencer();
   } else {
     SetFunctionMode(MENU_MODE);
@@ -830,8 +825,8 @@ void PlayGame() {
     // if they were going into a multiplayer game than we need to handle cleaning all that up
     if (Game_mode & GM_MULTI) {
       SetGameMode(GM_NORMAL);
-      for (int i = 0; i < MAX_PLAYERS; i++) {
-        NetPlayers[i].flags &= ~NPF_CONNECTED;
+      for (auto & NetPlayer : NetPlayers) {
+        NetPlayer.flags &= ~NPF_CONNECTED;
       }
     }
   }
@@ -855,14 +850,13 @@ void PlayGame() {
 ///////////////////////////////////////////////////////////////////////////////
 
 void SetGamemodeScript(const char *scrfilename, int num_teams) {
-  if (scrfilename != NULL)
+  if (scrfilename != nullptr)
     strcpy(Gamemode_info.scriptname, scrfilename);
   else
     Gamemode_info.scriptname[0] = 0;
   Gamemode_info.requested_num_teams = num_teams;
 }
 
-void RenderBlankScreen(void);
 bool InitGameScript() {
   //	initialize gamemode script here.
   if (Gamemode_info.scriptname[0]) {
@@ -913,7 +907,7 @@ int Low_vidmem = 0;
 void SetScreenMode(int sm, bool force_res_change) {
   static int old_sm = SM_NULL;
   static int rend_width = 0, rend_height = 0;
-  rendering_state rs;
+  rendering_state rs{};
 
   if (sm == SM_CINEMATIC) {
     // force cinematic to menu
@@ -1049,16 +1043,16 @@ void SetScreenMode(int sm, bool force_res_change) {
   switch (sm) {
   case SM_GAME: {
     ui_HideCursor();
-    SetUICallback(NULL);
+    SetUICallback(nullptr);
     int gw, gh;
-    Current_pilot.get_hud_data(NULL, NULL, NULL, &gw, &gh);
+    Current_pilot.get_hud_data(nullptr, nullptr, nullptr, &gw, &gh);
     if (force_res_change) {
       gw = Max_window_w;
       gh = Max_window_h;
     }
     InitGameScreen(gw, gh);
     // need to do this since the pilot w,h could change.
-    Current_pilot.set_hud_data(NULL, NULL, NULL, &Game_window_w, &Game_window_h);
+    Current_pilot.set_hud_data(nullptr, nullptr, nullptr, &Game_window_w, &Game_window_h);
     break;
   }
 
@@ -1101,8 +1095,8 @@ struct tFrameStackFrame {
   tFrameStackFrame *next;
   tFrameStackFrame *prev;
 };
-tFrameStackFrame *FrameStackRoot = NULL;
-tFrameStackFrame *FrameStackPtr = NULL;
+tFrameStackFrame *FrameStackRoot = nullptr;
+tFrameStackFrame *FrameStackPtr = nullptr;
 tFrameStackFrame FrameStack[8];
 int FrameStackDepth = 0;
 
@@ -1119,8 +1113,8 @@ void FramePush(int x1, int y1, int x2, int y2, bool clear) {
       Error("Out of memory\n");
     }
 
-    curr->prev = NULL;
-    curr->next = NULL;
+    curr->prev = nullptr;
+    curr->next = nullptr;
   } else {
     // add on to the end of the list
     curr->next = FrameStackPtr = &FrameStack[FrameStackDepth];
@@ -1130,7 +1124,7 @@ void FramePush(int x1, int y1, int x2, int y2, bool clear) {
     }
     curr->next->prev = curr; // setup previous frame
     curr = curr->next;
-    curr->next = NULL;
+    curr->next = nullptr;
   }
 
   // at this point curr should be a valid frame, with prev and next set
@@ -1170,12 +1164,12 @@ void FramePop(int *x1, int *y1, int *x2, int *y2, bool *clear) {
   if (frame == FrameStackRoot) {
     // we're popping off the root
     // DAJ		mem_free(FrameStackRoot);
-    FrameStackRoot = NULL;
-    FrameStackPtr = NULL;
+    FrameStackRoot = nullptr;
+    FrameStackPtr = nullptr;
   } else {
     // we're just going back a frame, but still have a stack
     FrameStackPtr = FrameStackPtr->prev; // pop back a frame
-    FrameStackPtr->next = NULL;
+    FrameStackPtr->next = nullptr;
     // DAJ		mem_free(frame);
   }
   FrameStackDepth--;
@@ -1205,7 +1199,7 @@ void StartFrame(int x, int y, int x2, int y2, bool clear, bool push_on_stack) {
   if (last_fov != Render_FOV) {
     // Figure out new zoom factor
     float num = (Render_FOV / 2);
-    num = (3.14 * (float)num / 180.0);
+    num = (3.14f * (float)num / 180.0f);
     Render_zoom = tan(num);
 
     last_fov = Render_FOV;
@@ -1254,22 +1248,9 @@ void EndFrame() {
 
 // Does a screenshot and tells the bitmap lib to save out the picture as a tga
 void DoScreenshot() {
-  int count;
-  char str[255], filename[255];
-  CFILE *infile;
-  int done = 0;
-  int width = 640, height = 480;
-
-  if (UseHardware) {
-    rendering_state rs;
-    rend_GetRenderState(&rs);
-    width = rs.screen_width;
-    height = rs.screen_height;
-  }
-
   StopTime();
 
-  // Tell our renderer lib to take a screen shot
+  // Tell our renderer lib to take a screenshot
   auto screenshot = rend_Screenshot();
 
   if (!screenshot || screenshot->getData() == nullptr) {
@@ -1277,28 +1258,25 @@ void DoScreenshot() {
     return;
   }
 
-  // Find a valid filename
-  count = 1;
-  while (!done) {
-    snprintf(str, sizeof(str), "Screenshot%.3d.png", count);
-    ddio_MakePath(filename, cf_GetWritableBaseDirectory().u8string().c_str(), str, NULL);
-    infile = (CFILE *)cfopen(filename, "rb");
-    if (infile == NULL) {
-      done = 1;
-      continue;
-    } else
-      cfclose(infile);
+  std::filesystem::path screenshots_path = cf_GetWritableBaseDirectory() / "screenshots";
 
-    count++;
-    if (count > 999)
-      break;
+  std::error_code ec;
+  std::filesystem::create_directories(screenshots_path, ec);
+  if (ec) {
+    LOG_ERROR << "Cannot create " << screenshots_path;
+    return;
   }
 
+  // Generate screenshot filename based on millisecond since epoch
+  const auto now = std::chrono::system_clock::now().time_since_epoch();
+  std::stringstream screen_name;
+  screen_name << "screenshot-" << std::chrono::duration_cast<std::chrono::milliseconds>(now).count() << ".png";
+  std::filesystem::path filename = screenshots_path / screen_name.str();
   // Now save it
-  screenshot->saveAsPNG(filename);
+  screenshot->saveAsPNG(filename.u8string().c_str());
 
   if (Demo_flags != DF_PLAYBACK) {
-    AddHUDMessage(TXT_SCRNSHT, filename);
+    AddHUDMessage(TXT_SCRNSHT, filename.filename().u8string().c_str());
   }
 
   StartTime();
