@@ -269,6 +269,7 @@
 #include <filesystem>
 
 #include "cfile.h"
+#include "ddio.h"
 #include "objinfo.h"
 #include "ship.h"
 #include "ui.h"

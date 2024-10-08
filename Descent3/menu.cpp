@@ -667,6 +667,7 @@
 #include "config.h"
 #include "gamesave.h"
 #include "gamesequence.h"
+#include "ddio.h"
 #include "demofile.h"
 #include "pilot.h"
 #include "LoadLevel.h"
