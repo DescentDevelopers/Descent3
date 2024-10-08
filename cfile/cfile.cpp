@@ -154,7 +154,7 @@ std::vector<std::filesystem::path> cf_LocatePathMultiplePathsHelper(const std::f
     auto to_append = cf_LocatePathCaseInsensitiveHelper(relative_path, *base_directories_iterator);
     ASSERT(("to_append should be either empty or an absolute path.", to_append.empty() || to_append.is_absolute()));
     if (std::filesystem::exists(to_append)) {
-      return_value.insert(return_value.begin(), to_append);
+      return_value.push_back(to_append);
       if (stop_after_first_result) {
         break;
       }
