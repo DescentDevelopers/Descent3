@@ -357,30 +357,41 @@ void DemoToggleRecording() {
   //	hand coded 128 because long filenames were failing in cfopen(which called fopen, which failed on very
   // long filenames.  instead of printing a message out to the user, just don't allow filenames that long)
   if (DoEditDialog(TXT_DEMOFILENAME, szfile, 128)) {
-    if (stricmp(szfile + (strlen(szfile) - 4), ".dem") != 0) {
-      strcat(szfile, ".dem");
-    }
-    Demo_fname = cf_GetWritableBaseDirectory() / "demo" / szfile;
-    LOG_INFO.printf("Saving demo to file: %s", Demo_fname.u8string().c_str());
-    // Try to create the file
-    Demo_cfp = cfopen(Demo_fname, "wb");
-    if (Demo_cfp) {
-      // Setup the demo variables
-      if (!(Game_mode & GM_MULTI)) {
-        MultiBuildMatchTables();
-      }
-      // Male sure we write the player info the first frame
-      Demo_last_pinfo = timer_GetTime() - (DEMO_PINFO_UPDATE * 2);
-      Demo_flags = DF_RECORDING;
-      // Write the header
-      DemoWriteHeader();
-      DemoStartNewFrame();
-    } else {
-      // cfopen failed
+    std::filesystem::path demo_directory = cf_GetWritableBaseDirectory() / "demo";
+
+    std::error_code ec;
+    std::filesystem::create_directories(demo_directory, ec);
+    if (ec) {
+      LOG_ERROR << "Failed to create " << demo_directory << " directory. Unable to create demo file!";
       AddBlinkingHUDMessage(TXT_DEMOCANTCREATE);
       Demo_fname.clear();
       return;
     }
+
+    Demo_fname = demo_directory / szfile;
+    Demo_fname.replace_extension(".dem");
+
+    LOG_INFO << "Saving demo to file " << Demo_fname;
+    // Try to create the file
+    Demo_cfp = cfopen(Demo_fname, "wb");
+    if (!Demo_cfp) {
+      // cfopen failed
+      LOG_ERROR << "Unable to create demo file!";
+      AddBlinkingHUDMessage(TXT_DEMOCANTCREATE);
+      Demo_fname.clear();
+      return;
+    }
+
+    // Set up the demo variables
+    if (!(Game_mode & GM_MULTI)) {
+      MultiBuildMatchTables();
+    }
+    // Male sure we write the player info the first frame
+    Demo_last_pinfo = timer_GetTime() - (DEMO_PINFO_UPDATE * 2);
+    Demo_flags = DF_RECORDING;
+    // Write the header
+    DemoWriteHeader();
+    DemoStartNewFrame();
   }
 }
 
