@@ -74,12 +74,16 @@ void mve_SetRenderProperties(int16_t x, int16_t y, int16_t w, int16_t h, rendere
 // plays a movie using the current screen.
 int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) {
 #ifndef NO_MOVIES
-  // first, find that movie..
+  // first, find that movie.
   std::filesystem::path real_name = cf_LocatePath("movies" / pMovieName);
+  if (real_name.empty()) {
+    LOG_ERROR << "MOVIE: File " << pMovieName << " not found, skipping playback";
+    return MVELIB_FILE_ERROR;
+  }
   // open movie file.
   FILE *hFile = fopen(real_name.u8string().c_str(), "rb");
   if (hFile == nullptr) {
-    LOG_ERROR.printf("MOVIE: Unable to open %s", real_name.u8string().c_str());
+    LOG_ERROR << "MOVIE: Unable to open " << pMovieName;
     return MVELIB_FILE_ERROR;
   }
 
