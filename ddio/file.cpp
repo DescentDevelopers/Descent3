@@ -192,3 +192,30 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
   mem_free(random_name);
   return result;
 }
+
+std::filesystem::path ddio_GetTempPath() {
+  std::filesystem::path result;
+
+#if defined(POSIX)
+  char *envr = SDL_getenv("XDG_CACHE_HOME");
+  if (envr) {
+    result = std::filesystem::path(envr) / "Descent3";
+  } else {
+    envr = SDL_getenv("HOME");
+    if (envr) {
+      result = std::filesystem::path(envr) / ".cache" / "Descent3";
+    } else {
+#endif
+      std::error_code ec;
+      std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
+      if (ec) {
+        Error("Could not find temporary directory: \"%s\"", ec.message().c_str() );
+        exit(1);
+      }
+      result = tempPath / "Descent3" / "cache";
+#if defined(POSIX)
+    }
+  }
+#endif
+  return result;
+}

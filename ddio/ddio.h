@@ -412,4 +412,10 @@ bool ddio_CreateLockFile(const std::filesystem::path &dir);
  */
 bool ddio_DeleteLockFile(const std::filesystem::path &dir);
 
+/**
+ * Gets path where to write temporary/cache files.
+ * @return path where user can write cache files.
+ */
+std::filesystem::path ddio_GetTempPath();
+
 #endif
