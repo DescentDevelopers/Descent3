@@ -76,17 +76,6 @@
 #include <cstdlib>
 #include <type_traits>
 
-template<typename T> static inline T *mem_rmalloc()
-{
-	static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
-	return static_cast<T *>(std::malloc(sizeof(T)));
-}
-template<typename T> static inline T *mem_rmalloc(std::size_t nelem)
-{
-	static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
-	return static_cast<T *>(std::malloc(nelem * sizeof(T)));
-}
-
 // Memory management debugging
 #ifdef MEM_USE_RTL
 #define mem_malloc(d) malloc(d) // Use this if your going to run BoundsChecker
@@ -106,10 +95,10 @@ template<typename T> static inline T *mem_rmalloc(std::size_t nelem)
 extern bool Mem_low_memory_mode;
 extern bool Mem_superlow_memory_mode; // DAJ
 
-//	use if you want to manually print out a memory error
+// use if you want to manually print out a memory error
 #define mem_error() mem_error_msg(__FILE__, __LINE__)
 
-//	initializes memory library.
+// initializes memory library.
 void mem_Init();
 
 // shutsdown memory
@@ -124,7 +113,7 @@ void *mem_malloc_sub(int size, const char *file, int line);
 // Frees a previously allocated block of memory
 void mem_free_sub(void *memblock);
 
-//	prints out a memory error message
+// prints out a memory error message
 void mem_error_msg(const char *file, int line, int size = -1);
 
 char *mem_strdup_sub(const char *src, const char *file, int line);
@@ -136,5 +125,17 @@ int mem_size_sub(void *memblock);
 bool mem_dumpmallocstofile(char *filename);
 
 void mem_heapcheck();
+
+// type aware memory allocation
+template<typename T> static inline T *mem_rmalloc()
+{
+  static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
+  return static_cast<T *>(mem_malloc(sizeof(T)));
+}
+template<typename T> static inline T *mem_rmalloc(std::size_t nelem)
+{
+  static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
+  return static_cast<T *>(mem_malloc(nelem * sizeof(T)));
+}
 
 #endif
