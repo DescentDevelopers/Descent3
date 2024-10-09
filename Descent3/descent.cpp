@@ -707,5 +707,3 @@ void D3DebugResumeHandler() {
 }
 
 #endif
-
-void RenderBlankScreen();

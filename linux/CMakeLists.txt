@@ -19,6 +19,7 @@ target_include_directories(linux PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/linux
   >
+  ${PROJECT_BINARY_DIR}/lib
 )
 target_link_libraries(linux PRIVATE
   ddebug
