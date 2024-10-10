@@ -293,6 +293,8 @@
 #include "hlsoundlib.h"
 #include "ddio.h"
 #include "pserror.h"
+#include "networking.h"
+#include "appdatabase.h"
 
 //////////////////////////////////////////////////////////////////////////////
 #define IDV_KCONFIG 10
@@ -1289,6 +1291,62 @@ void key_settings_dialog() {
   wnd.Close();
   wnd.Destroy();
 }
+
+void net_settings_dialog() {
+  newuiTiledWindow wnd;
+  newuiSheet *sheet;
+  int res;
+  int16_t curpos;
+  int16_t *pps_client_current_t;
+  tSliderSettings slider_set;
+
+  int cfg_range = CFG_NETWORK_CLIENT_PPS_MAX - CFG_NETWORK_CLIENT_PPS_MIN;
+  int nwRecommendPPS = nw_ReccomendPPS();
+
+  LOG_DEBUG.printf("Load network settings. PPS:%d.", nwRecommendPPS);
+
+  // Create window
+  wnd.Create("Network Settings", 0, 0, 384, 256);
+
+  // add group
+  sheet = wnd.GetSheet();
+  sheet->NewGroup("", 0, 0);
+
+  // slider setup
+  slider_set.min_val.i = CFG_NETWORK_CLIENT_PPS_MIN;
+  slider_set.max_val.i = CFG_NETWORK_CLIENT_PPS_MAX;
+  slider_set.type = SLIDER_UNITS_INT;
+  curpos = CALC_SLIDER_POS_INT(nwRecommendPPS, &slider_set, cfg_range);
+
+  pps_client_current_t = sheet->AddSlider("PPS", cfg_range, curpos, &slider_set);
+
+  // add group "window ctrl buttons"
+  sheet->NewGroup(NULL, 180, 160, NEWUI_ALIGN_HORIZ);
+  sheet->AddButton(TXT_OK, UID_OK);
+  sheet->AddButton(TXT_CANCEL, UID_CANCEL);
+
+  // render
+  wnd.Open();
+  do {
+    res = wnd.DoUI();
+
+    if (res == NEWUIRES_FORCEQUIT) {
+      break;
+    }
+  } while (res != UID_OK && res != UID_CANCEL);
+
+  if (res == UID_OK) {
+    // save changes
+    nwRecommendPPS = CALC_SLIDER_INT_VALUE(*pps_client_current_t, CFG_NETWORK_CLIENT_PPS_MIN, CFG_NETWORK_CLIENT_PPS_MAX, cfg_range);
+
+    LOG_DEBUG.printf("Write network client pps %d.", nwRecommendPPS);
+
+    Database->write(CTLCONFIG_PPS_CLIENT_DB_KEY, nwRecommendPPS);
+  }
+  wnd.Close();
+  wnd.Destroy();
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // configure controller new way
 struct t_ctlcfgswitchcb_data {

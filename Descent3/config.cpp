@@ -930,6 +930,7 @@ struct sound_menu {
 #define UID_SHORTCUT_JOYSETTINGS 0x1000
 #define UID_SHORTCUT_KEYSETTINGS 0x1001
 #define UID_SHORTCUT_FORCEFEED 0x1002
+#define UID_SHORTCUT_NETSETTINGS 0x1003
 
 struct toggles_menu {
   newuiSheet *sheet;
@@ -991,6 +992,10 @@ struct toggles_menu {
     if (ff_found) {
       sheet->AddLongButton(TXT_CFG_CONFIGFORCEFEEDBACK, UID_SHORTCUT_FORCEFEED);
     }
+
+    sheet->NewGroup("Misc", 110, ff_found ? 200 : 190);
+    sheet->AddLongButton("Network Settings", UID_SHORTCUT_NETSETTINGS);
+
     return sheet;
   };
 
@@ -1025,6 +1030,9 @@ struct toggles_menu {
       LoadControlConfig();
       key_settings_dialog();
       SaveControlConfig();
+      break;
+    case UID_SHORTCUT_NETSETTINGS:
+      net_settings_dialog();
       break;
     }
   };

@@ -59,6 +59,12 @@
 #define CTLCONFIG_CONTROLLER 1
 #define CTLCONFIG_WPNSEL 2
 
+#define CTLCONFIG_PPS_CLIENT_DB_KEY "ClientPPS"
+
+
+#define CFG_NETWORK_CLIENT_PPS_MIN 7
+#define CFG_NETWORK_CLIENT_PPS_MAX 30
+
 struct t_cfg_element {
   int16_t fn_id; // -1 = group start
   int16_t text;  // text string id.
@@ -76,5 +82,6 @@ void CtlConfig(int mode);
 // opens the settings dialogs.
 void joystick_settings_dialog();
 void key_settings_dialog();
+void net_settings_dialog();
 
 #endif
