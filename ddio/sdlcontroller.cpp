@@ -1402,6 +1402,7 @@ float sdlgameController::get_pov_value(int8_t controller, ct_format format, uint
     }
     break;
 
+  case ctAnalog:
   case ctDigital: {
     if (m_ExtCtlStates[m_ControlList[controller].id].pov[pov_number] == JOYPOV_CENTER)
       val = 0.0f;
