@@ -160,7 +160,7 @@ extern char PXO_hosted_lobby_name[];
 // the dedicated server
 
 static cvar_entry CVars[] = {
-    {"PPS", CVAR_TYPE_INT, &Netgame.packets_per_second, 2, 20, CVAR_GAMEINIT}, // 0
+    {"PPS", CVAR_TYPE_INT, &Netgame.packets_per_second, 2, 40, CVAR_GAMEINIT}, // 0
     {"TimeLimit", CVAR_TYPE_INT, &Netgame.timelimit, 0, 10000, CVAR_GAMEINIT},
     {"KillGoal", CVAR_TYPE_INT, &Netgame.killgoal, 0, 10000, CVAR_GAMEINIT},
     {"RespawnTime", CVAR_TYPE_INT, &Netgame.respawn_time, 0, 10000, CVAR_GAMEINIT},
