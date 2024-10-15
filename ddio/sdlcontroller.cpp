@@ -628,7 +628,6 @@ int sdlgameController::assign_function(ct_function *func) {
       elem.ctl[i] = 0;
       break;
     case ctAnalogTrigger:
-      std::cout << "test";
     case ctAxis:
       elem.ctl[i] = get_axis_controller(func->value[i]);
       break;
@@ -1363,8 +1362,6 @@ float sdlgameController::get_trigger_value(int8_t controller, uint8_t axis, ct_f
     val = 0.0f;
     LOG_WARNING << "unsupported format for function sdlgameController::get_trigger_value.";
   }
-
-  LOG_DEBUG << "Axis " << axis << " value is " << val << " raw " << axisval;
 
   return val;
 }

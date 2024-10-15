@@ -66,7 +66,6 @@
 #define JOYSTICK_H
 
 #include <cstdint>
-#include <vector>
 
 //	joystick ids.  used to initialize a stick and get its position
 #define MAX_JOYSTICKS 8
