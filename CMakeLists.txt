@@ -5,19 +5,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
 endif()
 
-option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
-option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
-option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
-option(FATAL_GL_ERRORS "Check OpenGL calls and raise exceptions on errors." OFF)
-option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
-option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
-option(USE_EXTERNAL_PLOG "Use system plog library instead bundled" OFF)
+# toolchain setup for vcpkg must be done before the 'project' call
 set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
 set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  option(BUILD_EDITOR "Build internal editor" OFF)
-endif()
 
 if(USE_VCPKG)
   if(DEFINED ENV{VCPKG_ROOT})
@@ -41,6 +31,17 @@ project(Descent3
   LANGUAGES C CXX
   VERSION 1.6.0
 )
+
+option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
+option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
+option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
+option(FATAL_GL_ERRORS "Check OpenGL calls and raise exceptions on errors." OFF)
+option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
+option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
+option(USE_EXTERNAL_PLOG "Use system plog library instead bundled" OFF)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  option(BUILD_EDITOR "Build internal editor" OFF)
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -223,14 +224,7 @@ add_subdirectory(AudioEncode)
 add_subdirectory(bitmap)
 add_subdirectory(cfile)
 add_subdirectory(ddebug)
-
-if(BUILD_EDITOR AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  add_subdirectory(dd_grwin32)
-  add_subdirectory(win32)
-endif()
-
 add_subdirectory(linux)
-
 add_subdirectory(ddio)
 add_subdirectory(fix)
 add_subdirectory(logger)
@@ -254,6 +248,8 @@ add_subdirectory(libmve)
 add_subdirectory(md5)
 
 if(BUILD_EDITOR AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  add_subdirectory(dd_grwin32)
+  add_subdirectory(win32)
   add_subdirectory(editor)
 endif()
 
@@ -276,4 +272,3 @@ set(CPACK_SOURCE_IGNORE_FILES
 )
 set(CPACK_VERBATIM_VARIABLES YES)
 include(CPack)
-
