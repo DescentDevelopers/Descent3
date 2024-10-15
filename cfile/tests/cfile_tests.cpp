@@ -22,12 +22,8 @@
 #include <gtest/gtest.h>
 #include "cfile.h"
 
-void add_cwd_to_base_directories() {
-  cf_AddBaseDirectory(std::filesystem::current_path());
-}
-
 TEST(D3, CFileIO) {
-  add_cwd_to_base_directories();
+  cf_AddBaseDirectory(std::filesystem::current_path());
   int lib_handle = cf_OpenLibrary("TestDir/test.hog");
   CFILE *file_handle = cfopen("lowercase.txt", "rb");
   char buf[5];
@@ -48,12 +44,12 @@ TEST(D3, CFileIO) {
 }
 
 TEST(D3, CFileLibrary) {
-  add_cwd_to_base_directories();
+  cf_AddBaseDirectory(std::filesystem::current_path());
   // First pass - without search path in "TestDir" (i.e. not search actual files in directory)
   // Second pass - with search path (files in directory goes first)
   for (int i = 0; i < 2; i++) {
     if (i != 0) {
-      EXPECT_EQ(cf_SetSearchPath("TestDir"), true);
+      EXPECT_TRUE(cf_SetSearchPath("TestDir"));
     }
 
     int lib_handle = cf_OpenLibrary("TestDir/test.hog");
@@ -78,40 +74,27 @@ TEST(D3, CFileLibrary) {
 
 TEST(D3, CFileLocatePath) {
   const std::vector<std::filesystem::path> test_paths = {
-      std::filesystem::path("TestDir") / "CamelCase.txt",
-      std::filesystem::path("TestDir") / "lowercase.txt",
-      std::filesystem::path("TestDir") / "UPPERCASE.TXT",
+      "TestDir/CamelCase.txt",
+      "TestDir/lowercase.txt",
+      "TestDir/UPPERCASE.TXT",
   };
+  cf_ClearBaseDirectories();
+  auto cwd = std::filesystem::current_path();
+  cf_AddBaseDirectory(cwd);
 
-  std::filesystem::path filename_new = cf_LocatePath(std::filesystem::path("no-exist-dir") / "no-exist-file.txt");
+  std::filesystem::path filename_new = cf_LocatePath("no-exist-dir/no-exist-file.txt");
   EXPECT_TRUE(filename_new.empty());
 
   filename_new = cf_LocatePath("no-exist-file.txt");
   EXPECT_TRUE(filename_new.empty());
 
-  auto cwd = std::filesystem::current_path();
-
   for (auto const &item : test_paths) {
-    auto directory = cwd / item.parent_path();
-    cf_ClearBaseDirectories();
-    cf_AddBaseDirectory(directory);
-    std::filesystem::path file = item.filename();
-    std::string file_lc = item.filename().u8string();
+    std::string file_lc = item.u8string();
     std::transform(file_lc.begin(), file_lc.end(), file_lc.begin(), ::tolower);
-    std::string file_uc = item.filename().u8string();
+    std::string file_uc = item.u8string();
     std::transform(file_uc.begin(), file_uc.end(), file_uc.begin(), ::toupper);
 
     EXPECT_FALSE(cf_LocatePath(file_lc).empty());
     EXPECT_FALSE(cf_LocatePath(file_uc).empty());
-
-    // Now try case-insensitive path with non-existing path.
-    // Expected not found on case-sensitive fs.
-    file_lc = item.u8string();
-    std::transform(file_lc.begin(), file_lc.end(), file_lc.begin(), ::tolower);
-    file_uc = item.u8string();
-    std::transform(file_uc.begin(), file_uc.end(), file_uc.begin(), ::toupper);
-
-    EXPECT_TRUE(cf_LocatePath(file_lc).empty());
-    EXPECT_TRUE(cf_LocatePath(file_uc).empty());
   }
 }

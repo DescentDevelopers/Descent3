@@ -22,6 +22,7 @@
 #include <fstream>
 #include <iterator>
 #include <regex>
+#include <SDL_filesystem.h>
 
 #include "IOOps.h"
 #include "chrono_timer.h"
@@ -190,5 +191,27 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
     tries--;
   }
   mem_free(random_name);
+  return result;
+}
+
+std::filesystem::path ddio_GetPrefPath(const char *org, const char *app) {
+  char *pref_path = SDL_GetPrefPath(org, app);
+  if (!pref_path) {
+    LOG_ERROR << "Failed to get writable preference path!";
+    return {};
+  }
+  std::filesystem::path result = std::filesystem::canonical(pref_path);
+  SDL_free(pref_path);
+  return result;
+}
+
+std::filesystem::path ddio_GetBasePath() {
+  char *exe_path = SDL_GetBasePath();
+  if (!exe_path) {
+    LOG_ERROR << "Failed to get parent path of executable!";
+    return {};
+  }
+  std::filesystem::path result = std::filesystem::canonical(exe_path);
+  SDL_free(exe_path);
   return result;
 }
