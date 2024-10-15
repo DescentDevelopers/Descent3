@@ -609,6 +609,7 @@ void sdlgameController::set_axis_sensitivity(ct_type axis_type, uint8_t axis, fl
   }
 }
 
+#include <iostream>
 // assigns an individual function
 int sdlgameController::assign_function(ct_function *func) {
   //	for now this is a straight forward translation (that is, no mapping of needs to controller
@@ -627,6 +628,7 @@ int sdlgameController::assign_function(ct_function *func) {
       elem.ctl[i] = 0;
       break;
     case ctAnalogTrigger:
+      std::cout << "test";
     case ctAxis:
       elem.ctl[i] = get_axis_controller(func->value[i]);
       break;
@@ -985,9 +987,14 @@ int8_t sdlgameController::get_axis_controller(uint8_t axis) {
   if (axis == NULL_BINDING)
     return NULL_LNXCONTROLLER;
 
-  for (int i = 2; i < m_NumControls; i++)
-    if ((m_ControlList[i].flags & (1 << (axis - 1))) && m_ControlList[i].id != CTID_INVALID)
+  int axis_mask = (1 << (axis - 1));
+
+  for (int i = 2; i < m_NumControls; i++) {
+    if ((m_ControlList[i].flags & axis_mask) && m_ControlList[i].id != CTID_INVALID &&
+        !(m_ControlList[i].axis_is_trigger & axis_mask)) {
       return i;
+    }
+  }
 
   return NULL_LNXCONTROLLER;
 }
@@ -1483,12 +1490,12 @@ int CTLLex(const char *command) {
 
 // okay, now search for a '****.ctl' file in the Base_directories
 void sdlgameController::parse_ctl_file(int devnum, const char *ctlname) {
-  for (auto base_directories_iterator = Base_directories.rbegin();
-       base_directories_iterator != Base_directories.rend();
+  for (auto base_directories_iterator = Base_directories.rbegin(); base_directories_iterator != Base_directories.rend();
        ++base_directories_iterator) {
     // parse each file until we find a name match, no name match, just return
     ddio_DoForeachFile(
-        *base_directories_iterator, std::regex(".*\\.ctl"), [this, &devnum, &ctlname](const std::filesystem::path &path) {
+        *base_directories_iterator, std::regex(".*\\.ctl"),
+        [this, &devnum, &ctlname](const std::filesystem::path &path) {
           InfFile file;
           bool found_name = false;
 
