@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -491,6 +491,7 @@ const char *cfg_binding_text(ct_type ctype, uint8_t ctrl, uint8_t binding) {
   case ctPOV2:
   case ctPOV3:
   case ctPOV4:
+  case ctAnalogTrigger:
   case ctMouseButton:
   case ctButton:
   case ctMouseAxis:
@@ -513,7 +514,7 @@ const char *cfg_binding_text(ct_type ctype, uint8_t ctrl, uint8_t binding) {
 class cfg_element_ui : public newuiMessageBox {
   uint8_t m_element;    // element passed and returned.
   uint8_t m_controller; // controller.
-  int8_t m_alpha;      // used for fx.
+  int8_t m_alpha;       // used for fx.
   ct_type m_type;
 
 public:
@@ -812,6 +813,7 @@ bool cfg_element::Configure(ct_type *new_elem_type, uint8_t *controller, uint8_t
   case ctPOV2:
   case ctPOV3:
   case ctPOV4:
+  case ctAnalogTrigger:
   case ctAxis:
   case ctMouseAxis:
     configure = true;
@@ -872,6 +874,7 @@ void cfg_element_ui::Create(const char *title, ct_type type, uint8_t controller,
   case ctPOV2:
   case ctPOV3:
   case ctPOV4:
+  case ctAnalogTrigger:
     sheet->AddText(TXT_CTLBINDHELP2_0);
     sheet->AddText(TXT_CTLBINDHELP2_1);
     break;
@@ -936,7 +939,8 @@ int cfg_element_ui::DoUI() {
     case ctPOV:
     case ctPOV2:
     case ctPOV3:
-    case ctPOV4: {
+    case ctPOV4:
+    case ctAnalogTrigger: {
       ct_config_data ccfgdata;
       ct_type new_type;
 
@@ -960,6 +964,10 @@ int cfg_element_ui::DoUI() {
               if (!GCV_VALID_RESULT(ccfgdata)) {
                 ccfgdata = Controller->get_controller_value(ctButton); // read hats before buttons
                 new_type = ctButton;
+                if (!GCV_VALID_RESULT(ccfgdata)) {
+                  ccfgdata = Controller->get_controller_value(ctAnalogTrigger);
+                  new_type = ctAnalogTrigger;
+                }
               }
             }
           }

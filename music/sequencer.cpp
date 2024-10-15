@@ -153,6 +153,7 @@
 #include "musiclib.h"
 #include "pserror.h"
 #include "streamaudio.h"
+#include "args.h"
 
 OutrageMusicSeq::OutrageMusicSeq() {
   m_sequencer_run = false;
@@ -340,7 +341,7 @@ void OutrageMusicSeq::Frame(float frame_time) {
 
 // music kernal.
 void OutrageMusicSeq::ExecScript(music_stream *strm) {
-  if (!strm)
+  if (!strm || FindArg("-nosound"))
     return;
 
 // get command
@@ -395,7 +396,6 @@ next_ins:
 
       // skip instructions until error is cleared.
       if (!err) {
-        //	mprintf(0, "MUSIC: Error opening stream %s on channel %d.\n", name, m_dominant_strm);
         LOG_WARNING.printf("Error opening stream %s on channel %d.", name, m_dominant_strm);
         strm->error = true;
       }
