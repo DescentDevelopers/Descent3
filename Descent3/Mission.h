@@ -167,6 +167,8 @@
 #ifndef MISSION_H
 #define MISSION_H
 
+#include <vector>
+
 #include "pstypes.h"
 #include "descent.h"
 
@@ -178,10 +180,10 @@
 #define LOAD_PROGRESS_DONE 200
 
 // Load level progress worker
-void LoadLevelProgress(int step, float percent, const char *chunk = NULL);
+void LoadLevelProgress(int step, float percent, const char *chunk = nullptr);
 
-//	array constants
-const int MSN_FILENAMELEN = _MAX_PATH, MSN_URLLEN = 256;
+// Array constants
+const int MSN_URLLEN = 256;
 
 #define MAX_KEYWORDLEN 300
 
@@ -209,22 +211,22 @@ extern level_info Level_info;
 
 //	level information
 struct tLevelNode {
-  //	level flags
-  unsigned flags;           // level flags
-  unsigned objective_flags; // level objective flags
+  // Level flags
+  uint32_t flags;           // level flags
+  uint32_t objective_flags; // level objective flags
 
-  //	movies
+  // Movies
   char *moviename;
   char *endmovie;
 
-  //	level filename
+  // Level filename
   char *filename;  // mine filename.
   char *briefname; // briefing filename
   char *hog;       // hog file name for this level
   char *score;     // music score of level
   char *progress;  // File name containing the progress background screen
 
-  //	level branching
+  // Level branching
   uint8_t lvlbranch0, lvlbranch1; // FORK or BRANCH command
   uint8_t secretlvl;              // SECRET command
   uint8_t pad;
@@ -251,10 +253,10 @@ struct tMission {
   //	listing of levels.
   int num_levels;     // number of levels
   int cur_level;      // current level playing.
-  tLevelNode *levels; // array of levels
+  std::vector<tLevelNode> levels; // array of levels
 };
 
-// structyre used to get information about a mission
+// structure used to get information about a mission
 struct tMissionInfo {
   char name[MSN_NAMELEN];
   char author[MSN_NAMELEN];
@@ -272,7 +274,19 @@ struct tMissionInfo {
 extern tMission Current_mission;
 extern tLevelNode *Current_level;
 
-extern char D3MissionsDir[];
+extern std::filesystem::path D3MissionsDir;
+
+/**
+ * Loads the mn3 file, specifies the hog and table file.
+ * @param mn3file file for loading
+ * @return true on success
+ */
+bool mn3_Open(const std::filesystem::path &mn3file);
+
+/**
+ * Closes the current mn3 file
+ */
+void mn3_Close();
 
 // Get the name field out of the mission file
 const char *GetMissionName(const char *mission);
@@ -308,13 +322,18 @@ bool LoadMissionLevel(int level);
 bool InitMissionScript();
 
 // Shows text on a background
-void ShowProgressScreen(const char *str, const char *str2 = NULL, bool flip = true);
+void ShowProgressScreen(const char *str, const char *str2 = nullptr, bool flip = true);
 
 // See if a mission file is multiplayer playable.
 bool IsMissionMultiPlayable(const char *mission);
 
-//	return information about a mission
-bool GetMissionInfo(const char *msnfile, tMissionInfo *msn);
+/**
+ * Fill information about a mission.
+ * @param msnfile mission file
+ * @param msn mission info to be filled
+ * @return true on success
+ */
+bool GetMissionInfo(const std::filesystem::path &msnfile, tMissionInfo *msn);
 
 // Returns the max number of teams this mission can support for this mod, or
 //-1 if this level shouldn't be played with this mission

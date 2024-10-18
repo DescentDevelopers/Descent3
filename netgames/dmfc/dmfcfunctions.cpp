@@ -325,7 +325,7 @@ void (*DLLCheckBoxSetCheck)(void *cb, bool state);
 bool (*DLLCheckBoxIsChecked)(void *cb);
 uint32_t (*DLLnw_GetHostAddressFromNumbers)(char *str);
 void (*TableFilesClear)(void);
-bool (*TableFileAdd)(char *filename);
+bool (*TableFileAdd)(const char *filename);
 void (*DLLDebugBreak_callback_stop)(void);
 void (*DLLDebugBreak_callback_resume)(void);
 void (*DLLInt3MessageBox)(const char *file, const char *line);

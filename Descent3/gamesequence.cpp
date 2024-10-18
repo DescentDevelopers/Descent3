@@ -1138,9 +1138,6 @@ extern matrix editor_player_orient;
 extern int editor_player_roomnum;
 #endif
 
-extern bool mn3_Open(const char *mn3file);
-extern void mn3_Close();
-
 extern bool Game_gauge_do_time_test;
 extern char Game_gauge_usefile[_MAX_PATH];
 
@@ -1331,8 +1328,6 @@ bool SimpleStartLevel(const std::filesystem::path& level_name) {
 
   Current_mission.cur_level = 1;
   Current_mission.num_levels = 1;
-  Current_mission.levels = mem_rmalloc<tLevelNode>();
-  memset(Current_mission.levels, 0, sizeof(tLevelNode));
 
   Current_level = nullptr;
   Current_mission.levels[0].filename = mem_strdup(level_name.u8string().c_str());
@@ -1455,7 +1450,7 @@ void DeleteAmbientObjects() {
 
 void Localization_SetLanguage(int type);
 int Localization_GetLanguage(void);
-void LoadLevelText(const char *level_filename);
+void LoadLevelText(const std::filesystem::path &level_filename);
 
 // Starts the level, which has already been loaded
 void StartLevel() {
