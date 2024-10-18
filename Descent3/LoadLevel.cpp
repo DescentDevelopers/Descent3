@@ -1459,7 +1459,7 @@ tConvertObject object_convert[] = {
 
 int object_convert_size = sizeof(object_convert) / sizeof(tConvertObject);
 
-int chunk_start, chunk_size, filelen;
+uint32_t chunk_start, chunk_size, filelen;
 
 int CountDataToPageIn();
 
@@ -2648,7 +2648,44 @@ void BuildXlateTable(CFILE *ifile, int (*lookup_func)(const char *), int16_t *xl
     xlate_table[i] = -1;
 }
 
-#define ISCHUNK(name) (!strncmp(chunk_name, name, 4))
+#define ISCHUNK(name) (strncmp(chunk_name, name, 4) == 0)
+
+/**
+ * Read and check level header
+ * @param fp file handle of level
+ * @return version of level, -1 on error
+ */
+int ReadHeader(CFILE *fp) {
+  // Read & check tag
+  char chunk_name[4];
+  cf_ReadBytes((uint8_t *)chunk_name, 4, fp);
+  if (!ISCHUNK(LEVEL_FILE_TAG)) {
+    return -1;
+  }
+
+  // Read version number
+  int version = cf_ReadInt(fp);
+  return version;
+}
+
+void ReadInfoChunk(CFILE *fp, level_info &info) {
+  // Initialize info
+  strcpy(info.name, "Unnamed");
+  strcpy(info.designer, "Anonymous");
+  strcpy(info.copyright, "");
+  strcpy(info.notes, "");
+
+  cf_ReadString(info.name, sizeof(info.name), fp);
+
+  // Localize level name here...
+  strcpy(info.name, LocalizeLevelName(info.name));
+
+  cf_ReadString(info.designer, sizeof(info.designer), fp);
+  cf_ReadString(info.copyright, sizeof(info.copyright), fp);
+  cf_ReadString(info.notes, sizeof(info.notes), fp);
+}
+
+
 
 // Reads info about our lightmaps
 void ReadNewLightmapChunk(CFILE *fp, int version) {
@@ -3600,38 +3637,19 @@ bool LoadLevelInfo(const std::filesystem::path &filename, level_info &info) {
   try {
     // catch cfile errors
 
-    // Read & check tag
-    char tag[4];
-    cf_ReadBytes((uint8_t *)tag, 4, ifile);
-    if (strncmp(tag, LEVEL_FILE_TAG, 4)) {
-      LOG_ERROR.printf("%s is not a level file (tag %c%c%c%c)",
-                       filename.u8string().c_str(), tag[0], tag[1], tag[2], tag[3]);
-      cfclose(ifile);
-      return false;
-    }
+    // Read and check header
+    int version = ReadHeader(ifile);
 
-    // Read & check version number
-    int version = cf_ReadInt(ifile);
-
-    // Check for too-new version
     if (version > LEVEL_FILE_VERSION) {
-      LOG_ERROR.printf("Mission file %s too new (version %d)", filename.u8string().c_str(), version);
+      LOG_ERROR.printf("Mission file too new (version %d)", version);
       cfclose(ifile);
       return false;
     }
     if (version < LEVEL_FILE_OLDEST_COMPATIBLE_VERSION) {
-      LOG_ERROR.printf("Mission file %s too old (version %d)", filename.u8string().c_str(), version);
+      LOG_ERROR.printf("Mission file too old (version %d)", version);
       cfclose(ifile);
       return false;
     }
-
-
-    // Init level info
-    strcpy(info.name, "Unnamed");
-    strcpy(info.designer, "Anonymous");
-    strcpy(info.copyright, "");
-    strcpy(info.notes, "");
-
 
     while (!cfeof(ifile)) {
       char chunk_name[4];
@@ -3641,14 +3659,7 @@ bool LoadLevelInfo(const std::filesystem::path &filename, level_info &info) {
       chunk_size = cf_ReadInt(ifile);
 
       if (ISCHUNK(CHUNK_LEVEL_INFO)) {
-        cf_ReadString(info.name, sizeof(info.name), ifile);
-
-        // Localize level name here...
-        strcpy(info.name, LocalizeLevelName(info.name));
-
-        cf_ReadString(info.designer, sizeof(info.designer), ifile);
-        cf_ReadString(info.copyright, sizeof(info.copyright), ifile);
-        cf_ReadString(info.notes, sizeof(info.notes), ifile);
+        ReadInfoChunk(ifile, info);
         found = true;
         break;
       } else {
@@ -3700,19 +3711,11 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 
     filelen = cfilelength(ifile);
 
-    // Read & check tag
-    cf_ReadBytes((uint8_t *)tag, 4, ifile);
-    if (strncmp(tag, LEVEL_FILE_TAG, 4)) {
-      cfclose(ifile);
-      retval = 0;
-      goto end_loadlevel;
-    }
+    version = ReadHeader(ifile);
 
-    // Read & check version number
-    version = cf_ReadInt(ifile);
-
-    // Check for too-new version
+    // Check for too new version
     if (version > LEVEL_FILE_VERSION) {
+      LOG_ERROR.printf("Mission file too new (version %d)", version);
       cfclose(ifile);
 #if (defined(EDITOR) || defined(NEWEDITOR))
       if (GetFunctionMode() == EDITOR_MODE)
@@ -3725,6 +3728,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 
     // Check for too-old version
     if (version < LEVEL_FILE_OLDEST_COMPATIBLE_VERSION) {
+      LOG_ERROR.printf("Mission file too old (version %d)", version);
       cfclose(ifile);
 #if (defined(EDITOR) || defined(NEWEDITOR))
       if (GetFunctionMode() == EDITOR_MODE)
@@ -3769,12 +3773,6 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 
     // Clear terrain sounds
     ClearTerrainSound();
-
-    // Init level info
-    strcpy(Level_info.name, "Unnamed");
-    strcpy(Level_info.designer, "Anonymous");
-    strcpy(Level_info.copyright, "");
-    strcpy(Level_info.notes, "");
 
     BOA_AABB_checksum = BOA_mine_checksum = 0;
     for (i = 0; i < MAX_ROOMS; i++) {
@@ -4009,14 +4007,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       } else if (ISCHUNK(CHUNK_TERRAIN)) {
         ReadTerrainChunks(ifile, version);
       } else if (ISCHUNK(CHUNK_LEVEL_INFO)) {
-        cf_ReadString(Level_info.name, sizeof(Level_info.name), ifile);
-
-        // Localize level name here...
-        strcpy(Level_info.name, LocalizeLevelName(Level_info.name));
-
-        cf_ReadString(Level_info.designer, sizeof(Level_info.designer), ifile);
-        cf_ReadString(Level_info.copyright, sizeof(Level_info.copyright), ifile);
-        cf_ReadString(Level_info.notes, sizeof(Level_info.notes), ifile);
+        ReadInfoChunk(ifile, Level_info);
 
         if (version >= 83) {
           Gravity_strength = cf_ReadFloat(ifile);
