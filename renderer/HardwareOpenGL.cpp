@@ -268,9 +268,9 @@ int opengl_MakeTextureObject(int tn) {
 
 int opengl_InitCache() {
 
-  OpenGL_bitmap_remap = (uint16_t *)mem_malloc(MAX_BITMAPS * 2);
+  OpenGL_bitmap_remap = mem_rmalloc<uint16_t>(MAX_BITMAPS);
   ASSERT(OpenGL_bitmap_remap);
-  OpenGL_lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * 2);
+  OpenGL_lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
   ASSERT(OpenGL_lightmap_remap);
 
   OpenGL_bitmap_states = mem_rmalloc<uint8_t>(MAX_BITMAPS);
@@ -573,9 +573,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   opengl_InitCache();
 
   if (OpenGL_packed_pixels) {
-    opengl_packed_Upload_data = (uint16_t *)mem_malloc(2048 * 2048 * 2);
-    opengl_packed_Translate_table = (uint16_t *)mem_malloc(65536 * 2);
-    opengl_packed_4444_translate_table = (uint16_t *)mem_malloc(65536 * 2);
+    opengl_packed_Upload_data = mem_rmalloc<uint16_t>(2048 * 2048);
+    opengl_packed_Translate_table = mem_rmalloc<uint16_t>(65536);
+    opengl_packed_4444_translate_table = mem_rmalloc<uint16_t>(65536);
 
     ASSERT(opengl_packed_Upload_data);
     ASSERT(opengl_packed_Translate_table);
@@ -620,9 +620,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
       opengl_packed_4444_translate_table[i] = INTEL_INT(pix);
     }
   } else {
-    opengl_Upload_data = (uint32_t *)mem_malloc(2048 * 2048 * 4);
-    opengl_Translate_table = (uint32_t *)mem_malloc(65536 * 4);
-    opengl_4444_translate_table = (uint32_t *)mem_malloc(65536 * 4);
+    opengl_Upload_data = mem_rmalloc<uint32_t>(2048 * 2048);
+    opengl_Translate_table = mem_rmalloc<uint32_t>(65536);
+    opengl_4444_translate_table = mem_rmalloc<uint32_t>(65536);
 
     ASSERT(opengl_Upload_data);
     ASSERT(opengl_Translate_table);
