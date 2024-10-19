@@ -129,7 +129,7 @@ struct OrphaningVertexBuffer : VertexBuffer<V> {
 
     auto start = nextVertex_;
     V* mapped = reinterpret_cast<V*>(dglMapBufferRange(GL_ARRAY_BUFFER, start * sizeof(V), dist * sizeof(V), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT));
-    std::copy(begin, end, mapped);
+    std::copy(&*begin, &*end, mapped); // note: funny &* here is to convert the iterator into a plain pointer, so MSVC's Debug STL doesn't slow this down
     dglUnmapBuffer(GL_ARRAY_BUFFER);
 
     nextVertex_ += dist;
