@@ -1683,10 +1683,6 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
 
 // Takes a screenshot of the current frame and puts it into the handle passed
 std::unique_ptr<NewBitmap> rend_Screenshot() {
-  uint16_t *dest_data;
-  uint32_t *temp_data;
-
-  int total = gpu_state.screen_width * gpu_state.screen_height;
   auto result = std::make_unique<NewBitmap>(gpu_state.screen_width, gpu_state.screen_height, PixelDataFormat::RGBA32, true);
 
   if (!result || result->getData() == nullptr) {
@@ -1712,8 +1708,8 @@ void rend_Screenshot(int bm_handle) {
 
   uint16_t* dest_data = bm_data(bm_handle, 0);
 
-  for (int i = 0; i < h; i++) {
-    for (int t = 0; t < w; t++) {
+  for (std::size_t i = 0; i < h; i++) {
+    for (std::size_t t = 0; t < w; t++) {
       uint32_t spix = temp_data[i * w + t];
 
       int r = spix & 0xff;
