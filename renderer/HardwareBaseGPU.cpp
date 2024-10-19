@@ -284,25 +284,12 @@ void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, uint8_t alpha) 
   int piece_w = bm_w(bm_array[0], 0);
   int piece_h = bm_h(bm_array[0], 0);
   int screen_w, screen_h;
-  int i, t;
   rend_SetZBufferState(0);
   rend_GetProjectionParameters(&screen_w, &screen_h);
-  for (i = 0; i < h; i++) {
-    for (t = 0; t < w; t++) {
+  for (int i = 0; i < h; i++) {
+    for (int t = 0; t < w; t++) {
       int dx = x + (piece_w * t);
       int dy = y + (piece_h * i);
-      int dw, dh;
-      if ((dx + piece_w) > screen_w)
-        dw = piece_w - ((dx + piece_w) - screen_w);
-      else
-        dw = piece_w;
-      if ((dy + piece_h) > screen_h)
-        dh = piece_h - ((dy + piece_h) - screen_h);
-      else
-        dh = piece_h;
-
-      float u2 = (float)dw / (float)piece_w;
-      float v2 = (float)dh / (float)piece_h;
       rend_DrawSimpleBitmap(bm_array[i * w + t], dx, dy);
     }
   }
