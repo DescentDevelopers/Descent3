@@ -89,7 +89,7 @@ void mng_ClearAddonTables();
 
 // Push the given table file as an addon table file
 // returns true on success
-bool mng_SetAddonTable(char *name);
+bool mng_SetAddonTable(const char *name);
 
 // Pushes an addon pack onto the stack so we can keep track of it
 void mng_PushAddonPage(int pagetype, char *name, int overlay);

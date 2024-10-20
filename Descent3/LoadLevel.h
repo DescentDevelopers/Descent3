@@ -444,6 +444,7 @@
  */
 
 #include "cfile.h"
+#include "Mission.h"
 #include "room.h"
 
 // Chunk types
@@ -633,6 +634,15 @@
 // 129->130 Added the modified force field bounce textures
 // 130->131 Added the powerups ignore gravity checkbox
 // 131->132 Added another ff bounce texture for Dan (his last day wish)
+
+/**
+ * Get information from level such as level name, author copyrights and notes.
+ * This function much lighter that LoadLevel() and gets only INFO chunk from mission.
+ * @param filename name of mission file
+ * @param info resulted info
+ * @return true on success
+ */
+bool LoadLevelInfo(const std::filesystem::path &filename, level_info &info);
 
 // Load a level file
 // Returns 1 if file read ok, else 0

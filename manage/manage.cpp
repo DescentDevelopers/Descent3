@@ -2729,7 +2729,7 @@ void mng_ClearAddonTables() {
 }
 // Push the given table file as an addon table file
 // returns true on success
-bool mng_SetAddonTable(char *name) {
+bool mng_SetAddonTable(const char *name) {
   ASSERT(Num_addon_tables < MAX_ADDON_TABLES);
   if (Num_addon_tables >= MAX_ADDON_TABLES)
     return false;

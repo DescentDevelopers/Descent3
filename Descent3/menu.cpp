@@ -654,6 +654,9 @@
 
 #include <cstdio>
 #include <cstring>
+#include <filesystem>
+#include <sstream>
+#include <vector>
 
 #include "log.h"
 #include "menu.h"
@@ -661,7 +664,6 @@
 #include "game.h"
 #include "Mission.h"
 #include "multi_ui.h"
-#include "ctlconfig.h"
 #include "config.h"
 #include "gamesave.h"
 #include "gamesequence.h"
@@ -698,7 +700,8 @@ bool Directplay_lobby_launched_game = false;
 #define IDV_LOADLEVEL 20
 #define IDV_OK 1
 #define IDV_CANCEL 2
-bool MenuLoadLevel(void);
+
+bool MenuLoadLevel();
 #endif
 // for command line joining of games
 bool Auto_connected = false;
@@ -742,7 +745,7 @@ int MainMenu() {
   main_menu.AddItem(IDV_CREDITS, KEY_C, TXT_MENUCREDITS);
   main_menu.AddItem(IDV_QUIT, KEY_Q, TXT_MENUQUIT, MM_ENDMENU_TYPE);
 #ifdef _DEBUG
-  main_menu.AddItem(0, 0, NULL);
+  main_menu.AddItem(0, 0, nullptr);
   main_menu.AddItem(IDV_LOADLEVEL, 0, "Load Level");
 #endif
   //	page in ui data.
@@ -781,7 +784,7 @@ int MainMenu() {
       Demo_restart = false;
       SetGameMode(GM_NORMAL);
       SetFunctionMode(LOADDEMO_MODE);
-      exit_menu = 1;
+      exit_menu = true;
       continue;
     } else if (MultiDLLGameStarting) {
       // Go back into the multiplayer DLL @ the game list
@@ -789,32 +792,12 @@ int MainMenu() {
       LOG_DEBUG << "Returning to Multiplayer!";
 
       if (ReturnMultiplayerGameMenu()) {
-        exit_menu = 1;
+        exit_menu = true;
         SetFunctionMode(GAME_MODE);
         continue;
       }
     }
-    /*
-            else
-            {
-                    if(FirstGame)
-                    {
-                            //MenuScene();
-                            //ui_ShowCursor();
-                            //Descent->defer();
-                            //DoUIFrame();
-                            //rend_Flip();
-                            //GetUIFrameResult();
-                            res = IDV_NEWGAME;
-                    }
-                    else {
-                            main_menu.SetMusicRegion(MM_MUSIC_REGION);
-                            res = main_menu.DoUI();
-                    }
-            }
-            if (FirstGame)
-                    res = IDV_NEWGAME;
-    */
+
     res = FirstGame ? IDV_NEWGAME : -1;
     if (res == -1) {
       main_menu.SetMusicRegion(MM_MUSIC_REGION);
@@ -836,9 +819,9 @@ int MainMenu() {
       break;
     case IDV_QUIT:
       if (DoMessageBox(TXT_MENUQUIT, TXT_QUITMESSAGE, MSGBOX_YESNO)) {
-        exit_game = 1;
-        exit_menu = 1;
-        Mem_quick_exit = 1; // tell the mem library to not free up each chunk individually
+        exit_game = true;
+        exit_menu = true;
+        Mem_quick_exit = true; // tell the mem library to not free up each chunk individually
       }
       break;
     case IDV_LOADGAME:
@@ -864,12 +847,12 @@ int MainMenu() {
       LOG_DEBUG << "Multiplayer!";
       // make all ships available
       LOG_DEBUG << "Making all ships available";
-      for (int i = 0; i < MAX_SHIPS; i++) {
-        if (Ships[i].used)
-          PlayerSetShipPermission(-1, Ships[i].name, true);
+      for (auto & Ship : Ships) {
+        if (Ship.used)
+          PlayerSetShipPermission(-1, Ship.name, true);
       }
       if (MainMultiplayerMenu()) {
-        exit_menu = 1;
+        exit_menu = true;
         SetFunctionMode(GAME_MODE);
       }
     } break;
@@ -877,12 +860,12 @@ int MainMenu() {
       if (LoadDemoDialog()) {
         SetGameMode(GM_NORMAL);
         SetFunctionMode(LOADDEMO_MODE);
-        exit_menu = 1;
+        exit_menu = true;
       }
       break;
     case IDV_CREDITS:
       SetFunctionMode(CREDITS_MODE);
-      exit_menu = 1;
+      exit_menu = true;
       /*
       #if defined(DEMO)
               //extern void ShowStaticScreen(char *bitmap_filename);
@@ -901,7 +884,7 @@ int MainMenu() {
     case IDV_LOADLEVEL: {
       if (MenuLoadLevel()) {
         ShowProgressScreen(TXT_LOADINGLEVEL);
-        exit_menu = 1;
+        exit_menu = true;
       }
     } break;
 #endif
@@ -940,11 +923,10 @@ bool ProcessCommandLine() {
 #endif
     tokp = strtok(p, "/");
     if (stricmp(tokp, "ip") == 0) {
-      tokp = strtok(NULL, "/");
+      tokp = strtok(nullptr, "/");
       Auto_login_port[0] = '\0';
       strcpy(Auto_login_addr, tokp);
-      //			char seldll[_MAX_PATH*2];
-      // ddio_MakePath(seldll,Base_directory,"online","Direct TCP~IP Game.d3c",NULL);
+
       if (LoadMultiDLL("Direct TCP~IP")) {
         CallMultiDLL(MT_AUTO_LOGIN);
         if (MultiDLLGameStarting) {
@@ -957,11 +939,10 @@ bool ProcessCommandLine() {
         LOG_WARNING << "Couldn't load DLL.";
       }
     } else if (stricmp(tokp, "pxo") == 0) {
-      tokp = strtok(NULL, "/");
+      tokp = strtok(nullptr, "/");
       Auto_login_port[0] = '\0';
       strcpy(Auto_login_addr, tokp);
-      //		char seldll[_MAX_PATH*2];
-      // ddio_MakePath(seldll,Base_directory,"online","parallax online.d3c",NULL);
+
       if (LoadMultiDLL("parallax online")) {
         CallMultiDLL(MT_AUTO_LOGIN);
         if (MultiDLLGameStarting) {
@@ -1042,6 +1023,7 @@ bool ProcessCommandLine() {
   SetUICallback(DEFAULT_UICALLBACK);
   return exit_menu ? true : false;
 }
+
 //////////////////////////////////////////////////////////////////////////////
 //	Start New Game
 #define MSNDLG_WIDTH 512
@@ -1057,6 +1039,7 @@ bool ProcessCommandLine() {
 #define MSNBTN_X2 ((3 * MSNDLG_WIDTH / 4) - (MSNBTN_W / 2))
 #define MSNBTN_Y (MSNDLG_HEIGHT - 64)
 #define UID_MSNLB 100
+#define UID_LVLB 101
 #define UID_MSNINFO 0x1000
 #define TRAINING_MISSION_NAME "Pilot Training"
 
@@ -1090,25 +1073,23 @@ static inline int count_missions(const std::vector<std::filesystem::path> &missi
   return c;
 }
 
-static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, char **filelist,
+static inline int generate_mission_listbox(newuiListBox *lb, std::vector<std::filesystem::path> &filelist,
                                            const std::vector<std::filesystem::path> &missions_directories) {
   int c = 0;
   for (const auto &missions_directory : missions_directories) {
     ddio_DoForeachFile(
-        missions_directory, std::regex(".*\\.mn3"), [&c, &lb, &n_maxfiles, &filelist](const std::filesystem::path &path) {
+        missions_directory, std::regex(".*\\.mn3"), [&c, &lb, &filelist](const std::filesystem::path &path) {
           tMissionInfo msninfo{};
-          if (c < n_maxfiles) {
-            if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
-              return;
-            if (GetMissionInfo(path.filename().u8string().c_str(), &msninfo) && msninfo.name[0] && msninfo.single) {
-              filelist[c] = mem_strdup(path.filename().u8string().c_str());
-              lb->AddItem(msninfo.name);
-              c++;
-              if (!(c % 2))
-                DoWaitMessage(true);
-            }
-          }
-        });
+          if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
+          return;
+        if (GetMissionInfo(path.filename(), &msninfo) && msninfo.name[0] && msninfo.single) {
+          filelist.push_back(path.filename());
+          lb->AddItem(msninfo.name);
+          c++;
+          if (!(c % 2))
+            DoWaitMessage(true);
+        }
+      });
   }
 
   return c;
@@ -1121,8 +1102,8 @@ bool MenuNewGame() {
   newuiTiledWindow menu;
   newuiSheet *select_sheet;
   newuiListBox *msn_lb;
-  char **filelist = nullptr;
-  int n_missions, i, res;
+  std::vector<std::filesystem::path> filelist;
+  int n_missions, res;
   bool found = false;
   bool do_menu = true, load_mission = false, retval = true;
 #ifdef DEMO
@@ -1174,59 +1155,41 @@ bool MenuNewGame() {
   menu.Create(TXT_MENUNEWGAME, 0, 0, 448, 384);
 
   select_sheet = menu.GetSheet();
-  select_sheet->NewGroup(NULL, 10, 0);
+  select_sheet->NewGroup(nullptr, 10, 0);
   msn_lb = select_sheet->AddListBox(352, 256, UID_MSNLB);
-  select_sheet->NewGroup(NULL, 160, 280, NEWUI_ALIGN_HORIZ);
+  select_sheet->NewGroup(nullptr, 160, 280, NEWUI_ALIGN_HORIZ);
   select_sheet->AddButton(TXT_OK, UID_OK);
   select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 #ifndef OEM
   select_sheet->AddButton(TXT_MSNINFO, UID_MSNINFO);
 #endif
 #ifndef OEM
-  // add mission names to listbox
-  // count valid mission files.
-  // add a please wait dialog here.
-  auto missions_directories = cf_LocateMultiplePaths("missions");
-  n_missions = 0;
-  n_missions += count_missions(missions_directories);
-  if (n_missions) {
-    // allocate extra mission slot because of check below which adds a name to the filelist.
-    filelist = (char **)mem_malloc(sizeof(char *) * (n_missions + 1));
-    for (i = 0; i < (n_missions + 1); i++)
-      filelist[i] = NULL;
-  } else {
-    DoMessageBox(TXT_ERROR, TXT_NOMISSIONS, MSGBOX_OK);
-    retval = false;
-    DoWaitMessage(false);
-    goto missions_fail;
-  }
   // generate real listbox now.
-  generate_mission_listbox(msn_lb, n_missions, filelist, missions_directories);
-  // #ifdef RELEASE
-  int k;
-  for (k = 0; k < n_missions; k++) {
-    if (!filelist[k])
-      continue;
-    if (stricmp(filelist[k], "d3.mn3") == 0) {
+  n_missions = generate_mission_listbox(msn_lb, filelist, cf_LocateMultiplePaths("missions"));
+
+  if (n_missions == 0) {
+    DoMessageBox(TXT_ERROR, TXT_NOMISSIONS, MSGBOX_OK);
+    DoWaitMessage(false);
+    return false;
+  }
+  for (auto const &mission : filelist) {
+    if (stricmp(mission.u8string().c_str(), "d3.mn3") == 0) {
       found = true;
       break;
     }
   }
   if (!found) {
-    filelist[n_missions] = mem_strdup("d3.mn3");
+    filelist.emplace_back("d3.mn3");
     msn_lb->AddItem(TXT_MAINMISSION);
     n_missions++;
   }
-// #endif
 #else
 #define OEM_MISSION_NAME "Descent 3: Sol Ascent"
-#define OEM_TRAINING_NAME "Pilot Training "
+#define OEM_TRAINING_NAME "Pilot Training"
   n_missions = 2;
-  filelist = mem_rmalloc<char *>(2);
-  filelist[0] = mem_strdup(OEM_MISSION_FILE);
-  ;
+  filelist.emplace_back(OEM_MISSION_NAME);
   msn_lb->AddItem(OEM_MISSION_NAME);
-  filelist[1] = mem_strdup(OEM_TRAINING_FILE);
+  filelist.emplace_back(OEM_TRAINING_NAME);
   msn_lb->AddItem(OEM_TRAINING_NAME);
 #endif
   DoWaitMessage(false);
@@ -1238,14 +1201,14 @@ redo_newgame_menu:
     res = menu.DoUI();
 #ifndef OEM
     if (res == UID_MSNINFO) {
-      tMissionInfo msninfo;
+      tMissionInfo msninfo{};
       int index = msn_lb->GetCurrentIndex();
       if (index >= 0 && index < n_missions) {
         if (GetMissionInfo(filelist[index], &msninfo)) {
           if (msninfo.name[0]) {
             newuiTiledWindow infownd;
             newuiSheet *sheet;
-            infownd.Create(NULL, 0, 0, 384, 192);
+            infownd.Create(nullptr, 0, 0, 384, 192);
             infownd.Open();
             sheet = infownd.GetSheet();
             sheet->NewGroup(TXT_MSNNAME, 0, 0);
@@ -1260,7 +1223,7 @@ redo_newgame_menu:
               sheet->AddText(msninfo.desc);
             else
               sheet->AddText(TXT_NONE);
-            sheet->NewGroup(NULL, 240, 118);
+            sheet->NewGroup(nullptr, 240, 118);
             sheet->AddButton(TXT_OK, UID_OK);
             infownd.DoUI();
             infownd.Close();
@@ -1277,15 +1240,11 @@ redo_newgame_menu:
     retval = false;
   } else if (res == UID_OK || res == UID_MSNLB) {
     int index = msn_lb->GetCurrentIndex();
-    char *nameptr = NULL;
-    if (index >= 0 && index < n_missions) {
+    std::filesystem::path nameptr;
+    if (index >= 0 && index < filelist.size()) {
       nameptr = filelist[index];
     }
-#ifndef OEM
-    if (!nameptr || !LoadMission(nameptr)) {
-#else
-    if (!LoadMission(nameptr)) {
-#endif
+    if (nameptr.empty() || !LoadMission(nameptr.u8string().c_str())) {
       DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
       retval = false;
     } else {
@@ -1300,8 +1259,7 @@ redo_newgame_menu:
       highest = std::min(highest + 1, Current_mission.num_levels);
 #endif
       if (highest > 1) {
-        int start_level;
-        start_level = DisplayLevelWarpDlg(highest);
+        int start_level = DisplayLevelWarpDlg(highest);
         if (start_level == -1) {
           goto redo_newgame_menu;
         } else {
@@ -1317,63 +1275,87 @@ redo_newgame_menu:
     }
   }
   menu.Destroy();
-missions_fail:
-  // free all memory
-  for (i = 0; i < n_missions; i++) {
-    if (filelist[i]) {
-      mem_free(filelist[i]);
-    }
-  }
-  if (filelist) {
-    mem_free(filelist);
-  }
+
   return retval;
 #endif
 }
+
 // DisplayLevelWarpDlg
 //	pass in the max level allowed to be chosen, if -1, than all levels are allowed (a.k.a level warp cheat)
 int DisplayLevelWarpDlg(int max_level) {
-  newuiMessageBox hwnd;
-  newuiSheet *sheet;
+  newuiTiledWindow menu;
+  newuiSheet *select_sheet;
+  newuiListBox *level_listbox;
+
   int chosen_level = 1, res;
   int highest_allowed;
-  char buffer[128];
-  char *input_text;
-  // creates a sheet
-  sheet = hwnd.GetSheet();
+
+  // Create UI
+  menu.Create(Current_mission.name, 0, 0, 448, 384);
+  select_sheet = menu.GetSheet();
+  select_sheet->NewGroup(nullptr, 10, 0);
+  level_listbox = select_sheet->AddListBox(352, 256, UID_LVLB, UILB_NOSORT);
+  select_sheet->NewGroup(nullptr, 160, 280, NEWUI_ALIGN_HORIZ);
+  select_sheet->AddButton(TXT_OK, UID_OK);
+  select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
+
   if (max_level != -1) {
-    hwnd.Create(TXT_LEVELSELECT, MSGBOX_OKCANCEL);
     highest_allowed = max_level;
-    snprintf(buffer, sizeof(buffer), TXT_LEVELSELECTB, highest_allowed);
   } else {
     // level warp
-    hwnd.Create(TXT_LEVELWARP, MSGBOX_OKCANCEL);
     highest_allowed = Current_mission.num_levels;
-    snprintf(buffer, sizeof(buffer), TXT_LEVELWARPB, Current_mission.num_levels);
   }
-  sheet->NewGroup(buffer, 0, 0);
-  input_text = sheet->AddEditBox(NULL, 4, 64, IDV_QUIT, UIED_NUMBERS);
-  sprintf(input_text, "%d", chosen_level);
-redo_level_choose:
-  hwnd.Open();
-  res = hwnd.DoUI();
-  hwnd.Close();
-  if (res == UID_OK || res == IDV_QUIT) {
-    chosen_level = atoi(input_text);
-    if (chosen_level < 1 || chosen_level > highest_allowed) {
-      snprintf(buffer, sizeof(buffer), TXT_CHOOSELEVEL, highest_allowed);
-      DoMessageBox(TXT_ERROR, buffer, MSGBOX_OK);
-      goto redo_level_choose;
+
+  int mn3_handle = -1;
+
+  // Because of D3: Retribution split mission nature we have to load library early
+  if (stricmp(Current_mission.filename, "d3.mn3") == 0) {
+    mn3_handle = cf_OpenLibrary(std::filesystem::path("missions") / "d3_2.mn3");
+  }
+  if (stricmp(Current_mission.filename, "d3_2.mn3") == 0) {
+    mn3_handle = cf_OpenLibrary(std::filesystem::path("missions") / "d3.mn3");
+  }
+
+  for (int i = 0; i < highest_allowed; i++) {
+    std::stringstream ss;
+    level_info info{};
+
+    LoadLevelInfo(Current_mission.levels[i].filename, info);
+    ss << std::setw(2) << std::setfill('0') << i + 1 << ". " << info.name;
+    level_listbox->AddItem(ss.str().c_str());
+  }
+
+  if (mn3_handle != -1) {
+    cf_CloseLibrary(mn3_handle);
+  }
+
+  // Main UI loop
+  menu.Open();
+  do {
+    res = menu.DoUI();
+    if (res == UID_OK || res == UID_LVLB) {
+      int index = level_listbox->GetCurrentIndex();
+      chosen_level = index + 1; // Levels are 1-based
+      if (chosen_level < 1 || chosen_level > highest_allowed) {
+        DoMessageBox(TXT_ERROR, TXT_CHOOSELEVEL, MSGBOX_OK);
+        continue; // Allow another selection
+      }
+      if (res == UID_LVLB) {
+        res = UID_OK;
+      }
+    } else if (res == UID_CANCEL) {
+      chosen_level = -1;
     }
-  } else {
-    chosen_level = -1;
-  }
-  hwnd.Destroy();
+  } while (res != UID_OK && res != UID_CANCEL);
+
+  menu.Close();
+  menu.Destroy();
   return chosen_level;
 }
+
 #ifdef _DEBUG
 // Loads a level and starts the game
-bool MenuLoadLevel(void) {
+bool MenuLoadLevel() {
   std::filesystem::path buffer;
   if (DoPathFileDialog(false, buffer, "Load Level", {"*.d3l"}, PFDF_FILEMUSTEXIST)) {
     SimpleStartLevel(buffer);
