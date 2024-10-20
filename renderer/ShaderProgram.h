@@ -67,7 +67,7 @@ struct VertexBuffer {
                   initialData,
                   bufferType);
 
-    for (GLint i{}; i < attribs.size(); i++) {
+    for (std::size_t i{}; i < attribs.size(); i++) {
       dglEnableVertexAttribArray(i);
       dglVertexAttribPointer(i,
                              attribs[i].size,
