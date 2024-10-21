@@ -4,4 +4,3 @@ Descent3 Online.dll
 Descent3 Online.dylib
 d3online_main.ogf
 d3online_game.ogf
-

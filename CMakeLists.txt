@@ -78,6 +78,8 @@ if(FORCE_COLORED_OUTPUT)
   endif()
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 include(GNUInstallDirs)
 if(FORCE_PORTABLE_INSTALL)
   set(CMAKE_INSTALL_BINDIR ".")
@@ -108,6 +110,15 @@ if(BUILD_TESTING)
   enable_testing()
   include(GoogleTest)
   add_subdirectory(tests)
+endif()
+
+# Define names for HOG files
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+  set(HOG_NAME "linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set(HOG_NAME "osx")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(HOG_NAME "win")
 endif()
 
 # rebuild d3_version.h every time

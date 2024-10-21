@@ -29,14 +29,13 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set_target_properties(Parallax_Online PROPERTIES SUFFIX ".dylib")
 endif()
 
-add_custom_target(Parallax_Online_Hog
-  COMMAND $<TARGET_FILE:HogMaker>
-  "$<TARGET_FILE_DIR:Descent3>/online/Parallax Online.d3c"
-  "${CMAKE_SOURCE_DIR}/netcon/mtclient/Parallax_Online.d3c.txt"
-  "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
-  "$<TARGET_FILE_DIR:Parallax_Online>"
-
-  DEPENDS Parallax_Online HogMaker
-  COMMENT "Generate 'Parallax Online.d3c'"
+include(HogMaker)
+MakeHog(
+  TARGET Parallax_Online_Hog
+  OUTPUT "$<CONFIG>/Parallax Online.d3c"
+  INPUT_FILE "${CMAKE_SOURCE_DIR}/netcon/mtclient/Parallax_Online.d3c.txt"
+  SEARCH_PATH "$<TARGET_FILE_DIR:Parallax_Online>" "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
+  DEPENDS Parallax_Online
 )
-install(FILES "$<TARGET_FILE_DIR:Descent3>/online/Parallax Online.d3c" DESTINATION ${CMAKE_INSTALL_DATADIR}/online)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Parallax Online.d3c" DESTINATION ${CMAKE_INSTALL_DATADIR}/online)

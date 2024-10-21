@@ -344,7 +344,34 @@ target_link_libraries(Descent3 PRIVATE
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
 target_link_options(Descent3 PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)
-add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog Descent3_Online_TCP_IP_Hog HogFull NetgamesDir Parallax_Online_Hog)
+add_dependencies(Descent3
+  get_git_hash
+  Direct_TCP_IP_Hog
+  Descent3_Online_TCP_IP_Hog
+  HogFull
+  Parallax_Online_Hog
+  anarchy
+  coop
+  ctf
+  entropy
+  hoard
+  hyperanarchy
+  monsterball
+  roboanarchy
+  tanarchy
+)
+
+# Custom command for copying custom targets such HOG files
+# We cannot use here TARGET_FILE_DIR generated expressions since custom target don't have one
+add_custom_command(TARGET Descent3 POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/scripts/$<CONFIG>/d3-${HOG_NAME}.hog" "$<TARGET_FILE_DIR:Descent3>"
+  COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:Descent3>/online"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/netcon/descent3onlineclient/$<CONFIG>/Descent3 Online.d3c" "$<TARGET_FILE_DIR:Descent3>/online"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/netcon/lanclient/$<CONFIG>/Direct TCP~IP.d3c" "$<TARGET_FILE_DIR:Descent3>/online"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/netcon/mtclient/$<CONFIG>/Parallax Online.d3c" "$<TARGET_FILE_DIR:Descent3>/online"
+  COMMENT "Copying HOG-files into Descent3 work dir"
+)
+
 install(TARGETS Descent3 RUNTIME BUNDLE DESTINATION .)
 if(MSVC)
   install(FILES $<TARGET_PDB_FILE:Descent3> DESTINATION ${CMAKE_INSTALL_BINDIR})
