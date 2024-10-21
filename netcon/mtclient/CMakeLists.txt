@@ -30,12 +30,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 add_custom_target(Parallax_Online_Hog
-  COMMAND $<TARGET_FILE:HogMaker>
+  COMMAND ${HogMakerBin}
   "$<TARGET_FILE_DIR:Descent3>/online/Parallax Online.d3c"
   "${CMAKE_SOURCE_DIR}/netcon/mtclient/Parallax_Online.d3c.txt"
   "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
   "$<TARGET_FILE_DIR:Parallax_Online>"
-
   DEPENDS Parallax_Online HogMaker
   COMMENT "Generate 'Parallax Online.d3c'"
 )
