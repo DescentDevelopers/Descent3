@@ -45,6 +45,8 @@
 #ifndef __AUDIO_TAUNT_H_
 #define __AUDIO_TAUNT_H_
 
+#include <filesystem>
+
 extern bool Audio_taunts_enabled;
 
 // Error codes:
@@ -82,7 +84,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename);
 //	taunt_PlayTauntFile
 //
 //	Given a path to an .osf file, it will play it
-bool taunt_PlayTauntFile(const char *filename);
+bool taunt_PlayTauntFile(const std::filesystem::path &filename);
 
 //	taunt_PlayPlayerTaunt
 //
