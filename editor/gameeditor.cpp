@@ -886,7 +886,7 @@ void InitEditGameSystems() {
   ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
 
   // Sound initialization
-  InitD3Music(FindArg("-nomusic") ? false : true);
+  InitD3Music(FindArg("-nomusic") || FindArg("-nosound") ? false : true);
   Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
 
   //	UI init.
@@ -925,7 +925,7 @@ void InitGameEditSystems() {
   ddio_MouseMode(MOUSE_STANDARD_MODE);
 
   // Sound initialization for editor
-  InitD3Music(FindArg("-nomusic") ? false : true);
+  InitD3Music(FindArg("-nomusic") || FindArg("-nosound") ? false : true);
   Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
 
   NewUIClose();

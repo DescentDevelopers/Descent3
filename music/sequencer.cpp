@@ -395,7 +395,6 @@ next_ins:
 
       // skip instructions until error is cleared.
       if (!err) {
-        //	mprintf(0, "MUSIC: Error opening stream %s on channel %d.\n", name, m_dominant_strm);
         LOG_WARNING.printf("Error opening stream %s on channel %d.", name, m_dominant_strm);
         strm->error = true;
       }

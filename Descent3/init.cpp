@@ -1912,7 +1912,7 @@ void InitD3Systems2(bool editor) {
 
   // the remaining sound system
   InitVoices();
-  InitD3Music(FindArg("-nomusic") ? false : true);
+  InitD3Music(FindArg("-nomusic")  || FindArg("-nosound") ? false : true);
   InitAmbientSoundSystem();
 
   InitGameSystems(editor);
