@@ -32,10 +32,13 @@ endif()
 include(HogMaker)
 MakeHog(
   TARGET Parallax_Online_Hog
-  OUTPUT "$<CONFIG>/Parallax Online.d3c"
+  OUTPUT "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Parallax Online.d3c"
   INPUT_FILE "${CMAKE_SOURCE_DIR}/netcon/mtclient/Parallax_Online.d3c.txt"
   SEARCH_PATH "$<TARGET_FILE_DIR:Parallax_Online>" "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
   DEPENDS Parallax_Online
 )
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Parallax Online.d3c" DESTINATION ${CMAKE_INSTALL_DATADIR}/online)
+install(
+  FILES "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Parallax Online.d3c"
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/online
+)

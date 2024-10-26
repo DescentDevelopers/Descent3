@@ -93,12 +93,16 @@ endforeach()
 include(HogMaker)
 MakeHog(
   TARGET HogFull
-  OUTPUT "$<CONFIG>/d3-${HOG_NAME}.hog"
+  OUTPUT "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/d3-${HOG_NAME}.hog"
   INPUT_FILE "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/d3-${HOG_NAME}-fullhog.txt"
   SEARCH_PATH "$<TARGET_FILE_DIR:AIGame>"
   DEPENDS ${SCRIPTS}
 )
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/d3-${HOG_NAME}.hog" DESTINATION ${CMAKE_INSTALL_DATADIR})
+
+install(
+  FILES "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/d3-${HOG_NAME}.hog"
+  DESTINATION ${CMAKE_INSTALL_DATADIR}
+)
 
 # FIXME: there may be only one d3-linux.hog, need deal with demo somehow.
 #	add_custom_target(HogLinuxDemo

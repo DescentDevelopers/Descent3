@@ -22,9 +22,13 @@ endif()
 include(HogMaker)
 MakeHog(
   TARGET Direct_TCP_IP_Hog
-  OUTPUT "$<CONFIG>/Direct TCP~IP.d3c"
+  OUTPUT "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Direct TCP~IP.d3c"
   INPUT_FILE "${CMAKE_SOURCE_DIR}/netcon/lanclient/TCP_IP.d3c.txt"
   SEARCH_PATH "$<TARGET_FILE_DIR:Direct_TCP_IP>" "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
   DEPENDS Direct_TCP_IP
 )
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Direct TCP~IP.d3c" DESTINATION ${CMAKE_INSTALL_DATADIR}/online)
+
+install(
+  FILES "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Direct TCP~IP.d3c"
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/online
+)

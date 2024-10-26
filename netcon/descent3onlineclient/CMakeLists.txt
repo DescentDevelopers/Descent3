@@ -29,9 +29,13 @@ endif()
 include(HogMaker)
 MakeHog(
   TARGET Descent3_Online_TCP_IP_Hog
-  OUTPUT "$<CONFIG>/Descent3 Online.d3c"
+  OUTPUT "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Descent3 Online.d3c"
   INPUT_FILE "${CMAKE_SOURCE_DIR}/netcon/descent3onlineclient/d3online.d3c.txt"
   SEARCH_PATH "$<TARGET_FILE_DIR:Descent3_Online_TCP_IP>" "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
   DEPENDS Descent3_Online_TCP_IP
 )
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/Descent3 Online.d3c" DESTINATION ${CMAKE_INSTALL_DATADIR}/online)
+
+install(
+  FILES "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Descent3 Online.d3c"
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/online
+)

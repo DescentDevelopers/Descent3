@@ -49,7 +49,7 @@ The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja
     ```
     See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
-Once CMake finishes, the built files will be put in `builds\win\Descent3\Debug` or `builds\win\Descent3\Release`.
+Once CMake finishes, the built files will be put in `builds\win\build\Debug` or `builds\win\build\Release`.
 
 ## Building - macOS
 1. **Install the prerequisite build tools.**
@@ -87,7 +87,7 @@ Once CMake finishes, the built files will be put in `builds\win\Descent3\Debug` 
     ```
     See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
-Once CMake finishes, the built files will be put in `builds/mac/Descent3/Debug` or `builds/mac/Descent3/Release`.
+Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or `builds/mac/build/Release`.
 
 ## Building - Linux
 1. **Install the prerequisite build tools.**
@@ -147,7 +147,7 @@ Once CMake finishes, the built files will be put in `builds/mac/Descent3/Debug` 
     ```
     See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
-Once CMake finishes, the built files will be put in `builds/linux/Descent3/Debug` or `builds/linux/Descent3/Release`.
+Once CMake finishes, the built files will be put in `builds/linux/build/Debug` or `builds/linux/build/Release`.
 
 ## Cross-compilation
 
