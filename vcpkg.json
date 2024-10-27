@@ -8,8 +8,15 @@
     {
       "name": "sdl2",
       "version>=": "2.30.3",
+      "features": ["x11", "wayland", "alsa"],
+      "default-features": false,
+      "platform": "linux & !native"
+    },
+    {
+      "name": "sdl2",
+      "version>=": "2.30.3",
       "features": ["x11","wayland", "alsa"],
-      "platform": "linux"
+      "platform": "linux & native"
     },
     {
       "name": "sdl2",
