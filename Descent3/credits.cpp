@@ -79,21 +79,20 @@
 
 #include <cstring>
 
-#include "log.h"
-#include "pstypes.h"
-#include "crossplat.h"
-#include "ddio.h"
-#include "grtext.h"
-#include "renderer.h"
-#include "gamefont.h"
-#include "game.h"
 #include "bitmap.h"
-#include "descent.h"
-#include "mem.h"
+#include "crossplat.h"
 #include "d3music.h"
+#include "ddio.h"
+#include "descent.h"
+#include "game.h"
+#include "gamefont.h"
+#include "grtext.h"
 #include "hlsoundlib.h"
+#include "log.h"
+#include "mem.h"
 #include "pserror.h"
 #include "psrand.h"
+#include "renderer.h"
 
 /*
 $$TABLE_GAMEFILE "GameCredits.txt"
@@ -118,7 +117,7 @@ struct creditline {
   float displaytime;
 };
 
-static void Credits_Render(creditline *, float);
+static void Credits_Render(creditline *header, float pixels_in);
 static creditline Creditlines;
 
 static ddgr_color CreditTextColor, CreditHeadingColor;
@@ -128,7 +127,7 @@ static chunked_bitmap Credits_bm;
 
 #define MAX_CREDIT_LEN 200
 
-static bool Credits_IsKeyPressed(void) {
+static bool Credits_IsKeyPressed() {
   if (ddio_KeyInKey())
     return true;
 
@@ -138,22 +137,23 @@ static bool Credits_IsKeyPressed(void) {
 // Parses a credit line
 // Returns 1 if new text was read, else 0
 static int Credits_ParseLine(char *line, creditline *credit) {
-  int line_len = strlen(line);
+  size_t line_len = strlen(line);
   int new_text = 0;
 
   if (line_len < 1) {
-    ASSERT(credit->next == NULL);
-    ASSERT(credit->text == NULL);
+    ASSERT(credit->next == nullptr);
+    ASSERT(credit->text == nullptr);
 
-    credit->text = NULL;
+    credit->text = nullptr;
 
     credit->type = CLTYPE_BLANK;
     new_text = 1;
 
-  } else if (line[0] == ';') // Comment
+  } else if (line[0] == ';') {
+    // Comment
     return 0;
-  else if (line[0] == '*') // Movement data
-  {
+  } else if (line[0] == '*') {
+    // Movement data
     int x1, x2, y1, y2;
     float timedelay;
 
@@ -169,10 +169,10 @@ static int Credits_ParseLine(char *line, creditline *credit) {
       CreditDisplayTime = timedelay;
     }
 
-  } else if (line[0] == '!') // Heading
-  {
-    ASSERT(credit->next == NULL);
-    ASSERT(credit->text == NULL);
+  } else if (line[0] == '!') {
+    // Heading
+    ASSERT(credit->next == nullptr);
+    ASSERT(credit->text == nullptr);
 
     credit->text = (char *)mem_malloc(line_len + 1);
     ASSERT(credit->text);
@@ -189,8 +189,8 @@ static int Credits_ParseLine(char *line, creditline *credit) {
     credit->type = CLTYPE_HEADING;
     new_text = 1;
 
-  } else if (line[0] == '$') // text color
-  {
+  } else if (line[0] == '$') {
+    // text color
     int r, g, b;
     int num_found = sscanf(line, "$%d %d %d", &r, &g, &b);
     if (num_found != 3) {
@@ -200,8 +200,8 @@ static int Credits_ParseLine(char *line, creditline *credit) {
       CreditTextColor = GR_RGB(r, g, b);
     }
 
-  } else if (line[0] == '^') // heading color
-  {
+  } else if (line[0] == '^') {
+    // heading color
     int r, g, b;
     int num_found = sscanf(line, "^%d %d %d", &r, &g, &b);
     if (num_found != 3) {
@@ -210,10 +210,9 @@ static int Credits_ParseLine(char *line, creditline *credit) {
     } else {
       CreditHeadingColor = GR_RGB(r, g, b);
     }
-
   } else {
-    ASSERT(credit->next == NULL);
-    ASSERT(credit->text == NULL);
+    ASSERT(credit->next == nullptr);
+    ASSERT(credit->text == nullptr);
 
     if (!strnicmp("Jason Leighton", line, 14) && (ps_rand() % 100) == 0) {
       strcat(line, " (Hi mom!)");
@@ -226,7 +225,6 @@ static int Credits_ParseLine(char *line, creditline *credit) {
     strcpy(credit->text, line);
     credit->color = CreditTextColor;
     credit->type = CLTYPE_TEXT;
-    // mprintf(0,"Read textline %s\n",line);
     new_text = 1;
   }
 
@@ -246,8 +244,8 @@ static bool Credits_LoadCredits(const char *filename) {
   CreditDisplayTime = 10;
 
   creditline *cur_credit = &Creditlines;
-  Creditlines.next = NULL;
-  Creditlines.text = NULL;
+  Creditlines.next = nullptr;
+  Creditlines.text = nullptr;
 
   // Open the file, bail on failure
   infile = cfopen(filename, "rt");
@@ -259,13 +257,13 @@ static bool Credits_LoadCredits(const char *filename) {
 
   for (int i = 0; i < 27; i++) {
     // Generate blank lines for the start
-    cur_credit->text = NULL;
+    cur_credit->text = nullptr;
     cur_credit->type = CLTYPE_BLANK;
     cur_credit->next = mem_rmalloc<creditline>();
     ASSERT(cur_credit->next);
     cur_credit = cur_credit->next;
-    cur_credit->next = NULL;
-    cur_credit->text = NULL;
+    cur_credit->next = nullptr;
+    cur_credit->text = nullptr;
   }
 
   // Read in each line of the credit file, allocing memory and putting it into a correct category
@@ -290,8 +288,8 @@ static bool Credits_LoadCredits(const char *filename) {
       cur_credit->next = mem_rmalloc<creditline>();
       ASSERT(cur_credit->next);
       cur_credit = cur_credit->next;
-      cur_credit->next = NULL;
-      cur_credit->text = NULL;
+      cur_credit->next = nullptr;
+      cur_credit->text = nullptr;
     }
   }
 
@@ -305,7 +303,7 @@ extern void ShowStaticScreen(char *bitmap_filename, bool timed = false, float de
 
 #define CREDIT_PIXELS_PER_SECOND 22
 
-void Credits_Display(void) {
+void Credits_Display() {
 #ifdef DEMO
   // ShowStaticScreen("democredits1.ogf");
   // ShowStaticScreen("democredits2.ogf");
@@ -371,7 +369,7 @@ void Credits_Display(void) {
       while (cur_pixel_count >= font_height) {
         credit = credit->next;
         cur_line++;
-        if (credit == NULL || credit->type == CLTYPE_END) {
+        if (credit == nullptr || credit->type == CLTYPE_END) {
           cur_pixel_count = -1;
           cur_line = count;
         } else {
@@ -380,7 +378,7 @@ void Credits_Display(void) {
       }
 
       // Player music for this frame
-      tMusicSeqInfo music_info;
+      tMusicSeqInfo music_info{};
       Sound_system.BeginSoundFrame(false);
       music_info.frametime = frametime;
       music_info.player_dead = false;
@@ -417,8 +415,6 @@ void Credits_Display(void) {
   // end the music.
   D3MusicStop();
   ddio_KeyFlush();
-//	ddio_MouseReset();				// -mouse shouldn't be reset.   ui system gets hosed
-// unfortunately under NT.
 #endif
 }
 
@@ -442,10 +438,8 @@ void Credits_Render(creditline *header, float pixels_in) {
       pixels_this_frame += text_height;
       cur_pixel += text_height;
 
-      if (credit == NULL)
-        done = 1;
-      else if (credit->type == CLTYPE_END)
-        done = 1;
+      if ((credit == nullptr) || (credit->type == CLTYPE_END))
+        done = true;
 
       continue;
     }
@@ -453,10 +447,10 @@ void Credits_Render(creditline *header, float pixels_in) {
 
     // Figure out alpha
     if (cur_pixel < 0) {
-      float norm = 1.0 - ((-cur_pixel) / (float)text_height);
+      float norm = 1.0f - ((-cur_pixel) / (float)text_height);
       grtext_SetAlpha(norm * 255);
     } else if ((cur_pixel + text_height) > 480) {
-      float norm = 1.0 - (((cur_pixel + text_height) - 480) / (float)text_height);
+      float norm = 1.0f - (((cur_pixel + text_height) - 480) / (float)text_height);
       grtext_SetAlpha(norm * 255);
     } else
       grtext_SetAlpha(255);
@@ -468,10 +462,8 @@ void Credits_Render(creditline *header, float pixels_in) {
 
     credit = credit->next;
 
-    if (credit == NULL)
-      done = 1;
-    else if (credit->type == CLTYPE_END)
-      done = 1;
+    if ((credit == nullptr) || (credit->type == CLTYPE_END))
+      done = true;
 
     cur_line++;
     pixels_this_frame += text_height;
