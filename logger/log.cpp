@@ -22,6 +22,7 @@
 #include <plog/Initializers/RollingFileInitializer.h>
 
 #ifdef WIN32
+#include <plog/Appenders/DebugOutputAppender.h>
 #include <cstdio>
 #include <windows.h>
 #include "debug.h"
@@ -35,6 +36,8 @@ void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_cons
   static plog::RollingFileAppender<plog::TxtFormatter> fileAppender(log_file.u8string().c_str());
 
 #ifdef WIN32
+  static plog::DebugOutputAppender<plog::TxtFormatter> debugAppender;
+
   if (enable_win_console) {
     // Open console window
     AllocConsole();
@@ -53,4 +56,9 @@ void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_cons
     }
     plog::get()->addAppender(&fileAppender);
   }
+#ifdef WIN32
+  if (IsDebuggerPresent()) {
+    plog::get()->addAppender(&debugAppender);
+  }
+#endif
 }
