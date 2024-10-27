@@ -44,6 +44,11 @@ jobs:
             cc: clang
             cxx: clang++
             name: Linux-x64-clang
+          - runner: ubuntu-latest
+            preset: linux-cross-arm64
+            cc: gcc
+            cxx: g++++
+            name: Linux-cross-arm64
         build_type:
           - Debug
           - Release
@@ -62,11 +67,17 @@ jobs:
           brew bundle install
 
       - name: Install Linux dependencies
-        if: ${{ matrix.os.preset == 'linux' }}
+        if: ${{ matrix.os.runner == 'ubuntu-latest' }}
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends \
             ninja-build cmake g++ curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev
+
+      - name: Install Linux Cross-compilation dependencies
+        if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
+        run: |
+          sudo apt install -y --no-install-recommends \
+            gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu g++-aarch64-linux-gnu
 
       - name: Install Windows dependencies
         if: ${{ matrix.os.runner == 'windows-latest' }}
@@ -81,7 +92,15 @@ jobs:
         with:
           vcpkgJsonGlob: vcpkg.json
 
+      - name: Configure cross-compiled build
+        if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
+        run: |
+          cmake --preset linux
+          ninja -f build-${{ matrix.build_type }}.ninja -C builds/linux/ HogMaker
+          cmake --preset linux-cross-arm64 -DHogMaker_DIR=$PWD/builds/linux/ -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
+
       - name: Configure CMake
+        if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
@@ -91,6 +110,7 @@ jobs:
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
 
       - name: Run ${{ matrix.build_type }} Unittests
+        if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
       - name: Local install
