@@ -5,9 +5,7 @@ on:
   push:
     branches: [ "main" ]
     paths-ignore:
-      - '**/README.md'
-      - '**/LICENSE'
-      - '**/.github/**'
+      - '**/*.md'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
