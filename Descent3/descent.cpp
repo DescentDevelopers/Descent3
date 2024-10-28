@@ -381,7 +381,6 @@
  * $NoKeywords: $
  */
 
-#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
 #include <vector>
@@ -408,6 +407,7 @@
 #include "args.h"
 #include "multi_dll_mgr.h"
 #include "localization.h"
+#include "uisys.h"
 
 //	---------------------------------------------------------------------------
 //	Variables
@@ -433,10 +433,6 @@ std::filesystem::path Descent3_temp_directory; // temp directory to put temp fil
 //		Initializes game elements and invokes the MainLoop
 //	---------------------------------------------------------------------------
 // #define BETA
-
-#if (defined(OEM) || defined(DEMO))
-void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
-#endif
 
 char Proxy_server[200] = "";
 int16_t Proxy_port = 80;
@@ -597,10 +593,8 @@ void MainLoop() {
   SetScreenMode(SM_NULL);
 }
 
-#if (defined(OEM) || defined(DEMO) || defined(RELEASE))
 // Shows a fullscreen static bitmap
-void ShowStaticScreen(char *bitmap_filename, bool timed, float delay_time) {
-  extern void ui_SetScreenMode(int w, int h);
+void ShowStaticScreen(const char *bitmap_filename, bool timed, float delay_time) {
   chunked_bitmap splash_bm;
 
   // do splash screen on release
@@ -615,7 +609,7 @@ void ShowStaticScreen(char *bitmap_filename, bool timed, float delay_time) {
 
     bm_FreeBitmap(bm_handle);
     float start_time = timer_GetTime();
-    while (1) {
+    while (true) {
       StartFrame();
 
       rend_DrawChunkedBitmap(&splash_bm, 0, 0, 255);
@@ -646,7 +640,6 @@ void ShowStaticScreen(char *bitmap_filename, bool timed, float delay_time) {
 
   ui_SetScreenMode(Max_window_w, Max_window_h);
 }
-#endif
 
 //	---------------------------------------------------------------------------
 //	Accessor functions

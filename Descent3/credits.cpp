@@ -299,8 +299,6 @@ static bool Credits_LoadCredits(const char *filename) {
   return true;
 }
 
-extern void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
-
 #define CREDIT_PIXELS_PER_SECOND 22
 
 void Credits_Display() {

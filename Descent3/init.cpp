@@ -1722,9 +1722,6 @@ void InitMessage(const char *c, float progress) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
-#if (defined(OEM) || defined(DEMO) || defined(RELEASE))
-void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
-#endif
 
 void IntroScreen() {
 // #if (defined(OEM) || defined(DEMO) )
