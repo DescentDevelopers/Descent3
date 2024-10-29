@@ -63,7 +63,7 @@ inline void CheckError() {
 
 template <typename T> struct FnPtr;
 template <typename Ret, typename... Args>
-struct FnPtr<Ret(Args...)> {
+struct FnPtr<Ret GLFUNCCALL(Args...)> {
   explicit FnPtr(std::string_view name, bool optional = false);
 
   Ret operator()(Args... args) const {
@@ -99,7 +99,7 @@ static void LoadGLFnPtrs() {
 }
 
 template<typename Ret, typename... Args>
-FnPtr<Ret(Args...)>::FnPtr(std::string_view name, bool optional) : fn_{} {
+FnPtr<Ret GLFUNCCALL(Args...)>::FnPtr(std::string_view name, bool optional) : fn_{} {
   inits_.push_back(std::make_tuple(reinterpret_cast<void**>(&fn_), name, optional));
 }
 
