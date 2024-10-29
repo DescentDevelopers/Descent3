@@ -40,7 +40,7 @@ The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja
     git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
     ```
 
-4. **Build Descent3.**
+3. **Build Descent3.**
 
     ```batch
     cd Descent3
@@ -49,7 +49,7 @@ The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja
     ```
     See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
-Once CMake finishes, the built files will be put in `builds\win\Descent3\Debug` or `builds\win\Descent3\Release`.
+Once CMake finishes, the built files will be put in `builds\win\build\Debug` or `builds\win\build\Release`.
 
 ## Building - macOS
 1. **Install the prerequisite build tools.**
@@ -87,7 +87,7 @@ Once CMake finishes, the built files will be put in `builds\win\Descent3\Debug` 
     ```
     See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
-Once CMake finishes, the built files will be put in `builds/mac/Descent3/Debug` or `builds/mac/Descent3/Release`.
+Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or `builds/mac/build/Release`.
 
 ## Building - Linux
 1. **Install the prerequisite build tools.**
@@ -147,7 +147,30 @@ Once CMake finishes, the built files will be put in `builds/mac/Descent3/Debug` 
     ```
     See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
-Once CMake finishes, the built files will be put in `builds/linux/Descent3/Debug` or `builds/linux/Descent3/Release`.
+Once CMake finishes, the built files will be put in `builds/linux/build/Debug` or `builds/linux/build/Release`.
+
+## Cross-compilation
+
+In order to cross-compile Descent3 to another platform (for example, Linux ARM64), you'll need to build auxiliary
+tools which needed to build data files. First create build-native directory and configure project in it:
+
+```shell
+mkdir build-native
+cd build-native
+cmake ..
+make HogMaker
+```
+
+Now you ready for cross-compilation. Create cross-compile directory and configure project in it, but this time add
+`-DCMAKE_TOOLCHAIN_FILE=MyToolchain.cmake` and `-DHogMaker_DIR=<path-to-Descent3/build-native/` options. This enables
+cross-compilation environment.
+
+```shell
+mkdir build-cross
+cd build-cross
+cmake -DCMAKE_TOOLCHAIN_FILE=MyToolchain.cmake -DHogMaker_DIR=~/src/build-native/ ..
+make
+```
 
 ## Build Options
 

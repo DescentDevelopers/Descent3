@@ -344,7 +344,24 @@ target_link_libraries(Descent3 PRIVATE
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
 target_link_options(Descent3 PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)
-add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog Descent3_Online_TCP_IP_Hog HogFull NetgamesDir Parallax_Online_Hog)
+set_target_properties(Descent3 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build")
+add_dependencies(Descent3
+  get_git_hash
+  Direct_TCP_IP_Hog
+  Descent3_Online_TCP_IP_Hog
+  HogFull
+  Parallax_Online_Hog
+  anarchy
+  coop
+  ctf
+  entropy
+  hoard
+  hyperanarchy
+  monsterball
+  roboanarchy
+  tanarchy
+)
+
 install(TARGETS Descent3 RUNTIME BUNDLE DESTINATION .)
 if(MSVC)
   install(FILES $<TARGET_PDB_FILE:Descent3> DESTINATION ${CMAKE_INSTALL_BINDIR})

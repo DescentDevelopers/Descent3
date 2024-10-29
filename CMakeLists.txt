@@ -78,12 +78,23 @@ if(FORCE_COLORED_OUTPUT)
   endif()
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 include(GNUInstallDirs)
 if(FORCE_PORTABLE_INSTALL)
   set(CMAKE_INSTALL_BINDIR ".")
   set(CMAKE_INSTALL_LIBDIR ".")
   set(CMAKE_INSTALL_DATADIR ".")
   set(CMAKE_INSTALL_DOCDIR ".")
+endif()
+
+# Get info about multi-config environment
+get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+# Properly determine output directory for generated files
+if(IS_MULTI_CONFIG)
+  set(D3_GENERATED_FILES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/$<CONFIG>")
+else ()
+  set(D3_GENERATED_FILES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build")
 endif()
 
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -108,6 +119,15 @@ if(BUILD_TESTING)
   enable_testing()
   include(GoogleTest)
   add_subdirectory(tests)
+endif()
+
+# Define names for HOG files
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+  set(HOG_NAME "linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set(HOG_NAME "osx")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(HOG_NAME "win")
 endif()
 
 # rebuild d3_version.h every time

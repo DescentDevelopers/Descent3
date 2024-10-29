@@ -19,14 +19,16 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set_target_properties(Direct_TCP_IP PROPERTIES SUFFIX ".dylib")
 endif()
 
-add_custom_target(Direct_TCP_IP_Hog
-  COMMAND $<TARGET_FILE:HogMaker>
-  "$<TARGET_FILE_DIR:Descent3>/online/Direct TCP~IP.d3c"
-  "${CMAKE_SOURCE_DIR}/netcon/lanclient/TCP_IP.d3c.txt"
-  "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
-  "$<TARGET_FILE_DIR:Direct_TCP_IP>"
-
-  DEPENDS Direct_TCP_IP HogMaker
-  COMMENT "Generate 'Direct TCP~IP.d3c'"
+include(HogMaker)
+MakeHog(
+  TARGET Direct_TCP_IP_Hog
+  OUTPUT "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Direct TCP~IP.d3c"
+  INPUT_FILE "${CMAKE_SOURCE_DIR}/netcon/lanclient/TCP_IP.d3c.txt"
+  SEARCH_PATH "$<TARGET_FILE_DIR:Direct_TCP_IP>" "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
+  DEPENDS Direct_TCP_IP
 )
-install(FILES "$<TARGET_FILE_DIR:Descent3>/online/Direct TCP~IP.d3c" DESTINATION ${CMAKE_INSTALL_DATADIR}/online)
+
+install(
+  FILES "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Direct TCP~IP.d3c"
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/online
+)
