@@ -435,10 +435,9 @@ void grSurface::replace_color(ddgr_color sc, ddgr_color dc) {
 //	---------------------------------------------------------------------------
 
 char *grSurface::lock(int *rowsize) {
-  bool grerr;
-
   ASSERT(m_SurfInit);
 
+  bool grerr = false;
   switch (ddsfObj.type) {
   case SURFTYPE_VIDEOSCREEN:
   case SURFTYPE_GENERIC:
