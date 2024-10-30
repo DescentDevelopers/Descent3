@@ -319,7 +319,6 @@ void grSurface::uniblt(int dx, int dy, grSurface *ssf, int sx, int sy, int sw, i
   //	mode 11b = dd_to_dd, 01b = mem_to_dd, 10b = dd_to_mem, 00b = mem_to_mem
   int mode = 0;
   ddgr_surface *dsfs = &ddsfObj, *ssfs = &ssf->ddsfObj;
-  bool err;
 
   //	setup blitting mode
   if (ssfs->type == SURFTYPE_GENERIC || ssfs->type == SURFTYPE_VIDEOSCREEN)
@@ -332,7 +331,7 @@ void grSurface::uniblt(int dx, int dy, grSurface *ssf, int sx, int sy, int sw, i
   */
   if (mode == 0x3) {
     ASSERT(!surf_Locked);
-    err = ddgr_surf_Blt(dsfs, dx, dy, ssfs, sx, sy, sw, sh);
+    ddgr_surf_Blt(dsfs, dx, dy, ssfs, sx, sy, sw, sh);
     return;
   }
 
@@ -340,7 +339,7 @@ void grSurface::uniblt(int dx, int dy, grSurface *ssf, int sx, int sy, int sw, i
                   just lock both surfaces and do a memory blt.
   */
   if (mode == 0) {
-    err = gr_mem_surf_Blt(dsfs, dx, dy, ssfs, sx, sy, sw, sh);
+    gr_mem_surf_Blt(dsfs, dx, dy, ssfs, sx, sy, sw, sh);
     return;
   }
 
@@ -359,7 +358,7 @@ void grSurface::uniblt(int dx, int dy, grSurface *ssf, int sx, int sy, int sw, i
     grSurface::scratch_mem_surf->flags = ssfs->flags;
 
     gr_mem_surf_Init(grSurface::scratch_mem_surf, data, rowsize);
-    err = gr_mem_surf_Blt(dsfs, dx, dy, grSurface::scratch_mem_surf, sx, sy, sw, sh);
+    gr_mem_surf_Blt(dsfs, dx, dy, grSurface::scratch_mem_surf, sx, sy, sw, sh);
 
     ssf->unlock();
     return;
@@ -380,7 +379,7 @@ void grSurface::uniblt(int dx, int dy, grSurface *ssf, int sx, int sy, int sw, i
     grSurface::scratch_mem_surf->flags = dsfs->flags;
 
     gr_mem_surf_Init(grSurface::scratch_mem_surf, m_DataPtr, m_DataRowsize);
-    err = gr_mem_surf_Blt(grSurface::scratch_mem_surf, dx, dy, ssfs, sx, sy, sw, sh);
+    gr_mem_surf_Blt(grSurface::scratch_mem_surf, dx, dy, ssfs, sx, sy, sw, sh);
 
     grSurface::unlock();
     return;
