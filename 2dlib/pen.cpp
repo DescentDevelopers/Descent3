@@ -129,17 +129,8 @@ void grViewport::hline(ddgr_color col, int x1, int x2, int y1) {
   rend_DrawLine(x1, y1, x2, y1);
 }
 
-//	grViewport::line
-//		draws a clipped line
-
 void grViewport::line(ddgr_color color, int x1, int y1, int x2, int y2) {
-  int xa, ya, xb, yb;
   ASSERT(vp_Locked);
-
-  xa = global_x(x1);
-  ya = global_y(y1);
-  xb = global_x(x2);
-  yb = global_y(y2);
 
   rend_SetFlatColor(color);
   rend_DrawLine(x1, y1, x2, y2);
