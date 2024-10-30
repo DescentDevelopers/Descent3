@@ -667,11 +667,10 @@ void grSurface::xlat24_16(char *data, int w, int h) {
   char *sptr;
   uint16_t *dptr;
   int scol, dcol, row;
-  int rowsize_w, height, width;
+  int height, width;
 
   dptr = (uint16_t *)m_DataPtr;
   sptr = (char *)data;
-  rowsize_w = m_DataRowsize / 2;
   height = std::min(h, ddsfObj.h);
   width = std::min(w, ddsfObj.w);
 
