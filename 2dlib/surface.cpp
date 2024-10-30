@@ -512,18 +512,16 @@ char *grSurface::lock(int x, int y, int *rowsize) {
 }
 
 void grSurface::unlock() {
-  bool grerr;
-
   ASSERT(m_SurfInit);
   ASSERT(surf_Locked);
 
   switch (ddsfObj.type) {
   case SURFTYPE_VIDEOSCREEN:
   case SURFTYPE_GENERIC:
-    grerr = ddgr_surf_Unlock(&ddsfObj, m_OrigDataPtr);
+    ddgr_surf_Unlock(&ddsfObj, m_OrigDataPtr);
     break;
   case SURFTYPE_MEMORY:
-    grerr = gr_mem_surf_Unlock(&ddsfObj, m_OrigDataPtr);
+    gr_mem_surf_Unlock(&ddsfObj, m_OrigDataPtr);
     break;
   default:
     Int3(); // invalid type!!
