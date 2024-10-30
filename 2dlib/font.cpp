@@ -631,7 +631,7 @@ int grFont::draw_char(grSurface *sf, int x, int y, int ch, tCharProperties *chpr
 
 int grFont::draw_char(grSurface *sf, int x, int y, int ch, int sx, int sy, int sw, int sh, tCharProperties *chprop) {
   gr_font_record *ft;
-  int next_x = 0, width, index;
+  int next_x = 0, index;
 
   ASSERT(m_FontHandle > -1);
   if ((ch < min_ascii()) || (ch > max_ascii()))
@@ -643,6 +643,7 @@ int grFont::draw_char(grSurface *sf, int x, int y, int ch, int sx, int sy, int s
   index = ch - ft->font.min_ascii;
 
   //	draw either a color bitmap or mono font.
+  [[maybe_unused]] int width;
   if (ft->font.flags & FT_PROPORTIONAL) {
     width = (int)ft->font.char_widths[index];
   } else {
