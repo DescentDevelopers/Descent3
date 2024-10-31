@@ -154,12 +154,6 @@ static bool Credits_LoadCredits(const char *filename, std::vector<creditline> &c
     return false;
   }
 
-  for (int i = 0; i < 27; i++) {
-    // Generate blank lines for the start
-    cur_credit.type = CLTYPE_BLANK;
-    credit_lines.push_back(cur_credit);
-  }
-
   // Read in each line of the credit file, allocing memory and putting it into a correct category
   while (!cfeof(infile)) {
     cf_ReadString(curline, MAX_CREDIT_LEN, infile);
@@ -238,10 +232,6 @@ static bool Credits_LoadCredits(const char *filename, std::vector<creditline> &c
       }
     }
   }
-  // End directive to be sure
-  cur_credit.type = CLTYPE_END;
-  cur_credit.text = "";
-  credit_lines.push_back(cur_credit);
 
   cfclose(infile);
   return true;
@@ -274,53 +264,74 @@ void Credits_Display() {
   LOG_INFO << "Chillin in credits";
 
   std::vector<creditline> credit_lines;
+
+  // Generate blank lines for the start
+  creditline cur_credit;
+  cur_credit.type = CLTYPE_BLANK;
+  for (int i = 0; i < 27; i++) {
+    credit_lines.push_back(cur_credit);
+  }
+
   // Load our credits
-  if (!Credits_LoadCredits("GameCredits.txt", credit_lines)) {
+  if (!Credits_LoadCredits("gamecredits.txt", credit_lines) || !Credits_LoadCredits("oscredits.txt", credit_lines)) {
     LOG_WARNING << "There was an error loading game credits!";
-  } else {
-    auto credit = credit_lines.begin();
+    // Free bitmaps
+    bm_DestroyChunkedBitmap(&Credits_bm);
 
-    int font_height = grfont_GetHeight(BIG_BRIEFING_FONT);
+    // end the music.
+    D3MusicStop();
+    ddio_KeyFlush();
 
-    float cur_pixel_count = 0;
-    float last_time = timer_GetTime();
+    return;
+  }
 
-    // Now show these guys
-    while (credit != credit_lines.end()) {
-      StartFrame(0, 0, Game_window_w, Game_window_h);
-      rend_DrawChunkedBitmap(&Credits_bm, 0, 0, 255);
-      Credits_Render(credit, credit_lines.end(), cur_pixel_count);
-      EndFrame();
-      rend_Flip();
+  // End directive to be sure
+  cur_credit.type = CLTYPE_END;
+  cur_credit.text = "";
+  credit_lines.push_back(cur_credit);
 
-      float frametime = timer_GetTime() - last_time;
-      last_time = timer_GetTime();
+  auto credit = credit_lines.begin();
 
-      cur_pixel_count += frametime * CREDIT_PIXELS_PER_SECOND;
+  int font_height = grfont_GetHeight(BIG_BRIEFING_FONT);
 
-      while (cur_pixel_count >= font_height) {
-        credit++;
-        if (credit == credit_lines.end() || credit->type == CLTYPE_END) {
-          cur_pixel_count = -1;
-        } else {
-          cur_pixel_count -= font_height;
-        }
+  float cur_pixel_count = 0;
+  float last_time = timer_GetTime();
+
+  // Now show these guys
+  while (credit != credit_lines.end()) {
+    StartFrame(0, 0, Game_window_w, Game_window_h);
+    rend_DrawChunkedBitmap(&Credits_bm, 0, 0, 255);
+    Credits_Render(credit, credit_lines.end(), cur_pixel_count);
+    EndFrame();
+    rend_Flip();
+
+    float frametime = timer_GetTime() - last_time;
+    last_time = timer_GetTime();
+
+    cur_pixel_count += frametime * CREDIT_PIXELS_PER_SECOND;
+
+    while (cur_pixel_count >= font_height) {
+      credit++;
+      if (credit == credit_lines.end() || credit->type == CLTYPE_END) {
+        cur_pixel_count = -1;
+      } else {
+        cur_pixel_count -= font_height;
       }
+    }
 
-      // Player music for this frame
-      tMusicSeqInfo music_info{};
-      Sound_system.BeginSoundFrame(false);
-      music_info.frametime = frametime;
-      music_info.player_dead = false;
-      music_info.started_level = false;
-      D3MusicDoFrame(&music_info);
-      Sound_system.EndSoundFrame();
+    // Player music for this frame
+    tMusicSeqInfo music_info{};
+    Sound_system.BeginSoundFrame(false);
+    music_info.frametime = frametime;
+    music_info.player_dead = false;
+    music_info.started_level = false;
+    D3MusicDoFrame(&music_info);
+    Sound_system.EndSoundFrame();
 
-      // Check for keys
-      Descent->defer();
-      if (Credits_IsKeyPressed()) {
-        break;
-      }
+    // Check for keys
+    Descent->defer();
+    if (Credits_IsKeyPressed()) {
+      break;
     }
   }
 
