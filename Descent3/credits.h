@@ -32,4 +32,4 @@
  * $NoKeywords: $
  */
 
-void Credits_Display(void);
+void Credits_Display();
