@@ -842,10 +842,10 @@ struct sound_menu {
 
   // retreive values from property sheet here.
   void finish() {
-    int iTemp;
-    char mixer_type = SOUND_MIXER_NONE;
-
 #if defined(_DEBUG)
+    char mixer_type = SOUND_MIXER_NONE;
+    int iTemp;
+
     iTemp = *sndmixer;
 
     switch (iTemp) {

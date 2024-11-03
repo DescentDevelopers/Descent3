@@ -1498,7 +1498,6 @@ void RenderHUDItems(tStatMask stat_mask) {
     char *keyp = NULL;
     char *axis = NULL;
     player *pp = &Players[Player_num];
-    int fidkey = -1, fidcont = -1;
     int hudconty = 130;
 
     RenderHUDTextFlags(0, GR_GREEN, HUD_ALPHA, 0, 15, hudconty, TXT_ENABLED_CONTROLS);

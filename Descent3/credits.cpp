@@ -349,10 +349,7 @@ void Credits_Display(void) {
     }
 
     int font_height = grfont_GetHeight(BIG_BRIEFING_FONT);
-    int total_pixel_height = font_height * count;
-
     int cur_line = 0;
-    float total_pixel_count = 0;
     float cur_pixel_count = 0;
     float last_time = timer_GetTime();
 

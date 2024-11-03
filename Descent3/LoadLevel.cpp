@@ -3686,13 +3686,11 @@ extern bool Disable_editor_rendering;
 // Returns 1 if file read ok, else 0
 int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
   CFILE *ifile;
-  char tag[4];
   int n, i, retval = 1;
 
   int version;
   bool f_read_AABB = false;
   bool no_128s = true;
-  int total = 0;
 #ifdef EDITOR
   Disable_editor_rendering = 1;
   Num_failed_xlate_items = 0;

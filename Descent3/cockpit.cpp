@@ -446,7 +446,6 @@ extern float GetTerrainDynamicScalar(vector *pos, int seg);
 extern void GetRoomDynamicScalar(vector *pos, room *rp, float *r, float *g, float *b);
 void RenderCockpit() {
   object *player_obj = &Objects[Players[Player_num].objnum];
-  physics_info *player_phys = &player_obj->mtype.phys_info;
   vector view_pos, light_vec;
   matrix view_tmat;
   float view_z, view_y, view_x, keyframe;

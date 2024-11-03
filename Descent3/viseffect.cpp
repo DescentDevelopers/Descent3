@@ -936,9 +936,7 @@ void CreateRandomParticles(int num_sparks, vector *pos, int roomnum, int bm_hand
 void DrawVisFadingLine(vis_effect *vis) {
   float norm_time;
   float time_live = Gametime - vis->creation_time;
-  float size = vis->size;
 
-  int visnum = vis - VisEffects;
   norm_time = time_live / vis->lifetime;
 
   if (norm_time >= 1)
@@ -1087,7 +1085,6 @@ void DrawVisRainDrop(vis_effect *vis) {
   float time_live = Gametime - vis->creation_time;
   float size = vis->size;
 
-  int visnum = vis - VisEffects;
   int bm_handle;
   fireball *fb = &Fireballs[vis->id];
 
@@ -1147,7 +1144,6 @@ void DrawVisSnowflake(vis_effect *vis) {
   float time_live = Gametime - vis->creation_time;
   float size = vis->size;
 
-  int visnum = vis - VisEffects;
   int bm_handle;
   fireball *fb = &Fireballs[vis->id];
 
@@ -1464,9 +1460,7 @@ void DrawVisAxisBillboard(vis_effect *vis) {
   float norm_time, alpha_norm = 1;
   float uchange = 0, vchange = 0;
   float time_live = Gametime - vis->creation_time;
-  float size = vis->size;
 
-  int visnum = vis - VisEffects;
   int bm_handle;
   int i;
 
@@ -1484,8 +1478,6 @@ void DrawVisAxisBillboard(vis_effect *vis) {
     pnts[i].p3_flags |= PF_UV;
     pntlist[i] = &pnts[i];
   }
-
-  fireball *fb = &Fireballs[vis->id];
 
   norm_time = time_live / vis->lifetime;
 
@@ -1572,11 +1564,8 @@ void DrawVisAxisBillboard(vis_effect *vis) {
 // Draws a bitmap that can orient around an axis
 void DrawVisBillboardSmoketrail(vis_effect *vis) {
   float norm_time, alpha_norm = 1;
-  float uchange = 0, vchange = 0;
   float time_live = Gametime - vis->creation_time;
-  float size = vis->size;
 
-  int visnum = vis - VisEffects;
   int bm_handle;
 
   // Get corners of this billboard
@@ -1600,8 +1589,6 @@ void DrawVisBillboardSmoketrail(vis_effect *vis) {
 
   if (!GetBillboardCorners(pnts, &top_point, &bot_point, width))
     return;
-
-  fireball *fb = &Fireballs[vis->id];
 
   for (int i = 0; i < 4; i++) {
     pnts[i].p3_flags |= PF_UV | PF_RGBA;

@@ -442,8 +442,6 @@ void RenderBmpBlur(tceffect *tce, float frametime, int xoff, int yoff, bool ok_t
   int sbm_handle = tce->bmpinfo.bm_handle;
   int dbm_handle = tce->bmpinfo.temp_bmhandle;
   bm_ClearBitmap(dbm_handle);
-  int x = 0;
-  int y = 0;
   bool done = false;
   if ((tce->flags == TC_BMPF_OUT) && (tce->bmpinfo.stage < 0))
     done = true;
@@ -636,7 +634,6 @@ void RenderBmpInvert(tceffect *tce, float frametime, int xoff, int yoff, bool ok
   uint8_t r, g, b;
   int bh = bm_h(srcbmph, 0);
   int bw = bm_w(srcbmph, 0);
-  int how_many = tce->bmpinfo.chunk_bmp.w * tce->bmpinfo.chunk_bmp.h;
   int how_many_across = tce->bmpinfo.chunk_bmp.w;
   int dim = bm_h(tce->bmpinfo.chunk_bmp.bm_array[0], 0);
   int shift; // speed up (since dim is always a power of 2)
@@ -882,12 +879,10 @@ void RenderButton(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to
   bool glow = false;
   while (PopEvent(tce, &evt)) {
     switch (evt.id) {
-    case TEVT_GAINFOCUS: {
-      int num = tce - TCEffects;
-    } break;
-    case TEVT_LOSTFOCUS: {
-      int num = tce - TCEffects;
-    } break;
+    case TEVT_GAINFOCUS:
+      break;
+    case TEVT_LOSTFOCUS:
+      break;
     case TEVT_MOUSEOVER: {
       if (tce->flags & OBF_GLOW) {
         if (tce->flags & OBF_MOUSEOVERFOCUS) {

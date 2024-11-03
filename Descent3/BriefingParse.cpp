@@ -275,7 +275,6 @@ static int ReadFullLine(char **data, CFILE *ifile) {
 //	Parses the briefing file (calling the callbacks throughout), check return code
 int CBriefParse::ParseBriefing(const char *filename) {
   CFILE *ifile;
-  bool retvalue = false;
   bool voice_def_screen = false;
   char text_buf[8192], *text_ptr = NULL;
   bool abort = 0;
@@ -285,7 +284,6 @@ int CBriefParse::ParseBriefing(const char *filename) {
   int beffect = bfxNONE;
   int x = 0, y = 0;
   char filen[40];
-  bool emergency_exit = false;
 
   // the following block of 'globals' are for when parsing a text block, the information is stored
   // here until a $endtext is hit

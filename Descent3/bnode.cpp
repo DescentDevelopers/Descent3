@@ -322,9 +322,9 @@ retry:
       float dot = *fvec * to;
 
       if (dot > 0.0f || f_retry) {
-        float node_size = 0.0f;
+        /* float node_size = 0.0f;
 
-        /*				if(!f_retry)
+                                        if(!f_retry)
                                         {
                                                 for(j = 0; j < bnlist->nodes[i].num_edges; j++)
                                                 {

@@ -293,9 +293,6 @@ struct {
 
 // Draw the scorch(es) for a given face
 void DrawScorches(int roomnum, int facenum) {
-  int i;
-  scorch *sp;
-
   if (!Detail_settings.Scorches_enabled)
     return;
 

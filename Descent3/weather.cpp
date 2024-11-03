@@ -155,7 +155,6 @@ void DoRainEffect() {
       if (visnum >= 0) {
         vis_effect *vis = &VisEffects[visnum];
         float life = .2f;
-        float size = .7 + ((ps_rand() % 10) / 20.0);
         vis->lifeleft = life;
         vis->lifetime = life;
         vis->end_pos = norm;

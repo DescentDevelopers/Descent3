@@ -96,7 +96,7 @@ bool taunt_PlayTauntFile(const char *filename) {
   if (!Audio_taunts_enabled)
     return false;
 
-  int ret = StreamPlay(filename, (MAX_GAME_VOLUME / 2.0f), 0);
+  StreamPlay(filename, (MAX_GAME_VOLUME / 2.0f), 0);
   return true;
 }
 

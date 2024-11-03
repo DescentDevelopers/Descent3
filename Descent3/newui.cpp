@@ -372,7 +372,6 @@ void GetCenteredTextPos(int width, int gap, int left_item_width, int middle_item
                         int *mx, int *rx) {
   int center_x = width / 2;
   int width_of_items = 2 * gap + left_item_width + middle_item_width + right_item_width;
-  int center_of_items = width_of_items / 2;
 
   *lx = center_x - (width_of_items / 2);
   *mx = (*lx) + gap + left_item_width;

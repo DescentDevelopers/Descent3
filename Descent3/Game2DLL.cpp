@@ -592,7 +592,7 @@ loaddll:
   // Clear out error queue
   mod_GetLastError();
   if (!mod_LoadModule(mod, tmp_dll_name)) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_WARNING.printf("You are missing the DLL %s!", name);
     return false;
   }
@@ -640,7 +640,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   mod_GetLastError();
   DLLGameInit = (DLLGameInit_fp)mod_GetSymbol(&GameDLLHandle, "DLLGameInit", 12);
   if (!DLLGameInit) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLGameInit!";
     Int3();
     FreeGameDLL();
@@ -650,7 +650,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   mod_GetLastError();
   DLLGameCall = (DLLGameCall_fp)mod_GetSymbol(&GameDLLHandle, "DLLGameCall", 8);
   if (!DLLGameCall) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLGameCall!";
     Int3();
     FreeGameDLL();
@@ -660,7 +660,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   mod_GetLastError();
   DLLGameClose = (DLLGameClose_fp)mod_GetSymbol(&GameDLLHandle, "DLLGameClose", 0);
   if (!DLLGameClose) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLGameClose!";
     Int3();
     FreeGameDLL();
@@ -670,7 +670,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
   mod_GetLastError();
   DLLGetGameInfo = (DLLGetGameInfo_fp)mod_GetSymbol(&GameDLLHandle, "DLLGetGameInfo", 4);
   if (!DLLGetGameInfo) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLGetGameInfo!";
     Int3();
     FreeGameDLL();
@@ -753,7 +753,7 @@ bool GetDLLGameInfo(const char *name, tDLLOptions *options) {
   mod_GetLastError();
   modGetGameInfo = (DLLGetGameInfo_fp)mod_GetSymbol(&mod, "DLLGetGameInfo", 4);
   if (!modGetGameInfo) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLGetGameInfo!";
     Int3();
     CloseGameModule(&mod);

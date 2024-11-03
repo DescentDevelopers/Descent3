@@ -1059,7 +1059,6 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
 
   int num_faces, i, t, lm_handle;
   uint16_t *dest_data;
-  int faces_misreported = 0;
 
   if (Dedicated_server)
     return;

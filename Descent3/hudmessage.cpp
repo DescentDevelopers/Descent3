@@ -520,8 +520,6 @@ bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color) {
 // Returns true if message added, or false if message not (because the previous message was the same)
 bool AddColoredHUDMessage(ddgr_color color, const char *format, ...) {
   std::va_list args;
-  char *message = NULL;
-  char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
@@ -556,8 +554,6 @@ bool AddFilteredColoredHUDMessage(ddgr_color color, const char *format, ...) {
     return false; // filter this message
 
   std::va_list args;
-  char *message = NULL;
-  char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
@@ -592,8 +588,6 @@ bool AddFilteredHUDMessage(const char *format, ...) {
     return false; // filter this message
 
   std::va_list args;
-  char *message = NULL;
-  char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
@@ -616,8 +610,6 @@ bool AddFilteredHUDMessage(const char *format, ...) {
 // Returns true if message added, or false if message not (because the previous message was the same)
 bool AddHUDMessage(const char *format, ...) {
   std::va_list args;
-  char *message = NULL;
-  char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
@@ -640,8 +632,6 @@ bool AddHUDMessage(const char *format, ...) {
 // Returns true if message added, or false if message not (because the previous message was the same)
 bool AddBlinkingHUDMessage(const char *format, ...) {
   std::va_list args;
-  char *message = NULL;
-  char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
@@ -908,7 +898,6 @@ void SendOffHUDInputMessage() {
 // Breaks up the input message so that if we overflow it starts on the next line nicely
 // Returns the number of characters in the next line
 int BreakupHUDInputMessage(char *str) {
-  int cur = 0;
   int last_space = -1;
   int len = strlen(HudInputMessage);
 
@@ -1128,7 +1117,6 @@ void RenderScrollingHUDMessages() {
 
     char *message = HUD_messages[i];
     int text_width = grtext_GetTextLineWidth(message);
-    int vp_width = Game_window_w;
     int y = (i * text_height) + Hud_scroll_offset;
 
     if (HUD_message_type[i] == HUD_MESSAGE_BLINKING) {

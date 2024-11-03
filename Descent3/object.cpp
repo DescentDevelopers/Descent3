@@ -1997,7 +1997,6 @@ void FreeAllObjects() {
 void ObjDeleteDead() {
   int i;
   object *objp;
-  int local_dead_player_object = -1;
 
   // Move all objects
   objp = Objects;
@@ -2066,7 +2065,6 @@ void ObjDeleteDead() {
 
       if (IS_GUIDEBOT(objp)) {
         int i;
-        int handle = objp->handle;
 
         for (i = 0; i < MAX_PLAYERS; i++) {
           if (objp->handle == Buddy_handle[i]) {
@@ -2615,7 +2613,6 @@ extern int DoAI;
 //--------------------------------------------------------------------
 // Process an object for the current frame
 void ObjDoFrame(object *obj) {
-  int previous_room = obj->roomnum;
   float save_frametime = Frametime;
 
   ASSERT(obj->type != OBJ_NONE);
@@ -3299,7 +3296,6 @@ bool ObjGetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info) {
 
   if ((objnum >= 0) && (obj->type != OBJ_NONE) && (obj->type != OBJ_WEAPON) && (obj->flags & OF_POLYGON_OBJECT)) {
     polyobj_info *pm = &obj->rtype.pobj_info;
-    ai_frame *ai_info = obj->ai_info;
 
     multi_anim_info->server_time = Gametime;
     multi_anim_info->server_anim_frame = (uint16_t)(pm->anim_frame * 256.0f);
@@ -3367,8 +3363,6 @@ void SetObjectControlType(object *obj, int control_type) {
     p_info->multi_turret_info.num_turrets = count;
 
     if ((count > 0) && (p_info->multi_turret_info.keyframes == NULL)) {
-      int cur = 0;
-
       p_info->multi_turret_info.time = 0;
       p_info->multi_turret_info.keyframes = mem_rmalloc<float>(count);
       p_info->multi_turret_info.last_keyframes = mem_rmalloc<float>(count);
@@ -3431,7 +3425,6 @@ void ObjGetTurretUpdate(uint16_t objnum, multi_turret *multi_turret_info) {
 
 void ObjSetTurretUpdate(uint16_t objnum, multi_turret *multi_turret_info) {
   object *obj = &Objects[objnum];
-  poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
   polyobj_info *p_info = &obj->rtype.pobj_info;
 
   if ((objnum >= 0) && (obj->type != OBJ_NONE) && (obj->type != OBJ_WEAPON) && (obj->flags & OF_POLYGON_OBJECT) &&

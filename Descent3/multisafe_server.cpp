@@ -1147,9 +1147,6 @@ void MultiDoMSafePowerup(uint8_t *data) {
 
 // Sends a powerup over to be evaluated on the client machine
 void MultiSendMSafePowerup(msafe_struct *mstruct) {
-  int sequence = -1;
-  int to_slot = -1;
-
   //	ASSERT (Netgame.local_role==LR_SERVER);
 
   uint8_t data[MAX_GAME_DATA_SIZE];

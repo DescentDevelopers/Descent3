@@ -667,9 +667,7 @@ void RenderHUDSecondary(tHUDItem *item) {
   int index = Players[Player_num].weapon[PW_SECONDARY].index;
   ship *ship = &Ships[Players[Player_num].ship_index];
   otype_wb_info *wb = &ship->static_wb[index];
-  weapon *wpn = GetWeaponFromIndex(Player_num, index);
   const char *text = TXT(Static_weapon_names_msg[index]);
-  float txt_w = (int)(grtext_GetLineWidth(text) / Hud_aspect_x) + 2;
 
   if (item->stat & STAT_GRAPHICAL) {
     int icon;

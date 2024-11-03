@@ -167,7 +167,6 @@ void FreeTriggers() {
 // Generates an error if the trigger cannot be found
 // Paramaters:	roomnum,facenum - the room and face with the trigger
 trigger *FindTrigger(int roomnum, int facenum) {
-  face *fp = &Rooms[roomnum].faces[facenum];
   trigger *tp;
   int i;
 

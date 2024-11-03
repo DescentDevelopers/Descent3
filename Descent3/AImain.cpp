@@ -1804,7 +1804,6 @@ bool move_relative_object_vec(object *obj, vector *vec, object *target, float ci
   vector from_target;
   vector opposite_fvec;
   vector goal_pos;
-  ai_frame *ai_info = obj->ai_info;
   bool f_done = false;
 
   from_target = obj->pos - target->pos;
@@ -2862,8 +2861,7 @@ void AISeeTarget(object *obj, bool f_see) {
 
   // Note:  Player position is also updated in the visibility test function
   //        for MIN_VIS_RECENT_CHECK_INTERVAL seconds
-  object *targetptr;
-  object *other_obj = targetptr = ObjGet(ai_info->target_handle);
+  object *targetptr = ObjGet(ai_info->target_handle);
 
   if (targetptr) {
     if (f_see)
@@ -4533,7 +4531,6 @@ void ai_move(object *obj) {
   bool f_dodge = false; // Are there any dodge goals
   bool f_avoid = false; // Are there any avoid goals
   int highest_influence_goal = -1;
-  float highest_influence = 0.0f;
   float highest_speed = 0.0f;
   bool f_turned = true;
   bool f_goal_found = false;
@@ -4814,8 +4811,6 @@ void ai_move(object *obj) {
                 bool f_orient = AITurnTowardsMatrix(obj, obj->ai_info->max_turn_rate, &orient);
 
                 if (f_at_pos && f_orient) {
-                  int goal_index = cur_goal - ai_info->goals;
-
                   if (cur_goal->type == AIG_PLACE_OBJ_ON_OBJ) {
                     UnattachFromParent(child_obj);
                     AttachObject(g_obj, c_ap, child_obj, p_ap, true);
@@ -4850,8 +4845,6 @@ void ai_move(object *obj) {
                 }
 
                 if (f_at_pos) {
-                  int goal_index = cur_goal - ai_info->goals;
-
                   AttachObject(obj, p_ap, g_obj, rad);
 
                   if (cur_goal->g_info.attach_info.flags & GAF_TEMP_CLEAR_ROBOT_COLLISIONS) {

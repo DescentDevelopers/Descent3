@@ -1043,7 +1043,6 @@ void CreateSplintersFromBody(object *obj, float explosion_mag, float lifetime) {
   vector rot_vecs[MAX_SUBOBJECTS];
   int num_splinters = 0;
   int i, t;
-  int parent_objnum = obj - Objects;
   matrix m;
   m = obj->orient;
   vm_TransposeMatrix(&m);
@@ -2230,8 +2229,6 @@ void DrawBlastRingObject(object *obj) {
   float cur_size = lifenorm * obj->ctype.blast_info.max_size;
   int i;
   g3Point *pntlist[4];
-  static int grav_first = 1;
-  static int grav_texture;
 
   if (obj->id == GRAVITY_FIELD_INDEX)
     cur_size = (1 - lifenorm) * obj->ctype.blast_info.max_size;

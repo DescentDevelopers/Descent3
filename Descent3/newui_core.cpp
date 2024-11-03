@@ -3119,7 +3119,6 @@ void newuiListBox::OnDraw() {
 
   // draw text?
   int i;
-  uint8_t alpha = 255;
   bool auto_select = ((m_Flags & UILB_AUTOSELECT) > 0);
   bool use_scroll = true;
 
@@ -3768,9 +3767,6 @@ void newuiComboBox::SetSelectChangeCallback(void (*fn)(int)) { selectchange_fn =
 // behavior when gadget is being drawn.
 void newuiComboBox::OnDraw() {
   m_barbmp->draw(0, 0);
-  bool auto_select = ((m_Flags & UILB_AUTOSELECT) > 0);
-  bool use_scroll = true;
-
   ui_SetTextClip(m_boffs, 1, m_W - m_boffs - m_up_btn.W(), m_H - 1);
 
   // decide whether to show arrows. , tricky code.

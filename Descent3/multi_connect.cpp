@@ -595,7 +595,6 @@ void MultiSendConnectionAccepted(int slotnum, SOCKET sock, network_address *addr
 
 int MultiPollForLevelInfo() {
   float start_time, ask_time, initial_start_time;
-  int connected = 0;
   uint8_t data[MAX_RECEIVE_SIZE];
   network_address from_addr;
 
@@ -903,7 +902,6 @@ void MultiCloseGame() {
 int SearchForLocalGamesTCP(uint32_t ask, uint16_t port) {
   int count = 0;
   int size;
-  int tries = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
   network_address check_addr, from_addr;
   check_addr.connection_type = NP_TCP;
@@ -932,7 +930,6 @@ int SearchForLocalGamesTCP(uint32_t ask, uint16_t port) {
 int SearchForGamesPXO(uint32_t ask, uint16_t port) {
   int count = 0;
   int size;
-  int tries = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
   network_address check_addr, from_addr;
   check_addr.connection_type = NP_TCP;

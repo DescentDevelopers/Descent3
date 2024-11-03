@@ -723,10 +723,8 @@ void DoMultiAllowed(void) {
   int i;
   const char *p;
   int objid;
-  int *index_to_id = NULL;
   bool shipsallowed[MAX_SHIPS];
   bool objsallowed[MAX_OBJECTS];
-  ConfigItem **ship_list = NULL;
   size_t strMax = std::max(strlen(TXT_ALLOW), strlen(TXT_DISALLOW)) + 3;
   char *str = mem_rmalloc<char>(strMax);
 
@@ -1067,7 +1065,6 @@ void MultiGameOptionsMenu(int alloptions) {
   NewUIWindow main_wnd;
   main_wnd.Create(0, 0, rs.screen_width, rs.screen_height, UIF_PROCESS_ALL);
 
-  int num_text = 0, num_edit = 0;
   int return_id;
   int id = 0;
 

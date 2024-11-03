@@ -452,9 +452,7 @@ bool Control_poll_flag = false; // determines if system is polling controls now.
 static bool Control_system_init = false;
 static float Control_interval_time = 0.0f;
 static float Control_current_time;
-static float Control_frametime;
-static float Key_pitch_ramp_time = 0.0f;
-static float Key_heading_ramp_time = 0.0f;
+// static float Control_frametime;
 
 static tSensitivity Key_ramp;
 

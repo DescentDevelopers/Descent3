@@ -215,7 +215,6 @@ void InitProcedurals() {
       float fg = gcount;
       int g = std::min((fg * lo_norm) + (7.0 * hi_norm), 7.0);
       for (t = 0; t < 32; t++) {
-        int index = gcount * 32 + t;
         WaterProcTableLo[i][gcount * 32 + t] |= (g << 5);
       }
     }
@@ -224,8 +223,6 @@ void InitProcedurals() {
       int g = std::min((fg * lo_norm) + (24.0 * hi_norm), 24.0);
 
       for (t = 0; t < 32; t++) {
-        int index = t * 4 + gcount;
-
         WaterProcTableHi[i][t * 4 + gcount] |= (g << 5);
       }
     }
@@ -483,8 +480,6 @@ static inline void PlaceProcPoint(int x, int y, uint8_t color) {
 }
 // Adds a sphere lightning bolt
 void AddProcSphereLightning(int handle, static_proc_element *proc) {
-  int procnum = proc - GameTextures[handle].procedural->static_proc_elements;
-
   if (Detail_settings.Procedurals_enabled) {
     if (proc->frequency != 0 && ((FrameCount) % proc->frequency) != 0)
       return;
@@ -1149,7 +1144,6 @@ void EvaluateWaterProcedural(int handle) {
   if (procedural->memory_type != PROC_MEMORY_TYPE_WATER)
     AllocateMemoryForWaterProcedural(handle);
 
-  int dest_bitmap = procedural->procedural_bitmap;
   for (int i = 0; i < procedural->num_static_elements; i++) {
     static_proc_element *proc = &procedural->static_proc_elements[i];
     switch (proc->type) {

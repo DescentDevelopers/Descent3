@@ -2571,7 +2571,6 @@ void ResetPlayerControlType(int slot) {
 
   //	Init physics
   object *playobj = &Objects[Players[slot].objnum];
-  ship *ship = &Ships[Players[slot].ship_index];
 
   playobj->mtype.phys_info = Ships[Players[slot].ship_index].phys_info;
 

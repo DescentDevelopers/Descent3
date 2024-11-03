@@ -152,9 +152,9 @@ void StartVoice(char *filename, int flags) {
     return;
   }
 
-  bool compressed = (flags & VF_COMPRESSED) ? true : false;
-  bool bit8 = (flags & VF_8BIT) ? true : false;
-  bool stereo = (flags & VF_STEREO) ? true : false;
+  // bool compressed = (flags & VF_COMPRESSED) ? true : false;
+  // bool bit8 = (flags & VF_8BIT) ? true : false;
+  // bool stereo = (flags & VF_STEREO) ? true : false;
 
   int vf = 0;
 

@@ -1210,8 +1210,6 @@ void AquireElectricalTarget(object *obj) {
 int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num) {
   int objnum;
   object *obj;
-  int parentnum = parent - Objects;
-  uint8_t terrain = 0;
 
   ASSERT(Weapons[weapon_num].used);
 
@@ -1344,9 +1342,6 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
         fate = fvi_FindIntersection(&fq, &hit_info);
 
         if (fate != HIT_NONE && fate != HIT_OUT_OF_TERRAIN_BOUNDS) {
-          float try_dist = vm_VectorDistance(&obj->pos, &end_pos);
-          float got_dist = vm_VectorDistance(&obj->pos, &hit_info.hit_pnt);
-
           obj->ctype.laser_info.hit_pnt = hit_info.hit_pnt;
           obj->ctype.laser_info.hit_wall_pnt = hit_info.hit_face_pnt[0];
           obj->ctype.laser_info.hit_room = hit_info.hit_room;

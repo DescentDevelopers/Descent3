@@ -1054,8 +1054,6 @@ int ObjInitFireball(object *objp) {
 }
 int ObjInitMarker(object *objp) {
   int ret = 1;
-  static int first = 1;
-  static int polynum = -1;
   ASSERT(objp->type == OBJ_MARKER);
   // Set size & shields
   objp->shields = 100;

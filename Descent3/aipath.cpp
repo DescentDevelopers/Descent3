@@ -231,9 +231,6 @@ static bool AIPathMoveToNextNode(ai_path_info *aip) {
   int c_path = aip->cur_path;
   int c_node = aip->cur_node;
 
-  int p_type = aip->path_type[c_path];
-  int p_index = aip->path_id[c_path];
-
   c_node++;
 
   if (c_node <= aip->path_end_node[c_path]) {
@@ -341,8 +338,6 @@ void AIPathMoveTurnTowardsNode(object *obj, vector *mdir, bool *f_moved) {
   int p = aip->cur_path;
 
   bool f_reverse = (g_ptr->flags & GF_PATH_MOVE_REVERSE_DIR) != 0;
-
-  ai_frame *ai_info = obj->ai_info;
 
   vector cur_pos;
 

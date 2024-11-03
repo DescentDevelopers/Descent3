@@ -638,14 +638,14 @@ int LoadMultiDLL(const char *name) {
 loaddll:
 
   if (!mod_LoadModule(&MultiDLLHandle, tmp_dll_name)) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_WARNING.printf("You are missing the DLL %s!", name);
     return 0;
   }
 
   DLLMultiInit = (DLLMultiInit_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiInit", 4);
   if (!DLLMultiInit) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiInit!";
     Int3();
     FreeMultiDLL();
@@ -653,7 +653,7 @@ loaddll:
   }
   DLLMultiCall = (DLLMultiCall_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiCall", 4);
   if (!DLLMultiCall) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiCall!";
     Int3();
     FreeMultiDLL();
@@ -661,7 +661,7 @@ loaddll:
   }
   DLLMultiClose = (DLLMultiClose_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiClose", 0);
   if (!DLLMultiClose) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiClose!";
     Int3();
     FreeMultiDLL();
@@ -693,7 +693,7 @@ loaddll:
     DLLMultiScoreCall = (DLLMultiScoreCall_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiScoreEvent", 8);
 
     if (!DLLMultiScoreCall) {
-      int err = mod_GetLastError();
+      mod_GetLastError();
       LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiScoreCall!";
       Int3();
       Supports_score_api = false;

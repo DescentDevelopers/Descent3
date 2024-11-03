@@ -1306,8 +1306,6 @@ void RenderTerrain(uint8_t from_mine, int left, int top, int right, int bot) {
   // Get the size of the current render window
   int render_width, render_height;
   rend_GetProjectionParameters(&render_width, &render_height);
-  float w2 = ((float)render_width - 1) / 2.0f;
-  float h2 = ((float)render_height - 1) / 2.0f;
 
   // Set up vars for (psuedo-)clipping window
   if (left < 0) {
@@ -2689,7 +2687,7 @@ void DisplayTerrainList(int cellcount, bool from_automap) {
   rend_SetWrapType(WT_WRAP);
 }
 // Arrays for drawing
-static int src[256];
+// static int src[256];
 static g3Point base[256];
 static g3Point *slist[256];
 // Draws the 2 triangles of the Terrainlist[index] (software)
