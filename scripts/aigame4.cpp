@@ -144,7 +144,7 @@ struct combwallhit_data {
 
 class CombWallHit final : public BaseObjScript {
 private:
-  combwallhit_data *memory;
+  combwallhit_data *memory = nullptr;
 
 public:
   CombWallHit() {}
@@ -162,7 +162,7 @@ struct droptarget_data {
 
 class DropTarget final : public BaseObjScript {
 private:
-  droptarget_data *memory;
+  droptarget_data *memory = nullptr;
 
 public:
   DropTarget() {}
@@ -179,7 +179,7 @@ struct gun_data {
 };
 
 class Gun final : public BaseObjScript {
-  gun_data *memory;
+  gun_data *memory = nullptr;
 
 public:
   Gun() {}
@@ -196,7 +196,7 @@ struct casing_data {
 
 class Casing final : public BaseObjScript {
 private:
-  casing_data *memory;
+  casing_data *memory = nullptr;
 
 public:
   Casing() {}
@@ -250,7 +250,7 @@ struct mercendboss_data {
 
 class MercEndBoss final : public BaseObjScript {
 private:
-  mercendboss_data *memory;
+  mercendboss_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);

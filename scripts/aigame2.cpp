@@ -218,7 +218,7 @@ class aiLukeTurret final : public aiObjScript {
     float timer;
   };
 
-  t_lturret_memory *memory;
+  t_lturret_memory *memory = nullptr;
 
 public:
   aiLukeTurret(){};
@@ -236,7 +236,7 @@ class aiSTBlackBarrel final : public aiObjScript {
     matrix orient;
   };
 
-  t_stblackbarrel_memory *memory;
+  t_stblackbarrel_memory *memory = nullptr;
 
 public:
   aiSTBlackBarrel(){};

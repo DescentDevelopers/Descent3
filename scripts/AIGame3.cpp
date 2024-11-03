@@ -805,7 +805,7 @@ struct alienorganism_data {
 // Alien Organism class definition
 class AlienOrganism final : public BaseObjScript {
 private:
-  alienorganism_data *memory;
+  alienorganism_data *memory = nullptr;
 
   void SetMode(int me, char mode);
   void DoTakeoff(int me, float takeoff_speed, float speed_variance);
@@ -985,7 +985,7 @@ struct heavytrooper_data {
 // Heavy Trooper class definition
 class HeavyTrooper final : public BaseObjScript {
 private:
-  heavytrooper_data *memory;
+  heavytrooper_data *memory = nullptr;
 
   void SetMode(int me, char mode);
 
@@ -1080,7 +1080,7 @@ struct lifter_data {
 // Lifter class definition
 class Lifter final : public BaseObjScript {
 private:
-  lifter_data *memory;
+  lifter_data *memory = nullptr;
 
   void SetMode(int me, char mode);
 
@@ -1294,7 +1294,7 @@ struct alienboss_data {
 // Alien Boss class definition
 class AlienBoss final : public BaseObjScript {
 private:
-  alienboss_data *memory;
+  alienboss_data *memory = nullptr;
 
   void SetMode(int me, char mode);
   void DoTakeoff(int me, float takeoff_speed, float speed_variance);
@@ -1385,7 +1385,7 @@ struct securitycamera_data {
 // Security Camera class definition
 class SecurityCamera final : public BaseObjScript {
 private:
-  securitycamera_data *memory;
+  securitycamera_data *memory = nullptr;
 
   void SetMode(int me, char mode);
 
@@ -1429,7 +1429,7 @@ struct crowdcontrol_data {
 // Security Camera class definition
 class CrowdControl final : public BaseObjScript {
 private:
-  crowdcontrol_data *memory;
+  crowdcontrol_data *memory = nullptr;
 
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
