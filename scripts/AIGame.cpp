@@ -344,7 +344,7 @@ static int GetObjectType(int object);
 class BaseObjScript {
 public:
   BaseObjScript();
-  ~BaseObjScript();
+  virtual ~BaseObjScript();
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 

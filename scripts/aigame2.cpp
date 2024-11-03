@@ -82,6 +82,7 @@ static const char *const Script_names[NUM_IDS] = {"Samir's Pest", "StormTrooperB
 //	ai base class
 class aiObjScript {
 public:
+  virtual ~aiObjScript() = default;
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:

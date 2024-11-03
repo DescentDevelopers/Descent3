@@ -88,6 +88,7 @@ tScriptIDInfo ScriptIDInfo[NUM_IDS] = {
 class GenericScript {
 public:
   GenericScript() {}
+  virtual ~GenericScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:

@@ -108,7 +108,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 class BaseScript {
 public:
   BaseScript();
-  ~BaseScript();
+  virtual ~BaseScript();
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 

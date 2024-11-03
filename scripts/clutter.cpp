@@ -79,6 +79,7 @@ static int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
 
 class ClutterScript {
 public:
+  virtual ~ClutterScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 };
 

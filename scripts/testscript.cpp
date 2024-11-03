@@ -56,7 +56,7 @@ tScriptInfo ScriptInfo[MAX_IDS] = {{ID_SHIELD_ORB, "Shield"}, {ID_ENERGY_ORB, "E
 class BaseObjScript {
 public:
   BaseObjScript();
-  ~BaseObjScript();
+  virtual ~BaseObjScript();
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:

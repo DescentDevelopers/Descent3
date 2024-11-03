@@ -602,7 +602,7 @@ static tScriptInfo ScriptInfo[NUM_IDS] = {
 class BaseObjScript {
 public:
   BaseObjScript();
-  ~BaseObjScript();
+  virtual ~BaseObjScript();
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 

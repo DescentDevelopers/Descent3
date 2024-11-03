@@ -126,7 +126,7 @@ static int aigame_mod_id;
 class BaseObjScript {
 public:
   BaseObjScript();
-  ~BaseObjScript();
+  virtual ~BaseObjScript();
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
