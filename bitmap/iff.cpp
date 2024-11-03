@@ -382,7 +382,7 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
 
     switch (sig) {
     case IFF_SIG_FORM: {
-      int newsig = bm_iff_get_sig(ifile);
+      bm_iff_get_sig(ifile);
       bmheader->type = TYPE_PBM;
       break;
     }

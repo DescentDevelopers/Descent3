@@ -575,8 +575,6 @@ int bm_AllocNoMemBitmap(int w, int h) {
 // Searches thru all bitmaps for a specific name, returns -1 if not found
 // or index of bitmap with name
 int bm_FindBitmapName(const char *name) {
-  int num_counted = 0;
-
   bms_bitmap fbmp;
   strcpy(fbmp.name, name);
   bm_Node *fnode = bm_findNode(&fbmp);
@@ -641,8 +639,6 @@ int bm_TestName(const char *src) {
   strncpy(namedest, filename, limit);
   namedest[limit] = 0;
 
-  int cur_len = strlen(namedest);
-
   // Now, make sure there are no other bitmaps with this name
   strcat(namedest, ".ogf");
   if ((i = bm_FindBitmapName(namedest)) == -1)
@@ -652,7 +648,6 @@ int bm_TestName(const char *src) {
 // gets the filename from a path, plus appends our .ogf extension
 void bm_ChangeEndName(const char *src, char *dest) {
   uint32_t i, limit;
-  int last = -1;
   int curnum = -1;
   char namedest[256 + 16];
   char path[256], ext[256], filename[256];

@@ -859,7 +859,6 @@ void OnClientCollide(uint8_t *data) {
   int pnum = me_obj->id;                     // player number
   int pteam = DMFCBase->GetPlayerTeam(pnum); // player's team
   int i;
-  bool play_return_home_msg = false;
 
   for (i = 0; i < CTFNumOfTeams; i++) {
     if (it_obj->id == FlagIDs[i])
@@ -876,7 +875,6 @@ void OnClientCollide(uint8_t *data) {
 
   // Did player collide with his own team's flag?
   if (fteam == pteam) {
-    int16_t flag_count = 0;
     vector fpos;
     int groom;
     int flagcount;
@@ -963,7 +961,6 @@ void OnClientCollide(uint8_t *data) {
 
         TeamScores[pteam] += score;
         OverallTeamScores[pteam] += score;
-        int newscore = TeamScores[pteam];
 
         switch (flagcount) {
         case 1: {
@@ -1121,7 +1118,6 @@ void OnClientLevelEnd(void) { DMFCBase->OnClientLevelEnd(); }
 
 void OnPlayerChangeTeam(int player_num, int newteam, bool announce, bool spew_onrespawn) {
   DMFCBase->OnPlayerChangeTeam(player_num, newteam, announce, spew_onrespawn);
-  player_record *pr = DMFCBase->GetPlayerRecordByPnum(player_num);
 }
 
 // OnClientPlayerKilled
@@ -2183,8 +2179,6 @@ bool AddFlagToPlayer(int pnum, int team, int flagobjnum) {
 //	RemoveFlagFromPlayer
 //	removes a flag from a player
 bool RemoveFlagFromPlayer(int pnum, int team) {
-  int flagobjnum = -1;
-
   if (DMFCBase->GetLocalRole() == LR_SERVER) {
 
     if (ChildFlags[team] == OBJECT_HANDLE_NONE)

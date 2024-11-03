@@ -96,7 +96,6 @@
 
 #define STR_BUF_SIZE 512
 static char Str_buf[STR_BUF_SIZE];      // String buffer for variable arguments
-static char Draw_str_buf[STR_BUF_SIZE]; // used to buffer words in a string
 
 //	---------------------------------------------------------------------------
 //	Viewport font and text funcitons

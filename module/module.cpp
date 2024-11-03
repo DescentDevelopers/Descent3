@@ -233,7 +233,6 @@ bool mod_FreeModule(module *handle) {
 // mod_GetLastError to see if there was an error symstr is the name of the function you want to get the symbol for (Do
 // NOT give any pre/suffix to this name) parmbytes is the size (in bytes) of the parameter list the function should have
 MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, uint8_t parmbytes) {
-  char buffer[256];
   MODPROCADDRESS sym;
   if (!handle) {
     ModLastError = MODERR_INVALIDHANDLE;
@@ -248,6 +247,7 @@ MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, uint8_t parmbyt
     return nullptr;
   }
 #if defined(WIN32)
+  char buffer[256];
   // We need to first form the correct symbol name (for Windows)
   if (parmbytes == 255)
     sprintf(buffer, "%s", symstr);

@@ -140,8 +140,6 @@ bool grMemorySurface::init(int w, int h, int bpp, char *data, int rowsize, unsig
 //	internal functions
 //	---------------------------------------------------------------------------
 
-static mem_bitmap grMemSurf_object;
-
 bool gr_bm_mem_Blt16(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh);
 bool gr_bm_mem_Blt16ck(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh);
 

@@ -225,7 +225,6 @@ void mng_InitPagelocks() {
 // Returns pointer to locker's name, or NULL if the file is unlocked
 char *mng_CheckIfLockerPresent() {
   CFILE *infile;
-  int i = 0;
   static char lockname[200];
 
   ASSERT(Network_up);
@@ -380,7 +379,6 @@ int mng_CheckIfPageLocked(mngs_Pagelock *pl) {
       r = 2;
     } else {
       if (!stricmp(pl->name, testlock.name)) {
-        int test = 0;
         if (pl->pagetype == testlock.pagetype) {
           if (!stricmp(testlock.holder, "UNLOCKED"))
             r = 0;
@@ -602,7 +600,7 @@ int mng_DeletePagelock(char *name, int pagetype) {
 // Given a list of names and a pagetype, deletes the ones already inside the lock file
 int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
   CFILE *infile, *outfile;
-  int done = 0, deleted = 0;
+  int done = 0;
   mngs_Pagelock temp_pl;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
@@ -656,7 +654,7 @@ int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
 // Goes through the pagelock table and deletes all duplicate entries
 int mng_DeleteDuplicatePagelocks() {
   CFILE *infile; //,*outfile;
-  int done = 0, deleted = 0;
+  int done = 0;
   mngs_Pagelock temp_pl;
   mngs_Pagelock *already_read;
   int num = 0, duplicates = 0, i;
@@ -727,7 +725,7 @@ int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
   memset(already_done, 0, 500);
 
   CFILE *infile, *outfile;
-  int done = 0, deleted = 0;
+  int done = 0;
   mngs_Pagelock temp_pl;
   int total = 0;
 

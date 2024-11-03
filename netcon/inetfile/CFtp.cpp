@@ -134,7 +134,6 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
   }
   m_ListenSock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == m_ListenSock) {
-    int iWinsockErr = WSAGetLastError();
     m_State = FTP_STATE_SOCKET_ERROR;
     return;
   } else {
@@ -145,7 +144,6 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
     // Bind the listen socket
     if (bind(m_ListenSock, (SOCKADDR *)&listensockaddr, sizeof(SOCKADDR))) {
       // Couldn't bind the socket
-      int iWinsockErr = WSAGetLastError();
       m_State = FTP_STATE_SOCKET_ERROR;
       return;
     }
@@ -153,7 +151,6 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
     // Listen for the server connection
     if (listen(m_ListenSock, 1)) {
       // Couldn't listen on the socket
-      int iWinsockErr = WSAGetLastError();
       m_State = FTP_STATE_SOCKET_ERROR;
       return;
     }
@@ -339,7 +336,6 @@ uint32_t CFtpGet::GetFile() {
   close(m_ListenSock);
 #endif
   if (m_DataSock == INVALID_SOCKET) {
-    int iWinsockErr = WSAGetLastError();
     m_State = FTP_STATE_SOCKET_ERROR;
     return 0;
   }
@@ -363,7 +359,6 @@ uint32_t CFtpGet::IssuePort() {
   // Get the address for the hListenSocket
   iLength = sizeof(listenaddr);
   if (getsockname(m_ListenSock, (SOCKADDR *)&listenaddr, &iLength) == SOCKET_ERROR) {
-    int iWinsockErr = WSAGetLastError();
     m_State = FTP_STATE_SOCKET_ERROR;
     return 0;
   }
@@ -374,7 +369,6 @@ uint32_t CFtpGet::IssuePort() {
   // Now, reuse the socket address structure to
   // get the IP address from the control socket.
   if (getsockname(m_ControlSock, (SOCKADDR *)&listenaddr, &iLength) == SOCKET_ERROR) {
-    int iWinsockErr = WSAGetLastError();
     m_State = FTP_STATE_SOCKET_ERROR;
     return 0;
   }
@@ -411,7 +405,6 @@ uint32_t CFtpGet::IssuePort() {
     if (nReplyCode != 250 || (ReadFTPServerReply() != 200)) // ummmmmmmm
 #endif
     {
-      int iWinsockErr = WSAGetLastError();
       m_State = FTP_STATE_SOCKET_ERROR;
       return 0;
     }
@@ -445,7 +438,6 @@ int CFtpGet::ConnectControlSocket() {
     return 0;
   // Now we will connect to the host
   if (connect(m_ControlSock, (SOCKADDR *)&hostaddr, sizeof(SOCKADDR))) {
-    int iWinsockErr = WSAGetLastError();
     m_State = FTP_STATE_CANT_CONNECT;
     return 0;
   }
@@ -479,7 +471,6 @@ uint32_t CFtpGet::SendFTPCommand(char *command) {
   FlushControlChannel();
   // Send the FTP command
   if (SOCKET_ERROR == (send(m_ControlSock, command, strlen(command), 0))) {
-    int iWinsockErr = WSAGetLastError();
     // Return 999 to indicate an error has occurred
     return (999);
   }
@@ -579,7 +570,6 @@ uint32_t CFtpGet::ReadDataChannel() {
 void CFtpGet::FlushControlChannel() {
   fd_set read_fds;
   TIMEVAL timeout;
-  int bytesin = 0;
   char flushbuff[3];
 
   timeout.tv_sec = 0;

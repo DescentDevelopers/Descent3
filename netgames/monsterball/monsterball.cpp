@@ -262,7 +262,6 @@ static int Highlight_bmp;
 static int LastHitPnum = -1;
 
 static bool players_sorted = false; // the Sorted*[] have been sorted
-static bool DisplayPowerBBlink = true;
 static bool DisplayScoreBlink = true;
 static bool DisplayScoreScreen = false;
 static bool display_my_welcome = false;
@@ -1696,8 +1695,6 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   int score_width = DLLgrtext_GetTextLineWidth("888");
   int name_x = DMFCBase->GetGameWindowW() - name_width - score_width - 10;
   int score_x = DMFCBase->GetGameWindowW() - score_width - 5;
-  int icon_size = height - 3;
-  int icon_x = name_x - icon_size - 3;
   DLLgrtext_SetAlpha(alpha);
   char name[256];
 
@@ -1921,9 +1918,6 @@ void HandleMonsterballCollideWithWeapon(object *ball, weapon_collide_info *winfo
 
 void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos, matrix *orient, float mass, float size,
                  vector *collision_point, vector *collision_normal, float rot_scalar, float vel_scalar) {
-  object *t = NULL;
-  object *other = NULL;
-
   ASSERT(std::isfinite(rotvel->x));
   ASSERT(std::isfinite(rotvel->y));
   ASSERT(std::isfinite(rotvel->z));

@@ -1948,7 +1948,6 @@ void do_walking_sim(object *obj) {
   vector total_force = Zero_vector; // Constant force acting on an object
 
   bool f_continue_sim;            // Should we run another simulation loop
-  bool f_start_fvi_record = true; // Records the rooms that are passed thru
 
   poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
 
@@ -1974,8 +1973,6 @@ void do_walking_sim(object *obj) {
   obj->flags &= (~OF_STOPPED_THIS_FRAME);
 
   // Do rotation velocity/accel stuff
-  bool f_rotated = false;
-
   if (!(fabs(pi->velocity.x) > .000001 || fabs(pi->velocity.y) > .000001 || fabs(pi->velocity.z) > .000001 ||
         fabs(pi->thrust.x) > .000001 || fabs(pi->thrust.y) > .000001 || fabs(pi->thrust.z) > .000001 ||
         fabs(pi->rotvel.x) > .000001 || fabs(pi->rotvel.y) > .000001 || fabs(pi->rotvel.z) > .000001 ||

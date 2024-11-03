@@ -1573,7 +1573,6 @@ void ConvertAxisAmountToEuler(vector *n, float *w, vector *e) {
   float t;
 
   float scale = *w / .0001f;
-  float w_n = .0001f;
   vector s_result;
 
   if (*w == 0.0f) {
@@ -2159,7 +2158,6 @@ void collide_generic_and_weapon(object *robotobj, object *weapon, vector *collis
   float damage_to_apply;
   uint8_t electrical = (Weapons[weapon->id].flags & WF_ELECTRICAL) ? 1 : 0;
   bool f_stick = ((weapon->mtype.phys_info.flags & PF_STICK) != 0);
-  bool f_energy = ((Weapons[weapon->id].flags & WF_MATTER_WEAPON) == 0);
   int damage_type;
 
   // Check for lava & volatile surfaces on an object

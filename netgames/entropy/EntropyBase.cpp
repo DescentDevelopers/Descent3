@@ -1738,7 +1738,6 @@ void DisplayWelcomeMessage(int player_num) {
 }
 
 void OnLabSpewTimer(void) {
-  int max_rooms = DMFCBase->GetHighestRoomIndex() + 1;
   int objnum;
   int index;
   int virus_count;

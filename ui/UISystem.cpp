@@ -539,8 +539,6 @@ bool ui_HideCursor() {
 }
 //	set user interface screen resolution
 void ui_SetScreenMode(int w, int h) {
-  int old_w = UI_screen_width;
-  int old_h = UI_screen_height;
   UI_screen_width = w;
   UI_screen_height = h;
   UI_aspect_x = (float)w / (float)FIXED_SCREEN_WIDTH;

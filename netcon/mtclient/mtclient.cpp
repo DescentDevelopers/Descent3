@@ -1094,7 +1094,7 @@ int MainMultiplayerMenu() {
 
   // void HotSpotCreate(int item,int parentitem, int id, int key, int txtitemoff, int txtitemon, int x, int y, int w,
   // int h, int flags,int winnum)
-  void *exit_hs = DLLHotSpotCreate(main_wnd, 5, KEY_ESC, exit_off_text, exit_on_text, 33, 427, 70, 15, 0);
+  /* void *exit_hs = */ DLLHotSpotCreate(main_wnd, 5, KEY_ESC, exit_off_text, exit_on_text, 33, 427, 70, 15, 0);
 
   void *priv_hs = DLLHotSpotCreate(main_wnd, 6, 0, priv_msg_off_text, priv_msg_on_text, 328, 403, 170, 15, 0);
 
@@ -1371,7 +1371,6 @@ int MainMultiplayerMenu() {
 
             memset(fmtchan, 0, 500);
 
-            int textx = 0;
             int charpos = 0;
             int endpos;
 #define LIST_ROW1 90
@@ -1737,7 +1736,6 @@ int SearchMasterTrackerGameMenu() {
   int i = 0;
   float last_req_time;
   char selgame[200];
-  void *selti = nullptr;
   void *return_text_on = DLLCreateNewUITextItem(TXT_PXO_RETURNTOCHAT, UICOL_HOTSPOT_HI);
   void *return_text_off = DLLCreateNewUITextItem(TXT_PXO_RETURNTOCHAT, UICOL_HOTSPOT_LO);
   void *game_head_text = DLLCreateNewUITextItem(TXT_PXO_GAMELISTHDR, UICOL_TEXT_NORMAL);
@@ -1844,7 +1842,6 @@ int SearchMasterTrackerGameMenu() {
   DLLNewUIWindowLoadBackgroundImage(main_wnd, "pxogame.ogf");
   DLLNewUIWindowOpen(main_wnd);
   *DLLNum_network_games_known = 0;
-  int lastgamesfound = 0;
   int itemp;
   last_req_time = DLLtimer_GetTime();
   RequestGameList();
@@ -1854,7 +1851,7 @@ int SearchMasterTrackerGameMenu() {
   // Menu loop
   while (!exit_menu) {
     if (ChatStarted)
-      const char *p = GetChatText();
+      GetChatText();
 
     DLLDescentDefer();
     IdleGameTracker();

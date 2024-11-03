@@ -696,8 +696,6 @@ void UIListBox::OnDraw() {
 
 //	behavior when key is pressed.
 void UIListBox::OnKeyDown(int key) {
-  UIGadget *gadget = this;
-
   if (key == KEY_UP) {
     if (m_SelectedIndex > 0) {
       if (m_SelectedIndex == m_Index)
@@ -837,7 +835,6 @@ void UIListBox::OnUserProcess() {
 // check if x and y selection hits a selected item.
 bool UIListBox::MseCheckSelect(int x, int y) {
   int i, ty;
-  bool use_scroll = !(m_Flags & UILB_NOSCROLL);
 
   if (!m_NumItems)
     return false;

@@ -440,7 +440,7 @@ int MainMultiplayerMenu() {
 
   // void HotSpotCreate(int item,int parentitem, int id, int key, int txtitemoff, int txtitemon, int x, int y, int w,
   // int h, int flags,int winnum)
-  void *exit_hs = DLLHotSpotCreate(main_wnd, 5, KEY_ESC, exit_off_text, exit_on_text, 33, 427, 70, 15, 0);
+  /* void *exit_hs = */ DLLHotSpotCreate(main_wnd, 5, KEY_ESC, exit_off_text, exit_on_text, 33, 427, 70, 15, 0);
 
   void *priv_hs = DLLHotSpotCreate(main_wnd, 6, 0, priv_msg_off_text, priv_msg_on_text, 328, 403, 170, 15, 0);
 
@@ -1188,7 +1188,7 @@ int SearchMasterTrackerGameMenu() {
   // Menu loop
   while (!exit_menu) {
     if (ChatStarted)
-      const char *p = GetChatText();
+      GetChatText();
 
     DLLDescentDefer();
 

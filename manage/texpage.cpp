@@ -762,9 +762,8 @@ int mng_ReadNewTexturePage(CFILE *infile, mngs_texture_page *texpage) {
 // If local is 1, deletes from the local table file
 int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
   CFILE *infile, *outfile;
-  uint8_t pagetype, replaced = 0;
+  uint8_t pagetype;
   int done = 0;
-  int deleted = 0;
   memset(&texpage1, 0, sizeof(mngs_texture_page));
 
   if (local)
@@ -796,7 +795,7 @@ int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
       continue;
     }
     pagetype = cf_ReadByte(infile);
-    int len = cf_ReadInt(infile);
+    /* int len = */ cf_ReadInt(infile);
 
     // If not a texture page, just read it in and write it right back out
     if (pagetype != PAGETYPE_TEXTURE) {

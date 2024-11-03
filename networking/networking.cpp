@@ -408,9 +408,6 @@ static int16_t Packet_free_list[MAX_PACKET_BUFFERS];               // contains i
 static int Num_packet_buffers;
 static int Largest_packet_index = 0;
 
-static int Uncompressed_outgoing_data_len = 0;
-static int Compressed_outgoing_data_len = 0;
-
 int Next_packet_id;
 int Last_packet_id;
 
@@ -465,8 +462,6 @@ struct reliable_net_sendbuffer {
 struct reliable_net_rcvbuffer {
   uint8_t buffer[NETBUFFERSIZE];
 };
-
-static SOCKET Reliable_UDP_socket = INVALID_SOCKET;
 
 static float first_sent_iamhere = 0;
 static float last_sent_iamhere = 0;
@@ -577,14 +572,7 @@ void nw_InitNetworking(int iReadBufSizeOverride) {
   WORD ver = MAKEWORD(1, 1);
 #endif
 
-  static char exewithpath[_MAX_PATH * 2];
-  static char exefile[_MAX_PATH * 2];
-  static char ourargs[_MAX_PATH * 2];
-  static char exedir[_MAX_PATH * 2];
-  static char exeext[_MAX_PATH];
-  static char *fixdir;
   static char szconntype[100];
-  int parmlen;
   int len = 99;
   Database->read("NetworkConnection", szconntype, &len);
   if (stricmp(szconntype, "DIALUP") == 0) {
@@ -612,10 +600,17 @@ void nw_InitNetworking(int iReadBufSizeOverride) {
   }
 #ifdef WIN32
   if (!dp_DidLobbyLaunchGame()) {
+    static char exewithpath[_MAX_PATH * 2];
+    static char exefile[_MAX_PATH * 2];
+    static char ourargs[_MAX_PATH * 2];
+    static char exedir[_MAX_PATH * 2];
+    static char exeext[_MAX_PATH];
+    static char *fixdir;
+
     // Tell direct play about this game
     char *p = GetCommandLine();
     LOG_DEBUG.printf("Command line: %s", p);
-    parmlen = strlen(p);
+    int parmlen = strlen(p);
 
     int a;
     for (a = 0; a < parmlen; ++a) {
@@ -851,7 +846,6 @@ void nw_GetNumbersFromHostAddress(network_address *address, char *str) {
 // returns the ip address of this computer
 uint32_t nw_GetThisIP() {
   SOCKADDR_IN local_address;
-  int address_size = sizeof(SOCKADDR);
 
   if (Net_fixed_ip != INADDR_NONE) {
     return Net_fixed_ip;
@@ -1078,7 +1072,6 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
   int use_buffer = -1;
   reliable_socket *rsocket;
   reliable_header send_header;
-  int send_this_packet = 1;
 
   if (length == 0) {
     LOG_ERROR << "Attempting to send 0 byte network packet in nw_SendReliable()";
@@ -1252,12 +1245,9 @@ void nw_DoNetworkIdle(void) {
 
 void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
   int i;
-  int rcode = -1;
   int16_t max_len = NETBUFFERSIZE;
   static reliable_header rcv_buff;
   static SOCKADDR rcv_addr;
-  int bytesin = 0;
-  int addrlen = sizeof(SOCKADDR);
   uint32_t rcvid; // The id of who we actually received a packet from, as opposed to socketid parm
 
   if (NP_TCP == naddr->connection_type) {
@@ -2505,11 +2495,6 @@ int nw_DoReceiveCallbacks(void) {
 void nw_ReliableResend(void) {
   int i, j;
   int rcode = -1;
-  int16_t max_len = NETBUFFERSIZE;
-  static reliable_header rcv_buff;
-  static SOCKADDR rcv_addr;
-  int bytesin = 0;
-  int addrlen = sizeof(SOCKADDR);
   reliable_socket *rsocket = NULL;
   // Go through each reliable socket that is connected and do any needed work.
   for (j = 0; j < MAXRELIABLESOCKETS; j++) {
