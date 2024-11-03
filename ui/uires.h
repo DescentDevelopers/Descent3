@@ -99,8 +99,7 @@ enum tUIDrawClass { uiDrawNormal, uiDrawAlphaSaturate, uiDrawFaded };
 
 class UIItem {
 public:
-  UIItem(){};
-  virtual ~UIItem(){};
+  virtual ~UIItem() = default;
 
   //	if returns false, then it didn't draw.
   virtual bool draw(int x, int y, tUIDrawClass draw_class = uiDrawNormal) { return false; };
@@ -235,7 +234,7 @@ public:
     m_IsChunked = false;
     m_Bitmap.handle = bm_handle;
   };
-  virtual ~UIBitmapItem(){};
+  virtual ~UIBitmapItem() = default;
 
   //	if returns false, then it didn't draw.
   virtual bool draw(int x, int y, tUIDrawClass draw_class = uiDrawNormal);

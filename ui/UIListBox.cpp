@@ -168,10 +168,6 @@
 
 //	Construction and destruction
 
-UIListBox::UIListBox() {}
-
-UIListBox::~UIListBox() {}
-
 void UIListBox::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
   m_NumItems = 0;
   m_ItemList = NULL;

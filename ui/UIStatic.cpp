@@ -87,10 +87,6 @@ void UIText::OnFormat() {
   UIGadget::OnFormat();
 }
 
-UIStatic::UIStatic() {}
-
-UIStatic::~UIStatic() {}
-
 void UIStatic::Create(UIWindow *parent, UIItem *item, int x, int y, int w, int h, int flags) {
   m_Background = NULL;
   if (item)

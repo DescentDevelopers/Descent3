@@ -303,8 +303,7 @@ protected:
   int m_W = 0, m_H = 0; // Dimensions of the UIObject
 
 public:
-  UIObject();
-  virtual ~UIObject();
+  virtual ~UIObject() = default;
 
   void Create(int x, int y, int w, int h); // define the ui object.
   void Destroy() { m_Created = false; };
@@ -449,9 +448,6 @@ public:
   virtual void OnNotify(UIGadget *){}; // usually called by a child gadget of a gadget.
 
 public:
-  UIGadget();
-  virtual ~UIGadget();
-
   UIWindow *GetWindow() { // returns the parent window for a gadget.
     return m_Wnd;
   };
@@ -512,9 +508,6 @@ protected:
   virtual void OnDestroy();             // override: behavior when gadget is destroyed.
 
 public:
-  UIHotspot();
-  virtual ~UIHotspot();
-
   //	optional key, when pressed, triggers hotspot.
   void Create(UIWindow *wnd, int id, int key, UIItem *itemoff, UIItem *itemon, int x, int y, int w, int h,
               int flags = 0);
@@ -563,9 +556,6 @@ public:
   };
 
 public:
-  UIButton();
-  virtual ~UIButton();
-
   void Create(UIWindow *parent, int id, UIItem *title, int x, int y, int w, int h, int flags = 0);
 
   virtual tUIClass Class() const { // Overide this function to name the class
@@ -668,9 +658,6 @@ protected:
   UIItem *m_Title = nullptr;
 
 public:
-  UIStatic();
-  virtual ~UIStatic();
-
   void Create(UIWindow *parent, UIItem *item, int x, int y, int w, int h, int flags = 0);
   void SetBackground(UIPrimativeItem *prim);
   void SetTitle(UIItem *item);
@@ -718,8 +705,6 @@ protected:
 
 class UIGroup final : public UIStatic {
 public:
-  UIGroup();
-  ~UIGroup();
   void Create(UIWindow *parent, char *label, int x, int y, int w, int h, ddgr_color label_color = GR_WHITE,
               ddgr_color box_color = GR_WHITE, int flags = 0);
 
@@ -776,9 +761,6 @@ protected:
   virtual void OnDestroy(); // override: behavior when gadget is destroyed.
 
 public:
-  UIEdit();
-  virtual ~UIEdit();
-
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
 
   //	settings
@@ -813,9 +795,6 @@ class UISlider : public UIGadget {
   UIItem *slider_item = nullptr; // slider item
 
 public:
-  UISlider();
-  virtual ~UISlider();
-
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
 
   //	sets visual characteristics of slider.
@@ -884,9 +863,6 @@ protected:
   int m_CX, m_CY, m_CX2, m_CY2; // clipping text.
 
 public:
-  UIListBox();
-  virtual ~UIListBox();
-
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
 
   virtual tUIClass Class() const { // Overide this function to name the class
@@ -951,9 +927,6 @@ public:
 
 class UIComboBox : public UIGadget {
 public:
-  UIComboBox();
-  virtual ~UIComboBox();
-
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
 
 private:
@@ -1022,9 +995,6 @@ protected:
   virtual void OnDestroy();     // behavior when gadget is destroyed.
 
 public:
-  UIConsoleGadget();
-  virtual ~UIConsoleGadget();
-
   //	font = console font, NOT GADGET FONT.   This font is used to proportion window
   void Create(UIWindow *parent, int id, int x, int y, int font, int cols, int rows, int flags = UIF_BORDER);
 
@@ -1149,9 +1119,6 @@ class UITitledWindow final : public UIWindow {
   int m_BorderThickness; // border thickness.
 
 public:
-  UITitledWindow();
-  virtual ~UITitledWindow();
-
   void Create(UITextItem &title, int x, int y, int w, int h);
 
   //	class id
@@ -1187,9 +1154,6 @@ protected:
   virtual void OnDraw();
 
 public:
-  UIConsole();
-  virtual ~UIConsole();
-
   //	font = console font, NOT GADGET FONT.   This font is used to proportion window
   void Create(int x, int y, int font, int cols, int rows);
   void Destroy();
