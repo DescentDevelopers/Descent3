@@ -69,27 +69,27 @@ public:
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class LevelScript_0000 : public BaseScript {
+class LevelScript_0000 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0003 : public BaseScript {
+class TriggerScript_0003 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0002 : public BaseScript {
+class TriggerScript_0002 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0001 : public BaseScript {
+class TriggerScript_0001 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0000 : public BaseScript {
+class TriggerScript_0000 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };

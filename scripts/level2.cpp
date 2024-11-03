@@ -132,337 +132,337 @@ public:
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class LevelScript_0000 : public BaseScript {
+class LevelScript_0000 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_082D : public BaseScript {
+class CustomObjectScript_082D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_082E : public BaseScript {
+class CustomObjectScript_082E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_082F : public BaseScript {
+class CustomObjectScript_082F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0830 : public BaseScript {
+class CustomObjectScript_0830 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0831 : public BaseScript {
+class CustomObjectScript_0831 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_2112 : public BaseScript {
+class CustomObjectScript_2112 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11F2 : public BaseScript {
+class CustomObjectScript_11F2 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11F4 : public BaseScript {
+class CustomObjectScript_11F4 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11F6 : public BaseScript {
+class CustomObjectScript_11F6 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_19F7 : public BaseScript {
+class CustomObjectScript_19F7 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11FB : public BaseScript {
+class CustomObjectScript_11FB final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_1211 : public BaseScript {
+class CustomObjectScript_1211 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0885 : public BaseScript {
+class CustomObjectScript_0885 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_080D : public BaseScript {
+class CustomObjectScript_080D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09EC : public BaseScript {
+class CustomObjectScript_09EC final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11EB : public BaseScript {
+class CustomObjectScript_11EB final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_19E9 : public BaseScript {
+class CustomObjectScript_19E9 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_19E8 : public BaseScript {
+class CustomObjectScript_19E8 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_19EA : public BaseScript {
+class CustomObjectScript_19EA final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09E7 : public BaseScript {
+class CustomObjectScript_09E7 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09E6 : public BaseScript {
+class CustomObjectScript_09E6 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11BB : public BaseScript {
+class CustomObjectScript_11BB final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09BC : public BaseScript {
+class CustomObjectScript_09BC final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09BD : public BaseScript {
+class CustomObjectScript_09BD final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09BE : public BaseScript {
+class CustomObjectScript_09BE final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11BF : public BaseScript {
+class CustomObjectScript_11BF final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C0 : public BaseScript {
+class CustomObjectScript_09C0 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11C1 : public BaseScript {
+class CustomObjectScript_11C1 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_11BA : public BaseScript {
+class CustomObjectScript_11BA final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C9 : public BaseScript {
+class CustomObjectScript_09C9 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C8 : public BaseScript {
+class CustomObjectScript_09C8 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C7 : public BaseScript {
+class CustomObjectScript_09C7 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C6 : public BaseScript {
+class CustomObjectScript_09C6 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C5 : public BaseScript {
+class CustomObjectScript_09C5 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C4 : public BaseScript {
+class CustomObjectScript_09C4 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C3 : public BaseScript {
+class CustomObjectScript_09C3 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_09C2 : public BaseScript {
+class CustomObjectScript_09C2 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_094E : public BaseScript {
+class CustomObjectScript_094E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0000 : public BaseScript {
+class TriggerScript_0000 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0001 : public BaseScript {
+class TriggerScript_0001 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0002 : public BaseScript {
+class TriggerScript_0002 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0004 : public BaseScript {
+class TriggerScript_0004 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0005 : public BaseScript {
+class TriggerScript_0005 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0003 : public BaseScript {
+class TriggerScript_0003 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0008 : public BaseScript {
+class TriggerScript_0008 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0006 : public BaseScript {
+class TriggerScript_0006 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000C : public BaseScript {
+class TriggerScript_000C final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000B : public BaseScript {
+class TriggerScript_000B final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0007 : public BaseScript {
+class TriggerScript_0007 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000E : public BaseScript {
+class TriggerScript_000E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000A : public BaseScript {
+class TriggerScript_000A final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0009 : public BaseScript {
+class TriggerScript_0009 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0010 : public BaseScript {
+class TriggerScript_0010 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000D : public BaseScript {
+class TriggerScript_000D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0014 : public BaseScript {
+class TriggerScript_0014 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0011 : public BaseScript {
+class TriggerScript_0011 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000F : public BaseScript {
+class TriggerScript_000F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0016 : public BaseScript {
+class TriggerScript_0016 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0013 : public BaseScript {
+class TriggerScript_0013 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0017 : public BaseScript {
+class TriggerScript_0017 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0018 : public BaseScript {
+class TriggerScript_0018 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0015 : public BaseScript {
+class TriggerScript_0015 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0012 : public BaseScript {
+class TriggerScript_0012 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0020 : public BaseScript {
+class TriggerScript_0020 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_001F : public BaseScript {
+class TriggerScript_001F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_001E : public BaseScript {
+class TriggerScript_001E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };

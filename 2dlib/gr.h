@@ -352,7 +352,7 @@ public:
 //		this is a software bitmap not video driver dependant
 //	----------------------------------------------------------------------------
 
-class grMemorySurface : public grSurface {
+class grMemorySurface final : public grSurface {
   bool m_FirstTimeInit; // do special stuff if we are initializing for first time
   bool m_AllowInit;     // we only allow initialization if we didn't create it.
 
@@ -375,7 +375,7 @@ public:
 //		this is a hardware bitmap allocated from the video driver
 //	----------------------------------------------------------------------------
 
-class grHardwareSurface : public grSurface {
+class grHardwareSurface final : public grSurface {
 public:
   grHardwareSurface();
   grHardwareSurface(int w, int h, int bpp, unsigned flags = 0, const char *name = NULL);
@@ -390,7 +390,7 @@ public:
 //		is used by the grViewport class to draw onto the screen
 //	----------------------------------------------------------------------------
 
-class grScreen : public grSurface {
+class grScreen final : public grSurface {
   friend class grViewport;
 
 public:

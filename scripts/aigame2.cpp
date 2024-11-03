@@ -100,7 +100,7 @@ protected:
 #define PEST_STATE_ROAM 0
 #define PEST_STATE_HIVE 1
 
-class aiSamirPest : public aiObjScript {
+class aiSamirPest final : public aiObjScript {
 public:
   aiSamirPest();
   ~aiSamirPest();
@@ -133,7 +133,7 @@ protected:
 #define STATE_ATTACK 5 // regular attack
 #define STATE_STALK 6  // stalks player
 
-class aiBlackStormTrooper : public aiObjScript {
+class aiBlackStormTrooper final : public aiObjScript {
 public:
   aiBlackStormTrooper();
   ~aiBlackStormTrooper();
@@ -183,7 +183,7 @@ private:
   void find_targets(int me_handle, bool new_snipe_point);
 };
 
-class aiCreeper : public aiObjScript {
+class aiCreeper final : public aiObjScript {
 public:
   aiCreeper();
   ~aiCreeper();
@@ -213,7 +213,7 @@ protected:
   virtual void OnMemRestore(void *ptr) { memory = (t_creep_memory *)ptr; };
 };
 
-class aiLukeTurret : public aiObjScript {
+class aiLukeTurret final : public aiObjScript {
   struct t_lturret_memory {
     float timer;
   };
@@ -231,7 +231,7 @@ protected:
   virtual void OnMemRestore(void *ptr) { memory = (t_lturret_memory *)ptr; };
 };
 
-class aiSTBlackBarrel : public aiObjScript {
+class aiSTBlackBarrel final : public aiObjScript {
   struct t_stblackbarrel_memory {
     matrix orient;
   };

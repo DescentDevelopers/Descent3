@@ -360,7 +360,7 @@ public:
 
 //	CLASS a large option button used in menus.
 
-class newuiMenuOptionButton : public newuiButton {
+class newuiMenuOptionButton final : public newuiButton {
 public:
   void Create(newuiMenu *menu, newuiMenuOptionButton *last, int16_t id, const char *name, int16_t x, int16_t y,
               bool m_mono_press);
@@ -376,14 +376,14 @@ private:
   newuiMenuOptionButton *m_prev_btn, *m_next_btn;
 };
 
-class newuiTinyButton : public newuiButton {
+class newuiTinyButton final : public newuiButton {
 public:
   void Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y);
 };
 
 //	CLASS creates an arrow button that is sensitive to touch (when down, always select)
 
-class newuiArrowButton : public newuiButton {
+class newuiArrowButton final : public newuiButton {
 public:
   newuiArrowButton(){};
 
@@ -405,7 +405,7 @@ private:
 #define SUBGADGET_UP 0x3
 #define SUBGADGET_DOWN 0x4
 
-class newuiListBox : public UIGadget {
+class newuiListBox final : public UIGadget {
 public:
   newuiListBox();
 
@@ -475,7 +475,7 @@ private:
 
 //	CLASS newuiComboBox
 
-class newuiComboBox : public UIGadget {
+class newuiComboBox final : public UIGadget {
 public:
   newuiComboBox();
 
@@ -526,7 +526,7 @@ private:
 
 // the new classic hotspot CLASS
 
-class newuiHotspot : public UIGadget {
+class newuiHotspot final : public UIGadget {
 private:
   char *m_title;
   int16_t m_alpha, m_alpha_adjust;
@@ -624,7 +624,7 @@ private:
 
 //	CLASS, large (fullscreen) menu
 
-class newuiLargeMenu : public newuiMenu {
+class newuiLargeMenu final : public newuiMenu {
 public:
   //	creates a menu
   void Create();

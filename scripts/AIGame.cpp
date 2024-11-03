@@ -361,7 +361,7 @@ struct pest_data {
   int foot_sounds[3];
 };
 
-class Pest : public BaseObjScript {
+class Pest final : public BaseObjScript {
 private:
   pest_data *memory;
   void DoInit(int me_handle);
@@ -384,7 +384,7 @@ struct stinger_data {
   char f_very_hurt;
 };
 
-class Stinger : public BaseObjScript {
+class Stinger final : public BaseObjScript {
 private:
   stinger_data *memory;
 
@@ -443,7 +443,7 @@ struct superthief_data {
   bool laser_on;
 };
 
-class SuperThief : public BaseObjScript {
+class SuperThief final : public BaseObjScript {
 private:
   superthief_data *memory;
 
@@ -499,7 +499,7 @@ struct humonculous_data {
   int16_t flags;
 };
 
-class Humonculous : public BaseObjScript {
+class Humonculous final : public BaseObjScript {
 private:
   humonculous_data *memory;
 
@@ -529,7 +529,7 @@ struct dragon_data {
   int tentacle[6];
 };
 
-class Dragon : public BaseObjScript {
+class Dragon final : public BaseObjScript {
 private:
   dragon_data *memory;
 
@@ -549,7 +549,7 @@ struct tracker_data {
   int hatch_object;
 };
 
-class Tracker : public BaseObjScript {
+class Tracker final : public BaseObjScript {
 private:
   tracker_data *memory;
 
@@ -571,7 +571,7 @@ struct lance_data {
   int mode;
 };
 
-class Lance : public BaseObjScript {
+class Lance final : public BaseObjScript {
 private:
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
@@ -591,7 +591,7 @@ struct flak_data {
   float death_time;
 };
 
-class Flak : public BaseObjScript {
+class Flak final : public BaseObjScript {
 private:
   flak_data *memory;
   void DoInit(int me_handle);
@@ -605,7 +605,7 @@ public:
 // Seeker class
 //------------------
 
-class Seeker : public BaseObjScript {
+class Seeker final : public BaseObjScript {
 private:
   void DoInit(int me);
   void DoCollide(int me);
@@ -623,7 +623,7 @@ struct supertrooper_data {
   int body_handle;
 };
 
-class SuperTrooper : public BaseObjScript {
+class SuperTrooper final : public BaseObjScript {
 private:
   supertrooper_data *memory;
   void DoInit(int me_handle);
@@ -666,7 +666,7 @@ struct sparky_data {
   float spin_time;
 };
 
-class Sparky : public BaseObjScript {
+class Sparky final : public BaseObjScript {
 private:
   sparky_data *memory;
   void DoInit(int me);
@@ -726,7 +726,7 @@ struct hellion_data {
   int camera[2];
 };
 
-class Hellion : public BaseObjScript {
+class Hellion final : public BaseObjScript {
 private:
   hellion_data *memory;
   void DoInit(int me);
@@ -795,7 +795,7 @@ struct mantaray_data {
 
 };
 
-class MantaRay : public BaseObjScript {
+class MantaRay final : public BaseObjScript {
 private:
   mantaray_data *memory;
   void DoInit(int me);
@@ -842,7 +842,7 @@ struct skiff_data {
 
 };
 
-class Skiff : public BaseObjScript {
+class Skiff final : public BaseObjScript {
 private:
   skiff_data *memory;
   void DoInit(int me);
@@ -892,7 +892,7 @@ struct spyhunter_data {
 
 };
 
-class SpyHunter : public BaseObjScript {
+class SpyHunter final : public BaseObjScript {
 private:
   spyhunter_data *memory;
   void DoInit(int me);
@@ -922,7 +922,7 @@ struct sniper_data {
   float base_acc;
 };
 
-class Sniper : public BaseObjScript {
+class Sniper final : public BaseObjScript {
   sniper_data *memory;
   void DoInit(int me);
   void DoFrame(int me);
@@ -950,7 +950,7 @@ struct snipernorun_data {
   float base_acc;
 };
 
-class SniperNoRun : public BaseObjScript {
+class SniperNoRun final : public BaseObjScript {
   snipernorun_data *memory;
   void DoInit(int me);
   void DoFrame(int me);
@@ -975,7 +975,7 @@ struct evadermoda_data {
   float base_acc;
 };
 
-class EvaderModA : public BaseObjScript {
+class EvaderModA final : public BaseObjScript {
   evadermoda_data *memory;
   void DoInit(int me);
   void DoFrame(int me);
@@ -1003,7 +1003,7 @@ struct flameras_data {
   bool f_firing_ok;
 };
 
-class FlameRAS : public BaseObjScript {
+class FlameRAS final : public BaseObjScript {
   flameras_data *memory;
   void DoInit(int me);
   void DoFrame(int me);
@@ -1041,7 +1041,7 @@ struct jugg_data {
   char flags;
 };
 
-class Jugg : public BaseObjScript {
+class Jugg final : public BaseObjScript {
 private:
   jugg_data *memory;
   void DoInit(int me_handle);
@@ -1067,7 +1067,7 @@ struct dtower_data {
   float last_frame;
 };
 
-class DTower : public BaseObjScript {
+class DTower final : public BaseObjScript {
 private:
   dtower_data *memory;
   void DoInit(int me_handle);
@@ -1090,7 +1090,7 @@ struct dcollector_data {
   bool f_dead;
 };
 
-class DCollector : public BaseObjScript {
+class DCollector final : public BaseObjScript {
 private:
   dcollector_data *memory;
   void DoInit(int me_handle);
@@ -1110,7 +1110,7 @@ struct cball_data {
   float mode_time;
 };
 
-class CBall : public BaseObjScript {
+class CBall final : public BaseObjScript {
 private:
   cball_data *memory;
   void DoInit(int me_handle);
@@ -1131,7 +1131,7 @@ struct sixgun_data {
   float circle_dist;
 };
 
-class SixGun : public BaseObjScript {
+class SixGun final : public BaseObjScript {
 private:
   sixgun_data *memory;
   void DoInit(int me_handle);
@@ -1150,7 +1150,7 @@ struct explodetimeout_data {
   float life_left;
 };
 
-class ExplodeTimeOut : public BaseObjScript {
+class ExplodeTimeOut final : public BaseObjScript {
 private:
   explodetimeout_data *memory;
   void DoInit(int me_handle);
@@ -1187,7 +1187,7 @@ struct sickle_data {
 
 };
 
-class Sickle : public BaseObjScript {
+class Sickle final : public BaseObjScript {
 private:
   sickle_data *memory;
   void SetMode(int me, char mode);
@@ -1208,7 +1208,7 @@ struct tBettyBombInfo {
   bool explode;
 };
 
-class BettyBomb : public BaseObjScript {
+class BettyBomb final : public BaseObjScript {
 public:
   BettyBomb() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -1222,7 +1222,7 @@ struct tBettyInfo {
   float lasttime;
 };
 
-class BettyScript : public BaseObjScript {
+class BettyScript final : public BaseObjScript {
 public:
   BettyScript() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -1242,7 +1242,7 @@ struct tChaffInfo {
   bool killme;
 };
 
-class ChaffScript : public BaseObjScript {
+class ChaffScript final : public BaseObjScript {
 public:
   ChaffScript() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -1260,7 +1260,7 @@ struct tChaffChunkInfo {
   float lifeleft;
 };
 
-class ChaffChunkScript : public BaseObjScript {
+class ChaffChunkScript final : public BaseObjScript {
 public:
   ChaffChunkScript() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -1278,7 +1278,7 @@ private:
 // ProxMine class
 //------------------
 
-class ProxMine : public BaseObjScript {
+class ProxMine final : public BaseObjScript {
 private:
   void DoInit(int me);
   void DoCollide(int me);
@@ -1292,7 +1292,7 @@ public:
 // Gunboy class
 //------------------
 
-class Gunboy : public BaseObjScript {
+class Gunboy final : public BaseObjScript {
 public:
   Gunboy() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -1308,7 +1308,7 @@ struct gbpowerup_data {
   float time_till_next_hud_message;
 };
 
-class GBPowerup : public BaseObjScript {
+class GBPowerup final : public BaseObjScript {
 private:
   gbpowerup_data *memory;
   void DoInit(int me);
@@ -1330,7 +1330,7 @@ struct joshbell_data {
   int bell_sound;
 };
 
-class JoshBell : public BaseObjScript {
+class JoshBell final : public BaseObjScript {
 private:
   joshbell_data *memory;
   void DoInit(int me);
@@ -1345,7 +1345,7 @@ public:
 // Explode On Contact
 //-----------------
 
-class ExplodeOnContact : public BaseObjScript {
+class ExplodeOnContact final : public BaseObjScript {
 private:
   void DoCollide(int me, int it_handle);
 
@@ -1358,7 +1358,7 @@ public:
 // Destroy On Contact
 //-----------------
 
-class DestroyOnContact : public BaseObjScript {
+class DestroyOnContact final : public BaseObjScript {
 private:
   void DoCollide(int me, int it_handle);
 
@@ -1570,7 +1570,7 @@ struct guidebot_data {
   uint16_t powerup_ids[6];
 };
 
-class GuideBot : public BaseObjScript {
+class GuideBot final : public BaseObjScript {
 private:
   guidebot_data *memory;
   void DoMessage(const char *str, bool f_high_priority, const char *sound_name = NULL, bool f_sound_2d = false);
@@ -1705,7 +1705,7 @@ struct thief_data {
   float aggression;
 };
 
-class Thief : public BaseObjScript {
+class Thief final : public BaseObjScript {
 private:
   thief_data *memory;
   void DoMessage(const char *str);
@@ -2299,7 +2299,7 @@ struct fireatdist_data {
   bool last_f_fire;
 };
 
-class FireAtDist : public BaseObjScript {
+class FireAtDist final : public BaseObjScript {
 private:
   fireatdist_data *memory;
   void DoInit(int me_handle);
@@ -2319,7 +2319,7 @@ struct hateptmc_data {
   float time_till_pulse;
 };
 
-class HatePTMC : public BaseObjScript {
+class HatePTMC final : public BaseObjScript {
 private:
   hateptmc_data *memory;
   void DoInit(int me_handle);
@@ -2342,7 +2342,7 @@ struct tubbs_data {
   float full_anger_time;
 };
 
-class Tubbs : public BaseObjScript {
+class Tubbs final : public BaseObjScript {
 private:
   tubbs_data *memory;
   void DoInit(int me);
@@ -2366,7 +2366,7 @@ struct oldscratch_data {
   float full_anger_time;
 };
 
-class OldScratch : public BaseObjScript {
+class OldScratch final : public BaseObjScript {
 private:
   oldscratch_data *memory;
   bool DoSteal(int me, int it);
@@ -2427,7 +2427,7 @@ struct barnswallow_data {
   int flags;
 };
 
-class BarnSwallow : public BaseObjScript {
+class BarnSwallow final : public BaseObjScript {
 private:
   barnswallow_data *memory;
   void DoInit(int me);

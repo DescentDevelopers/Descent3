@@ -127,7 +127,7 @@ void install_signal_handlers() { SetUnhandledExceptionFilter(RecordExceptionInfo
 //	---------------------------------------------------------------------------
 //	Define our operating system specific extensions to the gameos system
 //	---------------------------------------------------------------------------
-class oeD3LnxApp : public oeLnxApplication {
+class oeD3LnxApp final : public oeLnxApplication {
   bool shutdown, final_shutdown;
   int old_screen_mode;
 
@@ -142,7 +142,7 @@ public:
   void run() { Descent3(); };
 };
 
-class oeD3LnxDatabase : public oeLnxAppDatabase {
+class oeD3LnxDatabase final : public oeLnxAppDatabase {
 public:
   oeD3LnxDatabase() {
     char path[_MAX_PATH];

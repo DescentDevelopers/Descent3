@@ -142,7 +142,7 @@ struct combwallhit_data {
   float time_left;
 };
 
-class CombWallHit : public BaseObjScript {
+class CombWallHit final : public BaseObjScript {
 private:
   combwallhit_data *memory;
 
@@ -160,7 +160,7 @@ struct droptarget_data {
   float last_set_time;
 };
 
-class DropTarget : public BaseObjScript {
+class DropTarget final : public BaseObjScript {
 private:
   droptarget_data *memory;
 
@@ -178,7 +178,7 @@ struct gun_data {
   bool f_fire;
 };
 
-class Gun : public BaseObjScript {
+class Gun final : public BaseObjScript {
   gun_data *memory;
 
 public:
@@ -194,7 +194,7 @@ struct casing_data {
   float time_left;
 };
 
-class Casing : public BaseObjScript {
+class Casing final : public BaseObjScript {
 private:
   casing_data *memory;
 
@@ -248,7 +248,7 @@ struct mercendboss_data {
   int combine_object;
 };
 
-class MercEndBoss : public BaseObjScript {
+class MercEndBoss final : public BaseObjScript {
 private:
   mercendboss_data *memory;
   void DoInit(int me);
@@ -268,7 +268,7 @@ public:
 // HangLight class
 //------------------
 
-class HangLight : public BaseObjScript {
+class HangLight final : public BaseObjScript {
 private:
   void DoInit(int me);
 

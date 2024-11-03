@@ -180,7 +180,7 @@ public:
 #define UISNAZZYTEXTF_BLINKING 0x1
 #define UISNAZZYTEXTF_RESERVED 0xffff0000
 
-class UISnazzyTextItem : public UITextItem {
+class UISnazzyTextItem final : public UITextItem {
   unsigned m_flags;
 
   union {
@@ -213,7 +213,7 @@ public:
 //		used by user interface system, contains information about how to render
 //		text.  allows for alpha, color and different fonts.
 
-class UIBitmapItem : public UIItem {
+class UIBitmapItem final : public UIItem {
   bool m_IsValid;
   bool m_IsChunked; // is this a chunked bitmap?
 
@@ -284,7 +284,7 @@ public:
 //	UIPrimativeItem
 //		used to render simple 2d backgrounds.
 
-class UIPrimativeItem : public UIItem {
+class UIPrimativeItem final : public UIItem {
   ddgr_color color;
   uint8_t alpha;
 

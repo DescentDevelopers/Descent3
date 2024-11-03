@@ -1804,7 +1804,7 @@ bool PltCopyKeyConfig(pilot *src, pilot *dest) {
 //	UI3DWindow class
 //
 //	UI class for displaying a polymodel on the UIWindow, rotating 30 deg/sec
-class UI3DWindow : public UIStatic {
+class UI3DWindow final : public UIStatic {
 public:
   void OnDraw();
 };
@@ -1812,7 +1812,7 @@ public:
 //	UIBmpWindow class
 //
 //	UI class for displaying a bitmap on a UIWindow
-class UIBmpWindow : public UIStatic {
+class UIBmpWindow final : public UIStatic {
 public:
   UIBmpWindow();
   ~UIBmpWindow();

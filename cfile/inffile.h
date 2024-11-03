@@ -42,10 +42,10 @@ enum InfFileError {
   INFFILE_SYMBOL = 1024,
 };
 
-class InfFile {
+class InfFile final {
 public:
   InfFile();
-  virtual ~InfFile();
+  ~InfFile();
 
   //	opens an inf file, pass in a lexical analyzer that will return a command index.
   //	tag_check is a string that must appear at the very beginning of the file.

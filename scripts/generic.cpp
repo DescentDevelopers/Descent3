@@ -94,7 +94,7 @@ public:
 protected:
 };
 
-class GenericDoor : public GenericScript {
+class GenericDoor final : public GenericScript {
 public:
   GenericDoor() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -104,14 +104,14 @@ struct forcewallmemory {
   int object_handle;
 };
 
-class ForceWallScript : public GenericScript {
+class ForceWallScript final : public GenericScript {
 public:
   ForceWallScript();
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
   forcewallmemory *memory;
 };
 
-class WingNutScript : public GenericScript {
+class WingNutScript final : public GenericScript {
 public:
   WingNutScript() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -127,7 +127,7 @@ struct rapidfirememory {
   uint8_t collided_pnum;
 };
 
-class RapidFireScript : public GenericScript {
+class RapidFireScript final : public GenericScript {
 public:
   RapidFireScript();
 

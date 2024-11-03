@@ -69,7 +69,7 @@ struct tShieldOrbInfo {
 //------------------
 // Shield orb script
 //------------------
-class ShieldOrb : public BaseObjScript {
+class ShieldOrb final : public BaseObjScript {
 public:
   ShieldOrb() { info = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -81,7 +81,7 @@ private:
 //------------------
 // Energy orb script
 //------------------
-class EnergyOrb : public BaseObjScript {
+class EnergyOrb final : public BaseObjScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };

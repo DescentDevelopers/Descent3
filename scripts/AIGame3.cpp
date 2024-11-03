@@ -803,7 +803,7 @@ struct alienorganism_data {
 };
 
 // Alien Organism class definition
-class AlienOrganism : public BaseObjScript {
+class AlienOrganism final : public BaseObjScript {
 private:
   alienorganism_data *memory;
 
@@ -983,7 +983,7 @@ struct heavytrooper_data {
 };
 
 // Heavy Trooper class definition
-class HeavyTrooper : public BaseObjScript {
+class HeavyTrooper final : public BaseObjScript {
 private:
   heavytrooper_data *memory;
 
@@ -1078,7 +1078,7 @@ struct lifter_data {
 };
 
 // Lifter class definition
-class Lifter : public BaseObjScript {
+class Lifter final : public BaseObjScript {
 private:
   lifter_data *memory;
 
@@ -1292,7 +1292,7 @@ struct alienboss_data {
 };
 
 // Alien Boss class definition
-class AlienBoss : public BaseObjScript {
+class AlienBoss final : public BaseObjScript {
 private:
   alienboss_data *memory;
 
@@ -1383,7 +1383,7 @@ struct securitycamera_data {
 };
 
 // Security Camera class definition
-class SecurityCamera : public BaseObjScript {
+class SecurityCamera final : public BaseObjScript {
 private:
   securitycamera_data *memory;
 
@@ -1427,7 +1427,7 @@ struct crowdcontrol_data {
 };
 
 // Security Camera class definition
-class CrowdControl : public BaseObjScript {
+class CrowdControl final : public BaseObjScript {
 private:
   crowdcontrol_data *memory;
 

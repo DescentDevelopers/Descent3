@@ -142,7 +142,7 @@ public:
 //////////////////////////////////////////////////////////////////////
 class mmInterface;
 // class mmItem
-class mmItem : public UIGadget {
+class mmItem final : public UIGadget {
   char *m_text;  // text for item
   int16_t m_alpha; // alpha for text item
   int16_t m_satcount;

@@ -496,7 +496,7 @@ public:
 //		This is simply a region within the parent window that when clicked on
 //		or key pressed, does something.
 
-class UIHotspot : public UIGadget {
+class UIHotspot final : public UIGadget {
   UIItem *m_ItemOff, *m_ItemOn; // off and on states items.
   UIItem *m_ItemCur;            // current item.
 
@@ -686,7 +686,7 @@ protected:
 //	UIText
 //		This is a simple text.
 
-class UIText : public UIStatic {
+class UIText final : public UIStatic {
 public:
   void Create(UIWindow *parent, UITextItem *text, int x, int y, int flags = 0);
 
@@ -699,7 +699,7 @@ protected:
 //	UIProgress
 //		Progress Bar
 
-class UIProgress : public UIStatic {
+class UIProgress final : public UIStatic {
 public:
   void Create(UIWindow *parent, int x, int y, int w, int h, int flags = 0);
   void Update(float progress); // Call with a value from 0-1.0 to specify progress
@@ -716,7 +716,7 @@ protected:
 //	UIGroup
 //		Draws a group box on to the window
 
-class UIGroup : public UIStatic {
+class UIGroup final : public UIStatic {
 public:
   UIGroup();
   ~UIGroup();
@@ -997,7 +997,7 @@ protected:
 //	UIConsoleGadget
 //		a console that's a gadget within a window
 
-class UIConsoleGadget : public UIGadget {
+class UIConsoleGadget final : public UIGadget {
   int m_ConsoleFont;       // standard font for text in console
   ddgr_color *m_ColorRows; // color per row.
   char *m_ConsoleBuffer;   // text buffer of console.
@@ -1143,7 +1143,7 @@ public:
 //	Special windows
 //		titled window (functions as a standard dialog box.), without modality though.
 
-class UITitledWindow : public UIWindow {
+class UITitledWindow final : public UIWindow {
   UITextItem m_Title;    // title of window
   int m_CaptionColor;    // caption's color.
   int m_BorderThickness; // border thickness.
@@ -1180,7 +1180,7 @@ protected:
 //	UIConsole
 //		should display a simple console window where anyone can dump text into
 
-class UIConsole : public UIWindow {
+class UIConsole final : public UIWindow {
   UIConsoleGadget m_Console;
 
 protected:

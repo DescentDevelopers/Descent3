@@ -83,17 +83,17 @@ public:
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 };
 
-class FragCrate : public ClutterScript {
+class FragCrate final : public ClutterScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class NapalmBarrel : public ClutterScript {
+class NapalmBarrel final : public ClutterScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class AliencuplinkScript : public ClutterScript {
+class AliencuplinkScript final : public ClutterScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
@@ -102,14 +102,14 @@ struct tTNTHighYield {
   vector last_vel;
   float lifetime;
 };
-class TNTHighYield : public ClutterScript {
+class TNTHighYield final : public ClutterScript {
 public:
   TNTHighYield() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tTNTHighYield *memory;
 };
 
-class TNTMedYield : public ClutterScript {
+class TNTMedYield final : public ClutterScript {
 public:
   TNTMedYield() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -119,13 +119,13 @@ public:
 struct tFallingRock {
   float lifeleft;
 };
-class FallingRock : public ClutterScript {
+class FallingRock final : public ClutterScript {
 public:
   FallingRock() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tFallingRock *memory;
 };
-class LavaRock : public ClutterScript {
+class LavaRock final : public ClutterScript {
 public:
   LavaRock() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
