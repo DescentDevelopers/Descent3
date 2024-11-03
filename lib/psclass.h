@@ -155,9 +155,6 @@ template <class T, int t_LEN> class tQueue {
   int16_t m_head = 0, m_tail = 0;
 
 public:
-  tQueue() {};
-  ~tQueue(){};
-
   void send(T &item) { // sends an item onto the queue
     int16_t temp = m_tail + 1;
     if (temp == t_LEN)

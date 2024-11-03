@@ -84,8 +84,7 @@ protected:
   bool m_AppActive = true;
 
 public:
-  oeApplication() {};
-  virtual ~oeApplication(){};
+  virtual ~oeApplication() = default;
   //	initializes the object
   virtual void init() = 0;
   //	Function to retrieve information from object through a platform defined structure.

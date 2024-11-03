@@ -115,8 +115,6 @@ class tmmItemQueue {
   int16_t m_head = 0, m_tail = 0;
 
 public:
-  tmmItemQueue() {};
-  ~tmmItemQueue(){};
   void send(tmmItemFX &item) { // sends an item onto the queue
     int16_t temp = m_tail + 1;
     if (temp == tmmItemSIZE)

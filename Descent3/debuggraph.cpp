@@ -94,9 +94,6 @@ struct tAddDebugGraph {
 
 class tGraphNode {
 public:
-  tGraphNode() {}
-  ~tGraphNode() {}
-
   ddgr_color color;
 
   void Initialize(tAddDebugGraph *data);

@@ -1815,7 +1815,6 @@ public:
 class UIBmpWindow final : public UIStatic {
 public:
   UIBmpWindow();
-  ~UIBmpWindow();
   void SetInfo(bool animated, int handle);
   void OnDraw();
 
@@ -2959,8 +2958,6 @@ void UI3DWindow::OnDraw() {
 UIBmpWindow::UIBmpWindow() {
   start_time = timer_GetTime();
 }
-
-UIBmpWindow::~UIBmpWindow() {}
 
 void UIBmpWindow::SetInfo(bool anim, int handle) {
   animated = anim;

@@ -83,8 +83,6 @@ sdlgameController::sdlgameController(int num_funcs, ct_function *funcs) : gameCo
   sdlgameController::flush();
 }
 
-sdlgameController::~sdlgameController() {}
-
 //	these functions suspend or resume any controller reading.  this is really only useful for
 //	preemptive controller polling, but they should be used to activate and deactivate controller
 //	reading.

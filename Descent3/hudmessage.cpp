@@ -1604,10 +1604,6 @@ const char *tMsgList::get(int i) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-MsgListConsole::MsgListConsole() {}
-
-MsgListConsole::~MsgListConsole() {}
-
 // registers dimensions of box
 bool MsgListConsole::Open(const char *title, int x, int y, int w, int h) {
   m_x = x;

@@ -73,12 +73,6 @@
 #include "pserror.h"
 #include "voice.h"
 
-//	constructor
-CBriefParse::CBriefParse() {}
-
-//	destructor
-CBriefParse::~CBriefParse() {}
-
 //	SetCallbacks
 //
 //	Registers (or changes) the callbacks of the class

@@ -203,7 +203,7 @@ static inline uint16_t makeshort(uint8_t h, uint8_t l) { return static_cast<uint
 class gameController {
 public:
   gameController(int num_funcs, ct_function *funcs){};
-  virtual ~gameController(){};
+  virtual ~gameController() = default;
 
   //	these functions suspend or resume any controller reading.  this is really only useful for
   //	preemptive controller polling, but they should be used to activate and deactivate controller

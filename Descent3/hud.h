@@ -664,8 +664,6 @@ class MsgListConsole {
   float m_keydowntime;
 
 public:
-  MsgListConsole();
-  ~MsgListConsole();
   bool Open(const char *title, int x, int y, int w, int h); // registers dimensions of box
   void Close();
   void AttachMsgList(tMsgList *msglist);

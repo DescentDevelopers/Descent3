@@ -85,8 +85,6 @@ struct tTextBufferDesc {
 
 class CBriefParse {
 public:
-  CBriefParse();
-  ~CBriefParse();
   void SetCallbacks(tBriefParseCallbacks *cb);
   int ParseBriefing(const char *filename);
 
