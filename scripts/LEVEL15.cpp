@@ -2457,8 +2457,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 035: Locate Back-up Reactor Goal Completed
     if ((ScriptActionCtr_035 < 1) && (qRoomHasPlayer(Room_indexes[12]) == true)) {
       aGoalCompleted(Goal_indexes[2], 1);
@@ -2469,8 +2467,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit(uservars_as_int);
 
@@ -2689,8 +2685,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 059: Music Outside Init
     if (1) {
       aMusicSetRegionAll(1);

@@ -912,8 +912,6 @@ void MercEndBoss::DoFrame(int me) {
       matrix orient;
       vector start_pos;
       vector end_pos;
-      vector collision_pos;
-      vector collision_normal;
       int num_iterations = 0;
       int num_ignore = 0;
       int ignore_list[100];

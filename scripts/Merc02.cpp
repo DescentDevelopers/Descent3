@@ -1111,8 +1111,8 @@ bool qBeamHittingPlayer(int beam1_handle, int beam2_handle) {
   // see if anything is in the way
   ray_info ray;
   int flags, fate;
-  vector start_pos, end_pos, landing_pos;
-  int start_room, landing_room;
+  vector start_pos, end_pos;
+  int start_room;
 
   if (!qObjExists(beam1_handle))
     return false;
@@ -2419,8 +2419,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 050: Check Laser Room 1's Beams
     if (qUserFlag(14) == false) {
       if ((qBeamHittingPlayer(Object_handles[31], Object_handles[32]) == true) ||
@@ -2481,8 +2479,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -3604,8 +3600,6 @@ int16_t CustomObjectScript_1119::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 086: Give Closest Player the Infected Data Cartridge
     if ((ScriptActionCtr_086 < 1) && (qObjType(qPlayerClosest(data->me_handle, 8)) == 4)) {
       aAddObjectToInventoryNamed(data->me_handle, qPlayerClosest(data->me_handle, 8), Message_strings[1], 0);
@@ -4483,8 +4477,6 @@ int16_t CustomObjectScript_0913::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 100: Check Restricted Access Entrance Camera
     if ((ScriptActionCtr_100 < 1) && (qSecurityCameraAlerted(data->me_handle) == true)) {
       aSoundPlaySteaming("VoxMerc02FPA1.osf", 1.000000f);
@@ -4501,8 +4493,6 @@ int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 101: Check Restricted Hall A Camera 1
     if ((ScriptActionCtr_101 < 1) && (qSecurityCameraAlerted(data->me_handle) == true)) {
       aShowHUDMessage(Message_strings[28]);
@@ -4543,8 +4533,6 @@ int16_t CustomObjectScript_1048::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1111::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 102: Check Restricted Hall A Camera 2
     if ((ScriptActionCtr_102 < 1) && (qSecurityCameraAlerted(data->me_handle) == true)) {
       aShowHUDMessage(Message_strings[28]);
@@ -4585,8 +4573,6 @@ int16_t CustomObjectScript_1067::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_088C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 103: Check Armory Camera
     if ((ScriptActionCtr_103 < 1) && (qSecurityCameraAlerted(data->me_handle) == true)) {
       aShowHUDMessage(Message_strings[28]);
@@ -4627,8 +4613,6 @@ int16_t CustomObjectScript_108B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0883::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 104: Check Res Hall C Camera
     if ((ScriptActionCtr_104 < 1) && (qSecurityCameraAlerted(data->me_handle) == true)) {
       aShowHUDMessage(Message_strings[28]);
@@ -4669,8 +4653,6 @@ int16_t CustomObjectScript_1884::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_106F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 105: Check Hall C Camera 1
     if ((ScriptActionCtr_105 < 1) && (qSecurityCameraAlerted(data->me_handle) == true)) {
       aShowHUDMessage(Message_strings[28]);
@@ -4711,8 +4693,6 @@ int16_t CustomObjectScript_1071::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0894::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 106: Check Hall C Camera 2
     if ((ScriptActionCtr_106 < 1) && (qSecurityCameraAlerted(data->me_handle) == true)) {
       aShowHUDMessage(Message_strings[28]);
@@ -4826,8 +4806,6 @@ int16_t CustomObjectScript_082F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0006::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 051: Laser Room 1 Monitor Hit
     if ((ScriptActionCtr_051 < 1) && (qUserFlag(14) == true)) {
       aPortalRenderSet(0, 0, Room_indexes[1], 1);
@@ -4846,8 +4824,6 @@ int16_t TriggerScript_0006::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 040: Laser Room 2 Monitor 1 Hit
     if ((ScriptActionCtr_040 < 1) && (qUserFlag(13) == true)) {
       aUserVarInc(4);
@@ -4874,8 +4850,6 @@ int16_t TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 041: Laser Room 2 Monitor 2 Hit
     if ((ScriptActionCtr_041 < 1) && (qUserFlag(13) == true)) {
       aUserVarInc(4);
@@ -4902,8 +4876,6 @@ int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 012: Gate Monitor 1 Hit
     if ((ScriptActionCtr_012 < 1) && (qUserFlag(2) == true)) {
       aUserVarInc(1);
@@ -4930,8 +4902,6 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 013: Gate Monitor 2 Hit
     if ((ScriptActionCtr_013 < 1) && (qUserFlag(2) == true)) {
       aUserVarInc(1);

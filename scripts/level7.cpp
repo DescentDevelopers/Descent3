@@ -1900,8 +1900,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -1968,8 +1966,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 035: Movie Done--Play Sounds
     if ((ScriptActionCtr_035 < 1) && (1)) {
       aSetLevelTimer(30.000000f, 2);
@@ -2024,8 +2020,6 @@ int16_t CustomObjectScript_1097::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 054: Primary Control
     if ((ScriptActionCtr_054 < 1) && (1)) {
       aShowHUDMessage(Message_strings[0]);
@@ -2046,8 +2040,6 @@ int16_t CustomObjectScript_1097::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08B5::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 027: SmokeSpewer (2)
     if (1) {
       aTurnOnSpew(data->me_handle, 0, 7, 1.000000f, 0.100000f, 65664, 0, 1.500000f, 0.150000f, -1.000000f, 4.000000f,
@@ -2065,8 +2057,6 @@ int16_t CustomObjectScript_08B5::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0895::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 026: SmokeSpewer (1)
     if (1) {
       aTurnOnSpew(data->me_handle, 0, 7, 1.000000f, 0.100000f, 65664, 0, 1.500000f, 0.150000f, -1.000000f, 4.000000f,
@@ -2084,8 +2074,6 @@ int16_t CustomObjectScript_0895::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08A1::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 023: FireSpewer (1)
     if (1) {
       aTurnOnSpew(data->me_handle, 0, 2, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.150000f, -1.000000f, 5.000000f,
@@ -2103,8 +2091,6 @@ int16_t CustomObjectScript_08A1::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08A2::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 025: FireSpewer (2)
     if (1) {
       aTurnOnSpew(data->me_handle, 0, 2, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.150000f, -1.000000f, 5.000000f,
@@ -2122,8 +2108,6 @@ int16_t CustomObjectScript_08A2::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08AF::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 024: FireSpewer (3)
     if (1) {
       aTurnOnSpew(data->me_handle, 0, 2, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.150000f, -1.000000f, 5.000000f,
@@ -2141,8 +2125,6 @@ int16_t CustomObjectScript_08AF::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1901::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 047: Do Cooler Actions
     if ((ScriptActionCtr_047 < 1) && (1)) {
       aCreatePopupView(0, Object_handles[17], 10.000000f, 1.000000f);
@@ -2488,8 +2470,6 @@ int16_t CustomObjectScript_0944::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08B4::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 033: Superheater begin (1)
     if ((ScriptActionCtr_033 < 1) && (1)) {
       aTurnOnSpew(data->me_handle, 0, 2, 0.000000f, 0.000000f, 65536, 0, 2.000000f, 0.100000f, -1.000000f, 6.000000f,
@@ -2508,8 +2488,6 @@ int16_t CustomObjectScript_08B4::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08B3::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 005: Superheater begin (2)
     if ((ScriptActionCtr_005 < 1) && (1)) {
       aTurnOnSpew(data->me_handle, 0, 2, 0.000000f, 0.000000f, 65536, 0, 2.000000f, 0.100000f, -1.000000f, 6.000000f,
@@ -2640,8 +2618,6 @@ int16_t CustomObjectScript_20B1::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_089A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 037: Generic Smoke Spewer 4
     if (1) {
       aTurnOnSpew(Object_handles[40], 0, 7, 1.000000f, 0.100000f, 65664, 0, 1.500000f, 0.120000f, -1.000000f, 6.500000f,
@@ -2691,8 +2667,6 @@ int16_t CustomObjectScript_0945::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_192A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 021: Broken Pipe Part III (1)
     if (qUserVarValue(0) == 1.000000f) {
       aObjDestroy(data->me_handle);
@@ -2703,8 +2677,6 @@ int16_t CustomObjectScript_192A::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 019: Broken Pipe Part I (1)
     if (1) {
       aUserVarSet(0, 0.000000f);
@@ -2716,8 +2688,6 @@ int16_t CustomObjectScript_192A::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 020: Broken Pipe Part II (1)
     if (1) {
       if (qUserVarValue(0) == 0.000000f) {
@@ -2742,8 +2712,6 @@ int16_t CustomObjectScript_192A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_092B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 038: Broken Pipe Part III (2)
     if (qUserVarValue(1) == 1.000000f) {
       aObjDestroy(data->me_handle);
@@ -2754,8 +2722,6 @@ int16_t CustomObjectScript_092B::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 039: Broken Pipe Part I (2)
     if (1) {
       aUserVarSet(1, 0.000000f);
@@ -2767,8 +2733,6 @@ int16_t CustomObjectScript_092B::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 040: Broken Pipe Part II (2)
     if (1) {
       if (qUserVarValue(1) == 0.000000f) {
@@ -2962,8 +2926,6 @@ int16_t CustomObjectScript_2148::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 081: TurretMessage
     if ((ScriptActionCtr_081 < 3) && (1)) {
       aShowHUDMessage(Message_strings[21]);
@@ -3116,8 +3078,6 @@ int16_t TriggerScript_0003::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 044: Waypoint 3
     if (1) {
       aSetWaypoint(3);

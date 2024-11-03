@@ -1345,8 +1345,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 018: Player Hit, cancel timer & restart
     if ((qObjShields(qGetPlayerObj(0)) < 100.000000f) && ((ScriptActionCtr_016 > 0) == true) &&
         ((ScriptActionCtr_017 > 0) == false)) {
@@ -1457,8 +1455,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -1632,8 +1628,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_300D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 001: FirstGoal
     if ((ScriptActionCtr_001 < 1) && (1)) {
       aShowHUDMessage(Message_strings[0]);
@@ -1666,8 +1660,6 @@ int16_t CustomObjectScript_300D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_300C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 003: Return to Start from Forward Goal
     if ((ScriptActionCtr_003 < 1) && ((ScriptActionCtr_001 > 0) == true)) {
       aShowHUDMessage(Message_strings[4]);
@@ -1750,8 +1742,6 @@ int16_t CustomObjectScript_300C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_300B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 004: Left Goal
     if ((ScriptActionCtr_004 < 1) && (1)) {
       aTogglePlayerControl(0, 0, 4);
@@ -1784,8 +1774,6 @@ int16_t CustomObjectScript_300B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_4809::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 006: Up Goal
     if ((ScriptActionCtr_006 < 1) && (1)) {
       aShowHUDMessage(Message_strings[0]);
@@ -1818,8 +1806,6 @@ int16_t CustomObjectScript_4809::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1803::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 014: Start Course
     if ((ScriptActionCtr_014 < 1) && (1)) {
       aPortalRenderSet(1, 1, Room_indexes[0], 1);
@@ -1839,8 +1825,6 @@ int16_t CustomObjectScript_1803::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1806::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 015: Finish Course
     if ((ScriptActionCtr_015 < 1) && (1)) {
       aToggleAllPlayerControls(0, 0);
@@ -1863,8 +1847,6 @@ int16_t CustomObjectScript_1806::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_100A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 033: Start Dodge Timer Delay
     if ((ScriptActionCtr_033 < 1) && (1)) {
       aTogglePlayerControl(0, 0, 3);
@@ -1903,8 +1885,6 @@ int16_t CustomObjectScript_100A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_300E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 019: Leaving Dodging Room
     if ((ScriptActionCtr_019 < 1) && (1)) {
       aObjSetLightingDist(Object_handles[0], 50.000000f);
@@ -1964,8 +1944,6 @@ int16_t CustomObjectScript_2007::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_080F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 021: Enter Manuver room
     if ((ScriptActionCtr_021 < 1) && ((ScriptActionCtr_020 > 0) == true)) {
       aToggleShowPlayerControl(1, 0);
@@ -2094,8 +2072,6 @@ int16_t CustomObjectScript_1817::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_USE: {
-    tOSIRISEVTUSE *event_data = &data->evt_use;
-
     // Script 059: Player used camera monitor
     if (1) {
       aSoundPlaySteamingText("GuideBotD.osf", 1.000000f);
@@ -2198,8 +2174,6 @@ int16_t CustomObjectScript_081E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_081C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 047: InvulnPowerup2 Picked up
     if ((ScriptActionCtr_047 < 1) && (1)) {
 
@@ -2215,8 +2189,6 @@ int16_t CustomObjectScript_081C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0819::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 048: CloakPowerup2 Picked up
     if ((ScriptActionCtr_048 < 1) && (1)) {
 
@@ -2337,8 +2309,6 @@ int16_t CustomObjectScript_0823::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1824::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 057: Finished!
     if (1) {
       aEndLevel();
@@ -2355,8 +2325,6 @@ int16_t CustomObjectScript_1824::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 032: Entered Gallery
     if ((ScriptActionCtr_032 < 1) && (1)) {
       aSoundPlaySteamingText("GuideBotA.osf", 1.000000f);
@@ -2379,8 +2347,6 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 042: Entered KillBot Room
     if ((ScriptActionCtr_042 < 1) && (1)) {
       aSetLevelTimer(13.000000f, 14);
@@ -2402,8 +2368,6 @@ int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 050: Entered Last Room
     if ((ScriptActionCtr_050 < 1) && (1)) {
       aObjSetLightingDist(Object_handles[3], 0.000000f);

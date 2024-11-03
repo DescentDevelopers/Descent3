@@ -2795,8 +2795,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -3010,8 +3008,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 049: Start Level Objectives Messege
     if ((ScriptActionCtr_049 < 1) && (1)) {
       aCinematicSimple(Path_indexes[7], Message_strings[28], Object_handles[30], 10.000000f, 1);
@@ -3196,8 +3192,6 @@ int16_t CustomObjectScript_0837::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0852::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 019: Acc Floor Spewer
     if (1) {
       aTurnOnSpew(Object_handles[26], -1, 7, 0.000000f, 0.000000f, 65536, 0, 2.500000f, 0.150000f, -1.000000f,
@@ -3215,8 +3209,6 @@ int16_t CustomObjectScript_0852::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_2027::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 023: Turret Controller
     if (qObjExists(Object_handles[28]) == false) {
       aAISetState(0, data->me_handle);
@@ -3233,8 +3225,6 @@ int16_t CustomObjectScript_2027::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_087E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 022: Turret Controller
     if (qObjExists(Object_handles[28]) == false) {
       aAISetState(0, data->me_handle);
@@ -3268,8 +3258,6 @@ int16_t CustomObjectScript_9021::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 056: Start Level Objectives Messege 2
     if ((ScriptActionCtr_056 < 1) && (1)) {
       aCinematicSimple(Path_indexes[8], Message_strings[29], Object_handles[16], 10.000000f, 1);
@@ -3681,8 +3669,6 @@ int16_t CustomObjectScript_1090::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_18B0::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 028: Bad White Cage Exists
     if (qObjExists(Object_handles[53]) == true) {
       aAISetState(0, Object_handles[52]);
@@ -3701,8 +3687,6 @@ int16_t CustomObjectScript_18B0::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08B6::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 029: Bad TailbotCage Exists
     if (qObjExists(Object_handles[53]) == true) {
       aAISetState(0, Object_handles[54]);
@@ -3769,8 +3753,6 @@ int16_t CustomObjectScript_08A9::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10BD::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 032: Air Spewers
     if (1) {
       aTurnOnSpew(data->me_handle, 0, 7, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.150000f, -1.000000f, 5.000000f,
@@ -3788,8 +3770,6 @@ int16_t CustomObjectScript_10BD::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08BE::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 041: Air Spewers
     if (1) {
       aTurnOnSpew(data->me_handle, 0, 7, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.150000f, -1.000000f, 5.000000f,
@@ -3807,8 +3787,6 @@ int16_t CustomObjectScript_08BE::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_105C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 050: Air Spewers
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.150000f, -1.000000f, 5.000000f,
@@ -3826,8 +3804,6 @@ int16_t CustomObjectScript_105C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 072: Air Spewers
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.200000f, 0.150000f, -1.000000f, 10.000000f,
@@ -3845,8 +3821,6 @@ int16_t CustomObjectScript_084D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_295F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 123: Air Spewers
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 0.900000f, 0.150000f, -1.000000f, 14.000000f,
@@ -3877,8 +3851,6 @@ int16_t CustomObjectScript_295F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_182C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 064: Air Spewers
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 0.900000f, 0.150000f, -1.000000f, 14.000000f,
@@ -3917,8 +3889,6 @@ int16_t CustomObjectScript_2023::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0840::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 035: Jugg AI
     if (1) {
       aAISetState(0, data->me_handle);
@@ -3955,8 +3925,6 @@ int16_t CustomObjectScript_30C7::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 073: Start Level Objectives Messege 3
     if ((ScriptActionCtr_073 < 1) && (1)) {
       aSoundPlaySteaming("VoxL13StartLevel.osf", 1.000000f);
@@ -4212,8 +4180,6 @@ int16_t CustomObjectScript_0A08::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 082: Spy Hunter Off
     if (1) {
       aAISetState(0, data->me_handle);
@@ -4255,8 +4221,6 @@ int16_t CustomObjectScript_0A14::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 081: Sub Squid Off
     if (1) {
       aAISetState(0, data->me_handle);
@@ -4290,8 +4254,6 @@ int16_t CustomObjectScript_08CB::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0A35::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 133: FlameRas Created
     if (1) {
       aObjSetMovementType(data->me_handle, 0);
@@ -4308,8 +4270,6 @@ int16_t CustomObjectScript_0A35::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_9233::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 118: FlameRas Created
     if (1) {
       aObjSetMovementType(data->me_handle, 0);
@@ -4326,8 +4286,6 @@ int16_t CustomObjectScript_9233::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_092B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 127: ST Monitor - Sleep
     if (1) {
       aObjSetMovementType(data->me_handle, 0);
@@ -4356,8 +4314,6 @@ int16_t CustomObjectScript_092B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0929::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 126: ST Monitor2 - Sleep
     if (1) {
       aObjSetMovementType(data->me_handle, 0);
@@ -4386,8 +4342,6 @@ int16_t CustomObjectScript_0929::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_112A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 125: ST Monitor3 - Sleep
     if (1) {
       aObjSetMovementType(data->me_handle, 0);
@@ -4416,8 +4370,6 @@ int16_t CustomObjectScript_112A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0928::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 002: ST Monitor4 - Sleep
     if (1) {
       aObjSetMovementType(data->me_handle, 0);
@@ -4446,8 +4398,6 @@ int16_t CustomObjectScript_0928::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_29E9::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 122: DatShip1 --  Path On Creation
     if (1) {
       aAIGoalFollowPath(Object_handles[86], Path_indexes[12], 1, 19, 1, 3, 8392960, -1);

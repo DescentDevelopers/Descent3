@@ -1002,8 +1002,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 002: BlueUnSpark
     if ((qUserFlag(0) == true) && (qRoomHasPlayer(Room_indexes[0]) == false)) {
       aSoundPlayObject(Sound_indexes[0], Object_handles[0], 1.000000f);
@@ -1057,8 +1055,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -1106,8 +1102,6 @@ int16_t CustomObjectScript_0810::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 016: Switch-12 Initialize
     if (1) {
       aObjPlayAnim(data->me_handle, 3, 6, 1.000000f, 0);
@@ -1118,8 +1112,6 @@ int16_t CustomObjectScript_0810::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 014: Switch-12 Off
     if (1) {
       aRoomSetWind(Room_indexes[6], 0.000000f, 0.000000f, 0.000000f, 1.000000f);
@@ -1157,8 +1149,6 @@ int16_t CustomObjectScript_0811::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 015: Switch-11 Initialize
     if (1) {
       aObjPlayAnim(data->me_handle, 3, 6, 1.000000f, 0);
@@ -1169,8 +1159,6 @@ int16_t CustomObjectScript_0811::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 013: Switch-11 Off
     if (1) {
       aRoomSetWind(Room_indexes[6], 0.000000f, 0.000000f, 0.000000f, 1.000000f);
@@ -1208,7 +1196,6 @@ int16_t CustomObjectScript_0812::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
 
     // Script 026: Switch-22 Initialize
     if (1) {
@@ -1220,8 +1207,6 @@ int16_t CustomObjectScript_0812::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 027: Switch-22 Off
     if (1) {
       aRoomSetWind(Room_indexes[7], 0.000000f, 0.000000f, 0.000000f, 1.000000f);
@@ -1259,8 +1244,6 @@ int16_t CustomObjectScript_0813::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 023: Switch-21 Initialize
     if (1) {
       aObjPlayAnim(data->me_handle, 3, 6, 1.000000f, 0);
@@ -1271,8 +1254,6 @@ int16_t CustomObjectScript_0813::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 024: Switch-21 Off
     if (1) {
       aRoomSetWind(Room_indexes[7], 0.000000f, 0.000000f, 0.000000f, 1.000000f);
@@ -1310,8 +1291,6 @@ int16_t CustomObjectScript_0876::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 032: BSwitch-22 Initialize
     if (1) {
       aObjPlayAnim(data->me_handle, 3, 6, 1.000000f, 0);
@@ -1322,8 +1301,6 @@ int16_t CustomObjectScript_0876::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 036: BSwitch-22 Off
     if (1) {
       aRoomSetWind(Room_indexes[8], 0.000000f, 0.000000f, 0.000000f, 1.000000f);
@@ -1361,8 +1338,6 @@ int16_t CustomObjectScript_0875::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 031: BSwitch-21 Initialize
     if (1) {
       aObjPlayAnim(data->me_handle, 3, 6, 1.000000f, 0);
@@ -1373,8 +1348,6 @@ int16_t CustomObjectScript_0875::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 035: BSwitch-21 Off
     if (1) {
       aRoomSetWind(Room_indexes[8], 0.000000f, 0.000000f, 0.000000f, 1.000000f);
@@ -1412,8 +1385,6 @@ int16_t CustomObjectScript_0859::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 030: BSwitch-12 Initialize
     if (1) {
       aObjPlayAnim(data->me_handle, 3, 6, 1.000000f, 0);
@@ -1424,8 +1395,6 @@ int16_t CustomObjectScript_0859::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 034: BSwitch-12 Off
     if (1) {
       aRoomSetWind(Room_indexes[9], 0.000000f, 0.000000f, 0.000000f, 1.000000f);
@@ -1463,8 +1432,6 @@ int16_t CustomObjectScript_085A::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 029: BSwitch-11 Initialize
     if (1) {
       aObjPlayAnim(data->me_handle, 3, 6, 1.000000f, 0);
@@ -1475,8 +1442,6 @@ int16_t CustomObjectScript_085A::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 033: BSwitch-11 Off
     if (1) {
       aRoomSetWind(Room_indexes[9], 0.000000f, 0.000000f, 0.000000f, 1.000000f);

@@ -291,10 +291,8 @@ int16_t FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY:
     vector pos;
-    float mag;
     int weapon_id;
     int handle;
-    int i;
     int room;
 
     Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
@@ -312,10 +310,8 @@ int16_t NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY:
     vector pos;
-    float mag;
     int weapon_id;
     int handle;
-    int i;
     int room;
     matrix o, orient;
 
@@ -392,7 +388,6 @@ float GetObjectShields(int object) {
 int16_t TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    int i;
     tOSIRISMEMCHUNK ch;
     ch.id = 4;
     ch.size = sizeof(float);
@@ -443,7 +438,6 @@ int16_t TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    int i;
     tOSIRISMEMCHUNK ch;
     ch.id = 4;
     ch.size = sizeof(tTNTHighYield);
@@ -508,7 +502,6 @@ int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
     int close_obj_list[32];
     int roomnum;
     int rockpile_id;
-    float amount;
     vector pos;
 
     Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &roomnum);
@@ -540,7 +533,6 @@ int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    int i;
     tOSIRISMEMCHUNK ch;
     ch.id = 4;
     ch.size = sizeof(tFallingRock);
@@ -574,7 +566,6 @@ int16_t FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t LavaRock::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    int i;
     tOSIRISMEMCHUNK ch;
     ch.id = 4;
     ch.size = sizeof(tFallingRock);

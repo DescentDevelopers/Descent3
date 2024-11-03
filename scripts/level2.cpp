@@ -2189,8 +2189,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 038: Found Sweitzer in Minimum Security
     if ((ScriptActionCtr_038 < 1) &&
         ((qObjCanSeePlayerAdvancedWithStore(3, 360, Object_handles[61], 80.000000f, 1048585) == true) &&
@@ -2279,8 +2277,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -3047,8 +3043,6 @@ int16_t CustomObjectScript_2112::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_11F2::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 115: Start Shuttle Tunnel Shot
     if (1) {
       aObjGhostSet(1, Object_handles[0]);
@@ -3071,8 +3065,6 @@ int16_t CustomObjectScript_11F2::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_11F4::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 117: Start Shuttle Arriving at Cell Shot
     if (1) {
       aObjGhostSet(1, Object_handles[0]);
@@ -3094,8 +3086,6 @@ int16_t CustomObjectScript_11F4::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_11F6::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 116: Start Shuttle In Cell Shot
     if (1) {
       aObjGhostSet(1, Object_handles[11]);
@@ -3117,8 +3107,6 @@ int16_t CustomObjectScript_11F6::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_19F7::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 122: Start Shuttle Cell Shot Part 2
     if (1) {
       aObjSetMovementType(Object_handles[8], 2);
@@ -3156,8 +3144,6 @@ int16_t CustomObjectScript_11FB::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1211::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 118: Start Shuttle Leaving Cell Shot
     if (1) {
       aObjGhostSet(1, Object_handles[8]);
@@ -3199,8 +3185,6 @@ int16_t CustomObjectScript_0885::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 041: Shuttle Going To Sweitzer
     if ((ScriptActionCtr_041 < 1) && ((qUserFlag(9) == true) && (qUserFlag(8) == true) && (1 == false))) {
       aAIGoalFollowPathSimple(Object_handles[0], Path_indexes[2], 4096, 3, 3);
@@ -3227,8 +3211,6 @@ int16_t CustomObjectScript_0885::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 119: Start Player and Shuttle Exit Shot
     if (1) {
       aObjGhostSet(1, Object_handles[0]);
@@ -4153,8 +4135,6 @@ int16_t CustomObjectScript_094E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 013: Supply Hangar Alarm
     if (1) {
       aAIGoalFollowPathSimple(Object_handles[25], Path_indexes[12], 2101504, 6, 3);
@@ -4702,8 +4682,6 @@ int16_t TriggerScript_0012::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0020::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 104: Maximum VOX Trigger
     if (qUserFlag(5) == false) {
       aSoundPlaySteaming("VoxL02SpecificA.osf", 1.000000f);
@@ -4720,8 +4698,6 @@ int16_t TriggerScript_0020::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_001F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 103: Medium VOX Trigger
     if (qUserFlag(4) == false) {
       aSoundPlaySteaming("VoxL02SpecificA.osf", 1.000000f);
@@ -4738,8 +4714,6 @@ int16_t TriggerScript_001F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_001E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 098: Minimum VOX Trigger
     if (qUserFlag(3) == false) {
       aSoundPlaySteaming("VoxL02SpecificA.osf", 1.000000f);

@@ -852,8 +852,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -1014,8 +1012,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_481D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 011: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.500000f, 0.050000f, -1.000000f, 4.000000f,
@@ -1033,8 +1029,6 @@ int16_t CustomObjectScript_481D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_101E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 010: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.500000f, 0.050000f, -1.000000f, 4.000000f,
@@ -1052,8 +1046,6 @@ int16_t CustomObjectScript_101E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1021::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 009: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.500000f, 0.050000f, -1.000000f, 4.000000f,
@@ -1071,8 +1063,6 @@ int16_t CustomObjectScript_1021::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1022::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 012: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.500000f, 0.050000f, -1.000000f, 4.000000f,
@@ -1090,8 +1080,6 @@ int16_t CustomObjectScript_1022::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1035::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 008: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.500000f, 0.050000f, -1.000000f, 4.000000f,
@@ -1109,8 +1097,6 @@ int16_t CustomObjectScript_1035::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1020::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 007: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.400000f, 0.060000f, -1.000000f, 4.000000f,
@@ -1128,8 +1114,6 @@ int16_t CustomObjectScript_1020::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1823::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 006: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.400000f, 0.060000f, -1.000000f, 4.000000f,
@@ -1147,8 +1131,6 @@ int16_t CustomObjectScript_1823::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_182A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 005: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.400000f, 0.060000f, -1.000000f, 4.000000f,
@@ -1166,8 +1148,6 @@ int16_t CustomObjectScript_182A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_101F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 004: Torchlites
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 2, 0.000000f, 0.000000f, 65536, 0, 0.500000f, 0.050000f, -1.000000f, 4.000000f,
@@ -1185,8 +1165,6 @@ int16_t CustomObjectScript_101F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_2828::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 021: Nemo Switch 2 Shot
     if (qUserVarValue(1) == 0.000000f) {
       aUserVarSet(1, 1.000000f);
@@ -1213,8 +1191,6 @@ int16_t CustomObjectScript_2828::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0829::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 018: Nemo Switch 1 Shot
     if (qUserVarValue(0) == 0.000000f) {
       aUserVarSet(0, 1.000000f);

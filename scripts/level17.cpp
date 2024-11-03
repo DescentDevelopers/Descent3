@@ -3203,8 +3203,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -3491,8 +3489,6 @@ int16_t CustomObjectScript_0815::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0816::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 101: MiniReactorBlue TimerChain
     if ((ScriptActionCtr_101 < 1) && (1)) {
       aSetObjectTimer(Object_handles[11], 6.000000f, -1);
@@ -3575,8 +3571,6 @@ int16_t CustomObjectScript_0819::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0817::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 100: MiniReactorWhite TimerChain
     if ((ScriptActionCtr_100 < 1) && (1)) {
       aSetObjectTimer(Object_handles[26], 6.000000f, -1);
@@ -3707,8 +3701,6 @@ int16_t CustomObjectScript_0827::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_086A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 103: MiniReactorRed-2 Timer Chain
     if ((ScriptActionCtr_103 < 1) && (1)) {
       aSetObjectTimer(Object_handles[45], 6.000000f, -1);
@@ -3736,8 +3728,6 @@ int16_t CustomObjectScript_086A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_086B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 102: MiniReactorRed-1 Timer Chain
     if ((ScriptActionCtr_102 < 1) && (1)) {
       aSetObjectTimer(Object_handles[57], 6.000000f, -1);
@@ -3789,8 +3779,6 @@ int16_t CustomObjectScript_1025::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 073: MiniReactorRed Timer
     if ((ScriptActionCtr_073 < 1) && (1)) {
       aGoalCompleted(Goal_indexes[4], 1);
@@ -3809,8 +3797,6 @@ int16_t CustomObjectScript_1025::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0829::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 075: ReactorShake
     if (1) {
       aSetObjectTimer(data->me_handle, qRandomValue(0.500000f, 1.600000f), -1);
@@ -3828,8 +3814,6 @@ int16_t CustomObjectScript_0829::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0809::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 083: CycleFlames-5
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[72], 1.000000f);
@@ -3866,8 +3850,6 @@ int16_t CustomObjectScript_0809::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0808::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 082: CycleFlames-4
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[76], 1.000000f);
@@ -3904,8 +3886,6 @@ int16_t CustomObjectScript_0808::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1007::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 081: CycleFlames-3
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[79], 1.000000f);
@@ -3942,8 +3922,6 @@ int16_t CustomObjectScript_1007::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1006::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 080: CycleFlames-2
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[84], 1.000000f);
@@ -3980,8 +3958,6 @@ int16_t CustomObjectScript_1006::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0805::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 079: CycleFlames-1
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[87], 1.000000f);
@@ -4090,8 +4066,6 @@ int16_t CustomObjectScript_100E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0845::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 099: Blow Up Child ACW-12
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4108,8 +4082,6 @@ int16_t CustomObjectScript_0845::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0844::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 098: Blow Up Child ACW-11
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4126,8 +4098,6 @@ int16_t CustomObjectScript_0844::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0843::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 097: Blow Up Child ACW-10
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4144,8 +4114,6 @@ int16_t CustomObjectScript_0843::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0842::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 096: Blow Up Child ACW-9
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4162,8 +4130,6 @@ int16_t CustomObjectScript_0842::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0841::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 095: Blow Up Child ACW-8
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4180,8 +4146,6 @@ int16_t CustomObjectScript_0841::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0840::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 094: Blow Up Child ACW-7
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4198,8 +4162,6 @@ int16_t CustomObjectScript_0840::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 093: Blow Up Child ACW-6
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4216,8 +4178,6 @@ int16_t CustomObjectScript_083F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 092: Blow Up Child ACW-5
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4234,8 +4194,6 @@ int16_t CustomObjectScript_083E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 091: Blow Up Child ACW-4
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4252,8 +4210,6 @@ int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 090: Blow Up Child ACW-3
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4270,8 +4226,6 @@ int16_t CustomObjectScript_083C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 089: Blow Up Child ACW-2
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4288,8 +4242,6 @@ int16_t CustomObjectScript_083B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 088: Blow Up Child ACW-1
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4306,8 +4258,6 @@ int16_t CustomObjectScript_083A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0851::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 115: Blow Up Child ACB-12
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4324,8 +4274,6 @@ int16_t CustomObjectScript_0851::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0850::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 114: Blow Up Child ACB-11
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4342,8 +4290,6 @@ int16_t CustomObjectScript_0850::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 113: Blow Up Child ACB-10
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4360,8 +4306,6 @@ int16_t CustomObjectScript_084F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 112: Blow Up Child ACB-9
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4378,8 +4322,6 @@ int16_t CustomObjectScript_084E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 111: Blow Up Child ACB-8
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4396,8 +4338,6 @@ int16_t CustomObjectScript_084D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 110: Blow Up Child ACB-7
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4414,8 +4354,6 @@ int16_t CustomObjectScript_084C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 109: Blow Up Child ACB-6
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4432,8 +4370,6 @@ int16_t CustomObjectScript_084B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 108: Blow Up Child ACB-5
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4450,8 +4386,6 @@ int16_t CustomObjectScript_084A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0849::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 107: Blow Up Child ACB-4
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4468,8 +4402,6 @@ int16_t CustomObjectScript_0849::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0848::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 106: Blow Up Child ACB-3
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4486,8 +4418,6 @@ int16_t CustomObjectScript_0848::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0847::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 105: Blow Up Child ACB-2
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4504,8 +4434,6 @@ int16_t CustomObjectScript_0847::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0846::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 104: Blow Up Child ACB-1
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4522,8 +4450,6 @@ int16_t CustomObjectScript_0846::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 127: Blow Up Child ACR-12
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4540,8 +4466,6 @@ int16_t CustomObjectScript_085D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 126: Blow Up Child ACR-11
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4558,8 +4482,6 @@ int16_t CustomObjectScript_085C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 125: Blow Up Child ACR-10
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4576,8 +4498,6 @@ int16_t CustomObjectScript_085B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 124: Blow Up Child ACR-9
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4594,8 +4514,6 @@ int16_t CustomObjectScript_085A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0859::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 123: Blow Up Child ACR-8
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4612,8 +4530,6 @@ int16_t CustomObjectScript_0859::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0858::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 122: Blow Up Child ACR-7
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4630,8 +4546,6 @@ int16_t CustomObjectScript_0858::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0857::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 121: Blow Up Child ACR-6
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4648,8 +4562,6 @@ int16_t CustomObjectScript_0857::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0856::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 120: Blow Up Child ACR-5
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4666,8 +4578,6 @@ int16_t CustomObjectScript_0856::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0855::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 119: Blow Up Child ACR-4
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4684,8 +4594,6 @@ int16_t CustomObjectScript_0855::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0854::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 118: Blow Up Child ACR-3
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4702,8 +4610,6 @@ int16_t CustomObjectScript_0854::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0853::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 117: Blow Up Child ACR-2
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4720,8 +4626,6 @@ int16_t CustomObjectScript_0853::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0852::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 116: Blow Up Child ACR-1
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4738,8 +4642,6 @@ int16_t CustomObjectScript_0852::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0869::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 139: Blow Up Child ACS-12
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4756,8 +4658,6 @@ int16_t CustomObjectScript_0869::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0868::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 138: Blow Up Child ACS-11
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4774,8 +4674,6 @@ int16_t CustomObjectScript_0868::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0867::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 137: Blow Up Child ACS-10
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4792,8 +4690,6 @@ int16_t CustomObjectScript_0867::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0866::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 136: Blow Up Child ACS-9
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4810,8 +4706,6 @@ int16_t CustomObjectScript_0866::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0865::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 135: Blow Up Child ACS-8
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4828,8 +4722,6 @@ int16_t CustomObjectScript_0865::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0864::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 134: Blow Up Child ACS-7
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4846,8 +4738,6 @@ int16_t CustomObjectScript_0864::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0863::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 133: Blow Up Child ACS-6
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4864,8 +4754,6 @@ int16_t CustomObjectScript_0863::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0862::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 132: Blow Up Child ACS-5
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4882,8 +4770,6 @@ int16_t CustomObjectScript_0862::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0861::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 131: Blow Up Child ACS-4
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4900,8 +4786,6 @@ int16_t CustomObjectScript_0861::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0860::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 130: Blow Up Child ACS-3
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4918,8 +4802,6 @@ int16_t CustomObjectScript_0860::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 129: Blow Up Child ACS-2
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4936,8 +4818,6 @@ int16_t CustomObjectScript_085F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 128: Blow Up Child ACS-1
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -6038,8 +5918,6 @@ int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0040::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 077: End Level Camera
     if ((ScriptActionCtr_077 < 1) && (1)) {
       aGoalCompleted(Goal_indexes[6], 1);

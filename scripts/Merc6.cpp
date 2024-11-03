@@ -1947,8 +1947,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 066: Check Number of Welders Killed
     if ((ScriptActionCtr_066 < 1) && (qUserVarValueInt(4) == 4)) {
       aGoalCompleted(Goal_indexes[0], 1);
@@ -2002,8 +2000,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -2998,8 +2994,6 @@ int16_t CustomObjectScript_783F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1084::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DAMAGED: {
-    tOSIRISEVTDAMAGED *event_data = &data->evt_damaged;
-
     // Script 077: Crate #1 Damaged
     if (qUserFlag(15) == true) {
       if (qRandomValue(1.000000f, 100.000000f) < 50.000000f) {
@@ -3039,8 +3033,6 @@ int16_t CustomObjectScript_1084::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0885::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DAMAGED: {
-    tOSIRISEVTDAMAGED *event_data = &data->evt_damaged;
-
     // Script 079: Crate #2 Damaged
     if (qUserFlag(15) == true) {
       if (qRandomValue(1.000000f, 100.000000f) < 50.000000f) {
@@ -3080,8 +3072,6 @@ int16_t CustomObjectScript_0885::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1086::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DAMAGED: {
-    tOSIRISEVTDAMAGED *event_data = &data->evt_damaged;
-
     // Script 080: Crate #3 Damaged
     if (qUserFlag(15) == true) {
       if (qRandomValue(1.000000f, 100.000000f) < 50.000000f) {
@@ -3376,8 +3366,6 @@ int16_t CustomObjectScript_108E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1827::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 039: Reactor dies
     if ((ScriptActionCtr_039 < 1) && (qObjShields(data->me_handle) <= 0.000000f)) {
       aObjPlayAnim(data->me_handle, 0, 0, 1.000000f, 0);

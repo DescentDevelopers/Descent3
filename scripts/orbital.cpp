@@ -750,8 +750,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -870,8 +868,6 @@ int16_t CustomObjectScript_0903::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10F9::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 006: SoundSource 1
     if (1) {
       aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);

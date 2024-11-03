@@ -859,7 +859,7 @@ void aKillBotsNearObj(int objhandle) {
   int type;
   int scan_objs[MAX_SCAN_OBJECTS];
   int n_scan;
-  int n, i;
+  int i;
   uint16_t id;
 
   if (!qObjExists(objhandle))
@@ -926,7 +926,6 @@ void aClearTeleporterArea(int desthandle, int objhandle) {
   vector pos;
   matrix orient;
   int type;
-  int n, i;
 
   if (!qObjExists(objhandle))
     return;
@@ -1872,8 +1871,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 018: Check if any Maws have been broken
     if (qUserFlag(18) == false) {
       if ((qUserFlag(3) == false) && (qPortalIsOn(1, Room_indexes[13]) == false)) {
@@ -1933,8 +1930,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 

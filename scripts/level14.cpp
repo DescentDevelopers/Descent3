@@ -1789,8 +1789,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 067: Update Bypass Connector Display
     if (qUserVarValue(0) != qUserVarValue(12)) {
       aUserVarSet(12, qUserVarValue(0));
@@ -1806,8 +1804,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -2226,8 +2222,6 @@ int16_t CustomObjectScript_10B8::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 064: Give Closest Player the Anti-Virus Program
     if ((ScriptActionCtr_064 < 1) && (qObjType(qPlayerClosest(data->me_handle, 10)) == 4)) {
       aAddObjectToInventory(data->me_handle, qPlayerClosest(data->me_handle, 10), 0);
@@ -2291,8 +2285,6 @@ int16_t CustomObjectScript_10B8::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0892::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 029: Power Conduit1 Created
     if (1) {
       aObjSaveHandle(qGetAtachedChild(Object_handles[0], 0), 0);
@@ -2310,8 +2302,6 @@ int16_t CustomObjectScript_0892::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0891::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 030: Power Conduit2 Created
     if (1) {
       aObjSaveHandle(qGetAtachedChild(Object_handles[1], 0), 1);
@@ -2329,8 +2319,6 @@ int16_t CustomObjectScript_0891::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0890::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 031: Power Conduit3 Created
     if (1) {
       aObjSaveHandle(qGetAtachedChild(Object_handles[2], 0), 2);
@@ -2899,8 +2887,6 @@ int16_t CustomObjectScript_309C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1083::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 019: Mirror Node #1 Hit
     if (qUserFlag(17) == false) {
       if (((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 12.000000f)) &&
@@ -2949,8 +2935,6 @@ int16_t CustomObjectScript_1083::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_088A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 024: Mirror Node #2 Hit
     if (qUserFlag(17) == false) {
       if (((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 12.000000f)) &&
@@ -2999,8 +2983,6 @@ int16_t CustomObjectScript_088A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_188B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 025: Mirror Node #3 Hit
     if (qUserFlag(17) == false) {
       if (((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 12.000000f)) &&
@@ -3049,8 +3031,6 @@ int16_t CustomObjectScript_188B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_088C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 026: Mirror Node #4 Hit
     if (qUserFlag(17) == false) {
       if (((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 12.000000f)) &&
@@ -3099,8 +3079,6 @@ int16_t CustomObjectScript_088C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_088D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 027: Mirror Node #5 Hit
     if (qUserFlag(17) == false) {
       if (((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 12.000000f)) &&
@@ -3149,8 +3127,6 @@ int16_t CustomObjectScript_088D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_088E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 028: Mirror Node #6 Hit
     if (qUserFlag(17) == false) {
       if (((qObjAnimFrame(data->me_handle) == 0.000000f) || (qObjAnimFrame(data->me_handle) == 12.000000f)) &&

@@ -2403,8 +2403,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 009: Collectors & Builders Key Correctly Placed
     if ((ScriptActionCtr_009 < 1) &&
         ((qObjRoom(Object_handles[10]) == Room_indexes[2]) && (qObjRoom(Object_handles[7]) == Room_indexes[3]))) {
@@ -2479,8 +2477,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit(uservars_as_int);
 
@@ -2832,8 +2828,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 010: Voice Over Intro
     if ((ScriptActionCtr_010 < 1) && (1)) {
       aSoundPlaySteaming("VoxL06StartLevel.osf", 1.000000f);
@@ -3066,8 +3060,6 @@ int16_t CustomObjectScript_206F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10A5::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 087: LightningTest
     if (0 == true) {
       aLightningCreate(Object_handles[14], Object_handles[15], 10.000000f, 4.000000f, 1, Texture_indexes[0], 0.300000f,
@@ -3133,8 +3125,6 @@ int16_t CustomObjectScript_081E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08F7::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 002: DisablePlatformMovement
     if (1) {
       aObjGravityEnable(0, data->me_handle);
@@ -3145,8 +3135,6 @@ int16_t CustomObjectScript_08F7::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 001: DoStuffWhenPlatformHits
     if ((ScriptActionCtr_001 < 1) && (qObjRoom(data->me_handle) == Room_indexes[4])) {
       aSetLevelTimer(0.150000f, 11);
@@ -3298,8 +3286,6 @@ int16_t CustomObjectScript_2051::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1826::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 051: BlowUpSlagHeap
     if ((ScriptActionCtr_051 < 1) && (qObjAnimFrame(Object_handles[24]) != 126.000000f)) {
       aObjDestroy(Object_handles[26]);
@@ -3353,8 +3339,6 @@ int16_t CustomObjectScript_1826::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 026: MessagePlayerSeesBoss
     if ((ScriptActionCtr_026 < 1) && (1)) {
       aSetLevelTimer(3.000000f, 6);
@@ -3403,8 +3387,6 @@ int16_t CustomObjectScript_08FD::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 068: Start2ndPartCinematicAlt
     if ((ScriptActionCtr_068 < 2) && (1)) {
       if (ScriptActionCtr_068 == 0) {
@@ -3447,8 +3429,6 @@ int16_t CustomObjectScript_180A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_216E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 097: DroppingRocks01
     if ((ScriptActionCtr_097 < 1) && (qObjectPosition(data->me_handle, 1) < -490.000000f)) {
       aMiscViewerShake(40.000000f);
@@ -3467,8 +3447,6 @@ int16_t CustomObjectScript_216E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_3167::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 096: DroppingRocks02
     if ((ScriptActionCtr_096 < 1) && (qObjectPosition(data->me_handle, 1) < -490.000000f)) {
       aMiscViewerShake(40.000000f);
@@ -3487,8 +3465,6 @@ int16_t CustomObjectScript_3167::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1964::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 100: DroppingRocks03
     if ((ScriptActionCtr_100 < 1) && (qObjectPosition(data->me_handle, 1) < -490.000000f)) {
       aMiscViewerShake(40.000000f);
@@ -3507,8 +3483,6 @@ int16_t CustomObjectScript_1964::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_316A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 099: DroppingRocks04
     if ((ScriptActionCtr_099 < 1) && (qObjectPosition(data->me_handle, 1) < -490.000000f)) {
       aMiscViewerShake(40.000000f);
@@ -3527,8 +3501,6 @@ int16_t CustomObjectScript_316A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_216B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 098: DroppingRocks05
     if ((ScriptActionCtr_098 < 1) && (qObjectPosition(data->me_handle, 1) < -490.000000f)) {
       aMiscViewerShake(40.000000f);

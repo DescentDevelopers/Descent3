@@ -997,8 +997,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -1755,8 +1753,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 054: After Intro Movie
     if ((ScriptActionCtr_054 < 1) && (1)) {
       aSoundPlaySteaming("VoxL04StartLevel.osf", 1.000000f);
@@ -1786,8 +1782,6 @@ int16_t CustomObjectScript_08B3::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 030: Data Cartridge INIT
     if (1) {
       aObjGhostSet(1, Object_handles[5]);
@@ -1811,8 +1805,6 @@ int16_t CustomObjectScript_08B3::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 055: Data Cartridge ADD
     if ((ScriptActionCtr_055 < 1) && (qObjType(qPlayerClosest(data->me_handle, -1)) == 4)) {
       aAddObjectToInventory(data->me_handle, qPlayerClosest(data->me_handle, -1), 0);
@@ -1871,8 +1863,6 @@ int16_t CustomObjectScript_08B3::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08AE::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 032: After Upload Movie
     if (1) {
       aShowHUDMessage(Message_strings[4]);
@@ -1937,8 +1927,6 @@ int16_t CustomObjectScript_117D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 029: Entered Suzuki
     if ((ScriptActionCtr_029 < 1) && (1)) {
       aShowHUDMessage(Message_strings[1]);
@@ -1955,8 +1943,6 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 035: Mercenary Intro
     if ((ScriptActionCtr_035 < 1) && ((ScriptActionCtr_032 > 0) == true)) {
       aMusicSetRegionAll(6);

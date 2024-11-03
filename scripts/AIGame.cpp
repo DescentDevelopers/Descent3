@@ -1835,7 +1835,6 @@ bool SuperThief::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
 
 bool SuperThief::DoSteal(int me, int it) {
   int max_tries = numSuperThiefableItems;
-  float gen_perc, perc_chance;
   ;
   int i;
   int count_max, count_num;
@@ -2067,11 +2066,9 @@ void SuperThief::CheckAndFireSecondary(int me) {
 
 void SuperThief::DoInterval(int me) {
   bool f_force_ranged = false;
-  int target_handle;
   float anim_frame;
   float shields;
   int flags;
-  msafe_struct m;
   int room;
   vector pos;
 
@@ -2092,7 +2089,7 @@ void SuperThief::DoInterval(int me) {
     end_pos += orient.fvec * 2000.0f;
 
     int fvi_flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
-    int fate = FVI_RayCast(me, &pos, &end_pos, room, 0.0f, fvi_flags, &ray);
+    FVI_RayCast(me, &pos, &end_pos, room, 0.0f, fvi_flags, &ray);
 
     Obj_Value(memory->camera_obj, VF_SET, OBJV_I_ROOMNUM, &ray.hit_room);
     Obj_Value(memory->camera_obj, VF_SET, OBJV_V_POS, &ray.hit_point);
@@ -2136,7 +2133,6 @@ void SuperThief::DoInterval(int me) {
 
     if (memory->last_frame < 234.0f && anim_frame >= 234.0f) {
       msafe_struct mstruct;
-      int type;
 
       memory->laser_on = true;
       memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, NULL, me);
@@ -3067,7 +3063,6 @@ const int16_t hm_valid_next_modes[11] = {
 
 void Humonculous::DetermineDeathPos(int me, vector *dpos, int *droom) {
   float best_dist = 100000000.0f;
-  int best_dp;
   vector dp[6];
   int dr[6];
   int i;
@@ -3627,7 +3622,7 @@ void Humonculous::DoInterval(int me) {
 
         int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
-        int fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
+        FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
         memory->land_pos = ray.hit_point;
         memory->land_pos.y += memory->ground_pnt_offset;
@@ -3697,7 +3692,7 @@ void Humonculous::DoInterval(int me) {
 
         int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
-        int fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
+        FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
         memory->land_pos = ray.hit_point;
         memory->land_pos.y += memory->ground_pnt_offset;
@@ -4082,10 +4077,6 @@ void Jugg::SetMode(int me, char mode) {
 }
 
 void Jugg::DoInit(int me) {
-  int head_object;
-  int belly_object;
-  int turret_object;
-  int flame_object;
   int i;
 
   tOSIRISMEMCHUNK ch;
@@ -4123,7 +4114,6 @@ void Jugg::DoInit(int me) {
 
 void Jugg::DoFrame(int me) {
   float current_anim_frame;
-  matrix orient;
   int flags;
 
   Obj_Value(me, VF_GET, OBJV_F_ANIM_FRAME, &current_anim_frame);
@@ -4217,12 +4207,6 @@ int16_t Jugg::CallEvent(int event, tOSIRISEventInfo *data) {
 //---------------
 
 void DTower::DoInit(int me) {
-  int head_object;
-  int belly_object;
-  int turret_object;
-  int flame_object;
-  int i;
-
   tOSIRISMEMCHUNK ch;
   ch.id = 4;
   ch.size = sizeof(dtower_data);
@@ -4997,7 +4981,6 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
       int rhandle[32];
       bool rdone[32];
       int handle[32];
-      bool done[32];
       int i;
       int rnum_items;
       int num_items;
@@ -5315,7 +5298,6 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
 
                 if (fate == HIT_NONE) {
                   msafe_struct mstruct;
-                  int type;
 
                   Obj_Value(memory->me, VF_GET, OBJV_I_ROOMNUM, &mstruct.roomnum);
                   Obj_Value(memory->me, VF_GET, OBJV_V_POS, &mstruct.pos);
@@ -5431,7 +5413,6 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
   } else if (command->action == COM_GET_MENU) {
     int i;
     gb_menu *menu = (gb_menu *)command->ptr;
-    int cur_command = 0;
 
     strcpy(menu->title, TXT_GB_MENUTITLE);
 
@@ -5553,7 +5534,6 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
 }
 
 void GuideBot::DoCollide(int me, tOSIRISEVTCOLLIDE *evt_collide) {
-  int obj_type;
   int its_parent;
   float rand_val;
 
@@ -5608,7 +5588,6 @@ void GuideBot::DoCollide(int me, tOSIRISEVTCOLLIDE *evt_collide) {
 
 bool GuideBot::DoUse(int me) {
   int p_handle;
-  int sad_sound;
   int buddy_handle;
 
   // NOTE: Use is done on the inventory item and/or the real guidebot
@@ -5639,12 +5618,6 @@ bool GuideBot::DoUse(int me) {
 }
 
 bool GuideBot::DoInit(int me, bool f_reinit) {
-  vector fvec;
-  vector vel;
-  bool f_valid;
-  matrix orient;
-  vector pos;
-  int room;
   int i;
 
   tOSIRISMEMCHUNK ch;
@@ -5824,7 +5797,6 @@ void GuideBot::DoPowerupCheck(int me) {
         }
 
         if (f_for_me) {
-          tOSIRISEventInfo data;
           gb_com command;
 
           command.action = COM_POWERUP_NOTIFY;
@@ -5839,7 +5811,6 @@ void GuideBot::DoPowerupCheck(int me) {
 }
 
 void GuideBot::DoFrame(int me) {
-  int dir_index;
   int flags;
   float anim;
   float last_mode_time;
@@ -6605,9 +6576,6 @@ void Thief::SetMode(int me, int new_mode) {
 }
 
 void Thief::DoInit(int me) {
-
-  int room;
-  vector pos;
   tOSIRISMEMCHUNK ch;
   ch.id = 4;
   ch.size = sizeof(thief_data);
@@ -7074,18 +7042,10 @@ void Sickle::DoInit(int me) {
 
 void Sickle::DoFrame(int me) {
   vector uvec;
-  vector start_pos;
-  vector end_pos;
-  int flags;
-  int fate;
-  int start_room;
-  int ceiling_room;
   float anim_frame;
   int new_mode;
-  vector vel;
   float last_see_time;
   float last_hear_time;
-  char movement_type;
 
   float temp_time;
   float temp_time2;
@@ -7517,10 +7477,9 @@ int16_t Tubbs::CallEvent(int event, tOSIRISEventInfo *data) {
 
 bool OldScratch::DoSteal(int me, int it) {
   int max_tries = numSuperThiefableItems;
-  float gen_perc, perc_chance;
   ;
   int i;
-  int count_max, count_num;
+  int count_max;
   bool *attempted_steals;
 
   attempted_steals = (bool *)malloc(numSuperThiefableItems * sizeof(bool));
@@ -7870,7 +7829,6 @@ bool BarnSwallow::SendCommand(int me, int it, char action, int value) {
 }
 
 void BarnSwallow::DoInit(int me) {
-  int i;
   tOSIRISMEMCHUNK ch;
   ch.id = 4;
   ch.size = sizeof(barnswallow_data);
@@ -8077,7 +8035,6 @@ void BarnSwallow::DoFrame(int me) {
       if (rand_val > 95) // Find a remote powerup and go get it
       {
         int i;
-        bool f_ok = true;
 
         //					for(i = 0; i < memory->num_friends; i++)
         //					{
@@ -8169,7 +8126,6 @@ bool BarnSwallow::SetMode(int me, char mode, int it) {
 
   switch (mode) {
   case BSM_NEST: {
-    int room;
     float max_speed;
     vector pos;
 
@@ -8864,7 +8820,6 @@ void Hellion::DoFrame(int me) {
     vector normal;
     vector pos;
     int room;
-    vector end_pos;
 
     for (i = 0; i < 2; i++) {
       int my_room;
@@ -8874,7 +8829,7 @@ void Hellion::DoFrame(int me) {
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &my_room);
       Obj_GetGunPos(me, i + 1, &pos, &normal);
 
-      int rfate = FVI_RayCast(me, &my_pos, &pos, my_room, 0.0f, 0, &ray);
+      FVI_RayCast(me, &my_pos, &pos, my_room, 0.0f, 0, &ray);
       room = ray.hit_room;
 
       matrix orient;
@@ -10422,10 +10377,7 @@ bool EvaderModA::DoNotify(int me_handle, tOSIRISEventInfo *data) { return true; 
 void EvaderModA::SetMode(int me, char mode) {
   switch (mode) {
   case EMA_GET_BEHIND: {
-    vector pos;
     int vec;
-
-    int flags = GF_NOTIFIES | GF_ORIENT_TARGET;
 
     if ((rand() % 100) > 50) {
       vec = GST_NEG_FVEC;
@@ -10540,10 +10492,7 @@ bool FlameRAS::DoNotify(int me_handle, tOSIRISEventInfo *data) { return true; }
 void FlameRAS::SetMode(int me, char mode) {
   switch (mode) {
   case EMA_GET_BEHIND: {
-    vector pos;
     int vec;
-
-    int flags = GF_NOTIFIES | GF_ORIENT_TARGET;
 
     if ((rand() % 100) > 50) {
       vec = GST_NEG_FVEC;
@@ -10805,8 +10754,8 @@ int16_t BettyBomb::CallEvent(int event, tOSIRISEventInfo *data) {
 
     if (parent != OBJECT_HANDLE_NONE && child_id != -1) {
       int child_handle;
-      matrix orient, o, otemp, o1;
-      vector vel, pos, v, vtemp;
+      matrix orient;
+      vector vel, pos, v;
       int room;
 
       Obj_Value(parent, VF_GET, OBJV_M_ORIENT, &orient);
@@ -10895,7 +10844,7 @@ int16_t BettyScript::CallEvent(int event, tOSIRISEventInfo *data) {
     // create our memory
     DoInit(data->me_handle);
 
-    int parent, type;
+    int parent;
     vector vel;
 
     parent = GetObjectParent(data->me_handle);

@@ -1603,8 +1603,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -1745,8 +1743,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 034: Message for Transmitter
     if (1) {
       aShowHUDMessage(Message_strings[1]);
@@ -1778,8 +1774,6 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 080: MEGA Init
     if ((ScriptActionCtr_080 < 1) && (1)) {
       aUserVarSet(5, 2400.000000f);
@@ -2108,8 +2102,6 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 083: End Level After Camera
     if ((ScriptActionCtr_083 < 1) && (qUserFlag(2) == true)) {
       aEndLevel();
@@ -2126,8 +2118,6 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_18D5::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_GOALCOMPLETE: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_goalcomplete;
-
     // Script 059: Recovery-2 Return
     if ((ScriptActionCtr_059 < 1) && (1)) {
       aAIGoalFollowPathSimple(data->me_handle, Path_indexes[12], 4352, -1, 3);
@@ -2144,8 +2134,6 @@ int16_t CustomObjectScript_18D5::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_18D6::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_GOALCOMPLETE: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_goalcomplete;
-
     // Script 058: Recovery-1 Return
     if ((ScriptActionCtr_058 < 1) && (1)) {
       aAIGoalFollowPathSimple(data->me_handle, Path_indexes[12], 4352, -1, 3);
@@ -2878,8 +2866,6 @@ int16_t CustomObjectScript_094E::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 084: Transmitter Give
     if ((ScriptActionCtr_084 < 1) && (qObjType(qPlayerClosest(data->me_handle, -1)) == 4)) {
       aAddObjectToInventory(data->me_handle, qPlayerClosest(data->me_handle, -1), 0);
@@ -2912,8 +2898,6 @@ int16_t CustomObjectScript_094E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 010: EndLevel-Factory
     if ((ScriptActionCtr_010 < 1) && (qUserFlag(4) == true)) {
       aStartEndlevelSequencePath(Path_indexes[13], Path_indexes[14], 12.000000f, Message_strings[8]);

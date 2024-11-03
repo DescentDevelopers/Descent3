@@ -2564,8 +2564,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -3287,8 +3285,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_2042::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 021: Intro Landing Path
     if (1) {
       aPortalRenderSet(1, 0, Room_indexes[0], 1);
@@ -3331,8 +3327,6 @@ int16_t CustomObjectScript_2042::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_AIN_MOVIE_END: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
-
     // Script 040: Intro Cinematic - Parts II and III
     if (1) {
       if (ScriptActionCtr_040 == 0) {
@@ -3359,8 +3353,6 @@ int16_t CustomObjectScript_2042::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10A3::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 002: Space Patrol
     if (1) {
       aAIFlags(1, 32, data->me_handle);
@@ -3378,8 +3370,6 @@ int16_t CustomObjectScript_10A3::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_094B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 095: Sky Patrol 2
     if (1) {
       aAIFlags(1, 32, data->me_handle);
@@ -3425,8 +3415,6 @@ int16_t CustomObjectScript_0945::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_113E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 090: Data Vault Patrol A
     if (1) {
       aAISetFOV(data->me_handle, 70.000000f);
@@ -3444,8 +3432,6 @@ int16_t CustomObjectScript_113E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_193F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 091: Data Vault Patrol B
     if (1) {
       aAISetFOV(data->me_handle, 70.000000f);
@@ -3463,8 +3449,6 @@ int16_t CustomObjectScript_193F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_2140::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 092: Data Vault Guard Patrol
     if (1) {
       aAIGoalFollowPath(data->me_handle, Path_indexes[10], 1, 4, 1, 0, 8392960, -1);
@@ -3652,8 +3636,6 @@ int16_t CustomObjectScript_28BA::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_2133::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 125: Canyon Guard Patrol
     if (1) {
       aAIGoalFollowPath(data->me_handle, Path_indexes[12], 1, 9, 1, 0, 8392960, -1);
@@ -3713,8 +3695,6 @@ int16_t CustomObjectScript_2133::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1139::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 098: Setup Command Base Guard
     if (1) {
       aAIFlags(0, 33554432, data->me_handle);
@@ -3766,8 +3746,6 @@ int16_t CustomObjectScript_1139::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_098A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 097: Tank Patrol
     if (1) {
       aAIGoalFollowPath(data->me_handle, Path_indexes[16], 1, 11, 1, 0, 8392704, -1);
@@ -3784,8 +3762,6 @@ int16_t CustomObjectScript_098A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_08AA::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 003: D1 Patrol
     if (1) {
       aAIGoalFollowPath(Object_handles[61], Path_indexes[17], 1, 7, 1, 3, 8392704, -1);
@@ -3802,8 +3778,6 @@ int16_t CustomObjectScript_08AA::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_18BF::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 099: Setup D1 Ground Guard
     if (1) {
 
@@ -4740,8 +4714,6 @@ int16_t CustomObjectScript_208B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_2074::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 102: Setup Hangar Cam
     if (1) {
       aObjPlayAnim(data->me_handle, 0, 20, 14.000000f, 1);
@@ -4778,8 +4750,6 @@ int16_t CustomObjectScript_2074::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_203D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 103: Setup Prep Room Cam
     if (1) {
       aObjPlayAnim(data->me_handle, 0, 20, 14.000000f, 1);
@@ -4811,8 +4781,6 @@ int16_t CustomObjectScript_203D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_11B1::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 104: Setup Mem Plasma Cam
     if (1) {
       aObjPlayAnim(data->me_handle, 0, 20, 14.000000f, 1);
@@ -4849,8 +4817,6 @@ int16_t CustomObjectScript_11B1::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_3898::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 106: Setup Corridor Cam
     if (1) {
       aObjPlayAnim(data->me_handle, 0, 20, 14.000000f, 1);
@@ -4884,8 +4850,6 @@ int16_t CustomObjectScript_3898::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_303C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 107: Setup Substation 1 Cam
     if (1) {
       aObjPlayAnim(data->me_handle, 0, 20, 14.000000f, 1);
@@ -4917,8 +4881,6 @@ int16_t CustomObjectScript_303C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_2090::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 108: Setup Auxillary Cam
     if (1) {
       aObjPlayAnim(data->me_handle, 0, 20, 14.000000f, 1);
@@ -4954,8 +4916,6 @@ int16_t CustomObjectScript_2090::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_09D4::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 109: Setup Control Cam
     if (1) {
       aObjPlayAnim(data->me_handle, 0, 20, 14.000000f, 1);
@@ -5444,8 +5404,6 @@ int16_t CustomObjectScript_987D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_09AA::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_GOALCOMPLETE: {
-    tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_goalcomplete;
-
     // Script 119: Meteor1 - GoalID Explosion
     if (1) {
       aTurnOnSpew(Object_handles[109], -1, 0, 0.000000f, 0.000000f, 65536, 0, 1.200000f, 0.040000f, 1.000000f,
@@ -5458,8 +5416,6 @@ int16_t CustomObjectScript_09AA::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CHILD_DIED: {
-    tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
-
     // Script 117: Meteor1 - Path
     if (qObjIsType(Object_handles[61], 2) == false) {
       aAISetMaxSpeed(data->me_handle, 400.000000f);

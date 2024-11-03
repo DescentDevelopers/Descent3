@@ -835,7 +835,7 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
 
     int fvi_flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
-    int fate = FVI_RayCast(me_handle, &pos, &end_pos, room, 0.0f, fvi_flags, &ray);
+    FVI_RayCast(me_handle, &pos, &end_pos, room, 0.0f, fvi_flags, &ray);
 
     Obj_Value(memory->camera_obj, VF_SET, OBJV_I_ROOMNUM, &ray.hit_room);
     Obj_Value(memory->camera_obj, VF_SET, OBJV_V_POS, &ray.hit_point);
@@ -876,8 +876,6 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
   case STATE_SNIPE:
     // snipe for a certain amount of time, then return to base.
     if (memory->laser_targeted == false) {
-      int type;
-
       memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, NULL, me_handle);
       mstruct.objhandle = memory->camera_obj;
       MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
@@ -1004,8 +1002,6 @@ bool aiBlackStormTrooper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
 void aiBlackStormTrooper::set_state(int me_handle, int state) {
   int room_number, id, i;
   vector pos;
-  char buf[64];
-  char name[48];
   float dist;
 
   // SafeGoalClearAll(me_handle);
@@ -1330,10 +1326,8 @@ bool aiCreeper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
 }
 
 void aiCreeper::set_state(int me_handle, int state) {
-  int room_number = 0, id, i, flags;
+  int room_number = 0, flags;
   vector pos;
-  char buf[64];
-  char name[48];
   msafe_struct m;
   float circle_dist;
   char cenable;

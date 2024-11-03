@@ -1945,8 +1945,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 029: Medical Frigate Mayday!
     if ((qRoomHasPlayer(Room_indexes[21]) == true) && (qUserFlag(10) == false)) {
       aAddGameMessage(Message_strings[10], Message_strings[11]);
@@ -1969,8 +1967,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -2515,8 +2511,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 050: Music OutsideInit
     if ((ScriptActionCtr_050 < 1) && (1)) {
       aMusicSetRegionAll(1);
@@ -3402,8 +3396,6 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0018::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 087: Security Tower Goal Trigger
     if (1) {
       aGoalCompleted(Goal_indexes[2], 1);

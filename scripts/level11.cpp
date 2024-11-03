@@ -3531,8 +3531,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 027: All 3 Primary Controls
     if ((ScriptActionCtr_027 < 1) && (((ScriptActionCtr_056 > 0) == true) && ((ScriptActionCtr_055 > 0) == true) &&
                                       ((ScriptActionCtr_054 > 0) == true))) {
@@ -3545,8 +3543,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -3625,8 +3621,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 130: Mission Message
     if ((ScriptActionCtr_130 < 1) && (1)) {
       aSoundPlaySteaming("VoxLev11StartLevel.osf", 1.000000f);
@@ -3646,8 +3640,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0985::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 120: IntroCam
     if ((ScriptActionCtr_120 < 1) && (1 == true)) {
       aCinematicIntro(Path_indexes[0], Message_strings[0], Object_handles[1], Path_indexes[1], 22.000000f);
@@ -4174,8 +4166,6 @@ int16_t CustomObjectScript_1919::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0911::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 017: RockWallALL Invulnerable
     if (1) {
       aObjMakeInvuln(Object_handles[78], 999999);
@@ -4200,8 +4190,6 @@ int16_t CustomObjectScript_0911::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_310B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 018: RockWallTopExplode(1)
     if ((ScriptActionCtr_018 < 1) && (1)) {
       aObjMakeVulnerable(Object_handles[83]);
@@ -4273,8 +4261,6 @@ int16_t CustomObjectScript_08D1::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0A12::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 125: GenericSpewer-18
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4292,8 +4278,6 @@ int16_t CustomObjectScript_0A12::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_097C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 047: GenericSpewer-17
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4311,8 +4295,6 @@ int16_t CustomObjectScript_097C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_097D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 046: GenericSpewer-16
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4330,8 +4312,6 @@ int16_t CustomObjectScript_097D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_097E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 045: GenericSpewer-15
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4349,8 +4329,6 @@ int16_t CustomObjectScript_097E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_097B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 044: GenericSpewer-14
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4368,8 +4346,6 @@ int16_t CustomObjectScript_097B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_097A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 043: GenericSpewer-13
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4387,8 +4363,6 @@ int16_t CustomObjectScript_097A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0976::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 042: GenericSpewer-12
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4406,8 +4380,6 @@ int16_t CustomObjectScript_0976::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0977::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 041: GenericSpewer-11
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4425,8 +4397,6 @@ int16_t CustomObjectScript_0977::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0978::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 040: GenericSpewer-10
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4444,8 +4414,6 @@ int16_t CustomObjectScript_0978::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0979::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 039: GenericSpewer-9
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4463,8 +4431,6 @@ int16_t CustomObjectScript_0979::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0975::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 038: GenericSpewer-8
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4482,8 +4448,6 @@ int16_t CustomObjectScript_0975::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0974::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 037: GenericSpewer-7
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4501,8 +4465,6 @@ int16_t CustomObjectScript_0974::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0973::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 036: GenericSpewer-6
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4520,8 +4482,6 @@ int16_t CustomObjectScript_0973::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0972::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 035: GenericSpewer-5
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4539,8 +4499,6 @@ int16_t CustomObjectScript_0972::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0971::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 034: GenericSpewer-4
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4558,8 +4516,6 @@ int16_t CustomObjectScript_0971::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0970::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 015: GenericSpewer-3
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4577,8 +4533,6 @@ int16_t CustomObjectScript_0970::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_096F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 014: GenericSpewer-2
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4596,8 +4550,6 @@ int16_t CustomObjectScript_096F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_096E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 013: GenericSpewer-1
     if (1) {
       aTurnOnSpew(data->me_handle, -1, 7, 0.000000f, 0.000000f, 65536, 0, 1.700000f, 0.150000f, -1.000000f, 4.000000f,
@@ -4657,8 +4609,6 @@ int16_t CustomObjectScript_1181::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_110A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 019: Security Alert-1
     if ((ScriptActionCtr_019 < 1) &&
         ((qObjCanSeePlayer(65, data->me_handle, 240.000000f) == true) && ((ScriptActionCtr_131 > 0) == true))) {
@@ -4673,8 +4623,6 @@ int16_t CustomObjectScript_110A::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 131: Security-1 Timer
     if ((ScriptActionCtr_131 < 1) && (1)) {
 
@@ -4728,8 +4676,6 @@ int16_t CustomObjectScript_1108::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10DF::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 078: Security Alert-F
     if ((ScriptActionCtr_078 < 1) && (qObjCanSeePlayer(50, data->me_handle, 150.000000f) == true)) {
       aAISetState(1, Object_handles[50]);
@@ -4749,8 +4695,6 @@ int16_t CustomObjectScript_10DF::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10DE::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 077: Security Alert-E
     if ((ScriptActionCtr_077 < 1) && (qObjCanSeePlayer(50, data->me_handle, 150.000000f) == true)) {
       aAISetState(1, Object_handles[51]);
@@ -4770,8 +4714,6 @@ int16_t CustomObjectScript_10DE::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10DD::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 076: Security Alert-D
     if ((ScriptActionCtr_076 < 1) && (qObjCanSeePlayer(50, data->me_handle, 150.000000f) == true)) {
       aAISetState(1, Object_handles[48]);
@@ -4791,8 +4733,6 @@ int16_t CustomObjectScript_10DD::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10DC::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 075: Security Alert-C
     if ((ScriptActionCtr_075 < 1) && (qObjCanSeePlayer(65, data->me_handle, 150.000000f) == true)) {
       aAISetState(1, Object_handles[45]);
@@ -4812,8 +4752,6 @@ int16_t CustomObjectScript_10DC::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10DB::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 074: Security Alert-B
     if ((ScriptActionCtr_074 < 1) && (qObjCanSeePlayer(90, data->me_handle, 200.000000f) == true)) {
       aAISetState(1, Object_handles[31]);
@@ -4835,8 +4773,6 @@ int16_t CustomObjectScript_10DB::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10D6::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 073: Security Alert-A
     if ((ScriptActionCtr_073 < 1) && (qObjCanSeePlayer(30, data->me_handle, 60.000000f) == true)) {
       aAISetState(1, Object_handles[44]);
@@ -4855,8 +4791,6 @@ int16_t CustomObjectScript_10D6::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10D7::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 072: Security Alert-9
     if ((ScriptActionCtr_072 < 1) && (qObjCanSeePlayer(50, data->me_handle, 300.000000f) == true)) {
       aAISetState(1, Object_handles[43]);
@@ -4877,8 +4811,6 @@ int16_t CustomObjectScript_10D7::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10D8::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 071: Security Alert-8
     if ((ScriptActionCtr_071 < 1) && (qObjCanSeePlayer(50, data->me_handle, 300.000000f) == true)) {
       aAISetState(1, Object_handles[38]);
@@ -4899,8 +4831,6 @@ int16_t CustomObjectScript_10D8::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_116C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 070: Security Alert-7
     if ((ScriptActionCtr_070 < 1) && (qObjCanSeePlayer(90, data->me_handle, 70.000000f) == true)) {
       aAISetState(1, Object_handles[29]);
@@ -4920,8 +4850,6 @@ int16_t CustomObjectScript_116C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10D5::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 069: Security Alert-6
     if ((ScriptActionCtr_069 < 1) && (qObjCanSeePlayer(55, data->me_handle, 200.000000f) == true)) {
       aAISetState(1, Object_handles[37]);
@@ -4943,8 +4871,6 @@ int16_t CustomObjectScript_10D5::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10DA::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 068: Security Alert-5
     if ((ScriptActionCtr_068 < 1) && (qObjCanSeePlayer(90, data->me_handle, 80.000000f) == true)) {
       aAISetState(1, Object_handles[26]);
@@ -4964,8 +4890,6 @@ int16_t CustomObjectScript_10DA::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_18D4::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 067: Security Alert-4
     if ((ScriptActionCtr_067 < 1) && (qObjCanSeePlayer(70, data->me_handle, 250.000000f) == true)) {
       aAISetState(1, Object_handles[15]);
@@ -4987,8 +4911,6 @@ int16_t CustomObjectScript_18D4::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_18CD::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 066: Security Alert-3
     if ((ScriptActionCtr_066 < 1) && (qObjCanSeePlayer(70, data->me_handle, 250.000000f) == true)) {
       aAISetState(1, Object_handles[21]);
@@ -5010,8 +4932,6 @@ int16_t CustomObjectScript_18CD::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_18D3::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 065: Security Alert-2
     if ((ScriptActionCtr_065 < 1) && (qObjCanSeePlayer(50, data->me_handle, 220.000000f) == true)) {
       aAISetState(1, Object_handles[23]);
@@ -5815,8 +5735,6 @@ int16_t CustomObjectScript_0A53::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 126: PrisonSwitch Create
     if (1) {
       aTurnOnSpew(Object_handles[125], -1, 16, 0.000000f, 0.000000f, 65536, 0, 1.500000f, 0.070000f, -1.000000f,
@@ -5839,8 +5757,6 @@ int16_t CustomObjectScript_0A53::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_080F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 136: Exit Abort Timer
     if (1) {
       aEndLevel();
@@ -6164,8 +6080,6 @@ int16_t CustomObjectScript_096B::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 166: You got all 6!
     if (qUserVarValue(7) == 6.000000f) {
       aSoundPlayObject(Sound_indexes[0], Object_handles[12], 1.000000f);
@@ -6259,8 +6173,6 @@ int16_t CustomObjectScript_227E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0007::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 124: WayPoint-Last2
     if (1) {
       aSetWaypoint(5);
@@ -6277,8 +6189,6 @@ int16_t TriggerScript_0007::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0006::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 123: WayPoint-Last1
     if (1) {
       aSetWaypoint(5);
@@ -6295,8 +6205,6 @@ int16_t TriggerScript_0006::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0008::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 122: WayPoint-1
     if ((ScriptActionCtr_122 < 1) && (1)) {
       aCinematicSimple(Path_indexes[2], Message_strings[1], Object_handles[55], 10.000000f, 1);
@@ -6399,8 +6307,6 @@ int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 008: Cross (RL) Doors-1
     if (0.000000f == 0.000000f) {
       aDoorLockUnlock(0, Door_handles[11]);
@@ -6420,8 +6326,6 @@ int16_t TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 009: Cross (RL) Doors-2
     if (1) {
       aDoorLockUnlock(0, Door_handles[13]);
@@ -6441,8 +6345,6 @@ int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0003::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 010: Cross (RL) Doors-3
     if (1) {
       aDoorLockUnlock(0, Door_handles[15]);
@@ -6483,8 +6385,6 @@ int16_t TriggerScript_0009::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0024::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 156: PipeDemo 2
     if ((ScriptActionCtr_156 < 1) &&
         ((qObjExists(Object_handles[3]) == true) && ((ScriptActionCtr_132 > 0) == false))) {
@@ -6502,8 +6402,6 @@ int16_t TriggerScript_0024::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_000B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 132: PipeDemo 1
     if ((ScriptActionCtr_132 < 1) &&
         ((qObjExists(Object_handles[3]) == true) && ((ScriptActionCtr_156 > 0) == false))) {
@@ -6521,8 +6419,6 @@ int16_t TriggerScript_000B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0010::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 129: EscapeDoor-Bar
     if ((ScriptActionCtr_129 < 1) && ((ScriptActionCtr_127 > 0) == true)) {
       aDoorSetPos(Door_handles[0], 1.000000f);
@@ -6539,8 +6435,6 @@ int16_t TriggerScript_0010::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_000D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 153: EscapeDoor-2
     if ((ScriptActionCtr_153 < 1) && ((ScriptActionCtr_127 > 0) == true)) {
       aDoorSetPos(Door_handles[14], 1.000000f);
@@ -6557,8 +6451,6 @@ int16_t TriggerScript_000D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_000C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 118: EscapeDoor-1
     if ((ScriptActionCtr_118 < 1) && ((ScriptActionCtr_127 > 0) == true)) {
       aDoorSetPos(Door_handles[18], 1.000000f);
@@ -6899,8 +6791,6 @@ int16_t TriggerScript_001E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0025::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 155: PlayerCheat-2
     if (1) {
       aDoorSetPos(Door_handles[14], 0.000000f);
@@ -6917,8 +6807,6 @@ int16_t TriggerScript_0025::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0023::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 154: PlayerCheat-1
     if (1) {
       aDoorSetPos(Door_handles[14], 1.000000f);
@@ -6935,8 +6823,6 @@ int16_t TriggerScript_0023::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0026::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 170: Prison Cinema
     if ((ScriptActionCtr_170 < 1) && (1)) {
       aCinematicSimple(Path_indexes[9], Message_strings[15], Object_handles[13], 10.000000f, 1);

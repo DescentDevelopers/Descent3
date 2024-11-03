@@ -1490,8 +1490,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 #endif
   } break;
   case EVT_INTERVAL: {
-    tOSIRISEVTINTERVAL *event_data = &data->evt_interval;
-
     // Script 028: Update Reactor Display
     if (1) {
       aCustomReactorDisplayUpdate();
@@ -1513,8 +1511,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -1830,8 +1826,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_PLAYER_MOVIE_END: {
-    tOSIRISEVTPLAYERMOVIEEND *event_data = &data->evt_player_movie_end;
-
     // Script 009: GiveStartMessage
     if ((ScriptActionCtr_009 < 1) && (1)) {
       aSoundPlayObject(Sound_indexes[0], Object_handles[4], 1.000000f);
@@ -1868,8 +1862,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_200D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 027: Reactor5Status75percent
     if ((ScriptActionCtr_027 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
       aShowHUDMessage(Message_strings[4]);
@@ -1937,8 +1929,6 @@ int16_t CustomObjectScript_200D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_281B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 026: Reactor4Status75percent
     if ((ScriptActionCtr_026 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
       aShowHUDMessage(Message_strings[6]);
@@ -1997,8 +1987,6 @@ int16_t CustomObjectScript_281B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_3816::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 025: Reactor3Status75percent
     if ((ScriptActionCtr_025 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
       aShowHUDMessage(Message_strings[7]);
@@ -2057,8 +2045,6 @@ int16_t CustomObjectScript_3816::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1012::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 024: Reactor2Status75percent
     if ((ScriptActionCtr_024 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
       aShowHUDMessage(Message_strings[8]);
@@ -2117,8 +2103,6 @@ int16_t CustomObjectScript_1012::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_181C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 005: Reactor1Status75percent
     if ((ScriptActionCtr_005 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
       aShowHUDMessage(Message_strings[9]);
