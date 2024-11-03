@@ -122,15 +122,15 @@ public:
 class UITextItem : public UIItem {
   friend void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color);
 
-  uint8_t m_Alpha;      // alpha value of text.
-  ddgr_color m_Color; // color of text.
+  uint8_t m_Alpha = 255;      // alpha value of text.
+  ddgr_color m_Color = GR_WHITE; // color of text.
   int m_Font;
 
   static int m_DefaultFont;
   static int m_Sat;
 
 protected:
-  char *m_Text;
+  char *m_Text = nullptr;
 
 public:
   static void SetDefaultFont(int font) { UITextItem::m_DefaultFont = font; }
@@ -139,9 +139,6 @@ public:
 
 public:
   UITextItem() {
-    m_Text = NULL;
-    m_Alpha = 255;
-    m_Color = GR_WHITE;
     m_Font = m_DefaultFont;
   };
   UITextItem(const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
@@ -214,7 +211,7 @@ public:
 //		text.  allows for alpha, color and different fonts.
 
 class UIBitmapItem final : public UIItem {
-  bool m_IsValid;
+  bool m_IsValid = false;
   bool m_IsChunked; // is this a chunked bitmap?
 
   union {
@@ -222,13 +219,10 @@ class UIBitmapItem final : public UIItem {
     int handle;            // a simple bitmap
   } m_Bitmap;              // a bitmap.
 
-  uint8_t m_Alpha; // alpha value of text.
+  uint8_t m_Alpha = 255; // alpha value of text.
 
 public:
-  UIBitmapItem() {
-    m_IsValid = false;
-    m_Alpha = 255;
-  };
+  UIBitmapItem() {};
   UIBitmapItem(chunked_bitmap *chunk, uint8_t alpha = 255) {
     m_IsValid = true;
     m_Bitmap.chunk = chunk;

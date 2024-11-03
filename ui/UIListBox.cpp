@@ -168,20 +168,7 @@
 
 //	Construction and destruction
 
-UIListBox::UIListBox() {
-  m_NumItems = 0;
-  m_SelectedIndex = 0;
-  m_Index = 0;
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
-  m_MouseState = 0;
-  selectchange_fn = NULL;
-  selectchange_id_fn = NULL;
-  m_callbackptr = NULL;
-  m_TextOffX = 4;
-  m_TextOffY = 4;
-}
+UIListBox::UIListBox() {}
 
 UIListBox::~UIListBox() {}
 

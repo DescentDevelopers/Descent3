@@ -66,12 +66,7 @@
 
 //	Construction and destruction
 
-UISlider::UISlider() {
-  switch_item = slider_item = NULL;
-  selectchange_fn = NULL;
-  selectchange_id_fn = NULL;
-  m_callbackptr = NULL;
-}
+UISlider::UISlider() {}
 
 UISlider::~UISlider() {}
 

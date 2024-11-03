@@ -295,12 +295,12 @@ class UIWindow;
 //		tUIObject.
 
 class UIObject {
-  bool m_Created; // is this object created?
+  bool m_Created = false; // is this object created?
 
   //	variables shared by the entire UI hierarchy
 protected:
-  int m_X, m_Y; //	Location of UIObject relative to some other object.
-  int m_W, m_H; // Dimensions of the UIObject
+  int m_X = 0, m_Y = 0; // Location of UIObject relative to some other object.
+  int m_W = 0, m_H = 0; // Dimensions of the UIObject
 
 public:
   UIObject();
@@ -365,21 +365,21 @@ public:
 class UIGadget : public UIObject {
   friend class UIWindow;
 
-  UIGadget *m_Prev;
-  UIGadget *m_Next; // for maintaining list of linked gadgets.
+  UIGadget *m_Prev = nullptr;
+  UIGadget *m_Next = nullptr; // for maintaining list of linked gadgets.
 
   // master gadgets
-  UIGadget *m_MasterGadget; // select target
-  UIGadget *m_CurrentSlave; // current slave gadget in master.
+  UIGadget *m_MasterGadget = nullptr; // select target
+  UIGadget *m_CurrentSlave = nullptr; // current slave gadget in master.
 
   // slave gadgets
-  UIGadget *m_SlaveGadgets; // contains a list of slave gadgets.
-  UIGadget *m_NextSlave;
-  UIGadget *m_PrevSlave;
+  UIGadget *m_SlaveGadgets = nullptr; // contains a list of slave gadgets.
+  UIGadget *m_NextSlave = nullptr;
+  UIGadget *m_PrevSlave = nullptr;
 
   //	information for gadgets
 private:
-  int m_ID;      // id value of gadget.
+  int m_ID = 0;    // id value of gadget.
   int16_t m_Datum; // used to pass info around.
   uint16_t m_Hotkey;
   int m_SavedW, m_SavedH; // saved values of width and height.
@@ -399,11 +399,11 @@ public:
 #else
 protected:
 #endif
-  UIWindow *m_Wnd; // the gadget's parent window
+  UIWindow *m_Wnd = nullptr; // the gadget's parent window
 
 protected:
   int m_Flags;    // flags
-  bool m_infocus; // gadget has focus.
+  bool m_infocus = false; // gadget has focus.
 
   int GetSavedW() const { return m_SavedW; };
   int GetSavedH() const { return m_SavedH; };
@@ -497,8 +497,8 @@ public:
 //		or key pressed, does something.
 
 class UIHotspot final : public UIGadget {
-  UIItem *m_ItemOff, *m_ItemOn; // off and on states items.
-  UIItem *m_ItemCur;            // current item.
+  UIItem *m_ItemOff = nullptr, *m_ItemOn = nullptr; // off and on states items.
+  UIItem *m_ItemCur = nullptr;            // current item.
 
 protected:
   virtual void OnKeyDown(int key);      // override: behavior when key is pressed.
@@ -545,7 +545,7 @@ public:
 
 class UIButton : public UIGadget {
 private:
-  UIItem *m_Items[UI_BTS_NUM];     // UI Items for each state
+  UIItem *m_Items[UI_BTS_NUM]{};   // UI Items for each state
   ddgr_color m_Colors[UI_BTS_NUM]; // Backgrounds for states
 
   static int m_ButtonFont; // button fonts.
@@ -664,8 +664,8 @@ protected:
 
 class UIStatic : public UIGadget {
 protected:
-  UIPrimativeItem *m_Background;
-  UIItem *m_Title;
+  UIPrimativeItem *m_Background = nullptr;
+  UIItem *m_Title = nullptr;
 
 public:
   UIStatic();
@@ -725,9 +725,9 @@ public:
 
   //	inheritable operations
 protected:
-  bool m_bTextCreated;
+  bool m_bTextCreated = false;
   UIText m_tLabel;
-  char *m_Label;
+  char *m_Label = nullptr;
   ddgr_color m_LabelColor;
   ddgr_color m_BoxColor;
   virtual void OnDraw();
@@ -742,9 +742,9 @@ protected:
 #define KEYDOWN_REPEAT_DELAY 0.10f
 
 class UIEdit : public UIGadget {
-  char *m_TextBuf;        // Text buffer for edit control.
-  int m_FontHandle;       // font for edit control. (default -1 = window's font)
-  int m_BufSize;          // buffersize
+  char *m_TextBuf = nullptr; // Text buffer for edit control.
+  int m_FontHandle = -1;     // font for edit control. (default -1 = window's font)
+  int m_BufSize = 0;         // buffersize
   int m_Color;            // color of text.
   int m_CursorPosX;       // text cursor position within box.
   bool m_Active;          // active?
@@ -799,9 +799,9 @@ public:
 //		A simple slider
 
 class UISlider : public UIGadget {
-  void (*selectchange_fn)(int);            // callback when selection changes in slider
-  void (*selectchange_id_fn)(int, void *); // callback when selection changes in slider, also returns the ID
-  void *m_callbackptr;                     // user defined callback pointer
+  void (*selectchange_fn)(int) = nullptr;            // callback when selection changes in slider
+  void (*selectchange_id_fn)(int, void *) = nullptr; // callback when selection changes in slider, also returns the ID
+  void *m_callbackptr = nullptr;                     // user defined callback pointer
   int m_Pos;                               // this is the returned value as shown in the range.
   int m_Range;                             // returned value of slider is 0 to m_Range-1.
   int m_PixelWidth;                        // used to get the current position of slider.
@@ -809,8 +809,8 @@ class UISlider : public UIGadget {
   int switch_x, switch_y;                  // little box width and height.
   int switch_w, switch_h;
 
-  UIItem *switch_item; // slider switch item
-  UIItem *slider_item; // slider item
+  UIItem *switch_item = nullptr; // slider switch item
+  UIItem *slider_item = nullptr; // slider item
 
 public:
   UISlider();
@@ -867,9 +867,9 @@ protected:
 #define LISTBOX_BUFFER_SIZE 20
 
 class UIListBox : public UIGadget {
-  void (*selectchange_fn)(int);            // callback when selection changes in listbox.
-  void (*selectchange_id_fn)(int, void *); // callback when selection changes in listbox..also return the ID
-  void *m_callbackptr;                     // user defined callback pointer
+  void (*selectchange_fn)(int) = nullptr;            // callback when selection changes in listbox.
+  void (*selectchange_id_fn)(int, void *) = nullptr; // callback when selection changes in listbox..also return the ID
+  void *m_callbackptr = nullptr;                     // user defined callback pointer
   ddgr_color m_SelectColor;                // selected text color
   ddgr_color m_HiliteColor;                // color of hilite bar
   int m_LastMseX, m_LastMseY;              // used for double clicking.
@@ -879,7 +879,7 @@ class UIListBox : public UIGadget {
   void SetInternalSelectedIndex(int index); //  call by listbox system.
 
 protected:
-  int m_TextOffX, m_TextOffY;   // offset of text to border.
+  int m_TextOffX = 4, m_TextOffY = 4; // offset of text to border.
   int m_ArrowWidth;             // with of arrow.
   int m_CX, m_CY, m_CX2, m_CY2; // clipping text.
 
@@ -925,16 +925,16 @@ protected:
   virtual void OnUserProcess(); // override: behavior when gadget is processed
 
 private:
-  UIItem **m_ItemList; // list of items in listbox
-  int *m_Virt2Real;    // translates virtual(user) id to real index
-  int *m_Real2Virt;    // translates real index into virtual(user) id
+  UIItem **m_ItemList = nullptr; // list of items in listbox
+  int *m_Virt2Real = nullptr;    // translates virtual(user) id to real index
+  int *m_Real2Virt = nullptr;    // translates real index into virtual(user) id
 
   float m_ClickTime; // done to check for double clicks?
-  int m_MouseState;  // done for mouse selection.
+  int m_MouseState = 0; // done for mouse selection.
   int m_MouseX, m_MouseY;
-  int m_NumItems;                 // number of items in list.
-  int m_SelectedIndex;            // current selected index into listbox
-  int m_Index;                    // current index of visible items.
+  int m_NumItems = 0;             // number of items in list.
+  int m_SelectedIndex = 0;        // current selected index into listbox
+  int m_Index = 0;                // current index of visible items.
   bool m_ShowDown, m_ShowUp;      // whether the down and up arrows are displayed
   int m_UpArrowY0, m_DownArrowY0; // up and down arrow y locations.
   int m_UpArrowY1, m_DownArrowY1; // up and down arrow y max locations.
@@ -957,13 +957,13 @@ public:
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
 
 private:
-  UIItem **m_ItemList; // list of items in listbox
-  int m_nItems;        // number of items.
+  UIItem **m_ItemList = nullptr; // list of items in listbox
+  int m_nItems = 0;              // number of items.
   int m_ArrY, m_ArrH;  // up and down arrow dimensions
   int m_UpArrX, m_UpArrW, m_DownArrX, m_DownArrW;
-  int m_Index;                  // current index.
-  void (*selectchange_fn)(int); // callback when selection changes in listbox.
-  bool m_ShowUp, m_ShowDown;
+  int m_Index = 0;               // current index.
+  void (*selectchange_fn)(int) = nullptr; // callback when selection changes in listbox.
+  bool m_ShowUp = false, m_ShowDown = false;
   float m_scrolltimer; // scroll timer for delay in mouse.
   int m_scrollstage;   // determines how scrolling will work.
 
@@ -998,9 +998,9 @@ protected:
 //		a console that's a gadget within a window
 
 class UIConsoleGadget final : public UIGadget {
-  int m_ConsoleFont;       // standard font for text in console
-  ddgr_color *m_ColorRows; // color per row.
-  char *m_ConsoleBuffer;   // text buffer of console.
+  int m_ConsoleFont = -1;            // standard font for text in console
+  ddgr_color *m_ColorRows = nullptr; // color per row.
+  char *m_ConsoleBuffer = nullptr;   // text buffer of console.
   int m_Rows, m_Cols;      // dimensions in text.
   int m_VisRows;           // visible rows and columns
   int m_VisRowStart;       // scroll start of visible region of buffer.
@@ -1010,7 +1010,7 @@ class UIConsoleGadget final : public UIGadget {
   ddgr_color m_LineColor; // color of current line.
   int m_LineIndex;        // index within current row memory-wise(not column wise).
   int m_PutsBufLen;       // current length of puts buffer
-  char *m_PutsBuffer;     // puts buffer.
+  char *m_PutsBuffer = nullptr;      // puts buffer.
 
 private:
   void PutChar(int ch); // outputs a character onto the console.

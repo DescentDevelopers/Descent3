@@ -149,11 +149,7 @@ static UIEdit *UI_current_editbox = NULL;
 //	UIEdit
 //		A single line edit control.
 
-UIEdit::UIEdit() {
-  m_TextBuf = NULL;
-  m_BufSize = 0;
-  m_FontHandle = -1;
-}
+UIEdit::UIEdit() {}
 
 UIEdit::~UIEdit() {}
 

@@ -87,10 +87,7 @@ void UIText::OnFormat() {
   UIGadget::OnFormat();
 }
 
-UIStatic::UIStatic() {
-  m_Title = NULL;
-  m_Background = NULL;
-}
+UIStatic::UIStatic() {}
 
 UIStatic::~UIStatic() {}
 

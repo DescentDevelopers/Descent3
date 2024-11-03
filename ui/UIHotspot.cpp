@@ -85,10 +85,7 @@
 //		This is simply a region within the parent window that when clicked on
 //		or key pressed, does something.
 
-UIHotspot::UIHotspot() {
-  m_ItemOff = NULL;
-  m_ItemOn = NULL;
-}
+UIHotspot::UIHotspot() {}
 
 UIHotspot::~UIHotspot() {}
 

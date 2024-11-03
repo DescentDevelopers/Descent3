@@ -55,10 +55,7 @@
 //	UIGroup
 //		Draws a group box on to the window
 
-UIGroup::UIGroup() {
-  m_Label = NULL;
-  m_bTextCreated = false;
-}
+UIGroup::UIGroup() {}
 
 UIGroup::~UIGroup() {}
 

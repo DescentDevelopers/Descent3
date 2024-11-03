@@ -70,12 +70,7 @@
 //	int m_ConsoleFont;							// standard font for text in console
 //	char *m_ConsoleBuffer;						// text buffer of console.
 
-UIConsoleGadget::UIConsoleGadget() {
-  m_ConsoleFont = -1;
-  m_ConsoleBuffer = NULL;
-  m_ColorRows = NULL;
-  m_PutsBuffer = NULL;
-}
+UIConsoleGadget::UIConsoleGadget() {}
 
 UIConsoleGadget::~UIConsoleGadget() {}
 

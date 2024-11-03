@@ -42,11 +42,7 @@
 #include "log.h"
 #include "pserror.h"
 
-UIObject::UIObject() {
-  m_X = m_Y = 0;
-  m_W = m_H = 0;
-  m_Created = false;
-}
+UIObject::UIObject() {}
 
 UIObject::~UIObject() {}
 
