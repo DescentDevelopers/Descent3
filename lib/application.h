@@ -81,10 +81,10 @@ const int OEAPP_WINDOWED = 1, // App will run in a window. May not be supported.
     OEAPP_CONSOLE = 8;        // App will run in a console style window.
 class oeApplication {
 protected:
-  bool m_AppActive;
+  bool m_AppActive = true;
 
 public:
-  oeApplication() { m_AppActive = true; };
+  oeApplication() {};
   virtual ~oeApplication(){};
   //	initializes the object
   virtual void init() = 0;

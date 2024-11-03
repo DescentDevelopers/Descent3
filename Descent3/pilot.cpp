@@ -1821,11 +1821,11 @@ public:
 
 private:
   void DrawBorder();
-  bool animated;
-  int bm_handle;
+  bool animated = false;
+  int bm_handle = -1;
   float start_time;
   UIText text;
-  bool created;
+  bool created = false;
 };
 
 //	struct ship_pos
@@ -2957,10 +2957,7 @@ void UI3DWindow::OnDraw() {
 }
 
 UIBmpWindow::UIBmpWindow() {
-  animated = false;
-  bm_handle = -1;
   start_time = timer_GetTime();
-  created = false;
 }
 
 UIBmpWindow::~UIBmpWindow() {}

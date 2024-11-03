@@ -112,10 +112,10 @@ void MenuScene(); // display menu scene
 class tmmItemQueue {
 #define tmmItemSIZE 8
   tmmItemFX m_items[tmmItemSIZE];
-  int16_t m_head, m_tail;
+  int16_t m_head = 0, m_tail = 0;
 
 public:
-  tmmItemQueue() { m_head = m_tail = 0; };
+  tmmItemQueue() {};
   ~tmmItemQueue(){};
   void send(tmmItemFX &item) { // sends an item onto the queue
     int16_t temp = m_tail + 1;

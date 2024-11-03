@@ -1604,14 +1604,7 @@ const char *tMsgList::get(int i) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-MsgListConsole::MsgListConsole() {
-  m_opened = false;
-  m_list = NULL;
-  m_buffer = NULL;
-  m_bufline = 0;
-  m_conlines = NULL;
-  n_conlines = 0;
-}
+MsgListConsole::MsgListConsole() {}
 
 MsgListConsole::~MsgListConsole() {}
 

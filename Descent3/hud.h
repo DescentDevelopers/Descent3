@@ -652,14 +652,14 @@ struct tMsgList {
 //////////////////////////////////////////////////////////////////////////////
 
 class MsgListConsole {
-  tMsgList *m_list;
+  tMsgList *m_list = nullptr;
   int m_x, m_y, m_w, m_h;
-  int m_bufline, m_buflen, m_curmsgs, m_numlines;
-  bool m_opened;
-  char *m_buffer;
+  int m_bufline = 0, m_buflen, m_curmsgs, m_numlines;
+  bool m_opened = false;
+  char *m_buffer = nullptr;
   char m_title[32];
-  char **m_conlines;
-  int n_conlines;
+  char **m_conlines = nullptr;
+  int n_conlines = 0;
   int m_keydownstate; // -1 for up key, 1 for down key, 0 for none.
   float m_keydowntime;
 

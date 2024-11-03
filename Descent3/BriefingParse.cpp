@@ -74,24 +74,7 @@
 #include "voice.h"
 
 //	constructor
-CBriefParse::CBriefParse() {
-  AddTextEffect = NULL;
-  AddBmpEffect = NULL;
-  AddMovieEffect = NULL;
-  AddBkgEffect = NULL;
-  AddPolyEffect = NULL;
-  AddSoundEffect = NULL;
-  AddButtonEffect = NULL;
-  StartScreen = NULL;
-  EndScreen = NULL;
-  LoopCallback = NULL;
-  SetTitle = NULL;
-  SetStatic = NULL;
-  SetGlitch = NULL;
-  AddVoice = NULL;
-  linenum = 0;
-  parse_error = false;
-}
+CBriefParse::CBriefParse() {}
 
 //	destructor
 CBriefParse::~CBriefParse() {}
