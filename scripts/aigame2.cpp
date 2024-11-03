@@ -101,10 +101,6 @@ protected:
 #define PEST_STATE_HIVE 1
 
 class aiSamirPest final : public aiObjScript {
-public:
-  aiSamirPest();
-  ~aiSamirPest();
-
 private:
   struct t_pest_memory {
     int tail_handle;
@@ -134,10 +130,6 @@ protected:
 #define STATE_STALK 6  // stalks player
 
 class aiBlackStormTrooper final : public aiObjScript {
-public:
-  aiBlackStormTrooper();
-  ~aiBlackStormTrooper();
-
 private:
   struct t_bst_memory {
     float timer;
@@ -184,10 +176,6 @@ private:
 };
 
 class aiCreeper final : public aiObjScript {
-public:
-  aiCreeper();
-  ~aiCreeper();
-
 private:
   struct t_creep_memory {
     float timer;
@@ -220,10 +208,6 @@ class aiLukeTurret final : public aiObjScript {
 
   t_lturret_memory *memory = nullptr;
 
-public:
-  aiLukeTurret(){};
-  ~aiLukeTurret(){};
-
 protected:
   virtual void OnInit(int me_handle);
   virtual bool OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data);
@@ -237,10 +221,6 @@ class aiSTBlackBarrel final : public aiObjScript {
   };
 
   t_stblackbarrel_memory *memory = nullptr;
-
-public:
-  aiSTBlackBarrel(){};
-  ~aiSTBlackBarrel(){};
 
 protected:
   virtual void OnInit(int me_handle);
@@ -606,11 +586,6 @@ int16_t aiObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
 //	aiSamirPest
 //		The Samir Pest
 
-//	ai base class
-aiSamirPest::aiSamirPest() {}
-
-aiSamirPest::~aiSamirPest() {}
-
 void aiSamirPest::OnInit(int me_handle) {
   tOSIRISMEMCHUNK ch;
 
@@ -690,11 +665,6 @@ bool aiSamirPest::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) { return tru
 //////////////////////////////////////////////////////////////////////////////
 //	aiBlackStormTrooper
 //		CED Black Stormtrooper
-
-//	ai base class
-aiBlackStormTrooper::aiBlackStormTrooper() {}
-
-aiBlackStormTrooper::~aiBlackStormTrooper() {}
 
 void aiBlackStormTrooper::OnInit(int me_handle) {
   tOSIRISMEMCHUNK ch;
@@ -1199,11 +1169,6 @@ retry_set_state:
 
 //////////////////////////////////////////////////////////////////////////////
 //	aiCreeper
-
-//	ai base class
-aiCreeper::aiCreeper() {}
-
-aiCreeper::~aiCreeper() {}
 
 void aiCreeper::OnInit(int me_handle) {
   tOSIRISMEMCHUNK ch;

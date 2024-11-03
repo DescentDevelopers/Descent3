@@ -55,8 +55,7 @@ tScriptInfo ScriptInfo[MAX_IDS] = {{ID_SHIELD_ORB, "Shield"}, {ID_ENERGY_ORB, "E
 
 class BaseObjScript {
 public:
-  BaseObjScript();
-  virtual ~BaseObjScript();
+  virtual ~BaseObjScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -161,10 +160,6 @@ int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() {}
-
-BaseObjScript::~BaseObjScript() {}
-
 int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL:

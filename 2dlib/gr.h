@@ -377,9 +377,9 @@ public:
 
 class grHardwareSurface final : public grSurface {
 public:
-  grHardwareSurface();
+  grHardwareSurface() = default;
   grHardwareSurface(int w, int h, int bpp, unsigned flags = 0, const char *name = NULL);
-  virtual ~grHardwareSurface();
+  virtual ~grHardwareSurface() = default;
 
   bool create(int w, int h, int bpp, unsigned flags = 0, const char *name = NULL);
 };
@@ -395,7 +395,7 @@ class grScreen final : public grSurface {
 
 public:
   grScreen(int w, int h, int bpp, const char *name = NULL);
-  virtual ~grScreen();
+  virtual ~grScreen() = default;
 
   void flip();
 };

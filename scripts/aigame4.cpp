@@ -125,8 +125,7 @@ static int aigame_mod_id;
 
 class BaseObjScript {
 public:
-  BaseObjScript();
-  virtual ~BaseObjScript();
+  virtual ~BaseObjScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -147,7 +146,6 @@ private:
   combwallhit_data *memory = nullptr;
 
 public:
-  CombWallHit() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -165,7 +163,6 @@ private:
   droptarget_data *memory = nullptr;
 
 public:
-  DropTarget() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -182,7 +179,6 @@ class Gun final : public BaseObjScript {
   gun_data *memory = nullptr;
 
 public:
-  Gun() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -199,7 +195,6 @@ private:
   casing_data *memory = nullptr;
 
 public:
-  Casing() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -260,7 +255,6 @@ private:
   void PlayRandomSound(int me);
 
 public:
-  MercEndBoss() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -273,7 +267,6 @@ private:
   void DoInit(int me);
 
 public:
-  HangLight() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -417,10 +410,6 @@ static inline bool IsGoalFinishedNotify(int index) {
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() {}
-
-BaseObjScript::~BaseObjScript() {}
-
 int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //------------------

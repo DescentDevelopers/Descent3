@@ -343,8 +343,7 @@ static int GetObjectType(int object);
 
 class BaseObjScript {
 public:
-  BaseObjScript();
-  virtual ~BaseObjScript();
+  virtual ~BaseObjScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -367,7 +366,6 @@ private:
   void DoInit(int me_handle);
 
 public:
-  Pest() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -392,7 +390,6 @@ private:
   void DoInterval(int me_handle);
 
 public:
-  Stinger() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -460,7 +457,6 @@ private:
   void DoInterval(int me_handle);
 
 public:
-  SuperThief() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -510,7 +506,6 @@ private:
   bool DoNotify(int me, tOSIRISEventInfo *data);
 
 public:
-  Humonculous() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -536,7 +531,6 @@ private:
   void DoInit(int me_handle);
 
 public:
-  Dragon() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -556,7 +550,6 @@ private:
   void DoInit(int me_handle);
 
 public:
-  Tracker() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -578,7 +571,6 @@ private:
   lance_data *memory = nullptr;
 
 public:
-  Lance() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -597,7 +589,6 @@ private:
   void DoInit(int me_handle);
 
 public:
-  Flak() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -611,7 +602,6 @@ private:
   void DoCollide(int me);
 
 public:
-  Seeker() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -629,7 +619,6 @@ private:
   void DoInit(int me_handle);
 
 public:
-  SuperTrooper() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -675,7 +664,6 @@ private:
   void SetMode(int me, char mode);
 
 public:
-  Sparky() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -738,7 +726,6 @@ private:
   void SetMode(int me, char mode);
 
 public:
-  Hellion() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -812,7 +799,6 @@ private:
   void UpdateSquad(int me);
 
 public:
-  MantaRay() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -859,7 +845,6 @@ private:
   void UpdateSquad(int me);
 
 public:
-  Skiff() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -902,7 +887,6 @@ private:
   void SetMode(int me, char mode);
 
 public:
-  SpyHunter() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -930,7 +914,6 @@ class Sniper final : public BaseObjScript {
   void SetMode(int me, char mode);
 
 public:
-  Sniper() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -958,7 +941,6 @@ class SniperNoRun final : public BaseObjScript {
   void SetMode(int me, char mode);
 
 public:
-  SniperNoRun() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -983,7 +965,6 @@ class EvaderModA final : public BaseObjScript {
   void SetMode(int me, char mode);
 
 public:
-  EvaderModA() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1011,7 +992,6 @@ class FlameRAS final : public BaseObjScript {
   void SetMode(int me, char mode);
 
 public:
-  FlameRAS() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1049,7 +1029,6 @@ private:
   void SetMode(int me, char mode);
 
 public:
-  Jugg() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1074,7 +1053,6 @@ private:
   void DoFrame(int me_handle);
 
 public:
-  DTower() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1097,7 +1075,6 @@ private:
   void DoFrame(int me_handle);
 
 public:
-  DCollector() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1117,7 +1094,6 @@ private:
   void DoFrame(int me_handle);
 
 public:
-  CBall() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1138,7 +1114,6 @@ private:
   bool DoNotify(int me_handle, tOSIRISEVTAINOTIFY *notify);
 
 public:
-  SixGun() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1196,7 +1171,6 @@ private:
   bool DoNotify(int me_handle, tOSIRISEVTAINOTIFY *notify);
 
 public:
-  Sickle() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1210,7 +1184,6 @@ struct tBettyBombInfo {
 
 class BettyBomb final : public BaseObjScript {
 public:
-  BettyBomb() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 private:
@@ -1224,7 +1197,6 @@ struct tBettyInfo {
 
 class BettyScript final : public BaseObjScript {
 public:
-  BettyScript() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -1244,7 +1216,6 @@ struct tChaffInfo {
 
 class ChaffScript final : public BaseObjScript {
 public:
-  ChaffScript() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -1262,7 +1233,6 @@ struct tChaffChunkInfo {
 
 class ChaffChunkScript final : public BaseObjScript {
 public:
-  ChaffChunkScript() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -1284,7 +1254,6 @@ private:
   void DoCollide(int me);
 
 public:
-  ProxMine() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1294,7 +1263,6 @@ public:
 
 class Gunboy final : public BaseObjScript {
 public:
-  Gunboy() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1315,7 +1283,6 @@ private:
   void DoFrame(int me);
 
 public:
-  GBPowerup() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1337,7 +1304,6 @@ private:
   void DoCollide(int me);
 
 public:
-  JoshBell() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1350,7 +1316,6 @@ private:
   void DoCollide(int me, int it_handle);
 
 public:
-  ExplodeOnContact() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1363,7 +1328,6 @@ private:
   void DoCollide(int me, int it_handle);
 
 public:
-  DestroyOnContact() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1591,7 +1555,6 @@ private:
   void AddGetToGoalCommonGoals(int me);
 
 public:
-  GuideBot() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1726,7 +1689,6 @@ private:
   void DoSubModeFrame(int me);
 
 public:
-  Thief() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2306,7 +2268,6 @@ private:
   void DoFrame(int me_handle);
 
 public:
-  FireAtDist() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2326,7 +2287,6 @@ private:
   void DoFrame(int me_handle);
 
 public:
-  HatePTMC() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2350,7 +2310,6 @@ private:
   bool DoNotify(int me, tOSIRISEVTAINOTIFY *notify);
 
 public:
-  Tubbs() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2375,7 +2334,6 @@ private:
   bool DoNotify(int me, tOSIRISEVTAINOTIFY *notify);
 
 public:
-  OldScratch() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2441,7 +2399,6 @@ private:
   bool SetMode(int me, char mode, int it = OBJECT_HANDLE_NONE);
 
 public:
-  BarnSwallow() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2809,10 +2766,6 @@ static inline bool IsGoalFinishedNotify(int index) {
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() {}
-
-BaseObjScript::~BaseObjScript() {}
-
 int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //-----------------

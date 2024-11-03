@@ -135,8 +135,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 
 class BaseScript {
 public:
-  BaseScript();
-  virtual ~BaseScript();
+  virtual ~BaseScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2132,10 +2131,6 @@ int STDCALL GetCOScriptList(int **list, int **id_list) {
 //=======================
 // Script Implementation
 //=======================
-
-BaseScript::BaseScript() {}
-
-BaseScript::~BaseScript() {}
 
 int16_t BaseScript::CallEvent(int event, tOSIRISEventInfo *data) {
   mprintf(0, "BaseScript::CallEvent()\n");

@@ -25,7 +25,7 @@ namespace AudioDecoder {
 
 class IAudioDecoder {
 public:
-  virtual ~IAudioDecoder() {}
+  virtual ~IAudioDecoder() = default;
 
   // Read data from the audio decoder.
   //   pBuffer: The buffer to receive the data from

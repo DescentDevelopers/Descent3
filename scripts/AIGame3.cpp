@@ -601,8 +601,7 @@ static tScriptInfo ScriptInfo[NUM_IDS] = {
 
 class BaseObjScript {
 public:
-  BaseObjScript();
-  virtual ~BaseObjScript();
+  virtual ~BaseObjScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -865,7 +864,6 @@ private:
   void DoSquadieFrame(int me);
 
 public:
-  AlienOrganism() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1002,7 +1000,6 @@ private:
   void EnableGunAttack(int me, bool enable = true);
 
 public:
-  HeavyTrooper() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1104,7 +1101,6 @@ private:
   void UpdateLiftBeam(int me);
 
 public:
-  Lifter() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1330,7 +1326,6 @@ private:
   void DoCustomLookups(void);
 
 public:
-  AlienBoss() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1399,7 +1394,6 @@ private:
   bool ReceiveCommand(int me, int it, char command, void *ptr);
 
 public:
-  SecurityCamera() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1439,7 +1433,6 @@ private:
   bool ReceiveCommand(int me, int it, char command, void *ptr);
 
 public:
-  CrowdControl() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1631,10 +1624,6 @@ int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() {}
-
-BaseObjScript::~BaseObjScript() {}
-
 int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //---------------------

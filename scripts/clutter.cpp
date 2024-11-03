@@ -104,14 +104,12 @@ struct tTNTHighYield {
 };
 class TNTHighYield final : public ClutterScript {
 public:
-  TNTHighYield() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tTNTHighYield *memory = nullptr;
 };
 
 class TNTMedYield final : public ClutterScript {
 public:
-  TNTMedYield() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
   float *memory = nullptr;
 };
@@ -121,13 +119,11 @@ struct tFallingRock {
 };
 class FallingRock final : public ClutterScript {
 public:
-  FallingRock() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tFallingRock *memory = nullptr;
 };
 class LavaRock final : public ClutterScript {
 public:
-  LavaRock() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tFallingRock *memory = nullptr;
 };
