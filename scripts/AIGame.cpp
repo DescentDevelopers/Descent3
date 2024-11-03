@@ -386,13 +386,13 @@ struct stinger_data {
 
 class Stinger final : public BaseObjScript {
 private:
-  stinger_data *memory;
+  stinger_data *memory = nullptr;
 
   void DoInit(int me_handle);
   void DoInterval(int me_handle);
 
 public:
-  Stinger() { memory = NULL; }
+  Stinger() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -445,7 +445,7 @@ struct superthief_data {
 
 class SuperThief final : public BaseObjScript {
 private:
-  superthief_data *memory;
+  superthief_data *memory = nullptr;
 
   bool DoSteal(int me, int it);
   void SpewEverything(int me);
@@ -460,7 +460,7 @@ private:
   void DoInterval(int me_handle);
 
 public:
-  SuperThief() { memory = NULL; }
+  SuperThief() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -501,7 +501,7 @@ struct humonculous_data {
 
 class Humonculous final : public BaseObjScript {
 private:
-  humonculous_data *memory;
+  humonculous_data *memory = nullptr;
 
   void DetermineDeathPos(int me, vector *dpos, int *droom);
   bool SetMode(int me, uint16_t mode);
@@ -510,7 +510,7 @@ private:
   bool DoNotify(int me, tOSIRISEventInfo *data);
 
 public:
-  Humonculous() { memory = NULL; }
+  Humonculous() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -531,12 +531,12 @@ struct dragon_data {
 
 class Dragon final : public BaseObjScript {
 private:
-  dragon_data *memory;
+  dragon_data *memory = nullptr;
 
   void DoInit(int me_handle);
 
 public:
-  Dragon() { memory = NULL; }
+  Dragon() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -551,12 +551,12 @@ struct tracker_data {
 
 class Tracker final : public BaseObjScript {
 private:
-  tracker_data *memory;
+  tracker_data *memory = nullptr;
 
   void DoInit(int me_handle);
 
 public:
-  Tracker() { memory = NULL; }
+  Tracker() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1210,11 +1210,11 @@ struct tBettyBombInfo {
 
 class BettyBomb final : public BaseObjScript {
 public:
-  BettyBomb() { memory = NULL; }
+  BettyBomb() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 private:
-  tBettyBombInfo *memory;
+  tBettyBombInfo *memory = nullptr;
 };
 
 struct tBettyInfo {
@@ -1224,14 +1224,14 @@ struct tBettyInfo {
 
 class BettyScript final : public BaseObjScript {
 public:
-  BettyScript() { memory = NULL; }
+  BettyScript() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
   void DoInit(int me);
 
 private:
-  tBettyInfo *memory;
+  tBettyInfo *memory = nullptr;
 };
 
 //-----------------
@@ -1244,7 +1244,7 @@ struct tChaffInfo {
 
 class ChaffScript final : public BaseObjScript {
 public:
-  ChaffScript() { memory = NULL; }
+  ChaffScript() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -1252,7 +1252,7 @@ protected:
   void DoInterval(int handle);
 
 private:
-  tChaffInfo *memory;
+  tChaffInfo *memory = nullptr;
 };
 
 struct tChaffChunkInfo {
@@ -1262,7 +1262,7 @@ struct tChaffChunkInfo {
 
 class ChaffChunkScript final : public BaseObjScript {
 public:
-  ChaffChunkScript() { memory = NULL; }
+  ChaffChunkScript() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -1271,7 +1271,7 @@ protected:
   void DoCollide(tOSIRISEventInfo *data);
 
 private:
-  tChaffChunkInfo *memory;
+  tChaffChunkInfo *memory = nullptr;
 };
 
 //------------------
@@ -1572,7 +1572,7 @@ struct guidebot_data {
 
 class GuideBot final : public BaseObjScript {
 private:
-  guidebot_data *memory;
+  guidebot_data *memory = nullptr;
   void DoMessage(const char *str, bool f_high_priority, const char *sound_name = NULL, bool f_sound_2d = false);
   //	void InitPowerup(int me, char pow_id);
   //	void DoPowerupFrame(int me);
@@ -1591,7 +1591,7 @@ private:
   void AddGetToGoalCommonGoals(int me);
 
 public:
-  GuideBot() { memory = NULL; }
+  GuideBot() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 

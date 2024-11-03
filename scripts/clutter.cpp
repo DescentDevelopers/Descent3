@@ -104,16 +104,16 @@ struct tTNTHighYield {
 };
 class TNTHighYield final : public ClutterScript {
 public:
-  TNTHighYield() { memory = NULL; }
+  TNTHighYield() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  tTNTHighYield *memory;
+  tTNTHighYield *memory = nullptr;
 };
 
 class TNTMedYield final : public ClutterScript {
 public:
-  TNTMedYield() { memory = NULL; }
+  TNTMedYield() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  float *memory;
+  float *memory = nullptr;
 };
 
 struct tFallingRock {
@@ -121,15 +121,15 @@ struct tFallingRock {
 };
 class FallingRock final : public ClutterScript {
 public:
-  FallingRock() { memory = NULL; }
+  FallingRock() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  tFallingRock *memory;
+  tFallingRock *memory = nullptr;
 };
 class LavaRock final : public ClutterScript {
 public:
-  LavaRock() { memory = NULL; }
+  LavaRock() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  tFallingRock *memory;
+  tFallingRock *memory = nullptr;
 };
 
 //	InitializeDLL

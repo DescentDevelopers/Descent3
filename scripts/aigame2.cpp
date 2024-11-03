@@ -113,7 +113,7 @@ private:
     int state;
   };
 
-  t_pest_memory *memory;
+  t_pest_memory *memory = nullptr;
 
 protected:
   // Handles all possible OSIRIS events.
@@ -166,7 +166,7 @@ private:
     int snipe_target_handles[N_SNIPE_POINTS];
   };
 
-  t_bst_memory *memory;
+  t_bst_memory *memory = nullptr;
 
   void set_state(int me_handle, int state);
 
@@ -199,7 +199,7 @@ private:
     int eye_obj;
   };
 
-  t_creep_memory *memory;
+  t_creep_memory *memory = nullptr;
 
   void set_state(int me_handle, int state);
 
@@ -607,7 +607,7 @@ int16_t aiObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
 //		The Samir Pest
 
 //	ai base class
-aiSamirPest::aiSamirPest() { memory = NULL; }
+aiSamirPest::aiSamirPest() {}
 
 aiSamirPest::~aiSamirPest() {}
 
@@ -692,7 +692,7 @@ bool aiSamirPest::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) { return tru
 //		CED Black Stormtrooper
 
 //	ai base class
-aiBlackStormTrooper::aiBlackStormTrooper() { memory = NULL; }
+aiBlackStormTrooper::aiBlackStormTrooper() {}
 
 aiBlackStormTrooper::~aiBlackStormTrooper() {}
 
@@ -1201,7 +1201,7 @@ retry_set_state:
 //	aiCreeper
 
 //	ai base class
-aiCreeper::aiCreeper() { memory = NULL; }
+aiCreeper::aiCreeper() {}
 
 aiCreeper::~aiCreeper() {}
 

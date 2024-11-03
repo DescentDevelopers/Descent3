@@ -60,7 +60,7 @@ public:
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
-  bool called;
+  bool called = false;
 };
 
 struct tShieldOrbInfo {
@@ -161,7 +161,7 @@ int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() { called = false; }
+BaseObjScript::BaseObjScript() {}
 
 BaseObjScript::~BaseObjScript() {}
 
