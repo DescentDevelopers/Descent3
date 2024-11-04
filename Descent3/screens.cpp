@@ -464,7 +464,7 @@ void SinglePlayerPostLevelResults() {
   else
     PLR.accuracy_rating = 0.5f;
 
-  // strcpy(PLRHeader,PLR_success?"Mission Successfull":"Mission Failed");
+  // strcpy(PLRHeader, PLR_success ? "Mission Successful" : "Mission Failed");
   strcpy(PLRHeader, PLR_success ? TXT_PLR_MSN_SUCCESS : TXT_PLR_MSN_FAILED);
 
   snprintf(PLRLevel, sizeof(PLRLevel), "%s", Level_info.name);

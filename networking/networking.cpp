@@ -2275,7 +2275,7 @@ int nw_ReccomendPPS() {
 
 // Register the networking library to call your function back
 // When data containing your ID is found
-// Returns non-zero if succesfull, Zero if this ID is already registered
+// Returns non-zero if succesful, Zero if this ID is already registered
 int nw_RegisterCallback(NetworkReceiveCallback nfp, uint8_t id) {
   ASSERT(id < 16);
 

@@ -140,7 +140,7 @@ void CTableFileEdit::OnTableEditFileSave() {
   m_PageList.SaveSelected(&m_DescriptionBox);
 
   if (!m_PageList.SaveTable(NULL)) {
-    MessageBox("The save was unsuccessfull", "Save Table Error!");
+    MessageBox("The save was unsuccessful", "Save Table Error!");
     return;
   }
   m_PageList.SetTitleString(this);
@@ -158,7 +158,7 @@ void CTableFileEdit::OnTableEditFileSaveAs() {
   }
 
   if (!m_PageList.SaveTable(dlg_open.GetPathName().GetBuffer(0))) {
-    MessageBox("The save was unsuccessfull", "Save Table Error!");
+    MessageBox("The save was unsuccessful", "Save Table Error!");
     return;
   }
   m_PageList.SetTitleString(this);

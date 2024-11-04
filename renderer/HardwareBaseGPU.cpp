@@ -189,7 +189,7 @@ void rend_SetZBias(float z_bias) {
 }
 
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
-// usefull for motion blur effect
+// useful for motion blur effect
 void rend_SetAlphaFactor(float val) {
   gpu_Alpha_factor = std::clamp(val, 0.0f, 1.0f);
 }

@@ -3311,7 +3311,7 @@ HTREEITEM CDallasMainDlg::AddNodeToTree(HTREEITEM parent, HTREEITEM insertbefore
 
   added_item = m_ScriptTree.InsertItem(&tvs);
 
-  // If add was unsuccessfull, delete the item data
+  // If add was unsuccessful, delete the item data
   if (added_item == NULL) {
     delete new_data_node;
     MessageBox("Unable to Allocate a New Tree Node", "Out of Memory Error!", MB_OK | MB_ICONEXCLAMATION);
@@ -7217,7 +7217,7 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
 
 // Attempts to parse the Nth (indexed at 1) bracketed section of the given function node's desc,
 // and obtain from it the parameter name, default string, and range string.
-// It returns the param type if successfull, or -1 if the requested Parameter section
+// It returns the param type if successful, or -1 if the requested Parameter section
 // does not exist
 int CDallasMainDlg::ParseNthParam(HTREEITEM func_node, int n, CString &name_text, CString &default_text,
                                   CString &range_text) {
@@ -7247,7 +7247,7 @@ int CDallasMainDlg::ParseNthParam(HTREEITEM func_node, int n, CString &name_text
 
 // Attempts to parse the Nth (indexed at 1) bracketed section of the given action desc,
 // and obtain from it the parameter name, default string, and range string.
-// It returns the param type if successfull, or -1 if the requested Parameter section
+// It returns the param type if successful, or -1 if the requested Parameter section
 // does not exist
 int CDallasMainDlg::ParseNthParam(char *desc, int n, CString &name_text, CString &default_text, CString &range_text) {
   // Check validity of desc and given n
@@ -7277,7 +7277,7 @@ int CDallasMainDlg::ParseNthParam(char *desc, int n, CString &name_text, CString
 #define DEFAULT_SECTION 3
 #define RANGE_SECTION 4
 
-// Parses the next param block encountered, and, if successfull, returns the
+// Parses the next param block encountered, and, if successful, returns the
 // parameter type (-1 is returned if a parameter block was not found).
 // The name, default, and range strings are also set appropriately, and the
 // line pointer will be set to the first character after the closing bracket.

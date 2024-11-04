@@ -183,7 +183,7 @@ void TableFileFilter::OnFileSave() {
 
   CWaitCursor wc;
   if (!m_PageList.SaveList(NULL)) {
-    MessageBox("The save was unsuccessfull", "Save Table Error!");
+    MessageBox("The save was unsuccessful", "Save Table Error!");
     return;
   }
   m_PageList.SetTitleString();
@@ -200,7 +200,7 @@ void TableFileFilter::OnFileSaveAs() {
 
   CWaitCursor wc;
   if (!m_PageList.SaveList(dlg_open.GetPathName().GetBuffer(0))) {
-    MessageBox("The save was unsuccessfull", "Save Data List Error!");
+    MessageBox("The save was unsuccessful", "Save Data List Error!");
     return;
   }
 
@@ -221,7 +221,7 @@ void TableFileFilter::OnFileLoad() {
 
   CWaitCursor wc;
   if (!m_PageList.LoadList(dlg_open.GetPathName().GetBuffer(0))) {
-    MessageBox("The load was unsuccessfull", "Load Data List Error!");
+    MessageBox("The load was unsuccessful", "Load Data List Error!");
     m_PageList.ClearList();
     return;
   }
@@ -305,7 +305,7 @@ void TableFileFilter::OnBtnCreateNewTableFile() {
 
   CWaitCursor wc;
   if (!m_PageList.CreateNewTableFile(dlg_open.GetPathName().GetBuffer(0), SOURCE_TABLE_FILENAME)) {
-    MessageBox("The save was unsuccessfull", "Save Table File Error!");
+    MessageBox("The save was unsuccessful", "Save Table File Error!");
     return;
   }
 
