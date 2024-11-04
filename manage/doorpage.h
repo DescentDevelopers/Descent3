@@ -51,7 +51,7 @@ int mng_ReadNewDoorPage(CFILE *infile, mngs_door_page *doorpage);
 int mng_FindSpecificDoorPage(char *name, mngs_door_page *doorpage, int offset = 0);
 
 // Given a door page, allocs a door and calls AssignDoorPageToDoor to actually
-// load model and values. Rturns door handle on success, -1 if fail
+// load model and values. Returns door handle on success, -1 if fail
 int mng_SetAndLoadDoor(mngs_door_page *doorpage);
 
 // Given a doorpage and a door handle, attempts to make door n correspond to

@@ -233,7 +233,7 @@ int mng_FindSpecificMegacellPage(char *name, mngs_megacell_page *megacellpage, i
   return found; // successful!
 }
 // Given a megacell page, allocs a megacell and calls AssignMegacellPageToMegacell to actually
-// load models and values. Rturns megacell handle on success, -1 if fail
+// load models and values. Returns megacell handle on success, -1 if fail
 int mng_SetAndLoadMegacell(mngs_megacell_page *megacellpage) {
   int n;
 

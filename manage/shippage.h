@@ -57,7 +57,7 @@ int mng_ReadNewShipPage(CFILE *infile, mngs_ship_page *shippage);
 int mng_FindSpecificShipPage(char *name, mngs_ship_page *shippage, int offset = 0);
 
 // Given a ship page, allocs a ship and calls AssignShipPageToShip to actually
-// load model and values. Rturns ship handle on success, -1 if fail
+// load model and values. Returns ship handle on success, -1 if fail
 int mng_SetAndLoadShip(mngs_ship_page *shippage, CFILE *infile);
 
 // Given a shippage and a ship handle, attempts to make ship n correspond to

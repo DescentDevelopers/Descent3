@@ -53,7 +53,7 @@ int mng_DeletePowPage(char *name, int local);
 int mng_FindSpecificPowPage(char *name, mngs_power_page *powpage, int offset = 0);
 
 // Given a power page, allocs a powerup and calls AssignPowPageToPowerup to actually
-// load bitmaps and values. Rturns powerup handle on success, -1 if fail
+// load bitmaps and values. Returns powerup handle on success, -1 if fail
 int mng_SetAndLoadPowerup(mngs_power_page *powpage);
 
 // Given a powpage and a powerup handle, attempts to make powerup n correspond to

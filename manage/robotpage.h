@@ -53,7 +53,7 @@ int mng_DeleteRobotPage(char *name, int local);
 int mng_FindSpecificRobotPage(char *name, mngs_robot_page *robotpage);
 
 // Given a robot page, allocs a robot and calls AssignRobotPageToRobot to actually
-// load model and values. Rturns robot handle on success, -1 if fail
+// load model and values. Returns robot handle on success, -1 if fail
 int mng_SetAndLoadRobot(mngs_robot_page *robotpage);
 
 // Given a robotpage and a robot handle, attempts to make robot n correspond to

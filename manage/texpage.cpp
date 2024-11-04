@@ -916,7 +916,7 @@ try_again:;
 }
 
 // Given a texture page, allocs a texture and calls AssignTexPageToTexture to actually
-// load bitmaps and values. Rturns texture handle on success, -1 if fail
+// load bitmaps and values. Returns texture handle on success, -1 if fail
 int mng_SetAndLoadTexture(mngs_texture_page *texpage, CFILE *infile) {
   int n;
 
