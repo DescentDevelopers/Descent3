@@ -142,6 +142,9 @@ struct game_api {
   tOSIRISModuleInit *osiris_functions;
 };
 
+class UIItem;
+class UIObject;
+
 // Descent3 function prototypes.  NOTE: These must match the real D3 prototypes.
 
 typedef void (*GetGameAPI_fp)(game_api *);
@@ -611,7 +614,7 @@ DMFCDLLOUT(MultiMatchGeneric_fp DLLMultiMatchGeneric;)
 typedef void (*SetUITextItemText_fp)(void *uit, char *newtext, uint32_t color);
 DMFCDLLOUT(SetUITextItemText_fp DLLSetUITextItemText;)
 
-typedef void *(*NewUIWindowCreate_fp)(int x, int y, int w, int h, int flags);
+typedef UIObject *(*NewUIWindowCreate_fp)(int x, int y, int w, int h, int flags);
 DMFCDLLOUT(NewUIWindowCreate_fp DLLNewUIWindowCreate;)
 
 typedef void (*NewUIWindowDestroy_fp)(void *deswin);
@@ -623,19 +626,19 @@ DMFCDLLOUT(NewUIWindowOpen_fp DLLNewUIWindowOpen;)
 typedef void (*NewUIWindowClose_fp)(void *deswin);
 DMFCDLLOUT(NewUIWindowClose_fp DLLNewUIWindowClose;)
 
-typedef void *(*TextCreate_fp)(void *parentwin, void *textitem, int x, int y, int flags);
+typedef UIObject *(*TextCreate_fp)(void *parentwin, void *textitem, int x, int y, int flags);
 DMFCDLLOUT(TextCreate_fp DLLTextCreate;)
 
 typedef void (*TextSetTitle_fp)(void *text, void *textitem);
 DMFCDLLOUT(TextSetTitle_fp DLLTextSetTitle;)
 
-typedef void *(*EditCreate_fp)(void *parentwin, int id, int x, int y, int w, int h, int flags);
+typedef UIObject *(*EditCreate_fp)(void *parentwin, int id, int x, int y, int w, int h, int flags);
 DMFCDLLOUT(EditCreate_fp DLLEditCreate;)
 
-typedef void *(*ButtonCreate_fp)(void *parentwin, int id, void *titleitem, int x, int y, int w, int h, int flags);
+typedef UIObject *(*ButtonCreate_fp)(void *parentwin, int id, void *titleitem, int x, int y, int w, int h, int flags);
 DMFCDLLOUT(ButtonCreate_fp DLLButtonCreate;)
 
-typedef void *(*ListCreate_fp)(void *parentwin, int id, int x, int y, int w, int h, int flags);
+typedef UIObject *(*ListCreate_fp)(void *parentwin, int id, int x, int y, int w, int h, int flags);
 DMFCDLLOUT(ListCreate_fp DLLListCreate;)
 
 typedef void (*ListRemoveAll_fp)(void *item);
@@ -672,7 +675,7 @@ typedef int (*GetUIItemHeight_fp)(void *item);
 DMFCDLLOUT(GetUIItemHeight_fp DLLGetUIItemHeight;)
 
 // UI CheckBox functions
-typedef void *(*CheckBoxCreate_fp)(void *parent, int id, void *title, int x, int y, int w, int h, int flags);
+typedef UIObject *(*CheckBoxCreate_fp)(void *parent, int id, void *title, int x, int y, int w, int h, int flags);
 DMFCDLLOUT(CheckBoxCreate_fp DLLCheckBoxCreate;)
 
 typedef void (*CheckBoxSetCheck_fp)(void *cb, bool state);
@@ -695,8 +698,7 @@ DMFCDLLOUT(DoMessageBox_fp DLLDoMessageBox;)
 typedef void (*DescentDefer_fp)(void);
 DMFCDLLOUT(DescentDefer_fp DLLDescentDefer;)
 
-// typedef void *(*NewUIGameWindowCreate_fp)(int x, int y, int w, int h, int flags=UIF_PROCESS_ALL);
-typedef void *(*NewUIGameWindowCreate_fp)(int x, int y, int w, int h, int flags);
+typedef UIObject *(*NewUIGameWindowCreate_fp)(int x, int y, int w, int h, int flags);
 DMFCDLLOUT(NewUIGameWindowCreate_fp DLLNewUIGameWindowCreate;)
 
 typedef void (*NewUIGameWindowDestroy_fp)(void *item);
@@ -708,8 +710,8 @@ DMFCDLLOUT(NewUIGameWindowOpen_fp DLLNewUIGameWindowOpen;)
 typedef void (*NewUIGameWindowClose_fp)(void *item);
 DMFCDLLOUT(NewUIGameWindowClose_fp DLLNewUIGameWindowClose;)
 
-typedef void *(*HotSpotCreate_fp)(void *parentwin, int id, int key, void *txtitemoff, void *txtitemon, int x, int y,
-                                  int w, int h, int flags);
+typedef UIObject *(*HotSpotCreate_fp)(void *parentwin, int id, int key, void *txtitemoff, void *txtitemon,
+                                      int x, int y, int w, int h, int flags);
 DMFCDLLOUT(HotSpotCreate_fp DLLHotSpotCreate;)
 
 typedef int (*PollUI_fp)(void);
@@ -718,18 +720,17 @@ DMFCDLLOUT(PollUI_fp DLLPollUI;)
 typedef void (*RemoveUITextItem_fp)(void *item);
 DMFCDLLOUT(RemoveUITextItem_fp DLLRemoveUITextItem;)
 
-// typedef void *(*CreateNewUITextItem_fp)(const char *newtext,uint32_t color,int font=-1);
-typedef void *(*CreateNewUITextItem_fp)(const char *newtext, uint32_t color, int font);
+typedef UIItem *(*CreateNewUITextItem_fp)(const char *newtext, uint32_t color, int font);
 DMFCDLLOUT(CreateNewUITextItem_fp DLLCreateNewUITextItem;)
 
 typedef void (*RemoveUIBmpItem_fp)(void *item);
 DMFCDLLOUT(RemoveUIBmpItem_fp DLLRemoveUIBmpItem;)
 
-typedef void *(*CreateNewUIBmpItem_fp)(int handle, uint8_t alpha);
+typedef UIItem *(*CreateNewUIBmpItem_fp)(int handle, uint8_t alpha);
 DMFCDLLOUT(CreateNewUIBmpItem_fp DLLCreateNewUIBmpItem;)
 
-typedef void *(*UIConsoleGadgetCreate_fp)(void *parentid, int id, int x, int y, int font, int cols, int rows,
-                                          int flags);
+typedef UIObject *(*UIConsoleGadgetCreate_fp)(void *parentid, int id, int x, int y, int font,
+                                              int cols, int rows, int flags);
 DMFCDLLOUT(UIConsoleGadgetCreate_fp DLLUIConsoleGadgetCreate;)
 
 typedef void (*UIConsoleGadgetputs_fp)(void *item, const char *str);
@@ -738,7 +739,7 @@ DMFCDLLOUT(UIConsoleGadgetputs_fp DLLUIConsoleGadgetputs;)
 typedef void (*NewUIWindowSetFocusOnEditGadget_fp)(void *item, void *parent);
 DMFCDLLOUT(NewUIWindowSetFocusOnEditGadget_fp DLLNewUIWindowSetFocusOnEditGadget;)
 
-typedef void *(*OldListCreate_fp)(void *parentitem, int id, int x, int y, int w, int h, int flags);
+typedef UIObject *(*OldListCreate_fp)(void *parentitem, int id, int x, int y, int w, int h, int flags);
 DMFCDLLOUT(OldListCreate_fp DLLOldListCreate;)
 
 typedef void (*OldListRemoveAll_fp)(void *item);
@@ -753,7 +754,7 @@ DMFCDLLOUT(OldListRemoveItem_fp DLLOldListRemoveItem;)
 typedef void (*OldListSelectItem_fp)(void *item, void *txtitem);
 DMFCDLLOUT(OldListSelectItem_fp DLLOldListSelectItem;)
 
-typedef void *(*OldEditCreate_fp)(void *parentitem, int id, int x, int y, int w, int h, int flags);
+typedef UIObject *(*OldEditCreate_fp)(void *parentitem, int id, int x, int y, int w, int h, int flags);
 DMFCDLLOUT(OldEditCreate_fp DLLOldEditCreate;)
 
 typedef void (*OldEditGetText_fp)(void *item, char *buff, int len);
@@ -777,7 +778,7 @@ DMFCDLLOUT(SetOldEditBufferLen_fp DLLSetOldEditBufferLen;)
 typedef void (*NewUIWindowLoadBackgroundImage_fp)(void *item, const char *image_name);
 DMFCDLLOUT(NewUIWindowLoadBackgroundImage_fp DLLNewUIWindowLoadBackgroundImage;)
 
-typedef void (*DeleteUIItem_fp)(void *delitem);
+typedef void (*DeleteUIItem_fp)(UIObject *);
 DMFCDLLOUT(DeleteUIItem_fp DLLDeleteUIItem;)
 
 typedef void (*HotSpotSetStates_fp)(void *hs, void *texton, void *textoff);
@@ -805,8 +806,7 @@ DMFCDLLOUT(ui_HideCursor_fp DLLHideCursor;)
 typedef void (*GameFrame_fp)(void);
 DMFCDLLOUT(GameFrame_fp DLLGameFrame;)
 
-// typedef void *(*SliderCreate_fp)(void *parent, int id, int x, int y, int flags=0);
-typedef void *(*SliderCreate_fp)(void *parent, int id, int x, int y, int flags);
+typedef UIObject *(*SliderCreate_fp)(void *parent, int id, int x, int y, int flags);
 DMFCDLLOUT(SliderCreate_fp DLLSliderCreate;)
 
 typedef void (*SliderSetRange_fp)(void *slider, int range);

@@ -93,31 +93,31 @@ void DisplayHoardConfigDialog(tGameConfig *config) {
 
   // text items
   // ----------
-  void *start_game_text_off = DLLCreateNewUITextItem(TXT_RETURNTOGAME, UICOL_HOTSPOT_LO, -1);
-  void *start_game_text_on = DLLCreateNewUITextItem(TXT_RETURNTOGAME, UICOL_HOTSPOT_HI, -1);
-  void *window_title = DLLCreateNewUITextItem(TXT_GAMECONFIG, UICOL_WINDOW_TITLE, -1);
-  void *min_count_label_ti = DLLCreateNewUITextItem(TXT_MINIMUMORBS, UICOL_TEXT_NORMAL, -1);
-  void *slider_val_ti = DLLCreateNewUITextItem(buffer, UICOL_TEXT_NORMAL, -1);
+  auto start_game_text_off = DLLCreateNewUITextItem(TXT_RETURNTOGAME, UICOL_HOTSPOT_LO, -1);
+  auto start_game_text_on = DLLCreateNewUITextItem(TXT_RETURNTOGAME, UICOL_HOTSPOT_HI, -1);
+  auto window_title = DLLCreateNewUITextItem(TXT_GAMECONFIG, UICOL_WINDOW_TITLE, -1);
+  auto min_count_label_ti = DLLCreateNewUITextItem(TXT_MINIMUMORBS, UICOL_TEXT_NORMAL, -1);
+  auto slider_val_ti = DLLCreateNewUITextItem(buffer, UICOL_TEXT_NORMAL, -1);
 
   // main window
   // -----------
-  void *main_wnd = DLLNewUIGameWindowCreate(0, 0, WINDOW_W, WINDOW_H, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
+  auto main_wnd = DLLNewUIGameWindowCreate(0, 0, WINDOW_W, WINDOW_H, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
 
   // item placement
   // --------------
   int cury = 35;
   int left_x_col = 20;
 
-  void *start_game_hs = DLLHotSpotCreate(main_wnd, UID_OK, K_ENTER, start_game_text_off, start_game_text_on, 40,
+  auto start_game_hs = DLLHotSpotCreate(main_wnd, UID_OK, K_ENTER, start_game_text_off, start_game_text_on, 40,
                                          WINDOW_H - OKCANCEL_YOFFSET, 130, 15, UIF_CENTER);
-  void *window_title_text = DLLTextCreate(main_wnd, window_title, 0, 7, UIF_CENTER | UIF_FIT);
-  void *min_count_label = DLLTextCreate(main_wnd, min_count_label_ti, left_x_col, cury, UIF_FIT | UIF_CENTER);
+  auto window_title_text = DLLTextCreate(main_wnd, window_title, 0, 7, UIF_CENTER | UIF_FIT);
+  auto min_count_label = DLLTextCreate(main_wnd, min_count_label_ti, left_x_col, cury, UIF_FIT | UIF_CENTER);
   cury += 15;
-  void *count_slider = DLLSliderCreate(main_wnd, 31, 0, cury, UIF_CENTER | UIF_FIT);
+  auto count_slider = DLLSliderCreate(main_wnd, 31, 0, cury, UIF_CENTER | UIF_FIT);
   cury += 30;
   DLLSliderSetRange(count_slider, 11);
   DLLSliderSetPos(count_slider, config->min_hoard - 1);
-  void *slider_val = DLLTextCreate(main_wnd, slider_val_ti, left_x_col, cury, UIF_FIT | UIF_CENTER);
+  auto slider_val = DLLTextCreate(main_wnd, slider_val_ti, left_x_col, cury, UIF_FIT | UIF_CENTER);
 
   // show window
   // -----------
