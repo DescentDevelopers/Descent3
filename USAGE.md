@@ -66,9 +66,9 @@ conflicts.
     - On macOS, the `.app` bundle is currently not signed, so your operating
       system will not let you run it by double-clicking it. To remediate that,
       open your terminal and `cd` to `D3-open-source`. Run
-      `xattr -c ./Descent3.app` and then
-      `chmod +x ./Descent3.app/Content/MacOS/Descent3`, then run the game
-      using `./Descent3.app/Content/MacOS/Descent3`
+      `xattr -c ./Descent3.app`, `xattr -c ./netgames/*`,
+      `chmod +x ./Descent3.app/Contents/MacOS/Descent3`, and then run the game
+      using `./Descent3.app/Contents/MacOS/Descent3`
 
 ## Troubleshooting
 
