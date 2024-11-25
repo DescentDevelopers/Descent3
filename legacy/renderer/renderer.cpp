@@ -1450,7 +1450,7 @@ void rend_SetAlphaValue(uint8_t val) {
 }
 
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
-// usefull for motion blur effect
+// useful for motion blur effect
 void rend_SetAlphaFactor(float val) {
   if (val < 0.0f)
     val = 0.0f;

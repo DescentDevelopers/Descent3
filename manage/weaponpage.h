@@ -61,7 +61,7 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage, int off
 int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage);
 
 // Given a weapon page, allocs a weapon and calls AssignWeaponPageToWeapon to actually
-// load model and values. Rturns weapon handle on success, -1 if fail
+// load model and values. Returns weapon handle on success, -1 if fail
 int mng_SetAndLoadWeapon(mngs_weapon_page *weaponpage, CFILE *infile);
 
 // Given a weaponpage and a weapon handle, attempts to make weapon n correspond to

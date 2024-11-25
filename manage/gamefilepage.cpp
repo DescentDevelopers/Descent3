@@ -196,7 +196,7 @@ int mng_FindSpecificGamefilePage(char *name, mngs_gamefile_page *gamefilepage, i
 }
 
 // Given a gamefile page, allocs a gamefile and calls AssignGamefilePageToGamefile to actually
-// load models and values. Rturns gamefile handle on success, -1 if fail
+// load models and values. Returns gamefile handle on success, -1 if fail
 int mng_SetAndLoadGamefile(mngs_gamefile_page *gamefilepage) {
   int n;
 

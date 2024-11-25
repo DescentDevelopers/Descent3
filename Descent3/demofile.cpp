@@ -337,7 +337,7 @@ static bool Demo_play_fast = false;
 
 extern void PageInAllData();
 
-// Prompts user for filename and starts recording if successfull
+// Prompts user for filename and starts recording if successful
 void DemoToggleRecording() {
   char szfile[_MAX_PATH * 2];
   szfile[0] = '\0';

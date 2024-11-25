@@ -1838,7 +1838,7 @@ try_again:;
 }
 
 // Given a generic page, allocs a generic and calls AssignGenericPageTogeneric to actually
-// load models and values. Rturns generic handle on success, -1 if fail
+// load models and values. Returns generic handle on success, -1 if fail
 int mng_SetAndLoadGeneric(mngs_generic_page *genericpage, CFILE *infile) {
   int i, j, n;
   bool f_anim = false;

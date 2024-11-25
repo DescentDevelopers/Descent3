@@ -48,7 +48,7 @@ int mng_ReadNewSoundPage(CFILE *infile, mngs_sound_page *soundpage);
 int mng_FindSpecificSoundPage(char *name, mngs_sound_page *soundpage, int offset = 0);
 
 // Given a sound page, allocs a sound and calls AssignSoundPageToSound to actually
-// load model and values. Rturns sound handle on success, -1 if fail
+// load model and values. Returns sound handle on success, -1 if fail
 int mng_SetAndLoadSound(mngs_sound_page *soundpage);
 
 // Given a soundpage and a sound handle, attempts to make sound n correspond to

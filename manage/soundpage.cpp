@@ -381,7 +381,7 @@ int mng_FindSpecificSoundPage(char *name, mngs_sound_page *soundpage, int offset
   return found; // successful!
 }
 // Given a sound page, allocs a sound and calls AssignSoundPageToSound to actually
-// load raws and values. Rturns sound handle on success, -1 if fail
+// load raws and values. Returns sound handle on success, -1 if fail
 int mng_SetAndLoadSound(mngs_sound_page *soundpage) {
   int n;
 

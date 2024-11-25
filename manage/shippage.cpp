@@ -913,7 +913,7 @@ try_again:;
 }
 
 // Given a ship page, allocs a ship and calls AssignShipPageToShip to actually
-// load models and values. Rturns ship handle on success, -1 if fail
+// load models and values. Returns ship handle on success, -1 if fail
 int mng_SetAndLoadShip(mngs_ship_page *shippage, CFILE *infile) {
   int n;
 

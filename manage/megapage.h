@@ -49,7 +49,7 @@ int mng_ReadNewMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage);
 int mng_FindSpecificMegacellPage(char *name, mngs_megacell_page *megacellpage, int local);
 
 // Given a megacell page, allocs a megacell and calls AssignMegacellPageToMegacell to actually
-// load model and values. Rturns megacell handle on success, -1 if fail
+// load model and values. Returns megacell handle on success, -1 if fail
 int mng_SetAndLoadMegacell(mngs_megacell_page *megacellpage);
 
 // Given a megacellpage and a megacell handle, attempts to make megacell n correspond to

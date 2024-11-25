@@ -155,7 +155,7 @@ extern uint16_t Demo_obj_map[MAX_OBJECTS];
 #define DT_SETOBJLIFELEFT 25 // Object is getting OF_LIFELEFT flag changed
 #define DT_2D_SOUND 26       // Play a 2d sound
 
-// If not recording prompts user for filename and starts recording if successfull
+// If not recording prompts user for filename and starts recording if successful
 // If recording, close the demo file
 void DemoToggleRecording();
 

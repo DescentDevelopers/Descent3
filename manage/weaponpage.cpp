@@ -1345,7 +1345,7 @@ int mng_GetGuaranteedWeaponPage(char *name, CFILE *infile) {
 }
 
 // Given a weapon page, allocs a weapon and calls AssignWeaponPageToWeapon to actually
-// load models and values. Rturns weapon handle on success, -1 if fail
+// load models and values. Returns weapon handle on success, -1 if fail
 int mng_SetAndLoadWeapon(mngs_weapon_page *weaponpage, CFILE *infile) {
   int n;
 

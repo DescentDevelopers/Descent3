@@ -2634,7 +2634,7 @@ void d3d_SetAlphaValue(uint8_t val) {
 }
 
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
-// usefull for motion blur effect
+// useful for motion blur effect
 void d3d_SetAlphaFactor(float val) { d3d_Alpha_factor = val; }
 
 // Returns the current Alpha factor

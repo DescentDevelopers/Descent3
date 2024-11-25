@@ -61,7 +61,7 @@ int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage);
 int mng_FindSpecificGenericPage(char *name, mngs_generic_page *genericpage, int offset = 0);
 
 // Given a generic page, allocs a generic and calls AssignGenericPageToGeneric to actually
-// load model and values. Rturns generic handle on success, -1 if fail
+// load model and values. Returns generic handle on success, -1 if fail
 int mng_SetAndLoadGeneric(mngs_generic_page *genericpage, CFILE *infile = NULL);
 
 // Given a genericpage and a generic handle, attempts to make generic n correspond to

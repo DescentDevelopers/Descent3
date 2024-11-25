@@ -46,7 +46,7 @@
  * added multiple pages per mono window.
  *
  * 27    4/01/99 11:07a Kevin
- * Added some more usefull debugging info
+ * Added some more useful debugging info
  *
  * 26    4/01/99 9:40a Matt
  * Fixed dump_text_to_clipboard.  It used to allocate a fixed number of

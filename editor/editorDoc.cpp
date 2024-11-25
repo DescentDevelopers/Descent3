@@ -260,7 +260,7 @@ BOOL CEditorDoc::OnSaveDocument(LPCTSTR lpszPathName) {
                       "  4. Use File/Save As to save with the real name.\n\n"
                       "Matt & Samir are working on this problem.");
 
-  // If the Save was successfull, handle the Dallas coordination
+  // If the Save was successful, handle the Dallas coordination
   if (retval) {
 
     // If Dallas is up, change its filenames

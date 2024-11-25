@@ -795,7 +795,7 @@ const char *GetStringFromTable(int index);
 #define TXT_PLTTOONEW TXT(764)               //"Pilot File '%s' is not compatible with this version."
 #define TXT_FAILED TXT(765)                  //"Failed"
 #define TXT_SCORE TXT(766)                   //"Score"
-#define TXT_PLR_MSN_SUCCESS TXT(767)         // Mission Successfull
+#define TXT_PLR_MSN_SUCCESS TXT(767)         // Mission Successful
 #define TXT_PLR_MSN_FAILED TXT(768)          // Mission Failed
 #define TXT_VIEW_GUIDEBOT TXT(769)           //"Guide-Bot"
 #define TXT_VIEW_MARKER TXT(770)             //"Marker"

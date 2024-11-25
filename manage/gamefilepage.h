@@ -48,7 +48,7 @@ int mng_ReadNewGamefilePage(CFILE *infile, mngs_gamefile_page *gamefilepage);
 int mng_FindSpecificGamefilePage(char *name, mngs_gamefile_page *gamefilepage, int offset = 0);
 
 // Given a gamefile page, allocs a gamefile and calls AssignGamefilePageToGamefile to actually
-// load bitmaps and values. Rturns gamefile handle on success, -1 if fail
+// load bitmaps and values. Returns gamefile handle on success, -1 if fail
 int mng_SetAndLoadGamefile(mngs_gamefile_page *gamefilepage);
 
 // Given a gamefilepage and a gamefile handle, attempts to make gamefile n correspond to
