@@ -210,6 +210,8 @@ static void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
 
 // Ok to use Highest_room_index offset stuff
 bool BNode_FindPath(int start_room, int i, int j, float rad) {
+  if (start_room == -1)
+    return false;
   bpq PQPath;
   int counter;
   pq_item *start_node = new pq_item(i, -1, 0.0f);
@@ -311,6 +313,8 @@ int BNode_FindDirLocalVisibleBNode(int roomnum, vector *pos, vector *fvec, float
   }
 
   bn_list *bnlist = BNode_GetBNListPtr(roomnum);
+  if (bnlist == nullptr)
+    return -1;
 
 retry:
 
@@ -402,6 +406,7 @@ int BNode_FindClosestLocalVisibleBNode(int roomnum, vector *pos, float rad) {
   }
 
   bn_list *bnlist = BNode_GetBNListPtr(roomnum);
+  ASSERT(bnlist);
 
 retry:
 
