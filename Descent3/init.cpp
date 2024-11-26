@@ -1868,7 +1868,7 @@ void InitD3Systems1(bool editor) {
   gspy_Init();
 
   // Sound initialization
-  int soundres = Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
+  Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
 
   //	Initialize Cinematics system
   InitCinematics();

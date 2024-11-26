@@ -1480,7 +1480,7 @@ void mng_TransferPages() {
       continue;
     }
     pagetype = cf_ReadByte(infile);
-    int len = cf_ReadInt(infile);
+    /* int len = */ cf_ReadInt(infile);
     switch (pagetype) {
     case PAGETYPE_TEXTURE:
       mng_ReadNewTexturePage(infile, &texpage);
@@ -2208,7 +2208,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
 // If local is 1, deletes from the local table file
 int mng_DeletePage(char *name, int dest_pagetype, int local) {
   CFILE *infile, *outfile;
-  uint8_t pagetype, replaced = 0;
+  uint8_t pagetype;
   int done = 0;
   int deleted = 0;
 

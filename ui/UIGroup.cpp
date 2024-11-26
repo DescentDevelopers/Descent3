@@ -55,13 +55,6 @@
 //	UIGroup
 //		Draws a group box on to the window
 
-UIGroup::UIGroup() {
-  m_Label = NULL;
-  m_bTextCreated = false;
-}
-
-UIGroup::~UIGroup() {}
-
 void UIGroup::Create(UIWindow *parent, char *label, int x, int y, int w, int h, ddgr_color label_color,
                      ddgr_color box_color, int flags) {
   ASSERT(parent);

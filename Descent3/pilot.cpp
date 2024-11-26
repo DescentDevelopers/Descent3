@@ -1804,7 +1804,7 @@ bool PltCopyKeyConfig(pilot *src, pilot *dest) {
 //	UI3DWindow class
 //
 //	UI class for displaying a polymodel on the UIWindow, rotating 30 deg/sec
-class UI3DWindow : public UIStatic {
+class UI3DWindow final : public UIStatic {
 public:
   void OnDraw();
 };
@@ -1812,20 +1812,19 @@ public:
 //	UIBmpWindow class
 //
 //	UI class for displaying a bitmap on a UIWindow
-class UIBmpWindow : public UIStatic {
+class UIBmpWindow final : public UIStatic {
 public:
   UIBmpWindow();
-  ~UIBmpWindow();
   void SetInfo(bool animated, int handle);
   void OnDraw();
 
 private:
   void DrawBorder();
-  bool animated;
-  int bm_handle;
+  bool animated = false;
+  int bm_handle = -1;
   float start_time;
   UIText text;
-  bool created;
+  bool created = false;
 };
 
 //	struct ship_pos
@@ -2957,13 +2956,8 @@ void UI3DWindow::OnDraw() {
 }
 
 UIBmpWindow::UIBmpWindow() {
-  animated = false;
-  bm_handle = -1;
   start_time = timer_GetTime();
-  created = false;
 }
-
-UIBmpWindow::~UIBmpWindow() {}
 
 void UIBmpWindow::SetInfo(bool anim, int handle) {
   animated = anim;

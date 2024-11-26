@@ -45,17 +45,6 @@
 //		A listbox may contain text items, BUT only one will be visible
 //		Allows the user to scroll through them too.
 
-UIComboBox::UIComboBox() {
-  m_ItemList = NULL;
-  m_nItems = 0;
-  m_Index = 0;
-  m_ShowUp = false;
-  m_ShowDown = false;
-  selectchange_fn = NULL;
-}
-
-UIComboBox::~UIComboBox() {}
-
 //	creates a combo box
 void UIComboBox::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
   m_ItemList = NULL;

@@ -87,15 +87,14 @@ tScriptIDInfo ScriptIDInfo[NUM_IDS] = {
 
 class GenericScript {
 public:
-  GenericScript() {}
+  virtual ~GenericScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
 };
 
-class GenericDoor : public GenericScript {
+class GenericDoor final : public GenericScript {
 public:
-  GenericDoor() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -103,16 +102,14 @@ struct forcewallmemory {
   int object_handle;
 };
 
-class ForceWallScript : public GenericScript {
+class ForceWallScript final : public GenericScript {
 public:
-  ForceWallScript();
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  forcewallmemory *memory;
+  forcewallmemory *memory = nullptr;
 };
 
-class WingNutScript : public GenericScript {
+class WingNutScript final : public GenericScript {
 public:
-  WingNutScript() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -126,12 +123,10 @@ struct rapidfirememory {
   uint8_t collided_pnum;
 };
 
-class RapidFireScript : public GenericScript {
+class RapidFireScript final : public GenericScript {
 public:
-  RapidFireScript();
-
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  rapidfirememory *memory;
+  rapidfirememory *memory = nullptr;
 };
 
 //	InitializeDLL
@@ -382,8 +377,6 @@ int16_t GenericDoor::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-RapidFireScript::RapidFireScript() { memory = NULL; }
-
 #define RAPIDFIRE_RECHARGE 0.7f
 int16_t RapidFireScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
@@ -526,8 +519,6 @@ int16_t RapidFireScript::CallEvent(int event, tOSIRISEventInfo *data) {
 
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
-
-ForceWallScript::ForceWallScript() { memory = NULL; }
 
 int16_t ForceWallScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {

@@ -1144,7 +1144,6 @@ void TCMainMenuRenderCallback(void) {
 
 // Main menu
 bool TelComMainMenu(tTelComInfo *tcs) {
-  bool exitparse = false;
   int mm;
 
   mainmenu_system = -1;
@@ -3304,7 +3303,7 @@ void PageInTexture(int n, bool resize);
 //	Pages in all the necessary bitmaps, textures & sounds for the TelCom so that they are in memory
 void TelcomPageAllIn(void) {
   extern void UpdateInitMessage(float amount); // amount is 0 to 1
-  const float TELCOM_SOUND_PORTION = 0.3f, TELCOM_BITMAP_PORTION = 0.3f, TELCOM_TEXTUREHI_PORTION = 0.2f,
+  const float TELCOM_SOUND_PORTION = 0.3f, TELCOM_BITMAP_PORTION = 0.3f,
               TELCOM_TEXTURELO_PORTION = 0.2f;
 
   int i;
@@ -3719,7 +3718,6 @@ void TCSSSCallback(void) {
   vector view_pos;
   vector light_vec;
   matrix view_orient = IDENTITY_MATRIX;
-  matrix final_mat = IDENTITY_MATRIX;
   matrix rot_mat;
 
   //	draw model.

@@ -42,14 +42,6 @@
 #include "log.h"
 #include "pserror.h"
 
-UIObject::UIObject() {
-  m_X = m_Y = 0;
-  m_W = m_H = 0;
-  m_Created = false;
-}
-
-UIObject::~UIObject() {}
-
 //	obj = NULL, then this object has no parent: it is an independent entity.
 void UIObject::Create(int x, int y, int w, int h) {
   ASSERT(!m_Created);

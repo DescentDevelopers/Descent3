@@ -9693,8 +9693,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   O((""));
   O(("class BaseScript {"));
   O(("public:"));
-  O(("	BaseScript();"));
-  O(("	~BaseScript();"));
+  O(("	virtual ~BaseScript() = default;"));
   O(("	virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);"));
   O(("};"));
   O((""));
@@ -10271,16 +10270,6 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   O(("//======================="));
   O(("// Script Implementation "));
   O(("//======================="));
-  O((""));
-
-  O(("BaseScript::BaseScript()"));
-  O(("{"));
-  O(("}"));
-  O((""));
-
-  O(("BaseScript::~BaseScript()"));
-  O(("{"));
-  O(("}"));
   O((""));
 
   O(("int16_t BaseScript::CallEvent(int event,tOSIRISEventInfo *data)"));

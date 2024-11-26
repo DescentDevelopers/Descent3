@@ -194,677 +194,676 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 
 class BaseScript {
 public:
-  BaseScript();
-  ~BaseScript();
+  virtual ~BaseScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class LevelScript_0000 : public BaseScript {
+class LevelScript_0000 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0821 : public BaseScript {
+class CustomObjectScript_0821 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0820 : public BaseScript {
+class CustomObjectScript_0820 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_181E : public BaseScript {
+class CustomObjectScript_181E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_081F : public BaseScript {
+class CustomObjectScript_081F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0814 : public BaseScript {
+class CustomObjectScript_0814 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0815 : public BaseScript {
+class CustomObjectScript_0815 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0816 : public BaseScript {
+class CustomObjectScript_0816 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0818 : public BaseScript {
+class CustomObjectScript_0818 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0819 : public BaseScript {
+class CustomObjectScript_0819 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0817 : public BaseScript {
+class CustomObjectScript_0817 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_1024 : public BaseScript {
+class CustomObjectScript_1024 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0826 : public BaseScript {
+class CustomObjectScript_0826 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0828 : public BaseScript {
+class CustomObjectScript_0828 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0827 : public BaseScript {
+class CustomObjectScript_0827 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_086A : public BaseScript {
+class CustomObjectScript_086A final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_086B : public BaseScript {
+class CustomObjectScript_086B final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0829 : public BaseScript {
+class CustomObjectScript_0829 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_08C4 : public BaseScript {
+class CustomObjectScript_08C4 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_10CE : public BaseScript {
+class CustomObjectScript_10CE final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0809 : public BaseScript {
+class CustomObjectScript_0809 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0808 : public BaseScript {
+class CustomObjectScript_0808 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_1007 : public BaseScript {
+class CustomObjectScript_1007 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_1006 : public BaseScript {
+class CustomObjectScript_1006 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0805 : public BaseScript {
+class CustomObjectScript_0805 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_1004 : public BaseScript {
+class CustomObjectScript_1004 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_1003 : public BaseScript {
+class CustomObjectScript_1003 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_100E : public BaseScript {
+class CustomObjectScript_100E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0845 : public BaseScript {
+class CustomObjectScript_0845 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0844 : public BaseScript {
+class CustomObjectScript_0844 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0843 : public BaseScript {
+class CustomObjectScript_0843 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0842 : public BaseScript {
+class CustomObjectScript_0842 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0841 : public BaseScript {
+class CustomObjectScript_0841 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0840 : public BaseScript {
+class CustomObjectScript_0840 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_083F : public BaseScript {
+class CustomObjectScript_083F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_083E : public BaseScript {
+class CustomObjectScript_083E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_083D : public BaseScript {
+class CustomObjectScript_083D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_083C : public BaseScript {
+class CustomObjectScript_083C final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_083B : public BaseScript {
+class CustomObjectScript_083B final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_083A : public BaseScript {
+class CustomObjectScript_083A final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0851 : public BaseScript {
+class CustomObjectScript_0851 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0850 : public BaseScript {
+class CustomObjectScript_0850 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_084F : public BaseScript {
+class CustomObjectScript_084F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_084E : public BaseScript {
+class CustomObjectScript_084E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_084D : public BaseScript {
+class CustomObjectScript_084D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_084C : public BaseScript {
+class CustomObjectScript_084C final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_084B : public BaseScript {
+class CustomObjectScript_084B final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_084A : public BaseScript {
+class CustomObjectScript_084A final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0849 : public BaseScript {
+class CustomObjectScript_0849 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0848 : public BaseScript {
+class CustomObjectScript_0848 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0847 : public BaseScript {
+class CustomObjectScript_0847 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0846 : public BaseScript {
+class CustomObjectScript_0846 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_085D : public BaseScript {
+class CustomObjectScript_085D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_085C : public BaseScript {
+class CustomObjectScript_085C final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_085B : public BaseScript {
+class CustomObjectScript_085B final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_085A : public BaseScript {
+class CustomObjectScript_085A final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0859 : public BaseScript {
+class CustomObjectScript_0859 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0858 : public BaseScript {
+class CustomObjectScript_0858 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0857 : public BaseScript {
+class CustomObjectScript_0857 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0856 : public BaseScript {
+class CustomObjectScript_0856 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0855 : public BaseScript {
+class CustomObjectScript_0855 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0854 : public BaseScript {
+class CustomObjectScript_0854 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0853 : public BaseScript {
+class CustomObjectScript_0853 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0852 : public BaseScript {
+class CustomObjectScript_0852 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0869 : public BaseScript {
+class CustomObjectScript_0869 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0868 : public BaseScript {
+class CustomObjectScript_0868 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0867 : public BaseScript {
+class CustomObjectScript_0867 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0866 : public BaseScript {
+class CustomObjectScript_0866 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0865 : public BaseScript {
+class CustomObjectScript_0865 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0864 : public BaseScript {
+class CustomObjectScript_0864 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0863 : public BaseScript {
+class CustomObjectScript_0863 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0862 : public BaseScript {
+class CustomObjectScript_0862 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0861 : public BaseScript {
+class CustomObjectScript_0861 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_0860 : public BaseScript {
+class CustomObjectScript_0860 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_085F : public BaseScript {
+class CustomObjectScript_085F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class CustomObjectScript_085E : public BaseScript {
+class CustomObjectScript_085E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_003B : public BaseScript {
+class TriggerScript_003B final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_003A : public BaseScript {
+class TriggerScript_003A final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0035 : public BaseScript {
+class TriggerScript_0035 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0034 : public BaseScript {
+class TriggerScript_0034 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0031 : public BaseScript {
+class TriggerScript_0031 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_002F : public BaseScript {
+class TriggerScript_002F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_002E : public BaseScript {
+class TriggerScript_002E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0023 : public BaseScript {
+class TriggerScript_0023 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0022 : public BaseScript {
+class TriggerScript_0022 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0021 : public BaseScript {
+class TriggerScript_0021 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0020 : public BaseScript {
+class TriggerScript_0020 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_001B : public BaseScript {
+class TriggerScript_001B final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_001A : public BaseScript {
+class TriggerScript_001A final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0017 : public BaseScript {
+class TriggerScript_0017 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0016 : public BaseScript {
+class TriggerScript_0016 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0015 : public BaseScript {
+class TriggerScript_0015 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0014 : public BaseScript {
+class TriggerScript_0014 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0013 : public BaseScript {
+class TriggerScript_0013 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0012 : public BaseScript {
+class TriggerScript_0012 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0011 : public BaseScript {
+class TriggerScript_0011 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0010 : public BaseScript {
+class TriggerScript_0010 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000B : public BaseScript {
+class TriggerScript_000B final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000A : public BaseScript {
+class TriggerScript_000A final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0009 : public BaseScript {
+class TriggerScript_0009 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0008 : public BaseScript {
+class TriggerScript_0008 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0005 : public BaseScript {
+class TriggerScript_0005 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0004 : public BaseScript {
+class TriggerScript_0004 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0001 : public BaseScript {
+class TriggerScript_0001 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0000 : public BaseScript {
+class TriggerScript_0000 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_003D : public BaseScript {
+class TriggerScript_003D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_003C : public BaseScript {
+class TriggerScript_003C final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0039 : public BaseScript {
+class TriggerScript_0039 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0038 : public BaseScript {
+class TriggerScript_0038 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0037 : public BaseScript {
+class TriggerScript_0037 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0036 : public BaseScript {
+class TriggerScript_0036 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0033 : public BaseScript {
+class TriggerScript_0033 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0032 : public BaseScript {
+class TriggerScript_0032 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0030 : public BaseScript {
+class TriggerScript_0030 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_002C : public BaseScript {
+class TriggerScript_002C final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0027 : public BaseScript {
+class TriggerScript_0027 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0026 : public BaseScript {
+class TriggerScript_0026 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0025 : public BaseScript {
+class TriggerScript_0025 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0024 : public BaseScript {
+class TriggerScript_0024 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_001F : public BaseScript {
+class TriggerScript_001F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_001E : public BaseScript {
+class TriggerScript_001E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_001D : public BaseScript {
+class TriggerScript_001D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_001C : public BaseScript {
+class TriggerScript_001C final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0019 : public BaseScript {
+class TriggerScript_0019 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0018 : public BaseScript {
+class TriggerScript_0018 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000F : public BaseScript {
+class TriggerScript_000F final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000E : public BaseScript {
+class TriggerScript_000E final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000D : public BaseScript {
+class TriggerScript_000D final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_000C : public BaseScript {
+class TriggerScript_000C final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0007 : public BaseScript {
+class TriggerScript_0007 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0006 : public BaseScript {
+class TriggerScript_0006 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0003 : public BaseScript {
+class TriggerScript_0003 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0002 : public BaseScript {
+class TriggerScript_0002 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class TriggerScript_0040 : public BaseScript {
+class TriggerScript_0040 final : public BaseScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
@@ -3231,10 +3230,6 @@ int STDCALL GetCOScriptList(int **list, int **id_list) {
 // Script Implementation
 //=======================
 
-BaseScript::BaseScript() {}
-
-BaseScript::~BaseScript() {}
-
 int16_t BaseScript::CallEvent(int event, tOSIRISEventInfo *data) {
   mprintf(0, "BaseScript::CallEvent()\n");
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
@@ -3255,8 +3250,6 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     dfRestore(event_data->fileptr);
   } break;
   case EVT_LEVELSTART: {
-    tOSIRISEVTLEVELSTART *event_data = &data->evt_levelstart;
-
     ClearGlobalActionCtrs();
     dfInit();
 
@@ -3552,8 +3545,6 @@ int16_t CustomObjectScript_0815::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0816::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 101: MiniReactorBlue TimerChain
     if ((ScriptActionCtr_101 < 1) && (1)) {
       aSetObjectTimer(Object_handles[11], 6.000000f, -1);
@@ -3636,8 +3627,6 @@ int16_t CustomObjectScript_0819::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0817::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 100: MiniReactorWhite TimerChain
     if ((ScriptActionCtr_100 < 1) && (1)) {
       aSetObjectTimer(Object_handles[26], 6.000000f, -1);
@@ -3768,8 +3757,6 @@ int16_t CustomObjectScript_0827::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_086A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 103: MiniReactorRed-2 Timer Chain
     if ((ScriptActionCtr_103 < 1) && (1)) {
       aSetObjectTimer(Object_handles[45], 6.000000f, -1);
@@ -3797,8 +3784,6 @@ int16_t CustomObjectScript_086A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_086B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 102: MiniReactorRed-1 Timer Chain
     if ((ScriptActionCtr_102 < 1) && (1)) {
       aSetObjectTimer(Object_handles[57], 6.000000f, -1);
@@ -3826,8 +3811,6 @@ int16_t CustomObjectScript_086B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0829::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 073: MiniReactorRed Timer
     if ((ScriptActionCtr_073 < 1) && (1)) {
       aLightningCreate(Object_handles[69], Object_handles[70], 9999.000000f, 3.000000f, 1, Texture_indexes[0],
@@ -3899,8 +3882,6 @@ int16_t CustomObjectScript_08C4::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_CREATED: {
-    tOSIRISEVTCREATED *event_data = &data->evt_created;
-
     // Script 142: ReactorInit
     if (1) {
       aObjMakeInvuln(data->me_handle, 99999);
@@ -3938,8 +3919,6 @@ int16_t CustomObjectScript_08C4::CallEvent(int event, tOSIRISEventInfo *data) {
     }
   } break;
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 143: ReactorStartCharge
     if (1) {
       if (qUserVarValue(4) > 6.000000f) {
@@ -3965,8 +3944,6 @@ int16_t CustomObjectScript_08C4::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_10CE::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 075: ReactorShake
     if (1) {
       aSetObjectTimer(data->me_handle, qRandomValue(0.500000f, 1.600000f), -1);
@@ -3984,8 +3961,6 @@ int16_t CustomObjectScript_10CE::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0809::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 083: CycleFlames-5
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[77], 1.000000f);
@@ -4022,8 +3997,6 @@ int16_t CustomObjectScript_0809::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0808::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 082: CycleFlames-4
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[81], 1.000000f);
@@ -4060,8 +4033,6 @@ int16_t CustomObjectScript_0808::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1007::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 081: CycleFlames-3
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[84], 1.000000f);
@@ -4098,8 +4069,6 @@ int16_t CustomObjectScript_1007::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_1006::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 080: CycleFlames-2
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[89], 1.000000f);
@@ -4136,8 +4105,6 @@ int16_t CustomObjectScript_1006::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0805::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 079: CycleFlames-1
     if (1) {
       aSoundPlayObject(Sound_indexes[5], Object_handles[92], 1.000000f);
@@ -4246,8 +4213,6 @@ int16_t CustomObjectScript_100E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0845::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 099: Blow Up Child ACW-12
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4264,8 +4229,6 @@ int16_t CustomObjectScript_0845::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0844::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 098: Blow Up Child ACW-11
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4282,8 +4245,6 @@ int16_t CustomObjectScript_0844::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0843::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 097: Blow Up Child ACW-10
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4300,8 +4261,6 @@ int16_t CustomObjectScript_0843::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0842::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 096: Blow Up Child ACW-9
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4318,8 +4277,6 @@ int16_t CustomObjectScript_0842::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0841::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 095: Blow Up Child ACW-8
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4336,8 +4293,6 @@ int16_t CustomObjectScript_0841::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0840::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 094: Blow Up Child ACW-7
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4354,8 +4309,6 @@ int16_t CustomObjectScript_0840::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 093: Blow Up Child ACW-6
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4372,8 +4325,6 @@ int16_t CustomObjectScript_083F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 092: Blow Up Child ACW-5
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4390,8 +4341,6 @@ int16_t CustomObjectScript_083E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 091: Blow Up Child ACW-4
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4408,8 +4357,6 @@ int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 090: Blow Up Child ACW-3
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4426,8 +4373,6 @@ int16_t CustomObjectScript_083C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 089: Blow Up Child ACW-2
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4444,8 +4389,6 @@ int16_t CustomObjectScript_083B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_083A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 088: Blow Up Child ACW-1
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4462,8 +4405,6 @@ int16_t CustomObjectScript_083A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0851::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 115: Blow Up Child ACB-12
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4480,8 +4421,6 @@ int16_t CustomObjectScript_0851::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0850::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 114: Blow Up Child ACB-11
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4498,8 +4437,6 @@ int16_t CustomObjectScript_0850::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 113: Blow Up Child ACB-10
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4516,8 +4453,6 @@ int16_t CustomObjectScript_084F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 112: Blow Up Child ACB-9
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4534,8 +4469,6 @@ int16_t CustomObjectScript_084E::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 111: Blow Up Child ACB-8
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4552,8 +4485,6 @@ int16_t CustomObjectScript_084D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 110: Blow Up Child ACB-7
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4570,8 +4501,6 @@ int16_t CustomObjectScript_084C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 109: Blow Up Child ACB-6
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4588,8 +4517,6 @@ int16_t CustomObjectScript_084B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_084A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 108: Blow Up Child ACB-5
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4606,8 +4533,6 @@ int16_t CustomObjectScript_084A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0849::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 107: Blow Up Child ACB-4
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4624,8 +4549,6 @@ int16_t CustomObjectScript_0849::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0848::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 106: Blow Up Child ACB-3
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4642,8 +4565,6 @@ int16_t CustomObjectScript_0848::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0847::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 105: Blow Up Child ACB-2
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4660,8 +4581,6 @@ int16_t CustomObjectScript_0847::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0846::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 104: Blow Up Child ACB-1
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4678,8 +4597,6 @@ int16_t CustomObjectScript_0846::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 127: Blow Up Child ACR-12
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4696,8 +4613,6 @@ int16_t CustomObjectScript_085D::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 126: Blow Up Child ACR-11
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4714,8 +4629,6 @@ int16_t CustomObjectScript_085C::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 125: Blow Up Child ACR-10
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4732,8 +4645,6 @@ int16_t CustomObjectScript_085B::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 124: Blow Up Child ACR-9
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4750,8 +4661,6 @@ int16_t CustomObjectScript_085A::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0859::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 123: Blow Up Child ACR-8
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4768,8 +4677,6 @@ int16_t CustomObjectScript_0859::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0858::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 122: Blow Up Child ACR-7
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4786,8 +4693,6 @@ int16_t CustomObjectScript_0858::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0857::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 121: Blow Up Child ACR-6
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4804,8 +4709,6 @@ int16_t CustomObjectScript_0857::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0856::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 120: Blow Up Child ACR-5
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4822,8 +4725,6 @@ int16_t CustomObjectScript_0856::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0855::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 119: Blow Up Child ACR-4
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4840,8 +4741,6 @@ int16_t CustomObjectScript_0855::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0854::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 118: Blow Up Child ACR-3
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4858,8 +4757,6 @@ int16_t CustomObjectScript_0854::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0853::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 117: Blow Up Child ACR-2
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4876,8 +4773,6 @@ int16_t CustomObjectScript_0853::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0852::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 116: Blow Up Child ACR-1
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4894,8 +4789,6 @@ int16_t CustomObjectScript_0852::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0869::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 139: Blow Up Child ACS-12
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4912,8 +4805,6 @@ int16_t CustomObjectScript_0869::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0868::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 138: Blow Up Child ACS-11
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4930,8 +4821,6 @@ int16_t CustomObjectScript_0868::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0867::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 137: Blow Up Child ACS-10
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4948,8 +4837,6 @@ int16_t CustomObjectScript_0867::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0866::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 136: Blow Up Child ACS-9
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4966,8 +4853,6 @@ int16_t CustomObjectScript_0866::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0865::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 135: Blow Up Child ACS-8
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -4984,8 +4869,6 @@ int16_t CustomObjectScript_0865::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0864::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 134: Blow Up Child ACS-7
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -5002,8 +4885,6 @@ int16_t CustomObjectScript_0864::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0863::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 133: Blow Up Child ACS-6
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -5020,8 +4901,6 @@ int16_t CustomObjectScript_0863::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0862::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 132: Blow Up Child ACS-5
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -5038,8 +4917,6 @@ int16_t CustomObjectScript_0862::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0861::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 131: Blow Up Child ACS-4
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -5056,8 +4933,6 @@ int16_t CustomObjectScript_0861::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_0860::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 130: Blow Up Child ACS-3
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -5074,8 +4949,6 @@ int16_t CustomObjectScript_0860::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 129: Blow Up Child ACS-2
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -5092,8 +4965,6 @@ int16_t CustomObjectScript_085F::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t CustomObjectScript_085E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
-    tOSIRISEVTTIMER *event_data = &data->evt_timer;
-
     // Script 128: Blow Up Child ACS-1
     if (1) {
       aObjDestroy(qGetAtachedChild(data->me_handle, 0));
@@ -6194,8 +6065,6 @@ int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TriggerScript_0040::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
-    tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
-
     // Script 077: End Level Camera
     if ((ScriptActionCtr_077 < 1) && (1)) {
       aGoalCompleted(Goal_indexes[6], 1);

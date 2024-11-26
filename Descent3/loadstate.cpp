@@ -1308,8 +1308,6 @@ int LGSObjects(CFILE *fp, int version) {
       p_info->multi_turret_info.num_turrets = count;
 
       if ((count > 0) && (p_info->multi_turret_info.keyframes == NULL)) {
-        int cur = 0;
-
         p_info->multi_turret_info.time = 0;
         p_info->multi_turret_info.keyframes = mem_rmalloc<float>(count);
         p_info->multi_turret_info.last_keyframes = mem_rmalloc<float>(count);
@@ -1564,7 +1562,7 @@ int LGSObjSpecial(CFILE *fp, object *op) {
 
 // load spew
 int LGSSpew(CFILE *fp) {
-  int i, count = 0;
+  int i;
 
   // read GLOBAL value
   gs_ReadShort(fp, spew_count);

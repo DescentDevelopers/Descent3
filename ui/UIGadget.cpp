@@ -127,19 +127,6 @@ int UIGadget::m_LastKey = 0;
 int UIGadget::m_LastKeyCount = 0;
 float UIGadget::m_LastKeyTime = 0.0f;
 
-UIGadget::UIGadget() : UIObject() {
-  m_ID = 0;
-  m_Wnd = NULL;
-  m_Prev = m_PrevSlave = NULL;
-  m_Next = m_NextSlave = NULL;
-  m_MasterGadget = NULL;
-  m_SlaveGadgets = NULL;
-  m_CurrentSlave = NULL;
-  m_infocus = false;
-}
-
-UIGadget::~UIGadget() {}
-
 //	ALL Gadgets must have a parent.
 void UIGadget::Create(UIWindow *wnd, int id, int x, int y, int w, int h, int flags) {
   ASSERT(!IsCreated());

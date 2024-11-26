@@ -373,7 +373,7 @@ const tUIClass newuiNewClass = 1000;
 //	NewUIGameWindow
 //		this draws a UI window, but with a not-so-cool faded background.
 
-class NewUIWindow : public UIWindow {
+class NewUIWindow final : public UIWindow {
   chunked_bitmap m_Chunk;
 
 public:
@@ -411,7 +411,7 @@ public:
 //	NewUIMessageBox
 //		this draws a UI window, but with the cool standard game dialog background.
 
-class NewUIMessageBox : public NewUIGameWindow {
+class NewUIMessageBox final : public NewUIGameWindow {
 public:
   NewUIMessageBox();
 
@@ -421,7 +421,7 @@ public:
 //	NewUISlider
 //		this draws a nicer loking slider.
 
-class NewUISlider : public UISlider {
+class NewUISlider final : public UISlider {
   UIBitmapItem m_SliderBar;
   UIBitmapItem m_Slider;
 
@@ -432,7 +432,7 @@ public:
 //	NewUIEdit
 //		this draws a nicer edit box
 
-class NewUIEdit : public UIEdit {
+class NewUIEdit final : public UIEdit {
   UIBitmapItem m_EditLeft;
   UIBitmapItem m_EditCen;
   UIBitmapItem m_EditRight;
@@ -450,7 +450,7 @@ protected:
 //	NewUIListBox
 //		this draws a nicer list box
 
-class NewUIListBox : public UIListBox {
+class NewUIListBox final : public UIListBox {
   UIBitmapItem m_BackNW;
   UIBitmapItem m_BackN;
   UIBitmapItem m_BackNE;
@@ -475,7 +475,7 @@ protected:
 //	NewUIComboBox
 //		displays a listbox just one item.
 
-class NewUIComboBox : public UIComboBox {
+class NewUIComboBox final : public UIComboBox {
   UIBitmapItem m_CmbLeft;
   UIBitmapItem m_CmbCen;
   UIBitmapItem m_CmbRight;
@@ -493,7 +493,7 @@ protected:
 //	NewUIButton
 //		a nicer fixed size button.
 
-class NewUIButton : public UIButton {
+class NewUIButton final : public UIButton {
   UIBitmapItem m_BtnUpL, m_BtnUpC, m_BtnUpR;
   UIBitmapItem m_BtnDownL, m_BtnDownC, m_BtnDownR;
   UIBitmapItem m_BtnHiliteL, m_BtnHiliteC, m_BtnHiliteR;

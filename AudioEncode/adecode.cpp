@@ -23,7 +23,7 @@ using namespace AudioDecoder;
 
 namespace {
 
-class InternalAudioDecoder : public IAudioDecoder {
+class InternalAudioDecoder final : public IAudioDecoder {
 public:
   InternalAudioDecoder(ReadDataFunction readerFunction, void *pReaderData);
   ~InternalAudioDecoder();

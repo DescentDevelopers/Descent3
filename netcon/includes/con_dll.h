@@ -329,13 +329,15 @@ struct multi_api {
   int *vp[200]; // variable pointers
 };
 
+class UIItem;
+
 typedef void (*GetMultiAPI_fp)(multi_api *api);
 GetMultiAPI_fp DLLGetMultiAPI;
 
 typedef void (*SetUITextItemText_fp)(void *uit, char *newtext, uint32_t color);
 SetUITextItemText_fp DLLSetUITextItemText;
 
-typedef void *(*NewUIWindowCreate_fp)(int x, int y, int w, int h, int flags);
+typedef UIObject *(*NewUIWindowCreate_fp)(int x, int y, int w, int h, int flags);
 NewUIWindowCreate_fp DLLNewUIWindowCreate;
 
 typedef void (*NewUIWindowDestroy_fp)(void *deswin);
@@ -347,16 +349,16 @@ NewUIWindowOpen_fp DLLNewUIWindowOpen;
 typedef void (*NewUIWindowClose_fp)(void *deswin);
 NewUIWindowClose_fp DLLNewUIWindowClose;
 
-typedef void *(*TextCreate_fp)(void *parentwin, void *textitem, int x, int y, int flags);
+typedef UIObject *(*TextCreate_fp)(void *parentwin, void *textitem, int x, int y, int flags);
 TextCreate_fp DLLTextCreate;
 
-typedef void *(*EditCreate_fp)(void *parentwin, int id, int x, int y, int w, int h, int flags);
+typedef UIObject *(*EditCreate_fp)(void *parentwin, int id, int x, int y, int w, int h, int flags);
 EditCreate_fp DLLEditCreate;
 
-typedef void *(*ButtonCreate_fp)(void *parentwin, int id, void *titleitem, int x, int y, int w, int h, int flags);
+typedef UIObject *(*ButtonCreate_fp)(void *parentwin, int id, void *titleitem, int x, int y, int w, int h, int flags);
 ButtonCreate_fp DLLButtonCreate;
 
-typedef void *(*ListCreate_fp)(void *parentwin, int id, int x, int y, int w, int h, int flags);
+typedef UIObject *(*ListCreate_fp)(void *parentwin, int id, int x, int y, int w, int h, int flags);
 ListCreate_fp DLLListCreate;
 
 typedef void (*ListRemoveAll_fp)(void *item);
@@ -415,7 +417,7 @@ ValidateUser_fp DLLValidateUser;
 typedef void( *PollPTrackNet_fp) ();
 PollPTrackNet_fp DLLPollPTrackNet;
 */
-typedef void *(*NewUIGameWindowCreate_fp)(int x, int y, int w, int h, int flags);
+typedef UIObject *(*NewUIGameWindowCreate_fp)(int x, int y, int w, int h, int flags);
 NewUIGameWindowCreate_fp DLLNewUIGameWindowCreate;
 
 typedef void (*NewUIGameWindowDestroy_fp)(void *item);
@@ -467,8 +469,8 @@ nw_GetHostAddressFromNumbers_fp DLLnw_GetHostAddressFromNumbers;
 typedef int (*nw_GetProtocolType_fp)(void);
 nw_GetProtocolType_fp DLLnw_GetProtocolType;
 
-typedef void *(*HotSpotCreate_fp)(void *parentwin, int id, int key, void *txtitemoff, void *txtitemon, int x, int y,
-                                  int w, int h, int flags);
+typedef UIObject *(*HotSpotCreate_fp)(void *parentwin, int id, int key, void *txtitemoff, void *txtitemon,
+                                      int x, int y, int w, int h, int flags);
 HotSpotCreate_fp DLLHotSpotCreate;
 
 typedef int (*PollUI_fp)(void);
@@ -480,9 +482,9 @@ GetMissionName_fp DLLGetMissionName;
 typedef void (*RemoveUITextItem_fp)(void *item);
 RemoveUITextItem_fp DLLRemoveUITextItem;
 
-typedef void *(*CreateNewUITextItem_fp)(const char *newtext, uint32_t color, int font);
+typedef UIItem *(*CreateNewUITextItem_fp)(const char *newtext, uint32_t color, int font);
 CreateNewUITextItem_fp DLLCreateNewUITextItemFP;
-static inline void *DLLCreateNewUITextItem(const char *newtext, uint32_t color, int font = -1) {
+static inline UIItem *DLLCreateNewUITextItem(const char *newtext, uint32_t color, int font = -1) {
   return DLLCreateNewUITextItemFP(newtext, color, font);
 }
 
@@ -498,8 +500,8 @@ CreateSplashScreen_fp DLLCreateSplashScreen;
 typedef void (*CloseSplashScreen_fp)(void);
 CloseSplashScreen_fp DLLCloseSplashScreen;
 
-typedef void *(*UIConsoleGadgetCreate_fp)(void *parentid, int id, int x, int y, int font, int cols, int rows,
-                                          int flags);
+typedef UIObject *(*UIConsoleGadgetCreate_fp)(void *parentid, int id, int x, int y, int font,
+                                            int cols, int rows, int flags);
 UIConsoleGadgetCreate_fp DLLUIConsoleGadgetCreate;
 
 typedef void (*UIConsoleGadgetputs_fp)(void *item, const char *str);
@@ -508,10 +510,10 @@ UIConsoleGadgetputs_fp DLLUIConsoleGadgetputs;
 typedef void (*NewUIWindowSetFocusOnEditGadget_fp)(void *item, void *parent);
 NewUIWindowSetFocusOnEditGadget_fp DLLNewUIWindowSetFocusOnEditGadget;
 
-typedef void *(*OldEditCreate_fp)(void *parentitem, int id, int x, int y, int w, int h, int flags);
+typedef UIObject *(*OldEditCreate_fp)(void *parentitem, int id, int x, int y, int w, int h, int flags);
 OldEditCreate_fp DLLOldEditCreate;
 
-typedef void *(*OldListCreate_fp)(void *parentitem, int id, int x, int y, int w, int h, int flags);
+typedef UIObject *(*OldListCreate_fp)(void *parentitem, int id, int x, int y, int w, int h, int flags);
 OldListCreate_fp DLLOldListCreate;
 
 typedef void (*OldListRemoveAll_fp)(void *item);
@@ -550,7 +552,7 @@ SetOldEditBufferLen_fp DLLSetOldEditBufferLen;
 typedef void (*NewUIWindowLoadBackgroundImage_fp)(void *item, const char *image_name);
 NewUIWindowLoadBackgroundImage_fp DLLNewUIWindowLoadBackgroundImage;
 
-typedef void (*DeleteUIItem_fp)(void *delitem);
+typedef void (*DeleteUIItem_fp)(UIObject *);
 DeleteUIItem_fp DLLDeleteUIItem;
 
 typedef int (*SearchForLocalGamesIPX_fp)(network_address *check_addr);
@@ -915,29 +917,29 @@ void MultiplayerOptionsMenu();
 char dll_text[MAX_DLLS][_MAX_PATH];
 
 int StartMultiplayerGameMenu() {
-  void *game_name_text = DLLCreateNewUITextItem(TXT(10), UICOL_TEXT_NORMAL, -1);    // TXT_LC_GAMENAME
-  void *mission_name_text = DLLCreateNewUITextItem(TXT(11), UICOL_TEXT_NORMAL, -1); // TXT_LC_MSNNAME
-  void *script_name_text = DLLCreateNewUITextItem(TXT(12), UICOL_TEXT_NORMAL, -1);  // TXT_LC_SCRIPTNAME
+  auto game_name_text = DLLCreateNewUITextItem(TXT(10), UICOL_TEXT_NORMAL, -1);    // TXT_LC_GAMENAME
+  auto mission_name_text = DLLCreateNewUITextItem(TXT(11), UICOL_TEXT_NORMAL, -1); // TXT_LC_MSNNAME
+  auto script_name_text = DLLCreateNewUITextItem(TXT(12), UICOL_TEXT_NORMAL, -1);  // TXT_LC_SCRIPTNAME
 
-  void *start_game_on_text = DLLCreateNewUITextItem(TXT(13), UICOL_HOTSPOT_HI, -1);       // TXT_LC_STARTGAME
-  void *multiplayer_opts_on_text = DLLCreateNewUITextItem(TXT(14), UICOL_HOTSPOT_HI, -1); // TXT_LC_MPLYROPTIONS
-  void *exit_on_text = DLLCreateNewUITextItem(TXT(5), UICOL_HOTSPOT_HI, -1);              // TXT_LC_PREVMENU
+  auto start_game_on_text = DLLCreateNewUITextItem(TXT(13), UICOL_HOTSPOT_HI, -1);       // TXT_LC_STARTGAME
+  auto multiplayer_opts_on_text = DLLCreateNewUITextItem(TXT(14), UICOL_HOTSPOT_HI, -1); // TXT_LC_MPLYROPTIONS
+  auto exit_on_text = DLLCreateNewUITextItem(TXT(5), UICOL_HOTSPOT_HI, -1);              // TXT_LC_PREVMENU
 
-  void *start_game_off_text = DLLCreateNewUITextItem(TXT(13), UICOL_HOTSPOT_LO, -1);       // TXT_LC_STARTGAME
-  void *multiplayer_opts_off_text = DLLCreateNewUITextItem(TXT(14), UICOL_HOTSPOT_LO, -1); // TXT_LC_MPLYROPTIONS
-  void *exit_off_text = DLLCreateNewUITextItem(TXT(5), UICOL_HOTSPOT_LO, -1);              // TXT_LC_PREVMENU
+  auto start_game_off_text = DLLCreateNewUITextItem(TXT(13), UICOL_HOTSPOT_LO, -1);       // TXT_LC_STARTGAME
+  auto multiplayer_opts_off_text = DLLCreateNewUITextItem(TXT(14), UICOL_HOTSPOT_LO, -1); // TXT_LC_MPLYROPTIONS
+  auto exit_off_text = DLLCreateNewUITextItem(TXT(5), UICOL_HOTSPOT_LO, -1);              // TXT_LC_PREVMENU
 
-  void *save_settings_txt_on = DLLCreateNewUITextItem(TXT_DLL_SAVESETTINGS, UICOL_HOTSPOT_HI, -1);
-  void *save_settings_txt_off = DLLCreateNewUITextItem(TXT_DLL_SAVESETTINGS, UICOL_HOTSPOT_LO, -1);
+  auto save_settings_txt_on = DLLCreateNewUITextItem(TXT_DLL_SAVESETTINGS, UICOL_HOTSPOT_HI, -1);
+  auto save_settings_txt_off = DLLCreateNewUITextItem(TXT_DLL_SAVESETTINGS, UICOL_HOTSPOT_LO, -1);
 
-  void *load_settings_txt_on = DLLCreateNewUITextItem(TXT_DLL_LOADSETTINGS, UICOL_HOTSPOT_HI, -1);
-  void *load_settings_txt_off = DLLCreateNewUITextItem(TXT_DLL_LOADSETTINGS, UICOL_HOTSPOT_LO, -1);
+  auto load_settings_txt_on = DLLCreateNewUITextItem(TXT_DLL_LOADSETTINGS, UICOL_HOTSPOT_HI, -1);
+  auto load_settings_txt_off = DLLCreateNewUITextItem(TXT_DLL_LOADSETTINGS, UICOL_HOTSPOT_LO, -1);
 
-  void *start_text = DLLCreateNewUITextItem(TXT(13), UICOL_WINDOW_TITLE, DLL_BIG_BRIEFING_FONT);
+  auto start_text = DLLCreateNewUITextItem(TXT(13), UICOL_WINDOW_TITLE, DLL_BIG_BRIEFING_FONT);
 
-  void *blank_text = DLLCreateNewUITextItem("", GR_BLACK, -1);
+  auto blank_text = DLLCreateNewUITextItem("", GR_BLACK, -1);
   // Name -> UI item
-  std::map<std::string, void *> dll_ui_items;
+  std::map<std::string, UIItem *> dll_ui_items;
   char str[100];
   int exit_menu = 0;
   int cury = 40;
@@ -947,60 +949,60 @@ int StartMultiplayerGameMenu() {
   rendering_state rs;
   DLLrend_GetRenderState(&rs);
 
-  void *main_wnd = DLLNewUIWindowCreate(0, 0, rs.screen_width, rs.screen_height, UIF_PROCESS_ALL);
+  auto main_wnd = DLLNewUIWindowCreate(0, 0, rs.screen_width, rs.screen_height, UIF_PROCESS_ALL);
 
-  void *start_title = DLLTextCreate(main_wnd, start_text, 0, cury, UIF_CENTER);
+  auto start_title = DLLTextCreate(main_wnd, start_text, 0, cury, UIF_CENTER);
   cury += 35;
 
   // Mission name
-  void *mission_text = DLLTextCreate(main_wnd, game_name_text, 0, cury, UIF_CENTER);
+  auto mission_text = DLLTextCreate(main_wnd, game_name_text, 0, cury, UIF_CENTER);
   cury += 15;
-  void *mission_name_edit = DLLEditCreate(main_wnd, id++, 10, cury, 300, 15, UIF_CENTER);
+  auto mission_name_edit = DLLEditCreate(main_wnd, id++, 10, cury, 300, 15, UIF_CENTER);
   cury += 18;
   cury += 30;
 
   // mission name
-  void *game_name = DLLTextCreate(main_wnd, mission_name_text, 45, cury, 0);
+  auto game_name = DLLTextCreate(main_wnd, mission_name_text, 45, cury, 0);
   cury += 15;
 
-  void *list_1 = DLLListCreate(main_wnd, id++, 40, cury, 200, 100, 0);
+  auto list_1 = DLLListCreate(main_wnd, id++, 40, cury, 200, 100, 0);
 
   // Back up the same line!
   cury -= 15;
 
   // Script box
-  void *script_name = DLLTextCreate(main_wnd, script_name_text, 370, cury, 0);
+  auto script_name = DLLTextCreate(main_wnd, script_name_text, 370, cury, 0);
   cury += 18;
-  void *script_list = DLLListCreate(main_wnd, id++, 360, cury, 200, 100, 0);
+  auto script_list = DLLListCreate(main_wnd, id++, 360, cury, 200, 100, 0);
   cury += 118;
   cury += 40;
 
   // Start button
   int start_button = UID_OK;
-  void *start_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, start_game_off_text, start_game_on_text, 10, cury, 180,
-                                    30, UIF_FIT | UIF_CENTER);
+  auto start_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, start_game_off_text, start_game_on_text, 10, cury, 180,
+                                   30, UIF_FIT | UIF_CENTER);
   cury += 18;
 
   // Option button
   int option_button = id;
-  void *option_hs = DLLHotSpotCreate(main_wnd, id++, KEY_O, multiplayer_opts_off_text, multiplayer_opts_on_text, 10,
-                                     cury, 180, 30, UIF_FIT | UIF_CENTER);
+  auto option_hs = DLLHotSpotCreate(main_wnd, id++, KEY_O, multiplayer_opts_off_text, multiplayer_opts_on_text, 10,
+                                    cury, 180, 30, UIF_FIT | UIF_CENTER);
   cury += 18;
 
   // cancel button
 
   int save_button = id;
-  void *save_hs = DLLHotSpotCreate(main_wnd, id++, 0, save_settings_txt_off, save_settings_txt_on, 10, cury, 180, 30,
-                                   UIF_FIT | UIF_CENTER);
+  auto save_hs = DLLHotSpotCreate(main_wnd, id++, 0, save_settings_txt_off, save_settings_txt_on, 10, cury, 180, 30,
+                                  UIF_FIT | UIF_CENTER);
   cury += 18;
   int load_button = id;
-  void *load_hs = DLLHotSpotCreate(main_wnd, id++, 0, load_settings_txt_off, load_settings_txt_on, 10, cury, 180, 30,
-                                   UIF_FIT | UIF_CENTER);
+  auto load_hs = DLLHotSpotCreate(main_wnd, id++, 0, load_settings_txt_off, load_settings_txt_on, 10, cury, 180, 30,
+                                  UIF_FIT | UIF_CENTER);
   cury += 18;
 
   int cancel_button = UID_CANCEL;
-  void *cancel_hs = DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, exit_off_text, exit_on_text, 10, cury, 180, 30,
-                                     UIF_FIT | UIF_CENTER);
+  auto cancel_hs = DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, exit_off_text, exit_on_text, 10, cury, 180, 30,
+                                    UIF_FIT | UIF_CENTER);
   // put the multiplayer dll's into the listbox
   char buffer[_MAX_PATH];
 
@@ -1065,9 +1067,9 @@ int StartMultiplayerGameMenu() {
 #endif
   const char *p;
 #else
-  void *msn_single_ti = DLLCreateNewUITextItem("Polaris", UICOL_LISTBOX_LO);
-  void *msn_multi_ti = DLLCreateNewUITextItem("The Core", UICOL_LISTBOX_LO);
-  void *msn_multi_2 = DLLCreateNewUITextItem("Taurus", UICOL_LISTBOX_LO);
+  auto msn_single_ti = DLLCreateNewUITextItem("Polaris", UICOL_LISTBOX_LO);
+  auto msn_multi_ti = DLLCreateNewUITextItem("The Core", UICOL_LISTBOX_LO);
+  auto msn_multi_2 = DLLCreateNewUITextItem("Taurus", UICOL_LISTBOX_LO);
   DLLListAddItem(list_1, msn_single_ti);
   DLLListAddItem(list_1, msn_multi_ti);
   DLLListAddItem(list_1, msn_multi_2);

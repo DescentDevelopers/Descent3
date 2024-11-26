@@ -135,15 +135,6 @@ int UIButton::m_ButtonFont;
 //		This is a simple 2 state button (push down or push up)
 //		Buttons have properties of gadgets, plus bitmap information per state.
 
-UIButton::UIButton() {
-  m_Items[UI_BTS_DISABLED] = NULL;
-  m_Items[UI_BTS_INACTIVE] = NULL;
-  m_Items[UI_BTS_HILITE] = NULL;
-  m_Items[UI_BTS_ACTIVATED] = NULL;
-}
-
-UIButton::~UIButton() {}
-
 //	if text = NULL, no text printed out.
 void UIButton::Create(UIWindow *parent, int id, UIItem *item, int x, int y, int w, int h, int flags) {
   if (item) {

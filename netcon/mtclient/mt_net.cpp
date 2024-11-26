@@ -182,7 +182,6 @@ void InitMTSockets() {
   }
 
   {
-    static HOSTENT lhe;
     memset(&sockaddr, 0, sizeof(SOCKADDR_IN));
     gtrackaddr.sin_family = AF_INET;
     gtrackaddr.sin_addr.s_addr = INADDR_ANY;

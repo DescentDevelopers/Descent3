@@ -565,7 +565,6 @@ void BuildTerrainNormals() {
 
     for (z = 0, i = 0; i < TERRAIN_DEPTH - simplemul; i += simplemul, z++) {
       for (x = 0, t = 0; t < TERRAIN_WIDTH - simplemul; t += simplemul, x++) {
-        terrain_segment *tseg = &Terrain_seg[i * TERRAIN_WIDTH + t];
         terrain_segment *tseg0 = &Terrain_seg[i * TERRAIN_WIDTH + t];
         terrain_segment *tseg1 = &Terrain_seg[(i + simplemul) * TERRAIN_WIDTH + t];
         terrain_segment *tseg2 = &Terrain_seg[((i + simplemul) * TERRAIN_WIDTH) + t + simplemul];

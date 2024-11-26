@@ -56,8 +56,6 @@
 grScreen::grScreen(int w, int h, int bpp, const char *name)
     : grSurface(w, h, bpp, SURFTYPE_VIDEOSCREEN, SURFFLAG_BACKBUFFER, name) {}
 
-grScreen::~grScreen() {}
-
 //	---------------------------------------------------------------------------
 //	screen refresh routines
 //	---------------------------------------------------------------------------

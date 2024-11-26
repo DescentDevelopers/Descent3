@@ -221,8 +221,10 @@ $$TABLE_GAMEFILE "lvlres2.ogf"
 #define BACKGROUND_VIS 0
 #define OVERLAY_VIS 1
 
+/*
 static int Stat_ratings[] = {TXI_SCRNNONE, TXI_SCRNFEEBLE,    TXI_SCRNPOOR,   TXI_SCRNAVG,
                              TXI_SCRNGOOD, TXI_SCRNEXCELLENT, TXI_SCRNSUPREME};
+*/
 
 static struct {
   int state;

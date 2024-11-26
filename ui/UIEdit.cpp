@@ -149,14 +149,6 @@ static UIEdit *UI_current_editbox = NULL;
 //	UIEdit
 //		A single line edit control.
 
-UIEdit::UIEdit() {
-  m_TextBuf = NULL;
-  m_BufSize = 0;
-  m_FontHandle = -1;
-}
-
-UIEdit::~UIEdit() {}
-
 void UIEdit::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
   m_BufSize = 32;
   m_TextBuf = (char *)mem_malloc(m_BufSize + 1);

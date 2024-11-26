@@ -66,15 +66,6 @@
 
 //	Construction and destruction
 
-UISlider::UISlider() {
-  switch_item = slider_item = NULL;
-  selectchange_fn = NULL;
-  selectchange_id_fn = NULL;
-  m_callbackptr = NULL;
-}
-
-UISlider::~UISlider() {}
-
 #define SLIDER_BUTTON_WIDTH (switch_item->width() ? switch_item->width() : 16)
 #define SLIDER_BUTTON_HEIGHT (switch_item->height() ? switch_item->height() : 16)
 

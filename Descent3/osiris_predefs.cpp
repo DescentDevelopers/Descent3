@@ -1877,7 +1877,6 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
     // Pop Goal Local Variables
     va_start(marker, flags);
     int i_value = va_arg(marker, int);
-    int j_value = va_arg(marker, int);
     va_end(marker);
 
     // Do the actual goal and return;

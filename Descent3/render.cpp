@@ -76,8 +76,6 @@
 void RotateRoomPoints(room *rp, vector4 *world_vecs);
 #endif
 
-
-static int Faces_rendered = 0;
 extern float GetFPS();
 extern uint8_t Outline_release_mode;
 // 3d point for each vertex for use during rendering a room
@@ -709,7 +707,6 @@ void RotateAllExternalRooms() {
       room *rp = &Rooms[roomnum];
       MakePointsFromMinMax(corners, &rp->min_xyz, &rp->max_xyz);
 
-      uint8_t andbyte = 0xff;
       g3Point pnt;
       External_room_codes[i] = 0xff;
       External_room_project_net[i] = 0;
@@ -2446,7 +2443,7 @@ void RenderSingleLightGlow(int index) {
 // Draws a glow around a light
 void RenderSingleLightGlow2(int index) {
   static int first = 1;
-  static int normal_handle, star_handle;
+  static int star_handle;
   int bm_handle;
   room *rp = &Rooms[LightGlows[index].roomnum];
   face *fp = &rp->faces[LightGlows[index].facenum];
@@ -2773,7 +2770,6 @@ void BuildMirroredRoomList() {
     cc.cc_and = 0xff;
     cc.cc_or = 0;
     int nv = fp->num_verts;
-    int clipped = 0;
 
     for (i = 0; i < fp->num_verts; i++) {
       vector temp_vec;
@@ -2859,7 +2855,6 @@ void RenderMirroredRoom(room *rp) {
 #endif
   uint16_t save_flags[MAX_FACES_PER_ROOM];
   bool restore_index = true;
-  int save_index = Global_buffer_index;
 
   // Save old rotated points
   if (rp->wpb_index == -1) {
@@ -3001,7 +2996,6 @@ static int obj_sort_func(const obj_sort_item *a, const obj_sort_item *b) {
 static inline void IsRoomDynamicValid(room *rp, int x, int y, int z, float *r, float *g, float *b) {
   int w = rp->volume_width;
   int h = rp->volume_height;
-  int d = rp->volume_depth;
 
   uint8_t color = rp->volume_lights[(z * w * h) + (y * w) + x];
 
@@ -3058,9 +3052,6 @@ void GetRoomDynamicScalar(vector *pos, room *rp, float *r, float *g, float *b) {
   IsRoomDynamicValid(rp, int_x, next_y, next_z, &back_values_r[1], &back_values_g[1], &back_values_b[1]);
   IsRoomDynamicValid(rp, next_x, next_y, next_z, &back_values_r[2], &back_values_g[2], &back_values_b[2]);
   IsRoomDynamicValid(rp, next_x, int_y, next_z, &back_values_r[3], &back_values_g[3], &back_values_b[3]);
-  // Do front edge
-  int left_out = 0;
-  int right_out = 0;
   // Left edge
   left_norm_r = ((1 - fl_y) * front_values_r[0]) + (fl_y * front_values_r[1]);
   left_norm_g = ((1 - fl_y) * front_values_g[0]) + (fl_y * front_values_g[1]);

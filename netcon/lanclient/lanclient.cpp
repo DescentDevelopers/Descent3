@@ -406,19 +406,19 @@ namespace lanclient {
 int MainMultiplayerMenu() {
 
   char selgame[200] = "";
-  void *join_LC_text = DLLCreateNewUITextItem(TXT_LC_RETURNMAIN, GR_BLACK); // return_menu
-  void *list_head_txt = DLLCreateNewUITextItem(TXT_LC_GAMELISTHDR, UICOL_TEXT_NORMAL);
-  void *exit_on_text = DLLCreateNewUITextItem(TXT_LC_EXIT, UICOL_HOTSPOT_HI);
-  void *exit_off_text = DLLCreateNewUITextItem(TXT_LC_EXIT, UICOL_HOTSPOT_LO);
-  void *join_on_text = DLLCreateNewUITextItem(TXT_LC_JOINSEL, UICOL_HOTSPOT_HI);
-  void *join_off_text = DLLCreateNewUITextItem(TXT_LC_JOINSEL, UICOL_HOTSPOT_LO);
-  void *start_on_text = DLLCreateNewUITextItem(TXT_LC_STARTNEW, UICOL_HOTSPOT_HI);
-  void *start_off_text = DLLCreateNewUITextItem(TXT_LC_STARTNEW, UICOL_HOTSPOT_LO);
-  void *srch_on_text = DLLCreateNewUITextItem(TXT_LC_SRCHADDR, UICOL_HOTSPOT_HI);
-  void *srch_off_text = DLLCreateNewUITextItem(TXT_LC_SRCHADDR, UICOL_HOTSPOT_LO);
-  void *scan_on_text = DLLCreateNewUITextItem(TXT_LC_SCANLOCAL, UICOL_HOTSPOT_HI);
-  void *scan_off_text = DLLCreateNewUITextItem(TXT_LC_SCANLOCAL, UICOL_HOTSPOT_LO);
-  void *game_hdr_text = DLLCreateNewUITextItem(TXT_LC_GAMEHEADER, UICOL_WINDOW_TITLE, DLL_BIG_BRIEFING_FONT);
+  auto join_LC_text = DLLCreateNewUITextItem(TXT_LC_RETURNMAIN, GR_BLACK); // return_menu
+  auto list_head_txt = DLLCreateNewUITextItem(TXT_LC_GAMELISTHDR, UICOL_TEXT_NORMAL);
+  auto exit_on_text = DLLCreateNewUITextItem(TXT_LC_EXIT, UICOL_HOTSPOT_HI);
+  auto exit_off_text = DLLCreateNewUITextItem(TXT_LC_EXIT, UICOL_HOTSPOT_LO);
+  auto join_on_text = DLLCreateNewUITextItem(TXT_LC_JOINSEL, UICOL_HOTSPOT_HI);
+  auto join_off_text = DLLCreateNewUITextItem(TXT_LC_JOINSEL, UICOL_HOTSPOT_LO);
+  auto start_on_text = DLLCreateNewUITextItem(TXT_LC_STARTNEW, UICOL_HOTSPOT_HI);
+  auto start_off_text = DLLCreateNewUITextItem(TXT_LC_STARTNEW, UICOL_HOTSPOT_LO);
+  auto srch_on_text = DLLCreateNewUITextItem(TXT_LC_SRCHADDR, UICOL_HOTSPOT_HI);
+  auto srch_off_text = DLLCreateNewUITextItem(TXT_LC_SRCHADDR, UICOL_HOTSPOT_LO);
+  auto scan_on_text = DLLCreateNewUITextItem(TXT_LC_SCANLOCAL, UICOL_HOTSPOT_HI);
+  auto scan_off_text = DLLCreateNewUITextItem(TXT_LC_SCANLOCAL, UICOL_HOTSPOT_LO);
+  auto game_hdr_text = DLLCreateNewUITextItem(TXT_LC_GAMEHEADER, UICOL_WINDOW_TITLE, DLL_BIG_BRIEFING_FONT);
 
   int exit_menu = 0;
   void *net_game_txt_items[MAX_NET_GAMES];
@@ -432,27 +432,27 @@ int MainMultiplayerMenu() {
   DLLSetScreenMode(SM_MENU);
   *DLLNewUIWindow_alpha = 255;
 
-  void *main_wnd = DLLNewUIWindowCreate(0, 0, 640, 480, UIF_PROCESS_ALL);
+  auto main_wnd = DLLNewUIWindowCreate(0, 0, 640, 480, UIF_PROCESS_ALL);
 
-  void *info_on_text = DLLCreateNewUITextItem("", UICOL_HOTSPOT_HI);
-  void *info_hs = DLLHotSpotCreate(main_wnd, GET_INFO_ID, KEY_I, info_on_text, info_on_text, 1, 1, 1, 1, 0);
+  auto info_on_text = DLLCreateNewUITextItem("", UICOL_HOTSPOT_HI);
+  auto info_hs = DLLHotSpotCreate(main_wnd, GET_INFO_ID, KEY_I, info_on_text, info_on_text, 1, 1, 1, 1, 0);
 
-  void *screen_header = DLLTextCreate(main_wnd, game_hdr_text, 45, cury, UIF_CENTER);
+  auto screen_header = DLLTextCreate(main_wnd, game_hdr_text, 45, cury, UIF_CENTER);
   cury += 35;
-  void *start_hs = DLLHotSpotCreate(main_wnd, 7, KEY_S, start_off_text, start_on_text, 320, cury, 150, 15, UIF_CENTER);
+  auto start_hs = DLLHotSpotCreate(main_wnd, 7, KEY_S, start_off_text, start_on_text, 320, cury, 150, 15, UIF_CENTER);
   cury += 25;
-  void *srch_hs = DLLHotSpotCreate(main_wnd, 9, KEY_A, srch_off_text, srch_on_text, 320, cury, 250, 15, UIF_CENTER);
+  auto srch_hs = DLLHotSpotCreate(main_wnd, 9, KEY_A, srch_off_text, srch_on_text, 320, cury, 250, 15, UIF_CENTER);
   cury += 25;
-  void *edit_box = DLLEditCreate(main_wnd, 9, 10, cury, 300, 15, UIF_CENTER);
+  auto edit_box = DLLEditCreate(main_wnd, 9, 10, cury, 300, 15, UIF_CENTER);
   cury += 35;
-  void *scan_hs = DLLHotSpotCreate(main_wnd, 8, KEY_L, scan_off_text, scan_on_text, 320, cury, 200, 15, UIF_CENTER);
+  auto scan_hs = DLLHotSpotCreate(main_wnd, 8, KEY_L, scan_off_text, scan_on_text, 320, cury, 200, 15, UIF_CENTER);
   cury += 50;
-  void *list_header = DLLTextCreate(main_wnd, list_head_txt, 45, cury, 0);
+  auto list_header = DLLTextCreate(main_wnd, list_head_txt, 45, cury, 0);
   cury += 13;
-  void *main_list = DLLListCreate(main_wnd, UID_OK, 10, cury, 600, 170, UIF_CENTER | UILB_NOSORT);
+  auto main_list = DLLListCreate(main_wnd, UID_OK, 10, cury, 600, 170, UIF_CENTER | UILB_NOSORT);
   cury += 200;
-  void *join_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, join_off_text, join_on_text, 100, cury, 130, 15, 0);
-  void *exit_hs = DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, exit_off_text, exit_on_text, 400, cury, 70, 15, 0);
+  auto join_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, join_off_text, join_on_text, 100, cury, 130, 15, 0);
+  auto exit_hs = DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, exit_off_text, exit_on_text, 400, cury, 70, 15, 0);
   char szdip[30] = "";
   int diplen = 29;
   DLLDatabaseRead("DirectIP", szdip, &diplen);

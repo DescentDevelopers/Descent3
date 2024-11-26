@@ -103,7 +103,6 @@ static void ai_check_terrain_node(int cur_node, int f_check_local_nodes) {
   int xcounter, ycounter;
   int xstart, xend;
   int ystart, yend;
-  int f_ignore_terrain_in_this_node = 0;
 
   // Chrishack -- Note
 

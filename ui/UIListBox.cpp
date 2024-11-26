@@ -168,23 +168,6 @@
 
 //	Construction and destruction
 
-UIListBox::UIListBox() {
-  m_NumItems = 0;
-  m_SelectedIndex = 0;
-  m_Index = 0;
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
-  m_MouseState = 0;
-  selectchange_fn = NULL;
-  selectchange_id_fn = NULL;
-  m_callbackptr = NULL;
-  m_TextOffX = 4;
-  m_TextOffY = 4;
-}
-
-UIListBox::~UIListBox() {}
-
 void UIListBox::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
   m_NumItems = 0;
   m_ItemList = NULL;
@@ -713,8 +696,6 @@ void UIListBox::OnDraw() {
 
 //	behavior when key is pressed.
 void UIListBox::OnKeyDown(int key) {
-  UIGadget *gadget = this;
-
   if (key == KEY_UP) {
     if (m_SelectedIndex > 0) {
       if (m_SelectedIndex == m_Index)
@@ -854,7 +835,6 @@ void UIListBox::OnUserProcess() {
 // check if x and y selection hits a selected item.
 bool UIListBox::MseCheckSelect(int x, int y) {
   int i, ty;
-  bool use_scroll = !(m_Flags & UILB_NOSCROLL);
 
   if (!m_NumItems)
     return false;

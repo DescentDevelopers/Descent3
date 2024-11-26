@@ -358,7 +358,7 @@ private:
   int m_slot;
 };
 
-class MenuItem : public IMenuItem {
+class MenuItem final : public IMenuItem {
 public:
   MenuItem();
   MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int), ...); // the last parameters are the state items, which
@@ -455,7 +455,7 @@ struct tBanItem {
 };
 
 // This class handles displaying and processing a customizable and detailed stats screen (in-game)
-class CDmfcStats : public IDmfcStats {
+class CDmfcStats final : public IDmfcStats {
 public:
   // constuctor/destructor
   CDmfcStats();

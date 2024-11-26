@@ -868,7 +868,6 @@ void GoalClearAll(object *obj) {
 int GoalAllocSlot(object *obj, int level, float influence) {
   float lowest_influence_slot = -1.0;
   float lowest_influence = MAX_INFLUENCE + 1.0;
-  int alloc_slot = AI_INVALID_INDEX;
   ai_frame *ai_info = obj->ai_info;
   int cur_slot;
 
@@ -1421,8 +1420,6 @@ bool GoalIsGoalEnabled(object *obj, int goal_index) {
     if (cur_goal->flags & GF_OBJ_IS_TARGET) {
       gobj = ObjGet(obj->ai_info->target_handle);
     } else if (cur_goal->flags & (GF_OBJS_ARE_SPECIES | GF_OBJS_ARE_ENEMIES | GF_OBJS_ARE_FRIENDS)) {
-      bool done = false;
-
       if (cur_goal->flags & (GF_OBJS_ARE_SPECIES | GF_OBJS_ARE_FRIENDS)) {
         // chrishack -- not done
       }

@@ -70,15 +70,6 @@
 //	int m_ConsoleFont;							// standard font for text in console
 //	char *m_ConsoleBuffer;						// text buffer of console.
 
-UIConsoleGadget::UIConsoleGadget() {
-  m_ConsoleFont = -1;
-  m_ConsoleBuffer = NULL;
-  m_ColorRows = NULL;
-  m_PutsBuffer = NULL;
-}
-
-UIConsoleGadget::~UIConsoleGadget() {}
-
 //	font = console font, NOT GADGET FONT.   This font is used to proportion window
 void UIConsoleGadget::Create(UIWindow *parent, int id, int x, int y, int font, int cols, int rows, int flags) {
   int cw, ch, w, h;
@@ -270,10 +261,6 @@ void UIConsoleGadget::Scroll() {
 
 //	int m_ConsoleFont;							// standard font for text in console
 //	char *m_ConsoleBuffer;						// text buffer of console.
-
-UIConsole::UIConsole() {}
-
-UIConsole::~UIConsole() {}
 
 //	font = console font, NOT GADGET FONT.   This font is used to proportion window
 void UIConsole::Create(int x, int y, int font, int cols, int rows) {

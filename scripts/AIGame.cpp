@@ -343,8 +343,7 @@ static int GetObjectType(int object);
 
 class BaseObjScript {
 public:
-  BaseObjScript();
-  ~BaseObjScript();
+  virtual ~BaseObjScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -361,13 +360,12 @@ struct pest_data {
   int foot_sounds[3];
 };
 
-class Pest : public BaseObjScript {
+class Pest final : public BaseObjScript {
 private:
-  pest_data *memory;
+  pest_data *memory = nullptr;
   void DoInit(int me_handle);
 
 public:
-  Pest() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -384,15 +382,14 @@ struct stinger_data {
   char f_very_hurt;
 };
 
-class Stinger : public BaseObjScript {
+class Stinger final : public BaseObjScript {
 private:
-  stinger_data *memory;
+  stinger_data *memory = nullptr;
 
   void DoInit(int me_handle);
   void DoInterval(int me_handle);
 
 public:
-  Stinger() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -443,9 +440,9 @@ struct superthief_data {
   bool laser_on;
 };
 
-class SuperThief : public BaseObjScript {
+class SuperThief final : public BaseObjScript {
 private:
-  superthief_data *memory;
+  superthief_data *memory = nullptr;
 
   bool DoSteal(int me, int it);
   void SpewEverything(int me);
@@ -460,7 +457,6 @@ private:
   void DoInterval(int me_handle);
 
 public:
-  SuperThief() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -499,9 +495,9 @@ struct humonculous_data {
   int16_t flags;
 };
 
-class Humonculous : public BaseObjScript {
+class Humonculous final : public BaseObjScript {
 private:
-  humonculous_data *memory;
+  humonculous_data *memory = nullptr;
 
   void DetermineDeathPos(int me, vector *dpos, int *droom);
   bool SetMode(int me, uint16_t mode);
@@ -510,7 +506,6 @@ private:
   bool DoNotify(int me, tOSIRISEventInfo *data);
 
 public:
-  Humonculous() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -529,14 +524,13 @@ struct dragon_data {
   int tentacle[6];
 };
 
-class Dragon : public BaseObjScript {
+class Dragon final : public BaseObjScript {
 private:
-  dragon_data *memory;
+  dragon_data *memory = nullptr;
 
   void DoInit(int me_handle);
 
 public:
-  Dragon() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -549,14 +543,13 @@ struct tracker_data {
   int hatch_object;
 };
 
-class Tracker : public BaseObjScript {
+class Tracker final : public BaseObjScript {
 private:
-  tracker_data *memory;
+  tracker_data *memory = nullptr;
 
   void DoInit(int me_handle);
 
 public:
-  Tracker() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -571,14 +564,13 @@ struct lance_data {
   int mode;
 };
 
-class Lance : public BaseObjScript {
+class Lance final : public BaseObjScript {
 private:
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
-  lance_data *memory;
+  lance_data *memory = nullptr;
 
 public:
-  Lance() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -591,13 +583,12 @@ struct flak_data {
   float death_time;
 };
 
-class Flak : public BaseObjScript {
+class Flak final : public BaseObjScript {
 private:
-  flak_data *memory;
+  flak_data *memory = nullptr;
   void DoInit(int me_handle);
 
 public:
-  Flak() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -605,13 +596,12 @@ public:
 // Seeker class
 //------------------
 
-class Seeker : public BaseObjScript {
+class Seeker final : public BaseObjScript {
 private:
   void DoInit(int me);
   void DoCollide(int me);
 
 public:
-  Seeker() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -623,13 +613,12 @@ struct supertrooper_data {
   int body_handle;
 };
 
-class SuperTrooper : public BaseObjScript {
+class SuperTrooper final : public BaseObjScript {
 private:
-  supertrooper_data *memory;
+  supertrooper_data *memory = nullptr;
   void DoInit(int me_handle);
 
 public:
-  SuperTrooper() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -666,16 +655,15 @@ struct sparky_data {
   float spin_time;
 };
 
-class Sparky : public BaseObjScript {
+class Sparky final : public BaseObjScript {
 private:
-  sparky_data *memory;
+  sparky_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);
   void SetMode(int me, char mode);
 
 public:
-  Sparky() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -726,9 +714,9 @@ struct hellion_data {
   int camera[2];
 };
 
-class Hellion : public BaseObjScript {
+class Hellion final : public BaseObjScript {
 private:
-  hellion_data *memory;
+  hellion_data *memory = nullptr;
   void DoInit(int me);
   void RemapAlert(int me, float start, float end, float time);
   void RemapWB(int me, float start, float fire, int fire_sound, float end, float time, float latency, int index,
@@ -738,7 +726,6 @@ private:
   void SetMode(int me, char mode);
 
 public:
-  Hellion() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -795,9 +782,9 @@ struct mantaray_data {
 
 };
 
-class MantaRay : public BaseObjScript {
+class MantaRay final : public BaseObjScript {
 private:
-  mantaray_data *memory;
+  mantaray_data *memory = nullptr;
   void DoInit(int me);
 
   void DoSquadieFrame(int me);
@@ -812,7 +799,6 @@ private:
   void UpdateSquad(int me);
 
 public:
-  MantaRay() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -842,9 +828,9 @@ struct skiff_data {
 
 };
 
-class Skiff : public BaseObjScript {
+class Skiff final : public BaseObjScript {
 private:
-  skiff_data *memory;
+  skiff_data *memory = nullptr;
   void DoInit(int me);
 
   void DoSquadieFrame(int me);
@@ -859,7 +845,6 @@ private:
   void UpdateSquad(int me);
 
 public:
-  Skiff() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -892,9 +877,9 @@ struct spyhunter_data {
 
 };
 
-class SpyHunter : public BaseObjScript {
+class SpyHunter final : public BaseObjScript {
 private:
-  spyhunter_data *memory;
+  spyhunter_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   void DoSummon(int me);
@@ -902,7 +887,6 @@ private:
   void SetMode(int me, char mode);
 
 public:
-  SpyHunter() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -922,15 +906,14 @@ struct sniper_data {
   float base_acc;
 };
 
-class Sniper : public BaseObjScript {
-  sniper_data *memory;
+class Sniper final : public BaseObjScript {
+  sniper_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);
   void SetMode(int me, char mode);
 
 public:
-  Sniper() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -950,15 +933,14 @@ struct snipernorun_data {
   float base_acc;
 };
 
-class SniperNoRun : public BaseObjScript {
-  snipernorun_data *memory;
+class SniperNoRun final : public BaseObjScript {
+  snipernorun_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);
   void SetMode(int me, char mode);
 
 public:
-  SniperNoRun() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -975,15 +957,14 @@ struct evadermoda_data {
   float base_acc;
 };
 
-class EvaderModA : public BaseObjScript {
-  evadermoda_data *memory;
+class EvaderModA final : public BaseObjScript {
+  evadermoda_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);
   void SetMode(int me, char mode);
 
 public:
-  EvaderModA() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1003,15 +984,14 @@ struct flameras_data {
   bool f_firing_ok;
 };
 
-class FlameRAS : public BaseObjScript {
-  flameras_data *memory;
+class FlameRAS final : public BaseObjScript {
+  flameras_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);
   void SetMode(int me, char mode);
 
 public:
-  FlameRAS() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1041,15 +1021,14 @@ struct jugg_data {
   char flags;
 };
 
-class Jugg : public BaseObjScript {
+class Jugg final : public BaseObjScript {
 private:
-  jugg_data *memory;
+  jugg_data *memory = nullptr;
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
   void SetMode(int me, char mode);
 
 public:
-  Jugg() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1067,14 +1046,13 @@ struct dtower_data {
   float last_frame;
 };
 
-class DTower : public BaseObjScript {
+class DTower final : public BaseObjScript {
 private:
-  dtower_data *memory;
+  dtower_data *memory = nullptr;
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
 
 public:
-  DTower() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1090,14 +1068,13 @@ struct dcollector_data {
   bool f_dead;
 };
 
-class DCollector : public BaseObjScript {
+class DCollector final : public BaseObjScript {
 private:
-  dcollector_data *memory;
+  dcollector_data *memory = nullptr;
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
 
 public:
-  DCollector() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1110,14 +1087,13 @@ struct cball_data {
   float mode_time;
 };
 
-class CBall : public BaseObjScript {
+class CBall final : public BaseObjScript {
 private:
-  cball_data *memory;
+  cball_data *memory = nullptr;
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
 
 public:
-  CBall() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1131,14 +1107,13 @@ struct sixgun_data {
   float circle_dist;
 };
 
-class SixGun : public BaseObjScript {
+class SixGun final : public BaseObjScript {
 private:
-  sixgun_data *memory;
+  sixgun_data *memory = nullptr;
   void DoInit(int me_handle);
   bool DoNotify(int me_handle, tOSIRISEVTAINOTIFY *notify);
 
 public:
-  SixGun() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1150,9 +1125,9 @@ struct explodetimeout_data {
   float life_left;
 };
 
-class ExplodeTimeOut : public BaseObjScript {
+class ExplodeTimeOut final : public BaseObjScript {
 private:
-  explodetimeout_data *memory;
+  explodetimeout_data *memory = nullptr;
   void DoInit(int me_handle);
 
 public:
@@ -1187,16 +1162,15 @@ struct sickle_data {
 
 };
 
-class Sickle : public BaseObjScript {
+class Sickle final : public BaseObjScript {
 private:
-  sickle_data *memory;
+  sickle_data *memory = nullptr;
   void SetMode(int me, char mode);
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
   bool DoNotify(int me_handle, tOSIRISEVTAINOTIFY *notify);
 
 public:
-  Sickle() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1208,13 +1182,12 @@ struct tBettyBombInfo {
   bool explode;
 };
 
-class BettyBomb : public BaseObjScript {
+class BettyBomb final : public BaseObjScript {
 public:
-  BettyBomb() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 private:
-  tBettyBombInfo *memory;
+  tBettyBombInfo *memory = nullptr;
 };
 
 struct tBettyInfo {
@@ -1222,16 +1195,15 @@ struct tBettyInfo {
   float lasttime;
 };
 
-class BettyScript : public BaseObjScript {
+class BettyScript final : public BaseObjScript {
 public:
-  BettyScript() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
   void DoInit(int me);
 
 private:
-  tBettyInfo *memory;
+  tBettyInfo *memory = nullptr;
 };
 
 //-----------------
@@ -1242,9 +1214,8 @@ struct tChaffInfo {
   bool killme;
 };
 
-class ChaffScript : public BaseObjScript {
+class ChaffScript final : public BaseObjScript {
 public:
-  ChaffScript() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -1252,7 +1223,7 @@ protected:
   void DoInterval(int handle);
 
 private:
-  tChaffInfo *memory;
+  tChaffInfo *memory = nullptr;
 };
 
 struct tChaffChunkInfo {
@@ -1260,9 +1231,8 @@ struct tChaffChunkInfo {
   float lifeleft;
 };
 
-class ChaffChunkScript : public BaseObjScript {
+class ChaffChunkScript final : public BaseObjScript {
 public:
-  ChaffChunkScript() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -1271,20 +1241,19 @@ protected:
   void DoCollide(tOSIRISEventInfo *data);
 
 private:
-  tChaffChunkInfo *memory;
+  tChaffChunkInfo *memory = nullptr;
 };
 
 //------------------
 // ProxMine class
 //------------------
 
-class ProxMine : public BaseObjScript {
+class ProxMine final : public BaseObjScript {
 private:
   void DoInit(int me);
   void DoCollide(int me);
 
 public:
-  ProxMine() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1292,9 +1261,8 @@ public:
 // Gunboy class
 //------------------
 
-class Gunboy : public BaseObjScript {
+class Gunboy final : public BaseObjScript {
 public:
-  Gunboy() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1308,14 +1276,13 @@ struct gbpowerup_data {
   float time_till_next_hud_message;
 };
 
-class GBPowerup : public BaseObjScript {
+class GBPowerup final : public BaseObjScript {
 private:
-  gbpowerup_data *memory;
+  gbpowerup_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
 
 public:
-  GBPowerup() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1330,14 +1297,13 @@ struct joshbell_data {
   int bell_sound;
 };
 
-class JoshBell : public BaseObjScript {
+class JoshBell final : public BaseObjScript {
 private:
-  joshbell_data *memory;
+  joshbell_data *memory = nullptr;
   void DoInit(int me);
   void DoCollide(int me);
 
 public:
-  JoshBell() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1345,12 +1311,11 @@ public:
 // Explode On Contact
 //-----------------
 
-class ExplodeOnContact : public BaseObjScript {
+class ExplodeOnContact final : public BaseObjScript {
 private:
   void DoCollide(int me, int it_handle);
 
 public:
-  ExplodeOnContact() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1358,12 +1323,11 @@ public:
 // Destroy On Contact
 //-----------------
 
-class DestroyOnContact : public BaseObjScript {
+class DestroyOnContact final : public BaseObjScript {
 private:
   void DoCollide(int me, int it_handle);
 
 public:
-  DestroyOnContact() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1570,9 +1534,9 @@ struct guidebot_data {
   uint16_t powerup_ids[6];
 };
 
-class GuideBot : public BaseObjScript {
+class GuideBot final : public BaseObjScript {
 private:
-  guidebot_data *memory;
+  guidebot_data *memory = nullptr;
   void DoMessage(const char *str, bool f_high_priority, const char *sound_name = NULL, bool f_sound_2d = false);
   //	void InitPowerup(int me, char pow_id);
   //	void DoPowerupFrame(int me);
@@ -1591,7 +1555,6 @@ private:
   void AddGetToGoalCommonGoals(int me);
 
 public:
-  GuideBot() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1705,9 +1668,9 @@ struct thief_data {
   float aggression;
 };
 
-class Thief : public BaseObjScript {
+class Thief final : public BaseObjScript {
 private:
-  thief_data *memory;
+  thief_data *memory = nullptr;
   void DoMessage(const char *str);
 
   void SetMode(int me, int mode);
@@ -1726,7 +1689,6 @@ private:
   void DoSubModeFrame(int me);
 
 public:
-  Thief() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1873,7 +1835,6 @@ bool SuperThief::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
 
 bool SuperThief::DoSteal(int me, int it) {
   int max_tries = numSuperThiefableItems;
-  float gen_perc, perc_chance;
   ;
   int i;
   int count_max, count_num;
@@ -2105,11 +2066,9 @@ void SuperThief::CheckAndFireSecondary(int me) {
 
 void SuperThief::DoInterval(int me) {
   bool f_force_ranged = false;
-  int target_handle;
   float anim_frame;
   float shields;
   int flags;
-  msafe_struct m;
   int room;
   vector pos;
 
@@ -2130,7 +2089,7 @@ void SuperThief::DoInterval(int me) {
     end_pos += orient.fvec * 2000.0f;
 
     int fvi_flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
-    int fate = FVI_RayCast(me, &pos, &end_pos, room, 0.0f, fvi_flags, &ray);
+    FVI_RayCast(me, &pos, &end_pos, room, 0.0f, fvi_flags, &ray);
 
     Obj_Value(memory->camera_obj, VF_SET, OBJV_I_ROOMNUM, &ray.hit_room);
     Obj_Value(memory->camera_obj, VF_SET, OBJV_V_POS, &ray.hit_point);
@@ -2174,7 +2133,6 @@ void SuperThief::DoInterval(int me) {
 
     if (memory->last_frame < 234.0f && anim_frame >= 234.0f) {
       msafe_struct mstruct;
-      int type;
 
       memory->laser_on = true;
       memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, NULL, me);
@@ -2299,14 +2257,13 @@ struct fireatdist_data {
   bool last_f_fire;
 };
 
-class FireAtDist : public BaseObjScript {
+class FireAtDist final : public BaseObjScript {
 private:
-  fireatdist_data *memory;
+  fireatdist_data *memory = nullptr;
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
 
 public:
-  FireAtDist() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2319,14 +2276,13 @@ struct hateptmc_data {
   float time_till_pulse;
 };
 
-class HatePTMC : public BaseObjScript {
+class HatePTMC final : public BaseObjScript {
 private:
-  hateptmc_data *memory;
+  hateptmc_data *memory = nullptr;
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
 
 public:
-  HatePTMC() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2342,15 +2298,14 @@ struct tubbs_data {
   float full_anger_time;
 };
 
-class Tubbs : public BaseObjScript {
+class Tubbs final : public BaseObjScript {
 private:
-  tubbs_data *memory;
+  tubbs_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me, tOSIRISEVTAINOTIFY *notify);
 
 public:
-  Tubbs() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2366,16 +2321,15 @@ struct oldscratch_data {
   float full_anger_time;
 };
 
-class OldScratch : public BaseObjScript {
+class OldScratch final : public BaseObjScript {
 private:
-  oldscratch_data *memory;
+  oldscratch_data *memory = nullptr;
   bool DoSteal(int me, int it);
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me, tOSIRISEVTAINOTIFY *notify);
 
 public:
-  OldScratch() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2427,9 +2381,9 @@ struct barnswallow_data {
   int flags;
 };
 
-class BarnSwallow : public BaseObjScript {
+class BarnSwallow final : public BaseObjScript {
 private:
-  barnswallow_data *memory;
+  barnswallow_data *memory = nullptr;
   void DoInit(int me);
   bool SendCommand(int me, int it, char command, int value = 0);
   bool ReceiveCommand(int me, int it, gb_com *command);
@@ -2441,7 +2395,6 @@ private:
   bool SetMode(int me, char mode, int it = OBJECT_HANDLE_NONE);
 
 public:
-  BarnSwallow() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -2809,10 +2762,6 @@ static inline bool IsGoalFinishedNotify(int index) {
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() {}
-
-BaseObjScript::~BaseObjScript() {}
-
 int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //-----------------
@@ -3114,7 +3063,6 @@ const int16_t hm_valid_next_modes[11] = {
 
 void Humonculous::DetermineDeathPos(int me, vector *dpos, int *droom) {
   float best_dist = 100000000.0f;
-  int best_dp;
   vector dp[6];
   int dr[6];
   int i;
@@ -3674,7 +3622,7 @@ void Humonculous::DoInterval(int me) {
 
         int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
-        int fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
+        FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
         memory->land_pos = ray.hit_point;
         memory->land_pos.y += memory->ground_pnt_offset;
@@ -3744,7 +3692,7 @@ void Humonculous::DoInterval(int me) {
 
         int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
-        int fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
+        FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
         memory->land_pos = ray.hit_point;
         memory->land_pos.y += memory->ground_pnt_offset;
@@ -4129,10 +4077,6 @@ void Jugg::SetMode(int me, char mode) {
 }
 
 void Jugg::DoInit(int me) {
-  int head_object;
-  int belly_object;
-  int turret_object;
-  int flame_object;
   int i;
 
   tOSIRISMEMCHUNK ch;
@@ -4170,7 +4114,6 @@ void Jugg::DoInit(int me) {
 
 void Jugg::DoFrame(int me) {
   float current_anim_frame;
-  matrix orient;
   int flags;
 
   Obj_Value(me, VF_GET, OBJV_F_ANIM_FRAME, &current_anim_frame);
@@ -4264,12 +4207,6 @@ int16_t Jugg::CallEvent(int event, tOSIRISEventInfo *data) {
 //---------------
 
 void DTower::DoInit(int me) {
-  int head_object;
-  int belly_object;
-  int turret_object;
-  int flame_object;
-  int i;
-
   tOSIRISMEMCHUNK ch;
   ch.id = 4;
   ch.size = sizeof(dtower_data);
@@ -5044,7 +4981,6 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
       int rhandle[32];
       bool rdone[32];
       int handle[32];
-      bool done[32];
       int i;
       int rnum_items;
       int num_items;
@@ -5362,7 +5298,6 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
 
                 if (fate == HIT_NONE) {
                   msafe_struct mstruct;
-                  int type;
 
                   Obj_Value(memory->me, VF_GET, OBJV_I_ROOMNUM, &mstruct.roomnum);
                   Obj_Value(memory->me, VF_GET, OBJV_V_POS, &mstruct.pos);
@@ -5478,7 +5413,6 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
   } else if (command->action == COM_GET_MENU) {
     int i;
     gb_menu *menu = (gb_menu *)command->ptr;
-    int cur_command = 0;
 
     strcpy(menu->title, TXT_GB_MENUTITLE);
 
@@ -5600,7 +5534,6 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
 }
 
 void GuideBot::DoCollide(int me, tOSIRISEVTCOLLIDE *evt_collide) {
-  int obj_type;
   int its_parent;
   float rand_val;
 
@@ -5655,7 +5588,6 @@ void GuideBot::DoCollide(int me, tOSIRISEVTCOLLIDE *evt_collide) {
 
 bool GuideBot::DoUse(int me) {
   int p_handle;
-  int sad_sound;
   int buddy_handle;
 
   // NOTE: Use is done on the inventory item and/or the real guidebot
@@ -5686,12 +5618,6 @@ bool GuideBot::DoUse(int me) {
 }
 
 bool GuideBot::DoInit(int me, bool f_reinit) {
-  vector fvec;
-  vector vel;
-  bool f_valid;
-  matrix orient;
-  vector pos;
-  int room;
   int i;
 
   tOSIRISMEMCHUNK ch;
@@ -5871,7 +5797,6 @@ void GuideBot::DoPowerupCheck(int me) {
         }
 
         if (f_for_me) {
-          tOSIRISEventInfo data;
           gb_com command;
 
           command.action = COM_POWERUP_NOTIFY;
@@ -5886,7 +5811,6 @@ void GuideBot::DoPowerupCheck(int me) {
 }
 
 void GuideBot::DoFrame(int me) {
-  int dir_index;
   int flags;
   float anim;
   float last_mode_time;
@@ -6652,9 +6576,6 @@ void Thief::SetMode(int me, int new_mode) {
 }
 
 void Thief::DoInit(int me) {
-
-  int room;
-  vector pos;
   tOSIRISMEMCHUNK ch;
   ch.id = 4;
   ch.size = sizeof(thief_data);
@@ -7121,18 +7042,10 @@ void Sickle::DoInit(int me) {
 
 void Sickle::DoFrame(int me) {
   vector uvec;
-  vector start_pos;
-  vector end_pos;
-  int flags;
-  int fate;
-  int start_room;
-  int ceiling_room;
   float anim_frame;
   int new_mode;
-  vector vel;
   float last_see_time;
   float last_hear_time;
-  char movement_type;
 
   float temp_time;
   float temp_time2;
@@ -7564,10 +7477,9 @@ int16_t Tubbs::CallEvent(int event, tOSIRISEventInfo *data) {
 
 bool OldScratch::DoSteal(int me, int it) {
   int max_tries = numSuperThiefableItems;
-  float gen_perc, perc_chance;
   ;
   int i;
-  int count_max, count_num;
+  int count_max;
   bool *attempted_steals;
 
   attempted_steals = (bool *)malloc(numSuperThiefableItems * sizeof(bool));
@@ -7917,7 +7829,6 @@ bool BarnSwallow::SendCommand(int me, int it, char action, int value) {
 }
 
 void BarnSwallow::DoInit(int me) {
-  int i;
   tOSIRISMEMCHUNK ch;
   ch.id = 4;
   ch.size = sizeof(barnswallow_data);
@@ -8124,7 +8035,6 @@ void BarnSwallow::DoFrame(int me) {
       if (rand_val > 95) // Find a remote powerup and go get it
       {
         int i;
-        bool f_ok = true;
 
         //					for(i = 0; i < memory->num_friends; i++)
         //					{
@@ -8216,7 +8126,6 @@ bool BarnSwallow::SetMode(int me, char mode, int it) {
 
   switch (mode) {
   case BSM_NEST: {
-    int room;
     float max_speed;
     vector pos;
 
@@ -8911,7 +8820,6 @@ void Hellion::DoFrame(int me) {
     vector normal;
     vector pos;
     int room;
-    vector end_pos;
 
     for (i = 0; i < 2; i++) {
       int my_room;
@@ -8921,7 +8829,7 @@ void Hellion::DoFrame(int me) {
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &my_room);
       Obj_GetGunPos(me, i + 1, &pos, &normal);
 
-      int rfate = FVI_RayCast(me, &my_pos, &pos, my_room, 0.0f, 0, &ray);
+      FVI_RayCast(me, &my_pos, &pos, my_room, 0.0f, 0, &ray);
       room = ray.hit_room;
 
       matrix orient;
@@ -10469,10 +10377,7 @@ bool EvaderModA::DoNotify(int me_handle, tOSIRISEventInfo *data) { return true; 
 void EvaderModA::SetMode(int me, char mode) {
   switch (mode) {
   case EMA_GET_BEHIND: {
-    vector pos;
     int vec;
-
-    int flags = GF_NOTIFIES | GF_ORIENT_TARGET;
 
     if ((rand() % 100) > 50) {
       vec = GST_NEG_FVEC;
@@ -10587,10 +10492,7 @@ bool FlameRAS::DoNotify(int me_handle, tOSIRISEventInfo *data) { return true; }
 void FlameRAS::SetMode(int me, char mode) {
   switch (mode) {
   case EMA_GET_BEHIND: {
-    vector pos;
     int vec;
-
-    int flags = GF_NOTIFIES | GF_ORIENT_TARGET;
 
     if ((rand() % 100) > 50) {
       vec = GST_NEG_FVEC;
@@ -10852,8 +10754,8 @@ int16_t BettyBomb::CallEvent(int event, tOSIRISEventInfo *data) {
 
     if (parent != OBJECT_HANDLE_NONE && child_id != -1) {
       int child_handle;
-      matrix orient, o, otemp, o1;
-      vector vel, pos, v, vtemp;
+      matrix orient;
+      vector vel, pos, v;
       int room;
 
       Obj_Value(parent, VF_GET, OBJV_M_ORIENT, &orient);
@@ -10942,7 +10844,7 @@ int16_t BettyScript::CallEvent(int event, tOSIRISEventInfo *data) {
     // create our memory
     DoInit(data->me_handle);
 
-    int parent, type;
+    int parent;
     vector vel;
 
     parent = GetObjectParent(data->me_handle);

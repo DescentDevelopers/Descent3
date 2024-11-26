@@ -1210,7 +1210,6 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
 
     // If blast rings set, create 0-2 delayed blast rings
     if (death_flags & DF_BLAST_RING) {
-      float ring_size = OBJECT_OUTSIDE(objp) ? (objp->size * 3) : objp->size;
       int extras = ps_rand() % 3;
       for (int i = 0; i < extras; i++)
         CreateNewEvent(0, 0, (i * .1) + .1, objp, sizeof(*objp), DoBlastRingEvent);

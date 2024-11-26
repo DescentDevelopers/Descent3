@@ -2123,7 +2123,6 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
   fvi_wall_max_xyz = fvi_max_xyz;
 
   if (ROOMNUM_OUTSIDE(init_room_index)) {
-    int num_cells = 0;
     int next_y_delta;
     int xstart, xend, ystart, yend;
     int check_x, check_y;
@@ -3326,7 +3325,6 @@ void check_hit_obj(int objnum) {
   vector hit_point;
   float cur_dist;
   const object *obj = &Objects[objnum];
-  bool f_x = false;
   int collision_type;
   int m_obj_index = fvi_query_ptr->thisobjnum;
   object *m_obj = &Objects[m_obj_index];
@@ -4461,7 +4459,6 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
   int portal_num;
   //	vector col_point[32];
   //	vector col_normal[32];
-  int num_cols = 0;
   object *this_obj;
   uint8_t msector = 0;
 

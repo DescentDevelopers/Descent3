@@ -42,12 +42,8 @@
 //	constructor and destructor
 //	----------------------------------------------------------------------------
 
-grHardwareSurface::grHardwareSurface() : grSurface() {}
-
 grHardwareSurface::grHardwareSurface(int w, int h, int bpp, unsigned flags, const char *name)
     : grSurface(w, h, bpp, SURFTYPE_GENERIC, flags, name) {}
-
-grHardwareSurface::~grHardwareSurface() {}
 
 //	----------------------------------------------------------------------------
 //	initialize a hardware surface with these values

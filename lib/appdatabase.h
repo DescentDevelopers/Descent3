@@ -60,12 +60,12 @@
 
 class oeAppDatabase {
 public:
-  oeAppDatabase(){};
+  oeAppDatabase() = default;
 
   //	you can also create a reference to a current database.  this is good if
   //	you have a hierachical database.
   oeAppDatabase(oeAppDatabase *parent){};
-  virtual ~oeAppDatabase(){};
+  virtual ~oeAppDatabase() = default;
 
   //	creates an empty classification or structure where you can store information
   virtual bool create_record(const char *pathname) = 0;

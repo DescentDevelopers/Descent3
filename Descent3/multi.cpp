@@ -2016,7 +2016,6 @@ int MultiStuffRobotPosition(uint16_t objectnum, uint8_t *data) {
     MultiAddByte(0, data, &count);
 
   vector *vel = &obj->mtype.phys_info.velocity;
-  vector *rotvel = &obj->mtype.phys_info.rotvel;
 
   MultiAddShort((vel->x * 128.0), data, &count);
   MultiAddShort((vel->y * 128.0), data, &count);
@@ -3774,7 +3773,6 @@ int MultiFindFreeSlot() {
 void MultiDoAskToJoin(uint8_t *data, network_address *from_addr) {
   uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
-  int incount = 0;
   int size;
 
   size = START_DATA(MP_JOIN_RESPONSE, outdata, &count);
@@ -4097,8 +4095,6 @@ void MultiSendBlowupBuilding(int hit_objnum, int killer_objnum, float damage) {
   int count = 0;
   int size_offset = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
-
-  uint16_t short_damage = damage;
 
   size_offset = START_DATA(MP_BLOWUP_BUILDING, data, &count, 1);
   MultiAddShort(hit_objnum, data, &count);
@@ -4577,8 +4573,6 @@ void MultiDoJoinObjects(uint8_t *data) {
 
     uint32_t checksum;
     matrix orient;
-    uint8_t name_len = 0;
-    uint8_t num_persist_vars = 0;
 
     vm_MakeIdentity(&orient);
 
@@ -4997,7 +4991,7 @@ void MultiDoMessageToServer(uint8_t *data) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
   SKIP_HEADER(data, &count);
 
-  uint8_t slot = MultiGetByte(data, &count);
+  /* uint8_t slot = */ MultiGetByte(data, &count);
   int towho = (int8_t)MultiGetByte(data, &count);
   uint8_t len = MultiGetByte(data, &count);
 
@@ -5320,8 +5314,6 @@ void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record) {
   if (demo_record)
     obj->flags |= OF_CLIENTDEMOOBJECT;
 
-  object *parent_obj = ObjGetUltimateParent(obj);
-
   size_offset = START_DATA(MP_OBJECT, data, &count, 1);
 
   uint32_t index = MultiGetMatchChecksum(obj->type, obj->id);
@@ -5489,7 +5481,6 @@ int MultiStuffGuidedInfo(int slot, uint8_t *data) {
 
   // Do velocity
   vector *vel = &obj->mtype.phys_info.velocity;
-  vector *rotvel = &obj->mtype.phys_info.rotvel;
 
   MultiAddShort(vel->x * 128.0, data, &count);
   MultiAddShort(vel->y * 128.0, data, &count);
@@ -5654,7 +5645,7 @@ void MultiDoRemoveObject(uint8_t *data) {
   SKIP_HEADER(data, &count);
 
   uint16_t server_objnum = MultiGetUshort(data, &count);
-  uint8_t type = MultiGetByte(data, &count);
+  /* uint8_t type = */ MultiGetByte(data, &count);
 
   uint8_t sound = MultiGetByte(data, &count);
 
@@ -5866,7 +5857,7 @@ void MultiDoOnOff(uint8_t *data) {
   uint8_t slot = MultiGetByte(data, &count);
   uint8_t on = MultiGetByte(data, &count);
   uint8_t wb_index = MultiGetByte(data, &count);
-  uint8_t fire_mask = MultiGetByte(data, &count);
+  /* uint8_t fire_mask = */ MultiGetByte(data, &count);
 
   if (on) {
     Objects[Players[slot].objnum].weapon_fire_flags |= WFF_ON_OFF;
@@ -7353,8 +7344,6 @@ void MultiAddObjWBAnimUpdate(int objnum) {
 
 int MultiStuffObjWBAnimUpdate(uint16_t objnum, uint8_t *data) {
   // multi_anim multi_anim_info;
-  int count = 0;
-  int size = 0;
 
   if (Netgame.local_role != LR_SERVER) {
     BailOnMultiplayer(NULL);
@@ -7677,7 +7666,7 @@ void MultiDoFileDenied(uint8_t *data) {
   // We asked for a file, but the request was denied for some reason
   int count = 0;
   SKIP_HEADER(data, &count);
-  uint16_t filenum = MultiGetUshort(data, &count);
+  /* uint16_t filenum = */ MultiGetUshort(data, &count);
   uint16_t playernum = MultiGetUshort(data, &count);
   uint16_t filewho = MultiGetUshort(data, &count);
   LOG_DEBUG.printf("Got a file denied packet from %d", playernum);
@@ -7802,7 +7791,6 @@ void SendDataChunk(int playernum) {
   try {
     cf_ReadBytes(readbuf, dataread, NetPlayers[playernum].file_xfer_cfile);
   } catch (cfile_error *cfe) {
-    int t = cfe->read_write; // this is is here to fix compile warning
     // Woops, can't read the file, better error out!
     MultiCancelFile(playernum, NetPlayers[playernum].file_xfer_id, NetPlayers[playernum].file_xfer_who);
     Int3();
@@ -8123,7 +8111,7 @@ void MultiDoPing(uint8_t *data, network_address *addr) {
   int size_offset;
 
   SKIP_HEADER(data, &count);
-  uint8_t slot = MultiGetByte(data, &count);
+  /* uint8_t slot = */ MultiGetByte(data, &count);
   float pingtime = MultiGetFloat(data, &count);
 
   // Now send a response
@@ -9299,7 +9287,6 @@ void DoReqPlayerList(network_address *addr) {
   memset(outdata, 0, sizeof(outdata));
   size = START_DATA(MP_PLAYERLIST_DATA, outdata, &count);
 
-  uint16_t icurrplayers = 0;
   int i = 0;
   if (Dedicated_server) {
     // Skip the server player

@@ -174,7 +174,7 @@ static int create_audiobuf_handler(unsigned char major, unsigned char minor, uns
 
   int flags = get_ushort(data + 2);
   int sample_rate = get_ushort(data + 4);
-  int desired_buffer = get_int(data + 6);
+  // int desired_buffer = get_int(data + 6);
 
   int channels = (flags & MVE_AUDIO_FLAGS_STEREO) ? 2 : 1;
   int sample_size = (flags & MVE_AUDIO_FLAGS_16BIT) ? 2 : 1;
@@ -338,12 +338,12 @@ static int video_codemap_handler(unsigned char major, unsigned char minor, unsig
 static int video_data_handler(unsigned char major, unsigned char minor, unsigned char *data, int len, void *context) {
   unsigned char *temp;
 
-  short nFrameHot = get_short(data);
-  short nFrameCold = get_short(data + 2);
-  short nXoffset = get_short(data + 4);
-  short nYoffset = get_short(data + 6);
-  short nXsize = get_short(data + 8);
-  short nYsize = get_short(data + 10);
+  // short nFrameHot = get_short(data);
+  // short nFrameCold = get_short(data + 2);
+  // short nXoffset = get_short(data + 4);
+  // short nYoffset = get_short(data + 6);
+  // short nXsize = get_short(data + 8);
+  // short nYsize = get_short(data + 10);
   unsigned short nFlags = get_ushort(data + 12);
 
   if (nFlags & 1) {

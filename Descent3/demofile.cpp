@@ -309,7 +309,6 @@ static float Demo_next_frame = 0;
 static float Demo_frame_time = 0;
 static float Demo_last_pinfo;
 float Demo_frame_ofs;
-static int Demo_auto_idx = 0;
 uint32_t Demo_flags = 0;
 uint16_t Demo_obj_map[MAX_OBJECTS];
 static bool Demo_turretchanged[MAX_OBJECTS];
@@ -553,7 +552,6 @@ void DemoReadTurretChanged(void) {
   int objnum;
   uint16_t num_turrets;
   float turr_time;
-  int count = 0;
   float do_time;
 
   do_time = cf_ReadFloat(Demo_cfp);
@@ -599,7 +597,6 @@ void DemoWriteObjAnimChanged(uint16_t objnum) {
 void DemoReadObjAnimChanged(void) {
   custom_anim multi_anim_info;
   int objnum;
-  int count = 0;
   float changetime;
   changetime = cf_ReadFloat(Demo_cfp);
   objnum = cf_ReadShort(Demo_cfp);

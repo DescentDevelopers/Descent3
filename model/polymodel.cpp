@@ -2441,8 +2441,6 @@ void SetModelAngles(poly_model *po, const float *normalized_angles) {
 
         // Now do a parametric adjustment on the angles
 
-        int cur_angle = 0;
-
         // If we're already at the high point of the interpolation then just
         // stuff some values
         if (cur_state == po->num_key_angles - 1) {
@@ -2555,7 +2553,6 @@ void SetModelInterpPos(poly_model *po, const float *normalized_pos) {
 
       // Now do a parametric adjustment on the positions
 
-      vector total_delta_pos = {0, 0, 0};
       vector subpos;
       vector final_pos;
 
@@ -3122,7 +3119,6 @@ int CountFacesInPolymodel(poly_model *pm) {
 // of that point
 void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix *orient, int subnum, vector *pos,
                               vector *norm) {
-  bsp_info *sm = &pm->submodel[subnum];
   float normalized_time[MAX_SUBOBJECTS];
   int i;
 
@@ -3174,8 +3170,6 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
 
 void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix *orient, int subnum,
                               float *normalized_time, vector *pos, vector *norm) {
-  bsp_info *sm = &pm->submodel[subnum];
-
   ASSERT(!(pm->flags & PMF_NOT_RESIDENT));
 
   if (!pm->new_style)

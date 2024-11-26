@@ -760,7 +760,6 @@ int grtext_GetTextLineWidth(const char *str) {
   int line_width = 0, max_width = 0;
   int rgb_define_mode = 0;
   int strsize = strlen(str);
-  int line_idx = 0;
 
   for (int i = 0; i < strsize; i++) {
     int width;

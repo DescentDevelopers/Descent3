@@ -49,10 +49,9 @@ const int CTID_KEYBOARD = -1, // always -1 for keyboards
 
 const int CTID_EXTCONTROL0 = 0;
 
-class sdlgameController : public gameController {
+class sdlgameController final : public gameController {
 public:
   sdlgameController(int num_funcs, ct_function *funcs);
-  ~sdlgameController();
 
   //	these functions suspend or resume any controller reading.  this is really only useful for
   //	preemptive controller polling, but they should be used to activate and deactivate controller

@@ -74,7 +74,6 @@
 
 IDMFC *DMFCBase = NULL;
 static IDmfcStats *dstat = NULL;
-static IMenuItem *OSMenuSave = NULL;
 static object *dObjects = NULL;
 static player *dPlayers = NULL;
 
@@ -1268,7 +1267,6 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   if (DisplayScoreScreen)
     return;
 
-  int x = 520;
   int height = DLLgrfont_GetHeight((DMFCBase->GetGameFontTranslateArray())[HUD_FONT_INDEX]) + 3;
   uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)((DisplayScoreScreen) ? 128 : 255));
   int y = (DMFCBase->GetGameWindowH() / 2) - ((height * 5) / 2);

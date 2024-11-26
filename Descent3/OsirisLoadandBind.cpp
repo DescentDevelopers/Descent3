@@ -2683,7 +2683,7 @@ bool Osiris_RestoreSystemState(CFILE *file) {
     return false;
   }
 
-  uint8_t version = (uint8_t)cf_ReadByte(file);
+  /* uint8_t version = */ cf_ReadByte(file);
 
   num_bytes_to_be_restored = cf_ReadInt(file);
 

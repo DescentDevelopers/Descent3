@@ -310,7 +310,7 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
 }
 
 int FindClosestPlayer(int objhandle) {
-  vector objpos, playerpos;
+  vector objpos;
   float closest_dist = FLT_MAX;
   int closest_player = OBJECT_HANDLE_NONE;
   msafe_struct mstruct;
@@ -601,8 +601,7 @@ static tScriptInfo ScriptInfo[NUM_IDS] = {
 
 class BaseObjScript {
 public:
-  BaseObjScript();
-  ~BaseObjScript();
+  virtual ~BaseObjScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -803,9 +802,9 @@ struct alienorganism_data {
 };
 
 // Alien Organism class definition
-class AlienOrganism : public BaseObjScript {
+class AlienOrganism final : public BaseObjScript {
 private:
-  alienorganism_data *memory;
+  alienorganism_data *memory = nullptr;
 
   void SetMode(int me, char mode);
   void DoTakeoff(int me, float takeoff_speed, float speed_variance);
@@ -865,7 +864,6 @@ private:
   void DoSquadieFrame(int me);
 
 public:
-  AlienOrganism() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -983,9 +981,9 @@ struct heavytrooper_data {
 };
 
 // Heavy Trooper class definition
-class HeavyTrooper : public BaseObjScript {
+class HeavyTrooper final : public BaseObjScript {
 private:
-  heavytrooper_data *memory;
+  heavytrooper_data *memory = nullptr;
 
   void SetMode(int me, char mode);
 
@@ -1002,7 +1000,6 @@ private:
   void EnableGunAttack(int me, bool enable = true);
 
 public:
-  HeavyTrooper() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1078,9 +1075,9 @@ struct lifter_data {
 };
 
 // Lifter class definition
-class Lifter : public BaseObjScript {
+class Lifter final : public BaseObjScript {
 private:
-  lifter_data *memory;
+  lifter_data *memory = nullptr;
 
   void SetMode(int me, char mode);
 
@@ -1104,7 +1101,6 @@ private:
   void UpdateLiftBeam(int me);
 
 public:
-  Lifter() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1292,9 +1288,9 @@ struct alienboss_data {
 };
 
 // Alien Boss class definition
-class AlienBoss : public BaseObjScript {
+class AlienBoss final : public BaseObjScript {
 private:
-  alienboss_data *memory;
+  alienboss_data *memory = nullptr;
 
   void SetMode(int me, char mode);
   void DoTakeoff(int me, float takeoff_speed, float speed_variance);
@@ -1330,7 +1326,6 @@ private:
   void DoCustomLookups(void);
 
 public:
-  AlienBoss() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1383,9 +1378,9 @@ struct securitycamera_data {
 };
 
 // Security Camera class definition
-class SecurityCamera : public BaseObjScript {
+class SecurityCamera final : public BaseObjScript {
 private:
-  securitycamera_data *memory;
+  securitycamera_data *memory = nullptr;
 
   void SetMode(int me, char mode);
 
@@ -1399,7 +1394,6 @@ private:
   bool ReceiveCommand(int me, int it, char command, void *ptr);
 
 public:
-  SecurityCamera() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1427,9 +1421,9 @@ struct crowdcontrol_data {
 };
 
 // Security Camera class definition
-class CrowdControl : public BaseObjScript {
+class CrowdControl final : public BaseObjScript {
 private:
-  crowdcontrol_data *memory;
+  crowdcontrol_data *memory = nullptr;
 
   void DoInit(int me_handle);
   void DoFrame(int me_handle);
@@ -1439,7 +1433,6 @@ private:
   bool ReceiveCommand(int me, int it, char command, void *ptr);
 
 public:
-  CrowdControl() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -1631,10 +1624,6 @@ int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() {}
-
-BaseObjScript::~BaseObjScript() {}
-
 int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //---------------------
@@ -2217,7 +2206,6 @@ void AlienOrganism::UpdateSquadieFormationGoal(int me) {
 }
 
 void AlienOrganism::SetWanderGoal(int me) {
-  vector pos;
   int room = 0;
   float dist = 15.0f;
 
@@ -2557,7 +2545,6 @@ void AlienOrganism::UpdateEnergyBeams(int me) {
 void AlienOrganism::UpdateEnergyEffect(int me) {
   int room;
   vector pos;
-  int weapon_id;
 
   // See if this object has an energy charge
   if (memory->energy_charges > 0.0f) {
@@ -2586,7 +2573,6 @@ void AlienOrganism::SetMode(int me, char mode) {
 
   int flags;
   char movement_type;
-  vector vel;
 
   // Clear out any goals
   AI_SafeSetType(me, AIT_AIS);
@@ -2614,7 +2600,7 @@ void AlienOrganism::SetMode(int me, char mode) {
     ray_info ray;
     int fate;
     vector end_pos, landing_pos;
-    int end_room, landing_room;
+    int landing_room;
 
     // If currently landed, set take off velocity
     DoTakeoff(me, 8.0f, 3.0f);
@@ -3087,7 +3073,6 @@ void AlienOrganism::DoTakeoff(int me, float takeoff_speed, float speed_variance)
 
 // Processes the AI Initialize event
 void AlienOrganism::DoInit(int me) {
-  int flags;
   msafe_struct m;
   m.objhandle = me;
 
@@ -3211,8 +3196,8 @@ void AlienOrganism::DoInit(int me) {
 bool AlienOrganism::FindHome(int me) {
   int num_attempts;
   bool home_found;
-  vector start_pos, target_pos, landed_pos, home_dir;
-  int start_room, landed_room;
+  vector start_pos, target_pos, home_dir;
+  int start_room;
   matrix start_orient;
   int flags, fate;
   ray_info ray;
@@ -3311,7 +3296,7 @@ void AlienOrganism::DoSquadieFrame(int me) {
     float slowdown = 1.0f;
     if (dist <= ALIEN_APPROACH_DIST) {
       matrix leader_orient;
-      vector dir, leader_pos;
+      vector dir;
 
       // See if we are in front of leader
       Obj_Value(memory->leader_handle, VF_GET, OBJV_M_ORIENT, &leader_orient);
@@ -3348,11 +3333,8 @@ void AlienOrganism::DoSquadieFrame(int me) {
 
 // Processes the AI Frame Interval Event
 void AlienOrganism::DoFrame(int me) {
-  vector uvec;
   int flags;
   float anim_frame;
-  int new_mode;
-  vector vel;
   float last_see_time, last_see_game_time;
   float last_hear_time, last_hear_game_time;
   float last_perceive_time;
@@ -4788,8 +4770,8 @@ bool Lifter::OkToPull(int me, bool initial_check /*=true*/) {
   // see if anything is in the way
   ray_info ray;
   int flags, fate;
-  vector start_pos, end_pos, landing_pos;
-  int start_room, landing_room;
+  vector start_pos, end_pos;
+  int start_room;
   float target_size;
 
   Obj_Value(me, VF_GET, OBJV_V_POS, &start_pos);
@@ -5504,7 +5486,6 @@ bool AlienBoss::IsOnFire(int me) { return (Obj_IsEffect(me, EF_NAPALMED)); }
 
 // Sets wandering destination goal for boss
 void AlienBoss::SetWanderGoal(int me) {
-  vector pos;
   int room = 0;
   float dist = 15.0f;
 
@@ -5733,7 +5714,6 @@ void AlienBoss::SetMode(int me, char mode) {
 
   int flags;
   char movement_type;
-  vector vel;
 
   // Clear out any goals
   AI_SafeSetType(me, AIT_AIS);
@@ -5762,7 +5742,7 @@ void AlienBoss::SetMode(int me, char mode) {
     ray_info ray;
     int fate;
     vector end_pos, landing_pos;
-    int end_room, landing_room;
+    int landing_room;
 
     // If currently landed, set take off velocity
     DoTakeoff(me, 8.0f, 3.0f);
@@ -6178,7 +6158,6 @@ void AlienBoss::DoTakeoff(int me, float takeoff_speed, float speed_variance) {
 
 // Processes the AI Initialize event
 void AlienBoss::DoInit(int me) {
-  int flags;
   msafe_struct m;
   m.objhandle = me;
 
@@ -6362,8 +6341,8 @@ bool AlienBoss::DoStingAttack(int me) {
   // see if anything is in the way
   ray_info ray;
   int flags, fate;
-  vector start_pos, end_pos, landing_pos;
-  int start_room, landing_room;
+  vector start_pos, end_pos;
+  int start_room;
   float target_size;
 
   Obj_Value(me, VF_GET, OBJV_V_POS, &start_pos);
@@ -6393,7 +6372,6 @@ bool AlienBoss::DoStingAttack(int me) {
 
 // Processes the AI Frame Interval Event
 void AlienBoss::DoFrame(int me) {
-  int flags;
   float anim_frame;
   float last_see_time, last_see_game_time;
   float last_hear_time, last_hear_game_time;
@@ -7015,7 +6993,6 @@ bool SecurityCamera::ReceiveCommand(int me, int it, char command, void *ptr) {
 
 // Sets the Current Mode
 void SecurityCamera::SetMode(int me, char mode) {
-  int flags;
   float curr_anim_frame;
 
   // Get the current animation frame
@@ -7122,7 +7099,7 @@ void SecurityCamera::DoFrame(int me) {
       vector local_vec_to_target, world_vec_to_target, dir, local_fvec;
       matrix orient;
       double theta;
-      float frame_offset, dot, curr_frame, dest_frame, anim_time, next_frame;
+      float frame_offset, dot, curr_frame, dest_frame, anim_time;
 
       // Get the vec to target in local security camera space
       Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
@@ -7339,7 +7316,7 @@ void CrowdControl::DoFrame(int me) {
     if (!memory->disable_check && qObjExists(memory->follow_handle)) {
       vector my_vel, my_pos, leader_pos, leader_dir;
       matrix my_orient;
-      float my_max_speed, dist, new_speed;
+      float dist, new_speed;
 
       Obj_Value(me, VF_GET, OBJV_V_VELOCITY, &my_vel);
       Obj_Value(me, VF_GET, OBJV_V_POS, &my_pos);

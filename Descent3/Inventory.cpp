@@ -417,7 +417,7 @@ bool Inventory::AddObject(int object_handle, int flags, const char *description)
 
   ASSERT(obj->type == OBJ_BUILDING || obj->type == OBJ_ROBOT || obj->type == OBJ_POWERUP || obj->type == OBJ_CLUTTER);
 
-  inven_item *current = root, *prev = root, *newnode;
+  inven_item *prev = root, *newnode;
 
   if (count == 0) {
     // there are no items in the list...time to add
@@ -531,7 +531,7 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
     return false;
   }
 
-  inven_item *current = root, *prev = root, *newnode;
+  inven_item *prev = root, *newnode;
 
   if (count == 0) {
     // there are no items in the list...time to add
@@ -606,7 +606,7 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
   if (count >= MAX_UNIQUE_INVEN_ITEMS)
     return false;
 
-  inven_item *current = root, *prev = root, *newnode;
+  inven_item *prev = root, *newnode;
 
   if (count == 0) {
     // there are no items in the list...time to add

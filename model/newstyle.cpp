@@ -510,7 +510,6 @@ inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum
 inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) {
   g3Point *pointlist[100];
   polyface *fp = &sm->faces[facenum];
-  int modelnum = sm - pm->submodel;
   int t;
 
   for (t = 0; t < fp->nverts; t++) {
@@ -561,7 +560,6 @@ inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) 
 inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum) {
   g3Point *pointlist[100];
   polyface *fp = &sm->faces[facenum];
-  int modelnum = sm - pm->submodel;
   int t;
   bool smooth = 0;
 
@@ -623,7 +621,6 @@ inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum
 // Draws a glowing cone of light that represents thrusters
 void DrawThrusterEffect(vector *pos, float r, float g, float b, vector *norm, float size, float length) {
   vector cur_pos = *pos;
-  float cur_length = 0;
   vector glow_pos[MAX_PARTS];
   float glow_size[MAX_PARTS];
   int total_parts = 0;
@@ -702,7 +699,6 @@ void RenderSubmodelFacesSorted(poly_model *pm, bsp_info *sm) {
 
   int rcount;
   int model_render_order[MAX_POLYGON_VECS];
-  int modelnum = sm - pm->submodel;
 
   ASSERT(sm->nverts < MAX_POLYGON_VECS);
 

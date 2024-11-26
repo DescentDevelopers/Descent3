@@ -73,29 +73,6 @@
 #include "pserror.h"
 #include "voice.h"
 
-//	constructor
-CBriefParse::CBriefParse() {
-  AddTextEffect = NULL;
-  AddBmpEffect = NULL;
-  AddMovieEffect = NULL;
-  AddBkgEffect = NULL;
-  AddPolyEffect = NULL;
-  AddSoundEffect = NULL;
-  AddButtonEffect = NULL;
-  StartScreen = NULL;
-  EndScreen = NULL;
-  LoopCallback = NULL;
-  SetTitle = NULL;
-  SetStatic = NULL;
-  SetGlitch = NULL;
-  AddVoice = NULL;
-  linenum = 0;
-  parse_error = false;
-}
-
-//	destructor
-CBriefParse::~CBriefParse() {}
-
 //	SetCallbacks
 //
 //	Registers (or changes) the callbacks of the class
@@ -298,7 +275,6 @@ static int ReadFullLine(char **data, CFILE *ifile) {
 //	Parses the briefing file (calling the callbacks throughout), check return code
 int CBriefParse::ParseBriefing(const char *filename) {
   CFILE *ifile;
-  bool retvalue = false;
   bool voice_def_screen = false;
   char text_buf[8192], *text_ptr = NULL;
   bool abort = 0;
@@ -308,7 +284,6 @@ int CBriefParse::ParseBriefing(const char *filename) {
   int beffect = bfxNONE;
   int x = 0, y = 0;
   char filen[40];
-  bool emergency_exit = false;
 
   // the following block of 'globals' are for when parsing a text block, the information is stored
   // here until a $endtext is hit

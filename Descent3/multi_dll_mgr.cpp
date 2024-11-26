@@ -638,14 +638,14 @@ int LoadMultiDLL(const char *name) {
 loaddll:
 
   if (!mod_LoadModule(&MultiDLLHandle, tmp_dll_name)) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_WARNING.printf("You are missing the DLL %s!", name);
     return 0;
   }
 
   DLLMultiInit = (DLLMultiInit_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiInit", 4);
   if (!DLLMultiInit) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiInit!";
     Int3();
     FreeMultiDLL();
@@ -653,7 +653,7 @@ loaddll:
   }
   DLLMultiCall = (DLLMultiCall_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiCall", 4);
   if (!DLLMultiCall) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiCall!";
     Int3();
     FreeMultiDLL();
@@ -661,7 +661,7 @@ loaddll:
   }
   DLLMultiClose = (DLLMultiClose_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiClose", 0);
   if (!DLLMultiClose) {
-    int err = mod_GetLastError();
+    mod_GetLastError();
     LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiClose!";
     Int3();
     FreeMultiDLL();
@@ -693,7 +693,7 @@ loaddll:
     DLLMultiScoreCall = (DLLMultiScoreCall_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiScoreEvent", 8);
 
     if (!DLLMultiScoreCall) {
-      int err = mod_GetLastError();
+      mod_GetLastError();
       LOG_FATAL << "Couldn't get a handle to the dll function DLLMultiScoreCall!";
       Int3();
       Supports_score_api = false;
@@ -712,7 +712,7 @@ void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color) {
   strcpy(uit->m_Text, newtext);
   uit->set_color(color);
 }
-void *NewUIWindowCreate(int x, int y, int w, int h, int flags) {
+UIObject *NewUIWindowCreate(int x, int y, int w, int h, int flags) {
   NewUIWindow *newwin;
   newwin = new NewUIWindow;
   newwin->Create(x, y, w, h, flags);
@@ -721,14 +721,14 @@ void *NewUIWindowCreate(int x, int y, int w, int h, int flags) {
 void NewUIWindowDestroy(NewUIWindow *deswin) { deswin->Destroy(); }
 void NewUIWindowOpen(NewUIWindow *deswin) { deswin->Open(); }
 void NewUIWindowClose(NewUIWindow *deswin) { deswin->Close(); }
-void *TextCreate(UIWindow *parentwin, UITextItem *textitem, int x, int y, int flags) {
+UIObject *TextCreate(UIWindow *parentwin, UITextItem *textitem, int x, int y, int flags) {
   UIText *newtext;
   newtext = new UIText;
   newtext->Create(parentwin, textitem, x, y, flags);
   return newtext;
 }
 void TextSetTitle(UIText *text, UITextItem *textitem) { text->SetTitle(textitem); }
-void *EditCreate(UIWindow *parentwin, int id, int x, int y, int w, int h, int flags) {
+UIObject *EditCreate(UIWindow *parentwin, int id, int x, int y, int w, int h, int flags) {
   NewUIEdit *newedit;
   newedit = new NewUIEdit;
   newedit->Create(parentwin, id, x, y, w, h, flags);
@@ -736,13 +736,13 @@ void *EditCreate(UIWindow *parentwin, int id, int x, int y, int w, int h, int fl
 }
 void EditSetText(NewUIEdit *item, const char *newtext) { item->SetText(newtext); }
 void EditGetText(NewUIEdit *item, char *buff, int len) { item->GetText(buff, len); }
-void *ButtonCreate(UIWindow *parentwin, int id, UITextItem *titleitem, int x, int y, int w, int h, int flags) {
+UIObject *ButtonCreate(UIWindow *parentwin, int id, UITextItem *titleitem, int x, int y, int w, int h, int flags) {
   UIButton *newbutt;
   newbutt = new UIButton;
   newbutt->Create(parentwin, id, titleitem, x, y, w, h, flags);
   return newbutt;
 }
-void *ListCreate(UIWindow *parentwin, int id, int x, int y, int w, int h, int flags) {
+UIObject *ListCreate(UIWindow *parentwin, int id, int x, int y, int w, int h, int flags) {
   NewUIListBox *newlist;
   newlist = new NewUIListBox;
   newlist->Create(parentwin, id, x, y, w, h, flags);
@@ -777,7 +777,7 @@ void DatabaseWriteInt(const char *label, int val) {
   Database->write(label, val);
 }
 void DescentDefer(void) { Descent->defer(); }
-void *NewUIGameWindowCreate(int x, int y, int w, int h, int flags) {
+UIObject *NewUIGameWindowCreate(int x, int y, int w, int h, int flags) {
   NewUIGameWindow *newgamewin;
   newgamewin = new NewUIGameWindow;
   newgamewin->Create(x, y, w, h, flags);
@@ -786,8 +786,8 @@ void *NewUIGameWindowCreate(int x, int y, int w, int h, int flags) {
 void NewUIGameWindowDestroy(NewUIGameWindow *item) { item->Destroy(); }
 void NewUIGameWindowOpen(NewUIGameWindow *item) { item->Open(); }
 void NewUIGameWindowClose(NewUIGameWindow *item) { item->Close(); }
-void *HotSpotCreate(UIWindow *parentwin, int id, int key, UIItem *txtitemoff, UIItem *txtitemon, int x, int y, int w,
-                    int h, int flags) {
+UIObject *HotSpotCreate(UIWindow *parentwin, int id, int key, UIItem *txtitemoff, UIItem *txtitemon,
+                        int x, int y, int w, int h, int flags) {
   UIHotspot *newhs;
   newhs = new UIHotspot;
   if (newhs)
@@ -795,7 +795,7 @@ void *HotSpotCreate(UIWindow *parentwin, int id, int key, UIItem *txtitemoff, UI
   return newhs;
 }
 void HotSpotSetStates(UIHotspot *hs, UIItem *texton, UIItem *textoff) { hs->SetStates(textoff, texton); }
-void *CheckBoxCreate(UIWindow *parent, int id, UIItem *title, int x, int y, int w, int h, int flags) {
+UIObject *CheckBoxCreate(UIWindow *parent, int id, UIItem *title, int x, int y, int w, int h, int flags) {
   UICheckBox *newcb;
   newcb = new UICheckBox;
   if (newcb)
@@ -831,7 +831,7 @@ int PollUI(void) {
   }
   return result;
 }
-void *CreateNewUITextItem(const char *newtext, uint32_t color, int font) {
+UIItem *CreateNewUITextItem(const char *newtext, uint32_t color, int font) {
   UITextItem *new_text_item;
   if (font == -1) {
     new_text_item = new UITextItem(newtext);
@@ -855,7 +855,7 @@ void RemoveUITextItem(void *item) {
   UITextItem *old_text_item = (UITextItem *)item;
   delete old_text_item;
 }
-void *CreateNewUIBmpItem(int handle, uint8_t alpha) {
+UIItem *CreateNewUIBmpItem(int handle, uint8_t alpha) {
   UIBitmapItem *new_bmp_item;
   new_bmp_item = new UIBitmapItem(handle, alpha);
   return new_bmp_item;
@@ -900,7 +900,7 @@ void CloseSplashScreen(void) {
   } else
     return;
 }
-void *UIConsoleGadgetCreate(UIWindow *parentid, int id, int x, int y, int font, int cols, int rows, int flags) {
+UIObject *UIConsoleGadgetCreate(UIWindow *parentid, int id, int x, int y, int font, int cols, int rows, int flags) {
   UIConsoleGadget *newconsole;
   newconsole = new UIConsoleGadget;
   newconsole->Create(parentid, id, x, y, BRIEFING_FONT, cols, rows, flags);
@@ -922,7 +922,7 @@ void UIConsoleGadgetputs(UIConsoleGadget *item, const char *str) {
   item->puts(GR_RGB(r, g, b), str);
 }
 void NewUIWindowSetFocusOnEditGadget(UIEdit *item, UIWindow *parent) { item->Activate(); }
-void *OldListCreate(UIWindow *parentitem, int id, int x, int y, int w, int h, int flags) {
+UIObject *OldListCreate(UIWindow *parentitem, int id, int x, int y, int w, int h, int flags) {
   UIListBox *newoldlist;
   newoldlist = new UIListBox;
   newoldlist->Create(parentitem, id, x, y, w, h, flags);
@@ -944,7 +944,7 @@ const char *OldListGetItem(UIListBox *item, int index) {
   }
 }
 int OldListGetSelectedIndex(UIListBox *item) { return item->GetSelectedIndex(); }
-void *OldEditCreate(UIWindow *parentitem, int id, int x, int y, int w, int h, int flags) {
+UIObject *OldEditCreate(UIWindow *parentitem, int id, int x, int y, int w, int h, int flags) {
   UIEdit *newoldedit;
   newoldedit = new UIEdit;
   newoldedit->Create(parentitem, id, x, y, w, h, flags);
@@ -971,13 +971,13 @@ void SetOldEditBufferLen(UIEdit *item, int len) { item->SetBufferLen(len); }
 void NewUIWindowLoadBackgroundImage(NewUIWindow *item, const char *image_name) {
   item->LoadBackgroundImage(image_name);
 }
-void DeleteUIItem(void *delitem) { delete delitem; }   // !!! FIXME: this needs to change, but this deletes a lot of different things...
+void DeleteUIItem(UIObject *delitem) { delete delitem; }
 void GadgetDestroy(UIGadget *item) { item->Destroy(); }
-void *SliderCreate(UIWindow *parent, int id, int x, int y, int flags) {
+UIObject *SliderCreate(UIWindow *parent, int id, int x, int y, int flags) {
   NewUISlider *slid;
   slid = new NewUISlider;
   slid->Create(parent, id, x, y, flags);
-  return (void *)slid;
+  return slid;
 }
 void SliderSetRange(UISlider *slider, int range) { slider->SetRange(range); }
 int SliderGetRange(UISlider *slider) { return slider->GetRange(); }

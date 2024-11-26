@@ -112,11 +112,9 @@ void MenuScene(); // display menu scene
 class tmmItemQueue {
 #define tmmItemSIZE 8
   tmmItemFX m_items[tmmItemSIZE];
-  int16_t m_head, m_tail;
+  int16_t m_head = 0, m_tail = 0;
 
 public:
-  tmmItemQueue() { m_head = m_tail = 0; };
-  ~tmmItemQueue(){};
   void send(tmmItemFX &item) { // sends an item onto the queue
     int16_t temp = m_tail + 1;
     if (temp == tmmItemSIZE)
@@ -142,7 +140,7 @@ public:
 //////////////////////////////////////////////////////////////////////
 class mmInterface;
 // class mmItem
-class mmItem : public UIGadget {
+class mmItem final : public UIGadget {
   char *m_text;  // text for item
   int16_t m_alpha; // alpha for text item
   int16_t m_satcount;

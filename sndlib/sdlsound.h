@@ -36,7 +36,7 @@ public:
   vector velocity;
 };
 
-class lnxsound : public llsSystem {
+class lnxsound final : public llsSystem {
   // Public functions
 public:
   lnxsound();

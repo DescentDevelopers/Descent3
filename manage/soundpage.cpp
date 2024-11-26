@@ -221,7 +221,7 @@ void mng_WriteNewSoundPage(CFILE *outfile, mngs_sound_page *soundpage) {
 // Reads a sound page from an open file.  Returns 0 on error.
 int mng_ReadNewSoundPage(CFILE *infile, mngs_sound_page *soundpage) {
   ASSERT(infile != NULL);
-  int version = cf_ReadShort(infile);
+  /* int version = */ cf_ReadShort(infile);
   // read in name,rawfile name
   cf_ReadString(soundpage->sound_struct.name, PAGENAME_LEN, infile);
   cf_ReadString(soundpage->raw_name, PAGENAME_LEN, infile);

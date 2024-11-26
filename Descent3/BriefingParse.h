@@ -85,26 +85,24 @@ struct tTextBufferDesc {
 
 class CBriefParse {
 public:
-  CBriefParse();
-  ~CBriefParse();
   void SetCallbacks(tBriefParseCallbacks *cb);
   int ParseBriefing(const char *filename);
 
 private:
-  void (*AddTextEffect)(TCTEXTDESC* desc, char *text, char *description, int id);
-  void (*AddBmpEffect)(TCBMPDESC* desc, char *description);
-  void (*AddMovieEffect)(TCMOVIEDESC* desc, char *description);
-  void (*AddBkgEffect)(TCBKGDESC* desc, char *description);
-  void (*AddPolyEffect)(TCPOLYDESC* desc, char *description);
-  void (*AddSoundEffect)(TCSNDDESC* desc, char *description);
-  void (*AddButtonEffect)(TCBUTTONDESC* desc, char *description, int id);
-  void (*StartScreen)(int screen_num, char *desc, char *layout, uint32_t mask_set, uint32_t mask_unset);
-  void (*EndScreen)();
-  bool (*LoopCallback)();
-  void (*SetTitle)(char *title);
-  void (*SetStatic)(float amount);
-  void (*SetGlitch)(float amount);
-  void (*AddVoice)(char *filename, int flags, char *description);
+  void (*AddTextEffect)(TCTEXTDESC* desc, char *text, char *description, int id) = nullptr;
+  void (*AddBmpEffect)(TCBMPDESC* desc, char *description) = nullptr;
+  void (*AddMovieEffect)(TCMOVIEDESC* desc, char *description) = nullptr;
+  void (*AddBkgEffect)(TCBKGDESC* desc, char *description) = nullptr;
+  void (*AddPolyEffect)(TCPOLYDESC* desc, char *description) = nullptr;
+  void (*AddSoundEffect)(TCSNDDESC* desc, char *description) = nullptr;
+  void (*AddButtonEffect)(TCBUTTONDESC* desc, char *description, int id) = nullptr;
+  void (*StartScreen)(int screen_num, char *desc, char *layout, uint32_t mask_set, uint32_t mask_unset) = nullptr;
+  void (*EndScreen)() = nullptr;
+  bool (*LoopCallback)() = nullptr;
+  void (*SetTitle)(char *title) = nullptr;
+  void (*SetStatic)(float amount) = nullptr;
+  void (*SetGlitch)(float amount) = nullptr;
+  void (*AddVoice)(char *filename, int flags, char *description) = nullptr;
 
   void ParseError(const char *msg, const char *p = NULL);
   const char *ParseComma(const char *p);
@@ -117,8 +115,8 @@ private:
   bool ParseButtonEffect(const char *p);
   bool ParseTextEffect(const char *p, tTextBufferDesc *tbd);
 
-  int linenum;
-  bool parse_error;
+  int linenum = 0;
+  bool parse_error = false;
 };
 
 #endif

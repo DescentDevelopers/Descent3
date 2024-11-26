@@ -921,7 +921,6 @@ void DMFCInputCommand_Piggyback(const char *input_string) {
   }
 
   char s[20];
-  bool turn_on = true;
   object *pobj;
   int pnum = basethis->GetPlayerNum();
   pobj = &basethis->Objects[basethis->Players[pnum].objnum];

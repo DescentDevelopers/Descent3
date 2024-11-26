@@ -122,8 +122,8 @@
 extern DMFCBase *basethis;
 
 struct tTeamPlacementDialogInfo {
-  void *lb[DLLMAX_TEAMS];
-  void *text[DLLMAX_PLAYERS];
+  UIObject *lb[DLLMAX_TEAMS];
+  UIItem *text[DLLMAX_PLAYERS];
   int trans[DLLMAX_TEAMS][DLLMAX_PLAYERS];
   void (*old_callback)();
 };
@@ -297,10 +297,10 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
   }
 
   bool exit_menu = false;
-  void *list_red = NULL, *list_blue = NULL, *list_green = NULL, *list_yellow = NULL;
-  void *icon_b_hs[DLLMAX_TEAMS][DLLMAX_TEAMS - 1];
-  void *icon_hs[DLLMAX_TEAMS][DLLMAX_TEAMS - 1];
-  void *team_text[DLLMAX_TEAMS];
+  UIObject *list_red = NULL, *list_blue = NULL, *list_green = NULL, *list_yellow = NULL;
+  UIItem *icon_b_hs[DLLMAX_TEAMS][DLLMAX_TEAMS - 1];
+  UIObject *icon_hs[DLLMAX_TEAMS][DLLMAX_TEAMS - 1];
+  UIObject *team_text[DLLMAX_TEAMS];
 
   int count;
   int id_list[DLLMAX_TEAMS * (DLLMAX_TEAMS - 1)];
@@ -340,26 +340,26 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
 
   //////////////////////////////////////////////////
   // Text Items
-  void *start_game_text_off =
+  auto start_game_text_off =
       DLLCreateNewUITextItem((called_by_level_start) ? DTXT_UI_STARTGAME : DTXT_UI_RETURNTOGAME, UICOL_HOTSPOT_LO, -1);
-  void *start_game_text_on =
+  auto start_game_text_on =
       DLLCreateNewUITextItem((called_by_level_start) ? DTXT_UI_STARTGAME : DTXT_UI_RETURNTOGAME, UICOL_HOTSPOT_HI, -1);
-  void *client_wait_txt = DLLCreateNewUITextItem(DTXT_UI_CLIENTSWAIT, UICOL_HOTSPOT_LO, -1);
-  void *window_title = DLLCreateNewUITextItem(DTXT_UI_TEAMSETUP, UICOL_WINDOW_TITLE, -1);
+  auto client_wait_txt = DLLCreateNewUITextItem(DTXT_UI_CLIENTSWAIT, UICOL_HOTSPOT_LO, -1);
+  auto window_title = DLLCreateNewUITextItem(DTXT_UI_TEAMSETUP, UICOL_WINDOW_TITLE, -1);
 
   ///////////////////////////////////////////////////
   // Main Window
-  void *main_wnd = DLLNewUIGameWindowCreate(0, 0, 512, 384, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
+  auto main_wnd = DLLNewUIGameWindowCreate(0, 0, 512, 384, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
 
   ///////////////////////////////////////////////////
   // Item placement
   int cury;
   count = GetNumTeams();
 
-  void *start_game_hs = DLLHotSpotCreate(main_wnd, UID_OK, K_ENTER, start_game_text_off, start_game_text_on, 40,
+  auto start_game_hs = DLLHotSpotCreate(main_wnd, UID_OK, K_ENTER, start_game_text_off, start_game_text_on, 40,
                                          384 - OKCANCEL_YOFFSET, 130, 15, UIF_CENTER);
-  void *window_title_text = DLLTextCreate(main_wnd, window_title, 0, 7, UIF_CENTER | UIF_FIT);
-  void *client_wait_cb;
+  auto window_title_text = DLLTextCreate(main_wnd, window_title, 0, 7, UIF_CENTER | UIF_FIT);
+  UIObject *client_wait_cb;
 
   if (count > 2) {
     client_wait_cb = DLLCheckBoxCreate(main_wnd, 128, client_wait_txt, 256 - (DLLGetUIItemWidth(client_wait_txt) / 2),
@@ -709,8 +709,8 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
 struct tWaitForPlayers {
   float last_update;
   void (*old_callback)(void);
-  void *listbox;
-  void *text[DLLMAX_PLAYERS];
+  UIObject *listbox;
+  UIItem *text[DLLMAX_PLAYERS];
   int indexmap[DLLMAX_PLAYERS];
 };
 tWaitForPlayers wfpi;
@@ -782,28 +782,28 @@ void DMFCBase::DoDMFCUIWaitForPlayers(bool clients_wait) {
 
   ///////////////////////////////////////////////////
   // Text Items
-  void *start_game_text_off = DLLCreateNewUITextItem(DTXT_UI_STARTGAME, UICOL_HOTSPOT_LO, -1);
-  void *start_game_text_on = DLLCreateNewUITextItem(DTXT_UI_STARTGAME, UICOL_HOTSPOT_HI, -1);
-  void *client_wait_txt = DLLCreateNewUITextItem(DTXT_UI_CLIENTSWAIT, UICOL_HOTSPOT_LO, -1);
-  void *window_title = DLLCreateNewUITextItem(DTXT_UI_WAITFORPLAYERS, UICOL_WINDOW_TITLE, -1);
-  void *kick_text_off = DLLCreateNewUITextItem(DTXT_UI_KICKPLAYER, UICOL_HOTSPOT_LO, -1);
-  void *kick_text_on = DLLCreateNewUITextItem(DTXT_UI_KICKPLAYER, UICOL_HOTSPOT_HI, -1);
-  void *ban_text_off = DLLCreateNewUITextItem(DTXT_UI_BANPLAYER, UICOL_HOTSPOT_LO, -1);
-  void *ban_text_on = DLLCreateNewUITextItem(DTXT_UI_BANPLAYER, UICOL_HOTSPOT_HI, -1);
+  auto start_game_text_off = DLLCreateNewUITextItem(DTXT_UI_STARTGAME, UICOL_HOTSPOT_LO, -1);
+  auto start_game_text_on = DLLCreateNewUITextItem(DTXT_UI_STARTGAME, UICOL_HOTSPOT_HI, -1);
+  auto client_wait_txt = DLLCreateNewUITextItem(DTXT_UI_CLIENTSWAIT, UICOL_HOTSPOT_LO, -1);
+  auto window_title = DLLCreateNewUITextItem(DTXT_UI_WAITFORPLAYERS, UICOL_WINDOW_TITLE, -1);
+  auto kick_text_off = DLLCreateNewUITextItem(DTXT_UI_KICKPLAYER, UICOL_HOTSPOT_LO, -1);
+  auto kick_text_on = DLLCreateNewUITextItem(DTXT_UI_KICKPLAYER, UICOL_HOTSPOT_HI, -1);
+  auto ban_text_off = DLLCreateNewUITextItem(DTXT_UI_BANPLAYER, UICOL_HOTSPOT_LO, -1);
+  auto ban_text_on = DLLCreateNewUITextItem(DTXT_UI_BANPLAYER, UICOL_HOTSPOT_HI, -1);
 
   ///////////////////////////////////////////////////
   // Main Window
-  void *main_wnd = DLLNewUIGameWindowCreate(0, 0, 512, 384, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
+  auto main_wnd = DLLNewUIGameWindowCreate(0, 0, 512, 384, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
 
   ///////////////////////////////////////////////////
   // Item placement
   int cury = 30;
   bool exit_menu = false;
 
-  void *start_game_hs = DLLHotSpotCreate(main_wnd, UID_OK, K_ENTER, start_game_text_off, start_game_text_on, 40,
+  auto start_game_hs = DLLHotSpotCreate(main_wnd, UID_OK, K_ENTER, start_game_text_off, start_game_text_on, 40,
                                          384 - OKCANCEL_YOFFSET, 130, 15, UIF_CENTER);
-  void *window_title_text = DLLTextCreate(main_wnd, window_title, 0, 7, UIF_CENTER | UIF_FIT);
-  void *client_wait_cb =
+  auto window_title_text = DLLTextCreate(main_wnd, window_title, 0, 7, UIF_CENTER | UIF_FIT);
+  auto client_wait_cb =
       DLLCheckBoxCreate(main_wnd, 128, client_wait_txt, 30, 369 - OKCANCEL_YOFFSET, 130, 15, UIF_FIT | UIF_CENTER);
   wfpi.listbox = DLLListCreate(main_wnd, -1, 40, cury, 256, 288, UIF_CENTER);
   DLLCheckBoxSetCheck(client_wait_cb, clients_wait);
@@ -812,9 +812,9 @@ void DMFCBase::DoDMFCUIWaitForPlayers(bool clients_wait) {
   DLLGetUIItemPosition(wfpi.listbox, &l_x, &l_y, &l_w, &l_h);
   l_x = l_x + l_w + 10;
   l_y = (l_y + (l_h / 2)) - 15;
-  void *kick_hs = DLLHotSpotCreate(main_wnd, 10, -1, kick_text_off, kick_text_on, l_x, l_y, 130, 15, UIF_FIT);
+  auto kick_hs = DLLHotSpotCreate(main_wnd, 10, -1, kick_text_off, kick_text_on, l_x, l_y, 130, 15, UIF_FIT);
   l_y += 15;
-  void *ban_hs = DLLHotSpotCreate(main_wnd, 20, -1, ban_text_off, ban_text_on, l_x, l_y, 130, 15, UIF_FIT);
+  auto ban_hs = DLLHotSpotCreate(main_wnd, 20, -1, ban_text_off, ban_text_on, l_x, l_y, 130, 15, UIF_FIT);
 
   //////////////////////////////////////////////////
   // Process all

@@ -82,6 +82,7 @@ static const char *const Script_names[NUM_IDS] = {"Samir's Pest", "StormTrooperB
 //	ai base class
 class aiObjScript {
 public:
+  virtual ~aiObjScript() = default;
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
@@ -99,11 +100,7 @@ protected:
 #define PEST_STATE_ROAM 0
 #define PEST_STATE_HIVE 1
 
-class aiSamirPest : public aiObjScript {
-public:
-  aiSamirPest();
-  ~aiSamirPest();
-
+class aiSamirPest final : public aiObjScript {
 private:
   struct t_pest_memory {
     int tail_handle;
@@ -112,7 +109,7 @@ private:
     int state;
   };
 
-  t_pest_memory *memory;
+  t_pest_memory *memory = nullptr;
 
 protected:
   // Handles all possible OSIRIS events.
@@ -132,11 +129,7 @@ protected:
 #define STATE_ATTACK 5 // regular attack
 #define STATE_STALK 6  // stalks player
 
-class aiBlackStormTrooper : public aiObjScript {
-public:
-  aiBlackStormTrooper();
-  ~aiBlackStormTrooper();
-
+class aiBlackStormTrooper final : public aiObjScript {
 private:
   struct t_bst_memory {
     float timer;
@@ -165,7 +158,7 @@ private:
     int snipe_target_handles[N_SNIPE_POINTS];
   };
 
-  t_bst_memory *memory;
+  t_bst_memory *memory = nullptr;
 
   void set_state(int me_handle, int state);
 
@@ -182,11 +175,7 @@ private:
   void find_targets(int me_handle, bool new_snipe_point);
 };
 
-class aiCreeper : public aiObjScript {
-public:
-  aiCreeper();
-  ~aiCreeper();
-
+class aiCreeper final : public aiObjScript {
 private:
   struct t_creep_memory {
     float timer;
@@ -198,7 +187,7 @@ private:
     int eye_obj;
   };
 
-  t_creep_memory *memory;
+  t_creep_memory *memory = nullptr;
 
   void set_state(int me_handle, int state);
 
@@ -212,16 +201,12 @@ protected:
   virtual void OnMemRestore(void *ptr) { memory = (t_creep_memory *)ptr; };
 };
 
-class aiLukeTurret : public aiObjScript {
+class aiLukeTurret final : public aiObjScript {
   struct t_lturret_memory {
     float timer;
   };
 
-  t_lturret_memory *memory;
-
-public:
-  aiLukeTurret(){};
-  ~aiLukeTurret(){};
+  t_lturret_memory *memory = nullptr;
 
 protected:
   virtual void OnInit(int me_handle);
@@ -230,16 +215,12 @@ protected:
   virtual void OnMemRestore(void *ptr) { memory = (t_lturret_memory *)ptr; };
 };
 
-class aiSTBlackBarrel : public aiObjScript {
+class aiSTBlackBarrel final : public aiObjScript {
   struct t_stblackbarrel_memory {
     matrix orient;
   };
 
-  t_stblackbarrel_memory *memory;
-
-public:
-  aiSTBlackBarrel(){};
-  ~aiSTBlackBarrel(){};
+  t_stblackbarrel_memory *memory = nullptr;
 
 protected:
   virtual void OnInit(int me_handle);
@@ -605,11 +586,6 @@ int16_t aiObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
 //	aiSamirPest
 //		The Samir Pest
 
-//	ai base class
-aiSamirPest::aiSamirPest() { memory = NULL; }
-
-aiSamirPest::~aiSamirPest() {}
-
 void aiSamirPest::OnInit(int me_handle) {
   tOSIRISMEMCHUNK ch;
 
@@ -689,11 +665,6 @@ bool aiSamirPest::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) { return tru
 //////////////////////////////////////////////////////////////////////////////
 //	aiBlackStormTrooper
 //		CED Black Stormtrooper
-
-//	ai base class
-aiBlackStormTrooper::aiBlackStormTrooper() { memory = NULL; }
-
-aiBlackStormTrooper::~aiBlackStormTrooper() {}
 
 void aiBlackStormTrooper::OnInit(int me_handle) {
   tOSIRISMEMCHUNK ch;
@@ -864,7 +835,7 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
 
     int fvi_flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
-    int fate = FVI_RayCast(me_handle, &pos, &end_pos, room, 0.0f, fvi_flags, &ray);
+    FVI_RayCast(me_handle, &pos, &end_pos, room, 0.0f, fvi_flags, &ray);
 
     Obj_Value(memory->camera_obj, VF_SET, OBJV_I_ROOMNUM, &ray.hit_room);
     Obj_Value(memory->camera_obj, VF_SET, OBJV_V_POS, &ray.hit_point);
@@ -905,8 +876,6 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
   case STATE_SNIPE:
     // snipe for a certain amount of time, then return to base.
     if (memory->laser_targeted == false) {
-      int type;
-
       memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, NULL, me_handle);
       mstruct.objhandle = memory->camera_obj;
       MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
@@ -1033,8 +1002,6 @@ bool aiBlackStormTrooper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
 void aiBlackStormTrooper::set_state(int me_handle, int state) {
   int room_number, id, i;
   vector pos;
-  char buf[64];
-  char name[48];
   float dist;
 
   // SafeGoalClearAll(me_handle);
@@ -1199,11 +1166,6 @@ retry_set_state:
 //////////////////////////////////////////////////////////////////////////////
 //	aiCreeper
 
-//	ai base class
-aiCreeper::aiCreeper() { memory = NULL; }
-
-aiCreeper::~aiCreeper() {}
-
 void aiCreeper::OnInit(int me_handle) {
   tOSIRISMEMCHUNK ch;
   int flags;
@@ -1364,10 +1326,8 @@ bool aiCreeper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
 }
 
 void aiCreeper::set_state(int me_handle, int state) {
-  int room_number = 0, id, i, flags;
+  int room_number = 0, flags;
   vector pos;
-  char buf[64];
-  char name[48];
   msafe_struct m;
   float circle_dist;
   char cenable;

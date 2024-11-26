@@ -416,7 +416,6 @@ void mmInterface::OnDestroy() {
 
 // displays the copyright text
 void mmInterface::CopyrightText() {
-  int i;
   char type[16];
   type[0] = 0;
 #ifdef DEMO
@@ -464,8 +463,6 @@ void mmInterface::SetMusicRegion(int region) {
 
 // display menu scene
 void MenuScene() {
-  extern bool NewUI_wait_dialog; // is wait dialog up?
-
   if (MM_object) {
     StartFrame();
 

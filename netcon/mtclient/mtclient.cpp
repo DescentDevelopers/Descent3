@@ -824,21 +824,21 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
 
 int LoginMasterTracker() {
 
-  void *title_text = DLLCreateNewUITextItem(TXT_PXO_LOGINMASTERTRKR, UICOL_WINDOW_TITLE);
-  void *cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
-  void *login_on_text = DLLCreateNewUITextItem(TXT_PXO_LOGIN, UICOL_HOTSPOT_HI);
+  auto title_text = DLLCreateNewUITextItem(TXT_PXO_LOGINMASTERTRKR, UICOL_WINDOW_TITLE);
+  auto cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
+  auto login_on_text = DLLCreateNewUITextItem(TXT_PXO_LOGIN, UICOL_HOTSPOT_HI);
 
-  void *cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
-  void *login_off_text = DLLCreateNewUITextItem(TXT_PXO_LOGIN, UICOL_HOTSPOT_LO);
+  auto cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
+  auto login_off_text = DLLCreateNewUITextItem(TXT_PXO_LOGIN, UICOL_HOTSPOT_LO);
 
-  void *login_id_text = DLLCreateNewUITextItem(TXT_PXO_LOGINID, UICOL_TEXT_NORMAL);
-  void *tracker_id_text = DLLCreateNewUITextItem(TXT_PXO_TRACKERID, UICOL_TEXT_NORMAL);
-  void *password_text = DLLCreateNewUITextItem(TXT_PXO_PASSWORD, UICOL_TEXT_NORMAL);
+  auto login_id_text = DLLCreateNewUITextItem(TXT_PXO_LOGINID, UICOL_TEXT_NORMAL);
+  auto tracker_id_text = DLLCreateNewUITextItem(TXT_PXO_TRACKERID, UICOL_TEXT_NORMAL);
+  auto password_text = DLLCreateNewUITextItem(TXT_PXO_PASSWORD, UICOL_TEXT_NORMAL);
 
-  void *new_prof_on_text = DLLCreateNewUITextItem(TXT_PXO_CREATENEWPROFILE, UICOL_HOTSPOT_HI);
-  void *new_prof_off_text = DLLCreateNewUITextItem(TXT_PXO_CREATENEWPROFILE, UICOL_HOTSPOT_LO);
+  auto new_prof_on_text = DLLCreateNewUITextItem(TXT_PXO_CREATENEWPROFILE, UICOL_HOTSPOT_HI);
+  auto new_prof_off_text = DLLCreateNewUITextItem(TXT_PXO_CREATENEWPROFILE, UICOL_HOTSPOT_LO);
 
-  void *blank_text = DLLCreateNewUITextItem(TXT_PXO_BLANK, GR_BLACK);
+  auto blank_text = DLLCreateNewUITextItem(TXT_PXO_BLANK, GR_BLACK);
 
   int exit_menu = 0;
   int ret = 0;
@@ -846,26 +846,26 @@ int LoginMasterTracker() {
   int loginlen = LOGIN_LEN;
   int passlen = PASSWORD_LEN;
 
-  void *main_wnd = DLLNewUIGameWindowCreate(TRACKER_MENU_X, TRACKER_MENU_Y, TRACKER_MENU_W, TRACKER_MENU_H,
-                                            UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
+  auto main_wnd = DLLNewUIGameWindowCreate(TRACKER_MENU_X, TRACKER_MENU_Y, TRACKER_MENU_W, TRACKER_MENU_H,
+                                           UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
 
-  void *title = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
+  auto title = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
 
-  void *password = DLLTextCreate(main_wnd, password_text, 30, 130, UIF_CENTER);
-  void *login_id = DLLTextCreate(main_wnd, login_id_text, 50, 80, UIF_CENTER);
+  auto password = DLLTextCreate(main_wnd, password_text, 30, 130, UIF_CENTER);
+  auto login_id = DLLTextCreate(main_wnd, login_id_text, 50, 80, UIF_CENTER);
 
-  void *pass_edit = DLLEditCreate(main_wnd, UID_OK, 100, 140, 130, 15, UIF_CENTER | UIED_PASSWORD);
+  auto pass_edit = DLLEditCreate(main_wnd, UID_OK, 100, 140, 130, 15, UIF_CENTER | UIED_PASSWORD);
 
-  void *login_hs =
+  auto login_hs =
       DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, login_off_text, login_on_text, 60, TRACKER_MENU_H - 80, 60, 20, 0);
 
-  void *cancel_hs = DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, cancel_off_text, cancel_on_text, 130,
-                                     TRACKER_MENU_H - 80, 60, 20, 0);
+  auto cancel_hs = DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, cancel_off_text, cancel_on_text, 130,
+                                    TRACKER_MENU_H - 80, 60, 20, 0);
 
-  void *new_id_hs =
+  auto new_id_hs =
       DLLHotSpotCreate(main_wnd, 4, KEY_N, new_prof_off_text, new_prof_on_text, 0, 45, 120, 20, UIF_CENTER | UIF_FIT);
 
-  void *login_edit = DLLEditCreate(main_wnd, 3, 100, 90, 130, 15, UIF_CENTER);
+  auto login_edit = DLLEditCreate(main_wnd, 3, 100, 90, 130, 15, UIF_CENTER);
 
   // Read defaults
 
@@ -1027,40 +1027,40 @@ int MainMultiplayerMenu() {
 
   DLLToggleUICallback(0);
   ChatStarted = 1;
-  void *title_text = DLLCreateNewUITextItem(TXT_PXO_CONNECTING, UICOL_WINDOW_TITLE);
+  auto title_text = DLLCreateNewUITextItem(TXT_PXO_CONNECTING, UICOL_WINDOW_TITLE);
 
-  void *cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
-  void *cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
+  auto cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
+  auto cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
 
-  void *exit_on_text = DLLCreateNewUITextItem(TXT_PXO_EXIT, UICOL_HOTSPOT_HI);
-  void *exit_off_text = DLLCreateNewUITextItem(TXT_PXO_EXIT, UICOL_HOTSPOT_LO);
+  auto exit_on_text = DLLCreateNewUITextItem(TXT_PXO_EXIT, UICOL_HOTSPOT_HI);
+  auto exit_off_text = DLLCreateNewUITextItem(TXT_PXO_EXIT, UICOL_HOTSPOT_LO);
 
-  void *priv_msg_on_text = DLLCreateNewUITextItem(TXT_PXO_SENDPRIV, UICOL_HOTSPOT_HI);
-  void *priv_msg_off_text = DLLCreateNewUITextItem(TXT_PXO_SENDPRIV, UICOL_HOTSPOT_LO);
+  auto priv_msg_on_text = DLLCreateNewUITextItem(TXT_PXO_SENDPRIV, UICOL_HOTSPOT_HI);
+  auto priv_msg_off_text = DLLCreateNewUITextItem(TXT_PXO_SENDPRIV, UICOL_HOTSPOT_LO);
 
-  void *join_lobby_on_text = DLLCreateNewUITextItem(TXT_PXO_JOINPRIV, UICOL_HOTSPOT_HI);
-  void *join_lobby_off_text = DLLCreateNewUITextItem(TXT_PXO_JOINPRIV, UICOL_HOTSPOT_LO);
+  auto join_lobby_on_text = DLLCreateNewUITextItem(TXT_PXO_JOINPRIV, UICOL_HOTSPOT_HI);
+  auto join_lobby_off_text = DLLCreateNewUITextItem(TXT_PXO_JOINPRIV, UICOL_HOTSPOT_LO);
 
-  void *join_chan_on_text = DLLCreateNewUITextItem(TXT_PXO_JOINCHAN, UICOL_HOTSPOT_HI);
-  void *join_chan_off_text = DLLCreateNewUITextItem(TXT_PXO_JOINCHAN, UICOL_HOTSPOT_LO);
+  auto join_chan_on_text = DLLCreateNewUITextItem(TXT_PXO_JOINCHAN, UICOL_HOTSPOT_HI);
+  auto join_chan_off_text = DLLCreateNewUITextItem(TXT_PXO_JOINCHAN, UICOL_HOTSPOT_LO);
 
-  void *find_pilot_on_text = DLLCreateNewUITextItem(TXT_PXO_FINDPILOT, UICOL_HOTSPOT_HI);
-  void *find_pilot_off_text = DLLCreateNewUITextItem(TXT_PXO_FINDPILOT, UICOL_HOTSPOT_LO);
+  auto find_pilot_on_text = DLLCreateNewUITextItem(TXT_PXO_FINDPILOT, UICOL_HOTSPOT_HI);
+  auto find_pilot_off_text = DLLCreateNewUITextItem(TXT_PXO_FINDPILOT, UICOL_HOTSPOT_LO);
 
-  void *get_pilot_on_text = DLLCreateNewUITextItem(TXT_PXO_GETPILOTINFO, UICOL_HOTSPOT_HI);
-  void *get_pilot_off_text = DLLCreateNewUITextItem(TXT_PXO_GETPILOTINFO, UICOL_HOTSPOT_LO);
+  auto get_pilot_on_text = DLLCreateNewUITextItem(TXT_PXO_GETPILOTINFO, UICOL_HOTSPOT_HI);
+  auto get_pilot_off_text = DLLCreateNewUITextItem(TXT_PXO_GETPILOTINFO, UICOL_HOTSPOT_LO);
 
-  void *game_on_text = DLLCreateNewUITextItem(TXT_PXO_JOINSTARTGAME, UICOL_HOTSPOT_HI);
-  void *game_off_text = DLLCreateNewUITextItem(TXT_PXO_JOINSTARTGAME, UICOL_HOTSPOT_LO);
+  auto game_on_text = DLLCreateNewUITextItem(TXT_PXO_JOINSTARTGAME, UICOL_HOTSPOT_HI);
+  auto game_off_text = DLLCreateNewUITextItem(TXT_PXO_JOINSTARTGAME, UICOL_HOTSPOT_LO);
 
-  void *send_on_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_HI);
-  void *send_off_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_LO);
+  auto send_on_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_HI);
+  auto send_off_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_LO);
 
   char fmtlobbytext[200];
   snprintf(fmtlobbytext, sizeof(fmtlobbytext), TXT_PXO_YOUAREINLOBBY, Ourlobby);
-  void *lobby_text = DLLCreateNewUITextItem(fmtlobbytext, UICOL_TEXT_AUX);
+  auto lobby_text = DLLCreateNewUITextItem(fmtlobbytext, UICOL_TEXT_AUX);
 
-  void *blank_text = DLLCreateNewUITextItem(TXT_PXO_BLANK, UICOL_TEXT_AUX);
+  auto blank_text = DLLCreateNewUITextItem(TXT_PXO_BLANK, UICOL_TEXT_AUX);
   char sendline[MAX_CHAT_SEND_LEN];
   int exit_menu = 0;
   int ret = 0;
@@ -1069,8 +1069,8 @@ int MainMultiplayerMenu() {
   int i;
   float lastlisttime = 0;
   float lastchanlisttime = 0;
-  void *chan_ti[MAX_CHAT_CHANNELS];
-  void *user_ti[CHAT_MAX_USERLIST];
+  UIItem *chan_ti[MAX_CHAT_CHANNELS];
+  UIItem *user_ti[CHAT_MAX_USERLIST];
   char selpilot[MAX_CHAT_SEND_LEN];
   char oldselchan[200];
   for (i = 0; i < MAX_CHAT_CHANNELS; i++)
@@ -1090,40 +1090,40 @@ int MainMultiplayerMenu() {
   }
 
   // Create our buttons
-  void *main_wnd = DLLNewUIWindowCreate(0, 0, 640, 480, UIF_PROCESS_ALL);
+  auto main_wnd = DLLNewUIWindowCreate(0, 0, 640, 480, UIF_PROCESS_ALL);
 
   // void HotSpotCreate(int item,int parentitem, int id, int key, int txtitemoff, int txtitemon, int x, int y, int w,
   // int h, int flags,int winnum)
-  void *exit_hs = DLLHotSpotCreate(main_wnd, 5, KEY_ESC, exit_off_text, exit_on_text, 33, 427, 70, 15, 0);
+  /* auto exit_hs = */ DLLHotSpotCreate(main_wnd, 5, KEY_ESC, exit_off_text, exit_on_text, 33, 427, 70, 15, 0);
 
-  void *priv_hs = DLLHotSpotCreate(main_wnd, 6, 0, priv_msg_off_text, priv_msg_on_text, 328, 403, 170, 15, 0);
+  auto priv_hs = DLLHotSpotCreate(main_wnd, 6, 0, priv_msg_off_text, priv_msg_on_text, 328, 403, 170, 15, 0);
 
 #define JOIN_ROW 131
-  void *join_lobby_hs =
+  auto join_lobby_hs =
       DLLHotSpotCreate(main_wnd, 7, 0, join_lobby_off_text, join_lobby_on_text, 400, JOIN_ROW, 170, 15, 0);
-  void *join_chan_hs =
+  auto join_chan_hs =
       DLLHotSpotCreate(main_wnd, 14, 0, join_chan_off_text, join_chan_on_text, 178, JOIN_ROW, 170, 15, 0);
 
-  void *find_hs = DLLHotSpotCreate(main_wnd, 9, 0, find_pilot_off_text, find_pilot_on_text, 156, 403, 140, 15, 0);
-  void *get_pilot_hs =
+  auto find_hs = DLLHotSpotCreate(main_wnd, 9, 0, find_pilot_off_text, find_pilot_on_text, 156, 403, 140, 15, 0);
+  auto get_pilot_hs =
       DLLHotSpotCreate(main_wnd, 10, 0, get_pilot_off_text, get_pilot_on_text, colx1 + 10, 372, 130, 15, 0);
-  void *game_hs = DLLHotSpotCreate(main_wnd, 11, 0, game_off_text, game_on_text, 505, 431, 135, 15, 0);
+  auto game_hs = DLLHotSpotCreate(main_wnd, 11, 0, game_off_text, game_on_text, 505, 431, 135, 15, 0);
 
-  void *enter_hs = DLLHotSpotCreate(main_wnd, 15, KEY_ENTER, send_off_text, send_on_text, 550, 370, 70, 15, 0);
+  auto enter_hs = DLLHotSpotCreate(main_wnd, 15, KEY_ENTER, send_off_text, send_on_text, 550, 370, 70, 15, 0);
 
   // lobby_text
-  void *lobby_txt_gadget = DLLTextCreate(main_wnd, lobby_text, 200, 450, UIF_CENTER);
+  auto lobby_txt_gadget = DLLTextCreate(main_wnd, lobby_text, 200, 450, UIF_CENTER);
 
   // User list box, id #10
-  void *user_list = DLLOldListCreate(main_wnd, 10, colx1 + 20, 100, 108, 265, 0);
+  auto user_list = DLLOldListCreate(main_wnd, 10, colx1 + 20, 100, 108, 265, 0);
   // Channel list box, id #14
-  void *chan_list = DLLOldListCreate(main_wnd, 14, colx2, 25, 470, 96, 0);
+  auto chan_list = DLLOldListCreate(main_wnd, 14, colx2, 25, 470, 96, 0);
 
   // Edit box for typing in chat, id # 15
-  void *send_edit = DLLOldEditCreate(main_wnd, 15, colx2 + 10, 372, 390, 20, UIED_AUTOSELECT);
+  auto send_edit = DLLOldEditCreate(main_wnd, 15, colx2 + 10, 372, 390, 20, UIED_AUTOSELECT);
   DLLNewUIWindowLoadBackgroundImage(main_wnd, "pxomain.ogf");
   DLLSetOldEditBufferLen(send_edit, 100);
-  void *console_item = DLLUIConsoleGadgetCreate(main_wnd, 16, colx2, 165, 0, 51, 16, 0);
+  auto console_item = DLLUIConsoleGadgetCreate(main_wnd, 16, colx2, 165, 0, 51, 16, 0);
   pconsole = console_item;
 
   DLLNewUIWindowOpen(main_wnd);
@@ -1251,9 +1251,9 @@ int MainMultiplayerMenu() {
         oldseluser[0] = 0;
         if (oldsel)
           strcpy(oldseluser, oldsel);
-        void *old_ti = nullptr; // = DLLCreateNewUITextItem(TXT_PXO_JOINSTARTGAME,GR_WHITE);
+        UIItem *old_ti = nullptr; // = DLLCreateNewUITextItem(TXT_PXO_JOINSTARTGAME,GR_WHITE);
         // int oldsel = DLLOldListGetSelectedIndex(user_list);
-        // void * old_ti =
+        // UIItem * old_ti =
 
         DLLOldListRemoveAll(user_list);
         for (i = 0; i < CHAT_MAX_USERLIST; i++) {
@@ -1371,7 +1371,6 @@ int MainMultiplayerMenu() {
 
             memset(fmtchan, 0, 500);
 
-            int textx = 0;
             int charpos = 0;
             int endpos;
 #define LIST_ROW1 90
@@ -1737,46 +1736,44 @@ int SearchMasterTrackerGameMenu() {
   int i = 0;
   float last_req_time;
   char selgame[200];
-  void *selti = nullptr;
-  void *return_text_on = DLLCreateNewUITextItem(TXT_PXO_RETURNTOCHAT, UICOL_HOTSPOT_HI);
-  void *return_text_off = DLLCreateNewUITextItem(TXT_PXO_RETURNTOCHAT, UICOL_HOTSPOT_LO);
-  void *game_head_text = DLLCreateNewUITextItem(TXT_PXO_GAMELISTHDR, UICOL_TEXT_NORMAL);
-  void *exit_on_text = DLLCreateNewUITextItem(TXT_PXO_EXIT, UICOL_HOTSPOT_HI);
-  void *exit_off_text = DLLCreateNewUITextItem(TXT_PXO_EXIT, UICOL_HOTSPOT_LO);
-  void *join_on_text = DLLCreateNewUITextItem(TXT_PXO_JOINSEL, UICOL_HOTSPOT_HI);
-  void *join_off_text = DLLCreateNewUITextItem(TXT_PXO_JOINSEL, UICOL_HOTSPOT_LO);
-  void *start_on_text = DLLCreateNewUITextItem(TXT_PXO_STARTNEW, UICOL_HOTSPOT_HI);
-  void *start_off_text = DLLCreateNewUITextItem(TXT_PXO_STARTNEW, UICOL_HOTSPOT_LO);
+  auto return_text_on = DLLCreateNewUITextItem(TXT_PXO_RETURNTOCHAT, UICOL_HOTSPOT_HI);
+  auto return_text_off = DLLCreateNewUITextItem(TXT_PXO_RETURNTOCHAT, UICOL_HOTSPOT_LO);
+  auto game_head_text = DLLCreateNewUITextItem(TXT_PXO_GAMELISTHDR, UICOL_TEXT_NORMAL);
+  auto exit_on_text = DLLCreateNewUITextItem(TXT_PXO_EXIT, UICOL_HOTSPOT_HI);
+  auto exit_off_text = DLLCreateNewUITextItem(TXT_PXO_EXIT, UICOL_HOTSPOT_LO);
+  auto join_on_text = DLLCreateNewUITextItem(TXT_PXO_JOINSEL, UICOL_HOTSPOT_HI);
+  auto join_off_text = DLLCreateNewUITextItem(TXT_PXO_JOINSEL, UICOL_HOTSPOT_LO);
+  auto start_on_text = DLLCreateNewUITextItem(TXT_PXO_STARTNEW, UICOL_HOTSPOT_HI);
+  auto start_off_text = DLLCreateNewUITextItem(TXT_PXO_STARTNEW, UICOL_HOTSPOT_LO);
 
-  void *gname_on_text = DLLCreateNewUITextItem(TXT_PXO_GAMENAME2, UICOL_HOTSPOT_HI);
-  void *gname_off_text = DLLCreateNewUITextItem(TXT_PXO_GAMENAME2, UICOL_HOTSPOT_LO);
-  void *gtype_on_text = DLLCreateNewUITextItem(TXT_PXO_GAMETYPE, UICOL_HOTSPOT_HI);
-  void *gtype_off_text = DLLCreateNewUITextItem(TXT_PXO_GAMETYPE, UICOL_HOTSPOT_LO);
-  void *msn_on_text = DLLCreateNewUITextItem(TXT_PXO_MISSION, UICOL_HOTSPOT_HI);
-  void *msn_off_text = DLLCreateNewUITextItem(TXT_PXO_MISSION, UICOL_HOTSPOT_LO);
-  void *lvl_on_text = DLLCreateNewUITextItem(TXT_PXO_LEVEL, UICOL_HOTSPOT_HI);
-  void *lvl_off_text = DLLCreateNewUITextItem(TXT_PXO_LEVEL, UICOL_HOTSPOT_LO);
-  void *plrs_on_text = DLLCreateNewUITextItem(TXT_PXO_PLAYERS, UICOL_HOTSPOT_HI);
-  void *plrs_off_text = DLLCreateNewUITextItem(TXT_PXO_PLAYERS, UICOL_HOTSPOT_LO);
-  void *ping_on_text = DLLCreateNewUITextItem(TXT_PXO_PING, UICOL_HOTSPOT_HI);
-  void *ping_off_text = DLLCreateNewUITextItem(TXT_PXO_PING, UICOL_HOTSPOT_LO);
+  auto gname_on_text = DLLCreateNewUITextItem(TXT_PXO_GAMENAME2, UICOL_HOTSPOT_HI);
+  auto gname_off_text = DLLCreateNewUITextItem(TXT_PXO_GAMENAME2, UICOL_HOTSPOT_LO);
+  auto gtype_on_text = DLLCreateNewUITextItem(TXT_PXO_GAMETYPE, UICOL_HOTSPOT_HI);
+  auto gtype_off_text = DLLCreateNewUITextItem(TXT_PXO_GAMETYPE, UICOL_HOTSPOT_LO);
+  auto msn_on_text = DLLCreateNewUITextItem(TXT_PXO_MISSION, UICOL_HOTSPOT_HI);
+  auto msn_off_text = DLLCreateNewUITextItem(TXT_PXO_MISSION, UICOL_HOTSPOT_LO);
+  auto lvl_on_text = DLLCreateNewUITextItem(TXT_PXO_LEVEL, UICOL_HOTSPOT_HI);
+  auto lvl_off_text = DLLCreateNewUITextItem(TXT_PXO_LEVEL, UICOL_HOTSPOT_LO);
+  auto plrs_on_text = DLLCreateNewUITextItem(TXT_PXO_PLAYERS, UICOL_HOTSPOT_HI);
+  auto plrs_off_text = DLLCreateNewUITextItem(TXT_PXO_PLAYERS, UICOL_HOTSPOT_LO);
+  auto ping_on_text = DLLCreateNewUITextItem(TXT_PXO_PING, UICOL_HOTSPOT_HI);
+  auto ping_off_text = DLLCreateNewUITextItem(TXT_PXO_PING, UICOL_HOTSPOT_LO);
 
   char fmt_textstr[200];
   snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 28);
-  void *default_on_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_HI);
+  auto default_on_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_HI);
   snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 28);
 
-  void *default_off_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_LO);
-  void *game_hdr_text = DLLCreateNewUITextItem(TXT_PXO_GAME_HDR, UICOL_WINDOW_TITLE);
+  auto default_off_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_LO);
+  auto game_hdr_text = DLLCreateNewUITextItem(TXT_PXO_GAME_HDR, UICOL_WINDOW_TITLE);
 
-  void *info_on_text = DLLCreateNewUITextItem("", UICOL_HOTSPOT_HI);
-  void *info_off_text = DLLCreateNewUITextItem("", UICOL_HOTSPOT_LO);
+  auto info_on_text = DLLCreateNewUITextItem("", UICOL_HOTSPOT_HI);
+  auto info_off_text = DLLCreateNewUITextItem("", UICOL_HOTSPOT_LO);
 
   memset(PXOGamelist, 0, sizeof(PXOGamelist));
   NextGameItemNo = 0;
 
-  void *return_hs;
-  void *set_dft_hs;
+  UIObject *set_dft_hs;
 
   void *net_game_txt_items[MAX_NET_GAMES];
   int a;
@@ -1788,16 +1785,16 @@ int SearchMasterTrackerGameMenu() {
   DLLSetScreenMode(SM_MENU);
   *DLLNewUIWindow_alpha = 255;
 
-  void *main_wnd = DLLNewUIWindowCreate(0, 0, 640, 480, UIF_PROCESS_ALL);
+  auto main_wnd = DLLNewUIWindowCreate(0, 0, 640, 480, UIF_PROCESS_ALL);
 
-  void *screen_header = DLLTextCreate(main_wnd, game_hdr_text, 5, 15, UIF_CENTER);
+  auto screen_header = DLLTextCreate(main_wnd, game_hdr_text, 5, 15, UIF_CENTER);
   cury += 30;
-  void *start_hs = DLLHotSpotCreate(main_wnd, 7, KEY_S, start_off_text, start_on_text, 320, cury, 150, 15, UIF_CENTER);
+  auto start_hs = DLLHotSpotCreate(main_wnd, 7, KEY_S, start_off_text, start_on_text, 320, cury, 150, 15, UIF_CENTER);
   cury += 30; // 25;
 
   int setdfty;
 
-  return_hs = DLLHotSpotCreate(main_wnd, 8, KEY_R, return_text_off, return_text_on, 490, cury, 250, 15, UIF_CENTER);
+  auto return_hs = DLLHotSpotCreate(main_wnd, 8, KEY_R, return_text_off, return_text_on, 490, cury, 250, 15, UIF_CENTER);
   cury += 20;
 
   if (Bypass_chat) {
@@ -1818,33 +1815,32 @@ int SearchMasterTrackerGameMenu() {
     set_dft_hs = DLLHotSpotCreate(main_wnd, 9, 0, default_off_text, default_on_text, 490, cury, 300, 15, UIF_CENTER);
     cury += 30;
   }
-  // void * game_head = DLLTextCreate(main_wnd,game_head_text,45,cury,0);
+  // auto  game_head = DLLTextCreate(main_wnd,game_head_text,45,cury,0);
 
-  void *gname_hs = DLLHotSpotCreate(main_wnd, SORT_GAMENAME, 0, gname_off_text, gname_on_text, 44, cury,
-                                    DLLgrtext_GetTextLineWidth(TXT_PXO_GAMENAME2) + 1, 15, 0);
-  void *gtype_hs = DLLHotSpotCreate(main_wnd, SORT_GAMETYPE, 0, gtype_off_text, gtype_on_text, 215, cury,
-                                    DLLgrtext_GetTextLineWidth(TXT_PXO_GAMETYPE) + 1, 15, 0);
-  void *msn_hs = DLLHotSpotCreate(main_wnd, SORT_MISSION, 0, msn_off_text, msn_on_text, 320, cury,
-                                  DLLgrtext_GetTextLineWidth(TXT_PXO_MISSION) + 1, 15, 0);
-  void *lvl_hs = DLLHotSpotCreate(main_wnd, SORT_LEVEL, 0, lvl_off_text, lvl_on_text, 428, cury,
-                                  DLLgrtext_GetTextLineWidth(TXT_PXO_LEVEL) + 1, 15, 0);
-  void *players_hs = DLLHotSpotCreate(main_wnd, SORT_PLAYERS, 0, plrs_off_text, plrs_on_text, 479, cury,
-                                      DLLgrtext_GetTextLineWidth(TXT_PXO_PLAYERS) + 1, 15, 0);
-  void *ping_hs = DLLHotSpotCreate(main_wnd, SORT_PING, 0, ping_off_text, ping_on_text, 549, cury,
-                                   DLLgrtext_GetTextLineWidth(TXT_PXO_PING) + 1, 15, 0);
+  auto gname_hs = DLLHotSpotCreate(main_wnd, SORT_GAMENAME, 0, gname_off_text, gname_on_text, 44, cury,
+                                   DLLgrtext_GetTextLineWidth(TXT_PXO_GAMENAME2) + 1, 15, 0);
+  auto gtype_hs = DLLHotSpotCreate(main_wnd, SORT_GAMETYPE, 0, gtype_off_text, gtype_on_text, 215, cury,
+                                   DLLgrtext_GetTextLineWidth(TXT_PXO_GAMETYPE) + 1, 15, 0);
+  auto msn_hs = DLLHotSpotCreate(main_wnd, SORT_MISSION, 0, msn_off_text, msn_on_text, 320, cury,
+                                 DLLgrtext_GetTextLineWidth(TXT_PXO_MISSION) + 1, 15, 0);
+  auto lvl_hs = DLLHotSpotCreate(main_wnd, SORT_LEVEL, 0, lvl_off_text, lvl_on_text, 428, cury,
+                                 DLLgrtext_GetTextLineWidth(TXT_PXO_LEVEL) + 1, 15, 0);
+  auto players_hs = DLLHotSpotCreate(main_wnd, SORT_PLAYERS, 0, plrs_off_text, plrs_on_text, 479, cury,
+                                     DLLgrtext_GetTextLineWidth(TXT_PXO_PLAYERS) + 1, 15, 0);
+  auto ping_hs = DLLHotSpotCreate(main_wnd, SORT_PING, 0, ping_off_text, ping_on_text, 549, cury,
+                                  DLLgrtext_GetTextLineWidth(TXT_PXO_PING) + 1, 15, 0);
 
   cury += 15;
-  void *game_list = DLLListCreate(main_wnd, 6, 10, cury, 600, 230, UIF_CENTER | UILB_NOSORT);
+  auto game_list = DLLListCreate(main_wnd, 6, 10, cury, 600, 230, UIF_CENTER | UILB_NOSORT);
   cury += 260;
-  void *join_hs = DLLHotSpotCreate(main_wnd, 6, KEY_ENTER, join_off_text, join_on_text, 100, cury, 130, 15, 0);
-  void *exit_hs = DLLHotSpotCreate(main_wnd, 5, KEY_ESC, exit_off_text, exit_on_text, 400, cury, 70, 15, 0);
+  auto join_hs = DLLHotSpotCreate(main_wnd, 6, KEY_ENTER, join_off_text, join_on_text, 100, cury, 130, 15, 0);
+  auto exit_hs = DLLHotSpotCreate(main_wnd, 5, KEY_ESC, exit_off_text, exit_on_text, 400, cury, 70, 15, 0);
 
-  void *info_hs = DLLHotSpotCreate(main_wnd, GET_INFO_ID, KEY_I, info_off_text, info_on_text, 1, 1, 1, 1, 0);
+  auto info_hs = DLLHotSpotCreate(main_wnd, GET_INFO_ID, KEY_I, info_off_text, info_on_text, 1, 1, 1, 1, 0);
 
   DLLNewUIWindowLoadBackgroundImage(main_wnd, "pxogame.ogf");
   DLLNewUIWindowOpen(main_wnd);
   *DLLNum_network_games_known = 0;
-  int lastgamesfound = 0;
   int itemp;
   last_req_time = DLLtimer_GetTime();
   RequestGameList();
@@ -1854,7 +1850,7 @@ int SearchMasterTrackerGameMenu() {
   // Menu loop
   while (!exit_menu) {
     if (ChatStarted)
-      const char *p = GetChatText();
+      GetChatText();
 
     DLLDescentDefer();
     IdleGameTracker();
@@ -2304,14 +2300,14 @@ int JoinNewLobby(const char *lobby) {
   int rcode;
   const char *p;
   DLLmprintf(0, "Entering new lobby");
-  void *title_text = DLLCreateNewUITextItem(TXT_PXO_ENTERINGLOBBY, UICOL_WINDOW_TITLE);
+  auto title_text = DLLCreateNewUITextItem(TXT_PXO_ENTERINGLOBBY, UICOL_WINDOW_TITLE);
 
-  void *cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
-  void *cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
+  auto cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
+  auto cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
 
-  void *main_wnd = DLLNewUIGameWindowCreate(0, 256, 128, 128, UIF_CENTER | UIF_PROCESS_ALL | NUWF_TITLEMED);
-  void *title = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
-  void *cancel_hs =
+  auto main_wnd = DLLNewUIGameWindowCreate(0, 256, 128, 128, UIF_CENTER | UIF_PROCESS_ALL | NUWF_TITLEMED);
+  auto title = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
+  auto cancel_hs =
       DLLHotSpotCreate(main_wnd, 5, KEY_ESC, cancel_off_text, cancel_on_text, 20, 100, 70, 15, UIF_CENTER);
   DLLNewUIGameWindowOpen(main_wnd);
   do {
@@ -2360,29 +2356,29 @@ const char *SendWhisper(const char *name) {
   char message[MAX_CHAT_SEND_LEN];
   char pilot_name[MAX_CHAT_SEND_LEN];
   static char fmt_msg[MAX_CHAT_SEND_LEN * 2];
-  void *title_text = DLLCreateNewUITextItem(TXT_PXO_PRIVATEMESSAGE, UICOL_WINDOW_TITLE);
+  auto title_text = DLLCreateNewUITextItem(TXT_PXO_PRIVATEMESSAGE, UICOL_WINDOW_TITLE);
 
-  void *cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
-  void *cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
-  void *send_on_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_HI);
-  void *send_off_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_LO);
+  auto cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
+  auto cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
+  auto send_on_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_HI);
+  auto send_off_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_LO);
 
-  void *pilot_text = DLLCreateNewUITextItem(TXT_PXO_PILOTNAME, UICOL_TEXT_NORMAL);
-  void *message_text = DLLCreateNewUITextItem(TXT_PXO_MESSAGE, UICOL_TEXT_NORMAL);
+  auto pilot_text = DLLCreateNewUITextItem(TXT_PXO_PILOTNAME, UICOL_TEXT_NORMAL);
+  auto message_text = DLLCreateNewUITextItem(TXT_PXO_MESSAGE, UICOL_TEXT_NORMAL);
 
-  void *main_wnd = DLLNewUIGameWindowCreate(0, 0, 384, 256, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
+  auto main_wnd = DLLNewUIGameWindowCreate(0, 0, 384, 256, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
 
-  void *title = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
-  void *pilot = DLLTextCreate(main_wnd, pilot_text, 50, 55, 0);
-  void *message_t = DLLTextCreate(main_wnd, message_text, 50, 110, 0);
-  void *user_edit = DLLEditCreate(main_wnd, 10, 50, 75, 130, 15, 0);
-  void *msg_edit = DLLEditCreate(main_wnd, 3, 50, 130, 200, 15, 0);
+  auto title = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
+  auto pilot = DLLTextCreate(main_wnd, pilot_text, 50, 55, 0);
+  auto message_t = DLLTextCreate(main_wnd, message_text, 50, 110, 0);
+  auto user_edit = DLLEditCreate(main_wnd, 10, 50, 75, 130, 15, 0);
+  auto msg_edit = DLLEditCreate(main_wnd, 3, 50, 130, 200, 15, 0);
 
   // HotSpotCreate(int item,int parentitem, int id, int key, int txtitemoff, int txtitemon, int x, int y, int w, int h,
   // int flags,int winnum)
-  void *cancel_hs =
+  auto cancel_hs =
       DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, cancel_on_text, cancel_off_text, 130, 256 - 80, 60, 20, 0);
-  void *send_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, send_on_text, send_off_text, 60, 256 - 80, 60, 20, 0);
+  auto send_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, send_on_text, send_off_text, 60, 256 - 80, 60, 20, 0);
   DLLNewUIGameWindowOpen(main_wnd);
   // DLLNewUIWindowSetFocusOnEditGadget(msg_edit,main_wnd);
   DLLEditSetText(user_edit, name);
@@ -2443,27 +2439,27 @@ int JoinPrivateLobby() {
   char message[MAX_CHAT_SEND_LEN];
   char priv_channel[MAX_CHAT_SEND_LEN];
 
-  void *title_text = DLLCreateNewUITextItem(TXT_PXO_JOINPRIV, UICOL_WINDOW_TITLE);
+  auto title_text = DLLCreateNewUITextItem(TXT_PXO_JOINPRIV, UICOL_WINDOW_TITLE);
 
-  void *cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
-  void *cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
-  void *join_on_text = DLLCreateNewUITextItem(TXT_PXO_JOIN, UICOL_HOTSPOT_HI);
-  void *join_off_text = DLLCreateNewUITextItem(TXT_PXO_JOIN, UICOL_HOTSPOT_LO);
+  auto cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
+  auto cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
+  auto join_on_text = DLLCreateNewUITextItem(TXT_PXO_JOIN, UICOL_HOTSPOT_HI);
+  auto join_off_text = DLLCreateNewUITextItem(TXT_PXO_JOIN, UICOL_HOTSPOT_LO);
 
-  void *channel_text = DLLCreateNewUITextItem(TXT_PXO_CHANNELNAME, UICOL_TEXT_NORMAL);
+  auto channel_text = DLLCreateNewUITextItem(TXT_PXO_CHANNELNAME, UICOL_TEXT_NORMAL);
 
-  void *main_wnd = DLLNewUIGameWindowCreate(0, 0, 256, 256, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLELARGE);
+  auto main_wnd = DLLNewUIGameWindowCreate(0, 0, 256, 256, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLELARGE);
 
-  void *title = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
-  void *channel_t = DLLTextCreate(main_wnd, channel_text, 50, 95, UIF_CENTER);
-  void *chan_edit = DLLEditCreate(main_wnd, 3, 50, 115, 130, 15, UIF_CENTER);
+  auto title = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
+  auto channel_t = DLLTextCreate(main_wnd, channel_text, 50, 95, UIF_CENTER);
+  auto chan_edit = DLLEditCreate(main_wnd, 3, 50, 115, 130, 15, UIF_CENTER);
 
   // DLLNewUIWindowSetFocusOnEditGadget(chan_edit,main_wnd);
   // HotSpotCreate(int item,int parentitem, int id, int key, int txtitemoff, int txtitemon, int x, int y, int w, int h,
   // int flags,int winnum)
-  void *cancel_hs =
+  auto cancel_hs =
       DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, cancel_on_text, cancel_off_text, 130, 256 - 80, 60, 20, 0);
-  void *join_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, join_on_text, join_off_text, 60, 256 - 80, 60, 20, 0);
+  auto join_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, join_on_text, join_off_text, 60, 256 - 80, 60, 20, 0);
   DLLNewUIGameWindowOpen(main_wnd);
   while (!exit_menu) {
     int res;
@@ -2530,27 +2526,27 @@ int FindPilot() {
   char message[MAX_CHAT_SEND_LEN];
   char pilot_name[MAX_CHAT_SEND_LEN];
   static char fmt_msg[MAX_CHAT_SEND_LEN * 2];
-  void *title_text = DLLCreateNewUITextItem(TXT_PXO_FINDPILOT, UICOL_WINDOW_TITLE);
+  auto title_text = DLLCreateNewUITextItem(TXT_PXO_FINDPILOT, UICOL_WINDOW_TITLE);
 
-  void *cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
-  void *cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
-  void *search_on_text = DLLCreateNewUITextItem(TXT_PXO_SEARCH, UICOL_HOTSPOT_HI);
-  void *search_off_text = DLLCreateNewUITextItem(TXT_PXO_SEARCH, UICOL_HOTSPOT_LO);
+  auto cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
+  auto cancel_off_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_LO);
+  auto search_on_text = DLLCreateNewUITextItem(TXT_PXO_SEARCH, UICOL_HOTSPOT_HI);
+  auto search_off_text = DLLCreateNewUITextItem(TXT_PXO_SEARCH, UICOL_HOTSPOT_LO);
 
-  void *pilot_text = DLLCreateNewUITextItem(TXT_PXO_PILOTNAME, UICOL_TEXT_NORMAL);
+  auto pilot_text = DLLCreateNewUITextItem(TXT_PXO_PILOTNAME, UICOL_TEXT_NORMAL);
 
-  void *main_wnd = DLLNewUIGameWindowCreate(0, 0, 256, 256, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
+  auto main_wnd = DLLNewUIGameWindowCreate(0, 0, 256, 256, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
 
-  void *title_t = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
-  void *pilot_t = DLLTextCreate(main_wnd, pilot_text, 50, 95, UIF_CENTER);
-  void *pilot_edit = DLLEditCreate(main_wnd, 3, 50, 115, 130, 15, UIF_CENTER);
+  auto title_t = DLLTextCreate(main_wnd, title_text, 0, 7, UIF_CENTER);
+  auto pilot_t = DLLTextCreate(main_wnd, pilot_text, 50, 95, UIF_CENTER);
+  auto pilot_edit = DLLEditCreate(main_wnd, 3, 50, 115, 130, 15, UIF_CENTER);
 
   // DLLNewUIWindowSetFocusOnEditGadget(pilot_edit,main_wnd);
   // HotSpotCreate(int item,int parentitem, int id, int key, int txtitemoff, int txtitemon, int x, int y, int w, int h,
   // int flags,int winnum)
-  void *cancel_hs =
+  auto cancel_hs =
       DLLHotSpotCreate(main_wnd, UID_CANCEL, KEY_ESC, cancel_on_text, cancel_off_text, 130, 256 - 80, 60, 20, 0);
-  void *search_hs =
+  auto search_hs =
       DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, search_on_text, search_off_text, 60, 256 - 80, 60, 20, 0);
   DLLNewUIGameWindowOpen(main_wnd);
   while (!exit_menu) {
@@ -2688,26 +2684,26 @@ int GetPilotStats(const char *pilot) {
   char tmp_text[MAX_CHAT_SEND_LEN];
   vmt_descent3_struct d3_pilot_info;
 
-  void *eff_text;
-  void *time_text;
-  void *main_wnd;
-  void *title_t;
-  void *kill_t;
-  void *death_t;
-  void *suicide_t;
-  void *eff_t;
-  void *time_in_game_t;
-  void *pilot_t;
-  void *rank_t;
+  UIItem *eff_text;
+  UIItem *time_text;
+  UIObject *main_wnd;
+  UIObject *title_t;
+  UIObject *kill_t;
+  UIObject *death_t;
+  UIObject *suicide_t;
+  UIObject *eff_t;
+  UIObject *time_in_game_t;
+  UIObject *pilot_t;
+  UIObject *rank_t;
 
-  void *title_text;
-  void *pilot_name_text;
-  void *close_on_text;
-  void *close_off_text;
-  void *kills_text;
-  void *deaths_text;
-  void *suicide_text;
-  void *rank_text;
+  UIItem *title_text;
+  UIItem *pilot_name_text;
+  UIItem *close_on_text;
+  UIItem *close_off_text;
+  UIItem *kills_text;
+  UIItem *deaths_text;
+  UIItem *suicide_text;
+  UIItem *rank_text;
 
   DLLCreateSplashScreen(TXT_PXO_GETTINGPILOTSTAT, 1);
   // Cancel previously active lookups
@@ -3017,8 +3013,7 @@ int ShowMessageOfTheDay(void) {
   int motdlen = MAX_MOTD_LEN;
   int res;
   int rval = 0;
-  static void *main_wnd;
-  void *close_hs;
+  static UIObject *main_wnd;
 
   int last_motd_version = 0;
 
@@ -3032,17 +3027,17 @@ int ShowMessageOfTheDay(void) {
 
   DLLDatabaseWriteInt("MOTDVersion", Motd_version);
 
-  void *close_on_text = DLLCreateNewUITextItem(TXT_PXO_CLOSE, UICOL_HOTSPOT_HI);
-  void *close_off_text = DLLCreateNewUITextItem(TXT_PXO_CLOSE, UICOL_HOTSPOT_LO);
-  void *motd_text = DLLCreateNewUITextItem("PXO Message of the day", UICOL_WINDOW_TITLE);
+  auto close_on_text = DLLCreateNewUITextItem(TXT_PXO_CLOSE, UICOL_HOTSPOT_HI);
+  auto close_off_text = DLLCreateNewUITextItem(TXT_PXO_CLOSE, UICOL_HOTSPOT_LO);
+  auto motd_text = DLLCreateNewUITextItem("PXO Message of the day", UICOL_WINDOW_TITLE);
 
   main_wnd = DLLNewUIGameWindowCreate(0, 0, MOTD_WIDTH, MOTD_HEIGHT, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLELARGE);
 
-  void *console_item = DLLUIConsoleGadgetCreate(main_wnd, 15, 20, 30, 0, 40, 20, 0);
-  void *title = DLLTextCreate(main_wnd, motd_text, 0, 7, UIF_CENTER);
+  auto console_item = DLLUIConsoleGadgetCreate(main_wnd, 15, 20, 30, 0, 40, 20, 0);
+  auto title = DLLTextCreate(main_wnd, motd_text, 0, 7, UIF_CENTER);
 
-  close_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, close_off_text, close_on_text, 60, MOTD_HEIGHT - 60, 60, 20,
-                              UIF_CENTER);
+  auto close_hs = DLLHotSpotCreate(main_wnd, UID_OK, KEY_ENTER, close_off_text, close_on_text, 60, MOTD_HEIGHT - 60, 60, 20,
+                                   UIF_CENTER);
 
   DLLDatabaseRead("LastMOTD", szlastmotd, &motdlen);
 

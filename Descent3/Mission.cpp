@@ -1197,7 +1197,6 @@ fatal_error:
 
 void FreeMission() {
   //	Free up mission script
-  int i; //,j;
   // close MN3 file if there is one.
   mn3_Close();
   // Tell Osiris to shutdown the Osiris Mission Memory System, freeing all memory
@@ -1265,7 +1264,6 @@ bool LoadMissionLevel(int level) {
   }
   // Test to see if levels are valid
   bool boa = true, terrain = true;
-  char str[255];
 
   if (BOAGetMineChecksum() != BOA_vis_checksum)
     boa = false;

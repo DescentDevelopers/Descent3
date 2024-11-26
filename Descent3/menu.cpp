@@ -1105,7 +1105,7 @@ bool MenuNewGame() {
   std::vector<std::filesystem::path> filelist;
   int n_missions, res;
   bool found = false;
-  bool do_menu = true, load_mission = false, retval = true;
+  bool retval = true;
 #ifdef DEMO
   if (LoadMission("d3demo.mn3")) {
     CurrentPilotUpdateMissionStatus(true);

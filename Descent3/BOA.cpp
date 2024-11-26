@@ -1334,7 +1334,6 @@ void ValidateRoomPathPoint(int room, char *message, int len) {
   if (IsPathPointValid(room, &pos))
     return;
 
-  bool f_found = false;
   // vector best_pnt;
   // float best_distance;
 

@@ -132,16 +132,16 @@ void DoServerConfigureDialog(void) {
   char tempbuffer[20];
   bool exit_menu = false;
 
-  void *start_game_text_off = DLLCreateNewUITextItem(TXT_STARTGAME, GR_WHITE, -1);
-  void *start_game_text_on = DLLCreateNewUITextItem(TXT_STARTGAME, GR_RED, -1);
-  void *virus_pk_text = DLLCreateNewUITextItem(TXT_VIRUSCREDIT, GR_WHITE, -1);
+  auto start_game_text_off = DLLCreateNewUITextItem(TXT_STARTGAME, GR_WHITE, -1);
+  auto start_game_text_on = DLLCreateNewUITextItem(TXT_STARTGAME, GR_RED, -1);
+  auto virus_pk_text = DLLCreateNewUITextItem(TXT_VIRUSCREDIT, GR_WHITE, -1);
 
-  void *main_wnd = DLLNewUIGameWindowCreate(0, 0, 256, 256, UIF_PROCESS_ALL | UIF_CENTER);
+  auto main_wnd = DLLNewUIGameWindowCreate(0, 0, 256, 256, UIF_PROCESS_ALL | UIF_CENTER);
 
   int cury = 20;
-  void *virus_pk_edit = DLLEditCreate(main_wnd, 13, 40, cury, 80, 15, 0);
+  auto virus_pk_edit = DLLEditCreate(main_wnd, 13, 40, cury, 80, 15, 0);
   cury += 35;
-  void *start_game_hs =
+  auto start_game_hs =
       DLLHotSpotCreate(main_wnd, UID_OK, K_ENTER, start_game_text_off, start_game_text_on, 40, cury, 130, 15, 0);
   cury += 20;
 

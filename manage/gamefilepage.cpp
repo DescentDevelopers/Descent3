@@ -76,7 +76,7 @@ int mng_ReadNewGamefilePage(CFILE *infile, mngs_gamefile_page *gamefilepage) {
   ASSERT(infile != NULL);
   memset(gamefilepage, 0, sizeof(mngs_gamefile_page));
 
-  int version = cf_ReadShort(infile);
+  /* int version = */ cf_ReadShort(infile);
 
   cf_ReadString(gamefilepage->gamefile_struct.name, PAGENAME_LEN, infile);
   cf_ReadString(gamefilepage->gamefile_struct.dir_name, PAGENAME_LEN, infile);

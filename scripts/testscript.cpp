@@ -55,12 +55,11 @@ tScriptInfo ScriptInfo[MAX_IDS] = {{ID_SHIELD_ORB, "Shield"}, {ID_ENERGY_ORB, "E
 
 class BaseObjScript {
 public:
-  BaseObjScript();
-  ~BaseObjScript();
+  virtual ~BaseObjScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
-  bool called;
+  bool called = false;
 };
 
 struct tShieldOrbInfo {
@@ -69,7 +68,7 @@ struct tShieldOrbInfo {
 //------------------
 // Shield orb script
 //------------------
-class ShieldOrb : public BaseObjScript {
+class ShieldOrb final : public BaseObjScript {
 public:
   ShieldOrb() { info = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
@@ -81,7 +80,7 @@ private:
 //------------------
 // Energy orb script
 //------------------
-class EnergyOrb : public BaseObjScript {
+class EnergyOrb final : public BaseObjScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
@@ -161,10 +160,6 @@ int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() { called = false; }
-
-BaseObjScript::~BaseObjScript() {}
-
 int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL:

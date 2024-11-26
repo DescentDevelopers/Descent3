@@ -521,7 +521,6 @@ bool AttachObject(object *parent, char parent_ap, object *child, float percent_r
   ASSERT(child);
 
   poly_model *parent_pm = &Poly_models[parent->rtype.pobj_info.model_num];
-  poly_model *child_pm = &Poly_models[parent->rtype.pobj_info.model_num];
 
   if (parent_ap < 0 || parent_ap >= parent_pm->n_attach) {
     LOG_WARNING << "ATTACH: Parent AP invalid";

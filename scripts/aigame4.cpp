@@ -125,8 +125,7 @@ static int aigame_mod_id;
 
 class BaseObjScript {
 public:
-  BaseObjScript();
-  ~BaseObjScript();
+  virtual ~BaseObjScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -142,12 +141,11 @@ struct combwallhit_data {
   float time_left;
 };
 
-class CombWallHit : public BaseObjScript {
+class CombWallHit final : public BaseObjScript {
 private:
-  combwallhit_data *memory;
+  combwallhit_data *memory = nullptr;
 
 public:
-  CombWallHit() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -160,12 +158,11 @@ struct droptarget_data {
   float last_set_time;
 };
 
-class DropTarget : public BaseObjScript {
+class DropTarget final : public BaseObjScript {
 private:
-  droptarget_data *memory;
+  droptarget_data *memory = nullptr;
 
 public:
-  DropTarget() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -178,11 +175,10 @@ struct gun_data {
   bool f_fire;
 };
 
-class Gun : public BaseObjScript {
-  gun_data *memory;
+class Gun final : public BaseObjScript {
+  gun_data *memory = nullptr;
 
 public:
-  Gun() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -194,12 +190,11 @@ struct casing_data {
   float time_left;
 };
 
-class Casing : public BaseObjScript {
+class Casing final : public BaseObjScript {
 private:
-  casing_data *memory;
+  casing_data *memory = nullptr;
 
 public:
-  Casing() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -248,9 +243,9 @@ struct mercendboss_data {
   int combine_object;
 };
 
-class MercEndBoss : public BaseObjScript {
+class MercEndBoss final : public BaseObjScript {
 private:
-  mercendboss_data *memory;
+  mercendboss_data *memory = nullptr;
   void DoInit(int me);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);
@@ -260,7 +255,6 @@ private:
   void PlayRandomSound(int me);
 
 public:
-  MercEndBoss() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -268,12 +262,11 @@ public:
 // HangLight class
 //------------------
 
-class HangLight : public BaseObjScript {
+class HangLight final : public BaseObjScript {
 private:
   void DoInit(int me);
 
 public:
-  HangLight() {}
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
@@ -417,10 +410,6 @@ static inline bool IsGoalFinishedNotify(int index) {
 //============================================
 // Script Implementation
 //============================================
-BaseObjScript::BaseObjScript() {}
-
-BaseObjScript::~BaseObjScript() {}
-
 int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //------------------
@@ -923,8 +912,6 @@ void MercEndBoss::DoFrame(int me) {
       matrix orient;
       vector start_pos;
       vector end_pos;
-      vector collision_pos;
-      vector collision_normal;
       int num_iterations = 0;
       int num_ignore = 0;
       int ignore_list[100];

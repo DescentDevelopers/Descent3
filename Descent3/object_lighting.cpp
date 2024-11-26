@@ -237,8 +237,6 @@ void DoObjectLight(object *obj) {
 
         hit_info.hit_pnt -= obj->orient.fvec / 4;
 
-        float dist = vm_VectorDistanceQuick(&hit_info.hit_pnt, &obj->pos);
-
         // Now light up the hit area
         if (ROOMNUM_OUTSIDE(hit_info.hit_room))
           ApplyLightingToTerrain(&hit_info.hit_pnt, CELLNUM(hit_info.hit_room), FAST_HEADLIGHT_SIZE,
@@ -470,7 +468,6 @@ void ClearObjectLightmaps(object *obj) {
     poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
     ASSERT(pm->n_models < MAX_SUBOBJECTS);
 
-    int faceCount = 0;
     for (Mnum = 0; Mnum < pm->n_models; Mnum++) {
       if (!IsNonRenderableSubmodel(pm, Mnum)) {
         mem_free(obj->lm_object.lightmap_faces[Mnum][0].u2);

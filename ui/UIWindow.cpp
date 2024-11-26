@@ -686,10 +686,6 @@ void UIWindow::ResetAcceleratorKey() { m_naccels = 0; }
 //	----------------------------------------------------------------------------
 //	UITitledWindow class
 
-UITitledWindow::UITitledWindow() {}
-
-UITitledWindow::~UITitledWindow() {}
-
 void UITitledWindow::Create(UITextItem &title, int x, int y, int w, int h) {
   m_Title = title;
   m_BorderThickness = 2;

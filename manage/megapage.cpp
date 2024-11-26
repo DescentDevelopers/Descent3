@@ -176,7 +176,7 @@ int mng_ReadNewMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage) {
   int i;
   ASSERT(infile != NULL);
   memset(megacellpage, 0, sizeof(mngs_megacell_page));
-  int version = cf_ReadShort(infile);
+  /* int version = */ cf_ReadShort(infile);
 
   cf_ReadString(megacellpage->megacell_struct.name, PAGENAME_LEN, infile);
 

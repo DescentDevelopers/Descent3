@@ -370,7 +370,6 @@ void InitGauges(tStatMask gauge_mask) {
 //	deinitializes cockpit gauges
 void CloseGauges() {
   for (int i = 0; i < NUM_GAUGES; i++) {
-    uint16_t mask = Gauge_mask & (1 << i);
     Gauge_list[i].monitor = NULL;
   }
   Gauge_mask = 0;

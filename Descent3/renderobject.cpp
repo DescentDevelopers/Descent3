@@ -996,7 +996,6 @@ void DrawDebugInfo(object *obj) {
 // Draw a shard
 void DrawShardObject(object *obj) {
   shard_info_s *si = &obj->rtype.shard_info;
-  bool flip = 0;
   g3Point rotated_points[3];
   g3Point *pointlist[3];
   uint8_t codes_and = 0xff;
@@ -1335,7 +1334,6 @@ void RenderObject(object *obj) {
 
         float curr_alpha = 1.0f - alpha_step;
         float curr_t = t_interval;
-        float full_time = AFT / total_time; // how much of the interval we want to go across
 
         for (i = 0; i < num_iterations; i++) {
           if (!GetLinearPosition(positions, times, MAX_POSITION_HISTORY + 1, curr_t, &obj->pos))
@@ -1980,7 +1978,6 @@ void DrawPlayerDamageDisk(object *obj) {
     return;
   rend_SetZBias(-obj->size);
   int bm_handle;
-  int objnum = obj - Objects;
   float rot_temp = .25; // Higher is faster
   int int_game = Gametime / rot_temp;
   float diff = Gametime - (int_game * rot_temp);

@@ -265,17 +265,11 @@ static uint16_t LOD_sort_num[MAX_TERRAIN_LOD];
 // Variable to determine if we're in editor or game
 extern function_mode View_mode;
 
-static vector TJoint_VectorAddZ;
-static vector TJoint_VectorAddX;
-
 // Since our terrain points increment in finite steps we can rotate 2 points (x,z)
 // just add them to a base point to get the final rotated point
 void PreRotateTerrain() {
   vector rvec = {1 * TERRAIN_SIZE, 0, 0};
   vector fvec = {0, 0, 1 * TERRAIN_SIZE};
-
-  vector tj_rvec = {4, 0, 0};
-  vector tj_fvec = {0, 0, 4};
 
   TS_FVectorAdd = fvec * *TS_View_matrix;
   TS_RVectorAdd = rvec * *TS_View_matrix;
@@ -792,7 +786,6 @@ float GetTerrainGroundPoint(vector *pos, vector *normal) {
 }
 
 int SimplifyVertexSlow(int x, int z, float delta) {
-  vector *eye = TS_View_position;
   g3Point p1, p2;
 
   p1.p3_codes = 0;

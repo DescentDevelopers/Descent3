@@ -79,20 +79,21 @@ static int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
 
 class ClutterScript {
 public:
+  virtual ~ClutterScript() = default;
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 };
 
-class FragCrate : public ClutterScript {
+class FragCrate final : public ClutterScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class NapalmBarrel : public ClutterScript {
+class NapalmBarrel final : public ClutterScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class AliencuplinkScript : public ClutterScript {
+class AliencuplinkScript final : public ClutterScript {
 public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
@@ -101,34 +102,30 @@ struct tTNTHighYield {
   vector last_vel;
   float lifetime;
 };
-class TNTHighYield : public ClutterScript {
+class TNTHighYield final : public ClutterScript {
 public:
-  TNTHighYield() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  tTNTHighYield *memory;
+  tTNTHighYield *memory = nullptr;
 };
 
-class TNTMedYield : public ClutterScript {
+class TNTMedYield final : public ClutterScript {
 public:
-  TNTMedYield() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  float *memory;
+  float *memory = nullptr;
 };
 
 struct tFallingRock {
   float lifeleft;
 };
-class FallingRock : public ClutterScript {
+class FallingRock final : public ClutterScript {
 public:
-  FallingRock() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  tFallingRock *memory;
+  tFallingRock *memory = nullptr;
 };
-class LavaRock : public ClutterScript {
+class LavaRock final : public ClutterScript {
 public:
-  LavaRock() { memory = NULL; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
-  tFallingRock *memory;
+  tFallingRock *memory = nullptr;
 };
 
 //	InitializeDLL
@@ -294,10 +291,8 @@ int16_t FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY:
     vector pos;
-    float mag;
     int weapon_id;
     int handle;
-    int i;
     int room;
 
     Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
@@ -315,10 +310,8 @@ int16_t NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY:
     vector pos;
-    float mag;
     int weapon_id;
     int handle;
-    int i;
     int room;
     matrix o, orient;
 
@@ -395,7 +388,6 @@ float GetObjectShields(int object) {
 int16_t TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    int i;
     tOSIRISMEMCHUNK ch;
     ch.id = 4;
     ch.size = sizeof(float);
@@ -446,7 +438,6 @@ int16_t TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    int i;
     tOSIRISMEMCHUNK ch;
     ch.id = 4;
     ch.size = sizeof(tTNTHighYield);
@@ -511,7 +502,6 @@ int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
     int close_obj_list[32];
     int roomnum;
     int rockpile_id;
-    float amount;
     vector pos;
 
     Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &roomnum);
@@ -543,7 +533,6 @@ int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    int i;
     tOSIRISMEMCHUNK ch;
     ch.id = 4;
     ch.size = sizeof(tFallingRock);
@@ -577,7 +566,6 @@ int16_t FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
 int16_t LavaRock::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
-    int i;
     tOSIRISMEMCHUNK ch;
     ch.id = 4;
     ch.size = sizeof(tFallingRock);
