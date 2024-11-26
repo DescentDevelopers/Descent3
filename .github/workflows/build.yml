@@ -26,7 +26,7 @@ jobs:
             cc: cl
             cxx: cl
             name: Windows-x64
-          - runner: macos-12 # This is supposed to be Intel for now, and what macos-latest is defaulting to for some reason (as of 04/2024)
+          - runner: macos-13 # Should be Intel
             preset: mac
             cc: cc
             cxx: c++
