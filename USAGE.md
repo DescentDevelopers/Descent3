@@ -46,9 +46,9 @@ context menu.
       builds [here](https://github.com/DescentDevelopers/Descent3/actions/workflows/build.yml?query=branch%3Amain+event%3Apush).
     - If you want to build the engine files yourself, the follow the
       instructions in [BUILD.md](BUILD.md). Once you build the engine files,
-      they’ll be put in `builds/<platform>/<build-type>/`. For example, if
+      they’ll be put in `builds/<platform>/build/<build-type>/`. For example, if
       you’re using Linux and you create a “Release” build, then the files will
-      be located at `builds/linux/Release`.
+      be located at `builds/linux/build/Release`.
 
 9. Copy all the new engine files into `D3-open-source` and overwrite any
 conflicts.

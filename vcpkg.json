@@ -1,5 +1,5 @@
 {
-  "builtin-baseline": "198d68dbcc6c907cb3d0b9b1d93c3df6ecf93c62",
+  "builtin-baseline": "e60236ee051183f1122066bee8c54a0b47c43a60",
   "dependencies": [
     "glm",
     "gtest",
@@ -7,20 +7,27 @@
     "zlib",
     {
       "name": "sdl2",
-      "version>=": "2.30.3",
-      "features": ["x11","wayland", "alsa"],
-      "platform": "linux"
+      "version>=": "2.30.8",
+      "features": ["x11", "wayland", "alsa"],
+      "default-features": false,
+      "platform": "linux & !native"
     },
     {
       "name": "sdl2",
-      "version>=": "2.30.3",
+      "version>=": "2.30.8",
+      "features": ["x11","wayland", "alsa"],
+      "platform": "linux & native"
+    },
+    {
+      "name": "sdl2",
+      "version>=": "2.30.8",
       "platform": "!linux"
     }
   ],
   "overrides": [
     {
       "name": "sdl2",
-      "version": "2.30.3"
+      "version": "2.30.8"
     }
   ]
 }

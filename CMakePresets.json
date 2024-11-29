@@ -42,6 +42,20 @@
 				"lhs": "${hostSystemName}",
 				"rhs": "Linux"
 			}
+		},
+		{
+			"name": "linux-cross-arm64",
+			"inherits": "defaults",
+			"generator": "Ninja Multi-Config",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Linux"
+			},
+			"cacheVariables": {
+				"VCPKG_TARGET_TRIPLET": "arm64-linux",
+				"CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/linux-aarch64-gcc-toolchain.cmake"
+			}
 		}
 	],
 	"buildPresets": [
@@ -56,6 +70,10 @@
 		{
 			"name": "linux",
 			"configurePreset": "linux"
+		},
+		{
+			"name": "linux-cross-arm64",
+			"configurePreset": "linux-cross-arm64"
 		}
 	],
 	"testPresets": [

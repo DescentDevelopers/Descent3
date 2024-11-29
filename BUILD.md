@@ -152,24 +152,22 @@ Once CMake finishes, the built files will be put in `builds/linux/build/Debug` o
 ## Cross-compilation
 
 In order to cross-compile Descent3 to another platform (for example, Linux ARM64), you'll need to build auxiliary
-tools which needed to build data files. First create build-native directory and configure project in it:
+tools natively which are needed to build data files. First create build-native directory and configure project in it:
 
 ```shell
 mkdir build-native
 cd build-native
 cmake ..
-make HogMaker
+cmake --build . --target HogMaker
 ```
 
-Now you ready for cross-compilation. Create cross-compile directory and configure project in it, but this time add
-`-DCMAKE_TOOLCHAIN_FILE=MyToolchain.cmake` and `-DHogMaker_DIR=<path-to-Descent3/build-native/` options. This enables
-cross-compilation environment.
+Now, you are ready for cross-compilation. Create a new cross-compilation build directory and configure the project in it, but this time specify the location of the HogMaker native executable just built, as well as the [toolchain file](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html#id14) location. This enables the cross-compilation environment. An example toolchain file is provided for a Linux ARM64 build at `cmake/toolchains/linux-aarch64-gcc-toolchain.cmake`. The custom toolchain system can be used in combination with VCPKG to build all dependencies for the target system.
 
 ```shell
 mkdir build-cross
 cd build-cross
-cmake -DCMAKE_TOOLCHAIN_FILE=MyToolchain.cmake -DHogMaker_DIR=~/src/build-native/ ..
-make
+cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/MyToolChain.cmake -DHogMaker_DIR=../build-native/ ..
+cmake --build .
 ```
 
 ## Build Options
