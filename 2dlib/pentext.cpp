@@ -333,23 +333,18 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
 }
 
 void grViewport::draw_text_line(int x, int y, char *str) {
-  unsigned i, cur_x;
-
   /*	perform string drawing without viewport clipping.
           supports bitmap fonts or color(alpha) mapped fonts.
   */
-  cur_x = x;
-  for (i = 0; i < (int)strlen(str); i++) {
-    uint8_t ch;
-
-    ch = (uint8_t)str[i];
-
+  uint32_t cur_x = x;
+  for (size_t i = 0; i < strlen(str); i++) {
+    uint8_t ch = (uint8_t)str[i];
     if (ch == GR_COLOR_CHAR) {
-      if ((i + 3) >= (int)strlen(str))
+      if ((i + 3) >= strlen(str))
         Int3(); // This shouldn't happen!  bad string!
       set_text_color(GR_RGB(str[i + 1], str[i + 2], str[i + 3]));
       i += 4;
-      if (i >= (int)strlen(str))
+      if (i >= strlen(str))
         Int3(); // This shouldn't happen too.
       ch = (uint8_t)str[i];
     } else if (ch == '\t') { // tab char

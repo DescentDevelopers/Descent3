@@ -265,9 +265,9 @@ void gr_mem_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, i
 bool gr_mem_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh) {
   //	Maybe we should allow slow 16bpp to 24bpp and vice-versa blts.
   //	for now, we wont.
-  mem_bitmap *sbm = (mem_bitmap *)ssf->obj, *dbm = (mem_bitmap *)dsf->obj;
+  mem_bitmap *dbm = (mem_bitmap *)dsf->obj;
 
-  ASSERT(dbm->bpp == sbm->bpp);
+  ASSERT(dbm->bpp == ((mem_bitmap *)ssf->obj)->bpp);
 
   switch (dbm->bpp) {
   case BPP_16:
