@@ -537,7 +537,7 @@ const char *ddio_MouseGetBtnText(int btn) {
 }
 
 const char *ddio_MouseGetAxisText(int axis) {
-  if (axis >= (sizeof(Ctltext_MseAxisBindings) / sizeof(char *)) || axis < 0)
+  if (axis >= static_cast<int>(sizeof(Ctltext_MseAxisBindings) / sizeof(Ctltext_MseAxisBindings[0])) || axis < 0)
     return ("");
   return Ctltext_MseAxisBindings[axis];
 }
