@@ -278,49 +278,41 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
 int sdlMouseWheelFilter(SDL_Event const *event) {
   ASSERT(event->type == SDL_MOUSEWHEEL);
 
-  const SDL_MouseWheelEvent *ev = &event->wheel;
-  t_mse_event mevt;
-
   // !!! FIXME: this ignores horizontal wheels for now, since Descent3 doesn't currently have a concept of them
   // !!! FIXME: (vertical mouse wheels are represented as mouse buttons 4 and 5, incorrectly, on all platforms).
   // !!! FIXME: this will require improvements to the engine before this changes here, though.
 
-  if (ev->y > 0) { /* Mouse scroll up */
-    DDIO_mouse_state.btn_mask |= MOUSE_B5;
-    DIM_buttons.down_count[4]++;
-    DIM_buttons.time_down[4] = timer_GetTime();
-    DIM_buttons.is_down[4] = true;
-    mevt.btn = 4;
-    mevt.state = true;
-    MB_queue.send(mevt);
+  auto register_clicked = [](int button_bits, std::size_t button_index) {
+    DDIO_mouse_state.btn_mask |= button_bits;
+    DIM_buttons.down_count[button_index]++;
+    DIM_buttons.time_down[button_index] = timer_GetTime();
+    DIM_buttons.is_down[button_index] = true;
+    {
+      t_mse_event mevt;
+      mevt.btn = button_index;
+      mevt.state = true;
+      MB_queue.send(mevt);
+    }
 
     // send an immediate release event, as if the "button" was clicked. !!! FIXME: this also needs improvements in the engine.
     // don't remove from btn_mask
-    DIM_buttons.up_count[4]++;
-    DIM_buttons.is_down[4] = false;
-    DIM_buttons.time_up[4] = timer_GetTime();
-    mevt.btn = 4;
-    mevt.state = false;
-    MB_queue.send(mevt);
-    //		mprintf(0, "MOUSE Scrollwheel: Rolled Up\n");
-  } else if (ev->y < 0) { /* Mouse scroll down */
-    DDIO_mouse_state.btn_mask |= MOUSE_B6;
-    DIM_buttons.down_count[5]++;
-    DIM_buttons.time_down[5] = timer_GetTime();
-    DIM_buttons.is_down[5] = true;
-    mevt.btn = 5;
-    mevt.state = true;
-    MB_queue.send(mevt);
+    DIM_buttons.up_count[button_index]++;
+    DIM_buttons.is_down[button_index] = false;
+    DIM_buttons.time_up[button_index] = timer_GetTime();
+    {
+      t_mse_event mevt;
+      mevt.btn = button_index;
+      mevt.state = false;
+      MB_queue.send(mevt);
+    }
+  };
 
-    // send an immediate release event, as if the "button" was clicked. !!! FIXME: this also needs improvements in the engine.
-    // don't remove from btn_mask
-    DIM_buttons.up_count[5]++;
-    DIM_buttons.is_down[5] = false;
-    DIM_buttons.time_up[5] = timer_GetTime();
-    mevt.btn = 5;
-    mevt.state = false;
-    MB_queue.send(mevt);
-    //		mprintf(0, "MOUSE Scrollwheel: Rolled Down\n");
+  if (event->wheel.y > 0) {
+    // Mouse scroll up
+    register_clicked(MOUSE_B5, 4);
+  } else if (event->wheel.y < 0) {
+    // Mouse scroll down
+    register_clicked(MOUSE_B6, 5);
   }
 
   return 0;
