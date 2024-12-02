@@ -1957,13 +1957,7 @@ void SetupTempDirectory(void) {
   if (t_arg) {
     Descent3_temp_directory = GameArgs[t_arg + 1];
   } else {
-    std::error_code ec;
-    std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
-    if (ec) {
-      Error("Could not find temporary directory: \"%s\"", ec.message().c_str() );
-      exit(1);
-    }
-    Descent3_temp_directory = tempPath / "Descent3" / "cache";
+    Descent3_temp_directory = ddio_GetTempPath();
   }
 
   std::error_code ec;
