@@ -212,6 +212,9 @@ void D3DeferHandler(bool is_active);
 void SetFunctionMode(function_mode mode);
 function_mode GetFunctionMode();
 
+// Shows a fullscreen static bitmap
+void ShowStaticScreen(const char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
+
 #ifndef RELEASE
 //	this is called when you hit a debug break!
 void D3DebugStopHandler();

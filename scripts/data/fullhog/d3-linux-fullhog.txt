@@ -54,6 +54,7 @@ LEVELS2.str
 pxomain.ogf
 pxogame.ogf
 gamecredits.txt
+oscredits.txt
 loki.ogf
 aigame2.so
 AIGame3.so
