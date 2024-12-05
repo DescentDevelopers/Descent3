@@ -392,7 +392,7 @@ static int16_t key_binding_indices[] = {
     KEY_PADPERIOD, KEY_PADENTER, KEY_RCTRL, KEY_PADDIVIDE, KEY_RALT,     KEY_HOME,   KEY_UP,          KEY_PAGEUP,
     KEY_LEFT,      KEY_RIGHT,    KEY_END,   KEY_DOWN,      KEY_PAGEDOWN, KEY_INSERT, KEY_DELETE,      0xff};
 
-#define NUM_KEYBINDSTRINGS (sizeof(Ctltext_KeyBindings) / sizeof(char *))
+#define NUM_KEYBINDSTRINGS (sizeof(Ctltext_KeyBindings) / sizeof(Ctltext_KeyBindings[0]))
 
 #define F_ELEM_HILITE 0x1
 #define F_ELEM_ACTIVE 0x2
