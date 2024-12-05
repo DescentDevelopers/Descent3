@@ -134,6 +134,7 @@ endif()
 add_custom_target(get_git_hash ALL)
 
 add_custom_command(
+  POST_BUILD
   TARGET get_git_hash
   COMMAND ${CMAKE_COMMAND}
     -D SOURCE_DIR=${PROJECT_SOURCE_DIR}
