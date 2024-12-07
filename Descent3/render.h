@@ -311,6 +311,11 @@ void SetupRoomFog(room *rp, vector *eye, matrix *orient, int viewer_room);
 //				facenum - which face in the specified room
 void RenderFace(room *rp, int facenum);
 
+/**
+ * Renders a black screen, to be used for UI callbacks to prevent Hall of mirrors with mouse cursor
+ */
+void RenderBlankScreen();
+
 // Renders a specular face
 void RenderSpecularFacesFlat(room *rp);
 
