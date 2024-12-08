@@ -139,7 +139,8 @@ enum ct_type {
   ctMouseButton,
   ctPOV2,
   ctPOV3,
-  ctPOV4 // auxillary POV values.
+  ctPOV4, // auxillary POV values.
+  ctAnalogTrigger
 };
 
 struct ct_function {
