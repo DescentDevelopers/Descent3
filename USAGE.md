@@ -2,7 +2,7 @@
 
 **Important note**: This open source distribution of Descent 3 DOES NOT CONTAIN
 GAME ASSETS. Assets must be acquired separately from an official copy of the
-game, and copied as describe in the next section.
+game, and copied as described in the next section.
 
 This is the first release of the Descent 3 open source engine, that should be
 considered a beta version. If you find a bug that has not been reported before,
