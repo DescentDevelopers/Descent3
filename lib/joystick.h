@@ -108,13 +108,8 @@ typedef int tJoystick;
 struct tJoyInfo {
   char name[128];
   unsigned axes_mask;
+  unsigned trigger_axis_mask;
   unsigned num_btns;
-  int minx, maxx;
-  int miny, maxy;
-  int minz, maxz;
-  int minr, maxr;
-  int minu, maxu;
-  int minv, maxv;
 };
 
 //	shared between joystick remote server and local client.
