@@ -54,13 +54,10 @@ struct library {
   FILE *file = nullptr; // pointer to file for this lib, if no one using it
 };
 
-/* The "root" directories of the D3 file tree
- *
- * Directories that come later in the list override directories that come
- * earlier in the list. For example, if Base_directories[0] / "d3.hog" exists
- * and Base_directories[1] / "d3.hog" also exists, then the one in
- * Base_directories[1] will get used. The one in Base_directories[0] will be
- * ignored.
+/*
+ * List of base directories of the D3 file tree.
+ * Directories at the top of the list have higher priority.
+ * First entry should be a writable directory.
  */
 std::vector<std::filesystem::path> Base_directories = {};
 
@@ -82,7 +79,7 @@ const char *eof_error = "Unexpected end of file";
  * from this module.
  */
 void cf_AddBaseDirectory(const std::filesystem::path &base_directory) {
-  if (std::filesystem::exists(base_directory)) {
+  if (std::filesystem::exists(base_directory) && std::filesystem::is_directory(base_directory)) {
     Base_directories.push_back(base_directory);
   } else {
     LOG_WARNING << "Ignoring nonexistent base directory: " << base_directory;
@@ -99,44 +96,35 @@ void cf_ClearBaseDirectories() {
 
 std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::path &relative_path,
                                                          const std::filesystem::path &starting_dir) {
-#ifdef WIN32
   std::filesystem::path result = starting_dir / relative_path;
+  // Dumb check, maybe there already all ok?
   if (std::filesystem::exists(result)) {
     return result;
-  } else {
+  }
+#ifdef WIN32
+  else {
+    // On Windows there no need to case insensitive search, failing is failing
     return {};
   }
 #else
-  // Dumb check, maybe there already all ok?
-  if (exists((starting_dir / relative_path))) {
-    return starting_dir / relative_path;
-  }
+  result = starting_dir;
 
-  std::filesystem::path result, search_path, search_file;
+  // Iterate path components
+  for (auto path_it = relative_path.begin(); path_it != relative_path.end(); ++path_it) {
+    // Search component in search_path
+    auto const &it = std::filesystem::directory_iterator(result);
 
-  search_path = starting_dir / relative_path.parent_path();
-  search_file = relative_path.filename();
+    auto found = std::find_if(it, end(it), [&path_it](const auto& dir_entry) {
+      return stricmp(dir_entry.path().filename().u8string().c_str(), path_it->u8string().c_str()) == 0;
+    });
 
-  // If directory does not exist, nothing to search.
-  if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
-    return {};
-  }
-
-
-  // Search component in search_path
-  auto const &it = std::filesystem::directory_iterator(search_path);
-
-  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
-    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
-  });
-
-  if (found != end(it)) {
-    // Match, append to result
-    result = found->path();
-    search_path = result;
-  } else {
-    // Component not found, mission failed
-    return {};
+    if (found != end(it)) {
+      // Match, append to result
+      result /= found->path();
+    } else {
+      // Component not found, mission failed
+      return {};
+    }
   }
 
   return result;
@@ -145,16 +133,14 @@ std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::
 
 std::vector<std::filesystem::path> cf_LocatePathMultiplePathsHelper(const std::filesystem::path &relative_path,
                                                                     bool stop_after_first_result) {
-  ASSERT(("realative_path should be a relative path.", relative_path.is_relative()));
-  std::vector<std::filesystem::path> return_value = { };
-  for (auto base_directories_iterator = Base_directories.rbegin();
-       base_directories_iterator != Base_directories.rend();
-       ++base_directories_iterator) {
-    ASSERT(("base_directory should be an absolute path.", base_directories_iterator->is_absolute()));
-    auto to_append = cf_LocatePathCaseInsensitiveHelper(relative_path, *base_directories_iterator);
+  ASSERT(("relative_path should be a relative path.", relative_path.is_relative()));
+  std::vector<std::filesystem::path> return_value;
+  for (auto const &directory : Base_directories) {
+    ASSERT(("directory should be an absolute path.", directory.is_absolute()));
+    auto to_append = cf_LocatePathCaseInsensitiveHelper(relative_path, directory);
     ASSERT(("to_append should be either empty or an absolute path.", to_append.empty() || to_append.is_absolute()));
     if (std::filesystem::exists(to_append)) {
-      return_value.insert(return_value.begin(), to_append);
+      return_value.push_back(to_append);
       if (stop_after_first_result) {
         break;
       }

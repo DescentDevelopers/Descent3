@@ -128,8 +128,8 @@ extern char LocalScriptDir[];
 extern std::filesystem::path NetArtDir;
 extern std::filesystem::path LocalArtDir;
 
-extern char LocalCustomGraphicsDir[];
-extern char LocalCustomSoundsDir[];
+extern std::filesystem::path LocalCustomGraphicsDir;
+extern std::filesystem::path LocalCustomSoundsDir;
 
 extern char TempTableFilename[];
 extern char TempTableLockFilename[];

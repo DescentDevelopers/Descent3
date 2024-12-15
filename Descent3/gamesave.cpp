@@ -265,6 +265,7 @@
 
 #include <cstring>
 #include <filesystem>
+#include <sstream>
 
 #include "gamesave.h"
 #include "descent.h"
@@ -317,7 +318,7 @@ void SGSSnapshot(CFILE *fp);
 #define GAMESAVE_SLOT_X 12
 
 // we need this directory to load the savegame from
-static char LGS_Path[_MAX_PATH];
+static std::filesystem::path LGS_Path;
 
 extern int Times_game_restored;
 // available for all.
@@ -340,21 +341,15 @@ void QuickSaveGame() {
     SaveGameDialog();
   } else {
     // verify savegame still exists in the appropriate slot, if not just run dialog, if so then save
-    char filename[PSFILENAME_LEN + 1];
-    char pathname[_MAX_PATH];
-    char desc[GAMESAVE_DESCLEN + 1];
-    FILE *fp;
-    int i;
+    std::stringstream filename;
+    filename << "saveg" << std::setw(3) << std::setfill('0') << Quicksave_game_slot;
+    std::filesystem::path pathname = cf_GetWritableBaseDirectory() / "savegame" / filename.str();
 
-    i = Quicksave_game_slot;
-
-    snprintf(filename, sizeof(filename), "saveg00%d", i);
-    ddio_MakePath(pathname, cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", filename, NULL);
-
-    fp = fopen(pathname, "rb");
+    FILE *fp = fopen(pathname.u8string().c_str(), "rb");
     if (fp) {
       // slot valid, save here.
       fclose(fp);
+      char desc[GAMESAVE_DESCLEN + 1];
       if (GetGameStateInfo(pathname, desc)) {
         if (SaveGameState(pathname, desc)) {
           AddHUDMessage(TXT_QUICKSAVE);
@@ -373,9 +368,8 @@ void SaveGameDialog() {
   newuiSheet *sheet;
   int i, res;
 
-  char savegame_dir[_MAX_PATH];
-  char pathname[_MAX_PATH];
-  char filename[PSFILENAME_LEN + 1];
+  std::filesystem::path savegame_dir;
+  std::filesystem::path pathname;
   char desc[GAMESAVE_DESCLEN + 1];
   bool occupied_slot[N_SAVE_SLOTS];
 
@@ -392,8 +386,7 @@ void SaveGameDialog() {
 #endif
 
   // setup paths.
-  ddio_MakePath(savegame_dir, cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", NULL);
-  //	ddio_MakePath(pathname, savegame_dir, "*.sav", NULL); -unused
+  savegame_dir = cf_GetWritableBaseDirectory() / "savegame";
 
   // create savegame directory if it didn't exist before.
   std::error_code ec;
@@ -409,21 +402,23 @@ void SaveGameDialog() {
   wnd.Open();
   sheet = wnd.GetSheet();
 
-  sheet->NewGroup(NULL, GAMESAVE_HELP_X, GAMESAVE_HELP_Y);
+  sheet->NewGroup(nullptr, GAMESAVE_HELP_X, GAMESAVE_HELP_Y);
   sheet->AddText(TXT_SAVEGAMEHELP);
 
-  sheet->NewGroup(NULL, GAMESAVE_SLOT_X, GAMESAVE_SLOT_Y2);
+  sheet->NewGroup(nullptr, GAMESAVE_SLOT_X, GAMESAVE_SLOT_Y2);
   // generate save slots.
   for (i = 0; i < N_SAVE_SLOTS; i++) {
     FILE *fp;
     bool ingroup = (i == 0 || i == (N_SAVE_SLOTS - 1)) ? true : false;
 
-    snprintf(filename, sizeof(filename), "saveg00%d", i);
-    ddio_MakePath(pathname, savegame_dir, filename, NULL);
+    std::stringstream filename;
+    filename << "saveg" << std::setw(3) << std::setfill('0') << i;
+
+    pathname = savegame_dir / filename.str();
 
     occupied_slot[i] = false;
 
-    fp = fopen(pathname, "rb");
+    fp = fopen(pathname.u8string().c_str(), "rb");
     if (fp) {
       fclose(fp);
 
@@ -438,7 +433,7 @@ void SaveGameDialog() {
     }
   }
 
-  sheet->NewGroup(NULL, GAMESAVE_WND_W - 148, GAMESAVE_WND_H - 100);
+  sheet->NewGroup(nullptr, GAMESAVE_WND_W - 148, GAMESAVE_WND_H - 100);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
   // Mouse clicks from gameplay will be read by the dialog without this flush
@@ -488,8 +483,9 @@ void SaveGameDialog() {
             occupied_slot[slot] ? (DoMessageBox(TXT_WARNING, TXT_OVERWRITESAVE, MSGBOX_YESNO) ? true : false) : true;
 
         if (do_save) {
-          snprintf(filename, sizeof(filename), "saveg00%d", slot);
-          ddio_MakePath(pathname, savegame_dir, filename, NULL);
+          std::stringstream filename;
+          filename << "saveg" << std::setw(3) << std::setfill('0') << slot;
+          pathname = savegame_dir / filename.str();
           if (!SaveGameState(pathname, desc)) {
             DoMessageBox("", TXT_SAVEGAMEFAILED, MSGBOX_OK);
           } else {
@@ -569,15 +565,13 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 }
 
 bool LoadGameDialog() {
-  tLoadGameDialogData lgd_data;
+  tLoadGameDialogData lgd_data{};
   newuiTiledWindow wnd;
   newuiSheet *sheet;
   int i, res;
   bool retval = true;
 
-  char savegame_dir[_MAX_PATH];
-  char pathname[_MAX_PATH];
-  char filename[PSFILENAME_LEN + 1];
+  std::filesystem::path pathname;
   char desc[GAMESAVE_DESCLEN + 1];
   bool occupied_slot[N_SAVE_SLOTS], loadgames_avail = false;
 
@@ -587,8 +581,7 @@ bool LoadGameDialog() {
   }
 
   // setup paths.
-  ddio_MakePath(savegame_dir, cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", NULL);
-  ddio_MakePath(pathname, savegame_dir, "*.sav", NULL);
+  std::filesystem::path savegame_dir = cf_GetWritableBaseDirectory() / "savegame";
 
   // create savegame directory if it didn't exist before.
   if (!std::filesystem::is_directory(savegame_dir)) {
@@ -601,25 +594,26 @@ bool LoadGameDialog() {
   wnd.Open();
   sheet = wnd.GetSheet();
 
-  sheet->NewGroup(NULL, GAMESAVE_HELP_X, GAMESAVE_HELP_Y);
+  sheet->NewGroup(nullptr, GAMESAVE_HELP_X, GAMESAVE_HELP_Y);
   sheet->AddText(TXT_LOADGAMEHELP);
 
-  sheet->NewGroup(NULL, GAMESAVE_SLOT_X, GAMESAVE_SLOT_Y);
+  sheet->NewGroup(nullptr, GAMESAVE_SLOT_X, GAMESAVE_SLOT_Y);
 
   // generate save slots.
   lgd_data.cur_slot = SAVE_HOTSPOT_ID;
-  lgd_data.chunk.bm_array = NULL;
+  lgd_data.chunk.bm_array = nullptr;
 
   for (i = 0; i < N_SAVE_SLOTS; i++) {
     FILE *fp;
     bool ingroup = (i == 0 || i == (N_SAVE_SLOTS - 1)) ? true : false;
 
-    snprintf(filename, sizeof(filename), "saveg00%d", i);
-    ddio_MakePath(pathname, savegame_dir, filename, NULL);
+    std::stringstream filename;
+    filename << "saveg" << std::setw(3) << std::setfill('0') << i;
+    pathname = savegame_dir / filename.str();
 
     occupied_slot[i] = false;
 
-    fp = fopen(pathname, "rb");
+    fp = fopen(pathname.u8string().c_str(), "rb");
     if (fp) {
       int bm_handle = -1;
       int *pbm_handle;
@@ -628,7 +622,7 @@ bool LoadGameDialog() {
       if (lgd_data.cur_slot == (SAVE_HOTSPOT_ID + i)) {
         pbm_handle = &bm_handle;
       } else {
-        pbm_handle = NULL;
+        pbm_handle = nullptr;
       }
 
       if (GetGameStateInfo(pathname, desc, pbm_handle)) {
@@ -660,7 +654,7 @@ bool LoadGameDialog() {
     goto loadgame_fail;
   }
 
-  sheet->NewGroup(NULL, GAMESAVE_WND_W - 148, GAMESAVE_WND_H - 100);
+  sheet->NewGroup(nullptr, GAMESAVE_WND_W - 148, GAMESAVE_WND_H - 100);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
   wnd.SetData(&lgd_data);
@@ -679,9 +673,10 @@ bool LoadGameDialog() {
       int slot = res - SAVE_HOTSPOT_ID;
 
       if (occupied_slot[slot]) {
-        snprintf(filename, sizeof(filename), "saveg00%d", slot);
-        ddio_MakePath(pathname, savegame_dir, filename, NULL);
-        strcpy(LGS_Path, pathname);
+        std::stringstream filename;
+        filename << "saveg" << std::setw(3) << std::setfill('0') << slot;
+        pathname = savegame_dir / filename.str();
+        LGS_Path = pathname;
         SetGameState(GAMESTATE_LOADGAME);
         res = UID_CANCEL;
       }
@@ -703,7 +698,6 @@ loadgame_fail:
 
 //////////////////////////////////////////////////////////////////////////////
 
-// loads savegame as specified from LoadGameDialog.
 bool LoadCurrentSaveGame() {
   int retval = LoadGameState(LGS_Path);
   if (retval != LGS_OK) {
@@ -717,8 +711,7 @@ bool LoadCurrentSaveGame() {
 
 //////////////////////////////////////////////////////////////////////////////
 
-//	give a description and slot number (0 to GAMESAVE_SLOTS-1)
-bool SaveGameState(const char *pathname, const char *description) {
+bool SaveGameState(const std::filesystem::path &pathname, const char *description) {
   CFILE *fp;
   char buf[GAMESAVE_DESCLEN + 1];
   int16_t pending_music_region;
@@ -728,9 +721,8 @@ bool SaveGameState(const char *pathname, const char *description) {
     return false;
 
   // Delete the old games restored count.
-  char countpath[_MAX_PATH * 2];
-  strcpy(countpath, pathname);
-  strcat(countpath, ".cnt");
+  std::filesystem::path countpath = pathname;
+  countpath.replace_extension(".cnt");
   CFILE *countfp;
   countfp = cfopen(countpath, "wb");
   if (countfp) {
