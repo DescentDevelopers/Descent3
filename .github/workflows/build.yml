@@ -24,12 +24,12 @@ jobs:
             cc: cl
             cxx: cl
             name: Windows-x64
-          - runner: macos-13 # Should be Intel
+          - runner: macos-14
             preset: mac
             cc: cc
             cxx: c++
             name: macOS-Intel
-          - runner: macos-14 # This is supposed to be M1
+          - runner: macos-14
             preset: mac
             cc: cc
             cxx: c++
@@ -54,17 +54,28 @@ jobs:
           - Release
 
     runs-on: ${{ matrix.os.runner }}
+    env:
+      MACOS_ARCH_COMMAND: ''  # default to nothing
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Install macOS dependencies
-        if: ${{ matrix.os.preset == 'mac' }}
+      - name: Install macOS Rosetta 2 and Brew
+        if: ${{ matrix.os.name == 'macOS-Intel' }}
         run: |
-          # Install packages from Homebrew
-          brew bundle install
+          /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+          echo "MACOS_ARCH_COMMAND=arch -x86_64" >> $GITHUB_ENV
+          arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      - name: Install macOS ARM dependencies
+        if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-ARM' }}
+        run: brew bundle install
+
+      - name: Install macOS Intel dependencies
+        if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-Intel' }}
+        run: arch -x86_64 /usr/local/homebrew/bin/brew bundle install
 
       - name: Install Linux dependencies
         if: ${{ matrix.os.runner == 'ubuntu-latest' }}
@@ -104,18 +115,18 @@ jobs:
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
+        run: $MACOS_ARCH_COMMAND cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
 
       - name: Build ${{ matrix.build_type }}
-        run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
+        run: $MACOS_ARCH_COMMAND cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
 
       - name: Run ${{ matrix.build_type }} Unittests
         if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
-        run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
+        run: $MACOS_ARCH_COMMAND ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
       - name: Local install
         # There no cmake install presets so install in traditional way
-        run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
+        run: $MACOS_ARCH_COMMAND cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
