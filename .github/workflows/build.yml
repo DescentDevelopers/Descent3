@@ -77,7 +77,7 @@ jobs:
         if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-Intel' }}
         run: |
           eval "$(/usr/local/bin/brew shellenv)"
-          $MACOS_ARCH_COMMAND /usr/local/bin/brew bundle install
+          arch -x86_64 /usr/local/bin/brew bundle install
 
       - name: Install Linux dependencies
         if: ${{ matrix.os.runner == 'ubuntu-latest' }}
