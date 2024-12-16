@@ -72,8 +72,6 @@ jobs:
         if: ${{ matrix.os.name == 'macOS-Intel' }}
         shell: arch -x86_64 /bin/bash -e {0}
         run: |
-          /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-          echo "MACOS_ARCH_COMMAND=arch -x86_64" >> $GITHUB_ENV
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
       - name: Install macOS ARM dependencies
