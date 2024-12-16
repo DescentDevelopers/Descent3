@@ -82,8 +82,13 @@ jobs:
         if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-Intel' }}
         shell: arch -x86_64 /bin/bash -e {0}
         run: |
+          which brew
+          echo $PATH
           eval "$(/usr/local/bin/brew shellenv)"
-          /usr/local/bin/brew bundle install
+          which brew
+          echo $PATH
+          echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH for future steps so the Intel Brew and its installs are enshrined as the default 
+          brew bundle install
           file /usr/local/bin/cmake
 
       - name: Install Linux dependencies
