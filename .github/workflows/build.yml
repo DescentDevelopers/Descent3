@@ -24,12 +24,12 @@ jobs:
             cc: cl
             cxx: cl
             name: Windows-x64
-          - runner: macos-14
+          - runner: macos-14  # Apple Silicon, but we cross-compile
             preset: mac
             cc: cc
             cxx: c++
             name: macOS-Intel
-          - runner: macos-14
+          - runner: macos-14  # Apple Silicon
             preset: mac
             cc: cc
             cxx: c++
@@ -67,20 +67,19 @@ jobs:
       - name: Install Intel version of Brew
         if: ${{ matrix.os.name == 'macOS-Intel' }}
         shell: arch -x86_64 /bin/bash -e {0}
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-      - name: Install macOS ARM dependencies
-        if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-ARM' }}
-        run: brew bundle install
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
       - name: Install macOS Intel dependencies
-        if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-Intel' }}
+        if: ${{ matrix.os.name == 'macOS-Intel' }}
         shell: arch -x86_64 /bin/bash -e {0}
         run: |
-          eval "$(/usr/local/bin/brew shellenv)"
-          echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH for future steps so the Intel Brew and its installs are enshrined as the default 
+          eval "$(/usr/local/bin/brew shellenv)"  # makes the Intel version of Brew and its installs are enshrined as the default 
+          echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH so the above step persists into the future steps
           brew bundle install
+
+      - name: Install macOS ARM dependencies
+        if: ${{ matrix.os.name == 'macOS-ARM' }}
+        run: brew bundle install
 
       - name: Install Linux dependencies
         if: ${{ matrix.os.runner == 'ubuntu-latest' }}
