@@ -64,10 +64,11 @@ jobs:
 
       - name: Install macOS Rosetta 2 and Brew
         if: ${{ matrix.os.name == 'macOS-Intel' }}
+        shell: arch -x86_64 /bin/bash -e {0}
         run: |
           /usr/sbin/softwareupdate --install-rosetta --agree-to-license
           echo "MACOS_ARCH_COMMAND=arch -x86_64" >> $GITHUB_ENV
-          arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
       - name: Install macOS ARM dependencies
         if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-ARM' }}
@@ -75,9 +76,10 @@ jobs:
 
       - name: Install macOS Intel dependencies
         if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-Intel' }}
+        shell: arch -x86_64 /bin/bash -e {0}
         run: |
           eval "$(/usr/local/bin/brew shellenv)"
-          arch -x86_64 /usr/local/bin/brew bundle install
+          /usr/local/bin/brew bundle install
 
       - name: Install Linux dependencies
         if: ${{ matrix.os.runner == 'ubuntu-latest' }}
