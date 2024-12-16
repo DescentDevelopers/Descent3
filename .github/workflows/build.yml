@@ -84,6 +84,7 @@ jobs:
         run: |
           eval "$(/usr/local/bin/brew shellenv)"
           /usr/local/bin/brew bundle install
+          file /usr/local/bin/cmake
 
       - name: Install Linux dependencies
         if: ${{ matrix.os.runner == 'ubuntu-latest' }}
