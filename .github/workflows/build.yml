@@ -24,44 +24,36 @@ jobs:
             cc: cl
             cxx: cl
             name: Windows-x64
-            shell: ''
           - runner: macos-14
             preset: mac
             cc: cc
             cxx: c++
             name: macOS-Intel
-            shell: arch -x86_64 /bin/bash -e {0}
           - runner: macos-14
             preset: mac
             cc: cc
             cxx: c++
             name: macOS-ARM
-            shell: ''
           - runner: ubuntu-latest
             preset: linux
             cc: gcc
             cxx: g++
             name: Linux-x64
-            shell: ''
           - runner: ubuntu-latest
             preset: linux
             cc: clang
             cxx: clang++
             name: Linux-x64-clang
-            shell: ''
           - runner: ubuntu-latest
             preset: linux-cross-arm64
             cc: gcc
             cxx: g++++
             name: Linux-cross-arm64
-            shell: ''
         build_type:
           - Debug
           - Release
 
     runs-on: ${{ matrix.os.runner }}
-#    env:
-#      MACOS_ARCH_COMMAND: ''  # default to nothing
 
     steps:
       - uses: actions/checkout@v4
@@ -70,13 +62,11 @@ jobs:
 
       - name: Install macOS Rosetta 2
         if: ${{ matrix.os.name == 'macOS-Intel' }}
-        run: |
-          /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-#          echo "MACOS_ARCH_COMMAND=arch -x86_64" >> $GITHUB_ENV
-          
+        run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+
       - name: Install Intel version of Brew
         if: ${{ matrix.os.name == 'macOS-Intel' }}
-        shell: ${{ matrix.os.shell }}
+        shell: arch -x86_64 /bin/bash -e {0}
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -86,7 +76,7 @@ jobs:
 
       - name: Install macOS Intel dependencies
         if: ${{ matrix.os.preset == 'mac' && matrix.os.name == 'macOS-Intel' }}
-        shell: ${{ matrix.os.shell }}
+        shell: arch -x86_64 /bin/bash -e {0}
         run: |
           eval "$(/usr/local/bin/brew shellenv)"
           echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH for future steps so the Intel Brew and its installs are enshrined as the default 
