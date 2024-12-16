@@ -117,23 +117,19 @@ jobs:
 
       - name: Configure CMake
         if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
-        shell: ${{ matrix.os.shell }}
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
         run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
 
       - name: Build ${{ matrix.build_type }}
-        shell: ${{ matrix.os.shell }}
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
 
       - name: Run ${{ matrix.build_type }} Unittests
         if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
-        shell: ${{ matrix.os.shell }}
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
       - name: Local install
-        shell: ${{ matrix.os.shell }}
         # There no cmake install presets so install in traditional way
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
 
