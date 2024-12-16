@@ -62,7 +62,13 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install macOS Rosetta 2 and Brew
+      - name: Install macOS Rosetta 2
+        if: ${{ matrix.os.name == 'macOS-Intel' }}
+        run: |
+          /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+          echo "MACOS_ARCH_COMMAND=arch -x86_64" >> $GITHUB_ENV
+          
+      - name: Install Intel version of Brew
         if: ${{ matrix.os.name == 'macOS-Intel' }}
         shell: arch -x86_64 /bin/bash -e {0}
         run: |
