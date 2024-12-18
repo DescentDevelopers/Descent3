@@ -74,12 +74,7 @@ jobs:
 
       - name: Install macOS dependencies
         if: ${{ matrix.os.preset == 'mac' }}
-        run: |
-          file $(which cmake)
-          which brew
-          brew bundle install
-          file $(which cmake)
-          file /usr/local/bin/cmake
+        run: brew bundle install
 
       - name: Install Linux dependencies
         if: ${{ matrix.os.runner == 'ubuntu-latest' }}
