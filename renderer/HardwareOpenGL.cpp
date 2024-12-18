@@ -424,7 +424,21 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
   }
 
   if (!GSDLWindow) {
-    GSDLWindow = SDL_CreateWindow("Descent 3", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winw, winh, flags);
+    int display = 0;
+    if (int display_arg = FindArg("-display"); display_arg != 0) {
+      if (const char * arg_index_str = GetArg (display_arg + 1); arg_index_str == nullptr) {
+        LOG_WARNING << "No parameter for -display given";
+      } else {
+        int arg_index = atoi(arg_index_str);
+        int display_count = SDL_GetNumVideoDisplays();
+        if ((arg_index < 0) || (arg_index >= display_count)) {
+          LOG_WARNING.printf( "Parameter for -display must be in the range 0..%i", display_count-1 );
+        } else {
+          display = arg_index;
+        }
+      }
+    }
+    GSDLWindow = SDL_CreateWindow("Descent 3", SDL_WINDOWPOS_UNDEFINED_DISPLAY(display), SDL_WINDOWPOS_UNDEFINED_DISPLAY(display), winw, winh, flags);
     if (!GSDLWindow) {
       LOG_ERROR.printf("OpenGL: SDL window creation failed: %s", SDL_GetError());
       return 0;
