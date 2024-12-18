@@ -67,17 +67,19 @@ jobs:
       - name: Install Intel version of Brew
         if: ${{ matrix.os.name == 'macOS-Intel' }}
         shell: arch -x86_64 /bin/bash -e {0}
-        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-      - name: Enshrine Intel version of Brew
-        if: ${{ matrix.os.name == 'macOS-Intel' }}
-        shell: arch -x86_64 /bin/bash -e {0}
         run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           eval "$(/usr/local/bin/brew shellenv)"  # makes the Intel version of Brew and its installs are enshrined as the default 
           echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH so the above step persists into the future steps
 
       - name: Install macOS dependencies
-        run: brew bundle install
+        if: ${{ matrix.os.preset == 'mac' }}
+        run: |
+          file $(which cmake)
+          which brew
+          brew bundle install
+          file $(which cmake)
+          file /usr/local/bin/cmake
 
       - name: Install Linux dependencies
         if: ${{ matrix.os.runner == 'ubuntu-latest' }}
