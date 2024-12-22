@@ -47,9 +47,9 @@ int Num_object_ids[MAX_OBJECT_TYPES];
 // Objects that must be remapped so we can reference by index
 // If you change this array then you must change the defines in the header file
 // #ifdef _WIN32
-// char *Static_object_names[]={TBL_GENERIC("GuideBot"),TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
+// static constexpr char *Static_object_names[]={TBL_GENERIC("GuideBot"),TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
 // #else
-const char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
+static constexpr const char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
 // #endif
 
 #define NUM_STATIC_OBJECTS std::size(Static_object_names)

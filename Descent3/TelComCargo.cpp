@@ -125,7 +125,7 @@ struct tLineInfo {
   int id;
 };
 
-tLineInfo StatusLines[] = {
+static constexpr tLineInfo StatusLines[] = {
     {LIT_TITLE, "Ship Status", LID_NONE},        {LIT_VALUE, "Shields", LID_SHIELDS},
     {LIT_VALUE, "Energy", LID_ENERGY},           {LIT_TITLE, "Primaries", LID_PRIMARIES},
     {LIT_TITLE, "Secondaries", LID_SECONDARIES}, {LIT_TITLE, "Counter Measures", LID_COUNTERMEASURES},

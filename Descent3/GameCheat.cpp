@@ -160,7 +160,7 @@ char OldCheatBuffer[] = "AAAAAAAAAAAAAAA";
 extern bool Force_one_texture;
 extern uint8_t AutomapVisMap[MAX_ROOMS];
 
-const char *LamerCheats[] = {
+constexpr const char *LamerCheats[] = {
     "?E9FI=()",  // gabbagabbahey
     "=-OQESN1",  // motherlode
     "C<G2DAIV",  // zingermans

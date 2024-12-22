@@ -2498,7 +2498,7 @@ void msafe_DoPowerup(msafe_struct *mstruct) {
   }
 }
 // Data for primary powerups
-struct {
+static constexpr struct {
   const char *name;
   int weapon_index;
   int pickup_msg, already_have_msg, ammo_msg, full_msg;
@@ -2514,7 +2514,7 @@ struct {
     {"Omegacannon", OMEGA_INDEX, TXI_MSG_OMEGA, TXI_MSG_OMEGAHAVE, -1, -1},
 };
 #define NUM_POWERUP_TYPES_PRIMARY std::size(powerup_data_primary)
-struct {
+static constexpr struct {
   const char *name;
   int weapon_index;
   int added_one_msg, added_multi_msg, full_msg;
@@ -2535,7 +2535,7 @@ struct {
     {"4PackGuided", GUIDED_INDEX, TXI_MSG_GUIDED, TXI_MSG_MULTI_GUIDED, TXI_MSG_GUIDEDFULL},
 };
 #define NUM_POWERUP_TYPES_SECONDARY std::size(powerup_data_secondary)
-struct {
+static constexpr struct {
   const char *name;
   int weapon_index;
   int ammo_msg, full_msg;

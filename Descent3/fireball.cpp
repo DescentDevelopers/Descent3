@@ -1315,7 +1315,7 @@ void PlayObjectExplosionSound(object *objp) {
   if (sound != -1)
     Sound_system.Play3dSound(sound, SND_PRIORITY_HIGH, objp);
 }
-const char *dead_object_types[] = {
+static constexpr const char *dead_object_types[] = {
     "swatter", "swatter(deadmodel)", "Hangturret",  "Securityturret(DEAD)",
     "Lance",   "Lance(DEAD)",        "L10 swatter", "swatter(deadmodel)",
 };
@@ -2396,18 +2396,18 @@ int GetRandomExplosion(float size) {
 // TODO: MTS: only found in this file.
 // Returns a random medium sized explosion
 int GetRandomMediumExplosion() {
-  int choices[] = {MED_EXPLOSION_INDEX, MED_EXPLOSION_INDEX2, MED_EXPLOSION_INDEX3};
+  static constexpr int choices[] = {MED_EXPLOSION_INDEX, MED_EXPLOSION_INDEX2, MED_EXPLOSION_INDEX3};
   int pick = ps_rand() % 3;
   return (choices[pick]);
 }
 int GetRandomSmallExplosion() {
-  int choices[] = {SMALL_EXPLOSION_INDEX, SMALL_EXPLOSION_INDEX2};
+  static constexpr int choices[] = {SMALL_EXPLOSION_INDEX, SMALL_EXPLOSION_INDEX2};
   int pick = ps_rand() % 2;
   return (choices[pick]);
 }
 // TODO: MTS: only found in this file.
 int GetRandomBillowingExplosion() {
-  int choices[] = {BILLOWING_INDEX, MED_EXPLOSION_INDEX2};
+  static constexpr int choices[] = {BILLOWING_INDEX, MED_EXPLOSION_INDEX2};
   int pick = ps_rand() % 2;
   return (choices[pick]);
 }

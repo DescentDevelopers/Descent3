@@ -367,7 +367,7 @@
 weapon Weapons[MAX_WEAPONS];
 int Num_weapons = 0;
 
-const char *Static_weapon_names[] = {
+const char *const Static_weapon_names[] = {
     //	Primary weapons
     "Laser",
     "Vauss",
@@ -394,7 +394,7 @@ const char *Static_weapon_names[] = {
     "Yellow Flare",
 };
 
-int Static_weapon_names_msg[] = {
+const int Static_weapon_names_msg[] = {
     //	Primary weapons
     TXI_WPN_LASER,
     TXI_WPN_VAUSS,
@@ -421,7 +421,7 @@ int Static_weapon_names_msg[] = {
     TXI_WPN_YELL_FLARE,
 };
 
-int Static_weapon_ckpt_names[][2] = {
+const int Static_weapon_ckpt_names[][2] = {
     //	Primary weapons
     {TXI_WPNC_LASER_1, TXI_WPNC_LASER_2},
     {TXI_WPNC_VAUSS_1, TXI_WPNC_VAUSS_2},

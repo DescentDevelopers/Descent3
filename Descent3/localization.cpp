@@ -103,7 +103,7 @@ struct tLangTag {
   int length;
 };
 
-tLangTag Language_tags[] = {
+static tLangTag Language_tags[] = {
     {"!=!", -1}, // English
     {"!G!", -1}, // German
     {"!S!", -1}, // Spanish
@@ -120,7 +120,7 @@ int String_table_size = 0;
 char **String_table = NULL;
 
 // list of the string table files, they will be loaded in the order they are listed
-const char *String_table_list[] = {"D3.STR", NULL};
+constexpr const char *String_table_list[] = {"D3.STR", NULL};
 
 const char *_Error_string = "!!ERROR MISSING STRING!!";
 const char *_Empty_string = "\0";

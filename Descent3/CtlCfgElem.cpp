@@ -385,7 +385,7 @@ static char Ctltext_KeyBindings[][16] = {"",
                                          "",
                                          ""};
 
-static int16_t key_binding_indices[] = {
+static constexpr int16_t key_binding_indices[] = {
     KEY_BACKSP,    KEY_TAB,      KEY_ENTER, KEY_LCTRL,     KEY_LSHIFT,   KEY_RSHIFT, KEY_PADMULTIPLY, KEY_LALT,
     KEY_SPACEBAR,  KEY_CAPSLOCK, 0x45,      KEY_SCROLLOCK, KEY_PAD7,     KEY_PAD8,   KEY_PAD9,        KEY_PADMINUS,
     KEY_PAD4,      KEY_PAD5,     KEY_PAD6,  KEY_PADPLUS,   KEY_PAD1,     KEY_PAD2,   KEY_PAD3,        KEY_PAD0,

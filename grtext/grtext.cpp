@@ -210,7 +210,7 @@ static badword bad_words[] = {
 
 #define NUM_BAD_WORDS std::size(bad_words)
 
-static const char subst_chars[] = "#!&@&#%*";
+static constexpr char subst_chars[] = "#!&@&#%*";
 
 #define NUM_SUBST_CHARS (sizeof(subst_chars) - 1)
 
