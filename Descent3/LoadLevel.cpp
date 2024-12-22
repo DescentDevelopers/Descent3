@@ -1457,7 +1457,7 @@ tConvertObject object_convert[] = {
     {OBJ_POWERUP, -2, "ProxMinepowerup", CONV_MULTI},
     {OBJ_POWERUP, -2, "energy", 0}};
 
-int object_convert_size = sizeof(object_convert) / sizeof(tConvertObject);
+int object_convert_size = std::size(object_convert);
 
 uint32_t chunk_start, chunk_size, filelen;
 
@@ -3591,7 +3591,7 @@ const char *New_door_names[] = {"MARK'S OLD DOOR",
                           "PTMC Industrial 1",
                           "PTMC Covert 1"};
 
-#define NUM_RENAMED_DOORS (sizeof(Old_door_names) / sizeof(*Old_door_names))
+#define NUM_RENAMED_DOORS std::size(Old_door_names)
 
 // Deals with some renamed doors.  Translates the old name to the new name, then looks up the id
 int SpecialFindDoorName(const char *name) {

@@ -529,7 +529,7 @@ static const char *Preloaded_bitmap_list[] = {
     NEWUI_WIN_TITLE_L_FILE, NEWUI_WIN_TITLE_C_FILE, NEWUI_WIN_TITLE_R_FILE,
 };
 
-#define N_UI_PRELOADED_BITMAPS (sizeof(Preloaded_bitmap_list) / sizeof(const char *))
+#define N_UI_PRELOADED_BITMAPS std::size(Preloaded_bitmap_list)
 
 int UI_frame_result = -1;
 static newuiResources Newui_resources;

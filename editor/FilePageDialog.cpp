@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 
 char *DirectoryNames[] = {"Graphics", "Rooms", "Sounds",  "Models", "Levels", "Briefings",
                           "Misc",     "Art",   "Scripts", "Music",  "Voice"};
-int NumDirectoryNames = sizeof(DirectoryNames) / sizeof(char *);
+int NumDirectoryNames = std::size(DirectoryNames);
 
 /////////////////////////////////////////////////////////////////////////////
 // CFilePageDialog dialog

@@ -269,7 +269,7 @@ bool f_allow_objects_to_be_pushed_through_walls = false;
 
 void DrawItemModel(grHardwareSurface *surf, int model_num);
 
-#define NUM_EDIT_OBJTYPES (sizeof(edit_object_types) / sizeof(*edit_object_types))
+#define NUM_EDIT_OBJTYPES std::size(edit_object_types)
 
 /////////////////////////////////////////////////////////////////////////////
 // CObjectDialog dialog

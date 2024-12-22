@@ -2864,7 +2864,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
 // This mapping should really be on the powerup page
 const char *powerup_multipacks[] = {"Concussion", "4packConc",   "Frag",   "4packFrag",
                               "Guided",     "4packGuided", "Homing", "4packHoming"};
-#define N_POWERUP_MULTIPACKS (sizeof(powerup_multipacks) / sizeof(*powerup_multipacks) / 2)
+#define N_POWERUP_MULTIPACKS (std::size(powerup_multipacks) / 2)
 
 // Returns the index of the multipack version of the specified powerup, or -1 if none
 int FindMultipackPowerup(int single_index) {
@@ -3231,7 +3231,7 @@ static vector Death_cam_vectors[] = {{0, 1, 0},  {0, 1, -1}, {0, 0, -1}, {0, -1,
                                      {0, 0, 1},  {0, 1, 1},  {1, 0, 0},  {1, 0, -1},  {-1, 0, -1}, {-1, 0, 0},
                                      {-1, 0, 1}, {1, 0, 1},  {1, 1, 0},  {1, -1, 0},  {-1, -1, 0}, {-1, 1, 0}};
 
-#define NUM_DEATH_VECS (sizeof(Death_cam_vectors) / sizeof(vector))
+#define NUM_DEATH_VECS std::size(Death_cam_vectors)
 
 float MoveDeathCam(int slot, vector *vec, float distance) {
   fvi_info hit_data;

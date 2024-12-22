@@ -714,7 +714,7 @@ int MoveWeaponFromIndex(int index) {
 // This is a very confusing function.  It takes all the weapons that we have loaded
 // and remaps then into their proper places (if they are static).
 void RemapWeapons() {
-  int limit = sizeof(Static_weapon_names) / sizeof(void *);
+  int limit = std::size(Static_weapon_names);
   int i;
 
   for (i = 0; i < MAX_STATIC_WEAPONS; i++) {

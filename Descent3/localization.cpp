@@ -110,7 +110,7 @@ tLangTag Language_tags[] = {
     {"!I!", -1}, // Italian
     {"!F!", -1}, // French
 };
-int Num_languages = sizeof(Language_tags) / sizeof(tLangTag);
+int Num_languages = std::size(Language_tags);
 
 // The following data, in the anonymous namespace, are static to this file
 namespace {

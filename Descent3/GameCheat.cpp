@@ -186,7 +186,7 @@ const char *LamerCheats[] = {
     "#/;=3J8F",  // nosferatu
     "J#.DEJCT",  // pandorasbox
 };
-#define N_LAMER_CHEATS (sizeof(LamerCheats) / sizeof(*LamerCheats))
+#define N_LAMER_CHEATS std::size(LamerCheats)
 
 /*
 Demo Cheat Codes

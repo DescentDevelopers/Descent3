@@ -75,7 +75,7 @@ static tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
                                   {ID_FALLINGROCK, "FallingRock"},
                                   {ID_LAVAROCK, "LavaRock"}};
 
-static int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
+static int NumScriptIDs = std::size(ScriptIDs);
 
 class ClutterScript {
 public:

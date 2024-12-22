@@ -52,7 +52,7 @@ int Num_object_ids[MAX_OBJECT_TYPES];
 const char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
 // #endif
 
-#define NUM_STATIC_OBJECTS (sizeof(Static_object_names) / sizeof(*Static_object_names))
+#define NUM_STATIC_OBJECTS std::size(Static_object_names)
 
 #ifdef EDITOR
 const char * const Movement_class_names[] = {"Standing", "Flying", "Rolling", "Walking", "Jumping"};

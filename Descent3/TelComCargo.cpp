@@ -131,7 +131,7 @@ tLineInfo StatusLines[] = {
     {LIT_TITLE, "Secondaries", LID_SECONDARIES}, {LIT_TITLE, "Counter Measures", LID_COUNTERMEASURES},
     {LIT_TITLE, "Inventory", LID_INVENTORY}};
 
-#define NUM_LINES (sizeof(StatusLines) / sizeof(tLineInfo))
+#define NUM_LINES std::size(StatusLines)
 #define TITLE_X 30 + TCminx
 #define VALUE_X 400 + TCminx
 static int TCminx, TCmaxx, TCminy, TCmaxy;

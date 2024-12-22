@@ -1319,7 +1319,7 @@ const char *dead_object_types[] = {
     "swatter", "swatter(deadmodel)", "Hangturret",  "Securityturret(DEAD)",
     "Lance",   "Lance(DEAD)",        "L10 swatter", "swatter(deadmodel)",
 };
-#define N_DEAD_OBJECT_TYPES (sizeof(dead_object_types) / sizeof(*dead_object_types) / 2)
+#define N_DEAD_OBJECT_TYPES (std::size(dead_object_types) / 2)
 #include "osiris_predefs.h"
 // Creates a dead version of the given object
 void CreateDeadObject(object *objp) {
