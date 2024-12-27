@@ -175,13 +175,14 @@ public:
   }
 };
 
+// TODO: Make all functions actually return bool
 int sdlKeyFilter(const SDL_Event *event);
 int sdlMouseButtonUpFilter(const SDL_Event *event);
 int sdlMouseButtonDownFilter(const SDL_Event *event);
 int sdlMouseWheelFilter(const SDL_Event *event);
 int sdlMouseMotionFilter(const SDL_Event *event);
 
-int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
+bool SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
   switch (event->type) {
   case SDL_EVENT_KEY_UP:
   case SDL_EVENT_KEY_DOWN:
@@ -273,7 +274,6 @@ int main(int argc, char *argv[]) {
       flags |= APPFLAG_NOMOUSECAPTURE;
     ddio_MouseSetGrab(false);
       }
-    SDL_SetRelativeMouseMode(ddio_MouseGetGrab() ? true : false);
 
     if (!FindArg("-sharedmemory")) {
       flags |= APPFLAG_NOSHAREDMEMORY;

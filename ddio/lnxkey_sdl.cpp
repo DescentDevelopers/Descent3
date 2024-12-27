@@ -339,7 +339,7 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   return (uint8_t)rc;
 }
 
-int sdlKeyFilter(const SDL_Event *event) {
+bool sdlKeyFilter(const SDL_Event *event) {
   uint8_t kc = 0;
 
   if ((event->type != SDL_EVENT_KEY_UP) && (event->type != SDL_EVENT_KEY_DOWN))
