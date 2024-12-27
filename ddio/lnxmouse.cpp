@@ -190,7 +190,7 @@ void ddio_MouseMode(int mode) { Mouse_mode = mode; }
 void ddio_MouseSetVCoords(int width, int height) { ddio_MouseSetLimits(0, 0, width, height); }
 
 int sdlMouseButtonDownFilter(SDL_Event const *event) {
-  ASSERT(event->type == SDL_MOUSEBUTTONDOWN);
+  ASSERT(event->type == SDL_EVENT_MOUSE_BUTTON_DOWN);
 
   const SDL_MouseButtonEvent *ev = &event->button;
   t_mse_event mevt;
@@ -262,7 +262,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
 }
 
 int sdlMouseButtonUpFilter(SDL_Event const *event) {
-  ASSERT(event->type == SDL_MOUSEBUTTONUP);
+  ASSERT(event->type == SDL_EVENT_MOUSE_BUTTON_UP);
 
   const SDL_MouseButtonEvent *ev = &event->button;
   t_mse_event mevt;
@@ -336,7 +336,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
 }
 
 int sdlMouseWheelFilter(SDL_Event const *event) {
-  ASSERT(event->type == SDL_MOUSEWHEEL);
+  ASSERT(event->type == SDL_EVENT_MOUSE_WHEEL);
 
   const SDL_MouseWheelEvent *ev = &event->wheel;
   t_mse_event mevt;
@@ -387,7 +387,7 @@ int sdlMouseWheelFilter(SDL_Event const *event) {
 }
 
 int sdlMouseMotionFilter(SDL_Event const *event) {
-  if (event->type == SDL_JOYBALLMOTION) {
+  if (event->type == SDL_EVENT_JOYSTICK_BALL_MOTION) {
     DDIO_mouse_state.dx = event->jball.xrel / 100;
     DDIO_mouse_state.dy = event->jball.yrel / 100;
     DDIO_mouse_state.x += DDIO_mouse_state.dx;

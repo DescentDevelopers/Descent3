@@ -23,7 +23,7 @@ namespace D3 {
 MovieSoundDevice::MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_t channels, bool is_compressed) {
   SDL_AudioSpec spec{};
   spec.freq = sample_rate;
-  spec.format = (sample_size == 2) ? AUDIO_S16LSB : AUDIO_U8;
+  spec.format = (sample_size == 2) ? SDL_AUDIO_S16LE : SDL_AUDIO_U8;
   spec.channels = channels;
 
   m_device_id = SDL_OpenAudioDevice(nullptr, 0, &spec, nullptr, 0);

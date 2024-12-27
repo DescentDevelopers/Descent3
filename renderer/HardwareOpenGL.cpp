@@ -462,7 +462,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     LoadGLFnPtrs();
   } catch (std::exception const& ex) {
     // TODO: more raii-esque construction and cleanup here
-    SDL_GL_DeleteContext(GSDLGLContext);
+    SDL_GL_DestroyContext(GSDLGLContext);
     GSDLGLContext = nullptr;
     SDL_DestroyWindow(GSDLWindow);
     GSDLWindow = nullptr;
@@ -519,7 +519,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     dglDeleteRenderbuffers(1, &GOpenGLRBOColor);
     dglDeleteRenderbuffers(1, &GOpenGLRBODepth);
     GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
-    SDL_GL_DeleteContext(GSDLGLContext);
+    SDL_GL_DestroyContext(GSDLGLContext);
     SDL_DestroyWindow(GSDLWindow);
     GSDLGLContext = nullptr;
     GSDLWindow = nullptr;
@@ -724,7 +724,7 @@ void opengl_Close(const bool just_resizing) {
 
   if (GSDLGLContext) {
       SDL_GL_MakeCurrent(nullptr, nullptr);
-      SDL_GL_DeleteContext(GSDLGLContext);
+      SDL_GL_DestroyContext(GSDLGLContext);
       GSDLGLContext = nullptr;
       GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
   }

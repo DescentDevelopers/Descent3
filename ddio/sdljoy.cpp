@@ -141,15 +141,15 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
   if (server_adr) {
     return false;
   }
-  SDL_Joystick *stick = SDL_JoystickOpen(joy);
+  SDL_Joystick *stick = SDL_OpenJoystick(joy);
   Joysticks[joy].handle = stick;
   if (stick) {
     tJoyInfo caps;
 
     memset(&caps, 0, (sizeof(caps)));
     strncpy(caps.name, SDL_JoystickNameForIndex(joy), sizeof(caps.name) - 1);
-    caps.num_btns = SDL_JoystickNumButtons(stick);
-    int axes = SDL_JoystickNumAxes(stick);
+    caps.num_btns = SDL_GetNumJoystickButtons(stick);
+    int axes = SDL_GetNumJoystickAxes(stick);
     switch (axes) {
     default:
       // Fall through to 6 axes
@@ -180,7 +180,7 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
     case 0:
       break;
     }
-    int hats = SDL_JoystickNumHats(stick);
+    int hats = SDL_GetNumJoystickHats(stick);
     switch (hats) {
     default:
       // Fall through to 4 hats
@@ -206,7 +206,7 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
 
 //  closes connection with controller.
 static void joy_CloseStick(tJoystick joy) {
-  SDL_JoystickClose(Joysticks[joy].handle);
+  SDL_CloseJoystick(Joysticks[joy].handle);
   Joysticks[joy].handle = nullptr;
 }
 
@@ -285,30 +285,30 @@ void joy_GetPos(tJoystick joy, tJoyPos *pos) {
 
     mask = Joysticks[joy].caps.axes_mask;
     if (mask & JOYFLAG_XVALID) {
-      pos->x = SDL_JoystickGetAxis(stick, 0);
+      pos->x = SDL_GetJoystickAxis(stick, 0);
     }
     if (mask & JOYFLAG_YVALID) {
-      pos->y = SDL_JoystickGetAxis(stick, 1);
+      pos->y = SDL_GetJoystickAxis(stick, 1);
     }
     if (mask & JOYFLAG_ZVALID) {
-      pos->z = SDL_JoystickGetAxis(stick, 2);
+      pos->z = SDL_GetJoystickAxis(stick, 2);
     }
     if (mask & JOYFLAG_RVALID) {
-      pos->r = SDL_JoystickGetAxis(stick, 3);
+      pos->r = SDL_GetJoystickAxis(stick, 3);
     }
     if (mask & JOYFLAG_UVALID) {
-      pos->u = SDL_JoystickGetAxis(stick, 4);
+      pos->u = SDL_GetJoystickAxis(stick, 4);
     }
     if (mask & JOYFLAG_VVALID) {
-      pos->v = SDL_JoystickGetAxis(stick, 5);
+      pos->v = SDL_GetJoystickAxis(stick, 5);
     }
     for (i = 0; i < JOYPOV_NUM; ++i) {
       if (mask & (JOYFLAG_POVVALID << i)) {
-        pos->pov[i] = map_hat(SDL_JoystickGetHat(stick, i));
+        pos->pov[i] = map_hat(SDL_GetJoystickHat(stick, i));
       }
     }
     for (i = Joysticks[joy].caps.num_btns; i >= 0; --i) {
-      if (SDL_JoystickGetButton(stick, i)) {
+      if (SDL_GetJoystickButton(stick, i)) {
         pos->buttons |= (1 << i);
       }
     }

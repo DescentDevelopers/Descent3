@@ -93,7 +93,7 @@ int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_soun
   }
 
   spec.freq = SOUNDLIB_SAMPLE_RATE;
-  spec.format = SOUNDLIB_SAMPLE_SIZE == 8 ? AUDIO_U8 : AUDIO_S16SYS;
+  spec.format = SOUNDLIB_SAMPLE_SIZE == 8 ? SDL_AUDIO_U8 : SDL_AUDIO_S16;
   spec.channels = SOUNDLIB_CHANNELS;
   spec.samples = sampleCount;
   spec.callback = StreamAudio;

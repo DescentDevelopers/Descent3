@@ -293,10 +293,10 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   case SDLK_BACKSLASH:
     rc = KEY_BACKSLASH;
     break;
-  case SDLK_BACKQUOTE:
+  case SDLK_GRAVE:
     rc = KEY_LAPOSTRO;
     break;
-  case SDLK_QUOTE:
+  case SDLK_APOSTROPHE:
     rc = KEY_RAPOSTRO;
     break;
   case SDLK_SEMICOLON:
@@ -326,8 +326,8 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
 
     // convert 'a' - 'z' to 0-27, and then convert to ddio format.
   default:
-    if (rc >= SDLK_a && rc <= SDLK_z) {
-      rc = (rc - SDLK_a) + 1;
+    if (rc >= SDLK_A && rc <= SDLK_Z) {
+      rc = (rc - SDLK_A) + 1;
     } else {
       rc = 0;
     }
@@ -342,24 +342,24 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
 int sdlKeyFilter(const SDL_Event *event) {
   uint8_t kc = 0;
 
-  if ((event->type != SDL_KEYUP) && (event->type != SDL_KEYDOWN))
+  if ((event->type != SDL_EVENT_KEY_UP) && (event->type != SDL_EVENT_KEY_DOWN))
     return (1);
 
   switch (event->key.state) {
   case SDL_PRESSED:
     if (event->key.repeat) break;  // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
     kc = sdlkeycode_to_keycode(event->key.keysym.sym);
-    if (event->key.keysym.mod & KMOD_CTRL) {
+    if (event->key.keysym.mod & SDL_KMOD_CTRL) {
       switch (kc) {
       case KEY_G: // toggle grabbed input.
         bool grab = !ddio_MouseGetGrab();
         ddio_MouseSetGrab(grab);
-        SDL_SetRelativeMouseMode((SDL_bool)grab);
+        SDL_SetRelativeMouseMode((bool)grab);
         return 0;
       } // switch
     }   // if
 
-    else if (event->key.keysym.mod & KMOD_ALT) {
+    else if (event->key.keysym.mod & SDL_KMOD_ALT) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
         extern SDL_Window *GSDLWindow;
         Uint32 flags = SDL_GetWindowFlags(GSDLWindow);
