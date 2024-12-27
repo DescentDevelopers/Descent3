@@ -26,28 +26,25 @@ MovieSoundDevice::MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_
   spec.format = (sample_size == 2) ? SDL_AUDIO_S16LE : SDL_AUDIO_U8;
   spec.channels = channels;
 
-  m_device_id = SDL_OpenAudioDevice(nullptr, 0, &spec, nullptr, 0);
-  m_is_compressed = is_compressed;
-  m_sample_size = sample_size;
+  this->stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, nullptr, nullptr);
+  this->m_is_compressed = is_compressed;
+  this->m_sample_size = sample_size;
 };
 
 MovieSoundDevice::~MovieSoundDevice() {
-  if (m_device_id > 0) {
-    SDL_CloseAudioDevice(m_device_id);
-    m_device_id = 0;
+  if (this->stream != nullptr) {
+    SDL_CloseAudioDevice(SDL_GetAudioStreamDevice(this->stream));
   }
 }
 
-void MovieSoundDevice::FillBuffer(char *stream, int len) const {
-  SDL_QueueAudio(m_device_id, stream, len);
-};
+void MovieSoundDevice::FillBuffer(char *buffer, int len) const { SDL_PutAudioStreamData(this->stream, buffer, len); };
 
-void MovieSoundDevice::Play() { SDL_PauseAudioDevice(m_device_id, 0); }
+void MovieSoundDevice::Play() { SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(this->stream)); }
 
-void MovieSoundDevice::Stop() { SDL_PauseAudioDevice(m_device_id, 1); }
+void MovieSoundDevice::Stop() { SDL_PauseAudioDevice(SDL_GetAudioStreamDevice(this->stream)); }
 
-void MovieSoundDevice::Lock() { SDL_LockAudioDevice(m_device_id); }
+void MovieSoundDevice::Lock() {}
 
-void MovieSoundDevice::Unlock() { SDL_UnlockAudioDevice(m_device_id); }
+void MovieSoundDevice::Unlock() {}
 
 } // namespace D3

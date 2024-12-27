@@ -28,7 +28,7 @@ namespace D3 {
 /// Implementation class for sound device used on movie playback.
 class MovieSoundDevice : ISoundDevice {
 private:
-  SDL_AudioDeviceID m_device_id = 0;
+  SDL_AudioStream* stream = nullptr;
   uint16_t m_sample_size = 0;
 
 public:
@@ -46,7 +46,7 @@ public:
    * Check if sound device is properly initialized
    * @return true on success
    */
-  [[nodiscard]] bool IsInitialized() const { return m_device_id > 0; }
+  [[nodiscard]] bool IsInitialized() const { return this->stream != nullptr; }
 
   /**
    * Fill internal audio stream to be played
