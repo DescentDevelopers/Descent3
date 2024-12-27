@@ -147,7 +147,7 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
     tJoyInfo caps;
 
     memset(&caps, 0, (sizeof(caps)));
-    strncpy(caps.name, SDL_JoystickNameForIndex(joy), sizeof(caps.name) - 1);
+    strncpy(caps.name, SDL_GetJoystickNameForID(joy), sizeof(caps.name) - 1);
     caps.num_btns = SDL_GetNumJoystickButtons(stick);
     int axes = SDL_GetNumJoystickAxes(stick);
     switch (axes) {
@@ -318,19 +318,22 @@ void joy_GetPos(tJoystick joy, tJoyPos *pos) {
 static int joyGetNumDevs(void) {
   int found = 0;
 
+  int joyCount = 0;
+  SDL_GetJoysticks(&joyCount);
+
   // rcg06182000 add support for specific joydev.
   int rc = FindArgChar("-joystick", 'j');
   specificJoy = -1;
   if ((rc > 0) && (GameArgs[rc + 1] != NULL)) {
     specificJoy = atoi(GameArgs[rc + 1]);
-    if ((specificJoy >= 0) && (specificJoy < SDL_NumJoysticks())) {
+    if ((specificJoy >= 0) && (specificJoy < joyCount)) {
       found = 1;
     } else {
       specificJoy = -1;
     }
   }
   if (specificJoy < 0) {
-    found = SDL_NumJoysticks();
+    found = joyCount();
   }
 
   LOG_INFO.printf("Joystick: Found %d joysticks.", found);
