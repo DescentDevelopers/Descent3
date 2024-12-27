@@ -100,7 +100,7 @@ static bool joy_InitStick(tJoystick joy, char *server_adr);
 bool joy_Init() {
   //	reinitialize joystick if already initialized.
   joy_Close();
-  if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0) {
+  if (!SDL_InitSubSystem(SDL_INIT_JOYSTICK)) {
     LOG_ERROR << "Could not initialize Joystick";
     return false;
   }
