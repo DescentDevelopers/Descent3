@@ -333,7 +333,7 @@ static int joyGetNumDevs(void) {
     }
   }
   if (specificJoy < 0) {
-    found = joyCount();
+    found = joyCount;
   }
 
   LOG_INFO.printf("Joystick: Found %d joysticks.", found);

@@ -89,7 +89,7 @@ int sdlkey_to_ddiocode[27] = {0,     KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, K
 static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   // unceremoniously taken from Heretic source code with a few modifications.
   //  (by Outrage. Not Loki. We know better.  :)  --ryan.)
-  int rc = sdlkeycode;
+  uint32_t rc = sdlkeycode;
 
   switch (rc) {
   case SDLK_DELETE:
@@ -345,29 +345,30 @@ int sdlKeyFilter(const SDL_Event *event) {
   if ((event->type != SDL_EVENT_KEY_UP) && (event->type != SDL_EVENT_KEY_DOWN))
     return (1);
 
-  switch (event->key.state) {
-  case SDL_PRESSED:
+  switch (event->key.down) {
+  case true:
     if (event->key.repeat) break;  // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
-    kc = sdlkeycode_to_keycode(event->key.keysym.sym);
-    if (event->key.keysym.mod & SDL_KMOD_CTRL) {
+    kc = sdlkeycode_to_keycode(event->key.key);
+    if (event->key.mod & SDL_KMOD_CTRL) {
+      extern SDL_Window *GSDLWindow;
       switch (kc) {
       case KEY_G: // toggle grabbed input.
         bool grab = !ddio_MouseGetGrab();
         ddio_MouseSetGrab(grab);
-        SDL_SetRelativeMouseMode((bool)grab);
+        SDL_SetWindowRelativeMouseMode(GSDLWindow, grab);
         return 0;
       } // switch
     }   // if
 
-    else if (event->key.keysym.mod & SDL_KMOD_ALT) {
+    else if (event->key.mod & SDL_KMOD_ALT) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
         extern SDL_Window *GSDLWindow;
         Uint32 flags = SDL_GetWindowFlags(GSDLWindow);
         // (In SDL2, SDL_WINDOW_FULLSCREEN_DESKTOP is SDL_WINDOW_FULLSCREEN plus an extra bit set, so just check for _any_ fullscreen in this bitwise AND.)
         if (flags & SDL_WINDOW_FULLSCREEN) {
-          flags &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
+          flags &= ~SDL_WINDOW_FULLSCREEN;
         } else {
-          flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+          flags |= SDL_WINDOW_FULLSCREEN;
         }
         SDL_SetWindowFullscreen(GSDLWindow, flags);
         return(0);
@@ -379,8 +380,8 @@ int sdlKeyFilter(const SDL_Event *event) {
     ddio_UpdateKeyState(kc, true);
     break;
 
-  case SDL_RELEASED:
-    kc = sdlkeycode_to_keycode(event->key.keysym.sym);
+  case false:
+    kc = sdlkeycode_to_keycode(event->key.key);
     if (LKeys[kc].status) {
       LKeys[kc].up_time = timer_GetTime();
       LKeys[kc].status = false;
