@@ -52,7 +52,7 @@
 #ifndef __LNXVIDEOMODE_H__
 #define __LNXVIDEOMODE_H__
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #define MODE_OK 0
 #define MODE_HSYNC 1 /* hsync out of range */

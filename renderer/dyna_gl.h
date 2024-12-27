@@ -25,7 +25,7 @@
 #include <vector>
 
 #define GL_GLEXT_PROTOTYPES
-#include <SDL_opengl.h>
+#include <SDL3/SDL_opengl.h>
 
 #include "descent.h"
 #include "log.h"

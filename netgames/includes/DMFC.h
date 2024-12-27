@@ -291,7 +291,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <ctime>
-#include <SDL_assert.h>
+#include <SDL3/SDL_assert.h>
 
 #include "gamedll_header.h"
 #include "DMFCKeyCodes.h"

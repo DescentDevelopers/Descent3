@@ -2053,8 +2053,8 @@ static async_dns_lookup *lastaslu = NULL;
 
 #if defined(POSIX)
 int CDECLCALL gethostbynameworker(void *parm);
-#include "SDL.h"
-#include "SDL_thread.h"
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_thread.h>
 
 // rcg06192000 use SDL threads.
 // #include <pthread.h>

@@ -21,7 +21,7 @@
 #include <cstdlib>
 #include <cstdarg>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "pserror.h"
 #include "mem.h"

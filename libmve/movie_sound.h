@@ -19,7 +19,7 @@
 #ifndef LIBMVE_MOVIE_SOUND_H_
 #define LIBMVE_MOVIE_SOUND_H_
 
-#include <SDL_audio.h>
+#include <SDL3/SDL_audio.h>
 
 #include "sound_interface.h"
 
