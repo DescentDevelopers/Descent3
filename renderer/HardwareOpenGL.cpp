@@ -526,14 +526,6 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     return 0;
   }
 
-  // rcg09182000 gamma fun.
-  // rcg01112000 --nogamma fun.
-  if (!FindArgChar("-nogamma", 'M')) {
-    Uint16 ramp[256];
-    SDL_CalculateGammaRamp(Render_preferred_state.gamma, ramp);
-    SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp);
-  }
-
   if (ParentApplication) {
     reinterpret_cast<oeLnxApplication *>(ParentApplication)->set_sizepos(0, 0, *width, *height);
   }
