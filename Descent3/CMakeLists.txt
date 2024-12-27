@@ -312,7 +312,7 @@ file(GLOB_RECURSE INCS "../lib/*.h")
 
 add_executable(Descent3 WIN32 MACOSX_BUNDLE ${D3Icon} ${HEADERS} ${CPPS} ${INCS} ${MANIFEST} ${RC_FILE})
 target_link_libraries(Descent3 PRIVATE
-  SDL2::SDL2
+  SDL3::SDL3
   2dlib
   AudioEncode
   bitmap

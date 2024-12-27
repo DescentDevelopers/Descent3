@@ -2,7 +2,7 @@
 # Building Descent 3 Open Source 
 
 ## Dependencies
-The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code depends on [**SDL2**](https://github.com/libsdl-org/SDL/tree/SDL2) and [**zlib**](https://github.com/madler/zlib). You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
+The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code depends on [**SDL3**](https://github.com/libsdl-org/SDL/tree/main) and [**zlib**](https://github.com/madler/zlib). You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
 
 ## Installing and using vcpkg
 * When building for Windows, vcpkg is already installed and configured when using any of the Visual Studio command prompts (either actual Command Prompt, or PowerShell).
@@ -132,11 +132,11 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
     * If you would like to manage the code dependencies yourself:
         * APT users
             ```sh
-            sudo apt install -y --no-install-recommends libsdl2-dev zlib1g-dev libcpp-httplib-dev libgtest-dev libglm-dev
+            sudo apt install -y --no-install-recommends libsdl3-dev zlib1g-dev libcpp-httplib-dev libgtest-dev libglm-dev
             ```
         * DNF users
             ```sh
-            sudo dnf install -y SDL2-devel zlib-devel cpp-httplib-devel gtest glm-devel
+            sudo dnf install -y SDL3-devel zlib-devel cpp-httplib-devel gtest glm-devel
             ```
 
 3. **Clone the Descent3 source code.**

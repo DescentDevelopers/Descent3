@@ -7,27 +7,27 @@
     "plog",
     "zlib",
     {
-      "name": "sdl2",
+      "name": "sdl3",
       "version>=": "2.30.8",
       "features": ["x11", "wayland", "alsa"],
       "default-features": false,
       "platform": "linux & !native"
     },
     {
-      "name": "sdl2",
+      "name": "sdl3",
       "version>=": "2.30.8",
       "features": ["x11","wayland", "alsa"],
       "platform": "linux & native"
     },
     {
-      "name": "sdl2",
+      "name": "sdl3",
       "version>=": "2.30.8",
       "platform": "!linux"
     }
   ],
   "overrides": [
     {
-      "name": "sdl2",
+      "name": "sdl3",
       "version": "2.30.8"
     }
   ]

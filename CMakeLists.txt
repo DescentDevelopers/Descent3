@@ -161,9 +161,9 @@ endif()
 
 find_package(glm REQUIRED)
 find_package(httplib REQUIRED)
-find_package(SDL2 REQUIRED)
-# Some versions of the SDL2 find_package set SDL2_INCLUDE_DIR and some set a plural SDL2_INCLUDE_DIRS. Check both.
-message("SDL2 Include Dir is ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS}")
+find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
+# Some versions of the SDL3 find_package set SDL3_INCLUDE_DIR and some set a plural SDL3_INCLUDE_DIRS. Check both.
+message("SDL3 Include Dir is ${SDL3_INCLUDE_DIR} ${SDL3_INCLUDE_DIRS}")
 if(USE_EXTERNAL_PLOG)
   find_package(plog REQUIRED)
 endif()
@@ -171,11 +171,11 @@ endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   message("Building for Linux")
   add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
-  set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
+  set(PLATFORM_INCLUDES "lib/linux" ${SDL3_INCLUDE_DIR} ${SDL3_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for MAC OSX")
   add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
-  set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
+  set(PLATFORM_INCLUDES "lib/linux" ${SDL3_INCLUDE_DIR} ${SDL3_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   # Windows.h defines to avoid as many issues as possible.
   add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE PRIMARY_HOG=\"d3-win.hog\"

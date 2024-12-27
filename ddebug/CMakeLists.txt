@@ -30,6 +30,6 @@ target_link_libraries(ddebug PRIVATE
     misc
   >
   PUBLIC
-  SDL2::SDL2
+  SDL3::SDL3
   logger
 )
