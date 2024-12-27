@@ -49,7 +49,7 @@
 #include "config.h"
 #include "rtperformance.h"
 #include "HardwareInternal.h"
-#include "../Descent3/args.h"
+#include "args.h"
 #include "NewBitmap.h"
 #include "shaders.h"
 #include "ShaderProgram.h"
