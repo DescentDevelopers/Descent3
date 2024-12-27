@@ -87,11 +87,12 @@ private:
 extern char loadedLibrary[_MAX_PATH];
 static module OpenGLDLLInst;
 
-static std::vector<std::tuple<SDL_FunctionPointer, std::string_view, bool>> inits_;
+
+static std::vector<std::tuple<void **, std::string_view, bool>> inits_;
 static void LoadGLFnPtrs() {
   for (auto &[ptr, name, optional] : inits_) {
-    ptr = SDL_GL_GetProcAddress(name.data());
-    if (!ptr && !optional) {
+    *ptr = SDL_GL_GetProcAddress(name.data());
+    if (!*ptr && !optional) {
       throw std::runtime_error(std::string{"failed to find "} + name.data());
     }
   }
@@ -100,7 +101,7 @@ static void LoadGLFnPtrs() {
 
 template<typename Ret, typename... Args>
 FnPtr<Ret GLFUNCCALL(Args...)>::FnPtr(std::string_view name, bool optional) : fn_{} {
-  inits_.push_back(std::make_tuple(reinterpret_cast<SDL_FunctionPointer>(&fn_), name, optional));
+  inits_.push_back(std::make_tuple(reinterpret_cast<void **>(&fn_), name, optional));
 }
 
 static module *LoadOpenGLDLL(const char *dllname) {
