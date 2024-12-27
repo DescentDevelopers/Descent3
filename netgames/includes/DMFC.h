@@ -56,7 +56,7 @@
  * all mangles symbol names fixed.  Finished making interface functions.
  *
  * 120   6/12/99 10:59p Jeff
- * fixed messed up #ifdef for __LINUX__
+ * fixed messed up #ifdef for SDL_PLATFORM_LINUX
  *
  * 119   6/10/99 6:31p Jeff
  * fixed mprintf define
