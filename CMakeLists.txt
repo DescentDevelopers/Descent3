@@ -9,8 +9,10 @@ endif()
 set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
 set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
 
-if(USE_VCPKG)
+if(NOT USE_VCPKG STREQUAL "OFF")
   if(DEFINED ENV{VCPKG_ROOT})
+    set(USING_VCPKG true)
+
     if (CMAKE_TOOLCHAIN_FILE)
       cmake_path(ABSOLUTE_PATH CMAKE_TOOLCHAIN_FILE NORMALIZE OUTPUT_VARIABLE VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
     endif()
