@@ -35,3 +35,4 @@ target_link_libraries(dmfc PUBLIC
   physics
   ddio
 )
+target_include_directories(dmfc PRIVATE ${SDL3_INCLUDE_DIRS})

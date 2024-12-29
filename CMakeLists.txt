@@ -42,7 +42,8 @@ option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (dis
 option(FATAL_GL_ERRORS "Check OpenGL calls and raise exceptions on errors." OFF)
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
 option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
-option(USE_EXTERNAL_PLOG "Use system plog library instead bundled" OFF)
+option(USE_EXTERNAL_PLOG "Use system plog library instead of bundled version" OFF)
+option(USE_EXTERNAL_SDL "Use system SDL3 library instead of bundled version" OFF)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(BUILD_EDITOR "Build internal editor" OFF)
 endif()
@@ -171,11 +172,9 @@ endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   message("Building for Linux")
   add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
-  set(PLATFORM_INCLUDES "lib/linux" ${SDL3_INCLUDE_DIR} ${SDL3_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for MAC OSX")
   add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
-  set(PLATFORM_INCLUDES "lib/linux" ${SDL3_INCLUDE_DIR} ${SDL3_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   # Windows.h defines to avoid as many issues as possible.
   add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE PRIMARY_HOG=\"d3-win.hog\"
@@ -190,8 +189,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_link_options("$<$<CONFIG:Release>:/LTCG>")
 
   add_compile_definitions(WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
-
-  set(PLATFORM_INCLUDES "lib/win/DirectX" "lib/win")
 
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
@@ -240,7 +237,6 @@ include_directories(
   "lib"     # TODO: Remove after untying all modules
   "linux"   # -*-
   "Descent3"
-  ${PLATFORM_INCLUDES}
 )
 
 add_subdirectory(third_party)

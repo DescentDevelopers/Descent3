@@ -32,4 +32,5 @@ target_include_directories(sndlib PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/sndlib
   >
+  ${SDL3_INCLUDE_DIRS}
 )

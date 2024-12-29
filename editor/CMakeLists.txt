@@ -574,6 +574,7 @@ target_include_directories(Descent3Editor PRIVATE
   ${PROJECT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}/manage
   ${PROJECT_BINARY_DIR}/lib
+  {SDL3_INCLUDE_DIRS}
 )
 
 target_compile_definitions(Descent3Editor PUBLIC _AFXDLL EDITOR)

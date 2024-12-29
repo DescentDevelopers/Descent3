@@ -37,6 +37,7 @@ target_include_directories(ddio PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/ddio
   >
+  ${SDL3_INCLUDE_DIRS}
 )
 
 if(BUILD_TESTING)

@@ -31,7 +31,7 @@ set(CPPS
 )
 
 add_library(renderer STATIC ${HEADERS} ${CPPS})
-target_include_directories(renderer PRIVATE ${GENERATED_HEADERS})
+target_include_directories(renderer PRIVATE ${GENERATED_HEADERS} ${SDL3_INCLUDE_DIRS})
 target_link_libraries(renderer PRIVATE
   glm::glm
   SDL3::SDL3

@@ -23,6 +23,7 @@ target_include_directories(ddebug PUBLIC
   ${PROJECT_SOURCE_DIR}/ddebug
   >
   PRIVATE ${PROJECT_BINARY_DIR}/lib   # For d3_version.h
+  ${SDL3_INCLUDE_DIRS}
 )
 target_link_libraries(ddebug PRIVATE
   $<$<PLATFORM_ID:Windows>:

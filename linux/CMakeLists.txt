@@ -19,6 +19,7 @@ target_include_directories(linux PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/linux
   >
+  ${SDL3_INCLUDE_DIRS}
 )
 target_link_libraries(linux PRIVATE
   ddebug

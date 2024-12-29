@@ -14,7 +14,9 @@ target_link_libraries(Direct_TCP_IP PRIVATE
   module
   ui
   $<$<PLATFORM_ID:Windows>:ws2_32>
+  SDL3::SDL3  
 )
+target_include_directories(Direct_TCP_IP PRIVATE ${SDL3_INCLUDE_DIRS})
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set_target_properties(Direct_TCP_IP PROPERTIES SUFFIX ".dylib")
 endif()
