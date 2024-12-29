@@ -335,14 +335,14 @@ void AudioStream::SetVolume(float vol) {
 }
 float AudioStream::GetVolume() { return m_volume; }
 //	flags specify what type of stream it is.
-bool AudioStream::Open(const char *filename, int open_flags) {
+bool AudioStream::Open(const std::filesystem::path &filename, int open_flags) {
   // don't open a stream that's already open, or bogus filename
   if (m_state != STRM_INVALID) {
     AudioStream::Close();
     //	Int3();
     //	return false;
   }
-  if (m_archive.Opened() || !filename)
+  if (m_archive.Opened() || filename.empty())
     return false;
   if (!m_ll_sndsys)
     return false;
@@ -920,7 +920,7 @@ void StreamVolume(float master_volume) {
   User_audio_stream.SetVolume(Stream_volume * master_volume);
 }
 //	these functions are the 'simplified' stream interface from Jeff (most of this code is from Jeff)
-int StreamPlay(const char *filename, float volume, int flags) {
+int StreamPlay(const std::filesystem::path &filename, float volume, int flags) {
   int retval = -1;
   try {
     flags = 0;

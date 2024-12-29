@@ -294,6 +294,12 @@ if(WIN32)
   )
 endif()
 
+configure_file(
+  ${CMAKE_SOURCE_DIR}/lib/d3_platform_path.h.in
+  ${CMAKE_BINARY_DIR}/lib/d3_platform_path.h
+  @ONLY
+)
+
 if(UNIX AND NOT APPLE)
   set(PLATFORM_LIBS m ${CMAKE_DL_LIBS})
 endif()

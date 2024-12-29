@@ -181,6 +181,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <filesystem>
 
 #include "gamesave.h"
 #include "cfile.h"
@@ -224,7 +225,7 @@ extern void PageInAllData();
 // dynamically allocated to be efficient (only needed during save/load)
 
 static int LGSSnapshot(CFILE *fp);
-static void IncreaseRestoreCount(const char *file);
+static void IncreaseRestoreCount(const std::filesystem::path &file);
 
 int Times_game_restored = 0;
 // static gs_tables *gs_Xlates = NULL;
@@ -232,17 +233,14 @@ int Times_game_restored = 0;
 gs_tables *gs_Xlates = NULL;
 // int Gamesave_read_version=0;
 
-void IncreaseRestoreCount(const char *file) {
+void IncreaseRestoreCount(const std::filesystem::path &file) {
   // Open the file up in read more, read the current count, then incease it
   // and write the increased value back out.
 
-  char countpath[_MAX_PATH * 2];
-  CFILE *cfp;
+  std::filesystem::path countpath = file;
+  countpath.replace_extension(".cnt");
 
-  strcpy(countpath, file);
-  strcat(countpath, ".cnt");
-
-  cfp = cfopen(countpath, "rb");
+  CFILE *cfp = cfopen(countpath, "rb");
   if (cfp) {
     Times_game_restored = cf_ReadInt(cfp);
     cfclose(cfp);
@@ -259,10 +257,8 @@ void IncreaseRestoreCount(const char *file) {
 }
 
 extern bool IsRestoredGame;
-///////////////////////////////////////////////////////////////////////////////
-//	loads a game from a given slot.
-int LoadGameState(const char *pathname) {
-  CFILE *fp;
+
+int LoadGameState(const std::filesystem::path &pathname) {
   int retval = LGS_OK;
   char desc[GAMESAVE_DESCLEN + 1];
   char path[_MAX_PATH];
@@ -271,7 +267,7 @@ int LoadGameState(const char *pathname) {
   int16_t pending_music_region;
   IsRestoredGame = true;
   //	load in stuff
-  fp = cfopen(pathname, "rb");
+  CFILE *fp = cfopen(pathname, "rb");
   if (!fp) {
     Int3();
     return LGS_FILENOTFOUND;
@@ -414,20 +410,18 @@ loadsg_error:
   return retval;
 }
 
-//	retreive gamesave file header info. description must be a buffer of length GAMESAVE_DESCLEN+1
-// returns true if it's a valid savegame file.  false if corrupted somehow
-bool GetGameStateInfo(const char *pathname, char *description, int *bm_handle) {
-  CFILE *fp;
+bool GetGameStateInfo(const std::filesystem::path &pathname, char *description, int *bm_handle) {
   int bitmap;
   char desc[GAMESAVE_DESCLEN + 1];
 
-  fp = cfopen(pathname, "rb");
+  CFILE *fp = cfopen(pathname, "rb");
   if (!fp)
     return false;
 
   if (!cf_ReadBytes((uint8_t *)desc, GAMESAVE_DESCLEN + 1, fp)) {
     strcpy(description, TXT_ILLEGALSAVEGAME);
-    goto savesg_error;
+    cfclose(fp);
+    return false;
   }
 
   strcpy(description, desc);
@@ -440,10 +434,6 @@ bool GetGameStateInfo(const char *pathname, char *description, int *bm_handle) {
 
   cfclose(fp);
   return true;
-
-savesg_error:
-  cfclose(fp);
-  return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
