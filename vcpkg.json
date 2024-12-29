@@ -8,27 +8,27 @@
     "zlib",
     {
       "name": "sdl3",
-      "version>=": "2.30.8",
+      "version>=": "v3.1.6-preview#2",
       "features": ["x11", "wayland", "alsa"],
       "default-features": false,
       "platform": "linux & !native"
     },
     {
       "name": "sdl3",
-      "version>=": "2.30.8",
+      "version>=": "v3.1.6-preview#2",
       "features": ["x11","wayland", "alsa"],
       "platform": "linux & native"
     },
     {
       "name": "sdl3",
-      "version>=": "2.30.8",
+      "version>=": "v3.1.6-preview#2",
       "platform": "!linux"
     }
   ],
   "overrides": [
     {
       "name": "sdl3",
-      "version": "2.30.8"
+      "version": "v3.1.6-preview#2"
     }
   ]
 }

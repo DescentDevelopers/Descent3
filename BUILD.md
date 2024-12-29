@@ -2,7 +2,7 @@
 # Building Descent 3 Open Source 
 
 ## Dependencies
-The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code depends on [**SDL3**](https://github.com/libsdl-org/SDL/tree/main) and [**zlib**](https://github.com/madler/zlib). You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
+The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code depends on [**glm**](https://github.com/g-truc/glm) and [**zlib**](https://github.com/madler/zlib). The other dependencies such as SDL3 and plog are bundled as git submodules. You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
 
 ## Installing and using vcpkg
 * When building for Windows, vcpkg is already installed and configured when using any of the Visual Studio command prompts (either actual Command Prompt, or PowerShell).

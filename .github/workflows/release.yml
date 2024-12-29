@@ -17,7 +17,7 @@ jobs:
       - name: Generate git hash and tarball
         run: |
           sudo apt update
-          sudo apt install -y ninja-build cmake g++ libsdl3-dev zlib1g-dev
+          sudo apt install -y ninja-build cmake g++ zlib1g-dev
           cmake --preset linux
           cmake --build --preset linux -t get_git_hash
           cmake --build --preset linux -t package_source
