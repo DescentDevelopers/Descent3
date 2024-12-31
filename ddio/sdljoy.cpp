@@ -284,8 +284,12 @@ void joy_GetPos(tJoystick joy, tJoyPos *pos) {
     uint32_t mask;
 
     mask = Joysticks[joy].caps.axes_mask;
-    pos->x = SDL_JoystickGetAxis(stick, 0);
-    pos->y = SDL_JoystickGetAxis(stick, 1);
+    if (mask & JOYFLAG_XVALID) {
+      pos->x = SDL_JoystickGetAxis(stick, 0);
+    }
+    if (mask & JOYFLAG_YVALID) {
+      pos->y = SDL_JoystickGetAxis(stick, 1);
+    }
     if (mask & JOYFLAG_ZVALID) {
       pos->z = SDL_JoystickGetAxis(stick, 2);
     }

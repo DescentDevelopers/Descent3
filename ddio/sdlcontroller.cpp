@@ -901,11 +901,11 @@ bool sdlgameController::enum_controllers() {
       m_ControlList[num_devs].buttons = jc.num_btns;
       m_ControlList[num_devs].btnmask = 0;
       m_ControlList[num_devs].flags =
-          CTF_X_AXIS | CTF_Y_AXIS | ((jc.axes_mask & JOYFLAG_ZVALID) ? CTF_Z_AXIS : 0) |
-          ((jc.axes_mask & JOYFLAG_RVALID) ? CTF_R_AXIS : 0) | ((jc.axes_mask & JOYFLAG_UVALID) ? CTF_U_AXIS : 0) |
-          ((jc.axes_mask & JOYFLAG_VVALID) ? CTF_V_AXIS : 0) | ((jc.axes_mask & JOYFLAG_POVVALID) ? CTF_POV : 0) |
-          ((jc.axes_mask & JOYFLAG_POV2VALID) ? CTF_POV2 : 0) | ((jc.axes_mask & JOYFLAG_POV3VALID) ? CTF_POV3 : 0) |
-          ((jc.axes_mask & JOYFLAG_POV4VALID) ? CTF_POV4 : 0);
+          ((jc.axes_mask & JOYFLAG_XVALID) ? CTF_X_AXIS : 0) | ((jc.axes_mask & JOYFLAG_YVALID) ? CTF_Y_AXIS : 0) |
+          ((jc.axes_mask & JOYFLAG_ZVALID) ? CTF_Z_AXIS : 0) | ((jc.axes_mask & JOYFLAG_RVALID) ? CTF_R_AXIS : 0) |
+          ((jc.axes_mask & JOYFLAG_UVALID) ? CTF_U_AXIS : 0) | ((jc.axes_mask & JOYFLAG_VVALID) ? CTF_V_AXIS : 0) |
+          ((jc.axes_mask & JOYFLAG_POVVALID) ? CTF_POV : 0) | ((jc.axes_mask & JOYFLAG_POV2VALID) ? CTF_POV2 : 0) |
+          ((jc.axes_mask & JOYFLAG_POV3VALID) ? CTF_POV3 : 0) | ((jc.axes_mask & JOYFLAG_POV4VALID) ? CTF_POV4 : 0);
       m_ControlList[num_devs].normalizer[0] = (jc.maxx - jc.minx) / 2.0f;
       m_ControlList[num_devs].normalizer[1] = (jc.maxy - jc.miny) / 2.0f;
       m_ControlList[num_devs].normalizer[2] = (jc.maxz - jc.minz) / 2.0f;
