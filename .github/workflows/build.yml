@@ -117,7 +117,7 @@ jobs:
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ matrix.os.preset }} -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DUSE_EXTERNAL_PLOG=ON -DBUILD_EDITOR=${{ matrix.os.preset == 'linux-cross-arm64' && 'OFF' || 'ON' }} -DBUILD_TESTING=${{ matrix.os.preset == 'linux-cross-arm64' && 'OFF' || 'ON' }}
+        run: cmake --preset ${{ matrix.os.preset }} -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DUSE_EXTERNAL_PLOG=ON -DBUILD_EDITOR=ON -DBUILD_TESTING=${{ matrix.os.preset == 'linux-cross-arm64' && 'OFF' || 'ON' }}
 
       - name: Build ${{ matrix.build_type }}
         if: ${{ matrix.os.name != 'android' }}
