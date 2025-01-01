@@ -192,6 +192,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
   add_compile_definitions(WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
 
+  set(PLATFORM_INCLUDES "lib/win/DirectX" "lib/win")
+
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
 
@@ -239,6 +241,7 @@ include_directories(
   "lib"     # TODO: Remove after untying all modules
   "linux"   # -*-
   "Descent3"
+  $<$<PLATFORM_ID:Windows>:"${PLATFORM_INCLUDES}">
 )
 
 add_subdirectory(third_party)
