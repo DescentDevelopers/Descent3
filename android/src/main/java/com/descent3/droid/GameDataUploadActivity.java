@@ -34,7 +34,7 @@ public class GameDataUploadActivity extends Activity {
 
     mServer = new GameDataHttpServer(
       getAssets(),
-      getCacheDir().toPath().resolve("gamedata"),
+      Constants.getCacheGameDataDir(this),
       () -> {
         // TODO: there's gonna be a race here; should explicitly have the Success html trigger this?
         startActivity(new Intent(this, MainActivity.class));

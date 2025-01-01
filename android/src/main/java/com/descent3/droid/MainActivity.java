@@ -22,15 +22,15 @@ public class MainActivity extends SDLActivity {
     super.onCreate(savedInstanceState);
 
     try {
-      mFilesGameData = getFilesDir().toPath().resolve("gamedata");
+      mFilesGameData = Constants.getFileGameDataDir(this);
       Files.createDirectories(mFilesGameData);
-      mCacheGameData = getCacheDir().toPath().resolve("gamedata");
+      mCacheGameData = Constants.getCacheGameDataDir(this);
       mTempDir = Files.createTempDirectory("d3");
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
 
-    if (!mCacheGameData.resolve("d3.hog").toFile().exists()) {
+    if (!Constants.isGameDataPresent(this)) {
       startActivity(new Intent(this, GameDataUploadActivity.class));
       finish();
     }
