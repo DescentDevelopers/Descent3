@@ -45,7 +45,8 @@
   <!-- <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" /> -->
 
   <!-- Allow access to the vibrator -->
-  <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
   <uses-permission android:name="android.permission.INTERNET" />
 
   <!-- Create a Java class extending SDLActivity and place it in a

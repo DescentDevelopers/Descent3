@@ -9,28 +9,77 @@ import static fi.iki.elonen.NanoHTTPD.Response.Status.OK;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.net.ConnectivityManager;
+import android.net.ConnectivityManager.NetworkCallback;
+import android.net.LinkAddress;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.text.Html;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import fi.iki.elonen.NanoHTTPD;
 
 public class GameDataUploadActivity extends Activity {
   private GameDataHttpServer mServer;
+  private TextView mHttpServerAddresses;
+
+  private final NetworkCallback mNetworkCallback = new NetworkCallback() {
+    private final HashMap<Network, LinkProperties> mLinks = new HashMap<>();
+
+    @Override
+    public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+      mLinks.put(network, linkProperties);
+      updateAddresses();
+    }
+
+    @Override
+    public void onLost(Network network) {
+      mLinks.remove(network);
+      updateAddresses();
+    }
+
+    private void updateAddresses() {
+      Set<InetAddress> addresses =
+        mLinks.values().stream()
+          .map(LinkProperties::getLinkAddresses)
+          .flatMap(List::stream)
+          .map(LinkAddress::getAddress)
+          .collect(Collectors.toSet());
+      if (addresses.isEmpty()) {
+        mHttpServerAddresses.setText(R.string.network_unavailable);
+      } else {
+        mHttpServerAddresses.setText(addresses.stream()
+          .map(InetAddress::getHostAddress)
+          .map(s -> "http://" + s + ":" + mServer.getListeningPort() + "/")
+          .collect(Collectors.joining("\n")));
+      }
+    }
+  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.game_data_layout_activity);
+    mHttpServerAddresses = findViewById(R.id.game_data_http_server);
 
     mServer = new GameDataHttpServer(
       getAssets(),
@@ -40,23 +89,34 @@ public class GameDataUploadActivity extends Activity {
         startActivity(new Intent(this, MainActivity.class));
         finish();
       });
-
-    setContentView(R.layout.game_data_layout_activity);
   }
 
   @Override
   protected void onStart() {
     super.onStart();
+
+    mHttpServerAddresses.setText(R.string.network_unavailable);
+
     try {
       mServer.start();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+
+    getSystemService(ConnectivityManager.class).registerNetworkCallback(
+      new NetworkRequest.Builder()
+        .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+        .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+        .addTransportType(NetworkCapabilities.TRANSPORT_WIFI_AWARE)
+        .build(),
+      mNetworkCallback);
   }
 
   @Override
   protected void onStop() {
     super.onStop();
+
+    getSystemService(ConnectivityManager.class).unregisterNetworkCallback(mNetworkCallback);
     mServer.stop();
   }
 
