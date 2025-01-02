@@ -9,13 +9,6 @@
     {
       "name": "sdl3",
       "version>=": "3.1.6-preview",
-      "features": ["x11", "wayland", "alsa"],
-      "default-features": false,
-      "platform": "linux & !native"
-    },
-    {
-      "name": "sdl3",
-      "version>=": "3.1.6-preview",
       "features": ["x11","wayland", "alsa"],
       "platform": "linux & native"
     },

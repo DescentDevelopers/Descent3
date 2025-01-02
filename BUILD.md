@@ -2,7 +2,15 @@
 # Building Descent 3 Open Source 
 
 ## Dependencies
-The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code depends on [**glm**](https://github.com/g-truc/glm) and [**zlib**](https://github.com/madler/zlib). The other dependencies such as SDL3 and plog are bundled as git submodules. You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
+The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code also depends on third-party libraries that are not provided as part of the repository:
+- [**SDL3**](https://wiki.libsdl.org/SDL3/FrontPage) which is used as the base to handle video, audio and input.
+- [**cpp-httplib**](https://github.com/yhirose/cpp-httplib) as a HTTP client to download levels.
+- [**glm**](https://github.com/g-truc/glm) providing useful additions to OpenGL.
+- [**plog**](https://github.com/SergiusTheBest/plog) for logging
+- [**zlib**](https://www.zlib.net/) as a compression utility
+- [**gtest**](https://github.com/google/googletest) (optional) for testing.
+
+You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
 
 ## Installing and using vcpkg
 * When building for Windows, vcpkg is already installed and configured when using any of the Visual Studio command prompts (either actual Command Prompt, or PowerShell).
@@ -195,6 +203,5 @@ cmake --preset linux -DENABLE_LOGGER=ON
 | `ENABLE_MEM_RTL`         | Enable Real-time library memory management functions (disable to verbose memory allocations).                                                                                                                                                                                                           | `ON`                                                                                         |
 | `FORCE_COLORED_OUTPUT`   | Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja).                                                                                                                                                                                                          | `OFF`                                                                                        |
 | `FORCE_PORTABLE_INSTALL` | Install all files into local directory defined by `CMAKE_INSTALL_PREFIX`.                                                                                                                                                                                                                               | `ON`                                                                                         |
-| `USE_EXTERNAL_PLOG`      | Use system plog library.                                                                                                                                                                                                                                                                                | `OFF`                                                                                        |
-| `USE_EXTERNAL_SDL`      | Use system SDL3 library.                                                                                                                                                                                                                                                                                | `OFF`                                                                                        |
+      | `OFF`                                                                                        |
 | `USE_VCPKG`              | Explicitly control whether or not to use vcpkg for dependency resolution. `ON` requires the environment variable `VCPKG_ROOT` to be set.                                                                                                                                                                | Determined by the existence of `VCPKG_ROOT` in the environment: If it exists, vcpkg is used. |

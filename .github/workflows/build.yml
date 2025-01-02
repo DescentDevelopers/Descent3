@@ -42,7 +42,7 @@ jobs:
           - runner: ubuntu-latest
             preset: linux-cross-arm64
             cc: gcc
-            cxx: g++++
+            cxx: g++
             name: Linux-cross-arm64
         build_type:
           - Debug
