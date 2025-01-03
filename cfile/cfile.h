@@ -155,6 +155,13 @@ extern std::vector<std::filesystem::path> Base_directories;
  */
 void cf_AddBaseDirectory(const std::filesystem::path &base_directory);
 
+/* The user can specify a list of default read-only base directories by setting
+ * the -DDEFAULT_ADDITIONAL_DIRS CMake option. This function adds those base
+ * directories to the list of base directories that the game is currently
+ * using.
+ */
+void cf_AddDefaultBaseDirectories();
+
 /* After you call this function, you must call cf_AddBaseDirectory() at least
  * once before you use anything else from this module.
  */
