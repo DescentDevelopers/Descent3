@@ -32,6 +32,10 @@ project(Descent3
   VERSION 1.6.0
 )
 
+if(POLICY CMP0177) # install() DESTINATION path are normalized
+  cmake_policy(SET CMP0177 NEW)
+endif()
+
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
@@ -134,6 +138,7 @@ endif()
 add_custom_target(get_git_hash ALL)
 
 add_custom_command(
+  POST_BUILD
   TARGET get_git_hash
   COMMAND ${CMAKE_COMMAND}
     -D SOURCE_DIR=${PROJECT_SOURCE_DIR}
