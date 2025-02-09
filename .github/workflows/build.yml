@@ -98,8 +98,8 @@ jobs:
 
       - name: Customize vcpkg to create macOS universal binary
         if: ${{ matrix.os.preset == 'mac' }}
+        working-directory: ${{ env.VCPKG_ROOT }}/triplets
         run: |
-          cd "$VCPKG_ROOT"/triplets
           cp ./arm64-osx.cmake ./community/universal-osx.cmake
           sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
 
