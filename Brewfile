@@ -1,14 +1,14 @@
 # Homebrew dependencies to build Descent3
 
-brew "glm"
-brew "plog"
+# brew "glm"
+# brew "plog"
 
 # SDL
-brew "sdl2"
+# brew "sdl2"
 
 brew "cmake"
-brew "googletest"
+# brew "googletest"
 brew "ninja"
 
 # zlib
-brew "zlib"
+# brew "zlib"
