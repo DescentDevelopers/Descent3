@@ -52,6 +52,7 @@ The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja
 Once CMake finishes, the built files will be put in `builds\win\build\Debug` or `builds\win\build\Release`.
 
 ## Building - macOS
+
 1. **Install the prerequisite build tools.**
 
     * Make sure that [Xcode](https://developer.apple.com/xcode) is installed.
@@ -59,17 +60,19 @@ Once CMake finishes, the built files will be put in `builds\win\build\Debug` or 
 
 2. **Acquire the library dependencies.**
 
-    * If you would like to use vcpkg:
+    * To install the library dependencies:
         ```sh
         git clone https://github.com/microsoft/vcpkg
         export VCPKG_ROOT="$PWD/vcpkg"
         ```
         **NOTE:**
         You will need `$VCPKG_ROOT` defined in the environment for all build runs. It is a good idea to set this in your `.bashrc` or equivalent.
-    * If you would like to manage the code dependencies yourself:
-        ```sh
-        brew bundle install
-        ```
+    * Create a custom VCPKG triplet that allows the mac build to run and create a universal binary.
+      ```sh
+      cd "$VCPKG_ROOT"/triplets
+      cp ./arm64-osx.cmake ./community/universal-osx.cmake
+      sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
+      ```
 
 3. **Clone the Descent3 source code.**
 
@@ -79,13 +82,17 @@ Once CMake finishes, the built files will be put in `builds\win\build\Debug` or 
 
 4. **Build Descent3.**
 
-    ```sh
-    cd Descent3
-    brew bundle install
-    cmake --preset mac
-    cmake --build --preset mac --config [Debug|Release]
-    ```
-    See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
+    * Install the build tools.
+      ```sh
+      brew bundle install
+      ```
+    * Compile Descent 3.
+      ```sh
+      cd Descent3
+      cmake --preset mac
+      cmake --build --preset mac --config [Debug|Release]
+      ```
+      See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
 Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or `builds/mac/build/Release`.
 
