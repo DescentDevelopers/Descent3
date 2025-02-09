@@ -59,21 +59,21 @@ jobs:
         if: ${{ matrix.os.preset == 'mac' }}
         run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
 
-      - name: Install macOS ARM dependencies
+      - name: Install macOS dependencies
         if: ${{ matrix.os.preset == 'mac' }}
         run: brew bundle install
 
-      - name: Install Intel version of Brew
-        if: ${{ matrix.os.preset == 'mac' }}
-        shell: arch -x86_64 /bin/bash -e {0}
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          eval "$(/usr/local/bin/brew shellenv)"  # makes the Intel version of Brew and its installs are enshrined as the default 
-          echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH so the above step persists into the future steps
-
-      - name: Install macOS Intel dependencies
-        if: ${{ matrix.os.preset == 'mac' }}
-        run: brew bundle install
+#      - name: Install Intel version of Brew
+#        if: ${{ matrix.os.preset == 'mac' }}
+#        shell: arch -x86_64 /bin/bash -e {0}
+#        run: |
+#          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#          eval "$(/usr/local/bin/brew shellenv)"  # makes the Intel version of Brew and its installs are enshrined as the default
+#          echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH so the above step persists into the future steps
+#
+#      - name: Install macOS Intel dependencies
+#        if: ${{ matrix.os.preset == 'mac' }}
+#        run: brew bundle install
 
       - name: Install Linux dependencies
         if: ${{ matrix.os.runner == 'ubuntu-latest' }}
@@ -98,7 +98,6 @@ jobs:
            arch: win64
 
       - uses: lukka/run-vcpkg@v11
-        if: ${{ matrix.os.preset != 'mac' }}
         with:
           vcpkgJsonGlob: vcpkg.json
 
@@ -108,6 +107,13 @@ jobs:
           cmake --preset linux
           ninja -f build-${{ matrix.build_type }}.ninja -C builds/linux/ HogMaker
           cmake --preset linux-cross-arm64 -DHogMaker_DIR=$PWD/builds/linux/ -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
+
+      - name: Customize vcpkg to create macOS universal binary
+        if: ${{ matrix.os.preset == 'mac' }}
+        run: |
+          cd "$VCPKG_ROOT"/triplets
+          cp ./arm64-osx.cmake ./community/universal-osx.cmake
+          sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
 
       - name: Configure CMake
         if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
