@@ -24,16 +24,11 @@ jobs:
             cc: cl
             cxx: cl
             name: Windows-x64
-          - runner: macos-14  # Apple Silicon, but we cross-compile
+          - runner: macos-14  # Apple Silicon, but we make a universal binary
             preset: mac
             cc: cc
             cxx: c++
-            name: macOS-Intel
-          - runner: macos-14  # Apple Silicon
-            preset: mac
-            cc: cc
-            cxx: c++
-            name: macOS-ARM
+            name: macOS
           - runner: ubuntu-latest
             preset: linux
             cc: gcc
@@ -61,16 +56,8 @@ jobs:
           submodules: recursive
 
       - name: Install macOS Rosetta 2
-        if: ${{ matrix.os.name == 'macOS-Intel' }}
+        if: ${{ matrix.os.preset == 'mac' }}
         run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-
-      - name: Install Intel version of Brew
-        if: ${{ matrix.os.name == 'macOS-Intel' }}
-        shell: arch -x86_64 /bin/bash -e {0}
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          eval "$(/usr/local/bin/brew shellenv)"  # makes the Intel version of Brew and its installs are enshrined as the default 
-          echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH so the above step persists into the future steps
 
       - name: Install macOS dependencies
         if: ${{ matrix.os.preset == 'mac' }}
@@ -108,6 +95,13 @@ jobs:
           cmake --preset linux
           ninja -f build-${{ matrix.build_type }}.ninja -C builds/linux/ HogMaker
           cmake --preset linux-cross-arm64 -DHogMaker_DIR=$PWD/builds/linux/ -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
+
+      - name: Customize vcpkg to create macOS universal binary
+        if: ${{ matrix.os.preset == 'mac' }}
+        working-directory: ${{ env.VCPKG_ROOT }}/triplets
+        run: |
+          cp ./arm64-osx.cmake ./community/universal-osx.cmake
+          sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
 
       - name: Configure CMake
         if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
