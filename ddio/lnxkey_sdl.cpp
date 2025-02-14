@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -68,7 +68,6 @@
 
 #include "ddio.h"
 #include "pserror.h"
-
 
 extern volatile struct tLnxKeys {
   union {
@@ -345,9 +344,10 @@ bool sdlKeyFilter(const SDL_Event *event) {
   if ((event->type != SDL_EVENT_KEY_UP) && (event->type != SDL_EVENT_KEY_DOWN))
     return true;
 
-  switch (event->key.down) {
-  case true:
-    if (event->key.repeat) break;  // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
+  if (event->key.down) {
+    if (event->key.repeat) {
+      return false; // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
+    }
     kc = sdlkeycode_to_keycode(event->key.key);
     if (event->key.mod & SDL_KMOD_CTRL) {
       extern SDL_Window *GSDLWindow;
@@ -377,17 +377,15 @@ bool sdlKeyFilter(const SDL_Event *event) {
     LKeys[kc].down_time = timer_GetTime();
     LKeys[kc].status = true;
     ddio_UpdateKeyState(kc, true);
-    break;
 
-  case false:
+  } else {
     kc = sdlkeycode_to_keycode(event->key.key);
     if (LKeys[kc].status) {
       LKeys[kc].up_time = timer_GetTime();
       LKeys[kc].status = false;
       ddio_UpdateKeyState(kc, false);
     } // if
-    break;
-  } // switch
+  }
 
   return false;
 } // sdlKeyFilter
