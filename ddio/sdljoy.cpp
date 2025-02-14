@@ -319,7 +319,7 @@ static int joyGetNumDevs(void) {
   int found = 0;
 
   int joyCount = 0;
-  SDL_GetJoysticks(&joyCount);
+  SDL_JoystickID *joysticks = SDL_GetJoysticks(&joyCount);
 
   // rcg06182000 add support for specific joydev.
   int rc = FindArgChar("-joystick", 'j');
@@ -337,6 +337,7 @@ static int joyGetNumDevs(void) {
   }
 
   LOG_INFO.printf("Joystick: Found %d joysticks.", found);
+  SDL_free(joysticks);
   return found;
 }
 

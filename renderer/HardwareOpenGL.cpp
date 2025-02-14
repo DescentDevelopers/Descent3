@@ -423,12 +423,13 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
       } else {
         int arg_index = atoi(arg_index_str);
         int display_count = 0;
-        SDL_GetDisplays(&display_count);
+        SDL_DisplayID* displays = SDL_GetDisplays(&display_count);
         if ((arg_index < 0) || (arg_index >= display_count)) {
           LOG_WARNING.printf( "Parameter for -display must be in the range 0..%i", display_count-1 );
         } else {
           display = arg_index;
         }
+        SDL_free(displays);
       }
     }
 
