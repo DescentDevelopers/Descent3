@@ -343,7 +343,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
   uint8_t kc = 0;
 
   if ((event->type != SDL_EVENT_KEY_UP) && (event->type != SDL_EVENT_KEY_DOWN))
-    return (1);
+    return true;
 
   switch (event->key.down) {
   case true:
@@ -356,7 +356,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
         bool grab = !ddio_MouseGetGrab();
         ddio_MouseSetGrab(grab);
         SDL_SetWindowRelativeMouseMode(GSDLWindow, grab);
-        return 0;
+        return false;
       } // switch
     }   // if
 
@@ -370,7 +370,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
           flags |= SDL_WINDOW_FULLSCREEN;
         }
         SDL_SetWindowFullscreen(GSDLWindow, flags);
-        return(0);
+        return false;
       } // if
     }   // else if
 
@@ -389,7 +389,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
     break;
   } // switch
 
-  return (0);
+  return false;
 } // sdlKeyFilter
 
 bool ddio_sdl_InternalKeyInit(ddio_init_info *init_info) {

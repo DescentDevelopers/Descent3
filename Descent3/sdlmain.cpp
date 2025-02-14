@@ -175,12 +175,11 @@ public:
   }
 };
 
-// TODO: Make all functions actually return bool
-int sdlKeyFilter(const SDL_Event *event);
-int sdlMouseButtonUpFilter(const SDL_Event *event);
-int sdlMouseButtonDownFilter(const SDL_Event *event);
-int sdlMouseWheelFilter(const SDL_Event *event);
-int sdlMouseMotionFilter(const SDL_Event *event);
+bool sdlKeyFilter(const SDL_Event *event);
+bool sdlMouseButtonUpFilter(const SDL_Event *event);
+bool sdlMouseButtonDownFilter(const SDL_Event *event);
+bool sdlMouseWheelFilter(const SDL_Event *event);
+bool sdlMouseMotionFilter(const SDL_Event *event);
 
 bool SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
   switch (event->type) {
