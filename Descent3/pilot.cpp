@@ -2525,7 +2525,7 @@ bool PltSelectShip(pilot *Pilot) {
             FreeVClip(handle);
             break;
           }
-          std::filesystem::path newf = std::filesystem::path(LocalCustomGraphicsDir) / tempf.filename().replace_extension(".oaf");
+          std::filesystem::path newf = LocalCustomGraphicsDir / tempf.filename().replace_extension(".oaf");
 
           if (SaveVClip(newf, handle) == 0) {
             // error saving
@@ -2580,7 +2580,7 @@ bool PltSelectShip(pilot *Pilot) {
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.wav"}, PFDF_FILEMUSTEXIST)) {
         std::filesystem::path dpath;
         std::filesystem::path filename = path.filename().replace_extension(".osf");
-        std::filesystem::path tempfile = std::filesystem::path(LocalCustomSoundsDir) / filename;
+        std::filesystem::path tempfile = LocalCustomSoundsDir / filename;
 
         // import the sound
         LOG_INFO.printf("Importing: '%s'->'%s'", path.u8string().c_str(), tempfile.u8string().c_str());

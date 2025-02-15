@@ -8201,20 +8201,20 @@ void MultiSendRequestPlayTaunt(int index) {
     return;
 
   // make sure an audio file exists there
-  char audio_file[_MAX_PATH];
+  std::filesystem::path audio_file;
 
   switch (index) {
   case 0:
-    ddio_MakePath(audio_file, LocalCustomSoundsDir, NetPlayers[Player_num].voice_taunt1, NULL);
+    audio_file = LocalCustomSoundsDir / NetPlayers[Player_num].voice_taunt1;
     break;
   case 1:
-    ddio_MakePath(audio_file, LocalCustomSoundsDir, NetPlayers[Player_num].voice_taunt2, NULL);
+    audio_file = LocalCustomSoundsDir / NetPlayers[Player_num].voice_taunt2;
     break;
   case 2:
-    ddio_MakePath(audio_file, LocalCustomSoundsDir, NetPlayers[Player_num].voice_taunt3, NULL);
+    audio_file = LocalCustomSoundsDir / NetPlayers[Player_num].voice_taunt3;
     break;
   case 3:
-    ddio_MakePath(audio_file, LocalCustomSoundsDir, NetPlayers[Player_num].voice_taunt4, NULL);
+    audio_file = LocalCustomSoundsDir / NetPlayers[Player_num].voice_taunt4;
     break;
   }
 
