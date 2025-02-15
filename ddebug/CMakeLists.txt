@@ -6,7 +6,7 @@ set(HEADERS
 set(CPPS
   debug.cpp
   error.cpp
-  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
+  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD,Android>:
     lnxdebug.cpp
     lnxmono.cpp
   >
