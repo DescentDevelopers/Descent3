@@ -460,9 +460,10 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
       LOG_ERROR.printf("OpenGL: SDL window creation failed: %s", SDL_GetError());
       return 0;
     }
-    if (FindArgChar("-nomousegrab", 'm')) {
-      SDL_SetWindowRelativeMouseMode(GSDLWindow, false);
-    }
+
+    bool grabMouse = FindArgChar("-nomousegrab", 'm') == 0;
+    SDL_SetWindowRelativeMouseMode(GSDLWindow, grabMouse);
+
     SDL_SetWindowFullscreen(GSDLWindow, fullscreen);
   } else {
     SDL_SetWindowSize(GSDLWindow, winw, winh);
