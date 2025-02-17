@@ -80,6 +80,7 @@ struct Renderer {
     // these are effectively just constants, for now
     shader_.setUniform1i("u_texture0", 0);
     shader_.setUniform1i("u_texture1", 1);
+    this->setGammaCorrection(2.2);
   }
 
   /**
@@ -136,6 +137,10 @@ struct Renderer {
   void setFogBorders(float nearz, float farz) {
     shader_.setUniform1f("u_fog_start", nearz);
     shader_.setUniform1f("u_fog_end", farz);
+  }
+
+  void setGammaCorrection(float gamma) {
+    shader_.setUniform1f("u_gamma", gamma);
   }
 
   void setFogColor(ddgr_color color) {
