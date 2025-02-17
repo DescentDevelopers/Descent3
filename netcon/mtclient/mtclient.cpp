@@ -421,7 +421,6 @@
 #include "mt_net.h"
 #include "mtgametrack.h"
 #include "module.h"
-#include "inetgetfile.h"
 #include "chat_api.h"
 #include "mtstrings.h"
 
@@ -449,8 +448,6 @@
 
 #include "mtclient.h"
 #include "mtpilottrack.h"
-
-#include "DLLUiItems.h"
 
 char Ourlobby[50] = "";
 bool Login_aborted = false;
@@ -660,7 +657,7 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 #ifdef MACINTOSH
   InitOTSockets();
 #endif
-#include "mdllinit.h"
+  CommonDLLInit(api_func);
   DLLPXOPort = (uint16_t)((size_t)API.vp[32] & 0xffff);
   DLLmprintf(0, "Inside DLLMultiInit...\n");
   *DLLUse_DirectPlay = false;

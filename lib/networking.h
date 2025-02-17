@@ -216,7 +216,7 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_
 #define BOOL bool
 #define SOCKADDR_IN sockaddr_in
 #define SOCKADDR sockaddr
-#define INVALID_SOCKET -1
+#define INVALID_SOCKET (-1)
 
 #ifdef TRUE
 #undef TRUE
@@ -228,7 +228,7 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_
 #endif
 #define FALSE false
 #define HOSTENT struct hostent
-#define SOCKET_ERROR -1
+#define SOCKET_ERROR (-1)
 
 // Winsock = sockets error translation
 #define WSAEWOULDBLOCK EWOULDBLOCK

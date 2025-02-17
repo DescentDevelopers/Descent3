@@ -119,25 +119,29 @@
  */
 
 #include <cstdio>
+#include <future>
 
-#include "pstypes.h"
 #include "mem.h"
 #include "args.h"
 #include "descent.h"
+#include "httpclient.h"
 #include "networking.h"
 #include "multi.h"
 #include "log.h"
 #include "ui.h"
 #include "newui.h"
 #include "ddio.h"
+#include "pstring.h"
 #include "stringtable.h"
-#include "multi_dll_mgr.h"
 #include "grtext.h"
 #include "Mission.h"
 #include "mission_download.h"
+#include "multi_dll_mgr.h"
 #include "pserror.h"
 #include "renderer.h"
 #include "unzip.h"
+
+#define MOD_URL_BASEPATH "http://www.descent3.com/mods/" // WAS: "http://www.pxo.net/descent3/mods/"
 
 int Got_url;
 msn_urls msn_URL = {"", {"", "", "", "", ""}};
@@ -146,7 +150,7 @@ msn_urls Net_msn_URLs;
 extern char Proxy_server[200];
 extern int16_t Proxy_port;
 
-int msn_ExtractZipFile(char *zipfilename, char *mn3name);
+int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name);
 
 // Request a URL structure from a server containing a list of download locations
 // For the current mission being played
@@ -301,35 +305,25 @@ int msn_ShowDownloadChoices(msn_urls *urls) {
 
 #define MSN_MAX_STRING_LEN 100
 
-// Start downloading the file at the url specifies, showing a status screen
-// Return codes:
-// 0 Failed or cancelled
-// 1 Success
-int msn_DownloadWithStatus(char *url, char *filename) {
-  return 0;
-  /*
-  char qualfile[_MAX_PATH*2];
+bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filename) {
   float last_refresh;
-  int total_bytes = 0;
-  int received_bytes = 0;
+  uint64_t total_bytes = 0;
+  uint64_t received_bytes = 0;
   int time_elapsed = 0;
   int time_remain = 0;
   int xfer_rate = 0;
   int starttime = timer_GetTime();
   bool file_is_zip = false;
 
-  //check to see if we are downloading a zip file
-  char *url_ptr;
-  url_ptr = url + strlen(url);
-  while(url_ptr > url && *url_ptr!='.') url_ptr--;
-  if(*url_ptr=='.')
-  {
-          //now see if the rest of the extension is ZIP
-          if(!stricmp(url_ptr,".ZIP"))
-          {
-                  mprintf(0,"We're downloading a zip file!!!\n");
-                  file_is_zip = true;
-          }
+  std::vector<std::string> url_parts = StringSplit(url, "/");
+  if (!(stricmp("http:", url_parts.front().c_str()) == 0 || stricmp("https:", url_parts.front().c_str()) == 0)) {
+    LOG_WARNING.printf("'%s' scheme is not supported, no download!", url_parts.front().c_str());
+    return false;
+  }
+  std::filesystem::path download_file = std::filesystem::path(url_parts.back());
+  if (stricmp(download_file.extension().u8string().c_str(), ".zip") == 0) {
+    LOG_DEBUG << "We're downloading a zip file!!!";
+    file_is_zip = true;
   }
 
   char fmturl[MSN_MAX_STRING_LEN];
@@ -339,181 +333,182 @@ int msn_DownloadWithStatus(char *url, char *filename) {
   char fmttimer[MSN_MAX_STRING_LEN];
   char fmtrate[MSN_MAX_STRING_LEN];
 
-  sprintf(fmturl,DOWNLOAD_STATUS_URL_TEXT,url);
-  msn_ClipURLToWidth(MSN_DWNLD_STATUS_W-(MSN_COL_1+MSN_BORDER_W),fmturl);
-  sprintf(fmtrcvd,DOWNLOAD_STATUS_RCVD_TEXT,received_bytes);
-  sprintf(fmttotal,DOWNLOAD_STATUS_TOTAL_TEXT,total_bytes);
-  sprintf(fmtelaps,DOWNLOAD_STATUS_ELAPS_TEXT,msn_SecondsToString(time_elapsed));
-  sprintf(fmttimer,DOWNLOAD_STATUS_TIME_R_TEXT,msn_SecondsToString(time_remain));
-  sprintf(fmtrate,DOWNLOAD_STATUS_XFERRATE_TEXT,xfer_rate);
+  sprintf(fmturl, DOWNLOAD_STATUS_URL_TEXT, url);
+  msn_ClipURLToWidth(MSN_DWNLD_STATUS_W - (MSN_COL_1 + MSN_BORDER_W), fmturl);
+  sprintf(fmtrcvd, DOWNLOAD_STATUS_RCVD_TEXT, received_bytes);
+  sprintf(fmttotal, DOWNLOAD_STATUS_TOTAL_TEXT, total_bytes);
+  sprintf(fmtelaps, DOWNLOAD_STATUS_ELAPS_TEXT, msn_SecondsToString(time_elapsed));
+  sprintf(fmttimer, DOWNLOAD_STATUS_TIME_R_TEXT, msn_SecondsToString(time_remain));
+  sprintf(fmtrate, DOWNLOAD_STATUS_XFERRATE_TEXT, xfer_rate);
 
-  if(file_is_zip)
-  {
-          char fname[_MAX_FNAME];
-          char *s_ptr,*d_ptr;
-          s_ptr = filename;
-          d_ptr = fname;
-          while(*s_ptr && *s_ptr!='.'){ *d_ptr = *s_ptr; s_ptr++; d_ptr++;}
-          *d_ptr = '\0';
-          strcat(fname,".zip");
-          ddio_MakePath(qualfile,D3MissionsDir,fname,NULL);
-  }else
-  {
-          ddio_MakePath(qualfile,D3MissionsDir,filename,NULL);
-  }
-  InetGetFile *getmsnfile;
-  if(Proxy_server[0])
-  {
-          getmsnfile = new InetGetFile(url,qualfile,Proxy_server,Proxy_port);
-  }
-  else
-  {
-          getmsnfile = new InetGetFile(url,qualfile);
+  std::filesystem::path qualfile = std::filesystem::path(D3MissionsDir) / filename;
+  if (file_is_zip) {
+    qualfile.replace_extension(".zip");
   }
 
-  UITextItem title_text(TXT_MD_DOWNLOADSTATUS,UICOL_TEXT_NORMAL);
+  std::string download_url = StringJoin(std::vector<std::string>(url_parts.begin(), url_parts.begin() + 3), "/");
+
+  UITextItem title_text(TXT_MD_DOWNLOADSTATUS, UICOL_TEXT_NORMAL);
 
   UIHotspot cancel_hot;
 
-  UITextItem download_text(fmturl,UICOL_TEXT_NORMAL);;
-  UITextItem rcvd_text(fmtrcvd,UICOL_TEXT_NORMAL);
-  UITextItem total_text(fmttotal,UICOL_TEXT_NORMAL);
-  UITextItem elaps_text(fmtelaps,UICOL_TEXT_NORMAL);
-  UITextItem time_r_text(fmttimer,UICOL_TEXT_NORMAL);
-  UITextItem rate_text(fmtrate,UICOL_TEXT_NORMAL);
+  UITextItem download_text(fmturl, UICOL_TEXT_NORMAL);
+
+  UITextItem rcvd_text(fmtrcvd, UICOL_TEXT_NORMAL);
+  UITextItem total_text(fmttotal, UICOL_TEXT_NORMAL);
+  UITextItem elaps_text(fmtelaps, UICOL_TEXT_NORMAL);
+  UITextItem time_r_text(fmttimer, UICOL_TEXT_NORMAL);
+  UITextItem rate_text(fmtrate, UICOL_TEXT_NORMAL);
 
   NewUIGameWindow menu_wnd;
 
   UIText texts[10];
   UIProgress progress;
 
-  int exit_menu=0;
-  int ret=0;
+  bool exit_menu = false;
+  int ret = 0;
 
-  menu_wnd.Create(10,10,MSN_DWNLD_STATUS_W,MSN_DWNLD_STATUS_H,UIF_PROCESS_ALL | UIF_CENTER);
-  texts[0].Create (&menu_wnd,&title_text,0,8,UIF_CENTER);
-  texts[1].Create (&menu_wnd,&download_text,MSN_COL_1,MSN_ROW_1,0);
-  texts[2].Create (&menu_wnd,&rcvd_text,MSN_COL_1,MSN_ROW_2,0);
-  texts[3].Create (&menu_wnd,&total_text,MSN_COL_2,MSN_ROW_2,0);
-  texts[4].Create (&menu_wnd,&elaps_text,MSN_COL_1,MSN_ROW_3,0);
-  texts[5].Create (&menu_wnd,&time_r_text,MSN_COL_2,MSN_ROW_3,0);
-  texts[6].Create (&menu_wnd,&rate_text,MSN_COL_1,MSN_ROW_4,0);
+  menu_wnd.Create(10, 10, MSN_DWNLD_STATUS_W, MSN_DWNLD_STATUS_H, UIF_PROCESS_ALL | UIF_CENTER);
+  texts[0].Create(&menu_wnd, &title_text, 0, 8, UIF_CENTER);
+  texts[1].Create(&menu_wnd, &download_text, MSN_COL_1, MSN_ROW_1, 0);
+  texts[2].Create(&menu_wnd, &rcvd_text, MSN_COL_1, MSN_ROW_2, 0);
+  texts[3].Create(&menu_wnd, &total_text, MSN_COL_2, MSN_ROW_2, 0);
+  texts[4].Create(&menu_wnd, &elaps_text, MSN_COL_1, MSN_ROW_3, 0);
+  texts[5].Create(&menu_wnd, &time_r_text, MSN_COL_2, MSN_ROW_3, 0);
+  texts[6].Create(&menu_wnd, &rate_text, MSN_COL_1, MSN_ROW_4, 0);
 
-  UITextItem cancel_off(TXT_CANCEL,UICOL_HOTSPOT_LO,UIALPHA_HOTSPOT_LO);
-  UITextItem cancel_on(TXT_CANCEL,UICOL_HOTSPOT_HI,UIALPHA_HOTSPOT_HI);
+  UITextItem cancel_off(TXT_CANCEL, UICOL_HOTSPOT_LO, UIALPHA_HOTSPOT_LO);
+  UITextItem cancel_on(TXT_CANCEL, UICOL_HOTSPOT_HI, UIALPHA_HOTSPOT_HI);
 
-  progress.Create(&menu_wnd,MSN_COL_1,MSN_ROW_5,MSN_DWNLD_STATUS_W-(MSN_BORDER_W*2),35,0);
+  progress.Create(&menu_wnd, MSN_COL_1, MSN_ROW_5, MSN_DWNLD_STATUS_W - (MSN_BORDER_W * 2), 35, 0);
 
   int cancel_x = 0;
 
-  cancel_hot.Create(&menu_wnd, UID_CANCEL, KEY_ESC, &cancel_off,&cancel_on,
-                                                                  cancel_x, MSN_DWNLD_STATUS_H - OKCANCEL_YOFFSET,
-  0,0,UIF_FIT|UIF_CENTER); menu_wnd.Open();
+  cancel_hot.Create(&menu_wnd, UID_CANCEL, KEY_ESC, &cancel_off, &cancel_on, cancel_x,
+                    MSN_DWNLD_STATUS_H - OKCANCEL_YOFFSET, 0, 0, UIF_FIT | UIF_CENTER);
+  menu_wnd.Open();
 
-  last_refresh = timer_GetTime()-MSN_REFRESH_INTERVAL;
+  last_refresh = timer_GetTime() - MSN_REFRESH_INTERVAL;
 
-  while (!exit_menu)
-  {
-          int res;
+  std::string download_uri = "/" + StringJoin(std::vector<std::string>(url_parts.begin() + 3, url_parts.end()), "/");
 
-          if((timer_GetTime()-last_refresh)>MSN_REFRESH_INTERVAL)
-          {
-
-                  //Update the dialog
-                  //mprintf(0,"!");
-
-                  if(getmsnfile->IsFileReceived())
-                  {
-                          //File transfer successful!
-                          mprintf(0,"Succesfully received the file!\n");
-                          exit_menu = 1;
-
-                          if(file_is_zip)
-                          {
-                                  // now we gotta handle the zip file
-                                  ret = msn_ExtractZipFile(qualfile,filename);
-                          }else
-                          {
-                                  ret = 1;
-                          }
-                  }
-
-                  if(getmsnfile->IsFileError())
-                  {
-                          //File transfer Error!
-                          DoMessageBox(TXT_ERROR,TXT_FMTCANTDNLD,MSGBOX_OK);
-                          //Delete the file that didn't finish!
-                          ddio_DeleteFile(qualfile);
-                          mprintf(0,"Couldn't download the file! Error: %d\n",getmsnfile->GetErrorCode());
-                          exit_menu = 1;
-                          ret = 0;
-                  }
-
-                  last_refresh = timer_GetTime();
-                  received_bytes = getmsnfile->GetBytesIn();
-                  total_bytes = getmsnfile->GetTotalBytes();
-
-                  time_elapsed = timer_GetTime()-starttime;
-
-                  if(total_bytes)
-                  {
-                          time_remain = ((float)(total_bytes-received_bytes))/((float)(received_bytes/time_elapsed));
-                  }
-                  if(time_elapsed&&received_bytes)
-                  {
-                          xfer_rate = ((float)(received_bytes/time_elapsed));
-                  }
-                  texts[1].Destroy();
-                  texts[2].Destroy();
-                  texts[3].Destroy();
-                  texts[4].Destroy();
-                  texts[5].Destroy();
-                  texts[6].Destroy();
-
-                  sprintf(fmturl,DOWNLOAD_STATUS_URL_TEXT,url);
-                  msn_ClipURLToWidth(MSN_DWNLD_STATUS_W-(MSN_COL_1+MSN_BORDER_W),fmturl);
-                  sprintf(fmtrcvd,DOWNLOAD_STATUS_RCVD_TEXT,received_bytes);
-                  sprintf(fmttotal,DOWNLOAD_STATUS_TOTAL_TEXT,total_bytes);
-                  sprintf(fmtelaps,DOWNLOAD_STATUS_ELAPS_TEXT,msn_SecondsToString(time_elapsed));
-                  sprintf(fmttimer,DOWNLOAD_STATUS_TIME_R_TEXT,msn_SecondsToString(time_remain));
-                  msn_ClipURLToWidth(MSN_DWNLD_STATUS_W-(MSN_COL_2+MSN_BORDER_W),fmttimer);
-                  sprintf(fmtrate,DOWNLOAD_STATUS_XFERRATE_TEXT,xfer_rate);
-
-                  download_text = UITextItem (fmturl,UICOL_TEXT_NORMAL);;
-                  rcvd_text = UITextItem (fmtrcvd,UICOL_TEXT_NORMAL);
-                  total_text = UITextItem (fmttotal,UICOL_TEXT_NORMAL);
-                  elaps_text = UITextItem (fmtelaps,UICOL_TEXT_NORMAL);
-                  time_r_text = UITextItem (fmttimer,UICOL_TEXT_NORMAL);
-                  rate_text = UITextItem (fmtrate,UICOL_TEXT_NORMAL);
-
-                  texts[1].Create (&menu_wnd,&download_text,MSN_COL_1,MSN_ROW_1,0);
-                  texts[2].Create (&menu_wnd,&rcvd_text,MSN_COL_1,MSN_ROW_2,0);
-                  texts[3].Create (&menu_wnd,&total_text,MSN_COL_2,MSN_ROW_2,0);
-                  texts[4].Create (&menu_wnd,&elaps_text,MSN_COL_1,MSN_ROW_3,0);
-                  texts[5].Create (&menu_wnd,&time_r_text,MSN_COL_2,MSN_ROW_3,0);
-                  texts[6].Create (&menu_wnd,&rate_text,MSN_COL_1,MSN_ROW_4,0);
-
-                  progress.Update(((float)((float)received_bytes)/((float)total_bytes)));
-                  //mprintf(0,"@");
-          }
-          //mprintf(0,"-In");
-          res = PollUI();
-          //mprintf(0,"-Out");
-          switch(res)
-          {
-          case UID_CANCEL:
-                  getmsnfile->AbortGet();
-                  ddio_DeleteFile(qualfile);
-                  exit_menu = 1;
-                  ret = 0;
-                  break;
-          }
+  D3::HttpClient http_client(download_url);
+  if (Proxy_server[0]) {
+    http_client.SetProxy(Proxy_server, Proxy_port);
   }
+
+  httplib::Result (D3::HttpClient::*hcg)(const std::string &, const httplib::ContentReceiver &,
+                                         const httplib::Progress &) = &D3::HttpClient::Get;
+  std::fstream in(qualfile, std::ios::binary | std::ios::trunc | std::ios::out);
+  auto async_task = std::async(
+      std::launch::async, hcg, &http_client, download_uri,
+      [&in](const char *buf, size_t len) {
+        // Content receiver
+        in.write(buf, len);
+        return true;
+      },
+      [&received_bytes, &total_bytes, &exit_menu](uint64_t len, uint64_t total) {
+        // Progress updater
+        received_bytes = len;
+        total_bytes = total;
+        return !exit_menu; // return false on cancel
+      });
+
+  while (!exit_menu) {
+    D3::ChronoTimer::SleepMS(500);
+    // We cannot check status of async process until we get() it, so let's assume that we're done when
+    // received_bytes equals total_bytes on progress updater. If both are zero, then something bad happen;
+    // check result.error() in this case.
+    if (received_bytes == total_bytes) {
+      auto result = async_task.get();
+      if (result.error() == httplib::Error::Success) {
+        if (result->status == 200) {
+          LOG_INFO.printf("Successfully received the file (%d bytes)!", total_bytes);
+          in.close();
+          exit_menu = true;
+
+          if (file_is_zip) {
+            // now we gotta handle the zip file
+            ret = msn_ExtractZipFile(qualfile.u8string().c_str(), filename);
+          } else {
+            ret = 1;
+          }
+        } else {
+          // File transfer Error!
+          LOG_WARNING.printf("Couldn't download the file %s! Response from server: \"%s\" (%d)", url,
+                             httplib::status_message(result->status), result->status);
+          in.close();
+          std::filesystem::remove(qualfile);
+
+          DoMessageBox(TXT_ERROR, TXT_FMTCANTDNLD, MSGBOX_OK); // TODO: add error message from server here
+          exit_menu = true;
+          ret = 0;
+        }
+      } else {
+        // We failed, and this is not our fault!
+        LOG_WARNING << "Couldn't download the file! Error from httpclient: " << result.error();
+        in.close();
+        std::filesystem::remove(qualfile);
+
+        DoMessageBox(TXT_ERROR, TXT_FMTCANTDNLD, MSGBOX_OK); // TODO: add error message from httpclient here
+        exit_menu = true;
+        ret = 0;
+      }
+    }
+
+    last_refresh = timer_GetTime();
+    time_elapsed = timer_GetTime() - starttime;
+
+    if (total_bytes) {
+      time_remain = ((float)(total_bytes - received_bytes)) / ((float)(received_bytes / time_elapsed));
+    }
+    if (time_elapsed && received_bytes) {
+      xfer_rate = ((float)(received_bytes / time_elapsed));
+    }
+    texts[1].Destroy();
+    texts[2].Destroy();
+    texts[3].Destroy();
+    texts[4].Destroy();
+    texts[5].Destroy();
+    texts[6].Destroy();
+
+    sprintf(fmturl, DOWNLOAD_STATUS_URL_TEXT, url);
+    msn_ClipURLToWidth(MSN_DWNLD_STATUS_W - (MSN_COL_1 + MSN_BORDER_W), fmturl);
+    sprintf(fmtrcvd, DOWNLOAD_STATUS_RCVD_TEXT, received_bytes);
+    sprintf(fmttotal, DOWNLOAD_STATUS_TOTAL_TEXT, total_bytes);
+    sprintf(fmtelaps, DOWNLOAD_STATUS_ELAPS_TEXT, msn_SecondsToString(time_elapsed));
+    sprintf(fmttimer, DOWNLOAD_STATUS_TIME_R_TEXT, msn_SecondsToString(time_remain));
+    msn_ClipURLToWidth(MSN_DWNLD_STATUS_W - (MSN_COL_2 + MSN_BORDER_W), fmttimer);
+    sprintf(fmtrate, DOWNLOAD_STATUS_XFERRATE_TEXT, xfer_rate);
+
+    download_text = UITextItem(fmturl, UICOL_TEXT_NORMAL);
+
+    rcvd_text = UITextItem(fmtrcvd, UICOL_TEXT_NORMAL);
+    total_text = UITextItem(fmttotal, UICOL_TEXT_NORMAL);
+    elaps_text = UITextItem(fmtelaps, UICOL_TEXT_NORMAL);
+    time_r_text = UITextItem(fmttimer, UICOL_TEXT_NORMAL);
+    rate_text = UITextItem(fmtrate, UICOL_TEXT_NORMAL);
+
+    texts[1].Create(&menu_wnd, &download_text, MSN_COL_1, MSN_ROW_1, 0);
+    texts[2].Create(&menu_wnd, &rcvd_text, MSN_COL_1, MSN_ROW_2, 0);
+    texts[3].Create(&menu_wnd, &total_text, MSN_COL_2, MSN_ROW_2, 0);
+    texts[4].Create(&menu_wnd, &elaps_text, MSN_COL_1, MSN_ROW_3, 0);
+    texts[5].Create(&menu_wnd, &time_r_text, MSN_COL_2, MSN_ROW_3, 0);
+    texts[6].Create(&menu_wnd, &rate_text, MSN_COL_1, MSN_ROW_4, 0);
+
+    progress.Update(((float)((float)received_bytes) / ((float)total_bytes)));
+
+    if (PollUI() == UID_CANCEL) {
+      std::filesystem::remove(qualfile);
+      exit_menu = true;
+      ret = 0;
+    }
+  }
+
   menu_wnd.Close();
   menu_wnd.Destroy();
-  delete getmsnfile;
-  return ret;
-  */
+
+  return (ret > 0);
 }
 
 void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
@@ -689,9 +684,9 @@ void _get_zipfilename(char *output, char *directory, char *zipfilename) {
 
 // return 0 on failure
 // return 1 on success
-int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
+int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name) {
 
-  LOG_DEBUG.printf("Extracting ZIP File (%s) to missions directory", zipfilename);
+  LOG_DEBUG.printf("Extracting ZIP File (%s) to missions directory", zipfilename.u8string().c_str());
   if (!cfexist(zipfilename)) {
     LOG_WARNING << "Zip file doesn't exist";
     return 0;
@@ -707,7 +702,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
   ZIP zfile;
   zipentry *ze;
 
-  if (!zfile.OpenZip(zipfilename)) {
+  if (!zfile.OpenZip(zipfilename.u8string().c_str())) {
     LOG_WARNING << "Unable to open zip file";
     return 0;
   }
@@ -730,7 +725,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
     Descent->defer();
     process_file = true;
 
-    LOG_DEBUG.printf("Processesing: %s", ze->name);
+    LOG_DEBUG.printf("Processing: %s", ze->name);
 
     if (ze->compression_method == 0x0000 || ze->compression_method == 0x0008) {
       char *rfile = strrchr(ze->name, '/');
@@ -750,7 +745,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
         snprintf(buffer, sizeof(buffer), "%s already exists. Overwrite?", output_filename);
         if (DoMessageBox("Confirm", buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
           // delete the file
-          LOG_DEBUG.printf("Deleting %s", zipfilename);
+          LOG_DEBUG.printf("Deleting %s", zipfilename.u8string().c_str());
           if (!ddio_DeleteFile(output_filename)) {
             process_file = false;
             console.puts(GR_GREEN, "[Unable to Write] ");
@@ -789,7 +784,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
             console.puts(GR_GREEN, "CRC OK");
 
             // check to see if we extracted our mn3
-            if (CompareZipFileName(ze->name, mn3name)) {
+            if (CompareZipFileName(ze->name, mn3name.u8string().c_str())) {
               found_mn3 = true;
             }
           } else {
@@ -813,8 +808,9 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
   if (DoMessageBox("Confirm", "Do you want to delete the zip file? It is no longer needed.", MSGBOX_YESNO,
                    UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
     // delete the file
-    LOG_DEBUG.printf("Deleting %s", zipfilename);
-    ddio_DeleteFile(zipfilename);
+    LOG_DEBUG.printf("Deleting %s", zipfilename.u8string().c_str());
+    std::error_code ec;
+    std::filesystem::remove(zipfilename);
   }
 
   window.Close();
@@ -826,29 +822,14 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
   return 1;
 }
 
-#if defined(POSIX)
-char *_strlwr(char *string) {
-  char *ptr = string;
-  while (*ptr) {
-    *ptr = tolower(*ptr);
-    ptr++;
-  }
-  return string;
-}
-#endif
-
-#define MOD_URL_BASEPATH "http://www.descent3.com/mods/" // WAS: "http://www.pxo.net/descent3/mods/"
-
 int CheckGetD3M(char *d3m) {
 #if !defined(OEM)
 
   char modurl[MAX_MISSION_URL_LEN + 1];
   char *lowurl;
-  char pathname[_MAX_PATH];
   char *fixedd3m = NULL;
 
-  ddio_MakePath(pathname, LocalD3Dir, "Netgames", d3m, NULL);
-  if (cfexist(d3m) || cfexist(pathname)) {
+  if (cfexist(d3m) || cfexist(std::filesystem::path(LocalD3Dir) / "netgames" / d3m)) {
     return 1;
   }
 
