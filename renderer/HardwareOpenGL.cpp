@@ -80,7 +80,6 @@ struct Renderer {
     // these are effectively just constants, for now
     shader_.setUniform1i("u_texture0", 0);
     shader_.setUniform1i("u_texture1", 1);
-    this->setGammaCorrection(2.2);
   }
 
   /**
@@ -1163,6 +1162,7 @@ void gpu_DrawFlatPolygon3D(g3Point **p, int nv) {
 // Sets the gamma correction value
 void rend_SetGammaValue(float val) {
   gpu_preferred_state.gamma = val;
+  gRenderer->setGammaCorrection(val);
   LOG_DEBUG.printf("Setting gamma to %f", val);
 }
 
