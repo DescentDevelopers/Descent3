@@ -112,7 +112,7 @@
  *
  * 169   4/16/99 11:56a Matt
  * Changed directplay code to be "ifdef _WIN32" instead of "ifndef
- * __LINUX__" so it will work on the Mac.
+ * SDL_PLATFORM_LINUX" so it will work on the Mac.
  *
  * 168   4/15/99 1:40a Jeff
  * changes for linux compile

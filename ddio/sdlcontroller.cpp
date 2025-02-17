@@ -530,7 +530,7 @@ bool sdlgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
       val = get_axis_value(controller, value, alt_format, (m_ElementList[id].flags[i] & CTFNF_INVERT) ? true : false);
       if (m_ElementList[id].flags[i] & CTFNF_INVERT) {
         if (alt_format == ctDigital) {
-          val = (std::abs(val) < FLT_EPSILON) ? 1.0f : 0.0f;
+          val = (std::abs(val) < SDL_FLT_EPSILON) ? 1.0f : 0.0f;
         } else if (alt_format == ctAnalog) {
           val = -val;
         }
@@ -557,12 +557,12 @@ bool sdlgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
       val = 0.0f;
     }
 
-    if (std::abs(val) > FLT_EPSILON)
+    if (std::abs(val) > SDL_FLT_EPSILON)
       break;
   }
 
 skip_packet_read:
-  if (std::abs(val) > FLT_EPSILON)
+  if (std::abs(val) > SDL_FLT_EPSILON)
     packet->flags |= CTPK_ELEMENTACTIVE;
 
   packet->value = val;
@@ -811,7 +811,7 @@ void sdlgameController::extctl_getpos(int id) {
   //	handle buttons
   for (int i = 0; i < CT_MAX_BUTTONS; i++) {
     //	case if we read time before doing this again.
-    if ((ji.buttons & (1 << i)) && (std::abs(m_ExtCtlStates[id].btnstarts[i]) < FLT_EPSILON))
+    if ((ji.buttons & (1 << i)) && (std::abs(m_ExtCtlStates[id].btnstarts[i]) < SDL_FLT_EPSILON))
       m_ExtCtlStates[id].btnstarts[i] = timer_val;
     if ((ji.buttons & (1 << i)) && !(m_ExtCtlStates[id].buttons & (1 << i))) {
       m_ExtCtlStates[id].btnpresses[i]++;
@@ -836,7 +836,7 @@ void sdlgameController::mouse_geteval() {
     return;
   }
 
-  if (std::abs(g_accum_frame_time) > FLT_EPSILON)
+  if (std::abs(g_accum_frame_time) > SDL_FLT_EPSILON)
     return;
 
   btnmask = (unsigned)ddio_MouseGetState(&x, &y, &dx, &dy);
@@ -1221,7 +1221,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       return val;
     axis++;
 
-    if ((axis == CT_X_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > FLT_EPSILON)) {
+    if ((axis == CT_X_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > SDL_FLT_EPSILON)) {
       matrix orient;
 
       if (!(Players[Player_num].controller_bitflags & PCBF_HEADINGLEFT)) {
@@ -1244,7 +1244,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       ObjSetOrient(&Objects[Players[Player_num].objnum], &Objects[Players[Player_num].objnum].orient);
       return 0;
     }
-    if ((axis == CT_Y_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > FLT_EPSILON)) {
+    if ((axis == CT_Y_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > SDL_FLT_EPSILON)) {
       matrix orient;
 
       if (!(Players[Player_num].controller_bitflags & PCBF_PITCHUP)) {

@@ -26,10 +26,11 @@ target_link_libraries(sndlib PRIVATE
   mem
   stream_audio
   physics
-  SDL2::SDL2
+  SDL3::SDL3
 )
 target_include_directories(sndlib PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/sndlib
   >
+  ${SDL3_INCLUDE_DIRS}
 )

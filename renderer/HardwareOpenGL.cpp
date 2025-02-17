@@ -22,7 +22,10 @@
 #include <cstdio>
 #include <cstring>
 #include <optional>
-#include <SDL.h>
+
+// TODO: Use SDL_FunctionPointer properly instead
+#define SDL_FUNCTION_POINTER_IS_VOID_POINTER
+#include <SDL3/SDL.h>
 
 #if defined(WIN32)
 #include <windows.h>
@@ -46,7 +49,7 @@
 #include "config.h"
 #include "rtperformance.h"
 #include "HardwareInternal.h"
-#include "../Descent3/args.h"
+#include "args.h"
 #include "NewBitmap.h"
 #include "shaders.h"
 #include "ShaderProgram.h"
@@ -133,6 +136,10 @@ struct Renderer {
   void setFogBorders(float nearz, float farz) {
     shader_.setUniform1f("u_fog_start", nearz);
     shader_.setUniform1f("u_fog_end", farz);
+  }
+
+  void setGammaCorrection(float gamma) {
+    shader_.setUniform1f("u_gamma", gamma);
   }
 
   void setFogColor(ddgr_color color) {
@@ -362,13 +369,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     }
   }
 
-  bool fullscreen = true;
-
-  if (FindArgChar("-fullscreen", 'f')) {
-    fullscreen = true;
-  } else if (FindArgChar("-windowed", 'w')) {
-    fullscreen = false;
-  }
+  bool fullscreen =  FindArgChar("-windowed", 'w') == 0;
 
   if (!Already_loaded) {
     char gl_library[256];
@@ -417,35 +418,59 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-  Uint32 flags = SDL_WINDOW_OPENGL;
-
-  if (fullscreen) {
-    flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-  }
 
   if (!GSDLWindow) {
-    int display = 0;
-    if (int display_arg = FindArg("-display"); display_arg != 0) {
+    int display_num = 0;
+    int display_arg = FindArg("-display");
+    int display_count = 0;
+
+    SDL_DisplayID* displays = SDL_GetDisplays(&display_count);
+
+    if (display_arg != 0) {
       if (const char * arg_index_str = GetArg (display_arg + 1); arg_index_str == nullptr) {
         LOG_WARNING << "No parameter for -display given";
       } else {
         int arg_index = atoi(arg_index_str);
-        int display_count = SDL_GetNumVideoDisplays();
         if ((arg_index < 0) || (arg_index >= display_count)) {
           LOG_WARNING.printf( "Parameter for -display must be in the range 0..%i", display_count-1 );
         } else {
-          display = arg_index;
+          display_num = arg_index;
         }
       }
     }
-    GSDLWindow = SDL_CreateWindow("Descent 3", SDL_WINDOWPOS_UNDEFINED_DISPLAY(display), SDL_WINDOWPOS_UNDEFINED_DISPLAY(display), winw, winh, flags);
+
+    int display_id = displays[display_num];
+    SDL_free(displays);
+
+    //High-DPI support
+    {
+      float scale = SDL_GetDisplayContentScale(display_id);
+      LOG_WARNING.printf("Using content scale %f", scale);
+      winw = std::floor(static_cast<float>(winw)*scale);
+      winh = std::floor(static_cast<float>(winh)*scale);  
+    }
+
+
+    SDL_PropertiesID props = SDL_CreateProperties();
+    SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "Descent 3");
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER,  SDL_WINDOWPOS_UNDEFINED_DISPLAY(display_id));
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_UNDEFINED_DISPLAY(display_id));
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, winw);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, winh);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_OPENGL);
+    GSDLWindow = SDL_CreateWindowWithProperties(props);
+    SDL_DestroyProperties(props); 
     if (!GSDLWindow) {
       LOG_ERROR.printf("OpenGL: SDL window creation failed: %s", SDL_GetError());
       return 0;
     }
+
+    bool grabMouse = FindArgChar("-nomousegrab", 'm') == 0;
+    SDL_SetWindowRelativeMouseMode(GSDLWindow, grabMouse);
+
+    SDL_SetWindowFullscreen(GSDLWindow, fullscreen);
   } else {
     SDL_SetWindowSize(GSDLWindow, winw, winh);
-    SDL_SetWindowFullscreen(GSDLWindow, flags);
   }
 
   if (!GSDLGLContext) {
@@ -462,7 +487,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     LoadGLFnPtrs();
   } catch (std::exception const& ex) {
     // TODO: more raii-esque construction and cleanup here
-    SDL_GL_DeleteContext(GSDLGLContext);
+    SDL_GL_DestroyContext(GSDLGLContext);
     GSDLGLContext = nullptr;
     SDL_DestroyWindow(GSDLWindow);
     GSDLWindow = nullptr;
@@ -519,19 +544,11 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     dglDeleteRenderbuffers(1, &GOpenGLRBOColor);
     dglDeleteRenderbuffers(1, &GOpenGLRBODepth);
     GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
-    SDL_GL_DeleteContext(GSDLGLContext);
+    SDL_GL_DestroyContext(GSDLGLContext);
     SDL_DestroyWindow(GSDLWindow);
     GSDLGLContext = nullptr;
     GSDLWindow = nullptr;
     return 0;
-  }
-
-  // rcg09182000 gamma fun.
-  // rcg01112000 --nogamma fun.
-  if (!FindArgChar("-nogamma", 'M')) {
-    Uint16 ramp[256];
-    SDL_CalculateGammaRamp(Render_preferred_state.gamma, ramp);
-    SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp);
   }
 
   if (ParentApplication) {
@@ -724,7 +741,7 @@ void opengl_Close(const bool just_resizing) {
 
   if (GSDLGLContext) {
       SDL_GL_MakeCurrent(nullptr, nullptr);
-      SDL_GL_DeleteContext(GSDLGLContext);
+      SDL_GL_DestroyContext(GSDLGLContext);
       GSDLGLContext = nullptr;
       GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
   }
@@ -1145,6 +1162,7 @@ void gpu_DrawFlatPolygon3D(g3Point **p, int nv) {
 // Sets the gamma correction value
 void rend_SetGammaValue(float val) {
   gpu_preferred_state.gamma = val;
+  gRenderer->setGammaCorrection(val);
   LOG_DEBUG.printf("Setting gamma to %f", val);
 }
 
@@ -1457,7 +1475,7 @@ void rend_Flip() {
   // if we're rendering to an FBO, scale to the window framebuffer!
   if (GOpenGLFBO != 0) {
     int w, h;
-    SDL_GL_GetDrawableSize(GSDLWindow, &w, &h);
+    SDL_GetWindowSizeInPixels(GSDLWindow, &w, &h);
 
     int scaledHeight, scaledWidth;
     if (w < h) {

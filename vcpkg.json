@@ -1,34 +1,27 @@
 {
-  "builtin-baseline": "e60236ee051183f1122066bee8c54a0b47c43a60",
+  "builtin-baseline": "0bd7ec5b305428b0529397d512c3757695edf26b",
   "dependencies": [
     "cpp-httplib",
     "glm",
     "gtest",
     "plog",
-    "zlib",
     {
-      "name": "sdl2",
-      "version>=": "2.30.8",
-      "features": ["x11", "wayland", "alsa"],
-      "default-features": false,
-      "platform": "linux & !native"
-    },
-    {
-      "name": "sdl2",
-      "version>=": "2.30.8",
+      "name": "sdl3",
+      "version>=": "3.2.4",
       "features": ["x11","wayland", "alsa"],
-      "platform": "linux & native"
+      "platform": "linux"
     },
     {
-      "name": "sdl2",
-      "version>=": "2.30.8",
+      "name": "sdl3",
+      "version>=": "3.2.4",
       "platform": "!linux"
-    }
+    },
+    "zlib"
   ],
   "overrides": [
     {
-      "name": "sdl2",
-      "version": "2.30.8"
+      "name": "sdl3",
+      "version": "3.2.4"
     }
-  ]
+ ]
 }

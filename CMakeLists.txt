@@ -9,8 +9,9 @@ endif()
 set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
 set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
 
-if(USE_VCPKG)
+if(NOT USE_VCPKG STREQUAL "OFF")
   if(DEFINED ENV{VCPKG_ROOT})
+
     if (CMAKE_TOOLCHAIN_FILE)
       cmake_path(ABSOLUTE_PATH CMAKE_TOOLCHAIN_FILE NORMALIZE OUTPUT_VARIABLE VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
     endif()
@@ -42,7 +43,6 @@ option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (dis
 option(FATAL_GL_ERRORS "Check OpenGL calls and raise exceptions on errors." OFF)
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
 option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
-option(USE_EXTERNAL_PLOG "Use system plog library instead bundled" OFF)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(BUILD_EDITOR "Build internal editor" OFF)
 endif()
@@ -159,23 +159,18 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
   add_compile_options("-Wno-multichar;-Wall")
 endif()
 
+find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 find_package(glm REQUIRED)
 find_package(httplib REQUIRED)
-find_package(SDL2 REQUIRED)
-# Some versions of the SDL2 find_package set SDL2_INCLUDE_DIR and some set a plural SDL2_INCLUDE_DIRS. Check both.
-message("SDL2 Include Dir is ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS}")
-if(USE_EXTERNAL_PLOG)
-  find_package(plog REQUIRED)
-endif()
+find_package(ZLIB REQUIRED)
+find_package(plog REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   message("Building for Linux")
   add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
-  set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for MAC OSX")
   add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
-  set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   # Windows.h defines to avoid as many issues as possible.
   add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE PRIMARY_HOG=\"d3-win.hog\"
@@ -190,8 +185,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_link_options("$<$<CONFIG:Release>:/LTCG>")
 
   add_compile_definitions(WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
-
-  set(PLATFORM_INCLUDES "lib/win/DirectX" "lib/win")
 
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
@@ -221,8 +214,6 @@ endif()
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
 add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
 
-find_package(ZLIB REQUIRED)
-
 if(ENABLE_LOGGER)
   message("Enabling Logging")
   add_compile_definitions(LOGGER)
@@ -240,7 +231,10 @@ include_directories(
   "lib"     # TODO: Remove after untying all modules
   "linux"   # -*-
   "Descent3"
-  ${PLATFORM_INCLUDES}
+  $<$<PLATFORM_ID:Windows>:
+    "lib/win/DirectX"
+    "lib/win"
+  >
 )
 
 add_subdirectory(third_party)

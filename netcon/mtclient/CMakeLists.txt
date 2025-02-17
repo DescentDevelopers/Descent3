@@ -24,7 +24,9 @@ target_link_libraries(Parallax_Online PRIVATE
   module
   ui
   $<$<PLATFORM_ID:Windows>:ws2_32>
+  SDL3::SDL3
 )
+target_include_directories(Parallax_Online PRIVATE ${SDL3_INCLUDE_DIRS})
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set_target_properties(Parallax_Online PROPERTIES SUFFIX ".dylib")
 endif()
