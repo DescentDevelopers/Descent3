@@ -304,13 +304,38 @@
 #include "ctlconfig.h"
 #include "d3music.h"
 
+#include <algorithm>
+#include <vector>
+
 #define STAT_SCORE STAT_TIMER
 
-tVideoResolution Video_res_list[N_SUPPORTED_VIDRES] = {
-    {512, 384}, {640, 480}, {800, 600}, {960, 720}, {1024, 768}, {1280, 960}, {1600, 1200}, {640, 480} // custom
-};
+std::vector<tVideoResolution> Video_res_list = {{512, 384},
+                                                {640, 480},
+                                                {800, 600},
+                                                {960, 720},
+                                                {1024, 768},
+                                                {1280, 960},
+                                                {1600, 1200},
+                                                // 16:9
+                                                {1280, 720},
+                                                {1366, 768},
+                                                {1368, 768},
+                                                {1680, 1050},
+                                                {1920, 1080},
+                                                {2560, 1440},
+                                                {3840, 2160},
+                                                // 16:10
+                                                {1280, 800},
+                                                {1920, 1200},
+                                                {2560, 1600},
+                                                // Ultrawide
+                                                {2560, 1080},
+                                                {2880, 1200},
+                                                {3440, 1440},
+                                                {3840, 1600}};
 
-int Game_video_resolution = 1;
+const int DEFAULT_RESOLUTION = 7; // 1280x720
+int Game_video_resolution = DEFAULT_RESOLUTION;
 
 tDetailSettings Detail_settings;
 int Default_detail_level = DETAIL_LEVEL_MED;
@@ -464,7 +489,8 @@ void ConfigSetDetailLevel(int level) {
 
 #define IDV_GAMMAAPPLY 5
 #define IDV_AUTOGAMMA 6
-
+#define IDV_CHANGE_RES_WINDOW 10
+#define UID_RESOLUTION 110
 
 static void gamma_callback(newuiTiledWindow *wnd, void *data) {
   int bm_handle = *((int *)data);
@@ -631,7 +657,6 @@ static void config_gamma() {
   }
 }
 
-
 //////////////////////////////////////////////////////////////////
 // VIDEO MENU
 //
@@ -642,25 +667,15 @@ struct video_menu {
   bool *mipmapping;
   bool *vsync;
 
-  int *bitdepth;   // bitdepths
-  int *resolution; // all resolutions
+  int *bitdepth; // bitdepths
 
   // sets the menu up.
   newuiSheet *setup(newuiMenu *menu) {
-    int iTemp;
     sheet = menu->AddOption(IDV_VCONFIG, TXT_OPTVIDEO, NEWUIMENU_MEDIUM);
 
     // video resolution
-    iTemp = Game_video_resolution;
     sheet->NewGroup(TXT_RESOLUTION, 0, 0);
-    resolution = sheet->AddFirstLongRadioButton("512x384");
-    sheet->AddLongRadioButton("640x480");
-    sheet->AddLongRadioButton("800x600");
-    sheet->AddLongRadioButton("960x720");
-    sheet->AddLongRadioButton("1024x768");
-    sheet->AddLongRadioButton("1280x960");
-    sheet->AddLongRadioButton("1600x1200");
-    *resolution = iTemp;
+    sheet->AddLongButton("Change resolution", IDV_CHANGEWINDOW);
 
 #if !defined(POSIX)
     // renderer bit depth
@@ -685,11 +700,11 @@ struct video_menu {
     }
 #endif
     // video settings
-    sheet->NewGroup(TXT_TOGGLES, 0, 120);
+    sheet->NewGroup(TXT_TOGGLES, 0, 50);
     filtering = sheet->AddLongCheckBox(TXT_BILINEAR, (Render_preferred_state.filtering != 0));
     mipmapping = sheet->AddLongCheckBox(TXT_MIPMAPPING, (Render_preferred_state.mipping != 0));
 
-    sheet->NewGroup(TXT_MONITOR, 0, 180);
+    sheet->NewGroup(TXT_MONITOR, 0, 110);
     vsync = sheet->AddLongCheckBox(TXT_CFG_VSYNCENABLED, (Render_preferred_state.vsync_on != 0));
 
     sheet->AddText("");
@@ -715,35 +730,67 @@ struct video_menu {
       rend_SetPreferredState(&Render_preferred_state);
     }
 
-    if ((*resolution) != Game_video_resolution) {
-      // if in game, do resolution change.
-      int temp_w, temp_h;
-      int old_sm = GetScreenMode();
-
-      Game_video_resolution = *resolution;
-
-      if (old_sm == SM_GAME) {
-        SetScreenMode(SM_NULL);
-        SetScreenMode(old_sm, true);
-      }
-      temp_w = Video_res_list[Game_video_resolution].width;
-      temp_h = Video_res_list[Game_video_resolution].height;
-      Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
-    }
-
     sheet = NULL;
   };
 
   // process
   void process(int res) {
     switch (res) {
+    case IDV_CHANGE_RES_WINDOW: {
+      // Resolution configuration window
+      newuiTiledWindow menu;
+      newuiSheet *select_sheet;
+      newuiListBox *resolution_list;
+
+      menu.Create("Resolution", 0, 0, 300, 400);
+      select_sheet = menu.GetSheet();
+      select_sheet->NewGroup(NULL, 10, 0);
+      resolution_list = select_sheet->AddListBox(208, 257, UID_RESOLUTION, UILB_NOSORT);
+      select_sheet->NewGroup(NULL, 100, 300, NEWUI_ALIGN_HORIZ);
+      select_sheet->AddButton(TXT_OK, UID_OK);
+      select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
+
+      for (auto &resolution : Video_res_list) {
+        resolution_list->AddItem(resolution.getName().c_str());
+      }
+
+      menu.Open();
+
+      resolution_list->SetCurrentIndex(Game_video_resolution);
+
+      int res;
+      do {
+        res = menu.DoUI();
+      } while (res != UID_OK && res != UID_CANCEL);
+
+      if (res == UID_OK) {
+        int newindex = resolution_list->GetCurrentIndex();
+        if (newindex < Video_res_list.size()) {
+          Game_video_resolution = newindex;
+          int temp_w, temp_h;
+          int old_sm = GetScreenMode();
+
+          if (old_sm == SM_GAME) {
+            SetScreenMode(SM_NULL);
+            SetScreenMode(old_sm, true);
+          }
+
+          temp_w = Video_res_list[Game_video_resolution].width;
+          temp_h = Video_res_list[Game_video_resolution].height;
+          Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
+        }
+      }
+
+      menu.Close();
+      menu.Destroy();
+      break;
+    }
     case IDV_AUTOGAMMA:
       config_gamma();
       break;
     }
   };
 };
-
 
 //////////////////////////////////////////////////////////////////
 // SOUND MENU
@@ -755,7 +802,7 @@ struct sound_menu {
 
   int16_t *fxvolume, *musicvolume; // volume sliders
   int16_t *fxquantity;             // sound fx quantity limit
-  int *fxquality;                // sfx quality low/high
+  int *fxquality;                  // sfx quality low/high
 
   int16_t old_fxquantity;
 
@@ -920,7 +967,6 @@ struct sound_menu {
   };
 };
 
-
 //////////////////////////////////////////////////////////////////
 // GENERAL SETTINGS (TOGGLES) MENU
 //
@@ -1035,7 +1081,6 @@ struct toggles_menu {
     }
   };
 };
-
 
 //////////////////////////////////////////////////////////////////
 //  HUD CONFIG MENU
@@ -1158,7 +1203,6 @@ struct hud_menu {
   };
 };
 
-
 //////////////////////////////////////////////////////////////////
 // DETAILS MENU
 //
@@ -1171,7 +1215,7 @@ struct details_menu {
   bool *specmap, *headlight, *mirror, // check boxes
       *dynamic, *fog, *coronas, *procedurals, *powerup_halo, *scorches, *weapon_coronas;
   int16_t *pixel_err, // 0-27 (1-28)
-      *rend_dist;   // 0-120 (80-200)
+      *rend_dist;     // 0-120 (80-200)
 
   int *texture_quality;
 

@@ -118,6 +118,8 @@
 #define CONFIG_H_
 
 #include <cstdint>
+#include <sstream>
+#include <vector>
 
 // Main menu configuration functions
 
@@ -133,20 +135,20 @@ extern tGameToggles Game_toggles;
 // this list should match the list in config.cpp to work.
 #define N_SUPPORTED_VIDRES 8
 
-#define RES_512X384 0
-#define RES_640X480 1
-#define RES_800X600 2
-#define RES_960X720 3
-#define RES_1024X768 4
-#define RES_1280X960 5
-#define RES_1600X1200 6
 // stored resolution list and desired game resolution
 struct tVideoResolution {
   uint16_t width;
   uint16_t height;
+
+  std::string getName() const {
+    std::stringstream ss;
+    ss << this->width << "x" << this->height;
+    return ss.str();
+  }
 };
 
-extern tVideoResolution Video_res_list[];
+extern std::vector<tVideoResolution> Video_res_list;
+extern const int DEFAULT_RESOLUTION;
 extern int Game_video_resolution;
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
