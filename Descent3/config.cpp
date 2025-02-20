@@ -303,6 +303,7 @@
 #include "sounds.h"
 #include "ctlconfig.h"
 #include "d3music.h"
+#include "gameloop.h"
 
 #include <algorithm>
 #include <vector>
@@ -336,6 +337,7 @@ std::vector<tVideoResolution> Video_res_list = {{512, 384},
 
 const int DEFAULT_RESOLUTION = 7; // 1280x720
 int Game_video_resolution = DEFAULT_RESOLUTION;
+float Render_FOV_setting = 72.0f;
 
 tDetailSettings Detail_settings;
 int Default_detail_level = DETAIL_LEVEL_MED;
@@ -664,12 +666,14 @@ static void config_gamma() {
 struct video_menu {
   newuiSheet *sheet;
 
-  bool *filtering; // settings
-  bool *mipmapping;
-  bool *vsync;
-  char *resolution_string;
+  // settings
+  bool *filtering = nullptr;
+  bool *mipmapping = nullptr;
+  bool *vsync = nullptr;
+  char *resolution_string = nullptr;
+  short *fov = nullptr;
 
-  int *bitdepth; // bitdepths
+  int *bitdepth = nullptr; // bitdepths
 
   // sets the menu up.
   newuiSheet *setup(newuiMenu *menu) {
@@ -682,6 +686,14 @@ struct video_menu {
     std::string res = Video_res_list[Game_video_resolution].getName();
     snprintf(resolution_string, res.size() + 1, res.c_str());
     sheet->AddLongButton("Change", IDV_CHANGE_RES_WINDOW);
+
+    // FOV setting 72deg -> 90deg
+    tSliderSettings settings = {};
+    settings.min_val.f = D3_DEFAULT_FOV;
+    settings.max_val.f = 90.f;
+    settings.type = SLIDER_UNITS_FLOAT;
+    fov = sheet->AddSlider("FOV", settings.max_val.f - settings.min_val.f, Render_FOV_setting - D3_DEFAULT_FOV,
+                           &settings);
 
 #if !defined(POSIX)
     // renderer bit depth
@@ -706,11 +718,11 @@ struct video_menu {
     }
 #endif
     // video settings
-    sheet->NewGroup(TXT_TOGGLES, 0, 50);
+    sheet->NewGroup(TXT_TOGGLES, 0, 80);
     filtering = sheet->AddLongCheckBox(TXT_BILINEAR, (Render_preferred_state.filtering != 0));
     mipmapping = sheet->AddLongCheckBox(TXT_MIPMAPPING, (Render_preferred_state.mipping != 0));
 
-    sheet->NewGroup(TXT_MONITOR, 0, 110);
+    sheet->NewGroup(TXT_MONITOR, 0, 130);
     vsync = sheet->AddLongCheckBox(TXT_CFG_VSYNCENABLED, (Render_preferred_state.vsync_on != 0));
 
     sheet->AddText("");
@@ -734,6 +746,11 @@ struct video_menu {
     if (GetScreenMode() == SM_GAME) {
       Render_preferred_state.bit_depth = Render_preferred_bitdepth;
       rend_SetPreferredState(&Render_preferred_state);
+    }
+
+    Render_FOV_setting = static_cast<float>(fov[0]) + D3_DEFAULT_FOV;
+    if (Render_FOV != Render_FOV_setting) {
+      Render_FOV = Render_FOV_setting; // ISB: this may cause discontinuities if FOV is changed while zoomed.
     }
 
     sheet = NULL;
@@ -771,7 +788,7 @@ struct video_menu {
 
       if (res == UID_OK) {
         int newindex = resolution_list->GetCurrentIndex();
-        if (newindex < Video_res_list.size()) {
+        if (static_cast<size_t>(newindex) < Video_res_list.size()) {
           Game_video_resolution = newindex;
           int temp_w, temp_h;
           int old_sm = GetScreenMode();

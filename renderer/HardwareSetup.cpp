@@ -61,7 +61,7 @@ void g3_GetProjectionMatrix(float zoom, float *projMat) {
   memset(projMat, 0, sizeof(float) * 16);
 
   // calculate 1/tan(fov)
-  float oOT = 1.0f / zoom;
+  float oOT = 1.0f / vertical_fov;
 
   // fill in the matrix
   // Go read https://www.songho.ca/opengl/gl_projectionmatrix.html

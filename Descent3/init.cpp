@@ -980,6 +980,8 @@
 #include "gamecinematics.h"
 #include "debuggraph.h"
 
+#include <algorithm>
+
 // Uncomment this to allow all languages
 #define ALLOW_ALL_LANG 1
 
@@ -1156,6 +1158,7 @@ void SaveGameSettings() {
   Database->write("DetailPowerupHalos", Detail_settings.Powerup_halos);
 
   Database->write("RS_resolution", Game_video_resolution);
+  Database->write("RS_fov", static_cast<int>(Render_FOV_setting));
 
   Database->write("RS_bitdepth", Render_preferred_bitdepth);
   Database->write("RS_bilear", Render_preferred_state.filtering);
@@ -1288,6 +1291,13 @@ void LoadGameSettings() {
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
   Database->read_int("RS_resolution", &Game_video_resolution);
+  
+  int tempfov = 0;
+  Database->read_int("RS_fov", &tempfov);
+  tempfov = std::clamp(tempfov, static_cast<int>(D3_DEFAULT_FOV), 90);
+  Render_FOV_setting = static_cast<float>(tempfov);
+  Render_FOV = Render_FOV_setting;
+
   Database->read_int("RS_bilear", &Render_preferred_state.filtering);
   Database->read_int("RS_mipping", &Render_preferred_state.mipping);
   Database->read_int("RS_color_model", &Render_state.cur_color_model);
