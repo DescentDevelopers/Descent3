@@ -518,22 +518,22 @@ static void gamma_callback(newuiTiledWindow *wnd, void *data) {
     pnts[i].p3_flags = PF_PROJECTED;
   }
 
-  pnts[0].p3_sx = startx;
+  pnts[0].p3_sx = static_cast<float>(startx);
   pnts[0].p3_sy = GAMMA_SLICE_Y;
   pnts[0].p3_u = 0;
   pnts[0].p3_v = 0;
 
-  pnts[1].p3_sx = startx + GAMMA_SLICE_WIDTH;
+  pnts[1].p3_sx = static_cast<float>(startx + GAMMA_SLICE_WIDTH);
   pnts[1].p3_sy = GAMMA_SLICE_Y;
   pnts[1].p3_u = 2;
   pnts[1].p3_v = 0;
 
-  pnts[2].p3_sx = startx + GAMMA_SLICE_WIDTH;
+  pnts[2].p3_sx = static_cast<float>(startx + GAMMA_SLICE_WIDTH);
   pnts[2].p3_sy = GAMMA_SLICE_Y + GAMMA_SLICE_HEIGHT;
   pnts[2].p3_u = 2;
   pnts[2].p3_v = 1;
 
-  pnts[3].p3_sx = startx;
+  pnts[3].p3_sx = static_cast<float>(startx);
   pnts[3].p3_sy = GAMMA_SLICE_Y + GAMMA_SLICE_HEIGHT;
   pnts[3].p3_u = 0;
   pnts[3].p3_v = 1;
@@ -677,6 +677,7 @@ struct video_menu {
 
   // sets the menu up.
   newuiSheet *setup(newuiMenu *menu) {
+    int iTemp = 0;
     sheet = menu->AddOption(IDV_VCONFIG, TXT_OPTVIDEO, NEWUIMENU_MEDIUM);
 
     // video resolution
@@ -692,7 +693,7 @@ struct video_menu {
     settings.min_val.f = D3_DEFAULT_FOV;
     settings.max_val.f = 90.f;
     settings.type = SLIDER_UNITS_FLOAT;
-    fov = sheet->AddSlider("FOV", settings.max_val.f - settings.min_val.f, Render_FOV_setting - D3_DEFAULT_FOV,
+    fov = sheet->AddSlider("FOV", static_cast<int16_t>(settings.max_val.f - settings.min_val.f), static_cast<int16_t>(Render_FOV_setting - D3_DEFAULT_FOV),
                            &settings);
 
 #if !defined(POSIX)
@@ -1278,7 +1279,7 @@ struct details_menu {
     // sliders
     tSliderSettings slider_set;
     sheet->NewGroup(TXT_GEOMETRY, 90, 0);
-    iTemp = MAXIMUM_TERRAIN_DETAIL - Detail_settings.Pixel_error - MINIMUM_TERRAIN_DETAIL;
+    iTemp = static_cast<int>(MAXIMUM_TERRAIN_DETAIL - Detail_settings.Pixel_error - MINIMUM_TERRAIN_DETAIL);
     if (iTemp < 0)
       iTemp = 0;
     slider_set.min_val.i = MINIMUM_TERRAIN_DETAIL;
@@ -1312,7 +1313,7 @@ struct details_menu {
     Detail_settings.Fog_enabled = *fog;
     Detail_settings.Mirrored_surfaces = *mirror;
     Detail_settings.Object_complexity = *objcomp;
-    Detail_settings.Pixel_error = MAXIMUM_TERRAIN_DETAIL - ((*pixel_err) + MINIMUM_TERRAIN_DETAIL);
+    Detail_settings.Pixel_error = static_cast<float>(MAXIMUM_TERRAIN_DETAIL - ((*pixel_err) + MINIMUM_TERRAIN_DETAIL));
     Detail_settings.Powerup_halos = *powerup_halo;
     Detail_settings.Procedurals_enabled = *procedurals;
     Detail_settings.Scorches_enabled = *scorches;
@@ -1376,7 +1377,7 @@ void details_menu::set_preset_details(int setting) {
   // now go through all the config items and set to the new values
   int iTemp;
 
-  iTemp = MAXIMUM_TERRAIN_DETAIL - ds.Pixel_error - MINIMUM_TERRAIN_DETAIL;
+  iTemp = static_cast<int>(MAXIMUM_TERRAIN_DETAIL - ds.Pixel_error - MINIMUM_TERRAIN_DETAIL);
   if (iTemp < 0)
     iTemp = 0;
   *pixel_err = (int16_t)(iTemp);
