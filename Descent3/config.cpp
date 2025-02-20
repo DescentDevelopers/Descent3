@@ -657,6 +657,7 @@ static void config_gamma() {
   }
 }
 
+
 //////////////////////////////////////////////////////////////////
 // VIDEO MENU
 //
@@ -666,6 +667,7 @@ struct video_menu {
   bool *filtering; // settings
   bool *mipmapping;
   bool *vsync;
+  char *resolution_string;
 
   int *bitdepth; // bitdepths
 
@@ -675,7 +677,11 @@ struct video_menu {
 
     // video resolution
     sheet->NewGroup(TXT_RESOLUTION, 0, 0);
-    sheet->AddLongButton("Change resolution", IDV_CHANGEWINDOW);
+    constexpr int RES_BUFFER_SIZE = 15;
+    resolution_string = sheet->AddChangeableText(RES_BUFFER_SIZE);
+    std::string res = Video_res_list[Game_video_resolution].getName();
+    snprintf(resolution_string, res.size() + 1, res.c_str());
+    sheet->AddLongButton("Change", IDV_CHANGE_RES_WINDOW);
 
 #if !defined(POSIX)
     // renderer bit depth
@@ -778,6 +784,9 @@ struct video_menu {
           temp_w = Video_res_list[Game_video_resolution].width;
           temp_h = Video_res_list[Game_video_resolution].height;
           Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
+
+          std::string res = Video_res_list[Game_video_resolution].getName();
+          snprintf(resolution_string, res.size() + 1, res.c_str());
         }
       }
 
