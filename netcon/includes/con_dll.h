@@ -985,6 +985,9 @@ void CommonDLLInit(int *api_func) {
   // API.fp[109]; // Not used
   DLLCheckGetD3M = (CheckGetD3M_fp)API.fp[110];
   DLLddio_DoForeachFile = (ddio_DoForeachFile_fp)API.fp[111];
+  DLLcf_LocatePath = (cf_LocatePath_fp)API.fp[112];
+  DLLcf_LocateMultiplePaths = (cf_LocateMultiplePaths_fp)API.fp[113];
+  DLLcf_GetWritableBaseDirectory = (cf_GetWritableBaseDirectory_fp)API.fp[114];
 
   DLLMPlayers = (player *)API.players;
   DLLNetgame = (netgame_info *)API.netgame;
