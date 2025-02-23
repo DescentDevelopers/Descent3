@@ -103,12 +103,19 @@ jobs:
           cp ./arm64-osx.cmake ./community/universal-osx.cmake
           sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
 
+      - name: Import macOS code signing certificate
+        if: ${{ matrix.os.preset == 'mac' }}
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
+          p12-password: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12_PASSWORD }}
+
       - name: Configure CMake
         if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
+        run: cmake --preset ${{ matrix.os.preset }} -DCODESIGN_IDENTITY=${{ secrets.SIGNING_IDENTITY }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
 
       - name: Build ${{ matrix.build_type }}
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
@@ -120,6 +127,19 @@ jobs:
       - name: Local install
         # There no cmake install presets so install in traditional way
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
+
+      - name: Sign, package, and notarize for macOS
+        if: ${{ matrix.os.preset == 'mac' }}
+        uses: halprin/macos-sign-package-notarize@053b57360594c2f0ca9fb85fe3ad75fcc6bd9596
+        with:
+          path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/anarchy.d3m builds/${{ matrix.os.preset }}/installed/netgames/co-op.d3m builds/${{ matrix.os.preset }}/installed/netgames/ctf.d3m builds/${{ matrix.os.preset }}/installed/netgames/entropy.d3m builds/${{ matrix.os.preset }}/installed/netgames/hoard.d3m builds/${{ matrix.os.preset }}/installed/netgames/hyper-anarchy.d3m builds/${{ matrix.os.preset }}/installed/netgames/monsterball.d3m builds/${{ matrix.os.preset }}/installed/netgames/robo-anarchy.d3m builds/${{ matrix.os.preset }}/installed/netgames/team\ anarchy.d3m
+          signing-identity: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          app-store-connect-key: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY }}
+          app-store-connect-key-id: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY_ID }}
+          app-store-connect-issuer-id: ${{ secrets.MACOS_APP_STORE_CONNECT_ISSUER_ID }}
+          archive-files: builds/${{ matrix.os.preset }}/installed/*
+          archive-disk-name: Descent 3
+          archive-file-path: builds/${{ matrix.os.preset }}/installed//Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
