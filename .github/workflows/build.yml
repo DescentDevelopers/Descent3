@@ -130,16 +130,16 @@ jobs:
 
       - name: Sign, package, and notarize for macOS
         if: ${{ matrix.os.preset == 'mac' }}
-        uses: halprin/macos-sign-package-notarize@053b57360594c2f0ca9fb85fe3ad75fcc6bd9596
+        uses: halprin/macos-sign-package-notarize@v2
         with:
-          path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/anarchy.d3m builds/${{ matrix.os.preset }}/installed/netgames/co-op.d3m builds/${{ matrix.os.preset }}/installed/netgames/ctf.d3m builds/${{ matrix.os.preset }}/installed/netgames/entropy.d3m builds/${{ matrix.os.preset }}/installed/netgames/hoard.d3m builds/${{ matrix.os.preset }}/installed/netgames/hyper-anarchy.d3m builds/${{ matrix.os.preset }}/installed/netgames/monsterball.d3m builds/${{ matrix.os.preset }}/installed/netgames/robo-anarchy.d3m builds/${{ matrix.os.preset }}/installed/netgames/team\ anarchy.d3m
+          path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/*
           signing-identity: ${{ secrets.MACOS_SIGNING_IDENTITY }}
           app-store-connect-key: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY }}
           app-store-connect-key-id: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY_ID }}
           app-store-connect-issuer-id: ${{ secrets.MACOS_APP_STORE_CONNECT_ISSUER_ID }}
           archive-files: builds/${{ matrix.os.preset }}/installed/*
           archive-disk-name: Descent 3
-          archive-file-path: builds/${{ matrix.os.preset }}/installed//Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg
+          archive-file-path: builds/${{ matrix.os.preset }}/installed/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
