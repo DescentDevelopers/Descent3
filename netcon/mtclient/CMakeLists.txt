@@ -29,6 +29,11 @@ target_link_libraries(Parallax_Online PRIVATE
 target_include_directories(Parallax_Online PRIVATE ${SDL3_INCLUDE_DIRS})
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set_target_properties(Parallax_Online PROPERTIES SUFFIX ".dylib")
+  if(DEFINED CODESIGN_IDENTITY AND NOT "${CODESIGN_IDENTITY}" STREQUAL "")
+    message(STATUS "Code signing Parallax_Online")
+    add_custom_command(TARGET Parallax_Online POST_BUILD
+            COMMAND codesign --verbose --sign "${CODESIGN_IDENTITY}" --force --timestamp --deep -o runtime $<TARGET_FILE:Parallax_Online>)
+  endif()
 endif()
 
 include(HogMaker)
