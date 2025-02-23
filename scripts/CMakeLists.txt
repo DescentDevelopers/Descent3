@@ -87,6 +87,11 @@ foreach(SCRIPT ${SCRIPTS})
   set_target_properties(${SCRIPT} PROPERTIES CXX_VISIBILITY_PRESET "hidden")
   if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set_target_properties(${SCRIPT} PROPERTIES SUFFIX ".dylib")
+    if(DEFINED CODESIGN_IDENTITY AND NOT "${CODESIGN_IDENTITY}" STREQUAL "")
+      message(STATUS "Code signing ${SCRIPT}")
+      add_custom_command(TARGET ${SCRIPT} POST_BUILD
+              COMMAND codesign --verbose --sign "${CODESIGN_IDENTITY}" --force --timestamp --deep -o runtime $<TARGET_FILE:${SCRIPT}>)
+    endif()
   endif()
 endforeach()
 
