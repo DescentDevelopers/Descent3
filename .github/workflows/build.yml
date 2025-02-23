@@ -1,16 +1,21 @@
 name: Descent 3 Build
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
-    paths-ignore:
-      - '**/*.md'
-  pull_request:
-    branches: [ "main" ]
-    paths-ignore:
-      - '**/README.md'
-      - '**/LICENSE'
+  workflow_call:
+    secrets:
+      MACOS_SIGNING_IDENTITY:
+        required: false
+      MACOS_SIGNING_CERTIFICATE_P12:
+        required: false
+      MACOS_SIGNING_CERTIFICATE_P12_PASSWORD:
+        required: false
+      MACOS_APP_STORE_CONNECT_KEY:
+        required: false
+      MACOS_APP_STORE_CONNECT_KEY_ID:
+        required: false
+      MACOS_APP_STORE_CONNECT_ISSUER_ID:
+        required: false
+
 
 jobs:
   build:
@@ -49,6 +54,9 @@ jobs:
           - Release
 
     runs-on: ${{ matrix.os.runner }}
+
+    env:
+        MACOS_SIGNING: ${{ secrets.MACOS_SIGNING_IDENTITY != '' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -104,7 +112,7 @@ jobs:
           sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
 
       - name: Import macOS code signing certificate
-        if: ${{ matrix.os.preset == 'mac' }}
+        if: ${{ matrix.os.preset == 'mac' && env.MACOS_SIGNING == 'true' }}
         uses: apple-actions/import-codesign-certs@v3
         with:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
@@ -129,7 +137,7 @@ jobs:
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
 
       - name: Sign, package, and notarize for macOS
-        if: ${{ matrix.os.preset == 'mac' }}
+        if: ${{ matrix.os.preset == 'mac' && env.MACOS_SIGNING == 'true' }}
         uses: halprin/macos-sign-package-notarize@v2
         with:
           path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/*
@@ -142,7 +150,7 @@ jobs:
           archive-file-path: builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg
 
       - name: Swap macOS DMG disk image into installed folder
-        if: ${{ matrix.os.preset == 'mac' }}
+        if: ${{ matrix.os.preset == 'mac' && env.MACOS_SIGNING == 'true' }}
         run: |
           rm -rf builds/${{ matrix.os.preset }}/installed/*
           mv builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg builds/${{ matrix.os.preset }}/installed/
