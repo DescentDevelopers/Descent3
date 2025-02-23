@@ -747,6 +747,13 @@ struct video_menu {
     if (GetScreenMode() == SM_GAME) {
       Render_preferred_state.bit_depth = Render_preferred_bitdepth;
       rend_SetPreferredState(&Render_preferred_state);
+
+      SetScreenMode(GetScreenMode(), true);
+
+      int temp_w = Video_res_list[Game_video_resolution].width;
+      int temp_h = Video_res_list[Game_video_resolution].height;
+      Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
+  
     }
 
     Render_FOV_setting = static_cast<float>(fov[0]) + D3_DEFAULT_FOV;
@@ -791,18 +798,6 @@ struct video_menu {
         int newindex = resolution_list->GetCurrentIndex();
         if (static_cast<size_t>(newindex) < Video_res_list.size()) {
           Game_video_resolution = newindex;
-          int temp_w, temp_h;
-          int old_sm = GetScreenMode();
-
-          if (old_sm == SM_GAME) {
-            SetScreenMode(SM_NULL);
-            SetScreenMode(old_sm, true);
-          }
-
-          temp_w = Video_res_list[Game_video_resolution].width;
-          temp_h = Video_res_list[Game_video_resolution].height;
-          Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
-
           std::string res = Video_res_list[Game_video_resolution].getName();
           snprintf(resolution_string, res.size() + 1, res.c_str());
         }
