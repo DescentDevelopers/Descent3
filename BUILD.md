@@ -71,6 +71,9 @@ Once CMake finishes, the built files will be put in `builds\win\build\Debug` or 
     * To install the library dependencies:
         ```sh
         git clone https://github.com/microsoft/vcpkg
+        cd vcpkg
+        ./bootstrap-vcpkg.sh
+        cd -
         export VCPKG_ROOT="$PWD/vcpkg"
         ```
         **NOTE:**
@@ -110,7 +113,7 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
     * APT users (Debian, Ubuntu)
         ```sh
         sudo apt update
-        sudo apt install -y --no-install-recommends git ninja-build cmake g++
+        sudo apt install -y --no-install-recommends git ninja-build cmake g++ ca-certificates curl zip unzip tar
         ```
     * DNF users (Red Hat, Fedora)
         ```sh
@@ -120,10 +123,13 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
 
 2. **Acquire the library dependencies.**
 
-    * If you would like to use vcpkg:
+    * We recommend using VCPKG to manage library dependencies.
         1. Clone vcpkg:
             ```sh
             git clone https://github.com/microsoft/vcpkg
+            cd vcpkg
+            ./bootstrap-vcpkg.sh
+            cd -
             export VCPKG_ROOT="$PWD/vcpkg"
             ```
             **NOTE:**
@@ -137,20 +143,12 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
                 ```sh
                 sudo dnf install -y autoconf automake libtool perl-open perl-FindBin python-jinja2 libX11-devel libXft-devel libXext-devel wayland-devel libxkbcommon-devel mesa-libEGL-devel ibus-devel alsa-lib-devel pulseaudio-libs-devel
                 ```
-    * If you would like to manage the code dependencies yourself:
-        * APT users
-            ```sh
-            sudo apt install -y --no-install-recommends libsdl3-dev zlib1g-dev libcpp-httplib-dev libgtest-dev libglm-dev
-            ```
-        * DNF users
-            ```sh
-            sudo dnf install -y SDL3-devel zlib-devel cpp-httplib-devel gtest glm-devel
-            ```
+    * If you would like to manage the code dependencies yourself, install libraries and headers for the dependencies listed [above](#dependencies). SDL3 still being new at the time of writing, it may not be packaged by all popular non rolling-release Linux distributions yet.
 
 3. **Clone the Descent3 source code.**
 
     ```sh
-    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
+    git clone https://github.com/DescentDevelopers/Descent3
     ```
 
 4. **Build Descent3.**
@@ -160,6 +158,7 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
     cmake --preset linux
     cmake --build --preset linux --config [Debug|Release]
     ```
+
     See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
 Once CMake finishes, the built files will be put in `builds/linux/build/Debug` or `builds/linux/build/Release`.
@@ -189,14 +188,16 @@ cmake --build .
 
 The Descent3 build can be customized by [setting CMake variables on the command line](https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-D) during its "Configuration" phase (the command without the `--build` option). To set a variable, you prepend the variable name with `-D` and then append the value, all as one single parameter. For example:
 ```sh
-cmake --preset linux -DENABLE_LOGGER=ON
+cmake --preset linux -DBUILD_TESTING=ON
 ```
 
 **NOTE:** CMake variables, or more technically _CMake cache entries_, will persist in their values until they are explicitly cleared. So, if you set a variable and then run another CMake command _without_ that variable specified, the variable will still be set. Variables must be explicitly unset, or the `builds/` directory cleaned, in order to be cleared.
 
+You can also use the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html) front-end to easily set and view CMake cache variable values, and generate build
+
 | Option                   | Description                                                                                                                                                                                                                                                                                             | Default                                                                                      |
 |--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| `CMAKE_BUILD_TYPE`       | `Debug` builds are generally larger, slower and contain extra correctness checks that will validate game data and interrupt gameplay when problems are detected.<br>`Release` builds are optimized for size and speed and do not include debugging information, which makes it harder to find problems. | `Debug`                                                                                      |
+| `CMAKE_BUILD_TYPE`       | `Debug` builds are generally larger, slower and contain extra correctness checks that will validate game data and interrupt gameplay when problems are detected.<br>`Release` builds are optimized for size and speed and do not include debugging information, which makes it harder to find problems. The build type can also be set using the `--config` argument with a preset. | `Debug`                                                                                      |
 | `BUILD_EDITOR`           | _(Windows-only)_ Build internal editor.                                                                                                                                                                                                                                                                 | `OFF`                                                                                        |
 | `BUILD_TESTING`          | Enable testing. Requires GTest.                                                                                                                                                                                                                                                                         | `OFF`                                                                                        |
 | `ENABLE_LOGGER`          | Enable logging to the terminal.                                                                                                                                                                                                                                                                         | `OFF`                                                                                        |
