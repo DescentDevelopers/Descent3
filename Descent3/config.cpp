@@ -310,7 +310,8 @@
 
 #define STAT_SCORE STAT_TIMER
 
-std::vector<tVideoResolution> Video_res_list = {{512, 384},
+std::vector<tVideoResolution> Video_res_list = {{0,0},
+                                                {512, 384},
                                                 {640, 480},
                                                 {800, 600},
                                                 {960, 720},
@@ -335,7 +336,7 @@ std::vector<tVideoResolution> Video_res_list = {{512, 384},
                                                 {3440, 1440},
                                                 {3840, 1600}};
 
-const int DEFAULT_RESOLUTION = 7; // 1280x720
+const int DEFAULT_RESOLUTION = 0; // Screen resolution
 int Game_video_resolution = DEFAULT_RESOLUTION;
 float Render_FOV_setting = 72.0f;
 

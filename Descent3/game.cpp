@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -910,6 +910,32 @@ int GetScreenMode() { return Screen_mode; }
 int rend_initted = 0;
 int Low_vidmem = 0;
 
+int GetSDLDisplayId() {
+  int display_num = 0;
+  int display_arg = FindArg("-display");
+  int display_count = 0;
+
+  SDL_DisplayID *displays = SDL_GetDisplays(&display_count);
+
+  if (display_arg != 0) {
+    if (const char *arg_index_str = GetArg(display_arg + 1); arg_index_str == nullptr) {
+      LOG_WARNING << "No parameter for -display given";
+    } else {
+      int arg_index = atoi(arg_index_str);
+      if ((arg_index < 0) || (arg_index >= display_count)) {
+        LOG_WARNING.printf("Parameter for -display must be in the range 0..%i", display_count - 1);
+      } else {
+        display_num = arg_index;
+      }
+    }
+  }
+
+  int display_id = displays[display_num];
+  SDL_free(displays);
+
+  return display_id;
+}
+
 void SetScreenMode(int sm, bool force_res_change) {
   static int old_sm = SM_NULL;
   static int rend_width = 0, rend_height = 0;
@@ -939,8 +965,13 @@ void SetScreenMode(int sm, bool force_res_change) {
       rend_Close();
       rend_initted = 0;
     }
-  }
-  else {
+  } else {
+    // Default resolution: use current display mode
+    int display_id = GetSDLDisplayId();
+    const SDL_DisplayMode *mode = SDL_GetCurrentDisplayMode(display_id);
+    Video_res_list[0].width = mode->w;
+    Video_res_list[0].height = mode->h;
+
     int scr_width, scr_height, scr_bitdepth;
 
     if (sm == SM_GAME) {
