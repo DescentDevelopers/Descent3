@@ -467,6 +467,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
 
     bool grabMouse = FindArgChar("-nomousegrab", 'm') == 0;
     SDL_SetWindowRelativeMouseMode(GSDLWindow, grabMouse);
+    SDL_SetWindowKeyboardGrab(GSDLWindow, grabMouse);
 
     SDL_SetWindowFullscreen(GSDLWindow, fullscreen);
   } else {
