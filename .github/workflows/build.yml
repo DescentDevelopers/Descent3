@@ -1,5 +1,6 @@
 name: Descent 3 Build
 
+
 on:
   workflow_call:
     secrets:
@@ -18,6 +19,7 @@ on:
 
 
 jobs:
+
   build:
     name: ${{ matrix.os.name }}, ${{ matrix.build_type }}
     strategy:
