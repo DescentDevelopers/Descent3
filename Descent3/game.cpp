@@ -982,7 +982,7 @@ void SetScreenMode(int sm, bool force_res_change) {
         // We're using the default, so change some values for the menus
         rend_initted = 1;
         LOG_INFO << "Changing menu settings to default!";
-        Game_video_resolution = RES_640X480;
+        Game_video_resolution = DEFAULT_RESOLUTION;
         Render_preferred_state.bit_depth = 32;
         scr_width = 640;
         scr_height = 480;
@@ -1000,7 +1000,7 @@ void SetScreenMode(int sm, bool force_res_change) {
           // We're using the default, so change some values for the menus
           rend_initted = 1;
           LOG_INFO << "Changing menu settings to default!";
-          Game_video_resolution = RES_640X480;
+          Game_video_resolution = DEFAULT_RESOLUTION;
           Render_preferred_state.bit_depth = 32;
           scr_width = 640;
           scr_height = 480;

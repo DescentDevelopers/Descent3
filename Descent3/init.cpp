@@ -980,6 +980,8 @@
 #include "gamecinematics.h"
 #include "debuggraph.h"
 
+#include <algorithm>
+
 // Uncomment this to allow all languages
 #define ALLOW_ALL_LANG 1
 
@@ -1156,6 +1158,7 @@ void SaveGameSettings() {
   Database->write("DetailPowerupHalos", Detail_settings.Powerup_halos);
 
   Database->write("RS_resolution", Game_video_resolution);
+  Database->write("RS_fov", static_cast<int>(Render_FOV_setting));
 
   Database->write("RS_bitdepth", Render_preferred_bitdepth);
   Database->write("RS_bilear", Render_preferred_state.filtering);
@@ -1231,7 +1234,7 @@ void LoadGameSettings() {
   D3Use_force_feedback = true;
   D3Force_gain = 1.0f;
   D3Force_auto_center = true;
-  Game_video_resolution = RES_640X480;
+  Game_video_resolution = DEFAULT_RESOLUTION;
   PlayPowerupVoice = true;
   PlayVoices = true;
   Sound_mixer = SOUND_MIXER_SOFTWARE_16;
@@ -1288,6 +1291,13 @@ void LoadGameSettings() {
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
   Database->read_int("RS_resolution", &Game_video_resolution);
+  
+  int tempfov = 0;
+  Database->read_int("RS_fov", &tempfov);
+  tempfov = std::clamp(tempfov, static_cast<int>(D3_DEFAULT_FOV), 90);
+  Render_FOV_setting = static_cast<float>(tempfov);
+  Render_FOV = Render_FOV_setting;
+
   Database->read_int("RS_bilear", &Render_preferred_state.filtering);
   Database->read_int("RS_mipping", &Render_preferred_state.mipping);
   Database->read_int("RS_color_model", &Render_state.cur_color_model);
@@ -1361,13 +1371,18 @@ void LoadGameSettings() {
   ConfigSetDetailLevel(level);
   int widtharg = FindArg("-Width");
   int heightarg = FindArg("-Height");
-  if (widtharg) {
-    Video_res_list[N_SUPPORTED_VIDRES - 1].width = atoi(GameArgs[widtharg + 1]);
-    Game_video_resolution = N_SUPPORTED_VIDRES - 1;
+
+  if (widtharg && !heightarg) {
+    LOG_ERROR << "Specify '-Height' argument when setting '-Width'";
   }
-  if (heightarg) {
-    Video_res_list[N_SUPPORTED_VIDRES - 1].height = atoi(GameArgs[heightarg + 1]);
-    Game_video_resolution = N_SUPPORTED_VIDRES - 1;
+  if (heightarg && !widtharg) {
+    LOG_ERROR << "Specify '-Width' argument when setting '-Height'";
+  }
+
+  if (widtharg && heightarg) {
+    Video_res_list.emplace_back(tVideoResolution{static_cast<unsigned short>(atoi(GameArgs[widtharg + 1])),
+                                                 static_cast<unsigned short>(atoi(GameArgs[heightarg + 1]))});
+    Game_video_resolution = Video_res_list.size() - 1;
   }
 
   // Motion blur
@@ -1419,7 +1434,8 @@ void InitIOSystems(bool editor) {
   while (0 != (additionaldirarg = FindArg("-additionaldir", additionaldirarg))) {
     const auto dir_to_add = GetArg(additionaldirarg + 1);
     if (dir_to_add == NULL) {
-      LOG_WARNING << "-additionaldir was at the end of the argument list. It should never be at the end of the argument list.";
+      LOG_WARNING
+          << "-additionaldir was at the end of the argument list. It should never be at the end of the argument list.";
       break;
     } else {
       cf_AddBaseDirectory(std::filesystem::path(dir_to_add));
@@ -1909,7 +1925,7 @@ void InitD3Systems2(bool editor) {
 
   // the remaining sound system
   InitVoices();
-  InitD3Music(FindArg("-nomusic")  || FindArg("-nosound") ? false : true);
+  InitD3Music(FindArg("-nomusic") || FindArg("-nosound") ? false : true);
   InitAmbientSoundSystem();
 
   InitGameSystems(editor);
@@ -1957,7 +1973,7 @@ void SetupTempDirectory(void) {
     std::error_code ec;
     std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
     if (ec) {
-      Error("Could not find temporary directory: \"%s\"", ec.message().c_str() );
+      Error("Could not find temporary directory: \"%s\"", ec.message().c_str());
       exit(1);
     }
     Descent3_temp_directory = tempPath / "Descent3" / "cache";
@@ -2032,8 +2048,8 @@ void DeleteTempFiles() {
   ddio_DoForeachFile(Descent3_temp_directory, std::regex("d3[smocti].+\\.tmp"), [](const std::filesystem::path &path) {
     std::error_code ec;
     std::filesystem::remove(path, ec);
-    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n",
-                              path.u8string().c_str(), ec.message().c_str());
+    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", path.u8string().c_str(),
+                              ec.message().c_str());
   });
 }
 

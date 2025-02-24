@@ -2490,7 +2490,7 @@ void ObjDoEffects(object *obj) {
       // Stop doing liquid effect
       obj->effect_info->type_flags &= ~EF_LIQUID;
       if (obj == Viewer_object)
-        Render_FOV = D3_DEFAULT_FOV;
+        Render_FOV = Render_FOV_setting;
     } else {
       if (obj == Viewer_object) {
         int inttime = Gametime;
@@ -2502,7 +2502,7 @@ void ObjDoEffects(object *obj) {
         if (obj->effect_info->liquid_time_left < 1)
           scalar *= (obj->effect_info->liquid_time_left);
 
-        Render_FOV = D3_DEFAULT_FOV + scalar;
+        Render_FOV = Render_FOV_setting + scalar;
       }
     }
   }

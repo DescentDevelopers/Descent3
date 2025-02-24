@@ -108,6 +108,7 @@ void GameFrame(void);
 void GameRenderWorld(object *viewer, vector *viewer_eye, int viewer_roomnum, matrix *viewer_orient, float zoom,
                      bool rear_view);
 
+extern float Render_FOV_setting;
 extern float Render_zoom;
 extern float Render_FOV;
 
