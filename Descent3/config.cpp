@@ -304,14 +304,18 @@
 #include "ctlconfig.h"
 #include "d3music.h"
 #include "gameloop.h"
+#include "args.h"
+
+#include <SDL3/SDL.h>
 
 #include <algorithm>
 #include <vector>
+#include <set>
 
 #define STAT_SCORE STAT_TIMER
 
-std::vector<tVideoResolution> Video_res_list = {{0,0},
-                                                {512, 384},
+// This list is only used if `ConfigureDisplayResolutions` fails
+std::vector<tVideoResolution> Video_res_list = {{512, 384},
                                                 {640, 480},
                                                 {800, 600},
                                                 {960, 720},
@@ -336,9 +340,95 @@ std::vector<tVideoResolution> Video_res_list = {{0,0},
                                                 {3440, 1440},
                                                 {3840, 1600}};
 
-const int DEFAULT_RESOLUTION = 0; // Screen resolution
-int Game_video_resolution = DEFAULT_RESOLUTION;
+int Default_resolution_id = 7; // 1280x720 in the default list
+int Current_video_resolution_id = Default_resolution_id;
 float Render_FOV_setting = 72.0f;
+int Display_id = 0;
+
+void ConfigureDisplayResolutions() {
+  int display_count = 0;
+  SDL_DisplayID *displays = SDL_GetDisplays(&display_count);
+  if (!displays) {
+    return;
+  }
+
+  std::set<tVideoResolution, tVideoResolution::tVideoResolutionCompare> resolutions;
+  for (int d = 0; d < display_count; d++) {
+    SDL_DisplayID display_id = displays[d];
+
+    int modes_count = 0;
+    SDL_DisplayMode **modes = SDL_GetFullscreenDisplayModes(display_id, &modes_count);
+    if (!modes) {
+      return;
+    }
+    for (int modes_id = 0; modes_id < modes_count; modes_id++) {
+      SDL_DisplayMode *mode = modes[modes_id];
+      resolutions.emplace(tVideoResolution{static_cast<uint16_t>(mode->w), static_cast<uint16_t>(mode->h)});
+    }
+
+    SDL_free(modes);
+  }
+
+  // Take width and height argument into account
+  int widtharg = FindArg("-Width");
+  int heightarg = FindArg("-Height");
+
+  if (widtharg && !heightarg) {
+    LOG_ERROR << "Specify '-Height' argument when setting '-Width'";
+  }
+  if (heightarg && !widtharg) {
+    LOG_ERROR << "Specify '-Width' argument when setting '-Height'";
+  }
+
+  // Use the first display by default, or the one specified by "-display"
+  int display_arg = FindArg("-display");
+  int display_num = 0;
+  if (display_arg != 0) {
+    if (const char *arg_index_str = GetArg(display_arg + 1); arg_index_str == nullptr) {
+      LOG_WARNING << "No parameter for -display given";
+    } else {
+      int arg_index = atoi(arg_index_str);
+      if ((arg_index < 0) || (arg_index >= display_count)) {
+        LOG_WARNING.printf("Parameter for -display must be in the range 0..%i", display_count - 1);
+      } else {
+        display_num = arg_index;
+      }
+    }
+  }
+
+  Display_id = displays[display_num];
+
+  // Use either the CLI-provided resolution or the current display resolution as default
+  tVideoResolution current_resolution;
+  if (widtharg && heightarg) {
+    current_resolution.width = static_cast<unsigned short>(atoi(GameArgs[widtharg + 1]));
+    current_resolution.height = static_cast<unsigned short>(atoi(GameArgs[heightarg + 1]));
+    resolutions.emplace(current_resolution);
+  } else {
+    const SDL_DisplayMode *current_mode = SDL_GetCurrentDisplayMode(Display_id);
+    current_resolution.width = static_cast<unsigned short>(current_mode->w);
+    current_resolution.height = static_cast<unsigned short>(current_mode->h);
+  }
+
+  // Fill in Video_res_list from the set of unique resolutions
+  std::vector<tVideoResolution> resolutions_vec;
+  std::copy(resolutions.begin(), resolutions.end(), std::back_inserter(resolutions_vec));
+  if (resolutions_vec.empty()) {
+    return;
+  }
+  std::swap(resolutions_vec, Video_res_list);
+  SDL_free(displays);
+
+  // Find the index of the current screen resolution in the list
+  auto current_res_id = std::find(Video_res_list.begin(), Video_res_list.end(), current_resolution);
+  if (current_res_id != Video_res_list.end()) {
+    Default_resolution_id = static_cast<int>(current_res_id - Video_res_list.begin());
+  } else {
+    Default_resolution_id = 0; // default to the highest supported resolution
+  }
+
+  Current_video_resolution_id = Default_resolution_id;
+}
 
 tDetailSettings Detail_settings;
 int Default_detail_level = DETAIL_LEVEL_MED;
@@ -660,7 +750,6 @@ static void config_gamma() {
   }
 }
 
-
 //////////////////////////////////////////////////////////////////
 // VIDEO MENU
 //
@@ -678,14 +767,13 @@ struct video_menu {
 
   // sets the menu up.
   newuiSheet *setup(newuiMenu *menu) {
-    int iTemp = 0;
     sheet = menu->AddOption(IDV_VCONFIG, TXT_OPTVIDEO, NEWUIMENU_MEDIUM);
 
     // video resolution
     sheet->NewGroup(TXT_RESOLUTION, 0, 0);
     constexpr int RES_BUFFER_SIZE = 15;
     resolution_string = sheet->AddChangeableText(RES_BUFFER_SIZE);
-    std::string res = Video_res_list[Game_video_resolution].getName();
+    std::string res = Video_res_list[Current_video_resolution_id].getName();
     snprintf(resolution_string, res.size() + 1, res.c_str());
     sheet->AddLongButton("Change", IDV_CHANGE_RES_WINDOW);
 
@@ -694,10 +782,11 @@ struct video_menu {
     settings.min_val.f = D3_DEFAULT_FOV;
     settings.max_val.f = 90.f;
     settings.type = SLIDER_UNITS_FLOAT;
-    fov = sheet->AddSlider("FOV", static_cast<int16_t>(settings.max_val.f - settings.min_val.f), static_cast<int16_t>(Render_FOV_setting - D3_DEFAULT_FOV),
-                           &settings);
+    fov = sheet->AddSlider("FOV", static_cast<int16_t>(settings.max_val.f - settings.min_val.f),
+                           static_cast<int16_t>(Render_FOV_setting - D3_DEFAULT_FOV), &settings);
 
 #if !defined(POSIX)
+    int iTemp = 0;
     // renderer bit depth
     switch (Render_preferred_bitdepth) {
     case 16:
@@ -751,10 +840,9 @@ struct video_menu {
 
       SetScreenMode(GetScreenMode(), true);
 
-      int temp_w = Video_res_list[Game_video_resolution].width;
-      int temp_h = Video_res_list[Game_video_resolution].height;
+      int temp_w = Video_res_list[Current_video_resolution_id].width;
+      int temp_h = Video_res_list[Current_video_resolution_id].height;
       Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
-  
     }
 
     Render_FOV_setting = static_cast<float>(fov[0]) + D3_DEFAULT_FOV;
@@ -788,7 +876,7 @@ struct video_menu {
 
       menu.Open();
 
-      resolution_list->SetCurrentIndex(Game_video_resolution);
+      resolution_list->SetCurrentIndex(Current_video_resolution_id);
 
       int res;
       do {
@@ -798,8 +886,8 @@ struct video_menu {
       if (res == UID_OK) {
         int newindex = resolution_list->GetCurrentIndex();
         if (static_cast<size_t>(newindex) < Video_res_list.size()) {
-          Game_video_resolution = newindex;
-          std::string res = Video_res_list[Game_video_resolution].getName();
+          Current_video_resolution_id = newindex;
+          std::string res = Video_res_list[Current_video_resolution_id].getName();
           snprintf(resolution_string, res.size() + 1, res.c_str());
         }
       }

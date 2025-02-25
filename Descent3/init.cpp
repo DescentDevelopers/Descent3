@@ -1157,7 +1157,7 @@ void SaveGameSettings() {
   Database->write("DetailObjectComp", Detail_settings.Object_complexity);
   Database->write("DetailPowerupHalos", Detail_settings.Powerup_halos);
 
-  Database->write("RS_resolution", Game_video_resolution);
+  Database->write("RS_resolution", Current_video_resolution_id);
   Database->write("RS_fov", static_cast<int>(Render_FOV_setting));
 
   Database->write("RS_bitdepth", Render_preferred_bitdepth);
@@ -1234,7 +1234,7 @@ void LoadGameSettings() {
   D3Use_force_feedback = true;
   D3Force_gain = 1.0f;
   D3Force_auto_center = true;
-  Game_video_resolution = DEFAULT_RESOLUTION;
+  Current_video_resolution_id = Default_resolution_id;
   PlayPowerupVoice = true;
   PlayVoices = true;
   Sound_mixer = SOUND_MIXER_SOFTWARE_16;
@@ -1290,7 +1290,7 @@ void LoadGameSettings() {
   Database->read_int("RoomLeveling", &Default_player_room_leveling);
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
-  Database->read_int("RS_resolution", &Game_video_resolution);
+  Database->read_int("RS_resolution", &Current_video_resolution_id);
   
   int tempfov = 0;
   Database->read_int("RS_fov", &tempfov);
@@ -1369,21 +1369,6 @@ void LoadGameSettings() {
 
   Database->read_int("PredefDetailSetting", &level);
   ConfigSetDetailLevel(level);
-  int widtharg = FindArg("-Width");
-  int heightarg = FindArg("-Height");
-
-  if (widtharg && !heightarg) {
-    LOG_ERROR << "Specify '-Height' argument when setting '-Width'";
-  }
-  if (heightarg && !widtharg) {
-    LOG_ERROR << "Specify '-Width' argument when setting '-Height'";
-  }
-
-  if (widtharg && heightarg) {
-    Video_res_list.emplace_back(tVideoResolution{static_cast<unsigned short>(atoi(GameArgs[widtharg + 1])),
-                                                 static_cast<unsigned short>(atoi(GameArgs[heightarg + 1]))});
-    Game_video_resolution = Video_res_list.size() - 1;
-  }
 
   // Motion blur
   Use_motion_blur = 0;

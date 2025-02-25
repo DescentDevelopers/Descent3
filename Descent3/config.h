@@ -132,24 +132,46 @@ struct tGameToggles {
 
 extern tGameToggles Game_toggles;
 
-// this list should match the list in config.cpp to work.
-#define N_SUPPORTED_VIDRES 8
-
 // stored resolution list and desired game resolution
-struct tVideoResolution {
+struct tVideoResolution
+{
   uint16_t width;
   uint16_t height;
 
-  std::string getName() const {
+  std::string getName() const
+  {
     std::stringstream ss;
     ss << this->width << "x" << this->height;
     return ss.str();
   }
+
+  bool operator==(const tVideoResolution& other) {
+    return other.width == this->width && other.height == this->height;
+  }
+
+  struct tVideoResolutionCompare
+  {
+    bool operator()(const tVideoResolution &lres, const tVideoResolution &rres) const
+    {
+      if (lres.width != rres.width)
+      {
+        return lres.width < rres.width;
+      }
+      return lres.height < rres.height;
+    }
+  };
 };
 
 extern std::vector<tVideoResolution> Video_res_list;
-extern const int DEFAULT_RESOLUTION;
-extern int Game_video_resolution;
+extern int Default_resolution_id;
+extern int Current_video_resolution_id;
+extern int Display_id;
+
+/**
+ * List all unique resolutions for the detected displays,
+ * and set variables Video_res_list, Game_video_resolution and Display_id
+ */
+void ConfigureDisplayResolutions();
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // KEEP THESE MEMBERS IN THE SAME ORDER, IF YOU ADD,REMOVE, OR CHANGE ANYTHING IN THIS STRUCT, MAKE SURE YOU

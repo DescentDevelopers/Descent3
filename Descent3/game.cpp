@@ -910,32 +910,6 @@ int GetScreenMode() { return Screen_mode; }
 int rend_initted = 0;
 int Low_vidmem = 0;
 
-int GetSDLDisplayId() {
-  int display_num = 0;
-  int display_arg = FindArg("-display");
-  int display_count = 0;
-
-  SDL_DisplayID *displays = SDL_GetDisplays(&display_count);
-
-  if (display_arg != 0) {
-    if (const char *arg_index_str = GetArg(display_arg + 1); arg_index_str == nullptr) {
-      LOG_WARNING << "No parameter for -display given";
-    } else {
-      int arg_index = atoi(arg_index_str);
-      if ((arg_index < 0) || (arg_index >= display_count)) {
-        LOG_WARNING.printf("Parameter for -display must be in the range 0..%i", display_count - 1);
-      } else {
-        display_num = arg_index;
-      }
-    }
-  }
-
-  int display_id = displays[display_num];
-  SDL_free(displays);
-
-  return display_id;
-}
-
 void SetScreenMode(int sm, bool force_res_change) {
   static int old_sm = SM_NULL;
   static int rend_width = 0, rend_height = 0;
@@ -966,17 +940,11 @@ void SetScreenMode(int sm, bool force_res_change) {
       rend_initted = 0;
     }
   } else {
-    // Default resolution: use current display mode
-    int display_id = GetSDLDisplayId();
-    const SDL_DisplayMode *mode = SDL_GetCurrentDisplayMode(display_id);
-    Video_res_list[0].width = mode->w;
-    Video_res_list[0].height = mode->h;
-
     int scr_width, scr_height, scr_bitdepth;
 
     if (sm == SM_GAME) {
-      scr_width = Video_res_list[Game_video_resolution].width;
-      scr_height = Video_res_list[Game_video_resolution].height;
+      scr_width = Video_res_list[Current_video_resolution_id].width;
+      scr_height = Video_res_list[Current_video_resolution_id].height;
       scr_bitdepth = Render_preferred_bitdepth;
     } else {
       scr_width = FIXED_SCREEN_WIDTH;
@@ -1013,7 +981,7 @@ void SetScreenMode(int sm, bool force_res_change) {
         // We're using the default, so change some values for the menus
         rend_initted = 1;
         LOG_INFO << "Changing menu settings to default!";
-        Game_video_resolution = DEFAULT_RESOLUTION;
+        Current_video_resolution_id = Default_resolution_id;
         Render_preferred_state.bit_depth = 32;
         scr_width = 640;
         scr_height = 480;
@@ -1031,7 +999,7 @@ void SetScreenMode(int sm, bool force_res_change) {
           // We're using the default, so change some values for the menus
           rend_initted = 1;
           LOG_INFO << "Changing menu settings to default!";
-          Game_video_resolution = DEFAULT_RESOLUTION;
+          Current_video_resolution_id = Default_resolution_id;
           Render_preferred_state.bit_depth = 32;
           scr_width = 640;
           scr_height = 480;
