@@ -58,7 +58,7 @@ jobs:
     runs-on: ${{ matrix.os.runner }}
 
     env:
-        MACOS_SIGNING: ${{ secrets.MACOS_SIGNING_IDENTITY != '' }}
+        MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && secrets.MACOS_SIGNING_IDENTITY != '' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -114,7 +114,7 @@ jobs:
           sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
 
       - name: Import macOS code signing certificate
-        if: ${{ matrix.os.preset == 'mac' && env.MACOS_SIGNING == 'true' }}
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
         uses: DescentDevelopers/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
@@ -139,7 +139,7 @@ jobs:
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
 
       - name: Sign, package, and notarize for macOS
-        if: ${{ matrix.os.preset == 'mac' && env.MACOS_SIGNING == 'true' }}
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
         uses: DescentDevelopers/macos-sign-package-notarize@v1
         with:
           path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/*
@@ -152,7 +152,7 @@ jobs:
           archive-file-path: builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg
 
       - name: Swap macOS DMG disk image into installed folder
-        if: ${{ matrix.os.preset == 'mac' && env.MACOS_SIGNING == 'true' }}
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
         run: |
           rm -rf builds/${{ matrix.os.preset }}/installed/*
           mv builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg builds/${{ matrix.os.preset }}/installed/
