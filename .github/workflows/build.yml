@@ -58,7 +58,7 @@ jobs:
     runs-on: ${{ matrix.os.runner }}
 
     env:
-        MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && secrets.MACOS_SIGNING_IDENTITY != '' }}
+      MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && secrets.MACOS_SIGNING_IDENTITY != '' }}
 
     steps:
       - uses: actions/checkout@v4
