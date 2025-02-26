@@ -27,11 +27,7 @@ target_link_libraries(Descent3_Online_TCP_IP PRIVATE
 target_include_directories(Descent3_Online_TCP_IP PRIVATE ${SDL3_INCLUDE_DIRS})
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set_target_properties(Descent3_Online_TCP_IP PROPERTIES SUFFIX ".dylib")
-  if(DEFINED CODESIGN_IDENTITY AND NOT "${CODESIGN_IDENTITY}" STREQUAL "")
-    message(STATUS "Code signing Descent3_Online_TCP_IP")
-    add_custom_command(TARGET Descent3_Online_TCP_IP POST_BUILD
-            COMMAND codesign --verbose --sign "${CODESIGN_IDENTITY}" --force --timestamp --deep -o runtime $<TARGET_FILE:Descent3_Online_TCP_IP>)
-  endif()
+  macos_sign(Descent3_Online_TCP_IP)
 endif()
 
 include(HogMaker)
