@@ -115,7 +115,7 @@ jobs:
 
       - name: Import macOS code signing certificate
         if: ${{ matrix.os.preset == 'mac' && env.MACOS_SIGNING == 'true' }}
-        uses: apple-actions/import-codesign-certs@v3
+        uses: DescentDevelopers/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
           p12-password: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12_PASSWORD }}
@@ -140,7 +140,7 @@ jobs:
 
       - name: Sign, package, and notarize for macOS
         if: ${{ matrix.os.preset == 'mac' && env.MACOS_SIGNING == 'true' }}
-        uses: halprin/macos-sign-package-notarize@v2
+        uses: DescentDevelopers/macos-sign-package-notarize@v1
         with:
           path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/*
           signing-identity: ${{ secrets.MACOS_SIGNING_IDENTITY }}
