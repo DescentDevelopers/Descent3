@@ -15,6 +15,4 @@ jobs:
   build:
     name: Build for PR
     uses: ./.github/workflows/build.yml
-    secrets:
-      MACOS_SIGNING_IDENTITY: "asdf"
     # explicitly not passing secrets into the build
