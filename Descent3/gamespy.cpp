@@ -228,10 +228,10 @@ bool gpsy_ValidateString(char *str, char *crypt) {
     strcpy((char *)encrypted_val, crypt);
     gs_encrypt(gspy_d3_secret, encrypted_val, VALIDATE_SIZE);
     gs_encode(encrypted_val, VALIDATE_SIZE, (unsigned char *)encoded_val);
-    sprintf(keyvalue, "\\validate\\%s", encoded_val);
+    snprintf(keyvalue, sizeof(keyvalue), "\\validate\\%s", encoded_val);
     strcat(str, keyvalue);
   }
-  sprintf(keyvalue, "\\final");
+  snprintf(keyvalue, sizeof(keyvalue), "\\final");
   strcat(str, keyvalue);
   return false;
 }
@@ -286,7 +286,7 @@ int gspy_SendPacket(SOCKADDR_IN *addr) {
   }
   */
   gpsy_ValidateString(gspy_outgoingbuffer, *gspy_validate ? gspy_validate : nullptr);
-  sprintf(keyvalue, "\\queryid\\%d.%d", gspy_queryid, gspy_packetnumber);
+  snprintf(keyvalue, sizeof(keyvalue), "\\queryid\\%d.%d", gspy_queryid, gspy_packetnumber);
   strcat(gspy_outgoingbuffer, keyvalue);
 
   LOG_DEBUG.printf("GSPYOUT: %s", gspy_outgoingbuffer);
@@ -405,17 +405,17 @@ int gspy_DoEcho(SOCKADDR_IN *addr, char *msg) {
 int gspy_DoBasic(SOCKADDR_IN *addr) {
   char buf[MAX_GAMESPY_BUFFER];
 
-  sprintf(buf, "\\gamename\\%s", THISGAMENAME);
+  snprintf(buf, sizeof(buf), "\\gamename\\%s", THISGAMENAME);
   LOG_DEBUG.printf("Sending to gamespy: %s", buf);
   gspy_AddToBuffer(addr, buf);
 
   // sprintf(buf,"\\gamever\\%d.%d",Program_version.major,Program_version.minor);
-  sprintf(buf, "\\gamever\\%s %.1d.%.1d.%.1d", THISGAMEVER, Program_version.major, Program_version.minor,
+  snprintf(buf, sizeof(buf), "\\gamever\\%s %.1d.%.1d.%.1d", THISGAMEVER, Program_version.major, Program_version.minor,
           Program_version.build);
   LOG_DEBUG.printf("Sending to gamespy: %s", buf);
   gspy_AddToBuffer(addr, buf);
 
-  sprintf(buf, "\\location\\%d", gspy_region);
+  snprintf(buf, sizeof(buf), "\\location\\%d", gspy_region);
   LOG_DEBUG.printf("Sending to gamespy: %s", buf);
   gspy_AddToBuffer(addr, buf);
 
@@ -434,25 +434,25 @@ int gspy_DoStatus(SOCKADDR_IN *addr) {
 int gspy_DoRules(SOCKADDR_IN *addr) {
   char buf[MAX_GAMESPY_BUFFER];
 
-  sprintf(buf, "\\teamplay\\%d", Num_teams);
+  snprintf(buf, sizeof(buf), "\\teamplay\\%d", Num_teams);
   gspy_AddToBuffer(addr, buf);
 
-  sprintf(buf, "\\timelimit\\%d", (Netgame.flags & NF_TIMER) ? 0 : Netgame.timelimit);
+  snprintf(buf, sizeof(buf), "\\timelimit\\%d", (Netgame.flags & NF_TIMER) ? 0 : Netgame.timelimit);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\fraglimit\\%d", (Netgame.flags & NF_KILLGOAL) ? 0 : Netgame.killgoal);
+  snprintf(buf, sizeof(buf), "\\fraglimit\\%d", (Netgame.flags & NF_KILLGOAL) ? 0 : Netgame.killgoal);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\cl_pxotrack\\%d", Game_is_master_tracker_game);
+  snprintf(buf, sizeof(buf), "\\cl_pxotrack\\%d", Game_is_master_tracker_game);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\mouselook\\%d", (Netgame.flags & NF_ALLOW_MLOOK) ? 1 : 0);
+  snprintf(buf, sizeof(buf), "\\mouselook\\%d", (Netgame.flags & NF_ALLOW_MLOOK) ? 1 : 0);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\permissable\\%d", (Netgame.flags & NF_PERMISSABLE) ? 1 : 0);
+  snprintf(buf, sizeof(buf), "\\permissable\\%d", (Netgame.flags & NF_PERMISSABLE) ? 1 : 0);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\brightships\\%d", (Netgame.flags & NF_BRIGHT_PLAYERS) ? 1 : 0);
+  snprintf(buf, sizeof(buf), "\\brightships\\%d", (Netgame.flags & NF_BRIGHT_PLAYERS) ? 1 : 0);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\acccollisions\\%d", (Netgame.flags & NF_USE_ACC_WEAP) ? 1 : 0);
+  snprintf(buf, sizeof(buf), "\\acccollisions\\%d", (Netgame.flags & NF_USE_ACC_WEAP) ? 1 : 0);
   gspy_AddToBuffer(addr, buf);
 
-  sprintf(buf, "\\randpowerup\\%d", (Netgame.flags & NF_RANDOMIZE_RESPAWN) ? 1 : 0);
+  snprintf(buf, sizeof(buf), "\\randpowerup\\%d", (Netgame.flags & NF_RANDOMIZE_RESPAWN) ? 1 : 0);
   gspy_AddToBuffer(addr, buf);
 
   return 0;
@@ -463,15 +463,15 @@ int gspy_DoPlayers(SOCKADDR_IN *addr) {
   int player_count = 0;
   for (int i = 0; i < MAX_NET_PLAYERS; i++) {
     if (NetPlayers[i].flags & NPF_CONNECTED) {
-      sprintf(buf, "\\player_%d\\%s", player_count, Players[i].callsign);
+      snprintf(buf, sizeof(buf), "\\player_%d\\%s", player_count, Players[i].callsign);
       gspy_AddToBuffer(addr, buf);
-      sprintf(buf, "\\frags_%d\\%d", player_count, Multi_kills[i]);
+      snprintf(buf, sizeof(buf), "\\frags_%d\\%d", player_count, Multi_kills[i]);
       gspy_AddToBuffer(addr, buf);
-      sprintf(buf, "\\deaths_%d\\%d", player_count, Multi_deaths[i]);
+      snprintf(buf, sizeof(buf), "\\deaths_%d\\%d", player_count, Multi_deaths[i]);
       gspy_AddToBuffer(addr, buf);
-      sprintf(buf, "\\team_%d\\%d", player_count, Players[i].team);
+      snprintf(buf, sizeof(buf), "\\team_%d\\%d", player_count, Players[i].team);
       gspy_AddToBuffer(addr, buf);
-      sprintf(buf, "\\ping_%d\\%.0f", player_count, (NetPlayers[i].ping_time * 1000.0));
+      snprintf(buf, sizeof(buf), "\\ping_%d\\%.0f", player_count, (NetPlayers[i].ping_time * 1000.0));
       gspy_AddToBuffer(addr, buf);
 
       player_count++;
@@ -489,19 +489,19 @@ int gspy_DoGameInfo(SOCKADDR_IN *addr) {
       curplayers++;
   }
 
-  sprintf(buf, "\\hostname\\%s", Netgame.name);
+  snprintf(buf, sizeof(buf), "\\hostname\\%s", Netgame.name);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\hostport\\%d", Gameport);
+  snprintf(buf, sizeof(buf), "\\hostport\\%d", Gameport);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\mapname\\%s", Netgame.mission);
+  snprintf(buf, sizeof(buf), "\\mapname\\%s", Netgame.mission);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\gametype\\%s", Netgame.scriptname);
+  snprintf(buf, sizeof(buf), "\\gametype\\%s", Netgame.scriptname);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\numplayers\\%d", curplayers);
+  snprintf(buf, sizeof(buf), "\\numplayers\\%d", curplayers);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\maxplayers\\%d", Netgame.max_players);
+  snprintf(buf, sizeof(buf), "\\maxplayers\\%d", Netgame.max_players);
   gspy_AddToBuffer(addr, buf);
-  sprintf(buf, "\\gamemode\\%s", "openplaying");
+  snprintf(buf, sizeof(buf), "\\gamemode\\%s", "openplaying");
   gspy_AddToBuffer(addr, buf);
 
   return 0;
@@ -509,7 +509,7 @@ int gspy_DoGameInfo(SOCKADDR_IN *addr) {
 
 int gspy_DoHeartbeat(SOCKADDR_IN *addr) {
   char buf[MAX_GAMESPY_BUFFER];
-  sprintf(buf, "\\heartbeat\\%d\\gamename\\%s", gspy_listenport, THISGAMENAME);
+  snprintf(buf, sizeof(buf), "\\heartbeat\\%d\\gamename\\%s", gspy_listenport, THISGAMENAME);
   LOG_DEBUG.printf("GSPYOUT: %s", buf);
   sendto(gspy_socket, buf, strlen(buf) + 1, 0, (SOCKADDR *)addr, sizeof(SOCKADDR_IN));
 
