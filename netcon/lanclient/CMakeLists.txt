@@ -19,6 +19,7 @@ target_link_libraries(Direct_TCP_IP PRIVATE
 target_include_directories(Direct_TCP_IP PRIVATE ${SDL3_INCLUDE_DIRS})
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set_target_properties(Direct_TCP_IP PROPERTIES SUFFIX ".dylib")
+  macos_sign(Direct_TCP_IP)
 endif()
 
 include(HogMaker)

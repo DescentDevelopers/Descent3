@@ -1,18 +1,25 @@
 name: Descent 3 Build
 
+
 on:
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
-    paths-ignore:
-      - '**/*.md'
-  pull_request:
-    branches: [ "main" ]
-    paths-ignore:
-      - '**/README.md'
-      - '**/LICENSE'
+  workflow_call:
+    secrets:
+      MACOS_SIGNING_IDENTITY:
+        required: false
+      MACOS_SIGNING_CERTIFICATE_P12:
+        required: false
+      MACOS_SIGNING_CERTIFICATE_P12_PASSWORD:
+        required: false
+      MACOS_APP_STORE_CONNECT_KEY:
+        required: false
+      MACOS_APP_STORE_CONNECT_KEY_ID:
+        required: false
+      MACOS_APP_STORE_CONNECT_ISSUER_ID:
+        required: false
+
 
 jobs:
+
   build:
     name: ${{ matrix.os.name }}, ${{ matrix.build_type }}
     strategy:
@@ -49,6 +56,9 @@ jobs:
           - Release
 
     runs-on: ${{ matrix.os.runner }}
+
+    env:
+      MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && secrets.MACOS_SIGNING_IDENTITY != '' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -103,12 +113,19 @@ jobs:
           cp ./arm64-osx.cmake ./community/universal-osx.cmake
           sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
 
+      - name: Import macOS code signing certificate
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
+        uses: DescentDevelopers/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
+          p12-password: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12_PASSWORD }}
+
       - name: Configure CMake
         if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
+        run: cmake --preset ${{ matrix.os.preset }} -DCODESIGN_IDENTITY=${{ secrets.MACOS_SIGNING_IDENTITY }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
 
       - name: Build ${{ matrix.build_type }}
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
@@ -120,6 +137,25 @@ jobs:
       - name: Local install
         # There no cmake install presets so install in traditional way
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
+
+      - name: Sign, package, and notarize for macOS
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
+        uses: DescentDevelopers/macos-sign-package-notarize@v1
+        with:
+          path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/*
+          signing-identity: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          app-store-connect-key: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY }}
+          app-store-connect-key-id: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY_ID }}
+          app-store-connect-issuer-id: ${{ secrets.MACOS_APP_STORE_CONNECT_ISSUER_ID }}
+          archive-files: builds/${{ matrix.os.preset }}/installed/*
+          archive-disk-name: Descent 3
+          archive-file-path: builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg
+
+      - name: Swap macOS DMG disk image into installed folder
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
+        run: |
+          rm -rf builds/${{ matrix.os.preset }}/installed/*
+          mv builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg builds/${{ matrix.os.preset }}/installed/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4

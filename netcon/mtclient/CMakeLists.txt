@@ -29,6 +29,7 @@ target_link_libraries(Parallax_Online PRIVATE
 target_include_directories(Parallax_Online PRIVATE ${SDL3_INCLUDE_DIRS})
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set_target_properties(Parallax_Online PROPERTIES SUFFIX ".dylib")
+  macos_sign(Parallax_Online)
 endif()
 
 include(HogMaker)
