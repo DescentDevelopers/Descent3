@@ -963,7 +963,6 @@ void RenderHUDScore(tHUDItem *item) {
   snprintf(buf, sizeof(buf), "%s: %d ", TXT_SCORE, Players[Player_num].score);
 
   win_w = (Max_window_w - Game_window_w) * (Hud_aspect_x);
-  //	if (Game_video_resolution==RES_512X384) { win_w = win_w + 10; }
 
   int w = RenderHUDGetTextLineWidth(buf); // * win_w)/(Game_window_w);
   RenderHUDText(item->color, HUD_ALPHA, 0, item->x - w - win_w, item->y, buf);

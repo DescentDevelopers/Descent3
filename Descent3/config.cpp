@@ -303,14 +303,132 @@
 #include "sounds.h"
 #include "ctlconfig.h"
 #include "d3music.h"
+#include "gameloop.h"
+#include "args.h"
+
+#include <SDL3/SDL.h>
+
+#include <algorithm>
+#include <vector>
+#include <set>
 
 #define STAT_SCORE STAT_TIMER
 
-tVideoResolution Video_res_list[N_SUPPORTED_VIDRES] = {
-    {512, 384}, {640, 480}, {800, 600}, {960, 720}, {1024, 768}, {1280, 960}, {1600, 1200}, {640, 480} // custom
-};
+// This list is only used if `ConfigureDisplayResolutions` fails
+std::vector<tVideoResolution> Video_res_list = {{512, 384},
+                                                {640, 480},
+                                                {800, 600},
+                                                {960, 720},
+                                                {1024, 768},
+                                                {1280, 960},
+                                                {1600, 1200},
+                                                // 16:9
+                                                {1280, 720},
+                                                {1366, 768},
+                                                {1368, 768},
+                                                {1680, 1050},
+                                                {1920, 1080},
+                                                {2560, 1440},
+                                                {3840, 2160},
+                                                // 16:10
+                                                {1280, 800},
+                                                {1920, 1200},
+                                                {2560, 1600},
+                                                // Ultrawide
+                                                {2560, 1080},
+                                                {2880, 1200},
+                                                {3440, 1440},
+                                                {3840, 1600}};
 
-int Game_video_resolution = 1;
+int Default_resolution_id = 7; // 1280x720 in the default list
+int Current_video_resolution_id = Default_resolution_id;
+float Render_FOV_setting = 72.0f;
+int Display_id = 0;
+
+void ConfigureDisplayResolutions() {
+  int display_count = 0;
+  SDL_DisplayID *displays = SDL_GetDisplays(&display_count);
+  if (!displays) {
+    return;
+  }
+
+  std::set<tVideoResolution, tVideoResolution::tVideoResolutionCompare> resolutions;
+  for (int d = 0; d < display_count; d++) {
+    SDL_DisplayID display_id = displays[d];
+
+    int modes_count = 0;
+    SDL_DisplayMode **modes = SDL_GetFullscreenDisplayModes(display_id, &modes_count);
+    if (!modes) {
+      return;
+    }
+    for (int modes_id = 0; modes_id < modes_count; modes_id++) {
+      SDL_DisplayMode *mode = modes[modes_id];
+      resolutions.emplace(tVideoResolution{static_cast<uint16_t>(mode->w), static_cast<uint16_t>(mode->h)});
+    }
+
+    SDL_free(modes);
+  }
+
+  // Take width and height argument into account
+  int widtharg = FindArg("-Width");
+  int heightarg = FindArg("-Height");
+
+  if (widtharg && !heightarg) {
+    LOG_ERROR << "Specify '-Height' argument when setting '-Width'";
+  }
+  if (heightarg && !widtharg) {
+    LOG_ERROR << "Specify '-Width' argument when setting '-Height'";
+  }
+
+  // Use the first display by default, or the one specified by "-display"
+  int display_arg = FindArg("-display");
+  int display_num = 0;
+  if (display_arg != 0) {
+    if (const char *arg_index_str = GetArg(display_arg + 1); arg_index_str == nullptr) {
+      LOG_WARNING << "No parameter for -display given";
+    } else {
+      int arg_index = atoi(arg_index_str);
+      if ((arg_index < 0) || (arg_index >= display_count)) {
+        LOG_WARNING.printf("Parameter for -display must be in the range 0..%i", display_count - 1);
+      } else {
+        display_num = arg_index;
+      }
+    }
+  }
+
+  Display_id = displays[display_num];
+
+  // Use either the CLI-provided resolution or the current display resolution as default
+  tVideoResolution current_resolution;
+  if (widtharg && heightarg) {
+    current_resolution.width = static_cast<unsigned short>(atoi(GameArgs[widtharg + 1]));
+    current_resolution.height = static_cast<unsigned short>(atoi(GameArgs[heightarg + 1]));
+    resolutions.emplace(current_resolution);
+  } else {
+    const SDL_DisplayMode *current_mode = SDL_GetCurrentDisplayMode(Display_id);
+    current_resolution.width = static_cast<unsigned short>(current_mode->w);
+    current_resolution.height = static_cast<unsigned short>(current_mode->h);
+  }
+
+  // Fill in Video_res_list from the set of unique resolutions
+  std::vector<tVideoResolution> resolutions_vec;
+  std::copy(resolutions.begin(), resolutions.end(), std::back_inserter(resolutions_vec));
+  if (resolutions_vec.empty()) {
+    return;
+  }
+  std::swap(resolutions_vec, Video_res_list);
+  SDL_free(displays);
+
+  // Find the index of the current screen resolution in the list
+  auto current_res_id = std::find(Video_res_list.begin(), Video_res_list.end(), current_resolution);
+  if (current_res_id != Video_res_list.end()) {
+    Default_resolution_id = static_cast<int>(current_res_id - Video_res_list.begin());
+  } else {
+    Default_resolution_id = 0; // default to the highest supported resolution
+  }
+
+  Current_video_resolution_id = Default_resolution_id;
+}
 
 tDetailSettings Detail_settings;
 int Default_detail_level = DETAIL_LEVEL_MED;
@@ -464,7 +582,8 @@ void ConfigSetDetailLevel(int level) {
 
 #define IDV_GAMMAAPPLY 5
 #define IDV_AUTOGAMMA 6
-
+#define IDV_CHANGE_RES_WINDOW 10
+#define UID_RESOLUTION 110
 
 static void gamma_callback(newuiTiledWindow *wnd, void *data) {
   int bm_handle = *((int *)data);
@@ -490,22 +609,22 @@ static void gamma_callback(newuiTiledWindow *wnd, void *data) {
     pnts[i].p3_flags = PF_PROJECTED;
   }
 
-  pnts[0].p3_sx = startx;
+  pnts[0].p3_sx = static_cast<float>(startx);
   pnts[0].p3_sy = GAMMA_SLICE_Y;
   pnts[0].p3_u = 0;
   pnts[0].p3_v = 0;
 
-  pnts[1].p3_sx = startx + GAMMA_SLICE_WIDTH;
+  pnts[1].p3_sx = static_cast<float>(startx + GAMMA_SLICE_WIDTH);
   pnts[1].p3_sy = GAMMA_SLICE_Y;
   pnts[1].p3_u = 2;
   pnts[1].p3_v = 0;
 
-  pnts[2].p3_sx = startx + GAMMA_SLICE_WIDTH;
+  pnts[2].p3_sx = static_cast<float>(startx + GAMMA_SLICE_WIDTH);
   pnts[2].p3_sy = GAMMA_SLICE_Y + GAMMA_SLICE_HEIGHT;
   pnts[2].p3_u = 2;
   pnts[2].p3_v = 1;
 
-  pnts[3].p3_sx = startx;
+  pnts[3].p3_sx = static_cast<float>(startx);
   pnts[3].p3_sy = GAMMA_SLICE_Y + GAMMA_SLICE_HEIGHT;
   pnts[3].p3_u = 0;
   pnts[3].p3_v = 1;
@@ -631,38 +750,43 @@ static void config_gamma() {
   }
 }
 
-
 //////////////////////////////////////////////////////////////////
 // VIDEO MENU
 //
 struct video_menu {
   newuiSheet *sheet;
 
-  bool *filtering; // settings
-  bool *mipmapping;
-  bool *vsync;
+  // settings
+  bool *filtering = nullptr;
+  bool *mipmapping = nullptr;
+  bool *vsync = nullptr;
+  char *resolution_string = nullptr;
+  short *fov = nullptr;
 
-  int *bitdepth;   // bitdepths
-  int *resolution; // all resolutions
+  int *bitdepth = nullptr; // bitdepths
 
   // sets the menu up.
   newuiSheet *setup(newuiMenu *menu) {
-    int iTemp;
     sheet = menu->AddOption(IDV_VCONFIG, TXT_OPTVIDEO, NEWUIMENU_MEDIUM);
 
     // video resolution
-    iTemp = Game_video_resolution;
     sheet->NewGroup(TXT_RESOLUTION, 0, 0);
-    resolution = sheet->AddFirstLongRadioButton("512x384");
-    sheet->AddLongRadioButton("640x480");
-    sheet->AddLongRadioButton("800x600");
-    sheet->AddLongRadioButton("960x720");
-    sheet->AddLongRadioButton("1024x768");
-    sheet->AddLongRadioButton("1280x960");
-    sheet->AddLongRadioButton("1600x1200");
-    *resolution = iTemp;
+    constexpr int RES_BUFFER_SIZE = 15;
+    resolution_string = sheet->AddChangeableText(RES_BUFFER_SIZE);
+    std::string res = Video_res_list[Current_video_resolution_id].getName();
+    snprintf(resolution_string, res.size() + 1, res.c_str());
+    sheet->AddLongButton("Change", IDV_CHANGE_RES_WINDOW);
+
+    // FOV setting 72deg -> 90deg
+    tSliderSettings settings = {};
+    settings.min_val.f = D3_DEFAULT_FOV;
+    settings.max_val.f = 90.f;
+    settings.type = SLIDER_UNITS_FLOAT;
+    fov = sheet->AddSlider("FOV", static_cast<int16_t>(settings.max_val.f - settings.min_val.f),
+                           static_cast<int16_t>(Render_FOV_setting - D3_DEFAULT_FOV), &settings);
 
 #if !defined(POSIX)
+    int iTemp = 0;
     // renderer bit depth
     switch (Render_preferred_bitdepth) {
     case 16:
@@ -685,11 +809,11 @@ struct video_menu {
     }
 #endif
     // video settings
-    sheet->NewGroup(TXT_TOGGLES, 0, 120);
+    sheet->NewGroup(TXT_TOGGLES, 0, 80);
     filtering = sheet->AddLongCheckBox(TXT_BILINEAR, (Render_preferred_state.filtering != 0));
     mipmapping = sheet->AddLongCheckBox(TXT_MIPMAPPING, (Render_preferred_state.mipping != 0));
 
-    sheet->NewGroup(TXT_MONITOR, 0, 180);
+    sheet->NewGroup(TXT_MONITOR, 0, 130);
     vsync = sheet->AddLongCheckBox(TXT_CFG_VSYNCENABLED, (Render_preferred_state.vsync_on != 0));
 
     sheet->AddText("");
@@ -713,22 +837,17 @@ struct video_menu {
     if (GetScreenMode() == SM_GAME) {
       Render_preferred_state.bit_depth = Render_preferred_bitdepth;
       rend_SetPreferredState(&Render_preferred_state);
+
+      SetScreenMode(GetScreenMode(), true);
+
+      int temp_w = Video_res_list[Current_video_resolution_id].width;
+      int temp_h = Video_res_list[Current_video_resolution_id].height;
+      Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
     }
 
-    if ((*resolution) != Game_video_resolution) {
-      // if in game, do resolution change.
-      int temp_w, temp_h;
-      int old_sm = GetScreenMode();
-
-      Game_video_resolution = *resolution;
-
-      if (old_sm == SM_GAME) {
-        SetScreenMode(SM_NULL);
-        SetScreenMode(old_sm, true);
-      }
-      temp_w = Video_res_list[Game_video_resolution].width;
-      temp_h = Video_res_list[Game_video_resolution].height;
-      Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
+    Render_FOV_setting = static_cast<float>(fov[0]) + D3_DEFAULT_FOV;
+    if (Render_FOV != Render_FOV_setting) {
+      Render_FOV = Render_FOV_setting; // ISB: this may cause discontinuities if FOV is changed while zoomed.
     }
 
     sheet = NULL;
@@ -737,13 +856,52 @@ struct video_menu {
   // process
   void process(int res) {
     switch (res) {
+    case IDV_CHANGE_RES_WINDOW: {
+      // Resolution configuration window
+      newuiTiledWindow menu;
+      newuiSheet *select_sheet;
+      newuiListBox *resolution_list;
+
+      menu.Create("Resolution", 0, 0, 300, 400);
+      select_sheet = menu.GetSheet();
+      select_sheet->NewGroup(NULL, 10, 0);
+      resolution_list = select_sheet->AddListBox(208, 257, UID_RESOLUTION, UILB_NOSORT);
+      select_sheet->NewGroup(NULL, 100, 300, NEWUI_ALIGN_HORIZ);
+      select_sheet->AddButton(TXT_OK, UID_OK);
+      select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
+
+      for (auto &resolution : Video_res_list) {
+        resolution_list->AddItem(resolution.getName().c_str());
+      }
+
+      menu.Open();
+
+      resolution_list->SetCurrentIndex(Current_video_resolution_id);
+
+      int res;
+      do {
+        res = menu.DoUI();
+      } while (res != UID_OK && res != UID_CANCEL);
+
+      if (res == UID_OK) {
+        int newindex = resolution_list->GetCurrentIndex();
+        if (static_cast<size_t>(newindex) < Video_res_list.size()) {
+          Current_video_resolution_id = newindex;
+          std::string res = Video_res_list[Current_video_resolution_id].getName();
+          snprintf(resolution_string, res.size() + 1, res.c_str());
+        }
+      }
+
+      menu.Close();
+      menu.Destroy();
+      break;
+    }
     case IDV_AUTOGAMMA:
       config_gamma();
       break;
     }
   };
 };
-
 
 //////////////////////////////////////////////////////////////////
 // SOUND MENU
@@ -755,7 +913,7 @@ struct sound_menu {
 
   int16_t *fxvolume, *musicvolume; // volume sliders
   int16_t *fxquantity;             // sound fx quantity limit
-  int *fxquality;                // sfx quality low/high
+  int *fxquality;                  // sfx quality low/high
 
   int16_t old_fxquantity;
 
@@ -920,7 +1078,6 @@ struct sound_menu {
   };
 };
 
-
 //////////////////////////////////////////////////////////////////
 // GENERAL SETTINGS (TOGGLES) MENU
 //
@@ -1035,7 +1192,6 @@ struct toggles_menu {
     }
   };
 };
-
 
 //////////////////////////////////////////////////////////////////
 //  HUD CONFIG MENU
@@ -1158,7 +1314,6 @@ struct hud_menu {
   };
 };
 
-
 //////////////////////////////////////////////////////////////////
 // DETAILS MENU
 //
@@ -1171,7 +1326,7 @@ struct details_menu {
   bool *specmap, *headlight, *mirror, // check boxes
       *dynamic, *fog, *coronas, *procedurals, *powerup_halo, *scorches, *weapon_coronas;
   int16_t *pixel_err, // 0-27 (1-28)
-      *rend_dist;   // 0-120 (80-200)
+      *rend_dist;     // 0-120 (80-200)
 
   int *texture_quality;
 
@@ -1208,7 +1363,7 @@ struct details_menu {
     // sliders
     tSliderSettings slider_set;
     sheet->NewGroup(TXT_GEOMETRY, 90, 0);
-    iTemp = MAXIMUM_TERRAIN_DETAIL - Detail_settings.Pixel_error - MINIMUM_TERRAIN_DETAIL;
+    iTemp = static_cast<int>(MAXIMUM_TERRAIN_DETAIL - Detail_settings.Pixel_error - MINIMUM_TERRAIN_DETAIL);
     if (iTemp < 0)
       iTemp = 0;
     slider_set.min_val.i = MINIMUM_TERRAIN_DETAIL;
@@ -1242,7 +1397,7 @@ struct details_menu {
     Detail_settings.Fog_enabled = *fog;
     Detail_settings.Mirrored_surfaces = *mirror;
     Detail_settings.Object_complexity = *objcomp;
-    Detail_settings.Pixel_error = MAXIMUM_TERRAIN_DETAIL - ((*pixel_err) + MINIMUM_TERRAIN_DETAIL);
+    Detail_settings.Pixel_error = static_cast<float>(MAXIMUM_TERRAIN_DETAIL - ((*pixel_err) + MINIMUM_TERRAIN_DETAIL));
     Detail_settings.Powerup_halos = *powerup_halo;
     Detail_settings.Procedurals_enabled = *procedurals;
     Detail_settings.Scorches_enabled = *scorches;
@@ -1306,7 +1461,7 @@ void details_menu::set_preset_details(int setting) {
   // now go through all the config items and set to the new values
   int iTemp;
 
-  iTemp = MAXIMUM_TERRAIN_DETAIL - ds.Pixel_error - MINIMUM_TERRAIN_DETAIL;
+  iTemp = static_cast<int>(MAXIMUM_TERRAIN_DETAIL - ds.Pixel_error - MINIMUM_TERRAIN_DETAIL);
   if (iTemp < 0)
     iTemp = 0;
   *pixel_err = (int16_t)(iTemp);

@@ -353,8 +353,8 @@ void opengl_SetDefaults() {
 extern renderer_preferred_state Render_preferred_state;
 
 int opengl_Setup(oeApplication *app, const int *width, const int *height) {
-  int winw = Video_res_list[Game_video_resolution].width;
-  int winh = Video_res_list[Game_video_resolution].height;
+  int winw = Video_res_list[Current_video_resolution_id].width;
+  int winh = Video_res_list[Current_video_resolution_id].height;
 
   SDL_ClearError();
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {
@@ -424,27 +424,9 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     int display_arg = FindArg("-display");
     int display_count = 0;
 
-    SDL_DisplayID* displays = SDL_GetDisplays(&display_count);
-
-    if (display_arg != 0) {
-      if (const char * arg_index_str = GetArg (display_arg + 1); arg_index_str == nullptr) {
-        LOG_WARNING << "No parameter for -display given";
-      } else {
-        int arg_index = atoi(arg_index_str);
-        if ((arg_index < 0) || (arg_index >= display_count)) {
-          LOG_WARNING.printf( "Parameter for -display must be in the range 0..%i", display_count-1 );
-        } else {
-          display_num = arg_index;
-        }
-      }
-    }
-
-    int display_id = displays[display_num];
-    SDL_free(displays);
-
     //High-DPI support
     {
-      float scale = SDL_GetDisplayContentScale(display_id);
+      float scale = SDL_GetDisplayContentScale(Display_id);
       LOG_WARNING.printf("Using content scale %f", scale);
       winw = std::floor(static_cast<float>(winw)*scale);
       winh = std::floor(static_cast<float>(winh)*scale);  
@@ -453,8 +435,8 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
 
     SDL_PropertiesID props = SDL_CreateProperties();
     SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "Descent 3");
-    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER,  SDL_WINDOWPOS_UNDEFINED_DISPLAY(display_id));
-    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_UNDEFINED_DISPLAY(display_id));
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER,  SDL_WINDOWPOS_UNDEFINED_DISPLAY(Display_id));
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_UNDEFINED_DISPLAY(Display_id));
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, winw);
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, winh);
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_OPENGL);
