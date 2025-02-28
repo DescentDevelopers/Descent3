@@ -11,7 +11,7 @@ target_link_libraries(inetfile PRIVATE
   ddio
 )
 target_link_libraries(inetfile PUBLIC
-  httplib::httplib # For some reason, linking it privately causes issues at runtime
+  httplib # For some reason, linking it privately causes issues at runtime
   SDL3::SDL3
 )
 target_include_directories(inetfile PUBLIC

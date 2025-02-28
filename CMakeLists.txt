@@ -174,7 +174,15 @@ endif()
 
 find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 find_package(glm REQUIRED)
-find_package(httplib REQUIRED)
+if (TARGET httlib::httplib)
+  add_library(httplib ALIAS httplib::httplib)
+else()
+  # Some Linux distributions do not package httplibConfig.cmake, so find the header manually
+  find_file(CPP_HTTPLIB_HEADER httplib.h REQUIRED)
+
+  # The target httplib::httplib cannot be created manually, so rename it
+  add_library(httplib INTERFACE ${CPP_HTTPLIB_HEADER})
+endif()
 find_package(ZLIB REQUIRED)
 find_package(plog REQUIRED)
 
