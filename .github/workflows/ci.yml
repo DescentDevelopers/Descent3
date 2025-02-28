@@ -2,9 +2,9 @@ name: Continuous Integration
 
 
 on:
-  push:
+  pull_request:
     branches:
-      - build-fixes
+      - main
     paths-ignore:
       - '**/README.md'
       - '**/LICENSE'

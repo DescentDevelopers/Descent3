@@ -36,16 +36,11 @@ jobs:
             cc: cc
             cxx: c++
             name: macOS
-          - runner: ubuntu-20.04
+          - runner: ubuntu-20.04 # Using an old version on purpose to get wider glibc compatibility
             preset: linux
             cc: gcc
             cxx: g++
             name: Linux-x64
-          - runner: ubuntu-20.04
-            preset: linux
-            cc: clang
-            cxx: clang++
-            name: Linux-x64-clang
           - runner: ubuntu-20.04
             preset: linux-cross-arm64
             cc: gcc
