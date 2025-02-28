@@ -5,15 +5,6 @@ if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
 endif()
 
-set(CODESIGN_IDENTITY "" CACHE STRING "Sets the macOS code signing identity. If set to something besides the empty string, then the dynamic libraries put into the hog files will be signed using this identity.")
-function (macos_sign target)
-  if(DEFINED CODESIGN_IDENTITY AND NOT "${CODESIGN_IDENTITY}" STREQUAL "")
-    message(STATUS "Code signing ${target}")
-    add_custom_command(TARGET ${target} POST_BUILD
-            COMMAND codesign --verbose --sign "${CODESIGN_IDENTITY}" --force --timestamp --deep -o runtime $<TARGET_FILE:${target}>)
-  endif()
-endfunction()
-
 # toolchain setup for vcpkg must be done before the 'project' call
 set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
 set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
@@ -42,6 +33,10 @@ project(Descent3
   VERSION 1.6.0
 )
 
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+  message(FATAL_ERROR "In-source builds are not supported. Please run CMake with a different build path.")
+endif()
+
 if(POLICY CMP0177) # install() DESTINATION path are normalized
   cmake_policy(SET CMP0177 NEW)
 endif()
@@ -55,6 +50,15 @@ option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(BUILD_EDITOR "Build internal editor" OFF)
 endif()
+
+set(CODESIGN_IDENTITY "" CACHE STRING "Sets the macOS code signing identity. If set to something besides the empty string, then the dynamic libraries put into the hog files will be signed using this identity.")
+function (macos_sign target)
+  if(DEFINED CODESIGN_IDENTITY AND NOT "${CODESIGN_IDENTITY}" STREQUAL "")
+    message(STATUS "Code signing ${target}")
+    add_custom_command(TARGET ${target} POST_BUILD
+            COMMAND codesign --verbose --sign "${CODESIGN_IDENTITY}" --force --timestamp --deep -o runtime $<TARGET_FILE:${target}>)
+  endif()
+endfunction()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
