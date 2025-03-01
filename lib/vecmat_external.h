@@ -40,48 +40,176 @@
  * $NoKeywords: $
  */
 
-#ifndef VECMAT_EXTERNAL_H
-#define VECMAT_EXTERNAL_H
+#pragma once
 
-#include <cstdint>
-
-// Angles are unsigned shorts
-typedef uint16_t angle; // make sure this matches up with fix.h
+#include "fix.h"
 
 struct angvec {
-  angle p, h, b;
+using T = angle;
+constexpr static const size_t N       = 3;
+constexpr static const size_t PITCH   = 0;
+constexpr static const size_t HEADING = 1;
+constexpr static const size_t BANK    = 2;
+union {
+  T phb[N];
+  struct { T p, h, b; };
 };
-
-#define IDENTITY_MATRIX                                                                                                \
-  {                                                                                                                    \
-    {1.0, 0, 0}, {0, 1.0, 0}, { 0, 0, 1.0 }                                                                            \
-  }
+constexpr static inline angvec id(ssize_t i = -1)
+{
+  return angvec{
+  ((i % N) == PITCH)   ? (T)1 : (T)0,
+  ((i % N) == HEADING) ? (T)1 : (T)0,
+  ((i % N) == BANK)    ? (T)1 : (T)0
+  };
+}
+constexpr static inline angvec ne()
+{
+  return angvec{ (T)0, (T)0, (T)0 };
+}
+};
 
 struct vector {
-  float x, y, z;
+using T = scalar;
+constexpr static const size_t N = 3;
+constexpr static const size_t X = 0;
+constexpr static const size_t Y = 1;
+constexpr static const size_t Z = 2;
+union {
+  T xyz[N];
+  struct { T x, y, z; };
+  struct { T r, g, b; };
+};
+constexpr static inline const vector id(ssize_t i = -1)
+{
+  return vector{
+  ((i % N) == X) ? (T)1 : (T)0,
+  ((i % N) == Y) ? (T)1 : (T)0,
+  ((i % N) == Z) ? (T)1 : (T)0
+  };
+}
+constexpr static inline const vector ne()
+{
+  return vector{ (T)0, (T)0, (T)0 };
+}
 };
 
-struct vector4 {
-  float x, y, z, kat_pad;
+using vector_array = vector;
+
+struct alignas(sizeof(scalar) * 4) aligned_vector {
+using T = scalar;
+constexpr static const size_t N = 3;
+constexpr static const size_t X = 0;
+constexpr static const size_t Y = 1;
+constexpr static const size_t Z = 2;
+union {
+  T xyz[N];
+  struct { T x, y, z; };
+  struct { T r, g, b; };
+};
+constexpr static inline const aligned_vector id(ssize_t i = -1)
+{
+  return aligned_vector{
+  ((i % N) == X) ? (T)1 : (T)0,
+  ((i % N) == Y) ? (T)1 : (T)0,
+  ((i % N) == Z) ? (T)1 : (T)0,
+  };
+}
+constexpr static inline const aligned_vector ne()
+{
+  return aligned_vector{ (scalar)0, (scalar)0, (scalar)0 };
+}
 };
 
-struct vector_array {
-  float xyz[3];
+using aligned_vector_array = aligned_vector;
+
+struct alignas(sizeof(scalar) * 4) vector4 {
+using T = scalar;
+constexpr static const size_t N = 4;
+constexpr static const size_t X = 0;
+constexpr static const size_t Y = 1;
+constexpr static const size_t Z = 2;
+constexpr static const size_t W = 3;
+union {
+  T xyzw[N];
+  struct { T x, y, z; union { T w; T kat_pad; }; };
+  struct { union { T r; T l; }; T g, b, a; };
+  struct { T u,v; union { T u2; T s; }; union { T v2; T t; }; };
 };
+
+constexpr static inline const vector4 id(ssize_t i = -1)
+{
+  return vector4{
+  ((i % N) == X) ? (T)1 : (T)0,
+  ((i % N) == Y) ? (T)1 : (T)0,
+  ((i % N) == Z) ? (T)1 : (T)0,
+  ((i % N) == W) ? (T)1 : (T)0
+  };
+}
+constexpr static inline const vector4 ne()
+{
+  return vector4{ (T)0, (T)0, (T)0, (T)0 };
+}
+};
+
+using vector4_array = vector4;
+using aligned_vector4 = vector4;
+using aligned_vector4_array = aligned_vector4;
 
 struct matrix {
-  vector rvec, uvec, fvec;
+constexpr static const size_t RIGHT_HAND = 0;
+constexpr static const size_t UP         = 1;
+constexpr static const size_t FORWARD    = 2;
+union {
+struct {
+  vector rvec;
+  vector uvec;
+  vector fvec;
+};
+  scalar a2d[3][3];
+  scalar a1d[9];
+};
+constexpr static inline const matrix id()
+{
+  return matrix{ vector::id(0), vector::id(1), vector::id(2) };
+}
+constexpr static inline const matrix ne()
+{
+  return matrix{ vector::ne(), vector::ne(), vector::ne() };
+}
 };
 
-struct matrix4 {
-  vector4 rvec, uvec, fvec;
+constexpr matrix IDENTITY_MATRIX = matrix::id();
+
+struct alignas(alignof(vector4) * 4) matrix4 {
+constexpr static const size_t RIGHT_HAND = 0;
+constexpr static const size_t UP         = 1;
+constexpr static const size_t FORWARD    = 2;
+constexpr static const size_t POSITION   = 3;
+union {
+struct {
+  vector4 rvec;
+  vector4 uvec;
+  vector4 fvec;
+  vector4 pos;
+};
+  scalar a2d[4][4];
+  scalar a1d[16];
+};
+constexpr static inline const matrix4 id()
+{
+  return matrix4{ vector4::id(0), vector4::id(1), vector4::id(2), vector4::id(3) };
+}
+constexpr static inline const matrix4 ne()
+{
+  return matrix4{ vector4::ne(), vector4::ne(), vector4::ne(), vector4::ne() };
+}
 };
 
 // Zero's out a vector
-static inline void vm_MakeZero(vector *v) { v->x = v->y = v->z = 0; }
+static inline void vm_MakeZero(vector *v) { *v = vector::ne(); }
 
 // Set an angvec to {0,0,0}
-static inline void vm_MakeZero(angvec *a) { a->p = a->h = a->b = 0; }
+static inline void vm_MakeZero(angvec *a) { *a = angvec::ne(); }
 
 // Checks for equality
 static inline bool operator==(vector a, vector b) {
@@ -271,4 +399,3 @@ static inline float vm_Dot3Vector(float x, float y, float z, vector *v) { return
 
 #define vm_GetSurfaceNormal vm_GetNormal
 
-#endif

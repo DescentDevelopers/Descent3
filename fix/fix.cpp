@@ -69,24 +69,24 @@
 #include "fix.h"
 
 // Tables for trig functions
-float sincos_table[321]; // 256 entries + 64 sin-only + 1 for interpolation
+scalar sincos_table[321]; // 256 entries + 64 sin-only + 1 for interpolation
 angle asin_table[257];   // 1 quadrants worth, +1 for interpolation
 angle acos_table[257];
 
 // Generate the data for the trig tables
 void InitMathTables() {
   int i;
-  float rad, s, c;
+  scalar rad, s, c;
 
   for (i = 0; i < 321; i++) {
-    rad = (float)((double)i / 256.0 * 2 * PI);
+    rad = (scalar)((double)i / 256.0 * 2 * PI);
     sincos_table[i] = std::sin(rad);
   }
 
   for (i = 0; i < 256; i++) {
 
-    s = std::asin((float)i / 256.0f);
-    c = std::acos((float)i / 256.0f);
+    s = std::asin((scalar)i / 256.0f);
+    c = std::acos((scalar)i / 256.0f);
 
     s = (s / (PI * 2));
     c = (c / (PI * 2));
@@ -100,36 +100,36 @@ void InitMathTables() {
 }
 
 // Returns the sine of the given angle.  Linearly interpolates between two entries in a 256-entry table
-float FixSin(angle a) {
+scalar FixSin(angle a) {
   int i, f;
-  float s0, s1;
+  scalar s0, s1;
 
   i = (a >> 8) & 0xff;
   f = a & 0xff;
 
   s0 = sincos_table[i];
   s1 = sincos_table[i + 1];
-  return (float)(s0 + ((s1 - s0) * (double)f / 256.0));
+  return (scalar)(s0 + ((s1 - s0) * (double)f / 256.0));
 }
 
 // Returns the cosine of the given angle.  Linearly interpolates between two entries in a 256-entry table
-float FixCos(angle a) {
+scalar FixCos(angle a) {
   int i, f;
-  float c0, c1;
+  scalar c0, c1;
 
   i = (a >> 8) & 0xff;
   f = a & 0xff;
 
   c0 = sincos_table[i + 64];
   c1 = sincos_table[i + 64 + 1];
-  return (float)(c0 + ((c1 - c0) * (double)f / 256.0));
+  return (scalar)(c0 + ((c1 - c0) * (double)f / 256.0));
 }
 
 // Get rid of the "no return value" warnings in the next three functions
 #pragma warning(disable : 4035)
 
 // compute inverse sine
-angle FixAsin(float v) {
+angle FixAsin(scalar v) {
   fix vv;
   int i, f, aa;
 
@@ -151,7 +151,7 @@ angle FixAsin(float v) {
 }
 
 // compute inverse cosine
-angle FixAcos(float v) {
+angle FixAcos(scalar v) {
   fix vv;
   int i, f, aa;
 
@@ -177,8 +177,8 @@ angle FixAcos(float v) {
 // equal the ratio of the actual cos & sin for the result angle, but the parms
 // need not be the actual cos & sin.
 // NOTE: this is different from the standard C atan2, since it is left-handed.
-angle FixAtan2(float cos, float sin) {
-  float q, m;
+angle FixAtan2(scalar cos, scalar sin) {
+  scalar q, m;
   angle t;
 
   // find smaller of two

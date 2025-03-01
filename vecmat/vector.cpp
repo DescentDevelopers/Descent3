@@ -154,15 +154,15 @@
 #include "pserror.h"
 #include "psrand.h"
 
-const vector Zero_vector = {0.0, 0.0, 0.0};
+const vector Zero_vector = vector::ne();
 const matrix Identity_matrix = IDENTITY_MATRIX;
 
 void vm_AverageVector(vector *a, int num) {
   // Averages a vector.  ie divides each component of vector a by num
   ASSERT(num != 0);
-  a->x = a->x / (float)num;
-  a->y = a->y / (float)num;
-  a->z = a->z / (float)num;
+  a->x = a->x / (scalar)num;
+  a->y = a->y / (scalar)num;
+  a->z = a->z / (scalar)num;
 }
 
 void vm_AddVectors(vector *result, vector *a, vector *b) {
@@ -181,21 +181,21 @@ void vm_SubVectors(vector *result, const vector *a, const vector *b) {
   result->z = a->z - b->z;
 }
 
-float vm_VectorDistance(const vector *a, const vector *b) {
+scalar vm_VectorDistance(const vector *a, const vector *b) {
   // Given two vectors, returns the distance between them
 
   vector dest;
-  float dist;
+  scalar dist;
 
   vm_SubVectors(&dest, a, b);
   dist = vm_GetMagnitude(&dest);
   return dist;
 }
-float vm_VectorDistanceQuick(vector *a, vector *b) {
+scalar vm_VectorDistanceQuick(vector *a, vector *b) {
   // Given two vectors, returns the distance between them
 
   vector dest;
-  float dist;
+  scalar dist;
 
   vm_SubVectors(&dest, a, b);
   dist = vm_GetMagnitudeFast(&dest);
@@ -222,24 +222,24 @@ void vm_GetPerp(vector *n, vector *a, vector *b, vector *c) {
 //			v0,v1,v2 - three clockwise vertices
 // Returns the magnitude of the normal before it was normalized.
 // The bigger this value, the better the normal.
-float vm_GetNormal(vector *n, vector *v0, vector *v1, vector *v2) {
+scalar vm_GetNormal(vector *n, vector *v0, vector *v1, vector *v2) {
   vm_GetPerp(n, v0, v1, v2);
 
   return vm_NormalizeVector(n);
 }
 
 // Does a simple dot product calculation
-float vm_DotProduct(const vector *u, const vector *v) { return (u->x * v->x) + (u->y * v->y) + (u->z * v->z); }
+scalar vm_DotProduct(const vector *u, const vector *v) { return (u->x * v->x) + (u->y * v->y) + (u->z * v->z); }
 
 // Scales all components of vector v by value s and stores result in vector d
 // dest can equal source
-void vm_ScaleVector(vector *d, vector *v, float s) {
+void vm_ScaleVector(vector *d, vector *v, scalar s) {
   d->x = (v->x * s);
   d->y = (v->y * s);
   d->z = (v->z * s);
 }
 
-void vm_ScaleAddVector(vector *d, vector *p, vector *v, float s) {
+void vm_ScaleAddVector(vector *d, vector *p, vector *v, scalar s) {
   // Scales all components of vector v by value s
   // adds the result to p and stores result in vector d
   // dest can equal source
@@ -249,7 +249,7 @@ void vm_ScaleAddVector(vector *d, vector *p, vector *v, float s) {
   d->z = p->z + (v->z * s);
 }
 
-void vm_DivVector(vector *dest, vector *src, float n) {
+void vm_DivVector(vector *dest, vector *src, scalar n) {
   // Divides a vector into n portions
   // Dest can equal src
 
@@ -270,8 +270,8 @@ void vm_CrossProduct(vector *dest, vector *u, vector *v) {
 
 // Normalize a vector.
 // Returns:  the magnitude before normalization
-float vm_NormalizeVector(vector *a) {
-  float mag;
+scalar vm_NormalizeVector(vector *a) {
+  scalar mag;
 
   mag = vm_GetMagnitude(a);
 
@@ -286,8 +286,8 @@ float vm_NormalizeVector(vector *a) {
   return mag;
 }
 
-float vm_GetMagnitude(vector *a) {
-  float f;
+scalar vm_GetMagnitude(vector *a) {
+  scalar f;
 
   f = (a->x * a->x) + (a->y * a->y) + (a->z * a->z);
 
@@ -308,7 +308,7 @@ void vm_MakeInverseMatrix(matrix *dest) {
 void vm_TransposeMatrix(matrix *m) {
   // Transposes a matrix in place
 
-  float t;
+  scalar t;
 
   t = m->uvec.x;
   m->uvec.x = m->rvec.y;
@@ -402,7 +402,7 @@ matrix operator*=(matrix &src0, matrix src1) { return (src0 = src0 * src1); }
 // Parameters:	dest - filled in with the normalized direction vector
 //					start,end - the start and end points used to calculate the vector
 // Returns:		the distance between the two input points
-float vm_GetNormalizedDir(vector *dest, vector *end, vector *start) {
+scalar vm_GetNormalizedDir(vector *dest, vector *end, vector *start) {
   vm_SubVectors(dest, end, start);
   return vm_NormalizeVector(dest);
 }
@@ -412,31 +412,31 @@ float vm_GetNormalizedDir(vector *dest, vector *end, vector *start) {
 // Parameters:	dest - filled in with the normalized direction vector
 //					start,end - the start and end points used to calculate the vector
 // Returns:		the distance between the two input points
-float vm_GetNormalizedDirFast(vector *dest, vector *end, vector *start) {
+scalar vm_GetNormalizedDirFast(vector *dest, vector *end, vector *start) {
   vm_SubVectors(dest, end, start);
   return vm_NormalizeVectorFast(dest);
 }
 
-float vm_GetMagnitudeFast(vector *v) {
-  float a, b, c, bc;
+scalar vm_GetMagnitudeFast(vector *v) {
+  scalar a, b, c, bc;
 
   a = fabs(v->x);
   b = fabs(v->y);
   c = fabs(v->z);
 
   if (a < b) {
-    float t = a;
+    scalar t = a;
     a = b;
     b = t;
   }
 
   if (b < c) {
-    float t = b;
+    scalar t = b;
     b = c;
     c = t;
 
     if (a < b) {
-      float t = a;
+      scalar t = a;
       a = b;
       b = t;
     }
@@ -449,8 +449,8 @@ float vm_GetMagnitudeFast(vector *v) {
 
 // Normalize a vector using an approximation of the magnitude
 // Returns:  the magnitude before normalization
-float vm_NormalizeVectorFast(vector *a) {
-  float mag;
+scalar vm_NormalizeVectorFast(vector *a) {
+  scalar mag;
 
   mag = vm_GetMagnitudeFast(a);
 
@@ -471,7 +471,7 @@ float vm_NormalizeVectorFast(vector *a) {
 // Parms:	norm - the (normalized) surface normal of the plane
 //				planep - a point on the plane
 // Returns:	The signed distance from the plane; negative dist is on the back of the plane
-float vm_DistToPlane(vector *checkp, vector *norm, vector *planep) {
+scalar vm_DistToPlane(vector *checkp, vector *norm, vector *planep) {
   vector t;
 
   t = *checkp - *planep;
@@ -479,9 +479,9 @@ float vm_DistToPlane(vector *checkp, vector *norm, vector *planep) {
   return t * *norm;
 }
 
-float vm_GetSlope(float x1, float y1, float x2, float y2) {
+scalar vm_GetSlope(scalar x1, scalar y1, scalar x2, scalar y2) {
   // returns the slope of a line
-  float r;
+  scalar r;
 
   if (y2 - y1 == 0)
     return (0.0);
@@ -490,8 +490,8 @@ float vm_GetSlope(float x1, float y1, float x2, float y2) {
   return (r);
 }
 
-void vm_SinCosToMatrix(matrix *m, float sinp, float cosp, float sinb, float cosb, float sinh, float cosh) {
-  float sbsh, cbch, cbsh, sbch;
+void vm_SinCosToMatrix(matrix *m, scalar sinp, scalar cosp, scalar sinb, scalar cosb, scalar sinh, scalar cosh) {
+  scalar sbsh, cbch, cbsh, sbch;
 
   sbsh = (sinb * sinh);
   cbch = (cosb * cosh);
@@ -513,7 +513,7 @@ void vm_SinCosToMatrix(matrix *m, float sinp, float cosp, float sinb, float cosb
 }
 
 void vm_AnglesToMatrix(matrix *m, angle p, angle h, angle b) {
-  float sinp, cosp, sinb, cosb, sinh, cosh;
+  scalar sinp, cosp, sinb, cosb, sinh, cosh;
 
   sinp = FixSin(p);
   cosp = FixCos(p);
@@ -530,7 +530,7 @@ void vm_AnglesToMatrix(matrix *m, angle p, angle h, angle b) {
 //					v - the forward vector of the new matrix
 //					a - the angle of rotation around the forward vector
 void vm_VectorAngleToMatrix(matrix *m, vector *v, angle a) {
-  float sinb, cosb, sinp, cosp, sinh, cosh;
+  scalar sinb, cosb, sinp, cosp, sinh, cosh;
 
   sinb = FixSin(a);
   cosb = FixCos(a);
@@ -665,7 +665,7 @@ void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
   }
 }
 
-void vm_SinCos(uint16_t a, float *s, float *c) {
+void vm_SinCos(uint16_t a, scalar *s, scalar *c) {
   if (s)
     *s = FixSin(a);
   if (c)
@@ -677,7 +677,7 @@ void vm_SinCos(uint16_t a, float *s, float *c) {
 
 // extract angles from a matrix
 angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
-  float sinh, cosh, cosp, sinb, cosb;
+  scalar sinh, cosh, cosp, sinb, cosb;
 
   // Deal with straight up or straight down
   if (IS_ZERO(m->fvec.x) && IS_ZERO(m->fvec.z)) {
@@ -706,7 +706,7 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
 }
 
 // returns the value of a determinant
-float calc_det_value(matrix *det) {
+scalar calc_det_value(matrix *det) {
   return det->rvec.x * det->uvec.y * det->fvec.z - det->rvec.x * det->uvec.z * det->fvec.y -
          det->rvec.y * det->uvec.x * det->fvec.z + det->rvec.y * det->uvec.z * det->fvec.x +
          det->rvec.z * det->uvec.x * det->fvec.y - det->rvec.z * det->uvec.y * det->fvec.x;
@@ -749,10 +749,10 @@ angle vm_DeltaAngVecNorm(vector *v0, vector *v1, vector *fvec) {
 
 // Gets the real center of a polygon
 // Returns the size of the passed in stuff
-float vm_GetCentroid(vector *centroid, vector *src, int nv) {
+scalar vm_GetCentroid(vector *centroid, vector *src, int nv) {
   ASSERT(nv > 2);
   vector normal;
-  float area, total_area;
+  scalar area, total_area;
   int i;
   vector tmp_center;
 
@@ -803,10 +803,10 @@ float vm_GetCentroid(vector *centroid, vector *src, int nv) {
 
 // Gets the real center of a polygon, but uses fast magnitude calculation
 // Returns the size of the passed in stuff
-float vm_GetCentroidFast(vector *centroid, vector *src, int nv) {
+scalar vm_GetCentroidFast(vector *centroid, vector *src, int nv) {
   ASSERT(nv > 2);
   vector normal;
-  float area, total_area;
+  scalar area, total_area;
   int i;
   vector tmp_center;
 
@@ -863,13 +863,13 @@ void vm_MakeRandomVector(vector *vec) {
 }
 
 // Given a set of points, computes the minimum bounding sphere of those points
-float vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts) {
+scalar vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts) {
   // This algorithm is from Graphics Gems I.  There's a better algorithm in Graphics Gems III that
   // we should probably implement sometime.
 
   vector *min_x, *max_x, *min_y, *max_y, *min_z, *max_z, *vp;
-  float dx, dy, dz;
-  float rad, rad2;
+  scalar dx, dy, dz;
+  scalar rad, rad2;
   int i;
 
   // Initialize min, max vars
@@ -923,14 +923,14 @@ float vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts) {
   rad2 = rad * rad;
   for (i = 0, vp = vecs; i < num_verts; i++, vp++) {
     vector delta;
-    float t2;
+    scalar t2;
 
     delta = *vp - *center;
     t2 = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 
     // If point outside, make the sphere bigger
     if (t2 > rad2) {
-      float t;
+      scalar t;
 
       t = sqrt(t2);
       rad = (rad + t) / 2;

@@ -153,8 +153,6 @@
 
 #include <cmath>
 
-#include "fix.h"
-
 // All structs, defines and inline functions are located in vecmat_external.h
 // vecmat_external.h is where anything that can be used by DLLs should be.
 #include "vecmat_external.h"
