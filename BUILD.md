@@ -45,7 +45,7 @@ You can supply these dependencies yourself via your system's library management 
 
     Open a "x64 Native Tools Command Prompt" or "x64 Native Tools PowerShell" and run:
     ```batch
-    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
+    git clone https://github.com/DescentDevelopers/Descent3
     ```
 
 3. **Build Descent3.**
@@ -88,7 +88,7 @@ Once CMake finishes, the built files will be put in `builds\win\build\Debug` or 
 3. **Clone the Descent3 source code.**
 
     ```sh
-    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
+    git clone https://github.com/DescentDevelopers/Descent3
     ```
 
 4. **Build Descent3.**
@@ -137,7 +137,7 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
         2. Install vcpkg-needed build tools and dependencies:
             * APT users
                 ```sh
-                sudo apt install -y --no-install-recommends curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev
+                sudo apt install -y --no-install-recommends curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libxcursor-dev libxfixes-dev libxi-dev libxrandr-dev libxss-dev
                 ```
             * DNF users
                 ```sh
