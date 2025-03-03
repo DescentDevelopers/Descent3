@@ -74,7 +74,6 @@ jobs:
           sudo apt update
           sudo apt install -y --no-install-recommends \
             ninja-build g++ curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libxcursor-dev libxfixes-dev libxi-dev libxrandr-dev libxss-dev
-          unset VCPKG_BINARY_SOURCES
 
       - name: Setup cmake
         if: ${{ matrix.os.runner == 'ubuntu-20.04' }}
