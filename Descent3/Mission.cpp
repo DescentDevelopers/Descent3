@@ -674,6 +674,7 @@
 #include "BOA.h"
 #include "terrain.h"
 #include "multi.h"
+#include "module.h"
 #include "hud.h"
 //	---------------------------------------------------------------------------
 //	Data
@@ -1830,7 +1831,11 @@ bool mn3_Open(const char *mn3file) {
   if (mn3_handle == 0) {
     return false;
   } else {
-    Osiris_ExtractScriptsFromHog(mn3_handle, true);
+    /* Disabled loading scripts from .mn3 files on purpose:
+    all 64-bit first-party level scripts have already been loaded from `PRIMARY_HOG`.
+    Mission files contain only Win32 scripts by default, which cannot not be loaded on 64-bit builds.
+    Reactivate this when we have a proper sandbox system to safely run third-party scripts contained in user-made levels. */ 
+     // Osiris_ExtractScriptsFromHog(mn3_handle, true);
   }
   // do table file stuff.
   ddio_SplitPath(mn3file, NULL, filename, ext);

@@ -934,7 +934,10 @@ int _get_full_path_to_module(char *module_name, char *fullpath, char *basename) 
         }
       }
     }
-    Int3(); // this file was supposed to exist
+
+    // Script was not found in extracted scripts,
+    // we are possibly looking for a script in a 3rd-party level, which we do not want to load 
+    return -2;
   } break;
   default:
     *fullpath = '\0';
