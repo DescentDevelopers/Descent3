@@ -36,17 +36,12 @@ jobs:
             cc: cc
             cxx: c++
             name: macOS
-          - runner: ubuntu-latest
+          - runner: ubuntu-20.04 # Using an old version on purpose to get wider glibc compatibility
             preset: linux
             cc: gcc
             cxx: g++
             name: Linux-x64
-          - runner: ubuntu-latest
-            preset: linux
-            cc: clang
-            cxx: clang++
-            name: Linux-x64-clang
-          - runner: ubuntu-latest
+          - runner: ubuntu-20.04
             preset: linux-cross-arm64
             cc: gcc
             cxx: g++
@@ -74,11 +69,18 @@ jobs:
         run: brew bundle install
 
       - name: Install Linux dependencies
-        if: ${{ matrix.os.runner == 'ubuntu-latest' }}
+        if: ${{ matrix.os.runner == 'ubuntu-20.04' }}
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev
+            ninja-build g++ curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libxcursor-dev libxfixes-dev libxi-dev libxrandr-dev libxss-dev
+
+      - name: Setup cmake
+        if: ${{ matrix.os.runner == 'ubuntu-20.04' }}
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.30.x'
+
 
       - name: Install Linux Cross-compilation dependencies
         if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
