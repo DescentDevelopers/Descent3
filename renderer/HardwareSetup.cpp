@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -54,23 +54,29 @@ void g3_GetProjectionMatrix(float zoom, float *projMat) {
   int viewportWidth, viewportHeight;
   rend_GetProjectionParameters(&viewportWidth, &viewportHeight);
 
-  // compute aspect ratio for this ViewPort
-  float screenAspect = rend_GetAspectRatio();
-  if (sAspect != 0.0f) {
-    // check for user override
-    screenAspect = screenAspect * 4.0f / 3.0f / sAspect;
-  }
-  float s = screenAspect * ((float)viewportWidth) / ((float)viewportHeight);
+  float s = ((float)viewportWidth) / ((float)viewportHeight);
+  float vertical_fov = zoom * 3.0f / 4.0f;
 
   // setup the matrix
   memset(projMat, 0, sizeof(float) * 16);
 
   // calculate 1/tan(fov)
-  float oOT = 1.0f / zoom;
+  float oOT = 1.0f / vertical_fov;
 
   // fill in the matrix
-  projMat[0] = oOT;
-  projMat[5] = oOT * s;
+  // Go read https://www.songho.ca/opengl/gl_projectionmatrix.html
+  // if you feel like doing the math again :)
+	if (s <= 1.0f)
+	{
+		projMat[0] = oOT;
+		projMat[5] = oOT * s;
+	}
+	else
+	{
+		projMat[0] = oOT / s;
+		projMat[5] = oOT;
+	}
+
   projMat[10] = 1.0f;
   projMat[11] = 1.0f;
   projMat[14] = -1.0f;
@@ -91,16 +97,11 @@ void g3_StartFrame(vector *view_pos, matrix *view_matrix, float zoom) {
   Window_w2 = ((float)Window_width) * 0.5f;
   Window_h2 = ((float)Window_height) * 0.5f;
 
-  // Compute aspect ratio for this window
-  float screen_aspect = rend_GetAspectRatio();
-  if (sAspect != 0.0f) {
-    // check for user override
-    screen_aspect = screen_aspect * 4.0f / 3.0f / sAspect;
-  }
-  float s = screen_aspect * (float)Window_height / (float)Window_width;
+  // ISB trick: use the window aspect only, screen aspect ratio
+  // is not important because we assume pixels are square
+  float s = (float)Window_height / (float)Window_width;
 
-  if (s <= 0.0f) // JEFF: Should this have been 1.0f?
-  {
+  if (s <= 1.0f) {
     // scale x
     Matrix_scale.x = s;
     Matrix_scale.y = 1.0f;
@@ -109,6 +110,9 @@ void g3_StartFrame(vector *view_pos, matrix *view_matrix, float zoom) {
     Matrix_scale.x = 1.0f;
   }
 
+  //ISB: Convert zoom into vertical FOV for convenience
+  zoom *= 3.f / 4.f;
+
   Matrix_scale.z = 1.0f;
 
   // Set the view variables
@@ -116,16 +120,10 @@ void g3_StartFrame(vector *view_pos, matrix *view_matrix, float zoom) {
   View_zoom = zoom;
   Unscaled_matrix = *view_matrix;
 
-  // Compute matrix scale for zoom and aspect ratio
-  if (View_zoom <= 1.0f) {
-    // zoom in by scaling z
-    Matrix_scale.z = Matrix_scale.z * View_zoom;
-  } else {
-    // zoom out by scaling x and y
-    float oOZ = 1.0f / View_zoom;
-    Matrix_scale.x = Matrix_scale.x * oOZ;
-    Matrix_scale.y = Matrix_scale.y * oOZ;
-  }
+  // Scale x and y to zoom in or out;
+  float oOZ = 1.0f / View_zoom;
+  Matrix_scale.x = Matrix_scale.x * oOZ;
+  Matrix_scale.y = Matrix_scale.y * oOZ;
 
   // Scale the matrix elements
   View_matrix.rvec = Unscaled_matrix.rvec * Matrix_scale.x;

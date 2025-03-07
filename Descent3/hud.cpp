@@ -1416,12 +1416,16 @@ void RenderHUDItems(tStatMask stat_mask) {
   font_aspect_x = (float)Game_window_w / Max_window_w;
   font_aspect_y = (float)Game_window_h / Max_window_h;
 
+  // Add HUD text scaling for large screens
+  constexpr float scaling_height_threshold = 1080.0f;
+  float scaling_factor = std::max(1.0f, Max_window_h / scaling_height_threshold);
+
   if (font_aspect_x <= 0.60f) {
-    grtext_SetFontScale(0.60f);
+    grtext_SetFontScale(0.60f * scaling_factor);
   } else if (font_aspect_x <= 0.80f) {
-    grtext_SetFontScale(0.80f);
+    grtext_SetFontScale(0.80f * scaling_factor);
   } else {
-    grtext_SetFontScale(1.0f);
+    grtext_SetFontScale(scaling_factor);
   }
 
   //	do framerate calculations

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -939,13 +939,12 @@ void SetScreenMode(int sm, bool force_res_change) {
       rend_Close();
       rend_initted = 0;
     }
-  }
-  else {
+  } else {
     int scr_width, scr_height, scr_bitdepth;
 
     if (sm == SM_GAME) {
-      scr_width = Video_res_list[Game_video_resolution].width;
-      scr_height = Video_res_list[Game_video_resolution].height;
+      scr_width = Video_res_list[Current_video_resolution_id].width;
+      scr_height = Video_res_list[Current_video_resolution_id].height;
       scr_bitdepth = Render_preferred_bitdepth;
     } else {
       scr_width = FIXED_SCREEN_WIDTH;
@@ -982,7 +981,7 @@ void SetScreenMode(int sm, bool force_res_change) {
         // We're using the default, so change some values for the menus
         rend_initted = 1;
         LOG_INFO << "Changing menu settings to default!";
-        Game_video_resolution = RES_640X480;
+        Current_video_resolution_id = Default_resolution_id;
         Render_preferred_state.bit_depth = 32;
         scr_width = 640;
         scr_height = 480;
@@ -1000,7 +999,7 @@ void SetScreenMode(int sm, bool force_res_change) {
           // We're using the default, so change some values for the menus
           rend_initted = 1;
           LOG_INFO << "Changing menu settings to default!";
-          Game_video_resolution = RES_640X480;
+          Current_video_resolution_id = Default_resolution_id;
           Render_preferred_state.bit_depth = 32;
           scr_width = 640;
           scr_height = 480;
