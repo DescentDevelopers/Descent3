@@ -406,8 +406,8 @@ t_cfg_element Cfg_joy_elements[] = {{-1, CtlText_WeaponGroup, CCITEM_WPN_X2, CCI
                                     {ctfTOGGLE_BANKBUTTON, CtlText_ToggleBank, 0, 0},
                                     {ctfBANK_LEFTBUTTON, CtlText_BankLeft, 0, 0},
                                     {ctfBANK_RIGHTBUTTON, CtlText_BankRight, 0, 0}};
-#define N_JOY_CFG_FN (sizeof(Cfg_joy_elements) / sizeof(t_cfg_element))
-#define N_KEY_CFG_FN (sizeof(Cfg_key_elements) / sizeof(t_cfg_element))
+#define N_JOY_CFG_FN std::size(Cfg_joy_elements)
+#define N_KEY_CFG_FN std::size(Cfg_key_elements)
 static void ctl_cfg_set_and_verify_changes(int16_t fnid, ct_type elem_type, uint8_t controller, uint8_t elem, int8_t slot);
 static void ctl_cfg_element_options_dialog(int16_t fnid);
 // used for adjusting settings.

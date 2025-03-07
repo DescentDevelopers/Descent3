@@ -67,7 +67,8 @@ struct tScriptInfo {
   const char *name;
 };
 
-static tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
+static constexpr tScriptInfo ScriptIDs[] = {
+                                  {ID_FRAGCRATE, "fragcrate"},
                                   {ID_NAPALMBARREL, "napalmbarrel"},
                                   {ID_ALIENCUPLINK, "Aliencuplink"},
                                   {ID_TNTHIGHYIELD, "TNTCrateHighYield"},
@@ -75,7 +76,7 @@ static tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
                                   {ID_FALLINGROCK, "FallingRock"},
                                   {ID_LAVAROCK, "LavaRock"}};
 
-static int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
+static int NumScriptIDs = std::size(ScriptIDs);
 
 class ClutterScript {
 public:

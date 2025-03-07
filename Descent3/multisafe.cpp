@@ -2498,7 +2498,7 @@ void msafe_DoPowerup(msafe_struct *mstruct) {
   }
 }
 // Data for primary powerups
-struct {
+static constexpr struct {
   const char *name;
   int weapon_index;
   int pickup_msg, already_have_msg, ammo_msg, full_msg;
@@ -2513,8 +2513,8 @@ struct {
     {"Fusioncannon", FUSION_INDEX, TXI_MSG_FUSION, TXI_MSG_FUSIONHAVE, -1, -1},
     {"Omegacannon", OMEGA_INDEX, TXI_MSG_OMEGA, TXI_MSG_OMEGAHAVE, -1, -1},
 };
-#define NUM_POWERUP_TYPES_PRIMARY (sizeof(powerup_data_primary) / sizeof(*powerup_data_primary))
-struct {
+#define NUM_POWERUP_TYPES_PRIMARY std::size(powerup_data_primary)
+static constexpr struct {
   const char *name;
   int weapon_index;
   int added_one_msg, added_multi_msg, full_msg;
@@ -2534,15 +2534,15 @@ struct {
     {"4PackFrag", FRAG_INDEX, TXI_MSG_FRAG, TXI_MSG_MULTI_FRAG, TXI_MSG_FRAGFULL},
     {"4PackGuided", GUIDED_INDEX, TXI_MSG_GUIDED, TXI_MSG_MULTI_GUIDED, TXI_MSG_GUIDEDFULL},
 };
-#define NUM_POWERUP_TYPES_SECONDARY (sizeof(powerup_data_secondary) / sizeof(*powerup_data_secondary))
-struct {
+#define NUM_POWERUP_TYPES_SECONDARY std::size(powerup_data_secondary)
+static constexpr struct {
   const char *name;
   int weapon_index;
   int ammo_msg, full_msg;
 } powerup_data_ammo[] = {{"Vauss clip", VAUSS_INDEX, TXI_MSG_VAUSSAMMO, TXI_MSG_VAUSSFULL},
                          {"MassDriverAmmo", MASSDRIVER_INDEX, TXI_MSG_MASSAMMO, TXI_MSG_MASSFULL},
                          {"NapalmTank", NAPALM_INDEX, TXI_MSG_NAPALMFUEL, TXI_MSG_NAPALMFULL}};
-#define NUM_POWERUP_TYPES_AMMO (sizeof(powerup_data_ammo) / sizeof(*powerup_data_ammo))
+#define NUM_POWERUP_TYPES_AMMO std::size(powerup_data_ammo)
 void ShowAmmoAddedMessage(int weapon_index, int msg_index, int added) {
   int added_frac = 0;
   if (Ships[Players[Player_num].ship_index].fire_flags[weapon_index] & SFF_TENTHS) {

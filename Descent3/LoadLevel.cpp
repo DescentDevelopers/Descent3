@@ -1409,7 +1409,7 @@ struct tConvertObject {
   uint8_t flag;
 };
 
-tConvertObject object_convert[] = {
+const tConvertObject object_convert[] = {
 #ifdef DEMO
     {OBJ_POWERUP, -2, "Blackshark", CONV_MULTI | CONV_SINGLE},
     {OBJ_POWERUP, -2, "ImpactMortar", 0},
@@ -1457,7 +1457,7 @@ tConvertObject object_convert[] = {
     {OBJ_POWERUP, -2, "ProxMinepowerup", CONV_MULTI},
     {OBJ_POWERUP, -2, "energy", 0}};
 
-int object_convert_size = sizeof(object_convert) / sizeof(tConvertObject);
+static constexpr int object_convert_size = std::size(object_convert);
 
 uint32_t chunk_start, chunk_size, filelen;
 
@@ -3545,7 +3545,7 @@ void VerifyObjectList() {
 }
 
 // Data to deal with a bunch of renamed doors
-const char *Old_door_names[] = {"markroomdoor.OOF1",
+static constexpr const char *Old_door_names[] = {"markroomdoor.OOF1",
                           "cellblockdoor.OOF1",
                           "towerringdoor.OOF1",
                           "hangdoorinverse.oof1",
@@ -3568,7 +3568,7 @@ const char *Old_door_names[] = {"markroomdoor.OOF1",
                           "PTMC Industrial 1",
                           "PTMC Covert 1"};
 
-const char *New_door_names[] = {"MARK'S OLD DOOR",
+static constexpr const char *New_door_names[] = {"MARK'S OLD DOOR",
                           "SEAN'S NOVAK DOOR 1",
                           "SEAN'S NOVAK DOOR 2",
                           "SEAN'S NOVAK DOOR 3",
@@ -3591,7 +3591,7 @@ const char *New_door_names[] = {"MARK'S OLD DOOR",
                           "PTMC Industrial 1",
                           "PTMC Covert 1"};
 
-#define NUM_RENAMED_DOORS (sizeof(Old_door_names) / sizeof(*Old_door_names))
+#define NUM_RENAMED_DOORS std::size(Old_door_names)
 
 // Deals with some renamed doors.  Translates the old name to the new name, then looks up the id
 int SpecialFindDoorName(const char *name) {

@@ -2862,9 +2862,10 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
 
 // This is a terrible hack -- it maps powerup to multi-pack versions
 // This mapping should really be on the powerup page
-const char *powerup_multipacks[] = {"Concussion", "4packConc",   "Frag",   "4packFrag",
-                              "Guided",     "4packGuided", "Homing", "4packHoming"};
-#define N_POWERUP_MULTIPACKS (sizeof(powerup_multipacks) / sizeof(*powerup_multipacks) / 2)
+static constexpr const char *powerup_multipacks[] =
+	{"Concussion", "4packConc",   "Frag",   "4packFrag",
+	 "Guided",     "4packGuided", "Homing", "4packHoming"};
+#define N_POWERUP_MULTIPACKS (std::size(powerup_multipacks) / 2)
 
 // Returns the index of the multipack version of the specified powerup, or -1 if none
 int FindMultipackPowerup(int single_index) {
@@ -3227,11 +3228,12 @@ void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
 //	Moves death camera a certain distance based off of direction from vec from
 //	the player. returns new dist
 //
-static vector Death_cam_vectors[] = {{0, 1, 0},  {0, 1, -1}, {0, 0, -1}, {0, -1, -1}, {0, -1, 0},  {0, -1, 1},
-                                     {0, 0, 1},  {0, 1, 1},  {1, 0, 0},  {1, 0, -1},  {-1, 0, -1}, {-1, 0, 0},
-                                     {-1, 0, 1}, {1, 0, 1},  {1, 1, 0},  {1, -1, 0},  {-1, -1, 0}, {-1, 1, 0}};
+static constexpr vector Death_cam_vectors[] =
+	{{0, 1, 0},  {0, 1, -1}, {0, 0, -1}, {0, -1, -1}, {0, -1, 0},  {0, -1, 1},
+	 {0, 0, 1},  {0, 1, 1},  {1, 0, 0},  {1, 0, -1},  {-1, 0, -1}, {-1, 0, 0},
+	 {-1, 0, 1}, {1, 0, 1},  {1, 1, 0},  {1, -1, 0},  {-1, -1, 0}, {-1, 1, 0}};
 
-#define NUM_DEATH_VECS (sizeof(Death_cam_vectors) / sizeof(vector))
+#define NUM_DEATH_VECS std::size(Death_cam_vectors)
 
 float MoveDeathCam(int slot, vector *vec, float distance) {
   fvi_info hit_data;
@@ -3317,7 +3319,7 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
 // Returns the goal room of the passed in team
 int GetGoalRoomForTeam(int teamnum) {
   ASSERT(teamnum >= 0 && teamnum <= 3);
-  int flags[] = {RF_GOAL1, RF_GOAL2, RF_GOAL3, RF_GOAL4};
+  static constexpr int flags[] = {RF_GOAL1, RF_GOAL2, RF_GOAL3, RF_GOAL4};
 
   for (int i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used && (Rooms[i].flags & flags[teamnum])) {

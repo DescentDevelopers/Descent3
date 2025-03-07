@@ -160,7 +160,7 @@ char OldCheatBuffer[] = "AAAAAAAAAAAAAAA";
 extern bool Force_one_texture;
 extern uint8_t AutomapVisMap[MAX_ROOMS];
 
-const char *LamerCheats[] = {
+constexpr const char *LamerCheats[] = {
     "?E9FI=()",  // gabbagabbahey
     "=-OQESN1",  // motherlode
     "C<G2DAIV",  // zingermans
@@ -186,7 +186,7 @@ const char *LamerCheats[] = {
     "#/;=3J8F",  // nosferatu
     "J#.DEJCT",  // pandorasbox
 };
-#define N_LAMER_CHEATS (sizeof(LamerCheats) / sizeof(*LamerCheats))
+#define N_LAMER_CHEATS std::size(LamerCheats)
 
 /*
 Demo Cheat Codes

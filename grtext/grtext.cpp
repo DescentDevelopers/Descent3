@@ -208,9 +208,9 @@ static badword bad_words[] = {
     {0xbd, 0xa4, 0xbe, 0xbe, 0x00}                    // piss
 };
 
-#define NUM_BAD_WORDS (sizeof(bad_words) / sizeof(badword))
+#define NUM_BAD_WORDS std::size(bad_words)
 
-static const char subst_chars[] = "#!&@&#%*";
+static constexpr char subst_chars[] = "#!&@&#%*";
 
 #define NUM_SUBST_CHARS (sizeof(subst_chars) - 1)
 

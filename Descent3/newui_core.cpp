@@ -513,7 +513,7 @@ static inline UISnazzyTextItem *GadgetLargeText(const char *text) {
 
 //////////////////////////////////////////////////////////////////////////////
 //	DATA
-static const char *Preloaded_bitmap_list[] = {
+static constexpr const char *Preloaded_bitmap_list[] = {
     NEWUI_LRGBTN_FILE, // common buttons
     NEWUI_LRGBTNLIT_FILE,   NEWUI_LBTN_FILE,        NEWUI_LBTNLIT_FILE,     NEWUI_BTN_FILE,
     NEWUI_BTNLIT_FILE,      NEWUI_LCHKBTN_FILE,     NEWUI_LCHKBTNLIT_FILE,  NEWUI_CHKBTN_FILE,
@@ -529,7 +529,7 @@ static const char *Preloaded_bitmap_list[] = {
     NEWUI_WIN_TITLE_L_FILE, NEWUI_WIN_TITLE_C_FILE, NEWUI_WIN_TITLE_R_FILE,
 };
 
-#define N_UI_PRELOADED_BITMAPS (sizeof(Preloaded_bitmap_list) / sizeof(const char *))
+#define N_UI_PRELOADED_BITMAPS std::size(Preloaded_bitmap_list)
 
 int UI_frame_result = -1;
 static newuiResources Newui_resources;

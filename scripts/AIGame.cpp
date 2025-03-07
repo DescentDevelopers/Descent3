@@ -1629,7 +1629,7 @@ static tThiefItems ThiefableItems[] = {
     {6, THIEFABLEITEM_ACCESSORY, 1.00f, 0.60f, 1.00f, TXT_WEAP_RAPIDFIRE},       // RapidFire
     {7, THIEFABLEITEM_ACCESSORY, 1.00f, 0.60f, 1.00f, TXT_WEAP_QUADLASERS},      // Quads
 };
-static int numThiefableItems = sizeof(ThiefableItems) / sizeof(tThiefItems);
+static int numThiefableItems = std::size(ThiefableItems);
 
 struct inv_item {
   uint16_t id;
@@ -1728,7 +1728,7 @@ static tSuperThiefItems SuperThiefableItems[] = {
     {19, -1, THIEFABLEITEM_SECONDARY, .2f, TXT_WEAP_BLACKSHARK, "", ""},                           // Black Shark
 };
 
-static int numSuperThiefableItems = sizeof(SuperThiefableItems) / sizeof(tSuperThiefItems);
+static int numSuperThiefableItems = std::size(SuperThiefableItems);
 
 #define SUPERTHIEF_MELEE_DIST 50.0f
 

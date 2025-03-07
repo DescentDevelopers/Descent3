@@ -226,7 +226,7 @@ static cvar_entry CVars[] = {
 #define CVAR_SETDIFF 34
 #define CVAR_MOTD 35
 
-#define MAX_CVARS (sizeof(CVars) / sizeof(cvar_entry))
+#define MAX_CVARS std::size(CVars)
 
 // Takes the data that the config file has an runs a server based on that data
 // Returns true if ok, false if something is wrong

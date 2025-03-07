@@ -157,8 +157,8 @@ static char Ctltext_BtnBindings[][16] = {
 
 char Ctltext_PovBindings[][16] = {"", "pov-U", "pov-R", "pov-D", "pov-L"};
 
-#define NUM_AXISBINDSTRINGS (sizeof(Ctltext_AxisBindings) / sizeof(Ctltext_AxisBindings[0]))
-#define NUM_BTNBINDSTRINGS (sizeof(Ctltext_BtnBindings) / sizeof(Ctltext_AxisBindings[0]))
+#define NUM_AXISBINDSTRINGS std::size(Ctltext_AxisBindings)
+#define NUM_BTNBINDSTRINGS std::size(Ctltext_BtnBindings)
 
 // retrieves binding text for desired function, binding, etc.
 const char *sdlgameController::get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind) {
