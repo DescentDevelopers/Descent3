@@ -22,7 +22,7 @@
 #include <fstream>
 #include <iterator>
 #include <regex>
-#include <SDL_filesystem.h>
+#include <SDL3/SDL_filesystem.h>
 
 #include "IOOps.h"
 #include "chrono_timer.h"
@@ -206,12 +206,11 @@ std::filesystem::path ddio_GetPrefPath(const char *org, const char *app) {
 }
 
 std::filesystem::path ddio_GetBasePath() {
-  char *exe_path = SDL_GetBasePath();
+  const char *exe_path = SDL_GetBasePath();
   if (!exe_path) {
     LOG_ERROR << "Failed to get parent path of executable!";
     return {};
   }
   std::filesystem::path result = std::filesystem::canonical(exe_path);
-  SDL_free(exe_path);
   return result;
 }
