@@ -592,6 +592,9 @@ void rend_SetGammaValue(float val);
 // Enable or disable fullscreen
 void rend_SetFullScreen(bool fullscreen);
 
+// Init window mode from CLI flags -w/-f
+bool rend_InitWindowMode();
+
 // Fills in the passed in pointer with the current rendering state
 void rend_GetRenderState(rendering_state *rstate);
 

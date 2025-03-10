@@ -364,19 +364,6 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     }
   }
 
-  int winArg = FindArgChar("-windowed", 'w');
-  int fsArg = FindArgChar("-fullscreen", 'f');
-
-  if ((fsArg) && (winArg)) {
-    LOG_FATAL.printf("ERROR: %s AND %s specified!", GameArgs[winArg], GameArgs[fsArg]);
-    return (0);
-  } else if (winArg) {
-    // Override default value from database
-    Game_fullscreen = false;
-  } else if (fsArg) {
-    Game_fullscreen = true;
-  }
-
   if (!Already_loaded) {
     char gl_library[256];
     int arg;
@@ -1160,6 +1147,22 @@ void rend_SetFullScreen(bool fullscreen) {
   } else {
     LOG_DEBUG.printf("Exiting fullscreen mode");
   }
+}
+
+bool rend_InitWindowMode() {
+  int winArg = FindArgChar("-windowed", 'w');
+  int fsArg = FindArgChar("-fullscreen", 'f');
+
+  if ((fsArg) && (winArg)) {
+    LOG_FATAL.printf("ERROR: %s AND %s specified!", GameArgs[winArg], GameArgs[fsArg]);
+    return false;
+  } else if (winArg) {
+    // Override default value from database
+    Game_fullscreen = false;
+  } else if (fsArg) {
+    Game_fullscreen = true;
+  }
+  return true;
 }
 
 // Resets the texture cache

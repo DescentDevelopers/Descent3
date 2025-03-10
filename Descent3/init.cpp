@@ -1292,7 +1292,7 @@ void LoadGameSettings() {
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
   Database->read_int("RS_resolution", &Current_video_resolution_id);
-  
+
   int tempval = 0;
   Database->read_int("RS_fov", &tempval);
   tempval = std::clamp(tempval, static_cast<int>(D3_DEFAULT_FOV), 90);
@@ -1578,6 +1578,9 @@ void InitGraphics(bool editor) {
   // Init our textures
   if (!InitTextures())
     Error("Failed to initialize texture system.");
+
+  // Init fullscreen/windowed mode from CLI arguments
+  rend_InitWindowMode();
 
 #ifdef EDITOR
   char *driver = "GDIX";
