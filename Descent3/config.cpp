@@ -428,7 +428,11 @@ void ConfigureDisplayResolutions() {
     Default_resolution_id = 0; // default to the highest supported resolution
   }
 
-  Current_video_resolution_id = Default_resolution_id;
+  int tmp;
+  if (!Database->read_int("RS_resolution", &tmp)) {
+    // Only override resolution id if the value was not found in the settings
+    Current_video_resolution_id = Default_resolution_id;
+  }
 }
 
 tDetailSettings Detail_settings;
