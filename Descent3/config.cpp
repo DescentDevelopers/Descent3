@@ -343,6 +343,7 @@ std::vector<tVideoResolution> Video_res_list = {{512, 384},
 int Default_resolution_id = 7; // 1280x720 in the default list
 int Current_video_resolution_id = Default_resolution_id;
 float Render_FOV_setting = 72.0f;
+bool Game_fullscreen = true;
 int Display_id = 0;
 
 void ConfigureDisplayResolutions() {
@@ -758,6 +759,7 @@ struct video_menu {
 
   // settings
   bool *filtering = nullptr;
+  bool *fullscreen = nullptr;
   bool *mipmapping = nullptr;
   bool *vsync = nullptr;
   char *resolution_string = nullptr;
@@ -776,6 +778,8 @@ struct video_menu {
     std::string res = Video_res_list[Current_video_resolution_id].getName();
     snprintf(resolution_string, res.size() + 1, res.c_str());
     sheet->AddLongButton("Change", IDV_CHANGE_RES_WINDOW);
+
+    fullscreen = sheet->AddLongCheckBox("Fullscreen", Game_fullscreen);
 
     // FOV setting 72deg -> 90deg
     tSliderSettings settings = {};
@@ -843,6 +847,11 @@ struct video_menu {
       int temp_w = Video_res_list[Current_video_resolution_id].width;
       int temp_h = Video_res_list[Current_video_resolution_id].height;
       Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
+    }
+
+    if (*fullscreen != Game_fullscreen) {
+      Game_fullscreen = *fullscreen;
+      SetScreenMode(GetScreenMode(), true); // Force reload screen mode
     }
 
     Render_FOV_setting = static_cast<float>(fov[0]) + D3_DEFAULT_FOV;

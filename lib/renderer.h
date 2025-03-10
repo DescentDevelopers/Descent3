@@ -425,6 +425,7 @@ struct renderer_preferred_state {
   uint8_t bit_depth;
   int width, height;
   uint8_t vsync_on;
+  bool fullscreen = false;
 };
 
 struct renderer_lfb {
@@ -587,6 +588,9 @@ int rend_SetPreferredState(renderer_preferred_state *pref_state);
 
 // Sets the gamma value
 void rend_SetGammaValue(float val);
+
+// Enable or disable fullscreen
+void rend_SetFullScreen(bool fullscreen);
 
 // Fills in the passed in pointer with the current rendering state
 void rend_GetRenderState(rendering_state *rstate);
