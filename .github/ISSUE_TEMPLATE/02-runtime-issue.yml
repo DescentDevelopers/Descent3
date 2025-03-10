@@ -20,13 +20,13 @@ body:
     id: os-environment
     attributes:
       label: Operating System Environment
-      description: State what host platform (Microsoft Windows, Mac OS X, or Linux) you tried. If you tried multiple, list all of them.
+      description: State what host platform (Microsoft Windows, macOS, or Linux) you tried. If you tried multiple, list all of them.
       options:
         - label: Microsoft Windows (32-bit)
           required: false
         - label: Microsoft Windows (64-bit)
           required: false
-        - label: Mac OS X
+        - label: macOS
           required: false
         - label: Linux (specify distribution and version below)
           required: false
@@ -42,7 +42,7 @@ body:
           required: false
         - label: ARM (32-bit)
           required: false
-        - label: ARM64 (64-bit; sometimes called AArch64)
+        - label: ARM64 (64-bit; sometimes called AArch64 or Apple Silicon)
           required: false
         - label: Other (RISC V, PPC...)
           required: false
