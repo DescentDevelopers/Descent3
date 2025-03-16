@@ -1726,6 +1726,7 @@ void InitMessage(const char *c, float progress) {
   }
 
   EndFrame();
+  Descent->defer();
   rend_Flip();
 }
 
