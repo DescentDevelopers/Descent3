@@ -425,7 +425,7 @@ void ConfigureDisplayResolutions() {
   if (current_res_id != Video_res_list.end()) {
     Default_resolution_id = static_cast<int>(current_res_id - Video_res_list.begin());
   } else {
-    Default_resolution_id = 0; // default to the highest supported resolution
+    Default_resolution_id = Video_res_list.size() - 1; // default to the highest supported resolution
   }
 
   int tmp;
@@ -433,6 +433,10 @@ void ConfigureDisplayResolutions() {
     // Only override resolution id if the value was not found in the settings
     Current_video_resolution_id = Default_resolution_id;
   }
+
+  LOG_DEBUG << "Resolution configured to w=" << Video_res_list[Current_video_resolution_id].width
+            << "h=" << Video_res_list[Current_video_resolution_id].height << " (id " << Current_video_resolution_id
+            << ")";
 }
 
 tDetailSettings Detail_settings;
