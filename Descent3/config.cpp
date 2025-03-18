@@ -846,21 +846,18 @@ struct video_menu {
     if (bitdepth)
       Render_preferred_bitdepth = (*bitdepth) == 1 ? 32 : 16;
 #endif
-    if (GetScreenMode() == SM_GAME) {
-      Render_preferred_state.bit_depth = Render_preferred_bitdepth;
-      rend_SetPreferredState(&Render_preferred_state);
-
-      SetScreenMode(GetScreenMode(), true);
-
-      int temp_w = Video_res_list[Current_video_resolution_id].width;
-      int temp_h = Video_res_list[Current_video_resolution_id].height;
-      Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
-    }
 
     if (*fullscreen != Game_fullscreen) {
       Game_fullscreen = *fullscreen;
-      SetScreenMode(GetScreenMode(), true); // Force reload screen mode
     }
+
+    SetScreenMode(GetScreenMode(), true);
+    Render_preferred_state.bit_depth = Render_preferred_bitdepth;
+    rend_SetPreferredState(&Render_preferred_state, true);
+
+    int temp_w = Video_res_list[Current_video_resolution_id].width;
+    int temp_h = Video_res_list[Current_video_resolution_id].height;
+    Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
 
     Render_FOV_setting = static_cast<float>(fov[0]) + D3_DEFAULT_FOV;
     if (Render_FOV != Render_FOV_setting) {

@@ -584,7 +584,7 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1);
 
 // Sets some global preferences for the renderer
 // Returns -1 if it had to use the default resolution/bitdepth
-int rend_SetPreferredState(renderer_preferred_state *pref_state);
+int rend_SetPreferredState(renderer_preferred_state *pref_state, bool reinit = false);
 
 // Sets the gamma value
 void rend_SetGammaValue(float val);

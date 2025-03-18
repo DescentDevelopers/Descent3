@@ -338,20 +338,19 @@ void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww,
 }
 
 // Sets some global preferences for the renderer
-int rend_SetPreferredState(renderer_preferred_state *pref_state) {
+int rend_SetPreferredState(renderer_preferred_state *pref_state, bool reinit) {
   int retval = 1;
 
   renderer_preferred_state old_state = gpu_preferred_state;
 
   gpu_preferred_state = *pref_state;
   if (gpu_state.initted) {
-    int reinit = 0;
     LOG_DEBUG << "Inside pref state!";
 
     // Change gamma if needed
     if (pref_state->width != gpu_state.screen_width || pref_state->height != gpu_state.screen_height ||
         old_state.bit_depth != pref_state->bit_depth) {
-      reinit = 1;
+      reinit = true;
     }
 
     if (reinit) {
