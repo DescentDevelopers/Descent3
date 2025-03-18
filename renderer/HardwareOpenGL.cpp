@@ -444,8 +444,6 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     SDL_SetWindowKeyboardGrab(GSDLWindow, grabMouse);
 
     SDL_SetWindowFullscreen(GSDLWindow, Game_fullscreen);
-  } else {
-    SDL_SetWindowSize(GSDLWindow, winw, winh);
   }
 
   if (!GSDLGLContext) {
