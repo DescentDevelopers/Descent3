@@ -772,6 +772,7 @@ struct video_menu {
   bool *vsync = nullptr;
   char *resolution_string = nullptr;
   short *fov = nullptr;
+  bool resolution_changed = false;
 
   int *bitdepth = nullptr; // bitdepths
 
@@ -847,17 +848,18 @@ struct video_menu {
       Render_preferred_bitdepth = (*bitdepth) == 1 ? 32 : 16;
 #endif
 
-    if (*fullscreen != Game_fullscreen) {
+    if (*fullscreen != Game_fullscreen || Render_preferred_state.bit_depth != Render_preferred_bitdepth ||
+        resolution_changed) {
+      resolution_changed = false;
       Game_fullscreen = *fullscreen;
+      SetScreenMode(GetScreenMode(), true);
+      Render_preferred_state.bit_depth = Render_preferred_bitdepth;
+      rend_SetPreferredState(&Render_preferred_state, true);
+
+      int temp_w = Video_res_list[Current_video_resolution_id].width;
+      int temp_h = Video_res_list[Current_video_resolution_id].height;
+      Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
     }
-
-    SetScreenMode(GetScreenMode(), true);
-    Render_preferred_state.bit_depth = Render_preferred_bitdepth;
-    rend_SetPreferredState(&Render_preferred_state, true);
-
-    int temp_w = Video_res_list[Current_video_resolution_id].width;
-    int temp_h = Video_res_list[Current_video_resolution_id].height;
-    Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
 
     Render_FOV_setting = static_cast<float>(fov[0]) + D3_DEFAULT_FOV;
     if (Render_FOV != Render_FOV_setting) {
@@ -899,7 +901,8 @@ struct video_menu {
 
       if (res == UID_OK) {
         int newindex = resolution_list->GetCurrentIndex();
-        if (static_cast<size_t>(newindex) < Video_res_list.size()) {
+        if (static_cast<size_t>(newindex) < Video_res_list.size() && Current_video_resolution_id != newindex) {
+          resolution_changed = true;
           Current_video_resolution_id = newindex;
           std::string res = Video_res_list[Current_video_resolution_id].getName();
           snprintf(resolution_string, res.size() + 1, res.c_str());
