@@ -376,12 +376,12 @@ bool matcen::DoObjProd() {
         fate = fvi_FindIntersection(&fq, &hit_info);
 
         if (fate != HIT_NONE) {
-          float ps;
-          float pr;
-          float diff;
+          scalar ps;
+          scalar pr;
+          scalar diff;
 
-          ps = (gp - obj->pos) * obj->orient.uvec;
-          pr = (hit_info.hit_pnt - obj->pos) * obj->orient.uvec;
+          ps = vm_Dot3Product((gp - obj->pos), obj->orient.uvec);
+          pr = vm_Dot3Product((hit_info.hit_pnt - obj->pos), obj->orient.uvec);
 
           if (ps != pr) {
             diff = ps - pr;
@@ -594,10 +594,10 @@ bool matcen::ComputeCreatePnt() {
           for (i = 0; i < num_valid_faces; i++) {
             // Compute the vector to the m_create_pnt
             vector to_dist = m_create_pnt - m_spawn_vec[i];
-            float dot = m_spawn_normal[i] * to_dist;
+            scalar dot = vm_Dot3Product(m_spawn_normal[i], to_dist);
 
             if (dot < spawn_dist) {
-              float add_dist = spawn_dist - dot;
+              scalar add_dist = spawn_dist - dot;
               m_create_pnt += (add_dist * m_spawn_normal[i]);
             }
           }
@@ -638,10 +638,10 @@ bool matcen::ComputeCreatePnt() {
           for (i = 0; i < num_valid_gps; i++) {
             // Compute the vector to the m_create_pnt
             vector to_dist = m_create_pnt - m_spawn_vec[i];
-            float dot = m_spawn_normal[i] * to_dist;
+            scalar dot = vm_Dot3Product(m_spawn_normal[i], to_dist);
 
             if (dot < spawn_dist) {
-              float add_dist = spawn_dist - dot;
+              scalar add_dist = spawn_dist - dot;
               m_create_pnt += (add_dist * m_spawn_normal[i]);
             }
           }

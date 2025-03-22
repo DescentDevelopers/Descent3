@@ -222,7 +222,7 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
     vm_GetNormalizedDir(&edgevec, v1, v0);
 
     checkvec = *pos - *v0;
-    dot = checkvec * edgevec;
+    dot = vm_Dot3Product(checkvec, edgevec);
     checkp = *v0 + edgevec * dot;
     dist = vm_VectorDistance(&checkp, pos);
     if (dist < size)

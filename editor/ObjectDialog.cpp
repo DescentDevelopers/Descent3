@@ -1212,12 +1212,12 @@ void CObjectDialog::OnRegroundButton() {
           fate = fvi_FindIntersection(&fq, &hit_info);
 
           if (fate != HIT_NONE) {
-            float ps;
-            float pr;
-            float diff;
+            scalar ps;
+            scalar pr;
+            scalar diff;
 
-            ps = (gp - obj->pos) * obj->orient.uvec;
-            pr = (hit_info.hit_pnt - obj->pos) * obj->orient.uvec;
+            ps = vm_Dot3Product((gp - obj->pos), obj->orient.uvec);
+            pr = vm_Dot3Product((hit_info.hit_pnt - obj->pos), obj->orient.uvec);
 
             if (ps != pr) {
               diff = ps - pr;

@@ -326,9 +326,9 @@ void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
 
   ASSERT(result != v);
 
-  result->x = *v * m->rvec;
-  result->y = *v * m->uvec;
-  result->z = *v * m->fvec;
+  result->x = vm_Dot3Product(*v, m->rvec);
+  result->y = vm_Dot3Product(*v, m->uvec);
+  result->z = vm_Dot3Product(*v, m->fvec);
 }
 
 // Multiply a vector times the transpose of a matrix
@@ -476,7 +476,7 @@ scalar vm_DistToPlane(vector *checkp, vector *norm, vector *planep) {
 
   t = *checkp - *planep;
 
-  return t * *norm;
+  return vm_Dot3Product(t, *norm);
 }
 
 scalar vm_GetSlope(scalar x1, scalar y1, scalar x2, scalar y2) {
@@ -558,7 +558,7 @@ void vm_Orthogonalize(matrix *m) {
   }
 
   // Generate right vector from forward and up vectors
-  m->rvec = m->uvec ^ m->fvec;
+  m->rvec = vm_Cross3Product(m->uvec, m->fvec);
 
   // Normaize new right vector
   if (vm_NormalizeVector(&m->rvec) == 0) {
@@ -567,7 +567,7 @@ void vm_Orthogonalize(matrix *m) {
   }
 
   // Recompute up vector, in case it wasn't entirely perpendiclar
-  m->uvec = m->fvec ^ m->rvec;
+  m->uvec = vm_Cross3Product(m->fvec, m->rvec);
 }
 
 // do the math for vm_VectorToMatrix()
@@ -602,7 +602,7 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
 
         vm_NormalizeVector(xvec);
 
-        *yvec = *zvec ^ *xvec;
+        *yvec = vm_Cross3Product(*zvec, *xvec);
       }
 
     } else { // use right vec
@@ -611,14 +611,14 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
       if (vm_NormalizeVector(xvec) == 0)
         goto bad_vector2;
 
-      *yvec = *zvec ^ *xvec;
+      *yvec = vm_Cross3Product(*zvec, *xvec);
 
       // normalize new perpendicular vector
       if (vm_NormalizeVector(yvec) == 0)
         goto bad_vector2;
 
       // now recompute right vector, in case it wasn't entirely perpendiclar
-      *xvec = *yvec ^ *zvec;
+      *xvec = vm_Cross3Product(*yvec, *zvec);
     }
   } else { // use up vec
 
@@ -626,14 +626,14 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
     if (vm_NormalizeVector(yvec) == 0)
       goto bad_vector2;
 
-    *xvec = *yvec ^ *zvec;
+    *xvec = vm_Cross3Product(*yvec, *zvec);
 
     // normalize new perpendicular vector
     if (vm_NormalizeVector(xvec) == 0)
       goto bad_vector2;
 
     // now recompute up vector, in case it wasn't entirely perpendiclar
-    *yvec = *zvec ^ *xvec;
+    *yvec = vm_Cross3Product(*zvec, *xvec);
   }
 }
 

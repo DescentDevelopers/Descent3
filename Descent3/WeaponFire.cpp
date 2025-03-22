@@ -1303,8 +1303,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
   // Set initial velocity to that of the firing object
   // Don't do it though if it is a spawned weapon
   if ((obj->mtype.phys_info.flags & PF_USES_PARENT_VELOCITY) && parent->type != OBJ_WEAPON) {
-
-    float fdot = (parent->mtype.phys_info.velocity * parent->orient.fvec);
+    float fdot = vm_Dot3Product(parent->mtype.phys_info.velocity, parent->orient.fvec);
     vector fvel;
 
     if (fdot > 0.0)
@@ -1312,8 +1311,8 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
     else
       fvel = Zero_vector;
 
-    vector rvel = 0.1f * parent->orient.rvec * (parent->mtype.phys_info.velocity * parent->orient.rvec);
-    vector uvel = 0.1f * parent->orient.uvec * (parent->mtype.phys_info.velocity * parent->orient.uvec);
+    vector rvel = 0.1f * parent->orient.rvec * vm_Dot3Product(parent->mtype.phys_info.velocity, parent->orient.rvec);
+    vector uvel = 0.1f * parent->orient.uvec * vm_Dot3Product(parent->mtype.phys_info.velocity, parent->orient.uvec);
 
     obj->mtype.phys_info.velocity += fvel + rvel + uvel;
   }
@@ -1386,13 +1385,13 @@ void HomingTurnTowardObj(object *weapon, object *target) {
   dir_to_target = target->pos + movement - weapon->pos;
 
   if (weapon->mtype.phys_info.rotdrag > 0.0f) {
-    if (dir_to_target * weapon->orient.rvec > 0.0) {
+    if (vm_Dot3Product(dir_to_target, weapon->orient.rvec) > 0.0) {
       weapon->mtype.phys_info.rotthrust.y = weapon->mtype.phys_info.full_rotthrust;
     } else {
       weapon->mtype.phys_info.rotthrust.y = -weapon->mtype.phys_info.full_rotthrust;
     }
 
-    if (dir_to_target * weapon->orient.uvec > 0.0) {
+    if (vm_Dot3Product(dir_to_target, weapon->orient.uvec) > 0.0) {
       weapon->mtype.phys_info.rotthrust.x = -weapon->mtype.phys_info.full_rotthrust;
     } else {
       weapon->mtype.phys_info.rotthrust.x = weapon->mtype.phys_info.full_rotthrust;
@@ -1448,7 +1447,7 @@ object *HomingAquireTarget(object *obj) {
       f_locked = false;
     } else if (obj->effect_info && (obj->effect_info->type_flags & EF_CLOAKED)) {
       f_locked = false;
-    } else if (to_target * obj->orient.fvec > Weapons[obj->id].homing_fov) {
+    } else if (vm_Dot3Product(to_target, obj->orient.fvec) > Weapons[obj->id].homing_fov) {
       if (track_goal == Player_object && Player_object->type == OBJ_PLAYER) {
         float sound_delta;
         float volume;
@@ -1548,8 +1547,8 @@ object *HomingAquireTarget(object *obj) {
             if (weapon_parent && !AIObjEnemy(ObjGetUltimateParent(weapon_parent), ObjGetUltimateParent(&Objects[i])))
               continue;
 
-            float dist_to_target = vm_NormalizeVector(&to_target) - obj->size - Objects[i].size;
-            float cur_dot = to_target * obj->orient.fvec;
+            scalar dist_to_target = vm_NormalizeVector(&to_target) - obj->size - Objects[i].size;
+            scalar cur_dot = vm_Dot3Product(to_target, obj->orient.fvec);
 
             if (cur_dot > Weapons[obj->id].homing_fov) {
               // Pick chaff over other objects
@@ -2098,7 +2097,7 @@ void DrawElectricalWeapon(object *obj) {
 
   if (parent_obj != Viewer_object) {
     vector temp_line_norm = -line_norm;
-    view_dp = Viewer_object->orient.fvec * temp_line_norm;
+    view_dp = vm_Dot3Product(Viewer_object->orient.fvec, temp_line_norm);
   }
 
   matrix mat;
@@ -2296,7 +2295,7 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
 
       // Set initial velocity to that of the firing object
       if (Weapons[weapon_num].phys_info.flags & PF_USES_PARENT_VELOCITY) {
-        float fdot = (obj->mtype.phys_info.velocity * obj->orient.fvec);
+        scalar fdot = vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.fvec);
         vector fvel;
 
         if (fdot > 0.0)
@@ -2304,8 +2303,8 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
         else
           fvel = Zero_vector;
 
-        vector rvel = 0.1f * obj->orient.rvec * (obj->mtype.phys_info.velocity * obj->orient.rvec);
-        vector uvel = 0.1f * obj->orient.uvec * (obj->mtype.phys_info.velocity * obj->orient.uvec);
+        vector rvel = 0.1f * obj->orient.rvec * vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.rvec);
+        vector uvel = 0.1f * obj->orient.uvec * vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.uvec);
 
         vis->velocity += fvel + rvel + uvel;
       }

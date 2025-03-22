@@ -320,10 +320,10 @@ retry:
 
   for (i = 0; i < bnlist->num_nodes; i++) {
     vector to = bnlist->nodes[i].pos - *pos;
-    float dist = vm_NormalizeVector(&to);
+    scalar dist = vm_NormalizeVector(&to);
 
     if (dist < closest_dist) {
-      float dot = *fvec * to;
+      scalar dot = vm_Dot3Product(*fvec, to);
 
       if (dot > 0.0f || f_retry) {
         /* float node_size = 0.0f;

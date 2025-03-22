@@ -286,7 +286,7 @@ static inline matrix operator-(matrix a, matrix b) {
 static inline matrix operator-=(matrix &a, matrix b) { return (a = a - b); }
 
 // Does a simple dot product calculation
-static inline float operator*(vector u, vector v) { return (u.x * v.x) + (u.y * v.y) + (u.z * v.z); }
+//static inline float operator*(vector u, vector v) { return (u.x * v.x) + (u.y * v.y) + (u.z * v.z); }
 
 // Scalar multiplication
 static inline vector operator*(vector v, float s) {
@@ -342,9 +342,10 @@ static inline matrix operator/(matrix src, float n) {
 // Scalar division
 static inline matrix operator/=(matrix &src, float n) { return (src = src / n); }
 
+inline scalar vm_Dot3Product(const vector a, const vector b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 // Computes a cross product between u and v, returns the result
 //	in Normal.
-static inline vector operator^(vector u, vector v) {
+inline vector vm_Cross3Product(vector u, vector v) {
   return aligned_vector{u.y*v.z, u.z*v.x, u.x*v.y}
        - aligned_vector{v.y*u.z, v.z*u.x, v.x*u.y};
 }
@@ -379,14 +380,13 @@ static inline vector operator-(vector a) {
 static inline vector operator*(vector v, matrix m) {
   vector result;
 
-  result.x = v * m.rvec;
-  result.y = v * m.uvec;
-  result.z = v * m.fvec;
+  result.x = vm_Dot3Product(v,m.rvec);
+  result.y = vm_Dot3Product(v,m.uvec);
+  result.z = vm_Dot3Product(v,m.fvec);
 
   return result;
 }
 
-static inline float vm_Dot3Vector(float x, float y, float z, vector *v) { return (x * v->x) + (y * v->y) + (z * v->z); }
-
+static inline scalar vm_Dot3Vector(scalar x, scalar y, scalar z, vector *v) { return (x * v->x) + (y * v->y) + (z * v->z); }
 #define vm_GetSurfaceNormal vm_GetNormal
 

@@ -866,7 +866,7 @@ void CalculateVolumeLightsForRay(float total_sphere_dist, vector *src_center) {
                   subvec /= mag;
                   int hit;
 
-                  float scalar = subvec * rad_MaxSurface->normal;
+                  float scalar = vm_Dot3Product(subvec, rad_MaxSurface->normal);
 
                   if (scalar < 0)
                     continue;
@@ -914,7 +914,7 @@ void CalculateVolumeLightsForRay(float total_sphere_dist, vector *src_center) {
                 subvec /= mag;
                 int hit;
 
-                float scalar = subvec * rad_MaxSurface->normal;
+                float scalar = vm_Dot3Product(subvec, rad_MaxSurface->normal);
 
                 if (scalar < 0)
                   continue;

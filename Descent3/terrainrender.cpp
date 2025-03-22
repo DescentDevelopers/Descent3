@@ -2542,14 +2542,14 @@ void TerrainCellVisible(int index, int *upper_left, int *lower_right) {
   corner[3] = &World_point_buffer[seg + smul_x].p3_vec;
 
   vm_GetPerp(&tempv, corner[0], corner[1], corner[2]);
-  if ((tempv * *corner[1]) < 0)
+  if (vm_Dot3Product(tempv, *corner[1]) < 0)
     *upper_left = 1;
   else
     *upper_left = 0;
 
   // Now do lower right
   vm_GetPerp(&tempv, corner[2], corner[1], corner[3]);
-  if ((tempv * *corner[1]) < 0)
+  if (vm_Dot3Product(tempv, *corner[1]) < 0)
     *lower_right = 1;
   else
     *lower_right = 0;

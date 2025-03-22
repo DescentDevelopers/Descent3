@@ -66,7 +66,7 @@ void DoRainEffect() {
   else if (randval > 80)
     randval = 80;
 
-  if ((upvec * Viewer_object->orient.uvec) < 0)
+  if (vm_Dot3Product(upvec, Viewer_object->orient.uvec) < 0)
     randval = 8000; // Make sure rain does fall upwards
 
   if (Viewer_object->type == OBJ_PLAYER && OBJECT_OUTSIDE(Viewer_object) && (ps_rand() % randval) == 0) {

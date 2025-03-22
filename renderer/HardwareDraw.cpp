@@ -109,7 +109,7 @@ bool g3_CheckNormalFacing(vector *v, vector *norm) {
 
   tempv = View_position - *v;
 
-  return ((tempv * *norm) > 0);
+  return (vm_Dot3Product(tempv, *norm) > 0);
 }
 
 bool DoFacingCheck(vector *norm, g3Point **vertlist, vector *p) {
@@ -122,7 +122,7 @@ bool DoFacingCheck(vector *norm, g3Point **vertlist, vector *p) {
     vector tempv;
     // get three points (rotated) and compute normal
     vm_GetPerp(&tempv, &vertlist[0]->p3_vec, &vertlist[1]->p3_vec, &vertlist[2]->p3_vec);
-    return ((tempv * vertlist[1]->p3_vec) < 0);
+    return (vm_Dot3Product(tempv, vertlist[1]->p3_vec) < 0);
   }
 }
 

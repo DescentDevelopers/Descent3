@@ -1786,7 +1786,7 @@ void MakeBOAVisTable(bool from_lighting) {
                   dest_vector += 0.1f * Rooms[check_room].faces[Rooms[check_room].portals[j].portal_face].normal;
 
                   subvec = dest_vector - src2;
-                  if (subvec * src_fp->normal > 0.0f)
+                  if (vm_Dot3Product(subvec, src_fp->normal) > 0.0f)
                     continue;
                   /*subvec=src2-dest_vector;
                   if (subvec * dest_fp->normal>0)

@@ -1056,7 +1056,7 @@ void do_physics_sim(object *obj) {
         to_fvi_pos = obj->ctype.laser_info.hit_wall_pnt - hit_info.hit_face_pnt[0];
       }
 
-      if ((to_hit_pnt * to_fvi_pos) <= 0.0f) {
+      if (vm_Dot3Product(to_hit_pnt, to_fvi_pos) <= 0.0f) {
         fate = hit_info.hit_type[0] = HIT_WALL;
 
         hit_info.hit_pnt = obj->ctype.laser_info.hit_pnt;
@@ -1164,7 +1164,7 @@ void do_physics_sim(object *obj) {
       // chrishack -- potentially bad -- outside to inside stuff
       // We where sitting in a wall -- invalid starting point
       // moved backwards
-      if (fate == HIT_WALL && moved_vec_n * movement_vec < -0.000001 && actual_dist != 0.0) {
+      if (fate == HIT_WALL && vm_Dot3Product(moved_vec_n, movement_vec) < -0.000001 && actual_dist != 0.0) {
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
         moved_time = 0.0;
@@ -1258,12 +1258,12 @@ void do_physics_sim(object *obj) {
 
         // Find hit speed
         moved_v = obj->pos - start_pos; // chrishack -- We already computed this!!!!!!!
-        wall_part = moved_v * hit_info.hit_wallnorm[0];
+        wall_part = vm_Dot3Product(moved_v, hit_info.hit_wallnorm[0]);
 
         if (obj->mtype.phys_info.hit_die_dot > 0.0) {
           vector m_normal = start_pos - obj->pos;
           vm_NormalizeVector(&m_normal);
-          hit_dot = m_normal * hit_info.hit_wallnorm[0];
+          hit_dot = vm_Dot3Product(m_normal, hit_info.hit_wallnorm[0]);
         }
 
         hit_speed = -(wall_part / moved_time);
@@ -1285,7 +1285,7 @@ void do_physics_sim(object *obj) {
           // Slide object along wall
 
           // We're constrained by wall, so subtract wall part from the velocity vector
-          wall_part = hit_info.hit_wallnorm[0] * obj->mtype.phys_info.velocity;
+          wall_part = vm_Dot3Product(hit_info.hit_wallnorm[0], obj->mtype.phys_info.velocity);
 
           if (!f_forcefield && !f_volatile_lava && (obj->mtype.phys_info.num_bounces <= 0) &&
               (obj->mtype.phys_info.flags & PF_STICK)) {
@@ -1344,7 +1344,7 @@ void do_physics_sim(object *obj) {
               float v_mag = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
 
               if (obj->type == OBJ_CLUTTER && hit_info.hit_wallnorm[0].y > .4 &&
-                  (obj->mtype.phys_info.velocity * hit_info.hit_wallnorm[0] > -2.0f)) {
+                  (vm_Dot3Product(obj->mtype.phys_info.velocity, hit_info.hit_wallnorm[0]) > -2.0f)) {
 
                 if (obj->mtype.phys_info.flags & PF_GRAVITY) {
                   f_turn_gravity_on = true;
@@ -1372,7 +1372,7 @@ void do_physics_sim(object *obj) {
 
             float wall_force;
 
-            wall_force = total_force * hit_info.hit_wallnorm[0];
+            wall_force = vm_Dot3Product(total_force, hit_info.hit_wallnorm[0]);
 
             if (obj->type != OBJ_CLUTTER)
               total_force +=
@@ -1457,10 +1457,10 @@ void do_physics_sim(object *obj) {
 
       // Find hit speed
       moved_v = obj->pos - start_pos; // chrishack -- We already computed this!!!!!!!
-      wall_part = moved_v * hit_info.hit_wallnorm[0];
+      wall_part = vm_Dot3Product(moved_v, hit_info.hit_wallnorm[0]);
 
       // We're constrained by wall, so subtract wall part from the velocity vector
-      wall_part = hit_info.hit_wallnorm[0] * obj->mtype.phys_info.velocity;
+      wall_part = vm_Dot3Product(hit_info.hit_wallnorm[0], obj->mtype.phys_info.velocity);
 
       if (obj->mtype.phys_info.flags & PF_BOUNCE) {
         wall_part *= 2.0; // Subtract out wall part twice to achieve bounce
@@ -1473,7 +1473,7 @@ void do_physics_sim(object *obj) {
       } else {
         float wall_force;
 
-        wall_force = total_force * hit_info.hit_wallnorm[0];
+        wall_force = vm_Dot3Product(total_force, hit_info.hit_wallnorm[0]);
         total_force += hit_info.hit_wallnorm[0] * (wall_force * -1.001); // 1.001 so that we are not quite tangential
 
         // Update velocity from wall hit.
@@ -1652,7 +1652,7 @@ int PhysCastWalkRay(object *obj, vector *p0, vector *p1, vector *hitpnt, int *st
 
 void PhysCalPntOnCPntPlane(object *obj, vector *s_pnt, vector *d_pnt, float *dist) {
   vector tpnt = *s_pnt - obj->pos;
-  *dist = obj->orient.uvec * tpnt;
+  *dist = vm_Dot3Product(obj->orient.uvec, tpnt);
 
   *d_pnt = *s_pnt + ((-(*dist)) * obj->orient.uvec);
 }
@@ -1693,7 +1693,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
 
       int fate = PhysCastWalkRay(obj, &obj->pos, &pp[i], &x, NULL, &proom[i], &norm);
       if (fate != HIT_NONE) {
-        if (norm * obj->orient.uvec < 0.4717f) {
+        if (vm_Dot3Product(norm, obj->orient.uvec) < 0.4717f) {
           return false;
         }
 
@@ -1712,7 +1712,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
       fate = PhysCastWalkRay(obj, &pp[i], &foot_pnt, &hp[i], &proom[i], NULL, &norm);
 
       if (fate != HIT_NONE) {
-        if (norm * obj->orient.uvec < 0.4717f) {
+        if (vm_Dot3Product(norm, obj->orient.uvec) < 0.4717f) {
           return false;
         }
 
@@ -1735,7 +1735,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
     //		if(uvec.y < 0.0)
     //			uvec *= -1.0f;
 
-    float dot = orient->fvec * uvec;
+    scalar dot = vm_Dot3Product(orient->fvec, uvec);
     vector fvec = orient->fvec;
     fvec -= (uvec * dot);
     vm_NormalizeVector(&fvec);
@@ -1996,8 +1996,8 @@ void do_walking_sim(object *obj) {
         matrix orient = obj->orient;
 
         if (PhysComputeWalkerPosOrient(obj, &pos, &orient) &&
-            ((!obj->ai_info) || (orient.uvec * obj->orient.uvec > .7101 && orient.fvec * obj->orient.fvec > .7101 &&
-                                 orient.rvec * obj->orient.rvec > .7101)))
+            ((!obj->ai_info) || (vm_Dot3Product(orient.uvec, obj->orient.uvec) > .7101 && vm_Dot3Product(orient.fvec, obj->orient.fvec) > .7101 &&
+                                 vm_Dot3Product(orient.rvec, obj->orient.rvec) > .7101)))
           ObjSetPos(obj, &pos, obj->roomnum, &orient, false);
         else
           ObjSetOrient(obj, &obj->ai_info->saved_orient);
@@ -2031,7 +2031,7 @@ void do_walking_sim(object *obj) {
 #endif
 
     // Remove transient portions of the velocity
-    vector t = (obj->mtype.phys_info.velocity * obj->orient.uvec) * obj->orient.uvec;
+    vector t = vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.uvec) * obj->orient.uvec;
     obj->mtype.phys_info.velocity -= t;
 
     // Initailly assume that this is the last sim cycle
@@ -2063,8 +2063,8 @@ void do_walking_sim(object *obj) {
         matrix norient;
         norient = obj->orient;
         if (PhysComputeWalkerPosOrient(obj, &footstep, &norient)) {
-          if (norient.uvec * obj->orient.uvec > .7101 && norient.fvec * obj->orient.fvec > .7101 &&
-              norient.rvec * obj->orient.rvec > .7101) {
+          if (vm_Dot3Product(norient.uvec, obj->orient.uvec) > .7101 && vm_Dot3Product(norient.fvec, obj->orient.fvec) > .7101 &&
+              vm_Dot3Product(norient.rvec, obj->orient.rvec) > .7101) {
             ObjSetOrient(obj, &norient);
 
             movement_vec = footstep - obj->pos;
@@ -2162,7 +2162,7 @@ void do_walking_sim(object *obj) {
       // chrishack -- potentially bad -- outside to inside stuff
       // We where sitting in a wall -- invalid starting point
       // moved backwards
-      if (fate == HIT_WALL && moved_vec_n * movement_vec < -0.000001 && actual_dist != 0.0) {
+      if (fate == HIT_WALL && vm_Dot3Product(moved_vec_n, movement_vec) < -0.000001 && actual_dist != 0.0) {
 
         LOG_WARNING.printf("Obj %d Walked backwards!", OBJNUM(obj));
         /*
@@ -2227,12 +2227,12 @@ void do_walking_sim(object *obj) {
 
         // Find hit speed
         moved_v = obj->pos - start_pos; // chrishack -- We already computed this!!!!!!!
-        wall_part = moved_v * hit_info.hit_wallnorm[0];
+        wall_part = vm_Dot3Product(moved_v, hit_info.hit_wallnorm[0]);
 
         if (obj->mtype.phys_info.hit_die_dot > 0.0) {
           vector m_normal = start_pos - obj->pos;
           vm_NormalizeVector(&m_normal);
-          hit_dot = m_normal * hit_info.hit_wallnorm[0];
+          hit_dot = vm_Dot3Product(m_normal, hit_info.hit_wallnorm[0]);
         }
 
         hit_speed = -(wall_part / moved_time);
@@ -2254,7 +2254,7 @@ void do_walking_sim(object *obj) {
           // Slide object along wall
 
           // We're constrained by wall, so subtract wall part from the velocity vector
-          wall_part = hit_info.hit_wallnorm[0] * obj->mtype.phys_info.velocity;
+          wall_part = vm_Dot3Product(hit_info.hit_wallnorm[0], obj->mtype.phys_info.velocity);
 
           if ((obj->mtype.phys_info.num_bounces <= 0) && (obj->mtype.phys_info.flags & PF_STICK)) {
             obj->movement_type = MT_NONE;
@@ -2282,7 +2282,7 @@ void do_walking_sim(object *obj) {
           } else {
             float wall_force;
 
-            wall_force = total_force * hit_info.hit_wallnorm[0];
+            wall_force = vm_Dot3Product(total_force, hit_info.hit_wallnorm[0]);
             total_force +=
                 hit_info.hit_wallnorm[0] * (wall_force * -1.001f); // 1.001 so that we are not quite tangential
 

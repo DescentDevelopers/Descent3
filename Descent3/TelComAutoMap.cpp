@@ -481,7 +481,7 @@ void TCAMRenderRoom(int roomnum) {
 
     // See if this face is backfaced
     vector subvec = rp->verts[fp->face_verts[0]] - AM_view_pos;
-    if (subvec * fp->normal > 0)
+    if (vm_Dot3Product(subvec, fp->normal) > 0)
       continue; // backfaced
 
     int black_face = 0, wacky_face = 0;

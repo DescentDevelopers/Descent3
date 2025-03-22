@@ -1094,19 +1094,19 @@ void SetFallingPhysics(object *objp) {
   if (objp->movement_type == MT_WALKING) {
     objp->mtype.phys_info.rotvel = Zero_vector;
     objp->mtype.phys_info.flags |= PF_POINT_COLLIDE_WALLS;
-    float proj = objp->mtype.phys_info.velocity * objp->orient.uvec;
+    scalar proj = vm_Dot3Product(objp->mtype.phys_info.velocity, objp->orient.uvec);
     if (proj < 0.0f)
       objp->mtype.phys_info.velocity -= proj * objp->orient.uvec;
 
-    objp->mtype.phys_info.velocity += objp->orient.uvec * (3.0f + ((float)ps_rand() / D3_RAND_MAX) * 5.0);
+    objp->mtype.phys_info.velocity += objp->orient.uvec * (3.0f + ((scalar)ps_rand() / D3_RAND_MAX) * 5.0);
     objp->movement_type = MT_PHYSICS;
   } else { // not a walker
 
     // If not spinning much, give the object a good spin
     if (vm_GetMagnitude(&objp->mtype.phys_info.rotvel) < 4000.0f) {
-      objp->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.x = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.y = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.z = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
     }
   }
 }

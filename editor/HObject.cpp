@@ -369,7 +369,7 @@ bool HObjectPlace(int obj_type, int obj_id) {
 
     PhysCalcGround(&ground_point, &ground_normal, objp, 0);
     to_ground = objp->pos - ground_point;
-    dist = ground_normal * to_ground;
+    dist = vm_Dot3Product(ground_normal, to_ground);
     pos += dist * *surface_norm;
 
     // Compute source and destination matrices
@@ -457,7 +457,7 @@ void ResetGroundObject(object *objp) {
 
   PhysCalcGround(&ground_point, &ground_normal, objp, 0);
   to_ground = objp->pos - ground_point;
-  dist = ground_normal * to_ground;
+  dist = vm_Dot3Product(ground_normal, to_ground);
   pos += dist * surface_norm;
 
   // Compute source and destination matrices

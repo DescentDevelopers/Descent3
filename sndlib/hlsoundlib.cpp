@@ -987,7 +987,7 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
     dir_to_sound = Viewer_object->orient.fvec;
   }
   if ((m_sound_objects[sound_obj_index].play_info.sample_skip_interval == 0) && (*adjusted_volume > 0.0f) &&
-      (dir_to_sound * Viewer_object->orient.fvec < -.5))
+      (vm_Dot3Product(dir_to_sound,Viewer_object->orient.fvec) < -.5))
     m_sound_objects[sound_obj_index].play_info.sample_skip_interval = 1;
   *virtual_pos = Viewer_object->pos + (dir_to_sound * dist);
   return true;

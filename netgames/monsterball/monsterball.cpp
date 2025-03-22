@@ -1982,7 +1982,7 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
 
   ASSERT(m1 != 0.0f && m2 != 0.0f);
 
-  v_rel = *collision_normal * (p1 - p2);
+  v_rel = vm_Dot3Product(*collision_normal, (p1 - p2));
 
   float e;
   e = vel_scalar;
@@ -2011,8 +2011,8 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
   DLLvm_CrossProduct(&cc1, &c1, &r1);
   DLLvm_CrossProduct(&cc2, &c2, &r2);
 
-  cv1 = (*collision_normal) * c1;
-  cv2 = (*collision_normal) * c2;
+  cv1 = vm_Dot3Product(*collision_normal, c1);
+  cv2 = vm_Dot3Product(*collision_normal, c2);
 
   j = (-(1.0f + e)) * v_rel;
   j /= (1 / m1 + 1 / m2 + cv1 + cv2);
