@@ -731,7 +731,7 @@ int MainMenu() {
   }
 
   // setup screen
-  SetScreenMode(SM_MENU);
+  SetScreenMode(SM_MENU, true);
   // create interface
   main_menu.Create();
   main_menu.AddItem(IDV_NEWGAME, KEY_N, TXT_MENUNEWGAME, MM_STARTMENU_TYPE);

@@ -425,6 +425,7 @@ struct renderer_preferred_state {
   uint8_t bit_depth;
   int width, height;
   uint8_t vsync_on;
+  bool fullscreen = false;
 };
 
 struct renderer_lfb {
@@ -583,10 +584,16 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1);
 
 // Sets some global preferences for the renderer
 // Returns -1 if it had to use the default resolution/bitdepth
-int rend_SetPreferredState(renderer_preferred_state *pref_state);
+int rend_SetPreferredState(renderer_preferred_state *pref_state, bool reinit = false);
 
 // Sets the gamma value
 void rend_SetGammaValue(float val);
+
+// Enable or disable fullscreen
+void rend_SetFullScreen(bool fullscreen);
+
+// Init window mode from CLI flags -w/-f
+bool rend_InitWindowMode();
 
 // Fills in the passed in pointer with the current rendering state
 void rend_GetRenderState(rendering_state *rstate);

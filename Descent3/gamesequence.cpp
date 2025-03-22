@@ -1231,7 +1231,7 @@ bool GameSequencer() {
         SetFunctionMode(MENU_MODE);
       } else {
         SetGameState(GAMESTATE_LVLPLAYING);
-        SetScreenMode(SM_GAME);
+        SetScreenMode(SM_GAME, true);
         SetHUDMode(GetHUDMode());
       }
       ResumeGame();
@@ -1513,7 +1513,7 @@ void StartLevel() {
 #endif
 
   // Set screen mode
-  SetScreenMode(SM_GAME);
+  SetScreenMode(SM_GAME, true);
 
   // Init HUD and cockpit
   int ship_index;

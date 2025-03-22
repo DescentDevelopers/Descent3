@@ -27,7 +27,6 @@ set(CPPS
   HardwarePoints.cpp
   HardwareSetup.cpp
   HardwareTransforms.cpp
-  lnxscreenmode.cpp
 )
 
 add_library(renderer STATIC ${HEADERS} ${CPPS})
