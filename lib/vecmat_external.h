@@ -44,6 +44,12 @@
 
 #include "fix.h"
 
+#ifdef _MSVC_LANG
+#define VM_ALIGN(n) __declspec(align(n))
+#else
+#define VM_ALIGN(n) __attribute__((aligned(n)))
+#endif
+
 struct angvec {
 using T = angle;
 constexpr static const size_t N       = 3;
@@ -91,38 +97,21 @@ constexpr static inline const vector ne()
 {
   return vector{ (T)0, (T)0, (T)0 };
 }
+constexpr inline const vector yzx() const
+{
+  return vector{ y, z, x };
+}
+constexpr inline const vector zxy() const
+{
+  return vector{ z, x, y };
+}
 };
 
 using vector_array = vector;
-
-struct alignas(sizeof(scalar) * 4) aligned_vector {
-using T = scalar;
-constexpr static const size_t N = 3;
-constexpr static const size_t X = 0;
-constexpr static const size_t Y = 1;
-constexpr static const size_t Z = 2;
-union {
-  T xyz[N];
-  struct { T x, y, z; };
-  struct { T r, g, b; };
-};
-constexpr static inline const aligned_vector id(ssize_t i = -1)
-{
-  return aligned_vector{
-  ((i % N) == X) ? (T)1 : (T)0,
-  ((i % N) == Y) ? (T)1 : (T)0,
-  ((i % N) == Z) ? (T)1 : (T)0,
-  };
-}
-constexpr static inline const aligned_vector ne()
-{
-  return aligned_vector{ (scalar)0, (scalar)0, (scalar)0 };
-}
-};
-
+typedef VM_ALIGN(alignof(scalar) * 4) vector aligned_vector;
 using aligned_vector_array = aligned_vector;
 
-struct alignas(sizeof(scalar) * 4) vector4 {
+struct alignas(alignof(scalar) * 4) vector4 {
 using T = scalar;
 constexpr static const size_t N = 4;
 constexpr static const size_t X = 0;
@@ -135,7 +124,6 @@ union {
   struct { union { T r; T l; }; T g, b, a; };
   struct { T u,v; union { T u2; T s; }; union { T v2; T t; }; };
 };
-
 constexpr static inline const vector4 id(ssize_t i = -1)
 {
   return vector4{
@@ -148,6 +136,14 @@ constexpr static inline const vector4 id(ssize_t i = -1)
 constexpr static inline const vector4 ne()
 {
   return vector4{ (T)0, (T)0, (T)0, (T)0 };
+}
+constexpr inline operator aligned_vector()
+{
+  return *(aligned_vector*)this;
+}
+constexpr inline operator const aligned_vector() const
+{
+  return *(const aligned_vector*)this;
 }
 };
 
@@ -349,13 +345,8 @@ static inline matrix operator/=(matrix &src, float n) { return (src = src / n); 
 // Computes a cross product between u and v, returns the result
 //	in Normal.
 static inline vector operator^(vector u, vector v) {
-  vector dest;
-
-  dest.x = (u.y * v.z) - (u.z * v.y);
-  dest.y = (u.z * v.x) - (u.x * v.z);
-  dest.z = (u.x * v.y) - (u.y * v.x);
-
-  return dest;
+  return aligned_vector{u.y*v.z, u.z*v.x, u.x*v.y}
+       - aligned_vector{v.y*u.z, v.z*u.x, v.x*u.y};
 }
 
 // Matrix transpose
