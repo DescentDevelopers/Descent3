@@ -44,6 +44,7 @@
 #include "dedicated_server.h"
 #include "init.h"
 #include "log.h"
+#include "config.h"
 
 #ifdef WIN32
 #include "debug.h"
@@ -252,14 +253,6 @@ int main(int argc, char *argv[]) {
   // !!! FIXME: Don't use an event filter!
   SDL_SetEventFilter(d3SDLEventFilter, nullptr);
   install_signal_handlers();
-
-  int winArg = FindArgChar("-windowed", 'w');
-  int fsArg = FindArgChar("-fullscreen", 'f');
-
-  if ((fsArg) && (winArg)) {
-    LOG_FATAL.printf("ERROR: %s AND %s specified!", GameArgs[winArg], GameArgs[fsArg]);
-    return (0);
-  }
 
   // Initialize our OS Object.  This could be a game dependant OS object, or a default OS object.
   // Once we create it, if successful, we can start the game.

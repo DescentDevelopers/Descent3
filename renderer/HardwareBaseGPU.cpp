@@ -1,19 +1,19 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Descent Developers
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Descent 3
+ * Copyright (C) 2024 Descent Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 // TODO: This is missing a good way of overriding base behavior (like, you know, method overrides...)
@@ -125,16 +125,13 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
 void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, uint8_t *framebuffer) {}
 
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(int8_t state) {
-  gpu_state.cur_bilinear_state = state;
-}
+void rend_SetFiltering(int8_t state) { gpu_state.cur_bilinear_state = state; }
 
 // Sets a bitmap as a overlay map to rendered on top of the next texture map
 // a -1 value indicates no overlay map
 void rend_SetOverlayMap(int handle) { gpu_Overlay_map = handle; }
 
 void rend_SetOverlayType(uint8_t type) { gpu_Overlay_type = type; }
-
 
 void rend_FillCircle(ddgr_color col, int x, int y, int rad) {}
 
@@ -190,9 +187,7 @@ void rend_SetZBias(float z_bias) {
 
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
 // useful for motion blur effect
-void rend_SetAlphaFactor(float val) {
-  gpu_Alpha_factor = std::clamp(val, 0.0f, 1.0f);
-}
+void rend_SetAlphaFactor(float val) { gpu_Alpha_factor = std::clamp(val, 0.0f, 1.0f); }
 
 // Returns the current Alpha factor
 float rend_GetAlphaFactor() { return gpu_Alpha_factor; }
@@ -343,27 +338,26 @@ void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww,
 }
 
 // Sets some global preferences for the renderer
-int rend_SetPreferredState(renderer_preferred_state *pref_state) {
+int rend_SetPreferredState(renderer_preferred_state *pref_state, bool reinit) {
   int retval = 1;
+
   renderer_preferred_state old_state = gpu_preferred_state;
 
   gpu_preferred_state = *pref_state;
   if (gpu_state.initted) {
-    int reinit = 0;
     LOG_DEBUG << "Inside pref state!";
 
-    // Change gamma if needed
-    if (pref_state->width != gpu_state.screen_width || pref_state->height != gpu_state.screen_height ||
-        old_state.bit_depth != pref_state->bit_depth) {
-      reinit = 1;
+    if (old_state.fullscreen != pref_state->fullscreen) {
+      rend_SetFullScreen(pref_state->fullscreen);
     }
 
-    if (reinit) {
-      retval = rend_ReInit();
-    } else {
-      if (old_state.gamma != pref_state->gamma) {
-        rend_SetGammaValue(pref_state->gamma);
-      }
+    if (pref_state->width != gpu_state.screen_width || pref_state->height != gpu_state.screen_height ||
+        old_state.bit_depth != pref_state->bit_depth || reinit) {
+      rend_ReInit();
+    }
+
+    if (old_state.gamma != pref_state->gamma) {
+      rend_SetGammaValue(pref_state->gamma);
     }
   } else {
     gpu_preferred_state = *pref_state;
@@ -458,7 +452,8 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   gpu_RenderPolygon(&vArray[0], nv);
 }
 
-color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud, bool checkTextureQuality, bool flatColorForNoLight) {
+color_array DeterminePointColor(g3Point const *pnt, bool disableGouraud, bool checkTextureQuality,
+                                bool flatColorForNoLight) {
   auto alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
   if (gpu_state.cur_alpha_type & ATF_VERTEX) {
     alpha *= pnt->p3_a;
@@ -512,7 +507,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
     vData->color = DeterminePointColor(pnt);
-    
+
     vData->uv.s = pnt->p3_u;
     vData->uv.t = pnt->p3_v;
     vData->uv.r = 0.0f;

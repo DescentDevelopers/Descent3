@@ -343,6 +343,7 @@ std::vector<tVideoResolution> Video_res_list = {{512, 384},
 int Default_resolution_id = 7; // 1280x720 in the default list
 int Current_video_resolution_id = Default_resolution_id;
 float Render_FOV_setting = 72.0f;
+bool Game_fullscreen = true;
 int Display_id = 0;
 
 void ConfigureDisplayResolutions() {
@@ -424,10 +425,18 @@ void ConfigureDisplayResolutions() {
   if (current_res_id != Video_res_list.end()) {
     Default_resolution_id = static_cast<int>(current_res_id - Video_res_list.begin());
   } else {
-    Default_resolution_id = 0; // default to the highest supported resolution
+    Default_resolution_id = Video_res_list.size() - 1; // default to the highest supported resolution
   }
 
-  Current_video_resolution_id = Default_resolution_id;
+  int tmp;
+  if (!Database->read_int("RS_resolution", &tmp)) {
+    // Only override resolution id if the value was not found in the settings
+    Current_video_resolution_id = Default_resolution_id;
+  }
+
+  LOG_DEBUG << "Resolution configured to w=" << Video_res_list[Current_video_resolution_id].width
+            << "h=" << Video_res_list[Current_video_resolution_id].height << " (id " << Current_video_resolution_id
+            << ")";
 }
 
 tDetailSettings Detail_settings;
@@ -758,10 +767,12 @@ struct video_menu {
 
   // settings
   bool *filtering = nullptr;
+  bool *fullscreen = nullptr;
   bool *mipmapping = nullptr;
   bool *vsync = nullptr;
   char *resolution_string = nullptr;
   short *fov = nullptr;
+  bool resolution_changed = false;
 
   int *bitdepth = nullptr; // bitdepths
 
@@ -776,6 +787,8 @@ struct video_menu {
     std::string res = Video_res_list[Current_video_resolution_id].getName();
     snprintf(resolution_string, res.size() + 1, res.c_str());
     sheet->AddLongButton("Change", IDV_CHANGE_RES_WINDOW);
+
+    fullscreen = sheet->AddLongCheckBox("Fullscreen", Game_fullscreen);
 
     // FOV setting 72deg -> 90deg
     tSliderSettings settings = {};
@@ -834,11 +847,14 @@ struct video_menu {
     if (bitdepth)
       Render_preferred_bitdepth = (*bitdepth) == 1 ? 32 : 16;
 #endif
-    if (GetScreenMode() == SM_GAME) {
-      Render_preferred_state.bit_depth = Render_preferred_bitdepth;
-      rend_SetPreferredState(&Render_preferred_state);
 
+    if (*fullscreen != Game_fullscreen || Render_preferred_state.bit_depth != Render_preferred_bitdepth ||
+        resolution_changed) {
+      resolution_changed = false;
+      Game_fullscreen = *fullscreen;
       SetScreenMode(GetScreenMode(), true);
+      Render_preferred_state.bit_depth = Render_preferred_bitdepth;
+      rend_SetPreferredState(&Render_preferred_state, true);
 
       int temp_w = Video_res_list[Current_video_resolution_id].width;
       int temp_h = Video_res_list[Current_video_resolution_id].height;
@@ -885,7 +901,8 @@ struct video_menu {
 
       if (res == UID_OK) {
         int newindex = resolution_list->GetCurrentIndex();
-        if (static_cast<size_t>(newindex) < Video_res_list.size()) {
+        if (static_cast<size_t>(newindex) < Video_res_list.size() && Current_video_resolution_id != newindex) {
+          resolution_changed = true;
           Current_video_resolution_id = newindex;
           std::string res = Video_res_list[Current_video_resolution_id].getName();
           snprintf(resolution_string, res.size() + 1, res.c_str());

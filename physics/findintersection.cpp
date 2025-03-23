@@ -1046,7 +1046,7 @@ inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plan
   // I picked .00000001 from my head.  It would be pretty parallel of a pretty short movement and
   // the linear combination below might not product a nice answer
   if (fabs(proj_dist_line) <= 0.00000000001) {
-    float plane_dist;
+    scalar plane_dist;
 
     plane_dist = vm_Dot3Product((*p1 - *plane_pnt),*plane_norm);
     if (plane_dist >= rad)

@@ -1159,6 +1159,7 @@ void SaveGameSettings() {
 
   Database->write("RS_resolution", Current_video_resolution_id);
   Database->write("RS_fov", static_cast<int>(Render_FOV_setting));
+  Database->write("RS_fullscreen", static_cast<int>(Game_fullscreen));
 
   Database->write("RS_bitdepth", Render_preferred_bitdepth);
   Database->write("RS_bilear", Render_preferred_state.filtering);
@@ -1291,12 +1292,15 @@ void LoadGameSettings() {
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
   Database->read_int("RS_resolution", &Current_video_resolution_id);
-  
-  int tempfov = 0;
-  Database->read_int("RS_fov", &tempfov);
-  tempfov = std::clamp(tempfov, static_cast<int>(D3_DEFAULT_FOV), 90);
-  Render_FOV_setting = static_cast<float>(tempfov);
+
+  int tempval = 0;
+  Database->read_int("RS_fov", &tempval);
+  tempval = std::clamp(tempval, static_cast<int>(D3_DEFAULT_FOV), 90);
+  Render_FOV_setting = static_cast<float>(tempval);
   Render_FOV = Render_FOV_setting;
+
+  Database->read_int("RS_fullscreen", &tempval);
+  Game_fullscreen = tempval != 0;
 
   Database->read_int("RS_bilear", &Render_preferred_state.filtering);
   Database->read_int("RS_mipping", &Render_preferred_state.mipping);
@@ -1411,7 +1415,7 @@ void InitIOSystems(bool editor) {
     writable_base_directory = std::filesystem::current_path();
   }
 
-  ddio_SetWorkingDir(writable_base_directory.u8string().c_str());
+  ddio_SetWorkingDir((const char*)writable_base_directory.u8string().c_str());
   cf_AddBaseDirectory(writable_base_directory);
 
   // Set any additional base directories
@@ -1575,6 +1579,9 @@ void InitGraphics(bool editor) {
   if (!InitTextures())
     Error("Failed to initialize texture system.");
 
+  // Init fullscreen/windowed mode from CLI arguments
+  rend_InitWindowMode();
+
 #ifdef EDITOR
   char *driver = "GDIX";
 
@@ -1719,6 +1726,7 @@ void InitMessage(const char *c, float progress) {
   }
 
   EndFrame();
+  Descent->defer();
   rend_Flip();
 }
 
@@ -2026,15 +2034,15 @@ void SetupTempDirectory(void) {
     exit(1);
   }
   // restore working dir
-  ddio_SetWorkingDir(cf_GetWritableBaseDirectory().u8string().c_str());
+  ddio_SetWorkingDir((const char*)cf_GetWritableBaseDirectory().u8string().c_str());
 }
 
 void DeleteTempFiles() {
   ddio_DoForeachFile(Descent3_temp_directory, std::regex("d3[smocti].+\\.tmp"), [](const std::filesystem::path &path) {
     std::error_code ec;
     std::filesystem::remove(path, ec);
-    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", path.u8string().c_str(),
-                              ec.message().c_str());
+    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", (const char*)path.u8string().c_str(),
+                              (const char*)ec.message().c_str());
   });
 }
 

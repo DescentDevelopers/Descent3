@@ -230,10 +230,13 @@ void grtext_Init() {
 }
 
 //	macro to get character width
+#undef CHAR_WIDTH
 static inline int CHAR_WIDTH(int font, int ch) { return (int)(grfont_GetCharWidth(font, ch) * Grtext_scale); }
 
+#undef CHAR_HEIGHT
 static inline int CHAR_HEIGHT(int font) { return (int)(grfont_GetHeight(font) * Grtext_scale); }
 
+#undef CHAR_SPACING
 static inline int CHAR_SPACING(int font, int ch1, int ch2) { return (int)(grfont_GetKernedSpacing(font, ch1, ch2)); }
 
 //	macro to get character width
