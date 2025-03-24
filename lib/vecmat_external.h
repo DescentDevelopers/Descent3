@@ -68,11 +68,15 @@ constexpr static inline angvec id(ssize_t i = -1)
   ((i % N) == BANK)    ? (T)1 : (T)0
   };
 }
-constexpr static inline angvec ne()
-{
-  return angvec{ (T)0, (T)0, (T)0 };
-}
+constexpr static inline angvec ne()       { return angvec{ (T)0, (T)0, (T)0 }; }
+constexpr inline const angvec hbp() const { return angvec{ h, b, p }; }
+constexpr inline const angvec bph() const { return angvec{ b, p, h }; }
+constexpr inline T sum() const            { return p + h + b; }
+constexpr inline angvec operator-()      { return angvec{(T)-p, (T)-h, (T)-b }; }
+constexpr inline angvec operator*(angvec other) { return angvec{(T)(p * other.p),(T)(h * other.h),(T)(b * other.b)}; }
 };
+// Set an angvec to {0,0,0}
+static inline void vm_MakeZero(angvec *a) { *a = angvec::ne(); }
 
 struct vector {
 using T = scalar;
@@ -93,19 +97,44 @@ constexpr static inline const vector id(ssize_t i = -1)
   ((i % N) == Z) ? (T)1 : (T)0
   };
 }
-constexpr static inline const vector ne()
-{
-  return vector{ (T)0, (T)0, (T)0 };
-}
-constexpr inline const vector yzx() const
-{
-  return vector{ y, z, x };
-}
-constexpr inline const vector zxy() const
-{
-  return vector{ z, x, y };
-}
+constexpr static inline const vector ne() { return vector{ (T)0, (T)0, (T)0 }; }
+constexpr inline const vector yzx() const { return vector{ y, z, x }; }
+constexpr inline const vector zxy() const { return vector{ z, x, y }; }
+constexpr inline T sum() const            { return x + y + z; }
+constexpr inline vector operator-()       { return vector{(T)-x, (T)-y, (T)-z }; }
+
+constexpr inline vector operator+(const vector other) const { return { x + other.x, y + other.y, z + other.z }; }
+constexpr inline vector operator-(const vector other) const { return { x - other.x, y - other.y, z - other.z }; }
+constexpr inline vector operator*(const vector other) const { return { x * other.x, y * other.y, z * other.z }; }
+constexpr inline vector operator/(const vector other) const { return { x / other.x, y / other.y, z / other.z }; }
+
+constexpr inline vector& operator+=(const vector other) { return ((*this) = (*this) + other); }
+constexpr inline vector& operator-=(const vector other) { return ((*this) = (*this) - other); }
+constexpr inline vector& operator*=(const vector other) { return ((*this) = (*this) * other); }
+constexpr inline vector& operator/=(const vector other) { return ((*this) = (*this) / other); }
+
+constexpr inline vector operator+(const scalar s) const { return (*this) + vector{ s, s, s }; }
+constexpr inline vector operator-(const scalar s) const { return (*this) - vector{ s, s, s }; }
+constexpr inline vector operator*(const scalar s) const { return (*this) * vector{ s, s, s }; }
+constexpr inline vector operator/(const scalar s) const { return (*this) / vector{ s, s, s }; }
+
+constexpr inline vector& operator+=(const scalar s) { return ((*this) = (*this) + s); }
+constexpr inline vector& operator-=(const scalar s) { return ((*this) = (*this) - s); }
+constexpr inline vector& operator*=(const scalar s) { return ((*this) = (*this) * s); }
+constexpr inline vector& operator/=(const scalar s) { return ((*this) = (*this) / s); }
+
+friend inline vector operator+(const scalar s, vector rhs) { return  rhs + s; }
+friend inline vector operator-(const scalar s, vector rhs) { return -rhs + s; }
+friend inline vector operator*(const scalar s, vector rhs) { return  rhs * s; }
+friend inline vector operator/(const scalar s, vector rhs) { return (vector{s,s,s}/rhs); }
+
+constexpr inline bool operator==(const vector& other) { return x == other.x && y == other.y && z == other.z; }
+constexpr inline bool operator!=(const vector& other) { return !((*this) == other); }
+constexpr inline bool operator<(const vector& other) { return x < other.x || y < other.y || z < other.z; }
 };
+
+// zero's out a vector
+static inline void vm_MakeZero(vector *v) { *v = vector::ne(); }
 
 using vector_array = vector;
 typedef VM_ALIGN(alignof(scalar) * 4) vector aligned_vector;
@@ -133,18 +162,12 @@ constexpr static inline const vector4 id(ssize_t i = -1)
   ((i % N) == W) ? (T)1 : (T)0
   };
 }
-constexpr static inline const vector4 ne()
-{
-  return vector4{ (T)0, (T)0, (T)0, (T)0 };
-}
-constexpr inline operator aligned_vector()
-{
-  return *(aligned_vector*)this;
-}
-constexpr inline operator const aligned_vector() const
-{
-  return *(const aligned_vector*)this;
-}
+constexpr static inline const vector4 ne() { return vector4{ (T)0, (T)0, (T)0, (T)0 }; }
+constexpr inline operator aligned_vector() { return *(aligned_vector*)this; }
+constexpr inline operator const aligned_vector() const { return *(const aligned_vector*)this; }
+constexpr inline T sum() const             { return x + y + z + w; }
+constexpr inline vector4 operator-()      { return vector4{(T)-x, (T)-y, (T)-z, (T)-w}; }
+constexpr inline vector4 operator*(vector4 other)  { return vector4{x * other.x,y * other.y,z * other.z,w * other.w}; }
 };
 
 using vector4_array = vector4;
@@ -201,48 +224,6 @@ constexpr static inline const matrix4 ne()
 }
 };
 
-// Zero's out a vector
-static inline void vm_MakeZero(vector *v) { *v = vector::ne(); }
-
-// Set an angvec to {0,0,0}
-static inline void vm_MakeZero(angvec *a) { *a = angvec::ne(); }
-
-// Checks for equality
-static inline bool operator==(vector a, vector b) {
-  bool equality = false;
-  // Adds two vectors.
-
-  if (a.x == b.x && a.y == b.y && a.z == b.z)
-    equality = true;
-
-  return equality;
-}
-
-// Checks for inequality
-static inline bool operator!=(vector a, vector b) {
-  bool equality = true;
-  // Adds two vectors.
-
-  if (a.x == b.x && a.y == b.y && a.z == b.z)
-    equality = false;
-
-  return equality;
-}
-
-// Adds 2 vectors
-static inline vector operator+(vector a, vector b) {
-  // Adds two vectors.
-
-  a.x += b.x;
-  a.y += b.y;
-  a.z += b.z;
-
-  return a;
-}
-
-// Adds 2 vectors
-static inline vector operator+=(vector &a, vector b) { return (a = a + b); }
-
 // Adds 2 matrices
 static inline matrix operator+(matrix a, matrix b) {
   // Adds two 3x3 matrixs.
@@ -256,21 +237,6 @@ static inline matrix operator+(matrix a, matrix b) {
 
 // Adds 2 matrices
 static inline matrix operator+=(matrix &a, matrix b) { return (a = a + b); }
-
-// Subtracts 2 vectors
-static inline vector operator-(vector a, vector b) {
-  // subtracts two vectors
-
-  a.x -= b.x;
-  a.y -= b.y;
-  a.z -= b.z;
-
-  return a;
-}
-
-// Subtracts 2 vectors
-static inline vector operator-=(vector &a, vector b) { return (a = a - b); }
-
 // Subtracts 2 matrices
 static inline matrix operator-(matrix a, matrix b) {
   // subtracts two 3x3 matrices
@@ -289,21 +255,6 @@ static inline matrix operator-=(matrix &a, matrix b) { return (a = a - b); }
 //static inline float operator*(vector u, vector v) { return (u.x * v.x) + (u.y * v.y) + (u.z * v.z); }
 
 // Scalar multiplication
-static inline vector operator*(vector v, float s) {
-  v.x *= s;
-  v.y *= s;
-  v.z *= s;
-
-  return v;
-}
-
-// Scalar multiplication
-static inline vector operator*=(vector &v, float s) { return (v = v * s); }
-
-// Scalar multiplication
-static inline vector operator*(float s, vector v) { return v * s; }
-
-// Scalar multiplication
 static inline matrix operator*(float s, matrix m) {
   m.fvec = m.fvec * s;
   m.uvec = m.uvec * s;
@@ -319,18 +270,6 @@ static inline matrix operator*(matrix m, float s) { return s * m; }
 static inline matrix operator*=(matrix &m, float s) { return (m = m * s); }
 
 // Scalar division
-static inline vector operator/(vector src, float n) {
-  src.x /= n;
-  src.y /= n;
-  src.z /= n;
-
-  return src;
-}
-
-// Scalar division
-static inline vector operator/=(vector &src, float n) { return (src = src / n); }
-
-// Scalar division
 static inline matrix operator/(matrix src, float n) {
   src.fvec = src.fvec / n;
   src.rvec = src.rvec / n;
@@ -339,16 +278,17 @@ static inline matrix operator/(matrix src, float n) {
   return src;
 }
 
-// Scalar division
-static inline matrix operator/=(matrix &src, float n) { return (src = src / n); }
-
-inline scalar vm_Dot3Product(const vector a, const vector b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-// Computes a cross product between u and v, returns the result
-//	in Normal.
+inline scalar vm_Dot3Product(const vector a, const vector b) { return (aligned_vector{a} * aligned_vector{b}).sum(); }
+static inline scalar vm_Dot3Vector(scalar x, scalar y, scalar z, vector *v) { return vm_Dot3Product(aligned_vector{x,y,z}, *(aligned_vector*)v); }
 inline vector vm_Cross3Product(vector u, vector v) {
   return aligned_vector{u.y*v.z, u.z*v.x, u.x*v.y}
        - aligned_vector{v.y*u.z, v.z*u.x, v.x*u.y};
 }
+
+// Scalar division
+static inline matrix operator/=(matrix &src, float n) { return (src = src / n); }
+
+#define vm_GetSurfaceNormal vm_GetNormal
 
 // Matrix transpose
 static inline matrix operator~(matrix m) {
@@ -367,15 +307,6 @@ static inline matrix operator~(matrix m) {
   return m;
 }
 
-// Negate vector
-static inline vector operator-(vector a) {
-  a.x *= -1;
-  a.y *= -1;
-  a.z *= -1;
-
-  return a;
-}
-
 // Apply a matrix to a vector
 static inline vector operator*(vector v, matrix m) {
   vector result;
@@ -386,7 +317,3 @@ static inline vector operator*(vector v, matrix m) {
 
   return result;
 }
-
-static inline scalar vm_Dot3Vector(scalar x, scalar y, scalar z, vector *v) { return (x * v->x) + (y * v->y) + (z * v->z); }
-#define vm_GetSurfaceNormal vm_GetNormal
-
