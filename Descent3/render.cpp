@@ -3756,9 +3756,8 @@ int FogBlendFace (g3Point **src,int nv,int *num_solid,int *num_alpha)
 }
 */
 
-// RenderBlankScreen
-//	Renders a blank screen, to be used for UI callbacks to prevent Hall of mirrors with mouse cursor
-void RenderBlankScreen(void) { rend_ClearScreen(GR_BLACK); }
+void RenderBlankScreen() { rend_ClearScreen(GR_BLACK); }
+
 #ifdef EDITOR
 // Finds what room & face is visible at a given screen x & y
 // Everything must be set up just like for RenderMineRoom(), and presumably is the same as

@@ -54,13 +54,10 @@ struct library {
   FILE *file = nullptr; // pointer to file for this lib, if no one using it
 };
 
-/* The "root" directories of the D3 file tree
- *
- * Directories that come later in the list override directories that come
- * earlier in the list. For example, if Base_directories[0] / "d3.hog" exists
- * and Base_directories[1] / "d3.hog" also exists, then the one in
- * Base_directories[1] will get used. The one in Base_directories[0] will be
- * ignored.
+/*
+ * List of base directories of the D3 file tree.
+ * Directories at the top of the list have higher priority.
+ * First entry should be a writable directory.
  */
 std::vector<std::filesystem::path> Base_directories = {};
 
@@ -82,7 +79,7 @@ const char *eof_error = "Unexpected end of file";
  * from this module.
  */
 void cf_AddBaseDirectory(const std::filesystem::path &base_directory) {
-  if (std::filesystem::exists(base_directory)) {
+  if (std::filesystem::exists(base_directory) && std::filesystem::is_directory(base_directory)) {
     Base_directories.push_back(base_directory);
   } else {
     LOG_WARNING << "Ignoring nonexistent base directory: " << base_directory;
@@ -154,7 +151,7 @@ std::vector<std::filesystem::path> cf_LocatePathMultiplePathsHelper(const std::f
     auto to_append = cf_LocatePathCaseInsensitiveHelper(relative_path, *base_directories_iterator);
     ASSERT(("to_append should be either empty or an absolute path.", to_append.empty() || to_append.is_absolute()));
     if (std::filesystem::exists(to_append)) {
-      return_value.insert(return_value.begin(), to_append);
+      return_value.push_back(to_append);
       if (stop_after_first_result) {
         break;
       }

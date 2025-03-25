@@ -55,6 +55,8 @@
 #endif
 
 #include "appdatabase.h"
+#include "d3_platform_path.h"
+#include "ddio.h"
 #include "linux/lnxdatabase.h"
 #include "log.h"
 #include "pserror.h"
@@ -68,13 +70,12 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   // Open up the database file, for reading, read in all data and keep it in memory
   // then close the database
 
-  const char* prefPath = SDL_GetPrefPath("Outrage Entertainment", "Descent 3");
-  if (prefPath == nullptr) {
+  std::filesystem::path prefPath = ddio_GetPrefPath(D3_PREF_ORG, D3_PREF_APP);
+  if (prefPath.empty()) {
     LOG_FATAL << "Couldn't find preference directory!";
     exit(43);
   }
-  std::filesystem::path fileName = std::filesystem::path(prefPath) / REGISTRY_FILENAME;
-  SDL_free((void *)prefPath);
+  std::filesystem::path fileName = prefPath / REGISTRY_FILENAME;
 
   database = new CRegistry(fileName.u8string().c_str());
   database->Import();
