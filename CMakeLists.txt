@@ -194,10 +194,10 @@ find_package(plog REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   message("Building for Linux")
-  add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
+  add_compile_definitions(POSIX __LINUX__ PRIMARY_HOG=\"d3-linux.hog\")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for macOS")
-  add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
+  add_compile_definitions(POSIX MACOSX=1 PRIMARY_HOG=\"d3-osx.hog\")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   # Windows.h defines to avoid as many issues as possible.
   add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE PRIMARY_HOG=\"d3-win.hog\"
