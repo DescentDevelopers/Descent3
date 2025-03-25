@@ -209,7 +209,10 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(D3_PRIMARY_HOG "d3-win.hog")
-  set(D3_STANDARD_PATHS "C:\\Program Files (x86) \\Steam\\Descent 3")
+  set(D3_STANDARD_PATHS
+    "C:\\\\Program Files (x86)\\\\Steam\\\\steamapps\\\\common\\\\Descent 3"
+    "C:\\\\Program Files (x86)\\\\GOG Galaxy\\\\Games\\\\Descent 3"
+  )
 
   # Windows.h defines to avoid as many issues as possible.
   add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE

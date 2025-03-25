@@ -1445,7 +1445,6 @@ void InitIOSystems(bool editor) {
   std::filesystem::path platform_dir = std::filesystem::canonical(D3_DATADIR);
   cf_AddBaseDirectory(platform_dir);
 
-  //
   std::vector<std::filesystem::path> default_platform_dirs = {
     D3_STANDARD_PATHS
   };
