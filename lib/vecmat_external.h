@@ -148,7 +148,7 @@ template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive,
 constexpr inline vec<T_DST,N,A> operator/(const vec<T_OTHER,N_OTHER,A_OTHER> other) const
 {
 	vec<T_DST,N,A> dst = {};
-	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), dst.begin(), std::divides<>{});
+	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), dst.begin(), [](const T& a, const T& b) { return (T)a*(T)1/b; });
 	return dst;
 }
 /* arithmetic scalar */
@@ -180,8 +180,8 @@ template<typename T_OTHER, typename T_DST = decltype((T)1 / (T_OTHER)1)>
 constexpr inline vec<T_DST,N,A> operator/(const T_OTHER other) const
 {
 	vec<T_DST,N,A> dst = {};
-	dst.fill((T)other);
-	std::transform((*this).cbegin(), (*this).cend(), dst.cbegin(), dst.begin(), std::divides<>{});
+	dst.fill((T)1/other);
+	std::transform((*this).cbegin(), (*this).cend(), dst.cbegin(), dst.begin(), std::multiplies<>{});
 	return dst;
 }
 
@@ -207,7 +207,7 @@ constexpr inline vec<T,N,A> operator*=(const vec<T_OTHER,N_OTHER,A_OTHER> other)
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive>
 constexpr inline vec<T,N,A> operator/=(const vec<T_OTHER,N_OTHER,A_OTHER> other)
 {
-	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), (*this).begin(), std::divides<>{});
+	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), (*this).begin(), [](const T& a, const T& b) { return (T)a*(T)1/b; });
 	return (*this);
 }
 /* arithmetic assign scalar */
@@ -239,8 +239,8 @@ template<typename T_OTHER>
 constexpr inline vec<T,N,A> operator/=(const T_OTHER other)
 {
 	vec<T,N,A> dst = {};
-	dst.fill((T)other);
-	std::transform((*this).cbegin(), (*this).cend(), dst.cbegin(), (*this).begin(), std::divides<>{});
+	dst.fill((T)1/other);
+	std::transform((*this).cbegin(), (*this).cend(), dst.cbegin(), (*this).begin(), std::multiplies<>{});
 	return (*this);
 }
 
