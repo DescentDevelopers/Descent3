@@ -1258,8 +1258,6 @@ void DoScreenshot() {
     return;
   }
 
-  // Find a valid filename
-
   std::filesystem::path screenshots_path = cf_GetWritableBaseDirectory() / "screenshots";
 
   std::error_code ec;
@@ -1278,7 +1276,7 @@ void DoScreenshot() {
   screenshot->saveAsPNG((const char*)filename.u8string().c_str());
 
   if (Demo_flags != DF_PLAYBACK) {
-    AddHUDMessage(TXT_SCRNSHT, (const char*)filename.filename().u8string().c_str());
+    AddHUDMessage(TXT_SCRNSHT, filename.filename().u8string().c_str());
   }
 
   StartTime();
