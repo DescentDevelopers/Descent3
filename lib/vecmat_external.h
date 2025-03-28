@@ -45,12 +45,26 @@
 #include "fix.h"
 #include <array>
 #include <numeric>
-#include <bit>
 #include <algorithm>
 #include <limits>
 
 template<typename T>
-static constexpr inline T VM_BIT_CEIL(T x) noexcept { return T(1) << (std::numeric_limits<T>::digits - std::__countl_zero<T>(x)); }
+constexpr int VM_BIT_SCAN_REVERSE_CONST(const T n) noexcept {
+    if (n == 0) return -1;
+    T a = n, b = 0, j = std::numeric_limits<T>::digits, k = 0;
+    do {
+        j >>= 1;
+        k = (T)1 << j;
+        if (a >= k) {
+            a >>= j;
+            b += j;
+        }
+    } while (j > 0);
+    return int(b);
+}
+
+template<typename T>
+constexpr inline T VM_BIT_CEIL(T x) noexcept { return T(1) << (VM_BIT_SCAN_REVERSE_CONST((T)x-1) + 1); };
 
 #ifdef _MSVC_LANG
 #define VM_ALIGN(n) __declspec(align(n))
