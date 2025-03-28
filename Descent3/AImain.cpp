@@ -1734,9 +1734,9 @@ void AIMoveTowardsDir(object *obj, vector *dir, float scale) {
 bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, float scale, bool stop_at_end_point,
                            vector *mdir, bool *f_moved) {
   vector dir;
-  float distance;
+  scalar distance;
   ai_frame *ai_info = obj->ai_info;
-  float acc_scale;
+  scalar acc_scale;
 
   if (scale < 1.0f)
     acc_scale = 1.0f;
@@ -1750,13 +1750,13 @@ bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, floa
       return true;
     }
 
-    float s_to_stop = (ai_info->max_velocity * scale) / (ai_info->max_delta_velocity * acc_scale);
-    float d_to_stop = ai_info->max_velocity * scale * s_to_stop;
+    scalar s_to_stop = (ai_info->max_velocity * scale) / (ai_info->max_delta_velocity * acc_scale);
+    scalar d_to_stop = ai_info->max_velocity * scale * s_to_stop;
 
     dir = *pos - obj->pos;
-    float d_to_target = vm_NormalizeVector(&dir);
+    scalar d_to_target = vm_NormalizeVector(&dir);
     if (d_to_target < d_to_stop) {
-      float speed = ai_info->max_velocity * scale * (d_to_target / d_to_stop);
+      scalar speed = ai_info->max_velocity * scale * (d_to_target / d_to_stop);
 
       if (d_to_target <= speed * Frametime) {
         obj->mtype.phys_info.velocity = ((d_to_target / Frametime) + .09f) * dir;
@@ -1774,8 +1774,8 @@ bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, floa
 
     if (phys_info->velocity != Zero_vector) {
       vector vel_diff = -phys_info->velocity;
-      float delta_vel = vm_NormalizeVector(&vel_diff);
-      float max_delta_vel = Frametime * ai_info->max_delta_velocity * acc_scale;
+      scalar delta_vel = vm_NormalizeVector(&vel_diff);
+      scalar max_delta_vel = Frametime * ai_info->max_delta_velocity * acc_scale;
 
       if (delta_vel > max_delta_vel) {
         phys_info->velocity += (vel_diff * max_delta_vel);
@@ -1915,7 +1915,7 @@ bool compute_dodge_dir(vector *movement_dir, object *obj, object *dodge_obj) {
   dodge_vec *= scale;
 
   if (dodge_vec != Zero_vector && (obj->ai_info->dodge_till_time < Gametime ||
-                                   vm_GetMagnitude(&dodge_vec) > vm_GetMagnitude(&obj->ai_info->last_dodge_dir))) {
+                                   dodge_vec.mag() > obj->ai_info->last_dodge_dir.mag())) {
     obj->ai_info->last_dodge_dir = dodge_vec;
   }
 
@@ -2049,7 +2049,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
 
       if (vm_Dot3Product(obj->mtype.phys_info.velocity, normal) <= 0.0f) {
         vector no_y_vec = pos - fpnt;
-        no_y_vec.y = 0.0f;
+        no_y_vec.y() = 0.0f;
 
         float dist;
 
@@ -2139,7 +2139,7 @@ void AITurnTowardsDir(object *obj, /*velocity *new_vel,*/ vector *goal_dir /*, b
 
     if (max_angle != 32767 && max_angle != 32768) {
       // Get the up axis
-      vm_CrossProduct(&u_axis, &obj->orient.fvec, goal_dir);
+      u_axis = vector::cross3(obj->orient.fvec, *goal_dir);
 
       // Using the forward(original orient's forward) and the up (computed), get the orientation matrix
       vm_VectorToMatrix(&rot_matrix, &obj->orient.fvec, &u_axis, NULL);
@@ -2191,22 +2191,22 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
   vm_ExtractAnglesFromMatrix(&a, &rot_matrix);
   vector dist;
 
-  if (a.b > 32768)
-    dist.x = 65536 - a.b;
+  if (a.b() > 32768)
+    dist.x() = 65536 - a.b();
   else
-    dist.x = a.b;
+    dist.x() = a.b();
 
-  if (a.h > 32768)
-    dist.y = 65536 - a.h;
+  if (a.h() > 32768)
+    dist.y() = 65536 - a.h();
   else
-    dist.y = a.h;
+    dist.y() = a.h();
 
-  if (a.p > 32768)
-    dist.z = 65536 - a.p;
+  if (a.p() > 32768)
+    dist.z() = 65536 - a.p();
   else
-    dist.z = a.p;
+    dist.z() = a.p();
 
-  float angles = vm_GetMagnitude(&dist);
+  scalar angles = dist.mag();
 
   if (angles <= max_angles) {
     obj->orient = *g_orient;
@@ -2215,25 +2215,25 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
     return true;
   }
 
-  float scale = max_angles / angles;
+  scalar scale = max_angles / angles;
   dist *= scale;
 
-  if (a.b > 32768)
-    a.b = 65535 - dist.x;
+  if (a.b() > 32768)
+    a.b() = 65535 - dist.x();
   else
-    a.b = dist.x;
+    a.b() = dist.x();
 
-  if (a.h > 32768)
-    a.h = 65535 - dist.y;
+  if (a.h() > 32768)
+    a.h() = 65535 - dist.y();
   else
-    a.h = dist.y;
+    a.h() = dist.y();
 
-  if (a.p > 32768)
-    a.p = 65535 - dist.z;
+  if (a.p() > 32768)
+    a.p() = 65535 - dist.z();
   else
-    a.p = dist.z;
+    a.p() = dist.z();
 
-  vm_AnglesToMatrix(&rot_matrix, a.p, a.h, a.b);
+  vm_AnglesToMatrix(&rot_matrix, a.p(), a.h(), a.b());
   obj->orient *= rot_matrix;
   vm_Orthogonalize(&obj->orient);
   ObjSetOrient(obj, &obj->orient);
@@ -2752,14 +2752,14 @@ new_anim_label:
   }
 }
 
-static inline void ApplyConstantForce(object *objp, vector *new_pos, vector *force, float delta_time) {
+static inline void ApplyConstantForce(object *objp, vector *new_pos, vector *force, scalar delta_time) {
   const vector velocity = objp->mtype.phys_info.velocity;
-  const float drag = objp->mtype.phys_info.drag;
-  const float mass = objp->mtype.phys_info.mass;
+  const scalar drag = objp->mtype.phys_info.drag;
+  const scalar mass = objp->mtype.phys_info.mass;
 
   // Standard motion with a linear air drag (drag is proportional to velocity)
   *new_pos = objp->pos + (*force / drag) * (delta_time) +
-             (mass / drag) * (velocity - (*force / drag)) * (1 - exp(-(drag / mass) * delta_time));
+             (mass / drag) * (velocity - (*force / drag)) * ((scalar)1 - (scalar)exp(-(drag / mass) * delta_time));
 }
 
 bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float weapon_speed) {
@@ -3377,14 +3377,14 @@ start_loop:
 
   if (obj->movement_type == MT_WALKING && obj->ai_info->movement_type == MC_WALKING) {
     if (obj->ai_info->animation_type == AS_ALERT || obj->ai_info->animation_type == AS_IDLE) {
-      float scaler;
+      scalar scaler;
 
-      float speed = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
+      scalar speed = obj->mtype.phys_info.velocity.mag();
       scaler = speed / obj->ai_info->max_velocity;
 
       // If slow, use some rotational vel
       if (scaler < .7f) {
-        float speed = vm_GetMagnitude(&obj->mtype.phys_info.rotvel);
+        scalar speed = obj->mtype.phys_info.rotvel.mag();
         scaler += speed / 40000.0f;
 
         if (scaler > 1.0f)
@@ -4087,7 +4087,7 @@ bool AiGoalAvoid(vector *adir, object *obj, object *a_obj, float dist) {
   vector mdir;
   mdir = obj->mtype.phys_info.velocity - a_vel;
 
-  if (fabsf(mdir.x) < 0.1f && fabsf(mdir.y) < 0.1f && fabsf(mdir.z) < 0.1f) {
+  if (fabsf(mdir.x()) < 0.1f && fabsf(mdir.y()) < 0.1f && fabsf(mdir.z()) < 0.1f) {
     *adir = -to_avoid;
     vm_NormalizeVector(adir);
 
@@ -4570,24 +4570,24 @@ void ai_move(object *obj) {
 
     // FLOCK HEIGHT CODE
     if (ROOMNUM_OUTSIDE(obj->roomnum) && (ai_info->flags & AIF_BIASED_FLIGHT_HEIGHT)) {
-      composite_dir.y *= .5f;
+      composite_dir.y() *= .5f;
 
-      float delta = obj->pos.y - GetTerrainGroundPoint(&obj->pos) - obj->size;
+      float delta = obj->pos.y() - GetTerrainGroundPoint(&obj->pos) - obj->size;
       if (delta < ai_info->biased_flight_min) {
-        if (composite_dir.y < 0.0)
-          composite_dir.y *= .5f;
+        if (composite_dir.y() < 0.0)
+          composite_dir.y() *= .5f;
         else
-          composite_dir.y *= 4.0f;
+          composite_dir.y() *= 4.0f;
       } else if (delta > ai_info->biased_flight_max) {
-        if (composite_dir.y < 0.0)
-          composite_dir.y *= 4.0f;
+        if (composite_dir.y() < 0.0)
+          composite_dir.y() *= 4.0f;
         else
-          composite_dir.y *= 0.5f;
+          composite_dir.y() *= 0.5f;
       }
 
       float max_fly_upward_height = ai_info->biased_flight_min * ai_info->biased_flight_importance;
       if (delta < max_fly_upward_height) {
-        composite_dir.y += (1.0f - (delta / max_fly_upward_height)) * ai_info->biased_flight_importance;
+        composite_dir.y() += (1.0f - (delta / max_fly_upward_height)) * ai_info->biased_flight_importance;
       }
     }
 
@@ -5537,8 +5537,8 @@ static inline void ai_walker_stuff(object *obj) {
   if (ai_info->movement_type == MC_STANDING) {
     int next_anim;
 
-    if (vm_GetMagnitude(&obj->mtype.phys_info.velocity) > 0.01f ||
-        vm_GetMagnitude(&obj->mtype.phys_info.rotvel) > 0.01) {
+    if (obj->mtype.phys_info.velocity.mag() > 0.01f ||
+        obj->mtype.phys_info.rotvel.mag()   > 0.01f) {
       if (ai_info->next_animation_type == AI_INVALID_INDEX) {
         if (ai_info->animation_type == AS_ALERT) {
           next_anim = AS_GOTO_ALERT_WALKING;
@@ -5555,8 +5555,8 @@ static inline void ai_walker_stuff(object *obj) {
   } else if (ai_info->movement_type == MC_WALKING) {
     int next_anim;
 
-    if (vm_GetMagnitude(&obj->mtype.phys_info.velocity) <= 0.01f &&
-        vm_GetMagnitude(&obj->mtype.phys_info.rotvel) <= 0.01) {
+    if (obj->mtype.phys_info.velocity.mag() <= 0.01f &&
+        obj->mtype.phys_info.rotvel.mag() <= 0.01) {
       if (ai_info->animation_type == AS_ALERT) {
         next_anim = AS_GOTO_ALERT_STANDING;
         GoalAddGoal(obj, AIG_SET_ANIM, (void *)&next_anim, ACTIVATION_BLEND_LEVEL);
@@ -6139,7 +6139,7 @@ void AIDoFrame(object *obj) {
 
         ai_move(obj);
 
-        speed = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
+        speed = obj->mtype.phys_info.velocity.mag();
 
         // Removes the framerate independence from objects moving within 2x of there normal max speed
         if (speed > 0.1f && speed <= ai_info->max_velocity * 2.0) {

@@ -2811,7 +2811,7 @@ void UpdateTerrainSound() {
   }
 
   // Get player altitude
-  int alt = Player_object->pos.y / TERRAIN_HEIGHT_INCREMENT;
+  int alt = Player_object->pos.y() / TERRAIN_HEIGHT_INCREMENT;
   if (alt > 255) {
     alt = 255;
   }

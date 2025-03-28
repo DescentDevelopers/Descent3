@@ -428,7 +428,7 @@ void DrawSmallViews() {
     if (!viewer || (viewer->type == OBJ_DUMMY))
       kill_viewer = true;
 
-    if (viewer && OBJECT_OUTSIDE(viewer) && viewer->pos.y >= MAX_TERRAIN_HEIGHT)
+    if (viewer && OBJECT_OUTSIDE(viewer) && viewer->pos.y() >= MAX_TERRAIN_HEIGHT)
       kill_viewer = true;
 
     // If not view & not already static, switch to static

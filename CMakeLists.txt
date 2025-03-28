@@ -60,7 +60,7 @@ function (macos_sign target)
   endif()
 endfunction()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -103,6 +103,12 @@ if(FORCE_PORTABLE_INSTALL)
   set(CMAKE_INSTALL_LIBDIR ".")
   set(CMAKE_INSTALL_DATADIR ".")
   set(CMAKE_INSTALL_DOCDIR ".")
+
+  set(D3_DATADIR "${CMAKE_INSTALL_DATADIR}")
+else()
+  set(CMAKE_INSTALL_DATADIR "${CMAKE_INSTALL_DATADIR}/Descent3")
+  # On system install files will go into /usr/share/Descent3
+  set(D3_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/Descent3")
 endif()
 
 # Get info about multi-config environment

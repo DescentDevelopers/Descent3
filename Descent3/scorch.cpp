@@ -270,13 +270,13 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
   vm_VectorAngleToMatrix(&m, &fp->normal, ps_rand() * 2);
 
   // Store the vectors as signed 8-bit values
-  sp->rx = -m.rvec.x * 127;
-  sp->ry = -m.rvec.y * 127;
-  sp->rz = -m.rvec.z * 127;
+  sp->rx = -m.rvec.x() * 127;
+  sp->ry = -m.rvec.y() * 127;
+  sp->rz = -m.rvec.z() * 127;
 
-  sp->ux = m.uvec.x * 127;
-  sp->uy = m.uvec.y * 127;
-  sp->uz = m.uvec.z * 127;
+  sp->ux = m.uvec.x() * 127;
+  sp->uy = m.uvec.y() * 127;
+  sp->uz = m.uvec.z() * 127;
 
   // Flag this face as being scorched
   fp->flags |= FF_SCORCHED;
@@ -333,13 +333,13 @@ void DrawScorches(int roomnum, int facenum) {
         size *= 1.0 - ((depth - FADE_START_DISTANCE) / (MAX_VIS_DISTANCE - FADE_START_DISTANCE));
 
       // Calculate vectors to corners
-      right.x = (float)sp->rx * (size / 127.0);
-      right.y = (float)sp->ry * (size / 127.0);
-      right.z = (float)sp->rz * (size / 127.0);
+      right.x() = (scalar)sp->rx * (size / 127.0);
+      right.y() = (scalar)sp->ry * (size / 127.0);
+      right.z() = (scalar)sp->rz * (size / 127.0);
 
-      up.x = (float)sp->ux * (size / 127.0);
-      up.y = (float)sp->uy * (size / 127.0);
-      up.z = (float)sp->uz * (size / 127.0);
+      up.x() = (scalar)sp->ux * (size / 127.0);
+      up.y() = (scalar)sp->uy * (size / 127.0);
+      up.z() = (scalar)sp->uz * (size / 127.0);
 
       // Compute four corners
       corners[0] = sp->pos - right + up;

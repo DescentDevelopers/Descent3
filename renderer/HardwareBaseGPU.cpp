@@ -444,9 +444,9 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
     vData->uv.w = 1.0f;
 
     // Finally, specify a vertex
-    vData->pos.x = pnt->p3_sx + xAdd;
-    vData->pos.y = pnt->p3_sy + yAdd;
-    vData->pos.z = 0.0f;
+    vData->pos.x() = pnt->p3_sx + xAdd;
+    vData->pos.y() = pnt->p3_sy + yAdd;
+    vData->pos.z() = 0.0f;
   }
 
   gpu_RenderPolygon(&vArray[0], nv);

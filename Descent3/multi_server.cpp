@@ -1535,9 +1535,9 @@ void MultiSendWorldStates(int slot) {
       MultiAddByte(WS_ROOM_WIND, cur_data, &cur_count);
       MultiAddShort(i, cur_data, &cur_count);
 
-      MultiAddFloat(Rooms[i].wind.x, cur_data, &cur_count);
-      MultiAddFloat(Rooms[i].wind.y, cur_data, &cur_count);
-      MultiAddFloat(Rooms[i].wind.z, cur_data, &cur_count);
+      MultiAddFloat(Rooms[i].wind.x(), cur_data, &cur_count);
+      MultiAddFloat(Rooms[i].wind.y(), cur_data, &cur_count);
+      MultiAddFloat(Rooms[i].wind.z(), cur_data, &cur_count);
 
       MultiStoreWorldPacket(slot, data, &count, cur_data, &cur_count, &size_offset);
     }
@@ -2752,12 +2752,12 @@ void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int t
     switch (eventnum) {
     case EVT_CLIENT_GAMEWALLCOLLIDE:
     case EVT_GAMEWALLCOLLIDE:
-      MultiAddFloat(info->collide_info.point.x, data, &count);
-      MultiAddFloat(info->collide_info.point.y, data, &count);
-      MultiAddFloat(info->collide_info.point.z, data, &count);
-      MultiAddFloat(info->collide_info.normal.x, data, &count);
-      MultiAddFloat(info->collide_info.normal.y, data, &count);
-      MultiAddFloat(info->collide_info.normal.z, data, &count);
+      MultiAddFloat(info->collide_info.point.x(), data, &count);
+      MultiAddFloat(info->collide_info.point.y(), data, &count);
+      MultiAddFloat(info->collide_info.point.z(), data, &count);
+      MultiAddFloat(info->collide_info.normal.x(), data, &count);
+      MultiAddFloat(info->collide_info.normal.y(), data, &count);
+      MultiAddFloat(info->collide_info.normal.z(), data, &count);
       MultiAddFloat(info->collide_info.hitspeed, data, &count);
       MultiAddFloat(info->collide_info.hit_dot, data, &count);
       MultiAddInt(info->collide_info.hitseg, data, &count);
@@ -2765,12 +2765,12 @@ void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int t
       break;
     case EVT_CLIENT_GAMECOLLIDE:
     case EVT_GAMECOLLIDE:
-      MultiAddFloat(info->collide_info.point.x, data, &count);
-      MultiAddFloat(info->collide_info.point.y, data, &count);
-      MultiAddFloat(info->collide_info.point.z, data, &count);
-      MultiAddFloat(info->collide_info.normal.x, data, &count);
-      MultiAddFloat(info->collide_info.normal.y, data, &count);
-      MultiAddFloat(info->collide_info.normal.z, data, &count);
+      MultiAddFloat(info->collide_info.point.x(), data, &count);
+      MultiAddFloat(info->collide_info.point.y(), data, &count);
+      MultiAddFloat(info->collide_info.point.z(), data, &count);
+      MultiAddFloat(info->collide_info.normal.x(), data, &count);
+      MultiAddFloat(info->collide_info.normal.y(), data, &count);
+      MultiAddFloat(info->collide_info.normal.z(), data, &count);
       break;
     case EVT_GAMEOBJCHANGESEG:
     case EVT_CLIENT_GAMEOBJCHANGESEG:

@@ -1014,7 +1014,7 @@ void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
   vector temp_vec = sm->mod_pos + sm->offset;
   g3_StartInstanceAngles(&temp_vec, &sm->angs);
 
-  vm_AnglesToMatrix(&lightmatrix, sm->angs.p, sm->angs.h, sm->angs.b);
+  vm_AnglesToMatrix(&lightmatrix, sm->angs.p(), sm->angs.h(), sm->angs.b());
   StartLightInstance(&temp_vec, &lightmatrix);
 
   // Check my bit to see if I get drawn
@@ -1181,7 +1181,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
           while (mn != -1) {
             vector tpnt;
 
-            vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+            vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
             vm_TransposeMatrix(&m);
 
             tpnt = pnt * m;
@@ -1204,26 +1204,26 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
             first_pnt = false;
             min_xyz = max_xyz = pnt;
           } else {
-            if (pnt.x < min_xyz.x)
-              min_xyz.x = pnt.x;
-            else if (pnt.x > max_xyz.x)
-              max_xyz.x = pnt.x;
+            if (pnt.x() < min_xyz.x())
+              min_xyz.x() = pnt.x();
+            else if (pnt.x() > max_xyz.x())
+              max_xyz.x() = pnt.x();
 
-            if (pnt.y < min_xyz.y)
-              min_xyz.y = pnt.y;
-            else if (pnt.y > max_xyz.y)
-              max_xyz.y = pnt.y;
+            if (pnt.y() < min_xyz.y())
+              min_xyz.y() = pnt.y();
+            else if (pnt.y() > max_xyz.y())
+              max_xyz.y() = pnt.y();
 
-            if (pnt.z < min_xyz.z)
-              min_xyz.z = pnt.z;
-            else if (pnt.z > max_xyz.z)
-              max_xyz.z = pnt.z;
+            if (pnt.z() < min_xyz.z())
+              min_xyz.z() = pnt.z();
+            else if (pnt.z() > max_xyz.z())
+              max_xyz.z() = pnt.z();
           }
         }
       }
     }
 
-    geometric_center = (max_xyz + min_xyz) / 2.0;
+    geometric_center = (max_xyz + min_xyz) / 2.0f;
     *offset_ptr = geometric_center;
   }
 
@@ -1251,7 +1251,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
         while (mn != -1) {
           vector tpnt;
 
-          vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+          vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
           vm_TransposeMatrix(&m);
 
           tpnt = pnt * m;

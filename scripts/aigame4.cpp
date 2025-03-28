@@ -548,9 +548,9 @@ bool MercEndBoss::DoNotify(int me, tOSIRISEventInfo *data) {
       vector rvel;
       Obj_Value(me, VF_GET, OBJV_V_ROTVELOCITY, &rvel);
 
-      rvel.x -= 0.1f * DEATH_ROT_ACC * Game_GetFrameTime();
-      rvel.y -= DEATH_ROT_ACC * Game_GetFrameTime();
-      rvel.z += 0.3f * DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.x() -= 0.1f * DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.y() -= DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.z() += 0.3f * DEATH_ROT_ACC * Game_GetFrameTime();
 
       Obj_Value(me, VF_SET, OBJV_V_ROTVELOCITY, &rvel);
 

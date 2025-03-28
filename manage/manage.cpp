@@ -489,8 +489,8 @@ std::filesystem::path LocalMusicDir, NetMusicDir;
 std::filesystem::path LocalVoiceDir, NetVoiceDir;
 std::filesystem::path NetTableDir, LocalTableDir;
 char LocalD3Dir[TABLE_NAME_LEN], NetD3Dir[TABLE_NAME_LEN];
-char LocalCustomGraphicsDir[TABLE_NAME_LEN];
-char LocalCustomSoundsDir[TABLE_NAME_LEN];
+std::filesystem::path LocalCustomGraphicsDir;
+std::filesystem::path LocalCustomSoundsDir;
 std::filesystem::path LockerFile;
 std::filesystem::path VersionFile;
 char TableUser[TABLE_NAME_LEN];
@@ -601,17 +601,14 @@ int mng_InitTableFiles() {
     Network_up = 0;
   }
 
+  // Do locals
+  mng_InitLocalTables();
+  mng_InitLocalDirectories();
+  mng_CheckToCreateLocalTables();
+
   if (Network_up == 0) {
-    mng_InitLocalTables();
-    mng_InitLocalDirectories();
-    mng_CheckToCreateLocalTables();
     mng_InitTrackLocks();
   } else {
-    // Do locals
-    mng_InitLocalTables();
-    mng_InitLocalDirectories();
-    mng_CheckToCreateLocalTables();
-
     // Do network
     mng_InitNetTables();
     mng_InitNetDirectories();
@@ -689,8 +686,8 @@ int mng_InitLocalTables() {
   LocalManageGraphicsDir = localdir / "data" / "graphics";
   LocalModelsDir = localdir / "data" / "models";
   LocalSoundsDir = localdir / "data" / "sounds";
-  ddio_MakePath(LocalCustomSoundsDir, LocalD3Dir, "custom", "sounds", NULL);
-  ddio_MakePath(LocalCustomGraphicsDir, LocalD3Dir, "custom", "graphics", NULL);
+  LocalCustomSoundsDir = cf_GetWritableBaseDirectory() / "custom" / "sounds";
+  LocalCustomGraphicsDir = cf_GetWritableBaseDirectory() / "custom" / "graphics";
   LocalRoomsDir = localdir / "data" / "rooms";
   LocalBriefingDir = localdir / "data" / "briefings";
   ddio_MakePath(LocalScriptDir, LocalD3Dir, "data", "scripts", NULL);
@@ -815,18 +812,19 @@ void mng_CheckToCreateLocalTables() {
 }
 // Creates directories if needed
 void mng_InitLocalDirectories() {
-  std::filesystem::path dir = LocalD3Dir;
+  std::filesystem::path dir = cf_GetWritableBaseDirectory();
   std::error_code ec;
-  std::filesystem::create_directories(dir / "custom", ec);
+  std::filesystem::create_directories(dir / "demo", ec);
   std::filesystem::create_directories(dir / "custom" / "graphics", ec);
   std::filesystem::create_directories(dir / "custom" / "sounds", ec);
   std::filesystem::create_directories(dir / "custom" / "settings", ec);
+  std::filesystem::create_directories(dir / "savegame", ec);
+
 
   cf_SetSearchPath(LocalCustomGraphicsDir);
   cf_SetSearchPath(LocalCustomSoundsDir);
 
   if (Network_up) {
-    std::filesystem::create_directories(dir / "data", ec);
     std::filesystem::create_directories(dir / "data" / "tables", ec);
     std::filesystem::create_directories(dir / "data" / "graphics", ec);
     std::filesystem::create_directories(dir / "data" / "sounds", ec);
@@ -2366,10 +2364,8 @@ void mng_ReadPhysicsChunk(physics_info *phys_info, CFILE *infile) {
   phys_info->rotdrag = cf_ReadFloat(infile);
   phys_info->full_rotthrust = cf_ReadFloat(infile);
   phys_info->num_bounces = cf_ReadInt(infile);
-  phys_info->velocity.z = cf_ReadFloat(infile);
-  phys_info->rotvel.x = cf_ReadFloat(infile);
-  phys_info->rotvel.y = cf_ReadFloat(infile);
-  phys_info->rotvel.z = cf_ReadFloat(infile);
+  phys_info->velocity.z() = cf_ReadFloat(infile);
+  phys_info->rotvel = { cf_ReadFloat(infile), cf_ReadFloat(infile), cf_ReadFloat(infile) };
   phys_info->wiggle_amplitude = cf_ReadFloat(infile);
   phys_info->wiggles_per_sec = cf_ReadFloat(infile);
   phys_info->coeff_restitution = cf_ReadFloat(infile);
@@ -2386,10 +2382,10 @@ void mng_WritePhysicsChunk(physics_info *phys_info, CFILE *outfile) {
   cf_WriteFloat(outfile, phys_info->rotdrag);
   cf_WriteFloat(outfile, phys_info->full_rotthrust);
   cf_WriteInt(outfile, phys_info->num_bounces);
-  cf_WriteFloat(outfile, phys_info->velocity.z);
-  cf_WriteFloat(outfile, phys_info->rotvel.x);
-  cf_WriteFloat(outfile, phys_info->rotvel.y);
-  cf_WriteFloat(outfile, phys_info->rotvel.z);
+  cf_WriteFloat(outfile, phys_info->velocity.z());
+  cf_WriteFloat(outfile, phys_info->rotvel.x());
+  cf_WriteFloat(outfile, phys_info->rotvel.y());
+  cf_WriteFloat(outfile, phys_info->rotvel.z());
   cf_WriteFloat(outfile, phys_info->wiggle_amplitude);
   cf_WriteFloat(outfile, phys_info->wiggles_per_sec);
   cf_WriteFloat(outfile, phys_info->coeff_restitution);

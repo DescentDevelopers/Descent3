@@ -84,20 +84,19 @@
 #ifndef GAMESAVE_H
 #define GAMESAVE_H
 
-#include "pstypes.h"
+#include <filesystem>
+
+#include "bitmap.h"
 #include "cfile.h"
+#include "door.h"
+#include "doorway.h"
+#include "gametexture.h"
 #include "log.h"
 #include "object.h"
 #include "objinfo.h"
-
-#include "gametexture.h"
-#include "bitmap.h"
-#include "ddio.h"
-#include "door.h"
-#include "doorway.h"
+#include "polymodel.h"
 #include "ship.h"
 #include "weapon.h"
-#include "polymodel.h"
 
 #define GAMESAVE_SLOTS 8    // maximum number of savegames
 #define GAMESAVE_DESCLEN 31 // gamesave description maximum length.
@@ -123,11 +122,27 @@ struct gs_tables {
 #define GAMESAVE_VERSION 2
 #define GAMESAVE_OLDVER 0 // any version before this value is obsolete.
 
+/**
+ * Creates Save Game dialog in UI.
+ */
 void SaveGameDialog();
-bool LoadGameDialog(); // returns true if ok, false if canceled.
+
+/**
+ * Creates Load Game dialog in UI.
+ * @return true if user pressed OK, false if user pressed Cancel or there some errors occurred.
+ */
+bool LoadGameDialog();
+
+/**
+ * Quick saves game into predefined save game slot
+ */
 void QuickSaveGame();
 
-bool LoadCurrentSaveGame(); // loads savegame as specified from LoadGameDialog (false fails)
+/**
+ * Loads savegame as specified from LoadGameDialog
+ * @return false on failure
+ */
+bool LoadCurrentSaveGame();
 
 extern int Quicksave_game_slot; // externed so gamesequencing can reset this value starting new game.
 
@@ -142,15 +157,20 @@ extern int Quicksave_game_slot; // externed so gamesequencing can reset this val
 #define LGS_OBJECTSCORRUPT 5 // object list is corrupt (or out of date with level)
 #define LGS_CORRUPTLEVEL 6   // either level is out of date, or list is corrupted.
 
-int LoadGameState(const char *pathname);
+/**
+ * Loads a game from a given slot.
+ * @param pathname path to savegame.
+ * @return 0 on success, positive error code on failure.
+ */
+int LoadGameState(const std::filesystem::path &pathname);
 
 //	Easy IO routines for repetitive tasks.
 
 #define gs_WriteVector(_f, _v)                                                                                         \
   do {                                                                                                                 \
-    cf_WriteFloat((_f), (_v).x);                                                                                       \
-    cf_WriteFloat((_f), (_v).y);                                                                                       \
-    cf_WriteFloat((_f), (_v).z);                                                                                       \
+    cf_WriteFloat((_f), (_v).x());                                                                                       \
+    cf_WriteFloat((_f), (_v).y());                                                                                       \
+    cf_WriteFloat((_f), (_v).z());                                                                                       \
   } while (0)
 #define gs_WriteMatrix(_f, _m)                                                                                         \
   do {                                                                                                                 \
@@ -170,9 +190,9 @@ int LoadGameState(const char *pathname);
 
 #define gs_ReadVector(_f, _v)                                                                                          \
   do {                                                                                                                 \
-    (_v).x = cf_ReadFloat(_f);                                                                                         \
-    (_v).y = cf_ReadFloat(_f);                                                                                         \
-    (_v).z = cf_ReadFloat(_f);                                                                                         \
+    (_v).x() = cf_ReadFloat(_f);                                                                                         \
+    (_v).y() = cf_ReadFloat(_f);                                                                                         \
+    (_v).z() = cf_ReadFloat(_f);                                                                                         \
   } while (0)
 #define gs_ReadMatrix(_f, _m)                                                                                          \
   do {                                                                                                                 \
@@ -232,13 +252,23 @@ void SGSSpew(CFILE *fp);
 // load matcens
 void SGSMatcens(CFILE *fp);
 
-//	give a description and slot number (0 to GAMESAVE_SLOTS-1)
-bool SaveGameState(const char *pathname, const char *description);
+/**
+ * Give a description and slot number (0 to GAMESAVE_SLOTS-1)
+ * @param pathname path to savegame
+ * @param description description
+ * @return true on success
+ */
+bool SaveGameState(const std::filesystem::path &pathname, const char *description);
 
-//	retreive gamesave file header info. description must be a buffer of length GAMESAVE_DESCLEN+1
-// returns true if it's a valid savegame file.  false if corrupted somehow
-// pointer to bm_handle will return a bitmap handle to the snapshot for game. (*bm_handle) can be invalid.
-bool GetGameStateInfo(const char *pathname, char *description, int *bm_handle = NULL);
+/**
+ * Retrieves gamesave file header info. Description must be a buffer of length GAMESAVE_DESCLEN+1.
+ * Pointer to bm_handle will return a bitmap handle to the snapshot for game. (*bm_handle) can be invalid.
+ * @param pathname path to savegame
+ * @param description buffer for description of savegame
+ * @param bm_handle bitmap handle for screen snapshot
+ * @return true if savegame is valid, false if it is corrupted somehow
+ */
+bool GetGameStateInfo(const std::filesystem::path &pathname, char *description, int *bm_handle = nullptr);
 
 ///////////////////////////////////////////////////////////////////////////////
 //	reads in translation tables

@@ -253,11 +253,11 @@ void TCAMCenterOnPlayer() {
   AM_view_pos = Viewer_object->pos - (Viewer_object->orient.fvec * 10);
   vm_ExtractAnglesFromMatrix(&heading, &Player_object->orient);
 
-  vm_AnglesToMatrix(&newmat, 0, heading.h, 0);
+  vm_AnglesToMatrix(&newmat, 0, heading.h(), 0);
   AM_view_orient = newmat;
 
-  AM_heading = heading.h;
-  AM_pitch = heading.p;
+  AM_heading = heading.h();
+  AM_pitch = heading.p();
 }
 
 // This is the function called by TelCom
@@ -639,7 +639,7 @@ void TCAMRenderTerrain() {
 
   Terrain_from_mine = 0;
 
-  VisibleTerrainZ = (Detail_settings.Terrain_render_distance) * Matrix_scale.z;
+  VisibleTerrainZ = (Detail_settings.Terrain_render_distance) * Matrix_scale.z();
 
   // Set up our z wall
   g3_SetFarClipZ(VisibleTerrainZ);

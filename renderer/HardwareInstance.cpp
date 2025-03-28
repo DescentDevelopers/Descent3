@@ -74,7 +74,7 @@ void g3_StartInstanceAngles(vector *pos, angvec *angles) {
   }
 
   matrix tm;
-  vm_AnglesToMatrix(&tm, angles->p, angles->h, angles->b);
+  vm_AnglesToMatrix(&tm, angles->p(), angles->h(), angles->b());
 
   g3_StartInstanceMatrix(pos, &tm);
 }

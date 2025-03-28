@@ -505,7 +505,7 @@ void GoalInitWanderAround(object *obj, goal *goal_ptr) {
       pos = Rooms[roomnum].path_pnt;
     } else {
       ComputeTerrainSegmentCenter(&pos, CELLNUM(roomnum));
-      pos.y += (ai_info->biased_flight_max + ai_info->biased_flight_min) / 2.0f;
+      pos.y() += (ai_info->biased_flight_max + ai_info->biased_flight_min) / 2.0f;
     }
   } else {
     int tx = (ps_rand() % (TERRAIN_WIDTH - 56)) + (56 / 2);
@@ -514,7 +514,7 @@ void GoalInitWanderAround(object *obj, goal *goal_ptr) {
     int cell = tx + TERRAIN_WIDTH * tz;
     roomnum = 0x80000000 | cell;
     ComputeTerrainSegmentCenter(&pos, cell);
-    pos.y += (ai_info->biased_flight_max + ai_info->biased_flight_min) / 2.0f;
+    pos.y() += (ai_info->biased_flight_max + ai_info->biased_flight_min) / 2.0f;
   }
 
   goal_ptr->g_info.pos = pos;
