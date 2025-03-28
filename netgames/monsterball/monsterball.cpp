@@ -2099,9 +2099,9 @@ void DoMonsterballScoreEffect(void) {
   i_room = Monsterball_info.room;
 
   //////////////////////////////////////
-  float lifetime = 4.0f;
-  float thickness = 17.5f;
-  float slidetime = 0.3f;
+  scalar lifetime = 4.0f;
+  scalar thickness = 17.5f;
+  scalar slidetime = 0.3f;
   uint16_t color = GR_RGB16(30, 255, 30);
   int numtiles = 1;
   bool autotile = true;
@@ -2157,7 +2157,7 @@ void DoMonsterballScoreEffect(void) {
       vis->lighting_color = color;
       vis->billboard_info.width = thickness;
       vis->billboard_info.texture = autotile;
-      vis->velocity = { sat_count, slidetime, numtiles };
+      vis->velocity = { (scalar)sat_count, (scalar)slidetime, (scalar)numtiles };
 
       vis->flags = VF_USES_LIFELEFT | VF_WINDSHIELD_EFFECT | VF_LINK_TO_VIEWER | VF_EXPAND;
       vis->size = DLLvm_VectorDistanceQuick(&vis->pos, &vis->end_pos);
