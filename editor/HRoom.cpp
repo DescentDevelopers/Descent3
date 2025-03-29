@@ -439,7 +439,7 @@ void SelectPrevFace() {
   State_changed = 1;
 }
 
-#define DEFAULT_ROOM_LENGTH 20.0
+#define DEFAULT_ROOM_LENGTH (scalar)20.0
 
 // Adds a room at the current room/face.  The room is created by extuding out from the current face
 void AddRoom() {
@@ -1787,7 +1787,7 @@ void DeleteRoomFromMine(room *rp) {
   FreeRoom(rp);
 }
 
-#define DROP_ROOM_OFFSET 20.0
+#define DROP_ROOM_OFFSET (scalar)20.0
 
 // Places a room a short distance from the specified room & face
 // The new room is not attached to anything
@@ -2430,7 +2430,7 @@ void UndoSnap() {
   if ((Snap_roomnum <= Highest_room_index) && Rooms[Snap_roomnum].used) {
     vector *vp = &Rooms[Snap_roomnum].verts[Snap_vertnum];
 
-    if ((vp->x == Snap_new_point.x) && (vp->y == Snap_new_point.y) && (vp->z == Snap_new_point.z)) {
+    if ((vp->x() == Snap_new_point.x()) && (vp->y() == Snap_new_point.y()) && (vp->z() == Snap_new_point.z())) {
       *vp = Snap_old_point;
       World_changed = 1;
       return;
@@ -2446,9 +2446,9 @@ void UndoSnap() {
 //					v0,v1 - the end points of the two vectors
 //					normal - the surface normal of the face these verts lie in
 // Returns the cosine of the angle between <base,v0> and <base,v1>
-float GetAngle(vector *base, vector *v0, vector *v1, vector *normal) {
+scalar GetAngle(vector *base, vector *v0, vector *v1, vector *normal) {
   vector edge0, edge1, cross;
-  float dot;
+  scalar dot;
 
   vm_GetNormalizedDir(&edge0, v0, base);
   vm_GetNormalizedDir(&edge1, v1, base);
@@ -2456,10 +2456,10 @@ float GetAngle(vector *base, vector *v0, vector *v1, vector *normal) {
   dot = vm_Dot3Product(edge0, edge1);
   cross = vm_Cross3Product(edge0, edge1);
 
-  if (vm_Dot3Product(cross, *normal) > 0)
-    return 0.25 - dot / 4.0;
+  if (vm_Dot3Product(cross, *normal) > (scalar)0)
+    return (scalar)0.25 - dot / (scalar)4.0;
   else
-    return 0.75 + dot / 4.0;
+    return (scalar)0.75 + dot / (scalar)4.0;
 }
 
 // Connects two rooms in a pleasing way

@@ -255,7 +255,7 @@ bool MoveObject(object *obj, vector *newpos);
 //	---------------------------------------------------------------------------
 //	interface functions
 
-#define OBJECT_PLACE_DIST 10.0
+#define OBJECT_PLACE_DIST (scalar)10.0
 
 //	---------------------------------------------------------------------------
 
@@ -447,13 +447,13 @@ void ResetGroundObject(object *objp) {
 
   // Get terrain height and normal at current object location
   pos = objp->pos;
-  pos.y = GetTerrainGroundPoint(&pos, &surface_norm);
+  pos.y() = GetTerrainGroundPoint(&pos, &surface_norm);
 
   // Place the object's ground point on our placement point
   vector ground_point;
   vector ground_normal;
   vector to_ground;
-  float dist;
+  scalar dist;
 
   PhysCalcGround(&ground_point, &ground_normal, objp, 0);
   to_ground = objp->pos - ground_point;

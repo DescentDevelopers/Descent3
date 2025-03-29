@@ -407,7 +407,7 @@ void DrawAllPaths(grViewport *vp, vector *viewer_eye, matrix *viewer_orient, flo
 
     for (t = 0; t < gp->num_nodes; t++) {
       for (int k = 0; k < gp->num_nodes; k++) {
-        if (rot_points[k].p3_vec.z < rot_points[t].p3_vec.z) {
+        if (rot_points[k].p3_vec.z() < rot_points[t].p3_vec.z()) {
           g3Point temp;
           int tindex;
 
@@ -450,8 +450,8 @@ void DrawAllPaths(grViewport *vp, vector *viewer_eye, matrix *viewer_orient, flo
 
       g3_DrawSphere(color, &rot_points[t], size);
 
-      vector fpos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].fvec * (size - size / 10.0);
-      vector upos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].uvec * (size - size / 10.0);
+      vector fpos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].fvec * (size - size / (scalar)10.0);
+      vector upos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].uvec * (size - size / (scalar)10.0);
 
       g3Point frot;
       g3Point urot;
@@ -539,8 +539,8 @@ void DrawNumber(int num, vector pos, float size) {
     for (i = 0; i < NumOfPoints[num_array[j]]; i++) {
       rot_pnt[i] = basepnt;
 
-      rot_pnt[i].p3_vec.x += (ArrayX[num_array[j]][i] * size);
-      rot_pnt[i].p3_vec.y += (ArrayY[num_array[j]][i] * size);
+      rot_pnt[i].p3_vec.x() += (ArrayX[num_array[j]][i] * size);
+      rot_pnt[i].p3_vec.y() += (ArrayY[num_array[j]][i] * size);
 
       rot_pnt[i].p3_flags = 0;
       g3_CodePoint(&rot_pnt[i]);

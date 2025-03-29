@@ -343,15 +343,15 @@ int SlewFrame(object *obj, int movement_limitations) {
     joyy_moved = (abs(joy_y - old_joy_y) > JOY_NULL);
 
     if (btns) {
-      if (!rotang.p)
-        rotang.p = -joy_y * 256 * Frametime;
+      if (!rotang.p())
+        rotang.p() = -joy_y * 256 * Frametime;
     } else {
       if (joyy_moved)
-        obj->mtype.phys_info.velocity.z = (float)-joy_y / 4.0;
+        obj->mtype.phys_info.velocity.z() = (scalar)-joy_y / 4.0;
     }
 
-    if (!rotang.h)
-      rotang.h = joy_x * 256 * Frametime;
+    if (!rotang.h())
+      rotang.h() = joy_x * 256 * Frametime;
 
     if (joyx_moved)
       old_joy_x = joy_x;

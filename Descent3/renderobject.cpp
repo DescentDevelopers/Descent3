@@ -665,14 +665,14 @@ void DrawObjectSelectionBrackets(object *obj, bool front_flag) {
   g3_GetViewPosition(&viewvec);
   viewvec -= obj->pos;
   // Get length of line segments we're drawing
-  line_len = (pm->maxs.x - pm->mins.x) * 0.2f;
+  line_len = (pm->maxs.x() - pm->mins.x()) * 0.2f;
   // Do each corner
   for (int c = 0; c < 8; c++) {
     vector corner;
     // Get the corner relative to the object
-    corner = (obj->orient.rvec * ((c & 1) ? pm->mins.x : pm->maxs.x)) +
-             (obj->orient.uvec * ((c & 2) ? pm->mins.y : pm->maxs.y)) +
-             (obj->orient.fvec * ((c & 4) ? pm->mins.z : pm->maxs.z));
+    corner = (obj->orient.rvec * ((c & 1) ? pm->mins.x() : pm->maxs.x())) +
+             (obj->orient.uvec * ((c & 2) ? pm->mins.y() : pm->maxs.y())) +
+             (obj->orient.fvec * ((c & 4) ? pm->mins.z() : pm->maxs.z()));
     // See if this corner is in front or in back of the object, as specified
     if ((vm_Dot3Product(corner, viewvec) > 0.0) != front_flag)
       continue;

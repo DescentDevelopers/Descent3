@@ -629,15 +629,15 @@ void AttachGroup() {
 
 #define cf_ReadVector(f, v)                                                                                            \
   do {                                                                                                                 \
-    (v)->x = cf_ReadFloat(f);                                                                                          \
-    (v)->y = cf_ReadFloat(f);                                                                                          \
-    (v)->z = cf_ReadFloat(f);                                                                                          \
+    (v)->x() = cf_ReadFloat(f);                                                                                          \
+    (v)->y() = cf_ReadFloat(f);                                                                                          \
+    (v)->z() = cf_ReadFloat(f);                                                                                          \
   } while (0)
 #define cf_WriteVector(f, v)                                                                                           \
   do {                                                                                                                 \
-    cf_WriteFloat((f), (v)->x);                                                                                        \
-    cf_WriteFloat((f), (v)->y);                                                                                        \
-    cf_WriteFloat((f), (v)->z);                                                                                        \
+    cf_WriteFloat((f), (v)->x());                                                                                        \
+    cf_WriteFloat((f), (v)->y());                                                                                        \
+    cf_WriteFloat((f), (v)->z());                                                                                        \
   } while (0)
 #define cf_WriteMatrix(f, m)                                                                                           \
   do {                                                                                                                 \

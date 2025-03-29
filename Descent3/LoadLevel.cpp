@@ -2201,7 +2201,7 @@ void RemoveDegenerateFaces(room *rp) {
   for (f = rp->num_faces - 1; f >= 0; f--) {
     face *fp = &rp->faces[f];
 
-    if ((fp->normal.x == 0.0) && (fp->normal.y == 0.0) && (fp->normal.z == 0.0)) {
+    if ((fp->normal.x() == 0.0) && (fp->normal.y() == 0.0) && (fp->normal.z() == 0.0)) {
       LOG_DEBUG.printf("Deleting face %d from room %d", f, ROOMNUM(rp));
       DeleteRoomFace(rp, f);
       n_degenerate_faces_removed++;
@@ -4222,9 +4222,9 @@ end_loadlevel:
 
 #define cf_WriteVector(f, v)                                                                                           \
   do {                                                                                                                 \
-    cf_WriteFloat((f), (v)->x);                                                                                        \
-    cf_WriteFloat((f), (v)->y);                                                                                        \
-    cf_WriteFloat((f), (v)->z);                                                                                        \
+    cf_WriteFloat((f), (v)->x());                                                                                        \
+    cf_WriteFloat((f), (v)->y());                                                                                        \
+    cf_WriteFloat((f), (v)->z());                                                                                        \
   } while (0)
 #define cf_WriteMatrix(f, m)                                                                                           \
   do {                                                                                                                 \
@@ -4646,9 +4646,9 @@ void WriteBNodeChunk(CFILE *fp) {
       cf_WriteShort(fp, bnlist->num_nodes);
       if (bnlist->num_nodes) {
         for (j = 0; j < bnlist->num_nodes; j++) {
-          cf_WriteFloat(fp, bnlist->nodes[j].pos.x);
-          cf_WriteFloat(fp, bnlist->nodes[j].pos.y);
-          cf_WriteFloat(fp, bnlist->nodes[j].pos.z);
+          cf_WriteFloat(fp, bnlist->nodes[j].pos.x());
+          cf_WriteFloat(fp, bnlist->nodes[j].pos.y());
+          cf_WriteFloat(fp, bnlist->nodes[j].pos.z());
 
           cf_WriteShort(fp, bnlist->nodes[j].num_edges);
           if (bnlist->nodes[j].num_edges) {
@@ -4732,24 +4732,24 @@ void WriteRoomAABBChunk(CFILE *fp) {
 
       cf_WriteInt(fp, Rooms[i].num_faces);
       for (j = 0; j < Rooms[i].num_faces; j++) {
-        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.x);
-        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.y);
-        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.z);
+        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.x());
+        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.y());
+        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.z());
 
-        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.x);
-        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.y);
-        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.z);
+        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.x());
+        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.y());
+        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.z());
       }
 
       cf_WriteInt(fp, BOA_AABB_ROOM_checksum[i]);
 
-      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.x);
-      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.y);
-      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.z);
+      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.x());
+      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.y());
+      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.z());
 
-      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.x);
-      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.y);
-      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.z);
+      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.x());
+      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.y());
+      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.z());
 
       cf_WriteShort(fp, Rooms[i].num_bbf_regions);
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
@@ -4761,13 +4761,13 @@ void WriteRoomAABBChunk(CFILE *fp) {
           cf_WriteShort(fp, Rooms[i].bbf_list[j][k]);
         }
 
-        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].x);
-        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].y);
-        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].z);
+        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].x());
+        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].y());
+        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].z());
 
-        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].x);
-        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].y);
-        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].z);
+        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].x());
+        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].y());
+        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].z());
 
         cf_WriteByte(fp, Rooms[i].bbf_list_sector[j]);
       }
@@ -5196,13 +5196,13 @@ int SaveLevel(char *filename, bool f_save_room_AABB) {
 
     // Write room wind, if any rooms have wind
     for (i = nrooms = 0, rp = Rooms; i <= Highest_room_index; i++, rp++) // Count the number of rooms with wind
-      if ((rp->wind.x != 0.0) || (rp->wind.y != 0.0) || (rp->wind.z != 0.0))
+      if ((rp->wind.x() != 0.0) || (rp->wind.y() != 0.0) || (rp->wind.z() != 0.0))
         nrooms++;
     if (nrooms) {
       chunk_start_pos = StartChunk(ofile, CHUNK_ROOM_WIND);
       cf_WriteInt(ofile, nrooms);
       for (i = 0, rp = Rooms; i <= Highest_room_index; i++, rp++) { // write the wind values
-        if ((rp->wind.x != 0.0) || (rp->wind.y != 0.0) || (rp->wind.z != 0.0)) {
+        if ((rp->wind.x() != 0.0) || (rp->wind.y() != 0.0) || (rp->wind.z() != 0.0)) {
           cf_WriteShort(ofile, i);
           cf_WriteVector(ofile, &rp->wind);
         }

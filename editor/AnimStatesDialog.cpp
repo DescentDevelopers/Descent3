@@ -515,7 +515,7 @@ void CAnimStatesDialog::UpdateAnimStateView() {
   SetNormalizedTimeAnim(keyframe, norm_angles, pm);
 
   vm_AnglesToMatrix(&rot_matrix, 0, m_SpinFrame * 400, 0);
-  view_vector.z = -(fabs(pm->maxs.z - pm->mins.z) * 2);
+  view_vector.z() = -(fabs(pm->maxs.z() - pm->mins.z()) * 2);
 
   surf.create(128, 128, BPP_16);
   grViewport *vport = new grViewport(&surf);
