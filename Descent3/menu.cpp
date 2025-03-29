@@ -1054,11 +1054,11 @@ static inline int count_missions(const std::vector<std::filesystem::path> &missi
 
   for (const auto &missions_directory : missions_directories) {
     ddio_DoForeachFile(missions_directory, std::regex(".*\\.mn3"), [&c](const std::filesystem::path &path) {
-      if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
+      if (stricmp((const char*)path.filename().u8string().c_str(), "d3_2.mn3") == 0)
         return;
-      LOG_DEBUG.printf("Mission path: %s", path.u8string().c_str());
+      LOG_DEBUG.printf("Mission path: %s", (const char*)path.u8string().c_str());
       tMissionInfo msninfo{};
-      GetMissionInfo(path.filename().u8string().c_str(), &msninfo);
+      GetMissionInfo((const char*)path.filename().u8string().c_str(), &msninfo);
 
       if (msninfo.name[0] && msninfo.single) {
         LOG_DEBUG.printf("Name: %s", msninfo.name);
@@ -1081,7 +1081,7 @@ static inline int generate_mission_listbox(newuiListBox *lb, std::vector<std::fi
     ddio_DoForeachFile(
         missions_directory, std::regex(".*\\.mn3"), [&c, &lb, &filelist](const std::filesystem::path &path) {
           tMissionInfo msninfo{};
-          if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
+          if (stricmp((const char*)path.filename().u8string().c_str(), "d3_2.mn3") == 0)
           return;
         if (GetMissionInfo(path.filename(), &msninfo) && msninfo.name[0] && msninfo.single) {
           filelist.push_back(path.filename());
@@ -1174,7 +1174,7 @@ bool MenuNewGame() {
     return false;
   }
   for (auto const &mission : filelist) {
-    if (stricmp(mission.u8string().c_str(), "d3.mn3") == 0) {
+    if (stricmp((const char*)mission.u8string().c_str(), "d3.mn3") == 0) {
       found = true;
       break;
     }
@@ -1245,7 +1245,7 @@ redo_newgame_menu:
     if (index >= 0 && index < filelist.size()) {
       nameptr = filelist[index];
     }
-    if (nameptr.empty() || !LoadMission(nameptr.u8string().c_str())) {
+    if (nameptr.empty() || !LoadMission((const char*)nameptr.u8string().c_str())) {
       DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
       retval = false;
     } else {

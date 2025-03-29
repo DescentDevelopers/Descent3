@@ -723,9 +723,9 @@ inline void AppendToLevelChecksum(vector val) {
   if (!Level_md5) {
     return;
   }
-  Level_md5->update(val.x);
-  Level_md5->update(val.y);
-  Level_md5->update(val.z);
+  Level_md5->update(val.x());
+  Level_md5->update(val.y());
+  Level_md5->update(val.z());
 }
 
 inline void AppendToLevelChecksum(uint8_t val) {

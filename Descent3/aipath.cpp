@@ -358,7 +358,7 @@ void AIPathMoveTurnTowardsNode(object *obj, vector *mdir, bool *f_moved) {
     vector dir = cur_pos - obj->pos;
 
     if (obj->movement_type == MT_WALKING) {
-      float dot = dir * obj->orient.uvec;
+      scalar dot = vm_Dot3Product(dir, obj->orient.uvec);
       dir -= dot * obj->orient.uvec;
     }
     vm_NormalizeVector(&dir);
@@ -382,10 +382,10 @@ pass_node:
     vector dir = cur_pos - obj->pos;
 
     if (obj->movement_type == MT_WALKING) {
-      float dot = dir * obj->orient.uvec;
+      scalar dot = vm_Dot3Product(dir, obj->orient.uvec);
       dir -= dot * obj->orient.uvec;
     }
-    float dist = vm_GetMagnitude(&dir);
+    scalar dist = dir.mag();
 
     if (dist < 1.5f) {
       f_pass_node = true;
@@ -400,7 +400,7 @@ pass_node:
     if (!f_reverse) {
       if (AIPathAtStart(aip)) {
         if (AIPathAtEnd(aip)) {
-          if ((obj->pos - cur_pos) * (obj->last_pos - cur_pos) <= 0.0f && !f_too_far_from_end)
+          if (vm_Dot3Product((obj->pos - cur_pos), (obj->last_pos - cur_pos)) <= 0.0f && !f_too_far_from_end)
             f_pass_node = true;
         } else {
           vector next_pos;
@@ -408,7 +408,7 @@ pass_node:
 
           vector proj_line = obj->pos - cur_pos;
           vector line = next_pos - cur_pos;
-          float proj = proj_line * line;
+          scalar proj = vm_Dot3Product(proj_line, line);
 
           if (proj >= 0.0f)
             f_pass_node = true;
@@ -419,8 +419,8 @@ pass_node:
 
         vector proj = obj->pos - prev_pos;
         vector line = cur_pos - prev_pos;
-        float line_len = vm_NormalizeVector(&line);
-        float proj_len = proj * line;
+        scalar line_len = vm_NormalizeVector(&line);
+        scalar proj_len = vm_Dot3Product(proj, line);
 
         if (proj_len >= line_len)
           f_pass_node = true;
@@ -428,7 +428,7 @@ pass_node:
     } else {
       if (AIPathAtEnd(aip)) {
         if (AIPathAtStart(aip)) {
-          if ((obj->pos - cur_pos) * (obj->last_pos - cur_pos) <= 0.0f && !f_too_far_from_end)
+          if (vm_Dot3Product((obj->pos - cur_pos), (obj->last_pos - cur_pos)) <= 0.0f && !f_too_far_from_end)
             f_pass_node = true;
         } else {
           vector prev_pos;
@@ -436,7 +436,7 @@ pass_node:
 
           vector proj_line = obj->pos - cur_pos;
           vector line = prev_pos - cur_pos;
-          float proj = proj_line * line;
+          scalar proj = vm_Dot3Product(proj_line, line);
 
           if (proj >= 0.0f)
             f_pass_node = true;
@@ -447,8 +447,8 @@ pass_node:
 
         vector proj = obj->pos - next_pos;
         vector line = cur_pos - next_pos;
-        float line_len = vm_NormalizeVector(&line);
-        float proj_len = proj * line;
+        scalar line_len = vm_NormalizeVector(&line);
+        scalar proj_len = vm_Dot3Product(proj, line);
 
         if (proj_len >= line_len)
           f_pass_node = true;

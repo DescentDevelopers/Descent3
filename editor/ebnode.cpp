@@ -947,8 +947,8 @@ void EBNode_MakeDefaultIntraRoomNodes(int roomnum) {
         vector vec = rp->portals[j].path_pnt - rp->portals[i].path_pnt;
         vector cvec = rp->path_pnt - rp->portals[i].path_pnt;
 
-        float len = vm_NormalizeVector(&vec);
-        float cproj = cvec * vec;
+        scalar len = vm_NormalizeVector(&vec);
+        scalar cproj = vm_Dot3Product(cvec, vec);
 
         if (len >= cproj && cproj >= 0.0f) {
           vector cxline = cproj * vec;
@@ -1233,7 +1233,7 @@ void EBNode_DrawRoom(int room, grViewport *vp, vector *viewer_eye, matrix *viewe
 
     for (t = 0; t < bn_info->nodes[i].num_edges + 1; t++) {
       for (int k = 0; k < bn_info->nodes[i].num_edges + 1; k++) {
-        if (rot_points[k].p3_vec.z < rot_points[t].p3_vec.z) {
+        if (rot_points[k].p3_vec.z() < rot_points[t].p3_vec.z()) {
           g3Point temp;
           int tindex;
 

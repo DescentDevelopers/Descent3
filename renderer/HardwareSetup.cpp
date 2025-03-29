@@ -94,26 +94,20 @@ void g3_StartFrame(vector *view_pos, matrix *view_matrix, float zoom) {
   rend_GetProjectionParameters(&Window_width, &Window_height);
 
   // Set vars for projection
-  Window_w2 = ((float)Window_width) * 0.5f;
-  Window_h2 = ((float)Window_height) * 0.5f;
+  Window_w2 = ((scalar)Window_width) * 0.5f;
+  Window_h2 = ((scalar)Window_height) * 0.5f;
 
   // ISB trick: use the window aspect only, screen aspect ratio
   // is not important because we assume pixels are square
-  float s = (float)Window_height / (float)Window_width;
+  scalar s = (scalar)Window_height / (scalar)Window_width;
 
-  if (s <= 1.0f) {
-    // scale x
-    Matrix_scale.x = s;
-    Matrix_scale.y = 1.0f;
-  } else {
-    Matrix_scale.y = 1.0f / s;
-    Matrix_scale.x = 1.0f;
-  }
+  Matrix_scale = { s <= 1.0f ? s : 1.0f / s, 1.0f };
+
 
   //ISB: Convert zoom into vertical FOV for convenience
   zoom *= 3.f / 4.f;
 
-  Matrix_scale.z = 1.0f;
+  Matrix_scale.z() = 1.0f;
 
   // Set the view variables
   View_position = *view_pos;
@@ -121,14 +115,12 @@ void g3_StartFrame(vector *view_pos, matrix *view_matrix, float zoom) {
   Unscaled_matrix = *view_matrix;
 
   // Scale x and y to zoom in or out;
-  float oOZ = 1.0f / View_zoom;
-  Matrix_scale.x = Matrix_scale.x * oOZ;
-  Matrix_scale.y = Matrix_scale.y * oOZ;
+  Matrix_scale *= 1.0f / View_zoom;
 
   // Scale the matrix elements
-  View_matrix.rvec = Unscaled_matrix.rvec * Matrix_scale.x;
-  View_matrix.uvec = Unscaled_matrix.uvec * Matrix_scale.y;
-  View_matrix.fvec = Unscaled_matrix.fvec * Matrix_scale.z;
+  View_matrix.rvec = Unscaled_matrix.rvec * Matrix_scale.x();
+  View_matrix.uvec = Unscaled_matrix.uvec * Matrix_scale.y();
+  View_matrix.fvec = Unscaled_matrix.fvec * Matrix_scale.z();
 
   // Reset the list of free points
   InitFreePoints();

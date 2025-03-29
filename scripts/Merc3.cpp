@@ -1673,9 +1673,9 @@ $$END
 */
 void aSetObjectVelocity(int Object, float x, float y, float z, float mag) {
   vector vec;
-  vec.x = x;
-  vec.y = y;
-  vec.z = z;
+  vec.x() = x;
+  vec.y() = y;
+  vec.z() = z;
   vm_VectorNormalize(&vec);
   vec *= mag;
 
@@ -2137,7 +2137,7 @@ void cEndSequenceInit() {
   int i;
   for (i = 0; i < N_END_ROOMS; i++) {
     strcpy(exit_room_info[i].cmdstr, exit_room_info[i].commands);
-    aRoomSetWind(exit_room_info[i].room_number, exit_room_winds[i].x, exit_room_winds[i].y, exit_room_winds[i].z,
+    aRoomSetWind(exit_room_info[i].room_number, exit_room_winds[i].x(), exit_room_winds[i].y(), exit_room_winds[i].z(),
                  wind_speed);
   }
 }

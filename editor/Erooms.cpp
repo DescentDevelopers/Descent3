@@ -664,7 +664,7 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -681,9 +681,9 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   float leftmost_x = 900000.00f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].x < leftmost_x) {
+    if (verts[i].x() < leftmost_x) {
       leftmost_point = i;
-      leftmost_x = verts[i].x;
+      leftmost_x = verts[i].x();
     }
   }
 
@@ -694,9 +694,9 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   float topmost_y = -900000.0f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].y > topmost_y) {
+    if (verts[i].y() > topmost_y) {
       topmost_point = i;
-      topmost_y = verts[i].y;
+      topmost_y = verts[i].y();
     }
   }
 
@@ -707,9 +707,9 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   float rightmost_x = -900000.00f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].x > rightmost_x) {
+    if (verts[i].x() > rightmost_x) {
       rightmost_point = i;
-      rightmost_x = verts[i].x;
+      rightmost_x = verts[i].x();
     }
   }
 
@@ -720,9 +720,9 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   float bottommost_y = 900000.0f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].y < bottommost_y) {
+    if (verts[i].y() < bottommost_y) {
       bottommost_point = i;
-      bottommost_y = verts[i].y;
+      bottommost_y = verts[i].y();
     }
   }
 
@@ -732,14 +732,14 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
 
   vector base_vector;
 
-  base_vector.x = verts[leftmost_point].x;
-  base_vector.y = verts[topmost_point].y;
-  base_vector.z = 0;
+  base_vector.x() = verts[leftmost_point].x();
+  base_vector.y() = verts[topmost_point].y();
+  base_vector.z() = 0;
 
   // now actually find the uv of our specified point
 
-  uvl->u = (verts[vertnum].x - base_vector.x) / 20.0;
-  uvl->v = (base_vector.y - verts[vertnum].y) / 20.0;
+  uvl->u = (verts[vertnum].x() - base_vector.x()) / 20.0;
+  uvl->v = (base_vector.y() - verts[vertnum].y()) / 20.0;
 }
 
 #define DEFAULT_ALPHA 255
@@ -824,9 +824,9 @@ void SaveRoom(int n, char *filename) {
   cf_WriteInt(outfile, -1);
 
   for (int i = 0; i < Rooms[n].num_verts; i++) {
-    cf_WriteFloat(outfile, Rooms[n].verts[i].x);
-    cf_WriteFloat(outfile, Rooms[n].verts[i].y);
-    cf_WriteFloat(outfile, Rooms[n].verts[i].z);
+    cf_WriteFloat(outfile, Rooms[n].verts[i].x());
+    cf_WriteFloat(outfile, Rooms[n].verts[i].y());
+    cf_WriteFloat(outfile, Rooms[n].verts[i].z());
   }
 
   savepos = cftell(outfile);
@@ -880,9 +880,9 @@ void SaveRoom(int n, char *filename) {
     cf_WriteByte(outfile, Rooms[n].faces[i].light_multiple);
     cf_WriteInt(outfile, Rooms[n].faces[i].num_verts);
 
-    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.x);
-    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.y);
-    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.z);
+    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.x());
+    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.y());
+    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.z());
 
     // Search through our texture list and write out that index
     for (t = 0; t < highest_index; t++) {
@@ -969,9 +969,9 @@ int AllocLoadRoom(char *filename, bool bCenter, bool palette_room) {
         break;
       }
       for (i = 0; i < rp->num_verts; i++) {
-        rp->verts[i].x = cf_ReadFloat(infile);
-        rp->verts[i].y = cf_ReadFloat(infile);
-        rp->verts[i].z = cf_ReadFloat(infile);
+        rp->verts[i].x() = cf_ReadFloat(infile);
+        rp->verts[i].y() = cf_ReadFloat(infile);
+        rp->verts[i].z() = cf_ReadFloat(infile);
       }
       break;
     case ROOM_TEXTURE_CHUNK:
@@ -1009,9 +1009,9 @@ int AllocLoadRoom(char *filename, bool bCenter, bool palette_room) {
         ASSERT(rp->faces[i].face_verts);
         ASSERT(rp->faces[i].face_uvls);
 
-        rp->faces[i].normal.x = cf_ReadFloat(infile);
-        rp->faces[i].normal.y = cf_ReadFloat(infile);
-        rp->faces[i].normal.z = cf_ReadFloat(infile);
+        rp->faces[i].normal.x() = cf_ReadFloat(infile);
+        rp->faces[i].normal.y() = cf_ReadFloat(infile);
+        rp->faces[i].normal.z() = cf_ReadFloat(infile);
         rp->faces[i].light_multiple = light_multiple;
 
         tex_index = cf_ReadShort(infile);
@@ -1199,13 +1199,13 @@ bool FaceIsPlanar(int nv, int16_t *face_verts, vector *normal, vector *verts) {
   // Get average distance from origin for points on this face
   float average_d = 0;
   for (int v = 0; v < nv; v++)
-    average_d += verts[face_verts[v]] * *normal;
+    average_d += vm_Dot3Product(verts[face_verts[v]], *normal);
   average_d /= nv;
 
   // Look for points too far from the average
   float d;
   for (int v = 0; v < nv; v++) {
-    d = verts[face_verts[v]] * *normal;
+    d = vm_Dot3Product(verts[face_verts[v]], *normal);
     if (fabs(d - average_d) > POINT_TO_PLANE_EPSILON)
       return 0;
   }
@@ -1351,7 +1351,7 @@ void ReInitRoomFace(face *fp, int nverts) {
 // Parameters:	v0,v1 - the two points
 // Returns:		true if the points are the same or very close; else false
 bool PointsAreSame(vector *v0, vector *v1) {
-  float d = vm_VectorDistance(v0, v1);
+  scalar d = vm_VectorDistance(v0, v1);
 
   return (d < POINT_TO_POINT_EPSILON);
 }
@@ -1361,7 +1361,7 @@ bool PointsAreSame(vector *v0, vector *v1) {
 //					planepoint,normal - the plane we're checking against
 // Returns:		0 if on the plane, -1 if behind, 1 if in front
 int CheckPointToPlane(vector *checkpoint, vector *planepoint, vector *normal) {
-  float d = (*checkpoint - *planepoint) * *normal;
+  scalar d = vm_Dot3Product((*checkpoint - *planepoint), *normal);
 
   if (d < -POINT_TO_PLANE_EPSILON)
     return -1;
@@ -2040,23 +2040,23 @@ void LinkRooms(room *roomlist, int room0, int face0, int room1, int face1) {
 // Parameters:	min,max - filled in with the minimum and maximum x,y, & z values, respectively
 //					rp = the room
 void ComputeRoomMinMax(vector *min, vector *max, room *rp) {
-  min->x = min->y = min->z = FLT_MAX;
-  max->x = max->y = max->z = -FLT_MAX;
+  min->fill(FLT_MAX);
+  max->fill(-FLT_MAX);
 
   for (int i = 0; i < rp->num_verts; i++) {
-    if (rp->verts[i].x > max->x)
-      max->x = rp->verts[i].x;
-    if (rp->verts[i].y > max->y)
-      max->y = rp->verts[i].y;
-    if (rp->verts[i].z > max->z)
-      max->z = rp->verts[i].z;
+    if (rp->verts[i].x() > max->x())
+      max->x() = rp->verts[i].x();
+    if (rp->verts[i].y() > max->y())
+      max->y() = rp->verts[i].y();
+    if (rp->verts[i].z() > max->z())
+      max->z() = rp->verts[i].z();
 
-    if (rp->verts[i].x < min->x)
-      min->x = rp->verts[i].x;
-    if (rp->verts[i].y < min->y)
-      min->y = rp->verts[i].y;
-    if (rp->verts[i].z < min->z)
-      min->z = rp->verts[i].z;
+    if (rp->verts[i].x() < min->x())
+      min->x() = rp->verts[i].x();
+    if (rp->verts[i].y() < min->y())
+      min->y() = rp->verts[i].y();
+    if (rp->verts[i].z() < min->z())
+      min->z() = rp->verts[i].z();
   }
 }
 

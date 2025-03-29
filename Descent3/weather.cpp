@@ -66,16 +66,16 @@ void DoRainEffect() {
   else if (randval > 80)
     randval = 80;
 
-  if ((upvec * Viewer_object->orient.uvec) < 0)
+  if (vm_Dot3Product(upvec, Viewer_object->orient.uvec) < 0)
     randval = 8000; // Make sure rain does fall upwards
 
   if (Viewer_object->type == OBJ_PLAYER && OBJECT_OUTSIDE(Viewer_object) && (ps_rand() % randval) == 0) {
     // Put some droplets on the windshield
     vector pos = {0, 0, 0};
 
-    pos.x = ((ps_rand() % 1000) - 500) / 250.0;
-    pos.y = ((ps_rand() % 1000) - 500) / 350.0;
-    pos.z = 3.0;
+    pos.x() = ((ps_rand() % 1000) - 500) / 250.0;
+    pos.y() = ((ps_rand() % 1000) - 500) / 350.0;
+    pos.z() = 3.0;
 
     int visnum = VisEffectCreate(VIS_FIREBALL, RAINDROP_INDEX, Viewer_object->roomnum, &pos);
     if (visnum >= 0) {
@@ -102,7 +102,7 @@ void DoRainEffect() {
 
     vm_ExtractAnglesFromMatrix(&angs, &Viewer_object->orient);
     matrix mat;
-    vm_AnglesToMatrix(&mat, 0, angs.h, 0);
+    vm_AnglesToMatrix(&mat, 0, angs.h(), 0);
 
     for (i = 0; i < num; i++) {
       vector pos = Viewer_object->pos;
@@ -124,7 +124,7 @@ void DoRainEffect() {
         vis->lifetime = life;
         vis->lighting_color = GR_RGB16(200, 200, 255);
         vis->end_pos = pos;
-        vis->end_pos.y += 20;
+        vis->end_pos.y() += 20;
         vis->flags |= VF_WINDSHIELD_EFFECT;
         vis->pos -= (Viewer_object->mtype.phys_info.velocity / 2);
       }
@@ -142,15 +142,15 @@ void DoRainEffect() {
       pos += y * mat.uvec;
       pos += z * mat.fvec;
 
-      if (pos.z < 0 || pos.z >= TERRAIN_DEPTH * TERRAIN_SIZE)
+      if (pos.z() < 0 || pos.z() >= TERRAIN_DEPTH * TERRAIN_SIZE)
         continue;
-      if (pos.x < 0 || pos.x >= TERRAIN_WIDTH * TERRAIN_SIZE)
+      if (pos.x() < 0 || pos.x() >= TERRAIN_WIDTH * TERRAIN_SIZE)
         continue;
 
       // Create puddle drops on the terrain
       vector norm;
       float ypos = GetTerrainGroundPoint(&pos, &norm);
-      pos.y = ypos;
+      pos.y() = ypos;
       int visnum = VisEffectCreate(VIS_FIREBALL, PUDDLEDROP_INDEX, Viewer_object->roomnum, &pos);
       if (visnum >= 0) {
         vis_effect *vis = &VisEffects[visnum];
@@ -189,17 +189,17 @@ void DoSnowEffect() {
     for (int i = 0; i < num; i++) {
       vector pos = Viewer_object->pos;
 
-      float z = ((ps_rand() % 1000) / 1000.0) * 300;
-      float x = (((ps_rand() % 1000) - 500) / 500.0) * 200;
+      scalar z = ((ps_rand() % 1000) / 1000.0) * 300;
+      scalar x = (((ps_rand() % 1000) - 500) / 500.0) * 200;
       int y = (ps_rand() % 80);
 
       pos += x * mat.rvec;
       pos += y * mat.uvec;
       pos += z * mat.fvec;
 
-      if (pos.z < 0 || pos.z >= TERRAIN_DEPTH * TERRAIN_SIZE)
+      if (pos.z() < 0 || pos.z() >= TERRAIN_DEPTH * TERRAIN_SIZE)
         continue;
-      if (pos.x < 0 || pos.x >= TERRAIN_WIDTH * TERRAIN_SIZE)
+      if (pos.x() < 0 || pos.x() >= TERRAIN_WIDTH * TERRAIN_SIZE)
         continue;
 
       // Create falling rain

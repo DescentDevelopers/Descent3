@@ -1338,9 +1338,9 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
       vis->lighting_color = mstruct->color;
       vis->billboard_info.width = mstruct->size;
       vis->billboard_info.texture = mstruct->state;
-      vis->velocity.x = mstruct->count;
-      vis->velocity.y = mstruct->interval;
-      vis->velocity.z = mstruct->index;
+      vis->velocity.x() = mstruct->count;
+      vis->velocity.y() = mstruct->interval;
+      vis->velocity.z() = mstruct->index;
 
       vis->flags = VF_USES_LIFELEFT | VF_WINDSHIELD_EFFECT | VF_LINK_TO_VIEWER;
       vis->size = vm_VectorDistanceQuick(&vis->pos, &vis->end_pos);
@@ -1432,9 +1432,9 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     if (!VALIDATE_ROOM(mstruct->roomnum))
       return;
     vector fog_vec;
-    fog_vec.x = mstruct->fog_r;
-    fog_vec.y = mstruct->fog_g;
-    fog_vec.z = mstruct->fog_b;
+    fog_vec.x() = mstruct->fog_r;
+    fog_vec.y() = mstruct->fog_g;
+    fog_vec.z() = mstruct->fog_b;
     SetRoomChangeOverTime(mstruct->roomnum, 1, &fog_vec, mstruct->fog_depth, mstruct->interval);
     break;
   }

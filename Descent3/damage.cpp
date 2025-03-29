@@ -975,7 +975,7 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
   } else { // slow death
 
     int alternate_death = 0;
-    bool f_upsidedown_walker = (obj->movement_type == MT_WALKING) && (obj->orient.uvec.y < 0.0f);
+    bool f_upsidedown_walker = (obj->movement_type == MT_WALKING) && (obj->orient.uvec.y() < 0.0f);
 
     if (!f_upsidedown_walker && (ps_rand() % 2) == 1) {
       *death_flags = DF_DELAY_SPARKS;
@@ -1001,10 +1001,10 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
         if (obj->control_type == CT_AI &&
             Object_info[obj->id].anim[obj->ai_info->movement_type].elem[AS_DEATH].to != 0.0f) {
           // compute time remaining in current animation
-          float extra_time = obj->rtype.pobj_info.anim_time *
+          scalar extra_time = obj->rtype.pobj_info.anim_time *
                              (obj->rtype.pobj_info.anim_end_frame - obj->rtype.pobj_info.anim_frame) /
                              (obj->rtype.pobj_info.anim_end_frame - obj->rtype.pobj_info.anim_start_frame);
-          extra_time = std::min<float>(extra_time, 3.0); // limit extra time to 3 seconds
+          extra_time = std::min<scalar>(extra_time, 3.0); // limit extra time to 3 seconds
           *delay_time = Object_info[obj->id].anim[obj->ai_info->movement_type].elem[AS_DEATH].spc + 0.25 + extra_time;
           // Walkers last a little longer
           if (obj->movement_type == MT_WALKING)
@@ -1014,7 +1014,7 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
       }
     } else { // If building, make it shoot up
       *death_flags |= DF_DELAY_FLYING;
-      if (obj->orient.uvec.y == 1.0f)
+      if (obj->orient.uvec.y() == 1.0f)
         *delay_time = 2.0f;
       else
         *delay_time = 0.7f;
@@ -1094,19 +1094,19 @@ void SetFallingPhysics(object *objp) {
   if (objp->movement_type == MT_WALKING) {
     objp->mtype.phys_info.rotvel = Zero_vector;
     objp->mtype.phys_info.flags |= PF_POINT_COLLIDE_WALLS;
-    float proj = objp->mtype.phys_info.velocity * objp->orient.uvec;
+    scalar proj = vm_Dot3Product(objp->mtype.phys_info.velocity, objp->orient.uvec);
     if (proj < 0.0f)
       objp->mtype.phys_info.velocity -= proj * objp->orient.uvec;
 
-    objp->mtype.phys_info.velocity += objp->orient.uvec * (3.0f + ((float)ps_rand() / D3_RAND_MAX) * 5.0);
+    objp->mtype.phys_info.velocity += objp->orient.uvec * (3.0f + ((scalar)ps_rand() / D3_RAND_MAX) * 5.0);
     objp->movement_type = MT_PHYSICS;
   } else { // not a walker
 
     // If not spinning much, give the object a good spin
-    if (vm_GetMagnitude(&objp->mtype.phys_info.rotvel) < 4000.0f) {
-      objp->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    if (objp->mtype.phys_info.rotvel.mag() < 4000.0f) {
+      objp->mtype.phys_info.rotvel.x() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.y() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.z() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
     }
   }
 }
@@ -1124,20 +1124,20 @@ void SetFlyingPhysics(object *objp, bool tumbles) {
 
   if (tumbles) {
     // Make y spin a little bit more that x or z
-    objp->mtype.phys_info.rotvel.x = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.z = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.x() = (scalar)((40000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.y() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.z() = (scalar)((40000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
   }
 
-  if (objp->orient.uvec.y == 1.0f) {
-    objp->mtype.phys_info.velocity.y = (float)(3 * (ps_rand() % 15)) + 20.0;
-    objp->mtype.phys_info.velocity.x = 0;
-    objp->mtype.phys_info.velocity.z = 0;
+  if (objp->orient.uvec.y() == 1.0f) {
+    objp->mtype.phys_info.velocity.y() = (scalar)(3 * (ps_rand() % 15)) + 20.0;
+    objp->mtype.phys_info.velocity.x() = 0;
+    objp->mtype.phys_info.velocity.z() = 0;
 
     // Doubled the velocity on 4/30/99 to make Josh's pop machines cooler. -MT
-    objp->mtype.phys_info.velocity.y *= 2.0;
+    objp->mtype.phys_info.velocity.y() *= 2.0;
   } else {
-    objp->mtype.phys_info.velocity = objp->orient.uvec * ((float)(2.0f * (ps_rand() % 15)) + 7.0f);
+    objp->mtype.phys_info.velocity = objp->orient.uvec * ((scalar)(2.0f * (ps_rand() % 15)) + 7.0f);
   }
 }
 
@@ -1152,10 +1152,10 @@ float GetDeathAnimTime(object *objp) {
     if (Object_info[objp->id].anim[objp->ai_info->movement_type].elem[AS_DEATH].to != 0) {
 
       // calculate how long for the object to finish its current animation before starting death anim
-      float extra_time = objp->rtype.pobj_info.anim_time *
+      scalar extra_time = objp->rtype.pobj_info.anim_time *
                          (objp->rtype.pobj_info.anim_end_frame - objp->rtype.pobj_info.anim_frame) /
                          (objp->rtype.pobj_info.anim_end_frame - objp->rtype.pobj_info.anim_start_frame);
-      extra_time = std::min<float>(extra_time, 3.0); // limit extra time to 3 seconds
+      extra_time = std::min<scalar>(extra_time, 3.0); // limit extra time to 3 seconds
       LOG_DEBUG.printf("extra_time = %2f", extra_time);
 
       death_time = Object_info[objp->id].anim[objp->ai_info->movement_type].elem[AS_DEATH].spc + 0.25 + extra_time;
@@ -1224,7 +1224,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
   } else { // Some sort of delayed death
 
     // For upside-down walkers, force simple delay
-    bool f_upsidedown_walker = (objp->movement_type == MT_WALKING) && (objp->orient.uvec.y < 0.0f);
+    bool f_upsidedown_walker = (objp->movement_type == MT_WALKING) && (objp->orient.uvec.y() < 0.0f);
     if (f_upsidedown_walker)
       death_flags |= DF_DELAY_LOSES_ANTIGRAV;
 
@@ -1548,7 +1548,7 @@ void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
       vertnum++;
 
     // Calculate the center point
-    center = (curpoint + prevpoint + *hitpnt) / 3.0;
+    center = (curpoint + prevpoint + *hitpnt) / (scalar)3.0;
 
     // Create the object
     objnum = ObjCreate(OBJ_SHARD, 0, roomnum, &center, NULL);
@@ -1573,12 +1573,12 @@ void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
       si->tmap = fp->tmap;
 
       // Set velocity
-      objp->mtype.phys_info.velocity = shardvec * (50.0 + 100.0 * (objnum % 3));
+      objp->mtype.phys_info.velocity = shardvec * ((scalar)50.0 + (scalar)100.0 * (objnum % 3));
 
       // Set rotational velocity
-      objp->mtype.phys_info.rotvel.x = 25000.0 * (objnum % 5);
-      objp->mtype.phys_info.rotvel.y = 25000.0 * (objnum % 2);
-      objp->mtype.phys_info.rotvel.z = 25000.0 * (objnum % 3);
+      objp->mtype.phys_info.rotvel.x() = (scalar)25000.0 * (objnum % 5);
+      objp->mtype.phys_info.rotvel.y() = (scalar)25000.0 * (objnum % 2);
+      objp->mtype.phys_info.rotvel.z() = (scalar)25000.0 * (objnum % 3);
 
       prevpoint = curpoint;
       prev_u = cur_u;

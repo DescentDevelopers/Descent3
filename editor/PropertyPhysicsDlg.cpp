@@ -248,21 +248,21 @@ BOOL CPropertyPhysicsDlg::OnInitDialog() {
 
   curobj = &Objects[Cur_object_index];
 
-  m_fVelocityX = curobj->mtype.phys_info.velocity.x;
-  m_fVelocityY = curobj->mtype.phys_info.velocity.y;
-  m_fVelocityZ = curobj->mtype.phys_info.velocity.z;
+  m_fVelocityX = curobj->mtype.phys_info.velocity.x();
+  m_fVelocityY = curobj->mtype.phys_info.velocity.y();
+  m_fVelocityZ = curobj->mtype.phys_info.velocity.z();
 
-  m_fThrustX = curobj->mtype.phys_info.thrust.x;
-  m_fThrustY = curobj->mtype.phys_info.thrust.y;
-  m_fThrustZ = curobj->mtype.phys_info.thrust.z;
+  m_fThrustX = curobj->mtype.phys_info.thrust.x();
+  m_fThrustY = curobj->mtype.phys_info.thrust.y();
+  m_fThrustZ = curobj->mtype.phys_info.thrust.z();
 
-  m_fRotVelX = curobj->mtype.phys_info.rotvel.x;
-  m_fRotVelY = curobj->mtype.phys_info.rotvel.y;
-  m_fRotVelZ = curobj->mtype.phys_info.rotvel.z;
+  m_fRotVelX = curobj->mtype.phys_info.rotvel.x();
+  m_fRotVelY = curobj->mtype.phys_info.rotvel.y();
+  m_fRotVelZ = curobj->mtype.phys_info.rotvel.z();
 
-  m_fRotThrustX = curobj->mtype.phys_info.rotthrust.x;
-  m_fRotThrustY = curobj->mtype.phys_info.rotthrust.y;
-  m_fRotThrustZ = curobj->mtype.phys_info.rotthrust.z;
+  m_fRotThrustX = curobj->mtype.phys_info.rotthrust.x();
+  m_fRotThrustY = curobj->mtype.phys_info.rotthrust.y();
+  m_fRotThrustZ = curobj->mtype.phys_info.rotthrust.z();
 
   m_sTurnrollAngle = curobj->mtype.phys_info.turnroll;
 

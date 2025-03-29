@@ -219,7 +219,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
   sheet->NewGroup(nullptr, 0, 0);
   rootpathlistbox = sheet->AddListBox(60, 124, ID_ROOTPATH);
   for (auto const &root : ddio_GetSysRoots()) {
-    rootpathlistbox->AddItem(root.u8string().c_str());
+    rootpathlistbox->AddItem((const char*)root.u8string().c_str());
   }
 
   sheet->NewGroup(nullptr, 80, 0);
@@ -237,7 +237,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
   working_path = std::filesystem::canonical(path);
   UpdateFileList(listbox, working_path, wildcards);
 
-  strncpy(edits_filepath, working_path.u8string().c_str(), _MAX_PATH - 1);
+  strncpy(edits_filepath, (const char*)working_path.u8string().c_str(), _MAX_PATH - 1);
   edits_filepath[_MAX_PATH - 1] = '\0';
 
   std::string wildc1 = StringJoin(wildcards, ";");
@@ -275,7 +275,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
                 working_path = std::filesystem::canonical(working_path);
                 UpdateFileList(listbox, working_path, wildcards);
 
-                strncpy(edits_filepath, working_path.u8string().c_str(), _MAX_PATH - 1);
+                strncpy(edits_filepath, (const char*)working_path.u8string().c_str(), _MAX_PATH - 1);
                 edits_filepath[_MAX_PATH - 1] = '\0';
               } else {
                 // File is chosen
@@ -335,7 +335,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
 
             UpdateFileList(listbox, working_path, wildcards);
 
-            strncpy(edits_filepath, working_path.u8string().c_str(), _MAX_PATH - 1);
+            strncpy(edits_filepath, (const char*)working_path.u8string().c_str(), _MAX_PATH - 1);
             edits_filepath[_MAX_PATH - 1] = '\0';
           } else {
             // double-click on a file
@@ -362,7 +362,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
       working_path = working_path.parent_path();
 
       UpdateFileList(listbox, working_path, wildcards);
-      strncpy(edits_filepath, working_path.u8string().c_str(), _MAX_PATH - 1);
+      strncpy(edits_filepath, (const char*)working_path.u8string().c_str(), _MAX_PATH - 1);
       edits_filepath[_MAX_PATH - 1] = '\0';
     } break;
     case ID_WILDCARD: {
@@ -433,8 +433,8 @@ void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const s
       }
       if (std::filesystem::is_regular_file(dir_entry)) {
         for (const auto &wildcard : wildcards) {
-          if (stricmp(dir_entry.path().extension().u8string().c_str(),
-                      std::filesystem::path(wildcard).extension().u8string().c_str()) == 0) {
+          if (stricmp((const char*)dir_entry.path().extension().u8string().c_str(),
+                      (const char*)std::filesystem::path(wildcard).extension().u8string().c_str()) == 0) {
             files.push_back(dir_entry.path().filename());
           }
         }
@@ -442,7 +442,7 @@ void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const s
     }
   } catch (std::exception &e) {
     DoMessageBox(TXT_ERROR, TXT_ERRPATHNOTVALID, MSGBOX_OK);
-    LOG_ERROR.printf("Error iterating directory %s: %s", path.u8string().c_str(), e.what());
+    LOG_ERROR.printf("Error iterating directory %s: %s", (const char*)path.u8string().c_str(), e.what());
   }
 
   if (dirs.size() + files.size() == 0) {
@@ -453,11 +453,11 @@ void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const s
   char tempbuffer[_MAX_PATH + 1];
 
   for (auto const &dir : dirs) {
-    snprintf(tempbuffer, sizeof(tempbuffer), " [%s]", dir.u8string().c_str());
+    snprintf(tempbuffer, sizeof(tempbuffer), " [%s]", (const char*)dir.u8string().c_str());
     lb->AddItem(tempbuffer);
   }
   for (auto const &file : files) {
-    lb->AddItem(file.u8string().c_str());
+    lb->AddItem((const char*)file.u8string().c_str());
   }
 
   FDlg_EnableWaitMessage(false);

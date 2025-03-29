@@ -762,7 +762,7 @@ void FreeRoomFace(face *fp) {
 void ComputeRoomCenter(vector *vp, room *rp) {
   int i;
 
-  vp->x = vp->y = vp->z = 0;
+  *vp = vector::ne();
 
   for (i = 0; i < rp->num_verts; i++)
     *vp += rp->verts[i];
@@ -778,7 +778,7 @@ void ComputeCenterPointOnFace(vector *vp, room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
   int i;
 
-  vp->x = vp->y = vp->z = 0;
+  *vp = vector::ne();
 
   for (i = 0; i < fp->num_verts; i++)
     *vp += rp->verts[fp->face_verts[i]];
@@ -840,9 +840,9 @@ bool ComputeNormal(vector *normal, int num_verts, short *vertnum_list, vector *v
   if (largest_mag < MIN_NORMAL_MAG) {
     LOG_WARNING.printf("Warning: Normal has low precision. mag = %f, norm =  %f,%f,%f",
             largest_mag,
-            normal->x,
-            normal->y,
-            normal->z);
+            normal->x(),
+            normal->y(),
+            normal->z());
     return false;
   } else
     return true;
@@ -981,9 +981,9 @@ float GetAreaForFace(room *rp, int facenum) {
 void GetIJ(const vector *normal, int *ii, int *jj) {
 
   // To project onto 2d, find the largest element of the surface normal
-  if (fabs(normal->x) > fabs(normal->y))
-    if (fabs(normal->x) > fabs(normal->z)) {
-      if (normal->x > 0) {
+  if (fabs(normal->x()) > fabs(normal->y()))
+    if (fabs(normal->x()) > fabs(normal->z())) {
+      if (normal->x() > 0) {
         *ii = 2;
         *jj = 1; // x > y, x > z
       } else {
@@ -991,7 +991,7 @@ void GetIJ(const vector *normal, int *ii, int *jj) {
         *jj = 2;
       }
     } else {
-      if (normal->z > 0) {
+      if (normal->z() > 0) {
         *ii = 1;
         *jj = 0; // z > x > y
       } else {
@@ -1000,8 +1000,8 @@ void GetIJ(const vector *normal, int *ii, int *jj) {
       }
     }
   else // y > x
-    if (fabs(normal->y) > fabs(normal->z)) {
-      if (normal->y > 0) {
+    if (fabs(normal->y()) > fabs(normal->z())) {
+      if (normal->y() > 0) {
         *ii = 0;
         *jj = 2; // y > x, y > z
       } else {
@@ -1009,7 +1009,7 @@ void GetIJ(const vector *normal, int *ii, int *jj) {
         *jj = 0;
       }
     } else {
-      if (normal->z > 0) {
+      if (normal->z() > 0) {
         *ii = 1;
         *jj = 0; // z > y > x
       } else {
@@ -1107,9 +1107,9 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
 
 #ifdef NEWEDITOR
   if (!rp->num_verts) {
-    center->x = 0.0f;
-    center->y = 0.0f;
-    center->z = 0.0f;
+    center->x() = 0.0f;
+    center->y() = 0.0f;
+    center->z() = 0.0f;
     return 0.0f;
   }
 #endif
@@ -1120,22 +1120,22 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
   // First, find the points with the min & max x,y, & z coordinates
   for (i = 0, vp = rp->verts; i < rp->num_verts; i++, vp++) {
 
-    if (vp->x < min_x->x)
+    if (vp->x() < min_x->x())
       min_x = vp;
 
-    if (vp->x > max_x->x)
+    if (vp->x() > max_x->x())
       max_x = vp;
 
-    if (vp->y < min_y->y)
+    if (vp->y() < min_y->y())
       min_y = vp;
 
-    if (vp->y > max_y->y)
+    if (vp->y() > max_y->y())
       max_y = vp;
 
-    if (vp->z < min_z->z)
+    if (vp->z() < min_z->z())
       min_z = vp;
 
-    if (vp->z > max_z->z)
+    if (vp->z() > max_z->z())
       max_z = vp;
   }
 
@@ -1168,7 +1168,7 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
     float t2;
 
     delta = *vp - *center;
-    t2 = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+    t2 = delta.x() * delta.x() + delta.y() * delta.y() + delta.z() * delta.z();
 
     // If point outside, make the sphere bigger
     if (t2 > rad2) {
@@ -1313,9 +1313,9 @@ void DoRoomChangeFrame() {
       rp->flags |= RF_FOG;
       rp->room_change_flags |= RCF_CHANGING_WIND_FOG;
 
-      rp->fog_r = scale_color.x;
-      rp->fog_g = scale_color.y;
-      rp->fog_b = scale_color.z;
+      rp->fog_r = scale_color.x();
+      rp->fog_g = scale_color.y();
+      rp->fog_b = scale_color.z();
       rp->fog_depth = scale_depth;
     } else {
       vector scale_wind =
@@ -1370,9 +1370,9 @@ int SetRoomChangeOverTime(int roomnum, bool fog, vector *end, float depth_end, f
 
   if (fog) {
     Room_changes[index].start_depth = rp->fog_depth;
-    Room_changes[index].start_vector.x = rp->fog_r;
-    Room_changes[index].start_vector.y = rp->fog_g;
-    Room_changes[index].start_vector.z = rp->fog_b;
+    Room_changes[index].start_vector.x() = rp->fog_r;
+    Room_changes[index].start_vector.y() = rp->fog_g;
+    Room_changes[index].start_vector.z() = rp->fog_b;
     Room_changes[index].end_depth = depth_end;
   } else
     Room_changes[index].start_vector = rp->wind;

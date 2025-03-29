@@ -404,7 +404,7 @@ void ForceEffectsPlay(int id, float *scale, vector *direction) {
     vm_VectorToMatrix(&mat, direction);
     vm_ExtractAnglesFromMatrix(&ag, &mat);
 
-    new_dir = ((((float)ag.h) / 65535.0f) * 360.0f);
+    new_dir = ((((scalar)ag.h()) / 65535.0f) * 360.0f);
 
     new_dir = (new_dir)*FF_DEGREES;
   }
@@ -437,9 +437,9 @@ void DoForceForWeapon(object *me_obj, object *it_obj, vector *force_vec) {
   if (weap->flags & WF_MICROWAVE) {
     vector local_norm, v;
     float scale = 1.00f;
-    v.x = ps_rand() % 10;
-    v.y = 0;
-    v.z = ps_rand() % 10;
+    v.x() = ps_rand() % 10;
+    v.y() = 0;
+    v.z() = ps_rand() % 10;
     vm_NormalizeVector(&v);
     vm_MatrixMulVector(&local_norm, &v, &me_obj->orient);
 
@@ -511,9 +511,9 @@ void DoForceForShake(float magnitude) {
   if (magnitude > 1.0f)
     magnitude = 1.0f;
 
-  local_norm.x = (ps_rand() % 5);
-  local_norm.y = (ps_rand() % 5);
-  local_norm.z = (ps_rand() % 5);
+  local_norm.x() = (ps_rand() % 5);
+  local_norm.y() = (ps_rand() % 5);
+  local_norm.z() = (ps_rand() % 5);
   vm_NormalizeVector(&local_norm);
 
   ForceEffectsPlay(FORCE_SHIPSHAKE, &magnitude, &local_norm);

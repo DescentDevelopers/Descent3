@@ -173,7 +173,7 @@ public:
 };
 
 static float BNode_QuickDist(vector *pos1, vector *pos2) {
-  return fabs(pos1->x - pos2->x) + fabs(pos1->y - pos2->y) + fabs(pos1->z - pos2->z);
+  return fabs(pos1->x() - pos2->x()) + fabs(pos1->y() - pos2->y()) + fabs(pos1->z() - pos2->z());
 }
 
 int BNode_Path[MAX_BNODES_PER_ROOM];
@@ -320,10 +320,10 @@ retry:
 
   for (i = 0; i < bnlist->num_nodes; i++) {
     vector to = bnlist->nodes[i].pos - *pos;
-    float dist = vm_NormalizeVector(&to);
+    scalar dist = vm_NormalizeVector(&to);
 
     if (dist < closest_dist) {
-      float dot = *fvec * to;
+      scalar dot = vm_Dot3Product(*fvec, to);
 
       if (dot > 0.0f || f_retry) {
         /* float node_size = 0.0f;

@@ -80,15 +80,15 @@ void MultiDoMSafeFunction(uint8_t *data) {
     mstruct->roomnum = MultiGetInt(data, &count);
     GET_AND_VERIFY_OBJECT(mstruct->objhandle);
 
-    mstruct->pos.x = MultiGetFloat(data, &count);
-    mstruct->pos.y = MultiGetFloat(data, &count);
-    mstruct->pos.z = MultiGetFloat(data, &count);
+    mstruct->pos.x() = MultiGetFloat(data, &count);
+    mstruct->pos.y() = MultiGetFloat(data, &count);
+    mstruct->pos.z() = MultiGetFloat(data, &count);
 
     mstruct->lifetime = MultiGetFloat(data, &count);
 
-    mstruct->pos2.x = MultiGetFloat(data, &count);
-    mstruct->pos2.y = MultiGetFloat(data, &count);
-    mstruct->pos2.z = MultiGetFloat(data, &count);
+    mstruct->pos2.x() = MultiGetFloat(data, &count);
+    mstruct->pos2.y() = MultiGetFloat(data, &count);
+    mstruct->pos2.z() = MultiGetFloat(data, &count);
 
     char str[255];
     MultiGetString(str, data, &count);
@@ -121,9 +121,9 @@ void MultiDoMSafeFunction(uint8_t *data) {
     break;
   case MSAFE_ROOM_WIND:
     mstruct->roomnum = MultiGetShort(data, &count);
-    mstruct->wind.x = MultiGetFloat(data, &count);
-    mstruct->wind.y = MultiGetFloat(data, &count);
-    mstruct->wind.z = MultiGetFloat(data, &count);
+    mstruct->wind.x() = MultiGetFloat(data, &count);
+    mstruct->wind.y() = MultiGetFloat(data, &count);
+    mstruct->wind.z() = MultiGetFloat(data, &count);
     break;
   case MSAFE_ROOM_FOG:
     mstruct->roomnum = MultiGetShort(data, &count);
@@ -146,9 +146,9 @@ void MultiDoMSafeFunction(uint8_t *data) {
     break;
   case MSAFE_ROOM_CHANGING_WIND:
     mstruct->roomnum = MultiGetShort(data, &count);
-    mstruct->wind.x = MultiGetFloat(data, &count);
-    mstruct->wind.y = MultiGetFloat(data, &count);
-    mstruct->wind.z = MultiGetFloat(data, &count);
+    mstruct->wind.x() = MultiGetFloat(data, &count);
+    mstruct->wind.y() = MultiGetFloat(data, &count);
+    mstruct->wind.z() = MultiGetFloat(data, &count);
     mstruct->interval = MultiGetFloat(data, &count);
     break;
   case MSAFE_ROOM_LIGHT_PULSE:
@@ -300,18 +300,18 @@ void MultiDoMSafeFunction(uint8_t *data) {
   case MSAFE_OBJECT_WORLD_POSITION:
     GET_AND_VERIFY_OBJECT(mstruct->objhandle);
     mstruct->roomnum = MultiGetInt(data, &count);
-    mstruct->pos.x = MultiGetFloat(data, &count);
-    mstruct->pos.y = MultiGetFloat(data, &count);
-    mstruct->pos.z = MultiGetFloat(data, &count);
-    mstruct->orient.fvec.x = MultiGetFloat(data, &count);
-    mstruct->orient.fvec.y = MultiGetFloat(data, &count);
-    mstruct->orient.fvec.z = MultiGetFloat(data, &count);
-    mstruct->orient.rvec.x = MultiGetFloat(data, &count);
-    mstruct->orient.rvec.y = MultiGetFloat(data, &count);
-    mstruct->orient.rvec.z = MultiGetFloat(data, &count);
-    mstruct->orient.uvec.x = MultiGetFloat(data, &count);
-    mstruct->orient.uvec.y = MultiGetFloat(data, &count);
-    mstruct->orient.uvec.z = MultiGetFloat(data, &count);
+    mstruct->pos.x() = MultiGetFloat(data, &count);
+    mstruct->pos.y() = MultiGetFloat(data, &count);
+    mstruct->pos.z() = MultiGetFloat(data, &count);
+    mstruct->orient.fvec.x() = MultiGetFloat(data, &count);
+    mstruct->orient.fvec.y() = MultiGetFloat(data, &count);
+    mstruct->orient.fvec.z() = MultiGetFloat(data, &count);
+    mstruct->orient.rvec.x() = MultiGetFloat(data, &count);
+    mstruct->orient.rvec.y() = MultiGetFloat(data, &count);
+    mstruct->orient.rvec.z() = MultiGetFloat(data, &count);
+    mstruct->orient.uvec.x() = MultiGetFloat(data, &count);
+    mstruct->orient.uvec.y() = MultiGetFloat(data, &count);
+    mstruct->orient.uvec.z() = MultiGetFloat(data, &count);
     break;
   case MSAFE_OBJECT_SPARKS:
     GET_AND_VERIFY_OBJECT(mstruct->objhandle);
@@ -545,15 +545,15 @@ void MultiSendMSafeFunction(uint8_t type, msafe_struct *mstruct) {
     MultiAddInt(mstruct->roomnum, data, &count);
     MultiAddUshort(mstruct->objhandle & HANDLE_OBJNUM_MASK, data, &count);
 
-    MultiAddFloat(mstruct->pos.x, data, &count);
-    MultiAddFloat(mstruct->pos.y, data, &count);
-    MultiAddFloat(mstruct->pos.z, data, &count);
+    MultiAddFloat(mstruct->pos.x(), data, &count);
+    MultiAddFloat(mstruct->pos.y(), data, &count);
+    MultiAddFloat(mstruct->pos.z(), data, &count);
 
     MultiAddFloat(mstruct->lifetime, data, &count);
 
-    MultiAddFloat(mstruct->pos2.x, data, &count);
-    MultiAddFloat(mstruct->pos2.y, data, &count);
-    MultiAddFloat(mstruct->pos2.z, data, &count);
+    MultiAddFloat(mstruct->pos2.x(), data, &count);
+    MultiAddFloat(mstruct->pos2.y(), data, &count);
+    MultiAddFloat(mstruct->pos2.z(), data, &count);
 
     MultiAddString(GameTextures[mstruct->texnum].name, data, &count);
     MultiAddUshort(mstruct->color, data, &count);
@@ -584,16 +584,16 @@ void MultiSendMSafeFunction(uint8_t type, msafe_struct *mstruct) {
   case MSAFE_ROOM_WIND:
     sequence = NETSEQ_WORLD;
     MultiAddShort(mstruct->roomnum, data, &count);
-    MultiAddFloat(mstruct->wind.x, data, &count);
-    MultiAddFloat(mstruct->wind.y, data, &count);
-    MultiAddFloat(mstruct->wind.z, data, &count);
+    MultiAddFloat(mstruct->wind.x(), data, &count);
+    MultiAddFloat(mstruct->wind.y(), data, &count);
+    MultiAddFloat(mstruct->wind.z(), data, &count);
     break;
   case MSAFE_ROOM_CHANGING_WIND:
     sequence = NETSEQ_WORLD;
     MultiAddShort(mstruct->roomnum, data, &count);
-    MultiAddFloat(mstruct->wind.x, data, &count);
-    MultiAddFloat(mstruct->wind.y, data, &count);
-    MultiAddFloat(mstruct->wind.z, data, &count);
+    MultiAddFloat(mstruct->wind.x(), data, &count);
+    MultiAddFloat(mstruct->wind.y(), data, &count);
+    MultiAddFloat(mstruct->wind.z(), data, &count);
     MultiAddFloat(mstruct->interval, data, &count);
     break;
   case MSAFE_ROOM_FOG:
@@ -917,18 +917,18 @@ void MultiSendMSafeFunction(uint8_t type, msafe_struct *mstruct) {
     sequence = NETSEQ_OBJECTS;
     MultiAddUshort(mstruct->objhandle & HANDLE_OBJNUM_MASK, data, &count);
     MultiAddInt(mstruct->roomnum, data, &count);
-    MultiAddFloat(mstruct->pos.x, data, &count);
-    MultiAddFloat(mstruct->pos.y, data, &count);
-    MultiAddFloat(mstruct->pos.z, data, &count);
-    MultiAddFloat(mstruct->orient.fvec.x, data, &count);
-    MultiAddFloat(mstruct->orient.fvec.y, data, &count);
-    MultiAddFloat(mstruct->orient.fvec.z, data, &count);
-    MultiAddFloat(mstruct->orient.rvec.x, data, &count);
-    MultiAddFloat(mstruct->orient.rvec.y, data, &count);
-    MultiAddFloat(mstruct->orient.rvec.z, data, &count);
-    MultiAddFloat(mstruct->orient.uvec.x, data, &count);
-    MultiAddFloat(mstruct->orient.uvec.y, data, &count);
-    MultiAddFloat(mstruct->orient.uvec.z, data, &count);
+    MultiAddFloat(mstruct->pos.x(), data, &count);
+    MultiAddFloat(mstruct->pos.y(), data, &count);
+    MultiAddFloat(mstruct->pos.z(), data, &count);
+    MultiAddFloat(mstruct->orient.fvec.x(), data, &count);
+    MultiAddFloat(mstruct->orient.fvec.y(), data, &count);
+    MultiAddFloat(mstruct->orient.fvec.z(), data, &count);
+    MultiAddFloat(mstruct->orient.rvec.x(), data, &count);
+    MultiAddFloat(mstruct->orient.rvec.y(), data, &count);
+    MultiAddFloat(mstruct->orient.rvec.z(), data, &count);
+    MultiAddFloat(mstruct->orient.uvec.x(), data, &count);
+    MultiAddFloat(mstruct->orient.uvec.y(), data, &count);
+    MultiAddFloat(mstruct->orient.uvec.z(), data, &count);
     break;
   case MSAFE_OBJECT_SPARKS:
     sequence = NETSEQ_PLAYING;

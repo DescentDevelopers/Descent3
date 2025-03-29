@@ -278,7 +278,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
         int weapon_id = static_wb->gp_weapon_index[cur_m_bit];
 
         if (Weapons[weapon_id].phys_info.flags & PF_FIXED_VELOCITY)
-          obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.velocity.z;
+          obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.velocity.z();
         else if (Weapons[weapon_id].phys_info.flags & PF_USES_THRUST)
           obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.full_thrust / Weapons[weapon_id].phys_info.drag;
         else

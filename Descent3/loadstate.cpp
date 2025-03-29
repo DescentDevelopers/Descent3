@@ -871,9 +871,9 @@ int LGSObjects(CFILE *fp, int version) {
     AIDynamicPath[i].owner_handle = cf_ReadInt(fp);
 
     for (s = 0; s < num_n_to_read; s++) {
-      AIDynamicPath[i].pos[s].x = cf_ReadFloat(fp);
-      AIDynamicPath[i].pos[s].y = cf_ReadFloat(fp);
-      AIDynamicPath[i].pos[s].z = cf_ReadFloat(fp);
+      AIDynamicPath[i].pos[s].x() = cf_ReadFloat(fp);
+      AIDynamicPath[i].pos[s].y() = cf_ReadFloat(fp);
+      AIDynamicPath[i].pos[s].z() = cf_ReadFloat(fp);
       AIDynamicPath[i].roomnum[s] = cf_ReadInt(fp);
     }
 
