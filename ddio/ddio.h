@@ -384,6 +384,20 @@ void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::reg
 std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, const char *prefix);
 
 /**
+ * Gets path where files can be written.
+ * @param org name of organization
+ * @param app name of application
+ * @return path that contains org and app components where user can write files, empty path if there some errors
+ */
+std::filesystem::path ddio_GetPrefPath(const char *org, const char *app);
+
+/**
+ * Gets path directory of executable
+ * @return parent path of executable or empty path on error
+ */
+std::filesystem::path ddio_GetBasePath();
+
+/**
  * Check process existence by PID
  * @param pid PID of requested process
  * @return true if process exists, false otherwise

@@ -68,6 +68,8 @@
 
 #include "ddio.h"
 #include "pserror.h"
+#include "renderer.h"
+#include "config.h"
 
 extern volatile struct tLnxKeys {
   union {
@@ -362,14 +364,8 @@ bool sdlKeyFilter(const SDL_Event *event) {
 
     else if (event->key.mod & SDL_KMOD_ALT) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
-        extern SDL_Window *GSDLWindow;
-        Uint32 flags = SDL_GetWindowFlags(GSDLWindow);
-        if (flags & SDL_WINDOW_FULLSCREEN) {
-          flags &= ~SDL_WINDOW_FULLSCREEN;
-        } else {
-          flags |= SDL_WINDOW_FULLSCREEN;
-        }
-        SDL_SetWindowFullscreen(GSDLWindow, flags);
+        Game_fullscreen = !Game_fullscreen;
+        rend_SetFullScreen(Game_fullscreen);
         return false;
       } // if
     }   // else if

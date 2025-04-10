@@ -1855,14 +1855,14 @@ void BailOnMultiplayer(const char *message) {
 
 // Adds the trunctuated position data to an outgoing packet
 void MultiAddPositionData(vector *pos, uint8_t *data, int *count) {
-  MultiAddUshort((pos->x * 16.0), data, count);
-  MultiAddUshort((pos->z * 16.0), data, count);
-  MultiAddFloat(pos->y, data, count);
+  MultiAddUshort((pos->x() * 16.0), data, count);
+  MultiAddUshort((pos->z() * 16.0), data, count);
+  MultiAddFloat(pos->y(), data, count);
 }
 void MultiExtractPositionData(vector *vec, uint8_t *data, int *count) {
-  vec->x = ((float)MultiGetUshort(data, count)) / 16.0;
-  vec->z = ((float)MultiGetUshort(data, count)) / 16.0;
-  vec->y = MultiGetFloat(data, count);
+  vec->x() = ((float)MultiGetUshort(data, count)) / 16.0;
+  vec->z() = ((float)MultiGetUshort(data, count)) / 16.0;
+  vec->y() = MultiGetFloat(data, count);
 }
 
 void MultiSendBadChecksum(int slot) {
@@ -1907,9 +1907,9 @@ int MultiStuffPosition(int slot, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -1935,14 +1935,14 @@ int MultiStuffPosition(int slot, uint8_t *data) {
   vector *vel = &obj->mtype.phys_info.velocity;
   vector *rotvel = &obj->mtype.phys_info.rotvel;
 
-  MultiAddShort((vel->x * 128.0), data, &count);
-  MultiAddShort((vel->y * 128.0), data, &count);
-  MultiAddShort((vel->z * 128.0), data, &count);
+  MultiAddShort((vel->x() * 128.0), data, &count);
+  MultiAddShort((vel->y() * 128.0), data, &count);
+  MultiAddShort((vel->z() * 128.0), data, &count);
 
   if (Netgame.flags & NF_SENDROTVEL) {
-    MultiAddShort(rotvel->x / 4, data, &count);
-    MultiAddShort(rotvel->y / 4, data, &count);
-    MultiAddShort(rotvel->z / 4, data, &count);
+    MultiAddShort(rotvel->x() / 4, data, &count);
+    MultiAddShort(rotvel->y() / 4, data, &count);
+    MultiAddShort(rotvel->z() / 4, data, &count);
 
     MultiAddShort(obj->mtype.phys_info.turnroll, data, &count);
   }
@@ -2002,9 +2002,9 @@ int MultiStuffRobotPosition(uint16_t objectnum, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -2017,9 +2017,9 @@ int MultiStuffRobotPosition(uint16_t objectnum, uint8_t *data) {
 
   vector *vel = &obj->mtype.phys_info.velocity;
 
-  MultiAddShort((vel->x * 128.0), data, &count);
-  MultiAddShort((vel->y * 128.0), data, &count);
-  MultiAddShort((vel->z * 128.0), data, &count);
+  MultiAddShort((vel->x() * 128.0), data, &count);
+  MultiAddShort((vel->y() * 128.0), data, &count);
+  MultiAddShort((vel->z() * 128.0), data, &count);
 
   END_DATA(count, data, size);
   return count;
@@ -3009,32 +3009,32 @@ void MultiDoDoneWorldStates(uint8_t *data) {
 
 // Makes an abbrievated version of a matrix
 void MultiMakeMatrix(multi_orientation *dest, matrix *src) {
-  dest->multi_matrix[0] = (src->rvec.x * 32767.0);
-  dest->multi_matrix[1] = (src->rvec.y * 32767.0);
-  dest->multi_matrix[2] = (src->rvec.z * 32767.0);
+  dest->multi_matrix[0] = (src->rvec.x() * 32767.0);
+  dest->multi_matrix[1] = (src->rvec.y() * 32767.0);
+  dest->multi_matrix[2] = (src->rvec.z() * 32767.0);
 
-  dest->multi_matrix[3] = (src->uvec.x * 32767.0);
-  dest->multi_matrix[4] = (src->uvec.y * 32767.0);
-  dest->multi_matrix[5] = (src->uvec.z * 32767.0);
+  dest->multi_matrix[3] = (src->uvec.x() * 32767.0);
+  dest->multi_matrix[4] = (src->uvec.y() * 32767.0);
+  dest->multi_matrix[5] = (src->uvec.z() * 32767.0);
 
-  dest->multi_matrix[6] = (src->fvec.x * 32767.0);
-  dest->multi_matrix[7] = (src->fvec.y * 32767.0);
-  dest->multi_matrix[8] = (src->fvec.z * 32767.0);
+  dest->multi_matrix[6] = (src->fvec.x() * 32767.0);
+  dest->multi_matrix[7] = (src->fvec.y() * 32767.0);
+  dest->multi_matrix[8] = (src->fvec.z() * 32767.0);
 }
 
 // Extracts a matrix from an abbreviated matrix
 void MultiExtractMatrix(matrix *dest, multi_orientation *src) {
-  dest->rvec.x = (float)src->multi_matrix[0] / 32767.0;
-  dest->rvec.y = (float)src->multi_matrix[1] / 32767.0;
-  dest->rvec.z = (float)src->multi_matrix[2] / 32767.0;
+  dest->rvec.x() = (float)src->multi_matrix[0] / 32767.0;
+  dest->rvec.y() = (float)src->multi_matrix[1] / 32767.0;
+  dest->rvec.z() = (float)src->multi_matrix[2] / 32767.0;
 
-  dest->uvec.x = (float)src->multi_matrix[3] / 32767.0;
-  dest->uvec.y = (float)src->multi_matrix[4] / 32767.0;
-  dest->uvec.z = (float)src->multi_matrix[5] / 32767.0;
+  dest->uvec.x() = (float)src->multi_matrix[3] / 32767.0;
+  dest->uvec.y() = (float)src->multi_matrix[4] / 32767.0;
+  dest->uvec.z() = (float)src->multi_matrix[5] / 32767.0;
 
-  dest->fvec.x = (float)src->multi_matrix[6] / 32767.0;
-  dest->fvec.y = (float)src->multi_matrix[7] / 32767.0;
-  dest->fvec.z = (float)src->multi_matrix[8] / 32767.0;
+  dest->fvec.x() = (float)src->multi_matrix[6] / 32767.0;
+  dest->fvec.y() = (float)src->multi_matrix[7] / 32767.0;
+  dest->fvec.z() = (float)src->multi_matrix[8] / 32767.0;
 }
 
 void MultiDoPlayerPos(uint8_t *data) {
@@ -3080,15 +3080,15 @@ void MultiDoPlayerPos(uint8_t *data) {
   //	float dist=vm_VectorDistance (&pos,&obj->pos);
 
   // Get velocity
-  vel.x = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.y = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.z = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.x() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.y() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.z() = ((float)MultiGetShort(data, &count)) / 128.0;
 
   // Get rotational velocity
   if (Netgame.flags & NF_SENDROTVEL) {
-    rotvel.x = MultiGetShort(data, &count) * 4;
-    rotvel.y = MultiGetShort(data, &count) * 4;
-    rotvel.z = MultiGetShort(data, &count) * 4;
+    rotvel.x() = MultiGetShort(data, &count) * 4;
+    rotvel.y() = MultiGetShort(data, &count) * 4;
+    rotvel.z() = MultiGetShort(data, &count) * 4;
 
     turnroll = MultiGetShort(data, &count);
 
@@ -3188,8 +3188,8 @@ void MultiDoPlayerPos(uint8_t *data) {
         pps_player_num = Player_num;
       }
 
-      vector dest_pos = pos + (vel * (1.0 / NetPlayers[pps_player_num].pps));
-      vel = (dest_pos - obj->pos) / (1.0 / NetPlayers[pps_player_num].pps);
+      vector dest_pos = pos + (vel * ((scalar)1.0 / NetPlayers[pps_player_num].pps));
+      vel = (dest_pos - obj->pos) / ((scalar)1.0 / NetPlayers[pps_player_num].pps);
 
       pos = obj->pos;
     }
@@ -3254,9 +3254,9 @@ void MultiDoRobotPos(uint8_t *data) {
   vector vel = {0, 0, 0};
 
   // Get velocity
-  vel.x = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.y = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.z = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.x() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.y() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.z() = ((float)MultiGetShort(data, &count)) / 128.0;
   obj->mtype.phys_info.velocity = vel;
 
   obj->mtype.phys_info.flags &= ~PF_NO_COLLIDE;
@@ -4181,15 +4181,15 @@ void MultiDoWorldStates(uint8_t *data) {
       // Room wind
 
       int16_t roomnum = MultiGetShort(data, &count);
-      Rooms[roomnum].wind.x = MultiGetFloat(data, &count);
-      Rooms[roomnum].wind.y = MultiGetFloat(data, &count);
-      Rooms[roomnum].wind.z = MultiGetFloat(data, &count);
+      Rooms[roomnum].wind.x() = MultiGetFloat(data, &count);
+      Rooms[roomnum].wind.y() = MultiGetFloat(data, &count);
+      Rooms[roomnum].wind.z() = MultiGetFloat(data, &count);
 
       LOG_DEBUG.printf("Got room wind packet! Room=%d wind=%f %f %f",
               roomnum,
-              Rooms[roomnum].wind.x,
-              Rooms[roomnum].wind.y,
-              Rooms[roomnum].wind.z);
+              Rooms[roomnum].wind.x(),
+              Rooms[roomnum].wind.y(),
+              Rooms[roomnum].wind.z());
       break;
     }
     case WS_ROOM_FOG: {
@@ -5044,12 +5044,12 @@ void MultiDoExecuteDLL(uint8_t *data) {
     switch (eventnum) {
     case EVT_CLIENT_GAMEWALLCOLLIDE:
     case EVT_GAMEWALLCOLLIDE:
-      DLLInfo.collide_info.point.x = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.point.y = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.point.z = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.x = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.y = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.z = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.x() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.y() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.z() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.x() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.y() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.z() = MultiGetFloat(data, &count);
       DLLInfo.collide_info.hitspeed = MultiGetFloat(data, &count);
       DLLInfo.collide_info.hit_dot = MultiGetFloat(data, &count);
       DLLInfo.collide_info.hitseg = MultiGetInt(data, &count);
@@ -5057,12 +5057,12 @@ void MultiDoExecuteDLL(uint8_t *data) {
       break;
     case EVT_CLIENT_GAMECOLLIDE:
     case EVT_GAMECOLLIDE:
-      DLLInfo.collide_info.point.x = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.point.y = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.point.z = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.x = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.y = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.z = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.x() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.y() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.z() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.x() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.y() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.z() = MultiGetFloat(data, &count);
       break;
     case EVT_GAMEOBJCHANGESEG:
     case EVT_CLIENT_GAMEOBJCHANGESEG:
@@ -5349,9 +5349,9 @@ void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record) {
     angvec angs;
     vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-    MultiAddShort(angs.p, data, &count);
-    MultiAddShort(angs.h, data, &count);
-    MultiAddShort(angs.b, data, &count);
+    MultiAddShort(angs.p(), data, &count);
+    MultiAddShort(angs.h(), data, &count);
+    MultiAddShort(angs.b(), data, &count);
   }
 
   // Send movement type
@@ -5433,9 +5433,9 @@ void MultiDoGuidedInfo(uint8_t *data) {
 
   // Get velocity
   vector vel;
-  vel.x = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.y = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.z = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.x() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.y() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.z() = ((float)MultiGetShort(data, &count)) / 128.0;
 
   obj->mtype.phys_info.velocity = vel;
 
@@ -5466,9 +5466,9 @@ int MultiStuffGuidedInfo(int slot, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -5482,9 +5482,9 @@ int MultiStuffGuidedInfo(int slot, uint8_t *data) {
   // Do velocity
   vector *vel = &obj->mtype.phys_info.velocity;
 
-  MultiAddShort(vel->x * 128.0, data, &count);
-  MultiAddShort(vel->y * 128.0, data, &count);
-  MultiAddShort(vel->z * 128.0, data, &count);
+  MultiAddShort(vel->x() * 128.0, data, &count);
+  MultiAddShort(vel->y() * 128.0, data, &count);
+  MultiAddShort(vel->z() * 128.0, data, &count);
 
   END_DATA(count, data, size_offset);
 
@@ -7998,23 +7998,23 @@ char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
     break;
   case NETFILE_ID_SHIP_TEX:
     if (NetPlayers[playernum].ship_logo[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "graphics", NetPlayers[playernum].ship_logo, NULL);
+      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "graphics", NetPlayers[playernum].ship_logo, NULL);
     break;
   case NETFILE_ID_VOICE_TAUNT1:
     if (NetPlayers[playernum].voice_taunt1[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt1, NULL);
+      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt1, NULL);
     break;
   case NETFILE_ID_VOICE_TAUNT2:
     if (NetPlayers[playernum].voice_taunt2[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt2, NULL);
+      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt2, NULL);
     break;
   case NETFILE_ID_VOICE_TAUNT3:
     if (NetPlayers[playernum].voice_taunt3[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt3, NULL);
+      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt3, NULL);
     break;
   case NETFILE_ID_VOICE_TAUNT4:
     if (NetPlayers[playernum].voice_taunt4[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt4, NULL);
+      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt4, NULL);
     break;
   default:
     LOG_FATAL.printf("Unknown id (%d) passed to GetFileNameFromPlayerAndID()", id);
@@ -8201,20 +8201,20 @@ void MultiSendRequestPlayTaunt(int index) {
     return;
 
   // make sure an audio file exists there
-  char audio_file[_MAX_PATH];
+  std::filesystem::path audio_file;
 
   switch (index) {
   case 0:
-    ddio_MakePath(audio_file, LocalCustomSoundsDir, NetPlayers[Player_num].voice_taunt1, NULL);
+    audio_file = LocalCustomSoundsDir / NetPlayers[Player_num].voice_taunt1;
     break;
   case 1:
-    ddio_MakePath(audio_file, LocalCustomSoundsDir, NetPlayers[Player_num].voice_taunt2, NULL);
+    audio_file = LocalCustomSoundsDir / NetPlayers[Player_num].voice_taunt2;
     break;
   case 2:
-    ddio_MakePath(audio_file, LocalCustomSoundsDir, NetPlayers[Player_num].voice_taunt3, NULL);
+    audio_file = LocalCustomSoundsDir / NetPlayers[Player_num].voice_taunt3;
     break;
   case 3:
-    ddio_MakePath(audio_file, LocalCustomSoundsDir, NetPlayers[Player_num].voice_taunt4, NULL);
+    audio_file = LocalCustomSoundsDir / NetPlayers[Player_num].voice_taunt4;
     break;
   }
 
@@ -8604,9 +8604,9 @@ void MultiSendPermissionToFire(int pnum) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
   MultiAddShort(CELLNUM(obj->roomnum), data, &count);
@@ -8864,13 +8864,13 @@ void MultiSendAdjustPosition(int slot, float timestamp) {
   size_offset = START_DATA(MP_ADJUST_POSITION, data, &count);
   MultiAddFloat(timestamp, data, &count);
 
-  MultiAddFloat(obj->pos.x, data, &count);
-  MultiAddFloat(obj->pos.y, data, &count);
-  MultiAddFloat(obj->pos.z, data, &count);
+  MultiAddFloat(obj->pos.x(), data, &count);
+  MultiAddFloat(obj->pos.y(), data, &count);
+  MultiAddFloat(obj->pos.z(), data, &count);
 
-  MultiAddFloat(obj->mtype.phys_info.velocity.x, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.velocity.y, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.velocity.z, data, &count);
+  MultiAddFloat(obj->mtype.phys_info.velocity.x(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.velocity.y(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.velocity.z(), data, &count);
 
   MultiAddInt(obj->roomnum, data, &count);
 
@@ -8976,27 +8976,27 @@ int MultiStuffRequestToMove(uint8_t *data) {
   // Add timestamp
   MultiAddFloat(Gametime, data, &count);
 
-  MultiAddFloat(obj->pos.x, data, &count);
-  MultiAddFloat(obj->pos.y, data, &count);
-  MultiAddFloat(obj->pos.z, data, &count);
+  MultiAddFloat(obj->pos.x(), data, &count);
+  MultiAddFloat(obj->pos.y(), data, &count);
+  MultiAddFloat(obj->pos.z(), data, &count);
 
   // Do acceleration
-  MultiAddFloat(obj->mtype.phys_info.thrust.x, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.thrust.y, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.thrust.z, data, &count);
+  MultiAddFloat(obj->mtype.phys_info.thrust.x(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.thrust.y(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.thrust.z(), data, &count);
 
   // Do rotational acceleration
-  MultiAddFloat(obj->mtype.phys_info.rotthrust.x, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.rotthrust.y, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.rotthrust.z, data, &count);
+  MultiAddFloat(obj->mtype.phys_info.rotthrust.x(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.rotthrust.y(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.rotthrust.z(), data, &count);
 
   // Do orientation
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   END_DATA(count, data, size_offset);
 

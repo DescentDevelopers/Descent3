@@ -18,8 +18,8 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
 
-#include "debug.h"
 #include "pserror.h"
 #include "audiotaunts.h"
 #include "cfile.h"
@@ -92,7 +92,7 @@ void taunt_SetDelayTime(float t) { Audio_taunt_delay_time = t; }
 //	taunt_PlayTauntFile
 //
 //	Given a path to an .osf file, it will play it
-bool taunt_PlayTauntFile(const char *filename) {
+bool taunt_PlayTauntFile(const std::filesystem::path &filename) {
   if (!Audio_taunts_enabled)
     return false;
 
@@ -113,7 +113,7 @@ bool taunt_PlayPlayerTaunt(int pnum, int index) {
   }
 
   if ((NetPlayers[pnum].flags & NPF_CONNECTED) && (NetPlayers[pnum].sequence == NETSEQ_PLAYING)) {
-    char fullpath[_MAX_PATH];
+    std::filesystem::path fullpath;
     char *file;
     switch (index) {
     case 0:
@@ -130,10 +130,10 @@ bool taunt_PlayPlayerTaunt(int pnum, int index) {
       break;
     }
 
-    ddio_MakePath(fullpath, LocalCustomSoundsDir, file, NULL);
+    fullpath = LocalCustomSoundsDir / file;
 
     if (!cfexist(fullpath)) {
-      LOG_WARNING.printf("TAUNT: file %s doesn't exist (pnum=%d)", fullpath, pnum);
+      LOG_WARNING.printf("TAUNT: file %s doesn't exist (pnum=%d)", fullpath.u8string().c_str(), pnum);
       return false;
     }
 
@@ -354,7 +354,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
     goto error;
   }
 
-  if (!aenc_Compress(temp_filename.u8string().c_str(), osftemp_filename.u8string().c_str(), NULL, &samples, &rate, &chan, NULL, NULL)) {
+  if (!aenc_Compress((const char*)temp_filename.u8string().c_str(), (const char*)osftemp_filename.u8string().c_str(), NULL, &samples, &rate, &chan, NULL, NULL)) {
     // unable to compress
     LOG_WARNING << "Unable to compress";
     ret = false;

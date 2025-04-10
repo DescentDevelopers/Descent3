@@ -679,8 +679,8 @@ void CTextureGrWnd::Render() {
 
     if (GetFunctionMode() == EDITOR_MODE) {
       DrawPlayerOnWireframe();
-      if (!Flat_terrain && (Viewer_object->pos.y < GetTerrainGroundPoint(&Viewer_object->pos) + 5))
-        Viewer_object->pos.y = GetTerrainGroundPoint(&Viewer_object->pos) + 5;
+      if (!Flat_terrain && (Viewer_object->pos.y() < GetTerrainGroundPoint(&Viewer_object->pos) + 5))
+        Viewer_object->pos.y() = GetTerrainGroundPoint(&Viewer_object->pos) + 5;
     }
 
     StartEditorFrame(m_grViewport, &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
@@ -697,7 +697,7 @@ void CTextureGrWnd::Render() {
       ComputeTerrainSegmentCenter(&pos, (128 * TERRAIN_WIDTH) + 128);
       yval = GetTerrainGroundPoint(&pos);
 
-      pos.y = yval;
+      pos.y() = yval;
       Viewer_object->pos = pos;
       ObjSetOrient(Viewer_object, &Identity_matrix);
       World_changed = 1;
@@ -1121,11 +1121,11 @@ void CTextureGrWnd::OnLButtonDown(UINT nFlags, CPoint point) {
       } else if (KEY_STATE(KEY_N)) {
         vector vec = Rooms[roomnum].verts[Rooms[roomnum].faces[facenum].face_verts[0]];
         vector norm = Rooms[roomnum].faces[facenum].normal;
-        float plane_dist = -(vec.x * norm.x + vec.y * norm.y + vec.z * norm.z);
+        scalar plane_dist = -(vec.x() * norm.x() + vec.y() * norm.y() + vec.z() * norm.z());
         int i;
         for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
           vec = Rooms[roomnum].verts[Rooms[roomnum].faces[facenum].face_verts[i]];
-          float dist = vec.x * norm.x + vec.y * norm.y + vec.z * norm.z + plane_dist;
+          scalar dist = vec.x() * norm.x() + vec.y() * norm.y() + vec.z() * norm.z() + plane_dist;
           mprintf(0, "Vertex %d distance from plane=%f\n", i, dist);
         }
       } else if (KEY_STATE(KEY_V)) {
@@ -1409,21 +1409,21 @@ void UpdateProperties(CObjectPropertiesDialog *prop_dlg) {
   object *curobj;
   curobj = &Objects[Cur_object_index];
 
-  curobj->mtype.phys_info.velocity.x = prop_dlg->m_fVelocityX;
-  curobj->mtype.phys_info.velocity.y = prop_dlg->m_fVelocityY;
-  curobj->mtype.phys_info.velocity.z = prop_dlg->m_fVelocityZ;
+  curobj->mtype.phys_info.velocity.x() = prop_dlg->m_fVelocityX;
+  curobj->mtype.phys_info.velocity.y() = prop_dlg->m_fVelocityY;
+  curobj->mtype.phys_info.velocity.z() = prop_dlg->m_fVelocityZ;
 
-  curobj->mtype.phys_info.thrust.x = prop_dlg->m_fThrustX;
-  curobj->mtype.phys_info.thrust.y = prop_dlg->m_fThrustY;
-  curobj->mtype.phys_info.thrust.z = prop_dlg->m_fThrustZ;
+  curobj->mtype.phys_info.thrust.x() = prop_dlg->m_fThrustX;
+  curobj->mtype.phys_info.thrust.y() = prop_dlg->m_fThrustY;
+  curobj->mtype.phys_info.thrust.z() = prop_dlg->m_fThrustZ;
 
-  curobj->mtype.phys_info.rotvel.x = prop_dlg->m_fRotVelX;
-  curobj->mtype.phys_info.rotvel.y = prop_dlg->m_fRotVelY;
-  curobj->mtype.phys_info.rotvel.z = prop_dlg->m_fRotVelZ;
+  curobj->mtype.phys_info.rotvel.x() = prop_dlg->m_fRotVelX;
+  curobj->mtype.phys_info.rotvel.y() = prop_dlg->m_fRotVelY;
+  curobj->mtype.phys_info.rotvel.z() = prop_dlg->m_fRotVelZ;
 
-  curobj->mtype.phys_info.rotthrust.x = prop_dlg->m_fRotThrustX;
-  curobj->mtype.phys_info.rotthrust.y = prop_dlg->m_fRotThrustY;
-  curobj->mtype.phys_info.rotthrust.z = prop_dlg->m_fRotThrustZ;
+  curobj->mtype.phys_info.rotthrust.x() = prop_dlg->m_fRotThrustX;
+  curobj->mtype.phys_info.rotthrust.y() = prop_dlg->m_fRotThrustY;
+  curobj->mtype.phys_info.rotthrust.z() = prop_dlg->m_fRotThrustZ;
 
   curobj->mtype.phys_info.turnroll = prop_dlg->m_sTurnrollAngle;
   curobj->mtype.phys_info.num_bounces = prop_dlg->m_iNumBounces;

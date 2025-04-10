@@ -137,8 +137,8 @@ void CViewerPropDlg::OnDestroy() {
 void CViewerPropDlg::OnAlignUpWithYposButton() {
   matrix *m = &Viewer_object->orient;
 
-  m->rvec.y = m->fvec.y = m->uvec.x = m->uvec.z = 0;
-  m->uvec.y = 1.0;
+  m->rvec.y() = m->fvec.y() = m->uvec.x() = m->uvec.z() = 0;
+  m->uvec.y() = 1.0;
 
   vm_Orthogonalize(m);
 
@@ -148,12 +148,12 @@ void CViewerPropDlg::OnAlignUpWithYposButton() {
 void CViewerPropDlg::OnAlignXnegButton() {
   matrix *m = &Viewer_object->orient;
 
-  m->fvec.x = -1.0;
-  m->fvec.y = m->fvec.z = 0;
-  m->uvec.y = 1.0;
-  m->uvec.x = m->uvec.z = 0;
-  m->rvec.z = 1.0;
-  m->rvec.x = m->rvec.y = 0;
+  m->fvec.x() = -1.0;
+  m->fvec.y() = m->fvec.z() = 0;
+  m->uvec.y() = 1.0;
+  m->uvec.x() = m->uvec.z() = 0;
+  m->rvec.z() = 1.0;
+  m->rvec.x() = m->rvec.y() = 0;
 
   Viewer_moved = 1;
 }
@@ -161,12 +161,12 @@ void CViewerPropDlg::OnAlignXnegButton() {
 void CViewerPropDlg::OnAlignXposButton() {
   matrix *m = &Viewer_object->orient;
 
-  m->fvec.x = 1.0;
-  m->fvec.y = m->fvec.z = 0;
-  m->uvec.y = 1.0;
-  m->uvec.x = m->uvec.z = 0;
-  m->rvec.z = -1.0;
-  m->rvec.x = m->rvec.y = 0;
+  m->fvec.x() = 1.0;
+  m->fvec.y() = m->fvec.z() = 0;
+  m->uvec.y() = 1.0;
+  m->uvec.x() = m->uvec.z() = 0;
+  m->rvec.z() = -1.0;
+  m->rvec.x() = m->rvec.y() = 0;
 
   Viewer_moved = 1;
 }
@@ -174,12 +174,12 @@ void CViewerPropDlg::OnAlignXposButton() {
 void CViewerPropDlg::OnAlignYnegButton() {
   matrix *m = &Viewer_object->orient;
 
-  m->fvec.y = -1.0;
-  m->fvec.x = m->fvec.z = 0;
-  m->uvec.z = 1.0;
-  m->uvec.x = m->uvec.y = 0;
-  m->rvec.x = 1.0;
-  m->rvec.y = m->rvec.z = 0;
+  m->fvec.y() = -1.0;
+  m->fvec.x() = m->fvec.z() = 0;
+  m->uvec.z() = 1.0;
+  m->uvec.x() = m->uvec.y() = 0;
+  m->rvec.x() = 1.0;
+  m->rvec.y() = m->rvec.z() = 0;
 
   Viewer_moved = 1;
 }
@@ -187,12 +187,12 @@ void CViewerPropDlg::OnAlignYnegButton() {
 void CViewerPropDlg::OnAlignYposButton() {
   matrix *m = &Viewer_object->orient;
 
-  m->fvec.y = 1.0;
-  m->fvec.x = m->fvec.z = 0;
-  m->uvec.z = -1.0;
-  m->uvec.x = m->uvec.y = 0;
-  m->rvec.x = 1.0;
-  m->rvec.y = m->rvec.z = 0;
+  m->fvec.y() = 1.0;
+  m->fvec.x() = m->fvec.z() = 0;
+  m->uvec.z() = -1.0;
+  m->uvec.x() = m->uvec.y() = 0;
+  m->rvec.x() = 1.0;
+  m->rvec.y() = m->rvec.z() = 0;
 
   Viewer_moved = 1;
 }
@@ -200,12 +200,12 @@ void CViewerPropDlg::OnAlignYposButton() {
 void CViewerPropDlg::OnAlignZnegButton() {
   matrix *m = &Viewer_object->orient;
 
-  m->fvec.z = -1.0;
-  m->fvec.x = m->fvec.y = 0;
-  m->uvec.y = 1.0;
-  m->uvec.x = m->uvec.z = 0;
-  m->rvec.x = -1.0;
-  m->rvec.y = m->rvec.z = 0;
+  m->fvec.z() = -1.0;
+  m->fvec.x() = m->fvec.y() = 0;
+  m->uvec.y() = 1.0;
+  m->uvec.x() = m->uvec.z() = 0;
+  m->rvec.x() = -1.0;
+  m->rvec.y() = m->rvec.z() = 0;
 
   Viewer_moved = 1;
 }
@@ -213,12 +213,12 @@ void CViewerPropDlg::OnAlignZnegButton() {
 void CViewerPropDlg::OnAlignZposButton() {
   matrix *m = &Viewer_object->orient;
 
-  m->fvec.z = 1.0;
-  m->fvec.x = m->fvec.y = 0;
-  m->uvec.y = 1.0;
-  m->uvec.x = m->uvec.z = 0;
-  m->rvec.x = 1.0;
-  m->rvec.y = m->rvec.z = 0;
+  m->fvec.z() = 1.0;
+  m->fvec.x() = m->fvec.y() = 0;
+  m->uvec.y() = 1.0;
+  m->uvec.x() = m->uvec.z() = 0;
+  m->rvec.x() = 1.0;
+  m->rvec.y() = m->rvec.z() = 0;
 
   Viewer_moved = 1;
 }
@@ -250,13 +250,13 @@ void CViewerPropDlg::OnPosCommitButton() {
   char buf[10];
 
   m_XPosEdit.GetWindowText(buf, sizeof(buf));
-  pos.x = atof(buf);
+  pos.x() = atof(buf);
 
   m_YPosEdit.GetWindowText(buf, sizeof(buf));
-  pos.y = atof(buf);
+  pos.y() = atof(buf);
 
   m_ZPosEdit.GetWindowText(buf, sizeof(buf));
-  pos.z = atof(buf);
+  pos.z() = atof(buf);
 }
 
 void CViewerPropDlg::UpdateOrientation() {
@@ -265,26 +265,26 @@ void CViewerPropDlg::UpdateOrientation() {
 
   vm_ExtractAnglesFromMatrix(&angs, &Viewer_object->orient);
 
-  sprintf(buf, "%d", (int)angs.p * 360 / 65536);
+  sprintf(buf, "%d", (int)angs.p() * 360 / 65536);
   m_PitchEdit.SetWindowText(buf);
 
-  sprintf(buf, "%d", (int)angs.h * 360 / 65536);
+  sprintf(buf, "%d", (int)angs.h() * 360 / 65536);
   m_HeadingEdit.SetWindowText(buf);
 
-  sprintf(buf, "%d", (int)angs.b * 360 / 65536);
+  sprintf(buf, "%d", (int)angs.b() * 360 / 65536);
   m_BankEdit.SetWindowText(buf);
 }
 
 void CViewerPropDlg::UpdatePosition() {
   char buf[10];
 
-  sprintf(buf, "%.2f", Viewer_object->pos.x);
+  sprintf(buf, "%.2f", Viewer_object->pos.x());
   m_XPosEdit.SetWindowText(buf);
 
-  sprintf(buf, "%.2f", Viewer_object->pos.y);
+  sprintf(buf, "%.2f", Viewer_object->pos.y());
   m_YPosEdit.SetWindowText(buf);
 
-  sprintf(buf, "%.2f", Viewer_object->pos.z);
+  sprintf(buf, "%.2f", Viewer_object->pos.z());
   m_ZPosEdit.SetWindowText(buf);
 }
 
