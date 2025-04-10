@@ -346,6 +346,7 @@ void QuickSaveGame() {
     std::filesystem::path pathname = cf_GetWritableBaseDirectory() / "savegame" / filename.str();
 
     FILE *fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+
     if (fp) {
       // slot valid, save here.
       fclose(fp);
@@ -419,6 +420,7 @@ void SaveGameDialog() {
     occupied_slot[i] = false;
 
     fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+
     if (fp) {
       fclose(fp);
 
@@ -614,6 +616,7 @@ bool LoadGameDialog() {
     occupied_slot[i] = false;
 
     fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+
     if (fp) {
       int bm_handle = -1;
       int *pbm_handle;
