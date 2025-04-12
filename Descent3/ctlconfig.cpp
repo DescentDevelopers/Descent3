@@ -303,7 +303,7 @@
 #define IDV_OPTIONS 18
 
 // used for adjusting settings.
-#define CFG_AXIS_SENS_RANGE 20
+#define CFG_AXIS_SENS_RANGE 200
 const int16_t UID_JOYCFG = 0x1000;
 
 
