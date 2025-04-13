@@ -1214,18 +1214,17 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
   get_packet(ctfTOGGLE_SLIDEKEY, &key_slide1);
   get_packet(ctfTOGGLE_BANKKEY, &key_bank);
 
-  if (key_slide1.value || key_bank.value) {
-    // Don't do mouse look if either toggle is happening
-    return val;
-  }
-  if ((Current_pilot.mouselook_control) && (GAME_MODE == GetFunctionMode())) {
-    // Don't do mouselook controls if they aren't enabled in multiplayer
-    if ((Game_mode & GM_MULTI) && (!(Netgame.flags & NF_ALLOW_MLOOK)))
-      return val;
+  if ((Current_pilot.mouselook_control && GAME_MODE == GetFunctionMode()) &&
+      // Don't do mouse look if
+      !(
+        // either toggle is happening
+        key_slide1.value || key_bank.value ||
+        // mouselook isn't enabled in multiplayer
+        (Game_mode & GM_MULTI && !(Netgame.flags & NF_ALLOW_MLOOK)) ||
+        // we're in guided missile control
+        Players[Player_num].guided_obj
+      )) {
 
-    // Account for guided missile control
-    if (Players[Player_num].guided_obj)
-      return val;
     axis++;
 
     if ((axis == CT_X_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > FLT_EPSILON)) {
