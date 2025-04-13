@@ -877,9 +877,9 @@ bool sdlgameController::enum_controllers() {
   m_ControlList[num_devs].flags = CTF_X_AXIS | CTF_Y_AXIS; // | (naxis>=3 ? CTF_Z_AXIS : 0);
   m_ControlList[num_devs].btnmask = btnmask;
   // normalizer is the "available area" in dots - this is the max we expect ANY mouse to EVER travel in 1.0s
-  // if a mouse is faster than (normalizer / frame_time), rot speed will be CLAMPED to kMaxRevPerSec
-  m_ControlList[num_devs].normalizer[0] = 100000.0f;
-  m_ControlList[num_devs].normalizer[1] = 100000.0f;
+  // if a mouse is faster than (normalizer / frame_time), rot speed will be clamped to 1 rev/sec
+  m_ControlList[num_devs].normalizer[0] = 10000.0f;
+  m_ControlList[num_devs].normalizer[1] = 10000.0f;
   m_ControlList[num_devs].normalizer[2] = 100.0f;
   m_ControlList[num_devs].sens[0] = 1.0f;
   m_ControlList[num_devs].sens[1] = 1.0f;
@@ -1219,8 +1219,6 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
     return val;
   }
   if ((Current_pilot.mouselook_control) && (GAME_MODE == GetFunctionMode())) {
-    constexpr double kMaxRevPerSec = 10; // number of rotations when val == 1.0 (ie, max movement)
-
     // Don't do mouselook controls if they aren't enabled in multiplayer
     if ((Game_mode & GM_MULTI) && (!(Netgame.flags & NF_ALLOW_MLOOK)))
       return val;
@@ -1245,7 +1243,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       if (invert)
         val = -val;
 
-      vm_AnglesToMatrix(&orient, 0.0, rotationToFixAngle(val * kMaxRevPerSec * m_frame_time), 0.0);
+      vm_AnglesToMatrix(&orient, 0.0, rotationToFixAngle(val * m_frame_time), 0.0);
 
       Objects[Players[Player_num].objnum].orient = Objects[Players[Player_num].objnum].orient * orient;
 
@@ -1268,7 +1266,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       if (invert)
         val = -val;
 
-      vm_AnglesToMatrix(&orient, rotationToFixAngle(val * kMaxRevPerSec * m_frame_time), 0.0, 0.0);
+      vm_AnglesToMatrix(&orient, rotationToFixAngle(val * m_frame_time), 0.0, 0.0);
 
       Objects[Players[Player_num].objnum].orient = Objects[Players[Player_num].objnum].orient * orient;
 
