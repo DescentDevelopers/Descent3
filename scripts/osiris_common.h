@@ -1230,8 +1230,8 @@ struct msafe_struct {
   uint8_t pulse_offset;
 
   // Objects/Players
-  uint32_t objhandle;
-  uint32_t ithandle;
+  int32_t objhandle;
+  int32_t ithandle;
   float shields, energy;
   int16_t start_tick;
   int16_t end_tick;
