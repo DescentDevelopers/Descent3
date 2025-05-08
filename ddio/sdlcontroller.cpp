@@ -876,8 +876,10 @@ bool sdlgameController::enum_controllers() {
   m_ControlList[num_devs].buttons = nbtns;
   m_ControlList[num_devs].flags = CTF_X_AXIS | CTF_Y_AXIS; // | (naxis>=3 ? CTF_Z_AXIS : 0);
   m_ControlList[num_devs].btnmask = btnmask;
-  m_ControlList[num_devs].normalizer[0] = 320.0f;
-  m_ControlList[num_devs].normalizer[1] = 240.0f;
+  // normalizer is the "available area" in dots - this is the max we expect ANY mouse to EVER travel in 1.0s
+  // if a mouse is faster than (normalizer / frame_time), rot speed will be clamped to 1 rev/sec
+  m_ControlList[num_devs].normalizer[0] = 10000.0f;
+  m_ControlList[num_devs].normalizer[1] = 10000.0f;
   m_ControlList[num_devs].normalizer[2] = 100.0f;
   m_ControlList[num_devs].sens[0] = 1.0f;
   m_ControlList[num_devs].sens[1] = 1.0f;
@@ -1108,6 +1110,11 @@ float sdlgameController::get_button_value(int8_t controller, ct_format format, u
   return val;
 }
 
+// rot: fraction of one full circle (1.0 == 360 degrees)
+static constexpr angle rotationToFixAngle(double rot) {
+  return static_cast<angle>(std::numeric_limits<angle>::max() * rot);
+}
+
 //	note controller is index into ControlList.
 float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_format format, bool invert) {
   struct sdlgameController::t_controller *ctldev;
@@ -1207,18 +1214,17 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
   get_packet(ctfTOGGLE_SLIDEKEY, &key_slide1);
   get_packet(ctfTOGGLE_BANKKEY, &key_bank);
 
-  if (key_slide1.value || key_bank.value) {
-    // Don't do mouse look if either toggle is happening
-    return val;
-  }
-  if ((Current_pilot.mouselook_control) && (GAME_MODE == GetFunctionMode())) {
-    // Don't do mouselook controls if they aren't enabled in multiplayer
-    if ((Game_mode & GM_MULTI) && (!(Netgame.flags & NF_ALLOW_MLOOK)))
-      return val;
+  if ((Current_pilot.mouselook_control && GAME_MODE == GetFunctionMode()) &&
+      // Don't do mouse look if
+      !(
+        // either toggle is happening
+        key_slide1.value || key_bank.value ||
+        // mouselook isn't enabled in multiplayer
+        (Game_mode & GM_MULTI && !(Netgame.flags & NF_ALLOW_MLOOK)) ||
+        // we're in guided missile control
+        Players[Player_num].guided_obj
+      )) {
 
-    // Account for guided missile control
-    if (Players[Player_num].guided_obj)
-      return val;
     axis++;
 
     if ((axis == CT_X_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > SDL_FLT_EPSILON)) {
@@ -1236,7 +1242,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       if (invert)
         val = -val;
 
-      vm_AnglesToMatrix(&orient, 0.0, val * (((float)(65535.0f / 20)) * .5), 0.0);
+      vm_AnglesToMatrix(&orient, 0.0, rotationToFixAngle(val * m_frame_time), 0.0);
 
       Objects[Players[Player_num].objnum].orient = Objects[Players[Player_num].objnum].orient * orient;
 
@@ -1259,7 +1265,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       if (invert)
         val = -val;
 
-      vm_AnglesToMatrix(&orient, val * (((float)(65535.0f / 20)) * .5), 0.0, 0.0);
+      vm_AnglesToMatrix(&orient, rotationToFixAngle(val * m_frame_time), 0.0, 0.0);
 
       Objects[Players[Player_num].objnum].orient = Objects[Players[Player_num].objnum].orient * orient;
 

@@ -174,6 +174,8 @@
 #include "renderer.h"
 #include "Macros.h"
 
+constexpr float kDefaultMouseScale = 20;
+
 #define UI_MOUSE_HOTX 2
 #define UI_MOUSE_HOTY 2
 constexpr int ui_FrameTimeMS = 50;
@@ -270,8 +272,8 @@ bool ui_MousePoll(bool buttons) {
     btn_mask = ddio_MouseGetState(&mx, &my, NULL, NULL);
     UI_input.last_mx = UI_input.mx;
     UI_input.last_my = UI_input.my;
-    UI_input.mx = mx;
-    UI_input.my = my;
+    UI_input.mx = mx / kDefaultMouseScale;
+    UI_input.my = my / kDefaultMouseScale;
   } else if (UI_cursor_show) {
     // if bX_count is 0, then repeat processing can occur, otherwise only real mouse events are processed.
     if (ddio_MouseGetEvent(&msebtn, &state)) {
@@ -537,6 +539,7 @@ bool ui_HideCursor() {
   }
   return true; // cursor was hidden before.
 }
+
 //	set user interface screen resolution
 void ui_SetScreenMode(int w, int h) {
   UI_screen_width = w;
@@ -544,8 +547,7 @@ void ui_SetScreenMode(int w, int h) {
   UI_aspect_x = (float)w / (float)FIXED_SCREEN_WIDTH;
   UI_aspect_y = (float)h / (float)FIXED_SCREEN_HEIGHT;
   ddio_MouseReset();
-  //	ddio_MouseSetLimits(0,0, UI_screen_width, UI_screen_height);
-  ddio_MouseSetVCoords(UI_screen_width, UI_screen_height);
+  ddio_MouseSetVCoords(UI_screen_width * kDefaultMouseScale, UI_screen_height * kDefaultMouseScale);
   UI_input.cur_time = timer_GetTime();
   //	reposition all active open windows to their correct locations in this new resolution
   //@@	tUIWindowNode *wndnode = UIWindowList;
