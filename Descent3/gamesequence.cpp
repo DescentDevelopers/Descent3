@@ -1330,7 +1330,7 @@ bool SimpleStartLevel(const std::filesystem::path& level_name) {
   Current_mission.num_levels = 1;
 
   Current_level = nullptr;
-  Current_mission.levels[0].filename = mem_strdup(level_name.u8string().c_str());
+  Current_mission.levels[0].filename = mem_strdup((const char*)level_name.u8string().c_str());
   InitMissionScript();
 
   return true;

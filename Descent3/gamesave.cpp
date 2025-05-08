@@ -345,7 +345,8 @@ void QuickSaveGame() {
     filename << "saveg" << std::setw(3) << std::setfill('0') << Quicksave_game_slot;
     std::filesystem::path pathname = cf_GetWritableBaseDirectory() / "savegame" / filename.str();
 
-    FILE *fp = fopen(pathname.u8string().c_str(), "rb");
+    FILE *fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+
     if (fp) {
       // slot valid, save here.
       fclose(fp);
@@ -418,7 +419,8 @@ void SaveGameDialog() {
 
     occupied_slot[i] = false;
 
-    fp = fopen(pathname.u8string().c_str(), "rb");
+    fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+
     if (fp) {
       fclose(fp);
 
@@ -540,7 +542,7 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 
     LOG_DEBUG.printf("savegame slot=%d", id - SAVE_HOTSPOT_ID);
 
-    ddio_MakePath(savegame_dir, cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", NULL);
+    ddio_MakePath(savegame_dir, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", NULL);
     snprintf(filename, sizeof(filename), "saveg00%d", (id - SAVE_HOTSPOT_ID));
     ddio_MakePath(pathname, savegame_dir, filename, NULL);
 
@@ -613,7 +615,8 @@ bool LoadGameDialog() {
 
     occupied_slot[i] = false;
 
-    fp = fopen(pathname.u8string().c_str(), "rb");
+    fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+
     if (fp) {
       int bm_handle = -1;
       int *pbm_handle;

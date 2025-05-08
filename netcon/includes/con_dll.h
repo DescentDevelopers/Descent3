@@ -1181,9 +1181,8 @@ int StartMultiplayerGameMenu() {
   for (const auto &netgames_directory : DLLcf_LocateMultiplePaths("netgames")) {
     DLLddio_DoForeachFile(netgames_directory, std::regex(".+\\.d3m"),
                           [&dll_ui_items](const std::filesystem::path& path){
-                            dll_ui_items.insert_or_assign(
-                                path.stem().u8string(),
-                                DLLCreateNewUITextItem(path.stem().u8string().c_str(), UICOL_LISTBOX_LO, -1)
+                            dll_ui_items.insert_or_assign((const char*)path.stem().u8string().c_str(),
+                                DLLCreateNewUITextItem((const char*)path.stem().u8string().c_str(), UICOL_LISTBOX_LO, -1)
                                 );
     } );
   }
@@ -1210,12 +1209,12 @@ int StartMultiplayerGameMenu() {
   for (auto const &i : search_paths) {
     DLLddio_DoForeachFile(i.first, i.second, [&mi, &list_1](const std::filesystem::path &path) {
       std::filesystem::path mission_name = path.filename();
-      if (DLLIsMissionMultiPlayable(mission_name.u8string().c_str()) &&
-          (stricmp("d3_2.mn3", mission_name.u8string().c_str()) != 0)) {
-        DLLmprintf(0, "Found a mission: %s\n", mission_name.u8string().c_str());
+      if (DLLIsMissionMultiPlayable((const char*)mission_name.u8string().c_str()) &&
+          (stricmp("d3_2.mn3", (const char*)mission_name.u8string().c_str()) != 0)) {
+        DLLmprintf(0, "Found a mission: %s\n", (const char*)mission_name.u8string().c_str());
         mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
-        strcpy(mi->msn_name, DLLGetMissionName(mission_name.u8string().c_str()));
-        strcpy(mi->msn_file, mission_name.u8string().c_str());
+        strcpy(mi->msn_name, DLLGetMissionName((const char*)mission_name.u8string().c_str()));
+        strcpy(mi->msn_file, (const char*)mission_name.u8string().c_str());
         mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
         AddMsnItem(mi);
         DLLListAddItem(list_1, mi->ti);

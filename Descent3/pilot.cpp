@@ -1035,7 +1035,7 @@ void PilotSelect() {
         PilotListSelectChangeCallback(index);
 
         if (found_old) {
-          Current_pilot.set_filename(old_file.u8string());
+          Current_pilot.set_filename((const char*)old_file.u8string().c_str());
           PltReadFile(&Current_pilot, true, true);
 
           char pname[PILOT_STRING_SIZE];
@@ -1700,7 +1700,7 @@ std::vector<std::string> PltGetPilots(std::string ignore_filename, int display_d
     }
 
     ddio_DoForeachFile(cf_GetWritableBaseDirectory(), wildcard, [&ignore_filename, &result](const std::filesystem::path &path) {
-      std::string pilot = path.filename().u8string();
+      std::string pilot = (const char*)path.filename().u8string().c_str();
       if (!ignore_filename.empty() && stricmp(ignore_filename.c_str(), pilot.c_str()) == 0) {
         LOG_INFO.printf("Getting Pilots... found %s, but ignoring", pilot.c_str());
       } else {
@@ -1871,7 +1871,7 @@ tShipListInfo *lp_ship_info = nullptr;
 std::filesystem::path StripCRCFileName(const std::filesystem::path &src) {
   ASSERT(!src.empty());
 
-  std::vector<std::string> parts = StringSplit(src.u8string(), "_");
+  std::vector<std::string> parts = StringSplit((const char*)src.u8string().c_str(), "_");
   if (parts.size() < 2 || parts.back().size() != 8) {
     // this filename doesn't have a trailing CRC
     return src;
@@ -1912,7 +1912,7 @@ bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &
 
   // now create the full filename
 
-  dest = src.parent_path() / (StripCRCFileName(src).stem().u8string() + hex_string);
+  dest = src.parent_path() / ((const char*)(StripCRCFileName(src).stem().concat(hex_string).u8string().c_str()));
   dest.replace_extension(src.extension());
 
   return true;
@@ -2001,7 +2001,7 @@ bool ImportGraphic(const char *pathname, char *newfile) {
 
   // p contains the real filename
   // tempfilename contains old filename
-  bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(tempfilename.u8string().c_str()), 0);
+  bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE((const char*)tempfilename.u8string().c_str()), 0);
   if (bm_handle <= BAD_BITMAP_HANDLE) {
     LOG_WARNING << "Error reloading bitmap for rename";
     std::filesystem::remove(tempfilename, ec);
@@ -2018,7 +2018,7 @@ bool ImportGraphic(const char *pathname, char *newfile) {
   bm_FreeBitmap(bm_handle);
   std::filesystem::remove(tempfilename, ec);
 
-  strcpy(newfile, p.u8string().c_str());
+  strcpy(newfile, (const char*)p.u8string().c_str());
   return true;
 }
 
@@ -2042,8 +2042,8 @@ bool UpdateGraphicsListbox(newuiListBox *lb, const std::filesystem::path &select
 
   int i = 1; // With "None"
   for (auto const &image : Custom_images) {
-    lb->AddItem(StripCRCFileName(image).u8string().c_str());
-    if (stricmp(image.u8string().c_str(), selected_name.filename().u8string().c_str()) == 0) {
+    lb->AddItem((const char*)StripCRCFileName(image).u8string().c_str());
+    if (stricmp((const char*)image.u8string().c_str(), (const char*)selected_name.filename().u8string().c_str()) == 0) {
       lb->SetCurrentIndex(i);
       CustomCallBack(i);
     }
@@ -2091,24 +2091,24 @@ void UpdateAudioTauntBoxes(newuiComboBox *audio1_list, newuiComboBox *audio2_lis
   int i = 0;
   for (const auto &taunt : Audio_taunts) {
     std::filesystem::path tfn = StripCRCFileName(taunt);
-    audio1_list->AddItem(tfn.u8string().c_str());
-    audio2_list->AddItem(tfn.u8string().c_str());
-    audio3_list->AddItem(tfn.u8string().c_str());
-    audio4_list->AddItem(tfn.u8string().c_str());
+    audio1_list->AddItem((const char*)tfn.u8string().c_str());
+    audio2_list->AddItem((const char*)tfn.u8string().c_str());
+    audio3_list->AddItem((const char*)tfn.u8string().c_str());
+    audio4_list->AddItem((const char*)tfn.u8string().c_str());
 
-    if (!stricmp(paudio1, taunt.u8string().c_str())) {
+    if (!stricmp(paudio1, (const char*)taunt.u8string().c_str())) {
       // set this as selected index for audio #1
       audio1_list->SetCurrentIndex(i + 1);
     }
-    if (!stricmp(paudio2, taunt.u8string().c_str())) {
+    if (!stricmp(paudio2, (const char*)taunt.u8string().c_str())) {
       // set this as selected index for audio #2
       audio2_list->SetCurrentIndex(i + 1);
     }
-    if (!stricmp(paudio3, taunt.u8string().c_str())) {
+    if (!stricmp(paudio3, (const char*)taunt.u8string().c_str())) {
       // set this as selected index for audio #1
       audio3_list->SetCurrentIndex(i + 1);
     }
-    if (!stricmp(paudio4, taunt.u8string().c_str())) {
+    if (!stricmp(paudio4, (const char*)taunt.u8string().c_str())) {
       // set this as selected index for audio #2
       audio4_list->SetCurrentIndex(i + 1);
     }
@@ -2125,7 +2125,7 @@ void audio1changecallback(int index) {
   } else {
     index--;
     if (index < (int)Audio_taunts.size()) {
-      AudioTauntPilot->set_multiplayer_data(nullptr, Audio_taunts[index].u8string().c_str());
+      AudioTauntPilot->set_multiplayer_data(nullptr, (const char*)Audio_taunts[index].u8string().c_str());
     }
   }
 }
@@ -2137,7 +2137,7 @@ void audio2changecallback(int index) {
   } else {
     index--;
     if (index < (int)Audio_taunts.size()) {
-      AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, Audio_taunts[index].u8string().c_str());
+      AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, (const char*)Audio_taunts[index].u8string().c_str());
     }
   }
 }
@@ -2149,7 +2149,7 @@ void audio3changecallback(int index) {
   } else {
     index--;
     if (index < (int)Audio_taunts.size()) {
-      AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, Audio_taunts[index].u8string().c_str());
+      AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, (const char*)Audio_taunts[index].u8string().c_str());
     }
   }
 }
@@ -2162,7 +2162,7 @@ void audio4changecallback(int index) {
     index--;
     if (index < (int)Audio_taunts.size()) {
       AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, nullptr,
-                                            Audio_taunts[index].u8string().c_str());
+                                            (const char*)Audio_taunts[index].u8string().c_str());
     }
   }
 }
@@ -2465,21 +2465,21 @@ bool PltSelectShip(pilot *Pilot) {
       int index;
       index = taunts_lists.taunt_a->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
-        Pilot->set_multiplayer_data(nullptr, Audio_taunts[index - 1].u8string().c_str());
+        Pilot->set_multiplayer_data(nullptr, (const char*)Audio_taunts[index - 1].u8string().c_str());
       }
       index = taunts_lists.taunt_b->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
-        Pilot->set_multiplayer_data(nullptr, nullptr, Audio_taunts[index - 1].u8string().c_str());
+        Pilot->set_multiplayer_data(nullptr, nullptr, (const char*)Audio_taunts[index - 1].u8string().c_str());
       }
 
       index = taunts_lists.taunt_c->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
-        Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, Audio_taunts[index - 1].u8string().c_str());
+        Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, (const char*)Audio_taunts[index - 1].u8string().c_str());
       }
 
       index = taunts_lists.taunt_d->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
-        Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, nullptr, Audio_taunts[index - 1].u8string().c_str());
+        Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, nullptr, (const char*)Audio_taunts[index - 1].u8string().c_str());
       }
 
       char audio1[PAGENAME_LEN], audio2[PAGENAME_LEN], audio3[PAGENAME_LEN], audio4[PAGENAME_LEN];
@@ -2504,7 +2504,7 @@ bool PltSelectShip(pilot *Pilot) {
       std::filesystem::path path;
       char newf[_MAX_FNAME];
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.ogf", "*.tga", "*.pcx", "*.iff"}, PFDF_FILEMUSTEXIST)) {
-        if (ImportGraphic(path.u8string().c_str(), newf)) {
+        if (ImportGraphic((const char*)path.u8string().c_str(), newf)) {
           // update the listbox
           if (!UpdateGraphicsListbox(custom_list, newf))
             goto ship_id_err;
@@ -2516,7 +2516,7 @@ bool PltSelectShip(pilot *Pilot) {
     case ID_GETANIM: {
       std::filesystem::path path;
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.ifl"}, PFDF_FILEMUSTEXIST)) {
-        int handle = AllocLoadIFLVClip(IGNORE_TABLE(path.u8string().c_str()), SMALL_TEXTURE, 1);
+        int handle = AllocLoadIFLVClip(IGNORE_TABLE((const char*)path.u8string().c_str()), SMALL_TEXTURE, 1);
 
         if (handle != -1) {
           // change the file extension
@@ -2561,10 +2561,10 @@ bool PltSelectShip(pilot *Pilot) {
       int index = taunts_lists.taunt_a->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
         std::filesystem::path path = LocalCustomSoundsDir / Audio_taunts[index - 1];
-        LOG_INFO.printf("Playing: %s", path.u8string().c_str());
+        LOG_INFO.printf("Playing: %s", (const char*)path.u8string().c_str());
         bool cenable = taunt_AreEnabled();
         taunt_Enable(true);
-        taunt_PlayTauntFile(path.u8string().c_str());
+        taunt_PlayTauntFile((const char*)path.u8string().c_str());
         taunt_Enable(cenable);
       }
     } break;
@@ -2583,8 +2583,8 @@ bool PltSelectShip(pilot *Pilot) {
         std::filesystem::path tempfile = LocalCustomSoundsDir / filename;
 
         // import the sound
-        LOG_INFO.printf("Importing: '%s'->'%s'", path.u8string().c_str(), tempfile.u8string().c_str());
-        if (taunt_ImportWave(path.u8string().c_str(), tempfile.u8string().c_str())) {
+        LOG_INFO.printf("Importing: '%s'->'%s'", (const char*)path.u8string().c_str(), (const char*)tempfile.u8string().c_str());
+        if (taunt_ImportWave((const char*)path.u8string().c_str(), (const char*)tempfile.u8string().c_str())) {
           // success
 
           // check file size...make sure it isn't too big
@@ -2708,7 +2708,7 @@ void CustomCallBack(int c) {
     select_bitmap = Custom_images[c - 1];
   }
 
-  if (!strcmp(custom_texture, select_bitmap.u8string().c_str()))
+  if (!strcmp(custom_texture, (const char*)select_bitmap.u8string().c_str()))
     return;
 
   if (ship_pos.bm_handle > BAD_BITMAP_HANDLE) {
@@ -2732,7 +2732,7 @@ void CustomCallBack(int c) {
   } else {
     if ((c - 1) < (int)Custom_images.size()) {
       select_bitmap = Custom_images[c - 1];
-      strcpy(custom_texture, select_bitmap.u8string().c_str());
+      strcpy(custom_texture, (const char*)select_bitmap.u8string().c_str());
     } else {
       custom_texture[0] = '\0';
     }
