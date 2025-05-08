@@ -401,7 +401,7 @@ int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_stat
                        (Sounds[sound_index].max_distance - Sounds[sound_index].min_distance)));
   }
 
-  pan = (dir_to_sound * m_emulated_listener.orient.rvec);
+  pan = (vm_Dot3Product(dir_to_sound,m_emulated_listener.orient.rvec));
 
   if (volume < 0.0f)
     volume = 0.0f;
@@ -470,7 +470,7 @@ void lnxsound::AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_vol
                         Sounds[sound_cache[current_slot].m_sound_index].min_distance)));
   }
 
-  pan = (dir_to_sound * m_emulated_listener.orient.rvec);
+  pan = (vm_Dot3Product(dir_to_sound,m_emulated_listener.orient.rvec));
 
   if (volume < 0.0f)
     volume = 0.0f;

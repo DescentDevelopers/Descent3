@@ -563,19 +563,19 @@ void mng_WriteWeaponPage(CFILE *outfile, mngs_weapon_page *weaponpage) {
 
   cf_WriteByte(outfile, WEAPONPAGE_COMMAND_INIT_VELOCITY);
   cf_WriteByte(outfile, 4);
-  cf_WriteFloat(outfile, weaponpage->weapon_struct.phys_info.velocity.z);
+  cf_WriteFloat(outfile, weaponpage->weapon_struct.phys_info.velocity.z());
 
   cf_WriteByte(outfile, WEAPONPAGE_COMMAND_INIT_ROT_VEL_X);
   cf_WriteByte(outfile, 4);
-  cf_WriteFloat(outfile, weaponpage->weapon_struct.phys_info.rotvel.x);
+  cf_WriteFloat(outfile, weaponpage->weapon_struct.phys_info.rotvel.x());
 
   cf_WriteByte(outfile, WEAPONPAGE_COMMAND_INIT_ROT_VEL_Y);
   cf_WriteByte(outfile, 4);
-  cf_WriteFloat(outfile, weaponpage->weapon_struct.phys_info.rotvel.y);
+  cf_WriteFloat(outfile, weaponpage->weapon_struct.phys_info.rotvel.y());
 
   cf_WriteByte(outfile, WEAPONPAGE_COMMAND_INIT_ROT_VEL_Z);
   cf_WriteByte(outfile, 4);
-  cf_WriteFloat(outfile, weaponpage->weapon_struct.phys_info.rotvel.z);
+  cf_WriteFloat(outfile, weaponpage->weapon_struct.phys_info.rotvel.z());
 
   cf_WriteByte(outfile, WEAPONPAGE_COMMAND_LIFE_TIME);
   cf_WriteByte(outfile, 4);
@@ -761,9 +761,9 @@ void DoOEMNapalmBarrelHack(mngs_weapon_page *weaponpage) {
     weaponpage->weapon_struct.phys_info.drag = 0.01f;
     weaponpage->weapon_struct.phys_info.rotdrag = 0.001f;
 
-    weaponpage->weapon_struct.phys_info.velocity.x = 0;
-    weaponpage->weapon_struct.phys_info.velocity.y = 0;
-    weaponpage->weapon_struct.phys_info.velocity.z = 50.0f;
+    weaponpage->weapon_struct.phys_info.velocity.x() = 0;
+    weaponpage->weapon_struct.phys_info.velocity.y() = 0;
+    weaponpage->weapon_struct.phys_info.velocity.z() = 50.0f;
 
   } else {
     LOG_DEBUG << "BASHING NAPALMBARREL!!!!!!";
@@ -771,9 +771,9 @@ void DoOEMNapalmBarrelHack(mngs_weapon_page *weaponpage) {
     weaponpage->weapon_struct.custom_size = 1.0f;
     weaponpage->weapon_struct.phys_info.flags |= PF_USES_PARENT_VELOCITY;
 
-    weaponpage->weapon_struct.phys_info.velocity.x = 0;
-    weaponpage->weapon_struct.phys_info.velocity.y = 0;
-    weaponpage->weapon_struct.phys_info.velocity.z = 110.0f;
+    weaponpage->weapon_struct.phys_info.velocity.x() = 0;
+    weaponpage->weapon_struct.phys_info.velocity.y() = 0;
+    weaponpage->weapon_struct.phys_info.velocity.z() = 110.0f;
   }
 }
 #endif
@@ -1045,16 +1045,16 @@ int mng_ReadWeaponPage(CFILE *infile, mngs_weapon_page *weaponpage) {
       weaponpage->weapon_struct.phys_info.num_bounces = cf_ReadInt(infile);
       break;
     case WEAPONPAGE_COMMAND_INIT_VELOCITY:
-      weaponpage->weapon_struct.phys_info.velocity.z = cf_ReadFloat(infile);
+      weaponpage->weapon_struct.phys_info.velocity.z() = cf_ReadFloat(infile);
       break;
     case WEAPONPAGE_COMMAND_INIT_ROT_VEL_X:
-      weaponpage->weapon_struct.phys_info.rotvel.x = cf_ReadFloat(infile);
+      weaponpage->weapon_struct.phys_info.rotvel.x() = cf_ReadFloat(infile);
       break;
     case WEAPONPAGE_COMMAND_INIT_ROT_VEL_Y:
-      weaponpage->weapon_struct.phys_info.rotvel.y = cf_ReadFloat(infile);
+      weaponpage->weapon_struct.phys_info.rotvel.y() = cf_ReadFloat(infile);
       break;
     case WEAPONPAGE_COMMAND_INIT_ROT_VEL_Z:
-      weaponpage->weapon_struct.phys_info.rotvel.z = cf_ReadFloat(infile);
+      weaponpage->weapon_struct.phys_info.rotvel.z() = cf_ReadFloat(infile);
       break;
     case WEAPONPAGE_COMMAND_LIFE_TIME:
       weaponpage->weapon_struct.life_time = cf_ReadFloat(infile);

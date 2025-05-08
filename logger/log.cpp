@@ -33,7 +33,7 @@
 void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_console) {
   std::filesystem::path log_file = "Descent3.log";
   static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
-  static plog::RollingFileAppender<plog::TxtFormatter> fileAppender(log_file.u8string().c_str());
+  static plog::RollingFileAppender<plog::TxtFormatter> fileAppender((const char*)log_file.u8string().c_str());
 
 #ifdef WIN32
   static plog::DebugOutputAppender<plog::TxtFormatter> debugAppender;

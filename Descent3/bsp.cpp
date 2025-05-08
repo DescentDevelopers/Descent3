@@ -86,9 +86,9 @@ int BSPGetMineChecksum() {
       face *fp = &rp->faces[t];
 
       for (k = 0; k < fp->num_verts; k++) {
-        total += rp->verts[fp->face_verts[k]].x;
-        total += rp->verts[fp->face_verts[k]].y;
-        total += rp->verts[fp->face_verts[k]].z;
+        total += rp->verts[fp->face_verts[k]].x();
+        total += rp->verts[fp->face_verts[k]].y();
+        total += rp->verts[fp->face_verts[k]].z();
       }
     }
   }
@@ -117,9 +117,9 @@ int BSPGetMineChecksum() {
         for (int j = 0; j < sm->num_faces; j++) {
           for (int x = 0; x < sm->faces[j].nverts; x++) {
             GetObjectPointInWorld(&vert, obj, k, sm->faces[j].vertnums[x]);
-            total += vert.x;
-            total += vert.y;
-            total += vert.z;
+            total += vert.x();
+            total += vert.y();
+            total += vert.z();
           }
         }
       }
@@ -259,14 +259,14 @@ void CalculatePolygonPlane(bsppolygon *poly) {
 
   vector *vec = &poly->verts[0];
 
-  poly->plane.d = -(vec->x * poly->plane.a + vec->y * poly->plane.b + vec->z * poly->plane.c);
+  poly->plane.d = -(vec->x() * poly->plane.a + vec->y() * poly->plane.b + vec->z() * poly->plane.c);
 }
 
 // Classifies whether or not a point is in front,behind, or on a plane
 int ClassifyVector(bspplane *plane, vector *vec) {
   float dist;
 
-  dist = vec->x * plane->a + vec->y * plane->b + vec->z * plane->c + plane->d;
+  dist = vec->x() * plane->a + vec->y() * plane->b + vec->z() * plane->c + plane->d;
 
   if (dist > BSP_EPSILON)
     return BSP_IN_FRONT;
@@ -346,7 +346,7 @@ int SplitPolygon(bspplane *plane, bsppolygon *testpoly, bsppolygon **frontpoly, 
     vertptr1 = &testpoly->verts[i];
     polyvert[i] = vertptr1;
     codes[i] = ClassifyVector(plane, vertptr1);
-    dists[i] = plane->a * vertptr1->x + plane->b * vertptr1->y + plane->c * vertptr1->z + plane->d;
+    dists[i] = plane->a * vertptr1->x() + plane->b * vertptr1->y() + plane->c * vertptr1->z() + plane->d;
   }
 
   /* We must duplicate the first entry in the numvert+1 slot, so that
@@ -854,9 +854,9 @@ void BuildBSPTree() {
             for (x = 0; x < sm->faces[j].nverts; x++)
               newpoly->verts[x] = world_verts[x];
 
-            newpoly->plane.a = norm.x;
-            newpoly->plane.b = norm.y;
-            newpoly->plane.c = norm.z;
+            newpoly->plane.a = norm.x();
+            newpoly->plane.b = norm.y();
+            newpoly->plane.c = norm.z();
 
             CalculatePolygonPlane(newpoly);
 
@@ -895,9 +895,9 @@ void BuildBSPTree() {
       for (k = 0; k < Rooms[i].faces[t].num_verts; k++)
         newpoly->verts[k] = Rooms[i].verts[Rooms[i].faces[t].face_verts[k]];
 
-      newpoly->plane.a = Rooms[i].faces[t].normal.x;
-      newpoly->plane.b = Rooms[i].faces[t].normal.y;
-      newpoly->plane.c = Rooms[i].faces[t].normal.z;
+      newpoly->plane.a = Rooms[i].faces[t].normal.x();
+      newpoly->plane.b = Rooms[i].faces[t].normal.y();
+      newpoly->plane.c = Rooms[i].faces[t].normal.z();
 
       CalculatePolygonPlane(newpoly);
 
@@ -995,9 +995,9 @@ void BuildSingleBSPTree(int roomnum) {
           for (x = 0; x < sm->faces[j].nverts; x++)
             newpoly->verts[x] = world_verts[x];
 
-          newpoly->plane.a = norm.x;
-          newpoly->plane.b = norm.y;
-          newpoly->plane.c = norm.z;
+          newpoly->plane.a = norm.x();
+          newpoly->plane.b = norm.y();
+          newpoly->plane.c = norm.z();
 
           CalculatePolygonPlane(newpoly);
 
@@ -1027,9 +1027,9 @@ void BuildSingleBSPTree(int roomnum) {
     for (k = 0; k < Rooms[i].faces[t].num_verts; k++)
       newpoly->verts[k] = Rooms[i].verts[Rooms[i].faces[t].face_verts[k]];
 
-    newpoly->plane.a = Rooms[i].faces[t].normal.x;
-    newpoly->plane.b = Rooms[i].faces[t].normal.y;
-    newpoly->plane.c = Rooms[i].faces[t].normal.z;
+    newpoly->plane.a = Rooms[i].faces[t].normal.x();
+    newpoly->plane.b = Rooms[i].faces[t].normal.y();
+    newpoly->plane.c = Rooms[i].faces[t].normal.z();
 
     CalculatePolygonPlane(newpoly);
 
@@ -1059,8 +1059,8 @@ void BuildSingleBSPTree(int roomnum) {
 
 // Returns true if the point is inside the min,max
 static inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
-  if (pos->x < min_xyz->x || pos->y < min_xyz->y || pos->z < min_xyz->z || pos->x > max_xyz->x || pos->y > max_xyz->y ||
-      pos->z > max_xyz->z)
+  if (pos->x() < min_xyz->x() || pos->y() < min_xyz->y() || pos->z() < min_xyz->z() || pos->x() > max_xyz->x() || pos->y() > max_xyz->y() ||
+      pos->z() > max_xyz->z())
     return 0;
 
   return 1;
@@ -1106,9 +1106,9 @@ static inline int BSPPointInPolygon(vector *pos, bspnode *node) {
       vertp[i] = &verts[i];
     }
 
-    norm.x = node->plane.a;
-    norm.y = node->plane.b;
-    norm.z = node->plane.c;
+    norm.x() = node->plane.a;
+    norm.y() = node->plane.b;
+    norm.z() = node->plane.c;
 
     if ((check_point_to_face(pos, &norm, sm->faces[node->node_facenum].nverts, vertp)))
       return 0;
@@ -1152,8 +1152,8 @@ int BSPRayOccluded(vector *line_start, vector *line_end, bspnode *start_node) {
   while (si > 0) {
     POP_BSP_RAY();
     while (node->type == BSP_NODE) {
-      float dist1 = node->plane.a * start.x + node->plane.b * start.y + node->plane.c * start.z + node->plane.d;
-      float dist2 = node->plane.a * end.x + node->plane.b * end.y + node->plane.c * end.z + node->plane.d;
+      scalar dist1 = node->plane.a * start.x() + node->plane.b * start.y() + node->plane.c * start.z() + node->plane.d;
+      scalar dist2 = node->plane.a * end.x() + node->plane.b * end.y() + node->plane.c * end.z() + node->plane.d;
 
       if (dist1 >= 0 && dist2 >= 0) {
         node = (bspnode *)node->front;

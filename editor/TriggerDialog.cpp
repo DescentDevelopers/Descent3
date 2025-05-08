@@ -496,8 +496,8 @@ void CTriggerDialog::UpdateKeypad(int mask) {
 
 #include "erooms.h"
 
-#define TRIG_PLACE_DIST 5.0
-#define TRIG_DEFAULT_SIZE 10.0
+#define TRIG_PLACE_DIST (scalar)5.0
+#define TRIG_DEFAULT_SIZE (scalar)10.0
 
 void CTriggerDialog::OnTrigAddFloating() {
   int facenum, vertnum;

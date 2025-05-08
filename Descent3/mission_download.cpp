@@ -120,6 +120,7 @@
 
 #include <cstdio>
 #include <future>
+#include <fstream>
 
 #include "mem.h"
 #include "args.h"
@@ -316,12 +317,12 @@ bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filena
   bool file_is_zip = false;
 
   std::vector<std::string> url_parts = StringSplit(url, "/");
-  if (!(stricmp("http:", url_parts.front().c_str()) == 0 || stricmp("https:", url_parts.front().c_str()) == 0)) {
-    LOG_WARNING.printf("'%s' scheme is not supported, no download!", url_parts.front().c_str());
+  if (!(stricmp("http:", (const char*)url_parts.front().c_str()) == 0 || stricmp("https:", (const char*)url_parts.front().c_str()) == 0)) {
+    LOG_WARNING.printf("'%s' scheme is not supported, no download!", (const char*)url_parts.front().c_str());
     return false;
   }
   std::filesystem::path download_file = std::filesystem::path(url_parts.back());
-  if (stricmp(download_file.extension().u8string().c_str(), ".zip") == 0) {
+  if (stricmp((const char*)download_file.extension().u8string().c_str(), ".zip") == 0) {
     LOG_DEBUG << "We're downloading a zip file!!!";
     file_is_zip = true;
   }
@@ -702,7 +703,7 @@ int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::file
   ZIP zfile;
   zipentry *ze;
 
-  if (!zfile.OpenZip(zipfilename.u8string().c_str())) {
+  if (!zfile.OpenZip((const char*)zipfilename.u8string().c_str())) {
     LOG_WARNING << "Unable to open zip file";
     return 0;
   }
@@ -784,7 +785,7 @@ int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::file
             console.puts(GR_GREEN, "CRC OK");
 
             // check to see if we extracted our mn3
-            if (CompareZipFileName(ze->name, mn3name.u8string().c_str())) {
+            if (CompareZipFileName(ze->name, (const char*)mn3name.u8string().c_str())) {
               found_mn3 = true;
             }
           } else {

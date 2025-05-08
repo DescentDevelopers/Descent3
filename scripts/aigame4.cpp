@@ -548,9 +548,9 @@ bool MercEndBoss::DoNotify(int me, tOSIRISEventInfo *data) {
       vector rvel;
       Obj_Value(me, VF_GET, OBJV_V_ROTVELOCITY, &rvel);
 
-      rvel.x -= 0.1f * DEATH_ROT_ACC * Game_GetFrameTime();
-      rvel.y -= DEATH_ROT_ACC * Game_GetFrameTime();
-      rvel.z += 0.3f * DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.x() -= 0.1f * DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.y() -= DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.z() += 0.3f * DEATH_ROT_ACC * Game_GetFrameTime();
 
       Obj_Value(me, VF_SET, OBJV_V_ROTVELOCITY, &rvel);
 
@@ -1004,7 +1004,7 @@ void MercEndBoss::DoFrame(int me) {
           if (fate != HIT_NONE) {
             start_pos = ray.hit_point + (orient.fvec * 5.0f);
 
-            if (ray.hit_wallnorm * orient.fvec <= 0.0f) {
+            if (vm_Dot3Product(ray.hit_wallnorm, orient.fvec) <= 0.0f) {
               vector bf_pos = ray.hit_point + (orient.fvec * -9.0f);
               Obj_Create(OBJ_POWERUP, memory->wallhit_id, 76, &bf_pos);
               // mprintf(0, "HERE X\n");
@@ -1028,7 +1028,7 @@ void MercEndBoss::DoFrame(int me) {
           if (fate != HIT_NONE) {
             end_pos = ray.hit_point - (orient.fvec * 5.0f);
 
-            if (ray.hit_wallnorm * orient.fvec <= 0.0f) {
+            if (vm_Dot3Product(ray.hit_wallnorm, orient.fvec) <= 0.0f) {
               vector bf_pos = ray.hit_point + (orient.fvec * -9.0f);
               Obj_Create(OBJ_POWERUP, memory->wallhit_id, 76, &bf_pos);
               // mprintf(0, "HERE X\n");

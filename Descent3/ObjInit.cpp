@@ -775,7 +775,7 @@ int ObjInitGeneric(object *objp, bool reinit) {
     // Setup some physics things
     objp->mtype.phys_info = obj_info->phys_info; // Set the initial velocity
     // Warn about initial velocity & rotvel
-    if (obj_info->phys_info.velocity.z > 0.0)
+    if (obj_info->phys_info.velocity.z() > (scalar)0)
       Int3(); // Warning: This object has an initial velocity.  This is not supported.
               // If your object does not need an initial velocity, set it to zero on
               // the page.  If you do need an initial velocity, someone will have to

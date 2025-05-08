@@ -828,9 +828,9 @@ void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, uint16_t c
       vis->drag = .001f;
       vis->phys_flags |= PF_GRAVITY | PF_NO_COLLIDE;
 
-      vis->velocity.x = (ps_rand() % 100) - 50;
-      vis->velocity.y = (ps_rand() % 100);
-      vis->velocity.z = (ps_rand() % 100) - 50;
+      vis->velocity.x() = (ps_rand() % 100) - 50;
+      vis->velocity.y() = (ps_rand() % 100);
+      vis->velocity.z() = (ps_rand() % 100) - 50;
 
       vm_NormalizeVectorFast(&vis->velocity);
 
@@ -880,9 +880,9 @@ void CreateRandomSparks(int num_sparks, vector *pos, int roomnum, int which_inde
 
       vis->phys_flags |= PF_GRAVITY | PF_NO_COLLIDE;
 
-      vis->velocity.x = (ps_rand() % 100) - 50;
-      vis->velocity.y = (ps_rand() % 100);
-      vis->velocity.z = (ps_rand() % 100) - 50;
+      vis->velocity.x() = (ps_rand() % 100) - 50;
+      vis->velocity.y() = (ps_rand() % 100);
+      vis->velocity.z() = (ps_rand() % 100) - 50;
 
       vm_NormalizeVectorFast(&vis->velocity);
       vis->velocity *= 10 + (ps_rand() % 10);
@@ -916,9 +916,9 @@ void CreateRandomParticles(int num_sparks, vector *pos, int roomnum, int bm_hand
 
       vis->phys_flags |= PF_GRAVITY | PF_NO_COLLIDE;
 
-      vis->velocity.x = (ps_rand() % 100) - 50;
-      vis->velocity.y = (ps_rand() % 100);
-      vis->velocity.z = (ps_rand() % 100) - 50;
+      vis->velocity.x() = (ps_rand() % 100) - 50;
+      vis->velocity.y() = (ps_rand() % 100);
+      vis->velocity.z() = (ps_rand() % 100) - 50;
 
       vm_NormalizeVectorFast(&vis->velocity);
       vis->velocity *= 10 + (ps_rand() % 10);
@@ -1119,9 +1119,9 @@ void DrawVisRainDrop(vis_effect *vis) {
     rend_SetAlphaValue(val * .4 * 255);
 
     pos = Viewer_object->pos;
-    pos += Viewer_object->orient.rvec * vis->pos.x;
-    pos += Viewer_object->orient.uvec * vis->pos.y;
-    pos += Viewer_object->orient.fvec * vis->pos.z;
+    pos += Viewer_object->orient.rvec * vis->pos.x();
+    pos += Viewer_object->orient.uvec * vis->pos.y();
+    pos += Viewer_object->orient.fvec * vis->pos.z();
     g3_DrawRotatedBitmap(&pos, 0, size, (size * bm_h(bm_handle, 0)) / bm_w(bm_handle, 0), bm_handle);
     rend_SetZBufferState(1);
   } else {
@@ -1129,7 +1129,7 @@ void DrawVisRainDrop(vis_effect *vis) {
     rend_SetAlphaValue(val * .2 * 255);
     rend_SetZBufferWriteMask(0);
     pos = vis->pos;
-    ASSERT(!((vis->end_pos.x == 0.0) && (vis->end_pos.y == 0.0) && (vis->end_pos.z == 0.0)));
+    ASSERT(!((vis->end_pos.x() == 0.0) && (vis->end_pos.y() == 0.0) && (vis->end_pos.z() == 0.0)));
     g3_DrawPlanarRotatedBitmap(&pos, &vis->end_pos, 0, size, (size * bm_h(bm_handle, 0)) / bm_w(bm_handle, 0),
                                bm_handle);
     rend_SetZBufferWriteMask(1);
@@ -1196,13 +1196,13 @@ void DrawVisLightningBolt(vis_effect *vis) {
   float alpha_norm;
 
   if (vis->flags & VF_EXPAND) {
-    num_segs = line_mag * vis->velocity.y;
-    lightning_mag = vis->velocity.x;
+    num_segs = line_mag * vis->velocity.y();
+    lightning_mag = vis->velocity.x();
 
     alpha_norm = vis->lifeleft / vis->lifetime;
   } else {
-    num_segs = line_mag * vis->velocity.y;
-    lightning_mag = vis->velocity.x;
+    num_segs = line_mag * vis->velocity.y();
+    lightning_mag = vis->velocity.x();
 
     alpha_norm = .7f;
 
@@ -1279,14 +1279,14 @@ void DrawVisSineWave(vis_effect *vis) {
   if (vis->flags & VF_EXPAND)
     alpha_norm = vis->lifeleft / vis->lifetime;
 
-  num_segs = vis->velocity.x * line_mag; // /2
-  line_norm /= vis->velocity.x;          // *2
+  num_segs = vis->velocity.x() * line_mag; // /2
+  line_norm /= vis->velocity.x();          // *2
 
   alpha_norm = vis->lifeleft / vis->lifetime;
 
   vm_VectorToMatrix(&mat, &line_norm, &vis->velocity, NULL);
-  rvec = mat.rvec * vis->velocity.y; // /4
-  uvec = mat.uvec * vis->velocity.y; // /4
+  rvec = mat.rvec * vis->velocity.y(); // /4
+  uvec = mat.uvec * vis->velocity.y(); // /4
 
   // Set some states
 
@@ -1392,7 +1392,7 @@ void DrawVisThickLightning(vis_effect *vis) {
 
   int texnum = vis->custom_handle;
   int bm_handle = GetTextureBitmap(texnum, 0, true);
-  float tile_factor = vis->velocity.z;
+  float tile_factor = vis->velocity.z();
   float alpha_norm;
   int i, codes_and;
 
@@ -1434,10 +1434,10 @@ void DrawVisThickLightning(vis_effect *vis) {
 
   float vchange = 0;
 
-  if (vis->velocity.y != 0) {
-    int int_time = Gametime / vis->velocity.y;
-    float norm_time = Gametime - (int_time * vis->velocity.y);
-    norm_time /= vis->velocity.y;
+  if (vis->velocity.y() != 0) {
+    int int_time = Gametime / vis->velocity.y();
+    scalar norm_time = Gametime - (int_time * vis->velocity.y());
+    norm_time /= vis->velocity.y();
 
     vchange = norm_time;
   }
@@ -1448,7 +1448,7 @@ void DrawVisThickLightning(vis_effect *vis) {
   }
 
   // Now draw this thing!
-  for (i = 0; i < vis->velocity.x; i++) {
+  for (i = 0; i < vis->velocity.x(); i++) {
     g3_DrawPoly(4, pntlist, bm_handle);
   }
 
@@ -2029,7 +2029,7 @@ void VisEffectMoveOne(vis_effect *vis) {
 
     vis->pos += vis->velocity * Frametime;
 
-    if (vis->pos.y < 1)
+    if (vis->pos.y() < 1)
       VisEffectSetDeadFlag(vis);
   }
 

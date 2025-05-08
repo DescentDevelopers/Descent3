@@ -1053,7 +1053,7 @@ void DemoReadWeaponFire() {
 
         vis->movement_type = MT_PHYSICS;
         vis->velocity = obj->mtype.phys_info.velocity;
-        vis->velocity.y += 10;
+        vis->velocity.y() += (scalar)10;
       }
     }
   }

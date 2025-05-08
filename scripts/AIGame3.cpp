@@ -505,7 +505,7 @@ float TraverseShotPath(tShotData *shot_data) {
     // If it hit a wall, change the direction (perfect reflection)
     if (fate == HIT_WALL) {
       // Calculate the bounce dir from the current dir and face normal
-      vector new_dir = (-2.0f * (shot_dir * ray.hit_wallnorm)) * ray.hit_wallnorm + shot_dir;
+      vector new_dir = (-2.0f * vm_Dot3Product(shot_dir, ray.hit_wallnorm)) * ray.hit_wallnorm + shot_dir;
       shot_dir = new_dir;
 
       // Now, if necessary, cast another ray to finish off the scan dist
@@ -3303,7 +3303,7 @@ void AlienOrganism::DoSquadieFrame(int me) {
       dir = my_pos - memory->squad_goal_pos;
       vm_VectorNormalize(&dir);
       float dot_prod;
-      if ((dot_prod = leader_orient.fvec * dir) < 0.0f) {
+      if ((dot_prod = vm_Dot3Product(leader_orient.fvec,  dir)) < 0.0f) {
         slowdown = dist / ALIEN_APPROACH_DIST;
       }
     }
@@ -4763,7 +4763,7 @@ bool Lifter::OkToPull(int me, bool initial_check /*=true*/) {
   // NOTE: do my own vec to target here! (chris' doesn't update quick enough)
   AI_Value(me, VF_GET, AIV_V_VEC_TO_TARGET, &vec_to_target);
   vm_VectorNormalize(&vec_to_target);
-  fov_angle = orient.fvec * vec_to_target;
+  fov_angle = vm_Dot3Product(orient.fvec, vec_to_target);
   if (fov_angle < 0.7f)
     return false;
 
@@ -6303,7 +6303,7 @@ bool AlienBoss::OkToStartSpecialAttack(int me) {
   // NOTE: do my own vec to target here! (chris' doesn't update quick enough)
   AI_Value(me, VF_GET, AIV_V_VEC_TO_TARGET, &vec_to_target);
   vm_VectorNormalize(&vec_to_target);
-  fov_angle = orient.fvec * vec_to_target;
+  fov_angle = vm_Dot3Product(orient.fvec, vec_to_target);
   if (fov_angle < 0.7f)
     return false;
 
@@ -6334,7 +6334,7 @@ bool AlienBoss::DoStingAttack(int me) {
   // NOTE: do my own vec to target here! (chris' doesn't update quick enough)
   AI_Value(me, VF_GET, AIV_V_VEC_TO_TARGET, &vec_to_target);
   vm_VectorNormalize(&vec_to_target);
-  fov_angle = orient.fvec * vec_to_target;
+  fov_angle = vm_Dot3Product(orient.fvec, vec_to_target);
   if (fov_angle < 0.7f)
     return false;
 
@@ -6694,7 +6694,7 @@ void AlienBoss::DoFrame(int me) {
     // Update the values
     Obj_Value(me, VF_GET, OBJV_V_POS, &curr_pos);
     dist_vec = curr_pos - memory->last_pos;
-    memory->squared_dist_moved += (dist_vec.x * dist_vec.x + dist_vec.y * dist_vec.y + dist_vec.z * dist_vec.z);
+    memory->squared_dist_moved += (dist_vec.x() * dist_vec.x() + dist_vec.y() * dist_vec.y() + dist_vec.z() * dist_vec.z());
     memory->last_pos = curr_pos;
 
     // See if we need to do a stuck check
@@ -7108,15 +7108,15 @@ void SecurityCamera::DoFrame(int me) {
 
       // Make it track target on a 2D plane
       dir = local_vec_to_target;
-      dir.y = 0.0f;
-      if ((dir.x + dir.y + dir.z) == 0.0f)
+      dir.y() = 0.0f;
+      if ((dir.x() + dir.y() + dir.z()) == 0.0f)
         break;
       vm_VectorNormalize(&dir);
 
-      local_fvec.x = 0.0f;
-      local_fvec.y = 0.0f;
-      local_fvec.z = 1.0f;
-      dot = dir * local_fvec;
+      local_fvec.x() = 0.0f;
+      local_fvec.y() = 0.0f;
+      local_fvec.z() = 1.0f;
+      dot = vm_Dot3Product(dir, local_fvec);
       if (dot < -1.0f)
         dot = -1.0f;
       if (dot > 1.0f)
@@ -7132,7 +7132,7 @@ void SecurityCamera::DoFrame(int me) {
       // mprintf(0,"Frame offset: %.1f\n",frame_offset);
 
       // Get the dest frame between start and end frames for reference
-      if (dir.x < 0.0f)
+      if (dir.x() < 0.0f)
         frame_offset = -frame_offset;
       dest_frame = SC_MID_FRAME + frame_offset;
 
@@ -7324,10 +7324,10 @@ void CrowdControl::DoFrame(int me) {
       Obj_Value(memory->follow_handle, VF_GET, OBJV_V_POS, &leader_pos);
 
       // It's ok to move in reverse, or away from leader
-      ok_to_move_normally = ((my_vel * my_orient.fvec) <= 0.0f) ? true : false;
+      ok_to_move_normally = (vm_Dot3Product(my_vel, my_orient.fvec) <= 0.0f) ? true : false;
       if (!ok_to_move_normally) {
         leader_dir = leader_pos - my_pos;
-        ok_to_move_normally = ((my_vel * leader_dir) <= 0.0f) ? true : false;
+        ok_to_move_normally = (vm_Dot3Product(my_vel, leader_dir) <= 0.0f) ? true : false;
       }
 
       // Check to see if we're too close to leader (so we can slow down and stop)

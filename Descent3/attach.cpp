@@ -182,7 +182,7 @@ static bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *att
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     if (f_compute_pos)
@@ -242,25 +242,19 @@ static void ConvertAxisAmountMatrix(vector *n, float w, matrix *rotmat) {
   c = cos(w);
   t = 1.0f - c;
 
-  const float sx = s * n->x;
-  const float sy = s * n->y;
-  const float sz = s * n->z;
-  const float txy = t * n->x * n->y;
-  const float txz = t * n->x * n->z;
-  const float tyz = t * n->y * n->z;
-  const float txx = t * n->x * n->x;
-  const float tyy = t * n->y * n->y;
-  const float tzz = t * n->z * n->z;
+  const scalar sx = s * n->x();
+  const scalar sy = s * n->y();
+  const scalar sz = s * n->z();
+  const scalar txy = t * n->x() * n->y();
+  const scalar txz = t * n->x() * n->z();
+  const scalar tyz = t * n->y() * n->z();
+  const scalar txx = t * n->x() * n->x();
+  const scalar tyy = t * n->y() * n->y();
+  const scalar tzz = t * n->z() * n->z();
 
-  rotmat->rvec.x = txx + c;
-  rotmat->rvec.y = txy - sz;
-  rotmat->rvec.z = txz + sy;
-  rotmat->uvec.x = txy + sz;
-  rotmat->uvec.y = tyy + c;
-  rotmat->uvec.z = tyz - sx;
-  rotmat->fvec.x = txz - sy;
-  rotmat->fvec.y = tyz + sx;
-  rotmat->fvec.z = tzz + c;
+  rotmat->rvec = { txx + c, txy - sz, txz + sy };
+  rotmat->uvec = { txy + sz,  tyy + c, tyz - sx };
+  rotmat->fvec = { txz - sy, tyz + sx, tzz + c };
 }
 
 bool AttachDoPosOrientRad(object *parent, char p_ap, object *child, float rad_percent, vector *pos) {

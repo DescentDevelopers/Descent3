@@ -274,9 +274,9 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
   int green_limit = 31;
   int blue_limit = 31;
 
-  rad.x = light_dist;
-  rad.y = light_dist;
-  rad.z = light_dist;
+  rad.x() = light_dist;
+  rad.y() = light_dist;
+  rad.z() = light_dist;
 
   Light_min_xyz = *pos - rad;
   Light_max_xyz = *pos + rad;
@@ -286,8 +286,8 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
     face *fp = &rp->faces[i];
 
     // check to see if this face is within reach
-    if (Light_max_xyz.y < fp->min_xyz.y || fp->max_xyz.y < Light_min_xyz.y || Light_max_xyz.x < fp->min_xyz.x ||
-        fp->max_xyz.x < Light_min_xyz.x || Light_max_xyz.z < fp->min_xyz.z || fp->max_xyz.z < Light_min_xyz.z)
+    if (Light_max_xyz.y() < fp->min_xyz.y() || fp->max_xyz.y() < Light_min_xyz.y() || Light_max_xyz.x() < fp->min_xyz.x() ||
+        fp->max_xyz.x() < Light_min_xyz.x() || Light_max_xyz.z() < fp->min_xyz.z() || fp->max_xyz.z() < Light_min_xyz.z())
       continue;
 
     // Make sure face was rendered
@@ -324,7 +324,7 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
       // If this is a directional light, check for backfaces
       vector norm_vec = *pos - rp->verts[fp->face_verts[0]];
 
-      if ((norm_vec * lmi_ptr->normal) < 0) {
+      if (vm_Dot3Product(norm_vec, lmi_ptr->normal) < 0) {
         // Backface, skip this light
         continue;
       }
@@ -332,7 +332,7 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
       int in_front = 0; //
       for (t = 0; t < fp->num_verts && in_front == 0; t++) {
         norm_vec = rp->verts[fp->face_verts[t]] - *pos;
-        if (norm_vec * *light_direction > 0)
+        if (vm_Dot3Product(norm_vec, *light_direction) > 0)
           in_front = 1;
       }
 
@@ -619,12 +619,12 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
 
   // Start instance stuff
   vector temp_vec = sm->mod_pos + sm->offset;
-  vm_AnglesToMatrix(&mat, sm->angs.p, sm->angs.h, sm->angs.b);
+  vm_AnglesToMatrix(&mat, sm->angs.p(), sm->angs.h(), sm->angs.b());
   StartLightingInstance(&temp_vec, &mat);
 
-  rad.x = light_dist;
-  rad.y = light_dist;
-  rad.z = light_dist;
+  rad.x() = light_dist;
+  rad.y() = light_dist;
+  rad.z() = light_dist;
 
   vector light_pos = Light_position;
   vector light_dir = Light_direction;
@@ -635,9 +635,9 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
   // Now the Light_position is in the submodels frame of reference
   for (i = 0; i < sm->num_faces; i++) {
     // check to see if this face is within reach
-    if (Light_max_xyz.y < sm->face_min[i].y || sm->face_max[i].y < Light_min_xyz.y ||
-        Light_max_xyz.x < sm->face_min[i].x || sm->face_max[i].x < Light_min_xyz.x ||
-        Light_max_xyz.z < sm->face_min[i].z || sm->face_max[i].z < Light_min_xyz.z)
+    if (Light_max_xyz.y() < sm->face_min[i].y() || sm->face_max[i].y() < Light_min_xyz.y() ||
+        Light_max_xyz.x() < sm->face_min[i].x() || sm->face_max[i].x() < Light_min_xyz.x() ||
+        Light_max_xyz.z() < sm->face_min[i].z() || sm->face_max[i].z() < Light_min_xyz.z())
       continue;
 
     // Ok, now we know that this light touches this face
@@ -672,7 +672,7 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
       // If this is a directional light, check for backfaces
       vector norm_vec = light_pos - base_vector;
 
-      if ((norm_vec * lmi_ptr->normal) < 0) {
+      if (vm_Dot3Product(norm_vec, lmi_ptr->normal) < 0) {
         // Backface, skip this face
         continue;
       }
@@ -682,7 +682,7 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
       int in_front = 0; //
       for (t = 0; t < fp->num_verts && in_front == 0; t++) {
         norm_vec = sm->verts[poly_fp->vertnums[t]] - light_pos;
-        if (norm_vec * light_dir > 0)
+        if (vm_Dot3Product(norm_vec, light_dir) > 0)
           in_front = 1;
       }
 
@@ -945,7 +945,7 @@ void ApplyVolumeLightToObject(vector *pos, object *obj, float light_dist, float 
     // Do a directional light
     vector dir_vec = obj->pos - *pos;
     float mag = vm_NormalizeVectorFast(&dir_vec);
-    float dp = dir_vec * *light_direction;
+    float dp = vm_Dot3Product(dir_vec, *light_direction);
 
     if (mag > 1.0) {
       if (dp < dot_range)
@@ -1117,7 +1117,7 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
       // If this is a directional light, check for backfaces
       vector norm_vec = *pos - rp->verts[fp->face_verts[0]];
 
-      if ((norm_vec * lmi_ptr->normal) < 0) {
+      if (vm_Dot3Product(norm_vec, lmi_ptr->normal) < 0) {
         // Backface, skip this light
         continue;
       }
@@ -1125,7 +1125,7 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
       int in_front = 0; //
       for (t = 0; t < fp->num_verts && in_front == 0; t++) {
         norm_vec = rp->verts[fp->face_verts[t]] - *pos;
-        if (norm_vec * *light_direction > 0)
+        if (vm_Dot3Product(norm_vec, *light_direction) > 0)
           in_front = 1;
       }
 
@@ -1505,9 +1505,9 @@ void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float re
     // Check for backfaces
     vector tpos;
 
-    tpos.x = (seg_x * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
-    tpos.z = (seg_z * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
-    tpos.y = tseg->y;
+    tpos.x() = (seg_x * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
+    tpos.z() = (seg_z * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
+    tpos.y() = tseg->y;
 
     vector subvec = *pos - tpos;
 
@@ -1607,9 +1607,9 @@ void SetRoomPulse(room *rp, uint8_t pulse_time, uint8_t pulse_offset) {
 // TODO: MTS: Unused?
 // Returns the total number of bytes needed for volume lighting in this room
 int GetVolumeSizeOfRoom(room *rp, int *w, int *h, int *d) {
-  int width = ((rp->max_xyz.x - rp->min_xyz.x) / VOLUME_SPACING) + 1;
-  int height = ((rp->max_xyz.y - rp->min_xyz.y) / VOLUME_SPACING) + 1;
-  int depth = ((rp->max_xyz.z - rp->min_xyz.z) / VOLUME_SPACING) + 1;
+  int width = ((rp->max_xyz.x() - rp->min_xyz.x()) / VOLUME_SPACING) + 1;
+  int height = ((rp->max_xyz.y() - rp->min_xyz.y()) / VOLUME_SPACING) + 1;
+  int depth = ((rp->max_xyz.z() - rp->min_xyz.z()) / VOLUME_SPACING) + 1;
 
   if (w)
     *w = width;

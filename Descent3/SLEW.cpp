@@ -309,16 +309,16 @@ int SlewFrame(object *obj, int movement_limitations) {
     ret_flags |= SLEW_KEY;
 
   //	adjust physics info of object accordingly to keyboard input.
-  obj->mtype.phys_info.velocity.x += VEL_SPEED * (key_timex1 - key_timex0) * Slew_key_speed;
-  obj->mtype.phys_info.velocity.y += VEL_SPEED * (key_timey1 - key_timey0) * Slew_key_speed;
-  obj->mtype.phys_info.velocity.z += VEL_SPEED * (key_timez1 - key_timez0) * Slew_key_speed;
+  obj->mtype.phys_info.velocity.x() += VEL_SPEED * (key_timex1 - key_timex0) * Slew_key_speed;
+  obj->mtype.phys_info.velocity.y() += VEL_SPEED * (key_timey1 - key_timey0) * Slew_key_speed;
+  obj->mtype.phys_info.velocity.z() += VEL_SPEED * (key_timez1 - key_timez0) * Slew_key_speed;
 
-  rottime.x = key_timep1 - key_timep0;
-  rottime.y = key_timeh1 - key_timeh0;
-  rottime.z = key_timeb1 - key_timeb0;
-  rotang.p = (int16_t)(65536.0 * rottime.x * ROT_SPEED * Slew_key_speed);
-  rotang.h = (int16_t)(65536.0 * rottime.y * ROT_SPEED * Slew_key_speed);
-  rotang.b = (int16_t)(65536.0 * rottime.z * ROT_SPEED * Slew_key_speed);
+  rottime.x() = key_timep1 - key_timep0;
+  rottime.y() = key_timeh1 - key_timeh0;
+  rottime.z() = key_timeb1 - key_timeb0;
+  rotang.p() = (int16_t)(65536.0 * rottime.x() * ROT_SPEED * Slew_key_speed);
+  rotang.h() = (int16_t)(65536.0 * rottime.y() * ROT_SPEED * Slew_key_speed);
+  rotang.b() = (int16_t)(65536.0 * rottime.z() * ROT_SPEED * Slew_key_speed);
 
 // joystick movement
 #ifdef EDITOR
@@ -343,15 +343,15 @@ int SlewFrame(object *obj, int movement_limitations) {
     joyy_moved = (abs(joy_y - old_joy_y) > JOY_NULL);
 
     if (btns) {
-      if (!rotang.p)
-        rotang.p = -joy_y * 256 * Frametime;
+      if (!rotang.p())
+        rotang.p() = -joy_y * 256 * Frametime;
     } else {
       if (joyy_moved)
-        obj->mtype.phys_info.velocity.z = (float)-joy_y / 4.0;
+        obj->mtype.phys_info.velocity.z() = (scalar)-joy_y / 4.0;
     }
 
-    if (!rotang.h)
-      rotang.h = joy_x * 256 * Frametime;
+    if (!rotang.h())
+      rotang.h() = joy_x * 256 * Frametime;
 
     if (joyx_moved)
       old_joy_x = joy_x;
@@ -360,7 +360,7 @@ int SlewFrame(object *obj, int movement_limitations) {
   }
 #endif
 
-  vm_AnglesToMatrix(&rotmat, rotang.p, rotang.h, rotang.b);
+  vm_AnglesToMatrix(&rotmat, rotang.p(), rotang.h(), rotang.b());
 
   new_pm = obj->orient * rotmat;
   vm_Orthogonalize(&new_pm);
@@ -373,16 +373,16 @@ int SlewFrame(object *obj, int movement_limitations) {
   movement = svel * new_pm;
 
   if (movement_limitations & 1)
-    movement.x = 0;
+    movement.x() = 0;
   if (movement_limitations & 2)
-    movement.y = 0;
+    movement.y() = 0;
   if (movement_limitations & 4)
-    movement.z = 0;
+    movement.z() = 0;
 
   new_pos = obj->pos + movement;
 
   // Did the object position change?
-  if ((movement.x != 0.0f) || (movement.y != 0.0f) || (movement.z != 0.0f))
+  if ((movement.x() != 0.0f) || (movement.y() != 0.0f) || (movement.z() != 0.0f))
     ret_flags |= SLEW_MOVE;
 
   if (ret_flags & SLEW_MOVE) { // Get the new room
@@ -412,14 +412,14 @@ int SlewFrame(object *obj, int movement_limitations) {
 
         // Limit new position to terrain bounds if outside
         if (was_outside) {
-          if (new_pos.x < 1.0)
-            new_pos.x = 1.0;
-          if (new_pos.x > TERRAIN_WIDTH * TERRAIN_SIZE - 1.0)
-            new_pos.x = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
-          if (new_pos.z < 1.0)
-            new_pos.z = 1.0;
-          if (new_pos.z > TERRAIN_DEPTH * TERRAIN_SIZE - 1.0)
-            new_pos.z = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
+          if (new_pos.x() < 1.0)
+            new_pos.x() = 1.0;
+          if (new_pos.x() > TERRAIN_WIDTH * TERRAIN_SIZE - 1.0)
+            new_pos.x() = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
+          if (new_pos.z() < 1.0)
+            new_pos.z() = 1.0;
+          if (new_pos.z() > TERRAIN_DEPTH * TERRAIN_SIZE - 1.0)
+            new_pos.z() = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
         }
 
         // Call FVI up get updated room number
@@ -479,7 +479,7 @@ int SlewFrame(object *obj, int movement_limitations) {
   }
 
   // Set flag if rotation changed
-  if ((rotang.p != 0) || (rotang.h != 0) || (rotang.b != 0))
+  if (rotang != angvec::ne())
     ret_flags |= SLEW_ROTATE;
 
   return ret_flags;
