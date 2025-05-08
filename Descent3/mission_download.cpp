@@ -120,6 +120,7 @@
 
 #include <cstdio>
 #include <future>
+#include <fstream>
 
 #include "mem.h"
 #include "args.h"
