@@ -294,6 +294,9 @@ const char *GetMissionName(const char *mission);
 //	initializes mission system.
 void InitMission();
 
+// Load the mission and level from CLI arguments
+void InitDefaultMissionFromCLI();
+
 //	reset all states for a mission
 void ResetMission();
 
