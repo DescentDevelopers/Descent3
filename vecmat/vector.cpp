@@ -163,11 +163,11 @@ void vm_AverageVector(vector *a, int num) {
   *a /= (scalar)num;
 }
 
-void vm_AddVectors(vector *result, vector *a, vector *b) { *result = *a + *b; }
+void vm_AddVectors(vector *result, const vector *a, const vector *b) { *result = *a + *b; }
 void vm_SubVectors(vector *result, const vector *a, const vector *b) { *result = *a - *b; }
-void vm_ScaleVector(vector *d, vector *v, scalar s) { *d = *v * s; }
-void vm_ScaleAddVector(vector *d, vector *p, vector *v, scalar s) { *d = *p + (*v * s); }
-void vm_DivVector(vector *dest, vector *src, scalar n) { ASSERT(n != 0); *dest = *src / n; }
+void vm_ScaleVector(vector *d, const vector *v, scalar s) { *d = *v * s; }
+void vm_ScaleAddVector(vector *d, const vector *p, const vector *v, scalar s) { *d = *p + (*v * s); }
+void vm_DivVector(vector *dest, const vector *src, scalar n) { ASSERT(n != 0); *dest = *src / n; }
 scalar vm_VectorDistance(const vector *a, const vector *b)      { return vector::distance(*a, *b); }
 scalar vm_VectorDistanceQuick(const vector *a, const vector *b) { return vector::distance(*a, *b); }
 
@@ -231,7 +231,7 @@ void vm_TransposeMatrix(matrix *m) {
   m->uvec.z() = t;
 }
 
-void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
+void vm_MatrixMulVector(vector *result, const vector *v, const matrix *m) {
   // Rotates a vector thru a matrix
 
   ASSERT(result != v);
@@ -242,7 +242,7 @@ void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
 }
 
 // Multiply a vector times the transpose of a matrix
-void vm_VectorMulTMatrix(vector *result, vector *v, matrix *m) {
+void vm_VectorMulTMatrix(vector *result, const vector *v, const matrix *m) {
   ASSERT(result != v);
 
   *result = { vm_Dot3Vector(m->rvec.x(), m->uvec.x(), m->fvec.x(), v),
@@ -250,7 +250,7 @@ void vm_VectorMulTMatrix(vector *result, vector *v, matrix *m) {
               vm_Dot3Vector(m->rvec.z(), m->uvec.z(), m->fvec.z(), v) };
 }
 
-void vm_MatrixMul(matrix *dest, matrix *src0, matrix *src1) {
+void vm_MatrixMul(matrix *dest, const matrix *src0, const matrix *src1) {
   // For multiplying two 3x3 matrices together
 
   ASSERT((dest != src0) && (dest != src1));
@@ -269,7 +269,7 @@ void vm_MatrixMul(matrix *dest, matrix *src0, matrix *src1) {
 }
 
 // Multiply a matrix times the transpose of a matrix
-void vm_MatrixMulTMatrix(matrix *dest, matrix *src0, matrix *src1) {
+void vm_MatrixMulTMatrix(matrix *dest, const matrix *src0, const matrix *src1) {
   // For multiplying two 3x3 matrices together
 
   ASSERT((dest != src0) && (dest != src1));
@@ -287,7 +287,7 @@ void vm_MatrixMulTMatrix(matrix *dest, matrix *src0, matrix *src1) {
   dest->fvec.z() = src0->rvec.z() * src1->rvec.z() + src0->uvec.z() * src1->uvec.z() + src0->fvec.z() * src1->fvec.z();
 }
 
-matrix operator*(matrix src0, matrix src1) {
+matrix operator*(const matrix &src0, const matrix &src1) {
   // For multiplying two 3x3 matrices together
   matrix dest;
 
@@ -306,13 +306,13 @@ matrix operator*(matrix src0, matrix src1) {
   return dest;
 }
 
-matrix operator*=(matrix &src0, matrix src1) { return (src0 = src0 * src1); }
+matrix operator*=(matrix &src0, const matrix &src1) { return (src0 = src0 * src1); }
 
 // Computes a normalized direction vector between two points
 // Parameters:	dest - filled in with the normalized direction vector
 //					start,end - the start and end points used to calculate the vector
 // Returns:		the distance between the two input points
-scalar vm_GetNormalizedDir(vector *dest, vector *end, vector *start) {
+scalar vm_GetNormalizedDir(vector *dest, const vector *end, const vector *start) {
   vm_SubVectors(dest, end, start);
   return vm_NormalizeVector(dest);
 }
@@ -322,7 +322,7 @@ scalar vm_GetNormalizedDir(vector *dest, vector *end, vector *start) {
 // Parameters:	dest - filled in with the normalized direction vector
 //					start,end - the start and end points used to calculate the vector
 // Returns:		the distance between the two input points
-scalar vm_GetNormalizedDirFast(vector *dest, vector *end, vector *start) {
+scalar vm_GetNormalizedDirFast(vector *dest, const vector *end, const vector *start) {
   vm_SubVectors(dest, end, start);
   return vm_NormalizeVectorFast(dest);
 }
@@ -379,7 +379,7 @@ scalar vm_NormalizeVectorFast(vector *a) {
 // Parms:	norm - the (normalized) surface normal of the plane
 //				planep - a point on the plane
 // Returns:	The signed distance from the plane; negative dist is on the back of the plane
-scalar vm_DistToPlane(vector *checkp, vector *norm, vector *planep) {
+scalar vm_DistToPlane(const vector *checkp, const vector *norm, const vector *planep) {
   vector t;
 
   t = *checkp - *planep;
@@ -582,7 +582,7 @@ void vm_SinCos(uint16_t a, scalar *s, scalar *c) {
 #define IS_ZERO(x) (fabs(x) < EPSILON)
 
 // extract angles from a matrix
-angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
+angvec *vm_ExtractAnglesFromMatrix(angvec *a, const matrix *m) {
   scalar sinh, cosh, cosp, sinb, cosb;
 
   // Deal with straight up or straight down
@@ -612,7 +612,7 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
 }
 
 // returns the value of a determinant
-scalar calc_det_value(matrix *det) {
+scalar calc_det_value(const matrix *det) {
   return det->rvec.x() * det->uvec.y() * det->fvec.z() - det->rvec.x() * det->uvec.z() * det->fvec.y() -
          det->rvec.y() * det->uvec.x() * det->fvec.z() + det->rvec.y() * det->uvec.z() * det->fvec.x() +
          det->rvec.z() * det->uvec.x() * det->fvec.y() - det->rvec.z() * det->uvec.y() * det->fvec.x();
@@ -624,7 +624,7 @@ scalar calc_det_value(matrix *det) {
 // value of the angle in returned.  Otherwise the angle around that vector is
 // returned.
 
-angle vm_DeltaAngVec(vector *v0, vector *v1, vector *fvec) {
+angle vm_DeltaAngVec(const vector *v0, const vector *v1, const vector *fvec) {
   vector t0, t1;
 
   t0 = *v0;
@@ -637,7 +637,7 @@ angle vm_DeltaAngVec(vector *v0, vector *v1, vector *fvec) {
 }
 
 // computes the delta angle between two normalized vectors.
-angle vm_DeltaAngVecNorm(vector *v0, vector *v1, vector *fvec) {
+angle vm_DeltaAngVecNorm(const vector *v0, const vector *v1, const vector *fvec) {
   angle a;
 
   a = FixAcos(vm_DotProduct(v0, v1));
@@ -655,7 +655,7 @@ angle vm_DeltaAngVecNorm(vector *v0, vector *v1, vector *fvec) {
 
 // Gets the real center of a polygon
 // Returns the size of the passed in stuff
-scalar vm_GetCentroid(vector *centroid, vector *src, int nv) {
+scalar vm_GetCentroid(vector *centroid, const vector *src, int nv) {
   ASSERT(nv > 2);
   vector normal;
   scalar area, total_area;
@@ -709,7 +709,7 @@ scalar vm_GetCentroid(vector *centroid, vector *src, int nv) {
 
 // Gets the real center of a polygon, but uses fast magnitude calculation
 // Returns the size of the passed in stuff
-scalar vm_GetCentroidFast(vector *centroid, vector *src, int nv) {
+scalar vm_GetCentroidFast(vector *centroid, const vector *src, int nv) {
   ASSERT(nv > 2);
   vector normal;
   scalar area, total_area;
@@ -769,11 +769,11 @@ void vm_MakeRandomVector(vector *vec) {
 }
 
 // Given a set of points, computes the minimum bounding sphere of those points
-scalar vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts) {
+scalar vm_ComputeBoundingSphere(vector *center, const vector *vecs, int num_verts) {
   // This algorithm is from Graphics Gems I.  There's a better algorithm in Graphics Gems III that
   // we should probably implement sometime.
 
-  vector *min_x, *max_x, *min_y, *max_y, *min_z, *max_z, *vp;
+  const vector *min_x, *max_x, *min_y, *max_y, *min_z, *max_z, *vp;
   scalar dx, dy, dz;
   scalar rad, rad2;
   int i;
