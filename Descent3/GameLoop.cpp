@@ -1545,7 +1545,6 @@ extern bool Cinematics_enabled;
 
 // Deal with keys that only work for testing & debugging (eg., slew)
 void ProcessTestKeys(int key) {
-  static int ffret = -1;
   int i;
 
   // Debug break

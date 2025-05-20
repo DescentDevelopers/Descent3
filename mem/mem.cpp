@@ -228,7 +228,9 @@ struct mem_alloc_info {
   char file[17];
 };
 
+#if !defined(POSIX)
 static void *Mem_failsafe_block = nullptr;
+#endif
 
 bool Mem_low_memory_mode = false;
 bool Mem_superlow_memory_mode = false;
@@ -294,7 +296,6 @@ int mem_size_sub(void *memblock) {
 
 bool mem_dumpmallocstofile(char *filename) { return false; }
 
-#pragma mark -
 
 #else // defined(POSIX)
 // Windows memory management
