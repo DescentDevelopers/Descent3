@@ -136,7 +136,7 @@ std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::
   // Search component in search_path
   auto const &it = std::filesystem::directory_iterator(search_path);
 
-  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
+  auto found = std::find_if(it, end(it), [&search_file](const auto& dir_entry) {
     return stricmp((const char*)dir_entry.path().filename().u8string().c_str(), (const char*)search_file.u8string().c_str()) == 0;
   });
 
