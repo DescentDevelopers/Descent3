@@ -762,7 +762,7 @@ void FreeRoomFace(face *fp) {
 void ComputeRoomCenter(vector *vp, room *rp) {
   int i;
 
-  *vp = vector::ne();
+  *vp = vector{};
 
   for (i = 0; i < rp->num_verts; i++)
     *vp += rp->verts[i];
@@ -778,7 +778,7 @@ void ComputeCenterPointOnFace(vector *vp, room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
   int i;
 
-  *vp = vector::ne();
+  *vp = vector{};
 
   for (i = 0; i < fp->num_verts; i++)
     *vp += rp->verts[fp->face_verts[i]];

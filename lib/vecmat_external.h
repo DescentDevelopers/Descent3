@@ -135,7 +135,6 @@ constexpr inline const T& g() const { static_assert(N >= 2); return (*this)[1]; 
 constexpr inline const T& a() const { static_assert(N >= 4); return (*this)[3]; }
 
 constexpr static inline const vec<T,N,A> id(ssize_t i = -1) { vec<T,N> dst = {}; if(i == -1) dst.fill(1); else dst[i % N] = (T)1; return dst; }
-constexpr static inline const vec<T,N,A> ne() { vec<T,N,A> dst = {}; return dst; }
 
 template<enum align A_DST = align::adaptive>
 constexpr inline const vec<T,3,A_DST> yzx() const { return vec<T,3,A_DST>{ y(), z(), x() }; }
@@ -146,7 +145,7 @@ constexpr inline const vec<T,3,A_DST> hbp() const { return vec<T,3,A_DST>{ h(), 
 template<enum align A_DST = align::adaptive>
 constexpr inline const vec<T,3,A_DST> bph() const { return vec<T,3,A_DST>{ b(), p(), h() }; }
 
-constexpr inline T sum() const                    { return std::accumulate((*this).cbegin(), (*this).cend(), (T)0); }
+constexpr inline T sum() const                    { return std::accumulate((*this).cbegin(), (*this).cend(), T{}); }
 constexpr inline vec<T,N,A> operator-() const
 {
 	vec<T,N,A> dst;
@@ -315,9 +314,9 @@ using aligned_angvec        = vec<angle,3,align::vector>;
 using aligned_angvec_array  = aligned_angvec;
 
 // Set an angvec to {0,0,0}
-static inline void vm_MakeZero(angvec *a) { *a = angvec::ne(); }
+static inline void vm_MakeZero(angvec *a) { *a = angvec{}; }
 // zero's out a vector
-static inline void vm_MakeZero(vector *v) { *v = vector::ne(); }
+static inline void vm_MakeZero(vector *v) { *v = vector{}; }
 
 struct matrix {
 constexpr static const size_t RIGHT_HAND = 0;
@@ -338,7 +337,7 @@ constexpr static inline const matrix id()
 }
 constexpr static inline const matrix ne()
 {
-  return matrix{ vector::ne(), vector::ne(), vector::ne() };
+  return matrix{ vector{}, vector{}, vector{} };
 }
 };
 
@@ -365,7 +364,7 @@ constexpr static inline const matrix4 id()
 }
 constexpr static inline const matrix4 ne()
 {
-  return matrix4{ vector4::ne(), vector4::ne(), vector4::ne(), vector4::ne() };
+  return matrix4{ vector4{}, vector4{}, vector4{}, vector4{} };
 }
 };
 

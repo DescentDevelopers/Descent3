@@ -154,7 +154,7 @@
 #include "pserror.h"
 #include "psrand.h"
 
-const vector Zero_vector = vector::ne();
+const vector Zero_vector = vector{};
 const matrix Identity_matrix = IDENTITY_MATRIX;
 
 void vm_AverageVector(vector *a, int num) {
@@ -365,7 +365,7 @@ scalar vm_NormalizeVectorFast(vector *a) {
   mag = vm_GetMagnitudeFast(a);
 
   if (mag == 0.0) {
-    *a = vector::ne();
+    *a = vector{};
     return 0;
   }
 
