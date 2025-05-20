@@ -88,7 +88,7 @@ enum class align
 };
 
 template<typename T, size_t N, enum align A = align::adaptive, size_t N_POW2 = VM_BIT_CEIL(N)>
-struct alignas(N==N_POW2 && A != align::scalar || A == align::vector ? alignof(T) * N_POW2 : alignof(T)) vec : std::array<T,N> {
+struct alignas((N==N_POW2 && A != align::scalar) || A == align::vector ? alignof(T) * N_POW2 : alignof(T)) vec : std::array<T,N> {
 
 template<size_t N_DST = N, enum align A_DST = align::adaptive>
 operator vec<T,N_DST,A_DST>() { return *reinterpret_cast<vec<T,N_DST,A_DST>*>(this); }

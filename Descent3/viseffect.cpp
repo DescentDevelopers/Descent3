@@ -2218,7 +2218,7 @@ void AttachRandomNapalmEffectsToObject(object *obj) {
   vm_NormalizeVector(&velocity_norm);
   vector pos = obj->pos - (velocity_norm * (obj->size / 2));
 
-  if (obj->movement_type == MT_PHYSICS && (OBJECT_OUTSIDE(obj) && (ps_rand() % 3) == 0) || (ps_rand() % 3) == 0)
+  if ((obj->movement_type == MT_PHYSICS && (OBJECT_OUTSIDE(obj) && (ps_rand() % 3) == 0)) || (ps_rand() % 3) == 0)
     CreateFireball(&pos, BLACK_SMOKE_INDEX, obj->roomnum, VISUAL_FIREBALL);
 
   float size_scalar = obj->size / 7.0;

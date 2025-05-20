@@ -1803,7 +1803,7 @@ void DoPlayerFrameForOne(int slot) {
     obj->mtype.phys_info = observed->mtype.phys_info;
   }
 
-  if (obj->type == OBJ_PLAYER || obj->type == OBJ_OBSERVER && obj->id == Player_num) {
+  if (obj->type == OBJ_PLAYER || (obj->type == OBJ_OBSERVER && obj->id == Player_num)) {
     // Do camera stuff if needed
     SetupPlayerCamera();
   }
@@ -3923,7 +3923,7 @@ void ThiefStealItem(int player_object_handle, int item) {
   } break;
 
   case THIEFITEM_CLOAK: {
-    if ((pobj->effect_info) && (pobj->effect_info->type_flags & EF_FADING_OUT) ||
+    if ((pobj->effect_info && pobj->effect_info->type_flags & EF_FADING_OUT) ||
         (pobj->effect_info->type_flags & EF_CLOAKED)) {
       MakeObjectVisible(pobj);
     }

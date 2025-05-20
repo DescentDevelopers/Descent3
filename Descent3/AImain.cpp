@@ -4606,7 +4606,7 @@ void ai_move(object *obj) {
   } else {
     // Determine movement stuff
     if (obj->movement_type == MT_PHYSICS || obj->movement_type == MT_WALKING) {
-      if (targetptr && IsTargetLocal(obj, targetptr) || (ai_info->awareness >= AWARE_BARELY) ||
+      if ((targetptr && IsTargetLocal(obj, targetptr)) || (ai_info->awareness >= AWARE_BARELY) ||
           (ai_info->flags & AIF_PERSISTANT)) {
         for (i = NUM_ACTIVATION_LEVELS; i < MAX_GOALS; i++) {
           if (ai_info->goals[i].used) {

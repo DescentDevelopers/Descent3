@@ -241,8 +241,8 @@ bool BOA_PassablePortal(int room, int portal_index, bool f_for_sound, bool f_mak
         return false;
     }
 
-    if ((Rooms[room].portals[portal_index].flags & PF_RENDER_FACES) &&
-            !(Rooms[room].portals[portal_index].flags & PF_RENDERED_FLYTHROUGH) ||
+    if (((Rooms[room].portals[portal_index].flags & PF_RENDER_FACES) &&
+            !(Rooms[room].portals[portal_index].flags & PF_RENDERED_FLYTHROUGH)) ||
         (Rooms[room].portals[portal_index].flags & PF_BLOCK)) {
       return false;
     }
