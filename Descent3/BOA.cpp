@@ -1194,9 +1194,6 @@ void compute_blockage_info() {
 
 // Goes through all the valid points in the indoor engine and returns a unique
 // checksum
-
-#pragma optimize("", off)
-
 int BOAGetMineChecksum() {
   int i, t, k;
   int total = 0;
@@ -1282,8 +1279,6 @@ int BOAGetRoomChecksum(int i) {
 
   return (int)total;
 }
-
-#pragma optimize("", on)
 
 bool IsPathPointValid(int room, vector *pos) {
   // vector c_pnt = Rooms[room].path_pnt;

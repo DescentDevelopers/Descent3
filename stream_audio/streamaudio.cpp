@@ -747,7 +747,6 @@ void AudioStream::Reset() {
 }
 //////////////////////////////////////////////////////////////////////////////
 // invoked by AudioStreamCB.
-#pragma optimize("", off)
 void *AudioStream::StreamCallback(int *size) {
   uint8_t nextbuffer = (m_sbufidx + 1) % STRM_BUFCOUNT;
   void *data = NULL;
@@ -810,7 +809,7 @@ void *AudioStream::StreamCallback(int *size) {
   }
   return data;
 }
-#pragma optimize("", on)
+
 // reads in decompressed raw data.
 int AudioStream::ReadFileData(int buf, int len) {
   if (!m_archive.Opened())
@@ -831,9 +830,7 @@ int AudioStream::ReadFileData(int buf, int len) {
 
   return m_archive.Read(m_buffer[buf].data, len);
 }
-// TURN OFF OPTIMIZATIONS HERE.  Placement of instructions is VERY IMPORTANT here.  synched with StreamCallback,
-//	which also has optimizations off.
-#pragma optimize("", off)
+
 // updates file buffers
 void AudioStream::UpdateData() {
   int nextbuffer = ((m_fbufidx + 1) % STRM_BUFCOUNT);
@@ -888,7 +885,6 @@ void AudioStream::UpdateData() {
   }
 }
 
-#pragma optimize("", on)
 ///////////////////////////////////////////////////////////////////////////////
 //	decoder
 int ADecodeFileRead(void *data, void *buf, uint32_t qty) {
