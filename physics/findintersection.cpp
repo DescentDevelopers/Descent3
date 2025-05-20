@@ -2975,9 +2975,10 @@ int sphere_intersects_wall(vector *pnt, int segnum, float rad) {
 static const int bbox_edges[12][2] = {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {3, 4}, {2, 5},
                                       {5, 4}, {4, 7}, {5, 6}, {7, 6}, {7, 0}, {6, 1}};
 
+/*
 static const int bbox_faces[6][4] = {{4, 5, 2, 3}, {7, 6, 5, 4}, {0, 1, 6, 7},
                                      {0, 3, 2, 1}, {7, 4, 3, 0}, {1, 2, 5, 3}};
-/*
+
 bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *collision_normal, object *obj, vector
 *new_pos, int nv, vector **vertex_ptr_list, vector *face_normal)
 {
