@@ -328,11 +328,11 @@ struct {
 };
 constexpr static inline const matrix id()
 {
-  return matrix{ vector::id(0), vector::id(1), vector::id(2) };
+  return matrix{ {{vector::id(0), vector::id(1), vector::id(2)}} };
 }
 constexpr static inline const matrix ne()
 {
-  return matrix{ vector::ne(), vector::ne(), vector::ne() };
+  return matrix{ {{vector::ne(), vector::ne(), vector::ne()}} };
 }
 };
 
@@ -355,11 +355,11 @@ struct {
 };
 constexpr static inline const matrix4 id()
 {
-  return matrix4{ vector4::id(0), vector4::id(1), vector4::id(2), vector4::id(3) };
+  return matrix4{ {{vector4::id(0), vector4::id(1), vector4::id(2), vector4::id(3)}} };
 }
 constexpr static inline const matrix4 ne()
 {
-  return matrix4{ vector4::ne(), vector4::ne(), vector4::ne(), vector4::ne() };
+  return matrix4{ {{vector4::ne(), vector4::ne(), vector4::ne(), vector4::ne()}} };
 }
 };
 

@@ -212,8 +212,8 @@ scalar vm_DotProduct(const vector *u, const vector *v) { return vector::dot(*u,*
 void   vm_CrossProduct(vector *dest, const vector *u, const vector *v) { *dest = vector::cross3(*u,*v); }
 scalar vm_GetMagnitude(const vector *a) { return (scalar)sqrt(vector::dot(*a,*a)); }
 void   vm_ClearMatrix(matrix *dest) { memset(dest, 0, sizeof(matrix)); }
-void   vm_MakeIdentity(matrix *dest) { *dest = { vector::id(0), vector::id(1), vector::id(2) }; }
-void   vm_MakeInverseMatrix(matrix *dest) { *dest = { -vector::id(0), -vector::id(1), vector::id(2) }; }
+void   vm_MakeIdentity(matrix *dest) { *dest = { {{vector::id(0), vector::id(1), vector::id(2)}} }; }
+void   vm_MakeInverseMatrix(matrix *dest) { *dest = { {{-vector::id(0), -vector::id(1), vector::id(2)}} }; }
 
 void vm_TransposeMatrix(matrix *m) {
   // Transposes a matrix in place
