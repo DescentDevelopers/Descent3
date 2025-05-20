@@ -795,7 +795,6 @@ void PrintDedicatedMessage(const char *fmt, ...) {
 #endif
 #define SOCKADDR_IN sockaddr_in
 #define SOCKADDR sockaddr
-#define INVALID_SOCKET -1
 
 // Winsock = sockets error translation
 
@@ -806,8 +805,6 @@ void PrintDedicatedMessage(const char *fmt, ...) {
 #ifndef WSAGetLastError
 #define WSAGetLastError() errno
 #endif
-
-#define SOCKET_ERROR -1
 
 #endif
 
