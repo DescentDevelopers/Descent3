@@ -130,7 +130,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   uint32_t temp_long;
 
   // Flags for if we previously read data or a format
-  char f_data, f_fmt = 0;
+  char f_fmt = 0;
 
   // Loop counter
   int count;
@@ -345,7 +345,6 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
 
       // We did find a new format type
       f_fmt = 1;
-      f_data = 0;
       break;
 
     // Data Chunk
@@ -401,7 +400,6 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
       }
 
       // We found data, clear format flag
-      f_data = 1;
       f_fmt = 0; // Multiple waveforms, per file, are allowed
       break;
 

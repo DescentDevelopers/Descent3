@@ -640,38 +640,11 @@ void lnxsound::SoundStartFrame() {
   m_in_sound_frame = true;
   m_pending_actions = false;
 
-  int counter = 0, loop_counter = 0, stream_counter = 0, buf_loop_counter = 0;
-
-#ifdef _DEBUG
-  int n_p5 = 0, n_p4 = 0, n_p3 = 0, n_p2 = 0, n_p1 = 0, n_p0 = 0;
-#endif
-
+  int counter = 0;
   for (auto &current_slot : sound_cache) {
     sound_buffer_info *sb = &current_slot;
     if (sb->m_status != SSF_UNUSED) {
       counter++;
-      if (sb->m_status & SSF_PLAY_LOOPING) {
-        if (sb->m_status & SSF_BUFFERED_LOOP)
-          buf_loop_counter++;
-        loop_counter++;
-      }
-      if (sb->m_status & SSF_PLAY_STREAMING)
-        stream_counter++;
-
-#ifdef _DEBUG
-      if (sb->play_info->priority == SND_PRIORITY_CRITICAL)
-        n_p5++;
-      else if (sb->play_info->priority == SND_PRIORITY_HIGHEST)
-        n_p4++;
-      else if (sb->play_info->priority == SND_PRIORITY_HIGH)
-        n_p3++;
-      else if (sb->play_info->priority == SND_PRIORITY_NORMAL)
-        n_p2++;
-      else if (sb->play_info->priority == SND_PRIORITY_LOW)
-        n_p1++;
-      else if (sb->play_info->priority == SND_PRIORITY_LOWEST)
-        n_p0++;
-#endif
     }
   }
 

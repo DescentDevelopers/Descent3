@@ -713,18 +713,17 @@ int cfexist(const std::filesystem::path &filename) {
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp) {
-  int i;
-  const char *error_msg = eof_error; // default error
   ASSERT(!(cfp->flags & CFF_TEXT));
   if (cfp->position + count <= cfp->size) {
-    i = fread(buf, 1, count, cfp->file);
+    int i = fread(buf, 1, count, cfp->file);
     if (i == count) {
       cfp->position += i;
       return i;
     }
     // if not EOF, then get the error message
-    if (!feof(cfp->file))
-      error_msg = strerror(errno);
+    if (!feof(cfp->file)) {
+      ThrowCFileError(CFE_READING, cfp, strerror(errno));  
+    }
   }
   LOG_ERROR.printf("Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name,
                    errno);

@@ -461,22 +461,19 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
   }
 
   //	convert bufsize to true bufsize (bufsize = samples per measure for now.)
-  int bytesize, granularity;
+  int granularity = 0;
   switch (m_archive.StreamFormat()) {
   case SAF_8BIT_M:
     granularity = 1;
     break;
   case SAF_8BIT_S:
     granularity = 2;
-    bytesize = digihdr->measure << 1;
     break;
   case SAF_16BIT_M:
     granularity = 2;
-    bytesize = digihdr->measure << 1;
     break;
   case SAF_16BIT_S:
     granularity = 4;
-    bytesize = digihdr->measure << 2;
     break;
   }
 

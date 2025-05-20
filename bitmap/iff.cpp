@@ -549,7 +549,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
   CFILE *ifile;
   iff_bitmap_header bm_headers[40];
   iff_bitmap_header *temp_bm_head;
-  int32_t sig, form_len;
+  int32_t sig;
   int32_t form_type;
   int num_bitmaps = 0;
   int ret, i;
@@ -562,7 +562,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
     return -1;
 
   sig = bm_iff_get_sig(ifile);
-  form_len = cf_ReadInt(ifile, false);
+  cf_ReadInt(ifile, false); // form_len
 
   if (sig != IFF_SIG_FORM) {
     LOG_ERROR << "Not a valid IFF file.";

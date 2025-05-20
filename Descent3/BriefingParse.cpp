@@ -311,7 +311,6 @@ int CBriefParse::ParseBriefing(const char *filename) {
   title_buf[0] = 0;
 
   // Read & parse lines
-  int bytes_read;
   const char *p;
 
   linebuf = NULL;
@@ -327,7 +326,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
     }
 
     // Read the line
-    bytes_read = ReadFullLine(&linebuf, ifile);
+    ReadFullLine(&linebuf, ifile);
     linenum++;
 
     if (!linebuf) {
@@ -424,19 +423,16 @@ int CBriefParse::ParseBriefing(const char *filename) {
 
         char buffer[_MAX_PATH];
         char token[30];
-        int vflags = 0;
         bool bitdepthset = false;
         while (!play) {
           PARSE_TOKEN(token);
           if (!stricmp(token, "play"))
             play = true;
           else if (!stricmp(token, "8bit")) {
-            vflags |= VF_8BIT;
             bitdepthset = true;
+          // LGT: Values unused
           } else if (!stricmp(token, "compressed")) {
-            vflags |= VF_COMPRESSED;
           } else if (!stricmp(token, "stereo")) {
-            vflags |= VF_STEREO;
           } else if (!stricmp(buffer, "isset")) {
             int value, bit = 0x01;
             PARSE_INT(value);
@@ -456,8 +452,6 @@ int CBriefParse::ParseBriefing(const char *filename) {
           } else
             ParseError("Illegal parameter in $VOICE");
         }
-        if (!bitdepthset)
-          vflags |= VF_16BIT | VF_INTERUPT | VF_FORCE;
 
         PARSE_STRING(buffer);
 

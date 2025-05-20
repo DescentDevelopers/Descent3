@@ -307,7 +307,6 @@ int msn_ShowDownloadChoices(msn_urls *urls) {
 #define MSN_MAX_STRING_LEN 100
 
 bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filename) {
-  float last_refresh;
   uint64_t total_bytes = 0;
   uint64_t received_bytes = 0;
   int time_elapsed = 0;
@@ -389,8 +388,6 @@ bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filena
                     MSN_DWNLD_STATUS_H - OKCANCEL_YOFFSET, 0, 0, UIF_FIT | UIF_CENTER);
   menu_wnd.Open();
 
-  last_refresh = timer_GetTime() - MSN_REFRESH_INTERVAL;
-
   std::string download_uri = "/" + StringJoin(std::vector<std::string>(url_parts.begin() + 3, url_parts.end()), "/");
 
   D3::HttpClient http_client(download_url);
@@ -457,7 +454,6 @@ bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filena
       }
     }
 
-    last_refresh = timer_GetTime();
     time_elapsed = timer_GetTime() - starttime;
 
     if (total_bytes) {
@@ -522,9 +518,10 @@ void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
   if (Netgame.local_role == LR_SERVER) {
     size = START_DATA(MP_CUR_MSN_URLS, data, &count);
 
+    int i = 0;
     url = msn_GetURL(Netgame.mission);
     if (url) {
-      for (int i = 0; i < MAX_MISSION_URL_COUNT; i++) {
+      for (i = 0; i < MAX_MISSION_URL_COUNT; i++) {
         if (url->URL[0]) {
           num_urls++;
         }

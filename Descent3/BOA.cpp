@@ -702,7 +702,6 @@ void add_terrain_cell(int cell, int t_region, char *checked) {
 void compute_terrain_region_info() {
   int i;
   bool done = false;
-  bool f_warning = false;
   char checked[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
   for (i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++) {
@@ -776,10 +775,14 @@ void compute_terrain_region_info() {
 
         int region = TERRAIN_REGION(cell);
 
-        if (!(BOA_num_connect[region] < MAX_PATH_PORTALS)) {
-          f_warning = true;
-          break;
-        }
+#ifdef EDITOR
+      if (!(BOA_num_connect[region] < MAX_PATH_PORTALS)) {
+        OutrageMessageBox(
+            "This terrain has too many fly through\nterrain-mine connections!\n\nAI will not work correctly outside!\nIf "
+            "you really cannot fly outside\nignore this message.\n\nSee Chris for specific instructions!");
+      }
+      break;
+#endif
 
         //				if(region != 0)
         //				{
@@ -798,14 +801,6 @@ void compute_terrain_region_info() {
       }
     }
   }
-
-#ifdef EDITOR
-  if (f_warning) {
-    OutrageMessageBox(
-        "This terrain has too many fly through\nterrain-mine connections!\n\nAI will not work correctly outside!\nIf "
-        "you really cannot fly outside\nignore this message.\n\nSee Chris for specific instructions!");
-  }
-#endif
 }
 
 #define MAX_SOUND_PROP_DIST 400.0f
@@ -2390,7 +2385,6 @@ void ComputeAABB(bool f_full) {
         vector min_xyz;
         vector max_xyz;
         int pamount[6];
-        int nonpart = 0;
 
         if (rp->num_bbf_regions != 0) {
           for (x = 0; x < rp->num_bbf_regions; x++) {
@@ -2511,8 +2505,6 @@ void ComputeAABB(bool f_full) {
 
               rp->bbf_list[27 + r_struct_list[i][count] - 1][rp->num_bbf[27 + r_struct_list[i][count] - 1]++] = count;
             }
-
-            nonpart++;
           } else {
             //					bool f_found = false;
             //					int best;
