@@ -344,7 +344,7 @@ int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
     }
 
     if (cnt == -1) {
-      if (!bmheader->w & 1)
+      if (!bmheader->w)
         return IFF_CORRUPT;
     } else if (cnt)
       return IFF_CORRUPT;
