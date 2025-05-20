@@ -2422,7 +2422,7 @@ void ReceiveGameState(uint8_t *data) {
   for (i = 0; i < DLLMAX_TEAMS; i++) {
     if (server_objnums[i] != 65535) {
       // we should have a real object here
-      uint16_t our_objnum = DMFCBase->ConvertServerToLocalObjnum(server_objnums[i]);
+      int32_t our_objnum = DMFCBase->ConvertServerToLocalObjnum(server_objnums[i]);
 
       if (our_objnum == -1) {
         // fatal error

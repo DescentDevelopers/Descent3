@@ -1885,7 +1885,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
     }
   }
   if (Demo_flags == DF_RECORDING) {
-    DemoWriteWeaponFire(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (uint16_t)weapon_num, objnum,
+    DemoWriteWeaponFire(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, weapon_num, objnum,
                         gun_num);
   }
 

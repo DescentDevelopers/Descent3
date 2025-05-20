@@ -80,7 +80,7 @@ struct vis_attach_info {
 
   uint16_t modelnum;
   uint16_t vertnum;
-  uint16_t end_vertnum;
+  int32_t end_vertnum;
 
   uint8_t subnum, subnum2;
 };

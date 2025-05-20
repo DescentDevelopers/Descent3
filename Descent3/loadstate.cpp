@@ -1291,7 +1291,7 @@ int LGSObjects(CFILE *fp, int version) {
       int num_wbs = pm->num_wbs;
       int count = 0;
       for (int j = 0; j < num_wbs; j++) {
-        ASSERT(pm->poly_wb[j].num_turrets >= 0 && pm->poly_wb[j].num_turrets <= 6400);
+        ASSERT(pm->poly_wb[j].num_turrets >= 0);
         count += pm->poly_wb[j].num_turrets;
       }
 

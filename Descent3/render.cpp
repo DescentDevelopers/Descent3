@@ -30,6 +30,7 @@
  */
 
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 
@@ -139,7 +140,7 @@ static int Render_width, Render_height;
 int Clear_window_color = -1;
 int Clear_window = 2; // 1 = Clear whole background window, 2 = clear view portals into rest of world, 0 = no clear
 #define MAX_RENDER_ROOMS 100
-char Rooms_visited[MAX_ROOMS + MAX_PALETTE_ROOMS];
+uint8_t Rooms_visited[MAX_ROOMS + MAX_PALETTE_ROOMS];
 int Facing_visited[MAX_ROOMS + MAX_PALETTE_ROOMS];
 // For keeping track of portal recursion
 uint8_t Room_depth_list[MAX_ROOMS + MAX_PALETTE_ROOMS];
@@ -3458,7 +3459,7 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain) {
         RenderRoomOutline(&Rooms[roomnum]);
       }
       RenderRoom(&Rooms[roomnum]);
-      Rooms_visited[roomnum] = (char)255;
+      Rooms_visited[roomnum] = 255;
       // Stuff objects into our postrender list
       CheckToRenderMineObjects(roomnum);
     }

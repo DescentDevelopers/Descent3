@@ -2792,7 +2792,7 @@ void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *
 //	flag is which mission flag to set/clear (1-32)
 //	value is 0 to clear, or 1 to set
 void osipf_MissionFlagSet(int flag, uint8_t value) {
-  if (flag < 1 && flag > 32) {
+  if (flag < 1 || flag > 32) {
     LOG_ERROR.printf("Invalid flag passed to osipf_MissionFlagSet(%d)", flag);
     return;
   }
@@ -2811,7 +2811,7 @@ void osipf_MissionFlagSet(int flag, uint8_t value) {
 // Gets a mission flag
 //	flag is what mission flag to get.  Returns 1 if set, 0 if not.
 int osipf_MissionFlagGet(int flag) {
-  if (flag < 1 && flag > 32) {
+  if (flag < 1 || flag > 32) {
     LOG_ERROR.printf("Invalid flag passed to osipf_MissionFlagGet(%d)\n", flag);
     return 0;
   }
