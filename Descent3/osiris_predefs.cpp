@@ -3366,7 +3366,7 @@ int osipf_FindRoomName(const char *name) {
 
 int osipf_FindTriggerName(const char *name) {
   for (int i = 0; i < Num_triggers; i++) {
-    if (Triggers[i].name) {
+    if (Triggers[i].name[0]) {
       if (!stricmp(name, Triggers[i].name))
         return i;
     }

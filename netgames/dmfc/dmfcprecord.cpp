@@ -360,7 +360,7 @@ bool PRec_AssignPlayerToSlot(int pnum, int slot, player *players_array, netplaye
   Player_records[slot].total_time_in_game = 0;
   Player_records[slot].team = players_array[pnum].team;
 
-  if (basethis->IsMasterTrackerGame() && (basethis->Players[pnum].tracker_id)) {
+  if (basethis->IsMasterTrackerGame() && basethis->Players[pnum].tracker_id[0]) {
     // we are in a master tracker game, so save the tracker ID
     mprintf(0, "PREC: Got a PXO Player ID of %s\n", basethis->Players[pnum].tracker_id);
     Player_records[slot].tracker_id = strdup(basethis->Players[pnum].tracker_id);
