@@ -61,7 +61,7 @@ public:
 
   //	this functions polls the controllers if needed.  some systems may not need to implement
   //	this function.
-  void poll();
+  void poll() override;
 
   //	flushes all controller information
   void flush() override;
