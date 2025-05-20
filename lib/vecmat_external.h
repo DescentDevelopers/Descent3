@@ -146,7 +146,7 @@ template<enum align A_DST = align::adaptive>
 constexpr inline const vec<T,3,A_DST> bph() const { return vec<T,3,A_DST>{ b(), p(), h() }; }
 
 constexpr inline T sum() const                    { return std::accumulate((*this).cbegin(), (*this).cend(), (T)0); }
-constexpr inline vec<T,3,A> operator-() const     { vec<T,N,A> neg = {}; neg.fill((T)-1); return (*this) * neg; }
+constexpr inline vec<T,N,A> operator-() const     { vec<T,N,A> neg = {}; neg.fill((T)-1); return (*this) * neg; }
 
 /* arithmetic vector */
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive, typename T_DST = decltype((T)1 + (T_OTHER)1)>
