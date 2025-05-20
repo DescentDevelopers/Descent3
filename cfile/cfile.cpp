@@ -155,14 +155,14 @@ std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::
 
 std::vector<std::filesystem::path> cf_LocatePathMultiplePathsHelper(const std::filesystem::path &relative_path,
                                                                     bool stop_after_first_result) {
-  ASSERT(("realative_path should be a relative path.", relative_path.is_relative()));
+  ASSERT("relative_path should be a relative path." && relative_path.is_relative());
   std::vector<std::filesystem::path> return_value = { };
   for (auto base_directories_iterator = Base_directories.rbegin();
        base_directories_iterator != Base_directories.rend();
        ++base_directories_iterator) {
-    ASSERT(("base_directory should be an absolute path.", base_directories_iterator->is_absolute()));
+    ASSERT("base_directory should be an absolute path." && base_directories_iterator->is_absolute());
     auto to_append = cf_LocatePathCaseInsensitiveHelper(relative_path, *base_directories_iterator);
-    ASSERT(("to_append should be either empty or an absolute path.", to_append.empty() || to_append.is_absolute()));
+    ASSERT("to_append should be either empty or an absolute path." && (to_append.empty() || to_append.is_absolute()));
     if (std::filesystem::exists(to_append)) {
       return_value.push_back(to_append);
       if (stop_after_first_result) {
