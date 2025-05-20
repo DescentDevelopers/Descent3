@@ -212,19 +212,6 @@
 #include "mem.h"
 #include "pserror.h"
 
-// #define MEM_DEBUG
-
-#ifdef MEM_USE_RTL
-#pragma message("mem.cpp: Compiling For Run-Time Library usage")
-#endif
-
-#ifdef MEM_DEBUG
-#pragma message("mem.cpp: Compiling with Debug Settings")
-#endif
-
-#ifdef MEM_LOGFILE
-#pragma message("mem.cpp: Compiling with logfile support")
-#endif
 
 int Total_mem_used = 0;
 int Mem_high_water_mark = 0;
