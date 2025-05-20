@@ -359,8 +359,6 @@ try_english:
 
   while (!cfeof(file)) {
     cf_ReadString(tempbuffer, MAX_STRING_LENGTH, file);
-    if (scount >= 198)
-      scount = scount;
 
     line_info = _parse_line_information(tempbuffer);
 
@@ -492,9 +490,6 @@ int LoadStringFile(const char *filename, int starting_offset) {
 
   while (!cfeof(file)) {
     cf_ReadString(buffer, MAX_STRING_LENGTH, file);
-    if (scount >= 198)
-      scount = scount;
-
     line_info = _parse_line_information(buffer);
 
     switch (line_info) {

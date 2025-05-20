@@ -174,8 +174,6 @@ int bm_iff_get_sig(CFILE *f) {
   return (IFF_SIG_UNKNOWN);
 }
 int bm_iff_parse_bmhd(CFILE *ifile, uint32_t len, iff_bitmap_header *bmheader) {
-  len = len;
-
   bmheader->w = cf_ReadShort(ifile, false);
   bmheader->h = cf_ReadShort(ifile, false);
   bmheader->x = cf_ReadShort(ifile, false);

@@ -9420,7 +9420,6 @@ void MultiDoMSafePowerup(uint8_t *data);
 // Takes the individual packet types and passes their data to the appropriate routines
 void MultiProcessData(uint8_t *data, int len, int slot, network_address *from_addr) {
   uint8_t type = data[0];
-  len = len;
   int sequence = -1;
 
   // HEY!!!!!  These packets are the only ones that are accepted by non-connected machines
