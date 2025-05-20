@@ -130,7 +130,6 @@ void install_signal_handlers() { SetUnhandledExceptionFilter(RecordExceptionInfo
 //	---------------------------------------------------------------------------
 class oeD3LnxApp final : public oeLnxApplication {
   bool shutdown, final_shutdown;
-  int old_screen_mode;
 
 public:
   oeD3LnxApp(unsigned flags) : oeLnxApplication(flags) {

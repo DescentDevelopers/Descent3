@@ -105,8 +105,6 @@ private:
   llsSystem *m_ll_sound_ptr;
   bool m_init;
   sound_buffer *m_primary_buffer;
-  int *Fast_mixer;
-  int Fast_mixer_len;
   int m_primary_alignment;
   int m_BufferSize;
 

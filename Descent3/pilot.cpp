@@ -1824,7 +1824,6 @@ private:
   int bm_handle = -1;
   float start_time;
   UIText text;
-  bool created = false;
 };
 
 //	struct ship_pos

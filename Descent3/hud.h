@@ -660,7 +660,6 @@ class MsgListConsole {
   char m_title[32];
   char **m_conlines = nullptr;
   int n_conlines = 0;
-  int m_keydownstate; // -1 for up key, 1 for down key, 0 for none.
   float m_keydowntime;
 
 public:

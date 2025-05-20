@@ -612,7 +612,6 @@ private:
   tAlignment m_align;         // alignment of text
   int16_t m_newoptionid;        // tells that a new option has been selected.
   int16_t m_cursheetidx;
-  bool m_refreshgadgets; // refreshes gadgets on current sheet.
 
   void (*m_activate_sheet_cb)(newuiMenu *, int16_t, int16_t, void *);
   void (*m_option_focus_cb)(newuiMenu *, int16_t, void *);

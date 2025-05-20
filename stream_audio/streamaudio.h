@@ -247,7 +247,6 @@ class AudioStream {
   float m_last_frametime;
   uint8_t m_sbufidx;   // stream position markers
   uint8_t m_fbufidx;   // file position markers
-  uint8_t m_curbufidx; // current buffer in measure index
   uint8_t m_playcount;
   bool m_readahead;               // if stream is currently reading from disk
   bool m_readahead_finished_loop; // if a loop's readahead has finished
@@ -264,7 +263,6 @@ class AudioStream {
   int m_playbytesleft, m_playbytestotal;
   int m_curid;                  // stream's id #
   int *m_stopflag;              // location of stop flag used in stop function
-  bool m_loop;                  // are we looping?
   bool m_stopnextmeasure;       // stop on next measure.
   bool m_start_on_frame;        // we will play this stream on the next ::Frame call.
   bool m_start_on_frame_looped; // the stream that will play on next frame is looped.
