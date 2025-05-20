@@ -2294,7 +2294,7 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
   SOCKET send_sock;
   SOCKADDR_IN sock_addr; // UDP/TCP socket structure
 
-  int ret, send_len;
+  int ret = 0, send_len = 0;
   uint8_t iaddr[6], *send_data;
   int16_t port;
   fd_set wfds;

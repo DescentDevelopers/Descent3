@@ -4900,7 +4900,7 @@ void ai_move(object *obj) {
               int subtype = cur_goal->subtype;
               int vec_id = (subtype & 0xFFFFFFFE);
               bool f_toward = (subtype & 0x00000001);
-              vector *vec;
+              vector *vec = nullptr;
 
               // mprintf(0, "Moving relative a type %d\n", obj->type);
 

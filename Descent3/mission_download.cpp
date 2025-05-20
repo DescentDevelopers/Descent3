@@ -516,7 +516,6 @@ void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
   static msn_urls *url;
   int count = 0;
   int size;
-  int i;
   uint8_t data[MAX_GAME_DATA_SIZE];
   int num_urls = 0;
 
@@ -525,7 +524,7 @@ void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
 
     url = msn_GetURL(Netgame.mission);
     if (url) {
-      for (i = 0; i < MAX_MISSION_URL_COUNT; i++) {
+      for (int i = 0; i < MAX_MISSION_URL_COUNT; i++) {
         if (url->URL[0]) {
           num_urls++;
         }
@@ -547,7 +546,7 @@ void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
 
     // Number of URLs
     MultiAddByte(num_urls, data, &count);
-    for (i = 0; i < num_urls; i++) {
+    for (int i = 0; i < num_urls; i++) {
       uint16_t urllen = strlen(url->URL[i]) + 1;
       if ((count + urllen) >= MAX_GAME_DATA_SIZE) {
         // if for some reason the URLS exceed what a packet can send

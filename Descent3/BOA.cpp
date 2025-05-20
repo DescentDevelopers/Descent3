@@ -995,7 +995,7 @@ void FindPath(int i, int j) {
           ASSERT(next_room <= Highest_room_index + BOA_num_terrain_regions);
         }
 
-        int next_portal;
+        int next_portal = 0;
         if (BOA_INDEX(next_room) != BOA_INDEX(cur_node->roomnum)) {
           next_portal = BOA_DetermineStartRoomPortal(next_room, NULL, cur_node->roomnum, NULL);
         }
@@ -1053,7 +1053,7 @@ void FindPath(int i, int j) {
           next_room = Highest_room_index + TERRAIN_REGION(cell) + 1;
         }
 
-        int next_portal;
+        int next_portal = 0;
         if (BOA_INDEX(next_room) != BOA_INDEX(cur_node->roomnum)) {
           next_portal = BOA_DetermineStartRoomPortal(next_room, NULL, cur_node->roomnum, NULL);
         }

@@ -2145,7 +2145,7 @@ void cEndSequenceInit() {
 ///////////////////////////////////////////////////////////////////////////////
 void do_endsequence_fx(char fx_type, int handle) {
   uint16_t id;
-  float time, size, speed, bloblife, blobint;
+  float time = 0.0f, size = 0.0f, speed = 0.0f, bloblife = 0.0f, blobint = 0.0f;
   int killflags = 0x60; // fireballs and breaks apart on death
 
   //	do fx based on type

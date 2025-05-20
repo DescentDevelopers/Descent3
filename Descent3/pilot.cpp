@@ -2269,7 +2269,7 @@ bool PltSelectShip(pilot *Pilot) {
   int old_bmhandle;
   int old_flags;
   bool exit_menu = false;
-  bool ret;
+  bool ret = false;
 
   //	pre-initialize all variables
 
