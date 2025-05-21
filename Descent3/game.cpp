@@ -969,7 +969,7 @@ void SetScreenMode(int sm, bool force_res_change) {
     } else {
       int t = FindArg("-ForceStateLimited");
       if (t) {
-        StateLimited = (atoi((const char *)GameArgs[t + 1]) != 0);
+        StateLimited = (atoi(GameArgs[t + 1]) != 0);
       }
 
       if (rend_initted == -1) {
