@@ -2305,7 +2305,7 @@ bool IsScriptOutofSync(char *name) {
   bool out_of_sync = false;
   InitializeDLL_fp initdll;
   ShutdownDLL_fp shutdowndll;
-  module mod;
+  module_t mod;
 
   char filename[_MAX_PATH], ext[_MAX_EXT];
   char path[_MAX_PATH];
