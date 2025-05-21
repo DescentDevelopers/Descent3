@@ -630,7 +630,7 @@ void DemoReadObjAnimChanged(void) {
 void DemoWriteKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, int seed) {
   cf_WriteByte(Demo_cfp, DT_OBJ_EXPLODE);
   cf_WriteShort(Demo_cfp, OBJNUM(hit_obj));
-  cf_WriteShort(Demo_cfp, killer ? OBJNUM(killer) : 65535);
+  cf_WriteShort(Demo_cfp, killer ? OBJNUM(killer) : 32767);
   cf_WriteFloat(Demo_cfp, damage);
   cf_WriteInt(Demo_cfp, death_flags);
   cf_WriteFloat(Demo_cfp, delay);
@@ -649,8 +649,7 @@ void DemoReadKillObject(void) {
     return; // bail if invalid object type
 
   ps_srand(seed);
-  KillObject(&Objects[hit_objnum], &Objects[killer], damage, death_flags, delay);
-}
+KillObject(&Objects[hit_objnum], (killer != 32767) ? &Objects[killer] : NULL, damage, death_flags, delay);}
 
 void DemoWritePlayerDeath(object *player, bool melee, int fate) {
   cf_WriteByte(Demo_cfp, DT_PLAYER_DEATH);
