@@ -1905,7 +1905,7 @@ bool SuperThief::DoSteal(int me, int it) {
               max = (14 - SuperThiefableItems[i].index) / 2.5f + 1;
             }
 
-            int new_amount = (rand() / (float)(RAND_MAX + 1)) * max + 1;
+            int new_amount = (rand() / (float)(RAND_MAX)) * max + 1;
 
             if (new_amount < amount)
               amount = new_amount;
@@ -6287,7 +6287,7 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
               max = (14 - ThiefableItems[i].index) / 2.5f + 1;
             }
 
-            int new_amount = (rand() / (float)(RAND_MAX + 1)) * max + 1;
+            int new_amount = (rand() / (float)RAND_MAX) * max + 1;
 
             if (new_amount < amount)
               amount = new_amount;
@@ -7541,7 +7541,7 @@ bool OldScratch::DoSteal(int me, int it) {
               max = (14 - SuperThiefableItems[i].index) / 2.5f + 1;
             }
 
-            int new_amount = (rand() / (float)(RAND_MAX + 1)) * max + 1;
+            int new_amount = (rand() / (float)(RAND_MAX)) * max + 1;
 
             if (new_amount < amount)
               amount = new_amount;
