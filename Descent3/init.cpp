@@ -1,6 +1,7 @@
 /*
 * Descent 3
 * Copyright (C) 2024 Parallax Software
+* Copyright (C) 2024–2025 Descent Developers
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -1423,6 +1424,9 @@ void InitIOSystems(bool editor) {
   }
   LOG_INFO << "Setting writable preference path " << pref_path;
   cf_AddBaseDirectory(pref_path);
+
+  // Set the default base directories
+  cf_AddDefaultBaseDirectories();
 
   // Additional paths
   int additionaldirarg = 0;

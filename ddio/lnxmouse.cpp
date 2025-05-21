@@ -395,8 +395,8 @@ bool sdlMouseMotionFilter(SDL_Event const *event) {
   } // if
   else {
     if (ddio_mouseGrabbed) {
-      DDIO_mouse_state.dx = event->motion.xrel;
-      DDIO_mouse_state.dy = event->motion.yrel;
+      DDIO_mouse_state.dx += event->motion.xrel;
+      DDIO_mouse_state.dy += event->motion.yrel;
       DDIO_mouse_state.x += DDIO_mouse_state.dx;
       DDIO_mouse_state.y += DDIO_mouse_state.dy;
     } // if
