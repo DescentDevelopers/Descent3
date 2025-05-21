@@ -180,7 +180,7 @@ endif()
 
 find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 find_package(glm REQUIRED)
-if (TARGET httlib::httplib)
+if (TARGET httplib::httplib)
   add_library(httplib ALIAS httplib::httplib)
 else()
   # Some Linux distributions do not package httplibConfig.cmake, so find the header manually
