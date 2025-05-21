@@ -68,7 +68,8 @@ void WBSetupFireAnim(object *obj, otype_wb_info *static_wb, int wb_index) {
 
   p_dwb->wb_anim_mask = p_dwb->cur_firing_mask;
 
-  if (static_wb->anim_start_frame != static_wb->anim_end_frame) {
+  // LGT: Awkward array comparison by pointer, needs investivation to understand the actual intent 
+  if (+static_wb->anim_start_frame != static_wb->anim_end_frame) {
     p_dwb->flags |= DWBF_ANIMATING;
     p_dwb->wb_anim_frame = static_wb->anim_start_frame[p_dwb->cur_firing_mask];
   }
