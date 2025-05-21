@@ -418,7 +418,7 @@ static inline matrix operator/(matrix src, float n) {
 }
 
 inline scalar vm_Dot3Product(const vector a, const vector b) { return vector::dot(a,b); }
-static inline scalar vm_Dot3Vector(scalar x, scalar y, scalar z, vector *v) { return vector::dot(aligned_vector{x,y,z}, *(aligned_vector*)v); }
+static inline scalar vm_Dot3Vector(scalar x, scalar y, scalar z, vector *v) { return vector::dot(aligned_vector{x,y,z}, *v); }
 
 inline vector vm_Cross3Product(vector u, vector v) {
   return vector::cross3(u,v);
