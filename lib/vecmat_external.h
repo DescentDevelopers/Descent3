@@ -94,44 +94,44 @@ template<size_t N_DST = N, enum align A_DST = align::adaptive>
 operator vec<T,N_DST,A_DST>() { return *reinterpret_cast<vec<T,N_DST,A_DST>*>(this); }
 
 constexpr inline T& x() { return (*this)[0]; }
-constexpr inline T& y() { return (*this)[1]; }
-constexpr inline T& z() { return (*this)[2]; }
-constexpr inline T& w() { return (*this)[3]; }
+constexpr inline T& y() { static_assert(N >= 2); return (*this)[1]; }
+constexpr inline T& z() { static_assert(N >= 3); return (*this)[2]; }
+constexpr inline T& w() { static_assert(N >= 4); return (*this)[3]; }
 
 constexpr inline const T& x() const { return (*this)[0]; }
-constexpr inline const T& y() const { return (*this)[1]; }
-constexpr inline const T& z() const { return (*this)[2]; }
-constexpr inline const T& w() const { return (*this)[3]; }
+constexpr inline const T& y() const { static_assert(N >= 2); return (*this)[1]; }
+constexpr inline const T& z() const { static_assert(N >= 3); return (*this)[2]; }
+constexpr inline const T& w() const { static_assert(N >= 4); return (*this)[3]; }
 
 constexpr inline T& p() { return (*this)[0]; }
-constexpr inline T& h() { return (*this)[1]; }
-constexpr inline T& b() { return (*this)[2]; }
+constexpr inline T& h() { static_assert(N >= 2); return (*this)[1]; }
+constexpr inline T& b() { static_assert(N >= 3); return (*this)[2]; }
 
 constexpr inline const T& p() const { return (*this)[0]; }
-constexpr inline const T& h() const { return (*this)[1]; }
-constexpr inline const T& b() const { return (*this)[2]; }
+constexpr inline const T& h() const { static_assert(N >= 2); return (*this)[1]; }
+constexpr inline const T& b() const { static_assert(N >= 3); return (*this)[2]; }
 
 constexpr inline T&  u() { return (*this)[0]; }
-constexpr inline T&  v() { return (*this)[1]; }
-constexpr inline T& u2() { return (*this)[2]; }
-constexpr inline T& v2() { return (*this)[3]; }
-constexpr inline T&  s() { return (*this)[2]; }
-constexpr inline T&  t() { return (*this)[3]; }
+constexpr inline T&  v() { static_assert(N >= 2); return (*this)[1]; }
+constexpr inline T& u2() { static_assert(N >= 3); return (*this)[2]; }
+constexpr inline T& v2() { static_assert(N >= 4); return (*this)[3]; }
+constexpr inline T&  s() { static_assert(N >= 3); return (*this)[2]; }
+constexpr inline T&  t() { static_assert(N >= 4); return (*this)[3]; }
 constexpr inline const T&  u() const { return (*this)[0]; }
-constexpr inline const T&  v() const { return (*this)[1]; }
-constexpr inline const T& u2() const { return (*this)[2]; }
-constexpr inline const T& v2() const { return (*this)[3]; }
-constexpr inline const T&  s() const { return (*this)[2]; }
-constexpr inline const T&  t() const { return (*this)[3]; }
+constexpr inline const T&  v() const { static_assert(N >= 2); return (*this)[1]; }
+constexpr inline const T& u2() const { static_assert(N >= 3); return (*this)[2]; }
+constexpr inline const T& v2() const { static_assert(N >= 4); return (*this)[3]; }
+constexpr inline const T&  s() const { static_assert(N >= 3); return (*this)[2]; }
+constexpr inline const T&  t() const { static_assert(N >= 4); return (*this)[3]; }
 
 constexpr inline T& l() { return (*this)[0]; }
 constexpr inline T& r() { return (*this)[0]; }
-constexpr inline T& g() { return (*this)[1]; }
-constexpr inline T& a() { return (*this)[3]; }
+constexpr inline T& g() { static_assert(N >= 2); return (*this)[1]; }
+constexpr inline T& a() { static_assert(N >= 4); return (*this)[3]; }
 constexpr inline const T& l() const { return (*this)[0]; }
 constexpr inline const T& r() const { return (*this)[0]; }
-constexpr inline const T& g() const { return (*this)[1]; }
-constexpr inline const T& a() const { return (*this)[3]; }
+constexpr inline const T& g() const { static_assert(N >= 2); return (*this)[1]; }
+constexpr inline const T& a() const { static_assert(N >= 4); return (*this)[3]; }
 
 constexpr static inline const vec<T,N,A> id(ssize_t i = -1) { vec<T,N> dst = {}; if(i == -1) dst.fill(1); else dst[i % N] = (T)1; return dst; }
 constexpr static inline const vec<T,N,A> ne() { vec<T,N,A> dst = {}; return dst; }
