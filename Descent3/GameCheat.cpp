@@ -523,7 +523,7 @@ void DemoCheats(int key) {
 
     int i;
     for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
-      if (HAS_FLAG(i)) {
+      if (HAS_FLAG(i) != 0) {
         Players[Player_num].weapon_ammo[i] = Ships[Players[Player_num].ship_index].max_ammo[i];
       }
     }
