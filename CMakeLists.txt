@@ -180,6 +180,7 @@ endif()
 
 find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 find_package(glm REQUIRED)
+find_package(httplib QUIET)
 if (TARGET httplib::httplib)
   add_library(httplib ALIAS httplib::httplib)
 else()
