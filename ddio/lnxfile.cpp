@@ -91,10 +91,10 @@ bool ddio_SetWorkingDir(const char *path) { return (chdir(path)) ? false : true;
 bool ddio_FileDiff(const std::filesystem::path &path1, const std::filesystem::path &path2) {
   struct stat abuf{}, bbuf{};
 
-  if (stat((const char*)path1.u8string().c_str(), &abuf))
+  if (stat(path1.u8string().c_str(), &abuf))
     Int3(); // error getting stat info
 
-  if (stat((const char*)path2.u8string().c_str(), &bbuf))
+  if (stat(path2.u8string().c_str(), &bbuf))
     Int3(); // error getting stat info
 
   if ((abuf.st_size != bbuf.st_size) || (abuf.st_mtime != bbuf.st_mtime))
@@ -197,14 +197,14 @@ void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext) 
 void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src) {
   struct stat abuf{};
 
-  if (stat((const char*)src.u8string().c_str(), &abuf))
+  if (stat(src.u8string().c_str(), &abuf))
     Int3();
 
   struct utimbuf bbuf{};
   bbuf.actime = abuf.st_atime;
   bbuf.modtime = abuf.st_mtime;
 
-  if (utime((const char*)dest.u8string().c_str(), &bbuf))
+  if (utime(dest.u8string().c_str(), &bbuf))
     Int3();
 }
 

@@ -671,9 +671,9 @@ int mng_LoadTableFiles(int show_progress) {
 int mng_InitLocalTables() {
   // Set the local table directory from the base directory.
   auto writable_base_directory_string = cf_GetWritableBaseDirectory().u8string();
-  strncpy(LocalD3Dir, (const char*)writable_base_directory_string.c_str(), sizeof LocalD3Dir);
+  strncpy(LocalD3Dir, writable_base_directory_string.c_str(), sizeof LocalD3Dir);
   LocalD3Dir[sizeof LocalD3Dir - 1] = '\0';
-  if (strlen(LocalD3Dir) != strlen((const char*)writable_base_directory_string.c_str())) {
+  if (strlen(LocalD3Dir) != strlen(writable_base_directory_string.c_str())) {
     LOG_WARNING << "cf_GetWritableBaseDirectory() is too long to fit in LocalD3Dir, so LocalD3Dir was truncated.";
   }
   LOG_INFO << "Local dir: " << LocalD3Dir;
@@ -714,8 +714,8 @@ int mng_InitLocalTables() {
 #endif
 
   if (Network_up) {
-    ddio_MakePath(LocalTableFilename, (const char*)LocalTableDir.u8string().c_str(), LOCAL_TABLE, NULL);
-    ddio_MakePath(LocalTempTableFilename, (const char*)LocalTableDir.u8string().c_str(), TEMP_LOCAL_TABLE, NULL);
+    ddio_MakePath(LocalTableFilename, LocalTableDir.u8string().c_str(), LOCAL_TABLE, NULL);
+    ddio_MakePath(LocalTempTableFilename, LocalTableDir.u8string().c_str(), TEMP_LOCAL_TABLE, NULL);
   } else {
     strcpy(LocalTableFilename, LOCAL_TABLE);
     strcpy(LocalTempTableFilename, TEMP_LOCAL_TABLE);
@@ -747,11 +747,11 @@ int mng_InitNetTables() {
   NetMusicDir = netdir / "data" / "music";
   NetVoiceDir = netdir / "data" / "voice";
   TableLockFilename = NetTableDir / "table.lok";
-  ddio_MakePath(BackupLockFilename, (const char*)NetTableDir.u8string().c_str(), "tablelok.bak", NULL);
-  ddio_MakePath(BackupTableFilename, (const char*)NetTableDir.u8string().c_str(), "table.bak", NULL);
-  ddio_MakePath(TableFilename, (const char*)NetTableDir.u8string().c_str(), NET_TABLE, NULL);
-  ddio_MakePath(TempTableLockFilename, (const char*)NetTableDir.u8string().c_str(), "lock.tmp", NULL);
-  ddio_MakePath(TempTableFilename, (const char*)NetTableDir.u8string().c_str(), TEMP_NET_TABLE, NULL);
+  ddio_MakePath(BackupLockFilename, NetTableDir.u8string().c_str(), "tablelok.bak", NULL);
+  ddio_MakePath(BackupTableFilename, NetTableDir.u8string().c_str(), "table.bak", NULL);
+  ddio_MakePath(TableFilename, NetTableDir.u8string().c_str(), NET_TABLE, NULL);
+  ddio_MakePath(TempTableLockFilename, NetTableDir.u8string().c_str(), "lock.tmp", NULL);
+  ddio_MakePath(TempTableFilename, NetTableDir.u8string().c_str(), TEMP_NET_TABLE, NULL);
   LockerFile = NetTableDir / "locker";
   VersionFile = NetTableDir / "TableVersion";
 
@@ -1573,7 +1573,7 @@ void mng_TransferPages() {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     goto done;
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, TableLockFilename.u8string().c_str())) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     goto done;
@@ -1860,13 +1860,13 @@ bool InLockList(mngs_Pagelock *pl) {
 int GetPrimType(const std::filesystem::path &name) {
   int primtype;
   std::filesystem::path ext = name.extension();
-  if (!stricmp(".oof", (const char*)ext.u8string().c_str()))
+  if (!stricmp(".oof", ext.u8string().c_str()))
     primtype = PRIMTYPE_OOF;
-  else if (!stricmp(".ogf", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".ogf", ext.u8string().c_str()))
     primtype = PRIMTYPE_OGF;
-  else if (!stricmp(".oaf", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".oaf", ext.u8string().c_str()))
     primtype = PRIMTYPE_OAF;
-  else if (!stricmp(".wav", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".wav", ext.u8string().c_str()))
     primtype = PRIMTYPE_WAV;
   else
     primtype = PRIMTYPE_FILE;

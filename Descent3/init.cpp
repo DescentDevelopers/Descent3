@@ -1202,8 +1202,8 @@ void SaveGameSettings() {
   else
     Database->write("Default_pilot", " ", 2);
 
-  Database->write("GAME_base_directory", (const char*)config_base_directory.u8string().c_str(),
-                  strlen((const char*)config_base_directory.u8string().c_str()) + 1);
+  Database->write("GAME_base_directory", config_base_directory.u8string().c_str(),
+                  strlen(config_base_directory.u8string().c_str()) + 1);
 }
 
 /*
@@ -2060,15 +2060,15 @@ void SetupTempDirectory(void) {
     exit(1);
   }
   // restore working dir
-  ddio_SetWorkingDir((const char*)cf_GetWritableBaseDirectory().u8string().c_str());
+  ddio_SetWorkingDir(cf_GetWritableBaseDirectory().u8string().c_str());
 }
 
 void DeleteTempFiles() {
   ddio_DoForeachFile(Descent3_temp_directory, std::regex("d3[smocti].+\\.tmp"), [](const std::filesystem::path &path) {
     std::error_code ec;
     std::filesystem::remove(path, ec);
-    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", (const char*)path.u8string().c_str(),
-                              (const char*)ec.message().c_str());
+    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", path.u8string().c_str(),
+                              ec.message().c_str());
   });
 }
 

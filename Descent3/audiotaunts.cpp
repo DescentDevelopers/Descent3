@@ -354,7 +354,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
     goto error;
   }
 
-  if (!aenc_Compress((const char*)temp_filename.u8string().c_str(), (const char*)osftemp_filename.u8string().c_str(), NULL, &samples, &rate, &chan, NULL, NULL)) {
+  if (!aenc_Compress(temp_filename.u8string().c_str(), osftemp_filename.u8string().c_str(), NULL, &samples, &rate, &chan, NULL, NULL)) {
     // unable to compress
     LOG_WARNING << "Unable to compress";
     ret = false;

@@ -2126,7 +2126,7 @@ void CheckPXOForAnomalies() {
         // Ok, what we have here is multiple users with the same tracker ID.
         // This is bad. It could be user error, but it could be something worse.
         std::filesystem::path errfilepath = DLLcf_GetWritableBaseDirectory() / "pxo.err";
-        FILE *errfile = fopen((const char*)errfilepath.u8string().c_str(), "at");
+        FILE *errfile = fopen(errfilepath.u8string().c_str(), "at");
         if (errfile) {
           fprintf(errfile, "Dup TID: %s & %s / %s\n", DLLMPlayers[j].callsign, DLLMPlayers[i].callsign,
                   DLLMPlayers[i].tracker_id);
