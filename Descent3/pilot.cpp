@@ -1912,7 +1912,7 @@ bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &
 
   // now create the full filename
 
-  dest = src.parent_path() / ((const char*)(StripCRCFileName(src).stem().concat(hex_string).u8string().c_str()));
+  dest = src.parent_path() / StripCRCFileName(src).stem().concat(hex_string);
   dest.replace_extension(src.extension());
 
   return true;
@@ -2564,7 +2564,7 @@ bool PltSelectShip(pilot *Pilot) {
         LOG_INFO.printf("Playing: %s", (const char*)path.u8string().c_str());
         bool cenable = taunt_AreEnabled();
         taunt_Enable(true);
-        taunt_PlayTauntFile((const char*)path.u8string().c_str());
+        taunt_PlayTauntFile(path);
         taunt_Enable(cenable);
       }
     } break;

@@ -573,7 +573,7 @@ bool InitGameModule(const char *name, module *mod) {
 
   // Open the hog file
   if (!cf_OpenLibrary(lib_name)) {
-    tmp_dll_name = cf_LocatePath(lib_name).u8string().c_str();
+    tmp_dll_name = cf_LocatePath(lib_name);
     Multi_game_dll_name.clear();
     goto loaddll;
   }

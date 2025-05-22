@@ -430,7 +430,7 @@ bool msn_DownloadWithStatus(const char *url, const std::filesystem::path &filena
 
           if (file_is_zip) {
             // now we gotta handle the zip file
-            ret = msn_ExtractZipFile(qualfile.u8string().c_str(), filename);
+            ret = msn_ExtractZipFile(qualfile, filename);
           } else {
             ret = 1;
           }

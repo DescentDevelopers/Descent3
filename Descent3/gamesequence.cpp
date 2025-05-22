@@ -1311,7 +1311,7 @@ void CheckHogfile() {
     auto relative_path = std::filesystem::path("missions") / new_mn3;
     auto absolute_path = cf_LocatePath(relative_path);
     if (std::filesystem::exists(absolute_path)) {
-      mn3_Open(relative_path.u8string().c_str());
+      mn3_Open(relative_path);
       mem_free(Current_mission.filename);
       Current_mission.filename = mem_strdup(new_mn3);
     } else {

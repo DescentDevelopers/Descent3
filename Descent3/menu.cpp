@@ -1058,7 +1058,7 @@ static inline int count_missions(const std::vector<std::filesystem::path> &missi
         return;
       LOG_DEBUG.printf("Mission path: %s", (const char*)path.u8string().c_str());
       tMissionInfo msninfo{};
-      GetMissionInfo((const char*)path.filename().u8string().c_str(), &msninfo);
+      GetMissionInfo(path.filename(), &msninfo);
 
       if (msninfo.name[0] && msninfo.single) {
         LOG_DEBUG.printf("Name: %s", msninfo.name);
