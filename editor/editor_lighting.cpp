@@ -870,7 +870,7 @@ void DoRadiosityForRooms() {
 
   if (save_after_bsp) {
     char filename[_MAX_PATH];
-    ddio_MakePath(filename, cf_GetWritableBaseDirectory().u8string().c_str(), "BSPSave.D3L", NULL);
+    ddio_MakePath(filename, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "BSPSave.D3L", NULL);
 
     // Save the level to
     SaveLevel(filename);
@@ -1137,7 +1137,7 @@ void DoRadiosityForRooms() {
   SqueezeLightmaps(0, -1);
 
   char filename[_MAX_PATH + 1];
-  ddio_MakePath(filename, cf_GetWritableBaseDirectory().u8string().c_str(), "LightSave.D3L", NULL);
+  ddio_MakePath(filename, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "LightSave.D3L", NULL);
 
   // Save the level to disk
   SaveLevel(filename);

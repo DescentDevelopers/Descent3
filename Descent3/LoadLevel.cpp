@@ -3620,7 +3620,7 @@ bool LoadLevelInfo(const std::filesystem::path &filename, level_info &info) {
   bool found = false;
 
   if (!ifile) {
-    LOG_ERROR.printf("Failed to open mission file %s", filename.u8string().c_str());
+    LOG_ERROR.printf("Failed to open mission file %s", PATH_TO_CSTR(filename));
     return false;
   }
 

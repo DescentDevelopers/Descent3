@@ -606,7 +606,7 @@ int LoadMultiDLL(const char *name) {
     std::error_code ec;
     std::filesystem::remove(path, ec);
     if (ec) {
-      LOG_ERROR.printf("Unable to remove temporary file %s: %s", path.u8string().c_str(), ec.message().c_str());
+      LOG_ERROR.printf("Unable to remove temporary file %s: %s", PATH_TO_CSTR(path), ec.message().c_str());
     }
   });
 

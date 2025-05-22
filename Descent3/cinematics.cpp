@@ -72,7 +72,7 @@ bool PlayMovie(const std::filesystem::path &moviename) {
   std::filesystem::path filename = moviename;
   // check extension
   std::filesystem::path extension = moviename.extension();
-  if (stricmp((const char*)extension.u8string().c_str(), ".mve") != 0 && stricmp((const char*)extension.u8string().c_str(), ".mv8") != 0) {
+  if (stricmp(PATH_TO_CSTR(extension), ".mve") != 0 && stricmp(PATH_TO_CSTR(extension), ".mv8") != 0) {
     // we need an extension
     filename.replace_extension(".mve");
   }

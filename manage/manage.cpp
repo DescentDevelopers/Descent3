@@ -714,8 +714,8 @@ int mng_InitLocalTables() {
 #endif
 
   if (Network_up) {
-    ddio_MakePath(LocalTableFilename, (const char*)LocalTableDir.u8string().c_str(), LOCAL_TABLE, NULL);
-    ddio_MakePath(LocalTempTableFilename, (const char*)LocalTableDir.u8string().c_str(), TEMP_LOCAL_TABLE, NULL);
+    ddio_MakePath(LocalTableFilename, PATH_TO_CSTR(LocalTableDir), LOCAL_TABLE, NULL);
+    ddio_MakePath(LocalTempTableFilename, PATH_TO_CSTR(LocalTableDir), TEMP_LOCAL_TABLE, NULL);
   } else {
     strcpy(LocalTableFilename, LOCAL_TABLE);
     strcpy(LocalTempTableFilename, TEMP_LOCAL_TABLE);
@@ -747,11 +747,11 @@ int mng_InitNetTables() {
   NetMusicDir = netdir / "data" / "music";
   NetVoiceDir = netdir / "data" / "voice";
   TableLockFilename = NetTableDir / "table.lok";
-  ddio_MakePath(BackupLockFilename, (const char*)NetTableDir.u8string().c_str(), "tablelok.bak", NULL);
-  ddio_MakePath(BackupTableFilename, (const char*)NetTableDir.u8string().c_str(), "table.bak", NULL);
-  ddio_MakePath(TableFilename, (const char*)NetTableDir.u8string().c_str(), NET_TABLE, NULL);
-  ddio_MakePath(TempTableLockFilename, (const char*)NetTableDir.u8string().c_str(), "lock.tmp", NULL);
-  ddio_MakePath(TempTableFilename, (const char*)NetTableDir.u8string().c_str(), TEMP_NET_TABLE, NULL);
+  ddio_MakePath(BackupLockFilename, PATH_TO_CSTR(NetTableDir), "tablelok.bak", NULL);
+  ddio_MakePath(BackupTableFilename, PATH_TO_CSTR(NetTableDir), "table.bak", NULL);
+  ddio_MakePath(TableFilename, PATH_TO_CSTR(NetTableDir), NET_TABLE, NULL);
+  ddio_MakePath(TempTableLockFilename, PATH_TO_CSTR(NetTableDir), "lock.tmp", NULL);
+  ddio_MakePath(TempTableFilename, PATH_TO_CSTR(NetTableDir), TEMP_NET_TABLE, NULL);
   LockerFile = NetTableDir / "locker";
   VersionFile = NetTableDir / "TableVersion";
 
@@ -878,7 +878,7 @@ void mng_BackupTableFile() {
     TableTimeThreshold.dwLowDateTime = 0;
   } else {
     WIN32_FIND_DATA filedata;
-    HANDLE filehandle = FindFirstFile(str.u8string().c_str(), &filedata);
+    HANDLE filehandle = FindFirstFile(PATH_TO_CSTR(str), &filedata);
     if (filehandle == INVALID_HANDLE_VALUE) {
       Error("Couldn't open net table file for some reason!");
       return;
@@ -1573,7 +1573,7 @@ void mng_TransferPages() {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     goto done;
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     goto done;
@@ -1860,13 +1860,13 @@ bool InLockList(mngs_Pagelock *pl) {
 int GetPrimType(const std::filesystem::path &name) {
   int primtype;
   std::filesystem::path ext = name.extension();
-  if (!stricmp(".oof", (const char*)ext.u8string().c_str()))
+  if (!stricmp(".oof", PATH_TO_CSTR(ext)))
     primtype = PRIMTYPE_OOF;
-  else if (!stricmp(".ogf", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".ogf", PATH_TO_CSTR(ext)))
     primtype = PRIMTYPE_OGF;
-  else if (!stricmp(".oaf", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".oaf", PATH_TO_CSTR(ext)))
     primtype = PRIMTYPE_OAF;
-  else if (!stricmp(".wav", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".wav", PATH_TO_CSTR(ext)))
     primtype = PRIMTYPE_WAV;
   else
     primtype = PRIMTYPE_FILE;
@@ -1879,7 +1879,7 @@ void BuildOldFilesForDirectory(const std::filesystem::path& path, FILETIME thres
   HANDLE filehandle;
   WIN32_FIND_DATA filedata;
   std::filesystem::path newpath = path / "*.*";
-  filehandle = FindFirstFile(newpath.u8string().c_str(), &filedata);
+  filehandle = FindFirstFile(PATH_TO_CSTR(newpath), &filedata);
   bool go_ahead = true;
   if (filehandle == INVALID_HANDLE_VALUE)
     go_ahead = false;

@@ -1273,10 +1273,10 @@ void DoScreenshot() {
   screen_name << "screenshot-" << std::chrono::duration_cast<std::chrono::milliseconds>(now).count() << ".png";
   std::filesystem::path filename = screenshots_path / screen_name.str();
   // Now save it
-  screenshot->saveAsPNG((const char*)filename.u8string().c_str());
+  screenshot->saveAsPNG(PATH_TO_CSTR(filename));
 
   if (Demo_flags != DF_PLAYBACK) {
-    AddHUDMessage(TXT_SCRNSHT, filename.filename().u8string().c_str());
+    AddHUDMessage(TXT_SCRNSHT, PATH_TO_CSTR(filename.filename()));
   }
 
   StartTime();

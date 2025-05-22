@@ -698,10 +698,10 @@ void GenerateScriptListFromAllFiles(int mask) {
   //	compile all script files and place into script list.
   ddio_DoForeachFile(dir, std::regex(".+\\.scr"), [&mask](const std::filesystem::path& path){
     std::filesystem::path file = path.filename();
-    if (!stricmp(file.u8string().c_str(), DEFAULT_SCRIPT_NAME) && (mask & DEFAULT_SCRIPT_MASK))
-      GenerateScriptListFromFile(file.u8string().c_str());
-    else if ((mask & CUSTOM_SCRIPT_MASK) && stricmp(file.u8string().c_str(), DEFAULT_SCRIPT_NAME))
-      GenerateScriptListFromFile(file.u8string().c_str());
+    if (!stricmp(PATH_TO_CSTR(file), DEFAULT_SCRIPT_NAME) && (mask & DEFAULT_SCRIPT_MASK))
+      GenerateScriptListFromFile(PATH_TO_CSTR(file));
+    else if ((mask & CUSTOM_SCRIPT_MASK) && stricmp(PATH_TO_CSTR(file), DEFAULT_SCRIPT_NAME))
+      GenerateScriptListFromFile(PATH_TO_CSTR(file));
   });
 }
 

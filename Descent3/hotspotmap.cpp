@@ -594,7 +594,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
 // Given a filename and a hotspotmap structure, it saves it to disk (.HSM)
 void menutga_SaveHotSpotMap(const std::filesystem::path &filename, hotspotmap_t *hsmap, windowmap_t *wndmap) {
   CFILE *file;
-  LOG_DEBUG.printf("Saving HotSpotMap %s", filename.u8string().c_str());
+  LOG_DEBUG.printf("Saving HotSpotMap %s", PATH_TO_CSTR(filename));
   file = (CFILE *)cfopen(filename, "wb");
   if (!file) {
     Int3(); // get jeff!

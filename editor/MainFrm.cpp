@@ -1460,7 +1460,7 @@ void InitCScripts() {
   CreateNewMine();
 
   //	Setup include directories for OSIRIS
-  ddio_MakePath(path, cf_GetWritableBaseDirectory().u8string().c_str(), "data", "levels", NULL);
+  ddio_MakePath(path, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "data", "levels", NULL);
 }
 
 // Copied from winmain.cpp
@@ -2017,11 +2017,11 @@ void CMainFrame::OnImportBitmap() {
   mprintf(0, "Making a copy of this bitmap/anim locally...\n");
 
   if (!anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(), GameBitmaps[bm_handle].name);
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir), GameBitmaps[bm_handle].name);
     bm_SaveFileBitmap(filename, bm_handle);
     bm_FreeBitmap(bm_handle);
   } else {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(), GameVClips[bm_handle].name);
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir), GameVClips[bm_handle].name);
     SaveVClip(filename, bm_handle);
     FreeVClip(bm_handle);
   }
@@ -3186,7 +3186,7 @@ void CMainFrame::OnHotspotTga() {
   }
 
   if (!anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(), GameBitmaps[bm_handle].name);
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir), GameBitmaps[bm_handle].name);
     bm_SaveFileBitmap(filename, bm_handle);
     bm_FreeBitmap(bm_handle);
   }

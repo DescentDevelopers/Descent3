@@ -1202,8 +1202,8 @@ void SaveGameSettings() {
   else
     Database->write("Default_pilot", " ", 2);
 
-  Database->write("GAME_base_directory", (const char*)config_base_directory.u8string().c_str(),
-                  strlen((const char*)config_base_directory.u8string().c_str()) + 1);
+  Database->write("GAME_base_directory", PATH_TO_CSTR(config_base_directory),
+                  strlen(PATH_TO_CSTR(config_base_directory)) + 1);
 }
 
 /*
@@ -2001,7 +2001,7 @@ void SetupTempDirectory(void) {
   std::error_code ec;
   std::filesystem::create_directories(Descent3_temp_directory, ec);
   if (ec) {
-    Error("Could not create temporary directory: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Could not create temporary directory: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2010,7 +2010,7 @@ void SetupTempDirectory(void) {
   // verify that we can write to the temp directory
   if (tempfilename.empty()) {
     LOG_WARNING << "Unable to get temp file name";
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Unable to set temporary directory to: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2019,7 +2019,7 @@ void SetupTempDirectory(void) {
   if (!file) {
     // unable to open file for writing
     LOG_WARNING << "Unable to open temp file name for writing";
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Unable to set temporary directory to: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2032,7 +2032,7 @@ void SetupTempDirectory(void) {
     // unable to open file for reading
     LOG_WARNING << "Unable to open temp file name for reading";
     std::filesystem::remove(tempfilename);
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Unable to set temporary directory to: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2041,7 +2041,7 @@ void SetupTempDirectory(void) {
     LOG_WARNING << "Temp file verify failed";
     cfclose(file);
     std::filesystem::remove(tempfilename);
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Unable to set temporary directory to: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2056,19 +2056,19 @@ void SetupTempDirectory(void) {
   if (!ddio_CreateLockFile(std::filesystem::path(Descent3_temp_directory))) {
     LOG_WARNING << "Lock file NOT created in temp dir " << Descent3_temp_directory;
     Error("Unable to set temporary directory to: \"%s\"\nUnable to create lock file",
-          Descent3_temp_directory.u8string().c_str());
+          PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
   // restore working dir
-  ddio_SetWorkingDir((const char*)cf_GetWritableBaseDirectory().u8string().c_str());
+  ddio_SetWorkingDir(PATH_TO_CSTR(cf_GetWritableBaseDirectory()));
 }
 
 void DeleteTempFiles() {
   ddio_DoForeachFile(Descent3_temp_directory, std::regex("d3[smocti].+\\.tmp"), [](const std::filesystem::path &path) {
     std::error_code ec;
     std::filesystem::remove(path, ec);
-    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", (const char*)path.u8string().c_str(),
-                              (const char*)ec.message().c_str());
+    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", PATH_TO_CSTR(path),
+                              ec.message().c_str());
   });
 }
 
