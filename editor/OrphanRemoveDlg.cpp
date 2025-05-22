@@ -359,7 +359,7 @@ const char *orphan_ignore[] = {
     "monster.str", "mtclient.str", "tanarchy.str"};
 int num_orphan_ignore = std::size(orphan_ignore);
 
-bool IsFileUsed(const char *filename) {
+static bool IsFileUsed(const char *filename) {
   bool found = false;
 
   for (int i = 0; i < num_orphan_ignore; i++) {

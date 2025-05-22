@@ -137,6 +137,8 @@
 
 #define MAX_SCRIPT_LINE_SIZE 800
 
+static void GenerateScriptListFromFile(const char *fname);
+
 //	script name for current level
 char Level_script_name[MAX_SCRFILENAME];
 

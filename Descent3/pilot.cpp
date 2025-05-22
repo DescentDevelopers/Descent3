@@ -1948,7 +1948,7 @@ bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &
 //	Takes the graphics file at the given location and imports it into the custom\graphics dir as an scaled ogf
 //	pathname	=	full path to source bitmap
 //	newfile		=	on return true is the filename of the new bitmap
-bool ImportGraphic(const char *pathname, char *newfile) {
+static bool ImportGraphic(const char *pathname, char *newfile) {
   ASSERT(pathname);
   if (cfexist(pathname) != CFES_ON_DISK) {
     LOG_WARNING.printf("'%s' not found", pathname);

@@ -151,7 +151,7 @@ msn_urls Net_msn_URLs;
 extern char Proxy_server[200];
 extern int16_t Proxy_port;
 
-int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name);
+static int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name);
 
 // Request a URL structure from a server containing a list of download locations
 // For the current mission being played
@@ -685,7 +685,7 @@ void _get_zipfilename(char *output, char *directory, char *zipfilename) {
 
 // return 0 on failure
 // return 1 on success
-int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name) {
+static int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name) {
 
   LOG_DEBUG.printf("Extracting ZIP File (%s) to missions directory", zipfilename.u8string().c_str());
   if (!cfexist(zipfilename)) {
