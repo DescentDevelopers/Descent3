@@ -524,7 +524,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
   cfclose(infile);
   cfclose(outfile);
 
-  if (!SwitcherooFiles((const char*)TableLockFilename.u8string().c_str(), TempTableLockFilename)) {
+  if (!SwitcherooFiles(TableLockFilename, TempTableLockFilename)) {
     Int3();
     return 0;
   }
@@ -590,8 +590,10 @@ int mng_DeletePagelock(char *name, int pagetype) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
-    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
+  std::error_code ec;
+  std::filesystem::rename(TempTableLockFilename, TableLockFilename, ec);
+  if (ec) {
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file: %s", ec.message().c_str());
 
     return (0);
   }
@@ -603,6 +605,7 @@ int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
   CFILE *infile, *outfile;
   int done = 0;
   mngs_Pagelock temp_pl;
+  std::error_code ec;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
   if (!infile) {
@@ -640,12 +643,14 @@ int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
   cfclose(infile);
   cfclose(outfile);
 
-  if (remove(TableLockFilename)) {
-    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
+  if (std::filesystem::remove(TableLockFilename, ec)) {
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file: %s", ec.message().c_str());
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
-    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
+
+  std::filesystem::rename(TempTableLockFilename, TableLockFilename, ec);
+  if (ec) {
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file: %s", ec.message().c_str());
 
     return (0);
   }
@@ -729,6 +734,7 @@ int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
   int done = 0;
   mngs_Pagelock temp_pl;
   int total = 0;
+  std::error_code ec;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
   if (!infile) {
@@ -777,12 +783,14 @@ int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
 
   LOG_DEBUG.printf("Unlocked %d pages\n", total);
 
-  if (remove(TableLockFilename)) {
-    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
+  if (std::filesystem::remove(TableLockFilename)) {
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file: %s", ec.message().c_str());
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
-    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
+
+  std::filesystem::rename(TempTableLockFilename, TableLockFilename, ec);
+  if (ec) {
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file: %s", ec.message().c_str());
 
     return (0);
   }
