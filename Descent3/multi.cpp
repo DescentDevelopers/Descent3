@@ -4458,7 +4458,6 @@ void MultiDoWorldStates(uint8_t *data) {
       spew.speed = MultiGetFloat(data, &count);
 
       uint16_t local_spewnum = SpewCreate(&spew);
-      ASSERT(local_spewnum != -1); // DAJ -1FIX
       local_spewnum &= 0xFF;       // Adjust for handle
       Server_spew_list[spewnum] = local_spewnum;
       LOG_DEBUG.printf("Got spew of type %d. Server=%d local=%d", spew.effect_type, spewnum, local_spewnum);
@@ -5074,8 +5073,8 @@ void MultiDoExecuteDLL(uint8_t *data) {
     }
   }
 
-  int16_t local_me_objnum;
-  int16_t local_it_objnum;
+  int32_t local_me_objnum;
+  int32_t local_it_objnum;
 
   if (me_objnum == -1)
     local_me_objnum = -1;
@@ -8077,7 +8076,6 @@ void MultiDoGhostObject(uint8_t *data) {
     return;
   }
 
-  MULTI_ASSERT_NOMESSAGE(objnum != -1);
   MULTI_ASSERT_NOMESSAGE(Objects[objnum].type != OBJ_NONE);
 
   if (ghost) {
@@ -8332,7 +8330,7 @@ void MultiDoAiWeaponFlags(uint8_t *data) {
 
   int flags;
   int wb_index;
-  int16_t obj_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t obj_num = Server_object_list[MultiGetUshort(data, &count)];
   flags = MultiGetInt(data, &count);
   wb_index = MultiGetByte(data, &count);
   if (obj_num == 65535) {
@@ -9420,7 +9418,6 @@ void MultiDoMSafePowerup(uint8_t *data);
 // Takes the individual packet types and passes their data to the appropriate routines
 void MultiProcessData(uint8_t *data, int len, int slot, network_address *from_addr) {
   uint8_t type = data[0];
-  len = len;
   int sequence = -1;
 
   // HEY!!!!!  These packets are the only ones that are accepted by non-connected machines

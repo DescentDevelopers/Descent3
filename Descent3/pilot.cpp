@@ -1824,7 +1824,6 @@ private:
   int bm_handle = -1;
   float start_time;
   UIText text;
-  bool created = false;
 };
 
 //	struct ship_pos
@@ -2269,7 +2268,7 @@ bool PltSelectShip(pilot *Pilot) {
   int old_bmhandle;
   int old_flags;
   bool exit_menu = false;
-  bool ret;
+  bool ret = false;
 
   //	pre-initialize all variables
 

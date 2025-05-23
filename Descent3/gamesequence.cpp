@@ -2347,13 +2347,11 @@ void PageInShip(int id) {
   LoadLevelProgress(LOAD_PROGRESS_PAGING_DATA, PAGED_IN_CALC);
   // Try and load the various weapons
   int j;
-  if (shippointer->static_wb) {
-    for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
-      for (j = 0; j < MAX_WB_GUNPOINTS; j++) {
-        if (shippointer->static_wb[i].gp_weapon_index[j] != LASER_INDEX) {
-          PageInWeapon(shippointer->static_wb[i].gp_weapon_index[j]);
-          LoadLevelProgress(LOAD_PROGRESS_PAGING_DATA, PAGED_IN_CALC);
-        }
+  for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
+    for (j = 0; j < MAX_WB_GUNPOINTS; j++) {
+      if (shippointer->static_wb[i].gp_weapon_index[j] != LASER_INDEX) {
+        PageInWeapon(shippointer->static_wb[i].gp_weapon_index[j]);
+        LoadLevelProgress(LOAD_PROGRESS_PAGING_DATA, PAGED_IN_CALC);
       }
     }
   }

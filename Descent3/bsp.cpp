@@ -535,7 +535,7 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
   bspnode *frontnode, *backnode;
   listnode *frontlist = NULL, *backlist = NULL;
   bspplane partition_plane;
-  int numfront = 0, numback = 0, numsplits = 0;
+  int numfront = 0, numback = 0;
 
   ASSERT(numpolys > 0);
   partition_poly = SelectPlane(polylist);
@@ -671,8 +671,6 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
       // Must split this polygon
       ASSERT(fate == BSP_SPANNING);
       bsppolygon *frontpoly, *backpoly;
-
-      numsplits++;
 
       SplitPolygon(&partition_plane, testpoly, &frontpoly, &backpoly);
 

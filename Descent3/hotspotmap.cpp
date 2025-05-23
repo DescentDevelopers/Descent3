@@ -295,10 +295,6 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
     working_window = -1;
     for (x = 0; x < width; x++) {
       alpha = (unsigned)map[y * width + x];
-      if (alpha != 255) {
-        if (alpha >= 130)
-          alpha = alpha;
-      }
       if ((alpha >= MAX_HOTSPOTS) && (alpha != NO_ALPHA)) {
         // set the working_window value (needed so we know which window to work with for the writeable
         if (alpha != WRITEABLE_ALPHA) {

@@ -170,7 +170,7 @@ void DemoWriteHudMessage(uint32_t color, bool blink, char *msg);
 void DemoWriteChangedObjects();
 
 void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
-                         uint16_t weapobjnum, int16_t gunnum);
+                         int16_t weapobjnum, int16_t gunnum);
 
 void DemoWriteObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                         object *obj);

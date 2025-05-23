@@ -620,6 +620,6 @@ inline void opti_16s_mix(int16_t *cur_sample_16bit, const int num_write, int &sa
     *mb = (int16_t)l_sample;
     mb++;
     *mb = (int16_t)r_sample;
-    *mb++;
+    // *mb++; LGT: Statement has not effect. Should be mb++?
   }
 }

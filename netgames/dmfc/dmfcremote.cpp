@@ -152,7 +152,7 @@ void Remote_ProcessFrame(void) {
       // make sure they are in the game
       if (!pr || pr->state != STATE_INGAME) {
         // the player is no longer in the game
-        mprintf(0, "REMOTE: Removing authorization for %s\n", (pr->callsign) ? (pr->callsign) : "<UNKNOWN>");
+        mprintf(0, "REMOTE: Removing authorization for %s\n", pr->callsign[0] ? (pr->callsign) : "<UNKNOWN>");
         Remote_Logout(p);
 
         // change the key for the slot

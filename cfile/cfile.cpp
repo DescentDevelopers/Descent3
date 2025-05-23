@@ -136,7 +136,7 @@ std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::
   // Search component in search_path
   auto const &it = std::filesystem::directory_iterator(search_path);
 
-  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
+  auto found = std::find_if(it, end(it), [&search_file](const auto& dir_entry) {
     return stricmp((const char*)dir_entry.path().filename().u8string().c_str(), (const char*)search_file.u8string().c_str()) == 0;
   });
 
@@ -155,14 +155,14 @@ std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::
 
 std::vector<std::filesystem::path> cf_LocatePathMultiplePathsHelper(const std::filesystem::path &relative_path,
                                                                     bool stop_after_first_result) {
-  ASSERT(("realative_path should be a relative path.", relative_path.is_relative()));
+  ASSERT("relative_path should be a relative path." && relative_path.is_relative());
   std::vector<std::filesystem::path> return_value = { };
   for (auto base_directories_iterator = Base_directories.rbegin();
        base_directories_iterator != Base_directories.rend();
        ++base_directories_iterator) {
-    ASSERT(("base_directory should be an absolute path.", base_directories_iterator->is_absolute()));
+    ASSERT("base_directory should be an absolute path." && base_directories_iterator->is_absolute());
     auto to_append = cf_LocatePathCaseInsensitiveHelper(relative_path, *base_directories_iterator);
-    ASSERT(("to_append should be either empty or an absolute path.", to_append.empty() || to_append.is_absolute()));
+    ASSERT("to_append should be either empty or an absolute path." && (to_append.empty() || to_append.is_absolute()));
     if (std::filesystem::exists(to_append)) {
       return_value.push_back(to_append);
       if (stop_after_first_result) {
@@ -713,18 +713,17 @@ int cfexist(const std::filesystem::path &filename) {
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp) {
-  int i;
-  const char *error_msg = eof_error; // default error
   ASSERT(!(cfp->flags & CFF_TEXT));
   if (cfp->position + count <= cfp->size) {
-    i = fread(buf, 1, count, cfp->file);
+    int i = fread(buf, 1, count, cfp->file);
     if (i == count) {
       cfp->position += i;
       return i;
     }
     // if not EOF, then get the error message
-    if (!feof(cfp->file))
-      error_msg = strerror(errno);
+    if (!feof(cfp->file)) {
+      ThrowCFileError(CFE_READING, cfp, strerror(errno));  
+    }
   }
   LOG_ERROR.printf("Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name,
                    errno);

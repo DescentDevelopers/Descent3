@@ -1455,8 +1455,6 @@ const tConvertObject object_convert[] = {
     {OBJ_POWERUP, -2, "ProxMinepowerup", CONV_MULTI},
     {OBJ_POWERUP, -2, "energy", 0}};
 
-static constexpr int object_convert_size = std::size(object_convert);
-
 uint32_t chunk_start, chunk_size, filelen;
 
 int CountDataToPageIn();
@@ -1512,7 +1510,7 @@ void ConvertObject(int *type, int *id) {
 
   // look at even numbered items, they are the object to convert
   // odd number items are destination
-  for (int i = 0; i < object_convert_size; i += 2) {
+  for (int i = 0; i < std::size(object_convert); i += 2) {
     if (*type == object_convert[i].type) {
       // type match, check id's
       if (object_convert[i].id == -2) {

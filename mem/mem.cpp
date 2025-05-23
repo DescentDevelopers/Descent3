@@ -212,19 +212,6 @@
 #include "mem.h"
 #include "pserror.h"
 
-// #define MEM_DEBUG
-
-#ifdef MEM_USE_RTL
-#pragma message("mem.cpp: Compiling For Run-Time Library usage")
-#endif
-
-#ifdef MEM_DEBUG
-#pragma message("mem.cpp: Compiling with Debug Settings")
-#endif
-
-#ifdef MEM_LOGFILE
-#pragma message("mem.cpp: Compiling with logfile support")
-#endif
 
 int Total_mem_used = 0;
 int Mem_high_water_mark = 0;
@@ -241,7 +228,9 @@ struct mem_alloc_info {
   char file[17];
 };
 
+#if !defined(POSIX)
 static void *Mem_failsafe_block = nullptr;
+#endif
 
 bool Mem_low_memory_mode = false;
 bool Mem_superlow_memory_mode = false;
@@ -307,7 +296,6 @@ int mem_size_sub(void *memblock) {
 
 bool mem_dumpmallocstofile(char *filename) { return false; }
 
-#pragma mark -
 
 #else // defined(POSIX)
 // Windows memory management

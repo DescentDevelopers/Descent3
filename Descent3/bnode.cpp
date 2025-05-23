@@ -302,7 +302,6 @@ static char BNode_vis[MAX_BNODES_PER_ROOM];
 
 int BNode_FindDirLocalVisibleBNode(int roomnum, vector *pos, vector *fvec, float rad) {
   int i;
-  float best_dot = -1.01f;
   float closest_dist = 800.0f;
   int closest_node = -1;
   bool f_retry = false;
@@ -355,7 +354,6 @@ retry:
 
           if (fvi_FindIntersection(&fq, &hit_info) == HIT_NONE) {
             BNode_vis[i] = VIS_OK;
-            best_dot = dot;
             closest_node = i;
           } else {
             if (!f_retry) {

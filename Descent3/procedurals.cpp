@@ -777,7 +777,7 @@ void AddProcFallLeft(int handle, static_proc_element *proc) {
         DynamicProcElements[index].x1 = IntToFix(proc->x1 + ((ps_rand() % 5) - 2));
         DynamicProcElements[index].y1 = IntToFix(proc->y1 + ((ps_rand() % 5) - 2));
         DynamicProcElements[index].color = BRIGHT_COLOR;
-        DynamicProcElements[index].dx = IntToFix(-1);
+        DynamicProcElements[index].dx = -65536;
         DynamicProcElements[index].dy = FloatToFix((-(prand() % 100)) / 300.0);
         DynamicProcElements[index].frames_left = (prand() % 15) + 25;
       }

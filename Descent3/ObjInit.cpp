@@ -734,7 +734,7 @@ int ObjInitGeneric(object *objp, bool reinit) {
   // Deal with deleted type
   if (obj_info->type == OBJ_NONE) {
     int i;
-    for (i = 0, obj_info = Object_info; i < MAX_OBJECT_IDS; i++, obj_info) { // find other object of same type
+    for (i = 0, obj_info = Object_info; i < MAX_OBJECT_IDS; i++) { // find other object of same type
       if (Object_info[i].type == objp->type)
         break;
     }

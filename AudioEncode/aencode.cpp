@@ -143,10 +143,6 @@ float std_hi_filter[] = {
     0.0012475221f, -0.0024950907f, -0.0087309526f, 0.019957958f, 0.050528999f, -0.12055097f, -0.29304558f, 0.70617616f,
 };
 
-const float T911 = -32767.0f;
-const float T913 = 32767.0f;
-const float T1266 = 0.0f;
-
 void WriteBand_Fmt0(Encoder &enc, int32_t colIndex, uint32_t formatId) {}
 
 void WriteBand_Fmt3_16(Encoder &enc, int32_t colIndex, uint32_t formatId) {

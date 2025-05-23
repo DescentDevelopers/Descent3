@@ -125,9 +125,6 @@ scalar FixCos(angle a) {
   return (scalar)(c0 + ((c1 - c0) * (double)f / 256.0));
 }
 
-// Get rid of the "no return value" warnings in the next three functions
-#pragma warning(disable : 4035)
-
 // compute inverse sine
 angle FixAsin(scalar v) {
   fix vv;

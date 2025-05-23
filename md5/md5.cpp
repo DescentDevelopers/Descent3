@@ -51,7 +51,7 @@ void MD5::round(std::array<std::uint32_t, 4> &sums, const uint8_t *block) const 
 
   // 64 rounds...
   for (uint32_t r = 0; r < 64; ++r) {
-    std::uint32_t f, g;
+    std::uint32_t f = 0, g = 0;
     uint32_t s = md5_round_shifts[((r >> 2) & ~3) | (r & 3)];
     switch (r >> 4) {
     case 0:

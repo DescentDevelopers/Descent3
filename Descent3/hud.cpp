@@ -915,7 +915,6 @@ void UpdateCustomtext2HUDItem(char *text) {
     if (HUD_array[i].stat && (HUD_array[i].type == HUD_ITEM_CUSTOMTEXT2)) {
       ASSERT(HUD_array[i].data.text != NULL);
       strncpy(HUD_array[i].data.text, text, HUD_array[i].buffer_size);
-      HUD_array[i].data.text[HUD_array[i].buffer_size - 1];
       break;
     }
   }

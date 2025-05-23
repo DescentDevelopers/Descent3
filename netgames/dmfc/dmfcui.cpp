@@ -619,8 +619,7 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
 
           if (TeamDlgFinalTeamSettings[i] != TS_NOTINGAME) {
             // we've changed his team though
-            int new_team;
-            new_team = TeamDlgFinalTeamSettings[i];
+            int new_team = TeamDlgFinalTeamSettings[i];
             RequestTeamChange(new_team, i, false); // no need to spew his stuff
           } else {
             // we haven't changed his team, so he's ok on the team he's on
@@ -629,7 +628,7 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
           // this player was in the game when we brought up the dialog
           if (TeamDlgInitialTeamSettings[i] != TeamDlgFinalTeamSettings[i]) {
             // he has changed teams!!
-            int new_team;
+            int new_team = 0;
             if (TeamDlgFinalTeamSettings[i] != TS_NOTINGAME) {
               new_team = TeamDlgFinalTeamSettings[i];
             } else {

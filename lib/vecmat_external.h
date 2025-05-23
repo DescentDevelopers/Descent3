@@ -88,7 +88,7 @@ enum class align
 };
 
 template<typename T, size_t N, enum align A = align::adaptive, size_t N_POW2 = VM_BIT_CEIL(N)>
-struct alignas(N==N_POW2 && A != align::scalar || A == align::vector ? alignof(T) * N_POW2 : alignof(T)) vec : std::array<T,N> {
+struct alignas((N==N_POW2 && A != align::scalar) || A == align::vector ? alignof(T) * N_POW2 : alignof(T)) vec : std::array<T,N> {
 
 template<size_t N_DST = N, enum align A_DST = align::adaptive>
 operator vec<T,N_DST,A_DST>() { return *reinterpret_cast<vec<T,N_DST,A_DST>*>(this); }
@@ -328,11 +328,11 @@ struct {
 };
 constexpr static inline const matrix id()
 {
-  return matrix{ vector::id(0), vector::id(1), vector::id(2) };
+  return matrix{ {{vector::id(0), vector::id(1), vector::id(2)}} };
 }
 constexpr static inline const matrix ne()
 {
-  return matrix{ vector::ne(), vector::ne(), vector::ne() };
+  return matrix{ {{vector::ne(), vector::ne(), vector::ne()}} };
 }
 };
 
@@ -355,11 +355,11 @@ struct {
 };
 constexpr static inline const matrix4 id()
 {
-  return matrix4{ vector4::id(0), vector4::id(1), vector4::id(2), vector4::id(3) };
+  return matrix4{ {{vector4::id(0), vector4::id(1), vector4::id(2), vector4::id(3)}} };
 }
 constexpr static inline const matrix4 ne()
 {
-  return matrix4{ vector4::ne(), vector4::ne(), vector4::ne(), vector4::ne() };
+  return matrix4{ {{vector4::ne(), vector4::ne(), vector4::ne(), vector4::ne()}} };
 }
 };
 

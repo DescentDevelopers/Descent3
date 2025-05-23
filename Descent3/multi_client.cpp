@@ -146,6 +146,7 @@
 #include "Mission.h"
 #include "stringtable.h"
 #include "ship.h"
+#include <cstdint>
 
 #define WEAPONS_LOAD_UPDATE_INTERVAL 2.0
 
@@ -436,9 +437,9 @@ void MultiDoClientFrame() {
         }
       }
 
-      uint8_t data[MAX_GAME_DATA_SIZE], count = 0, add_count = 0;
-
-      count = MultiStuffPosition(Player_num, data);
+      uint8_t data[MAX_GAME_DATA_SIZE];
+      int32_t add_count = 0;
+      int32_t count = MultiStuffPosition(Player_num, data);
 
       // Send firing if needed
       if (Player_fire_packet[Player_num].fired_on_this_frame == PFP_FIRED)

@@ -1905,7 +1905,7 @@ bool SuperThief::DoSteal(int me, int it) {
               max = (14 - SuperThiefableItems[i].index) / 2.5f + 1;
             }
 
-            int new_amount = (rand() / (float)(RAND_MAX + 1)) * max + 1;
+            int new_amount = (rand() / (float)(RAND_MAX)) * max + 1;
 
             if (new_amount < amount)
               amount = new_amount;
@@ -6287,7 +6287,7 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
               max = (14 - ThiefableItems[i].index) / 2.5f + 1;
             }
 
-            int new_amount = (rand() / (float)(RAND_MAX + 1)) * max + 1;
+            int new_amount = (rand() / (float)RAND_MAX) * max + 1;
 
             if (new_amount < amount)
               amount = new_amount;
@@ -7541,7 +7541,7 @@ bool OldScratch::DoSteal(int me, int it) {
               max = (14 - SuperThiefableItems[i].index) / 2.5f + 1;
             }
 
-            int new_amount = (rand() / (float)(RAND_MAX + 1)) * max + 1;
+            int new_amount = (rand() / (float)(RAND_MAX)) * max + 1;
 
             if (new_amount < amount)
               amount = new_amount;
@@ -10155,7 +10155,7 @@ void Sniper::SetMode(int me, char mode) {
     AI_Value(me, VF_SET, AIV_F_MAX_SPEED, &memory->base_speed);
     AI_Value(me, VF_SET, AIV_F_MAX_DELTA_SPEED, &memory->base_acc);
     memory->time_till_next_mode = 5.0f * (float)rand() / (float)RAND_MAX;
-    +6.0f;
+    // +6.0f; LGT: Highlighted by formatter. Should be part of the previous statement?
   } break;
   }
 
@@ -10286,7 +10286,7 @@ void SniperNoRun::SetMode(int me, char mode) {
     AI_Value(me, VF_SET, AIV_F_MAX_SPEED, &memory->base_speed);
     AI_Value(me, VF_SET, AIV_F_MAX_DELTA_SPEED, &memory->base_acc);
     memory->time_till_next_mode = 5.0f * (float)rand() / (float)RAND_MAX;
-    +4.0f;
+    // +4.0f; LGT: Highlighted by formatter. Should be part of the previous statement?
   } break;
   }
 
@@ -10411,7 +10411,7 @@ void EvaderModA::SetMode(int me, char mode) {
     }
 
     memory->time_till_next_mode = 4.0f * (float)rand() / (float)RAND_MAX;
-    +6.0f;
+    // +6.0f; LGT: Highlighted by formatter. Should be part of the previous statement?
   } break;
   }
 
@@ -10526,7 +10526,7 @@ void FlameRAS::SetMode(int me, char mode) {
     }
 
     memory->time_till_next_mode = 4.0f * (float)rand() / (float)RAND_MAX;
-    +6.0f;
+    // +6.0f; LGT: Highlighted by formatter. Should be part of the previous statement?
   } break;
   }
 

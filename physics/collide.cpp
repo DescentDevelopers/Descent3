@@ -1047,9 +1047,8 @@ extern void DeformTerrain(vector *pos, int depth, scalar size);
 
 // Check for lava, volatile, or water surface.  If contact, make special sound & kill the weapon
 void check_for_special_surface(object *weapon, int surface_tmap, vector *surface_normal, float hit_dot) {
-  bool f_forcefield, f_volatile, f_lava, f_water;
+  bool f_volatile, f_lava, f_water;
 
-  f_forcefield = (GameTextures[surface_tmap].flags & TF_FORCEFIELD) != 0;
   f_volatile = (GameTextures[surface_tmap].flags & TF_VOLATILE) != 0;
   f_lava = (GameTextures[surface_tmap].flags & TF_LAVA) != 0;
   f_water = (GameTextures[surface_tmap].flags & TF_WATER) != 0;
@@ -1707,21 +1706,18 @@ void bump_obj_against_fixed(object *obj, vector *collision_point, vector *collis
 void bump_two_objects(object *object0, object *object1, vector *collision_point, vector *collision_normal,
                       int damage_flag) {
   object *t = nullptr;
-  object *other = nullptr;
 
   // Determine if a moving object hits a non-moving object
   if ((object0->movement_type != MT_PHYSICS && object0->movement_type != MT_WALKING) ||
       (object0->movement_type == MT_PHYSICS && object0->mtype.phys_info.velocity == Zero_vector &&
        (object0->mtype.phys_info.flags & PF_LOCK_MASK) && (object0->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS))) {
     t = object1;
-    other = object0;
     *collision_normal *= -1.0f;
   }
   if ((object1->movement_type != MT_PHYSICS && object1->movement_type != MT_WALKING) ||
       (object1->movement_type == MT_PHYSICS && object1->mtype.phys_info.velocity == Zero_vector &&
        (object1->mtype.phys_info.flags & PF_LOCK_MASK) && (object1->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS))) {
     t = object0;
-    other = object1;
   }
 
   // If we hit a non-moving object...

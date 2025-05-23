@@ -1332,7 +1332,6 @@ void aiCreeper::set_state(int me_handle, int state) {
   float circle_dist;
   char cenable;
 
-retry_set_state:
   switch (state) {
   case STATE_IDLE:
     // stay at one position until ready.  note that if attacked , it will flee in this state.

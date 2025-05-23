@@ -85,6 +85,7 @@
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "dmfcinternal.h"
+#include <cstdint>
 #include <stdlib.h>
 #include <string.h>
 
@@ -359,7 +360,7 @@ bool PRec_AssignPlayerToSlot(int pnum, int slot, player *players_array, netplaye
   Player_records[slot].total_time_in_game = 0;
   Player_records[slot].team = players_array[pnum].team;
 
-  if (basethis->IsMasterTrackerGame() && (basethis->Players[pnum].tracker_id)) {
+  if (basethis->IsMasterTrackerGame() && basethis->Players[pnum].tracker_id[0]) {
     // we are in a master tracker game, so save the tracker ID
     mprintf(0, "PREC: Got a PXO Player ID of %s\n", basethis->Players[pnum].tracker_id);
     Player_records[slot].tracker_id = strdup(basethis->Players[pnum].tracker_id);
@@ -592,9 +593,12 @@ void PRec_ReceivePRecFromServer(uint8_t *data) {
   pr->callsign[callsignlen] = '\0';
   MultiUnpackNetworkAddress(&pr->net_addr, data, &count); // unpack bytes (network address)
   pr->pnum = MultiGetByte(data, &count);                  // unpack byte (pnum)
-  pr->team = MultiGetByte(data, &count);
-  if (pr->team == 255) // unpack byte (team)
+  uint8_t team = MultiGetByte(data, &count);
+  if (team == 255) {
     pr->team = -1;
+  } else {
+    pr->team = team;
+  }
 
   if (MultiGetByte(data, &count)) {
     ASSERT(basethis->IsMasterTrackerGame() != 0);

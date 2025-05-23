@@ -174,8 +174,6 @@ int bm_iff_get_sig(CFILE *f) {
   return (IFF_SIG_UNKNOWN);
 }
 int bm_iff_parse_bmhd(CFILE *ifile, uint32_t len, iff_bitmap_header *bmheader) {
-  len = len;
-
   bmheader->w = cf_ReadShort(ifile, false);
   bmheader->h = cf_ReadShort(ifile, false);
   bmheader->x = cf_ReadShort(ifile, false);
@@ -346,7 +344,7 @@ int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
     }
 
     if (cnt == -1) {
-      if (!bmheader->w & 1)
+      if (!bmheader->w)
         return IFF_CORRUPT;
     } else if (cnt)
       return IFF_CORRUPT;
@@ -549,7 +547,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
   CFILE *ifile;
   iff_bitmap_header bm_headers[40];
   iff_bitmap_header *temp_bm_head;
-  int32_t sig, form_len;
+  int32_t sig;
   int32_t form_type;
   int num_bitmaps = 0;
   int ret, i;
@@ -562,7 +560,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
     return -1;
 
   sig = bm_iff_get_sig(ifile);
-  form_len = cf_ReadInt(ifile, false);
+  cf_ReadInt(ifile, false); // form_len
 
   if (sig != IFF_SIG_FORM) {
     LOG_ERROR << "Not a valid IFF file.";

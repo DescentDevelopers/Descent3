@@ -3356,7 +3356,7 @@ void SetObjectControlType(object *obj, int control_type) {
     memset(obj->ai_info, 0x00, sizeof(ai_frame)); // DAJ clear the baby
 
     for (i = 0; i < num_wbs; i++) {
-      ASSERT(pm->poly_wb[i].num_turrets >= 0 && pm->poly_wb[i].num_turrets <= 6400);
+      ASSERT(pm->poly_wb[i].num_turrets >= 0);
       count += pm->poly_wb[i].num_turrets;
     }
 

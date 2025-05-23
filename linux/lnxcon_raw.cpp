@@ -43,6 +43,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cctype>
+#include <iostream>
 
 #include "AppConsole.h"
 #include "ddio_common.h"
@@ -174,6 +175,5 @@ void con_raw_Destroy() {
 
 // put some data up on the screen
 void con_raw_Puts(int window, const char *str) {
-  fprintf(stdout, str);
-  fflush(stdout);
+  std::cout << str << std::flush;
 }

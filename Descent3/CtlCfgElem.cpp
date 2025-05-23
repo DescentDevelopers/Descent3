@@ -482,7 +482,6 @@ const char *cfg_binding_text(ct_type ctype, uint8_t ctrl, uint8_t binding) {
 
   switch (ctype) {
   case ctKey: {
-    ASSERT(binding < NUM_KEYBINDSTRINGS);
     str = Ctltext_KeyBindings[binding];
     break;
   }

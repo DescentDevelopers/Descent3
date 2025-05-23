@@ -2599,7 +2599,7 @@ void DisplayTerrainList(int cellcount, bool from_automap) {
     cx = t % TERRAIN_WIDTH;
     cz = t / TERRAIN_WIDTH;
 
-    if (cx < TERRAIN_WIDTH - simplemul && cz < TERRAIN_DEPTH - simplemul || lod != (MAX_TERRAIN_LOD - 1)) {
+    if ((cx < TERRAIN_WIDTH - simplemul && cz < TERRAIN_DEPTH - simplemul) || lod != (MAX_TERRAIN_LOD - 1)) {
       int ul, lr; // upper_left,lower_right
       if (Terrain_seg[t].flags & TF_INVISIBLE)
         if (!Show_invisible_terrain)

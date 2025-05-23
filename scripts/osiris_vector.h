@@ -24,9 +24,6 @@
 
 const vector Zero_vector = vector::ne();
 
-// Disable the "possible loss of data" warning
-#pragma warning(disable : 4244)
-
 // Used for debugging.  It is used in printf's so we do not have to write out the structure 3 times
 // to print all the coordinates.
 #define XYZ(v) (v)->x(), (v)->y(), (v)->z()
