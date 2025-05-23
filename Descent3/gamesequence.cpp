@@ -1354,7 +1354,7 @@ bool StartNewGame() {
   InitPlayerNewShip(Player_num, INVRESET_ALL);
   InitPlayerNewGame(Player_num);
 
-  InitCameraViews(1); // Turn off all camera views, including rear views
+  InitCameraViews(true); // Turn off all camera views, including rear views
 
   Quicksave_game_slot = -1; // reset so that quicksave key will always go to savegame menu first
 
@@ -1552,7 +1552,7 @@ void StartLevel() {
   ResetGameMessages();
   ResetReticle();
   ResetSmallViews();  // ResetSmallViews() must come before InitCameraViews()
-  InitCameraViews(0); // ResetSmallViews() must come before InitCameraViews()
+  InitCameraViews(false); // ResetSmallViews() must come before InitCameraViews()
   RestoreCameraRearviews();
   SetHUDMode(GetHUDMode()); // what does this do?
 
