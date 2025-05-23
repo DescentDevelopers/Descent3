@@ -301,7 +301,7 @@ void InitDefaultMissionFromCLI();
 void ResetMission();
 
 //	loads and verifies a mission as the current mission, returns if valid of not.
-bool LoadMission(const char *msn);
+bool LoadMission(const std::filesystem::path& mssn);
 
 //	initializes a level's script.
 void InitLevelScript();
