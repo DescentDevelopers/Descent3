@@ -150,28 +150,28 @@ constexpr inline vec<T,3,A> operator-() const     { vec<T,N,A> neg = {}; neg.fil
 
 /* arithmetic vector */
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive, typename T_DST = decltype((T)1 + (T_OTHER)1)>
-constexpr inline vec<T_DST,N,A> operator+(const vec<T_OTHER,N_OTHER,A_OTHER> other) const
+constexpr inline vec<T_DST,N,A> operator+(const vec<T_OTHER,N_OTHER,A_OTHER> &other) const
 {
 	vec<T_DST,N,A> dst = {};
 	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), dst.begin(), std::plus<>{});
 	return dst;
 }
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive, typename T_DST = decltype((T)1 - (T_OTHER)1)>
-constexpr inline vec<T_DST,N,A> operator-(const vec<T_OTHER,N_OTHER,A_OTHER> other) const
+constexpr inline vec<T_DST,N,A> operator-(const vec<T_OTHER,N_OTHER,A_OTHER> &other) const
 {
 	vec<T_DST,N,A> dst = {};
 	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), dst.begin(), std::minus<>{});
 	return dst;
 }
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive, typename T_DST = decltype((T)1 * (T_OTHER)1)>
-constexpr inline vec<T_DST,N,A> operator*(const vec<T_OTHER,N_OTHER,A_OTHER> other) const
+constexpr inline vec<T_DST,N,A> operator*(const vec<T_OTHER,N_OTHER,A_OTHER> &other) const
 {
 	vec<T_DST,N,A> dst = {};
 	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), dst.begin(), std::multiplies<>{});
 	return dst;
 }
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive, typename T_DST = decltype((T)1 / (T_OTHER)1)>
-constexpr inline vec<T_DST,N,A> operator/(const vec<T_OTHER,N_OTHER,A_OTHER> other) const
+constexpr inline vec<T_DST,N,A> operator/(const vec<T_OTHER,N_OTHER,A_OTHER> &other) const
 {
 	vec<T_DST,N,A> dst = {};
 	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), dst.begin(), [](const T& a, const T& b) { return (T)a*(T)1/b; });
@@ -179,7 +179,7 @@ constexpr inline vec<T_DST,N,A> operator/(const vec<T_OTHER,N_OTHER,A_OTHER> oth
 }
 /* arithmetic scalar */
 template<typename T_OTHER, typename T_DST = decltype((T)1 + (T_OTHER)1)>
-constexpr inline vec<T_DST,N,A> operator+(const T_OTHER other) const
+constexpr inline vec<T_DST,N,A> operator+(const T_OTHER &other) const
 {
 	vec<T_DST,N,A> dst = {};
 	dst.fill((T)other);
@@ -187,7 +187,7 @@ constexpr inline vec<T_DST,N,A> operator+(const T_OTHER other) const
 	return dst;
 }
 template<typename T_OTHER, typename T_DST = decltype((T)1 - (T_OTHER)1)>
-constexpr inline vec<T_DST,N,A> operator-(const T_OTHER other) const
+constexpr inline vec<T_DST,N,A> operator-(const T_OTHER &other) const
 {
 	vec<T_DST,N,A> dst = {};
 	dst.fill((T)other);
@@ -195,7 +195,7 @@ constexpr inline vec<T_DST,N,A> operator-(const T_OTHER other) const
 	return dst;
 }
 template<typename T_OTHER, typename T_DST = decltype((T)1 * (T_OTHER)1)>
-constexpr inline vec<T_DST,N,A> operator*(const T_OTHER other) const
+constexpr inline vec<T_DST,N,A> operator*(const T_OTHER &other) const
 {
 	vec<T_DST,N,A> dst = {};
 	dst.fill((T)other);
@@ -203,7 +203,7 @@ constexpr inline vec<T_DST,N,A> operator*(const T_OTHER other) const
 	return dst;
 }
 template<typename T_OTHER, typename T_DST = decltype((T)1 / (T_OTHER)1)>
-constexpr inline vec<T_DST,N,A> operator/(const T_OTHER other) const
+constexpr inline vec<T_DST,N,A> operator/(const T_OTHER &other) const
 {
 	vec<T_DST,N,A> dst = {};
 	dst.fill((T)1/other);
@@ -213,32 +213,32 @@ constexpr inline vec<T_DST,N,A> operator/(const T_OTHER other) const
 
 /* arithmetic assign vector */
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive>
-constexpr inline vec<T,N,A> operator+=(const vec<T_OTHER,N_OTHER,A_OTHER> other)
+constexpr inline vec<T,N,A> operator+=(const vec<T_OTHER,N_OTHER,A_OTHER> &other)
 {
 	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), (*this).begin(), std::plus<>{});
 	return (*this);
 }
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive>
-constexpr inline vec<T,N,A> operator-=(const vec<T_OTHER,N_OTHER,A_OTHER> other)
+constexpr inline vec<T,N,A> operator-=(const vec<T_OTHER,N_OTHER,A_OTHER> &other)
 {
 	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), (*this).begin(), std::minus<>{});
 	return (*this);
 }
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive>
-constexpr inline vec<T,N,A> operator*=(const vec<T_OTHER,N_OTHER,A_OTHER> other)
+constexpr inline vec<T,N,A> operator*=(const vec<T_OTHER,N_OTHER,A_OTHER> &other)
 {
 	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), (*this).begin(), std::multiplies<>{});
 	return (*this);
 }
 template<typename T_OTHER, size_t N_OTHER, enum align A_OTHER = align::adaptive>
-constexpr inline vec<T,N,A> operator/=(const vec<T_OTHER,N_OTHER,A_OTHER> other)
+constexpr inline vec<T,N,A> operator/=(const vec<T_OTHER,N_OTHER,A_OTHER> &other)
 {
 	std::transform((*this).cbegin(), (*this).cbegin() + std::min<size_t>(N_OTHER,N), other.cbegin(), (*this).begin(), [](const T& a, const T& b) { return (T)a*(T)1/b; });
 	return (*this);
 }
 /* arithmetic assign scalar */
 template<typename T_OTHER>
-constexpr inline vec<T,N,A> operator+=(const T_OTHER other)
+constexpr inline vec<T,N,A> operator+=(const T_OTHER &other)
 {
 	vec<T,N,A> dst = {};
 	dst.fill((T)other);
@@ -246,7 +246,7 @@ constexpr inline vec<T,N,A> operator+=(const T_OTHER other)
 	return (*this);
 }
 template<typename T_OTHER>
-constexpr inline vec<T,N,A> operator-=(const T_OTHER other)
+constexpr inline vec<T,N,A> operator-=(const T_OTHER &other)
 {
 	vec<T,N,A> dst = {};
 	dst.fill((T)other);
@@ -254,7 +254,7 @@ constexpr inline vec<T,N,A> operator-=(const T_OTHER other)
 	return (*this);
 }
 template<typename T_OTHER>
-constexpr inline vec<T,N,A> operator*=(const T_OTHER other)
+constexpr inline vec<T,N,A> operator*=(const T_OTHER &other)
 {
 	vec<T,N,A> dst = {};
 	dst.fill((T)other);
@@ -262,7 +262,7 @@ constexpr inline vec<T,N,A> operator*=(const T_OTHER other)
 	return (*this);
 }
 template<typename T_OTHER>
-constexpr inline vec<T,N,A> operator/=(const T_OTHER other)
+constexpr inline vec<T,N,A> operator/=(const T_OTHER &other)
 {
 	vec<T,N,A> dst = {};
 	dst.fill((T)1/other);
@@ -271,16 +271,16 @@ constexpr inline vec<T,N,A> operator/=(const T_OTHER other)
 }
 
 /* commutative operators */
-friend inline vec<T,N,A> operator+(const scalar s, vec<T,N,A> rhs) { return  rhs + s; }
-friend inline vec<T,N,A> operator-(const scalar s, vec<T,N,A> rhs) { return -rhs + s; }
-friend inline vec<T,N,A> operator*(const scalar s, vec<T,N,A> rhs) { return  rhs * s; }
-friend inline vec<T,N,A> operator/(const scalar s, vec<T,N,A> rhs) { vec<T,N,A> tmp = {}; tmp.fill(s); return tmp/rhs; }
+friend inline vec<T,N,A> operator+(const scalar s, const vec<T,N,A> &rhs) { return  rhs + s; }
+friend inline vec<T,N,A> operator-(const scalar s, const vec<T,N,A> &rhs) { return -rhs + s; }
+friend inline vec<T,N,A> operator*(const scalar s, const vec<T,N,A> &rhs) { return  rhs * s; }
+friend inline vec<T,N,A> operator/(const scalar s, const vec<T,N,A> &rhs) { vec<T,N,A> tmp = {}; tmp.fill(s); return tmp/rhs; }
 
 template<size_t N_A = 3, size_t N_B = 3, enum align A_A = align::adaptive, enum align A_B = align::adaptive>
-constexpr static inline scalar dot(vec<T,N_A,A_A> a, vec<T,N_B,A_B> b) { return (a * b).sum(); }
+constexpr static inline scalar dot(const vec<T,N_A,A_A> &a, const vec<T,N_B,A_B> &b) { return (a * b).sum(); }
 
 template<size_t N_A = 3, size_t N_B = 3, enum align A_A = align::adaptive, enum align A_B = align::adaptive>
-constexpr static inline vec<T,3> cross3(vec<T,N_A,A_A> a, vec<T,N_B,A_B> b)
+constexpr static inline vec<T,3> cross3(const vec<T,N_A,A_A> &a, const vec<T,N_B,A_B> &b)
 {
   return vec<T,3,align::vector>{a.y()*b.z(), a.z()*b.x(), a.x()*b.y()}
        - vec<T,3,align::vector>{b.y()*a.z(), b.z()*a.x(), b.x()*a.y()};
@@ -288,7 +288,7 @@ constexpr static inline vec<T,3> cross3(vec<T,N_A,A_A> a, vec<T,N_B,A_B> b)
 constexpr inline scalar mag() const { return (scalar)sqrt(dot((*this),(*this))); }
 
 template<size_t N_A = 3, size_t N_B = 3, enum align A_A = align::adaptive, enum align A_B = align::adaptive>
-static constexpr inline scalar distance(vec<T,N_A,A_A> a, vec<T,N_B,A_B> b) { return (a - b).mag(); }
+static constexpr inline scalar distance(const vec<T,N_A,A_A> &a, const vec<T,N_B,A_B> &b) { return (a - b).mag(); }
 
 
 };
@@ -364,7 +364,7 @@ constexpr static inline const matrix4 ne()
 };
 
 // Adds 2 matrices
-static inline matrix operator+(matrix a, matrix b) {
+static inline matrix operator+(matrix a, const matrix &b) {
   // Adds two 3x3 matrixs.
 
   a.rvec += b.rvec;
@@ -375,9 +375,9 @@ static inline matrix operator+(matrix a, matrix b) {
 }
 
 // Adds 2 matrices
-static inline matrix operator+=(matrix &a, matrix b) { return (a = a + b); }
+static inline matrix operator+=(matrix &a, const matrix &b) { return (a = a + b); }
 // Subtracts 2 matrices
-static inline matrix operator-(matrix a, matrix b) {
+static inline matrix operator-(matrix a, const matrix &b) {
   // subtracts two 3x3 matrices
 
   a.rvec = a.rvec - b.rvec;
@@ -388,10 +388,10 @@ static inline matrix operator-(matrix a, matrix b) {
 }
 
 // Subtracts 2 matrices
-static inline matrix operator-=(matrix &a, matrix b) { return (a = a - b); }
+static inline matrix operator-=(matrix &a, const matrix &b) { return (a = a - b); }
 
 // Does a simple dot product calculation
-//static inline float operator*(vector u, vector v) { return (u.x * v.x) + (u.y * v.y) + (u.z * v.z); }
+//static inline float operator*(const vector &u, const vector &v) { return (u.x * v.x) + (u.y * v.y) + (u.z * v.z); }
 
 // Scalar multiplication
 static inline matrix operator*(float s, matrix m) {
@@ -417,10 +417,10 @@ static inline matrix operator/(matrix src, float n) {
   return src;
 }
 
-inline scalar vm_Dot3Product(const vector a, const vector b) { return vector::dot(a,b); }
-static inline scalar vm_Dot3Vector(scalar x, scalar y, scalar z, vector *v) { return vector::dot(aligned_vector{x,y,z}, *(aligned_vector*)v); }
+inline scalar vm_Dot3Product(const vector &a, const vector &b) { return vector::dot(a,b); }
+static inline scalar vm_Dot3Vector(scalar x, scalar y, scalar z, const vector *v) { return vector::dot(aligned_vector{x,y,z}, *v); }
 
-inline vector vm_Cross3Product(vector u, vector v) {
+inline vector vm_Cross3Product(const vector &u, const vector &v) {
   return vector::cross3(u,v);
 }
 
@@ -447,6 +447,6 @@ static inline matrix operator~(matrix m) {
 }
 
 // Apply a matrix to a vector
-static inline vector operator*(vector v, matrix m) {
+static inline vector operator*(const vector &v, const matrix &m) {
   return { vector::dot(v,m.rvec), vector::dot(v,m.uvec), vector::dot(v,m.fvec) };
 }
