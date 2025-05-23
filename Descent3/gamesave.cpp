@@ -531,8 +531,6 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
   if (id < (SAVE_HOTSPOT_ID + N_SAVE_SLOTS) && id != cb_data->cur_slot) {
     // new bitmap to be displayed!
     char filename[PSFILENAME_LEN + 1];
-    char pathname[_MAX_PATH];
-    char savegame_dir[_MAX_PATH];
     char desc[GAMESAVE_DESCLEN + 1];
     int bm_handle;
 
@@ -542,9 +540,8 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 
     LOG_DEBUG.printf("savegame slot=%d", id - SAVE_HOTSPOT_ID);
 
-    ddio_MakePath(savegame_dir, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", NULL);
     snprintf(filename, sizeof(filename), "saveg00%d", (id - SAVE_HOTSPOT_ID));
-    ddio_MakePath(pathname, savegame_dir, filename, NULL);
+    std::filesystem::path pathname = cf_GetWritableBaseDirectory() / "savegame" / filename;
 
     if (GetGameStateInfo(pathname, desc, &bm_handle)) {
       if (bm_handle > 0) {
