@@ -119,9 +119,9 @@
  */
 
 #include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <future>
-#include <fstream>
 
 #include "mem.h"
 #include "args.h"
@@ -674,16 +674,6 @@ char *msn_SecondsToString(int time_sec) {
   return fmttime;
 }
 
-void _get_zipfilename(char *output, char *directory, char *zipfilename) {
-  char *s = strrchr(zipfilename, '/');
-  if (s)
-    s++;
-  else
-    s = zipfilename;
-
-  ddio_MakePath(output, directory, s, NULL);
-}
-
 // return 0 on failure
 // return 1 on success
 int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::filesystem::path &mn3name) {
@@ -694,11 +684,9 @@ int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::file
     return 0;
   }
 
-  char mission_directory[_MAX_PATH];
-  char output_filename[_MAX_PATH];
   char buffer[256 + 32];
 
-  ddio_MakePath(mission_directory, LocalD3Dir, "missions", NULL);
+  std::filesystem::path mission_directory = std::filesystem::path(LocalD3Dir) / "missions";
 
   // now go through the zip file and extract all the files out that we can
   ZIP zfile;
@@ -741,14 +729,15 @@ int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::file
       console.puts(GR_GREEN, buffer);
 
       // create the filename for this file
-      _get_zipfilename(output_filename, mission_directory, ze->name);
+      std::filesystem::path output_filename = mission_directory / ze->name;
 
       if (cfexist(output_filename)) {
-        snprintf(buffer, sizeof(buffer), "%s already exists. Overwrite?", output_filename);
+        snprintf(buffer, sizeof(buffer), "%s already exists. Overwrite?", output_filename.u8string().c_str());
         if (DoMessageBox("Confirm", buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
           // delete the file
           LOG_DEBUG.printf("Deleting %s", zipfilename.u8string().c_str());
-          if (!ddio_DeleteFile(output_filename)) {
+          std::error_code ec;
+          if (!std::filesystem::remove(output_filename, ec)) {
             process_file = false;
             console.puts(GR_GREEN, "[Unable to Write] ");
           } else {
@@ -766,7 +755,7 @@ int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::file
         DoUIFrame();
         rend_Flip();
 
-        int ret = zfile.ExtractFile(ze, output_filename);
+        int ret = zfile.ExtractFile(ze, output_filename.u8string().c_str());
         if (ret < 0) {
           if (ret == -9) {
             LOG_WARNING << " Error writing to file";
@@ -777,7 +766,8 @@ int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::file
           }
           console.puts(GR_GREEN, buffer);
           if (cfexist(output_filename)) {
-            ddio_DeleteFile(output_filename);
+            std::error_code ec;
+            std::filesystem::remove(output_filename, ec);
           }
         } else {
           // check the CRC
@@ -791,7 +781,8 @@ int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const std::file
             }
           } else {
             console.puts(GR_GREEN, "CRC FAIL!");
-            ddio_DeleteFile(output_filename);
+            std::error_code ec;
+            std::filesystem::remove(output_filename, ec);
           }
         }
       }
