@@ -468,9 +468,9 @@
  */
 
 #include <algorithm>
-#include <cstdint>
 #include <cstdlib>
 #include <cstdarg>
+#include <filesystem>
 
 #include "gamedll_header.h"
 #include "DMFC.h"
@@ -4720,7 +4720,7 @@ MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, uint8_t flags, 
   return nullptr;
 }
 
-void ParseHostsFile(char *filename, tHostsNode **root) {
+void ParseHostsFile(const std::filesystem::path &filename, tHostsNode **root) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "rt");
 
@@ -4872,15 +4872,12 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
 //
 //	Reads in the hosts.allow and hosts.deny files (if available)
 void DMFCBase::ReadInHostsAllowDeny(void) {
-  char allow_fn[_MAX_PATH], deny_fn[_MAX_PATH];
-  bool allow_exist, deny_exist;
-
   // build the path info here
-  DLLddio_MakePath(allow_fn, LocalD3Dir, "netgames", "hosts.allow", nullptr);
-  DLLddio_MakePath(deny_fn, LocalD3Dir, "netgames", "hosts.deny", nullptr);
+  std::filesystem::path allow_fn = std::filesystem::path(LocalD3Dir) / "netgames" / "hosts.allow";
+  std::filesystem::path deny_fn = std::filesystem::path(LocalD3Dir) / "netgames" / "hosts.deny";
 
-  allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
-  deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
+  bool allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
+  bool deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
 
   m_DenyList = nullptr;
   m_AllowList = nullptr;
@@ -4946,7 +4943,7 @@ bool DMFCBase::IsPlayerAlive(int pnum) {
 //	Loads up the startup script and sets variables accordingly
 void DMFCBase::ParseStartupScript(void) {
   CFILE *file;
-  char path[_MAX_PATH];
+  std::filesystem::path path;
   char buffer[256];
   int size;
   bool ok_to_read;
@@ -4955,11 +4952,11 @@ void DMFCBase::ParseStartupScript(void) {
 
   if ((autoexec_arg = DLLFindArg("-autoexec", 1)) != 0) {
     // a specific autoexec.dmfc file was specified, use that
-    strcpy(path, GetGameArg(autoexec_arg + 1));
+    path = GetGameArg(autoexec_arg + 1);
     LOG_INFO << "Override AUTOEXEC.DMFC to " << path;
   } else {
     // use the default autoexec.dmfc
-    DLLddio_MakePath(path, LocalD3Dir, "netgames", "autoexec.dmfc", nullptr);
+    path = std::filesystem::path(LocalD3Dir) / "netgames" / "autoexec.dmfc";
   }
 
   DLLOpenCFILE(&file, path, "rt");

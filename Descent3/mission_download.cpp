@@ -119,6 +119,7 @@
  */
 
 #include <cstdio>
+#include <fstream>
 #include <future>
 #include <fstream>
 
@@ -747,7 +748,9 @@ static int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const st
         if (DoMessageBox("Confirm", buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
           // delete the file
           LOG_DEBUG.printf("Deleting %s", PATH_TO_CSTR(zipfilename));
-          if (!ddio_DeleteFile(output_filename)) {
+          std::error_code ec;
+          std::filesystem::remove(output_filename, ec);
+          if (ec) {
             process_file = false;
             console.puts(GR_GREEN, "[Unable to Write] ");
           } else {
