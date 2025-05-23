@@ -290,13 +290,13 @@ extern char D3HogDir[_MAX_PATH * 2];
 
 // Writes data from the ambient sound data file
 void WriteAmbientData() {
-  char filename[_MAX_PATH];
+  std::filesystem::path filename;
   CFILE *ofile;
 
 #ifndef NEWEDITOR
-  ddio_MakePath(filename, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "data", "misc", AMBIENT_FILE_NAME, NULL);
+  filename = cf_GetWritableBaseDirectory() / "data" / "misc" / AMBIENT_FILE_NAME;
 #else
-  ddio_MakePath(filename, D3HogDir, "data", "misc", AMBIENT_FILE_NAME, NULL);
+  filename = D3HogDir / "data" / "misc" / AMBIENT_FILE_NAME;
 #endif
   ofile = cfopen(filename, "wb");
 
