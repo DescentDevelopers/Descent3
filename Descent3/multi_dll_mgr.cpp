@@ -432,7 +432,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[32] = (int *)MultiStartClient;
   api->fp[33] = (int *)rend_GetRenderState;
   api->fp[34] = (int *)LoadMission;
-  api->fp[35] = (int *)ddio_MakePath;
+  api->fp[35] = (int *)nullptr; // ddio_MakePath;
   api->fp[36] = (int *)nullptr; // ddio_FindFileStart;
   api->fp[37] = (int *)nullptr; // ddio_FindFileClose;
   api->fp[38] = (int *)nullptr; // ddio_FindNextFile;
@@ -440,7 +440,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[40] = (int *)ShowProgressScreen;
   api->fp[41] = (int *)SearchForLocalGamesTCP;
   api->fp[42] = (int *)nw_GetHostAddressFromNumbers;
-  api->fp[43] = (int *)NULL; // nw_GetProtocolType;
+  api->fp[43] = (int *)nullptr; // nw_GetProtocolType;
   api->fp[44] = (int *)HotSpotCreate;
   api->fp[45] = (int *)PollUI;
   api->fp[46] = (int *)GetMissionName;
