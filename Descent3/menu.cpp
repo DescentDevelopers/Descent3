@@ -813,7 +813,7 @@ int MainMenu() {
       // make only the default ships available (we may need to move this depending on load a saved game)
       PlayerResetShipPermissions(-1, true);
       if (MenuNewGame()) {
-        exit_menu = 1;
+        exit_menu = true;
         MenuScene();
         rend_Flip();
       }
@@ -830,7 +830,7 @@ int MainMenu() {
       if (LoadGameDialog()) {
         SetGameMode(GM_NORMAL);
         SetFunctionMode(RESTORE_GAME_MODE);
-        exit_menu = 1;
+        exit_menu = true;
       }
       break;
     case IDV_OPTIONS:
@@ -1107,40 +1107,31 @@ bool MenuNewGame() {
   int n_missions, res;
   bool found = false;
   bool retval = true;
+  std::filesystem::path mission_name;
+
 #ifdef DEMO
-  if (LoadMission("d3demo.mn3")) {
-    CurrentPilotUpdateMissionStatus(true);
-    // go into game mode.
-    SetGameMode(GM_NORMAL);
-    SetFunctionMode(GAME_MODE);
-    return true;
-  } else {
-    DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
-    return false;
-  }
+  mission_name = "d3demo.mn3";
 #else
-  if ((!FindArg("-mission")) && (!FirstGame) && (-1 == Current_pilot.find_mission_data(TRAINING_MISSION_NAME))) {
-
+  if (int mission_arg = FindArg("-mission")) {
+    // If direct loading via cmdline option
+    mission_name = std::filesystem::path(GameArgs[mission_arg + 1]).filename().replace_extension(".mn3");
+  } else if ((!FirstGame) && (-1 == Current_pilot.find_mission_data(TRAINING_MISSION_NAME))) {
+    // First time?
     FirstGame = true;
-
-    if (LoadMission("training.mn3")) {
-      CurrentPilotUpdateMissionStatus(true);
-      // go into game mode.
-      SetGameMode(GM_NORMAL);
-      SetFunctionMode(GAME_MODE);
-      return true;
-    } else {
-      DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
-      return false;
-    }
+    mission_name = "training.mn3";
   } else if (FirstGame) {
+    // Already trained
     FirstGame = false;
 #ifdef OEM
-    if (LoadMission(OEM_MISSION_FILE))
+    mission_name = OEM_MISSION_FILE;
 #else
-    if (LoadMission("d3.mn3"))
-#endif
-    {
+    mission_name = "d3.mn3";
+#endif // OEM
+  }
+#endif // DEMO
+
+  if (!mission_name.empty()) {
+    if (LoadMission(mission_name)) {
       CurrentPilotUpdateMissionStatus(true);
       // go into game mode.
       SetGameMode(GM_NORMAL);
@@ -1278,7 +1269,6 @@ redo_newgame_menu:
   menu.Destroy();
 
   return retval;
-#endif
 }
 
 // DisplayLevelWarpDlg
