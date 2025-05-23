@@ -444,7 +444,7 @@ MultiStartClient_fp DLLMultiStartClient;
 typedef void (*rend_GetRenderState_fp)(rendering_state *rstate);
 rend_GetRenderState_fp DLLrend_GetRenderState;
 
-typedef bool (*LoadMission_fp)(char *msn);
+typedef bool (*LoadMission_fp)(const std::filesystem::path& msn);
 LoadMission_fp DLLLoadMission;
 
 typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
