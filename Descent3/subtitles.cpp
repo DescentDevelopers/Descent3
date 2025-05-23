@@ -186,11 +186,9 @@ void SubtParseSubtitles(CFILE *file) {
 
     Subtitles[Num_subtitles].first_frame = first_frame;
     Subtitles[Num_subtitles].last_frame = last_frame;
-    Subtitles[Num_subtitles].msg = mem_rmalloc<char>(strlen(p) + 1);
+    Subtitles[Num_subtitles].msg = mem_strdup(p); // be sure to free this later
     if (!Subtitles[Num_subtitles].msg)
       goto subt_parse_error;
-    strcpy(Subtitles[Num_subtitles].msg, p); // be sure to free this later
-
     Num_subtitles++;
 
     PARSE_NEXT_LINE();

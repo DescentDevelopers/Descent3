@@ -616,7 +616,7 @@ void CScriptLevelInterface::UpdateScriptListWithLevels() {
           // ok we have a d3l, look to see if there is a script available for it
           gamefile.replace_extension(".cpp");
           if (std::filesystem::is_regular_file(std::filesystem::path(LocalScriptDir) / gamefile)) {
-            combo->AddString(gamefile.u8string().c_str());
+            combo->AddString(PATH_TO_CSTR(gamefile));
           }
         }
       }
@@ -669,7 +669,7 @@ void CScriptLevelInterface::UpdateScriptListWithScripts() {
 
   if (m_ShowNonCheckedOut) {
     ddio_DoForeachFile(std::filesystem::path(LocalScriptDir), std::regex(".+\\.cpp"), [&combo](const std::filesystem::path& path){
-      combo->AddString(path.filename().u8string().c_str());
+      combo->AddString(PATH_TO_CSTR(path.filename()));
     });
 
   } else {

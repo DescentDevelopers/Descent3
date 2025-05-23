@@ -739,9 +739,8 @@ void BEAddTextEffect(TCTEXTDESC *desc, char *text, char *description, int id) {
     mem_free(befx->text);
     befx->text = NULL;
   }
-  befx->text = mem_rmalloc<char>(strlen(text) + 1);
+  befx->text = mem_strdup(text);
   ASSERT(befx->text);
-  strcpy(befx->text, text);
 
   // Setup for items not set with caps
   if (!(dest->caps & TCTD_FONT)) {

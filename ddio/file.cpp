@@ -170,9 +170,9 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
   const int len = 10;
   const char *ext = ".tmp";
   std::filesystem::path result;
-  size_t len_result = strlen((const char*)(basedir / prefix).u8string().c_str());
+  size_t len_result = strlen(PATH_TO_CSTR(basedir / prefix));
   char *random_name = (char *)mem_malloc(len_result + len + strlen(ext) + 1);
-  strncpy(random_name, (const char*)(basedir / prefix).u8string().c_str(), len_result);
+  strncpy(random_name, PATH_TO_CSTR(basedir / prefix), len_result);
 
   srand(D3::ChronoTimer::GetTimeMS());
 

@@ -1625,9 +1625,9 @@ void ResaveVClip(const char *name) {
 
 void ResaveAllBitmaps() {
   ddio_DoForeachFile(std::filesystem::path(LocalD3Dir) / "data" / "graphics", std::regex(".+\\.ogf"),
-                     [](const std::filesystem::path &path) { ResaveBitmap(path.filename().u8string().c_str()); });
+                     [](const std::filesystem::path &path) { ResaveBitmap(PATH_TO_CSTR(path.filename())); });
   ddio_DoForeachFile(std::filesystem::path(LocalD3Dir) / "data" / "graphics", std::regex(".+\\.oaf"),
-                     [](const std::filesystem::path &path) { ResaveVClip(path.filename().u8string().c_str()); });
+                     [](const std::filesystem::path &path) { ResaveVClip(PATH_TO_CSTR(path.filename())); });
 }
 
 void CLightingDialog::OnVolumeLights() {

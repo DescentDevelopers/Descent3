@@ -178,9 +178,6 @@ char *AddEventBlockToScript(char *script, const char *evtname, const char *scrip
 //	generates script list from all script files.
 void GenerateScriptListFromAllFiles(int mask = ALL_SCRIPT_MASK);
 
-//	generates script list from one file
-void GenerateScriptListFromFile(const char *fname);
-
 //	This function generates ScriptWizard comment header information for script files
 //	if it doesn't already have it.  This should be called whenever a script file is loaded and compiled
 //	via script wizard.

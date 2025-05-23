@@ -701,12 +701,12 @@ bool mn3_GetInfo(const std::filesystem::path &mn3file, tMissionInfo *msn);
 
 static inline bool IS_MN3_FILE(const std::filesystem::path &fname) {
   std::filesystem::path ext = fname.extension();
-  return (stricmp((const char*)ext.u8string().c_str(), ".mn3") == 0);
+  return stricmp(PATH_TO_CSTR(ext), ".mn3") == 0;
 }
 
 static inline std::filesystem::path MN3_TO_MSN_NAME(const std::filesystem::path &mn3name) {
   std::filesystem::path fname = std::filesystem::path(mn3name).stem();
-  if (stricmp((const char*)fname.u8string().c_str(), "d3_2") == 0) {
+  if (stricmp(PATH_TO_CSTR(fname), "d3_2") == 0) {
     fname = "d3";
   }
   fname.replace_extension(".msn");
@@ -1166,9 +1166,9 @@ bool LoadMission(const char *mssn) {
   //	set up current mission (movies are already set above)
   msn->cur_level = 1;
   msn->num_levels = numlevels;
-  msn->filename = mem_strdup((const char*)mission.u8string().c_str());
+  msn->filename = mem_strdup(PATH_TO_CSTR(mission));
   msn->game_state_flags = 0;
-  strcpy(Net_msn_URLs.msnname, (const char*)mission.u8string().c_str());
+  strcpy(Net_msn_URLs.msnname, PATH_TO_CSTR(mission));
   res = true; // everything is ok.
 
   // if error, print it out, else end.
@@ -1238,7 +1238,7 @@ void LoadLevelText(const std::filesystem::path &level_filename) {
   pathname.replace_extension(".str");
 
   char **goal_strings;
-  if (CreateStringTable((const char*)pathname.u8string().c_str(), &goal_strings, &n_strings)) {
+  if (CreateStringTable(PATH_TO_CSTR(pathname), &goal_strings, &n_strings)) {
     int n_goals = Level_goals.GetNumGoals();
     ASSERT(n_strings == (n_goals * 3));
     for (int i = 0; i < n_goals; i++) {
@@ -1692,7 +1692,7 @@ bool GetMissionInfo(const std::filesystem::path &msnfile, tMissionInfo *msn) {
   }
   CFILE *fp = cfopen(msnfile, "rt");
   if (!fp) {
-    LOG_WARNING.printf("Failed to open mission file %s in GetMissionInfo.", msnfile.u8string().c_str());
+    LOG_WARNING.printf("Failed to open mission file %s in GetMissionInfo.", PATH_TO_CSTR(msnfile));
     return false;
   }
   msn->multi = true;
@@ -1791,17 +1791,17 @@ bool mn3_Open(const std::filesystem::path &mn3file) {
   std::filesystem::path filename = mn3file.stem();
 
   std::filesystem::path voice_hog;
-  if ((stricmp((const char*)filename.u8string().c_str(), "d3") == 0) || (stricmp((const char*)filename.u8string().c_str(), "training") == 0)) {
+  if (stricmp(PATH_TO_CSTR(filename), "d3") == 0 || stricmp(PATH_TO_CSTR(filename), "training") == 0) {
     // Open audio hog file
     voice_hog = std::filesystem::path("missions") / "d3voice1.hog"; // Audio for levels 1-4
     Mission_voice_hog_handle = cf_OpenLibrary(voice_hog);
-  } else if (stricmp((const char*)filename.u8string().c_str(), "d3_2") == 0) {
+  } else if (stricmp(PATH_TO_CSTR(filename), "d3_2") == 0) {
     // Open audio hog file
     voice_hog = std::filesystem::path("missions") / "d3voice2.hog"; // Audio for levels 5-17
     Mission_voice_hog_handle = cf_OpenLibrary(voice_hog);
   }
   filename.replace_extension(".gam");
-  mng_SetAddonTable((const char*)filename.u8string().c_str());
+  mng_SetAddonTable(PATH_TO_CSTR(filename));
   Current_mission.mn3_handle = mn3_handle;
   return true;
 }
