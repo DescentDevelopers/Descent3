@@ -1684,8 +1684,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
 
   // Set the name
   if (tempname[0]) {
-    objp->name = mem_rmalloc<char>(strlen(tempname) + 1);
-    strcpy(objp->name, tempname);
+    objp->name = mem_strdup(tempname);
   }
 
   // Update checksum
@@ -2444,8 +2443,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
     char tempname[ROOM_NAME_LEN + 1];
     cf_ReadString(tempname, sizeof(tempname), ifile);
     if (strlen(tempname)) {
-      rp->name = mem_rmalloc<char>(strlen(tempname) + 1);
-      strcpy(rp->name, tempname);
+      rp->name = mem_strdup(tempname);
     }
   }
 

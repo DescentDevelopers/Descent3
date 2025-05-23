@@ -240,13 +240,7 @@ char *LoadScript(const char *filename) {
     mem_free(tmp_script);
 
   cfclose(file);
-
-  source = mem_rmalloc<char>(strlen(temp.GetBuffer(1)) + 1);
-  if (!source)
-    return false;
-  strcpy(source, temp.GetBuffer(1));
-
-  return source;
+  return mem_strdup(temp.GetBuffer(1));
 }
 
 void SaveScript(const char *filename, char *script) {

@@ -3169,12 +3169,11 @@ void CMainFrame::OnHotspotTga() {
     return;
   }
 
-  buffer = mem_rmalloc<char>(strlen(tga_path.GetBuffer(1)) + 1);
+  buffer = mem_strdup(tga_path.GetBuffer(1));
   if (!buffer) {
     Int3(); // find Jeff
     return;
   }
-  strcpy(buffer, tga_path.GetBuffer(1));
   if (menutga_ConvertTGAtoHSM(buffer))
     OutrageMessageBox("HotSpot Map Extracted");
 

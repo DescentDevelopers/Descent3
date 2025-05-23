@@ -1548,8 +1548,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
       }
 
       if (strlen(tempname)) {
-        curobj->name = mem_rmalloc<char>(strlen(tempname) + 1);
-        strcpy(curobj->name, tempname);
+        curobj->name = mem_strdup(tempname);
       }
 
       World_changed = 1;

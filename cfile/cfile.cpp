@@ -522,10 +522,9 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   cfile = mem_rmalloc<CFILE>();
   if (!cfile)
     Error("Out of memory in open_file_in_directory()");
-  cfile->name = mem_rmalloc<char>(strlen(PATH_TO_CSTR(using_filename)) + 1);
+  cfile->name = mem_strdup(PATH_TO_CSTR(using_filename));
   if (!cfile->name)
     Error("Out of memory in open_file_in_directory()");
-  strcpy(cfile->name, PATH_TO_CSTR(using_filename));
   cfile->file = fp;
   cfile->lib_handle = -1;
   cfile->size = ddio_GetFileLength(fp);
