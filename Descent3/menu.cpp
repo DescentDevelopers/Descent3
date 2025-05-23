@@ -813,7 +813,7 @@ int MainMenu() {
       // make only the default ships available (we may need to move this depending on load a saved game)
       PlayerResetShipPermissions(-1, true);
       if (MenuNewGame()) {
-        exit_menu = 1;
+        exit_menu = true;
         MenuScene();
         rend_Flip();
       }
@@ -830,7 +830,7 @@ int MainMenu() {
       if (LoadGameDialog()) {
         SetGameMode(GM_NORMAL);
         SetFunctionMode(RESTORE_GAME_MODE);
-        exit_menu = 1;
+        exit_menu = true;
       }
       break;
     case IDV_OPTIONS:
@@ -1119,7 +1119,20 @@ bool MenuNewGame() {
     return false;
   }
 #else
-  if ((!FindArg("-mission")) && (!FirstGame) && (-1 == Current_pilot.find_mission_data(TRAINING_MISSION_NAME))) {
+  if (int mission_arg = FindArg("-mission")) {
+    std::filesystem::path filename = std::filesystem::path(GameArgs[mission_arg + 1]).filename().replace_extension(".mn3");
+    if (LoadMission(filename.u8string().c_str())) {
+      CurrentPilotUpdateMissionStatus(true);
+      // go into game mode.
+      SetGameMode(GM_NORMAL);
+      SetFunctionMode(GAME_MODE);
+      return true;
+    } else {
+      DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
+      return false;
+    }
+  }
+  if ((!FirstGame) && (-1 == Current_pilot.find_mission_data(TRAINING_MISSION_NAME))) {
 
     FirstGame = true;
 
@@ -1278,7 +1291,7 @@ redo_newgame_menu:
   menu.Destroy();
 
   return retval;
-#endif
+#endif // DEMO
 }
 
 // DisplayLevelWarpDlg
