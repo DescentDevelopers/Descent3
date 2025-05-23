@@ -84,14 +84,15 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+#include <filesystem>
+#include <string>
 
 #include "cfile.h"
-#include "ddio.h"
-#include "descent.h"
 #include "game.h"
 #include "localization.h"
 #include "log.h"
@@ -235,29 +236,12 @@ const char *GetStringFromTable(int index) {
   return String_table[index];
 }
 
-void FixFilenameCase(const char *filename, char *newfile) {
-  char path[_MAX_PATH], file[_MAX_FNAME], ext[_MAX_EXT];
-  ddio_SplitPath(filename, path, file, ext);
+std::filesystem::path FixFilenameCase(const std::filesystem::path &filename) {
+  std::string local_file = filename.filename().u8string();
 
-  char *p;
-
-  p = file;
-  while (*p) {
-    *p = tolower(*p);
-    p++;
-  };
-  p = ext;
-  while (*p) {
-    *p = tolower(*p);
-    p++;
-  };
-
-  strcat(file, ext);
-
-  if (strlen(path) > 0)
-    ddio_MakePath(newfile, path, file, NULL);
-  else
-    strcpy(newfile, file);
+  std::transform(local_file.begin(), local_file.end(), local_file.begin(),
+                 [](unsigned char c){ return std::tolower(c); });
+  return filename.parent_path() / local_file;
 }
 
 // Given a filename, pointer to a char * array and a pointer to an int,
@@ -273,11 +257,9 @@ bool CreateStringTable(const char *filename, char ***table, int *size) {
       *size = 0;
     return false;
   }
-  CFILE *file;
 
-  char fname[_MAX_PATH];
-  FixFilenameCase(filename, fname);
-  file = cfopen(fname, "rt");
+  std::filesystem::path fname = FixFilenameCase(filename);
+  CFILE *file = cfopen(fname, "rt");
   if (!file) {
     if (table)
       *table = NULL;
@@ -450,8 +432,7 @@ int GetTotalStringCount(void) {
 
   while (String_table_list[findex]) {
     // open the file up
-    char fname[_MAX_PATH];
-    FixFilenameCase(String_table_list[findex], fname);
+    std::filesystem::path fname = FixFilenameCase(String_table_list[findex]);
     file = cfopen(fname, "rt");
     if (!file)
       return 0;
@@ -475,10 +456,8 @@ int LoadStringFile(const char *filename, int starting_offset) {
   if (!filename)
     return 0;
 
-  CFILE *file;
-  char fname[_MAX_PATH];
-  FixFilenameCase(filename, fname);
-  file = cfopen(fname, "rt");
+  std::filesystem::path fname = FixFilenameCase(filename);
+  CFILE *file = cfopen(fname, "rt");
   if (!file)
     return 0;
 
