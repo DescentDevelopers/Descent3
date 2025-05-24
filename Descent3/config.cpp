@@ -782,10 +782,10 @@ struct video_menu {
 
     // video resolution
     sheet->NewGroup(TXT_RESOLUTION, 0, 0);
-    constexpr int RES_BUFFER_SIZE = 15;
-    resolution_string = sheet->AddChangeableText(RES_BUFFER_SIZE);
     std::string res = Video_res_list[Current_video_resolution_id].getName();
-    snprintf(resolution_string, res.size() + 1, res.c_str());
+    auto alloc_size = std::max(res.size() + 1, static_cast<size_t>(15));
+    resolution_string = sheet->AddChangeableText(alloc_size);
+    snprintf(resolution_string, alloc_size, res.c_str());
     sheet->AddLongButton("Change", IDV_CHANGE_RES_WINDOW);
 
     fullscreen = sheet->AddLongCheckBox("Fullscreen", Game_fullscreen);
