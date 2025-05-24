@@ -71,7 +71,7 @@ std::size_t CleanupStr(char *dest, const char *src, std::size_t destlen) {
   end++;
 
   // Set output size to minimum of trimmed string length and buffer size minus 1
-  out_size = (end - src) < destlen - 1 ? (end - src) : destlen - 1;
+  out_size = static_cast<size_t>(end - src) < destlen - 1 ? (end - src) : destlen - 1;
 
   // Copy trimmed string and add null terminator
   std::memcpy(dest, src, out_size);
@@ -84,7 +84,7 @@ std::string StringJoin(const std::vector<std::string> &strs, const std::string &
   if (strs.empty())
     return "";
   std::vector<char> res;
-  for (int i = 0; i < strs.size() - 1; ++i) {
+  for (size_t i = 0; i < strs.size() - 1; ++i) {
     for (auto const &c : strs[i]) {
       res.push_back(c);
     }

@@ -33,8 +33,8 @@
 
 #define GET_AND_VERIFY_OBJECT(o)                                                                                       \
   {                                                                                                                    \
-    o = VerifyMSafeObject(MultiGetUshort(data, &count));                                                               \
-    if (o == OBJECT_HANDLE_NONE)                                                                                       \
+    (o) = VerifyMSafeObject(MultiGetUshort(data, &count));                                                             \
+    if ((o) == OBJECT_HANDLE_NONE)                                                                                     \
       return;                                                                                                          \
   }
 

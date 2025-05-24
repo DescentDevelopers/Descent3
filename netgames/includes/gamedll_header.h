@@ -831,21 +831,6 @@ DMFCDLLOUT(SliderSetSelectChangeCallbackWData_fp DLLSliderSetSelectChangeCallbac
 typedef void (*DPrintf_fp)(const char *fmt, ...);
 DMFCDLLOUT(DPrintf_fp DPrintf;)
 
-// Split a pathname into its component parts
-//	The path in splitpath is in the *LOCAL* file system's syntax
-typedef void (*ddio_SplitPath_fp)(const char *srcPath, char *path, char *filename, char *ext);
-DMFCDLLOUT(ddio_SplitPath_fp DLLddio_SplitPath;)
-
-// Constructs a path in the local file system's syntax
-// 	builtPath: stores the constructed path
-//  absolutePathHeader: absolute path on which the sub directories will be appended
-//						(specified in local file system syntax)
-//	subdir:	the first subdirectory
-//  takes a variable number of additional subdirectories which will be concatenated on to the path
-//		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
-typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
-DMFCDLLOUT(ddio_MakePath_fp DLLddio_MakePath;)
-
 //	Plays a 2d sound
 // typedef int (*Play2dSound_fp)(int sound_index, float volume =MAX_GAME_VOLUME/2);
 typedef int (*Play2dSound_fp)(int sound_index, float volume);
