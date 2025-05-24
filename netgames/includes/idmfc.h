@@ -139,9 +139,10 @@
 #ifndef __IDMFC_H_
 #define __IDMFC_H_
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdarg>
+#include <filesystem>
+
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "controls.h"
@@ -1189,13 +1190,14 @@ public:
   //	Disables/Enables the autosaving of game stats to file on disconnect from the game
   virtual void EnableAutoSaveDisconnect(bool enable) = 0;
 
-  //	DMFCBase::GenerateStatFilename
-  //
-  //	Given the following information it will return a full path to what
-  //	the recommended filename to save stats to should be.
-  //	root = Multiplayer DLL Name (filename will start with this)
-  //	end_of_level = pass true if this is the end of a level stats
-  virtual void GenerateStatFilename(char *filename, const char *root, bool end_of_level) = 0;
+  /**
+   * Given the following information it will return a full path to what
+   * the recommended filename to save stats to should be.
+   * @param root Multiplayer DLL Name (filename will start with this)
+   * @param end_of_level pass true if this is the end of a level stats
+   * @return
+   */
+  virtual std::filesystem::path GenerateStatFilename(const char *root, bool end_of_level) = 0;
 
   //	DMFCBase::IsPlayerObserver
   //
@@ -1922,7 +1924,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_EnableStatisticalMessages(IDMFC *instance, bool
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableOnScreenMenu(IDMFC *instance, bool turn_on);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableAutoSaveLevelEnd(IDMFC *instance, bool enable);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableAutoSaveDisconnect(IDMFC *instance, bool enable);
-DLLEXPORT void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, char *filename, const char *root,
+DLLEXPORT std::filesystem::path DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, const char *root,
                                                              bool end_of_level);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerObserver(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableOnScreenMenuBackground(IDMFC *instance, bool enable);

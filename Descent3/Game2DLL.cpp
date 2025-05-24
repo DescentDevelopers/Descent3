@@ -287,8 +287,8 @@ void GetGameAPI(game_api *api) {
   api->fp[149] = (int *)ui_HideCursor;
   api->fp[150] = (int *)GameFrame;
   api->fp[151] = (int *)PrintDedicatedMessage;
-  api->fp[152] = (int *)ddio_MakePath;
-  api->fp[153] = (int *)ddio_SplitPath;
+  api->fp[152] = (int *)nullptr; // ddio_MakePath;
+  api->fp[153] = (int *)nullptr; // ddio_SplitPath;
   api->fp[154] = (int *)D3W_Play2dSound;
   api->fp[155] = (int *)D3W_TouchSound;
   api->fp[156] = (int *)dDatabaseRead1;

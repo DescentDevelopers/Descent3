@@ -95,8 +95,10 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+#include <filesystem>
+
 #include "gamedll_header.h" //included by all mods, it includes all needed headers, etc.
-#include <string.h>
 #include "idmfc.h" //dmfc! (required)
 #include "Entropy.h"
 #include "Entropystr.h" //our string table for Entropy
@@ -189,7 +191,7 @@ static int snd_virus_pickup = -1;
 static void DisplayHUDScores(struct tHUDItem *hitem);
 static void DisplayWelcomeMessage(int player_num);
 static void SortTeamScores(int *sortedindex, int *scores);
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const std::filesystem::path &filename);
 static void OnLabSpewTimer(void);
 void RemoveVirusFromPlayer(int player_num, bool remove_all);
 static bool ScanForLaboratory(int team, int *newlab);
@@ -1394,7 +1396,7 @@ void OnControlMessage(uint8_t msg, int from_pnum) {
   }
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const std::filesystem::path &filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
@@ -1593,21 +1595,18 @@ void SaveStatsToFile(char *filename) {
 }
 
 #define ROOTFILENAME "Entropy"
-void OnSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
-void OnLevelEndSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, true);
+void OnLevelEndSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, true);
   SaveStatsToFile(filename);
 }
 
-void OnDisconnectSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnDisconnectSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
