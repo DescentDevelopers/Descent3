@@ -110,7 +110,7 @@ void UIStatic::SetTitle(UIItem *item) {
     delete m_Title;
   m_Title = NULL;
   if (item)
-    m_Title = (UIPrimativeItem *)item->CopyUIItem();
+    m_Title = item->CopyUIItem();
 }
 
 void UIStatic::OnDraw() {
