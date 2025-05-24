@@ -77,12 +77,14 @@
  */
 
 #include <cstring>
+#include <filesystem>
 
 #include "gamedll_header.h"
 #include "idmfc.h"
 #include "log.h"
 #include "tanDMFC.h"
 #include "tanarchystr.h"
+
 IDMFC *DMFCBase = nullptr;
 static IDmfcStats *dstat = nullptr;
 static player *dPlayers;
@@ -624,7 +626,7 @@ do_disconnected_folk:
 quick_exit:;
 }
 
-void SaveStatsToFile(const char *filename) {
+void SaveStatsToFile(const std::filesystem::path &filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
@@ -821,21 +823,18 @@ void SaveStatsToFile(const char *filename) {
 }
 
 #define ROOTFILENAME "Team Anarchy"
-void OnSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
-void OnLevelEndSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, true);
+void OnLevelEndSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, true);
   SaveStatsToFile(filename);
 }
 
-void OnDisconnectSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnDisconnectSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
