@@ -2293,15 +2293,15 @@ void DrawBlastRingObject(object *obj) {
   rend_SetAlphaValue(255);
   ring_angle = 0;
   cur_size *= 2;
-  float alpha = 1.0;
+  scalar alpha = 1.0;
   if (lifenorm > .5)
     alpha = 1.0 - ((lifenorm - .5) / .5);
   for (i = 0; i < num_segments; i++, ring_angle += ring_increment) {
-    float ring_sin = FixSin(((int)(ring_angle + (lifenorm * 65536)) % 65536));
-    float ring_cos = FixCos(((int)(ring_angle + (lifenorm * 65536)) % 65536));
+    scalar ring_sin = FixSin(((int)(ring_angle + (lifenorm * 65536)) % 65536));
+    scalar ring_cos = FixCos(((int)(ring_angle + (lifenorm * 65536)) % 65536));
 
-    inner_vecs[i] = obj->orient.rvec * (ring_cos * cur_size * .50);
-    inner_vecs[i] += obj->orient.fvec * (ring_sin * cur_size * .50);
+    inner_vecs[i] = obj->orient.rvec * (ring_cos * cur_size * (scalar).50);
+    inner_vecs[i] += obj->orient.fvec * (ring_sin * cur_size * (scalar).50);
     inner_vecs[i] += obj->pos;
     outer_vecs[i] = obj->orient.rvec * (ring_cos * cur_size);
     outer_vecs[i] += obj->orient.fvec * (ring_sin * cur_size);

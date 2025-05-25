@@ -976,15 +976,15 @@ int ReloadModelTextures(int modelnum) {
 }
 
 void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
-  float x, y, z;
-  float s, c, t;
+  scalar x, y, z;
+  scalar s, c, t;
 
   x = axis->x();
   y = axis->y();
   z = axis->z();
 
-  s = (float)FixSin(ang);
-  c = (float)FixCos(ang);
+  s = (scalar)FixSin(ang);
+  c = (scalar)FixCos(ang);
   t = 1.0f - c;
 
   mat->rvec.x() = t * x * x + c;
@@ -1605,7 +1605,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
         // Do lightmap res computation
         if (version_major >= 21) {
-          float xdiff, ydiff;
+          scalar xdiff, ydiff;
 
           xdiff = cf_ReadFloat(infile);
           ydiff = cf_ReadFloat(infile);

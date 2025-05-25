@@ -50,7 +50,7 @@ uint8_t g3_CodePoint(g3Point *p) {
     vec.y() /= Matrix_scale.y();
     vec.z() /= Matrix_scale.z();
 
-    float dp = vec * Clip_plane;
+    scalar dp = vm_Dot3Product(vec, Clip_plane);
     if (dp < -0.005f) {
       cc |= CC_OFF_CUSTOM;
     }

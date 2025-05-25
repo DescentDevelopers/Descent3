@@ -112,9 +112,9 @@ wireframe_view Wireframe_view_room = {IDENTITY_MATRIX, {0, 0, 0}, DEFAULT_VIEW_D
 // The current wireframe view
 wireframe_view *Wireframe_view = &Wireframe_view_mine;
 
-#define MOVE_SCALE 3.0
-#define ZOOM_SCALE 10.0
-#define RAD_SCALE 10.0
+#define MOVE_SCALE (scalar)3.0
+#define ZOOM_SCALE (scalar)10.0
+#define RAD_SCALE (scalar)10.0
 
 // Read the mouse and move the wireframe view
 void MoveWorld() {

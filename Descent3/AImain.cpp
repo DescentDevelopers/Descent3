@@ -1658,7 +1658,7 @@ float AIDetermineObjVisLevel(object *obj, object *target) {
       vector from_target = obj->pos - target->pos;
       vm_NormalizeVector(&from_target);
 
-      if ((target->orient.fvec) * (from_target) > 0.965f) {
+      if (vm_Dot3Product(target->orient.fvec, from_target) > 0.965f) {
         vis_level += 1.0f;
       }
     }
@@ -1734,9 +1734,9 @@ void AIMoveTowardsDir(object *obj, vector *dir, float scale) {
 bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, float scale, bool stop_at_end_point,
                            vector *mdir, bool *f_moved) {
   vector dir;
-  float distance;
+  scalar distance;
   ai_frame *ai_info = obj->ai_info;
-  float acc_scale;
+  scalar acc_scale;
 
   if (scale < 1.0f)
     acc_scale = 1.0f;
@@ -1750,13 +1750,13 @@ bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, floa
       return true;
     }
 
-    float s_to_stop = (ai_info->max_velocity * scale) / (ai_info->max_delta_velocity * acc_scale);
-    float d_to_stop = ai_info->max_velocity * scale * s_to_stop;
+    scalar s_to_stop = (ai_info->max_velocity * scale) / (ai_info->max_delta_velocity * acc_scale);
+    scalar d_to_stop = ai_info->max_velocity * scale * s_to_stop;
 
     dir = *pos - obj->pos;
-    float d_to_target = vm_NormalizeVector(&dir);
+    scalar d_to_target = vm_NormalizeVector(&dir);
     if (d_to_target < d_to_stop) {
-      float speed = ai_info->max_velocity * scale * (d_to_target / d_to_stop);
+      scalar speed = ai_info->max_velocity * scale * (d_to_target / d_to_stop);
 
       if (d_to_target <= speed * Frametime) {
         obj->mtype.phys_info.velocity = ((d_to_target / Frametime) + .09f) * dir;
@@ -1774,8 +1774,8 @@ bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, floa
 
     if (phys_info->velocity != Zero_vector) {
       vector vel_diff = -phys_info->velocity;
-      float delta_vel = vm_NormalizeVector(&vel_diff);
-      float max_delta_vel = Frametime * ai_info->max_delta_velocity * acc_scale;
+      scalar delta_vel = vm_NormalizeVector(&vel_diff);
+      scalar max_delta_vel = Frametime * ai_info->max_delta_velocity * acc_scale;
 
       if (delta_vel > max_delta_vel) {
         phys_info->velocity += (vel_diff * max_delta_vel);
@@ -1814,7 +1814,7 @@ bool move_relative_object_vec(object *obj, vector *vec, object *target, float ci
     opposite_fvec = *vec;
   }
 
-  if (from_target * opposite_fvec > 0.0f) {
+  if (vm_Dot3Product(from_target, opposite_fvec) > 0.0f) {
     // I am currently on the side of the object that I do not want to be on
     vector goal_dir;
     vector vec_to_plane;
@@ -1822,7 +1822,7 @@ bool move_relative_object_vec(object *obj, vector *vec, object *target, float ci
     vector plane_component;
 
     vec_to_plane = obj->pos - target->pos;
-    normal_component = opposite_fvec * (opposite_fvec * vec_to_plane);
+    normal_component = opposite_fvec * vm_Dot3Product(opposite_fvec, vec_to_plane);
     plane_component = vec_to_plane - normal_component;
 
     if (plane_component == Zero_vector) {
@@ -1887,7 +1887,7 @@ bool compute_dodge_dir(vector *movement_dir, object *obj, object *dodge_obj) {
 
   vector dpoint;
 
-  p = dobj_motion * vec_to_obj;
+  p = vm_Dot3Product(dobj_motion, vec_to_obj);
 
   if (p <= 0.0)
     return false;
@@ -1991,7 +1991,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
       vector fpnt = rp->verts[fp->face_verts[0]];
 
       // Ignore backfaces
-      if ((pos - fpnt) * fp->normal > 0.0f) {
+      if (vm_Dot3Product((pos - fpnt), fp->normal) > 0.0f) {
         float dist = vm_DistToPlane(&pos, &fp->normal, &fpnt);
 
         if (dist < rad) {
@@ -2047,7 +2047,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
           TerrainNormals[MAX_TERRAIN_LOD - 1][cur_node].normal1 + TerrainNormals[MAX_TERRAIN_LOD - 1][cur_node].normal2;
       vm_NormalizeVector(&normal);
 
-      if (obj->mtype.phys_info.velocity * normal <= 0.0f) {
+      if (vm_Dot3Product(obj->mtype.phys_info.velocity, normal) <= 0.0f) {
         vector no_y_vec = pos - fpnt;
         no_y_vec.y() = 0.0f;
 
@@ -2115,10 +2115,10 @@ void AITurnTowardsDir(object *obj, /*velocity *new_vel,*/ vector *goal_dir /*, b
   matrix saved_orient = obj->orient;
   vector saved_uvec = obj->orient.uvec;
 
-  if (*goal_dir == Zero_vector || (obj->orient.fvec * (*goal_dir)) >= ONE_DEGREE_ARC_COS)
+  if (*goal_dir == Zero_vector || vm_Dot3Product(obj->orient.fvec, (*goal_dir)) >= ONE_DEGREE_ARC_COS)
     return; // No goal_dir or less than 1 degree off goal
 
-  if (obj->size > 32.0f && (obj->orient.fvec * (*goal_dir)) >= FIVE_DEGREE_ARC_COS)
+  if (obj->size > 32.0f && (vm_Dot3Product(obj->orient.fvec, (*goal_dir))) >= FIVE_DEGREE_ARC_COS)
     return; // Big objects have more play
 
   if (obj->type != OBJ_WEAPON) {
@@ -2159,8 +2159,8 @@ void AITurnTowardsDir(object *obj, /*velocity *new_vel,*/ vector *goal_dir /*, b
   if (obj->movement_type == MT_WALKING) {
     obj->orient.uvec = saved_uvec;
 
-    float f_proj = obj->orient.uvec * obj->orient.fvec;
-    float r_proj = obj->orient.uvec * obj->orient.rvec;
+    scalar f_proj = vm_Dot3Product(obj->orient.uvec, obj->orient.fvec);
+    scalar r_proj = vm_Dot3Product(obj->orient.uvec, obj->orient.rvec);
 
     if (f_proj <= -1.0f || f_proj >= 1.0f || r_proj >= 1.0f || r_proj <= -1.0f) {
       obj->orient = saved_orient;
@@ -2215,7 +2215,7 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
     return true;
   }
 
-  float scale = max_angles / angles;
+  scalar scale = max_angles / angles;
   dist *= scale;
 
   if (a.b() > 32768)
@@ -2323,7 +2323,7 @@ bool MeleeHitOk(object *obj) {
   }
 
   if (obj->movement_type == MT_PHYSICS || obj->movement_type == MT_PHYSICS) {
-    if ((relative_vel * ai_info->vec_to_target_perceived) < 0.0f) {
+    if (vm_Dot3Product(relative_vel, ai_info->vec_to_target_perceived) < 0.0f) {
       return false;
     }
   }
@@ -2382,7 +2382,7 @@ bool AiMelee(object *obj) {
   f_vec = obj->orient.fvec;
   vm_NormalizeVector(&f_vec);
 
-  dot = f_vec * ai_info->vec_to_target_perceived;
+  dot = vm_Dot3Product(f_vec, ai_info->vec_to_target_perceived);
 
   if (dot >= 0.8f) {
     gi_fire attack_info;
@@ -2752,14 +2752,14 @@ new_anim_label:
   }
 }
 
-static inline void ApplyConstantForce(object *objp, vector *new_pos, vector *force, float delta_time) {
+static inline void ApplyConstantForce(object *objp, vector *new_pos, vector *force, scalar delta_time) {
   const vector velocity = objp->mtype.phys_info.velocity;
-  const float drag = objp->mtype.phys_info.drag;
-  const float mass = objp->mtype.phys_info.mass;
+  const scalar drag = objp->mtype.phys_info.drag;
+  const scalar mass = objp->mtype.phys_info.mass;
 
   // Standard motion with a linear air drag (drag is proportional to velocity)
   *new_pos = objp->pos + (*force / drag) * (delta_time) +
-             (mass / drag) * (velocity - (*force / drag)) * (1 - exp(-(drag / mass) * delta_time));
+             (mass / drag) * (velocity - (*force / drag)) * ((scalar)1 - (scalar)exp(-(drag / mass) * delta_time));
 }
 
 bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float weapon_speed) {
@@ -2768,11 +2768,11 @@ bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float we
     return true;
   }
 
-  float vl = AIDetermineObjVisLevel(robot, target);
+  scalar vl = AIDetermineObjVisLevel(robot, target);
 
   ai_frame *ai_info = robot->ai_info;
   vector to_target = target->pos - robot->pos;
-  float dist_to_target = vm_NormalizeVector(&to_target);
+  scalar dist_to_target = vm_NormalizeVector(&to_target);
 
   if (weapon_speed == 0.0f && ai_info)
     weapon_speed = ai_info->weapon_speed;
@@ -2782,16 +2782,16 @@ bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float we
     return false;
   }
 
-  float wsp = weapon_speed - (to_target * target->mtype.phys_info.velocity);
+  scalar wsp = weapon_speed - (vm_Dot3Product(to_target, target->mtype.phys_info.velocity));
 
   if (wsp <= 0.0f || vl < AIVIS_BARELY) {
     *aim_pt = target->pos;
     return false;
   }
 
-  float dt = dist_to_target / wsp;
+  scalar dt = dist_to_target / wsp;
 
-  float scale;
+  scalar scale;
 
   if (ai_info)
     scale = ai_info->lead_accuracy;
@@ -3047,7 +3047,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
                   if (ps_rand() < ai_info->dodge_percent * D3_RAND_MAX) {
                     vector fov_vec;
 
-                    if (ai_info->vec_to_target_actual * (*AIDetermineFovVec(&Objects[AI_RenderedList[i]], &fov_vec)) >=
+                    if (vm_Dot3Product(ai_info->vec_to_target_actual, (*AIDetermineFovVec(&Objects[AI_RenderedList[i]], &fov_vec))) >=
                         Objects[AI_RenderedList[i]].ai_info->fov) {
                       // mprintf(0, "I am fired upon says robot %d\n", AI_RenderedList[i]));
                       if (ai_info->notify_flags & (0x00000001 << notify_type)) {
@@ -3088,7 +3088,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
                   vector fov_vec;
                   AIDetermineFovVec(&Objects[i], &fov_vec);
 
-                  if (to_weapon * fov_vec >= Objects[i].ai_info->fov) {
+                  if (vm_Dot3Product(to_weapon, fov_vec) >= Objects[i].ai_info->fov) {
                     // mprintf(0, "I am fired upon says robot %d\n", AI_RenderedList[i]);
                     if (ai_info->notify_flags & (0x00000001 << notify_type)) {
                       ai_info->memory[0].num_enemy_shots_dodged++;
@@ -3377,7 +3377,7 @@ start_loop:
 
   if (obj->movement_type == MT_WALKING && obj->ai_info->movement_type == MC_WALKING) {
     if (obj->ai_info->animation_type == AS_ALERT || obj->ai_info->animation_type == AS_IDLE) {
-      float scaler;
+      scalar scaler;
 
       float speed = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
       scaler = speed / obj->ai_info->max_velocity;
@@ -3904,7 +3904,7 @@ void AICheckTargetVis(object *obj) {
   vector fov_vec;
   AIDetermineFovVec(obj, &fov_vec);
 
-  if (ai_info->vec_to_target_actual * fov_vec < ai_info->fov) {
+  if (vm_Dot3Product(ai_info->vec_to_target_actual, fov_vec) < ai_info->fov) {
     ai_info->status_reg &= ~AISR_SEES_GOAL;
     return;
   }
@@ -4095,7 +4095,7 @@ bool AiGoalAvoid(vector *adir, object *obj, object *a_obj, float dist) {
   }
 
   vm_NormalizeVector(&mdir);
-  float temp = mdir * to_avoid;
+  scalar temp = vm_Dot3Product(mdir, to_avoid);
 
   if (temp <= 0.0f) {
     *adir = -to_avoid;
@@ -4277,7 +4277,7 @@ void AIDoTrackFrame(object *obj) {
         vector fov_vec;
         AIDetermineFovVec(obj, &fov_vec);
 
-        if (to * fov_vec < ai_info->fov)
+        if (vm_Dot3Product(to, fov_vec) < ai_info->fov)
           continue;
 
         if (cur_dist[0] > dist) {
@@ -4451,15 +4451,15 @@ void AIDoOrient(object *obj, int g_index) {
 
           vector proj = obj->pos - next_pos;
           vector line = cur_pos - next_pos;
-          float line_len = vm_NormalizeVector(&line);
-          float proj_len = proj * line;
+          scalar line_len = vm_NormalizeVector(&line);
+          scalar proj_len = vm_Dot3Product(proj, line);
 
           if (proj_len > 0.0) {
             if (proj_len > line_len)
               return; // We should have updated nodes
 
-            float scale1 = proj_len / line_len;
-            float scale2 = 1.0f - scale1;
+            scalar scale1 = proj_len / line_len;
+            scalar scale2 = 1.0f - scale1;
 
             fvec = (scale1 * gp->pathnodes[n].fvec + scale2 * gp->pathnodes[n + 1].fvec);
             uvec = (scale1 * gp->pathnodes[n].uvec + scale2 * gp->pathnodes[n + 1].uvec);
@@ -4470,15 +4470,15 @@ void AIDoOrient(object *obj, int g_index) {
 
           vector proj = obj->pos - prev_pos;
           vector line = cur_pos - prev_pos;
-          float line_len = vm_NormalizeVector(&line);
-          float proj_len = proj * line;
+          scalar line_len = vm_NormalizeVector(&line);
+          scalar proj_len = vm_Dot3Product(proj, line);
 
           if (proj_len > 0.0) {
             if (proj_len > line_len)
               return; // We should have updated nodes
 
-            float scale1 = proj_len / line_len;
-            float scale2 = 1.0f - scale1;
+            scalar scale1 = proj_len / line_len;
+            scalar scale2 = 1.0f - scale1;
 
             fvec = (scale1 * gp->pathnodes[n].fvec + scale2 * gp->pathnodes[n - 1].fvec);
             uvec = (scale1 * gp->pathnodes[n].uvec + scale2 * gp->pathnodes[n - 1].uvec);
@@ -5206,7 +5206,7 @@ void ai_fire(object *obj) {
 
         target_dir[WB_MOVE_STILL] = ai_info->last_see_target_pos - gun_point[WB_MOVE_STILL];
         vm_NormalizeVector(&target_dir[WB_MOVE_STILL]);
-        dot[WB_MOVE_STILL] = gun_normal[WB_MOVE_STILL] * target_dir[WB_MOVE_STILL];
+        dot[WB_MOVE_STILL] = vm_Dot3Product(gun_normal[WB_MOVE_STILL], target_dir[WB_MOVE_STILL]);
 
         best_dot = WB_MOVE_STILL;
       }
@@ -5219,9 +5219,9 @@ void ai_fire(object *obj) {
       float max_invalid_ang;
       bool f_constrain = true;
 
-      float s_scale =
+      scalar s_scale =
           (((obj->ai_info->flags & AIF_TEAM_MASK) != AIF_TEAM_REBEL)) ? Diff_ai_turret_speed[DIFF_LEVEL] : 1.0f;
-      const float rps = pm->submodel[pm->poly_wb[i].turret_index[j]].rps * s_scale;
+      const scalar rps = (pm->submodel[pm->poly_wb[i].turret_index[j]].rps * s_scale);
 
       if (pm->submodel[pm->poly_wb[i].turret_index[j]].fov >
           0.0f) // Gametime >= obj->dynamic_wb[i].turret_next_think_time[j])
@@ -5269,9 +5269,9 @@ void ai_fire(object *obj) {
         vm_NormalizeVector(&target_dir[WB_MOVE_RIGHT]);
         vm_NormalizeVector(&target_dir[WB_MOVE_LEFT]);
 
-        dot[WB_MOVE_STILL] = gun_normal[WB_MOVE_STILL] * target_dir[WB_MOVE_STILL];
-        dot[WB_MOVE_RIGHT] = gun_normal[WB_MOVE_RIGHT] * target_dir[WB_MOVE_RIGHT];
-        dot[WB_MOVE_LEFT] = gun_normal[WB_MOVE_LEFT] * target_dir[WB_MOVE_LEFT];
+        dot[WB_MOVE_STILL] = vm_Dot3Product(gun_normal[WB_MOVE_STILL], target_dir[WB_MOVE_STILL]);
+        dot[WB_MOVE_RIGHT] = vm_Dot3Product(gun_normal[WB_MOVE_RIGHT], target_dir[WB_MOVE_RIGHT]);
+        dot[WB_MOVE_LEFT]  = vm_Dot3Product(gun_normal[WB_MOVE_LEFT], target_dir[WB_MOVE_LEFT]);
 
         if (dot[WB_MOVE_RIGHT] > dot[WB_MOVE_STILL])
           best_dot = WB_MOVE_RIGHT;
@@ -5358,7 +5358,7 @@ void ai_fire(object *obj) {
 
           target_dir[best_dot] = ai_info->last_see_target_pos - gun_point[best_dot];
           vm_NormalizeVector(&target_dir[best_dot]);
-          dot[best_dot] = gun_normal[best_dot] * target_dir[best_dot];
+          dot[best_dot] = vm_Dot3Product(gun_normal[best_dot], target_dir[best_dot]);
         }
       }
 
@@ -5780,7 +5780,7 @@ void AITargetCheck(object *obj, object *target, object **best_obj, float *best_d
     vector look_dir;
     AIDetermineFovVec(obj, &look_dir);
 
-    dot = to_obj * look_dir;
+    dot = vm_Dot3Product(to_obj, look_dir);
 
     if (f_use_dot && dot <= *best_dot) {
       return;

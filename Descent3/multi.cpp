@@ -3188,8 +3188,8 @@ void MultiDoPlayerPos(uint8_t *data) {
         pps_player_num = Player_num;
       }
 
-      vector dest_pos = pos + (vel * (1.0 / NetPlayers[pps_player_num].pps));
-      vel = (dest_pos - obj->pos) / (1.0 / NetPlayers[pps_player_num].pps);
+      vector dest_pos = pos + (vel * ((scalar)1.0 / NetPlayers[pps_player_num].pps));
+      vel = (dest_pos - obj->pos) / ((scalar)1.0 / NetPlayers[pps_player_num].pps);
 
       pos = obj->pos;
     }

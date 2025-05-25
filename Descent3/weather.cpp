@@ -66,7 +66,7 @@ void DoRainEffect() {
   else if (randval > 80)
     randval = 80;
 
-  if ((upvec * Viewer_object->orient.uvec) < 0)
+  if (vm_Dot3Product(upvec, Viewer_object->orient.uvec) < 0)
     randval = 8000; // Make sure rain does fall upwards
 
   if (Viewer_object->type == OBJ_PLAYER && OBJECT_OUTSIDE(Viewer_object) && (ps_rand() % randval) == 0) {
@@ -189,8 +189,8 @@ void DoSnowEffect() {
     for (int i = 0; i < num; i++) {
       vector pos = Viewer_object->pos;
 
-      float z = ((ps_rand() % 1000) / 1000.0) * 300;
-      float x = (((ps_rand() % 1000) - 500) / 500.0) * 200;
+      scalar z = ((ps_rand() % 1000) / 1000.0) * 300;
+      scalar x = (((ps_rand() % 1000) - 500) / 500.0) * 200;
       int y = (ps_rand() % 80);
 
       pos += x * mat.rvec;

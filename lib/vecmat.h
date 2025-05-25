@@ -186,10 +186,10 @@ extern void vm_MatrixMul(matrix *, matrix *, matrix *);
 void vm_MatrixMulTMatrix(matrix *dest, matrix *src0, matrix *src1);
 
 // Given a vector, returns the magnitude.  Uses sqrt so it's slow
-extern float vm_GetMagnitude(vector *);
+extern scalar vm_GetMagnitude(const vector *);
 
 // Given a vector, returns an approximation of the magnitude
-extern float vm_GetMagnitudeFast(vector *);
+extern scalar vm_GetMagnitudeFast(const vector *);
 
 // Returns the dot product of the two given vectors
 extern float vm_DotProduct(const vector *, const vector *);
@@ -220,7 +220,7 @@ extern void vm_ScaleVector(vector *, vector *, float);
 extern void vm_ScaleAddVector(vector *d, vector *p, vector *v, float s);
 
 // Divides second vector components by 3rd arg, placing result in first arg.  Useful for parametric lines
-extern void vm_DivVector(vector *, vector *, float);
+extern void vm_DivVector(vector *, vector *, const scalar);
 
 // Same as NormalizeVector, but uses approximation
 extern float vm_NormalizeVectorFast(vector *);
@@ -250,10 +250,10 @@ void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec = nullptr, vector *
 void vm_VectorAngleToMatrix(matrix *m, vector *v, angle a);
 
 // Given an angle, places sin in 2nd arg, cos in 3rd.  Either can be null
-extern void vm_SinCos(angle, float *, float *);
+extern void vm_SinCos(angle, scalar *, scalar *);
 
 // Given x1,y1,x2,y2, returns the slope
-extern float vm_GetSlope(float, float, float, float);
+extern scalar vm_GetSlope(scalar, scalar, scalar, scalar);
 
 // Calculates the perpendicular vector given three points
 // Parms:	n - the computed perp vector (filled in)
@@ -268,10 +268,10 @@ void vm_GetPerp(vector *n, vector *a, vector *b, vector *c);
 float vm_GetNormal(vector *n, vector *v0, vector *v1, vector *v2);
 
 // Gets the distances (magnitude) between two vectors. Slow.
-extern float vm_VectorDistance(const vector *a, const vector *b);
+extern scalar vm_VectorDistance(const vector *a, const vector *b);
 
 // Gets the approx distances (magnitude) between two vectors. Faster.
-extern float vm_VectorDistanceQuick(vector *a, vector *b);
+extern scalar vm_VectorDistanceQuick(const vector *a, const vector *b);
 
 // Computes a normalized direction vector between two points
 // Parameters:	dest - filled in with the normalized direction vector
@@ -303,16 +303,16 @@ float vm_DistToPlane(vector *checkp, vector *norm, vector *planep);
 float calc_det_value(matrix *det);
 
 void vm_MakeInverseMatrix(matrix *dest);
-void vm_SinCosToMatrix(matrix *m, float sinp, float cosp, float sinb, float cosb, float sinh, float cosh);
+void vm_SinCosToMatrix(matrix *m, scalar sinp, scalar cosp, scalar sinb, scalar cosb, scalar sinh, scalar cosh);
 
 // Gets the real center of a polygon
-float vm_GetCentroid(vector *centroid, vector *src, int nv);
+scalar vm_GetCentroid(vector *centroid, vector *src, int nv);
 
 //	retrieves a random vector in values -RAND_MAX/2 to RAND_MAX/2
 void vm_MakeRandomVector(vector *vec);
 
 // Given a set of points, computes the minimum bounding sphere of those points
-float vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts);
+scalar vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts);
 
 // Gets the real center of a polygon, but uses fast magnitude calculation
 // Returns the size of the passed in stuff

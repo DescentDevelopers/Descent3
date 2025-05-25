@@ -439,7 +439,7 @@ void SelectPrevFace() {
   State_changed = 1;
 }
 
-#define DEFAULT_ROOM_LENGTH 20.0
+#define DEFAULT_ROOM_LENGTH (scalar)20.0
 
 // Adds a room at the current room/face.  The room is created by extuding out from the current face
 void AddRoom() {
@@ -671,16 +671,16 @@ void SnapRoom(int basevert) {
   vm_GetNormalizedDir(&attedge, &v1, &v0);
 
   // Get angle between two edge vectors
-  double dot = baseedge * attedge;
+  scalar dot = vm_Dot3Product(baseedge, attedge);
   if (dot > 1.0)
     dot = 1.0;
-  double ac = acos(dot);
-  float delta_ang = 32768.0 * ac / PI;
+  scalar ac = acos(dot);
+  scalar delta_ang = 32768.0 * ac / PI;
 
   // Get sign of angle
   vector checkv;
   vm_CrossProduct(&checkv, &baseedge, &attedge);
-  if ((bfp->normal * checkv) > 0)
+  if (vm_Dot3Product(bfp->normal, checkv) > 0)
     delta_ang = -delta_ang;
 
   // Update placed room angle
@@ -1292,7 +1292,7 @@ void BuildBridge(room *attroomp, int attface, room *baseroomp, int baseface) {
   dist = vm_GetNormalizedDir(&delta_vec, &bc, &ac);
 
   // Compute the cosine of the angle between our vector and the normal of the base face
-  cos = delta_vec * bfp->normal;
+  cos = vm_Dot3Product(delta_vec, bfp->normal);
 
   // Get a pointer to a vertex on the base face
   basevert = &baseroomp->verts[bfp->face_verts[0]];
@@ -1312,7 +1312,7 @@ void BuildBridge(room *attroomp, int attface, room *baseroomp, int baseface) {
     newroomp->verts[i] = attroomp->verts[afp->face_verts[nv - 1 - i]];
 
     // Get distance from base face to this vertex
-    dist = ((*basevert - newroomp->verts[i]) * bfp->normal) / cos;
+    dist = vm_Dot3Product((*basevert - newroomp->verts[i]), bfp->normal) / cos;
 
     // Get the new vert
     newroomp->verts[nv + i] = newroomp->verts[i] + (delta_vec * dist);
@@ -1446,7 +1446,7 @@ void JoinRooms(room *attroomp, int attface, room *baseroomp, int baseface) {
   }
 
   // Compute the cosine of the angle between our vector and the normal of the base face
-  cos = delta_vec * bfp->normal;
+  cos = vm_Dot3Product(delta_vec, bfp->normal);
 
   // If cos is zero, two center points are the same, so no move
   if (fabs(cos) < JOIN_EPSILON)
@@ -1458,7 +1458,7 @@ void JoinRooms(room *attroomp, int attface, room *baseroomp, int baseface) {
     float dist;
 
     // Get distance from base face to this vertex
-    dist = ((*basevert - *vp) * bfp->normal) / cos;
+    dist = vm_Dot3Product((*basevert - *vp), bfp->normal) / cos;
 
     // If we're moving the point, make sure it's not part of a portal
     if (fabs(dist) > POINT_TO_PLANE_EPSILON) {
@@ -1787,7 +1787,7 @@ void DeleteRoomFromMine(room *rp) {
   FreeRoom(rp);
 }
 
-#define DROP_ROOM_OFFSET 20.0
+#define DROP_ROOM_OFFSET (scalar)20.0
 
 // Places a room a short distance from the specified room & face
 // The new room is not attached to anything
@@ -2446,20 +2446,20 @@ void UndoSnap() {
 //					v0,v1 - the end points of the two vectors
 //					normal - the surface normal of the face these verts lie in
 // Returns the cosine of the angle between <base,v0> and <base,v1>
-float GetAngle(vector *base, vector *v0, vector *v1, vector *normal) {
+scalar GetAngle(vector *base, vector *v0, vector *v1, vector *normal) {
   vector edge0, edge1, cross;
-  float dot;
+  scalar dot;
 
   vm_GetNormalizedDir(&edge0, v0, base);
   vm_GetNormalizedDir(&edge1, v1, base);
 
-  dot = edge0 * edge1;
+  dot = vm_Dot3Product(edge0, edge1);
   cross = edge0 ^ edge1;
 
-  if (cross * *normal > 0)
-    return 0.25 - dot / 4.0;
+  if (vm_Dot3Product(cross, *normal) > (scalar)0)
+    return (scalar)0.25 - dot / (scalar)4.0;
   else
-    return 0.75 + dot / 4.0;
+    return (scalar)0.75 + dot / (scalar)4.0;
 }
 
 // Connects two rooms in a pleasing way
@@ -2516,7 +2516,7 @@ void BuildSmoothBridge(room *rp0, int facenum0, room *rp1, int facenum1) {
   vm_GetNormalizedDir(&delta_vec, &c1, &c0);
 
   // Compute the cosine of the angle between our vector and the normal of the base face
-  float cos = delta_vec * fp1->normal;
+  scalar cos = vm_Dot3Product(delta_vec, fp1->normal);
 
   // Get a pointer to a vertex on face1
   vector *vp = &rp->verts[nv0];
@@ -2525,7 +2525,7 @@ void BuildSmoothBridge(room *rp0, int facenum0, room *rp1, int facenum1) {
   for (i = 0; i < nv0; i++) {
 
     // Get distance from base face to this vertex
-    float dist = ((*vp - rp->verts[i]) * fp1->normal) / cos;
+    scalar dist = vm_Dot3Product((*vp - rp->verts[i]), fp1->normal) / cos;
 
     // Get the new vert
     tverts[i] = rp->verts[i] + (delta_vec * dist);
@@ -2533,10 +2533,10 @@ void BuildSmoothBridge(room *rp0, int facenum0, room *rp1, int facenum1) {
 
   // Find closest face0 point to point 0 of face1
   int smallest_i = -1;
-  float smallest_angle = 1.0;
+  scalar smallest_angle = 1.0;
   vector tnorm = -fp1->normal;
   for (i = 0; i < nv0; i++) {
-    float angle = GetAngle(&c1, &rp->verts[nv0], &tverts[i], &tnorm);
+    scalar angle = GetAngle(&c1, &rp->verts[nv0], &tverts[i], &tnorm);
     if (angle > 0.5)
       angle = 1.0 - angle; // we want closest in either direction
     if (angle < smallest_angle) {
@@ -2550,7 +2550,7 @@ void BuildSmoothBridge(room *rp0, int facenum0, room *rp1, int facenum1) {
   int prev1 = 0, // set up the previous edge
       prev0 = smallest_i;
   for (i = 0; i < nverts; i++) {
-    float angle0, angle1;
+    scalar angle0, angle1;
 
     face *fp = &rp->faces[i];
 

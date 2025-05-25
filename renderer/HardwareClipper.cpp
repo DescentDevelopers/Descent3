@@ -137,11 +137,11 @@ g3Point *ClipCustomEdge(g3Point *on_pnt, g3Point *off_pnt) {
   w.y() /= Matrix_scale.y();
   w.z() /= Matrix_scale.z();
 
-  float k, den = -(Clip_plane * ray_direction);
+  scalar k, den = -vm_Dot3Product(Clip_plane, ray_direction);
   if (den == 0.0f) {
     k = 1.0f;
   } else {
-    float num = Clip_plane * w;
+    scalar num = vm_Dot3Product(Clip_plane, w);
     k = num / den;
   }
 

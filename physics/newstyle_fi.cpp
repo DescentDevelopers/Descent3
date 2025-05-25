@@ -71,15 +71,15 @@ static void CollidePolygonModel(vector *pos, matrix *orient, int model_num, floa
                                 uint32_t f_render_sub);
 
 static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
-  float x, y, z;
-  float s, c, t;
+  scalar x, y, z;
+  scalar s, c, t;
 
   x = axis->x();
   y = axis->y();
   z = axis->z();
 
-  s = (float)FixSin(ang);
-  c = (float)FixCos(ang);
+  s = (scalar)FixSin(ang);
+  c = (scalar)FixCos(ang);
   t = 1.0f - c;
 
   mat->rvec.x() = t * x * x + c;
@@ -195,7 +195,7 @@ static void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
               x = *fvi_query_ptr->p1 - *fvi_query_ptr->p0;
               vm_NormalizeVector(&x);
 
-              fvi_hit_param = (newp - *fvi_query_ptr->p0) * x;
+              fvi_hit_param = vm_Dot3Product((newp - *fvi_query_ptr->p0), x);
 
               if (!(fvi_hit_param > -10000000.0 && fvi_hit_param < 10000000.0)) {
                 LOG_WARNING << "FVI Warning: fvi_hit_param seems yucky!";

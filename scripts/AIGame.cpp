@@ -3257,7 +3257,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
             FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
     fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
-    if (ray.hit_wallnorm * orient.rvec > -0.95) {
+    if (vm_Dot3Product(ray.hit_wallnorm, orient.rvec) > -0.95) {
       memory->mode = HM_WALL_HIT;
       SetMode(me, HM_MELEE);
       return false;
@@ -3268,7 +3268,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
     AI_AddGoal(me, AIG_GET_TO_POS, 1, 1.0, H_GUID_LANDED, GF_ORIENT_SCRIPTED | GF_USE_BLINE_IF_SEES_GOAL | GF_NOTIFIES,
                &memory->land_pos, ray.hit_room);
 
-    float dist = 0.0f;
+    scalar dist = 0.0f;
     AI_GoalValue(me, 1, VF_SET, AIGV_F_CIRCLE_DIST, &dist);
 
     flags = PF_POINT_COLLIDE_WALLS;
@@ -3405,7 +3405,7 @@ void Humonculous::DoInit(int me) {
   Obj_GetGroundPos(me, 0, &g_pos, &g_norm);
 
   vector from_ground = pos - g_pos;
-  memory->ground_pnt_offset = fabs(from_ground * orient.uvec);
+  memory->ground_pnt_offset = fabs(vm_Dot3Product(from_ground, orient.uvec));
 
   AI_Value(me, VF_GET, AIV_F_MAX_SPEED, &memory->max_speed);
   AI_Value(me, VF_GET, AIV_F_MAX_DELTA_SPEED, &memory->max_delta_speed);
@@ -5957,7 +5957,7 @@ void GuideBot::DoFrame(int me) {
         vector dir_to_goal = it_pos - me_pos;
         vm_VectorNormalize(&dir_to_goal);
 
-        if ((flags & AISR_CIRCLE_DIST) && (dir_to_goal * orient.fvec > 0.4717f) && anim >= 23 && anim <= 33)
+        if ((flags & AISR_CIRCLE_DIST) && (vm_Dot3Product(dir_to_goal, orient.fvec) > 0.4717f) && anim >= 23 && anim <= 33)
           memory->extinguish_obj_time += Game_GetFrameTime();
 
         if (memory->extinguish_obj_time > 1.5f) {
@@ -7311,7 +7311,7 @@ void HatePTMC::DoFrame(int me) {
 
             Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
-            if (p_room == room || dist < 60.0f || orient.fvec * dir >= fov) {
+            if (p_room == room || dist < 60.0f || vm_Dot3Product(orient.fvec, dir) >= fov) {
               ray_info ray;
               int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                           FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
@@ -8434,7 +8434,7 @@ void Sparky::DoFrame(int me) {
     matrix orient;
     Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
-    float dot = orient.rvec * memory->orient.rvec;
+    scalar dot = vm_Dot3Product(orient.rvec, memory->orient.rvec);
     if (dot < -1.0f)
       dot = -1.0f;
     else if (dot > 1.0f)
@@ -8445,7 +8445,7 @@ void Sparky::DoFrame(int me) {
     float aps = (ang * 65535.0f) / (Game_GetFrameTime() * (2.0f * PI));
 
     if (aps >= MIN_MALF_SPEED) {
-      float tdot = memory->orient.rvec * orient.fvec;
+      float tdot = vm_Dot3Product(memory->orient.rvec, orient.fvec);
       if (tdot < 0.0f)
         spin_dir = SPARKY_ROT_LEFT;
       else if (tdot > 0.0f)

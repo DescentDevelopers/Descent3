@@ -56,10 +56,10 @@ extern void vm_MatrixMul(matrix *, matrix *, matrix *);
 void vm_MatrixMulTMatrix(matrix *dest, matrix *src0, matrix *src1);
 
 // Given a vector, returns the magnitude.  Uses sqrt so it's slow
-extern float vm_GetMagnitude(vector *);
+extern scalar vm_GetMagnitude(const vector *);
 
 // Given a vector, returns an approximation of the magnitude
-extern float vm_GetMagnitudeFast(vector *);
+extern scalar vm_GetMagnitudeFast(const vector *);
 
 // Returns the dot product of the two given vectors
 extern float vm_DotProduct(vector *, vector *);
@@ -140,10 +140,10 @@ float vm_GetNormal(vector *n, vector *v0, vector *v1, vector *v2);
 #define vm_GetSurfaceNormal vm_GetNormal
 
 // Gets the distances (magnitude) between two vectors. Slow.
-extern float vm_VectorDistance(const vector *a, const vector *b);
+extern scalar vm_VectorDistance(const vector *a, const vector *b);
 
 // Gets the approx distances (magnitude) between two vectors. Faster.
-extern float vm_VectorDistanceQuick(vector *a, vector *b);
+extern scalar vm_VectorDistanceQuick(const vector *a, const vector *b);
 
 // Computes a normalized direction vector between two points
 // Parameters:	dest - filled in with the normalized direction vector

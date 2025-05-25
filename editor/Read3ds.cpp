@@ -687,12 +687,12 @@ int compute_faces_mapping(reading_face *f, vector *out_norm, float *out_d) {
 int uvs_match(reading_face *a, int va, reading_face *b, int vb) {
   int f1, f2, flag;
   vector n1, n2;
-  float d1, d2;
-  float cosTheta;
-  float u_err, v_err;
+  scalar d1, d2;
+  scalar cosTheta;
+  scalar u_err, v_err;
 
-  u_err = (float)fabs((a->face_uvls[va].u - b->face_uvls[vb].u) / ((a->face_uvls[va].u + b->face_uvls[vb].u) / 2.0f));
-  v_err = (float)fabs((a->face_uvls[va].v - b->face_uvls[vb].v) / ((a->face_uvls[va].v + b->face_uvls[vb].v) / 2.0f));
+  u_err = (scalar)fabs((a->face_uvls[va].u - b->face_uvls[vb].u) / ((a->face_uvls[va].u + b->face_uvls[vb].u) / (scalar)2.0f));
+  v_err = (scalar)fabs((a->face_uvls[va].v - b->face_uvls[vb].v) / ((a->face_uvls[va].v + b->face_uvls[vb].v) / (scalar)2.0f));
 
   if (u_err + v_err > 0.00001f)
     return 0;

@@ -2431,7 +2431,7 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
 
   // Find top most point
   int topmost_point = -1;
-  float topmost_y = -900000.0f; // a big number
+  scalar topmost_y = -900000.0f; // a big number
 
   for (i = 0; i < nv; i++) {
     if (verts[i].y() > topmost_y) {
@@ -2444,7 +2444,7 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
 
   // Find right most point
   int rightmost_point = -1;
-  float rightmost_x = -900000.00f; // a big number
+  scalar rightmost_x = -900000.00f; // a big number
 
   for (i = 0; i < nv; i++) {
     if (verts[i].x() > rightmost_x) {
@@ -2479,12 +2479,12 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
   // Figure out lightmap resolution
   scalar xdiff = verts[rightmost_point].x() - verts[leftmost_point].x();
   scalar ydiff = verts[topmost_point].y() - verts[bottommost_point].y();
-  float max_diff = (float)std::max(xdiff, ydiff);
+  scalar max_diff = (float)std::max(xdiff, ydiff);
 
   int lightmap_x_res = -1, lightmap_y_res = -1;
-  float xspacing = LightSpacing;
-  float yspacing = LightSpacing;
-  float spacing = LightSpacing;
+  scalar xspacing = LightSpacing;
+  scalar yspacing = LightSpacing;
+  scalar spacing  = LightSpacing;
   int res, done_spacing = 0;
   int xspace_int, yspace_int;
 

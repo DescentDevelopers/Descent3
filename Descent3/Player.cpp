@@ -2754,7 +2754,7 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
 
   // Set physics data for this object
 
-  obj->mtype.phys_info.velocity = parent->mtype.phys_info.velocity + parent->orient.fvec * 30.0;
+  obj->mtype.phys_info.velocity = parent->mtype.phys_info.velocity + parent->orient.fvec * (scalar)30;
 
   vm_MakeZero(&obj->mtype.phys_info.rotthrust);
 

@@ -103,6 +103,8 @@ constexpr static inline const vector ne()
 {
   return vector{ (T)0, (T)0, (T)0 };
 }
+// Does a simple dot product calculation
+static inline scalar dot(const vector &u, const vector &v) { return (u.x() * v.x()) + (u.y() * v.y()) + (u.z() * v.z()); }
 };
 
 using vector_array = vector;
@@ -309,9 +311,6 @@ static inline matrix operator-(matrix a, matrix b) {
 // Subtracts 2 matrices
 static inline matrix operator-=(matrix &a, matrix b) { return (a = a - b); }
 
-// Does a simple dot product calculation
-static inline float operator*(vector u, vector v) { return (u.x() * v.x()) + (u.y() * v.y()) + (u.z() * v.z()); }
-
 // Scalar multiplication
 static inline vector operator*(vector v, float s) {
   v.x() *= s;
@@ -408,13 +407,14 @@ static inline vector operator-(vector a) {
 static inline vector operator*(vector v, matrix m) {
   vector result;
 
-  result.x() = v * m.rvec;
-  result.y() = v * m.uvec;
-  result.z() = v * m.fvec;
+  result.x() = vector::dot(v, m.rvec);
+  result.y() = vector::dot(v, m.uvec);
+  result.z() = vector::dot(v, m.fvec);
 
   return result;
 }
 
+inline scalar vm_Dot3Product(const vector a, const vector b) { return (a.x() * b.x()) + (a.y() * b.y()) + (a.z() * b.z()); }
 static inline float vm_Dot3Vector(float x, float y, float z, vector *v) { return (x * v->x()) + (y * v->y()) + (z * v->z()); }
 
 #define vm_GetSurfaceNormal vm_GetNormal

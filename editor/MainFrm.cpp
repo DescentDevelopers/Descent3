@@ -3393,7 +3393,7 @@ void CMainFrame::OnOsiriscompile() {
 }
 
 // Copied here from HObject.cpp
-#define OBJECT_PLACE_DIST 10.0
+#define OBJECT_PLACE_DIST (scalar)10.0
 bool MoveObject(object *obj, vector *newpos);
 
 void CMainFrame::OnViewMoveCameraToCurrentObject() {

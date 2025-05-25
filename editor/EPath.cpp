@@ -450,8 +450,8 @@ void DrawAllPaths(grViewport *vp, vector *viewer_eye, matrix *viewer_orient, flo
 
       g3_DrawSphere(color, &rot_points[t], size);
 
-      vector fpos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].fvec * (size - size / 10.0);
-      vector upos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].uvec * (size - size / 10.0);
+      vector fpos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].fvec * (size - size / (scalar)10.0);
+      vector upos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].uvec * (size - size / (scalar)10.0);
 
       g3Point frot;
       g3Point urot;

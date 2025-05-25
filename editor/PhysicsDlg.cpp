@@ -325,7 +325,7 @@ void CPhysicsDlg::SetPhysicsData(physics_info *phys_info) {
   m_gravity_flag = phys_info->flags & (PF_GRAVITY | PF_REVERSE_GRAVITY);
 
   m_max_bounces = phys_info->num_bounces;
-  m_percent_loss = 100.0 - (phys_info->coeff_restitution * 100.0);
+  m_percent_loss = (scalar)100.0 - (phys_info->coeff_restitution * (scalar)100.0);
 
   m_wiggle = (phys_info->flags & PF_WIGGLE) != 0;
   m_magnetism = (phys_info->flags & PF_IGNORE_OWN_CONC_FORCES) != 0;
@@ -333,7 +333,7 @@ void CPhysicsDlg::SetPhysicsData(physics_info *phys_info) {
   //	m_gravity = (phys_info->flags & PF_GRAVITY) != 0;
   m_persistent = (phys_info->flags & PF_PERSISTENT) != 0;
 
-  m_hit_die_angle = (phys_info->hit_die_dot == -1) ? 0 : asin(phys_info->hit_die_dot) * (180.0 / PI);
+  m_hit_die_angle = (phys_info->hit_die_dot == -1) ? 0 : asin(phys_info->hit_die_dot) * ((scalar)180.0 / (scalar)PI);
 }
 
 // Copy data from CPhysicsDlg class to physics_info struct
@@ -480,10 +480,10 @@ void CPhysicsDlg::GetPhysicsData(physics_info *phys_info) {
   phys_info->rotvel.z() = m_init_rot_velocity_z;
 
   phys_info->num_bounces = m_max_bounces;
-  phys_info->coeff_restitution = (100.0 - m_percent_loss) / 100.0;
+  phys_info->coeff_restitution = ((scalar)100.0 - m_percent_loss) / (scalar)100.0;
 
   if (phys_info->hit_die_dot != -1)
-    phys_info->hit_die_dot = sin(m_hit_die_angle * PI / (180.0));
+    phys_info->hit_die_dot = sin(m_hit_die_angle * (scalar)PI / ((scalar)180.0));
 
   phys_info->flags &= (~PF_GRAVITY_MASK);
   phys_info->flags |= m_gravity_flag;

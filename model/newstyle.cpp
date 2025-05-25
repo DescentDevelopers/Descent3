@@ -264,18 +264,18 @@ inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
         vector incident_norm = vert - Polymodel_bump_pos;
         vm_NormalizeVectorFast(&incident_norm);
 
-        float d = incident_norm * vertnorm;
+        scalar d = vm_Dot3Product(incident_norm, vertnorm);
         vector upvec = d * vertnorm;
         incident_norm -= (2 * upvec);
 
-        float dotp = (subvec * incident_norm);
+        scalar dotp = vm_Dot3Product(subvec, incident_norm);
 
         if (dotp < 0)
           dotp = 0;
         if (dotp > 1)
           dotp = 1;
 
-        float val = dotp * .5;
+        scalar val = dotp * .5;
 
         p->p3_uvl.u2 = val;
         p->p3_uvl.v2 = val;
@@ -516,7 +516,7 @@ inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) 
     g3Point *p = &Robot_points[fp->vertnums[t]];
     pointlist[t] = p;
 
-    float mag;
+    scalar mag;
 
     if (Polymodel_effect.fog_plane_check == 1) {
       mag = vm_DotProduct(&Fog_plane, &sm->verts[fp->vertnums[t]]) + Fog_distance;
@@ -526,18 +526,18 @@ inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) 
       // Now we must generate the split point. This is simply
       // an equation in the form Origin + t*Direction
 
-      float dist = (*vec * Polymodel_fog_plane) + Fog_distance;
+      scalar dist = vm_Dot3Product(*vec, Polymodel_fog_plane) + Fog_distance;
 
       vector subvec = *vec - Fog_view_pos;
 
-      float t = Fog_eye_distance / (Fog_eye_distance - dist);
+      scalar t = Fog_eye_distance / (Fog_eye_distance - dist);
       vector portal_point = Fog_view_pos + (t * subvec);
 
-      float eye_distance = -(vm_DotProduct(&Fog_plane, &portal_point));
+      scalar eye_distance = -(vm_DotProduct(&Fog_plane, &portal_point));
       mag = vm_DotProduct(&Fog_plane, vec) + eye_distance;
     }
 
-    float scalar = mag / Polymodel_effect.fog_depth;
+    scalar scalar = mag / Polymodel_effect.fog_depth;
 
     if (scalar > 1)
       scalar = 1;
@@ -588,11 +588,11 @@ inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum
     vector incident_norm = vert - Polymodel_specular_pos;
     vm_NormalizeVectorFast(&incident_norm);
 
-    float d = incident_norm * vertnorm;
+    scalar d = vm_Dot3Product(incident_norm, vertnorm);
     vector upvec = d * vertnorm;
     incident_norm -= (2 * upvec);
 
-    float dotp = subvec * incident_norm;
+    scalar dotp = vm_Dot3Product(subvec,incident_norm);
 
     if (dotp < 0)
       continue;
@@ -600,8 +600,8 @@ inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum
       dotp = 1;
 
     if (dotp > 0) {
-      int index = ((float)(MAX_SPECULAR_INCREMENTS - 1) * dotp);
-      float val = Specular_tables[2][index];
+      int index = ((scalar)(MAX_SPECULAR_INCREMENTS - 1) * dotp);
+      scalar val = Specular_tables[2][index];
 
       p->p3_a = val * Polymodel_effect.spec_scalar;
     }
@@ -761,7 +761,7 @@ void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
 
     // Check to see if this face even faces us!
     tempv = view_pos - sm->verts[fp->vertnums[0]];
-    if ((tempv * fp->normal) < 0)
+    if ((vm_Dot3Product(tempv, fp->normal)) < 0)
       continue;
 
     if (fp->texnum != -1) {
@@ -841,7 +841,7 @@ void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
       Fog_distance = -(vm_DotProduct(&Fog_plane, &Fog_view_pos));
     else {
       Fog_distance = -(vm_DotProduct(&Polymodel_fog_plane, &Polymodel_fog_portal_vert));
-      Fog_eye_distance = (Fog_view_pos * Polymodel_fog_plane) + Fog_distance;
+      Fog_eye_distance = vm_Dot3Product(Fog_view_pos, Polymodel_fog_plane) + Fog_distance;
     }
 
     rend_SetOverlayType(OT_NONE);
@@ -1223,7 +1223,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
       }
     }
 
-    geometric_center = (max_xyz + min_xyz) / 2.0;
+    geometric_center = (max_xyz + min_xyz) / 2.0f;
     *offset_ptr = geometric_center;
   }
 

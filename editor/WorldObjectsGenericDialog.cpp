@@ -1183,9 +1183,9 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void) {
   vm_MakeZero(&zero_vector);
   vm_MakeIdentity(&id_matrix);
 
-  float norm_angles[256];
+  scalar norm_angles[256];
 
-  float keyframe = pm->frame_min + (pm->frame_max - pm->frame_min) * ((float)frame / (float)NUM_ANIM_FRAMES);
+  scalar keyframe = pm->frame_min + (pm->frame_max - pm->frame_min) * ((scalar)frame / (scalar)NUM_ANIM_FRAMES);
 
   SetNormalizedTimeAnim(keyframe, norm_angles, pm);
 

@@ -1031,7 +1031,7 @@ void DoWallEffects(object *weapon, int surface_tmap) {
           vis->velocity *= 4 + (ps_rand() % 20);
           vis->size = .5 + (((ps_rand() % 11) - 5) * .05);
           vis->flags |= VF_USES_LIFELEFT;
-          float lifetime = 1.0 + (((ps_rand() % 11) - 5) * .1);
+          scalar lifetime = 1.0 + (((ps_rand() % 11) - 5) * .1);
           vis->lifeleft = lifetime;
           vis->lifetime = lifetime;
           vis->lighting_color = color;
@@ -1043,7 +1043,7 @@ void DoWallEffects(object *weapon, int surface_tmap) {
 
 #define FORCEFIELD_DAMAGE 5.0f
 
-extern void DeformTerrain(vector *pos, int depth, float size);
+extern void DeformTerrain(vector *pos, int depth, scalar size);
 
 // Check for lava, volatile, or water surface.  If contact, make special sound & kill the weapon
 void check_for_special_surface(object *weapon, int surface_tmap, vector *surface_normal, float hit_dot) {
@@ -1568,11 +1568,11 @@ void ConvertEulerToAxisAmount(vector *e, vector *n, float *w) {
 }
 
 void ConvertAxisAmountToEuler(vector *n, float *w, vector *e) {
-  float s;
-  float c;
-  float t;
+  scalar s;
+  scalar c;
+  scalar t;
 
-  float scale = *w / .0001f;
+  scalar scale = *w / .0001f;
   vector s_result;
 
   if (*w == 0.0f) {
@@ -1654,7 +1654,7 @@ void bump_obj_against_fixed(object *obj, vector *collision_point, vector *collis
   if (m1 <= 0.0f)
     m1 = 0.00000001f;
 
-  v_rel = *collision_normal * (p1);
+  v_rel = vm_Dot3Product(*collision_normal, p1);
 
   float e = obj->mtype.phys_info.coeff_restitution;
 
@@ -1675,7 +1675,7 @@ void bump_obj_against_fixed(object *obj, vector *collision_point, vector *collis
 
   vm_CrossProduct(&cc1, &c1, &r1);
 
-  cv1 = (*collision_normal) * c1;
+  cv1 = vm_Dot3Product(*collision_normal,c1);
 
   j = (-(1.0f + e)) * v_rel;
   j /= (1 / m1 + cv1);
@@ -1747,7 +1747,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
     if (!(t->flags & OF_DEAD)) {
       // Find hit speed
       moved_v = t->pos - t->last_pos;
-      wall_part = *collision_normal * t->mtype.phys_info.velocity;
+      wall_part = vm_Dot3Product(*collision_normal, t->mtype.phys_info.velocity);
 
       if (t->mtype.phys_info.flags & PF_BOUNCE) {
         wall_part *= 2.0; // Subtract out wall part twice to achieve bounce
@@ -1772,7 +1772,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
       } else {
         float wall_force;
 
-        wall_force = t->mtype.phys_info.thrust * *collision_normal;
+        wall_force = vm_Dot3Product(t->mtype.phys_info.thrust,*collision_normal);
         t->mtype.phys_info.thrust +=
             *collision_normal * (wall_force * -1.001); // 1.001 so that we are not quite tangential
 
@@ -1875,7 +1875,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
   if (m2 <= 0.0f)
     m2 = 0.00000001f;
 
-  v_rel = *collision_normal * (p1 - p2);
+  v_rel = vm_Dot3Product(*collision_normal,(p1 - p2));
 
   float e;
 
@@ -1916,8 +1916,8 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
   vm_CrossProduct(&cc1, &c1, &r1);
   vm_CrossProduct(&cc2, &c2, &r2);
 
-  cv1 = (*collision_normal) * c1;
-  cv2 = (*collision_normal) * c2;
+  cv1 = vm_Dot3Product(*collision_normal,c1);
+  cv2 = vm_Dot3Product(*collision_normal,c2);
 
   j = (-(1.0f + e)) * v_rel;
   j /= (1 / m1 + 1 / m2 + cv1 + cv2);

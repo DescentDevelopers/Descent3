@@ -252,8 +252,8 @@ int ShootRayToVolumePoint(vector *src, vector *dest, int start_room) {
 
 void ClipSatelliteToTerrain(vector *answer, vector *src_vec, vector *dest_vec) {
   vector cur_vec = *src_vec;
-  float terrain_limit = 256 * TERRAIN_SIZE;
-  float mag, diff;
+  scalar terrain_limit = 256 * TERRAIN_SIZE;
+  scalar mag, diff;
   vector ray;
 
   // Check ceiling
@@ -326,7 +326,7 @@ void ClipSatelliteToTerrain(vector *answer, vector *src_vec, vector *dest_vec) {
 
 // Returns 1 if a src vector can hit dest vector unobstructed, else 0
 int ShootRayFromPoint(vector *src, vector *dest, rad_surface *src_surf, rad_surface *dest_surf) {
-  float dist;
+  scalar dist;
   bool do_backface = 0;
   fvi_info hit_info;
   fvi_query fq;
@@ -425,7 +425,7 @@ float GetMaxColor(spectra *sp);
 float GetFormFactorForElementAndSatellite(rad_surface *dest_surf, rad_element *dest_element, vector *src_center) {
   vector dest_center;
   vector light_center = *src_center;
-  float form_factor = 0.0;
+  scalar form_factor = 0.0;
 
   if (Ignore_satellites)
     return 0;
@@ -436,7 +436,7 @@ float GetFormFactorForElementAndSatellite(rad_surface *dest_surf, rad_element *d
   for (int j = 0; j < dest_element->num_verts; j++) {
     dest_center = dest_element->verts[j];
     dest_center += (dest_surf->normal / 32.0);
-    float temp_factor = 0;
+    scalar temp_factor = 0;
 
     int hit = 0;
     vector ray = light_center - dest_center;
@@ -866,7 +866,7 @@ void CalculateVolumeLightsForRay(float total_sphere_dist, vector *src_center) {
                   subvec /= mag;
                   int hit;
 
-                  float scalar = subvec * rad_MaxSurface->normal;
+                  float scalar = vm_Dot3Product(subvec, rad_MaxSurface->normal);
 
                   if (scalar < 0)
                     continue;
@@ -914,7 +914,7 @@ void CalculateVolumeLightsForRay(float total_sphere_dist, vector *src_center) {
                 subvec /= mag;
                 int hit;
 
-                float scalar = subvec * rad_MaxSurface->normal;
+                float scalar = vm_Dot3Product(subvec, rad_MaxSurface->normal);
 
                 if (scalar < 0)
                   continue;

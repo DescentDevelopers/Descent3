@@ -124,7 +124,7 @@
 #include "editor.h"
 #include "pserror.h"
 
-#define FACE_VIEW_DIST 5.0
+#define FACE_VIEW_DIST (scalar)5.0
 
 // Set the viewer in the specified room facing the specified face
 // If room_center is true, put viewer at the center of the room facing the face
@@ -147,7 +147,7 @@ void SetViewerFromRoomFace(room *roomp, int facenum, bool room_center) {
 
     if (roomp->flags & RF_EXTERNAL) {
       vector t;
-      float rad = ComputeRoomBoundingSphere(&t, roomp);
+      scalar rad = ComputeRoomBoundingSphere(&t, roomp);
 
       newpos.z() -= rad * 1.5;
 

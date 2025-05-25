@@ -818,8 +818,8 @@ int SimplifyVertex(int x, int z, float delta) {
   vec.z() = z * TERRAIN_SIZE;
   vec.y() = Terrain_seg[z * TERRAIN_WIDTH + x].y;
 
-  float delta_squared = delta * delta;
-  float first_part, second_part;
+  scalar delta_squared = delta * delta;
+  scalar first_part, second_part;
 
   scalar ex_minus_vx_squared = (eye->x() - vec.x()) * (eye->x() - vec.x());
   scalar ez_minus_vz_squared = (eye->z() - vec.z()) * (eye->z() - vec.z());

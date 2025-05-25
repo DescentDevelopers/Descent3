@@ -41,9 +41,9 @@ void g3_GetModelViewMatrix(const vector *viewPos, const matrix *viewMatrix, floa
   mvMat[9] = localOrient.uvec.z();
   mvMat[10] = localOrient.fvec.z();
   mvMat[11] = 0.0f;
-  mvMat[12] = localPos * localOrient.rvec;
-  mvMat[13] = localPos * localOrient.uvec;
-  mvMat[14] = localPos * localOrient.fvec + Z_bias;
+  mvMat[12] = vm_Dot3Product(localPos, localOrient.rvec);
+  mvMat[13] = vm_Dot3Product(localPos, localOrient.uvec);
+  mvMat[14] = vm_Dot3Product(localPos, localOrient.fvec) + Z_bias;
   mvMat[15] = 1.0f;
 }
 

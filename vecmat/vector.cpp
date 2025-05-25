@@ -191,7 +191,7 @@ scalar vm_VectorDistance(const vector *a, const vector *b) {
   dist = vm_GetMagnitude(&dest);
   return dist;
 }
-scalar vm_VectorDistanceQuick(vector *a, vector *b) {
+scalar vm_VectorDistanceQuick(const vector *a, const vector *b) {
   // Given two vectors, returns the distance between them
 
   vector dest;
@@ -286,7 +286,7 @@ scalar vm_NormalizeVector(vector *a) {
   return mag;
 }
 
-scalar vm_GetMagnitude(vector *a) {
+scalar vm_GetMagnitude(const vector *a) {
   scalar f;
 
   f = (a->x() * a->x()) + (a->y() * a->y()) + (a->z() * a->z());
@@ -326,9 +326,9 @@ void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
 
   ASSERT(result != v);
 
-  result->x() = *v * m->rvec;
-  result->y() = *v * m->uvec;
-  result->z() = *v * m->fvec;
+  result->x() = vm_Dot3Product(*v, m->rvec);
+  result->y() = vm_Dot3Product(*v, m->uvec);
+  result->z() = vm_Dot3Product(*v, m->fvec);
 }
 
 // Multiply a vector times the transpose of a matrix
@@ -417,7 +417,7 @@ scalar vm_GetNormalizedDirFast(vector *dest, vector *end, vector *start) {
   return vm_NormalizeVectorFast(dest);
 }
 
-scalar vm_GetMagnitudeFast(vector *v) {
+scalar vm_GetMagnitudeFast(const vector *v) {
   scalar a, b, c, bc;
 
   a = fabs(v->x());
@@ -476,7 +476,7 @@ scalar vm_DistToPlane(vector *checkp, vector *norm, vector *planep) {
 
   t = *checkp - *planep;
 
-  return t * *norm;
+  return vm_Dot3Product(t, *norm);
 }
 
 scalar vm_GetSlope(scalar x1, scalar y1, scalar x2, scalar y2) {
@@ -926,7 +926,7 @@ scalar vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts) {
     scalar t2;
 
     delta = *vp - *center;
-    t2 = delta.x() * delta.x() + delta.y() * delta.y() + delta.z() * delta.z();
+    t2 = vector::dot(delta, delta);
 
     // If point outside, make the sphere bigger
     if (t2 > rad2) {

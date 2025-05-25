@@ -255,7 +255,7 @@ bool MoveObject(object *obj, vector *newpos);
 //	---------------------------------------------------------------------------
 //	interface functions
 
-#define OBJECT_PLACE_DIST 10.0
+#define OBJECT_PLACE_DIST (scalar)10.0
 
 //	---------------------------------------------------------------------------
 
@@ -369,7 +369,7 @@ bool HObjectPlace(int obj_type, int obj_id) {
 
     PhysCalcGround(&ground_point, &ground_normal, objp, 0);
     to_ground = objp->pos - ground_point;
-    dist = ground_normal * to_ground;
+    dist = vm_Dot3Product(ground_normal, to_ground);
     pos += dist * *surface_norm;
 
     // Compute source and destination matrices
@@ -453,11 +453,11 @@ void ResetGroundObject(object *objp) {
   vector ground_point;
   vector ground_normal;
   vector to_ground;
-  float dist;
+  scalar dist;
 
   PhysCalcGround(&ground_point, &ground_normal, objp, 0);
   to_ground = objp->pos - ground_point;
-  dist = ground_normal * to_ground;
+  dist = vm_Dot3Product(ground_normal, to_ground);
   pos += dist * surface_norm;
 
   // Compute source and destination matrices

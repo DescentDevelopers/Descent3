@@ -1199,13 +1199,13 @@ bool FaceIsPlanar(int nv, int16_t *face_verts, vector *normal, vector *verts) {
   // Get average distance from origin for points on this face
   float average_d = 0;
   for (int v = 0; v < nv; v++)
-    average_d += verts[face_verts[v]] * *normal;
+    average_d += vm_Dot3Product(verts[face_verts[v]], *normal);
   average_d /= nv;
 
   // Look for points too far from the average
   float d;
   for (int v = 0; v < nv; v++) {
-    d = verts[face_verts[v]] * *normal;
+    d = vm_Dot3Product(verts[face_verts[v]], *normal);
     if (fabs(d - average_d) > POINT_TO_PLANE_EPSILON)
       return 0;
   }
@@ -1351,7 +1351,7 @@ void ReInitRoomFace(face *fp, int nverts) {
 // Parameters:	v0,v1 - the two points
 // Returns:		true if the points are the same or very close; else false
 bool PointsAreSame(vector *v0, vector *v1) {
-  float d = vm_VectorDistance(v0, v1);
+  scalar d = vm_VectorDistance(v0, v1);
 
   return (d < POINT_TO_POINT_EPSILON);
 }
@@ -1361,7 +1361,7 @@ bool PointsAreSame(vector *v0, vector *v1) {
 //					planepoint,normal - the plane we're checking against
 // Returns:		0 if on the plane, -1 if behind, 1 if in front
 int CheckPointToPlane(vector *checkpoint, vector *planepoint, vector *normal) {
-  float d = (*checkpoint - *planepoint) * *normal;
+  scalar d = vm_Dot3Product((*checkpoint - *planepoint), *normal);
 
   if (d < -POINT_TO_PLANE_EPSILON)
     return -1;

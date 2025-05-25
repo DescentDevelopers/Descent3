@@ -339,7 +339,7 @@ bool FindSharedEdgeAcrossRooms(room *rp0, int face0, room *rp1, int face1, int *
 // Parameters:	n0,n1 - the two normals
 // Returns:		true if they are more-or-less the same, else false
 inline bool NormalsAreSame(vector *n0, vector *n1) {
-  float d = *n0 * *n1;
+  scalar d = vm_Dot3Product(*n0, *n1);
 
   return (d > NORMALS_SAME_VALUE);
 }

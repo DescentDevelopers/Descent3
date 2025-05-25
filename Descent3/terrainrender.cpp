@@ -895,7 +895,7 @@ int IsTerrainDynamicChecked(int seg, int bit) {
 }
 // Gets the dynamic light value for this position
 float GetTerrainDynamicScalar(vector *pos, int seg) {
-  float cube_values[10];
+  scalar cube_values[10];
   int y_increment = MAX_TERRAIN_HEIGHT / 8;
   int y_int = pos->y() / y_increment;
   int x_int = pos->x() / TERRAIN_SIZE;
@@ -2259,7 +2259,7 @@ void SortTerrainList(int cellcount) {
     for (k = 0; k < 4; k++)
       if (n[k] <= 65535)
         Terrain_list[i].z += World_point_buffer[n[k]].p3_vec.z();
-    Terrain_list[i].z /= 4;
+    Terrain_list[i].z /= (scalar)4;
   }
   // Sort the faces
   qsort(Terrain_list, cellcount, sizeof(*Terrain_list), (int (*)(const void *, const void *))TerrainSortingFunction);
@@ -2542,14 +2542,14 @@ void TerrainCellVisible(int index, int *upper_left, int *lower_right) {
   corner[3] = &World_point_buffer[seg + smul_x].p3_vec;
 
   vm_GetPerp(&tempv, corner[0], corner[1], corner[2]);
-  if ((tempv * *corner[1]) < 0)
+  if (vm_Dot3Product(tempv, *corner[1]) < 0)
     *upper_left = 1;
   else
     *upper_left = 0;
 
   // Now do lower right
   vm_GetPerp(&tempv, corner[2], corner[1], corner[3]);
-  if ((tempv * *corner[1]) < 0)
+  if (vm_Dot3Product(tempv, *corner[1]) < 0)
     *lower_right = 1;
   else
     *lower_right = 0;

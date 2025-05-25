@@ -1845,8 +1845,8 @@ void CTerrainDialog::OnTerrainOcclusion() {
             }
 
             int cur_x = start_x;
-            float cur_z = start_z;
-            float delta_z = (float)(end_z - start_z) / (float)limit;
+            scalar cur_z = start_z;
+            scalar delta_z = (scalar)(end_z - start_z) / (scalar)limit;
 
             for (j = 0; j < limit; j++, cur_x += x_add, cur_z += delta_z) {
               for (int z = 0; z < OCCLUSION_SIZE; z++) {
@@ -1868,8 +1868,8 @@ void CTerrainDialog::OnTerrainOcclusion() {
             }
 
             int cur_z = start_z;
-            float cur_x = start_x;
-            float delta_x = (float)(end_x - start_x) / (float)limit;
+            scalar cur_x = start_x;
+            scalar delta_x = (scalar)(end_x - start_x) / (scalar)limit;
 
             for (j = 0; j < limit; j++, cur_z += z_add, cur_x += delta_x) {
               for (int z = 0; z < OCCLUSION_SIZE; z++) {
