@@ -160,113 +160,16 @@ const matrix Identity_matrix = IDENTITY_MATRIX;
 void vm_AverageVector(vector *a, int num) {
   // Averages a vector.  ie divides each component of vector a by num
   ASSERT(num != 0);
-  a->x() = a->x() / (scalar)num;
-  a->y() = a->y() / (scalar)num;
-  a->z() = a->z() / (scalar)num;
+  *a /= (scalar)num;
 }
 
-void vm_AddVectors(vector *result, vector *a, vector *b) {
-  // Adds two vectors.  Either source can equal dest
-
-  result->x() = a->x() + b->x();
-  result->y() = a->y() + b->y();
-  result->z() = a->z() + b->z();
-}
-
-void vm_SubVectors(vector *result, const vector *a, const vector *b) {
-  // Subtracts second vector from first.  Either source can equal dest
-
-  result->x() = a->x() - b->x();
-  result->y() = a->y() - b->y();
-  result->z() = a->z() - b->z();
-}
-
-scalar vm_VectorDistance(const vector *a, const vector *b) {
-  // Given two vectors, returns the distance between them
-
-  vector dest;
-  scalar dist;
-
-  vm_SubVectors(&dest, a, b);
-  dist = vm_GetMagnitude(&dest);
-  return dist;
-}
-scalar vm_VectorDistanceQuick(const vector *a, const vector *b) {
-  // Given two vectors, returns the distance between them
-
-  vector dest;
-  scalar dist;
-
-  vm_SubVectors(&dest, a, b);
-  dist = vm_GetMagnitudeFast(&dest);
-  return dist;
-}
-
-// Calculates the perpendicular vector given three points
-// Parms:	n - the computed perp vector (filled in)
-//			v0,v1,v2 - three clockwise vertices
-void vm_GetPerp(vector *n, vector *a, vector *b, vector *c) {
-  // Given 3 vertices, return the surface normal in n
-  // IMPORTANT: B must be the 'corner' vertex
-
-  vector x, y;
-
-  vm_SubVectors(&x, b, a);
-  vm_SubVectors(&y, c, b);
-
-  vm_CrossProduct(n, &x, &y);
-}
-
-// Calculates the (normalized) surface normal give three points
-// Parms:	n - the computed surface normal (filled in)
-//			v0,v1,v2 - three clockwise vertices
-// Returns the magnitude of the normal before it was normalized.
-// The bigger this value, the better the normal.
-scalar vm_GetNormal(vector *n, vector *v0, vector *v1, vector *v2) {
-  vm_GetPerp(n, v0, v1, v2);
-
-  return vm_NormalizeVector(n);
-}
-
-// Does a simple dot product calculation
-scalar vm_DotProduct(const vector *u, const vector *v) { return (u->x() * v->x()) + (u->y() * v->y()) + (u->z() * v->z()); }
-
-// Scales all components of vector v by value s and stores result in vector d
-// dest can equal source
-void vm_ScaleVector(vector *d, vector *v, scalar s) {
-  d->x() = (v->x() * s);
-  d->y() = (v->y() * s);
-  d->z() = (v->z() * s);
-}
-
-void vm_ScaleAddVector(vector *d, vector *p, vector *v, scalar s) {
-  // Scales all components of vector v by value s
-  // adds the result to p and stores result in vector d
-  // dest can equal source
-
-  d->x() = p->x() + (v->x() * s);
-  d->y() = p->y() + (v->y() * s);
-  d->z() = p->z() + (v->z() * s);
-}
-
-void vm_DivVector(vector *dest, vector *src, scalar n) {
-  // Divides a vector into n portions
-  // Dest can equal src
-
-  ASSERT(n != 0);
-  dest->x() = src->x() / n;
-  dest->y() = src->y() / n;
-  dest->z() = src->z() / n;
-}
-
-void vm_CrossProduct(vector *dest, vector *u, vector *v) {
-  // Computes a cross product between u and v, returns the result
-  //	in Normal.  Dest cannot equal source.
-
-  dest->x() = (u->y() * v->z()) - (u->z() * v->y());
-  dest->y() = (u->z() * v->x()) - (u->x() * v->z());
-  dest->z() = (u->x() * v->y()) - (u->y() * v->x());
-}
+void vm_AddVectors(vector *result, vector *a, vector *b) { *result = *a + *b; }
+void vm_SubVectors(vector *result, const vector *a, const vector *b) { *result = *a - *b; }
+void vm_ScaleVector(vector *d, vector *v, scalar s) { *d = *v * s; }
+void vm_ScaleAddVector(vector *d, vector *p, vector *v, scalar s) { *d = *p + (*v * s); }
+void vm_DivVector(vector *dest, vector *src, scalar n) { ASSERT(n != 0); *dest = *src / n; }
+scalar vm_VectorDistance(const vector *a, const vector *b)      { return vector::distance(*a, *b); }
+scalar vm_VectorDistanceQuick(const vector *a, const vector *b) { return vector::distance(*a, *b); }
 
 // Normalize a vector.
 // Returns:  the magnitude before normalization
@@ -278,26 +181,39 @@ scalar vm_NormalizeVector(vector *a) {
   if (mag > 0)
     *a /= mag;
   else {
-    *a = Zero_vector;
-    a->x() = 1.0;
+    *a = vector::id(0);
     mag = 0.0f;
   }
 
   return mag;
 }
 
-scalar vm_GetMagnitude(const vector *a) {
-  scalar f;
-
-  f = (a->x() * a->x()) + (a->y() * a->y()) + (a->z() * a->z());
-
-  return (sqrt(f));
+// Calculates the perpendicular vector given three points
+// Parms:	n - the computed perp vector (filled in)
+//			v0,v1,v2 - three clockwise vertices
+// Given 3 vertices, return the surface normal in n
+// IMPORTANT: B must be the 'corner' vertex
+void vm_GetPerp(vector *n, const vector *a, const vector *b, const vector *c) {
+  *n = vector::cross3(*b - *a, *c - *b);
 }
 
-void vm_ClearMatrix(matrix *dest) { memset(dest, 0, sizeof(matrix)); }
+// Calculates the (normalized) surface normal give three points
+// Parms:	n - the computed surface normal (filled in)
+//			v0,v1,v2 - three clockwise vertices
+// Returns the magnitude of the normal before it was normalized.
+// The bigger this value, the better the normal.
+scalar vm_GetNormal(vector *n, const vector *v0, const vector *v1, const vector *v2) {
+  vm_GetPerp(n, v0, v1, v2);
+  return vm_NormalizeVector(n);
+}
 
+// Does a simple dot product calculation
+scalar vm_DotProduct(const vector *u, const vector *v) { return vector::dot(*u,*v); }
+void   vm_CrossProduct(vector *dest, const vector *u, const vector *v) { *dest = vector::cross3(*u,*v); }
+scalar vm_GetMagnitude(const vector *a) { return (scalar)sqrt(vector::dot(*a,*a)); }
+void   vm_ClearMatrix(matrix *dest) { memset(dest, 0, sizeof(matrix)); }
 void   vm_MakeIdentity(matrix *dest) { *dest = { vector::id(0), vector::id(1), vector::id(2) }; }
-void   vm_MakeInverseMatrix(matrix *dest) { *dest = { -vector::id(0), -vector::id(1), -vector::id(2) }; }
+void   vm_MakeInverseMatrix(matrix *dest) { *dest = { -vector::id(0), -vector::id(1), vector::id(2) }; }
 
 void vm_TransposeMatrix(matrix *m) {
   // Transposes a matrix in place
@@ -329,9 +245,9 @@ void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
 void vm_VectorMulTMatrix(vector *result, vector *v, matrix *m) {
   ASSERT(result != v);
 
-  result->x() = vm_Dot3Vector(m->rvec.x(), m->uvec.x(), m->fvec.x(), v);
-  result->y() = vm_Dot3Vector(m->rvec.y(), m->uvec.y(), m->fvec.y(), v);
-  result->z() = vm_Dot3Vector(m->rvec.z(), m->uvec.z(), m->fvec.z(), v);
+  *result = { vm_Dot3Vector(m->rvec.x(), m->uvec.x(), m->fvec.x(), v),
+              vm_Dot3Vector(m->rvec.y(), m->uvec.y(), m->fvec.y(), v),
+              vm_Dot3Vector(m->rvec.z(), m->uvec.z(), m->fvec.z(), v) };
 }
 
 void vm_MatrixMul(matrix *dest, matrix *src0, matrix *src1) {
@@ -588,9 +504,7 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
         m->rvec.y() = m->rvec.z() = m->uvec.x() = m->uvec.y() = 0;
       } else { // not straight up or down
 
-        xvec->x() = zvec->z();
-        xvec->y() = 0;
-        xvec->z() = -zvec->x();
+        *xvec = { zvec->z(), 0, -zvec->x() };
 
         vm_NormalizeVector(xvec);
 

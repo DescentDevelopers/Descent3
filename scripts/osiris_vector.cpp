@@ -21,26 +21,17 @@
 void vm_AverageVector(vector *a, int num) {
   // Averages a vector.  ie divides each component of vector a by num
   // assert (num!=0);
-
-  a->x() = a->x() / (float)num;
-  a->y() = a->y() / (float)num;
-  a->z() = a->z() / (float)num;
+  *a /= (scalar)num;
 }
 
-void vm_AddVectors(vector *result, vector *a, vector *b) {
+void vm_AddVectors(vector *result, const vector *a, const vector *b) {
   // Adds two vectors.  Either source can equal dest
-
-  result->x() = a->x() + b->x();
-  result->y() = a->y() + b->y();
-  result->z() = a->z() + b->z();
+  *result = *a + *b;
 }
 
 void vm_SubVectors(vector *result, const vector *a, const vector *b) {
   // Subtracts second vector from first.  Either source can equal dest
-
-  result->x() = a->x() - b->x();
-  result->y() = a->y() - b->y();
-  result->z() = a->z() - b->z();
+  *result = *a - *b;
 }
 
 scalar vm_VectorDistance(const vector *a, const vector *b) {
@@ -55,7 +46,7 @@ scalar vm_VectorDistanceQuick(const vector *a, const vector *b) {
 // Calculates the perpendicular vector given three points
 // Parms:	n - the computed perp vector (filled in)
 //			v0,v1,v2 - three clockwise vertices
-void vm_GetPerp(vector *n, vector *a, vector *b, vector *c) {
+void vm_GetPerp(vector *n, const vector *a, const vector *b, const vector *c) {
   // Given 3 vertices, return the surface normal in n
   // IMPORTANT: B must be the 'corner' vertex
   *n = vector::cross3(*b - *a, *c - *b);
@@ -66,31 +57,27 @@ void vm_GetPerp(vector *n, vector *a, vector *b, vector *c) {
 //			v0,v1,v2 - three clockwise vertices
 // Returns the magnitude of the normal before it was normalized.
 // The bigger this value, the better the normal.
-float vm_GetNormal(vector *n, vector *v0, vector *v1, vector *v2) {
+scalar vm_GetNormal(vector *n, const vector *v0, const vector *v1, const vector *v2) {
   vm_GetPerp(n, v0, v1, v2);
 
   return vm_VectorNormalize(n);
 }
 
 // Does a simple dot product calculation
-float vm_DotProduct(vector *u, vector *v) { return (u->x() * v->x()) + (u->y() * v->y()) + (u->z() * v->z()); }
+scalar vm_DotProduct(const vector *u, const vector *v) { return vector::dot(*u, *v); }
 
 // Scales all components of vector v by value s and stores result in vector d
 // dest can equal source
-void vm_ScaleVector(vector *d, vector *v, float s) {
-  d->x() = (v->x() * s);
-  d->y() = (v->y() * s);
-  d->z() = (v->z() * s);
+void vm_ScaleVector(vector *d, const vector *v, const scalar s) {
+  *d = *v * s;
 }
 
-void vm_ScaleAddVector(vector *d, vector *p, vector *v, float s) {
+void vm_ScaleAddVector(vector *d, const vector *p, const vector *v, const scalar s) {
   // Scales all components of vector v by value s
   // adds the result to p and stores result in vector d
   // dest can equal source
 
-  d->x() = p->x() + (v->x() * s);
-  d->y() = p->y() + (v->y() * s);
-  d->z() = p->z() + (v->z() * s);
+  *d = *p + *v * s;
 }
 
 void vm_DivVector(vector *dest, vector *src, const scalar n) {
@@ -98,13 +85,10 @@ void vm_DivVector(vector *dest, vector *src, const scalar n) {
   // Dest can equal src
 
   // assert (n!=0);
-
-  dest->x() = src->x() / n;
-  dest->y() = src->y() / n;
-  dest->z() = src->z() / n;
+  *dest = *src / n;
 }
 
-void vm_CrossProduct(vector *dest, vector *u, vector *v) {
+void vm_CrossProduct(vector *dest, const vector *u, const vector *v) {
   // Computes a cross product between u and v, returns the result
   //	in Normal.  Dest cannot equal source.
   *dest = vector::cross3(*u, *v);
@@ -154,23 +138,19 @@ void vm_TransposeMatrix(matrix *m) {
   m->uvec.z() = t;
 }
 
-void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
+void vm_MatrixMulVector(vector *result, const vector *v, const matrix *m) {
   // Rotates a vector thru a matrix
-
   // assert(result != v);
-
-  result->x() = vector::dot(*v, m->rvec);
-  result->y() = vector::dot(*v, m->uvec);
-  result->z() = vector::dot(*v, m->fvec);
+  *result = vector{ vector::dot(*v, m->rvec), vector::dot(*v, m->uvec), vector::dot(*v, m->fvec) };
 }
 
 // Multiply a vector times the transpose of a matrix
 void vm_VectorMulTMatrix(vector *result, vector *v, matrix *m) {
   // assert(result != v);
 
-  result->x() = vm_Dot3Vector(m->rvec.x(), m->uvec.x(), m->fvec.x(), v);
-  result->y() = vm_Dot3Vector(m->rvec.y(), m->uvec.y(), m->fvec.y(), v);
-  result->z() = vm_Dot3Vector(m->rvec.z(), m->uvec.z(), m->fvec.z(), v);
+  *result = { vm_Dot3Vector(m->rvec.x(), m->uvec.x(), m->fvec.x(), v),
+              vm_Dot3Vector(m->rvec.y(), m->uvec.y(), m->fvec.y(), v),
+              vm_Dot3Vector(m->rvec.z(), m->uvec.z(), m->fvec.z(), v) };
 }
 
 void vm_MatrixMul(matrix *dest, matrix *src0, matrix *src1) {
@@ -235,7 +215,7 @@ matrix operator*=(matrix &src0, matrix src1) { return (src0 = src0 * src1); }
 // Parameters:	dest - filled in with the normalized direction vector
 //					start,end - the start and end points used to calculate the vector
 // Returns:		the distance between the two input points
-float vm_GetNormalizedDir(vector *dest, vector *end, vector *start) {
+scalar vm_GetNormalizedDir(vector *dest, const vector *end, const vector *start) {
   vm_SubVectors(dest, end, start);
   return vm_VectorNormalize(dest);
 }
@@ -245,7 +225,7 @@ float vm_GetNormalizedDir(vector *dest, vector *end, vector *start) {
 // Parameters:	dest - filled in with the normalized direction vector
 //					start,end - the start and end points used to calculate the vector
 // Returns:		the distance between the two input points
-float vm_GetNormalizedDirFast(vector *dest, vector *end, vector *start) {
+scalar vm_GetNormalizedDirFast(vector *dest, const vector *end, const vector *start) {
   vm_SubVectors(dest, end, start);
   return vm_VectorNormalizeFast(dest);
 }
@@ -301,12 +281,8 @@ scalar vm_VectorNormalizeFast(vector *a) {
 // Parms:	norm - the (normalized) surface normal of the plane
 //				planep - a point on the plane
 // Returns:	The signed distance from the plane; negative dist is on the back of the plane
-float vm_DistToPlane(vector *checkp, vector *norm, vector *planep) {
-  vector t;
-
-  t = *checkp - *planep;
-
-  return vector::dot(t, *norm);
+scalar vm_DistToPlane(const vector *checkp, const vector *norm, const vector *planep) {
+  return vector::dot(*checkp - *planep, *norm);
 }
 
 scalar vm_GetSlope(scalar x1, scalar y1, scalar x2, scalar y2) {
@@ -424,9 +400,7 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
         m->rvec.y() = m->rvec.z() = m->uvec.x() = m->uvec.y() = 0;
       } else { // not straight up or down
 
-        xvec->x() = zvec->z();
-        xvec->y() = 0;
-        xvec->z() = -zvec->x();
+        *xvec = { zvec->z(),0, -zvec->x() };
 
         vm_VectorNormalize(xvec);
 
@@ -693,9 +667,10 @@ float vm_GetCentroidFast(vector *centroid, vector *src, int nv) {
 
 //	creates a completely random, non-normalized vector with a range of values from -1023 to +1024 values)
 void vm_MakeRandomVector(vector *vec) {
-  vec->x() = rand() - RAND_MAX / 2;
-  vec->y() = rand() - RAND_MAX / 2;
-  vec->z() = rand() - RAND_MAX / 2;
+  vec->x() = rand();
+  vec->y() = rand();
+  vec->z() = rand();
+  *vec -= RAND_MAX / 2;
 }
 
 // Given a set of points, computes the minimum bounding sphere of those points

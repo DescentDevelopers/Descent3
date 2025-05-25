@@ -94,21 +94,15 @@ void g3_StartFrame(vector *view_pos, matrix *view_matrix, float zoom) {
   rend_GetProjectionParameters(&Window_width, &Window_height);
 
   // Set vars for projection
-  Window_w2 = ((float)Window_width) * 0.5f;
-  Window_h2 = ((float)Window_height) * 0.5f;
+  Window_w2 = ((scalar)Window_width) * 0.5f;
+  Window_h2 = ((scalar)Window_height) * 0.5f;
 
   // ISB trick: use the window aspect only, screen aspect ratio
   // is not important because we assume pixels are square
-  float s = (float)Window_height / (float)Window_width;
+  scalar s = (scalar)Window_height / (scalar)Window_width;
 
-  if (s <= 1.0f) {
-    // scale x
-    Matrix_scale.x() = s;
-    Matrix_scale.y() = 1.0f;
-  } else {
-    Matrix_scale.y() = 1.0f / s;
-    Matrix_scale.x() = 1.0f;
-  }
+  Matrix_scale = { s <= 1.0f ? s : 1.0f / s, 1.0f };
+
 
   //ISB: Convert zoom into vertical FOV for convenience
   zoom *= 3.f / 4.f;

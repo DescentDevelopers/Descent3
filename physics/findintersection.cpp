@@ -1091,8 +1091,8 @@ static const int ij_table[3][2] = {
 
 // see if a point in inside a face by projecting into 2d
 uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list) {
-  vector_array *colp_array; // Axis-independent version of the collision point
-  vector_array *norm;       // Axis-independent version of the plane's normal
+  vector *colp_array; // Axis-independent version of the collision point
+  vector *norm;       // Axis-independent version of the plane's normal
   vector t;                 // Temporary vector that holds the magnatude of the normal's x,y,z components (ABS)
   int biggest;              // Index of the largest of the three components (0-x, 1-y, 2-z)  Axis to ignore :)
   int i, j, edge;           // Index for i-axis, Index for j-axis, and the current edge
@@ -1101,15 +1101,15 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   vector_array *v0, *v1;    // Vertices of the current line segment in the 2d in/out check loop
 
   // Lets look at these vectors as arrays :)
-  norm = (vector_array *)face_normal;
-  colp_array = (vector_array *)colp;
+  norm = (vector *)face_normal;
+  colp_array = (vector *)colp;
 
   // now do 2d check to see if point is in side
 
   // Get x,y,z components of the normal and put them in array form (so we can pick any two for i,j)
-  t.x() = fabs(norm->xyz[0]);
-  t.y() = fabs(norm->xyz[1]);
-  t.z() = fabs(norm->xyz[2]);
+  t.x() = fabs((*norm)[0]);
+  t.y() = fabs((*norm)[1]);
+  t.z() = fabs((*norm)[2]);
 
   // Determine which axis will be normal to the plane the points are projected onto
   if (t.x() > t.y())
@@ -1124,7 +1124,7 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
 
   // For a plane with a normal that is in the opposite direction of the axis,
   // we should circle the other direction -- i.e. always circle in clockwise direction with normal (left-handed)
-  if (norm->xyz[biggest] > 0) {
+  if ((*norm)[biggest] > 0) {
     i = ij_table[biggest][0];
     j = ij_table[biggest][1];
   } else {
@@ -1135,8 +1135,8 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   // now do the 2d problem in the i,j plane
 
   // Get the i,j check point
-  check_i = colp_array->xyz[i];
-  check_j = colp_array->xyz[j];
+  check_i = (*colp_array)[i];
+  check_j = (*colp_array)[j];
 
   // Do a simple 2d cross-product between each line segment and the start point to the check point
   // Go in a clockwise direction, if determinant is negative then point is outside of this multi-
@@ -1147,14 +1147,14 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
 
     // v0 = (vector_array *)&Vertices[vertex_list[facenum*3+edge]];
     // v1 = (vector_array *)&Vertices[vertex_list[facenum*3+((edge+1)%nv)]];
-    v0 = (vector_array *)vertex_ptr_list[edge];
-    v1 = (vector_array *)vertex_ptr_list[(edge + 1) % nv];
+    v0 = vertex_ptr_list[edge];
+    v1 = vertex_ptr_list[(edge + 1) % nv];
 
-    edgevec.i = v1->xyz[i] - v0->xyz[i];
-    edgevec.j = v1->xyz[j] - v0->xyz[j];
+    edgevec.i = (*v1)[i] - (*v0)[i];
+    edgevec.j = (*v1)[j] - (*v0)[j];
 
-    checkvec.i = check_i - v0->xyz[i];
-    checkvec.j = check_j - v0->xyz[j];
+    checkvec.i = check_i - (*v0)[i];
+    checkvec.j = check_j - (*v0)[j];
 
     d = checkvec.i * edgevec.j - checkvec.j * edgevec.i;
 
@@ -1328,7 +1328,7 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
     dist = -(vm_Dot3Product(mvec,po0));
 
     closest_pnt = po0 + dist * mvec;
-    //	ASSERT(!(closest_pnt.x() == 0.0 && closest_pnt.y() == 0.0 && closest_pnt.z() == 0)); -- why does this matter?
+    //	ASSERT(!(closest_pnt.x == 0.0 && closest_pnt.y == 0.0 && closest_pnt.z == 0)); -- why does this matter?
 
     dist_from_origin = vm_GetMagnitude(&closest_pnt);
     if (dist_from_origin >= rad)
@@ -2262,9 +2262,9 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
         int connect_room;
 
         if (f_stop_at_closed_doors) {
-          if ((cur_room->portals[x].flags & PF_RENDER_FACES) &&
-                  !(cur_room->portals[x].flags & PF_RENDERED_FLYTHROUGH) ||
-              (cur_room->portals[x].flags & PF_BLOCK)) {
+          if (((cur_room->portals[x].flags & PF_RENDER_FACES) &&
+              !(cur_room->portals[x].flags & PF_RENDERED_FLYTHROUGH)) ||
+               (cur_room->portals[x].flags & PF_BLOCK)) {
             continue;
           }
         }
@@ -3571,8 +3571,8 @@ void check_hit_obj(int objnum) {
                       hit_obj_size = obj->size;
                     }
 
-                    pos_hit = hit_obj_pos + pos_hit * (hit_obj_size / (hit_obj_size + fvi_anim_sphere_rad));
                     ASSERT(hit_obj_size + fvi_anim_sphere_rad > 0.0f);
+                    pos_hit = hit_obj_pos + pos_hit * (hit_obj_size / (hit_obj_size + fvi_anim_sphere_rad));
 
                     fvi_collision_dist = cur_dist;
                     fvi_hit_data_ptr->hit_pnt = hit_point - fvi_anim_sphere_offset;
@@ -3582,8 +3582,9 @@ void check_hit_obj(int objnum) {
                     fvi_hit_data_ptr->hit_object[0] = objnum;
                     fvi_hit_data_ptr->hit_type[0] = HIT_OBJECT;
                     fvi_hit_data_ptr->hit_face_pnt[0] = pos_hit;
-                    fvi_hit_data_ptr->hit_wallnorm[0] = (pos_hit - hit_obj_pos) / hit_obj_size;
+
                     ASSERT(hit_obj_size > 0.0f);
+                    fvi_hit_data_ptr->hit_wallnorm[0] = (pos_hit - hit_obj_pos) / hit_obj_size;
 
                     ASSERT(objnum != -1);
                   }

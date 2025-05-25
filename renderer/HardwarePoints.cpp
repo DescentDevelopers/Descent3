@@ -46,9 +46,7 @@ uint8_t g3_CodePoint(g3Point *p) {
   // Check to see if we should be clipped to the custom plane
   if (Clip_custom) {
     vector vec = p->p3_vec - Clip_plane_point;
-    vec.x() /= Matrix_scale.x();
-    vec.y() /= Matrix_scale.y();
-    vec.z() /= Matrix_scale.z();
+    vec /= Matrix_scale;
 
     scalar dp = vm_Dot3Product(vec, Clip_plane);
     if (dp < -0.005f) {

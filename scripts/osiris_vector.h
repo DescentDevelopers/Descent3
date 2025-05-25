@@ -44,10 +44,10 @@ extern void vm_MakeZero(vector *v);
 extern void vm_MakeZero(angvec *a);
 
 // Rotates a vector thru a matrix
-extern void vm_MatrixMulVector(vector *, vector *, matrix *);
+extern void vm_MatrixMulVector(vector *, const vector *, matrix *);
 
 // Multiply a vector times the transpose of a matrix
-void vm_VectorMulTMatrix(vector *result, vector *v, matrix *m);
+void vm_VectorMulTMatrix(vector *result, const vector *v, matrix *m);
 
 // Multiplies 2 3x3 matrixes, returning the result in first argument
 extern void vm_MatrixMul(matrix *, matrix *, matrix *);
@@ -62,16 +62,16 @@ extern scalar vm_GetMagnitude(const vector *);
 extern scalar vm_GetMagnitudeFast(const vector *);
 
 // Returns the dot product of the two given vectors
-extern float vm_DotProduct(vector *, vector *);
+extern scalar vm_DotProduct(const vector *, const vector *);
 
 // Returns a perpendicular vector to the two given vectors
-extern void vm_CrossProduct(vector *, vector *, vector *);
+extern void vm_CrossProduct(vector *, const vector *, const vector *);
 
 // Returns the difference between two vectors
 extern void vm_SubVectors(vector *, const vector *, const vector *);
 
 // Returns adds two vectors, returns result in first arg
-extern void vm_AddVectors(vector *, vector *, vector *);
+extern void vm_AddVectors(vector *, const vector *, const vector *);
 
 // Inits vector to 0,0,0
 extern void vm_CenterVector(vector *);
@@ -81,19 +81,19 @@ extern void vm_AverageVector(vector *, int);
 
 // Normalizes a vector
 // Returns the magnitude before normalization
-extern float vm_VectorNormalize(vector *);
+extern scalar vm_VectorNormalize(vector *);
 
 // Scales second arg vector by 3rd arg, placing result in first arg
-extern void vm_ScaleVector(vector *, vector *, float);
+extern void vm_ScaleVector(vector *, const vector *, const scalar);
 
 // Scales all components of vector v by value s adds the result to p and stores result in vector d
-extern void vm_ScaleAddVector(vector *d, vector *p, vector *v, float s);
+extern void vm_ScaleAddVector(vector *d, const vector *p, const vector *v, const scalar s);
 
 // Divides second vector components by 3rd arg, placing result in first arg.  Useful for parametric lines
-extern void vm_DivVector(vector *, vector *, float);
+extern void vm_DivVector(vector *, const vector *, const scalar);
 
 // Same as VectorNormalize, but uses approximation
-extern float vm_VectorNormalizeFast(vector *);
+extern scalar vm_VectorNormalizeFast(vector *);
 
 // Clears a matrix to zero
 extern void vm_ClearMatrix(matrix *);
@@ -102,7 +102,7 @@ extern void vm_ClearMatrix(matrix *);
 extern void vm_TransposeMatrix(matrix *);
 
 // Given 3 angles (p,h,b), makes a rotation matrix out of them
-extern void vm_AnglesToMatrix(matrix *, angle p, angle h, angle b);
+extern void vm_AnglesToMatrix(matrix *, const angle p, const angle h, const angle b);
 
 // Ensure that a matrix is orthogonal
 void vm_Orthogonalize(matrix *m);
@@ -120,22 +120,22 @@ void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec = NULL, vector *rve
 void vm_VectorAngleToMatrix(matrix *m, vector *v, angle a);
 
 // Given an angle, places sin in 2nd arg, cos in 3rd.  Either can be null
-extern void vm_SinCos(angle, float *, float *);
+extern void vm_SinCos(angle, scalar *, scalar *);
 
 // Given x1,y1,x2,y2, returns the slope
-extern float vm_GetSlope(float, float, float, float);
+extern scalar vm_GetSlope(scalar, scalar, scalar, scalar);
 
 // Calculates the perpendicular vector given three points
 // Parms:	n - the computed perp vector (filled in)
 //			v0,v1,v2 - three clockwise vertices
-void vm_GetPerp(vector *n, vector *a, vector *b, vector *c);
+void vm_GetPerp(vector *n, const vector *a, const vector *b, const vector *c);
 
 // Calculates the (normalized) surface normal give three points
 // Parms:	n - the computed surface normal (filled in)
 //			v0,v1,v2 - three clockwise vertices
 // Returns the magnitude of the normal before it was normalized.
 // The bigger this value, the better the normal.
-float vm_GetNormal(vector *n, vector *v0, vector *v1, vector *v2);
+scalar vm_GetNormal(vector *n, const vector *v0, const vector *v1, const vector *v2);
 
 #define vm_GetSurfaceNormal vm_GetNormal
 
@@ -149,11 +149,11 @@ extern scalar vm_VectorDistanceQuick(const vector *a, const vector *b);
 // Parameters:	dest - filled in with the normalized direction vector
 //					start,end - the start and end points used to calculate the vector
 // Returns:		the distance between the two input points
-float vm_GetNormalizedDir(vector *dest, vector *end, vector *start);
+scalar vm_GetNormalizedDir(vector *dest, const vector *end, const vector *start);
 
 // Returns a normalized direction vector between two points
 // Uses sloppier magnitude, less precise
-float vm_GetNormalizedDirFast(vector *dest, vector *end, vector *start);
+scalar vm_GetNormalizedDirFast(vector *dest, const vector *end, const vector *start);
 
 // extract angles from a matrix
 angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m);
@@ -169,26 +169,26 @@ angle vm_DeltaAngVecNorm(vector *v0, vector *v1, vector *fvec);
 // Parms:	norm - the (normalized) surface normal of the plane
 //				planep - a point on the plane
 // Returns:	The signed distance from the plane; negative dist is on the back of the plane
-float vm_DistToPlane(vector *checkp, vector *norm, vector *planep);
+scalar vm_DistToPlane(vector *checkp, vector *norm, vector *planep);
 
 // returns the value of a determinant
-float calc_det_value(matrix *det);
+scalar calc_det_value(matrix *det);
 
 void vm_MakeInverseMatrix(matrix *dest);
-void vm_SinCosToMatrix(matrix *m, float sinp, float cosp, float sinb, float cosb, float sinh, float cosh);
+void vm_SinCosToMatrix(matrix *m, scalar sinp, scalar cosp, scalar sinb, scalar cosb, scalar sinh, scalar cosh);
 
 // Gets the real center of a polygon
-float vm_GetCentroid(vector *centroid, vector *src, int nv);
+scalar vm_GetCentroid(vector *centroid, vector *src, int nv);
 
 //	retrieves a random vector in values -RAND_MAX/2 to RAND_MAX/2
 void vm_MakeRandomVector(vector *vec);
 
 // Given a set of points, computes the minimum bounding sphere of those points
-float vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts);
+scalar vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts);
 
 // Gets the real center of a polygon, but uses fast magnitude calculation
 // Returns the size of the passed in stuff
-float vm_GetCentroidFast(vector *centroid, vector *src, int nv);
+scalar vm_GetCentroidFast(vector *centroid, vector *src, int nv);
 
 // Here are the C++ operator overloads -- they do as expected
 extern matrix operator*(matrix src0, matrix src1);
