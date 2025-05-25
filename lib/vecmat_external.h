@@ -131,10 +131,18 @@ constexpr static const size_t Z = 2;
 constexpr static const size_t W = 3;
 union {
   T xyzw[N];
-  struct { T x, y, z; union { T w; T kat_pad; }; };
+  struct { T iix, iiy, iiz; union { T iiw; T kat_pad; }; };
   struct { union { T r; T l; }; T g, b, a; };
   struct { T u,v; union { T u2; T s; }; union { T v2; T t; }; };
 };
+constexpr inline T &x() { return iix; }
+constexpr inline T &y() { return iiy; }
+constexpr inline T &z() { return iiz; }
+constexpr inline T &w() { return iiw; }
+constexpr inline const T &x() const { return iix; }
+constexpr inline const T &y() const { return iiy; }
+constexpr inline const T &z() const { return iiz; }
+constexpr inline const T &w() const { return iiw; }
 
 constexpr static inline const vector4 id(ssize_t i = -1)
 {
