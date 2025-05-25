@@ -1725,7 +1725,7 @@ bool check_line_to_line(scalar *t1, scalar *t2, vector *p1, vector *v1, vector *
   scalar d, cross_mag2; // mag squared cross product
 
   det.rvec = *p2 - *p1;
-  det.fvec = *v1 ^ *v2; // (crossproduct)
+  det.fvec = vm_Cross3Product(*v1, *v2);
   cross_mag2 = vm_Dot3Product(det.fvec,det.fvec);
 
   if (cross_mag2 == 0.0)

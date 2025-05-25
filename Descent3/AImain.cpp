@@ -2139,7 +2139,7 @@ void AITurnTowardsDir(object *obj, /*velocity *new_vel,*/ vector *goal_dir /*, b
 
     if (max_angle != 32767 && max_angle != 32768) {
       // Get the up axis
-      vm_CrossProduct(&u_axis, &obj->orient.fvec, goal_dir);
+      u_axis = vector::cross3(obj->orient.fvec, *goal_dir);
 
       // Using the forward(original orient's forward) and the up (computed), get the orientation matrix
       vm_VectorToMatrix(&rot_matrix, &obj->orient.fvec, &u_axis, NULL);

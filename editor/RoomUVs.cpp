@@ -139,7 +139,7 @@ void AssignUVsToFace(room *rp, int facenum, roomUVL *uva, roomUVL *uvb, int va, 
   }
 
   // Get right vector from the cross product of the forward vec with the surface normal
-  rvec = fvec ^ fp->normal;
+  rvec = vm_Cross3Product(fvec, fp->normal);
 
   // Normalize uv values
   ruvmag.u /= mag01;

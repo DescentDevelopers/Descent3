@@ -91,6 +91,15 @@ constexpr inline T &z() { return iiz; }
 constexpr inline const T &x() const { return iix; }
 constexpr inline const T &y() const { return iiy; }
 constexpr inline const T &z() const { return iiz; }
+constexpr static inline vector cross3(vector a, vector b)
+{
+  vector r;
+  r.iix = a.y() * b.z() - b.y() * a.z();
+  r.iiy = a.z() * b.x() - b.z() * a.x();
+  r.iiz = a.x() * b.y() - b.x() * a.y();
+  return r;
+}
+
 constexpr static inline const vector id(ssize_t i = -1)
 {
   return vector{
@@ -416,6 +425,8 @@ static inline vector operator*(vector v, matrix m) {
 
 inline scalar vm_Dot3Product(const vector a, const vector b) { return (a.x() * b.x()) + (a.y() * b.y()) + (a.z() * b.z()); }
 static inline float vm_Dot3Vector(float x, float y, float z, vector *v) { return (x * v->x()) + (y * v->y()) + (z * v->z()); }
+inline vector vm_Cross3Product(vector u, vector v) {
+  return vector::cross3(u,v);
+}
 
 #define vm_GetSurfaceNormal vm_GetNormal
-

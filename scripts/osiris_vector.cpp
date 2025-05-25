@@ -70,13 +70,7 @@ scalar vm_VectorDistanceQuick(const vector *a, const vector *b) {
 void vm_GetPerp(vector *n, vector *a, vector *b, vector *c) {
   // Given 3 vertices, return the surface normal in n
   // IMPORTANT: B must be the 'corner' vertex
-
-  vector x, y;
-
-  vm_SubVectors(&x, b, a);
-  vm_SubVectors(&y, c, b);
-
-  vm_CrossProduct(n, &x, &y);
+  *n = vector::cross3(*b - *a, *c - *b);
 }
 
 // Calculates the (normalized) surface normal give three points
@@ -125,10 +119,7 @@ void vm_DivVector(vector *dest, vector *src, const scalar n) {
 void vm_CrossProduct(vector *dest, vector *u, vector *v) {
   // Computes a cross product between u and v, returns the result
   //	in Normal.  Dest cannot equal source.
-
-  dest->x() = (u->y() * v->z()) - (u->z() * v->y());
-  dest->y() = (u->z() * v->x()) - (u->x() * v->z());
-  dest->z() = (u->x() * v->y()) - (u->y() * v->x());
+  *dest = vector::cross3(*u, *v);
 }
 
 // Normalize a vector.
@@ -420,7 +411,7 @@ void vm_Orthogonalize(matrix *m) {
   }
 
   // Generate right vector from forward and up vectors
-  m->rvec = m->uvec ^ m->fvec;
+  m->rvec = vector::cross3(m->uvec, m->fvec);
 
   // Normaize new right vector
   if (vm_VectorNormalize(&m->rvec) == 0) {
@@ -429,7 +420,7 @@ void vm_Orthogonalize(matrix *m) {
   }
 
   // Recompute up vector, in case it wasn't entirely perpendiclar
-  m->uvec = m->fvec ^ m->rvec;
+  m->uvec = vector::cross3(m->fvec, m->rvec);
 }
 
 // do the math for vm_VectorToMatrix()
@@ -463,7 +454,7 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
 
         vm_VectorNormalize(xvec);
 
-        *yvec = *zvec ^ *xvec;
+        *yvec = vector::cross3(*zvec, *xvec);
       }
 
     } else { // use right vec
@@ -472,14 +463,14 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
       if (vm_VectorNormalize(xvec) == 0)
         goto bad_vector2;
 
-      *yvec = *zvec ^ *xvec;
+      *yvec = vector::cross3(*zvec, *xvec);
 
       // normalize new perpendicular vector
       if (vm_VectorNormalize(yvec) == 0)
         goto bad_vector2;
 
       // now recompute right vector, in case it wasn't entirely perpendiclar
-      *xvec = *yvec ^ *zvec;
+      *xvec = vector::cross3(*yvec, *zvec);
     }
   } else { // use up vec
 
@@ -487,14 +478,14 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
     if (vm_VectorNormalize(yvec) == 0)
       goto bad_vector2;
 
-    *xvec = *yvec ^ *zvec;
+    *xvec = vector::cross3(*yvec, *zvec);
 
     // normalize new perpendicular vector
     if (vm_VectorNormalize(xvec) == 0)
       goto bad_vector2;
 
     // now recompute up vector, in case it wasn't entirely perpendiclar
-    *yvec = *zvec ^ *xvec;
+    *yvec = vector::cross3(*zvec, *xvec);
   }
 }
 

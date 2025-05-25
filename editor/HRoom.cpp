@@ -2454,7 +2454,7 @@ scalar GetAngle(vector *base, vector *v0, vector *v1, vector *normal) {
   vm_GetNormalizedDir(&edge1, v1, base);
 
   dot = vm_Dot3Product(edge0, edge1);
-  cross = edge0 ^ edge1;
+  cross = vm_Cross3Product(edge0, edge1);
 
   if (vm_Dot3Product(cross, *normal) > (scalar)0)
     return (scalar)0.25 - dot / (scalar)4.0;
