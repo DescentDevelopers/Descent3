@@ -792,7 +792,7 @@ void ComputeDebugVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float 
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < fp->num_verts; i++) {

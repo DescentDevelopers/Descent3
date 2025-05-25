@@ -282,7 +282,7 @@ static void newstyle_StartInstanceAngles(vector *pos, angvec *angles) {
     return;
   }
 
-  vm_AnglesToMatrix(&tm, angles->p, angles->h, angles->b);
+  vm_AnglesToMatrix(&tm, angles->p(), angles->h(), angles->b());
 
   newstyle_StartInstanceMatrix(pos, &tm);
 }
@@ -425,7 +425,7 @@ bool PolyCollideObject(object *obj) {
     while (mn != -1) {
       vector tpnt;
 
-      vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+      vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
       vm_TransposeMatrix(&m);
 
       tpnt = pnt * m;

@@ -404,7 +404,7 @@ void ForceEffectsPlay(int id, float *scale, vector *direction) {
     vm_VectorToMatrix(&mat, direction);
     vm_ExtractAnglesFromMatrix(&ag, &mat);
 
-    new_dir = ((((float)ag.h) / 65535.0f) * 360.0f);
+    new_dir = ((((scalar)ag.h()) / 65535.0f) * 360.0f);
 
     new_dir = (new_dir)*FF_DEGREES;
   }

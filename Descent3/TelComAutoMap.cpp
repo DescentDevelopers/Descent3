@@ -253,11 +253,11 @@ void TCAMCenterOnPlayer() {
   AM_view_pos = Viewer_object->pos - (Viewer_object->orient.fvec * 10);
   vm_ExtractAnglesFromMatrix(&heading, &Player_object->orient);
 
-  vm_AnglesToMatrix(&newmat, 0, heading.h, 0);
+  vm_AnglesToMatrix(&newmat, 0, heading.h(), 0);
   AM_view_orient = newmat;
 
-  AM_heading = heading.h;
-  AM_pitch = heading.p;
+  AM_heading = heading.h();
+  AM_pitch = heading.p();
 }
 
 // This is the function called by TelCom

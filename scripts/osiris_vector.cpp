@@ -538,12 +538,12 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
   float sinh, cosh, cosp;
 
   if (m->fvec.x == 0 && m->fvec.z == 0) // zero head
-    a->h = 0;
+    a->h() = 0;
   else
-    a->h = FixAtan2(m->fvec.z, m->fvec.x);
+    a->h() = FixAtan2(m->fvec.z, m->fvec.x);
 
-  sinh = FixSin(a->h);
-  cosh = FixCos(a->h);
+  sinh = FixSin(a->h());
+  cosh = FixCos(a->h());
 
   if (fabs(sinh) > fabs(cosh)) // sine is larger, so use it
     cosp = (m->fvec.x / sinh);
@@ -551,13 +551,13 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
     cosp = (m->fvec.z / cosh);
 
   if (cosp == 0 && m->fvec.y == 0)
-    a->p = 0;
+    a->p() = 0;
   else
-    a->p = FixAtan2(cosp, -m->fvec.y);
+    a->p() = FixAtan2(cosp, -m->fvec.y);
 
   if (cosp == 0) // the cosine of pitch is zero.  we're pitched straight up. say no bank
 
-    a->b = 0;
+    a->b() = 0;
 
   else {
     float sinb, cosb;
@@ -566,9 +566,9 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
     cosb = (m->uvec.y / cosp);
 
     if (sinb == 0 && cosb == 0)
-      a->b = 0;
+      a->b() = 0;
     else
-      a->b = FixAtan2(cosb, sinb);
+      a->b() = FixAtan2(cosb, sinb);
   }
 
   return a;

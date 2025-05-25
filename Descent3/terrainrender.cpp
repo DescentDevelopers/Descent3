@@ -1485,7 +1485,7 @@ void DrawLightning(void) {
   scalar = ((ps_rand() % 1000) - 500) / 500.0;
   scalar *= 15000;
   vm_ExtractAnglesFromMatrix(&player_angs, &Viewer_object->orient);
-  new_heading = (player_angs.h + (int)scalar) % 65536;
+  new_heading = (player_angs.h() + (int)scalar) % 65536;
   vm_AnglesToMatrix(&mat, 0, new_heading, 0);
   // Put the starting point way up in the air
   float ylimit = (-(Viewer_object->pos.y * 2)) + (ps_rand() % 400);
@@ -2125,7 +2125,7 @@ void DrawSky(vector *veye, matrix *vorient) {
         if (Terrain_sky.satellite_flags[i] & TSF_ATMOSPHERE) {
           angvec angs;
           vm_ExtractAnglesFromMatrix(&angs, vorient);
-          DrawAtmosphereBlend(&tempvec, angs.b, size, (size * bm_h(bm_handle, 0)) / bm_w(bm_handle, 0), bm_handle, sr,
+          DrawAtmosphereBlend(&tempvec, angs.b(), size, (size * bm_h(bm_handle, 0)) / bm_w(bm_handle, 0), bm_handle, sr,
                               sg, sb);
         }
       }

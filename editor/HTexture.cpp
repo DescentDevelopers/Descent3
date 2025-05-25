@@ -597,7 +597,7 @@ int HTextureGetLeftVertexForFace(int roomnum, int facenum) {
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -651,7 +651,7 @@ int HTextureGetTopVertexForFace(int roomnum, int facenum) {
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -706,7 +706,7 @@ int HTextureGetRightVertexForFace(int roomnum, int facenum) {
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -760,7 +760,7 @@ int HTextureGetBottomVertexForFace(int roomnum, int facenum) {
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {

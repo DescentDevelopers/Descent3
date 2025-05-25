@@ -2191,20 +2191,20 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
   vm_ExtractAnglesFromMatrix(&a, &rot_matrix);
   vector dist;
 
-  if (a.b > 32768)
-    dist.x = 65536 - a.b;
+  if (a.b() > 32768)
+    dist.x = 65536 - a.b();
   else
-    dist.x = a.b;
+    dist.x = a.b();
 
-  if (a.h > 32768)
-    dist.y = 65536 - a.h;
+  if (a.h() > 32768)
+    dist.y = 65536 - a.h();
   else
-    dist.y = a.h;
+    dist.y = a.h();
 
-  if (a.p > 32768)
-    dist.z = 65536 - a.p;
+  if (a.p() > 32768)
+    dist.z = 65536 - a.p();
   else
-    dist.z = a.p;
+    dist.z = a.p();
 
   float angles = vm_GetMagnitude(&dist);
 
@@ -2218,22 +2218,22 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
   float scale = max_angles / angles;
   dist *= scale;
 
-  if (a.b > 32768)
-    a.b = 65535 - dist.x;
+  if (a.b() > 32768)
+    a.b() = 65535 - dist.x;
   else
-    a.b = dist.x;
+    a.b() = dist.x;
 
-  if (a.h > 32768)
-    a.h = 65535 - dist.y;
+  if (a.h() > 32768)
+    a.h() = 65535 - dist.y;
   else
-    a.h = dist.y;
+    a.h() = dist.y;
 
-  if (a.p > 32768)
-    a.p = 65535 - dist.z;
+  if (a.p() > 32768)
+    a.p() = 65535 - dist.z;
   else
-    a.p = dist.z;
+    a.p() = dist.z;
 
-  vm_AnglesToMatrix(&rot_matrix, a.p, a.h, a.b);
+  vm_AnglesToMatrix(&rot_matrix, a.p(), a.h(), a.b());
   obj->orient *= rot_matrix;
   vm_Orthogonalize(&obj->orient);
   ObjSetOrient(obj, &obj->orient);

@@ -2519,9 +2519,9 @@ void SetModelAngles(poly_model *po, const float *normalized_angles) {
 
         vm_ExtractAnglesFromMatrix(&po->submodel[i].angs, &temp_matrix);
       } else {
-        po->submodel[i].angs.h = 0;
-        po->submodel[i].angs.p = 0;
-        po->submodel[i].angs.h = 0;
+        po->submodel[i].angs.h() = 0;
+        po->submodel[i].angs.p() = 0;
+        po->submodel[i].angs.h() = 0;
       }
     }
   }
@@ -2637,9 +2637,9 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t 
       // Don't rotate turrets or auto-rotators
       if (!(sm->flags & (SOF_TURRET | SOF_ROTATE))) {
         if (sm->num_key_angles <= 1) {
-          sm->angs.p = 0;
-          sm->angs.h = 0;
-          sm->angs.b = 0;
+          sm->angs.p() = 0;
+          sm->angs.h() = 0;
+          sm->angs.b() = 0;
           continue;
         }
 
@@ -2711,9 +2711,9 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t 
       po->submodel[i].mod_pos.y = 0;
       po->submodel[i].mod_pos.z = 0;
 
-      po->submodel[i].angs.p = 0;
-      po->submodel[i].angs.h = 0;
-      po->submodel[i].angs.b = 0;
+      po->submodel[i].angs.p() = 0;
+      po->submodel[i].angs.h() = 0;
+      po->submodel[i].angs.b() = 0;
     }
   }
 }
@@ -3145,7 +3145,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     tpnt = pnt * m;
@@ -3190,7 +3190,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     tpnt = pnt * m;

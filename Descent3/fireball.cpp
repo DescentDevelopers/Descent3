@@ -2419,8 +2419,8 @@ void DrawSmolderingObject(object *obj) {
   if (!Viewer_object)
     return;
   vm_ExtractAnglesFromMatrix(&angs, &Viewer_object->orient);
-  veca.x = FixCos(angs.h);
-  veca.z = FixSin(angs.h);
+  veca.x = FixCos(angs.h());
+  veca.z = FixSin(angs.h());
   veca.y = 0;
   world_verts[0] = obj->pos - (veca * 10);
   world_verts[1] = obj->pos + (veca * 10);

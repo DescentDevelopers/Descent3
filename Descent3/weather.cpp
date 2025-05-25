@@ -102,7 +102,7 @@ void DoRainEffect() {
 
     vm_ExtractAnglesFromMatrix(&angs, &Viewer_object->orient);
     matrix mat;
-    vm_AnglesToMatrix(&mat, 0, angs.h, 0);
+    vm_AnglesToMatrix(&mat, 0, angs.h(), 0);
 
     for (i = 0; i < num; i++) {
       vector pos = Viewer_object->pos;

@@ -619,7 +619,7 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
 
   // Start instance stuff
   vector temp_vec = sm->mod_pos + sm->offset;
-  vm_AnglesToMatrix(&mat, sm->angs.p, sm->angs.h, sm->angs.b);
+  vm_AnglesToMatrix(&mat, sm->angs.p(), sm->angs.h(), sm->angs.b());
   StartLightingInstance(&temp_vec, &mat);
 
   rad.x = light_dist;

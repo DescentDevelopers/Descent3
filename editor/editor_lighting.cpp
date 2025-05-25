@@ -1422,7 +1422,7 @@ void BuildElementListForRoomFace(int roomnum, int facenum, rad_surface *surf) {
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -2404,7 +2404,7 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < nv; i++) {

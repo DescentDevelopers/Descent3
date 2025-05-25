@@ -190,7 +190,7 @@ void GetPointInObjectSpace(vector *dest, vector *pos, object *obj, int subnum, i
     else
       tpnt = pnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
 
     pnt = tpnt * m;
   }
@@ -527,7 +527,7 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < nv; i++) {
@@ -771,7 +771,7 @@ void BuildElementListForObjectFace(int objnum, int subnum, int facenum, rad_surf
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < fp->nverts; i++) {

@@ -52,8 +52,14 @@ constexpr static const size_t HEADING = 1;
 constexpr static const size_t BANK    = 2;
 union {
   T phb[N];
-  struct { T p, h, b; };
+  struct { T iip, iih, iib; };
 };
+constexpr inline T &p() { return iip; }
+constexpr inline T &h() { return iih; }
+constexpr inline T &b() { return iib; }
+constexpr inline const T &p() const { return iip; }
+constexpr inline const T &h() const { return iih; }
+constexpr inline const T &b() const { return iib; }
 constexpr static inline angvec id(ssize_t i = -1)
 {
   return angvec{

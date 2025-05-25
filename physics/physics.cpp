@@ -121,7 +121,7 @@ void DoPhysLinkedFrame(object *obj) {
     while (mn != -1) {
       vector tpnt;
 
-      vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+      vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
       vm_TransposeMatrix(&m);
 
       tpnt = pnt * m;
@@ -202,7 +202,7 @@ bool PhysCalcGround(vector *ground_point, vector *ground_normal, object *obj, in
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     tpnt = pnt * m;
@@ -396,11 +396,11 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
 
   // Fixed rate rotaters
   if (obj->mtype.phys_info.flags & PF_FIXED_ROT_VELOCITY) {
-    tangles.p = (int16_t)(rotvel->x * frame_time);
-    tangles.h = (int16_t)(rotvel->y * frame_time);
-    tangles.b = (int16_t)(rotvel->z * frame_time);
+    tangles.p() = (int16_t)(rotvel->x * frame_time);
+    tangles.h() = (int16_t)(rotvel->y * frame_time);
+    tangles.b() = (int16_t)(rotvel->z * frame_time);
 
-    vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
+    vm_AnglesToMatrix(&rotmat, tangles.p(), tangles.h(), tangles.b());
     *orient = *orient * rotmat; // ObjSetOrient below
 
     vm_Orthogonalize(orient); // Rest done after call
@@ -411,9 +411,9 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   // now rotate object
   // unrotate object for bank caused by turn
   if (*turnroll != 0) {
-    tangles.p = tangles.h = 0;
-    tangles.b = -(*turnroll);
-    vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
+    tangles.p() = tangles.h() = 0;
+    tangles.b() = -(*turnroll);
+    vm_AnglesToMatrix(&rotmat, tangles.p(), tangles.h(), tangles.b());
     // Apply rotation matrix to the orientation matrix
     *orient = *orient * rotmat; // ObjSetOrient is below
   }
@@ -441,21 +441,21 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
           bound = 10;
         }
 
-        if (ang.b > bound && ang.b < 65535 - bound) // About 1 degree
+        if (ang.b() > bound && ang.b() < 65535 - bound) // About 1 degree
         {
           float scale;
 
           // Scale on pitch
-          if (ang.p < 32768) {
-            scale = abs(16834 - (int)ang.p) / 16384.0f;
+          if (ang.p() < 32768) {
+            scale = abs(16834 - (int)ang.p()) / 16384.0f;
           } else {
-            scale = abs(49152 - (int)ang.p) / 16384.0f;
+            scale = abs(49152 - (int)ang.p()) / 16384.0f;
           }
 
           //					mprintf(0, "scale %f, ", scale);
 
-          if (ang.b < 32768) {
-            float al_rate = scale * MAX_LEVEL_ANGLES_PER_SEC * (1.0f - (abs(16834 - (int)ang.b) / 16384.0f));
+          if (ang.b() < 32768) {
+            float al_rate = scale * MAX_LEVEL_ANGLES_PER_SEC * (1.0f - (abs(16834 - (int)ang.b()) / 16384.0f));
 
             if (al_rate < scale * 5000.0f) {
               al_rate = scale * 5000.0f;
@@ -463,15 +463,15 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
 
             al_rate *= frame_time;
 
-            if (al_rate > ang.b)
-              al_rate = ang.b;
+            if (al_rate > ang.b())
+              al_rate = ang.b();
 
             //						mprintf(0, "L al_rate %f\n", al_rate);
 
-            ang.b -= al_rate;
+            ang.b() -= al_rate;
 
           } else {
-            float al_rate = scale * MAX_LEVEL_ANGLES_PER_SEC * (1.0f - (abs(16384 - ((int)ang.b - 32768)) / 16384.0f));
+            float al_rate = scale * MAX_LEVEL_ANGLES_PER_SEC * (1.0f - (abs(16384 - ((int)ang.b() - 32768)) / 16384.0f));
 
             if (al_rate < scale * 5000.0f) {
               al_rate = scale * 5000.0f;
@@ -479,17 +479,17 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
 
             al_rate *= frame_time;
 
-            if (al_rate > 65535 - ang.b)
-              al_rate = 65535 - ang.b;
+            if (al_rate > 65535 - ang.b())
+              al_rate = 65535 - ang.b();
 
             //						mprintf(0, "G al_rate %f\n", al_rate);
 
-            ang.b += al_rate;
+            ang.b() += al_rate;
           }
 
           fvec = orient->fvec;
 
-          vm_AnglesToMatrix(orient, ang.p, ang.h, ang.b);
+          vm_AnglesToMatrix(orient, ang.p(), ang.h(), ang.b());
         }
       }
     }
@@ -521,14 +521,14 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
         bound = 750;
 
         // About 1 degree -- front or back
-        if ((ang.p > bound) && (ang.p < 65535 - bound) && // Forward
-            abs(ang.p - 32768) > bound)                   // Backward
+        if ((ang.p() > bound) && (ang.p() < 65535 - bound) && // Forward
+            abs(ang.p() - 32768) > bound)                   // Backward
         {
           float scale;
           f_pitch_leveled = true;
 
           if (obj->orient.uvec.y < 0.0f) {
-            ang.p += 16384;
+            ang.p() += 16384;
           }
 
           scale = 1.05f - fabs(obj->orient.uvec.y);
@@ -537,11 +537,11 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
           if (scale > 1.0)
             scale = 1.0;
 
-          if (ang.p < 16834) {
+          if (ang.p() < 16834) {
             rotthrust->x -= scale * obj->mtype.phys_info.full_rotthrust;
-          } else if (ang.p < 32768) {
+          } else if (ang.p() < 32768) {
             rotthrust->x += scale * obj->mtype.phys_info.full_rotthrust;
-          } else if (ang.p < 49152) {
+          } else if (ang.p() < 49152) {
             rotthrust->x -= scale * obj->mtype.phys_info.full_rotthrust;
           } else {
             rotthrust->x += scale * obj->mtype.phys_info.full_rotthrust;
@@ -556,8 +556,8 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
 
       // extract angles from a matrix
       vm_ExtractAnglesFromMatrix(&ang, orient);
-      if ((ang.p < 32768 && (abs((int)ang.p - (int)16834) > max_tilt_angle)) ||
-          (ang.p >= 32768 && (abs((int)ang.p - (int)49152) > max_tilt_angle))) {
+      if ((ang.p() < 32768 && (abs((int)ang.p() - (int)16834) > max_tilt_angle)) ||
+          (ang.p() >= 32768 && (abs((int)ang.p() - (int)49152) > max_tilt_angle))) {
 
         if ((pi->flags & PF_TURNROLL) && *turnroll) {
           bound = *turnroll;
@@ -568,24 +568,24 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
           bound = 10;
         }
 
-        if (ang.b > bound && ang.b < 65535 - bound) // About 1 degree
+        if (ang.b() > bound && ang.b() < 65535 - bound) // About 1 degree
         {
           float scale;
 
           // Scale on pitch
-          if (ang.p < 32768) {
-            scale = (abs(16834 - (int)ang.p) - max_tilt_angle) / (16384.0f - max_tilt_angle);
+          if (ang.p() < 32768) {
+            scale = (abs(16834 - (int)ang.p()) - max_tilt_angle) / (16384.0f - max_tilt_angle);
           } else {
-            scale = (abs(49152 - (int)ang.p) - max_tilt_angle) / (16384.0f - max_tilt_angle);
+            scale = (abs(49152 - (int)ang.p()) - max_tilt_angle) / (16384.0f - max_tilt_angle);
           }
 
-          if (ang.b < 32768) {
-            float temp_scale;
+          if (ang.b() < 32768) {
+            scalar temp_scale;
 
-            if (ang.b > 28672) {
+            if (ang.b() > 28672) {
               temp_scale = (1.04f - ((28672 - 16834) / 16384.0f));
             } else {
-              temp_scale = (1.04f - (abs(16834 - (int)ang.b) / 16384.0f));
+              temp_scale = (1.04f - (abs(16834 - (int)ang.b()) / 16384.0f));
             }
 
             temp_scale *= temp_scale;
@@ -597,10 +597,10 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
           } else {
             float temp_scale;
 
-            if (ang.b < 36864) {
+            if (ang.b() < 36864) {
               temp_scale = (1.04f - ((49152 - 36864) / 16384.0f));
             } else {
-              temp_scale = (1.04f - (abs(49152 - (int)ang.b) / 16384.0f));
+              temp_scale = (1.04f - (abs(49152 - (int)ang.b()) / 16384.0f));
             }
 
             temp_scale *= temp_scale;
@@ -624,12 +624,12 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   }
 
   // Apply rotation to the "un-rollbanked" object
-  tangles.p = (int16_t)(rotvel->x * frame_time); // Casting to int16_t is required for aarch64 to avoid FCVTZU
+  tangles.p() = (int16_t)(rotvel->x * frame_time); // Casting to int16_t is required for aarch64 to avoid FCVTZU
                                                  // instruction which strips the negative sign
-  tangles.h = (int16_t)(rotvel->y * frame_time);
-  tangles.b = (int16_t)(rotvel->z * frame_time);
+  tangles.h() = (int16_t)(rotvel->y * frame_time);
+  tangles.b() = (int16_t)(rotvel->z * frame_time);
 
-  vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
+  vm_AnglesToMatrix(&rotmat, tangles.p(), tangles.h(), tangles.b());
   *orient = *orient * rotmat; // ObjSetOrient is below
 
   // Determine the new turnroll from this amount of turning
@@ -639,9 +639,9 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
 
   // re-rotate object for bank caused by turn
   if (*turnroll != 0) {
-    tangles.p = tangles.h = 0;
-    tangles.b = *turnroll;
-    vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
+    tangles.p() = tangles.h() = 0;
+    tangles.b() = *turnroll;
+    vm_AnglesToMatrix(&rotmat, tangles.p(), tangles.h(), tangles.b());
     *orient = *orient * rotmat; // ObjSetOrient is below
   }
   // Make sure the new orientation is valid
@@ -1761,7 +1761,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
 
       angvec a;
       vm_ExtractAnglesFromMatrix(&a, orient);
-      vm_AnglesToMatrix(orient, 0.0f, a.h, 0.0f);
+      vm_AnglesToMatrix(orient, 0.0f, a.h(), 0.0f);
     }
   }
 

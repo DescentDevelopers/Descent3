@@ -681,26 +681,26 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
 
   // Deal with straight up or straight down
   if (IS_ZERO(m->fvec.x) && IS_ZERO(m->fvec.z)) {
-    a->p = (m->fvec.y > 0) ? 0xc000 : 0x4000;
-    a->b = 0.0;
-    a->h = FixAtan2(m->rvec.x, -m->rvec.z);
+    a->p() = (m->fvec.y > 0) ? 0xc000 : 0x4000;
+    a->b() = 0.0;
+    a->h() = FixAtan2(m->rvec.x, -m->rvec.z);
     return a;
   }
 
-  a->h = FixAtan2(m->fvec.z, m->fvec.x);
+  a->h() = FixAtan2(m->fvec.z, m->fvec.x);
 
-  sinh = FixSin(a->h);
-  cosh = FixCos(a->h);
+  sinh = FixSin(a->h());
+  cosh = FixCos(a->h());
 
   if (fabs(sinh) > fabs(cosh)) // sine is larger, so use it
     cosp = (m->fvec.x / sinh);
   else // cosine is larger, so use it
     cosp = (m->fvec.z / cosh);
-  a->p = FixAtan2(cosp, -m->fvec.y);
+  a->p() = FixAtan2(cosp, -m->fvec.y);
 
   sinb = (m->rvec.y / cosp);
   cosb = (m->uvec.y / cosp);
-  a->b = FixAtan2(cosb, sinb);
+  a->b() = FixAtan2(cosb, sinb);
 
   return a;
 }

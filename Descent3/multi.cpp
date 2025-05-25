@@ -1907,9 +1907,9 @@ int MultiStuffPosition(int slot, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -2002,9 +2002,9 @@ int MultiStuffRobotPosition(uint16_t objectnum, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -5349,9 +5349,9 @@ void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record) {
     angvec angs;
     vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-    MultiAddShort(angs.p, data, &count);
-    MultiAddShort(angs.h, data, &count);
-    MultiAddShort(angs.b, data, &count);
+    MultiAddShort(angs.p(), data, &count);
+    MultiAddShort(angs.h(), data, &count);
+    MultiAddShort(angs.b(), data, &count);
   }
 
   // Send movement type
@@ -5466,9 +5466,9 @@ int MultiStuffGuidedInfo(int slot, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -8604,9 +8604,9 @@ void MultiSendPermissionToFire(int pnum) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
   MultiAddShort(CELLNUM(obj->roomnum), data, &count);
@@ -8994,9 +8994,9 @@ int MultiStuffRequestToMove(uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   END_DATA(count, data, size_offset);
 

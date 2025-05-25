@@ -265,13 +265,13 @@ void CViewerPropDlg::UpdateOrientation() {
 
   vm_ExtractAnglesFromMatrix(&angs, &Viewer_object->orient);
 
-  sprintf(buf, "%d", (int)angs.p * 360 / 65536);
+  sprintf(buf, "%d", (int)angs.p() * 360 / 65536);
   m_PitchEdit.SetWindowText(buf);
 
-  sprintf(buf, "%d", (int)angs.h * 360 / 65536);
+  sprintf(buf, "%d", (int)angs.h() * 360 / 65536);
   m_HeadingEdit.SetWindowText(buf);
 
-  sprintf(buf, "%d", (int)angs.b * 360 / 65536);
+  sprintf(buf, "%d", (int)angs.b() * 360 / 65536);
   m_BankEdit.SetWindowText(buf);
 }
 

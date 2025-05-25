@@ -29,7 +29,8 @@ const vector Zero_vector = {0.0f, 0.0f, 0.0f};
 
 // Used for debugging.  It is used in printf's so we do not have to write out the structure 3 times
 // to print all the coordinates.
-#define XYZ(v) (v)->x, (v)->y, (v)->z
+#define XYZ(v) (v)->x(), (v)->y(), (v)->z()
+#define HPB(v) (v)->h(), (v)->p(), (v)->b()
 
 extern const matrix Identity_matrix;
 

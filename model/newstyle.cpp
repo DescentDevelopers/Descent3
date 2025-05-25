@@ -1014,7 +1014,7 @@ void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
   vector temp_vec = sm->mod_pos + sm->offset;
   g3_StartInstanceAngles(&temp_vec, &sm->angs);
 
-  vm_AnglesToMatrix(&lightmatrix, sm->angs.p, sm->angs.h, sm->angs.b);
+  vm_AnglesToMatrix(&lightmatrix, sm->angs.p(), sm->angs.h(), sm->angs.b());
   StartLightInstance(&temp_vec, &lightmatrix);
 
   // Check my bit to see if I get drawn
@@ -1181,7 +1181,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
           while (mn != -1) {
             vector tpnt;
 
-            vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+            vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
             vm_TransposeMatrix(&m);
 
             tpnt = pnt * m;
@@ -1251,7 +1251,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
         while (mn != -1) {
           vector tpnt;
 
-          vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+          vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
           vm_TransposeMatrix(&m);
 
           tpnt = pnt * m;
