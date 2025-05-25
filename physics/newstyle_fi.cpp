@@ -74,25 +74,25 @@ static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
   float x, y, z;
   float s, c, t;
 
-  x = axis->x;
-  y = axis->y;
-  z = axis->z;
+  x = axis->x();
+  y = axis->y();
+  z = axis->z();
 
   s = (float)FixSin(ang);
   c = (float)FixCos(ang);
   t = 1.0f - c;
 
-  mat->rvec.x = t * x * x + c;
-  mat->rvec.y = t * x * y + s * z;
-  mat->rvec.z = t * x * z - s * y;
+  mat->rvec.x() = t * x * x + c;
+  mat->rvec.y() = t * x * y + s * z;
+  mat->rvec.z() = t * x * z - s * y;
 
-  mat->uvec.x = t * x * y - s * z;
-  mat->uvec.y = t * y * y + c;
-  mat->uvec.z = t * y * z + s * x;
+  mat->uvec.x() = t * x * y - s * z;
+  mat->uvec.y() = t * y * y + c;
+  mat->uvec.z() = t * y * z + s * x;
 
-  mat->fvec.x = t * x * z + s * y;
-  mat->fvec.y = t * y * z - s * x;
-  mat->fvec.z = t * z * z + c;
+  mat->fvec.x() = t * x * z + s * y;
+  mat->fvec.y() = t * y * z - s * x;
+  mat->fvec.z() = t * z * z + c;
 }
 
 float fvi_hit_param;
@@ -105,36 +105,36 @@ inline void ns_compute_movement_AABB() {
   vector delta_movement = *fvi_query_ptr->p1 - *fvi_query_ptr->p0;
   vector offset_vec;
 
-  offset_vec.x = fvi_query_ptr->rad;
-  offset_vec.y = fvi_query_ptr->rad;
-  offset_vec.z = fvi_query_ptr->rad;
+  offset_vec.x() = fvi_query_ptr->rad;
+  offset_vec.y() = fvi_query_ptr->rad;
+  offset_vec.z() = fvi_query_ptr->rad;
 
   ns_min_xyz = ns_max_xyz = *fvi_query_ptr->p0;
 
   ns_min_xyz -= offset_vec;
   ns_max_xyz += offset_vec;
 
-  if (delta_movement.x > 0.0f)
-    ns_max_xyz.x += delta_movement.x;
+  if (delta_movement.x() > 0.0f)
+    ns_max_xyz.x() += delta_movement.x();
   else
-    ns_min_xyz.x += delta_movement.x;
+    ns_min_xyz.x() += delta_movement.x();
 
-  if (delta_movement.y > 0.0f)
-    ns_max_xyz.y += delta_movement.y;
+  if (delta_movement.y() > 0.0f)
+    ns_max_xyz.y() += delta_movement.y();
   else
-    ns_min_xyz.y += delta_movement.y;
+    ns_min_xyz.y() += delta_movement.y();
 
-  if (delta_movement.z > 0.0f)
-    ns_max_xyz.z += delta_movement.z;
+  if (delta_movement.z() > 0.0f)
+    ns_max_xyz.z() += delta_movement.z();
   else
-    ns_min_xyz.z += delta_movement.z;
+    ns_min_xyz.z() += delta_movement.z();
 }
 
 inline bool ns_movement_manual_AABB(vector *min_xyz, vector *max_xyz) {
   bool overlap = true;
 
-  if (max_xyz->y < ns_min_xyz.y || ns_max_xyz.y < min_xyz->y || max_xyz->x < ns_min_xyz.x ||
-      ns_max_xyz.x < min_xyz->x || max_xyz->z < ns_min_xyz.z || ns_max_xyz.z < min_xyz->z)
+  if (max_xyz->y() < ns_min_xyz.y() || ns_max_xyz.y() < min_xyz->y() || max_xyz->x() < ns_min_xyz.x() ||
+      ns_max_xyz.x() < min_xyz->x() || max_xyz->z() < ns_min_xyz.z() || ns_max_xyz.z() < min_xyz->z())
     overlap = false;
 
   return overlap;

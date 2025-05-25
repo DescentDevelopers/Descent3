@@ -943,11 +943,11 @@ void FindHitpointUV(float *u, float *v, vector *point, room *rp, int facenum) {
 
   // Copy face points into 2d verts array
   for (i = 0; i < 3; i++) {
-    t = &rp->verts[fp->face_verts[i]].x;
+    t = &rp->verts[fp->face_verts[i]].x();
     pnt[i].i = t[ii];
     pnt[i].j = t[jj];
   }
-  t = &point->x;
+  t = &point->x();
   checkp.i = t[ii];
   checkp.j = t[jj];
 
@@ -992,7 +992,7 @@ void DoWallEffects(object *weapon, int surface_tmap) {
         vis->movement_type = MT_PHYSICS;
         vis->size = 3.0;
         vm_MakeZero(&vis->velocity);
-        vis->velocity.y = 10;
+        vis->velocity.y() = 10;
       }
     }
   } else if (texp->flags & TF_RUBBLE) {
@@ -1018,13 +1018,13 @@ void DoWallEffects(object *weapon, int surface_tmap) {
           vis->phys_flags |= PF_GRAVITY | PF_NO_COLLIDE;
 
           if ((ps_rand() % 3) == 0) {
-            vis->velocity.x = (ps_rand() % 100) - 50;
-            vis->velocity.y = -((ps_rand() % 200) - 30);
-            vis->velocity.z = (ps_rand() % 100) - 50;
+            vis->velocity.x() = (ps_rand() % 100) - 50;
+            vis->velocity.y() = -((ps_rand() % 200) - 30);
+            vis->velocity.z() = (ps_rand() % 100) - 50;
           } else {
-            vis->velocity.x = (ps_rand() % 300) - 50;
-            vis->velocity.y = -((ps_rand() % 200) - 30);
-            vis->velocity.z = (ps_rand() % 300) - 50;
+            vis->velocity.x() = (ps_rand() % 300) - 50;
+            vis->velocity.y() = -((ps_rand() % 200) - 30);
+            vis->velocity.z() = (ps_rand() % 300) - 50;
           }
 
           vm_NormalizeVectorFast(&vis->velocity);
@@ -1476,46 +1476,46 @@ void CollideAnglesToMatrix(matrix *m, float p, float h, float b) {
   sinh = sin(h);
   cosh = cos(h);
 
-  m->rvec.x = cosb * cosh;
-  m->rvec.y = cosb * sinp * sinh - cosp * sinb;
-  m->rvec.z = cosb * cosp * sinh + sinb * sinp;
+  m->rvec.x() = cosb * cosh;
+  m->rvec.y() = cosb * sinp * sinh - cosp * sinb;
+  m->rvec.z() = cosb * cosp * sinh + sinb * sinp;
 
-  m->uvec.x = cosh * sinb;
-  m->uvec.y = sinb * sinp * sinh + cosp * cosb;
-  m->uvec.z = sinb * cosp * sinh - cosb * sinp;
+  m->uvec.x() = cosh * sinb;
+  m->uvec.y() = sinb * sinp * sinh + cosp * cosb;
+  m->uvec.z() = sinb * cosp * sinh - cosb * sinp;
 
-  m->fvec.x = -sinh;
-  m->fvec.y = sinp * cosh;
-  m->fvec.z = cosp * cosh;
+  m->fvec.x() = -sinh;
+  m->fvec.y() = sinp * cosh;
+  m->fvec.z() = cosp * cosh;
 }
 
 vector *CollideExtractAnglesFromMatrix(vector *a, matrix *m) {
   float sinh, cosh, sinp, sinb;
 
-  sinh = -m->fvec.x;
+  sinh = -m->fvec.x();
   if (sinh < -1.0f)
     sinh = -1.0f;
   else if (sinh > 1.0f)
     sinh = 1.0f;
-  a->y = asin(sinh);
+  a->y() = asin(sinh);
 
-  cosh = cos(a->y);
+  cosh = cos(a->y());
   ASSERT(cosh != 0.0);
 
-  sinp = m->fvec.y / cosh;
+  sinp = m->fvec.y() / cosh;
   if (sinp < -1.0f)
     sinp = -1.0f;
   else if (sinp > 1.0f)
     sinp = 1.0f;
 
-  sinb = m->uvec.x / cosh;
+  sinb = m->uvec.x() / cosh;
   if (sinb < -1.0f)
     sinb = -1.0f;
   else if (sinb > 1.0f)
     sinb = 1.0f;
 
-  a->x = asin(sinp);
-  a->z = asin(sinb);
+  a->x() = asin(sinp);
+  a->z() = asin(sinb);
 
   return a;
 }
@@ -1529,7 +1529,7 @@ void ConvertEulerToAxisAmount(vector *e, vector *n, float *w) {
   // If there isn't a rotation, return something valid
   if (rotspeed == 0.0f || scale == 0.0f) {
     *n = Zero_vector;
-    n->y = 1.0f;
+    n->y() = 1.0f;
     *w = 0.0f;
 
     return;
@@ -1537,19 +1537,19 @@ void ConvertEulerToAxisAmount(vector *e, vector *n, float *w) {
 
   e_n = *e / scale;
 
-  CollideAnglesToMatrix(&rotmat, e_n.x, e_n.y, e_n.z);
+  CollideAnglesToMatrix(&rotmat, e_n.x(), e_n.y(), e_n.z());
 
   // This is from Graphics Gems 1 p.467  I am converting from a angle vector
   // to the normal of that rotation (you can also get the angle about that normal, but
   // we don't need it)
-  n->x = rotmat.uvec.z - rotmat.fvec.y;
-  n->y = rotmat.fvec.x - rotmat.rvec.z;
-  n->z = rotmat.rvec.y - rotmat.uvec.x;
+  n->x() = rotmat.uvec.z() - rotmat.fvec.y();
+  n->y() = rotmat.fvec.x() - rotmat.rvec.z();
+  n->z() = rotmat.rvec.y() - rotmat.uvec.x();
 
   if (*n != Zero_vector) {
     vm_NormalizeVector(n);
 
-    float ct = (rotmat.rvec.x + rotmat.uvec.y + rotmat.fvec.z - 1.0f) / 2.0f;
+    float ct = (rotmat.rvec.x() + rotmat.uvec.y() + rotmat.fvec.z() - 1.0f) / 2.0f;
     if (ct < -1.0f)
       ct = -1.0f;
     else if (ct > 1.0f)
@@ -1585,40 +1585,40 @@ void ConvertAxisAmountToEuler(vector *n, float *w, vector *e) {
   t = 1.0f - c;
 
   matrix rotmat;
-  const float sx = s * n->x;
-  const float sy = s * n->y;
-  const float sz = s * n->z;
-  const float txy = t * n->x * n->y;
-  const float txz = t * n->x * n->z;
-  const float tyz = t * n->y * n->z;
-  const float txx = t * n->x * n->x;
-  const float tyy = t * n->y * n->y;
-  const float tzz = t * n->z * n->z;
+  const scalar sx = s * n->x();
+  const scalar sy = s * n->y();
+  const scalar sz = s * n->z();
+  const scalar txy = t * n->x() * n->y();
+  const scalar txz = t * n->x() * n->z();
+  const scalar tyz = t * n->y() * n->z();
+  const scalar txx = t * n->x() * n->x();
+  const scalar tyy = t * n->y() * n->y();
+  const scalar tzz = t * n->z() * n->z();
 
-  rotmat.rvec.x = txx + c;
-  rotmat.rvec.y = txy - sz;
-  rotmat.rvec.z = txz + sy;
-  rotmat.uvec.x = txy + sz;
-  rotmat.uvec.y = tyy + c;
-  rotmat.uvec.z = tyz - sx;
-  rotmat.fvec.x = txz - sy;
-  rotmat.fvec.y = tyz + sx;
-  rotmat.fvec.z = tzz + c;
+  rotmat.rvec.x() = txx + c;
+  rotmat.rvec.y() = txy - sz;
+  rotmat.rvec.z() = txz + sy;
+  rotmat.uvec.x() = txy + sz;
+  rotmat.uvec.y() = tyy + c;
+  rotmat.uvec.z() = tyz - sx;
+  rotmat.fvec.x() = txz - sy;
+  rotmat.fvec.y() = tyz + sx;
+  rotmat.fvec.z() = tzz + c;
 
   CollideExtractAnglesFromMatrix(&s_result, &rotmat);
 
-  e->x = (s_result.x) * scale * (65535.0f / (2.0 * PI));
-  e->y = (s_result.y) * scale * (65535.0f / (2.0 * PI));
-  e->z = (s_result.z) * scale * (65535.0f / (2.0 * PI));
+  e->x() = (s_result.x()) * scale * (65535.0f / (2.0 * PI));
+  e->y() = (s_result.y()) * scale * (65535.0f / (2.0 * PI));
+  e->z() = (s_result.z()) * scale * (65535.0f / (2.0 * PI));
 }
 
 void bump_obj_against_fixed(object *obj, vector *collision_point, vector *collision_normal) {
-  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z));
+  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z()));
 
   if (!IsOKToApplyForce(obj))
     return;
@@ -1696,12 +1696,12 @@ void bump_obj_against_fixed(object *obj, vector *collision_point, vector *collis
 
   obj->mtype.phys_info.rotvel += (txx1 * obj->orient);
 
-  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z));
+  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z()));
 }
 
 void bump_two_objects(object *object0, object *object1, vector *collision_point, vector *collision_normal,
@@ -1808,18 +1808,18 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
     return;
   }
 
-  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z));
+  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z()));
 
   vector r1 = *collision_point - object0->pos;
   vector r2 = *collision_point - object1->pos;
@@ -1963,18 +1963,18 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
   if (f_force_2)
     object1->mtype.phys_info.rotvel += (txx2 * object1->orient) * rotscale2;
 
-  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z));
+  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(object1->mtype.phys_info.velocity.z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z()));
 
   // Do ForceFeedback stuff for moving objects
   //-----------------------------------------
@@ -2445,12 +2445,12 @@ void collide_two_objects(object *A, object *B, vector *collision_point, vector *
     if (a_good && b_good) {
       DLLInfo.me_handle = A->handle;
       DLLInfo.it_handle = B->handle;
-      DLLInfo.collide_info.point.x = collision_point->x;
-      DLLInfo.collide_info.point.y = collision_point->y;
-      DLLInfo.collide_info.point.z = collision_point->z;
-      DLLInfo.collide_info.normal.x = collision_normal->x;
-      DLLInfo.collide_info.normal.y = collision_normal->y;
-      DLLInfo.collide_info.normal.z = collision_normal->z;
+      DLLInfo.collide_info.point.x() = collision_point->x();
+      DLLInfo.collide_info.point.y() = collision_point->y();
+      DLLInfo.collide_info.point.z() = collision_point->z();
+      DLLInfo.collide_info.normal.x() = collision_normal->x();
+      DLLInfo.collide_info.normal.y() = collision_normal->y();
+      DLLInfo.collide_info.normal.z() = collision_normal->z();
       CallGameDLL(EVT_GAMECOLLIDE, &DLLInfo);
 
       DLLInfo.me_handle = B->handle;
@@ -2702,12 +2702,12 @@ bool collide_object_with_wall(object *A, float hitspeed, int hitseg, int hitwall
     // call multiplayer event
     DLLInfo.me_handle = A->handle;
     DLLInfo.it_handle = OBJECT_HANDLE_NONE;
-    DLLInfo.collide_info.point.x = hitpt->x;
-    DLLInfo.collide_info.point.y = hitpt->y;
-    DLLInfo.collide_info.point.z = hitpt->z;
-    DLLInfo.collide_info.normal.x = wall_normal->x;
-    DLLInfo.collide_info.normal.y = wall_normal->y;
-    DLLInfo.collide_info.normal.z = wall_normal->z;
+    DLLInfo.collide_info.point.x() = hitpt->x();
+    DLLInfo.collide_info.point.y() = hitpt->y();
+    DLLInfo.collide_info.point.z() = hitpt->z();
+    DLLInfo.collide_info.normal.x() = wall_normal->x();
+    DLLInfo.collide_info.normal.y() = wall_normal->y();
+    DLLInfo.collide_info.normal.z() = wall_normal->z();
     DLLInfo.collide_info.hitspeed = hitspeed;
     DLLInfo.collide_info.hit_dot = hit_dot;
     DLLInfo.collide_info.hitseg = hitseg;

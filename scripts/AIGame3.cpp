@@ -6694,7 +6694,7 @@ void AlienBoss::DoFrame(int me) {
     // Update the values
     Obj_Value(me, VF_GET, OBJV_V_POS, &curr_pos);
     dist_vec = curr_pos - memory->last_pos;
-    memory->squared_dist_moved += (dist_vec.x * dist_vec.x + dist_vec.y * dist_vec.y + dist_vec.z * dist_vec.z);
+    memory->squared_dist_moved += (dist_vec.x() * dist_vec.x() + dist_vec.y() * dist_vec.y() + dist_vec.z() * dist_vec.z());
     memory->last_pos = curr_pos;
 
     // See if we need to do a stuck check
@@ -7108,14 +7108,14 @@ void SecurityCamera::DoFrame(int me) {
 
       // Make it track target on a 2D plane
       dir = local_vec_to_target;
-      dir.y = 0.0f;
-      if ((dir.x + dir.y + dir.z) == 0.0f)
+      dir.y() = 0.0f;
+      if ((dir.x() + dir.y() + dir.z()) == 0.0f)
         break;
       vm_VectorNormalize(&dir);
 
-      local_fvec.x = 0.0f;
-      local_fvec.y = 0.0f;
-      local_fvec.z = 1.0f;
+      local_fvec.x() = 0.0f;
+      local_fvec.y() = 0.0f;
+      local_fvec.z() = 1.0f;
       dot = dir * local_fvec;
       if (dot < -1.0f)
         dot = -1.0f;
@@ -7132,7 +7132,7 @@ void SecurityCamera::DoFrame(int me) {
       // mprintf(0,"Frame offset: %.1f\n",frame_offset);
 
       // Get the dest frame between start and end frames for reference
-      if (dir.x < 0.0f)
+      if (dir.x() < 0.0f)
         frame_offset = -frame_offset;
       dest_frame = SC_MID_FRAME + frame_offset;
 

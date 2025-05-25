@@ -1204,20 +1204,20 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
             first_pnt = false;
             min_xyz = max_xyz = pnt;
           } else {
-            if (pnt.x < min_xyz.x)
-              min_xyz.x = pnt.x;
-            else if (pnt.x > max_xyz.x)
-              max_xyz.x = pnt.x;
+            if (pnt.x() < min_xyz.x())
+              min_xyz.x() = pnt.x();
+            else if (pnt.x() > max_xyz.x())
+              max_xyz.x() = pnt.x();
 
-            if (pnt.y < min_xyz.y)
-              min_xyz.y = pnt.y;
-            else if (pnt.y > max_xyz.y)
-              max_xyz.y = pnt.y;
+            if (pnt.y() < min_xyz.y())
+              min_xyz.y() = pnt.y();
+            else if (pnt.y() > max_xyz.y())
+              max_xyz.y() = pnt.y();
 
-            if (pnt.z < min_xyz.z)
-              min_xyz.z = pnt.z;
-            else if (pnt.z > max_xyz.z)
-              max_xyz.z = pnt.z;
+            if (pnt.z() < min_xyz.z())
+              min_xyz.z() = pnt.z();
+            else if (pnt.z() > max_xyz.z())
+              max_xyz.z() = pnt.z();
           }
         }
       }

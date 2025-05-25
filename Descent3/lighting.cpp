@@ -274,9 +274,9 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
   int green_limit = 31;
   int blue_limit = 31;
 
-  rad.x = light_dist;
-  rad.y = light_dist;
-  rad.z = light_dist;
+  rad.x() = light_dist;
+  rad.y() = light_dist;
+  rad.z() = light_dist;
 
   Light_min_xyz = *pos - rad;
   Light_max_xyz = *pos + rad;
@@ -286,8 +286,8 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
     face *fp = &rp->faces[i];
 
     // check to see if this face is within reach
-    if (Light_max_xyz.y < fp->min_xyz.y || fp->max_xyz.y < Light_min_xyz.y || Light_max_xyz.x < fp->min_xyz.x ||
-        fp->max_xyz.x < Light_min_xyz.x || Light_max_xyz.z < fp->min_xyz.z || fp->max_xyz.z < Light_min_xyz.z)
+    if (Light_max_xyz.y() < fp->min_xyz.y() || fp->max_xyz.y() < Light_min_xyz.y() || Light_max_xyz.x() < fp->min_xyz.x() ||
+        fp->max_xyz.x() < Light_min_xyz.x() || Light_max_xyz.z() < fp->min_xyz.z() || fp->max_xyz.z() < Light_min_xyz.z())
       continue;
 
     // Make sure face was rendered
@@ -622,9 +622,9 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
   vm_AnglesToMatrix(&mat, sm->angs.p(), sm->angs.h(), sm->angs.b());
   StartLightingInstance(&temp_vec, &mat);
 
-  rad.x = light_dist;
-  rad.y = light_dist;
-  rad.z = light_dist;
+  rad.x() = light_dist;
+  rad.y() = light_dist;
+  rad.z() = light_dist;
 
   vector light_pos = Light_position;
   vector light_dir = Light_direction;
@@ -635,9 +635,9 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
   // Now the Light_position is in the submodels frame of reference
   for (i = 0; i < sm->num_faces; i++) {
     // check to see if this face is within reach
-    if (Light_max_xyz.y < sm->face_min[i].y || sm->face_max[i].y < Light_min_xyz.y ||
-        Light_max_xyz.x < sm->face_min[i].x || sm->face_max[i].x < Light_min_xyz.x ||
-        Light_max_xyz.z < sm->face_min[i].z || sm->face_max[i].z < Light_min_xyz.z)
+    if (Light_max_xyz.y() < sm->face_min[i].y() || sm->face_max[i].y() < Light_min_xyz.y() ||
+        Light_max_xyz.x() < sm->face_min[i].x() || sm->face_max[i].x() < Light_min_xyz.x() ||
+        Light_max_xyz.z() < sm->face_min[i].z() || sm->face_max[i].z() < Light_min_xyz.z())
       continue;
 
     // Ok, now we know that this light touches this face
@@ -1505,9 +1505,9 @@ void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float re
     // Check for backfaces
     vector tpos;
 
-    tpos.x = (seg_x * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
-    tpos.z = (seg_z * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
-    tpos.y = tseg->y;
+    tpos.x() = (seg_x * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
+    tpos.z() = (seg_z * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
+    tpos.y() = tseg->y;
 
     vector subvec = *pos - tpos;
 
@@ -1607,9 +1607,9 @@ void SetRoomPulse(room *rp, uint8_t pulse_time, uint8_t pulse_offset) {
 // TODO: MTS: Unused?
 // Returns the total number of bytes needed for volume lighting in this room
 int GetVolumeSizeOfRoom(room *rp, int *w, int *h, int *d) {
-  int width = ((rp->max_xyz.x - rp->min_xyz.x) / VOLUME_SPACING) + 1;
-  int height = ((rp->max_xyz.y - rp->min_xyz.y) / VOLUME_SPACING) + 1;
-  int depth = ((rp->max_xyz.z - rp->min_xyz.z) / VOLUME_SPACING) + 1;
+  int width = ((rp->max_xyz.x() - rp->min_xyz.x()) / VOLUME_SPACING) + 1;
+  int height = ((rp->max_xyz.y() - rp->min_xyz.y()) / VOLUME_SPACING) + 1;
+  int depth = ((rp->max_xyz.z() - rp->min_xyz.z()) / VOLUME_SPACING) + 1;
 
   if (w)
     *w = width;

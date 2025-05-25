@@ -115,7 +115,7 @@ bool g3_CheckNormalFacing(vector *v, vector *norm) {
 bool DoFacingCheck(vector *norm, g3Point **vertlist, vector *p) {
   if (norm) {
     // have normal
-    ASSERT(norm->x || norm->y || norm->z);
+    ASSERT(norm->x() || norm->y() || norm->z());
     return g3_CheckNormalFacing(p, norm);
   } else {
     // normal not specified, so must compute
@@ -239,7 +239,7 @@ void g3_DrawSphere(ddgr_color color, g3Point *pnt, float rad) {
     if (!(pnt->p3_flags & PF_PROJECTED))
       g3_ProjectPoint(pnt);
 
-    rend_FillCircle(color, pnt->p3_sx, pnt->p3_sy, (rad * Matrix_scale.x * Window_w2 / pnt->p3_z));
+    rend_FillCircle(color, pnt->p3_sx, pnt->p3_sy, (rad * Matrix_scale.x() * Window_w2 / pnt->p3_z));
   }
 }
 
@@ -309,26 +309,26 @@ void g3_DrawRotatedBitmap(vector *pos, angle rot_angle, float width, float heigh
   float h = height;
 
   vector rot_vectors[4];
-  rot_vectors[0].x = -w;
-  rot_vectors[0].y = h;
+  rot_vectors[0].x() = -w;
+  rot_vectors[0].y() = h;
 
-  rot_vectors[1].x = w;
-  rot_vectors[1].y = h;
+  rot_vectors[1].x() = w;
+  rot_vectors[1].y() = h;
 
-  rot_vectors[2].x = w;
-  rot_vectors[2].y = -h;
+  rot_vectors[2].x() = w;
+  rot_vectors[2].y() = -h;
 
-  rot_vectors[3].x = -w;
-  rot_vectors[3].y = -h;
+  rot_vectors[3].x() = -w;
+  rot_vectors[3].y() = -h;
 
   g3Point rot_points[8], *pntlist[8];
   int i;
   for (i = 0; i < 4; ++i) {
     vector offset;
-    rot_vectors[i].z = 0.0f;
+    rot_vectors[i].z() = 0.0f;
     vm_MatrixMulVector(&offset, &rot_vectors[i], &rot_matrix);
 
-    vector cornerPos = *pos + (viewOrient.uvec * offset.y) + (viewOrient.rvec * offset.x);
+    vector cornerPos = *pos + (viewOrient.uvec * offset.y()) + (viewOrient.rvec * offset.x());
     rot_points[i].p3_codes = 0;
     g3_RotatePoint(&rot_points[i], &cornerPos);
 
@@ -421,8 +421,8 @@ void g3_DrawBox(ddgr_color color, g3Point *pnt, float rad) {
 
     float w, h;
 
-    w = rad * Matrix_scale.x * Window_w2 / pnt->p3_z;
-    h = rad * Matrix_scale.y * Window_h2 / pnt->p3_z;
+    w = rad * Matrix_scale.x() * Window_w2 / pnt->p3_z;
+    h = rad * Matrix_scale.y() * Window_h2 / pnt->p3_z;
 
     rend_DrawLine(round(pnt->p3_sx - w), round(pnt->p3_sy - h), round(pnt->p3_sx + w), round(pnt->p3_sy - h));
     rend_DrawLine(round(pnt->p3_sx + w), round(pnt->p3_sy - h), round(pnt->p3_sx + w), round(pnt->p3_sy + h));

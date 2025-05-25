@@ -461,14 +461,13 @@ void RenderCockpit() {
     LOG_WARNING << "Cockpit missing viewer!";
     return;
   }
-  view_z =
-      viewer_subobj->offset.z - Cockpit_info.buffet_vec.z * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave * 1.1f;
-  view_y = viewer_subobj->offset.y + Cockpit_info.buffet_vec.y * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave;
-  view_x = viewer_subobj->offset.x + Cockpit_info.buffet_vec.x * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave;
-  //@@	if (player_phys->rotthrust.x !=0.0f || player_phys->rotthrust.y != 0.0f) {
+  view_z = viewer_subobj->offset.z() - Cockpit_info.buffet_vec.z() * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave * 1.1f;
+  view_y = viewer_subobj->offset.y() + Cockpit_info.buffet_vec.y() * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave;
+  view_x = viewer_subobj->offset.x() + Cockpit_info.buffet_vec.x() * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave;
+  //@@	if (player_phys->rotthrust.x() !=0.0f || player_phys->rotthrust.y() != 0.0f) {
   //@@		gauge_reset = true;
-  //@@		view_x += (player_phys->rotthrust.y*COCKPIT_SHIFT_DELTA/player_phys->full_rotthrust);
-  //@@		view_y -= (player_phys->rotthrust.x*COCKPIT_SHIFT_DELTA/player_phys->full_rotthrust);
+  //@@		view_x += (player_phys->rotthrust.y()*COCKPIT_SHIFT_DELTA/player_phys->full_rotthrust);
+  //@@		view_y -= (player_phys->rotthrust.x()*COCKPIT_SHIFT_DELTA/player_phys->full_rotthrust);
   //@@	}
   //	create new orientation, so the cockpit should be facing the viewer
   view_tmat = Viewer_object->orient;

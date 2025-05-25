@@ -915,18 +915,18 @@ object *CreateSubobjectDebrisDirected(object *parent, int subobj_num, vector *di
   obj->mtype.phys_info.velocity = *dir;
   obj->mtype.phys_info.velocity *= explosion_mag;
   // obj->mtype.phys_info.velocity += parent->mtype.phys_info.velocity;
-  if (obj->mtype.phys_info.velocity.x > 100000.0f)
-    obj->mtype.phys_info.velocity.x = 100000.0f;
-  if (obj->mtype.phys_info.velocity.y > 100000.0f)
-    obj->mtype.phys_info.velocity.y = 100000.0f;
-  if (obj->mtype.phys_info.velocity.z > 100000.0f)
-    obj->mtype.phys_info.velocity.z = 100000.0f;
-  if (obj->mtype.phys_info.velocity.x < -100000.0f)
-    obj->mtype.phys_info.velocity.x = -100000.0f;
-  if (obj->mtype.phys_info.velocity.y < -100000.0f)
-    obj->mtype.phys_info.velocity.y = -100000.0f;
-  if (obj->mtype.phys_info.velocity.z < -100000.0f)
-    obj->mtype.phys_info.velocity.z = -100000.0f;
+  if (obj->mtype.phys_info.velocity.x() > (scalar)100000.0f)
+    obj->mtype.phys_info.velocity.x() = (scalar)100000.0f;
+  if (obj->mtype.phys_info.velocity.y() > (scalar)100000.0f)
+    obj->mtype.phys_info.velocity.y() = (scalar)100000.0f;
+  if (obj->mtype.phys_info.velocity.z() > (scalar)100000.0f)
+    obj->mtype.phys_info.velocity.z() = (scalar)100000.0f;
+  if (obj->mtype.phys_info.velocity.x() < (scalar)-100000.0f)
+    obj->mtype.phys_info.velocity.x() = (scalar)-100000.0f;
+  if (obj->mtype.phys_info.velocity.y() < (scalar)-100000.0f)
+    obj->mtype.phys_info.velocity.y() = (scalar)-100000.0f;
+  if (obj->mtype.phys_info.velocity.z() < (scalar)-100000.0f)
+    obj->mtype.phys_info.velocity.z() = (scalar)-100000.0f;
   obj->mtype.phys_info.rotvel = parent->mtype.phys_info.rotvel;
   vm_MakeZero(&obj->mtype.phys_info.rotthrust);
   obj->size = Poly_models[obj->rtype.pobj_info.model_num].submodel[subobj_num].rad * 0.5;
@@ -935,9 +935,9 @@ object *CreateSubobjectDebrisDirected(object *parent, int subobj_num, vector *di
 
   obj->mtype.phys_info.flags = (PF_GRAVITY | PF_BOUNCE | PF_FIXED_ROT_VELOCITY);
   obj->mtype.phys_info.coeff_restitution = .2f;
-  obj->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.x() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.y() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.z() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
   if (death_flags & DF_DEBRIS_REMAINS) {
     obj->mtype.phys_info.num_bounces = 8;
     obj->mtype.phys_info.flags |= PF_STICK;
@@ -959,9 +959,9 @@ object *CreateSubobjectDebrisDirected(object *parent, int subobj_num, vector *di
 object *CreateSubobjectDebris(object *parent, int subobj_num, float explosion_mag, int death_flags) {
   vector rand_vec;
   // Set physics data for this object
-  rand_vec.x = (float)(D3_RAND_MAX / 2 - ps_rand());
-  rand_vec.y = (float)(D3_RAND_MAX / 2 - ps_rand()) + .2f * D3_RAND_MAX; // a habit of moving upwards
-  rand_vec.z = (float)(D3_RAND_MAX / 2 - ps_rand());
+  rand_vec.x() = (float)(D3_RAND_MAX / 2 - ps_rand());
+  rand_vec.y() = (float)(D3_RAND_MAX / 2 - ps_rand()) + .2f * D3_RAND_MAX; // a habit of moving upwards
+  rand_vec.z() = (float)(D3_RAND_MAX / 2 - ps_rand());
 
   vm_NormalizeVectorFast(&rand_vec);
   explosion_mag *= 1.0f + ((float)(D3_RAND_MAX / 2 - ps_rand()) / (float)(D3_RAND_MAX / 2) * 0.05); // +5/-5 percent
@@ -986,20 +986,20 @@ void CreateExtraFireballs(object *obj, float size_scale) {
     // Make this a billowing explosion
     if (obj->type == OBJ_BUILDING && OBJECT_OUTSIDE(obj)) {
       float increment = (obj->size * 1.5) / extras;
-      pos.y += (increment * i);
+      pos.y() += (increment * i);
       add_time = (1.0 / extras) * i;
       upwards = 60;
     } else {
-      pos.x += (((ps_rand() % 100) / 50.0) - 1.0) * (obj->size / 2);
-      pos.y += (((ps_rand() % 100) / 50.0) - 1.0) * (obj->size / 2);
-      pos.z += (((ps_rand() % 100) / 50.0) - 1.0) * (obj->size / 2);
+      pos.x() += (((ps_rand() % 100) / 50.0) - 1.0) * (obj->size / 2);
+      pos.y() += (((ps_rand() % 100) / 50.0) - 1.0) * (obj->size / 2);
+      pos.z() += (((ps_rand() % 100) / 50.0) - 1.0) * (obj->size / 2);
       add_time = .3 + ((ps_rand() % 100) / 200.0);
       upwards = 0;
     }
 
-    vals[0] = pos.x;
-    vals[1] = pos.y;
-    vals[2] = pos.z;
+    vals[0] = pos.x();
+    vals[1] = pos.y();
+    vals[2] = pos.z();
     if (size_add > 0) {
       if (ps_rand() % 2)
         vals[3] = BIG_EXPLOSION_INDEX;
@@ -1186,9 +1186,9 @@ void DoDeathSpew(object *parent) {
         object *obj = &Objects[objnum];
 
         // Set random velocity for powerups
-        obj->mtype.phys_info.velocity.x = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
-        obj->mtype.phys_info.velocity.z = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
-        obj->mtype.phys_info.velocity.y = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
+        obj->mtype.phys_info.velocity.x() = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
+        obj->mtype.phys_info.velocity.z() = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
+        obj->mtype.phys_info.velocity.y() = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
         InitObjectScripts(obj);
         // Send object to other players
         if (Game_mode & GM_MULTI) {
@@ -1262,8 +1262,8 @@ void CreateElectricalBolts(object *objp, int num_bolts) {
         vis->lifeleft = 1.0;
         vis->lifetime = 1.0;
         vis->end_pos = objp->pos;
-        vis->velocity.x = .15f;
-        vis->velocity.y = 3;
+        vis->velocity.x() = .15f;
+        vis->velocity.y() = 3;
         vis->attach_info.obj_handle = objp->handle;
         vis->attach_info.subnum = subnum;
         vis->attach_info.vertnum = ps_rand() % sm->nverts;
@@ -1283,9 +1283,9 @@ void CreateObjectSmokeSpewer(object *objp) {
   myspew.use_gunpoint = false;
   myspew.real_obj = false;
   myspew.pt.origin = objp->pos;
-  myspew.pt.normal.x = 0;
-  myspew.pt.normal.y = 1.0;
-  myspew.pt.normal.z = 0;
+  myspew.pt.normal.x() = 0;
+  myspew.pt.normal.y() = 1.0;
+  myspew.pt.normal.z() = 0;
   myspew.pt.room_num = objp->roomnum;
   myspew.effect_type = BLACK_SMOKE_INDEX;
   myspew.drag = .01f;
@@ -1541,10 +1541,10 @@ void DoGravityFieldEffect(object *obj) {
         vis->lifetime = obj->lifetime;
         vis->end_pos = obj->pos;
 
-        vis->end_pos.y = obj->pos.y + (MAX_TERRAIN_HEIGHT * 2);
-        vis->velocity.x = 2;
-        vis->velocity.y = 1;
-        vis->velocity.z = 3;
+        vis->end_pos.y() = obj->pos.y() + (MAX_TERRAIN_HEIGHT * 2);
+        vis->velocity.x() = 2;
+        vis->velocity.y() = 1;
+        vis->velocity.z() = 3;
         vis->custom_handle = FindTextureName("ThickLineLightning");
         vis->billboard_info.width = 70;
         vis->billboard_info.texture = 0;
@@ -1562,9 +1562,9 @@ void DoGravityFieldEffect(object *obj) {
       for (i = 0; i < 3; i++) {
       again:
         vector rand_vector, test_vector;
-        rand_vector.x = ((ps_rand() % 100 - 50) / 50.0) + .1; // So we don't get a zero vector
-        rand_vector.y = ((ps_rand() % 100) - 50) / 50.0;
-        rand_vector.z = ((ps_rand() % 100) - 50) / 50.0;
+        rand_vector.x() = ((ps_rand() % 100 - 50) / 50.0) + .1; // So we don't get a zero vector
+        rand_vector.y() = ((ps_rand() % 100) - 50) / 50.0;
+        rand_vector.z() = ((ps_rand() % 100) - 50) / 50.0;
         vm_NormalizeVector(&rand_vector);
         test_vector = obj->pos + (rand_vector * 1000);
         vector dest_pos;
@@ -1601,9 +1601,9 @@ void DoGravityFieldEffect(object *obj) {
           vis->custom_handle = FindTextureName("ThickLineLightning");
           vis->billboard_info.width = 25;
           vis->billboard_info.texture = 1;
-          vis->velocity.x = 2;
-          vis->velocity.y = 1;
-          vis->velocity.z = .5;
+          vis->velocity.x() = 2;
+          vis->velocity.y() = 1;
+          vis->velocity.z() = .5;
 
           vis->lighting_color = GR_RGB16(100, 150, 255);
           vis->flags = VF_USES_LIFELEFT | VF_WINDSHIELD_EFFECT | VF_LINK_TO_VIEWER;
@@ -1620,12 +1620,12 @@ void DoGravityFieldEffect(object *obj) {
       vis->lifeleft = Frametime;
       vis->lifetime = Frametime;
       vis->end_pos = obj->pos;
-      vis->end_pos.x += (((float)(ps_rand() % 100) - 50) / 50.0) * sphere_norm * max_size;
-      vis->end_pos.y += (((float)(ps_rand() % 100) - 50) / 50.0) * sphere_norm * max_size;
-      vis->end_pos.z += (((float)(ps_rand() % 100) - 50) / 50.0) * sphere_norm * max_size;
+      vis->end_pos.x() += (((float)(ps_rand() % 100) - 50) / 50.0) * sphere_norm * max_size;
+      vis->end_pos.y() += (((float)(ps_rand() % 100) - 50) / 50.0) * sphere_norm * max_size;
+      vis->end_pos.z() += (((float)(ps_rand() % 100) - 50) / 50.0) * sphere_norm * max_size;
       vis->custom_handle = visnum;
-      vis->velocity.x = 2;
-      vis->velocity.y = .25;
+      vis->velocity.x() = 2;
+      vis->velocity.y() = .25;
       vis->flags = VF_USES_LIFELEFT;
       vis->size = 100;
     }
@@ -1684,8 +1684,8 @@ void DoGravityFieldEffect(object *obj) {
           vis->custom_handle = hit_obj_ptr - Objects;
           vis->flags = VF_USES_LIFELEFT | VF_NO_Z_ADJUST;
           vis->size = dist;
-          vis->velocity.x = 1;
-          vis->velocity.y = .25;
+          vis->velocity.x() = 1;
+          vis->velocity.y() = .25;
         }
         if ((ps_rand() % 8) == 0)
           CreateRandomSparks(ps_rand() % 3, &hit_obj_ptr->pos, hit_obj_ptr->roomnum, -1, (ps_rand() % 2) + 2);
@@ -1952,9 +1952,9 @@ void CreateBlueBlastRing(vector *pos, int index, float lifetime, float max_size,
 
   if (ps_rand() % 2 || force_up) {
     memset(&tempm, 0, sizeof(matrix));
-    tempm.rvec.x = 1.0;
-    tempm.uvec.z = -1.0;
-    tempm.fvec.y = 1.0;
+    tempm.rvec.x() = 1.0;
+    tempm.uvec.z() = -1.0;
+    tempm.fvec.y() = 1.0;
   } else {
     // Face the viewer
     vector fvec = Viewer_object->pos - *pos;
@@ -2025,7 +2025,7 @@ int CreateObjectBlastRing(object *objp) {
 int CreateSmolderingObject(vector *pos, int index, float lifetime, float max_size, int roomnum) {
   int objnum;
   vector new_pos = *pos;
-  new_pos.y = GetTerrainGroundPoint(&new_pos);
+  new_pos.y() = GetTerrainGroundPoint(&new_pos);
 
   objnum = ObjCreate(OBJ_FIREBALL, index, roomnum, &new_pos, NULL);
   if (objnum < 0) {
@@ -2077,9 +2077,9 @@ void DrawColoredRing(vector *pos, float r, float g, float b, float inner_alpha, 
       for (i = 0; i < numSegments; ++i, ringAngle += ringIncrement) {
         float ringSin = FixSin(ringAngle);
         float ringCos = FixCos(ringAngle);
-        circleVecs[lodi][i].x = ringCos;
-        circleVecs[lodi][i].y = ringSin;
-        circleVecs[lodi][i].z = 0.0f;
+        circleVecs[lodi][i].x() = ringCos;
+        circleVecs[lodi][i].y() = ringSin;
+        circleVecs[lodi][i].z() = 0.0f;
       }
     }
   }
@@ -2348,9 +2348,9 @@ void DoExplosionEvent(int eventnum, void *data) {
   float size;
   float upwards_velocity;
   pos_state sound_pos;
-  pos.x = vals[0];
-  pos.y = vals[1];
-  pos.z = vals[2];
+  pos.x() = vals[0];
+  pos.y() = vals[1];
+  pos.z() = vals[2];
   fireball_num = (int)vals[3];
   roomnum = (int)vals[4];
   size = vals[5];
@@ -2373,9 +2373,9 @@ void DoExplosionEvent(int eventnum, void *data) {
     if (upwards_velocity > .001) {
       VisEffects[visnum].movement_type = MT_PHYSICS;
       VisEffects[visnum].phys_flags = PF_FIXED_VELOCITY;
-      VisEffects[visnum].velocity.x = 0;
-      VisEffects[visnum].velocity.z = 0;
-      VisEffects[visnum].velocity.y = upwards_velocity;
+      VisEffects[visnum].velocity.x() = 0;
+      VisEffects[visnum].velocity.z() = 0;
+      VisEffects[visnum].velocity.y() = upwards_velocity;
     }
   }
 }
@@ -2419,15 +2419,15 @@ void DrawSmolderingObject(object *obj) {
   if (!Viewer_object)
     return;
   vm_ExtractAnglesFromMatrix(&angs, &Viewer_object->orient);
-  veca.x = FixCos(angs.h());
-  veca.z = FixSin(angs.h());
-  veca.y = 0;
+  veca.x() = FixCos(angs.h());
+  veca.z() = FixSin(angs.h());
+  veca.y() = 0;
   world_verts[0] = obj->pos - (veca * 10);
   world_verts[1] = obj->pos + (veca * 10);
   world_verts[2] = obj->pos + (veca * 10);
   world_verts[3] = obj->pos - (veca * 10);
-  world_verts[0].y += obj->ctype.blast_info.max_size;
-  world_verts[1].y += obj->ctype.blast_info.max_size;
+  world_verts[0].y() += obj->ctype.blast_info.max_size;
+  world_verts[1].y() += obj->ctype.blast_info.max_size;
   for (int i = 0; i < 4; i++) {
     g3_RotatePoint(&pnts[i], &world_verts[i]);
     pnts[i].p3_flags |= PF_UV;

@@ -447,7 +447,7 @@ void ResetGroundObject(object *objp) {
 
   // Get terrain height and normal at current object location
   pos = objp->pos;
-  pos.y = GetTerrainGroundPoint(&pos, &surface_norm);
+  pos.y() = GetTerrainGroundPoint(&pos, &surface_norm);
 
   // Place the object's ground point on our placement point
   vector ground_point;

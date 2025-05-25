@@ -82,9 +82,15 @@ constexpr static const size_t Y = 1;
 constexpr static const size_t Z = 2;
 union {
   T xyz[N];
-  struct { T x, y, z; };
+  struct { T iix, iiy, iiz; };
   struct { T r, g, b; };
 };
+constexpr inline T &x() { return iix; }
+constexpr inline T &y() { return iiy; }
+constexpr inline T &z() { return iiz; }
+constexpr inline const T &x() const { return iix; }
+constexpr inline const T &y() const { return iiy; }
+constexpr inline const T &z() const { return iiz; }
 constexpr static inline const vector id(ssize_t i = -1)
 {
   return vector{
@@ -230,7 +236,7 @@ static inline bool operator==(vector a, vector b) {
   bool equality = false;
   // Adds two vectors.
 
-  if (a.x == b.x && a.y == b.y && a.z == b.z)
+  if (a.x() == b.x() && a.y() == b.y() && a.z() == b.z())
     equality = true;
 
   return equality;
@@ -241,7 +247,7 @@ static inline bool operator!=(vector a, vector b) {
   bool equality = true;
   // Adds two vectors.
 
-  if (a.x == b.x && a.y == b.y && a.z == b.z)
+  if (a.x() == b.x() && a.y() == b.y() && a.z() == b.z())
     equality = false;
 
   return equality;
@@ -251,9 +257,9 @@ static inline bool operator!=(vector a, vector b) {
 static inline vector operator+(vector a, vector b) {
   // Adds two vectors.
 
-  a.x += b.x;
-  a.y += b.y;
-  a.z += b.z;
+  a.x() += b.x();
+  a.y() += b.y();
+  a.z() += b.z();
 
   return a;
 }
@@ -279,9 +285,9 @@ static inline matrix operator+=(matrix &a, matrix b) { return (a = a + b); }
 static inline vector operator-(vector a, vector b) {
   // subtracts two vectors
 
-  a.x -= b.x;
-  a.y -= b.y;
-  a.z -= b.z;
+  a.x() -= b.x();
+  a.y() -= b.y();
+  a.z() -= b.z();
 
   return a;
 }
@@ -304,13 +310,13 @@ static inline matrix operator-(matrix a, matrix b) {
 static inline matrix operator-=(matrix &a, matrix b) { return (a = a - b); }
 
 // Does a simple dot product calculation
-static inline float operator*(vector u, vector v) { return (u.x * v.x) + (u.y * v.y) + (u.z * v.z); }
+static inline float operator*(vector u, vector v) { return (u.x() * v.x()) + (u.y() * v.y()) + (u.z() * v.z()); }
 
 // Scalar multiplication
 static inline vector operator*(vector v, float s) {
-  v.x *= s;
-  v.y *= s;
-  v.z *= s;
+  v.x() *= s;
+  v.y() *= s;
+  v.z() *= s;
 
   return v;
 }
@@ -338,9 +344,9 @@ static inline matrix operator*=(matrix &m, float s) { return (m = m * s); }
 
 // Scalar division
 static inline vector operator/(vector src, float n) {
-  src.x /= n;
-  src.y /= n;
-  src.z /= n;
+  src.x() /= n;
+  src.y() /= n;
+  src.z() /= n;
 
   return src;
 }
@@ -365,9 +371,9 @@ static inline matrix operator/=(matrix &src, float n) { return (src = src / n); 
 static inline vector operator^(vector u, vector v) {
   vector dest;
 
-  dest.x = (u.y * v.z) - (u.z * v.y);
-  dest.y = (u.z * v.x) - (u.x * v.z);
-  dest.z = (u.x * v.y) - (u.y * v.x);
+  dest.x() = (u.y() * v.z()) - (u.z() * v.y());
+  dest.y() = (u.z() * v.x()) - (u.x() * v.z());
+  dest.z() = (u.x() * v.y()) - (u.y() * v.x());
 
   return dest;
 }
@@ -376,24 +382,24 @@ static inline vector operator^(vector u, vector v) {
 static inline matrix operator~(matrix m) {
   float t;
 
-  t = m.uvec.x;
-  m.uvec.x = m.rvec.y;
-  m.rvec.y = t;
-  t = m.fvec.x;
-  m.fvec.x = m.rvec.z;
-  m.rvec.z = t;
-  t = m.fvec.y;
-  m.fvec.y = m.uvec.z;
-  m.uvec.z = t;
+  t = m.uvec.x();
+  m.uvec.x() = m.rvec.y();
+  m.rvec.y() = t;
+  t = m.fvec.x();
+  m.fvec.x() = m.rvec.z();
+  m.rvec.z() = t;
+  t = m.fvec.y();
+  m.fvec.y() = m.uvec.z();
+  m.uvec.z() = t;
 
   return m;
 }
 
 // Negate vector
 static inline vector operator-(vector a) {
-  a.x *= -1;
-  a.y *= -1;
-  a.z *= -1;
+  a.x() *= -1;
+  a.y() *= -1;
+  a.z() *= -1;
 
   return a;
 }
@@ -402,14 +408,14 @@ static inline vector operator-(vector a) {
 static inline vector operator*(vector v, matrix m) {
   vector result;
 
-  result.x = v * m.rvec;
-  result.y = v * m.uvec;
-  result.z = v * m.fvec;
+  result.x() = v * m.rvec;
+  result.y() = v * m.uvec;
+  result.z() = v * m.fvec;
 
   return result;
 }
 
-static inline float vm_Dot3Vector(float x, float y, float z, vector *v) { return (x * v->x) + (y * v->y) + (z * v->z); }
+static inline float vm_Dot3Vector(float x, float y, float z, vector *v) { return (x * v->x()) + (y * v->y()) + (z * v->z()); }
 
 #define vm_GetSurfaceNormal vm_GetNormal
 

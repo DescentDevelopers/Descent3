@@ -1233,7 +1233,7 @@ void EBNode_DrawRoom(int room, grViewport *vp, vector *viewer_eye, matrix *viewe
 
     for (t = 0; t < bn_info->nodes[i].num_edges + 1; t++) {
       for (int k = 0; k < bn_info->nodes[i].num_edges + 1; k++) {
-        if (rot_points[k].p3_vec.z < rot_points[t].p3_vec.z) {
+        if (rot_points[k].p3_vec.z() < rot_points[t].p3_vec.z()) {
           g3Point temp;
           int tindex;
 

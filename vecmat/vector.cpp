@@ -160,25 +160,25 @@ const matrix Identity_matrix = IDENTITY_MATRIX;
 void vm_AverageVector(vector *a, int num) {
   // Averages a vector.  ie divides each component of vector a by num
   ASSERT(num != 0);
-  a->x = a->x / (scalar)num;
-  a->y = a->y / (scalar)num;
-  a->z = a->z / (scalar)num;
+  a->x() = a->x() / (scalar)num;
+  a->y() = a->y() / (scalar)num;
+  a->z() = a->z() / (scalar)num;
 }
 
 void vm_AddVectors(vector *result, vector *a, vector *b) {
   // Adds two vectors.  Either source can equal dest
 
-  result->x = a->x + b->x;
-  result->y = a->y + b->y;
-  result->z = a->z + b->z;
+  result->x() = a->x() + b->x();
+  result->y() = a->y() + b->y();
+  result->z() = a->z() + b->z();
 }
 
 void vm_SubVectors(vector *result, const vector *a, const vector *b) {
   // Subtracts second vector from first.  Either source can equal dest
 
-  result->x = a->x - b->x;
-  result->y = a->y - b->y;
-  result->z = a->z - b->z;
+  result->x() = a->x() - b->x();
+  result->y() = a->y() - b->y();
+  result->z() = a->z() - b->z();
 }
 
 scalar vm_VectorDistance(const vector *a, const vector *b) {
@@ -229,14 +229,14 @@ scalar vm_GetNormal(vector *n, vector *v0, vector *v1, vector *v2) {
 }
 
 // Does a simple dot product calculation
-scalar vm_DotProduct(const vector *u, const vector *v) { return (u->x * v->x) + (u->y * v->y) + (u->z * v->z); }
+scalar vm_DotProduct(const vector *u, const vector *v) { return (u->x() * v->x()) + (u->y() * v->y()) + (u->z() * v->z()); }
 
 // Scales all components of vector v by value s and stores result in vector d
 // dest can equal source
 void vm_ScaleVector(vector *d, vector *v, scalar s) {
-  d->x = (v->x * s);
-  d->y = (v->y * s);
-  d->z = (v->z * s);
+  d->x() = (v->x() * s);
+  d->y() = (v->y() * s);
+  d->z() = (v->z() * s);
 }
 
 void vm_ScaleAddVector(vector *d, vector *p, vector *v, scalar s) {
@@ -244,9 +244,9 @@ void vm_ScaleAddVector(vector *d, vector *p, vector *v, scalar s) {
   // adds the result to p and stores result in vector d
   // dest can equal source
 
-  d->x = p->x + (v->x * s);
-  d->y = p->y + (v->y * s);
-  d->z = p->z + (v->z * s);
+  d->x() = p->x() + (v->x() * s);
+  d->y() = p->y() + (v->y() * s);
+  d->z() = p->z() + (v->z() * s);
 }
 
 void vm_DivVector(vector *dest, vector *src, scalar n) {
@@ -254,18 +254,18 @@ void vm_DivVector(vector *dest, vector *src, scalar n) {
   // Dest can equal src
 
   ASSERT(n != 0);
-  dest->x = src->x / n;
-  dest->y = src->y / n;
-  dest->z = src->z / n;
+  dest->x() = src->x() / n;
+  dest->y() = src->y() / n;
+  dest->z() = src->z() / n;
 }
 
 void vm_CrossProduct(vector *dest, vector *u, vector *v) {
   // Computes a cross product between u and v, returns the result
   //	in Normal.  Dest cannot equal source.
 
-  dest->x = (u->y * v->z) - (u->z * v->y);
-  dest->y = (u->z * v->x) - (u->x * v->z);
-  dest->z = (u->x * v->y) - (u->y * v->x);
+  dest->x() = (u->y() * v->z()) - (u->z() * v->y());
+  dest->y() = (u->z() * v->x()) - (u->x() * v->z());
+  dest->z() = (u->x() * v->y()) - (u->y() * v->x());
 }
 
 // Normalize a vector.
@@ -279,7 +279,7 @@ scalar vm_NormalizeVector(vector *a) {
     *a /= mag;
   else {
     *a = Zero_vector;
-    a->x = 1.0;
+    a->x() = 1.0;
     mag = 0.0f;
   }
 
@@ -289,7 +289,7 @@ scalar vm_NormalizeVector(vector *a) {
 scalar vm_GetMagnitude(vector *a) {
   scalar f;
 
-  f = (a->x * a->x) + (a->y * a->y) + (a->z * a->z);
+  f = (a->x() * a->x()) + (a->y() * a->y()) + (a->z() * a->z());
 
   return (sqrt(f));
 }
@@ -298,11 +298,11 @@ void vm_ClearMatrix(matrix *dest) { memset(dest, 0, sizeof(matrix)); }
 
 void vm_MakeIdentity(matrix *dest) {
   memset(dest, 0, sizeof(matrix));
-  dest->rvec.x = dest->uvec.y = dest->fvec.z = 1.0;
+  dest->rvec.x() = dest->uvec.y() = dest->fvec.z() = 1.0;
 }
 void vm_MakeInverseMatrix(matrix *dest) {
   memset((void *)dest, 0, sizeof(matrix));
-  dest->rvec.x = dest->uvec.y = dest->fvec.z = -1.0;
+  dest->rvec.x() = dest->uvec.y() = dest->fvec.z() = -1.0;
 }
 
 void vm_TransposeMatrix(matrix *m) {
@@ -310,15 +310,15 @@ void vm_TransposeMatrix(matrix *m) {
 
   scalar t;
 
-  t = m->uvec.x;
-  m->uvec.x = m->rvec.y;
-  m->rvec.y = t;
-  t = m->fvec.x;
-  m->fvec.x = m->rvec.z;
-  m->rvec.z = t;
-  t = m->fvec.y;
-  m->fvec.y = m->uvec.z;
-  m->uvec.z = t;
+  t = m->uvec.x();
+  m->uvec.x() = m->rvec.y();
+  m->rvec.y() = t;
+  t = m->fvec.x();
+  m->fvec.x() = m->rvec.z();
+  m->rvec.z() = t;
+  t = m->fvec.y();
+  m->fvec.y() = m->uvec.z();
+  m->uvec.z() = t;
 }
 
 void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
@@ -326,18 +326,18 @@ void vm_MatrixMulVector(vector *result, vector *v, matrix *m) {
 
   ASSERT(result != v);
 
-  result->x = *v * m->rvec;
-  result->y = *v * m->uvec;
-  result->z = *v * m->fvec;
+  result->x() = *v * m->rvec;
+  result->y() = *v * m->uvec;
+  result->z() = *v * m->fvec;
 }
 
 // Multiply a vector times the transpose of a matrix
 void vm_VectorMulTMatrix(vector *result, vector *v, matrix *m) {
   ASSERT(result != v);
 
-  result->x = vm_Dot3Vector(m->rvec.x, m->uvec.x, m->fvec.x, v);
-  result->y = vm_Dot3Vector(m->rvec.y, m->uvec.y, m->fvec.y, v);
-  result->z = vm_Dot3Vector(m->rvec.z, m->uvec.z, m->fvec.z, v);
+  result->x() = vm_Dot3Vector(m->rvec.x(), m->uvec.x(), m->fvec.x(), v);
+  result->y() = vm_Dot3Vector(m->rvec.y(), m->uvec.y(), m->fvec.y(), v);
+  result->z() = vm_Dot3Vector(m->rvec.z(), m->uvec.z(), m->fvec.z(), v);
 }
 
 void vm_MatrixMul(matrix *dest, matrix *src0, matrix *src1) {
@@ -345,17 +345,17 @@ void vm_MatrixMul(matrix *dest, matrix *src0, matrix *src1) {
 
   ASSERT((dest != src0) && (dest != src1));
 
-  dest->rvec.x = vm_Dot3Vector(src0->rvec.x, src0->uvec.x, src0->fvec.x, &src1->rvec);
-  dest->uvec.x = vm_Dot3Vector(src0->rvec.x, src0->uvec.x, src0->fvec.x, &src1->uvec);
-  dest->fvec.x = vm_Dot3Vector(src0->rvec.x, src0->uvec.x, src0->fvec.x, &src1->fvec);
+  dest->rvec.x() = vm_Dot3Vector(src0->rvec.x(), src0->uvec.x(), src0->fvec.x(), &src1->rvec);
+  dest->uvec.x() = vm_Dot3Vector(src0->rvec.x(), src0->uvec.x(), src0->fvec.x(), &src1->uvec);
+  dest->fvec.x() = vm_Dot3Vector(src0->rvec.x(), src0->uvec.x(), src0->fvec.x(), &src1->fvec);
 
-  dest->rvec.y = vm_Dot3Vector(src0->rvec.y, src0->uvec.y, src0->fvec.y, &src1->rvec);
-  dest->uvec.y = vm_Dot3Vector(src0->rvec.y, src0->uvec.y, src0->fvec.y, &src1->uvec);
-  dest->fvec.y = vm_Dot3Vector(src0->rvec.y, src0->uvec.y, src0->fvec.y, &src1->fvec);
+  dest->rvec.y() = vm_Dot3Vector(src0->rvec.y(), src0->uvec.y(), src0->fvec.y(), &src1->rvec);
+  dest->uvec.y() = vm_Dot3Vector(src0->rvec.y(), src0->uvec.y(), src0->fvec.y(), &src1->uvec);
+  dest->fvec.y() = vm_Dot3Vector(src0->rvec.y(), src0->uvec.y(), src0->fvec.y(), &src1->fvec);
 
-  dest->rvec.z = vm_Dot3Vector(src0->rvec.z, src0->uvec.z, src0->fvec.z, &src1->rvec);
-  dest->uvec.z = vm_Dot3Vector(src0->rvec.z, src0->uvec.z, src0->fvec.z, &src1->uvec);
-  dest->fvec.z = vm_Dot3Vector(src0->rvec.z, src0->uvec.z, src0->fvec.z, &src1->fvec);
+  dest->rvec.z() = vm_Dot3Vector(src0->rvec.z(), src0->uvec.z(), src0->fvec.z(), &src1->rvec);
+  dest->uvec.z() = vm_Dot3Vector(src0->rvec.z(), src0->uvec.z(), src0->fvec.z(), &src1->uvec);
+  dest->fvec.z() = vm_Dot3Vector(src0->rvec.z(), src0->uvec.z(), src0->fvec.z(), &src1->fvec);
 }
 
 // Multiply a matrix times the transpose of a matrix
@@ -364,34 +364,34 @@ void vm_MatrixMulTMatrix(matrix *dest, matrix *src0, matrix *src1) {
 
   ASSERT((dest != src0) && (dest != src1));
 
-  dest->rvec.x = src0->rvec.x * src1->rvec.x + src0->uvec.x * src1->uvec.x + src0->fvec.x * src1->fvec.x;
-  dest->uvec.x = src0->rvec.x * src1->rvec.y + src0->uvec.x * src1->uvec.y + src0->fvec.x * src1->fvec.y;
-  dest->fvec.x = src0->rvec.x * src1->rvec.z + src0->uvec.x * src1->uvec.z + src0->fvec.x * src1->fvec.z;
+  dest->rvec.x() = src0->rvec.x() * src1->rvec.x() + src0->uvec.x() * src1->uvec.x() + src0->fvec.x() * src1->fvec.x();
+  dest->uvec.x() = src0->rvec.x() * src1->rvec.y() + src0->uvec.x() * src1->uvec.y() + src0->fvec.x() * src1->fvec.y();
+  dest->fvec.x() = src0->rvec.x() * src1->rvec.z() + src0->uvec.x() * src1->uvec.z() + src0->fvec.x() * src1->fvec.z();
 
-  dest->rvec.y = src0->rvec.y * src1->rvec.x + src0->uvec.y * src1->uvec.x + src0->fvec.y * src1->fvec.x;
-  dest->uvec.y = src0->rvec.y * src1->rvec.y + src0->uvec.y * src1->uvec.y + src0->fvec.y * src1->fvec.y;
-  dest->fvec.y = src0->rvec.y * src1->rvec.z + src0->uvec.y * src1->uvec.z + src0->fvec.y * src1->fvec.z;
+  dest->rvec.y() = src0->rvec.y() * src1->rvec.x() + src0->uvec.y() * src1->uvec.x() + src0->fvec.y() * src1->fvec.x();
+  dest->uvec.y() = src0->rvec.y() * src1->rvec.y() + src0->uvec.y() * src1->uvec.y() + src0->fvec.y() * src1->fvec.y();
+  dest->fvec.y() = src0->rvec.y() * src1->rvec.z() + src0->uvec.y() * src1->uvec.z() + src0->fvec.y() * src1->fvec.z();
 
-  dest->rvec.z = src0->rvec.z * src1->rvec.x + src0->uvec.z * src1->uvec.x + src0->fvec.z * src1->fvec.x;
-  dest->uvec.z = src0->rvec.z * src1->rvec.y + src0->uvec.z * src1->uvec.y + src0->fvec.z * src1->fvec.y;
-  dest->fvec.z = src0->rvec.z * src1->rvec.z + src0->uvec.z * src1->uvec.z + src0->fvec.z * src1->fvec.z;
+  dest->rvec.z() = src0->rvec.z() * src1->rvec.x() + src0->uvec.z() * src1->uvec.x() + src0->fvec.z() * src1->fvec.x();
+  dest->uvec.z() = src0->rvec.z() * src1->rvec.y() + src0->uvec.z() * src1->uvec.y() + src0->fvec.z() * src1->fvec.y();
+  dest->fvec.z() = src0->rvec.z() * src1->rvec.z() + src0->uvec.z() * src1->uvec.z() + src0->fvec.z() * src1->fvec.z();
 }
 
 matrix operator*(matrix src0, matrix src1) {
   // For multiplying two 3x3 matrices together
   matrix dest;
 
-  dest.rvec.x = vm_Dot3Vector(src0.rvec.x, src0.uvec.x, src0.fvec.x, &src1.rvec);
-  dest.uvec.x = vm_Dot3Vector(src0.rvec.x, src0.uvec.x, src0.fvec.x, &src1.uvec);
-  dest.fvec.x = vm_Dot3Vector(src0.rvec.x, src0.uvec.x, src0.fvec.x, &src1.fvec);
+  dest.rvec.x() = vm_Dot3Vector(src0.rvec.x(), src0.uvec.x(), src0.fvec.x(), &src1.rvec);
+  dest.uvec.x() = vm_Dot3Vector(src0.rvec.x(), src0.uvec.x(), src0.fvec.x(), &src1.uvec);
+  dest.fvec.x() = vm_Dot3Vector(src0.rvec.x(), src0.uvec.x(), src0.fvec.x(), &src1.fvec);
 
-  dest.rvec.y = vm_Dot3Vector(src0.rvec.y, src0.uvec.y, src0.fvec.y, &src1.rvec);
-  dest.uvec.y = vm_Dot3Vector(src0.rvec.y, src0.uvec.y, src0.fvec.y, &src1.uvec);
-  dest.fvec.y = vm_Dot3Vector(src0.rvec.y, src0.uvec.y, src0.fvec.y, &src1.fvec);
+  dest.rvec.y() = vm_Dot3Vector(src0.rvec.y(), src0.uvec.y(), src0.fvec.y(), &src1.rvec);
+  dest.uvec.y() = vm_Dot3Vector(src0.rvec.y(), src0.uvec.y(), src0.fvec.y(), &src1.uvec);
+  dest.fvec.y() = vm_Dot3Vector(src0.rvec.y(), src0.uvec.y(), src0.fvec.y(), &src1.fvec);
 
-  dest.rvec.z = vm_Dot3Vector(src0.rvec.z, src0.uvec.z, src0.fvec.z, &src1.rvec);
-  dest.uvec.z = vm_Dot3Vector(src0.rvec.z, src0.uvec.z, src0.fvec.z, &src1.uvec);
-  dest.fvec.z = vm_Dot3Vector(src0.rvec.z, src0.uvec.z, src0.fvec.z, &src1.fvec);
+  dest.rvec.z() = vm_Dot3Vector(src0.rvec.z(), src0.uvec.z(), src0.fvec.z(), &src1.rvec);
+  dest.uvec.z() = vm_Dot3Vector(src0.rvec.z(), src0.uvec.z(), src0.fvec.z(), &src1.uvec);
+  dest.fvec.z() = vm_Dot3Vector(src0.rvec.z(), src0.uvec.z(), src0.fvec.z(), &src1.fvec);
 
   return dest;
 }
@@ -420,9 +420,9 @@ scalar vm_GetNormalizedDirFast(vector *dest, vector *end, vector *start) {
 scalar vm_GetMagnitudeFast(vector *v) {
   scalar a, b, c, bc;
 
-  a = fabs(v->x);
-  b = fabs(v->y);
-  c = fabs(v->z);
+  a = fabs(v->x());
+  b = fabs(v->y());
+  c = fabs(v->z());
 
   if (a < b) {
     scalar t = a;
@@ -455,13 +455,13 @@ scalar vm_NormalizeVectorFast(vector *a) {
   mag = vm_GetMagnitudeFast(a);
 
   if (mag == 0.0) {
-    a->x = a->y = a->z = 0.0;
+    a->x() = a->y() = a->z() = 0.0;
     return 0;
   }
 
-  a->x = (a->x / mag);
-  a->y = (a->y / mag);
-  a->z = (a->z / mag);
+  a->x() = (a->x() / mag);
+  a->y() = (a->y() / mag);
+  a->z() = (a->z() / mag);
 
   return mag;
 }
@@ -498,18 +498,18 @@ void vm_SinCosToMatrix(matrix *m, scalar sinp, scalar cosp, scalar sinb, scalar 
   cbsh = (cosb * sinh);
   sbch = (sinb * cosh);
 
-  m->rvec.x = cbch + (sinp * sbsh); // m1
-  m->uvec.z = sbsh + (sinp * cbch); // m8
+  m->rvec.x() = cbch + (sinp * sbsh); // m1
+  m->uvec.z() = sbsh + (sinp * cbch); // m8
 
-  m->uvec.x = (sinp * cbsh) - sbch; // m2
-  m->rvec.z = (sinp * sbch) - cbsh; // m7
+  m->uvec.x() = (sinp * cbsh) - sbch; // m2
+  m->rvec.z() = (sinp * sbch) - cbsh; // m7
 
-  m->fvec.x = (sinh * cosp); // m3
-  m->rvec.y = (sinb * cosp); // m4
-  m->uvec.y = (cosb * cosp); // m5
-  m->fvec.z = (cosh * cosp); // m9
+  m->fvec.x() = (sinh * cosp); // m3
+  m->rvec.y() = (sinb * cosp); // m4
+  m->uvec.y() = (cosb * cosp); // m5
+  m->fvec.z() = (cosh * cosp); // m9
 
-  m->fvec.y = -sinp; // m6
+  m->fvec.y() = -sinp; // m6
 }
 
 void vm_AnglesToMatrix(matrix *m, angle p, angle h, angle b) {
@@ -535,12 +535,12 @@ void vm_VectorAngleToMatrix(matrix *m, vector *v, angle a) {
   sinb = FixSin(a);
   cosb = FixCos(a);
 
-  sinp = -v->y;
+  sinp = -v->y();
   cosp = sqrt(1.0 - (sinp * sinp));
 
   if (cosp != 0.0) {
-    sinh = v->x / cosp;
-    cosh = v->z / cosp;
+    sinh = v->x() / cosp;
+    cosh = v->z() / cosp;
   } else {
     sinh = 0;
     cosh = 1.0;
@@ -588,17 +588,17 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
 
     bad_vector2:;
 
-      if (zvec->x == 0 && zvec->z == 0) { // forward vec is straight up or down
+      if (zvec->x() == 0 && zvec->z() == 0) { // forward vec is straight up or down
 
-        m->rvec.x = 1.0;
-        m->uvec.z = (zvec->y < 0) ? 1.0 : -1.0;
+        m->rvec.x() = 1.0;
+        m->uvec.z() = (zvec->y() < 0) ? 1.0 : -1.0;
 
-        m->rvec.y = m->rvec.z = m->uvec.x = m->uvec.y = 0;
+        m->rvec.y() = m->rvec.z() = m->uvec.x() = m->uvec.y() = 0;
       } else { // not straight up or down
 
-        xvec->x = zvec->z;
-        xvec->y = 0;
-        xvec->z = -zvec->x;
+        xvec->x() = zvec->z();
+        xvec->y() = 0;
+        xvec->z() = -zvec->x();
 
         vm_NormalizeVector(xvec);
 
@@ -680,26 +680,26 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
   scalar sinh, cosh, cosp, sinb, cosb;
 
   // Deal with straight up or straight down
-  if (IS_ZERO(m->fvec.x) && IS_ZERO(m->fvec.z)) {
-    a->p() = (m->fvec.y > 0) ? 0xc000 : 0x4000;
+  if (IS_ZERO(m->fvec.x()) && IS_ZERO(m->fvec.z())) {
+    a->p() = (m->fvec.y() > 0) ? 0xc000 : 0x4000;
     a->b() = 0.0;
-    a->h() = FixAtan2(m->rvec.x, -m->rvec.z);
+    a->h() = FixAtan2(m->rvec.x(), -m->rvec.z());
     return a;
   }
 
-  a->h() = FixAtan2(m->fvec.z, m->fvec.x);
+  a->h() = FixAtan2(m->fvec.z(), m->fvec.x());
 
   sinh = FixSin(a->h());
   cosh = FixCos(a->h());
 
   if (fabs(sinh) > fabs(cosh)) // sine is larger, so use it
-    cosp = (m->fvec.x / sinh);
+    cosp = (m->fvec.x() / sinh);
   else // cosine is larger, so use it
-    cosp = (m->fvec.z / cosh);
-  a->p() = FixAtan2(cosp, -m->fvec.y);
+    cosp = (m->fvec.z() / cosh);
+  a->p() = FixAtan2(cosp, -m->fvec.y());
 
-  sinb = (m->rvec.y / cosp);
-  cosb = (m->uvec.y / cosp);
+  sinb = (m->rvec.y() / cosp);
+  cosb = (m->uvec.y() / cosp);
   a->b() = FixAtan2(cosb, sinb);
 
   return a;
@@ -707,9 +707,9 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, matrix *m) {
 
 // returns the value of a determinant
 scalar calc_det_value(matrix *det) {
-  return det->rvec.x * det->uvec.y * det->fvec.z - det->rvec.x * det->uvec.z * det->fvec.y -
-         det->rvec.y * det->uvec.x * det->fvec.z + det->rvec.y * det->uvec.z * det->fvec.x +
-         det->rvec.z * det->uvec.x * det->fvec.y - det->rvec.z * det->uvec.y * det->fvec.x;
+  return det->rvec.x() * det->uvec.y() * det->fvec.z() - det->rvec.x() * det->uvec.z() * det->fvec.y() -
+         det->rvec.y() * det->uvec.x() * det->fvec.z() + det->rvec.y() * det->uvec.z() * det->fvec.x() +
+         det->rvec.z() * det->uvec.x() * det->fvec.y() - det->rvec.z() * det->uvec.y() * det->fvec.x();
 }
 
 // computes the delta angle between two vectors.
@@ -857,9 +857,9 @@ scalar vm_GetCentroidFast(vector *centroid, vector *src, int nv) {
 
 //	creates a completely random, non-normalized vector with a range of values from -1023 to +1024 values)
 void vm_MakeRandomVector(vector *vec) {
-  vec->x = ps_rand() - D3_RAND_MAX / 2;
-  vec->y = ps_rand() - D3_RAND_MAX / 2;
-  vec->z = ps_rand() - D3_RAND_MAX / 2;
+  vec->x() = ps_rand() - D3_RAND_MAX / 2;
+  vec->y() = ps_rand() - D3_RAND_MAX / 2;
+  vec->z() = ps_rand() - D3_RAND_MAX / 2;
 }
 
 // Given a set of points, computes the minimum bounding sphere of those points
@@ -878,22 +878,22 @@ scalar vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts) {
   // First, find the points with the min & max x,y, & z coordinates
   for (i = 0, vp = vecs; i < num_verts; i++, vp++) {
 
-    if (vp->x < min_x->x)
+    if (vp->x() < min_x->x())
       min_x = vp;
 
-    if (vp->x > max_x->x)
+    if (vp->x() > max_x->x())
       max_x = vp;
 
-    if (vp->y < min_y->y)
+    if (vp->y() < min_y->y())
       min_y = vp;
 
-    if (vp->y > max_y->y)
+    if (vp->y() > max_y->y())
       max_y = vp;
 
-    if (vp->z < min_z->z)
+    if (vp->z() < min_z->z())
       min_z = vp;
 
-    if (vp->z > max_z->z)
+    if (vp->z() > max_z->z())
       max_z = vp;
   }
 
@@ -926,7 +926,7 @@ scalar vm_ComputeBoundingSphere(vector *center, vector *vecs, int num_verts) {
     scalar t2;
 
     delta = *vp - *center;
-    t2 = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+    t2 = delta.x() * delta.x() + delta.y() * delta.y() + delta.z() * delta.z();
 
     // If point outside, make the sphere bigger
     if (t2 > rad2) {

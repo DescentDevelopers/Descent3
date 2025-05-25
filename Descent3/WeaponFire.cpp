@@ -1294,7 +1294,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
   //	vm_MakeZero(&obj->mtype.phys_info.rotvel);
 
   // Set the initial velocity
-  vm_ScaleVector(&obj->mtype.phys_info.velocity, dir, Weapons[weapon_num].phys_info.velocity.z * scalar);
+  vm_ScaleVector(&obj->mtype.phys_info.velocity, dir, Weapons[weapon_num].phys_info.velocity.z() * scalar);
 
   // If this is a player, scale the velocity based on the players weapon_speed scalar
   if (parent->type == OBJ_PLAYER)
@@ -1387,18 +1387,18 @@ void HomingTurnTowardObj(object *weapon, object *target) {
 
   if (weapon->mtype.phys_info.rotdrag > 0.0f) {
     if (dir_to_target * weapon->orient.rvec > 0.0) {
-      weapon->mtype.phys_info.rotthrust.y = weapon->mtype.phys_info.full_rotthrust;
+      weapon->mtype.phys_info.rotthrust.y() = weapon->mtype.phys_info.full_rotthrust;
     } else {
-      weapon->mtype.phys_info.rotthrust.y = -weapon->mtype.phys_info.full_rotthrust;
+      weapon->mtype.phys_info.rotthrust.y() = -weapon->mtype.phys_info.full_rotthrust;
     }
 
     if (dir_to_target * weapon->orient.uvec > 0.0) {
-      weapon->mtype.phys_info.rotthrust.x = -weapon->mtype.phys_info.full_rotthrust;
+      weapon->mtype.phys_info.rotthrust.x() = -weapon->mtype.phys_info.full_rotthrust;
     } else {
-      weapon->mtype.phys_info.rotthrust.x = weapon->mtype.phys_info.full_rotthrust;
+      weapon->mtype.phys_info.rotthrust.x() = weapon->mtype.phys_info.full_rotthrust;
     }
 
-    weapon->mtype.phys_info.rotthrust.z = 0.0;
+    weapon->mtype.phys_info.rotthrust.z() = 0.0;
 
     if (!ObjGet(weapon->parent_handle) || ObjGet(weapon->parent_handle)->type != OBJ_PLAYER)
       weapon->mtype.phys_info.rotthrust *= Diff_homing_strength[DIFF_LEVEL];
@@ -1950,7 +1950,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
 
         vis->movement_type = MT_PHYSICS;
         vis->velocity = obj->mtype.phys_info.velocity;
-        vis->velocity.y += 10;
+        vis->velocity.y() += 10;
       }
     }
   }
@@ -2292,7 +2292,7 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
       vis_effect *vis = &VisEffects[visnum];
 
       // Set the initial velocity
-      vm_ScaleVector(&vis->velocity, &laser_dir, Weapons[weapon_num].phys_info.velocity.z);
+      vm_ScaleVector(&vis->velocity, &laser_dir, Weapons[weapon_num].phys_info.velocity.z());
 
       // Set initial velocity to that of the firing object
       if (Weapons[weapon_num].phys_info.flags & PF_USES_PARENT_VELOCITY) {
@@ -2590,7 +2590,7 @@ void DrawWeaponObject(object *obj) {
     } else if ((Weapons[obj->id].flags & WF_IMAGE_BITMAP) || (Weapons[obj->id].flags & WF_IMAGE_VCLIP)) {
       int bm_handle;
       int objnum = obj - Objects;
-      float rot_temp = Weapons[obj->id].phys_info.rotvel.z / 65536.0;
+      float rot_temp = Weapons[obj->id].phys_info.rotvel.z() / (scalar)65536.0;
       int int_game = Gametime / rot_temp;
       float diff = Gametime - (int_game * rot_temp);
       int rot_angle = diff * 65536;
@@ -3361,7 +3361,7 @@ void TimeoutWeapon(object *obj) {
     if (Weapons[obj->id].sounds[WSI_IMPACT_WALL] != SOUND_NONE_INDEX)
       Sound_system.Play3dSound(Weapons[obj->id].sounds[WSI_IMPACT_WALL], SND_PRIORITY_HIGH, obj);
 
-    temp.y = 1.0;
+    temp.y() = (scalar)1.0;
 
     DoWeaponExploded(obj, &temp);
   }

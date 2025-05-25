@@ -73,9 +73,9 @@ void DoRainEffect() {
     // Put some droplets on the windshield
     vector pos = {0, 0, 0};
 
-    pos.x = ((ps_rand() % 1000) - 500) / 250.0;
-    pos.y = ((ps_rand() % 1000) - 500) / 350.0;
-    pos.z = 3.0;
+    pos.x() = ((ps_rand() % 1000) - 500) / 250.0;
+    pos.y() = ((ps_rand() % 1000) - 500) / 350.0;
+    pos.z() = 3.0;
 
     int visnum = VisEffectCreate(VIS_FIREBALL, RAINDROP_INDEX, Viewer_object->roomnum, &pos);
     if (visnum >= 0) {
@@ -124,7 +124,7 @@ void DoRainEffect() {
         vis->lifetime = life;
         vis->lighting_color = GR_RGB16(200, 200, 255);
         vis->end_pos = pos;
-        vis->end_pos.y += 20;
+        vis->end_pos.y() += 20;
         vis->flags |= VF_WINDSHIELD_EFFECT;
         vis->pos -= (Viewer_object->mtype.phys_info.velocity / 2);
       }
@@ -142,15 +142,15 @@ void DoRainEffect() {
       pos += y * mat.uvec;
       pos += z * mat.fvec;
 
-      if (pos.z < 0 || pos.z >= TERRAIN_DEPTH * TERRAIN_SIZE)
+      if (pos.z() < 0 || pos.z() >= TERRAIN_DEPTH * TERRAIN_SIZE)
         continue;
-      if (pos.x < 0 || pos.x >= TERRAIN_WIDTH * TERRAIN_SIZE)
+      if (pos.x() < 0 || pos.x() >= TERRAIN_WIDTH * TERRAIN_SIZE)
         continue;
 
       // Create puddle drops on the terrain
       vector norm;
       float ypos = GetTerrainGroundPoint(&pos, &norm);
-      pos.y = ypos;
+      pos.y() = ypos;
       int visnum = VisEffectCreate(VIS_FIREBALL, PUDDLEDROP_INDEX, Viewer_object->roomnum, &pos);
       if (visnum >= 0) {
         vis_effect *vis = &VisEffects[visnum];
@@ -197,9 +197,9 @@ void DoSnowEffect() {
       pos += y * mat.uvec;
       pos += z * mat.fvec;
 
-      if (pos.z < 0 || pos.z >= TERRAIN_DEPTH * TERRAIN_SIZE)
+      if (pos.z() < 0 || pos.z() >= TERRAIN_DEPTH * TERRAIN_SIZE)
         continue;
-      if (pos.x < 0 || pos.x >= TERRAIN_WIDTH * TERRAIN_SIZE)
+      if (pos.x() < 0 || pos.x() >= TERRAIN_WIDTH * TERRAIN_SIZE)
         continue;
 
       // Create falling rain

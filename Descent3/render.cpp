@@ -460,30 +460,30 @@ void SetGlowStatus(int roomnum, int facenum, vector *center, float size, int fas
 }
 // Takes a min,max vector and makes a surrounding cube from it
 void MakePointsFromMinMax(vector *corners, vector *minp, vector *maxp) {
-  corners[0].x = minp->x;
-  corners[0].y = maxp->y;
-  corners[0].z = minp->z;
-  corners[1].x = maxp->x;
-  corners[1].y = maxp->y;
-  corners[1].z = minp->z;
-  corners[2].x = maxp->x;
-  corners[2].y = minp->y;
-  corners[2].z = minp->z;
-  corners[3].x = minp->x;
-  corners[3].y = minp->y;
-  corners[3].z = minp->z;
-  corners[4].x = minp->x;
-  corners[4].y = maxp->y;
-  corners[4].z = maxp->z;
-  corners[5].x = maxp->x;
-  corners[5].y = maxp->y;
-  corners[5].z = maxp->z;
-  corners[6].x = maxp->x;
-  corners[6].y = minp->y;
-  corners[6].z = maxp->z;
-  corners[7].x = minp->x;
-  corners[7].y = minp->y;
-  corners[7].z = maxp->z;
+  corners[0].x() = minp->x();
+  corners[0].y() = maxp->y();
+  corners[0].z() = minp->z();
+  corners[1].x() = maxp->x();
+  corners[1].y() = maxp->y();
+  corners[1].z() = minp->z();
+  corners[2].x() = maxp->x();
+  corners[2].y() = minp->y();
+  corners[2].z() = minp->z();
+  corners[3].x() = minp->x();
+  corners[3].y() = minp->y();
+  corners[3].z() = minp->z();
+  corners[4].x() = minp->x();
+  corners[4].y() = maxp->y();
+  corners[4].z() = maxp->z();
+  corners[5].x() = maxp->x();
+  corners[5].y() = maxp->y();
+  corners[5].z() = maxp->z();
+  corners[6].x() = maxp->x();
+  corners[6].y() = minp->y();
+  corners[6].z() = maxp->z();
+  corners[7].x() = minp->x();
+  corners[7].y() = minp->y();
+  corners[7].z() = maxp->z();
 }
 
 // Rotates all the points in a room
@@ -561,8 +561,8 @@ int ExternalRoomVisibleFromPortal(int index, clip_wnd *wnd) {
   if (External_room_project_net[index])
     return 1;
   for (i = 0; i < 8; i++) {
-    pnt.p3_sx = External_room_corners[index][i].x;
-    pnt.p3_sy = External_room_corners[index][i].y;
+    pnt.p3_sx = External_room_corners[index][i].x();
+    pnt.p3_sy = External_room_corners[index][i].y();
     pnt.p3_codes = 0;
     code &= clip2d(&pnt, wnd);
   }
@@ -689,7 +689,7 @@ void RotateAllExternalRooms() {
   // Build the external room list if needed
   if (N_external_rooms == -1) {
     // Set up our z wall
-    float zclip = (Detail_settings.Terrain_render_distance) * Matrix_scale.z;
+    float zclip = (Detail_settings.Terrain_render_distance) * Matrix_scale.z();
     g3_SetFarClipZ(zclip);
     N_external_rooms = 0;
 
@@ -721,8 +721,8 @@ void RotateAllExternalRooms() {
           infront = true;
         pnt.p3_codes &= ~CC_BEHIND;
         g3_ProjectPoint(&pnt);
-        External_room_corners[i][t].x = pnt.p3_sx;
-        External_room_corners[i][t].y = pnt.p3_sy;
+        External_room_corners[i][t].x() = pnt.p3_sx;
+        External_room_corners[i][t].y() = pnt.p3_sy;
       }
       if (infront && behind) {
         External_room_codes[i] = 0;
@@ -1916,7 +1916,7 @@ void RenderFace(room *rp, int facenum) {
   if (!UseHardware) {
     tt = TT_LINEAR;                        // default to linear
     for (vn = 0; vn < fp->num_verts; vn++) // select perspective if close
-      if (pointlist[vn]->p3_vec.z < 35) {
+      if (pointlist[vn]->p3_vec.z() < 35) {
         tt = TT_PERSPECTIVE;
         break;
       }
@@ -2488,12 +2488,12 @@ void RenderSingleLightGlow2(int index) {
   temp_vec = fvec * mat;
   fvec = temp_vec;
   vm_NormalizeVectorFast(&fvec);
-  rvec.x = fvec.z;
-  rvec.y = 0;
-  rvec.z = -fvec.x;
-  uvec.y = 1;
-  uvec.x = 0;
-  uvec.z = 0;
+  rvec.x() = fvec.z();
+  rvec.y() = 0;
+  rvec.z() = -fvec.x();
+  uvec.y() = 1;
+  uvec.x() = 0;
+  uvec.z() = 0;
   vm_VectorToMatrix(&rot_mat, NULL, &uvec, &rvec);
   vm_TransposeMatrix(&mat);
   temp_vec = rot_mat.rvec * mat;
@@ -2633,7 +2633,7 @@ void BuildMirroredRoomListSub(int start_room_num, clip_wnd *wnd) {
   vector *mirror_norm = &mirror_fp->normal;
   // This is how far the mirror face is from the normalized plane
   float mirror_dist =
-      -(mirror_vec->x * mirror_norm->x + mirror_vec->y * mirror_norm->y + mirror_vec->z * mirror_norm->z);
+      -(mirror_vec->x() * mirror_norm->x() + mirror_vec->y() * mirror_norm->y() + mirror_vec->z() * mirror_norm->z());
   // Check all the portals for this room
   for (t = 0; t < rp->num_portals; t++) {
     portal *pp = &rp->portals[t];
@@ -2659,7 +2659,7 @@ void BuildMirroredRoomListSub(int start_room_num, clip_wnd *wnd) {
       vector temp_vec;
       vector *vec = &rp->verts[fp->face_verts[0]];
       float dist_from_mirror =
-          vec->x * mirror_norm->x + vec->y * mirror_norm->y + vec->z * mirror_norm->z + mirror_dist;
+          vec->x() * mirror_norm->x() + vec->y() * mirror_norm->y() + vec->z() * mirror_norm->z() + mirror_dist;
       // dest_vecs contains the point on the other side of the mirror (ie the reflected point)
       temp_vec = *vec - (*mirror_norm * (dist_from_mirror * 2));
       vector incident_norm;
@@ -2679,7 +2679,7 @@ void BuildMirroredRoomListSub(int start_room_num, clip_wnd *wnd) {
       vector temp_vec;
       vector *vec = &rp->verts[fp->face_verts[i]];
       float dist_from_mirror =
-          vec->x * mirror_norm->x + vec->y * mirror_norm->y + vec->z * mirror_norm->z + mirror_dist;
+          vec->x() * mirror_norm->x() + vec->y() * mirror_norm->y() + vec->z() * mirror_norm->z() + mirror_dist;
       // dest_vecs contains the point on the other side of the mirror (ie the reflected point)
       temp_vec = *vec - (*mirror_norm * (dist_from_mirror * 2));
       g3_RotatePoint(&portal_points[i], &temp_vec);
@@ -2760,7 +2760,7 @@ void BuildMirroredRoomList() {
   vector *mirror_norm = &mirror_fp->normal;
   // This is how far the mirror face is from the normalized plane
   float mirror_dist =
-      -(mirror_vec->x * mirror_norm->x + mirror_vec->y * mirror_norm->y + mirror_vec->z * mirror_norm->z);
+      -(mirror_vec->x() * mirror_norm->x() + mirror_vec->y() * mirror_norm->y() + mirror_vec->z() * mirror_norm->z());
   int total_points = 0;
   for (int t = 0; t < rp->num_mirror_faces; t++) {
     face *fp = &rp->faces[rp->mirror_faces_list[t]];
@@ -2775,7 +2775,7 @@ void BuildMirroredRoomList() {
       vector temp_vec;
       vector *vec = &rp->verts[fp->face_verts[i]];
       float dist_from_mirror =
-          vec->x * mirror_norm->x + vec->y * mirror_norm->y + vec->z * mirror_norm->z + mirror_dist;
+          vec->x() * mirror_norm->x() + vec->y() * mirror_norm->y() + vec->z() * mirror_norm->z() + mirror_dist;
       // dest_vecs contains the point on the other side of the mirror (ie the reflected point)
       temp_vec = *vec - (*mirror_norm * (dist_from_mirror * 2));
       g3_RotatePoint(&portal_points[i], &temp_vec);
@@ -2877,18 +2877,18 @@ void RenderMirroredRoom(room *rp) {
   face *mirror_fp = &mirror_rp->faces[mirror_rp->mirror_face];
   vector *norm = &mirror_fp->normal;
   // This is how far the mirror face is from the normalized plane
-  float mirror_dist = -(mirror_vec->x * norm->x + mirror_vec->y * norm->y + mirror_vec->z * norm->z);
+  float mirror_dist = -(mirror_vec->x() * norm->x() + mirror_vec->y() * norm->y() + mirror_vec->z() * norm->z());
 
   for (i = 0; i < rp->num_verts; i++) {
     vector *vec = &rp->verts[i];
-    float dist_from_mirror = vec->x * norm->x + vec->y * norm->y + vec->z * norm->z + mirror_dist;
+    float dist_from_mirror = vec->x() * norm->x() + vec->y() * norm->y() + vec->z() * norm->z() + mirror_dist;
     // dest_vecs contains the point on the other side of the mirror (ie the reflected point)
     mirror_dest_vecs[i] = *vec - (*norm * (dist_from_mirror * 2));
 #if (defined(RELEASE) && defined(KATMAI))
     if (Katmai) {
-      kat_vecs[i].x = mirror_dest_vecs[i].x;
-      kat_vecs[i].y = mirror_dest_vecs[i].y;
-      kat_vecs[i].z = mirror_dest_vecs[i].z;
+      kat_vecs[i].x() = mirror_dest_vecs[i].x();
+      kat_vecs[i].y() = mirror_dest_vecs[i].y();
+      kat_vecs[i].z() = mirror_dest_vecs[i].z();
     }
 #endif
   }
@@ -3017,9 +3017,9 @@ void GetRoomDynamicScalar(vector *pos, room *rp, float *r, float *g, float *b) {
     *b = 1;
     return;
   }
-  float fl_x = (pos->x - rp->min_xyz.x) / VOLUME_SPACING;
-  float fl_y = (pos->y - rp->min_xyz.y) / VOLUME_SPACING;
-  float fl_z = (pos->z - rp->min_xyz.z) / VOLUME_SPACING;
+  float fl_x = (pos->x() - rp->min_xyz.x()) / VOLUME_SPACING;
+  float fl_y = (pos->y() - rp->min_xyz.y()) / VOLUME_SPACING;
+  float fl_z = (pos->z() - rp->min_xyz.z()) / VOLUME_SPACING;
   fl_x = std::max<float>(fl_x, 0);
   fl_y = std::max<float>(fl_y, 0);
   fl_z = std::max<float>(fl_z, 0);
@@ -3106,7 +3106,7 @@ void RenderRoomObjects(room *rp) {
     float size = obj->size;
     // Special case weapons with streamers
     if (obj->type == OBJ_WEAPON && (Weapons[obj->id].flags & WF_STREAMER))
-      size = Weapons[obj->id].phys_info.velocity.z;
+      size = Weapons[obj->id].phys_info.velocity.z();
     // Check if object is trivially rejected
     bool isVisible = IsPointVisible(&obj->pos, size, &zdist) ? true : false;
     if (Render_mirror_for_room || (obj->type == OBJ_WEAPON && Weapons[obj->id].flags & WF_ELECTRICAL) || isVisible) {
@@ -3146,7 +3146,7 @@ void RenderRoomObjects(room *rp) {
     face *mirror_fp = &mirror_rp->faces[mirror_rp->mirror_face];
     vector *norm = &mirror_fp->normal;
     // This is how far the mirror face is from the normalized plane
-    float mirror_dist = -(mirror_vec->x * norm->x + mirror_vec->y * norm->y + mirror_vec->z * norm->z);
+    scalar mirror_dist = -(mirror_vec->x() * norm->x() + mirror_vec->y() * norm->y() + mirror_vec->z() * norm->z());
     // Setup mirror matrix
 
     vector negz_vec = {0, 0, -1};
@@ -3166,10 +3166,10 @@ void RenderRoomObjects(room *rp) {
         vector save_end_vec = vis->end_pos;
         vector *vec = &vis->pos;
         vector *end_vec = &vis->end_pos;
-        float dist_from_mirror = vec->x * norm->x + vec->y * norm->y + vec->z * norm->z + mirror_dist;
+        float dist_from_mirror = vec->x() * norm->x() + vec->y() * norm->y() + vec->z() * norm->z() + mirror_dist;
         // dest_vecs contains the point on the other side of the mirror (ie the reflected point)
         vis->pos = *vec - (*norm * (dist_from_mirror * 2));
-        dist_from_mirror = end_vec->x * norm->x + end_vec->y * norm->y + end_vec->z * norm->z + mirror_dist;
+        dist_from_mirror = end_vec->x() * norm->x() + end_vec->y() * norm->y() + end_vec->z() * norm->z() + mirror_dist;
         // dest_vecs contains the point on the other side of the mirror (ie the reflected point)
         vis->end_pos = *end_vec - (*norm * (dist_from_mirror * 2));
 
@@ -3184,7 +3184,7 @@ void RenderRoomObjects(room *rp) {
         matrix temp_mat;
 
         vector *vec = &objp->pos;
-        float dist_from_mirror = vec->x * norm->x + vec->y * norm->y + vec->z * norm->z + mirror_dist;
+        float dist_from_mirror = vec->x() * norm->x() + vec->y() * norm->y() + vec->z() * norm->z() + mirror_dist;
         // dest_vecs contains the point on the other side of the mirror (ie the reflected point)
         objp->pos = *vec - (*norm * (dist_from_mirror * 2));
         // Check for rear view
@@ -3250,7 +3250,7 @@ void CheckToRenderMineObjects(int roomnum) {
       float size = Objects[index].size;
       // Special case weapons with streamers
       if (Objects[index].type == OBJ_WEAPON && (Weapons[Objects[index].id].flags & WF_STREAMER))
-        size = Weapons[Objects[index].id].phys_info.velocity.z;
+        size = Weapons[Objects[index].id].phys_info.velocity.z();
       // Check if object is trivially rejected
       int visible = IsPointVisible(&obj->pos, size, &zdist); // calculate zdist
       if ((obj->type == OBJ_WEAPON && Weapons[obj->id].flags & WF_ELECTRICAL) || visible) {

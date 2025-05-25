@@ -392,9 +392,9 @@ skip_combine:;
 // Converts the 3dsmax coordinate space into our left-handed coordinate space
 void ConvertHandiness(vector *v) {
   vector v1 = *v;
-  v->x = -1.0f * v1.x;
-  v->y = v1.z;
-  v->z = -1.0f * v1.y;
+  v->x() = -1.0f * v1.x();
+  v->y() = v1.z();
+  v->z() = -1.0f * v1.y();
 }
 
 #define skip(f, n) cfseek(f, n, SEEK_CUR)
@@ -542,9 +542,9 @@ void Parse3DSMaxChunk(CFILE *fp, int size) {
       Reading_room.num_verts = num_verts;
 
       for (i = 0; i < num_verts; i++) {
-        Reading_room.verts[i].x = cf_ReadFloat(fp);
-        Reading_room.verts[i].y = cf_ReadFloat(fp);
-        Reading_room.verts[i].z = cf_ReadFloat(fp);
+        Reading_room.verts[i].x() = cf_ReadFloat(fp);
+        Reading_room.verts[i].y() = cf_ReadFloat(fp);
+        Reading_room.verts[i].z() = cf_ReadFloat(fp);
 
         Reading_room.verts[i] *= scale_factor;
       }
@@ -652,33 +652,33 @@ int compute_faces_mapping(reading_face *f, vector *out_norm, float *out_d) {
   ut = vt = 0.0f;
 
   for (i = 0; i < f->num_verts; i++) {
-    u.x = f->face_uvls[i].u;
-    u.y = f->face_uvls[i].v;
-    u.z = 1.0f;
+    u.x() = f->face_uvls[i].u;
+    u.y() = f->face_uvls[i].v;
+    u.z() = 1.0f;
 
-    v.x = f->face_uvls[(i + 1) % f->num_verts].u;
-    v.y = f->face_uvls[(i + 1) % f->num_verts].v;
-    v.z = 1.0f;
+    v.x() = f->face_uvls[(i + 1) % f->num_verts].u;
+    v.y() = f->face_uvls[(i + 1) % f->num_verts].v;
+    v.z() = 1.0f;
 
-    ut += (float)fabs(u.x - v.x);
-    vt += (float)fabs(u.y - v.y);
+    ut += (float)fabs(u.x() - v.x());
+    vt += (float)fabs(u.y() - v.y());
 
-    normal.x += (u.y - v.y) * (u.z + v.z);
-    normal.y += (u.z - v.z) * (u.x + v.x);
-    normal.z += (u.x - v.x) * (u.y + v.y);
+    normal.x() += (u.y() - v.y()) * (u.z() + v.z());
+    normal.y() += (u.z() - v.z()) * (u.x() + v.x());
+    normal.z() += (u.x() - v.x()) * (u.y() + v.y());
     point += u;
   }
 
   len = vm_GetMagnitude(&normal);
 
-  out_norm->x = normal.x / len;
-  out_norm->y = normal.y / len;
-  out_norm->z = normal.z / len;
+  out_norm->x() = normal.x() / len;
+  out_norm->y() = normal.y() / len;
+  out_norm->z() = normal.z() / len;
   len *= f->num_verts;
   *out_d = (vm_DotProduct(&point, &normal) / len);
-  point.x /= f->num_verts;
-  point.y /= f->num_verts;
-  point.z /= f->num_verts;
+  point.x() /= f->num_verts;
+  point.y() /= f->num_verts;
+  point.z() /= f->num_verts;
 
   return 0;
 }
@@ -732,11 +732,11 @@ int CombineFaces(reading_face *dest, reading_face *a, reading_face *b) {
   // Compare points to plane
   vector vec = Reading_room.verts[a->face_verts[0]];
   vector norm = a->normal;
-  float plane_dist = -(vec.x * norm.x + vec.y * norm.y + vec.z * norm.z);
+  scalar plane_dist = -(vec.x() * norm.x() + vec.y() * norm.y() + vec.z() * norm.z());
 
   for (i = 0; i < b->num_verts; i++) {
     vec = Reading_room.verts[b->face_verts[i]];
-    float dist = vec.x * norm.x + vec.y * norm.y + vec.z * norm.z + plane_dist;
+    scalar dist = vec.x() * norm.x() + vec.y() * norm.y() + vec.z() * norm.z() + plane_dist;
     if (fabs(dist) > MAX_POINT_DISTANCE_FROM_PLANE)
       return 0;
   }

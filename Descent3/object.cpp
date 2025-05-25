@@ -1654,15 +1654,15 @@ void ObjSetAABB(object *obj) {
              obj->type != OBJ_POWERUP && obj->type != OBJ_PLAYER) {
     vector offset_pos;
 
-    object_rad.x = object_rad.y = object_rad.z = Poly_models[obj->rtype.pobj_info.model_num].anim_size;
+    object_rad.x() = object_rad.y() = object_rad.z() = Poly_models[obj->rtype.pobj_info.model_num].anim_size;
     offset_pos = obj->pos + obj->anim_sphere_offset;
 
     obj->min_xyz = offset_pos - object_rad;
     obj->max_xyz = offset_pos + object_rad;
   } else {
-    object_rad.x = obj->size;
-    object_rad.y = obj->size;
-    object_rad.z = obj->size;
+    object_rad.x() = obj->size;
+    object_rad.y() = obj->size;
+    object_rad.z() = obj->size;
 
     obj->min_xyz = obj->pos - object_rad;
 
@@ -2395,17 +2395,17 @@ void DoFlyingControl(object *objp) {
       ASSERT(objp->id == Player_num);
       object *g_obj = Players[objp->id].guided_obj;
 
-      g_obj->mtype.phys_info.rotthrust.x = controls.pitch_thrust * g_obj->mtype.phys_info.full_rotthrust;
-      g_obj->mtype.phys_info.rotthrust.z = controls.bank_thrust * g_obj->mtype.phys_info.full_rotthrust;
-      g_obj->mtype.phys_info.rotthrust.y = controls.heading_thrust * g_obj->mtype.phys_info.full_rotthrust;
+      g_obj->mtype.phys_info.rotthrust.x() = controls.pitch_thrust * g_obj->mtype.phys_info.full_rotthrust;
+      g_obj->mtype.phys_info.rotthrust.z() = controls.bank_thrust * g_obj->mtype.phys_info.full_rotthrust;
+      g_obj->mtype.phys_info.rotthrust.y() = controls.heading_thrust * g_obj->mtype.phys_info.full_rotthrust;
     } else {
       player *playp = &Players[objp->id];
 
-      objp->mtype.phys_info.rotthrust.x =
+      objp->mtype.phys_info.rotthrust.x() =
           controls.pitch_thrust * objp->mtype.phys_info.full_rotthrust * playp->turn_scalar;
-      objp->mtype.phys_info.rotthrust.z =
+      objp->mtype.phys_info.rotthrust.z() =
           controls.bank_thrust * objp->mtype.phys_info.full_rotthrust * playp->turn_scalar;
-      objp->mtype.phys_info.rotthrust.y =
+      objp->mtype.phys_info.rotthrust.y() =
           controls.heading_thrust * objp->mtype.phys_info.full_rotthrust * playp->turn_scalar;
     }
 

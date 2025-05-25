@@ -1985,7 +1985,7 @@ vector osipf_AIGetRoomPathPoint(int roomnum) {
       vector pos;
 
       ComputeTerrainSegmentCenter(&pos, cell);
-      pos.y += 15.0f + ((float)ps_rand() / (float)D3_RAND_MAX) * 20; // between 15 and 35
+      pos.y() += 15.0f + ((float)ps_rand() / (float)D3_RAND_MAX) * 20; // between 15 and 35
 
       return pos;
     }
@@ -3467,9 +3467,9 @@ bool osipf_PathGetInformation(int pathid, int point, vector *pos, int *room, mat
     return false;
 
   if (pos) {
-    pos->x = GamePaths[pathid].pathnodes[point].pos.x;
-    pos->y = GamePaths[pathid].pathnodes[point].pos.y;
-    pos->z = GamePaths[pathid].pathnodes[point].pos.z;
+    pos->x() = GamePaths[pathid].pathnodes[point].pos.x();
+    pos->y() = GamePaths[pathid].pathnodes[point].pos.y();
+    pos->z() = GamePaths[pathid].pathnodes[point].pos.z();
   }
 
   if (room) {

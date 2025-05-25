@@ -1592,20 +1592,20 @@ get_height:;
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++, rp++)
     if (rp->used)
       for (v = 0; v < rp->num_verts; v++)
-        rp->verts[v].y += delta_y;
+        rp->verts[v].y() += delta_y;
 
   // Drop all the objects
   for (o = 0; o <= Highest_object_index; o++)
     if (Objects[o].type != OBJ_NONE) {
       vector new_pos = Objects[o].pos;
-      new_pos.y += delta_y;
+      new_pos.y() += delta_y;
       ObjSetPos(&Objects[o], &new_pos, Objects[o].roomnum, NULL, false);
     }
 
   // Drop all the paths
   for (p = 0; p < Num_game_paths; p++)
     for (n = 0; n < GamePaths[p].num_nodes; n++)
-      GamePaths[p].pathnodes[n].pos.y += delta_y;
+      GamePaths[p].pathnodes[n].pos.y() += delta_y;
 
   // Done
   EditorStatus("Terrain moved by by %d to %d", delta_height, desired_height);
@@ -1817,13 +1817,13 @@ void CTerrainDialog::OnTerrainOcclusion() {
           // See if this ray is close enough
           vector src_vec, dest_vec;
 
-          src_vec.x = start_x;
-          src_vec.y = 0;
-          src_vec.z = start_z;
+          src_vec.x() = start_x;
+          src_vec.y() = 0;
+          src_vec.z() = start_z;
 
-          dest_vec.x = end_x;
-          dest_vec.y = 0;
-          dest_vec.z = end_z;
+          dest_vec.x() = end_x;
+          dest_vec.y() = 0;
+          dest_vec.z() = end_z;
 
           // vector subvec=dest_vec-src_vec;
 

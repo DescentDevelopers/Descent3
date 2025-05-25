@@ -544,9 +544,9 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   float leftmost_x = 900000.00f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].x < leftmost_x) {
+    if (verts[i].x() < leftmost_x) {
       leftmost_point = i;
-      leftmost_x = verts[i].x;
+      leftmost_x = verts[i].x();
     }
   }
 
@@ -557,9 +557,9 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   float topmost_y = -900000.0f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].y > topmost_y) {
+    if (verts[i].y() > topmost_y) {
       topmost_point = i;
-      topmost_y = verts[i].y;
+      topmost_y = verts[i].y();
     }
   }
 
@@ -570,9 +570,9 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   float rightmost_x = -900000.00f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].x > rightmost_x) {
+    if (verts[i].x() > rightmost_x) {
       rightmost_point = i;
-      rightmost_x = verts[i].x;
+      rightmost_x = verts[i].x();
     }
   }
 
@@ -583,9 +583,9 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   float bottommost_y = 900000.0f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].y < bottommost_y) {
+    if (verts[i].y() < bottommost_y) {
       bottommost_point = i;
-      bottommost_y = verts[i].y;
+      bottommost_y = verts[i].y();
     }
   }
 
@@ -600,8 +600,8 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   base_vector.z = 0;
 
   // Figure out lightmap resolution
-  float xdiff = verts[rightmost_point].x - verts[leftmost_point].x;
-  float ydiff = verts[topmost_point].y - verts[bottommost_point].y;
+  float xdiff = verts[rightmost_point].x() - verts[leftmost_point].x();
+  float ydiff = verts[topmost_point].y() - verts[bottommost_point].y();
   float max_diff = (float)std::max(xdiff, ydiff);
 
   int lightmap_x_res = -1, lightmap_y_res = -1;
@@ -703,8 +703,8 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
       facevert = rot_vert;
 
       // Find uv2s for this vertex
-      lfp->u2[t] = (facevert.x - verts[leftmost_point].x) / (float)(lightmap_x_res * xspace_int);
-      lfp->v2[t] = fabs((verts[topmost_point].y - facevert.y)) / (float)(lightmap_y_res * yspace_int);
+      lfp->u2[t] = (facevert.x() - verts[leftmost_point].x()) / (float)(lightmap_x_res * xspace_int);
+      lfp->v2[t] = fabs((verts[topmost_point].y() - facevert.y())) / (float)(lightmap_y_res * yspace_int);
 
       ASSERT(lfp->u2[t] >= 0 && lfp->u2[t] <= 1.0);
       ASSERT(lfp->v2[t] >= 0 && lfp->v2[t] <= 1.0);

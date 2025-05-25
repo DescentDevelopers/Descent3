@@ -317,10 +317,10 @@ void CPhysicsDlg::SetPhysicsData(physics_info *phys_info) {
 
   m_big_sphere = (phys_info->flags & PF_NEVER_USE_BIG_SPHERE) != 0;
 
-  m_init_velocity = phys_info->velocity.z;
-  m_init_rot_velocity_x = phys_info->rotvel.x;
-  m_init_rot_velocity_y = phys_info->rotvel.y;
-  m_init_rot_velocity_z = phys_info->rotvel.z;
+  m_init_velocity = phys_info->velocity.z();
+  m_init_rot_velocity_x = phys_info->rotvel.x();
+  m_init_rot_velocity_y = phys_info->rotvel.y();
+  m_init_rot_velocity_z = phys_info->rotvel.z();
 
   m_gravity_flag = phys_info->flags & (PF_GRAVITY | PF_REVERSE_GRAVITY);
 
@@ -474,10 +474,10 @@ void CPhysicsDlg::GetPhysicsData(physics_info *phys_info) {
   else
     phys_info->flags &= ~PF_NEVER_USE_BIG_SPHERE;
 
-  phys_info->velocity.z = m_init_velocity;
-  phys_info->rotvel.x = m_init_rot_velocity_x;
-  phys_info->rotvel.y = m_init_rot_velocity_y;
-  phys_info->rotvel.z = m_init_rot_velocity_z;
+  phys_info->velocity.z() = m_init_velocity;
+  phys_info->rotvel.x() = m_init_rot_velocity_x;
+  phys_info->rotvel.y() = m_init_rot_velocity_y;
+  phys_info->rotvel.z() = m_init_rot_velocity_z;
 
   phys_info->num_bounces = m_max_bounces;
   phys_info->coeff_restitution = (100.0 - m_percent_loss) / 100.0;

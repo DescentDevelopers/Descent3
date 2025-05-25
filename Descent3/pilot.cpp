@@ -2883,7 +2883,7 @@ void UI3DWindow::OnDraw() {
 
   vector viewer_eye = {0, 0, 0};
   matrix viewer_orient = IDENTITY_MATRIX;
-  viewer_eye.z = -ship_pos.cam_dist;
+  viewer_eye.z() = -ship_pos.cam_dist;
 
   //	3d start frame
   //@@@@@StartFrame(m_X,m_Y,m_X+m_W-1,m_Y+m_H-1);
@@ -2917,9 +2917,9 @@ void UI3DWindow::OnDraw() {
   vm_Orthogonalize(&view_orient);
   ship_pos.last_frame = view_orient;
 
-  light_vec.x = 0.0f;
-  light_vec.y = -1.0f;
-  light_vec.z = -1.0f;
+  light_vec.x() = 0.0f;
+  light_vec.y() = -1.0f;
+  light_vec.z() = -1.0f;
   light_scalar = 0.8f;
   vm_NormalizeVector(&light_vec);
 

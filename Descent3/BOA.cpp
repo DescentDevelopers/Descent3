@@ -1212,9 +1212,9 @@ int BOAGetMineChecksum() {
 
       for (k = 0; k < fp->num_verts; k++) {
         int x, y, z;
-        x = floor(rp->verts[fp->face_verts[k]].x);
-        y = floor(rp->verts[fp->face_verts[k]].y);
-        z = floor(rp->verts[fp->face_verts[k]].z);
+        x = floor(rp->verts[fp->face_verts[k]].x());
+        y = floor(rp->verts[fp->face_verts[k]].y());
+        z = floor(rp->verts[fp->face_verts[k]].z());
         total += x + y + z;
       }
 
@@ -1264,9 +1264,9 @@ int BOAGetRoomChecksum(int i) {
       face *fp = &rp->faces[t];
 
       for (k = 0; k < fp->num_verts; k++) {
-        total += rp->verts[fp->face_verts[k]].x;
-        total += rp->verts[fp->face_verts[k]].y;
-        total += rp->verts[fp->face_verts[k]].z;
+        total += rp->verts[fp->face_verts[k]].x();
+        total += rp->verts[fp->face_verts[k]].y();
+        total += rp->verts[fp->face_verts[k]].z();
       }
 
       total += fp->num_verts << 4;
@@ -1343,9 +1343,9 @@ void ValidateRoomPathPoint(int room, char *message, int len) {
     for (j = 1; j < MAX_SUBDIVISIONS - 1; j++) {
       for (k = 1; k < MAX_SUBDIVISIONS - 1; k++) {
         vector t_pnt = Rooms[room].min_xyz;
-        t_pnt.x += diff.x * i;
-        t_pnt.y += diff.y * j;
-        t_pnt.z += diff.z * k;
+        t_pnt.x() += diff.x() * i;
+        t_pnt.y() += diff.y() * j;
+        t_pnt.z() += diff.z() * k;
 
         if (IsPathPointValid(room, &t_pnt)) {
           Rooms[room].path_pnt = t_pnt;
@@ -1427,9 +1427,9 @@ void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *x
   float leftmost_x = 900000.00f; // a big number
 
   for (i = 0; i < fp->num_verts; i++) {
-    if (verts[i].x < leftmost_x) {
+    if (verts[i].x() < leftmost_x) {
       leftmost_point = i;
-      leftmost_x = verts[i].x;
+      leftmost_x = verts[i].x();
     }
   }
 
@@ -1440,9 +1440,9 @@ void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *x
   float topmost_y = -900000.0f; // a big number
 
   for (i = 0; i < fp->num_verts; i++) {
-    if (verts[i].y > topmost_y) {
+    if (verts[i].y() > topmost_y) {
       topmost_point = i;
-      topmost_y = verts[i].y;
+      topmost_y = verts[i].y();
     }
   }
 
@@ -1453,9 +1453,9 @@ void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *x
   float rightmost_x = -900000.00f; // a big number
 
   for (i = 0; i < fp->num_verts; i++) {
-    if (verts[i].x > rightmost_x) {
+    if (verts[i].x() > rightmost_x) {
       rightmost_point = i;
-      rightmost_x = verts[i].x;
+      rightmost_x = verts[i].x();
     }
   }
 
@@ -1466,9 +1466,9 @@ void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *x
   float bottommost_y = 900000.0f; // a big number
 
   for (i = 0; i < fp->num_verts; i++) {
-    if (verts[i].y < bottommost_y) {
+    if (verts[i].y() < bottommost_y) {
       bottommost_point = i;
-      bottommost_y = verts[i].y;
+      bottommost_y = verts[i].y();
     }
   }
 
@@ -1478,16 +1478,16 @@ void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *x
 
   vector base_vector;
 
-  base_vector.x = verts[leftmost_point].x;
-  base_vector.y = verts[topmost_point].y;
-  base_vector.z = 0;
+  base_vector.x() = verts[leftmost_point].x();
+  base_vector.y() = verts[topmost_point].y();
+  base_vector.z() = 0;
 
   // Figure out grid resolution
   if (xdiff)
-    *xdiff = verts[rightmost_point].x - verts[leftmost_point].x;
+    *xdiff = verts[rightmost_point].x() - verts[leftmost_point].x();
 
   if (ydiff)
-    *ydiff = verts[topmost_point].y - verts[bottommost_point].y;
+    *ydiff = verts[topmost_point].y() - verts[bottommost_point].y();
 
   // Find upper left corner
   vm_TransposeMatrix(&trans_matrix);
@@ -2098,18 +2098,18 @@ void MakeBOA(void) {
 static int Current_sort_room;
 
 static int face_sort_func1(const int16_t *a, const int16_t *b) {
-  if (Rooms[Current_sort_room].faces[*a].min_xyz.y > Rooms[Current_sort_room].faces[*b].min_xyz.y)
+  if (Rooms[Current_sort_room].faces[*a].min_xyz.y() > Rooms[Current_sort_room].faces[*b].min_xyz.y())
     return -1;
-  else if (Rooms[Current_sort_room].faces[*a].min_xyz.y < Rooms[Current_sort_room].faces[*b].min_xyz.y)
+  else if (Rooms[Current_sort_room].faces[*a].min_xyz.y() < Rooms[Current_sort_room].faces[*b].min_xyz.y())
     return 1;
   else
     return 0;
 }
 
 static int face_sort_func2(const int16_t *a, const int16_t *b) {
-  if (Rooms[Current_sort_room].faces[*a].max_xyz.y < Rooms[Current_sort_room].faces[*b].max_xyz.y)
+  if (Rooms[Current_sort_room].faces[*a].max_xyz.y() < Rooms[Current_sort_room].faces[*b].max_xyz.y())
     return -1;
-  else if (Rooms[Current_sort_room].faces[*a].max_xyz.y > Rooms[Current_sort_room].faces[*b].max_xyz.y)
+  else if (Rooms[Current_sort_room].faces[*a].max_xyz.y() > Rooms[Current_sort_room].faces[*b].max_xyz.y())
     return 1;
   else
     return 0;
@@ -2171,29 +2171,29 @@ void ComputeAABB(bool f_full) {
           vector face_max;
 
           for (k = 0; k < Rooms[i].faces[j].num_verts; k++) {
-            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].x < face_min.x)
-              face_min.x = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].x;
+            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].x() < face_min.x())
+              face_min.x() = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].x();
 
-            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].y < face_min.y)
-              face_min.y = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].y;
+            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].y() < face_min.y())
+              face_min.y() = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].y();
 
-            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].z < face_min.z)
-              face_min.z = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].z;
+            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].z() < face_min.z())
+              face_min.z() = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].z();
 
-            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].x > face_max.x)
-              face_max.x = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].x;
+            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].x() > face_max.x())
+              face_max.x() = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].x();
 
-            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].y > face_max.y)
-              face_max.y = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].y;
+            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].y() > face_max.y())
+              face_max.y() = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].y();
 
-            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].z > face_max.z)
-              face_max.z = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].z;
+            if (k == 0 || Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].z() > face_max.z())
+              face_max.z() = Rooms[i].verts[Rooms[i].faces[j].face_verts[k]].z();
           }
 
           Rooms[i].faces[j].min_xyz = face_min;
           Rooms[i].faces[j].max_xyz = face_max;
 
-          average_y += ((face_min.y + face_max.y) / 2);
+          average_y += ((face_min.y() + face_max.y()) / 2);
         }
 
         average_y /= Rooms[i].num_faces;
@@ -2202,29 +2202,29 @@ void ComputeAABB(bool f_full) {
 
         room *rp = &Rooms[i];
 
-        rp->max_xyz.x = rp->max_xyz.y = rp->max_xyz.z = -9999999.0;
-        rp->min_xyz.x = rp->min_xyz.y = rp->min_xyz.z = 9999999.0;
+        rp->max_xyz.x() = rp->max_xyz.y() = rp->max_xyz.z() = -9999999.0;
+        rp->min_xyz.x() = rp->min_xyz.y() = rp->min_xyz.z() = 9999999.0;
 
         for (int t = 0; t < rp->num_faces; t++) {
           face *fp = &rp->faces[t];
 
-          if (fp->max_xyz.x > rp->max_xyz.x)
-            rp->max_xyz.x = fp->max_xyz.x;
+          if (fp->max_xyz.x() > rp->max_xyz.x())
+            rp->max_xyz.x() = fp->max_xyz.x();
 
-          if (fp->max_xyz.y > rp->max_xyz.y)
-            rp->max_xyz.y = fp->max_xyz.y;
+          if (fp->max_xyz.y() > rp->max_xyz.y())
+            rp->max_xyz.y() = fp->max_xyz.y();
 
-          if (fp->max_xyz.z > rp->max_xyz.z)
-            rp->max_xyz.z = fp->max_xyz.z;
+          if (fp->max_xyz.z() > rp->max_xyz.z())
+            rp->max_xyz.z() = fp->max_xyz.z();
 
-          if (fp->min_xyz.x < rp->min_xyz.x)
-            rp->min_xyz.x = fp->min_xyz.x;
+          if (fp->min_xyz.x() < rp->min_xyz.x())
+            rp->min_xyz.x() = fp->min_xyz.x();
 
-          if (fp->min_xyz.y < rp->min_xyz.y)
-            rp->min_xyz.y = fp->min_xyz.y;
+          if (fp->min_xyz.y() < rp->min_xyz.y())
+            rp->min_xyz.y() = fp->min_xyz.y();
 
-          if (fp->min_xyz.z < rp->min_xyz.z)
-            rp->min_xyz.z = fp->min_xyz.z;
+          if (fp->min_xyz.z() < rp->min_xyz.z())
+            rp->min_xyz.z() = fp->min_xyz.z();
         }
       }
     }
@@ -2324,8 +2324,8 @@ void ComputeAABB(bool f_full) {
 
         for (count = 0; count < num_structs_per_room[i]; count++) {
 
-          s_max_xyz[count].x = s_max_xyz[count].y = s_max_xyz[count].z = -9999999.0;
-          s_min_xyz[count].x = s_min_xyz[count].y = s_min_xyz[count].z = 9999999.0;
+          s_max_xyz[count].x() = s_max_xyz[count].y() = s_max_xyz[count].z() = -9999999.0;
+          s_min_xyz[count].x() = s_min_xyz[count].y() = s_min_xyz[count].z() = 9999999.0;
 
           for (int t = 0; t < rp->num_faces; t++) {
             if (r_struct_list[i][t] != count)
@@ -2333,33 +2333,33 @@ void ComputeAABB(bool f_full) {
 
             face *fp = &rp->faces[t];
 
-            if (fp->max_xyz.x > s_max_xyz[count].x)
-              s_max_xyz[count].x = fp->max_xyz.x;
+            if (fp->max_xyz.x() > s_max_xyz[count].x())
+              s_max_xyz[count].x() = fp->max_xyz.x();
 
-            if (fp->max_xyz.y > s_max_xyz[count].y)
-              s_max_xyz[count].y = fp->max_xyz.y;
+            if (fp->max_xyz.y() > s_max_xyz[count].y())
+              s_max_xyz[count].y() = fp->max_xyz.y();
 
-            if (fp->max_xyz.z > s_max_xyz[count].z)
-              s_max_xyz[count].z = fp->max_xyz.z;
+            if (fp->max_xyz.z() > s_max_xyz[count].z())
+              s_max_xyz[count].z() = fp->max_xyz.z();
 
-            if (fp->min_xyz.x < s_min_xyz[count].x)
-              s_min_xyz[count].x = fp->min_xyz.x;
+            if (fp->min_xyz.x() < s_min_xyz[count].x())
+              s_min_xyz[count].x() = fp->min_xyz.x();
 
-            if (fp->min_xyz.y < s_min_xyz[count].y)
-              s_min_xyz[count].y = fp->min_xyz.y;
+            if (fp->min_xyz.y() < s_min_xyz[count].y())
+              s_min_xyz[count].y() = fp->min_xyz.y();
 
-            if (fp->min_xyz.z < s_min_xyz[count].z)
-              s_min_xyz[count].z = fp->min_xyz.z;
+            if (fp->min_xyz.z() < s_min_xyz[count].z())
+              s_min_xyz[count].z() = fp->min_xyz.z();
           }
         }
 
         int best = 0;
         vector diff = s_max_xyz[0] - s_min_xyz[0];
-        float best_size = fabs(diff.x * diff.y * diff.z);
+        scalar best_size = fabs(diff.x() * diff.y() * diff.z());
 
         for (count = 1; count < num_structs_per_room[i]; count++) {
           diff = s_max_xyz[count] - s_min_xyz[count];
-          float size = fabs(diff.x * diff.y * diff.z);
+          scalar size = fabs(diff.x() * diff.y() * diff.z());
 
           if (size > best_size) {
             best = count;
@@ -2427,37 +2427,37 @@ void ComputeAABB(bool f_full) {
         vector diff;
         // vector min_diff;
         // vector max_diff;
-        diff.x = diff.y = diff.z = 15.0f;
+        diff.x() = diff.y() = diff.z() = 15.0f;
 
         min_xyz = max_xyz = (rp->min_xyz + rp->max_xyz) / 2.0f;
 
         min_xyz -= diff;
         max_xyz += diff;
 
-        if (min_xyz.x <= rp->min_xyz.x)
-          min_xyz.x = rp->min_xyz.x + 2.5f;
-        if (min_xyz.y <= rp->min_xyz.y)
-          min_xyz.y = rp->min_xyz.y + 2.5f;
-        if (min_xyz.z <= rp->min_xyz.z)
-          min_xyz.z = rp->min_xyz.z + 2.5f;
-        if (max_xyz.x >= rp->max_xyz.x)
-          max_xyz.x = rp->max_xyz.x - 2.5f;
-        if (max_xyz.y >= rp->max_xyz.y)
-          max_xyz.y = rp->max_xyz.y - 2.5f;
-        if (max_xyz.z >= rp->max_xyz.z)
-          max_xyz.z = rp->max_xyz.z - 2.5f;
+        if (min_xyz.x() <= rp->min_xyz.x())
+          min_xyz.x() = rp->min_xyz.x() + 2.5f;
+        if (min_xyz.y() <= rp->min_xyz.y())
+          min_xyz.y() = rp->min_xyz.y() + 2.5f;
+        if (min_xyz.z() <= rp->min_xyz.z())
+          min_xyz.z() = rp->min_xyz.z() + 2.5f;
+        if (max_xyz.x() >= rp->max_xyz.x())
+          max_xyz.x() = rp->max_xyz.x() - 2.5f;
+        if (max_xyz.y() >= rp->max_xyz.y())
+          max_xyz.y() = rp->max_xyz.y() - 2.5f;
+        if (max_xyz.z() >= rp->max_xyz.z())
+          max_xyz.z() = rp->max_xyz.z() - 2.5f;
 
-        if (min_xyz.x >= max_xyz.x) {
-          min_xyz.x = rp->min_xyz.x;
-          max_xyz.x = rp->max_xyz.x;
+        if (min_xyz.x() >= max_xyz.x()) {
+          min_xyz.x() = rp->min_xyz.x();
+          max_xyz.x() = rp->max_xyz.x();
         }
-        if (min_xyz.y >= max_xyz.y) {
-          min_xyz.y = rp->min_xyz.y;
-          max_xyz.y = rp->max_xyz.y;
+        if (min_xyz.y() >= max_xyz.y()) {
+          min_xyz.y() = rp->min_xyz.y();
+          max_xyz.y() = rp->max_xyz.y();
         }
-        if (min_xyz.z >= max_xyz.z) {
-          min_xyz.z = rp->min_xyz.z;
-          max_xyz.z = rp->max_xyz.z;
+        if (min_xyz.z() >= max_xyz.z()) {
+          min_xyz.z() = rp->min_xyz.z();
+          max_xyz.z() = rp->max_xyz.z();
         }
 
         rp->bbf_min_xyz = min_xyz;
@@ -2482,27 +2482,27 @@ void ComputeAABB(bool f_full) {
           for (x = 0; x < 6; x++)
             list[x] = false;
 
-          if (fp->max_xyz.x <= min_xyz.x) {
+          if (fp->max_xyz.x() <= min_xyz.x()) {
             list[0] = true;
             f_part = true;
           }
-          if (fp->max_xyz.y <= min_xyz.y) {
+          if (fp->max_xyz.y() <= min_xyz.y()) {
             list[1] = true;
             f_part = true;
           }
-          if (fp->max_xyz.z <= min_xyz.z) {
+          if (fp->max_xyz.z() <= min_xyz.z()) {
             list[2] = true;
             f_part = true;
           }
-          if ((!list[0]) && fp->min_xyz.x >= max_xyz.x) {
+          if ((!list[0]) && fp->min_xyz.x() >= max_xyz.x()) {
             list[3] = true;
             f_part = true;
           }
-          if ((!list[1]) && fp->min_xyz.y >= max_xyz.y) {
+          if ((!list[1]) && fp->min_xyz.y() >= max_xyz.y()) {
             list[4] = true;
             f_part = true;
           }
-          if ((!list[2]) && fp->min_xyz.z >= max_xyz.z) {
+          if ((!list[2]) && fp->min_xyz.z() >= max_xyz.z()) {
             list[5] = true;
             f_part = true;
           }
@@ -2656,29 +2656,29 @@ void ComputeAABB(bool f_full) {
           continue;
 
         for (count = 0; count < rp->num_bbf_regions; count++) {
-          rp->bbf_list_max_xyz[count].x = rp->bbf_list_max_xyz[count].y = rp->bbf_list_max_xyz[count].z = -9999999.0;
-          rp->bbf_list_min_xyz[count].x = rp->bbf_list_min_xyz[count].y = rp->bbf_list_min_xyz[count].z = 9999999.0;
+          rp->bbf_list_max_xyz[count].x() = rp->bbf_list_max_xyz[count].y() = rp->bbf_list_max_xyz[count].z() = -9999999.0;
+          rp->bbf_list_min_xyz[count].x() = rp->bbf_list_min_xyz[count].y() = rp->bbf_list_min_xyz[count].z() = 9999999.0;
 
           for (int t = 0; t < rp->num_bbf[count]; t++) {
             face *fp = &rp->faces[rp->bbf_list[count][t]];
 
-            if (fp->max_xyz.x > rp->bbf_list_max_xyz[count].x)
-              rp->bbf_list_max_xyz[count].x = fp->max_xyz.x;
+            if (fp->max_xyz.x() > rp->bbf_list_max_xyz[count].x())
+              rp->bbf_list_max_xyz[count].x() = fp->max_xyz.x();
 
-            if (fp->max_xyz.y > rp->bbf_list_max_xyz[count].y)
-              rp->bbf_list_max_xyz[count].y = fp->max_xyz.y;
+            if (fp->max_xyz.y() > rp->bbf_list_max_xyz[count].y())
+              rp->bbf_list_max_xyz[count].y() = fp->max_xyz.y();
 
-            if (fp->max_xyz.z > rp->bbf_list_max_xyz[count].z)
-              rp->bbf_list_max_xyz[count].z = fp->max_xyz.z;
+            if (fp->max_xyz.z() > rp->bbf_list_max_xyz[count].z())
+              rp->bbf_list_max_xyz[count].z() = fp->max_xyz.z();
 
-            if (fp->min_xyz.x < rp->bbf_list_min_xyz[count].x)
-              rp->bbf_list_min_xyz[count].x = fp->min_xyz.x;
+            if (fp->min_xyz.x() < rp->bbf_list_min_xyz[count].x())
+              rp->bbf_list_min_xyz[count].x() = fp->min_xyz.x();
 
-            if (fp->min_xyz.y < rp->bbf_list_min_xyz[count].y)
-              rp->bbf_list_min_xyz[count].y = fp->min_xyz.y;
+            if (fp->min_xyz.y() < rp->bbf_list_min_xyz[count].y())
+              rp->bbf_list_min_xyz[count].y() = fp->min_xyz.y();
 
-            if (fp->min_xyz.z < rp->bbf_list_min_xyz[count].z)
-              rp->bbf_list_min_xyz[count].z = fp->min_xyz.z;
+            if (fp->min_xyz.z() < rp->bbf_list_min_xyz[count].z())
+              rp->bbf_list_min_xyz[count].z() = fp->min_xyz.z();
           }
         }
       }
@@ -2845,29 +2845,29 @@ void ComputeAABB(bool f_full) {
           continue;
 
         for (count = 0; count < rp->num_bbf_regions; count++) {
-          rp->bbf_list_max_xyz[count].x = rp->bbf_list_max_xyz[count].y = rp->bbf_list_max_xyz[count].z = -9999999.0;
-          rp->bbf_list_min_xyz[count].x = rp->bbf_list_min_xyz[count].y = rp->bbf_list_min_xyz[count].z = 9999999.0;
+          rp->bbf_list_max_xyz[count].x() = rp->bbf_list_max_xyz[count].y() = rp->bbf_list_max_xyz[count].z() = -9999999.0;
+          rp->bbf_list_min_xyz[count].x() = rp->bbf_list_min_xyz[count].y() = rp->bbf_list_min_xyz[count].z() = 9999999.0;
 
           for (int t = 0; t < rp->num_bbf[count]; t++) {
             face *fp = &rp->faces[rp->bbf_list[count][t]];
 
-            if (fp->max_xyz.x > rp->bbf_list_max_xyz[count].x)
-              rp->bbf_list_max_xyz[count].x = fp->max_xyz.x;
+            if (fp->max_xyz.x() > rp->bbf_list_max_xyz[count].x())
+              rp->bbf_list_max_xyz[count].x() = fp->max_xyz.x();
 
-            if (fp->max_xyz.y > rp->bbf_list_max_xyz[count].y)
-              rp->bbf_list_max_xyz[count].y = fp->max_xyz.y;
+            if (fp->max_xyz.y() > rp->bbf_list_max_xyz[count].y())
+              rp->bbf_list_max_xyz[count].y() = fp->max_xyz.y();
 
-            if (fp->max_xyz.z > rp->bbf_list_max_xyz[count].z)
-              rp->bbf_list_max_xyz[count].z = fp->max_xyz.z;
+            if (fp->max_xyz.z() > rp->bbf_list_max_xyz[count].z())
+              rp->bbf_list_max_xyz[count].z() = fp->max_xyz.z();
 
-            if (fp->min_xyz.x < rp->bbf_list_min_xyz[count].x)
-              rp->bbf_list_min_xyz[count].x = fp->min_xyz.x;
+            if (fp->min_xyz.x() < rp->bbf_list_min_xyz[count].x())
+              rp->bbf_list_min_xyz[count].x() = fp->min_xyz.x();
 
-            if (fp->min_xyz.y < rp->bbf_list_min_xyz[count].y)
-              rp->bbf_list_min_xyz[count].y = fp->min_xyz.y;
+            if (fp->min_xyz.y() < rp->bbf_list_min_xyz[count].y())
+              rp->bbf_list_min_xyz[count].y() = fp->min_xyz.y();
 
-            if (fp->min_xyz.z < rp->bbf_list_min_xyz[count].z)
-              rp->bbf_list_min_xyz[count].z = fp->min_xyz.z;
+            if (fp->min_xyz.z() < rp->bbf_list_min_xyz[count].z())
+              rp->bbf_list_min_xyz[count].z() = fp->min_xyz.z();
           }
         }
       }
@@ -2892,22 +2892,22 @@ void ComputeAABB(bool f_full) {
             for (x = 0; x < 6; x++)
               list[x] = false;
 
-            if (fp->max_xyz.x <= min_xyz.x) {
+            if (fp->max_xyz.x() <= min_xyz.x()) {
               list[0] = true;
             }
-            if (fp->max_xyz.y <= min_xyz.y) {
+            if (fp->max_xyz.y() <= min_xyz.y()) {
               list[1] = true;
             }
-            if (fp->max_xyz.z <= min_xyz.z) {
+            if (fp->max_xyz.z() <= min_xyz.z()) {
               list[2] = true;
             }
-            if ((!list[0]) && fp->min_xyz.x >= max_xyz.x) {
+            if ((!list[0]) && fp->min_xyz.x() >= max_xyz.x()) {
               list[3] = true;
             }
-            if ((!list[1]) && fp->min_xyz.y >= max_xyz.y) {
+            if ((!list[1]) && fp->min_xyz.y() >= max_xyz.y()) {
               list[4] = true;
             }
-            if ((!list[2]) && fp->min_xyz.z >= max_xyz.z) {
+            if ((!list[2]) && fp->min_xyz.z() >= max_xyz.z()) {
               list[5] = true;
             }
 
@@ -2978,29 +2978,29 @@ void ComputeAABB(bool f_full) {
     if (Rooms[i].used) {
       room *rp = &Rooms[i];
 
-      rp->max_xyz.x = rp->max_xyz.y = rp->max_xyz.z = -9999999.0;
-      rp->min_xyz.x = rp->min_xyz.y = rp->min_xyz.z = 9999999.0;
+      rp->max_xyz.x() = rp->max_xyz.y() = rp->max_xyz.z() = -9999999.0;
+      rp->min_xyz.x() = rp->min_xyz.y() = rp->min_xyz.z() = 9999999.0;
 
       for (int t = 0; t < rp->num_faces; t++) {
         face *fp = &rp->faces[t];
 
-        if (fp->max_xyz.x > rp->max_xyz.x)
-          rp->max_xyz.x = fp->max_xyz.x;
+        if (fp->max_xyz.x() > rp->max_xyz.x())
+          rp->max_xyz.x() = fp->max_xyz.x();
 
-        if (fp->max_xyz.y > rp->max_xyz.y)
-          rp->max_xyz.y = fp->max_xyz.y;
+        if (fp->max_xyz.y() > rp->max_xyz.y())
+          rp->max_xyz.y() = fp->max_xyz.y();
 
-        if (fp->max_xyz.z > rp->max_xyz.z)
-          rp->max_xyz.z = fp->max_xyz.z;
+        if (fp->max_xyz.z() > rp->max_xyz.z())
+          rp->max_xyz.z() = fp->max_xyz.z();
 
-        if (fp->min_xyz.x < rp->min_xyz.x)
-          rp->min_xyz.x = fp->min_xyz.x;
+        if (fp->min_xyz.x() < rp->min_xyz.x())
+          rp->min_xyz.x() = fp->min_xyz.x();
 
-        if (fp->min_xyz.y < rp->min_xyz.y)
-          rp->min_xyz.y = fp->min_xyz.y;
+        if (fp->min_xyz.y() < rp->min_xyz.y())
+          rp->min_xyz.y() = fp->min_xyz.y();
 
-        if (fp->min_xyz.z < rp->min_xyz.z)
-          rp->min_xyz.z = fp->min_xyz.z;
+        if (fp->min_xyz.z() < rp->min_xyz.z())
+          rp->min_xyz.z() = fp->min_xyz.z();
       }
     }
   }

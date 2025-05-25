@@ -240,9 +240,9 @@ struct g3Point {
 };
 
 // macros to reference x,y,z elements of a 3d point
-#define p3_x p3_vec.x
-#define p3_y p3_vec.y
-#define p3_z p3_vec.z
+#define p3_x p3_vec.x()
+#define p3_y p3_vec.y()
+#define p3_z p3_vec.z()
 
 // macros to reference individual elements of the uvls struct
 #define p3_u p3_uvl.u

@@ -284,9 +284,9 @@ void SetElementView(rad_element *ep) {
   vector u, v, n;
 
   // Select random vector for hemicube orientation
-  rv.x = ((rand() / RAND_MAX) * 2.0 - 1.0);
-  rv.y = ((rand() / RAND_MAX) * 2.0 - 1.0);
-  rv.z = ((rand() / RAND_MAX) * 2.0 - 1.0);
+  rv.x() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
+  rv.y() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
+  rv.z() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
 
   n = rad_MaxSurface->normal; // Get patch normal
 
@@ -312,9 +312,9 @@ void SetSurfaceView(rad_surface *surf) {
   vector u, v, n;
 
   // Select random vector for hemicube orientation
-  rv.x = ((rand() / RAND_MAX) * 2.0 - 1.0);
-  rv.y = ((rand() / RAND_MAX) * 2.0 - 1.0);
-  rv.z = ((rand() / RAND_MAX) * 2.0 - 1.0);
+  rv.x() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
+  rv.y() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
+  rv.z() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
 
   n = rad_MaxSurface->normal; // Get patch normal
 
@@ -729,7 +729,7 @@ void ScanRadiosityPoly(g3Point **pl, int nv, int element_id) {
 
     cp[i].sx = p.p3_sx;
     cp[i].sy = p.p3_sy;
-    cp[i].z = 1.0 / (float)p.p3_vec.z;
+    cp[i].z = (scalar)1.0 / (scalar)(p.p3_vec.z());
   }
 
   // Determine top and bottom y coords.

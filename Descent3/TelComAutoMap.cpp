@@ -639,7 +639,7 @@ void TCAMRenderTerrain() {
 
   Terrain_from_mine = 0;
 
-  VisibleTerrainZ = (Detail_settings.Terrain_render_distance) * Matrix_scale.z;
+  VisibleTerrainZ = (Detail_settings.Terrain_render_distance) * Matrix_scale.z();
 
   // Set up our z wall
   g3_SetFarClipZ(VisibleTerrainZ);

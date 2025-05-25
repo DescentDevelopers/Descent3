@@ -149,16 +149,16 @@ void SetViewerFromRoomFace(room *roomp, int facenum, bool room_center) {
       vector t;
       float rad = ComputeRoomBoundingSphere(&t, roomp);
 
-      newpos.z -= rad * 1.5;
+      newpos.z() -= rad * 1.5;
 
-      if (newpos.x < 1.0)
-        newpos.x = 1.0;
-      if (newpos.x > TERRAIN_WIDTH * TERRAIN_SIZE - 1.0)
-        newpos.x = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
-      if (newpos.z < 1.0)
-        newpos.z = 1.0;
-      if (newpos.z > TERRAIN_DEPTH * TERRAIN_SIZE - 1.0)
-        newpos.z = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
+      if (newpos.x() < 1.0)
+        newpos.x() = 1.0;
+      if (newpos.x() > TERRAIN_WIDTH * TERRAIN_SIZE - 1.0)
+        newpos.x() = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
+      if (newpos.z() < 1.0)
+        newpos.z() = 1.0;
+      if (newpos.z() > TERRAIN_DEPTH * TERRAIN_SIZE - 1.0)
+        newpos.z() = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
 
       orient = Identity_matrix;
 
@@ -177,14 +177,14 @@ void SetViewerFromRoomFace(room *roomp, int facenum, bool room_center) {
     vm_VectorToMatrix(&orient, &t, NULL, NULL);
 
     if (roomp->flags & RF_EXTERNAL) {
-      if (newpos.x < 1.0)
-        newpos.x = 1.0;
-      if (newpos.x > TERRAIN_WIDTH * TERRAIN_SIZE - 1.0)
-        newpos.x = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
-      if (newpos.z < 1.0)
-        newpos.z = 1.0;
-      if (newpos.z > TERRAIN_DEPTH * TERRAIN_SIZE - 1.0)
-        newpos.z = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
+      if (newpos.x() < 1.0)
+        newpos.x() = 1.0;
+      if (newpos.x() > TERRAIN_WIDTH * TERRAIN_SIZE - 1.0)
+        newpos.x() = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
+      if (newpos.z() < 1.0)
+        newpos.z() = 1.0;
+      if (newpos.z() > TERRAIN_DEPTH * TERRAIN_SIZE - 1.0)
+        newpos.z() = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
       roomnum = GetTerrainRoomFromPos(&newpos);
     } else {
       int new_roomnum = FindPointRoom(&newpos);
@@ -422,9 +422,9 @@ void SetEditorViewer() {
 
     // get position for viewer
     if (Editor_view_mode == VM_TERRAIN) { // if terrain, put viewer at center of world
-      pos.x = TERRAIN_SIZE * TERRAIN_WIDTH / 2;
-      pos.y = Terrain_seg[0].y + 30;
-      pos.z = TERRAIN_SIZE * TERRAIN_DEPTH / 2;
+      pos.x() = TERRAIN_SIZE * TERRAIN_WIDTH / 2;
+      pos.y() = Terrain_seg[0].y + 30;
+      pos.z() = TERRAIN_SIZE * TERRAIN_DEPTH / 2;
       roomnum = MAKE_ROOMNUM(0);              // any value ok, so long as it has terrain flag
     } else if (Editor_view_mode == VM_MINE) { // if mine, put in center of any room
       for (roomnum = 0; roomnum <= Highest_room_index; roomnum++)

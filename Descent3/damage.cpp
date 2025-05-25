@@ -975,7 +975,7 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
   } else { // slow death
 
     int alternate_death = 0;
-    bool f_upsidedown_walker = (obj->movement_type == MT_WALKING) && (obj->orient.uvec.y < 0.0f);
+    bool f_upsidedown_walker = (obj->movement_type == MT_WALKING) && (obj->orient.uvec.y() < 0.0f);
 
     if (!f_upsidedown_walker && (ps_rand() % 2) == 1) {
       *death_flags = DF_DELAY_SPARKS;
@@ -1014,7 +1014,7 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
       }
     } else { // If building, make it shoot up
       *death_flags |= DF_DELAY_FLYING;
-      if (obj->orient.uvec.y == 1.0f)
+      if (obj->orient.uvec.y() == 1.0f)
         *delay_time = 2.0f;
       else
         *delay_time = 0.7f;
@@ -1104,9 +1104,9 @@ void SetFallingPhysics(object *objp) {
 
     // If not spinning much, give the object a good spin
     if (vm_GetMagnitude(&objp->mtype.phys_info.rotvel) < 4000.0f) {
-      objp->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.x() = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.y() = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.z() = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
     }
   }
 }
@@ -1124,18 +1124,18 @@ void SetFlyingPhysics(object *objp, bool tumbles) {
 
   if (tumbles) {
     // Make y spin a little bit more that x or z
-    objp->mtype.phys_info.rotvel.x = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.z = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.x() = (scalar)((40000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.y() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.z() = (scalar)((40000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
   }
 
-  if (objp->orient.uvec.y == 1.0f) {
-    objp->mtype.phys_info.velocity.y = (float)(3 * (ps_rand() % 15)) + 20.0;
-    objp->mtype.phys_info.velocity.x = 0;
-    objp->mtype.phys_info.velocity.z = 0;
+  if (objp->orient.uvec.y() == 1.0f) {
+    objp->mtype.phys_info.velocity.y() = (scalar)(3 * (ps_rand() % 15)) + 20.0;
+    objp->mtype.phys_info.velocity.x() = 0;
+    objp->mtype.phys_info.velocity.z() = 0;
 
     // Doubled the velocity on 4/30/99 to make Josh's pop machines cooler. -MT
-    objp->mtype.phys_info.velocity.y *= 2.0;
+    objp->mtype.phys_info.velocity.y() *= 2.0;
   } else {
     objp->mtype.phys_info.velocity = objp->orient.uvec * ((float)(2.0f * (ps_rand() % 15)) + 7.0f);
   }
@@ -1224,7 +1224,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
   } else { // Some sort of delayed death
 
     // For upside-down walkers, force simple delay
-    bool f_upsidedown_walker = (objp->movement_type == MT_WALKING) && (objp->orient.uvec.y < 0.0f);
+    bool f_upsidedown_walker = (objp->movement_type == MT_WALKING) && (objp->orient.uvec.y() < 0.0f);
     if (f_upsidedown_walker)
       death_flags |= DF_DELAY_LOSES_ANTIGRAV;
 
@@ -1576,9 +1576,9 @@ void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
       objp->mtype.phys_info.velocity = shardvec * (50.0 + 100.0 * (objnum % 3));
 
       // Set rotational velocity
-      objp->mtype.phys_info.rotvel.x = 25000.0 * (objnum % 5);
-      objp->mtype.phys_info.rotvel.y = 25000.0 * (objnum % 2);
-      objp->mtype.phys_info.rotvel.z = 25000.0 * (objnum % 3);
+      objp->mtype.phys_info.rotvel.x() = (scalar)25000.0 * (objnum % 5);
+      objp->mtype.phys_info.rotvel.y() = (scalar)25000.0 * (objnum % 2);
+      objp->mtype.phys_info.rotvel.z() = (scalar)25000.0 * (objnum % 3);
 
       prevpoint = curpoint;
       prev_u = cur_u;

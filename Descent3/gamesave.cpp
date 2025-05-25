@@ -1039,9 +1039,9 @@ void SGSObjects(CFILE *fp) {
     cf_WriteInt(fp, AIDynamicPath[i].owner_handle);
 
     for (s = 0; s < MAX_NODES; s++) {
-      cf_WriteFloat(fp, AIDynamicPath[i].pos[s].x);
-      cf_WriteFloat(fp, AIDynamicPath[i].pos[s].y);
-      cf_WriteFloat(fp, AIDynamicPath[i].pos[s].z);
+      cf_WriteFloat(fp, AIDynamicPath[i].pos[s].x());
+      cf_WriteFloat(fp, AIDynamicPath[i].pos[s].y());
+      cf_WriteFloat(fp, AIDynamicPath[i].pos[s].z());
       cf_WriteInt(fp, AIDynamicPath[i].roomnum[s]);
     }
   }

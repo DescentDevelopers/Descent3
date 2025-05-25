@@ -942,12 +942,12 @@ void DrawItemModel(grHardwareSurface *surf, int model_num) {
 
   // Calculate viewer position
   vector maxs = pm->maxs, mins = pm->mins;
-  view_pos.x = -(mins.x + maxs.x) / 2;
-  view_pos.y = (mins.y + maxs.y) / 2;
-  maxs.x += view_pos.x;
-  maxs.y -= view_pos.y;
-  maxs.z = 0;
-  view_pos.z = -2.5 * vm_GetMagnitude(&maxs);
+  view_pos.x() = -(mins.x() + maxs.x()) / 2;
+  view_pos.y() = (mins.y() + maxs.y()) / 2;
+  maxs.x() += view_pos.x();
+  maxs.y() -= view_pos.y();
+  maxs.z() = 0;
+  view_pos.z() = -2.5 * vm_GetMagnitude(&maxs);
 
   // Set viewer and object orientations
   vm_MakeIdentity(&id_matrix);

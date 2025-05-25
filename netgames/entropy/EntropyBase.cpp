@@ -1831,13 +1831,13 @@ bool CompareDistanceTravel(vector *curr_pos, vector *last_pos) {
   vector result;
   float a, b, c, bc, dist;
 
-  result.x = curr_pos->x - last_pos->x;
-  result.y = curr_pos->y - last_pos->y;
-  result.z = curr_pos->z - last_pos->z;
+  result.x() = curr_pos->x() - last_pos->x();
+  result.y() = curr_pos->y() - last_pos->y();
+  result.z() = curr_pos->z() - last_pos->z();
 
-  a = fabs(result.x);
-  b = fabs(result.y);
-  c = fabs(result.z);
+  a = fabs(result.x());
+  b = fabs(result.y());
+  c = fabs(result.z());
 
   if (a < b) {
     float t = a;

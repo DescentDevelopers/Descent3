@@ -883,9 +883,9 @@ void FreePolyModel(int i) {
 }
 
 void ReadModelVector(vector *vec, CFILE *infile) {
-  vec->x = cf_ReadFloat(infile);
-  vec->y = cf_ReadFloat(infile);
-  vec->z = cf_ReadFloat(infile);
+  vec->x() = cf_ReadFloat(infile);
+  vec->y() = cf_ReadFloat(infile);
+  vec->z() = cf_ReadFloat(infile);
 }
 
 void ReadModelStringLen(char *ptr, int len, CFILE *infile) {
@@ -979,25 +979,25 @@ void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
   float x, y, z;
   float s, c, t;
 
-  x = axis->x;
-  y = axis->y;
-  z = axis->z;
+  x = axis->x();
+  y = axis->y();
+  z = axis->z();
 
   s = (float)FixSin(ang);
   c = (float)FixCos(ang);
   t = 1.0f - c;
 
-  mat->rvec.x = t * x * x + c;
-  mat->rvec.y = t * x * y + s * z;
-  mat->rvec.z = t * x * z - s * y;
+  mat->rvec.x() = t * x * x + c;
+  mat->rvec.y() = t * x * y + s * z;
+  mat->rvec.z() = t * x * z - s * y;
 
-  mat->uvec.x = t * x * y - s * z;
-  mat->uvec.y = t * y * y + c;
-  mat->uvec.z = t * y * z + s * x;
+  mat->uvec.x() = t * x * y - s * z;
+  mat->uvec.y() = t * y * y + c;
+  mat->uvec.z() = t * y * z + s * x;
 
-  mat->fvec.x = t * x * z + s * y;
-  mat->fvec.y = t * y * z - s * x;
-  mat->fvec.z = t * z * z + c;
+  mat->fvec.x() = t * x * z + s * y;
+  mat->fvec.y() = t * y * z - s * x;
+  mat->fvec.z() = t * z * z + c;
 }
 
 void SetPolymodelProperties(bsp_info *subobj, char *props) {
@@ -1231,20 +1231,20 @@ void MinMaxSubmodel(poly_model *pm, bsp_info *sm, vector offset) {
 
   offset += sm->offset;
   // Get max
-  if ((sm->max.x + offset.x) > pm->maxs.x)
-    pm->maxs.x = sm->max.x + offset.x;
-  if ((sm->max.y + offset.y) > pm->maxs.y)
-    pm->maxs.y = sm->max.y + offset.y;
-  if ((sm->max.z + offset.z) > pm->maxs.z)
-    pm->maxs.z = sm->max.z + offset.z;
+  if ((sm->max.x() + offset.x()) > pm->maxs.x())
+    pm->maxs.x() = sm->max.x() + offset.x();
+  if ((sm->max.y() + offset.y()) > pm->maxs.y())
+    pm->maxs.y() = sm->max.y() + offset.y();
+  if ((sm->max.z() + offset.z()) > pm->maxs.z())
+    pm->maxs.z() = sm->max.z() + offset.z();
 
   // Get min
-  if ((sm->min.x + offset.x) < pm->mins.x)
-    pm->mins.x = sm->min.x + offset.x;
-  if ((sm->min.y + offset.y) < pm->mins.y)
-    pm->mins.y = sm->min.y + offset.y;
-  if ((sm->min.z + offset.z) < pm->mins.z)
-    pm->mins.z = sm->min.z + offset.z;
+  if ((sm->min.x() + offset.x()) < pm->mins.x())
+    pm->mins.x() = sm->min.x() + offset.x();
+  if ((sm->min.y() + offset.y()) < pm->mins.y())
+    pm->mins.y() = sm->min.y() + offset.y();
+  if ((sm->min.z() + offset.z()) < pm->mins.z())
+    pm->mins.z() = sm->min.z() + offset.z();
 
   for (int i = 0; i < sm->num_children; i++)
     MinMaxSubmodel(pm, &pm->submodel[sm->children[i]], offset);
@@ -1257,8 +1257,8 @@ void FindMinMaxForModel(poly_model *pm) {
   ASSERT(!(pm->flags & PMF_NOT_RESIDENT));
 
   vm_MakeZero(&zero_vec);
-  pm->mins.x = pm->mins.y = pm->mins.z = 90000;
-  pm->maxs.x = pm->maxs.y = pm->maxs.z = -90000;
+  pm->mins.x() = pm->mins.y() = pm->mins.z() = 90000;
+  pm->maxs.x() = pm->maxs.y() = pm->maxs.z() = -90000;
 
   for (int i = 0; i < pm->n_models; i++) {
     bsp_info *sm = &pm->submodel[i];
@@ -1369,8 +1369,8 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       ASSERT(n < pm->n_models);
 
-      pm->submodel[n].min.x = pm->submodel[n].min.y = pm->submodel[n].min.z = 90000;
-      pm->submodel[n].max.x = pm->submodel[n].max.y = pm->submodel[n].max.z = -90000;
+      pm->submodel[n].min.x() = pm->submodel[n].min.y() = pm->submodel[n].min.z() = 90000;
+      pm->submodel[n].max.x() = pm->submodel[n].max.y() = pm->submodel[n].max.z() = -90000;
 
       pm->submodel[n].parent = cf_ReadInt(infile);
 
@@ -1440,20 +1440,20 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         ReadModelVector(&pm->submodel[n].verts[i], infile);
 
         // Get max
-        if (pm->submodel[n].verts[i].x > pm->submodel[n].max.x)
-          pm->submodel[n].max.x = pm->submodel[n].verts[i].x;
-        if (pm->submodel[n].verts[i].y > pm->submodel[n].max.y)
-          pm->submodel[n].max.y = pm->submodel[n].verts[i].y;
-        if (pm->submodel[n].verts[i].z > pm->submodel[n].max.z)
-          pm->submodel[n].max.z = pm->submodel[n].verts[i].z;
+        if (pm->submodel[n].verts[i].x() > pm->submodel[n].max.x())
+          pm->submodel[n].max.x() = pm->submodel[n].verts[i].x();
+        if (pm->submodel[n].verts[i].y() > pm->submodel[n].max.y())
+          pm->submodel[n].max.y() = pm->submodel[n].verts[i].y();
+        if (pm->submodel[n].verts[i].z() > pm->submodel[n].max.z())
+          pm->submodel[n].max.z() = pm->submodel[n].verts[i].z();
 
         // Get min
-        if (pm->submodel[n].verts[i].x < pm->submodel[n].min.x)
-          pm->submodel[n].min.x = pm->submodel[n].verts[i].x;
-        if (pm->submodel[n].verts[i].y < pm->submodel[n].min.y)
-          pm->submodel[n].min.y = pm->submodel[n].verts[i].y;
-        if (pm->submodel[n].verts[i].z < pm->submodel[n].min.z)
-          pm->submodel[n].min.z = pm->submodel[n].verts[i].z;
+        if (pm->submodel[n].verts[i].x() < pm->submodel[n].min.x())
+          pm->submodel[n].min.x() = pm->submodel[n].verts[i].x();
+        if (pm->submodel[n].verts[i].y() < pm->submodel[n].min.y())
+          pm->submodel[n].min.y() = pm->submodel[n].verts[i].y();
+        if (pm->submodel[n].verts[i].z() < pm->submodel[n].min.z())
+          pm->submodel[n].min.z() = pm->submodel[n].verts[i].z();
       }
       for (i = 0; i < nverts; i++)
         ReadModelVector(&pm->submodel[n].vertnorms[i], infile);
@@ -1586,20 +1586,20 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           if (t == 0) {
             *min_ptr = *max_ptr = *v_ptr;
           } else {
-            if (v_ptr->x < min_ptr->x)
-              min_ptr->x = v_ptr->x;
-            else if (v_ptr->x > max_ptr->x)
-              max_ptr->x = v_ptr->x;
+            if (v_ptr->x() < min_ptr->x())
+              min_ptr->x() = v_ptr->x();
+            else if (v_ptr->x() > max_ptr->x())
+              max_ptr->x() = v_ptr->x();
 
-            if (v_ptr->y < min_ptr->y)
-              min_ptr->y = v_ptr->y;
-            else if (v_ptr->y > max_ptr->y)
-              max_ptr->y = v_ptr->y;
+            if (v_ptr->y() < min_ptr->y())
+              min_ptr->y() = v_ptr->y();
+            else if (v_ptr->y() > max_ptr->y())
+              max_ptr->y() = v_ptr->y();
 
-            if (v_ptr->z < min_ptr->z)
-              min_ptr->z = v_ptr->z;
-            else if (v_ptr->z > max_ptr->z)
-              max_ptr->z = v_ptr->z;
+            if (v_ptr->z() < min_ptr->z())
+              min_ptr->z() = v_ptr->z();
+            else if (v_ptr->z() > max_ptr->z())
+              max_ptr->z() = v_ptr->z();
           }
         }
 
@@ -2573,9 +2573,9 @@ void SetModelInterpPos(poly_model *po, const float *normalized_pos) {
     }
   } else {
     for (i = 0; i < po->n_models; i++) {
-      po->submodel[i].mod_pos.x = 0;
-      po->submodel[i].mod_pos.y = 0;
-      po->submodel[i].mod_pos.z = 0;
+      po->submodel[i].mod_pos.x() = 0;
+      po->submodel[i].mod_pos.y() = 0;
+      po->submodel[i].mod_pos.z() = 0;
     }
   }
 }
@@ -2707,9 +2707,9 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t 
 
   } else {
     for (i = 0; i < po->n_models; i++) {
-      po->submodel[i].mod_pos.x = 0;
-      po->submodel[i].mod_pos.y = 0;
-      po->submodel[i].mod_pos.z = 0;
+      po->submodel[i].mod_pos.x() = 0;
+      po->submodel[i].mod_pos.y() = 0;
+      po->submodel[i].mod_pos.z() = 0;
 
       po->submodel[i].angs.p() = 0;
       po->submodel[i].angs.h() = 0;

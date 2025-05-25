@@ -2430,7 +2430,7 @@ void UndoSnap() {
   if ((Snap_roomnum <= Highest_room_index) && Rooms[Snap_roomnum].used) {
     vector *vp = &Rooms[Snap_roomnum].verts[Snap_vertnum];
 
-    if ((vp->x == Snap_new_point.x) && (vp->y == Snap_new_point.y) && (vp->z == Snap_new_point.z)) {
+    if ((vp->x() == Snap_new_point.x()) && (vp->y() == Snap_new_point.y()) && (vp->z() == Snap_new_point.z())) {
       *vp = Snap_old_point;
       World_changed = 1;
       return;

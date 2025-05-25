@@ -333,9 +333,9 @@ void GetPreRotatedPoint(g3Point *dest, int x, int z, int yvalue) {
 
   // also store the unrotated point
   dest->p3_flags |= PF_ORIGPOINT;
-  dest->p3_vecPreRot.x = TERRAIN_SIZE * x;
-  dest->p3_vecPreRot.y = TERRAIN_HEIGHT_INCREMENT * yvalue;
-  dest->p3_vecPreRot.z = TERRAIN_SIZE * z;
+  dest->p3_vecPreRot.x() = TERRAIN_SIZE * x;
+  dest->p3_vecPreRot.y() = TERRAIN_HEIGHT_INCREMENT * yvalue;
+  dest->p3_vecPreRot.z() = TERRAIN_SIZE * z;
 }
 
 // Gets a pre-rotated point that does not fall exactly on one of our 255 height values
@@ -354,9 +354,9 @@ void GetSpecialRotatedPoint(g3Point *dest, int x, int z, float yvalue) {
 
   // also store the unrotated point
   dest->p3_flags |= PF_ORIGPOINT;
-  dest->p3_vecPreRot.x = TERRAIN_SIZE * x;
-  dest->p3_vecPreRot.y = yvalue;
-  dest->p3_vecPreRot.z = TERRAIN_SIZE * z;
+  dest->p3_vecPreRot.x() = TERRAIN_SIZE * x;
+  dest->p3_vecPreRot.y() = yvalue;
+  dest->p3_vecPreRot.z() = TERRAIN_SIZE * z;
 }
 
 void Terrain_start_frame(vector *eye, matrix *view_orient) {
@@ -514,8 +514,8 @@ int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount) {
 
   if ((Terrain_checksum + 1) == Terrain_occlusion_checksum && !Terrain_from_mine) {
     use_occlusion = 1;
-    int oz = (Viewer_object->pos.z / TERRAIN_SIZE) / OCCLUSION_SIZE;
-    int ox = (Viewer_object->pos.x / TERRAIN_SIZE) / OCCLUSION_SIZE;
+    int oz = (Viewer_object->pos.z() / TERRAIN_SIZE) / OCCLUSION_SIZE;
+    int ox = (Viewer_object->pos.x() / TERRAIN_SIZE) / OCCLUSION_SIZE;
 
     if (oz < 0 || oz >= OCCLUSION_SIZE || ox < 0 || ox >= OCCLUSION_SIZE)
       use_occlusion = 0;
@@ -646,12 +646,12 @@ int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount) {
       // Do min height for region
       GetPreRotatedPointFast(&pnt->p3_vec, x[i], z[i], ymin_int[0]);
 
-      if (pnt->p3_vec.z >= 0)
+      if (pnt->p3_vec.z() >= 0)
         same_side &= 1;
       else
         same_side &= 2;
 
-      if ((fabs(pnt->p3_vec.z) <= testdist))
+      if ((fabs(pnt->p3_vec.z()) <= testdist))
         close = 1;
 
       anded &= g3_CodePoint(pnt);
@@ -669,12 +669,12 @@ int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount) {
       // Do max height for region
       GetPreRotatedPointFast(&pnt->p3_vec, x[i], z[i], ymax_int[0]);
 
-      if (pnt->p3_vec.z >= 0)
+      if (pnt->p3_vec.z() >= 0)
         same_side &= 1;
       else
         same_side &= 2;
 
-      if ((fabs(pnt->p3_vec.z) <= testdist))
+      if ((fabs(pnt->p3_vec.z()) <= testdist))
         close = 1;
 
       anded &= g3_CodePoint(pnt);
@@ -728,8 +728,8 @@ int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount) {
 // Given a position, returns the terrain segment that that position is in/over
 // returns -1 if not over terrain
 int GetTerrainCellFromPos(vector *pos) {
-  int x = pos->x / TERRAIN_SIZE;
-  int z = pos->z / TERRAIN_SIZE;
+  int x = pos->x() / TERRAIN_SIZE;
+  int z = pos->z() / TERRAIN_SIZE;
 
   if (x < 0 || x >= TERRAIN_WIDTH || z < 0 || z >= TERRAIN_DEPTH)
     return -1;
@@ -744,10 +744,10 @@ void ComputeTerrainSegmentCenter(vector *pos, int segnum) {
   int segx = segnum % TERRAIN_WIDTH;
   int segz = segnum / TERRAIN_WIDTH;
 
-  pos->x = (segx * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
-  pos->z = (segz * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
+  pos->x() = (segx * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
+  pos->z() = (segz * TERRAIN_SIZE) + (TERRAIN_SIZE / 2);
 
-  pos->y = GetTerrainGroundPoint(pos);
+  pos->y() = GetTerrainGroundPoint(pos);
 }
 
 // Given an position, returns the terrain Y coord at that location
@@ -757,8 +757,8 @@ float GetTerrainGroundPoint(vector *pos, vector *normal) {
   int t;
   int x, z;
 
-  x = pos->x / TERRAIN_SIZE;
-  z = pos->z / TERRAIN_SIZE;
+  x = pos->x() / TERRAIN_SIZE;
+  z = pos->z() / TERRAIN_SIZE;
 
   if (x < 0 || x >= TERRAIN_WIDTH || z < 0 || z >= TERRAIN_DEPTH)
     return (0);
@@ -766,16 +766,16 @@ float GetTerrainGroundPoint(vector *pos, vector *normal) {
   t = z * TERRAIN_WIDTH + x;
 
   pnt = *pos;
-  pnt.x -= (x * TERRAIN_SIZE);
-  pnt.z -= (z * TERRAIN_SIZE);
+  pnt.x() -= (x * TERRAIN_SIZE);
+  pnt.z() -= (z * TERRAIN_SIZE);
 
-  if (pnt.x > pnt.z)
+  if (pnt.x() > pnt.z())
     norm = TerrainNormals[MAX_TERRAIN_LOD - 1][t].normal2;
   else
     norm = TerrainNormals[MAX_TERRAIN_LOD - 1][t].normal1;
 
   // Do plane equation on x,z and then interpolate y
-  y = ((pnt.x * norm.x) + (pnt.z * norm.z)) / norm.y;
+  y = ((pnt.x() * norm.x()) + (pnt.z() * norm.z())) / norm.y();
   y = -y;
   y += Terrain_seg[t].y;
 
@@ -814,16 +814,16 @@ int SimplifyVertex(int x, int z, float delta) {
   vector vec;
   float inner;
 
-  vec.x = x * TERRAIN_SIZE;
-  vec.z = z * TERRAIN_SIZE;
-  vec.y = Terrain_seg[z * TERRAIN_WIDTH + x].y;
+  vec.x() = x * TERRAIN_SIZE;
+  vec.z() = z * TERRAIN_SIZE;
+  vec.y() = Terrain_seg[z * TERRAIN_WIDTH + x].y;
 
   float delta_squared = delta * delta;
   float first_part, second_part;
 
-  float ex_minus_vx_squared = (eye->x - vec.x) * (eye->x - vec.x);
-  float ez_minus_vz_squared = (eye->z - vec.z) * (eye->z - vec.z);
-  float ey_minus_vy_squared = (eye->y - vec.y) * (eye->y - vec.y);
+  scalar ex_minus_vx_squared = (eye->x() - vec.x()) * (eye->x() - vec.x());
+  scalar ez_minus_vz_squared = (eye->z() - vec.z()) * (eye->z() - vec.z());
+  scalar ey_minus_vy_squared = (eye->y() - vec.y()) * (eye->y() - vec.y());
 
   first_part = delta_squared * (ex_minus_vx_squared + ez_minus_vz_squared);
 

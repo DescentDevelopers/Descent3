@@ -665,14 +665,14 @@ void DrawObjectSelectionBrackets(object *obj, bool front_flag) {
   g3_GetViewPosition(&viewvec);
   viewvec -= obj->pos;
   // Get length of line segments we're drawing
-  line_len = (pm->maxs.x - pm->mins.x) * 0.2f;
+  line_len = (pm->maxs.x() - pm->mins.x()) * 0.2f;
   // Do each corner
   for (int c = 0; c < 8; c++) {
     vector corner;
     // Get the corner relative to the object
-    corner = (obj->orient.rvec * ((c & 1) ? pm->mins.x : pm->maxs.x)) +
-             (obj->orient.uvec * ((c & 2) ? pm->mins.y : pm->maxs.y)) +
-             (obj->orient.fvec * ((c & 4) ? pm->mins.z : pm->maxs.z));
+    corner = (obj->orient.rvec * ((c & 1) ? pm->mins.x() : pm->maxs.x())) +
+             (obj->orient.uvec * ((c & 2) ? pm->mins.y() : pm->maxs.y())) +
+             (obj->orient.fvec * ((c & 4) ? pm->mins.z() : pm->maxs.z()));
     // See if this corner is in front or in back of the object, as specified
     if (((corner * viewvec) > 0.0) != front_flag)
       continue;
@@ -746,8 +746,8 @@ static void DrawNumber(int num, vector pos, float size, ddgr_color c1) {
     g3_RotatePoint(&basepnt, &cur_pos);
     for (i = 0; i < NumOfPoints[num_array[j]]; i++) {
       rot_pnt[i] = basepnt;
-      rot_pnt[i].p3_vec.x += (ArrayX[num_array[j]][i] * size);
-      rot_pnt[i].p3_vec.y += (ArrayY[num_array[j]][i] * size);
+      rot_pnt[i].p3_vec.x() += (ArrayX[num_array[j]][i] * size);
+      rot_pnt[i].p3_vec.y() += (ArrayY[num_array[j]][i] * size);
       rot_pnt[i].p3_flags = 0;
       g3_CodePoint(&rot_pnt[i]);
       g3_ProjectPoint(&rot_pnt[i]);
@@ -763,8 +763,8 @@ static void DrawNumber(int num, vector pos, float size, ddgr_color c1) {
 }
 static inline bool object_object_AABB(object *obj1, object *obj2) {
   bool overlap = true;
-  if (obj1->max_xyz.x < obj2->min_xyz.x || obj2->max_xyz.x < obj1->min_xyz.x || obj1->max_xyz.z < obj2->min_xyz.z ||
-      obj2->max_xyz.z < obj1->min_xyz.z || obj1->max_xyz.y < obj2->min_xyz.y || obj2->max_xyz.y < obj1->min_xyz.y)
+  if (obj1->max_xyz.x() < obj2->min_xyz.x() || obj2->max_xyz.x() < obj1->min_xyz.x() || obj1->max_xyz.z() < obj2->min_xyz.z() ||
+      obj2->max_xyz.z() < obj1->min_xyz.z() || obj1->max_xyz.y() < obj2->min_xyz.y() || obj2->max_xyz.y() < obj1->min_xyz.y())
     overlap = false;
 
   return overlap;
@@ -806,9 +806,9 @@ void ComputeDebugVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float 
   int leftmost_point = -1;
   float leftmost_x = 900000.00f; // a big number
   for (i = 0; i < fp->num_verts; i++) {
-    if (verts[i].x < leftmost_x) {
+    if (verts[i].x() < leftmost_x) {
       leftmost_point = i;
-      leftmost_x = verts[i].x;
+      leftmost_x = verts[i].x();
     }
   }
   ASSERT(leftmost_point != -1);
@@ -816,9 +816,9 @@ void ComputeDebugVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float 
   int topmost_point = -1;
   float topmost_y = -900000.0f; // a big number
   for (i = 0; i < fp->num_verts; i++) {
-    if (verts[i].y > topmost_y) {
+    if (verts[i].y() > topmost_y) {
       topmost_point = i;
-      topmost_y = verts[i].y;
+      topmost_y = verts[i].y();
     }
   }
   ASSERT(topmost_point != -1);
@@ -826,9 +826,9 @@ void ComputeDebugVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float 
   int rightmost_point = -1;
   float rightmost_x = -900000.00f; // a big number
   for (i = 0; i < fp->num_verts; i++) {
-    if (verts[i].x > rightmost_x) {
+    if (verts[i].x() > rightmost_x) {
       rightmost_point = i;
-      rightmost_x = verts[i].x;
+      rightmost_x = verts[i].x();
     }
   }
   ASSERT(rightmost_point != -1);
@@ -836,20 +836,20 @@ void ComputeDebugVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float 
   int bottommost_point = -1;
   float bottommost_y = 900000.0f; // a big number
   for (i = 0; i < fp->num_verts; i++) {
-    if (verts[i].y < bottommost_y) {
+    if (verts[i].y() < bottommost_y) {
       bottommost_point = i;
-      bottommost_y = verts[i].y;
+      bottommost_y = verts[i].y();
     }
   }
   ASSERT(bottommost_point != -1);
   // now set the base vertex, which is where we base uv 0,0 on
   vector base_vector;
-  base_vector.x = verts[leftmost_point].x;
-  base_vector.y = verts[topmost_point].y;
-  base_vector.z = 0;
+  base_vector.x() = verts[leftmost_point].x();
+  base_vector.y() = verts[topmost_point].y();
+  base_vector.z() = 0;
   // Figure out grid resolution
-  *xdiff = verts[rightmost_point].x - verts[leftmost_point].x;
-  *ydiff = verts[topmost_point].y - verts[bottommost_point].y;
+  *xdiff = verts[rightmost_point].x() - verts[leftmost_point].x();
+  *ydiff = verts[topmost_point].y() - verts[bottommost_point].y();
 
   // Find upper left corner
   vm_TransposeMatrix(&trans_matrix);
@@ -947,21 +947,21 @@ void DrawDebugInfo(object *obj) {
     c1 = GR_RGB(255, 255, 255);
   pos[0] = obj->max_xyz;
   pos[1] = obj->max_xyz;
-  pos[1].z = obj->min_xyz.z;
+  pos[1].z() = obj->min_xyz.z();
   pos[2] = obj->min_xyz;
-  pos[2].y = obj->max_xyz.y;
+  pos[2].y() = obj->max_xyz.y();
   pos[3] = obj->max_xyz;
-  pos[3].x = obj->min_xyz.x;
+  pos[3].x() = obj->min_xyz.x();
   pos[4] = obj->max_xyz;
-  pos[4].y = obj->min_xyz.y;
+  pos[4].y() = obj->min_xyz.y();
   pos[5] = obj->min_xyz;
-  pos[5].x = obj->max_xyz.x;
+  pos[5].x() = obj->max_xyz.x();
   pos[6] = obj->min_xyz;
   pos[7] = obj->min_xyz;
-  pos[7].z = obj->max_xyz.z;
+  pos[7].z() = obj->max_xyz.z();
 
   pos[8] = obj->pos;
-  pos[8].y += .8f * obj->size;
+  pos[8].y() += .8f * obj->size;
   g3_RotatePoint(&g3p[0], &pos[0]);
   g3_RotatePoint(&g3p[1], &pos[1]);
   g3_RotatePoint(&g3p[2], &pos[2]);
@@ -1583,9 +1583,9 @@ void RenderObject_DrawPolymodel(object *obj, float *normalized_times) {
       use_effect = 1;
       // switch object position a little
       float moveval = 10.0 * val * Viewer_object->effect_info->deform_range;
-      obj_pos.x += (((ps_rand() % 1000) - 500) / 500.0) * moveval;
-      obj_pos.y += (((ps_rand() % 1000) - 500) / 500.0) * moveval;
-      obj_pos.z += (((ps_rand() % 1000) - 500) / 500.0) * moveval;
+      obj_pos.x() += (((ps_rand() % 1000) - 500) / 500.0) * moveval;
+      obj_pos.y() += (((ps_rand() % 1000) - 500) / 500.0) * moveval;
+      obj_pos.z() += (((ps_rand() % 1000) - 500) / 500.0) * moveval;
     }
     // If this is a powerup, fade it out near the end of its life
     if (obj->type == OBJ_POWERUP && (obj->flags & OF_USES_LIFELEFT) && obj->lifeleft < 5) {
@@ -1645,7 +1645,7 @@ void RenderObject_DrawPolymodel(object *obj, float *normalized_times) {
     }
     if (Detail_settings.Bumpmapping_enabled && (obj->type == OBJ_ROBOT || obj->type == OBJ_PLAYER)) {
       pe.bump_light_pos = obj->pos;
-      pe.bump_light_pos.y += 100;
+      pe.bump_light_pos.y() += 100;
       pe.bump_scalar = 1;
       pe.type |= PEF_BUMPMAPPED;
       use_effect = 1;
@@ -1890,9 +1890,9 @@ void DrawPowerupSparkles(object *obj) {
     }
 
     vector pos_delta;
-    pos_delta.x = (ps_rand() % 100) - 50;
-    pos_delta.y = (ps_rand() % 100) - 80;
-    pos_delta.z = (ps_rand() % 100) - 50;
+    pos_delta.x() = (ps_rand() % 100) - 50;
+    pos_delta.y() = (ps_rand() % 100) - 80;
+    pos_delta.z() = (ps_rand() % 100) - 50;
     vm_NormalizeVector(&pos_delta);
     pos_delta = obj->last_pos + (obj_size_delta * pos_delta);
 
@@ -1906,9 +1906,9 @@ void DrawPowerupSparkles(object *obj) {
       vis->drag = 0.2f;
       vis->phys_flags |= PF_GRAVITY | PF_NO_COLLIDE;
 
-      vis->velocity.x = (ps_rand() % 50) - 25;
-      vis->velocity.y = -10 - (ps_rand() % 20);
-      vis->velocity.z = (ps_rand() % 50) - 25;
+      vis->velocity.x() = (ps_rand() % 50) - 25;
+      vis->velocity.y() = -10 - (ps_rand() % 20);
+      vis->velocity.z() = (ps_rand() % 50) - 25;
       vm_NormalizeVector(&vis->velocity);
       vis->velocity *= 3.0f + (ps_rand() % 4);
 
@@ -2121,27 +2121,27 @@ void DrawPlayerTypingIndicator(object *obj) {
     g3_RotatePoint(&pnt, fq.p1);
     g3_ProjectPoint(&pnt);
 
-    points[0].p3_vec.x = pnt.p3_vec.x - bmw;
-    points[0].p3_vec.y = pnt.p3_vec.y + bmh + 5;
-    points[0].p3_vec.z = pnt.p3_vec.z;
+    points[0].p3_vec.x() = pnt.p3_vec.x() - bmw;
+    points[0].p3_vec.y() = pnt.p3_vec.y() + bmh + 5;
+    points[0].p3_vec.z() = pnt.p3_vec.z();
     points[0].p3_u = 0;
     points[0].p3_v = 0;
 
-    points[1].p3_vec.x = pnt.p3_vec.x + bmw;
-    points[1].p3_vec.y = pnt.p3_vec.y + bmh + 5;
-    points[1].p3_vec.z = pnt.p3_vec.z;
+    points[1].p3_vec.x() = pnt.p3_vec.x() + bmw;
+    points[1].p3_vec.y() = pnt.p3_vec.y() + bmh + 5;
+    points[1].p3_vec.z() = pnt.p3_vec.z();
     points[1].p3_u = 1;
     points[1].p3_v = 0;
 
-    points[2].p3_vec.x = pnt.p3_vec.x + bmw;
-    points[2].p3_vec.y = pnt.p3_vec.y - bmh + 5;
-    points[2].p3_vec.z = pnt.p3_vec.z;
+    points[2].p3_vec.x() = pnt.p3_vec.x() + bmw;
+    points[2].p3_vec.y() = pnt.p3_vec.y() - bmh + 5;
+    points[2].p3_vec.z() = pnt.p3_vec.z();
     points[2].p3_u = 1;
     points[2].p3_v = 1;
 
-    points[3].p3_vec.x = pnt.p3_vec.x - bmw;
-    points[3].p3_vec.y = pnt.p3_vec.y - bmh + 5;
-    points[3].p3_vec.z = pnt.p3_vec.z;
+    points[3].p3_vec.x() = pnt.p3_vec.x() - bmw;
+    points[3].p3_vec.y() = pnt.p3_vec.y() - bmh + 5;
+    points[3].p3_vec.z() = pnt.p3_vec.z();
     points[3].p3_u = 0;
     points[3].p3_v = 1;
 
@@ -2249,8 +2249,8 @@ void DrawSparkyDamageLightning(object *obj) {
         vis->lifeleft = 1.0;
         vis->lifetime = 1.0;
         vis->end_pos = obj->pos;
-        vis->velocity.x = .15f;
-        vis->velocity.y = 3;
+        vis->velocity.x() = .15f;
+        vis->velocity.y() = 3;
         vis->attach_info.obj_handle = obj->handle;
         vis->attach_info.subnum = subnum;
         vis->attach_info.vertnum = ps_rand() % sm->nverts;
@@ -2293,8 +2293,8 @@ void DrawVirusLightning(object *obj) {
       vis->lifeleft = 1.0;
       vis->lifetime = 1.0;
       vis->end_pos = obj->pos;
-      vis->velocity.x = .15f;
-      vis->velocity.y = 3;
+      vis->velocity.x() = .15f;
+      vis->velocity.y() = 3;
       vis->attach_info.obj_handle = obj->handle;
       vis->attach_info.subnum = subnum;
       vis->attach_info.vertnum = ps_rand() % sm->nverts;

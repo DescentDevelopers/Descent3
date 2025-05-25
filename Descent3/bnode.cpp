@@ -173,7 +173,7 @@ public:
 };
 
 static float BNode_QuickDist(vector *pos1, vector *pos2) {
-  return fabs(pos1->x - pos2->x) + fabs(pos1->y - pos2->y) + fabs(pos1->z - pos2->z);
+  return fabs(pos1->x() - pos2->x()) + fabs(pos1->y() - pos2->y()) + fabs(pos1->z() - pos2->z());
 }
 
 int BNode_Path[MAX_BNODES_PER_ROOM];

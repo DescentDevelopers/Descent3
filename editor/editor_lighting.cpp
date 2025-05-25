@@ -907,12 +907,12 @@ void DoRadiosityForRooms() {
       ASSERT(Volume_elements[roomnum]);
 
       // Now go through and find all the valid spectra points
-      float cur_z = Rooms[roomnum].min_xyz.z + .1;
+      float cur_z = Rooms[roomnum].min_xyz.z() + .1;
 
       for (i = 0; i < vd; i++, cur_z += VOLUME_SPACING) {
-        float cur_y = Rooms[roomnum].min_xyz.y + .1;
+        float cur_y = Rooms[roomnum].min_xyz.y() + .1;
         for (t = 0; t < vh; t++, cur_y += VOLUME_SPACING) {
-          float cur_x = Rooms[roomnum].min_xyz.x + .1;
+          float cur_x = Rooms[roomnum].min_xyz.x() + .1;
           for (j = 0; j < vw; j++, cur_x += VOLUME_SPACING) {
             vector dest_vec;
             dest_vec.x = cur_x;
@@ -1445,8 +1445,8 @@ void BuildElementListForRoomFace(int roomnum, int facenum, rad_surface *surf) {
   vert = LightmapInfo[lmi_handle].upper_left - avg_vert;
   vm_MatrixMulVector(&base_vector, &vert, &trans_matrix);
 
-  xdiff.x = LightmapInfo[lmi_handle].xspacing;
-  ydiff.y = LightmapInfo[lmi_handle].yspacing;
+  xdiff.x() = LightmapInfo[lmi_handle].xspacing;
+  ydiff.y() = LightmapInfo[lmi_handle].yspacing;
 
   vm_TransposeMatrix(&trans_matrix);
 
@@ -1503,13 +1503,13 @@ void SetRadClipLines(vector *tp, vector *rp, vector *bp, vector *lp) {
 
 uint8_t CodeRadPoint(rad_point *rp) {
   uint8_t code = 0;
-  if (rp->pos.x < rad_ClipLeft->x)
+  if (rp->pos.x() < rad_ClipLeft->x())
     code |= CC_OFF_LEFT;
-  if (rp->pos.x > rad_ClipRight->x)
+  if (rp->pos.x() > rad_ClipRight->x())
     code |= CC_OFF_RIGHT;
-  if (rp->pos.y < rad_ClipBottom->y)
+  if (rp->pos.y() < rad_ClipBottom->y())
     code |= CC_OFF_BOT;
-  if (rp->pos.y > rad_ClipTop->y)
+  if (rp->pos.y() > rad_ClipTop->y())
     code |= CC_OFF_TOP;
   rp->code = code;
 
@@ -1653,22 +1653,22 @@ int ClipRadToPlane(int plane, rad_point *src, rad_point *dest, int nv) {
 // Takes two points and a plane, and clips.
 void ClipRadEdge(int plane_flag, rad_point *on_pnt, rad_point *off_pnt) {
   if (plane_flag & CC_OFF_TOP) {
-    float percent_on = 1.0 - ((off_pnt->pos.y - rad_ClipTop->y) / (off_pnt->pos.y - on_pnt->pos.y));
+    scalar percent_on = 1.0 - ((off_pnt->pos.y() - rad_ClipTop->y()) / (off_pnt->pos.y() - on_pnt->pos.y()));
     GlobalTempRadPoint.pos = on_pnt->pos + ((off_pnt->pos - on_pnt->pos) * percent_on);
   }
 
   if (plane_flag & CC_OFF_RIGHT) {
-    float percent_on = 1.0 - ((off_pnt->pos.x - rad_ClipRight->x) / (off_pnt->pos.x - on_pnt->pos.x));
+    scalar percent_on = 1.0 - ((off_pnt->pos.x() - rad_ClipRight->x()) / (off_pnt->pos.x() - on_pnt->pos.x()));
     GlobalTempRadPoint.pos = on_pnt->pos + ((off_pnt->pos - on_pnt->pos) * percent_on);
   }
 
   if (plane_flag & CC_OFF_LEFT) {
-    float percent_on = 1.0 - ((off_pnt->pos.x - rad_ClipLeft->x) / (off_pnt->pos.x - on_pnt->pos.x));
+    scalar percent_on = 1.0 - ((off_pnt->pos.x() - rad_ClipLeft->x()) / (off_pnt->pos.x() - on_pnt->pos.x()));
     GlobalTempRadPoint.pos = on_pnt->pos + ((off_pnt->pos - on_pnt->pos) * percent_on);
   }
 
   if (plane_flag & CC_OFF_BOT) {
-    float percent_on = 1.0 - ((off_pnt->pos.y - rad_ClipBottom->y) / (off_pnt->pos.y - on_pnt->pos.y));
+    scalar percent_on = 1.0 - ((off_pnt->pos.y() - rad_ClipBottom->y()) / (off_pnt->pos.y() - on_pnt->pos.y()));
     GlobalTempRadPoint.pos = on_pnt->pos + ((off_pnt->pos - on_pnt->pos) * percent_on);
   }
 
@@ -1688,7 +1688,7 @@ int ShootRayForTerrainLight(vector *src, vector *dest, int cellnum) {
   fvi_query fq;
   vector temp_dest = *dest;
 
-  if (temp_dest.y >= MAX_TERRAIN_HEIGHT * 3) {
+  if (temp_dest.y() >= MAX_TERRAIN_HEIGHT * 3) {
     float mag;
     float ydiff;
     vector ray = temp_dest - *src;
@@ -1696,7 +1696,7 @@ int ShootRayForTerrainLight(vector *src, vector *dest, int cellnum) {
     mag = vm_GetMagnitude(&ray);
     ray /= mag;
 
-    ydiff = ((MAX_TERRAIN_HEIGHT * 3) - src->y) / ray.y;
+    ydiff = ((MAX_TERRAIN_HEIGHT * 3) - src->y()) / ray.y();
 
     temp_dest = *src + (ray * ydiff);
   }
@@ -1773,7 +1773,7 @@ void DoTerrainDynamicTable() {
         for (j = 0; j < Terrain_sky.num_satellites; j++) {
           raynum++;
 
-          if (gp.y > pos.y)
+          if (gp.y() > pos.y())
             continue;
 
           int answer;
@@ -1922,17 +1922,17 @@ void DoRadiosityForTerrain() {
       z = i / (AREA_X);
       x = i % (AREA_X);
 
-      a.x = x * TERRAIN_SIZE;
-      a.y = Terrain_seg[(z * TERRAIN_WIDTH) + (x)].y;
-      a.z = z * TERRAIN_SIZE;
+      a.x() = x * TERRAIN_SIZE;
+      a.y() = Terrain_seg[(z * TERRAIN_WIDTH) + (x)].y;
+      a.z() = z * TERRAIN_SIZE;
 
-      b.x = x * TERRAIN_SIZE;
-      b.y = Terrain_seg[((z + 1) * TERRAIN_WIDTH) + (x)].y;
-      b.z = (z + 1) * TERRAIN_SIZE;
+      b.x() = x * TERRAIN_SIZE;
+      b.y() = Terrain_seg[((z + 1) * TERRAIN_WIDTH) + (x)].y;
+      b.z() = (z + 1) * TERRAIN_SIZE;
 
-      c.x = (x + 1) * TERRAIN_SIZE;
-      c.y = Terrain_seg[((z + 1) * TERRAIN_WIDTH) + (x + 1)].y;
-      c.z = (z + 1) * TERRAIN_SIZE;
+      c.x() = (x + 1) * TERRAIN_SIZE;
+      c.y() = Terrain_seg[((z + 1) * TERRAIN_WIDTH) + (x + 1)].y;
+      c.z() = (z + 1) * TERRAIN_SIZE;
 
       Light_surfaces[i * 2].verts[0] = a;
       Light_surfaces[i * 2].verts[1] = b;
@@ -1962,17 +1962,17 @@ void DoRadiosityForTerrain() {
       z = i / (AREA_X);
       x = i % (AREA_X);
 
-      a.x = x * TERRAIN_SIZE;
-      a.y = Terrain_seg[(z * TERRAIN_WIDTH) + (x)].y;
-      a.z = z * TERRAIN_SIZE;
+      a.x() = x * TERRAIN_SIZE;
+      a.y() = Terrain_seg[(z * TERRAIN_WIDTH) + (x)].y;
+      a.z() = z * TERRAIN_SIZE;
 
-      b.x = (x + 1) * TERRAIN_SIZE;
-      b.y = Terrain_seg[((z + 1) * TERRAIN_WIDTH) + (x + 1)].y;
-      b.z = (z + 1) * TERRAIN_SIZE;
+      b.x() = (x + 1) * TERRAIN_SIZE;
+      b.y() = Terrain_seg[((z + 1) * TERRAIN_WIDTH) + (x + 1)].y;
+      b.z() = (z + 1) * TERRAIN_SIZE;
 
-      c.x = (x + 1) * TERRAIN_SIZE;
-      c.y = Terrain_seg[(z * TERRAIN_WIDTH) + (x + 1)].y;
-      c.z = z * TERRAIN_SIZE;
+      c.x() = (x + 1) * TERRAIN_SIZE;
+      c.y() = Terrain_seg[(z * TERRAIN_WIDTH) + (x + 1)].y;
+      c.z() = z * TERRAIN_SIZE;
 
       Light_surfaces[i * 2 + 1].verts[0] = a;
       Light_surfaces[i * 2 + 1].verts[1] = b;
@@ -2421,9 +2421,9 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
   float leftmost_x = 900000.00f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].x < leftmost_x) {
+    if (verts[i].x() < leftmost_x) {
       leftmost_point = i;
-      leftmost_x = verts[i].x;
+      leftmost_x = verts[i].x();
     }
   }
 
@@ -2434,9 +2434,9 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
   float topmost_y = -900000.0f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].y > topmost_y) {
+    if (verts[i].y() > topmost_y) {
       topmost_point = i;
-      topmost_y = verts[i].y;
+      topmost_y = verts[i].y();
     }
   }
 
@@ -2447,9 +2447,9 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
   float rightmost_x = -900000.00f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].x > rightmost_x) {
+    if (verts[i].x() > rightmost_x) {
       rightmost_point = i;
-      rightmost_x = verts[i].x;
+      rightmost_x = verts[i].x();
     }
   }
 
@@ -2460,9 +2460,9 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
   float bottommost_y = 900000.0f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].y < bottommost_y) {
+    if (verts[i].y() < bottommost_y) {
       bottommost_point = i;
-      bottommost_y = verts[i].y;
+      bottommost_y = verts[i].y();
     }
   }
 
@@ -2477,8 +2477,8 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
   base_vector.z = 0;
 
   // Figure out lightmap resolution
-  float xdiff = verts[rightmost_point].x - verts[leftmost_point].x;
-  float ydiff = verts[topmost_point].y - verts[bottommost_point].y;
+  scalar xdiff = verts[rightmost_point].x() - verts[leftmost_point].x();
+  scalar ydiff = verts[topmost_point].y() - verts[bottommost_point].y();
   float max_diff = (float)std::max(xdiff, ydiff);
 
   int lightmap_x_res = -1, lightmap_y_res = -1;
@@ -2581,8 +2581,8 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
       facevert = rot_vert;
 
       // Find uv2s for this vertex
-      fp->face_uvls[t].u2 = (facevert.x - verts[leftmost_point].x) / (float)(lightmap_x_res * xspace_int);
-      fp->face_uvls[t].v2 = fabs((verts[topmost_point].y - facevert.y)) / (float)(lightmap_y_res * yspace_int);
+      fp->face_uvls[t].u2 = (facevert.x() - verts[leftmost_point].x()) / (float)(lightmap_x_res * xspace_int);
+      fp->face_uvls[t].v2 = fabs((verts[topmost_point].y() - facevert.y())) / (float)(lightmap_y_res * yspace_int);
 
       if (fp->face_uvls[t].u2 < 0)
         fp->face_uvls[t].u2 = 0;

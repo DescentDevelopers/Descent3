@@ -2049,7 +2049,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
 
       if (obj->mtype.phys_info.velocity * normal <= 0.0f) {
         vector no_y_vec = pos - fpnt;
-        no_y_vec.y = 0.0f;
+        no_y_vec.y() = 0.0f;
 
         float dist;
 
@@ -2192,19 +2192,19 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
   vector dist;
 
   if (a.b() > 32768)
-    dist.x = 65536 - a.b();
+    dist.x() = 65536 - a.b();
   else
-    dist.x = a.b();
+    dist.x() = a.b();
 
   if (a.h() > 32768)
-    dist.y = 65536 - a.h();
+    dist.y() = 65536 - a.h();
   else
-    dist.y = a.h();
+    dist.y() = a.h();
 
   if (a.p() > 32768)
-    dist.z = 65536 - a.p();
+    dist.z() = 65536 - a.p();
   else
-    dist.z = a.p();
+    dist.z() = a.p();
 
   float angles = vm_GetMagnitude(&dist);
 
@@ -2219,19 +2219,19 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
   dist *= scale;
 
   if (a.b() > 32768)
-    a.b() = 65535 - dist.x;
+    a.b() = 65535 - dist.x();
   else
-    a.b() = dist.x;
+    a.b() = dist.x();
 
   if (a.h() > 32768)
-    a.h() = 65535 - dist.y;
+    a.h() = 65535 - dist.y();
   else
-    a.h() = dist.y;
+    a.h() = dist.y();
 
   if (a.p() > 32768)
-    a.p() = 65535 - dist.z;
+    a.p() = 65535 - dist.z();
   else
-    a.p() = dist.z;
+    a.p() = dist.z();
 
   vm_AnglesToMatrix(&rot_matrix, a.p(), a.h(), a.b());
   obj->orient *= rot_matrix;
@@ -4087,7 +4087,7 @@ bool AiGoalAvoid(vector *adir, object *obj, object *a_obj, float dist) {
   vector mdir;
   mdir = obj->mtype.phys_info.velocity - a_vel;
 
-  if (fabsf(mdir.x) < 0.1f && fabsf(mdir.y) < 0.1f && fabsf(mdir.z) < 0.1f) {
+  if (fabsf(mdir.x()) < 0.1f && fabsf(mdir.y()) < 0.1f && fabsf(mdir.z()) < 0.1f) {
     *adir = -to_avoid;
     vm_NormalizeVector(adir);
 
@@ -4570,24 +4570,24 @@ void ai_move(object *obj) {
 
     // FLOCK HEIGHT CODE
     if (ROOMNUM_OUTSIDE(obj->roomnum) && (ai_info->flags & AIF_BIASED_FLIGHT_HEIGHT)) {
-      composite_dir.y *= .5f;
+      composite_dir.y() *= .5f;
 
-      float delta = obj->pos.y - GetTerrainGroundPoint(&obj->pos) - obj->size;
+      float delta = obj->pos.y() - GetTerrainGroundPoint(&obj->pos) - obj->size;
       if (delta < ai_info->biased_flight_min) {
-        if (composite_dir.y < 0.0)
-          composite_dir.y *= .5f;
+        if (composite_dir.y() < 0.0)
+          composite_dir.y() *= .5f;
         else
-          composite_dir.y *= 4.0f;
+          composite_dir.y() *= 4.0f;
       } else if (delta > ai_info->biased_flight_max) {
-        if (composite_dir.y < 0.0)
-          composite_dir.y *= 4.0f;
+        if (composite_dir.y() < 0.0)
+          composite_dir.y() *= 4.0f;
         else
-          composite_dir.y *= 0.5f;
+          composite_dir.y() *= 0.5f;
       }
 
       float max_fly_upward_height = ai_info->biased_flight_min * ai_info->biased_flight_importance;
       if (delta < max_fly_upward_height) {
-        composite_dir.y += (1.0f - (delta / max_fly_upward_height)) * ai_info->biased_flight_importance;
+        composite_dir.y() += (1.0f - (delta / max_fly_upward_height)) * ai_info->biased_flight_importance;
       }
     }
 

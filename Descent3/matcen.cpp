@@ -574,7 +574,7 @@ bool matcen::ComputeCreatePnt() {
             face *fp = &rp->faces[m_spawn_pnt[i]];
             int y;
 
-            m_spawn_vec[num_valid_faces].x = m_spawn_vec[num_valid_faces].y = m_spawn_vec[num_valid_faces].z = 0;
+            m_spawn_vec[num_valid_faces].x() = m_spawn_vec[num_valid_faces].y() = m_spawn_vec[num_valid_faces].z() = 0;
 
             for (y = 0; y < fp->num_verts; y++)
               m_spawn_vec[num_valid_faces] += rp->verts[fp->face_verts[y]];
@@ -757,22 +757,22 @@ void matcen::SaveData(CFILE *fp) {
 
   cf_WriteInt(fp, m_roomnum);
 
-  cf_WriteFloat(fp, m_create_pnt.x);
-  cf_WriteFloat(fp, m_create_pnt.y);
-  cf_WriteFloat(fp, m_create_pnt.z);
+  cf_WriteFloat(fp, m_create_pnt.x());
+  cf_WriteFloat(fp, m_create_pnt.y());
+  cf_WriteFloat(fp, m_create_pnt.z());
 
   cf_WriteInt(fp, m_create_room);
 
   for (i = 0; i < MAX_SPAWN_PNTS; i++) {
     cf_WriteInt(fp, m_spawn_pnt[i]);
 
-    cf_WriteFloat(fp, m_spawn_vec[i].x);
-    cf_WriteFloat(fp, m_spawn_vec[i].y);
-    cf_WriteFloat(fp, m_spawn_vec[i].x);
+    cf_WriteFloat(fp, m_spawn_vec[i].x());
+    cf_WriteFloat(fp, m_spawn_vec[i].y());
+    cf_WriteFloat(fp, m_spawn_vec[i].x());
 
-    cf_WriteFloat(fp, m_spawn_normal[i].x);
-    cf_WriteFloat(fp, m_spawn_normal[i].y);
-    cf_WriteFloat(fp, m_spawn_normal[i].x);
+    cf_WriteFloat(fp, m_spawn_normal[i].x());
+    cf_WriteFloat(fp, m_spawn_normal[i].y());
+    cf_WriteFloat(fp, m_spawn_normal[i].x());
   }
 
   cf_WriteInt(fp, m_max_prod);
@@ -882,22 +882,22 @@ void matcen::LoadData(CFILE *fp) {
 
   m_roomnum = cf_ReadInt(fp);
 
-  m_create_pnt.x = cf_ReadFloat(fp);
-  m_create_pnt.y = cf_ReadFloat(fp);
-  m_create_pnt.z = cf_ReadFloat(fp);
+  m_create_pnt.x() = cf_ReadFloat(fp);
+  m_create_pnt.y() = cf_ReadFloat(fp);
+  m_create_pnt.z() = cf_ReadFloat(fp);
 
   m_create_room = cf_ReadInt(fp);
 
   for (i = 0; i < max_spawn_pnts; i++) {
     m_spawn_pnt[i] = cf_ReadInt(fp);
 
-    m_spawn_vec[i].x = cf_ReadFloat(fp);
-    m_spawn_vec[i].y = cf_ReadFloat(fp);
-    m_spawn_vec[i].z = cf_ReadFloat(fp);
+    m_spawn_vec[i].x() = cf_ReadFloat(fp);
+    m_spawn_vec[i].y() = cf_ReadFloat(fp);
+    m_spawn_vec[i].z() = cf_ReadFloat(fp);
 
-    m_spawn_normal[i].x = cf_ReadFloat(fp);
-    m_spawn_normal[i].y = cf_ReadFloat(fp);
-    m_spawn_normal[i].z = cf_ReadFloat(fp);
+    m_spawn_normal[i].x() = cf_ReadFloat(fp);
+    m_spawn_normal[i].y() = cf_ReadFloat(fp);
+    m_spawn_normal[i].z() = cf_ReadFloat(fp);
   }
 
   m_max_prod = cf_ReadInt(fp);
@@ -1506,8 +1506,8 @@ void matcen::DoRenderFrame() {
             vis->lifetime = .8f;
             vis->end_pos = m_spawn_vec[i];
             vis->flags = VF_USES_LIFELEFT | VF_EXPAND;
-            vis->velocity.x = .8f;
-            vis->velocity.y = 1;
+            vis->velocity.x() = .8f;
+            vis->velocity.y() = 1;
             m_spawn_vis_effects[m_cur_saturation_count][i] = visnum;
           }
         }
@@ -1569,8 +1569,8 @@ void matcen::DoRenderFrame() {
             vis->lifetime = 1;
             vis->end_pos = m_spawn_vec[i];
             vis->flags = VF_USES_LIFELEFT | VF_EXPAND;
-            vis->velocity.x = 1;
-            vis->velocity.y = 1;
+            vis->velocity.x() = 1;
+            vis->velocity.y() = 1;
             m_spawn_vis_effects[m_cur_saturation_count][i] = visnum;
           }
         }
@@ -1633,9 +1633,9 @@ void matcen::DoRenderFrame() {
             vis->flags = VF_USES_LIFELEFT | VF_EXPAND | VF_LINK_TO_VIEWER;
             vis->billboard_info.width = std::max<float>(1, size / 2);
             vis->billboard_info.texture = 1;
-            vis->velocity.x = 1;
-            vis->velocity.y = 1;
-            vis->velocity.z = .5;
+            vis->velocity.x() = 1;
+            vis->velocity.y() = 1;
+            vis->velocity.z() = .5;
             vis->lighting_color = GR_RGB16(255, 255, 255);
 
             vis->custom_handle = m_creation_texture;

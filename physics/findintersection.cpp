@@ -1107,17 +1107,17 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   // now do 2d check to see if point is in side
 
   // Get x,y,z components of the normal and put them in array form (so we can pick any two for i,j)
-  t.x = fabs(norm->xyz[0]);
-  t.y = fabs(norm->xyz[1]);
-  t.z = fabs(norm->xyz[2]);
+  t.x() = fabs(norm->xyz[0]);
+  t.y() = fabs(norm->xyz[1]);
+  t.z() = fabs(norm->xyz[2]);
 
   // Determine which axis will be normal to the plane the points are projected onto
-  if (t.x > t.y)
-    if (t.x > t.z)
+  if (t.x() > t.y())
+    if (t.x() > t.z())
       biggest = 0;
     else
       biggest = 2;
-  else if (t.y > t.z)
+  else if (t.y() > t.z())
     biggest = 1;
   else
     biggest = 2;
@@ -1321,14 +1321,14 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
     po0 = (*p0 - *ep0) * edge_orient;
     po1 = (*p1 - *ep0) * edge_orient;
 
-    po0.z = po1.z = 0.0;
+    po0.z() = po1.z() = 0.0;
     mvec = po1 - po0;
     vector_len = vm_NormalizeVector(&mvec);
 
     dist = -(mvec * po0);
 
     closest_pnt = po0 + dist * mvec;
-    //	ASSERT(!(closest_pnt.x == 0.0 && closest_pnt.y == 0.0 && closest_pnt.z == 0)); -- why does this matter?
+    //	ASSERT(!(closest_pnt.x() == 0.0 && closest_pnt.y() == 0.0 && closest_pnt.z() == 0)); -- why does this matter?
 
     dist_from_origin = vm_GetMagnitude(&closest_pnt);
     if (dist_from_origin >= rad)
@@ -1812,20 +1812,20 @@ inline void compute_movement_AABB(void) {
 
   fvi_min_xyz = fvi_max_xyz = *fvi_query_ptr->p0;
 
-  if (delta_movement.x > 0.0f)
-    fvi_max_xyz.x += delta_movement.x;
+  if (delta_movement.x() > 0.0f)
+    fvi_max_xyz.x() += delta_movement.x();
   else
-    fvi_min_xyz.x += delta_movement.x;
+    fvi_min_xyz.x() += delta_movement.x();
 
-  if (delta_movement.y > 0.0f)
-    fvi_max_xyz.y += delta_movement.y;
+  if (delta_movement.y() > 0.0f)
+    fvi_max_xyz.y() += delta_movement.y();
   else
-    fvi_min_xyz.y += delta_movement.y;
+    fvi_min_xyz.y() += delta_movement.y();
 
-  if (delta_movement.z > 0.0f)
-    fvi_max_xyz.z += delta_movement.z;
+  if (delta_movement.z() > 0.0f)
+    fvi_max_xyz.z() += delta_movement.z();
   else
-    fvi_min_xyz.z += delta_movement.z;
+    fvi_min_xyz.z() += delta_movement.z();
 
   fvi_wall_min_xyz = fvi_min_xyz;
   fvi_wall_max_xyz = fvi_max_xyz;
@@ -1834,9 +1834,9 @@ inline void compute_movement_AABB(void) {
     if (fvi_query_ptr->thisobjnum < 0) {
       vector offset_vec;
 
-      offset_vec.x = fvi_query_ptr->rad;
-      offset_vec.y = fvi_query_ptr->rad;
-      offset_vec.z = fvi_query_ptr->rad;
+      offset_vec.x() = fvi_query_ptr->rad;
+      offset_vec.y() = fvi_query_ptr->rad;
+      offset_vec.z() = fvi_query_ptr->rad;
 
       fvi_min_xyz -= offset_vec;
       fvi_max_xyz += offset_vec;
@@ -1862,8 +1862,8 @@ inline void compute_movement_AABB(void) {
 inline bool object_object_AABB(object *obj1, object *obj2) {
   bool overlap = true;
 
-  if (obj1->max_xyz.x < obj2->min_xyz.x || obj2->max_xyz.x < obj1->min_xyz.x || obj1->max_xyz.z < obj2->min_xyz.z ||
-      obj2->max_xyz.z < obj1->min_xyz.z || obj1->max_xyz.y < obj2->min_xyz.y || obj2->max_xyz.y < obj1->min_xyz.y)
+  if (obj1->max_xyz.x() < obj2->min_xyz.x() || obj2->max_xyz.x() < obj1->min_xyz.x() || obj1->max_xyz.z() < obj2->min_xyz.z() ||
+      obj2->max_xyz.z() < obj1->min_xyz.z() || obj1->max_xyz.y() < obj2->min_xyz.y() || obj2->max_xyz.y() < obj1->min_xyz.y())
     overlap = false;
 
   return overlap;
@@ -1872,8 +1872,8 @@ inline bool object_object_AABB(object *obj1, object *obj2) {
 inline bool object_movement_AABB(object *obj) {
   bool overlap = true;
 
-  if (obj->max_xyz.x < fvi_min_xyz.x || fvi_max_xyz.x < obj->min_xyz.x || obj->max_xyz.z < fvi_min_xyz.z ||
-      fvi_max_xyz.z < obj->min_xyz.z || obj->max_xyz.y < fvi_min_xyz.y || fvi_max_xyz.y < obj->min_xyz.y)
+  if (obj->max_xyz.x() < fvi_min_xyz.x() || fvi_max_xyz.x() < obj->min_xyz.x() || obj->max_xyz.z() < fvi_min_xyz.z() ||
+      fvi_max_xyz.z() < obj->min_xyz.z() || obj->max_xyz.y() < fvi_min_xyz.y() || fvi_max_xyz.y() < obj->min_xyz.y())
     overlap = false;
 
   return overlap;
@@ -1882,9 +1882,9 @@ inline bool object_movement_AABB(object *obj) {
 inline bool object_room_AABB(object *obj, face *room_face) {
   bool overlap = true;
 
-  if (obj->max_xyz.y < room_face->min_xyz.y || room_face->max_xyz.y < obj->min_xyz.y ||
-      obj->max_xyz.x < room_face->min_xyz.x || room_face->max_xyz.x < obj->min_xyz.x ||
-      obj->max_xyz.z < room_face->min_xyz.z || room_face->max_xyz.z < obj->min_xyz.z)
+  if (obj->max_xyz.y() < room_face->min_xyz.y() || room_face->max_xyz.y() < obj->min_xyz.y() ||
+      obj->max_xyz.x() < room_face->min_xyz.x() || room_face->max_xyz.x() < obj->min_xyz.x() ||
+      obj->max_xyz.z() < room_face->min_xyz.z() || room_face->max_xyz.z() < obj->min_xyz.z())
     overlap = false;
 
   return overlap;
@@ -1893,9 +1893,9 @@ inline bool object_room_AABB(object *obj, face *room_face) {
 inline bool room_movement_AABB(face *room_face) {
   bool overlap = true;
 
-  if (fvi_wall_max_xyz.y < room_face->min_xyz.y || room_face->max_xyz.y < fvi_wall_min_xyz.y ||
-      fvi_wall_max_xyz.x < room_face->min_xyz.x || room_face->max_xyz.x < fvi_wall_min_xyz.x ||
-      fvi_wall_max_xyz.z < room_face->min_xyz.z || room_face->max_xyz.z < fvi_wall_min_xyz.z)
+  if (fvi_wall_max_xyz.y() < room_face->min_xyz.y() || room_face->max_xyz.y() < fvi_wall_min_xyz.y() ||
+      fvi_wall_max_xyz.x() < room_face->min_xyz.x() || room_face->max_xyz.x() < fvi_wall_min_xyz.x() ||
+      fvi_wall_max_xyz.z() < room_face->min_xyz.z() || room_face->max_xyz.z() < fvi_wall_min_xyz.z())
     overlap = false;
 
   return overlap;
@@ -1904,8 +1904,8 @@ inline bool room_movement_AABB(face *room_face) {
 inline bool room_manual_AABB(const face *room_face, const vector *min_xyz, const vector *max_xyz) {
   bool overlap = true;
 
-  if (max_xyz->y < room_face->min_xyz.y || room_face->max_xyz.y < min_xyz->y || max_xyz->x < room_face->min_xyz.x ||
-      room_face->max_xyz.x < min_xyz->x || max_xyz->z < room_face->min_xyz.z || room_face->max_xyz.z < min_xyz->z)
+  if (max_xyz->y() < room_face->min_xyz.y() || room_face->max_xyz.y() < min_xyz->y() || max_xyz->x() < room_face->min_xyz.x() ||
+      room_face->max_xyz.x() < min_xyz->x() || max_xyz->z() < room_face->min_xyz.z() || room_face->max_xyz.z() < min_xyz->z())
     overlap = false;
 
   return overlap;
@@ -1932,12 +1932,12 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
   // Quick volume
   min_xyz = max_xyz = *pos;
 
-  min_xyz.x -= rad;
-  min_xyz.y -= rad;
-  min_xyz.z -= rad;
-  max_xyz.x += rad;
-  max_xyz.y += rad;
-  max_xyz.z += rad;
+  min_xyz.x() -= rad;
+  min_xyz.y() -= rad;
+  min_xyz.z() -= rad;
+  max_xyz.x() += rad;
+  max_xyz.y() += rad;
+  max_xyz.z() += rad;
 
   // Initially this is the only room in the list
   next_rooms[0] = init_room_index;
@@ -1955,22 +1955,22 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
     // sort shit
     uint8_t msector = 0;
 
-    if (min_xyz.x <= cur_room->bbf_min_xyz.x) {
+    if (min_xyz.x() <= cur_room->bbf_min_xyz.x()) {
       msector |= 0x01;
     }
-    if (min_xyz.y <= cur_room->bbf_min_xyz.y) {
+    if (min_xyz.y() <= cur_room->bbf_min_xyz.y()) {
       msector |= 0x02;
     }
-    if (min_xyz.z <= cur_room->bbf_min_xyz.z) {
+    if (min_xyz.z() <= cur_room->bbf_min_xyz.z()) {
       msector |= 0x04;
     }
-    if (max_xyz.x >= cur_room->bbf_max_xyz.x) {
+    if (max_xyz.x() >= cur_room->bbf_max_xyz.x()) {
       msector |= 0x08;
     }
-    if (max_xyz.y >= cur_room->bbf_max_xyz.y) {
+    if (max_xyz.y() >= cur_room->bbf_max_xyz.y()) {
       msector |= 0x10;
     }
-    if (max_xyz.z >= cur_room->bbf_max_xyz.z) {
+    if (max_xyz.z() >= cur_room->bbf_max_xyz.z()) {
       msector |= 0x20;
     }
 
@@ -1984,8 +1984,8 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
     // Do the actual wall collsion stuff here!
     for (int test1 = 0; test1 < num_bbf_regions; test1++) {
       if (((*bbf_val) & msector) == (*bbf_val)) {
-        if (region_min->x > max_xyz.x || region_min->y > max_xyz.y || region_min->z > max_xyz.z ||
-            region_max->x < min_xyz.x || region_max->y < min_xyz.y || region_max->z < min_xyz.z)
+        if (region_min->x() > max_xyz.x() || region_min->y() > max_xyz.y() || region_min->z() > max_xyz.z() ||
+            region_max->x() < min_xyz.x() || region_max->y() < min_xyz.y() || region_max->z() < min_xyz.z())
           goto skip_region;
 
         int16_t *cur_face_index_ptr = *bbf_list_ptr;
@@ -2089,8 +2089,8 @@ int fvi_QuickDistCellList(int init_cell_index, vector *pos, float rad, int *quic
 
   for (ycounter = ystart; ycounter <= yend; ycounter++) {
     for (xcounter = xstart; xcounter <= xend; xcounter++) {
-      if ((Terrain_seg[cur_node].y >= pos->y - rad) || (Terrain_seg[cur_node + TERRAIN_WIDTH + 1].y >= pos->y - rad) ||
-          (Terrain_seg[cur_node + 1].y >= pos->y - rad) || (Terrain_seg[cur_node + TERRAIN_WIDTH].y >= pos->y - rad)) {
+      if ((Terrain_seg[cur_node].y >= pos->y() - rad) || (Terrain_seg[cur_node + TERRAIN_WIDTH + 1].y >= pos->y() - rad) ||
+          (Terrain_seg[cur_node + 1].y >= pos->y() - rad) || (Terrain_seg[cur_node + TERRAIN_WIDTH].y >= pos->y() - rad)) {
         quick_cell_list[num_cells++] = cur_node;
         if (num_cells >= max_elements)
           break;
@@ -2113,7 +2113,7 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
   vector delta;
 
   // Quick volume
-  delta.x = delta.y = delta.z = rad;
+  delta.x() = delta.y() = delta.z() = rad;
   fvi_min_xyz = fvi_max_xyz = *pos;
 
   fvi_min_xyz -= delta;
@@ -2327,37 +2327,37 @@ internal_try_again:
   new_pos = min_xyz = max_xyz = *pos;
 
   if (!try_again) {
-    new_pos.x += 10000000.0f;
-    max_xyz.x += 10000000.0f;
+    new_pos.x() += (scalar)10000000;
+    max_xyz.x() += (scalar)10000000;
   } else {
-    new_pos.z -= 10000000.0f;
-    min_xyz.z -= 10000000.0f;
-    new_pos.y -= 10000000.0f;
-    min_xyz.y -= 10000000.0f;
-    new_pos.x -= 10000000.0f;
-    min_xyz.x -= 10000000.0f;
+    new_pos.z() -= (scalar)10000000;
+    min_xyz.z() -= (scalar)10000000;
+    new_pos.y() -= (scalar)10000000;
+    min_xyz.y() -= (scalar)10000000;
+    new_pos.x() -= (scalar)10000000;
+    min_xyz.x() -= (scalar)10000000;
   }
   //	mprintf(0, "Checking room %d ", ROOMNUM(cur_room));
 
   // sort shit
   uint8_t msector = 0;
 
-  if (min_xyz.x <= cur_room->bbf_min_xyz.x) {
+  if (min_xyz.x() <= cur_room->bbf_min_xyz.x()) {
     msector |= 0x01;
   }
-  if (min_xyz.y <= cur_room->bbf_min_xyz.y) {
+  if (min_xyz.y() <= cur_room->bbf_min_xyz.y()) {
     msector |= 0x02;
   }
-  if (min_xyz.z <= cur_room->bbf_min_xyz.z) {
+  if (min_xyz.z() <= cur_room->bbf_min_xyz.z()) {
     msector |= 0x04;
   }
-  if (max_xyz.x >= cur_room->bbf_max_xyz.x) {
+  if (max_xyz.x() >= cur_room->bbf_max_xyz.x()) {
     msector |= 0x08;
   }
-  if (max_xyz.y >= cur_room->bbf_max_xyz.y) {
+  if (max_xyz.y() >= cur_room->bbf_max_xyz.y()) {
     msector |= 0x10;
   }
-  if (max_xyz.z >= cur_room->bbf_max_xyz.z) {
+  if (max_xyz.z() >= cur_room->bbf_max_xyz.z()) {
     msector |= 0x20;
   }
 
@@ -2371,8 +2371,8 @@ internal_try_again:
   // Do the actual wall collsion stuff here!
   for (int test1 = 0; test1 < num_bbf_regions; test1++) {
     if (((*bbf_val) & msector) == (*bbf_val)) {
-      if (region_min->x > max_xyz.x || region_min->y > max_xyz.y || region_min->z > max_xyz.z ||
-          region_max->x < min_xyz.x || region_max->y < min_xyz.y || region_max->z < min_xyz.z)
+      if (region_min->x() > max_xyz.x() || region_min->y() > max_xyz.y() || region_min->z() > max_xyz.z() ||
+          region_max->x() < min_xyz.x() || region_max->y() < min_xyz.y() || region_max->z() < min_xyz.z())
         goto skip_region;
 
       int16_t *cur_face_index_ptr = *bbf_list_ptr;
@@ -2453,7 +2453,7 @@ internal_try_again:
 #define MIN_LONG_RAY (TERRAIN_SIZE * 20.0)
 
 inline bool is_long_xz_ray(fvi_query *fq) {
-  if ((fabs(fq->p0->x - fq->p1->x) > MIN_LONG_RAY) || (fabs(fq->p0->z - fq->p1->z) > MIN_LONG_RAY)) {
+  if ((fabs(fq->p0->x() - fq->p1->x()) > MIN_LONG_RAY) || (fabs(fq->p0->z() - fq->p1->z()) > MIN_LONG_RAY)) {
     return true;
   } else {
     return false;
@@ -2472,21 +2472,21 @@ void check_ceiling() {
   vector colp;
 
   // Bail early if hitpnt is not high enough
-  if (fvi_query_ptr->rad + fvi_hit_data_ptr->hit_pnt.y < CEILING_HEIGHT)
+  if (fvi_query_ptr->rad + fvi_hit_data_ptr->hit_pnt.y() < CEILING_HEIGHT)
     return;
 
-  vlist[0].x = 0.0;
-  vlist[0].y = CEILING_HEIGHT;
-  vlist[0].z = 0.0;
-  vlist[1].x = TERRAIN_WIDTH * TERRAIN_SIZE;
-  vlist[1].y = CEILING_HEIGHT;
-  vlist[1].z = 0.0;
-  vlist[2].x = TERRAIN_WIDTH * TERRAIN_SIZE;
-  vlist[2].y = CEILING_HEIGHT;
-  vlist[2].z = TERRAIN_DEPTH * TERRAIN_SIZE;
-  vlist[3].x = 0.0;
-  vlist[3].y = CEILING_HEIGHT;
-  vlist[3].z = TERRAIN_DEPTH * TERRAIN_SIZE;
+  vlist[0].x() = 0.0;
+  vlist[0].y() = CEILING_HEIGHT;
+  vlist[0].z() = 0.0;
+  vlist[1].x() = TERRAIN_WIDTH * TERRAIN_SIZE;
+  vlist[1].y() = CEILING_HEIGHT;
+  vlist[1].z() = 0.0;
+  vlist[2].x() = TERRAIN_WIDTH * TERRAIN_SIZE;
+  vlist[2].y() = CEILING_HEIGHT;
+  vlist[2].z() = TERRAIN_DEPTH * TERRAIN_SIZE;
+  vlist[3].x() = 0.0;
+  vlist[3].y() = CEILING_HEIGHT;
+  vlist[3].z() = TERRAIN_DEPTH * TERRAIN_SIZE;
 
   vertex_ptr_list[0] = &vlist[0];
   vertex_ptr_list[1] = &vlist[1];
@@ -2651,9 +2651,9 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
   ASSERT(fq != nullptr && hit_data != nullptr);
 
-  ASSERT(std::isfinite(fq->p1->x)); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(std::isfinite(fq->p1->y)); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(std::isfinite(fq->p1->z)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->x())); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->y())); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->z())); // Caller wants to go to infinity!  -- Not FVI's fault.
 
   fvi_movement_delta = *fq->p1 - *fq->p0;
 
@@ -3225,28 +3225,28 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
   int num_int_box = 0;
   vector int_points_box[12];
 
-  verts[0] = (orient->rvec * pm->mins.x) + (orient->uvec * pm->maxs.y) + (orient->fvec * pm->mins.z);
+  verts[0] = (orient->rvec * pm->mins.x()) + (orient->uvec * pm->maxs.y()) + (orient->fvec * pm->mins.z());
 
-  verts[1] = (orient->rvec * pm->mins.x) + (orient->uvec * pm->mins.y) + (orient->fvec * pm->mins.z);
+  verts[1] = (orient->rvec * pm->mins.x()) + (orient->uvec * pm->mins.y()) + (orient->fvec * pm->mins.z());
 
-  verts[2] = (orient->rvec * pm->maxs.x) + (orient->uvec * pm->mins.y) + (orient->fvec * pm->mins.z);
+  verts[2] = (orient->rvec * pm->maxs.x()) + (orient->uvec * pm->mins.y()) + (orient->fvec * pm->mins.z());
 
-  verts[3] = (orient->rvec * pm->maxs.x) + (orient->uvec * pm->maxs.y) + (orient->fvec * pm->mins.z);
+  verts[3] = (orient->rvec * pm->maxs.x()) + (orient->uvec * pm->maxs.y()) + (orient->fvec * pm->mins.z());
 
-  verts[4] = (orient->rvec * pm->maxs.x) + (orient->uvec * pm->maxs.y) + (orient->fvec * pm->maxs.z);
+  verts[4] = (orient->rvec * pm->maxs.x()) + (orient->uvec * pm->maxs.y()) + (orient->fvec * pm->maxs.z());
 
-  verts[5] = (orient->rvec * pm->maxs.x) + (orient->uvec * pm->mins.y) + (orient->fvec * pm->maxs.z);
+  verts[5] = (orient->rvec * pm->maxs.x()) + (orient->uvec * pm->mins.y()) + (orient->fvec * pm->maxs.z());
 
-  verts[6] = (orient->rvec * pm->mins.x) + (orient->uvec * pm->mins.y) + (orient->fvec * pm->maxs.z);
+  verts[6] = (orient->rvec * pm->mins.x()) + (orient->uvec * pm->mins.y()) + (orient->fvec * pm->maxs.z());
 
-  verts[7] = (orient->rvec * pm->mins.x) + (orient->uvec * pm->maxs.y) + (orient->fvec * pm->maxs.z);
+  verts[7] = (orient->rvec * pm->mins.x()) + (orient->uvec * pm->maxs.y()) + (orient->fvec * pm->maxs.z());
 
   for (i = 0; i < 8; i++) {
     verts[i] += *new_pos;
   }
 
   vector xxx_normal = Zero_vector;
-  xxx_normal.y = 1.0f;
+  xxx_normal.y() = 1.0f;
 
   for (i = 0; i < 8; i++) {
     rel[i] = verts[i];
@@ -3854,10 +3854,10 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
 
     if (((float)Terrain_max_height_int[6][lod_z * (TERRAIN_WIDTH >> 2) + lod_x] * TERRAIN_HEIGHT_INCREMENT +
                  fvi_query_ptr->rad >=
-             fvi_query_ptr->p0->y ||
+             fvi_query_ptr->p0->y() ||
          (float)Terrain_max_height_int[6][lod_z * (TERRAIN_WIDTH >> 2) + lod_x] * TERRAIN_HEIGHT_INCREMENT +
                  fvi_query_ptr->rad >=
-             fvi_query_ptr->p1->y) &&
+             fvi_query_ptr->p1->y()) &&
         !(Terrain_seg[cur_node].flags & TF_INVISIBLE) &&
         !(fvi_query_ptr->flags & (FQ_IGNORE_WALLS | FQ_IGNORE_TERRAIN))) {
 
@@ -3875,23 +3875,23 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
           int cellnum_upper_right = cur_node + TERRAIN_WIDTH + 1;
           int cellnum_right = cur_node + 1;
 
-          vlist[0].x = (cur_node % TERRAIN_WIDTH) * TERRAIN_SIZE;
-          vlist[0].y = Terrain_seg[cur_node].y;
-          vlist[0].z = (cur_node / TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[0].x() = (cur_node % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[0].y() = Terrain_seg[cur_node].y;
+          vlist[0].z() = (cur_node / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
-          vlist[1].x = (cellnum_upper_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[1].x() = (cellnum_upper_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
           if (cellnum_upper_right < TERRAIN_WIDTH * TERRAIN_DEPTH)
-            vlist[1].y = Terrain_seg[cellnum_upper_right].y;
+            vlist[1].y() = Terrain_seg[cellnum_upper_right].y;
           else
-            vlist[1].y = 0.0;
-          vlist[1].z = (cellnum_upper_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
+            vlist[1].y() = 0.0;
+          vlist[1].z() = (cellnum_upper_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
-          vlist[2].x = (cellnum_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[2].x() = (cellnum_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
           if (cellnum_right < TERRAIN_WIDTH * TERRAIN_DEPTH)
-            vlist[2].y = Terrain_seg[cellnum_right].y;
+            vlist[2].y() = Terrain_seg[cellnum_right].y;
           else
-            vlist[2].y = 0.0;
-          vlist[2].z = (cellnum_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
+            vlist[2].y() = 0.0;
+          vlist[2].z() = (cellnum_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
           vertex_ptr_list[0] = &vlist[0];
           vertex_ptr_list[1] = &vlist[1];
@@ -3903,23 +3903,23 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
           int cellnum_upper = cur_node + TERRAIN_WIDTH;
           int cellnum_upper_right = cur_node + TERRAIN_WIDTH + 1;
 
-          vlist[0].x = (cur_node % TERRAIN_WIDTH) * TERRAIN_SIZE;
-          vlist[0].y = Terrain_seg[cur_node].y;
-          vlist[0].z = (cur_node / TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[0].x() = (cur_node % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[0].y() = Terrain_seg[cur_node].y;
+          vlist[0].z() = (cur_node / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
-          vlist[1].x = (cellnum_upper % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[1].x() = (cellnum_upper % TERRAIN_WIDTH) * TERRAIN_SIZE;
           if (cellnum_upper < TERRAIN_WIDTH * TERRAIN_DEPTH)
-            vlist[1].y = Terrain_seg[cellnum_upper].y;
+            vlist[1].y() = Terrain_seg[cellnum_upper].y;
           else
-            vlist[1].y = 0.0;
-          vlist[1].z = (cellnum_upper / TERRAIN_WIDTH) * TERRAIN_SIZE;
+            vlist[1].y() = 0.0;
+          vlist[1].z() = (cellnum_upper / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
-          vlist[2].x = (cellnum_upper_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[2].x() = (cellnum_upper_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
           if (cellnum_upper_right < TERRAIN_WIDTH * TERRAIN_DEPTH)
-            vlist[2].y = Terrain_seg[cellnum_upper_right].y;
+            vlist[2].y() = Terrain_seg[cellnum_upper_right].y;
           else
-            vlist[2].y = 0.0;
-          vlist[2].z = (cellnum_upper_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
+            vlist[2].y() = 0.0;
+          vlist[2].z() = (cellnum_upper_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
           vertex_ptr_list[0] = &vlist[0];
           vertex_ptr_list[1] = &vlist[1];
@@ -4190,24 +4190,24 @@ int do_fvi_terrain() {
     float delta = 1.0;
     vector movement = fvi_hit_data_ptr->hit_pnt - *fvi_query_ptr->p0;
 
-    if (fvi_hit_data_ptr->hit_pnt.x < (fvi_query_ptr->rad + 0.000001)) {
-      delta = (fvi_query_ptr->p0->x - (fvi_query_ptr->rad + 0.000001)) / (-movement.x);
-    } else if (fvi_hit_data_ptr->hit_pnt.x >
+    if (fvi_hit_data_ptr->hit_pnt.x() < (fvi_query_ptr->rad + 0.000001)) {
+      delta = (fvi_query_ptr->p0->x() - (fvi_query_ptr->rad + 0.000001)) / (-movement.x());
+    } else if (fvi_hit_data_ptr->hit_pnt.x() >
                (float)((TERRAIN_WIDTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001)) {
-      delta = ((float)((TERRAIN_WIDTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->x) /
-              (movement.x);
+      delta = ((float)((TERRAIN_WIDTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->x()) /
+              (movement.x());
     }
 
-    if (fvi_hit_data_ptr->hit_pnt.z < (fvi_query_ptr->rad + 0.000001)) {
-      if ((fvi_query_ptr->p0->z - (fvi_query_ptr->rad + 0.000001)) / (-movement.z) < delta)
-        delta = (fvi_query_ptr->p0->z - (fvi_query_ptr->rad + 0.000001)) / (-movement.z);
-    } else if (fvi_hit_data_ptr->hit_pnt.z >
+    if (fvi_hit_data_ptr->hit_pnt.z() < (fvi_query_ptr->rad + 0.000001)) {
+      if ((fvi_query_ptr->p0->z() - (fvi_query_ptr->rad + 0.000001)) / (-movement.z()) < delta)
+        delta = (fvi_query_ptr->p0->z() - (fvi_query_ptr->rad + 0.000001)) / (-movement.z());
+    } else if (fvi_hit_data_ptr->hit_pnt.z() >
                (float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001)) {
-      if (((float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->z) /
-              (movement.z) <
+      if (((float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->z()) /
+              (movement.z()) <
           delta)
-        delta = ((float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->z) /
-                (movement.z);
+        delta = ((float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->z()) /
+                (movement.z());
     }
 
     fvi_hit_data_ptr->hit_pnt = *fvi_query_ptr->p0 + delta * movement;
@@ -4462,22 +4462,22 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
   object *this_obj;
   uint8_t msector = 0;
 
-  if (fvi_min_xyz.x <= cur_room->bbf_min_xyz.x) {
+  if (fvi_min_xyz.x() <= cur_room->bbf_min_xyz.x()) {
     msector |= 0x01;
   }
-  if (fvi_min_xyz.y <= cur_room->bbf_min_xyz.y) {
+  if (fvi_min_xyz.y() <= cur_room->bbf_min_xyz.y()) {
     msector |= 0x02;
   }
-  if (fvi_min_xyz.z <= cur_room->bbf_min_xyz.z) {
+  if (fvi_min_xyz.z() <= cur_room->bbf_min_xyz.z()) {
     msector |= 0x04;
   }
-  if (fvi_max_xyz.x >= cur_room->bbf_max_xyz.x) {
+  if (fvi_max_xyz.x() >= cur_room->bbf_max_xyz.x()) {
     msector |= 0x08;
   }
-  if (fvi_max_xyz.y >= cur_room->bbf_max_xyz.y) {
+  if (fvi_max_xyz.y() >= cur_room->bbf_max_xyz.y()) {
     msector |= 0x10;
   }
-  if (fvi_max_xyz.z >= cur_room->bbf_max_xyz.z) {
+  if (fvi_max_xyz.z() >= cur_room->bbf_max_xyz.z()) {
     msector |= 0x20;
   }
 
@@ -4568,9 +4568,9 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
     // Do the actual wall collsion stuff here!
     for (int test1 = 0; test1 < num_bbf_regions; test1++) {
       if (((*bbf_val) & msector) == (*bbf_val)) {
-        if (region_min->x > fvi_wall_max_xyz.x || region_min->y > fvi_wall_max_xyz.y ||
-            region_min->z > fvi_wall_max_xyz.z || region_max->x < fvi_wall_min_xyz.x ||
-            region_max->y < fvi_wall_min_xyz.y || region_max->z < fvi_wall_min_xyz.z)
+        if (region_min->x() > fvi_wall_max_xyz.x() || region_min->y() > fvi_wall_max_xyz.y() ||
+            region_min->z() > fvi_wall_max_xyz.z() || region_max->x() < fvi_wall_min_xyz.x() ||
+            region_max->y() < fvi_wall_min_xyz.y() || region_max->z() < fvi_wall_min_xyz.z())
           goto skip_region;
 
         if (fvi_zero_rad && FastVectorBBox((float *)region_min, (float *)region_max, (float *)fvi_query_ptr->p0,
@@ -4597,8 +4597,8 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
           const vector *cf_max = &cur_face->max_xyz;
           const vector *cf_min = &cur_face->min_xyz;
 
-          if (cf_min->x > fvi_wall_max_xyz.x || cf_min->y > fvi_wall_max_xyz.y || cf_min->z > fvi_wall_max_xyz.z ||
-              cf_max->x < fvi_wall_min_xyz.x || cf_max->y < fvi_wall_min_xyz.y || cf_max->z < fvi_wall_min_xyz.z)
+          if (cf_min->x() > fvi_wall_max_xyz.x() || cf_min->y() > fvi_wall_max_xyz.y() || cf_min->z() > fvi_wall_max_xyz.z() ||
+              cf_max->x() < fvi_wall_min_xyz.x() || cf_max->y() < fvi_wall_min_xyz.y() || cf_max->z() < fvi_wall_min_xyz.z())
             continue;
 
           if (fvi_zero_rad && !FastVectorBBox((float *)cf_min, (float *)cf_max, (float *)fvi_query_ptr->p0,

@@ -88,17 +88,17 @@ void GetMouseRotation(int idx, int idy, matrix *RotMat) {
   dxdr = dx / dr;
   dydr = dy / dr;
 
-  RotMat->rvec.x = cos_theta + ((dydr * dydr) * cos_theta1);
-  RotMat->uvec.x = -((dxdr * dydr) * cos_theta1);
-  RotMat->fvec.x = (dxdr * sin_theta);
+  RotMat->rvec.x() = cos_theta + ((dydr * dydr) * cos_theta1);
+  RotMat->uvec.x() = -((dxdr * dydr) * cos_theta1);
+  RotMat->fvec.x() = (dxdr * sin_theta);
 
-  RotMat->rvec.y = RotMat->uvec.x;
-  RotMat->uvec.y = cos_theta + ((dxdr * dxdr) * cos_theta1);
-  RotMat->fvec.y = (dydr * sin_theta);
+  RotMat->rvec.y() = RotMat->uvec.x();
+  RotMat->uvec.y() = cos_theta + ((dxdr * dxdr) * cos_theta1);
+  RotMat->fvec.y() = (dydr * sin_theta);
 
-  RotMat->rvec.z = -RotMat->fvec.x;
-  RotMat->uvec.z = -RotMat->fvec.y;
-  RotMat->fvec.z = cos_theta;
+  RotMat->rvec.z() = -RotMat->fvec.x();
+  RotMat->uvec.z() = -RotMat->fvec.y();
+  RotMat->fvec.z() = cos_theta;
 }
 
 // Variables for current view position and orientation

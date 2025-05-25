@@ -1192,7 +1192,7 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void) {
   spin_frame++;
 
   vm_AnglesToMatrix(&rot_matrix, 0, spin_frame * 400, 0);
-  view_vector.z = -(fabs(pm->maxs.z - pm->mins.z) * 2);
+  view_vector.z() = -(fabs(pm->maxs.z() - pm->mins.z()) * (scalar)2);
 
   m_ObjectSurf.create(128, 128, BPP_16);
   grViewport *vport = new grViewport(&m_ObjectSurf);

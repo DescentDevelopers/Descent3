@@ -673,24 +673,24 @@ void OnServerCollide(object *me_obj, object *it_obj, vector *point, vector *norm
       }
 
       weapon_collide_info winfo;
-      winfo.rotvel.x = it_obj->mtype.phys_info.rotvel.x;
-      winfo.rotvel.y = it_obj->mtype.phys_info.rotvel.y;
-      winfo.rotvel.z = it_obj->mtype.phys_info.rotvel.z;
-      winfo.velocity.x = it_obj->mtype.phys_info.velocity.x;
-      winfo.velocity.y = it_obj->mtype.phys_info.velocity.y;
-      winfo.velocity.z = it_obj->mtype.phys_info.velocity.z;
-      winfo.pos.x = it_obj->pos.x;
-      winfo.pos.y = it_obj->pos.y;
-      winfo.pos.z = it_obj->pos.z;
-      winfo.orient.fvec.x = it_obj->orient.fvec.x;
-      winfo.orient.fvec.y = it_obj->orient.fvec.y;
-      winfo.orient.fvec.z = it_obj->orient.fvec.z;
-      winfo.orient.uvec.x = it_obj->orient.uvec.x;
-      winfo.orient.uvec.y = it_obj->orient.uvec.y;
-      winfo.orient.uvec.z = it_obj->orient.uvec.z;
-      winfo.orient.rvec.x = it_obj->orient.rvec.x;
-      winfo.orient.rvec.y = it_obj->orient.rvec.y;
-      winfo.orient.rvec.z = it_obj->orient.rvec.z;
+      winfo.rotvel.x() = it_obj->mtype.phys_info.rotvel.x();
+      winfo.rotvel.y() = it_obj->mtype.phys_info.rotvel.y();
+      winfo.rotvel.z() = it_obj->mtype.phys_info.rotvel.z();
+      winfo.velocity.x() = it_obj->mtype.phys_info.velocity.x();
+      winfo.velocity.y() = it_obj->mtype.phys_info.velocity.y();
+      winfo.velocity.z() = it_obj->mtype.phys_info.velocity.z();
+      winfo.pos.x() = it_obj->pos.x();
+      winfo.pos.y() = it_obj->pos.y();
+      winfo.pos.z() = it_obj->pos.z();
+      winfo.orient.fvec.x() = it_obj->orient.fvec.x();
+      winfo.orient.fvec.y() = it_obj->orient.fvec.y();
+      winfo.orient.fvec.z() = it_obj->orient.fvec.z();
+      winfo.orient.uvec.x() = it_obj->orient.uvec.x();
+      winfo.orient.uvec.y() = it_obj->orient.uvec.y();
+      winfo.orient.uvec.z() = it_obj->orient.uvec.z();
+      winfo.orient.rvec.x() = it_obj->orient.rvec.x();
+      winfo.orient.rvec.y() = it_obj->orient.rvec.y();
+      winfo.orient.rvec.z() = it_obj->orient.rvec.z();
       winfo.mass = it_obj->mtype.phys_info.mass;
       winfo.size = it_obj->size;
       HandleMonsterballCollideWithWeapon(me_obj, &winfo, point, normal);
@@ -1918,18 +1918,18 @@ void HandleMonsterballCollideWithWeapon(object *ball, weapon_collide_info *winfo
 
 void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos, matrix *orient, float mass, float size,
                  vector *collision_point, vector *collision_normal, float rot_scalar, float vel_scalar) {
-  ASSERT(std::isfinite(rotvel->x));
-  ASSERT(std::isfinite(rotvel->y));
-  ASSERT(std::isfinite(rotvel->z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(velocity->x));
-  ASSERT(std::isfinite(velocity->y));
-  ASSERT(std::isfinite(velocity->z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z));
+  ASSERT(std::isfinite(rotvel->x()));
+  ASSERT(std::isfinite(rotvel->y()));
+  ASSERT(std::isfinite(rotvel->z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(velocity->x()));
+  ASSERT(std::isfinite(velocity->y()));
+  ASSERT(std::isfinite(velocity->z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z()));
 
   vector r1 = *collision_point - object0->pos;
   vector r2 = *collision_point - (*pos);
@@ -1960,17 +1960,17 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
   if (temp1 != 0.0f) {
     DLLvm_CrossProduct(&w1, &n1, &r1);
   } else {
-    w1.x = 0;
-    w1.y = 0;
-    w1.z = 0;
+    w1.x() = 0;
+    w1.y() = 0;
+    w1.z() = 0;
   }
 
   if (temp2 != 0.0f) {
     DLLvm_CrossProduct(&w2, &n2, &r2);
   } else {
-    w2.x = 0;
-    w2.y = 0;
-    w2.z = 0;
+    w2.x() = 0;
+    w2.y() = 0;
+    w2.z() = 0;
   }
 
   vector p1 = object0->mtype.phys_info.velocity + w1;
@@ -2049,12 +2049,12 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
   // change the player's rotational velocity
   object0->mtype.phys_info.rotvel += (txx1 * object0->orient) * rotscale1;
 
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z()));
 }
 
 bool ValidateOwner(int *pnum, object **obj) {
@@ -2126,7 +2126,7 @@ void DoMonsterballScoreEffect(void) {
 
     // find top of room
     check_pos = (doing_start) ? m_pos : i_pos;
-    check_pos.y *= 50000;
+    check_pos.y() *= 50000;
     hit_type = DLLfvi_FindIntersection(&fq, &hit_data, false);
 
     if (hit_type == HIT_NONE)
@@ -2136,7 +2136,7 @@ void DoMonsterballScoreEffect(void) {
     start_pos = hit_data.hit_pnt;
 
     check_pos = (doing_start) ? m_pos : i_pos;
-    check_pos.y *= -50000;
+    check_pos.y() *= -50000;
     hit_type = DLLfvi_FindIntersection(&fq, &hit_data, false);
 
     if (hit_type == HIT_NONE)
@@ -2157,9 +2157,9 @@ void DoMonsterballScoreEffect(void) {
       vis->lighting_color = color;
       vis->billboard_info.width = thickness;
       vis->billboard_info.texture = autotile;
-      vis->velocity.x = sat_count;
-      vis->velocity.y = slidetime;
-      vis->velocity.z = numtiles;
+      vis->velocity.x() = sat_count;
+      vis->velocity.y() = slidetime;
+      vis->velocity.z() = numtiles;
 
       vis->flags = VF_USES_LIFELEFT | VF_WINDSHIELD_EFFECT | VF_LINK_TO_VIEWER | VF_EXPAND;
       vis->size = DLLvm_VectorDistanceQuick(&vis->pos, &vis->end_pos);
