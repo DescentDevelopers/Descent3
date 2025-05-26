@@ -2365,9 +2365,7 @@ void mng_ReadPhysicsChunk(physics_info *phys_info, CFILE *infile) {
   phys_info->full_rotthrust = cf_ReadFloat(infile);
   phys_info->num_bounces = cf_ReadInt(infile);
   phys_info->velocity.z() = cf_ReadFloat(infile);
-  phys_info->rotvel.x() = cf_ReadFloat(infile);
-  phys_info->rotvel.y() = cf_ReadFloat(infile);
-  phys_info->rotvel.z() = cf_ReadFloat(infile);
+  phys_info->rotvel = { cf_ReadFloat(infile), cf_ReadFloat(infile), cf_ReadFloat(infile) };
   phys_info->wiggle_amplitude = cf_ReadFloat(infile);
   phys_info->wiggles_per_sec = cf_ReadFloat(infile);
   phys_info->coeff_restitution = cf_ReadFloat(infile);

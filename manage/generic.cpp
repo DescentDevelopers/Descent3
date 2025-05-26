@@ -1679,9 +1679,7 @@ int mng_ReadGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
       break;
 
     case GENERICPAGE_COMMAND_INT_ROTVEL:
-      genericpage->objinfo_struct.phys_info.rotvel.x() = cf_ReadFloat(infile);
-      genericpage->objinfo_struct.phys_info.rotvel.y() = cf_ReadFloat(infile);
-      genericpage->objinfo_struct.phys_info.rotvel.z() = cf_ReadFloat(infile);
+      genericpage->objinfo_struct.phys_info.rotvel = { cf_ReadFloat(infile), cf_ReadFloat(infile), cf_ReadFloat(infile) };
       break;
 
     case GENERICPAGE_COMMAND_NUM_BOUNCES:

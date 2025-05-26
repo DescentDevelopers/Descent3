@@ -1364,9 +1364,7 @@ char *GetFailedXLateItemName(int type, int id) {
 // Useful macros
 #define cf_ReadVector(f, v)                                                                                            \
   do {                                                                                                                 \
-    (v)->x() = cf_ReadFloat(f);                                                                                          \
-    (v)->y() = cf_ReadFloat(f);                                                                                          \
-    (v)->z() = cf_ReadFloat(f);                                                                                          \
+    (*v) = { cf_ReadFloat(f), cf_ReadFloat(f), cf_ReadFloat(f) };                                                      \
   } while (0)
 #define cf_ReadMatrix(f, m)                                                                                            \
   do {                                                                                                                 \

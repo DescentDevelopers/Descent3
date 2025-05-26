@@ -3732,9 +3732,7 @@ void TCSSSCallback(void) {
   vm_Orthogonalize(&view_orient);
   TCShipSelect.orient = view_orient;
 
-  light_vec.x() = 0.0f;
-  light_vec.y() = -1.0f;
-  light_vec.z() = -1.0f;
+  light_vec = { 0.0f, -1.0f, -1.0f };
   light_scalar = 0.8f;
   vm_NormalizeVector(&light_vec);
 

@@ -2040,8 +2040,8 @@ void LinkRooms(room *roomlist, int room0, int face0, int room1, int face1) {
 // Parameters:	min,max - filled in with the minimum and maximum x,y, & z values, respectively
 //					rp = the room
 void ComputeRoomMinMax(vector *min, vector *max, room *rp) {
-  min->x = min->y = min->z = FLT_MAX;
-  max->x = max->y = max->z = -FLT_MAX;
+  min->fill(FLT_MAX);
+  max->fill(-FLT_MAX);
 
   for (int i = 0; i < rp->num_verts; i++) {
     if (rp->verts[i].x() > max->x())

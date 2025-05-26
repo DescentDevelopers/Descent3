@@ -309,17 +309,10 @@ void g3_DrawRotatedBitmap(vector *pos, angle rot_angle, float width, float heigh
   float h = height;
 
   vector rot_vectors[4];
-  rot_vectors[0].x() = -w;
-  rot_vectors[0].y() = h;
-
-  rot_vectors[1].x() = w;
-  rot_vectors[1].y() = h;
-
-  rot_vectors[2].x() = w;
-  rot_vectors[2].y() = -h;
-
-  rot_vectors[3].x() = -w;
-  rot_vectors[3].y() = -h;
+  rot_vectors[0] = { -w,  h };
+  rot_vectors[1] = {  w,  h };
+  rot_vectors[2] = {  w, -h };
+  rot_vectors[3] = { -w, -h };
 
   g3Point rot_points[8], *pntlist[8];
   int i;

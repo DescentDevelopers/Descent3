@@ -2157,9 +2157,7 @@ void DoMonsterballScoreEffect(void) {
       vis->lighting_color = color;
       vis->billboard_info.width = thickness;
       vis->billboard_info.texture = autotile;
-      vis->velocity.x() = sat_count;
-      vis->velocity.y() = slidetime;
-      vis->velocity.z() = numtiles;
+      vis->velocity = { (scalar)sat_count, (scalar)slidetime, (scalar)numtiles };
 
       vis->flags = VF_USES_LIFELEFT | VF_WINDSHIELD_EFFECT | VF_LINK_TO_VIEWER | VF_EXPAND;
       vis->size = DLLvm_VectorDistanceQuick(&vis->pos, &vis->end_pos);

@@ -2424,11 +2424,7 @@ void ComputeAABB(bool f_full) {
           rp->bbf_list_sector[x] = bbf_lookup[x];
         }
 
-        vector diff;
-        // vector min_diff;
-        // vector max_diff;
-        diff.x() = diff.y() = diff.z() = 15.0f;
-
+        vector diff = { (scalar)15, (scalar)15, (scalar)15 };
         min_xyz = max_xyz = (rp->min_xyz + rp->max_xyz) / 2.0f;
 
         min_xyz -= diff;

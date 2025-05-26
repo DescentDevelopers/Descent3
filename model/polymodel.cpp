@@ -1369,8 +1369,8 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       ASSERT(n < pm->n_models);
 
-      pm->submodel[n].min.x() = pm->submodel[n].min.y() = pm->submodel[n].min.z() = 90000;
-      pm->submodel[n].max.x() = pm->submodel[n].max.y() = pm->submodel[n].max.z() = -90000;
+      pm->submodel[n].min.fill(90000);
+      pm->submodel[n].max.fill(-90000);
 
       pm->submodel[n].parent = cf_ReadInt(infile);
 

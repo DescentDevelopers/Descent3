@@ -388,11 +388,6 @@ inline void MultiAddVector(vector v, uint8_t *data, int *count) {
 }
 
 inline vector MultiGetVector(uint8_t *data, int *count) {
-  vector v;
-
-  v.x() = MultiGetFloat(data, count);
-  v.y() = MultiGetFloat(data, count);
-  v.z() = MultiGetFloat(data, count);
-  return v;
+  return { MultiGetFloat(data, count), MultiGetFloat(data, count), MultiGetFloat(data, count) };
 }
 #endif

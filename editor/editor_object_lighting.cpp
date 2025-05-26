@@ -595,9 +595,7 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
 
   vector base_vector;
 
-  base_vector.x = verts[leftmost_point].x;
-  base_vector.y = verts[topmost_point].y;
-  base_vector.z = 0;
+  base_vector = { verts[leftmost_point].x(), verts[topmost_point].y(), 0 };
 
   // Figure out lightmap resolution
   float xdiff = verts[rightmost_point].x() - verts[leftmost_point].x();
@@ -796,8 +794,7 @@ void BuildElementListForObjectFace(int objnum, int subnum, int facenum, rad_surf
 
   vm_TransposeMatrix(&trans_matrix);
 
-  xdiff.x = LightmapInfo[lmi_handle].xspacing;
-  ydiff.y = LightmapInfo[lmi_handle].yspacing;
+  xdiff = vector{ (scalar)LightmapInfo[lmi_handle].xspacing, (scalar)LightmapInfo[lmi_handle].yspacing, (scalar)0 };
 
   for (i = 0; i < yres; i++) {
     for (t = 0; t < xres; t++) {

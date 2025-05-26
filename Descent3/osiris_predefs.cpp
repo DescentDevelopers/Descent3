@@ -3466,19 +3466,14 @@ bool osipf_PathGetInformation(int pathid, int point, vector *pos, int *room, mat
   if (point < 0 || point >= GamePaths[pathid].num_nodes)
     return false;
 
-  if (pos) {
-    pos->x() = GamePaths[pathid].pathnodes[point].pos.x();
-    pos->y() = GamePaths[pathid].pathnodes[point].pos.y();
-    pos->z() = GamePaths[pathid].pathnodes[point].pos.z();
-  }
+  if (pos)
+    *pos = GamePaths[pathid].pathnodes[point].pos;
 
-  if (room) {
+  if (room)
     *room = GamePaths[pathid].pathnodes[point].roomnum;
-  }
 
-  if (orient) {
+  if (orient)
     vm_VectorToMatrix(orient, &GamePaths[pathid].pathnodes[point].fvec, &GamePaths[pathid].pathnodes[point].uvec, NULL);
-  }
 
   return true;
 }

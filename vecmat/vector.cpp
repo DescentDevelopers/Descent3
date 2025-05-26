@@ -296,14 +296,8 @@ scalar vm_GetMagnitude(const vector *a) {
 
 void vm_ClearMatrix(matrix *dest) { memset(dest, 0, sizeof(matrix)); }
 
-void vm_MakeIdentity(matrix *dest) {
-  memset(dest, 0, sizeof(matrix));
-  dest->rvec.x() = dest->uvec.y() = dest->fvec.z() = 1.0;
-}
-void vm_MakeInverseMatrix(matrix *dest) {
-  memset((void *)dest, 0, sizeof(matrix));
-  dest->rvec.x() = dest->uvec.y() = dest->fvec.z() = -1.0;
-}
+void   vm_MakeIdentity(matrix *dest) { *dest = { vector::id(0), vector::id(1), vector::id(2) }; }
+void   vm_MakeInverseMatrix(matrix *dest) { *dest = { -vector::id(0), -vector::id(1), -vector::id(2) }; }
 
 void vm_TransposeMatrix(matrix *m) {
   // Transposes a matrix in place

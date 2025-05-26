@@ -914,10 +914,7 @@ void DoRadiosityForRooms() {
         for (t = 0; t < vh; t++, cur_y += VOLUME_SPACING) {
           float cur_x = Rooms[roomnum].min_xyz.x() + .1;
           for (j = 0; j < vw; j++, cur_x += VOLUME_SPACING) {
-            vector dest_vec;
-            dest_vec.x = cur_x;
-            dest_vec.y = cur_y;
-            dest_vec.z = cur_z;
+            vector dest_vec = { cur_x, cur_y, cur_z };
 
             Volume_elements[roomnum][(i * vw * vh) + (t * vw) + j].pos = dest_vec;
 
@@ -1756,19 +1753,11 @@ void DoTerrainDynamicTable() {
 
     for (t = 0; t < AREA_X; t++) {
       int tseg = i * TERRAIN_WIDTH + t;
-      vector gp;
-
-      gp.x = (t * TERRAIN_SIZE);
-      gp.z = (i * TERRAIN_SIZE);
-
-      gp.y = Terrain_seg[tseg].y;
+      vector gp = { (t * TERRAIN_SIZE), Terrain_seg[tseg].y, (i * TERRAIN_SIZE) };
 
       for (k = 0; k < 8; k++) {
-        vector pos;
-
-        pos.x = gp.x;
-        pos.z = gp.z;
-        pos.y = k * (MAX_TERRAIN_HEIGHT / 8);
+        vector pos = gp;
+        pos.y() = k * (MAX_TERRAIN_HEIGHT / 8);
 
         for (j = 0; j < Terrain_sky.num_satellites; j++) {
           raynum++;
@@ -1796,12 +1785,7 @@ void ComputeTerrainSpeedTable() {
   for (i = 0; i < AREA_Z; i++) {
     for (t = 0; t < AREA_X; t++) {
       int tseg = i * TERRAIN_WIDTH + t;
-      vector pos;
-
-      pos.x = (t * TERRAIN_SIZE);
-      pos.z = (i * TERRAIN_SIZE);
-      pos.y = (Terrain_seg[tseg].y) + .001;
-
+      vector pos = { (t * TERRAIN_SIZE), (Terrain_seg[tseg].y) + .001, (i * TERRAIN_SIZE) };
       raynum++;
 
       for (j = 0; j < Terrain_sky.num_satellites; j++)
@@ -2470,11 +2454,7 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
 
   // now set the base vertex, which is where we base uv 0,0 on
 
-  vector base_vector;
-
-  base_vector.x = verts[leftmost_point].x;
-  base_vector.y = verts[topmost_point].y;
-  base_vector.z = 0;
+  vector base_vector = { verts[leftmost_point].x(), verts[topmost_point].y(), 0 };
 
   // Figure out lightmap resolution
   scalar xdiff = verts[rightmost_point].x() - verts[leftmost_point].x();

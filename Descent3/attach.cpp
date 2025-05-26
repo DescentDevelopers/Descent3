@@ -252,15 +252,9 @@ static void ConvertAxisAmountMatrix(vector *n, float w, matrix *rotmat) {
   const scalar tyy = t * n->y() * n->y();
   const scalar tzz = t * n->z() * n->z();
 
-  rotmat->rvec.x() = txx + c;
-  rotmat->rvec.y() = txy - sz;
-  rotmat->rvec.z() = txz + sy;
-  rotmat->uvec.x() = txy + sz;
-  rotmat->uvec.y() = tyy + c;
-  rotmat->uvec.z() = tyz - sx;
-  rotmat->fvec.x() = txz - sy;
-  rotmat->fvec.y() = tyz + sx;
-  rotmat->fvec.z() = tzz + c;
+  rotmat->rvec = { txx + c, txy - sz, txz + sy };
+  rotmat->uvec = { txy + sz,  tyy + c, tyz - sx };
+  rotmat->fvec = { txz - sy, tyz + sx, tzz + c };
 }
 
 bool AttachDoPosOrientRad(object *parent, char p_ap, object *child, float rad_percent, vector *pos) {

@@ -115,6 +115,7 @@ constexpr static inline const vector ne()
 // Does a simple dot product calculation
 static inline scalar dot(const vector &u, const vector &v) { return (u.x() * v.x()) + (u.y() * v.y()) + (u.z() * v.z()); }
 inline scalar mag() const { return iix * iix + iiy * iiy + iiz * iiz; }
+inline void fill(T x) { iix = iiy = iiz = x; }
 };
 
 using vector_array = vector;
