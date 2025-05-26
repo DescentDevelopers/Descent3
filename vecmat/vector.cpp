@@ -459,9 +459,7 @@ scalar vm_NormalizeVectorFast(vector *a) {
     return 0;
   }
 
-  a->x() = (a->x() / mag);
-  a->y() = (a->y() / mag);
-  a->z() = (a->z() / mag);
+  *a /= mag;
 
   return mag;
 }

@@ -1959,7 +1959,7 @@ void CreateBlueBlastRing(vector *pos, int index, float lifetime, float max_size,
     // Face the viewer
     vector fvec = Viewer_object->pos - *pos;
     vm_NormalizeVectorFast(&fvec);
-    if (vm_GetMagnitudeFast(&fvec) < .5)
+    if (fvec.mag() < .5)
       return;
     vm_VectorToMatrix(&tempm, &fvec, NULL, NULL);
   }

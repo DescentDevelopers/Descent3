@@ -1103,7 +1103,7 @@ void SetFallingPhysics(object *objp) {
   } else { // not a walker
 
     // If not spinning much, give the object a good spin
-    if (vm_GetMagnitude(&objp->mtype.phys_info.rotvel) < 4000.0f) {
+    if (objp->mtype.phys_info.rotvel.mag() < 4000.0f) {
       objp->mtype.phys_info.rotvel.x() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
       objp->mtype.phys_info.rotvel.y() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
       objp->mtype.phys_info.rotvel.z() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));

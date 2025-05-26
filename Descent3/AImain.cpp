@@ -1915,7 +1915,7 @@ bool compute_dodge_dir(vector *movement_dir, object *obj, object *dodge_obj) {
   dodge_vec *= scale;
 
   if (dodge_vec != Zero_vector && (obj->ai_info->dodge_till_time < Gametime ||
-                                   vm_GetMagnitude(&dodge_vec) > vm_GetMagnitude(&obj->ai_info->last_dodge_dir))) {
+                                   dodge_vec.mag() > obj->ai_info->last_dodge_dir.mag())) {
     obj->ai_info->last_dodge_dir = dodge_vec;
   }
 
@@ -2206,7 +2206,7 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
   else
     dist.z() = a.p();
 
-  float angles = vm_GetMagnitude(&dist);
+  scalar angles = dist.mag();
 
   if (angles <= max_angles) {
     obj->orient = *g_orient;
@@ -3379,12 +3379,12 @@ start_loop:
     if (obj->ai_info->animation_type == AS_ALERT || obj->ai_info->animation_type == AS_IDLE) {
       scalar scaler;
 
-      float speed = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
+      scalar speed = obj->mtype.phys_info.velocity.mag();
       scaler = speed / obj->ai_info->max_velocity;
 
       // If slow, use some rotational vel
       if (scaler < .7f) {
-        float speed = vm_GetMagnitude(&obj->mtype.phys_info.rotvel);
+        scalar speed = obj->mtype.phys_info.rotvel.mag();
         scaler += speed / 40000.0f;
 
         if (scaler > 1.0f)
@@ -5537,8 +5537,8 @@ static inline void ai_walker_stuff(object *obj) {
   if (ai_info->movement_type == MC_STANDING) {
     int next_anim;
 
-    if (vm_GetMagnitude(&obj->mtype.phys_info.velocity) > 0.01f ||
-        vm_GetMagnitude(&obj->mtype.phys_info.rotvel) > 0.01) {
+    if (obj->mtype.phys_info.velocity.mag() > 0.01f ||
+        obj->mtype.phys_info.rotvel.mag()   > 0.01f) {
       if (ai_info->next_animation_type == AI_INVALID_INDEX) {
         if (ai_info->animation_type == AS_ALERT) {
           next_anim = AS_GOTO_ALERT_WALKING;
@@ -5555,8 +5555,8 @@ static inline void ai_walker_stuff(object *obj) {
   } else if (ai_info->movement_type == MC_WALKING) {
     int next_anim;
 
-    if (vm_GetMagnitude(&obj->mtype.phys_info.velocity) <= 0.01f &&
-        vm_GetMagnitude(&obj->mtype.phys_info.rotvel) <= 0.01) {
+    if (obj->mtype.phys_info.velocity.mag() <= 0.01f &&
+        obj->mtype.phys_info.rotvel.mag() <= 0.01) {
       if (ai_info->animation_type == AS_ALERT) {
         next_anim = AS_GOTO_ALERT_STANDING;
         GoalAddGoal(obj, AIG_SET_ANIM, (void *)&next_anim, ACTIVATION_BLEND_LEVEL);
@@ -6139,7 +6139,7 @@ void AIDoFrame(object *obj) {
 
         ai_move(obj);
 
-        speed = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
+        speed = obj->mtype.phys_info.velocity.mag();
 
         // Removes the framerate independence from objects moving within 2x of there normal max speed
         if (speed > 0.1f && speed <= ai_info->max_velocity * 2.0) {

@@ -45,23 +45,11 @@ void vm_SubVectors(vector *result, const vector *a, const vector *b) {
 
 scalar vm_VectorDistance(const vector *a, const vector *b) {
   // Given two vectors, returns the distance between them
-
-  vector dest;
-  float dist;
-
-  vm_SubVectors(&dest, a, b);
-  dist = vm_GetMagnitude(&dest);
-  return dist;
+  return (*a - *b).mag();
 }
 scalar vm_VectorDistanceQuick(const vector *a, const vector *b) {
   // Given two vectors, returns the distance between them
-
-  vector dest;
-  float dist;
-
-  vm_SubVectors(&dest, a, b);
-  dist = vm_GetMagnitudeFast(&dest);
-  return dist;
+  return (*a - *b).mag();
 }
 
 // Calculates the perpendicular vector given three points
@@ -124,10 +112,8 @@ void vm_CrossProduct(vector *dest, vector *u, vector *v) {
 
 // Normalize a vector.
 // Returns:  the magnitude before normalization
-float vm_VectorNormalize(vector *a) {
-  float mag;
-
-  mag = vm_GetMagnitude(a);
+scalar vm_VectorNormalize(vector *a) {
+  scalar mag = a->mag();
 
   if (mag > 0)
     *a /= mag;
@@ -141,11 +127,7 @@ float vm_VectorNormalize(vector *a) {
 }
 
 scalar vm_GetMagnitude(const vector *a) {
-  float f;
-
-  f = (a->x() * a->x()) + (a->y() * a->y()) + (a->z() * a->z());
-
-  return (sqrt(f));
+  return a->mag();
 }
 
 void vm_ClearMatrix(matrix *dest) { memset(dest, 0, sizeof(matrix)); }
@@ -303,8 +285,8 @@ scalar vm_GetMagnitudeFast(const vector *v) {
 
 // Normalize a vector using an approximation of the magnitude
 // Returns:  the magnitude before normalization
-float vm_VectorNormalizeFast(vector *a) {
-  float mag;
+scalar vm_VectorNormalizeFast(vector *a) {
+  scalar mag;
 
   mag = vm_GetMagnitudeFast(a);
 
@@ -312,10 +294,7 @@ float vm_VectorNormalizeFast(vector *a) {
     a->x() = a->y() = a->z() = 0.0;
     return 0;
   }
-
-  a->x() = (a->x() / mag);
-  a->y() = (a->y() / mag);
-  a->z() = (a->z() / mag);
+  *a /= mag;
 
   return mag;
 }

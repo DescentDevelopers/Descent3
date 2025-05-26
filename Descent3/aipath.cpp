@@ -385,7 +385,7 @@ pass_node:
       scalar dot = vm_Dot3Product(dir, obj->orient.uvec);
       dir -= dot * obj->orient.uvec;
     }
-    float dist = vm_GetMagnitude(&dir);
+    scalar dist = dir.mag();
 
     if (dist < 1.5f) {
       f_pass_node = true;
