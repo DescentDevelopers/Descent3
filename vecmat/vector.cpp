@@ -455,7 +455,7 @@ scalar vm_NormalizeVectorFast(vector *a) {
   mag = vm_GetMagnitudeFast(a);
 
   if (mag == 0.0) {
-    a->x() = a->y() = a->z() = 0.0;
+    *a = vector::ne();
     return 0;
   }
 

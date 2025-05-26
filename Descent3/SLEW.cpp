@@ -479,7 +479,7 @@ int SlewFrame(object *obj, int movement_limitations) {
   }
 
   // Set flag if rotation changed
-  if ((rotang.p() != 0) || (rotang.h() != 0) || (rotang.b() != 0))
+  if (rotang != angvec::ne())
     ret_flags |= SLEW_ROTATE;
 
   return ret_flags;

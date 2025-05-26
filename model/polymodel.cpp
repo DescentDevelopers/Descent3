@@ -2519,9 +2519,7 @@ void SetModelAngles(poly_model *po, const float *normalized_angles) {
 
         vm_ExtractAnglesFromMatrix(&po->submodel[i].angs, &temp_matrix);
       } else {
-        po->submodel[i].angs.h() = 0;
-        po->submodel[i].angs.p() = 0;
-        po->submodel[i].angs.h() = 0;
+        po->submodel[i].angs = angvec::ne();
       }
     }
   }
@@ -2572,11 +2570,8 @@ void SetModelInterpPos(poly_model *po, const float *normalized_pos) {
       }
     }
   } else {
-    for (i = 0; i < po->n_models; i++) {
-      po->submodel[i].mod_pos.x() = 0;
-      po->submodel[i].mod_pos.y() = 0;
-      po->submodel[i].mod_pos.z() = 0;
-    }
+    for (i = 0; i < po->n_models; i++)
+      po->submodel[i].mod_pos = vector::ne();
   }
 }
 
@@ -2602,7 +2597,7 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t 
         continue;
 
       if (sm->num_key_pos <= 1) {
-        vm_MakeZero(&sm->mod_pos);
+        sm->mod_pos = vector::ne();
         goto do_angles;
       }
 
@@ -2707,13 +2702,8 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t 
 
   } else {
     for (i = 0; i < po->n_models; i++) {
-      po->submodel[i].mod_pos.x() = 0;
-      po->submodel[i].mod_pos.y() = 0;
-      po->submodel[i].mod_pos.z() = 0;
-
-      po->submodel[i].angs.p() = 0;
-      po->submodel[i].angs.h() = 0;
-      po->submodel[i].angs.b() = 0;
+      po->submodel[i].mod_pos = vector::ne();
+      po->submodel[i].angs = angvec::ne();
     }
   }
 }

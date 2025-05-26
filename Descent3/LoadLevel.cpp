@@ -2858,11 +2858,8 @@ void ReadLightmapChunk(CFILE *fp, int version) {
       cf_ReadVector(fp, &v);
       if (!Dedicated_server)
         LightmapInfo[lmi].normal = v;
-    } else {
-      LightmapInfo[lmi].normal.x() = 0;
-      LightmapInfo[lmi].normal.y() = 0;
-      LightmapInfo[lmi].normal.z() = 1;
-    }
+    } else
+      LightmapInfo[lmi].normal = vector::id(2);
 
     uint16_t *data;
 
@@ -2951,13 +2948,8 @@ void ReadGamePathsChunk(CFILE *fp, int version) {
         cf_ReadVector(fp, &GamePaths[i].pathnodes[j].fvec);
         cf_ReadVector(fp, &GamePaths[i].pathnodes[j].uvec);
       } else {
-        GamePaths[i].pathnodes[j].fvec.x() = 0.0;
-        GamePaths[i].pathnodes[j].fvec.y() = 0.0;
-        GamePaths[i].pathnodes[j].fvec.z() = 1.0;
-
-        GamePaths[i].pathnodes[j].uvec.x() = 0.0;
-        GamePaths[i].pathnodes[j].uvec.y() = 1.0;
-        GamePaths[i].pathnodes[j].uvec.z() = 0.0;
+        GamePaths[i].pathnodes[j].fvec = vector::id(2);
+        GamePaths[i].pathnodes[j].uvec = vector::id(1);
       }
     }
   }

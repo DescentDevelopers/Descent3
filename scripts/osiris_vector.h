@@ -22,7 +22,7 @@
 #include "fix.h"
 #include "vecmat_external.h"
 
-const vector Zero_vector = {0.0f, 0.0f, 0.0f};
+const vector Zero_vector = vector::ne();
 
 // Disable the "possible loss of data" warning
 #pragma warning(disable : 4244)
