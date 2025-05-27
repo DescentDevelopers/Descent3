@@ -1304,7 +1304,11 @@ void LoadGameSettings() {
   Database->read_int("RoomLeveling", &Default_player_room_leveling);
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
-  Database->read_int("RS_resolution", &Current_video_resolution_id);
+  Database->read_int("RS_resolution", &tempint);
+  if (tempint >= 0 && tempint < std::size(Video_res_list))
+    Current_video_resolution_id = tempint;
+  else
+    LOG_WARNING << "Game settings contain a display resolution index that is out of bounds. Starting with default resolution.";
 
   int tempval = 0;
   Database->read_int("RS_fov", &tempval);
