@@ -879,7 +879,7 @@ bool DemoMission(int mode = 0) {
 }
 #endif
 
-bool LoadMission(const char *mssn) {
+bool LoadMission(const std::filesystem::path& mssn) {
   Times_game_restored = 0;
   LOG_INFO << "In LoadMission()";
 #if (defined(OEM) || defined(DEMO))
@@ -919,7 +919,7 @@ bool LoadMission(const char *mssn) {
   // Open MN3 if filename passed was a mn3 file.
   if (IS_MN3_FILE(mssn)) {
     mission = mssn;
-    pathname = std::filesystem::path("missions") / mission;
+    pathname = "missions" / mission;
   } else {
     mission = mssn;
     pathname = mssn;

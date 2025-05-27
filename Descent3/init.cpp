@@ -1549,20 +1549,16 @@ void InitIOSystems(bool editor) {
   // things as the mainmenu movie, or loading screen
   int mission_arg = FindArg("-mission");
   if (mission_arg > 0) {
-    char path_to_mission[_MAX_PATH];
-    char filename[256];
-
     // get the true filename
-    ddio_SplitPath(GameArgs[mission_arg + 1], NULL, filename, NULL);
-    strcat(filename, ".mn3");
+    std::filesystem::path filename = std::filesystem::path(GameArgs[mission_arg + 1]).filename().replace_extension("mn3");
 
-    // make the full path (it is forced to be on the harddrive since it contains
-    // textures and stuff).
-    ddio_MakePath(path_to_mission, LocalD3Dir, "missions", filename, NULL);
+    std::filesystem::path path_to_mission = "missions" / filename;
     if (cfexist(path_to_mission)) {
       cf_OpenLibrary(path_to_mission);
     } else {
-      Int3(); // mission not found
+      // mission not found
+      LOG_WARNING.printf("Mission file '%s' not found! Ignoring -mission command-line arg.",
+                         path_to_mission.u8string().c_str());
     }
   }
 
