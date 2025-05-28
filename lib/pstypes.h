@@ -40,4 +40,12 @@
 #endif
 #endif
 
+/*
+ * g++ -std=c++17: fs::path::u8string() returns std::string
+ * g++ -std=c++20: fs::path::u8string() returns std::u8string
+ * But there are no practical APIs to even deal with char8_t, so just
+ * wing it with the char representation.
+ */
+#define PATH_TO_CSTR(/*std::filesystem::path*/ p) reinterpret_cast<const char *>((p).u8string().c_str())
+
 #endif

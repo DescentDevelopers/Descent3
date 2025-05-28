@@ -81,7 +81,7 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
     return MVELIB_FILE_ERROR;
   }
   // open movie file.
-  FILE *hFile = fopen((const char*)real_name.u8string().c_str(), "rb");
+  FILE *hFile = fopen(PATH_TO_CSTR(real_name), "rb");
   if (hFile == nullptr) {
     LOG_ERROR << "MOVIE: Unable to open " << pMovieName;
     return MVELIB_FILE_ERROR;
@@ -103,7 +103,7 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
 
   MVESTREAM *mve = MVE_rmPrepMovie(hFile, -1, -1, 0);
   if (mve == nullptr) {
-    LOG_ERROR.printf("Failed to prepMovie %s", pMovieName.u8string().c_str());
+    LOG_ERROR.printf("Failed to prepMovie %s", PATH_TO_CSTR(pMovieName));
     fclose(hFile);
     mve_CloseSound();
     return MVELIB_INIT_ERROR;
@@ -323,10 +323,10 @@ intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *ap
 #ifndef NO_MOVIES
   // first, find that movie..
   std::filesystem::path real_name = cf_LocatePath(std::filesystem::path("movies") / mvename);
-  fhandle = fopen((const char*)real_name.u8string().c_str(), "rb");
+  fhandle = fopen(PATH_TO_CSTR(real_name), "rb");
 
   if (fhandle == nullptr) {
-    LOG_WARNING.printf("MOVIE: Unable to open %s", (const char*)real_name.u8string().c_str());
+    LOG_WARNING.printf("MOVIE: Unable to open %s", PATH_TO_CSTR(real_name));
     return 0;
   }
 

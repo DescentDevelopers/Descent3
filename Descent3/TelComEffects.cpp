@@ -1253,10 +1253,9 @@ bool CreateMovie(tceffect *tce, const char *filename) {
   tce->movieinfo.filename = NULL;
   tce->w = tce->h = 100;
 
-  tce->movieinfo.filename = mem_rmalloc<char>(strlen(filename) + 1);
+  tce->movieinfo.filename = mem_strdup(filename);
   if (!tce->movieinfo.filename)
     return false;
-  strcpy(tce->movieinfo.filename, filename);
   tce->movieinfo.handle = StartMovie(filename);
   if (!tce->movieinfo.handle)
     return false;

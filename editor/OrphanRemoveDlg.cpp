@@ -359,7 +359,7 @@ const char *orphan_ignore[] = {
     "monster.str", "mtclient.str", "tanarchy.str"};
 int num_orphan_ignore = std::size(orphan_ignore);
 
-bool IsFileUsed(const char *filename) {
+static bool IsFileUsed(const char *filename) {
   bool found = false;
 
   for (int i = 0; i < num_orphan_ignore; i++) {
@@ -426,8 +426,8 @@ void COrphanRemoveDlg::OnSelchangeDirectory() {
 
   ddio_DoForeachFile(fullpath, std::regex(".+"),
                      [this, &num_files, &total_filesize, &data, &stats](const std::filesystem::path &path) {
-                       if (!IsFileUsed(path.filename().u8string().c_str())) {
-                         m_List.AddString(path.filename().u8string().c_str());
+                       if (!IsFileUsed(PATH_TO_CSTR(path.filename()))) {
+                         m_List.AddString(PATH_TO_CSTR(path.filename()));
                          num_files++;
                          total_filesize += filelen(path.filename(), path.parent_path());
                          sprintf(data, "Num Files: %d\r\nSize: %dK", num_files, total_filesize / 1024);

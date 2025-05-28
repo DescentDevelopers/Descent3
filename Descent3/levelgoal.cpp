@@ -289,8 +289,7 @@ bool lgoal::SetName(int handle, char *name) {
   if (m_name)
     mem_free(m_name);
 
-  m_name = mem_rmalloc<char>(strlen(name) + 1);
-  strcpy(m_name, name);
+  m_name = mem_strdup(name);
   m_modified = 1;
 
   if (Game_mode & GM_MULTI && Netgame.local_role != LR_CLIENT) {
@@ -321,9 +320,7 @@ bool lgoal::SetCompletionMessage(char *message) {
   if (m_completion_message)
     mem_free(m_completion_message);
 
-  m_completion_message = mem_rmalloc<char>(strlen(message) + 1);
-  strcpy(m_completion_message, message);
-
+  m_completion_message = mem_strdup(message);
   return true;
 }
 
@@ -334,9 +331,7 @@ bool lgoal::SetItemName(char *iname) {
   if (m_item_name)
     mem_free(m_item_name);
 
-  m_item_name = mem_rmalloc<char>(strlen(iname) + 1);
-  strcpy(m_item_name, iname);
-
+  m_item_name = mem_strdup(iname);
   return true;
 }
 
@@ -443,9 +438,7 @@ bool lgoal::SetDesc(char *desc) {
   if (m_desc)
     mem_free(m_desc);
 
-  m_desc = mem_rmalloc<char>(strlen(desc) + 1);
-  strcpy(m_desc, desc);
-
+  m_desc = mem_strdup(desc);
   return true;
 }
 

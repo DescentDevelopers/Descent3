@@ -336,7 +336,7 @@ int LoadServerConfigFile() {
 
   //	open file
   if (!inf.Open(Netgame.server_config_name, "[server config file]", DedicatedServerLex)) {
-    PrintDedicatedMessage(TXT_DS_BADCONFIG, Netgame.server_config_name.u8string().c_str());
+    PrintDedicatedMessage(TXT_DS_BADCONFIG, PATH_TO_CSTR(Netgame.server_config_name));
     PrintDedicatedMessage("\n");
     return 0;
   }

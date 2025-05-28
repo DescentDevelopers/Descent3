@@ -164,10 +164,10 @@ bool ddio_SetWorkingDir(const char *path) { return (SetCurrentDirectory(path)) ?
 bool ddio_FileDiff(const std::filesystem::path &path1, const std::filesystem::path &path2) {
   struct _stat abuf, bbuf;
 
-  if (_stat(path1.u8string().c_str(), &abuf))
+  if (_stat(PATH_TO_CSTR(path1), &abuf))
     Int3(); // error getting stat info
 
-  if (_stat(path2.u8string().c_str(), &bbuf))
+  if (_stat(PATH_TO_CSTR(path2), &bbuf))
     Int3(); // error getting stat info
 
   if ((abuf.st_size != bbuf.st_size) || (abuf.st_mtime != bbuf.st_mtime))
@@ -196,11 +196,11 @@ void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem:
 
 try_again:;
 
-  desthandle = CreateFile(dest.u8string().c_str(), GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  srchandle = CreateFile(src.u8string().c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  desthandle = CreateFile(PATH_TO_CSTR(dest), GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  srchandle = CreateFile(PATH_TO_CSTR(src), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
   if (desthandle == INVALID_HANDLE_VALUE || srchandle == INVALID_HANDLE_VALUE) {
-    LOG_WARNING.printf("Couldn't copy file time for %s! Error=%d", dest.u8string().c_str(), GetLastError());
+    LOG_WARNING.printf("Couldn't copy file time for %s! Error=%d", PATH_TO_CSTR(dest), GetLastError());
 
     if (desthandle != INVALID_HANDLE_VALUE)
       CloseHandle(desthandle);
