@@ -115,7 +115,9 @@ void g3_StartFrame(vector *view_pos, matrix *view_matrix, float zoom) {
   Unscaled_matrix = *view_matrix;
 
   // Scale x and y to zoom in or out;
-  Matrix_scale *= 1.0f / View_zoom;
+  float oOZ = 1.0f / View_zoom;
+  Matrix_scale.x() = Matrix_scale.x() * oOZ;
+  Matrix_scale.y() = Matrix_scale.y() * oOZ;
 
   // Scale the matrix elements
   View_matrix.rvec = Unscaled_matrix.rvec * Matrix_scale.x();
