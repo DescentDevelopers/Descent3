@@ -148,7 +148,7 @@ extern char *Level_script_source;
 extern tScriptName Script_names[];
 
 // Script event names
-extern char *Script_evt_names[];
+extern const char *Script_evt_names[];
 extern uint16_t Script_evt_ids[];
 
 bool NewScript(const char *filename);

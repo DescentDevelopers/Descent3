@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined(AFX_SCRIPTSYNCDIALOG_H__9C4083C0_CB58_11D2_AB2B_006008BF0B09__INCLUDED_)
-#define AFX_SCRIPTSYNCDIALOG_H__9C4083C0_CB58_11D2_AB2B_006008BF0B09__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+
+#include <filesystem>
+
 // ScriptSyncDialog.h : header file
 //
 
@@ -92,7 +90,7 @@ public:
   bool m_InStuff;
   int m_Index;
   bool m_Done;
-  char old_dir[_MAX_PATH];
+  std::filesystem::path old_dir;
   bool m_FillingIn;
   int m_ErrorCount;
   int m_HasCompiler;
@@ -124,5 +122,3 @@ protected:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_SCRIPTSYNCDIALOG_H__9C4083C0_CB58_11D2_AB2B_006008BF0B09__INCLUDED_)

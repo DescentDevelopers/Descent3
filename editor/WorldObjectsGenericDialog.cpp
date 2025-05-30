@@ -1467,7 +1467,7 @@ void CWorldObjectsGenericDialog::OnSelScript() {
 
   char filename[_MAX_PATH];
   char pathname[_MAX_PATH], name[_MAX_PATH];
-  strcpy(pathname, LocalScriptDir);
+  strcpy(pathname, LocalScriptDir.u8string().c_str());
 
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, pathname, sizeof(pathname)))
     return;

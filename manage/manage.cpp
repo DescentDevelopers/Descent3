@@ -930,7 +930,7 @@ int mng_FindTrackLock(char *name, int pagetype) {
 // Searches through global array of tracklocks and returns first free one
 // Sets the tracklock to be named "name" and its type "pagetype"
 // returns -1 if none free
-int mng_AllocTrackLock(char *name, int pagetype) {
+int mng_AllocTrackLock(const char *name, int pagetype) {
   int i;
   for (i = 0; i < MAX_TRACKLOCKS; i++)
     if (GlobalTrackLocks[i].used == 0) {
