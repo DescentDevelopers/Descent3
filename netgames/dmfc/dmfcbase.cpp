@@ -467,14 +467,18 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <chrono>
+#include <cstdlib>
+#include <cstdarg>
+#include <filesystem>
+#include <sstream>
+#include <string>
+
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "dmfcinternal.h"
 #include "dmfcinputcommands.h"
-
-#include <stdlib.h>
-#include <stdarg.h>
-#include <algorithm>
 
 char **DMFCStringTable;
 int DMFCStringTableSize = 0;
@@ -935,8 +939,8 @@ void DMFCBase::LoadFunctions(int *api_func) {
   DLLHideCursor = (ui_HideCursor_fp)API.fp[149];
   DLLGameFrame = (GameFrame_fp)API.fp[150];
   DPrintf = (DPrintf_fp)API.fp[151];
-  DLLddio_MakePath = (ddio_MakePath_fp)API.fp[152];
-  DLLddio_SplitPath = (ddio_SplitPath_fp)API.fp[153];
+  // DLLddio_MakePath = (ddio_MakePath_fp)API.fp[152];
+  // DLLddio_SplitPath = (ddio_SplitPath_fp)API.fp[153];
   DLLPlay2dSound = (Play2dSound_fp)API.fp[154];
   DLLTouchSound = (TouchSound_fp)API.fp[155];
   DatabaseRead1 = (dDatabaseRead_fp1)API.fp[156];
@@ -3852,103 +3856,22 @@ void DMFCBase::EnableAutoSaveDisconnect(bool enable) {
     DISABLE_FLAGS(m_iProtectedFlags, DMFC_PRF_AUTOSAVEDISC);
 }
 
-//	DMFCBase::GenerateStatFilename
-//
-//	Given the following information it will return a full path to what
-//	the recommended filename to save stats to should be.
-//	root = Multiplayer DLL Name (filename will start with this)
-//	end_of_level = pass true if this is the end of a level stats
-void DMFCBase::GenerateStatFilename(char *filename, const char *root, bool end_of_level) {
+std::filesystem::path DMFCBase::GenerateStatFilename(const char *root, bool end_of_level) {
   int level = Current_mission->cur_level;
   char *name = Netgame->name;
-  struct tm *newtime;
-  time_t long_time;
 
-  time(&long_time);
-  newtime = localtime(&long_time);
-
-  char fname[256];
-  char timestr[100];
-  char day[8], month[8];
-
-  switch (newtime->tm_wday) {
-  case 0:
-    strcpy(day, DTXT_SUNDAY);
-    break;
-  case 1:
-    strcpy(day, DTXT_MONDAY);
-    break;
-  case 2:
-    strcpy(day, DTXT_TUESDAY);
-    break;
-  case 3:
-    strcpy(day, DTXT_WEDNESDAY);
-    break;
-  case 4:
-    strcpy(day, DTXT_THURSDAY);
-    break;
-  case 5:
-    strcpy(day, DTXT_FRIDAY);
-    break;
-  case 6:
-    strcpy(day, DTXT_SATURDAY);
-    break;
-  }
-
-  switch (newtime->tm_mon) {
-  case 0:
-    strcpy(month, DTXT_JANUARY);
-    break;
-  case 1:
-    strcpy(month, DTXT_FEBRUARY);
-    break;
-  case 2:
-    strcpy(month, DTXT_MARCH);
-    break;
-  case 3:
-    strcpy(month, DTXT_APRIL);
-    break;
-  case 4:
-    strcpy(month, DTXT_MAY);
-    break;
-  case 5:
-    strcpy(month, DTXT_JUNE);
-    break;
-  case 6:
-    strcpy(month, DTXT_JULY);
-    break;
-  case 7:
-    strcpy(month, DTXT_AUGUST);
-    break;
-  case 8:
-    strcpy(month, DTXT_SEPTEMBER);
-    break;
-  case 9:
-    strcpy(month, DTXT_OCTOBER);
-    break;
-  case 10:
-    strcpy(month, DTXT_NOVEMBER);
-    break;
-  case 11:
-    strcpy(month, DTXT_DECEMBER);
-    break;
-  }
-
-  snprintf(timestr, sizeof(timestr), "%s._%s._%d_%d_%02d%02d", day, month, newtime->tm_mday, newtime->tm_year + 1900,
-           newtime->tm_hour, newtime->tm_min);
-  snprintf(fname, sizeof(fname), "%s_%s_%d_%s%s.stats", root, name, level, (end_of_level) ? DTXT_ENDOFLEVELCONCAT : "",
-           timestr);
+  const auto now = std::chrono::system_clock::now();
+  auto in_time_t = std::chrono::system_clock::to_time_t(now);
+  std::stringstream ss;
+  ss << root << "_" << name << "_" << level << "_" << (end_of_level ? DTXT_ENDOFLEVELCONCAT : "")
+     << std::put_time(std::localtime(&in_time_t), "%Y_%m_%d_%H%M") << ".stats";
+  std::string fname = ss.str();
 
   // remove all spaces (convert to _)
-  char *p = fname;
-  while ((*p)) {
-    if (*p == ' ')
-      *p = '_';
-    p++;
-  }
+  std::replace(fname.begin(), fname.end(), ' ', '_');
 
   // build the path info here
-  DLLddio_MakePath(filename, LocalD3Dir, "netgames", fname, NULL);
+  return std::filesystem::path(LocalD3Dir) / "netgames" / fname;
 }
 
 //	DMFCBase::IsPlayerObserver
@@ -4683,7 +4606,7 @@ MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, uint8_t flags, 
   return NULL;
 }
 
-void ParseHostsFile(char *filename, tHostsNode **root) {
+void ParseHostsFile(const std::filesystem::path &filename, tHostsNode **root) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "rt");
 
@@ -4835,15 +4758,12 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
 //
 //	Reads in the hosts.allow and hosts.deny files (if available)
 void DMFCBase::ReadInHostsAllowDeny(void) {
-  char allow_fn[_MAX_PATH], deny_fn[_MAX_PATH];
-  bool allow_exist, deny_exist;
-
   // build the path info here
-  DLLddio_MakePath(allow_fn, LocalD3Dir, "netgames", "hosts.allow", NULL);
-  DLLddio_MakePath(deny_fn, LocalD3Dir, "netgames", "hosts.deny", NULL);
+  std::filesystem::path allow_fn = std::filesystem::path(LocalD3Dir) / "netgames" / "hosts.allow";
+  std::filesystem::path deny_fn = std::filesystem::path(LocalD3Dir) / "netgames" / "hosts.deny";
 
-  allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
-  deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
+  bool allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
+  bool deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
 
   m_DenyList = NULL;
   m_AllowList = NULL;
@@ -4909,7 +4829,7 @@ bool DMFCBase::IsPlayerAlive(int pnum) {
 //	Loads up the startup script and sets variables accordingly
 void DMFCBase::ParseStartupScript(void) {
   CFILE *file;
-  char path[_MAX_PATH];
+  std::filesystem::path path;
   char buffer[256];
   int size;
   bool ok_to_read;
@@ -4918,11 +4838,11 @@ void DMFCBase::ParseStartupScript(void) {
 
   if ((autoexec_arg = DLLFindArg("-autoexec", 1)) != 0) {
     // a specific autoexec.dmfc file was specified, use that
-    strcpy(path, GetGameArg(autoexec_arg + 1));
-    mprintf(0, "Override AUTOEXEC.DMFC to %s\n", path);
+    path = GetGameArg(autoexec_arg + 1);
+    mprintf(0, "Override AUTOEXEC.DMFC to %s\n", path.u8string().c_str());
   } else {
     // use the default autoexec.dmfc
-    DLLddio_MakePath(path, LocalD3Dir, "netgames", "autoexec.dmfc", NULL);
+    path = std::filesystem::path(LocalD3Dir) / "netgames" / "autoexec.dmfc";
   }
 
   DLLOpenCFILE(&file, path, "rt");

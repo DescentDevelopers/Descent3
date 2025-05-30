@@ -447,9 +447,6 @@ rend_GetRenderState_fp DLLrend_GetRenderState;
 typedef bool (*LoadMission_fp)(char *msn);
 LoadMission_fp DLLLoadMission;
 
-typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
-ddio_MakePath_fp DLLddio_MakePath;
-
 // typedef void( *MultiStartServer_fp) (int playing,char *scriptname,int dedicated_num_teams=-1);
 typedef void (*MultiStartServer_fp)(int playing, char *scriptname, int dedicated_num_teams);
 MultiStartServer_fp DLLMultiStartServerFP;
@@ -904,7 +901,7 @@ void CommonDLLInit(int *api_func) {
   DLLMultiStartClient = (MultiStartClient_fp)API.fp[32];
   DLLrend_GetRenderState = (rend_GetRenderState_fp)API.fp[33];
   DLLLoadMission = (LoadMission_fp)API.fp[34];
-  DLLddio_MakePath = (ddio_MakePath_fp)API.fp[35];
+  // DLLddio_MakePath = (ddio_MakePath_fp)API.fp[35]; // unused
   // DLLddio_FindFileStart = (ddio_FindFileStart_fp)API.fp[36]; // unused
   // DLLddio_FindFileClose = (ddio_FindFileClose_fp)API.fp[37]; // unused
   // DLLddio_FindNextFile = (ddio_FindNextFile_fp)API.fp[38];   // unused

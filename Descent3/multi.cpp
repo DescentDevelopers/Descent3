@@ -1644,6 +1644,8 @@
 
 #include <algorithm>
 #include <cstring>
+#include <filesystem>
+#include <string>
 
 #include "chrono_timer.h"
 #include "pserror.h"
@@ -1656,6 +1658,7 @@
 #include "init.h"
 #include "hud.h"
 #include "log.h"
+#include "pstring.h"
 #include "robotfire.h"
 #include "ship.h"
 #include "descent.h"
@@ -1812,7 +1815,14 @@ void SendDataChunk(int playernum);
 void DenyFile(int playernum, int filenum, int file_who);
 void MultiDoFileCancelled(uint8_t *data);
 void MultiDoCustomPlayerData(uint8_t *data);
-char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id);
+
+/**
+ * Return filename for player's customizable data (logo and taunts)
+ * @param playernum requested player id
+ * @param id requested resource id
+ * @return filename or empty path if no such resource for requested player
+ */
+std::filesystem::path GetFileNameFromPlayerAndID(uint16_t playernum, uint16_t id);
 
 // Multiplayer position flags
 #define MPF_AFTERBURNER 1 // Afterburner is on
@@ -7530,23 +7540,22 @@ void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who) {
     return;
   }
   // Check to see if this file exists already
-  char *p = GetFileNameFromPlayerAndID(file_who, file_id);
-  if (*p) {
-    if (CFES_ON_DISK == cfexist(p)) {
+  std::filesystem::path p = GetFileNameFromPlayerAndID(file_who, file_id);
+  if (!p.empty()) {
+    if (cfexist(p) == CFES_ON_DISK) {
       char szcrc[_MAX_PATH];
-      char path[_MAX_PATH];
-      char ext[_MAX_PATH];
-      char file[_MAX_PATH];
 
-      ddio_SplitPath(p, path, file, ext);
-      snprintf(szcrc, sizeof(szcrc), "_%.8x", cf_GetfileCRC(p));
-      // See if the the CRC is already in the filename
-      if (strnicmp(szcrc, file + (strlen(file) - 9), 9) != 0) {
-        LOG_WARNING.printf("Bad CRC on file %s! It must be corrupt! File will not be used, and is being deleted!", p);
-        ddio_DeleteFile(p);
+      std::vector<std::string> parts = StringSplit(p.stem().u8string(), "_");
+      snprintf(szcrc, sizeof(szcrc), "%.8x", cf_GetfileCRC(p));
+      // See if the CRC is already in the filename
+      if (stricmp(szcrc, parts.back().c_str()) != 0) {
+        LOG_WARNING.printf("Bad CRC on file %s! It must be corrupt! File will not be used, and is being deleted!",
+                           p.u8string().c_str());
+        std::error_code ec;
+        std::filesystem::remove(p, ec);
       } else {
         // Hey hey, we already have this file
-        LOG_DEBUG.printf("Using existing file: %s", p);
+        LOG_DEBUG << "Using existing file: " << p;
         DoNextPlayerFile(file_who);
         return;
       }
@@ -7593,15 +7602,14 @@ void MultiDoFileReq(uint8_t *data) {
     // FIXME!! Figure out what file to open
     CFILE *cfp;
     // char filename[_MAX_PATH];
-    char filewithpath[_MAX_PATH * 2];
-    strcpy(filewithpath, GetFileNameFromPlayerAndID(filewho, filenum));
-    if (filewithpath[0] == 0) {
-      LOG_DEBUG.printf("Got a file request for a file that doesn't exist (%s).", filewithpath);
+    std::filesystem::path filewithpath = GetFileNameFromPlayerAndID(filewho, filenum);
+    if (filewithpath.empty()) {
+      LOG_DEBUG.printf("Got a file request for a file that doesn't exist (%s).", filewithpath.u8string().c_str());
       DenyFile(playernum, filenum, NetPlayers[playernum].file_xfer_who);
     } else {
       cfp = cfopen(filewithpath, "rb");
       if (!cfp) {
-        LOG_WARNING.printf("Couldn't open a file (%s) for transfer.", filewithpath);
+        LOG_WARNING.printf("Couldn't open a file (%s) for transfer.", filewithpath.u8string().c_str());
         DenyFile(playernum, filenum, NetPlayers[playernum].file_xfer_who);
         return;
         // We couldn't create the file, so cancel the attempt to transfer it.
@@ -7700,14 +7708,12 @@ void MultiDoFileData(uint8_t *data) {
     // Find out if this is the first packet of this file. if so, create and open the file
     if (NetPlayers[playernum].file_xfer_pos == 0) {
       LOG_DEBUG << "Creating file...";
-      CFILE *cfp;
       // char filename[_MAX_PATH];
-      char filewithpath[_MAX_PATH * 2];
-      strcpy(filewithpath, GetFileNameFromPlayerAndID(playernum, file_id));
+      std::filesystem::path filewithpath = GetFileNameFromPlayerAndID(playernum, file_id);
 
-      cfp = cfopen(filewithpath, "wb");
+      CFILE *cfp = cfopen(filewithpath, "wb");
       if (!cfp) {
-        LOG_WARNING.printf("Can't create file %s", filewithpath);
+        LOG_WARNING << "Can't create file " << filewithpath;
         // We couldn't create the file, so cancel the attempt to transfer it.
         MultiCancelFile(playernum, file_id, NetPlayers[playernum].file_xfer_who);
         return;
@@ -7949,14 +7955,14 @@ void MultiDoCustomPlayerData(uint8_t *data) {
     return;
   LOG_DEBUG << "Got custom data in MultiDoCustomPlayerData()";
   NetPlayers[playernum].custom_file_seq = NETFILE_ID_SHIP_TEX; // First in the sequence of files we will request
-  int16_t logo_len = MultiGetUshort(data, &count);
+  uint16_t logo_len = MultiGetUshort(data, &count);
   memcpy(NetPlayers[playernum].ship_logo, data + count, logo_len);
   count += logo_len;
   LOG_DEBUG.printf("%s uses custom ship logo %s", Players[playernum].callsign, NetPlayers[playernum].ship_logo);
 
   for (int t = 0; t < 4; t++) {
     char *filename;
-    int16_t vt_len;
+    uint16_t vt_len;
 
     switch (t) {
     case 0:
@@ -7979,17 +7985,15 @@ void MultiDoCustomPlayerData(uint8_t *data) {
   }
 }
 
-char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
-  static char rval[_MAX_PATH * 2];
-
-  rval[0] = '\0';
+std::filesystem::path GetFileNameFromPlayerAndID(uint16_t playernum, uint16_t id) {
+  std::filesystem::path rval;
 
   if (playernum >= MAX_NET_PLAYERS) {
-    LOG_WARNING.printf("Invalid playernum (%d) passed to GetFileNameFromPlayerAndID()", playernum);
+    LOG_WARNING.printf("Invalid playernum (%d) passed to function", playernum);
     return rval;
   }
   if (id > NETFILE_ID_LAST_FILE) {
-    LOG_WARNING.printf("Invalid file id (%d) passed to GetFileNameFromPlayerAndID()", id);
+    LOG_WARNING.printf("Invalid file id (%d) passed to function", id);
     return rval;
   }
   switch (id) {
@@ -7998,38 +8002,36 @@ char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
     break;
   case NETFILE_ID_SHIP_TEX:
     if (NetPlayers[playernum].ship_logo[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "graphics", NetPlayers[playernum].ship_logo, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "graphics" / NetPlayers[playernum].ship_logo;
     break;
   case NETFILE_ID_VOICE_TAUNT1:
     if (NetPlayers[playernum].voice_taunt1[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt1, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "sounds" / NetPlayers[playernum].voice_taunt1;
     break;
   case NETFILE_ID_VOICE_TAUNT2:
     if (NetPlayers[playernum].voice_taunt2[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt2, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "sounds" / NetPlayers[playernum].voice_taunt2;
     break;
   case NETFILE_ID_VOICE_TAUNT3:
     if (NetPlayers[playernum].voice_taunt3[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt3, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "sounds" / NetPlayers[playernum].voice_taunt3;
     break;
   case NETFILE_ID_VOICE_TAUNT4:
     if (NetPlayers[playernum].voice_taunt4[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt4, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "sounds" / NetPlayers[playernum].voice_taunt4;
     break;
   default:
-    LOG_FATAL.printf("Unknown id (%d) passed to GetFileNameFromPlayerAndID()", id);
+    LOG_FATAL.printf("Unknown id (%d) passed to function", id);
     Int3();
     break;
   }
-  if (*rval) {
-    CFILE *cfp;
-    cfp = cfopen(rval, "rb");
+  if (!rval.empty()) {
+    CFILE *cfp = cfopen(rval, "rb");
     if (!cfp) {
       LOG_WARNING.printf("Multiplayer file xfer File does not exist, not using file %d for player %d!", id, playernum);
-      // rval[0] = '\0';
     } else if (32768 < cfilelength(cfp)) {
       LOG_WARNING.printf("Multiplayer file xfer File to long, not using file %d for player %d!", id, playernum);
-      rval[0] = '\0';
+      rval.clear();
     }
     if (cfp)
       cfclose(cfp);
@@ -8332,7 +8334,7 @@ void MultiDoAiWeaponFlags(uint8_t *data) {
 
   int flags;
   int wb_index;
-  int16_t obj_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t obj_num = Server_object_list[MultiGetUshort(data, &count)];
   flags = MultiGetInt(data, &count);
   wb_index = MultiGetByte(data, &count);
   if (obj_num == 65535) {

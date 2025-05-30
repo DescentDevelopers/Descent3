@@ -60,7 +60,7 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CBriefManage message handlers
-bool AddNewGameFile(char *fullpath, char *directory);
+bool AddNewGameFile(const std::filesystem::path &fullpath, const std::filesystem::path &directory);
 bool CheckInGamefile(char *tempbuffer, bool show_ok_confirmation);
 void CBriefManage::OnAdd() {
   if (!Network_up) {

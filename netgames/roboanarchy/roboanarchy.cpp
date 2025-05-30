@@ -47,14 +47,14 @@
  * $NoKeywords: $
  */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <filesystem>
+
 #include "idmfc.h"
 #include "roboAnarchy.h"
 #include "roboanarchystr.h"
-
-#include <algorithm>
 
 IDMFC *DMFCBase = NULL;
 static IDmfcStats *dstat = NULL;
@@ -75,7 +75,7 @@ static bool display_my_welcome = false;
 static void DisplayHUDScores(struct tHUDItem *hitem);
 static void DisplayScores(void);
 static void DisplayWelcomeMessage(int player_num);
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const std::filesystem::path &filename);
 static void SwitchHUDColor(int i);
 static void SwitchAnarchyScores(int i);
 
@@ -541,7 +541,7 @@ void OnPLRInterval(void) {
 quick_exit:;
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const std::filesystem::path &filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
@@ -704,21 +704,18 @@ void SaveStatsToFile(char *filename) {
 }
 
 #define ROOTFILENAME "Anarchy"
-void OnSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
-void OnLevelEndSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, true);
+void OnLevelEndSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, true);
   SaveStatsToFile(filename);
 }
 
-void OnDisconnectSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnDisconnectSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 

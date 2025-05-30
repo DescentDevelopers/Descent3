@@ -120,7 +120,6 @@
 #include "manage.h"
 #include "doorpage.h"
 #include "mono.h"
-#include "vclip.h"
 #include "polymodel.h"
 #include "door.h"
 #include "ddio.h"
@@ -972,7 +971,7 @@ void CWorldObjectsDoorDialog::OnBrowse() {
 
   char filename[_MAX_PATH];
   char pathname[_MAX_PATH], name[_MAX_PATH];
-  strcpy(pathname, LocalScriptDir);
+  strcpy(pathname, LocalScriptDir.u8string().c_str());
 
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, pathname, sizeof(pathname)))
     return;

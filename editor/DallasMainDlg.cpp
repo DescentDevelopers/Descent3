@@ -307,14 +307,14 @@
 
 #include "stdafx.h"
 
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <cctype>
+#include <filesystem>
 #include <io.h>
 
 #include "pserror.h"
 #include "cfile.h"
 #include "mem.h"
-#include "mono.h"
 #include "ddio.h"
 #include "manage.h"
 #include "object.h"
@@ -362,7 +362,7 @@ CFILE *CurrentOutputFile;
 int CurrentTabLevel;
 
 // Writes out text to CurrentFile
-void OutToFile(char *format, ...) {
+void OutToFile(const char *format, ...) {
   char buffer[1024];
 
   if (CurrentOutputFile == NULL)
@@ -671,7 +671,7 @@ void CDallasMainDlg::OnActivate(UINT nState, CWnd *pWndOther, BOOL bMinimized) {
 // Saves all data
 void CDallasMainDlg::OnSaveButton() {
   CString temp_str;
-  char fullpath[_MAX_PATH];
+  std::filesystem::path fullpath;
 
 #ifndef NEWEDITOR
   // Make sure we're in the editor
@@ -692,8 +692,9 @@ void CDallasMainDlg::OnSaveButton() {
   CreateMsgTableFile(m_ScriptMessagesFilename.GetBuffer(0));
 
   // Get the full DLL path, and delete the DLL
-  ddio_MakePath(fullpath, LocalScriptDir, m_ScriptDLLFilename.GetBuffer(0), NULL);
-  ddio_DeleteFile(fullpath);
+  fullpath = LocalScriptDir / m_ScriptDLLFilename.GetBuffer(0);
+  std::error_code ec;
+  std::filesystem::remove(fullpath, ec);
 
   // Attempt to compile it and create the dll
   CompilerOutputText = "";
@@ -705,8 +706,8 @@ void CDallasMainDlg::OnSaveButton() {
   ScriptCompile(&ci);
 
   // Check to see if the DLL has been created
-  ddio_MakePath(fullpath, LocalScriptDir, m_ScriptDLLFilename.GetBuffer(0), NULL);
-  if (_access(fullpath, 0x00) == -1) {
+  fullpath = LocalScriptDir / m_ScriptDLLFilename.GetBuffer(0);
+  if (!std::filesystem::exists(fullpath)) {
     MessageBox("The compile failed.  See output for error details.", "Compiler Error");
   }
 
@@ -1601,7 +1602,7 @@ void CDallasMainDlg::OnMenuSelectionOfTypeDelete(UINT nID) {
 }
 
 // Displays a deletion prompt
-int CDallasMainDlg::DeletePrompt(char *msg) {
+int CDallasMainDlg::DeletePrompt(const char *msg) {
   CString title = "Deletion Prompt";
   return (MessageBox(msg, title.GetBuffer(0), MB_YESNO | MB_ICONQUESTION));
 }
@@ -1814,7 +1815,7 @@ void CDallasMainDlg::ClearTree(void) {
 }
 
 // Obtains the string name for an event type
-char *CDallasMainDlg::GetEventTypeString(int type) {
+const char *CDallasMainDlg::GetEventTypeString(int type) {
   for (int j = 0; event_info[j].type >= 0; j++)
     if (event_info[j].type == type)
       return (event_info[j].name);
@@ -1841,7 +1842,7 @@ void CDallasMainDlg::UpdateTreeText(HTREEITEM parent) {
 }
 
 // Obtains the in-code DEFINE name for an event type
-char *CDallasMainDlg::GetEventCodeName(int type) {
+const char *CDallasMainDlg::GetEventCodeName(int type) {
   for (int j = 0; event_info[j].type >= 0; j++)
     if (event_info[j].type == type)
       return (event_info[j].code_name);
@@ -1850,7 +1851,7 @@ char *CDallasMainDlg::GetEventCodeName(int type) {
 }
 
 // Obtains the data line for an event type
-char *CDallasMainDlg::GetEventDataLine(int type) {
+const char *CDallasMainDlg::GetEventDataLine(int type) {
   for (int j = 0; event_info[j].type >= 0; j++)
     if (event_info[j].type == type)
       return (event_info[j].data_line);
@@ -2066,7 +2067,7 @@ bool CDallasMainDlg::CanAppendElseToNode(HTREEITEM node) {
 }
 
 // Obtains the string name for an expression operator type
-char *CDallasMainDlg::GetExpressionOperatorTypeString(int type) {
+const char *CDallasMainDlg::GetExpressionOperatorTypeString(int type) {
   for (int j = 0; expop_info[j].type >= 0; j++)
     if (expop_info[j].type == type)
       return (expop_info[j].name);
@@ -2075,7 +2076,7 @@ char *CDallasMainDlg::GetExpressionOperatorTypeString(int type) {
 }
 
 // Obtains the string name for an expression operator type
-char *CDallasMainDlg::GetExpressionOperatorCodeName(int type) {
+const char *CDallasMainDlg::GetExpressionOperatorCodeName(int type) {
   for (int j = 0; expop_info[j].type >= 0; j++)
     if (expop_info[j].type == type)
       return (expop_info[j].code_name);
@@ -2084,7 +2085,7 @@ char *CDallasMainDlg::GetExpressionOperatorCodeName(int type) {
 }
 
 // Obtains the string name for a literal
-char *CDallasMainDlg::GetLiteralName(int type) {
+const char *CDallasMainDlg::GetLiteralName(int type) {
   for (int j = 0; param_menu_item[j].type >= 0; j++)
     if (param_menu_item[j].type == type)
       return (param_menu_item[j].name);
@@ -3291,7 +3292,7 @@ HTREEITEM CDallasMainDlg::AddNodeToTree(HTREEITEM parent, HTREEITEM insertbefore
   tvi.mask = TVIF_TEXT;
   // FormatTreeText(node_text,new_data_node);
   // tvi.pszText=node_text.GetBuffer(0);
-  tvi.pszText = "";
+  tvi.pszText = const_cast<char *>("");
 
   // Get the previous child node for "insert before"
   if (insertbefore != TVI_FIRST && insertbefore != TVI_LAST && insertbefore != TVI_SORT) {
@@ -3847,7 +3848,7 @@ void CDallasMainDlg::ClearMessageList(void) {
 }
 
 // Adds a message to the list
-bool CDallasMainDlg::AddToMessageList(char *name, char *message) {
+bool CDallasMainDlg::AddToMessageList(char *name, const char *message) {
   tMessageListEntry *empty_slot;
   int index;
 
@@ -4827,7 +4828,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
 }
 
 // Displays the invalid special parameter warning message
-void CDallasMainDlg::InvSpecParamMsg(int scriptID, char *type_name) {
+void CDallasMainDlg::InvSpecParamMsg(int scriptID, const char *type_name) {
   CString msg, title;
 
   if (type_name == NULL)
@@ -4840,7 +4841,7 @@ void CDallasMainDlg::InvSpecParamMsg(int scriptID, char *type_name) {
 }
 
 // Displays the NOT SPECIFIED indexed value warning message
-void CDallasMainDlg::IndValNotSpecMsg(int scriptID, char *type_name) {
+void CDallasMainDlg::IndValNotSpecMsg(int scriptID, const char *type_name) {
   CString msg, title;
 
   if (type_name == NULL)
@@ -4852,7 +4853,7 @@ void CDallasMainDlg::IndValNotSpecMsg(int scriptID, char *type_name) {
 }
 
 // Displays the invalid indexed value warning message
-void CDallasMainDlg::InvIndValMsg(int scriptID, char *type_name, int index, char *name) {
+void CDallasMainDlg::InvIndValMsg(int scriptID, const char *type_name, int index, const char *name) {
   CString msg, title;
 
   if (type_name == NULL || name == NULL)
@@ -4866,7 +4867,7 @@ void CDallasMainDlg::InvIndValMsg(int scriptID, char *type_name, int index, char
 }
 
 // Displays the invalid indexed value prompt
-int CDallasMainDlg::InvIndValPrompt(int scriptID, char *type_name, int index, char *name, int new_index) {
+int CDallasMainDlg::InvIndValPrompt(int scriptID, const char *type_name, int index, const char *name, int new_index) {
   CString msg, title;
 
   if (type_name == NULL || name == NULL)
@@ -4880,7 +4881,7 @@ int CDallasMainDlg::InvIndValPrompt(int scriptID, char *type_name, int index, ch
 }
 
 // Displays the invalid indexed value name warning message
-void CDallasMainDlg::InvNameIndValMsg(int scriptID, char *type_name, int index, char *name, char *new_name) {
+void CDallasMainDlg::InvNameIndValMsg(int scriptID, const char *type_name, int index, const char *name, const char *new_name) {
   CString msg, title;
 
   if (type_name == NULL || name == NULL || new_name == NULL)
@@ -4894,7 +4895,7 @@ void CDallasMainDlg::InvNameIndValMsg(int scriptID, char *type_name, int index, 
 }
 
 // Displays the invalid indexed value name prompt
-int CDallasMainDlg::InvNameIndValPrompt(int scriptID, char *type_name, int index, char *name, char *new_name,
+int CDallasMainDlg::InvNameIndValPrompt(int scriptID, const char *type_name, int index, const char *name, const char *new_name,
                                         int new_index) {
   CString msg, title;
 
@@ -5638,7 +5639,7 @@ void CDallasMainDlg::ClearEnumDatabase(void) {
 }
 
 // Returns the DB slot matching the given enum type name
-int CDallasMainDlg::GetEnumID(char *name) {
+int CDallasMainDlg::GetEnumID(const char *name) {
   int i;
 
   if (name == NULL)
@@ -5668,7 +5669,7 @@ char *CDallasMainDlg::GetEnumValueName(char *name, int value) {
 
 // Obtains the value bound to an enum value name,
 // Returns TRUE if value was found, FALSE otherwise
-bool CDallasMainDlg::GetEnumValue(char *name, char *value_name, int &value) {
+bool CDallasMainDlg::GetEnumValue(const char *name, const char *value_name, int &value) {
   int DBslot, j;
 
   DBslot = GetEnumID(name);
@@ -6048,7 +6049,7 @@ char *CDallasMainDlg::GetActionHelp(int ID) {
 }
 
 // Returns a pointer to the action function name
-char *CDallasMainDlg::GetActionFunc(int ID) {
+const char *CDallasMainDlg::GetActionFunc(int ID) {
   if (ID == DO_NOTHING_ID)
     return DO_NOTHING_STRING;
 
@@ -6090,7 +6091,7 @@ char *CDallasMainDlg::GetQueryHelp(int ID) {
 }
 
 // Returns a pointer to the query function name
-char *CDallasMainDlg::GetQueryFunc(int ID) {
+const char *CDallasMainDlg::GetQueryFunc(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
     return INVALID_FUNCTION_NAME;
 
@@ -6138,15 +6139,14 @@ int CDallasMainDlg::GetQueryReturnType(int ID, CString &name) {
 }
 
 // Parses the given text file, adding categories, actions, and queries, as it finds them
-void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*/) {
+void CDallasMainDlg::ParseFunctionFile(const char *filename, bool show_errors /*=TRUE*/) {
   CFILE *ifile;
   char linebuf[2048];
   char *line;
   char helpbuf[2048];
   int linenum;
-  char fullpath[_MAX_PATH];
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / filename;
 
   ifile = cfopen(fullpath, "rt");
   if (ifile == NULL) {
@@ -7160,7 +7160,7 @@ void CDallasMainDlg::FillActionMenu(CMenu *action_menu, int command_offset) {
 // Fills up the given menu with the categories of queries
 // NOTE: Command ID's of menu items start at the given command_offset
 void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int valid_return_type,
-                                   char *valid_return_name) {
+                                   const char *valid_return_name) {
   int j, k, queries_added;
   int query_ret_type;
   CString query_ret_name;
@@ -7702,14 +7702,13 @@ void CDallasMainDlg::ScriptFileParseError(int error_code, int linenum, int scrip
 
 // Reads in the script source file and calls the various parsers for the
 // Appropriate sections
-int CDallasMainDlg::ParseSourceScript(char *filename) {
+int CDallasMainDlg::ParseSourceScript(const char *filename) {
   CFILE *infile;
   char linebuf[2048];
   char tempbuf[256];
   char *line;
   int linenum;
   int valid_lines_read, version;
-  char fullpath[_MAX_PATH];
   int rc;
 
   HTREEITEM last_node_added, current_parent, returned_node;
@@ -7719,7 +7718,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
 
   CurrentParsingFilename = m_ScriptFilename;
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / filename;
 
   // Try to open the file for loading
   infile = cfopen(fullpath, "rt");
@@ -9222,7 +9221,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 }
 
 // Handle Special Parse Errors (Invalid Named Values)
-void CDallasMainDlg::SpecialScriptFileParseError(int linenum, int script_ID, char *type_name, const char *name) {
+void CDallasMainDlg::SpecialScriptFileParseError(int linenum, int script_ID, const char *type_name, const char *name) {
   CString err_msg;
 
   if (name == NULL || type_name == NULL)
@@ -9256,15 +9255,13 @@ bool CDallasMainDlg::ValidateFunctionNode(HTREEITEM node, int linenum) {
 }
 
 // Reads in the message list from a file
-int CDallasMainDlg::ParseMsgTableFile(char *filename) {
+int CDallasMainDlg::ParseMsgTableFile(const char *filename) {
   CFILE *infile;
   char filebuffer[MAX_MSG_FILE_BUFFER_LEN];
   char *line, *msg_start;
   int line_num;
   bool next_msgid_found;
-  char fullpath[_MAX_PATH];
-
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / filename;
 
   // Try to open the file for loading
   infile = cfopen(fullpath, "rt");
@@ -9395,16 +9392,15 @@ int CDallasMainDlg::CountCustomScriptLines(CFILE *infile) {
 }
 
 // Reads in and stores all the lines in the custom script block
-int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TRUE*/) {
+int CDallasMainDlg::ParseCustomScriptFile(const char *filename, bool show_errors /*=TRUE*/) {
   CFILE *infile;
   char linebuf[2048];
   char *line;
   int linenum;
-  char fullpath[_MAX_PATH];
 
   CurrentParsingFilename = m_ScriptFilename;
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / filename;
 
   // Try to open the file for loading
   infile = cfopen(fullpath, "rt");
@@ -9526,14 +9522,13 @@ void CDallasMainDlg::WriteCustomScriptBlock(void) {
 /////////////////////////////////////////////////////////////////////////////
 
 // Writes message list to file
-int CDallasMainDlg::CreateMsgTableFile(char *filename) {
+int CDallasMainDlg::CreateMsgTableFile(const char *filename) {
   CFILE *outfile;
   CString buffer;
   int count, j;
   tMessageListEntry *msg_data;
-  char fullpath[_MAX_PATH];
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / filename;
 
   // Try to open the file for writing
   outfile = cfopen(fullpath, "wt");
@@ -9590,7 +9585,6 @@ void CDallasMainDlg::TabOver(void) {
 
 // Create the source script CPP file
 int CDallasMainDlg::CreateScriptFile(char *filename) {
-  char fullpath[_MAX_PATH];
   int j, counter, num_CO_scripts;
 
   // Fill the name lists (and check for any invalid/not selected fields)
@@ -9608,11 +9602,11 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   BuildScriptGroupingList();
 
   // Open the file for writing
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / filename;
   CurrentOutputFile = cfopen(fullpath, "wt");
   if (CurrentOutputFile == NULL) {
     CString msg, title;
-    msg.Format("ERROR: Unable to open %s for output.", fullpath);
+    msg.Format("ERROR: Unable to open %s for output.", fullpath.u8string().c_str());
     title.Format("Script Save Error!");
     MessageBox(msg, title, MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
@@ -14459,7 +14453,7 @@ HTREEITEM CDallasMainDlg::CreateDefaultActionStatementNode(HTREEITEM parent) {
 // Create default parameter node, and assigns it an appropriate default value
 // based upon the parameter type
 HTREEITEM CDallasMainDlg::CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM insert_before, int param_type,
-                                                     char *name, char *def_value /*=NULL*/) {
+                                                     const char *name, const char *def_value /*=NULL*/) {
   tTreeNodeData node_data;
 
   if (parent == NULL || insert_before == NULL || name == NULL)

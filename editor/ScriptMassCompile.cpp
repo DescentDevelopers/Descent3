@@ -60,19 +60,21 @@
 // ScriptMassCompile.cpp : implementation file
 //
 
+#include <cstring>
+#include <cstdarg>
+#include <filesystem>
+
 #include "stdafx.h"
 #include "editor.h"
+#include "ScriptLevelInterface.h"
 #include "ScriptMassCompile.h"
 #include "cfile.h"
 #include "gamefile.h"
 #include "gamefilepage.h"
 #include "AppDatabase.h"
 #include "Descent.h"
-#include "mono.h"
 #include "ddio.h"
 #include "ScriptCompilerAPI.h"
-#include <string.h>
-#include <stdarg.h>
 #include "mem.h"
 #include "pserror.h"
 
@@ -86,7 +88,7 @@ static char THIS_FILE[] = __FILE__;
 // CScriptMassCompile dialog
 CString MassScriptEditContent;
 CEdit *MassScriptEdit;
-void writeline(char *format, ...);
+void writeline(const char *format, ...);
 
 CScriptMassCompile::CScriptMassCompile(CWnd *pParent /*=NULL*/) : CDialog(CScriptMassCompile::IDD, pParent) {
   //{{AFX_DATA_INIT(CScriptMassCompile)
@@ -203,7 +205,7 @@ void CScriptMassCompile::OnOK() {
   CDialog::OnOK();
 }
 
-void writeline(char *format, ...) {
+void writeline(const char *format, ...) {
   char buffer[2048];
   va_list marker;
   va_start(marker, format);
@@ -321,7 +323,7 @@ BOOL CScriptMassCompile::OnInitDialog() {
   return TRUE;
 }
 
-void CScriptMassCompile::SetStepText(int step, char *format, ...) {
+void CScriptMassCompile::SetStepText(int step, const char *format, ...) {
   if (step < 1 || step > 4)
     return;
 
@@ -490,19 +492,20 @@ void masscompilercallback(char *str) {
   Descent->defer();
 }
 
-bool CScriptMassCompile::Step3(char *filename, bool islevel) {
+bool CScriptMassCompile::Step3(const char *filename, bool islevel) {
   tCompilerInfo ci;
   ci.callback = masscompilercallback;
   ci.script_type = (islevel) ? ST_LEVEL : ST_GAME;
   strcpy(ci.source_filename, filename);
   strcat(ci.source_filename, ".cpp");
 
-  char compiled_filename[_MAX_PATH], full_path[_MAX_PATH];
+  char compiled_filename[_MAX_PATH];
   strcpy(compiled_filename, filename);
   strcat(compiled_filename, ".dll");
-  ddio_MakePath(full_path, LocalScriptDir, compiled_filename, NULL);
+  std::filesystem::path full_path = LocalScriptDir / compiled_filename;
   if (cfexist(full_path)) {
-    ddio_DeleteFile(full_path);
+    std::error_code ec;
+    std::filesystem::remove(full_path, ec);
   }
 
   writeline("===START COMPILE===");
@@ -525,7 +528,7 @@ bool CScriptMassCompile::Step3(char *filename, bool islevel) {
 }
 
 bool CheckInGamefile(char *tempbuffer, bool giveok);
-bool AddNewGameFile(char *fullpath, char *directory);
+bool AddNewGameFile(const std::filesystem::path &fullpath, const std::filesystem::path &directory);
 bool CScriptMassCompile::Step4(char *filename) {
   if (!Network_up) {
     SetStepText(4, "Skipping, Network 'Down'");
@@ -600,8 +603,7 @@ bool CScriptMassCompile::Step4(char *filename) {
     if (j >= MAX_GAMEFILES) {
       // compiled file doesn't exist, we'll need to add it
       writeline("Step 4: Attempting to add %s to manage system", compiled_filename);
-      char fullpath[_MAX_PATH];
-      ddio_MakePath(fullpath, LocalScriptDir, compiled_filename, NULL);
+      std::filesystem::path fullpath = LocalScriptDir / compiled_filename;
       bool ret = AddNewGameFile(fullpath, "scripts");
       if (!ret) {
         writeline("Step 4: Unable to add %s to manage system", compiled_filename);
@@ -676,9 +678,8 @@ void CScriptMassCompile::OnOodscripts() {
   if (!list)
     return;
 
-  char old_dir[_MAX_PATH];
-  ddio_GetWorkingDir(old_dir, _MAX_PATH);
-  ddio_SetWorkingDir(LocalScriptDir);
+  std::filesystem::path old_dir = std::filesystem::current_path();
+  std::filesystem::current_path(LocalScriptDir);
 
   char filename[_MAX_PATH];
   int count = list->GetCount();
@@ -695,9 +696,9 @@ void CScriptMassCompile::OnOodscripts() {
     }
   }
 
-  ddio_SetWorkingDir(old_dir);
+  std::filesystem::current_path(old_dir);
 }
-bool IsScriptOutofSync(char *name);
+
 void CScriptMassCompile::OnOosscripts() {
   CCheckListBox *list = (CCheckListBox *)GetDlgItem(IDC_LIST);
   if (!list)

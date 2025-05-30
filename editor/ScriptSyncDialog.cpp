@@ -39,7 +39,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bool ManageFindFirst(char *buffer, char *wildcard);
+bool ManageFindFirst(char *buffer, const char *wildcard);
 bool ManageFindNext(char *buffer);
 void ManageFindClose(void);
 
@@ -50,7 +50,7 @@ uint8_t DetermineScriptType(char *filename);
 bool IsScriptOutofDate(char *name);
 // returns true if the given .cpp/.dll file is out of sync (or non-existant).  Working directory
 // doesn't necessarily have to be set to data\scripts.
-bool IsScriptOutofSync(char *name);
+bool IsScriptOutofSync(const std::filesystem::path &name);
 
 /////////////////////////////////////////////////////////////////////////////
 // CScriptSyncDialog dialog
@@ -206,7 +206,7 @@ public:
 };
 tManageFindIn ManageFindInData;
 
-bool ManageFindFirst(char *buffer, char *wildcard) {
+bool ManageFindFirst(char *buffer, const char *wildcard) {
   if (ManageFindInData.searching)
     ManageFindClose();
 
@@ -267,8 +267,8 @@ BOOL CScriptSyncDialog::OnInitDialog() {
   m_Files = NULL;
   m_FillingIn = true;
   m_ErrorCount = 0;
-  ddio_GetWorkingDir(old_dir, _MAX_PATH);
-  ddio_SetWorkingDir(LocalScriptDir);
+  old_dir = std::filesystem::current_path();
+  std::filesystem::current_path(LocalScriptDir);
   m_List.Initialize();
   BuildList();
 
@@ -477,5 +477,5 @@ void CScriptSyncDialog::OnDestroy() {
   if (m_Files) {
     mem_free(m_Files);
   }
-  ddio_SetWorkingDir(old_dir);
+  std::filesystem::current_path(old_dir);
 }
