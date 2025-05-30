@@ -50,6 +50,6 @@ int GetPrevGamefile(int n);
 
 // Searches thru all gamefile for a specific name, returns -1 if not found
 // or index of gamefile with name
-int FindGamefileName(char *name);
+int FindGamefileName(const char *name);
 
 #endif
