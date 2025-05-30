@@ -142,7 +142,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bool AddNewGameFile(char *fullpath, char *directory);
+bool AddNewGameFile(const std::filesystem::path &fullpath, const std::filesystem::path &directory);
 bool DeleteGamefile(char *tempbuffer);
 bool CheckInGamefile(char *tempbuffer, bool giveok);
 bool CheckOutGamefile(char *tempbuffer, bool show_ok_confirmation, bool report_who_has_locked = true);
@@ -325,15 +325,15 @@ void CScriptLevelInterface::OnCompile() {
               "Congratulations! It looks like a dll was successfully created. I\ndon't see the DLL in the manage "
               "system, so\nwould you like me to add it into the manage system for you?(HIGHLY recommended)");
       if (MessageBox(buffer, "Congratulations", MB_YESNO) == IDYES) {
-        ddio_MakePath(buffer, LocalScriptDir, filename, NULL);
-        if (!cfexist(buffer)) {
+        std::filesystem::path full_path = LocalScriptDir / filename;
+        if (!cfexist(full_path)) {
           sprintf(buffer,
                   "I can't seem to find %s in your data\\scripts directory...Sorry,\nbut I can't automatically add it "
                   "for you.\nYou'll have to manually add %s into the manage system.",
                   filename, filename);
           MessageBox(buffer, "Uh Oh!", MB_OK);
         } else {
-          if (AddNewGameFile(buffer, "scripts")) {
+          if (AddNewGameFile(full_path, "scripts")) {
             sprintf(buffer,
                     "%s has been added into the manage system.  Don't forget to check it in to make sure it stays in "
                     "the\nmanage system!",
@@ -361,7 +361,7 @@ void CScriptLevelInterface::OnEditscript() {
   if (!combo)
     return;
 
-  char tempbuf[_MAX_PATH], fullpath[_MAX_PATH];
+  char tempbuf[_MAX_PATH];
 
   int index = combo->GetCurSel();
   combo->GetLBText(index, tempbuf);
@@ -371,9 +371,9 @@ void CScriptLevelInterface::OnEditscript() {
     MessageBox("This file is NOT checked out, you'll lose all changes on your\nnext data update!", "Warning", MB_OK);
   }
 
-  ddio_MakePath(fullpath, LocalScriptDir, tempbuf, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / tempbuf;
   if (!cfexist(fullpath)) {
-    sprintf(tempbuf, "Weird, I couldn't find %s to open...", fullpath);
+    sprintf(tempbuf, "Weird, I couldn't find %s to open...", fullpath.u8string().c_str());
     MessageBox(tempbuf, "Error", MB_OK);
     return;
   }
@@ -384,9 +384,9 @@ void CScriptLevelInterface::OnEditscript() {
   sei.fMask = SEE_MASK_NOCLOSEPROCESS;
   sei.hwnd = m_hWnd;
   sei.lpVerb = "open";
-  sei.lpFile = fullpath;
+  sei.lpFile = fullpath.u8string().c_str();
   sei.lpParameters = NULL;
-  sei.lpDirectory = LocalScriptDir;
+  sei.lpDirectory = LocalScriptDir.u8string().c_str();
   sei.nShow = SW_NORMAL;
 
   // int res = (int)ShellExecute(m_hWnd,"open",fullpath,NULL,LocalScriptDir,0);
@@ -841,8 +841,7 @@ void CScriptLevelInterface::OnCreatescript() {
         sprintf(buffer, "Do you want to add\n%s\nto the network?", filename);
 
         if (cfexist(filename) && MessageBox(buffer, "Add to Data", MB_YESNO) == IDYES) {
-          ddio_MakePath(buffer, LocalScriptDir, filename, NULL);
-          AddNewGameFile(buffer, "scripts");
+          AddNewGameFile(LocalScriptDir / filename, "scripts");
           UpdateDialog();
           added_to_network = true;
         }
@@ -870,8 +869,7 @@ void CScriptLevelInterface::OnCreatescript() {
         ddio_SplitPath(filename, NULL, dllname, NULL);
         strcat(dllname, ".dll");
         if (cfexist(dllname) && added_to_network) {
-          ddio_MakePath(buffer, LocalScriptDir, dllname, NULL);
-          AddNewGameFile(buffer, "scripts");
+          AddNewGameFile(LocalScriptDir / dllname, "scripts");
           UpdateDialog();
         }
 
@@ -1017,9 +1015,7 @@ bool DeleteGamefile(char *tempbuffer) {
   return true;
 }
 
-bool AddNewGameFile(char *fullpath, char *directory) {
-  char cur_name[100];
-  char pathname[100], name[100], extension[100];
+bool AddNewGameFile(const std::filesystem::path &fullpath, const std::filesystem::path &directory) {
   int gamefile_handle;
 
   if (!Network_up) {
@@ -1027,28 +1023,27 @@ bool AddNewGameFile(char *fullpath, char *directory) {
   }
 
   //	Okay, we selected a file. Lets do what needs to be done here.
-  ddio_SplitPath(fullpath, pathname, name, extension);
-  sprintf(cur_name, "%s%s", name, extension);
+  std::filesystem::path cur_name = fullpath.filename();
 
-  if ((FindGamefileName(cur_name)) != -1) {
+  if ((FindGamefileName(cur_name.u8string().c_str())) != -1) {
     OutrageMessageBox("There is already a file with that name.  Rename the file and then try to add it.");
     return false;
   }
 
   gamefile_handle = AllocGamefile();
 
-  strcpy(Gamefiles[gamefile_handle].name, cur_name);
-  strcpy(Gamefiles[gamefile_handle].dir_name, directory);
+  strcpy(Gamefiles[gamefile_handle].name, cur_name.u8string().c_str());
+  strcpy(Gamefiles[gamefile_handle].dir_name, directory.u8string().c_str());
 
   // Finally, save a local copy of the model/anim and alloc a tracklock
   mprintf(0, "Making a copy of this file locally...\n");
 
   char destname[100];
   ddio_MakePath(destname, LocalD3Dir, "data", directory, Gamefiles[gamefile_handle].name, NULL);
-  if (stricmp(destname, fullpath)) // only copy if they are different
+  if (stricmp(destname, fullpath.u8string().c_str())) // only copy if they are different
     cf_CopyFile(destname, fullpath);
 
-  mng_AllocTrackLock(cur_name, PAGETYPE_GAMEFILE);
+  mng_AllocTrackLock(cur_name.u8string().c_str(), PAGETYPE_GAMEFILE);
   return true;
 }
 
@@ -2301,26 +2296,23 @@ typedef void(DLLFUNCCALL *ShutdownDLL_fp)(void);
 
 // returns true if the given .cpp/.dll file is out of sync (or non-existant).  Working directory
 // doesn't necessarily have to be set to data\scripts.
-bool IsScriptOutofSync(char *name) {
+bool IsScriptOutofSync(const std::filesystem::path &name) {
   bool out_of_sync = false;
   InitializeDLL_fp initdll;
   ShutdownDLL_fp shutdowndll;
   module mod;
 
-  char filename[_MAX_PATH], ext[_MAX_EXT];
-  char path[_MAX_PATH];
-
-  ddio_SplitPath(name, NULL, filename, ext);
+  std::filesystem::path filename = name.stem();
 
   Osiris_module_init.string_count = 0;
   Osiris_module_init.string_table = NULL;
   Osiris_module_init.module_is_static = false;
   Osiris_module_init.module_identifier = 0;
-  Osiris_module_init.script_identifier = filename;
+  Osiris_module_init.script_identifier = filename.u8string().c_str();
 
-  strcat(filename, ".dll");
-  ddio_MakePath(path, LocalScriptDir, filename, NULL);
-  mprintf(0, "	Checking %s...", filename);
+  filename.replace_extension(".dll");
+  std::filesystem::path path = LocalScriptDir / filename;
+  mprintf(0, "	Checking %s...", filename.u8string().c_str());
 
   if (mod_LoadModule(&mod, path)) {
     initdll = (InitializeDLL_fp)mod_GetSymbol(&mod, "InitializeDLL", 4);

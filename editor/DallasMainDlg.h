@@ -362,11 +362,11 @@ struct tMessageListEntry {
 
 // Struct for storing expression operator information
 struct ExpOpInfoItem {
-  int type;        // expression operator (see above)
-  char *name;      // the displayed name
-  char *menu_name; // the menu name
-  char *code_name; // DEFINE string to identify event in code
-  int op_type;     // whether it is a binary or comparison op
+  int type;              // expression operator (see above)
+  const char *name;      // the displayed name
+  const char *menu_name; // the menu name
+  const char *code_name; // DEFINE string to identify event in code
+  int op_type;           // whether it is a binary or comparison op
 };
 
 // Script Owner Types
@@ -425,11 +425,11 @@ struct ExpOpInfoItem {
 
 // Struct for storing event information
 struct EventInfoItem {
-  int type;        // event type (see above)
-  char *name;      // the displayed name
-  char *code_name; // DEFINE string to identify event in code
-  char *data_line; // The line for this event's data struct
-  int flags;       // owner and various flags
+  int type;              // event type (see above)
+  const char *name;      // the displayed name
+  const char *code_name; // DEFINE string to identify event in code
+  const char *data_line; // The line for this event's data struct
+  int flags;             // owner and various flags
 };
 
 // Constants for masking what events go with what owner
@@ -448,8 +448,8 @@ struct EventInfoItem {
 
 // Struct for easily creating literal menu
 struct ParamMenuItem {
-  int type;   // the type of literal (parameter type)
-  char *name; // menu name of the literal
+  int type;         // the type of literal (parameter type)
+  const char *name; // menu name of the literal
 };
 
 // Nested Types
@@ -1092,13 +1092,16 @@ public:
 
   void SetTreeNodeImage(HTREEITEM node); // Sets the image for a node (based on node data)
 
-  char *GetEventTypeString(int type);
-  char *GetEventCodeName(int type);
-  char *GetEventDataLine(int type);
+  const char *GetEventTypeString(int type);
+
+  const char *GetEventCodeName(int type);
+
+  const char *GetEventDataLine(int type);
   void GetLogicalOperatorTypeString(int type, CString &string);
-  char *GetExpressionOperatorTypeString(int type);
-  char *GetExpressionOperatorCodeName(int type);
-  char *GetLiteralName(int type);
+
+  const char *GetExpressionOperatorTypeString(int type);
+  const char *GetExpressionOperatorCodeName(int type);
+  const char *GetLiteralName(int type);
 
   bool ScriptHasAnIt(HTREEITEM script_node);
   bool ScriptHasAMe(HTREEITEM script_node);
@@ -1131,7 +1134,7 @@ public:
 
   tTreeNodeData *GetNearestFunctionNode(HTREEITEM node);
   void DisplayFloatingPopupMenu(HTREEITEM node, POINT &pt);
-  int DeletePrompt(char *msg);
+  int DeletePrompt(const char *msg);
   void ConfirmAfterDelete(HTREEITEM parent);
 
   void HighlightAllScripts(void);       // Highlights scripts according to public owner data
@@ -1146,7 +1149,7 @@ public:
   ///////////////////////////////////
   void InitMessageList(void);                        // initializes the message list
   void ClearMessageList(void);                       // clears the message list
-  bool AddToMessageList(char *name, char *message);  // adds a message to the list
+  bool AddToMessageList(char *name, const char *message);  // adds a message to the list
   char *FindMessageInList(char *name);               // returns a message matching given name
   int DeleteMessageListEntry(char *name);            // Deletes a message entry
   tMessageListEntry *GetEmptyMessageListEntry(void); // returns an available entry slot
@@ -1160,12 +1163,12 @@ public:
   int AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_warnings);
 
   // Funcs for displaying Indexed value messages
-  void InvSpecParamMsg(int scriptID, char *type_name);
-  void IndValNotSpecMsg(int scriptID, char *type_name);
-  void InvIndValMsg(int scriptID, char *type_name, int index, char *name);
-  int InvIndValPrompt(int scriptID, char *type_name, int index, char *name, int new_index);
-  void InvNameIndValMsg(int scriptID, char *type_name, int index, char *name, char *new_name);
-  int InvNameIndValPrompt(int scriptID, char *type_name, int index, char *name, char *new_name, int new_index);
+  void InvSpecParamMsg(int scriptID, const char *type_name);
+  void IndValNotSpecMsg(int scriptID, const char *type_name);
+  void InvIndValMsg(int scriptID, const char *type_name, int index, const char *name);
+  int InvIndValPrompt(int scriptID, const char *type_name, int index, const char *name, int new_index);
+  void InvNameIndValMsg(int scriptID, const char *type_name, int index, const char *name, const char *new_name);
+  int InvNameIndValPrompt(int scriptID, const char *type_name, int index, const char *name, const char *new_name, int new_index);
 
   // Funcs for displaying object messages
   void InvObjMsg(int scriptID, int handle, char *name);
@@ -1224,10 +1227,10 @@ public:
   ///////////////////////////////////////
   void InitEnumDatabase(void);                   // Initializes the enum DB for use
   void ClearEnumDatabase(void);                  // Clears any allocated data for the enums
-  int GetEnumID(char *name);                     // Returns the DB slot matching the given enum type name
+  int GetEnumID(const char *name);                     // Returns the DB slot matching the given enum type name
   char *GetEnumValueName(char *name, int value); // Returns the name bound to an enum value
 
-  bool GetEnumValue(char *name, char *value_name, int &value); // obtains value for given value name
+  bool GetEnumValue(const char *name, const char *value_name, int &value); // obtains value for given value name
 
   int FillEnumTypesMenu(CMenu *enum_menu, int command_offset, char *valid_name);
   int FillEnumValuesMenu(CMenu *enum_menu, int command_offset, char *enum_name);
@@ -1251,15 +1254,15 @@ public:
   ///////////////////////////////////////
   void InitFunctionDatabases(void);  // Initialize the Action and Query Database Arrays
   void ClearFunctionDatabases(void); // Frees up any allocated memory
-  void ParseFunctionFile(char *filename,
+  void ParseFunctionFile(const char *filename,
                          bool show_errors = TRUE); // Parses a file, and adds any Actions and Querys to the database
   char *GetActionDesc(int ID);                     // Returns the Action description
   char *GetActionHelp(int ID);                     // Returns the Action help text
-  char *GetActionFunc(int ID);                     // Returns the Action function name
+  const char *GetActionFunc(int ID);               // Returns the Action function name
   int GetActionFuncID(char *func_name);            // Searches action list for action matching given function name
   char *GetQueryDesc(int ID);                      // Returns the Query description
   char *GetQueryHelp(int ID);                      // Returns the Query help text
-  char *GetQueryFunc(int ID);                      // Returns the Query function name
+  const char *GetQueryFunc(int ID);                // Returns the Query function name
   int GetQueryFuncID(char *func_name);             // Searches query list for query matching given function name
   int GetQueryReturnType(int ID, CString &name);   // Returns the Query's return type (parameter type)
   int GetFunctionCategoryID(char *catname);        // Matches an integer ID to a given category name
@@ -1272,7 +1275,7 @@ public:
   bool ValidateActionNode(HTREEITEM node, int linenum);
   bool ValidateQueryNode(HTREEITEM node, int linenum);
   void FillActionMenu(CMenu *action_menu, int command_offset);
-  void FillQueryMenu(CMenu *query_menu, int command_offset, int valid_return_type, char *valid_return_name);
+  void FillQueryMenu(CMenu *query_menu, int command_offset, int valid_return_type, const char *valid_return_name);
   bool ConformParamNode(HTREEITEM parent_node, HTREEITEM &param_node, int type, char *name, char *def_value = NULL);
 
   int ParseNthParam(HTREEITEM func_node, int n, CString &name_text, CString &default_text, CString &range_text);
@@ -1298,15 +1301,15 @@ public:
   ///////////////////////////////////
   // Source File Parsing Functions
   ///////////////////////////////////
-  int ParseSourceScript(char *filename); // does high-level parsing of CPP file
-  int ParseMsgTableFile(char *filename); // reads in the message list from a file
+  int ParseSourceScript(const char *filename); // does high-level parsing of CPP file
+  int ParseMsgTableFile(const char *filename); // reads in the message list from a file
 
   HTREEITEM ParseScriptNodeLine_v0(char *line, int linenum, HTREEITEM parent, bool &skip_all_children,
                                    HTREEITEM insert_before = TVI_LAST);
   HTREEITEM ParseScriptNodeLine_v1U(char *line, int linenum, HTREEITEM parent, bool &skip_all_children, int version,
                                     HTREEITEM insert_before = TVI_LAST);
   void ScriptFileParseError(int error_code, int linenum, int script_ID, const char *name);
-  void SpecialScriptFileParseError(int linenum, int script_ID, char *type_name, const char *name);
+  void SpecialScriptFileParseError(int linenum, int script_ID, const char *type_name, const char *name);
   bool ValidateFunctionNode(HTREEITEM node, int linenum);
 
   ///////////////////////////////////
@@ -1315,13 +1318,13 @@ public:
   void InitCustomScriptStorage(void);
   void ClearCustomScriptStorage(void);
   int CountCustomScriptLines(CFILE *infile);
-  int ParseCustomScriptFile(char *filename, bool show_errors = TRUE);
+  int ParseCustomScriptFile(const char *filename, bool show_errors = TRUE);
   void WriteCustomScriptBlock(void);
 
   ///////////////////////////////////
   // Source File Creation Functions
   ///////////////////////////////////
-  int CreateMsgTableFile(char *filename); // writes message list to file
+  int CreateMsgTableFile(const char *filename); // writes message list to file
   void TabOver(void);                     // writes series of tabs
   int CreateScriptFile(char *filename);   // creates the new script file
   void CreateLevelEventCases(tScriptOwnerGroup *owner_group);
@@ -1431,8 +1434,8 @@ public:
   HTREEITEM CreateDefaultConditionalStatementSubtree(HTREEITEM parent, int type, int query_id = -1);
   HTREEITEM CreateDefaultExpressionOperatorNode(HTREEITEM parent, int type);
   HTREEITEM CreateDefaultActionStatementNode(HTREEITEM parent);
-  HTREEITEM CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM insert_before, int param_type, char *name,
-                                       char *def_value = NULL);
+  HTREEITEM CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM insert_before, int param_type, const char *name,
+                                       const char *def_value = NULL);
   HTREEITEM CreateDefaultClipboardNode(void);
 
   ///////////////////////////////////

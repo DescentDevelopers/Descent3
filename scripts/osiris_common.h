@@ -334,7 +334,9 @@
 #ifndef __OSIRIS_COMMON_H_
 #define __OSIRIS_COMMON_H_
 
+#include <complex.h>
 #include <cstdint>
+#include <filesystem>
 
 #include "vecmat_external.h"
 #include "aistruct_external.h"
@@ -986,7 +988,7 @@ struct tOSIRISModuleInit {
                          // count is 0....only when the level ends.
                          // this is for Game modules ONLY.
 
-  char *script_identifier; // Contains a unique script identifier (string), which
+  const char *script_identifier; // Contains a unique script identifier (string), which
                            // can be used for the OMMS system. While this pointer
                            // will always be valid during the lifetime of the module
                            // DO NOT ALTER THE STRING IT POINTS TO.
