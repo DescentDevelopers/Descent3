@@ -133,7 +133,7 @@ bool taunt_PlayPlayerTaunt(int pnum, int index) {
     fullpath = LocalCustomSoundsDir / file;
 
     if (!cfexist(fullpath)) {
-      LOG_WARNING.printf("TAUNT: file %s doesn't exist (pnum=%d)", fullpath.u8string().c_str(), pnum);
+      LOG_WARNING.printf("TAUNT: file %s doesn't exist (pnum=%d)", PATH_TO_CSTR(fullpath), pnum);
       return false;
     }
 
@@ -354,7 +354,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
     goto error;
   }
 
-  if (!aenc_Compress((const char*)temp_filename.u8string().c_str(), (const char*)osftemp_filename.u8string().c_str(), NULL, &samples, &rate, &chan, NULL, NULL)) {
+  if (!aenc_Compress(PATH_TO_CSTR(temp_filename), PATH_TO_CSTR(osftemp_filename), NULL, &samples, &rate, &chan, NULL, NULL)) {
     // unable to compress
     LOG_WARNING << "Unable to compress";
     ret = false;

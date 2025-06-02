@@ -524,7 +524,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
   cfclose(infile);
   cfclose(outfile);
 
-  if (!SwitcherooFiles((const char*)TableLockFilename.u8string().c_str(), TempTableLockFilename)) {
+  if (!SwitcherooFiles(PATH_TO_CSTR(TableLockFilename), TempTableLockFilename)) {
     Int3();
     return 0;
   }
@@ -532,7 +532,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
 // Log this change
 #ifndef RELEASE
   std::filesystem::path pathstr = std::filesystem::path(NetD3Dir) / "TableLog";
-  FILE *logfile = fopen((const char*)pathstr.u8string().c_str(), "at");
+  FILE *logfile = fopen(PATH_TO_CSTR(pathstr), "at");
   if (logfile) {
     char str[255 + 32];
     char date[255];
@@ -590,7 +590,7 @@ int mng_DeletePagelock(char *name, int pagetype) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
@@ -644,7 +644,7 @@ int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
@@ -781,7 +781,7 @@ int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);

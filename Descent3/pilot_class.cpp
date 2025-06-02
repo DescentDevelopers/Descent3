@@ -419,7 +419,7 @@ int pilot::flush(bool new_file) {
 
   if (new_file && cfexist(real_filename)) {
     // the file already exists, we can't write out
-    LOG_WARNING.printf("PLTW: File (%s) exists, can't create", real_filename.u8string().c_str());
+    LOG_WARNING.printf("PLTW: File (%s) exists, can't create", PATH_TO_CSTR(real_filename));
     return PLTW_FILE_EXISTS;
   }
 
@@ -428,7 +428,7 @@ int pilot::flush(bool new_file) {
 
     file = cfopen(real_filename, "wb");
     if (!file) {
-      LOG_WARNING.printf("PLTW: File (%s) can't be opened", real_filename.u8string().c_str());
+      LOG_WARNING.printf("PLTW: File (%s) can't be opened", PATH_TO_CSTR(real_filename));
       return PLTW_FILE_CANTOPEN;
     }
 
@@ -501,14 +501,14 @@ int pilot::read(bool skip_config, bool skip_mission_data) {
 
   if (!cfexist(real_filename)) {
     // the file already exists, we can't write out
-    LOG_WARNING.printf("PLTR: File (%s) does not exist", real_filename.u8string().c_str());
+    LOG_WARNING.printf("PLTR: File (%s) does not exist", PATH_TO_CSTR(real_filename));
     return PLTR_FILE_NOEXIST;
   }
 
   try {
     file = cfopen(real_filename, "rb");
     if (!file) {
-      LOG_WARNING.printf("PLTR: File (%s) can't be opened", real_filename.u8string().c_str());
+      LOG_WARNING.printf("PLTR: File (%s) can't be opened", PATH_TO_CSTR(real_filename));
       return PLTR_FILE_CANTOPEN;
     }
 

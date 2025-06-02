@@ -267,7 +267,7 @@ int SaveVClip(const std::filesystem::path& filename, int num) {
   // Now save each frame of this vclip
   for (int i = 0; i < vc->num_frames; i++) {
     if (bm_SaveBitmap(outfile, vc->frames[i]) != 1) {
-      LOG_ERROR.printf("Couldn't save frame %d of vclip %s!", i, filename.u8string().c_str());
+      LOG_ERROR.printf("Couldn't save frame %d of vclip %s!", i, PATH_TO_CSTR(filename));
       Int3();
       cfclose(outfile);
       return 0;

@@ -320,7 +320,7 @@ long WINAPI RecordExceptionInfo(PEXCEPTION_POINTERS data) {
     exit(1);
   }
 
-  HANDLE hDumpFile = CreateFile(dumFilePath.u8string().c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, 0);
+  HANDLE hDumpFile = CreateFile(PATH_TO_CSTR(dumFilePath), GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, 0);
   if (hDumpFile == INVALID_HANDLE_VALUE) {
     OutrageMessageBox("Could not create crash dump file, error code: %x", GetLastError());
     exit(1);
@@ -332,7 +332,7 @@ long WINAPI RecordExceptionInfo(PEXCEPTION_POINTERS data) {
   exceptInfo.ClientPointers = TRUE;
 
   if (MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &exceptInfo, nullptr, nullptr)) {
-    OutrageMessageBox("Crash dump file written to: %s\nYou can attach it to a bug report.", dumFilePath.u8string().c_str());
+    OutrageMessageBox("Crash dump file written to: %s\nYou can attach it to a bug report.", PATH_TO_CSTR(dumFilePath));
   } else {
     OutrageMessageBox("Could not write crash dump file, error code: %x", GetLastError());
     exit(1);

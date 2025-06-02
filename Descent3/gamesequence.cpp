@@ -1311,7 +1311,7 @@ void CheckHogfile() {
     auto relative_path = std::filesystem::path("missions") / new_mn3;
     auto absolute_path = cf_LocatePath(relative_path);
     if (std::filesystem::exists(absolute_path)) {
-      mn3_Open(relative_path.u8string().c_str());
+      mn3_Open(relative_path);
       mem_free(Current_mission.filename);
       Current_mission.filename = mem_strdup(new_mn3);
     } else {
@@ -1330,7 +1330,7 @@ bool SimpleStartLevel(const std::filesystem::path& level_name) {
   Current_mission.num_levels = 1;
 
   Current_level = nullptr;
-  Current_mission.levels[0].filename = mem_strdup((const char*)level_name.u8string().c_str());
+  Current_mission.levels[0].filename = mem_strdup(PATH_TO_CSTR(level_name));
   InitMissionScript();
 
   return true;

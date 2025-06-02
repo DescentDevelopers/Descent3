@@ -976,7 +976,7 @@ void CWorldObjectsPlayerDialog::OnPshipCockpit() {
   sprintf(Ships[D3EditState.current_ship].cockpit_name, "%s%s", curname, ext);
 
   // Finally, save a local copy of the inf file.
-  sprintf(curname, "%s\\%s", LocalMiscDir.u8string().c_str(), Ships[D3EditState.current_ship].cockpit_name);
+  sprintf(curname, "%s\\%s", PATH_TO_CSTR(LocalMiscDir), Ships[D3EditState.current_ship].cockpit_name);
   cf_CopyFile(curname, filename);
 
   UpdateDialog();

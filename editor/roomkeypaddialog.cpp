@@ -437,8 +437,7 @@ void CRoomKeypadDialog::OnLoadRoom() {
   }
 
   ASSERT(Rooms[n].name == NULL);
-  Rooms[n].name = mem_rmalloc<char>(strlen(roomname) + 1);
-  strcpy(Rooms[n].name, roomname);
+  Rooms[n].name = mem_strdup(roomname);
 
   D3EditState.current_room = n;
 
