@@ -1771,7 +1771,7 @@ bool GetMissionInfo(const std::filesystem::path &msnfile, tMissionInfo *msn) {
   return true;
 }
 
-const char *GetMissionName(const char *mission) {
+const char *GetMissionName(const std::filesystem::path &mission) {
   tMissionInfo msninfo{};
   static char msnname[MSN_NAMELEN];
   msnname[0] = 0;
@@ -1783,7 +1783,7 @@ const char *GetMissionName(const char *mission) {
   return msnname;
 }
 
-bool IsMissionMultiPlayable(const char *mission) {
+bool IsMissionMultiPlayable(const std::filesystem::path &mission) {
   tMissionInfo msninfo{};
   if (GetMissionInfo(mission, &msninfo)) {
     return msninfo.multi;
@@ -1875,8 +1875,8 @@ void mn3_Close() {
 // Return values:
 // -1	Bad match -- this level and this mod shouldn't be played together!
 // MAX_NET_PLAYERS	-- This is playable with any number of teams the mod wants
-int MissionGetKeywords(const char *mission, char *keywords) {
-  ASSERT(mission);
+int MissionGetKeywords(const std::filesystem::path &mission, char *keywords) {
+  ASSERT(!mission.empty());
   ASSERT(keywords);
 
   char msn_keywords[NUM_KEYWORDS][KEYWORD_LEN];
@@ -1893,7 +1893,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
 
   memset(msn_keywords, 0, sizeof(msn_keywords));
   memset(mod_keywords, 0, sizeof(mod_keywords));
-  LOG_DEBUG.printf("MissionGetKeywords(%s,%s)", mission, keywords);
+  LOG_DEBUG << "MissionGetKeywords(" << mission << ", " << keywords << ")";
   if (!GetMissionInfo(mission, &msn_info)) {
     return -1;
   }
@@ -1956,7 +1956,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
       }
       // We never found one we needed, so return -1;
       if (!found_keyword) {
-        LOG_WARNING.printf("%s keyword needed in %s not found!", mod_keyword, mission);
+        LOG_WARNING << mod_keyword << " keyword needed in " << mission << " not found!";
         return -1;
       }
     }

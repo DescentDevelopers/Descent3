@@ -289,7 +289,7 @@ bool mn3_Open(const std::filesystem::path &mn3file);
 void mn3_Close();
 
 // Get the name field out of the mission file
-const char *GetMissionName(const char *mission);
+const char *GetMissionName(const std::filesystem::path &mission);
 
 //	initializes mission system.
 void InitMission();
@@ -328,7 +328,7 @@ bool InitMissionScript();
 void ShowProgressScreen(const char *str, const char *str2 = nullptr, bool flip = true);
 
 // See if a mission file is multiplayer playable.
-bool IsMissionMultiPlayable(const char *mission);
+bool IsMissionMultiPlayable(const std::filesystem::path &mission);
 
 /**
  * Fill information about a mission.
@@ -343,7 +343,7 @@ bool GetMissionInfo(const std::filesystem::path &msnfile, tMissionInfo *msn);
 // Return values:
 // -1	Bad match -- this level and this mod shouldn't be played together!
 // MAX_NET_PLAYERS	-- This is playable with any number of teams the mod wants
-int MissionGetKeywords(const char *mission, char *keywords);
+int MissionGetKeywords(const std::filesystem::path &mission, char *keywords);
 
 #ifdef EDITOR
 //	Used by editor to load all necessary elements for level playing for systems
