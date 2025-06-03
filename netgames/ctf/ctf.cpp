@@ -238,7 +238,7 @@ const char *GetString(int d) {
   else
     return StringTable[d];
 }
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const char *filename);
 static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
 static void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use);
 
@@ -352,7 +352,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   DMFCBase->GameInit(CTFNumOfTeams);
   DLLCreateStringTable("CTF.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -566,6 +565,11 @@ void DLLFUNCCALL DLLGameClose() {
     DMFCBase->DestroyPointer();
     DMFCBase = NULL;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 /////////////////////////////////////////////////////////////
@@ -782,7 +786,7 @@ void OnClientLevelStart(void) {
     if ((flagid != -1) && (goalroom >= 0) && (goalroom <= DMFCBase->GetHighestRoomIndex()) &&
         (!ROOMNUM_OUTSIDE(goalroom)) && (dRooms[goalroom].used)) {
       // Safe to create the flag
-      DLLmprintf(0, "Creating %s Flag\n", DMFCBase->GetTeamString(i));
+      LOG_INFO.printf("Creating %s Flag", DMFCBase->GetTeamString(i));
       DLLComputeRoomCenter(&vpos, &dRooms[goalroom]);
       objnum = DLLObjCreate(OBJ_POWERUP, flagid, goalroom, &vpos, NULL, OBJECT_HANDLE_NONE);
       DLLMultiSendObject(&dObjects[objnum], 0, true);
@@ -1027,7 +1031,7 @@ void OnClientCollide(uint8_t *data) {
       if (DMFCBase->GetScoreLimit(&killgoal)) {
         if (TeamScores[pteam] >= killgoal) {
           // That's all she wrote for this level
-          DLLmprintf(0, "OnClientCollide:Kill Goal Reached!\n");
+          LOG_INFO << "OnClientCollide:Kill Goal Reached!";
           DMFCBase->EndLevel();
         }
       }
@@ -1380,11 +1384,11 @@ do_disconnected_folk:
 quick_exit:;
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf(0, "Unable to open output file\n");
+    LOG_WARNING << "Unable to open output file";
     return;
   }
 
@@ -2158,7 +2162,7 @@ bool AddFlagToPlayer(int pnum, int team, int flagobjnum) {
 
     if (!ret) {
       // couldn't attach the flag
-      mprintf(0, "CTF: COULDN'T ATTACH FLAG TO PLAYER, DELETING\n");
+      LOG_WARNING << "CTF: COULDN'T ATTACH FLAG TO PLAYER, DELETING";
       // tell the clients to remove this flag
       DLLSetObjectDeadFlag(&dObjects[flagobjnum], true, false);
     }
@@ -2166,7 +2170,7 @@ bool AddFlagToPlayer(int pnum, int team, int flagobjnum) {
 
   if (flagobjnum == -1) {
     // there was an error creating the flag...not good
-    mprintf(0, "CTF: Couldn't create/unhash flag for attachment\n");
+    LOG_WARNING << "CTF: Couldn't create/unhash flag for attachment";
     DMFCBase->DisconnectMe();
     return false;
   }
@@ -2426,7 +2430,7 @@ void ReceiveGameState(uint8_t *data) {
 
       if (our_objnum == -1) {
         // fatal error
-        mprintf(0, "CTF: Local Objnums don't match server objnums\n");
+        LOG_ERROR << "CTF: Local Objnums don't match server objnums";
         ChildFlags[i] = OBJECT_HANDLE_NONE;
         DMFCBase->DisconnectMe();
       } else {
@@ -2435,7 +2439,7 @@ void ReceiveGameState(uint8_t *data) {
           AddFlagToPlayer(HasFlag[i], i, our_objnum);
         else {
           // hmm, HasFlag doesn't match ChildFlags
-          mprintf(0, "CTF: HasFlag doesn't match ChildFlags!!!!\n");
+          LOG_WARNING << "CTF: HasFlag doesn't match ChildFlags!!!!";
           ChildFlags[i] = OBJECT_HANDLE_NONE;
         }
       }
@@ -2455,7 +2459,7 @@ int GetFlagCountForPlayer(int pnum) {
   // 1st check the pnum, make sure it is OK, is it isn't, return 0
   if (pnum < 0 || pnum >= DLLMAX_PLAYERS) {
     // invalid player number, return 0 flags
-    mprintf(0, "CTF: Invalid PNUM passed to GetFlagCountForPlayer()\n");
+    LOG_WARNING << "CTF: Invalid PNUM passed to GetFlagCountForPlayer()";
     return 0;
   }
 
@@ -2477,7 +2481,7 @@ uint8_t GetFlagMaskForPlayer(int pnum) {
   // 1st check the pnum, make sure it is OK, if it isn't, return 0, meaning no flags
   if (pnum < 0 || pnum >= DLLMAX_PLAYERS) {
     // invalid player number, return 0 flags
-    mprintf(0, "CTF: Invalid PNUM passed to GetFlagMaskForPlayer()\n");
+    LOG_WARNING << "CTF: Invalid PNUM passed to GetFlagMaskForPlayer()";
     return 0;
   }
 
@@ -2505,19 +2509,19 @@ bool GivePlayerFlag(int pnum, uint8_t team) {
   // 1st check the player num, make sure it is valid
   if (!DMFCBase->CheckPlayerNum(pnum)) {
     // not a valid player
-    mprintf(0, "CTF: Invalid pnum passed to GivePlayerFlag()\n");
+    LOG_WARNING << "CTF: Invalid pnum passed to GivePlayerFlag()";
     return false;
   }
 
   // 2nd check to make sure the team given is valid, and not our own team
   if (team >= CTFNumOfTeams) {
     // not a valid team
-    mprintf(0, "CTF: Invalid team passed to GivePlayerFlag() (team>=CTFNumOfTeams)\n");
+    LOG_WARNING << "CTF: Invalid team passed to GivePlayerFlag() (team>=CTFNumOfTeams)";
     return false;
   }
   if (team == DMFCBase->GetPlayerTeam(pnum)) {
     // we can't add a flag of the same team to a player
-    mprintf(0, "CTF: In GivePlayerFlag(), trying to add a player's home team flag\n");
+    LOG_INFO << "CTF: In GivePlayerFlag(), trying to add a player's home team flag";
     return false;
   }
 
@@ -2525,14 +2529,14 @@ bool GivePlayerFlag(int pnum, uint8_t team) {
   // we'll check our HasFlags[] first
   if (HasFlag[team] != -1) {
     // hmm, we have someone listed as already having this flag...odd
-    mprintf(0, "CTF: In GivePlayerFlag(), trying to add a flag, but we see someone else should already have it\n");
+    LOG_WARNING << "CTF: In GivePlayerFlag(), trying to add a flag, but we see someone else should already have it";
     int player = HasFlag[team];
     if (DMFCBase->CheckPlayerNum(player)) {
       // this player is in the game...
       // make sure this player doesn't have the flag in his inventory
       while (DLLInvCheckItem(player, OBJ_POWERUP, FlagIDs[team])) {
         // we have it listed that he does
-        mprintf(0, "CTF: In GivePlayerFlag(), we detected the flag in someone elses inventory\n");
+        LOG_WARNING << "CTF: In GivePlayerFlag(), we detected the flag in someone elses inventory";
         // remove all the flags that this player has of this team...very weird
         DLLInvRemove(player, OBJ_POWERUP, FlagIDs[team]);
         SetColoredBalls(player, false);
@@ -2546,7 +2550,7 @@ bool GivePlayerFlag(int pnum, uint8_t team) {
     // reset this value of the array
     HasFlag[team] = -1;
     if (DMFCBase->GetLocalRole() != LR_SERVER) {
-      mprintf(0, "CTF: Game must be out of sync, requesting game state\n");
+      LOG_WARNING << "CTF: Game must be out of sync, requesting game state";
       DMFCBase->RequestGameState();
     }
   }
@@ -2559,7 +2563,7 @@ bool GivePlayerFlag(int pnum, uint8_t team) {
 
     // remove all the flags the player has
     while (DLLInvCheckItem(player, OBJ_POWERUP, FlagIDs[team])) {
-      mprintf(0, "CTF: In GivePlayerFlag(), detected a flag in a stranger's inventory\n");
+      LOG_WARNING << "CTF: In GivePlayerFlag(), detected a flag in a stranger's inventory";
       DLLInvRemove(player, OBJ_POWERUP, FlagIDs[team]);
       SetColoredBalls(player, false);
       // check to see if the player had a flag attached to him
@@ -2579,7 +2583,7 @@ bool GivePlayerFlag(int pnum, uint8_t team) {
     // so we got here and added a flag to the player, now we need to attach the flag to the player
     if (!AddFlagToPlayer(pnum, team)) {
       // there was an error adding the flag,,,,ack!
-      mprintf(0, "CTF: In GivePlayerFlag(), couldn't attach the flag to the player\n");
+      LOG_WARNING << "CTF: In GivePlayerFlag(), couldn't attach the flag to the player";
     }
   }
 
@@ -2590,18 +2594,18 @@ bool GivePlayerFlag(int pnum, uint8_t team) {
 void LoseFlagForPlayer(int pnum, uint8_t team, bool remove_from_inven) {
   // 1st check the player number
   if (pnum < 0 || pnum >= DLLMAX_PLAYERS) {
-    mprintf(0, "CTF:Invalid pnum passed to LoseFlagForPlayer()\n");
+    LOG_WARNING << "CTF:Invalid pnum passed to LoseFlagForPlayer()";
     return;
   }
 
   // 2nd check the team number
   if (team >= CTFNumOfTeams) {
-    mprintf(0, "CTF:Invalid team passed to LoseFlagForPlayer()\n");
+    LOG_WARNING << "CTF:Invalid team passed to LoseFlagForPlayer()";
     return;
   }
 
   if (team == DMFCBase->GetPlayerTeam(pnum)) {
-    mprintf(0, "CTF:Invalid team passed to LoseFlagForPlayer()...same team as player\n");
+    LOG_WARNING << "CTF:Invalid team passed to LoseFlagForPlayer()...same team as player";
     return;
   }
 

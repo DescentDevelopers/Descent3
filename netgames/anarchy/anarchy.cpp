@@ -78,7 +78,7 @@ static bool display_my_welcome = false;
 static void DisplayHUDScores(struct tHUDItem *hitem);
 static void DisplayScores(void);
 static void DisplayWelcomeMessage(int player_num);
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const char *filename);
 static void SwitchHUDColor(int i);
 static void SwitchAnarchyScores(int i);
 static const char *GetString(int d);
@@ -160,7 +160,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   DMFCBase->Set_OnPrintScores(OnPrintScores);
 
   DLLCreateStringTable("Anarchy.str", &StringTable, &StringTableSize);
-  mprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -227,6 +226,11 @@ void DLLFUNCCALL DLLGameClose() {
     DMFCBase->DestroyPointer();
     DMFCBase = NULL;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size) {
@@ -546,11 +550,11 @@ void OnPLRInterval(void) {
 quick_exit:;
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    mprintf(0, "Unable to open output file\n");
+    LOG_ERROR << "Unable to open output file";
     return;
   }
 

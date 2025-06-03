@@ -130,7 +130,7 @@ static void DisplayWelcomeMessage(int player_num);
 static void DoBallsEffect(int i, int count);
 static void ReceiveHoardInv(uint8_t *data);
 static void SendHoardInv(int playernum);
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const char *filename);
 static void ReceiveGameConfig(uint8_t *data);
 static void OnClientPlayerEntersGame(int player_num);
 
@@ -308,7 +308,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   dPlayers = DMFCBase->GetPlayers();
 
   DLLCreateStringTable("Hoard.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -320,7 +319,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   if (DMFCBase->AddInputCommand("mincount",
                                 "[Dedicated Server Only]\nSets the minimum number of hoard orbs needed to score.\n",
                                 DMFCInputCommand_MinCount, true) < 1)
-    mprintf(0, "Hoard Warning: Error Adding Input Command\n");
+    LOG_WARNING << "Hoard Warning: Error Adding Input Command";
 
   HoardGameInit(1);
 
@@ -345,7 +344,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   HoardID = DLLFindObjectIDName("Hoardorb");
   if (HoardID == -1) {
-    DLLmprintf(0, "HOARD: BIG WARNING, COULDN'T FIND HOARD ORB ID...YOUR GAME IS IN JEOPARDY!\n");
+    LOG_WARNING << "HOARD: BIG WARNING, COULDN'T FIND HOARD ORB ID...YOUR GAME IS IN JEOPARDY!";
     *all_ok = 0;
     return;
   }
@@ -464,6 +463,11 @@ void DLLFUNCCALL DLLGameClose() {
     DMFCBase->DestroyPointer();
     DMFCBase = NULL;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 // DMFCApp::GameInit
@@ -785,7 +789,7 @@ void OnClientPlayerChangeSegment(int player_num, int newseg, int oldseg) {
     // check the score to see if we hit the limit
     if (DMFCBase->GetScoreLimit(&score)) {
       if (score <= ((stat) ? stat->Score[DSTAT_LEVEL] : 0)) {
-        DLLmprintf(0, "Score limit reached\n");
+        LOG_INFO << "Score limit reached";
         DMFCBase->EndLevel();
       }
     }
@@ -856,7 +860,7 @@ void OnClientCollide(object *me_obj, object *it_obj) {
         DLLSetObjectDeadFlag(it_obj, true, false);
       }
     } else
-      DLLmprintf(0, "HOARD BIG WARNING: TRYING TO ADD NONPOWERUP TO INVENTORY! (%d)\n", it_obj->type);
+      LOG_WARNING.printf("HOARD BIG WARNING: TRYING TO ADD NONPOWERUP TO INVENTORY! (%d)", it_obj->type);
 
     // add rotating balls if necessary
     DoBallsEffect(playernum, count + 1);
@@ -1024,11 +1028,11 @@ void OnPLRInterval(void) {
 quick_exit:;
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf(0, "Unable to open output file\n");
+    LOG_WARNING << "Unable to open output file";
     return;
   }
 
