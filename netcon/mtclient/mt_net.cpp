@@ -74,7 +74,8 @@
 #endif
 
 #include <memory.h>
-#include "pstypes.h"
+
+#include "log.h"
 #include "networking.h"
 #include "mtgametrack.h"
 #include "mt_net.h"
@@ -130,16 +131,9 @@ SOCKADDR_IN ptrackaddr;
 SOCKADDR_IN ctrackaddr;
 SOCKADDR_IN sockaddr;
 
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-
 #define NW_AGHBN_CANCEL 1
 #define NW_AGHBN_LOOKUP 2
 #define NW_AGHBN_READ 3
-
-// extern void DLLDebug_ConsolePrintf  (int n, const char *format, ... );
-typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
-
-extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 
 typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, const char *hostname);
 extern nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
@@ -173,12 +167,12 @@ void InitMTSockets() {
 #ifdef WIN32
   int error = WSAStartup(ver, &ws_data);
   if (error != 0) {
-    DLLmprintf(0, "There was an error initializing networking! Error=%d\n", error);
+    LOG_ERROR.printf("There was an error initializing networking! Error=%d", error);
     return;
   } else
 #endif
   {
-    DLLmprintf(0, "Network initted successfully!\n");
+    LOG_INFO << "Network initted successfully!";
   }
 
   {
@@ -189,7 +183,7 @@ void InitMTSockets() {
 
     gtrackaddr.sin_family = AF_INET;
     // This would be a good place to resolve the IP based on a domain name
-    DLLmprintf(0, "Looking up hostname: %s.\n", GAMETRACKERNAME);
+    LOG_INFO.printf("Looking up hostname: %s.", GAMETRACKERNAME);
 
     DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_LOOKUP, GAMETRACKERNAME);
 
@@ -204,8 +198,7 @@ void InitMTSockets() {
     } while (rcode == 0);
 
     if (rcode != 1) {
-      DLLmprintf(0, "Unable to gethostbyname(\"%s\").\n", GAMETRACKERNAME);
-      DLLmprintf(0, "WSAGetLastError() returned %d.\n", WSAGetLastError());
+      LOG_ERROR.printf("Unable to gethostbyname(\"%s\"): error %d.\n", GAMETRACKERNAME, WSAGetLastError());
       DLLnw_Asyncgethostbyname(nullptr, NW_AGHBN_CANCEL, nullptr);
       return;
     }
@@ -220,7 +213,7 @@ void InitMTSockets() {
     sockaddr.sin_family = AF_INET;
     sockaddr.sin_addr.s_addr = INADDR_ANY;
     sockaddr.sin_port = 0; // htons(REGPORT);
-    DLLmprintf(0, "Looking up hostname: %s.\n", PILOTTRACKERNAME);
+    LOG_INFO.printf("Looking up hostname: %s.", PILOTTRACKERNAME);
     DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_LOOKUP, PILOTTRACKERNAME);
     do {
       rcode = DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_READ, PILOTTRACKERNAME);
@@ -232,8 +225,7 @@ void InitMTSockets() {
     } while (rcode == 0);
 
     if (rcode != 1) {
-      DLLmprintf(0, "Unable to gethostbyname(\"%s\").\n", PILOTTRACKERNAME);
-      DLLmprintf(0, "WSAGetLastError() returned %d.\n", WSAGetLastError());
+      LOG_ERROR.printf("Unable to gethostbyname(\"%s\"): error %d", PILOTTRACKERNAME, WSAGetLastError());
       DLLnw_Asyncgethostbyname(nullptr, NW_AGHBN_CANCEL, nullptr);
       return;
     }
@@ -248,7 +240,7 @@ void InitMTSockets() {
 void CloseMTSockets() {
 #ifdef WIN32
   if (WSACleanup()) {
-    DLLmprintf(0, "Error closing wsock!\n");
+    LOG_ERROR << "Error closing wsock!";
   }
 #endif
 }
