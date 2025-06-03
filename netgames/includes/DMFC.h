@@ -295,6 +295,7 @@
 
 #include "gamedll_header.h"
 #include "DMFCKeyCodes.h"
+#include "log.h"
 
 #ifndef RELEASE
 
@@ -316,7 +317,7 @@
 #endif
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf(0, "Fatal error at %s:%d.\n", __FILE__, __LINE__);                                                         \
+    LOG_FATAL.printf("Fatal error at %s:%d.", __FILE__, __LINE__);                                                     \
     DEBUG_BREAK();                                                                                                     \
   } while (0)
 
@@ -330,8 +331,6 @@
 
 #define DLLASSERT(x) ASSERT(x)
 
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-
 #else // Release build
 
 #ifdef DEBUG_BREAK
@@ -340,7 +339,6 @@
 #define DEBUG_BREAK()
 
 #define DLLASSERT(x)
-#define DLLmprintf(...)
 
 #ifdef Int3
 #undef Int3
@@ -353,11 +351,6 @@
 #define ASSERT(x)
 
 #endif // #ifndef RELEASE
-
-#ifdef mprintf // undefine mprintf and redirect it to use DLLmprintf
-#undef mprintf
-#endif
-#define mprintf DLLmprintf
 
 #define DLLMAX_PLAYERS MAX_PLAYERS
 #define DLLMAX_TEAMS 4

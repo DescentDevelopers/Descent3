@@ -189,7 +189,7 @@ static int snd_virus_pickup = -1;
 static void DisplayHUDScores(struct tHUDItem *hitem);
 static void DisplayWelcomeMessage(int player_num);
 static void SortTeamScores(int *sortedindex, int *scores);
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const char *filename);
 static void OnLabSpewTimer(void);
 void RemoveVirusFromPlayer(int player_num, bool remove_all);
 static bool ScanForLaboratory(int team, int *newlab);
@@ -298,7 +298,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   DMFCBase->GameInit(NUM_TEAMS);
   DLLCreateStringTable("entropy.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -429,6 +428,11 @@ void DLLFUNCCALL DLLGameClose() {
     DMFCBase->DestroyPointer();
     DMFCBase = NULL;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 // The server has just started, so clear out all the stats and game info
@@ -804,7 +808,7 @@ void OnServerCollide(object *me_obj, object *it_obj) {
     }
     if (virus_team == -1) {
       // hey! we hit a virus that doesn't belong to any team!!
-      DLLmprintf(0, "Virus (%d) doesn't belong to any team, removing...\n", virus_objnum);
+      LOG_INFO.printf("Virus (%d) doesn't belong to any team, removing...", virus_objnum);
       DMFCBase->OnServerCollide(me_obj, it_obj);
       DLLSetObjectDeadFlag(it_obj, true, false);
       return;
@@ -944,13 +948,13 @@ void TakeOverRoom(int newteam, int oldteam, int roomnum, int victor) {
   }
 
   if (!success) {
-    DLLmprintf(0, "Invalid Takeover!!!!!!!\n");
+    LOG_WARNING << "Invalid Takeover!!!!!!!";
     return;
   }
 
   // print out hud message (and sound?)
   char buffer[256];
-  DLLmprintf(0, "old=%d new=%d\n", oldteam, newteam);
+  LOG_DEBUG.printf("old=%d new=%d", oldteam, newteam);
   snprintf(buffer, sizeof(buffer), TXT_TAKEOVER, (victor != -1) ? dPlayers[victor].callsign : TXT_NONAME,
            DMFCBase->GetTeamString(oldteam), room_buf);
   DLLAddHUDMessage(buffer);
@@ -1394,11 +1398,11 @@ void OnControlMessage(uint8_t msg, int from_pnum) {
   }
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf(0, "Unable to open output file\n");
+    LOG_WARNING << "Unable to open output file";
     return;
   }
 

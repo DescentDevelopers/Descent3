@@ -76,9 +76,11 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+
 #include "gamedll_header.h"
-#include <string.h>
 #include "idmfc.h"
+#include "log.h"
 #include "tanDMFC.h"
 #include "tanarchystr.h"
 IDMFC *DMFCBase = NULL;
@@ -185,7 +187,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   DMFCBase->GameInit(NUM_TEAMS);
   DLLCreateStringTable("tanarchy.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -306,6 +307,11 @@ void DLLFUNCCALL DLLGameClose() {
     DMFCBase->DestroyPointer();
     DMFCBase = NULL;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 // The server has just started, so clear out all the stats and game info
@@ -618,11 +624,11 @@ do_disconnected_folk:
 quick_exit:;
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf(0, "Unable to open output file\n");
+    LOG_ERROR << "Unable to open output file";
     return;
   }
 
@@ -836,7 +842,7 @@ void OnDisconnectSaveStatsToFile(void) {
 // Handles when we get a new player packet
 void GetGameStartPacket(uint8_t *data) {
   // get the team scores
-  DLLmprintf(0, "Receiving Team Scores from server\n");
+  LOG_INFO << "Receiving Team Scores from server";
   int count = 0, i;
   for (i = 0; i < NUM_TEAMS; i++) {
     TeamScore[i] = MultiGetInt(data, &count);
@@ -857,7 +863,7 @@ void SendGameStartPacket(int pnum) {
   }
 
   // we're done
-  DLLmprintf(0, "Sending Team Scores to %s\n", dPlayers[pnum].callsign);
+  LOG_INFO.printf("Sending Team Scores to %s", dPlayers[pnum].callsign);
   DMFCBase->SendPacket(data, count, pnum);
 }
 
