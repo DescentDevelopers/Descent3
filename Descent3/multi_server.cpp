@@ -821,14 +821,9 @@ void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_te
       MultiGetShipChecksum(i);
 }
 
-// Checks if the selected mission and script are compatible
-// Return values:
-//-1 Not compatible!
-//>=0 Number of teams supported for this mod & level
-
 #define SCRIPTBADFORMISSION (-1)
 
-int CheckMissionForScript(char *mission, char *script, int dedicated_server_num_teams) {
+int CheckMissionForScript(const std::filesystem::path &mission, char *script, int dedicated_server_num_teams) {
   char mod_keys[MAX_KEYWORDLEN];
   if (!GetDLLRequirements(script, mod_keys, MAX_KEYWORDLEN)) {
     return SCRIPTBADFORMISSION;
