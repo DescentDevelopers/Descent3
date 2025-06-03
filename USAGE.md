@@ -525,6 +525,16 @@ The following command-line options are available in Descent 3. You can set comma
 
 ### Other Options
 
+- `-loadlevel`
+
+    **Type:** int
+
+    **Default:** Off
+
+    **Platform:** all
+
+    **Description:** Load a specific level from the mission selected with `-mission`. Only has an effect when `-mission` is specified.
+
 - `-logfile`
 
     **Type:** boolean
@@ -563,7 +573,7 @@ The following command-line options are available in Descent 3. You can set comma
 
     **Platform:** all
 
-    **Description:** Loads the specified mission file at startup.
+    **Description:** Loads the specified mission file at startup. Example: `-mission d3` to load the main campaign. Combine this option with `-loadlevel` to load a specific level from the mission.
 
 - `-pilot <name>`
 
