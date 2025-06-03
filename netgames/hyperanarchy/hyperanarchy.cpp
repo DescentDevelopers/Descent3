@@ -152,7 +152,7 @@ static int FindHyperObjectNum(void);
 // if no one does.
 static int FindHyperOrbInInventory(void);
 static void ResetTimer(void);
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const char *filename);
 
 void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
@@ -232,7 +232,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   DMFCBase->Set_OnClientPlayerEntersGame(OnClientPlayerEntersGame);
 
   DLLCreateStringTable("hyper.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -261,7 +260,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   HyperOrbID = DLLFindObjectIDName("Hyperorb");
   if (HyperOrbID == -1) {
-    DLLmprintf(0, "Hyper Anarchy: BIG WARNING, COULDN'T FIND HyperOrb ID...YOUR GAME IS IN JEOPARDY!\n");
+    LOG_WARNING << "Hyper Anarchy: BIG WARNING, COULDN'T FIND HyperOrb ID...YOUR GAME IS IN JEOPARDY!";
     *all_ok = 0;
     return;
   }
@@ -381,6 +380,11 @@ void DLLFUNCCALL DLLGameClose() {
   }
 }
 
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
+}
+
 //////////////////////////////////////////////////////////////
 /////// Overrides ///////////////////////////////////////////
 
@@ -470,9 +474,8 @@ void OnServerGameCreated(void) {
 void OnServerLevelStart(void) {
   // Now create a hyper orb in a random room -eek
   if (HyperOrbID != -1) {
-    DLLmprintf(0, "Attempting to create HyperOrb in a random room\n");
     int room = GetRandomValidRoom();
-    DLLmprintf(0, "Room %d selected\n", room);
+    LOG_INFO.printf("Creating HyperOrb in a random room %d", room);
     // We got a good room
     // Safe to create the flag
     CreateHyperOrbInRoom(room);
@@ -754,7 +757,6 @@ void OnServerCollide(object *me_obj, object *it_obj) {
   if ((me_obj->type == OBJ_PLAYER) && (DLLInvCheckItem(it_obj->id, OBJ_POWERUP, HyperOrbID))) {
     /*
     //Two Players collided...one had orb
-    DLLmprintf(0,"Player2Player\n");
     DMFCBase->CallClientEvent(EVT_CLIENT_GAMECOLLIDE,DMFCBase->GetMeObjNum(),DMFCBase->GetItObjNum(),-1);
     DMFCBase->CallOnClientCollide(me_obj,it_obj);
     */
@@ -875,7 +877,7 @@ void OnClientPlayerKilled(object *killer_obj, int victim_pnum) {
     // check the score to see if we hit the limit
     if ((DMFCBase->GetScoreLimit(&score))) {
       if (score <= stat->Score[DSTAT_LEVEL]) {
-        DLLmprintf(0, "Score limit reached\n");
+        LOG_INFO << "Score limit reached";
         DMFCBase->EndLevel();
       }
     }
@@ -903,11 +905,11 @@ void OnClientPlayerDisconnect(int player_num) {
   DMFCBase->OnClientPlayerDisconnect(player_num);
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf(0, "Unable to open output file\n");
+    LOG_WARNING << "Unable to open output file";
     return;
   }
 
@@ -1103,7 +1105,7 @@ void ReceiveHyperGameState(uint8_t *data) {
   KillCount = MultiGetInt(data, &count);
 
   if (WhoHasOrb != -1) {
-    DLLmprintf(0, "%s has the score orb!\n", dPlayers[WhoHasOrb].callsign);
+    LOG_INFO.printf("%s has the score orb!", dPlayers[WhoHasOrb].callsign);
     DLLInvAddTypeID(WhoHasOrb, OBJ_POWERUP, HyperOrbID, -1, -1, 0, NULL);
   }
   UpdateEffect();
@@ -1373,12 +1375,11 @@ void SortPlayerScores(int *sortedindex, int size) {
 
 // Generates a valid random room
 int GetRandomValidRoom(void) {
-  while (1) {
+  while (true) {
     int room;
     room = rand() % (DMFCBase->GetHighestRoomIndex() + 1);
     if ((!ROOMNUM_OUTSIDE(room)) && ((DMFCBase->GetRooms())[room].used)) {
       if (!((DMFCBase->GetRooms())[room].flags & RF_EXTERNAL)) {
-        DLLmprintf(0, "Room %d selected\n", room);
         return room;
       }
     }

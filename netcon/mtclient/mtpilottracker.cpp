@@ -154,12 +154,6 @@ struct vmt_descent3_struct {
 
 #include "mtpilottrack.h"
 
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-
-typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
-
-extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
-
 typedef float (*timer_GetTime_fp)();
 extern timer_GetTime_fp DLLtimer_GetTime;
 

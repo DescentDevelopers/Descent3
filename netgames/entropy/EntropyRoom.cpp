@@ -168,7 +168,7 @@ void DoServerConfigureDialog(void) {
       exit_menu = true;
       DLLEditGetText(virus_pk_edit, tempbuffer, 20);
       int newpk = atoi(tempbuffer);
-      DLLmprintf(0, "New Virus/Kill = %d\n", newpk);
+      LOG_INFO.printf("New Virus/Kill = %d", newpk);
       break;
     };
   }
