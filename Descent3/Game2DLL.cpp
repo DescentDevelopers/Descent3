@@ -97,6 +97,7 @@ typedef void DLLFUNCCALL (*DLLGameClose_fp)();
 typedef void DLLFUNCCALL (*DLLGameGetName_fp)(char *buffer, int maxsize);
 typedef void DLLFUNCCALL (*DLLGameGetDesc_fp)(char **buffer, int maxsize, int lines);
 typedef void DLLFUNCCALL (*DLLGetGameInfo_fp)(tDLLOptions *options);
+typedef void DLLFUNCCALL (*DLLLoggerInit_fp)(plog::Severity severity, plog::IAppender* appender);
 #else
 typedef void(DLLFUNCCALL *DLLGameCall_fp)(int eventnum, dllinfo *data);
 typedef void(DLLFUNCCALL *DLLGameInit_fp)(int *api_func, uint8_t *all_ok, int num_teams_to_use);
@@ -104,11 +105,13 @@ typedef void(DLLFUNCCALL *DLLGameClose_fp)();
 typedef void(DLLFUNCCALL *DLLGameGetName_fp)(char *buffer, int maxsize);
 typedef void(DLLFUNCCALL *DLLGameGetDesc_fp)(char **buffer, int maxsize, int lines);
 typedef void(DLLFUNCCALL *DLLGetGameInfo_fp)(tDLLOptions *options);
+typedef void(DLLFUNCCALL *DLLLoggerInit_fp)(plog::Severity severity, plog::IAppender* appender);
 #endif
 DLLGameCall_fp DLLGameCall = nullptr;
 DLLGameInit_fp DLLGameInit = nullptr;
 DLLGameClose_fp DLLGameClose = nullptr;
 DLLGetGameInfo_fp DLLGetGameInfo = nullptr;
+DLLLoggerInit_fp DLLLoggerInit = nullptr;
 dllinfo DLLInfo;
 tOSIRISModuleInit Multi_d3m_osiris_funcs;
 std::filesystem::path Multi_game_dll_name;
@@ -610,6 +613,7 @@ void FreeGameDLL() {
   DLLGameInit = nullptr;
   DLLGameClose = nullptr;
   DLLGetGameInfo = nullptr;
+  DLLLoggerInit = nullptr;
 }
 // Loads the game dll.  Returns 1 on success, else 0 on failure
 int LoadGameDLL(const char *name, int num_teams_to_use) {
@@ -676,6 +680,16 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
     FreeGameDLL();
     return 0;
   }
+  // Clear out error queue
+  mod_GetLastError();
+  DLLLoggerInit = (DLLLoggerInit_fp)mod_GetSymbol(&GameDLLHandle, "DLLLoggerInit", 8);
+  if (!DLLLoggerInit) {
+    mod_GetLastError();
+    LOG_WARNING << "Couldn't get a handle to the dll function DLLLoggerInit!";
+  } else {
+    DLLLoggerInit(plog::get()->getMaxSeverity(), plog::get());
+  }
+
   if (first) {
     // Jeff: Linux for some reason dies if you try to
     // free a DLL/so on atexit, they should be freed
