@@ -30,6 +30,7 @@ add_library(dmfc STATIC ${HEADERS} ${CPPS})
 target_link_libraries(dmfc PUBLIC
   SDL3::SDL3
   grtext
+  logger
   misc
   module
   physics
