@@ -149,7 +149,7 @@ tScriptName Script_names[MAX_SCRIPTS];
 
 #define MAX_SCREVTS 15
 //	INCREMENT MAX_SCREVTS in ObjCScript when you add a new event!
-char *Script_evt_names[MAX_SCREVTS] = {
+const char *Script_evt_names[MAX_SCREVTS] = {
     "EVT_AI_FRAME",       "EVT_AI_NOTIFY",       "EVT_AI_INIT",
     "EVT_CREATED",        "EVT_COLLIDE",         "EVT_DAMAGED",
     "EVT_INTERVAL",       "EVT_DESTROY",         "EVT_USE",
@@ -183,13 +183,8 @@ char *GotoScriptInText(char *text, const char *script);
 int GenerateScriptParamInfo(int id, const char *script_text);
 
 bool NewScript(const char *filename) {
-  char path[_MAX_PATH];
-  CFILE *file;
-
-  ddio_MakePath(path, LocalLevelsDir, filename, NULL);
-
   //	create the file
-  file = cfopen(path, "wt");
+  CFILE *file = cfopen(LocalLevelsDir / filename, "wt");
   if (!file)
     return false;
 
@@ -202,7 +197,6 @@ bool NewScript(const char *filename) {
 // Returns true on success
 char *LoadScript(const char *filename) {
   char *source;
-  char file_path[256];
   CFILE *file;
   CString temp;
   int size;
@@ -210,7 +204,7 @@ char *LoadScript(const char *filename) {
 
   memset(buffer, 0, MAX_SCRIPT_LINE_SIZE);
 
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
+  std::filesystem::path file_path = LocalLevelsDir / filename;
   //	mprintf(0,"Loading script from %s\n",file_path);
   if (!cfexist(file_path)) {
     return false;
@@ -248,12 +242,7 @@ char *LoadScript(const char *filename) {
 }
 
 void SaveScript(const char *filename, char *script) {
-  CFILE *file;
-  char file_path[256];
-
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
-
-  file = cfopen(file_path, "wt");
+  CFILE *file = cfopen(LocalLevelsDir / filename, "wt");
   cf_WriteString(file, script);
   //		mprintf(0,"Saving script to %s\n",file_path);
   cfclose(file);
@@ -294,12 +283,8 @@ bool CompileScript(tD3XProgram *program, char *script) {
 }
 
 void SaveScriptCode(const char *filename, tD3XProgram *program) {
-  CFILE *file;
-  char file_path[256];
-
   //	write out default script program
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
-  file = cfopen(file_path, "wb");
+  CFILE *file = cfopen(LocalLevelsDir / filename, "wb");
   // D3XSaveProgram(file, program); // LGT: function undefined
   mprintf(0, "Saving %s.\n", filename);
   cfclose(file);

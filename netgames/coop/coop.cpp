@@ -99,14 +99,14 @@
  * $NoKeywords: $
  */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <filesystem>
+
 #include "idmfc.h"
 #include "coop.h"
 #include "coopstr.h"
-
-#include <algorithm>
 
 IDMFC *DMFCBase = NULL;
 static IDmfcStats *dstat = NULL;
@@ -631,7 +631,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   DLLgrtext_SetFont(old_font);
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const std::filesystem::path &filename) {
   /*
   CFILE *file;
   DLLOpenCFILE(&file,filename,"wt");
@@ -709,21 +709,18 @@ void SaveStatsToFile(char *filename) {
 }
 
 #define ROOTFILENAME "D3Coop"
-void OnSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
-void OnLevelEndSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, true);
+void OnLevelEndSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, true);
   SaveStatsToFile(filename);
 }
 
-void OnDisconnectSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnDisconnectSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 

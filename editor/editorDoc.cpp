@@ -70,6 +70,9 @@
 // editorDoc.cpp : implementation of the CEditorDoc class
 //
 
+#include <cstring>
+#include <filesystem>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "SrvrItem.h" // ADDED FOR OLE SUPPORT
@@ -77,8 +80,6 @@
 #include "ObjectListDialog.h"
 #include "keypaddialog.h"
 #include "MainFrm.h"
-
-#include <string.h>
 
 #include "d3edit.h"
 #include "mono.h"
@@ -98,11 +99,8 @@ static char THIS_FILE[] = __FILE__;
 
 // Function to copy a Dallas script file
 int CopyScriptFile(char *old_file, char *new_file) {
-  char old_fullpath[_MAX_PATH];
-  char new_fullpath[_MAX_PATH];
-
-  ddio_MakePath(old_fullpath, LocalScriptDir, old_file, NULL);
-  ddio_MakePath(new_fullpath, LocalScriptDir, new_file, NULL);
+  std::filesystem::path old_fullpath = LocalScriptDir / old_file;
+  std::filesystem::path new_fullpath = LocalScriptDir / new_file;
 
   return (cf_CopyFile(new_fullpath, old_fullpath));
 }
@@ -188,13 +186,10 @@ BOOL CEditorDoc::OnNewDocument() {
   theApp.main_doc = this;
 
   // Remove any "Untitled" dallas script files
-  char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.cpp", NULL);
-  ddio_DeleteFile(fullpath);
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.dll", NULL);
-  ddio_DeleteFile(fullpath);
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.msg", NULL);
-  ddio_DeleteFile(fullpath);
+  std::error_code ec;
+  std::filesystem::remove(LocalScriptDir / "Untitled.cpp", ec);
+  std::filesystem::remove(LocalScriptDir / "Untitled.dll", ec);
+  std::filesystem::remove(LocalScriptDir / "Untitled.msg", ec);
 
   return TRUE;
 }

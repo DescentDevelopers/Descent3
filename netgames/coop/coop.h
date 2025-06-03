@@ -73,7 +73,7 @@ void OnPlayerConnect(int player_num);
 void OnServerGameCreated(void);
 void OnClientLevelStart(void);
 void OnGameStateRequest(int player_num);
-void SaveStatsToFile(char *filename);
+void SaveStatsToFile(const std::filesystem::path &filename);
 void OnSaveStatsToFile(void);
 void OnLevelEndSaveStatsToFile(void);
 void OnDisconnectSaveStatsToFile(void);
