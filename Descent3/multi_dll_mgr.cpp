@@ -332,16 +332,20 @@ typedef void DLLFUNCCALL (*DLLMultiCall_fp)(int eventnum);
 typedef void DLLFUNCCALL (*DLLMultiScoreCall_fp)(int eventnum, void *data);
 typedef void DLLFUNCCALL (*DLLMultiInit_fp)(int *api_fp);
 typedef void DLLFUNCCALL (*DLLMultiClose_fp)();
+typedef void DLLFUNCCALL (*DLLMultiInitLogger_fp)(plog::Severity severity, plog::IAppender* appender);
 #else
 typedef void(DLLFUNCCALL *DLLMultiCall_fp)(int eventnum);
 typedef void(DLLFUNCCALL *DLLMultiScoreCall_fp)(int eventnum, void *data);
 typedef void(DLLFUNCCALL *DLLMultiInit_fp)(int *api_fp);
 typedef void(DLLFUNCCALL *DLLMultiClose_fp)();
+typedef void(DLLFUNCCALL *DLLMultiInitLogger_fp)(plog::Severity severity, plog::IAppender* appender);
 #endif
 DLLMultiScoreCall_fp DLLMultiScoreCall = nullptr;
 DLLMultiCall_fp DLLMultiCall = nullptr;
 DLLMultiInit_fp DLLMultiInit = nullptr;
 DLLMultiClose_fp DLLMultiClose = nullptr;
+DLLMultiInitLogger_fp DLLMultiInitLogger = nullptr;
+
 // dllmultiiInfo DLLMultiInfo;
 // The DLL needs these too.
 #define MAXTEXTITEMS 100
@@ -586,6 +590,7 @@ void FreeMultiDLL() {
   DLLMultiCall = nullptr;
   DLLMultiInit = nullptr;
   DLLMultiClose = nullptr;
+  DLLMultiInitLogger = nullptr;
 }
 
 // Loads the Multi dll.  Returns 1 on success, else 0 on failure
@@ -665,6 +670,14 @@ loaddll:
     Int3();
     FreeMultiDLL();
     return 0;
+  }
+  // Initialize logger. For backward compatibility, lack of DLLMultiInitLogger symbols is non-fatal error.
+  DLLMultiInitLogger = (DLLMultiInitLogger_fp)mod_GetSymbol(&MultiDLLHandle, "DLLMultiInitLogger", 8);
+  if (!DLLMultiInitLogger) {
+    mod_GetLastError();
+    LOG_WARNING << "Couldn't get a handle to the dll function DLLMultiInitLogger!";
+  } else {
+    DLLMultiInitLogger(plog::get()->getMaxSeverity(), plog::get());
   }
 
   if (first) {
