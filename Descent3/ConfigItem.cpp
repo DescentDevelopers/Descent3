@@ -687,8 +687,8 @@ void ConfigItem::Add(int count, ...) {
       // make sure allocation ok
       ASSERT(m_tiList[i]);
       uitemp = va_arg(marker, UITextItem *);
-      (*m_tiList[i]) = *uitemp;
-      (*m_tiList[i]).set_alpha(255);
+      *m_tiList[i] = *uitemp;
+      m_tiList[i]->set_alpha(255);
       // allocate radio button
       m_rbList[i] = new UIRadioButton;
       // make sure allocation ok
@@ -700,11 +700,11 @@ void ConfigItem::Add(int count, ...) {
         m_rbList[i]->Create(m_hWnd, NULL, m_iID[i], m_tiList[i], m_X + curr_x, m_Y + curr_y, m_tiList[i]->width(),
                             m_tiList[i]->height(), UIF_FIT | UIRB_NOBUTTON);
 
-      (*m_tiList[i]).set_color(UICOL_HOTSPOT_HI);
+      m_tiList[i]->set_color(UICOL_HOTSPOT_HI);
       m_rbList[i]->SetStateItem(UI_BTS_ACTIVATED, m_tiList[i]);
-      (*m_tiList[i]).set_color(UICOL_HOTSPOT_LO);
+      m_tiList[i]->set_color(UICOL_HOTSPOT_LO);
       m_rbList[i]->SetStateItem(UI_BTS_INACTIVE, m_tiList[i]);
-      (*m_tiList[i]).set_color(UICOL_HOTSPOT_HI);
+      m_tiList[i]->set_color(UICOL_HOTSPOT_HI);
       m_rbList[i]->SetStateItem(UI_BTS_HILITE, m_tiList[i]);
 
       // adjust curr x/y

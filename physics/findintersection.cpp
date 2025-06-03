@@ -1449,7 +1449,7 @@ float rad, vector *ep0, vector *ep1)
         float cdist; // Closest dist
 
         vector perp = (mdir ^ edir);        // Determines the normalized perp to both lines
-        if(perp == Zero_vector)
+        if(perp == vector{})
                 goto check_ends;  // We are moving parallal to the cylinder (only end collisions are possible)
         pmag = vm_NormalizeVector(&perp);
 
@@ -2669,7 +2669,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
       this_obj->type != OBJ_PLAYER && fq->rad == this_obj->size) {
     if (this_obj->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS) {
       fvi_wall_sphere_rad = 0.0f;
-      fvi_wall_sphere_offset = Zero_vector;
+      fvi_wall_sphere_offset = vector{};
       fvi_wall_sphere_p0 = *fq->p0;
       fvi_wall_sphere_p1 = *fq->p1;
     } else {
@@ -2688,23 +2688,23 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
       fvi_wall_sphere_rad = fq->rad * PLAYER_SIZE_SCALAR;
       if (Players[this_obj->id].flags & (PLAYER_FLAGS_DEAD | PLAYER_FLAGS_DYING))
         fvi_wall_sphere_rad *= 0.5f;
-      fvi_wall_sphere_offset = Zero_vector;
+      fvi_wall_sphere_offset = vector{};
       fvi_wall_sphere_p0 = *fq->p0;
       fvi_wall_sphere_p1 = *fq->p1;
     } else if ((this_obj) && this_obj->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS) {
       fvi_wall_sphere_rad = 0.0f;
-      fvi_wall_sphere_offset = Zero_vector;
+      fvi_wall_sphere_offset = vector{};
       fvi_wall_sphere_p0 = *fq->p0;
       fvi_wall_sphere_p1 = *fq->p1;
     } else {
       fvi_wall_sphere_rad = fq->rad;
-      fvi_wall_sphere_offset = Zero_vector;
+      fvi_wall_sphere_offset = vector{};
       fvi_wall_sphere_p0 = *fq->p0;
       fvi_wall_sphere_p1 = *fq->p1;
     }
 
     fvi_anim_sphere_rad = fq->rad;
-    fvi_anim_sphere_offset = Zero_vector;
+    fvi_anim_sphere_offset = vector{};
     fvi_anim_sphere_p0 = *fq->p0;
     fvi_anim_sphere_p1 = *fq->p1;
   }
@@ -3203,7 +3203,7 @@ vector PointSpeed(object *obj, vector *pos, matrix *orient, vector *rotvel, vect
   if (temp1 != 0.0f) {
     vm_CrossProduct(&w1, &n1, &r1);
   } else {
-    w1 = Zero_vector;
+    w1 = vector{};
   }
 
   return *velocity + w1;
@@ -3245,7 +3245,7 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
     verts[i] += *new_pos;
   }
 
-  vector xxx_normal = Zero_vector;
+  vector xxx_normal{};
   xxx_normal.y() = 1.0f;
 
   for (i = 0; i < 8; i++) {
@@ -3733,7 +3733,7 @@ fvi_query_ptr->p1)); matrix orient = *fvi_query_ptr->o_orient; vector rotvel = *
         // Save results of this simulation
         old_sim_time_remaining = sim_time_remaining;
         moved_vec_n = end_pos - *p0;
-        if(moved_vec_n != Zero_vector)
+        if(moved_vec_n != vector{})
         {
                 actual_dist = vm_NormalizeVector(&moved_vec_n);
         }
@@ -3988,7 +3988,7 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
               fvi_hit_data_ptr->hit_pnt = *fvi_query_ptr->p0;
 
               fvi_collision_dist = 0.0;
-              movement_dir = Zero_vector;
+              movement_dir = vector{};
               hit_dist = 0.0f;
             }
 

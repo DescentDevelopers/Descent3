@@ -518,7 +518,7 @@ void DemoWriteChangedObjects() {
       if ((Objects[i].type == OBJ_PLAYER) || (Objects[i].type == OBJ_OBSERVER) || (Objects[i].type == OBJ_ROBOT) ||
           (Objects[i].type == OBJ_POWERUP) || (Objects[i].type == OBJ_CLUTTER) || (Objects[i].type == OBJ_BUILDING) ||
           (Objects[i].type == OBJ_CAMERA)) {
-        if ((Objects[i].flags & OF_MOVED_THIS_FRAME)) //||(Objects[i].mtype.phys_info.velocity!=Zero_vector))
+        if ((Objects[i].flags & OF_MOVED_THIS_FRAME)) //||(Objects[i].mtype.phys_info.velocity!=vector{}))
         {
           DemoWriteChangedObj(&Objects[i]);
           // num_changed++;
@@ -923,8 +923,8 @@ void DemoReadObj() {
   // if((!((obj->flags&OF_DYING)||(obj->flags&OF_EXPLODING)||(obj->flags&OF_DEAD)))&&obj->type!=255)
 
   if (obj->type != OBJ_NONE) {
-    obj->mtype.phys_info.velocity = Zero_vector;
-    obj->mtype.phys_info.rotvel = Zero_vector;
+    obj->mtype.phys_info.velocity = vector{};
+    obj->mtype.phys_info.rotvel = vector{};
     ObjSetPos(obj, &pos, roomnum, &orient, true);
     poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
     if ((!(obj->flags & OF_ATTACHED)) && (pm->n_attach))
@@ -990,7 +990,7 @@ void DemoReadWeaponFire() {
   weapobjnum = cf_ReadShort(Demo_cfp);
   int16_t gunnum = cf_ReadShort(Demo_cfp);
   ASSERT(uniqueid != 0xffffffff);
-  ASSERT(dir != Zero_vector);
+  ASSERT(dir != vector{});
 
   // This is a hack for the napalm, omega & vauss to prevent making files incompatible
   if ((obj->type == OBJ_PLAYER) && (obj->id != Player_num)) {

@@ -617,7 +617,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
 
   if (pi->rotdrag > 0.0f) {
     if (!(pi->flags & PF_USES_THRUST)) {
-      *rotthrust = Zero_vector;
+      *rotthrust = vector{};
     }
 
     PhysicsApplyConstRotForce(*obj, *rotthrust, *rotvel, frame_time);
@@ -661,7 +661,7 @@ void PhysicsDoSimLinear(const object &obj, const vector &pos, const vector &forc
 
   vector forceToUse = force;
   if (!ROOMNUM_OUTSIDE(obj.roomnum) && !(obj.mtype.phys_info.flags & PF_LOCK_MASK) &&
-      Rooms[obj.roomnum].wind != Zero_vector && count == 0 && obj.mtype.phys_info.drag > 0.0f &&
+      Rooms[obj.roomnum].wind != vector{} && count == 0 && obj.mtype.phys_info.drag > 0.0f &&
       !(obj.type == OBJ_POWERUP && Level_powerups_ignore_wind)) {
     // Factor in outside wind
     const vector &wind = Rooms[obj.roomnum].wind;
@@ -753,7 +753,7 @@ void do_physics_sim(object *obj) {
   }
 
   if (obj->type == OBJ_PLAYER &&
-      (obj->mtype.phys_info.thrust != Zero_vector || obj->mtype.phys_info.rotthrust != Zero_vector)) {
+      (obj->mtype.phys_info.thrust != vector{} || obj->mtype.phys_info.rotthrust != vector{})) {
     Players[obj->id].last_thrust_time = Gametime;
   }
 
@@ -840,7 +840,7 @@ void do_physics_sim(object *obj) {
         fabs(pi->rotvel.x()) > .000001 || fabs(pi->rotvel.y()) > .000001 || fabs(pi->rotvel.z()) > .000001 ||
         fabs(pi->rotthrust.x()) > .000001 || fabs(pi->rotthrust.y()) > .000001 || fabs(pi->rotthrust.z()) > .000001 ||
         (obj->mtype.phys_info.flags & PF_GRAVITY) ||
-        ((!ROOMNUM_OUTSIDE(obj->roomnum)) && Rooms[obj->roomnum].wind != Zero_vector) ||
+        ((!ROOMNUM_OUTSIDE(obj->roomnum)) && Rooms[obj->roomnum].wind != vector{}) ||
         (obj->mtype.phys_info.flags & PF_WIGGLE) ||
         ((obj->ai_info != NULL) && ((obj->ai_info->flags & AIF_REPORT_NEW_ORIENT) != 0)))) {
     if ((obj->flags & OF_MOVED_THIS_FRAME)) {
@@ -1030,7 +1030,7 @@ void do_physics_sim(object *obj) {
 
     if (fate != HIT_NONE) {
       if (obj->type == OBJ_PLAYER && hit_info.num_hits > 1) {
-        vector n = Zero_vector;
+        vector n{};
         int i;
 
         for (i = 0; i < hit_info.num_hits; i++) {
@@ -1155,7 +1155,7 @@ void do_physics_sim(object *obj) {
       // Save results of this simulation
       old_sim_time_remaining = sim_time_remaining;
       moved_vec_n = obj->pos - start_pos; // chrishack -- use this copy
-      if (moved_vec_n != Zero_vector) {
+      if (moved_vec_n != vector{}) {
         actual_dist = vm_NormalizeVector(&moved_vec_n);
       } else {
         actual_dist = 0.0f;
@@ -1212,7 +1212,7 @@ void do_physics_sim(object *obj) {
     switch (fate) {
     case HIT_NONE:
       if (obj->type == OBJ_WEAPON && (obj->mtype.phys_info.flags & (PF_GRAVITY | PF_WIND))) {
-        if (obj->mtype.phys_info.velocity != Zero_vector)
+        if (obj->mtype.phys_info.velocity != vector{})
           vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
       }
       f_continue_sim = false;
@@ -1353,8 +1353,8 @@ void do_physics_sim(object *obj) {
                 }
 
                 if (v_mag < 1.8f) {
-                  obj->mtype.phys_info.velocity = Zero_vector;
-                  obj->mtype.phys_info.rotvel = Zero_vector;
+                  obj->mtype.phys_info.velocity = vector{};
+                  obj->mtype.phys_info.rotvel = vector{};
                   goto skip_sim;
                 } else {
                   goto slide_sim;
@@ -1402,9 +1402,9 @@ void do_physics_sim(object *obj) {
               // obj->mtype.phys_info.velocity *= (luke_test);
             } else if (obj->type == OBJ_CLUTTER && !(obj->mtype.phys_info.flags & PF_LOCK_MASK)) {
               // Do rolling rotvel hack
-              obj->mtype.phys_info.rotvel = Zero_vector;
+              obj->mtype.phys_info.rotvel = vector{};
 
-              if (obj->mtype.phys_info.velocity != Zero_vector) {
+              if (obj->mtype.phys_info.velocity != vector{}) {
                 vector axis;
                 scalar speed = vm_GetMagnitude(&obj->mtype.phys_info.velocity);
 
@@ -1437,7 +1437,7 @@ void do_physics_sim(object *obj) {
 
           // Weapons should face their new heading.  This is so missiles are pointing in the correct direct.
           if (obj->type == OBJ_WEAPON && (bounced || (obj->mtype.phys_info.flags & (PF_GRAVITY | PF_WIND))))
-            if (obj->mtype.phys_info.velocity != Zero_vector)
+            if (obj->mtype.phys_info.velocity != vector{})
               vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
         }
       }
@@ -1527,7 +1527,7 @@ void do_physics_sim(object *obj) {
            (obj->type == OBJ_BUILDING && obj->ai_info)) &&
           sim_time_remaining == old_sim_time_remaining &&
           (Objects[hit_info.hit_object[0]].movement_type == MT_NONE ||
-           (Objects[hit_info.hit_object[0]].mtype.phys_info.velocity == Zero_vector &&
+           (Objects[hit_info.hit_object[0]].mtype.phys_info.velocity == vector{} &&
             (Objects[hit_info.hit_object[0]].mtype.phys_info.flags & PF_LOCK_MASK)))) {
         obj->mtype.phys_info.velocity += hit_info.hit_wallnorm[0];
       }
@@ -1588,7 +1588,7 @@ void do_physics_sim(object *obj) {
   if (count >= sim_loop_limit) {
     if (obj->type == OBJ_PLAYER) {
       LOG_WARNING << "Too many collisions for player!";
-      obj->mtype.phys_info.velocity = Zero_vector;
+      obj->mtype.phys_info.velocity = vector{};
     }
   }
 
@@ -1702,7 +1702,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
     }
 
     int num_ave = 0;
-    vector ave_diff = Zero_vector;
+    vector ave_diff{};
 
     for (i = 0; i < 3; i++) {
       int fate;
@@ -1726,7 +1726,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
     if (num_ave > 0) {
       ave_diff /= num_ave;
     } else
-      ave_diff = Zero_vector;
+      ave_diff = vector{};
 
     vector uvec;
     vm_GetPerp(&uvec, &hp[0], &hp[1], &hp[2]);
@@ -1945,7 +1945,7 @@ void do_walking_sim(object *obj) {
 
   int bounced = 0; // Did the object bounce?
 
-  vector total_force = Zero_vector; // Constant force acting on an object
+  vector total_force{}; // Constant force acting on an object
 
   bool f_continue_sim;            // Should we run another simulation loop
 
@@ -1978,7 +1978,7 @@ void do_walking_sim(object *obj) {
         fabs(pi->rotvel.x()) > .000001 || fabs(pi->rotvel.y()) > .000001 || fabs(pi->rotvel.z()) > .000001 ||
         fabs(pi->rotthrust.x()) > .000001 || fabs(pi->rotthrust.y()) > .000001 || fabs(pi->rotthrust.z()) > .000001 ||
         (obj->mtype.phys_info.flags & PF_GRAVITY) ||
-        ((!ROOMNUM_OUTSIDE(obj->roomnum)) && Rooms[obj->roomnum].wind != Zero_vector) ||
+        ((!ROOMNUM_OUTSIDE(obj->roomnum)) && Rooms[obj->roomnum].wind != vector{}) ||
         (obj->mtype.phys_info.flags & PF_WIGGLE) ||
         ((obj->ai_info != NULL) && ((obj->ai_info->flags & AIF_REPORT_NEW_ORIENT) != 0)))) {
     if ((obj->flags & OF_MOVED_THIS_FRAME)) {
@@ -2023,7 +2023,7 @@ void do_walking_sim(object *obj) {
 
   // Simulate movement until we are done (i.e. Frametime has passed or object is done moving)
   do {
-    obj->mtype.phys_info.rotvel = Zero_vector;
+    obj->mtype.phys_info.rotvel = vector{};
 
 #ifdef _DEBUG
     // This records the sim.
@@ -2103,18 +2103,18 @@ void do_walking_sim(object *obj) {
             }
           } else {
             f_step = false;
-            movement_vec = Zero_vector;
+            movement_vec = vector{};
           }
         } else {
           f_step = false;
-          movement_vec = Zero_vector;
+          movement_vec = vector{};
         }
       } else {
         f_step = false;
       }
 
       if (!f_step) {
-        pi->velocity = Zero_vector;
+        pi->velocity = vector{};
         break;
       }
 
@@ -2153,7 +2153,7 @@ void do_walking_sim(object *obj) {
       // Save results of this simulation
       old_sim_time_remaining = sim_time_remaining;
       moved_vec_n = obj->pos - start_pos; // chrishack -- use this copy
-      if (moved_vec_n != Zero_vector) {
+      if (moved_vec_n != vector{}) {
         actual_dist = vm_NormalizeVector(&moved_vec_n);
       } else {
         actual_dist = 0.0f;
@@ -2319,7 +2319,7 @@ void do_walking_sim(object *obj) {
 
           // Weapons should face their new heading.  This is so missiles are pointing in the correct direct.
           if (obj->type == OBJ_WEAPON && (bounced || (obj->mtype.phys_info.flags & (PF_GRAVITY | PF_WIND))))
-            if (obj->mtype.phys_info.velocity != Zero_vector)
+            if (obj->mtype.phys_info.velocity != vector{})
               vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
         }
       }
