@@ -21,6 +21,7 @@
 #include "grdefs.h"
 #include "player.h"
 #include "game.h"
+#include "log.h"
 #include "pilot.h"
 #include "ddio_common.h"
 #include "module.h"
@@ -187,7 +188,7 @@ void UpdateGamelist(void *lb) {
         NextGameItemNo++;
         Gamelist[j].handle = DLLNetwork_games[k].handle;
         Gamelist[j].used = true;
-        DLLmprintf(0, "Adding %s\n", DLLNetwork_games[k].name);
+        LOG_INFO.printf("Adding %s", DLLNetwork_games[k].name);
 
         FormatServerLine(fmtline, k);
 
@@ -223,6 +224,7 @@ extern "C" {
 DLLEXPORT void DLLFUNCCALL DLLMultiInit(int *api_func);
 DLLEXPORT void DLLFUNCCALL DLLMultiCall(int eventnum);
 DLLEXPORT void DLLFUNCCALL DLLMultiClose();
+DLLEXPORT void DLLFUNCCALL DLLMultiInitLogger(plog::Severity severity, plog::IAppender* appender);
 }
 
 bool All_ok = true;
@@ -233,13 +235,12 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
   Use_netgame_flags = true;
   CommonDLLInit(api_func);
 
-  DLLmprintf(0, "Inside DLLMultiInit...\n");
+  LOG_DEBUG << "Inside DLLMultiInit...";
   *DLLUse_DirectPlay = false;
   Auto_start = false;
 
-  DLLmprintf(0, "About to create string table...\n");
   DLLCreateStringTable("d3online.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
+  LOG_DEBUG.printf("%d strings loaded from string table", StringTableSize);
   if (!StringTableSize) {
     All_ok = false;
     return;
@@ -250,14 +251,14 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 
 // Called when the DLL is shutdown
 void DLLFUNCCALL DLLMultiClose() {
-  DLLmprintf(0, "Closing down Online Direct TCP-IP DLL\n");
+  LOG_DEBUG << "Closing down Online Direct TCP-IP DLL";
   DLLDestroyStringTable(StringTable, StringTableSize);
 }
 
 // The main entry point where the game calls the dll
 void DLLFUNCCALL DLLMultiCall(int eventnum) {
   // We don't need eventnum right now.
-  DLLmprintf(0, "DLLMultiCall:%d!\n", eventnum);
+  LOG_DEBUG.printf("DLLMultiCall: %d!", eventnum);
 
   switch (eventnum) {
   case MT_EVT_GET_HELP:
@@ -327,6 +328,11 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
   }
 }
 
+void DLLFUNCCALL DLLMultiInitLogger(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
+};
+
 #define CONNECT_IRC_TIMEOUT 30.0
 #define MAX_CHAT_SEND_LEN 200
 #define MAX_CHAT_CHANNELS 50
@@ -346,10 +352,7 @@ struct {
 
 int MainMultiplayerMenu() {
   knownDirectIpHosts.clear();
-  DLLmprintf(0, "MainMultiplayerMenu.\n");
-  DLLmprintf(0, "%d", DESCENT3_BLOCK_SIZE);
-
-  DLLmprintf(0, "Inside MainMultiplayerMenu()\n");
+  LOG_DEBUG << "Inside MainMultiplayerMenu()";
   if (Bypass_chat && !ChatStarted) {
     int rcode1 = SearchMasterTrackerGameMenu();
     if (rcode1 == -1)
@@ -472,7 +475,7 @@ int MainMultiplayerMenu() {
   snprintf(chat_whois_info, sizeof(chat_whois_info), "%s %s", sztrackerid, pilot_name);
   chat_conn_time = DLLtimer_GetTime();
 
-  DLLmprintf(0, "About to connect...\n");
+  LOG_DEBUG << "About to connect...";
   do {
     chat_connected = ConnectToChatServer(CHATTRACKERNAME, CHATPORT, pilot_name, chat_whois_info);
     p = GetChatText();
@@ -508,7 +511,7 @@ int MainMultiplayerMenu() {
     DLLNewUIWindowClose(main_wnd);
     goto shutdownodip;
   }
-  DLLmprintf(0, "Connected to chat server!\n");
+  LOG_INFO << "Connected to chat server!";
   if (!JoinNewLobby("#descent")) {
     ret = 0;
     exit_menu = 1;
@@ -554,7 +557,7 @@ int MainMultiplayerMenu() {
         exit_menu = 1;
         break;
       default:
-        DLLmprintf(0, "Warning: Received an unknown chat command!\n");
+        LOG_WARNING.printf("Received an unknown chat command (%d)!", cmd);
         break;
       }
     }
@@ -633,7 +636,7 @@ int MainMultiplayerMenu() {
 
       if (tokp) {
         // Remove all previous items
-        DLLmprintf(0, "Refreshing channel list\n");
+        LOG_INFO << "Refreshing channel list";
 
         int selitem = DLLOldListGetSelectedIndex(chan_list);
         char *oldsel = nullptr;
@@ -752,9 +755,8 @@ int MainMultiplayerMenu() {
     case 3:
       // Join Mastertracker game
       {
-        DLLmprintf(0, "Sending Mastertracker game list request.\n");
+        LOG_INFO << "Sending Mastertracker game list request.";
         RequestDIPGameList();
-        DLLmprintf(0, "Calling SearchMasterTrackerGameMenu().\n");
         DLLNewUIWindowClose(main_wnd);
         *DLLGame_is_master_tracker_game = 0;
         int gamestart = SearchMasterTrackerGameMenu();
@@ -790,7 +792,7 @@ int MainMultiplayerMenu() {
     case 6:
       // Send a private message
       // Create new dialog box, prompt for user and message, then send message
-      DLLmprintf(0, "Sending private Message\n");
+      LOG_INFO << "Sending private Message";
       // Get the currently selected pilot name
       strcpy(selpilot, DLLOldListGetItem(user_list, DLLOldListGetSelectedIndex(user_list)));
       SendWhisper(selpilot);
@@ -808,11 +810,10 @@ int MainMultiplayerMenu() {
       break;
     case 9:
       // Find a pilot
-      DLLmprintf(0, "Finding a pilot\n");
+      LOG_INFO << "Finding a pilot";
       FindPilot();
       break;
     case 11: {
-      DLLmprintf(0, "Calling SearchMasterTrackerGameMenu().\n");
       DLLNewUIWindowClose(main_wnd);
       *DLLGame_is_master_tracker_game = 0;
       int gamestart = SearchMasterTrackerGameMenu();
@@ -829,10 +830,9 @@ int MainMultiplayerMenu() {
     } break;
     case 14:
       // Channel list box
-      DLLmprintf(0, "Joining new public channel\n");
       {
         int selitem = 0;
-        DLLmprintf(0, "Joining new public channel\n");
+        LOG_INFO << "Joining new public channel";
         selitem = DLLOldListGetSelectedIndex(chan_list);
         if (!JoinNewLobby(chan_info[selitem].origname)) {
           ret = 0;
@@ -884,10 +884,9 @@ shutdownodip:
     user_ti[i] = nullptr;
   }
   *DLLNewUIWindow_alpha = oldalpha;
-  DLLmprintf(0, "Disconnecting from Online Direct TCP-IP IRC.\n");
+  LOG_INFO << "Disconnecting from Online Direct TCP-IP IRC.";
   DisconnectFromChatServer();
   ChatStarted = 0;
-  DLLmprintf(0, "Disconnected.\n");
   DLLToggleUICallback(1);
 
   // Delete all those items we created
@@ -1032,7 +1031,7 @@ void ResortGameList(void *lb, int type, bool invert) {
 #define GET_INFO_ID 50
 
 int SearchMasterTrackerGameMenu() {
-  DLLmprintf(0, "SearchMasterTrackerGameMenu().\n");
+  LOG_DEBUG << "SearchMasterTrackerGameMenu()";
   int exit_menu = 0;
   int cury = 40;
   int ret = 0;
@@ -1158,7 +1157,7 @@ int SearchMasterTrackerGameMenu() {
   // request master
   RequestDIPGameList();
   *DLLNum_network_games_known = 0;
-  DLLmprintf(0, "Waiting for Mastertracker response.\n");
+  LOG_INFO << "Waiting for Mastertracker response.";
 
   auto ui_directip_counter = DLLCreateNewUITextItem("0 Server", GR_LIGHTGRAY);
   auto directip_counter = DLLTextCreate(main_wnd, ui_directip_counter, 290, curyButtomMenu, 130);
@@ -1224,7 +1223,7 @@ int SearchMasterTrackerGameMenu() {
     // request master
     if ((DLLtimer_GetTime() - last_master_req_time) > REQ_GAME_MASTER_INTERVAL) {
       last_master_req_time = DLLtimer_GetTime();
-      DLLmprintf(0, "request master\n");
+      LOG_INFO << "Request master";
 
       // re request master
       RequestDIPGameList();
@@ -1235,7 +1234,7 @@ int SearchMasterTrackerGameMenu() {
 
       // update existing servers
       for (apiServerEntry &directIpHost : knownDirectIpHosts) {
-        DLLmprintf(0, "send directip query to: %d %d\n", directIpHost.ipv4adr, directIpHost.port);
+        LOG_DEBUG.printf("Send directip query to: %d %d\n", directIpHost.ipv4adr, directIpHost.port);
         DLLSearchForLocalGamesTCP(directIpHost.ipv4adr, directIpHost.port);
       }
 
@@ -1276,7 +1275,7 @@ int SearchMasterTrackerGameMenu() {
           break;
         gameno = gameid;
 
-        DLLmprintf(0, "Selected item is %s\n", DLLNetwork_games[gameno].name);
+        LOG_DEBUG.printf("Selected item is %s\n", DLLNetwork_games[gameno].name);
 
         network_address s_address;
         s_address.connection_type = NP_TCP;
@@ -1292,7 +1291,7 @@ int SearchMasterTrackerGameMenu() {
           //  Check to see if this mission exists!
           if (DLLmsn_CheckGetMission(&s_address, DLLNetwork_games[gameno].mission)) {
             if ((DLLTryToJoinServer(&s_address))) {
-              DLLmprintf(0, "Menu: Game joined!\n");
+              LOG_INFO << "Menu: Game joined!";
               DLLNewUIWindowClose(main_wnd);
               exit_menu = 1;
               ret = 1;
@@ -1365,38 +1364,32 @@ int SearchMasterTrackerGameMenu() {
         gameno = gameid;
         if (gameid == -1)
           break;
-        DLLmprintf(0, "Selected item is %s\n", DLLNetwork_games[gameno].name);
+        LOG_DEBUG.printf("Selected item is %s", DLLNetwork_games[gameno].name);
         DLLShowNetgameInfo(&DLLNetwork_games[gameno]);
       }
     } break;
 
     case SORT_GAMENAME: {
-      DLLmprintf(0, "Sorting by game name.\n");
       invert_sort_gamename = !invert_sort_gamename;
       ResortGameList(game_list, res, invert_sort_gamename);
     } break;
     case SORT_GAMETYPE: {
-      DLLmprintf(0, "Sorting by game type.\n");
       invert_sort_gametype = !invert_sort_gametype;
       ResortGameList(game_list, res, invert_sort_gametype);
     } break;
     case SORT_MISSION: {
-      DLLmprintf(0, "Sorting by mission.\n");
       invert_sort_mission = !invert_sort_mission;
       ResortGameList(game_list, res, invert_sort_mission);
     } break;
     case SORT_LEVEL: {
-      DLLmprintf(0, "Sorting by level.\n");
       invert_sort_levels = !invert_sort_levels;
       ResortGameList(game_list, res, invert_sort_levels);
     } break;
     case SORT_PLAYERS: {
-      DLLmprintf(0, "Sorting by players.\n");
       invert_sort_players = !invert_sort_players;
       ResortGameList(game_list, res, invert_sort_players);
     } break;
     case SORT_PING: {
-      DLLmprintf(0, "Sorting by ping.\n");
       invert_sort_ping = !invert_sort_ping;
       ResortGameList(game_list, res, invert_sort_ping);
     } break;
@@ -1476,7 +1469,7 @@ int SearchMasterTrackerGameMenu() {
 int JoinNewLobby(const char *lobby) {
   int rcode;
   const char *p;
-  DLLmprintf(0, "Entering new lobby");
+  LOG_INFO << "Entering new lobby";
   auto title_text = DLLCreateNewUITextItem(TXT_ODT_ENTERINGLOBBY, UICOL_WINDOW_TITLE);
 
   auto cancel_on_text = DLLCreateNewUITextItem(TXT_ODT_CANCEL, UICOL_HOTSPOT_HI);
@@ -1503,7 +1496,7 @@ int JoinNewLobby(const char *lobby) {
   if (rcode == 1) {
     return 1;
   } else {
-    DLLmprintf(0, "Unable to join lobby: %d\n", rcode);
+    LOG_WARNING.printf("Unable to join lobby: %d", rcode);
     char txtmessage[200];
     char cleanlobby[50];
     memset(cleanlobby, 0, 29);
