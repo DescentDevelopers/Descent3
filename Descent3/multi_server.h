@@ -51,6 +51,15 @@ void MultiDoServerFrame();
 // Set the local machine as a server
 void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_teams = -1);
 
+/**
+ * Checks if the selected mission and script are compatible
+ * @param mission requested mission
+ * @param script script name
+ * @param dedicated_server_num_teams requested number of teams from dedicated server
+ * @return number of teams supported for this mod & level (>=0) or -1 if mission incompatible
+ */
+int CheckMissionForScript(const std::filesystem::path &mission, char *script, int dedicated_server_num_teams);
+
 // Disconnects all players that haven't been heard from in a while
 // Server only
 void MultiDisconnectDeadPlayers();
