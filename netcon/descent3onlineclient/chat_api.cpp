@@ -31,6 +31,7 @@
 #include "chat_api.h"
 #include "crossplat.h"
 #include "grdefs.h"
+#include "log.h"
 #include "odtstrings.h"
 #include "networking.h"
 
@@ -47,12 +48,6 @@ extern nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
 typedef int (*PollUI_fp)();
 extern PollUI_fp DLLPollUI;
-
-#ifndef RELEASE
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-#else
-#define DLLmprintf(...)
-#endif
 
 typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
@@ -189,8 +184,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
     } while (rcode == 0);
 
     if (rcode != 1) {
-      DLLmprintf(0, "Unable to gethostbyname(\"%s\").\n", serveraddr);
-      DLLmprintf(0, "WSAGetLastError() returned %d.\n", WSAGetLastError());
+      LOG_ERROR.printf("Unable to gethostbyname(\"%s\"): error %d", serveraddr, WSAGetLastError());
       DLLnw_Asyncgethostbyname(nullptr, NW_AGHBN_CANCEL, nullptr);
       return 0;
     }
@@ -207,16 +201,16 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
       if (EINPROGRESS == ret || 0 == ret)
 #endif
       {
-        DLLmprintf(0, "Beginning socket connect\n");
+        LOG_INFO << "Beginning socket connect";
         Socket_connecting = 1;
         return 0;
       }
     } else {
       // This should never happen, connect should always return WSAEWOULDBLOCK
-      DLLmprintf(0, "connect returned too soon!\n");
+      LOG_WARNING << "connect returned too soon!";
       Socket_connecting = 1;
       Socket_connected = 1;
-      DLLmprintf(0, "Socket connected, sending user and nickname request\n");
+      LOG_INFO << "Socket connected, sending user and nickname request";
       snprintf(signon_str, sizeof(signon_str), "/USER %s %s %s :%s", "user", "user", "user", Chat_tracker_id);
       SendChatString(signon_str, 1);
       snprintf(signon_str, sizeof(signon_str), "/NICK %s", Nick_name);
@@ -246,7 +240,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
       // Writable -- that means it's connected
       if (select(Chatsock + 1, nullptr, &write_fds, nullptr, &timeout)) {
         Socket_connected = 1;
-        DLLmprintf(0, "Socket connected, sending user and nickname request\n");
+        LOG_INFO << "Socket connected, sending user and nickname request";
         snprintf(signon_str, sizeof(signon_str), "/USER %s %s %s :%s", "user", "user", "user", Chat_tracker_id);
         SendChatString(signon_str, 1);
         snprintf(signon_str, sizeof(signon_str), "/NICK %s", Nick_name);
@@ -258,7 +252,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
       FD_SET(Chatsock, &error_fds);
       // error -- that means it's not going to connect
       if (select(Chatsock + 1, nullptr, nullptr, &error_fds, &timeout)) {
-        DLLmprintf(0, "Select returned an error!\n");
+        LOG_ERROR << "select() returned an error!";
         return -1;
       }
       return 0;
@@ -462,13 +456,12 @@ const char *ChatGetString() {
       if (WSAEWOULDBLOCK != lerror && 0 != lerror)
 #endif
       {
-        DLLmprintf(0, "recv caused an error: %d\n", lerror);
+        LOG_ERROR.printf("recv() caused an error: %d", lerror);
       }
       return nullptr;
     }
     if (bytesread) {
       ch[1] = '\0';
-      // DLLmprintf(0,ch);
       if ((ch[0] == 0x0a) || (ch[0] == 0x0d)) {
         if (Input_chat_buffer[0] == '\0') {
           // Blank line, ignore it
@@ -476,7 +469,6 @@ const char *ChatGetString() {
         }
         strcpy(return_string, Input_chat_buffer);
         Input_chat_buffer[0] = '\0';
-        // DLLmprintf(0,"->|%s\n",return_string);
         p = ParseIRCMessage(return_string, MSG_REMOTE);
 
         return p;
@@ -484,7 +476,7 @@ const char *ChatGetString() {
       strcat(Input_chat_buffer, ch);
     } else {
       // Select said we had read data, but 0 bytes read means disconnected
-      DLLmprintf(0, "Disconnected! Doh!");
+      LOG_ERROR << "Disconnected! Doh!";
       AddChatCommandToQueue(CC_DISCONNECTED, nullptr, 0);
       return nullptr;
     }
@@ -931,7 +923,7 @@ char *ParseIRCMessage(char *Line, int iMode) {
   if (stricmp(szCmd, "376") == 0) // end of motd, trigger autojoin...
   {
     if (!Chat_server_connected) {
-      DLLmprintf(0, "Connected to chat server!\n");
+      LOG_INFO << "Connected to chat server!";
       Chat_server_connected = 1;
       // We want to make sure we know our nick. This is somewhat of a hack
       strcpy(Nick_name, GetWordNum(0, szRemLine + 1));

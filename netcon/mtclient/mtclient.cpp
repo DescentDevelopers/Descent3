@@ -417,6 +417,7 @@
 #include "player.h"
 #include "game.h"
 #include "pilot.h"
+#include "log.h"
 #include "ddio_common.h"
 #include "mt_net.h"
 #include "mtgametrack.h"
@@ -602,9 +603,8 @@ void UpdateGamelist(void *lb) {
         NextGameItemNo++;
         PXOGamelist[j].handle = DLLNetwork_games[k].handle;
         PXOGamelist[j].used = true;
-        DLLmprintf(0, "Adding %s\n", DLLNetwork_games[k].name);
+        LOG_INFO.printf("Adding %s", DLLNetwork_games[k].name);
 
-        // DLLmprintf(0,"Found game: %s\n",DLLNetwork_games[k].name);
         FormatServerLine(fmtline, k, j);
 
         if (DLLNetwork_games[k].dedicated_server) {
@@ -626,7 +626,6 @@ void UpdateGamelist(void *lb) {
 
       if (gameid != -1) {
         int k = gameid;
-        // DLLmprintf(0,"Updating %s\n",DLLNetwork_games[gameid].name);
         char fmtline[200];
         FormatServerLine(fmtline, k, j);
         DLLSetUITextItemText(PXOGamelist[j].ti, fmtline,
@@ -646,6 +645,7 @@ extern "C" {
 DLLEXPORT void DLLFUNCCALL DLLMultiInit(int *api_func);
 DLLEXPORT void DLLFUNCCALL DLLMultiCall(int eventnum);
 DLLEXPORT void DLLFUNCCALL DLLMultiClose();
+DLLEXPORT void DLLFUNCCALL DLLMultiInitLogger(plog::Severity severity, plog::IAppender* appender);
 }
 
 bool All_ok = true;
@@ -659,12 +659,9 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 #endif
   CommonDLLInit(api_func);
   DLLPXOPort = (uint16_t)((size_t)API.vp[32] & 0xffff);
-  DLLmprintf(0, "Inside DLLMultiInit...\n");
   *DLLUse_DirectPlay = false;
   Auto_start = false;
-  DLLmprintf(0, "About to create string table...\n");
   DLLCreateStringTable("mtclient.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     All_ok = false;
     return;
@@ -675,7 +672,7 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 
 // Called when the DLL is shutdown
 void DLLFUNCCALL DLLMultiClose() {
-  DLLmprintf(0, "Closing down PXO DLL\n");
+  LOG_DEBUG << "Closing down PXO DLL";
   DLLDestroyStringTable(StringTable, StringTableSize);
   DLLnw_UnRegisterCallback(PXO_NETID_USER_TRACKER);
   DLLnw_UnRegisterCallback(PXO_NETID_GAME_TRACKER);
@@ -746,7 +743,7 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
           *DLLMultiGameStarting = 0;
         }
       } else {
-        DLLmprintf(0, "Login failed!\n");
+        LOG_ERROR << "Login failed!";
         *DLLMultiGameStarting = 0;
         return;
       }
@@ -814,6 +811,11 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
     break;
   }
 }
+
+void DLLFUNCCALL DLLMultiInitLogger(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
+};
 
 #ifdef MACINTOSH
 #pragma export off
@@ -883,7 +885,7 @@ int LoginMasterTracker() {
 
     switch (res) {
     case 3:
-      DLLmprintf(0, "Got event 3!\n");
+      LOG_DEBUG << "Got event 3!";
       break;
     case 4:
 #ifdef WIN32
@@ -924,7 +926,7 @@ int LoginMasterTracker() {
       DLLCloseSplashScreen();
       if (valret == 1) {
         // User was validated
-        DLLmprintf(0, "Mastertracker user validated!\n");
+        LOG_INFO << "Mastertracker user validated!";
         // Run this to make sure we properly ACK the server.
         for (int j = 0; j < 10; j++)
           PollPTrackNet();
@@ -936,7 +938,7 @@ int LoginMasterTracker() {
         break;
       } else if (valret == -1) {
         // User invalid!
-        DLLmprintf(0, "Mastertracker user not validated!\n");
+        LOG_WARNING << "Mastertracker user not validated!";
         DLLDoMessageBox(TXT_PXO_MASTERTRACKER, TXT_PXO_BADLOGIN, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
         // Run this to make sure we properly ACK the server.
         for (int j = 0; j < 10; j++)
@@ -944,7 +946,7 @@ int LoginMasterTracker() {
         break;
       } else {
         // timeout waiting for tracker!
-        DLLmprintf(0, "Mastertracker timeout!\n");
+        LOG_ERROR << "Mastertracker timeout!";
         DLLDoMessageBox(TXT_PXO_MASTERTRACKER, TXT_PXO_TIMEOUTMT, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
         // Run this to make sure we properly ACK the server.
         for (int j = 0; j < 10; j++)
@@ -1009,12 +1011,11 @@ struct {
 
 int MainMultiplayerMenu() {
 
-  DLLmprintf(0, "%d", DESCENT3_BLOCK_SIZE);
   if (!ShowMessageOfTheDay()) {
     return 0;
   }
 
-  DLLmprintf(0, "Inside MainMultiplayerMenu()\n");
+  LOG_DEBUG << "Inside MainMultiplayerMenu()";
   if (Bypass_chat && !ChatStarted) {
     int rcode1 = SearchMasterTrackerGameMenu();
     if (rcode1 == -1)
@@ -1141,7 +1142,7 @@ int MainMultiplayerMenu() {
   snprintf(chat_whois_info, sizeof(chat_whois_info), "%s %s", sztrackerid, pilot_name);
   chat_conn_time = DLLtimer_GetTime();
   // DLLNewUIWindowSetFocusOnEditGadget(send_edit,main_wnd);
-  DLLmprintf(0, "About to connect...\n");
+  LOG_DEBUG << "About to connect...";
   do {
     chat_connected = ConnectToChatServer(CHATTRACKERNAME, CHATPORT, pilot_name, chat_whois_info);
     // chat_connected = ConnectToChatServer("plasma.outrage.com:7000",pilot_name,chat_whois_info);
@@ -1180,7 +1181,7 @@ int MainMultiplayerMenu() {
     DLLNewUIWindowClose(main_wnd);
     goto shutdownpxo;
   }
-  DLLmprintf(0, "Connected to chat server!\n");
+  LOG_INFO << "Connected to chat server!";
   if (!JoinNewLobby("#autoselect")) {
     ret = 0;
     exit_menu = 1;
@@ -1227,7 +1228,7 @@ int MainMultiplayerMenu() {
         exit_menu = 1;
         break;
       default:
-        DLLmprintf(0, "Warning: Received an unknown chat command!\n");
+        LOG_WARNING.printf("Warning: Received an unknown chat command: %d!", cmd);
         break;
       }
     }
@@ -1306,7 +1307,7 @@ int MainMultiplayerMenu() {
 
       if (tokp) {
         // Remove all previous items
-        DLLmprintf(0, "Refreshing channel list\n");
+        LOG_DEBUG << "Refreshing channel list";
         // get the text of the currently selected channel.
         // char * oldsel = DLLOldListGetItem(chan_list,DLLOldListGetSelectedIndex(chan_list));
         //
@@ -1432,9 +1433,8 @@ int MainMultiplayerMenu() {
     case 3:
       // Join Mastertracker game
       {
-        DLLmprintf(0, "Sending Mastertracker game list request.\n");
+        LOG_DEBUG << "Sending Mastertracker game list request.";
         RequestGameList();
-        DLLmprintf(0, "Calling SearchMasterTrackerGameMenu().\n");
         DLLNewUIWindowClose(main_wnd);
         *DLLGame_is_master_tracker_game = 1;
         int gamestart = SearchMasterTrackerGameMenu();
@@ -1471,7 +1471,7 @@ int MainMultiplayerMenu() {
     case 6:
       // Send a private message
       // Create new dialog box, prompt for user and message, then send message
-      DLLmprintf(0, "Sending private Message\n");
+      LOG_DEBUG << "Sending private Message";
       // Get the currently selected pilot name
       strcpy(selpilot, DLLOldListGetItem(user_list, DLLOldListGetSelectedIndex(user_list)));
       SendWhisper(selpilot);
@@ -1489,19 +1489,18 @@ int MainMultiplayerMenu() {
       break;
     case 9:
       // Find a pilot
-      DLLmprintf(0, "Finding a pilot\n");
+      LOG_DEBUG << "Finding a pilot";
       FindPilot();
       break;
     case 10:
       // Get pilot stats
-      DLLmprintf(0, "Getting pilot statistics\n");
+      LOG_DEBUG << "Getting pilot statistics";
       strcpy(selpilot, DLLOldListGetItem(user_list, DLLOldListGetSelectedIndex(user_list)));
       GetPilotStats(selpilot);
       break;
     case 11: {
-      DLLmprintf(0, "Sending Mastertracker game list request.\n");
+      LOG_DEBUG << "Sending Mastertracker game list request.";
       RequestGameList();
-      DLLmprintf(0, "Calling SearchMasterTrackerGameMenu().\n");
       DLLNewUIWindowClose(main_wnd);
       *DLLGame_is_master_tracker_game = 1;
       int gamestart = SearchMasterTrackerGameMenu();
@@ -1518,10 +1517,9 @@ int MainMultiplayerMenu() {
     } break;
     case 14:
       // Channel list box
-      DLLmprintf(0, "Joining new public channel\n");
+      LOG_DEBUG << "Joining new public channel";
       {
         int selitem = 0;
-        DLLmprintf(0, "Joining new public channel\n");
         selitem = DLLOldListGetSelectedIndex(chan_list);
         if (!JoinNewLobby(chan_info[selitem].origname)) {
           ret = 0;
@@ -1573,10 +1571,9 @@ shutdownpxo:
     user_ti[i] = nullptr;
   }
   *DLLNewUIWindow_alpha = oldalpha;
-  DLLmprintf(0, "Disconnecting from PXO.\n");
+  LOG_INFO << "Disconnecting from PXO.";
   DisconnectFromChatServer();
   ChatStarted = 0;
-  DLLmprintf(0, "Disconnected.\n");
   DLLToggleUICallback(1);
 
   // Delete all those items we created
@@ -1842,7 +1839,7 @@ int SearchMasterTrackerGameMenu() {
   last_req_time = DLLtimer_GetTime();
   RequestGameList();
   *DLLNum_network_games_known = 0;
-  DLLmprintf(0, "Waiting for Mastertracker response.\n");
+  LOG_INFO << "Waiting for Mastertracker response.";
 
   // Menu loop
   while (!exit_menu) {
@@ -1854,14 +1851,13 @@ int SearchMasterTrackerGameMenu() {
     games = GetGameList();
     res = DLLPollUI();
     if (games) {
-      // DLLmprintf(0,"GetGameList() returned a gamedata.\n");
       for (i = 0; i < (MAX_GAME_LISTS_PER_PACKET * 4); i++) {
         //				char *gn = games->game_name[i];
         if (games->game_type == GT_D3TNG) {
           DLLSearchForGamesPXO(games->game_server[i], games->game_port[i]);
         } else {
           if (games->game_server[i] && games->game_port[i]) {
-            DLLmprintf(0, "Bad bad bad!!!!\n");
+            LOG_WARNING << "Bad bad bad!!!!";
             DLLSearchForGamesPXO(games->game_server[i], games->game_port[i]);
           }
         }
@@ -1910,7 +1906,7 @@ int SearchMasterTrackerGameMenu() {
           break;
         gameno = gameid;
 
-        DLLmprintf(0, "Selected item is %s\n", DLLNetwork_games[gameno].name);
+        LOG_DEBUG.printf("Selected item is %s", DLLNetwork_games[gameno].name);
 
         network_address s_address;
         s_address.connection_type = NP_TCP;
@@ -1926,7 +1922,7 @@ int SearchMasterTrackerGameMenu() {
             // Check to see if this mission exists!
             if (DLLmsn_CheckGetMission(&s_address, DLLNetwork_games[gameno].mission)) {
               if ((DLLTryToJoinServer(&s_address))) {
-                DLLmprintf(0, "Menu: Game joined!\n");
+                LOG_INFO << "Menu: Game joined!";
                 DLLNewUIWindowClose(main_wnd);
                 exit_menu = 1;
                 ret = 1;
@@ -2000,38 +1996,32 @@ int SearchMasterTrackerGameMenu() {
         gameno = gameid;
         if (gameid == -1)
           break;
-        DLLmprintf(0, "Selected item is %s\n", DLLNetwork_games[gameno].name);
+        LOG_INFO.printf("Selected item is %s", DLLNetwork_games[gameno].name);
         DLLShowNetgameInfo(&DLLNetwork_games[gameno]);
       }
     } break;
 
     case SORT_GAMENAME: {
-      DLLmprintf(0, "Sorting by game name.\n");
       invert_sort_gamename = !invert_sort_gamename;
       ResortGameList(game_list, res, invert_sort_gamename);
     } break;
     case SORT_GAMETYPE: {
-      DLLmprintf(0, "Sorting by game type.\n");
       invert_sort_gametype = !invert_sort_gametype;
       ResortGameList(game_list, res, invert_sort_gametype);
     } break;
     case SORT_MISSION: {
-      DLLmprintf(0, "Sorting by mission.\n");
       invert_sort_mission = !invert_sort_mission;
       ResortGameList(game_list, res, invert_sort_mission);
     } break;
     case SORT_LEVEL: {
-      DLLmprintf(0, "Sorting by level.\n");
       invert_sort_levels = !invert_sort_levels;
       ResortGameList(game_list, res, invert_sort_levels);
     } break;
     case SORT_PLAYERS: {
-      DLLmprintf(0, "Sorting by players.\n");
       invert_sort_players = !invert_sort_players;
       ResortGameList(game_list, res, invert_sort_players);
     } break;
     case SORT_PING: {
-      DLLmprintf(0, "Sorting by ping.\n");
       invert_sort_ping = !invert_sort_ping;
       ResortGameList(game_list, res, invert_sort_ping);
     } break;
@@ -2158,13 +2148,13 @@ void DoMTFrame() {
         if (rcode == 1) {
           // Copy data from the DLLMTPilotinfo[MTReadingPilot] struct here
           DLLMNetPlayers[MTWritingPilot].flags &= ~NPF_MT_WRITING_PILOT;
-          DLLmprintf(0, "Pilot data wrote to the Mastertracker for Player[%d] %s (tid=%s).\n", MTWritingPilot,
+          LOG_DEBUG.printf("Pilot data wrote to the Mastertracker for Player[%d] %s (tid=%s).", MTWritingPilot,
                      DLLMTPilotinfo[MTWritingPilot].pilot_name, DLLMTPilotinfo[MTWritingPilot].tracker_id);
           MTWritingPilot = -1;
 
         } else {
           DLLMNetPlayers[MTWritingPilot].flags &= ~NPF_MT_WRITING_PILOT;
-          DLLmprintf(0, "Pilot write to the mastertracker failed. Error code %d.\n", rcode);
+          LOG_WARNING.printf("Pilot write to the mastertracker failed. Error code %d.", rcode);
           MTWritingPilot = -1;
         }
       }
@@ -2181,7 +2171,7 @@ void DoMTFrame() {
             DLLMTPilotinfo[i].deaths = DLLMPlayers[i].deaths;
             DLLMTPilotinfo[i].suicides = DLLMPlayers[i].suicides;
             DLLMTPilotinfo[i].rank = (DLLMPlayers[i].rank * 65536.0);
-            DLLmprintf(0, "Sending pilot %d rank of %f\n", i, DLLMTPilotinfo[i].rank / 65536.0);
+            LOG_INFO.printf("Sending pilot %d rank of %f", i, DLLMTPilotinfo[i].rank / 65536.0);
 
             DLLMTPilotinfo[i].lateral_thrust = DLLMPlayers[i].lateral_thrust;
             DLLMTPilotinfo[i].rotational_thrust = DLLMPlayers[i].rotational_thrust;
@@ -2189,7 +2179,7 @@ void DoMTFrame() {
             DLLMTPilotinfo[i].sliding_pct = 0;                // FIXME
             DLLMPlayers[i].time_in_game = DLLtimer_GetTime(); // when we write this data multiple times we need this
 
-            DLLmprintf(0, "Sending User info to the Mastertracker for Player[%d] %s (tid=%s).\n", i,
+            LOG_INFO.printf("Sending User info to the Mastertracker for Player[%d] %s (tid=%s).", i,
                        DLLMTPilotinfo[i].pilot_name, DLLMTPilotinfo[i].tracker_id);
             SendD3PilotData(&DLLMTPilotinfo[i]);
 
@@ -2200,7 +2190,7 @@ void DoMTFrame() {
             // If we never read this pilot's stats, we really don't care what they were.
             DLLMNetPlayers[i].flags &= ~NPF_MT_READING_PILOT;
             DLLMNetPlayers[i].flags &= ~NPF_MT_WRITING_PILOT;
-            DLLmprintf(0, "Didn't write Mastertracker stats for %s because we never received any from the tracker!\n",
+            LOG_WARNING.printf("Didn't write Mastertracker stats for %s because we never received any from the tracker!",
                        DLLMPlayers[i].callsign);
           }
         }
@@ -2219,7 +2209,7 @@ void DoMTFrame() {
             DLLMPlayers[MTReadingPilot].deaths = DLLMTPilotinfo[MTReadingPilot].deaths;
             DLLMPlayers[MTReadingPilot].suicides = DLLMTPilotinfo[MTReadingPilot].suicides;
             DLLMPlayers[MTReadingPilot].rank = DLLMTPilotinfo[MTReadingPilot].rank / 65536.0;
-            DLLmprintf(0, "Read pilot %s rank of %f\n", DLLMPlayers[MTReadingPilot].callsign,
+            LOG_DEBUG.printf("Read pilot %s rank of %f", DLLMPlayers[MTReadingPilot].callsign,
                        DLLMPlayers[MTReadingPilot].rank);
             DLLMPlayers[MTReadingPilot].lateral_thrust = DLLMTPilotinfo[MTReadingPilot].lateral_thrust;
             DLLMPlayers[MTReadingPilot].rotational_thrust = DLLMTPilotinfo[MTReadingPilot].rotational_thrust;
@@ -2227,12 +2217,12 @@ void DoMTFrame() {
             //  Something = DLLMTPilotinfo[i].sliding_pct;//FIXME
 
             DLLMNetPlayers[MTReadingPilot].flags |= NPF_MT_HAS_PILOT_DATA;
-            DLLmprintf(0, "Pilot data received from the Mastertracker for Player[%d] %s (tid=%s).\n", MTReadingPilot,
+            LOG_DEBUG.printf("Pilot data received from the Mastertracker for Player[%d] %s (tid=%s).", MTReadingPilot,
                        DLLMTPilotinfo[MTReadingPilot].pilot_name, DLLMTPilotinfo[MTReadingPilot].tracker_id);
             MTReadingPilot = -1;
           } else {
             // DLLMNetPlayers[MTReadingPilot].flags &= ~NPF_MT_READING_PILOT;
-            DLLmprintf(0, "Pilot read from mastertracker failed. Error code %d.\n", rcode);
+            LOG_WARNING.printf("Pilot read from mastertracker failed. Error code %d.", rcode);
             MTReadingPilot = -1;
           }
         }
@@ -2241,7 +2231,7 @@ void DoMTFrame() {
         for (i = 0; i < MAX_NET_PLAYERS; i++) {
           if (DLLMNetPlayers[i].flags & NPF_MT_READING_PILOT) {
             MTReadingPilot = i;
-            DLLmprintf(0, "Requesting User info from the Mastertracker for Player[%d] %s (tid=%s).\n", i,
+            LOG_DEBUG.printf("Requesting User info from the Mastertracker for Player[%d] %s (tid=%s).", i,
                        DLLMTPilotinfo[i].pilot_name, DLLMTPilotinfo[i].tracker_id);
             GetD3PilotData(&DLLMTPilotinfo[i], DLLMPlayers[i].callsign, DLLMPlayers[i].tracker_id);
             CheckPXOForAnomalies();
@@ -2277,9 +2267,9 @@ void DoMTGameOver(void) {
           DLLMTPilotinfo[i].rotational_thrust = DLLMPlayers[i].rotational_thrust;
           DLLMTPilotinfo[i].online_time += DLLtimer_GetTime() - DLLMPlayers[i].time_in_game;
           DLLMTPilotinfo[i].sliding_pct = 0; // FIXME
-          DLLmprintf(0, "Sending User info to the Mastertracker for Player[%d] %s (tid=%s).\n", i,
+          LOG_DEBUG.printf("Sending User info to the Mastertracker for Player[%d] %s (tid=%s).", i,
                      DLLMTPilotinfo[i].pilot_name, DLLMTPilotinfo[i].tracker_id);
-          DLLmprintf(0, "Sending pilot %d rank of %f\n", i, DLLMTPilotinfo[i].rank / 65536.0);
+          LOG_DEBUG.printf("Sending pilot %d rank of %f", i, DLLMTPilotinfo[i].rank / 65536.0);
           SendD3PilotData(&DLLMTPilotinfo[i]);
           while (SendD3PilotData(nullptr) == 0) {
             DLLDescentDefer();
@@ -2296,7 +2286,7 @@ void DoMTGameOver(void) {
 int JoinNewLobby(const char *lobby) {
   int rcode;
   const char *p;
-  DLLmprintf(0, "Entering new lobby");
+  LOG_INFO << "Entering new lobby";
   auto title_text = DLLCreateNewUITextItem(TXT_PXO_ENTERINGLOBBY, UICOL_WINDOW_TITLE);
 
   auto cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
@@ -2323,7 +2313,7 @@ int JoinNewLobby(const char *lobby) {
     strcpy(DLLPXO_hosted_lobby_name, lobby);
     return 1;
   } else {
-    DLLmprintf(0, "Unable to join lobby: %d\n", rcode);
+    LOG_WARNING.printf("Unable to join lobby: %d", rcode);
     char txtmessage[200];
     char cleanlobby[50];
     memset(cleanlobby, 0, 29);
@@ -2725,7 +2715,7 @@ int GetPilotStats(const char *pilot) {
     }
   }
   if (p == (char *)-1) {
-    DLLmprintf(0, "Timeout looking for user\n");
+    LOG_WARNING << "Timeout looking for user";
     DLLDoMessageBox(TXT_PXO_MASTERTRACKER, TXT_PXO_TIMEOUTMT, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
     DLLCloseSplashScreen();
     return 0;
@@ -2736,7 +2726,7 @@ int GetPilotStats(const char *pilot) {
     tokp++;
     strcpy(tid, p);
     strcpy(real_pilot, tokp);
-    DLLmprintf(0, "Requesting pilot info for %s %s\n", tid, real_pilot);
+    LOG_DEBUG.printf("Requesting pilot info for %s %s", tid, real_pilot);
     memset(&d3_pilot_info, 0, sizeof(vmt_descent3_struct));
     GetD3PilotData(&d3_pilot_info, real_pilot, tid);
     int iresult = 0;
@@ -2757,7 +2747,7 @@ int GetPilotStats(const char *pilot) {
       }
     }
     if (iresult == 1) {
-      DLLmprintf(0, "Got pilot info for %s %s\n", tid, real_pilot);
+      LOG_DEBUG.printf("Got pilot info for %s %s", tid, real_pilot);
 
       // Do rank thingy here.
       snprintf(tmp_text, sizeof(tmp_text), "Rank: %s (%d) Next Advance at %d",
@@ -2871,7 +2861,7 @@ void AutoLoginAndJoinGame() {
   DLLDatabaseRead("TrackerLogin", szloginid, &loginlen);
   DLLDatabaseRead("TrackerPassword", szpassword, &passlen);
   if (!*DLLAuto_login_addr) {
-    DLLmprintf(0, "Can't autostart because no IP address was specified!!\n");
+    LOG_ERROR << "Can't autostart because no IP address was specified!!";
     *DLLMultiGameStarting = 0;
     goto failed_login;
   }
@@ -2901,18 +2891,18 @@ void AutoLoginAndJoinGame() {
   }
   if (valret == 1) {
     // User was validated
-    DLLmprintf(0, "Mastertracker user validated!\n");
+    LOG_INFO << "Mastertracker user validated!";
     strcpy(DLLTracker_id, sztrackerid);
     strcpy(DLLMPlayers[DLLPlayer_num].tracker_id, sztrackerid);
 
   } else if (valret == -1) {
     // User invalid!
-    DLLmprintf(0, "Mastertracker user not validated!\n");
+    LOG_WARNING << "Mastertracker user not validated!";
     DLLDoMessageBox(TXT_PXO_MASTERTRACKER, TXT_PXO_BADLOGIN, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
     goto failed_login;
   } else {
     // timeout waiting for tracker!
-    DLLmprintf(0, "Mastertracker timeout!\n");
+    LOG_WARNING << "Mastertracker timeout!";
     DLLDoMessageBox(TXT_PXO_MASTERTRACKER, TXT_PXO_TIMEOUTMT, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
     goto failed_login;
   }
@@ -2928,7 +2918,7 @@ void AutoLoginAndJoinGame() {
   DLLMultiStartClient(nullptr);
 
   if ((DLLTryToJoinServer(&s_address))) {
-    DLLmprintf(0, "Menu: Game joined!\n");
+    LOG_DEBUG << "Menu: Game joined!";
     *DLLMultiGameStarting = 1;
   }
 
@@ -2970,20 +2960,20 @@ void AutoLoginAndStartGame() {
   }
   if (valret == 1) {
     // User was validated
-    DLLmprintf(0, "Mastertracker user validated!\n");
-    DLLPrintDedicatedMessage("Mastertracker user validated.\n");
+    LOG_INFO << "Mastertracker user validated!";
+    DLLPrintDedicatedMessage("Mastertracker user validated.");
     strcpy(DLLTracker_id, sztrackerid);
     strcpy(DLLMPlayers[DLLPlayer_num].tracker_id, sztrackerid);
 
   } else if (valret == -1) {
     // User invalid!
-    DLLmprintf(0, "Mastertracker user not validated!\n");
-    DLLPrintDedicatedMessage("Mastertracker user not validated!\n");
+    LOG_WARNING << "Mastertracker user not validated!";
+    DLLPrintDedicatedMessage("Mastertracker user not validated!");
     goto failed_login;
   } else {
     // timeout waiting for tracker!
-    DLLmprintf(0, "Mastertracker timeout!\n");
-    DLLPrintDedicatedMessage("Mastertracker timeout!\n");
+    LOG_WARNING << "Mastertracker timeout!";
+    DLLPrintDedicatedMessage("Mastertracker timeout!");
     goto failed_login;
   }
 
@@ -3018,7 +3008,7 @@ int ShowMessageOfTheDay(void) {
 
   if (Motd_version == last_motd_version) {
     // MOTD is old....
-    DLLmprintf(0, "MOTD is old, skipping\n");
+    LOG_DEBUG << "MOTD is old, skipping";
     return 1;
   }
 
@@ -3038,7 +3028,7 @@ int ShowMessageOfTheDay(void) {
 
   DLLDatabaseRead("LastMOTD", szlastmotd, &motdlen);
 
-  DLLmprintf(0, "Getting message of the day...\n");
+  LOG_INFO << "Getting message of the day...";
   DLLCreateSplashScreen(TXT_PXO_CONNECTING, 1);
   int mcode = GetD3MOTD(sznewmotd, MAX_MOTD_LEN);
   do {
@@ -3055,7 +3045,7 @@ int ShowMessageOfTheDay(void) {
   DLLCloseSplashScreen();
 
   if (mcode == 1) {
-    DLLmprintf(0, "Message of the day: %s\n", sznewmotd);
+    LOG_INFO.printf("Message of the day: %s", sznewmotd);
     if (strcmp(szlastmotd, sznewmotd) != 0) {
       DLLNewUIGameWindowOpen(main_wnd);
       DLLUIConsoleGadgetputs(console_item, sznewmotd);
@@ -3068,17 +3058,17 @@ int ShowMessageOfTheDay(void) {
       rval = 1;
       goto close_motd;
     } else {
-      DLLmprintf(0, "Message of the day is old, ignoring!\n");
+      LOG_DEBUG << "Message of the day is old, ignoring!";
       rval = 1;
       goto close_motd;
     }
   } else {
-    DLLmprintf(0, "Get message of the day failed (%d)!\n", mcode);
+    LOG_WARNING.printf("Get message of the day failed (%d)!", mcode);
     goto close_motd;
   }
 
 close_motd:
-  DLLmprintf(0, "Ending motd\n");
+  LOG_DEBUG << "Ending motd";
   DLLNewUIGameWindowDestroy(main_wnd);
   DLLRemoveUITextItem(motd_text);
   DLLRemoveUITextItem(close_on_text);
