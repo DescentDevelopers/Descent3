@@ -1140,7 +1140,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
   int start_frame = 0;
   int end_frame = 0;
 
-  vector geometric_center = Zero_vector;
+  vector geometric_center{};
 
   // Chris: Come see me when you are ready to deal with the paging problem - JL
   pm = GetPolymodelPointer(handle);
@@ -1294,7 +1294,7 @@ float ComputeDefaultSize(int type, int handle, float *size_ptr) {
 
     if (type == OBJ_PLAYER) {
       Poly_models[handle].anim_size *= PLAYER_SIZE_SCALAR;
-      Poly_models[handle].anim_size_offset = Zero_vector;
+      Poly_models[handle].anim_size_offset = vector{};
     }
   } else {
     if (type == OBJ_POWERUP) {
@@ -1303,10 +1303,10 @@ float ComputeDefaultSize(int type, int handle, float *size_ptr) {
     }
 
     Poly_models[handle].wall_size = size;
-    Poly_models[handle].wall_size_offset = Zero_vector;
+    Poly_models[handle].wall_size_offset = vector{};
 
     Poly_models[handle].anim_size = size;
-    Poly_models[handle].anim_size_offset = Zero_vector;
+    Poly_models[handle].anim_size_offset = vector{};
   }
 
   Poly_models[handle].flags |= PMF_SIZE_COMPUTED;

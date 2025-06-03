@@ -157,7 +157,6 @@
 // vecmat_external.h is where anything that can be used by DLLs should be.
 #include "vecmat_external.h"
 
-extern const vector Zero_vector;
 extern const matrix Identity_matrix;
 
 // Used for debugging.  It is used in printf's so we do not have to write out the structure 3 times

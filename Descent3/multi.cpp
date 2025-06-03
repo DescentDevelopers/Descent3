@@ -5751,7 +5751,7 @@ void MultiDoPowerupReposition(uint8_t *data) {
   if (terrain)
     roomnum = MAKE_ROOMNUM(roomnum);
 
-  obj->mtype.phys_info.velocity = Zero_vector;
+  obj->mtype.phys_info.velocity = vector{};
 
   ObjSetPos(obj, &pos, roomnum, &obj->orient, true);
 }
@@ -8942,8 +8942,8 @@ void MultiDoRequestToMove(uint8_t *data) {
 
   do_physics_sim(obj);
 
-  obj->mtype.phys_info.thrust = Zero_vector;
-  obj->mtype.phys_info.rotthrust = Zero_vector;
+  obj->mtype.phys_info.thrust = vector{};
+  obj->mtype.phys_info.rotthrust = vector{};
   obj->orient = orient;
 
   bool client_error = 0;

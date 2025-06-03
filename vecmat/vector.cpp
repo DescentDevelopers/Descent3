@@ -154,7 +154,6 @@
 #include "pserror.h"
 #include "psrand.h"
 
-const vector Zero_vector = vector{};
 const matrix Identity_matrix = IDENTITY_MATRIX;
 
 void vm_AverageVector(vector *a, int num) {

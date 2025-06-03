@@ -688,7 +688,7 @@ void osipf_RoomValue(int roomnum, char op, char vtype, void *ptr, int index) {
       if (index < 0 || index >= rp->num_faces || rp->faces[index].num_verts <= 0) {
         *(vector *)ptr = rp->path_pnt;
       } else {
-        *(vector *)ptr = Zero_vector;
+        *(vector *)ptr = vector{};
 
         for (i = 0; i < rp->faces[index].num_verts; i++) {
           *(vector *)ptr += rp->verts[rp->faces[index].face_verts[i]];
@@ -1680,13 +1680,13 @@ vector osipf_AIFindHidePos(int hideobjhandle, int viewobjhandle, float time, int
   if (hide_obj == NULL) {
     LOG_ERROR << "Illegal Hide Object Passed To AIFindHidePos";
     *hide_room = -1;
-    return Zero_vector;
+    return vector{};
   }
 
   if (hide_obj->control_type != CT_AI) {
     LOG_ERROR << "Illegal Object CT Passed To AIFindHidePos";
     *hide_room = -1;
-    return Zero_vector;
+    return vector{};
   }
 
   if (view_obj == NULL) {
@@ -1980,7 +1980,7 @@ vector osipf_AIGetRoomPathPoint(int roomnum) {
     int cell = CELLNUM(roomnum);
 
     if (cell >= TERRAIN_DEPTH * TERRAIN_WIDTH) {
-      return Zero_vector;
+      return vector{};
     } else {
       vector pos;
 
@@ -1993,7 +1993,7 @@ vector osipf_AIGetRoomPathPoint(int roomnum) {
     return Rooms[roomnum].path_pnt;
   }
 
-  return Zero_vector;
+  return vector{};
 }
 
 int osipf_AIFindEnergyCenter(int objhandle) {
@@ -2079,8 +2079,8 @@ void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun
 
   if (obj == NULL) {
     LOG_ERROR << "Illegal Object Passed To AIGetGunPosition";
-    *gun_pnt = Zero_vector;
-    *gun_normal = Zero_vector;
+    *gun_pnt = vector{};
+    *gun_normal = vector{};
     return;
   }
 
@@ -2092,8 +2092,8 @@ void osipf_GetGroundPos(int objhandle, int ground_number, vector *ground_pnt, ve
 
   if (obj == NULL) {
     LOG_ERROR << "Illegal Object Passed To Obj_GetGroundPos";
-    *ground_pnt = Zero_vector;
-    *ground_normal = Zero_vector;
+    *ground_pnt = vector{};
+    *ground_normal = vector{};
     return;
   }
 

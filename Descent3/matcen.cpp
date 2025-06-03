@@ -239,7 +239,7 @@ matcen::matcen() {
 
   m_status = 0;
 
-  m_create_pnt = Zero_vector;
+  m_create_pnt = vector{};
   m_create_room = MATCEN_ERROR;
 
   m_cached_prod_index = -1;
@@ -567,7 +567,7 @@ bool matcen::ComputeCreatePnt() {
         int num_valid_faces = 0;
         room *rp = &Rooms[m_roomnum];
 
-        m_create_pnt = Zero_vector;
+        m_create_pnt = vector{};
 
         for (i = 0; i < m_num_spawn_pnts; i++) {
           if (m_spawn_pnt[i] >= 0 && m_spawn_pnt[i] < rp->num_faces) {
@@ -623,7 +623,7 @@ bool matcen::ComputeCreatePnt() {
         int i;
         int num_valid_gps = 0;
 
-        m_create_pnt = Zero_vector;
+        m_create_pnt = vector{};
 
         for (i = 0; i < m_num_spawn_pnts; i++) {
           if (WeaponCalcGun(&m_spawn_vec[num_valid_gps], &m_spawn_normal[num_valid_gps], master_obj, m_spawn_pnt[i])) {

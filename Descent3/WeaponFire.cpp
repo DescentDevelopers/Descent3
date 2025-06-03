@@ -1309,7 +1309,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
     if (fdot > 0.0)
       fvel = parent->orient.fvec * fdot;
     else
-      fvel = Zero_vector;
+      fvel = vector{};
 
     vector rvel = 0.1f * parent->orient.rvec * vm_Dot3Product(parent->mtype.phys_info.velocity, parent->orient.rvec);
     vector uvel = 0.1f * parent->orient.uvec * vm_Dot3Product(parent->mtype.phys_info.velocity, parent->orient.uvec);
@@ -1373,7 +1373,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
 // Steers a homing missile
 void HomingTurnTowardObj(object *weapon, object *target) {
   vector dir_to_target;
-  vector movement = Zero_vector;
+  vector movement{};
 
   if (target == NULL)
     return;
@@ -1613,7 +1613,7 @@ object *HomingAquireTarget(object *obj) {
 
 // Does homing code
 void HomingDoFrame(object *obj) {
-  obj->mtype.phys_info.rotthrust = Zero_vector;
+  obj->mtype.phys_info.rotthrust = vector{};
 
   HomingTurnTowardObj(obj, HomingAquireTarget(obj));
 }
@@ -1840,7 +1840,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
       if (f_force_forward) {
         WeaponCalcGun(&laser_pos, NULL, obj, gun_num);
         laser_dir = obj->orient.fvec;
-      } else if (f_force_target && obj->ai_info && obj->ai_info->vec_to_target_perceived != Zero_vector) {
+      } else if (f_force_target && obj->ai_info && obj->ai_info->vec_to_target_perceived != vector{}) {
         WeaponCalcGun(&laser_pos, NULL, obj, gun_num);
         laser_dir = obj->ai_info->vec_to_target_perceived;
       } else {
@@ -2301,7 +2301,7 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
         if (fdot > (scalar)0.0)
           fvel = obj->orient.fvec * fdot;
         else
-          fvel = Zero_vector;
+          fvel = vector{};
 
         vector rvel = (scalar)0.1f * obj->orient.rvec * vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.rvec);
         vector uvel = (scalar)0.1f * obj->orient.uvec * vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.uvec);
@@ -3355,7 +3355,7 @@ void TimeoutWeapon(object *obj) {
 
   if ((Weapons[n].flags & WF_MATTER_WEAPON) && !(Weapons[n].flags & WF_SPAWNS_TIMEOUT) &&
       (Weapons[n].spawn_count <= 0)) {
-    vector temp = Zero_vector;
+    vector temp{};
 
     if (Weapons[obj->id].sounds[WSI_IMPACT_WALL] != SOUND_NONE_INDEX)
       Sound_system.Play3dSound(Weapons[obj->id].sounds[WSI_IMPACT_WALL], SND_PRIORITY_HIGH, obj);

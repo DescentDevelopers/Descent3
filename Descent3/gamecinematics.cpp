@@ -714,7 +714,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
   camera->ai_info->last_render_time = -1.0f;
   camera->ai_info->next_target_update_time = Gametime;
   camera->ai_info->notify_flags |= AI_NOTIFIES_ALWAYS_ON;
-  camera->ai_info->last_see_target_pos = Zero_vector;
+  camera->ai_info->last_see_target_pos = vector{};
   camera->ai_info->dodge_vel_percent = 1.0f;
   camera->ai_info->attack_vel_percent = 1.0f;
   camera->ai_info->fight_same = 0.0f;
@@ -836,7 +836,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
       vector turn_to = target->pos - camera->pos;
       vm_NormalizeVector(&turn_to);
 
-      if (turn_to == Zero_vector) {
+      if (turn_to == vector{}) {
         LOG_WARNING << "Cine: No turn_to or less than 1 degree off goal";
         goto continue_start;
       }
@@ -1113,7 +1113,7 @@ void Cinematic_Frame(void) {
     vector turn_to = target->pos - camera->pos;
     vm_NormalizeVector(&turn_to);
 
-    if (turn_to == Zero_vector) {
+    if (turn_to == vector{}) {
       LOG_WARNING << "Cine: No turn_to or less than 1 degree off goal";
       goto continue_frame;
     }
