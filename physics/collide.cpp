@@ -1528,7 +1528,7 @@ void ConvertEulerToAxisAmount(vector *e, vector *n, float *w) {
 
   // If there isn't a rotation, return something valid
   if (rotspeed == 0.0f || scale == 0.0f) {
-    *n = Zero_vector;
+    *n = vector{};
     n->y() = 1.0f;
     *w = 0.0f;
 
@@ -1546,7 +1546,7 @@ void ConvertEulerToAxisAmount(vector *e, vector *n, float *w) {
   n->y() = rotmat.fvec.x() - rotmat.rvec.z();
   n->z() = rotmat.rvec.y() - rotmat.uvec.x();
 
-  if (*n != Zero_vector) {
+  if (*n != vector{}) {
     vm_NormalizeVector(n);
 
     float ct = (rotmat.rvec.x() + rotmat.uvec.y() + rotmat.fvec.z() - 1.0f) / 2.0f;
@@ -1576,7 +1576,7 @@ void ConvertAxisAmountToEuler(vector *n, float *w, vector *e) {
   vector s_result;
 
   if (*w == 0.0f) {
-    *e = Zero_vector;
+    *e = vector{};
     return;
   }
 
@@ -1642,7 +1642,7 @@ void bump_obj_against_fixed(object *obj, vector *collision_point, vector *collis
   if (temp1 != 0.0f) {
     vm_CrossProduct(&w1, &n1, &r1);
   } else {
-    w1 = Zero_vector;
+    w1 = vector{};
   }
 
   vector p1 = obj->mtype.phys_info.velocity + w1;
@@ -1711,14 +1711,14 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
 
   // Determine if a moving object hits a non-moving object
   if ((object0->movement_type != MT_PHYSICS && object0->movement_type != MT_WALKING) ||
-      (object0->movement_type == MT_PHYSICS && object0->mtype.phys_info.velocity == Zero_vector &&
+      (object0->movement_type == MT_PHYSICS && object0->mtype.phys_info.velocity == vector{} &&
        (object0->mtype.phys_info.flags & PF_LOCK_MASK) && (object0->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS))) {
     t = object1;
     other = object0;
     *collision_normal *= -1.0f;
   }
   if ((object1->movement_type != MT_PHYSICS && object1->movement_type != MT_WALKING) ||
-      (object1->movement_type == MT_PHYSICS && object1->mtype.phys_info.velocity == Zero_vector &&
+      (object1->movement_type == MT_PHYSICS && object1->mtype.phys_info.velocity == vector{} &&
        (object1->mtype.phys_info.flags & PF_LOCK_MASK) && (object1->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS))) {
     t = object0;
     other = object1;
@@ -1728,7 +1728,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
   if (t) {
     // chrishack -- walker hack
     if (t->movement_type != MT_PHYSICS && t->movement_type != MT_WALKING) {
-      t->mtype.phys_info.velocity = Zero_vector;
+      t->mtype.phys_info.velocity = vector{};
       return;
     }
 
@@ -1850,13 +1850,13 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
   if (temp1 != 0.0f) {
     vm_CrossProduct(&w1, &n1, &r1);
   } else {
-    w1 = Zero_vector;
+    w1 = vector{};
   }
 
   if (temp2 != 0.0f) {
     vm_CrossProduct(&w2, &n2, &r2);
   } else {
-    w2 = Zero_vector;
+    w2 = vector{};
   }
 
   vector p1 = object0->mtype.phys_info.velocity + w1;
@@ -2072,7 +2072,7 @@ void collide_generic_and_player(object *robotobj, object *playerobj, vector *col
   if (robotobj->movement_type == MT_PHYSICS || robotobj->movement_type == MT_WALKING) {
     rvel = robotobj->mtype.phys_info.velocity;
   } else {
-    rvel = Zero_vector;
+    rvel = vector{};
   }
   rvel -= playerobj->mtype.phys_info.velocity;
   float speed = vm_NormalizeVector(&rvel);

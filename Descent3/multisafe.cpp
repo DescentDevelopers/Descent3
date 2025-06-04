@@ -741,7 +741,7 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
   case MSAFE_OBJECT_POS:
     objp = ObjGet(mstruct->objhandle);
     if (!objp)
-      mstruct->pos = Zero_vector;
+      mstruct->pos = vector{};
     else
       mstruct->pos = objp->pos;
     break;
@@ -762,7 +762,7 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
   case MSAFE_OBJECT_WORLD_POSITION:
     objp = ObjGet(mstruct->objhandle);
     if (!objp) {
-      mstruct->pos = Zero_vector;
+      mstruct->pos = vector{};
       mstruct->orient = Identity_matrix;
       mstruct->roomnum = -1;
     } else {
@@ -774,28 +774,28 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
   case MSAFE_OBJECT_VELOCITY:
     objp = ObjGet(mstruct->objhandle);
     if (!objp || (objp->movement_type != MT_WALKING && objp->movement_type != MT_PHYSICS))
-      mstruct->velocity = Zero_vector;
+      mstruct->velocity = vector{};
     else
       mstruct->velocity = objp->mtype.phys_info.velocity;
     break;
   case MSAFE_OBJECT_ROTVELOCITY:
     objp = ObjGet(mstruct->objhandle);
     if (!objp || (objp->movement_type != MT_WALKING && objp->movement_type != MT_PHYSICS))
-      mstruct->rot_velocity = Zero_vector;
+      mstruct->rot_velocity = vector{};
     else
       mstruct->rot_velocity = objp->mtype.phys_info.rotvel;
     break;
   case MSAFE_OBJECT_THRUST:
     objp = ObjGet(mstruct->objhandle);
     if (!objp || (objp->movement_type != MT_WALKING && objp->movement_type != MT_PHYSICS))
-      mstruct->thrust = Zero_vector;
+      mstruct->thrust = vector{};
     else
       mstruct->thrust = objp->mtype.phys_info.thrust;
     break;
   case MSAFE_OBJECT_ROTTHRUST:
     objp = ObjGet(mstruct->objhandle);
     if (!objp || (objp->movement_type != MT_WALKING && objp->movement_type != MT_PHYSICS))
-      mstruct->rot_thrust = Zero_vector;
+      mstruct->rot_thrust = vector{};
     else
       mstruct->rot_thrust = objp->mtype.phys_info.rotthrust;
     break;

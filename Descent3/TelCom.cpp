@@ -3697,7 +3697,7 @@ void TCSSSCallback(void) {
     return;
   }
 
-  vector viewer_eye = vector::ne();
+  vector viewer_eye{};
   matrix viewer_orient = IDENTITY_MATRIX;
   viewer_eye.z() = -TCShipSelect.cam_dist;
 

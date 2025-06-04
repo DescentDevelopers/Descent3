@@ -1745,7 +1745,7 @@ bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, floa
 
   if (stop_at_end_point) {
     if (vm_VectorDistance(pos, &obj->pos) <= .2f) {
-      obj->mtype.phys_info.velocity = Zero_vector;
+      obj->mtype.phys_info.velocity = vector{};
       *f_moved = true;
       return true;
     }
@@ -1772,7 +1772,7 @@ bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, floa
   if (*pos == obj->pos) {
     physics_info *phys_info = &obj->mtype.phys_info;
 
-    if (phys_info->velocity != Zero_vector) {
+    if (phys_info->velocity != vector{}) {
       vector vel_diff = -phys_info->velocity;
       scalar delta_vel = vm_NormalizeVector(&vel_diff);
       scalar max_delta_vel = Frametime * ai_info->max_delta_velocity * acc_scale;
@@ -1825,7 +1825,7 @@ bool move_relative_object_vec(object *obj, vector *vec, object *target, float ci
     normal_component = opposite_fvec * vm_Dot3Product(opposite_fvec, vec_to_plane);
     plane_component = vec_to_plane - normal_component;
 
-    if (plane_component == Zero_vector) {
+    if (plane_component == vector{}) {
       goal_dir = target->orient.rvec;
     } else {
       goal_dir = plane_component;
@@ -1914,7 +1914,7 @@ bool compute_dodge_dir(vector *movement_dir, object *obj, object *dodge_obj) {
 
   dodge_vec *= scale;
 
-  if (dodge_vec != Zero_vector && (obj->ai_info->dodge_till_time < Gametime ||
+  if (dodge_vec != vector{} && (obj->ai_info->dodge_till_time < Gametime ||
                                    dodge_vec.mag() > obj->ai_info->last_dodge_dir.mag())) {
     obj->ai_info->last_dodge_dir = dodge_vec;
   }
@@ -1953,7 +1953,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
   int num_faces;
   float rad;
   int i;
-  vector awall_dir = Zero_vector;
+  vector awall_dir{};
   float closest_dist;
   vector pos;
   bool f_danger = false;
@@ -1973,7 +1973,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
 
   closest_dist = rad + 1.0f;
 
-  if (obj->mtype.phys_info.velocity == Zero_vector) {
+  if (obj->mtype.phys_info.velocity == vector{}) {
     return false;
   }
 
@@ -2115,7 +2115,7 @@ void AITurnTowardsDir(object *obj, /*velocity *new_vel,*/ vector *goal_dir /*, b
   matrix saved_orient = obj->orient;
   vector saved_uvec = obj->orient.uvec;
 
-  if (*goal_dir == Zero_vector || vm_Dot3Product(obj->orient.fvec, (*goal_dir)) >= ONE_DEGREE_ARC_COS)
+  if (*goal_dir == vector{} || vm_Dot3Product(obj->orient.fvec, (*goal_dir)) >= ONE_DEGREE_ARC_COS)
     return; // No goal_dir or less than 1 degree off goal
 
   if (obj->size > 32.0f && (vm_Dot3Product(obj->orient.fvec, (*goal_dir))) >= FIVE_DEGREE_ARC_COS)
@@ -2318,7 +2318,7 @@ bool MeleeHitOk(object *obj) {
     if (target->movement_type == MT_PHYSICS || target->movement_type == MT_PHYSICS) {
       relative_vel = -target->mtype.phys_info.velocity;
     } else {
-      relative_vel = Zero_vector;
+      relative_vel = vector{};
     }
   }
 
@@ -3685,7 +3685,7 @@ bool AIInit(object *obj, uint8_t ai_class, uint8_t ai_type, uint8_t ai_movement)
 
   ai_info->vec_to_target_perceived = obj->orient.fvec;
 
-  ai_info->last_dodge_dir = Zero_vector;
+  ai_info->last_dodge_dir = vector{};
   ai_info->dodge_till_time = Gametime - 1.0f;
 
   if (ObjGet(obj->parent_handle)) {
@@ -4081,7 +4081,7 @@ bool AiGoalAvoid(vector *adir, object *obj, object *a_obj, float dist) {
   if (a_obj->movement_type == MT_PHYSICS || a_obj->movement_type == MT_WALKING)
     a_vel = a_obj->mtype.phys_info.velocity;
   else
-    a_vel = Zero_vector;
+    a_vel = vector{};
 
   vector to_avoid = a_obj->pos - obj->pos;
   vector mdir;
@@ -4546,11 +4546,11 @@ void ai_move(object *obj) {
   // object *g_objs[5]; // 1 target + 2 enemies + 2 friends
 
   object *targetptr = ObjGet(ai_info->target_handle); // The target of this AI
-  ai_info->movement_dir = Zero_vector;
+  ai_info->movement_dir = vector{};
 
   // Hacked flocking code
   if (ai_info->ai_type == AIT_BIRD_FLOCK1) {
-    vector composite_dir = Zero_vector;
+    vector composite_dir{};
 
     for (int temp = 0; temp < AI_FriendNumNear; temp++) {
       object *g_obj = AI_FriendObj[temp];
@@ -4565,7 +4565,7 @@ void ai_move(object *obj) {
     }
 
     // Facing code
-    if (composite_dir == Zero_vector)
+    if (composite_dir == vector{})
       composite_dir = obj->orient.fvec;
 
     // FLOCK HEIGHT CODE
@@ -4601,8 +4601,8 @@ void ai_move(object *obj) {
   // Stop objects that have not been active lately
   if (!(ai_info->flags & AIF_PERSISTANT) && Gametime - ai_info->last_see_target_time > CHECK_VIS_INFREQUENTLY_TIME &&
       Gametime - ai_info->last_hear_target_time > CHECK_VIS_INFREQUENTLY_TIME && ai_info->awareness == AWARE_NONE) {
-    obj->mtype.phys_info.velocity = Zero_vector;
-    obj->mtype.phys_info.rotvel = Zero_vector;
+    obj->mtype.phys_info.velocity = vector{};
+    obj->mtype.phys_info.rotvel = vector{};
   } else {
     // Determine movement stuff
     if (obj->movement_type == MT_PHYSICS || obj->movement_type == MT_WALKING) {
@@ -5004,7 +5004,7 @@ void ai_move(object *obj) {
                 int16_t robots[6];
                 int num_robots =
                     fvi_QuickDistObjectList(&obj->pos, obj->roomnum, 30.0f, robots, 6, false, true, false, true);
-                vector d = Zero_vector;
+                vector d{};
                 int i;
                 float closest = 100000.0f;
 
@@ -5031,7 +5031,7 @@ void ai_move(object *obj) {
                   }
                 }
 
-                if (d != Zero_vector) {
+                if (d != vector{}) {
                   if (closest < 30.0f) {
                     float scale = 1.0f - closest / 30.0f;
                     vm_NormalizeVector(&d);
@@ -5065,16 +5065,16 @@ void ai_move(object *obj) {
           }
         } else {
           if (!(f_dodge || f_avoid ||
-                (ai_info->dodge_till_time >= Gametime && ai_info->last_dodge_dir != Zero_vector))) {
+                (ai_info->dodge_till_time >= Gametime && ai_info->last_dodge_dir != vector{}))) {
             AIMoveTowardsPosition(obj, &obj->pos, 1.0f, false, &goal_mdir, &goal_f_moved);
             goal_mset = true;
           }
         }
 
         // BLEND THIS!
-        if ((f_dodge || f_avoid || (ai_info->dodge_till_time >= Gametime && ai_info->last_dodge_dir != Zero_vector)) ||
+        if ((f_dodge || f_avoid || (ai_info->dodge_till_time >= Gametime && ai_info->last_dodge_dir != vector{})) ||
             (!goal_f_moved && goal_mset)) {
-          if (!f_dodge && (ai_info->dodge_till_time >= Gametime && ai_info->last_dodge_dir != Zero_vector)) {
+          if (!f_dodge && (ai_info->dodge_till_time >= Gametime && ai_info->last_dodge_dir != vector{})) {
             f_dodge = true;
             ai_info->movement_dir += ai_info->last_dodge_dir;
 
@@ -5550,7 +5550,7 @@ static inline void ai_walker_stuff(object *obj) {
         }
       }
 
-      obj->mtype.phys_info.velocity = Zero_vector;
+      obj->mtype.phys_info.velocity = vector{};
     }
   } else if (ai_info->movement_type == MC_WALKING) {
     int next_anim;
@@ -6028,8 +6028,8 @@ void AIDoFrame(object *obj) {
 
   // AI objects don't use thrust (in general)
   obj->mtype.phys_info.flags &= ~PF_USES_THRUST;
-  obj->mtype.phys_info.rotthrust = Zero_vector;
-  obj->mtype.phys_info.thrust = Zero_vector;
+  obj->mtype.phys_info.rotthrust = vector{};
+  obj->mtype.phys_info.thrust = vector{};
 
   if (obj->type == OBJ_DUMMY)
     return;
@@ -6145,7 +6145,7 @@ void AIDoFrame(object *obj) {
         if (speed > 0.1f && speed <= ai_info->max_velocity * 2.0) {
           if (obj->mtype.phys_info.drag > 0.0f && obj->mtype.phys_info.mass > 0.0f) {
             obj->mtype.phys_info.flags |= PF_USES_THRUST;
-            obj->mtype.phys_info.rotthrust = Zero_vector;
+            obj->mtype.phys_info.rotthrust = vector{};
             obj->mtype.phys_info.thrust = obj->mtype.phys_info.velocity * obj->mtype.phys_info.drag;
           }
         }

@@ -268,7 +268,7 @@ scalar vm_VectorNormalizeFast(vector *a) {
   mag = vm_GetMagnitudeFast(a);
 
   if (mag == 0.0) {
-    *a = Zero_vector;
+    *a = vector{};
     return 0;
   }
   *a /= mag;

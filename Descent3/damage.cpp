@@ -1092,7 +1092,7 @@ void SetFallingPhysics(object *objp) {
 
   // Special stuff for walkers
   if (objp->movement_type == MT_WALKING) {
-    objp->mtype.phys_info.rotvel = Zero_vector;
+    objp->mtype.phys_info.rotvel = vector{};
     objp->mtype.phys_info.flags |= PF_POINT_COLLIDE_WALLS;
     scalar proj = vm_Dot3Product(objp->mtype.phys_info.velocity, objp->orient.uvec);
     if (proj < 0.0f)

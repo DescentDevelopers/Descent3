@@ -431,9 +431,9 @@ void SpewClearEvent(int handle, bool force) {
     return;
 
   vis->inuse = vis->random = vis->use_gunpoint = vis->real_obj = false;
-  vis->pt.origin = vector::ne();
+  vis->pt.origin = vector{};
   vis->pt.room_num = 0;
-  vis->pt.normal = vector::ne();
+  vis->pt.normal = vector{};
   vis->effect_type = MED_SMOKE_INDEX;
   vis->phys_info = PF_FIXED_VELOCITY;
   vis->drag = vis->mass = vis->time_int = vis->longevity = vis->lifetime = vis->size = vis->speed = 0.0f;
