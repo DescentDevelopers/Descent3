@@ -233,8 +233,8 @@ public:
   void get_mission_data(int index, tMissionData *data);
   int find_mission_data(const char *mission_name);
 
-private:
   void initialize(void); // initializes all the data (for constructors)
+private:
   bool write_pending = false; // data has changed and pilot data is out of sync with file
 private:
   // internal file access functions

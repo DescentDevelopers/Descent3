@@ -177,10 +177,9 @@ pilot::pilot() :
 	hud_mode{HUD_COCKPIT},
 	hud_graphical_stat{STAT_STANDARD}
 {
-  initialize();
 }
 
-// initializes all the data (for constructors)
+// Two-stage construction (because it references global vars)
 void pilot::initialize(void) {
   int i;
 
