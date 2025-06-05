@@ -155,7 +155,7 @@ struct tVideoResolution
   }
 };
 
-extern std::vector<tVideoResolution> Video_res_list;
+extern std::vector<tVideoResolution> &Video_res_list();
 extern int Default_resolution_id;
 extern int Current_video_resolution_id;
 extern int Display_id;

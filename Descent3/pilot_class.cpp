@@ -205,8 +205,15 @@ void pilot::initialize(void) {
   hud_mode = (uint8_t)HUD_COCKPIT;
   hud_stat = 0;
   hud_graphical_stat = STAT_STANDARD;
-  game_window_w = Video_res_list[Current_video_resolution_id].width;
-  game_window_h = Video_res_list[Current_video_resolution_id].height;
+  auto &vres = Video_res_list();
+  if (Current_video_resolution_id >= 0 &&
+      static_cast<size_t>(Current_video_resolution_id) < vres.size()) {
+		game_window_w = vres[Current_video_resolution_id].width;
+		game_window_h = vres[Current_video_resolution_id].height;
+  } else {
+		game_window_w = 0;
+		game_window_h = 0;
+  }
   num_missions_flown = 0;
   mission_data = NULL;
   mouselook_control = false;

@@ -314,31 +314,23 @@
 
 #define STAT_SCORE STAT_TIMER
 
-// This list is only used if `ConfigureDisplayResolutions` fails
-std::vector<tVideoResolution> Video_res_list = {{512, 384},
-                                                {640, 480},
-                                                {800, 600},
-                                                {960, 720},
-                                                {1024, 768},
-                                                {1280, 960},
-                                                {1600, 1200},
-                                                // 16:9
-                                                {1280, 720},
-                                                {1366, 768},
-                                                {1368, 768},
-                                                {1680, 1050},
-                                                {1920, 1080},
-                                                {2560, 1440},
-                                                {3840, 2160},
-                                                // 16:10
-                                                {1280, 800},
-                                                {1920, 1200},
-                                                {2560, 1600},
-                                                // Ultrawide
-                                                {2560, 1080},
-                                                {2880, 1200},
-                                                {3440, 1440},
-                                                {3840, 1600}};
+std::vector<tVideoResolution> &Video_res_list()
+{
+	// This list is only used if `ConfigureDisplayResolutions` fails
+	static std::vector<tVideoResolution> list = {
+		// 4:3
+		{512, 384}, {640, 480}, {800, 600}, {960, 720}, {1024, 768},
+		{1280, 960}, {1600, 1200},
+		// 16:9
+		{1280, 720}, {1366, 768}, {1368, 768}, {1680, 1050},
+		{1920, 1080}, {2560, 1440}, {3840, 2160},
+		// 16:10
+		{1280, 800}, {1920, 1200}, {2560, 1600},
+		// Ultrawide
+		{2560, 1080}, {2880, 1200}, {3440, 1440}, {3840, 1600}
+	};
+	return list;
+}
 
 int Default_resolution_id = 7; // 1280x720 in the default list
 int Current_video_resolution_id = Default_resolution_id;
@@ -417,15 +409,16 @@ void ConfigureDisplayResolutions() {
   if (resolutions_vec.empty()) {
     return;
   }
-  Video_res_list = std::move(resolutions_vec);
+  auto &vres = Video_res_list();
+  vres = std::move(resolutions_vec);
   SDL_free(displays);
 
   // Find the index of the current screen resolution in the list
-  auto current_res_id = std::find(Video_res_list.begin(), Video_res_list.end(), current_resolution);
-  if (current_res_id != Video_res_list.end()) {
-    Default_resolution_id = static_cast<int>(current_res_id - Video_res_list.begin());
+  auto current_res_id = std::find(vres.cbegin(), vres.cend(), current_resolution);
+  if (current_res_id != vres.cend()) {
+    Default_resolution_id = static_cast<int>(current_res_id - vres.cbegin());
   } else {
-    Default_resolution_id = Video_res_list.size() - 1; // default to the highest supported resolution
+    Default_resolution_id = vres.size() - 1; // default to the highest supported resolution
   }
 
   int tmp;
@@ -434,8 +427,8 @@ void ConfigureDisplayResolutions() {
     Current_video_resolution_id = Default_resolution_id;
   }
 
-  LOG_DEBUG << "Resolution configured to w=" << Video_res_list[Current_video_resolution_id].width
-            << "h=" << Video_res_list[Current_video_resolution_id].height << " (id " << Current_video_resolution_id
+  LOG_DEBUG << "Resolution configured to w=" << vres[Current_video_resolution_id].width
+            << "h=" << vres[Current_video_resolution_id].height << " (id " << Current_video_resolution_id
             << ")";
 }
 
@@ -782,7 +775,8 @@ struct video_menu {
 
     // video resolution
     sheet->NewGroup(TXT_RESOLUTION, 0, 0);
-    std::string res = Video_res_list[Current_video_resolution_id].getName();
+    auto &vres = Video_res_list();
+    std::string res = vres[Current_video_resolution_id].getName();
     auto alloc_size = std::max(res.size() + 1, static_cast<size_t>(15));
     resolution_string = sheet->AddChangeableText(alloc_size);
     snprintf(resolution_string, alloc_size, res.c_str());
@@ -856,8 +850,9 @@ struct video_menu {
       Render_preferred_state.bit_depth = Render_preferred_bitdepth;
       rend_SetPreferredState(&Render_preferred_state, true);
 
-      int temp_w = Video_res_list[Current_video_resolution_id].width;
-      int temp_h = Video_res_list[Current_video_resolution_id].height;
+      auto &vres = Video_res_list();
+      int temp_w = vres[Current_video_resolution_id].width;
+      int temp_h = vres[Current_video_resolution_id].height;
       Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
     }
 
@@ -886,7 +881,8 @@ struct video_menu {
       select_sheet->AddButton(TXT_OK, UID_OK);
       select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
-      for (auto &resolution : Video_res_list) {
+      auto &vres = Video_res_list();
+      for (auto &resolution : vres) {
         resolution_list->AddItem(resolution.getName().c_str());
       }
 
@@ -901,10 +897,10 @@ struct video_menu {
 
       if (res == UID_OK) {
         int newindex = resolution_list->GetCurrentIndex();
-        if (static_cast<size_t>(newindex) < Video_res_list.size() && Current_video_resolution_id != newindex) {
+        if (static_cast<size_t>(newindex) < vres.size() && Current_video_resolution_id != newindex) {
           resolution_changed = true;
           Current_video_resolution_id = newindex;
-          std::string res = Video_res_list[Current_video_resolution_id].getName();
+          std::string res = vres[Current_video_resolution_id].getName();
           snprintf(resolution_string, res.size() + 1, res.c_str());
         }
       }
