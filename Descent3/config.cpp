@@ -417,7 +417,7 @@ void ConfigureDisplayResolutions() {
   if (resolutions_vec.empty()) {
     return;
   }
-  std::swap(resolutions_vec, Video_res_list);
+  Video_res_list = std::move(resolutions_vec);
   SDL_free(displays);
 
   // Find the index of the current screen resolution in the list
