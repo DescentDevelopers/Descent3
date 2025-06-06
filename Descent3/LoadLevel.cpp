@@ -3165,7 +3165,7 @@ void ReadRoomAABBChunk(CFILE *fp, int version) {
       Rooms[i].bbf_list = mem_rmalloc<int16_t *>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_min_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_max_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_sector = mem_rmalloc<uint8_t>(sizeof(char) * Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_sector = mem_rmalloc<uint8_t>(Rooms[i].num_bbf_regions);
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
         Rooms[i].num_bbf[j] = cf_ReadShort(fp);

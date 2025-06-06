@@ -143,14 +143,14 @@ bool con_raw_Create() {
   Con_raw_rows = 24; // one less, since the bottom window takes up one row
 
   // allocate any memory needed for buffers
-  Con_raw_inp_buf = (char *)malloc(sizeof(char) * (Con_raw_cols + 4));
-  Con_raw_read_buf = (char *)malloc(sizeof(char) * (Con_raw_cols + 4));
+  Con_raw_inp_buf = static_cast<char *>(malloc(Con_raw_cols + 4));
+  Con_raw_read_buf = static_cast<char *>(malloc(Con_raw_cols + 4));
   if (!Con_raw_inp_buf || !Con_raw_read_buf) {
     // error allocating memory
     return false;
   }
-  memset(Con_raw_inp_buf, 0, sizeof(char) * (Con_raw_cols + 4));
-  memset(Con_raw_read_buf, 0, sizeof(char) * (Con_raw_cols + 4));
+  memset(Con_raw_inp_buf, 0, Con_raw_cols + 4);
+  memset(Con_raw_read_buf, 0, Con_raw_cols + 4);
   Con_raw_last_command[0] = '\0';
 
   Con_raw_inp_pos = 0;
