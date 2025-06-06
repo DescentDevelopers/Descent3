@@ -19,6 +19,7 @@
 // AIGame.cpp
 //
 #include <cfloat>
+#include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -400,7 +401,7 @@ public:
 #define MAX_STOLEN_WEAPONS 25
 
 struct weapon_item {
-  char index;
+  int8_t index;
   int owner;
   char amount;
 };
@@ -2364,7 +2365,7 @@ struct barnswallow_data {
 
   int follower;
 
-  char num_friends;
+  int8_t num_friends;
   int friends[BS_MAX_FRIENDS];
   float next_friend_update_time;
 

@@ -1507,6 +1507,7 @@
  * $NoKeywords: $
  */
 
+#include <cstdint>
 #include <cstdlib>
 
 #include "AIMain.h"
@@ -3346,7 +3347,7 @@ void ai_do_animation(object *obj, float anim_time) {
     }
   } else {
     if (obj->ai_info->animation_type == AS_RANGED_ATTACK) {
-      char wb = obj->ai_info->last_special_wb_firing;
+      int8_t wb = obj->ai_info->last_special_wb_firing;
 
       if (Object_info[obj->id].static_wb[wb].flags & WBF_SPRAY) {
         obj->weapon_fire_flags |= WFF_SPRAY;
@@ -6059,7 +6060,7 @@ void AIDoFrame(object *obj) {
   // Handle On/off and spray weapons
   {
     if ((obj->weapon_fire_flags & WFF_SPRAY) && !(obj->flags & (OF_DESTROYED | OF_DYING))) {
-      char wb_index = ai_info->last_special_wb_firing;
+      int8_t wb_index = ai_info->last_special_wb_firing;
       DoSprayEffect(obj, &Object_info[obj->id].static_wb[wb_index], wb_index);
       if (!((Game_mode & GM_MULTI) && (Netgame.local_role == LR_CLIENT))) {
         if (WBIsBatteryReady(obj, &Object_info[obj->id].static_wb[wb_index], wb_index) &&

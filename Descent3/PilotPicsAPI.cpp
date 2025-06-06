@@ -59,6 +59,7 @@
  */
 
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <cstdio>
 
@@ -561,7 +562,7 @@ bool PPic_BuildDatabases(void) {
     Pilot_id_to_offset[count].offset = file_pos;
     Pilot_id_to_offset[count].id = pilot_id;
 
-    char let_pos;
+    int8_t let_pos;
     if (isalpha(name_buffer[0])) {
       let_pos = toupper(name_buffer[0]) - 'A';
     } else {

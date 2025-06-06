@@ -630,7 +630,7 @@ int cfgetc(CFILE *cfp) {
   if (cfp->position >= cfp->size)
     return EOF;
 
-  fread(ch, sizeof(char), 1, cfp->file);
+  fread(ch, 1, 1, cfp->file);
   c = ch[0];
   // c = getc( cfp->file );
   if (cfeof(cfp))
@@ -644,7 +644,7 @@ int cfgetc(CFILE *cfp) {
       if (c == 10) // return LF as newline
         c = '\n';
       else if (c == 13) { // check for CR/LF pair
-        fread(ch, sizeof(char), 1, cfp->file);
+        fread(ch, 1, 1, cfp->file);
         int cc = ch[0]; // getc(cfp->file);
         // if (cc != EOF) {
         if (!cfeof(cfp)) {

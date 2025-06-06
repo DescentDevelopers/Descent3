@@ -160,9 +160,8 @@ void ReceivePickupVirus(uint8_t *data) {
 
 // MTS: only used in this file.
 void SendRoomInfo(int pnum) {
-  char *room_info = NULL;
   int flags, r, i;
-  room_info = (char *)malloc(sizeof(char) * RoomCount);
+  auto room_info = static_cast<char *>(malloc(RoomCount));
   if (!room_info)
     return;
 
@@ -210,8 +209,7 @@ void SendRoomInfo(int pnum) {
 void ReceiveRoomInfo(uint8_t *data) {
   int i, count = 0;
   int flag;
-  char *room_info;
-  room_info = (char *)malloc(sizeof(char) * RoomCount);
+  auto room_info = static_cast<char *>(malloc(RoomCount));
   if (!room_info) {
     FatalError("Out of Memory");
     return;

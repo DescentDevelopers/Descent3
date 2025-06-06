@@ -19,6 +19,7 @@
 #ifndef _MATCEN_H_
 #define _MATCEN_H_
 
+#include <cstdint>
 #include "cfile.h"
 #include "vecmat.h"
 #include "matcen_external.h"
@@ -155,8 +156,8 @@ public:
   char GetNumSpawnPnts();
   bool SetNumSpawnPnts(char num_s);
 
-  int GetSpawnPnt(char s_index);
-  bool SetSpawnPnt(char s_index, int s_value);
+  int GetSpawnPnt(int8_t s_index);
+  bool SetSpawnPnt(int8_t s_index, int s_value);
 
   void SaveData(CFILE *fptr);
   void LoadData(CFILE *fptr);
@@ -170,8 +171,8 @@ public:
   char GetNumProdTypes();
   bool SetNumProdTypes(char num_prod_types);
 
-  bool GetProdInfo(char index, int *type_id, int *priority, float *time, int *max_prod);
-  bool SetProdInfo(char index, int *type_id, int *priority, float *time, int *max_prod);
+  bool GetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod);
+  bool SetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod);
 
   float GetProdMultiplier();
   bool SetProdMultiplier(float multi);
@@ -194,8 +195,8 @@ public:
   float GetPostProdTime();
   bool SetPostProdTime(float time);
 
-  int GetSound(char sound_type);
-  bool SetSound(char sound_type, int sound_index);
+  int GetSound(int8_t sound_type);
+  bool SetSound(int8_t sound_type, int sound_index);
 
   void Reset();
 };
