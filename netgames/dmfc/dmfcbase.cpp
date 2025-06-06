@@ -472,6 +472,7 @@
 #include "dmfcinternal.h"
 #include "dmfcinputcommands.h"
 
+#include <cstdint>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <algorithm>
@@ -3449,7 +3450,8 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
   */
 
   // now extract the command
-  char command[64], index = 0;
+  char command[64];
+  int8_t index = 0;
   char *p = &command_string[1];
 
   // lowercase the command_string

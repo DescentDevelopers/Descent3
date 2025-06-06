@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdint>
 #include <stdlib.h>
 #include "aiambient.h"
 #include "string.h"
@@ -30,7 +31,7 @@ ambient_life a_life;
 void ambient_life::DoFrame(void) {}
 
 void ambient_life::InitForLevel(void) {
-  char i;
+  int8_t i;
 
   for (i = 0; i < MAX_AL_TYPES; i++) {
     ComputeNextSize(i);
@@ -41,7 +42,7 @@ void ambient_life::InitForLevel(void) {
   DoFrame();
 }
 
-void ambient_life::GetALValue(char i, char field, void *ptr) {
+void ambient_life::GetALValue(int8_t i, char field, void *ptr) {
   switch (field) {
   case ALI_TYPE:
     *((int *)ptr) = m_type[i];
@@ -61,7 +62,7 @@ void ambient_life::GetALValue(char i, char field, void *ptr) {
   }
 }
 
-void ambient_life::ComputeNextSize(char i) {
+void ambient_life::ComputeNextSize(int8_t i) {
   char diff = m_max[i] - m_min[i];
   if (diff > 0) {
     char offset = ps_rand() % diff;
@@ -71,7 +72,7 @@ void ambient_life::ComputeNextSize(char i) {
   }
 }
 
-void ambient_life::SetALValue(char i, char field, void *ptr) {
+void ambient_life::SetALValue(int8_t i, char field, void *ptr) {
   switch (field) {
   case ALI_TYPE:
     m_type[i] = *((int *)ptr);
