@@ -353,7 +353,7 @@ void ConfigureDisplayResolutions() {
     return;
   }
 
-  std::set<tVideoResolution, tVideoResolution::tVideoResolutionCompare> resolutions;
+  std::set<tVideoResolution> resolutions;
   for (int d = 0; d < display_count; d++) {
     SDL_DisplayID display_id = displays[d];
 

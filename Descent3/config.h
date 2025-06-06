@@ -149,17 +149,10 @@ struct tVideoResolution
     return other.width == this->width && other.height == this->height;
   }
 
-  struct tVideoResolutionCompare
+  bool operator<(const tVideoResolution& other) const
   {
-    bool operator()(const tVideoResolution &lres, const tVideoResolution &rres) const
-    {
-      if (lres.width != rres.width)
-      {
-        return lres.width < rres.width;
-      }
-      return lres.height < rres.height;
-    }
-  };
+    return width != other.width ? width < other.width : height < other.height;
+  }
 };
 
 extern std::vector<tVideoResolution> Video_res_list;
