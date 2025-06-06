@@ -145,7 +145,7 @@ struct tVideoResolution
     return ss.str();
   }
 
-  bool operator==(const tVideoResolution& other) {
+  bool operator==(const tVideoResolution& other) const {
     return other.width == this->width && other.height == this->height;
   }
 
