@@ -348,8 +348,9 @@ void opengl_SetDefaults() {
 extern renderer_preferred_state Render_preferred_state;
 
 int opengl_Setup(oeApplication *app, const int *width, const int *height) {
-  int winw = Video_res_list[Current_video_resolution_id].width;
-  int winh = Video_res_list[Current_video_resolution_id].height;
+  auto &vres = Video_res_list();
+  int winw = vres[Current_video_resolution_id].width;
+  int winh = vres[Current_video_resolution_id].height;
 
   SDL_ClearError();
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {

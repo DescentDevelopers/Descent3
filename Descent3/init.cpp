@@ -1305,7 +1305,7 @@ void LoadGameSettings() {
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
   Database->read_int("RS_resolution", &tempint);
-  if (tempint >= 0 && tempint < std::size(Video_res_list))
+  if (tempint >= 0 && tempint < Video_res_list().size())
     Current_video_resolution_id = tempint;
   else
     LOG_WARNING << "Game settings contain a display resolution index that is out of bounds. Starting with default resolution.";

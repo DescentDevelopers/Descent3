@@ -937,8 +937,9 @@ void SetScreenMode(int sm, bool force_res_change) {
     int scr_width, scr_height, scr_bitdepth;
 
     if (sm == SM_GAME) {
-      scr_width = Video_res_list[Current_video_resolution_id].width;
-      scr_height = Video_res_list[Current_video_resolution_id].height;
+      auto &vres = Video_res_list();
+      scr_width = vres[Current_video_resolution_id].width;
+      scr_height = vres[Current_video_resolution_id].height;
       scr_bitdepth = Render_preferred_bitdepth;
     } else {
       scr_width = FIXED_SCREEN_WIDTH;
