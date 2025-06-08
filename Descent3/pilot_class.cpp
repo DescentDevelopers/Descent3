@@ -177,16 +177,6 @@ pilot::pilot() {
   initialize();
 }
 
-pilot::pilot(pilot *copy) {
-  write_pending = true;
-  initialize();
-}
-
-pilot::pilot(char *fname) {
-  write_pending = true;
-  initialize();
-}
-
 // initializes all the data (for constructors)
 void pilot::initialize(void) {
   int i;

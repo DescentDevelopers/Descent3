@@ -170,8 +170,6 @@ class pilot {
 public:
   ~pilot();
   pilot();
-  pilot(pilot *copy);
-  pilot(char *fname);
 
   // This function guts the data so it's virgin (fresh for reading)
   // frees any memory that needs to be freed, etc.
