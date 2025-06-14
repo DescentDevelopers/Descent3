@@ -235,7 +235,7 @@ public:
 
 private:
   void initialize(void); // initializes all the data (for constructors)
-  bool write_pending;    // data has changed and pilot data is out of sync with file
+  bool write_pending = false; // data has changed and pilot data is out of sync with file
 private:
   // internal file access functions
   void write_name(CFILE *file);
@@ -254,7 +254,7 @@ private:
 
   // for the read functions, skip is true if the data should actually
   // just be skipped and not processed
-  int file_version;
+  int file_version = 0;
   void read_name(CFILE *file, bool skip);
   void read_ship_info(CFILE *file, bool skip);
   void read_custom_multiplayer_data(CFILE *file, bool skip);
@@ -273,46 +273,46 @@ private:
   //--- Pilot data				---//
   //--- Try to preserve alignment	---//
   std::string filename;// filename location of this pilot
-  char *name;          // name of the pilot (used in the game)
-  char *ship_logo;     // ship logo for multiplayer play (filename)
-  char *ship_model;    // what ship does this pilot fly
-  char *audio1_file;   // audio taunt #1 (filename)
-  char *audio2_file;   // audio taunt #2 (filename)
-  char *audio3_file;   // audio taunt #1 (filename)
-  char *audio4_file;   // audio taunt #2 (filename)
-  char *guidebot_name; // guidebot name
+  char *name = nullptr;          // name of the pilot (used in the game)
+  char *ship_logo = nullptr;     // ship logo for multiplayer play (filename)
+  char *ship_model = nullptr;    // what ship does this pilot fly
+  char *audio1_file = nullptr;   // audio taunt #1 (filename)
+  char *audio2_file = nullptr;   // audio taunt #2 (filename)
+  char *audio3_file = nullptr;   // audio taunt #1 (filename)
+  char *audio4_file = nullptr;   // audio taunt #2 (filename)
+  char *guidebot_name = nullptr; // guidebot name
 
-  uint16_t picture_id; // pilot picture image id
+  uint16_t picture_id = PPIC_INVALID_ID; // pilot picture image id
   uint8_t difficulty;  // difficulty setting for this pilot (DIFFICULTY_*)
   uint8_t hud_mode;    // hud display mode
-  bool profanity_filter_on, audiotaunts;
+  bool profanity_filter_on = false, audiotaunts = true;
 
-  uint16_t hud_stat; // hud layout using the STAT mask
+  uint16_t hud_stat = 0; // hud layout using the STAT mask
   uint16_t hud_graphical_stat;
 
-  int game_window_w, game_window_h; // game window size
+  int game_window_w = 0, game_window_h = 0; // game window size
 
-  int num_missions_flown;     // number of mission's flown
-  tMissionData *mission_data; // mission data
+  int num_missions_flown = 0;     // number of mission's flown
+  tMissionData *mission_data = nullptr; // mission data
 
-  uint16_t PrimarySelectList[MAX_PRIMARY_WEAPONS];
-  uint16_t SecondarySelectList[MAX_SECONDARY_WEAPONS];
+  uint16_t PrimarySelectList[MAX_PRIMARY_WEAPONS]{};
+  uint16_t SecondarySelectList[MAX_SECONDARY_WEAPONS]{};
 
-  tGameToggles gameplay_toggles; // special options in config menu.
+  tGameToggles gameplay_toggles{}; // special options in config menu.
 
 public:
-  char taunts[MAX_PILOT_TAUNTS][PILOT_TAUNT_SIZE]; // taunt macros
+  char taunts[MAX_PILOT_TAUNTS][PILOT_TAUNT_SIZE]{}; // taunt macros
 
-  cntrldata controls[NUM_CONTROLLER_FUNCTIONS]; // controller settings
-  float mouse_sensitivity[N_MOUSE_AXIS];        // axis sensitivities
-  float joy_sensitivity[N_JOY_AXIS];            // axis sensitivities
-  float key_ramping;
-  char read_controller;   // do we read the controller port also (beyond keyboard/mouse)
-  bool mouselook_control; // mouselook control.
-  bool lrearview_enabled;
-  bool rrearview_enabled; // are these small views enabled?
+  cntrldata controls[NUM_CONTROLLER_FUNCTIONS]{}; // controller settings
+  float mouse_sensitivity[N_MOUSE_AXIS]{};        // axis sensitivities
+  float joy_sensitivity[N_JOY_AXIS]{};            // axis sensitivities
+  float key_ramping = 0.35;
+  char read_controller = READF_MOUSE + READF_JOY;   // do we read the controller port also (beyond keyboard/mouse)
+  bool mouselook_control = false; // mouselook control.
+  bool lrearview_enabled = false;
+  bool rrearview_enabled = false; // are these small views enabled?
 
-  uint8_t ingame_difficulty; // DAJ for optimization
+  uint8_t ingame_difficulty = 0; // DAJ for optimization
 };
 
 #endif
