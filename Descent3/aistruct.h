@@ -392,6 +392,7 @@
 #ifndef AISTRUCT_H_
 #define AISTRUCT_H_
 
+#include <cstdint>
 #include "pstypes.h"
 #include "vecmat.h"
 #include "aistruct_external.h"
@@ -759,10 +760,9 @@ struct ai_frame {
   float last_sound_time[MAX_AI_SOUNDS];
   int16_t last_played_sound_index;
 
-  char movement_type;
-  char movement_subtype;
+  int8_t movement_type, movement_subtype;
 
-  char animation_type;
+  int8_t animation_type;
   char next_animation_type;
 
   char next_movement; // For queueing actions  :)

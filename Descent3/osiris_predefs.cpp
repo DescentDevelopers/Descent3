@@ -431,6 +431,7 @@
  * $NoKeywords: $
  */
 #include <cstdarg>
+#include <cstdint>
 
 #include "osiris_predefs.h"
 #include "object.h"
@@ -2145,7 +2146,7 @@ int osipf_GetNumAttachSlots(int objhandle) {
 
 int osipf_GetAttachChildHandle(int objhandle, char attachpoint) {
   object *parent = ObjGet(objhandle);
-  char parent_ap = attachpoint;
+  int8_t parent_ap = attachpoint;
 
   if ((parent) && (parent->flags & OF_POLYGON_OBJECT)) {
     poly_model *parent_pm = &Poly_models[parent->rtype.pobj_info.model_num];
@@ -2633,7 +2634,7 @@ float osipf_GameTime(void) { return Gametime; }
 
 float osipf_FrameTime(void) { return Frametime; }
 
-void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *ptr, char g_index) {
+void osipf_ObjWBValue(int obj_handle, int8_t wb_index, char op, char vtype, void *ptr, int8_t g_index) {
   object *objp = ObjGet(obj_handle);
 
   if (!objp) {
@@ -2974,7 +2975,7 @@ bool osipf_AIIsObjEnemy(int obj_handle, int it_handle) {
   return false;
 }
 
-void osipf_AIGoalValue(int obj_handle, char g_index, char op, char vtype, void *ptr, char index) {
+void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void *ptr, int8_t index) {
   object *obj = ObjGet(obj_handle);
   if (!obj)
     return;
@@ -3558,9 +3559,9 @@ void osipf_LGoalValue(char op, char vtype, void *ptr, int g_index, int i_index) 
   } break;
   case LGSV_C_GOAL_LIST: {
     if (op == VF_GET) {
-      Level_goals.GoalGoalList(g_index, LO_GET_SPECIFIED, (char *)ptr);
+      Level_goals.GoalGoalList(g_index, LO_GET_SPECIFIED, static_cast<int8_t *>(ptr));
     } else if (op == VF_SET) {
-      Level_goals.GoalGoalList(g_index, LO_SET_SPECIFIED, (char *)ptr);
+      Level_goals.GoalGoalList(g_index, LO_SET_SPECIFIED, static_cast<int8_t *>(ptr));
     }
   } break;
   case LGSV_I_STATUS: {
