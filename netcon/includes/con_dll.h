@@ -444,7 +444,7 @@ MultiStartClient_fp DLLMultiStartClient;
 typedef void (*rend_GetRenderState_fp)(rendering_state *rstate);
 rend_GetRenderState_fp DLLrend_GetRenderState;
 
-typedef bool (*LoadMission_fp)(char *msn);
+typedef bool (*LoadMission_fp)(const std::filesystem::path& msn);
 LoadMission_fp DLLLoadMission;
 
 typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
@@ -476,7 +476,7 @@ HotSpotCreate_fp DLLHotSpotCreate;
 typedef int (*PollUI_fp)(void);
 PollUI_fp DLLPollUI;
 
-typedef const char *(*GetMissionName_fp)(const char *mission);
+typedef const char *(*GetMissionName_fp)(const std::filesystem::path &mission);
 GetMissionName_fp DLLGetMissionName;
 
 typedef void (*RemoveUITextItem_fp)(void *item);
@@ -597,7 +597,7 @@ DatabaseWriteInt_fp DLLDatabaseWriteInt;
 typedef void (*DoScreenshot_fp)();
 DoScreenshot_fp DLLDoScreenshot;
 
-typedef bool (*IsMissionMultiPlayable_fp)(const char *mission);
+typedef bool (*IsMissionMultiPlayable_fp)(const std::filesystem::path &mission);
 IsMissionMultiPlayable_fp DLLIsMissionMultiPlayable;
 
 //	returns width of text in current font.
@@ -690,7 +690,7 @@ MultiLevelSelection_fp DLLMultiLevelSelection;
 typedef bool (*DoPlayerMouselookCheck_fp)(uint32_t flags);
 DoPlayerMouselookCheck_fp DLLDoPlayerMouselookCheck;
 
-typedef int (*CheckMissionForScript_fp)(char *mission, char *script, int dedicated_server_num_teams);
+typedef int (*CheckMissionForScript_fp)(const std::filesystem::path &mission, char *script, int dedicated_server_num_teams);
 CheckMissionForScript_fp DLLCheckMissionForScript;
 
 typedef void (*ShowNetgameInfo_fp)(network_game *game);
@@ -1209,11 +1209,11 @@ int StartMultiplayerGameMenu() {
   for (auto const &i : search_paths) {
     DLLddio_DoForeachFile(i.first, i.second, [&mi, &list_1](const std::filesystem::path &path) {
       std::filesystem::path mission_name = path.filename();
-      if (DLLIsMissionMultiPlayable((const char*)mission_name.u8string().c_str()) &&
+      if (DLLIsMissionMultiPlayable(mission_name) &&
           (stricmp("d3_2.mn3", (const char*)mission_name.u8string().c_str()) != 0)) {
         DLLmprintf(0, "Found a mission: %s\n", (const char*)mission_name.u8string().c_str());
         mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
-        strcpy(mi->msn_name, DLLGetMissionName((const char*)mission_name.u8string().c_str()));
+        strcpy(mi->msn_name, DLLGetMissionName(mission_name));
         strcpy(mi->msn_file, (const char*)mission_name.u8string().c_str());
         mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
         AddMsnItem(mi);

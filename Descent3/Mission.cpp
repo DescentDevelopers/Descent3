@@ -751,7 +751,7 @@ void InitDefaultMissionFromCLI() {
   int mission_arg = FindArg("-mission");
   if (mission_arg > 0) {
     std::filesystem::path filename = std::filesystem::path(GameArgs[mission_arg + 1]).filename().replace_extension(".mn3");
-    LoadMission((const char*)filename.u8string().c_str());
+    LoadMission(filename);
 
     int level_arg = FindArg("-loadlevel");
     if (level_arg > 0) {
@@ -902,7 +902,7 @@ bool DemoMission(int mode = 0) {
 }
 #endif
 
-bool LoadMission(const char *mssn) {
+bool LoadMission(const std::filesystem::path& mssn) {
   Times_game_restored = 0;
   LOG_INFO << "In LoadMission()";
 #if (defined(OEM) || defined(DEMO))
@@ -942,7 +942,7 @@ bool LoadMission(const char *mssn) {
   // Open MN3 if filename passed was a mn3 file.
   if (IS_MN3_FILE(mssn)) {
     mission = mssn;
-    pathname = std::filesystem::path("missions") / mission;
+    pathname = "missions" / mission;
   } else {
     mission = mssn;
     pathname = mssn;
@@ -1771,7 +1771,7 @@ bool GetMissionInfo(const std::filesystem::path &msnfile, tMissionInfo *msn) {
   return true;
 }
 
-const char *GetMissionName(const char *mission) {
+const char *GetMissionName(const std::filesystem::path &mission) {
   tMissionInfo msninfo{};
   static char msnname[MSN_NAMELEN];
   msnname[0] = 0;
@@ -1783,7 +1783,7 @@ const char *GetMissionName(const char *mission) {
   return msnname;
 }
 
-bool IsMissionMultiPlayable(const char *mission) {
+bool IsMissionMultiPlayable(const std::filesystem::path &mission) {
   tMissionInfo msninfo{};
   if (GetMissionInfo(mission, &msninfo)) {
     return msninfo.multi;
@@ -1875,8 +1875,8 @@ void mn3_Close() {
 // Return values:
 // -1	Bad match -- this level and this mod shouldn't be played together!
 // MAX_NET_PLAYERS	-- This is playable with any number of teams the mod wants
-int MissionGetKeywords(const char *mission, char *keywords) {
-  ASSERT(mission);
+int MissionGetKeywords(const std::filesystem::path &mission, char *keywords) {
+  ASSERT(!mission.empty());
   ASSERT(keywords);
 
   char msn_keywords[NUM_KEYWORDS][KEYWORD_LEN];
@@ -1893,7 +1893,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
 
   memset(msn_keywords, 0, sizeof(msn_keywords));
   memset(mod_keywords, 0, sizeof(mod_keywords));
-  LOG_DEBUG.printf("MissionGetKeywords(%s,%s)", mission, keywords);
+  LOG_DEBUG << "MissionGetKeywords(" << mission << ", " << keywords << ")";
   if (!GetMissionInfo(mission, &msn_info)) {
     return -1;
   }
@@ -1956,7 +1956,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
       }
       // We never found one we needed, so return -1;
       if (!found_keyword) {
-        LOG_WARNING.printf("%s keyword needed in %s not found!", mod_keyword, mission);
+        LOG_WARNING << mod_keyword << " keyword needed in " << mission << " not found!";
         return -1;
       }
     }

@@ -152,8 +152,6 @@ static int RunServerConfigs();
 static int DedicatedServerLex(const char *command);
 static void SetCVarNone(int index);
 
-extern int CheckMissionForScript(char *mission, char *script, int dedicated_server_num_teams);
-
 extern char Multi_message_of_the_day[];
 extern char PXO_hosted_lobby_name[];
 // These define the types of variables that can be set in the code through

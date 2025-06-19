@@ -493,13 +493,13 @@ int LGSXlateTables(CFILE *fp) {
 }
 
 //	loads in level's mission and level.
-int LGSMission(const char *msnname, int level) {
+int LGSMission(const std::filesystem::path &msnname, int level) {
   //	we will free the mission.
   //	Free any game objects/etc that needs to be done when ending a level here.
   FreeScriptsForLevel();
 
   Osiris_DisableCreateEvents();
-  if (LoadMission((const char *)msnname)) {
+  if (LoadMission(msnname)) {
     SetCurrentLevel(level);
     Player_num = 0; // Reset player num
     Players[Player_num].ship_index = FindShipName(DEFAULT_SHIP);
@@ -509,7 +509,7 @@ int LGSMission(const char *msnname, int level) {
     mng_LoadAddonPages();
 
     InitPlayerNewShip(Player_num, INVRESET_ALL);
-    InitCameraViews(1); // Turn off all camera views, including rear views
+    InitCameraViews(true); // Turn off all camera views, including rear views
 
     if (!LoadAndStartCurrentLevel()) {
       Int3();
