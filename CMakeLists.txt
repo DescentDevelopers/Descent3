@@ -106,9 +106,9 @@ if(FORCE_PORTABLE_INSTALL)
 
   set(D3_DATADIR "${CMAKE_INSTALL_DATADIR}")
 else()
-  set(CMAKE_INSTALL_DATADIR "${CMAKE_INSTALL_DATADIR}/Descent3")
-  # On system install files will go into /usr/share/Descent3
-  set(D3_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/Descent3")
+  set(CMAKE_INSTALL_DATADIR "${CMAKE_INSTALL_DATADIR}/descent3")
+  # On system install files will go into /usr/share/descent3
+  set(D3_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/descent3")
 endif()
 
 # Get info about multi-config environment
