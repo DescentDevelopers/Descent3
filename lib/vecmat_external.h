@@ -49,47 +49,52 @@
 #include <limits>
 #include <numeric>
 
-static constexpr inline bool VM_ISPOW2(uintmax_t x) { return (x && (!(x & (x-1)))); }
-
-template<typename T>
-static constexpr inline int VM_BIT_SCAN_REVERSE_CONST(const T n) noexcept {
-    if (n == 0) return -1;
-	if (VM_ISPOW2(n)) return n;
-    T a = n, b = 0, j = std::numeric_limits<T>::digits, k = 0;
-    do {
-        j >>= 1;
-        k = (T)1 << j;
-        if (a >= k) {
-            a >>= j;
-            b += j;
-        }
-    } while (j > 0);
-    return int(b);
-}
-
-template<typename T>
-static constexpr inline T VM_BIT_CEIL(T x) noexcept { return T(1) << (VM_BIT_SCAN_REVERSE_CONST((T)x-1) + 1); };
-
-template<typename T>
-static constexpr inline T VM_BIT_FLOOR(T x) noexcept { return x == 0 || VM_ISPOW2(x) ? x : ((VM_BIT_FLOOR(x >> 1)) << 1); }
-
 #ifdef _MSVC_LANG
 #define VM_ALIGN(n) __declspec(align(n))
-#else
+#elif (__GNUC__ >= 3 || defined(__clang__))
 #define VM_ALIGN(n) __attribute__((aligned(n)))
+#else
+#define VM_ALIGN(a)
 #endif
+
+#if ((__cplusplus < 201103L) && (__STDC_VERSION__ < 202311L))
+#define alignof _Alignof
+#define alignas _Alignas
+#endif
+
+#define BITOP_RUP01__(x) (             (x) | (             (x) >>  1))
+#define BITOP_RUP02__(x) (BITOP_RUP01__(x) | (BITOP_RUP01__(x) >>  2))
+#define BITOP_RUP04__(x) (BITOP_RUP02__(x) | (BITOP_RUP02__(x) >>  4))
+#define BITOP_RUP08__(x) (BITOP_RUP04__(x) | (BITOP_RUP04__(x) >>  8))
+#define BITOP_RUP16__(x) (BITOP_RUP08__(x) | (BITOP_RUP08__(x) >> 16))
+#define BITOP_RUP32__(x) (BITOP_RUP16__(x) | (BITOP_RUP16__(x) >> 32))
+#define BITOP_RUP64__(x) (BITOP_RUP32__(x) | (BITOP_RUP32__(x) >> 64))
+
+constexpr static inline uintmax_t VM_BIT_CEIL (uintmax_t x) {
+switch(std::numeric_limits<uintmax_t>::digits)
+{
+	case   8: return (BITOP_RUP04__(uint8_t (x) - 1) + 1);
+	case  16: return (BITOP_RUP08__(uint16_t(x) - 1) + 1);
+	default:
+	case  32: return (BITOP_RUP16__(uint32_t(x) - 1) + 1);
+	case  64: return (BITOP_RUP32__(uint64_t(x) - 1) + 1);
+}
+}
+
+constexpr static inline bool      VM_ISPOW2   (uintmax_t x) { return x && (!(x & (x-1)));                                            }
+constexpr static inline uintmax_t VM_BIT_FLOOR(uintmax_t x) { return ((x == 0) || VM_ISPOW2(x) ? x : ((VM_BIT_FLOOR(x >> 1)) << 1)); }
 
 enum class align
 {
 	none     = 0 << 0,
-	scalar   = 1 << 1,
-	vector   = 2 << 1,
-	matrix   = 3 << 1,
-	adaptive = 4 << 1,
+	scalar   = 1 << 0,
+	linear   = 1 << 1,
+	matrix   = 1 << 2,
+	adaptive = 1 << 3,
 };
 
-template<typename T, size_t N, enum align A = align::adaptive, size_t N_POW2 = VM_BIT_CEIL(N)>
-struct alignas(N==N_POW2 && A != align::scalar || A == align::vector ? alignof(T) * N_POW2 : alignof(T)) vec : std::array<T,N> {
+template<typename T, size_t N, enum align A = align::adaptive, size_t N_POW2 = VM_BIT_CEIL(N), size_t T_S = std::max<size_t>(alignof(T), sizeof(T))>
+struct VM_ALIGN((((N == N_POW2) && (A != align::scalar)) || ((A == align::linear) || (A == align::matrix))) ? N_POW2 * T_S : T_S) vec : std::array<T,N> {
 
 template<size_t N_DST = N, enum align A_DST = align::adaptive>
 operator vec<T,N_DST,A_DST>() { return *reinterpret_cast<vec<T,N_DST,A_DST>*>(this); }
@@ -287,8 +292,8 @@ constexpr static inline scalar dot(const vec<T,N_A,A_A> &a, const vec<T,N_B,A_B>
 template<size_t N_A = 3, size_t N_B = 3, enum align A_A = align::adaptive, enum align A_B = align::adaptive>
 constexpr static inline vec<T,3> cross3(const vec<T,N_A,A_A> &a, const vec<T,N_B,A_B> &b)
 {
-  return vec<T,3,align::vector>{a.y()*b.z(), a.z()*b.x(), a.x()*b.y()}
-       - vec<T,3,align::vector>{b.y()*a.z(), b.z()*a.x(), b.x()*a.y()};
+  return vec<T,3,align::linear>{a.y()*b.z(), a.z()*b.x(), a.x()*b.y()}
+       - vec<T,3,align::linear>{b.y()*a.z(), b.z()*a.x(), b.x()*a.y()};
 }
 constexpr inline scalar mag() const { return (scalar)sqrt(dot((*this),(*this))); }
 
@@ -300,17 +305,17 @@ static constexpr inline scalar distance(const vec<T,N_A,A_A> &a, const vec<T,N_B
 
 using vector                = vec<scalar,3>;
 using vector_array          = vector;
-using aligned_vector        = vec<scalar,3,align::vector>;
+using aligned_vector        = vec<scalar,3,align::linear>;
 using aligned_vector_array  = aligned_vector;
 
 using vector4               = vec<scalar,4>;
 using vector4_array         = vector4;
-using aligned_vector4       = vec<scalar,4,align::vector>; 
+using aligned_vector4       = vec<scalar,4,align::linear>; 
 using aligned_vector4_array = aligned_vector4;
 
 using angvec                = vec<angle,3>;
 using angvec_array          = angvec;
-using aligned_angvec        = vec<angle,3,align::vector>;
+using aligned_angvec        = vec<angle,3,align::linear>;
 using aligned_angvec_array  = aligned_angvec;
 
 // Set an angvec to {0,0,0}
@@ -339,9 +344,31 @@ constexpr static inline const matrix ne()
 {
   return matrix{ vector{}, vector{}, vector{} };
 }
+constexpr inline void set_col(size_t i, const vector v)
+{
+	a2d[0][i % 3] = v[0];
+	a2d[1][i % 3] = v[1];
+	a2d[2][i % 3] = v[2];
+}
+constexpr inline vector col(size_t i) const
+{
+	return vector{ a2d[0][i % 3], a2d[1][i % 3], a2d[2][i % 3] };
+}
+constexpr inline matrix transposed() const
+{
+	return matrix{ col(0), col(1), col(2) };
+}
+constexpr inline scalar det() const
+{
+	scalar dst = scalar(0);
+	for(size_t i = 0; i < 3; i++)
+		dst += a2d[0][i] * (a2d[1][(i+1) % 3] * a2d[2][(i+2) % 3]
+		                  - a2d[1][(i+2) % 3] * a2d[2][(i+1) % 3]);
+  	return dst;
+}
 };
 
-constexpr matrix IDENTITY_MATRIX = matrix::id();
+constexpr matrix IDENTITY_MATRIX = { vector::id(0), vector::id(1), vector::id(2) };
 
 struct alignas(alignof(vector4) * 4) matrix4 {
 constexpr static const size_t RIGHT_HAND = 0;
@@ -365,6 +392,21 @@ constexpr static inline const matrix4 id()
 constexpr static inline const matrix4 ne()
 {
   return matrix4{ vector4{}, vector4{}, vector4{}, vector4{} };
+}
+constexpr inline void set_col(size_t i, const vector4 v)
+{
+	a2d[0][i % 4] = v[0];
+	a2d[1][i % 4] = v[1];
+	a2d[2][i % 4] = v[2];
+	a2d[3][i % 4] = v[3];
+}
+constexpr inline vector4 col(size_t i) const
+{
+	return vector4{ a2d[0][i % 4], a2d[1][i % 4], a2d[2][i % 4], a2d[2][i % 4] };
+}
+constexpr inline matrix4 transposed() const
+{
+	return matrix4{ col(0), col(1), col(2), col(3) };
 }
 };
 
@@ -436,19 +478,7 @@ static inline matrix operator/=(matrix &src, float n) { return (src = src / n); 
 
 // Matrix transpose
 static inline matrix operator~(matrix m) {
-  float t;
-
-  t = m.uvec.x();
-  m.uvec.x() = m.rvec.y();
-  m.rvec.y() = t;
-  t = m.fvec.x();
-  m.fvec.x() = m.rvec.z();
-  m.rvec.z() = t;
-  t = m.fvec.y();
-  m.fvec.y() = m.uvec.z();
-  m.uvec.z() = t;
-
-  return m;
+  return m.transposed();
 }
 
 // Apply a matrix to a vector
