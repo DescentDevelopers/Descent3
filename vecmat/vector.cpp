@@ -273,17 +273,9 @@ void vm_MatrixMulTMatrix(matrix *dest, const matrix *src0, const matrix *src1) {
 
   ASSERT((dest != src0) && (dest != src1));
 
-  dest->rvec.x() = src0->rvec.x() * src1->rvec.x() + src0->uvec.x() * src1->uvec.x() + src0->fvec.x() * src1->fvec.x();
-  dest->uvec.x() = src0->rvec.x() * src1->rvec.y() + src0->uvec.x() * src1->uvec.y() + src0->fvec.x() * src1->fvec.y();
-  dest->fvec.x() = src0->rvec.x() * src1->rvec.z() + src0->uvec.x() * src1->uvec.z() + src0->fvec.x() * src1->fvec.z();
-
-  dest->rvec.y() = src0->rvec.y() * src1->rvec.x() + src0->uvec.y() * src1->uvec.x() + src0->fvec.y() * src1->fvec.x();
-  dest->uvec.y() = src0->rvec.y() * src1->rvec.y() + src0->uvec.y() * src1->uvec.y() + src0->fvec.y() * src1->fvec.y();
-  dest->fvec.y() = src0->rvec.y() * src1->rvec.z() + src0->uvec.y() * src1->uvec.z() + src0->fvec.y() * src1->fvec.z();
-
-  dest->rvec.z() = src0->rvec.z() * src1->rvec.x() + src0->uvec.z() * src1->uvec.x() + src0->fvec.z() * src1->fvec.x();
-  dest->uvec.z() = src0->rvec.z() * src1->rvec.y() + src0->uvec.z() * src1->uvec.y() + src0->fvec.z() * src1->fvec.y();
-  dest->fvec.z() = src0->rvec.z() * src1->rvec.z() + src0->uvec.z() * src1->uvec.z() + src0->fvec.z() * src1->fvec.z();
+  dest->set_col(0, src0->rvec.x() * src1->rvec + src0->uvec.x() * src1->uvec + src0->fvec.x() * src1->fvec);
+  dest->set_col(1, src0->rvec.y() * src1->rvec + src0->uvec.y() * src1->uvec + src0->fvec.y() * src1->fvec);
+  dest->set_col(2, src0->rvec.z() * src1->rvec + src0->uvec.z() * src1->uvec + src0->fvec.z() * src1->fvec);
 }
 
 matrix operator*(const matrix &src0, const matrix &src1) {
@@ -612,9 +604,7 @@ angvec *vm_ExtractAnglesFromMatrix(angvec *a, const matrix *m) {
 
 // returns the value of a determinant
 scalar calc_det_value(const matrix *det) {
-  return det->rvec.x() * det->uvec.y() * det->fvec.z() - det->rvec.x() * det->uvec.z() * det->fvec.y() -
-         det->rvec.y() * det->uvec.x() * det->fvec.z() + det->rvec.y() * det->uvec.z() * det->fvec.x() +
-         det->rvec.z() * det->uvec.x() * det->fvec.y() - det->rvec.z() * det->uvec.y() * det->fvec.x();
+	return det->det();
 }
 
 // computes the delta angle between two vectors.
@@ -762,9 +752,7 @@ scalar vm_GetCentroidFast(vector *centroid, const vector *src, int nv) {
 
 //	creates a completely random, non-normalized vector with a range of values from -1023 to +1024 values)
 void vm_MakeRandomVector(vector *vec) {
-  vec->x() = ps_rand() - D3_RAND_MAX / 2;
-  vec->y() = ps_rand() - D3_RAND_MAX / 2;
-  vec->z() = ps_rand() - D3_RAND_MAX / 2;
+  vec->fill(ps_rand() - D3_RAND_MAX / 2);
 }
 
 // Given a set of points, computes the minimum bounding sphere of those points
