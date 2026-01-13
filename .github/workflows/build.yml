@@ -127,8 +127,15 @@ jobs:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
           p12-password: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12_PASSWORD }}
 
+      - name: Configure cross-compiled build
+        if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
+        run: |
+          cmake --preset linux
+          ninja -f build-${{ matrix.build_type }}.ninja -C builds/linux/ HogMaker
+          cmake --preset linux-cross-arm64 -DHogMaker_DIR=$PWD/builds/linux/ -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
+
       - name: Configure CMake
-        if: ${{ matrix.os.name != 'android' }}
+        if: ${{ matrix.os.name != 'android' && matrix.os.preset != 'linux-cross-arm64' }}
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}

@@ -333,17 +333,11 @@ endif()
 
 add_subdirectory(Descent3)
 
-# Always build HogMaker natively. Build it as external project,
-include(ExternalProject)
-ExternalProject_Add(HogMaker
-    SOURCE_DIR ${CMAKE_SOURCE_DIR}/tools
-    BINARY_DIR ${CMAKE_BINARY_DIR}/tools
-    INSTALL_COMMAND ""
-)
-if (DEFINED CMAKE_CONFIGURATION_TYPES)
-  set(HogMakerBin_ConfigDir "$<CONFIG>/")
+if (CMAKE_CROSSCOMPILING)
+  find_package(HogMaker REQUIRED)
+else()
+  add_subdirectory(tools)
 endif()
-set(HogMakerBin ${CMAKE_BINARY_DIR}/tools/${HogMakerBin_ConfigDir}HogMaker)
 
 add_subdirectory(netcon)
 add_subdirectory(netgames)
