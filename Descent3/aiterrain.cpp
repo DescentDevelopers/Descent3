@@ -187,18 +187,18 @@ bool ait_GetGroundInfo(ground_information *ground_info, vector *p0, vector *p1, 
     float delta = 1.0;
     vector movement = *p1 - *p0;
 
-    if (p1->x < (0.5f * TERRAIN_SIZE)) {
-      delta = (p0->x - (0.5f * TERRAIN_SIZE)) / (-movement.x);
-    } else if (p1->x > (float)(TERRAIN_WIDTH * TERRAIN_SIZE) - (0.5f * TERRAIN_SIZE)) {
-      delta = ((float)(TERRAIN_WIDTH * TERRAIN_SIZE) - (0.5f * TERRAIN_SIZE) - p0->x) / (movement.x);
+    if (p1->x() < (0.5f * TERRAIN_SIZE)) {
+      delta = (p0->x() - (0.5f * TERRAIN_SIZE)) / (-movement.x());
+    } else if (p1->x() > (scalar)(TERRAIN_WIDTH * TERRAIN_SIZE) - ((scalar)0.5f * TERRAIN_SIZE)) {
+      delta = ((scalar)(TERRAIN_WIDTH * TERRAIN_SIZE) - ((scalar)0.5f * TERRAIN_SIZE) - p0->x()) / (movement.x());
     }
 
-    if (p1->z < (0.5f * TERRAIN_SIZE)) {
-      if ((p0->z - (0.5f * TERRAIN_SIZE)) / (-movement.z) < delta)
-        delta = (p0->z - (0.5f * TERRAIN_SIZE)) / (-movement.z);
-    } else if (p1->z > (float)(TERRAIN_DEPTH * TERRAIN_SIZE) - (0.5f * TERRAIN_SIZE)) {
-      if (((float)(TERRAIN_WIDTH * TERRAIN_SIZE) - (0.5f * TERRAIN_SIZE) - p0->z) / (movement.z) < delta)
-        delta = ((float)(TERRAIN_WIDTH * TERRAIN_SIZE) - (0.5f * TERRAIN_SIZE) - p0->z) / (movement.z);
+    if (p1->z() < (0.5f * TERRAIN_SIZE)) {
+      if ((p0->z() - (0.5f * TERRAIN_SIZE)) / (-movement.z()) < delta)
+        delta = (p0->z() - (0.5f * TERRAIN_SIZE)) / (-movement.z());
+    } else if (p1->z() > (scalar)(TERRAIN_DEPTH * TERRAIN_SIZE) - (0.5f * TERRAIN_SIZE)) {
+      if (((scalar)(TERRAIN_WIDTH * TERRAIN_SIZE) - ((scalar)0.5f * TERRAIN_SIZE) - p0->z()) / (movement.z()) < delta)
+        delta = ((scalar)(TERRAIN_WIDTH * TERRAIN_SIZE) - (0.5f * TERRAIN_SIZE) - p0->z()) / (movement.z());
     }
 
     *p1 = *p0 + delta * movement;

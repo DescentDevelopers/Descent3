@@ -19,6 +19,7 @@
 // AIGame.cpp
 //
 #include <cfloat>
+#include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -400,7 +401,7 @@ public:
 #define MAX_STOLEN_WEAPONS 25
 
 struct weapon_item {
-  char index;
+  int8_t index;
   int owner;
   char amount;
 };
@@ -1629,7 +1630,7 @@ static tThiefItems ThiefableItems[] = {
     {6, THIEFABLEITEM_ACCESSORY, 1.00f, 0.60f, 1.00f, TXT_WEAP_RAPIDFIRE},       // RapidFire
     {7, THIEFABLEITEM_ACCESSORY, 1.00f, 0.60f, 1.00f, TXT_WEAP_QUADLASERS},      // Quads
 };
-static int numThiefableItems = sizeof(ThiefableItems) / sizeof(tThiefItems);
+static int numThiefableItems = std::size(ThiefableItems);
 
 struct inv_item {
   uint16_t id;
@@ -1728,7 +1729,7 @@ static tSuperThiefItems SuperThiefableItems[] = {
     {19, -1, THIEFABLEITEM_SECONDARY, .2f, TXT_WEAP_BLACKSHARK, "", ""},                           // Black Shark
 };
 
-static int numSuperThiefableItems = sizeof(SuperThiefableItems) / sizeof(tSuperThiefItems);
+static int numSuperThiefableItems = std::size(SuperThiefableItems);
 
 #define SUPERTHIEF_MELEE_DIST 50.0f
 
@@ -1784,9 +1785,9 @@ void SuperThief::SpewEverything(int me) {
       float speed = rand() / (float)RAND_MAX * 20.0f + 5.0f;
       vector dir;
 
-      dir.x = rand() / (float)RAND_MAX - 0.5f;
-      dir.y = rand() / (float)RAND_MAX - 0.5f;
-      dir.z = rand() / (float)RAND_MAX - 0.5f;
+      dir.x() = rand() / (float)RAND_MAX - 0.5f;
+      dir.y() = rand() / (float)RAND_MAX - 0.5f;
+      dir.z() = rand() / (float)RAND_MAX - 0.5f;
 
       vm_VectorNormalize(&dir);
       dir *= speed;
@@ -2364,7 +2365,7 @@ struct barnswallow_data {
 
   int follower;
 
-  char num_friends;
+  int8_t num_friends;
   int friends[BS_MAX_FRIENDS];
   float next_friend_update_time;
 
@@ -3084,7 +3085,7 @@ void Humonculous::DetermineDeathPos(int me, vector *dpos, int *droom) {
   Obj_Value(Scrpt_FindObjectName("SafeDeath06"), VF_GET, OBJV_I_ROOMNUM, &dr[5]);
 
   for (i = 0; i < 6; i++) {
-    dp[i].y = -440.0f;
+    dp[i].y() = -440.0f;
 
     float cur_dist = vm_VectorDistance(&mpos, &dp[i]);
 
@@ -3119,8 +3120,8 @@ bool Humonculous::DoNotify(int me, tOSIRISEventInfo *data) {
   case HM_ABOUT_TO_FAKE_DEATH:
   case HM_ABOUT_TO_DIE: {
     if (data->evt_ai_notify.notify_type == AIN_SCRIPTED_ORIENT) {
-      vector uvec = Zero_vector;
-      uvec.y = 1.0f;
+      vector uvec{};
+      uvec.y() = 1.0f;
 
       if (AI_TurnTowardsVectors(me, &memory->land_fvec, &uvec))
         memory->flags |= HF_ORIENTED;
@@ -3230,7 +3231,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
     Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
     memory->land_fvec = orient.fvec;
-    memory->land_fvec.y = 0.0f;
+    memory->land_fvec.y() = 0.0f;
     vm_VectorNormalize(&memory->land_fvec);
     orient.fvec = memory->land_fvec;
 
@@ -3257,7 +3258,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
             FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
     fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
-    if (ray.hit_wallnorm * orient.rvec > -0.95) {
+    if (vm_Dot3Product(ray.hit_wallnorm, orient.rvec) > -0.95) {
       memory->mode = HM_WALL_HIT;
       SetMode(me, HM_MELEE);
       return false;
@@ -3268,7 +3269,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
     AI_AddGoal(me, AIG_GET_TO_POS, 1, 1.0, H_GUID_LANDED, GF_ORIENT_SCRIPTED | GF_USE_BLINE_IF_SEES_GOAL | GF_NOTIFIES,
                &memory->land_pos, ray.hit_room);
 
-    float dist = 0.0f;
+    scalar dist = 0.0f;
     AI_GoalValue(me, 1, VF_SET, AIGV_F_CIRCLE_DIST, &dist);
 
     flags = PF_POINT_COLLIDE_WALLS;
@@ -3405,7 +3406,7 @@ void Humonculous::DoInit(int me) {
   Obj_GetGroundPos(me, 0, &g_pos, &g_norm);
 
   vector from_ground = pos - g_pos;
-  memory->ground_pnt_offset = fabs(from_ground * orient.uvec);
+  memory->ground_pnt_offset = fabs(vm_Dot3Product(from_ground, orient.uvec));
 
   AI_Value(me, VF_GET, AIV_F_MAX_SPEED, &memory->max_speed);
   AI_Value(me, VF_GET, AIV_F_MAX_DELTA_SPEED, &memory->max_delta_speed);
@@ -3482,8 +3483,8 @@ void Humonculous::DoInterval(int me) {
   switch (memory->mode) {
   case HM_INTRO_CUTSCENE: {
     if (memory->mode_time < H_DOOR_WAIT_TIME && memory->mode_time + Game_GetFrameTime() >= H_DOOR_WAIT_TIME) {
-      vector velocity = Zero_vector;
-      velocity.y = 65.0f;
+      vector velocity{};
+      velocity.y() = 65.0f;
 
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &velocity);
 
@@ -3618,14 +3619,14 @@ void Humonculous::DoInterval(int me) {
         Obj_Value(me, VF_GET, OBJV_V_POS, &start_pos);
         Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &start_room);
         end_pos = start_pos;
-        end_pos.y -= 2000.0f;
+        end_pos.y() -= 2000.0f;
 
         int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
         FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
         memory->land_pos = ray.hit_point;
-        memory->land_pos.y += memory->ground_pnt_offset;
+        memory->land_pos.y() += memory->ground_pnt_offset;
 
         float max_speed = 20.0f;
         float max_delta_speed = 50.0f;
@@ -3648,7 +3649,7 @@ void Humonculous::DoInterval(int me) {
         Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
         memory->land_fvec = orient.fvec;
-        memory->land_fvec.y = 0.0f;
+        memory->land_fvec.y() = 0.0f;
         vm_VectorNormalize(&memory->land_fvec);
       }
 
@@ -3664,8 +3665,8 @@ void Humonculous::DoInterval(int me) {
 
   case HM_FAKE_DEATH: {
     if (memory->mode_time > 4.0f) {
-      vector velocity = Zero_vector;
-      velocity.y = 40.0f;
+      vector velocity{};
+      velocity.y() = 40.0f;
 
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &velocity);
       SetMode(me, HM_DEATH_CHARGE);
@@ -3688,14 +3689,14 @@ void Humonculous::DoInterval(int me) {
         Obj_Value(me, VF_GET, OBJV_V_POS, &start_pos);
         Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &start_room);
         end_pos = start_pos;
-        end_pos.y -= 2000.0f;
+        end_pos.y() -= 2000.0f;
 
         int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
         FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
         memory->land_pos = ray.hit_point;
-        memory->land_pos.y += memory->ground_pnt_offset;
+        memory->land_pos.y() += memory->ground_pnt_offset;
 
         float max_speed = 20.0f;
         float max_delta_speed = 50.0f;
@@ -3718,7 +3719,7 @@ void Humonculous::DoInterval(int me) {
         Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
         memory->land_fvec = orient.fvec;
-        memory->land_fvec.y = 0.0f;
+        memory->land_fvec.y() = 0.0f;
         vm_VectorNormalize(&memory->land_fvec);
       }
     }
@@ -4250,9 +4251,9 @@ void DTower::DoFrame(int me) {
     Obj_Burning(me, 10.0f, 5.0f);
 
     vector vel = {0.0f, 0.0f, 0.0f};
-    vel.y = (float)rand() / (float)RAND_MAX * 30.0f + 90.0f;
-    vel.x = (float)rand() / (float)RAND_MAX * 16.0f - 8.0f;
-    vel.z = (float)rand() / (float)RAND_MAX * 16.0f - 8.0f;
+    vel.y() = (float)rand() / (float)RAND_MAX * 30.0f + 90.0f;
+    vel.x() = (float)rand() / (float)RAND_MAX * 16.0f - 8.0f;
+    vel.z() = (float)rand() / (float)RAND_MAX * 16.0f - 8.0f;
 
     Obj_UnattachFromParent(memory->ball_handle);
     Obj_Value(memory->ball_handle, VF_SET, OBJV_V_VELOCITY, &vel);
@@ -4322,9 +4323,9 @@ void DCollector::DoFrame(int me) {
       Obj_Burning(me, 6.0f, 3.0f);
 
       vector vel = {0.0f, 0.0f, 0.0f};
-      vel.y = (float)rand() / (float)RAND_MAX * 30.0f + 90.0f;
-      vel.x = (float)rand() / (float)RAND_MAX * 8.0f - 4.0f;
-      vel.z = (float)rand() / (float)RAND_MAX * 8.0f - 4.0f;
+      vel.y() = (float)rand() / (float)RAND_MAX * 30.0f + 90.0f;
+      vel.x() = (float)rand() / (float)RAND_MAX * 8.0f - 4.0f;
+      vel.z() = (float)rand() / (float)RAND_MAX * 8.0f - 4.0f;
       Obj_Value(memory->ball_handle, VF_SET, OBJV_V_VELOCITY, &vel);
       Obj_Burning(memory->ball_handle, 15.0f, 3.0f);
     }
@@ -5957,7 +5958,7 @@ void GuideBot::DoFrame(int me) {
         vector dir_to_goal = it_pos - me_pos;
         vm_VectorNormalize(&dir_to_goal);
 
-        if ((flags & AISR_CIRCLE_DIST) && (dir_to_goal * orient.fvec > 0.4717f) && anim >= 23 && anim <= 33)
+        if ((flags & AISR_CIRCLE_DIST) && (vm_Dot3Product(dir_to_goal, orient.fvec) > 0.4717f) && anim >= 23 && anim <= 33)
           memory->extinguish_obj_time += Game_GetFrameTime();
 
         if (memory->extinguish_obj_time > 1.5f) {
@@ -6769,9 +6770,9 @@ void Thief::SpewEverything(int me) {
       float speed = rand() / (float)RAND_MAX * 20.0f + 5.0f;
       vector dir;
 
-      dir.x = rand() / (float)RAND_MAX - 0.5f;
-      dir.y = rand() / (float)RAND_MAX - 0.5f;
-      dir.z = rand() / (float)RAND_MAX - 0.5f;
+      dir.x() = rand() / (float)RAND_MAX - 0.5f;
+      dir.y() = rand() / (float)RAND_MAX - 0.5f;
+      dir.z() = rand() / (float)RAND_MAX - 0.5f;
 
       vm_VectorNormalize(&dir);
       dir *= speed;
@@ -6837,9 +6838,9 @@ void Thief::SpewEverything(int me) {
       float speed = rand() / (float)RAND_MAX * 20.0f + 5.0f;
       vector dir;
 
-      dir.x = rand() / (float)RAND_MAX - 0.5f;
-      dir.y = rand() / (float)RAND_MAX - 0.5f;
-      dir.z = rand() / (float)RAND_MAX - 0.5f;
+      dir.x() = rand() / (float)RAND_MAX - 0.5f;
+      dir.y() = rand() / (float)RAND_MAX - 0.5f;
+      dir.z() = rand() / (float)RAND_MAX - 0.5f;
 
       vm_VectorNormalize(&dir);
       dir *= speed;
@@ -6928,13 +6929,13 @@ void Sickle::SetMode(int me, char mode) {
     Obj_Value(me, VF_GET, OBJV_V_POS, &start_pos);
     Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &start_room);
     end_pos = start_pos;
-    end_pos.y = end_pos.y + 400.0;
+    end_pos.y() = end_pos.y() + 400.0;
     flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
             FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
     fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
     memory->ceiling_pos = ray.hit_point;
-    memory->ceiling_pos.y -= 3.2f;
+    memory->ceiling_pos.y() -= 3.2f;
 
     fate = FVI_RayCast(me, &start_pos, &memory->ceiling_pos, start_room, 0.0f, flags, &ray);
     ceiling_room = ray.hit_room;
@@ -6974,7 +6975,7 @@ void Sickle::SetMode(int me, char mode) {
 
     if (memory->mode == SICKLE_LANDED) {
       Obj_Value(me, VF_GET, OBJV_V_VELOCITY, &vel);
-      vel.y -= (8.0f + ((float)rand() / (float)RAND_MAX) * 15.0f);
+      vel.y() -= (8.0f + ((float)rand() / (float)RAND_MAX) * 15.0f);
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &vel);
     }
 
@@ -7032,7 +7033,7 @@ void Sickle::DoInit(int me) {
   matrix orient;
   Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
   memory->home_fvec = orient.fvec;
-  memory->home_fvec.y = 0.0f;
+  memory->home_fvec.y() = 0.0f;
   vm_VectorNormalize(&memory->home_fvec);
 
   memory->mode_time = 0.0f;
@@ -7084,9 +7085,9 @@ void Sickle::DoFrame(int me) {
       SetMode(me, SICKLE_LAND_ON_CEILING);
     }
   } else if (memory->mode == SICKLE_LAND_ON_CEILING) {
-    uvec.x = 0.0;
-    uvec.y = -1.0;
-    uvec.z = 0.0;
+    uvec.x() = 0.0;
+    uvec.y() = -1.0;
+    uvec.z() = 0.0;
 
     memory->done_turning = AI_TurnTowardsVectors(me, &memory->home_fvec, &uvec) != 0;
 
@@ -7311,7 +7312,7 @@ void HatePTMC::DoFrame(int me) {
 
             Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
-            if (p_room == room || dist < 60.0f || orient.fvec * dir >= fov) {
+            if (p_room == room || dist < 60.0f || vm_Dot3Product(orient.fvec, dir) >= fov) {
               ray_info ray;
               int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                           FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
@@ -7575,9 +7576,9 @@ bool OldScratch::DoSteal(int me, int it) {
           float speed = rand() / (float)RAND_MAX * 20.0f + 5.0f;
           vector dir;
 
-          dir.x = rand() / (float)RAND_MAX - 0.5f;
-          dir.y = rand() / (float)RAND_MAX - 0.5f;
-          dir.z = rand() / (float)RAND_MAX - 0.5f;
+          dir.x() = rand() / (float)RAND_MAX - 0.5f;
+          dir.y() = rand() / (float)RAND_MAX - 0.5f;
+          dir.z() = rand() / (float)RAND_MAX - 0.5f;
 
           vm_VectorNormalize(&dir);
           dir *= speed;
@@ -7736,11 +7737,11 @@ int16_t OldScratch::CallEvent(int event, tOSIRISEventInfo *data) {
 //---------------------
 
 void BarnSwallow::ComputeNextNestPnt(int me, vector *pos) {
-  pos->x = (0.5f - (float)rand() / (float)RAND_MAX);
-  pos->y = (0.5f - (float)rand() / (float)RAND_MAX);
-  pos->z = (0.5f - (float)rand() / (float)RAND_MAX);
+  pos->x() = (0.5f - (float)rand() / (float)RAND_MAX);
+  pos->y() = (0.5f - (float)rand() / (float)RAND_MAX);
+  pos->z() = (0.5f - (float)rand() / (float)RAND_MAX);
 
-  pos->y *= 0.3f;
+  pos->y() *= 0.3f;
 
   vm_VectorNormalize(pos);
 
@@ -8345,14 +8346,14 @@ bool Sparky::DoNotify(int me_handle, tOSIRISEventInfo *data) {
     Obj_Value(me_handle, VF_GET, OBJV_V_ROTVELOCITY, &rvel);
 
     if (memory->spin_dir == SPARKY_ROT_LEFT) {
-      rvel.y -= DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.y() -= DEATH_ROT_ACC * Game_GetFrameTime();
     } else {
-      rvel.y += DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.y() += DEATH_ROT_ACC * Game_GetFrameTime();
     }
 
     Obj_Value(me_handle, VF_SET, OBJV_V_ROTVELOCITY, &rvel);
 
-    vector dir = Zero_vector;
+    vector dir{};
     AI_Value(me_handle, VF_SET, AIV_V_MOVEMENT_DIR, &dir);
   }
 
@@ -8434,7 +8435,7 @@ void Sparky::DoFrame(int me) {
     matrix orient;
     Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
-    float dot = orient.rvec * memory->orient.rvec;
+    scalar dot = vm_Dot3Product(orient.rvec, memory->orient.rvec);
     if (dot < -1.0f)
       dot = -1.0f;
     else if (dot > 1.0f)
@@ -8445,7 +8446,7 @@ void Sparky::DoFrame(int me) {
     float aps = (ang * 65535.0f) / (Game_GetFrameTime() * (2.0f * PI));
 
     if (aps >= MIN_MALF_SPEED) {
-      float tdot = memory->orient.rvec * orient.fvec;
+      float tdot = vm_Dot3Product(memory->orient.rvec, orient.fvec);
       if (tdot < 0.0f)
         spin_dir = SPARKY_ROT_LEFT;
       else if (tdot > 0.0f)
@@ -10852,9 +10853,9 @@ int16_t BettyScript::CallEvent(int event, tOSIRISEventInfo *data) {
     if (parent != OBJECT_HANDLE_NONE) {
       // Give it velocity
       Obj_Value(parent, VF_GET, OBJV_V_VELOCITY, &vel);
-      vel.x = vel.x * -0.5;
-      vel.y = vel.y * -0.5;
-      vel.z = vel.z * -0.5;
+      vel.x() = vel.x() * -0.5;
+      vel.y() = vel.y() * -0.5;
+      vel.z() = vel.z() * -0.5;
       Obj_Value(data->me_handle, VF_SET, OBJV_V_VELOCITY, &vel);
     }
 
@@ -10913,9 +10914,9 @@ int16_t BettyScript::CallEvent(int event, tOSIRISEventInfo *data) {
       if (velmag > 120.0f) {
         // limit the velocity
         scale = 120.0f / velmag;
-        vel.x = scale * vel.x;
-        vel.y = scale * vel.y;
-        vel.z = scale * vel.z;
+        vel.x() = scale * vel.x();
+        vel.y() = scale * vel.y();
+        vel.z() = scale * vel.z();
         Obj_Value(data->me_handle, VF_SET, OBJV_V_VELOCITY, &vel);
       }
     }
@@ -10970,9 +10971,9 @@ void ChaffScript::DoInit(int handle) {
     chaffcount = 10;
     for (count = 0; count < chaffcount; count++) {
       v = -vel;
-      v.x += (rand() % 30) - 15;
-      v.y += (rand() % 30) - 15;
-      v.z += (rand() % 30) - 15;
+      v.x() += (rand() % 30) - 15;
+      v.y() += (rand() % 30) - 15;
+      v.z() += (rand() % 30) - 15;
 
       ch = Obj_Create(OBJ_ROBOT, chunk_id, room, &pos, &orient, parent, &v);
     }

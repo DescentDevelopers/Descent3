@@ -741,7 +741,7 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
   case MSAFE_OBJECT_POS:
     objp = ObjGet(mstruct->objhandle);
     if (!objp)
-      mstruct->pos = Zero_vector;
+      mstruct->pos = vector{};
     else
       mstruct->pos = objp->pos;
     break;
@@ -762,7 +762,7 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
   case MSAFE_OBJECT_WORLD_POSITION:
     objp = ObjGet(mstruct->objhandle);
     if (!objp) {
-      mstruct->pos = Zero_vector;
+      mstruct->pos = vector{};
       mstruct->orient = Identity_matrix;
       mstruct->roomnum = -1;
     } else {
@@ -774,28 +774,28 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
   case MSAFE_OBJECT_VELOCITY:
     objp = ObjGet(mstruct->objhandle);
     if (!objp || (objp->movement_type != MT_WALKING && objp->movement_type != MT_PHYSICS))
-      mstruct->velocity = Zero_vector;
+      mstruct->velocity = vector{};
     else
       mstruct->velocity = objp->mtype.phys_info.velocity;
     break;
   case MSAFE_OBJECT_ROTVELOCITY:
     objp = ObjGet(mstruct->objhandle);
     if (!objp || (objp->movement_type != MT_WALKING && objp->movement_type != MT_PHYSICS))
-      mstruct->rot_velocity = Zero_vector;
+      mstruct->rot_velocity = vector{};
     else
       mstruct->rot_velocity = objp->mtype.phys_info.rotvel;
     break;
   case MSAFE_OBJECT_THRUST:
     objp = ObjGet(mstruct->objhandle);
     if (!objp || (objp->movement_type != MT_WALKING && objp->movement_type != MT_PHYSICS))
-      mstruct->thrust = Zero_vector;
+      mstruct->thrust = vector{};
     else
       mstruct->thrust = objp->mtype.phys_info.thrust;
     break;
   case MSAFE_OBJECT_ROTTHRUST:
     objp = ObjGet(mstruct->objhandle);
     if (!objp || (objp->movement_type != MT_WALKING && objp->movement_type != MT_PHYSICS))
-      mstruct->rot_thrust = Zero_vector;
+      mstruct->rot_thrust = vector{};
     else
       mstruct->rot_thrust = objp->mtype.phys_info.rotthrust;
     break;
@@ -1338,9 +1338,9 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
       vis->lighting_color = mstruct->color;
       vis->billboard_info.width = mstruct->size;
       vis->billboard_info.texture = mstruct->state;
-      vis->velocity.x = mstruct->count;
-      vis->velocity.y = mstruct->interval;
-      vis->velocity.z = mstruct->index;
+      vis->velocity.x() = mstruct->count;
+      vis->velocity.y() = mstruct->interval;
+      vis->velocity.z() = mstruct->index;
 
       vis->flags = VF_USES_LIFELEFT | VF_WINDSHIELD_EFFECT | VF_LINK_TO_VIEWER;
       vis->size = vm_VectorDistanceQuick(&vis->pos, &vis->end_pos);
@@ -1432,9 +1432,9 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     if (!VALIDATE_ROOM(mstruct->roomnum))
       return;
     vector fog_vec;
-    fog_vec.x = mstruct->fog_r;
-    fog_vec.y = mstruct->fog_g;
-    fog_vec.z = mstruct->fog_b;
+    fog_vec.x() = mstruct->fog_r;
+    fog_vec.y() = mstruct->fog_g;
+    fog_vec.z() = mstruct->fog_b;
     SetRoomChangeOverTime(mstruct->roomnum, 1, &fog_vec, mstruct->fog_depth, mstruct->interval);
     break;
   }
@@ -2498,7 +2498,7 @@ void msafe_DoPowerup(msafe_struct *mstruct) {
   }
 }
 // Data for primary powerups
-struct {
+static constexpr struct {
   const char *name;
   int weapon_index;
   int pickup_msg, already_have_msg, ammo_msg, full_msg;
@@ -2513,8 +2513,8 @@ struct {
     {"Fusioncannon", FUSION_INDEX, TXI_MSG_FUSION, TXI_MSG_FUSIONHAVE, -1, -1},
     {"Omegacannon", OMEGA_INDEX, TXI_MSG_OMEGA, TXI_MSG_OMEGAHAVE, -1, -1},
 };
-#define NUM_POWERUP_TYPES_PRIMARY (sizeof(powerup_data_primary) / sizeof(*powerup_data_primary))
-struct {
+#define NUM_POWERUP_TYPES_PRIMARY std::size(powerup_data_primary)
+static constexpr struct {
   const char *name;
   int weapon_index;
   int added_one_msg, added_multi_msg, full_msg;
@@ -2534,15 +2534,15 @@ struct {
     {"4PackFrag", FRAG_INDEX, TXI_MSG_FRAG, TXI_MSG_MULTI_FRAG, TXI_MSG_FRAGFULL},
     {"4PackGuided", GUIDED_INDEX, TXI_MSG_GUIDED, TXI_MSG_MULTI_GUIDED, TXI_MSG_GUIDEDFULL},
 };
-#define NUM_POWERUP_TYPES_SECONDARY (sizeof(powerup_data_secondary) / sizeof(*powerup_data_secondary))
-struct {
+#define NUM_POWERUP_TYPES_SECONDARY std::size(powerup_data_secondary)
+static constexpr struct {
   const char *name;
   int weapon_index;
   int ammo_msg, full_msg;
 } powerup_data_ammo[] = {{"Vauss clip", VAUSS_INDEX, TXI_MSG_VAUSSAMMO, TXI_MSG_VAUSSFULL},
                          {"MassDriverAmmo", MASSDRIVER_INDEX, TXI_MSG_MASSAMMO, TXI_MSG_MASSFULL},
                          {"NapalmTank", NAPALM_INDEX, TXI_MSG_NAPALMFUEL, TXI_MSG_NAPALMFULL}};
-#define NUM_POWERUP_TYPES_AMMO (sizeof(powerup_data_ammo) / sizeof(*powerup_data_ammo))
+#define NUM_POWERUP_TYPES_AMMO std::size(powerup_data_ammo)
 void ShowAmmoAddedMessage(int weapon_index, int msg_index, int added) {
   int added_frac = 0;
   if (Ships[Players[Player_num].ship_index].fire_flags[weapon_index] & SFF_TENTHS) {

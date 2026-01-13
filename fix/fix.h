@@ -63,12 +63,17 @@
 
 #include <cmath>
 #include <cstdint>
+#include <type_traits>
+
+typedef std::make_signed<size_t>::type ssize_t;
+// the basic floating-point type
+using scalar = float;
 
 // Angles are unsigned shorts
-typedef uint16_t angle;
+using angle = uint16_t;
 
 // The basic fixed-point type
-typedef int32_t fix;
+using fix = int32_t;
 
 #define PI 3.141592654f
 #define PIOVER2 1.570796327 // DAJ
@@ -84,10 +89,10 @@ typedef int32_t fix;
 void InitMathTables();
 
 // Returns the sine of the given angle.  Linearly interpolates between two entries in a 256-entry table
-float FixSin(angle a);
+scalar FixSin(angle a);
 
 // Returns the cosine of the given angle.  Linearly interpolates between two entries in a 256-entry table
-float FixCos(angle a);
+scalar FixCos(angle a);
 
 #define Round(x) ((int)(x + 0.5))
 
@@ -96,11 +101,11 @@ float FixCos(angle a);
 #define FloatToFix(num) ((fix)((num) * FLOAT_SCALER))
 #define IntToFix(num) ((num) << FIX_SHIFT)
 #define ShortToFix(num) (((int32_t)(num)) << FIX_SHIFT)
-#define FixToFloat(num) (((float)(num)) / FLOAT_SCALER)
+#define FixToFloat(num) (((scalar)(num)) / FLOAT_SCALER)
 #define FixToInt(num) ((num) >> FIX_SHIFT)
 
-angle FixAtan2(float cos, float sin);
-angle FixAsin(float v);
-angle FixAcos(float v);
+angle FixAtan2(scalar cos, scalar sin);
+angle FixAsin(scalar v);
+angle FixAcos(scalar v);
 
 #endif

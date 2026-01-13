@@ -82,7 +82,7 @@
 // ----------------------------------------------------------------------------
 
 #include <cstring>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "pserror.h"
 #include "psclass.h"
@@ -95,7 +95,8 @@ static bool DDIO_mouse_init = false;
 static struct mses_state {
   int fd;                   // file descriptor of mouse
   int t, l, b, r;           // limit rectangle of absolute mouse coords
-  int x, y, dx, dy, cx, cy; // current x,y,z in absolute mouse coords
+  int x, y, cx, cy;         // current x,y,z in absolute mouse coords
+  float dx, dy;             
   int btn_mask;
 } DDIO_mouse_state;
 
@@ -169,7 +170,7 @@ void ddio_MouseReset() {
 
   DDIO_mouse_state.x = DDIO_mouse_state.cx = Lnx_app_obj->m_W / 2;
   DDIO_mouse_state.y = DDIO_mouse_state.cy = Lnx_app_obj->m_H / 2;
-  DDIO_mouse_state.dy = DDIO_mouse_state.dx = 0;
+  DDIO_mouse_state.dy = DDIO_mouse_state.dx = 0.0f;
 }
 
 //	displays the mouse pointer.  Each Hide call = Show call.
@@ -189,8 +190,8 @@ void ddio_MouseMode(int mode) { Mouse_mode = mode; }
 // virtual coordinate system for mouse (match to video resolution set for optimal mouse usage.
 void ddio_MouseSetVCoords(int width, int height) { ddio_MouseSetLimits(0, 0, width, height); }
 
-int sdlMouseButtonDownFilter(SDL_Event const *event) {
-  ASSERT(event->type == SDL_MOUSEBUTTONDOWN);
+bool sdlMouseButtonDownFilter(SDL_Event const *event) {
+  ASSERT(event->type == SDL_EVENT_MOUSE_BUTTON_DOWN);
 
   const SDL_MouseButtonEvent *ev = &event->button;
   t_mse_event mevt;
@@ -258,11 +259,11 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     //		mprintf(0, "MOUSE Button 7: Down\n");
   }
 
-  return (0);
+  return false;
 }
 
-int sdlMouseButtonUpFilter(SDL_Event const *event) {
-  ASSERT(event->type == SDL_MOUSEBUTTONUP);
+bool sdlMouseButtonUpFilter(SDL_Event const *event) {
+  ASSERT(event->type == SDL_EVENT_MOUSE_BUTTON_UP);
 
   const SDL_MouseButtonEvent *ev = &event->button;
   t_mse_event mevt;
@@ -332,11 +333,11 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     //		mprintf(0, "MOUSE Button 7: Up\n");
   }
 
-  return (0);
+  return false;
 }
 
-int sdlMouseWheelFilter(SDL_Event const *event) {
-  ASSERT(event->type == SDL_MOUSEWHEEL);
+bool sdlMouseWheelFilter(SDL_Event const *event) {
+  ASSERT(event->type == SDL_EVENT_MOUSE_WHEEL);
 
   const SDL_MouseWheelEvent *ev = &event->wheel;
   t_mse_event mevt;
@@ -383,30 +384,21 @@ int sdlMouseWheelFilter(SDL_Event const *event) {
     //		mprintf(0, "MOUSE Scrollwheel: Rolled Down\n");
   }
 
-  return 0;
+  return false;
 }
 
-int sdlMouseMotionFilter(SDL_Event const *event) {
-  if (event->type == SDL_JOYBALLMOTION) {
-    DDIO_mouse_state.dx = event->jball.xrel / 100;
-    DDIO_mouse_state.dy = event->jball.yrel / 100;
+bool sdlMouseMotionFilter(SDL_Event const *event) {
+  if (event->type == SDL_EVENT_JOYSTICK_BALL_MOTION) {
+    DDIO_mouse_state.dx = event->jball.xrel / 100.0f;
+    DDIO_mouse_state.dy = event->jball.yrel / 100.0f;
     DDIO_mouse_state.x += DDIO_mouse_state.dx;
     DDIO_mouse_state.y += DDIO_mouse_state.dy;
-  } // if
-  else {
-    if (ddio_mouseGrabbed) {
-      DDIO_mouse_state.dx = event->motion.xrel;
-      DDIO_mouse_state.dy = event->motion.yrel;
-      DDIO_mouse_state.x += DDIO_mouse_state.dx;
-      DDIO_mouse_state.y += DDIO_mouse_state.dy;
-    } // if
-    else {
-      DDIO_mouse_state.dx = event->motion.x - DDIO_mouse_state.x;
-      DDIO_mouse_state.dy = event->motion.y - DDIO_mouse_state.y;
-      DDIO_mouse_state.x = event->motion.x;
-      DDIO_mouse_state.y = event->motion.y;
-    } // else
-  }   // else
+  } else {
+    DDIO_mouse_state.dx += event->motion.xrel;
+    DDIO_mouse_state.dy += event->motion.yrel;
+    DDIO_mouse_state.x += DDIO_mouse_state.dx;
+    DDIO_mouse_state.y += DDIO_mouse_state.dy;
+  }
 
   if (DDIO_mouse_state.x < DDIO_mouse_state.l)
     DDIO_mouse_state.x = DDIO_mouse_state.l;
@@ -417,7 +409,7 @@ int sdlMouseMotionFilter(SDL_Event const *event) {
   if (DDIO_mouse_state.y >= DDIO_mouse_state.b)
     DDIO_mouse_state.y = DDIO_mouse_state.b - 1;
 
-  return (0);
+  return false;
 }
 
 //	This function will handle all mouse events.
@@ -449,8 +441,8 @@ int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z, int *dz) {
   if (dz)
     *dz = 0;
 
-  DDIO_mouse_state.dx = 0;
-  DDIO_mouse_state.dy = 0;
+  DDIO_mouse_state.dx = 0.0f;
+  DDIO_mouse_state.dy = 0.0f;
 
   // unset the mouse wheel "button" once it's been retrieved.
   DDIO_mouse_state.btn_mask &= ~(MOUSE_B5|MOUSE_B6);
@@ -537,7 +529,7 @@ const char *ddio_MouseGetBtnText(int btn) {
 }
 
 const char *ddio_MouseGetAxisText(int axis) {
-  if (axis >= static_cast<int>(sizeof(Ctltext_MseAxisBindings) / sizeof(Ctltext_MseAxisBindings[0])) || axis < 0)
+  if (axis < 0 || static_cast<size_t>(axis) >= std::size(Ctltext_MseAxisBindings))
     return ("");
   return Ctltext_MseAxisBindings[axis];
 }

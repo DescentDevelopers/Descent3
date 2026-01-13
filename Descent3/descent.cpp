@@ -407,6 +407,7 @@
 #include "args.h"
 #include "multi_dll_mgr.h"
 #include "localization.h"
+#include "config.h"
 #include "uisys.h"
 
 //	---------------------------------------------------------------------------
@@ -475,6 +476,7 @@ void Descent3() {
     }
     // Show intro & loading screens if not dedicated server
     if (!Dedicated_server) {
+      ConfigureDisplayResolutions();
       SetScreenMode(SM_CINEMATIC);
 
       // Show the intro movie
@@ -700,5 +702,3 @@ void D3DebugResumeHandler() {
 }
 
 #endif
-
-void RenderBlankScreen();

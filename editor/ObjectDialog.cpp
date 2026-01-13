@@ -269,7 +269,7 @@ bool f_allow_objects_to_be_pushed_through_walls = false;
 
 void DrawItemModel(grHardwareSurface *surf, int model_num);
 
-#define NUM_EDIT_OBJTYPES (sizeof(edit_object_types) / sizeof(*edit_object_types))
+#define NUM_EDIT_OBJTYPES std::size(edit_object_types)
 
 /////////////////////////////////////////////////////////////////////////////
 // CObjectDialog dialog
@@ -942,12 +942,12 @@ void DrawItemModel(grHardwareSurface *surf, int model_num) {
 
   // Calculate viewer position
   vector maxs = pm->maxs, mins = pm->mins;
-  view_pos.x = -(mins.x + maxs.x) / 2;
-  view_pos.y = (mins.y + maxs.y) / 2;
-  maxs.x += view_pos.x;
-  maxs.y -= view_pos.y;
-  maxs.z = 0;
-  view_pos.z = -2.5 * vm_GetMagnitude(&maxs);
+  view_pos.x() = -(mins.x() + maxs.x()) / 2;
+  view_pos.y() = (mins.y() + maxs.y()) / 2;
+  maxs.x() += view_pos.x();
+  maxs.y() -= view_pos.y();
+  maxs.z() = 0;
+  view_pos.z() = -2.5 * vm_GetMagnitude(&maxs);
 
   // Set viewer and object orientations
   vm_MakeIdentity(&id_matrix);
@@ -1212,12 +1212,12 @@ void CObjectDialog::OnRegroundButton() {
           fate = fvi_FindIntersection(&fq, &hit_info);
 
           if (fate != HIT_NONE) {
-            float ps;
-            float pr;
-            float diff;
+            scalar ps;
+            scalar pr;
+            scalar diff;
 
-            ps = (gp - obj->pos) * obj->orient.uvec;
-            pr = (hit_info.hit_pnt - obj->pos) * obj->orient.uvec;
+            ps = vm_Dot3Product((gp - obj->pos), obj->orient.uvec);
+            pr = vm_Dot3Product((hit_info.hit_pnt - obj->pos), obj->orient.uvec);
 
             if (ps != pr) {
               diff = ps - pr;

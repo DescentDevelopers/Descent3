@@ -1014,13 +1014,13 @@ inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plan
 
   // Compute the distance to the plane and the distance the line travels in the direction of the normal
   // Negative because if the object is moving toward the plane, it is moving in the opposite direction of the normal
-  proj_dist_line = (*plane_norm * line_vec);
+  proj_dist_line = vm_Dot3Product(*plane_norm, line_vec);
   if (proj_dist_line >= 0.0f)
     return 0;
 
   //  Vector from p0 to a point on the plane
   point_plane_vec = *plane_pnt - *p0;
-  proj_dist_point_plane = (*plane_norm * point_plane_vec);
+  proj_dist_point_plane = (vm_Dot3Product(*plane_norm, point_plane_vec));
 
   // Throw out any sphere who's centerpoint is initially behind the face
   if (proj_dist_point_plane > 0.0)
@@ -1046,16 +1046,16 @@ inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plan
   // I picked .00000001 from my head.  It would be pretty parallel of a pretty short movement and
   // the linear combination below might not product a nice answer
   if (fabs(proj_dist_line) <= 0.00000000001) {
-    float plane_dist;
+    scalar plane_dist;
 
-    plane_dist = (*p1 - *plane_pnt) * *plane_norm;
+    plane_dist = vm_Dot3Product((*p1 - *plane_pnt),*plane_norm);
     if (plane_dist >= rad)
       return 0;
 
     *intp = *p1 + (rad - plane_dist) * (*plane_norm);
 
     // Make sure the computed new position is not behind the wall.
-    ASSERT((*intp - *plane_pnt) * *plane_norm >= -0.01);
+    ASSERT(vm_Dot3Product((*intp - *plane_pnt), *plane_norm) >= -0.01);
 
   } else {
     // The intersection of the line and the plane is a simple linear combination
@@ -1091,8 +1091,8 @@ static const int ij_table[3][2] = {
 
 // see if a point in inside a face by projecting into 2d
 uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list) {
-  vector_array *colp_array; // Axis-independent version of the collision point
-  vector_array *norm;       // Axis-independent version of the plane's normal
+  vector *colp_array; // Axis-independent version of the collision point
+  vector *norm;       // Axis-independent version of the plane's normal
   vector t;                 // Temporary vector that holds the magnatude of the normal's x,y,z components (ABS)
   int biggest;              // Index of the largest of the three components (0-x, 1-y, 2-z)  Axis to ignore :)
   int i, j, edge;           // Index for i-axis, Index for j-axis, and the current edge
@@ -1101,30 +1101,30 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   vector_array *v0, *v1;    // Vertices of the current line segment in the 2d in/out check loop
 
   // Lets look at these vectors as arrays :)
-  norm = (vector_array *)face_normal;
-  colp_array = (vector_array *)colp;
+  norm = (vector *)face_normal;
+  colp_array = (vector *)colp;
 
   // now do 2d check to see if point is in side
 
   // Get x,y,z components of the normal and put them in array form (so we can pick any two for i,j)
-  t.x = fabs(norm->xyz[0]);
-  t.y = fabs(norm->xyz[1]);
-  t.z = fabs(norm->xyz[2]);
+  t.x() = fabs((*norm)[0]);
+  t.y() = fabs((*norm)[1]);
+  t.z() = fabs((*norm)[2]);
 
   // Determine which axis will be normal to the plane the points are projected onto
-  if (t.x > t.y)
-    if (t.x > t.z)
+  if (t.x() > t.y())
+    if (t.x() > t.z())
       biggest = 0;
     else
       biggest = 2;
-  else if (t.y > t.z)
+  else if (t.y() > t.z())
     biggest = 1;
   else
     biggest = 2;
 
   // For a plane with a normal that is in the opposite direction of the axis,
   // we should circle the other direction -- i.e. always circle in clockwise direction with normal (left-handed)
-  if (norm->xyz[biggest] > 0) {
+  if ((*norm)[biggest] > 0) {
     i = ij_table[biggest][0];
     j = ij_table[biggest][1];
   } else {
@@ -1135,26 +1135,26 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   // now do the 2d problem in the i,j plane
 
   // Get the i,j check point
-  check_i = colp_array->xyz[i];
-  check_j = colp_array->xyz[j];
+  check_i = (*colp_array)[i];
+  check_j = (*colp_array)[j];
 
   // Do a simple 2d cross-product between each line segment and the start point to the check point
   // Go in a clockwise direction, if determinant is negative then point is outside of this multi-
   // side polygon.  :)  Only works for concave polygons.
   for (edge = edgemask = 0; edge < nv; edge++) {
     vec2d edgevec, checkvec;
-    float d;
+    scalar d;
 
     // v0 = (vector_array *)&Vertices[vertex_list[facenum*3+edge]];
     // v1 = (vector_array *)&Vertices[vertex_list[facenum*3+((edge+1)%nv)]];
-    v0 = (vector_array *)vertex_ptr_list[edge];
-    v1 = (vector_array *)vertex_ptr_list[(edge + 1) % nv];
+    v0 = vertex_ptr_list[edge];
+    v1 = vertex_ptr_list[(edge + 1) % nv];
 
-    edgevec.i = v1->xyz[i] - v0->xyz[i];
-    edgevec.j = v1->xyz[j] - v0->xyz[j];
+    edgevec.i = (*v1)[i] - (*v0)[i];
+    edgevec.j = (*v1)[j] - (*v0)[j];
 
-    checkvec.i = check_i - v0->xyz[i];
-    checkvec.j = check_j - v0->xyz[j];
+    checkvec.i = check_i - (*v0)[i];
+    checkvec.j = check_j - (*v0)[j];
 
     d = checkvec.i * edgevec.j - checkvec.j * edgevec.i;
 
@@ -1191,7 +1191,7 @@ int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, co
   line_vec = *p1 - *p0;
   point_to_center_vec = *sphere_pos - *p0;
 
-  if (line_vec * point_to_center_vec <= 0.0f)
+  if (vm_Dot3Product(line_vec, point_to_center_vec) <= 0.0f)
     return 0;
 
   // Get the magnitude and direction of the line vector
@@ -1199,7 +1199,7 @@ int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, co
   mag_line = vm_NormalizeVector(&normalized_line_vec);
 
   // Compute the location of the point on the line that is perpendicular to the center of the sphere
-  closest_point_dist = normalized_line_vec * point_to_center_vec;
+  closest_point_dist = vm_Dot3Product(normalized_line_vec, point_to_center_vec);
 
   // We check for an initial hit, so if closest_point is negative distance, it was a miss (think about it)
   // Otherwise, make sure it is not any farther than would for a collision to happen
@@ -1207,7 +1207,7 @@ int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, co
     return 0;
 
   // Is the initial p0 position an intersection?  If so, warn us and collide immediately.
-  if (point_to_center_vec * point_to_center_vec < sphere_rad * sphere_rad) {
+  if (vm_Dot3Product(point_to_center_vec, point_to_center_vec) < sphere_rad * sphere_rad) {
     if (f_correcting) {
       /*
             // chrishack
@@ -1220,7 +1220,7 @@ int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, co
       vm_NormalizeVector(&n_ptc);
 
       *intp =
-          *p0 - n_ptc * (sphere_rad - (float)sqrt(sphere_rad * sphere_rad - point_to_center_vec * point_to_center_vec));
+          *p0 - n_ptc * (sphere_rad - (scalar)sqrt(sphere_rad * sphere_rad - vm_Dot3Product(point_to_center_vec, point_to_center_vec)));
 
       *col_dist = 0.0;
       return 1;
@@ -1259,7 +1259,7 @@ int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, co
 
 bool IsPointInCylinder(vector *normal, vector *cylinder_pnt, vector *edir, float elen, const float rad,
                        const vector *pnt, vector *mdir, bool *f_collide) {
-  float plen = (*pnt - *cylinder_pnt) * *edir;
+  scalar plen = vm_Dot3Product((*pnt - *cylinder_pnt), *edir);
 
   if (plen < 0.0f || plen > elen) {
     return false;
@@ -1272,7 +1272,7 @@ bool IsPointInCylinder(vector *normal, vector *cylinder_pnt, vector *edir, float
     return false;
   }
 
-  if (*normal * *mdir >= 0.0f)
+  if (vm_Dot3Product(*normal,*mdir) >= 0.0f)
     *f_collide = false;
   else
     *f_collide = true;
@@ -1321,11 +1321,11 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
     po0 = (*p0 - *ep0) * edge_orient;
     po1 = (*p1 - *ep0) * edge_orient;
 
-    po0.z = po1.z = 0.0;
+    po0.z() = po1.z() = 0.0;
     mvec = po1 - po0;
     vector_len = vm_NormalizeVector(&mvec);
 
-    dist = -(mvec * po0);
+    dist = -(vm_Dot3Product(mvec,po0));
 
     closest_pnt = po0 + dist * mvec;
     //	ASSERT(!(closest_pnt.x == 0.0 && closest_pnt.y == 0.0 && closest_pnt.z == 0)); -- why does this matter?
@@ -1356,10 +1356,10 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
       if (valid_t[i]) {
         ivertex[i] = *p0 + mvec3d * (vector_len3d * t[i]);
 
-        t_edge = ((ivertex[i] - *ep0) * edgevec) / edge_len;
+        t_edge = (vm_Dot3Product(ivertex[i] - *ep0, edgevec)) / edge_len;
         if (t_edge >= 0.0 && t_edge <= 1.0) {
           cole_dist[i] = vector_len3d * t[i];
-          inte[i] = *ep0 + ((ivertex[i] - *ep0) * edgevec) * edgevec;
+          inte[i] = *ep0 + vm_Dot3Product((ivertex[i] - *ep0), edgevec) * edgevec;
           valid_hit = 1;
           /// mprintf(0, "%f,%f,%f to %f,%f, %f\n", XYZ(p0), XYZ(p1));
         } else {
@@ -1449,7 +1449,7 @@ float rad, vector *ep0, vector *ep1)
         float cdist; // Closest dist
 
         vector perp = (mdir ^ edir);        // Determines the normalized perp to both lines
-        if(perp == Zero_vector)
+        if(perp == vector{})
                 goto check_ends;  // We are moving parallal to the cylinder (only end collisions are possible)
         pmag = vm_NormalizeVector(&perp);
 
@@ -1720,13 +1720,13 @@ int check_line_to_face(vector *newp, vector *colp, float *col_dist, vector *wall
 // chrishack -- check this later
 // computes the parameters of closest approach of two lines
 // fill in two parameters, t0 & t1.  returns 0 if lines are parallel, else 1
-bool check_line_to_line(float *t1, float *t2, vector *p1, vector *v1, vector *p2, vector *v2) {
+bool check_line_to_line(scalar *t1, scalar *t2, vector *p1, vector *v1, vector *p2, vector *v2) {
   matrix det;
-  float d, cross_mag2; // mag squared cross product
+  scalar d, cross_mag2; // mag squared cross product
 
   det.rvec = *p2 - *p1;
-  det.fvec = *v1 ^ *v2; // (crossproduct)
-  cross_mag2 = det.fvec * det.fvec;
+  det.fvec = vm_Cross3Product(*v1, *v2);
+  cross_mag2 = vm_Dot3Product(det.fvec,det.fvec);
 
   if (cross_mag2 == 0.0)
     return false; // lines are parallel
@@ -1773,8 +1773,8 @@ int check_vector_to_object(vector *intp, float *col_dist, vector *p0, vector *p1
   // This accounts for relative position vs. relative velocity
   if (fvi_objnum != -1 && still_obj->movement_type == MT_PHYSICS && Objects[fvi_objnum].movement_type == MT_PHYSICS) {
     if (still_obj->type != OBJ_POWERUP && Objects[fvi_objnum].type != OBJ_POWERUP) {
-      if ((still_pos - Objects[fvi_objnum].pos) *
-              (still_obj->mtype.phys_info.velocity - Objects[fvi_objnum].mtype.phys_info.velocity) >=
+      if (vm_Dot3Product(still_pos - Objects[fvi_objnum].pos,
+              (still_obj->mtype.phys_info.velocity - Objects[fvi_objnum].mtype.phys_info.velocity)) >=
           0) {
 #ifndef NED_PHYSICS
 #ifdef _DEBUG
@@ -1812,20 +1812,20 @@ inline void compute_movement_AABB(void) {
 
   fvi_min_xyz = fvi_max_xyz = *fvi_query_ptr->p0;
 
-  if (delta_movement.x > 0.0f)
-    fvi_max_xyz.x += delta_movement.x;
+  if (delta_movement.x() > 0.0f)
+    fvi_max_xyz.x() += delta_movement.x();
   else
-    fvi_min_xyz.x += delta_movement.x;
+    fvi_min_xyz.x() += delta_movement.x();
 
-  if (delta_movement.y > 0.0f)
-    fvi_max_xyz.y += delta_movement.y;
+  if (delta_movement.y() > 0.0f)
+    fvi_max_xyz.y() += delta_movement.y();
   else
-    fvi_min_xyz.y += delta_movement.y;
+    fvi_min_xyz.y() += delta_movement.y();
 
-  if (delta_movement.z > 0.0f)
-    fvi_max_xyz.z += delta_movement.z;
+  if (delta_movement.z() > 0.0f)
+    fvi_max_xyz.z() += delta_movement.z();
   else
-    fvi_min_xyz.z += delta_movement.z;
+    fvi_min_xyz.z() += delta_movement.z();
 
   fvi_wall_min_xyz = fvi_min_xyz;
   fvi_wall_max_xyz = fvi_max_xyz;
@@ -1834,9 +1834,9 @@ inline void compute_movement_AABB(void) {
     if (fvi_query_ptr->thisobjnum < 0) {
       vector offset_vec;
 
-      offset_vec.x = fvi_query_ptr->rad;
-      offset_vec.y = fvi_query_ptr->rad;
-      offset_vec.z = fvi_query_ptr->rad;
+      offset_vec.x() = fvi_query_ptr->rad;
+      offset_vec.y() = fvi_query_ptr->rad;
+      offset_vec.z() = fvi_query_ptr->rad;
 
       fvi_min_xyz -= offset_vec;
       fvi_max_xyz += offset_vec;
@@ -1862,8 +1862,8 @@ inline void compute_movement_AABB(void) {
 inline bool object_object_AABB(object *obj1, object *obj2) {
   bool overlap = true;
 
-  if (obj1->max_xyz.x < obj2->min_xyz.x || obj2->max_xyz.x < obj1->min_xyz.x || obj1->max_xyz.z < obj2->min_xyz.z ||
-      obj2->max_xyz.z < obj1->min_xyz.z || obj1->max_xyz.y < obj2->min_xyz.y || obj2->max_xyz.y < obj1->min_xyz.y)
+  if (obj1->max_xyz.x() < obj2->min_xyz.x() || obj2->max_xyz.x() < obj1->min_xyz.x() || obj1->max_xyz.z() < obj2->min_xyz.z() ||
+      obj2->max_xyz.z() < obj1->min_xyz.z() || obj1->max_xyz.y() < obj2->min_xyz.y() || obj2->max_xyz.y() < obj1->min_xyz.y())
     overlap = false;
 
   return overlap;
@@ -1872,8 +1872,8 @@ inline bool object_object_AABB(object *obj1, object *obj2) {
 inline bool object_movement_AABB(object *obj) {
   bool overlap = true;
 
-  if (obj->max_xyz.x < fvi_min_xyz.x || fvi_max_xyz.x < obj->min_xyz.x || obj->max_xyz.z < fvi_min_xyz.z ||
-      fvi_max_xyz.z < obj->min_xyz.z || obj->max_xyz.y < fvi_min_xyz.y || fvi_max_xyz.y < obj->min_xyz.y)
+  if (obj->max_xyz.x() < fvi_min_xyz.x() || fvi_max_xyz.x() < obj->min_xyz.x() || obj->max_xyz.z() < fvi_min_xyz.z() ||
+      fvi_max_xyz.z() < obj->min_xyz.z() || obj->max_xyz.y() < fvi_min_xyz.y() || fvi_max_xyz.y() < obj->min_xyz.y())
     overlap = false;
 
   return overlap;
@@ -1882,9 +1882,9 @@ inline bool object_movement_AABB(object *obj) {
 inline bool object_room_AABB(object *obj, face *room_face) {
   bool overlap = true;
 
-  if (obj->max_xyz.y < room_face->min_xyz.y || room_face->max_xyz.y < obj->min_xyz.y ||
-      obj->max_xyz.x < room_face->min_xyz.x || room_face->max_xyz.x < obj->min_xyz.x ||
-      obj->max_xyz.z < room_face->min_xyz.z || room_face->max_xyz.z < obj->min_xyz.z)
+  if (obj->max_xyz.y() < room_face->min_xyz.y() || room_face->max_xyz.y() < obj->min_xyz.y() ||
+      obj->max_xyz.x() < room_face->min_xyz.x() || room_face->max_xyz.x() < obj->min_xyz.x() ||
+      obj->max_xyz.z() < room_face->min_xyz.z() || room_face->max_xyz.z() < obj->min_xyz.z())
     overlap = false;
 
   return overlap;
@@ -1893,9 +1893,9 @@ inline bool object_room_AABB(object *obj, face *room_face) {
 inline bool room_movement_AABB(face *room_face) {
   bool overlap = true;
 
-  if (fvi_wall_max_xyz.y < room_face->min_xyz.y || room_face->max_xyz.y < fvi_wall_min_xyz.y ||
-      fvi_wall_max_xyz.x < room_face->min_xyz.x || room_face->max_xyz.x < fvi_wall_min_xyz.x ||
-      fvi_wall_max_xyz.z < room_face->min_xyz.z || room_face->max_xyz.z < fvi_wall_min_xyz.z)
+  if (fvi_wall_max_xyz.y() < room_face->min_xyz.y() || room_face->max_xyz.y() < fvi_wall_min_xyz.y() ||
+      fvi_wall_max_xyz.x() < room_face->min_xyz.x() || room_face->max_xyz.x() < fvi_wall_min_xyz.x() ||
+      fvi_wall_max_xyz.z() < room_face->min_xyz.z() || room_face->max_xyz.z() < fvi_wall_min_xyz.z())
     overlap = false;
 
   return overlap;
@@ -1904,8 +1904,8 @@ inline bool room_movement_AABB(face *room_face) {
 inline bool room_manual_AABB(const face *room_face, const vector *min_xyz, const vector *max_xyz) {
   bool overlap = true;
 
-  if (max_xyz->y < room_face->min_xyz.y || room_face->max_xyz.y < min_xyz->y || max_xyz->x < room_face->min_xyz.x ||
-      room_face->max_xyz.x < min_xyz->x || max_xyz->z < room_face->min_xyz.z || room_face->max_xyz.z < min_xyz->z)
+  if (max_xyz->y() < room_face->min_xyz.y() || room_face->max_xyz.y() < min_xyz->y() || max_xyz->x() < room_face->min_xyz.x() ||
+      room_face->max_xyz.x() < min_xyz->x() || max_xyz->z() < room_face->min_xyz.z() || room_face->max_xyz.z() < min_xyz->z())
     overlap = false;
 
   return overlap;
@@ -1932,12 +1932,12 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
   // Quick volume
   min_xyz = max_xyz = *pos;
 
-  min_xyz.x -= rad;
-  min_xyz.y -= rad;
-  min_xyz.z -= rad;
-  max_xyz.x += rad;
-  max_xyz.y += rad;
-  max_xyz.z += rad;
+  min_xyz.x() -= rad;
+  min_xyz.y() -= rad;
+  min_xyz.z() -= rad;
+  max_xyz.x() += rad;
+  max_xyz.y() += rad;
+  max_xyz.z() += rad;
 
   // Initially this is the only room in the list
   next_rooms[0] = init_room_index;
@@ -1955,22 +1955,22 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
     // sort shit
     uint8_t msector = 0;
 
-    if (min_xyz.x <= cur_room->bbf_min_xyz.x) {
+    if (min_xyz.x() <= cur_room->bbf_min_xyz.x()) {
       msector |= 0x01;
     }
-    if (min_xyz.y <= cur_room->bbf_min_xyz.y) {
+    if (min_xyz.y() <= cur_room->bbf_min_xyz.y()) {
       msector |= 0x02;
     }
-    if (min_xyz.z <= cur_room->bbf_min_xyz.z) {
+    if (min_xyz.z() <= cur_room->bbf_min_xyz.z()) {
       msector |= 0x04;
     }
-    if (max_xyz.x >= cur_room->bbf_max_xyz.x) {
+    if (max_xyz.x() >= cur_room->bbf_max_xyz.x()) {
       msector |= 0x08;
     }
-    if (max_xyz.y >= cur_room->bbf_max_xyz.y) {
+    if (max_xyz.y() >= cur_room->bbf_max_xyz.y()) {
       msector |= 0x10;
     }
-    if (max_xyz.z >= cur_room->bbf_max_xyz.z) {
+    if (max_xyz.z() >= cur_room->bbf_max_xyz.z()) {
       msector |= 0x20;
     }
 
@@ -1984,8 +1984,8 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
     // Do the actual wall collsion stuff here!
     for (int test1 = 0; test1 < num_bbf_regions; test1++) {
       if (((*bbf_val) & msector) == (*bbf_val)) {
-        if (region_min->x > max_xyz.x || region_min->y > max_xyz.y || region_min->z > max_xyz.z ||
-            region_max->x < min_xyz.x || region_max->y < min_xyz.y || region_max->z < min_xyz.z)
+        if (region_min->x() > max_xyz.x() || region_min->y() > max_xyz.y() || region_min->z() > max_xyz.z() ||
+            region_max->x() < min_xyz.x() || region_max->y() < min_xyz.y() || region_max->z() < min_xyz.z())
           goto skip_region;
 
         int16_t *cur_face_index_ptr = *bbf_list_ptr;
@@ -2089,8 +2089,8 @@ int fvi_QuickDistCellList(int init_cell_index, vector *pos, float rad, int *quic
 
   for (ycounter = ystart; ycounter <= yend; ycounter++) {
     for (xcounter = xstart; xcounter <= xend; xcounter++) {
-      if ((Terrain_seg[cur_node].y >= pos->y - rad) || (Terrain_seg[cur_node + TERRAIN_WIDTH + 1].y >= pos->y - rad) ||
-          (Terrain_seg[cur_node + 1].y >= pos->y - rad) || (Terrain_seg[cur_node + TERRAIN_WIDTH].y >= pos->y - rad)) {
+      if ((Terrain_seg[cur_node].y >= pos->y() - rad) || (Terrain_seg[cur_node + TERRAIN_WIDTH + 1].y >= pos->y() - rad) ||
+          (Terrain_seg[cur_node + 1].y >= pos->y() - rad) || (Terrain_seg[cur_node + TERRAIN_WIDTH].y >= pos->y() - rad)) {
         quick_cell_list[num_cells++] = cur_node;
         if (num_cells >= max_elements)
           break;
@@ -2113,7 +2113,7 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
   vector delta;
 
   // Quick volume
-  delta.x = delta.y = delta.z = rad;
+  delta.x() = delta.y() = delta.z() = rad;
   fvi_min_xyz = fvi_max_xyz = *pos;
 
   fvi_min_xyz -= delta;
@@ -2262,9 +2262,9 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
         int connect_room;
 
         if (f_stop_at_closed_doors) {
-          if ((cur_room->portals[x].flags & PF_RENDER_FACES) &&
-                  !(cur_room->portals[x].flags & PF_RENDERED_FLYTHROUGH) ||
-              (cur_room->portals[x].flags & PF_BLOCK)) {
+          if (((cur_room->portals[x].flags & PF_RENDER_FACES) &&
+              !(cur_room->portals[x].flags & PF_RENDERED_FLYTHROUGH)) ||
+               (cur_room->portals[x].flags & PF_BLOCK)) {
             continue;
           }
         }
@@ -2327,37 +2327,37 @@ internal_try_again:
   new_pos = min_xyz = max_xyz = *pos;
 
   if (!try_again) {
-    new_pos.x += 10000000.0f;
-    max_xyz.x += 10000000.0f;
+    new_pos.x() += (scalar)10000000;
+    max_xyz.x() += (scalar)10000000;
   } else {
-    new_pos.z -= 10000000.0f;
-    min_xyz.z -= 10000000.0f;
-    new_pos.y -= 10000000.0f;
-    min_xyz.y -= 10000000.0f;
-    new_pos.x -= 10000000.0f;
-    min_xyz.x -= 10000000.0f;
+    new_pos.z() -= (scalar)10000000;
+    min_xyz.z() -= (scalar)10000000;
+    new_pos.y() -= (scalar)10000000;
+    min_xyz.y() -= (scalar)10000000;
+    new_pos.x() -= (scalar)10000000;
+    min_xyz.x() -= (scalar)10000000;
   }
   //	mprintf(0, "Checking room %d ", ROOMNUM(cur_room));
 
   // sort shit
   uint8_t msector = 0;
 
-  if (min_xyz.x <= cur_room->bbf_min_xyz.x) {
+  if (min_xyz.x() <= cur_room->bbf_min_xyz.x()) {
     msector |= 0x01;
   }
-  if (min_xyz.y <= cur_room->bbf_min_xyz.y) {
+  if (min_xyz.y() <= cur_room->bbf_min_xyz.y()) {
     msector |= 0x02;
   }
-  if (min_xyz.z <= cur_room->bbf_min_xyz.z) {
+  if (min_xyz.z() <= cur_room->bbf_min_xyz.z()) {
     msector |= 0x04;
   }
-  if (max_xyz.x >= cur_room->bbf_max_xyz.x) {
+  if (max_xyz.x() >= cur_room->bbf_max_xyz.x()) {
     msector |= 0x08;
   }
-  if (max_xyz.y >= cur_room->bbf_max_xyz.y) {
+  if (max_xyz.y() >= cur_room->bbf_max_xyz.y()) {
     msector |= 0x10;
   }
-  if (max_xyz.z >= cur_room->bbf_max_xyz.z) {
+  if (max_xyz.z() >= cur_room->bbf_max_xyz.z()) {
     msector |= 0x20;
   }
 
@@ -2371,8 +2371,8 @@ internal_try_again:
   // Do the actual wall collsion stuff here!
   for (int test1 = 0; test1 < num_bbf_regions; test1++) {
     if (((*bbf_val) & msector) == (*bbf_val)) {
-      if (region_min->x > max_xyz.x || region_min->y > max_xyz.y || region_min->z > max_xyz.z ||
-          region_max->x < min_xyz.x || region_max->y < min_xyz.y || region_max->z < min_xyz.z)
+      if (region_min->x() > max_xyz.x() || region_min->y() > max_xyz.y() || region_min->z() > max_xyz.z() ||
+          region_max->x() < min_xyz.x() || region_max->y() < min_xyz.y() || region_max->z() < min_xyz.z())
         goto skip_region;
 
       int16_t *cur_face_index_ptr = *bbf_list_ptr;
@@ -2453,7 +2453,7 @@ internal_try_again:
 #define MIN_LONG_RAY (TERRAIN_SIZE * 20.0)
 
 inline bool is_long_xz_ray(fvi_query *fq) {
-  if ((fabs(fq->p0->x - fq->p1->x) > MIN_LONG_RAY) || (fabs(fq->p0->z - fq->p1->z) > MIN_LONG_RAY)) {
+  if ((fabs(fq->p0->x() - fq->p1->x()) > MIN_LONG_RAY) || (fabs(fq->p0->z() - fq->p1->z()) > MIN_LONG_RAY)) {
     return true;
   } else {
     return false;
@@ -2472,21 +2472,21 @@ void check_ceiling() {
   vector colp;
 
   // Bail early if hitpnt is not high enough
-  if (fvi_query_ptr->rad + fvi_hit_data_ptr->hit_pnt.y < CEILING_HEIGHT)
+  if (fvi_query_ptr->rad + fvi_hit_data_ptr->hit_pnt.y() < CEILING_HEIGHT)
     return;
 
-  vlist[0].x = 0.0;
-  vlist[0].y = CEILING_HEIGHT;
-  vlist[0].z = 0.0;
-  vlist[1].x = TERRAIN_WIDTH * TERRAIN_SIZE;
-  vlist[1].y = CEILING_HEIGHT;
-  vlist[1].z = 0.0;
-  vlist[2].x = TERRAIN_WIDTH * TERRAIN_SIZE;
-  vlist[2].y = CEILING_HEIGHT;
-  vlist[2].z = TERRAIN_DEPTH * TERRAIN_SIZE;
-  vlist[3].x = 0.0;
-  vlist[3].y = CEILING_HEIGHT;
-  vlist[3].z = TERRAIN_DEPTH * TERRAIN_SIZE;
+  vlist[0].x() = 0.0;
+  vlist[0].y() = CEILING_HEIGHT;
+  vlist[0].z() = 0.0;
+  vlist[1].x() = TERRAIN_WIDTH * TERRAIN_SIZE;
+  vlist[1].y() = CEILING_HEIGHT;
+  vlist[1].z() = 0.0;
+  vlist[2].x() = TERRAIN_WIDTH * TERRAIN_SIZE;
+  vlist[2].y() = CEILING_HEIGHT;
+  vlist[2].z() = TERRAIN_DEPTH * TERRAIN_SIZE;
+  vlist[3].x() = 0.0;
+  vlist[3].y() = CEILING_HEIGHT;
+  vlist[3].z() = TERRAIN_DEPTH * TERRAIN_SIZE;
 
   vertex_ptr_list[0] = &vlist[0];
   vertex_ptr_list[1] = &vlist[1];
@@ -2651,9 +2651,9 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
   ASSERT(fq != nullptr && hit_data != nullptr);
 
-  ASSERT(std::isfinite(fq->p1->x)); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(std::isfinite(fq->p1->y)); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(std::isfinite(fq->p1->z)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->x())); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->y())); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->z())); // Caller wants to go to infinity!  -- Not FVI's fault.
 
   fvi_movement_delta = *fq->p1 - *fq->p0;
 
@@ -2669,7 +2669,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
       this_obj->type != OBJ_PLAYER && fq->rad == this_obj->size) {
     if (this_obj->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS) {
       fvi_wall_sphere_rad = 0.0f;
-      fvi_wall_sphere_offset = Zero_vector;
+      fvi_wall_sphere_offset = vector{};
       fvi_wall_sphere_p0 = *fq->p0;
       fvi_wall_sphere_p1 = *fq->p1;
     } else {
@@ -2688,23 +2688,23 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
       fvi_wall_sphere_rad = fq->rad * PLAYER_SIZE_SCALAR;
       if (Players[this_obj->id].flags & (PLAYER_FLAGS_DEAD | PLAYER_FLAGS_DYING))
         fvi_wall_sphere_rad *= 0.5f;
-      fvi_wall_sphere_offset = Zero_vector;
+      fvi_wall_sphere_offset = vector{};
       fvi_wall_sphere_p0 = *fq->p0;
       fvi_wall_sphere_p1 = *fq->p1;
     } else if ((this_obj) && this_obj->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS) {
       fvi_wall_sphere_rad = 0.0f;
-      fvi_wall_sphere_offset = Zero_vector;
+      fvi_wall_sphere_offset = vector{};
       fvi_wall_sphere_p0 = *fq->p0;
       fvi_wall_sphere_p1 = *fq->p1;
     } else {
       fvi_wall_sphere_rad = fq->rad;
-      fvi_wall_sphere_offset = Zero_vector;
+      fvi_wall_sphere_offset = vector{};
       fvi_wall_sphere_p0 = *fq->p0;
       fvi_wall_sphere_p1 = *fq->p1;
     }
 
     fvi_anim_sphere_rad = fq->rad;
-    fvi_anim_sphere_offset = Zero_vector;
+    fvi_anim_sphere_offset = vector{};
     fvi_anim_sphere_p0 = *fq->p0;
     fvi_anim_sphere_p1 = *fq->p1;
   }
@@ -2752,7 +2752,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
       sub_dir = *fq->p1 - *fq->p0;  // Direction of movement
       vm_NormalizeVector(&sub_dir); // Normalize it
-      sub_dir *= MIN_LONG_RAY;      // Scale it to the length of a sub-division
+      sub_dir *= (scalar)MIN_LONG_RAY;      // Scale it to the length of a sub-division
 
       // Determine the first sub-division
       new_p0 = *fq->p0;
@@ -3203,7 +3203,7 @@ vector PointSpeed(object *obj, vector *pos, matrix *orient, vector *rotvel, vect
   if (temp1 != 0.0f) {
     vm_CrossProduct(&w1, &n1, &r1);
   } else {
-    w1 = Zero_vector;
+    w1 = vector{};
   }
 
   return *velocity + w1;
@@ -3225,32 +3225,32 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
   int num_int_box = 0;
   vector int_points_box[12];
 
-  verts[0] = (orient->rvec * pm->mins.x) + (orient->uvec * pm->maxs.y) + (orient->fvec * pm->mins.z);
+  verts[0] = (orient->rvec * pm->mins.x()) + (orient->uvec * pm->maxs.y()) + (orient->fvec * pm->mins.z());
 
-  verts[1] = (orient->rvec * pm->mins.x) + (orient->uvec * pm->mins.y) + (orient->fvec * pm->mins.z);
+  verts[1] = (orient->rvec * pm->mins.x()) + (orient->uvec * pm->mins.y()) + (orient->fvec * pm->mins.z());
 
-  verts[2] = (orient->rvec * pm->maxs.x) + (orient->uvec * pm->mins.y) + (orient->fvec * pm->mins.z);
+  verts[2] = (orient->rvec * pm->maxs.x()) + (orient->uvec * pm->mins.y()) + (orient->fvec * pm->mins.z());
 
-  verts[3] = (orient->rvec * pm->maxs.x) + (orient->uvec * pm->maxs.y) + (orient->fvec * pm->mins.z);
+  verts[3] = (orient->rvec * pm->maxs.x()) + (orient->uvec * pm->maxs.y()) + (orient->fvec * pm->mins.z());
 
-  verts[4] = (orient->rvec * pm->maxs.x) + (orient->uvec * pm->maxs.y) + (orient->fvec * pm->maxs.z);
+  verts[4] = (orient->rvec * pm->maxs.x()) + (orient->uvec * pm->maxs.y()) + (orient->fvec * pm->maxs.z());
 
-  verts[5] = (orient->rvec * pm->maxs.x) + (orient->uvec * pm->mins.y) + (orient->fvec * pm->maxs.z);
+  verts[5] = (orient->rvec * pm->maxs.x()) + (orient->uvec * pm->mins.y()) + (orient->fvec * pm->maxs.z());
 
-  verts[6] = (orient->rvec * pm->mins.x) + (orient->uvec * pm->mins.y) + (orient->fvec * pm->maxs.z);
+  verts[6] = (orient->rvec * pm->mins.x()) + (orient->uvec * pm->mins.y()) + (orient->fvec * pm->maxs.z());
 
-  verts[7] = (orient->rvec * pm->mins.x) + (orient->uvec * pm->maxs.y) + (orient->fvec * pm->maxs.z);
+  verts[7] = (orient->rvec * pm->mins.x()) + (orient->uvec * pm->maxs.y()) + (orient->fvec * pm->maxs.z());
 
   for (i = 0; i < 8; i++) {
     verts[i] += *new_pos;
   }
 
-  vector xxx_normal = Zero_vector;
-  xxx_normal.y = 1.0f;
+  vector xxx_normal{};
+  xxx_normal.y() = 1.0f;
 
   for (i = 0; i < 8; i++) {
     rel[i] = verts[i];
-    dot[i] = rel[i] * (xxx_normal);
+    dot[i] = vm_Dot3Product(rel[i],(xxx_normal));
   }
 
   for (i = 0; i < 8; i++) {
@@ -3269,7 +3269,7 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
     if (dot[bbox_edges[i][0]] > 0.0f && dot[bbox_edges[i][1]] < 0.0f && collidable[bbox_edges[i][1]]) {
       movement = verts[bbox_edges[i][1]] - verts[bbox_edges[i][0]];
 
-      nmovement = -(movement * *face_normal);
+      nmovement = -(vm_Dot3Product(movement,*face_normal));
 
       plane_pnt = verts[bbox_edges[i][0]];
       plane_pnt += movement * (dot[bbox_edges[i][0]] / nmovement);
@@ -3278,7 +3278,7 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
     } else if (dot[bbox_edges[i][0]] < 0.0f && dot[bbox_edges[i][1]] > 0.0f && collidable[bbox_edges[i][0]]) {
       movement = verts[bbox_edges[i][0]] - verts[bbox_edges[i][1]];
 
-      nmovement = -(movement * *face_normal);
+      nmovement = -(vm_Dot3Product(movement,*face_normal));
 
       plane_pnt = verts[bbox_edges[i][1]];
       plane_pnt += movement * (dot[bbox_edges[i][1]] / nmovement);
@@ -3558,7 +3558,7 @@ void check_hit_obj(int objnum) {
                   if (cur_dist < fvi_collision_dist) {
 
                     vector pos_hit;
-                    float hit_obj_size;
+                    scalar hit_obj_size;
                     vector hit_obj_pos;
 
                     hit_obj_pos = obj->pos + obj->anim_sphere_offset;
@@ -3571,8 +3571,8 @@ void check_hit_obj(int objnum) {
                       hit_obj_size = obj->size;
                     }
 
-                    pos_hit = hit_obj_pos + pos_hit * (hit_obj_size / (hit_obj_size + fvi_anim_sphere_rad));
                     ASSERT(hit_obj_size + fvi_anim_sphere_rad > 0.0f);
+                    pos_hit = hit_obj_pos + pos_hit * (hit_obj_size / (hit_obj_size + fvi_anim_sphere_rad));
 
                     fvi_collision_dist = cur_dist;
                     fvi_hit_data_ptr->hit_pnt = hit_point - fvi_anim_sphere_offset;
@@ -3582,8 +3582,9 @@ void check_hit_obj(int objnum) {
                     fvi_hit_data_ptr->hit_object[0] = objnum;
                     fvi_hit_data_ptr->hit_type[0] = HIT_OBJECT;
                     fvi_hit_data_ptr->hit_face_pnt[0] = pos_hit;
-                    fvi_hit_data_ptr->hit_wallnorm[0] = (pos_hit - hit_obj_pos) / hit_obj_size;
+
                     ASSERT(hit_obj_size > 0.0f);
+                    fvi_hit_data_ptr->hit_wallnorm[0] = (pos_hit - hit_obj_pos) / hit_obj_size;
 
                     ASSERT(objnum != -1);
                   }
@@ -3732,7 +3733,7 @@ fvi_query_ptr->p1)); matrix orient = *fvi_query_ptr->o_orient; vector rotvel = *
         // Save results of this simulation
         old_sim_time_remaining = sim_time_remaining;
         moved_vec_n = end_pos - *p0;
-        if(moved_vec_n != Zero_vector)
+        if(moved_vec_n != vector{})
         {
                 actual_dist = vm_NormalizeVector(&moved_vec_n);
         }
@@ -3854,10 +3855,10 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
 
     if (((float)Terrain_max_height_int[6][lod_z * (TERRAIN_WIDTH >> 2) + lod_x] * TERRAIN_HEIGHT_INCREMENT +
                  fvi_query_ptr->rad >=
-             fvi_query_ptr->p0->y ||
+             fvi_query_ptr->p0->y() ||
          (float)Terrain_max_height_int[6][lod_z * (TERRAIN_WIDTH >> 2) + lod_x] * TERRAIN_HEIGHT_INCREMENT +
                  fvi_query_ptr->rad >=
-             fvi_query_ptr->p1->y) &&
+             fvi_query_ptr->p1->y()) &&
         !(Terrain_seg[cur_node].flags & TF_INVISIBLE) &&
         !(fvi_query_ptr->flags & (FQ_IGNORE_WALLS | FQ_IGNORE_TERRAIN))) {
 
@@ -3875,23 +3876,23 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
           int cellnum_upper_right = cur_node + TERRAIN_WIDTH + 1;
           int cellnum_right = cur_node + 1;
 
-          vlist[0].x = (cur_node % TERRAIN_WIDTH) * TERRAIN_SIZE;
-          vlist[0].y = Terrain_seg[cur_node].y;
-          vlist[0].z = (cur_node / TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[0].x() = (cur_node % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[0].y() = Terrain_seg[cur_node].y;
+          vlist[0].z() = (cur_node / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
-          vlist[1].x = (cellnum_upper_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[1].x() = (cellnum_upper_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
           if (cellnum_upper_right < TERRAIN_WIDTH * TERRAIN_DEPTH)
-            vlist[1].y = Terrain_seg[cellnum_upper_right].y;
+            vlist[1].y() = Terrain_seg[cellnum_upper_right].y;
           else
-            vlist[1].y = 0.0;
-          vlist[1].z = (cellnum_upper_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
+            vlist[1].y() = 0.0;
+          vlist[1].z() = (cellnum_upper_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
-          vlist[2].x = (cellnum_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[2].x() = (cellnum_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
           if (cellnum_right < TERRAIN_WIDTH * TERRAIN_DEPTH)
-            vlist[2].y = Terrain_seg[cellnum_right].y;
+            vlist[2].y() = Terrain_seg[cellnum_right].y;
           else
-            vlist[2].y = 0.0;
-          vlist[2].z = (cellnum_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
+            vlist[2].y() = 0.0;
+          vlist[2].z() = (cellnum_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
           vertex_ptr_list[0] = &vlist[0];
           vertex_ptr_list[1] = &vlist[1];
@@ -3903,23 +3904,23 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
           int cellnum_upper = cur_node + TERRAIN_WIDTH;
           int cellnum_upper_right = cur_node + TERRAIN_WIDTH + 1;
 
-          vlist[0].x = (cur_node % TERRAIN_WIDTH) * TERRAIN_SIZE;
-          vlist[0].y = Terrain_seg[cur_node].y;
-          vlist[0].z = (cur_node / TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[0].x() = (cur_node % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[0].y() = Terrain_seg[cur_node].y;
+          vlist[0].z() = (cur_node / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
-          vlist[1].x = (cellnum_upper % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[1].x() = (cellnum_upper % TERRAIN_WIDTH) * TERRAIN_SIZE;
           if (cellnum_upper < TERRAIN_WIDTH * TERRAIN_DEPTH)
-            vlist[1].y = Terrain_seg[cellnum_upper].y;
+            vlist[1].y() = Terrain_seg[cellnum_upper].y;
           else
-            vlist[1].y = 0.0;
-          vlist[1].z = (cellnum_upper / TERRAIN_WIDTH) * TERRAIN_SIZE;
+            vlist[1].y() = 0.0;
+          vlist[1].z() = (cellnum_upper / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
-          vlist[2].x = (cellnum_upper_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
+          vlist[2].x() = (cellnum_upper_right % TERRAIN_WIDTH) * TERRAIN_SIZE;
           if (cellnum_upper_right < TERRAIN_WIDTH * TERRAIN_DEPTH)
-            vlist[2].y = Terrain_seg[cellnum_upper_right].y;
+            vlist[2].y() = Terrain_seg[cellnum_upper_right].y;
           else
-            vlist[2].y = 0.0;
-          vlist[2].z = (cellnum_upper_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
+            vlist[2].y() = 0.0;
+          vlist[2].z() = (cellnum_upper_right / TERRAIN_WIDTH) * TERRAIN_SIZE;
 
           vertex_ptr_list[0] = &vlist[0];
           vertex_ptr_list[1] = &vlist[1];
@@ -3987,7 +3988,7 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
               fvi_hit_data_ptr->hit_pnt = *fvi_query_ptr->p0;
 
               fvi_collision_dist = 0.0;
-              movement_dir = Zero_vector;
+              movement_dir = vector{};
               hit_dist = 0.0f;
             }
 
@@ -4190,24 +4191,24 @@ int do_fvi_terrain() {
     float delta = 1.0;
     vector movement = fvi_hit_data_ptr->hit_pnt - *fvi_query_ptr->p0;
 
-    if (fvi_hit_data_ptr->hit_pnt.x < (fvi_query_ptr->rad + 0.000001)) {
-      delta = (fvi_query_ptr->p0->x - (fvi_query_ptr->rad + 0.000001)) / (-movement.x);
-    } else if (fvi_hit_data_ptr->hit_pnt.x >
+    if (fvi_hit_data_ptr->hit_pnt.x() < (fvi_query_ptr->rad + 0.000001)) {
+      delta = (fvi_query_ptr->p0->x() - (fvi_query_ptr->rad + 0.000001)) / (-movement.x());
+    } else if (fvi_hit_data_ptr->hit_pnt.x() >
                (float)((TERRAIN_WIDTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001)) {
-      delta = ((float)((TERRAIN_WIDTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->x) /
-              (movement.x);
+      delta = ((float)((TERRAIN_WIDTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->x()) /
+              (movement.x());
     }
 
-    if (fvi_hit_data_ptr->hit_pnt.z < (fvi_query_ptr->rad + 0.000001)) {
-      if ((fvi_query_ptr->p0->z - (fvi_query_ptr->rad + 0.000001)) / (-movement.z) < delta)
-        delta = (fvi_query_ptr->p0->z - (fvi_query_ptr->rad + 0.000001)) / (-movement.z);
-    } else if (fvi_hit_data_ptr->hit_pnt.z >
+    if (fvi_hit_data_ptr->hit_pnt.z() < (fvi_query_ptr->rad + 0.000001)) {
+      if ((fvi_query_ptr->p0->z() - (fvi_query_ptr->rad + 0.000001)) / (-movement.z()) < delta)
+        delta = (fvi_query_ptr->p0->z() - (fvi_query_ptr->rad + 0.000001)) / (-movement.z());
+    } else if (fvi_hit_data_ptr->hit_pnt.z() >
                (float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001)) {
-      if (((float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->z) /
-              (movement.z) <
+      if (((float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->z()) /
+              (movement.z()) <
           delta)
-        delta = ((float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->z) /
-                (movement.z);
+        delta = ((float)((TERRAIN_DEPTH - 1) * TERRAIN_SIZE) - (fvi_query_ptr->rad + 0.000001) - fvi_query_ptr->p0->z()) /
+                (movement.z());
     }
 
     fvi_hit_data_ptr->hit_pnt = *fvi_query_ptr->p0 + delta * movement;
@@ -4462,22 +4463,22 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
   object *this_obj;
   uint8_t msector = 0;
 
-  if (fvi_min_xyz.x <= cur_room->bbf_min_xyz.x) {
+  if (fvi_min_xyz.x() <= cur_room->bbf_min_xyz.x()) {
     msector |= 0x01;
   }
-  if (fvi_min_xyz.y <= cur_room->bbf_min_xyz.y) {
+  if (fvi_min_xyz.y() <= cur_room->bbf_min_xyz.y()) {
     msector |= 0x02;
   }
-  if (fvi_min_xyz.z <= cur_room->bbf_min_xyz.z) {
+  if (fvi_min_xyz.z() <= cur_room->bbf_min_xyz.z()) {
     msector |= 0x04;
   }
-  if (fvi_max_xyz.x >= cur_room->bbf_max_xyz.x) {
+  if (fvi_max_xyz.x() >= cur_room->bbf_max_xyz.x()) {
     msector |= 0x08;
   }
-  if (fvi_max_xyz.y >= cur_room->bbf_max_xyz.y) {
+  if (fvi_max_xyz.y() >= cur_room->bbf_max_xyz.y()) {
     msector |= 0x10;
   }
-  if (fvi_max_xyz.z >= cur_room->bbf_max_xyz.z) {
+  if (fvi_max_xyz.z() >= cur_room->bbf_max_xyz.z()) {
     msector |= 0x20;
   }
 
@@ -4568,9 +4569,9 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
     // Do the actual wall collsion stuff here!
     for (int test1 = 0; test1 < num_bbf_regions; test1++) {
       if (((*bbf_val) & msector) == (*bbf_val)) {
-        if (region_min->x > fvi_wall_max_xyz.x || region_min->y > fvi_wall_max_xyz.y ||
-            region_min->z > fvi_wall_max_xyz.z || region_max->x < fvi_wall_min_xyz.x ||
-            region_max->y < fvi_wall_min_xyz.y || region_max->z < fvi_wall_min_xyz.z)
+        if (region_min->x() > fvi_wall_max_xyz.x() || region_min->y() > fvi_wall_max_xyz.y() ||
+            region_min->z() > fvi_wall_max_xyz.z() || region_max->x() < fvi_wall_min_xyz.x() ||
+            region_max->y() < fvi_wall_min_xyz.y() || region_max->z() < fvi_wall_min_xyz.z())
           goto skip_region;
 
         if (fvi_zero_rad && FastVectorBBox((float *)region_min, (float *)region_max, (float *)fvi_query_ptr->p0,
@@ -4597,8 +4598,8 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
           const vector *cf_max = &cur_face->max_xyz;
           const vector *cf_min = &cur_face->min_xyz;
 
-          if (cf_min->x > fvi_wall_max_xyz.x || cf_min->y > fvi_wall_max_xyz.y || cf_min->z > fvi_wall_max_xyz.z ||
-              cf_max->x < fvi_wall_min_xyz.x || cf_max->y < fvi_wall_min_xyz.y || cf_max->z < fvi_wall_min_xyz.z)
+          if (cf_min->x() > fvi_wall_max_xyz.x() || cf_min->y() > fvi_wall_max_xyz.y() || cf_min->z() > fvi_wall_max_xyz.z() ||
+              cf_max->x() < fvi_wall_min_xyz.x() || cf_max->y() < fvi_wall_min_xyz.y() || cf_max->z() < fvi_wall_min_xyz.z())
             continue;
 
           if (fvi_zero_rad && !FastVectorBBox((float *)cf_min, (float *)cf_max, (float *)fvi_query_ptr->p0,

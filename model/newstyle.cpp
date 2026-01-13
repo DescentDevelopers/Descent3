@@ -264,18 +264,18 @@ inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
         vector incident_norm = vert - Polymodel_bump_pos;
         vm_NormalizeVectorFast(&incident_norm);
 
-        float d = incident_norm * vertnorm;
+        scalar d = vm_Dot3Product(incident_norm, vertnorm);
         vector upvec = d * vertnorm;
         incident_norm -= (2 * upvec);
 
-        float dotp = (subvec * incident_norm);
+        scalar dotp = vm_Dot3Product(subvec, incident_norm);
 
         if (dotp < 0)
           dotp = 0;
         if (dotp > 1)
           dotp = 1;
 
-        float val = dotp * .5;
+        scalar val = dotp * .5;
 
         p->p3_uvl.u2 = val;
         p->p3_uvl.v2 = val;
@@ -516,7 +516,7 @@ inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) 
     g3Point *p = &Robot_points[fp->vertnums[t]];
     pointlist[t] = p;
 
-    float mag;
+    scalar mag;
 
     if (Polymodel_effect.fog_plane_check == 1) {
       mag = vm_DotProduct(&Fog_plane, &sm->verts[fp->vertnums[t]]) + Fog_distance;
@@ -526,18 +526,18 @@ inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) 
       // Now we must generate the split point. This is simply
       // an equation in the form Origin + t*Direction
 
-      float dist = (*vec * Polymodel_fog_plane) + Fog_distance;
+      scalar dist = vm_Dot3Product(*vec, Polymodel_fog_plane) + Fog_distance;
 
       vector subvec = *vec - Fog_view_pos;
 
-      float t = Fog_eye_distance / (Fog_eye_distance - dist);
+      scalar t = Fog_eye_distance / (Fog_eye_distance - dist);
       vector portal_point = Fog_view_pos + (t * subvec);
 
-      float eye_distance = -(vm_DotProduct(&Fog_plane, &portal_point));
+      scalar eye_distance = -(vm_DotProduct(&Fog_plane, &portal_point));
       mag = vm_DotProduct(&Fog_plane, vec) + eye_distance;
     }
 
-    float scalar = mag / Polymodel_effect.fog_depth;
+    scalar scalar = mag / Polymodel_effect.fog_depth;
 
     if (scalar > 1)
       scalar = 1;
@@ -588,11 +588,11 @@ inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum
     vector incident_norm = vert - Polymodel_specular_pos;
     vm_NormalizeVectorFast(&incident_norm);
 
-    float d = incident_norm * vertnorm;
+    scalar d = vm_Dot3Product(incident_norm, vertnorm);
     vector upvec = d * vertnorm;
     incident_norm -= (2 * upvec);
 
-    float dotp = subvec * incident_norm;
+    scalar dotp = vm_Dot3Product(subvec,incident_norm);
 
     if (dotp < 0)
       continue;
@@ -600,8 +600,8 @@ inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum
       dotp = 1;
 
     if (dotp > 0) {
-      int index = ((float)(MAX_SPECULAR_INCREMENTS - 1) * dotp);
-      float val = Specular_tables[2][index];
+      int index = ((scalar)(MAX_SPECULAR_INCREMENTS - 1) * dotp);
+      scalar val = Specular_tables[2][index];
 
       p->p3_a = val * Polymodel_effect.spec_scalar;
     }
@@ -761,7 +761,7 @@ void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
 
     // Check to see if this face even faces us!
     tempv = view_pos - sm->verts[fp->vertnums[0]];
-    if ((tempv * fp->normal) < 0)
+    if ((vm_Dot3Product(tempv, fp->normal)) < 0)
       continue;
 
     if (fp->texnum != -1) {
@@ -841,7 +841,7 @@ void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
       Fog_distance = -(vm_DotProduct(&Fog_plane, &Fog_view_pos));
     else {
       Fog_distance = -(vm_DotProduct(&Polymodel_fog_plane, &Polymodel_fog_portal_vert));
-      Fog_eye_distance = (Fog_view_pos * Polymodel_fog_plane) + Fog_distance;
+      Fog_eye_distance = vm_Dot3Product(Fog_view_pos, Polymodel_fog_plane) + Fog_distance;
     }
 
     rend_SetOverlayType(OT_NONE);
@@ -1014,7 +1014,7 @@ void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
   vector temp_vec = sm->mod_pos + sm->offset;
   g3_StartInstanceAngles(&temp_vec, &sm->angs);
 
-  vm_AnglesToMatrix(&lightmatrix, sm->angs.p, sm->angs.h, sm->angs.b);
+  vm_AnglesToMatrix(&lightmatrix, sm->angs.p(), sm->angs.h(), sm->angs.b());
   StartLightInstance(&temp_vec, &lightmatrix);
 
   // Check my bit to see if I get drawn
@@ -1140,7 +1140,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
   int start_frame = 0;
   int end_frame = 0;
 
-  vector geometric_center = Zero_vector;
+  vector geometric_center{};
 
   // Chris: Come see me when you are ready to deal with the paging problem - JL
   pm = GetPolymodelPointer(handle);
@@ -1181,7 +1181,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
           while (mn != -1) {
             vector tpnt;
 
-            vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+            vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
             vm_TransposeMatrix(&m);
 
             tpnt = pnt * m;
@@ -1204,26 +1204,26 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
             first_pnt = false;
             min_xyz = max_xyz = pnt;
           } else {
-            if (pnt.x < min_xyz.x)
-              min_xyz.x = pnt.x;
-            else if (pnt.x > max_xyz.x)
-              max_xyz.x = pnt.x;
+            if (pnt.x() < min_xyz.x())
+              min_xyz.x() = pnt.x();
+            else if (pnt.x() > max_xyz.x())
+              max_xyz.x() = pnt.x();
 
-            if (pnt.y < min_xyz.y)
-              min_xyz.y = pnt.y;
-            else if (pnt.y > max_xyz.y)
-              max_xyz.y = pnt.y;
+            if (pnt.y() < min_xyz.y())
+              min_xyz.y() = pnt.y();
+            else if (pnt.y() > max_xyz.y())
+              max_xyz.y() = pnt.y();
 
-            if (pnt.z < min_xyz.z)
-              min_xyz.z = pnt.z;
-            else if (pnt.z > max_xyz.z)
-              max_xyz.z = pnt.z;
+            if (pnt.z() < min_xyz.z())
+              min_xyz.z() = pnt.z();
+            else if (pnt.z() > max_xyz.z())
+              max_xyz.z() = pnt.z();
           }
         }
       }
     }
 
-    geometric_center = (max_xyz + min_xyz) / 2.0;
+    geometric_center = (max_xyz + min_xyz) / 2.0f;
     *offset_ptr = geometric_center;
   }
 
@@ -1251,7 +1251,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
         while (mn != -1) {
           vector tpnt;
 
-          vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+          vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
           vm_TransposeMatrix(&m);
 
           tpnt = pnt * m;
@@ -1294,7 +1294,7 @@ float ComputeDefaultSize(int type, int handle, float *size_ptr) {
 
     if (type == OBJ_PLAYER) {
       Poly_models[handle].anim_size *= PLAYER_SIZE_SCALAR;
-      Poly_models[handle].anim_size_offset = Zero_vector;
+      Poly_models[handle].anim_size_offset = vector{};
     }
   } else {
     if (type == OBJ_POWERUP) {
@@ -1303,10 +1303,10 @@ float ComputeDefaultSize(int type, int handle, float *size_ptr) {
     }
 
     Poly_models[handle].wall_size = size;
-    Poly_models[handle].wall_size_offset = Zero_vector;
+    Poly_models[handle].wall_size_offset = vector{};
 
     Poly_models[handle].anim_size = size;
-    Poly_models[handle].anim_size_offset = Zero_vector;
+    Poly_models[handle].anim_size_offset = vector{};
   }
 
   Poly_models[handle].flags |= PMF_SIZE_COMPUTED;

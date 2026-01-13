@@ -714,7 +714,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
   camera->ai_info->last_render_time = -1.0f;
   camera->ai_info->next_target_update_time = Gametime;
   camera->ai_info->notify_flags |= AI_NOTIFIES_ALWAYS_ON;
-  camera->ai_info->last_see_target_pos = Zero_vector;
+  camera->ai_info->last_see_target_pos = vector{};
   camera->ai_info->dodge_vel_percent = 1.0f;
   camera->ai_info->attack_vel_percent = 1.0f;
   camera->ai_info->fight_same = 0.0f;
@@ -836,7 +836,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
       vector turn_to = target->pos - camera->pos;
       vm_NormalizeVector(&turn_to);
 
-      if (turn_to == Zero_vector) {
+      if (turn_to == vector{}) {
         LOG_WARNING << "Cine: No turn_to or less than 1 degree off goal";
         goto continue_start;
       }
@@ -849,8 +849,8 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
 
       camera->orient.fvec = turn_to;
 
-      camera->orient.uvec.x = camera->orient.uvec.z = 0.0f;
-      camera->orient.uvec.y = 1.0f;
+      camera->orient.uvec.x() = camera->orient.uvec.z() = 0.0f;
+      camera->orient.uvec.y() = 1.0f;
 
       vm_Orthogonalize(&camera->orient);
       ObjSetOrient(camera, &camera->orient);
@@ -1113,7 +1113,7 @@ void Cinematic_Frame(void) {
     vector turn_to = target->pos - camera->pos;
     vm_NormalizeVector(&turn_to);
 
-    if (turn_to == Zero_vector) {
+    if (turn_to == vector{}) {
       LOG_WARNING << "Cine: No turn_to or less than 1 degree off goal";
       goto continue_frame;
     }
@@ -1126,8 +1126,8 @@ void Cinematic_Frame(void) {
 
     camera->orient.fvec = turn_to;
 
-    camera->orient.uvec.x = camera->orient.uvec.z = 0.0f;
-    camera->orient.uvec.y = 1.0f;
+    camera->orient.uvec.x() = camera->orient.uvec.z() = 0.0f;
+    camera->orient.uvec.y() = 1.0f;
 
     vm_Orthogonalize(&camera->orient);
     ObjSetOrient(camera, &camera->orient);
@@ -2231,20 +2231,20 @@ void Cinematic_DoDemoFileData(uint8_t *buffer) {
     cinematic_data.end_transition = mf_ReadInt(buffer, &count);
     cinematic_data.start_transition = mf_ReadInt(buffer, &count);
     cinematic_data.pathid = mf_ReadInt(buffer, &count);
-    cinematic_data.position.x = mf_ReadFloat(buffer, &count);
-    cinematic_data.position.y = mf_ReadFloat(buffer, &count);
-    cinematic_data.position.z = mf_ReadFloat(buffer, &count);
+    cinematic_data.position.x() = mf_ReadFloat(buffer, &count);
+    cinematic_data.position.y() = mf_ReadFloat(buffer, &count);
+    cinematic_data.position.z() = mf_ReadFloat(buffer, &count);
     cinematic_data.room = mf_ReadInt(buffer, &count);
     if (mf_ReadByte(buffer, &count)) {
-      fake_orient.fvec.x = mf_ReadFloat(buffer, &count);
-      fake_orient.fvec.y = mf_ReadFloat(buffer, &count);
-      fake_orient.fvec.z = mf_ReadFloat(buffer, &count);
-      fake_orient.uvec.x = mf_ReadFloat(buffer, &count);
-      fake_orient.uvec.y = mf_ReadFloat(buffer, &count);
-      fake_orient.uvec.z = mf_ReadFloat(buffer, &count);
-      fake_orient.rvec.x = mf_ReadFloat(buffer, &count);
-      fake_orient.rvec.y = mf_ReadFloat(buffer, &count);
-      fake_orient.rvec.z = mf_ReadFloat(buffer, &count);
+      fake_orient.fvec.x() = mf_ReadFloat(buffer, &count);
+      fake_orient.fvec.y() = mf_ReadFloat(buffer, &count);
+      fake_orient.fvec.z() = mf_ReadFloat(buffer, &count);
+      fake_orient.uvec.x() = mf_ReadFloat(buffer, &count);
+      fake_orient.uvec.y() = mf_ReadFloat(buffer, &count);
+      fake_orient.uvec.z() = mf_ReadFloat(buffer, &count);
+      fake_orient.rvec.x() = mf_ReadFloat(buffer, &count);
+      fake_orient.rvec.y() = mf_ReadFloat(buffer, &count);
+      fake_orient.rvec.z() = mf_ReadFloat(buffer, &count);
     }
 
     cinematic_data.max_time_play = mf_ReadFloat(buffer, &count);
@@ -2277,18 +2277,18 @@ void Cinematic_DoDemoFileData(uint8_t *buffer) {
     canned_data.time = mf_ReadFloat(buffer, &count);
     canned_data.object_to_use_for_point = mf_ReadInt(buffer, &count);
     canned_data.room = mf_ReadInt(buffer, &count);
-    canned_data.pos.x = mf_ReadFloat(buffer, &count);
-    canned_data.pos.y = mf_ReadFloat(buffer, &count);
-    canned_data.pos.z = mf_ReadFloat(buffer, &count);
-    canned_data.orient.fvec.x = mf_ReadFloat(buffer, &count);
-    canned_data.orient.fvec.y = mf_ReadFloat(buffer, &count);
-    canned_data.orient.fvec.z = mf_ReadFloat(buffer, &count);
-    canned_data.orient.uvec.x = mf_ReadFloat(buffer, &count);
-    canned_data.orient.uvec.y = mf_ReadFloat(buffer, &count);
-    canned_data.orient.uvec.z = mf_ReadFloat(buffer, &count);
-    canned_data.orient.rvec.x = mf_ReadFloat(buffer, &count);
-    canned_data.orient.rvec.y = mf_ReadFloat(buffer, &count);
-    canned_data.orient.rvec.z = mf_ReadFloat(buffer, &count);
+    canned_data.pos.x() = mf_ReadFloat(buffer, &count);
+    canned_data.pos.y() = mf_ReadFloat(buffer, &count);
+    canned_data.pos.z() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.fvec.x() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.fvec.y() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.fvec.z() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.uvec.x() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.uvec.y() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.uvec.z() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.rvec.x() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.rvec.y() = mf_ReadFloat(buffer, &count);
+    canned_data.orient.rvec.z() = mf_ReadFloat(buffer, &count);
 
     mf_ReadString(buffer, &count, text_string);
     canned_data.text_to_display = text_string;
@@ -2320,22 +2320,22 @@ void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info) {
     mf_WriteInt(buffer, &count, info->cinematic_data->end_transition);
     mf_WriteInt(buffer, &count, info->cinematic_data->start_transition);
     mf_WriteInt(buffer, &count, info->cinematic_data->pathid);
-    mf_WriteFloat(buffer, &count, info->cinematic_data->position.x);
-    mf_WriteFloat(buffer, &count, info->cinematic_data->position.y);
-    mf_WriteFloat(buffer, &count, info->cinematic_data->position.z);
+    mf_WriteFloat(buffer, &count, info->cinematic_data->position.x());
+    mf_WriteFloat(buffer, &count, info->cinematic_data->position.y());
+    mf_WriteFloat(buffer, &count, info->cinematic_data->position.z());
     mf_WriteInt(buffer, &count, info->cinematic_data->room);
 
     if (info->cinematic_data->orient) {
       mf_WriteByte(buffer, &count, 1);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->fvec.x);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->fvec.y);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->fvec.z);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->uvec.x);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->uvec.y);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->uvec.z);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->rvec.x);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->rvec.y);
-      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->rvec.z);
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->fvec.x());
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->fvec.y());
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->fvec.z());
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->uvec.x());
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->uvec.y());
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->uvec.z());
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->rvec.x());
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->rvec.y());
+      mf_WriteFloat(buffer, &count, info->cinematic_data->orient->rvec.z());
 
     } else {
       mf_WriteByte(buffer, &count, 0);
@@ -2372,18 +2372,18 @@ void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info) {
     mf_WriteFloat(buffer, &count, info->canned_data->time);
     mf_WriteInt(buffer, &count, info->canned_data->object_to_use_for_point);
     mf_WriteInt(buffer, &count, info->canned_data->room);
-    mf_WriteFloat(buffer, &count, info->canned_data->pos.x);
-    mf_WriteFloat(buffer, &count, info->canned_data->pos.y);
-    mf_WriteFloat(buffer, &count, info->canned_data->pos.z);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.fvec.x);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.fvec.y);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.fvec.z);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.uvec.x);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.uvec.y);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.uvec.z);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.rvec.x);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.rvec.y);
-    mf_WriteFloat(buffer, &count, info->canned_data->orient.rvec.z);
+    mf_WriteFloat(buffer, &count, info->canned_data->pos.x());
+    mf_WriteFloat(buffer, &count, info->canned_data->pos.y());
+    mf_WriteFloat(buffer, &count, info->canned_data->pos.z());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.fvec.x());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.fvec.y());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.fvec.z());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.uvec.x());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.uvec.y());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.uvec.z());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.rvec.x());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.rvec.y());
+    mf_WriteFloat(buffer, &count, info->canned_data->orient.rvec.z());
 
     if (info->canned_data->text_to_display)
       mf_WriteString(buffer, &count, info->canned_data->text_to_display);

@@ -33,7 +33,7 @@
 #include <csignal>
 #endif
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "appdatabase.h"
 #include "application.h"
@@ -44,6 +44,7 @@
 #include "dedicated_server.h"
 #include "init.h"
 #include "log.h"
+#include "config.h"
 
 #ifdef WIN32
 #include "debug.h"
@@ -175,27 +176,27 @@ public:
   }
 };
 
-int sdlKeyFilter(const SDL_Event *event);
-int sdlMouseButtonUpFilter(const SDL_Event *event);
-int sdlMouseButtonDownFilter(const SDL_Event *event);
-int sdlMouseWheelFilter(const SDL_Event *event);
-int sdlMouseMotionFilter(const SDL_Event *event);
+bool sdlKeyFilter(const SDL_Event *event);
+bool sdlMouseButtonUpFilter(const SDL_Event *event);
+bool sdlMouseButtonDownFilter(const SDL_Event *event);
+bool sdlMouseWheelFilter(const SDL_Event *event);
+bool sdlMouseMotionFilter(const SDL_Event *event);
 
-int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
+bool SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
   switch (event->type) {
-  case SDL_KEYUP:
-  case SDL_KEYDOWN:
+  case SDL_EVENT_KEY_UP:
+  case SDL_EVENT_KEY_DOWN:
     return (sdlKeyFilter(event));
-  case SDL_JOYBALLMOTION:
-  case SDL_MOUSEMOTION:
+  case SDL_EVENT_JOYSTICK_BALL_MOTION:
+  case SDL_EVENT_MOUSE_MOTION:
     return (sdlMouseMotionFilter(event));
-  case SDL_MOUSEBUTTONUP:
+  case SDL_EVENT_MOUSE_BUTTON_UP:
     return (sdlMouseButtonUpFilter(event));
-  case SDL_MOUSEBUTTONDOWN:
+  case SDL_EVENT_MOUSE_BUTTON_DOWN:
     return (sdlMouseButtonDownFilter(event));
-  case SDL_MOUSEWHEEL:
+  case SDL_EVENT_MOUSE_WHEEL:
     return (sdlMouseWheelFilter(event));
-  case SDL_QUIT:
+  case SDL_EVENT_QUIT:
     SDL_Quit();
     _exit(0);
     break;
@@ -244,7 +245,7 @@ int main(int argc, char *argv[]) {
 #endif
 
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
-  if (rc != 0) {
+  if (!rc) {
     LOG_FATAL.printf("SDL: SDL_Init() failed: %d: %s!", rc, SDL_GetError());
     return (0);
   }
@@ -252,14 +253,6 @@ int main(int argc, char *argv[]) {
   // !!! FIXME: Don't use an event filter!
   SDL_SetEventFilter(d3SDLEventFilter, nullptr);
   install_signal_handlers();
-
-  int winArg = FindArgChar("-windowed", 'w');
-  int fsArg = FindArgChar("-fullscreen", 'f');
-
-  if ((fsArg) && (winArg)) {
-    LOG_FATAL.printf("ERROR: %s AND %s specified!", GameArgs[winArg], GameArgs[fsArg]);
-    return (0);
-  }
 
   // Initialize our OS Object.  This could be a game dependant OS object, or a default OS object.
   // Once we create it, if successful, we can start the game.
@@ -273,7 +266,6 @@ int main(int argc, char *argv[]) {
       flags |= APPFLAG_NOMOUSECAPTURE;
     ddio_MouseSetGrab(false);
       }
-    SDL_SetRelativeMouseMode(ddio_MouseGetGrab() ? SDL_TRUE : SDL_FALSE);
 
     if (!FindArg("-sharedmemory")) {
       flags |= APPFLAG_NOSHAREDMEMORY;

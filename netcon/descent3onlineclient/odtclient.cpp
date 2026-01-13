@@ -24,7 +24,6 @@
 #include "pilot.h"
 #include "ddio_common.h"
 #include "module.h"
-#include "inetgetfile.h"
 #include "chat_api.h"
 #include "odtstrings.h"
 
@@ -52,7 +51,6 @@
 
 #include "odtclient.h"
 #include "dip_gametrack.h"
-#include "DLLUiItems.h"
 
 char Ourlobby[50] = "";
 bool Auto_start = false;
@@ -219,10 +217,6 @@ void UpdateGamelist(void *lb) {
   }
 }
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
-
 // These next two function prototypes MUST appear in the extern "C" block if called
 // from a CPP file.
 extern "C" {
@@ -236,11 +230,8 @@ bool MT_Sock_inited = false;
 
 // Initializes the game function pointers
 void DLLFUNCCALL DLLMultiInit(int *api_func) {
-  Use_netgame_flags = 1;
-#ifdef MACINTOSH
-  InitOTSockets();
-#endif
-#include "mdllinit.h"
+  Use_netgame_flags = true;
+  CommonDLLInit(api_func);
 
   DLLmprintf(0, "Inside DLLMultiInit...\n");
   *DLLUse_DirectPlay = false;
@@ -261,9 +252,6 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 void DLLFUNCCALL DLLMultiClose() {
   DLLmprintf(0, "Closing down Online Direct TCP-IP DLL\n");
   DLLDestroyStringTable(StringTable, StringTableSize);
-#ifdef MACINTOSH
-  ShutdownOTSockets();
-#endif
 }
 
 // The main entry point where the game calls the dll
@@ -338,11 +326,6 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
     break;
   }
 }
-
-#ifdef MACINTOSH
-#pragma export off
-#endif
-
 
 #define CONNECT_IRC_TIMEOUT 30.0
 #define MAX_CHAT_SEND_LEN 200
@@ -829,9 +812,6 @@ int MainMultiplayerMenu() {
       FindPilot();
       break;
     case 11: {
-      DLLmprintf(0, "Sending Mastertracker game list request.\n");
-      RequestDIPGameList();
-
       DLLmprintf(0, "Calling SearchMasterTrackerGameMenu().\n");
       DLLNewUIWindowClose(main_wnd);
       *DLLGame_is_master_tracker_game = 0;
@@ -1489,8 +1469,6 @@ int SearchMasterTrackerGameMenu() {
     ChatStarted = 1;
     ret = MainMultiplayerMenu();
   }
-
-  RequestDIPShutdown();
 
   return ret;
 }

@@ -155,6 +155,7 @@
  *
  */
 
+#include <cstdint>
 #include <cstring>
 
 #include "levelgoal.h"
@@ -363,7 +364,7 @@ bool lgoal::Priority(int handle, char operation, int *value) {
   return false;
 }
 
-bool lgoal::GoalList(char operation, char *value) {
+bool lgoal::GoalList(char operation, int8_t *value) {
   if (!value)
     return false;
 
@@ -606,7 +607,7 @@ bool levelgoals::GoalPriority(int index, char operation, int *flags) {
   return m_goal[index].Priority(index, operation, flags);
 }
 
-bool levelgoals::GoalGoalList(int index, char operation, char *value) {
+bool levelgoals::GoalGoalList(int index, char operation, int8_t *value) {
   if (index < 0 || index >= m_num_goals)
     return false;
 
@@ -740,7 +741,7 @@ bool levelgoals::SaveLevelGoalInfo(CFILE *fptr) {
     int num_items;
     int j;
     int priority = 0;
-    char g_list = 0;
+    int8_t g_list = 0;
     int status = 0;
 
     Level_goals.GoalStatus(i, LO_GET_SPECIFIED, &status);
@@ -838,7 +839,7 @@ bool levelgoals::LoadLevelGoalInfo(CFILE *fptr) {
     int num_items;
     int j;
     int priority;
-    char g_list;
+    int8_t g_list;
     int status;
 
     int gi = AddGoal(false);
@@ -958,7 +959,7 @@ int levelgoals::GetNumActivePrimaryGoals() {
   int i;
   int bestp[4];
   int cp;  // Current priority
-  char cl; // Current list
+  int8_t cl; // Current list
   int temp_p[MAX_GOAL_LISTS][MAX_LEVEL_GOALS];
   char temp_g[MAX_GOAL_LISTS][MAX_LEVEL_GOALS];
 
@@ -1013,7 +1014,7 @@ int levelgoals::GetNumActiveSecondaryGoals() {
   int i;
   int bestp[4];
   int cp;  // Current priority
-  char cl; // Current list
+  int8_t cl; // Current list
   int temp_p[MAX_GOAL_LISTS][MAX_LEVEL_GOALS];
   char temp_g[MAX_GOAL_LISTS][MAX_LEVEL_GOALS];
 

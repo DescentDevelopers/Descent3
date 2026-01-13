@@ -190,7 +190,7 @@ void GetPointInObjectSpace(vector *dest, vector *pos, object *obj, int subnum, i
     else
       tpnt = pnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
 
     pnt = tpnt * m;
   }
@@ -527,7 +527,7 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < nv; i++) {
@@ -544,9 +544,9 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   float leftmost_x = 900000.00f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].x < leftmost_x) {
+    if (verts[i].x() < leftmost_x) {
       leftmost_point = i;
-      leftmost_x = verts[i].x;
+      leftmost_x = verts[i].x();
     }
   }
 
@@ -557,9 +557,9 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   float topmost_y = -900000.0f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].y > topmost_y) {
+    if (verts[i].y() > topmost_y) {
       topmost_point = i;
-      topmost_y = verts[i].y;
+      topmost_y = verts[i].y();
     }
   }
 
@@ -570,9 +570,9 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   float rightmost_x = -900000.00f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].x > rightmost_x) {
+    if (verts[i].x() > rightmost_x) {
       rightmost_point = i;
-      rightmost_x = verts[i].x;
+      rightmost_x = verts[i].x();
     }
   }
 
@@ -583,9 +583,9 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   float bottommost_y = 900000.0f; // a big number
 
   for (i = 0; i < nv; i++) {
-    if (verts[i].y < bottommost_y) {
+    if (verts[i].y() < bottommost_y) {
       bottommost_point = i;
-      bottommost_y = verts[i].y;
+      bottommost_y = verts[i].y();
     }
   }
 
@@ -595,13 +595,11 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
 
   vector base_vector;
 
-  base_vector.x = verts[leftmost_point].x;
-  base_vector.y = verts[topmost_point].y;
-  base_vector.z = 0;
+  base_vector = { verts[leftmost_point].x(), verts[topmost_point].y(), 0 };
 
   // Figure out lightmap resolution
-  float xdiff = verts[rightmost_point].x - verts[leftmost_point].x;
-  float ydiff = verts[topmost_point].y - verts[bottommost_point].y;
+  float xdiff = verts[rightmost_point].x() - verts[leftmost_point].x();
+  float ydiff = verts[topmost_point].y() - verts[bottommost_point].y();
   float max_diff = (float)std::max(xdiff, ydiff);
 
   int lightmap_x_res = -1, lightmap_y_res = -1;
@@ -703,8 +701,8 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
       facevert = rot_vert;
 
       // Find uv2s for this vertex
-      lfp->u2[t] = (facevert.x - verts[leftmost_point].x) / (float)(lightmap_x_res * xspace_int);
-      lfp->v2[t] = fabs((verts[topmost_point].y - facevert.y)) / (float)(lightmap_y_res * yspace_int);
+      lfp->u2[t] = (facevert.x() - verts[leftmost_point].x()) / (float)(lightmap_x_res * xspace_int);
+      lfp->v2[t] = fabs((verts[topmost_point].y() - facevert.y())) / (float)(lightmap_y_res * yspace_int);
 
       ASSERT(lfp->u2[t] >= 0 && lfp->u2[t] <= 1.0);
       ASSERT(lfp->v2[t] >= 0 && lfp->v2[t] <= 1.0);
@@ -771,7 +769,7 @@ void BuildElementListForObjectFace(int objnum, int subnum, int facenum, rad_surf
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < fp->nverts; i++) {
@@ -796,8 +794,7 @@ void BuildElementListForObjectFace(int objnum, int subnum, int facenum, rad_surf
 
   vm_TransposeMatrix(&trans_matrix);
 
-  xdiff.x = LightmapInfo[lmi_handle].xspacing;
-  ydiff.y = LightmapInfo[lmi_handle].yspacing;
+  xdiff = vector{ (scalar)LightmapInfo[lmi_handle].xspacing, (scalar)LightmapInfo[lmi_handle].yspacing, (scalar)0 };
 
   for (i = 0; i < yres; i++) {
     for (t = 0; t < xres; t++) {

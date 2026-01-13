@@ -1173,12 +1173,12 @@ void AquireElectricalTarget(object *obj) {
     int fate;          // Collision type for response code
     fvi_info hit_info; // Hit information
     fvi_query fq;      // Movement query
-    vector dest = obj->pos + (obj->orient.fvec * 50.0);
+    vector dest = obj->pos + (obj->orient.fvec * (scalar)50.0);
 
     fq.p0 = &obj->pos;
     fq.startroom = obj->roomnum;
     fq.p1 = &dest;
-    fq.rad = .0001f;
+    fq.rad = (scalar).0001f;
     fq.thisobjnum = Objects - obj;
     fq.ignore_obj_list = NULL;
     fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
@@ -1294,7 +1294,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
   //	vm_MakeZero(&obj->mtype.phys_info.rotvel);
 
   // Set the initial velocity
-  vm_ScaleVector(&obj->mtype.phys_info.velocity, dir, Weapons[weapon_num].phys_info.velocity.z * scalar);
+  vm_ScaleVector(&obj->mtype.phys_info.velocity, dir, Weapons[weapon_num].phys_info.velocity.z() * scalar);
 
   // If this is a player, scale the velocity based on the players weapon_speed scalar
   if (parent->type == OBJ_PLAYER)
@@ -1303,17 +1303,16 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
   // Set initial velocity to that of the firing object
   // Don't do it though if it is a spawned weapon
   if ((obj->mtype.phys_info.flags & PF_USES_PARENT_VELOCITY) && parent->type != OBJ_WEAPON) {
-
-    float fdot = (parent->mtype.phys_info.velocity * parent->orient.fvec);
+    float fdot = vm_Dot3Product(parent->mtype.phys_info.velocity, parent->orient.fvec);
     vector fvel;
 
     if (fdot > 0.0)
       fvel = parent->orient.fvec * fdot;
     else
-      fvel = Zero_vector;
+      fvel = vector{};
 
-    vector rvel = 0.1f * parent->orient.rvec * (parent->mtype.phys_info.velocity * parent->orient.rvec);
-    vector uvel = 0.1f * parent->orient.uvec * (parent->mtype.phys_info.velocity * parent->orient.uvec);
+    vector rvel = 0.1f * parent->orient.rvec * vm_Dot3Product(parent->mtype.phys_info.velocity, parent->orient.rvec);
+    vector uvel = 0.1f * parent->orient.uvec * vm_Dot3Product(parent->mtype.phys_info.velocity, parent->orient.uvec);
 
     obj->mtype.phys_info.velocity += fvel + rvel + uvel;
   }
@@ -1374,7 +1373,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
 // Steers a homing missile
 void HomingTurnTowardObj(object *weapon, object *target) {
   vector dir_to_target;
-  vector movement = Zero_vector;
+  vector movement{};
 
   if (target == NULL)
     return;
@@ -1386,19 +1385,19 @@ void HomingTurnTowardObj(object *weapon, object *target) {
   dir_to_target = target->pos + movement - weapon->pos;
 
   if (weapon->mtype.phys_info.rotdrag > 0.0f) {
-    if (dir_to_target * weapon->orient.rvec > 0.0) {
-      weapon->mtype.phys_info.rotthrust.y = weapon->mtype.phys_info.full_rotthrust;
+    if (vm_Dot3Product(dir_to_target, weapon->orient.rvec) > 0.0) {
+      weapon->mtype.phys_info.rotthrust.y() = weapon->mtype.phys_info.full_rotthrust;
     } else {
-      weapon->mtype.phys_info.rotthrust.y = -weapon->mtype.phys_info.full_rotthrust;
+      weapon->mtype.phys_info.rotthrust.y() = -weapon->mtype.phys_info.full_rotthrust;
     }
 
-    if (dir_to_target * weapon->orient.uvec > 0.0) {
-      weapon->mtype.phys_info.rotthrust.x = -weapon->mtype.phys_info.full_rotthrust;
+    if (vm_Dot3Product(dir_to_target, weapon->orient.uvec) > 0.0) {
+      weapon->mtype.phys_info.rotthrust.x() = -weapon->mtype.phys_info.full_rotthrust;
     } else {
-      weapon->mtype.phys_info.rotthrust.x = weapon->mtype.phys_info.full_rotthrust;
+      weapon->mtype.phys_info.rotthrust.x() = weapon->mtype.phys_info.full_rotthrust;
     }
 
-    weapon->mtype.phys_info.rotthrust.z = 0.0;
+    weapon->mtype.phys_info.rotthrust.z() = 0.0;
 
     if (!ObjGet(weapon->parent_handle) || ObjGet(weapon->parent_handle)->type != OBJ_PLAYER)
       weapon->mtype.phys_info.rotthrust *= Diff_homing_strength[DIFF_LEVEL];
@@ -1448,7 +1447,7 @@ object *HomingAquireTarget(object *obj) {
       f_locked = false;
     } else if (obj->effect_info && (obj->effect_info->type_flags & EF_CLOAKED)) {
       f_locked = false;
-    } else if (to_target * obj->orient.fvec > Weapons[obj->id].homing_fov) {
+    } else if (vm_Dot3Product(to_target, obj->orient.fvec) > Weapons[obj->id].homing_fov) {
       if (track_goal == Player_object && Player_object->type == OBJ_PLAYER) {
         float sound_delta;
         float volume;
@@ -1548,8 +1547,8 @@ object *HomingAquireTarget(object *obj) {
             if (weapon_parent && !AIObjEnemy(ObjGetUltimateParent(weapon_parent), ObjGetUltimateParent(&Objects[i])))
               continue;
 
-            float dist_to_target = vm_NormalizeVector(&to_target) - obj->size - Objects[i].size;
-            float cur_dot = to_target * obj->orient.fvec;
+            scalar dist_to_target = vm_NormalizeVector(&to_target) - obj->size - Objects[i].size;
+            scalar cur_dot = vm_Dot3Product(to_target, obj->orient.fvec);
 
             if (cur_dot > Weapons[obj->id].homing_fov) {
               // Pick chaff over other objects
@@ -1614,7 +1613,7 @@ object *HomingAquireTarget(object *obj) {
 
 // Does homing code
 void HomingDoFrame(object *obj) {
-  obj->mtype.phys_info.rotthrust = Zero_vector;
+  obj->mtype.phys_info.rotthrust = vector{};
 
   HomingTurnTowardObj(obj, HomingAquireTarget(obj));
 }
@@ -1774,7 +1773,7 @@ bool WeaponCalcGun(vector *gun_point, vector *gun_normal, object *obj, int gun_n
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     if (gun_point)
@@ -1841,7 +1840,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
       if (f_force_forward) {
         WeaponCalcGun(&laser_pos, NULL, obj, gun_num);
         laser_dir = obj->orient.fvec;
-      } else if (f_force_target && obj->ai_info && obj->ai_info->vec_to_target_perceived != Zero_vector) {
+      } else if (f_force_target && obj->ai_info && obj->ai_info->vec_to_target_perceived != vector{}) {
         WeaponCalcGun(&laser_pos, NULL, obj, gun_num);
         laser_dir = obj->ai_info->vec_to_target_perceived;
       } else {
@@ -1950,7 +1949,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
 
         vis->movement_type = MT_PHYSICS;
         vis->velocity = obj->mtype.phys_info.velocity;
-        vis->velocity.y += 10;
+        vis->velocity.y() += 10;
       }
     }
   }
@@ -2098,7 +2097,7 @@ void DrawElectricalWeapon(object *obj) {
 
   if (parent_obj != Viewer_object) {
     vector temp_line_norm = -line_norm;
-    view_dp = Viewer_object->orient.fvec * temp_line_norm;
+    view_dp = vm_Dot3Product(Viewer_object->orient.fvec, temp_line_norm);
   }
 
   matrix mat;
@@ -2292,20 +2291,20 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
       vis_effect *vis = &VisEffects[visnum];
 
       // Set the initial velocity
-      vm_ScaleVector(&vis->velocity, &laser_dir, Weapons[weapon_num].phys_info.velocity.z);
+      vm_ScaleVector(&vis->velocity, &laser_dir, Weapons[weapon_num].phys_info.velocity.z());
 
       // Set initial velocity to that of the firing object
       if (Weapons[weapon_num].phys_info.flags & PF_USES_PARENT_VELOCITY) {
-        float fdot = (obj->mtype.phys_info.velocity * obj->orient.fvec);
+        scalar fdot = vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.fvec);
         vector fvel;
 
-        if (fdot > 0.0)
+        if (fdot > (scalar)0.0)
           fvel = obj->orient.fvec * fdot;
         else
-          fvel = Zero_vector;
+          fvel = vector{};
 
-        vector rvel = 0.1f * obj->orient.rvec * (obj->mtype.phys_info.velocity * obj->orient.rvec);
-        vector uvel = 0.1f * obj->orient.uvec * (obj->mtype.phys_info.velocity * obj->orient.uvec);
+        vector rvel = (scalar)0.1f * obj->orient.rvec * vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.rvec);
+        vector uvel = (scalar)0.1f * obj->orient.uvec * vm_Dot3Product(obj->mtype.phys_info.velocity, obj->orient.uvec);
 
         vis->velocity += fvel + rvel + uvel;
       }
@@ -2590,10 +2589,10 @@ void DrawWeaponObject(object *obj) {
     } else if ((Weapons[obj->id].flags & WF_IMAGE_BITMAP) || (Weapons[obj->id].flags & WF_IMAGE_VCLIP)) {
       int bm_handle;
       int objnum = obj - Objects;
-      float rot_temp = Weapons[obj->id].phys_info.rotvel.z / 65536.0;
+      float rot_temp = Weapons[obj->id].phys_info.rotvel.z() / (scalar)65536.0;
       int int_game = Gametime / rot_temp;
       float diff = Gametime - (int_game * rot_temp);
-      int rot_angle = diff * 65536;
+      int rot_angle = diff * (scalar)65536;
 
       if (Weapons[obj->id].flags & WF_NO_ROTATE)
         rot_angle = (objnum * 1000) % 65536;
@@ -2680,7 +2679,7 @@ void DoZoomStay() {
     if (Zoom_fov_time < 0) {
       Zoom_fov_time = 0;
       Players[Player_num].flags &= ~PLAYER_FLAGS_ZOOMED;
-      Render_FOV = D3_DEFAULT_FOV;
+      Render_FOV = Render_FOV_setting;
     }
   }
 }
@@ -2689,7 +2688,7 @@ void DoZoomStay() {
 void DoZoomEffect(player_weapon *pw, uint8_t clear) {
   if (pw->firing_time < .5) {
     Players[Player_num].turn_scalar = 1.0;
-    Render_FOV = D3_DEFAULT_FOV;
+    Render_FOV = Render_FOV_setting;
 
     if (!clear)
       DoZoomStay();
@@ -2712,12 +2711,12 @@ void DoZoomEffect(player_weapon *pw, uint8_t clear) {
     int fate;          // Collision type for response code
     fvi_info hit_info; // Hit information
     fvi_query fq;      // Movement query
-    vector dest = obj->pos + (obj->orient.fvec * 5000.0);
+    vector dest = obj->pos + (obj->orient.fvec * (scalar)5000.0);
 
     fq.p0 = &obj->pos;
     fq.startroom = obj->roomnum;
     fq.p1 = &dest;
-    fq.rad = .0001f;
+    fq.rad = (scalar).0001f;
     fq.thisobjnum = Objects - obj;
     fq.ignore_obj_list = NULL;
     fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
@@ -2736,9 +2735,9 @@ void DoZoomEffect(player_weapon *pw, uint8_t clear) {
   }
 
   // calculate zoom effect
-  float norm = (pw->firing_time - .5) * 2;
+  scalar norm = (pw->firing_time - (scalar).5) * 2;
 
-  Render_FOV = (ZOOM_FOV_TARGET * norm) + ((1.0 - norm) * D3_DEFAULT_FOV);
+  Render_FOV = (ZOOM_FOV_TARGET * norm) + (((scalar)1.0 - norm) * Render_FOV_setting);
 
   return;
 }
@@ -3356,12 +3355,12 @@ void TimeoutWeapon(object *obj) {
 
   if ((Weapons[n].flags & WF_MATTER_WEAPON) && !(Weapons[n].flags & WF_SPAWNS_TIMEOUT) &&
       (Weapons[n].spawn_count <= 0)) {
-    vector temp = Zero_vector;
+    vector temp{};
 
     if (Weapons[obj->id].sounds[WSI_IMPACT_WALL] != SOUND_NONE_INDEX)
       Sound_system.Play3dSound(Weapons[obj->id].sounds[WSI_IMPACT_WALL], SND_PRIORITY_HIGH, obj);
 
-    temp.y = 1.0;
+    temp.y() = (scalar)1.0;
 
     DoWeaponExploded(obj, &temp);
   }

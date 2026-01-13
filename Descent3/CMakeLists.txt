@@ -294,6 +294,12 @@ if(WIN32)
   )
 endif()
 
+configure_file(
+  ${CMAKE_SOURCE_DIR}/lib/d3_platform_path.h.in
+  ${CMAKE_BINARY_DIR}/lib/d3_platform_path.h
+  @ONLY
+)
+
 if(UNIX AND NOT APPLE)
   set(PLATFORM_LIBS m ${CMAKE_DL_LIBS})
 endif()
@@ -318,7 +324,7 @@ else()
   install(TARGETS Descent3 RUNTIME BUNDLE DESTINATION .)
 endif()
 target_link_libraries(Descent3 PRIVATE
-  SDL2::SDL2
+  SDL3::SDL3
   2dlib
   AudioEncode
   bitmap
@@ -327,6 +333,7 @@ target_link_libraries(Descent3 PRIVATE
   ddio
   fix
   grtext
+  inetfile
   libmve
   libacm
   linux
@@ -348,7 +355,7 @@ target_link_libraries(Descent3 PRIVATE
   unzip
   vecmat
   ${PLATFORM_LIBS})
-target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
+target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib ${SDL3_INCLUDE_DIRS})
 target_link_options(Descent3 PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)
 set_target_properties(Descent3 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build")
 add_dependencies(Descent3

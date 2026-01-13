@@ -431,6 +431,7 @@
  * $NoKeywords: $
  */
 #include <cstdarg>
+#include <cstdint>
 
 #include "osiris_predefs.h"
 #include "object.h"
@@ -688,7 +689,7 @@ void osipf_RoomValue(int roomnum, char op, char vtype, void *ptr, int index) {
       if (index < 0 || index >= rp->num_faces || rp->faces[index].num_verts <= 0) {
         *(vector *)ptr = rp->path_pnt;
       } else {
-        *(vector *)ptr = Zero_vector;
+        *(vector *)ptr = vector{};
 
         for (i = 0; i < rp->faces[index].num_verts; i++) {
           *(vector *)ptr += rp->verts[rp->faces[index].face_verts[i]];
@@ -1680,13 +1681,13 @@ vector osipf_AIFindHidePos(int hideobjhandle, int viewobjhandle, float time, int
   if (hide_obj == NULL) {
     LOG_ERROR << "Illegal Hide Object Passed To AIFindHidePos";
     *hide_room = -1;
-    return Zero_vector;
+    return vector{};
   }
 
   if (hide_obj->control_type != CT_AI) {
     LOG_ERROR << "Illegal Object CT Passed To AIFindHidePos";
     *hide_room = -1;
-    return Zero_vector;
+    return vector{};
   }
 
   if (view_obj == NULL) {
@@ -1980,12 +1981,12 @@ vector osipf_AIGetRoomPathPoint(int roomnum) {
     int cell = CELLNUM(roomnum);
 
     if (cell >= TERRAIN_DEPTH * TERRAIN_WIDTH) {
-      return Zero_vector;
+      return vector{};
     } else {
       vector pos;
 
       ComputeTerrainSegmentCenter(&pos, cell);
-      pos.y += 15.0f + ((float)ps_rand() / (float)D3_RAND_MAX) * 20; // between 15 and 35
+      pos.y() += 15.0f + ((float)ps_rand() / (float)D3_RAND_MAX) * 20; // between 15 and 35
 
       return pos;
     }
@@ -1993,7 +1994,7 @@ vector osipf_AIGetRoomPathPoint(int roomnum) {
     return Rooms[roomnum].path_pnt;
   }
 
-  return Zero_vector;
+  return vector{};
 }
 
 int osipf_AIFindEnergyCenter(int objhandle) {
@@ -2079,8 +2080,8 @@ void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun
 
   if (obj == NULL) {
     LOG_ERROR << "Illegal Object Passed To AIGetGunPosition";
-    *gun_pnt = Zero_vector;
-    *gun_normal = Zero_vector;
+    *gun_pnt = vector{};
+    *gun_normal = vector{};
     return;
   }
 
@@ -2092,8 +2093,8 @@ void osipf_GetGroundPos(int objhandle, int ground_number, vector *ground_pnt, ve
 
   if (obj == NULL) {
     LOG_ERROR << "Illegal Object Passed To Obj_GetGroundPos";
-    *ground_pnt = Zero_vector;
-    *ground_normal = Zero_vector;
+    *ground_pnt = vector{};
+    *ground_normal = vector{};
     return;
   }
 
@@ -2145,7 +2146,7 @@ int osipf_GetNumAttachSlots(int objhandle) {
 
 int osipf_GetAttachChildHandle(int objhandle, char attachpoint) {
   object *parent = ObjGet(objhandle);
-  char parent_ap = attachpoint;
+  int8_t parent_ap = attachpoint;
 
   if ((parent) && (parent->flags & OF_POLYGON_OBJECT)) {
     poly_model *parent_pm = &Poly_models[parent->rtype.pobj_info.model_num];
@@ -2633,7 +2634,7 @@ float osipf_GameTime(void) { return Gametime; }
 
 float osipf_FrameTime(void) { return Frametime; }
 
-void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *ptr, char g_index) {
+void osipf_ObjWBValue(int obj_handle, int8_t wb_index, char op, char vtype, void *ptr, int8_t g_index) {
   object *objp = ObjGet(obj_handle);
 
   if (!objp) {
@@ -2974,7 +2975,7 @@ bool osipf_AIIsObjEnemy(int obj_handle, int it_handle) {
   return false;
 }
 
-void osipf_AIGoalValue(int obj_handle, char g_index, char op, char vtype, void *ptr, char index) {
+void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void *ptr, int8_t index) {
   object *obj = ObjGet(obj_handle);
   if (!obj)
     return;
@@ -3466,19 +3467,14 @@ bool osipf_PathGetInformation(int pathid, int point, vector *pos, int *room, mat
   if (point < 0 || point >= GamePaths[pathid].num_nodes)
     return false;
 
-  if (pos) {
-    pos->x = GamePaths[pathid].pathnodes[point].pos.x;
-    pos->y = GamePaths[pathid].pathnodes[point].pos.y;
-    pos->z = GamePaths[pathid].pathnodes[point].pos.z;
-  }
+  if (pos)
+    *pos = GamePaths[pathid].pathnodes[point].pos;
 
-  if (room) {
+  if (room)
     *room = GamePaths[pathid].pathnodes[point].roomnum;
-  }
 
-  if (orient) {
+  if (orient)
     vm_VectorToMatrix(orient, &GamePaths[pathid].pathnodes[point].fvec, &GamePaths[pathid].pathnodes[point].uvec, NULL);
-  }
 
   return true;
 }
@@ -3563,9 +3559,9 @@ void osipf_LGoalValue(char op, char vtype, void *ptr, int g_index, int i_index) 
   } break;
   case LGSV_C_GOAL_LIST: {
     if (op == VF_GET) {
-      Level_goals.GoalGoalList(g_index, LO_GET_SPECIFIED, (char *)ptr);
+      Level_goals.GoalGoalList(g_index, LO_GET_SPECIFIED, static_cast<int8_t *>(ptr));
     } else if (op == VF_SET) {
-      Level_goals.GoalGoalList(g_index, LO_SET_SPECIFIED, (char *)ptr);
+      Level_goals.GoalGoalList(g_index, LO_SET_SPECIFIED, static_cast<int8_t *>(ptr));
     }
   } break;
   case LGSV_I_STATUS: {

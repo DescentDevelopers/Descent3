@@ -1,18 +1,25 @@
 name: Descent 3 Build
 
+
 on:
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
-    paths-ignore:
-      - '**/*.md'
-  pull_request:
-    branches: [ "main" ]
-    paths-ignore:
-      - '**/README.md'
-      - '**/LICENSE'
+  workflow_call:
+    secrets:
+      MACOS_SIGNING_IDENTITY:
+        required: false
+      MACOS_SIGNING_CERTIFICATE_P12:
+        required: false
+      MACOS_SIGNING_CERTIFICATE_P12_PASSWORD:
+        required: false
+      MACOS_APP_STORE_CONNECT_KEY:
+        required: false
+      MACOS_APP_STORE_CONNECT_KEY_ID:
+        required: false
+      MACOS_APP_STORE_CONNECT_ISSUER_ID:
+        required: false
+
 
 jobs:
+
   build:
     name: ${{ matrix.os.name }}, ${{ matrix.build_type }}
     strategy:
@@ -24,28 +31,20 @@ jobs:
             cc: cl
             cxx: cl
             name: Windows-x64
-          - runner: macos-14  # Apple Silicon, but we cross-compile
+          - runner: macos-14  # Apple Silicon, but we make a universal binary
             preset: mac
             cc: cc
             cxx: c++
-            name: macOS-Intel
-          - runner: macos-14  # Apple Silicon
-            preset: mac
-            cc: cc
-            cxx: c++
-            name: macOS-ARM
-          - runner: ubuntu-latest
+            name: macOS
+          - runner: ubuntu-22.04
             preset: linux
             cc: gcc
             cxx: g++
             name: Linux-x64
-          - runner: ubuntu-latest
-            preset: linux
-            cc: clang
-            cxx: clang++
-            name: Linux-x64-clang
-          - runner: ubuntu-latest
+          - runner: ubuntu-22.04
             preset: linux-cross-arm64
+            cc: gcc
+            cxx: g++
             name: Linux-cross-arm64
           - runner: ubuntu-latest
             name: android
@@ -55,33 +54,35 @@ jobs:
 
     runs-on: ${{ matrix.os.runner }}
 
+    env:
+      MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && secrets.MACOS_SIGNING_IDENTITY != '' }}
+
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Install macOS Rosetta 2
-        if: ${{ matrix.os.name == 'macOS-Intel' }}
+        if: ${{ matrix.os.preset == 'mac' }}
         run: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-
-      - name: Install Intel version of Brew
-        if: ${{ matrix.os.name == 'macOS-Intel' }}
-        shell: arch -x86_64 /bin/bash -e {0}
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          eval "$(/usr/local/bin/brew shellenv)"  # makes the Intel version of Brew and its installs are enshrined as the default 
-          echo "PATH=$PATH" >> $GITHUB_ENV  # modify $PATH so the above step persists into the future steps
 
       - name: Install macOS dependencies
         if: ${{ matrix.os.preset == 'mac' }}
         run: brew bundle install
 
       - name: Install Linux dependencies
-        if: ${{ matrix.os.runner == 'ubuntu-latest' }}
+        if: ${{ matrix.os.runner == 'ubuntu-22.04' }}
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev
+            ninja-build g++ curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libxcursor-dev libxfixes-dev libxi-dev libxrandr-dev libxss-dev
+
+      - name: Setup cmake
+        if: ${{ matrix.os.runner == 'ubuntu-22.04' }}
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.30.x'
+
 
       - name: Install Linux Cross-compilation dependencies
         if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
@@ -112,12 +113,26 @@ jobs:
         if: ${{ matrix.os.name == 'android' }}
         run: ./gradlew build
 
+      - name: Customize vcpkg to create macOS universal binary
+        if: ${{ matrix.os.preset == 'mac' }}
+        working-directory: ${{ env.VCPKG_ROOT }}/triplets
+        run: |
+          cp ./arm64-osx.cmake ./community/universal-osx.cmake
+          sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
+
+      - name: Import macOS code signing certificate
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
+        uses: DescentDevelopers/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
+          p12-password: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12_PASSWORD }}
+
       - name: Configure CMake
         if: ${{ matrix.os.name != 'android' }}
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ matrix.os.preset }} -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DUSE_EXTERNAL_PLOG=ON -DBUILD_EDITOR=ON -DBUILD_TESTING=${{ matrix.os.preset == 'linux-cross-arm64' && 'OFF' || 'ON' }}
+        run: cmake --preset ${{ matrix.os.preset }} -DCODESIGN_IDENTITY=${{ secrets.MACOS_SIGNING_IDENTITY }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON -DBUILD_TESTING=${{ matrix.os.preset == 'linux-cross-arm64' && 'OFF' || 'ON' }}
 
       - name: Build ${{ matrix.build_type }}
         if: ${{ matrix.os.name != 'android' }}
@@ -131,6 +146,25 @@ jobs:
         if: ${{ matrix.os.name != 'android' }}
         # There no cmake install presets so install in traditional way
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
+
+      - name: Sign, package, and notarize for macOS
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
+        uses: DescentDevelopers/macos-sign-package-notarize@v1
+        with:
+          path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/*
+          signing-identity: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          app-store-connect-key: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY }}
+          app-store-connect-key-id: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY_ID }}
+          app-store-connect-issuer-id: ${{ secrets.MACOS_APP_STORE_CONNECT_ISSUER_ID }}
+          archive-files: builds/${{ matrix.os.preset }}/installed/*
+          archive-disk-name: Descent 3
+          archive-file-path: builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg
+
+      - name: Swap macOS DMG disk image into installed folder
+        if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
+        run: |
+          rm -rf builds/${{ matrix.os.preset }}/installed/*
+          mv builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg builds/${{ matrix.os.preset }}/installed/
 
       - name: Upload Artifacts
         if: ${{ matrix.os.name != 'android' }}

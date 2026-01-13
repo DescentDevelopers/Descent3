@@ -149,7 +149,7 @@
 #ifndef PSERROR_H
 #define PSERROR_H
 
-#include <SDL_assert.h>
+#include <SDL3/SDL_assert.h>
 
 #include "debug.h"
 #include "log.h"

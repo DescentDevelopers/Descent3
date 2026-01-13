@@ -34,6 +34,7 @@ uniform bool u_fog_enable;
 uniform vec4 u_fog_color;
 uniform float u_fog_start;
 uniform float u_fog_end;
+uniform float u_gamma; // Gamma correction
 
 float branchless_invert_or_zero(in float value) {
     // sign() returns 1 if val > 0, -1 if val < 0, and 0 if val == 0
@@ -57,4 +58,5 @@ void main()
     // fog_factor must also be 1. invert u_fog_enable (so that it is 1 when disabled) and take the max.
     fog_factor = max(fog_factor, float(!u_fog_enable));
     out_color = out_color * fog_factor + (1.0 - fog_factor) * u_fog_color;
+    out_color.rgb = pow(out_color.rgb, vec3(1.0/u_gamma));
 }

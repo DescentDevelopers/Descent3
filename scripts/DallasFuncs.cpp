@@ -1002,18 +1002,18 @@ void dfSave(void *fileptr) {
 
   File_WriteByte(PositionClipboard.has_pos, fileptr);
   File_WriteInt(PositionClipboard.room, fileptr);
-  File_WriteFloat(PositionClipboard.pos.x, fileptr);
-  File_WriteFloat(PositionClipboard.pos.y, fileptr);
-  File_WriteFloat(PositionClipboard.pos.z, fileptr);
-  File_WriteFloat(PositionClipboard.orient.fvec.x, fileptr);
-  File_WriteFloat(PositionClipboard.orient.fvec.y, fileptr);
-  File_WriteFloat(PositionClipboard.orient.fvec.z, fileptr);
-  File_WriteFloat(PositionClipboard.orient.uvec.x, fileptr);
-  File_WriteFloat(PositionClipboard.orient.uvec.y, fileptr);
-  File_WriteFloat(PositionClipboard.orient.uvec.z, fileptr);
-  File_WriteFloat(PositionClipboard.orient.rvec.x, fileptr);
-  File_WriteFloat(PositionClipboard.orient.rvec.y, fileptr);
-  File_WriteFloat(PositionClipboard.orient.rvec.z, fileptr);
+  File_WriteFloat(PositionClipboard.pos.x(), fileptr);
+  File_WriteFloat(PositionClipboard.pos.y(), fileptr);
+  File_WriteFloat(PositionClipboard.pos.z(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.fvec.x(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.fvec.y(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.fvec.z(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.uvec.x(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.uvec.y(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.uvec.z(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.rvec.x(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.rvec.y(), fileptr);
+  File_WriteFloat(PositionClipboard.orient.rvec.z(), fileptr);
 }
 
 // Restore vars
@@ -1039,18 +1039,18 @@ void dfRestore(void *fileptr) {
 
   PositionClipboard.has_pos = (File_ReadByte(fileptr)) ? true : false;
   PositionClipboard.room = File_ReadInt(fileptr);
-  PositionClipboard.pos.x = File_ReadFloat(fileptr);
-  PositionClipboard.pos.y = File_ReadFloat(fileptr);
-  PositionClipboard.pos.z = File_ReadFloat(fileptr);
-  PositionClipboard.orient.fvec.x = File_ReadFloat(fileptr);
-  PositionClipboard.orient.fvec.y = File_ReadFloat(fileptr);
-  PositionClipboard.orient.fvec.z = File_ReadFloat(fileptr);
-  PositionClipboard.orient.uvec.x = File_ReadFloat(fileptr);
-  PositionClipboard.orient.uvec.y = File_ReadFloat(fileptr);
-  PositionClipboard.orient.uvec.z = File_ReadFloat(fileptr);
-  PositionClipboard.orient.rvec.x = File_ReadFloat(fileptr);
-  PositionClipboard.orient.rvec.y = File_ReadFloat(fileptr);
-  PositionClipboard.orient.rvec.z = File_ReadFloat(fileptr);
+  PositionClipboard.pos.x() = File_ReadFloat(fileptr);
+  PositionClipboard.pos.y() = File_ReadFloat(fileptr);
+  PositionClipboard.pos.z() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.fvec.x() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.fvec.y() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.fvec.z() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.uvec.x() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.uvec.y() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.uvec.z() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.rvec.x() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.rvec.y() = File_ReadFloat(fileptr);
+  PositionClipboard.orient.rvec.z() = File_ReadFloat(fileptr);
 }
 
 int dfGetPlayer(int objhandle) {
@@ -2125,9 +2125,9 @@ $$END
 void aObjSetVelocity(int objhandle, float x, float y, float z, float speed) {
   vector velocity;
 
-  velocity.x = x * speed;
-  velocity.y = y * speed;
-  velocity.z = z * speed;
+  velocity.x() = x * speed;
+  velocity.y() = y * speed;
+  velocity.z() = z * speed;
 
   Obj_Value(objhandle, VF_SET, OBJV_V_VELOCITY, &velocity);
 }
@@ -3260,9 +3260,9 @@ void aRoomSetWind(int roomnum, float x, float y, float z, float speed) {
 
   mstruct.roomnum = roomnum;
   //!!mstruct.wind = *v;
-  mstruct.wind.x = x * speed;
-  mstruct.wind.y = y * speed;
-  mstruct.wind.z = z * speed;
+  mstruct.wind.x() = x * speed;
+  mstruct.wind.y() = y * speed;
+  mstruct.wind.z() = z * speed;
 
   MSafe_CallFunction(MSAFE_ROOM_WIND, &mstruct);
 }
@@ -3287,9 +3287,9 @@ void aRoomChangeWind(int roomnum, float x, float y, float z, float speed, float 
 
   mstruct.roomnum = roomnum;
   //!!mstruct.wind = *v;
-  mstruct.wind.x = x * speed;
-  mstruct.wind.y = y * speed;
-  mstruct.wind.z = z * speed;
+  mstruct.wind.x() = x * speed;
+  mstruct.wind.y() = y * speed;
+  mstruct.wind.z() = z * speed;
   mstruct.interval = time;
 
   MSafe_CallFunction(MSAFE_ROOM_CHANGING_WIND, &mstruct);
@@ -4856,13 +4856,13 @@ float qObjectPosition(int handle, int axis) {
 
     switch (axis) {
     case 0:
-      value = pos.x;
+      value = pos.x();
       break;
     case 1:
-      value = pos.y;
+      value = pos.y();
       break;
     case 2:
-      value = pos.z;
+      value = pos.z();
       break;
     }
   }

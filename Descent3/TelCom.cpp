@@ -3697,9 +3697,9 @@ void TCSSSCallback(void) {
     return;
   }
 
-  vector viewer_eye = {0, 0, 0};
+  vector viewer_eye{};
   matrix viewer_orient = IDENTITY_MATRIX;
-  viewer_eye.z = -TCShipSelect.cam_dist;
+  viewer_eye.z() = -TCShipSelect.cam_dist;
 
   grtext_Flush();
   StartFrame(325, 142, 535, 280);
@@ -3732,9 +3732,7 @@ void TCSSSCallback(void) {
   vm_Orthogonalize(&view_orient);
   TCShipSelect.orient = view_orient;
 
-  light_vec.x = 0.0f;
-  light_vec.y = -1.0f;
-  light_vec.z = -1.0f;
+  light_vec = { 0.0f, -1.0f, -1.0f };
   light_scalar = 0.8f;
   vm_NormalizeVector(&light_vec);
 

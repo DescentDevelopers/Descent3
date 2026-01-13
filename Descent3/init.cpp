@@ -1,6 +1,7 @@
 /*
 * Descent 3
 * Copyright (C) 2024 Parallax Software
+* Copyright (C) 2024–2025 Descent Developers
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -921,6 +922,7 @@
 #include "init.h"
 #include "config.h"
 #include "3d.h"
+#include "d3_platform_path.h"
 #include "hlsoundlib.h"
 #include "manage.h"
 #include "bitmap.h"
@@ -980,6 +982,8 @@
 #include "gamecinematics.h"
 #include "debuggraph.h"
 
+#include <algorithm>
+
 // Uncomment this to allow all languages
 #define ALLOW_ALL_LANG 1
 
@@ -1001,6 +1005,9 @@ bool Running_editor = false; // didn't we have a variable like this somewhere
 #endif
 
 static bool Init_in_editor = false;
+
+// Base directory from configuration path
+std::filesystem::path config_base_directory;
 
 // used to update load bar.
 static void SetInitMessageLength(const char *c, float amount); // portion of total bar to fill (0 to 1)
@@ -1155,7 +1162,9 @@ void SaveGameSettings() {
   Database->write("DetailObjectComp", Detail_settings.Object_complexity);
   Database->write("DetailPowerupHalos", Detail_settings.Powerup_halos);
 
-  Database->write("RS_resolution", Game_video_resolution);
+  Database->write("RS_resolution", Current_video_resolution_id);
+  Database->write("RS_fov", static_cast<int>(Render_FOV_setting));
+  Database->write("RS_fullscreen", static_cast<int>(Game_fullscreen));
 
   Database->write("RS_bitdepth", Render_preferred_bitdepth);
   Database->write("RS_bilear", Render_preferred_state.filtering);
@@ -1192,6 +1201,9 @@ void SaveGameSettings() {
     Database->write("Default_pilot", Default_pilot.c_str(), strlen(Default_pilot.c_str()) + 1);
   else
     Database->write("Default_pilot", " ", 2);
+
+  Database->write("GAME_base_directory", (const char*)config_base_directory.u8string().c_str(),
+                  strlen((const char*)config_base_directory.u8string().c_str()) + 1);
 }
 
 /*
@@ -1231,7 +1243,7 @@ void LoadGameSettings() {
   D3Use_force_feedback = true;
   D3Force_gain = 1.0f;
   D3Force_auto_center = true;
-  Game_video_resolution = RES_640X480;
+  Current_video_resolution_id = Default_resolution_id;
   PlayPowerupVoice = true;
   PlayVoices = true;
   Sound_mixer = SOUND_MIXER_SOFTWARE_16;
@@ -1252,6 +1264,11 @@ void LoadGameSettings() {
     } else if (stricmp(tempbuffer, "German") == 0) {
       ddio_SetKeyboardLanguage(KBLANG_GERMAN);
     }
+  }
+
+  templen = TEMPBUFFERSIZE;
+  if (Database->read("GAME_base_directory", tempbuffer, &templen)) {
+    config_base_directory = tempbuffer;
   }
 
   templen = TEMPBUFFERSIZE;
@@ -1287,7 +1304,21 @@ void LoadGameSettings() {
   Database->read_int("RoomLeveling", &Default_player_room_leveling);
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
-  Database->read_int("RS_resolution", &Game_video_resolution);
+  Database->read_int("RS_resolution", &tempint);
+  if (tempint >= 0 && tempint < std::size(Video_res_list))
+    Current_video_resolution_id = tempint;
+  else
+    LOG_WARNING << "Game settings contain a display resolution index that is out of bounds. Starting with default resolution.";
+
+  int tempval = 0;
+  Database->read_int("RS_fov", &tempval);
+  tempval = std::clamp(tempval, static_cast<int>(D3_DEFAULT_FOV), 90);
+  Render_FOV_setting = static_cast<float>(tempval);
+  Render_FOV = Render_FOV_setting;
+
+  Database->read_int("RS_fullscreen", &tempval);
+  Game_fullscreen = tempval != 0;
+
   Database->read_int("RS_bilear", &Render_preferred_state.filtering);
   Database->read_int("RS_mipping", &Render_preferred_state.mipping);
   Database->read_int("RS_color_model", &Render_state.cur_color_model);
@@ -1359,16 +1390,6 @@ void LoadGameSettings() {
 
   Database->read_int("PredefDetailSetting", &level);
   ConfigSetDetailLevel(level);
-  int widtharg = FindArg("-Width");
-  int heightarg = FindArg("-Height");
-  if (widtharg) {
-    Video_res_list[N_SUPPORTED_VIDRES - 1].width = atoi(GameArgs[widtharg + 1]);
-    Game_video_resolution = N_SUPPORTED_VIDRES - 1;
-  }
-  if (heightarg) {
-    Video_res_list[N_SUPPORTED_VIDRES - 1].height = atoi(GameArgs[heightarg + 1]);
-    Game_video_resolution = N_SUPPORTED_VIDRES - 1;
-  }
 
   // Motion blur
   Use_motion_blur = 0;
@@ -1388,44 +1409,61 @@ void LoadGameSettings() {
         I/O systems initialization
 */
 void InitIOSystems(bool editor) {
-  ddio_init_info io_info;
+  // Read in stuff from the registry
+  INIT_MESSAGE(("Reading settings."));
+  LoadGameSettings();
 
-  // Set the writable base directory
-  int dirarg = FindArg("-setdir");
-  int exedirarg = FindArg("-useexedir");
-  std::filesystem::path writable_base_directory;
-  if (dirarg) {
-    writable_base_directory = GameArgs[dirarg + 1];
-  } else if (exedirarg) {
-    char exec_path[_MAX_PATH];
-    memset(exec_path, 0, sizeof(exec_path));
-    // Populate exec_path with the executable path
-    if (!ddio_GetBinaryPath(exec_path, sizeof(exec_path))) {
-      Error("Failed to get executable path\n");
-    } else {
-      std::filesystem::path executablePath(exec_path);
-      writable_base_directory = executablePath.parent_path();
-      LOG_INFO << "Using working directory of " << writable_base_directory;
-    }
-  } else {
-    writable_base_directory = std::filesystem::current_path();
+  /*
+   * Populate base directories. In result, we have the following list of directories (in priority order):
+   * - Writable preference path
+   * - User defined paths (cmd-line and configuration)
+   * - Platform defined paths (such as /usr/share/Descent3 on Linux or Steam installation paths)
+   * - Directory of executable
+   */
+
+  // Writable preference path
+  std::filesystem::path pref_path = ddio_GetPrefPath(D3_PREF_ORG, D3_PREF_APP);
+  if (pref_path.empty()) {
+    Error("Failed to get preference path!");
   }
+  LOG_INFO << "Setting writable preference path " << pref_path;
+  cf_AddBaseDirectory(pref_path);
 
-  ddio_SetWorkingDir(writable_base_directory.u8string().c_str());
-  cf_AddBaseDirectory(writable_base_directory);
+  // Set the default base directories
+  cf_AddDefaultBaseDirectories();
 
-  // Set any additional base directories
-  auto additionaldirarg = 0;
+  // Additional paths
+  int additionaldirarg = 0;
   while (0 != (additionaldirarg = FindArg("-additionaldir", additionaldirarg))) {
     const auto dir_to_add = GetArg(additionaldirarg + 1);
-    if (dir_to_add == NULL) {
-      LOG_WARNING << "-additionaldir was at the end of the argument list. It should never be at the end of the argument list.";
+    if (dir_to_add == nullptr) {
+      LOG_WARNING << "-additionaldir requires directory path as value.";
       break;
     } else {
-      cf_AddBaseDirectory(std::filesystem::path(dir_to_add));
+      cf_AddBaseDirectory(dir_to_add);
       additionaldirarg += 2;
     }
   }
+  // Path from configuration
+  if (!config_base_directory.empty()) {
+    cf_AddBaseDirectory(config_base_directory);
+  }
+
+  // Platform dependent paths
+  std::filesystem::path platform_dir = std::filesystem::canonical(D3_DATADIR);
+  cf_AddBaseDirectory(platform_dir);
+  // TODO: add Steam/registry locations
+
+  // Add path of executable
+  std::filesystem::path exec_path = ddio_GetBasePath();
+  // Populate exec_path with the executable path
+  if (exec_path.empty() || exec_path == platform_dir) {
+    LOG_DEBUG << "Skipping adding executable path (empty or redundant path).";
+  } else {
+    cf_AddBaseDirectory(exec_path);
+  }
+
+  LOG_INFO << "Base directories: " << cf_LocateMultiplePaths("");
 
   Descent->set_defer_handler(D3DeferHandler);
 
@@ -1442,6 +1480,7 @@ void InitIOSystems(bool editor) {
 #endif
 
   //	do io init stuff
+  ddio_init_info io_info{};
   io_info.obj = Descent;
 
   INIT_MESSAGE(("Initializing DDIO systems."));
@@ -1455,10 +1494,6 @@ void InitIOSystems(bool editor) {
   RTP_ENABLEFLAGS(RTI_WEATHERFRAMETIME | RTI_PLAYERFRAMETIME | RTI_DOORFRAMETIME | RTI_LEVELGOALTIME |
                   RTI_MATCENFRAMETIME);
   RTP_ENABLEFLAGS(RTI_OBJFRAMETIME | RTI_AIFRAMETIME | RTI_PROCESSKEYTIME);
-
-  //	Read in stuff from the registry
-  INIT_MESSAGE(("Reading settings."));
-  LoadGameSettings();
 
   // Setup temp directory
   INIT_MESSAGE(("Setting up temp directory."));
@@ -1509,28 +1544,6 @@ void InitIOSystems(bool editor) {
   // this one at the end to find our newly build script libraries first
   sys_hid = cf_OpenLibrary(PRIMARY_HOG);
 
-  // Check to see if there is a -mission command line option
-  // if there is, attempt to open that hog/mn3 so it can override such
-  // things as the mainmenu movie, or loading screen
-  int mission_arg = FindArg("-mission");
-  if (mission_arg > 0) {
-    char path_to_mission[_MAX_PATH];
-    char filename[256];
-
-    // get the true filename
-    ddio_SplitPath(GameArgs[mission_arg + 1], NULL, filename, NULL);
-    strcat(filename, ".mn3");
-
-    // make the full path (it is forced to be on the harddrive since it contains
-    // textures and stuff).
-    ddio_MakePath(path_to_mission, LocalD3Dir, "missions", filename, NULL);
-    if (cfexist(path_to_mission)) {
-      cf_OpenLibrary(path_to_mission);
-    } else {
-      Int3(); // mission not found
-    }
-  }
-
   // Initialize debug graph early incase any system uses it in its init
   INIT_MESSAGE(("Initializing debug graph."));
   DebugGraph_Initialize();
@@ -1573,6 +1586,9 @@ void InitGraphics(bool editor) {
   // Init our textures
   if (!InitTextures())
     Error("Failed to initialize texture system.");
+
+  // Init fullscreen/windowed mode from CLI arguments
+  rend_InitWindowMode();
 
 #ifdef EDITOR
   char *driver = "GDIX";
@@ -1718,6 +1734,7 @@ void InitMessage(const char *c, float progress) {
   }
 
   EndFrame();
+  Descent->defer();
   rend_Flip();
 }
 
@@ -1825,6 +1842,7 @@ void InitD3Systems1(bool editor) {
 
   // Initialize missions
   InitMission();
+  InitDefaultMissionFromCLI();
 
   // Initializes the ship structure
   InitShips();
@@ -1909,7 +1927,7 @@ void InitD3Systems2(bool editor) {
 
   // the remaining sound system
   InitVoices();
-  InitD3Music(FindArg("-nomusic")  || FindArg("-nosound") ? false : true);
+  InitD3Music(FindArg("-nomusic") || FindArg("-nosound") ? false : true);
   InitAmbientSoundSystem();
 
   InitGameSystems(editor);
@@ -1957,7 +1975,7 @@ void SetupTempDirectory(void) {
     std::error_code ec;
     std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
     if (ec) {
-      Error("Could not find temporary directory: \"%s\"", ec.message().c_str() );
+      Error("Could not find temporary directory: \"%s\"", ec.message().c_str());
       exit(1);
     }
     Descent3_temp_directory = tempPath / "Descent3" / "cache";
@@ -2025,15 +2043,15 @@ void SetupTempDirectory(void) {
     exit(1);
   }
   // restore working dir
-  ddio_SetWorkingDir(cf_GetWritableBaseDirectory().u8string().c_str());
+  ddio_SetWorkingDir((const char*)cf_GetWritableBaseDirectory().u8string().c_str());
 }
 
 void DeleteTempFiles() {
   ddio_DoForeachFile(Descent3_temp_directory, std::regex("d3[smocti].+\\.tmp"), [](const std::filesystem::path &path) {
     std::error_code ec;
     std::filesystem::remove(path, ec);
-    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n",
-                              path.u8string().c_str(), ec.message().c_str());
+    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", (const char*)path.u8string().c_str(),
+                              (const char*)ec.message().c_str());
   });
 }
 

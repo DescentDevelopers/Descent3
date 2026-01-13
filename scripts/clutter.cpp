@@ -67,7 +67,8 @@ struct tScriptInfo {
   const char *name;
 };
 
-static tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
+static constexpr tScriptInfo ScriptIDs[] = {
+                                  {ID_FRAGCRATE, "fragcrate"},
                                   {ID_NAPALMBARREL, "napalmbarrel"},
                                   {ID_ALIENCUPLINK, "Aliencuplink"},
                                   {ID_TNTHIGHYIELD, "TNTCrateHighYield"},
@@ -75,7 +76,7 @@ static tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
                                   {ID_FALLINGROCK, "FallingRock"},
                                   {ID_LAVAROCK, "LavaRock"}};
 
-static int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
+static int NumScriptIDs = std::size(ScriptIDs);
 
 class ClutterScript {
 public:
@@ -473,9 +474,9 @@ int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
 
     accel = fabs(delta_vel / frametime);
 
-    bool case1 = (accel >= 40.0f && vel_val > 35.0f && memory->last_vel.y < -6.0f) ? true : false;
+    bool case1 = (accel >= 40.0f && vel_val > 35.0f && memory->last_vel.y() < -6.0f) ? true : false;
     bool case2 = (accel > 100.0f && vel_val > 50.0f) ? true : false;
-    bool case3 = (accel > 1500.0f && memory->last_vel.y < -5.0f) ? true : false;
+    bool case3 = (accel > 1500.0f && memory->last_vel.y() < -5.0f) ? true : false;
 
     if (case1 || case2 || case3) {
       if (case1)

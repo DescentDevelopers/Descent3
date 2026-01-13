@@ -879,12 +879,12 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
     if (objp->movement_type == MT_PHYSICS || objp->movement_type == MT_WALKING)
       *virtual_vel = objp->mtype.phys_info.velocity;
     else
-      *virtual_vel = Zero_vector;
+      *virtual_vel = vector{};
 
     sound_pos = objp->pos;
     sound_seg = objp->roomnum;
   } else {
-    *virtual_vel = Zero_vector;
+    *virtual_vel = vector{};
     sound_pos = m_sound_objects[sound_obj_index].m_link_info.pos_info.pos;
     sound_seg = m_sound_objects[sound_obj_index].m_link_info.pos_info.segnum;
   }
@@ -987,7 +987,7 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
     dir_to_sound = Viewer_object->orient.fvec;
   }
   if ((m_sound_objects[sound_obj_index].play_info.sample_skip_interval == 0) && (*adjusted_volume > 0.0f) &&
-      (dir_to_sound * Viewer_object->orient.fvec < -.5))
+      (vm_Dot3Product(dir_to_sound,Viewer_object->orient.fvec) < -.5))
     m_sound_objects[sound_obj_index].play_info.sample_skip_interval = 1;
   *virtual_pos = Viewer_object->pos + (dir_to_sound * dist);
   return true;

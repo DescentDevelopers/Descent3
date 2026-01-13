@@ -1183,16 +1183,16 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void) {
   vm_MakeZero(&zero_vector);
   vm_MakeIdentity(&id_matrix);
 
-  float norm_angles[256];
+  scalar norm_angles[256];
 
-  float keyframe = pm->frame_min + (pm->frame_max - pm->frame_min) * ((float)frame / (float)NUM_ANIM_FRAMES);
+  scalar keyframe = pm->frame_min + (pm->frame_max - pm->frame_min) * ((scalar)frame / (scalar)NUM_ANIM_FRAMES);
 
   SetNormalizedTimeAnim(keyframe, norm_angles, pm);
 
   spin_frame++;
 
   vm_AnglesToMatrix(&rot_matrix, 0, spin_frame * 400, 0);
-  view_vector.z = -(fabs(pm->maxs.z - pm->mins.z) * 2);
+  view_vector.z() = -(fabs(pm->maxs.z() - pm->mins.z()) * (scalar)2);
 
   m_ObjectSurf.create(128, 128, BPP_16);
   grViewport *vport = new grViewport(&m_ObjectSurf);

@@ -883,9 +883,9 @@ void FreePolyModel(int i) {
 }
 
 void ReadModelVector(vector *vec, CFILE *infile) {
-  vec->x = cf_ReadFloat(infile);
-  vec->y = cf_ReadFloat(infile);
-  vec->z = cf_ReadFloat(infile);
+  vec->x() = cf_ReadFloat(infile);
+  vec->y() = cf_ReadFloat(infile);
+  vec->z() = cf_ReadFloat(infile);
 }
 
 void ReadModelStringLen(char *ptr, int len, CFILE *infile) {
@@ -976,28 +976,28 @@ int ReloadModelTextures(int modelnum) {
 }
 
 void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
-  float x, y, z;
-  float s, c, t;
+  scalar x, y, z;
+  scalar s, c, t;
 
-  x = axis->x;
-  y = axis->y;
-  z = axis->z;
+  x = axis->x();
+  y = axis->y();
+  z = axis->z();
 
-  s = (float)FixSin(ang);
-  c = (float)FixCos(ang);
+  s = (scalar)FixSin(ang);
+  c = (scalar)FixCos(ang);
   t = 1.0f - c;
 
-  mat->rvec.x = t * x * x + c;
-  mat->rvec.y = t * x * y + s * z;
-  mat->rvec.z = t * x * z - s * y;
+  mat->rvec.x() = t * x * x + c;
+  mat->rvec.y() = t * x * y + s * z;
+  mat->rvec.z() = t * x * z - s * y;
 
-  mat->uvec.x = t * x * y - s * z;
-  mat->uvec.y = t * y * y + c;
-  mat->uvec.z = t * y * z + s * x;
+  mat->uvec.x() = t * x * y - s * z;
+  mat->uvec.y() = t * y * y + c;
+  mat->uvec.z() = t * y * z + s * x;
 
-  mat->fvec.x = t * x * z + s * y;
-  mat->fvec.y = t * y * z - s * x;
-  mat->fvec.z = t * z * z + c;
+  mat->fvec.x() = t * x * z + s * y;
+  mat->fvec.y() = t * y * z - s * x;
+  mat->fvec.z() = t * z * z + c;
 }
 
 void SetPolymodelProperties(bsp_info *subobj, char *props) {
@@ -1231,20 +1231,20 @@ void MinMaxSubmodel(poly_model *pm, bsp_info *sm, vector offset) {
 
   offset += sm->offset;
   // Get max
-  if ((sm->max.x + offset.x) > pm->maxs.x)
-    pm->maxs.x = sm->max.x + offset.x;
-  if ((sm->max.y + offset.y) > pm->maxs.y)
-    pm->maxs.y = sm->max.y + offset.y;
-  if ((sm->max.z + offset.z) > pm->maxs.z)
-    pm->maxs.z = sm->max.z + offset.z;
+  if ((sm->max.x() + offset.x()) > pm->maxs.x())
+    pm->maxs.x() = sm->max.x() + offset.x();
+  if ((sm->max.y() + offset.y()) > pm->maxs.y())
+    pm->maxs.y() = sm->max.y() + offset.y();
+  if ((sm->max.z() + offset.z()) > pm->maxs.z())
+    pm->maxs.z() = sm->max.z() + offset.z();
 
   // Get min
-  if ((sm->min.x + offset.x) < pm->mins.x)
-    pm->mins.x = sm->min.x + offset.x;
-  if ((sm->min.y + offset.y) < pm->mins.y)
-    pm->mins.y = sm->min.y + offset.y;
-  if ((sm->min.z + offset.z) < pm->mins.z)
-    pm->mins.z = sm->min.z + offset.z;
+  if ((sm->min.x() + offset.x()) < pm->mins.x())
+    pm->mins.x() = sm->min.x() + offset.x();
+  if ((sm->min.y() + offset.y()) < pm->mins.y())
+    pm->mins.y() = sm->min.y() + offset.y();
+  if ((sm->min.z() + offset.z()) < pm->mins.z())
+    pm->mins.z() = sm->min.z() + offset.z();
 
   for (int i = 0; i < sm->num_children; i++)
     MinMaxSubmodel(pm, &pm->submodel[sm->children[i]], offset);
@@ -1257,8 +1257,8 @@ void FindMinMaxForModel(poly_model *pm) {
   ASSERT(!(pm->flags & PMF_NOT_RESIDENT));
 
   vm_MakeZero(&zero_vec);
-  pm->mins.x = pm->mins.y = pm->mins.z = 90000;
-  pm->maxs.x = pm->maxs.y = pm->maxs.z = -90000;
+  pm->mins.x() = pm->mins.y() = pm->mins.z() = 90000;
+  pm->maxs.x() = pm->maxs.y() = pm->maxs.z() = -90000;
 
   for (int i = 0; i < pm->n_models; i++) {
     bsp_info *sm = &pm->submodel[i];
@@ -1369,8 +1369,8 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       ASSERT(n < pm->n_models);
 
-      pm->submodel[n].min.x = pm->submodel[n].min.y = pm->submodel[n].min.z = 90000;
-      pm->submodel[n].max.x = pm->submodel[n].max.y = pm->submodel[n].max.z = -90000;
+      pm->submodel[n].min.fill(90000);
+      pm->submodel[n].max.fill(-90000);
 
       pm->submodel[n].parent = cf_ReadInt(infile);
 
@@ -1440,20 +1440,20 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         ReadModelVector(&pm->submodel[n].verts[i], infile);
 
         // Get max
-        if (pm->submodel[n].verts[i].x > pm->submodel[n].max.x)
-          pm->submodel[n].max.x = pm->submodel[n].verts[i].x;
-        if (pm->submodel[n].verts[i].y > pm->submodel[n].max.y)
-          pm->submodel[n].max.y = pm->submodel[n].verts[i].y;
-        if (pm->submodel[n].verts[i].z > pm->submodel[n].max.z)
-          pm->submodel[n].max.z = pm->submodel[n].verts[i].z;
+        if (pm->submodel[n].verts[i].x() > pm->submodel[n].max.x())
+          pm->submodel[n].max.x() = pm->submodel[n].verts[i].x();
+        if (pm->submodel[n].verts[i].y() > pm->submodel[n].max.y())
+          pm->submodel[n].max.y() = pm->submodel[n].verts[i].y();
+        if (pm->submodel[n].verts[i].z() > pm->submodel[n].max.z())
+          pm->submodel[n].max.z() = pm->submodel[n].verts[i].z();
 
         // Get min
-        if (pm->submodel[n].verts[i].x < pm->submodel[n].min.x)
-          pm->submodel[n].min.x = pm->submodel[n].verts[i].x;
-        if (pm->submodel[n].verts[i].y < pm->submodel[n].min.y)
-          pm->submodel[n].min.y = pm->submodel[n].verts[i].y;
-        if (pm->submodel[n].verts[i].z < pm->submodel[n].min.z)
-          pm->submodel[n].min.z = pm->submodel[n].verts[i].z;
+        if (pm->submodel[n].verts[i].x() < pm->submodel[n].min.x())
+          pm->submodel[n].min.x() = pm->submodel[n].verts[i].x();
+        if (pm->submodel[n].verts[i].y() < pm->submodel[n].min.y())
+          pm->submodel[n].min.y() = pm->submodel[n].verts[i].y();
+        if (pm->submodel[n].verts[i].z() < pm->submodel[n].min.z())
+          pm->submodel[n].min.z() = pm->submodel[n].verts[i].z();
       }
       for (i = 0; i < nverts; i++)
         ReadModelVector(&pm->submodel[n].vertnorms[i], infile);
@@ -1586,26 +1586,26 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           if (t == 0) {
             *min_ptr = *max_ptr = *v_ptr;
           } else {
-            if (v_ptr->x < min_ptr->x)
-              min_ptr->x = v_ptr->x;
-            else if (v_ptr->x > max_ptr->x)
-              max_ptr->x = v_ptr->x;
+            if (v_ptr->x() < min_ptr->x())
+              min_ptr->x() = v_ptr->x();
+            else if (v_ptr->x() > max_ptr->x())
+              max_ptr->x() = v_ptr->x();
 
-            if (v_ptr->y < min_ptr->y)
-              min_ptr->y = v_ptr->y;
-            else if (v_ptr->y > max_ptr->y)
-              max_ptr->y = v_ptr->y;
+            if (v_ptr->y() < min_ptr->y())
+              min_ptr->y() = v_ptr->y();
+            else if (v_ptr->y() > max_ptr->y())
+              max_ptr->y() = v_ptr->y();
 
-            if (v_ptr->z < min_ptr->z)
-              min_ptr->z = v_ptr->z;
-            else if (v_ptr->z > max_ptr->z)
-              max_ptr->z = v_ptr->z;
+            if (v_ptr->z() < min_ptr->z())
+              min_ptr->z() = v_ptr->z();
+            else if (v_ptr->z() > max_ptr->z())
+              max_ptr->z() = v_ptr->z();
           }
         }
 
         // Do lightmap res computation
         if (version_major >= 21) {
-          float xdiff, ydiff;
+          scalar xdiff, ydiff;
 
           xdiff = cf_ReadFloat(infile);
           ydiff = cf_ReadFloat(infile);
@@ -2122,12 +2122,12 @@ int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
   }
 
   // if this is an oof instead of a pof, flag it as such
-  if (!stricmp(".oof", filename.extension().u8string().c_str())) {
+  if (!stricmp(".oof", (const char*)filename.extension().u8string().c_str())) {
     Poly_models[polynum].new_style = 1;
   } else
     Poly_models[polynum].new_style = 0;
 
-  strcpy(Poly_models[polynum].name, name.u8string().c_str());
+  strcpy(Poly_models[polynum].name, (const char*)name.u8string().c_str());
 
   int ret = 0;
   if (!pageable)
@@ -2228,7 +2228,7 @@ std::filesystem::path ChangePolyModelName(const std::filesystem::path &src) {
 // or index of polymodel with name
 int FindPolyModelName(const std::filesystem::path &name) {
   for (int i = 0; i < MAX_POLY_MODELS; i++) {
-    if (Poly_models[i].used && !stricmp(Poly_models[i].name, name.u8string().c_str())) {
+    if (Poly_models[i].used && !stricmp((const char*)Poly_models[i].name, (const char*)name.u8string().c_str())) {
       return i;
     }
   }
@@ -2519,9 +2519,7 @@ void SetModelAngles(poly_model *po, const float *normalized_angles) {
 
         vm_ExtractAnglesFromMatrix(&po->submodel[i].angs, &temp_matrix);
       } else {
-        po->submodel[i].angs.h = 0;
-        po->submodel[i].angs.p = 0;
-        po->submodel[i].angs.h = 0;
+        po->submodel[i].angs = angvec{};
       }
     }
   }
@@ -2572,11 +2570,8 @@ void SetModelInterpPos(poly_model *po, const float *normalized_pos) {
       }
     }
   } else {
-    for (i = 0; i < po->n_models; i++) {
-      po->submodel[i].mod_pos.x = 0;
-      po->submodel[i].mod_pos.y = 0;
-      po->submodel[i].mod_pos.z = 0;
-    }
+    for (i = 0; i < po->n_models; i++)
+      po->submodel[i].mod_pos = vector{};
   }
 }
 
@@ -2602,7 +2597,7 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t 
         continue;
 
       if (sm->num_key_pos <= 1) {
-        vm_MakeZero(&sm->mod_pos);
+        sm->mod_pos = vector{};
         goto do_angles;
       }
 
@@ -2637,9 +2632,9 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t 
       // Don't rotate turrets or auto-rotators
       if (!(sm->flags & (SOF_TURRET | SOF_ROTATE))) {
         if (sm->num_key_angles <= 1) {
-          sm->angs.p = 0;
-          sm->angs.h = 0;
-          sm->angs.b = 0;
+          sm->angs.p() = 0;
+          sm->angs.h() = 0;
+          sm->angs.b() = 0;
           continue;
         }
 
@@ -2707,13 +2702,8 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t 
 
   } else {
     for (i = 0; i < po->n_models; i++) {
-      po->submodel[i].mod_pos.x = 0;
-      po->submodel[i].mod_pos.y = 0;
-      po->submodel[i].mod_pos.z = 0;
-
-      po->submodel[i].angs.p = 0;
-      po->submodel[i].angs.h = 0;
-      po->submodel[i].angs.b = 0;
+      po->submodel[i].mod_pos = vector{};
+      po->submodel[i].angs = angvec{};
     }
   }
 }
@@ -3145,7 +3135,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     tpnt = pnt * m;
@@ -3190,7 +3180,7 @@ void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     tpnt = pnt * m;

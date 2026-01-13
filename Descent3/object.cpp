@@ -1654,15 +1654,15 @@ void ObjSetAABB(object *obj) {
              obj->type != OBJ_POWERUP && obj->type != OBJ_PLAYER) {
     vector offset_pos;
 
-    object_rad.x = object_rad.y = object_rad.z = Poly_models[obj->rtype.pobj_info.model_num].anim_size;
+    object_rad.x() = object_rad.y() = object_rad.z() = Poly_models[obj->rtype.pobj_info.model_num].anim_size;
     offset_pos = obj->pos + obj->anim_sphere_offset;
 
     obj->min_xyz = offset_pos - object_rad;
     obj->max_xyz = offset_pos + object_rad;
   } else {
-    object_rad.x = obj->size;
-    object_rad.y = obj->size;
-    object_rad.z = obj->size;
+    object_rad.x() = obj->size;
+    object_rad.y() = obj->size;
+    object_rad.z() = obj->size;
 
     obj->min_xyz = obj->pos - object_rad;
 
@@ -2395,17 +2395,17 @@ void DoFlyingControl(object *objp) {
       ASSERT(objp->id == Player_num);
       object *g_obj = Players[objp->id].guided_obj;
 
-      g_obj->mtype.phys_info.rotthrust.x = controls.pitch_thrust * g_obj->mtype.phys_info.full_rotthrust;
-      g_obj->mtype.phys_info.rotthrust.z = controls.bank_thrust * g_obj->mtype.phys_info.full_rotthrust;
-      g_obj->mtype.phys_info.rotthrust.y = controls.heading_thrust * g_obj->mtype.phys_info.full_rotthrust;
+      g_obj->mtype.phys_info.rotthrust.x() = controls.pitch_thrust * g_obj->mtype.phys_info.full_rotthrust;
+      g_obj->mtype.phys_info.rotthrust.z() = controls.bank_thrust * g_obj->mtype.phys_info.full_rotthrust;
+      g_obj->mtype.phys_info.rotthrust.y() = controls.heading_thrust * g_obj->mtype.phys_info.full_rotthrust;
     } else {
       player *playp = &Players[objp->id];
 
-      objp->mtype.phys_info.rotthrust.x =
+      objp->mtype.phys_info.rotthrust.x() =
           controls.pitch_thrust * objp->mtype.phys_info.full_rotthrust * playp->turn_scalar;
-      objp->mtype.phys_info.rotthrust.z =
+      objp->mtype.phys_info.rotthrust.z() =
           controls.bank_thrust * objp->mtype.phys_info.full_rotthrust * playp->turn_scalar;
-      objp->mtype.phys_info.rotthrust.y =
+      objp->mtype.phys_info.rotthrust.y() =
           controls.heading_thrust * objp->mtype.phys_info.full_rotthrust * playp->turn_scalar;
     }
 
@@ -2490,7 +2490,7 @@ void ObjDoEffects(object *obj) {
       // Stop doing liquid effect
       obj->effect_info->type_flags &= ~EF_LIQUID;
       if (obj == Viewer_object)
-        Render_FOV = D3_DEFAULT_FOV;
+        Render_FOV = Render_FOV_setting;
     } else {
       if (obj == Viewer_object) {
         int inttime = Gametime;
@@ -2502,7 +2502,7 @@ void ObjDoEffects(object *obj) {
         if (obj->effect_info->liquid_time_left < 1)
           scalar *= (obj->effect_info->liquid_time_left);
 
-        Render_FOV = D3_DEFAULT_FOV + scalar;
+        Render_FOV = Render_FOV_setting + scalar;
       }
     }
   }
@@ -3132,8 +3132,8 @@ void ObjSetOrient(object *obj, const matrix *orient) {
       obj->wall_sphere_offset = Poly_models[obj->rtype.pobj_info.model_num].wall_size_offset * m;
       obj->anim_sphere_offset = Poly_models[obj->rtype.pobj_info.model_num].anim_size_offset * m;
     } else {
-      obj->wall_sphere_offset = Zero_vector;
-      obj->anim_sphere_offset = Zero_vector;
+      obj->wall_sphere_offset = vector{};
+      obj->anim_sphere_offset = vector{};
     }
   }
 }
@@ -3273,7 +3273,7 @@ void GetObjectPointInWorld(vector *dest, object *obj, int subnum, int vertnum) {
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     tpnt = pnt * m;

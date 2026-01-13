@@ -284,9 +284,9 @@ void SetElementView(rad_element *ep) {
   vector u, v, n;
 
   // Select random vector for hemicube orientation
-  rv.x = ((rand() / RAND_MAX) * 2.0 - 1.0);
-  rv.y = ((rand() / RAND_MAX) * 2.0 - 1.0);
-  rv.z = ((rand() / RAND_MAX) * 2.0 - 1.0);
+  rv.x() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
+  rv.y() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
+  rv.z() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
 
   n = rad_MaxSurface->normal; // Get patch normal
 
@@ -312,16 +312,16 @@ void SetSurfaceView(rad_surface *surf) {
   vector u, v, n;
 
   // Select random vector for hemicube orientation
-  rv.x = ((rand() / RAND_MAX) * 2.0 - 1.0);
-  rv.y = ((rand() / RAND_MAX) * 2.0 - 1.0);
-  rv.z = ((rand() / RAND_MAX) * 2.0 - 1.0);
+  rv.x() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
+  rv.y() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
+  rv.z() = (((scalar)rand() / (scalar)RAND_MAX) * (scalar)2.0 - (scalar)1.0);
 
   n = rad_MaxSurface->normal; // Get patch normal
 
   do // Get valid u-axis vector
   {
     vm_CrossProduct(&u, &n, &rv);
-  } while (vm_GetMagnitude(&u) < .0001);
+  } while (vm_GetMagnitude(&u) < (scalar).0001);
 
   vm_NormalizeVector(&u);
   vm_CrossProduct(&v, &u, &n); // Determine v-axis
@@ -344,7 +344,7 @@ void BuildTransform(vector *nu, vector *nv, vector *nn) {
   else
     GetCenterOfElement(rad_Hemicube.shooting_element, &rad_Hemicube.view_position);
 
-  rad_Hemicube.view_position += (rad_MaxSurface->normal / 16.0);
+  rad_Hemicube.view_position += (rad_MaxSurface->normal / (scalar)16.0);
 
   vm->fvec = *nn;
   vm->uvec = *nv;
@@ -710,12 +710,12 @@ int NextIndex(int val, int modulus) {
 void ScanRadiosityPoly(g3Point **pl, int nv, int element_id) {
   int i, left_edge_dir;
 
-  float Delta_right_x, Right_x, Delta_left_x, Left_x;
-  float Left_z, Right_z, Delta_left_z, Delta_right_z;
+  scalar Delta_right_x, Right_x, Delta_left_x, Left_x;
+  scalar Left_z, Right_z, Delta_left_z, Delta_right_z;
 
-  float height, left_height, right_height;
+  scalar height, left_height, right_height;
   int vlt, vlb, vrt, vrb, desty;
-  float top_y, bottom_y, next_break_left, next_break_right, y;
+  scalar top_y, bottom_y, next_break_left, next_break_right, y;
 
   hemicube_point cp[100];
 
@@ -729,7 +729,7 @@ void ScanRadiosityPoly(g3Point **pl, int nv, int element_id) {
 
     cp[i].sx = p.p3_sx;
     cp[i].sy = p.p3_sy;
-    cp[i].z = 1.0 / (float)p.p3_vec.z;
+    cp[i].z = (scalar)1.0 / (scalar)(p.p3_vec.z());
   }
 
   // Determine top and bottom y coords.
@@ -774,8 +774,8 @@ void ScanRadiosityPoly(g3Point **pl, int nv, int element_id) {
 
     // Draw a scanline
 
-    float sl, sr;
-    float lz, rz;
+    scalar sl, sr;
+    scalar lz, rz;
 
     sl = Left_x;
     sr = Right_x;
@@ -796,12 +796,12 @@ void ScanRadiosityPoly(g3Point **pl, int nv, int element_id) {
     }
 
     if (width > 0) {
-      float z = lz;
-      float dz = (rz - z) / width;
+      scalar z = lz;
+      scalar dz = (rz - z) / width;
 
       // Enter scan line
       for (int x = x1; x < x1 + width; x++) {
-        float realz = 1.0 / z;
+        scalar realz = (scalar)1.0 / z;
         // Check element visibility
         if (realz <= rad_Hemicube.depth_grid[destptr + x]) {
           // Update Z-buffer

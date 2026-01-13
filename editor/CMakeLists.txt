@@ -564,7 +564,7 @@ set(SOURCE
 set(CMAKE_MFC_FLAG 1)
 
 # Editor only works in Windows, because of MFC and DirectX dependencies
-set(PLATFORM_LIBS linux wsock32.lib winmm.lib dd_grwin32 win32 SDL2::SDL2)
+set(PLATFORM_LIBS linux wsock32.lib winmm.lib dd_grwin32 win32 SDL3::SDL3)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /NODEFAULTLIB:LIBC")
 
 
@@ -574,6 +574,7 @@ target_include_directories(Descent3Editor PRIVATE
   ${PROJECT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}/manage
   ${PROJECT_BINARY_DIR}/lib
+  {SDL3_INCLUDE_DIRS}
 )
 
 target_compile_definitions(Descent3Editor PUBLIC _AFXDLL EDITOR)
@@ -589,6 +590,7 @@ target_link_libraries(Descent3Editor
     ddebug
     libmve
     libacm
+    inetfile
     fix
     grtext
     manage

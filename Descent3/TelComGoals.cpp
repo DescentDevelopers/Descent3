@@ -140,7 +140,7 @@ static int TG_MouseOffset_x = -1, TG_MouseOffset_y = -1;
 bool TG_compare_slots(int left, int right) {
   int left_index, right_index;
   int left_priority, right_priority;
-  char left_list, right_list;
+  int8_t left_list, right_list;
 
   left_index = TG_Lines[left].goal_index;
   right_index = TG_Lines[right].goal_index;

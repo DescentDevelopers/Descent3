@@ -182,6 +182,7 @@
 #include <filesystem>
 
 #include "cfile.h"
+#include "crossplat.h"
 #include "manage.h"
 #include "pstypes.h"
 #include "pserror.h"
@@ -283,7 +284,7 @@ int mng_MakeLocker() {
   do {
     locker = mng_CheckIfLockerPresent();
     if (locker) {
-      strupr(locker);
+      _strupr(locker);
       if (OutrageMessageBox(MBOX_YESNO,
                             "The network database is already locked by %s.\nIt will probably become available if you "
                             "wait a few moments.\n\nWould you like to try again?",
@@ -523,7 +524,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
   cfclose(infile);
   cfclose(outfile);
 
-  if (!SwitcherooFiles(TableLockFilename.u8string().c_str(), TempTableLockFilename)) {
+  if (!SwitcherooFiles((const char*)TableLockFilename.u8string().c_str(), TempTableLockFilename)) {
     Int3();
     return 0;
   }
@@ -531,7 +532,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
 // Log this change
 #ifndef RELEASE
   std::filesystem::path pathstr = std::filesystem::path(NetD3Dir) / "TableLog";
-  FILE *logfile = fopen(pathstr.u8string().c_str(), "at");
+  FILE *logfile = fopen((const char*)pathstr.u8string().c_str(), "at");
   if (logfile) {
     char str[255 + 32];
     char date[255];
@@ -589,7 +590,7 @@ int mng_DeletePagelock(char *name, int pagetype) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
@@ -643,7 +644,7 @@ int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
@@ -780,7 +781,7 @@ int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);

@@ -269,6 +269,7 @@
 #include <filesystem>
 
 #include "cfile.h"
+#include "ddio.h"
 #include "objinfo.h"
 #include "ship.h"
 #include "ui.h"
@@ -356,30 +357,41 @@ void DemoToggleRecording() {
   //	hand coded 128 because long filenames were failing in cfopen(which called fopen, which failed on very
   // long filenames.  instead of printing a message out to the user, just don't allow filenames that long)
   if (DoEditDialog(TXT_DEMOFILENAME, szfile, 128)) {
-    if (stricmp(szfile + (strlen(szfile) - 4), ".dem") != 0) {
-      strcat(szfile, ".dem");
-    }
-    Demo_fname = cf_GetWritableBaseDirectory() / "demo" / szfile;
-    LOG_INFO.printf("Saving demo to file: %s", Demo_fname.u8string().c_str());
-    // Try to create the file
-    Demo_cfp = cfopen(Demo_fname, "wb");
-    if (Demo_cfp) {
-      // Setup the demo variables
-      if (!(Game_mode & GM_MULTI)) {
-        MultiBuildMatchTables();
-      }
-      // Male sure we write the player info the first frame
-      Demo_last_pinfo = timer_GetTime() - (DEMO_PINFO_UPDATE * 2);
-      Demo_flags = DF_RECORDING;
-      // Write the header
-      DemoWriteHeader();
-      DemoStartNewFrame();
-    } else {
-      // cfopen failed
+    std::filesystem::path demo_directory = cf_GetWritableBaseDirectory() / "demo";
+
+    std::error_code ec;
+    std::filesystem::create_directories(demo_directory, ec);
+    if (ec) {
+      LOG_ERROR << "Failed to create " << demo_directory << " directory. Unable to create demo file!";
       AddBlinkingHUDMessage(TXT_DEMOCANTCREATE);
       Demo_fname.clear();
       return;
     }
+
+    Demo_fname = demo_directory / szfile;
+    Demo_fname.replace_extension(".dem");
+
+    LOG_INFO << "Saving demo to file " << Demo_fname;
+    // Try to create the file
+    Demo_cfp = cfopen(Demo_fname, "wb");
+    if (!Demo_cfp) {
+      // cfopen failed
+      LOG_ERROR << "Unable to create demo file!";
+      AddBlinkingHUDMessage(TXT_DEMOCANTCREATE);
+      Demo_fname.clear();
+      return;
+    }
+
+    // Set up the demo variables
+    if (!(Game_mode & GM_MULTI)) {
+      MultiBuildMatchTables();
+    }
+    // Male sure we write the player info the first frame
+    Demo_last_pinfo = timer_GetTime() - (DEMO_PINFO_UPDATE * 2);
+    Demo_flags = DF_RECORDING;
+    // Write the header
+    DemoWriteHeader();
+    DemoStartNewFrame();
   }
 }
 
@@ -506,7 +518,7 @@ void DemoWriteChangedObjects() {
       if ((Objects[i].type == OBJ_PLAYER) || (Objects[i].type == OBJ_OBSERVER) || (Objects[i].type == OBJ_ROBOT) ||
           (Objects[i].type == OBJ_POWERUP) || (Objects[i].type == OBJ_CLUTTER) || (Objects[i].type == OBJ_BUILDING) ||
           (Objects[i].type == OBJ_CAMERA)) {
-        if ((Objects[i].flags & OF_MOVED_THIS_FRAME)) //||(Objects[i].mtype.phys_info.velocity!=Zero_vector))
+        if ((Objects[i].flags & OF_MOVED_THIS_FRAME)) //||(Objects[i].mtype.phys_info.velocity!=vector{}))
         {
           DemoWriteChangedObj(&Objects[i]);
           // num_changed++;
@@ -911,8 +923,8 @@ void DemoReadObj() {
   // if((!((obj->flags&OF_DYING)||(obj->flags&OF_EXPLODING)||(obj->flags&OF_DEAD)))&&obj->type!=255)
 
   if (obj->type != OBJ_NONE) {
-    obj->mtype.phys_info.velocity = Zero_vector;
-    obj->mtype.phys_info.rotvel = Zero_vector;
+    obj->mtype.phys_info.velocity = vector{};
+    obj->mtype.phys_info.rotvel = vector{};
     ObjSetPos(obj, &pos, roomnum, &orient, true);
     poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
     if ((!(obj->flags & OF_ATTACHED)) && (pm->n_attach))
@@ -978,7 +990,7 @@ void DemoReadWeaponFire() {
   weapobjnum = cf_ReadShort(Demo_cfp);
   int16_t gunnum = cf_ReadShort(Demo_cfp);
   ASSERT(uniqueid != 0xffffffff);
-  ASSERT(dir != Zero_vector);
+  ASSERT(dir != vector{});
 
   // This is a hack for the napalm, omega & vauss to prevent making files incompatible
   if ((obj->type == OBJ_PLAYER) && (obj->id != Player_num)) {
@@ -1041,7 +1053,7 @@ void DemoReadWeaponFire() {
 
         vis->movement_type = MT_PHYSICS;
         vis->velocity = obj->mtype.phys_info.velocity;
-        vis->velocity.y += 10;
+        vis->velocity.y() += (scalar)10;
       }
     }
   }

@@ -112,7 +112,7 @@
  *
  * 169   4/16/99 11:56a Matt
  * Changed directplay code to be "ifdef _WIN32" instead of "ifndef
- * __LINUX__" so it will work on the Mac.
+ * SDL_PLATFORM_LINUX" so it will work on the Mac.
  *
  * 168   4/15/99 1:40a Jeff
  * changes for linux compile
@@ -667,6 +667,7 @@
 #include "config.h"
 #include "gamesave.h"
 #include "gamesequence.h"
+#include "ddio.h"
 #include "demofile.h"
 #include "pilot.h"
 #include "LoadLevel.h"
@@ -731,7 +732,7 @@ int MainMenu() {
   }
 
   // setup screen
-  SetScreenMode(SM_MENU);
+  SetScreenMode(SM_MENU, true);
   // create interface
   main_menu.Create();
   main_menu.AddItem(IDV_NEWGAME, KEY_N, TXT_MENUNEWGAME, MM_STARTMENU_TYPE);
@@ -1009,13 +1010,13 @@ bool ProcessCommandLine() {
     exit_menu = 1;
 #endif
   }
-#ifndef RELEASE
-  int t = FindArg("-loadlevel");
-  if (t) {
-    SimpleStartLevel(GameArgs[t + 1]);
+  // On first load, enter mission directly if the argument is specified
+  int missionArg = FindArg("-mission");
+  static bool missionEntered = false;
+  if (missionArg && !missionEntered) {
+    missionEntered = true;
     exit_menu = 1;
   }
-#endif
   // at some point the code above sets exit_menu, so we're going to game mode.
   if (exit_menu) {
     SetFunctionMode(GAME_MODE);
@@ -1053,11 +1054,11 @@ static inline int count_missions(const std::vector<std::filesystem::path> &missi
 
   for (const auto &missions_directory : missions_directories) {
     ddio_DoForeachFile(missions_directory, std::regex(".*\\.mn3"), [&c](const std::filesystem::path &path) {
-      if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
+      if (stricmp((const char*)path.filename().u8string().c_str(), "d3_2.mn3") == 0)
         return;
-      LOG_DEBUG.printf("Mission path: %s", path.u8string().c_str());
+      LOG_DEBUG.printf("Mission path: %s", (const char*)path.u8string().c_str());
       tMissionInfo msninfo{};
-      GetMissionInfo(path.filename().u8string().c_str(), &msninfo);
+      GetMissionInfo((const char*)path.filename().u8string().c_str(), &msninfo);
 
       if (msninfo.name[0] && msninfo.single) {
         LOG_DEBUG.printf("Name: %s", msninfo.name);
@@ -1080,7 +1081,7 @@ static inline int generate_mission_listbox(newuiListBox *lb, std::vector<std::fi
     ddio_DoForeachFile(
         missions_directory, std::regex(".*\\.mn3"), [&c, &lb, &filelist](const std::filesystem::path &path) {
           tMissionInfo msninfo{};
-          if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
+          if (stricmp((const char*)path.filename().u8string().c_str(), "d3_2.mn3") == 0)
           return;
         if (GetMissionInfo(path.filename(), &msninfo) && msninfo.name[0] && msninfo.single) {
           filelist.push_back(path.filename());
@@ -1173,7 +1174,7 @@ bool MenuNewGame() {
     return false;
   }
   for (auto const &mission : filelist) {
-    if (stricmp(mission.u8string().c_str(), "d3.mn3") == 0) {
+    if (stricmp((const char*)mission.u8string().c_str(), "d3.mn3") == 0) {
       found = true;
       break;
     }
@@ -1244,7 +1245,7 @@ redo_newgame_menu:
     if (index >= 0 && index < filelist.size()) {
       nameptr = filelist[index];
     }
-    if (nameptr.empty() || !LoadMission(nameptr.u8string().c_str())) {
+    if (nameptr.empty() || !LoadMission((const char*)nameptr.u8string().c_str())) {
       DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
       retval = false;
     } else {

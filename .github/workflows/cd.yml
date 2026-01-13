@@ -1,0 +1,22 @@
+name: Continuous Delivery
+
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+
+
+jobs:
+  build:
+    name: Build for main branch
+    uses: ./.github/workflows/build.yml
+    secrets:
+      MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+      MACOS_SIGNING_CERTIFICATE_P12: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
+      MACOS_SIGNING_CERTIFICATE_P12_PASSWORD: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12_PASSWORD }}
+      MACOS_APP_STORE_CONNECT_KEY: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY }}
+      MACOS_APP_STORE_CONNECT_KEY_ID: ${{ secrets.MACOS_APP_STORE_CONNECT_KEY_ID }}
+      MACOS_APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.MACOS_APP_STORE_CONNECT_ISSUER_ID }}

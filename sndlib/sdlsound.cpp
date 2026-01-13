@@ -21,7 +21,7 @@
 #include <cstdlib>
 #include <cstdarg>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "pserror.h"
 #include "mem.h"
@@ -46,7 +46,7 @@ static int sound_buffer_size = MAX_SOUNDS_PLAYING_AT_ONCE;
 lnxsound *ll_sound_ptr;
 
 // A peroidic mixer that uses the primary buffer as a stream buffer
-static void StreamAudio(void *user_ptr, Uint8 *stream, int len);
+void StreamAudio(void *userdata, SDL_AudioStream *stream, int additional_amount, int total_amount);
 
 lnxsound::lnxsound() : llsSystem() {
   ll_sound_ptr = this;
@@ -93,20 +93,18 @@ int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_soun
   }
 
   spec.freq = SOUNDLIB_SAMPLE_RATE;
-  spec.format = SOUNDLIB_SAMPLE_SIZE == 8 ? AUDIO_U8 : AUDIO_S16SYS;
+  spec.format = SOUNDLIB_SAMPLE_SIZE == 8 ? SDL_AUDIO_U8 : SDL_AUDIO_S16;
   spec.channels = SOUNDLIB_CHANNELS;
-  spec.samples = sampleCount;
-  spec.callback = StreamAudio;
-  spec.userdata = &m_mixer;
 
-  sound_device = SDL_OpenAudioDevice(nullptr, 0, &spec, nullptr, 0);
+  this->sound_stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, StreamAudio, &m_mixer); 
+  this->sound_device = SDL_GetAudioStreamDevice(sound_stream);
   if (sound_device == 0) {
     strcpy(m_error_text, SDL_GetError());
     return false;
   }
 
   LOG_INFO << "Sound: Hardware configured. Kicking off stream thread...";
-  SDL_PauseAudioDevice(sound_device, 0);
+  SDL_ResumeAudioDevice(sound_device);
 
   m_total_sounds_played = 0;
   m_cur_sounds_played = 0;
@@ -403,7 +401,7 @@ int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_stat
                        (Sounds[sound_index].max_distance - Sounds[sound_index].min_distance)));
   }
 
-  pan = (dir_to_sound * m_emulated_listener.orient.rvec);
+  pan = (vm_Dot3Product(dir_to_sound,m_emulated_listener.orient.rvec));
 
   if (volume < 0.0f)
     volume = 0.0f;
@@ -472,7 +470,7 @@ void lnxsound::AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_vol
                         Sounds[sound_cache[current_slot].m_sound_index].min_distance)));
   }
 
-  pan = (dir_to_sound * m_emulated_listener.orient.rvec);
+  pan = (vm_Dot3Product(dir_to_sound,m_emulated_listener.orient.rvec));
 
   if (volume < 0.0f)
     volume = 0.0f;
@@ -757,6 +755,15 @@ void lnxsound_ErrorText(const char *fmt, ...) {
 }
 
 // A peroidic mixer that uses the primary buffer as a stream buffer
-static void StreamAudio(void *user_ptr, Uint8 *stream, int len) {
-  ((software_mixer *)user_ptr)->StreamMixer((char *)stream, len);
+void StreamAudio(void *userdata, SDL_AudioStream *stream, int additional_amount, int total_amount)
+{
+    if (additional_amount > 0) {
+        Uint8 *data = SDL_stack_alloc(Uint8, additional_amount);
+        if (data) {
+            // StreamAudio(userdata, data, additional_amount);
+            ((software_mixer *)userdata)->StreamMixer((char *)data, additional_amount);
+            SDL_PutAudioStreamData(stream, data, additional_amount);
+            SDL_stack_free(data);
+        }
+    }
 }

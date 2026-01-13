@@ -208,9 +208,9 @@ static badword bad_words[] = {
     {0xbd, 0xa4, 0xbe, 0xbe, 0x00}                    // piss
 };
 
-#define NUM_BAD_WORDS (sizeof(bad_words) / sizeof(badword))
+#define NUM_BAD_WORDS std::size(bad_words)
 
-static const char subst_chars[] = "#!&@&#%*";
+static constexpr char subst_chars[] = "#!&@&#%*";
 
 #define NUM_SUBST_CHARS (sizeof(subst_chars) - 1)
 
@@ -229,15 +229,12 @@ void grtext_Init() {
   }
 }
 
-//	macro to get character width
-static inline int CHAR_WIDTH(int font, int ch) { return (int)(grfont_GetCharWidth(font, ch) * Grtext_scale); }
-
-static inline int CHAR_HEIGHT(int font) { return (int)(grfont_GetHeight(font) * Grtext_scale); }
-
-static inline int CHAR_SPACING(int font, int ch1, int ch2) { return (int)(grfont_GetKernedSpacing(font, ch1, ch2)); }
-
-//	macro to get character width
-static inline int CHAR_WIDTH_TEMP(const tFontTemplate *ft, int ch) {
+//	macros to get character dimensions
+static inline int GRCHAR_WIDTH(int font, int ch) { return (int)(grfont_GetCharWidth(font, ch) * Grtext_scale); }
+static inline int GRCHAR_HEIGHT(int font) { return (int)(grfont_GetHeight(font) * Grtext_scale); }
+static inline int GRCHAR_SPACING(int font, int ch1, int ch2) { return (int)(grfont_GetKernedSpacing(font, ch1, ch2)); }
+static inline int GRCHAR_HEIGHT_TEMP(const tFontTemplate *ft) { return (int)ft->ch_height; }
+static inline int GRCHAR_WIDTH_TEMP(const tFontTemplate *ft, int ch) {
   if (ch > ft->max_ascii && ft->uppercase) {
     ch = toupper(ch);
   } else if (ch < ft->min_ascii || ch > ft->max_ascii) {
@@ -246,10 +243,7 @@ static inline int CHAR_WIDTH_TEMP(const tFontTemplate *ft, int ch) {
 
   return (int)((ft->proportional) ? ft->ch_widths[ch - ft->min_ascii] : ft->ch_maxwidth);
 }
-
-static inline int CHAR_HEIGHT_TEMP(const tFontTemplate *ft) { return (int)ft->ch_height; }
-
-static inline int CHAR_SPACING_TEMP(const tFontTemplate *ft, int ch1, int ch2) {
+static inline int GRCHAR_SPACING_TEMP(const tFontTemplate *ft, int ch1, int ch2) {
   if (ch1 > ft->max_ascii && ft->uppercase) {
     ch1 = toupper(ch1);
   }
@@ -698,7 +692,7 @@ void grtext_RenderString(int x, int y, char *str) {
     gx = cur_x; // Clip function needs global coords.
 
     clipped = 0;
-    if ((CLIP_TOP > (gy + CHAR_HEIGHT(Grtext_font))) || (CLIP_BOTTOM < gy))
+    if ((CLIP_TOP > (gy + GRCHAR_HEIGHT(Grtext_font))) || (CLIP_BOTTOM < gy))
       clipped = 2;
     else if ((CLIP_LEFT > (gx + line_width)) || (CLIP_RIGHT < gx))
       clipped = 2;
@@ -706,7 +700,7 @@ void grtext_RenderString(int x, int y, char *str) {
     if (clipped != 2) {
       if (CLIP_LEFT > gx || CLIP_RIGHT < (gx + line_width))
         clipped = 1;
-      if (CLIP_TOP > gy || CLIP_BOTTOM < (gy + CHAR_HEIGHT(Grtext_font)))
+      if (CLIP_TOP > gy || CLIP_BOTTOM < (gy + GRCHAR_HEIGHT(Grtext_font)))
         clipped = 1;
 
       if (clipped == 0)
@@ -714,7 +708,7 @@ void grtext_RenderString(int x, int y, char *str) {
       else if (clipped == 1)
         grtext_DrawTextLineClip(gx, gy, line);
     }
-    cur_y += (Grtext_line_spacing + CHAR_HEIGHT(Grtext_font));
+    cur_y += (Grtext_line_spacing + GRCHAR_HEIGHT(Grtext_font));
     cur_x = CLIP_LEFT;
 
     // replace the newline, if there was one
@@ -731,7 +725,7 @@ int grtext_GetTextHeightTemplate(tFontTemplate *ft, const char *str) {
   const char *spos = str;
 
   do {
-    cur_h += (Grtext_line_spacing + CHAR_HEIGHT_TEMP(ft));
+    cur_h += (Grtext_line_spacing + GRCHAR_HEIGHT_TEMP(ft));
 
     spos = strchr(spos, '\n');
     if (spos)
@@ -746,7 +740,7 @@ int grtext_GetTextHeight(const char *str) {
   const char *spos = str;
 
   do {
-    cur_h += (Grtext_line_spacing + CHAR_HEIGHT(Grtext_font));
+    cur_h += (Grtext_line_spacing + GRCHAR_HEIGHT(Grtext_font));
 
     spos = strchr(spos, '\n');
     if (spos)
@@ -774,7 +768,7 @@ int grtext_GetTextLineWidth(const char *str) {
     if (!rgb_define_mode) {
       if (ch == '\t') { // tab char
         int space_width;
-        space_width = (CHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing) * Grtext_tabspace;
+        space_width = (GRCHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing) * Grtext_tabspace;
         line_width = (line_width + space_width) / space_width * space_width;
       } else if (ch == GRTEXT_FORMAT_CHAR) {
         if ((i + 1) >= strsize)
@@ -787,8 +781,8 @@ int grtext_GetTextLineWidth(const char *str) {
         }
         line_width = 0;
       } else {
-        width = CHAR_WIDTH(Grtext_font, ch);
-        line_width += (width + Grtext_spacing + CHAR_SPACING(Grtext_font, ch, ch2));
+        width = GRCHAR_WIDTH(Grtext_font, ch);
+        line_width += (width + Grtext_spacing + GRCHAR_SPACING(Grtext_font, ch, ch2));
       }
     } else
       rgb_define_mode++;
@@ -818,7 +812,7 @@ int grtext_GetTextLineWidthTemplate(const tFontTemplate *ft, const char *str) {
     if (!rgb_define_mode) {
       if (ch == '\t') { // tab char
         int space_width;
-        space_width = (CHAR_WIDTH_TEMP(ft, ' ') + Grtext_spacing) * Grtext_tabspace;
+        space_width = (GRCHAR_WIDTH_TEMP(ft, ' ') + Grtext_spacing) * Grtext_tabspace;
         line_width = (line_width + space_width) / space_width * space_width;
       } else if (ch == GRTEXT_FORMAT_CHAR) {
         if ((i + 1) >= strsize)
@@ -831,8 +825,8 @@ int grtext_GetTextLineWidthTemplate(const tFontTemplate *ft, const char *str) {
         }
         line_width = 0;
       } else {
-        width = CHAR_WIDTH_TEMP(ft, ch);
-        line_width += (width + Grtext_spacing + CHAR_SPACING_TEMP(ft, ch, ch2));
+        width = GRCHAR_WIDTH_TEMP(ft, ch);
+        line_width += (width + Grtext_spacing + GRCHAR_SPACING_TEMP(ft, ch, ch2));
       }
     } else
       rgb_define_mode++;
@@ -858,7 +852,7 @@ void grtext_DrawTextLineClip(int x, int y, char *str) {
           go through each character in the line and determine what is totally clipped,
           partially clipped and by how much, and not clipped at all and draw accordingly
   */
-  h = CHAR_HEIGHT(Grtext_font);
+  h = GRCHAR_HEIGHT(Grtext_font);
   ch_y = 0;
   ch_h = h;
   draw_y = y;
@@ -867,7 +861,7 @@ void grtext_DrawTextLineClip(int x, int y, char *str) {
     ch_y = CLIP_TOP - y;
     draw_y = CLIP_TOP;
   }
-  if (CLIP_BOTTOM < (y + CHAR_HEIGHT(Grtext_font))) {
+  if (CLIP_BOTTOM < (y + GRCHAR_HEIGHT(Grtext_font))) {
     ch_h = CLIP_BOTTOM - y;
   }
   ch_h = ch_h - ch_y; // do this to clip both top and bottom
@@ -879,7 +873,7 @@ void grtext_DrawTextLineClip(int x, int y, char *str) {
     ch = (uint8_t)str[i];
     ch2 = (uint8_t)str[i + 1];
 
-    w = CHAR_WIDTH(Grtext_font, ch);
+    w = GRCHAR_WIDTH(Grtext_font, ch);
 
     if (ch == GR_COLOR_CHAR) {
       ddgr_color col;
@@ -891,7 +885,7 @@ void grtext_DrawTextLineClip(int x, int y, char *str) {
       i += 3;
     } else if (ch == '\t') { // tab char
       int space_width;
-      space_width = (CHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing) * Grtext_tabspace;
+      space_width = (GRCHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing) * Grtext_tabspace;
       cur_x = (cur_x + space_width) / space_width * space_width;
     } else if (((cur_x + w) < CLIP_LEFT) || (cur_x > CLIP_RIGHT)) {
       cur_x += (Grtext_spacing + w);
@@ -901,7 +895,7 @@ void grtext_DrawTextLineClip(int x, int y, char *str) {
       cur_x = x + ((int)str[i + 1] * GRTEXT_FORMAT_SCALAR);
       i++;
     } else if (ch == ' ') {
-      cur_x += (CHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing + CHAR_SPACING(Grtext_font, ch, ch2));
+      cur_x += (GRCHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing + GRCHAR_SPACING(Grtext_font, ch, ch2));
     } else {
       ch_x = 0;
       ch_w = w;
@@ -933,7 +927,7 @@ void grtext_DrawTextLineClip(int x, int y, char *str) {
         cbi.sh = ch_h;
       }
       cur_x = grfont_BltChar(Grtext_font, &cbi);
-      cur_x += (Grtext_spacing + CHAR_SPACING(Grtext_font, ch, ch2));
+      cur_x += (Grtext_spacing + GRCHAR_SPACING(Grtext_font, ch, ch2));
     }
   }
 }
@@ -956,7 +950,7 @@ void grtext_DrawTextLine(int x, int y, char *str) {
     int w;
     ch = (uint8_t)str[i];
     ch2 = (uint8_t)str[i + 1];
-    w = CHAR_WIDTH(Grtext_font, ch);
+    w = GRCHAR_WIDTH(Grtext_font, ch);
 
     if (ch == GR_COLOR_CHAR) {
       ddgr_color col;
@@ -968,7 +962,7 @@ void grtext_DrawTextLine(int x, int y, char *str) {
       i += 3;
     } else if (ch == '\t') { // tab char
       int space_width;
-      space_width = (CHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing) * Grtext_tabspace;
+      space_width = (GRCHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing) * Grtext_tabspace;
       cur_x = (cur_x + space_width) / space_width * space_width;
     } else if (ch == GRTEXT_FORMAT_CHAR) {
       if ((i + 1) >= strsize)
@@ -976,7 +970,7 @@ void grtext_DrawTextLine(int x, int y, char *str) {
       cur_x = x + ((int)str[i + 1] * GRTEXT_FORMAT_SCALAR);
       i++;
     } else if (ch == ' ') {
-      cur_x += (CHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing);
+      cur_x += (GRCHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing);
     } else {
       cbi.ch = ch;
       cbi.clipped = false; // if =1, use sx,sy,sw,sh
@@ -984,7 +978,7 @@ void grtext_DrawTextLine(int x, int y, char *str) {
       cbi.y = y;
       cbi.dsw = cbi.dsh = Grtext_scale;
       cur_x = grfont_BltChar(Grtext_font, &cbi);
-      cur_x += (Grtext_spacing + CHAR_SPACING(Grtext_font, ch, ch2));
+      cur_x += (Grtext_spacing + GRCHAR_SPACING(Grtext_font, ch, ch2));
     }
   }
 }

@@ -2218,9 +2218,9 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
     rotate_adj = 32768.0f;
   }
 
-  playerobj->mtype.phys_info.rotvel.x = (float)((rotate_adj));
-  playerobj->mtype.phys_info.rotvel.y = (float)((rotate_adj));
-  playerobj->mtype.phys_info.rotvel.z = (float)((rotate_adj));
+  playerobj->mtype.phys_info.rotvel.x() = (scalar)((rotate_adj));
+  playerobj->mtype.phys_info.rotvel.y() = (scalar)((rotate_adj));
+  playerobj->mtype.phys_info.rotvel.z() = (scalar)((rotate_adj));
 
   //	set times and other stuff for dying.
   if (Death[slot].fate == DEATH_FALL)
@@ -2281,17 +2281,17 @@ void DoNewPlayerDeathFrame(int slot) {
     //	modify physics properties every INTERVAL
     if ((Death[slot].physics_frametime + DEATH_PHYS_INTERVAL) > Gametime) {
       if (Death[slot].fate == DEATH_FALL) {
-        playerobj->mtype.phys_info.rotvel.x /= 1.15f;
-        playerobj->mtype.phys_info.rotvel.y /= 1.1f;
-        playerobj->mtype.phys_info.rotvel.z /= 1.0f;
+        playerobj->mtype.phys_info.rotvel.x() /= 1.15f;
+        playerobj->mtype.phys_info.rotvel.y() /= 1.1f;
+        playerobj->mtype.phys_info.rotvel.z() /= 1.0f;
       } else if (Death[slot].fate == DEATH_D2STYLE) {
-        playerobj->mtype.phys_info.rotvel.x /= 1.15f;
-        playerobj->mtype.phys_info.rotvel.y /= 1.0f;
-        playerobj->mtype.phys_info.rotvel.z /= 1.05f;
+        playerobj->mtype.phys_info.rotvel.x() /= 1.15f;
+        playerobj->mtype.phys_info.rotvel.y() /= 1.0f;
+        playerobj->mtype.phys_info.rotvel.z() /= 1.05f;
       } else {
-        playerobj->mtype.phys_info.rotvel.x /= 1.10f;
-        playerobj->mtype.phys_info.rotvel.y /= 1.05f;
-        playerobj->mtype.phys_info.rotvel.z /= 1.0f;
+        playerobj->mtype.phys_info.rotvel.x() /= 1.10f;
+        playerobj->mtype.phys_info.rotvel.y() /= 1.05f;
+        playerobj->mtype.phys_info.rotvel.z() /= 1.0f;
       }
 
       playerobj->mtype.phys_info.velocity *= Death[slot].accel_mod;
@@ -2340,7 +2340,7 @@ void DoNewPlayerDeathFrame(int slot) {
       //	orient death camera towards player ship
       directional = playerobj->pos - Death[slot].camera->pos;
       if (vm_GetMagnitudeFast(&directional) == 0.0f)
-        directional.x += 1.0f;
+        directional.x() += 1.0f;
       vm_VectorToMatrix(&Death[slot].camera->orient, &directional, NULL, NULL);
     }
 
@@ -2640,7 +2640,7 @@ void PlayerSetControlToAI(int slot, float velocity) {
   pobj->ai_info->last_render_time = -1.0f;
   pobj->ai_info->next_target_update_time = Gametime;
   pobj->ai_info->notify_flags |= AI_NOTIFIES_ALWAYS_ON;
-  pobj->ai_info->last_see_target_pos = Zero_vector;
+  pobj->ai_info->last_see_target_pos = vector{};
   pobj->ai_info->dodge_vel_percent = 1.0f;
   pobj->ai_info->attack_vel_percent = 1.0f;
   pobj->ai_info->fight_same = 0.0f;
@@ -2754,7 +2754,7 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
 
   // Set physics data for this object
 
-  obj->mtype.phys_info.velocity = parent->mtype.phys_info.velocity + parent->orient.fvec * 30.0;
+  obj->mtype.phys_info.velocity = parent->mtype.phys_info.velocity + parent->orient.fvec * (scalar)30;
 
   vm_MakeZero(&obj->mtype.phys_info.rotthrust);
 
@@ -2765,9 +2765,9 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
   obj->mtype.phys_info.flags = (PF_GRAVITY | PF_BOUNCE | PF_FIXED_ROT_VELOCITY);
   obj->mtype.phys_info.coeff_restitution = .25f;
 
-  obj->mtype.phys_info.rotvel.x = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.y = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.z = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.x() = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.y() = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.z() = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
 
   obj->mtype.phys_info.num_bounces = 5;
 
@@ -2788,9 +2788,9 @@ void PlayerSpewObject(object *objp, int timed, int room, vector *pos, matrix *or
   ObjSetPos(objp, pos, room, orient, true);
 
   // Set random velocity for powerups
-  objp->mtype.phys_info.velocity.x = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
-  objp->mtype.phys_info.velocity.z = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
-  objp->mtype.phys_info.velocity.y = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.x() = ((ps_rand() / (scalar)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.z() = ((ps_rand() / (scalar)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.y() = ((ps_rand() / (scalar)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
 
   // Send object to other players
   if (Game_mode & GM_MULTI) {
@@ -2862,9 +2862,10 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
 
 // This is a terrible hack -- it maps powerup to multi-pack versions
 // This mapping should really be on the powerup page
-const char *powerup_multipacks[] = {"Concussion", "4packConc",   "Frag",   "4packFrag",
-                              "Guided",     "4packGuided", "Homing", "4packHoming"};
-#define N_POWERUP_MULTIPACKS (sizeof(powerup_multipacks) / sizeof(*powerup_multipacks) / 2)
+static constexpr const char *powerup_multipacks[] =
+	{"Concussion", "4packConc",   "Frag",   "4packFrag",
+	 "Guided",     "4packGuided", "Homing", "4packHoming"};
+#define N_POWERUP_MULTIPACKS (std::size(powerup_multipacks) / 2)
 
 // Returns the index of the multipack version of the specified powerup, or -1 if none
 int FindMultipackPowerup(int single_index) {
@@ -3199,12 +3200,12 @@ void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
     i++;
   }
 
-  rand_vec.x = (float)(D3_RAND_MAX / 2 - ps_rand());
+  rand_vec.x() = (float)(D3_RAND_MAX / 2 - ps_rand());
   if (obj->movement_type != MT_PHYSICS)
-    rand_vec.y = (float)((float)ps_rand() / 2.0); // A habit of moving upward
+    rand_vec.y() = (float)((float)ps_rand() / 2.0); // A habit of moving upward
   else
-    rand_vec.y = (float)((float)D3_RAND_MAX / 1.5f - (float)ps_rand()); // A habit of moving upward
-  rand_vec.z = (float)(D3_RAND_MAX / 2 - ps_rand());
+    rand_vec.y() = (float)((float)D3_RAND_MAX / 1.5f - (float)ps_rand()); // A habit of moving upward
+  rand_vec.z() = (float)(D3_RAND_MAX / 2 - ps_rand());
   vm_NormalizeVectorFast(&rand_vec);
 
   object *subobj = CreateSubobjectDebrisDirected(obj, subobjnum, &rand_vec, magnitude);
@@ -3227,11 +3228,12 @@ void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
 //	Moves death camera a certain distance based off of direction from vec from
 //	the player. returns new dist
 //
-static vector Death_cam_vectors[] = {{0, 1, 0},  {0, 1, -1}, {0, 0, -1}, {0, -1, -1}, {0, -1, 0},  {0, -1, 1},
-                                     {0, 0, 1},  {0, 1, 1},  {1, 0, 0},  {1, 0, -1},  {-1, 0, -1}, {-1, 0, 0},
-                                     {-1, 0, 1}, {1, 0, 1},  {1, 1, 0},  {1, -1, 0},  {-1, -1, 0}, {-1, 1, 0}};
+static constexpr vector Death_cam_vectors[] =
+	{{0, 1, 0},  {0, 1, -1}, {0, 0, -1}, {0, -1, -1}, {0, -1, 0},  {0, -1, 1},
+	 {0, 0, 1},  {0, 1, 1},  {1, 0, 0},  {1, 0, -1},  {-1, 0, -1}, {-1, 0, 0},
+	 {-1, 0, 1}, {1, 0, 1},  {1, 1, 0},  {1, -1, 0},  {-1, -1, 0}, {-1, 1, 0}};
 
-#define NUM_DEATH_VECS (sizeof(Death_cam_vectors) / sizeof(vector))
+#define NUM_DEATH_VECS std::size(Death_cam_vectors)
 
 float MoveDeathCam(int slot, vector *vec, float distance) {
   fvi_info hit_data;
@@ -3253,8 +3255,8 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
   do {
     //	randomize cam_vec just a little bit if possible.
     cam_vec = Death_cam_vectors[cur_vec_index++];
-    cam_vec.x += ((ps_rand() % 5) - 2) * 0.1f;
-    cam_vec.y += ((ps_rand() % 5) - 2) * 0.1f;
+    cam_vec.x() += ((ps_rand() % 5) - 2) * 0.1f;
+    cam_vec.y() += ((ps_rand() % 5) - 2) * 0.1f;
     vm_NormalizeVector(&cam_vec);
 
     cam_vec = cam_vec * distance;
@@ -3276,9 +3278,9 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
     fq.ignore_obj_list = NULL;
     fq.flags = 0;
 
-    ASSERT(std::isfinite(next_vec.x));
-    ASSERT(std::isfinite(next_vec.y));
-    ASSERT(std::isfinite(next_vec.z));
+    ASSERT(std::isfinite(next_vec.x()));
+    ASSERT(std::isfinite(next_vec.y()));
+    ASSERT(std::isfinite(next_vec.z()));
 
     fvi_FindIntersection(&fq, &hit_data);
 
@@ -3317,7 +3319,7 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
 // Returns the goal room of the passed in team
 int GetGoalRoomForTeam(int teamnum) {
   ASSERT(teamnum >= 0 && teamnum <= 3);
-  int flags[] = {RF_GOAL1, RF_GOAL2, RF_GOAL3, RF_GOAL4};
+  static constexpr int flags[] = {RF_GOAL1, RF_GOAL2, RF_GOAL3, RF_GOAL4};
 
   for (int i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used && (Rooms[i].flags & flags[teamnum])) {

@@ -46,11 +46,9 @@ uint8_t g3_CodePoint(g3Point *p) {
   // Check to see if we should be clipped to the custom plane
   if (Clip_custom) {
     vector vec = p->p3_vec - Clip_plane_point;
-    vec.x /= Matrix_scale.x;
-    vec.y /= Matrix_scale.y;
-    vec.z /= Matrix_scale.z;
+    vec /= Matrix_scale;
 
-    float dp = vec * Clip_plane;
+    scalar dp = vm_Dot3Product(vec, Clip_plane);
     if (dp < -0.005f) {
       cc |= CC_OFF_CUSTOM;
     }
@@ -91,9 +89,9 @@ void g3_Point2Vec(vector *v, int16_t sx, int16_t sy) {
   vector tempv;
   matrix tempm;
 
-  tempv.x = (((sx - Window_w2) / Window_w2) * Matrix_scale.z / Matrix_scale.x);
-  tempv.y = -(((sy - Window_h2) / Window_h2) * Matrix_scale.z / Matrix_scale.y);
-  tempv.z = 1.0f;
+  tempv.x() = (((sx - Window_w2) / Window_w2) * Matrix_scale.z() / Matrix_scale.x());
+  tempv.y() = -(((sy - Window_h2) / Window_h2) * Matrix_scale.z() / Matrix_scale.y());
+  tempv.z() = 1.0f;
 
   vm_NormalizeVector(&tempv);
 
@@ -104,25 +102,25 @@ void g3_Point2Vec(vector *v, int16_t sx, int16_t sy) {
 
 // delta rotation functions
 vector *g3_RotateDeltaX(vector *dest, float dx) {
-  dest->x = View_matrix.rvec.x * dx;
-  dest->y = View_matrix.uvec.x * dx;
-  dest->z = View_matrix.fvec.x * dx;
+  dest->x() = View_matrix.rvec.x() * dx;
+  dest->y() = View_matrix.uvec.x() * dx;
+  dest->z() = View_matrix.fvec.x() * dx;
 
   return dest;
 }
 
 vector *g3_RotateDeltaY(vector *dest, float dy) {
-  dest->x = View_matrix.rvec.y * dy;
-  dest->y = View_matrix.uvec.y * dy;
-  dest->z = View_matrix.fvec.y * dy;
+  dest->x() = View_matrix.rvec.y() * dy;
+  dest->y() = View_matrix.uvec.y() * dy;
+  dest->z() = View_matrix.fvec.y() * dy;
 
   return dest;
 }
 
 vector *g3_RotateDeltaZ(vector *dest, float dz) {
-  dest->x = View_matrix.rvec.z * dz;
-  dest->y = View_matrix.uvec.z * dz;
-  dest->z = View_matrix.fvec.z * dz;
+  dest->x() = View_matrix.rvec.z() * dz;
+  dest->y() = View_matrix.uvec.z() * dz;
+  dest->z() = View_matrix.fvec.z() * dz;
 
   return dest;
 }
@@ -143,6 +141,6 @@ uint8_t g3_AddDeltaVec(g3Point *dest, g3Point *src, vector *deltav) {
 
 // calculate the depth of a point - returns the z coord of the rotated point
 float g3_CalcPointDepth(vector *pnt) {
-  return ((pnt->x - View_position.x) * View_matrix.fvec.x) + ((pnt->y - View_position.y) * View_matrix.fvec.y) +
-         ((pnt->z - View_position.z) * View_matrix.fvec.z);
+  return ((pnt->x() - View_position.x()) * View_matrix.fvec.x()) + ((pnt->y() - View_position.y()) * View_matrix.fvec.y()) +
+         ((pnt->z() - View_position.z()) * View_matrix.fvec.z());
 }

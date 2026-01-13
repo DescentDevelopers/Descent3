@@ -28,10 +28,11 @@ add_definitions(-DOUTRAGE_VERSION)
 
 add_library(dmfc STATIC ${HEADERS} ${CPPS})
 target_link_libraries(dmfc PUBLIC
-  SDL2::SDL2
+  SDL3::SDL3
   grtext
   misc
   module
   physics
   ddio
 )
+target_include_directories(dmfc PRIVATE ${SDL3_INCLUDE_DIRS})

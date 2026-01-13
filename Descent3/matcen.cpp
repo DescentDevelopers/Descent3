@@ -145,6 +145,7 @@
 #endif
 
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 
@@ -239,7 +240,7 @@ matcen::matcen() {
 
   m_status = 0;
 
-  m_create_pnt = Zero_vector;
+  m_create_pnt = vector{};
   m_create_room = MATCEN_ERROR;
 
   m_cached_prod_index = -1;
@@ -376,12 +377,12 @@ bool matcen::DoObjProd() {
         fate = fvi_FindIntersection(&fq, &hit_info);
 
         if (fate != HIT_NONE) {
-          float ps;
-          float pr;
-          float diff;
+          scalar ps;
+          scalar pr;
+          scalar diff;
 
-          ps = (gp - obj->pos) * obj->orient.uvec;
-          pr = (hit_info.hit_pnt - obj->pos) * obj->orient.uvec;
+          ps = vm_Dot3Product((gp - obj->pos), obj->orient.uvec);
+          pr = vm_Dot3Product((hit_info.hit_pnt - obj->pos), obj->orient.uvec);
 
           if (ps != pr) {
             diff = ps - pr;
@@ -567,14 +568,14 @@ bool matcen::ComputeCreatePnt() {
         int num_valid_faces = 0;
         room *rp = &Rooms[m_roomnum];
 
-        m_create_pnt = Zero_vector;
+        m_create_pnt = vector{};
 
         for (i = 0; i < m_num_spawn_pnts; i++) {
           if (m_spawn_pnt[i] >= 0 && m_spawn_pnt[i] < rp->num_faces) {
             face *fp = &rp->faces[m_spawn_pnt[i]];
             int y;
 
-            m_spawn_vec[num_valid_faces].x = m_spawn_vec[num_valid_faces].y = m_spawn_vec[num_valid_faces].z = 0;
+            m_spawn_vec[num_valid_faces].x() = m_spawn_vec[num_valid_faces].y() = m_spawn_vec[num_valid_faces].z() = 0;
 
             for (y = 0; y < fp->num_verts; y++)
               m_spawn_vec[num_valid_faces] += rp->verts[fp->face_verts[y]];
@@ -594,10 +595,10 @@ bool matcen::ComputeCreatePnt() {
           for (i = 0; i < num_valid_faces; i++) {
             // Compute the vector to the m_create_pnt
             vector to_dist = m_create_pnt - m_spawn_vec[i];
-            float dot = m_spawn_normal[i] * to_dist;
+            scalar dot = vm_Dot3Product(m_spawn_normal[i], to_dist);
 
             if (dot < spawn_dist) {
-              float add_dist = spawn_dist - dot;
+              scalar add_dist = spawn_dist - dot;
               m_create_pnt += (add_dist * m_spawn_normal[i]);
             }
           }
@@ -623,7 +624,7 @@ bool matcen::ComputeCreatePnt() {
         int i;
         int num_valid_gps = 0;
 
-        m_create_pnt = Zero_vector;
+        m_create_pnt = vector{};
 
         for (i = 0; i < m_num_spawn_pnts; i++) {
           if (WeaponCalcGun(&m_spawn_vec[num_valid_gps], &m_spawn_normal[num_valid_gps], master_obj, m_spawn_pnt[i])) {
@@ -638,10 +639,10 @@ bool matcen::ComputeCreatePnt() {
           for (i = 0; i < num_valid_gps; i++) {
             // Compute the vector to the m_create_pnt
             vector to_dist = m_create_pnt - m_spawn_vec[i];
-            float dot = m_spawn_normal[i] * to_dist;
+            scalar dot = vm_Dot3Product(m_spawn_normal[i], to_dist);
 
             if (dot < spawn_dist) {
-              float add_dist = spawn_dist - dot;
+              scalar add_dist = spawn_dist - dot;
               m_create_pnt += (add_dist * m_spawn_normal[i]);
             }
           }
@@ -706,14 +707,14 @@ bool matcen::SetCreateRoom(int room) {
   return false;
 }
 
-int matcen::GetSpawnPnt(char s_index) {
+int matcen::GetSpawnPnt(int8_t s_index) {
   if (s_index >= 0 && s_index < MAX_SPAWN_PNTS)
     return m_spawn_pnt[s_index];
 
   return MATCEN_ERROR;
 }
 
-bool matcen::SetSpawnPnt(char s_index, int s_value) {
+bool matcen::SetSpawnPnt(int8_t s_index, int s_value) {
   if (s_index >= 0 && s_index < MAX_SPAWN_PNTS) {
     m_spawn_pnt[s_index] = s_value;
     ComputeCreatePnt();
@@ -757,22 +758,22 @@ void matcen::SaveData(CFILE *fp) {
 
   cf_WriteInt(fp, m_roomnum);
 
-  cf_WriteFloat(fp, m_create_pnt.x);
-  cf_WriteFloat(fp, m_create_pnt.y);
-  cf_WriteFloat(fp, m_create_pnt.z);
+  cf_WriteFloat(fp, m_create_pnt.x());
+  cf_WriteFloat(fp, m_create_pnt.y());
+  cf_WriteFloat(fp, m_create_pnt.z());
 
   cf_WriteInt(fp, m_create_room);
 
   for (i = 0; i < MAX_SPAWN_PNTS; i++) {
     cf_WriteInt(fp, m_spawn_pnt[i]);
 
-    cf_WriteFloat(fp, m_spawn_vec[i].x);
-    cf_WriteFloat(fp, m_spawn_vec[i].y);
-    cf_WriteFloat(fp, m_spawn_vec[i].x);
+    cf_WriteFloat(fp, m_spawn_vec[i].x());
+    cf_WriteFloat(fp, m_spawn_vec[i].y());
+    cf_WriteFloat(fp, m_spawn_vec[i].x());
 
-    cf_WriteFloat(fp, m_spawn_normal[i].x);
-    cf_WriteFloat(fp, m_spawn_normal[i].y);
-    cf_WriteFloat(fp, m_spawn_normal[i].x);
+    cf_WriteFloat(fp, m_spawn_normal[i].x());
+    cf_WriteFloat(fp, m_spawn_normal[i].y());
+    cf_WriteFloat(fp, m_spawn_normal[i].x());
   }
 
   cf_WriteInt(fp, m_max_prod);
@@ -882,22 +883,22 @@ void matcen::LoadData(CFILE *fp) {
 
   m_roomnum = cf_ReadInt(fp);
 
-  m_create_pnt.x = cf_ReadFloat(fp);
-  m_create_pnt.y = cf_ReadFloat(fp);
-  m_create_pnt.z = cf_ReadFloat(fp);
+  m_create_pnt.x() = cf_ReadFloat(fp);
+  m_create_pnt.y() = cf_ReadFloat(fp);
+  m_create_pnt.z() = cf_ReadFloat(fp);
 
   m_create_room = cf_ReadInt(fp);
 
   for (i = 0; i < max_spawn_pnts; i++) {
     m_spawn_pnt[i] = cf_ReadInt(fp);
 
-    m_spawn_vec[i].x = cf_ReadFloat(fp);
-    m_spawn_vec[i].y = cf_ReadFloat(fp);
-    m_spawn_vec[i].z = cf_ReadFloat(fp);
+    m_spawn_vec[i].x() = cf_ReadFloat(fp);
+    m_spawn_vec[i].y() = cf_ReadFloat(fp);
+    m_spawn_vec[i].z() = cf_ReadFloat(fp);
 
-    m_spawn_normal[i].x = cf_ReadFloat(fp);
-    m_spawn_normal[i].y = cf_ReadFloat(fp);
-    m_spawn_normal[i].z = cf_ReadFloat(fp);
+    m_spawn_normal[i].x() = cf_ReadFloat(fp);
+    m_spawn_normal[i].y() = cf_ReadFloat(fp);
+    m_spawn_normal[i].z() = cf_ReadFloat(fp);
   }
 
   m_max_prod = cf_ReadInt(fp);
@@ -988,7 +989,7 @@ bool matcen::SetNumProdTypes(char num_prod_types) {
   return false;
 }
 
-bool matcen::GetProdInfo(char index, int *type_id, int *priority, float *time, int *max_prod) {
+bool matcen::GetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod) {
   if (index >= 0 && index < MAX_PROD_TYPES) {
     if (type_id)
       *type_id = m_prod_type[index];
@@ -1008,7 +1009,7 @@ bool matcen::GetProdInfo(char index, int *type_id, int *priority, float *time, i
   return false;
 }
 
-bool matcen::SetProdInfo(char index, int *type_id, int *priority, float *time, int *max_prod) {
+bool matcen::SetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod) {
   if (index >= 0 && index < MAX_PROD_TYPES) {
     if (type_id && (*type_id >= -1))
       m_prod_type[index] = *type_id;
@@ -1506,8 +1507,8 @@ void matcen::DoRenderFrame() {
             vis->lifetime = .8f;
             vis->end_pos = m_spawn_vec[i];
             vis->flags = VF_USES_LIFELEFT | VF_EXPAND;
-            vis->velocity.x = .8f;
-            vis->velocity.y = 1;
+            vis->velocity.x() = .8f;
+            vis->velocity.y() = 1;
             m_spawn_vis_effects[m_cur_saturation_count][i] = visnum;
           }
         }
@@ -1569,8 +1570,8 @@ void matcen::DoRenderFrame() {
             vis->lifetime = 1;
             vis->end_pos = m_spawn_vec[i];
             vis->flags = VF_USES_LIFELEFT | VF_EXPAND;
-            vis->velocity.x = 1;
-            vis->velocity.y = 1;
+            vis->velocity.x() = 1;
+            vis->velocity.y() = 1;
             m_spawn_vis_effects[m_cur_saturation_count][i] = visnum;
           }
         }
@@ -1631,11 +1632,11 @@ void matcen::DoRenderFrame() {
             vis->lifeleft = 1;
             vis->lifetime = 1;
             vis->flags = VF_USES_LIFELEFT | VF_EXPAND | VF_LINK_TO_VIEWER;
-            vis->billboard_info.width = std::max<float>(1, size / 2);
+            vis->billboard_info.width = std::max<scalar>(1, size / 2);
             vis->billboard_info.texture = 1;
-            vis->velocity.x = 1;
-            vis->velocity.y = 1;
-            vis->velocity.z = .5;
+            vis->velocity.x() = 1;
+            vis->velocity.y() = 1;
+            vis->velocity.z() = .5;
             vis->lighting_color = GR_RGB16(255, 255, 255);
 
             vis->custom_handle = m_creation_texture;
@@ -1728,7 +1729,7 @@ void matcen::SetCreationTexture(int16_t texnum) { m_creation_texture = texnum; }
 
 int16_t matcen::GetCreationTexture() { return m_creation_texture; }
 
-int matcen::GetSound(char sound_type) {
+int matcen::GetSound(int8_t sound_type) {
   if (sound_type >= 0 && sound_type < MAX_MATCEN_SOUNDS) {
     return m_sounds[sound_type];
   }
@@ -1736,7 +1737,7 @@ int matcen::GetSound(char sound_type) {
   return MATCEN_ERROR;
 }
 
-bool matcen::SetSound(char sound_type, int sound_index) {
+bool matcen::SetSound(int8_t sound_type, int sound_index) {
   if (sound_type >= 0 && sound_type < MAX_MATCEN_SOUNDS) {
     m_sounds[sound_type] = sound_index;
   }

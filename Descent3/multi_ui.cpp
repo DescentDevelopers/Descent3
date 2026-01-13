@@ -100,7 +100,7 @@
  *
  * 82    4/16/99 11:56a Matt
  * Changed directplay code to be "ifdef _WIN32" instead of "ifndef
- * __LINUX__" so it will work on the Mac.
+ * SDL_PLATFORM_LINUX" so it will work on the Mac.
  *
  * 81    4/15/99 3:36p Kevin
  * Added mouselook UI stuff to the multiplayer options menu

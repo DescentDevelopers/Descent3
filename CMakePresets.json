@@ -31,6 +31,11 @@
 				"type": "equals",
 				"lhs": "${hostSystemName}",
 				"rhs": "Darwin"
+			},
+			"cacheVariables": {
+				"VCPKG_TARGET_TRIPLET": "universal-osx",
+				"CMAKE_OSX_ARCHITECTURES": "arm64;x86_64",
+				"VCPKG_OSX_ARCHITECTURES": "arm64;x86_64"
 			}
 		},
 		{

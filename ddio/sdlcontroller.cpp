@@ -157,8 +157,8 @@ static char Ctltext_BtnBindings[][16] = {
 
 char Ctltext_PovBindings[][16] = {"", "pov-U", "pov-R", "pov-D", "pov-L"};
 
-#define NUM_AXISBINDSTRINGS (sizeof(Ctltext_AxisBindings) / sizeof(Ctltext_AxisBindings[0]))
-#define NUM_BTNBINDSTRINGS (sizeof(Ctltext_BtnBindings) / sizeof(Ctltext_AxisBindings[0]))
+#define NUM_AXISBINDSTRINGS std::size(Ctltext_AxisBindings)
+#define NUM_BTNBINDSTRINGS std::size(Ctltext_BtnBindings)
 
 // retrieves binding text for desired function, binding, etc.
 const char *sdlgameController::get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind) {
@@ -530,7 +530,7 @@ bool sdlgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
       val = get_axis_value(controller, value, alt_format, (m_ElementList[id].flags[i] & CTFNF_INVERT) ? true : false);
       if (m_ElementList[id].flags[i] & CTFNF_INVERT) {
         if (alt_format == ctDigital) {
-          val = (std::abs(val) < FLT_EPSILON) ? 1.0f : 0.0f;
+          val = (std::abs(val) < SDL_FLT_EPSILON) ? 1.0f : 0.0f;
         } else if (alt_format == ctAnalog) {
           val = -val;
         }
@@ -557,12 +557,12 @@ bool sdlgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
       val = 0.0f;
     }
 
-    if (std::abs(val) > FLT_EPSILON)
+    if (std::abs(val) > SDL_FLT_EPSILON)
       break;
   }
 
 skip_packet_read:
-  if (std::abs(val) > FLT_EPSILON)
+  if (std::abs(val) > SDL_FLT_EPSILON)
     packet->flags |= CTPK_ELEMENTACTIVE;
 
   packet->value = val;
@@ -811,7 +811,7 @@ void sdlgameController::extctl_getpos(int id) {
   //	handle buttons
   for (int i = 0; i < CT_MAX_BUTTONS; i++) {
     //	case if we read time before doing this again.
-    if ((ji.buttons & (1 << i)) && (std::abs(m_ExtCtlStates[id].btnstarts[i]) < FLT_EPSILON))
+    if ((ji.buttons & (1 << i)) && (std::abs(m_ExtCtlStates[id].btnstarts[i]) < SDL_FLT_EPSILON))
       m_ExtCtlStates[id].btnstarts[i] = timer_val;
     if ((ji.buttons & (1 << i)) && !(m_ExtCtlStates[id].buttons & (1 << i))) {
       m_ExtCtlStates[id].btnpresses[i]++;
@@ -836,7 +836,7 @@ void sdlgameController::mouse_geteval() {
     return;
   }
 
-  if (std::abs(g_accum_frame_time) > FLT_EPSILON)
+  if (std::abs(g_accum_frame_time) > SDL_FLT_EPSILON)
     return;
 
   btnmask = (unsigned)ddio_MouseGetState(&x, &y, &dx, &dy);
@@ -876,8 +876,10 @@ bool sdlgameController::enum_controllers() {
   m_ControlList[num_devs].buttons = nbtns;
   m_ControlList[num_devs].flags = CTF_X_AXIS | CTF_Y_AXIS; // | (naxis>=3 ? CTF_Z_AXIS : 0);
   m_ControlList[num_devs].btnmask = btnmask;
-  m_ControlList[num_devs].normalizer[0] = 320.0f;
-  m_ControlList[num_devs].normalizer[1] = 240.0f;
+  // normalizer is the "available area" in dots - this is the max we expect ANY mouse to EVER travel in 1.0s
+  // if a mouse is faster than (normalizer / frame_time), rot speed will be clamped to 1 rev/sec
+  m_ControlList[num_devs].normalizer[0] = 10000.0f;
+  m_ControlList[num_devs].normalizer[1] = 10000.0f;
   m_ControlList[num_devs].normalizer[2] = 100.0f;
   m_ControlList[num_devs].sens[0] = 1.0f;
   m_ControlList[num_devs].sens[1] = 1.0f;
@@ -1108,6 +1110,11 @@ float sdlgameController::get_button_value(int8_t controller, ct_format format, u
   return val;
 }
 
+// rot: fraction of one full circle (1.0 == 360 degrees)
+static constexpr angle rotationToFixAngle(double rot) {
+  return static_cast<angle>(std::numeric_limits<angle>::max() * rot);
+}
+
 //	note controller is index into ControlList.
 float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_format format, bool invert) {
   struct sdlgameController::t_controller *ctldev;
@@ -1207,21 +1214,20 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
   get_packet(ctfTOGGLE_SLIDEKEY, &key_slide1);
   get_packet(ctfTOGGLE_BANKKEY, &key_bank);
 
-  if (key_slide1.value || key_bank.value) {
-    // Don't do mouse look if either toggle is happening
-    return val;
-  }
-  if ((Current_pilot.mouselook_control) && (GAME_MODE == GetFunctionMode())) {
-    // Don't do mouselook controls if they aren't enabled in multiplayer
-    if ((Game_mode & GM_MULTI) && (!(Netgame.flags & NF_ALLOW_MLOOK)))
-      return val;
+  if ((Current_pilot.mouselook_control && GAME_MODE == GetFunctionMode()) &&
+      // Don't do mouse look if
+      !(
+        // either toggle is happening
+        key_slide1.value || key_bank.value ||
+        // mouselook isn't enabled in multiplayer
+        (Game_mode & GM_MULTI && !(Netgame.flags & NF_ALLOW_MLOOK)) ||
+        // we're in guided missile control
+        Players[Player_num].guided_obj
+      )) {
 
-    // Account for guided missile control
-    if (Players[Player_num].guided_obj)
-      return val;
     axis++;
 
-    if ((axis == CT_X_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > FLT_EPSILON)) {
+    if ((axis == CT_X_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > SDL_FLT_EPSILON)) {
       matrix orient;
 
       if (!(Players[Player_num].controller_bitflags & PCBF_HEADINGLEFT)) {
@@ -1236,7 +1242,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       if (invert)
         val = -val;
 
-      vm_AnglesToMatrix(&orient, 0.0, val * (((float)(65535.0f / 20)) * .5), 0.0);
+      vm_AnglesToMatrix(&orient, 0.0, rotationToFixAngle(val * m_frame_time), 0.0);
 
       Objects[Players[Player_num].objnum].orient = Objects[Players[Player_num].objnum].orient * orient;
 
@@ -1244,7 +1250,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       ObjSetOrient(&Objects[Players[Player_num].objnum], &Objects[Players[Player_num].objnum].orient);
       return 0;
     }
-    if ((axis == CT_Y_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > FLT_EPSILON)) {
+    if ((axis == CT_Y_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > SDL_FLT_EPSILON)) {
       matrix orient;
 
       if (!(Players[Player_num].controller_bitflags & PCBF_PITCHUP)) {
@@ -1259,7 +1265,7 @@ float sdlgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       if (invert)
         val = -val;
 
-      vm_AnglesToMatrix(&orient, val * (((float)(65535.0f / 20)) * .5), 0.0, 0.0);
+      vm_AnglesToMatrix(&orient, rotationToFixAngle(val * m_frame_time), 0.0, 0.0);
 
       Objects[Players[Player_num].objnum].orient = Objects[Players[Player_num].objnum].orient * orient;
 

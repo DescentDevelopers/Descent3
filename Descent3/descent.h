@@ -174,7 +174,7 @@ enum function_mode {
 extern bool Descent_overrided_intro;
 
 // This is the default FOV
-#define D3_DEFAULT_FOV 72.0
+#define D3_DEFAULT_FOV 72.0f
 // This is the default zoom factor to be used for the game 3D view.
 #define D3_DEFAULT_ZOOM 0.726f
 

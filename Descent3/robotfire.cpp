@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdint>
 #include <cstdlib>
 
 #include "robotfire.h"
@@ -51,7 +52,7 @@ void FireOnOffWeapon(object *objp) {
       WBFireBattery(objp, &Ships[ship_index].static_wb[wb_index], 0, wb_index);
     }
   } else if (objp->ai_info) {
-    char wb_index = objp->ai_info->last_special_wb_firing;
+    int8_t wb_index = objp->ai_info->last_special_wb_firing;
     if (wb_index > MAX_WBS_PER_OBJ) { // DAJ
       LOG_WARNING.printf("FireOnOffWeapon wb_index %d > MAX_WBS_PER_OBJ", wb_index);
       return;
@@ -278,7 +279,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
         int weapon_id = static_wb->gp_weapon_index[cur_m_bit];
 
         if (Weapons[weapon_id].phys_info.flags & PF_FIXED_VELOCITY)
-          obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.velocity.z;
+          obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.velocity.z();
         else if (Weapons[weapon_id].phys_info.flags & PF_USES_THRUST)
           obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.full_thrust / Weapons[weapon_id].phys_info.drag;
         else

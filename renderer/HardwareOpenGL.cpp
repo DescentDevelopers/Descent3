@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <algorithm>
 #include <array>
@@ -22,7 +22,10 @@
 #include <cstdio>
 #include <cstring>
 #include <optional>
-#include <SDL.h>
+
+// TODO: Use SDL_FunctionPointer properly instead
+#define SDL_FUNCTION_POINTER_IS_VOID_POINTER
+#include <SDL3/SDL.h>
 
 #if defined(WIN32)
 #include <windows.h>
@@ -46,7 +49,7 @@
 #include "config.h"
 #include "rtperformance.h"
 #include "HardwareInternal.h"
-#include "../Descent3/args.h"
+#include "args.h"
 #include "NewBitmap.h"
 #include "shaders.h"
 #include "ShaderProgram.h"
@@ -112,31 +115,30 @@ struct Renderer {
     shader_.setUniform1i("u_texture_enable", texture_enable_);
   }
 
-  template <typename VertexIter,
-            typename = std::enable_if_t<std::is_same_v<typename std::iterator_traits<VertexIter>::value_type, PosColorUV2Vertex>>>
+  template <typename VertexIter, typename = std::enable_if_t<std::is_same_v<
+                                     typename std::iterator_traits<VertexIter>::value_type, PosColorUV2Vertex>>>
   size_t addVertexData(VertexIter begin, VertexIter end) {
     return shader_.addVertexData(begin, end);
   }
 
   struct PosColorUVVertex_tag {};
-  template <typename VertexIter,
-            typename = std::enable_if_t<std::is_same_v<typename std::iterator_traits<VertexIter>::value_type, PosColorUVVertex>>>
+  template <typename VertexIter, typename = std::enable_if_t<std::is_same_v<
+                                     typename std::iterator_traits<VertexIter>::value_type, PosColorUVVertex>>>
   size_t addVertexData(VertexIter begin, VertexIter end, PosColorUVVertex_tag = {}) {
     std::array<PosColorUV2Vertex, MAX_POINTS_IN_POLY> converted;
-    std::transform(begin, end, converted.begin(), [](auto const& vtx) {
-      return PosColorUV2Vertex{vtx.pos, vtx.color, vtx.uv, {}};
-    });
+    std::transform(begin, end, converted.begin(),
+                   [](auto const &vtx) { return PosColorUV2Vertex{vtx.pos, vtx.color, vtx.uv, {}}; });
     return shader_.addVertexData(converted.cbegin(), converted.cend());
   }
 
-  void setFogEnabled(bool enabled) {
-    shader_.setUniform1i("u_fog_enable", enabled);
-  }
+  void setFogEnabled(bool enabled) { shader_.setUniform1i("u_fog_enable", enabled); }
 
   void setFogBorders(float nearz, float farz) {
     shader_.setUniform1f("u_fog_start", nearz);
     shader_.setUniform1f("u_fog_end", farz);
   }
+
+  void setGammaCorrection(float gamma) { shader_.setUniform1f("u_gamma", gamma); }
 
   void setFogColor(ddgr_color color) {
     shader_.setUniform4fv("u_fog_color", GR_COLOR_RED(color) / 255.0f, GR_COLOR_GREEN(color) / 255.0f,
@@ -233,13 +235,12 @@ static GLuint GOpenGLRBODepth = 0;
 static GLuint GOpenGLFBOWidth = 0;
 static GLuint GOpenGLFBOHeight = 0;
 
-
 // returns true if the passed in extension name is supported
 bool opengl_CheckExtension(std::string_view extName) {
   GLint numExtensions;
   dglGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
   for (GLint i = 0; i < numExtensions; i++) {
-    if (extName == reinterpret_cast<char const*>(dglGetStringi(GL_EXTENSIONS, i))) {
+    if (extName == reinterpret_cast<char const *>(dglGetStringi(GL_EXTENSIONS, i))) {
       return true;
     }
   }
@@ -356,8 +357,8 @@ void opengl_SetDefaults() {
 extern renderer_preferred_state Render_preferred_state;
 
 int opengl_Setup(oeApplication *app, const int *width, const int *height) {
-  int winw = Video_res_list[Game_video_resolution].width;
-  int winh = Video_res_list[Game_video_resolution].height;
+  int winw = Video_res_list[Current_video_resolution_id].width;
+  int winh = Video_res_list[Current_video_resolution_id].height;
 
   SDL_ClearError();
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {
@@ -372,14 +373,6 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     }
   }
 
-  bool fullscreen = true;
-
-  if (FindArgChar("-fullscreen", 'f')) {
-    fullscreen = true;
-  } else if (FindArgChar("-windowed", 'w')) {
-    fullscreen = false;
-  }
-
   if (!Already_loaded) {
     char gl_library[256];
     int arg;
@@ -387,7 +380,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     if (arg != 0) {
       strcpy(gl_library, GameArgs[arg + 1]);
     } else {
-        gl_library[0] = 0;
+      gl_library[0] = 0;
     }
 
     LOG_INFO.printf("OpenGL: Attempting to use \"%s\" for OpenGL",
@@ -419,7 +412,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     } // if
   }
 
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
@@ -429,35 +422,40 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 #endif
-  Uint32 flags = SDL_WINDOW_OPENGL;
-
-  if (fullscreen) {
-    flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-  }
 
   if (!GSDLWindow) {
-    int display = 0;
-    if (int display_arg = FindArg("-display"); display_arg != 0) {
-      if (const char * arg_index_str = GetArg (display_arg + 1); arg_index_str == nullptr) {
-        LOG_WARNING << "No parameter for -display given";
-      } else {
-        int arg_index = atoi(arg_index_str);
-        int display_count = SDL_GetNumVideoDisplays();
-        if ((arg_index < 0) || (arg_index >= display_count)) {
-          LOG_WARNING.printf( "Parameter for -display must be in the range 0..%i", display_count-1 );
-        } else {
-          display = arg_index;
-        }
-      }
+    int display_num = 0;
+    int display_arg = FindArg("-display");
+    int display_count = 0;
+
+    // High-DPI support
+    {
+      float scale = SDL_GetDisplayContentScale(Display_id);
+      LOG_WARNING.printf("Using content scale %f", scale);
+      winw = std::floor(static_cast<float>(winw) * scale);
+      winh = std::floor(static_cast<float>(winh) * scale);
     }
-    GSDLWindow = SDL_CreateWindow("Descent 3", SDL_WINDOWPOS_UNDEFINED_DISPLAY(display), SDL_WINDOWPOS_UNDEFINED_DISPLAY(display), winw, winh, flags);
+
+    SDL_PropertiesID props = SDL_CreateProperties();
+    SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "Descent 3");
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, SDL_WINDOWPOS_UNDEFINED_DISPLAY(Display_id));
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_UNDEFINED_DISPLAY(Display_id));
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, winw);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, winh);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_OPENGL);
+    GSDLWindow = SDL_CreateWindowWithProperties(props);
+    SDL_DestroyProperties(props);
     if (!GSDLWindow) {
       LOG_ERROR.printf("OpenGL: SDL window creation failed: %s", SDL_GetError());
       return 0;
     }
-  } else {
+
+    bool grabMouse = FindArgChar("-nomousegrab", 'm') == 0;
+    SDL_SetWindowRelativeMouseMode(GSDLWindow, grabMouse);
+
+    rend_SetFullScreen(Game_fullscreen);
+  } else if (!Game_fullscreen) {
     SDL_SetWindowSize(GSDLWindow, winw, winh);
-    SDL_SetWindowFullscreen(GSDLWindow, flags);
   }
 
   if (!GSDLGLContext) {
@@ -472,9 +470,9 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
 
   try {
     LoadGLFnPtrs();
-  } catch (std::exception const& ex) {
+  } catch (std::exception const &ex) {
     // TODO: more raii-esque construction and cleanup here
-    SDL_GL_DeleteContext(GSDLGLContext);
+    SDL_GL_DestroyContext(GSDLGLContext);
     GSDLGLContext = nullptr;
     SDL_DestroyWindow(GSDLWindow);
     GSDLWindow = nullptr;
@@ -486,7 +484,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
 
   // clear the window framebuffer to start.
   dglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  dglClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  dglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   SDL_GL_SwapWindow(GSDLWindow);
 
   /* Tear down the backbuffer and rebuild at new dimensions... */
@@ -502,8 +500,8 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
   }
 
-  const GLsizei w = (GLsizei) *width;
-  const GLsizei h = (GLsizei) *height;
+  const GLsizei w = (GLsizei)*width;
+  const GLsizei h = (GLsizei)*height;
 
   GOpenGLFBOWidth = w;
   GOpenGLFBOHeight = h;
@@ -531,19 +529,11 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     dglDeleteRenderbuffers(1, &GOpenGLRBOColor);
     dglDeleteRenderbuffers(1, &GOpenGLRBODepth);
     GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
-    SDL_GL_DeleteContext(GSDLGLContext);
+    SDL_GL_DestroyContext(GSDLGLContext);
     SDL_DestroyWindow(GSDLWindow);
     GSDLGLContext = nullptr;
     GSDLWindow = nullptr;
     return 0;
-  }
-
-  // rcg09182000 gamma fun.
-  // rcg01112000 --nogamma fun.
-  if (!FindArgChar("-nogamma", 'M')) {
-    Uint16 ramp[256];
-    SDL_CalculateGammaRamp(Render_preferred_state.gamma, ramp);
-    SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp);
   }
 
   if (ParentApplication) {
@@ -735,17 +725,16 @@ void opengl_Close(const bool just_resizing) {
   gRenderer.reset();
 
   if (GSDLGLContext) {
-      SDL_GL_MakeCurrent(nullptr, nullptr);
-      SDL_GL_DeleteContext(GSDLGLContext);
-      GSDLGLContext = nullptr;
-      GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
+    SDL_GL_MakeCurrent(nullptr, nullptr);
+    SDL_GL_DestroyContext(GSDLGLContext);
+    GSDLGLContext = nullptr;
+    GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
   }
 
   if (!just_resizing && GSDLWindow) {
-      SDL_DestroyWindow(GSDLWindow);
-      GSDLWindow = nullptr;
+    SDL_DestroyWindow(GSDLWindow);
+    GSDLWindow = nullptr;
   }
-
 
   if (OpenGL_packed_pixels) {
     if (opengl_packed_Upload_data) {
@@ -1140,15 +1129,12 @@ void gpu_DrawFlatPolygon3D(g3Point **p, int nv) {
 
   std::array<PosColorUVVertex, 100> vertices{};
   std::transform(p, p + nv, std::begin(vertices), [](auto pnt) {
-    return PosColorUVVertex{
-        pnt->p3_vecPreRot,
-        DeterminePointColor(pnt, true, false, true),
-        tex_array{
-            // tex coord can be default-constructed, because it will ultimately be ignored
-            // because this function is only called when cur_texture_quality == 0, and anytime
-            // that is true, GL_TEXTURE_2D is also disabled
-        }
-    };
+    return PosColorUVVertex{pnt->p3_vecPreRot, DeterminePointColor(pnt, true, false, true),
+                            tex_array{
+                                // tex coord can be default-constructed, because it will ultimately be ignored
+                                // because this function is only called when cur_texture_quality == 0, and anytime
+                                // that is true, GL_TEXTURE_2D is also disabled
+                            }};
   });
 
   gpu_RenderPolygon(vertices.data(), nv);
@@ -1157,7 +1143,37 @@ void gpu_DrawFlatPolygon3D(g3Point **p, int nv) {
 // Sets the gamma correction value
 void rend_SetGammaValue(float val) {
   gpu_preferred_state.gamma = val;
+  gRenderer->setGammaCorrection(val);
   LOG_DEBUG.printf("Setting gamma to %f", val);
+}
+
+void rend_SetFullScreen(bool fullscreen) {
+  if (GSDLWindow) {
+    SDL_SetWindowFullscreen(GSDLWindow, fullscreen);
+    SDL_SyncWindow(GSDLWindow);
+  }
+
+  if (fullscreen) {
+    LOG_DEBUG.printf("Entering fullscreen mode");
+  } else {
+    LOG_DEBUG.printf("Exiting fullscreen mode");
+  }
+}
+
+bool rend_InitWindowMode() {
+  int winArg = FindArgChar("-windowed", 'w');
+  int fsArg = FindArgChar("-fullscreen", 'f');
+
+  if ((fsArg) && (winArg)) {
+    LOG_FATAL.printf("ERROR: %s AND %s specified!", GameArgs[winArg], GameArgs[fsArg]);
+    return false;
+  } else if (winArg) {
+    // Override default value from database
+    Game_fullscreen = false;
+  } else if (fsArg) {
+    Game_fullscreen = true;
+  }
+  return true;
 }
 
 // Resets the texture cache
@@ -1266,7 +1282,7 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
       } // end for d_y
 
     } // end for windex
-  }   // end for hindex
+  } // end for hindex
 }
 
 // Tells the software renderer whether or not to use mipping
@@ -1347,14 +1363,10 @@ void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
 void rend_SetFlatColor(ddgr_color color) { gpu_state.cur_color = color; }
 
 // Sets the fog state to TRUE or FALSE
-void rend_SetFogState(int8_t state) {
-  gRenderer->setFogEnabled(state);
-}
+void rend_SetFogState(int8_t state) { gRenderer->setFogEnabled(state); }
 
 // Sets the near and far plane of fog
-void rend_SetFogBorders(float nearz, float farz) {
-  gRenderer->setFogBorders(nearz, farz);
-}
+void rend_SetFogBorders(float nearz, float farz) { gRenderer->setFogBorders(nearz, farz); }
 
 void rend_SetRendererType(renderer_type state) {
   Renderer_type = state;
@@ -1440,7 +1452,6 @@ void rend_StartFrame(int x1, int y1, int x2, int y2, int clear_flags) {
   gpu_state.clip_y2 = y2;
 }
 
-
 // Flips the screen
 void rend_Flip() {
 #ifndef RELEASE
@@ -1451,7 +1462,7 @@ void rend_Flip() {
 
   LOG_VERBOSE.printf("Uploads=%d    Polys=%d   Verts=%d", OpenGL_uploads, OpenGL_polys_drawn, OpenGL_verts_processed);
   LOG_VERBOSE.printf("Sets= 0:%d   1:%d   2:%d   3:%d", OpenGL_sets_this_frame[0], OpenGL_sets_this_frame[1],
-              OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]);
+                     OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]);
   LOG_VERBOSE.printf("Sets= 4:%d   5:%d", OpenGL_sets_this_frame[4], OpenGL_sets_this_frame[5]);
   for (i = 0; i < 10; i++) {
     OpenGL_sets_this_frame[i] = 0;
@@ -1469,26 +1480,25 @@ void rend_Flip() {
   // if we're rendering to an FBO, scale to the window framebuffer!
   if (GOpenGLFBO != 0) {
     int w, h;
-    SDL_GL_GetDrawableSize(GSDLWindow, &w, &h);
+    SDL_GetWindowSizeInPixels(GSDLWindow, &w, &h);
 
     int scaledHeight, scaledWidth;
     if (w < h) {
       scaledWidth = w;
-      scaledHeight = (int) (((((double)GOpenGLFBOHeight) / ((double)GOpenGLFBOWidth))) * ((double)w));
+      scaledHeight = (int)(((((double)GOpenGLFBOHeight) / ((double)GOpenGLFBOWidth))) * ((double)w));
     } else {
       scaledHeight = h;
-      scaledWidth = (int) (((((double)GOpenGLFBOWidth) / ((double)GOpenGLFBOHeight))) * ((double)h));
+      scaledWidth = (int)(((((double)GOpenGLFBOWidth) / ((double)GOpenGLFBOHeight))) * ((double)h));
     }
 
     const int centeredX = (w - scaledWidth) / 2;
     const int centeredY = (h - scaledHeight) / 2;
 
     dglBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    dglClearColor (0.0f, 0.0f, 0.0f, 1.0f);
-    dglClear(GL_COLOR_BUFFER_BIT);  // in case the Steam Overlay wrote to places we don't blit over.
-    dglBlitFramebuffer(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight,
-                          centeredX, centeredY, centeredX + scaledWidth, centeredY + scaledHeight,
-                          GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    dglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    dglClear(GL_COLOR_BUFFER_BIT); // in case the Steam Overlay wrote to places we don't blit over.
+    dglBlitFramebuffer(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight, centeredX, centeredY, centeredX + scaledWidth,
+                       centeredY + scaledHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     dglBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
@@ -1576,8 +1586,7 @@ void rend_SetPixel(ddgr_color color, int x, int y) {
       {static_cast<float>(x), static_cast<float>(y), 0},
       {GR_COLOR_RED(color) / 255.0f, GR_COLOR_GREEN(color) / 255.0f, GR_COLOR_BLUE(color) / 255.0f, 1},
       {},
-      {}
-  };
+      {}};
   dglDrawArrays(GL_POINTS, gRenderer->addVertexData(&vtx, &vtx + 1), 1);
 }
 
@@ -1611,18 +1620,9 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   };
   std::array<PosColorUV2Vertex, 2> vertices{
       PosColorUV2Vertex{
-          {static_cast<float>(x1 + gpu_state.clip_x1), static_cast<float>(y1 + gpu_state.clip_y1), 0},
-          color,
-          {},
-          {}
-      },
+          {static_cast<float>(x1 + gpu_state.clip_x1), static_cast<float>(y1 + gpu_state.clip_y1), 0}, color, {}, {}},
       PosColorUV2Vertex{
-          {static_cast<float>(x2 + gpu_state.clip_x1), static_cast<float>(y2 + gpu_state.clip_y1), 0},
-          color,
-          {},
-          {}
-      }
-  };
+          {static_cast<float>(x2 + gpu_state.clip_x1), static_cast<float>(y2 + gpu_state.clip_y1), 0}, color, {}, {}}};
 
   dglDrawArrays(GL_LINES, gRenderer->addVertexData(vertices.begin(), vertices.end()), vertices.size());
 
@@ -1632,9 +1632,7 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
 }
 
 // Sets the color of fog
-void rend_SetFogColor(ddgr_color color) {
-  gRenderer->setFogColor(color);
-}
+void rend_SetFogColor(ddgr_color color) { gRenderer->setFogColor(color); }
 
 void rend_SetAlphaType(int8_t atype) {
   if (atype == gpu_state.cur_alpha_type)
@@ -1709,7 +1707,8 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
 
 // Takes a screenshot of the current frame and puts it into the handle passed
 std::unique_ptr<NewBitmap> rend_Screenshot() {
-  auto result = std::make_unique<NewBitmap>(gpu_state.screen_width, gpu_state.screen_height, PixelDataFormat::RGBA32, true);
+  auto result =
+      std::make_unique<NewBitmap>(gpu_state.screen_width, gpu_state.screen_height, PixelDataFormat::RGBA32, true);
 
   if (!result || result->getData() == nullptr) {
     return nullptr;
@@ -1724,7 +1723,7 @@ std::unique_ptr<NewBitmap> rend_Screenshot() {
 // Takes a screenshot of the current frame and puts it into the handle passed
 void rend_Screenshot(int bm_handle) {
   auto screenshot = rend_Screenshot();
-  auto *temp_data = reinterpret_cast<uint32_t*>(screenshot->getData());
+  auto *temp_data = reinterpret_cast<uint32_t *>(screenshot->getData());
 
   uint32_t w, h;
   screenshot->getSize(w, h);
@@ -1732,7 +1731,7 @@ void rend_Screenshot(int bm_handle) {
   ASSERT((bm_w(bm_handle, 0)) == gpu_state.screen_width);
   ASSERT((bm_h(bm_handle, 0)) == gpu_state.screen_height);
 
-  uint16_t* dest_data = bm_data(bm_handle, 0);
+  uint16_t *dest_data = bm_data(bm_handle, 0);
 
   for (std::size_t i = 0; i < h; i++) {
     for (std::size_t t = 0; t < w; t++) {

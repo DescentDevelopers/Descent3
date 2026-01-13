@@ -947,7 +947,7 @@ void aClearTeleporterArea(int desthandle, int objhandle) {
   Obj_Value(desthandle, VF_GET, OBJV_I_ROOMNUM, &room);
 
   // Create the teleport-in effect just below the destination
-  pos.y -= 1.0f;
+  pos.y() -= 1.0f;
 
   // Look up the weapon effect
   if (teleport_effect_id < 0)

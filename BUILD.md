@@ -2,7 +2,15 @@
 # Building Descent 3 Open Source 
 
 ## Dependencies
-The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code depends on [**SDL2**](https://github.com/libsdl-org/SDL/tree/SDL2) and [**zlib**](https://github.com/madler/zlib). You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
+The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code also depends on third-party libraries that are not provided as part of the repository:
+- [**SDL3**](https://wiki.libsdl.org/SDL3/FrontPage) which is used as the base to handle video, audio and input.
+- [**cpp-httplib**](https://github.com/yhirose/cpp-httplib) as a HTTP client to download levels.
+- [**glm**](https://github.com/g-truc/glm) providing useful additions to OpenGL.
+- [**plog**](https://github.com/SergiusTheBest/plog) for logging
+- [**zlib**](https://www.zlib.net/) as a compression utility
+- [**gtest**](https://github.com/google/googletest) (optional) for testing.
+
+You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
 
 ## Installing and using vcpkg
 * When building for Windows, vcpkg is already installed and configured when using any of the Visual Studio command prompts (either actual Command Prompt, or PowerShell).
@@ -37,7 +45,7 @@ The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja
 
     Open a "x64 Native Tools Command Prompt" or "x64 Native Tools PowerShell" and run:
     ```batch
-    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
+    git clone https://github.com/DescentDevelopers/Descent3
     ```
 
 3. **Build Descent3.**
@@ -52,6 +60,7 @@ The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja
 Once CMake finishes, the built files will be put in `builds\win\build\Debug` or `builds\win\build\Release`.
 
 ## Building - macOS
+
 1. **Install the prerequisite build tools.**
 
     * Make sure that [Xcode](https://developer.apple.com/xcode) is installed.
@@ -59,33 +68,42 @@ Once CMake finishes, the built files will be put in `builds\win\build\Debug` or 
 
 2. **Acquire the library dependencies.**
 
-    * If you would like to use vcpkg:
+    * To install the library dependencies:
         ```sh
         git clone https://github.com/microsoft/vcpkg
+        cd vcpkg
+        ./bootstrap-vcpkg.sh
+        cd -
         export VCPKG_ROOT="$PWD/vcpkg"
         ```
         **NOTE:**
         You will need `$VCPKG_ROOT` defined in the environment for all build runs. It is a good idea to set this in your `.bashrc` or equivalent.
-    * If you would like to manage the code dependencies yourself:
-        ```sh
-        brew bundle install
-        ```
+    * Create a custom VCPKG triplet that allows the mac build to run and create a universal binary.
+      ```sh
+      cd "$VCPKG_ROOT"/triplets
+      cp ./arm64-osx.cmake ./community/universal-osx.cmake
+      sed -i '' 's/^set(VCPKG_OSX_ARCHITECTURES.*$/set(VCPKG_OSX_ARCHITECTURES "arm64;x86_64")/' ./community/universal-osx.cmake
+      ```
 
 3. **Clone the Descent3 source code.**
 
     ```sh
-    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
+    git clone https://github.com/DescentDevelopers/Descent3
     ```
 
 4. **Build Descent3.**
 
-    ```sh
-    cd Descent3
-    brew bundle install
-    cmake --preset mac
-    cmake --build --preset mac --config [Debug|Release]
-    ```
-    See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
+    * Install the build tools.
+      ```sh
+      brew bundle install
+      ```
+    * Compile Descent 3.
+      ```sh
+      cd Descent3
+      cmake --preset mac
+      cmake --build --preset mac --config [Debug|Release]
+      ```
+      See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
 Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or `builds/mac/build/Release`.
 
@@ -95,7 +113,7 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
     * APT users (Debian, Ubuntu)
         ```sh
         sudo apt update
-        sudo apt install -y --no-install-recommends git ninja-build cmake g++
+        sudo apt install -y --no-install-recommends git ninja-build cmake g++ ca-certificates curl zip unzip tar
         ```
     * DNF users (Red Hat, Fedora)
         ```sh
@@ -105,10 +123,13 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
 
 2. **Acquire the library dependencies.**
 
-    * If you would like to use vcpkg:
+    * We recommend using VCPKG to manage library dependencies.
         1. Clone vcpkg:
             ```sh
             git clone https://github.com/microsoft/vcpkg
+            cd vcpkg
+            ./bootstrap-vcpkg.sh
+            cd -
             export VCPKG_ROOT="$PWD/vcpkg"
             ```
             **NOTE:**
@@ -116,26 +137,18 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
         2. Install vcpkg-needed build tools and dependencies:
             * APT users
                 ```sh
-                sudo apt install -y --no-install-recommends curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev
+                sudo apt install -y --no-install-recommends curl pkg-config autoconf automake libtool libltdl-dev make python3-jinja2 libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libxcursor-dev libxfixes-dev libxi-dev libxrandr-dev libxss-dev
                 ```
             * DNF users
                 ```sh
                 sudo dnf install -y autoconf automake libtool perl-open perl-FindBin python-jinja2 libX11-devel libXft-devel libXext-devel wayland-devel libxkbcommon-devel mesa-libEGL-devel ibus-devel alsa-lib-devel pulseaudio-libs-devel
                 ```
-    * If you would like to manage the code dependencies yourself:
-        * APT users
-            ```sh
-            sudo apt install -y --no-install-recommends libsdl2-dev zlib1g-dev libgtest-dev libglm-dev
-            ```
-        * DNF users
-            ```sh
-            sudo dnf install -y SDL2-devel zlib-devel gtest glm-devel
-            ```
+    * If you would like to manage the code dependencies yourself, install libraries and headers for the dependencies listed [above](#dependencies). SDL3 still being new at the time of writing, it may not be packaged by all popular non rolling-release Linux distributions yet.
 
 3. **Clone the Descent3 source code.**
 
     ```sh
-    git clone --recurse-submodules https://github.com/DescentDevelopers/Descent3
+    git clone https://github.com/DescentDevelopers/Descent3
     ```
 
 4. **Build Descent3.**
@@ -145,6 +158,7 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
     cmake --preset linux
     cmake --build --preset linux --config [Debug|Release]
     ```
+
     See [Build Options](#build-options) below for more information on `Debug` vs `Release`.
 
 Once CMake finishes, the built files will be put in `builds/linux/build/Debug` or `builds/linux/build/Release`.
@@ -174,19 +188,25 @@ cmake --build .
 
 The Descent3 build can be customized by [setting CMake variables on the command line](https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-D) during its "Configuration" phase (the command without the `--build` option). To set a variable, you prepend the variable name with `-D` and then append the value, all as one single parameter. For example:
 ```sh
-cmake --preset linux -DENABLE_LOGGER=ON
+cmake --preset linux -DBUILD_TESTING=ON
 ```
 
 **NOTE:** CMake variables, or more technically _CMake cache entries_, will persist in their values until they are explicitly cleared. So, if you set a variable and then run another CMake command _without_ that variable specified, the variable will still be set. Variables must be explicitly unset, or the `builds/` directory cleaned, in order to be cleared.
 
-| Option                   | Description                                                                                                                                                                                                                                                                                             | Default                                                                                      |
-|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| `CMAKE_BUILD_TYPE`       | `Debug` builds are generally larger, slower and contain extra correctness checks that will validate game data and interrupt gameplay when problems are detected.<br>`Release` builds are optimized for size and speed and do not include debugging information, which makes it harder to find problems. | `Debug`                                                                                      |
-| `BUILD_EDITOR`           | _(Windows-only)_ Build internal editor.                                                                                                                                                                                                                                                                 | `OFF`                                                                                        |
-| `BUILD_TESTING`          | Enable testing. Requires GTest.                                                                                                                                                                                                                                                                         | `OFF`                                                                                        |
-| `ENABLE_LOGGER`          | Enable logging to the terminal.                                                                                                                                                                                                                                                                         | `OFF`                                                                                        |
-| `ENABLE_MEM_RTL`         | Enable Real-time library memory management functions (disable to verbose memory allocations).                                                                                                                                                                                                           | `ON`                                                                                         |
-| `FORCE_COLORED_OUTPUT`   | Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja).                                                                                                                                                                                                          | `OFF`                                                                                        |
-| `FORCE_PORTABLE_INSTALL` | Install all files into local directory defined by `CMAKE_INSTALL_PREFIX`.                                                                                                                                                                                                                               | `ON`                                                                                         |
-| `USE_EXTERNAL_PLOG`      | Use system plog library.                                                                                                                                                                                                                                                                                | `OFF`                                                                                        |
-| `USE_VCPKG`              | Explicitly control whether or not to use vcpkg for dependency resolution. `ON` requires the environment variable `VCPKG_ROOT` to be set.                                                                                                                                                                | Determined by the existence of `VCPKG_ROOT` in the environment: If it exists, vcpkg is used. |
+You can also use the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html) front-end to easily set and view CMake cache variable values, and generate build
+
+| Option                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Default                                                                                      |
+|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| `CMAKE_BUILD_TYPE`        | `Debug` builds are generally larger, slower and contain extra correctness checks that will validate game data and interrupt gameplay when problems are detected.<br>`Release` builds are optimized for size and speed and do not include debugging information, which makes it harder to find problems. The build type can also be set using the `--config` argument with a preset.                                                                            | `Debug`                                                                                      |
+| `BUILD_EDITOR`            | _(Windows-only)_ Build internal editor.                                                                                                                                                                                                                                                                                                                                                                                                                        | `OFF`                                                                                        |
+| `BUILD_TESTING`           | Enable testing. Requires GTest.                                                                                                                                                                                                                                                                                                                                                                                                                                | `OFF`                                                                                        |
+| `DEFAULT_ADDITIONAL_DIRS` | A semi-colon separated list of paths that Descent 3 will use as read-only base directories (see [USAGE.md’s Base directories section][1]). Each item in this list is placed between quotation marks in order to form a C++ expression. This will cause issues if the items in the list are not properly escaped. You can use C++ escape sequences in order to embed special characters (like `\`, `"` and `;`) in paths. Example: `C:\\Games\\Descent3\\;D:\\` | A list with one item in it. The item is an empty string.                                     |
+| `ENABLE_LOGGER`           | Enable logging to the terminal.                                                                                                                                                                                                                                                                                                                                                                                                                                | `OFF`                                                                                        |
+| `ENABLE_MEM_RTL`          | Enable Real-time library memory management functions (disable to verbose memory allocations).                                                                                                                                                                                                                                                                                                                                                                  | `ON`                                                                                         |
+| `FORCE_COLORED_OUTPUT`    | Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja).                                                                                                                                                                                                                                                                                                                                                                 | `OFF`                                                                                        |
+| `FORCE_PORTABLE_INSTALL`  | Install all files into local directory defined by `CMAKE_INSTALL_PREFIX`.                                                                                                                                                                                                                                                                                                                                                                                      | `ON`                                                                                         |
+      | `OFF`                                                                                        |
+| `USE_VCPKG`               | Explicitly control whether or not to use vcpkg for dependency resolution. `ON` requires the environment variable `VCPKG_ROOT` to be set.                                                                                                                                                                                                                                                                                                                       | Determined by the existence of `VCPKG_ROOT` in the environment: If it exists, vcpkg is used. |
+| `CODESIGN_IDENTITY`       | Sets the macOS code signing identity. If set to something besides the empty string, then the dynamic libraries put into the hog files will be signed using this identity.                                                                                                                                                                                                                                                                                      | The empty string, `""`.                                                                      |
+
+[1]: ./USAGE.md#base-directories

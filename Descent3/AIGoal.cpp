@@ -463,6 +463,7 @@
  * $NoKeywords: $
  */
 
+#include <cstdint>
 #include <cstdlib>
 
 #include "AIGoal.h"
@@ -505,7 +506,7 @@ void GoalInitWanderAround(object *obj, goal *goal_ptr) {
       pos = Rooms[roomnum].path_pnt;
     } else {
       ComputeTerrainSegmentCenter(&pos, CELLNUM(roomnum));
-      pos.y += (ai_info->biased_flight_max + ai_info->biased_flight_min) / 2.0f;
+      pos.y() += (ai_info->biased_flight_max + ai_info->biased_flight_min) / 2.0f;
     }
   } else {
     int tx = (ps_rand() % (TERRAIN_WIDTH - 56)) + (56 / 2);
@@ -514,7 +515,7 @@ void GoalInitWanderAround(object *obj, goal *goal_ptr) {
     int cell = tx + TERRAIN_WIDTH * tz;
     roomnum = 0x80000000 | cell;
     ComputeTerrainSegmentCenter(&pos, cell);
-    pos.y += (ai_info->biased_flight_max + ai_info->biased_flight_min) / 2.0f;
+    pos.y() += (ai_info->biased_flight_max + ai_info->biased_flight_min) / 2.0f;
   }
 
   goal_ptr->g_info.pos = pos;
@@ -1096,7 +1097,7 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
     if ((ai_info->animation_type == AS_ALERT) || (ai_info->animation_type == AS_MELEE1 + 1) ||
         (ai_info->animation_type == AS_MELEE2 + 1)) {
       uint8_t m_num = attack_info->melee_number;
-      char new_anim;
+      int8_t new_anim;
 
       if (m_num)
         new_anim = AS_MELEE1;
@@ -1116,7 +1117,7 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
     break;
 
   case AIG_SET_ANIM: {
-    char new_anim = *((int *)arg_struct);
+    int8_t new_anim = *static_cast<int *>(arg_struct);
     polyobj_info *p_info = &obj->rtype.pobj_info;
 
     //			mprintf(0, "Anim Goal %d\n", new_anim);

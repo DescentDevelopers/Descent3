@@ -18,7 +18,8 @@
 
 #include <queue>
 
-#define TSETSEFLYAPIURL  "http://api.tsetsefly.de/?format=linebyline&template=simpleServerList&get=gameServerList&filter=gameName[d3];network[directip];&request=hp"
+#define TSETSEFLYAPI_HOST "http://api.tsetsefly.de"
+#define TSETSEFLYAPI_URI "/?format=linebyline&template=simpleServerList&get=gameServerList&filter=gameName[d3];network[directip];&request=hp"
 
 struct apiServerEntry {
   uint32_t ipv4adr;
@@ -26,5 +27,4 @@ struct apiServerEntry {
 };
 
 void RequestDIPGameList();
-void RequestDIPShutdown();
 std::queue<apiServerEntry> GetDIpGameList();

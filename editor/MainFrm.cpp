@@ -1044,7 +1044,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     return -1; // fail to create
   }
 
-  if (!m_wndStatusBar.Create(this) || !m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT))) {
+  if (!m_wndStatusBar.Create(this) || !m_wndStatusBar.SetIndicators(indicators, std::size(indicators))) {
     TRACE0("Failed to create status bar\n");
     return -1; // fail to create
   }
@@ -2693,13 +2693,13 @@ void MoveEntireMine() {
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++, rp++) {
     if (rp->used) {
       for (int v = 0; v < rp->num_verts; v++) {
-        rp->verts[v].x += delta_x;
-        rp->verts[v].z += delta_z;
+        rp->verts[v].x() += delta_x;
+        rp->verts[v].z() += delta_z;
       }
 
       for (int objnum = rp->objects; objnum != -1; objnum = Objects[objnum].next) {
-        Objects[objnum].pos.x += delta_x;
-        Objects[objnum].pos.z += delta_z;
+        Objects[objnum].pos.x() += delta_x;
+        Objects[objnum].pos.z() += delta_z;
       }
     }
   }
@@ -3393,7 +3393,7 @@ void CMainFrame::OnOsiriscompile() {
 }
 
 // Copied here from HObject.cpp
-#define OBJECT_PLACE_DIST 10.0
+#define OBJECT_PLACE_DIST (scalar)10.0
 bool MoveObject(object *obj, vector *newpos);
 
 void CMainFrame::OnViewMoveCameraToCurrentObject() {
@@ -3480,8 +3480,8 @@ void CMainFrame::OnShowAllCheckedOut() {
 }
 
 void CMainFrame::OnViewShowViewerForwardVector() {
-  EditorStatus("Viewer forward vector: %.3f, %.3f, %.3f", Viewer_object->orient.fvec.x + 0.0005,
-               Viewer_object->orient.fvec.y + 0.0005, Viewer_object->orient.fvec.z + 0.0005);
+  EditorStatus("Viewer forward vector: %.3f, %.3f, %.3f", Viewer_object->orient.fvec.x() + (scalar)0.0005,
+               Viewer_object->orient.fvec.y() + (scalar)0.0005, Viewer_object->orient.fvec.z() + (scalar)0.0005);
 }
 
 void CMainFrame::OnObjectPlaceSoundSourceAtViewer() {

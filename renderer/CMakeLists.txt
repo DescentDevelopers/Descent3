@@ -29,14 +29,13 @@ set(CPPS
   HardwarePoints.cpp
   HardwareSetup.cpp
   HardwareTransforms.cpp
-  lnxscreenmode.cpp
 )
 
 add_library(renderer STATIC ${HEADERS} ${CPPS})
-target_include_directories(renderer PRIVATE ${GENERATED_HEADERS})
+target_include_directories(renderer PRIVATE ${GENERATED_HEADERS} ${SDL3_INCLUDE_DIRS})
 target_link_libraries(renderer PRIVATE
   glm::glm
-  SDL2::SDL2
+  SDL3::SDL3
   bitmap
   ddebug
   ddio

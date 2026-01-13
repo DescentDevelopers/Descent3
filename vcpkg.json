@@ -1,33 +1,32 @@
 {
-  "builtin-baseline": "e60236ee051183f1122066bee8c54a0b47c43a60",
+  "builtin-baseline": "8f90c294883ccf67d2f4953383718aeae981575f",
   "dependencies": [
+    "cpp-httplib",
     "glm",
     "gtest",
     "plog",
-    "zlib",
     {
-      "name": "sdl2",
-      "version>=": "2.30.8",
-      "features": ["x11", "wayland", "alsa"],
-      "default-features": false,
-      "platform": "linux & !native"
-    },
-    {
-      "name": "sdl2",
-      "version>=": "2.30.8",
+      "name": "sdl3",
+      "version>=": "3.2.6",
       "features": ["x11","wayland", "alsa"],
-      "platform": "linux & native"
+      "platform": "linux"
     },
     {
-      "name": "sdl2",
-      "version>=": "2.30.8",
+      "name": "sdl3",
+      "version>=": "3.2.6",
       "platform": "!linux"
-    }
+    },
+    {
+      "name": "libxcrypt",
+      "version>=": "4.4.38",
+      "platform": "linux"
+    },
+    "zlib"
   ],
   "overrides": [
     {
-      "name": "sdl2",
-      "version": "2.30.8"
+      "name": "sdl3",
+      "version": "3.2.6"
     }
-  ]
+ ]
 }

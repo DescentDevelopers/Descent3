@@ -385,14 +385,14 @@ static char Ctltext_KeyBindings[][16] = {"",
                                          "",
                                          ""};
 
-static int16_t key_binding_indices[] = {
+static constexpr int16_t key_binding_indices[] = {
     KEY_BACKSP,    KEY_TAB,      KEY_ENTER, KEY_LCTRL,     KEY_LSHIFT,   KEY_RSHIFT, KEY_PADMULTIPLY, KEY_LALT,
     KEY_SPACEBAR,  KEY_CAPSLOCK, 0x45,      KEY_SCROLLOCK, KEY_PAD7,     KEY_PAD8,   KEY_PAD9,        KEY_PADMINUS,
     KEY_PAD4,      KEY_PAD5,     KEY_PAD6,  KEY_PADPLUS,   KEY_PAD1,     KEY_PAD2,   KEY_PAD3,        KEY_PAD0,
     KEY_PADPERIOD, KEY_PADENTER, KEY_RCTRL, KEY_PADDIVIDE, KEY_RALT,     KEY_HOME,   KEY_UP,          KEY_PAGEUP,
     KEY_LEFT,      KEY_RIGHT,    KEY_END,   KEY_DOWN,      KEY_PAGEDOWN, KEY_INSERT, KEY_DELETE,      0xff};
 
-#define NUM_KEYBINDSTRINGS (sizeof(Ctltext_KeyBindings) / sizeof(Ctltext_KeyBindings[0]))
+#define NUM_KEYBINDSTRINGS std::size(Ctltext_KeyBindings)
 
 #define F_ELEM_HILITE 0x1
 #define F_ELEM_ACTIVE 0x2

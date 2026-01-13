@@ -90,7 +90,7 @@
  *
  * 61    4/16/99 11:56a Matt
  * Changed directplay code to be "ifdef _WIN32" instead of "ifndef
- * __LINUX__" so it will work on the Mac.
+ * SDL_PLATFORM_LINUX" so it will work on the Mac.
  *
  * 60    4/16/99 12:15a Jeff
  * linux wants stdcall modifiers before parens, unlike windows
@@ -394,8 +394,8 @@ void GetMultiAPI(multi_api *api) {
   api->netgame = (int *)&Netgame;
   api->netplayers = (int *)&NetPlayers;
   api->ships = (int *)Ships;
-  // Fill in function pointers here.  The order here must match the order on the
-  // DLL side (netcon/includes/mdllinit.h)
+  // Fill in function pointers here. The order here must match the order on the DLL side
+  // (netcon/includes/con_dll.h)
 
   api->fp[0] = (int *)SetUITextItemText;
   api->fp[1] = (int *)NewUIWindowCreate;

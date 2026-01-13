@@ -357,7 +357,7 @@ const char *orphan_ignore[] = {
     "anarchy.str", "coop.str",     "ctf.str",         "entropy.str",     "dmfc.str",        "d3.str",
     "hoard.str",   "dp_modem.str", "dp_serial.str",   "hyper.str",       "ipxclient.str",   "lanclient.str",
     "monster.str", "mtclient.str", "tanarchy.str"};
-int num_orphan_ignore = sizeof(orphan_ignore) / sizeof(char *);
+int num_orphan_ignore = std::size(orphan_ignore);
 
 bool IsFileUsed(const char *filename) {
   bool found = false;

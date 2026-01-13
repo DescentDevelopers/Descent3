@@ -641,6 +641,9 @@
 #include <cstdlib>
 #include <filesystem>
 
+#include "args.h"
+#include "ddio.h"
+#include "crossplat.h"
 #include "Mission.h"
 #include "3d.h"
 #include "LoadLevel.h"
@@ -670,6 +673,7 @@
 #include "BOA.h"
 #include "terrain.h"
 #include "multi.h"
+#include "module.h"
 #include "hud.h"
 #include "localization.h"
 #include "levelgoal.h"
@@ -700,12 +704,12 @@ bool mn3_GetInfo(const std::filesystem::path &mn3file, tMissionInfo *msn);
 
 static inline bool IS_MN3_FILE(const std::filesystem::path &fname) {
   std::filesystem::path ext = fname.extension();
-  return (stricmp(ext.u8string().c_str(), ".mn3") == 0);
+  return (stricmp((const char *)ext.u8string().c_str(), ".mn3") == 0);
 }
 
 static inline std::filesystem::path MN3_TO_MSN_NAME(const std::filesystem::path &mn3name) {
   std::filesystem::path fname = std::filesystem::path(mn3name).stem();
-  if (stricmp(fname.u8string().c_str(), "d3_2") == 0) {
+  if (stricmp((const char *)fname.u8string().c_str(), "d3_2") == 0) {
     fname = "d3";
   }
   fname.replace_extension(".msn");
@@ -741,6 +745,26 @@ void InitMission() {
   }
   atexit(ResetMission);
 }
+
+void InitDefaultMissionFromCLI() {
+  // Load mission on startup
+  int mission_arg = FindArg("-mission");
+  if (mission_arg > 0) {
+    std::filesystem::path filename = std::filesystem::path(GameArgs[mission_arg + 1]).filename().replace_extension(".mn3");
+    LoadMission((const char*)filename.u8string().c_str());
+
+    int level_arg = FindArg("-loadlevel");
+    if (level_arg > 0) {
+      int level{std::atoi(GameArgs[level_arg + 1])};
+      if (level <= 0 || level > Current_mission.num_levels) {
+        LOG_WARNING << "Invalid level selection, resetting to 1";
+        level = 1;
+      }
+      Current_mission.cur_level = level;
+    }
+  }
+}
+
 //	reset all states for a mission
 void ResetMission() {
   LOG_INFO << "In ResetMission()";
@@ -1165,9 +1189,9 @@ bool LoadMission(const char *mssn) {
   //	set up current mission (movies are already set above)
   msn->cur_level = 1;
   msn->num_levels = numlevels;
-  msn->filename = mem_strdup(mission.u8string().c_str());
+  msn->filename = mem_strdup((const char *)mission.u8string().c_str());
   msn->game_state_flags = 0;
-  strcpy(Net_msn_URLs.msnname, mission.u8string().c_str());
+  strcpy(Net_msn_URLs.msnname, (const char *)mission.u8string().c_str());
   res = true; // everything is ok.
 
   // if error, print it out, else end.
@@ -1237,7 +1261,7 @@ void LoadLevelText(const std::filesystem::path &level_filename) {
   pathname.replace_extension(".str");
 
   char **goal_strings;
-  if (CreateStringTable(pathname.u8string().c_str(), &goal_strings, &n_strings)) {
+  if (CreateStringTable((const char *)pathname.u8string().c_str(), &goal_strings, &n_strings)) {
     int n_goals = Level_goals.GetNumGoals();
     ASSERT(n_strings == (n_goals * 3));
     for (int i = 0; i < n_goals; i++) {
@@ -1780,23 +1804,29 @@ bool mn3_Open(const std::filesystem::path &mn3file) {
   if (mn3_handle == 0) {
     return false;
   } else {
-    Osiris_ExtractScriptsFromHog(mn3_handle, true);
+    /* Disabled loading scripts from .mn3 files on purpose:
+    all 64-bit first-party level scripts have already been loaded from `PRIMARY_HOG`.
+    Mission files contain only Win32 scripts by default, which cannot not be loaded on 64-bit builds.
+    Reactivate this when we have a proper sandbox system to safely run third-party scripts contained in user-made
+    levels. */
+    // Osiris_ExtractScriptsFromHog(mn3_handle, true);
   }
   // do table file stuff.
   std::filesystem::path filename = mn3file.stem();
 
   std::filesystem::path voice_hog;
-  if ((stricmp(filename.u8string().c_str(), "d3") == 0) || (stricmp(filename.u8string().c_str(), "training") == 0)) {
+  if ((stricmp((const char *)filename.u8string().c_str(), "d3") == 0) ||
+      (stricmp((const char *)filename.u8string().c_str(), "training") == 0)) {
     // Open audio hog file
     voice_hog = std::filesystem::path("missions") / "d3voice1.hog"; // Audio for levels 1-4
     Mission_voice_hog_handle = cf_OpenLibrary(voice_hog);
-  } else if (stricmp(filename.u8string().c_str(), "d3_2") == 0) {
+  } else if (stricmp((const char *)filename.u8string().c_str(), "d3_2") == 0) {
     // Open audio hog file
     voice_hog = std::filesystem::path("missions") / "d3voice2.hog"; // Audio for levels 5-17
     Mission_voice_hog_handle = cf_OpenLibrary(voice_hog);
   }
   filename.replace_extension(".gam");
-  mng_SetAddonTable(filename.u8string().c_str());
+  mng_SetAddonTable((const char *)filename.u8string().c_str());
   Current_mission.mn3_handle = mn3_handle;
   return true;
 }

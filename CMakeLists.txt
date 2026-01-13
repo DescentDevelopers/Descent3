@@ -25,8 +25,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Android")
   set(ENV{ANDROID_NDK_HOME} ${CMAKE_ANDROID_NDK})
 endif()
 
-if(USE_VCPKG)
+if(NOT USE_VCPKG STREQUAL "OFF")
   if(DEFINED ENV{VCPKG_ROOT})
+
     if (CMAKE_TOOLCHAIN_FILE)
       cmake_path(ABSOLUTE_PATH CMAKE_TOOLCHAIN_FILE NORMALIZE OUTPUT_VARIABLE VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
     endif()
@@ -48,16 +49,32 @@ project(Descent3
   VERSION 1.6.0
 )
 
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+  message(FATAL_ERROR "In-source builds are not supported. Please run CMake with a different build path.")
+endif()
+
+if(POLICY CMP0177) # install() DESTINATION path are normalized
+  cmake_policy(SET CMP0177 NEW)
+endif()
+
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
 option(FATAL_GL_ERRORS "Check OpenGL calls and raise exceptions on errors." OFF)
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
 option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
-option(USE_EXTERNAL_PLOG "Use system plog library instead bundled" OFF)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(BUILD_EDITOR "Build internal editor" OFF)
 endif()
+
+set(CODESIGN_IDENTITY "" CACHE STRING "Sets the macOS code signing identity. If set to something besides the empty string, then the dynamic libraries put into the hog files will be signed using this identity.")
+function (macos_sign target)
+  if(DEFINED CODESIGN_IDENTITY AND NOT "${CODESIGN_IDENTITY}" STREQUAL "")
+    message(STATUS "Code signing ${target}")
+    add_custom_command(TARGET ${target} POST_BUILD
+            COMMAND codesign --verbose --sign "${CODESIGN_IDENTITY}" --force --timestamp --deep -o runtime $<TARGET_FILE:${target}>)
+  endif()
+endfunction()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -102,6 +119,12 @@ if(FORCE_PORTABLE_INSTALL)
   set(CMAKE_INSTALL_LIBDIR ".")
   set(CMAKE_INSTALL_DATADIR ".")
   set(CMAKE_INSTALL_DOCDIR ".")
+
+  set(D3_DATADIR "${CMAKE_INSTALL_DATADIR}")
+else()
+  set(CMAKE_INSTALL_DATADIR "${CMAKE_INSTALL_DATADIR}/Descent3")
+  # On system install files will go into /usr/share/Descent3
+  set(D3_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/Descent3")
 endif()
 
 # Get info about multi-config environment
@@ -152,6 +175,7 @@ endif()
 add_custom_target(get_git_hash ALL)
 
 add_custom_command(
+  POST_BUILD
   TARGET get_git_hash
   COMMAND ${CMAKE_COMMAND}
     -D SOURCE_DIR=${PROJECT_SOURCE_DIR}
@@ -172,20 +196,33 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
   add_compile_options("-Wno-multichar;-Wall")
 endif()
 
+find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 find_package(glm REQUIRED)
-find_package(SDL2 REQUIRED)
-# Some versions of the SDL2 find_package set SDL2_INCLUDE_DIR and some set a plural SDL2_INCLUDE_DIRS. Check both.
-message("SDL2 Include Dir is ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS}")
-if(USE_EXTERNAL_PLOG)
-  find_package(plog REQUIRED)
+find_package(httplib QUIET)
+if (TARGET httplib::httplib)
+  add_library(httplib ALIAS httplib::httplib)
+else()
+  # Some Linux distributions do not package httplibConfig.cmake, so find the header manually
+  find_file(CPP_HTTPLIB_HEADER httplib.h REQUIRED)
+  find_library(CPP_HTTPLIB_LIB cpp-httplib QUIET)
+
+  # The target httplib::httplib cannot be created manually, so rename it
+  add_library(httplib INTERFACE ${CPP_HTTPLIB_HEADER})
+
+  # And some Linux distributions build httplib as header-only,
+  # and some as header+library. What a mess!
+  if (NOT ${CPP_HTTPLIB_LIB} STREQUAL "CPP_HTTPLIB_LIB-NOTFOUND")
+    target_link_libraries(httplib INTERFACE ${CPP_HTTPLIB_LIB})
+  endif ()
 endif()
+find_package(ZLIB REQUIRED)
+find_package(plog REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   message("Building for Linux")
   add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
-  set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  message("Building for MAC OSX")
+  message("Building for macOS")
   add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
   set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
@@ -206,8 +243,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_link_options("$<$<CONFIG:Release>:/LTCG>")
 
   add_compile_definitions(WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
-
-  set(PLATFORM_INCLUDES "lib/win/DirectX" "lib/win")
 
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
@@ -237,8 +272,6 @@ endif()
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
 add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
 
-find_package(ZLIB REQUIRED)
-
 if(ENABLE_LOGGER)
   message("Enabling Logging")
   add_compile_definitions(LOGGER)
@@ -256,7 +289,10 @@ include_directories(
   "lib"     # TODO: Remove after untying all modules
   "linux"   # -*-
   "Descent3"
-  ${PLATFORM_INCLUDES}
+  $<$<PLATFORM_ID:Windows>:
+    "lib/win/DirectX"
+    "lib/win"
+  >
 )
 
 add_subdirectory(third_party)

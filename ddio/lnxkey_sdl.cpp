@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -64,11 +64,12 @@
  * $NoKeywords: $
  */
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "ddio.h"
 #include "pserror.h"
-
+#include "renderer.h"
+#include "config.h"
 
 extern volatile struct tLnxKeys {
   union {
@@ -89,7 +90,7 @@ int sdlkey_to_ddiocode[27] = {0,     KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, K
 static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   // unceremoniously taken from Heretic source code with a few modifications.
   //  (by Outrage. Not Loki. We know better.  :)  --ryan.)
-  int rc = sdlkeycode;
+  uint32_t rc = sdlkeycode;
 
   switch (rc) {
   case SDLK_DELETE:
@@ -293,10 +294,10 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   case SDLK_BACKSLASH:
     rc = KEY_BACKSLASH;
     break;
-  case SDLK_BACKQUOTE:
+  case SDLK_GRAVE:
     rc = KEY_LAPOSTRO;
     break;
-  case SDLK_QUOTE:
+  case SDLK_APOSTROPHE:
     rc = KEY_RAPOSTRO;
     break;
   case SDLK_SEMICOLON:
@@ -326,8 +327,8 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
 
     // convert 'a' - 'z' to 0-27, and then convert to ddio format.
   default:
-    if (rc >= SDLK_a && rc <= SDLK_z) {
-      rc = (rc - SDLK_a) + 1;
+    if (rc >= SDLK_A && rc <= SDLK_Z) {
+      rc = (rc - SDLK_A) + 1;
     } else {
       rc = 0;
     }
@@ -339,57 +340,50 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   return (uint8_t)rc;
 }
 
-int sdlKeyFilter(const SDL_Event *event) {
+bool sdlKeyFilter(const SDL_Event *event) {
   uint8_t kc = 0;
 
-  if ((event->type != SDL_KEYUP) && (event->type != SDL_KEYDOWN))
-    return (1);
+  if ((event->type != SDL_EVENT_KEY_UP) && (event->type != SDL_EVENT_KEY_DOWN))
+    return true;
 
-  switch (event->key.state) {
-  case SDL_PRESSED:
-    if (event->key.repeat) break;  // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
-    kc = sdlkeycode_to_keycode(event->key.keysym.sym);
-    if (event->key.keysym.mod & KMOD_CTRL) {
+  if (event->key.down) {
+    if (event->key.repeat) {
+      return false; // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
+    }
+    kc = sdlkeycode_to_keycode(event->key.key);
+    if (event->key.mod & SDL_KMOD_CTRL) {
+      extern SDL_Window *GSDLWindow;
       switch (kc) {
       case KEY_G: // toggle grabbed input.
         bool grab = !ddio_MouseGetGrab();
         ddio_MouseSetGrab(grab);
-        SDL_SetRelativeMouseMode((SDL_bool)grab);
-        return 0;
+        SDL_SetWindowRelativeMouseMode(GSDLWindow, grab);
+        return false;
       } // switch
     }   // if
 
-    else if (event->key.keysym.mod & KMOD_ALT) {
+    else if (event->key.mod & SDL_KMOD_ALT) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
-        extern SDL_Window *GSDLWindow;
-        Uint32 flags = SDL_GetWindowFlags(GSDLWindow);
-        // (In SDL2, SDL_WINDOW_FULLSCREEN_DESKTOP is SDL_WINDOW_FULLSCREEN plus an extra bit set, so just check for _any_ fullscreen in this bitwise AND.)
-        if (flags & SDL_WINDOW_FULLSCREEN) {
-          flags &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
-        } else {
-          flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-        }
-        SDL_SetWindowFullscreen(GSDLWindow, flags);
-        return(0);
+        Game_fullscreen = !Game_fullscreen;
+        rend_SetFullScreen(Game_fullscreen);
+        return false;
       } // if
     }   // else if
 
     LKeys[kc].down_time = timer_GetTime();
     LKeys[kc].status = true;
     ddio_UpdateKeyState(kc, true);
-    break;
 
-  case SDL_RELEASED:
-    kc = sdlkeycode_to_keycode(event->key.keysym.sym);
+  } else {
+    kc = sdlkeycode_to_keycode(event->key.key);
     if (LKeys[kc].status) {
       LKeys[kc].up_time = timer_GetTime();
       LKeys[kc].status = false;
       ddio_UpdateKeyState(kc, false);
     } // if
-    break;
-  } // switch
+  }
 
-  return (0);
+  return false;
 } // sdlKeyFilter
 
 bool ddio_sdl_InternalKeyInit(ddio_init_info *init_info) {

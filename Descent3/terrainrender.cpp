@@ -895,15 +895,15 @@ int IsTerrainDynamicChecked(int seg, int bit) {
 }
 // Gets the dynamic light value for this position
 float GetTerrainDynamicScalar(vector *pos, int seg) {
-  float cube_values[10];
+  scalar cube_values[10];
   int y_increment = MAX_TERRAIN_HEIGHT / 8;
-  int y_int = pos->y / y_increment;
-  int x_int = pos->x / TERRAIN_SIZE;
-  int z_int = pos->z / TERRAIN_SIZE;
+  int y_int = pos->y() / y_increment;
+  int x_int = pos->x() / TERRAIN_SIZE;
+  int z_int = pos->z() / TERRAIN_SIZE;
 
-  float x_norm = (pos->x / TERRAIN_SIZE) - x_int;
-  float z_norm = (pos->z / TERRAIN_SIZE) - z_int;
-  float y_norm = (pos->y / y_increment) - y_int;
+  scalar x_norm = (pos->x() / TERRAIN_SIZE) - x_int;
+  scalar z_norm = (pos->z() / TERRAIN_SIZE) - z_int;
+  scalar y_norm = (pos->y() / y_increment) - y_int;
   if (y_norm < 0) {
     y_norm = 0;
     y_int = 0;
@@ -1038,8 +1038,8 @@ void RenderTerrainRooms() {
     return;
   if ((Terrain_checksum + 1) == Terrain_occlusion_checksum) {
     use_occlusion = 1;
-    int oz = (Viewer_object->pos.z / TERRAIN_SIZE) / OCCLUSION_SIZE;
-    int ox = (Viewer_object->pos.x / TERRAIN_SIZE) / OCCLUSION_SIZE;
+    int oz = (Viewer_object->pos.z() / TERRAIN_SIZE) / OCCLUSION_SIZE;
+    int ox = (Viewer_object->pos.x() / TERRAIN_SIZE) / OCCLUSION_SIZE;
     if (oz < 0 || oz >= OCCLUSION_SIZE || ox < 0 || ox >= OCCLUSION_SIZE)
       use_occlusion = 0;
     src_occlusion_index = oz * OCCLUSION_SIZE + ox;
@@ -1058,13 +1058,13 @@ void RenderTerrainRooms() {
     float size = obj->size;
 
     if (use_occlusion) {
-      int y1 = (obj->pos.z / TERRAIN_SIZE) / OCCLUSION_SIZE;
-      int x1 = (obj->pos.x / TERRAIN_SIZE) / OCCLUSION_SIZE;
+      int y1 = (obj->pos.z() / TERRAIN_SIZE) / OCCLUSION_SIZE;
+      int x1 = (obj->pos.x() / TERRAIN_SIZE) / OCCLUSION_SIZE;
       int dest_occlusion_index = (y1 * OCCLUSION_SIZE);
       dest_occlusion_index += x1;
       int occ_byte = dest_occlusion_index / 8;
       int occ_bit = dest_occlusion_index % 8;
-      if (obj->pos.y < MAX_TERRAIN_HEIGHT) {
+      if (obj->pos.y() < MAX_TERRAIN_HEIGHT) {
         if (!(Terrain_occlusion_map[src_occlusion_index][occ_byte] & (1 << occ_bit)))
           continue;
       }
@@ -1115,8 +1115,8 @@ void RenderAllTerrainObjects() {
   int i;
   if ((Terrain_checksum + 1) == Terrain_occlusion_checksum) {
     use_occlusion = 1;
-    int oz = (Viewer_object->pos.z / TERRAIN_SIZE) / OCCLUSION_SIZE;
-    int ox = (Viewer_object->pos.x / TERRAIN_SIZE) / OCCLUSION_SIZE;
+    int oz = (Viewer_object->pos.z() / TERRAIN_SIZE) / OCCLUSION_SIZE;
+    int ox = (Viewer_object->pos.x() / TERRAIN_SIZE) / OCCLUSION_SIZE;
     if (oz < 0 || oz >= OCCLUSION_SIZE || ox < 0 || ox >= OCCLUSION_SIZE)
       use_occlusion = 0;
     src_occlusion_index = oz * OCCLUSION_SIZE + ox;
@@ -1143,15 +1143,15 @@ void RenderAllTerrainObjects() {
 
     // Special case weapons with streamers
     if (obj->type == OBJ_WEAPON && (Weapons[obj->id].flags & WF_STREAMER))
-      size = Weapons[obj->id].phys_info.velocity.z;
+      size = Weapons[obj->id].phys_info.velocity.z();
     if (use_occlusion) {
-      int y1 = (obj->pos.z / TERRAIN_SIZE) / OCCLUSION_SIZE;
-      int x1 = (obj->pos.x / TERRAIN_SIZE) / OCCLUSION_SIZE;
+      int y1 = (obj->pos.z() / TERRAIN_SIZE) / OCCLUSION_SIZE;
+      int x1 = (obj->pos.x() / TERRAIN_SIZE) / OCCLUSION_SIZE;
       int dest_occlusion_index = (y1 * OCCLUSION_SIZE);
       dest_occlusion_index += x1;
       int occ_byte = dest_occlusion_index / 8;
       int occ_bit = dest_occlusion_index % 8;
-      if (obj->pos.y + obj->size < MAX_TERRAIN_HEIGHT) {
+      if (obj->pos.y() + obj->size < MAX_TERRAIN_HEIGHT) {
         if (!(Terrain_occlusion_map[src_occlusion_index][occ_byte] & (1 << occ_bit)))
           continue;
       }
@@ -1244,18 +1244,18 @@ void DrawFogLayer() {
   rend_SetAlphaType(AT_CONSTANT);
   rend_SetTextureType(TT_FLAT);
   rend_SetLighting(LS_NONE);
-  worldvec[0].x = 0;
-  worldvec[0].y = FOG_LAYER_HEIGHT;
-  worldvec[0].z = 0;
-  worldvec[1].x = 0;
-  worldvec[1].y = FOG_LAYER_HEIGHT;
-  worldvec[1].z = TERRAIN_DEPTH * TERRAIN_SIZE;
-  worldvec[2].x = TERRAIN_WIDTH * TERRAIN_SIZE;
-  worldvec[2].y = FOG_LAYER_HEIGHT;
-  worldvec[2].z = TERRAIN_DEPTH * TERRAIN_SIZE;
-  worldvec[3].x = TERRAIN_WIDTH * TERRAIN_SIZE;
-  worldvec[3].y = FOG_LAYER_HEIGHT;
-  worldvec[3].z = 0;
+  worldvec[0].x() = 0;
+  worldvec[0].y() = FOG_LAYER_HEIGHT;
+  worldvec[0].z() = 0;
+  worldvec[1].x() = 0;
+  worldvec[1].y() = FOG_LAYER_HEIGHT;
+  worldvec[1].z() = TERRAIN_DEPTH * TERRAIN_SIZE;
+  worldvec[2].x() = TERRAIN_WIDTH * TERRAIN_SIZE;
+  worldvec[2].y() = FOG_LAYER_HEIGHT;
+  worldvec[2].z() = TERRAIN_DEPTH * TERRAIN_SIZE;
+  worldvec[3].x() = TERRAIN_WIDTH * TERRAIN_SIZE;
+  worldvec[3].y() = FOG_LAYER_HEIGHT;
+  worldvec[3].z() = 0;
   for (int i = 0; i < 4; i++) {
     g3_RotatePoint(&pnt[i], &worldvec[i]);
     pntlist[i] = &pnt[i];
@@ -1272,21 +1272,21 @@ void DrawCloudLayer() {
   rend_SetAlphaType(AT_CONSTANT);
   rend_SetTextureType(TT_FLAT);
   rend_SetLighting(LS_NONE);
-  worldvec[0].x = -(TERRAIN_SIZE * 100);
-  worldvec[0].y = CLOUD_LAYER_HEIGHT;
-  worldvec[0].z = (TERRAIN_SIZE * (100 + TERRAIN_DEPTH));
+  worldvec[0].x() = -(TERRAIN_SIZE * 100);
+  worldvec[0].y() = CLOUD_LAYER_HEIGHT;
+  worldvec[0].z() = (TERRAIN_SIZE * (100 + TERRAIN_DEPTH));
 
-  worldvec[1].x = -(TERRAIN_SIZE * 100);
-  worldvec[1].y = CLOUD_LAYER_HEIGHT;
-  worldvec[1].z = -(TERRAIN_SIZE * (100));
+  worldvec[1].x() = -(TERRAIN_SIZE * 100);
+  worldvec[1].y() = CLOUD_LAYER_HEIGHT;
+  worldvec[1].z() = -(TERRAIN_SIZE * (100));
 
-  worldvec[2].x = (TERRAIN_SIZE * (100 + TERRAIN_WIDTH));
-  worldvec[2].y = CLOUD_LAYER_HEIGHT;
-  worldvec[2].z = -(TERRAIN_SIZE * (100));
+  worldvec[2].x() = (TERRAIN_SIZE * (100 + TERRAIN_WIDTH));
+  worldvec[2].y() = CLOUD_LAYER_HEIGHT;
+  worldvec[2].z() = -(TERRAIN_SIZE * (100));
 
-  worldvec[3].x = (TERRAIN_SIZE * (100 + TERRAIN_WIDTH));
-  worldvec[3].y = CLOUD_LAYER_HEIGHT;
-  worldvec[3].z = (TERRAIN_SIZE * (100 + TERRAIN_DEPTH));
+  worldvec[3].x() = (TERRAIN_SIZE * (100 + TERRAIN_WIDTH));
+  worldvec[3].y() = CLOUD_LAYER_HEIGHT;
+  worldvec[3].z() = (TERRAIN_SIZE * (100 + TERRAIN_DEPTH));
   for (int i = 0; i < 4; i++) {
     g3_RotatePoint(&pnt[i], &worldvec[i]);
     pntlist[i] = &pnt[i];
@@ -1485,14 +1485,14 @@ void DrawLightning(void) {
   scalar = ((ps_rand() % 1000) - 500) / 500.0;
   scalar *= 15000;
   vm_ExtractAnglesFromMatrix(&player_angs, &Viewer_object->orient);
-  new_heading = (player_angs.h + (int)scalar) % 65536;
+  new_heading = (player_angs.h() + (int)scalar) % 65536;
   vm_AnglesToMatrix(&mat, 0, new_heading, 0);
   // Put the starting point way up in the air
-  float ylimit = (-(Viewer_object->pos.y * 2)) + (ps_rand() % 400);
+  float ylimit = (-(Viewer_object->pos.y() * 2)) + (ps_rand() % 400);
   vector cur_from = Viewer_object->pos + (mat.fvec * 4000);
   vector new_vec;
-  cur_from.y += 800.0f;
-  cur_from.y += (ps_rand() % 100);
+  cur_from.y() += 800.0f;
+  cur_from.y() += (ps_rand() % 100);
   // Set some states
 
   rend_SetAlphaType(AT_SATURATE_TEXTURE);
@@ -1522,7 +1522,7 @@ void DrawLightning(void) {
     new_vec += x_adjust * (mat.rvec * 70);
     new_vec -= y_adjust * (mat.uvec * 100);
     DrawLightningSegment(&cur_from, &new_vec);
-    if (cur_from.y < ylimit) // We're close to the ground, so just bail!
+    if (cur_from.y() < ylimit) // We're close to the ground, so just bail!
       continue;
 
     if ((ps_rand() % ((level * level * 20) + 8)) == 0 && cur_splits < 2) {
@@ -1889,20 +1889,20 @@ void DrawAtmosphereBlend(vector *pos, angle rotAngle, float w, float h, int bm, 
 
   // setup the rotation vectors
   vector rotVectors[4];
-  rotVectors[0].x = -w;
-  rotVectors[0].y = h;
-  rotVectors[1].x = w;
-  rotVectors[1].y = h;
-  rotVectors[2].x = w;
-  rotVectors[2].y = -h;
-  rotVectors[3].x = -w;
-  rotVectors[3].y = -h;
+  rotVectors[0].x() = -w;
+  rotVectors[0].y() = h;
+  rotVectors[1].x() = w;
+  rotVectors[1].y() = h;
+  rotVectors[2].x() = w;
+  rotVectors[2].y() = -h;
+  rotVectors[3].x() = -w;
+  rotVectors[3].y() = -h;
 
   // rotate the points
   g3Point rotPoints[8], *pntList[8];
   int i;
   for (i = 0; i < 4; ++i) {
-    rotVectors[i].z = 0.0f;
+    rotVectors[i].z() = 0.0f;
     rotVectors[i] = (rotVectors[i] * rotationToWorld) + (*pos);
 
     // setup the point
@@ -2035,13 +2035,13 @@ void DrawSky(vector *veye, matrix *vorient) {
   for (i = 0; i < 6; i++) {
     for (t = 0; t < MAX_HORIZON_PIECES; t++) {
       tempvec = Terrain_sky.horizon_vectors[t][i];
-      tempvec.y -= veye->y * 0.5f;
+      tempvec.y() -= veye->y() * 0.5f;
       vm_MatrixMulVector(&Temp_sky_vectors[t][i], &tempvec, vorient);
 
       tempvec = Terrain_sky.horizon_vectors[t][i];
-      tempvec.x += veye->x;
-      tempvec.z += veye->z;
-      tempvec.y += veye->y * 0.5f;
+      tempvec.x() += veye->x();
+      tempvec.z() += veye->z();
+      tempvec.y() += veye->y() * 0.5f;
       Temp_sky_vectors_unrotated[t][i] = tempvec;
     }
   }
@@ -2125,7 +2125,7 @@ void DrawSky(vector *veye, matrix *vorient) {
         if (Terrain_sky.satellite_flags[i] & TSF_ATMOSPHERE) {
           angvec angs;
           vm_ExtractAnglesFromMatrix(&angs, vorient);
-          DrawAtmosphereBlend(&tempvec, angs.b, size, (size * bm_h(bm_handle, 0)) / bm_w(bm_handle, 0), bm_handle, sr,
+          DrawAtmosphereBlend(&tempvec, angs.b(), size, (size * bm_h(bm_handle, 0)) / bm_w(bm_handle, 0), bm_handle, sr,
                               sg, sb);
         }
       }
@@ -2258,8 +2258,8 @@ void SortTerrainList(int cellcount) {
     n[3] = t + simplemul;
     for (k = 0; k < 4; k++)
       if (n[k] <= 65535)
-        Terrain_list[i].z += World_point_buffer[n[k]].p3_vec.z;
-    Terrain_list[i].z /= 4;
+        Terrain_list[i].z += World_point_buffer[n[k]].p3_vec.z();
+    Terrain_list[i].z /= (scalar)4;
   }
   // Sort the faces
   qsort(Terrain_list, cellcount, sizeof(*Terrain_list), (int (*)(const void *, const void *))TerrainSortingFunction);
@@ -2542,14 +2542,14 @@ void TerrainCellVisible(int index, int *upper_left, int *lower_right) {
   corner[3] = &World_point_buffer[seg + smul_x].p3_vec;
 
   vm_GetPerp(&tempv, corner[0], corner[1], corner[2]);
-  if ((tempv * *corner[1]) < 0)
+  if (vm_Dot3Product(tempv, *corner[1]) < 0)
     *upper_left = 1;
   else
     *upper_left = 0;
 
   // Now do lower right
   vm_GetPerp(&tempv, corner[2], corner[1], corner[3]);
-  if ((tempv * *corner[1]) < 0)
+  if (vm_Dot3Product(tempv, *corner[1]) < 0)
     *lower_right = 1;
   else
     *lower_right = 0;
@@ -2870,7 +2870,7 @@ int DrawTerrainTrianglesSoftware(int index, int bm_handle, int upper_left, int l
                           }
                   }
           #endif
-  #endif//__LINUX__
+  #endif//SDL_PLATFORM_LINUX
           */
   return 0;
 }

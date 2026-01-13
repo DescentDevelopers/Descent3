@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdint>
 #include "attach.h"
 #include "terrain.h"
 #include "log.h"
@@ -142,7 +143,7 @@ PI); rot_angle = acos(dot);
 
 // Finds the position of a attach point on an object
 // The uvec is optional as most attaching objects don't need at complete orientation set (only an fvec)
-static bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *attach_pos, bool f_compute_fvec,
+static bool AttachPointPos(object *obj, int8_t ap, bool f_compute_pos, vector *attach_pos, bool f_compute_fvec,
                            vector *attach_fvec, bool *f_computed_uvec = NULL, vector *attach_uvec = NULL) {
   poly_model *pm;
   vector pnt;
@@ -182,7 +183,7 @@ static bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *att
   while (mn != -1) {
     vector tpnt;
 
-    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p, pm->submodel[mn].angs.h, pm->submodel[mn].angs.b);
+    vm_AnglesToMatrix(&m, pm->submodel[mn].angs.p(), pm->submodel[mn].angs.h(), pm->submodel[mn].angs.b());
     vm_TransposeMatrix(&m);
 
     if (f_compute_pos)
@@ -242,25 +243,19 @@ static void ConvertAxisAmountMatrix(vector *n, float w, matrix *rotmat) {
   c = cos(w);
   t = 1.0f - c;
 
-  const float sx = s * n->x;
-  const float sy = s * n->y;
-  const float sz = s * n->z;
-  const float txy = t * n->x * n->y;
-  const float txz = t * n->x * n->z;
-  const float tyz = t * n->y * n->z;
-  const float txx = t * n->x * n->x;
-  const float tyy = t * n->y * n->y;
-  const float tzz = t * n->z * n->z;
+  const scalar sx = s * n->x();
+  const scalar sy = s * n->y();
+  const scalar sz = s * n->z();
+  const scalar txy = t * n->x() * n->y();
+  const scalar txz = t * n->x() * n->z();
+  const scalar tyz = t * n->y() * n->z();
+  const scalar txx = t * n->x() * n->x();
+  const scalar tyy = t * n->y() * n->y();
+  const scalar tzz = t * n->z() * n->z();
 
-  rotmat->rvec.x = txx + c;
-  rotmat->rvec.y = txy - sz;
-  rotmat->rvec.z = txz + sy;
-  rotmat->uvec.x = txy + sz;
-  rotmat->uvec.y = tyy + c;
-  rotmat->uvec.z = tyz - sx;
-  rotmat->fvec.x = txz - sy;
-  rotmat->fvec.y = tyz + sx;
-  rotmat->fvec.z = tzz + c;
+  rotmat->rvec = { txx + c, txy - sz, txz + sy };
+  rotmat->uvec = { txy + sz,  tyy + c, tyz - sx };
+  rotmat->fvec = { txz - sy, tyz + sx, tzz + c };
 }
 
 bool AttachDoPosOrientRad(object *parent, char p_ap, object *child, float rad_percent, vector *pos) {
@@ -465,7 +460,7 @@ static void ProprogateUltimateAttachParent(object *parent, int ultimate_handle) 
 
 // Attaches 2 objects via attach points on each.  The f_used_aligned allows for an aligned connection.
 // NOTE: The child always moves to the parent
-bool AttachObject(object *parent, char parent_ap, object *child, char child_ap, bool f_use_aligned) {
+bool AttachObject(object *parent, int8_t parent_ap, object *child, char child_ap, bool f_use_aligned) {
   ASSERT(parent);
   ASSERT(child);
 
@@ -516,7 +511,7 @@ bool AttachObject(object *parent, char parent_ap, object *child, char child_ap, 
 
 // Attaches a child object to a parent object by a percent of the radius of the child.
 // NOTE: The child always moves to the parent and not the reverse
-bool AttachObject(object *parent, char parent_ap, object *child, float percent_rad) {
+bool AttachObject(object *parent, int8_t parent_ap, object *child, float percent_rad) {
   ASSERT(parent);
   ASSERT(child);
 
@@ -667,7 +662,7 @@ bool UnattachFromParent(object *child) {
 }
 
 // Unattaches a child from an attach point
-bool UnattachChild(object *parent, char parent_ap) {
+bool UnattachChild(object *parent, int8_t parent_ap) {
   object *child;
 
   if ((child = ObjGet(parent->attach_children[parent_ap])) != NULL) {

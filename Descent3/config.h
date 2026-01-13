@@ -118,6 +118,8 @@
 #define CONFIG_H_
 
 #include <cstdint>
+#include <sstream>
+#include <vector>
 
 // Main menu configuration functions
 
@@ -130,24 +132,48 @@ struct tGameToggles {
 
 extern tGameToggles Game_toggles;
 
-// this list should match the list in config.cpp to work.
-#define N_SUPPORTED_VIDRES 8
-
-#define RES_512X384 0
-#define RES_640X480 1
-#define RES_800X600 2
-#define RES_960X720 3
-#define RES_1024X768 4
-#define RES_1280X960 5
-#define RES_1600X1200 6
 // stored resolution list and desired game resolution
-struct tVideoResolution {
+struct tVideoResolution
+{
   uint16_t width;
   uint16_t height;
+
+  std::string getName() const
+  {
+    std::stringstream ss;
+    ss << this->width << "x" << this->height;
+    return ss.str();
+  }
+
+  bool operator==(const tVideoResolution& other) {
+    return other.width == this->width && other.height == this->height;
+  }
+
+  struct tVideoResolutionCompare
+  {
+    bool operator()(const tVideoResolution &lres, const tVideoResolution &rres) const
+    {
+      if (lres.width != rres.width)
+      {
+        return lres.width < rres.width;
+      }
+      return lres.height < rres.height;
+    }
+  };
 };
 
-extern tVideoResolution Video_res_list[];
-extern int Game_video_resolution;
+extern std::vector<tVideoResolution> Video_res_list;
+extern int Default_resolution_id;
+extern int Current_video_resolution_id;
+extern int Display_id;
+extern bool Game_fullscreen;
+
+
+/**
+ * List all unique resolutions for the detected displays,
+ * and set variables Video_res_list, Game_video_resolution and Display_id
+ */
+void ConfigureDisplayResolutions();
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // KEEP THESE MEMBERS IN THE SAME ORDER, IF YOU ADD,REMOVE, OR CHANGE ANYTHING IN THIS STRUCT, MAKE SURE YOU
