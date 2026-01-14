@@ -333,12 +333,7 @@ endif()
 
 add_subdirectory(Descent3)
 
-if (CMAKE_CROSSCOMPILING)
-  find_package(HogMaker REQUIRED)
-else()
-  add_subdirectory(tools)
-endif()
-
+add_subdirectory(tools)
 add_subdirectory(netcon)
 add_subdirectory(netgames)
 add_subdirectory(scripts)
