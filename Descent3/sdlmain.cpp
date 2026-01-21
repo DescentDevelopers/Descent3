@@ -176,37 +176,6 @@ public:
   }
 };
 
-bool sdlKeyFilter(const SDL_Event *event);
-bool sdlMouseButtonUpFilter(const SDL_Event *event);
-bool sdlMouseButtonDownFilter(const SDL_Event *event);
-bool sdlMouseWheelFilter(const SDL_Event *event);
-bool sdlMouseMotionFilter(const SDL_Event *event);
-
-bool SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
-  switch (event->type) {
-  case SDL_EVENT_KEY_UP:
-  case SDL_EVENT_KEY_DOWN:
-    return (sdlKeyFilter(event));
-  case SDL_EVENT_JOYSTICK_BALL_MOTION:
-  case SDL_EVENT_MOUSE_MOTION:
-    return (sdlMouseMotionFilter(event));
-  case SDL_EVENT_MOUSE_BUTTON_UP:
-    return (sdlMouseButtonUpFilter(event));
-  case SDL_EVENT_MOUSE_BUTTON_DOWN:
-    return (sdlMouseButtonDownFilter(event));
-  case SDL_EVENT_MOUSE_WHEEL:
-    return (sdlMouseWheelFilter(event));
-  case SDL_EVENT_QUIT:
-    SDL_Quit();
-    _exit(0);
-    break;
-  default:
-    break;
-  } // switch
-
-  return (1);
-}
-
 //	---------------------------------------------------------------------------
 //	Main
 //		creates all the OS objects and then runs Descent 3.
@@ -250,8 +219,6 @@ int main(int argc, char *argv[]) {
     return (0);
   }
 
-  // !!! FIXME: Don't use an event filter!
-  SDL_SetEventFilter(d3SDLEventFilter, nullptr);
   install_signal_handlers();
 
   // Initialize our OS Object.  This could be a game dependant OS object, or a default OS object.

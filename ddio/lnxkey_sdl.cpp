@@ -340,15 +340,15 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   return (uint8_t)rc;
 }
 
-bool sdlKeyFilter(const SDL_Event *event) {
+void sdlKeyEvent(const SDL_Event *event) {
   uint8_t kc = 0;
 
   if ((event->type != SDL_EVENT_KEY_UP) && (event->type != SDL_EVENT_KEY_DOWN))
-    return true;
+    return;
 
   if (event->key.down) {
     if (event->key.repeat) {
-      return false; // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
+      return; // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
     }
     kc = sdlkeycode_to_keycode(event->key.key);
     if (event->key.mod & SDL_KMOD_CTRL) {
@@ -358,7 +358,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
         bool grab = !ddio_MouseGetGrab();
         ddio_MouseSetGrab(grab);
         SDL_SetWindowRelativeMouseMode(GSDLWindow, grab);
-        return false;
+        return;
       } // switch
     }   // if
 
@@ -366,7 +366,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
         Game_fullscreen = !Game_fullscreen;
         rend_SetFullScreen(Game_fullscreen);
-        return false;
+        return;
       } // if
     }   // else if
 
@@ -382,9 +382,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
       ddio_UpdateKeyState(kc, false);
     } // if
   }
-
-  return false;
-} // sdlKeyFilter
+}
 
 bool ddio_sdl_InternalKeyInit(ddio_init_info *init_info) {
   // reset key list
