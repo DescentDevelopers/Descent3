@@ -216,7 +216,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   dPlayers = DMFCBase->GetPlayers();
 
   DLLCreateStringTable("Coop.str", &StringTable, &StringTableSize);
-  mprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -312,6 +311,11 @@ void DLLFUNCCALL DLLGameClose() {
     DMFCBase->DestroyPointer();
     DMFCBase = NULL;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 void OnHUDInterval(void) {
@@ -525,7 +529,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
   DLLGetUltimateParentForObject(&parent, killer);
 
   if ((parent->type != OBJ_PLAYER) && (parent->type != OBJ_OBSERVER)) {
-    mprintf(0, "Robot killed wasn't by a OBJ_PLAYER or OBJ_OBSERVER (%d)\n", parent->type);
+    LOG_WARNING.printf("Robot killed wasn't by a OBJ_PLAYER or OBJ_OBSERVER (%d)", parent->type);
     return;
   }
 
@@ -533,7 +537,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
 
   player_record *pr = DMFCBase->GetPlayerRecordByPnum(killer_pnum);
   if (!pr) {
-    mprintf(0, "Invalid player record!\n");
+    LOG_FATAL << "Invalid player record!";
     Int3();
     return;
   }
@@ -543,7 +547,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
   stat->Score[DSTAT_LEVEL]++;
   stat->Score[DSTAT_OVERALL]++;
 
-  mprintf(0, "%s's score is now %d\n", dPlayers[killer_pnum].callsign, stat->Score[DSTAT_LEVEL]);
+  LOG_INFO.printf("%s's score is now %d", dPlayers[killer_pnum].callsign, stat->Score[DSTAT_LEVEL]);
 
   DMFCBase->OnClientObjectKilled(obj, killer);
 }

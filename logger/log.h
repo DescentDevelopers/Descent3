@@ -18,8 +18,8 @@
 
 #pragma once
 
-// This is interface header for chosen logger library. Currently, this is plog.
-#include <plog/Log.h>
+#include <plog/Log.h>   // This is interface header for chosen logger library. Currently, this is plog.
+#include <plog/Init.h>  // Required for modules.
 
 /*
 In case of swapping to another solution here should be redefined following macros:

@@ -755,14 +755,6 @@ struct vmt_descent3_struct {
 #pragma pack()
 #endif
 
-/////////////////////////////
-// Defines
-#ifndef RELEASE
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-#else
-#define DLLmprintf(...)
-#endif
-
 uint32_t MTClientVer = 100;
 
 multi_api API;
@@ -1211,7 +1203,7 @@ int StartMultiplayerGameMenu() {
       std::filesystem::path mission_name = path.filename();
       if (DLLIsMissionMultiPlayable((const char*)mission_name.u8string().c_str()) &&
           (stricmp("d3_2.mn3", (const char*)mission_name.u8string().c_str()) != 0)) {
-        DLLmprintf(0, "Found a mission: %s\n", (const char*)mission_name.u8string().c_str());
+        LOG_INFO << "Found a mission: " << mission_name;
         mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
         strcpy(mi->msn_name, DLLGetMissionName((const char*)mission_name.u8string().c_str()));
         strcpy(mi->msn_file, (const char*)mission_name.u8string().c_str());
@@ -1354,7 +1346,7 @@ int StartMultiplayerGameMenu() {
         {
           // Do warp dialog here if needed
           if (-1 != DLLMultiLevelSelection()) {
-            DLLmprintf(0, "Mission loaded successfully!\n");
+            LOG_INFO << "Mission loaded successfully!";
             DLLMultiStartServer(1, DLLNetgame->scriptname, teams);
             exit_menu = 1;
             ret = 1;
