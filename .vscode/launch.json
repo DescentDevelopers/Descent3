@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug (MSVC)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "-setdir", "${workspaceFolder}",
+        "-additionaldir", "${env:D3_GAMEDATA_DIR}",
+        "-additionaldir", "${command:cmake.launchTargetDirectory}"
+      ]
+    },
+    {
+      "name": "Debug (gdb/lldb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "args": [
+        "-setdir", "${workspaceFolder}",
+        "-additionaldir", "${env:D3_GAMEDATA_DIR}",
+        "-additionaldir", "${command:cmake.launchTargetDirectory}"
+      ]
+    }
+  ]
+}
