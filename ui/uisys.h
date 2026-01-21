@@ -55,6 +55,12 @@ struct tUIInput {
 
   bool key_first_press; // if the key was really pressed or just held down.
   bool printscreen;
+
+  enum {
+    CURSOR_MODE_MOUSE,
+    CURSOR_MODE_TOUCH,
+    CURSOR_MODE_TOUCH_ACTIVE,
+  } cursorMode;
 };
 
 //	user interface frame time
