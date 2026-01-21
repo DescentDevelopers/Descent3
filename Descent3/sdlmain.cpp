@@ -245,6 +245,7 @@ int main(int argc, char *argv[]) {
   setenv("SDL_VIDEODRIVER", "dummy", 1);
 #endif
 
+  SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (!rc) {
     LOG_FATAL.printf("SDL: SDL_Init() failed: %d: %s!", rc, SDL_GetError());

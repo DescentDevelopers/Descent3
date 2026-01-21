@@ -362,6 +362,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
 
   SDL_ClearError();
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {
+    SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
     const int rc = SDL_Init(SDL_INIT_VIDEO);
     if (rc != 0) {
       char buffer[512];
