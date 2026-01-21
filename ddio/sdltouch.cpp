@@ -31,19 +31,30 @@ std::vector<TouchPoint> const& ddio_GetCurrentTouches() {
 
 void sdlTouchEvent(SDL_Event const *event) {
   auto matchesTouchId = [id = event->tfinger.fingerID](auto const &t) { return t.id == id; };
-  auto toWindowX = [](auto x) { return static_cast<int>(x * Lnx_app_obj->m_W); };
-  auto toWindowY = [](auto y) { return static_cast<int>(y * Lnx_app_obj->m_H); };
+  auto winCoords = [](auto event) {
+    int w, h;
+    SDL_Window* win = SDL_GetWindowFromID(event->tfinger.windowID);
+    SDL_GetWindowSize(win, &w, &h);
+    auto factor = static_cast<float>(Lnx_app_obj->m_H) / h;
+    auto w_overrun = (factor * w - Lnx_app_obj->m_W) / 2;
+    w *= factor;
+    h *= factor;
+
+    return std::tuple{
+        static_cast<int>(event->tfinger.x * w - w_overrun),
+        static_cast<int>(event->tfinger.y * h)
+    };
+  };
   switch (event->type) {
   case SDL_EVENT_FINGER_DOWN: {
-    currentTouches.push_back({event->tfinger.fingerID, toWindowX(event->tfinger.x),
-                              toWindowY(event->tfinger.y)});
+    auto const& [x, y] = winCoords(event);
+    currentTouches.push_back({event->tfinger.fingerID, x, y});
     break;
   }
   case SDL_EVENT_FINGER_MOTION: {
     auto it = std::find_if(std::begin(currentTouches), std::end(currentTouches),
                            matchesTouchId);
-    it->x = toWindowX(event->tfinger.x);
-    it->y = toWindowY(event->tfinger.y);
+    std::tie(it->x, it-> y) = winCoords(event);
     break;
   }
   case SDL_EVENT_FINGER_UP: // fallthrough
