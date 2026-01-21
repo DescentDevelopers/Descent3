@@ -1,7 +1,10 @@
 {
-  "builtin-baseline": "8f90c294883ccf67d2f4953383718aeae981575f",
+  "builtin-baseline": "84bab45d415d22042bd0b9081aea57f362da3f35",
   "dependencies": [
-    "cpp-httplib",
+    {
+      "name": "cpp-httplib",
+      "version>=": "0.23.0"
+    },
     "glm",
     "gtest",
     "plog",

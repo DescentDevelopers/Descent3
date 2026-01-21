@@ -30,7 +30,7 @@ httplib::Result HttpClient::Get(const std::string &URIPath) {
     return m_client->Get(URIPath);
 }
 
-httplib::Result HttpClient::Get(const std::string &URIPath, const httplib::Progress &progress) {
+httplib::Result HttpClient::Get(const std::string &URIPath, const D3::HttpClient::Progress &progress) {
   return m_client->Get(URIPath, progress);
 }
 
@@ -39,7 +39,7 @@ httplib::Result HttpClient::Get(const std::string &URIPath, const httplib::Conte
 }
 
 httplib::Result HttpClient::Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver,
-                    const httplib::Progress &progress) {
+                    const D3::HttpClient::Progress &progress) {
   return m_client->Get(URIPath, content_receiver, progress);
 }
 

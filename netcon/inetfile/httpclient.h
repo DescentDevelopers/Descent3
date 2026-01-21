@@ -32,6 +32,12 @@ namespace D3 {
 
 class HttpClient {
 public:
+  using Progress = httplib::DownloadProgress;
+  // no way to test with macro; would have to do a cmake-level compile check
+  //#if httplib < 0.23
+  //using Progress = httplib::Progress;
+  //#endif
+
   /**
    * Constructor for HttpClient
    * @param URL request URL, should be in form of http://example.com. Don't add "/" on the end as it's part of URIPath.
@@ -46,12 +52,12 @@ public:
    * @param URIPath requested path (for example, "/some_dir/my_file.txt")
    * @return standard HTTP code. 200 means is OK.
    */
-  httplib::Result Get(const std::string &URIPath, const httplib::Progress &progress);
+  httplib::Result Get(const std::string &URIPath, const Progress &progress);
 
   httplib::Result Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver);
 
   httplib::Result Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver,
-                      const httplib::Progress &progress);
+                      const Progress &progress);
 
   void SetProxy(const std::string &proxy_host, uint16_t port);
 
