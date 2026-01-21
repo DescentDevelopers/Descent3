@@ -32,6 +32,7 @@ namespace D3 {
 
 class HttpClient {
 public:
+  using Progress = std::function<bool(size_t current, size_t total)>;
   /**
    * Constructor for HttpClient
    * @param URL request URL, should be in form of http://example.com. Don't add "/" on the end as it's part of URIPath.
@@ -46,12 +47,12 @@ public:
    * @param URIPath requested path (for example, "/some_dir/my_file.txt")
    * @return standard HTTP code. 200 means is OK.
    */
-  httplib::Result Get(const std::string &URIPath, const httplib::Progress &progress);
+  httplib::Result Get(const std::string &URIPath, const HttpClient::Progress &progress);
 
   httplib::Result Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver);
 
   httplib::Result Get(const std::string &URIPath, const httplib::ContentReceiver &content_receiver,
-                      const httplib::Progress &progress);
+                      const HttpClient::Progress &progress);
 
   void SetProxy(const std::string &proxy_host, uint16_t port);
 
