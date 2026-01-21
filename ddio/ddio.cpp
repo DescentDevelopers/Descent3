@@ -97,6 +97,7 @@
 #include "joystick.h"
 #include "log.h"
 #include "pserror.h"
+#include "sdltouch.h"
 
 static bool DDIO_initialized = false;
 // ----------------------------------------------------------------------------
@@ -150,6 +151,7 @@ void sdlMouseButtonUpEvent(const SDL_Event *event);
 void sdlMouseButtonDownEvent(const SDL_Event *event);
 void sdlMouseWheelEvent(const SDL_Event *event);
 void sdlMouseMotionEvent(const SDL_Event *event);
+void sdlTouchEvent(SDL_Event const *event);
 void ddio_Frame() {
   if (Input_mode == Input_sdl) {
     SDL_Event event;
@@ -171,6 +173,12 @@ void ddio_Frame() {
         break;
       case SDL_EVENT_MOUSE_WHEEL:
         sdlMouseWheelEvent(&event);
+        break;
+      case SDL_EVENT_FINGER_DOWN:
+      case SDL_EVENT_FINGER_MOTION:
+      case SDL_EVENT_FINGER_UP:
+      case SDL_EVENT_FINGER_CANCELED:
+        sdlTouchEvent(&event);
         break;
       case SDL_EVENT_QUIT:
         SDL_Quit();

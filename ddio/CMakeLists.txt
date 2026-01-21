@@ -5,6 +5,7 @@ set(HEADERS
   ddio_lnx.h
   controller.h
   sdlcontroller.h
+  sdltouch.h
 )
 set(CPPS
   chrono_timer.cpp
@@ -19,6 +20,7 @@ set(CPPS
   lnxmouse.cpp
   lnxkey_sdl.cpp
   sdlcontroller.cpp
+  sdltouch.cpp
   $<$<PLATFORM_ID:Darwin,Linux,OpenBSD,Android>:
     lnxfile.cpp
   >
