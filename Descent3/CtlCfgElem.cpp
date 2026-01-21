@@ -1011,7 +1011,7 @@ int cfg_element_ui::DoUI() {
       quit = true;
     }
 
-    DoUIFrameWithoutInput();
+    DoUIFrame(false);
     rend_Flip();
 
     if (GetUIFrameResult() == NEWUIRES_FORCEQUIT) {
