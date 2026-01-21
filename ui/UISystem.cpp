@@ -517,13 +517,7 @@ int ui_DoFrame(bool input) {
 
   return res;
 }
-//	does a ui frame and gets mouse and key information.
-int ui_DoFrame(tUIInput *input, bool doinput) {
-  int res;
-  res = ui_DoFrame(doinput);
-  *input = UI_input;
-  return res;
-}
+
 //	hide and show cursor. effects are cumulative
 bool ui_ShowCursor() {
   if (!UI_cursor_show) {
