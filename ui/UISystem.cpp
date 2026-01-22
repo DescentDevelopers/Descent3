@@ -173,6 +173,7 @@
 #include "pserror.h"
 #include "renderer.h"
 #include "Macros.h"
+#include "SDLHelpers.h"
 
 constexpr float kDefaultMouseScale = 20;
 
@@ -456,6 +457,7 @@ void ui_DoWindowFocus() {
     UIWindowFocus = NULL;
 }
 //	returns a result and processes input of a window in focus
+extern SDL_Window* GSDLWindow;
 int ui_ProcessFocusedWindow() {
   int res = -1;
   int res2;
@@ -465,6 +467,11 @@ int ui_ProcessFocusedWindow() {
   // get keys.   get mouse while real events (non ui manuipulated) are there.
   ui_MousePoll(false);
   if (UIWindowFocus) {
+    SDL_Rect safeArea{};
+    SDL_GetWindowSafeArea(GSDLWindow, &safeArea);
+    auto const& [safeX, safeY, safeW, safeH] = SDLWindowToGameRenderer(safeArea);
+    UIWindowFocus->AdjustToSafeArea(safeX, safeY, safeW, safeH);
+
     UI_input.b1_count = 0; // button one state reset.
     ui_KeyPoll();
     ui_MousePoll(true);
