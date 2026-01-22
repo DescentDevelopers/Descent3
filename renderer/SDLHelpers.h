@@ -22,7 +22,7 @@
 #include <SDL3/SDL.h>
 #include <tuple>
 
-std::tuple<int, int> SDLNormalizedToGameRenderer(float x, float y);
+std::tuple<int, int> SDLNormalizedToGameRenderer(double x, double y);
 std::tuple<int, int> SDLWindowToGameRenderer(int x, int y);
 std::tuple<int, int> GameRendererToSDLWindow(int x, int y);
 

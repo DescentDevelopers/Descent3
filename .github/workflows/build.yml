@@ -46,7 +46,7 @@ jobs:
             cc: gcc
             cxx: g++
             name: Linux-cross-arm64
-          - runner: ubuntu-latest
+          - runner: ubuntu-22.04
             name: android
         build_type:
           - Debug

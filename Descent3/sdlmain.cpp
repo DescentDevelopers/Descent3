@@ -28,7 +28,9 @@
 #include <filesystem>
 #include <map>
 
-#ifndef WIN32
+#ifdef WIN32
+#define SDL_MAIN_HANDLED
+#else
 #include <unistd.h>
 #include <csignal>
 #endif
