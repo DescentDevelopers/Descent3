@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ddio_lnx.h"
 #include "sdltouch.h"
+#include "SDLHelpers.h"
 
 namespace {
 
@@ -31,30 +31,17 @@ std::vector<TouchPoint> const& ddio_GetCurrentTouches() {
 
 void sdlTouchEvent(SDL_Event const *event) {
   auto matchesTouchId = [id = event->tfinger.fingerID](auto const &t) { return t.id == id; };
-  auto winCoords = [](auto event) {
-    int w, h;
-    SDL_Window* win = SDL_GetWindowFromID(event->tfinger.windowID);
-    SDL_GetWindowSize(win, &w, &h);
-    auto factor = static_cast<float>(Lnx_app_obj->m_H) / h;
-    auto w_overrun = (factor * w - Lnx_app_obj->m_W) / 2;
-    w *= factor;
-    h *= factor;
-
-    return std::tuple{
-        static_cast<int>(event->tfinger.x * w - w_overrun),
-        static_cast<int>(event->tfinger.y * h)
-    };
-  };
   switch (event->type) {
   case SDL_EVENT_FINGER_DOWN: {
-    auto const& [x, y] = winCoords(event);
+
+    auto const& [x, y] = SDLNormalizedToGameRenderer(event->tfinger.x, event->tfinger.y);
     currentTouches.push_back({event->tfinger.fingerID, x, y});
     break;
   }
   case SDL_EVENT_FINGER_MOTION: {
     auto it = std::find_if(std::begin(currentTouches), std::end(currentTouches),
                            matchesTouchId);
-    std::tie(it->x, it-> y) = winCoords(event);
+    std::tie(it->x, it->y) = SDLNormalizedToGameRenderer(event->tfinger.x, event->tfinger.y);
     break;
   }
   case SDL_EVENT_FINGER_UP: // fallthrough

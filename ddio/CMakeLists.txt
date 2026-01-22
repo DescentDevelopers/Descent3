@@ -34,10 +34,12 @@ target_link_libraries(ddio PRIVATE
   ddebug
   logger
   mem
+  renderer
 )
 target_include_directories(ddio PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/ddio
+  ${PROJECT_SOURCE_DIR}/renderer
   >
   ${SDL3_INCLUDE_DIRS}
 )

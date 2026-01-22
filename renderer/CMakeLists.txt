@@ -17,6 +17,7 @@ set(HEADERS
   dyna_gl.h
   HardwareInternal.h
   ShaderProgram.h
+  SDLHelpers.h
   ${SHADERS_H}
 )
 set(CPPS
@@ -29,6 +30,7 @@ set(CPPS
   HardwarePoints.cpp
   HardwareSetup.cpp
   HardwareTransforms.cpp
+  SDLHelpers.cpp
 )
 
 add_library(renderer STATIC ${HEADERS} ${CPPS})
