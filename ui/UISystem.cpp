@@ -307,6 +307,7 @@ bool ui_MousePoll(bool buttons) {
 }
 bool ui_KeyPoll() {
   int key;
+  free(malloc(4));
   key = ddio_KeyInKey();
   if (key == KEY_PRINT_SCREEN)
     UI_input.printscreen = true;
