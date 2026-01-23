@@ -131,8 +131,9 @@ jobs:
         if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
         run: |
           cmake --preset linux
-          ninja -f build-${{ matrix.build_type }}.ninja -C builds/linux/ HogMaker
-          cmake --preset linux-cross-arm64 -DHogMaker_DIR=$PWD/builds/linux/ -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
+          cmake --build --preset linux --target HogMaker
+          cmake --install builds/linux --prefix $PWD/builds/host_tools/ --component HostTools
+          cmake --preset linux-cross-arm64 -DHOGMAKE_BINARY=$PWD/builds/host_tools/HogMaker -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
 
       - name: Configure CMake
         if: ${{ matrix.os.name != 'android' && matrix.os.preset != 'linux-cross-arm64' }}
