@@ -173,14 +173,17 @@ mkdir build-native
 cd build-native
 cmake ..
 cmake --build . --target HogMaker
+cmake --install . --prefix . --component HostTools
 ```
 
-Now, you are ready for cross-compilation. Create a new cross-compilation build directory and configure the project in it, but this time specify the location of the HogMaker native executable just built, as well as the [toolchain file](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html#id14) location. This enables the cross-compilation environment. An example toolchain file is provided for a Linux ARM64 build at `cmake/toolchains/linux-aarch64-gcc-toolchain.cmake`. The custom toolchain system can be used in combination with VCPKG to build all dependencies for the target system.
+Feel free to omit the `--target HogMaker` if you want to build the entire Descent3 project, or the `cmake --install` step if you don't mind finding the HogMaker build location yourself (it will vary between build generators like Ninja vs Make).
+
+Once you have a HogMaker binary runnable on your build system, you are ready for cross-compilation. Create a new cross-compilation build directory and configure the project in it, but this time specify the location of the HogMaker native executable just built, as well as the [toolchain file](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html#id14) location. This enables the cross-compilation environment. An example toolchain file is provided for a Linux ARM64 build at `cmake/toolchains/linux-aarch64-gcc-toolchain.cmake`. The custom toolchain system can be used in combination with VCPKG to build all dependencies for the target system.
 
 ```shell
 mkdir build-cross
 cd build-cross
-cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/MyToolChain.cmake -DHogMaker_DIR=../build-native/ ..
+cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/MyToolChain.cmake -DHOGMAKER_BINARY=../build-native/HogMaker ..
 cmake --build .
 ```
 

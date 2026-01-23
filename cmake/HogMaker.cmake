@@ -52,7 +52,11 @@ function(MakeHog)
   elseif (HOGMAKE_BINARY)
     set(HOGMAKE_DEPENDENCY "${HOGMAKE_BINARY}")
   else()
-    message(FATAL_ERROR "HOGMAKE_BINARY not set")
+    message(FATAL_ERROR "
+    HOGMAKE_BINARY not set. For cross-compilation builds, you must pre-build HogMaker using the
+    host toolchain, and then add -DHOGMAKE_BINARY=... to your cross-compile configuration. See
+    BUILD.md section 'Cross Compilation' for more info and an example.
+    ")
   endif()
 
   add_custom_command(OUTPUT "${HOG_OUTPUT}"
