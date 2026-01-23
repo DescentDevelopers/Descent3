@@ -316,7 +316,13 @@ endif()
 
 file(GLOB_RECURSE INCS "../lib/*.h")
 
-add_executable(Descent3 WIN32 MACOSX_BUNDLE ${D3Icon} ${HEADERS} ${CPPS} ${INCS} ${MANIFEST} ${RC_FILE})
+if(ANDROID)
+  add_library(Descent3 MODULE ${HEADERS} ${CPPS} ${INCS}
+  )
+else()
+  add_executable(Descent3 WIN32 MACOSX_BUNDLE ${D3Icon} ${HEADERS} ${CPPS} ${INCS} ${MANIFEST} ${RC_FILE})
+  install(TARGETS Descent3 RUNTIME BUNDLE DESTINATION .)
+endif()
 target_link_libraries(Descent3 PRIVATE
   SDL3::SDL3
   2dlib
@@ -369,7 +375,6 @@ add_dependencies(Descent3
   tanarchy
 )
 
-install(TARGETS Descent3 RUNTIME BUNDLE DESTINATION .)
 if(MSVC)
   install(FILES $<TARGET_PDB_FILE:Descent3> DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()

@@ -46,12 +46,25 @@ function(MakeHog)
     DEPENDS "${HOG_OUTPUT}"
   )
 
+  if (NOT CMAKE_CROSSCOMPILING)
+    set(HOGMAKE_BINARY $<TARGET_FILE:HogMaker>)
+    set(HOGMAKE_DEPENDENCY HogMaker)
+  elseif (HOGMAKE_BINARY)
+    set(HOGMAKE_DEPENDENCY "${HOGMAKE_BINARY}")
+  else()
+    message(FATAL_ERROR "
+    HOGMAKE_BINARY not set. For cross-compilation builds, you must pre-build HogMaker using the
+    host toolchain, and then add -DHOGMAKE_BINARY=... to your cross-compile configuration. See
+    BUILD.md section 'Cross Compilation' for more info and an example.
+    ")
+  endif()
+
   add_custom_command(OUTPUT "${HOG_OUTPUT}"
-    COMMAND $<TARGET_FILE:HogMaker>
+    COMMAND "${HOGMAKE_BINARY}"
       "${HOG_OUTPUT}"
       "${HOG_INPUT_FILE}"
       "${HOG_SEARCH_PATH}"
-    DEPENDS HogMaker ${HOG_INPUT_FILE} ${HOG_DEPENDS}
+    DEPENDS ${HOGMAKE_DEPENDENCY} ${HOG_INPUT_FILE} ${HOG_DEPENDS}
     COMMENT "Generate ${HOG_OUTPUT}"
     COMMAND_EXPAND_LISTS
   )

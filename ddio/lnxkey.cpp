@@ -52,6 +52,7 @@
 #include "application.h"
 #include "ddio.h"
 #include "mono.h"
+#include "ddio_lnx.h"
 
 volatile struct tLnxKeys {
   union {
@@ -87,29 +88,12 @@ void ddio_sdl_InternalResetKey(uint8_t key);
 bool ddio_sdl_KeyFrame();
 void ddio_sdl_InternalKeyFrame(void);
 
-enum {
-  Input_null,
-  Input_sdl // Input_svga,Input_xwin
-} Keyboard_mode;
-
 // ----------------------------------------------------------------------------
 //	Initialization of keyboard device.
 // ----------------------------------------------------------------------------
 
 bool ddio_InternalKeyInit(ddio_init_info *init_info) {
-  oeLnxApplication *app = (oeLnxApplication *)init_info->obj;
-  tLnxAppInfo app_info;
-
-  if (!app) {
-    return false;
-  }
-
-  app->get_info(&app_info);
-
-  // determine if we are to use SDL or null mode
-  Keyboard_mode = (app_info.flags & APPFLAG_USESERVICE) ? Input_null : Input_sdl;
-
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_null:
     return ddio_null_InternalKeyInit(init_info);
   case Input_sdl:
@@ -120,7 +104,7 @@ bool ddio_InternalKeyInit(ddio_init_info *init_info) {
 }
 
 void ddio_InternalKeyClose() {
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_null:
     return ddio_null_InternalKeyClose();
   case Input_sdl:
@@ -129,7 +113,7 @@ void ddio_InternalKeyClose() {
 }
 
 bool ddio_InternalKeyState(uint8_t key) {
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_null:
     return ddio_null_InternalKeyState(key);
   case Input_sdl:
@@ -140,7 +124,7 @@ bool ddio_InternalKeyState(uint8_t key) {
 }
 
 void ddio_InternalKeySuspend() {
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_null:
     ddio_null_InternalKeySuspend();
     break;
@@ -150,7 +134,7 @@ void ddio_InternalKeySuspend() {
 }
 
 void ddio_InternalKeyResume() {
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_null:
     ddio_null_InternalKeyResume();
     break;
@@ -160,7 +144,7 @@ void ddio_InternalKeyResume() {
 }
 
 float ddio_InternalKeyDownTime(uint8_t key) {
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_null:
     return ddio_null_InternalKeyDownTime(key);
   case Input_sdl:
@@ -171,7 +155,7 @@ float ddio_InternalKeyDownTime(uint8_t key) {
 }
 
 void ddio_InternalResetKey(uint8_t key) {
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_null:
     ddio_null_InternalResetKey(key);
     break;
@@ -181,7 +165,7 @@ void ddio_InternalResetKey(uint8_t key) {
 }
 
 bool ddio_KeyFrame() {
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_sdl:
     break;
   case Input_null:
@@ -192,7 +176,7 @@ bool ddio_KeyFrame() {
 }
 
 void ddio_InternalKeyFrame(void) {
-  switch (Keyboard_mode) {
+  switch (Input_mode) {
   case Input_null:
     ddio_null_InternalKeyFrame();
     break;

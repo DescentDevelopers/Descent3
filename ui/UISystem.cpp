@@ -173,6 +173,7 @@
 #include "pserror.h"
 #include "renderer.h"
 #include "Macros.h"
+#include "SDLHelpers.h"
 
 constexpr float kDefaultMouseScale = 20;
 
@@ -268,15 +269,45 @@ bool ui_MousePoll(bool buttons) {
   int msebtn;
   bool state;
   if (!buttons) {
-    //	get all input, mouse maintains persistent button info. key doesn't.
-    btn_mask = ddio_MouseGetState(&mx, &my, NULL, NULL);
-    UI_input.last_mx = UI_input.mx;
-    UI_input.last_my = UI_input.my;
-    UI_input.mx = mx / kDefaultMouseScale;
-    UI_input.my = my / kDefaultMouseScale;
+    if (UI_input.cursorMode == tUIInput::CURSOR_MODE_MOUSE) {
+      //	get all input, mouse maintains persistent button info. key doesn't.
+      btn_mask = ddio_MouseGetState(&mx, &my, NULL, NULL);
+      UI_input.last_mx = UI_input.mx;
+      UI_input.last_my = UI_input.my;
+      UI_input.mx = mx / kDefaultMouseScale;
+      UI_input.my = my / kDefaultMouseScale;
+    }
+
+    // here is where we will treat touches like mouse inputs for now
+    // stupid-simple algo: the most recent touch wins, and it sets the mouse position
+    for (auto const& touch : ddio_GetCurrentTouches()) {
+      UI_input.cursorMode = tUIInput::CURSOR_MODE_TOUCH_ACTIVE;
+      UI_input.mx = touch.x;
+      UI_input.my = touch.y;
+    }
   } else if (UI_cursor_show) {
+    // here we simulate the actual press/release: if the screen is touched, it's a mouse press
+    // and if we were tracking touch(es) and now we're not, that's a release.
+    // if we aren't tracking touches now and we also weren't earlier, go ahead and look at the mouse
+    if (UI_input.b1_count == 0) {
+      if (!ddio_GetCurrentTouches().empty()) {
+        UI_input.cursorMode = tUIInput::CURSOR_MODE_TOUCH_ACTIVE;
+        UI_input.b1_last_status = UI_input.b1_status;
+        UI_input.b1_status = UIMSEBTN_PRESSED;
+        UI_input.b1_count = 1;
+        return true;
+      } else if (UI_input.cursorMode == tUIInput::CURSOR_MODE_TOUCH_ACTIVE) {
+        UI_input.cursorMode = tUIInput::CURSOR_MODE_TOUCH;
+        UI_input.b1_last_status = UI_input.b1_status;
+        UI_input.b1_status = UIMSEBTN_RELEASED;
+        UI_input.b1_count = 1;
+        return true;
+      }
+    }
+
     // if bX_count is 0, then repeat processing can occur, otherwise only real mouse events are processed.
     if (ddio_MouseGetEvent(&msebtn, &state)) {
+      UI_input.cursorMode = tUIInput::CURSOR_MODE_MOUSE;
       // mprintf(2, "mouse #%d state %d at %04d %04d\n", msebtn, UI_input.b1_status, UI_input.mx, UI_input.my);
       if (msebtn == 0) {
         UI_input.b1_last_status = UI_input.b1_status;
@@ -426,6 +457,7 @@ void ui_DoWindowFocus() {
     UIWindowFocus = NULL;
 }
 //	returns a result and processes input of a window in focus
+extern SDL_Window* GSDLWindow;
 int ui_ProcessFocusedWindow() {
   int res = -1;
   int res2;
@@ -435,6 +467,11 @@ int ui_ProcessFocusedWindow() {
   // get keys.   get mouse while real events (non ui manuipulated) are there.
   ui_MousePoll(false);
   if (UIWindowFocus) {
+    SDL_Rect safeArea{};
+    SDL_GetWindowSafeArea(GSDLWindow, &safeArea);
+    auto const& [safeX, safeY, safeW, safeH] = SDLWindowToGameRenderer(safeArea);
+    UIWindowFocus->AdjustToSafeArea(safeX, safeY, safeW, safeH);
+
     UI_input.b1_count = 0; // button one state reset.
     ui_KeyPoll();
     ui_MousePoll(true);
@@ -517,13 +554,7 @@ int ui_DoFrame(bool input) {
 
   return res;
 }
-//	does a ui frame and gets mouse and key information.
-int ui_DoFrame(tUIInput *input, bool doinput) {
-  int res;
-  res = ui_DoFrame(doinput);
-  *input = UI_input;
-  return res;
-}
+
 //	hide and show cursor. effects are cumulative
 bool ui_ShowCursor() {
   if (!UI_cursor_show) {

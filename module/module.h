@@ -97,7 +97,7 @@
 // Platform-specific library extensions
 #if defined(WIN32)
 #define MODULE_EXT ".dll"
-#elif defined(__LINUX__)
+#elif defined(__LINUX__) || defined(ANDROID)
 #define MODULE_EXT ".so"
 #elif defined(MACOSX)
 #define MODULE_EXT ".dylib"

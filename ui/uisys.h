@@ -55,6 +55,12 @@ struct tUIInput {
 
   bool key_first_press; // if the key was really pressed or just held down.
   bool printscreen;
+
+  enum {
+    CURSOR_MODE_MOUSE,
+    CURSOR_MODE_TOUCH,
+    CURSOR_MODE_TOUCH_ACTIVE,
+  } cursorMode;
 };
 
 //	user interface frame time
@@ -132,10 +138,7 @@ void ui_RemoveAllWindows();
 void ui_RemoveWindow(UIWindow *wnd);
 
 //	does a ui frame given a list of windows. returns result list.
-int ui_DoFrame(bool input = true);
-
-//	does a ui frame and gets mouse and key information.
-int ui_DoFrame(tUIInput *input, bool doinput = true);
+int ui_DoFrame(bool input);
 
 //	ability to load/use mouse cursors
 void ui_UseCursor(const char *fname);
