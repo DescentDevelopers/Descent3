@@ -190,7 +190,7 @@ void ddio_MouseMode(int mode) { Mouse_mode = mode; }
 // virtual coordinate system for mouse (match to video resolution set for optimal mouse usage.
 void ddio_MouseSetVCoords(int width, int height) { ddio_MouseSetLimits(0, 0, width, height); }
 
-bool sdlMouseButtonDownFilter(SDL_Event const *event) {
+void sdlMouseButtonDownEvent(SDL_Event const *event) {
   ASSERT(event->type == SDL_EVENT_MOUSE_BUTTON_DOWN);
 
   const SDL_MouseButtonEvent *ev = &event->button;
@@ -258,11 +258,9 @@ bool sdlMouseButtonDownFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Button 7: Down\n");
   }
-
-  return false;
 }
 
-bool sdlMouseButtonUpFilter(SDL_Event const *event) {
+void sdlMouseButtonUpEvent(SDL_Event const *event) {
   ASSERT(event->type == SDL_EVENT_MOUSE_BUTTON_UP);
 
   const SDL_MouseButtonEvent *ev = &event->button;
@@ -332,11 +330,9 @@ bool sdlMouseButtonUpFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Button 7: Up\n");
   }
-
-  return false;
 }
 
-bool sdlMouseWheelFilter(SDL_Event const *event) {
+void sdlMouseWheelEvent(SDL_Event const *event) {
   ASSERT(event->type == SDL_EVENT_MOUSE_WHEEL);
 
   const SDL_MouseWheelEvent *ev = &event->wheel;
@@ -383,11 +379,9 @@ bool sdlMouseWheelFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Scrollwheel: Rolled Down\n");
   }
-
-  return false;
 }
 
-bool sdlMouseMotionFilter(SDL_Event const *event) {
+void sdlMouseMotionEvent(SDL_Event const *event) {
   if (event->type == SDL_EVENT_JOYSTICK_BALL_MOTION) {
     DDIO_mouse_state.dx = event->jball.xrel / 100.0f;
     DDIO_mouse_state.dy = event->jball.yrel / 100.0f;
@@ -408,16 +402,10 @@ bool sdlMouseMotionFilter(SDL_Event const *event) {
     DDIO_mouse_state.y = DDIO_mouse_state.t;
   if (DDIO_mouse_state.y >= DDIO_mouse_state.b)
     DDIO_mouse_state.y = DDIO_mouse_state.b - 1;
-
-  return false;
 }
 
 //	This function will handle all mouse events.
-void ddio_InternalMouseFrame(void) {
-  static unsigned frame_count = 0;
-  SDL_PumpEvents();
-  frame_count++;
-}
+void ddio_InternalMouseFrame(void) {}
 
 /*	x, y = absolute mouse position
         dx, dy = mouse deltas since last call
