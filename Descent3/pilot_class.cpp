@@ -172,48 +172,22 @@ extern float Key_ramp_speed;
 
 pilot::~pilot() { clean(false); }
 
-pilot::pilot() {
-  write_pending = false;
-  initialize();
+pilot::pilot() :
+	difficulty{DIFFICULTY_ROOKIE},
+	hud_mode{HUD_COCKPIT},
+	hud_graphical_stat{STAT_STANDARD}
+{
 }
 
-pilot::pilot(pilot *copy) {
-  write_pending = true;
-  initialize();
-}
-
-pilot::pilot(char *fname) {
-  write_pending = true;
-  initialize();
-}
-
-// initializes all the data (for constructors)
+// Two-stage construction (because it references global vars)
 void pilot::initialize(void) {
   int i;
 
   filename.clear();
-  name = NULL;
   ship_model = mem_strdup("Pyro-GL");
-  ship_logo = NULL;
-  audio1_file = NULL;
-  audio2_file = NULL;
-  audio3_file = NULL;
-  audio4_file = NULL;
   guidebot_name = mem_strdup("GB");
-  picture_id = PPIC_INVALID_ID;
-  difficulty = DIFFICULTY_ROOKIE;
-  hud_mode = (uint8_t)HUD_COCKPIT;
-  hud_stat = 0;
-  hud_graphical_stat = STAT_STANDARD;
   game_window_w = Video_res_list[Current_video_resolution_id].width;
   game_window_h = Video_res_list[Current_video_resolution_id].height;
-  num_missions_flown = 0;
-  mission_data = NULL;
-  mouselook_control = false;
-  key_ramping = 0.35f;
-  lrearview_enabled = false;
-  rrearview_enabled = false;
-
   bool kiddie_settings = true;
 
   if (Database) {
@@ -236,8 +210,6 @@ void pilot::initialize(void) {
   for (i = 0; i < MAX_PILOT_TAUNTS; i++) {
     strcpy(taunts[i], TXT(TXT_TAUNT_TEXT + i));
   }
-
-  read_controller = READF_MOUSE + READF_JOY;
 
   if (Controller) {
     for (i = 0; i < NUM_CONTROLLER_FUNCTIONS; i++) {

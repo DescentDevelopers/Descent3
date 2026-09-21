@@ -2061,12 +2061,9 @@ void DeleteTempFiles() {
  *
  */
 
-static int Init_old_screen_mode;
 static void (*Init_old_ui_callback)() = NULL;
 static bool Init_old_control_mode;
-static bool Init_ui_cursor_visible;
 static bool Init_was_game_paused = false;
-static pilot Init_old_pilot;
 
 // TODO: MTS: Unused in project
 void ShutdownD3() {
@@ -2096,81 +2093,14 @@ void ShutdownD3() {
     Sound_system.PauseSounds();
   }
 
-  SaveControlConfig(&Init_old_pilot);
   CloseControls();
 
   //	shutdown cinematics.
 
   //	shutdown screen.
-  Init_ui_cursor_visible = ui_IsCursorVisible();
-  Init_old_screen_mode = GetScreenMode();
   Init_old_ui_callback = GetUICallback();
   SetScreenMode(SM_NULL);
 
   // shutdown IO
   ddio_Close();
-}
-
-// TODO: MTS: unused in project
-//	This function restarts all game systems
-void RestartD3() {
-  ddio_init_info io_info;
-
-  if (!Init_systems_init)
-    return;
-
-  LOG_INFO << "Restarting D3...";
-
-  if (!FindArg("-windowed")) {
-    if (Dedicated_server) {
-      ddio_MouseMode(MOUSE_STANDARD_MODE);
-    } else {
-      ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
-    }
-  }
-
-  // startup io
-  io_info.obj = Descent;
-  if (!ddio_Init(&io_info)) {
-    Error("I/O initialization failed.");
-  }
-
-  //	startup screen.
-  ddio_KeyFlush();
-  SetScreenMode(Init_old_screen_mode);
-  SetUICallback(Init_old_ui_callback);
-  if (Init_ui_cursor_visible)
-    ui_ShowCursor();
-
-  //	startup game systems
-  InitControls();
-  LoadControlConfig(&Init_old_pilot);
-
-  // resume game sounds and time as needed
-  if (GetFunctionMode() == GAME_MODE) {
-    if (!(Game_mode & GM_MULTI)) {
-      if (!Init_was_game_paused) {
-        ResumeGame();
-      } else {
-        D3MusicResume();
-      }
-    }
-  } else {
-    Sound_system.ResumeSounds();
-    D3MusicResume();
-  }
-
-  // resume controller if it was active before alt-tabbing out.
-  if (Init_old_control_mode) {
-    ResumeControls();
-  }
-
-  // Restart Force Feedback
-  ForceRestart();
-
-  //	startup cinematics.
-
-  //	startup sound.
-  //	Sound_system.ResumeSounds();
-  //	Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
 }
