@@ -21,6 +21,12 @@
 // Platform-specific compile-time defined location of data files
 #define D3_DATADIR "@D3_DATADIR@"
 
+// Standard Descent 3 installation locations for the platform (Steam, GoG...)
+#define D3_STANDARD_PATHS "@D3_STANDARD_PATHS_CPP@"
+
+// .hog file shipped with the game
+#define D3_PRIMARY_HOG "@D3_PRIMARY_HOG@"
+
 // Part of preference path (organization)
 #define D3_PREF_ORG "Outrage Entertainment"
 

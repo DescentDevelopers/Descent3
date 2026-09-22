@@ -1452,7 +1452,22 @@ void InitIOSystems(bool editor) {
   // Platform dependent paths
   std::filesystem::path platform_dir = std::filesystem::canonical(D3_DATADIR);
   cf_AddBaseDirectory(platform_dir);
-  // TODO: add Steam/registry locations
+
+  std::vector<std::filesystem::path> default_platform_dirs = {
+    D3_STANDARD_PATHS
+  };
+
+  for (const auto& platform_dir: default_platform_dirs) {
+    if (platform_dir.u8string().at(0) == '~') {
+      // On Unix, replace "~" in paths by the runtime $HOME directory
+      std::string base_dir_str = platform_dir.u8string();
+      const std::string home_dir = std::getenv("HOME");
+      base_dir_str.replace(0,1,home_dir);
+      cf_AddBaseDirectory(std::filesystem::path(base_dir_str));
+    } else {
+      cf_AddBaseDirectory(platform_dir);
+    }
+  }
 
   // Add path of executable
   std::filesystem::path exec_path = ddio_GetBasePath();
@@ -1542,7 +1557,7 @@ void InitIOSystems(bool editor) {
 
   // last library opened is the first to be searched for dynamic libs, so put
   // this one at the end to find our newly build script libraries first
-  sys_hid = cf_OpenLibrary(PRIMARY_HOG);
+  sys_hid = cf_OpenLibrary(D3_PRIMARY_HOG);
 
   // Initialize debug graph early incase any system uses it in its init
   INIT_MESSAGE(("Initializing debug graph."));
