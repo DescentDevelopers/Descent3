@@ -269,11 +269,6 @@
 
 class DMFCBase;
 
-#ifdef mprintf // undefine mprintf and redirect it to use DLLmprintf
-#undef mprintf
-#endif
-#define mprintf(...) DLLmprintf(__VA_ARGS__)
-
 #define MAX_DBNAME_SIZE 32
 #define MAX_DBLABEL_SIZE 128
 

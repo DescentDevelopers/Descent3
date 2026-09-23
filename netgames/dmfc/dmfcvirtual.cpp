@@ -69,6 +69,7 @@
 #include "DMFC.h"
 #include "dmfcinternal.h"
 #include "d3events.h"
+#include "log.h"
 
 //	DMFCBase::InitializeVirtualHandles
 //		Prepares the virtual handles
@@ -991,7 +992,7 @@ void DMFCBase::TranslateEvent(int eventnum, dllinfo *data) {
     TranslateTextMacro(src_string, dest_string, dest_size);
   } break;
   default:
-    DLLmprintf(0, "DMFC Warning: Unhandled Event #%X\n", eventnum);
+    LOG_WARNING.printf("DMFC Warning: Unhandled Event #%X", eventnum);
     break;
   }
 }

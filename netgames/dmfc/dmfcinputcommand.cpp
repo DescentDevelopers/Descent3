@@ -189,7 +189,7 @@ void DMFCInputCommand_Team(const char *input_string) {
   if ((t == -1) || (t == curr_team) || (curr_team == -1))
     return;
 
-  mprintf(0, "Attempting to change teams to %s team\n", team);
+  LOG_INFO.printf("Attempting to change teams to %s team", team);
   DLLAddHUDMessage(DTXT_TEAMCHANGEATTEMPT, team);
   basethis->RequestTeamChange(t, basethis->GetPlayerNum(), true);
 }
@@ -228,7 +228,7 @@ void DMFCInputCommand_ChangeTeam(const char *input_string) {
   if ((!basethis->CheckPlayerNum(p)) || (t == -1) || (t == curr_team) || (curr_team == -1))
     return;
 
-  mprintf(0, "Attempting to change %s to %s team\n", basethis->Players[p].callsign, team);
+  LOG_INFO.printf("Attempting to change %s to %s team", basethis->Players[p].callsign, team);
   DLLAddHUDMessage(DTXT_STEAMCHANGEATTEMPT, basethis->Players[p].callsign, team);
   basethis->RequestTeamChange(t, p, true);
 }
@@ -907,7 +907,7 @@ void DMFCInputCommand_Observer(const char *input_string) {
     return;
   }
 
-  mprintf(0, "SwitchObserverMode %s [%d]\n", (turn_on) ? "On" : "Off", pnum);
+  LOG_INFO.printf("SwitchObserverMode %s [%d]", (turn_on) ? "On" : "Off", pnum);
 
   DLLMultiSendRequestToObserve(OBSERVER_MODE_ROAM, (turn_on) ? 1 : 0, 0);
 }
@@ -954,12 +954,12 @@ void DMFCInputCommand_Piggyback(const char *input_string) {
       DLLMultiSendRequestToObserve(OBSERVER_MODE_ROAM, 0, 0);
   }
   if (pnum == basethis->GetPlayerNum()) {
-    mprintf(0, "Returning to self\n");
+    LOG_INFO << "Returning to self";
     return;
   }
 
   if (basethis->CallOnAllowObserverChange(true)) {
-    mprintf(0, "Switching to piggyback for player %d\n", topnum);
+    LOG_INFO.printf("Switching to piggyback for player %d", topnum);
     DLLMultiSendRequestToObserve(OBSERVER_MODE_PIGGYBACK, 1, basethis->Players[topnum].objnum);
   }
 }

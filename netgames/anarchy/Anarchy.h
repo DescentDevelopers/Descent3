@@ -43,6 +43,7 @@
 
 #include "osiris_share.h"
 #include "d3events.h"
+#include "log.h"
 
 // Setup and processing functions
 void AnarchyGameInit(int teams);
@@ -80,6 +81,7 @@ DLLEXPORT void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_t
 DLLEXPORT void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data);
 DLLEXPORT void DLLFUNCCALL DLLGameClose();
 DLLEXPORT void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options);
+DLLEXPORT void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender);
 DLLEXPORT int DLLFUNCCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void DLLFUNCCALLPTR CreateInstance(int id);
 DLLEXPORT void DLLFUNCCALL DestroyInstance(int id, void *ptr);
