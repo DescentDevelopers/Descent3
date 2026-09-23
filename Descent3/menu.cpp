@@ -1107,40 +1107,28 @@ bool MenuNewGame() {
   int n_missions, res;
   bool found = false;
   bool retval = true;
+  std::filesystem::path mission_name;
+
 #ifdef DEMO
-  if (LoadMission("d3demo.mn3")) {
-    CurrentPilotUpdateMissionStatus(true);
-    // go into game mode.
-    SetGameMode(GM_NORMAL);
-    SetFunctionMode(GAME_MODE);
-    return true;
-  } else {
-    DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
-    return false;
-  }
+  mission_name = "d3demo.mn3";
 #else
   if ((!FindArg("-mission")) && (!FirstGame) && (-1 == Current_pilot.find_mission_data(TRAINING_MISSION_NAME))) {
 
     FirstGame = true;
-
-    if (LoadMission("training.mn3")) {
-      CurrentPilotUpdateMissionStatus(true);
-      // go into game mode.
-      SetGameMode(GM_NORMAL);
-      SetFunctionMode(GAME_MODE);
-      return true;
-    } else {
-      DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
-      return false;
-    }
+    mission_name = "training.mn3";
   } else if (FirstGame) {
+    // Already trained
     FirstGame = false;
 #ifdef OEM
-    if (LoadMission(OEM_MISSION_FILE))
+    mission_name = OEM_MISSION_FILE;
 #else
-    if (LoadMission("d3.mn3"))
-#endif
-    {
+    mission_name = "d3.mn3";
+#endif // OEM
+  }
+#endif // DEMO
+
+  if (!mission_name.empty()) {
+    if (LoadMission(mission_name)) {
       CurrentPilotUpdateMissionStatus(true);
       // go into game mode.
       SetGameMode(GM_NORMAL);
@@ -1245,7 +1233,7 @@ redo_newgame_menu:
     if (index >= 0 && index < filelist.size()) {
       nameptr = filelist[index];
     }
-    if (nameptr.empty() || !LoadMission((const char*)nameptr.u8string().c_str())) {
+    if (nameptr.empty() || !LoadMission(nameptr)) {
       DoMessageBox(TXT_ERROR, TXT_ERRLOADMSN, MSGBOX_OK);
       retval = false;
     } else {
@@ -1278,7 +1266,6 @@ redo_newgame_menu:
   menu.Destroy();
 
   return retval;
-#endif
 }
 
 // DisplayLevelWarpDlg

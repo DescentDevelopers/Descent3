@@ -275,7 +275,7 @@ bool GetGameStateInfo(const std::filesystem::path &pathname, char *description, 
 int LGSXlateTables(CFILE *fp);
 
 //	loads in level's mission and level.
-int LGSMission(const char *msnname, int level);
+int LGSMission(const std::filesystem::path &msnname, int level);
 
 //	initializes rooms
 int LGSRooms(CFILE *fp);

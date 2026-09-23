@@ -774,7 +774,7 @@ int DemoReadHeader() {
   // Now load the mission
   Osiris_DisableCreateEvents();
   IsRestoredGame = true;
-  if (LoadMission((const char *)demo_mission)) {
+  if (LoadMission(demo_mission)) {
     mng_LoadAddonPages();
 
     SetCurrentLevel(level_num);
