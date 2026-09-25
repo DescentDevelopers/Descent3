@@ -46,6 +46,8 @@ jobs:
             cc: gcc
             cxx: g++
             name: Linux-cross-arm64
+          - runner: ubuntu-22.04
+            name: android
         build_type:
           - Debug
           - Release
@@ -101,12 +103,15 @@ jobs:
         with:
           vcpkgJsonGlob: vcpkg.json
 
-      - name: Configure cross-compiled build
-        if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
-        run: |
-          cmake --preset linux
-          ninja -f build-${{ matrix.build_type }}.ninja -C builds/linux/ HogMaker
-          cmake --preset linux-cross-arm64 -DHogMaker_DIR=$PWD/builds/linux/ -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
+      - uses: actions/setup-java@v4
+        if: ${{ matrix.os.name == 'android' }}
+        with:
+         java-version: '17'
+         distribution: 'temurin'
+
+      - name: Build APK
+        if: ${{ matrix.os.name == 'android' }}
+        run: ./gradlew build
 
       - name: Customize vcpkg to create macOS universal binary
         if: ${{ matrix.os.preset == 'mac' }}
@@ -122,21 +127,31 @@ jobs:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12 }}
           p12-password: ${{ secrets.MACOS_SIGNING_CERTIFICATE_P12_PASSWORD }}
 
+      - name: Configure cross-compiled build
+        if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
+        run: |
+          cmake --preset linux
+          cmake --build --preset linux --target HogMaker --config Release
+          cmake --install builds/linux --prefix $PWD/builds/host_tools/ --config Release --component HostTools
+          cmake --preset linux-cross-arm64 -DHOGMAKE_BINARY=$PWD/builds/host_tools/HogMaker -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
+
       - name: Configure CMake
-        if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
+        if: ${{ matrix.os.name != 'android' && matrix.os.preset != 'linux-cross-arm64' }}
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ matrix.os.preset }} -DCODESIGN_IDENTITY=${{ secrets.MACOS_SIGNING_IDENTITY }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
+        run: cmake --preset ${{ matrix.os.preset }} -DCODESIGN_IDENTITY=${{ secrets.MACOS_SIGNING_IDENTITY }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON -DBUILD_TESTING=${{ matrix.os.preset == 'linux-cross-arm64' && 'OFF' || 'ON' }}
 
       - name: Build ${{ matrix.build_type }}
+        if: ${{ matrix.os.name != 'android' }}
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
 
       - name: Run ${{ matrix.build_type }} Unittests
-        if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
+        if: ${{ matrix.os.preset != 'linux-cross-arm64' && matrix.os.name != 'android' }}
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
       - name: Local install
+        if: ${{ matrix.os.name != 'android' }}
         # There no cmake install presets so install in traditional way
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
 
@@ -160,6 +175,7 @@ jobs:
           mv builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg builds/${{ matrix.os.preset }}/installed/
 
       - name: Upload Artifacts
+        if: ${{ matrix.os.name != 'android' }}
         uses: actions/upload-artifact@v4
         with:
           name: Descent3_${{ matrix.build_type }}_${{ matrix.os.name }}

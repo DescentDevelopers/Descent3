@@ -28,12 +28,15 @@
 #include <filesystem>
 #include <map>
 
-#ifndef WIN32
+#ifdef WIN32
+#define SDL_MAIN_HANDLED
+#else
 #include <unistd.h>
 #include <csignal>
 #endif
 
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 
 #include "appdatabase.h"
 #include "application.h"
@@ -176,37 +179,6 @@ public:
   }
 };
 
-bool sdlKeyFilter(const SDL_Event *event);
-bool sdlMouseButtonUpFilter(const SDL_Event *event);
-bool sdlMouseButtonDownFilter(const SDL_Event *event);
-bool sdlMouseWheelFilter(const SDL_Event *event);
-bool sdlMouseMotionFilter(const SDL_Event *event);
-
-bool SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
-  switch (event->type) {
-  case SDL_EVENT_KEY_UP:
-  case SDL_EVENT_KEY_DOWN:
-    return (sdlKeyFilter(event));
-  case SDL_EVENT_JOYSTICK_BALL_MOTION:
-  case SDL_EVENT_MOUSE_MOTION:
-    return (sdlMouseMotionFilter(event));
-  case SDL_EVENT_MOUSE_BUTTON_UP:
-    return (sdlMouseButtonUpFilter(event));
-  case SDL_EVENT_MOUSE_BUTTON_DOWN:
-    return (sdlMouseButtonDownFilter(event));
-  case SDL_EVENT_MOUSE_WHEEL:
-    return (sdlMouseWheelFilter(event));
-  case SDL_EVENT_QUIT:
-    SDL_Quit();
-    _exit(0);
-    break;
-  default:
-    break;
-  } // switch
-
-  return (1);
-}
-
 //	---------------------------------------------------------------------------
 //	Main
 //		creates all the OS objects and then runs Descent 3.
@@ -244,14 +216,13 @@ int main(int argc, char *argv[]) {
   setenv("SDL_VIDEODRIVER", "dummy", 1);
 #endif
 
+  SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (!rc) {
     LOG_FATAL.printf("SDL: SDL_Init() failed: %d: %s!", rc, SDL_GetError());
     return (0);
   }
 
-  // !!! FIXME: Don't use an event filter!
-  SDL_SetEventFilter(d3SDLEventFilter, nullptr);
   install_signal_handlers();
 
   // Initialize our OS Object.  This could be a game dependant OS object, or a default OS object.

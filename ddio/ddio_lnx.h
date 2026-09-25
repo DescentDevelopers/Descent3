@@ -28,4 +28,10 @@
 
 extern oeLnxApplication *Lnx_app_obj;
 
+enum input_mode_t {
+  Input_null,
+  Input_sdl,
+};
+extern enum input_mode_t Input_mode;
+
 #endif

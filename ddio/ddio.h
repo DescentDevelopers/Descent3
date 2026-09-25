@@ -199,6 +199,7 @@
 #include "chrono_timer.h"
 #include "ddio_common.h"
 #include "pstypes.h"
+#include "sdltouch.h"
 
 // ----------------------------------------------------------------------------
 //	Initialization and destruction functions
@@ -313,6 +314,8 @@ void ddio_MouseGetLimits(int *left, int *top, int *right, int *bottom, int *zmin
 
 // virtual coordinate system for mouse (match to video resolution set for optimal mouse usage.
 void ddio_MouseSetVCoords(int width, int height);
+
+std::vector<TouchPoint> const& ddio_GetCurrentTouches();
 
 //	---------------------------------------------------------------------------
 //	File Operations

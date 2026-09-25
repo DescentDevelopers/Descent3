@@ -1,0 +1,20 @@
+Subject: [PATCH] Add consideration for IME insets to Safe Area
+---
+Index: android/src/main/java/org/libsdl/app/SDLSurface.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/android/src/main/java/org/libsdl/app/SDLSurface.java b/android/src/main/java/org/libsdl/app/SDLSurface.java
+--- a/android/src/main/java/org/libsdl/app/SDLSurface.java	(revision a162be9609af731e5a0f0b78351fc8d32ee899b0)
++++ b/android/src/main/java/org/libsdl/app/SDLSurface.java	(date 1769037984477)
+@@ -199,7 +199,8 @@
+                                                WindowInsets.Type.systemGestures() |
+                                                WindowInsets.Type.mandatorySystemGestures() |
+                                                WindowInsets.Type.tappableElement() |
+-                                               WindowInsets.Type.displayCutout());
++                                               WindowInsets.Type.displayCutout() |
++                                               WindowInsets.Type.ime());
+ 
+             SDLActivity.onNativeInsetsChanged(combined.left, combined.right, combined.top, combined.bottom);
+         }

@@ -222,6 +222,7 @@ void UIEdit::GetText(char *buffer, int len) {
 // sets font of control (default is window's font.)
 void UIEdit::SetFont(int font) { m_FontHandle = font; }
 
+extern SDL_Window* GSDLWindow;
 void UIEdit::Activate() {
   if (UI_current_editbox) {
     UI_current_editbox->Deactivate();
@@ -231,6 +232,8 @@ void UIEdit::Activate() {
   m_Active = true;
   UI_current_editbox = this;
   m_UpdateCount = false;
+
+  SDL_StartTextInput(GSDLWindow);
 
   //	mprintf(0, "activating edit box\n");
 }
@@ -242,6 +245,8 @@ void UIEdit::Deactivate() {
   m_Active = false;
   UI_current_editbox = NULL;
   m_Wnd->ResumeHotkeys();
+
+  SDL_StopTextInput(GSDLWindow);
 }
 
 //	Overrides

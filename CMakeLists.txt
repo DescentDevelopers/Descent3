@@ -9,6 +9,22 @@ endif()
 set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
 set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+  if (ANDROID_ABI MATCHES "arm64-v8a")
+    set(VCPKG_TARGET_TRIPLET "arm64-android" CACHE STRING "" FORCE)
+  elseif(ANDROID_ABI MATCHES "armeabi-v7a")
+    set(VCPKG_TARGET_TRIPLET "arm-android" CACHE STRING "" FORCE)
+  elseif(ANDROID_ABI MATCHES "x86_64")
+    set(VCPKG_TARGET_TRIPLET "x64-android" CACHE STRING "" FORCE)
+  elseif(ANDROID_ABI MATCHES "x86")
+    set(VCPKG_TARGET_TRIPLET "x86-android" CACHE STRING "" FORCE)
+  else()
+    message(FATAL_ERROR "ANDROID_ABI not set or not recognized")
+  endif()
+
+  set(ENV{ANDROID_NDK_HOME} ${CMAKE_ANDROID_NDK})
+endif()
+
 if(NOT USE_VCPKG STREQUAL "OFF")
   if(DEFINED ENV{VCPKG_ROOT})
 
@@ -151,6 +167,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(HOG_NAME "osx")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(HOG_NAME "win")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+  set(HOG_NAME "android")
 endif()
 
 # rebuild d3_version.h every time
@@ -206,6 +224,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for macOS")
   add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
+  set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+  message("Building for Android")
+  add_compile_definitions(POSIX ANDROID _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-android.hog\")
+  set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   # Windows.h defines to avoid as many issues as possible.
   add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE PRIMARY_HOG=\"d3-win.hog\"
@@ -310,12 +333,7 @@ endif()
 
 add_subdirectory(Descent3)
 
-if (CMAKE_CROSSCOMPILING)
-  find_package(HogMaker REQUIRED)
-else()
-  add_subdirectory(tools)
-endif()
-
+add_subdirectory(tools)
 add_subdirectory(netcon)
 add_subdirectory(netgames)
 add_subdirectory(scripts)

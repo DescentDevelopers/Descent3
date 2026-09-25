@@ -5,6 +5,7 @@ set(HEADERS
   ddio_lnx.h
   controller.h
   sdlcontroller.h
+  sdltouch.h
 )
 set(CPPS
   chrono_timer.cpp
@@ -19,7 +20,8 @@ set(CPPS
   lnxmouse.cpp
   lnxkey_sdl.cpp
   sdlcontroller.cpp
-  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
+  sdltouch.cpp
+  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD,Android>:
     lnxfile.cpp
   >
   $<$<PLATFORM_ID:Windows>:
@@ -32,10 +34,12 @@ target_link_libraries(ddio PRIVATE
   ddebug
   logger
   mem
+  renderer
 )
 target_include_directories(ddio PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/ddio
+  ${PROJECT_SOURCE_DIR}/renderer
   >
   ${SDL3_INCLUDE_DIRS}
 )

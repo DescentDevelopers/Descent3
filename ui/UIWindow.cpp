@@ -198,6 +198,10 @@ void UIWindow::Create(int x, int y, int w, int h, int flags) {
     y = UI_screen_height / 2 - h / 2;
   }
 
+  m_RealX = x;
+  m_RealY = y;
+  m_RealW = w;
+  m_RealH = h;
   UIObject::Create(x, y, w, h);
 }
 
@@ -214,6 +218,14 @@ void UIWindow::Destroy() {
   SetBackItem(NULL);
 
   UIObject::Destroy();
+}
+
+void UIWindow::Move(int x, int y, int w, int h) {
+  m_RealX = x;
+  m_RealY = y;
+  m_RealW = w;
+  m_RealH = h;
+  UIObject::Move(x, y, w, h);
 }
 
 //	interface functions
@@ -291,6 +303,13 @@ void UIWindow::UnlockFocusOnGadget() { m_LockedGadget = NULL; }
 
 // forces all keyinput onto one gadget.
 void UIWindow::LockKeyFocusOnGadget(UIGadget *gadget) {}
+
+void UIWindow::AdjustToSafeArea(int safeX, int safeY, int safeW, int safeH) {
+  m_W = std::min(m_RealW, safeW);
+  m_H = std::min(m_RealH, safeH);
+  m_X = std::clamp(m_RealX, safeX, safeX + safeW - m_W);
+  m_Y = std::clamp(m_RealY, safeY, safeY + safeH - m_H);
+}
 
 //	Process
 //		run this to handle user input inside an interface

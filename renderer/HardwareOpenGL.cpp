@@ -69,13 +69,15 @@ extern uint8_t Renderer_initted;
 renderer_type Renderer_type = RENDERER_OPENGL;
 
 struct Renderer {
-  Renderer()
-      : shader_{shaders::vertex,
-                shaders::fragment,
-                {vertexAttrib(3, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::pos, "in_pos"),
-                 vertexAttrib(4, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::color, "in_color"),
-                 vertexAttrib(2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv0, "in_uv0"),
-                 vertexAttrib(2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv1, "in_uv1")}} {
+  Renderer() : shader_{
+    std::string{kGlslVersion} + std::string{shaders::vertex},
+    std::string{kGlslVersion} + std::string{shaders::fragment},
+    {
+      vertexAttrib(3, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::pos, "in_pos"),
+      vertexAttrib(4, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::color, "in_color"),
+      vertexAttrib(2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv0, "in_uv0"),
+      vertexAttrib(2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv1, "in_uv1")
+    }} {
     shader_.Use();
 
     // these are effectively just constants, for now
@@ -149,6 +151,13 @@ private:
   glm::mat4x4 projection_;
   GLint texture_enable_{};
   ShaderProgram<PosColorUV2Vertex> shader_;
+
+  static constexpr auto kGlslVersion =
+#if defined(ANDROID)
+      shaders::version_300_es;
+#else
+  shaders::version_150_core;
+#endif
 };
 std::optional<Renderer> gRenderer;
 
@@ -353,6 +362,7 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
 
   SDL_ClearError();
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {
+    SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
     const int rc = SDL_Init(SDL_INIT_VIDEO);
     if (rc != 0) {
       char buffer[512];
@@ -409,8 +419,10 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+#if !defined(ANDROID)
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
 
   if (!GSDLWindow) {
     int display_num = 0;
