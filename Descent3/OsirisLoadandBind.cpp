@@ -481,7 +481,7 @@ struct tOSIRISModule {
   GetTriggerScriptID_fp GetTriggerScriptID;
   GetCOScriptList_fp GetCOScriptList;
   SaveRestoreState_fp SaveRestoreState;
-  module mod;
+  module_t mod;
   char *module_name;
   char **string_table;
   int strings_loaded;
@@ -1010,7 +1010,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
 
   // the module has loaded, attempt to import all the level functions
   tOSIRISModule *osm = &OSIRIS_loaded_modules[loaded_id];
-  module *mod = &osm->mod;
+  module_t *mod = &osm->mod;
 
   // there are 9 functions we need to import
   // InitializeDLL@4
@@ -1205,7 +1205,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
 
   // the module has loaded, attempt to import all the level functions
   tOSIRISModule *osm = &OSIRIS_loaded_modules[loaded_id];
-  module *mod = &osm->mod;
+  module_t *mod = &osm->mod;
 
   // there are 7 functions we need to import
   // InitializeDLL@4
@@ -1311,7 +1311,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
 //	Returns -3 if the module is not a game module. Returns -4 if no module slots are available.
 //	This technically doesn't load a mission module, as it should already be loaded by
 //	Descent 3 prior.
-int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
+int Osiris_LoadMissionModule(module_t *module_handle, const char *filename) {
   if ((Game_mode & GM_MULTI) && (Netgame.local_role != LR_SERVER)) {
     // no scripts for a client!
     return -1;
@@ -1348,8 +1348,8 @@ int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
 
   // the module has loaded, attempt to import all the game functions
   tOSIRISModule *osm = &OSIRIS_loaded_modules[loaded_id];
-  memcpy(&osm->mod, module_handle, sizeof(module));
-  module *mod = &osm->mod;
+  memcpy(&osm->mod, module_handle, sizeof(module_t));
+  module_t *mod = &osm->mod;
 
   // there are 5 functions we need to import
   // GetGOScriptID@4

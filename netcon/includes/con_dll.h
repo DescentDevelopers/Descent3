@@ -273,6 +273,7 @@
 #include "crossplat.h"
 #include "ship.h"
 #include "pstypes.h"
+#include "module.h"
 
 // Uncomment out this line of code to build the demo version of the multiplayer connection dlls
 // #define DEMO	1
@@ -657,18 +658,18 @@ MultiGameOptionsMenu_fp DLLMultiGameOptionsMenu;
 
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
-typedef bool (*mod_LoadModule_fp)(module *handle, const std::filesystem::path &modfilename, int flags);
+typedef bool (*mod_LoadModule_fp)(module_t *handle, const std::filesystem::path &modfilename, int flags);
 mod_LoadModule_fp DLLmod_LoadModule;
 
 // Frees a previously loaded module from memory, it can no longer be used
 // Returns true on success, false otherwise
-typedef bool (*mod_FreeModule_fp)(module *handle);
+typedef bool (*mod_FreeModule_fp)(module_t *handle);
 mod_FreeModule_fp DLLmod_FreeModule;
 
 // Returns a pointer to a function within a loaded module.  If it returns NULL there was an error.  Check
 // mod_GetLastError to see if there was an error symstr is the name of the function you want to get the symbol for (Do
 // NOT give any pre/suffix to this name) parmbytes is the size (in bytes) of the parameter list the function should have
-typedef MODPROCADDRESS (*mod_GetSymbol_fp)(module *handle, const char *symstr, uint8_t parmbytes);
+typedef MODPROCADDRESS (*mod_GetSymbol_fp)(module_t *handle, const char *symstr, uint8_t parmbytes);
 mod_GetSymbol_fp DLLmod_GetSymbol;
 
 // Returns an error code to what the last error was.  When this function is called the last error is cleared, so by
@@ -820,7 +821,7 @@ char *DLLAuto_login_port;
 
 bool Use_netgame_flags;
 
-module MTAVDLLHandle = {NULL};
+module_t MTAVDLLHandle = {NULL};
 
 #if defined(WIN32)
 typedef void(DLLFUNCCALL DLLAVInit_fp)(int *ptr);

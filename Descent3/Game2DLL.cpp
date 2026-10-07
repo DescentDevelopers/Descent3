@@ -71,7 +71,7 @@ extern int Camera_view_mode[NUM_CAMERA_VIEWS];
 //		This function initializes a Module Init Struct with all the needed data to get sent
 //	to the module during initialization.
 extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi);
-module GameDLLHandle = {NULL};
+module_t GameDLLHandle = {NULL};
 extern ddgr_color Player_colors[];
 struct game_api {
   int *objs;
@@ -547,7 +547,7 @@ void GetGameAPI(game_api *api) {
   Multi_d3m_osiris_funcs.script_identifier = Netgame.scriptname;
 }
 // Closes and deletes any tempfiles for the game module
-void CloseGameModule(module *mod) {
+void CloseGameModule(module_t *mod) {
   // Clear out error queue
   mod_GetLastError();
   mod_FreeModule(mod);
@@ -560,7 +560,7 @@ void CloseGameModule(module *mod) {
   mod->handle = NULL;
 }
 // this function will load up the DLL, but not get any symbols
-bool InitGameModule(const char *name, module *mod) {
+bool InitGameModule(const char *name, module_t *mod) {
   std::filesystem::path lib_name;
   std::filesystem::path dll_name;
   std::filesystem::path tmp_dll_name;
@@ -744,7 +744,7 @@ int GameDLLGetConnectingPlayersTeam(int slot) {
 }
 // Call this function to get information/options from a unloaded mod
 bool GetDLLGameInfo(const char *name, tDLLOptions *options) {
-  module mod = {NULL};
+  module_t mod = {NULL};
   memset(options, 0, sizeof(tDLLOptions));
   DLLGetGameInfo_fp modGetGameInfo;
   if (!InitGameModule(name, &mod))
