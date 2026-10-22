@@ -130,9 +130,6 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
     Movie_bm_handle = -1;
   }
 
-  // close our file handle
-  fclose(hFile);
-
   // determine the return code
   int err = MVELIB_NOERROR;
   if (aborted) {
@@ -368,30 +365,31 @@ intptr_t mve_SequenceFrame(intptr_t handle, void *fhandle, bool sequence, int *b
   static unsigned sw = 0, sh = 0, hicolor = 0;
   int err = 0;
 
-reread_frame:
+  while (true) {
+    // get the next frame of data
+    uint8_t *pBuffer = nullptr;
+    err = MVE_rmStepMovie((MVESTREAM *)handle);
 
-  // get the next frame of data
-  uint8_t *pBuffer = nullptr;
-  err = MVE_rmStepMovie((MVESTREAM *)handle);
+    if (err == 0) {
+      // blit to bitmap
+      int texW, texH;
+      BlitToMovieBitmap(pBuffer, sw, sh, hicolor, false, texW, texH);
 
-  if (err == 0) {
-    // blit to bitmap
-    int texW, texH;
-    BlitToMovieBitmap(pBuffer, sw, sh, hicolor, false, texW, texH);
+      if (bm_handle) {
+        *bm_handle = Movie_bm_handle;
+      }
 
-    if (bm_handle) {
-      *bm_handle = Movie_bm_handle;
+      return handle;
     }
 
-    return handle;
+    if (Movie_looping && err == MVE_ERR_EOF) {
+      if (!mve_reset((MVESTREAM *)handle)) {
+        // failed to reset MVE, bail out
+        return -1;
+      }
+      sequence = true;
+    }
   }
-
-  if (Movie_looping && err == MVE_ERR_EOF) {
-    mve_reset((MVESTREAM *)handle);
-    sequence = true;
-    goto reread_frame;
-  }
-
   return -1;
 #else
   return -1;

@@ -53,7 +53,7 @@ static int _mvefile_fetch_next_chunk(MVEFILE *movie);
 static MVESTREAM *_mvestream_alloc();
 static void _mvestream_free(MVESTREAM *movie);
 static int _mvestream_open(MVESTREAM *movie, void *stream);
-static void _mvestream_reset(MVESTREAM *movie);
+static bool _mvestream_reset(MVESTREAM *movie);
 
 /************************************************************
  * public MVEFILE functions
@@ -95,7 +95,7 @@ void mvefile_close(MVEFILE *movie) { _mvefile_free(movie); }
 /*
  * reset a MVE file
  */
-void mvefile_reset(MVEFILE *file) {
+bool mvefile_reset(MVEFILE *file) {
   _mvefile_reset(file);
 
   /* initialize the file */
@@ -104,11 +104,13 @@ void mvefile_reset(MVEFILE *file) {
   /* verify the file's header */
   if (!_mvefile_read_header(file)) {
     _mvefile_free(file);
-    // return NULL;
+    return false;
   }
 
   /* now, prefetch the next chunk */
   _mvefile_fetch_next_chunk(file);
+
+  return true;
 }
 
 /*
@@ -224,10 +226,11 @@ MVESTREAM *mve_open(void *stream) {
  */
 void mve_close(MVESTREAM *movie) { _mvestream_free(movie); }
 
-/*
+/**
  * reset an MVE stream
+ * @return true if reset is successful
  */
-void mve_reset(MVESTREAM *movie) { _mvestream_reset(movie); }
+bool mve_reset(MVESTREAM *movie) { return _mvestream_reset(movie); }
 
 /*
  * set segment type handler
@@ -298,6 +301,9 @@ static MVEFILE *_mvefile_alloc() {
  */
 static void _mvefile_free(MVEFILE *movie) {
   /* free the stream */
+  if (movie->stream != nullptr) {
+    fclose((FILE *)movie->stream);
+  }
   movie->stream = nullptr;
 
   /* free the buffer */
@@ -484,4 +490,4 @@ static int _mvestream_open(MVESTREAM *movie, void *stream) {
 /*
  * reset an MVESTREAM
  */
-static void _mvestream_reset(MVESTREAM *movie) { mvefile_reset(movie->movie); }
+static bool _mvestream_reset(MVESTREAM *movie) { return mvefile_reset(movie->movie); }
