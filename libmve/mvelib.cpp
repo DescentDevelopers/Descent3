@@ -338,6 +338,9 @@ static int _mvefile_open(MVEFILE *file, void *stream) {
  */
 static void _mvefile_reset(MVEFILE *file) {
   fseek((FILE *)file->stream, 0, SEEK_SET);
+  if (file->cur_chunk) {
+    mve_free(file->cur_chunk);
+  }
   file->cur_chunk = nullptr;
   file->buf_size = 0;
   file->cur_fill = 0;
