@@ -1,6 +1,7 @@
 /*
 * Descent 3 
 * Copyright (C) 2024 Parallax Software
+* Copyright (C) 2026 Descent Developers
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,18 +19,16 @@
 
 #include <cstring>
 
-#include "cinematics.h"
-#include "d3movie.h"
-#include "game.h"
-#include "ddio.h"
-#include "descent.h"
-#include "gamefont.h"
-#include "hlsoundlib.h"
-#include "log.h"
-#include "subtitles.h"
-#include "dedicated_server.h"
 #include "appdatabase.h"
 #include "bitmap.h"
+#include "cinematics.h"
+#include "d3movie.h"
+#include "ddio.h"
+#include "dedicated_server.h"
+#include "descent.h"
+#include "game.h"
+#include "log.h"
+#include "subtitles.h"
 
 static bool Cinematic_lib_init = false;
 static int Cinematic_x = 0, Cinematic_y = 0, Cinematic_w = 0, Cinematic_h = 0;
@@ -96,9 +95,9 @@ bool PlayMovie(const std::filesystem::path &moviename) {
   return retval;
 }
 
-tCinematic *StartMovie(const char *moviename, bool looping) {
+MVESTREAM *StartMovie(const char *moviename, bool looping) {
   if (!Cinematic_lib_init)
-    return NULL;
+    return nullptr;
 
   // get in the right directory
   char filename[_MAX_PATH];
@@ -107,7 +106,7 @@ tCinematic *StartMovie(const char *moviename, bool looping) {
 
   // check extension
   const char *extension = strrchr(filename, '.');
-  if (extension == NULL || (stricmp(extension, ".mve") != 0 && stricmp(extension, ".mv8") != 0)) {
+  if (extension == nullptr || (stricmp(extension, ".mve") != 0 && stricmp(extension, ".mv8") != 0)) {
     // we need an extension
     strncat(filename, ".mve", sizeof(filename) - strlen(filename) - 1);
     filename[sizeof(filename) - 1] = 0;
@@ -115,27 +114,22 @@ tCinematic *StartMovie(const char *moviename, bool looping) {
 
   SetMovieProperties(0, 0, Max_window_w, Max_window_h, Renderer_type);
 
-  FILE *filehandle;
-  intptr_t hMovie = mve_SequenceStart(filename, &filehandle, Descent, looping);
-  if (hMovie == 0)
-    return NULL;
+  MVESTREAM *hMovie = mve_SequenceStart(filename, looping);
+  if (hMovie == nullptr)
+    return nullptr;
 
-  tCinematic *mve = new tCinematic;
-  mve->mvehandle = hMovie;
-  mve->filehandle = filehandle;
-  mve->frame_chunk.bm_array = NULL;
-  return mve;
+  return hMovie;
 }
 
-bool FrameMovie(tCinematic *mve, int x, int y, bool sequence) {
-  if (!Cinematic_lib_init || mve == NULL)
+bool FrameMovie(MVESTREAM *mve, int x, int y) {
+  if (!Cinematic_lib_init || mve == nullptr)
     return false;
 
   int bm_handle;
-  intptr_t hNewMovie = mve_SequenceFrame(mve->mvehandle, mve->filehandle, sequence, &bm_handle);
-  if (hNewMovie != -1) {
+  MVESTREAM *hNewMovie = mve_SequenceFrame(mve, &bm_handle);
+  if (hNewMovie == nullptr) {
     // we must have looped, we have a new handle
-    mve->mvehandle = hNewMovie;
+    mve = hNewMovie;
   }
 
   //	do chunk conversion and blt if absolutely necessary.
@@ -152,20 +146,14 @@ bool FrameMovie(tCinematic *mve, int x, int y, bool sequence) {
     rend_CopyBitmapToFramebuffer(bm_handle, x, y);
   }
 
-  return (hNewMovie != -1);
+  return (hNewMovie != nullptr);
 }
 
-void EndMovie(tCinematic *mve) {
-  if (mve == NULL || !Cinematic_lib_init)
+void EndMovie(MVESTREAM *mve) {
+  if (mve == nullptr || !Cinematic_lib_init)
     return;
 
-  mve_SequenceClose(mve->mvehandle, mve->filehandle);
-
-  if (mve->frame_chunk.bm_array) {
-    bm_DestroyChunkedBitmap(&mve->frame_chunk);
-  }
-
-  delete mve;
+  mve_SequenceClose(mve);
 }
 
 void CinematicCallback(int mveX, int mveY, int frameNum) { SubtDrawSubtitles(frameNum); }

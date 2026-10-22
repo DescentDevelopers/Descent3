@@ -470,7 +470,7 @@ void MenuScene() {
       DrawLargeBitmap(&MM_object->m_art, 0, 0, 1.0f);
     } else {
 #ifdef MOVIE_MENU
-      FrameMovie(MM_object->m_movie, -1, -1, true);
+      FrameMovie(MM_object->m_movie, -1, -1);
 #else
       DrawLargeBitmap(&MM_object->m_art, 0, 0, 1.0f);
 #endif

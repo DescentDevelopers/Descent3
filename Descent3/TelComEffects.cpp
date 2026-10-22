@@ -138,6 +138,8 @@
 #include <cstring>
 
 #include "TelComEffects.h"
+
+#include "cinematics.h"
 #include "log.h"
 #include "mem.h"
 #include "vecmat.h"

@@ -1,6 +1,7 @@
 /*
 * Descent 3
 * Copyright (C) 2024 Parallax Software
+* Copyright (C) 2026 Descent Developers
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -316,15 +317,15 @@ void CallbackShowFrameNoFlip(unsigned char *buf, unsigned int bufw, unsigned int
 }
 #endif
 
-intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *app, bool looping) {
+MVESTREAM *mve_SequenceStart(const char *mvename, bool looping) {
 #ifndef NO_MOVIES
   // first, find that movie..
   std::filesystem::path real_name = cf_LocatePath(std::filesystem::path("movies") / mvename);
-  fhandle = fopen(PATH_TO_CSTR(real_name), "rb");
+  FILE *fhandle = fopen(PATH_TO_CSTR(real_name), "rb");
 
   if (fhandle == nullptr) {
     LOG_WARNING.printf("MOVIE: Unable to open %s", PATH_TO_CSTR(real_name));
-    return 0;
+    return nullptr;
   }
 
   // setup
@@ -343,23 +344,23 @@ intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *ap
   if (mve == nullptr) {
     LOG_ERROR.printf("Failed to PrepMovie %s", mvename);
     fclose((FILE *)fhandle);
-    return MVELIB_INIT_ERROR;
+    return nullptr;
   }
 
-  return (intptr_t)mve;
+  return mve;
 #else
   return nullptr;
 #endif
 }
 
-intptr_t mve_SequenceFrame(intptr_t handle, void *fhandle, bool sequence, int *bm_handle) {
+MVESTREAM *mve_SequenceFrame(MVESTREAM *handle, int *bm_handle) {
 #ifndef NO_MOVIES
   if (bm_handle) {
     *bm_handle = -1;
   }
 
-  if (handle == -1) {
-    return -1;
+  if (handle == nullptr) {
+    return nullptr;
   }
 
   static unsigned sw = 0, sh = 0, hicolor = 0;
@@ -368,7 +369,7 @@ intptr_t mve_SequenceFrame(intptr_t handle, void *fhandle, bool sequence, int *b
   while (true) {
     // get the next frame of data
     uint8_t *pBuffer = nullptr;
-    err = MVE_rmStepMovie((MVESTREAM *)handle);
+    err = MVE_rmStepMovie(handle);
 
     if (err == 0) {
       // blit to bitmap
@@ -383,25 +384,24 @@ intptr_t mve_SequenceFrame(intptr_t handle, void *fhandle, bool sequence, int *b
     }
 
     if (Movie_looping && err == MVE_ERR_EOF) {
-      if (!mve_reset((MVESTREAM *)handle)) {
+      if (!mve_reset(handle)) {
         // failed to reset MVE, bail out
-        return -1;
+        return nullptr;
       }
-      sequence = true;
     }
   }
-  return -1;
+  return nullptr;
 #else
-  return -1;
+  return nullptr;
 #endif
 }
 
-bool mve_SequenceClose(intptr_t hMovie, void *hFile) {
+bool mve_SequenceClose(MVESTREAM *hMovie) {
 #ifndef NO_MOVIES
-  if (hMovie == -1)
+  if (hMovie == nullptr)
     return false;
 
-  MVE_rmEndMovie((MVESTREAM *)hMovie);
+  MVE_rmEndMovie(hMovie);
 
   // free our bitmap
   if (Movie_bm_handle != -1) {

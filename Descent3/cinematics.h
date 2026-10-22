@@ -51,24 +51,16 @@
 #ifndef CINEMATICS_H
 #define CINEMATICS_H
 
-#include "renderer.h"
-#include "bitmap.h"
-
-#include <cstdint>
 #include <filesystem>
 
-//	Movie Cinematic
-struct tCinematic {
-  intptr_t mvehandle;
-  void *filehandle;
-  chunked_bitmap frame_chunk; // used internally, don't access.
-};
+#include "mvelib.h"
+#include "renderer.h"
 
 bool InitCinematics();
 void SetMovieProperties(int x, int y, int w, int h, renderer_type type);
 bool PlayMovie(const std::filesystem::path &moviename);
-tCinematic *StartMovie(const char *moviename, bool looping = false);
-bool FrameMovie(tCinematic *mve, int x, int y, bool sequence = true);
-void EndMovie(tCinematic *mve);
+MVESTREAM *StartMovie(const char *moviename, bool looping = false);
+bool FrameMovie(MVESTREAM *mve, int x, int y);
+void EndMovie(MVESTREAM *mve);
 
 #endif

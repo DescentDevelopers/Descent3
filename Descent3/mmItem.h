@@ -69,8 +69,8 @@
 #ifndef MMITEM_H
 #define MMITEM_H
 
-#include "cinematics.h"
 #include "gamefont.h"
+#include "mvelib.h"
 #include "newui.h"
 #include "psclass.h"
 
@@ -182,7 +182,7 @@ class mmInterface : public UIWindow {
   int m_nmenu_items;                 // number of menu items available.
   mmItem m_menuitems[N_MMENU_ITEMS]; // main menu items
 #ifdef MOVIE_MENU
-  tCinematic *m_movie; // menu movie handle
+  MVESTREAM *m_movie; // menu movie handle
 #endif
   tLargeBitmap m_art; // artwork for the bitmap
 public:
