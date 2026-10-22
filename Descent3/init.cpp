@@ -1857,7 +1857,10 @@ void InitD3Systems1(bool editor) {
   InitMathTables();
 
   // Initialize a random seed.
-  ps_srand(time(nullptr));
+  int iseedarg = FindArg("-randseed");
+  uint32_t seed = static_cast<uint32_t>(iseedarg ? strtoul(GameArgs[iseedarg + 1], nullptr, 10) : time(nullptr));
+  LOG_INFO << "seeding RNG with " << seed;
+  ps_srand(seed);
 
   // This function has to be done before any sound stuff is called
   InitSounds();
