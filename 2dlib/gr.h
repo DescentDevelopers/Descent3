@@ -178,7 +178,7 @@ struct gr_font_record {
 
 class grFont {
   static gr_font_record m_FontList[MAX_FONTS];
-  static grMemorySurface *m_CharSurf;
+  static std::unique_ptr<grMemorySurface> m_CharSurf;
 
   int m_FontHandle; // offset into m_FontList
 
