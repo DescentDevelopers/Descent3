@@ -300,6 +300,7 @@
 #include <cstdarg>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "log.h"
 #include "newui.h"
@@ -328,6 +329,14 @@ static struct {
 } NewUI_bitmap_list[NEWUIBMP_NUM];
 
 static bool NewUI_init = false;
+
+// The DoWaitPopup window, while it is open.
+static std::unique_ptr<newuiTiledWindow> Wait_popup;
+
+// Runs at exit, before static destruction.  If the game exits while the wait popup is open (e.g. Error() inside
+// TelCom), leak the window as the raw pointer used to: destroying it during static destruction would walk its gadget
+// list, whose text gadget (a function-local static) has already been destroyed by then.
+static void AbandonWaitPopupAtExit() { (void)Wait_popup.release(); }
 
 //	closes New UI system
 void NewUIClose();
@@ -387,6 +396,7 @@ void NewUIInit() {
   } else {
     NewUI_init = true;
     atexit(NewUIClose);
+    atexit(AbandonWaitPopupAtExit);
   }
 
   for (i = 0; i < NEWUIBMP_NUM; i++) {
@@ -577,7 +587,6 @@ void DoWaitPopup(bool enable, const char *message) {
 #define FDWM_HEIGHT 128
 #define FDWM_WIDTH 256
 
-  static newuiTiledWindow *msgbox = nullptr;
   static UIText text;
   static bool opened = false;
   newuiSheet *sheet;
@@ -589,13 +598,13 @@ void DoWaitPopup(bool enable, const char *message) {
   opened = enable;
 
   if (enable) {
-    msgbox = new newuiTiledWindow;
+    Wait_popup = std::make_unique<newuiTiledWindow>();
 
-    if (msgbox) {
+    if (Wait_popup) {
 
-      msgbox->Create(nullptr, 0, 0, FDWM_WIDTH, FDWM_HEIGHT);
+      Wait_popup->Create(nullptr, 0, 0, FDWM_WIDTH, FDWM_HEIGHT);
 
-      sheet = msgbox->GetSheet();
+      sheet = Wait_popup->GetSheet();
       if (message) {
         char msg[512];
         int w, h;
@@ -604,13 +613,13 @@ void DoWaitPopup(bool enable, const char *message) {
         w = grtext_GetTextLineWidth(msg);
         h = grtext_GetTextHeight(msg);
         UITextItem item{MONITOR9_NEWUI_FONT, msg, NEWUI_MONITORFONT_COLOR};
-        text.Create(msgbox, &item, (msgbox->W() - w) / 2, (msgbox->H() - h) / 2);
+        text.Create(Wait_popup.get(), &item, (Wait_popup->W() - w) / 2, (Wait_popup->H() - h) / 2);
 
         //				sheet->NewGroup(NULL, , 25);
         //				sheet->AddText(msg);
       }
 
-      msgbox->Open();
+      Wait_popup->Open();
       //			sheet->Realize();
 
       // fake a DoUI
@@ -619,12 +628,11 @@ void DoWaitPopup(bool enable, const char *message) {
     }
   } else {
 
-    if (msgbox) {
-      msgbox->Close();
-      msgbox->Destroy();
-      delete msgbox;
+    if (Wait_popup) {
+      Wait_popup->Close();
+      Wait_popup->Destroy();
     }
-    msgbox = nullptr;
+    Wait_popup.reset();
   }
 }
 
