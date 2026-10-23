@@ -741,17 +741,6 @@ int AllocPolyModel() {
 
 // Frees all the polymodel data, but doesn't free the actual polymodel itself
 void FreePolymodelData(int i) {
-  int t;
-
-  for (t = 0; t < Poly_models[i].n_models; t++) {
-    if (Poly_models[i].submodel) {
-      if (Poly_models[i].submodel[t].flags & (SOF_GLOW | SOF_THRUSTER)) {
-        mem_free(Poly_models[i].submodel[t].glow_info);
-        Poly_models[i].submodel[t].glow_info = nullptr;
-      }
-    }
-  }
-
   if (Poly_models[i].model_data) {
     mem_free(Poly_models[i].model_data);
     Poly_models[i].model_data = nullptr;
@@ -986,8 +975,9 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
 
     subobj->flags |= SOF_GLOW;
 
-    if (subobj->glow_info == nullptr) // DAJ may already exist
-      subobj->glow_info = mem_rmalloc<glowinfo>();
+    if (subobj->glow_info == nullptr) { // DAJ may already exist
+      subobj->glow_info = std::make_unique<glowinfo>();
+    }
 
     subobj->glow_info->glow_r = r;
     subobj->glow_info->glow_g = g;
@@ -1010,8 +1000,9 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
 
     subobj->flags |= SOF_THRUSTER;
 
-    if (subobj->glow_info == nullptr) // DAJ may already exist
-      subobj->glow_info = mem_rmalloc<glowinfo>();
+    if (subobj->glow_info == nullptr) { // DAJ may already exist
+      subobj->glow_info = std::make_unique<glowinfo>();
+    }
 
     subobj->glow_info->glow_r = r;
     subobj->glow_info->glow_g = g;

@@ -216,7 +216,7 @@ struct bsp_info {
 
   float normalized_angle;
 
-  glowinfo *glow_info;
+  std::unique_ptr<glowinfo> glow_info;
 };
 
 #define PMF_LIGHTMAP_RES 1
