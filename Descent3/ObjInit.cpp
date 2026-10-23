@@ -1168,7 +1168,11 @@ int ObjInitTypeSpecific(object *objp, bool reinitializing) {
 int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creation_time, int parent_handle) {
   // Zero out object structure to keep weird bugs from happening in uninitialized fields.
   // I hate doing this because it seems sloppy, but it's probably better to do it
-  memset(objp, 0, sizeof(object));
+  // (The unions are zeroed explicitly because value-initialization only zeroes their first member.)
+  *objp = object{};
+  memset(&objp->mtype, 0, sizeof(objp->mtype));
+  memset(&objp->ctype, 0, sizeof(objp->ctype));
+  memset(&objp->rtype, 0, sizeof(objp->rtype));
   // Set the stuff that's passed in
   objp->type = type;
   objp->id = id;
