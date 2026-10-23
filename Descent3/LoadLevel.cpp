@@ -2563,13 +2563,12 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
       int size = w * h * d;
 
       if (size) {
+        rp->volume_lights = std::make_unique<uint8_t[]>(size);
+      } else {
+        rp->volume_lights.reset();
+      }
 
-        rp->volume_lights = mem_rmalloc<uint8_t>(size);
-        ASSERT(rp->volume_lights); // ran out of memory!
-      } else
-        rp->volume_lights = nullptr;
-
-      ReadCompressionByte(ifile, rp->volume_lights, w * h * d);
+      ReadCompressionByte(ifile, rp->volume_lights.get(), w * h * d);
 
       rp->volume_width = w;
       rp->volume_height = h;
@@ -4468,7 +4467,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
     cf_WriteInt(ofile, h);
     cf_WriteInt(ofile, d);
 
-    CheckToWriteCompressByte(ofile, rp->volume_lights, w * h * d);
+    CheckToWriteCompressByte(ofile, rp->volume_lights.get(), w * h * d);
   }
 
   cf_WriteFloat(ofile, rp->fog_depth);
