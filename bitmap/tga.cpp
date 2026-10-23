@@ -615,7 +615,8 @@ int bm_page_in_file(int n) {
     mipped = 1;
 
   int size = (width * height * 2) + (mipped * ((width * height * 2) / 3)) + 2;
-  GameBitmaps[n].data16 = (uint16_t *)mem_malloc(size);
+  // size is in bytes and may be odd; left uninitialised because the file data overwrites it
+  GameBitmaps[n].data16 = std::unique_ptr<uint16_t[]>(new uint16_t[(size + 1) / 2]);
   if (!GameBitmaps[n].data16) {
     LOG_ERROR << "Out of memory in bm_page_in_file!";
     return 0;

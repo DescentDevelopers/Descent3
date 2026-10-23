@@ -445,7 +445,7 @@ void bm_InitBitmaps() {
   Bitmaps_initted = 1;
   for (i = 0; i < MAX_BITMAPS; i++) {
     GameBitmaps[i].used = 0;
-    GameBitmaps[i].data16 = nullptr;
+    GameBitmaps[i].data16.reset();
     GameBitmaps[i].format = BITMAP_FORMAT_STANDARD;
     GameBitmaps[i].cache_slot = -1;
     GameBitmaps[i].flags = 0;
@@ -483,13 +483,14 @@ int bm_AllocateMemoryForIndex(int n, int w, int h, int add_mem) {
   // If no go on the malloc, bail out with -1
 
   int size = (w * h * 2) + (add_mem) + 2;
-  GameBitmaps[n].data16 = (uint16_t *)mem_malloc(size);
+  // size is in bytes and may be odd; left uninitialised here because it is 0xAA-filled below
+  GameBitmaps[n].data16 = std::unique_ptr<uint16_t[]>(new uint16_t[(size + 1) / 2]);
   if (!GameBitmaps[n].data16) {
     Int3(); // Ran out of memory!
     return -1;
   }
   Bitmap_memory_used += (size);
-  memset(GameBitmaps[n].data16, 0xAA, size);
+  memset(GameBitmaps[n].data16.get(), 0xAA, size);
 
   GameBitmaps[n].format = BITMAP_FORMAT_STANDARD;
   GameBitmaps[n].width = w;
@@ -609,19 +610,17 @@ void bm_FreeBitmapData(int handle) {
       if (GameBitmaps[handle].flags & BF_MIPMAPPED)
         Bitmap_memory_used -= (mem_used / 3);
     }
-    mem_free(GameBitmaps[handle].data16);
   }
   GameBitmaps[handle].cache_slot = -1;
   GameBitmaps[handle].flags |= BF_NOT_RESIDENT;
   if (GameBitmaps[handle].flags & BF_MIPMAPPED)
     GameBitmaps[handle].flags |= BF_WANTS_MIP;
-  GameBitmaps[handle].data16 = nullptr;
+  GameBitmaps[handle].data16.reset();
 }
 //	simply frees up a bitmap
 void bm_FreeBitmapMain(int handle) {
   bm_deleteNode(&GameBitmaps[handle]);
   bm_FreeBitmapData(handle);
-  GameBitmaps[handle].data16 = nullptr;
   GameBitmaps[handle].cache_slot = -1;
   GameBitmaps[handle].used = 0;
   Num_of_bitmaps--;
@@ -1187,7 +1186,7 @@ uint16_t *bm_data(int handle, int miplevel) {
     if (!bm_MakeBitmapResident(handle))
       return nullptr;
 
-  d = GameBitmaps[handle].data16;
+  d = GameBitmaps[handle].data16.get();
   for (i = 0; i < miplevel; i++) {
     d += (GameBitmaps[handle].width >> i) * (GameBitmaps[handle].height >> i);
   }
@@ -1531,8 +1530,7 @@ void bm_ChangeSize(int handle, int new_w, int new_h) {
 
   bm_ScaleBitmapToBitmap(n, handle);
   Bitmap_memory_used -= mem_used + (mipped * (mem_used / 3));
-  mem_free(GameBitmaps[handle].data16);
-  GameBitmaps[handle].data16 = GameBitmaps[n].data16;
+  GameBitmaps[handle].data16 = std::move(GameBitmaps[n].data16);
   GameBitmaps[handle].width = new_w;
   GameBitmaps[handle].height = new_h;
   GameBitmaps[n].used = 0;
