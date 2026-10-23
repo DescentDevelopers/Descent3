@@ -183,8 +183,8 @@ void software_mixer::StreamMixer(char *ptr, int len) {
         int sound_index = cur_buf->m_sound_index;
         int sample_index = Sounds[sound_index].sample_index;
         sound_file_info *snd_file = &SoundFiles[sample_index];
-        sample_16bit = snd_file->sample_16bit;
-        sample_8bit = snd_file->sample_8bit;
+        sample_16bit = snd_file->sample_16bit.get();
+        sample_8bit = snd_file->sample_8bit.get();
         np_sample_length = snd_file->np_sample_length;
         sample_length = snd_file->sample_length;
         loop_start = Sounds[sound_index].loop_start;
