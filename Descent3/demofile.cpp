@@ -325,8 +325,6 @@ bool Demo_make_movie = false;
 #define MAX_COOP_TURRETS 400
 extern float turret_holder[MAX_COOP_TURRETS];
 
-extern gs_tables *gs_Xlates;
-
 extern float Min_frametime;
 extern float Max_frametime;
 extern float Avg_frametime;
@@ -794,9 +792,7 @@ int DemoReadHeader() {
   FrameCount = frame_count;
   Demo_next_frame = demo_gametime;
 
-  if (gs_Xlates)
-    mem_free(gs_Xlates);
-  gs_Xlates = mem_rmalloc<gs_tables>();
+  gs_Xlates = std::make_unique<gs_tables>();
 
   try {
     LGSXlateTables(Demo_cfp);
@@ -1435,8 +1431,7 @@ void DemoAbort(bool deletefile) {
   is_multi_demo = false;
   if (Demo_flags != DF_NONE) {
     // We're done with the xlate table, so free it
-    mem_free(gs_Xlates);
-    gs_Xlates = nullptr;
+    gs_Xlates.reset();
 
     cfclose(Demo_cfp);
     Demo_flags = DF_NONE;
