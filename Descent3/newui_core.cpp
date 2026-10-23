@@ -448,7 +448,7 @@ class newuiSlider : public UIGadget {
   int16_t m_pos;
   int16_t m_unitrange;
   UIBitmapItem *m_bar_bmp;
-  UISnazzyTextItem *m_title;
+  std::unique_ptr<UISnazzyTextItem> m_title;
   newuiArrowButton m_minus_btn;
   newuiArrowButton m_plus_btn;
   tSliderSettings m_unit_settings;
@@ -492,24 +492,24 @@ protected:
   virtual void OnKeyDown(int key);
 
 private:
-  UISnazzyTextItem *m_title;
+  std::unique_ptr<UISnazzyTextItem> m_title;
   bool m_quick_escape_enable;
 };
 
-static inline UISnazzyTextItem *MonitorSmallText(const char *text) {
-  return new UISnazzyTextItem(0, MONITOR9_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
+static inline std::unique_ptr<UISnazzyTextItem> MonitorSmallText(const char *text) {
+  return std::make_unique<UISnazzyTextItem>(0, MONITOR9_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
 }
 
-static inline UISnazzyTextItem *MonitorLargeText(const char *text) {
-  return new UISnazzyTextItem(0, MONITOR15_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
+static inline std::unique_ptr<UISnazzyTextItem> MonitorLargeText(const char *text) {
+  return std::make_unique<UISnazzyTextItem>(0, MONITOR15_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
 }
 
-static inline UISnazzyTextItem *GadgetSmallText(const char *text) {
-  return new UISnazzyTextItem(0, GADGET9_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
+static inline std::unique_ptr<UISnazzyTextItem> GadgetSmallText(const char *text) {
+  return std::make_unique<UISnazzyTextItem>(0, GADGET9_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
 }
 
-static inline UISnazzyTextItem *GadgetLargeText(const char *text) {
-  return new UISnazzyTextItem(0, GADGET15_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
+static inline std::unique_ptr<UISnazzyTextItem> GadgetLargeText(const char *text) {
+  return std::make_unique<UISnazzyTextItem>(0, GADGET15_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2106,7 +2106,6 @@ char *newuiSheet::AddEditBox(const char *title, int16_t maxlen, int16_t w, int16
 newuiButton::newuiButton() {
   m_bkg = nullptr;
   m_litbkg = nullptr;
-  m_text = nullptr;
 }
 
 void newuiButton::Create(UIWindow *menu, int16_t id, const char *name, int16_t x, int16_t y, int16_t flags) {
@@ -2170,10 +2169,7 @@ void newuiButton::OnDestroy() {
     Newui_resources.Free(m_litbkg);
     m_litbkg = nullptr;
   }
-  if (m_text) {
-    delete m_text;
-    m_text = nullptr;
-  }
+  m_text.reset();
 
   UIButton::OnDestroy();
 }
@@ -2416,7 +2412,6 @@ void newuiRadioButton::OnDraw() { newuiButton::OnDraw(); }
 newuiSlider::newuiSlider() {
   m_pos = m_unitrange = 0;
   m_bar_bmp = nullptr;
-  m_title = nullptr;
 }
 
 void newuiSlider::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t range) {
@@ -2586,10 +2581,7 @@ void newuiSlider::OnDestroy() {
     Newui_resources.Free(m_bar_bmp);
     m_bar_bmp = nullptr;
   }
-  if (m_title) {
-    delete m_title;
-    m_title = nullptr;
-  }
+  m_title.reset();
 }
 
 // this function will handle when an arrow button was pressed
@@ -3882,7 +3874,7 @@ void newuiComboBox::OnDetachFromWindow() {
 
 //	CLASS newuiEditBox
 
-newuiEditBox::newuiEditBox() { m_title = nullptr; }
+newuiEditBox::newuiEditBox() {}
 
 void newuiEditBox::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t w, int16_t flags) {
   //	if (name) {
@@ -3906,10 +3898,7 @@ void newuiEditBox::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x
 void newuiEditBox::EnableOnQuickEscapeBehavior(bool do_it) { m_quick_escape_enable = do_it; }
 
 void newuiEditBox::OnDestroy() {
-  if (m_title) {
-    delete m_title;
-    m_title = nullptr;
-  }
+  m_title.reset();
 
   UIEdit::OnDestroy();
 }
