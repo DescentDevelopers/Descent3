@@ -17,11 +17,9 @@
 
 #define AUDIO
 
-#include <chrono>
 #include <cstring>
 #include <deque>
 #include <memory>
-#include <thread>
 
 #include "byteswap.h"
 #include "chrono_timer.h"
@@ -103,7 +101,9 @@ unsigned long int timer_getmicroseconds() {
 }
 
 void timer_sleepmicroseconds(unsigned long int usec) {
-  std::this_thread::sleep_for(std::chrono::microseconds(usec));
+  // Sleep through ChronoTimer, which reads the time above, so the mock clock advances too. Round up so a frame is
+  // never shown early.
+  D3::ChronoTimer::SleepMS(static_cast<int>((usec + 999) / 1000));
 }
 
 static int create_timer_handler(unsigned char major, unsigned char minor, unsigned char *data, int len, void *context) {

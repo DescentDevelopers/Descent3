@@ -1177,6 +1177,7 @@ void DemoFrame() {
       float tdelta = timer_GetTime();
 
       while ((Gametime + Demo_frame_ofs) < Demo_next_frame) {
+        D3::ChronoTimer::Pump();
         Demo_frame_ofs = timer_GetTime() - tdelta;
       }
     }

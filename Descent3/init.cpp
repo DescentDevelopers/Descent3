@@ -1098,6 +1098,16 @@ void PreInitD3Systems() {
     LOG_INFO.printf("Using default framecap of 60");
   }
 
+#ifdef MOCK_CLOCK
+  // The mock clock dictates the frametime
+  if (FindArg("-framecap")) {
+    Error("-framecap is not supported: the mock clock fixes the frametime at %dms",
+          D3::ChronoTimer::kFixedStepMS);
+  }
+  Min_allowed_frametime = D3::ChronoTimer::kFixedStepMS;
+  LOG_INFO.printf("Using fixed frametime of %d", Min_allowed_frametime);
+#endif
+
   // Mouselook sensitivity!
   int msensearg = FindArg("-mlooksens");
   if (msensearg) {

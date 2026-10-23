@@ -44,6 +44,18 @@ public:
 
   /// Sleep for delay milliseconds
   static void SleepMS(int delay);
+
+  /// Let time pass while waiting on the timer without sleeping. Call once per wait-loop iteration.
+  /// Does nothing on the real clock.
+  static void Pump();
+
+#ifdef MOCK_CLOCK
+  /// Length of every game frame on the mock clock. Matches the default 60fps framecap, which truncates to 16ms.
+  static constexpr int kFixedStepMS = 16;
+
+  /// Whether the mock clock waits for real time to catch up when it advances (default true)
+  static void SetPaced(bool paced);
+#endif
 };
 
 }
