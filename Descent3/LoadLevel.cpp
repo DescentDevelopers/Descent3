@@ -2918,7 +2918,7 @@ void ReadGamePathsChunk(CFILE *fp, int version) {
   for (i = 0; i < Num_game_paths; i++) {
     GamePaths[i].used = 1;
     GamePaths[i].name[0] = 0;
-    GamePaths[i].pathnodes = mem_rmalloc<node>(MAX_NODES_PER_PATH);
+    GamePaths[i].pathnodes = std::make_unique<node[]>(MAX_NODES_PER_PATH);
     GamePaths[i].flags = 0;
 
     // Read in the path's info
