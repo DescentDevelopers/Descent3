@@ -506,7 +506,7 @@ struct object {
   } rtype;
 
   effect_info_s *effect_info;
-  light_info *lighting_info;  // Pointer to lighting info, or NULL if inherits from type
+  std::unique_ptr<light_info> lighting_info; // Pointer to lighting info, or NULL if inherits from type
 
   // Something to do with multiplayer, possibly, but it's hard to know for sure
   // because some people are incapable of commented their code.

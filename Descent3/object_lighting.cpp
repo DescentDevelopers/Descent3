@@ -628,7 +628,7 @@ void ObjSetLocalLighting(object *objp) {
            (objp->type == OBJ_BUILDING));
 
     // allocate a light info for this object
-    objp->lighting_info = mem_rmalloc<light_info>();
+    objp->lighting_info = std::make_unique<light_info>();
 
     // copy the lighting info from the type for this object
     *objp->lighting_info = Object_info[objp->id].lighting_info;
@@ -637,8 +637,9 @@ void ObjSetLocalLighting(object *objp) {
 
 // Returns a pointer to the lighting info for the specified object
 light_info *ObjGetLightInfo(object *objp) {
-  if (objp->lighting_info)
-    return objp->lighting_info;
+  if (objp->lighting_info) {
+    return objp->lighting_info.get();
+  }
 
   if ((objp->type == OBJ_POWERUP) || (objp->type == OBJ_ROBOT) || (objp->type == OBJ_CLUTTER) ||
       (objp->type == OBJ_BUILDING))

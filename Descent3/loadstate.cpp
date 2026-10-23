@@ -984,9 +984,9 @@ int LGSObjects(CFILE *fp, int version) {
     gs_ReadByte(fp, has_lightinfo);
     if (has_lightinfo) {
       if (!op->lighting_info) {
-        op->lighting_info = mem_rmalloc<light_info>();
+        op->lighting_info = std::make_unique<light_info>();
       }
-      cf_ReadBytes((uint8_t *)op->lighting_info, sizeof(*op->lighting_info), fp);
+      cf_ReadBytes((uint8_t *)op->lighting_info.get(), sizeof(*op->lighting_info), fp);
     }
 
     // validate handle.
