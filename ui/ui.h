@@ -713,7 +713,7 @@ public:
 protected:
   bool m_bTextCreated = false;
   UIText m_tLabel;
-  char *m_Label = nullptr;
+  std::unique_ptr<char[]> m_Label;
   ddgr_color m_LabelColor;
   ddgr_color m_BoxColor;
   virtual void OnDraw();
@@ -728,7 +728,7 @@ protected:
 #define KEYDOWN_REPEAT_DELAY 0.10f
 
 class UIEdit : public UIGadget {
-  char *m_TextBuf = nullptr; // Text buffer for edit control.
+  std::unique_ptr<char[]> m_TextBuf; // Text buffer for edit control.
   int m_FontHandle = -1;     // font for edit control. (default -1 = window's font)
   int m_BufSize = 0;         // buffersize
   int m_Color;            // color of text.
