@@ -399,7 +399,7 @@ void CListViewEx::OnSetFocus(CWnd *pOldWnd) {
   CListView::OnSetFocus(pOldWnd);
 
   // check if we are getting focus from label edit box
-  if (pOldWnd != NULL && pOldWnd->GetParent() == this)
+  if (pOldWnd != nullptr && pOldWnd->GetParent() == this)
     return;
 
   // repaint items that should change appearance
@@ -411,7 +411,7 @@ void CListViewEx::OnKillFocus(CWnd *pNewWnd) {
   CListView::OnKillFocus(pNewWnd);
 
   // check if we are losing focus to label edit box
-  if (pNewWnd != NULL && pNewWnd->GetParent() == this)
+  if (pNewWnd != nullptr && pNewWnd->GetParent() == this)
     return;
 
   // repaint items that should change appearance

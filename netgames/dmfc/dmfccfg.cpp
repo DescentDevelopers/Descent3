@@ -53,7 +53,7 @@
 #include "dmfcinternal.h"
 
 
-CRegistry *reg = NULL;
+CRegistry *reg = nullptr;
 
 // DMFCBase::CFGOpen
 //
@@ -81,7 +81,7 @@ void DMFCBase::CFGClose(void) {
   if (reg) {
     reg->Export();
     delete reg;
-    reg = NULL;
+    reg = nullptr;
   }
 }
 
@@ -181,7 +181,7 @@ char *CRegistry::ParseString(char *p, char *buf, int bufsize, char sdelim, char 
   save_p = p;
 
   if (*p != sdelim) {
-    return NULL;
+    return nullptr;
   } else {
     p++; // skip initial quote
   }
@@ -192,12 +192,12 @@ char *CRegistry::ParseString(char *p, char *buf, int bufsize, char sdelim, char 
 
   // Check for buffer overflow
   if (bufsize <= 0) {
-    return NULL;
+    return nullptr;
   }
 
   // Check for missing endquote
   if (!*p) {
-    return NULL;
+    return nullptr;
   }
 
   // Write terminator
@@ -220,7 +220,7 @@ char *CRegistry::ParseToken(char *p, char *buf, int bufsize) {
 
   // Check for buffer overflow
   if (bufsize <= 0) {
-    return NULL;
+    return nullptr;
   }
 
   return p;
@@ -240,7 +240,7 @@ char *CRegistry::ParseToken(char *p, char *buf, int bufsize) {
   } while (0)
 
 CRegistry::CRegistry(const char *str) {
-  currentkey = root = NULL;
+  currentkey = root = nullptr;
   strcpy(name, str);
 }
 
@@ -255,7 +255,7 @@ void CRegistry::Destroy(void) {
     DestroyKey(curr);
     curr = next;
   }
-  root = NULL;
+  root = nullptr;
 }
 
 void CRegistry::DestroyKey(tKey *key) {
@@ -274,7 +274,7 @@ void CRegistry::DestroyKey(tKey *key) {
 void CRegistry::DestroyRecord(tRecord *record) {
   if (record->data) {
     free(record->data);
-    record->data = NULL;
+    record->data = nullptr;
   }
   free(record);
 }
@@ -446,9 +446,9 @@ void CRegistry::CreateKey(const char *name) {
     curr = curr->next;
   }
 
-  curr->next = NULL;
+  curr->next = nullptr;
   strcpy(curr->name, name);
-  curr->records = NULL;
+  curr->records = nullptr;
   currentkey = curr;
 }
 
@@ -468,7 +468,7 @@ bool CRegistry::LookupKey(const char *name) {
 
 tRecord *CRegistry::LookupRecord(const char *record, void *data) {
   if (!currentkey)
-    return NULL;
+    return nullptr;
 
   tRecord *curr;
   curr = currentkey->records;
@@ -491,7 +491,7 @@ tRecord *CRegistry::LookupRecord(const char *record, void *data) {
     }
     curr = curr->next;
   }
-  return NULL;
+  return nullptr;
 }
 
 int CRegistry::GetDataSize(const char *record) {
@@ -568,7 +568,7 @@ bool CRegistry::CreateRecord(const char *name, char type, void *data) {
     curr = currentkey->records;
   }
 
-  curr->next = NULL;
+  curr->next = nullptr;
   strcpy(curr->name, name);
   switch (type) {
   case REGT_STRING:

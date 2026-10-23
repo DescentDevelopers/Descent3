@@ -33,8 +33,8 @@ g3s_face SquareSides[] = {{4, {0, 1, 2, 3}}, {4, {1, 5, 6, 2}}, {4, {5, 4, 7, 6}
 
 g3s_polymodel SquareModel = {6, 8, SquareSides, square_data};
 
-object *Square = NULL;
-object *Square2 = NULL;
+object *Square = nullptr;
+object *Square2 = nullptr;
 
 extern SoundLib SndLib;
 
@@ -73,7 +73,7 @@ void RenderTexFrame(grViewport *my_viewport) {
   framecount++;
   g3_SetViewAngles(&vpos, &vang, 0);
 
-  newtime = time(NULL);
+  newtime = time(nullptr);
   if (newtime != oldtime) {
     oldtime = newtime;
     framecount = 0;
@@ -81,8 +81,8 @@ void RenderTexFrame(grViewport *my_viewport) {
 
   SndLib.begin_sound_frame();
 
-  if (Square2 == NULL) {
-    if ((Square2 = AllocateObject()) == NULL)
+  if (Square2 == nullptr) {
+    if ((Square2 = AllocateObject()) == nullptr)
       return;
     mng_LoadAllTextures();
     D3EditState.texdlg_texture = 0;
@@ -181,8 +181,8 @@ void RenderWireFrame(grViewport *my_viewport) {
   static float ydir = .3;
   static float zdir = .6;
 
-  if (Square == NULL)
-    if ((Square = AllocateObject()) == NULL)
+  if (Square == nullptr)
+    if ((Square = AllocateObject()) == nullptr)
       return;
 
   PositionObject(Square, sx, sy, sz);

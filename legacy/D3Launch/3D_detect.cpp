@@ -134,14 +134,14 @@ HRESULT WINAPI gr_d3d_enum(LPGUID lpGUID, LPSTR lpDeviceDescription, LPSTR lpDev
       d3d->pguid_3d = &d3d->guid_3d;
     } else {
       memset(&d3d->guid_3d, 0, sizeof(GUID));
-      d3d->pguid_3d = NULL;
+      d3d->pguid_3d = nullptr;
     }
 
     memmove(&d3d->guid_2d, &d2d->guid_2d, sizeof(GUID));
     if (d2d->pguid_2d) {
       d3d->pguid_2d = &d3d->guid_2d;
     } else {
-      d3d->pguid_2d = NULL;
+      d3d->pguid_2d = nullptr;
     }
 
     // strcpy( d3d->name, "Direct 3D - " );
@@ -163,7 +163,7 @@ BOOL WINAPI gr_d2d_enum(LPGUID lpGUID, LPSTR lpDeviceDescription, LPSTR lpDevice
     d2d->pguid_2d = &d2d->guid_2d;
   } else {
     memset(&d2d->guid_2d, 0, sizeof(GUID));
-    d2d->pguid_2d = NULL;
+    d2d->pguid_2d = nullptr;
   }
 
   strcpy(d2d->name, lpDeviceDescription);
@@ -172,15 +172,15 @@ BOOL WINAPI gr_d2d_enum(LPGUID lpGUID, LPSTR lpDeviceDescription, LPSTR lpDevice
   return D3DENUMRET_OK;
 }
 
-HRESULT(__stdcall *pfn_DirectDrawEnumerate)(LPDDENUMCALLBACK, LPVOID) = NULL;
-HRESULT(__stdcall *pfn_DirectDrawCreate)(GUID FAR *, LPDIRECTDRAW FAR *, IUnknown FAR *) = NULL;
+HRESULT(__stdcall *pfn_DirectDrawEnumerate)(LPDDENUMCALLBACK, LPVOID) = nullptr;
+HRESULT(__stdcall *pfn_DirectDrawCreate)(GUID FAR *, LPDIRECTDRAW FAR *, IUnknown FAR *) = nullptr;
 
 // Check for any Direct 3D devices
 void check_direct3d() {
   int i;
   HRESULT ddrval;
-  LPDIRECTDRAW lpDD1 = NULL;
-  LPDIRECT3D2 lpD3D = NULL;
+  LPDIRECTDRAW lpDD1 = nullptr;
+  LPDIRECT3D2 lpD3D = nullptr;
 
   Num_d2d_devices = 0;
   Num_d3d_devices = 0;
@@ -200,7 +200,7 @@ void check_direct3d() {
   if (!pfn_DirectDrawEnumerate)
     goto D3DError;
 
-  ddrval = pfn_DirectDrawEnumerate(gr_d2d_enum, NULL);
+  ddrval = pfn_DirectDrawEnumerate(gr_d2d_enum, nullptr);
   if (ddrval != DD_OK) {
     OutputDebugString("GR_D3D_INIT: DirectDrawEnumerate failed.\n");
     goto D3DError;
@@ -209,7 +209,7 @@ void check_direct3d() {
   for (i = 0; i < Num_d2d_devices; i++) {
     d3d_device *d2d = (d3d_device *)&D2D_devices[i];
 
-    ddrval = pfn_DirectDrawCreate(d2d->pguid_2d, &lpDD1, NULL);
+    ddrval = pfn_DirectDrawCreate(d2d->pguid_2d, &lpDD1, nullptr);
     if (ddrval != DD_OK) {
       OutputDebugString("GR_D3D_INIT: DirectDrawCreate failed.\n");
       goto D3DError;
@@ -227,10 +227,10 @@ void check_direct3d() {
     }
 
     lpD3D->Release();
-    lpD3D = NULL;
+    lpD3D = nullptr;
 
     lpDD1->Release();
-    lpDD1 = NULL;
+    lpDD1 = nullptr;
   }
 
   // Store Direct3D devices in number of cards
@@ -245,14 +245,14 @@ void check_direct3d() {
 D3DError:
 
   // If any devices haven't been freed, free them
-  if (lpD3D != NULL) {
+  if (lpD3D != nullptr) {
     lpD3D->Release();
-    lpD3D = NULL;
+    lpD3D = nullptr;
   }
 
-  if (lpDD1 != NULL) {
+  if (lpDD1 != nullptr) {
     lpDD1->Release();
-    lpDD1 = NULL;
+    lpDD1 = nullptr;
   }
   // mprintf( "Direct3D Polling failed.\n" );
 
@@ -343,15 +343,15 @@ typedef BOOL(CALLBACK *LPFN_WGLDELETECONTEXT)(HGLRC);
 
 // Check for OpenGL support, and add it to list
 void check_openGL() {
-  LPFN_GLGETSTRING pfn_glGetString = NULL;
-  LPFN_WGLMAKECURRENT pfn_wglMakeCurrent = NULL;
-  LPFN_WGLCREATECONTEXT pfn_wglCreateContext = NULL;
-  LPFN_WGLDELETECONTEXT pfn_wglDeleteContext = NULL;
+  LPFN_GLGETSTRING pfn_glGetString = nullptr;
+  LPFN_WGLMAKECURRENT pfn_wglMakeCurrent = nullptr;
+  LPFN_WGLCREATECONTEXT pfn_wglCreateContext = nullptr;
+  LPFN_WGLDELETECONTEXT pfn_wglDeleteContext = nullptr;
 
   // Check for the OpenGL dll, and open it
-  if (opengl_dll_handle == NULL) {
+  if (opengl_dll_handle == nullptr) {
     opengl_dll_handle = LoadLibrary("opengl32.dll");
-    if (opengl_dll_handle == NULL) {
+    if (opengl_dll_handle == nullptr) {
       OutputDebugString("OpenGL DLL not found.\n");
       return;
     }
@@ -368,7 +368,7 @@ void check_openGL() {
   }
 
   // Make sure the video tab has been initialized first
-  if (CurrentVideoTab == NULL) {
+  if (CurrentVideoTab == nullptr) {
     OutputDebugString("The Video Tab was not set.\n");
     return;
   }
@@ -379,7 +379,7 @@ void check_openGL() {
   //		destroyed afterwords - this function will fail if
   //		it is called in any other context.
   HDC hOpenGLDC = GetDC(CurrentVideoTab->m_MsgDlg.m_hWnd);
-  if (hOpenGLDC == NULL) {
+  if (hOpenGLDC == nullptr) {
     OutputDebugString("GetDC() failed.\n");
     return;
   }
@@ -425,7 +425,7 @@ void check_openGL() {
   // Create an OpenGL context, and make it the current context
   HGLRC ResourceContext;
   ResourceContext = pfn_wglCreateContext((HDC)hOpenGLDC);
-  if (ResourceContext == NULL) {
+  if (ResourceContext == nullptr) {
     DWORD ret = GetLastError();
     OutputDebugString("wglCreateContext() failed.\n");
     return;
@@ -438,7 +438,7 @@ void check_openGL() {
   Num_cards++;
 
   // Clean up
-  pfn_wglMakeCurrent(NULL, NULL);
+  pfn_wglMakeCurrent(nullptr, nullptr);
   pfn_wglDeleteContext(ResourceContext);
   ReleaseDC(CurrentVideoTab->m_hWnd, hOpenGLDC);
 }

@@ -67,7 +67,7 @@ void MultiSendPlayer(int slot, int which);
 void MultiSendReliablyToAllExcept(int except, uint8_t *data, int size, int seq_threshold = 0, bool urgent = 1);
 
 // Tells clients to execute dlls on their machines
-void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info = NULL);
+void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info = nullptr);
 
 // Resets the settings that a server uses
 void MultiResetSettings();
@@ -78,6 +78,6 @@ void GetNewRankings(object *killed, object *killer);
 // Returns a ranking index based on the player rating
 // If rankbuf is non-null, fills in the string corresponding to that rank
 // Returns -1 if not a pxo game (ie no rankings in this game)
-int GetRankIndex(int pnum, char *rankbuf = NULL);
+int GetRankIndex(int pnum, char *rankbuf = nullptr);
 
 #endif

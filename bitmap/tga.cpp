@@ -144,7 +144,7 @@
 #include "mem.h"
 #include "pserror.h"
 
-static char *Tga_file_data = NULL;
+static char *Tga_file_data = nullptr;
 static int Fake_pos = 0;
 static int Bad_tga = 0;
 static int Fake_file_size = 0;
@@ -504,7 +504,7 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
     cfseek(infile, savepos, SEEK_SET);
 
     Tga_file_data = mem_rmalloc<char>(numleft);
-    ASSERT(Tga_file_data != NULL);
+    ASSERT(Tga_file_data != nullptr);
     Fake_pos = 0;
     Bad_tga = 0;
     Fake_file_size = numleft;
@@ -521,9 +521,9 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
     Int3();
   // bm_tga_read_outrage_compressed8 (infile,n);
 
-  if (Tga_file_data != NULL) {
+  if (Tga_file_data != nullptr) {
     mem_free(Tga_file_data);
-    Tga_file_data = NULL;
+    Tga_file_data = nullptr;
     cfseek(infile, savepos + Fake_pos, SEEK_SET);
   }
 
@@ -662,7 +662,7 @@ int bm_page_in_file(int n) {
     cfseek(infile, savepos, SEEK_SET);
 
     Tga_file_data = mem_rmalloc<char>(numleft);
-    ASSERT(Tga_file_data != NULL);
+    ASSERT(Tga_file_data != nullptr);
     Fake_pos = 0;
     Bad_tga = 0;
     Fake_file_size = numleft;
@@ -679,9 +679,9 @@ int bm_page_in_file(int n) {
     Int3();
   // bm_tga_read_outrage_compressed8 (infile,n);
 
-  if (Tga_file_data != NULL) {
+  if (Tga_file_data != nullptr) {
     mem_free(Tga_file_data);
-    Tga_file_data = NULL;
+    Tga_file_data = nullptr;
     cfseek(infile, savepos + Fake_pos, SEEK_SET);
   }
 

@@ -31,7 +31,7 @@
 class TrueFalseDlg : public CDialog {
   // Construction
 public:
-  TrueFalseDlg(CWnd *pParent = NULL); // standard constructor
+  TrueFalseDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(TrueFalseDlg)

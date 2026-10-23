@@ -1763,7 +1763,7 @@ void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, uint16_t *
   int i, t;
   lfb.type = LFB_LOCK_WRITE;
   rend_GetLFBLock(&lfb);
-  if (lfb.data == NULL) {
+  if (lfb.data == nullptr) {
     mprintf(0, "Couldn't get lock in rend_DrawLFBBitmap!\n");
     return;
   }
@@ -2225,9 +2225,9 @@ void *rend_RetrieveDirectDrawObj(void **frontsurf, void **backsurf) {
       break;
     }
   }
-  *frontsurf = NULL;
-  *backsurf = NULL;
-  return NULL;
+  *frontsurf = nullptr;
+  *backsurf = nullptr;
+  return nullptr;
 }
 // returns rendering statistics for the frame
 void rend_GetStatistics(tRendererStats *stats) {

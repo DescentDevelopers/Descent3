@@ -447,7 +447,7 @@ void CListCtrlEx::OnKillFocus(CWnd *pNewWnd) {
 
   // this really still has focus if one of its chilren (ie. the edit box)
   // has focus
-  if (pNewWnd != NULL && pNewWnd->GetParent() == this)
+  if (pNewWnd != nullptr && pNewWnd->GetParent() == this)
     return;
 
   // repaint items that should change appearance

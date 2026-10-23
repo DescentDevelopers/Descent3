@@ -39,7 +39,7 @@ private:
 
   // Construction
 public:
-  RobotEditWeaponsDialog(otype_wb_info static_wb[], poly_model *pm, CWnd *pParent = NULL); // standard constructor
+  RobotEditWeaponsDialog(otype_wb_info static_wb[], poly_model *pm, CWnd *pParent = nullptr); // standard constructor
   void GetData(void);
 
   // Dialog Data

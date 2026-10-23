@@ -273,7 +273,7 @@ BOOL CUpdateDlg::GetVersionNfo() {
 
   // parse the most up to date version number out of the file
   FILE *f = fopen(VERSION_LOC_FNAME, "rt");
-  if (f == NULL) {
+  if (f == nullptr) {
     LocalizedMessageBox(IDS_UPDATEDLG_NO_FIND, IDS_UPDATEDLG_ERROR, MB_OK | MB_ICONERROR);
     return FALSE;
   }
@@ -395,7 +395,7 @@ BOOL CUpdateDlg::GetMOTD() {
 #ifdef USE_MULTI_LANGUAGES
   int lang_type = os_config_read_uint(szSectionName, "LanguageType", LANGUAGE_ENGLISH);
   if (lang_type != LANGUAGE_ENGLISH) {
-    char *path = NULL;
+    char *path = nullptr;
     switch (lang_type) {
     case LANGUAGE_FRENCH:
       path = FRN_MOTD_PATH;
@@ -412,7 +412,7 @@ BOOL CUpdateDlg::GetMOTD() {
     }
 
     // See if a motd file exists for this language
-    if (path != NULL) {
+    if (path != nullptr) {
       get_file_ret = GetHTTPFile(path, MOTD_LOC_FNAME);
       if (get_file_ret == GETHTTPFILE_OK) {
         CloseHTTP();
@@ -505,7 +505,7 @@ void CUpdateDlg::OnYes() {
 
   // Open the version file
   f = fopen(VERSION_LOC_FNAME, "rt");
-  if (f == NULL) {
+  if (f == nullptr) {
     LocalizedMessageBox(IDS_UPDATEDLG_YES_ERR1, IDS_UPDATEDLG_ERROR, MB_OK | MB_ICONERROR);
     EndDialog(0);
     return;
@@ -557,7 +557,7 @@ void CUpdateDlg::OnYes() {
 
       // Download the site info file
       filename_only = strrchr(filebuffer, '/');
-      if (filename_only == NULL)
+      if (filename_only == nullptr)
         filename_only = filebuffer;
       else
         filename_only++;
@@ -603,7 +603,7 @@ void CUpdateDlg::OnYes() {
 
       // Download the patch file
       filename_only = strrchr(site_select_dlg.download_path, '/');
-      if (filename_only == NULL)
+      if (filename_only == nullptr)
         filename_only = site_select_dlg.download_path;
       else
         filename_only++;
@@ -670,7 +670,7 @@ void CUpdateDlg::OnYes() {
     } else {
       CString str_msg;
       filename_only = strrchr(filebuffer, '/');
-      if (filename_only == NULL)
+      if (filename_only == nullptr)
         filename_only = filebuffer;
       else
         filename_only++;
@@ -730,7 +730,7 @@ BOOL CUpdateDlg::OnInitDialog() {
   CancelPressed = FALSE;
   downloading = FALSE;
   patching = FALSE;
-  dlg = NULL;
+  dlg = nullptr;
 
   // Don't put a limit on the MOTD box
   m_MOTDBox.LimitText(0);
@@ -768,7 +768,7 @@ BOOL CUpdateDlg::OnInitDialog() {
   msg_dlg.EndDialog(0);
 
   // Don't need to show update prompt if user's been here already
-  os_config_write_uint(NULL, "UpdatePromptShown", 1);
+  os_config_write_uint(nullptr, "UpdatePromptShown", 1);
 
   return TRUE; // return TRUE unless you set the focus to a control
                // EXCEPTION: OCX Property Pages should return FALSE
@@ -817,7 +817,7 @@ __declspec(dllexport) LPVOID CALLBACK CallBack(UINT Id, LPVOID Parm) {
     case 4:
       // Error message text
       temp_msg.LoadString(IDS_UPDATEDLG_PATCH_ERROR);
-      MessageBox(NULL, CleanString((char *)Parm), temp_msg, MB_OK | MB_ICONERROR);
+      MessageBox(nullptr, CleanString((char *)Parm), temp_msg, MB_OK | MB_ICONERROR);
       break;
     case 5:
       // % completed
@@ -931,7 +931,7 @@ __declspec(dllexport) LPVOID CALLBACK CallBack(UINT Id, LPVOID Parm) {
 
   if (CancelPressed) // all of our call-back dialogs set this
                      // flag if the user pushes a CANCEL button
-    return (NULL);
+    return (nullptr);
   else
     return (RetVal);
 }
@@ -1019,12 +1019,12 @@ int CUpdateDlg::UpdateTheLauncher() {
 
   BOOL ret = CreateProcess(REPLACER_FNAME,            // pointer to name of executable module
                            CommandLine.GetBuffer(0),  // pointer to command line string
-                           NULL,                      // pointer to process security attributes
-                           NULL,                      // pointer to thread security attributes
+                           nullptr,                      // pointer to process security attributes
+                           nullptr,                      // pointer to thread security attributes
                            FALSE,                     // handle inheritance flag
                            CREATE_DEFAULT_ERROR_MODE, // creation flags
-                           NULL,                      // pointer to new environment block
-                           NULL,                      // pointer to current directory name
+                           nullptr,                      // pointer to new environment block
+                           nullptr,                      // pointer to current directory name
                            &si,                       // pointer to STARTUPINFO
                            &pi                        // pointer to PROCESS_INFORMATION
   );
@@ -1038,7 +1038,7 @@ int CUpdateDlg::UpdateTheLauncher() {
 
 // Downloads a given remote file and saves it as a local file
 int CUpdateDlg::GetHTTPFile(char *remote, char *local) {
-  uint32_t LastPrintbytes = time(NULL);
+  uint32_t LastPrintbytes = time(nullptr);
   InetGetFile *inetfile;
   WORD ver = MAKEWORD(1, 1);
   char URL[_MAX_PATH + 1];
@@ -1096,7 +1096,7 @@ int CUpdateDlg::GetHTTPFile(char *remote, char *local) {
     }
 
     // update the download status information
-    if (time(NULL) - LastPrintbytes >= 1) {
+    if (time(nullptr) - LastPrintbytes >= 1) {
       if (inetfile->GetTotalBytes()) {
         int ipct = 0;
 
@@ -1109,7 +1109,7 @@ int CUpdateDlg::GetHTTPFile(char *remote, char *local) {
         m_progress.SetPos(ipct);
         StatusBar(IDS_UPDATEDLG_DL_FILE);
       }
-      LastPrintbytes = time(NULL);
+      LastPrintbytes = time(nullptr);
     }
 
     // See if cancel has been pushed
@@ -1129,7 +1129,7 @@ void CUpdateDlg::GetHTTPFileErrorBox(int error_id, char *remote, char *local) {
   CString msg, title;
 
   // Make sure the data is not NULL
-  if (remote == NULL || local == NULL)
+  if (remote == nullptr || local == nullptr)
     return;
 
   // Make sure an error has occurred
@@ -1271,7 +1271,7 @@ BOOL CUpdateDlg::ParseMOTDFile(void) {
 
   // Try and open the message of the day local text file
   f = fopen(MOTD_LOC_FNAME, "rt");
-  if (f == NULL) {
+  if (f == nullptr) {
     // Couldn't open file, so insert default message
     MOTD_buffer.LoadString(IDS_UPDATEDLG_NO_MOTD);
     m_MOTDBox.SetWindowText(MOTD_buffer.GetBuffer(0));

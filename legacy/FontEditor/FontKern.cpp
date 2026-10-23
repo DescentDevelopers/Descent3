@@ -60,7 +60,7 @@ char *SampleText = "This is some sample text that is here to\n"
 // if there is no kerning structure, add it. if no kerning in font, add it to the template
 #define KERNINFO_PAIR_SIZE 3
 
-int fonttool_get_kerning(int c1, int c2, int *pairnum = NULL);
+int fonttool_get_kerning(int c1, int c2, int *pairnum = nullptr);
 
 int fonttool_get_kerning(int c1, int c2, int *pairnum) {
   int i;
@@ -125,7 +125,7 @@ void fonttool_set_kerning(int c1, int c2, int dist) {
           // last pair, deallocate kern_data and end.
           mprintf(0, "removing last kerning pair\n");
           mem_free(kern_data);
-          kern_data = NULL;
+          kern_data = nullptr;
         } else {
           mprintf(0, "removing kerning pair %d,%d\n", c1, c2);
         }
@@ -164,7 +164,7 @@ void fonttool_set_kerning(int c1, int c2, int dist) {
 void fonttool_remove_kerning() {
   if (Font_template.kern_data) {
     mem_free(Font_template.kern_data);
-    Font_template.kern_data = NULL;
+    Font_template.kern_data = nullptr;
   }
 }
 

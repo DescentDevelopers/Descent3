@@ -141,8 +141,8 @@
 char Level_script_name[MAX_SCRFILENAME];
 
 // Currently loaded script file
-char *Default_script_source = NULL;
-char *Level_script_source = NULL;
+char *Default_script_source = nullptr;
+char *Level_script_source = nullptr;
 
 // Table of scripts within script file
 tScriptName Script_names[MAX_SCRIPTS];
@@ -186,7 +186,7 @@ bool NewScript(const char *filename) {
   char path[_MAX_PATH];
   CFILE *file;
 
-  ddio_MakePath(path, LocalLevelsDir, filename, NULL);
+  ddio_MakePath(path, LocalLevelsDir, filename, nullptr);
 
   //	create the file
   file = cfopen(path, "wt");
@@ -210,7 +210,7 @@ char *LoadScript(const char *filename) {
 
   memset(buffer, 0, MAX_SCRIPT_LINE_SIZE);
 
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
+  ddio_MakePath(file_path, LocalLevelsDir, filename, nullptr);
   //	mprintf(0,"Loading script from %s\n",file_path);
   if (!cfexist(file_path)) {
     return false;
@@ -251,7 +251,7 @@ void SaveScript(const char *filename, char *script) {
   CFILE *file;
   char file_path[256];
 
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
+  ddio_MakePath(file_path, LocalLevelsDir, filename, nullptr);
 
   file = cfopen(file_path, "wt");
   cf_WriteString(file, script);
@@ -274,7 +274,7 @@ bool CompileScript(tD3XProgram *program, char *script) {
 		return false;
 	}
 
-	if (program == NULL) {
+	if (program == nullptr) {
 		mprintf(1, "You can't compile an uninitialized script!\n");
 		return false;
 	}
@@ -298,7 +298,7 @@ void SaveScriptCode(const char *filename, tD3XProgram *program) {
   char file_path[256];
 
   //	write out default script program
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
+  ddio_MakePath(file_path, LocalLevelsDir, filename, nullptr);
   file = cfopen(file_path, "wb");
   // D3XSaveProgram(file, program); // LGT: function undefined
   mprintf(0, "Saving %s.\n", filename);
@@ -375,7 +375,7 @@ bool GenerateScriptWizardInfo(char *script, bool custom) {
   line = 1;
   slot = 0;
 
-  if (script == NULL)
+  if (script == nullptr)
     return false;
 
   strsize = strlen(script);
@@ -544,7 +544,7 @@ char *GotoScriptInText(char *text, const char *script) {
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -565,7 +565,7 @@ char *FindEventNameFromID(int id) {
 	for (int i = 0; i < MAX_SCREVTS; i++)
 		if (id == Script_evt_ids[i]) return Script_evt_names[i];
 #endif
-  return NULL;
+  return nullptr;
 }
 
 int FindEventIDFromName(const char *name) {
@@ -607,7 +607,7 @@ char *AddScriptBlockToScript(char *script, const char *newname, const char *type
   newsrc = mem_rmalloc<char>(strlen(script) + strlen(newblk) + 1);
   if (!newsrc) {
     mprintf(1, "Allocation failure in creating new script buffer.\n");
-    return NULL;
+    return nullptr;
   }
 
   sprintf(newsrc, "%s%s", script, newblk);
@@ -633,7 +633,7 @@ char *AddEventBlockToScript(char *script, const char *evtname, const char *scrip
 
   txtstart = GotoScriptInText(script, scriptname);
   if (!txtstart)
-    return NULL;
+    return nullptr;
 
   preword = txtstart;
   strsize = strlen(script);
@@ -684,7 +684,7 @@ char *AddEventBlockToScript(char *script, const char *evtname, const char *scrip
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 //	generates script list from all script files.
@@ -747,11 +747,11 @@ void tScriptName::free_parameters() {
   for (int i = 0; i < nparms; i++) {
     if (parameters[i]) {
       delete[] (parameters[i]);
-      parameters[i] = NULL;
+      parameters[i] = nullptr;
     }
     if (paramtypes[i]) {
       delete[] (paramtypes[i]);
-      paramtypes[i] = NULL;
+      paramtypes[i] = nullptr;
     }
   }
   nparms = 0;

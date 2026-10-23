@@ -294,7 +294,7 @@ void DumpTextToClipboard(char *text) {
   }
   *ptr = 0; // terminate string
   GlobalUnlock(h_text);
-  OpenClipboard(NULL);
+  OpenClipboard(nullptr);
   EmptyClipboard();
   SetClipboardData(CF_TEXT, h_text);
   CloseClipboard();

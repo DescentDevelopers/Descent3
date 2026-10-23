@@ -149,10 +149,10 @@ void UIGadget::Create(UIWindow *wnd, int id, int x, int y, int w, int h, int fla
 
   //	handle formatting issues.
   OnFormat();
-  m_MasterGadget = NULL;
-  m_SlaveGadgets = NULL;
-  m_CurrentSlave = NULL;
-  m_NextSlave = m_PrevSlave = NULL;
+  m_MasterGadget = nullptr;
+  m_SlaveGadgets = nullptr;
+  m_CurrentSlave = nullptr;
+  m_NextSlave = m_PrevSlave = nullptr;
   m_Datum = 0;
 
   m_Wnd->AddGadget(this);
@@ -160,7 +160,7 @@ void UIGadget::Create(UIWindow *wnd, int id, int x, int y, int w, int h, int fla
 
 void UIGadget::Destroy() {
   // slaves are freed or destroyed by now.
-  m_SlaveGadgets = NULL;
+  m_SlaveGadgets = nullptr;
 
   // remove gadget from windw list.
   if (m_Wnd) {
@@ -256,7 +256,7 @@ void UIGadget::AttachSlaveGadget(UIGadget *gadget) {
     m_SlaveGadgets->m_NextSlave = gadget;
   }
   gadget->m_PrevSlave = m_SlaveGadgets;
-  gadget->m_NextSlave = NULL;
+  gadget->m_NextSlave = nullptr;
   m_SlaveGadgets = gadget;
 }
 
@@ -282,7 +282,7 @@ void UIGadget::DetachSlaveGadget(UIGadget *gadget) {
     gadget->m_NextSlave->m_PrevSlave = gadget->m_PrevSlave;
   }
 
-  gadget->m_MasterGadget = NULL;
+  gadget->m_MasterGadget = nullptr;
   gadget->m_Flags &= (~UIF_SLAVE);
 }
 
@@ -295,7 +295,7 @@ void UIGadget::LostFocus() {
   if (m_CurrentSlave) {
     ASSERT(m_SlaveGadgets);
     m_CurrentSlave->LostFocus();
-    m_CurrentSlave = NULL;
+    m_CurrentSlave = nullptr;
   }
   m_infocus = false;
 }
@@ -306,7 +306,7 @@ void UIGadget::GainFocus() {
   //	m_LastKeyTime = 0.0f;
 
   m_infocus = true;
-  m_CurrentSlave = NULL;
+  m_CurrentSlave = nullptr;
   this->OnGainFocus(); // should invoke gadget's OnGainFocus function
 }
 
@@ -331,7 +331,7 @@ void UIGadget::CheckFocusOnSlaves(int mx, int my) {
   if (!slave) {
     if (m_CurrentSlave) {
       m_CurrentSlave->LostFocus();
-      m_CurrentSlave = NULL;
+      m_CurrentSlave = nullptr;
     }
   }
 }
@@ -380,7 +380,7 @@ bool UIGadget::IsLocked() const {
 
 UIGadget *UIGadget::GetPrevUsableGadget() {
   UIGadget *gadget = this;
-  UIGadget *next_gadget = NULL;
+  UIGadget *next_gadget = nullptr;
 
   while (gadget->m_Prev) {
     gadget = gadget->m_Prev;
@@ -395,7 +395,7 @@ UIGadget *UIGadget::GetPrevUsableGadget() {
 
 UIGadget *UIGadget::GetNextUsableGadget() {
   UIGadget *gadget = this;
-  UIGadget *next_gadget = NULL;
+  UIGadget *next_gadget = nullptr;
 
   while (gadget->m_Next) {
     gadget = gadget->m_Next;

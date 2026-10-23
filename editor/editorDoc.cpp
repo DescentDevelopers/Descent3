@@ -101,8 +101,8 @@ int CopyScriptFile(char *old_file, char *new_file) {
   char old_fullpath[_MAX_PATH];
   char new_fullpath[_MAX_PATH];
 
-  ddio_MakePath(old_fullpath, LocalScriptDir, old_file, NULL);
-  ddio_MakePath(new_fullpath, LocalScriptDir, new_file, NULL);
+  ddio_MakePath(old_fullpath, LocalScriptDir, old_file, nullptr);
+  ddio_MakePath(new_fullpath, LocalScriptDir, new_file, nullptr);
 
   return (cf_CopyFile(new_fullpath, old_fullpath));
 }
@@ -166,7 +166,7 @@ void CEditorDoc::Dump(CDumpContext &dc) const { COleServerDoc::Dump(dc); }
 
 BOOL CEditorDoc::OnNewDocument() {
   // If Dallas is running, don't create a new document
-  if (theApp.m_DallasModelessDlgPtr != NULL) {
+  if (theApp.m_DallasModelessDlgPtr != nullptr) {
     OutrageMessageBox("The Dallas Script Editor is open!\n\n"
                       "You must close down Dallas before creating a New Level...");
     return FALSE;
@@ -189,11 +189,11 @@ BOOL CEditorDoc::OnNewDocument() {
 
   // Remove any "Untitled" dallas script files
   char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.cpp", NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.cpp", nullptr);
   ddio_DeleteFile(fullpath);
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.dll", NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.dll", nullptr);
   ddio_DeleteFile(fullpath);
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.msg", NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.msg", nullptr);
   ddio_DeleteFile(fullpath);
 
   return TRUE;
@@ -203,7 +203,7 @@ BOOL CEditorDoc::OnOpenDocument(LPCTSTR lpszPathName) {
   BOOL opened;
 
   // If Dallas is running, don't open the document
-  if (theApp.m_DallasModelessDlgPtr != NULL) {
+  if (theApp.m_DallasModelessDlgPtr != nullptr) {
     OutrageMessageBox("The Dallas Script Editor is open!\n\n"
                       "You must close down Dallas before loading a new level...");
     return FALSE;
@@ -264,7 +264,7 @@ BOOL CEditorDoc::OnSaveDocument(LPCTSTR lpszPathName) {
   if (retval) {
 
     // If Dallas is up, change its filenames
-    if (theApp.m_DallasModelessDlgPtr != NULL) {
+    if (theApp.m_DallasModelessDlgPtr != nullptr) {
       theApp.m_DallasModelessDlgPtr->SetAllFilenamesToThis((char *)lpszPathName);
     }
 
@@ -279,12 +279,12 @@ BOOL CEditorDoc::OnSaveDocument(LPCTSTR lpszPathName) {
     if (old_level_fname.IsEmpty())
       strcpy(old_filename, "Untitled");
     else
-      ddio_SplitPath(old_level_fname.GetBuffer(0), NULL, old_filename, NULL);
+      ddio_SplitPath(old_level_fname.GetBuffer(0), nullptr, old_filename, nullptr);
 
     if (new_level_fname.IsEmpty())
       strcpy(new_filename, "Untitled");
     else
-      ddio_SplitPath(new_level_fname.GetBuffer(0), NULL, new_filename, NULL);
+      ddio_SplitPath(new_level_fname.GetBuffer(0), nullptr, new_filename, nullptr);
 
     // Make sure names are different (ie 'Save As')
     if (stricmp(old_filename, new_filename) != 0) {
@@ -312,7 +312,7 @@ void CEditorDoc::OnCloseDocument() {
   COleServerDoc::OnCloseDocument();
   mprintf(0, "Closing current level...\n");
 
-  theApp.main_doc = NULL;
+  theApp.main_doc = nullptr;
 }
 
 BOOL CEditorDoc::SaveModified() {

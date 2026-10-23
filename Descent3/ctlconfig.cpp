@@ -688,7 +688,7 @@ public:
 void wpnsel_cfg_screen::setup(newuiLargeMenu *menu) {
   m_menu = menu;
   m_sheet = menu->AddOption(IDV_WPNSEL, TXT_WPNSELPREC);
-  m_sheet->NewGroup(NULL, 0, 20);
+  m_sheet->NewGroup(nullptr, 0, 20);
   m_sheet->AddText(TXT_WPNCFGHELP0);
   m_sheet->AddText(TXT_WPNCFGHELP1);
   m_selection_status = -1;
@@ -1011,19 +1011,19 @@ void ctl_cfg_element_options_dialog(int16_t fnid) {
     str[0] = 0;
   }
   // open a small window
-  wnd.Create(NULL, 0, 0, 320, 192);
+  wnd.Create(nullptr, 0, 0, 320, 192);
   sheet = wnd.GetSheet();
   // the standard ok and cancel buttons
-  sheet->NewGroup(NULL, 116, 110, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 116, 110, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
-  sheet->NewGroup(NULL, 0, 0);
+  sheet->NewGroup(nullptr, 0, 0);
   sheet->AddText(TXT_CFGHELP_TEXT);
   sheet->AddText(str);
   y = 40;
   // check if there's a binding, if so, then check if we should put up invert axis option.
-  clear_binding[0] = NULL;
-  inv_binding[0] = NULL;
+  clear_binding[0] = nullptr;
+  inv_binding[0] = nullptr;
   if (cfgparts.ctrl_0 != NULL_CONTROLLER) {
     snprintf(str, sizeof(str), TXT_CFG_BIND_1, cfg_binding_text(ctype_fn[0], cfgparts.ctrl_0, cfgparts.bind_0));
     sheet->NewGroup(str, 0, y, NEWUI_ALIGN_HORIZ);
@@ -1037,8 +1037,8 @@ void ctl_cfg_element_options_dialog(int16_t fnid) {
     y += 30;
   }
   // check if there's a binding, if so, then check if we should put up invert axis option.
-  clear_binding[1] = NULL;
-  inv_binding[1] = NULL;
+  clear_binding[1] = nullptr;
+  inv_binding[1] = nullptr;
   if (cfgparts.ctrl_1 != NULL_CONTROLLER) {
     snprintf(str, sizeof(str), TXT_CFG_BIND_2, cfg_binding_text(ctype_fn[1], cfgparts.ctrl_1, cfgparts.bind_1));
     sheet->NewGroup(str, 0, y, NEWUI_ALIGN_HORIZ);
@@ -1088,15 +1088,15 @@ int weapon_select_dialog(int wpn, bool is_secondary) {
   int res, i;
   uint16_t retval;
   wpn &= (~WPNSEL_SKIP);
-  wnd.Create(NULL, 0, 0, 320, 288);
+  wnd.Create(nullptr, 0, 0, 320, 288);
   sheet = wnd.GetSheet();
-  sheet->NewGroup(NULL, 116, 210, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 116, 210, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
-  sheet->NewGroup(NULL, 0, 0);
+  sheet->NewGroup(nullptr, 0, 0);
   sheet->AddText(TXT_WPNCFGHELP3);
   sheet->AddText(TXT(Static_weapon_names_msg[wpn]));
-  sheet->NewGroup(NULL, 0, 40);
+  sheet->NewGroup(nullptr, 0, 40);
   lbox = sheet->AddListBox(192, 160, UID_WPNLIST, UILB_NOSORT);
   // add primaries or secondaries.
   for (i = 0; i < 10; i++) {
@@ -1141,9 +1141,9 @@ void joystick_settings_dialog() {
   char axis_str[N_JOY_AXIS] = {'X', 'Y', 'Z', 'R', 'U', 'V'};
   int16_t *joy_sens[N_JOY_AXIS];
   int16_t *mse_sens[N_MOUSE_AXIS];
-  int16_t *ff_gain = NULL;
-  bool *ff_enabled = NULL;
-  bool *ff_auto_center = NULL;
+  int16_t *ff_gain = nullptr;
+  bool *ff_enabled = nullptr;
+  bool *ff_auto_center = nullptr;
   bool ff_auto_center_support = false;
   bool ff_found = false;
   bool *joy_enabled;
@@ -1153,7 +1153,7 @@ void joystick_settings_dialog() {
   wnd.Create(TXT_JOYMOUSESETTINGS, 0, 0, 480, 384);
   sheet = wnd.GetSheet();
   // standard ui
-  sheet->NewGroup(NULL, 270, 288, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 270, 288, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
   // sensitivity sliders for joystick
@@ -1193,11 +1193,11 @@ void joystick_settings_dialog() {
   sheet->AddLongRadioButton(TXT_MOUSELOOK);
   *msectl = Current_pilot.mouselook_control ? 1 : 0;
   y += 50;
-  sheet->NewGroup(NULL, 210, y);
+  sheet->NewGroup(nullptr, 210, y);
   sheet->AddLongButton(TXT_CALIBJOYSTICK, UID_JOYCFG);
   // force feedback stuff
   y += 30;
-  ddio_ff_GetInfo(&ff_found, NULL);
+  ddio_ff_GetInfo(&ff_found, nullptr);
   if (ff_found) {
     sheet->NewGroup(TXT_TITLE_FORCEFEEDBACK, 210, y);
     ff_enabled = sheet->AddLongCheckBox(TXT_CFG_FFENABLED, ForceIsEnabled());
@@ -1269,13 +1269,13 @@ void key_settings_dialog() {
   int16_t *key_ramp_speed;
   wnd.Create(TXT_KEYSETTINGS, 0, 0, 384, 256);
   sheet = wnd.GetSheet();
-  sheet->NewGroup(NULL, 0, 30);
+  sheet->NewGroup(nullptr, 0, 30);
   slider_set.min_val.f = 0.0f;
   slider_set.max_val.f = CFG_KEY_RAMP_MAX;
   slider_set.type = SLIDER_UNITS_FLOAT;
   curpos = CALC_SLIDER_POS_FLOAT(Key_ramp_speed, &slider_set, CFG_KEY_RAMP_RANGE);
   key_ramp_speed = sheet->AddSlider(TXT_KEYRAMPINGTIME, CFG_KEY_RAMP_RANGE, curpos, &slider_set);
-  sheet->NewGroup(NULL, 180, 160, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 180, 160, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
   wnd.Open();
@@ -1321,7 +1321,7 @@ void net_settings_dialog() {
   pps_client_current_t = sheet->AddSlider("PPS", cfg_range, curpos, &slider_set);
 
   // add group "window ctrl buttons"
-  sheet->NewGroup(NULL, 180, 160, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 180, 160, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
@@ -1375,7 +1375,7 @@ void CtlConfigSwitchCB(newuiMenu *menu, int16_t old_option_id, int16_t new_optio
     cfgdata->curcfg = cfgdata->wpncfg;
     break;
   default:
-    cfgdata->curcfg = NULL;
+    cfgdata->curcfg = nullptr;
   }
   if (cfgdata->curcfg) {
     cfgdata->curcfg->realize();
@@ -1419,7 +1419,7 @@ void CtlConfig(int mode) {
   cfg_cb_data.joycfg = &joycfg;
   cfg_cb_data.keycfg = &keycfg;
   cfg_cb_data.wpncfg = &wpncfg;
-  cfg_cb_data.curcfg = NULL;
+  cfg_cb_data.curcfg = nullptr;
   menu.AddSimpleOption(UID_CANCEL, TXT_GEN_EXIT);
   menu.SetCurrentOption((mode == CTLCONFIG_WPNSEL)       ? IDV_WPNSEL
                         : (mode == CTLCONFIG_CONTROLLER) ? IDV_CCONFIG

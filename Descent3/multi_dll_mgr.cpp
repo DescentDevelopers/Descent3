@@ -317,8 +317,8 @@
 #include "directplay.h"
 #endif
 
-void *callback = NULL;
-module MultiDLLHandle = {NULL};
+void *callback = nullptr;
+module MultiDLLHandle = {nullptr};
 int SearchForLocalGamesTCP(uint32_t ask, uint16_t port);
 int SearchForGamesPXO(uint32_t ask, uint16_t port);
 extern uint8_t NewUIWindow_alpha;
@@ -339,10 +339,10 @@ typedef void(DLLFUNCCALL *DLLMultiScoreCall_fp)(int eventnum, void *data);
 typedef void(DLLFUNCCALL *DLLMultiInit_fp)(int *api_fp);
 typedef void(DLLFUNCCALL *DLLMultiClose_fp)();
 #endif
-DLLMultiScoreCall_fp DLLMultiScoreCall = NULL;
-DLLMultiCall_fp DLLMultiCall = NULL;
-DLLMultiInit_fp DLLMultiInit = NULL;
-DLLMultiClose_fp DLLMultiClose = NULL;
+DLLMultiScoreCall_fp DLLMultiScoreCall = nullptr;
+DLLMultiCall_fp DLLMultiCall = nullptr;
+DLLMultiInit_fp DLLMultiInit = nullptr;
+DLLMultiClose_fp DLLMultiClose = nullptr;
 // dllmultiiInfo DLLMultiInfo;
 // The DLL needs these too.
 #define MAXTEXTITEMS 100
@@ -440,7 +440,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[40] = (int *)ShowProgressScreen;
   api->fp[41] = (int *)SearchForLocalGamesTCP;
   api->fp[42] = (int *)nw_GetHostAddressFromNumbers;
-  api->fp[43] = (int *)NULL; // nw_GetProtocolType;
+  api->fp[43] = (int *)nullptr; // nw_GetProtocolType;
   api->fp[44] = (int *)HotSpotCreate;
   api->fp[45] = (int *)PollUI;
   api->fp[46] = (int *)GetMissionName;
@@ -468,7 +468,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[68] = (int *)SetOldEditBufferLen;
   api->fp[69] = (int *)NewUIWindowLoadBackgroundImage;
   api->fp[70] = (int *)DeleteUIItem;
-  api->fp[71] = (int *)NULL;  // was SearchForLocalGamesIPX
+  api->fp[71] = (int *)nullptr;  // was SearchForLocalGamesIPX
   api->fp[72] = (int *)HotSpotSetStates;
   api->fp[73] = (int *)PlayerSetShipPermission;
   api->fp[74] = (int *)fp_PlayerIsShipAllowed;
@@ -477,9 +477,9 @@ void GetMultiAPI(multi_api *api) {
   api->fp[76] = (int *)dp_ListDirectPlayGames;
   api->fp[77] = (int *)dp_GetModemChoices;
 #else
-  api->fp[75] = (int *)NULL;
-  api->fp[76] = (int *)NULL;
-  api->fp[77] = (int *)NULL;
+  api->fp[75] = (int *)nullptr;
+  api->fp[76] = (int *)nullptr;
+  api->fp[77] = (int *)nullptr;
 #endif
   api->fp[78] = (int *)DatabaseReadInt;
   api->fp[79] = (int *)DatabaseWriteInt;
@@ -491,8 +491,8 @@ void GetMultiAPI(multi_api *api) {
   api->fp[84] = (int *)dp_StartGame;
   api->fp[85] = (int *)dp_EndGame;
 #else
-  api->fp[84] = (int *)NULL;
-  api->fp[85] = (int *)NULL;
+  api->fp[84] = (int *)nullptr;
+  api->fp[85] = (int *)nullptr;
 #endif
   api->fp[86] = (int *)nw_Asyncgethostbyname;
   api->fp[87] = (int *)PrintDedicatedMessage;
@@ -529,8 +529,8 @@ void GetMultiAPI(multi_api *api) {
   api->vp[1] = (int *)Tracker_id;
   api->vp[2] = (int *)&Game_is_master_tracker_game;
   api->vp[3] = (int *)&Game_mode;
-  api->vp[4] = (int *)NULL; // Current_pilot; no longer a struct
-  api->vp[5] = (int *)NULL; // Base_directory; no longer exists
+  api->vp[4] = (int *)nullptr; // Current_pilot; no longer a struct
+  api->vp[5] = (int *)nullptr; // Base_directory; no longer exists
   api->vp[6] = (int *)&MultiDLLGameStarting;
   api->vp[7] = (int *)MTPilotinfo;
   api->vp[8] = (int *)&Num_network_games_known;
@@ -553,12 +553,12 @@ void GetMultiAPI(multi_api *api) {
   api->vp[24] = (int *)&Num_modems_found;
 #else
   static bool _dummyUse_DirectPlay = false;
-  api->vp[19] = (int *)NULL;
-  api->vp[20] = (int *)NULL;
-  api->vp[21] = (int *)NULL;
+  api->vp[19] = (int *)nullptr;
+  api->vp[20] = (int *)nullptr;
+  api->vp[21] = (int *)nullptr;
   api->vp[22] = (int *)&_dummyUse_DirectPlay;
-  api->vp[23] = (int *)NULL;
-  api->vp[24] = (int *)NULL;
+  api->vp[23] = (int *)nullptr;
+  api->vp[24] = (int *)nullptr;
 #endif
   api->vp[25] = (int *)&Dedicated_server;
   api->vp[26] = (int *)&TCP_active;
@@ -584,9 +584,9 @@ void FreeMultiDLL() {
   if (!std::filesystem::remove(Multi_conn_dll_name)) {
     LOG_WARNING << "Couldn't delete the tmp dll";
   }
-  DLLMultiCall = NULL;
-  DLLMultiInit = NULL;
-  DLLMultiClose = NULL;
+  DLLMultiCall = nullptr;
+  DLLMultiInit = nullptr;
+  DLLMultiClose = nullptr;
 }
 
 // Loads the Multi dll.  Returns 1 on success, else 0 on failure
@@ -952,18 +952,18 @@ UIObject *OldEditCreate(UIWindow *parentitem, int id, int x, int y, int w, int h
 }
 void OldEditSetText(UIEdit *item, const char *newtext) { item->SetText(newtext); }
 void OldEditGetText(UIEdit *item, char *buff, int len) { item->GetText(buff, len); }
-static void (*DLLInit_old_ui_callback)() = NULL;
+static void (*DLLInit_old_ui_callback)() = nullptr;
 void ToggleUICallback(int state) {
 
   if (state == 0) {
-    if (DLLInit_old_ui_callback == NULL) {
+    if (DLLInit_old_ui_callback == nullptr) {
       DLLInit_old_ui_callback = GetUICallback();
-      SetUICallback(NULL);
+      SetUICallback(nullptr);
     }
   } else {
-    if (DLLInit_old_ui_callback != NULL) {
+    if (DLLInit_old_ui_callback != nullptr) {
       SetUICallback(DLLInit_old_ui_callback);
-      DLLInit_old_ui_callback = NULL;
+      DLLInit_old_ui_callback = nullptr;
     }
   }
 }
@@ -1090,5 +1090,5 @@ void ScoreAPIFrameInterval() {
       CallMultiScoreDLL(CDT_EVT_SET_GAMEID, GameArgs[gi_arg + 1]);
     }
   }
-  CallMultiScoreDLL(CDT_EVT_FRAME, NULL);
+  CallMultiScoreDLL(CDT_EVT_FRAME, nullptr);
 }

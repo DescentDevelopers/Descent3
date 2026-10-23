@@ -533,9 +533,9 @@ static constexpr const char *Preloaded_bitmap_list[] = {
 
 int UI_frame_result = -1;
 static newuiResources Newui_resources;
-static void (*UI_callback)() = NULL;
+static void (*UI_callback)() = nullptr;
 static UIBitmapItem *Preloaded_bitmaps[N_UI_PRELOADED_BITMAPS] = {
-    NULL,
+    nullptr,
 };
 
 #ifndef MULTI_H
@@ -583,7 +583,7 @@ void newuiCore_ReleaseBitmaps() {
 
   for (i = 0; i < N_UI_PRELOADED_BITMAPS; i++) {
     newui_FreeBitmap(Preloaded_bitmaps[i]);
-    Preloaded_bitmaps[i] = NULL;
+    Preloaded_bitmaps[i] = nullptr;
   }
 }
 
@@ -733,7 +733,7 @@ UIBitmapItem *newuiResources::Load(const char *filename) {
     if (free_slot == -1) {
       // reached limit.
       Int3();
-      return NULL;
+      return nullptr;
     }
     i = free_slot;
 
@@ -820,7 +820,7 @@ void newuiResources::Free(UIBitmapItem *bmitem) {
 newuiMenu::newuiMenu() {
   m_nsheets = 0;
   m_bkg = 0;
-  m_cursheet = NULL;
+  m_cursheet = nullptr;
   m_newoptionid = -1;
   m_align = NEWUI_ALIGN_VERT;
 }
@@ -844,8 +844,8 @@ void newuiMenu::Create() {
   m_align = NEWUI_ALIGN_VERT;
 
   m_uiframe_cb = GetUICallback();
-  m_activate_sheet_cb = NULL;
-  m_option_focus_cb = NULL;
+  m_activate_sheet_cb = nullptr;
+  m_option_focus_cb = nullptr;
 
   UIWindow::Create((Max_window_w - m_bkg->width()) / 2, (Max_window_h - m_bkg->height()) / 2, m_bkg->width(),
                    m_bkg->height());
@@ -883,7 +883,7 @@ int newuiMenu::DoUI() {
       if (m_sheetbtn[i].GetID() == (int)m_newoptionid) {
         if (m_cursheet) {
           m_cursheet->Unrealize();
-          m_cursheet = NULL;
+          m_cursheet = nullptr;
         }
 
         if (m_hassheet[i]) {
@@ -910,7 +910,7 @@ int newuiMenu::DoUI() {
       Int3();
       if (m_cursheet) {
         m_cursheet->Unrealize();
-        m_cursheet = NULL;
+        m_cursheet = nullptr;
       }
     }
     m_newoptionid = -1;
@@ -960,11 +960,11 @@ void newuiMenu::AddSimpleOption(int16_t id, const char *title, int yoff) {
 }
 
 newuiSheet *newuiMenu::AddOption(int16_t id, const char *title, int size, bool has_sheet, int yoff) {
-  newuiMenuOptionButton *last_btn = NULL;
+  newuiMenuOptionButton *last_btn = nullptr;
 
   if (m_nsheets == N_NEWUI_SHEETS) {
     Int3();
-    return NULL;
+    return nullptr;
   }
 
   if (has_sheet) {
@@ -993,7 +993,7 @@ newuiSheet *newuiMenu::AddOption(int16_t id, const char *title, int size, bool h
   m_nsheets++;
 
   if (!has_sheet) {
-    return NULL;
+    return nullptr;
   }
 
   return &m_sheets[m_nsheets - 1];
@@ -1036,7 +1036,7 @@ void newuiMenu::OnDestroy() {
 
   if (m_bkg) {
     Newui_resources.Free(m_bkg);
-    m_bkg = NULL;
+    m_bkg = nullptr;
   }
 
   for (i = 0; i < m_nsheets; i++) {
@@ -1076,7 +1076,7 @@ newuiSheet *newuiLargeMenu::AddOption(int16_t id, const char *title, int size) {
 #define MBTN_OK 0
 #define MBTN_CANCEL 1
 
-newuiMessageBox::newuiMessageBox() { m_bkg = NULL; }
+newuiMessageBox::newuiMessageBox() { m_bkg = nullptr; }
 
 void newuiMessageBox::Create(const char *title, int type) {
   ASSERT(title);
@@ -1135,7 +1135,7 @@ void newuiMessageBox::OnDestroy() {
 
   if (m_bkg) {
     Newui_resources.Free(m_bkg);
-    m_bkg = NULL;
+    m_bkg = nullptr;
   }
 
   m_sheet.Destroy();
@@ -1186,7 +1186,7 @@ void newuiMessageBox::OnDraw() {
 #define GADGET_CHANGEABLE_TXT 17 // changeable text
 
 newuiSheet::newuiSheet() {
-  m_gadgetlist = NULL;
+  m_gadgetlist = nullptr;
   m_gadgetlimit = 0;
   m_ngadgets = 0;
   m_realized = false;
@@ -1198,14 +1198,14 @@ void newuiSheet::Create(UIWindow *menu, const char *title, int n_items, int sx, 
   if (title) {
     m_title = mem_strdup(title);
   } else {
-    m_title = NULL;
+    m_title = nullptr;
   }
   m_gadgetlimit = n_items;
   m_ngadgets = 0;
   if (n_items) {
     m_gadgetlist = mem_rmalloc<t_gadget_desc>(n_items);
   } else {
-    m_gadgetlist = NULL;
+    m_gadgetlist = nullptr;
   }
 
   m_parent = menu;
@@ -1215,10 +1215,10 @@ void newuiSheet::Create(UIWindow *menu, const char *title, int n_items, int sx, 
   m_initial_focus_id = -1;
 
   for (i = 0; i < m_gadgetlimit; i++) {
-    m_gadgetlist[i].obj.gadget = NULL;
-    m_gadgetlist[i].title = NULL;
+    m_gadgetlist[i].obj.gadget = nullptr;
+    m_gadgetlist[i].title = nullptr;
     m_gadgetlist[i].id = -1;
-    m_gadgetlist[i].internal = NULL;
+    m_gadgetlist[i].internal = nullptr;
   }
 }
 
@@ -1232,8 +1232,8 @@ void newuiSheet::Destroy() {
     mem_free(m_gadgetlist);
   if (m_title)
     mem_free(m_title);
-  m_title = NULL;
-  m_gadgetlist = NULL;
+  m_title = nullptr;
+  m_gadgetlist = nullptr;
   m_ngadgets = 0;
 }
 
@@ -1278,10 +1278,10 @@ void newuiSheet::SetInitialFocusedGadget(int16_t id) { m_initial_focus_id = id; 
 // call this to initialize gadgets specified above in parent window
 void newuiSheet::Realize() {
   int i, first_radio_index = -1, last_toggle_index = -1, gx = m_sx, gy = m_sy;
-  newuiRadioButton *prev_radio = NULL;
+  newuiRadioButton *prev_radio = nullptr;
   bool horizontal_align = false, hotspot_group = false, toggles_group = false;
-  newuiEditBox *focus_edit = NULL;
-  UIGadget *focus_gadget = NULL;
+  newuiEditBox *focus_edit = nullptr;
+  UIGadget *focus_gadget = nullptr;
 
   if (m_realized)
     return;
@@ -1320,7 +1320,7 @@ void newuiSheet::Realize() {
           gy += text->H();
         }
       } else {
-        desc->obj.gadget = NULL;
+        desc->obj.gadget = nullptr;
       }
 
       if (toggles_group && last_toggle_index != -1) {
@@ -1328,7 +1328,7 @@ void newuiSheet::Realize() {
         desc->obj.chbox->SetFlag(UIF_GROUP_END);
       }
 
-      prev_radio = NULL;
+      prev_radio = nullptr;
       hotspot_group = false;
       toggles_group = false;
       first_radio_index = -1;
@@ -1651,7 +1651,7 @@ void newuiSheet::Unrealize() {
         delete desc->obj.gadget;
       }
 
-      desc->obj.gadget = NULL;
+      desc->obj.gadget = nullptr;
     }
   }
 
@@ -1922,7 +1922,7 @@ UIGadget *newuiSheet::GetGadget(int16_t id) {
   }
 
   Int3();
-  return NULL;
+  return nullptr;
 }
 
 newuiSheet::t_gadget_desc *newuiSheet::AddGadget(int16_t id, int8_t type, const char *title) {
@@ -1933,16 +1933,16 @@ newuiSheet::t_gadget_desc *newuiSheet::AddGadget(int16_t id, int8_t type, const 
   if (m_gadgetlimit <= m_ngadgets) {
     Error("Internal error in newuiSheet::AddGadget (ngadgets=%d, id=%d, type=%d, title=%s)\n", m_ngadgets, (int)id,
           (int)type, title ? title : "NULL");
-    return NULL;
+    return nullptr;
   }
 
   m_gadgetlist[i].id = id;
   m_gadgetlist[i].type = type;
-  m_gadgetlist[i].title = title ? mem_strdup(title) : NULL;
-  m_gadgetlist[i].obj.gadget = NULL;
+  m_gadgetlist[i].title = title ? mem_strdup(title) : nullptr;
+  m_gadgetlist[i].obj.gadget = nullptr;
   m_gadgetlist[i].parm.i = 0;
   m_gadgetlist[i].changed = false;
-  m_gadgetlist[i].internal = NULL;
+  m_gadgetlist[i].internal = nullptr;
 
   m_ngadgets++;
 
@@ -2019,7 +2019,7 @@ int16_t *newuiSheet::AddSlider(const char *title, int16_t range, int16_t init_po
     gadget->internal = mem_malloc(sizeof(tSliderSettings));
     memcpy(gadget->internal, settings, sizeof(tSliderSettings));
   } else {
-    gadget->internal = NULL;
+    gadget->internal = nullptr;
   }
 
   return &gadget->parm.s[0];
@@ -2042,13 +2042,13 @@ void newuiSheet::AddText(const char *text, ...) {
 
 // adds a static bitmap
 void newuiSheet::AddBitmap(int bm_handle) {
-  newuiSheet::t_gadget_desc *gadget = AddGadget(-1, GADGET_STATIC_BMP, NULL);
+  newuiSheet::t_gadget_desc *gadget = AddGadget(-1, GADGET_STATIC_BMP, nullptr);
   gadget->parm.i = bm_handle;
 }
 
 //	adds a static text item
 char *newuiSheet::AddChangeableText(int buflen) {
-  newuiSheet::t_gadget_desc *gadget = AddGadget(-1, GADGET_CHANGEABLE_TXT, NULL);
+  newuiSheet::t_gadget_desc *gadget = AddGadget(-1, GADGET_CHANGEABLE_TXT, nullptr);
   gadget->internal = (void *)(size_t)buflen;
   gadget->parm.p = mem_malloc(buflen);
   return (char *)gadget->parm.p;
@@ -2064,7 +2064,7 @@ void newuiSheet::AddHotspot(const char *title, int16_t w, int16_t h, int16_t id,
 
 // adds a listbox
 newuiListBox *newuiSheet::AddListBox(int16_t w, int16_t h, int16_t id, uint16_t flags) {
-  newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_LISTBOX, NULL);
+  newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_LISTBOX, nullptr);
   newuiListBox *lb = new newuiListBox;
   lb->Create(m_parent, id, 0, 0, w, h, flags);
   m_parent->RemoveGadget(lb);
@@ -2074,7 +2074,7 @@ newuiListBox *newuiSheet::AddListBox(int16_t w, int16_t h, int16_t id, uint16_t 
 
 // adds a listbox
 newuiComboBox *newuiSheet::AddComboBox(int16_t id, uint16_t flags) {
-  newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_COMBOBOX, NULL);
+  newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_COMBOBOX, nullptr);
   newuiComboBox *cb = new newuiComboBox;
   cb->Create(m_parent, id, 0, 0, flags);
   m_parent->RemoveGadget(cb);
@@ -2114,9 +2114,9 @@ char *newuiSheet::AddEditBox(const char *title, int16_t maxlen, int16_t w, int16
 //	CLASS simple buttons
 
 newuiButton::newuiButton() {
-  m_bkg = NULL;
-  m_litbkg = NULL;
-  m_text = NULL;
+  m_bkg = nullptr;
+  m_litbkg = nullptr;
+  m_text = nullptr;
 }
 
 void newuiButton::Create(UIWindow *menu, int16_t id, const char *name, int16_t x, int16_t y, int16_t flags) {
@@ -2174,15 +2174,15 @@ void newuiButton::InitStates(const char *name, bool is_long, int16_t flags) {
 void newuiButton::OnDestroy() {
   if (m_bkg) {
     Newui_resources.Free(m_bkg);
-    m_bkg = NULL;
+    m_bkg = nullptr;
   }
   if (m_litbkg) {
     Newui_resources.Free(m_litbkg);
-    m_litbkg = NULL;
+    m_litbkg = nullptr;
   }
   if (m_text) {
     delete m_text;
-    m_text = NULL;
+    m_text = nullptr;
   }
 
   UIButton::OnDestroy();
@@ -2228,7 +2228,7 @@ void newuiMenuOptionButton::Create(newuiMenu *menu, newuiMenuOptionButton *last,
   m_text = GadgetLargeText(name);
   m_mono_press = mono_press;
   m_prev_btn = last;
-  m_next_btn = NULL;
+  m_next_btn = nullptr;
   if (m_prev_btn) {
     m_prev_btn->m_next_btn = this;
   }
@@ -2425,8 +2425,8 @@ void newuiRadioButton::OnDraw() { newuiButton::OnDraw(); }
 
 newuiSlider::newuiSlider() {
   m_pos = m_unitrange = 0;
-  m_bar_bmp = NULL;
-  m_title = NULL;
+  m_bar_bmp = nullptr;
+  m_title = nullptr;
 }
 
 void newuiSlider::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t range) {
@@ -2466,10 +2466,10 @@ void newuiSlider::OnAttachToWindow() {
     bx += 2;
   }
 
-  m_minus_btn.Create(m_Wnd, -1, NEWUI_ARROW_LEFT, NULL, bx, by);
+  m_minus_btn.Create(m_Wnd, -1, NEWUI_ARROW_LEFT, nullptr, bx, by);
   m_minus_btn.SetFlag(UIF_NOTIFYMASTERSEL);
   AttachSlaveGadget(&m_minus_btn);
-  m_plus_btn.Create(m_Wnd, -1, NEWUI_ARROW_RIGHT, NULL, bx + m_bar_bmp->width() - 24, by);
+  m_plus_btn.Create(m_Wnd, -1, NEWUI_ARROW_RIGHT, nullptr, bx + m_bar_bmp->width() - 24, by);
   m_plus_btn.SetFlag(UIF_NOTIFYMASTERSEL);
   AttachSlaveGadget(&m_plus_btn);
 }
@@ -2487,7 +2487,7 @@ void newuiSlider::OnDetachFromWindow() {
 }
 
 void newuiSlider::SetUnits(tSliderSettings *settings) {
-  if (settings == NULL) {
+  if (settings == nullptr) {
     m_unit_settings.type = -1;
   } else {
     memcpy(&m_unit_settings, settings, sizeof(m_unit_settings));
@@ -2594,11 +2594,11 @@ void newuiSlider::OnDraw() {
 void newuiSlider::OnDestroy() {
   if (m_bar_bmp) {
     Newui_resources.Free(m_bar_bmp);
-    m_bar_bmp = NULL;
+    m_bar_bmp = nullptr;
   }
   if (m_title) {
     delete m_title;
-    m_title = NULL;
+    m_title = nullptr;
   }
 }
 
@@ -2619,12 +2619,12 @@ void newuiSlider::OnNotifySelect(UIGadget *g) {
 //	CLASS a new listbox. uses less memory than the old listbox hopefully.
 
 newuiListBox::newuiListBox() {
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
-  selectchange_fn = NULL;
-  selectchange_id_fn = NULL;
-  m_callbackptr = NULL;
+  m_ItemList = nullptr;
+  m_Virt2Real = nullptr;
+  m_Real2Virt = nullptr;
+  selectchange_fn = nullptr;
+  selectchange_id_fn = nullptr;
+  m_callbackptr = nullptr;
   m_NumItems = 0;
   m_SelectedIndex = -1;
   m_Index = 0;
@@ -2637,12 +2637,12 @@ newuiListBox::newuiListBox() {
 }
 
 void newuiListBox::Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, int16_t w, int16_t h, uint16_t flags) {
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
-  selectchange_fn = NULL;
-  selectchange_id_fn = NULL;
-  m_callbackptr = NULL;
+  m_ItemList = nullptr;
+  m_Virt2Real = nullptr;
+  m_Real2Virt = nullptr;
+  selectchange_fn = nullptr;
+  selectchange_id_fn = nullptr;
+  m_callbackptr = nullptr;
   m_NumItems = 0;
   m_SelectedIndex = -1;
   m_Index = 0;
@@ -2792,7 +2792,7 @@ void newuiListBox::AddItem(const char *name) {
       int result;
 
       int old_r2v;
-      char *old_item = NULL;
+      char *old_item = nullptr;
 
       while (oidx <= m_NumItems) {
 
@@ -2885,7 +2885,7 @@ void newuiListBox::RemoveItem(const char *name) {
     if (res == 0) {
       found = i;
       mem_free(m_ItemList[found]);
-      m_ItemList[found] = NULL;
+      m_ItemList[found] = nullptr;
       break;
     }
   }
@@ -2946,9 +2946,9 @@ void newuiListBox::RemoveAll() {
   if (m_Real2Virt)
     mem_free(m_Real2Virt);
 
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
+  m_ItemList = nullptr;
+  m_Virt2Real = nullptr;
+  m_Real2Virt = nullptr;
   m_Index = m_NumItems = 0;
 }
 
@@ -3339,9 +3339,9 @@ void newuiListBox::OnDestroy() {
   if (m_Virt2Real)
     mem_free(m_Virt2Real);
 
-  m_ItemList = NULL;
-  m_Real2Virt = NULL;
-  m_Virt2Real = NULL;
+  m_ItemList = nullptr;
+  m_Real2Virt = nullptr;
+  m_Virt2Real = nullptr;
 
   Newui_resources.Free(m_pieces[N_PIECE_IDX]);
   Newui_resources.Free(m_pieces[NE_PIECE_IDX]);
@@ -3360,11 +3360,11 @@ void newuiListBox::OnUserProcess() {}
 
 // when gadget is added to a window (AddGadget is called)
 void newuiListBox::OnAttachToWindow() {
-  m_up_btn.Create(m_Wnd, -1, NEWUI_ARROW_UP, NULL, m_X + m_W - m_boffs - 8, m_Y + m_boffs - 1);
+  m_up_btn.Create(m_Wnd, -1, NEWUI_ARROW_UP, nullptr, m_X + m_W - m_boffs - 8, m_Y + m_boffs - 1);
   m_up_btn.SetFlag(UIF_NOTIFYMASTERSEL);
   AttachSlaveGadget(&m_up_btn);
 
-  m_down_btn.Create(m_Wnd, -1, NEWUI_ARROW_DOWN, NULL, m_X + m_W - m_boffs - 8, m_Y + m_H - m_boffs - 19);
+  m_down_btn.Create(m_Wnd, -1, NEWUI_ARROW_DOWN, nullptr, m_X + m_W - m_boffs - 8, m_Y + m_H - m_boffs - 19);
   m_down_btn.SetFlag(UIF_NOTIFYMASTERSEL);
   AttachSlaveGadget(&m_down_btn);
 }
@@ -3388,19 +3388,19 @@ void newuiListBox::Offset(int16_t offs) {
 //	CLASS a new listbox. uses less memory than the old listbox hopefully.
 
 newuiComboBox::newuiComboBox() {
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
-  selectchange_fn = NULL;
+  m_ItemList = nullptr;
+  m_Virt2Real = nullptr;
+  m_Real2Virt = nullptr;
+  selectchange_fn = nullptr;
   m_NumItems = 0;
   m_Index = 0;
 }
 
 void newuiComboBox::Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, uint16_t flags) {
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
-  selectchange_fn = NULL;
+  m_ItemList = nullptr;
+  m_Virt2Real = nullptr;
+  m_Real2Virt = nullptr;
+  selectchange_fn = nullptr;
   m_NumItems = 0;
   m_Index = 0;
   m_showup = m_showdown = false;
@@ -3529,7 +3529,7 @@ void newuiComboBox::AddItem(const char *name) {
       int result;
 
       int old_r2v;
-      char *old_item = NULL;
+      char *old_item = nullptr;
 
       while (oidx <= m_NumItems) {
 
@@ -3622,7 +3622,7 @@ void newuiComboBox::RemoveItem(const char *name) {
     if (res == 0) {
       found = i;
       mem_free(m_ItemList[found]);
-      m_ItemList[found] = NULL;
+      m_ItemList[found] = nullptr;
       break;
     }
   }
@@ -3680,9 +3680,9 @@ void newuiComboBox::RemoveAll() {
   if (m_Real2Virt)
     mem_free(m_Real2Virt);
 
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
+  m_ItemList = nullptr;
+  m_Virt2Real = nullptr;
+  m_Real2Virt = nullptr;
   m_Index = m_NumItems = 0;
 }
 
@@ -3850,9 +3850,9 @@ void newuiComboBox::OnDestroy() {
   if (m_Virt2Real)
     mem_free(m_Virt2Real);
 
-  m_ItemList = NULL;
-  m_Real2Virt = NULL;
-  m_Virt2Real = NULL;
+  m_ItemList = nullptr;
+  m_Real2Virt = nullptr;
+  m_Virt2Real = nullptr;
 
   Newui_resources.Free(m_barbmp);
 
@@ -3862,14 +3862,14 @@ void newuiComboBox::OnDestroy() {
 // when gadget is added to a window (AddGadget is called)
 void newuiComboBox::OnAttachToWindow() {
   m_boffs = 16;
-  m_up_btn.Create(m_Wnd, -1, NEWUI_ARROW_CBUP, NULL, m_X + 4, m_Y + 3);
+  m_up_btn.Create(m_Wnd, -1, NEWUI_ARROW_CBUP, nullptr, m_X + 4, m_Y + 3);
   m_up_btn.SetFlag(UIF_NOTIFYMASTERSEL);
   m_showup = true;
   AttachSlaveGadget(&m_up_btn);
   //	m_showup = false;
   //	m_Wnd->RemoveGadget(&m_up_btn);
 
-  m_down_btn.Create(m_Wnd, -1, NEWUI_ARROW_CBDOWN, NULL, m_X + m_W - m_boffs - 8, m_Y + 3);
+  m_down_btn.Create(m_Wnd, -1, NEWUI_ARROW_CBDOWN, nullptr, m_X + m_W - m_boffs - 8, m_Y + 3);
   m_down_btn.SetFlag(UIF_NOTIFYMASTERSEL);
   AttachSlaveGadget(&m_down_btn);
   m_showdown = true;
@@ -3892,7 +3892,7 @@ void newuiComboBox::OnDetachFromWindow() {
 
 //	CLASS newuiEditBox
 
-newuiEditBox::newuiEditBox() { m_title = NULL; }
+newuiEditBox::newuiEditBox() { m_title = nullptr; }
 
 void newuiEditBox::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t w, int16_t flags) {
   //	if (name) {
@@ -3918,7 +3918,7 @@ void newuiEditBox::EnableOnQuickEscapeBehavior(bool do_it) { m_quick_escape_enab
 void newuiEditBox::OnDestroy() {
   if (m_title) {
     delete m_title;
-    m_title = NULL;
+    m_title = nullptr;
   }
 
   UIEdit::OnDestroy();
@@ -3948,13 +3948,13 @@ void newuiEditBox::OnKeyDown(int key) {
 
 // the new classic hotspot CLASS
 
-newuiHotspot::newuiHotspot() { m_title = NULL; }
+newuiHotspot::newuiHotspot() { m_title = nullptr; }
 
 void newuiHotspot::Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags) {
   if (title) {
     m_title = mem_strdup(title);
   } else {
-    m_title = NULL;
+    m_title = nullptr;
   }
 
   m_alpha = 0;
@@ -3982,7 +3982,7 @@ void newuiHotspot::OnDraw() {
     y += text.height();
     x = 20;
 
-    strptr = strtok(NULL, "\n");
+    strptr = strtok(nullptr, "\n");
   }
 
   if (m_alpha_adjust != 0) {
@@ -4004,7 +4004,7 @@ void newuiHotspot::OnDraw() {
 void newuiHotspot::OnDestroy() {
   if (m_title) {
     mem_free(m_title);
-    m_title = NULL;
+    m_title = nullptr;
   }
 
   UIGadget::OnDestroy();
@@ -4051,11 +4051,11 @@ void newuiHotspot::OnLostFocus() {
 // CLASS, sizable window
 
 newuiTiledWindow::newuiTiledWindow() {
-  m_startui_cb = NULL;
-  m_endui_cb = NULL;
-  m_draw_cb = NULL;
-  m_onframe_cb = NULL;
-  m_data = NULL;
+  m_startui_cb = nullptr;
+  m_endui_cb = nullptr;
+  m_draw_cb = nullptr;
+  m_onframe_cb = nullptr;
+  m_data = nullptr;
   m_title[0] = 0;
   m_realized = false;
 }
@@ -4086,14 +4086,14 @@ void newuiTiledWindow::Create(const char *title, int16_t x, int16_t y, int16_t w
   }
 
   // initialze stuff
-  m_startui_cb = NULL;
-  m_endui_cb = NULL;
-  m_draw_cb = NULL;
-  m_onframe_cb = NULL;
-  m_data = NULL;
+  m_startui_cb = nullptr;
+  m_endui_cb = nullptr;
+  m_draw_cb = nullptr;
+  m_onframe_cb = nullptr;
+  m_data = nullptr;
   m_realized = false;
 
-  m_sheet.Create(this, NULL, 96, NEWUI_TILED_SHEET_X, title ? NEWUI_TILED_SHEET_Y : NEWUI_TILED_TITLE_Y);
+  m_sheet.Create(this, nullptr, 96, NEWUI_TILED_SHEET_X, title ? NEWUI_TILED_SHEET_Y : NEWUI_TILED_TITLE_Y);
 
   // graphics.
   m_pieces[N_PIECE_IDX] = Newui_resources.Load(NEWUI_WIN_N_FILE);
@@ -4281,11 +4281,11 @@ void newuiTiledWindow::OnDestroy() {
   Newui_resources.Free(m_pieces[TC_PIECE_IDX]);
   Newui_resources.Free(m_pieces[TR_PIECE_IDX]);
 
-  m_startui_cb = NULL;
-  m_endui_cb = NULL;
-  m_draw_cb = NULL;
-  m_onframe_cb = NULL;
-  m_data = NULL;
+  m_startui_cb = nullptr;
+  m_endui_cb = nullptr;
+  m_draw_cb = nullptr;
+  m_onframe_cb = nullptr;
+  m_data = nullptr;
 
   m_sheet.Destroy();
 

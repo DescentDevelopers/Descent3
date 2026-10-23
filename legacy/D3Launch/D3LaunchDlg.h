@@ -150,7 +150,7 @@
 class CD3LaunchDlg : public CDialog {
   // Construction
 public:
-  CD3LaunchDlg(CWnd *pParent = NULL);    // standard constructor
+  CD3LaunchDlg(CWnd *pParent = nullptr);    // standard constructor
   bool MouseOverButton(CButton *button); // checks if mouse is over button
   void RedrawButton(CButton *button);    // marks button region for redraw
   void RefreshDialog(void);              // sets up launcher for new language

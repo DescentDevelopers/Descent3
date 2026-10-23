@@ -71,7 +71,7 @@ extern int Camera_view_mode[NUM_CAMERA_VIEWS];
 //		This function initializes a Module Init Struct with all the needed data to get sent
 //	to the module during initialization.
 extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi);
-module GameDLLHandle = {NULL};
+module GameDLLHandle = {nullptr};
 extern ddgr_color Player_colors[];
 struct game_api {
   int *objs;
@@ -105,10 +105,10 @@ typedef void(DLLFUNCCALL *DLLGameGetName_fp)(char *buffer, int maxsize);
 typedef void(DLLFUNCCALL *DLLGameGetDesc_fp)(char **buffer, int maxsize, int lines);
 typedef void(DLLFUNCCALL *DLLGetGameInfo_fp)(tDLLOptions *options);
 #endif
-DLLGameCall_fp DLLGameCall = NULL;
-DLLGameInit_fp DLLGameInit = NULL;
-DLLGameClose_fp DLLGameClose = NULL;
-DLLGetGameInfo_fp DLLGetGameInfo = NULL;
+DLLGameCall_fp DLLGameCall = nullptr;
+DLLGameInit_fp DLLGameInit = nullptr;
+DLLGameClose_fp DLLGameClose = nullptr;
+DLLGetGameInfo_fp DLLGetGameInfo = nullptr;
 dllinfo DLLInfo;
 tOSIRISModuleInit Multi_d3m_osiris_funcs;
 std::filesystem::path Multi_game_dll_name;
@@ -539,7 +539,7 @@ void GetGameAPI(game_api *api) {
 
   api->osiris_functions = &Multi_d3m_osiris_funcs;
   Osiris_CreateModuleInitStruct(&Multi_d3m_osiris_funcs);
-  Multi_d3m_osiris_funcs.string_table = NULL;
+  Multi_d3m_osiris_funcs.string_table = nullptr;
   Multi_d3m_osiris_funcs.string_count = 0;
   Multi_d3m_osiris_funcs.module_identifier = 0xEDF7;
   Multi_d3m_osiris_funcs.module_is_static = false;
@@ -557,7 +557,7 @@ void CloseGameModule(module *mod) {
       LOG_WARNING << "Couldn't delete the tmp dll";
     }
   }
-  mod->handle = NULL;
+  mod->handle = nullptr;
 }
 // this function will load up the DLL, but not get any symbols
 bool InitGameModule(const char *name, module *mod) {
@@ -606,10 +606,10 @@ void FreeGameDLL() {
     DLLGameClose();
   Osiris_UnloadMissionModule();
   CloseGameModule(&GameDLLHandle);
-  DLLGameCall = NULL;
-  DLLGameInit = NULL;
-  DLLGameClose = NULL;
-  DLLGetGameInfo = NULL;
+  DLLGameCall = nullptr;
+  DLLGameInit = nullptr;
+  DLLGameClose = nullptr;
+  DLLGetGameInfo = nullptr;
 }
 // Loads the game dll.  Returns 1 on success, else 0 on failure
 int LoadGameDLL(const char *name, int num_teams_to_use) {
@@ -744,7 +744,7 @@ int GameDLLGetConnectingPlayersTeam(int slot) {
 }
 // Call this function to get information/options from a unloaded mod
 bool GetDLLGameInfo(const char *name, tDLLOptions *options) {
-  module mod = {NULL};
+  module mod = {nullptr};
   memset(options, 0, sizeof(tDLLOptions));
   DLLGetGameInfo_fp modGetGameInfo;
   if (!InitGameModule(name, &mod))

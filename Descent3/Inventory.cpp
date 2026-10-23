@@ -311,9 +311,9 @@
 
 // constructor
 Inventory::Inventory(void) {
-  root = NULL;
+  root = nullptr;
   count = 0;
-  pos = NULL;
+  pos = nullptr;
 }
 
 // destructor
@@ -332,7 +332,7 @@ void Inventory::Reset(bool in_game, int reset_stage) {
   inven_item *current = root, *next, *new_root;
 
   int item_count = count;
-  new_root = NULL;
+  new_root = nullptr;
   object *obj;
 
   bool remove_nonspewers = false;
@@ -734,7 +734,7 @@ bool Inventory::Use(int type, int id, object *parent) {
   ASSERT(parent);
   player = parent;
 
-  if (player == NULL) {
+  if (player == nullptr) {
     Int3();
     return false;
   }
@@ -785,7 +785,7 @@ bool Inventory::Use(int type, int id, object *parent) {
 
     } else {
 
-      objnum = ObjCreate(node->type, node->id, roomnum, &player->pos, NULL, player->handle);
+      objnum = ObjCreate(node->type, node->id, roomnum, &player->pos, nullptr, player->handle);
       if (objnum == -1) {
         Int3();
         return false;
@@ -928,7 +928,7 @@ void Inventory::RemoveNode(inven_item *node) {
       movepos = true;
       pos = pos->next;
     } else
-      pos = NULL;
+      pos = nullptr;
   }
 
   if (node == root) {
@@ -941,7 +941,7 @@ void Inventory::RemoveNode(inven_item *node) {
       p->next = root;
     } else {
       delete node;
-      root = NULL;
+      root = nullptr;
     }
   } else {
     delete node;
@@ -958,7 +958,7 @@ inven_item *Inventory::FindItem(int type, int id) {
   inven_item *current = root;
 
   if (count == 0)
-    return NULL; // there are no items, don't even bother
+    return nullptr; // there are no items, don't even bother
 
   int counter = count;
 
@@ -972,7 +972,7 @@ inven_item *Inventory::FindItem(int type, int id) {
     counter--;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 // returns how many items are in the inventory
@@ -1063,7 +1063,7 @@ int Inventory::ReadInventory(CFILE *file) {
 
   int num_items = cf_ReadInt(file);
   count = num_items;
-  root = NULL;
+  root = nullptr;
   char temp[512];
 
   int t, i, otype;
@@ -1096,7 +1096,7 @@ int Inventory::ReadInventory(CFILE *file) {
         }
       }
 
-      if (root == NULL) {
+      if (root == nullptr) {
         // there are no items in the list...time to add
         root = new inven_item;
         item = root;
@@ -1233,21 +1233,21 @@ bool Inventory::GetAuxPosTypeID(int &type, int &id) {
 // returns the description of the item at the current position
 char *Inventory::GetPosDescription(void) {
   if (!pos)
-    return NULL;
+    return nullptr;
   return pos->description;
 }
 
 // returns the name of the item at the current position
 char *Inventory::GetPosName(void) {
   if (!pos)
-    return NULL;
+    return nullptr;
   return pos->name;
 }
 
 // returns the icon name of the item at the current position
 char *Inventory::GetPosIconName(void) {
   if (!pos)
-    return NULL;
+    return nullptr;
   return pos->icon_name;
 }
 
@@ -1286,7 +1286,7 @@ void Inventory::GotoPos(int newpos) {
   ResetPos();
   int i;
   for (i = 0; i < newpos; i++) {
-    if ((pos) && (pos->next != NULL))
+    if ((pos) && (pos->next != nullptr))
       pos = pos->next;
   }
 }
@@ -1413,7 +1413,7 @@ void Inventory::ValidatePos(bool forward) {
     else
       node = node->prev;
   }
-  pos = NULL;
+  pos = nullptr;
 }
 
 // returns how many of a type/id exists in the inventory

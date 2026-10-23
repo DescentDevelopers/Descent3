@@ -48,7 +48,7 @@ struct SITE_ENTRY {
 class CSiteSelectDlg : public CDialog {
   // Construction
 public:
-  CSiteSelectDlg(CWnd *pParent = NULL); // standard constructor
+  CSiteSelectDlg(CWnd *pParent = nullptr); // standard constructor
   void SetColumnWidths(void);
   BOOL AddSiteEntry(SITE_ENTRY *entry);
   BOOL ParseSiteFile(void);

@@ -35,5 +35,5 @@
 
 int paged_in_num = 0;
 int paged_in_count = 0;
-class oeAppDatabase *Database = NULL;
+class oeAppDatabase *Database = nullptr;
 bool Force_one_texture = false;

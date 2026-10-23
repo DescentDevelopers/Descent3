@@ -108,8 +108,8 @@
 
 #include <algorithm>
 
-IDMFC *DMFCBase = NULL;
-static IDmfcStats *dstat = NULL;
+IDMFC *DMFCBase = nullptr;
+static IDmfcStats *dstat = nullptr;
 static player *dPlayers;
 
 struct tPlayerStat {
@@ -258,13 +258,13 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
               DSIF_SHOWPLAYERVIEW;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 5;
-  tsi.clbDetailedColumn = NULL;
-  tsi.clbDetailedColumnBMP = NULL;
+  tsi.clbDetailedColumn = nullptr;
+  tsi.clbDetailedColumnBMP = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
-  tsi.clbPlayerColumnBMP = NULL;
-  tsi.DetailedColumns = NULL;
+  tsi.clbPlayerColumnBMP = nullptr;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
 
@@ -304,13 +304,13 @@ void DLLFUNCCALL DLLGameClose() {
 
   if (dstat) {
     dstat->DestroyPointer();
-    dstat = NULL;
+    dstat = nullptr;
   }
 
   if (DMFCBase) {
     DMFCBase->GameClose();
     DMFCBase->DestroyPointer();
-    DMFCBase = NULL;
+    DMFCBase = nullptr;
   }
 }
 
@@ -453,7 +453,7 @@ void OnServerGameCreated(void) {
     if (pr)
       stat = (tPlayerStat *)pr->user_info;
     else
-      stat = NULL;
+      stat = nullptr;
     if (stat) {
       stat->Score[DSTAT_LEVEL] = 0;
       stat->Score[DSTAT_OVERALL] = 0;
@@ -471,7 +471,7 @@ void OnClientLevelStart(void) {
     if (pr)
       stat = (tPlayerStat *)pr->user_info;
     else
-      stat = NULL;
+      stat = nullptr;
 
     if (stat) {
       stat->Score[DSTAT_LEVEL] = 0;
@@ -611,7 +611,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
           DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
 
           DLLrend_DrawScaledBitmap(name_x - 2, start_y - 2, DMFCBase->GetGameWindowW() - 8, start_y + height + 1,
-                                   Highlight_bmp, 0, 0, 1, 1, 1.0, -1, NULL);
+                                   Highlight_bmp, 0, 0, 1, 1, 1.0, -1, nullptr);
           DLLrend_SetZBufferState(1);
         }
       }

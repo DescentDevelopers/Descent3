@@ -91,10 +91,10 @@ extern char *Proxy_server;
 extern int16_t Proxy_port;
 
 #if defined(POSIX)
-pthread_create_fp df_pthread_create = NULL;
-pthread_exit_fp df_pthread_exit = NULL;
-pthread_detach_fp df_pthread_detach = NULL;
-pthread_self_fp df_pthread_self = NULL;
+pthread_create_fp df_pthread_create = nullptr;
+pthread_exit_fp df_pthread_exit = nullptr;
+pthread_detach_fp df_pthread_detach = nullptr;
+pthread_self_fp df_pthread_self = nullptr;
 
 bool inet_LoadThreadLib(void) {
   if (df_pthread_create)
@@ -112,7 +112,7 @@ bool inet_LoadThreadLib(void) {
   df_pthread_self = (pthread_self_fp)dlsym(lib, "pthread_self");
 
   if (!df_pthread_create || !df_pthread_detach || !df_pthread_self) {
-    df_pthread_create = NULL; // this variable I use to see if the library is loaded
+    df_pthread_create = nullptr; // this variable I use to see if the library is loaded
     return false;
   }
 
@@ -132,31 +132,31 @@ void InetGetFile::AbortGet() {
 
 InetGetFile::InetGetFile(char *URL, char *localfile, char *proxyip, int16_t proxyport) {
   m_HardError = 0;
-  http = NULL;
-  ftp = NULL;
-  if ((URL == NULL) || (localfile == NULL)) {
+  http = nullptr;
+  ftp = nullptr;
+  if ((URL == nullptr) || (localfile == nullptr)) {
     m_HardError = INET_ERROR_BADPARMS;
   }
 
   if (strstr(URL, "http:")) {
     m_bUseHTTP = true;
     http = new ChttpGet(URL, localfile, proxyip, proxyport);
-    if (http == NULL)
+    if (http == nullptr)
       m_HardError = INET_ERROR_NO_MEMORY;
   } else if (strstr(URL, "ftp:")) {
     m_bUseHTTP = false;
     ftp = new CFtpGet(URL, localfile);
-    if (ftp == NULL)
+    if (ftp == nullptr)
       m_HardError = INET_ERROR_NO_MEMORY;
   } else if (strstr(URL, "HTTP:")) {
     m_bUseHTTP = true;
     http = new ChttpGet(URL, localfile, proxyip, proxyport);
-    if (http == NULL)
+    if (http == nullptr)
       m_HardError = INET_ERROR_NO_MEMORY;
   } else if (strstr(URL, "FTP:")) {
     m_bUseHTTP = false;
     ftp = new CFtpGet(URL, localfile);
-    if (ftp == NULL)
+    if (ftp == nullptr)
       m_HardError = INET_ERROR_NO_MEMORY;
   } else {
     m_HardError = INET_ERROR_CANT_PARSE_URL;
@@ -166,30 +166,30 @@ InetGetFile::InetGetFile(char *URL, char *localfile, char *proxyip, int16_t prox
 
 InetGetFile::InetGetFile(char *URL, char *localfile) {
   m_HardError = 0;
-  http = NULL;
-  ftp = NULL;
-  if ((URL == NULL) || (localfile == NULL)) {
+  http = nullptr;
+  ftp = nullptr;
+  if ((URL == nullptr) || (localfile == nullptr)) {
     m_HardError = INET_ERROR_BADPARMS;
   }
   if (strstr(URL, "http:")) {
     m_bUseHTTP = true;
     http = new ChttpGet(URL, localfile);
-    if (http == NULL)
+    if (http == nullptr)
       m_HardError = INET_ERROR_NO_MEMORY;
   } else if (strstr(URL, "ftp:")) {
     m_bUseHTTP = false;
     ftp = new CFtpGet(URL, localfile);
-    if (ftp == NULL)
+    if (ftp == nullptr)
       m_HardError = INET_ERROR_NO_MEMORY;
   } else if (strstr(URL, "HTTP:")) {
     m_bUseHTTP = true;
     http = new ChttpGet(URL, localfile);
-    if (http == NULL)
+    if (http == nullptr)
       m_HardError = INET_ERROR_NO_MEMORY;
   } else if (strstr(URL, "FTP:")) {
     m_bUseHTTP = false;
     ftp = new CFtpGet(URL, localfile);
-    if (ftp == NULL)
+    if (ftp == nullptr)
       m_HardError = INET_ERROR_NO_MEMORY;
   } else {
     m_HardError = INET_ERROR_CANT_PARSE_URL;
@@ -198,9 +198,9 @@ InetGetFile::InetGetFile(char *URL, char *localfile) {
 }
 
 InetGetFile::~InetGetFile() {
-  if (http != NULL)
+  if (http != nullptr)
     delete http;
-  if (ftp != NULL)
+  if (ftp != nullptr)
     delete ftp;
 }
 

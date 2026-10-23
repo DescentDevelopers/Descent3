@@ -54,10 +54,10 @@ void CTitleTip::RegisterWindowClass() {
     wndcls.lpfnWndProc = ::DefWindowProc;
     wndcls.cbClsExtra = wndcls.cbWndExtra = 0;
     wndcls.hInstance = hInst;
-    wndcls.hIcon = NULL;
+    wndcls.hIcon = nullptr;
     wndcls.hCursor = LoadCursor(hInst, IDC_ARROW);
     wndcls.hbrBackground = (HBRUSH)(COLOR_INFOBK + 1);
-    wndcls.lpszMenuName = NULL;
+    wndcls.lpszMenuName = nullptr;
     wndcls.lpszClassName = TITLETIP_CLASSNAME;
     if (!AfxRegisterClass(&wndcls))
       AfxThrowResourceException();
@@ -97,7 +97,7 @@ BOOL CTitleTip::Create(CWnd *pParentWnd) {
   DWORD dwStyle = WS_BORDER | WS_POPUP;
   DWORD dwExStyle = WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
   m_pParentWnd = pParentWnd;
-  return CreateEx(dwExStyle, TITLETIP_CLASSNAME, NULL, dwStyle, 0, 0, 0, 0, NULL, NULL, NULL);
+  return CreateEx(dwExStyle, TITLETIP_CLASSNAME, nullptr, dwStyle, 0, 0, 0, 0, nullptr, nullptr, nullptr);
 }
 
 /**
@@ -116,7 +116,7 @@ void CTitleTip::Show(CRect rectTitle, CString sTitleText, int xoffset /*=0*/) {
   ASSERT(::IsWindow(m_hWnd));
   ASSERT(!rectTitle.IsRectEmpty());
 
-  if (GetFocus() == NULL) // only display titletip if app has focus
+  if (GetFocus() == nullptr) // only display titletip if app has focus
     return;
 
   // Define the rectangle outside which the titletip will be hidden.
@@ -229,7 +229,7 @@ BOOL CTitleTip::PreTranslateMessage(MSG *pMsg) {
       ShowWindow(SW_HIDE);
     }
     pWnd->SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
-    if (GetCapture() == NULL)
+    if (GetCapture() == nullptr)
       SetCapture();
     return TRUE;
   case WM_KEYDOWN:
@@ -240,7 +240,7 @@ BOOL CTitleTip::PreTranslateMessage(MSG *pMsg) {
     return TRUE;
   }
 
-  if (GetFocus() == NULL) {
+  if (GetFocus() == nullptr) {
     ReleaseCapture();
     ShowWindow(SW_HIDE);
     return TRUE;

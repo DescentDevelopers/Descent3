@@ -665,7 +665,7 @@ void CWorldObjectsPowerupDialog::UpdatePowerupView(void) {
 		m_PowerupSurf.create(128, 128, BPP_16);
 		grViewport *vport=new grViewport (&m_PowerupSurf);
 		g3_StartFrame (vport,&view_vector,&id_matrix,D3_DEFAULT_ZOOM);
-		DrawPolygonModel (&zero_vector,&rot_matrix,bm_handle,NULL,0,1.0);
+		DrawPolygonModel (&zero_vector,&rot_matrix,bm_handle,nullptr,0,1.0);
 		g3_EndFrame();
 
 		x = rect.left + ((rect.right-rect.left)/2) - m_PowerupSurf.width()/2; 
@@ -682,7 +682,7 @@ BOOL CWorldObjectsPowerupDialog::OnInitDialog() {
 
   CDialog::OnInitDialog();
 
-  CWnd::SetTimer(1, 100, NULL);
+  CWnd::SetTimer(1, 100, nullptr);
 
   return TRUE; // return TRUE unless you set the focus to a control
                // EXCEPTION: OCX Property Pages should return FALSE

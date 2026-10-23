@@ -62,7 +62,7 @@ BOOL CPlaySongDlg::OnInitDialog() {
 
   // set up stream to play.
   m_Stream.Open((LPCTSTR)m_StreamName);
-  SetTimer(0, 100, NULL);
+  SetTimer(0, 100, nullptr);
 
   //	okay we should start playing the song
   CProgressCtrl *progress = (CProgressCtrl *)GetDlgItem(IDC_PLAYPROGRESS);

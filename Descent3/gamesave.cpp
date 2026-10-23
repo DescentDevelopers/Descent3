@@ -542,9 +542,9 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 
     LOG_DEBUG.printf("savegame slot=%d", id - SAVE_HOTSPOT_ID);
 
-    ddio_MakePath(savegame_dir, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", NULL);
+    ddio_MakePath(savegame_dir, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", nullptr);
     snprintf(filename, sizeof(filename), "saveg00%d", (id - SAVE_HOTSPOT_ID));
-    ddio_MakePath(pathname, savegame_dir, filename, NULL);
+    ddio_MakePath(pathname, savegame_dir, filename, nullptr);
 
     if (GetGameStateInfo(pathname, desc, &bm_handle)) {
       if (bm_handle > 0) {
@@ -930,7 +930,7 @@ void SGSRooms(CFILE *fp) {
       // save doorway info
       if (Rooms[i].flags & RF_DOOR) {
         doorway *dp = Rooms[i].doorway_data;
-        ASSERT(dp != NULL);
+        ASSERT(dp != nullptr);
         gs_WriteByte(fp, dp->state);
         gs_WriteByte(fp, dp->flags);
         gs_WriteByte(fp, dp->keys_needed);

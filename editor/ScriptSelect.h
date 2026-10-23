@@ -39,7 +39,7 @@ class CScriptSelect : public CDialog {
   // Construction
 public:
   CScriptSelect(uint16_t scr_type = 0xffff, int custom = CUSTOM_SCRIPT_MASK,
-                CWnd *pParent = NULL); // standard constructor
+                CWnd *pParent = nullptr); // standard constructor
 
   int m_CurScriptSel;
 
@@ -98,7 +98,7 @@ inline void RETURN_SCRIPTSELECT_OBJECT(object *obj, CScriptSelect &sel) {
 #if 0 // LGT: script undefined
 	obj->script.set_parms(sel.m_NumParms, sel.m_Parm);
 	if (sel.m_ScriptName == "null") 
-		obj->script.set_name(NULL);
+		obj->script.set_name(nullptr);
 	else
 		obj->script.set_name(sel.m_ScriptName);
 	obj->script.is_custom = (sel.m_CustomType==CUSTOM_SCRIPT_MASK) ? 1 : 0;
@@ -119,7 +119,7 @@ inline void RETURN_SCRIPTSELECT_TRIGGER(trigger *trig, CScriptSelect &sel) {
 #if 0 // LGT: script undefined
 	trig->script.set_parms(sel.m_NumParms, sel.m_Parm);
 	if (sel.m_ScriptName == "null") 
-		trig->script.set_name(NULL);
+		trig->script.set_name(nullptr);
 	else
 		trig->script.set_name(sel.m_ScriptName);
 	trig->script.is_custom = (sel.m_CustomType==CUSTOM_SCRIPT_MASK) ? 1 : 0;

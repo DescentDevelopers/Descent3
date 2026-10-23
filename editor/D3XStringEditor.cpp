@@ -185,7 +185,7 @@ void CD3XStringEditor::OnSave() {
 				strptr += str.GetLength()+1;
 			}
 
-			new_prog = D3XReallocProgram(NULL, old_prog->len, old_prog->nscripts, old_prog->nstr);
+			new_prog = D3XReallocProgram(nullptr, old_prog->len, old_prog->nscripts, old_prog->nstr);
 			if (new_prog) {
 				D3XLoadProgramFromComponents(new_prog, old_prog->code, old_prog->map, strbuf);
 				D3XFreeProgram(old_prog);

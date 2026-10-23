@@ -523,7 +523,7 @@ int bm_iff_alloc_file(CFILE *ifile) {
   else
     Int3(); // Huh? Get Jason!
 
-  ret = bm_iff_parse_file(ifile, &bmheader, NULL);
+  ret = bm_iff_parse_file(ifile, &bmheader, nullptr);
 
   if (ret != IFF_NO_ERROR) {
     LOG_ERROR << "Couldn't load IFF file.";
@@ -574,7 +574,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
 
   if (form_type == IFF_SIG_ANIM) {
     while (!cfeof(ifile) && num_bitmaps < 40) {
-      ret = bm_iff_parse_file(ifile, &bm_headers[num_bitmaps], num_bitmaps > 0 ? &bm_headers[num_bitmaps - 1] : NULL);
+      ret = bm_iff_parse_file(ifile, &bm_headers[num_bitmaps], num_bitmaps > 0 ? &bm_headers[num_bitmaps - 1] : nullptr);
 
       if (ret != IFF_NO_ERROR)
         goto done;

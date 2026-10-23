@@ -119,7 +119,7 @@ void CFilePageDialog::OnAddFile() {
     mprintf(0, "Making a copy of '%s' locally...\n", cur_name);
 
     char destname[100];
-    ddio_MakePath(destname, LocalD3Dir, "data", dlg.m_SelectedDestDir, Gamefiles[gamefile_handle].name, NULL);
+    ddio_MakePath(destname, LocalD3Dir, "data", dlg.m_SelectedDestDir, Gamefiles[gamefile_handle].name, nullptr);
     if (stricmp(destname, dlg.m_SelectedFiles[q])) // only copy if they are different
       cf_CopyFile(destname, dlg.m_SelectedFiles[q]);
 
@@ -227,7 +227,7 @@ void CFilePageDialog::OnCheckinFile() {
 
   for (int i = 0; i < listbox_count; i++) {
     list->GetText(listbox_map[i], buffer);
-    ddio_SplitPath(buffer, NULL, NULL, ext);
+    ddio_SplitPath(buffer, nullptr, nullptr, ext);
     if ((!stricmp(ext, ".d3l")) || (!stricmp(ext, ".cpp"))) {
       if (MessageBox("Tisk Tisk, Now there you go, ignoring Jeff when he told you not to check levels and scripts\nin "
                      "through this dialog.  Are you sure you want to ignore Jeff?\n(He doesn't like to be ignored)",
@@ -264,8 +264,8 @@ void CFilePageDialog::OnCheckinFile() {
 
           char destname[100], srcname[100];
 
-          ddio_MakePath(srcname, LocalD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, NULL);
-          ddio_MakePath(destname, NetD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, NULL);
+          ddio_MakePath(srcname, LocalD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, nullptr);
+          ddio_MakePath(destname, NetD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, nullptr);
 
           cf_CopyFile(destname, srcname);
 
@@ -379,7 +379,7 @@ void CFilePageDialog::OnLockFile() {
 
   for (int i = 0; i < listbox_count; i++) {
     list->GetText(listbox_map[i], buffer);
-    ddio_SplitPath(buffer, NULL, NULL, ext);
+    ddio_SplitPath(buffer, nullptr, nullptr, ext);
     if ((!stricmp(ext, ".d3l")) || (!stricmp(ext, ".cpp"))) {
       if (MessageBox("Tisk Tisk, Now there you go, ignoring Jeff when he told you not to check levels and scripts\nout "
                      "through this dialog.  Are you sure you want to ignore Jeff?\n(He doesn't like to be ignored)",

@@ -120,7 +120,7 @@ public:
     node = node_index;
     p_node = parent_node;
     cost = n_cost;
-    next = NULL;
+    next = nullptr;
   }
 
   int node;
@@ -134,7 +134,7 @@ class bpq {
   pq_item *q_head;
 
 public:
-  bpq() { q_head = NULL; }
+  bpq() { q_head = nullptr; }
 
   void push(pq_item *new_node) {
     new_node->next = q_head;
@@ -143,14 +143,14 @@ public:
 
   pq_item *pop() {
     pq_item *cur_item = q_head;
-    pq_item *prev_item = NULL;
+    pq_item *prev_item = nullptr;
     pq_item *best_item = q_head;
-    pq_item *best_prev_item = NULL;
+    pq_item *best_prev_item = nullptr;
 
-    if (q_head == NULL)
-      return NULL;
+    if (q_head == nullptr)
+      return nullptr;
 
-    while (cur_item != NULL) {
+    while (cur_item != nullptr) {
       if (cur_item->cost < best_item->cost) {
 
         best_prev_item = prev_item;
@@ -264,10 +264,10 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
 
       list_item = node_list[next_node];
 
-      if (list_item != NULL && list_item->cost < new_cost)
+      if (list_item != nullptr && list_item->cost < new_cost)
         continue;
 
-      if (list_item == NULL) {
+      if (list_item == nullptr) {
         list_item = new pq_item(next_node, cur_node->node, new_cost);
 
         node_list[next_node] = list_item;
@@ -350,7 +350,7 @@ retry:
           fq.p1 = &bnlist->nodes[i].pos;
           fq.rad = min_bn_rad;
           fq.thisobjnum = -1;
-          fq.ignore_obj_list = NULL;
+          fq.ignore_obj_list = nullptr;
           fq.flags = FQ_CHECK_OBJS | FQ_NO_RELINK | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
 
           if (fvi_FindIntersection(&fq, &hit_info) == HIT_NONE) {
@@ -436,7 +436,7 @@ retry:
           fq.p1 = &bnlist->nodes[i].pos;
           fq.rad = min_bn_rad;
           fq.thisobjnum = -1;
-          fq.ignore_obj_list = NULL;
+          fq.ignore_obj_list = nullptr;
           fq.flags = 0;
         }
 
@@ -465,7 +465,7 @@ retry:
 
 bn_list *BNode_GetBNListPtr(int roomnum, bool f_in_load_level) {
   if (roomnum == -1) {
-    return NULL;
+    return nullptr;
   } else if (roomnum >= 0 && roomnum <= Highest_room_index) {
     //		if(!f_in_load_level)
     //		{
@@ -473,7 +473,7 @@ bn_list *BNode_GetBNListPtr(int roomnum, bool f_in_load_level) {
     //		}
 
     if (!Rooms[roomnum].used) {
-      return NULL;
+      return nullptr;
     }
 
     room *rp = &Rooms[roomnum];
@@ -484,7 +484,7 @@ bn_list *BNode_GetBNListPtr(int roomnum, bool f_in_load_level) {
     return &BNode_terrain_list[roomnum - Highest_room_index - 1];
   }
 
-  return NULL;
+  return nullptr;
 }
 
 void BNode_ClearBNodeInfo(void) {
@@ -501,7 +501,7 @@ void BNode_ClearBNodeInfo(void) {
     }
 
     BNode_terrain_list[i].num_nodes = 0;
-    BNode_terrain_list[i].nodes = NULL;
+    BNode_terrain_list[i].nodes = nullptr;
   }
 
   BNode_allocated = false;
@@ -525,7 +525,7 @@ void BNode_FreeRoom(room *rp) {
 
   if (rp->bn_info.num_nodes) {
     mem_free(rp->bn_info.nodes);
-    rp->bn_info.nodes = NULL;
+    rp->bn_info.nodes = nullptr;
     rp->bn_info.num_nodes = 0;
   }
 }

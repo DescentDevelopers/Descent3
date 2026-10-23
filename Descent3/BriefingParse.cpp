@@ -134,10 +134,10 @@ static const char *const keywords[] = {"screen", "button", "text",  "endtext", "
 
 #define fntSMBRIEF 0
 #define fntLGBRIEF 1
-static const char *const FontNames[] = {"sm_brief", "lg_brief", NULL};
+static const char *const FontNames[] = {"sm_brief", "lg_brief", nullptr};
 
 static const char *const TextEffectstr[] = {"None",       "flash",           "scroll_l2r", "scroll_r2l", "scroll_t2b",
-                                            "scroll_b2t", "fade_in_and_out", "fade_in",    "fade_out",   NULL};
+                                            "scroll_b2t", "fade_in_and_out", "fade_in",    "fade_out",   nullptr};
 #define bfxNONE 0
 #define bfxFADE_IN 1
 #define bfxFADE_OUT 2
@@ -152,7 +152,7 @@ static const char *const TextEffectstr[] = {"None",       "flash",           "sc
 
 static const char *const BitmapEffectstr[] = {"None",       "Fade_in",    "Fade_out",    "Blur_in",
                                               "Blur_out",   "Scan_in",    "Scan_out",    "Invert_in",
-                                              "Invert_out", "Stretch_in", "Stretch_out", NULL};
+                                              "Invert_out", "Stretch_in", "Stretch_out", nullptr};
 
 ////////////////////////////////////////////
 //	These are the types of on screen buttons
@@ -163,7 +163,7 @@ static const char *const BitmapEffectstr[] = {"None",       "Fade_in",    "Fade_
 #define osbQUIT 4
 #define osbJUMP_PAGE 5
 
-static const char *const OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", "Quit", "Jump", NULL};
+static const char *const OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", "Quit", "Jump", nullptr};
 
 /////////////////////////////////////////////
 // These are the different ways an onscreen button will respond to mouse clicks
@@ -171,7 +171,7 @@ static const char *const OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", 
 #define oscCLICK_DOWN 1
 #define oscCLICK_UP 2
 
-static const char *const OnScreenButtonClickTypes[] = {"HoldDown", "ClickDown", "ClickUp", NULL};
+static const char *const OnScreenButtonClickTypes[] = {"HoldDown", "ClickDown", "ClickUp", nullptr};
 
 #define PARSE_INT(i)                                                                                                   \
   do {                                                                                                                 \
@@ -212,7 +212,7 @@ static int ReadFullLine(char **data, CFILE *ifile) {
   counter = 0;
   done = false;
   readin = 0;
-  *data = NULL;
+  *data = nullptr;
   char c;
 
   while (!done) {
@@ -276,10 +276,10 @@ static int ReadFullLine(char **data, CFILE *ifile) {
 int CBriefParse::ParseBriefing(const char *filename) {
   CFILE *ifile;
   bool voice_def_screen = false;
-  char text_buf[8192], *text_ptr = NULL;
+  char text_buf[8192], *text_ptr = nullptr;
   bool abort = 0;
   bool gottitle = false;
-  char *linebuf = NULL;
+  char *linebuf = nullptr;
 
   int beffect = bfxNONE;
   int x = 0, y = 0;
@@ -314,12 +314,12 @@ int CBriefParse::ParseBriefing(const char *filename) {
   int bytes_read;
   const char *p;
 
-  linebuf = NULL;
+  linebuf = nullptr;
 
   while ((!cfeof(ifile) && !parse_error && !abort)) {
     if (linebuf) {
       mem_free(linebuf);
-      linebuf = NULL;
+      linebuf = nullptr;
     }
 
     if (LoopCallback) {
@@ -509,7 +509,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
         polydesc.mission_mask_unset = 0;
         strcpy(polydesc.polyname, name);
         if (AddPolyEffect)
-          (*AddPolyEffect)(&polydesc, NULL);
+          (*AddPolyEffect)(&polydesc, nullptr);
       } break;
       case K_BUTTON: {
         if (!ParseButtonEffect(p))
@@ -556,7 +556,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
         }
 
         if (StartScreen)
-          (*StartScreen)(current_screen, description, (layout_found) ? layout_scr : NULL, mission_mask_set,
+          (*StartScreen)(current_screen, description, (layout_found) ? layout_scr : nullptr, mission_mask_set,
                          mission_mask_unset);
 
         voice_def_screen = false;
@@ -589,7 +589,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
           (*AddTextEffect)(&text_buffer_desc.textdesc, text_buf, text_buffer_desc.description,
                            text_buffer_desc.text_id);
         text_buffer_desc.text_id = -1;
-        text_ptr = NULL;
+        text_ptr = nullptr;
       } break;
       case K_BITMAP: {
         char buffer[64];
@@ -812,7 +812,7 @@ done_parsing:;
   if (linebuf) {
     // make sure all memory is freed
     mem_free(linebuf);
-    linebuf = NULL;
+    linebuf = nullptr;
   }
 
   return PBERR_NOERR;
@@ -1215,7 +1215,7 @@ const char *CBriefParse::ParseToken(const char *p, char *buf, int bufsize) {
   // Check for buffer overflow
   if (bufsize <= 0) {
     ParseError("Token too long", save_p);
-    return NULL;
+    return nullptr;
   }
 
   return p;
@@ -1232,7 +1232,7 @@ const char *CBriefParse::ParseString(const char *p, char *buf, int bufsize) {
 
   if (*p != '"') {
     ParseError("Missing quote", p);
-    return NULL;
+    return nullptr;
   } else
     p++; // skip initial quote
 
@@ -1243,13 +1243,13 @@ const char *CBriefParse::ParseString(const char *p, char *buf, int bufsize) {
   // Check for buffer overflow
   if (bufsize <= 0) {
     ParseError("String too long", save_p);
-    return NULL;
+    return nullptr;
   }
 
   // Check for missing endquote
   if (!*p) {
     ParseError("Missing endquote", save_p);
-    return NULL;
+    return nullptr;
   }
 
   // Write terminator
@@ -1286,7 +1286,7 @@ const char *CBriefParse::ParseInt(const char *p, int *i) {
     return t;
   } else {
     ParseError("Invalid character in integer", p);
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -1321,7 +1321,7 @@ const char *CBriefParse::ParseFloat(const char *p, float *f) {
   // Make sure at least one digit
   if (!got_digit) {
     ParseError("Expecting digit", p);
-    return NULL;
+    return nullptr;
   }
 
   // Check for valid separator, and convert
@@ -1330,7 +1330,7 @@ const char *CBriefParse::ParseFloat(const char *p, float *f) {
     return t;
   } else {
     ParseError("Invalid character in floating-point number", p);
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -1340,7 +1340,7 @@ const char *CBriefParse::ParseComma(const char *p) {
 
   if (*p != ',') {
     ParseError("Comma expected");
-    return NULL;
+    return nullptr;
   }
 
   return p + 1;

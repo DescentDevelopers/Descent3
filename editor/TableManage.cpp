@@ -46,16 +46,16 @@
 // GenericPageNode Class Members
 ////////////////////////////////////////////////////////////////
 GenericPageNode::GenericPageNode() {
-  prev = NULL;
-  next = NULL;
+  prev = nullptr;
+  next = nullptr;
   page_id = 0;
 }
 
 GenericPageNode::~GenericPageNode() {
   // Free up the object description memory
-  if (genericpage.objinfo_struct.description != NULL) {
+  if (genericpage.objinfo_struct.description != nullptr) {
     mem_free(genericpage.objinfo_struct.description);
-    genericpage.objinfo_struct.description = NULL;
+    genericpage.objinfo_struct.description = nullptr;
   }
 }
 
@@ -67,13 +67,13 @@ bool GenericPageNode::operator<(const GenericPageNode &node) {
 // GenericPageList Class Members
 ////////////////////////////////////////////////////////////////
 GenericPageList::GenericPageList() {
-  m_head = NULL;
-  m_tail = NULL;
+  m_head = nullptr;
+  m_tail = nullptr;
   m_size = 0;
   m_TableFilename = "";
   m_TableLoaded = FALSE;
   m_TableModified = FALSE;
-  m_SelectedNode = NULL;
+  m_SelectedNode = nullptr;
   m_SelectedIndex = 0;
 }
 
@@ -83,18 +83,18 @@ void GenericPageList::ClearList(void) {
   GenericPageNode *temp, *node;
 
   node = m_head;
-  while (node != NULL) {
+  while (node != nullptr) {
     temp = node;
     node = node->next;
     delete temp;
   }
   m_size = 0;
-  m_head = NULL;
-  m_tail = NULL;
+  m_head = nullptr;
+  m_tail = nullptr;
   m_TableFilename = "";
   m_TableLoaded = FALSE;
   m_TableModified = FALSE;
-  m_SelectedNode = NULL;
+  m_SelectedNode = nullptr;
   m_SelectedIndex = 0;
 }
 
@@ -103,15 +103,15 @@ void GenericPageList::ClearList(void) {
 bool GenericPageList::AddToList(GenericPageNode *new_node) {
   GenericPageNode *node;
 
-  if (new_node == NULL)
+  if (new_node == nullptr)
     return FALSE;
 
   // Handle empty list case
-  if (m_head == NULL) {
+  if (m_head == nullptr) {
     m_head = new_node;
     m_tail = new_node;
-    new_node->next = NULL;
-    new_node->prev = NULL;
+    new_node->next = nullptr;
+    new_node->prev = nullptr;
 
     m_size++;
     return TRUE;
@@ -120,7 +120,7 @@ bool GenericPageList::AddToList(GenericPageNode *new_node) {
   // Handle (new node < list head) case
   if ((*new_node) < (*m_head)) {
     new_node->next = m_head;
-    new_node->prev = NULL;
+    new_node->prev = nullptr;
     m_head->prev = new_node;
     m_head = new_node;
 
@@ -131,13 +131,13 @@ bool GenericPageList::AddToList(GenericPageNode *new_node) {
   // Search through list until end of list or until the new node is less
   // than the next node, then add the new node after the current node
   node = m_head;
-  while (node->next != NULL && (*(node->next)) < (*new_node))
+  while (node->next != nullptr && (*(node->next)) < (*new_node))
     node = node->next;
 
   new_node->next = node->next;
   new_node->prev = node;
 
-  if (node->next == NULL)
+  if (node->next == nullptr)
     m_tail = new_node;
   else
     node->next->prev = new_node;
@@ -188,7 +188,7 @@ bool GenericPageList::LoadTable(char *table_filename) {
     }
 
     generic_page_node = new GenericPageNode;
-    if (generic_page_node == NULL) {
+    if (generic_page_node == nullptr) {
       return FALSE;
     }
     mng_ReadNewGenericPage(infile, &(generic_page_node->genericpage));
@@ -261,7 +261,7 @@ bool GenericPageList::SaveTable(char *table_filename) {
 
     // Look for the generic page with the current page position in list
     new_generic_page = FindNode(page_id);
-    if (new_generic_page == NULL) {
+    if (new_generic_page == nullptr) {
       // There is a page incompatibility!!!!
       // so, just write out the one that was read instead
       mng_WriteNewGenericPage(outfile, &genericpage);
@@ -273,9 +273,9 @@ bool GenericPageList::SaveTable(char *table_filename) {
     }
 
     // Free up the description memory for the temp page
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
 
     page_id++;
@@ -284,7 +284,7 @@ bool GenericPageList::SaveTable(char *table_filename) {
   cfclose(infile);
   cfclose(outfile);
 
-  if (table_filename == NULL)
+  if (table_filename == nullptr)
     // if no filename specified, just save it to the currently loaded file
     table_filename = m_TableFilename.GetBuffer(0);
   else {
@@ -313,7 +313,7 @@ bool GenericPageList::FillFromList(CComboBox *list) {
   list->ResetContent();
 
   node = m_head;
-  while (node != NULL) {
+  while (node != nullptr) {
     list->InsertString(-1, node->genericpage.objinfo_struct.name);
     node = node->next;
   }
@@ -325,10 +325,10 @@ bool GenericPageList::FillFromList(CComboBox *list) {
 }
 
 void GenericPageList::SelectNext(void) {
-  if (m_SelectedNode == NULL)
+  if (m_SelectedNode == nullptr)
     return;
 
-  if (m_SelectedNode->next == NULL) {
+  if (m_SelectedNode->next == nullptr) {
     m_SelectedNode = m_head;
     m_SelectedIndex = 0;
   } else {
@@ -338,10 +338,10 @@ void GenericPageList::SelectNext(void) {
 }
 
 void GenericPageList::SelectPrev(void) {
-  if (m_SelectedNode == NULL)
+  if (m_SelectedNode == nullptr)
     return;
 
-  if (m_SelectedNode->prev == NULL) {
+  if (m_SelectedNode->prev == nullptr) {
     m_SelectedNode = m_tail;
     m_SelectedIndex = (m_size - 1);
   } else {
@@ -359,7 +359,7 @@ void GenericPageList::SelectNode(uint32_t list_index) {
 
   node = m_head;
   for (j = 0; j < list_index; j++)
-    if (node != NULL)
+    if (node != nullptr)
       node = node->next;
 
   m_SelectedNode = node;
@@ -369,13 +369,13 @@ void GenericPageList::SelectNode(uint32_t list_index) {
 void GenericPageList::DisplaySelected(CComboBox *list, CEdit *description) {
   char *text;
 
-  if (m_SelectedNode == NULL)
+  if (m_SelectedNode == nullptr)
     return;
 
   list->SetCurSel(m_SelectedIndex);
 
   text = m_SelectedNode->genericpage.objinfo_struct.description;
-  if (text == NULL)
+  if (text == nullptr)
     description->SetWindowText(NO_DESCRIPTION_STRING);
   else
     description->SetWindowText(text);
@@ -386,7 +386,7 @@ void GenericPageList::SaveSelected(CEdit *description) {
   char *new_text;
   char *old_text;
 
-  if (m_SelectedNode == NULL)
+  if (m_SelectedNode == nullptr)
     return;
 
   // Get pointer to old text
@@ -401,17 +401,17 @@ void GenericPageList::SaveSelected(CEdit *description) {
   // Check if new description is empty, if it is, make it NULL
   if (strlen(new_text) == 0 || stricmp(new_text, NO_DESCRIPTION_STRING) == 0) {
     mem_free(new_text);
-    new_text = NULL;
+    new_text = nullptr;
   }
 
   // If both new and old are empty, get outta here
-  if (old_text == NULL && new_text == NULL) {
+  if (old_text == nullptr && new_text == nullptr) {
     mem_free(new_text);
     return;
   }
 
   // If both have descriptions and they match, get outta here
-  if (old_text != NULL && new_text != NULL) {
+  if (old_text != nullptr && new_text != nullptr) {
     if (strcmp(old_text, new_text) == 0) {
       mem_free(new_text);
       return;
@@ -419,7 +419,7 @@ void GenericPageList::SaveSelected(CEdit *description) {
   }
 
   // Free up the old text memory, and assign it to the new text
-  if (old_text != NULL)
+  if (old_text != nullptr)
     mem_free(old_text);
 
   m_SelectedNode->genericpage.objinfo_struct.description = new_text;
@@ -431,9 +431,9 @@ void GenericPageList::SaveSelected(CEdit *description) {
 GenericPageNode *GenericPageList::FindNode(uint32_t page_id) {
   GenericPageNode *node, *found_node;
 
-  found_node = NULL;
+  found_node = nullptr;
   node = m_head;
-  while (node != NULL) {
+  while (node != nullptr) {
     if (node->page_id == page_id) {
       found_node = node;
       break;

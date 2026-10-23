@@ -344,10 +344,10 @@ int TryToJoinServer(network_address *addr) {
     NetPlayers[i].voice_taunt4[0] = 0;
     NetPlayers[i].custom_file_seq = NETFILE_ID_NOFILE;
     // Set all custom textures to NULL
-    PlayerSetCustomTexture(i, NULL);
+    PlayerSetCustomTexture(i, nullptr);
   }
   Current_pilot.get_multiplayer_data(NetPlayers[Player_num].ship_logo, NetPlayers[Player_num].voice_taunt1,
-                                     NetPlayers[Player_num].voice_taunt2, NULL, NetPlayers[Player_num].voice_taunt3,
+                                     NetPlayers[Player_num].voice_taunt2, nullptr, NetPlayers[Player_num].voice_taunt3,
                                      NetPlayers[Player_num].voice_taunt4);
   if (NetPlayers[Player_num].ship_logo[0])
     PlayerSetCustomTexture(Player_num, NetPlayers[Player_num].ship_logo);

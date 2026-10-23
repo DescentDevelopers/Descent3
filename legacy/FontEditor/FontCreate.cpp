@@ -77,7 +77,7 @@ inline FONTFILE OPEN_FONT(char *filename) {
 
   fp = (FONTFILE)fopen(filename, "wb");
   if (!fp)
-    return NULL;
+    return nullptr;
 
   return fp;
 }
@@ -296,7 +296,7 @@ bool extract_font(int bm_handle, tFontFileInfo *ft) {
     cur_char = read_font_line(cur_char, bmx, bmy);
     if (cur_char == -1) {
       delete[] m_DataBuffer;
-      m_DataBuffer = NULL;
+      m_DataBuffer = nullptr;
       return false;
     }
     bmy += m_CharHeight + 1;
@@ -325,9 +325,9 @@ bool extract_font(int bm_handle, tFontFileInfo *ft) {
   ft->min_ascii = 0;
   ft->max_ascii = cur_char - 1;
   ft->raw_data = (uint8_t *)m_DataBuffer;
-  ft->char_data = NULL;
+  ft->char_data = nullptr;
   ft->char_widths = m_CharWidths;
-  ft->kern_data = NULL;
+  ft->kern_data = nullptr;
 
   ft->flags |= FT_FMT4444;
 
@@ -372,7 +372,7 @@ void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_
   //	Adjust font record for file write.
   int num_char;
 
-  ft.kern_data = NULL;
+  ft.kern_data = nullptr;
   ft.min_ascii = min_ascii;
   ft.max_ascii = ft.min_ascii + ft.max_ascii;
 

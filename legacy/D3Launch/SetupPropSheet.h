@@ -33,8 +33,8 @@ class CSetupPropSheet : public CPropertySheet {
 
   // Construction
 public:
-  CSetupPropSheet(UINT nIDCaption, CWnd *pParentWnd = NULL, UINT iSelectPage = 0);
-  CSetupPropSheet(LPCTSTR pszCaption, CWnd *pParentWnd = NULL, UINT iSelectPage = 0);
+  CSetupPropSheet(UINT nIDCaption, CWnd *pParentWnd = nullptr, UINT iSelectPage = 0);
+  CSetupPropSheet(LPCTSTR pszCaption, CWnd *pParentWnd = nullptr, UINT iSelectPage = 0);
 
   // Attributes
 public:

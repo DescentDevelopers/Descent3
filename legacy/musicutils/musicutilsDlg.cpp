@@ -175,7 +175,7 @@ BOOL CMusicutilsDlg::OnInitDialog() {
   ASSERT(IDM_ABOUTBOX < 0xF000);
 
   CMenu *pSysMenu = GetSystemMenu(FALSE);
-  if (pSysMenu != NULL) {
+  if (pSysMenu != nullptr) {
     CString strAboutMenu;
     strAboutMenu.LoadString(IDS_ABOUTBOX);
     if (!strAboutMenu.IsEmpty()) {
@@ -189,11 +189,11 @@ BOOL CMusicutilsDlg::OnInitDialog() {
   SetIcon(m_hIcon, TRUE);  // Set big icon
   SetIcon(m_hIcon, FALSE); // Set small icon
 
-  hBkgLeaf = NULL;
-  hCombatLeaf = NULL;
-  hDangerLeaf = NULL;
-  hIntroLeaf = NULL;
-  hEndCombatLeaf = NULL;
+  hBkgLeaf = nullptr;
+  hCombatLeaf = nullptr;
+  hDangerLeaf = nullptr;
+  hIntroLeaf = nullptr;
+  hEndCombatLeaf = nullptr;
 
   // TODO: Add extra initialization here
   tWin32AppInfo appinfo;
@@ -229,7 +229,7 @@ void CMusicutilsDlg::OnDestroy() {
 
   MusicPlayClose();
   delete MusicUtils;
-  MusicUtils = NULL;
+  MusicUtils = nullptr;
 
   CDialog::OnDestroy();
 }
@@ -307,7 +307,7 @@ void CMusicutilsDlg::OnFileNew() {
 void CMusicutilsDlg::OnFileQuit() { OnCancel(); }
 
 void CMusicutilsDlg::OnFileOpen() {
-  CFileDialog opendlg(TRUE, "omf", NULL, OFN_PATHMUSTEXIST, "Outrage Music Files(*.omf)|*.omf||", this);
+  CFileDialog opendlg(TRUE, "omf", nullptr, OFN_PATHMUSTEXIST, "Outrage Music Files(*.omf)|*.omf||", this);
 
   if (!SaveModified())
     return;
@@ -346,7 +346,7 @@ void CMusicutilsDlg::OpenThemeFile(const CString &filename) {
   char operand[INFFILE_LINELEN];     // operand
   char curpath[16][INFFILE_LINELEN]; // stores complete path of song.
   int iter;
-  tSongItem *cursong = NULL;
+  tSongItem *cursong = nullptr;
   int curcmdtype;
 
   //	open file
@@ -465,7 +465,7 @@ void CMusicutilsDlg::SaveThemeFile() {
   while (hTreeItem) {
     song = GetSongFromTreeItem(hTreeItem);
     if (song) {
-      ddio_SplitPath((LPCTSTR)song->strSongPath, NULL, filename, ext);
+      ddio_SplitPath((LPCTSTR)song->strSongPath, nullptr, filename, ext);
       tempstr.Format("#zzint%d=%s\n", iter, (LPCTSTR)song->strSongPath);
       codestr += (tempstr + "intro=") + filename;
       codestr += ext;
@@ -482,7 +482,7 @@ void CMusicutilsDlg::SaveThemeFile() {
   while (hTreeItem) {
     song = GetSongFromTreeItem(hTreeItem);
     if (song) {
-      ddio_SplitPath((LPCTSTR)song->strSongPath, NULL, filename, ext);
+      ddio_SplitPath((LPCTSTR)song->strSongPath, nullptr, filename, ext);
       tempstr.Format("#zzbkg%d=%s\n", iter, (LPCTSTR)song->strSongPath);
       codestr += (tempstr + "scene=") + filename;
       codestr += ext;
@@ -505,7 +505,7 @@ void CMusicutilsDlg::SaveThemeFile() {
   while (hTreeItem) {
     song = GetSongFromTreeItem(hTreeItem);
     if (song) {
-      ddio_SplitPath((LPCTSTR)song->strSongPath, NULL, filename, ext);
+      ddio_SplitPath((LPCTSTR)song->strSongPath, nullptr, filename, ext);
       tempstr.Format("#zzcmb%d=%s\n", iter, (LPCTSTR)song->strSongPath);
       codestr += (tempstr + "combat=") + filename;
       codestr += ext;
@@ -524,7 +524,7 @@ void CMusicutilsDlg::SaveThemeFile() {
   while (hTreeItem) {
     song = GetSongFromTreeItem(hTreeItem);
     if (song) {
-      ddio_SplitPath((LPCTSTR)song->strSongPath, NULL, filename, ext);
+      ddio_SplitPath((LPCTSTR)song->strSongPath, nullptr, filename, ext);
       tempstr.Format("#zzdgr%d=%s\n", iter, (LPCTSTR)song->strSongPath);
       codestr += (tempstr + "danger=") + filename;
       codestr += ext;
@@ -543,7 +543,7 @@ void CMusicutilsDlg::SaveThemeFile() {
   while (hTreeItem) {
     song = GetSongFromTreeItem(hTreeItem);
     if (song) {
-      ddio_SplitPath((LPCTSTR)song->strSongPath, NULL, filename, ext);
+      ddio_SplitPath((LPCTSTR)song->strSongPath, nullptr, filename, ext);
       tempstr.Format("#zzecm%d=%s\n", iter, (LPCTSTR)song->strSongPath);
       codestr += (tempstr + "endcombat=") + filename;
       codestr += ext;
@@ -575,7 +575,7 @@ void CMusicutilsDlg::SaveThemeFile() {
 //	outrage stream format (osf)
 
 void CMusicutilsDlg::OnToolsMakeStream() {
-  CFileDialog opendlg(TRUE, "raw", NULL, OFN_PATHMUSTEXIST, "Raw files(*.raw)|*.raw||", this);
+  CFileDialog opendlg(TRUE, "raw", nullptr, OFN_PATHMUSTEXIST, "Raw files(*.raw)|*.raw||", this);
   CString srcfilestr;
   CString destfilestr;
 
@@ -647,7 +647,7 @@ strconv_err:
 
 //	Plays a song
 void CMusicutilsDlg::OnToolsPlaySong() {
-  CFileDialog opendlg(TRUE, "osf", NULL, OFN_PATHMUSTEXIST, "Outrage Stream Files(*.osf)|*.osf||", this);
+  CFileDialog opendlg(TRUE, "osf", nullptr, OFN_PATHMUSTEXIST, "Outrage Stream Files(*.osf)|*.osf||", this);
 
   //	get filename to play
   if (opendlg.DoModal() != IDOK) {
@@ -665,7 +665,7 @@ static uint8_t StaticFileBuffer[FILEBUFFER_LENGTH];
 
 bool CMusicutilsDlg::SaveDigitalStream(OSFArchive *osf, const CString &rawfilename, uint8_t compression, uint8_t format,
                                        uint32_t samples, const CString &realname, uint8_t xforms, int measure) {
-  FILE *fpin = NULL;
+  FILE *fpin = nullptr;
   int i;
   uint32_t filelen;
   int nblocks;
@@ -690,7 +690,7 @@ bool CMusicutilsDlg::SaveDigitalStream(OSFArchive *osf, const CString &rawfilena
     si.dwFlags = STARTF_USESHOWWINDOW;
     si.wShowWindow = SW_SHOW;
 
-    if (!CreateProcess(NULL, cmdbuffer, NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc_info)) {
+    if (!CreateProcess(nullptr, cmdbuffer, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &proc_info)) {
       AfxMessageBox("Failed to start audio compression tool f:\tools\audcomp.exe");
       return false;
     }
@@ -849,11 +849,11 @@ void CMusicutilsDlg::FreeTree() {
   FreeTreeItems(hBkgLeaf);
   FreeTreeItems(hCombatLeaf);
   FreeTreeItems(hDangerLeaf);
-  hBkgLeaf = NULL;
-  hCombatLeaf = NULL;
-  hDangerLeaf = NULL;
-  hIntroLeaf = NULL;
-  hEndCombatLeaf = NULL;
+  hBkgLeaf = nullptr;
+  hCombatLeaf = nullptr;
+  hDangerLeaf = nullptr;
+  hIntroLeaf = nullptr;
+  hEndCombatLeaf = nullptr;
 }
 
 //	frees all daya for a tree leaf (and all children.)
@@ -895,7 +895,7 @@ void CMusicutilsDlg::InsertTreeItem(HTREEITEM hParentItem) {
 HTREEITEM CMusicutilsDlg::FreeTreeItem(HTREEITEM hItem) {
   CTreeCtrl *tree = (CTreeCtrl *)GetDlgItem(IDC_THEME_TREE);
   LPARAM param;
-  HTREEITEM hNextItem = NULL;
+  HTREEITEM hNextItem = nullptr;
 
   // only allow us to delete a song (not a property)
   param = GetLeafParam(hItem);
@@ -994,14 +994,14 @@ CMusicutilsDlg::tSongItem *CMusicutilsDlg::InsertSong(HTREEITEM hTree, const tSo
 
   song->hTreeItem = InsertLeaf(hTree, strSong.GetBuffer(_MAX_PATH + 64), (LPARAM)song);
 
-  song->hTI_repeat = NULL;
+  song->hTI_repeat = nullptr;
   if (hTree != hIntroLeaf && hTree != hEndCombatLeaf) {
     tempstr.Format("%s%s", TXT_REPEAT, songitm->repeat ? "true" : "false");
     song->hTI_repeat = InsertLeaf(song->hTreeItem, (LPCTSTR)tempstr, LEAFTYPE_PROPERTY);
     song->repeat = songitm->repeat;
   }
 
-  song->hTI_lvllink = NULL;
+  song->hTI_lvllink = nullptr;
   song->roomlink = songitm->roomlink;
   if (hTree == hBkgLeaf) {
     // add sub items to background song leaf
@@ -1051,7 +1051,7 @@ void CMusicutilsDlg::SetSongProperty(tSongProp property, tSongItem *song) {
   CTreeCtrl *tree = (CTreeCtrl *)GetDlgItem(IDC_THEME_TREE);
   tSongItem *real_song;
   CString tempstr;
-  HTREEITEM hItem = NULL;
+  HTREEITEM hItem = nullptr;
 
   switch (property) {
   case SONGPROP_REPEAT:

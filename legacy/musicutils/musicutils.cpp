@@ -53,7 +53,7 @@ CMusicutilsApp::CMusicutilsApp() {
 // The one and only CMusicutilsApp object
 
 CMusicutilsApp theApp;
-oeApplication *MusicUtils = NULL;
+oeApplication *MusicUtils = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMusicutilsApp initialization

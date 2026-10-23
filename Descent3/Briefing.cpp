@@ -235,7 +235,7 @@ static constexpr int NumHotTags = std::size(HotTags);
 
 static int osb_xoff = 0, osb_yoff = 0;
 static int current_screen = -1;
-static tTelComInfo *pb_tcs = NULL;
+static tTelComInfo *pb_tcs = nullptr;
 static bool gottitle = false;
 static bool pbfirst_call;
 static char pbtitle[100];
@@ -298,7 +298,7 @@ bool ParseForHotTags(const char *src, char **dest) {
   bool ret = false;
   const char *curr_ptr = src;
   char *dest_ptr;
-  *dest = NULL;
+  *dest = nullptr;
 
   bool done = false;
   int length = strlen(src) + 1;
@@ -327,7 +327,7 @@ bool ParseForHotTags(const char *src, char **dest) {
           if (!new_mem) {
             // out of memory
             mem_free((*dest));
-            *dest = NULL;
+            *dest = nullptr;
             return false;
           }
 
@@ -370,7 +370,7 @@ bool ParseForHotTags(const char *src, char **dest) {
           if (!new_mem) {
             // out of memory
             mem_free((*dest));
-            *dest = NULL;
+            *dest = nullptr;
             return false;
           }
 
@@ -401,7 +401,7 @@ bool ParseForHotTags(const char *src, char **dest) {
             if (!new_mem) {
               // out of memory
               mem_free((*dest));
-              *dest = NULL;
+              *dest = nullptr;
               return false;
             }
 
@@ -423,7 +423,7 @@ bool ParseForHotTags(const char *src, char **dest) {
 
   if (!ret) {
     mem_free((*dest));
-    *dest = NULL;
+    *dest = nullptr;
   }
 
   return ret;
@@ -455,7 +455,7 @@ bool PlayBriefing(tTelComInfo *tcs) {
 
 void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
-    char *new_text = NULL;
+    char *new_text = nullptr;
     const bool new_stuff = ParseForHotTags(text, &new_text);
 
     CreateTextEffect(desc, new_stuff ? new_text : text, MONITOR_MAIN, current_screen, id);

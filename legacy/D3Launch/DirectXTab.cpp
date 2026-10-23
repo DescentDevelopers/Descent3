@@ -109,12 +109,12 @@ BOOL CDirectXTab::OnInitDialog() {
 
   // TODO: Add extra initialization here
   LONG lResult;
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
 
   if (Dd_dll_handle) {
     lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE,             // Where it is
                            "Software\\Microsoft\\DirectX", // name of key
-                           NULL,                           // DWORD reserved
+                           0,                              // DWORD reserved
                            KEY_QUERY_VALUE,                // Allows all changes
                            &hKey                           // Location to store key
     );
@@ -126,7 +126,7 @@ BOOL CDirectXTab::OnInitDialog() {
       dwLen = 32;
       lResult = RegQueryValueEx(hKey,               // Handle to key
                                 "Version",          // The values name
-                                NULL,               // DWORD reserved
+                                nullptr,               // DWORD reserved
                                 &dwType,            // What kind it is
                                 (uint8_t *)version, // value to set
                                 &dwLen              // How many bytes to set
@@ -146,7 +146,7 @@ BOOL CDirectXTab::OnInitDialog() {
         dwLen = 4;
         lResult = RegQueryValueEx(hKey,               // Handle to key
                                   "InstalledVersion", // The values name
-                                  NULL,               // DWORD reserved
+                                  nullptr,               // DWORD reserved
                                   &dwType,            // What kind it is
                                   (uint8_t *)&val,    // value to set
                                   &dwLen              // How many bytes to set

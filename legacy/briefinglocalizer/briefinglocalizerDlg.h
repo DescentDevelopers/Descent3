@@ -42,7 +42,7 @@ public:
   CString m_TempFileName;
   CString m_RealFileName;
   bool m_FileChanged;
-  CBriefinglocalizerDlg(CWnd *pParent = NULL); // standard constructor
+  CBriefinglocalizerDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CBriefinglocalizerDlg)

@@ -424,7 +424,7 @@ bool PostLevelResults(bool success) {
   ui_ShowCursor();
   background_loaded = false;
   SetScreenMode(old_mode);
-  SetUICallback(NULL);
+  SetUICallback(nullptr);
   return rval;
 }
 

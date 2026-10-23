@@ -168,7 +168,7 @@ class oms_stream {
   } m_data2; // data for internal ops.
 
 private:
-  inline void STREAM_COMMANDP(uint8_t cmd, void *p = NULL) {
+  inline void STREAM_COMMANDP(uint8_t cmd, void *p = nullptr) {
     m_status.cmd = cmd;
     m_status.parm.p = p;
   }
@@ -197,7 +197,7 @@ public:
 public:
   void Process(float frmtime);             // processes a stream's events.
   void Send(oms_q_evt *evt);               // sends an event to the stream.
-  void Reset(OutrageMusicSeq *seq = NULL); // reset stream.
+  void Reset(OutrageMusicSeq *seq = nullptr); // reset stream.
   void SetVolume(float vol);               // volume.
 
   // event senders

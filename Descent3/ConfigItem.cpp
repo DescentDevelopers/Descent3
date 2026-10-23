@@ -108,22 +108,22 @@ ConfigItem::ConfigItem() {
   m_fCurrentValue = 0;
   m_iFlags = 0;
   m_iType = 0;
-  m_iID = NULL;
+  m_iID = nullptr;
   m_iNumIDs = 0;
   m_iItems = 0;
   m_iValueType = 0;
-  m_hWnd = NULL;
-  m_tiList = NULL;
+  m_hWnd = nullptr;
+  m_tiList = nullptr;
   m_tiCount = 0;
-  m_hsList = NULL;
+  m_hsList = nullptr;
   m_hsCount = 0;
-  m_sList = NULL;
+  m_sList = nullptr;
   m_sCount = 0;
-  m_rbList = NULL;
+  m_rbList = nullptr;
   m_rbCount = 0;
-  m_bList = NULL;
+  m_bList = nullptr;
   m_bCount = 0;
-  m_lbList = NULL;
+  m_lbList = nullptr;
   m_lbCount = 0;
   m_fMin = 0;
   m_fMax = 100;
@@ -131,10 +131,10 @@ ConfigItem::ConfigItem() {
   m_fUnit = 1;
   m_auxX = 0;
   m_bAlive = false;
-  m_labeltext = NULL;
-  m_fCallback = NULL;
-  m_iCallback = NULL;
-  m_bCallback = NULL;
+  m_labeltext = nullptr;
+  m_fCallback = nullptr;
+  m_iCallback = nullptr;
+  m_bCallback = nullptr;
 }
 
 ConfigItem::~ConfigItem() {
@@ -242,7 +242,7 @@ void ConfigItem::Destroy(void) {
 
   if (m_labeltext) {
     mem_free(m_labeltext);
-    m_labeltext = NULL;
+    m_labeltext = nullptr;
   }
 
   if ((m_tiCount) && (m_tiList)) {
@@ -697,7 +697,7 @@ void ConfigItem::Add(int count, ...) {
         m_rbList[i]->Create(m_hWnd, m_rbList[i - 1], m_iID[i], m_tiList[i], m_X + curr_x, m_Y + curr_y,
                             m_tiList[i]->width(), m_tiList[i]->height(), UIF_FIT | UIRB_NOBUTTON);
       else
-        m_rbList[i]->Create(m_hWnd, NULL, m_iID[i], m_tiList[i], m_X + curr_x, m_Y + curr_y, m_tiList[i]->width(),
+        m_rbList[i]->Create(m_hWnd, nullptr, m_iID[i], m_tiList[i], m_X + curr_x, m_Y + curr_y, m_tiList[i]->width(),
                             m_tiList[i]->height(), UIF_FIT | UIRB_NOBUTTON);
 
       m_tiList[i]->set_color(UICOL_HOTSPOT_HI);
@@ -971,7 +971,7 @@ void ConfigItem::Add(int count, ...) {
         m_rbList[i]->Create(m_hWnd, m_rbList[i - 1], m_iID[i], m_tiList[i], m_X + curr_x + offset, m_Y + curr_y, m_W,
                             m_H, UIF_FIT);
       else
-        m_rbList[i]->Create(m_hWnd, NULL, m_iID[i], m_tiList[i], m_X + curr_x + offset, m_Y + curr_y, m_W, m_H,
+        m_rbList[i]->Create(m_hWnd, nullptr, m_iID[i], m_tiList[i], m_X + curr_x + offset, m_Y + curr_y, m_W, m_H,
                             UIF_FIT);
 
       // store the max width

@@ -168,21 +168,21 @@ static cvar_entry CVars[] = {
     {"MissionName", CVAR_TYPE_STRING, &Netgame.mission, -1, MSN_NAMELEN, CVAR_GAMEINIT},
     {"Scriptname", CVAR_TYPE_STRING, &Netgame.scriptname, -1, NETGAME_SCRIPT_LEN, CVAR_GAMEINIT},
     {"ConnectionName", CVAR_TYPE_STRING, &Netgame.connection_name, -1, PAGENAME_LEN, CVAR_GAMEINIT},
-    {"Quit", CVAR_TYPE_NONE, NULL, -1, -1, CVAR_GAMEPLAY}, // 8
-    {"EndLevel", CVAR_TYPE_NONE, NULL, -1, -1, CVAR_GAMEPLAY},
+    {"Quit", CVAR_TYPE_NONE, nullptr, -1, -1, CVAR_GAMEPLAY}, // 8
+    {"EndLevel", CVAR_TYPE_NONE, nullptr, -1, -1, CVAR_GAMEPLAY},
 #if 0 // def DEMO
 {"MaxPlayers",CVAR_TYPE_INT,&Netgame.max_players,2,16,CVAR_GAMEINIT},	//10
 #else
     {"MaxPlayers", CVAR_TYPE_INT, &Netgame.max_players, 2, MAX_PLAYERS, CVAR_GAMEINIT}, // 10
 #endif
-    {"Say", CVAR_TYPE_STRING, NULL, -1, 200, CVAR_GAMEPLAY},                                                  // 11
+    {"Say", CVAR_TYPE_STRING, nullptr, -1, 200, CVAR_GAMEPLAY},                                                  // 11
     {"UseSmoothing", CVAR_TYPE_INT, &Dummy_dedicated_var, 0, 1, CVAR_GAMEINIT},                               // 12
     {"SendRotVel", CVAR_TYPE_INT, &Dummy_dedicated_var, 0, 1, CVAR_GAMEINIT},                                 // 13
     {"MultiSettingsFile", CVAR_TYPE_STRING, &Dummy_dedicated_string, -1, 40, CVAR_GAMEINIT},                  // 14
     {"DisallowPowerup", CVAR_TYPE_STRING, &Dummy_dedicated_string, -1, 40, CVAR_GAMEINIT | CVAR_GAMEPLAY},    // 15
     {"AllowPowerup", CVAR_TYPE_STRING, &Dummy_dedicated_string, -1, 40, CVAR_GAMEINIT | CVAR_GAMEPLAY},       // 16
-    {"StartRtLog", CVAR_TYPE_NONE, NULL, -1, -1, CVAR_GAMEPLAY},                                              // 17
-    {"StopRtLog", CVAR_TYPE_NONE, NULL, -1, -1, CVAR_GAMEPLAY},                                               // 18
+    {"StartRtLog", CVAR_TYPE_NONE, nullptr, -1, -1, CVAR_GAMEPLAY},                                              // 17
+    {"StopRtLog", CVAR_TYPE_NONE, nullptr, -1, -1, CVAR_GAMEPLAY},                                               // 18
     {"PXOUsername", CVAR_TYPE_STRING, &Auto_login_name, -1, 50, CVAR_GAMEINIT},                               // 19
     {"PXOPassword", CVAR_TYPE_STRING, &Auto_login_pass, -1, 50, CVAR_GAMEINIT},                               // 20
     {"BrightPlayers", CVAR_TYPE_INT, &Dummy_dedicated_var, -1, -1, CVAR_GAMEINIT},                            // 21
@@ -196,9 +196,9 @@ static cvar_entry CVars[] = {
     {"PXOHostingLobby", CVAR_TYPE_STRING, &PXO_hosted_lobby_name, -1, 100, CVAR_GAMEINIT | CVAR_GAMEPLAY},    // 29
     {"RandomizeRespawn", CVAR_TYPE_INT, &Dummy_dedicated_var, -1, -1, CVAR_GAMEINIT},                         // 30
     {"AllowMouselook", CVAR_TYPE_INT, &Dummy_dedicated_var, -1, -1, CVAR_GAMEINIT},                           // 31
-    {"AudioTauntDelay", CVAR_TYPE_FLOAT, NULL, -1, -1, CVAR_GAMEINIT},                                        // 32
-    {"SetLevel", CVAR_TYPE_INT, NULL, -1, -1, CVAR_GAMEINIT | CVAR_GAMEPLAY},                                 // 33
-    {"SetDifficulty", CVAR_TYPE_INT, NULL, 0, 4, CVAR_GAMEINIT},                                              // 34
+    {"AudioTauntDelay", CVAR_TYPE_FLOAT, nullptr, -1, -1, CVAR_GAMEINIT},                                        // 32
+    {"SetLevel", CVAR_TYPE_INT, nullptr, -1, -1, CVAR_GAMEINIT | CVAR_GAMEPLAY},                                 // 33
+    {"SetDifficulty", CVAR_TYPE_INT, nullptr, 0, 4, CVAR_GAMEINIT},                                              // 34
     {"MOTD", CVAR_TYPE_STRING, &Multi_message_of_the_day, -1, HUD_MESSAGE_LENGTH * 2, CVAR_GAMEINIT},         // 35
 };
 
@@ -704,7 +704,7 @@ void ParseLine(char *srcline, char *command, char *operand, int cmdlen, int oprl
   //	m_lineptr = command, opr = operand, nextcmd = next lineptr.
   cmd = strtok(srcline, " \t=:");
   if (cmd)
-    opr = strtok(NULL, "");
+    opr = strtok(nullptr, "");
   else
     return; // null command, so bail
 
@@ -820,7 +820,7 @@ struct dedicated_socket {
   dedicated_socket *next;
 };
 
-dedicated_socket *Head_sock = NULL;
+dedicated_socket *Head_sock = nullptr;
 
 SOCKET dedicated_listen_socket = INVALID_SOCKET;
 
@@ -888,7 +888,7 @@ void ListenDedicatedSocket(void) {
     if (Head_sock)
       Head_sock->prev = new_socket;
     new_socket->next = Head_sock;
-    new_socket->prev = NULL;
+    new_socket->prev = nullptr;
     Head_sock = new_socket;
     memcpy(&new_socket->addr, &conn_addr, sizeof(new_socket->addr));
     new_socket->input[0] = '\0';
@@ -946,7 +946,7 @@ dedicated_socket *DedicatedLogoutTelnet(dedicated_socket *conn) {
   } else {
     Head_sock = conn->next;
     if (Head_sock)
-      Head_sock->prev = NULL;
+      Head_sock->prev = nullptr;
   }
 
   mem_free(conn);

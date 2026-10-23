@@ -31,7 +31,7 @@
 class CInsSongDlg : public CDialog {
   // Construction
 public:
-  CInsSongDlg(CWnd *pParent = NULL); // standard constructor
+  CInsSongDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CInsSongDlg)

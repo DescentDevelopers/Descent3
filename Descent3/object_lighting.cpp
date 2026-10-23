@@ -124,11 +124,11 @@
 
 // returns true if this light point is visible
 bool IsLightPointVisible(vector *pos, float size, object *obj) {
-  if (obj != NULL) {
-    if ((obj->flags & OF_RENDERED) || IsPointVisible(pos, size, NULL))
+  if (obj != nullptr) {
+    if ((obj->flags & OF_RENDERED) || IsPointVisible(pos, size, nullptr))
       return true;
   } else {
-    if (IsPointVisible(pos, size, NULL))
+    if (IsPointVisible(pos, size, nullptr))
       return true;
   }
 
@@ -231,7 +231,7 @@ void DoObjectLight(object *obj) {
         fq.rad = 0.0f;
         fq.flags = FQ_CHECK_OBJS;
         fq.thisobjnum = -1;
-        fq.ignore_obj_list = NULL;
+        fq.ignore_obj_list = nullptr;
 
         fvi_FindIntersection(&fq, &hit_info);
 
@@ -363,7 +363,7 @@ void DoObjectLight(object *obj) {
   float scalar = 1.0;
   float red, green, blue;
   float light_distance = li->light_distance;
-  vector *direction = NULL;
+  vector *direction = nullptr;
 
   // Make katmai lights bigger
   if (Katmai)
@@ -490,7 +490,7 @@ void ClearObjectLightmaps(object *obj) {
 
       if (obj->lm_object.num_faces[Mnum]) {
         mem_free(obj->lm_object.lightmap_faces[Mnum]);
-        obj->lm_object.lightmap_faces[Mnum] = NULL;
+        obj->lm_object.lightmap_faces[Mnum] = nullptr;
       }
       obj->lm_object.num_faces[Mnum] = 0;
     }
@@ -532,7 +532,7 @@ void SetupObjectLightmapMemory(object *obj) {
   for (Mnum = 0; Mnum < pm->n_models; Mnum++) {
     if (IsNonRenderableSubmodel(pm, Mnum)) {
       obj->lm_object.num_faces[Mnum] = 0;
-      obj->lm_object.lightmap_faces[Mnum] = NULL;
+      obj->lm_object.lightmap_faces[Mnum] = nullptr;
       continue;
     }
 
@@ -621,7 +621,7 @@ void MakeObjectVisible(object *obj) {
 // Sets an object to have local lighting info
 void ObjSetLocalLighting(object *objp) {
   // If this object doesn't have its own lighting info, create it
-  if (objp->lighting_info == NULL) {
+  if (objp->lighting_info == nullptr) {
 
     // make sure this is a generic object
     ASSERT((objp->type == OBJ_POWERUP) || (objp->type == OBJ_ROBOT) || (objp->type == OBJ_CLUTTER) ||
@@ -649,5 +649,5 @@ light_info *ObjGetLightInfo(object *objp) {
 
   Int3();
 
-  return NULL;
+  return nullptr;
 }

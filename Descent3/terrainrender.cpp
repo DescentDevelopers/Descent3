@@ -983,7 +983,7 @@ int ShootRaysToObject(object *obj) {
   fq.rad = 0.0f;
   fq.flags = FQ_NO_RELINK | FQ_EXTERNAL_ROOMS_AS_SPHERE | FQ_IGNORE_EXTERNAL_ROOMS;
   fq.thisobjnum = Viewer_object - Objects;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   for (int i = 0; i < 8; i++) {
     fq.p1 = &corners[i];
@@ -1094,7 +1094,7 @@ void RenderTerrainRooms() {
 #ifndef NEWEDITOR
     RenderMine(obj->id, 0, 1);
 #else
-    RenderMine(obj->id, 0, 1, 1, 0, 0, NULL);
+    RenderMine(obj->id, 0, 1, 1, 0, 0, nullptr);
 #endif
 // Draw a surrounding sphere
 #if (defined(_DEBUG) && !defined(NEWEDITOR))

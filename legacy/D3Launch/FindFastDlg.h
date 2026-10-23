@@ -31,7 +31,7 @@
 class CFindFastDlg : public CDialog {
   // Construction
 public:
-  CFindFastDlg(CWnd *pParent = NULL); // standard constructor
+  CFindFastDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CFindFastDlg)

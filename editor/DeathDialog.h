@@ -34,7 +34,7 @@
 class CDeathDialog : public CDialog {
   // Construction
 public:
-  CDeathDialog(death_info *death_info, CWnd *pParent = NULL); // standard constructor
+  CDeathDialog(death_info *death_info, CWnd *pParent = nullptr); // standard constructor
 
   death_info *m_death_info_ptr;
   int m_flags;

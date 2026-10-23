@@ -533,12 +533,12 @@ BOOL CWorldObjectsGenericDialog::OnInitDialog() {
   m_type_name = Object_type_names[m_type];
   m_lod = 0;
 
-  Copy_object.description = NULL;
+  Copy_object.description = nullptr;
 
   CDialog::OnInitDialog();
 
   // Start the timer
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   // Make sure we have a valid object
   if (Object_info[m_current].type != m_type)
@@ -1259,7 +1259,7 @@ void CWorldObjectsGenericDialog::OnGenericCopy() {
 
     Copy_object = Object_info[m_current];
 
-    Copy_object.description = NULL;
+    Copy_object.description = nullptr;
 
     if (!Object_info[m_current].description)
       Copy_object.description = mem_strdup("<no description>");
@@ -1312,7 +1312,7 @@ void CWorldObjectsGenericDialog::OnGenericPaste() {
   Object_info[n] = Copy_object;
 
   Object_info[n].description = Copy_object.description;
-  Copy_object.description = NULL;
+  Copy_object.description = nullptr;
 
   // Set type and name
   Object_info[n].type = m_type;
@@ -1360,7 +1360,7 @@ void CWorldObjectsGenericDialog::OnDestroy() {
 
   if (Copy_object.description) {
     mem_free(Copy_object.description);
-    Copy_object.description = NULL;
+    Copy_object.description = nullptr;
   }
 
   SaveGenericsOnClose();
@@ -1472,7 +1472,7 @@ void CWorldObjectsGenericDialog::OnSelScript() {
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, pathname, sizeof(pathname)))
     return;
 
-  ddio_SplitPath(filename, NULL, name, NULL);
+  ddio_SplitPath(filename, nullptr, name, nullptr);
   sprintf(filename, "%s.dll", name);
 
   strcpy(Object_info[m_current].module_name, filename);
@@ -1579,7 +1579,7 @@ void CWorldObjectsGenericDialog::OnKillfocusGenericInvenDescription() {
 
   if (Object_info[m_current].description) {
     mem_free(Object_info[m_current].description);
-    Object_info[m_current].description = NULL;
+    Object_info[m_current].description = nullptr;
   }
 
   if ((strlen(str) > 0) && (strcmp(str, "<no description>"))) {

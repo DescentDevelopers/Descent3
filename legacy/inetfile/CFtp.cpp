@@ -83,7 +83,7 @@ void FTPObjThread(void *obj)
 {
   ((CFtpGet *)obj)->WorkerThread();
 #if defined(POSIX)
-  return NULL;
+  return nullptr;
 #endif
 }
 
@@ -107,7 +107,7 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
   m_Aborted = false;
 
   LOCALFILE = fopen(localfile, "wb");
-  if (NULL == LOCALFILE) {
+  if (nullptr == LOCALFILE) {
     m_State = FTP_STATE_CANT_WRITE_FILE;
     return;
   }
@@ -170,7 +170,7 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
   // read the filename by searching backwards for a /
   // then keep reading until you find the first /
   // when you found it, you have the host and dir
-  char *filestart = NULL;
+  char *filestart = nullptr;
   char *dirstart;
   for (int i = strlen(pURL); i >= 0; i--) {
     if (pURL[i] == '/') {
@@ -183,7 +183,7 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
       }
     }
   }
-  if ((dirstart == NULL) || (filestart == NULL)) {
+  if ((dirstart == nullptr) || (filestart == nullptr)) {
     m_State = FTP_STATE_URL_PARSING_ERROR;
     return;
   } else {
@@ -195,7 +195,7 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
   // At this point we should have a nice host,dir and filename
 
 #ifdef WIN32
-  if (NULL == _beginthread(FTPObjThread, 0, this)) {
+  if (0 == _beginthread(FTPObjThread, 0, this)) {
     m_State = FTP_STATE_INTERNAL_ERROR;
     return;
   }
@@ -205,7 +205,7 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
     m_State = FTP_STATE_INTERNAL_ERROR;
     return;
   }
-  if (df_pthread_create(&thread, NULL, FTPObjThread, this) != 0) {
+  if (df_pthread_create(&thread, nullptr, FTPObjThread, this) != 0) {
     m_State = FTP_STATE_INTERNAL_ERROR;
     return;
   }
@@ -315,7 +315,7 @@ uint32_t CFtpGet::GetFile() {
   if (m_Aborting)
     return 0;
 
-  m_DataSock = accept(m_ListenSock, NULL, NULL); //(SOCKADDR *)&sockaddr,&iAddrLength);
+  m_DataSock = accept(m_ListenSock, nullptr, nullptr); //(SOCKADDR *)&sockaddr,&iAddrLength);
                                                  // Close the listen socket
 #if !defined(POSIX)
   closesocket(m_ListenSock);
@@ -409,16 +409,16 @@ int CFtpGet::ConnectControlSocket() {
   SERVENT *se;
   SOCKADDR_IN hostaddr;
   he = gethostbyname(m_szHost);
-  if (he == NULL) {
+  if (he == nullptr) {
     m_State = FTP_STATE_HOST_NOT_FOUND;
     return 0;
   }
   // m_ControlSock
   if (m_Aborting)
     return 0;
-  se = getservbyname("ftp", NULL);
+  se = getservbyname("ftp", nullptr);
 
-  if (se == NULL) {
+  if (se == nullptr) {
     hostaddr.sin_port = htons(21);
   } else {
     hostaddr.sin_port = se->s_port;
@@ -572,7 +572,7 @@ void CFtpGet::FlushControlChannel() {
   FD_ZERO(&read_fds);
   FD_SET(m_ControlSock, &read_fds);
 
-  while (select(m_ControlSock + 1, &read_fds, NULL, NULL, &timeout)) {
+  while (select(m_ControlSock + 1, &read_fds, nullptr, nullptr, &timeout)) {
     recv(m_ControlSock, flushbuff, 1, 0);
   }
 }

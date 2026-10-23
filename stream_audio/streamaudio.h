@@ -309,7 +309,7 @@ public:
   bool Play(bool start_on_frame = false); //	plays a stream
   void Stop(bool on_measure = false,
             int *stop_flag =
-                NULL);       // causes a rewind to start of stream, if on_measure is true, stop occurs when measure ends
+                nullptr);       // causes a rewind to start of stream, if on_measure is true, stop occurs when measure ends
   void SetVolume(float vol); // sets volume
   float GetVolume();         // returns volume
                              // misc requests

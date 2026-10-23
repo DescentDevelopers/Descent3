@@ -145,7 +145,7 @@ CBitmapButtonEx::CBitmapButtonEx() {
   m_TextMessage = "";                // Default to no string message
   m_Orientation = LEFT_ORIENTED_BTN; // Default to left orientation
 
-  m_AnimBitmaps = NULL;
+  m_AnimBitmaps = nullptr;
   m_NumAnimFrames = 0;
   m_CurrAnimFrame = 0;
   m_IgnoreDisabled = FALSE;
@@ -153,7 +153,7 @@ CBitmapButtonEx::CBitmapButtonEx() {
 
 CBitmapButtonEx::~CBitmapButtonEx() {
   // Delete the allocated bitmaps
-  if (m_AnimBitmaps != NULL)
+  if (m_AnimBitmaps != nullptr)
     delete[] m_AnimBitmaps;
 
   // Detach this from the button object
@@ -175,9 +175,9 @@ void CBitmapButtonEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
   CBitmap *bitmap;
   CPalette *palette;
   COLORREF old_color, new_color, new_shadow_color;
-  CFont *old_font = NULL;
-  CBitmap *old_bitmap = NULL;
-  CPalette *old_palette = NULL;
+  CFont *old_font = nullptr;
+  CBitmap *old_bitmap = nullptr;
+  CPalette *old_palette = nullptr;
   int old_mode = 0;
   UINT old_alignment = 0;
 
@@ -186,7 +186,7 @@ void CBitmapButtonEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
     return;
 
   // Get button's state and draw appropriate bitmap
-  if (m_AnimBitmaps != NULL) {
+  if (m_AnimBitmaps != nullptr) {
     bitmap = &m_AnimBitmaps[m_CurrAnimFrame];
     new_color = DOWN_TEXT_COLOR;
     new_shadow_color = DOWN_TEXT_SHADOW_COLOR;
@@ -230,7 +230,7 @@ void CBitmapButtonEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
   bitmap->GetObject(sizeof(BITMAP), &m_bmInfo);
 
   // Select and realize the palette
-  if (dc->GetDeviceCaps(RASTERCAPS) & RC_PALETTE && palette->m_hObject != NULL) {
+  if (dc->GetDeviceCaps(RASTERCAPS) & RC_PALETTE && palette->m_hObject != nullptr) {
     old_palette = dc->SelectPalette(palette, TRUE);
     dc->RealizePalette();
   }
@@ -238,7 +238,7 @@ void CBitmapButtonEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
   if (memDC.CreateCompatibleDC(dc) == 0)
     OutputDebugString("CreateCompatibleDC() failed.\n");
 
-  if ((old_bitmap = memDC.SelectObject(bitmap)) == NULL)
+  if ((old_bitmap = memDC.SelectObject(bitmap)) == nullptr)
     OutputDebugString("SelectObject() failed!\n");
 
   dc->StretchBlt(0, 0, crect.Width(), crect.Height(), &memDC, 0, 0, m_bmInfo.bmWidth, m_bmInfo.bmHeight, SRCCOPY);
@@ -252,25 +252,25 @@ void CBitmapButtonEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
     old_alignment = dc->SetTextAlign(TA_CENTER | TA_TOP);
     old_color = dc->SetTextColor(new_shadow_color);
 
-    dc->ExtTextOut(m_TextStartPoint.x - 1, m_TextStartPoint.y, ETO_CLIPPED, &m_TextClipBox, m_TextMessage, NULL);
+    dc->ExtTextOut(m_TextStartPoint.x - 1, m_TextStartPoint.y, ETO_CLIPPED, &m_TextClipBox, m_TextMessage, nullptr);
     dc->SetTextColor(new_color);
 
     // dc->Rectangle(&m_TextClipBox);
-    dc->ExtTextOut(m_TextStartPoint.x, m_TextStartPoint.y, ETO_CLIPPED, &m_TextClipBox, m_TextMessage, NULL);
+    dc->ExtTextOut(m_TextStartPoint.x, m_TextStartPoint.y, ETO_CLIPPED, &m_TextClipBox, m_TextMessage, nullptr);
     // dc->DrawText(m_TextMessage,&m_TextClipBox,DT_CENTER);
 
     dc->SetTextColor(old_color);
     dc->SetTextAlign(old_alignment);
     dc->SetBkMode(old_mode);
 
-    if (old_font != NULL)
+    if (old_font != nullptr)
       dc->SelectObject(old_font);
   }
 
-  if (old_bitmap != NULL)
+  if (old_bitmap != nullptr)
     memDC.SelectObject(old_bitmap);
 
-  if (old_palette != NULL)
+  if (old_palette != nullptr)
     dc->SelectPalette(old_palette, FALSE);
 
   if (memDC.DeleteDC() == 0)
@@ -285,7 +285,7 @@ void CBitmapButtonEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
 bool CBitmapButtonEx::Setup(UINT nID, CWnd *parent, int orient /*=LEFT_ORIENTED_BTN*/) {
   CString res_name, title;
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return FALSE;
 
   // Let the bitmap class set things up for us
@@ -355,7 +355,7 @@ bool CBitmapButtonEx::Setup(UINT nID, CWnd *parent, int orient /*=LEFT_ORIENTED_
   // Resize the buttons to match the proportions of the dialog
   BITMAP bm;
   m_UpBitmap.GetObject(sizeof(BITMAP), &bm);
-  SetWindowPos(NULL, 0, 0, int(bm.bmWidth * DlgWidthModifier), int(bm.bmHeight * DlgHeightModifier),
+  SetWindowPos(nullptr, 0, 0, int(bm.bmWidth * DlgWidthModifier), int(bm.bmHeight * DlgHeightModifier),
                SWP_NOMOVE | SWP_NOZORDER);
 
   return TRUE;
@@ -368,7 +368,7 @@ bool CBitmapButtonEx::AnimSetup(UINT nID, CWnd *parent, int num_frames) {
   if (num_frames == 0)
     return FALSE;
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return FALSE;
 
   // Let the bitmap class set things up for us
@@ -393,7 +393,7 @@ bool CBitmapButtonEx::AnimSetup(UINT nID, CWnd *parent, int num_frames) {
   // Resize the buttons to match the proportions of the dialog
   BITMAP bm;
   m_AnimBitmaps[0].GetObject(sizeof(BITMAP), &bm);
-  SetWindowPos(NULL, 0, 0, int(bm.bmWidth * DlgWidthModifier), int(bm.bmHeight * DlgHeightModifier),
+  SetWindowPos(nullptr, 0, 0, int(bm.bmWidth * DlgWidthModifier), int(bm.bmHeight * DlgHeightModifier),
                SWP_NOMOVE | SWP_NOZORDER);
 
   return TRUE;
@@ -407,7 +407,7 @@ bool CBitmapButtonEx::AnimSetup(UINT nID, CWnd *parent, int num_frames) {
 bool CBitmapButtonEx::Load(UINT nID, CWnd *parent) {
   CString res_name, title;
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return FALSE;
 
   parent->GetDlgItemText(nID, title);
@@ -417,13 +417,13 @@ bool CBitmapButtonEx::Load(UINT nID, CWnd *parent) {
   OutputDebugString("\n");
 
   res_name.Format("%s%s", title, "U");
-  GetBitmapAndPalette(res_name, &m_UpBitmap, NULL);
+  GetBitmapAndPalette(res_name, &m_UpBitmap, nullptr);
   res_name.Format("%s%s", title, "D");
-  GetBitmapAndPalette(res_name, &m_DownBitmap, NULL);
+  GetBitmapAndPalette(res_name, &m_DownBitmap, nullptr);
   res_name.Format("%s%s", title, "M");
-  GetBitmapAndPalette(res_name, &m_MouseBitmap, NULL);
+  GetBitmapAndPalette(res_name, &m_MouseBitmap, nullptr);
   res_name.Format("%s%s", title, "X");
-  GetBitmapAndPalette(res_name, &m_DisabledBitmap, NULL);
+  GetBitmapAndPalette(res_name, &m_DisabledBitmap, nullptr);
 
   return (TRUE);
 }
@@ -434,7 +434,7 @@ bool CBitmapButtonEx::AnimLoad(UINT nID, CWnd *parent) {
   CString res_name, title;
   int j;
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return FALSE;
 
   parent->GetDlgItemText(nID, title);
@@ -447,13 +447,13 @@ bool CBitmapButtonEx::AnimLoad(UINT nID, CWnd *parent) {
   if (m_NumAnimFrames == 0)
     return FALSE;
   m_AnimBitmaps = new CBitmap[m_NumAnimFrames];
-  if (m_AnimBitmaps == NULL)
+  if (m_AnimBitmaps == nullptr)
     return FALSE;
 
   // Load in the bitmaps
   for (j = 0; j < m_NumAnimFrames; j++) {
     res_name.Format("%s%d", title, j);
-    GetBitmapAndPalette(res_name, &m_AnimBitmaps[j], NULL);
+    GetBitmapAndPalette(res_name, &m_AnimBitmaps[j], nullptr);
   }
 
   return (TRUE);

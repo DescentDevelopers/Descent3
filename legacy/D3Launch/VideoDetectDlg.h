@@ -31,7 +31,7 @@
 class CVideoDetectDlg : public CDialog {
   // Construction
 public:
-  CVideoDetectDlg(CWnd *pParent = NULL); // standard constructor
+  CVideoDetectDlg(CWnd *pParent = nullptr); // standard constructor
 
   int DetectOpenGL;
   int DetectDirect3D;

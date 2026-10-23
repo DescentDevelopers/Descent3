@@ -32,7 +32,7 @@ class CRawCvtDlg : public CDialog {
   // Construction
 public:
   int m_Xforms;
-  CRawCvtDlg(CWnd *pParent = NULL); // standard constructor
+  CRawCvtDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CRawCvtDlg)

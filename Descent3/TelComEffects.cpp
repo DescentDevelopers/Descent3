@@ -162,7 +162,7 @@ void EfxInit(void) {
     tce->id = INVALID_EFFECT_ID;
     tce->prev = -1;
     tce->next = -1;
-    tce->text_buffer = NULL;
+    tce->text_buffer = nullptr;
     tce->tab_stop = false;
     tce->has_focus = false;
     for (int j = 0; j < MAX_EFFECT_EVENTS; j++)
@@ -211,7 +211,7 @@ void EfxDestroyScreen(int screen) {
     tce->screen = -1;
     tce->prev = tce->next = -1;
     tce->id = INVALID_EFFECT_ID;
-    tce->text_buffer = NULL;
+    tce->text_buffer = nullptr;
     for (int j = 0; j < MAX_EFFECT_EVENTS; j++)
       tce->event_queue[j].id = -1;
   }
@@ -274,7 +274,7 @@ void EfxFreeEffect(tceffect *tce) {
 
   if (tce->text_buffer) {
     mem_free(tce->text_buffer);
-    tce->text_buffer = NULL;
+    tce->text_buffer = nullptr;
   }
 
   if (tce->has_focus) {
@@ -325,7 +325,7 @@ void EfxFreeEffect(tceffect *tce) {
           bm_FreeBitmap(tce->bmpinfo.bitmaps[i]);
       }
       mem_free(tce->bmpinfo.bitmaps);
-      tce->bmpinfo.bitmaps = NULL;
+      tce->bmpinfo.bitmaps = nullptr;
     }
 
     if (tce->bmpinfo.chunk_bmp.pw != 0 || tce->bmpinfo.chunk_bmp.ph != 0) {
@@ -338,12 +338,12 @@ void EfxFreeEffect(tceffect *tce) {
   case EFX_MOVIE:
     if (tce->movieinfo.handle) {
       EndMovie(tce->movieinfo.handle);
-      tce->movieinfo.handle = NULL;
+      tce->movieinfo.handle = nullptr;
     }
 
     if (tce->movieinfo.filename) {
       mem_free(tce->movieinfo.filename);
-      tce->movieinfo.filename = NULL;
+      tce->movieinfo.filename = nullptr;
     }
     break;
   case EFX_POLYMODEL:
@@ -464,7 +464,7 @@ void EfxInit(tceffect *tce, bool tab_stop, bool gets_focus) {
   }   // end else
 
   tce->pos_x = tce->pos_y = 0;
-  tce->text_buffer = NULL;
+  tce->text_buffer = nullptr;
   tce->age = 0;
   tce->flags = 0;
   tce->color = GR_GREEN;
@@ -495,7 +495,7 @@ void EfxInit(tceffect *tce, bool tab_stop, bool gets_focus) {
   case EFX_BMP_STRETCH:
     tce->bmpinfo.temp_bmhandle = -1;
     tce->bmpinfo.stage = 0;
-    tce->bmpinfo.bitmaps = NULL;
+    tce->bmpinfo.bitmaps = nullptr;
     tce->bmpinfo.bm_count = 0;
     tce->bmpinfo.bm_handle = -1;
     tce->bmpinfo.chunk_bmp.pw = tce->bmpinfo.chunk_bmp.ph = 0;
@@ -503,8 +503,8 @@ void EfxInit(tceffect *tce, bool tab_stop, bool gets_focus) {
   case EFX_BACKGROUND:
     break;
   case EFX_MOVIE:
-    tce->movieinfo.handle = NULL;
-    tce->movieinfo.filename = NULL;
+    tce->movieinfo.handle = nullptr;
+    tce->movieinfo.filename = nullptr;
     tce->movieinfo.fps = 20.0f;
     break;
   case EFX_POLYMODEL:
@@ -523,7 +523,7 @@ void EfxInit(tceffect *tce, bool tab_stop, bool gets_focus) {
     tce->buttoninfo.button_type = BUTT_NEXTPAGE;
     tce->buttoninfo.sibling = -1;
     tce->buttoninfo.parent = -1;
-    tce->buttoninfo.internal = NULL;
+    tce->buttoninfo.internal = nullptr;
     tce->buttoninfo.jump_page = 0;
     break;
   default:
@@ -1007,7 +1007,7 @@ int CreateButtonEffect(TCBUTTONDESC* desc, int monitor, int screen, int id) {
   if (desc->button_type == BUTT_INTERNAL) {
     tce->buttoninfo.internal = desc->internal;
   } else {
-    tce->buttoninfo.internal = NULL;
+    tce->buttoninfo.internal = nullptr;
   }
 
   tce->buttoninfo.sibling = desc->sibling_id;
@@ -1185,7 +1185,7 @@ bool CreateBmpStretch(tceffect *tce, const char *filename) {
 
   tce->bmpinfo.chunk_bmp.pw = tce->bmpinfo.chunk_bmp.ph = 0;
   tce->bmpinfo.bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
-  tce->bmpinfo.bitmaps = NULL;
+  tce->bmpinfo.bitmaps = nullptr;
   tce->bmpinfo.bm_count = 0;
   if (tce->bmpinfo.bm_handle == -1) {
     tce->bmpinfo.bm_handle = BAD_BITMAP_HANDLE;
@@ -1249,8 +1249,8 @@ bool CreateBmpStretch(tceffect *tce, const char *filename) {
 bool CreateMovie(tceffect *tce, const char *filename) {
   ASSERT(filename);
 
-  tce->movieinfo.handle = NULL;
-  tce->movieinfo.filename = NULL;
+  tce->movieinfo.handle = nullptr;
+  tce->movieinfo.filename = nullptr;
   tce->w = tce->h = 100;
 
   tce->movieinfo.filename = mem_rmalloc<char>(strlen(filename) + 1);

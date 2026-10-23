@@ -25,7 +25,7 @@
 class CFilePageDialog : public CDialog {
   // Construction
 public:
-  CFilePageDialog(CWnd *pParent = NULL); // standard constructor
+  CFilePageDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CFilePageDialog)

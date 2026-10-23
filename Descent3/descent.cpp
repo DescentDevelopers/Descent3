@@ -420,9 +420,9 @@ static function_mode Function_mode = INIT_MODE; // Game function mode
 #endif
 static function_mode Last_function_mode = INIT_MODE;
 
-grScreen *Game_screen = NULL;   // The one and only video screen
-oeApplication *Descent = NULL;  // The Main application
-oeAppDatabase *Database = NULL; // Application database.
+grScreen *Game_screen = nullptr;   // The one and only video screen
+oeApplication *Descent = nullptr;  // The Main application
+oeAppDatabase *Database = nullptr; // Application database.
 
 bool Descent_overrided_intro = false;
 

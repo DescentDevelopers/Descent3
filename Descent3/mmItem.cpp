@@ -126,9 +126,9 @@
 // externed from newui.cpp
 extern int UI_frame_result;
 
-static mmInterface *MM_object = NULL;
+static mmInterface *MM_object = nullptr;
 // attached window.
-mmInterface *mmItem::m_window = NULL;
+mmInterface *mmItem::m_window = nullptr;
 
 const char *MMSoundFiles[N_MM_SOUNDS] = {"MenuBeepEnter", "MenuBeepSelect"};
 void PlayMenuSound(int sound_index, bool wait_till_done = false);
@@ -142,7 +142,7 @@ $$TABLE_SOUND "MenuBeepSelect"
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-mmItem::mmItem() { m_text = NULL; }
+mmItem::mmItem() { m_text = nullptr; }
 
 mmItem::~mmItem() {
   if (m_text)
@@ -157,7 +157,7 @@ void mmItem::Create(int id, int key, int x, int y, const char *text, int flags, 
   m_satcount = 0;
   m_fxqueue.flush();
 
-  m_text = text ? mem_strdup(text) : NULL;
+  m_text = text ? mem_strdup(text) : nullptr;
   m_fxqueue.send(init_fx);
   m_curfx = mmItemFXNull;
   m_process_speed = 0.0f;
@@ -190,7 +190,7 @@ void mmItem::OnFormat() {
 void mmItem::OnDestroy() {
   if (m_text) {
     mem_free(m_text);
-    m_text = NULL;
+    m_text = nullptr;
   }
 }
 
@@ -326,7 +326,7 @@ void mmInterface::Create() {
     if (!LoadLargeBitmap("mainmenuoverride.ogf", &m_art)) {
       Error("Unable to load main menu art mainmenuoverride.ogf.");
     }
-    m_movie = NULL;
+    m_movie = nullptr;
     static_menu_background = true;
   } else {
     m_movie = StartMovie("mainmenu", true);
@@ -403,7 +403,7 @@ void mmInterface::OnDestroy() {
 #ifdef MOVIE_MENU
     if (m_movie) {
       EndMovie(m_movie);
-      m_movie = NULL;
+      m_movie = nullptr;
     }
 #else
     FreeLargeBitmap(&m_art);
@@ -411,7 +411,7 @@ void mmInterface::OnDestroy() {
   }
 
   SetUICallback(DEFAULT_UICALLBACK);
-  MM_object = NULL;
+  MM_object = nullptr;
 }
 
 // displays the copyright text

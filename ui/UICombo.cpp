@@ -47,12 +47,12 @@
 
 //	creates a combo box
 void UIComboBox::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
-  m_ItemList = NULL;
+  m_ItemList = nullptr;
   m_nItems = 0;
   m_Index = 0;
   m_ShowUp = false;
   m_ShowDown = false;
-  selectchange_fn = NULL;
+  selectchange_fn = nullptr;
   m_scrolltimer = 0.0f;
   m_scrollstage = 0;
 
@@ -112,7 +112,7 @@ void UIComboBox::SelectItem(const UIItem *item) {
 }
 
 // returns the item at listbox index given.
-UIItem *UIComboBox::GetItem(int index) const { return (index < m_nItems) ? m_ItemList[index] : NULL; }
+UIItem *UIComboBox::GetItem(int index) const { return (index < m_nItems) ? m_ItemList[index] : nullptr; }
 
 // sets the selected index.
 void UIComboBox::SetSelectedIndex(int index) {
@@ -133,7 +133,7 @@ void UIComboBox::OnDestroy() {
   if (m_ItemList)
     delete[] m_ItemList;
 
-  m_ItemList = NULL;
+  m_ItemList = nullptr;
 }
 
 // behavior when gadget is being drawn.

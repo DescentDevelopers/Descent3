@@ -630,8 +630,8 @@ float RenderObjectStaticRedValue = 1.0f;
 float RenderObjectStaticGreenValue = 1.0f;
 float RenderObjectStaticBlueValue = 1.0f;
 float RenderObjectStaticScalar = 1.0f;
-uint8_t *RenderObjectGouraudValue = NULL;
-lightmap_object *RenderObjectLightmapObject = NULL;
+uint8_t *RenderObjectGouraudValue = nullptr;
+lightmap_object *RenderObjectLightmapObject = nullptr;
 vector RenderObject_LightDirection;
 
 float Last_powerup_sparkle_time = 0.0f;
@@ -787,7 +787,7 @@ void ComputeDebugVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float 
   // Reverse the normal because we're looking "at" the face, not from it
   fvec = -fp->normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
@@ -876,7 +876,7 @@ void DrawRoomVisPnts(object *obj) {
         src_vertp[j] = &src_verts[j];
       }
       vector fvec = -src_fp->normal;
-      vm_VectorToMatrix(&src_matrix, &fvec, NULL, NULL);
+      vm_VectorToMatrix(&src_matrix, &fvec, nullptr, nullptr);
       ComputeDebugVisFaceUpperLeft(rp, src_fp, &src_upper_left, &src_width, &src_height, &src_center);
 
       if (src_width > VIS_TABLE_RESOLUTION) {
@@ -1279,7 +1279,7 @@ void RenderObject(object *obj) {
       SetNormalizedTimeObj(obj, normalized_time);
       RenderObject_DrawPolymodel(obj, normalized_time);
     } else {
-      RenderObject_DrawPolymodel(obj, NULL);
+      RenderObject_DrawPolymodel(obj, nullptr);
     }
 
     ////////////////////////////////////////////
@@ -1346,7 +1346,7 @@ void RenderObject(object *obj) {
                                                   Poly_models[obj->rtype.pobj_info.model_num].frame_min)) {
             RenderObject_DrawPolymodel(obj, normalized_time);
           } else {
-            RenderObject_DrawPolymodel(obj, NULL);
+            RenderObject_DrawPolymodel(obj, nullptr);
           }
 
           // update
@@ -1785,7 +1785,7 @@ int IsPointVisible(vector *pos, float size, float *pointz) {
 
   g3_RotatePoint(&pnt, pos);
   ccode = g3_CodePoint(&pnt);
-  if (pointz != NULL)
+  if (pointz != nullptr)
     *pointz = pnt.p3_z;
   if (ccode) // the center point is off, find out if the whole object is off
   {
@@ -1859,7 +1859,7 @@ void DrawPowerupSparkles(object *obj) {
   // we want to render if
   // a) we are not rendering in a mirror
   // b) we are rendering a mirror but the object is not visible from our position
-  if (Render_mirror_for_room && !IsPointVisible(&obj->pos, obj->size, NULL))
+  if (Render_mirror_for_room && !IsPointVisible(&obj->pos, obj->size, nullptr))
     return;
 
   if (obj->render_type != RT_POLYOBJ)
@@ -2099,7 +2099,7 @@ void DrawPlayerTypingIndicator(object *obj) {
   fq.p1 = &obj->pos;
   fq.rad = 0;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
   fate = fvi_FindIntersection(&fq, &hit_data);
   if (fate == HIT_NONE || (fate == HIT_SPHERE_2_POLY_OBJECT && hit_data.hit_object[0] == (obj - Objects))) {
@@ -2200,7 +2200,7 @@ void DrawPlayerNameOnHud(object *obj) {
   fq.p1 = &obj->pos;
   fq.rad = 0;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
   fate = fvi_FindIntersection(&fq, &hit_data);
   if (fate == HIT_NONE || (fate == HIT_SPHERE_2_POLY_OBJECT && hit_data.hit_object[0] == (obj - Objects))) {
@@ -2322,7 +2322,7 @@ void DrawPlayerSightVector(object *obj) {
   fq.p1 = &end_pos;
   fq.rad = 0;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
   fate = fvi_FindIntersection(&fq, &hit_data);
   rend_SetAlphaType(AT_VERTEX);

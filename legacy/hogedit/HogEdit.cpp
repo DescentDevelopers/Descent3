@@ -115,7 +115,7 @@ END_MESSAGE_MAP()
 
 CHogEditApp::CHogEditApp() {
   // TODO: add construction code here,
-  WaitCursor = NULL;
+  WaitCursor = nullptr;
   DoAutoProcess = FALSE;
   // Place all significant initialization in InitInstance
 }
@@ -272,7 +272,7 @@ void ProcessMessages(void) {
   MSG msg;
   int MsgCount;
 
-  for (MsgCount = MAX_MESSAGES; MsgCount && PeekMessage(&msg, NULL, 0, 0, PM_REMOVE); MsgCount--) {
+  for (MsgCount = MAX_MESSAGES; MsgCount && PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE); MsgCount--) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
@@ -290,14 +290,14 @@ void UpdateTotalFiles(int num_files) {
 // Updates the status bar with the given message
 CWaitCursor *WaitCursor;
 void UpdateStatusBar(char *msg) {
-  if (msg == NULL)
+  if (msg == nullptr)
     return;
 
   MainStatusBar->SetPaneText(0, msg, TRUE);
   ProcessMessages();
 
   // If the WaitCursor is not null, restore it
-  if (WaitCursor != NULL)
+  if (WaitCursor != nullptr)
     WaitCursor->Restore();
 }
 
@@ -338,7 +338,7 @@ int ParseAppCommandLine(char *cmdline, char **argv, int max_args) {
       s++;              // skip to char after quote
 
       q = strchr(s, '\"'); // find ending quote
-      if (q == NULL) {
+      if (q == nullptr) {
         strcpy(argv[argc], s);
         s += strlen(argv[argc]);
       } else {

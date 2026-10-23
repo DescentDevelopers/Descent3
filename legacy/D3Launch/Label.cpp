@@ -42,7 +42,7 @@ CLabel::CLabel() {
   m_bTimer = FALSE;
   m_bState = FALSE;
   m_bLink = TRUE;
-  m_hCursor = NULL;
+  m_hCursor = nullptr;
   m_Type = None;
 
   m_hwndBrush = ::CreateSolidBrush(GetSysColor(COLOR_3DFACE));
@@ -175,7 +175,7 @@ CLabel &CLabel::FlashText(BOOL bActivate) {
     m_bState = FALSE;
 
     m_bTimer = TRUE;
-    SetTimer(1, 500, NULL);
+    SetTimer(1, 500, nullptr);
     m_Type = Text;
   }
 
@@ -191,7 +191,7 @@ CLabel &CLabel::FlashBackground(BOOL bActivate) {
     m_bState = FALSE;
 
     m_bTimer = TRUE;
-    SetTimer(1, 500, NULL);
+    SetTimer(1, 500, nullptr);
 
     m_Type = Background;
   }
@@ -211,7 +211,7 @@ void CLabel::OnTimer(UINT nIDEvent) {
     break;
 
   case Background:
-    InvalidateRect(NULL, FALSE);
+    InvalidateRect(nullptr, FALSE);
     UpdateWindow();
     break;
   }
@@ -234,7 +234,7 @@ void CLabel::OnLButtonDown(UINT nFlags, CPoint point) {
   CString strLink;
 
   GetWindowText(strLink);
-  ShellExecute(NULL, "open", strLink, NULL, NULL, SW_SHOWNORMAL);
+  ShellExecute(nullptr, "open", strLink, nullptr, nullptr, SW_SHOWNORMAL);
 
   CStatic::OnLButtonDown(nFlags, point);
 }

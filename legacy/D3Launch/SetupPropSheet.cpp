@@ -56,21 +56,21 @@ BOOL CSetupPropSheet::OnInitDialog() {
 
   // TODO: Add your specialized code here
   HWND OK_btn = ::GetDlgItem(this->m_hWnd, IDOK);
-  if (OK_btn != NULL) {
+  if (OK_btn != nullptr) {
     CString title;
     title.LoadString(IDS_OK);
     ::SetWindowText(OK_btn, title.GetBuffer(0));
   }
 
   HWND Cancel_btn = ::GetDlgItem(this->m_hWnd, IDCANCEL);
-  if (Cancel_btn != NULL) {
+  if (Cancel_btn != nullptr) {
     CString title;
     title.LoadString(IDS_CANCEL);
     ::SetWindowText(Cancel_btn, title.GetBuffer(0));
   }
 
   HWND Help_btn = ::GetDlgItem(this->m_hWnd, IDHELP);
-  if (Help_btn != NULL) {
+  if (Help_btn != nullptr) {
     CString title;
     title.LoadString(IDS_HELP);
     ::SetWindowText(Help_btn, title.GetBuffer(0));

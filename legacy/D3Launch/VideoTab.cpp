@@ -103,7 +103,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CVideoTab *CurrentVideoTab = NULL;
+CVideoTab *CurrentVideoTab = nullptr;
 BOOL VideoTabInitialized = FALSE;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -116,10 +116,10 @@ CVideoTab::CVideoTab() : CPropertyPage(CVideoTab::IDD) {
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
 
-  CurrentVideoTab = NULL;
+  CurrentVideoTab = nullptr;
 }
 
-CVideoTab::~CVideoTab() { CurrentVideoTab = NULL; }
+CVideoTab::~CVideoTab() { CurrentVideoTab = nullptr; }
 
 int CVideoTab::GetCurrentCard() {
   int current = m_videocard_list.GetCurSel();
@@ -187,9 +187,9 @@ void CVideoTab::OnVideocardDetect() {
   m_MsgDlg.DestroyWindow();
 
   // Now that the window is gone, release the opengl dll (fixes crash)
-  if (opengl_dll_handle != NULL) {
+  if (opengl_dll_handle != nullptr) {
     FreeLibrary(opengl_dll_handle);
-    opengl_dll_handle = NULL;
+    opengl_dll_handle = nullptr;
   }
 
   int i;
@@ -233,7 +233,7 @@ BOOL CVideoTab::OnInitDialog() {
   CurrentVideoTab = this;
 
   // Get the PreferredRenderer
-  RendererType renderer_id = (RendererType)os_config_read_uint(NULL, "PreferredRenderer", RENDERER_NONE);
+  RendererType renderer_id = (RendererType)os_config_read_uint(nullptr, "PreferredRenderer", RENDERER_NONE);
 
   // Get the name of the selected rendering device
   char *current_card = os_config_read_string(szSectionName, "RenderingDeviceName", "");
@@ -273,9 +273,9 @@ BOOL CVideoTab::OnInitDialog() {
     m_MsgDlg.DestroyWindow();
 
     // Now that the window is gone, release the opengl dll (fixes crash)
-    if (opengl_dll_handle != NULL) {
+    if (opengl_dll_handle != nullptr) {
       FreeLibrary(opengl_dll_handle);
-      opengl_dll_handle = NULL;
+      opengl_dll_handle = nullptr;
     }
 
     // Put the detected cards into the list, and see if the selected card is one of them
@@ -357,7 +357,7 @@ void CVideoTab::OnOK() {
   OutputDebugString("Setting the videocard!\n");
 
   // Get the PreferredRenderer
-  os_config_write_uint(NULL, "PreferredRenderer", Cards[current].renderer_type);
+  os_config_write_uint(nullptr, "PreferredRenderer", Cards[current].renderer_type);
 
   // Write out the name of the rendering device
   os_config_write_string(szSectionName, "RenderingDeviceName", Cards[current].name);
