@@ -1195,8 +1195,8 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void) {
   view_vector.z() = -(fabs(pm->maxs.z() - pm->mins.z()) * (scalar)2);
 
   m_ObjectSurf.create(128, 128, BPP_16);
-  grViewport *vport = new grViewport(&m_ObjectSurf);
-  StartEditorFrame(vport, &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
+  auto vport = std::make_unique<grViewport>(&m_ObjectSurf);
+  StartEditorFrame(vport.get(), &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
   DrawPolygonModel(&zero_vector, &rot_matrix, bm_handle, norm_angles, 0, 1.0, 1.0, 1.0);
   EndEditorFrame();
 
@@ -1204,7 +1204,7 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void) {
   y = rect.top + ((rect.bottom - rect.top) / 2) - m_ObjectSurf.height() / 2;
   Desktop_surf->blt(x, y, &m_ObjectSurf);
 
-  delete vport;
+  vport.reset();
   m_ObjectSurf.free();
 }
 
