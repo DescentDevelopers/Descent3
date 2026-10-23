@@ -328,43 +328,31 @@ typedef bms_bitmap *bm_T;      /* type of item to be stored */
 typedef int bm_hashTableIndex; /* index into hash table */
 #define compEQ(a, b) (stricmp((a)->name, (b)->name) == 0)
 struct bm_Node {
-  struct bm_Node *next; /* next bm_Node */
-  bm_T data;            /* data stored in bm_Node */
+  std::unique_ptr<bm_Node> next; /* next bm_Node */
+  bm_T data;                     /* data stored in bm_Node */
 };
 static bm_Node *bm_findNode(bm_T data);
 static void bm_deleteNode(bm_T data);
 static bm_Node *bm_insertNode(bm_T data);
 static bm_hashTableIndex bm_hash(bm_T data);
-static bm_Node **bm_hashTable = nullptr;
+static std::unique_ptr<std::unique_ptr<bm_Node>[]> bm_hashTable;
 static const int bm_hashTableSize = (MAX_BITMAPS / 2);
 static void bm_InitHashTable();
 static void bm_DeleteHashTable();
 static int bm_TestName(const char *src);
 
-void bm_InitHashTable() {
-  bm_hashTable = mem_rmalloc<bm_Node *>(bm_hashTableSize);
-  for (int a = 0; a < bm_hashTableSize; a++) {
-    bm_hashTable[a] = nullptr;
-  }
-}
+void bm_InitHashTable() { bm_hashTable = std::make_unique<std::unique_ptr<bm_Node>[]>(bm_hashTableSize); }
 void bm_DeleteHashTable() {
   if (bm_hashTable) {
     int idx;
     for (idx = 0; idx < bm_hashTableSize; idx++) {
-      if (bm_hashTable[idx]) {
-        bm_Node *curr, *next;
-        curr = bm_hashTable[idx];
-        while (curr) {
-          next = curr->next;
-          mem_free(curr);
-          curr = next;
-        }
-        bm_hashTable[idx] = nullptr;
+      // unlink nodes one at a time so long chains don't recurse in ~bm_Node
+      while (bm_hashTable[idx]) {
+        bm_hashTable[idx] = std::move(bm_hashTable[idx]->next);
       }
     }
 
-    mem_free(bm_hashTable);
-    bm_hashTable = nullptr;
+    bm_hashTable.reset();
   }
 }
 
@@ -383,46 +371,35 @@ bm_hashTableIndex bm_hash(bm_T data) {
   return (hval % (MAX_BITMAPS / 2));
 }
 bm_Node *bm_insertNode(bm_T data) {
-  bm_Node *p, *p0;
   bm_hashTableIndex bucket;
   /************************************************
    *  allocate bm_Node for data and insert in table  *
    ************************************************/
   /* insert bm_Node at beginning of list */
   bucket = bm_hash(data);
-  if ((p = mem_rmalloc<bm_Node>()) == nullptr) {
-    exit(1);
-  }
-  p0 = bm_hashTable[bucket];
-  bm_hashTable[bucket] = p;
-  p->next = p0;
+  auto p = std::make_unique<bm_Node>();
+  p->next = std::move(bm_hashTable[bucket]);
   p->data = data;
-  return p;
+  bm_hashTable[bucket] = std::move(p);
+  return bm_hashTable[bucket].get();
 }
 void bm_deleteNode(bm_T data) {
-  bm_Node *p0, *p;
+  std::unique_ptr<bm_Node> *link;
   bm_hashTableIndex bucket;
   /********************************************
    *  delete bm_Node containing data from table  *
    ********************************************/
-  /* find bm_Node */
-  p0 = nullptr;
+  /* find bm_Node; link is the owning pointer that points at it */
   bucket = bm_hash(data);
-  p = bm_hashTable[bucket];
-  while (p && !compEQ(p->data, data)) {
-    p0 = p;
-    p = p->next;
+  link = &bm_hashTable[bucket];
+  while (*link && !compEQ((*link)->data, data)) {
+    link = &(*link)->next;
   }
-  if (!p)
+  if (!*link) {
     return;
-  /* p designates bm_Node to delete, remove it from list */
-  if (p0)
-    /* not first bm_Node, p0 points to previous bm_Node */
-    p0->next = p->next;
-  else
-    /* first bm_Node on chain */
-    bm_hashTable[bucket] = p->next;
-  mem_free(p);
+  }
+  /* unlink the bm_Node and free it */
+  *link = std::move((*link)->next);
 }
 bm_Node *bm_findNode(bm_T data) {
   bm_Node *p;
@@ -431,9 +408,10 @@ bm_Node *bm_findNode(bm_T data) {
   /*******************************
    *  find bm_Node containing data  *
    *******************************/
-  p = bm_hashTable[bm_hash(data)];
-  while (p && !compEQ(p->data, data))
-    p = p->next;
+  p = bm_hashTable[bm_hash(data)].get();
+  while (p && !compEQ(p->data, data)) {
+    p = p->next.get();
+  }
   return p;
 }
 //	simply frees up a bitmap
