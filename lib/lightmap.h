@@ -19,6 +19,8 @@
 #ifndef LIGHTMAP_H
 #define LIGHTMAP_H
 
+#include <memory>
+
 #include "pstypes.h"
 
 #define MAX_LIGHTMAPS (65534)
@@ -32,7 +34,7 @@
 
 struct bms_lightmap {
   uint8_t width, height; // Width and height in pixels
-  uint16_t *data;        // 16bit data
+  std::unique_ptr<uint16_t[]> data; // 16bit data
 
   uint16_t used;
   uint8_t flags;
