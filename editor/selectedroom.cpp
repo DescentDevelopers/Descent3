@@ -164,7 +164,7 @@ int SelectConnectedRooms(int roomnum) {
   return count;
 }
 
-static int *Save_selected_rooms;
+static std::unique_ptr<int[]> Save_selected_rooms;
 static int N_save_selected_rooms = -1; //-1 means empty list
 
 // Save the (user's) selected list so that an internal function can use it
@@ -182,9 +182,7 @@ void SaveRoomSelectedList() {
   if (!N_save_selected_rooms) // are there any rooms in the list?
     return;                   //..no, so don't bother to save them
 
-  Save_selected_rooms = (int *)mem_malloc(N_save_selected_rooms * sizeof(*Save_selected_rooms));
-
-  ASSERT(Save_selected_rooms != nullptr);
+  Save_selected_rooms = std::make_unique<int[]>(N_save_selected_rooms);
 
   for (i = 0; i < N_selected_rooms; i++)
     Save_selected_rooms[i] = Selected_rooms[i];
@@ -209,5 +207,5 @@ void RestoreRoomSelectedList() {
   for (i = 0; i < N_selected_rooms; i++)
     Selected_rooms[i] = Save_selected_rooms[i];
 
-  mem_free(Save_selected_rooms); // free up memory
+  Save_selected_rooms.reset(); // free up memory
 }
