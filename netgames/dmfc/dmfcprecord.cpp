@@ -101,7 +101,7 @@ void PRec_Init(void) {
   int i;
 
   for (i = 0; i < MAX_PLAYER_RECORDS; i++) {
-    memset(&Player_records[i], 0, sizeof(player_record));
+    Player_records[i] = {};
     Player_records[i].state = STATE_EMPTY;
     Player_records[i].user_info = nullptr;
     Player_records[i].pinfo = nullptr;
@@ -327,7 +327,7 @@ int PRec_GetFreeSlot(void) {
       delete Player_records[old_player].pinfo;
       Player_records[old_player].pinfo = nullptr;
     }
-    memset(&Player_records[old_player], 0, sizeof(player_record));
+    Player_records[old_player] = {};
     Player_records[old_player].state = STATE_EMPTY;
     Player_records[old_player].user_info = save_ptr;
     Player_records[old_player].user_info_size = size;
