@@ -109,6 +109,7 @@
 #define GRTEXT_H
 
 #include <cstdint>
+#include <memory>
 
 #include "grdefs.h"
 
@@ -285,10 +286,10 @@ struct tFontFileInfo {
   uint8_t min_ascii;     // minimum ascii value used by font
   uint8_t max_ascii;     // max ascii value used by the font
   int16_t byte_width;    // width of a character in the font in bytes
-  uint8_t *raw_data;     // pixel, map data.
-  uint8_t **char_data;   // pointers to each character
-  uint8_t *char_widths;  // individual pixel widths of each character
-  uint8_t *kern_data;    // kerning information for specific letter combos
+  std::unique_ptr<uint8_t[]> raw_data;    // pixel, map data.
+  std::unique_ptr<uint8_t *[]> char_data; // pointers to each character
+  std::unique_ptr<uint8_t[]> char_widths; // individual pixel widths of each character
+  std::unique_ptr<uint8_t[]> kern_data;   // kerning information for specific letter combos
 
   // FFI2 (newstyle) data
   tFontFileInfo2 ffi2;
