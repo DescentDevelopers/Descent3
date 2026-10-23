@@ -87,6 +87,8 @@
 #ifndef UIRES_H
 #define UIRES_H
 
+#include <memory>
+
 #include "bitmap.h"
 #include "grdefs.h"
 
@@ -129,12 +131,11 @@ class UITextItem : public UIItem {
   static int m_Sat;
 
 protected:
-  char *m_Text = nullptr;
+  std::unique_ptr<char[]> m_Text;
 
 public:
   static void SetDefaultFont(int font) { UITextItem::m_DefaultFont = font; }
   static void SetSaturationFactor(int sat) { UITextItem::m_Sat = sat; }
-  static char dummy_str[4];
 
 public:
   UITextItem() {
@@ -166,10 +167,10 @@ public:
 
   //	operators
   operator const char *() const { // access m_Text
-    return m_Text;
+    return m_Text.get();
   };
 
-  const char *GetBuffer() const { return m_Text; };
+  const char *GetBuffer() const { return m_Text.get(); };
 
   const UITextItem &operator=(const UITextItem &item);
 };

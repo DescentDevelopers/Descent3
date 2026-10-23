@@ -46,21 +46,9 @@
 
 int UITextItem::m_Sat = 0;
 int UITextItem::m_DefaultFont = 0;
-char UITextItem::dummy_str[4] = "";
 
 UITextItem::UITextItem(const char *text, ddgr_color color, uint8_t alpha) {
-  int slen = strlen(text);
-  if (slen > 0) {
-    m_Text = mem_strdup(text);
-    if (!m_Text) {
-      Error("Memory allocation failed in UITextItem.");
-    }
-  } else {
-    m_Text = &UITextItem::dummy_str[0];
-    dummy_str[0] = 0;
-  }
-
-  strcpy(m_Text, text);
+  m_Text = mem_strdup_unique(text);
 
   m_Color = color;
   m_Alpha = alpha;
@@ -68,31 +56,18 @@ UITextItem::UITextItem(const char *text, ddgr_color color, uint8_t alpha) {
 }
 
 UITextItem::UITextItem(int font, const char *text, ddgr_color color, uint8_t alpha) {
-  int slen = strlen(text);
-  if (slen > 0) {
-    m_Text = mem_strdup(text);
-    if (!m_Text) {
-      Error("Memory allocation failed in UITextItem.");
-    }
-  } else {
-    m_Text = &UITextItem::dummy_str[0];
-    dummy_str[0] = 0;
-  }
-
-  strcpy(m_Text, text);
+  m_Text = mem_strdup_unique(text);
 
   m_Color = color;
   m_Alpha = alpha;
   m_Font = font;
 }
 
-UITextItem::UITextItem(const UITextItem &item) : UIItem(item) { *this = item; }
+UITextItem::UITextItem(const UITextItem &item)
+    : UIItem(item), m_Alpha(item.m_Alpha), m_Color(item.m_Color), m_Font(item.m_Font),
+      m_Text(mem_strdup_unique(item.m_Text.get())) {}
 
-UITextItem::~UITextItem() {
-  if (m_Text && m_Text != (&UITextItem::dummy_str[0])) {
-    mem_free(m_Text);
-  }
-}
+UITextItem::~UITextItem() = default;
 
 //	Inheritable functions
 bool UITextItem::draw(int x, int y, tUIDrawClass draw_class) {
@@ -103,22 +78,22 @@ bool UITextItem::draw(int x, int y, tUIDrawClass draw_class) {
 
   if (draw_class == uiDrawAlphaSaturate) {
     ui_DrawSetTextType(UI_TEXTTYPE_SATURATE);
-    ui_DrawString(m_Color, x, y, m_Text);
+    ui_DrawString(m_Color, x, y, m_Text.get());
     for (i = 0; i < UITextItem::m_Sat; i++)
-      ui_DrawString(m_Color, x, y, m_Text);
+      ui_DrawString(m_Color, x, y, m_Text.get());
   } else if (draw_class == uiDrawFaded) {
     ui_DrawSetTextType(0);
     ui_SetCharAlpha(m_Alpha / 2);
-    ui_DrawString(m_Color, x, y, m_Text);
+    ui_DrawString(m_Color, x, y, m_Text.get());
     ui_DrawSetTextType(UI_TEXTTYPE_SATURATE);
     for (i = 0; i < UITextItem::m_Sat; i++)
-      ui_DrawString(m_Color, x, y, m_Text);
+      ui_DrawString(m_Color, x, y, m_Text.get());
   } else {
     ui_DrawSetTextType(0);
-    ui_DrawString(m_Color, x, y, m_Text);
+    ui_DrawString(m_Color, x, y, m_Text.get());
     ui_DrawSetTextType(UI_TEXTTYPE_SATURATE);
     for (i = 0; i < UITextItem::m_Sat; i++)
-      ui_DrawString(m_Color, x, y, m_Text);
+      ui_DrawString(m_Color, x, y, m_Text.get());
   }
 
   return true;
@@ -126,12 +101,12 @@ bool UITextItem::draw(int x, int y, tUIDrawClass draw_class) {
 
 int UITextItem::width() {
   ui_DrawSetFont(m_Font);
-  return (m_Text ? ui_GetTextWidth(m_Text) : 0);
+  return (m_Text ? ui_GetTextWidth(m_Text.get()) : 0);
 }
 
 int UITextItem::height() {
   ui_DrawSetFont(m_Font);
-  return (m_Text ? ui_GetTextHeight(m_Text) : 0);
+  return (m_Text ? ui_GetTextHeight(m_Text.get()) : 0);
 }
 
 //	operators
@@ -144,22 +119,11 @@ UIItem *UITextItem::CopyUIItem() {
 }
 
 const UITextItem &UITextItem::operator=(const UITextItem &item) {
-  if (m_Text && m_Text != (&UITextItem::dummy_str[0])) {
-    mem_free(m_Text);
+  if (this == &item) {
+    return *this;
   }
 
-  if (strlen(item.m_Text) > 0) {
-    m_Text = mem_strdup(item.m_Text);
-    if (!m_Text)
-      Error("Memory allocation failed in UITextItem.");
-  } else {
-    m_Text = &UITextItem::dummy_str[0];
-    dummy_str[0] = 0;
-  }
-
-  if (m_Text != item.m_Text) {
-    strcpy(m_Text, item.m_Text);
-  }
+  m_Text = mem_strdup_unique(item.m_Text.get());
   m_Color = item.m_Color;
   m_Alpha = item.m_Alpha;
   m_Font = item.m_Font;
@@ -252,20 +216,11 @@ UIItem *UISnazzyTextItem::CopyUIItem() {
 
 const UISnazzyTextItem &UISnazzyTextItem::operator=(const UISnazzyTextItem &item) {
   // reproduce UITextItem's = operator
-  if (m_Text && m_Text != (&UITextItem::dummy_str[0])) {
-    mem_free(m_Text);
+  if (this == &item) {
+    return *this;
   }
 
-  if (strlen(item.m_Text) > 0) {
-    m_Text = mem_strdup(item.m_Text);
-    if (!m_Text)
-      Error("Memory allocation failed in UITextItem.");
-  } else {
-    m_Text = &UITextItem::dummy_str[0];
-    dummy_str[0] = 0;
-  }
-
-  strcpy(m_Text, item.m_Text);
+  m_Text = mem_strdup_unique(item.m_Text.get());
 
   set_color(item.get_color());
   set_alpha(item.get_alpha());

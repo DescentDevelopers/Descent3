@@ -724,11 +724,7 @@ void CallMultiDLL(int eventnum) {
     DLLMultiCall(eventnum);
 }
 void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color) {
-  // The item's buffer is sized for its old text, so replace it rather than copying into it
-  if (uit->m_Text && uit->m_Text != &UITextItem::dummy_str[0]) {
-    mem_free(uit->m_Text);
-  }
-  uit->m_Text = mem_strdup(newtext);
+  uit->m_Text = mem_strdup_unique(newtext);
   uit->set_color(color);
 }
 UIObject *NewUIWindowCreate(int x, int y, int w, int h, int flags) {
