@@ -1429,6 +1429,11 @@ void CMainFrame::DoKeypadTabNotify(NMHDR *nmhdr) {
 //	Put all non client window destruction here!
 void CMainFrame::OnNcDestroy() { CFrameWnd::OnNcDestroy(); }
 
+// The editor's own application and database objects.  Descent/Database borrow these while the
+// editor is active (the game window swaps in its own application object, see gameeditor.cpp).
+static std::unique_ptr<oeLnxApplication> Editor_app;
+static std::unique_ptr<oeLnxAppDatabase> Editor_database;
+
 void CMainFrame::OnDestroy() {
   CFrameWnd::OnDestroy();
 
@@ -1438,14 +1443,10 @@ void CMainFrame::OnDestroy() {
 
   //	kill game and editor objects outside MFC.
   Desktop_surf.reset();
-  if (Database) {
-    delete Database;
-    Database = nullptr;
-  }
-  if (Descent) {
-    delete Descent;
-    Descent = nullptr;
-  }
+  Editor_database.reset();
+  Database = nullptr;
+  Editor_app.reset();
+  Descent = nullptr;
 }
 
 void InitCScripts() {
@@ -1464,6 +1465,10 @@ void InitCScripts() {
 // editor leaves through exit() (e.g. Error()) they are still alive here, and the subsystems their destructors use
 // have already been shut down by earlier atexit handlers.  Leak them on that path, as the editor always did.
 static void AbandonEditorObjectsAtExit() {
+  // ~oeLnxAppDatabase would export the registry, which an exit() from the editor never did.
+  (void)Editor_database.release();
+  (void)Editor_app.release();
+
   // ~grSurface would close the video surface after ddgr_Close.
   (void)Desktop_surf.release();
 }
@@ -1477,8 +1482,10 @@ void WinMainInitEditor(unsigned hwnd, unsigned hinst) {
   // appinfo.hinst = (HInstance)hinst;
   appinfo.flags = OEAPP_WINDOWED;
 
-  Descent = new oeLnxApplication(&appinfo);
-  Database = new oeLnxAppDatabase;
+  Editor_app = std::make_unique<oeLnxApplication>(&appinfo);
+  Descent = Editor_app.get();
+  Editor_database = std::make_unique<oeLnxAppDatabase>();
+  Database = Editor_database.get();
 
   atexit(AbandonEditorObjectsAtExit);
 }
