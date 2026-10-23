@@ -73,8 +73,8 @@ void CObjectListCombo::Init(int type, int selected_handle) {
     // Only lists named objects.  If we ever need all objects, add a flag.
     if (Objects[i].name && ((type == OBJ_NONE) || (Objects[i].type == type))) {
       char str[100];
-      sprintf(str, "%s (%s, %x)", Objects[i].name ? Objects[i].name : "<no name>", Object_type_names[Objects[i].type],
-              Objects[i].handle);
+      sprintf(str, "%s (%s, %x)", Objects[i].name ? Objects[i].name.get() : "<no name>",
+              Object_type_names[Objects[i].type], Objects[i].handle);
 
       int index = AddString(str);
       SetItemData(index, Objects[i].handle);

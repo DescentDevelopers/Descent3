@@ -1295,7 +1295,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     char *title = nullptr;
 
     if (newobjnum > -1)
-      title = Objects[newobjnum].name;
+      title = Objects[newobjnum].name.get();
 
     if (popup.CreatePopupMenu())
       ret = SetupPopup(&popup, title);
@@ -1525,8 +1525,8 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
       char tempname[OBJ_NAME_LEN + 1] = "";
       object *curobj = &Objects[Cur_object_index];
       if (curobj->name) {
-        ASSERT(strlen(curobj->name) <= OBJ_NAME_LEN);
-        strcpy(tempname, curobj->name);
+        ASSERT(strlen(curobj->name.get()) <= OBJ_NAME_LEN);
+        strcpy(tempname, curobj->name.get());
       }
 
     try_again:;
@@ -1542,13 +1542,10 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
         goto try_again;
       }
 
-      if (curobj->name) {
-        mem_free(curobj->name);
-        curobj->name = nullptr;
-      }
+      curobj->name.reset();
 
       if (strlen(tempname)) {
-        curobj->name = mem_strdup(tempname);
+        curobj->name = mem_strdup_unique(tempname);
       }
 
       World_changed = 1;

@@ -300,7 +300,7 @@ void CDoorwayDialog::UpdateDialog() {
 
     ASSERT(Rooms[Current_door_room].flags & RF_DOOR);
 
-    strcpy(last_name, Objects[Cur_object_index].name ? Objects[Cur_object_index].name : "<no name>");
+    strcpy(last_name, Objects[Cur_object_index].name ? Objects[Cur_object_index].name.get() : "<no name>");
     sprintf(str, "Door:  %s        ", last_name);
     ebox->SetWindowText(str);
 

@@ -92,6 +92,7 @@
  */
 
 #include <cstdint>
+#include <memory>
 
 #include "vecmat_external.h"
 #include "robotfirestruct.h"
@@ -404,7 +405,7 @@ struct object {
   uint16_t id;        // which form of object...which powerup, robot, etc.
   uint32_t flags;
 
-  char *name; // the name of this object, or NULL
+  std::unique_ptr<char[]> name; // the name of this object, or NULL
 
   int32_t handle;       //  unique handle for this object.  See defines above
   int16_t next, prev;   // id of next and previous connected object in Objects, -1 = no connection

@@ -1485,7 +1485,7 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
   case OBJV_S_NAME:
     if (op == VF_GET) {
       if (obj->name) {
-        strcpy((char *)ptr, obj->name);
+        strcpy((char *)ptr, obj->name.get());
       } else {
         *((char *)ptr) = 0;
       }
@@ -3376,7 +3376,7 @@ int osipf_FindTriggerName(const char *name) {
 int osipf_FindObjectName(const char *name) {
   for (int i = 0; i < MAX_OBJECTS; i++) {
     if (Objects[i].type != OBJ_NONE && Objects[i].name != nullptr) {
-      if (!stricmp(name, Objects[i].name))
+      if (!stricmp(name, Objects[i].name.get()))
         return Objects[i].handle;
     }
   }
@@ -3399,7 +3399,7 @@ int osipf_GetTriggerFace(int trigger_id) {
 
 int osipf_FindDoorName(const char *name) {
   for (int i = 0; i <= MAX_OBJECTS; i++) {
-    if (Objects[i].type == OBJ_DOOR && Objects[i].name && !stricmp(Objects[i].name, name)) {
+    if (Objects[i].type == OBJ_DOOR && Objects[i].name && !stricmp(Objects[i].name.get(), name)) {
       return Objects[i].handle;
     }
   }

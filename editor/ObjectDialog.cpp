@@ -786,7 +786,7 @@ void SelectObject(int objnum) {
 
   object *objp = &Objects[objnum];
   type_name = Object_type_names[objp->type];
-  obj_name = objp->name ? objp->name : "<none>";
+  obj_name = objp->name ? objp->name.get() : "<none>";
 
   if (IS_GENERIC(objp->type))
     id_name = Object_info[objp->id].name;
@@ -1150,14 +1150,14 @@ void CObjectDialog::OnObjectSwapButton() {
           temp_name[0] = '\0';
 
           if (Objects[i].name) {
-            strcpy(temp_name, Objects[i].name);
+            strcpy(temp_name, Objects[i].name.get());
           }
 
           ObjDelete(i);
           int o_index = ObjCreate(Object_info[d_id].type, d_id, room, &pos, &orient, parent);
 
           if (temp_name[0] != '\0') {
-            Objects[o_index].name = mem_strdup(temp_name);
+            Objects[o_index].name = mem_strdup_unique(temp_name);
           }
         }
       }
