@@ -225,14 +225,13 @@ group::~group() {
 //					roomnums - pointer to list of room numbers
 //					attachroom, attachface - where group attaches when pasted
 // Returns:		pointer to group
-group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
+std::unique_ptr<group> CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
   int r;
   int room_xlate[MAX_ROOMS];
   int n_objects = 0, n_triggers = 0, n_doors = 0;
 
   // Allocate group & room arrays
-  auto g = new group;
-  ASSERT(g != nullptr);
+  auto g = std::make_unique<group>();
   g->nrooms = nrooms;
   g->rooms = std::make_unique<room[]>(nrooms);
 
@@ -732,7 +731,7 @@ void ReadGroupTrigger(CFILE *ifile, trigger *tp) {
 }
 
 // Loads a group from disk
-group *LoadGroup(char *filename) {
+std::unique_ptr<group> LoadGroup(char *filename) {
   CFILE *ifile;
   char tag[4];
   int version, level_version;
@@ -775,7 +774,7 @@ group *LoadGroup(char *filename) {
   ReadTextureList(ifile);
 
   // Allocate group
-  auto g = new group;
+  auto g = std::make_unique<group>();
 
   // Read group info
   g->nrooms = cf_ReadInt(ifile);

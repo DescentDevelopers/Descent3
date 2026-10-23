@@ -1471,6 +1471,10 @@ static void AbandonEditorObjectsAtExit() {
 
   // ~grSurface would close the video surface after ddgr_Close.
   (void)Desktop_surf.release();
+
+  // The scrap buffer has always been left allocated at exit, on every path: ~group calls FreeRoom, which touches
+  // global room, bnode and lightmap state.
+  (void)Scrap.release();
 }
 
 // Copied from winmain.cpp
@@ -2287,7 +2291,7 @@ void CMainFrame::OnEditSaveScrap() {
   if (!strchr(filename, '.'))
     strcat(filename, ".grp");
 
-  SaveGroup(filename, Scrap);
+  SaveGroup(filename, Scrap.get());
 
   EditorStatus("Group saved to %s", filename);
 }
@@ -2295,7 +2299,6 @@ void CMainFrame::OnEditSaveScrap() {
 void CMainFrame::OnEditLoadScrap() {
   CString filter = "D3 Group Files (*.grp)|*.grp||";
   char filename[255];
-  group *newscrap;
 
   if (!OpenFileDialog(this, (LPCSTR)filter, filename, Current_scrap_dir, sizeof(Current_scrap_dir)))
     return;
@@ -2303,11 +2306,10 @@ void CMainFrame::OnEditLoadScrap() {
   if (!strchr(filename, '.'))
     strcat(filename, ".grp");
 
-  newscrap = LoadGroup(filename);
+  std::unique_ptr<group> newscrap = LoadGroup(filename);
 
   if (newscrap) {
-    delete Scrap;
-    Scrap = newscrap;
+    Scrap = std::move(newscrap);
     EditorStatus("Group loaded from %s", filename);
   }
 }
@@ -2338,7 +2340,7 @@ int CopySelectedRooms() {
   }
 
   // Get rid of old contents of scrap buffer
-  delete Scrap;
+  Scrap.reset();
 
   Scrap = CopyGroup(N_selected_rooms, Selected_rooms, ROOMNUM(Markedroomp), Markedface);
 
@@ -2361,7 +2363,7 @@ void CMainFrame::OnEditPlace() {
     return;
   }
 
-  PlaceGroup(Curroomp, Curface, Scrap);
+  PlaceGroup(Curroomp, Curface, Scrap.get());
 }
 
 void CMainFrame::OnEditPlaceTerrain() {
@@ -2388,7 +2390,7 @@ void CMainFrame::OnEditPlaceTerrain() {
   if (result == IDCANCEL)
     return;
 
-  PlaceGroupTerrain(cellnum, Scrap, (result == IDYES));
+  PlaceGroupTerrain(cellnum, Scrap.get(), (result == IDYES));
 }
 
 void CMainFrame::OnEditAttach() {

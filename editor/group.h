@@ -99,7 +99,7 @@ struct group {
 //					roomnums - pointer to list of room numbers
 //					attachroom, attachface - where group attaches when pasted
 // Returns:		pointer to group
-group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface);
+std::unique_ptr<group> CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface);
 
 // Delete the given list of rooms
 // Parameters:	nrooms - the number of rooms in list
@@ -128,6 +128,6 @@ void SaveGroup(char *filename, group *g);
 
 // Loads a group from disk
 // Returns:	pointer to the group loaded
-group *LoadGroup(char *filename);
+std::unique_ptr<group> LoadGroup(char *filename);
 
 #endif // ifdef _GROUP_H
