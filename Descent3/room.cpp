@@ -464,69 +464,6 @@ int CountRoomFaceVerts(room *rp) {
 
 #endif
 
-// Vars for the room memory system
-uint8_t *Room_mem_buf = nullptr; // pointer to the rooms block of memory
-uint8_t *Room_mem_ptr = nullptr; // pointer to free memory in the rooms block
-int Room_mem_size;          // How big our chunk is
-
-// Closes down the room memory system.
-void RoomMemClose() {
-  if (Room_mem_buf)
-    mem_free(Room_mem_buf);
-
-  Room_mem_buf = Room_mem_ptr = nullptr;
-}
-
-// Initialized the memory buffer for a room
-// Parameters:	size - the total amount of memory needed for the room
-void RoomMemInit(int nverts, int nfaces, int nfaceverts, int nportals) {
-#if (defined(EDITOR) || defined(NEWEDITOR))
-  return; // This system is disabled in the editor
-#endif
-
-  if (nverts == 0) // We don't know how much mem the room will use, so do the old way
-    return;
-
-  size_t size = 0;
-  size += nfaces * (sizeof(*Rooms[0].faces) + sizeof(std::max_align_t));
-  size += nverts * (sizeof(*Rooms[0].verts) + sizeof(std::max_align_t));
-  size += nportals * (sizeof(*Rooms[0].portals) + sizeof(std::max_align_t));
-  size += nfaceverts * (sizeof(*Rooms[0].faces[0].face_verts) + sizeof(std::max_align_t) +
-          sizeof(*Rooms[0].faces[0].face_uvls) + sizeof(std::max_align_t));
-
-  if (Room_mem_buf)
-    mem_free(Room_mem_buf);
-
-  Room_mem_buf = mem_rmalloc<uint8_t>(size);
-  Room_mem_size = size;
-
-  Room_mem_ptr = Room_mem_buf;
-}
-
-// Allocates memory for a room or face
-template<typename T> static T *RoomMemAlloc(size_t nelem) {
-  static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
-  if (Room_mem_buf) {
-    uint8_t *p = reinterpret_cast<uint8_t *>((reinterpret_cast<uintptr_t>(Room_mem_ptr) + alignof(T) - 1) / alignof(T) * alignof(T));
-    Room_mem_ptr = p + nelem * sizeof(T);
-    ASSERT(Room_mem_ptr <= (Room_mem_buf + Room_mem_size));
-    return static_cast<T *>(static_cast<void *>(p));
-  } else
-    return static_cast<T *>(mem_malloc(nelem * sizeof(T)));
-}
-
-// Frees memory in a room
-// Doesn't actually do anything
-void RoomMemFree(void *buf) {
-  if (!buf)
-    return;
-
-  if (Room_mem_buf) {
-    ASSERT(((buf) >= Room_mem_buf) && ((buf) < (Room_mem_buf + Room_mem_size)));
-  } else
-    mem_free(buf);
-}
-
 // Initalize a room, allocating memory and filling in fields
 // Parameters:	rp - the room to be initialized
 //					nverts - how many vertices this room will have
@@ -559,12 +496,12 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->fog_g = 1.0;
   rp->fog_b = 1.0;
 
-  rp->faces = RoomMemAlloc<face>(nfaces);
+  rp->faces = mem_rmalloc<face>(nfaces);
   ASSERT(rp->faces != nullptr);
 
   rp->num_bbf_regions = 0;
 
-  rp->verts = RoomMemAlloc<vector>(nverts);
+  rp->verts = mem_rmalloc<vector>(nverts);
   ASSERT(rp->verts != nullptr);
 
   if (Katmai) {
@@ -576,7 +513,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->pulse_offset = 0;
 
   if (nportals) {
-    rp->portals = RoomMemAlloc<portal>(nportals);
+    rp->portals = mem_rmalloc<portal>(nportals);
     ASSERT(rp->portals != nullptr);
   } else
     rp->portals = nullptr;
@@ -621,9 +558,9 @@ void InitRoomFace(face *fp, int nverts) {
   fp->special_handle = BAD_SPECIAL_FACE_INDEX;
   fp->light_multiple = 4;
 
-  fp->face_verts = RoomMemAlloc<short>(nverts);
+  fp->face_verts = mem_rmalloc<int16_t>(nverts);
   ASSERT(fp->face_verts != nullptr);
-  fp->face_uvls = RoomMemAlloc<roomUVL>(nverts);
+  fp->face_uvls = mem_rmalloc<roomUVL>(nverts);
   ASSERT(fp->face_uvls != nullptr);
 
   ASSERT(fp->face_verts);
@@ -664,9 +601,9 @@ void FreeRoom(room *rp) {
     FreeRoomFace(&rp->faces[i]);
 
   // Free up mem alloced for this room
-  RoomMemFree(rp->faces);
-  RoomMemFree(rp->portals);
-  RoomMemFree(rp->verts);
+  mem_free(rp->faces);
+  mem_free(rp->portals);
+  mem_free(rp->verts);
 
   if (Katmai )
     mem_free(rp->verts4);
@@ -722,8 +659,6 @@ void FreeAllRooms() {
 
   ASSERT(Highest_room_index == -1);
 
-  RoomMemClose();
-
   //	mprintf(2,"Done\n");
 }
 
@@ -752,8 +687,8 @@ void FreeRoomFace(face *fp) {
     fp->special_handle = BAD_SPECIAL_FACE_INDEX;
   }
 
-  RoomMemFree(fp->face_verts);
-  RoomMemFree(fp->face_uvls);
+  mem_free(fp->face_verts);
+  mem_free(fp->face_uvls);
 }
 
 // Finds the center point of a room
