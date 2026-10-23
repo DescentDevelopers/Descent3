@@ -239,31 +239,27 @@ void InitHemicube(int resolution) {
   rad_Hemicube.ff_res = resolution;
   rad_Hemicube.grid_dim = resolution / 2;
 
-  rad_Hemicube.id_grid = (int *)mem_malloc(rad_Hemicube.ff_res * rad_Hemicube.ff_res * sizeof(int));
-  ASSERT(rad_Hemicube.id_grid != nullptr);
-  rad_Hemicube.depth_grid = (float *)mem_malloc(rad_Hemicube.ff_res * rad_Hemicube.ff_res * sizeof(float));
-  ASSERT(rad_Hemicube.depth_grid != nullptr);
+  rad_Hemicube.id_grid = std::make_unique<int[]>(rad_Hemicube.ff_res * rad_Hemicube.ff_res);
+  rad_Hemicube.depth_grid = std::make_unique<float[]>(rad_Hemicube.ff_res * rad_Hemicube.ff_res);
 
-  rad_Hemicube.top_array = (float *)mem_malloc(rad_Hemicube.grid_dim * rad_Hemicube.grid_dim * sizeof(float));
-  ASSERT(rad_Hemicube.top_array != nullptr);
-  rad_Hemicube.side_array = (float *)mem_malloc(rad_Hemicube.grid_dim * rad_Hemicube.grid_dim * sizeof(float));
-  ASSERT(rad_Hemicube.side_array != nullptr);
+  rad_Hemicube.top_array = std::make_unique<float[]>(rad_Hemicube.grid_dim * rad_Hemicube.grid_dim);
+  rad_Hemicube.side_array = std::make_unique<float[]>(rad_Hemicube.grid_dim * rad_Hemicube.grid_dim);
 
   CalculateDeltaFormFactors();
 
   // Get a surface to draw to
   rad_Hemicube.drawing_surface.create(rad_Hemicube.ff_res, rad_Hemicube.ff_res, BPP_16);
-  rad_Hemicube.vport = new grViewport(&rad_Hemicube.drawing_surface);
+  rad_Hemicube.vport = std::make_unique<grViewport>(&rad_Hemicube.drawing_surface);
 }
 
 void CloseHemicube() {
-  delete rad_Hemicube.vport;
+  rad_Hemicube.vport.reset();
   rad_Hemicube.drawing_surface.free();
 
-  mem_free(rad_Hemicube.depth_grid);
-  mem_free(rad_Hemicube.id_grid);
-  mem_free(rad_Hemicube.side_array);
-  mem_free(rad_Hemicube.top_array);
+  rad_Hemicube.depth_grid.reset();
+  rad_Hemicube.id_grid.reset();
+  rad_Hemicube.side_array.reset();
+  rad_Hemicube.top_array.reset();
 
   rad_Drawing = 0;
 }
@@ -352,7 +348,8 @@ void BuildTransform(vector *nu, vector *nv, vector *nn) {
 }
 
 void StartHemicubeDrawing() {
-  StartEditorFrame(rad_Hemicube.vport, &rad_Hemicube.view_position, &rad_Hemicube.view_matrix, Hemicube_view_zoom);
+  StartEditorFrame(rad_Hemicube.vport.get(), &rad_Hemicube.view_position, &rad_Hemicube.view_matrix,
+                   Hemicube_view_zoom);
 }
 
 int surface_colors[9000];

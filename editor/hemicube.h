@@ -19,6 +19,8 @@
 #ifndef HEMICUBE_H
 #define HEMICUBE_H
 
+#include <memory>
+
 #include "3d.h"
 #include "radiosity.h"
 #include "gr.h"
@@ -31,12 +33,12 @@ struct rad_hemicube {
   rad_surface *shooting_surface;
 
   grHardwareSurface drawing_surface;
-  grViewport *vport;
-  int *id_grid;
-  float *depth_grid;
+  std::unique_ptr<grViewport> vport;
+  std::unique_ptr<int[]> id_grid;
+  std::unique_ptr<float[]> depth_grid;
 
-  float *top_array;
-  float *side_array;
+  std::unique_ptr<float[]> top_array;
+  std::unique_ptr<float[]> side_array;
 
   int ff_res;   // Form factor resolution
   int grid_dim; // Hemicube top/side array dimension
