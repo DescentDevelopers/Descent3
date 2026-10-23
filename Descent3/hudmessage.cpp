@@ -1596,24 +1596,17 @@ bool MsgListConsole::Open(const char *title, int x, int y, int w, int h) {
   m_buflen = 2048;
 
 redo_copy:
-  m_buffer = mem_rmalloc<char>(m_buflen);
-  if (m_buffer) {
-    m_buffer[0] = 0;
-    m_opened = true;
-  } else {
-    m_opened = false;
-    return false;
-  }
+  m_buffer = std::make_unique<char[]>(m_buflen);
+  m_opened = true;
 
   //	generate text buffer
   int i, len, j;
-  char *bufptr = m_buffer;
+  char *bufptr = m_buffer.get();
 
   for (i = 0; i < m_list->m_nmsg; i++) {
     const char *msg = m_list->m_msg[i].get();
-    if ((strlen(m_buffer) + strlen(msg) + 2) >= (unsigned)(m_buflen)) {
+    if ((strlen(m_buffer.get()) + strlen(msg) + 2) >= (unsigned)(m_buflen)) {
       // reallocate buffer
-      mem_free(m_buffer);
       m_buflen = m_buflen * 2;
       goto redo_copy;
     }
@@ -1637,15 +1630,14 @@ redo_copy:
   }
 
   ASSERT(c > 0);
-  m_conlines = mem_rmalloc<char *>(c);
+  m_conlines = std::make_unique<char *[]>(c);
   n_conlines = c;
-  memset(m_conlines, 0, sizeof(char *) * c);
 
   // get pointer to first visible line.
   c = 0;
   m_bufline = 0;
-  len = strlen(m_buffer);
-  bufptr = m_buffer;
+  len = strlen(m_buffer.get());
+  bufptr = m_buffer.get();
   for (i = 0; i <= len; i++) {
     if (m_buffer[i] == '\n' || m_buffer[i] == 0) {
       if (c == n_conlines) {
@@ -1674,10 +1666,8 @@ redo_copy:
 
 void MsgListConsole::Close() {
   if (m_opened) {
-    if (m_conlines)
-      mem_free(m_conlines);
-    if (m_buffer)
-      mem_free(m_buffer);
+    m_conlines.reset();
+    m_buffer.reset();
     m_opened = false;
     ResumeControls();
   }
@@ -1803,8 +1793,8 @@ void MsgListConsole::DoInput() {
           m_conlines[i] = m_conlines[i - 1];
 
         // go back until hit previous newline of beginning of buffer.
-        for (lineptr = m_conlines[0] - 1; lineptr != m_buffer && lineptr[-1] != '\n'; lineptr--)
-          ;
+        for (lineptr = m_conlines[0] - 1; lineptr != m_buffer.get() && lineptr[-1] != '\n'; lineptr--) {
+        }
         m_conlines[0] = lineptr;
       }
     } else if (offset_count > 0) {
