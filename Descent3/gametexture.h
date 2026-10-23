@@ -299,7 +299,7 @@ struct texture {
   float alpha;            // alpha value (from 0 to 1)
   float speed;            // how fast this texture animates
 
-  proc_struct *procedural;
+  std::unique_ptr<proc_struct> procedural;
 
   int sound;          // The sound this texture makes
   float sound_volume; // The volume for this texture's sound

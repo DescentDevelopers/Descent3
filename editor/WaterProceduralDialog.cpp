@@ -385,7 +385,7 @@ void CWaterProceduralDialog::OnMouseMove(UINT nFlags, CPoint point) {
 // Creates a procedural element at x,y
 static_proc_element *CWaterProceduralDialog::CreateElement(int x, int y) {
   int n = D3EditState.texdlg_texture;
-  proc_struct *procedural = GameTextures[n].procedural;
+  proc_struct *procedural = GameTextures[n].procedural.get();
 
   int index;
 

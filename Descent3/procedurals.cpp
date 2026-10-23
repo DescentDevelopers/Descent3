@@ -808,7 +808,7 @@ void DoDynamicFallLeft(int handle, dynamic_proc_element *proc) {
 void CalcWater2(int handle, int density) {
   int newh;
   int count = PROC_SIZE + 1;
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
 
   int16_t *newptr = (int16_t *)procedural->proc2.get();
   int16_t *oldptr = (int16_t *)procedural->proc1.get();
@@ -871,7 +871,7 @@ void CalcWater2(int handle, int density) {
 void CalcWater(int handle, int density) {
   int newh;
   int count = PROC_SIZE + 1;
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
 
   int16_t *newptr = (int16_t *)procedural->proc2.get();
   int16_t *oldptr = (int16_t *)procedural->proc1.get();
@@ -928,7 +928,7 @@ void DrawWaterNoLight(int handle) {
   int dx, dy;
   int x, y;
   int offset = 0;
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
   int dest_bitmap = procedural->procedural_bitmap;
   uint16_t *dest_data = (uint16_t *)bm_data(dest_bitmap, 0);
   uint16_t *src_data = (uint16_t *)bm_data(GameTextures[handle].bm_handle, 0);
@@ -959,7 +959,7 @@ void DrawWaterWithLight(int handle, int lightval) {
   int x, y;
   uint16_t c;
   int offset = 0;
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
   int dest_bitmap = procedural->procedural_bitmap;
   uint16_t *dest_data = (uint16_t *)bm_data(dest_bitmap, 0);
   uint16_t *src_data = (uint16_t *)bm_data(GameTextures[handle].bm_handle, 0);
@@ -1124,7 +1124,7 @@ void AddProcSineBlob(static_proc_element *proc, int handle) {
   }
 }
 void AllocateMemoryForWaterProcedural(int handle) {
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
   int w = PROC_SIZE;
   int h = PROC_SIZE;
   procedural->proc1 = std::make_unique<uint8_t[]>(w * h * 2);
@@ -1133,7 +1133,7 @@ void AllocateMemoryForWaterProcedural(int handle) {
 }
 // Does a water effect for this texture
 void EvaluateWaterProcedural(int handle) {
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
   if (procedural->memory_type != PROC_MEMORY_TYPE_WATER)
     AllocateMemoryForWaterProcedural(handle);
 
@@ -1212,7 +1212,7 @@ void EvaluateWaterProcedural(int handle) {
   std::swap(procedural->proc1, procedural->proc2);
 }
 void AllocateMemoryForFireProcedural(int handle) {
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
   int w = PROC_SIZE;
   int h = PROC_SIZE;
   procedural->proc1 = std::make_unique<uint8_t[]>(w * h * 1);
@@ -1220,7 +1220,7 @@ void AllocateMemoryForFireProcedural(int handle) {
   procedural->memory_type = PROC_MEMORY_TYPE_FIRE;
 }
 void EvaluateFireProcedural(int handle) {
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
 
   int dest_bitmap = procedural->procedural_bitmap;
   if (procedural->memory_type != PROC_MEMORY_TYPE_FIRE) {
@@ -1318,7 +1318,7 @@ void EvaluateFireProcedural(int handle) {
 }
 // Does a procedural for this texture
 void EvaluateProcedural(int handle) {
-  proc_struct *procedural = GameTextures[handle].procedural;
+  proc_struct *procedural = GameTextures[handle].procedural.get();
 
   int dest_bitmap = procedural->procedural_bitmap;
   if (bm_w(dest_bitmap, 0) != PROC_SIZE) {
