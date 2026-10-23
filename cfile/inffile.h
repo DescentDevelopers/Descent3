@@ -28,6 +28,7 @@
 #endif // _MSC_VER >= 1000
 
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "crossplat.h"
@@ -73,7 +74,7 @@ private:
   struct sym_info // full runtime symbol
   {
     char name[_MAX_PATH];
-    char *text;
+    std::unique_ptr<char[]> text;
   };
 
   // inf file symbol list
