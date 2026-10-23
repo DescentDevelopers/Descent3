@@ -797,6 +797,28 @@ void FreeProceduralForTexture(int n) {
   }
 }
 
+// Copies all of src's values into dest, except for the procedural, which stays with its texture
+void CopyTextureValues(texture *dest, const texture *src) {
+  memcpy(dest->name, src->name, sizeof(dest->name));
+  dest->flags = src->flags;
+  dest->bm_handle = src->bm_handle;
+  dest->destroy_handle = src->destroy_handle;
+  dest->damage = src->damage;
+  dest->reflectivity = src->reflectivity;
+  dest->r = src->r;
+  dest->g = src->g;
+  dest->b = src->b;
+  dest->slide_u = src->slide_u;
+  dest->slide_v = src->slide_v;
+  dest->alpha = src->alpha;
+  dest->speed = src->speed;
+  dest->sound = src->sound;
+  dest->sound_volume = src->sound_volume;
+  dest->bumpmap = src->bumpmap;
+  dest->corona_type = src->corona_type;
+  dest->used = src->used;
+}
+
 // Frees a texture that is being used and
 // Decrements number of textures in use
 void FreeTexture(int n) {

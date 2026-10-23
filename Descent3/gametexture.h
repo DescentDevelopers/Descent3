@@ -308,6 +308,7 @@ struct texture {
   uint8_t corona_type; // what type of corona this thing uses
   uint8_t used;        // is this texture free to be allocated?
 
+  // When adding members, update CopyTextureValues()
 };
 
 extern texture GameTextures[MAX_TEXTURES];
@@ -364,6 +365,9 @@ void FreeProceduralForTexture(int n);
 
 // Allocates memory for a procedural that is attached to a texture
 int AllocateProceduralForTexture(int handle);
+
+// Copies all of src's values into dest, except for the procedural, which stays with its texture
+void CopyTextureValues(texture *dest, const texture *src);
 
 #endif
 

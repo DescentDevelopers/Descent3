@@ -937,8 +937,13 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
   texture *tex = &GameTextures[n];
   int bm_handle;
 
+  // Drop any old procedural; it is rebuilt from the page below
+  if (tex->procedural != nullptr) {
+    FreeProceduralForTexture(n);
+  }
+
   // copy our values
-  memcpy(tex, &texpage->tex_struct, sizeof(texture));
+  CopyTextureValues(tex, &texpage->tex_struct);
 
 // Check to see if this image differs from the one on the net
 // If so, make a local copy
@@ -1025,9 +1030,6 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
 
   // Set procedural if there is one
   if (tex->flags & TF_PROCEDURAL) {
-    if (tex->procedural != nullptr)
-      FreeProceduralForTexture(n);
-
     if (texpage->num_proc_elements == 0) {
       tex->flags &= ~TF_PROCEDURAL;
 
@@ -1067,7 +1069,7 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
 void mng_AssignTextureToTexPage(int n, mngs_texture_page *texpage) {
   texture *tex = &GameTextures[n];
 
-  memcpy(&texpage->tex_struct, tex, sizeof(texture));
+  CopyTextureValues(&texpage->tex_struct, tex);
 
   if (tex->bm_handle != -1) {
     if (tex->flags & TF_ANIMATED)
