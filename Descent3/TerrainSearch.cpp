@@ -636,8 +636,8 @@ int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount) {
         int cell = (lz << level) + lx;
         ASSERT(level <= 6);
 
-        ymin_int[i] = *(Terrain_min_height_int[level] + cell);
-        ymax_int[i] = *(Terrain_max_height_int[level] + cell);
+        ymin_int[i] = Terrain_min_height_int[level][cell];
+        ymax_int[i] = Terrain_max_height_int[level][cell];
         first = 0;
       }
 

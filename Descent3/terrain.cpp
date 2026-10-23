@@ -64,22 +64,22 @@ int TerrainLightmaps[4];
 // A list of terrain to render
 terrain_render_info Terrain_list[MAX_CELLS_TO_RENDER];
 
-uint16_t *Terrain_rotate_list; // which points have been sub/rotated this frame
-g3Point *World_point_buffer; // Rotated points
+std::unique_ptr<uint16_t[]> Terrain_rotate_list; // which points have been sub/rotated this frame
+std::unique_ptr<g3Point[]> World_point_buffer;   // Rotated points
 
 // The min/max values for a particular region of terrain
-uint8_t *Terrain_min_height_int[7];
-uint8_t *Terrain_max_height_int[7];
+std::unique_ptr<uint8_t[]> Terrain_min_height_int[7];
+std::unique_ptr<uint8_t[]> Terrain_max_height_int[7];
 // Texture values for a particular region
 
 // Terrain dynamic lighting table
 uint8_t Terrain_dynamic_table[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
 // Terrain normals depending on LOD
-terrain_normals *TerrainNormals[MAX_TERRAIN_LOD];
+std::unique_ptr<terrain_normals[]> TerrainNormals[MAX_TERRAIN_LOD];
 
 // Max deltas per terrain lod block
-float *TerrainDeltaBlocks[MAX_TERRAIN_LOD];
+std::unique_ptr<float[]> TerrainDeltaBlocks[MAX_TERRAIN_LOD];
 
 // Tracks edges of LOD
 uint8_t TerrainJoinMap[TERRAIN_WIDTH * TERRAIN_DEPTH];
@@ -628,22 +628,22 @@ void GenerateTerrainLight() {
 void CloseTerrain(void) {
   int i;
 
-  for (i = MAX_TERRAIN_LOD - 1; i < MAX_TERRAIN_LOD; i++)
-    mem_free(TerrainNormals[i]);
+  for (i = MAX_TERRAIN_LOD - 1; i < MAX_TERRAIN_LOD; i++) {
+    TerrainNormals[i].reset();
+  }
 
   for (i = 0; i < 7; i++) {
-    if (Terrain_min_height_int[i])
-      mem_free(Terrain_min_height_int[i]);
-    if (Terrain_max_height_int[i])
-      mem_free(Terrain_max_height_int[i]);
+    Terrain_min_height_int[i].reset();
+    Terrain_max_height_int[i].reset();
   }
 
   if (!Dedicated_server) {
-    mem_free(Terrain_rotate_list);
-    mem_free(World_point_buffer);
+    Terrain_rotate_list.reset();
+    World_point_buffer.reset();
 
-    for (i = 0; i < MAX_TERRAIN_LOD - 1; i++)
-      mem_free(TerrainDeltaBlocks[i]);
+    for (i = 0; i < MAX_TERRAIN_LOD - 1; i++) {
+      TerrainDeltaBlocks[i].reset();
+    }
   }
 }
 
@@ -915,8 +915,8 @@ void ResetTerrain(int force) {
 
     for (i = 0; i < 7; i++) {
       int size = 1 << i;
-      memset(Terrain_min_height_int[i], 0, size * size);
-      memset(Terrain_max_height_int[i], 0, size * size);
+      memset(Terrain_min_height_int[i].get(), 0, size * size);
+      memset(Terrain_max_height_int[i].get(), 0, size * size);
     }
 
     if (!Dedicated_server) {
@@ -924,7 +924,7 @@ void ResetTerrain(int force) {
         int w = TERRAIN_WIDTH >> ((MAX_TERRAIN_LOD - 1) - i);
         int h = TERRAIN_DEPTH >> ((MAX_TERRAIN_LOD - 1) - i);
 
-        memset(TerrainDeltaBlocks[i], 0, w * h * sizeof(float));
+        memset(TerrainDeltaBlocks[i].get(), 0, w * h * sizeof(float));
       }
     }
   }
@@ -964,10 +964,10 @@ void InitTerrain(void) {
 
   // Setup stuff for rendering
   if (!Dedicated_server) {
-    Terrain_rotate_list = (uint16_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(uint16_t));
+    Terrain_rotate_list = std::make_unique<uint16_t[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
     ASSERT(Terrain_rotate_list);
 
-    World_point_buffer = mem_rmalloc<g3Point>(TERRAIN_WIDTH * TERRAIN_DEPTH);
+    World_point_buffer = std::make_unique<g3Point[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
     ASSERT(World_point_buffer);
 
     // Allocate space for lod delta tree and unique texture IDs
@@ -975,7 +975,7 @@ void InitTerrain(void) {
       w = TERRAIN_WIDTH >> ((MAX_TERRAIN_LOD - 1) - i);
       h = TERRAIN_DEPTH >> ((MAX_TERRAIN_LOD - 1) - i);
 
-      TerrainDeltaBlocks[i] = (float *)mem_malloc(w * h * sizeof(float));
+      TerrainDeltaBlocks[i] = std::make_unique<float[]>(w * h);
     }
   }
 
@@ -985,8 +985,7 @@ void InitTerrain(void) {
     w = TERRAIN_WIDTH >> ((MAX_TERRAIN_LOD - 1) - i);
     h = TERRAIN_DEPTH >> ((MAX_TERRAIN_LOD - 1) - i);
 
-    TerrainNormals[i] = mem_rmalloc<terrain_normals>(w * h);
-    memset(TerrainNormals[i], 0, w * h * sizeof(terrain_normals));
+    TerrainNormals[i] = std::make_unique<terrain_normals[]>(w * h);
   }
 
   // Allocate space for our min/max tables
@@ -995,8 +994,8 @@ void InitTerrain(void) {
     h = 1 << i;
 
     // Index 1 cuts the whole thing into 4ths, index 2 into 8ths, etc
-    Terrain_min_height_int[i] = (uint8_t *)mem_malloc(w * h * sizeof(uint8_t));
-    Terrain_max_height_int[i] = (uint8_t *)mem_malloc(w * h * sizeof(uint8_t));
+    Terrain_min_height_int[i] = std::make_unique<uint8_t[]>(w * h);
+    Terrain_max_height_int[i] = std::make_unique<uint8_t[]>(w * h);
 
     ASSERT(Terrain_min_height_int[i] != nullptr);
     ASSERT(Terrain_max_height_int[i] != nullptr);

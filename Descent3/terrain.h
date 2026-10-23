@@ -19,6 +19,8 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
+#include <memory>
+
 #include "vecmat.h"
 #include "pstypes.h"
 #include "3d.h"
@@ -179,7 +181,7 @@ struct terrain_normals {
 };
 
 extern uint8_t Terrain_dynamic_table[];
-extern terrain_normals *TerrainNormals[MAX_TERRAIN_LOD];
+extern std::unique_ptr<terrain_normals[]> TerrainNormals[MAX_TERRAIN_LOD];
 
 // Occlusion data for knowing what to draw
 extern uint8_t Terrain_occlusion_map[256][32];
@@ -229,9 +231,9 @@ extern int Terrain_LOD_engine_off;
 extern float Terrain_texture_distance; // how far we should texture before going to flat shad
 
 extern uint8_t TerrainJoinMap[];
-extern float *TerrainDeltaBlocks[];
-extern uint8_t *Terrain_max_height_int[];
-extern uint8_t *Terrain_min_height_int[];
+extern std::unique_ptr<float[]> TerrainDeltaBlocks[];
+extern std::unique_ptr<uint8_t[]> Terrain_max_height_int[];
+extern std::unique_ptr<uint8_t[]> Terrain_min_height_int[];
 extern uint8_t Fast_terrain;
 extern uint8_t Flat_terrain;
 extern uint8_t Show_invisible_terrain;
@@ -243,8 +245,8 @@ extern uint8_t TerrainSelected[];
 extern int Num_terrain_selected;
 #endif
 
-extern uint16_t *Terrain_rotate_list; // which points have been sub/rotated this frame
-extern g3Point *World_point_buffer; // Rotated points
+extern std::unique_ptr<uint16_t[]> Terrain_rotate_list; // which points have been sub/rotated this frame
+extern std::unique_ptr<g3Point[]> World_point_buffer;   // Rotated points
 
 #define TSEARCH_FOUND_TERRAIN 0
 #define TSEARCH_FOUND_MINE 1
