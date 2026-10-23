@@ -1961,10 +1961,7 @@ void ObjDelete(int objnum) {
 
   obj->name.reset();
 
-  if (obj->lighting_info) {
-    mem_free(obj->lighting_info);
-    obj->lighting_info = nullptr;
-  }
+  obj->lighting_info.reset();
 
   ObjFree(objnum);
 }

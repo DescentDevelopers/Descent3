@@ -1070,7 +1070,7 @@ void SGSObjects(CFILE *fp) {
     // Store whether or not we have a pointer to lighting_info
     gs_WriteByte(fp, op->lighting_info ? 1 : 0);
     if (op->lighting_info) {
-      cf_WriteBytes((uint8_t *)op->lighting_info, sizeof(*op->lighting_info), fp);
+      cf_WriteBytes((uint8_t *)op->lighting_info.get(), sizeof(*op->lighting_info), fp);
     }
 
     // these objects FOR NOW won't be saved
