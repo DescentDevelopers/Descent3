@@ -492,7 +492,7 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
 
 // TODO: MTS: only used in this file
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
-int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
+int menutga_alloc_file(const char *name, std::unique_ptr<char[]> &hsmap, int *w, int *h) {
   uint8_t image_id_len, color_map_type, image_type, pixsize, descriptor;
   uint8_t upside_down = 0;
   uint16_t width, height;
@@ -525,9 +525,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   *h = height = cf_ReadShort(infile);
   pixsize = cf_ReadByte(infile);
 
-  hsmap[0] = (char *)mem_malloc(width * height);
-
-  ASSERT(hsmap);
+  hsmap = std::make_unique<char[]>(width * height);
 
   if (pixsize != 32) {
     LOG_DEBUG.printf("menutga: This file has a pixsize of field of %d, it should be 32. ", pixsize);
@@ -564,10 +562,10 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
 
       if (upside_down) {
         GameBitmaps[n].data16[((height - 1) - i) * width + t] = newpix;
-        hsmap[0][((height - 1) - i) * width + t] = alphavalue;
+        hsmap[((height - 1) - i) * width + t] = alphavalue;
       } else {
         GameBitmaps[n].data16[i * width + t] = newpix;
-        hsmap[0][i * width + t] = alphavalue;
+        hsmap[i * width + t] = alphavalue;
       }
     }
   }
@@ -819,7 +817,6 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
 
   // strip file name
   int index, width = 0, height = 0;
-  char *menu_filename;
   hotspotmap_t hsmap;
   windowmap_t wndmap;
 
@@ -836,27 +833,25 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
   }
 
   int size = strlen(filename) + 5;
-  menu_filename = mem_rmalloc<char>(size);
-  strcpy(menu_filename, filename);
-  strcat(menu_filename, ".HSM"); // Hot Spot Map
-  LOG_DEBUG.printf("HSM=%s", menu_filename);
+  auto menu_filename = std::make_unique<char[]>(size);
+  strcpy(menu_filename.get(), filename);
+  strcat(menu_filename.get(), ".HSM"); // Hot Spot Map
+  LOG_DEBUG.printf("HSM=%s", menu_filename.get());
 
-  std::filesystem::path save_path = LocalManageGraphicsDir / menu_filename;
+  std::filesystem::path save_path = LocalManageGraphicsDir / menu_filename.get();
 
   // now load up the tga and alloc it, then save it with the alpha hotspots
   int bm_handle;
-  char *map[1];
+  std::unique_ptr<char[]> map;
   bm_handle = menutga_alloc_file(fpath, map, &width, &height);
   if (bm_handle == -1)
     return false;
-  wndmap.num_of_windows = CreateHotSpotMap(map[0], width, height, &hsmap);
+  wndmap.num_of_windows = CreateHotSpotMap(map.get(), width, height, &hsmap);
   if (wndmap.num_of_windows == -1)
     return false; // DAJ -1FIX
-  CreateWindowMap(map[0], width, height, &wndmap);
+  CreateWindowMap(map.get(), width, height, &wndmap);
   menutga_SaveHotSpotMap(save_path, &hsmap, &wndmap);
   ExportHotSpot("C:\\hotspot.txt", &hsmap);
-  mem_free(menu_filename);
-  mem_free(map[0]);
   FreeHotSpotMapInternals(&hsmap);
   wndmap.wm.reset();
   return true;
