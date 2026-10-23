@@ -192,6 +192,7 @@
 #include <DbgHelp.h>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "debug.h"
 #include "mem.h"
@@ -220,14 +221,12 @@ int Debug_ErrorBox(int type, const char *title, const char *topstring, const cha
   else
     DEBUG_BREAK();
 
-  char *tmpbuf = mem_rmalloc<char>(strlen(topstring) + strlen(bottomstring) + 5);
-  wsprintf(tmpbuf, "%s\r\n\r\n%s", topstring, bottomstring);
+  auto tmpbuf = std::make_unique<char[]>(strlen(topstring) + strlen(bottomstring) + 5);
+  wsprintf(tmpbuf.get(), "%s\r\n\r\n%s", topstring, bottomstring);
 
   ShowCursor(TRUE);
-  int answer = MessageBox(nullptr, tmpbuf, title, flags | MB_TASKMODAL | MB_SETFOREGROUND);
+  int answer = MessageBox(nullptr, tmpbuf.get(), title, flags | MB_TASKMODAL | MB_SETFOREGROUND);
   ShowCursor(FALSE);
-
-  mem_free(tmpbuf);
 
   return answer;
 }
