@@ -144,13 +144,8 @@ int ZIP::ReadECD() {
 
     if (FindECDSignature(buf.get(), buf_length, &offset)) {
       m_ecd_length = buf_length - offset;
-      m_ecd = (char *)malloc(m_ecd_length);
-
-      if (!m_ecd) {
-        return -1;
-      }
-
-      memcpy(m_ecd, buf.get() + offset, m_ecd_length);
+      m_ecd = std::make_unique<char[]>(m_ecd_length);
+      memcpy(m_ecd.get(), buf.get() + offset, m_ecd_length);
       return 0;
     }
 
@@ -198,41 +193,36 @@ bool ZIP::OpenZip(const char *zipfile) {
     return false;
   }
 
-  m_end_of_cent_dir_sig = get_buffer_int(m_ecd + ECD_ESIG);
-  m_number_of_this_disk = get_buffer_short(m_ecd + ECD_EDSK);
-  m_number_of_disk_start_cent_dir = get_buffer_short(m_ecd + ECD_ECEN);
-  m_total_entries_cent_dir_this_disk = get_buffer_short(m_ecd + ECD_ENUM);
-  m_total_entries_cent_dir = get_buffer_short(m_ecd + ECD_ECENN);
-  m_size_of_cent_dir = get_buffer_int(m_ecd + ECD_ECSZ);
-  m_offset_to_start_of_cent_dir = get_buffer_int(m_ecd + ECD_EOFST);
-  m_zipfile_comment_length = get_buffer_short(m_ecd + ECD_ECOML);
-  m_zipfile_comment = m_ecd + ECD_ECOM;
+  m_end_of_cent_dir_sig = get_buffer_int(m_ecd.get() + ECD_ESIG);
+  m_number_of_this_disk = get_buffer_short(m_ecd.get() + ECD_EDSK);
+  m_number_of_disk_start_cent_dir = get_buffer_short(m_ecd.get() + ECD_ECEN);
+  m_total_entries_cent_dir_this_disk = get_buffer_short(m_ecd.get() + ECD_ENUM);
+  m_total_entries_cent_dir = get_buffer_short(m_ecd.get() + ECD_ECENN);
+  m_size_of_cent_dir = get_buffer_int(m_ecd.get() + ECD_ECSZ);
+  m_offset_to_start_of_cent_dir = get_buffer_int(m_ecd.get() + ECD_EOFST);
+  m_zipfile_comment_length = get_buffer_short(m_ecd.get() + ECD_ECOML);
+  m_zipfile_comment = m_ecd.get() + ECD_ECOM;
 
   // make sure there is no disk spanning
   if ((m_number_of_this_disk != m_number_of_disk_start_cent_dir) ||
       (m_total_entries_cent_dir_this_disk != m_total_entries_cent_dir) || (m_total_entries_cent_dir < 1)) {
-    free(m_ecd);
+    m_ecd.reset();
     fclose(m_fp);
     return false;
   }
 
   if (fseek(m_fp, m_offset_to_start_of_cent_dir, SEEK_SET) != 0) {
-    free(m_ecd);
+    m_ecd.reset();
     fclose(m_fp);
     return false;
   }
 
   // begin reading for the begining of central directory
-  m_cd = (char *)malloc(m_size_of_cent_dir);
-  if (!m_cd) {
-    free(m_ecd);
-    fclose(m_fp);
-    return false;
-  }
+  m_cd = std::make_unique<char[]>(m_size_of_cent_dir);
 
-  if (fread(m_cd, m_size_of_cent_dir, 1, m_fp) != 1) {
-    free(m_cd);
-    free(m_ecd);
+  if (fread(m_cd.get(), m_size_of_cent_dir, 1, m_fp) != 1) {
+    m_cd.reset();
+    m_ecd.reset();
     fclose(m_fp);
     return false;
   }
@@ -243,14 +233,8 @@ bool ZIP::OpenZip(const char *zipfile) {
   // rewind to the begining of central dir
   m_cd_pos = 0;
 
-  m_zip = (char *)malloc(strlen(zipfile) + 1);
-  if (!m_zip) {
-    free(m_cd);
-    free(m_ecd);
-    fclose(m_fp);
-    return false;
-  }
-  strcpy(m_zip, zipfile);
+  m_zip = std::make_unique<char[]>(strlen(zipfile) + 1);
+  strcpy(m_zip.get(), zipfile);
   m_open = true;
 
   return true;
@@ -264,14 +248,12 @@ void ZIP::CloseZip() {
   /* release all */
   if (m_ent.name)
     free(m_ent.name);
-  if (m_cd)
-    free(m_cd);
-  if (m_ecd)
-    free(m_ecd);
-  if (m_fp)
+  m_cd.reset();
+  m_ecd.reset();
+  if (m_fp) {
     fclose(m_fp);
-  if (m_zip)
-    free(m_zip);
+  }
+  m_zip.reset();
   m_open = false;
 }
 
@@ -285,25 +267,25 @@ zipentry *ZIP::ReadNextZipEntry() {
   if (m_cd_pos >= m_size_of_cent_dir)
     return nullptr;
 
-  m_ent.cent_file_header_sig = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CENSIG);
-  m_ent.version_made_by = *(m_cd + m_cd_pos + ZIPCD_CVER);
-  m_ent.host_os = *(m_cd + m_cd_pos + ZIPCD_COS);
-  m_ent.version_needed_to_extract = *(m_cd + m_cd_pos + ZIPCD_CVXT);
-  m_ent.os_needed_to_extract = *(m_cd + m_cd_pos + ZIPCD_CEXOS);
-  m_ent.general_purpose_bit_flag = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CFLG);
-  m_ent.compression_method = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CMTHD);
-  m_ent.last_mod_file_time = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CTIME);
-  m_ent.last_mod_file_date = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CDATE);
-  m_ent.crc32 = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CCRC);
-  m_ent.compressed_size = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CSIZ);
-  m_ent.uncompressed_size = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CUNC);
-  m_ent.filename_length = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CFNL);
-  m_ent.extra_field_length = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CXTL);
-  m_ent.file_comment_length = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CCML);
-  m_ent.disk_number_start = get_buffer_short(m_cd + m_cd_pos + ZIPCD_DSK);
-  m_ent.internal_file_attrib = get_buffer_short(m_cd + m_cd_pos + ZIPCD_INT);
-  m_ent.external_file_attrib = get_buffer_int(m_cd + m_cd_pos + ZIPCD_EXT);
-  m_ent.offset_lcl_hdr_frm_frst_disk = get_buffer_int(m_cd + m_cd_pos + ZIPCD_OFST);
+  m_ent.cent_file_header_sig = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_CENSIG);
+  m_ent.version_made_by = *(m_cd.get() + m_cd_pos + ZIPCD_CVER);
+  m_ent.host_os = *(m_cd.get() + m_cd_pos + ZIPCD_COS);
+  m_ent.version_needed_to_extract = *(m_cd.get() + m_cd_pos + ZIPCD_CVXT);
+  m_ent.os_needed_to_extract = *(m_cd.get() + m_cd_pos + ZIPCD_CEXOS);
+  m_ent.general_purpose_bit_flag = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CFLG);
+  m_ent.compression_method = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CMTHD);
+  m_ent.last_mod_file_time = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CTIME);
+  m_ent.last_mod_file_date = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CDATE);
+  m_ent.crc32 = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_CCRC);
+  m_ent.compressed_size = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_CSIZ);
+  m_ent.uncompressed_size = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_CUNC);
+  m_ent.filename_length = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CFNL);
+  m_ent.extra_field_length = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CXTL);
+  m_ent.file_comment_length = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CCML);
+  m_ent.disk_number_start = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_DSK);
+  m_ent.internal_file_attrib = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_INT);
+  m_ent.external_file_attrib = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_EXT);
+  m_ent.offset_lcl_hdr_frm_frst_disk = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_OFST);
 
   // Make sure the filename isn't too long
   if (m_cd_pos + ZIPCD_CFN + m_ent.filename_length > m_size_of_cent_dir) {
@@ -315,7 +297,7 @@ zipentry *ZIP::ReadNextZipEntry() {
   m_ent.name = (char *)malloc(m_ent.filename_length + 1);
   if (!m_ent.name)
     return nullptr;
-  memcpy(m_ent.name, m_cd + m_cd_pos + ZIPCD_CFN, m_ent.filename_length);
+  memcpy(m_ent.name, m_cd.get() + m_cd_pos + ZIPCD_CFN, m_ent.filename_length);
   m_ent.name[m_ent.filename_length] = '\0';
 
   // skip to next entry in central dir
