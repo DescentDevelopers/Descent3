@@ -56,10 +56,9 @@ CBriefEdit::CBriefEdit(CWnd *pParent /*=NULL*/) : CDialog(CBriefEdit::IDD, pPare
   m_fStatic = 0.0f;
   m_sTitle = _T("");
   //}}AFX_DATA_INIT
-  layouts = nullptr;
   num_layouts = 0;
   ParseLayoutScreenFile("BriefingLayouts.txt");
-  PBlayouts = layouts;
+  PBlayouts = layouts.get();
   PBnum_layouts = &num_layouts;
   layout_bmp = -1;
   TCx = TCy = 0;
@@ -1227,8 +1226,7 @@ void CBriefEdit::OnOK() {
 
   has_changed = false;
 
-  if (layouts)
-    mem_free(layouts);
+  layouts.reset();
   if (layout_bmp > BAD_BITMAP_HANDLE)
     bm_FreeBitmap(layout_bmp);
   CDialog::OnOK();
@@ -1873,10 +1871,7 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename) {
     return;
 
   num_layouts = 0;
-  if (layouts) {
-    mem_free(layouts);
-    layouts = nullptr;
-  }
+  layouts.reset();
 
   char buffer[512];
 
@@ -1889,15 +1884,7 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename) {
     return;
   }
 
-  layouts = mem_rmalloc<tLayoutScreen>(num_layouts);
-  if (!layouts) {
-    mprintf(0, "Out of memory loading layout screens...trying to load %d screens\n", num_layouts);
-    num_layouts = 0;
-    cfclose(file);
-    return;
-  }
-
-  memset(layouts, 0, sizeof(tLayoutScreen) * num_layouts);
+  layouts = std::make_unique<tLayoutScreen[]>(num_layouts);
 
   // format of a layout def.
   //--filename

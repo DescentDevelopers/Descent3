@@ -144,7 +144,7 @@ class CBriefEdit : public CDialog {
   // Construction
 public:
   BriefGlobalValues m_GlobalValues;
-  tLayoutScreen *layouts;
+  std::unique_ptr<tLayoutScreen[]> layouts;
   int num_layouts;
   CBriefEdit(CWnd *pParent = nullptr); // standard constructor
   void ParseLayoutScreenFile(char *filename);
