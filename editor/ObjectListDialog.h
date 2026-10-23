@@ -25,6 +25,8 @@
 // ObjectListDialog.h : header file
 //
 
+#include <memory>
+
 /////////////////////////////////////////////////////////////////////////////
 // CObjectListDialog dialog
 
@@ -83,7 +85,7 @@ private:
     int handle;
   };
 
-  tObjNode *m_Leafs[MAX_OBJ_LEAFS];
+  std::unique_ptr<tObjNode[]> m_Leafs[MAX_OBJ_LEAFS];
 
   HTREEITEM hClipboardTree;
   HTREEITEM hRobotTree;
