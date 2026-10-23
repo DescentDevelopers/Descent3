@@ -44,7 +44,7 @@ float rad_Convergence = 1.0f;
 int rad_NumSurfaces;
 int rad_NumElements;
 
-float *rad_FormFactors;
+std::unique_ptr<float[]> rad_FormFactors;
 
 int rad_StepCount = 0;
 int rad_MaxStep = 1;
@@ -125,8 +125,7 @@ void InitRadiosityRun() {
 void SetupFormFactors() {
   ASSERT(rad_NumElements > 0);
 
-  rad_FormFactors = mem_rmalloc<float>(rad_NumElements);
-  ASSERT(rad_FormFactors != nullptr);
+  rad_FormFactors = std::make_unique<float[]>(rad_NumElements);
 }
 
 void CalculateAreaForSurface(rad_surface *sp) {
@@ -396,7 +395,7 @@ void CloseRadiosityRun() {
 
   NormalizeExitance();
   if (Shoot_method == SM_HEMICUBE) {
-    mem_free(rad_FormFactors);
+    rad_FormFactors.reset();
     CloseHemicube();
   }
 }
