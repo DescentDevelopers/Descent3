@@ -237,7 +237,7 @@ class AudioStream {
   OSFArchive m_archive;                   // audio stream archive object.
   std::unique_ptr<AudioDecoder::IAudioDecoder> m_decoder; // audio codec object
   struct { // mixing buffers
-    uint8_t *data;
+    std::unique_ptr<uint8_t[]> data;
     int nbytes; // number of bytes of valid data.
     int flags;
     int id;
