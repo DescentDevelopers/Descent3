@@ -164,7 +164,7 @@ extern rad_surface *rad_MaxSurface;
 extern int rad_NumSurfaces;
 extern int rad_NumElements;
 
-extern float *rad_FormFactors;
+extern std::unique_ptr<float[]> rad_FormFactors;
 extern rad_surface *rad_Surfaces;
 extern std::unique_ptr<volume_element[]> Volume_elements[];
 

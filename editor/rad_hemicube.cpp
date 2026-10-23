@@ -174,7 +174,7 @@ void CalculateFormFactorsHemiCube() {
         }
       }
 
-      SumDeltas(rad_FormFactors, i);
+      SumDeltas(rad_FormFactors.get(), i);
       EndHemicubeDrawing(i);
     }
   }
