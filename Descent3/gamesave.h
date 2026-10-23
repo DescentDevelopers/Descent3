@@ -303,7 +303,7 @@ int LGSVisEffects(CFILE *fp);
 int LGSSpew(CFILE *fp);
 
 //	loads ai
-int LGSObjAI(CFILE *fp, ai_frame **pai);
+int LGSObjAI(CFILE *fp, std::unique_ptr<ai_frame> &pai);
 
 // saves ai goals
 int LGSObjAIGoal(CFILE *fp, goal *g);
