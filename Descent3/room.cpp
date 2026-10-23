@@ -496,8 +496,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->fog_g = 1.0;
   rp->fog_b = 1.0;
 
-  rp->faces = mem_rmalloc<face>(nfaces);
-  ASSERT(rp->faces != nullptr);
+  rp->faces = std::make_unique<face[]>(nfaces);
 
   rp->num_bbf_regions = 0;
 
@@ -600,7 +599,7 @@ void FreeRoom(room *rp) {
     FreeRoomFace(&rp->faces[i]);
 
   // Free up mem alloced for this room
-  mem_free(rp->faces);
+  rp->faces.reset();
   mem_free(rp->portals);
   mem_free(rp->verts);
 

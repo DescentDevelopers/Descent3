@@ -1469,7 +1469,7 @@ void RenderSpecularFacesFlat(room *rp) {
       }
     }
     if (GameTextures[fp->tmap].flags & TF_SMOOTH_SPECULAR) {
-      smooth_faces[num_smooth_faces] = fp - rp->faces;
+      smooth_faces[num_smooth_faces] = fp - rp->faces.get();
       num_smooth_faces++;
     } else {
       if (fp->flags & FF_TRIANGULATED)
@@ -1534,7 +1534,7 @@ void UpdateSpecularFace(room *rp, face *fp) {
   int n = Num_specular_faces_to_render;
   if (n >= MAX_SPECULAR_FACES)
     return;
-  Specular_faces[n] = fp - rp->faces;
+  Specular_faces[n] = fp - rp->faces.get();
   Num_specular_faces_to_render++;
   if (!(fp->flags & FF_SPEC_INVISIBLE))
     Num_real_specular_faces_to_render++;
@@ -1550,7 +1550,7 @@ bool Fog_disabled = 0;
 void UpdateFogFace(room *rp, face *fp) {
   if (Fog_disabled || !Detail_settings.Fog_enabled)
     return;
-  Fog_faces[Num_fog_faces_to_render++] = fp - rp->faces;
+  Fog_faces[Num_fog_faces_to_render++] = fp - rp->faces.get();
 }
 
 // Render a fog layer on top of a face
