@@ -3927,14 +3927,10 @@ void newuiEditBox::OnKeyDown(int key) {
 
 // the new classic hotspot CLASS
 
-newuiHotspot::newuiHotspot() { m_title = nullptr; }
+newuiHotspot::newuiHotspot() {}
 
 void newuiHotspot::Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags) {
-  if (title) {
-    m_title = mem_strdup(title);
-  } else {
-    m_title = nullptr;
-  }
+  m_title = mem_strdup_unique(title);
 
   m_alpha = 0;
   m_alpha_adjust = 0;
@@ -3948,7 +3944,7 @@ void newuiHotspot::OnDraw() {
   char *strptr;
   int y = 2, x = 2;
 
-  textaux_WordWrap(m_title, buf, m_W - 22, MONITOR9_NEWUI_FONT);
+  textaux_WordWrap(m_title.get(), buf, m_W - 22, MONITOR9_NEWUI_FONT);
 
   strptr = strtok(buf, "\n");
   while (strptr) {
@@ -3981,10 +3977,7 @@ void newuiHotspot::OnDraw() {
 }
 
 void newuiHotspot::OnDestroy() {
-  if (m_title) {
-    mem_free(m_title);
-    m_title = nullptr;
-  }
+  m_title.reset();
 
   UIGadget::OnDestroy();
 }

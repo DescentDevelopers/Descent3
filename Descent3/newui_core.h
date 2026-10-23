@@ -531,7 +531,7 @@ private:
 
 class newuiHotspot final : public UIGadget {
 private:
-  char *m_title;
+  std::unique_ptr<char[]> m_title;
   int16_t m_alpha, m_alpha_adjust;
   float m_mse_timer;
 
@@ -539,7 +539,7 @@ public:
   newuiHotspot();
 
   void Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags = 0);
-  const char *GetTitle() const { return m_title; };
+  const char *GetTitle() const { return m_title.get(); };
 
 protected:
   virtual void OnDraw(); // this will use the newuiButton drawing scheme
