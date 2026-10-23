@@ -53,6 +53,7 @@
 #include "dmfcinternal.h"
 #include "encryption.h"
 
+#include <memory>
 #include <stdlib.h>
 #include <memory.h>
 
@@ -416,14 +417,14 @@ void Remote_SendMessage(int client, const char *message) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
-  char *allocated = nullptr;
+  std::unique_ptr<char[]> allocated;
   int len = strlen(message);
   const int maxlen = ((MAX_GAME_DATA_SIZE - 5) < 511) ? (MAX_GAME_DATA_SIZE - 5) : 511;
   if (len > maxlen) {
-    allocated = new char[maxlen + 1];
-    memcpy(allocated, message, maxlen);
+    allocated = std::make_unique<char[]>(maxlen + 1);
+    memcpy(allocated.get(), message, maxlen);
     allocated[maxlen] = '\0';
-    message = allocated;
+    message = allocated.get();
     len = maxlen;
   }
 
@@ -434,7 +435,6 @@ void Remote_SendMessage(int client, const char *message) {
   MultiAddString(message, data, &count);
 
   basethis->SendPacket(data, count, client);
-  delete[] allocated;
 }
 
 // Receives a message from the server
