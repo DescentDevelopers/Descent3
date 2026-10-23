@@ -22,6 +22,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <memory>
 
 #if defined(POSIX)
 #include <sys/time.h>
@@ -68,8 +69,8 @@ int Getting_user_channel_error = 0;
 int Getting_user_tracker_error = 0;
 char User_req_tracker_id[100] = ""; // These are oversized for saftey
 char User_req_channel[100] = "";
-char *User_list = nullptr;
-char *Chan_list = nullptr;
+std::unique_ptr<char[]> User_list;
+std::unique_ptr<char[]> Chan_list;
 int Socket_connected = 0;
 int Chat_server_connected = 0;
 int Joining_channel = 0;
@@ -96,8 +97,8 @@ void ChatInit() {
   Getting_user_tracker_error = 0;
   User_req_tracker_id[0] = '\0';
   User_req_channel[0] = '\0';
-  User_list = nullptr;
-  Chan_list = nullptr;
+  User_list.reset();
+  Chan_list.reset();
   Socket_connected = 0;
   Chat_server_connected = 0;
   Joining_channel = 0;
@@ -278,14 +279,8 @@ void DisconnectFromChatServer() {
   Socket_connecting = 0;
   Socket_connected = 0;
   Input_chat_buffer[0] = '\0';
-  if (User_list) {
-    DLLmem_free(User_list);
-    User_list = nullptr;
-  }
-  if (Chan_list) {
-    DLLmem_free(Chan_list);
-    Chan_list = nullptr;
-  }
+  User_list.reset();
+  Chan_list.reset();
 
   Chat_server_connected = 0;
   Joining_channel = 0;
@@ -378,10 +373,7 @@ Chat_command *GetChatCommand() {
 char *GetChatUserList() {
   int iuser_list_length = 0;
   ;
-  if (User_list) {
-    DLLmem_free(User_list);
-    User_list = nullptr;
-  }
+  User_list.reset();
   if (!Socket_connected)
     return nullptr;
 
@@ -391,15 +383,14 @@ char *GetChatUserList() {
     Curruser = Curruser->next;
   }
   Curruser = Firstuser;
-  User_list = (char *)DLLmem_malloc(iuser_list_length + 1);
-  User_list[0] = '\0';
+  User_list = std::make_unique<char[]>(iuser_list_length + 1);
   while (Curruser) {
-    strcat(User_list, Curruser->nick_name);
-    strcat(User_list, " ");
+    strcat(User_list.get(), Curruser->nick_name);
+    strcat(User_list.get(), " ");
     Curruser = Curruser->next;
   }
 
-  return User_list;
+  return User_list.get();
 }
 
 // Call this to set/join a channel. Since we can't be sure that we will be
@@ -1074,10 +1065,7 @@ char *GetChannelList() {
   if (!Socket_connected)
     return nullptr;
 
-  if (Chan_list) {
-    DLLmem_free(Chan_list);
-    Chan_list = nullptr;
-  }
+  Chan_list.reset();
 
   Currchannel = Firstchannel;
   while (Currchannel) {
@@ -1086,21 +1074,20 @@ char *GetChannelList() {
     Currchannel = Currchannel->next;
   }
   Currchannel = Firstchannel;
-  Chan_list = (char *)DLLmem_malloc(ichan_list_length + 1);
-  Chan_list[0] = '\0';
+  Chan_list = std::make_unique<char[]>(ichan_list_length + 1);
   while (Currchannel) {
-    strcat(Chan_list, "$");
-    strcat(Chan_list, Currchannel->channel_name);
-    strcat(Chan_list, " ");
+    strcat(Chan_list.get(), "$");
+    strcat(Chan_list.get(), Currchannel->channel_name);
+    strcat(Chan_list.get(), " ");
     snprintf(sznumusers, sizeof(sznumusers), "%d ", Currchannel->users);
-    strcat(Chan_list, sznumusers);
-    strcat(Chan_list, Currchannel->topic); // fgets
-    strcat(Chan_list, " ");
+    strcat(Chan_list.get(), sznumusers);
+    strcat(Chan_list.get(), Currchannel->topic); // fgets
+    strcat(Chan_list.get(), " ");
     Currchannel = Currchannel->next;
   }
   FlushChannelList();
   GettingChannelList = 0;
-  return Chan_list;
+  return Chan_list.get();
 }
 
 void AddChannel(char *channel, uint16_t numusers, char *topic) {
