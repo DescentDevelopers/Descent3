@@ -70,6 +70,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "mem.h"
 #include "iff.h"
@@ -108,7 +109,7 @@ struct iff_bitmap_header {
   uint8_t masking, compression;  // see constants above
   uint8_t xaspect, yaspect;      // aspect ratio (usually 5/6)
   pal_entry palette[256];      // the palette for this bitmap
-  uint8_t *raw_data;             // ptr to array of data
+  std::unique_ptr<uint8_t[]> raw_data; // ptr to array of data
   int16_t row_size;              // offset to next row
 };
 
@@ -208,7 +209,7 @@ int bm_iff_parse_bmhd(CFILE *ifile, uint32_t len, iff_bitmap_header *bmheader) {
 
 //  the buffer pointed to by raw_data is stuffed with a pointer to decompressed pixel data
 int bm_iff_parse_body(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
-  uint8_t *p = bmheader->raw_data;
+  uint8_t *p = bmheader->raw_data.get();
   int width = 0, depth = 0, done = 0;
 
   if (bmheader->type == TYPE_PBM) {
@@ -300,7 +301,7 @@ void bm_iff_skip_chunk(CFILE *ifile, uint32_t len) {
 
 // modify passed bitmap
 int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
-  uint8_t *p = bmheader->raw_data;
+  uint8_t *p = bmheader->raw_data.get();
   int y;
   int32_t chunk_end = cftell(ifile) + len;
 
@@ -394,7 +395,7 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
         return ret;
       else {
 
-        bmheader->raw_data = (uint8_t *)mem_malloc(bmheader->w * bmheader->h);
+        bmheader->raw_data = std::make_unique<uint8_t[]>(bmheader->w * bmheader->h);
         if (!bmheader->raw_data)
           return IFF_NO_MEM;
       }
@@ -410,12 +411,12 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
       bmheader->w = prev_bm->w;
       bmheader->h = prev_bm->h;
       bmheader->type = prev_bm->type;
-      bmheader->raw_data = (uint8_t *)mem_malloc(bmheader->w * bmheader->h);
+      bmheader->raw_data = std::make_unique<uint8_t[]>(bmheader->w * bmheader->h);
 
       if (!bmheader->raw_data)
         return IFF_NO_MEM;
 
-      memcpy(bmheader->raw_data, prev_bm->raw_data, bmheader->w * bmheader->h);
+      memcpy(bmheader->raw_data.get(), prev_bm->raw_data.get(), bmheader->w * bmheader->h);
 
       if (len & 1)
         len++;
@@ -533,13 +534,11 @@ int bm_iff_alloc_file(CFILE *ifile) {
   // Alloc our bitmap
   src_bm = bm_AllocBitmap(bmheader.w, bmheader.h, 0);
   if (src_bm < 0) {
-    mem_free(bmheader.raw_data);
     return -1;
   }
 
   // Convert our 8 bit bitmap to 16bit
   bm_iff_convert_8_to_16(src_bm, &bmheader);
-  free(bmheader.raw_data);
 
   return src_bm;
 }
@@ -553,9 +552,6 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
   int32_t form_type;
   int num_bitmaps = 0;
   int ret, i;
-
-  for (int t = 0; t < 40; t++)
-    bm_headers[t].raw_data = nullptr;
 
   ifile = cfopen(ifilename, "rb");
   if (!ifile)
@@ -603,9 +599,6 @@ done:
     bm_iff_convert_8_to_16(src_bm, temp_bm_head);
     bm_list[i] = src_bm;
   }
-
-  for (i = 0; i < num_bitmaps; i++)
-    mem_free(bm_headers[i].raw_data);
 
   return num_bitmaps;
 }
