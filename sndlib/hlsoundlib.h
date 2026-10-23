@@ -207,6 +207,8 @@
 #ifndef __HLSOUNDLIB_H__
 #define __HLSOUNDLIB_H__
 
+#include <memory>
+
 #include "ssl_lib.h"
 #include "object.h"
 
@@ -272,7 +274,7 @@ private:
 
 public:
   // Include a lowel-level sound system
-  class llsSystem *m_ll_sound_ptr;
+  std::unique_ptr<llsSystem> m_ll_sound_ptr;
 
   hlsSystem(); // {m_f_hls_system_init = 0; m_sounds_played=0; m_master_volume = 1.0; m_pause_new = false;}
   ~hlsSystem() { KillSoundLib(true); }

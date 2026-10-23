@@ -491,7 +491,6 @@ EnvAudio_Presets[N_ENVAUDIO_PRESETS] = {
 //////////////////////////////////////////////////////////////////////////////
 hlsSystem::hlsSystem() {
   m_f_hls_system_init = 0;
-  m_ll_sound_ptr = nullptr;
   m_sounds_played = 0;
   m_master_volume = 1.0;
   m_pause_new = false;
@@ -518,7 +517,7 @@ int hlsSystem::InitSoundLib(oeApplication *sos, char mixer_type, char quality, b
   int status;
   // Turn off sound if desired
   if ((FindArg("-nosound")) || Dedicated_server) {
-    m_ll_sound_ptr = nullptr;
+    m_ll_sound_ptr.reset();
     return 0;
   }
   if (m_f_hls_system_init) {
@@ -526,8 +525,9 @@ int hlsSystem::InitSoundLib(oeApplication *sos, char mixer_type, char quality, b
   }
 
   // Create and initialize the low-level sound library
-  if (m_ll_sound_ptr == nullptr)
-    m_ll_sound_ptr = new lnxsound;
+  if (m_ll_sound_ptr == nullptr) {
+    m_ll_sound_ptr = std::make_unique<lnxsound>();
+  }
   ASSERT(m_ll_sound_ptr);
   if (m_ll_sound_ptr == nullptr)
     return 0;
@@ -546,7 +546,7 @@ int hlsSystem::InitSoundLib(oeApplication *sos, char mixer_type, char quality, b
     Sound_mixer = GetSoundMixer();
 
     // invoke high level stream system
-    AudioStream::InitSystem(this->m_ll_sound_ptr);
+    AudioStream::InitSystem(this->m_ll_sound_ptr.get());
     //	set current environment
     m_cur_environment = ENVAUD_PRESET_NONE;
   }
@@ -567,10 +567,7 @@ void hlsSystem::KillSoundLib(bool f_kill_sound_list) {
     m_ll_sound_ptr->DestroySoundLib();
     m_f_hls_system_init = 0;
   }
-  if (m_ll_sound_ptr) {
-    delete m_ll_sound_ptr;
-    m_ll_sound_ptr = nullptr;
-  }
+  m_ll_sound_ptr.reset();
   // This is independent of the actual sound_lib status.  It happened because sounds
   // use the manage system.
   // moved this from beginning of function because won't the data freed here screw up streaming/looping sounds?
