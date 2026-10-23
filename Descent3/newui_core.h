@@ -62,6 +62,8 @@
 #ifndef NEWUI_CORE_H
 #define NEWUI_CORE_H
 
+#include <memory>
+
 #include "ui.h"
 
 #define N_NEWUI_BMPS 32  // number of ui bitmaps.
@@ -299,7 +301,7 @@ private:
     int8_t type;   // enumerated ui gadget type
     bool changed; // parameters are different than defaults?
     int16_t id;     // id value
-    char *title;  // title of gadget
+    std::unique_ptr<char[]> title; // title of gadget
     union {
       int i;
       int16_t s[2];
@@ -319,17 +321,18 @@ private:
       newuiHotspot *hot;
     } obj;
     void *internal; // internal info.
-  } *m_gadgetlist;
+  };
+  std::unique_ptr<t_gadget_desc[]> m_gadgetlist;
 
   UIWindow *m_parent;
   int m_ngadgets, m_gadgetlimit;
   bool m_realized;
-  char *m_title;
+  std::unique_ptr<char[]> m_title;
 
   t_gadget_desc *AddGadget(int16_t id, int8_t type, const char *title);
 
 public:
-  const char *GetTitle() { return m_title; };
+  const char *GetTitle() { return m_title.get(); };
 };
 
 //	CLASS new button class.
