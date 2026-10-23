@@ -55,6 +55,39 @@ static char THIS_FILE[] = __FILE__;
 // Data for copy/paste object
 object_info Copy_object;
 
+// Gives dst its own copy of src's AI, weapon battery and animation blocks (dst drops any block src doesn't have)
+static void CopyObjectInfoBlocks(object_info *dst, const object_info *src) {
+  if (src->ai_info) {
+    if (!dst->ai_info) {
+      dst->ai_info = mem_rmalloc<t_ai_info>();
+    }
+    *dst->ai_info = *src->ai_info;
+  } else if (dst->ai_info) {
+    mem_free(dst->ai_info);
+    dst->ai_info = nullptr;
+  }
+
+  if (src->static_wb) {
+    if (!dst->static_wb) {
+      dst->static_wb = mem_rmalloc<otype_wb_info>(MAX_WBS_PER_OBJ);
+    }
+    memcpy(dst->static_wb, src->static_wb, sizeof(otype_wb_info) * MAX_WBS_PER_OBJ);
+  } else if (dst->static_wb) {
+    mem_free(dst->static_wb);
+    dst->static_wb = nullptr;
+  }
+
+  if (src->anim) {
+    if (!dst->anim) {
+      dst->anim = mem_rmalloc<anim_elem>(NUM_MOVEMENT_CLASSES);
+    }
+    memcpy(dst->anim, src->anim, sizeof(anim_elem) * NUM_MOVEMENT_CLASSES);
+  } else if (dst->anim) {
+    mem_free(dst->anim);
+    dst->anim = nullptr;
+  }
+}
+
 CWorldObjectsGenericDialog::CWorldObjectsGenericDialog(CWnd *pParent /*=NULL*/)
     : CDialog(CWorldObjectsGenericDialog::IDD, pParent) {
   //{{AFX_DATA_INIT(CWorldObjectsGenericDialog)
@@ -1255,7 +1288,8 @@ void CWorldObjectsGenericDialog::OnGenericCopy() {
       mem_free(Copy_object.description);
     }
 
-    Copy_object = Object_info[m_current];
+    CopyObjectInfoPlainFields(&Copy_object, &Object_info[m_current]);
+    CopyObjectInfoBlocks(&Copy_object, &Object_info[m_current]);
 
     Copy_object.description = nullptr;
 
@@ -1307,7 +1341,8 @@ void CWorldObjectsGenericDialog::OnGenericPaste() {
   }
 
   // Copy into new slot
-  Object_info[n] = Copy_object;
+  CopyObjectInfoPlainFields(&Object_info[n], &Copy_object);
+  CopyObjectInfoBlocks(&Object_info[n], &Copy_object);
 
   Object_info[n].description = Copy_object.description;
   Copy_object.description = nullptr;
