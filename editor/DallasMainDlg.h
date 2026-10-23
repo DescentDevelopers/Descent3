@@ -629,12 +629,12 @@ stores the sound array index position str_val:		stores the name of the sound for
 #define INVALID_ENUM -1
 
 struct tEnumValueEntry {
-  char *name; // the name of this enum value
-  int value;  // the value bound to this name
+  std::unique_ptr<char[]> name; // the name of this enum value
+  int value;                    // the value bound to this name
 };
 
 struct tEnumDBEntry {
-  char *name;                              // the name for this enumeration type
+  std::unique_ptr<char[]> name;            // the name for this enumeration type
   tEnumValueEntry values[MAX_ENUM_VALUES]; // the enumerated value storage
   int num_values;                          // the number of values stored
   bool is_user_type;                       // indicates if it's a user type
@@ -653,12 +653,12 @@ struct tEnumDBEntry {
 #define INVALID_FLAG -1
 
 struct tFlagValueEntry {
-  char *name; // the name of this flag value
-  int value;  // the value bound to this name
+  std::unique_ptr<char[]> name; // the name of this flag value
+  int value;                    // the value bound to this name
 };
 
 struct tFlagDBEntry {
-  char *name;                              // the name for this flag type
+  std::unique_ptr<char[]> name;            // the name for this flag type
   tFlagValueEntry values[MAX_FLAG_VALUES]; // the flag value storage
   int num_values;                          // the number of values stored
 };
