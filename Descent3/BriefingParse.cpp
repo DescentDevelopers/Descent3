@@ -64,6 +64,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "BriefingParse.h"
 #include "TelComEffects.h"
@@ -204,7 +205,7 @@ static const char *const OnScreenButtonClickTypes[] = {"HoldDown", "ClickDown", 
       goto done_parsing;                                                                                               \
   } while (0)
 
-static int ReadFullLine(char **data, CFILE *ifile) {
+static int ReadFullLine(std::unique_ptr<char[]> &data, CFILE *ifile) {
   int counter, readin;
   char buffer[512];
   bool done;
@@ -212,7 +213,7 @@ static int ReadFullLine(char **data, CFILE *ifile) {
   counter = 0;
   done = false;
   readin = 0;
-  *data = nullptr;
+  data.reset();
   char c;
 
   while (!done) {
@@ -231,13 +232,10 @@ static int ReadFullLine(char **data, CFILE *ifile) {
     // check if we have a full temp buffer
     if (readin == sizeof(buffer)) {
       // we have a full temp buffer
-      char *temp_buffer;
-      temp_buffer = (char *)mem_malloc(counter + sizeof(buffer)); // allocate another buffer full
-      if (*data) {
+      auto temp_buffer = std::make_unique<char[]>(counter + sizeof(buffer)); // allocate another buffer full
+      if (data) {
         // copy over existing data
-        memcpy(temp_buffer, *data, counter);
-        // free it
-        mem_free(*data);
+        memcpy(temp_buffer.get(), data.get(), counter);
       }
       // copy over new data
       memcpy(&temp_buffer[counter], buffer, sizeof(buffer));
@@ -246,26 +244,22 @@ static int ReadFullLine(char **data, CFILE *ifile) {
       counter += readin;
       readin = 0;
 
-      *data = temp_buffer;
+      data = std::move(temp_buffer);
     }
   }
 
   // append all the data thats in the tempbuffer into the final buffer
-  char *temp_buffer;
-  temp_buffer = (char *)mem_malloc(counter + readin + 1); // allocate what we need (plus for NULL term)
-  if (*data) {
+  auto temp_buffer = std::make_unique<char[]>(counter + readin + 1); // allocate what we need (plus for NULL term)
+  if (data) {
     // copy over existing data
-    memcpy(temp_buffer, *data, counter);
-    // free it
-    mem_free(*data);
+    memcpy(temp_buffer.get(), data.get(), counter);
   }
   // copy over new data
   memcpy(&temp_buffer[counter], buffer, readin);
 
   counter += (readin + 1);
-  *data = temp_buffer;
-
   temp_buffer[counter - 1] = '\0';
+  data = std::move(temp_buffer);
 
   return counter;
 }
@@ -279,7 +273,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
   char text_buf[8192], *text_ptr = nullptr;
   bool abort = 0;
   bool gottitle = false;
-  char *linebuf = nullptr;
+  std::unique_ptr<char[]> linebuf;
 
   int beffect = bfxNONE;
   int x = 0, y = 0;
@@ -314,20 +308,15 @@ int CBriefParse::ParseBriefing(const char *filename) {
   int bytes_read;
   const char *p;
 
-  linebuf = nullptr;
-
   while ((!cfeof(ifile) && !parse_error && !abort)) {
-    if (linebuf) {
-      mem_free(linebuf);
-      linebuf = nullptr;
-    }
+    linebuf.reset();
 
     if (LoopCallback) {
       abort = (*LoopCallback)();
     }
 
     // Read the line
-    bytes_read = ReadFullLine(&linebuf, ifile);
+    bytes_read = ReadFullLine(linebuf, ifile);
     linenum++;
 
     if (!linebuf) {
@@ -346,7 +335,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
       int keyword_id;
 
       // Get the keyword id
-      p = ParseKeyword(linebuf, &keyword_id);
+      p = ParseKeyword(linebuf.get(), &keyword_id);
 
       switch (keyword_id) {
       case K_TITLE: {
@@ -780,10 +769,10 @@ int CBriefParse::ParseBriefing(const char *filename) {
     } else if (reading_text && text_ptr) { // a line of text
       if (text_ptr != text_buf)
         *text_ptr++ = '\n';
-      if (text_ptr - text_buf + strlen(linebuf) > sizeof(text_buf))
+      if (text_ptr - text_buf + strlen(linebuf.get()) > sizeof(text_buf))
         ParseError("Text buffer overflow");
       else {
-        strcpy(text_ptr, linebuf);
+        strcpy(text_ptr, linebuf.get());
         text_ptr += strlen(text_ptr);
       }
     } else if ((linebuf[0] == ';') || (linebuf[0] == 0)) // Check for comment or blank line
@@ -808,12 +797,6 @@ done_parsing:;
 
   // Close the file
   cfclose(ifile);
-
-  if (linebuf) {
-    // make sure all memory is freed
-    mem_free(linebuf);
-    linebuf = nullptr;
-  }
 
   return PBERR_NOERR;
 }
