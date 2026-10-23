@@ -189,7 +189,7 @@ char *MatcenEffectStrings[NUM_MATCEN_EFFECTS] = {"Line lightning", "Line sinewav
 #endif
 
 int Num_matcens = 0;
-matcen *Matcen[MAX_MATCENS];
+std::unique_ptr<matcen> Matcen[MAX_MATCENS];
 bool Matcen_created = false;
 
 matcen::matcen() {
@@ -1892,7 +1892,7 @@ int FindMatcenIndex(const char *name) {
 
 int CreateMatcen(const char *name, bool *f_name_changed) {
   if (Num_matcens < MAX_MATCENS) {
-    Matcen[Num_matcens] = new matcen;
+    Matcen[Num_matcens] = std::make_unique<matcen>();
     Matcen[Num_matcens++]->SetName(name);
 
     *f_name_changed = false;
@@ -1909,7 +1909,7 @@ void InitMatcens() {
   Num_matcens = 0;
 
   for (i = 0; i < MAX_MATCENS; i++) {
-    Matcen[i] = nullptr;
+    Matcen[i].reset();
   }
 
   atexit(DestroyAllMatcens);
@@ -1924,9 +1924,7 @@ void __cdecl DestroyAllMatcens()
   int i;
 
   for (i = 0; i < Num_matcens; i++) {
-    if (Matcen[i]) {
-      delete Matcen[i];
-    }
+    Matcen[i].reset();
   }
 
   Num_matcens = 0;
@@ -1976,14 +1974,13 @@ void DestroyMatcen(int id, bool f_resort = false) {
 #endif
 
   if (MatcenValid(id)) {
-    delete Matcen[id];
-    Matcen[id] = nullptr;
+    Matcen[id].reset();
 
     Num_matcens--;
 
     if (f_resort) {
       while (id < Num_matcens) {
-        Matcen[id] = Matcen[id + 1];
+        Matcen[id] = std::move(Matcen[id + 1]);
         id++;
       }
     }
