@@ -1034,7 +1034,8 @@ Chat_command *GetChatCommandFromQueue() {
   if (!Firstcommand)
     return nullptr;
   Currcommand = Firstcommand;
-  memcpy(&response_cmd, Currcommand, sizeof(Chat_command));
+  response_cmd.command = Currcommand->command;
+  memcpy(response_cmd.data, Currcommand->data, sizeof(response_cmd.data));
   tmp_cmd = Currcommand->next;
   DLLmem_free(Firstcommand);
   Firstcommand = tmp_cmd;
