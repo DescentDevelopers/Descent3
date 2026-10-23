@@ -116,6 +116,7 @@
 //
 
 #include <filesystem>
+#include <memory>
 #include <regex>
 
 #include "stdafx.h"
@@ -1249,9 +1250,7 @@ bool CScriptLevelInterface::DeleteLevel() {
 
   if (list_size == 0)
     return false;
-  int *index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return false;
+  auto index_map = std::make_unique<int[]>(list_size);
 
   int index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -1262,7 +1261,6 @@ bool CScriptLevelInterface::DeleteLevel() {
   }
 
   if (!mng_MakeLocker()) {
-    mem_free(index_map);
     return false;
   }
 
@@ -1376,7 +1374,6 @@ bool CScriptLevelInterface::DeleteLevel() {
   }
 
   mng_EraseLocker();
-  mem_free(index_map);
 
   return changed;
 }
@@ -1394,9 +1391,7 @@ bool CScriptLevelInterface::DeleteScript() {
 
   if (list_size == 0)
     return false;
-  int *index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return false;
+  auto index_map = std::make_unique<int[]>(list_size);
 
   int index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -1407,7 +1402,6 @@ bool CScriptLevelInterface::DeleteScript() {
   }
 
   if (!mng_MakeLocker()) {
-    mem_free(index_map);
     return false;
   }
 
@@ -1493,7 +1487,6 @@ bool CScriptLevelInterface::DeleteScript() {
   }
 
   mng_EraseLocker();
-  mem_free(index_map);
 
   return changed;
 }
@@ -1511,9 +1504,7 @@ bool CScriptLevelInterface::CheckInScripts() {
 
   if (list_size == 0)
     return false;
-  int *index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return false;
+  auto index_map = std::make_unique<int[]>(list_size);
 
   int index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -1524,7 +1515,6 @@ bool CScriptLevelInterface::CheckInScripts() {
   }
 
   if (!mng_MakeLocker()) {
-    mem_free(index_map);
     return false;
   }
 
@@ -1619,9 +1609,7 @@ bool CScriptLevelInterface::CheckInLevels() {
 
   if (list_size == 0)
     return false;
-  int *index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return false;
+  auto index_map = std::make_unique<int[]>(list_size);
 
   int index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -1632,7 +1620,6 @@ bool CScriptLevelInterface::CheckInLevels() {
   }
 
   if (!mng_MakeLocker()) {
-    mem_free(index_map);
     return false;
   }
 
@@ -1741,7 +1728,6 @@ bool CScriptLevelInterface::CheckInLevels() {
   }
 
   mng_EraseLocker();
-  mem_free(index_map);
 
   return changed;
 }
@@ -1759,9 +1745,7 @@ bool CScriptLevelInterface::CheckOutScripts() {
 
   if (list_size == 0)
     return false;
-  int *index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return false;
+  auto index_map = std::make_unique<int[]>(list_size);
 
   int index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -1772,7 +1756,6 @@ bool CScriptLevelInterface::CheckOutScripts() {
   }
 
   if (!mng_MakeLocker()) {
-    mem_free(index_map);
     return false;
   }
 
@@ -1853,7 +1836,6 @@ bool CScriptLevelInterface::CheckOutScripts() {
   }
 
   mng_EraseLocker();
-  mem_free(index_map);
 
   return changed;
 }
@@ -1871,9 +1853,7 @@ bool CScriptLevelInterface::CheckOutLevels() {
 
   if (list_size == 0)
     return false;
-  int *index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return false;
+  auto index_map = std::make_unique<int[]>(list_size);
 
   int index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -1884,7 +1864,6 @@ bool CScriptLevelInterface::CheckOutLevels() {
   }
 
   if (!mng_MakeLocker()) {
-    mem_free(index_map);
     return false;
   }
 
@@ -1997,7 +1976,6 @@ bool CScriptLevelInterface::CheckOutLevels() {
   }
 
   mng_EraseLocker();
-  mem_free(index_map);
 
   return changed;
 }
@@ -2015,9 +1993,7 @@ bool CScriptLevelInterface::UndoCheckOutScripts() {
 
   if (list_size == 0)
     return false;
-  int *index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return false;
+  auto index_map = std::make_unique<int[]>(list_size);
 
   int index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -2028,7 +2004,6 @@ bool CScriptLevelInterface::UndoCheckOutScripts() {
   }
 
   if (!mng_MakeLocker()) {
-    mem_free(index_map);
     return false;
   }
 
@@ -2126,9 +2101,7 @@ bool CScriptLevelInterface::UndoCheckOutLevels() {
 
   if (list_size == 0)
     return false;
-  int *index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return false;
+  auto index_map = std::make_unique<int[]>(list_size);
 
   int index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -2139,7 +2112,6 @@ bool CScriptLevelInterface::UndoCheckOutLevels() {
   }
 
   if (!mng_MakeLocker()) {
-    mem_free(index_map);
     return false;
   }
 
@@ -2253,7 +2225,6 @@ bool CScriptLevelInterface::UndoCheckOutLevels() {
   }
 
   mng_EraseLocker();
-  mem_free(index_map);
 
   return changed;
 }
