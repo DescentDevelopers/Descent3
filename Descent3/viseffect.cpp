@@ -467,10 +467,10 @@
 // DAJ uint16_t VisDeadList[max_vis_effects];
 // DAJ static int16_t Vis_free_list[max_vis_effects];
 
-vis_effect *VisEffects = nullptr;
+std::unique_ptr<vis_effect[]> VisEffects;
 
-static int16_t *Vis_free_list = nullptr;
-uint16_t *VisDeadList = nullptr;
+static std::unique_ptr<int16_t[]> Vis_free_list;
+std::unique_ptr<uint16_t[]> VisDeadList;
 
 uint16_t max_vis_effects = 0;
 
@@ -479,12 +479,9 @@ int Highest_vis_effect_index = 0;
 int Num_vis_effects = 0;
 
 void ShutdownVisEffects() {
-  if (VisEffects)
-    mem_free(VisEffects);
-  if (VisDeadList)
-    mem_free(VisDeadList);
-  if (Vis_free_list)
-    mem_free(Vis_free_list);
+  VisEffects.reset();
+  VisDeadList.reset();
+  Vis_free_list.reset();
 }
 
 // Goes through our array and clears the slots out
@@ -496,9 +493,9 @@ void InitVisEffects() {
     return;
 
   // max_vis_effects is constant, so we only get here once, with nothing allocated yet
-  VisEffects = mem_rmalloc<vis_effect>(max_vis_effects);
-  VisDeadList = mem_rmalloc<uint16_t>(max_vis_effects);
-  Vis_free_list = mem_rmalloc<int16_t>(max_vis_effects);
+  VisEffects = std::make_unique<vis_effect[]>(max_vis_effects);
+  VisDeadList = std::make_unique<uint16_t[]>(max_vis_effects);
+  Vis_free_list = std::make_unique<int16_t[]>(max_vis_effects);
 
   for (int i = 0; i < max_vis_effects; i++) {
     VisEffects[i].type = VIS_NONE;
@@ -1291,7 +1288,7 @@ void DrawVisSineWave(vis_effect *vis) {
   rend_SetLighting(LS_NONE);
   rend_SetZBufferWriteMask(0);
   rend_SetFlatColor(GR_RGB(10, 60, 200));
-  int cur_sin = (vis - VisEffects) * 5000;
+  int cur_sin = (vis - VisEffects.get()) * 5000;
 
   cur_sin += (FrameCount * 2000);
 
@@ -1843,7 +1840,7 @@ void DrawVisEffect(vis_effect *vis) {
       size *= 1.8f;
   }
 
-  int visnum = vis - VisEffects;
+  int visnum = vis - VisEffects.get();
   int rot_angle;
   int bm_handle;
 
@@ -2003,7 +2000,7 @@ void VisEffectSetDeadFlag(vis_effect *vis) {
 
   vis->flags |= VF_DEAD;
 
-  VisDeadList[NumVisDead++] = vis - VisEffects;
+  VisDeadList[NumVisDead++] = vis - VisEffects.get();
 }
 
 // Moves
@@ -2087,7 +2084,7 @@ void VisEffectMoveOne(vis_effect *vis) {
         float normalized_time[MAX_SUBOBJECTS];
 
         if (obj->lowest_attached_vis == -1) {
-          obj->lowest_attached_vis = vis - VisEffects;
+          obj->lowest_attached_vis = vis - VisEffects.get();
           poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
 
           int i;
@@ -2096,7 +2093,7 @@ void VisEffectMoveOne(vis_effect *vis) {
           SetModelAngles(pm, normalized_time);
           SetModelInterpPos(pm, normalized_time);
 
-          for (i = vis - VisEffects; i <= Highest_vis_effect_index; i++) {
+          for (i = vis - VisEffects.get(); i <= Highest_vis_effect_index; i++) {
             vis_effect *this_vis = &VisEffects[i];
             if (this_vis->type != VIS_NONE && (this_vis->flags & VF_ATTACHED) &&
                 ((this_vis->attach_info.obj_handle & HANDLE_OBJNUM_MASK) == objnum) &&
@@ -2115,7 +2112,7 @@ void VisEffectMoveOne(vis_effect *vis) {
 
       // Relink if need be
       if (obj->roomnum != vis->roomnum)
-        VisEffectRelink(vis - VisEffects, obj->roomnum);
+        VisEffectRelink(vis - VisEffects.get(), obj->roomnum);
     }
   }
 
@@ -2157,7 +2154,7 @@ void VisEffectMoveOne(vis_effect *vis) {
   // Link this effect to the viewer if needed
   if (vis->flags & VF_LINK_TO_VIEWER) {
     if (vis->roomnum != Viewer_object->roomnum) {
-      VisEffectRelink(vis - VisEffects, Viewer_object->roomnum);
+      VisEffectRelink(vis - VisEffects.get(), Viewer_object->roomnum);
     }
   }
 }
