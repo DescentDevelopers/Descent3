@@ -288,14 +288,14 @@ void grFont::init(const char *fontname) {
     ASSERT(slot != -1);
 
     //	clear up surface and bitmap lists
-    grFont::m_FontList[slot].ch_w = nullptr;
-    grFont::m_FontList[slot].ch_h = nullptr;
-    grFont::m_FontList[slot].ch_u = nullptr;
-    grFont::m_FontList[slot].ch_v = nullptr;
+    grFont::m_FontList[slot].ch_w.reset();
+    grFont::m_FontList[slot].ch_h.reset();
+    grFont::m_FontList[slot].ch_u.reset();
+    grFont::m_FontList[slot].ch_v.reset();
 
     for (i = 0; i < MAX_FONT_BITMAPS; i++) {
       grFont::m_FontList[slot].bmps[i] = -1;
-      grFont::m_FontList[slot].surfs[i] = nullptr;
+      grFont::m_FontList[slot].surfs[i].reset();
     }
 
     //	We must load this font from the 'hogfile'
@@ -334,30 +334,21 @@ void grFont::free_font(gr_font_record *ft) {
   int i;
 
   //	delete font surface info.
-  if (ft->ch_wf)
-    delete[] ft->ch_wf;
-  if (ft->ch_hf)
-    delete[] ft->ch_hf;
-  if (ft->ch_uf)
-    delete[] ft->ch_uf;
-  if (ft->ch_vf)
-    delete[] ft->ch_vf;
-  if (ft->ch_w)
-    delete[] ft->ch_w;
-  if (ft->ch_h)
-    delete[] ft->ch_h;
-  if (ft->ch_u)
-    delete[] ft->ch_u;
-  if (ft->ch_v)
-    delete[] ft->ch_v;
-  if (ft->ch_surf)
-    delete[] ft->ch_surf;
+  ft->ch_wf.reset();
+  ft->ch_hf.reset();
+  ft->ch_uf.reset();
+  ft->ch_vf.reset();
+  ft->ch_w.reset();
+  ft->ch_h.reset();
+  ft->ch_u.reset();
+  ft->ch_v.reset();
+  ft->ch_surf.reset();
 
   for (i = 0; i < MAX_FONT_BITMAPS; i++) {
-    if (ft->bmps[i] != -1)
+    if (ft->bmps[i] != -1) {
       bm_FreeBitmap(ft->bmps[i]);
-    if (ft->surfs[i])
-      delete ft->surfs[i];
+    }
+    ft->surfs[i].reset();
   }
 
   //	delete font file info.
@@ -472,20 +463,20 @@ void grFont::translate_to_surfaces(int slot) {
   num_ch = fntfile->max_ascii - fntfile->min_ascii + 1;
 
   //	initialize memory
-  fnt->ch_w = new uint8_t[num_ch];
-  fnt->ch_h = new uint8_t[num_ch];
-  fnt->ch_u = new uint8_t[num_ch];
-  fnt->ch_v = new uint8_t[num_ch];
-  fnt->ch_surf = new uint8_t[num_ch];
-  fnt->ch_uf = new float[num_ch];
-  fnt->ch_vf = new float[num_ch];
-  fnt->ch_wf = new float[num_ch];
-  fnt->ch_hf = new float[num_ch];
+  fnt->ch_w = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_h = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_u = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_v = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_surf = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_uf = std::make_unique<float[]>(num_ch);
+  fnt->ch_vf = std::make_unique<float[]>(num_ch);
+  fnt->ch_wf = std::make_unique<float[]>(num_ch);
+  fnt->ch_hf = std::make_unique<float[]>(num_ch);
 
   fnt->bmps[surf_index] = bm_AllocBitmap(GRFONT_SURFACE_WIDTH, GRFONT_SURFACE_HEIGHT, 0);
   if (fnt->bmps[surf_index] == -1)
     Error("grFont::translate_to_surfaces <Bitmap allocation error>");
-  fnt->surfs[surf_index] = new grMemorySurface;
+  fnt->surfs[surf_index] = std::make_unique<grMemorySurface>();
   fnt->surfs[surf_index]->init(GRFONT_SURFACE_WIDTH, GRFONT_SURFACE_HEIGHT, BPP_16,
                                (char *)bm_data(fnt->bmps[surf_index], 0), GRFONT_SURFACE_WIDTH * BITS_TO_BYTES(BPP_16),
                                SURFFLAG_COLORKEY);
@@ -505,7 +496,7 @@ void grFont::translate_to_surfaces(int slot) {
 
       fnt->surfs[surf_index - 1]->blt(u, v, m_CharSurf);
     } else { //	font monochrome, convert bits to pixels
-      grFont::translate_mono_char(fnt->surfs[surf_index - 1], u, v, ch, fntfile, w);
+      grFont::translate_mono_char(fnt->surfs[surf_index - 1].get(), u, v, ch, fntfile, w);
     }
 
     fnt->ch_h[ch] = fntfile->height;
@@ -529,7 +520,7 @@ void grFont::translate_to_surfaces(int slot) {
         fnt->bmps[surf_index] = bm_AllocBitmap(GRFONT_SURFACE_WIDTH, GRFONT_SURFACE_HEIGHT, 0);
         if (fnt->bmps[surf_index] == -1)
           Error("grFont::translate_to_surfaces <Bitmap allocation error>");
-        fnt->surfs[surf_index] = new grMemorySurface;
+        fnt->surfs[surf_index] = std::make_unique<grMemorySurface>();
         fnt->surfs[surf_index]->init(GRFONT_SURFACE_WIDTH, GRFONT_SURFACE_HEIGHT, BPP_16,
                                      (char *)bm_data(fnt->bmps[surf_index], 0),
                                      GRFONT_SURFACE_WIDTH * BITS_TO_BYTES(BPP_16), SURFFLAG_COLORKEY);
@@ -617,9 +608,10 @@ int grFont::draw_char(grSurface *sf, int x, int y, int ch, tCharProperties *chpr
     rend_DrawFontCharacter(ft->bmps[ft->ch_surf[index]], x, y, x + ft->ch_w[index] - 1, y + ft->ch_h[index] - 1,
                            ft->ch_uf[index], ft->ch_vf[index], ft->ch_wf[index], ft->ch_hf[index]);
   } else if (ft->font.flags & FT_COLOR) {
-    sf->blt(x, y, ft->surfs[ft->ch_surf[index]], ft->ch_u[index], ft->ch_v[index], ft->ch_w[index], ft->ch_h[index]);
+    sf->blt(x, y, ft->surfs[ft->ch_surf[index]].get(), ft->ch_u[index], ft->ch_v[index], ft->ch_w[index],
+            ft->ch_h[index]);
   } else {
-    charblt16(sf, chprop->col[0], x, y, ft->surfs[ft->ch_surf[index]], ft->ch_u[index], ft->ch_v[index],
+    charblt16(sf, chprop->col[0], x, y, ft->surfs[ft->ch_surf[index]].get(), ft->ch_u[index], ft->ch_v[index],
               ft->ch_w[index], ft->ch_h[index]);
   }
 
@@ -663,10 +655,10 @@ int grFont::draw_char(grSurface *sf, int x, int y, int ch, int sx, int sy, int s
                            ft->ch_vf[index] + (((float)sy) / ((float)GRFONT_SURFACE_HEIGHT)),
                            ((float)sw) / ((float)GRFONT_SURFACE_WIDTH), ((float)sh) / ((float)GRFONT_SURFACE_HEIGHT));
   } else if (ft->font.flags & FT_COLOR) {
-    sf->blt(x, y, ft->surfs[ft->ch_surf[index]], ft->ch_u[index] + sx, ft->ch_v[index] + sy, sw, sh);
+    sf->blt(x, y, ft->surfs[ft->ch_surf[index]].get(), ft->ch_u[index] + sx, ft->ch_v[index] + sy, sw, sh);
   } else {
-    charblt16(sf, chprop->col[0], x, y, ft->surfs[ft->ch_surf[index]], ft->ch_u[index] + sx, ft->ch_v[index] + sy, sw,
-              sh);
+    charblt16(sf, chprop->col[0], x, y, ft->surfs[ft->ch_surf[index]].get(), ft->ch_u[index] + sx, ft->ch_v[index] + sy,
+              sw, sh);
   }
 
   //	adjust next x value with kerning and return it.

@@ -104,6 +104,8 @@
 #ifndef _GR_H
 #define _GR_H
 
+#include <memory>
+
 #include "Ddgr.h"
 #include "fix.h"
 #include "pserror.h"
@@ -167,9 +169,9 @@ struct gr_font_record {
   char filename[32];          // filename of font
   int references;             // number of references of that font
   int bmps[MAX_FONT_BITMAPS]; // font bitmap handles
-  grMemorySurface *surfs[MAX_FONT_BITMAPS];
-  uint8_t *ch_u, *ch_v, *ch_w, *ch_h, *ch_surf;
-  float *ch_uf, *ch_vf, *ch_wf, *ch_hf;
+  std::unique_ptr<grMemorySurface> surfs[MAX_FONT_BITMAPS];
+  std::unique_ptr<uint8_t[]> ch_u, ch_v, ch_w, ch_h, ch_surf;
+  std::unique_ptr<float[]> ch_uf, ch_vf, ch_wf, ch_hf;
   gr_font_file_record font;
 
 };
