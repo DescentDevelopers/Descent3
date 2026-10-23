@@ -260,9 +260,9 @@ void CWireframeGrWnd::Render() {
     return;
 
   if (Editor_view_mode == VM_TERRAIN)
-    DrawTerrainWorld(m_grViewport, &Wireframe_view->target, &Wireframe_view->orient, Wireframe_view->dist);
+    DrawTerrainWorld(m_grViewport.get(), &Wireframe_view->target, &Wireframe_view->orient, Wireframe_view->dist);
   else
-    DrawWorld(m_grViewport, &Wireframe_view->target, &Wireframe_view->orient, Wireframe_view->dist, 0,
+    DrawWorld(m_grViewport.get(), &Wireframe_view->target, &Wireframe_view->orient, Wireframe_view->dist, 0,
               Wireframe_view->rad);
 }
 
@@ -422,13 +422,13 @@ void CWireframeGrWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     // See if we're clicking on the current face
     found_segnum = ROOMNUM(Curroomp);
     found_facenum = Curface;
-    if (WireframeFindRoomFace(m_grViewport, point.x, point.y, &found_segnum, &found_facenum, FM_SPECIFIC)) {
+    if (WireframeFindRoomFace(m_grViewport.get(), point.x, point.y, &found_segnum, &found_facenum, FM_SPECIFIC)) {
       find_mode = FM_NEXT;
     }
 
   find_again:;
 
-    if (WireframeFindRoomFace(m_grViewport, point.x, point.y, &found_segnum, &found_facenum, find_mode)) {
+    if (WireframeFindRoomFace(m_grViewport.get(), point.x, point.y, &found_segnum, &found_facenum, find_mode)) {
       if (KEY_STATE(KEY_LSHIFT) || KEY_STATE(KEY_RSHIFT)) { // ctrl + click means toggle select state
         int newstate;
         newstate = ToggleRoomSelectedState(found_segnum);
