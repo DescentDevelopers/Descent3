@@ -494,6 +494,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "chrono_timer.h"
 #include "log.h"
@@ -550,7 +551,7 @@ windowmap_t windowmap;   // Holds window data (position)
 tTelComInfo Telcom_system;
 
 chunked_bitmap Telcom_bitmap; // background bitmap for telcom system
-static chunked_bitmap *hotspot_bitmaps;
+static std::unique_ptr<chunked_bitmap[]> hotspot_bitmaps;
 static int LoadTelcomBitmap(const char *filename, chunked_bitmap *bmp);
 static bool TelComMainMenu(tTelComInfo *tcs);
 
@@ -809,7 +810,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
   old_sm = GetScreenMode();
   SetScreenMode(SM_MENU);
 
-  hotspot_bitmaps = nullptr;
+  hotspot_bitmaps.reset();
 
   int TelCom_bitmap = bm_AllocLoadFileBitmap(IGNORE_TABLE(TELCOM_DISPLAY_OGF), 0);
   if (!cfexist(HOTSPOT_DISPLAY)) {
@@ -832,9 +833,8 @@ bool TelComShow(bool ingame, bool ShipSelect) {
   if (hotspotmap.num_of_hotspots) {
     int TelCom_onbmp = bm_AllocLoadFileBitmap(IGNORE_TABLE(TELCOM_DISPLAY_OGF_ON), 0);
     if (TelCom_onbmp != -1) {
-      hotspot_bitmaps = mem_rmalloc<chunked_bitmap>(hotspotmap.num_of_hotspots);
-      ASSERT(hotspot_bitmaps);
-      CompressTelComOnImage(TelCom_onbmp, hotspot_bitmaps);
+      hotspot_bitmaps = std::make_unique<chunked_bitmap[]>(hotspotmap.num_of_hotspots);
+      CompressTelComOnImage(TelCom_onbmp, hotspot_bitmaps.get());
       bm_FreeBitmap(TelCom_onbmp);
     }
   }
@@ -860,8 +860,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
 
 telcom_bad_error:
 
-  if (hotspot_bitmaps)
-    mem_free(hotspot_bitmaps);
+  hotspot_bitmaps.reset();
 
   // must do this to clear out keyboard events
   ddio_KeyFlush();
@@ -942,7 +941,7 @@ void FreeTelComOnBitmaps(chunked_bitmap *array) {
 // This deactivates the TelCom system
 void TelComDeactivate(void) {
   LOG_DEBUG << "TelCom System being deactivated";
-  FreeTelComOnBitmaps(hotspot_bitmaps);
+  FreeTelComOnBitmaps(hotspot_bitmaps.get());
   FreeHotSpotMapInternals(&hotspotmap);
   FreeViewports();
   if (windowmap.wm)
