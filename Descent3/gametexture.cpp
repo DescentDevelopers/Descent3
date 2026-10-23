@@ -328,7 +328,7 @@ int AllocTexture(void) {
 
   Num_textures++;
 
-  memset(&GameTextures[i], 0, sizeof(texture));
+  GameTextures[i] = {};
 
   GameTextures[i].used = 1;
 
