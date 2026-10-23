@@ -698,18 +698,18 @@ struct tFlagDBEntry {
 
 // Structure that defines an action
 struct tActionDBEntry {
-  int category; // Which group this action belongs to
-  char *desc;   // What the user sees
-  char *func;   // The glue function to call for this action
-  char *help;   // The help info for this function
+  int category;                 // Which group this action belongs to
+  std::unique_ptr<char[]> desc; // What the user sees
+  std::unique_ptr<char[]> func; // The glue function to call for this action
+  std::unique_ptr<char[]> help; // The help info for this function
 };
 
 // Structure that defines a query
 struct tQueryDBEntry {
-  int category; // Which group this query belongs to
-  char *desc;   // What the user sees
-  char *func;   // The glue function to call for this query
-  char *help;   // The help info for this function
+  int category;                 // Which group this query belongs to
+  std::unique_ptr<char[]> desc; // What the user sees
+  std::unique_ptr<char[]> func; // The glue function to call for this query
+  std::unique_ptr<char[]> help; // The help info for this function
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -974,7 +974,7 @@ private:
   int m_NumFlags;
 
   // The Action function database
-  char *m_FunctionCategories[MAX_CATEGORIES];
+  std::unique_ptr<char[]> m_FunctionCategories[MAX_CATEGORIES];
   tActionDBEntry m_ActionDatabase[MAX_ACTIONS];
   tQueryDBEntry m_QueryDatabase[MAX_QUERIES];
   int m_NumFunctionCategories;

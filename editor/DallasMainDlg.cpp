@@ -5863,23 +5863,24 @@ int CDallasMainDlg::FillFlagValuesBox(CCheckListBox *box, char *flag_name, int f
 void CDallasMainDlg::InitFunctionDatabases(void) {
   int j;
 
-  for (j = 0; j < MAX_CATEGORIES; j++)
-    m_FunctionCategories[j] = nullptr;
+  for (j = 0; j < MAX_CATEGORIES; j++) {
+    m_FunctionCategories[j].reset();
+  }
   m_NumFunctionCategories = 0;
 
   for (j = 0; j < MAX_ACTIONS; j++) {
     m_ActionDatabase[j].category = INVALID_CATEGORY;
-    m_ActionDatabase[j].desc = nullptr;
-    m_ActionDatabase[j].func = nullptr;
-    m_ActionDatabase[j].help = nullptr;
+    m_ActionDatabase[j].desc.reset();
+    m_ActionDatabase[j].func.reset();
+    m_ActionDatabase[j].help.reset();
   }
   m_NumActions = 0;
 
   for (j = 0; j < MAX_QUERIES; j++) {
     m_QueryDatabase[j].category = INVALID_CATEGORY;
-    m_QueryDatabase[j].desc = nullptr;
-    m_QueryDatabase[j].func = nullptr;
-    m_QueryDatabase[j].help = nullptr;
+    m_QueryDatabase[j].desc.reset();
+    m_QueryDatabase[j].func.reset();
+    m_QueryDatabase[j].help.reset();
   }
   m_NumQueries = 0;
 }
@@ -5888,38 +5889,35 @@ void CDallasMainDlg::InitFunctionDatabases(void) {
 void CDallasMainDlg::ClearFunctionDatabases(void) {
   int j;
 
-  for (j = 0; j < m_NumFunctionCategories; j++)
-    mem_free(m_FunctionCategories[j]);
+  for (j = 0; j < m_NumFunctionCategories; j++) {
+    m_FunctionCategories[j].reset();
+  }
   m_NumFunctionCategories = 0;
 
   for (j = 0; j < m_NumActions; j++) {
     m_ActionDatabase[j].category = INVALID_CATEGORY;
-    mem_free(m_ActionDatabase[j].desc);
-    m_ActionDatabase[j].desc = nullptr;
-    mem_free(m_ActionDatabase[j].func);
-    m_ActionDatabase[j].func = nullptr;
-    mem_free(m_ActionDatabase[j].help);
-    m_ActionDatabase[j].help = nullptr;
+    m_ActionDatabase[j].desc.reset();
+    m_ActionDatabase[j].func.reset();
+    m_ActionDatabase[j].help.reset();
   }
   m_NumActions = 0;
 
   for (j = 0; j < m_NumQueries; j++) {
     m_QueryDatabase[j].category = INVALID_CATEGORY;
-    mem_free(m_QueryDatabase[j].desc);
-    m_QueryDatabase[j].desc = nullptr;
-    mem_free(m_QueryDatabase[j].func);
-    m_QueryDatabase[j].func = nullptr;
-    mem_free(m_QueryDatabase[j].help);
-    m_QueryDatabase[j].help = nullptr;
+    m_QueryDatabase[j].desc.reset();
+    m_QueryDatabase[j].func.reset();
+    m_QueryDatabase[j].help.reset();
   }
   m_NumQueries = 0;
 }
 
 // Matches an integer ID to a given category name
 int CDallasMainDlg::GetFunctionCategoryID(char *catname) {
-  for (int i = 0; i < m_NumFunctionCategories; i++)
-    if (strcmp(m_FunctionCategories[i], catname) == 0)
+  for (int i = 0; i < m_NumFunctionCategories; i++) {
+    if (strcmp(m_FunctionCategories[i].get(), catname) == 0) {
       return i;
+    }
+  }
 
   return INVALID_CATEGORY;
 }
@@ -5975,7 +5973,7 @@ char *CDallasMainDlg::GetActionDesc(int ID) {
   if (ID < 0 || ID >= m_NumActions)
     return nullptr;
 
-  return (m_ActionDatabase[ID].desc);
+  return (m_ActionDatabase[ID].desc.get());
 }
 
 // Returns a pointer to the action help text
@@ -5983,7 +5981,7 @@ char *CDallasMainDlg::GetActionHelp(int ID) {
   if (ID < 0 || ID >= m_NumActions)
     return nullptr;
 
-  return (m_ActionDatabase[ID].help);
+  return (m_ActionDatabase[ID].help.get());
 }
 
 // Returns a pointer to the action function name
@@ -5994,7 +5992,7 @@ char *CDallasMainDlg::GetActionFunc(int ID) {
   if (ID < 0 || ID >= m_NumActions)
     return INVALID_FUNCTION_NAME;
 
-  return (m_ActionDatabase[ID].func);
+  return (m_ActionDatabase[ID].func.get());
 }
 
 // Searches action list for action matching given function name
@@ -6005,9 +6003,11 @@ int CDallasMainDlg::GetActionFuncID(char *func_name) {
   if (strcmp(DO_NOTHING_STRING, func_name) == 0)
     return DO_NOTHING_ID;
 
-  for (int j = 0; j < m_NumActions; j++)
-    if (strcmp(m_ActionDatabase[j].func, func_name) == 0)
+  for (int j = 0; j < m_NumActions; j++) {
+    if (strcmp(m_ActionDatabase[j].func.get(), func_name) == 0) {
       return (j);
+    }
+  }
 
   return INVALID_FUNCTION_ID;
 }
@@ -6017,7 +6017,7 @@ char *CDallasMainDlg::GetQueryDesc(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
     return nullptr;
 
-  return (m_QueryDatabase[ID].desc);
+  return (m_QueryDatabase[ID].desc.get());
 }
 
 // Returns a pointer to the query help text
@@ -6025,7 +6025,7 @@ char *CDallasMainDlg::GetQueryHelp(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
     return nullptr;
 
-  return (m_QueryDatabase[ID].help);
+  return (m_QueryDatabase[ID].help.get());
 }
 
 // Returns a pointer to the query function name
@@ -6033,7 +6033,7 @@ char *CDallasMainDlg::GetQueryFunc(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
     return INVALID_FUNCTION_NAME;
 
-  return (m_QueryDatabase[ID].func);
+  return (m_QueryDatabase[ID].func.get());
 }
 
 // Searches query list for query matching given function name
@@ -6041,9 +6041,11 @@ int CDallasMainDlg::GetQueryFuncID(char *func_name) {
   if (func_name == nullptr)
     return INVALID_FUNCTION_ID;
 
-  for (int j = 0; j < m_NumQueries; j++)
-    if (strcmp(m_QueryDatabase[j].func, func_name) == 0)
+  for (int j = 0; j < m_NumQueries; j++) {
+    if (strcmp(m_QueryDatabase[j].func.get(), func_name) == 0) {
       return (j);
+    }
+  }
 
   return INVALID_FUNCTION_ID;
 }
@@ -6124,12 +6126,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
           done = 1;
         else if (m_NumFunctionCategories < MAX_CATEGORIES) {
           if (GetFunctionCategoryID(line) == INVALID_CATEGORY) { // don't add duplicate categories
-            m_FunctionCategories[m_NumFunctionCategories] = mem_strdup(line);
-            if (m_FunctionCategories[m_NumFunctionCategories] == nullptr) {
-              FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-              cfclose(ifile);
-              return;
-            }
+            m_FunctionCategories[m_NumFunctionCategories] = mem_strdup_unique(line);
             m_NumFunctionCategories++;
             if (m_NumFunctionCategories == MAX_CATEGORIES)
               MessageBox("Warning: The Maximum Category limit has been reached!", "Warning!");
@@ -6341,12 +6338,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      action->desc = mem_strdup(line);
-      if (action->desc == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      action->desc = mem_strdup_unique(line);
 
       // Read action function
       cf_ReadString(linebuf, sizeof(linebuf), ifile);
@@ -6356,12 +6348,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      action->func = mem_strdup(line);
-      if (action->func == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      action->func = mem_strdup_unique(line);
 
       // Read help
       bool done = 0;
@@ -6387,12 +6374,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       if (!done)
         FunctionFileParseError(UEOF_ERR, linenum, filename);
 
-      action->help = mem_strdup(helpbuf);
-      if (action->help == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      action->help = mem_strdup_unique(helpbuf);
     } else if (strncmp(line, TAG_QUERY, strlen(TAG_QUERY)) == 0) { // Parse Query block
       if (m_NumQueries >= MAX_QUERIES) {
         MessageBox("ERROR: The Maximum Query limit has been exceeded!\n\nParsing must stop immediately.", "ERROR!");
@@ -6427,12 +6409,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      query->desc = mem_strdup(line);
-      if (query->desc == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      query->desc = mem_strdup_unique(line);
 
       // Read action function
       cf_ReadString(linebuf, sizeof(linebuf), ifile);
@@ -6442,12 +6419,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      query->func = mem_strdup(line);
-      if (query->func == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      query->func = mem_strdup_unique(line);
 
       // Read help
       bool done = 0;
@@ -6473,12 +6445,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       if (!done)
         FunctionFileParseError(UEOF_ERR, linenum, filename);
 
-      query->help = mem_strdup(helpbuf);
-      if (query->help == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      query->help = mem_strdup_unique(helpbuf);
     }
   }
 
@@ -7031,12 +6998,12 @@ void CDallasMainDlg::FillActionMenu(CMenu *action_menu, int command_offset) {
     // Scan the list, adding Actions that match the current category
     for (k = 0; k < m_NumActions; k++)
       if (m_ActionDatabase[k].category == j) {
-        char *temp_desc = mem_rmalloc<char>(strlen(m_ActionDatabase[k].desc) + 1);
+        char *temp_desc = mem_rmalloc<char>(strlen(m_ActionDatabase[k].desc.get()) + 1);
         if (temp_desc == nullptr) {
           MessageBox("Out of memory error in FillActionMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
           return;
         }
-        ParseOutActionVarTypes(temp_desc, m_ActionDatabase[k].desc);
+        ParseOutActionVarTypes(temp_desc, m_ActionDatabase[k].desc.get());
         category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc);
         mem_free(temp_desc);
         actions_added++;
@@ -7044,10 +7011,11 @@ void CDallasMainDlg::FillActionMenu(CMenu *action_menu, int command_offset) {
 
     // Detach and add this submenu to the action menu
     ColumnizePopupMenu(&category_submenu);
-    if (actions_added == 0)
-      action_menu->AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j]);
-    else
-      action_menu->AppendMenu(MF_POPUP, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j]);
+    if (actions_added == 0) {
+      action_menu->AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j].get());
+    } else {
+      action_menu->AppendMenu(MF_POPUP, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j].get());
+    }
   }
 }
 
@@ -7069,12 +7037,12 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
     // Scan the list, adding queries that match the current category
     for (k = 0; k < m_NumActions; k++)
       if (m_QueryDatabase[k].category == j) {
-        char *temp_desc = mem_rmalloc<char>(strlen(m_QueryDatabase[k].desc) + 1);
+        char *temp_desc = mem_rmalloc<char>(strlen(m_QueryDatabase[k].desc.get()) + 1);
         if (temp_desc == nullptr) {
           MessageBox("Out of memory error in FillQueryMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
           return;
         }
-        ParseOutQueryVarTypes(temp_desc, m_QueryDatabase[k].desc);
+        ParseOutQueryVarTypes(temp_desc, m_QueryDatabase[k].desc.get());
 
         query_ret_type = GetQueryReturnType(k, query_ret_name);
 
@@ -7102,10 +7070,11 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
 
     // Detach and add this submenu to the action menu
     ColumnizePopupMenu(&category_submenu);
-    if (queries_added == 0)
-      query_menu->AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j]);
-    else
-      query_menu->AppendMenu(MF_POPUP, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j]);
+    if (queries_added == 0) {
+      query_menu->AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j].get());
+    } else {
+      query_menu->AppendMenu(MF_POPUP, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j].get());
+    }
   }
 }
 
@@ -10517,7 +10486,7 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
   }
 
   // Handle the DALLAS custom queries first
-  if (strcmp(m_QueryDatabase[data->ID].func, "qScriptExecuted_DALLAS") == 0) {
+  if (strcmp(m_QueryDatabase[data->ID].func.get(), "qScriptExecuted_DALLAS") == 0) {
     HTREEITEM child_node;
     tTreeNodeData *child_data;
     child_node = m_ScriptTree.GetChildItem(query_node);
@@ -10530,7 +10499,7 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
     cfprintf(CurrentOutputFile, "(%s > 0)", tmp_name.GetBuffer(0));
     return;
   }
-  if (strcmp(m_QueryDatabase[data->ID].func, "qTimesScriptExecuted_DALLAS") == 0) {
+  if (strcmp(m_QueryDatabase[data->ID].func.get(), "qTimesScriptExecuted_DALLAS") == 0) {
     HTREEITEM child_node;
     tTreeNodeData *child_data;
     child_node = m_ScriptTree.GetChildItem(query_node);
@@ -10545,7 +10514,7 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
   }
 
   // Write out the function name
-  cfprintf(CurrentOutputFile, "%s(", m_QueryDatabase[data->ID].func);
+  cfprintf(CurrentOutputFile, "%s(", m_QueryDatabase[data->ID].func.get());
 
   // Write out the parameter arguments
   HTREEITEM param_node;
@@ -10649,7 +10618,7 @@ void CDallasMainDlg::WriteActionFunctionCall(HTREEITEM action_node) {
 
   // Write out the function name
   TabOver();
-  cfprintf(CurrentOutputFile, "%s(", m_ActionDatabase[data->ID].func);
+  cfprintf(CurrentOutputFile, "%s(", m_ActionDatabase[data->ID].func.get());
 
   // Write out the parameter arguments
   HTREEITEM param_node;
