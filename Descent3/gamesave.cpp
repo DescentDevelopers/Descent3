@@ -1087,10 +1087,11 @@ void SGSObjects(CFILE *fp) {
 
     // write out object name
     int ii;
-    ii = (op->name) ? strlen(op->name) : 0;
+    ii = (op->name) ? strlen(op->name.get()) : 0;
     gs_WriteByte(fp, ii);
-    if (ii > 0)
-      cf_WriteBytes((uint8_t *)op->name, ii, fp);
+    if (ii > 0) {
+      cf_WriteBytes((uint8_t *)op->name.get(), ii, fp);
+    }
 
     //	data universal to all objects that need to be saved.
     gs_WriteShort(fp, (int16_t)op->id);

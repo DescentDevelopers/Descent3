@@ -2449,13 +2449,13 @@ void ResetObjectOntoTerrain() {
       int roomnum = GetTerrainRoomFromPos(&objp->pos);
       ObjSetPos(objp, &objp->pos, roomnum, nullptr, true);
 
-      EditorStatus("Object %d (\"%s\") moved to cell %d", OBJNUM(objp), objp->name ? objp->name : "<no name>",
+      EditorStatus("Object %d (\"%s\") moved to cell %d", OBJNUM(objp), objp->name ? objp->name.get() : "<no name>",
                    CELLNUM(roomnum));
 
       World_changed = 1;
     } else
       EditorStatus("Object %d (\"%s\") already outside (on cell %d)", OBJNUM(objp),
-                   objp->name ? objp->name : "<no name>", CELLNUM(objp->roomnum));
+                   objp->name ? objp->name.get() : "<no name>", CELLNUM(objp->roomnum));
   }
 }
 
@@ -2641,7 +2641,7 @@ void ListLightmapObjects() {
         lm_count++;
         mprintf(0, "%d: %s  %s", i, Object_type_names[Objects[i].type], Object_info[Objects[i].id].name);
         if (Objects[i].name)
-          mprintf(0, "  name=\"%s\"\n", Objects[i].name);
+          mprintf(0, "  name=\"%s\"\n", Objects[i].name.get());
         else
           mprintf(0, "\n");
       } else
@@ -2841,7 +2841,7 @@ int GetChangeMask() {
   last_curportal = Curportal;
 
   if (Cur_object_index != -1) {
-    char *name = Objects[Cur_object_index].name ? Objects[Cur_object_index].name : "<no name>";
+    char *name = Objects[Cur_object_index].name ? Objects[Cur_object_index].name.get() : "<no name>";
     if (strcmp(last_name, name))
       mask |= KUF_CUROBJ_NAME_CHANGED;
     strcpy(last_name, name);

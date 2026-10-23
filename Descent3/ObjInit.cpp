@@ -742,14 +742,14 @@ int ObjInitGeneric(object *objp, bool reinit) {
 #ifdef EDITOR
     if (GetFunctionMode() == EDITOR_MODE)
       OutrageMessageBox("Object %d (\"%s\") had ID %d which no longer exists.  Changing to %d, \"%s\".", OBJNUM(objp),
-                        objp->name ? objp->name : "<no name>", objp->id, i, obj_info->name);
+                        objp->name ? objp->name.get() : "<no name>", objp->id, i, obj_info->name);
 #endif
   }
   if (obj_info->type != objp->type) {
 #ifdef EDITOR
     if (GetFunctionMode() == EDITOR_MODE)
       OutrageMessageBox("Object %d (\"%s\"), type name \"%s\", changed from type %s to %s", OBJNUM(objp),
-                        objp->name ? objp->name : "<no name>", obj_info->name, Object_type_names[objp->type],
+                        objp->name ? objp->name.get() : "<no name>", obj_info->name, Object_type_names[objp->type],
                         Object_type_names[obj_info->type]);
 #endif
     objp->type = obj_info->type;
@@ -1191,7 +1191,7 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->change_flags = 0;
   objp->generic_nonvis_flags = 0;
   objp->generic_sent_nonvis = 0;
-  objp->name = nullptr;
+  objp->name.reset();
   objp->custom_default_script_name = nullptr;
   objp->custom_default_module_name = nullptr;
   objp->contains_type = -1;

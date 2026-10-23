@@ -1009,16 +1009,11 @@ int LGSObjects(CFILE *fp, int version) {
     // object name
     gs_ReadByte(fp, j);
     if (j > 0) {
-      if (op->name)
-        mem_free(op->name);
-      op->name = (char *)mem_malloc(j + 1);
-      if (!op->name)
-        Error("Out of memory");
-
-      cf_ReadBytes((uint8_t *)op->name, j, fp);
+      op->name = std::make_unique<char[]>(j + 1);
+      cf_ReadBytes((uint8_t *)op->name.get(), j, fp);
       op->name[j] = '\0';
     } else {
-      op->name = nullptr;
+      op->name.reset();
     }
 
     //	Kill any script thread associated with this object.

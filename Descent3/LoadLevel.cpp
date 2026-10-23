@@ -1684,7 +1684,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
 
   // Set the name
   if (tempname[0]) {
-    objp->name = mem_strdup(tempname);
+    objp->name = mem_strdup_unique(tempname);
   }
 
   // Update checksum
@@ -4214,7 +4214,7 @@ int WriteObject(CFILE *ofile, object *objp) {
   cf_WriteByte(ofile, objp->type);
   cf_WriteShort(ofile, objp->id);
 
-  cf_WriteString(ofile, objp->name ? objp->name : "");
+  cf_WriteString(ofile, objp->name ? objp->name.get() : "");
 
   cf_WriteInt(ofile, objp->flags);
 
