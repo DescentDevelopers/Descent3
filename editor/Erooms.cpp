@@ -621,7 +621,7 @@ room *CreateNewRoom(int nverts, int nfaces, bool palette_room) {
   roomnum = GetFreeRoom(palette_room);
 
   if (roomnum == -1)
-    return NULL;
+    return nullptr;
 
   rp = &Rooms[roomnum];
 
@@ -659,7 +659,7 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   // Reverse the normal because we're looking "at" the face, not from it
   fvec = -Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
@@ -768,7 +768,7 @@ void AssignDefaultUVsToRoomFace(room *rp, int facenum) {
 // Searches thru all rooms for a specific name, returns -1 if not found
 // or index of room with name
 int FindRoomName(char *name) {
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (int i = FIRST_PALETTE_ROOM; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++)
     if (Rooms[i].used && Rooms[i].name && !stricmp(name, Rooms[i].name))
@@ -954,7 +954,7 @@ int AllocLoadRoom(char *filename, bool bCenter, bool palette_room) {
       // room_num=AllocRoom (num_verts,num_faces);
       rp = CreateNewRoom(num_verts, num_faces, palette_room);
 
-      if (rp == NULL) {
+      if (rp == nullptr) {
         done = 1;
         continue;
       }
@@ -1240,7 +1240,7 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
       int nfaces = rp->num_faces + num_new_faces;
 
       newfaces = mem_rmalloc<face>(nfaces);
-      ASSERT(newfaces != NULL);
+      ASSERT(newfaces != nullptr);
 
       // Copy all the faces into our new array
       for (t = 0; t < rp->num_faces; t++) {
@@ -1249,9 +1249,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
           int nverts = rp->faces[t].num_verts;
 
           newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
-          ASSERT(newfaces[t].face_verts != NULL);
+          ASSERT(newfaces[t].face_verts != nullptr);
           newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
-          ASSERT(newfaces[t].face_uvls != NULL);
+          ASSERT(newfaces[t].face_uvls != nullptr);
 
           newfaces[t].normal = rp->faces[t].normal;
           newfaces[t].tmap = rp->faces[t].tmap;
@@ -1269,9 +1269,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
           int nverts = 3;
 
           newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
-          ASSERT(newfaces[t].face_verts != NULL);
+          ASSERT(newfaces[t].face_verts != nullptr);
           newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
-          ASSERT(newfaces[t].face_uvls != NULL);
+          ASSERT(newfaces[t].face_uvls != nullptr);
 
           newfaces[t].tmap = rp->faces[t].tmap;
           newfaces[t].flags = rp->faces[t].flags;
@@ -1342,9 +1342,9 @@ void ReInitRoomFace(face *fp, int nverts) {
   mem_free(fp->face_uvls);
 
   fp->face_verts = (int16_t *)mem_malloc(nverts * sizeof(*fp->face_verts));
-  ASSERT(fp->face_verts != NULL);
+  ASSERT(fp->face_verts != nullptr);
   fp->face_uvls = mem_rmalloc<roomUVL>(nverts);
-  ASSERT(fp->face_uvls != NULL);
+  ASSERT(fp->face_uvls != nullptr);
 }
 
 // Determines if two points are close enough together to be considered the same
@@ -1397,7 +1397,7 @@ int RoomAddVertices(room *rp, int num_new_verts) {
 
   auto newverts = mem_rmalloc<vector>(rp->num_verts + num_new_verts);
 
-  ASSERT(newverts != NULL);
+  ASSERT(newverts != nullptr);
 
   for (int i = 0; i < rp->num_verts; i++) {
     newverts[i] = rp->verts[i];
@@ -1424,7 +1424,7 @@ int RoomAddFaces(room *rp, int num_new_faces) {
 
   auto newfaces = mem_rmalloc<face>(rp->num_faces + num_new_faces);
 
-  ASSERT(newfaces != NULL);
+  ASSERT(newfaces != nullptr);
 
   for (int i = 0; i < rp->num_faces; i++)
     newfaces[i] = rp->faces[i];
@@ -1636,7 +1636,7 @@ void DeleteRoomVert(room *rp, int vertnum) {
 
   // malloc new list
   newverts = mem_rmalloc<vector>(rp->num_verts - 1);
-  ASSERT(newverts != NULL);
+  ASSERT(newverts != nullptr);
 
   // Copy verts to new list
   for (v = 0; v < vertnum; v++) {
@@ -1718,7 +1718,7 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
 
   // Allocate new face list
   newfaces = mem_rmalloc<face>(rp->num_faces - 1);
-  ASSERT(newfaces != NULL);
+  ASSERT(newfaces != nullptr);
 
   // Copy faces over
   for (f = 0; f < facenum; f++)
@@ -1750,7 +1750,7 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
 
   // Adjust the current and marked faces if necessary
 #ifdef NEWEDITOR
-  if (theApp.m_pLevelWnd != NULL)
+  if (theApp.m_pLevelWnd != nullptr)
 #endif
     if (rp == Curroomp) {
       if (Curface == rp->num_faces)
@@ -1808,10 +1808,10 @@ void DeleteRoomPortal(room *rp, int portalnum) {
 
   // Alloc new portal list
   if (rp->num_portals == 1)
-    newportals = NULL;
+    newportals = nullptr;
   else {
     newportals = mem_rmalloc<portal>(rp->num_portals - 1);
-    ASSERT(newportals != NULL);
+    ASSERT(newportals != nullptr);
   }
 
   // Copy portals over

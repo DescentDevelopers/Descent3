@@ -64,7 +64,7 @@ BOOL CDriversDlg::OnInitDialog() {
 #if (defined(OEM_VOODOO3) || defined(DISABLE_GLSETUP))
   CWnd *button;
   button = GetDlgItem(IDC_GLSETUP_BUTTON);
-  if (button != NULL)
+  if (button != nullptr)
     button->EnableWindow(FALSE);
 #endif
 

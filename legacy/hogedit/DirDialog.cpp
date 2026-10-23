@@ -99,7 +99,7 @@ BOOL CDirDialog::DoBrowse(CWnd *pwndParent) {
       //
       // Convert the path to an ITEMIDLIST.
       //
-      hr = pDesktopFolder->ParseDisplayName(NULL, NULL, olePath, &chEaten, &pidl, &dwAttributes);
+      hr = pDesktopFolder->ParseDisplayName(nullptr, nullptr, olePath, &chEaten, &pidl, &dwAttributes);
       if (FAILED(hr)) {
         pMalloc->Free(pidl);
         pMalloc->Release();
@@ -108,7 +108,7 @@ BOOL CDirDialog::DoBrowse(CWnd *pwndParent) {
       bInfo.pidlRoot = pidl;
     }
   }
-  bInfo.hwndOwner = pwndParent == NULL ? NULL : pwndParent->GetSafeHwnd();
+  bInfo.hwndOwner = pwndParent == nullptr ? nullptr : pwndParent->GetSafeHwnd();
   bInfo.pszDisplayName = m_strPath.GetBuffer(_MAX_PATH);
   bInfo.lpszTitle = (m_strTitle.IsEmpty()) ? "Open" : m_strTitle;
   bInfo.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS | (m_bStatus ? BIF_STATUSTEXT : 0);
@@ -116,7 +116,7 @@ BOOL CDirDialog::DoBrowse(CWnd *pwndParent) {
   bInfo.lpfn = BrowseCtrlCallback; // address of callback function
   bInfo.lParam = (LPARAM)this;     // pass address of object to callback function
 
-  if ((pidl = ::SHBrowseForFolder(&bInfo)) == NULL) {
+  if ((pidl = ::SHBrowseForFolder(&bInfo)) == nullptr) {
     return FALSE;
   }
   m_strPath.ReleaseBuffer();

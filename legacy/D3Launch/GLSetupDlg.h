@@ -48,7 +48,7 @@
 class CGLSetupDlg : public CDialog {
   // Construction
 public:
-  CGLSetupDlg(CWnd *pParent = NULL); // standard constructor
+  CGLSetupDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CGLSetupDlg)

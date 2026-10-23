@@ -91,16 +91,16 @@ int Num_directplay_games = 0;
 
 char Directplay_session_desc[MAX_DP_GAMES][200];
 bool Directplay_lobby_launched_game = false;
-void *lpAddress = NULL;
+void *lpAddress = nullptr;
 
 // char Directplay_modem_list[MAX_MODEMS][200];
 modem_list Modems_found[MAX_MODEMS];
 int Num_modems_found = 0;
 
 LPVOID lpConnectionBuffer;
-LPDIRECTPLAY4A lpDirectPlay4A = NULL;
-LPDIRECTPLAYLOBBY3A lpDirectPlayLobby3A = NULL;
-LPDPLCONNECTION lpdplconnection = NULL;
+LPDIRECTPLAY4A lpDirectPlay4A = nullptr;
+LPDIRECTPLAYLOBBY3A lpDirectPlayLobby3A = nullptr;
+LPDPLCONNECTION lpdplconnection = nullptr;
 
 // {915CE160-3125-11d2-BB3D-00104B27BFF0}
 static const GUID DPD3_GUID = {0x915ce160, 0x3125, 0x11d2, {0xbb, 0x3d, 0x0, 0x10, 0x4b, 0x27, 0xbf, 0xf0}};
@@ -120,7 +120,7 @@ BOOL FAR PASCAL DirectPlayEnumConnectionsCallback(LPCGUID lpguidSP, LPVOID lpCon
   LOG_DEBUG.printf("Directplay connection found: %s", lpName->lpszShortNameA);
   // Do something with the list of connections
   for (int i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
-    if (dpconns[i].conn == NULL) {
+    if (dpconns[i].conn == nullptr) {
       dpconns[i].conn = mem_malloc(dwConnectionSize);
       memcpy(dpconns[i].conn, lpConnection, dwConnectionSize);
       strcpy(dpconns[i].name, lpName->lpszShortNameA);
@@ -156,14 +156,14 @@ BOOL FAR PASCAL EnumSessionsCallback(LPCDPSESSIONDESC2 lpSessionDesc, LPDWORD lp
 
 int dp_SelectDirectPlayConnection(char *name) {
   HRESULT hr;
-  void *connection = NULL;
+  void *connection = nullptr;
   int i;
   if (!lpDirectPlay4A)
     return 0;
   if (name) {
     if (lpAddress)
       mem_free(lpAddress);
-    lpAddress = NULL;
+    lpAddress = nullptr;
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (stricmp(dpconns[i].name, name) == 0) {
         LOG_DEBUG.printf("Found DirectPlay connection: %s", name);
@@ -183,10 +183,10 @@ int dp_SelectDirectPlayConnection(char *name) {
   hr = lpDirectPlay4A->InitializeConnection(connection, 0);
 
   for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
-    if (dpconns[i].conn != NULL) {
+    if (dpconns[i].conn != nullptr) {
       mem_free(dpconns[i].conn);
-      dpconns[i].conn = NULL;
-      dpconns[i].name[0] = NULL;
+      dpconns[i].conn = nullptr;
+      dpconns[i].name[0] = '\0';
     }
   }
 
@@ -207,22 +207,22 @@ int dp_InitDirectPlay(char *conn_name, void *parms, int num_elements) {
   // Delete any previous directplay instance
   if (lpDirectPlay4A)
     lpDirectPlay4A->Release();
-  if (SUCCEEDED(CoCreateInstance(CLSID_DirectPlay, NULL, CLSCTX_INPROC_SERVER, IID_IDirectPlay4A,
+  if (SUCCEEDED(CoCreateInstance(CLSID_DirectPlay, nullptr, CLSCTX_INPROC_SERVER, IID_IDirectPlay4A,
                                  (LPVOID *)&lpDirectPlay4A))) {
     lpDirectPlay4A->EnumConnections(&DPD3_GUID, DirectPlayEnumConnectionsCallback, 0, 0);
   } else {
-    lpDirectPlay4A = NULL;
+    lpDirectPlay4A = nullptr;
   }
   if (parms) {
     if (lpDirectPlayLobby3A) {
       lpDirectPlayLobby3A->Release();
-      lpDirectPlayLobby3A = NULL;
+      lpDirectPlayLobby3A = nullptr;
     }
 
-    hr = CoCreateInstance(CLSID_DirectPlayLobby, NULL, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
+    hr = CoCreateInstance(CLSID_DirectPlayLobby, nullptr, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
                           (LPVOID *)&lpDirectPlayLobby3A);
     if (SUCCEEDED(hr)) {
-      hr = lpDirectPlayLobby3A->CreateCompoundAddress((LPDPCOMPOUNDADDRESSELEMENT)parms, num_elements, NULL,
+      hr = lpDirectPlayLobby3A->CreateCompoundAddress((LPDPCOMPOUNDADDRESSELEMENT)parms, num_elements, nullptr,
                                                       &dwAddressSize);
       if (hr == DPERR_BUFFERTOOSMALL) {
         if (lpAddress)
@@ -256,7 +256,7 @@ void dp_EndGame() {
     return;
   lpDirectPlay4A->Close();
   lpDirectPlay4A->Release();
-  lpDirectPlay4A = NULL;
+  lpDirectPlay4A = nullptr;
 }
 
 // This function gets called when a game is started, so Direcplay knows the title, and to listen
@@ -284,7 +284,7 @@ int dp_StartGame(char *gamename) {
   ZeroMemory(&server_player, sizeof(DPNAME));
   server_player.dwSize = sizeof(DPNAME);
   server_player.lpszShortNameA = Players[Player_num].callsign;
-  server_player.lpszLongNameA = NULL;
+  server_player.lpszLongNameA = nullptr;
 
   // if(lpAddress)
   //{
@@ -296,18 +296,18 @@ int dp_StartGame(char *gamename) {
   //}
 
   if (SUCCEEDED(hres)) {
-    NetPlayers[Player_num].hPlayerEvent = CreateEvent(NULL,  // no security
+    NetPlayers[Player_num].hPlayerEvent = CreateEvent(nullptr,  // no security
                                                       FALSE, // auto reset
                                                       FALSE, // initial event reset
-                                                      NULL); // no name
-    if (NetPlayers[Player_num].hPlayerEvent == NULL) {
+                                                      nullptr); // no name
+    if (NetPlayers[Player_num].hPlayerEvent == nullptr) {
       LOG_ERROR << "Failed to create directplay notification event!";
       dp_EndGame();
       DP_active = false;
       return 0;
     }
     hres = lpDirectPlay4A->CreatePlayer(&NetPlayers[Player_num].dpidPlayer, &server_player,
-                                        NetPlayers[Player_num].hPlayerEvent, NULL, 0, DPPLAYER_SERVERPLAYER);
+                                        NetPlayers[Player_num].hPlayerEvent, nullptr, 0, DPPLAYER_SERVERPLAYER);
     if (FAILED(hres)) {
       LOG_ERROR.printf("Failed to create directplay player in dp_StartGame(): error %d", hres);
       return 0;
@@ -435,7 +435,7 @@ int dp_DirectPlaySend(network_address *who_to, uint8_t *data, int len, bool reli
     send_flags |= DPSEND_GUARANTEED;
 
   memcpy(&idTo, who_to->address, sizeof(DPID));
-  hr = lpDirectPlay4A->SendEx(NetPlayers[Player_num].dpidPlayer, idTo, send_flags, data, len, 0, 0, NULL, NULL);
+  hr = lpDirectPlay4A->SendEx(NetPlayers[Player_num].dpidPlayer, idTo, send_flags, data, len, 0, 0, nullptr, nullptr);
 
   if (FAILED(hr))
     return 0;
@@ -475,21 +475,21 @@ int dp_DirectPlayJoinGame(LPDPSESSIONDESC2 session) {
     ZeroMemory(&client_player, sizeof(DPNAME));
     client_player.dwSize = sizeof(DPNAME);
     client_player.lpszShortNameA = Players[Player_num].callsign;
-    client_player.lpszLongNameA = NULL;
+    client_player.lpszLongNameA = nullptr;
 
     LOG_DEBUG << "Creating local player...";
-    NetPlayers[Player_num].hPlayerEvent = CreateEvent(NULL,  // no security
+    NetPlayers[Player_num].hPlayerEvent = CreateEvent(nullptr,  // no security
                                                       FALSE, // auto reset
                                                       FALSE, // initial event reset
-                                                      NULL); // no name
-    if (NetPlayers[Player_num].hPlayerEvent == NULL) {
+                                                      nullptr); // no name
+    if (NetPlayers[Player_num].hPlayerEvent == nullptr) {
       LOG_ERROR << "Failed to create directplay notification event!";
       dp_EndGame();
       DP_active = false;
       return 0;
     }
     hres = lpDirectPlay4A->CreatePlayer(&NetPlayers[Player_num].dpidPlayer, &client_player,
-                                        NetPlayers[Player_num].hPlayerEvent, NULL, 0, 0);
+                                        NetPlayers[Player_num].hPlayerEvent, nullptr, 0, 0);
     if (FAILED(hres)) {
       LOG_ERROR.printf("Failed to create directplay player in dp_DirectPlayJoinGame(): error %d", hres);
       return 0;
@@ -503,18 +503,18 @@ void dp_ShutdownDirectPlay() {
   int i;
   LOG_DEBUG << "Freeing DirectPlay memory";
   for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
-    if (dpconns[i].conn != NULL) {
+    if (dpconns[i].conn != nullptr) {
       mem_free(dpconns[i].conn);
-      dpconns[i].conn = NULL;
-      dpconns[i].name[0] = NULL;
+      dpconns[i].conn = nullptr;
+      dpconns[i].name[0] = '\0';
     }
   }
   if (lpdplconnection)
     mem_free(lpdplconnection);
   if (lpAddress)
     mem_free(lpAddress);
-  lpAddress = NULL;
-  lpdplconnection = NULL;
+  lpAddress = nullptr;
+  lpdplconnection = nullptr;
   // Delete any previous directplay instance
   LOG_DEBUG << "Releasing DirectPlay COM object (lpDirectPlay4A)";
   // if(lpDirectPlay4A)
@@ -567,12 +567,12 @@ BOOL FAR PASCAL EnumModemAddress(REFGUID lpguidDataType, DWORD dwDataSize, LPCVO
 int dp_GetModemChoices(char *buffer, LPDWORD size) {
   LPDIRECTPLAY4A lpTempDP4;
   HRESULT hr;
-  void *connection = NULL;
+  void *connection = nullptr;
   ;
   int i;
   Num_modems_found = 0;
   if (SUCCEEDED(
-          CoCreateInstance(CLSID_DirectPlay, NULL, CLSCTX_INPROC_SERVER, IID_IDirectPlay4A, (LPVOID *)&lpTempDP4))) {
+          CoCreateInstance(CLSID_DirectPlay, nullptr, CLSCTX_INPROC_SERVER, IID_IDirectPlay4A, (LPVOID *)&lpTempDP4))) {
 
     lpTempDP4->EnumConnections(&DPD3_GUID, DirectPlayEnumConnectionsCallback, 0, 0);
 
@@ -593,10 +593,10 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
     hr = lpTempDP4->InitializeConnection(connection, 0);
 
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
-      if (dpconns[i].conn != NULL) {
+      if (dpconns[i].conn != nullptr) {
         mem_free(dpconns[i].conn);
-        dpconns[i].conn = NULL;
-        dpconns[i].name[0] = NULL;
+        dpconns[i].conn = nullptr;
+        dpconns[i].name[0] = '\0';
       }
     }
 
@@ -608,9 +608,9 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
     if (buffer) {
       if (lpDirectPlayLobby3A) {
         lpDirectPlayLobby3A->Release();
-        lpDirectPlayLobby3A = NULL;
+        lpDirectPlayLobby3A = nullptr;
       }
-      hr = CoCreateInstance(CLSID_DirectPlayLobby, NULL, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
+      hr = CoCreateInstance(CLSID_DirectPlayLobby, nullptr, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
                             (LPVOID *)&lpDirectPlayLobby3A);
       if (SUCCEEDED(hr))
         lpDirectPlayLobby3A->EnumAddress(EnumModemAddress, buffer, *size, 0);
@@ -658,7 +658,7 @@ void dp_RegisterLobbyApplication(char *appname, char *exefile, char *exepath, ch
   LOG_INFO.printf("AppDesc.lpszCurrentDirectoryA = %s", workingdir);
   LOG_INFO.printf("AppDesc.lpszDescriptionA = %s", description);
 
-  hr = CoCreateInstance(CLSID_DirectPlayLobby, NULL, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
+  hr = CoCreateInstance(CLSID_DirectPlayLobby, nullptr, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
                         (LPVOID *)&lpDirectPlayLobby3A);
   if (SUCCEEDED(hr)) {
     hr = lpDirectPlayLobby3A->RegisterApplication(0, &AppDesc);
@@ -683,29 +683,29 @@ bool dp_DidLobbyLaunchGame() {
   Directplay_lobby_launched_game = false;
   if (lpDirectPlayLobby3A) {
     lpDirectPlayLobby3A->Release();
-    lpDirectPlayLobby3A = NULL;
+    lpDirectPlayLobby3A = nullptr;
   }
-  CoInitialize(NULL);
-  hr = CoCreateInstance(CLSID_DirectPlayLobby, NULL, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
+  CoInitialize(nullptr);
+  hr = CoCreateInstance(CLSID_DirectPlayLobby, nullptr, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
                         (LPVOID *)&lpDirectPlayLobby3A);
   if (SUCCEEDED(hr)) {
-    hr = lpDirectPlayLobby3A->GetConnectionSettings(0, NULL, &buffersize);
+    hr = lpDirectPlayLobby3A->GetConnectionSettings(0, nullptr, &buffersize);
     if (FAILED(hr)) {
       if (hr == DPERR_NOTLOBBIED) {
         LOG_ERROR << "Application not started from a lobby.";
         lpDirectPlayLobby3A->Release();
-        lpDirectPlayLobby3A = NULL;
+        lpDirectPlayLobby3A = nullptr;
         return false;
       }
       LOG_ERROR << "Unable to determine DirectPlay lobby connection info buffer size!!!";
       lpDirectPlayLobby3A->Release();
-      lpDirectPlayLobby3A = NULL;
+      lpDirectPlayLobby3A = nullptr;
       return false;
     }
     lpdplconnection = (LPDPLCONNECTION)mem_malloc(buffersize);
     hr = lpDirectPlayLobby3A->GetConnectionSettings(0, lpdplconnection, &buffersize);
     lpDirectPlayLobby3A->Release();
-    lpDirectPlayLobby3A = NULL;
+    lpDirectPlayLobby3A = nullptr;
     if (FAILED(hr)) {
       LOG_ERROR << "IDirectPlayLobby3::GetConnectionSettings() failed.";
       if (hr == DPERR_NOTLOBBIED) {

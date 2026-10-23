@@ -159,7 +159,7 @@ BOOL CSiteSelectDlg::ParseSiteFile(void) {
   FILE *f;
 
   f = fopen(SITES_LOC_FNAME, "rt");
-  if (f == NULL) {
+  if (f == nullptr) {
     return FALSE;
   }
 

@@ -111,7 +111,7 @@ public:
   void DisplayVersions(int maj1, int min1, int bld1, int maj2 = -1, int min2 = -1, int bld2 = -1);
   void Cleanup(void);
 
-  CUpdateDlg(CWnd *pParent = NULL, int should_verify = 1); // standard constructor
+  CUpdateDlg(CWnd *pParent = nullptr, int should_verify = 1); // standard constructor
 
   CFont m_listfont; // font for the update feedback list
   CMessageWindowDlg msg_dlg;

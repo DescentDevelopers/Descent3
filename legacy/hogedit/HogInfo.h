@@ -47,7 +47,7 @@
 class CHogInfo : public CDialog {
   // Construction
 public:
-  CHogInfo(CWnd *pParent = NULL); // standard constructor
+  CHogInfo(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CHogInfo)

@@ -145,14 +145,14 @@ void CJoystickTab::OnBtnCalibrate() {
   memset(&si, 0, sizeof(STARTUPINFO));
   si.cb = sizeof(si);
 
-  BOOL ret = CreateProcess(NULL,                                              // pointer to name of executable module
+  BOOL ret = CreateProcess(nullptr,                                              // pointer to name of executable module
                            "rundll32.exe shell32.dll,Control_RunDLL joy.cpl", // pointer to command line string
-                           NULL,                                              // pointer to process security attributes
-                           NULL,                                              // pointer to thread security attributes
+                           nullptr,                                              // pointer to process security attributes
+                           nullptr,                                              // pointer to thread security attributes
                            FALSE,                                             // handle inheritance flag
                            CREATE_DEFAULT_ERROR_MODE,                         // creation flags
-                           NULL,                                              // pointer to new environment block
-                           NULL,                                              // pointer to current directory name
+                           nullptr,                                              // pointer to new environment block
+                           nullptr,                                              // pointer to current directory name
                            &si,                                               // pointer to STARTUPINFO
                            &pi                                                // pointer to PROCESS_INFORMATION
   );
@@ -160,9 +160,9 @@ void CJoystickTab::OnBtnCalibrate() {
   if (!ret) {
     char *lpMsgBuf;
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                  (LPTSTR)&lpMsgBuf, 0, NULL);
+                  (LPTSTR)&lpMsgBuf, 0, nullptr);
 
     // Display the string.
     CString err_msg;
@@ -363,7 +363,7 @@ int GetJoystickName(int joy_num, char *szRegKey, char *szReturnName)
   sprintf((char *)KeyStr, (char *)REGSTR_VAL_JOYNOEMNAME, joy_num + 1);
   Length = sizeof(szOEMName); // Get OEMNAME Configuration
 
-  if (ERROR_SUCCESS != RegQueryValueEx(JoyConfigKey, (char *)KeyStr, NULL, NULL, (uint8_t *)&szOEMName, &Length)) {
+  if (ERROR_SUCCESS != RegQueryValueEx(JoyConfigKey, (char *)KeyStr, nullptr, nullptr, (uint8_t *)&szOEMName, &Length)) {
     return (1); // No OEM name listed return error
   }
   RegCloseKey(ConfigKey); // Closes the registry Key
@@ -379,7 +379,7 @@ int GetJoystickName(int joy_num, char *szRegKey, char *szReturnName)
   Length = _MAX_PATH; // Get Name as listed in Control Panel
 
   if (ERROR_SUCCESS !=
-      RegQueryValueEx(OEMPropKey, REGSTR_VAL_JOYOEMNAME, NULL, NULL, (uint8_t *)szReturnName, &Length)) {
+      RegQueryValueEx(OEMPropKey, REGSTR_VAL_JOYOEMNAME, nullptr, nullptr, (uint8_t *)szReturnName, &Length)) {
     return (1); // No OEM name listed return error
   }
   RegCloseKey(OEMPropKey); // Closes the registry Key
@@ -425,8 +425,8 @@ void CJoystickTab::OnOK() {
 
 // Pointers to functions contained in DSOUND.dll
 int Di_dll_loaded = 0;
-HINSTANCE Di_dll_handle = NULL;
-HRESULT(__stdcall *pfn_DirectInputCreate)(HINSTANCE, DWORD, LPDIRECTINPUT *, LPUNKNOWN) = NULL;
+HINSTANCE Di_dll_handle = nullptr;
+HRESULT(__stdcall *pfn_DirectInputCreate)(HINSTANCE, DWORD, LPDIRECTINPUT *, LPUNKNOWN) = nullptr;
 
 // obtain the function pointers from the dsound.dll
 void di_dll_get_functions() {
@@ -453,7 +453,7 @@ int di_dll_load() {
 void di_dll_free() {
   if (Di_dll_loaded) {
     FreeLibrary(Di_dll_handle);
-    Di_dll_handle = NULL;
+    Di_dll_handle = nullptr;
     Di_dll_loaded = 0;
   }
 }
@@ -562,9 +562,9 @@ int di_detect_joysticks(int cur_joy, CComboBox *box) {
     return 0;
   }
 
-  hr = pfn_DirectInputCreate(GetModuleHandle(NULL), DIRECTINPUT_VERSION, &di_joystick_obj, NULL);
+  hr = pfn_DirectInputCreate(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, &di_joystick_obj, nullptr);
   if (FAILED(hr)) {
-    hr = pfn_DirectInputCreate(GetModuleHandle(NULL), 0x300, &di_joystick_obj, NULL);
+    hr = pfn_DirectInputCreate(GetModuleHandle(nullptr), 0x300, &di_joystick_obj, nullptr);
     if (FAILED(hr)) {
       di_dll_free();
       return 0;

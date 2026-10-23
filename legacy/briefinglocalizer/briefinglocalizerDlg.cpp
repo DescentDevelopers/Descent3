@@ -120,7 +120,7 @@ BOOL CBriefinglocalizerDlg::OnInitDialog() {
   static char szFilter[] = "Descent 3 Briefing (*.br?)|*.br?|All Files (*.*)|*.*||";
 
   _chdir(DefaultPath);
-  fd = new CFileDialog(true, ".brf", NULL, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilter);
+  fd = new CFileDialog(true, ".brf", nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilter);
   if (fd->DoModal() == IDCANCEL) {
     delete fd;
     CDialog::OnCancel();
@@ -131,7 +131,7 @@ BOOL CBriefinglocalizerDlg::OnInitDialog() {
 
   m_RealFileName = fd->GetPathName();
 
-  _splitpath(m_RealFileName, drive, path, NULL, NULL);
+  _splitpath(m_RealFileName, drive, path, nullptr, nullptr);
 
   savepath = drive;
   savepath += path;
@@ -143,7 +143,7 @@ BOOL CBriefinglocalizerDlg::OnInitDialog() {
   m_TempFileName = sztempfile;
 
   delete fd;
-  fd = NULL;
+  fd = nullptr;
   FILE *infile;
   struct _stat buf;
   int result = _stat(m_RealFileName, &buf);

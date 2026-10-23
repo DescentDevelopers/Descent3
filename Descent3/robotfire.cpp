@@ -214,7 +214,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
   if ((static_wb->flags & WBF_GUIDED) && obj->type == OBJ_PLAYER) {
     ASSERT(num_fired <= 1); // Only one guided can be fired at a time
     if (num_fired > 0) {
-      if (Players[obj->id].guided_obj != NULL) // if there already is a guided, release it
+      if (Players[obj->id].guided_obj != nullptr) // if there already is a guided, release it
       {
         ReleaseGuidedMissile(obj->id);
       }
@@ -234,7 +234,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
   if ((static_wb->flags & WBF_USER_TIMEOUT) && obj->type == OBJ_PLAYER) {
     ASSERT(num_fired <= 1); // Only one guided can be fired at a time
     if (num_fired > 0) {
-      if (Players[obj->id].user_timeout_obj != NULL) // if there already is a guided, release it
+      if (Players[obj->id].user_timeout_obj != nullptr) // if there already is a guided, release it
       {
         ReleaseUserTimeoutMissile(obj->id);
       }
@@ -337,7 +337,7 @@ void WBClearInfo(otype_wb_info static_wb[]) {
   int i;
   int j;
 
-  if (static_wb == NULL)
+  if (static_wb == nullptr)
     return;
 
   for (i = 0; i < MAX_WBS_PER_OBJ; i++) {

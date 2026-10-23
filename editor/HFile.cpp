@@ -408,7 +408,7 @@ room *CreateDefaultRoom() {
 
   // Get a pointer to our room
   rp = CreateNewRoom(16, 10, 0); // 16 verts, 10 faces, normal room
-  ASSERT(rp != NULL);
+  ASSERT(rp != nullptr);
 
   // Set the vertices for the room
   for (i = 0; i < 16; i++)
@@ -452,7 +452,7 @@ void CreateNewMine() {
 
   // Create a new room
   Curroomp = CreateDefaultRoom();
-  ASSERT(Curroomp != NULL);
+  ASSERT(Curroomp != nullptr);
 
   // Reset misc. vars
   Curface = Curedge = Curvert = 0;
@@ -481,14 +481,14 @@ void CreateNewMine() {
   FindPlayerStarts();
 
   // Clear the marked room
-  Markedroomp = NULL;
+  Markedroomp = nullptr;
 
   // Clear the selected segments
   ClearRoomSelectedList();
 
   // Clear the placed room & group
   Placed_room = -1;
-  Placed_group = NULL;
+  Placed_group = nullptr;
 
   // Reset the triggers
   Num_triggers = 0;

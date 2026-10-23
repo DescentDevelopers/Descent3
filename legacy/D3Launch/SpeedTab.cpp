@@ -491,7 +491,7 @@ void CSpeedTab::OnBtnSpeedDetect() {
   GetDlgItem(IDC_RAM_SPEED, &hwnd);
   ::SetWindowText(hwnd, tmp);
 
-  HDC hScreenDC = ::GetDC(NULL);
+  HDC hScreenDC = ::GetDC(nullptr);
   HDC hMemDC = CreateCompatibleDC(hScreenDC);
 
   int w, h;
@@ -550,7 +550,7 @@ void CSpeedTab::OnBtnSpeedDetect() {
     ::SetWindowText(hwnd, GetFullName(&Cards[current_card]));
     graphics_accelerator = Cards[current_card].renderer_type;
   } else { // otherwise, get it from the registry
-    RendererType renderer_id = (RendererType)os_config_read_uint(NULL, "PreferredRenderer", RENDERER_NONE);
+    RendererType renderer_id = (RendererType)os_config_read_uint(nullptr, "PreferredRenderer", RENDERER_NONE);
     char *card_name = os_config_read_string(szSectionName, "RenderingDeviceName", "");
     card3d temp_card;
     temp_card.renderer_type = renderer_id;

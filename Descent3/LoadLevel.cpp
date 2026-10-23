@@ -1305,7 +1305,7 @@
 #include "editor/editor_lighting.h"
 #endif
 
-MD5 *Level_md5 = NULL;
+MD5 *Level_md5 = nullptr;
 
 char *LocalizeLevelName(char *level);
 
@@ -1723,7 +1723,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
       cf_ReadBytes((uint8_t *)objp->custom_default_script_name, i, ifile);
       objp->custom_default_script_name[i] = '\0';
     } else {
-      objp->custom_default_script_name = NULL;
+      objp->custom_default_script_name = nullptr;
     }
 
     i = cf_ReadByte(ifile);
@@ -1732,11 +1732,11 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
       cf_ReadBytes((uint8_t *)objp->custom_default_module_name, i, ifile);
       objp->custom_default_module_name[i] = '\0';
     } else {
-      objp->custom_default_module_name = NULL;
+      objp->custom_default_module_name = nullptr;
     }
   } else {
-    objp->custom_default_module_name = NULL;
-    objp->custom_default_script_name = NULL;
+    objp->custom_default_module_name = nullptr;
+    objp->custom_default_script_name = nullptr;
   }
 
   //	load in obsolete script info
@@ -2439,7 +2439,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
   InitRoom(rp, nverts, nfaces, nportals);
 
   // Get room name
-  rp->name = NULL;
+  rp->name = nullptr;
   if (version >= 96) {
     char tempname[ROOM_NAME_LEN + 1];
     cf_ReadString(tempname, sizeof(tempname), ifile);
@@ -2569,7 +2569,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
         rp->volume_lights = mem_rmalloc<uint8_t>(size);
         ASSERT(rp->volume_lights); // ran out of memory!
       } else
-        rp->volume_lights = NULL;
+        rp->volume_lights = nullptr;
 
       ReadCompressionByte(ifile, rp->volume_lights, w * h * d);
 
@@ -2792,7 +2792,7 @@ void ReadLightmapChunk(CFILE *fp, int version) {
 
   int nummaps;
   int i, t;
-  uint16_t *ded_dummy_data = NULL;
+  uint16_t *ded_dummy_data = nullptr;
 
   if (Dedicated_server) {
     ded_dummy_data = (uint16_t *)mem_malloc(128 * 128 * 2);
@@ -3030,11 +3030,11 @@ void ReadBNodeChunk(CFILE *fp, int version) {
               bnlist->nodes[j].edges[k].max_rad = cf_ReadFloat(fp);
             }
           } else {
-            bnlist->nodes[j].edges = NULL;
+            bnlist->nodes[j].edges = nullptr;
           }
         }
       } else {
-        bnlist->nodes = NULL;
+        bnlist->nodes = nullptr;
       }
     }
   }
@@ -3465,7 +3465,7 @@ void ReadTerrainChunks(CFILE *fp, int version) {
     terr_chunk_size = cf_ReadInt(fp);
 
     LoadLevelProgress(LOAD_PROGRESS_LOADING_LEVEL,
-                      (filelen) ? (float)(terr_chunk_start + terr_chunk_size) / (float)filelen : 0.0f, NULL);
+                      (filelen) ? (float)(terr_chunk_start + terr_chunk_size) / (float)filelen : 0.0f, nullptr);
 
     if (ISCHUNK(CHUNK_TERRAIN_HEIGHT)) {
       ReadTerrainHeightChunk(fp, version);
@@ -3824,7 +3824,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           if ((i % 10) == 0) {
             LoadLevelProgress(
                 LOAD_PROGRESS_LOADING_LEVEL,
-                (filelen) ? (float)(chunk_start + (((chunk_size) / num_rooms) * i)) / (float)filelen : 0.0f, NULL);
+                (filelen) ? (float)(chunk_start + (((chunk_size) / num_rooms) * i)) / (float)filelen : 0.0f, nullptr);
           }
 
           roomnum = (version >= 96) ? cf_ReadShort(ifile) : i;
@@ -3974,7 +3974,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 #if (defined(EDITOR) || defined(NEWEDITOR))
         if (FindArg("-savescript")) {
           char path[_MAX_PATH], name[_MAX_PATH];
-          ddio_SplitPath(filename, path, name, NULL);
+          ddio_SplitPath(filename, path, name, nullptr);
           strcat(path, name);
           strcat(path, ".scr");
           CFILE *ofile = cfopen(path, "wb");
@@ -4034,7 +4034,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           Curvert = cf_ReadShort(ifile);
         }
         t = cf_ReadShort(ifile);
-        Markedroomp = (t == -1) ? NULL : &Rooms[t];
+        Markedroomp = (t == -1) ? nullptr : &Rooms[t];
         Markedface = cf_ReadShort(ifile);
         if (version >= 81) {
           Markededge = cf_ReadShort(ifile);
@@ -4119,7 +4119,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
     Player_object = &Objects[Players[0].objnum];
 
   // aabbs
-  LoadLevelProgress(LOAD_PROGRESS_LOADING_LEVEL, 1.0f, NULL);
+  LoadLevelProgress(LOAD_PROGRESS_LOADING_LEVEL, 1.0f, nullptr);
 
   // Compute the bounding boxes
   if (!f_read_AABB)
@@ -4192,7 +4192,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
   ConsolidateMineMirrors();
 
   // paging data.
-  LoadLevelProgress(LOAD_PROGRESS_PAGING_DATA, 0.0f, NULL);
+  LoadLevelProgress(LOAD_PROGRESS_PAGING_DATA, 0.0f, nullptr);
 
 #ifndef NEWEDITOR
   CountDataToPageIn();
@@ -4207,7 +4207,7 @@ end_loadlevel:
     for (int i = 0; i <= Highest_room_index; i++) {
       if (Rooms[i].used) {
         Rooms[i].bn_info.num_nodes = 0;
-        Rooms[i].bn_info.nodes = NULL;
+        Rooms[i].bn_info.nodes = nullptr;
       }
     }
   }
@@ -4987,7 +4987,7 @@ void WriteLightmapChunk(CFILE *fp) {
         cf_WriteShort(fp, h);
 
         uint16_t *data = lm_data(LightmapInfo[i].lm_handle);
-        ASSERT(data != NULL);
+        ASSERT(data != nullptr);
 
         CheckToWriteCompressShort(fp, data, w * h);
       }
@@ -5409,7 +5409,7 @@ void AlmostPageInSound(int id) {
     return;
 
   // Check if the sample data is already loaded
-  if (SoundFiles[id].sample_16bit != NULL || SoundFiles[id].sample_8bit != NULL || sound_counted[id])
+  if (SoundFiles[id].sample_16bit != nullptr || SoundFiles[id].sample_8bit != nullptr || sound_counted[id])
     return;
   sound_counted[id] = 1;
   need_to_page_num++;

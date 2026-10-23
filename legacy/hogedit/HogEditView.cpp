@@ -241,7 +241,7 @@ void CHogEditView::OnFileNew() {
 // Returns a type string for the given filename extension
 void CHogEditView::GetFileType(char *type, char *filename) {
   char ext[PSFILENAME_LEN + 1];
-  _splitpath(filename, NULL, NULL, NULL, ext);
+  _splitpath(filename, nullptr, nullptr, nullptr, ext);
 
   if (!strcmp(ext, ".ogf")) {
     strcpy(type, "Outrage Graphics File");
@@ -294,7 +294,7 @@ void CHogEditView::OnActionInsert() {
   SetFullRowSel(m_bFullRowSel);
 
   CString filter = "All files (*.*)|*.*||";
-  CFileDialog dlg_open(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
+  CFileDialog dlg_open(TRUE, nullptr, nullptr, OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
                        filter.GetBuffer(0), this);
 
   filename_buffer = new char[MAX_FILENAME_BUFFER];
@@ -305,7 +305,7 @@ void CHogEditView::OnActionInsert() {
   memset(filename_buffer, '\0', MAX_FILENAME_BUFFER);
 
   dlg_open.m_ofn.lpstrTitle = title;
-  dlg_open.m_ofn.lpstrFileTitle = NULL;
+  dlg_open.m_ofn.lpstrFileTitle = nullptr;
   dlg_open.m_ofn.lpstrFile = filename_buffer;
   dlg_open.m_ofn.nMaxFile = MAX_FILENAME_BUFFER;
 
@@ -335,7 +335,7 @@ void CHogEditView::OnActionInsert() {
 
   pos = dlg_open.GetStartPosition();
 
-  while (pos != NULL) {
+  while (pos != nullptr) {
     path = dlg_open.GetNextPathName(pos);
 
     rv = doc->AddFile(path, &entry);
@@ -422,10 +422,10 @@ void CHogEditView::UpdateTitle(CString &path, bool mod_flag) {
   char filename[PSFILENAME_LEN + 1], ext[12];
   char title[_MAX_PATH + 1];
 
-  _splitpath(path.GetBuffer(0), NULL, NULL, filename, ext);
+  _splitpath(path.GetBuffer(0), nullptr, nullptr, filename, ext);
   sprintf(title, "%s (%s%s%s)", HOG_EDIT_TITLE, filename, ext, (mod_flag) ? "*" : "");
 
-  if ((main_window = GetParentFrame()) != NULL)
+  if ((main_window = GetParentFrame()) != nullptr)
     main_window->SetWindowText(title);
   else
     OutputDebugString("Can't get main window!\n");
@@ -447,7 +447,7 @@ void CHogEditView::OnFileOpen() {
   if (!DoAutoProcess) {
     // Create Open File Box
     CString filter = "Outrage hog template (*.rib)|*.rib|Outrage hogfiles (*.hog)|*.hog|All Files (*.*)|*.*||";
-    CFileDialog dlg_open(TRUE, NULL, NULL, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
+    CFileDialog dlg_open(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
     if (dlg_open.DoModal() == IDCANCEL) {
       return;
     }
@@ -532,7 +532,7 @@ void CHogEditView::OnFileSaveAs() {
   }
 
   CString filter = "Outrage hog template (*.rib)|*.rib||";
-  CFileDialog dlg_save(FALSE, ".rib", NULL, 0, (LPCTSTR)filter, this);
+  CFileDialog dlg_save(FALSE, ".rib", nullptr, 0, (LPCTSTR)filter, this);
 
   if (dlg_save.DoModal() == IDCANCEL) {
     return;
@@ -599,7 +599,7 @@ void CHogEditView::OnActionDelete() {
 
       // Search for and remove corresponding entry from Document Library
       pos = doc->Library.filelist.GetHeadPosition();
-      while (pos != NULL) {
+      while (pos != nullptr) {
         last_pos = pos;
         entry = doc->Library.filelist.GetNext(pos);
         if (!stricmp(entry.name, name) && !stricmp(entry.path, path)) {
@@ -644,7 +644,7 @@ void CHogEditView::OnActionCreate() {
 
     if (!UseCurrentHogFilename) {
       CString filter = "Outrage hog file (*.hog)|*.hog|All files (*.*)|*.*||";
-      CFileDialog dlg_save(FALSE, NULL, doc->Library.filename, 0, (LPCTSTR)filter, this);
+      CFileDialog dlg_save(FALSE, nullptr, doc->Library.filename, 0, (LPCTSTR)filter, this);
 
       dlg_save.m_ofn.lpstrTitle = title;
 
@@ -656,7 +656,7 @@ void CHogEditView::OnActionCreate() {
       hog_name = dlg_save.GetPathName();
 
       // If no extension was specified, add ".hog" by default
-      if (strchr(hog_name.GetBuffer(0), '.') == NULL)
+      if (strchr(hog_name.GetBuffer(0), '.') == nullptr)
         hog_name += ".hog";
 
       check_name = TRUE;
@@ -722,7 +722,7 @@ void CHogEditView::OnActionCreate() {
           (const char **)hog_filenames,
           UpdateStatusBar);
   */
-  WaitCursor = NULL;
+  WaitCursor = nullptr;
 
   if (ret != HOGMAKER_OK) {
     char msg[1024];
@@ -793,7 +793,7 @@ void CHogEditView::OnActionCreate() {
   if (DoAutoProcess) {
     CFrameWnd *main_window;
 
-    if ((main_window = GetParentFrame()) != NULL)
+    if ((main_window = GetParentFrame()) != nullptr)
       main_window->PostMessage(WM_CLOSE);
   }
 }
@@ -833,7 +833,7 @@ void CHogEditView::OnActionUpdate() {
   CWaitCursor wc;
 
   pos = doc->Library.filelist.GetHeadPosition();
-  while (pos != NULL) {
+  while (pos != nullptr) {
     prev_pos = pos;
     temp_entry = doc->Library.filelist.GetNext(pos);
     res = doc->UpdatedFileCheck(&temp_entry);
@@ -940,7 +940,7 @@ void CHogEditView::OnActionExtract() {
 
       // Search for corresponding entry in Document Library
       pos = doc->Library.filelist.GetHeadPosition();
-      while (pos != NULL) {
+      while (pos != nullptr) {
         entry = doc->Library.filelist.GetNext(pos);
         if (!stricmp(entry.name, name)) {
 

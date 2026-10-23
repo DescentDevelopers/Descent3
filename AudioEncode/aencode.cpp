@@ -103,8 +103,8 @@ void WriteBand_Fmt27(Encoder &enc, int32_t colIndex, uint32_t packerId);
 void WriteBand_Fmt29(Encoder &enc, int32_t colIndex, uint32_t packerId);
 
 WriteBandFunc WriteBand_tbl[] = {WriteBand_Fmt0,
-                                 NULL,
-                                 NULL,
+                                 nullptr,
+                                 nullptr,
                                  WriteBand_Fmt3_16,
                                  WriteBand_Fmt3_16,
                                  WriteBand_Fmt3_16,
@@ -127,13 +127,13 @@ WriteBandFunc WriteBand_tbl[] = {WriteBand_Fmt0,
                                  WriteBand_Fmt22,
                                  WriteBand_Fmt23,
                                  WriteBand_Fmt24,
-                                 NULL,
+                                 nullptr,
                                  WriteBand_Fmt26,
                                  WriteBand_Fmt27,
-                                 NULL,
+                                 nullptr,
                                  WriteBand_Fmt29,
-                                 NULL,
-                                 NULL};
+                                 nullptr,
+                                 nullptr};
 
 float std_lo_filter[] = {
     -0.0012475221f, -0.0024950907f, 0.0087309526f, 0.019957958f, -0.050528999f, -0.12055097f, 0.29304558f, 0.70617616f,
@@ -657,7 +657,7 @@ int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_
   int adjustedSomeVal = (((someVal < -1) ? (someVal + 1) : (someVal)) + 1) >> 1;
   enc.m_adjustedSamplesTimeNumColumns = adjustedSomeVal * (enc.m_numColumns - 1);
   enc.m_levelSlots = reinterpret_cast<float **>(malloc(sizeof(float *) * (levels + 1)));
-  if (enc.m_levelSlots == NULL)
+  if (enc.m_levelSlots == nullptr)
     return 0;
 
   if (levels >= 0) {
@@ -669,7 +669,7 @@ int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_
 
       float *blockData = reinterpret_cast<float *>(malloc((enc.m_samplesPerBlock + extraSamples) * sizeof(float)));
       enc.m_levelSlots[i] = blockData;
-      if (blockData == NULL)
+      if (blockData == nullptr)
         return 0;
 
       memset(blockData, 0, (enc.m_samplesPerBlock + extraSamples) * sizeof(float));
@@ -678,7 +678,7 @@ int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_
   }
 
   enc.m_pFormatIdPerColumn = reinterpret_cast<uint32_t *>(malloc(enc.m_numColumns * sizeof(uint32_t)));
-  if (enc.m_pFormatIdPerColumn == NULL)
+  if (enc.m_pFormatIdPerColumn == nullptr)
     return 0;
 
   enc.m_sampleCount = 0;
@@ -693,7 +693,7 @@ int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_
 }
 
 void DestroyEncoder(Encoder &enc) {
-  if (enc.m_levelSlots != NULL) {
+  if (enc.m_levelSlots != nullptr) {
     for (int i = 0; i <= enc.m_levels; ++i) {
       if (enc.m_levelSlots[i] != 0) {
         int extraSamples = 0;
@@ -708,7 +708,7 @@ void DestroyEncoder(Encoder &enc) {
     free(enc.m_levelSlots);
   }
 
-  if (enc.m_pFormatIdPerColumn != NULL) {
+  if (enc.m_pFormatIdPerColumn != nullptr) {
     free(enc.m_pFormatIdPerColumn);
   }
 }

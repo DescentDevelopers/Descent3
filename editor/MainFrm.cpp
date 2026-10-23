@@ -1005,31 +1005,31 @@ static UINT indicators[] = {
     ID_INDICATOR_VIEWER  // which viewer is current
 };
 
-static CMainFrame *MFC_Main_frame = NULL;
+static CMainFrame *MFC_Main_frame = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame construction/destruction
 
 CMainFrame::CMainFrame() {
   // TODO: add member initialization code here
-  m_KeypadTabDialog = NULL;
+  m_KeypadTabDialog = nullptr;
 
-  m_LightingDialog = NULL;
-  m_TextureDialog = NULL;
-  m_ObjectDialog = NULL;
-  m_TriggerDialog = NULL;
-  m_DoorwayDialog = NULL;
-  m_PathPadDialog = NULL;
-  m_TerrainDialog = NULL;
-  m_MegacellKeypad = NULL;
-  m_LevelDialog = NULL;
-  m_MatcenDialog = NULL;
+  m_LightingDialog = nullptr;
+  m_TextureDialog = nullptr;
+  m_ObjectDialog = nullptr;
+  m_TriggerDialog = nullptr;
+  m_DoorwayDialog = nullptr;
+  m_PathPadDialog = nullptr;
+  m_TerrainDialog = nullptr;
+  m_MegacellKeypad = nullptr;
+  m_LevelDialog = nullptr;
+  m_MatcenDialog = nullptr;
 
-  m_ObjModeless = NULL;
-  m_KeypadTabCtrl = NULL;
-  m_RoomDialog = NULL;
-  m_FloatingKeypadDialog = NULL;
-  m_D3Splash = NULL;
+  m_ObjModeless = nullptr;
+  m_KeypadTabCtrl = nullptr;
+  m_RoomDialog = nullptr;
+  m_FloatingKeypadDialog = nullptr;
+  m_D3Splash = nullptr;
 }
 
 CMainFrame::~CMainFrame() {}
@@ -1280,7 +1280,7 @@ void CMainFrame::RemoveSplashScreen() {
     return;
   m_D3Splash->ShowWindow(SW_HIDE);
   m_D3Splash->DestroyWindow();
-  m_D3Splash = NULL;
+  m_D3Splash = nullptr;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1439,15 +1439,15 @@ void CMainFrame::OnDestroy() {
   //	kill game and editor objects outside MFC.
   if (Desktop_surf) {
     delete Desktop_surf;
-    Desktop_surf = NULL;
+    Desktop_surf = nullptr;
   }
   if (Database) {
     delete Database;
-    Database = NULL;
+    Database = nullptr;
   }
   if (Descent) {
     delete Descent;
-    Descent = NULL;
+    Descent = nullptr;
   }
 }
 
@@ -1460,7 +1460,7 @@ void InitCScripts() {
   CreateNewMine();
 
   //	Setup include directories for OSIRIS
-  ddio_MakePath(path, cf_GetWritableBaseDirectory().u8string().c_str(), "data", "levels", NULL);
+  ddio_MakePath(path, cf_GetWritableBaseDirectory().u8string().c_str(), "data", "levels", nullptr);
 }
 
 // Copied from winmain.cpp
@@ -1825,7 +1825,7 @@ void CMainFrame::DockKeypad(BOOL dock) {
       //	Resize the keypad to the size of the window.
       if (m_FloatingKeypadDialog) {
         m_FloatingKeypadDialog->DestroyWindow();
-        m_FloatingKeypadDialog = NULL;
+        m_FloatingKeypadDialog = nullptr;
       }
       ShowControlBar(&m_wndKeypadBar, TRUE, FALSE);
       ResizeKeypad();
@@ -1855,7 +1855,7 @@ void CMainFrame::DockKeypad(BOOL dock) {
       }
 
       // place keypad at right, top of desktop if not already placed
-      m_FloatingKeypadDialog->SetWindowPos(NULL, D3EditState.float_keypad_x, D3EditState.float_keypad_y,
+      m_FloatingKeypadDialog->SetWindowPos(nullptr, D3EditState.float_keypad_x, D3EditState.float_keypad_y,
                                            D3EditState.float_keypad_w, D3EditState.float_keypad_h, SWP_NOZORDER);
       m_FloatingKeypadDialog->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
       m_FloatingKeypadDialog->ShowWindow(SW_SHOW);
@@ -2259,7 +2259,7 @@ void CMainFrame::OnEditSelectAttached() {
 }
 
 void CMainFrame::OnEditSaveScrap() {
-  if (Scrap == NULL) {
+  if (Scrap == nullptr) {
     OutrageMessageBox("The scrap buffer is empty.");
     return;
   }
@@ -2380,7 +2380,7 @@ void CMainFrame::OnEditPlaceTerrain() {
 }
 
 void CMainFrame::OnEditAttach() {
-  ASSERT(Placed_group != NULL);
+  ASSERT(Placed_group != nullptr);
 
   AttachGroup();
 }
@@ -2433,7 +2433,7 @@ void ResetObjectOntoTerrain() {
 
     if (!OBJECT_OUTSIDE(objp)) {
       int roomnum = GetTerrainRoomFromPos(&objp->pos);
-      ObjSetPos(objp, &objp->pos, roomnum, NULL, true);
+      ObjSetPos(objp, &objp->pos, roomnum, nullptr, true);
 
       EditorStatus("Object %d (\"%s\") moved to cell %d", OBJNUM(objp), objp->name ? objp->name : "<no name>",
                    CELLNUM(roomnum));
@@ -2460,7 +2460,7 @@ void ResetObjectsIntoMine() {
             OutrageMessageBox("Can't find room for object %d (type = %s)", objnum, Object_type_names[objp->type]);
           else {
             mprintf(0, "Moving object %d to room %d\n", objnum, roomnum);
-            ObjSetPos(&Objects[objnum], &objp->pos, roomnum, NULL, true);
+            ObjSetPos(&Objects[objnum], &objp->pos, roomnum, nullptr, true);
             count++;
           }
         }
@@ -2804,7 +2804,7 @@ void CMainFrame::OnTestTest3() {
 }
 
 int GetChangeMask() {
-  static room *last_curroomp = NULL;
+  static room *last_curroomp = nullptr;
   static int last_curface = -1, last_curportal = -1, last_curobj = -1;
   static char last_name[OBJ_NAME_LEN + 1] = "";
 
@@ -3203,9 +3203,9 @@ void CMainFrame::OnEditorsFiles() {
   theApp.resume();
 }
 
-void CMainFrame::OnUpdateEditAttach(CCmdUI *pCmdUI) { pCmdUI->Enable(Placed_group != NULL); }
+void CMainFrame::OnUpdateEditAttach(CCmdUI *pCmdUI) { pCmdUI->Enable(Placed_group != nullptr); }
 
-void CMainFrame::OnUpdateEditSaveScrap(CCmdUI *pCmdUI) { pCmdUI->Enable(Scrap != NULL); }
+void CMainFrame::OnUpdateEditSaveScrap(CCmdUI *pCmdUI) { pCmdUI->Enable(Scrap != nullptr); }
 
 void CMainFrame::OnFileLevelProps() {
   CLevelDialog dlg(this);
@@ -3222,7 +3222,7 @@ void CMainFrame::OnObjbutton() {
     D3EditState.objmodeless_y = rect.top;
     D3EditState.objmodeless_on = false;
     m_ObjModeless->DestroyWindow();
-    m_ObjModeless = NULL;
+    m_ObjModeless = nullptr;
   } else {
     m_ObjModeless = new CObjectListModeless(this);
     m_ObjModeless->Create();
@@ -3234,7 +3234,7 @@ void CMainFrame::OnObjbutton() {
 
 void CMainFrame::OnUpdateObjbutton(CCmdUI *pCmdUI) {
   if (m_ObjModeless && !D3EditState.objmodeless_on) {
-    m_ObjModeless = NULL;
+    m_ObjModeless = nullptr;
   }
 
   pCmdUI->SetCheck(D3EditState.objmodeless_on);
@@ -3375,7 +3375,7 @@ void CMainFrame::OnUpdateViewShowObjectsInWireframeView(CCmdUI *pCmdUI) {
 }
 
 void CMainFrame::OnEditorsDallas() {
-  if (theApp.m_DallasModelessDlgPtr == NULL) {
+  if (theApp.m_DallasModelessDlgPtr == nullptr) {
     theApp.m_DallasModelessDlgPtr = new CDallasMainDlg;
     theApp.m_DallasModelessDlgPtr->Create(IDD_DALLAS_MAIN_DIALOG, this);
     theApp.m_DallasModelessDlgPtr->ShowWindow(SW_SHOW);
@@ -3419,14 +3419,14 @@ void CMainFrame::OnViewMoveCameraToCurrentObject() {
   fq.startroom = Viewer_object->roomnum;
   fq.p1 = &pos;
   fq.thisobjnum = OBJNUM(Viewer_object);
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = 0;
   fq.rad = 0.0;
 
   fvi_FindIntersection(&fq, &hit_info);
 
   // Move the viewer to the new position
-  MoveViewer(&hit_info.hit_pnt, hit_info.hit_room, NULL);
+  MoveViewer(&hit_info.hit_pnt, hit_info.hit_room, nullptr);
 }
 
 void SelectObject(int objnum);
@@ -3455,7 +3455,7 @@ void CMainFrame::OnShowAllCheckedOut() {
 
   // Get all locked pages
   mngs_Pagelock *LockList = mem_rmalloc<mngs_Pagelock>(MAX_LOCKLIST_ELEMENTS);
-  int n = mng_GetListOfLocks(LockList, MAX_LOCKLIST_ELEMENTS, NULL);
+  int n = mng_GetListOfLocks(LockList, MAX_LOCKLIST_ELEMENTS, nullptr);
 
   // ASSERT(n >= 1);		//always dummy page?
   // ASSERT(!strcmp(LockList[0].name,"DUMMY PAGE"));
@@ -3642,7 +3642,7 @@ void CMainFrame::OnFileSaveGoalText() {
   strcat(pathname, ".str");
   strcat(filename, ext);
 
-  CFileDialog dlg_open(FALSE, (LPCTSTR) ".str", pathname, 0, NULL, this);
+  CFileDialog dlg_open(FALSE, (LPCTSTR) ".str", pathname, 0, nullptr, this);
   if (dlg_open.DoModal() == IDCANCEL)
     return;
 
@@ -3650,7 +3650,7 @@ void CMainFrame::OnFileSaveGoalText() {
 }
 
 void CMainFrame::OnViewViewprop() {
-  if (theApp.m_ViewerPropDlgPtr == NULL) {
+  if (theApp.m_ViewerPropDlgPtr == nullptr) {
     theApp.m_ViewerPropDlgPtr = new CViewerPropDlg;
     theApp.m_ViewerPropDlgPtr->Create(IDD_VIEWER_DIALOG, this);
     theApp.m_ViewerPropDlgPtr->ShowWindow(SW_SHOW);
@@ -3660,7 +3660,7 @@ void CMainFrame::OnViewViewprop() {
 }
 
 void CMainFrame::OnUpdateViewViewprop(CCmdUI *pCmdUI) {
-  if (theApp.m_ViewerPropDlgPtr == NULL) {
+  if (theApp.m_ViewerPropDlgPtr == nullptr) {
     pCmdUI->SetCheck(0);
   } else {
     pCmdUI->SetCheck(1);

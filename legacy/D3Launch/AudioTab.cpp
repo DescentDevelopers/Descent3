@@ -211,7 +211,7 @@ BOOL WINAPI dsound_enum_callback(GUID FAR *lpGuid, LPSTR lpDeviceDescription, LP
     card->pguid = &card->guid;
   } else {
     memset(&card->guid, 0, sizeof(GUID));
-    card->pguid = NULL;
+    card->pguid = nullptr;
   }
 
   // Save name of device
@@ -231,7 +231,7 @@ CreateDSBuffer(LPDIRECTSOUND lpDirectSound, int buffer_type, LPDIRECTSOUNDBUFFER
   if (frequency != 44100 && frequency != 22050 && frequency != 11025)
     return 0;
 
-  if (lpDirectSound == NULL)
+  if (lpDirectSound == nullptr)
     return 0;
 
   // Setup the wave format
@@ -258,7 +258,7 @@ CreateDSBuffer(LPDIRECTSOUND lpDirectSound, int buffer_type, LPDIRECTSOUNDBUFFER
   // m_primary_bit_depth = fmt.wBitsPerSample;
   // m_primary_alignment   = fmt.nBlockAlign;
 
-  dsbd.lpwfxFormat = NULL;
+  dsbd.lpwfxFormat = nullptr;
   dsbd.dwBufferBytes = 0;
   dsbd.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_GETCURRENTPOSITION2;
   if (positional) {
@@ -280,10 +280,10 @@ BOOL CreativeEAXCheck(LPDIRECTSOUND lpds) {
   BOOL retval = FALSE;
   DWORD properties = 0;
   ULONG ulAnswer = 0;
-  LPKSPROPERTYSET lpksps = NULL;
+  LPKSPROPERTYSET lpksps = nullptr;
   WAVEFORMATEX wave;
   DSBUFFERDESC dsbdesc;
-  LPDIRECTSOUNDBUFFER lpdsb = NULL;
+  LPDIRECTSOUNDBUFFER lpdsb = nullptr;
 
   const DWORD EAX_ENVIRONMENTS_AVAILABLE = 1, EAX_BUFFERMIX_AVAILABLE = 2;
 
@@ -301,7 +301,7 @@ BOOL CreativeEAXCheck(LPDIRECTSOUND lpds) {
   dsbdesc.dwBufferBytes = DSBSIZE_MIN * 2;
   dsbdesc.lpwfxFormat = &wave;
 
-  if (FAILED(lpds->CreateSoundBuffer(&dsbdesc, &lpdsb, NULL))) {
+  if (FAILED(lpds->CreateSoundBuffer(&dsbdesc, &lpdsb, nullptr))) {
     retval = FALSE;
   } else if (FAILED(lpdsb->QueryInterface(IID_IKsPropertySet, (LPVOID *)&lpksps))) {
     retval = FALSE;
@@ -391,13 +391,13 @@ bool DetermineMixerOptions(LPDIRECTSOUND lpDirectSound, UINT &mixer_flags) {
   // Try and create a buffer
   HRESULT result;
   LPDIRECTSOUNDBUFFER lp_primary_buffer;
-  lp_primary_buffer = NULL;
+  lp_primary_buffer = nullptr;
 
   // test software
   result = CreateDSBuffer(lpDirectSound, SBT_PRIMARY, &lp_primary_buffer, 0, 22050, true, true, false);
 
   // Make sure buffer was created successfully
-  if (lp_primary_buffer == NULL)
+  if (lp_primary_buffer == nullptr)
     return TRUE;
 
   if (result != DS_OK) {
@@ -440,24 +440,24 @@ void check_direct_sound() {
   LPDIRECTSOUND lpDirectSound;
 
   ds_dll_handle = LoadLibrary("dsound.dll");
-  if (ds_dll_handle == NULL)
+  if (ds_dll_handle == nullptr)
     return;
 
   // Get function pointers from DLL
   pfn_DirectSoundEnumerate = (LPFN_DIRECTSOUNDENUMERATE)GetProcAddress(ds_dll_handle, "DirectSoundEnumerateA");
-  if (pfn_DirectSoundEnumerate == NULL) {
+  if (pfn_DirectSoundEnumerate == nullptr) {
     OutputDebugString("Could not find DirectSoundEnumerate()\n");
     goto DSoundCleanup;
   }
 
   pfn_DirectSoundCreate = (LPFN_DIRECTSOUNDCREATE)GetProcAddress(ds_dll_handle, "DirectSoundCreate");
-  if (pfn_DirectSoundCreate == NULL) {
+  if (pfn_DirectSoundCreate == nullptr) {
     OutputDebugString("Could not find DirectSoundCreate()\n");
     goto DSoundCleanup;
   }
 
   // Enumerate sound cards/devices on user's system
-  dsrval = pfn_DirectSoundEnumerate((LPDSENUMCALLBACKA)dsound_enum_callback, NULL);
+  dsrval = pfn_DirectSoundEnumerate((LPDSENUMCALLBACKA)dsound_enum_callback, nullptr);
   if (dsrval != DS_OK) {
     OutputDebugString("DirectSoundEnumerate failed.\n");
     goto DSoundCleanup;
@@ -470,7 +470,7 @@ void check_direct_sound() {
     Cards[j].mixers = DS8BIT_MIXER;
 
     // Initialize Direct sound and get available mixers
-    if (DirectSoundCreate(Cards[j].pguid, &lpDirectSound, NULL) == DS_OK) {
+    if (DirectSoundCreate(Cards[j].pguid, &lpDirectSound, nullptr) == DS_OK) {
       // Creation succeeded.
       // lpDirectSound->lpVtbl->SetCooperativeLevel(lpDirectSound, hwnd, DSSCL_NORMAL);
       // .
@@ -517,7 +517,7 @@ void detect_sound_cards(int really_detect) {
   // Setup "None" card slot
   strcpy(Cards[Num_cards].name, no_sound_msg);
   Cards[Num_cards].mixers = 0;
-  Cards[Num_cards].pguid = NULL;
+  Cards[Num_cards].pguid = nullptr;
   memset(&Cards[Num_cards].guid, 0, sizeof(GUID));
   Num_cards++;
 
@@ -608,7 +608,7 @@ void CAudioTab::OnOK() {
     mixer_id = SOUND_MIXER_DS_16;
 
   // Write out the default mixer
-  os_config_write_uint(NULL, "SoundMixer", mixer_id);
+  os_config_write_uint(nullptr, "SoundMixer", mixer_id);
 
   // Write out the Launcher sound setting
   LauncherSoundEnabled = m_LauncherSndCheck.GetCheck();
@@ -648,10 +648,10 @@ BOOL CAudioTab::OnInitDialog() {
   m_MsgDlg.DestroyWindow();
 
   // Get current card name from the registry
-  current_card = os_config_read_string(szSectionName, "SoundcardName", NULL);
+  current_card = os_config_read_string(szSectionName, "SoundcardName", nullptr);
 
   // Get the currently selected mixer
-  mixer_id = os_config_read_uint(NULL, "SoundMixer", SOUND_MIXER_NONE);
+  mixer_id = os_config_read_uint(nullptr, "SoundMixer", SOUND_MIXER_NONE);
 
   current = -1;
   if (current_card) {

@@ -35,7 +35,7 @@ class CPlaySongDlg : public CDialog {
 public:
   AudioStream m_Stream;
   CString m_StreamName;
-  CPlaySongDlg(CWnd *pParent = NULL); // standard constructor
+  CPlaySongDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CPlaySongDlg)

@@ -49,7 +49,7 @@ void RenderObject_SetLightDirection(vector *dir);
 
 // Given a position in 3space and a size, returns whether or not that sized point is
 // visible from the current view matrix
-int IsPointVisible(vector *, float, float *pointz = NULL);
+int IsPointVisible(vector *, float, float *pointz = nullptr);
 
 // Draws the 'typing message' icon indicator above an object
 void DrawPlayerTypingIndicator(object *obj);

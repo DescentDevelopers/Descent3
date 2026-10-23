@@ -79,18 +79,18 @@ const uint8_t *GL_error_string;
 
 #if defined(WIN32)
 //	Moved from DDGR library
-static HWND hOpenGLWnd = NULL;
-static HDC hOpenGLDC = NULL;
+static HWND hOpenGLWnd = nullptr;
+static HDC hOpenGLDC = nullptr;
 HGLRC ResourceContext;
 static WORD Saved_gamma_values[256 * 3];
 #elif defined(POSIX)
-static Display *OpenGL_Display = NULL;
+static Display *OpenGL_Display = nullptr;
 static Window OpenGL_Window;
 static XVisualInfo OpenGL_VisualInfo;
 static GLXContext OpenGL_Context;
 static bool OpenGL_TextureHack = false;
 static bool OpenGL_UseLists = false;
-static oeLnxApplication *OpenGL_LinuxApp = NULL;
+static oeLnxApplication *OpenGL_LinuxApp = nullptr;
 
 // void CreateFullScreenWindow(Display *dpy,Window rootwin,Window window,int DisplayScreen,int DisplayWidth,int
 // DisplayHeight);
@@ -148,13 +148,13 @@ uint16_t *OpenGL_lightmap_remap;
 uint8_t *OpenGL_bitmap_states;
 uint8_t *OpenGL_lightmap_states;
 
-uint32_t *opengl_Upload_data = NULL;
-uint32_t *opengl_Translate_table = NULL;
-uint32_t *opengl_4444_translate_table = NULL;
+uint32_t *opengl_Upload_data = nullptr;
+uint32_t *opengl_Translate_table = nullptr;
+uint32_t *opengl_4444_translate_table = nullptr;
 
-uint16_t *opengl_packed_Upload_data = NULL;
-uint16_t *opengl_packed_Translate_table = NULL;
-uint16_t *opengl_packed_4444_translate_table = NULL;
+uint16_t *opengl_packed_Upload_data = nullptr;
+uint16_t *opengl_packed_Translate_table = nullptr;
+uint16_t *opengl_packed_4444_translate_table = nullptr;
 
 rendering_state OpenGL_state;
 static float Alpha_multiplier = 1.0;
@@ -177,7 +177,7 @@ tex_array GL_tex_coords[100];
 tex_array GL_tex_coords2[100];
 
 bool OpenGL_multitexture_state = false;
-module *OpenGLDLLHandle = NULL;
+module *OpenGLDLLHandle = nullptr;
 int Already_loaded = 0;
 bool opengl_Blending_on = 0;
 
@@ -448,7 +448,7 @@ int opengl_Setup(HDC glhdc) {
   if (pf == 0) {
     Int3();
     // FreeLibrary(opengl_dll_handle);
-    return NULL;
+    return nullptr;
   }
 
   mprintf(0, "Choose pixel format successful!\n");
@@ -458,7 +458,7 @@ int opengl_Setup(HDC glhdc) {
     DWORD ret = GetLastError();
     Int3();
     // FreeLibrary(opengl_dll_handle);
-    return NULL;
+    return nullptr;
   }
 
   mprintf(0, "SetPixelFormat successful!\n");
@@ -467,26 +467,26 @@ int opengl_Setup(HDC glhdc) {
   if (DescribePixelFormat(glhdc, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd_copy) == 0) {
     Int3();
     // FreeLibrary(opengl_dll_handle);
-    return NULL;
+    return nullptr;
   }
 
   // Check the returned PFD to see if it is hardware accelerated
   if ((pfd_copy.dwFlags & PFD_GENERIC_ACCELERATED) == 0 && (pfd_copy.dwFlags & PFD_GENERIC_FORMAT) != 0) {
     Int3();
     // FreeLibrary(opengl_dll_handle);
-    return NULL;
+    return nullptr;
   }
 
   // Create an OpenGL context, and make it the current context
   ResourceContext = dwglCreateContext((HDC)glhdc);
-  if (ResourceContext == NULL) {
+  if (ResourceContext == nullptr) {
     DWORD ret = GetLastError();
     // FreeLibrary(opengl_dll_handle);
     Int3();
-    return NULL;
+    return nullptr;
   }
 
-  ASSERT(ResourceContext != NULL);
+  ASSERT(ResourceContext != nullptr);
   mprintf(0, "Making context current\n");
   dwglMakeCurrent((HDC)glhdc, ResourceContext);
 
@@ -598,7 +598,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 
   // Create an OpenGL rendering context
   OpenGL_Context = glXCreateContext(OpenGL_Display, new_vis, None, True);
-  if (OpenGL_Context == NULL) {
+  if (OpenGL_Context == nullptr) {
     fprintf(stderr, "OpenGL: Unable to create GLX Context\n");
     Int3();
     return 0;
@@ -698,7 +698,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
    */
   static HWND hwnd;
 
-  if (app != NULL) {
+  if (app != nullptr) {
     ParentApplication = app;
     hwnd = (HWND)((oeWin32Application *)app)->m_hWnd;
   }
@@ -730,7 +730,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
       if (retval != DISP_CHANGE_SUCCESSFUL) {
         mprintf(0, "OpenGL_INIT:Change display setting failed failed!\n");
         rend_SetErrorMessage("OGL: ChangeDisplaySettings failed.  Make sure your desktop is set to 16bit mode!");
-        ChangeDisplaySettings(NULL, 0);
+        ChangeDisplaySettings(nullptr, 0);
         goto D3DError;
       } else {
         OpenGL_preferred_state.bit_depth = 16;
@@ -745,7 +745,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   memset(&OpenGL_state, 0, sizeof(rendering_state));
 
   //	These values are set here - samir
-  if (app != NULL) {
+  if (app != nullptr) {
     hOpenGLWnd = (HWND)((oeWin32Application *)app)->m_hWnd;
   }
 
@@ -977,21 +977,21 @@ void opengl_Close(const bool just_resizing) {
 
 #if defined(WIN32)
   if (dwglMakeCurrent)
-    dwglMakeCurrent(NULL, NULL);
+    dwglMakeCurrent(nullptr, nullptr);
 
   if (dwglDeleteContext)
     dwglDeleteContext(ResourceContext);
 
   // Change our display back
   if (!WindowGL)
-    ChangeDisplaySettings(NULL, 0);
+    ChangeDisplaySettings(nullptr, 0);
 #elif defined(POSIX)
   // Restore our video mode
   LinuxVideoMode.Lock(false);
   LinuxVideoMode.RestoreVideoMode();
   if (OpenGL_Display) {
     if (dglXMakeCurrent)
-      glXMakeCurrent(OpenGL_Display, OpenGL_Window, NULL);
+      glXMakeCurrent(OpenGL_Display, OpenGL_Window, nullptr);
     if (dglXDestroyContext)
       glXDestroyContext(OpenGL_Display, OpenGL_Context);
   }
@@ -1006,9 +1006,9 @@ void opengl_Close(const bool just_resizing) {
       mem_free(opengl_packed_Translate_table);
     if (opengl_packed_4444_translate_table)
       mem_free(opengl_packed_4444_translate_table);
-    opengl_packed_Upload_data = NULL;
-    opengl_packed_Translate_table = NULL;
-    opengl_packed_4444_translate_table = NULL;
+    opengl_packed_Upload_data = nullptr;
+    opengl_packed_Translate_table = nullptr;
+    opengl_packed_4444_translate_table = nullptr;
   } else {
     if (opengl_Upload_data)
       mem_free(opengl_Upload_data);
@@ -1016,9 +1016,9 @@ void opengl_Close(const bool just_resizing) {
       mem_free(opengl_Translate_table);
     if (opengl_4444_translate_table)
       mem_free(opengl_4444_translate_table);
-    opengl_Upload_data = NULL;
-    opengl_Translate_table = NULL;
-    opengl_4444_translate_table = NULL;
+    opengl_Upload_data = nullptr;
+    opengl_Translate_table = nullptr;
+    opengl_4444_translate_table = nullptr;
   }
 
   if (OpenGL_cache_initted) {
@@ -2392,7 +2392,7 @@ int opengl_SetPreferredState(renderer_preferred_state *pref_state) {
 
     if (reinit) {
       opengl_Close();
-      retval = opengl_Init(NULL, &OpenGL_preferred_state);
+      retval = opengl_Init(nullptr, &OpenGL_preferred_state);
     } else {
       if (old_state.gamma != pref_state->gamma) {
         opengl_SetGammaValue(pref_state->gamma);

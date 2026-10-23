@@ -135,7 +135,7 @@ int DLLFUNCCALL GetGOScriptID(char *name, uint8_t isdoor) { return -1; }
 //	particular script (by allocating and initializing memory, etc.).  A pointer to this instance
 //	is to be returned back to Descent 3.  This pointer will be passed around, along with the ID
 //	for CallInstanceEvent() and DestroyInstance().  Return NULL if there was an error.
-void DLLFUNCCALLPTR CreateInstance(int id) { return NULL; }
+void DLLFUNCCALLPTR CreateInstance(int id) { return nullptr; }
 
 //	DestroyInstance
 //	Purpose:

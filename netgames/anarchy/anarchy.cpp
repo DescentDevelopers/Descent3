@@ -59,8 +59,8 @@
 
 #include <algorithm>
 
-IDMFC *DMFCBase = NULL;
-static IDmfcStats *dstat = NULL;
+IDMFC *DMFCBase = nullptr;
+static IDmfcStats *dstat = nullptr;
 
 static int SortedPlayers[MAX_PLAYER_RECORDS]; // sorted player nums
 static bool DisplayScoreScreen;
@@ -218,14 +218,14 @@ void DLLFUNCCALL DLLGameClose() {
 
   if (dstat) {
     dstat->DestroyPointer();
-    dstat = NULL;
+    dstat = nullptr;
   }
 
   if (DMFCBase) {
     AnarchyGameClose();
     DMFCBase->GameClose();
     DMFCBase->DestroyPointer();
-    DMFCBase = NULL;
+    DMFCBase = nullptr;
   }
 }
 
@@ -250,7 +250,7 @@ void AnarchyGameInit(int teams) {
   // add the anarchy menu/submenus
   IMenuItem *lev1, *lev2;
 
-  lev1 = CreateMenuItemWArgs("Anarchy", MIT_NORMAL, 0, NULL);
+  lev1 = CreateMenuItemWArgs("Anarchy", MIT_NORMAL, 0, nullptr);
 
   lev2 = CreateMenuItemWArgs(TXT_MNU_HUDSTYLE, MIT_STATE, 0, SwitchAnarchyScores);
   lev2->SetStateItemList(3, TXT_NONE, TXT_SCOREHD, TXT_EFFICIENCY);
@@ -278,13 +278,13 @@ void AnarchyGameInit(int teams) {
   tsi.flags = DSIF_SHOW_PIC | DSIF_SHOW_OBSERVERICON;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 6;
-  tsi.clbDetailedColumn = NULL;
-  tsi.clbDetailedColumnBMP = NULL;
+  tsi.clbDetailedColumn = nullptr;
+  tsi.clbDetailedColumnBMP = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
-  tsi.clbPlayerColumnBMP = NULL;
-  tsi.DetailedColumns = NULL;
+  tsi.clbPlayerColumnBMP = nullptr;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
 
@@ -652,7 +652,7 @@ void SaveStatsToFile(char *filename) {
           memset(buffer, ' ', BUFSIZE);
           dpr = DMFCBase->GetPlayerRecord(stat.slot);
 
-          ASSERT(dpr != NULL);
+          ASSERT(dpr != nullptr);
           if (dpr) {
             snprintf(tempbuffer, sizeof(tempbuffer), "%s", dpr->callsign);
             memcpy(buffer, tempbuffer, strlen(tempbuffer));
@@ -921,7 +921,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
             DLLrend_SetLighting(LS_NONE);
             DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
             DLLrend_DrawScaledBitmap(name_x - 2, y - 2, score_x + score_width + 2, y + height - 1, Highlight_bmp, 0, 0,
-                                     1, 1, 1.0, -1, NULL);
+                                     1, 1, 1.0, -1, nullptr);
             DLLrend_SetZBufferState(1);
           }
 

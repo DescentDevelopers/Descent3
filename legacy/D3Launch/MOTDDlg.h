@@ -31,7 +31,7 @@
 class CMOTDDlg : public CDialog {
   // Construction
 public:
-  CMOTDDlg(CWnd *pParent = NULL); // standard constructor
+  CMOTDDlg(CWnd *pParent = nullptr); // standard constructor
   BOOL ParseMOTDFile(void);
 
   // Dialog Data

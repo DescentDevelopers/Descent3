@@ -49,7 +49,7 @@
 class CQuickCompile : public CDialog {
   // Construction
 public:
-  CQuickCompile(char *scriptname, CWnd *pParent = NULL); // standard constructor
+  CQuickCompile(char *scriptname, CWnd *pParent = nullptr); // standard constructor
 
   char m_scriptname[_MAX_PATH];
   int8_t ret_value;

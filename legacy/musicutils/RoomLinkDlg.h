@@ -31,7 +31,7 @@
 class CRoomLinkDlg : public CDialog {
   // Construction
 public:
-  CRoomLinkDlg(CWnd *pParent = NULL); // standard constructor
+  CRoomLinkDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CRoomLinkDlg)

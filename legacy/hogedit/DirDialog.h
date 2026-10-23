@@ -32,7 +32,7 @@ public:
   CDirDialog();
   virtual ~CDirDialog();
 
-  BOOL DoBrowse(CWnd *pwndParent = NULL);
+  BOOL DoBrowse(CWnd *pwndParent = nullptr);
 
   CString m_strWindowTitle;
   CString m_strPath;

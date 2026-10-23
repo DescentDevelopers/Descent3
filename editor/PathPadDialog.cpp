@@ -332,7 +332,7 @@ void CPathPadDialog::OnPathpadCenterView() {
   fq.p1 = &attempted_pos;
   fq.rad = 0.0f;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
   int hit = fvi_FindIntersection(&fq, &hit_info);
@@ -340,7 +340,7 @@ void CPathPadDialog::OnPathpadCenterView() {
   if (hit != HIT_NONE)
     Int3(); // what does it mean that we hit something?
 
-  ObjSetPos(Viewer_object, &hit_info.hit_pnt, hit_info.hit_room, NULL, false);
+  ObjSetPos(Viewer_object, &hit_info.hit_pnt, hit_info.hit_room, nullptr, false);
 
   World_changed = 1;
   UpdateDialog();
@@ -500,11 +500,11 @@ void CPathPadDialog::OnPathMoveObjectButton() {
 
     game_path *gp = &GamePaths[p];
 
-    ObjSetPos(&Objects[Cur_object_index], &gp->pathnodes[n].pos, gp->pathnodes[n].roomnum, NULL, false);
+    ObjSetPos(&Objects[Cur_object_index], &gp->pathnodes[n].pos, gp->pathnodes[n].roomnum, nullptr, false);
 
     matrix node_orient;
 
-    vm_VectorToMatrix(&node_orient, &gp->pathnodes[n].fvec, &gp->pathnodes[n].uvec, NULL);
+    vm_VectorToMatrix(&node_orient, &gp->pathnodes[n].fvec, &gp->pathnodes[n].uvec, nullptr);
     ObjSetOrient(&Objects[Cur_object_index], &node_orient);
 
     World_changed = 1;
@@ -524,7 +524,7 @@ void CPathPadDialog::OnPathReorientViewerButton() {
 
   matrix node_orient;
 
-  vm_VectorToMatrix(&node_orient, &gp->pathnodes[n].fvec, &gp->pathnodes[n].uvec, NULL);
+  vm_VectorToMatrix(&node_orient, &gp->pathnodes[n].fvec, &gp->pathnodes[n].uvec, nullptr);
   ObjSetOrient(Viewer_object, &node_orient);
 
   World_changed = 1;
@@ -587,7 +587,7 @@ void CPathPadDialog::OnPathMoveObjNoOrient() {
 
     game_path *gp = &GamePaths[p];
 
-    ObjSetPos(&Objects[Cur_object_index], &gp->pathnodes[n].pos, gp->pathnodes[n].roomnum, NULL, false);
+    ObjSetPos(&Objects[Cur_object_index], &gp->pathnodes[n].pos, gp->pathnodes[n].roomnum, nullptr, false);
 
     // matrix node_orient;
 
@@ -934,7 +934,7 @@ void CPathPadDialog::OnMvtnButton() {
 
   BNode_current_id,
 
-      ObjSetPos(Viewer_object, &pos, roomnum, NULL, false);
+      ObjSetPos(Viewer_object, &pos, roomnum, nullptr, false);
   World_changed = 1;
 }
 

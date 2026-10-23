@@ -240,7 +240,7 @@ int ShootRayToVolumePoint(vector *src, vector *dest, int start_room) {
   fq.rad = 0.0f;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS | FQ_NO_RELINK | FQ_IGNORE_RENDER_THROUGH_PORTALS;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   int fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -398,7 +398,7 @@ int ShootRayFromPoint(vector *src, vector *dest, rad_surface *src_surf, rad_surf
   fq.rad = 0.0f;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS | FQ_NO_RELINK | FQ_IGNORE_RENDER_THROUGH_PORTALS;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   int fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -503,7 +503,7 @@ void CheckToUpdateSpecularFace(rad_surface *dest_surf, spectra *color, vector *s
   if (Rooms[dest_surf->roomnum].faces[dest_surf->facenum].special_handle == BAD_SPECIAL_FACE_INDEX)
     return;
 
-  if (src_center == NULL)
+  if (src_center == nullptr)
     GetCenterOfSurface(rad_MaxSurface, &light_center);
   else
     light_center = *src_center;
@@ -819,7 +819,7 @@ void CalculateVolumeLightsForRay(float total_sphere_dist, vector *src_center) {
       }
 
       for (int roomnum = 0; roomnum < MAX_VOLUME_ELEMENTS; roomnum++) {
-        if (Volume_elements[roomnum] == NULL)
+        if (Volume_elements[roomnum] == nullptr)
           continue;
         if (check_room[roomnum] == 0)
           continue;
@@ -972,7 +972,7 @@ void CalculateFormFactorsRaycast() {
     express -= rad_MaxSurface->area;
     sphere_dist = sqrt(express);
     if (sphere_dist > 0)
-      fvi_QuickDistFaceList(rad_MaxSurface->roomnum, &src_center, sphere_dist, NULL, rad_NumSurfaces);
+      fvi_QuickDistFaceList(rad_MaxSurface->roomnum, &src_center, sphere_dist, nullptr, rad_NumSurfaces);
   }
 
   // Do volume lighting
@@ -1098,6 +1098,6 @@ void CalculateFormFactorsRaycast() {
     }
 
     if (rad_MaxSurface->surface_type == ST_ROOM && Calculate_specular_lighting)
-      CheckToUpdateSpecularFace(dest_surf, &Current_max_specular_color, NULL);
+      CheckToUpdateSpecularFace(dest_surf, &Current_max_specular_color, nullptr);
   }
 }

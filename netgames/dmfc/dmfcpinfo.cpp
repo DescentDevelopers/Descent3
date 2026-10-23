@@ -111,8 +111,8 @@ PInfo::PInfo(int slot) {
   extra_info.last_death_num = -1;
   extra_info.got_revenge = 0;
 
-  killer_list = NULL;
-  curr = NULL;
+  killer_list = nullptr;
+  curr = nullptr;
 
   curr = CreateKiller(slot); // Setup Suicide
   if (curr)
@@ -183,9 +183,9 @@ tPKillerInfo *PInfo::GetFirstKiller(void) {
 
 tPKillerInfo *PInfo::GetNextKiller(void) {
   if (!curr)
-    return NULL;
+    return nullptr;
   if (!curr->next)
-    return NULL;
+    return nullptr;
   curr = curr->next;
   return curr;
 }
@@ -194,7 +194,7 @@ tPKillerInfo *PInfo::FindKiller(int slot, tPKillerInfo **wprev) {
   tPKillerInfo *curr;
   tPKillerInfo *prev;
   curr = killer_list;
-  prev = NULL;
+  prev = nullptr;
 
   while (curr) {
 
@@ -221,16 +221,16 @@ tPKillerInfo *PInfo::CreateKiller(int slot) {
       // the name wasn't in the list so we can tack it on here at the end
       curr = (tPKillerInfo *)malloc(sizeof(tPKillerInfo));
       if (!curr)
-        return NULL;
+        return nullptr;
       prev->next = curr;
     } else {
       // no names in the list
       curr = killer_list = (tPKillerInfo *)malloc(sizeof(tPKillerInfo));
       if (!killer_list)
-        return NULL;
+        return nullptr;
     }
 
-    curr->next = NULL;
+    curr->next = nullptr;
     curr->kills = 0;
     curr->slot = slot;
   }
@@ -264,7 +264,7 @@ void PInfo::ResetAll(void) {
     free(c);
     c = next;
   }
-  curr = killer_list = NULL;
+  curr = killer_list = nullptr;
 
   extra_info.last_kill_time = 0;
   extra_info.last_death_time = 0;

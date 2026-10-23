@@ -164,7 +164,7 @@ int CHogEditDoc::LoadDocument(CString &name) {
   ascii_name = name.GetBuffer(0);
 
   //	extract file extension from name
-  _splitpath(ascii_name, NULL, NULL, NULL, ext);
+  _splitpath(ascii_name, nullptr, nullptr, nullptr, ext);
 
   //	load either .rib or .hog file
   if (stricmp(ext, ".rib") == 0) {
@@ -193,7 +193,7 @@ int CHogEditDoc::SaveDocument(CString &name) {
   ascii_name = name.GetBuffer(0);
 
   //	name dialog
-  _splitpath(ascii_name, NULL, NULL, NULL, ext);
+  _splitpath(ascii_name, nullptr, nullptr, nullptr, ext);
 
   //	load either .rib or .hog file
   if (stricmp(ext, ".rib") == 0) {
@@ -217,7 +217,7 @@ int CHogEditDoc::LoadRib(const char *pathname) {
 
   // open the file
   rib_fp = fopen(pathname, "rb");
-  if (rib_fp == NULL) {
+  if (rib_fp == nullptr) {
     OutputDebugString("Could not open file.\n");
     return false;
   }
@@ -287,7 +287,7 @@ int CHogEditDoc::LoadHog(const char *pathname) {
 
   // open the file
   hog_fp = fopen(pathname, "rb");
-  if (hog_fp == NULL) {
+  if (hog_fp == nullptr) {
     return FALSE;
   }
 
@@ -366,7 +366,7 @@ int CHogEditDoc::SaveRib(const char *pathname) {
 
   // create new file
   rib_fp = fopen(pathname, "wb");
-  if (rib_fp == NULL) {
+  if (rib_fp == nullptr) {
     OutputDebugString("Could not open file.\n");
     return FALSE;
   }
@@ -437,7 +437,7 @@ int CHogEditDoc::AddFile(const char *pathname, hog_library_entry *entry) {
   }
 
   // Get just the filename
-  _splitpath(pathname, NULL, NULL, temp_filename, ext);
+  _splitpath(pathname, nullptr, nullptr, temp_filename, ext);
 
   // Check if filename is too big
   sprintf(test_filename, "%s%s", temp_filename, ext);
@@ -449,7 +449,7 @@ int CHogEditDoc::AddFile(const char *pathname, hog_library_entry *entry) {
   length = filestat.st_size;
   timestamp = filestat.st_mtime;
 
-  _splitpath(pathname, drive, path, NULL, NULL);
+  _splitpath(pathname, drive, path, nullptr, nullptr);
   sprintf(newpath, "%s%s", drive, path);
   strcpy(path, filename);
 
@@ -540,13 +540,13 @@ bool CHogEditDoc::CreateFilenameList(char ***filenames) {
 
   // Allocate the list of filename pointers
   *filenames = new (char(*[Library.num_entries]));
-  if (*filenames == NULL)
+  if (*filenames == nullptr)
     return FALSE;
 
   // Allocate and store each filename in the Library
   j = 0;
   pos = Library.filelist.GetHeadPosition();
-  while (pos != NULL) {
+  while (pos != nullptr) {
     temp_entry = Library.filelist.GetNext(pos);
 
     // Only include the path if it's added from a rib file
@@ -556,7 +556,7 @@ bool CHogEditDoc::CreateFilenameList(char ***filenames) {
       sprintf(full_name, "%s", temp_entry.name);
 
     (*filenames)[j] = new char[strlen(full_name) + 1];
-    if ((*filenames)[j] == NULL) {
+    if ((*filenames)[j] == nullptr) {
       OutputDebugString("Outta memory!\n");
       return FALSE;
     }
@@ -580,8 +580,8 @@ int compare(const void *arg1, const void *arg2) {
   char ext2[_MAX_EXT];
 
   // Isolate just the filenames (w/extensions) for the compare
-  _splitpath(*(char **)arg1, NULL, NULL, filename1, ext1);
-  _splitpath(*(char **)arg2, NULL, NULL, filename2, ext2);
+  _splitpath(*(char **)arg1, nullptr, nullptr, filename1, ext1);
+  _splitpath(*(char **)arg2, nullptr, nullptr, filename2, ext2);
   strcat(filename1, ext1);
   strcat(filename2, ext2);
 
@@ -626,7 +626,7 @@ uint32_t CHogEditDoc::CalcHogFileSize(void) {
 
   // Add file lengths
   pos = Library.filelist.GetHeadPosition();
-  while (pos != NULL) {
+  while (pos != nullptr) {
     temp_entry = Library.filelist.GetNext(pos);
     total += temp_entry.length;
   }
@@ -644,13 +644,13 @@ bool CHogEditDoc::ExtractFile(int file_pos, unsigned file_len, char *out_fname) 
 
   // Open input (hog) file
   hog_fp = fopen(m_DocumentName, "rb");
-  if (hog_fp == NULL) {
+  if (hog_fp == nullptr) {
     return FALSE;
   }
 
   // Open output file
   out_fp = fopen(out_fname, "wb");
-  if (out_fp == NULL) {
+  if (out_fp == nullptr) {
     fclose(hog_fp);
     return FALSE;
   }
@@ -686,12 +686,12 @@ FILE *CHogEditDoc::FindFileInHog(char *hog_fname, tHogFileEntry *table_entry) {
 
   // If current file isn't a hog, get outta here
   if (!m_StaticHog)
-    return (NULL);
+    return (nullptr);
 
   // Search the current entry list for the given filename
   pos = Library.filelist.GetHeadPosition();
   found_in_hog = FALSE;
-  while (pos != NULL) {
+  while (pos != nullptr) {
     entry = Library.filelist.GetNext(pos);
     if (!stricmp(entry.name, table_entry->name)) {
       found_in_hog = TRUE;
@@ -701,11 +701,11 @@ FILE *CHogEditDoc::FindFileInHog(char *hog_fname, tHogFileEntry *table_entry) {
 
   // If the filename wasn't in the list, get outta here
   if (!found_in_hog)
-    return (NULL);
+    return (nullptr);
 
   // If the found file is actually an "external" file, get outta here
   if (entry.offset == -1)
-    return (NULL);
+    return (nullptr);
 
   // fill in the entry data for this file
   table_entry->flags = entry.flags;
@@ -714,14 +714,14 @@ FILE *CHogEditDoc::FindFileInHog(char *hog_fname, tHogFileEntry *table_entry) {
 
   // open the source hog file
   hog_fp = fopen(hog_fname, "rb");
-  if (hog_fp == NULL) {
-    return (NULL);
+  if (hog_fp == nullptr) {
+    return (nullptr);
   }
 
   // Seek to correct place in hog file
   if (fseek(hog_fp, entry.offset, SEEK_SET) != 0) {
     fclose(hog_fp);
-    return (NULL);
+    return (nullptr);
   }
 
   // Return pointer to file's position within the hog
@@ -762,7 +762,7 @@ int CHogEditDoc::CreateNewHogFromCurrentHog(char *src_hog_fname, char *target_ho
 
   //	create new file
   hog_fp = fopen(dest_hog_fname, "wb");
-  if (hog_fp == NULL) {
+  if (hog_fp == nullptr) {
     delete[] table;
     strcpy(hogerr_filename, dest_hog_fname);
     return HOGMAKER_OPENOUTFILE;
@@ -823,7 +823,7 @@ int CHogEditDoc::CreateNewHogFromCurrentHog(char *src_hog_fname, char *target_ho
     struct _stat mystat;
 
     // Get JUST the name of the file (with extension)
-    _splitpath(filenames[i], NULL, NULL, table[i].name, ext);
+    _splitpath(filenames[i], nullptr, nullptr, table[i].name, ext);
     strcat(table[i].name, ext);
 
     // See if the file is in the hog, and, if it is, get the file position
@@ -831,9 +831,9 @@ int CHogEditDoc::CreateNewHogFromCurrentHog(char *src_hog_fname, char *target_ho
     ifp = FindFileInHog(src_hog_fname, &table[i]);
 
     // If file isn't in the hog, then process it as an "external" file
-    if (ifp == NULL) {
+    if (ifp == nullptr) {
       ifp = fopen(filenames[i], "rb");
-      if (ifp == NULL) {
+      if (ifp == nullptr) {
         delete[] table;
         fclose(hog_fp);
         strcpy(hogerr_filename, filenames[i]);

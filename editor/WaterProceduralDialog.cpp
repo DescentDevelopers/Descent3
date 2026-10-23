@@ -220,7 +220,7 @@ void CWaterProceduralDialog::OnTimer(UINT nIDEvent) {
 BOOL CWaterProceduralDialog::OnInitDialog() {
   CDialog::OnInitDialog();
 
-  CWnd::SetTimer(1, 33, NULL); // 30 frames per second
+  CWnd::SetTimer(1, 33, nullptr); // 30 frames per second
 
   int save_num = 0;
   int n = D3EditState.texdlg_texture;
@@ -387,7 +387,7 @@ static_proc_element *CWaterProceduralDialog::CreateElement(int x, int y) {
   int index;
 
   if (GameTextures[n].procedural->num_static_elements >= MAX_PROC_ELEMENTS)
-    return NULL;
+    return nullptr;
   else
     index = GameTextures[n].procedural->num_static_elements;
 

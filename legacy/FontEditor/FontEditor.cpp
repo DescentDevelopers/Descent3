@@ -68,7 +68,7 @@ void InitRenderer(oeApplication *app, renderer_type renderer);
 extern void FontKern(const char *fnt_file_name);
 extern void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_ascii, int max_ascii, int type);
 
-class oeApplication *FontEditor = NULL;
+class oeApplication *FontEditor = nullptr;
 int System_font_handle = -1;
 
 class appFontKerner : public oeWin32Application {
@@ -148,7 +148,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     return 0;
   }
 
-  MessageBox(NULL, "Need to specify a font to edit.", "Error", MB_OK);
+  MessageBox(nullptr, "Need to specify a font to edit.", "Error", MB_OK);
 
   return 0;
 }
@@ -184,7 +184,7 @@ void InitIO(oeApplication *app) {
   ddio_Init(&ddio_init_data);
 
   GetCurrentDirectory(sizeof(path), path);
-  cf_SetSearchPath(path, NULL);
+  cf_SetSearchPath(path, nullptr);
 }
 
 void InitRenderer(oeApplication *app, renderer_type renderer) {

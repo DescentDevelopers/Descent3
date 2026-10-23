@@ -136,14 +136,14 @@ int BSPGetMineChecksum() {
 bspnode *NewBSPNode(void) {
   bspnode *node;
 
-  if ((node = mem_rmalloc<bspnode>()) == NULL) {
-    return NULL;
+  if ((node = mem_rmalloc<bspnode>()) == nullptr) {
+    return nullptr;
   }
 
   /* Initialize the node, set its variables to zero */
 
   node->type = BSP_NODE;
-  node->polylist = NULL;
+  node->polylist = nullptr;
   node->num_polys = 0;
   node->node_facenum = 0;
   node->node_roomnum = 0;
@@ -153,8 +153,8 @@ bspnode *NewBSPNode(void) {
   node->plane.b = 0.0;
   node->plane.c = 0.0;
   node->plane.d = 0.0;
-  node->front = NULL;
-  node->back = NULL;
+  node->front = nullptr;
+  node->back = nullptr;
 
   return node;
 }
@@ -167,13 +167,13 @@ bsppolygon *NewPolygon(int roomnum, int facenum, int numverts) {
 
   newpoly = mem_rmalloc<bsppolygon>();
 
-  if (newpoly == NULL) {
+  if (newpoly == nullptr) {
     LOG_ERROR << "NewPolygon: Couldn't allocate polygon";
-    return NULL;
+    return nullptr;
   }
 
   verts = mem_rmalloc<vector>(numverts);
-  ASSERT(verts != NULL);
+  ASSERT(verts != nullptr);
 
   newpoly->nv = numverts;
   newpoly->verts = verts;
@@ -243,7 +243,7 @@ void LoadBSPNode(CFILE *infile, bspnode **node) {
 
 // Frees up a polygon and all the vertices associated with it
 void FreePolygon(bsppolygon *poly) {
-  ASSERT(poly != NULL);
+  ASSERT(poly != nullptr);
   ASSERT(poly->nv > 2);
 
   if (poly->nv > 0) {
@@ -466,13 +466,13 @@ bsppolygon *SelectPlane(listnode **polylist) {
   int checked = 0;
 
   bestscore = 9999999.0;
-  bestpoly = NULL;
+  bestpoly = nullptr;
 
   /*	Iterate through every polygon, checking its plane against all
    * the other polygons. But don't check it against itself
    */
 
-  for (outer = *polylist; outer != NULL; outer = outer->next) {
+  for (outer = *polylist; outer != nullptr; outer = outer->next) {
     outerpoly = (bsppolygon *)outer->data;
     splits = front = back = planar = 0;
     score = 0.0;
@@ -484,7 +484,7 @@ bsppolygon *SelectPlane(listnode **polylist) {
     if (checked >= 300)
       return bestpoly;
 
-    for (inner = *polylist; inner != NULL; inner = inner->next) {
+    for (inner = *polylist; inner != nullptr; inner = inner->next) {
       innerpoly = (bsppolygon *)inner->data;
       if (innerpoly != outerpoly) {
         result = ClassifyPolygon(&outerpoly->plane, innerpoly);
@@ -533,14 +533,14 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
   listnode *lnode = *polylist;
   listnode *next;
   bspnode *frontnode, *backnode;
-  listnode *frontlist = NULL, *backlist = NULL;
+  listnode *frontlist = nullptr, *backlist = nullptr;
   bspplane partition_plane;
   int numfront = 0, numback = 0, numsplits = 0;
 
   ASSERT(numpolys > 0);
   partition_poly = SelectPlane(polylist);
 
-  if (partition_poly == NULL) {
+  if (partition_poly == nullptr) {
     // We hit a leaf!  Fill in the appropriate leaf stuff
 
     /*vector center;
@@ -637,9 +637,9 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
   tree->plane = partition_poly->plane;
   partition_plane = partition_poly->plane;
 
-  frontlist = backlist = NULL;
+  frontlist = backlist = nullptr;
 
-  for (lnode = *polylist; lnode != NULL; lnode = next) {
+  for (lnode = *polylist; lnode != nullptr; lnode = next) {
     next = lnode->next;
 
     bsppolygon *testpoly = (bsppolygon *)lnode->data;
@@ -686,8 +686,8 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
     }
   }
 
-  if (frontlist != NULL) {
-    if ((frontnode = NewBSPNode()) == NULL) {
+  if (frontlist != nullptr) {
+    if ((frontnode = NewBSPNode()) == nullptr) {
       LOG_ERROR << "BuildBSPNode: Error, can't allocate front node";
       return 0;
     }
@@ -700,7 +700,7 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
     tree->front = frontnode;
     DestroyList(&frontlist);
   } else {
-    if ((frontnode = NewBSPNode()) == NULL) {
+    if ((frontnode = NewBSPNode()) == nullptr) {
       LOG_ERROR << "BuildBSPNode: Error, can't allocate front node";
       return 0;
     }
@@ -708,8 +708,8 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
     tree->front = frontnode;
   }
 
-  if (backlist != NULL) {
-    if ((backnode = NewBSPNode()) == NULL) {
+  if (backlist != nullptr) {
+    if ((backnode = NewBSPNode()) == nullptr) {
       LOG_ERROR << "BuildBSPNode: Error, can't allocate front node";
       return 0;
     }
@@ -722,7 +722,7 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
     tree->back = backnode;
     DestroyList(&backlist);
   } else {
-    if ((backnode = NewBSPNode()) == NULL) {
+    if ((backnode = NewBSPNode()) == nullptr) {
       LOG_ERROR << "BuildBSPNode: Error, can't allocate front node";
       return 0;
     }
@@ -1200,8 +1200,8 @@ void InitDefaultBSP() {
     atexit(DestroyDefaultBSPTree);
   }
 
-  MineBSP.polylist = NULL;
-  MineBSP.vertlist = NULL;
+  MineBSP.polylist = nullptr;
+  MineBSP.vertlist = nullptr;
 
   BSP_initted = 1;
 }

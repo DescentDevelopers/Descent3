@@ -246,17 +246,17 @@ public:
   Inventory();
   ~Inventory();
   // adds a type/id item to the inventory (returns true on success)
-  bool Add(int type, int id, object *parent = NULL, int aux_type = -1, int aux_id = -1, int flags = 0,
-           const char *description = NULL);
+  bool Add(int type, int id, object *parent = nullptr, int aux_type = -1, int aux_id = -1, int flags = 0,
+           const char *description = nullptr);
   // adds an object to the inventory (marked by its objhandle)
-  bool AddObject(int object_handle, int flags = 0, const char *description = NULL);
+  bool AddObject(int object_handle, int flags = 0, const char *description = nullptr);
   // adds a special cased CounterMeasure into the inventory
-  bool AddCounterMeasure(int id, int aux_type = -1, int aux_id = -1, int flags = 0, const char *description = NULL);
+  bool AddCounterMeasure(int id, int aux_type = -1, int aux_id = -1, int flags = 0, const char *description = nullptr);
   // removes an item from the inventory (reduces its count by one...if there is no more, then it goes bye-bye)
   bool Remove(int type, int id = -1);
   // uses an item in the inventory (also reduces its count by one...if there is no more, then it goes bye-bye)
-  bool Use(int type, int id, object *parent = NULL);
-  bool Use(int objhandle, object *parent = NULL);
+  bool Use(int type, int id, object *parent = nullptr);
+  bool Use(int objhandle, object *parent = nullptr);
   // returns how many unique type/ids are in the inventory
   int Size(void);
   // returns true if there is an item in the inventory with the given type/id (or objhandle if id is -1)
@@ -299,7 +299,7 @@ public:
   void GotoPos(int newpos);
   void GotoPos(int type, int id);
   // uses the currently selected item
-  bool UsePos(object *parent = NULL);
+  bool UsePos(object *parent = nullptr);
   // returns the 'index' position of the current position
   int GetPos(void);
   // checks the pos, if it is on a nonselectable item, it will move to the next selectable (NULL if none)
@@ -321,7 +321,7 @@ public:
 
 private:
   // adds an item to the inventory (returns true on success)
-  bool AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flags, const char *description = NULL);
+  bool AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flags, const char *description = nullptr);
   void RemoveNode(inven_item *node);
   // sends a request to the server to use a particular item in the inventory
   void SendRequestToServerToUse(int type, int id = -1);

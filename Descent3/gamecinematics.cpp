@@ -434,8 +434,8 @@ void Cinematic_PerformFake(void) {
   }
 
   // tell the target it's the focus of a cinematic
-  AINotify(target, AIN_MOVIE_START, NULL);
-  AINotify(target, AIN_MOVIE_END, NULL);
+  AINotify(target, AIN_MOVIE_START, nullptr);
+  AINotify(target, AIN_MOVIE_END, nullptr);
 
   if (target->type == OBJ_PLAYER) {
     tOSIRISEventInfo ei;
@@ -453,12 +453,12 @@ void Cinematic_SetForFakeCinematic(tGameCinematic *info) {
 }
 
 static inline int Cinematics_CreateCamera(void) {
-  int objnum = ObjCreate(OBJ_CAMERA, 0, Player_object->roomnum, &Player_object->pos, NULL);
+  int objnum = ObjCreate(OBJ_CAMERA, 0, Player_object->roomnum, &Player_object->pos, nullptr);
   if (objnum == -1)
     return OBJECT_HANDLE_NONE;
 
   if (Demo_flags == DF_RECORDING) {
-    DemoWriteObjCreate(OBJ_CAMERA, 0, Player_object->roomnum, &Player_object->pos, NULL, OBJECT_HANDLE_NONE,
+    DemoWriteObjCreate(OBJ_CAMERA, 0, Player_object->roomnum, &Player_object->pos, nullptr, OBJECT_HANDLE_NONE,
                        &Objects[objnum]);
   }
 
@@ -473,8 +473,8 @@ bool Cinematic_Start(tGameCinematic *info, char *text_string) {
   if (Demo_flags == DF_PLAYBACK)
     return true; // demo system calls Cinematic_StartCine itself
 
-  ASSERT(info != NULL);
-  ASSERT(text_string != NULL);
+  ASSERT(info != nullptr);
+  ASSERT(text_string != nullptr);
   if (!info || !text_string)
     return false;
 
@@ -489,7 +489,7 @@ bool Cinematic_Start(tGameCinematic *info, char *text_string) {
   }
 
   if ((info->flags & GCF_CAMERAPLACEMENT) == GCF_USEPATH) {
-    info->orient = NULL; // ensure that this is NULL
+    info->orient = nullptr; // ensure that this is NULL
   }
 
   int camera_handle = Cinematics_CreateCamera();
@@ -518,8 +518,8 @@ static inline void Cinematic_DeleteCamera(int objhandle) {
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed
 //	use pipes (|) to separate lines. (does not call demo routines)
 bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int camera_objhandle) {
-  ASSERT(info != NULL);
-  ASSERT(text_string != NULL);
+  ASSERT(info != nullptr);
+  ASSERT(text_string != nullptr);
   if (!info || !text_string) {
     Cinematic_DeleteCamera(camera_objhandle);
     return false;
@@ -600,7 +600,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
     // objnum =
     // ObjCreate(OBJ_CAMERA,0,GamePaths[GameCinema.pathnum].pathnodes[0].roomnum,&GamePaths[GameCinema.pathnum].pathnodes[0].pos,NULL);
     ObjSetPos(c, &GamePaths[GameCinema.pathnum].pathnodes[0].pos, GamePaths[GameCinema.pathnum].pathnodes[0].roomnum,
-              NULL, false);
+              nullptr, false);
   }
 
   GameCinema.camera_objhandle = Objects[objnum].handle;
@@ -749,11 +749,11 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
 
     if (GamePaths[GameCinema.pathnum].num_nodes == 1) {
       vm_VectorToMatrix(&c_orient, &GamePaths[GameCinema.pathnum].pathnodes[0].fvec,
-                        &GamePaths[GameCinema.pathnum].pathnodes[0].uvec, NULL);
+                        &GamePaths[GameCinema.pathnum].pathnodes[0].uvec, nullptr);
       pi.next_node = 0;
     } else {
       vector fvec = GamePaths[GameCinema.pathnum].pathnodes[1].pos - GamePaths[GameCinema.pathnum].pathnodes[0].pos;
-      vm_VectorToMatrix(&c_orient, &fvec, NULL, NULL);
+      vm_VectorToMatrix(&c_orient, &fvec, nullptr, nullptr);
       pi.next_node = 1;
     }
 
@@ -865,7 +865,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
 
       if (cur_node != next_node) {
         vector fvec = GamePaths[path_num].pathnodes[next_node].pos - GamePaths[path_num].pathnodes[cur_node].pos;
-        vm_VectorToMatrix(&camera->orient, &fvec, NULL, NULL);
+        vm_VectorToMatrix(&camera->orient, &fvec, nullptr, nullptr);
         vm_Orthogonalize(&camera->orient);
         ObjSetOrient(camera, &camera->orient);
       }
@@ -898,7 +898,7 @@ void Cinematic_Stop(void) {
 
   if (GameCinema.text) {
     mem_free(GameCinema.text);
-    GameCinema.text = NULL;
+    GameCinema.text = nullptr;
   }
 
   // tell the target object the cinematic is over
@@ -969,7 +969,7 @@ void Cinematic_Stop(void) {
   }
 
   if (target) {
-    AINotify(target, AIN_MOVIE_END, NULL);
+    AINotify(target, AIN_MOVIE_END, nullptr);
 
     if (target->type == OBJ_PLAYER) {
       tOSIRISEventInfo ei;
@@ -1040,7 +1040,7 @@ void Cinematic_Frame(void) {
           int endnode = GamePaths[currpath].num_nodes - 1;
 
           vm_VectorToMatrix(&orient, &GamePaths[currpath].pathnodes[endnode].fvec,
-                            &GamePaths[currpath].pathnodes[endnode].uvec, NULL);
+                            &GamePaths[currpath].pathnodes[endnode].uvec, nullptr);
 
           pos = GamePaths[currpath].pathnodes[endnode].pos;
           room = GamePaths[currpath].pathnodes[endnode].roomnum;
@@ -1066,7 +1066,7 @@ void Cinematic_Frame(void) {
   // tell the target it's the focus of a cinematic
   if (target && !GameCinema.target_triggered) {
     GameCinema.target_triggered = true;
-    AINotify(target, AIN_MOVIE_START, NULL);
+    AINotify(target, AIN_MOVIE_START, nullptr);
 
     if (target->type == OBJ_PLAYER) {
       tOSIRISEventInfo ei;
@@ -1075,7 +1075,7 @@ void Cinematic_Frame(void) {
   }
 
   // check to see if we should be looking through the camera
-  if (Gametime >= GameCinema.camera_start && Gametime <= GameCinema.camera_stop && camera != NULL) {
+  if (Gametime >= GameCinema.camera_start && Gametime <= GameCinema.camera_stop && camera != nullptr) {
     // camera should be the viewer
     Viewer_object = camera;
   } else {
@@ -1142,7 +1142,7 @@ void Cinematic_Frame(void) {
 
     if (cur_node != next_node) {
       vector fvec = GamePaths[path_num].pathnodes[next_node].pos - GamePaths[path_num].pathnodes[cur_node].pos;
-      vm_VectorToMatrix(&camera->orient, &fvec, NULL, NULL);
+      vm_VectorToMatrix(&camera->orient, &fvec, nullptr, nullptr);
       vm_Orthogonalize(&camera->orient);
       ObjSetOrient(camera, &camera->orient);
     }
@@ -1319,7 +1319,7 @@ void Cinematic_DrawText(void) {
       float p = (perc > 0.18f) ? 1.0f : (perc / 0.18f);
 
       int gl, gr, gt, gb;
-      grtext_GetParameters(&gl, &gt, &gr, &gb, NULL);
+      grtext_GetParameters(&gl, &gt, &gr, &gb, nullptr);
 
       int width = (1.0f - p) * GameCinema.longest_line;
       int rx = gl + (gr - gl) / 2 + (GameCinema.longest_line / 2);
@@ -1714,7 +1714,7 @@ void CannedCinematicIntroCallback(int type) {
     if (GamePaths[pathnum].num_nodes > 1) {
       next_node = 1;
       vector fvec = GamePaths[pathnum].pathnodes[1].pos - GamePaths[pathnum].pathnodes[0].pos;
-      vm_VectorToMatrix(&orient, &fvec, NULL, NULL);
+      vm_VectorToMatrix(&orient, &fvec, nullptr, nullptr);
 
       // see if it is a hacked 2 node path (i.e. it is such a small distance it should move)
       if (GamePaths[pathnum].num_nodes == 2) {
@@ -1734,7 +1734,7 @@ void CannedCinematicIntroCallback(int type) {
       next_node = 0;
       CannedCinematicIntro.should_thrust = false;
       LOG_WARNING << "Player should NOT thrust";
-      vm_VectorToMatrix(&orient, &GamePaths[pathnum].pathnodes[0].fvec, &GamePaths[pathnum].pathnodes[0].uvec, NULL);
+      vm_VectorToMatrix(&orient, &GamePaths[pathnum].pathnodes[0].fvec, &GamePaths[pathnum].pathnodes[0].uvec, nullptr);
     }
     pos = GamePaths[pathnum].pathnodes[0].pos;
     roomnum = GamePaths[pathnum].pathnodes[0].roomnum;
@@ -1855,7 +1855,7 @@ void CannedCinematicEndLevelCallback(int type) {
     if (GamePaths[pathnum].num_nodes > 1) {
       next_node = 1;
       vector fvec = GamePaths[pathnum].pathnodes[1].pos - GamePaths[pathnum].pathnodes[0].pos;
-      vm_VectorToMatrix(&orient, &fvec, NULL, NULL);
+      vm_VectorToMatrix(&orient, &fvec, nullptr, nullptr);
 
       if (GamePaths[pathnum].num_nodes == 2) {
         if (fabs(vm_VectorDistance(&GamePaths[pathnum].pathnodes[1].pos, &GamePaths[pathnum].pathnodes[0].pos)) >
@@ -1869,7 +1869,7 @@ void CannedCinematicEndLevelCallback(int type) {
       }
     } else {
       next_node = 0;
-      vm_VectorToMatrix(&orient, &GamePaths[pathnum].pathnodes[0].fvec, &GamePaths[pathnum].pathnodes[0].uvec, NULL);
+      vm_VectorToMatrix(&orient, &GamePaths[pathnum].pathnodes[0].fvec, &GamePaths[pathnum].pathnodes[0].uvec, nullptr);
       CannedCinematicEndLevel.should_thrust = false;
     }
     pos = GamePaths[pathnum].pathnodes[0].pos;
@@ -1965,7 +1965,7 @@ void CannedCinematic_EndLevelPoint(vector *pos, int room, const char *Text, int 
 
   info.position = *pos;
   info.room = room;
-  info.orient = NULL;
+  info.orient = nullptr;
 
   Cinematic_StartCine(&info, Text, camera_handle);
 }
@@ -2150,7 +2150,7 @@ void Cinematic_StartCanned(tCannedCinematicInfo *info, int camera_handle) {
   if (Demo_flags == DF_RECORDING) {
     tCinematicDemoInfo demo_data;
     demo_data.cinematic_type = CDI_CANNED;
-    demo_data.text_string = NULL;
+    demo_data.text_string = nullptr;
     demo_data.canned_data = info;
     demo_data.camera_objhandle = camera_handle;
     Cinematic_WriteDemoFileData(&demo_data);
@@ -2225,7 +2225,7 @@ void Cinematic_DoDemoFileData(uint8_t *buffer) {
     vm_MakeIdentity(&fake_orient);
 
     cinematic_data.orient = &fake_orient;
-    cinematic_data.callback = NULL;
+    cinematic_data.callback = nullptr;
     cinematic_data.flags = mf_ReadInt(buffer, &count);
     cinematic_data.target_objhandle = mf_ReadInt(buffer, &count);
     cinematic_data.end_transition = mf_ReadInt(buffer, &count);

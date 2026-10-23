@@ -36,7 +36,7 @@
 class CDriversDlg : public CDialog {
   // Construction
 public:
-  CDriversDlg(CWnd *pParent = NULL); // standard constructor
+  CDriversDlg(CWnd *pParent = nullptr); // standard constructor
 
   int m_Selection;
 

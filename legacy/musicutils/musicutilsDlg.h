@@ -37,7 +37,7 @@ class OSFArchive;
 class CMusicutilsDlg : public CDialog {
   // Construction
 public:
-  CMusicutilsDlg(CWnd *pParent = NULL); // standard constructor
+  CMusicutilsDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CMusicutilsDlg)

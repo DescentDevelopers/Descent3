@@ -283,7 +283,7 @@ MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, uint8_t parmbyt
       ModLastError = MODERR_OTHER;
       break;
     }
-    return NULL;
+    return nullptr;
   }
 #elif defined(POSIX)
   sym = dlsym(handle->handle, symstr);

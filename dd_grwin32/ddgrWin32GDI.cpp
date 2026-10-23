@@ -96,9 +96,9 @@ bool ddgr_gdi_Init(oeApplication *app, bool fullscreen, bool ddraw) {
   GDI_DATA(fullscreen) = fullscreen;
   GDI_DATA(hPrimaryWnd) = (HWND)((oeWin32Application *)app)->m_hWnd;
 
-  GDI_DATA(lpDD) = NULL;
+  GDI_DATA(lpDD) = nullptr;
   if (ddraw) {
-    hres = DirectDrawCreate(NULL, &GDI_DATA(lpDD), NULL);
+    hres = DirectDrawCreate(nullptr, &GDI_DATA(lpDD), nullptr);
     if (hres != DD_OK) {
       ddgr_PushError("Failure to initialize DirectDraw driver (%d)", LOWORD(hres));
       return false;
@@ -119,7 +119,7 @@ bool ddgr_gdi_Init(oeApplication *app, bool fullscreen, bool ddraw) {
       // grab all device modes for the current display device.
       unsigned i;
       for (i = 0; i < GDI_MAX_DEVMODES; i++) {
-        if (EnumDisplaySettings(NULL, i, &GDI_DATA(devmodes[i])) == FALSE) {
+        if (EnumDisplaySettings(nullptr, i, &GDI_DATA(devmodes[i])) == FALSE) {
           break;
         }
         HDC hdc = GetDC(GDI_DATA(hPrimaryWnd));
@@ -144,7 +144,7 @@ bool ddgr_gdi_Init(oeApplication *app, bool fullscreen, bool ddraw) {
     }
   }
 
-  GDI_DATA(hOffscreenDC) = NULL;
+  GDI_DATA(hOffscreenDC) = nullptr;
   GDI_DATA(vidrefs) = 0; // reset video reference count.
   GDI_DATA(init) = true;
 
@@ -168,7 +168,7 @@ void ddgr_gdi_Close() {
         GDI_DATA(lpDD)->RestoreDisplayMode();
         GDI_DATA(lpDD)->Release();
       }
-      GDI_DATA(lpDD) = NULL;
+      GDI_DATA(lpDD) = nullptr;
     } else {
       //	do a ChangeDisplaySettings to old mode.
       LONG lres;
@@ -180,7 +180,7 @@ void ddgr_gdi_Close() {
     }
   }
 
-  GDI_DATA(hPrimaryWnd) = NULL;
+  GDI_DATA(hPrimaryWnd) = nullptr;
   GDI_DATA(init) = false;
 
   LOG_DEBUG << "GDI system closed.";
@@ -227,8 +227,8 @@ bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
       }
     }
     //	HACKS FOR OPENGL, WILL CHANGE SOON.
-    hdc = CreateCompatibleDC(NULL);
-    if (hdc == NULL) {
+    hdc = CreateCompatibleDC(nullptr);
+    if (hdc == nullptr) {
       ddgr_PushError("Unable to create offscreen device context (%x).", GetLastError());
       return false;
     }
@@ -238,10 +238,10 @@ bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
   GDI_DATA(vidrefs)++; // increment vidref count
 
   gdisf = new tGDISurface;
-  gdisf->hbm = NULL;
-  gdisf->data = NULL;
-  gdisf->rowsize = NULL;
-  gdisf->hwnd = NULL;
+  gdisf->hbm = nullptr;
+  gdisf->data = nullptr;
+  gdisf->rowsize = 0;
+  gdisf->hwnd = nullptr;
 
   // this means that we are capturing the screen, not creating a screen.
   //	get the screen's width and height and bitdepth
@@ -251,9 +251,9 @@ bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
     sf->bpp = (int)GetDeviceCaps(GDI_DATA(hOffscreenDC), BITSPIXEL);
   }
 
-  HDC hdc = GetDC(NULL);
+  HDC hdc = GetDC(nullptr);
   int tbpp = GetDeviceCaps(hdc, BITSPIXEL);
-  ReleaseDC(NULL, hdc);
+  ReleaseDC(nullptr, hdc);
 
   if (tbpp < sf->bpp) {
     ddgr_PushError("Desktop color depth must be set to a %d-bit color mode or greater.\n", sf->bpp);
@@ -284,7 +284,7 @@ bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
     gdisf->backbuffer = true;
     delete gdisf2;
   } else {
-    gdisf->hbm = NULL; // this is really just the screen.
+    gdisf->hbm = nullptr; // this is really just the screen.
     gdisf->backbuffer = false;
   }
 
@@ -327,7 +327,7 @@ bool ddgr_gdi_surf_FlipVideo(ddgr_surface *sf) {
   int dw, dh;
   tGDISurface *bm = (tGDISurface *)sf->obj;
 
-  ASSERT(bm->hwnd != NULL);
+  ASSERT(bm->hwnd != nullptr);
 
   //	don't give an error if there's no backbuffer.
   if (!bm->backbuffer)
@@ -389,7 +389,7 @@ bool ddgr_gdi_surf_Create(ddgr_surface *sf) {
     header.bmi.biClrUsed = 0;
     header.bmi.biClrImportant = 0;
 
-    bm->hbm = CreateDIBSection(GDI_DATA(hOffscreenDC), (BITMAPINFO *)&header, DIB_RGB_COLORS, &bm->data, NULL, 0);
+    bm->hbm = CreateDIBSection(GDI_DATA(hOffscreenDC), (BITMAPINFO *)&header, DIB_RGB_COLORS, &bm->data, nullptr, 0);
   } else {
     tDIBHeader header;
     header.bmi.biSize = sizeof(BITMAPINFOHEADER);
@@ -417,7 +417,7 @@ bool ddgr_gdi_surf_Create(ddgr_surface *sf) {
       bm->rowsize = nw * 4;
     }
 
-    bm->hbm = CreateDIBSection(GDI_DATA(hOffscreenDC), (BITMAPINFO *)&header, DIB_RGB_COLORS, &bm->data, NULL, 0);
+    bm->hbm = CreateDIBSection(GDI_DATA(hOffscreenDC), (BITMAPINFO *)&header, DIB_RGB_COLORS, &bm->data, nullptr, 0);
   }
 
   if (!bm->hbm) {
@@ -425,7 +425,7 @@ bool ddgr_gdi_surf_Create(ddgr_surface *sf) {
     delete bm;
     return false;
   }
-  bm->hwnd = NULL; // This is set by application
+  bm->hwnd = nullptr; // This is set by application
 
   sf->obj = (void *)bm;
 
@@ -475,7 +475,7 @@ void ddgr_gdi_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w,
   clr_brush = CreateSolidBrush(RGB((BYTE)red, (BYTE)green, (BYTE)blue));
 
   //	Are we clearing the primary display?
-  if (dbm->hbm == NULL) {
+  if (dbm->hbm == nullptr) {
     if (dbm->hwnd)
       hdc = GetDC(dbm->hwnd);
     else
@@ -490,7 +490,7 @@ void ddgr_gdi_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w,
 
   SelectObject(hdc, old_brush);
 
-  if (dbm->hbm == NULL) {
+  if (dbm->hbm == nullptr) {
     // do if clearing was done on primary display.
     if (dbm->hwnd)
       ReleaseDC(dbm->hwnd, hdc);
@@ -516,13 +516,13 @@ bool ddgr_gdi_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int
 
   //	note that if our destination bitmap is the 'screen', then we use the GDI hwnd DC
   //	else we use the DC of the window specified in the destination.
-  if (dbm->hbm == NULL) {
-    if (dbm->hwnd == NULL)
+  if (dbm->hbm == nullptr) {
+    if (dbm->hwnd == nullptr)
       hdc_dest = GetDC(GDI_DATA(hPrimaryWnd));
     else
       hdc_dest = GetDC(dbm->hwnd);
   } else {
-    hdc_dest = CreateCompatibleDC(NULL);
+    hdc_dest = CreateCompatibleDC(nullptr);
     old_bmp2 = (HBITMAP)SelectObject(hdc_dest, dbm->hbm);
   }
 
@@ -532,8 +532,8 @@ bool ddgr_gdi_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int
 
   SelectObject(GDI_DATA(hOffscreenDC), old_bmp);
 
-  if (dbm->hbm == NULL) {
-    if (dbm->hwnd == NULL)
+  if (dbm->hbm == nullptr) {
+    if (dbm->hwnd == nullptr)
       ReleaseDC(GDI_DATA(hPrimaryWnd), hdc_dest);
     else
       ReleaseDC(dbm->hwnd, hdc_dest);

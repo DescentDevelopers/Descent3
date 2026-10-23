@@ -126,7 +126,7 @@ char *parse_int(char *buf, int *d) {
   // Make sure at least one digit
   if (!got_digit) {
     *d = 0;
-    return NULL;
+    return nullptr;
   }
 
   // Check for valid separator, and convert
@@ -134,7 +134,7 @@ char *parse_int(char *buf, int *d) {
     *d = atoi(buf);
     return t;
   } else {
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -147,7 +147,7 @@ char *parse_token(char *p, const char *token) {
     return p + len;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 #define PARSE_NEXT_LINE()                                                                                              \
@@ -206,7 +206,7 @@ void SubtResetSubTitles(void) {
   for (int i = 0; i < Num_subtitles; i++) {
     if (Subtitles[i].msg)
       mem_free(Subtitles[i].msg);
-    Subtitles[i].msg = NULL;
+    Subtitles[i].msg = nullptr;
   }
   Num_subtitles = 0;
   Movie_subtitle_init = 1;

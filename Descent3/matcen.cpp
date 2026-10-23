@@ -233,7 +233,7 @@ matcen::matcen() {
 
   m_max_alive_children = -1;
   m_num_alive = 0;
-  m_alive_list = NULL;
+  m_alive_list = nullptr;
 
   m_preprod_time = 1.5f;
   m_postprod_time = 1.0f;
@@ -339,7 +339,7 @@ bool matcen::DoObjProd() {
   vector fvec = Player_object->pos - m_create_pnt;
   vm_NormalizeVector(&fvec);
 
-  vm_VectorToMatrix(&orient, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&orient, &fvec, nullptr, nullptr);
 
   if (m_prod_type[m_cached_prod_index] >= 0) {
     int croom = m_create_room;
@@ -358,7 +358,7 @@ bool matcen::DoObjProd() {
       vector gp;
       object *obj = &Objects[objnum];
 
-      if (PhysCalcGround(&gp, NULL, obj, 0)) {
+      if (PhysCalcGround(&gp, nullptr, obj, 0)) {
         fvi_info hit_info;
         fvi_query fq;
         int fate;
@@ -372,7 +372,7 @@ bool matcen::DoObjProd() {
         fq.rad = 0.0f;
         fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS;
         fq.thisobjnum = OBJNUM(obj);
-        fq.ignore_obj_list = NULL;
+        fq.ignore_obj_list = nullptr;
 
         fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -387,7 +387,7 @@ bool matcen::DoObjProd() {
           if (ps != pr) {
             diff = ps - pr;
             obj->pos -= diff * obj->orient.uvec;
-            ObjSetPos(obj, &obj->pos, obj->roomnum, NULL, false);
+            ObjSetPos(obj, &obj->pos, obj->roomnum, nullptr, false);
             obj->flags |= OF_MOVED_THIS_FRAME;
 
             m_create_pnt = obj->pos;
@@ -664,7 +664,7 @@ bool matcen::ComputeCreatePnt() {
       fq.p1 = &m_create_pnt;
       fq.rad = 0.0f;
       fq.thisobjnum = -1;
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = FQ_IGNORE_WALLS;
 
       fvi_FindIntersection(&fq, &hit_info);
@@ -929,7 +929,7 @@ void matcen::LoadData(CFILE *fp) {
     }
   } else {
     m_num_alive = 0;
-    m_alive_list = NULL;
+    m_alive_list = nullptr;
   }
 
   m_preprod_time = cf_ReadFloat(fp);
@@ -1220,7 +1220,7 @@ void matcen::CheckActivateStatus() {
       fq.p1 = &Player_object->pos;
       fq.rad = 0.0f;
       fq.thisobjnum = -1;
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = FQ_NO_RELINK | FQ_CHECK_OBJS | FQ_ONLY_DOOR_OBJ;
 
       fate = fvi_FindIntersection(&fq, &hit_info);
@@ -1788,7 +1788,7 @@ bool matcen::SetMaxAliveChildren(int max_alive) {
     if (max_alive > 0) {
       temp = mem_rmalloc<int>(max_alive);
     } else {
-      temp = NULL;
+      temp = nullptr;
     }
 
     // Determine the current number of alive (and tracked) children
@@ -1902,7 +1902,7 @@ void InitMatcens() {
   Num_matcens = 0;
 
   for (i = 0; i < MAX_MATCENS; i++) {
-    Matcen[i] = NULL;
+    Matcen[i] = nullptr;
   }
 
   atexit(DestroyAllMatcens);
@@ -1970,7 +1970,7 @@ void DestroyMatcen(int id, bool f_resort = false) {
 
   if (MatcenValid(id)) {
     delete Matcen[id];
-    Matcen[id] = NULL;
+    Matcen[id] = nullptr;
 
     Num_matcens--;
 

@@ -31,7 +31,7 @@
 class CLightingStatus : public CDialog {
   // Construction
 public:
-  CLightingStatus(CWnd *pParent = NULL); // standard constructor
+  CLightingStatus(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CLightingStatus)

@@ -170,16 +170,16 @@
 
 void UIListBox::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
   m_NumItems = 0;
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
+  m_ItemList = nullptr;
+  m_Virt2Real = nullptr;
+  m_Real2Virt = nullptr;
   m_SelectedIndex = 0;
   m_Index = 0;
   m_MouseState = 0;
   m_ClickTime = 0;
-  selectchange_fn = NULL;
-  selectchange_id_fn = NULL;
-  m_callbackptr = NULL;
+  selectchange_fn = nullptr;
+  selectchange_id_fn = nullptr;
+  m_callbackptr = nullptr;
   m_ShowDown = false;
   m_ShowUp = false;
   m_SelectColor = GR_WHITE;
@@ -312,7 +312,7 @@ void UIListBox::AddItem(const UIItem *item) {
       int result;
 
       int old_r2v;
-      UIItem *old_item = NULL;
+      UIItem *old_item = nullptr;
 
       while (oidx <= m_NumItems) {
 
@@ -454,9 +454,9 @@ void UIListBox::RemoveAll() {
     delete[] m_Virt2Real;
   if (m_Real2Virt)
     delete[] m_Real2Virt;
-  m_ItemList = NULL;
-  m_Virt2Real = NULL;
-  m_Real2Virt = NULL;
+  m_ItemList = nullptr;
+  m_Virt2Real = nullptr;
+  m_Real2Virt = nullptr;
 }
 
 // selects the given item in the list.
@@ -478,14 +478,14 @@ void UIListBox::SelectItem(const UIItem *item) {
 // returns the item at listbox index given.
 UIItem *UIListBox::GetItem(int index) const {
   if (m_NumItems == 0)
-    return NULL;
+    return nullptr;
 
   if (index >= 0 && index < m_NumItems) {
     int real_index = m_Virt2Real[index];
     ASSERT(real_index >= 0 && real_index < m_NumItems);
     return m_ItemList[real_index];
   } else
-    return NULL;
+    return nullptr;
 }
 
 // returns the current listbox index
@@ -596,9 +596,9 @@ void UIListBox::OnDestroy() {
   if (m_Virt2Real)
     delete[] m_Virt2Real;
 
-  m_ItemList = NULL;
-  m_Real2Virt = NULL;
-  m_Virt2Real = NULL;
+  m_ItemList = nullptr;
+  m_Real2Virt = nullptr;
+  m_Virt2Real = nullptr;
 }
 
 // behavior when gadget is being drawn.

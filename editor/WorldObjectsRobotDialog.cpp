@@ -718,7 +718,7 @@ BOOL CWorldObjectsRobotDialog::OnInitDialog() {
 #if 0 // LGT: undeclared symbols
 	CDialog::OnInitDialog();
 	
-	CWnd::SetTimer(1,50,NULL);
+	CWnd::SetTimer(1,50,nullptr);
 
 	UpdateDialog();
 #endif

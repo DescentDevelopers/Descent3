@@ -161,7 +161,7 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
 
       // Object_info[i].script_name[0] = 0;
       Object_info[i].icon_name[0] = 0;
-      Object_info[i].description = NULL;
+      Object_info[i].description = nullptr;
       Object_info[i].flags |= OIF_INVEN_SELECTABLE;
 
       // init spew types
@@ -194,27 +194,27 @@ void FreeObjectID(int n) {
   Object_info[n].module_name[0] = 0;
   if (Object_info[n].description) {
     mem_free(Object_info[n].description);
-    Object_info[n].description = NULL;
+    Object_info[n].description = nullptr;
   }
   if (Object_info[n].anim) // DAJ LEAK FIX
   {
     mem_free(Object_info[n].anim);
-    Object_info[n].anim = NULL;
+    Object_info[n].anim = nullptr;
   }
   if (Object_info[n].ai_info) // DAJ LEAK FIX
   {
     mem_free(Object_info[n].ai_info);
-    Object_info[n].ai_info = NULL;
+    Object_info[n].ai_info = nullptr;
   }
   if (Object_info[n].description) // DAJ LEAK FIX
   {
     mem_free(Object_info[n].description);
-    Object_info[n].description = NULL;
+    Object_info[n].description = nullptr;
   }
   if (Object_info[n].static_wb) // DAJ LEAK FIX
   {
     mem_free(Object_info[n].static_wb);
-    Object_info[n].static_wb = NULL;
+    Object_info[n].static_wb = nullptr;
   }
 }
 
@@ -291,7 +291,7 @@ int GetPrevObjectID(int n) {
 int FindObjectIDName(const char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_OBJECT_IDS; i++)
     if ((Object_info[i].type != OBJ_NONE) && !stricmp(name, Object_info[i].name))
@@ -313,7 +313,7 @@ void DrawObject(object *obj) {
   ASSERT(Object_info[obj->id].type != OBJ_NONE);
 
   if (obj->render_type == RT_POLYOBJ)
-    DrawPolygonModel(&obj->pos, &obj->orient, Object_info[obj->id].render_handle, NULL, 0, 1.0, 1.0, 1.0,
+    DrawPolygonModel(&obj->pos, &obj->orient, Object_info[obj->id].render_handle, nullptr, 0, 1.0, 1.0, 1.0,
                      obj->rtype.pobj_info.subobj_flags);
   else
     Int3();

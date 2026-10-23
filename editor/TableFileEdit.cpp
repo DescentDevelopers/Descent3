@@ -73,7 +73,7 @@ void CTableFileEdit::OnTableEditFileLoad() {
 
   CString filters = "Outrage Table File (*.loc)|*.loc|All Files (*.*)|*.*||";
 
-  CFileDialog dlg_open(TRUE, NULL, NULL, OFN_FILEMUSTEXIST, (LPCTSTR)filters, this);
+  CFileDialog dlg_open(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST, (LPCTSTR)filters, this);
   if (dlg_open.DoModal() == IDCANCEL) {
     return;
   }
@@ -139,7 +139,7 @@ void CTableFileEdit::OnTableEditFileSave() {
   // TODO: Add your command handler code here
   m_PageList.SaveSelected(&m_DescriptionBox);
 
-  if (!m_PageList.SaveTable(NULL)) {
+  if (!m_PageList.SaveTable(nullptr)) {
     MessageBox("The save was unsuccessful", "Save Table Error!");
     return;
   }
@@ -152,7 +152,7 @@ void CTableFileEdit::OnTableEditFileSaveAs() {
 
   CString filters = "Outrage Table File (*.loc)|*.loc|All Files (*.*)|*.*||";
 
-  CFileDialog dlg_open(FALSE, NULL, NULL, 0, (LPCTSTR)filters, this);
+  CFileDialog dlg_open(FALSE, nullptr, nullptr, 0, (LPCTSTR)filters, this);
   if (dlg_open.DoModal() == IDCANCEL) {
     return;
   }

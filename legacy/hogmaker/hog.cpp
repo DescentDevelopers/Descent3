@@ -159,7 +159,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames) {
 
   //	create new file
   hog_fp = fopen(hogname, "wb");
-  if (hog_fp == NULL) {
+  if (hog_fp == nullptr) {
     delete[] table;
     return HOGMAKER_OUTFILE;
   }
@@ -211,13 +211,13 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames) {
     struct _stat mystat;
 
     ifp = fopen(filenames[i], "rb");
-    if (ifp == NULL) {
+    if (ifp == nullptr) {
       delete[] table;
       fclose(hog_fp);
       return HOGMAKER_INFILE;
     }
 
-    _splitpath(filenames[i], NULL, NULL, table[i].name, ext);
+    _splitpath(filenames[i], nullptr, nullptr, table[i].name, ext);
     _fstat(fileno(ifp), &mystat);
 
     strcat(table[i].name, ext);

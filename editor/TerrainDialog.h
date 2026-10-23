@@ -31,7 +31,7 @@
 class CTerrainDialog : public CKeypadDialog {
   // Construction
 public:
-  CTerrainDialog(CWnd *pParent = NULL); // standard constructor
+  CTerrainDialog(CWnd *pParent = nullptr); // standard constructor
   virtual void RunKeypadFunction(int code);
   void SetCurrentMoon(int);
 

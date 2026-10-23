@@ -409,7 +409,7 @@ bool PolyCollideObject(object *obj) {
                         obj->rtype.pobj_info.subobj_flags);
   }
 #else
-  CollidePolygonModel(&obj->pos, &obj->orient, obj->rtype.pobj_info.model_num, NULL, obj->rtype.pobj_info.subobj_flags);
+  CollidePolygonModel(&obj->pos, &obj->orient, obj->rtype.pobj_info.model_num, nullptr, obj->rtype.pobj_info.subobj_flags);
 #endif
 
   View_position = temp_pos;

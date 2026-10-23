@@ -157,10 +157,10 @@
 OutrageMusicSeq::OutrageMusicSeq() {
   m_sequencer_run = false;
   m_sequencer_init = false;
-  m_str_buffer = NULL;
-  m_ins_buffer = NULL;
+  m_str_buffer = nullptr;
+  m_ins_buffer = nullptr;
   m_curregion = -1;
-  m_pending_song = m_active_song = m_playing_song = NULL;
+  m_pending_song = m_active_song = m_playing_song = nullptr;
 }
 
 OutrageMusicSeq::~OutrageMusicSeq() { OutrageMusicSeq::Shutdown(); }
@@ -187,7 +187,7 @@ bool OutrageMusicSeq::Init(const char *theme_file) {
   //	initialize music lists
   m_music_list.free();
   m_tracklist.init(64);
-  m_pending_song = m_active_song = m_playing_song = NULL;
+  m_pending_song = m_active_song = m_playing_song = nullptr;
   m_output_q.flush();
   m_curregion = -1;
 
@@ -215,7 +215,7 @@ void OutrageMusicSeq::Shutdown() {
   for (int i = 0; i < OMS_NUM_STRM; i++)
     m_strm[i].Reset(this);
 
-  m_playing_song = NULL;
+  m_playing_song = nullptr;
   m_sequencer_init = false;
 }
 
@@ -275,7 +275,7 @@ void OutrageMusicSeq::SetVolume(float vol) {
       m_active_song->stream_idle = false;                                                                              \
       m_active_song->request_stop = false;                                                                             \
     }                                                                                                                  \
-    m_pending_song = NULL;                                                                                             \
+    m_pending_song = nullptr;                                                                                             \
   } while (0)
 
 //	runs a frame of input.
@@ -545,8 +545,8 @@ next_ins:
       evt.parm.i = strm->type;
       m_output_q.send(evt);
       strm->stream_idle = true;
-      m_active_song = NULL;
-      m_playing_song = NULL;
+      m_active_song = nullptr;
+      m_playing_song = nullptr;
     }
     break;
   }
@@ -568,7 +568,7 @@ void OutrageMusicSeq::StartSong(int song, bool clean_switch) {
   if (m_curregion >= 0) {
     m_pending_song = GetSong(m_curregion, (int16_t)song);
   } else {
-    m_pending_song = NULL;
+    m_pending_song = nullptr;
   }
 
   if (m_pending_song) {
@@ -581,8 +581,8 @@ void OutrageMusicSeq::StartSong(int song, bool clean_switch) {
 // stops song, cold.
 void OutrageMusicSeq::StopSong() {
   if (m_active_song) {
-    m_active_song = NULL;
-    m_playing_song = NULL;
+    m_active_song = nullptr;
+    m_playing_song = nullptr;
   }
   m_strm[m_dominant_strm].m_stream.Close();
 }
@@ -620,7 +620,7 @@ OutrageMusicSeq::music_ins *OutrageMusicSeq::alloc_and_copy_ins(int len, const m
   // copy instructions to static buffer and return a pointer to it
   if ((m_ins_curptr + len) > (m_ins_buffer + MAX_MUSIC_INSTRUCTIONS)) {
     Int3();
-    return NULL;
+    return nullptr;
   } else {
     memcpy(m_ins_curptr, ins, len * sizeof(music_ins));
     m_ins_curptr += len;
@@ -633,7 +633,7 @@ char *OutrageMusicSeq::alloc_and_copy_str(const char *str) {
   int slen = strlen(str) + 1;
   if ((m_str_curptr + slen) > (m_str_buffer + MAX_MUSIC_STRLEN)) {
     Int3();
-    return NULL;
+    return nullptr;
   } else {
     strcpy(m_str_curptr, str);
     m_str_curptr += slen;
@@ -652,7 +652,7 @@ OutrageMusicSeq::music_stream *OutrageMusicSeq::AddToList(int16_t region, int16_
   node->t.ins = alloc_and_copy_ins(len, ins);
   if (!node->t.ins) {
     delete node;
-    return NULL;
+    return nullptr;
   }
 
   // link it in.
@@ -674,7 +674,7 @@ void OutrageMusicSeq::FreeList() {
 
 OutrageMusicSeq::music_stream *OutrageMusicSeq::GetSong(int16_t region, int16_t theme_type) {
   tListNode<music_stream> *node = m_music_list.start();
-  music_stream *strm = NULL;
+  music_stream *strm = nullptr;
   int i;
 
   for (i = 0; i < m_music_list.length(); node = m_music_list.next(), i++) {
@@ -694,10 +694,10 @@ OutrageMusicSeq::music_stream *OutrageMusicSeq::GetSong(int16_t region, int16_t 
         strm->i_reg = 0;
         strm->ifi_block = false;
         strm->stream_idle = true;
-        strm->strm = NULL;
-        strm->old_strm = NULL;
-        strm->loop_name = NULL;
-        strm->pending_loop_name = NULL;
+        strm->strm = nullptr;
+        strm->old_strm = nullptr;
+        strm->loop_name = nullptr;
+        strm->pending_loop_name = nullptr;
         strm->last_ip = -1;
         strm->error = false;
         break;
@@ -735,7 +735,7 @@ const char *OutrageMusicSeq::GetCurrentLoopName(int *count) {
   }
 
   *count = 0;
-  return NULL;
+  return nullptr;
 }
 
 // gets current region PLAYING, not PENDING like above.

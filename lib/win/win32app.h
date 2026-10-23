@@ -210,7 +210,7 @@ public:
   bool NT() const { return m_NTFlag; }
 
   // retreive full version information
-  static tWin32OS version(int *major, int *minor, int *build = NULL, char *desc = NULL);
+  static tWin32OS version(int *major, int *minor, int *build = nullptr, char *desc = nullptr);
 
   // detect if application can handle what we want of it.
   static bool GetSystemSpecs(const char *fname);

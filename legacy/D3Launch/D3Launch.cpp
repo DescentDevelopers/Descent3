@@ -202,10 +202,10 @@ bool GlideInited;
 int Dx_version;
 
 // Global storage for DDraw handle
-HINSTANCE Dd_dll_handle = NULL;
+HINSTANCE Dd_dll_handle = nullptr;
 
 // Global storage for OpenGL library
-HINSTANCE opengl_dll_handle = NULL;
+HINSTANCE opengl_dll_handle = nullptr;
 
 // Values to scale the bitmaps to match the dialog size
 double DlgWidthModifier;
@@ -235,8 +235,8 @@ CD3LaunchApp::CD3LaunchApp() {
   // TODO: add construction code here,
   // Place all significant initialization in InitInstance
   m_straight_to_update = 0;
-  m_hResInst = NULL;
-  m_hDefResInst = NULL;
+  m_hResInst = nullptr;
+  m_hDefResInst = nullptr;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -252,7 +252,7 @@ BOOL CD3LaunchApp::FirstInstance() {
 
   // See if the D3 Launcher mutex has already been created
   hnd = OpenMutex(MUTEX_ALL_ACCESS, FALSE, D3_LAUNCHER_MUTEX_NAME);
-  if (hnd == NULL)
+  if (hnd == nullptr)
     return TRUE; // Nope, this is the first instance
 
   // close the mutex handle
@@ -260,7 +260,7 @@ BOOL CD3LaunchApp::FirstInstance() {
 
   // Determine if another window with our title exists...
   CWnd *pWndPrev, *pWndChild;
-  pWndPrev = CWnd::FindWindow(NULL, szTitle);
+  pWndPrev = CWnd::FindWindow(nullptr, szTitle);
   if (pWndPrev) {
     // if so, does it have any popups?
     pWndChild = pWndPrev->GetLastActivePopup();
@@ -305,12 +305,12 @@ BOOL CD3LaunchApp::InitInstance() {
   }
 
   // Create the Mutex to signal that the Launcher is currently running
-  if (CreateMutex(NULL, TRUE, D3_LAUNCHER_MUTEX_NAME) == NULL) {
+  if (CreateMutex(nullptr, TRUE, D3_LAUNCHER_MUTEX_NAME) == nullptr) {
     return FALSE;
   }
 
   // Initialize the com object for this ap
-  CoInitialize(NULL);
+  CoInitialize(nullptr);
 
   // parse the command line
   OutrageParseCommandLine();
@@ -378,8 +378,8 @@ BOOL CD3LaunchApp::InitInstance() {
   RenderersDetected = FALSE;
   GlideInited = FALSE;
   Dx_version = 0;
-  Dd_dll_handle = NULL;
-  opengl_dll_handle = NULL;
+  Dd_dll_handle = nullptr;
+  opengl_dll_handle = nullptr;
 
   // Display the main menu dialog
   CD3LaunchDlg dlg;
@@ -402,20 +402,20 @@ int CD3LaunchApp::ExitInstance() {
   // If glide has been initialized, shut it down before we exit
   // shutdown_glide();  // don't need this now (it shuts it down in 3D_detect)
 
-  if (m_hResInst != NULL) {
+  if (m_hResInst != nullptr) {
     FreeLibrary(m_hResInst);
-    m_hResInst = NULL;
+    m_hResInst = nullptr;
   }
 
-  if (opengl_dll_handle != NULL) {
+  if (opengl_dll_handle != nullptr) {
     FreeLibrary(opengl_dll_handle);
-    opengl_dll_handle = NULL;
+    opengl_dll_handle = nullptr;
   }
 
   // Just in case, make sure the DDraw DLL has been freed
-  if (Dd_dll_handle != NULL) {
+  if (Dd_dll_handle != nullptr) {
     FreeLibrary(Dd_dll_handle);
-    Dd_dll_handle = NULL;
+    Dd_dll_handle = nullptr;
   }
 
   return CWinApp::ExitInstance();
@@ -427,7 +427,7 @@ void help_launch(char *help_filename) {
   char curr_dir[_MAX_PATH + 1];
   char file_path[_MAX_PATH + 1];
 
-  if (_getcwd(curr_dir, _MAX_PATH) == NULL)
+  if (_getcwd(curr_dir, _MAX_PATH) == nullptr)
     return;
 
   sprintf(file_path, "%s\\%s%s", curr_dir, HELP_DIR, help_filename);
@@ -448,7 +448,7 @@ void help_launch(char *help_filename) {
 void url_launch(char *url) {
   int r;
 
-  r = (int)ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOW);
+  r = (int)ShellExecute(nullptr, "open", url, nullptr, nullptr, SW_SHOW);
   if (r < 32) {
     CString txt;
     switch (r) {
@@ -509,23 +509,23 @@ BOOL PlayResource(LPSTR lpName, bool WaitUntilDone) {
   /* Find the WAVE resource. */
   hResInfo = FindResource(Nl, lpName, "WAVE");
 
-  if (hResInfo == NULL)
+  if (hResInfo == nullptr)
     return FALSE;
 
   /* Load the WAVE resource. */
   hRes = LoadResource(Nl, hResInfo);
-  if (hRes == NULL)
+  if (hRes == nullptr)
     return FALSE;
 
   /* Lock the WAVE resource and play it. */
   lpRes = (LPSTR)LockResource(hRes);
-  if (lpRes == NULL)
+  if (lpRes == nullptr)
     return FALSE;
 
   int play_type = (WaitUntilDone) ? SND_SYNC : SND_ASYNC;
 
   bRtn = sndPlaySound(lpRes, SND_MEMORY | play_type);
-  if (bRtn == NULL)
+  if (bRtn == nullptr)
     return FALSE;
 
   /* Free the WAVE resource and return success or failure. */
@@ -553,14 +553,14 @@ BOOL GetBitmapAndPalette(UINT nIDResource, CBitmap *bitmap, CPalette *pal) {
 // Loads a bitmap and palette from a given resource name
 BOOL GetBitmapAndPalette(LPCTSTR lpszResourceName, CBitmap *bitmap, CPalette *pal) {
   // Make sure a bitmap is given
-  if (bitmap == NULL)
+  if (bitmap == nullptr)
     return TRUE;
 
   // Load in the bitmap resource
   HBITMAP hBmp =
       (HBITMAP)::LoadImage(AfxGetResourceHandle(), lpszResourceName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
-  if (hBmp == NULL)
+  if (hBmp == nullptr)
     return FALSE;
 
   // Delete any attached objects from the bitmap
@@ -572,7 +572,7 @@ BOOL GetBitmapAndPalette(LPCTSTR lpszResourceName, CBitmap *bitmap, CPalette *pa
   bitmap->Attach(hBmp);
 
   // If no palette is desired, get outta here
-  if (pal == NULL)
+  if (pal == nullptr)
     return TRUE;
 
   // Delete any attached objects from the palette
@@ -588,23 +588,23 @@ BOOL GetBitmapAndPalette(LPCTSTR lpszResourceName, CBitmap *bitmap, CPalette *pa
   int nColors = bmInfo.biClrUsed ? bmInfo.biClrUsed : 1 << bmInfo.biBitCount;
 
   // Create a halftone palette if colors > 256.
-  CClientDC dc(NULL); // Desktop DC
+  CClientDC dc(nullptr); // Desktop DC
 
   if (nColors > 256)
     pal->CreateHalftonePalette(&dc);
   else { // Create the palette
     RGBQUAD *pRGB = new RGBQUAD[nColors];
-    if (pRGB == NULL)
+    if (pRGB == nullptr)
       return FALSE;
 
     CDC memDC;
-    CBitmap *old_bitmap = NULL;
+    CBitmap *old_bitmap = nullptr;
 
     memDC.CreateCompatibleDC(&dc);
     old_bitmap = memDC.SelectObject(bitmap);
     ::GetDIBColorTable(memDC, 0, nColors, pRGB);
 
-    if (old_bitmap != NULL)
+    if (old_bitmap != nullptr)
       memDC.SelectObject(old_bitmap);
 
     if (memDC.DeleteDC() == 0)
@@ -612,7 +612,7 @@ BOOL GetBitmapAndPalette(LPCTSTR lpszResourceName, CBitmap *bitmap, CPalette *pa
 
     UINT nSize = sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * 256);
     LOGPALETTE *pLP = (LOGPALETTE *)new BYTE[nSize];
-    if (pLP == NULL) {
+    if (pLP == nullptr) {
       delete[] pRGB;
       return FALSE;
     }
@@ -670,7 +670,7 @@ BOOL GetBitmapAndPalette(LPCTSTR lpszResourceName, CBitmap *bitmap, CPalette *pa
 // Processes and waiting messages
 void DeferMessages(void) {
   MSG msg;
-  for (int MsgCount = MAX_MESSAGES; MsgCount && PeekMessage(&msg, NULL, 0, 0, PM_REMOVE); MsgCount--) {
+  for (int MsgCount = MAX_MESSAGES; MsgCount && PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE); MsgCount--) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
@@ -685,7 +685,7 @@ bool ProcessGlu32DLL(void) {
   // Second, see if user's system already has access to a Glu32.dll
   HINSTANCE dll_handle;
   dll_handle = LoadLibrary("Glu32.dll");
-  if (dll_handle != NULL) {
+  if (dll_handle != nullptr) {
     FreeLibrary(dll_handle);
     DeleteFile("Glu32.xyz");
     return FALSE;
@@ -710,7 +710,7 @@ bool ProcessUpdatedVersionFile(void) {
 
   // See if the updated version text file exists
   f = fopen(UPDATED_VERSION_FNAME, "rt");
-  if (f == NULL) {
+  if (f == nullptr) {
     return FALSE;
   }
 
@@ -773,13 +773,13 @@ bool ProcessUpdatedVersionFile(void) {
 // installed on the user's system
 int GetDirectXVersion(void) {
   LONG lResult;
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
 
   int version_num = 0;
   if (Dd_dll_handle) {
     lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE,             // Where it is
                            "Software\\Microsoft\\DirectX", // name of key
-                           NULL,                           // DWORD reserved
+                           0,                              // DWORD reserved
                            KEY_QUERY_VALUE,                // Allows all changes
                            &hKey                           // Location to store key
     );
@@ -791,7 +791,7 @@ int GetDirectXVersion(void) {
       dwLen = 32;
       lResult = RegQueryValueEx(hKey,               // Handle to key
                                 "Version",          // The values name
-                                NULL,               // DWORD reserved
+                                nullptr,               // DWORD reserved
                                 &dwType,            // What kind it is
                                 (uint8_t *)version, // value to set
                                 &dwLen              // How many bytes to set
@@ -809,7 +809,7 @@ int GetDirectXVersion(void) {
         dwLen = 4;
         lResult = RegQueryValueEx(hKey,               // Handle to key
                                   "InstalledVersion", // The values name
-                                  NULL,               // DWORD reserved
+                                  nullptr,               // DWORD reserved
                                   &dwType,            // What kind it is
                                   (uint8_t *)&val,    // value to set
                                   &dwLen              // How many bytes to set
@@ -833,31 +833,31 @@ typedef int(CALLBACK *LPFN_DIRECTXSETUPGETVERSION)(DWORD *, DWORD *);
 
 // Attempts to obtain the DirectX version and revision number via the dsetup.dll
 bool GetDirectXVersionViaDLL(DWORD *version, DWORD *revision) {
-  HINSTANCE dsetup_dll_handle = NULL;
-  LPFN_DIRECTXSETUPGETVERSION pfn_DirectXSetupGetVersion = NULL;
+  HINSTANCE dsetup_dll_handle = nullptr;
+  LPFN_DIRECTXSETUPGETVERSION pfn_DirectXSetupGetVersion = nullptr;
 
   version = 0;
   revision = 0;
 
   // Check for the DSetup dll, and open it
   dsetup_dll_handle = LoadLibrary("dsetup.dll");
-  if (dsetup_dll_handle == NULL) {
+  if (dsetup_dll_handle == nullptr) {
     return FALSE;
   }
 
   // Get the DirectXSetup function
   pfn_DirectXSetupGetVersion =
       (LPFN_DIRECTXSETUPGETVERSION)GetProcAddress(dsetup_dll_handle, "DirectXSetupGetVersionA");
-  if (pfn_DirectXSetupGetVersion == NULL) {
+  if (pfn_DirectXSetupGetVersion == nullptr) {
     FreeLibrary(dsetup_dll_handle);
-    dsetup_dll_handle = NULL;
+    dsetup_dll_handle = nullptr;
     return FALSE;
   }
 
   int rc = pfn_DirectXSetupGetVersion(version, revision);
 
   FreeLibrary(dsetup_dll_handle);
-  dsetup_dll_handle = NULL;
+  dsetup_dll_handle = nullptr;
 
   if (rc == 0)
     return FALSE;
@@ -910,13 +910,13 @@ void Register(bool wait_until_done) {
   si.cb = sizeof(si);
 
   BOOL ret = CreateProcess("reg32a.exe",              // pointer to name of executable module
-                           NULL,                      // pointer to command line string
-                           NULL,                      // pointer to process security attributes
-                           NULL,                      // pointer to thread security attributes
+                           nullptr,                      // pointer to command line string
+                           nullptr,                      // pointer to process security attributes
+                           nullptr,                      // pointer to thread security attributes
                            FALSE,                     // handle inheritance flag
                            CREATE_DEFAULT_ERROR_MODE, // creation flags
-                           NULL,                      // pointer to new environment block
-                           NULL,                      // pointer to current directory name
+                           nullptr,                      // pointer to new environment block
+                           nullptr,                      // pointer to current directory name
                            &si,                       // pointer to STARTUPINFO
                            &pi                        // pointer to PROCESS_INFORMATION
   );
@@ -946,8 +946,8 @@ void CopyHelpFiles(bool should_overwrite) {
   }
 
   // Build the source help filenames
-  _splitpath(HELP_HLP_FNAME, NULL, NULL, hlp_filename, hlp_ext);
-  _splitpath(HELP_CNT_FNAME, NULL, NULL, cnt_filename, cnt_ext);
+  _splitpath(HELP_HLP_FNAME, nullptr, nullptr, hlp_filename, hlp_ext);
+  _splitpath(HELP_CNT_FNAME, nullptr, nullptr, cnt_filename, cnt_ext);
 
   int lang_type = os_config_read_uint(szSectionName, "LanguageType", LANGUAGE_ENGLISH);
   switch (lang_type) {
@@ -1075,7 +1075,7 @@ void ReadConfigFile(void) {
   // Try and open the config file
   sprintf(path, "%s%s", LANGUAGE_LAUNCHER_PATH, LAUNCHER_CONFIG_FNAME);
   f = fopen(path, "rt");
-  if (f == NULL)
+  if (f == nullptr)
     return;
 
   // Read in config file
@@ -1095,10 +1095,10 @@ void ReadConfigFile(void) {
 
     // split off line's parameter
     line = strtok(line, "=");
-    if (line == NULL)
+    if (line == nullptr)
       continue;
-    parm = strtok(NULL, "");
-    if (parm == NULL)
+    parm = strtok(nullptr, "");
+    if (parm == nullptr)
       continue;
 
     RemoveTrailingWhitespace(line);
@@ -1131,7 +1131,7 @@ void ReadConfigFile(void) {
 void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
   const char delimiter = '\\';
   va_list args;
-  char *currentDir = NULL;
+  char *currentDir = nullptr;
   int pathLength = 0;
 
   assert(newPath);
@@ -1152,7 +1152,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 
   // Add the additional subdirectories
   va_start(args, subDir);
-  while ((currentDir = va_arg(args, char *)) != NULL) {
+  while ((currentDir = va_arg(args, char *)) != nullptr) {
     pathLength = strlen(newPath);
     if (newPath[pathLength - 1] != delimiter) {
       newPath[pathLength] = delimiter; // add the delimiter

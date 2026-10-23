@@ -397,13 +397,13 @@ BOOL CD3LaunchDlg::OnInitDialog() {
 
   pLaunchDlg = this;
 
-  srand((unsigned)time(NULL));
+  srand((unsigned)time(nullptr));
 
-  m_timerID = SetTimer(MOUSE_TIMER_ID, MAIN_TIMER_DELAY, NULL);
+  m_timerID = SetTimer(MOUSE_TIMER_ID, MAIN_TIMER_DELAY, nullptr);
 
   // Dim all System Menu options we don't want
   CMenu *sysmenu = GetSystemMenu(FALSE);
-  if (sysmenu != NULL) {
+  if (sysmenu != nullptr) {
     sysmenu->EnableMenuItem(0, MF_BYPOSITION | MF_GRAYED);
     sysmenu->EnableMenuItem(2, MF_BYPOSITION | MF_GRAYED);
     sysmenu->EnableMenuItem(4, MF_BYPOSITION | MF_GRAYED);
@@ -599,9 +599,9 @@ void CD3LaunchDlg::OnBtnSetup() {
     title.Format(IDS_PROFANITY_TITLE);
     msg.Format(IDS_PROFANITY_MSG);
     if (MessageBox(msg, title, MB_YESNO | MB_ICONQUESTION) == IDYES)
-      os_config_write_uint(NULL, "ProfanityPrevention", 1);
+      os_config_write_uint(nullptr, "ProfanityPrevention", 1);
     else
-      os_config_write_uint(NULL, "ProfanityPrevention", 0);
+      os_config_write_uint(nullptr, "ProfanityPrevention", 0);
   }
 
   // Display Setup Window
@@ -655,7 +655,7 @@ void CD3LaunchDlg::OnBtnSetup() {
 #endif
 
     // Get the currently selected renderer type
-    RendererType renderer_id = (RendererType)os_config_read_uint(NULL, "PreferredRenderer", RENDERER_NONE);
+    RendererType renderer_id = (RendererType)os_config_read_uint(nullptr, "PreferredRenderer", RENDERER_NONE);
 
     // If they detected renderers, set vsync for jason
     if (RenderersDetected) {
@@ -666,18 +666,18 @@ void CD3LaunchDlg::OnBtnSetup() {
       else
         vsync_enabled = 0;
 
-      os_config_write_uint(NULL, "RS_vsync", vsync_enabled);
+      os_config_write_uint(nullptr, "RS_vsync", vsync_enabled);
       RenderersDetected = FALSE;
     }
 
     // Display the openGL warning message
     if (renderer_id == RENDERER_OPENGL) {
-      if (os_config_read_uint(NULL, "OpenGLWarningShown", 0) == 0) {
+      if (os_config_read_uint(nullptr, "OpenGLWarningShown", 0) == 0) {
         CString title, msg;
         title.Format(IDS_OPENGL_WARNING_TITLE);
         msg.Format(IDS_OPENGL_WARNING_MSG);
         MessageBox(msg, title, MB_OK | MB_ICONINFORMATION);
-        os_config_write_uint(NULL, "OpenGLWarningShown", 1);
+        os_config_write_uint(nullptr, "OpenGLWarningShown", 1);
       }
     }
   }
@@ -715,14 +715,14 @@ void CD3LaunchDlg::OnBtnReadme() {
   memset(&si, 0, sizeof(STARTUPINFO));
   si.cb = sizeof(si);
 
-  BOOL ret = CreateProcess(NULL,                      // pointer to name of executable module
+  BOOL ret = CreateProcess(nullptr,                      // pointer to name of executable module
                            "notepad readme.txt",      // pointer to command line string
-                           NULL,                      // pointer to process security attributes
-                           NULL,                      // pointer to thread security attributes
+                           nullptr,                      // pointer to process security attributes
+                           nullptr,                      // pointer to thread security attributes
                            FALSE,                     // handle inheritance flag
                            CREATE_DEFAULT_ERROR_MODE, // creation flags
-                           NULL,                      // pointer to new environment block
-                           NULL,                      // pointer to current directory name
+                           nullptr,                      // pointer to new environment block
+                           nullptr,                      // pointer to current directory name
                            &si,                       // pointer to STARTUPINFO
                            &pi                        // pointer to PROCESS_INFORMATION
   );
@@ -730,9 +730,9 @@ void CD3LaunchDlg::OnBtnReadme() {
   if (!ret) {
     char *lpMsgBuf;
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                  (LPTSTR)&lpMsgBuf, 0, NULL);
+                  (LPTSTR)&lpMsgBuf, 0, nullptr);
 
     // Display the string.
     CString readme_msg;
@@ -750,14 +750,14 @@ void CD3LaunchDlg::OnBtnReadme() {
   memset(&si, 0, sizeof(STARTUPINFO));
   si.cb = sizeof(si);
 
-  BOOL ret = CreateProcess(NULL,                      // pointer to name of executable module
+  BOOL ret = CreateProcess(nullptr,                      // pointer to name of executable module
                            README_VIEWER_FNAME,       // pointer to command line string
-                           NULL,                      // pointer to process security attributes
-                           NULL,                      // pointer to thread security attributes
+                           nullptr,                      // pointer to process security attributes
+                           nullptr,                      // pointer to thread security attributes
                            FALSE,                     // handle inheritance flag
                            CREATE_DEFAULT_ERROR_MODE, // creation flags
-                           NULL,                      // pointer to new environment block
-                           NULL,                      // pointer to current directory name
+                           nullptr,                      // pointer to new environment block
+                           nullptr,                      // pointer to current directory name
                            &si,                       // pointer to STARTUPINFO
                            &pi                        // pointer to PROCESS_INFORMATION
   );
@@ -765,9 +765,9 @@ void CD3LaunchDlg::OnBtnReadme() {
   if (!ret) {
     char *lpMsgBuf;
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                  (LPTSTR)&lpMsgBuf, 0, NULL);
+                  (LPTSTR)&lpMsgBuf, 0, nullptr);
 
     // Display the string.
     CString readme_msg;
@@ -795,7 +795,7 @@ void CD3LaunchDlg::OnBtnPlay() {
   strncpy(command_line_temp, command_line, MAX_CMD_LINE_LEN);
   command_line_temp[MAX_CMD_LINE_LEN] = '\0';
   StringToLower(command_line_temp);
-  if (strstr(command_line_temp, "-dedicated ") == NULL)
+  if (strstr(command_line_temp, "-dedicated ") == nullptr)
     dedicated_switch_set = FALSE;
   else
     dedicated_switch_set = TRUE;
@@ -809,7 +809,7 @@ void CD3LaunchDlg::OnBtnPlay() {
   }
 
   // Display the message stating that user has not configured detail level
-  if (os_config_read_uint(NULL, "DetailLevelConfigured", 0) == 0) {
+  if (os_config_read_uint(nullptr, "DetailLevelConfigured", 0) == 0) {
     msg.LoadString(IDS_D3LAUNCHDLG_SPD_MSG);
     title.LoadString(IDS_D3LAUNCHDLG_SPD_TITLE);
     MessageBox(msg, title, MB_OK | MB_ICONWARNING);
@@ -817,7 +817,7 @@ void CD3LaunchDlg::OnBtnPlay() {
   }
 
   // Display message if user has not selected a rendering device
-  if (!dedicated_switch_set && os_config_read_uint(NULL, "PreferredRenderer", RENDERER_NONE) == RENDERER_NONE) {
+  if (!dedicated_switch_set && os_config_read_uint(nullptr, "PreferredRenderer", RENDERER_NONE) == RENDERER_NONE) {
     msg.LoadString(IDS_D3LAUNCHDLG_NO_RENDERER_MSG);
     title.LoadString(IDS_D3LAUNCHDLG_NO_RENDERER_TITLE);
     MessageBox(msg, title, MB_OK | MB_ICONWARNING);
@@ -848,8 +848,8 @@ void CD3LaunchDlg::OnBtnPlay() {
 
 #if (defined(OEM_VOODOO3) || defined(OEM_KATMAI))
   // Display the update recommendation message
-  if (os_config_read_uint(NULL, "UpdatePromptShown", 0) == 0) {
-    os_config_write_uint(NULL, "UpdatePromptShown", 1);
+  if (os_config_read_uint(nullptr, "UpdatePromptShown", 0) == 0) {
+    os_config_write_uint(nullptr, "UpdatePromptShown", 1);
     msg.LoadString(IDS_D3LAUNCHDLG_UPDPRMT_MSG);
     title.LoadString(IDS_D3LAUNCHDLG_UPDPRMT_TITLE);
     if (MessageBox(msg, title, MB_YESNO | MB_ICONQUESTION) == IDYES) {
@@ -860,7 +860,7 @@ void CD3LaunchDlg::OnBtnPlay() {
 #endif
 
   // display findfast dialog if needed.
-  HWND ffhwnd = ::FindWindow("Find Fast Indexer", NULL);
+  HWND ffhwnd = ::FindWindow("Find Fast Indexer", nullptr);
 
   if (ffhwnd) {
     CFindFastDlg findfastdlg;
@@ -887,12 +887,12 @@ void CD3LaunchDlg::OnBtnPlay() {
       ::SendMessage(ffhwnd, WM_COMMAND, 0xe141, 0);
       do {
         Sleep(100);
-        ffhwnd = ::FindWindow("Find Fast Indexer", NULL);
+        ffhwnd = ::FindWindow("Find Fast Indexer", nullptr);
         num_shutdown_checks++;
-      } while (ffhwnd != NULL && num_shutdown_checks < 10);
+      } while (ffhwnd != nullptr && num_shutdown_checks < 10);
 
       // If FindFast is still running, display warning prompt
-      if (ffhwnd != NULL) {
+      if (ffhwnd != nullptr) {
         msg.LoadString(IDS_FINDFAST_MSG);
         title.LoadString(IDS_FINDFAST_TITLE);
         if (MessageBox(msg, title, MB_YESNO | MB_ICONWARNING) != IDYES)
@@ -906,18 +906,18 @@ void CD3LaunchDlg::OnBtnPlay() {
   cmd_line_options = os_config_read_string(szSectionName, "CmdLineOptions", "");
 
   // Get rid of any gamma related environment variables
-  SetEnvironmentVariable("SST_RGAMMA", NULL);
-  SetEnvironmentVariable("SST_GGAMMA", NULL);
-  SetEnvironmentVariable("SST_BGAMMA", NULL);
-  SetEnvironmentVariable("SST_GAMMA", NULL);
+  SetEnvironmentVariable("SST_RGAMMA", nullptr);
+  SetEnvironmentVariable("SST_GGAMMA", nullptr);
+  SetEnvironmentVariable("SST_BGAMMA", nullptr);
+  SetEnvironmentVariable("SST_GAMMA", nullptr);
 
-  SetEnvironmentVariable("SSTV2_RGAMMA", NULL);
-  SetEnvironmentVariable("SSTV2_GGAMMA", NULL);
-  SetEnvironmentVariable("SSTV2_BGAMMA", NULL);
-  SetEnvironmentVariable("SSTV2_GAMMA", NULL);
+  SetEnvironmentVariable("SSTV2_RGAMMA", nullptr);
+  SetEnvironmentVariable("SSTV2_GGAMMA", nullptr);
+  SetEnvironmentVariable("SSTV2_BGAMMA", nullptr);
+  SetEnvironmentVariable("SSTV2_GAMMA", nullptr);
 
   // Don't use lightmaps if using lowest detail setting
-  if (os_config_read_uint(NULL, "PredefDetailSetting", MEDIUM_DETAIL) == LOW_DETAIL) {
+  if (os_config_read_uint(nullptr, "PredefDetailSetting", MEDIUM_DETAIL) == LOW_DETAIL) {
     no_lightmaps_switch = "-nolightmaps";
   } else {
     no_lightmaps_switch = "";
@@ -981,12 +981,12 @@ void CD3LaunchDlg::OnBtnPlay() {
 
   BOOL ret = CreateProcess(ExecFile.GetBuffer(0),     // pointer to name of executable module
                            CommandLine.GetBuffer(0),  // pointer to command line string
-                           NULL,                      // pointer to process security attributes
-                           NULL,                      // pointer to thread security attributes
+                           nullptr,                      // pointer to process security attributes
+                           nullptr,                      // pointer to thread security attributes
                            FALSE,                     // handle inheritance flag
                            CREATE_DEFAULT_ERROR_MODE, // creation flags
-                           NULL,                      // pointer to new environment block
-                           NULL,                      // pointer to current directory name
+                           nullptr,                      // pointer to new environment block
+                           nullptr,                      // pointer to current directory name
                            &si,                       // pointer to STARTUPINFO
                            &pi                        // pointer to PROCESS_INFORMATION
   );
@@ -997,9 +997,9 @@ void CD3LaunchDlg::OnBtnPlay() {
   } else {
     char *lpMsgBuf;
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                  (LPTSTR)&lpMsgBuf, 0, NULL);
+                  (LPTSTR)&lpMsgBuf, 0, nullptr);
 
     // Display the string
     CString launch_msg, error_msg;
@@ -1208,9 +1208,9 @@ BOOL CD3LaunchDlg::PreCreateWindow(CREATESTRUCT &cs) {
 // Sets the new language resource DLL
 bool CD3LaunchDlg::SetLanguageDLL(int lang_type) {
   // If a DLL is currently loaded, free it
-  if (theApp.m_hResInst != NULL) {
+  if (theApp.m_hResInst != nullptr) {
     FreeLibrary(theApp.m_hResInst);
-    theApp.m_hResInst = NULL;
+    theApp.m_hResInst = nullptr;
   }
 
   switch (lang_type) {
@@ -1231,7 +1231,7 @@ bool CD3LaunchDlg::SetLanguageDLL(int lang_type) {
     break;
   }
 
-  if (theApp.m_hResInst != NULL) {
+  if (theApp.m_hResInst != nullptr) {
     AfxSetResourceHandle(theApp.m_hResInst);
     return TRUE;
   }
@@ -1265,8 +1265,8 @@ void CD3LaunchDlg::RefreshDialog(void) {
 BOOL CD3LaunchDlg::OnEraseBkgnd(CDC *pDC) {
   // TODO: Add your message handler code here and/or call default
   CDC memDC;
-  CBitmap *old_bitmap = NULL;
-  CPalette *old_palette = NULL;
+  CBitmap *old_bitmap = nullptr;
+  CPalette *old_palette = nullptr;
   CRect crect;
   GetClientRect(&crect);
 
@@ -1274,7 +1274,7 @@ BOOL CD3LaunchDlg::OnEraseBkgnd(CDC *pDC) {
   CPalette *palette = &(theApp.m_palette);
 
   // Select and realize the palette
-  if (pDC->GetDeviceCaps(RASTERCAPS) & RC_PALETTE && palette->m_hObject != NULL) {
+  if (pDC->GetDeviceCaps(RASTERCAPS) & RC_PALETTE && palette->m_hObject != nullptr) {
     old_palette = pDC->SelectPalette(palette, FALSE);
     pDC->RealizePalette();
   }
@@ -1284,10 +1284,10 @@ BOOL CD3LaunchDlg::OnEraseBkgnd(CDC *pDC) {
 
   pDC->StretchBlt(0, 0, m_size.cx, m_size.cy, &memDC, 0, 0, m_bmInfo.bmWidth, m_bmInfo.bmHeight, SRCCOPY);
 
-  if (old_bitmap != NULL)
+  if (old_bitmap != nullptr)
     memDC.SelectObject(old_bitmap);
 
-  if (old_palette != NULL)
+  if (old_palette != nullptr)
     pDC->SelectPalette(old_palette, FALSE);
 
   if (memDC.DeleteDC() == 0)
@@ -1299,9 +1299,9 @@ BOOL CD3LaunchDlg::OnEraseBkgnd(CDC *pDC) {
 
 BOOL CD3LaunchDlg::DestroyWindow() {
   // TODO: Add your specialized code here and/or call the base class
-  if (Dd_dll_handle != NULL) {
+  if (Dd_dll_handle != nullptr) {
     FreeLibrary(Dd_dll_handle);
-    Dd_dll_handle = NULL;
+    Dd_dll_handle = nullptr;
   }
 
   return CDialog::DestroyWindow();
@@ -1327,7 +1327,7 @@ void CD3LaunchDlg::OnBtnUninstall() {
   char *temp_str;
 
   // Grab the uninstall path
-  temp_str = os_config_read_string_ex(UNINSTALL_PATH, "UninstallString", NULL);
+  temp_str = os_config_read_string_ex(UNINSTALL_PATH, "UninstallString", nullptr);
   if (!temp_str) {
     CString msg, title;
     msg.LoadString(IDS_D3LAUNCHDLG_NO_UNINSTALL);
@@ -1338,7 +1338,7 @@ void CD3LaunchDlg::OnBtnUninstall() {
   strcpy(reg_command_line, temp_str);
 
   // Grab the application display name
-  temp_str = os_config_read_string_ex(UNINSTALL_PATH, "DisplayName", NULL);
+  temp_str = os_config_read_string_ex(UNINSTALL_PATH, "DisplayName", nullptr);
   if (!temp_str) {
     CString msg, title;
     msg.LoadString(IDS_D3LAUNCHDLG_NO_UNINSTALL);
@@ -1365,14 +1365,14 @@ void CD3LaunchDlg::OnBtnUninstall() {
   memset(&si, 0, sizeof(STARTUPINFO));
   si.cb = sizeof(si);
 
-  BOOL ret = CreateProcess(NULL,                      // pointer to name of executable module
+  BOOL ret = CreateProcess(nullptr,                      // pointer to name of executable module
                            command_line,              // pointer to command line string
-                           NULL,                      // pointer to process security attributes
-                           NULL,                      // pointer to thread security attributes
+                           nullptr,                      // pointer to process security attributes
+                           nullptr,                      // pointer to thread security attributes
                            FALSE,                     // handle inheritance flag
                            CREATE_DEFAULT_ERROR_MODE, // creation flags
-                           NULL,                      // pointer to new environment block
-                           NULL,                      // pointer to current directory name
+                           nullptr,                      // pointer to new environment block
+                           nullptr,                      // pointer to current directory name
                            &si,                       // pointer to STARTUPINFO
                            &pi                        // pointer to PROCESS_INFORMATION
   );
@@ -1384,9 +1384,9 @@ void CD3LaunchDlg::OnBtnUninstall() {
   } else {
     char *lpMsgBuf;
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                  (LPTSTR)&lpMsgBuf, 0, NULL);
+                  (LPTSTR)&lpMsgBuf, 0, nullptr);
 
     // Display the string.
     CString error_title;
@@ -1420,10 +1420,10 @@ int CD3LaunchDlg::find_cd_drive(char *subdir) {
     path[0] = (char)('A' + i);
     if (GetDriveType(path) == DRIVE_CDROM) {
       cdrom_drive = -3;
-      GetVolumeInformation(path, volume, 256, NULL, NULL, NULL, NULL, 0);
+      GetVolumeInformation(path, volume, 256, nullptr, nullptr, nullptr, nullptr, 0);
       if (!stricmp(volume, CD1_VOLUME_NAME) || !stricmp(volume, CD2_VOLUME_NAME)) {
         if (!_chdir(path)) {
-          if (subdir == NULL || !_chdir(subdir)) {
+          if (subdir == nullptr || !_chdir(subdir)) {
             cdrom_drive = i;
             break;
           }
@@ -1525,14 +1525,14 @@ void CD3LaunchDlg::InstallDirectX() {
   strcat(CD_path, "directx6");
   _chdir(CD_path);
 
-  HINSTANCE dsetup_dll_handle = NULL;
-  LPFN_DIRECTXSETUP pfn_DirectXSetup = NULL;
+  HINSTANCE dsetup_dll_handle = nullptr;
+  LPFN_DIRECTXSETUP pfn_DirectXSetup = nullptr;
 
   // Check for the DirectXSetup dll, and open it
   strcpy(DLL_path, CD_path);
   strcat(DLL_path, "\\dsetup.dll");
   dsetup_dll_handle = LoadLibrary(DLL_path);
-  if (dsetup_dll_handle == NULL) {
+  if (dsetup_dll_handle == nullptr) {
     CString msg, title;
     msg.Format(IDS_D3LAUNCHDLG_DSETUP_ERR_MSG1);
     title.Format(IDS_D3LAUNCHDLG_DSETUP_ERR_TITLE);
@@ -1543,13 +1543,13 @@ void CD3LaunchDlg::InstallDirectX() {
 
   // Get the DirectXSetup function
   pfn_DirectXSetup = (LPFN_DIRECTXSETUP)GetProcAddress(dsetup_dll_handle, "DirectXSetupA");
-  if (pfn_DirectXSetup == NULL) {
+  if (pfn_DirectXSetup == nullptr) {
     CString msg, title;
     msg.Format(IDS_D3LAUNCHDLG_DSETUP_ERR_MSG2);
     title.Format(IDS_D3LAUNCHDLG_DSETUP_ERR_TITLE);
     MessageBox(msg, title);
     FreeLibrary(dsetup_dll_handle);
-    dsetup_dll_handle = NULL;
+    dsetup_dll_handle = nullptr;
     SetCurrentDirectory(original_path);
     return;
   }
@@ -1618,7 +1618,7 @@ void CD3LaunchDlg::InstallDirectX() {
   };
 
   FreeLibrary(dsetup_dll_handle);
-  dsetup_dll_handle = NULL;
+  dsetup_dll_handle = nullptr;
 
   SetCurrentDirectory(original_path);
 }
@@ -1654,13 +1654,13 @@ void CD3LaunchDlg::RunOpenGLSetup() {
   si.cb = sizeof(si);
 
   BOOL ret = CreateProcess("glsetup.exe",             // pointer to name of executable module
-                           NULL,                      // pointer to command line string
-                           NULL,                      // pointer to process security attributes
-                           NULL,                      // pointer to thread security attributes
+                           nullptr,                      // pointer to command line string
+                           nullptr,                      // pointer to process security attributes
+                           nullptr,                      // pointer to thread security attributes
                            FALSE,                     // handle inheritance flag
                            CREATE_DEFAULT_ERROR_MODE, // creation flags
-                           NULL,                      // pointer to new environment block
-                           NULL,                      // pointer to current directory name
+                           nullptr,                      // pointer to new environment block
+                           nullptr,                      // pointer to current directory name
                            &si,                       // pointer to STARTUPINFO
                            &pi                        // pointer to PROCESS_INFORMATION
   );
@@ -1668,9 +1668,9 @@ void CD3LaunchDlg::RunOpenGLSetup() {
   if (!ret) {
     char *lpMsgBuf;
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, GetLastError(),
                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                  (LPTSTR)&lpMsgBuf, 0, NULL);
+                  (LPTSTR)&lpMsgBuf, 0, nullptr);
 
     // Display the string.
     CString err_title;
@@ -1754,7 +1754,7 @@ void CD3LaunchDlg::OnOK() {
 
   // Get the currently highlighted/focused button
   selected_button = (CButton *)GetFocus();
-  if (selected_button == NULL)
+  if (selected_button == nullptr)
     return;
 
   // Make the button look like it's been clicked

@@ -172,13 +172,13 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok) {
   tsi.flags = DSIF_SHOW_PIC | DSIF_SHOW_OBSERVERICON | DSIF_SEPERATE_BY_TEAM;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 7;
-  tsi.clbDetailedColumnBMP = NULL;
-  tsi.clbDetailedColumn = NULL;
+  tsi.clbDetailedColumnBMP = nullptr;
+  tsi.clbDetailedColumn = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
   tsi.clbPlayerColumnBMP = ShowStatBitmap;
-  tsi.DetailedColumns = NULL;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
   tsi.clTeamLine = TeamScoreCallback;
@@ -382,7 +382,7 @@ void DMFCApp::OnClientPlayerChangeSegment(int player_num, int newseg, int oldseg
     return; // dedicated server
 
   HandlePowerballLoss(player_num, false);
-  DLLObjSetPos(&Objects[PowerBallObjnum], &PowerBallPos, PowerBallRoom, NULL, false);
+  DLLObjSetPos(&Objects[PowerBallObjnum], &PowerBallPos, PowerBallRoom, nullptr, false);
   WhoHasPowerBall = -1;
 
   DLLAddHUDMessage("%s Team Scores!!", GetTeamString(Players[player_num].team));
@@ -425,7 +425,7 @@ void DMFCApp::OnClientLevelStart(void) {
     if (pr)
       stat = (tPlayerStat *)pr->user_info;
     else
-      stat = NULL;
+      stat = nullptr;
     if (stat)
       stat->Score[DSTAT_LEVEL] = 0;
   }
@@ -443,7 +443,7 @@ void DMFCApp::OnClientLevelStart(void) {
   }
 
   if (GetLocalRole() == LR_SERVER) {
-    PowerBallObjnum = DLLObjCreate(OBJ_POWERUP, PowerBallID, PowerBallRoom, &PowerBallPos, NULL);
+    PowerBallObjnum = DLLObjCreate(OBJ_POWERUP, PowerBallID, PowerBallRoom, &PowerBallPos, nullptr);
     if (PowerBallObjnum == -1)
       FatalError("Unable to create PowerBall");
     DLLMultiSendObject(&Objects[PowerBallObjnum], 1);
@@ -988,7 +988,7 @@ void UpdatePowerBallEffectOnPlayer(int pnum, bool pickedup) {
   if (pickedup) {
     DLLPlayerSetRotatingBall(pnum, 3, 0, red, green, blue);
   } else {
-    DLLPlayerSetRotatingBall(pnum, 0, 0, NULL, NULL, NULL);
+    DLLPlayerSetRotatingBall(pnum, 0, 0, nullptr, nullptr, nullptr);
   }
 }
 
@@ -1207,8 +1207,8 @@ void bump_two_objects(object *object0, vector *rotvel, vector *velocity, vector 
                       float size, vector *collision_point, vector *collision_normal, float rot_scalar,
                       float vel_scalar) {
   //	vector force;	//dv,
-  object *t = NULL;
-  object *other = NULL;
+  object *t = nullptr;
+  object *other = nullptr;
 
   ASSERT(std::isfinite(rotvel->x));
   ASSERT(std::isfinite(rotvel->y));

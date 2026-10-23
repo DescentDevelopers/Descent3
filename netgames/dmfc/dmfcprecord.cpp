@@ -103,17 +103,17 @@ void PRec_Init(void) {
   for (i = 0; i < MAX_PLAYER_RECORDS; i++) {
     memset(&Player_records[i], 0, sizeof(player_record));
     Player_records[i].state = STATE_EMPTY;
-    Player_records[i].user_info = NULL;
-    Player_records[i].pinfo = NULL;
-    Player_records[i].tracker_id = NULL;
+    Player_records[i].user_info = nullptr;
+    Player_records[i].pinfo = nullptr;
+    Player_records[i].tracker_id = nullptr;
     Player_records[i].user_info_size = 0;
     Player_records[i].total_time_in_game = 0;
   }
   for (i = 0; i < DLLMAX_PLAYERS; i++)
     Pnum_to_PRec[i] = -1;
 
-  Player_record_pack_cb = NULL;
-  Player_record_unpack_cb = NULL;
+  Player_record_pack_cb = nullptr;
+  Player_record_unpack_cb = nullptr;
 }
 
 //	Frees up and closes the Player records
@@ -127,11 +127,11 @@ void PRec_Close(void) {
 
     if (Player_records[i].pinfo) {
       delete Player_records[i].pinfo;
-      Player_records[i].pinfo = NULL;
+      Player_records[i].pinfo = nullptr;
     }
   }
-  Player_record_pack_cb = NULL;
-  Player_record_unpack_cb = NULL;
+  Player_record_pack_cb = nullptr;
+  Player_record_unpack_cb = nullptr;
 }
 
 //	Sets up the Player records so they can be used for Multiplayer user defined stats
@@ -150,8 +150,8 @@ void PRec_Close(void) {
 //				-2 invalid callbacks
 int PRec_SetupUserPRec(int sizeof_user_stats, int (*pack_callback)(void *user_info, uint8_t *data),
                        int (*unpack_callback)(void *user_info, uint8_t *data)) {
-  ASSERT(pack_callback != NULL);
-  ASSERT(unpack_callback != NULL);
+  ASSERT(pack_callback != nullptr);
+  ASSERT(unpack_callback != nullptr);
   if (!pack_callback || !unpack_callback)
     return -2;
 
@@ -172,7 +172,7 @@ int PRec_SetupUserPRec(int sizeof_user_stats, int (*pack_callback)(void *user_in
     for (i = 0; i < MAX_PLAYER_RECORDS; i++) {
       if (Player_records[i].user_info) {
         free(Player_records[i].user_info);
-        Player_records[i].user_info = NULL;
+        Player_records[i].user_info = nullptr;
       }
       Player_records[i].user_info_size = 0;
     }
@@ -198,7 +198,7 @@ user_stats_err:
   for (i = 0; i < MAX_PLAYER_RECORDS; i++) {
     if (Player_records[i].user_info) {
       free(Player_records[i].user_info);
-      Player_records[i].user_info = NULL;
+      Player_records[i].user_info = nullptr;
     }
     Player_records[i].user_info_size = 0;
   }
@@ -216,14 +216,14 @@ int PRec_GetPlayerSlot(int pnum) {
 //	hasn't been called yet
 void *PRec_GetUserStats(int slot) {
   if ((slot < 0) || (slot >= MAX_PLAYER_RECORDS))
-    return NULL;
+    return nullptr;
   return Player_records[slot].user_info;
 }
 
 //	Returns a pointer to a player_record for the requested slot, NULL if error
 player_record *PRec_GetPRecord(int slot) {
   if ((slot < 0) || (slot >= MAX_PLAYER_RECORDS))
-    return NULL;
+    return nullptr;
   return &Player_records[slot];
 }
 
@@ -325,7 +325,7 @@ int PRec_GetFreeSlot(void) {
     int size = Player_records[old_player].user_info_size;
     if (Player_records[old_player].pinfo) {
       delete Player_records[old_player].pinfo;
-      Player_records[old_player].pinfo = NULL;
+      Player_records[old_player].pinfo = nullptr;
     }
     memset(&Player_records[old_player], 0, sizeof(player_record));
     Player_records[old_player].state = STATE_EMPTY;
@@ -365,13 +365,13 @@ bool PRec_AssignPlayerToSlot(int pnum, int slot, player *players_array, netplaye
     Player_records[slot].tracker_id = strdup(basethis->Players[pnum].tracker_id);
   } else {
     // either it's not a tracker game or the tracker_id member of players is void
-    Player_records[slot].tracker_id = NULL;
+    Player_records[slot].tracker_id = nullptr;
   }
 
   memset(&Player_records[slot].dstats, 0, sizeof(t_dstat));
   if (Player_records[slot].pinfo) {
     delete Player_records[slot].pinfo;
-    Player_records[slot].pinfo = NULL;
+    Player_records[slot].pinfo = nullptr;
   }
   Player_records[slot].pinfo = new PInfo(slot);
   return true;
@@ -618,7 +618,7 @@ void PRec_ReceivePRecFromServer(uint8_t *data) {
   MultiUnpackDStats(&pr->dstats, data, &count);         // unpack bytes (dstats)
 
   if (MultiGetByte(data, &count)) {
-    ASSERT(pr->user_info != NULL);
+    ASSERT(pr->user_info != nullptr);
     if (Player_record_unpack_cb) {
       count += (*Player_record_unpack_cb)(pr->user_info, &data[count]);
     } else {
@@ -626,7 +626,7 @@ void PRec_ReceivePRecFromServer(uint8_t *data) {
       count += pr->user_info_size; // attempt to recover
     }
   } else {
-    ASSERT(pr->user_info == NULL);
+    ASSERT(pr->user_info == nullptr);
   }
 
   if (pr->pinfo) {

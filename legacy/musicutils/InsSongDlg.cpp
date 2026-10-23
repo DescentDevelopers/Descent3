@@ -62,7 +62,7 @@ BOOL CInsSongDlg::OnInitDialog() {
 }
 
 void CInsSongDlg::OnBrowse() {
-  CFileDialog opendlg(TRUE, "osf", NULL, OFN_PATHMUSTEXIST, "Outrage Stream Files(*.osf)|*.osf||", this);
+  CFileDialog opendlg(TRUE, "osf", nullptr, OFN_PATHMUSTEXIST, "Outrage Stream Files(*.osf)|*.osf||", this);
   CEdit *edit = (CEdit *)GetDlgItem(IDC_EDIT);
 
   //	get filename to play

@@ -816,7 +816,7 @@ int LoadPCXTerrain(char *filename) {
   uint8_t buf;
   uint8_t *lando;
 
-  if ((infile = cfopen(filename, "rb")) == NULL)
+  if ((infile = cfopen(filename, "rb")) == nullptr)
     return (0);
 
   cf_ReadInt(infile);
@@ -998,8 +998,8 @@ void InitTerrain(void) {
     Terrain_min_height_int[i] = (uint8_t *)mem_malloc(w * h * sizeof(uint8_t));
     Terrain_max_height_int[i] = (uint8_t *)mem_malloc(w * h * sizeof(uint8_t));
 
-    ASSERT(Terrain_min_height_int[i] != NULL);
-    ASSERT(Terrain_max_height_int[i] != NULL);
+    ASSERT(Terrain_min_height_int[i] != nullptr);
+    ASSERT(Terrain_max_height_int[i] != nullptr);
   }
 
   Terrain_sky.lightangle = 0;

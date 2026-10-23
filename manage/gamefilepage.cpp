@@ -40,8 +40,8 @@ extern char *TablefileNameOverride;
 
 // Given an open file pointer and a gamefile_page struct, writes that gamefile page out
 void mng_WriteGamefilePage(CFILE *outfile, mngs_gamefile_page *gamefilepage) {
-  ASSERT(outfile != NULL);
-  ASSERT(gamefilepage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(gamefilepage != nullptr);
 
   cf_WriteByte(outfile, PAGETYPE_GAMEFILE);
 
@@ -58,8 +58,8 @@ void mng_WriteGamefilePage(CFILE *outfile, mngs_gamefile_page *gamefilepage) {
 }
 // Given an open file pointer and a gamefile_page struct, writes that gamefile page out
 void mng_WriteNewGamefilePage(CFILE *outfile, mngs_gamefile_page *gamefilepage) {
-  ASSERT(outfile != NULL);
-  ASSERT(gamefilepage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(gamefilepage != nullptr);
 
   int offset = StartManagePage(outfile, PAGETYPE_GAMEFILE);
 
@@ -73,7 +73,7 @@ void mng_WriteNewGamefilePage(CFILE *outfile, mngs_gamefile_page *gamefilepage) 
 
 // Reads a gamefile page from an open file.  Returns 0 on error.
 int mng_ReadNewGamefilePage(CFILE *infile, mngs_gamefile_page *gamefilepage) {
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   memset(gamefilepage, 0, sizeof(mngs_gamefile_page));
 
   /* int version = */ cf_ReadShort(infile);
@@ -97,7 +97,7 @@ int mng_ReadGamefilePage(CFILE *infile, mngs_gamefile_page *gamefilepage) {
   if (!Old_table_method)
     return mng_ReadNewGamefilePage(infile, gamefilepage);
 
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   memset(gamefilepage, 0, sizeof(mngs_gamefile_page));
 
   while (!done) {
@@ -153,7 +153,7 @@ int mng_FindSpecificGamefilePage(char *name, mngs_gamefile_page *gamefilepage, i
 
       infile = cfopen(tablename, "rb");
     } else {
-      infile = NULL;
+      infile = nullptr;
       if (TablefileNameOverride) {
         infile = cfopen(TablefileNameOverride, "rb");
       }

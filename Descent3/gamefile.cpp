@@ -109,7 +109,7 @@ int GetPrevGamefile(int n) {
 int FindGamefileName(char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_GAMEFILES; i++)
     if (Gamefiles[i].used && !stricmp(name, Gamefiles[i].name))

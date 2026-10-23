@@ -335,7 +335,7 @@ static bm_Node *bm_findNode(bm_T data);
 static void bm_deleteNode(bm_T data);
 static bm_Node *bm_insertNode(bm_T data);
 static bm_hashTableIndex bm_hash(bm_T data);
-static bm_Node **bm_hashTable = NULL;
+static bm_Node **bm_hashTable = nullptr;
 static const int bm_hashTableSize = (MAX_BITMAPS / 2);
 static void bm_InitHashTable();
 static void bm_DeleteHashTable();
@@ -344,7 +344,7 @@ static int bm_TestName(const char *src);
 void bm_InitHashTable() {
   bm_hashTable = mem_rmalloc<bm_Node *>(bm_hashTableSize);
   for (int a = 0; a < bm_hashTableSize; a++) {
-    bm_hashTable[a] = NULL;
+    bm_hashTable[a] = nullptr;
   }
 }
 void bm_DeleteHashTable() {
@@ -359,12 +359,12 @@ void bm_DeleteHashTable() {
           mem_free(curr);
           curr = next;
         }
-        bm_hashTable[idx] = NULL;
+        bm_hashTable[idx] = nullptr;
       }
     }
 
     mem_free(bm_hashTable);
-    bm_hashTable = NULL;
+    bm_hashTable = nullptr;
   }
 }
 
@@ -427,7 +427,7 @@ void bm_deleteNode(bm_T data) {
 bm_Node *bm_findNode(bm_T data) {
   bm_Node *p;
   if (!bm_hashTable)
-    return NULL;
+    return nullptr;
   /*******************************
    *  find bm_Node containing data  *
    *******************************/
@@ -445,7 +445,7 @@ void bm_InitBitmaps() {
   Bitmaps_initted = 1;
   for (i = 0; i < MAX_BITMAPS; i++) {
     GameBitmaps[i].used = 0;
-    GameBitmaps[i].data16 = NULL;
+    GameBitmaps[i].data16 = nullptr;
     GameBitmaps[i].format = BITMAP_FORMAT_STANDARD;
     GameBitmaps[i].cache_slot = -1;
     GameBitmaps[i].flags = 0;
@@ -602,7 +602,7 @@ void bm_FreeBitmap(int handle) {
 }
 //	simply frees up a bitmap
 void bm_FreeBitmapData(int handle) {
-  if (GameBitmaps[handle].data16 != NULL && !(GameBitmaps[handle].flags & BF_NOT_RESIDENT)) {
+  if (GameBitmaps[handle].data16 != nullptr && !(GameBitmaps[handle].flags & BF_NOT_RESIDENT)) {
     if (!(GameBitmaps[handle].flags & BF_NOT_RESIDENT)) {
       int mem_used = (GameBitmaps[handle].width * GameBitmaps[handle].height * 2);
       Bitmap_memory_used -= mem_used;
@@ -615,13 +615,13 @@ void bm_FreeBitmapData(int handle) {
   GameBitmaps[handle].flags |= BF_NOT_RESIDENT;
   if (GameBitmaps[handle].flags & BF_MIPMAPPED)
     GameBitmaps[handle].flags |= BF_WANTS_MIP;
-  GameBitmaps[handle].data16 = NULL;
+  GameBitmaps[handle].data16 = nullptr;
 }
 //	simply frees up a bitmap
 void bm_FreeBitmapMain(int handle) {
   bm_deleteNode(&GameBitmaps[handle]);
   bm_FreeBitmapData(handle);
-  GameBitmaps[handle].data16 = NULL;
+  GameBitmaps[handle].data16 = nullptr;
   GameBitmaps[handle].cache_slot = -1;
   GameBitmaps[handle].used = 0;
   Num_of_bitmaps--;
@@ -1179,13 +1179,13 @@ uint16_t *bm_data(int handle, int miplevel) {
   int i;
   if (!GameBitmaps[handle].used) {
     Int3();
-    return NULL;
+    return nullptr;
   }
 
   // If this bitmap is not page in, do so!
   if (GameBitmaps[handle].flags & BF_NOT_RESIDENT)
     if (!bm_MakeBitmapResident(handle))
-      return NULL;
+      return nullptr;
 
   d = GameBitmaps[handle].data16;
   for (i = 0; i < miplevel; i++) {
@@ -1348,7 +1348,7 @@ int bm_rowsize(int handle, int miplevel) {
 }
 //	a function to determine if a pixel in a bitmap is transparent
 bool bm_pixel_transparent(int bm_handle, int x, int y) {
-  if ((bm_data(bm_handle, 0)) == NULL)
+  if ((bm_data(bm_handle, 0)) == nullptr)
     return 0; // only check 16bit stuff
   uint16_t *data = bm_data(bm_handle, 0);
   data = data + (bm_w(bm_handle, 0) * y) + x;
@@ -1364,7 +1364,7 @@ bool bm_pixel_transparent(int bm_handle, int x, int y) {
 }
 //	a function to determine if a pixel in a bitmap is transparent
 uint16_t bm_pixel(int bm_handle, int x, int y) {
-  if ((bm_data(bm_handle, 0)) == NULL)
+  if ((bm_data(bm_handle, 0)) == nullptr)
     return 0; // only check 16bit stuff
   uint16_t *data = bm_data(bm_handle, 0);
   data = data + (bm_w(bm_handle, 0) * y) + x;
@@ -1372,7 +1372,7 @@ uint16_t bm_pixel(int bm_handle, int x, int y) {
 }
 // Goes through the bitmap and sees if there is any transparency...if so, flag it!
 int bm_SetBitmapIfTransparent(int handle) {
-  if ((bm_data(handle, 0)) == NULL)
+  if ((bm_data(handle, 0)) == nullptr)
     return 0; // only check 16bit stuff
   int w = bm_w(handle, 0);
   int h = bm_h(handle, 0);
@@ -1515,7 +1515,7 @@ void bm_DestroyChunkedBitmap(chunked_bitmap *chunk) {
   for (i = 0; i < num_bmps; i++)
     bm_FreeBitmap(chunk->bm_array[i]);
   mem_free(chunk->bm_array);
-  chunk->bm_array = NULL;
+  chunk->bm_array = nullptr;
 }
 // Changes the size of a bitmap to a new size
 void bm_ChangeSize(int handle, int new_w, int new_h) {

@@ -289,7 +289,7 @@ void ddio_InternalMouseResume();
         dx, dy = mouse deltas since last call
         return value is mouse button mask.   values not needed should pass NULL pointers.
 */
-int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z = NULL, int *dz = NULL);
+int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z = nullptr, int *dz = nullptr);
 
 // gets a mouse button event, returns false if none.
 bool ddio_MouseGetEvent(int *btn, bool *state);

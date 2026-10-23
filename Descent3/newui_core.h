@@ -258,7 +258,7 @@ public:
   void AddLongRadioButton(const char *title, int16_t id = DEFAULT_NEWUID);
 
   // adds a slider, set the range for it too., returns two values, int16_t[0] = position, int16_t[1] = range
-  int16_t *AddSlider(const char *title, int16_t range, int16_t init_pos = 0, tSliderSettings *settings = NULL,
+  int16_t *AddSlider(const char *title, int16_t range, int16_t init_pos = 0, tSliderSettings *settings = nullptr,
                    int16_t id = DEFAULT_NEWUID);
 
   //	adds a static text item

@@ -110,7 +110,7 @@ CScriptStudio::CScriptStudio(CWnd *pParent /*=NULL*/) : CDialog(CScriptStudio::I
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
 
-  m_pdlgFindReplace = NULL;
+  m_pdlgFindReplace = nullptr;
 }
 
 void CScriptStudio::DoDataExchange(CDataExchange *pDX) {
@@ -366,7 +366,7 @@ void CScriptStudio::OnUpdateOsirisPaste(CCmdUI *pCmdUI) {
 LONG CScriptStudio::OnFindReplace(WPARAM wParam, LPARAM lParam) {
   // Get a pointer to the calling dialog
   CFindReplaceDialog *pDlg = CFindReplaceDialog::GetNotifier(lParam);
-  ASSERT(pDlg != NULL);
+  ASSERT(pDlg != nullptr);
 
   // See what the user is up to out there...
   if (pDlg->IsTerminating()) {
@@ -418,22 +418,22 @@ void CScriptStudio::InitFindReplace(BOOL bFind) {
   // the pointer is still non-NULL, but the object is already
   // dead, so reset the pointer!
   //
-  m_pdlgFindReplace = NULL;
+  m_pdlgFindReplace = nullptr;
   m_LastWord = " ";
 
   // Construct the dialog
   m_pdlgFindReplace = new CFindReplaceDialog;
-  ASSERT(m_pdlgFindReplace != NULL);
+  ASSERT(m_pdlgFindReplace != nullptr);
 
   // Initialize the dialog
   if (!m_pdlgFindReplace->Create(bFind, 0, 0, FR_DOWN, this)) {
     mprintf(0, "Error allocating find/replace dialog!");
-    m_pdlgFindReplace = NULL;
+    m_pdlgFindReplace = nullptr;
     return;
   }
 
   // Display the dialog
-  ASSERT(m_pdlgFindReplace != NULL);
+  ASSERT(m_pdlgFindReplace != nullptr);
   m_pdlgFindReplace->SetActiveWindow();
   m_pdlgFindReplace->ShowWindow(SW_SHOW);
 }
@@ -649,7 +649,7 @@ bool InvokeScriptStudio(const char *filename, const char *scrname) {
 	bool ret = false;
 
 //	initialize script studio.
-	script = D3XReallocProgram(NULL, 0, 0, 0);					 
+	script = D3XReallocProgram(nullptr, 0, 0, 0);					 
 	if (!script) {
 		OutrageMessageBox("Failure to compile script!   Something is wrong!");
 		return false;

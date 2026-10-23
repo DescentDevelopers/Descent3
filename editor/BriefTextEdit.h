@@ -33,8 +33,8 @@
 class CBriefTextEdit : public CDialog {
   // Construction
 public:
-  CBriefTextEdit(int curr_screen, TCTEXTDESC *desc = NULL, char *text = NULL, int id = 0,
-                 CWnd *pParent = NULL); // standard constructor
+  CBriefTextEdit(int curr_screen, TCTEXTDESC *desc = nullptr, char *text = nullptr, int id = 0,
+                 CWnd *pParent = nullptr); // standard constructor
   TCTEXTDESC desc;
   int m_Screen;
   CString m_Text;

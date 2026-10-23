@@ -34,7 +34,7 @@ public:
   CString m_SoundName;
   int m_SoundIndex;
 
-  CDallasSoundDlg(CWnd *pParent = NULL); // standard constructor
+  CDallasSoundDlg(CWnd *pParent = nullptr); // standard constructor
 
   void FillSoundList(void);
 

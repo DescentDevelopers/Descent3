@@ -122,8 +122,8 @@ CScriptWizard::CScriptWizard(CWnd *pParent /*=NULL*/) : CDialog(CScriptWizard::I
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
 
-  m_ScriptSource = NULL;
-  m_ScriptCode = NULL;
+  m_ScriptSource = nullptr;
+  m_ScriptCode = nullptr;
 }
 
 void CScriptWizard::DoDataExchange(CDataExchange *pDX) {
@@ -462,8 +462,8 @@ void CScriptWizard::OnUnlock() {
 
         SaveScript(ScriptFileName, m_ScriptSource);
 
-        ddio_MakePath(srcname, LocalD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, NULL);
-        ddio_MakePath(destname, NetD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, NULL);
+        ddio_MakePath(srcname, LocalD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, nullptr);
+        ddio_MakePath(destname, NetD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, nullptr);
 
         cf_CopyFile(destname, srcname);
 
@@ -511,7 +511,7 @@ void CScriptWizard::LoadCurrentModule() {
   if (m_ScriptSource)
     FreeScript(m_ScriptSource);
 
-  m_ScriptSource = NULL;
+  m_ScriptSource = nullptr;
 
   if (modcbox->GetLBText(modcbox->GetCurSel(), str) != CB_ERR) {
     char *ptr;

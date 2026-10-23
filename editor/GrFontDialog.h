@@ -52,7 +52,7 @@
 class CGrFontDialog : public CDialog {
   // Construction
 public:
-  CGrFontDialog(CWnd *pParent = NULL); // standard constructor
+  CGrFontDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CGrFontDialog)

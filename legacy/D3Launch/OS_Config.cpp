@@ -67,13 +67,13 @@
 
 char *szCompanyName = REG_COMPANY_NAME;
 char *szAppName = REG_APP_NAME;
-char *szSectionName = NULL; // Don't use a section name for the launcher
+char *szSectionName = nullptr; // Don't use a section name for the launcher
 
 // Removes a value from to the INI file.  Passing
 // name=NULL will delete the section.
 
 void os_config_remove(char *section, char *name) {
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
   DWORD dwDisposition;
   char keyname[1024];
   LONG lResult;
@@ -98,11 +98,11 @@ void os_config_remove(char *section, char *name) {
   } else {
     lResult = RegCreateKeyEx(HKEY_LOCAL_MACHINE,      // Where to add it
                              keyname,                 // name of key
-                             NULL,                    // DWORD reserved
+                             0,                       // DWORD reserved
                              "",                      // Object class
                              REG_OPTION_NON_VOLATILE, // Save to disk
                              KEY_ALL_ACCESS,          // Allows all changes
-                             NULL,                    // Default security attributes
+                             nullptr,                    // Default security attributes
                              &hKey,                   // Location to store key
                              &dwDisposition);         // Location to store status of key
 
@@ -127,7 +127,7 @@ Cleanup:
 // removes the string. Writing a NULL value to a NULL name will delete
 // the section.
 void os_config_write_string(char *section, char *name, char *value) {
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
   DWORD dwDisposition;
   char keyname[1024];
   LONG lResult;
@@ -140,11 +140,11 @@ void os_config_write_string(char *section, char *name, char *value) {
 
   lResult = RegCreateKeyEx(HKEY_LOCAL_MACHINE,      // Where to add it
                            keyname,                 // name of key
-                           NULL,                    // DWORD reserved
+                           0,                       // DWORD reserved
                            "",                      // Object class
                            REG_OPTION_NON_VOLATILE, // Save to disk
                            KEY_ALL_ACCESS,          // Allows all changes
-                           NULL,                    // Default security attributes
+                           nullptr,                    // Default security attributes
                            &hKey,                   // Location to store key
                            &dwDisposition);         // Location to store status of key
 
@@ -160,7 +160,7 @@ void os_config_write_string(char *section, char *name, char *value) {
 
   lResult = RegSetValueEx(hKey,                // Handle to key
                           name,                // The values name
-                          NULL,                // DWORD reserved
+                          0,                   // DWORD reserved
                           REG_SZ,              // null terminated string
                           (CONST BYTE *)value, // value to set
                           strlen(value));      // How many bytes to set
@@ -177,7 +177,7 @@ Cleanup:
 
 // same as previous function except we don't use the application name to build up the keyname
 void os_config_write_string2(char *section, char *name, char *value) {
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
   DWORD dwDisposition;
   char keyname[1024];
   LONG lResult;
@@ -190,11 +190,11 @@ void os_config_write_string2(char *section, char *name, char *value) {
 
   lResult = RegCreateKeyEx(HKEY_LOCAL_MACHINE,      // Where to add it
                            keyname,                 // name of key
-                           NULL,                    // DWORD reserved
+                           0,                       // DWORD reserved
                            "",                      // Object class
                            REG_OPTION_NON_VOLATILE, // Save to disk
                            KEY_ALL_ACCESS,          // Allows all changes
-                           NULL,                    // Default security attributes
+                           nullptr,                    // Default security attributes
                            &hKey,                   // Location to store key
                            &dwDisposition);         // Location to store status of key
 
@@ -210,7 +210,7 @@ void os_config_write_string2(char *section, char *name, char *value) {
 
   lResult = RegSetValueEx(hKey,                // Handle to key
                           name,                // The values name
-                          NULL,                // DWORD reserved
+                          0,                   // DWORD reserved
                           REG_SZ,              // null terminated string
                           (CONST BYTE *)value, // value to set
                           strlen(value));      // How many bytes to set
@@ -227,7 +227,7 @@ Cleanup:
 
 // Writes an uint32_t to the INI file.
 void os_config_write_uint(char *section, char *name, uint32_t value) {
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
   DWORD dwDisposition;
   char keyname[1024];
   LONG lResult;
@@ -240,11 +240,11 @@ void os_config_write_uint(char *section, char *name, uint32_t value) {
 
   lResult = RegCreateKeyEx(HKEY_LOCAL_MACHINE,      // Where to add it
                            keyname,                 // name of key
-                           NULL,                    // DWORD reserved
+                           0,                       // DWORD reserved
                            "",                      // Object class
                            REG_OPTION_NON_VOLATILE, // Save to disk
                            KEY_ALL_ACCESS,          // Allows all changes
-                           NULL,                    // Default security attributes
+                           nullptr,                    // Default security attributes
                            &hKey,                   // Location to store key
                            &dwDisposition);         // Location to store status of key
 
@@ -260,7 +260,7 @@ void os_config_write_uint(char *section, char *name, uint32_t value) {
 
   lResult = RegSetValueEx(hKey,                 // Handle to key
                           name,                 // The values name
-                          NULL,                 // DWORD reserved
+                          0,                    // DWORD reserved
                           REG_DWORD,            // null terminated string
                           (CONST BYTE *)&value, // value to set
                           4);                   // How many bytes to set
@@ -284,7 +284,7 @@ Cleanup:
 static char tmp_string_data[1024];
 
 char *os_config_read_string(char *section, char *name, char *default_value) {
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
   DWORD dwType, dwLen;
   char keyname[1024];
   LONG lResult;
@@ -297,7 +297,7 @@ char *os_config_read_string(char *section, char *name, char *default_value) {
 
   lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, // Where it is
                          keyname,            // name of key
-                         NULL,               // DWORD reserved
+                         0,                  // DWORD reserved
                          KEY_QUERY_VALUE,    // Allows all changes
                          &hKey);             // Location to store key
 
@@ -314,7 +314,7 @@ char *os_config_read_string(char *section, char *name, char *default_value) {
   dwLen = 1024;
   lResult = RegQueryValueEx(hKey,                        // Handle to key
                             name,                        // The values name
-                            NULL,                        // DWORD reserved
+                            nullptr,                        // DWORD reserved
                             &dwType,                     // What kind it is
                             (uint8_t *)&tmp_string_data, // value to set
                             &dwLen);                     // How many bytes to set
@@ -336,13 +336,13 @@ Cleanup:
 static char tmp_string_data_ex[1024];
 
 char *os_config_read_string_ex(char *keyname, char *name, char *default_value) {
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
   DWORD dwType, dwLen;
   LONG lResult;
 
   lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, // Where it is
                          keyname,            // name of key
-                         NULL,               // DWORD reserved
+                         0,                  // DWORD reserved
                          KEY_QUERY_VALUE,    // Allows all changes
                          &hKey);             // Location to store key
 
@@ -359,7 +359,7 @@ char *os_config_read_string_ex(char *keyname, char *name, char *default_value) {
   dwLen = 1024;
   lResult = RegQueryValueEx(hKey,                           // Handle to key
                             name,                           // The values name
-                            NULL,                           // DWORD reserved
+                            nullptr,                           // DWORD reserved
                             &dwType,                        // What kind it is
                             (uint8_t *)&tmp_string_data_ex, // value to set
                             &dwLen);                        // How many bytes to set
@@ -379,7 +379,7 @@ Cleanup:
 }
 
 char *os_config_read_string2(char *section, char *name, char *default_value) {
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
   DWORD dwType, dwLen;
   char keyname[1024];
   LONG lResult;
@@ -392,7 +392,7 @@ char *os_config_read_string2(char *section, char *name, char *default_value) {
 
   lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, // Where it is
                          keyname,            // name of key
-                         NULL,               // DWORD reserved
+                         0,                  // DWORD reserved
                          KEY_QUERY_VALUE,    // Allows all changes
                          &hKey);             // Location to store key
 
@@ -409,7 +409,7 @@ char *os_config_read_string2(char *section, char *name, char *default_value) {
   dwLen = 1024;
   lResult = RegQueryValueEx(hKey,                        // Handle to key
                             name,                        // The values name
-                            NULL,                        // DWORD reserved
+                            nullptr,                        // DWORD reserved
                             &dwType,                     // What kind it is
                             (uint8_t *)&tmp_string_data, // value to set
                             &dwLen);                     // How many bytes to set
@@ -431,7 +431,7 @@ Cleanup:
 // Reads a string from the INI file.  Default_value must
 // be passed, and if 'name' isn't found, then returns default_value
 uint32_t os_config_read_uint(char *section, char *name, uint32_t default_value) {
-  HKEY hKey = NULL;
+  HKEY hKey = nullptr;
   DWORD dwType, dwLen;
   char keyname[1024];
   LONG lResult;
@@ -445,7 +445,7 @@ uint32_t os_config_read_uint(char *section, char *name, uint32_t default_value) 
 
   lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, // Where it is
                          keyname,            // name of key
-                         NULL,               // DWORD reserved
+                         0,                  // DWORD reserved
                          KEY_QUERY_VALUE,    // Allows all changes
                          &hKey);             // Location to store key
 
@@ -462,7 +462,7 @@ uint32_t os_config_read_uint(char *section, char *name, uint32_t default_value) 
   dwLen = 4;
   lResult = RegQueryValueEx(hKey,                // Handle to key
                             name,                // The values name
-                            NULL,                // DWORD reserved
+                            nullptr,                // DWORD reserved
                             &dwType,             // What kind it is
                             (uint8_t *)&tmp_val, // value to set
                             &dwLen);             // How many bytes to set

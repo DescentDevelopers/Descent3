@@ -79,7 +79,7 @@ BOOL CDallasUserTypesDlg::OnInitDialog() {
   m_DallasModelessDlgPtr = GetDallasDialogPtr();
 
   // If Dallas is up, fill in the user type and value boxes
-  if (m_DallasModelessDlgPtr != NULL) {
+  if (m_DallasModelessDlgPtr != nullptr) {
     m_DallasModelessDlgPtr->FillUserTypeBox(&m_UserTypeCombo);
 
     if (!last_type_selected.IsEmpty()) {
@@ -101,7 +101,7 @@ void CDallasUserTypesDlg::OnAddButton() {
   CDallasMainDlg *m_DallasModelessDlgPtr;
   m_DallasModelessDlgPtr = GetDallasDialogPtr();
 
-  if (m_DallasModelessDlgPtr == NULL)
+  if (m_DallasModelessDlgPtr == nullptr)
     return;
 
   // Get the name of the user type
@@ -162,7 +162,7 @@ void CDallasUserTypesDlg::OnChangeButton() {
   CDallasMainDlg *m_DallasModelessDlgPtr;
   m_DallasModelessDlgPtr = GetDallasDialogPtr();
 
-  if (m_DallasModelessDlgPtr == NULL)
+  if (m_DallasModelessDlgPtr == nullptr)
     return;
 
   // Get the name of the user type
@@ -227,7 +227,7 @@ void CDallasUserTypesDlg::OnDeleteButton() {
   CDallasMainDlg *m_DallasModelessDlgPtr;
   m_DallasModelessDlgPtr = GetDallasDialogPtr();
 
-  if (m_DallasModelessDlgPtr == NULL)
+  if (m_DallasModelessDlgPtr == nullptr)
     return;
 
   // Get the name of the user type
@@ -277,7 +277,7 @@ void CDallasUserTypesDlg::OnSelchangeUtypeCombo() {
   last_type_selected = name;
 
   // If Dallas is up, fill in the user type and value boxes
-  if (m_DallasModelessDlgPtr != NULL) {
+  if (m_DallasModelessDlgPtr != nullptr) {
     m_DallasModelessDlgPtr->FillValuesBox(&m_ValuesListBox, name.GetBuffer(0));
   }
 }

@@ -77,7 +77,7 @@ BOOL CMOTDDlg::ParseMOTDFile(void) {
   FILE *f;
 
   f = fopen(MOTD_LOC_FNAME, "rt");
-  if (f == NULL) {
+  if (f == nullptr) {
     return FALSE;
   }
 

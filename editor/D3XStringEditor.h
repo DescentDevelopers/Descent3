@@ -50,7 +50,7 @@
 class CD3XStringEditor : public CDialog {
   // Construction
 public:
-  CD3XStringEditor(CWnd *pParent = NULL); // standard constructor
+  CD3XStringEditor(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CD3XStringEditor)
