@@ -3711,7 +3711,7 @@ void DMFCBase::CheckPInfo() {
 
       while (node) {
         ASSERT(node->slot >= 0 && node->slot < 64);
-        node = node->next;
+        node = node->next.get();
       }
     }
   }

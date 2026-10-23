@@ -111,7 +111,6 @@ PInfo::PInfo(int slot) {
   extra_info.last_death_num = -1;
   extra_info.got_revenge = 0;
 
-  killer_list = nullptr;
   curr = nullptr;
 
   curr = CreateKiller(slot); // Setup Suicide
@@ -119,16 +118,7 @@ PInfo::PInfo(int slot) {
     curr->kills = 0;
 }
 
-PInfo::~PInfo(void) {
-  tPKillerInfo *curr, *next;
-  curr = next = killer_list;
-
-  while (curr) {
-    next = curr->next;
-    free(curr);
-    curr = next;
-  }
-}
+PInfo::~PInfo(void) = default;
 
 tPKillerInfo *PInfo::GetKillerInfo(int slot) {
   tPKillerInfo *info;
@@ -177,8 +167,8 @@ void PInfo::HandleSuicide(void) {
 tPExtraInfo *PInfo::GetExtraInfo(void) { return &extra_info; }
 
 tPKillerInfo *PInfo::GetFirstKiller(void) {
-  curr = killer_list;
-  return killer_list;
+  curr = killer_list.get();
+  return curr;
 }
 
 tPKillerInfo *PInfo::GetNextKiller(void) {
@@ -186,14 +176,14 @@ tPKillerInfo *PInfo::GetNextKiller(void) {
     return nullptr;
   if (!curr->next)
     return nullptr;
-  curr = curr->next;
+  curr = curr->next.get();
   return curr;
 }
 
 tPKillerInfo *PInfo::FindKiller(int slot, tPKillerInfo **wprev) {
   tPKillerInfo *curr;
   tPKillerInfo *prev;
-  curr = killer_list;
+  curr = killer_list.get();
   prev = nullptr;
 
   while (curr) {
@@ -204,7 +194,7 @@ tPKillerInfo *PInfo::FindKiller(int slot, tPKillerInfo **wprev) {
     }
 
     prev = curr;
-    curr = curr->next;
+    curr = curr->next.get();
   }
 
   if (wprev)
@@ -219,18 +209,14 @@ tPKillerInfo *PInfo::CreateKiller(int slot) {
   if (!curr) {
     if (prev) {
       // the name wasn't in the list so we can tack it on here at the end
-      curr = (tPKillerInfo *)malloc(sizeof(tPKillerInfo));
-      if (!curr)
-        return nullptr;
-      prev->next = curr;
+      prev->next = std::make_unique<tPKillerInfo>();
+      curr = prev->next.get();
     } else {
       // no names in the list
-      curr = killer_list = (tPKillerInfo *)malloc(sizeof(tPKillerInfo));
-      if (!killer_list)
-        return nullptr;
+      killer_list = std::make_unique<tPKillerInfo>();
+      curr = killer_list.get();
     }
 
-    curr->next = nullptr;
     curr->kills = 0;
     curr->slot = slot;
   }
@@ -244,27 +230,18 @@ void PInfo::RemoveKiller(int slot) {
 
   if (curr) {
     if (prev) {
-      prev->next = curr->next;
-      free(curr);
+      prev->next = std::move(curr->next);
     } else {
       // we're removing root (odd...this is yourself)
       ASSERT(!prev); // Get Jeff
-      killer_list = curr->next;
-      free(curr);
+      killer_list = std::move(curr->next);
     }
   }
 }
 
 void PInfo::ResetAll(void) {
-  tPKillerInfo *c, *next;
-  c = next = killer_list;
-
-  while (c) {
-    next = c->next;
-    free(c);
-    c = next;
-  }
-  curr = killer_list = nullptr;
+  killer_list.reset();
+  curr = nullptr;
 
   extra_info.last_kill_time = 0;
   extra_info.last_death_time = 0;
@@ -297,14 +274,14 @@ int PInfo::GetExtraInfoSize(void) {
 
 int PInfo::GetSizeOfData(void) {
   tPKillerInfo *c;
-  c = killer_list;
+  c = killer_list.get();
   int size = 0;
 
   size = 0;
   while (c) {
     size += sizeof(int); // kills
     size++;              // slot
-    c = c->next;
+    c = c->next.get();
   }
 
   size += GetExtraInfoSize();
@@ -316,7 +293,7 @@ void PInfo::PackData(uint8_t *buffer) {
   if (!buffer)
     return;
   tPKillerInfo *c;
-  c = killer_list;
+  c = killer_list.get();
   int count = 0;
 
   MultiAddFloat(extra_info.last_kill_time, buffer, &count);
@@ -334,7 +311,7 @@ void PInfo::PackData(uint8_t *buffer) {
     ASSERT(c->slot >= 0 && c->slot < 64);
     MultiAddByte(c->slot, buffer, &count); // slot
     MultiAddInt(c->kills, buffer, &count);
-    c = c->next;
+    c = c->next.get();
   }
 }
 

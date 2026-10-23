@@ -309,7 +309,7 @@ struct tInputCommandNode {
 struct tPKillerInfo {
   uint8_t slot;
   int kills;
-  tPKillerInfo *next;
+  std::unique_ptr<tPKillerInfo> next;
 };
 
 struct tPExtraInfo {
@@ -349,7 +349,7 @@ public:
 private:
   tPKillerInfo *FindKiller(int slot, tPKillerInfo **prev = nullptr);
   tPKillerInfo *CreateKiller(int slot);
-  tPKillerInfo *killer_list;
+  std::unique_ptr<tPKillerInfo> killer_list;
   tPKillerInfo *curr;
   tPExtraInfo extra_info;
   int m_slot;
