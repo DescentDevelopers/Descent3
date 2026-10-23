@@ -42,6 +42,8 @@
 
 // GrFontDialog.h : header file
 //
+#include <memory>
+
 #include "gr.h"
 
 #define MAX_FONT_CHARS 256
@@ -111,7 +113,8 @@ private:
   int16_t m_CharWidths[MAX_FONT_CHARS];
   int16_t m_CharMaxWidth;
   uint16_t *m_FontBmData;
-  uint16_t *m_DataBuffer, *m_DataPtr;
+  std::unique_ptr<uint16_t[]> m_DataBuffer;
+  uint16_t *m_DataPtr;
   uint16_t m_BgColor, m_BoxColor;
   uint16_t m_FgColor;
   BOOL m_FontProp;      // Proportional font.

@@ -140,7 +140,6 @@ CGrFontDialog::CGrFontDialog(CWnd *pParent /*=NULL*/) : CDialog(CGrFontDialog::I
   //}}AFX_DATA_INIT
 
   m_FontPicBm = -1;
-  m_DataBuffer = nullptr;
 
   ZeroMemory(&m_FontRecord, sizeof(m_FontRecord));
 }
@@ -307,8 +306,7 @@ void CGrFontDialog::OnSave() {
 void CGrFontDialog::OnDestroy() {
   CDialog::OnDestroy();
 
-  if (m_DataBuffer)
-    delete[] m_DataBuffer;
+  m_DataBuffer.reset();
   if (m_FontPicBm > -1)
     bm_FreeBitmap(m_FontPicBm);
   m_FontPicBm = -1;
@@ -411,10 +409,8 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft) {
   m_FontType = MONOCHROME_FONT;
   m_FgColor = NEW_TRANSPARENT_COLOR;
 
-  if (m_DataBuffer)
-    delete[] m_DataBuffer;
-  m_DataBuffer = new uint16_t[1024 * MAX_FONT_CHARS];
-  m_DataPtr = m_DataBuffer;
+  m_DataBuffer = std::make_unique<uint16_t[]>(1024 * MAX_FONT_CHARS);
+  m_DataPtr = m_DataBuffer.get();
 
   //	assume upper left pixel is background color, and first-found other
   //	color is box color
@@ -436,8 +432,7 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft) {
   for (cur_char = 0; bmy < m_FontBmH && cur_char < MAX_FONT_CHARS;) {
     cur_char = read_font_line(cur_char, bmx, bmy);
     if (cur_char == -1) {
-      delete[] m_DataBuffer;
-      m_DataBuffer = nullptr;
+      m_DataBuffer.reset();
       mprintf(0, "fuck!\n");
       return FALSE;
     }
@@ -466,7 +461,7 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft) {
   ft->baseline = m_CharHeight;
   ft->min_ascii = 0;
   ft->max_ascii = cur_char - 1;
-  ft->raw_data = (uint8_t *)m_DataBuffer;
+  ft->raw_data = (uint8_t *)m_DataBuffer.get();
   ft->char_data = nullptr;
   ft->char_widths = m_CharWidths;
   ft->kern_data = nullptr;
@@ -577,7 +572,7 @@ int CGrFontDialog::read_font_char(int cur_char, int &bmx, int &bmy) {
       else
         *m_DataPtr++ = 0x07e0;
 
-      ASSERT(m_DataPtr < m_DataBuffer + (1024 * 256));
+      ASSERT(m_DataPtr < m_DataBuffer.get() + (1024 * 256));
     }
 
   return 1;
@@ -645,15 +640,13 @@ BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft) {
   }
 
   if (ft->flags & FT_COLOR) {
-    WRITE_FONT_INT(ffile, (int)(m_DataPtr - m_DataBuffer) * sizeof(uint16_t));
-    WRITE_FONT_DATA(ffile, (uint8_t *)m_DataBuffer, (m_DataPtr - m_DataBuffer) * sizeof(uint16_t), 1);
+    WRITE_FONT_INT(ffile, (int)(m_DataPtr - m_DataBuffer.get()) * sizeof(uint16_t));
+    WRITE_FONT_DATA(ffile, (uint8_t *)m_DataBuffer.get(), (m_DataPtr - m_DataBuffer.get()) * sizeof(uint16_t), 1);
   } else {
     // bitpack for mono font storage:: 16bpp -> 8 bits/1 byte
     int i, x, y, w, cnt = 0;
-    uint16_t *p = m_DataBuffer;
-    uint8_t *bits;
-
-    bits = (uint8_t *)mem_malloc(256 * MAX_FONT_CHARS);
+    uint16_t *p = m_DataBuffer.get();
+    auto bits = std::make_unique<uint8_t[]>(256 * MAX_FONT_CHARS);
 
     for (i = 0; i < num_char; i++) {
       for (y = 0; y < ft->height; y++) {
@@ -682,8 +675,7 @@ BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft) {
     }
 
     WRITE_FONT_INT(ffile, cnt);
-    WRITE_FONT_DATA(ffile, bits, cnt, 1);
-    mem_free(bits);
+    WRITE_FONT_DATA(ffile, bits.get(), cnt, 1);
   }
 
   //	We should add kerning support here.
