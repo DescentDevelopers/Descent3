@@ -1413,7 +1413,7 @@ int TC_cursor = -1;
 
 // Monitor hilight variables
 static int TelcomHiLiteCount[MAX_MONITOR];
-static int *TelcomHiLites[MAX_MONITOR];
+static std::unique_ptr<int[]> TelcomHiLites[MAX_MONITOR];
 struct {
   int x, y;
 } TelcomHiLiteOffset[MAX_MONITOR];
@@ -1943,7 +1943,7 @@ void TelcomRenderDrawHiLites(void) {
 
     curr_x = TelcomHiLiteOffset[monitor].x + Telcom_system.Monitor_coords[monitor].left;
     curr_y = TelcomHiLiteOffset[monitor].y + Telcom_system.Monitor_coords[monitor].top;
-    HiLites = TelcomHiLites[monitor];
+    HiLites = TelcomHiLites[monitor].get();
 
     for (i = 0; i < TelcomHiLiteCount[monitor]; i++) {
       w = bm_w(HiLites[i], 0);
@@ -1966,18 +1966,14 @@ void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) 
   while (filelist[TelcomHiLiteCount[monitor]])
     TelcomHiLiteCount[monitor]++;
 
-  if (!TelcomHiLiteCount[monitor])
-    TelcomHiLites[monitor] = nullptr;
-
-  TelcomHiLites[monitor] = mem_rmalloc<int>(TelcomHiLiteCount[monitor]);
-  if (!TelcomHiLites[monitor]) {
-    LOG_DEBUG.printf("Unable to allocate memory for hilights monitor=%d", monitor);
-    TelcomHiLiteCount[monitor] = 0;
-    return;
+  if (!TelcomHiLiteCount[monitor]) {
+    TelcomHiLites[monitor].reset();
   }
 
+  TelcomHiLites[monitor] = std::make_unique<int[]>(TelcomHiLiteCount[monitor]);
+
   int *HiLites;
-  HiLites = TelcomHiLites[monitor];
+  HiLites = TelcomHiLites[monitor].get();
   for (int i = 0; i < TelcomHiLiteCount[monitor]; i++) {
     HiLites[i] = FindTextureName(IGNORE_TABLE(filelist[i]));
     if (HiLites[i] == -1)
@@ -1992,13 +1988,8 @@ void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) 
 
 //	Frees all the memory allocated for the hilites
 void TelcomFreeHiLites(void) {
-  int *HiLites;
   for (int monitor = 0; monitor < MAX_MONITOR; monitor++) {
-    HiLites = TelcomHiLites[monitor];
-
-    if (HiLites) {
-      mem_free(HiLites);
-    }
+    TelcomHiLites[monitor].reset();
     TelcomHiLiteCount[monitor] = 0;
   }
 }
