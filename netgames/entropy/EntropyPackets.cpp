@@ -161,9 +161,7 @@ void ReceivePickupVirus(uint8_t *data) {
 // MTS: only used in this file.
 void SendRoomInfo(int pnum) {
   int flags, r, i;
-  auto room_info = static_cast<char *>(malloc(RoomCount));
-  if (!room_info)
-    return;
+  auto room_info = std::make_unique<char[]>(RoomCount);
 
   for (r = 0; r < RoomCount; r++) {
     flags = dRooms[RoomList[r]].flags;
@@ -202,18 +200,12 @@ void SendRoomInfo(int pnum) {
   }
 
   DMFCBase->SendPacket(data, count, pnum);
-
-  free(room_info);
 }
 
 void ReceiveRoomInfo(uint8_t *data) {
   int i, count = 0;
   int flag;
-  auto room_info = static_cast<char *>(malloc(RoomCount));
-  if (!room_info) {
-    FatalError("Out of Memory");
-    return;
-  }
+  auto room_info = std::make_unique<char[]>(RoomCount);
 
   for (i = 0; i < RoomCount; i++) {
     room_info[i] = MultiGetByte(data, &count);
@@ -256,7 +248,6 @@ void ReceiveRoomInfo(uint8_t *data) {
     rp->flags |= flag;
     rp->room_change_flags |= RCF_GOALSPECIAL_FLAGS;
   }
-  free(room_info);
 
   for (i = 0; i < NUM_TEAMS; i++) {
     TeamOwnedRooms[i] = MultiGetInt(data, &count);
