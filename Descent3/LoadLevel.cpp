@@ -2694,7 +2694,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
     return;
   }
 
-  uint16_t *lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
+  auto lightmap_remap = std::make_unique<uint16_t[]>(MAX_LIGHTMAPS);
 
   nummaps = cf_ReadInt(fp);
 
@@ -2776,8 +2776,6 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
       LightmapInfo[lmi].normal = norm;
     }
   }
-
-  mem_free(lightmap_remap);
 }
 
 // Reads info about our lightmaps
@@ -2790,11 +2788,10 @@ void ReadLightmapChunk(CFILE *fp, int version) {
 
   int nummaps;
   int i, t;
-  uint16_t *ded_dummy_data = nullptr;
+  std::unique_ptr<uint16_t[]> ded_dummy_data;
 
   if (Dedicated_server) {
-    ded_dummy_data = (uint16_t *)mem_malloc(128 * 128 * 2);
-    ASSERT(ded_dummy_data);
+    ded_dummy_data = std::make_unique<uint16_t[]>(128 * 128);
   }
 
   nummaps = cf_ReadInt(fp);
@@ -2860,7 +2857,7 @@ void ReadLightmapChunk(CFILE *fp, int version) {
     uint16_t *data;
 
     if (Dedicated_server)
-      data = ded_dummy_data;
+      data = ded_dummy_data.get();
     else
       data = (uint16_t *)lm_data(LightmapInfo[lmi].lm_handle);
 
@@ -2890,10 +2887,6 @@ void ReadLightmapChunk(CFILE *fp, int version) {
       }
     }
   }
-
-  // Free dummy data for dedicated server
-  if (Dedicated_server)
-    mem_free(ded_dummy_data);
 }
 
 // Reads information about the terrain mesh
@@ -2904,15 +2897,13 @@ void ReadTerrainHeightChunk(CFILE *fp, int version) {
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_seg[i].ypos = cf_ReadByte(fp);
   } else {
-    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
-    ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+    auto byte_vals = std::make_unique<uint8_t[]>(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++) {
       Terrain_seg[i].ypos = byte_vals[i];
       AppendToLevelChecksum(Terrain_seg[i].ypos);
     }
-
-    mem_free(byte_vals);
   }
 }
 
@@ -3339,31 +3330,31 @@ void ReadTerrainSkyAndLightChunk(CFILE *fp, int version) {
         Terrain_dynamic_table[i] = cf_ReadByte(fp);
     }
   } else {
-    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    auto byte_vals = std::make_unique<uint8_t[]>(TERRAIN_DEPTH * TERRAIN_WIDTH);
 
-    ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+    ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_seg[i].l = byte_vals[i];
 
-    ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+    ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_seg[i].r = byte_vals[i];
 
-    ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+    ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_seg[i].g = byte_vals[i];
 
-    ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+    ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_seg[i].b = byte_vals[i];
 
-    ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+    ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_dynamic_table[i] = byte_vals[i];
 
     if (version >= 72) {
       Terrain_occlusion_checksum = cf_ReadInt(fp);
-      ReadCompressionByte(fp, byte_vals, OCCLUSION_SIZE * OCCLUSION_SIZE * 32);
+      ReadCompressionByte(fp, byte_vals.get(), OCCLUSION_SIZE * OCCLUSION_SIZE * 32);
       for (i = 0; i < OCCLUSION_SIZE * OCCLUSION_SIZE * 32; i++) {
         int row = i / 32;
         int column = i % 32;
@@ -3371,8 +3362,6 @@ void ReadTerrainSkyAndLightChunk(CFILE *fp, int version) {
         Terrain_occlusion_map[row][column] = byte_vals[i];
       }
     }
-
-    mem_free(byte_vals);
   }
 }
 
@@ -3403,16 +3392,16 @@ void ReadTerrainTmapFlagChunk(CFILE *fp, int version) {
       }
     }
   } else {
-    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
-    uint16_t *short_vals = (uint16_t *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
+    auto byte_vals = std::make_unique<uint8_t[]>(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    auto short_vals = std::make_unique<uint16_t[]>(TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     if (version < 102) {
       // Read tmap1
-      ReadCompressionShort(fp, short_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+      ReadCompressionShort(fp, short_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
       // Read tmap2
-      ReadCompressionShort(fp, short_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+      ReadCompressionShort(fp, short_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
     } else {
-      ReadCompressionShort(fp, short_vals, TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH);
+      ReadCompressionShort(fp, short_vals.get(), TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH);
       for (i = 0; i < TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH; i++) {
         Terrain_tex_seg[i].tex_index = texture_xlate[short_vals[i]];
 
@@ -3422,7 +3411,7 @@ void ReadTerrainTmapFlagChunk(CFILE *fp, int version) {
         }
       }
 
-      ReadCompressionByte(fp, byte_vals, TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH);
+      ReadCompressionByte(fp, byte_vals.get(), TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH);
       for (i = 0; i < TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH; i++) {
         Terrain_tex_seg[i].rotation = byte_vals[i];
         if ((Terrain_tex_seg[i].rotation >> 4) == 0)
@@ -3431,20 +3420,17 @@ void ReadTerrainTmapFlagChunk(CFILE *fp, int version) {
     }
 
     // Read flags
-    ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+    ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_seg[i].flags = byte_vals[i];
 
     if (version < 102) {
       // Read rotation_factor
-      ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+      ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
 
       // Read tile_factor
-      ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+      ReadCompressionByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
     }
-
-    mem_free(byte_vals);
-    mem_free(short_vals);
   }
 }
 
@@ -4136,13 +4122,8 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
   // share 1 lightmap
 
   if (version >= 34 && !Dedicated_server) {
-    uint8_t *lightmap_spoken_for = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
-    uint8_t *free_lightmap_info = mem_rmalloc<uint8_t>(MAX_LIGHTMAP_INFOS);
-    ASSERT(lightmap_spoken_for);
-    memset(lightmap_spoken_for, 0, MAX_LIGHTMAPS);
-
-    ASSERT(free_lightmap_info);
-    memset(free_lightmap_info, 0, MAX_LIGHTMAP_INFOS);
+    auto lightmap_spoken_for = std::make_unique<uint8_t[]>(MAX_LIGHTMAPS);
+    auto free_lightmap_info = std::make_unique<uint8_t[]>(MAX_LIGHTMAP_INFOS);
 
     for (i = 0; i < Num_lightmap_infos_read; i++) {
       int index = LightmapInfoRemap[i];
@@ -4173,9 +4154,6 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       if (free_lightmap_info[i])
         FreeLightmapInfo(i);
     }
-
-    mem_free(lightmap_spoken_for);
-    mem_free(free_lightmap_info);
   }
 
   VerifyObjectList();
@@ -4853,32 +4831,32 @@ void WriteTerrainSkyAndLightChunk(CFILE *fp) {
   }
 
   // Write lighting
-  uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+  auto byte_vals = std::make_unique<uint8_t[]>(TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   // l
   for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
     byte_vals[i] = Terrain_seg[i].l;
-  CheckToWriteCompressByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+  CheckToWriteCompressByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   // r
   for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
     byte_vals[i] = Terrain_seg[i].r;
-  CheckToWriteCompressByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+  CheckToWriteCompressByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   // g
   for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
     byte_vals[i] = Terrain_seg[i].g;
-  CheckToWriteCompressByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+  CheckToWriteCompressByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   // b
   for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
     byte_vals[i] = Terrain_seg[i].b;
-  CheckToWriteCompressByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+  CheckToWriteCompressByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   // Terrain_dynamic_table
   for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
     byte_vals[i] = Terrain_dynamic_table[i];
-  CheckToWriteCompressByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
+  CheckToWriteCompressByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   // Terrain occlusion table
   cf_WriteInt(fp, Terrain_occlusion_checksum);
@@ -4888,9 +4866,7 @@ void WriteTerrainSkyAndLightChunk(CFILE *fp) {
 
     byte_vals[i] = Terrain_occlusion_map[row][column];
   }
-  CheckToWriteCompressByte(fp, byte_vals, OCCLUSION_SIZE * OCCLUSION_SIZE * 32);
-
-  mem_free(byte_vals);
+  CheckToWriteCompressByte(fp, byte_vals.get(), OCCLUSION_SIZE * OCCLUSION_SIZE * 32);
 
   EndChunk(fp, start_pos);
 }
@@ -4898,8 +4874,8 @@ void WriteTerrainSkyAndLightChunk(CFILE *fp) {
 void WriteTerrainTmapChunk(CFILE *fp) {
   int i;
 
-  uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
-  uint16_t *short_vals = (uint16_t *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
+  auto byte_vals = std::make_unique<uint8_t[]>(TERRAIN_DEPTH * TERRAIN_WIDTH);
+  auto short_vals = std::make_unique<uint16_t[]>(TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   int start_pos;
   start_pos = StartChunk(fp, CHUNK_TERRAIN_TMAPS_FLAGS);
@@ -4907,20 +4883,17 @@ void WriteTerrainTmapChunk(CFILE *fp) {
   // Tmap 1s
   for (i = 0; i < TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH; i++)
     short_vals[i] = Terrain_tex_seg[i].tex_index;
-  CheckToWriteCompressShort(fp, short_vals, TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH);
+  CheckToWriteCompressShort(fp, short_vals.get(), TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH);
 
   // Rotators
   for (i = 0; i < TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH; i++)
     byte_vals[i] = Terrain_tex_seg[i].rotation;
-  CheckToWriteCompressByte(fp, byte_vals, TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH);
+  CheckToWriteCompressByte(fp, byte_vals.get(), TERRAIN_TEX_DEPTH * TERRAIN_TEX_WIDTH);
 
   // flags
   for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
     byte_vals[i] = Terrain_seg[i].flags;
-  CheckToWriteCompressByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
-
-  mem_free(byte_vals);
-  mem_free(short_vals);
+  CheckToWriteCompressByte(fp, byte_vals.get(), TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   EndChunk(fp, start_pos);
 }
@@ -4941,13 +4914,8 @@ void WriteLightmapChunk(CFILE *fp) {
   int lightmap_info_count = 0;
   int lightmap_count = 0;
 
-  uint16_t *lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
-  uint8_t *lightmap_spoken_for = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
-
-  ASSERT(lightmap_remap);
-  ASSERT(lightmap_spoken_for);
-
-  memset(lightmap_spoken_for, 0, MAX_LIGHTMAPS);
+  auto lightmap_remap = std::make_unique<uint16_t[]>(MAX_LIGHTMAPS);
+  auto lightmap_spoken_for = std::make_unique<uint8_t[]>(MAX_LIGHTMAPS);
 
   // Build a lightmap remap list
   for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
@@ -4965,7 +4933,7 @@ void WriteLightmapChunk(CFILE *fp) {
       LightmapInfoRemap[i] = BAD_LMI_INDEX;
   }
 
-  memset(lightmap_spoken_for, 0, MAX_LIGHTMAPS);
+  memset(lightmap_spoken_for.get(), 0, MAX_LIGHTMAPS);
   start_pos = StartChunk(fp, CHUNK_NEW_LIGHTMAPS);
 
   cf_WriteInt(fp, lightmap_count);
@@ -5015,9 +4983,6 @@ void WriteLightmapChunk(CFILE *fp) {
       cf_WriteVector(fp, &LightmapInfo[i].normal);
     }
   }
-
-  mem_free(lightmap_remap);
-  mem_free(lightmap_spoken_for);
 
   EndChunk(fp, start_pos);
 }
