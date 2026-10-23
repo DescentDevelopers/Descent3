@@ -2306,8 +2306,7 @@ void CMainFrame::OnEditLoadScrap() {
   newscrap = LoadGroup(filename);
 
   if (newscrap) {
-    if (Scrap)
-      FreeGroup(Scrap);
+    delete Scrap;
     Scrap = newscrap;
     EditorStatus("Group loaded from %s", filename);
   }
@@ -2339,8 +2338,7 @@ int CopySelectedRooms() {
   }
 
   // Get rid of old contents of scrap buffer
-  if (Scrap)
-    FreeGroup(Scrap);
+  delete Scrap;
 
   Scrap = CopyGroup(N_selected_rooms, Selected_rooms, ROOMNUM(Markedroomp), Markedface);
 

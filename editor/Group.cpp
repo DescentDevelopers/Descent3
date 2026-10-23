@@ -214,20 +214,20 @@
 #include "door.h"
 
 // Free a group.
-// Parameters:	g - the group to be freed
-void FreeGroup(group *g) {
-  for (int r = 0; r < g->nrooms; r++)
-    FreeRoom(&g->rooms[r]);
+group::~group() {
+  for (int r = 0; r < nrooms; r++) {
+    FreeRoom(&rooms[r]);
+  }
 
-  mem_free(g->rooms);
+  mem_free(rooms);
 
-  if (g->nobjects)
-    mem_free(g->objects);
+  if (nobjects) {
+    mem_free(objects);
+  }
 
-  if (g->ntriggers)
-    mem_free(g->triggers);
-
-  mem_free(g);
+  if (ntriggers) {
+    mem_free(triggers);
+  }
 }
 
 // Copy the given list of rooms to a group
@@ -241,7 +241,7 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
   int n_objects = 0, n_triggers = 0, n_doors = 0;
 
   // Allocate group & room arrays
-  auto g = mem_rmalloc<group>();
+  auto g = new group;
   ASSERT(g != nullptr);
   g->nrooms = nrooms;
   g->rooms = mem_rmalloc<room>(nrooms);
@@ -790,7 +790,7 @@ group *LoadGroup(char *filename) {
   ReadTextureList(ifile);
 
   // Allocate group
-  auto g = mem_rmalloc<group>();
+  auto g = new group;
 
   // Read group info
   g->nrooms = cf_ReadInt(ifile);
