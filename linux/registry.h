@@ -49,19 +49,20 @@
 #define REGT_STRING 0
 #define REGT_DWORD 1
 
+#include <memory>
 #include <stdio.h>
 
 struct tRecord {
   char name[MAX_RECORD_NAME];
   char type;
-  void *data;
-  tRecord *next;
+  std::unique_ptr<char[]> data; // NUL-terminated string or sizeof(int) bytes, depending on type
+  std::unique_ptr<tRecord> next;
 };
 
 struct tKey {
   char name[MAX_RECORD_NAME];
-  tKey *next;
-  tRecord *records;
+  std::unique_ptr<tKey> next;
+  std::unique_ptr<tRecord> records;
 };
 
 class CRegistry {
@@ -80,12 +81,10 @@ public:
 
 private:
   void Destroy(void);
-  void DestroyKey(tKey *key);
-  void DestroyRecord(tRecord *record);
   void ExportKey(tKey *key, FILE *file);
   void ExportRecord(tRecord *record, FILE *file);
   char name[MAX_RECORD_NAME];
-  tKey *root;
+  std::unique_ptr<tKey> root;
   tKey *currentkey;
 };
 
