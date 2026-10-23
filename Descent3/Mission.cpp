@@ -816,36 +816,36 @@ bool DemoMission(int mode = 0) {
 #endif
     // strncpy(msn->levels[0].name, "Search for Sweitzer", MSN_NAMELEN-1);
     msn->levels[0].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[0].filename = mem_strdup("level1.d3l");
-    msn->levels[0].briefname = mem_strdup("level1.brf");
-    msn->levels[0].score = mem_strdup("level1.omf");
-    msn->levels[0].progress = mem_strdup("l1load.ogf");
-    msn->levels[0].moviename = mem_strdup("level1.mve");
+    msn->levels[0].filename = mem_strdup_unique("level1.d3l");
+    msn->levels[0].briefname = mem_strdup_unique("level1.brf");
+    msn->levels[0].score = mem_strdup_unique("level1.omf");
+    msn->levels[0].progress = mem_strdup_unique("l1load.ogf");
+    msn->levels[0].moviename = mem_strdup_unique("level1.mve");
 #ifndef DEMO
     // strncpy(msn->levels[0].name, "Into the Heart of the Ship", MSN_NAMELEN-1);
     msn->levels[1].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[1].filename = mem_strdup("level3.d3l");
-    msn->levels[1].briefname = mem_strdup("level2o.brf");
-    msn->levels[1].score = mem_strdup("level3.omf");
-    msn->levels[1].progress = mem_strdup("l3load.ogf");
+    msn->levels[1].filename = mem_strdup_unique("level3.d3l");
+    msn->levels[1].briefname = mem_strdup_unique("level2o.brf");
+    msn->levels[1].score = mem_strdup_unique("level3.omf");
+    msn->levels[1].progress = mem_strdup_unique("l3load.ogf");
     // strncpy(msn->levels[0].name, "The Nomad Caves", MSN_NAMELEN-1);
     msn->levels[2].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[2].filename = mem_strdup("level6.d3l");
-    msn->levels[2].briefname = mem_strdup("level3o.brf");
-    msn->levels[2].score = mem_strdup("level6.omf");
-    msn->levels[2].progress = mem_strdup("l6load.ogf");
+    msn->levels[2].filename = mem_strdup_unique("level6.d3l");
+    msn->levels[2].briefname = mem_strdup_unique("level3o.brf");
+    msn->levels[2].score = mem_strdup_unique("level6.omf");
+    msn->levels[2].progress = mem_strdup_unique("l6load.ogf");
     // strncpy(msn->levels[0].name, "The Transmode Virus", MSN_NAMELEN-1);
     msn->levels[3].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[3].filename = mem_strdup("level7.d3l");
-    msn->levels[3].briefname = mem_strdup("level4o.brf");
-    msn->levels[3].score = mem_strdup("level7.omf");
-    msn->levels[3].progress = mem_strdup("l7load.ogf");
+    msn->levels[3].filename = mem_strdup_unique("level7.d3l");
+    msn->levels[3].briefname = mem_strdup_unique("level4o.brf");
+    msn->levels[3].score = mem_strdup_unique("level7.omf");
+    msn->levels[3].progress = mem_strdup_unique("l7load.ogf");
     // strncpy(msn->levels[0].name, "The Rescue", MSN_NAMELEN-1);
     msn->levels[4].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[4].filename = mem_strdup("level11.d3l");
-    msn->levels[4].briefname = mem_strdup("level5o.brf");
-    msn->levels[4].score = mem_strdup("level11.omf");
-    msn->levels[4].progress = mem_strdup("l11load.ogf");
+    msn->levels[4].filename = mem_strdup_unique("level11.d3l");
+    msn->levels[4].briefname = mem_strdup_unique("level5o.brf");
+    msn->levels[4].score = mem_strdup_unique("level11.omf");
+    msn->levels[4].progress = mem_strdup_unique("l11load.ogf");
     mn3_Open("d3oem.mn3");
 #endif
     break;
@@ -854,30 +854,30 @@ bool DemoMission(int mode = 0) {
     strcpy(msn->name, "Polaris");
     msn->filename = mem_strdup("Polaris.d3l");
     // strncpy(msn->levels[0].name, "Polaris", MSN_NAMELEN-1);
-    msn->levels[0].filename = mem_strdup("polaris.d3l");
+    msn->levels[0].filename = mem_strdup_unique("polaris.d3l");
     msn->levels[0].flags |= LVLFLAG_BRANCH;
     msn->levels[0].lvlbranch0 = 1;
-    msn->levels[0].progress = mem_strdup("polaris.ogf");
+    msn->levels[0].progress = mem_strdup_unique("polaris.ogf");
     break;
   }
   case 2: {
     strcpy(msn->name, "The Core");
     msn->filename = mem_strdup("TheCore.d3l");
     // strncpy(msn->levels[0].name, "The Core", MSN_NAMELEN-1);
-    msn->levels[0].filename = mem_strdup("thecore.d3l");
+    msn->levels[0].filename = mem_strdup_unique("thecore.d3l");
     msn->levels[0].flags |= LVLFLAG_BRANCH;
     msn->levels[0].lvlbranch0 = 1;
-    msn->levels[0].progress = mem_strdup("thecore.ogf");
+    msn->levels[0].progress = mem_strdup_unique("thecore.ogf");
     break;
   }
   case 3: {
     strcpy(msn->name, "Taurus");
     msn->filename = mem_strdup("Taurus.d3l");
     // strncpy(msn->levels[0].name, "Taurus", MSN_NAMELEN-1);
-    msn->levels[0].filename = mem_strdup("taurus.d3l");
+    msn->levels[0].filename = mem_strdup_unique("taurus.d3l");
     msn->levels[0].flags |= LVLFLAG_BRANCH;
     msn->levels[0].lvlbranch0 = 1;
-    msn->levels[0].progress = mem_strdup("taurus.ogf");
+    msn->levels[0].progress = mem_strdup_unique("taurus.ogf");
     break;
   }
 #ifndef DEMO
@@ -885,11 +885,11 @@ bool DemoMission(int mode = 0) {
     strcpy(msn->name, "Pilot Training");
     msn->filename = mem_strdup("training.mn3");
     // strncpy(msn->levels[0].name, "Training", MSN_NAMELEN-1);
-    msn->levels[0].filename = mem_strdup("trainingmission.d3l");
-    msn->levels[0].briefname = nullptr; // mem_strdup("training.brf");
+    msn->levels[0].filename = mem_strdup_unique("trainingmission.d3l");
+    msn->levels[0].briefname.reset(); // mem_strdup("training.brf");
     msn->levels[0].flags = 0;
     msn->levels[0].lvlbranch0 = 0;
-    msn->levels[0].progress = mem_strdup("trainingload.ogf");
+    msn->levels[0].progress = mem_strdup_unique("trainingload.ogf");
     mn3_Open("training.mn3");
     break;
   }
@@ -1060,7 +1060,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_SCORE;
-          msn->levels[curlvlnum - 1].score = mem_strdup(operand);
+          msn->levels[curlvlnum - 1].score = mem_strdup_unique(operand);
           if (!msn->levels[curlvlnum - 1].score)
             goto fatal_error;
         }
@@ -1069,7 +1069,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
         } else {
-          msn->levels[curlvlnum - 1].progress = mem_strdup(operand);
+          msn->levels[curlvlnum - 1].progress = mem_strdup_unique(operand);
           if (!msn->levels[curlvlnum - 1].progress)
             goto fatal_error;
         }
@@ -1080,7 +1080,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
             goto fatal_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_SPECIALHOG;
-          if (!(msn->levels[curlvlnum - 1].hog = mem_strdup(operand)))
+          if (!(msn->levels[curlvlnum - 1].hog = mem_strdup_unique(operand)))
             goto fatal_error;
         }
       } else if (!stricmp(command, "NUMLEVELS")) {
@@ -1114,7 +1114,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_STARTMOVIE;
-          if (!(msn->levels[curlvlnum - 1].moviename = mem_strdup(operand)))
+          if (!(msn->levels[curlvlnum - 1].moviename = mem_strdup_unique(operand)))
             goto fatal_error;
         }
       } else if (!stricmp(command, "INTRODEFAULT")) {
@@ -1123,7 +1123,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else if (!Descent_overrided_intro) {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_STARTMOVIE;
-          if (!(msn->levels[curlvlnum - 1].moviename = mem_strdup(operand)))
+          if (!(msn->levels[curlvlnum - 1].moviename = mem_strdup_unique(operand)))
             goto fatal_error;
         }
       } else if (!stricmp(command, "ENDMOVIE")) {
@@ -1132,7 +1132,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_ENDMOVIE;
-          if (!(msn->levels[curlvlnum - 1].endmovie = mem_strdup(operand)))
+          if (!(msn->levels[curlvlnum - 1].endmovie = mem_strdup_unique(operand)))
             goto fatal_error;
         }
       } else if (!stricmp(command, "MINE")) {
@@ -1140,7 +1140,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
         } else {
-          if (!(msn->levels[curlvlnum - 1].filename = mem_strdup(operand)))
+          if (!(msn->levels[curlvlnum - 1].filename = mem_strdup_unique(operand)))
             goto fatal_error;
         }
       } else if (!stricmp(command, "SECRET")) {
@@ -1157,7 +1157,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_BRIEFING;
-          if (!(msn->levels[curlvlnum - 1].briefname = mem_strdup(operand)))
+          if (!(msn->levels[curlvlnum - 1].briefname = mem_strdup_unique(operand)))
             goto fatal_error;
         }
       } else if (!stricmp(command, "BRANCH")) {
@@ -1228,22 +1228,6 @@ void FreeMission() {
   // Tell Osiris to shutdown the Osiris Mission Memory System, freeing all memory
   Osiris_CloseOMMS();
   // free up any data allocated per level node.
-  for (auto &level : Current_mission.levels) {
-    if (level.filename)
-      mem_free(level.filename);
-    if (level.briefname)
-      mem_free(level.briefname);
-    if (level.hog)
-      mem_free(level.hog);
-    if (level.moviename)
-      mem_free(level.moviename);
-    if (level.endmovie)
-      mem_free(level.endmovie);
-    if (level.score)
-      mem_free(level.score);
-    if (level.progress)
-      mem_free(level.progress);
-  }
   Current_mission.levels.clear();
 
   if (Current_mission.hog)
@@ -1280,9 +1264,9 @@ void LoadLevelText(const std::filesystem::path &level_filename) {
 bool LoadMissionLevel(int level) {
   Hud_show_controls = false;
   LoadLevelProgress(LOAD_PROGRESS_START, 0);
-  if (!LoadLevel(Current_mission.levels[level - 1].filename, nullptr)) {
+  if (!LoadLevel(Current_mission.levels[level - 1].filename.get(), nullptr)) {
     char buf[128];
-    snprintf(buf, sizeof(buf), TXT_MSNERROR, Current_mission.levels[level - 1].filename);
+    snprintf(buf, sizeof(buf), TXT_MSNERROR, Current_mission.levels[level - 1].filename.get());
     SetUICallback(DEFAULT_UICALLBACK);
     DoMessageBox(TXT_ERROR, buf, MSGBOX_OK);
     LoadLevelProgress(LOAD_PROGRESS_DONE, 0);
@@ -1304,7 +1288,7 @@ bool LoadMissionLevel(int level) {
     Sleep(2000);
   } */
 
-  LoadLevelText(Current_mission.levels[level - 1].filename);
+  LoadLevelText(Current_mission.levels[level - 1].filename.get());
 
   return true;
 }
@@ -1349,7 +1333,7 @@ void LoadLevelProgress(int step, float percent, const char *chunk) {
     if ((!(Game_mode & GM_MULTI)) && (!Current_mission.levels[Current_mission.cur_level - 1].progress)) {
       p = "tunnelload.ogf";
     } else {
-      p = Current_mission.levels[Current_mission.cur_level - 1].progress;
+      p = Current_mission.levels[Current_mission.cur_level - 1].progress.get();
     }
 
     if (p) {
@@ -1688,7 +1672,7 @@ extern bool IsRestoredGame;
 
 void InitLevelScript() {
   if (Current_level->filename) {
-    std::filesystem::path filename = Current_level->filename;
+    std::filesystem::path filename = Current_level->filename.get();
     filename.replace_extension(MODULE_EXT);
     Osiris_LoadLevelModule(filename);
   }
@@ -1989,10 +1973,11 @@ void QuickStartMission() {
   Current_mission.num_levels = 1;
   Current_mission.levels.emplace_back(tLevelNode{});
   Current_level = &Current_mission.levels[0];
-  if (Editor_quickplay_levelname[0] != '\0')
-    Current_level->filename = mem_strdup(Editor_quickplay_levelname);
-  else
-    Current_level->filename = nullptr;
+  if (Editor_quickplay_levelname[0] != '\0') {
+    Current_level->filename = mem_strdup_unique(Editor_quickplay_levelname);
+  } else {
+    Current_level->filename.reset();
+  }
   //	proceed with initialization.
   InitMissionScript();
   SetGameState(GAMESTATE_LVLSTART);

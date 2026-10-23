@@ -1306,7 +1306,7 @@ int DisplayLevelWarpDlg(int max_level) {
     std::stringstream ss;
     level_info info{};
 
-    LoadLevelInfo(Current_mission.levels[i].filename, info);
+    LoadLevelInfo(Current_mission.levels[i].filename.get(), info);
     ss << std::setw(2) << std::setfill('0') << i + 1 << ". " << info.name;
     level_listbox->AddItem(ss.str().c_str());
   }

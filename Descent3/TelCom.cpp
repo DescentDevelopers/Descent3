@@ -649,7 +649,7 @@ void TelComMain(bool ingame, bool SelectShip) {
         const char *tag[] = {"", "_GER", "_SPN", "_ITN", "_FRN"};
         bool ok_to_go = false;
 
-        ddio_SplitPath(Current_level->briefname, nullptr, basefilename, extension);
+        ddio_SplitPath(Current_level->briefname.get(), nullptr, basefilename, extension);
 
         strcpy(briefingname, basefilename);
         strcat(briefingname, tag[Localization_GetLanguage()]);
@@ -657,7 +657,7 @@ void TelComMain(bool ingame, bool SelectShip) {
 
         if (!cfexist(briefingname)) {
           // language version doesn't exist
-          strcpy(briefingname, Current_level->briefname);
+          strcpy(briefingname, Current_level->briefname.get());
 
           if (cfexist(briefingname)) {
             ok_to_go = true;

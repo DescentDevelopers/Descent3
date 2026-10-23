@@ -167,6 +167,7 @@
 #ifndef MISSION_H
 #define MISSION_H
 
+#include <memory>
 #include <vector>
 
 #include "pstypes.h"
@@ -216,15 +217,15 @@ struct tLevelNode {
   uint32_t objective_flags; // level objective flags
 
   // Movies
-  char *moviename = nullptr;
-  char *endmovie = nullptr;
+  std::unique_ptr<char[]> moviename;
+  std::unique_ptr<char[]> endmovie;
 
   // Level filename
-  char *filename = nullptr;  // mine filename.
-  char *briefname = nullptr; // briefing filename
-  char *hog = nullptr;       // hog file name for this level
-  char *score = nullptr;     // music score of level
-  char *progress = nullptr;  // File name containing the progress background screen
+  std::unique_ptr<char[]> filename;  // mine filename.
+  std::unique_ptr<char[]> briefname; // briefing filename
+  std::unique_ptr<char[]> hog;       // hog file name for this level
+  std::unique_ptr<char[]> score;     // music score of level
+  std::unique_ptr<char[]> progress;  // File name containing the progress background screen
 
   // Level branching
   uint8_t lvlbranch0, lvlbranch1; // FORK or BRANCH command
