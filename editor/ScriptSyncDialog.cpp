@@ -264,7 +264,7 @@ BOOL CScriptSyncDialog::OnInitDialog() {
   m_Index = 0;
   m_NumFiles = 0;
   m_HasCompiler = -1;
-  m_Files = nullptr;
+  m_Files.reset();
   m_FillingIn = true;
   m_ErrorCount = 0;
   ddio_GetWorkingDir(old_dir, _MAX_PATH);
@@ -295,7 +295,7 @@ void CScriptSyncDialog::defer(void) {
 void CScriptSyncDialog::BuildList(void) {
   char buffer[256];
   m_NumFiles = 0;
-  m_Files = nullptr;
+  m_Files.reset();
 
   if (ManageFindFirst(buffer, "*.cpp")) {
     m_NumFiles++;
@@ -308,7 +308,7 @@ void CScriptSyncDialog::BuildList(void) {
   if (m_NumFiles == 0)
     return;
 
-  m_Files = mem_rmalloc<tFileInfo>(m_NumFiles);
+  m_Files = std::make_unique<tFileInfo[]>(m_NumFiles);
   m_NumFiles = 0;
 
   if (ManageFindFirst(buffer, "*.cpp")) {
@@ -414,20 +414,18 @@ void CScriptSyncDialog::DoStuff(void) {
           if (m_Files[m_Index].state == STATE_MISSING || m_Files[m_Index].state == STATE_ERROOD ||
               m_Files[m_Index].state == STATE_ERROOS) {
             m_ErrorCount++;
-            char *string;
-            string = mem_strdup(SS_CompileOutputData.GetBuffer(0));
+            std::unique_ptr<char[]> string = mem_strdup_unique(SS_CompileOutputData.GetBuffer(0));
             if (string) {
               char buffer[2048];
               const char *next_line;
 
               mprintf(0, "===========================================\n");
-              next_line = textaux_CopyTextLine(string, buffer);
+              next_line = textaux_CopyTextLine(string.get(), buffer);
               while (next_line) {
                 mprintf(0, "%s\n", buffer);
                 next_line = textaux_CopyTextLine(next_line, buffer);
               }
               mprintf(0, "===========================================\n");
-              mem_free(string);
             }
           }
         } else {
@@ -474,8 +472,6 @@ void CScriptSyncDialog::OnTimer(UINT nIDEvent) {
 void CScriptSyncDialog::OnDestroy() {
   CDialog::OnDestroy();
 
-  if (m_Files) {
-    mem_free(m_Files);
-  }
+  m_Files.reset();
   ddio_SetWorkingDir(old_dir);
 }

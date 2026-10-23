@@ -30,6 +30,8 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CMyListCtrl window
+#include <memory>
+
 #include "manage_external.h"
 
 #define STATE_COMPILED 0
@@ -87,7 +89,7 @@ public:
   bool early_exit;
   bool first_paint;
 
-  tFileInfo *m_Files;
+  std::unique_ptr<tFileInfo[]> m_Files;
   int m_NumFiles;
   bool m_InStuff;
   int m_Index;
