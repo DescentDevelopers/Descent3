@@ -156,18 +156,16 @@ void UIButton::Create(UIWindow *parent, int id, UIItem *item, int x, int y, int 
 
 UIItem *UIButton::GetStateItem(int state) {
   ASSERT(state < UI_BTS_NUM);
-  return m_Items[state];
+  return m_Items[state].get();
 };
 
 // sets the background bitmap for a specified button state
 void UIButton::SetStateItem(int state, UIItem *item) {
   ASSERT(state < UI_BTS_NUM);
-  if (m_Items[state]) {
-    delete m_Items[state];
-    m_Items[state] = nullptr;
-  }
-  if (item)
+  m_Items[state].reset();
+  if (item) {
     m_Items[state] = item->CopyUIItem();
+  }
 }
 
 int UIButton::GetColor(int state) const {

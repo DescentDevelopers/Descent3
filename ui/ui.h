@@ -268,6 +268,7 @@
 #define UI_H
 
 #include <cstdint>
+#include <memory>
 
 #include "grdefs.h"
 #include "uires.h"
@@ -493,8 +494,8 @@ public:
 //		or key pressed, does something.
 
 class UIHotspot final : public UIGadget {
-  UIItem *m_ItemOff = nullptr, *m_ItemOn = nullptr; // off and on states items.
-  UIItem *m_ItemCur = nullptr;            // current item.
+  std::unique_ptr<UIItem> m_ItemOff, m_ItemOn; // off and on states items.
+  UIItem *m_ItemCur = nullptr;                 // current item.
 
 protected:
   virtual void OnKeyDown(int key);      // override: behavior when key is pressed.
@@ -538,7 +539,7 @@ public:
 
 class UIButton : public UIGadget {
 private:
-  UIItem *m_Items[UI_BTS_NUM]{};   // UI Items for each state
+  std::unique_ptr<UIItem> m_Items[UI_BTS_NUM]; // UI Items for each state
   ddgr_color m_Colors[UI_BTS_NUM]; // Backgrounds for states
 
   static int m_ButtonFont; // button fonts.
@@ -654,14 +655,14 @@ protected:
 
 class UIStatic : public UIGadget {
 protected:
-  UIPrimativeItem *m_Background = nullptr;
-  UIItem *m_Title = nullptr;
+  std::unique_ptr<UIItem> m_Background;
+  std::unique_ptr<UIItem> m_Title;
 
 public:
   void Create(UIWindow *parent, UIItem *item, int x, int y, int w, int h, int flags = 0);
   void SetBackground(UIPrimativeItem *prim);
   void SetTitle(UIItem *item);
-  UIItem *GetItem() const { return m_Title; };
+  UIItem *GetItem() const { return m_Title.get(); };
 
 protected:
   virtual void OnDraw();    // behavior when gadget is being drawn.
@@ -791,8 +792,8 @@ class UISlider : public UIGadget {
   int switch_x, switch_y;                  // little box width and height.
   int switch_w, switch_h;
 
-  UIItem *switch_item = nullptr; // slider switch item
-  UIItem *slider_item = nullptr; // slider item
+  std::unique_ptr<UIItem> switch_item; // slider switch item
+  std::unique_ptr<UIItem> slider_item; // slider item
 
 public:
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
@@ -1015,7 +1016,7 @@ class UIWindow : public UIObject {
   UIGadget *m_GadgetTail;
   UIGadget *m_GadgetCur;
   UIGadget *m_LockedGadget; // marks a particular gadget that will always have focus
-  UIItem *m_BackItem;       // background UI item.
+  std::unique_ptr<UIItem> m_BackItem; // background UI item.
 
   float m_KeyTime; // time when key went down.
 
@@ -1088,11 +1089,10 @@ public:
   //	settings
   void SetFont(int handle);        // sets window's font.
   void SetBackItem(UIItem *item) { // sets the background drawing item.
-    if (m_BackItem)
-      delete m_BackItem;
-    m_BackItem = nullptr;
-    if (item)
+    m_BackItem.reset();
+    if (item) {
       m_BackItem = item->CopyUIItem();
+    }
   };                                  //
   void SetBackColor(ddgr_color col) { // sets the background color.  this is ALWAYS first, then the backitem
     m_BackColor = col;

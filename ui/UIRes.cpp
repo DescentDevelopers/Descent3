@@ -110,11 +110,9 @@ int UITextItem::height() {
 }
 
 //	operators
-UIItem *UITextItem::CopyUIItem() {
-  UITextItem *newitem = ::new UITextItem();
-  if (newitem) {
-    *newitem = *this;
-  }
+std::unique_ptr<UIItem> UITextItem::CopyUIItem() {
+  auto newitem = std::make_unique<UITextItem>();
+  *newitem = *this;
   return newitem;
 }
 
@@ -206,11 +204,9 @@ bool UISnazzyTextItem::draw(int x, int y, tUIDrawClass draw_class) {
   return UITextItem::draw(x, y, draw_class);
 }
 
-UIItem *UISnazzyTextItem::CopyUIItem() {
-  UISnazzyTextItem *newitem = ::new UISnazzyTextItem();
-  if (newitem) {
-    *newitem = *this;
-  }
+std::unique_ptr<UIItem> UISnazzyTextItem::CopyUIItem() {
+  auto newitem = std::make_unique<UISnazzyTextItem>();
+  *newitem = *this;
   return newitem;
 }
 
@@ -249,11 +245,9 @@ int UIBitmapItem::width() { return (m_IsValid ? ui_GetBitmapWidth(this) : 0); }
 int UIBitmapItem::height() { return (m_IsValid ? ui_GetBitmapHeight(this) : 0); }
 
 //	operators
-UIItem *UIBitmapItem::CopyUIItem() {
-  UIBitmapItem *newitem = ::new UIBitmapItem();
-  if (newitem) {
-    *newitem = *this;
-  }
+std::unique_ptr<UIItem> UIBitmapItem::CopyUIItem() {
+  auto newitem = std::make_unique<UIBitmapItem>();
+  *newitem = *this;
   return newitem;
 }
 
@@ -277,7 +271,4 @@ bool UIPrimativeItem::draw(int x, int y, int w, int h) {
   return true;
 }
 
-UIItem *UIPrimativeItem::CopyUIItem() {
-  UIPrimativeItem *newitem = ::new UIPrimativeItem(color, alpha);
-  return newitem;
-}
+std::unique_ptr<UIItem> UIPrimativeItem::CopyUIItem() { return std::make_unique<UIPrimativeItem>(color, alpha); }
