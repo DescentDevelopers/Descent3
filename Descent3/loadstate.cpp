@@ -1134,26 +1134,20 @@ int LGSObjects(CFILE *fp, int version) {
     // custom default script info
     gs_ReadByte(fp, j);
     if (j > 0) {
-      op->custom_default_script_name = (char *)mem_malloc(j + 1);
-      if (!op->custom_default_script_name)
-        Error("Out of memory");
-
-      cf_ReadBytes((uint8_t *)op->custom_default_script_name, j, fp);
+      op->custom_default_script_name = std::make_unique<char[]>(j + 1);
+      cf_ReadBytes((uint8_t *)op->custom_default_script_name.get(), j, fp);
       op->custom_default_script_name[j] = '\0';
     } else {
-      op->custom_default_script_name = nullptr;
+      op->custom_default_script_name.reset();
     }
 
     gs_ReadByte(fp, j);
     if (j > 0) {
-      op->custom_default_module_name = (char *)mem_malloc(j + 1);
-      if (!op->custom_default_module_name)
-        Error("Out of memory");
-
-      cf_ReadBytes((uint8_t *)op->custom_default_module_name, j, fp);
+      op->custom_default_module_name = std::make_unique<char[]>(j + 1);
+      cf_ReadBytes((uint8_t *)op->custom_default_module_name.get(), j, fp);
       op->custom_default_module_name[j] = '\0';
     } else {
-      op->custom_default_module_name = nullptr;
+      op->custom_default_module_name.reset();
     }
 
     VERIFY_SAVEFILE;

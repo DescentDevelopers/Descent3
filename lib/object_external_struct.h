@@ -515,8 +515,8 @@ struct object {
   // OSIRIS Script Info (new OSIRIS)
   tOSIRISScript *osiris_script;
 
-  char *custom_default_script_name;
-  char *custom_default_module_name;
+  std::unique_ptr<char[]> custom_default_script_name;
+  std::unique_ptr<char[]> custom_default_module_name;
 };
 
 #endif

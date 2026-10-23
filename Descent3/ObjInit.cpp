@@ -1192,8 +1192,8 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->generic_nonvis_flags = 0;
   objp->generic_sent_nonvis = 0;
   objp->name.reset();
-  objp->custom_default_script_name = nullptr;
-  objp->custom_default_module_name = nullptr;
+  objp->custom_default_script_name.reset();
+  objp->custom_default_module_name.reset();
   objp->contains_type = -1;
   objp->lifeleft = 0;
   objp->effect_info = nullptr;

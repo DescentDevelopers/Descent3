@@ -1927,15 +1927,8 @@ void ObjDelete(int objnum) {
   //	Kill any script thread associated with this object.
   FreeObjectScripts(obj, false);
 
-  if (obj->custom_default_script_name) {
-    mem_free(obj->custom_default_script_name);
-    obj->custom_default_script_name = nullptr;
-  }
-
-  if (obj->custom_default_module_name) {
-    mem_free(obj->custom_default_module_name);
-    obj->custom_default_module_name = nullptr;
-  }
+  obj->custom_default_script_name.reset();
+  obj->custom_default_module_name.reset();
 
   obj->type = OBJ_NONE; // unused!
   obj->roomnum = -1;    // zero it!

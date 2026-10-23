@@ -1718,24 +1718,24 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     // read in default script override information
     i = cf_ReadByte(ifile);
     if (i > 0) {
-      objp->custom_default_script_name = (char *)mem_malloc(i + 1);
-      cf_ReadBytes((uint8_t *)objp->custom_default_script_name, i, ifile);
+      objp->custom_default_script_name = std::make_unique<char[]>(i + 1);
+      cf_ReadBytes((uint8_t *)objp->custom_default_script_name.get(), i, ifile);
       objp->custom_default_script_name[i] = '\0';
     } else {
-      objp->custom_default_script_name = nullptr;
+      objp->custom_default_script_name.reset();
     }
 
     i = cf_ReadByte(ifile);
     if (i > 0) {
-      objp->custom_default_module_name = (char *)mem_malloc(i + 1);
-      cf_ReadBytes((uint8_t *)objp->custom_default_module_name, i, ifile);
+      objp->custom_default_module_name = std::make_unique<char[]>(i + 1);
+      cf_ReadBytes((uint8_t *)objp->custom_default_module_name.get(), i, ifile);
       objp->custom_default_module_name[i] = '\0';
     } else {
-      objp->custom_default_module_name = nullptr;
+      objp->custom_default_module_name.reset();
     }
   } else {
-    objp->custom_default_module_name = nullptr;
-    objp->custom_default_script_name = nullptr;
+    objp->custom_default_module_name.reset();
+    objp->custom_default_script_name.reset();
   }
 
   //	load in obsolete script info
@@ -4242,15 +4242,15 @@ int WriteObject(CFILE *ofile, object *objp) {
     cf_WriteFloat(ofile, objp->ctype.soundsource_info.volume);
   }
 
-  i = (objp->custom_default_script_name) ? strlen(objp->custom_default_script_name) : 0;
+  i = (objp->custom_default_script_name) ? strlen(objp->custom_default_script_name.get()) : 0;
   cf_WriteByte(ofile, i);
   if (i > 0)
-    cf_WriteBytes((uint8_t *)objp->custom_default_script_name, i, ofile);
+    cf_WriteBytes((uint8_t *)objp->custom_default_script_name.get(), i, ofile);
 
-  i = (objp->custom_default_module_name) ? strlen(objp->custom_default_module_name) : 0;
+  i = (objp->custom_default_module_name) ? strlen(objp->custom_default_module_name.get()) : 0;
   cf_WriteByte(ofile, i);
   if (i > 0)
-    cf_WriteBytes((uint8_t *)objp->custom_default_module_name, i, ofile);
+    cf_WriteBytes((uint8_t *)objp->custom_default_module_name.get(), i, ofile);
 
   // If there is lightmap data for this object, write it out.
   if (objp->lighting_render_type == LRT_LIGHTMAPS) {
