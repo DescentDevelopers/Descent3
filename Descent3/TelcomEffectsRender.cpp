@@ -53,6 +53,7 @@
 #include <cstring>
 
 #include "TelComEffects.h"
+#include "cinematics.h"
 #include "hlsoundlib.h"
 #include "log.h"
 #include "mem.h"
@@ -770,7 +771,7 @@ void RenderMovie(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_
   if (!tce->movieinfo.handle)
     return;
   bool done = false;
-  FrameMovie(tce->movieinfo.handle, tce->pos_x + glitch_dx, tce->pos_y + glitch_dy, false);
+  FrameMovie(tce->movieinfo.handle, tce->pos_x + glitch_dx, tce->pos_y + glitch_dy);
   float end_time = tce->age + frametime;
   while ((end_time > tce->age) && (!done)) {
     if (!FrameMovie(tce->movieinfo.handle, tce->pos_x + glitch_dx + xoff, tce->pos_y + glitch_dy + yoff)) {

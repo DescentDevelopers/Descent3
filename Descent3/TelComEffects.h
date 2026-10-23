@@ -118,10 +118,9 @@
 #ifndef __TELCOM_EFFECTS_H_
 #define __TELCOM_EFFECTS_H_
 
-#include "pstypes.h"
 #include "renderer.h"
 #include "grdefs.h"
-#include "cinematics.h"
+#include "mvelib.h"
 #include "TelComEfxStructs.h"
 #include "TelCom.h"
 #include "vecmat_external.h"
@@ -215,7 +214,7 @@ struct tPolyInfo {
 };
 
 struct tMovieInfo {
-  tCinematic *handle; // handle to the movie
+  MVESTREAM *handle; // handle to the movie
   char *filename;     // filename of the movie
   float fps;          // fps
 };

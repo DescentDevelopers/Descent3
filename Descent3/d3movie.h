@@ -1,6 +1,7 @@
 /*
 * Descent 3 
 * Copyright (C) 2024 Parallax Software
+* Copyright (C) 2026 Descent Developers
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@
 #include <filesystem>
 
 #include "application.h"
+#include "mvelib.h"
 #include "renderer.h"
 
 #define MVELIB_NOERROR 0
@@ -38,18 +40,29 @@ int mve_Init();
 // simply plays a movie.
 int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp);
 
-// used to copy movie data to a pointer, looping will loop, fhandle will be a pointer to a file handle to be returned
-// handle to movie sequence is returned by function.
-intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *app, bool looping = false);
+/**
+ * Initialize sequence play
+ * @param mvename filename of movie to play
+ * @param looping restart play on end of movie
+ * @return handle to movie sequence
+ */
+MVESTREAM *mve_SequenceStart(const char *mvename, bool looping = false);
 
-//	frames movies started with SequenceStart.  Optionally, pass a pointer to a variable which will receive
-//	bitmap handle containing data, nx and ny will contain adjusted x and y coordinates if needed.
-//	passing -1 to x and y centers the frame on that axis
-//	handle is the movie handle returned by mve_Sequence start
-//	returned value is the handle passed into mve_SequenceFrame or new one if movie looped.
-intptr_t mve_SequenceFrame(intptr_t handle, void *fhandle, bool sequence, int *bm_handle);
+/**
+ * Frames movie started with mve_SequenceStart(). Optionally, pass a pointer to a variable which will receive bitmap
+ * handle containing data.
+ * @param handle the movie handle returned by mve_SequenceStart()
+ * @param bm_handle bitmap handle containing data.
+ * @return value is the handle passed into mve_SequenceFrame() or new one if movie looped.
+ */
+MVESTREAM *mve_SequenceFrame(MVESTREAM *handle, int *bm_handle);
 
-bool mve_SequenceClose(intptr_t handle, void *fhandle);
+/**
+ * Close sequence and free allocated memory
+ * @param handle movie handle
+ * @return true if some memory freed, false if there was nothing to do.
+ */
+bool mve_SequenceClose(MVESTREAM *handle);
 
 //	sets render frame boundaries.
 void mve_SetRenderProperties(int16_t x, int16_t y, int16_t w, int16_t h, renderer_type type, bool hicolor);

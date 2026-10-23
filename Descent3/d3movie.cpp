@@ -1,6 +1,7 @@
 /*
 * Descent 3
 * Copyright (C) 2024 Parallax Software
+* Copyright (C) 2026 Descent Developers
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -129,9 +130,6 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
     bm_FreeBitmap(Movie_bm_handle);
     Movie_bm_handle = -1;
   }
-
-  // close our file handle
-  fclose(hFile);
 
   // determine the return code
   int err = MVELIB_NOERROR;
@@ -319,15 +317,15 @@ void CallbackShowFrameNoFlip(unsigned char *buf, unsigned int bufw, unsigned int
 }
 #endif
 
-intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *app, bool looping) {
+MVESTREAM *mve_SequenceStart(const char *mvename, bool looping) {
 #ifndef NO_MOVIES
   // first, find that movie..
   std::filesystem::path real_name = cf_LocatePath(std::filesystem::path("movies") / mvename);
-  fhandle = fopen(PATH_TO_CSTR(real_name), "rb");
+  FILE *fhandle = fopen(PATH_TO_CSTR(real_name), "rb");
 
   if (fhandle == nullptr) {
     LOG_WARNING.printf("MOVIE: Unable to open %s", PATH_TO_CSTR(real_name));
-    return 0;
+    return nullptr;
   }
 
   // setup
@@ -346,64 +344,64 @@ intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *ap
   if (mve == nullptr) {
     LOG_ERROR.printf("Failed to PrepMovie %s", mvename);
     fclose((FILE *)fhandle);
-    return MVELIB_INIT_ERROR;
+    return nullptr;
   }
 
-  return (intptr_t)mve;
+  return mve;
 #else
   return nullptr;
 #endif
 }
 
-intptr_t mve_SequenceFrame(intptr_t handle, void *fhandle, bool sequence, int *bm_handle) {
+MVESTREAM *mve_SequenceFrame(MVESTREAM *handle, int *bm_handle) {
 #ifndef NO_MOVIES
   if (bm_handle) {
     *bm_handle = -1;
   }
 
-  if (handle == -1) {
-    return -1;
+  if (handle == nullptr) {
+    return nullptr;
   }
 
   static unsigned sw = 0, sh = 0, hicolor = 0;
   int err = 0;
 
-reread_frame:
+  while (true) {
+    // get the next frame of data
+    uint8_t *pBuffer = nullptr;
+    err = MVE_rmStepMovie(handle);
 
-  // get the next frame of data
-  uint8_t *pBuffer = nullptr;
-  err = MVE_rmStepMovie((MVESTREAM *)handle);
+    if (err == 0) {
+      // blit to bitmap
+      int texW, texH;
+      BlitToMovieBitmap(pBuffer, sw, sh, hicolor, false, texW, texH);
 
-  if (err == 0) {
-    // blit to bitmap
-    int texW, texH;
-    BlitToMovieBitmap(pBuffer, sw, sh, hicolor, false, texW, texH);
+      if (bm_handle) {
+        *bm_handle = Movie_bm_handle;
+      }
 
-    if (bm_handle) {
-      *bm_handle = Movie_bm_handle;
+      return handle;
     }
 
-    return handle;
+    if (Movie_looping && err == MVE_ERR_EOF) {
+      if (!mve_reset(handle)) {
+        // failed to reset MVE, bail out
+        return nullptr;
+      }
+    }
   }
-
-  if (Movie_looping && err == MVE_ERR_EOF) {
-    mve_reset((MVESTREAM *)handle);
-    sequence = true;
-    goto reread_frame;
-  }
-
-  return -1;
+  return nullptr;
 #else
-  return -1;
+  return nullptr;
 #endif
 }
 
-bool mve_SequenceClose(intptr_t hMovie, void *hFile) {
+bool mve_SequenceClose(MVESTREAM *hMovie) {
 #ifndef NO_MOVIES
-  if (hMovie == -1)
+  if (hMovie == nullptr)
     return false;
 
-  MVE_rmEndMovie((MVESTREAM *)hMovie);
+  MVE_rmEndMovie(hMovie);
 
   // free our bitmap
   if (Movie_bm_handle != -1) {
