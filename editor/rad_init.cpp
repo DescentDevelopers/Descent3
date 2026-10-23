@@ -59,7 +59,7 @@ int UseVolumeLights = 0; // User selectable to do volumelights
 int Calculate_specular_lighting = 0;
 
 // Specular variable
-float *Room_strongest_value[MAX_ROOMS][4];
+std::unique_ptr<float[]> Room_strongest_value[MAX_ROOMS][4];
 
 // Tells radiosity renderer to do volume lighting
 int Do_volume_lighting = 0;

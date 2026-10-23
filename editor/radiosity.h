@@ -144,7 +144,7 @@ struct rad_point {
   uint8_t code;
 };
 
-extern float *Room_strongest_value[][4];
+extern std::unique_ptr<float[]> Room_strongest_value[][4];
 
 extern int Ignore_terrain;
 extern int Ignore_satellites;
