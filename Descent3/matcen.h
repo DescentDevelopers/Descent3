@@ -210,7 +210,7 @@ public:
   void Reset();
 };
 
-extern matcen *Matcen[MAX_MATCENS];
+extern std::unique_ptr<matcen> Matcen[MAX_MATCENS];
 int FindMatcenIndex(const char *name);
 int CreateMatcen(const char *name, bool *f_name_changed);
 void InitMatcens();
