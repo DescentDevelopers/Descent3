@@ -213,7 +213,6 @@ void CloseFilterLogFiles(void);
 ////////////////////////////////////////////////////////////////
 PageDataNode::PageDataNode() {
   prev = nullptr;
-  next = nullptr;
 
   name[0] = '\0';
   type = PAGETYPE_UNKNOWN;
@@ -254,7 +253,6 @@ PageDataList::PageDataList() {
   int j;
 
   // Init the list to be empty
-  m_head = nullptr;
   m_tail = nullptr;
   m_size = 0;
 
@@ -290,19 +288,15 @@ PageDataList::~PageDataList() {
 
 // Wipes out the data list
 void PageDataList::ClearList(void) {
-  PageDataNode *temp, *node;
   int j;
 
   CWaitCursor wc;
 
-  node = m_head;
-  while (node != nullptr) {
-    temp = node;
-    node = node->next;
-    delete temp;
+  // Unlink one node at a time so a long list isn't destroyed recursively
+  while (m_head != nullptr) {
+    m_head = std::move(m_head->next);
   }
   m_size = 0;
-  m_head = nullptr;
   m_tail = nullptr;
 
   // Init the level filename list to be empty
@@ -331,8 +325,9 @@ void PageDataList::ClearList(void) {
 
 // Adds the node to the list in ascending alphabetical order
 // according to the page names of the nodes
-bool PageDataList::AddToList(PageDataNode *new_node) {
+bool PageDataList::AddToList(std::unique_ptr<PageDataNode> new_node) {
   PageDataNode *node;
+  PageDataNode *added_node = new_node.get();
 
   CWaitCursor wc;
 
@@ -341,10 +336,9 @@ bool PageDataList::AddToList(PageDataNode *new_node) {
 
   // Handle empty list case
   if (m_head == nullptr) {
-    m_head = new_node;
-    m_tail = new_node;
-    new_node->next = nullptr;
+    m_tail = added_node;
     new_node->prev = nullptr;
+    m_head = std::move(new_node);
 
     m_size++;
     goto UpdateControls;
@@ -352,10 +346,10 @@ bool PageDataList::AddToList(PageDataNode *new_node) {
 
   // Handle (new node < list head) case
   if ((*new_node) < (*m_head)) {
-    new_node->next = m_head;
     new_node->prev = nullptr;
-    m_head->prev = new_node;
-    m_head = new_node;
+    m_head->prev = added_node;
+    new_node->next = std::move(m_head);
+    m_head = std::move(new_node);
 
     m_size++;
     goto UpdateControls;
@@ -363,26 +357,28 @@ bool PageDataList::AddToList(PageDataNode *new_node) {
 
   // Search through list until end of list or until the new node is less
   // than the next node, then add the new node after the current node
-  node = m_head;
-  while (node->next != nullptr && (*(node->next)) < (*new_node))
-    node = node->next;
+  node = m_head.get();
+  while (node->next != nullptr && (*(node->next)) < (*new_node)) {
+    node = node->next.get();
+  }
 
-  new_node->next = node->next;
   new_node->prev = node;
 
-  if (node->next == nullptr)
-    m_tail = new_node;
-  else
-    node->next->prev = new_node;
+  if (node->next == nullptr) {
+    m_tail = added_node;
+  } else {
+    node->next->prev = added_node;
+  }
 
-  node->next = new_node;
+  new_node->next = std::move(node->next);
+  node->next = std::move(new_node);
 
   m_size++;
 
 UpdateControls:
 
   // Add it to the data list control
-  AddToListCtrl(0, new_node);
+  AddToListCtrl(0, added_node);
 
   // Update the count
   if (m_NumPagesText)
@@ -399,7 +395,7 @@ UpdateControls:
 
 // Creates a new node and adds it to the list (if not already in it)
 bool PageDataList::AddToList(char *page_name, uint8_t page_type, int page_flags) {
-  PageDataNode *new_node, *found_node;
+  PageDataNode *found_node;
   CWaitCursor wc;
 
   // If the node is already in the list, don't add it!
@@ -420,11 +416,7 @@ bool PageDataList::AddToList(char *page_name, uint8_t page_type, int page_flags)
   }
 
   // Allocate memory for the new node
-  new_node = new PageDataNode;
-  if (new_node == nullptr) {
-    mprintf(0, "ERROR: Could not allocate new PageDataNode!\n");
-    return FALSE;
-  }
+  auto new_node = std::make_unique<PageDataNode>();
 
   // Initialize the data
   strcpy(new_node->name, page_name);
@@ -437,7 +429,7 @@ bool PageDataList::AddToList(char *page_name, uint8_t page_type, int page_flags)
     new_node->tag_count++;
 
   // Add the new node to the list
-  AddToList(new_node);
+  AddToList(std::move(new_node));
 
   return TRUE;
 }
@@ -485,23 +477,25 @@ bool PageDataList::RemoveFromList(PageDataNode *goner_node) {
   if (goner_node == nullptr)
     return FALSE;
 
-  // Connect previous node to the next node
-  if (goner_node->prev != nullptr)
-    goner_node->prev->next = goner_node->next;
+  // The node is owned by the previous node's link, or by m_head if it is the head
+  std::unique_ptr<PageDataNode> &owner = (goner_node->prev != nullptr) ? goner_node->prev->next : m_head;
+  ASSERT(owner.get() == goner_node);
+  std::unique_ptr<PageDataNode> goner = std::move(owner);
 
   // Connect the next node to the previous node
-  if (goner_node->next != nullptr)
-    goner_node->next->prev = goner_node->prev;
-
-  // If node to be removed is the head, make the next node the head
-  if (goner_node == m_head)
-    m_head = goner_node->next;
+  if (goner->next != nullptr) {
+    goner->next->prev = goner->prev;
+  }
 
   // If node to be removed is the tail, make the previous node the tail
-  if (goner_node == m_tail)
-    m_tail = goner_node->prev;
+  if (goner_node == m_tail) {
+    m_tail = goner->prev;
+  }
 
-  delete goner_node;
+  // Connect previous node (or the head) to the next node
+  owner = std::move(goner->next);
+
+  goner.reset();
   m_size--;
 
   // Update the count
@@ -521,8 +515,6 @@ bool PageDataList::RemoveFromList(PageDataNode *goner_node) {
 bool PageDataList::LoadList(char *list_filename) {
   int i, list_size;
   CFILE *infile;
-  PageDataNode *new_node;
-
   CWaitCursor wc;
 
   // Wipe out the current data list
@@ -549,17 +541,13 @@ bool PageDataList::LoadList(char *list_filename) {
   for (i = 0; i < list_size; i++) {
 
     // Allocate memory for the new node
-    new_node = new PageDataNode;
-    if (new_node == nullptr) {
-      mprintf(0, "ERROR: Could not allocate new PageDataNode!\n");
-      return FALSE;
-    }
+    auto new_node = std::make_unique<PageDataNode>();
 
     // Read in the node's data
     new_node->Load(infile);
 
     // Add the new node to the list
-    AddToList(new_node);
+    AddToList(std::move(new_node));
     wc.Restore();
   }
 
@@ -623,10 +611,10 @@ bool PageDataList::SaveList(char *list_filename) {
   cf_WriteInt(outfile, m_size);
 
   // Write out each data node in the list
-  node = m_head;
+  node = m_head.get();
   for (i = 0; i < m_size; i++) {
     node->Save(outfile);
-    node = node->next;
+    node = node->next.get();
   }
 
   // Write out the number of level filenames
@@ -658,13 +646,13 @@ PageDataNode *PageDataList::FindNode(char *page_name, uint8_t page_type) {
   PageDataNode *node, *found_node;
 
   found_node = nullptr;
-  node = m_head;
+  node = m_head.get();
   while (node != nullptr) {
     if (node->type == page_type && stricmp(node->name, page_name) == 0) {
       found_node = node;
       break;
     }
-    node = node->next;
+    node = node->next.get();
   }
 
   return (found_node);
@@ -1427,8 +1415,9 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
   }
 
   // Mark all pages in data list as not having been written out
-  for (node = m_head; node != nullptr; node = node->next)
+  for (node = m_head.get(); node != nullptr; node = node->next.get()) {
     node->flags &= ~PAGE_WRITTEN_FLAG;
+  }
 
   OpenFilterLogFiles();
 
@@ -1590,7 +1579,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
   // Create message summary (if some pages weren't written)
   unwritten_page_found = FALSE;
   summary_msg = "The following pages were not written out (they were not found in the source table file):\n\n";
-  for (node = m_head; node != nullptr; node = node->next) {
+  for (node = m_head.get(); node != nullptr; node = node->next.get()) {
     if (node->flags & PAGE_WRITTEN_FLAG)
       continue;
 
@@ -1607,8 +1596,9 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
       m_Dlg->MessageBox(summary_msg, "Not All Pages Were Written");
 
   // Mark all pages in data list as not having been written out
-  for (node = m_head; node != nullptr; node = node->next)
+  for (node = m_head.get(); node != nullptr; node = node->next.get()) {
     node->flags &= ~PAGE_WRITTEN_FLAG;
+  }
 
   return TRUE; // successful!
 }
