@@ -1861,7 +1861,7 @@ int MissionGetKeywords(const std::filesystem::path &mission, char *keywords) {
 
   char msn_keywords[NUM_KEYWORDS][KEYWORD_LEN];
   char mod_keywords[NUM_KEYWORDS][KEYWORD_LEN];
-  char *parse_keys = mem_strdup(keywords);
+  std::unique_ptr<char[]> parse_keys = mem_strdup_unique(keywords);
   char seps[] = ",";
   int teams = MAX_NET_PLAYERS;
   int goals = 0;
@@ -1878,12 +1878,11 @@ int MissionGetKeywords(const std::filesystem::path &mission, char *keywords) {
     return -1;
   }
 
-  if (!*parse_keys) {
-    mem_free(parse_keys);
+  if (!parse_keys[0]) {
     return MAX_NET_PLAYERS;
   }
   // Break up the mod keywords into an array
-  char *tokp = strtok(parse_keys, seps);
+  char *tokp = strtok(parse_keys.get(), seps);
   if (tokp) {
     do {
       strcpy(mod_keywords[mod_key_count], tokp);
@@ -1910,7 +1909,6 @@ int MissionGetKeywords(const std::filesystem::path &mission, char *keywords) {
       goals = atoi(msn_keyword + GOALSTEXTLEN);
     }
   }
-  mem_free(parse_keys);
 
   // Loop through looking for matches
   for (auto &mod_keyword : mod_keywords) {
