@@ -500,8 +500,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
 
   rp->num_bbf_regions = 0;
 
-  rp->verts = mem_rmalloc<vector>(nverts);
-  ASSERT(rp->verts != nullptr);
+  rp->verts = std::make_unique<vector[]>(nverts);
 
   if (Katmai) {
     rp->verts4 = std::make_unique<vector4[]>(nverts);
@@ -596,7 +595,7 @@ void FreeRoom(room *rp) {
   // Free up mem alloced for this room
   rp->faces.reset();
   mem_free(rp->portals);
-  mem_free(rp->verts);
+  rp->verts.reset();
 
   rp->verts4.reset();
 
@@ -722,7 +721,7 @@ bool ComputeFaceNormal(room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
   bool ok;
 
-  ok = ComputeNormal(&fp->normal, fp->num_verts, fp->face_verts.get(), rp->verts);
+  ok = ComputeNormal(&fp->normal, fp->num_verts, fp->face_verts.get(), rp->verts.get());
 
   if (!ok) {
     LOG_WARNING.printf("Warning: Low precision normal for room:face = %d:%d", ROOMNUM(rp), facenum);
@@ -1038,7 +1037,7 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
   min_x = max_x = min_y = max_y = min_z = max_z = &rp->verts[0];
 
   // First, find the points with the min & max x,y, & z coordinates
-  for (i = 0, vp = rp->verts; i < rp->num_verts; i++, vp++) {
+  for (i = 0, vp = rp->verts.get(); i < rp->num_verts; i++, vp++) {
 
     if (vp->x() < min_x->x())
       min_x = vp;
@@ -1083,7 +1082,7 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
 
   // Go through all points and look for ones that don't fit
   rad2 = rad * rad;
-  for (i = 0, vp = rp->verts; i < rp->num_verts; i++, vp++) {
+  for (i = 0, vp = rp->verts.get(); i < rp->num_verts; i++, vp++) {
     vector delta;
     float t2;
 
