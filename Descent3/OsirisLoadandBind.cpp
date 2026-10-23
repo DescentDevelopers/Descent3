@@ -466,7 +466,7 @@ struct tRefObj {
   int objnum;
   int type, id;
   bool dummy;
-  tRefObj *next;
+  std::unique_ptr<tRefObj> next;
 };
 
 struct tOSIRISModule {
@@ -488,7 +488,7 @@ struct tOSIRISModule {
   int strings_loaded;
 
 #ifdef OSIRISDEBUG
-  tRefObj *RefRoot;
+  std::unique_ptr<tRefObj> RefRoot;
 #endif
 };
 
@@ -600,7 +600,7 @@ void Osiris_InitModuleLoader(void) {
 
 #ifdef OSIRISDEBUG
     ASSERT(OSIRIS_loaded_modules[i].RefRoot == nullptr);
-    OSIRIS_loaded_modules[i].RefRoot = nullptr;
+    OSIRIS_loaded_modules[i].RefRoot.reset();
 #endif
   }
 
@@ -717,7 +717,7 @@ void Osiris_FreeModule(int id) {
 
 #ifdef OSIRISDEBUG
     ASSERT(OSIRIS_loaded_modules[id].RefRoot == nullptr);
-    OSIRIS_loaded_modules[id].RefRoot = nullptr;
+    OSIRIS_loaded_modules[id].RefRoot.reset();
 #endif
 
     OSIRIS_loaded_modules[id].module_name.reset();
@@ -750,13 +750,13 @@ void Osiris_DumpLoadedObjects(char *file) {
   for (int j = 0; j < MAX_LOADED_MODULES; j++) {
     if (OSIRIS_loaded_modules[j].flags & OSIMF_INUSE && OSIRIS_loaded_modules[j].RefRoot != nullptr) {
       // uh oh! scripts were not completely decremented
-      tRefObj *node = OSIRIS_loaded_modules[j].RefRoot;
+      tRefObj *node = OSIRIS_loaded_modules[j].RefRoot.get();
       while (node) {
         snprintf(buffy, sizeof(buffy), "Module: \"%s\" Objnum: %d Type: %d%s Id:%d\n",
                  OSIRIS_loaded_modules[j].module_name.get(), node->objnum, node->type, (node->dummy) ? "(Dummy)" : "",
                  node->id);
         cf_WriteString(f, buffy);
-        node = node->next;
+        node = node->next.get();
       }
     }
   }
@@ -1039,7 +1039,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
 
 #ifdef OSIRISDEBUG
   ASSERT(osm->RefRoot == nullptr);
-  osm->RefRoot = nullptr;
+  osm->RefRoot.reset();
 #endif
 
   // make sure all of the functions imported ok
@@ -1228,7 +1228,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
 
 #ifdef OSIRISDEBUG
   ASSERT(osm->RefRoot == nullptr);
-  osm->RefRoot = nullptr;
+  osm->RefRoot.reset();
 #endif
 
   // make sure all of the functions imported ok
@@ -1366,7 +1366,7 @@ int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
 
 #ifdef OSIRISDEBUG
   ASSERT(osm->RefRoot == nullptr);
-  osm->RefRoot = nullptr;
+  osm->RefRoot.reset();
 #endif
 
   // make sure all of the functions imported ok
@@ -1532,19 +1532,20 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
           tRefObj *node;
           if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
-            node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
+            OSIRIS_loaded_modules[dll_id].RefRoot = std::make_unique<tRefObj>();
+            node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
           } else {
-            node = OSIRIS_loaded_modules[dll_id].RefRoot;
-            while (node->next)
-              node = node->next;
-            node->next = mem_rmalloc<tRefObj>();
-            node = node->next;
+            node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
+            while (node->next) {
+              node = node->next.get();
+            }
+            node->next = std::make_unique<tRefObj>();
+            node = node->next.get();
           }
           node->objnum = OBJNUM(obj);
           node->id = obj->id;
           node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
           node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-          node->next = nullptr;
 #endif
         }
       }
@@ -1596,19 +1597,20 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
             tRefObj *node;
             if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
+              OSIRIS_loaded_modules[dll_id].RefRoot = std::make_unique<tRefObj>();
+              node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
             } else {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot;
-              while (node->next)
-                node = node->next;
-              node->next = mem_rmalloc<tRefObj>();
-              node = node->next;
+              node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
+              while (node->next) {
+                node = node->next.get();
+              }
+              node->next = std::make_unique<tRefObj>();
+              node = node->next.get();
             }
             node->objnum = OBJNUM(obj);
             node->id = obj->id;
             node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
             node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-            node->next = nullptr;
 #endif
           }
         }
@@ -1653,19 +1655,20 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
               tRefObj *node;
               if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
-                node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
+                OSIRIS_loaded_modules[dll_id].RefRoot = std::make_unique<tRefObj>();
+                node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
               } else {
-                node = OSIRIS_loaded_modules[dll_id].RefRoot;
-                while (node->next)
-                  node = node->next;
-                node->next = mem_rmalloc<tRefObj>();
-                node = node->next;
+                node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
+                while (node->next) {
+                  node = node->next.get();
+                }
+                node->next = std::make_unique<tRefObj>();
+                node = node->next.get();
               }
               node->objnum = OBJNUM(obj);
               node->id = obj->id;
               node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
               node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-              node->next = nullptr;
 #endif
 
               if (iscustomonly) {
@@ -1723,19 +1726,20 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
             tRefObj *node;
             if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
+              OSIRIS_loaded_modules[dll_id].RefRoot = std::make_unique<tRefObj>();
+              node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
             } else {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot;
-              while (node->next)
-                node = node->next;
-              node->next = mem_rmalloc<tRefObj>();
-              node = node->next;
+              node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
+              while (node->next) {
+                node = node->next.get();
+              }
+              node->next = std::make_unique<tRefObj>();
+              node = node->next.get();
             }
             node->objnum = OBJNUM(obj);
             node->id = obj->id;
             node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
             node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-            node->next = nullptr;
 #endif
           }
         }
@@ -1783,22 +1787,20 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->default_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
-        // free this node
-        if (prev)
-          prev->next = node->next;
-        else {
-          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot);
-          OSIRIS_loaded_modules[dll_id].RefRoot = node->next;
+        // free this node (unlinking it destroys it)
+        if (prev) {
+          prev->next = std::move(node->next);
+        } else {
+          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot.get());
+          OSIRIS_loaded_modules[dll_id].RefRoot = std::move(node->next);
         }
-
-        mem_free(node);
         break;
       }
       prev = node;
-      node = node->next;
+      node = node->next.get();
     }
     ASSERT(node); // make sure we found the node
 #endif
@@ -1823,22 +1825,20 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->level_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
-        // free this node
-        if (prev)
-          prev->next = node->next;
-        else {
-          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot);
-          OSIRIS_loaded_modules[dll_id].RefRoot = node->next;
+        // free this node (unlinking it destroys it)
+        if (prev) {
+          prev->next = std::move(node->next);
+        } else {
+          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot.get());
+          OSIRIS_loaded_modules[dll_id].RefRoot = std::move(node->next);
         }
-
-        mem_free(node);
         break;
       }
       prev = node;
-      node = node->next;
+      node = node->next.get();
     }
     ASSERT(node); // make sure we found the node
 #endif
@@ -1860,22 +1860,20 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->custom_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
-        // free this node
-        if (prev)
-          prev->next = node->next;
-        else {
-          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot);
-          OSIRIS_loaded_modules[dll_id].RefRoot = node->next;
+        // free this node (unlinking it destroys it)
+        if (prev) {
+          prev->next = std::move(node->next);
+        } else {
+          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot.get());
+          OSIRIS_loaded_modules[dll_id].RefRoot = std::move(node->next);
         }
-
-        mem_free(node);
         break;
       }
       prev = node;
-      node = node->next;
+      node = node->next.get();
     }
     ASSERT(node); // make sure we found the node
 #endif
@@ -1897,22 +1895,20 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->mission_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
-        // free this node
-        if (prev)
-          prev->next = node->next;
-        else {
-          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot);
-          OSIRIS_loaded_modules[dll_id].RefRoot = node->next;
+        // free this node (unlinking it destroys it)
+        if (prev) {
+          prev->next = std::move(node->next);
+        } else {
+          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot.get());
+          OSIRIS_loaded_modules[dll_id].RefRoot = std::move(node->next);
         }
-
-        mem_free(node);
         break;
       }
       prev = node;
-      node = node->next;
+      node = node->next.get();
     }
     ASSERT(node); // make sure we found the node
 #endif
