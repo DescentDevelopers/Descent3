@@ -612,25 +612,23 @@ bool InputObjectName(char *buf, int len, char *title, char *prompt, CWnd *wnd) {
   if (len > (PAGENAME_LEN - 1))
     len = PAGENAME_LEN - 1;
 
-  char *tempbuf = mem_rmalloc<char>(len);
+  auto tempbuf = std::make_unique<char[]>(len);
 
-  strncpy(tempbuf, buf, len - 1);
+  strncpy(tempbuf.get(), buf, len - 1);
   tempbuf[len - 1] = '\0';
 
 try_again:
 
-  if (!InputString(tempbuf, len, title, prompt, wnd)) {
-    mem_free(tempbuf);
+  if (!InputString(tempbuf.get(), len, title, prompt, wnd)) {
     return 0;
   }
 
-  if (FindObjectIDName(tempbuf) != -1) {
+  if (FindObjectIDName(tempbuf.get()) != -1) {
     OutrageMessageBox("The name you specified is already in use.  Enter another name.");
     goto try_again;
   }
 
-  strcpy(buf, tempbuf);
-  mem_free(tempbuf);
+  strcpy(buf, tempbuf.get());
 
   return 1;
 }

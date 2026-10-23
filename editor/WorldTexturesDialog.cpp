@@ -1996,24 +1996,22 @@ void CWorldTexturesDialog::OnPingPong() {
 // Returns true if got new name, false if cancelled.
 // the data in buf not changed if cancel is pressed
 bool InputTextureName(char *buf, int len, char *title, char *prompt, CWnd *wnd) {
-  char *tempbuf = mem_rmalloc<char>(len);
+  auto tempbuf = std::make_unique<char[]>(len);
 
-  strcpy(tempbuf, buf);
+  strcpy(tempbuf.get(), buf);
 
 try_again:
 
-  if (!InputString(tempbuf, len, title, prompt, wnd)) {
-    mem_free(tempbuf);
+  if (!InputString(tempbuf.get(), len, title, prompt, wnd)) {
     return 0;
   }
 
-  if (FindTextureName(tempbuf) != -1) {
+  if (FindTextureName(tempbuf.get()) != -1) {
     OutrageMessageBox("The name you specified is already in use.  Enter another name.");
     goto try_again;
   }
 
-  strcpy(buf, tempbuf);
-  mem_free(tempbuf);
+  strcpy(buf, tempbuf.get());
 
   return 1;
 }
