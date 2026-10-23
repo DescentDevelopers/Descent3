@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <memory>
 #include <optional>
 
 // TODO: Use SDL_FunctionPointer properly instead
@@ -197,10 +198,10 @@ extern int gpu_last_uploaded;
 extern float gpu_Alpha_factor;
 extern float gpu_Alpha_multiplier;
 
-uint16_t *OpenGL_bitmap_remap = nullptr;
-uint16_t *OpenGL_lightmap_remap = nullptr;
-uint8_t *OpenGL_bitmap_states = nullptr;
-uint8_t *OpenGL_lightmap_states = nullptr;
+static std::unique_ptr<uint16_t[]> OpenGL_bitmap_remap;
+static std::unique_ptr<uint16_t[]> OpenGL_lightmap_remap;
+static std::unique_ptr<uint8_t[]> OpenGL_bitmap_states;
+static std::unique_ptr<uint8_t[]> OpenGL_lightmap_states;
 
 uint32_t *opengl_Upload_data = nullptr;
 uint32_t *opengl_Translate_table = nullptr;
@@ -270,15 +271,11 @@ int opengl_MakeTextureObject(int tn) {
 
 int opengl_InitCache() {
 
-  OpenGL_bitmap_remap = mem_rmalloc<uint16_t>(MAX_BITMAPS);
-  ASSERT(OpenGL_bitmap_remap);
-  OpenGL_lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
-  ASSERT(OpenGL_lightmap_remap);
+  OpenGL_bitmap_remap = std::make_unique<uint16_t[]>(MAX_BITMAPS);
+  OpenGL_lightmap_remap = std::make_unique<uint16_t[]>(MAX_LIGHTMAPS);
 
-  OpenGL_bitmap_states = mem_rmalloc<uint8_t>(MAX_BITMAPS);
-  ASSERT(OpenGL_bitmap_states);
-  OpenGL_lightmap_states = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
-  ASSERT(OpenGL_lightmap_states);
+  OpenGL_bitmap_states = std::make_unique<uint8_t[]>(MAX_BITMAPS);
+  OpenGL_lightmap_states = std::make_unique<uint8_t[]>(MAX_LIGHTMAPS);
 
   // Setup textures and cacheing
   int i;
@@ -751,10 +748,10 @@ void opengl_Close(const bool just_resizing) {
   }
 
   if (OpenGL_cache_initted) {
-    mem_free(OpenGL_lightmap_remap);
-    mem_free(OpenGL_bitmap_remap);
-    mem_free(OpenGL_lightmap_states);
-    mem_free(OpenGL_bitmap_states);
+    OpenGL_lightmap_remap.reset();
+    OpenGL_bitmap_remap.reset();
+    OpenGL_lightmap_states.reset();
+    OpenGL_bitmap_states.reset();
     OpenGL_cache_initted = 0;
   }
 
@@ -1168,10 +1165,10 @@ bool rend_InitWindowMode() {
 // Resets the texture cache
 void opengl_ResetCache() {
   if (OpenGL_cache_initted) {
-    mem_free(OpenGL_lightmap_remap);
-    mem_free(OpenGL_bitmap_remap);
-    mem_free(OpenGL_lightmap_states);
-    mem_free(OpenGL_bitmap_states);
+    OpenGL_lightmap_remap.reset();
+    OpenGL_bitmap_remap.reset();
+    OpenGL_lightmap_states.reset();
+    OpenGL_bitmap_states.reset();
     OpenGL_cache_initted = 0;
   }
 
