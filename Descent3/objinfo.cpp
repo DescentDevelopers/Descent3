@@ -158,7 +158,7 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
 
       // Object_info[i].script_name[0] = 0;
       Object_info[i].icon_name[0] = 0;
-      Object_info[i].description = nullptr;
+      Object_info[i].description.reset();
       Object_info[i].flags |= OIF_INVEN_SELECTABLE;
 
       // init spew types
@@ -189,17 +189,9 @@ void FreeObjectID(int n) {
   Object_info[n].icon_name[0] = 0;
   Object_info[n].script_name_override[0] = 0;
   Object_info[n].module_name[0] = 0;
-  if (Object_info[n].description) {
-    mem_free(Object_info[n].description);
-    Object_info[n].description = nullptr;
-  }
+  Object_info[n].description.reset();
   Object_info[n].anim.reset();
   Object_info[n].ai_info.reset();
-  if (Object_info[n].description) // DAJ LEAK FIX
-  {
-    mem_free(Object_info[n].description);
-    Object_info[n].description = nullptr;
-  }
   Object_info[n].static_wb.reset();
 }
 

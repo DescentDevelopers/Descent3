@@ -477,7 +477,7 @@ struct object_info {
 
   int ammo_count; // if a powerup, how much ammo it has
 
-  char *description;                   // used for inventory
+  std::unique_ptr<char[]> description; // used for inventory
   char icon_name[MAX_INVEN_ICON_SIZE]; // used for inventory
 
   int16_t sounds[MAX_OBJ_SOUNDS]; // list of sound handles

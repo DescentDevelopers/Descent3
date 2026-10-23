@@ -175,9 +175,7 @@ bool IsFileInGenericPage(const char *filename) {
           return true;
       }
 
-      if (genericpage.objinfo_struct.description) {
-        mem_free(genericpage.objinfo_struct.description);
-      }
+      genericpage.objinfo_struct.description.reset();
     }
   }
   return false;

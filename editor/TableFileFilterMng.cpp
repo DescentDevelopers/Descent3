@@ -1483,10 +1483,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
       } else {
         WriteToRemovedLog(genericpage.objinfo_struct.name, pagetype);
       }
-      if (genericpage.objinfo_struct.description != nullptr) {
-        mem_free(genericpage.objinfo_struct.description);
-        genericpage.objinfo_struct.description = nullptr;
-      }
+      genericpage.objinfo_struct.description.reset();
       break;
     case PAGETYPE_GAMEFILE:
       // Read it in, write it out.

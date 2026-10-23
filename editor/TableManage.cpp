@@ -52,10 +52,7 @@ GenericPageNode::GenericPageNode() {
 
 GenericPageNode::~GenericPageNode() {
   // Free up the object description memory
-  if (genericpage.objinfo_struct.description != nullptr) {
-    mem_free(genericpage.objinfo_struct.description);
-    genericpage.objinfo_struct.description = nullptr;
-  }
+  genericpage.objinfo_struct.description.reset();
 }
 
 bool GenericPageNode::operator<(const GenericPageNode &node) {
@@ -264,10 +261,7 @@ bool GenericPageList::SaveTable(char *table_filename) {
     }
 
     // Free up the description memory for the temp page
-    if (genericpage.objinfo_struct.description != nullptr) {
-      mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = nullptr;
-    }
+    genericpage.objinfo_struct.description.reset();
 
     page_id++;
   }
@@ -367,7 +361,7 @@ void GenericPageList::DisplaySelected(CComboBox *list, CEdit *description) {
 
   list->SetCurSel(m_SelectedIndex);
 
-  text = m_SelectedNode->genericpage.objinfo_struct.description;
+  text = m_SelectedNode->genericpage.objinfo_struct.description.get();
   if (text == nullptr)
     description->SetWindowText(NO_DESCRIPTION_STRING);
   else
@@ -376,45 +370,37 @@ void GenericPageList::DisplaySelected(CComboBox *list, CEdit *description) {
 
 void GenericPageList::SaveSelected(CEdit *description) {
   CString new_descrip;
-  char *new_text;
   char *old_text;
 
   if (m_SelectedNode == nullptr)
     return;
 
   // Get pointer to old text
-  old_text = m_SelectedNode->genericpage.objinfo_struct.description;
+  old_text = m_SelectedNode->genericpage.objinfo_struct.description.get();
 
   // Get Copy of new Description text
   description->GetWindowText(new_descrip);
-  new_text = mem_strdup(new_descrip.GetBuffer(0));
-  ASSERT(new_text); // out of memory!
+  std::unique_ptr<char[]> new_text = mem_strdup_unique(new_descrip.GetBuffer(0));
 
   // Check if new description is empty, if it is, make it NULL
-  if (strlen(new_text) == 0 || stricmp(new_text, NO_DESCRIPTION_STRING) == 0) {
-    mem_free(new_text);
-    new_text = nullptr;
+  if (strlen(new_text.get()) == 0 || stricmp(new_text.get(), NO_DESCRIPTION_STRING) == 0) {
+    new_text.reset();
   }
 
   // If both new and old are empty, get outta here
   if (old_text == nullptr && new_text == nullptr) {
-    mem_free(new_text);
     return;
   }
 
   // If both have descriptions and they match, get outta here
   if (old_text != nullptr && new_text != nullptr) {
-    if (strcmp(old_text, new_text) == 0) {
-      mem_free(new_text);
+    if (strcmp(old_text, new_text.get()) == 0) {
       return;
     }
   }
 
-  // Free up the old text memory, and assign it to the new text
-  if (old_text != nullptr)
-    mem_free(old_text);
-
-  m_SelectedNode->genericpage.objinfo_struct.description = new_text;
+  // Replace the old text (freeing it) with the new text
+  m_SelectedNode->genericpage.objinfo_struct.description = std::move(new_text);
   m_TableModified = TRUE;
 
   return;

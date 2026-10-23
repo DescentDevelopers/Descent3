@@ -1012,10 +1012,7 @@ void mng_ReadDummyPage(CFILE *infile, uint8_t pagetype) {
     break;
   case PAGETYPE_GENERIC:
     mng_ReadNewGenericPage(infile, &genericpage);
-    if (genericpage.objinfo_struct.description != nullptr) {
-      mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = nullptr;
-    }
+    genericpage.objinfo_struct.description.reset();
     break;
   case PAGETYPE_GAMEFILE:
     mng_ReadNewGamefilePage(infile, &gamefilepage);
@@ -1057,10 +1054,7 @@ void mng_ReadWriteDummyPage(CFILE *infile, CFILE *outfile, uint8_t pagetype) {
     // Read it in, write it out.
     mng_ReadNewGenericPage(infile, &genericpage);
     mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != nullptr) {
-      mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = nullptr;
-    }
+    genericpage.objinfo_struct.description.reset();
     break;
   case PAGETYPE_GAMEFILE:
     // Read it in, write it out.
@@ -1710,10 +1704,7 @@ void ReorderPages(int local) {
     mng_ReadNewGenericPage(infile, &genericpage);
     if (genericpage.objinfo_struct.type == OBJ_POWERUP)
       mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != nullptr) {
-      mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = nullptr;
-    }
+    genericpage.objinfo_struct.description.reset();
   }
   // Do standard generics
   done = 0;
@@ -1733,10 +1724,7 @@ void ReorderPages(int local) {
     mng_ReadNewGenericPage(infile, &genericpage);
     if (genericpage.objinfo_struct.type != OBJ_POWERUP)
       mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != nullptr) {
-      mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = nullptr;
-    }
+    genericpage.objinfo_struct.description.reset();
   }
   // Do countermeasure weapons
   done = 0;
@@ -2116,10 +2104,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
       mng_ReadNewGenericPage(infile, &genericpage);
       if (!stricmp(srcname, genericpage.objinfo_struct.name)) {
         // This is the page we want to replace, so write the new one out.
-        if (genericpage.objinfo_struct.description != nullptr) {
-          mem_free(genericpage.objinfo_struct.description);
-          genericpage.objinfo_struct.description = nullptr;
-        }
+        genericpage.objinfo_struct.description.reset();
         genericpage.objinfo_struct.icon_name[0] = '\0';
 
         mng_AssignAndWritePage(handle, pagetype, outfile);
@@ -2266,10 +2251,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
         mng_WriteNewGenericPage(outfile, &genericpage);
       else
         deleted = 1; // Don't write out the one we want to delete
-      if (genericpage.objinfo_struct.description != nullptr) {
-        mem_free(genericpage.objinfo_struct.description);
-        genericpage.objinfo_struct.description = nullptr;
-      }
+      genericpage.objinfo_struct.description.reset();
       genericpage.objinfo_struct.icon_name[0] = '\0';
       break;
     }
