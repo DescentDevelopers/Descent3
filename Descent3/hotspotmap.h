@@ -49,6 +49,8 @@
 #define __HOTSPOTMAP_H_
 
 #include <filesystem>
+#include <memory>
+
 #include "grdefs.h"
 
 // for the next two defines this is how they work when converting the alpha values into hotspots/windows
@@ -71,13 +73,13 @@ struct scanline {
 struct hotspot {
   int starting_y;
   int scanlines;
-  scanline *x;
+  std::unique_ptr<scanline[]> x;
 };
 
 // structure for all hotspots
 struct hotspotmap_t {
   char num_of_hotspots;
-  hotspot *hs;
+  std::unique_ptr<hotspot[]> hs;
 };
 
 // structure for 1 window

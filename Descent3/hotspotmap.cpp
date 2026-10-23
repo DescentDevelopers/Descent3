@@ -176,8 +176,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
   if (!num_hs)
     return -1;
 
-  hsmap->hs = mem_rmalloc<hotspot>(num_hs);
-  ASSERT(hsmap->hs);
+  hsmap->hs = std::make_unique<hotspot[]>(num_hs);
   for (count = 0; count < num_hs; count++) {
     if (whats_there[count] == HOTSPOT_THERE) {
       hsmap->hs[count].starting_y = MAX_MAP_HEIGHT;
@@ -221,9 +220,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
       // fill in the struct with the start and end values for each scanline
       hsmap->hs[count].scanlines = sl_count;
       if (sl_count) {
-        hsmap->hs[count].x = mem_rmalloc<scanline>(sl_count);
-        ASSERT(hsmap->hs[count].x);
-        memset(hsmap->hs[count].x, 0, sizeof(scanline) * sl_count);
+        hsmap->hs[count].x = std::make_unique<scanline[]>(sl_count);
         y = hsmap->hs[count].starting_y;
         for (curr_sl = 0; curr_sl < sl_count; curr_sl++) {
           hsmap->hs[count].x[curr_sl].start = sl_x[y].start;
@@ -236,7 +233,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
     } else {
       hsmap->hs[count].scanlines = 0;
       hsmap->hs[count].starting_y = 0;
-      hsmap->hs[count].x = nullptr;
+      hsmap->hs[count].x.reset();
     } // end ifelse (hotspot_there)
   }   // end for (count)
 
@@ -246,10 +243,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
       LOG_DEBUG.printf("Notice: HotSpot %d is empty", count);
       hsmap->hs[count].scanlines = 0;
       hsmap->hs[count].starting_y = 0;
-      if (hsmap->hs[count].x) {
-        mem_free(hsmap->hs[count].x);
-      }
-      hsmap->hs[count].x = nullptr;
+      hsmap->hs[count].x.reset();
     }
   }
 
@@ -682,20 +676,18 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
 
   int curr_hs, curr_sl, num_sl;
 
-  hsmap->hs = mem_rmalloc<hotspot>(hsmap->num_of_hotspots);
-  memset(hsmap->hs, 0, sizeof(hotspot) * hsmap->num_of_hotspots);
+  hsmap->hs = std::make_unique<hotspot[]>(hsmap->num_of_hotspots);
   for (curr_hs = 0; curr_hs < hsmap->num_of_hotspots; curr_hs++) {
     hsmap->hs[curr_hs].starting_y = cf_ReadInt(infile);
     num_sl = hsmap->hs[curr_hs].scanlines = cf_ReadInt(infile);
     if (num_sl) {
-      hsmap->hs[curr_hs].x = mem_rmalloc<scanline>(hsmap->hs[curr_hs].scanlines);
-      memset(hsmap->hs[curr_hs].x, 0, sizeof(scanline) * hsmap->hs[curr_hs].scanlines);
+      hsmap->hs[curr_hs].x = std::make_unique<scanline[]>(hsmap->hs[curr_hs].scanlines);
       for (curr_sl = 0; curr_sl < hsmap->hs[curr_hs].scanlines; curr_sl++) {
         hsmap->hs[curr_hs].x[curr_sl].start = cf_ReadInt(infile);
         hsmap->hs[curr_hs].x[curr_sl].end = cf_ReadInt(infile);
       }
     } else {
-      hsmap->hs[curr_hs].x = nullptr;
+      hsmap->hs[curr_hs].x.reset();
     }
   }
 
@@ -827,25 +819,8 @@ void FreeHotSpotMapInternals(hotspotmap_t *hsmap) {
 
   ASSERT(hsmap);
 
-  if (!hsmap->hs)
-    return;
-
-  int curr_hs;
-  int num_hs;
-
-  num_hs = hsmap->num_of_hotspots;
-  for (curr_hs = 0; curr_hs < num_hs; curr_hs++) {
-    if (hsmap->hs[curr_hs].scanlines) {
-      if (hsmap->hs[curr_hs].x) {
-        mem_free(hsmap->hs[curr_hs].x);
-        hsmap->hs[curr_hs].x = nullptr;
-      }
-    }
-  }
-  if (hsmap->hs) {
-    mem_free(hsmap->hs);
-    hsmap->hs = nullptr;
-  }
+  // each hotspot frees its own scanlines
+  hsmap->hs.reset();
 }
 
 // This function (given a filename) loads a TGA file, extracts a hotspot map, and saves the hotspot map
@@ -862,7 +837,7 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
 
   wndmap.num_of_windows = 0;
   wndmap.wm = nullptr;
-  hsmap.hs = nullptr;
+  hsmap.hs.reset();
   hsmap.num_of_hotspots = 0;
 
   for (index = (signed)strlen(filename); index >= 0; index--) {
