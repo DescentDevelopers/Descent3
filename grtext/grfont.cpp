@@ -473,16 +473,16 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
 
   //	Read in all widths
   if (ft_flags & FT_PROPORTIONAL) {
-    ft->ch_widths = mem_rmalloc<uint8_t>(num_char);
+    ft->ch_widths = std::make_unique<uint8_t[]>(num_char);
     for (i = 0; i < num_char; i++)
       ft->ch_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
   } else {
-    ft->ch_widths = nullptr;
+    ft->ch_widths.reset();
   }
 
   if (ft_flags & FT_KERNED) {
     int n_pairs = (int)READ_FONT_SHORT(ff);
-    ft->kern_data = mem_rmalloc<uint8_t>(sizeof(uint8_t) * 3 * (n_pairs + 1));
+    ft->kern_data = std::make_unique<uint8_t[]>(3 * (n_pairs + 1));
     for (i = 0; i < n_pairs; i++) {
       ft->kern_data[i * 3] = READ_FONT_BYTE(ff);
       ft->kern_data[i * 3 + 1] = READ_FONT_BYTE(ff);
@@ -492,7 +492,7 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
     ft->kern_data[i * 3 + 1] = 255;
     ft->kern_data[i * 3 + 2] = 0;
   } else {
-    ft->kern_data = nullptr;
+    ft->kern_data.reset();
   }
 
   ft->ch_height = (uint8_t)ft_height;
@@ -514,14 +514,8 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
 
 // frees a font template
 void grfont_FreeTemplate(tFontTemplate *ft) {
-  if (ft->kern_data) {
-    mem_free(ft->kern_data);
-    ft->kern_data = nullptr;
-  }
-  if (ft->ch_widths) {
-    mem_free(ft->ch_widths);
-    ft->ch_widths = nullptr;
-  }
+  ft->kern_data.reset();
+  ft->ch_widths.reset();
 }
 
 // MTS: unused?
@@ -611,8 +605,8 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   // write out the template's widths and kerning instead of the ones read from the file.
   fnt.kern_data.reset();
   fnt.char_widths.reset();
-  const uint8_t *kern_data = ft->kern_data;
-  const uint8_t *char_widths = ft->ch_widths;
+  const uint8_t *kern_data = ft->kern_data.get();
+  const uint8_t *char_widths = ft->ch_widths.get();
 
   // write out font.
   ffout = OPEN_FONT2(pathname);
@@ -1104,7 +1098,7 @@ int grfont_GetKernedSpacing(int font, int ch1, int ch2) {
 //	returns a character's width
 int grfont_GetKernedSpacingTemp(const tFontTemplate *ft, int ch1, int ch2) {
   if (ft->kern_data) {
-    uint8_t *kern = ft->kern_data;
+    uint8_t *kern = ft->kern_data.get();
     while (kern[0] != 255) {
       if (ch1 == kern[0] && ch2 == kern[1]) {
         return (int)((int8_t)kern[2]);

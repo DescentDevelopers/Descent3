@@ -200,8 +200,8 @@ void grtext_Render();
 // we can load a font template into this structure.  call grfont_FreeTemplate(tFontTemplate) to free memory here.
 struct tFontTemplate {
   uint16_t min_ascii, max_ascii;
-  uint8_t *ch_widths;
-  uint8_t *kern_data;
+  std::unique_ptr<uint8_t[]> ch_widths;
+  std::unique_ptr<uint8_t[]> kern_data;
   uint8_t ch_height;
   uint8_t ch_maxwidth;  // max width of character in font.
   bool proportional;  // is this font proportional? if so use array of widths, else use maxwidth
