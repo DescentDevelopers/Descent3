@@ -1228,7 +1228,7 @@ void FreeMission() {
   // Tell Osiris to shutdown the Osiris Mission Memory System, freeing all memory
   Osiris_CloseOMMS();
   // free up any data allocated per level node.
-  for (auto level : Current_mission.levels) {
+  for (auto &level : Current_mission.levels) {
     if (level.filename)
       mem_free(level.filename);
     if (level.briefname)
