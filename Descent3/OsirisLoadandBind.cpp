@@ -3470,7 +3470,7 @@ void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid) {
   if (root->root->unique_id == uid) {
     // the root node matches
     node_to_free = root->root;
-    root->root = nullptr;
+    root->root = root->root->next;
     goto free_mem;
   }
 
