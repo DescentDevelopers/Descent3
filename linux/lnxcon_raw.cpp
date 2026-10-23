@@ -44,12 +44,13 @@
 #include <cstring>
 #include <cstdio>
 #include <cctype>
+#include <memory>
 
 #include "AppConsole.h"
 #include "ddio_common.h"
 
-static char *Con_raw_read_buf = nullptr; // The next buffer of text from user input
-static char *Con_raw_inp_buf = nullptr;
+static std::unique_ptr<char[]> Con_raw_read_buf; // The next buffer of text from user input
+static std::unique_ptr<char[]> Con_raw_inp_buf;
 static int8_t Con_raw_inp_pos = 0; // Currently updating input buffer of text (and its position)
 static char Con_raw_last_command[CON_MAX_STRINGLEN]; // The last command entered by the user
 static int Con_raw_cols = 0, Con_raw_rows = 0;       // The size of the main window (input window is (1 row, Con_cols))
@@ -65,7 +66,7 @@ bool con_raw_Input(char *buf, int buflen) {
 
   if (Con_raw_read_buf[0]) {
     // we have a new buffer of input...send it away
-    strncpy(buf, Con_raw_read_buf, buflen - 1);
+    strncpy(buf, Con_raw_read_buf.get(), buflen - 1);
     buf[buflen - 1] = 0;
     Con_raw_read_buf[0] = 0;
     return true;
@@ -101,23 +102,23 @@ void con_raw_Defer() {
     case KEY_ENTER: {
       // Go to the beginning of the next line.
       // The bottom line wraps around to the top.
-      strcpy(Con_raw_read_buf, Con_raw_inp_buf);
-      strcat(Con_raw_inp_buf, "\n");
+      strcpy(Con_raw_read_buf.get(), Con_raw_inp_buf.get());
+      strcat(Con_raw_inp_buf.get(), "\n");
 
       // go to the next line
       con_raw_Puts(-1, "\n");
 
       // only save the buffer if there is text in the buffer
-      char *p = Con_raw_read_buf;
+      char *p = Con_raw_read_buf.get();
       while (*p) {
         if (isalnum(*p)) {
-          strcpy(Con_raw_last_command, Con_raw_read_buf);
+          strcpy(Con_raw_last_command, Con_raw_read_buf.get());
           break;
         }
         p++;
       }
 
-      memset(Con_raw_inp_buf, 0, Con_raw_cols + 4);
+      memset(Con_raw_inp_buf.get(), 0, Con_raw_cols + 4);
       Con_raw_inp_pos = 0;
     } break;
     default:
@@ -144,14 +145,8 @@ bool con_raw_Create() {
   Con_raw_rows = 24; // one less, since the bottom window takes up one row
 
   // allocate any memory needed for buffers
-  Con_raw_inp_buf = static_cast<char *>(malloc(Con_raw_cols + 4));
-  Con_raw_read_buf = static_cast<char *>(malloc(Con_raw_cols + 4));
-  if (!Con_raw_inp_buf || !Con_raw_read_buf) {
-    // error allocating memory
-    return false;
-  }
-  memset(Con_raw_inp_buf, 0, Con_raw_cols + 4);
-  memset(Con_raw_read_buf, 0, Con_raw_cols + 4);
+  Con_raw_inp_buf = std::make_unique<char[]>(Con_raw_cols + 4);
+  Con_raw_read_buf = std::make_unique<char[]>(Con_raw_cols + 4);
   Con_raw_last_command[0] = '\0';
 
   Con_raw_inp_pos = 0;
@@ -161,15 +156,8 @@ bool con_raw_Create() {
 
 void con_raw_Destroy() {
   // free any allocated memory
-  if (Con_raw_inp_buf) {
-    free(Con_raw_inp_buf);
-    Con_raw_inp_buf = nullptr;
-  }
-
-  if (Con_raw_read_buf) {
-    free(Con_raw_read_buf);
-    Con_raw_read_buf = nullptr;
-  }
+  Con_raw_inp_buf.reset();
+  Con_raw_read_buf.reset();
   Con_raw_cols = Con_raw_rows = 0;
 }
 
