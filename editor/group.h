@@ -68,6 +68,8 @@
 #ifndef _GROUP_H
 #define _GROUP_H
 
+#include <memory>
+
 // Define room, so we don't have to include room.h
 struct room;
 struct object;
@@ -75,18 +77,18 @@ struct trigger;
 
 // A group.  Used for cut, paste, copy, etc.
 struct group {
-  int nrooms = 0;              // number of rooms in this group
-  room *rooms = nullptr;       // pointer to list of rooms
-  int attachroom = 0;          // which room is attached when pasting
-  int attachface = 0;          // which face is attached when pasting
-  int nobjects = 0;            // how many objects
-  int ndoors = 0;              // how many doors
-  object *objects = nullptr;   // pointer to list of objects
-  int ntriggers = 0;           // how many triggers
-  trigger *triggers = nullptr; // pointer to list of triggers
+  int nrooms = 0;                      // number of rooms in this group
+  std::unique_ptr<room[]> rooms;       // list of rooms
+  int attachroom = 0;                  // which room is attached when pasting
+  int attachface = 0;                  // which face is attached when pasting
+  int nobjects = 0;                    // how many objects
+  int ndoors = 0;                      // how many doors
+  std::unique_ptr<object[]> objects;   // list of objects
+  int ntriggers = 0;                   // how many triggers
+  std::unique_ptr<trigger[]> triggers; // list of triggers
 
   group() = default;
-  // Frees the rooms (FreeRoom) and the object & trigger lists
+  // Frees the rooms' contents (FreeRoom); the arrays themselves are freed by their owners
   ~group();
   group(const group &) = delete;
   group &operator=(const group &) = delete;
