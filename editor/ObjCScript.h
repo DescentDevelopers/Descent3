@@ -119,21 +119,13 @@ struct tScriptName {
 
   //	parameters
   int nparms;
-  char *paramtypes[MAX_SCRPARAMS];
-  char *parameters[MAX_SCRPARAMS];
+  std::unique_ptr<char[]> paramtypes[MAX_SCRPARAMS];
+  std::unique_ptr<char[]> parameters[MAX_SCRPARAMS];
 
   tScriptName() {
-    for (int i = 0; i < MAX_SCRPARAMS; i++) {
-      parameters[i] = nullptr;
-      paramtypes[i] = nullptr;
-    }
     used = false;
     nparms = 0;
   }
-  ~tScriptName() {
-    free_parameters();
-    used = false;
-  };
 
   void add_parameter(const char *type, const char *parm);
   void free_parameters();

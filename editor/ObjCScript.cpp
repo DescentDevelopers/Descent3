@@ -721,23 +721,15 @@ int FindFreeScriptSlot() {
 void tScriptName::add_parameter(const char *type, const char *parm) {
   ASSERT(nparms < MAX_SCRPARAMS);
 
-  paramtypes[nparms] = new char[strlen(type) + 1];
-  parameters[nparms] = new char[strlen(parm) + 1];
-  strcpy(parameters[nparms], parm);
-  strcpy(paramtypes[nparms], type);
+  paramtypes[nparms] = mem_strdup_unique(type);
+  parameters[nparms] = mem_strdup_unique(parm);
   nparms++;
 }
 
 void tScriptName::free_parameters() {
   for (int i = 0; i < nparms; i++) {
-    if (parameters[i]) {
-      delete[] (parameters[i]);
-      parameters[i] = nullptr;
-    }
-    if (paramtypes[i]) {
-      delete[] (paramtypes[i]);
-      paramtypes[i] = nullptr;
-    }
+    parameters[i].reset();
+    paramtypes[i].reset();
   }
   nparms = 0;
 }
