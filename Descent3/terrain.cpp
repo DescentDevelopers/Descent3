@@ -814,7 +814,7 @@ int LoadPCXTerrain(char *filename) {
   int16_t xmin, ymin, xmax, ymax;
   int width, height;
   uint8_t buf;
-  uint8_t *lando;
+  std::unique_ptr<uint8_t[]> lando;
 
   if ((infile = cfopen(filename, "rb")) == nullptr)
     return (0);
@@ -833,7 +833,7 @@ int LoadPCXTerrain(char *filename) {
 
   total = width * height;
 
-  lando = mem_rmalloc<uint8_t>(total);
+  lando = std::make_unique<uint8_t[]>(total);
 
   LOG_DEBUG.printf("Heightmap is %d x %d", width, height);
 
@@ -859,7 +859,7 @@ int LoadPCXTerrain(char *filename) {
       Terrain_seg[((TERRAIN_WIDTH - 1) - i) * TERRAIN_WIDTH + j].ypos = n;
     }
 
-  mem_free(lando);
+  lando.reset();
   BuildMinMaxTerrain();
   BuildTerrainNormals();
   GenerateTerrainLight();
