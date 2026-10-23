@@ -265,7 +265,7 @@ private:
 
   static ddgr_surface_node *surf_list;     // the surface list
   static ddgr_surface_node *surf_list_cur; // current node on list.
-  static ddgr_surface *scratch_mem_surf;   // use as temporary memory surface
+  static std::unique_ptr<ddgr_surface> scratch_mem_surf; // use as temporary memory surface
 
 private:
   //	coversion blts.
