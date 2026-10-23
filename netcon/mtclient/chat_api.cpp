@@ -82,7 +82,8 @@ int GettingUserChannel = 0;
 std::unique_ptr<Chat_user> Firstuser;
 Chat_user *Curruser;
 Chat_command *Firstcommand, *Currcommand;
-Chat_channel *Firstchannel, *Currchannel;
+std::unique_ptr<Chat_channel> Firstchannel;
+Chat_channel *Currchannel;
 
 void ChatInit() {
   Socket_connecting = 0;
@@ -1038,15 +1039,11 @@ void FlushChatCommandQueue() {
 }
 
 void FlushChannelList() {
-  Chat_channel *tmp_chan;
-  Currchannel = Firstchannel;
-
-  while (Currchannel) {
-    tmp_chan = Currchannel->next;
-    DLLmem_free(Currchannel);
-    Currchannel = tmp_chan;
+  // Unlink one node at a time so long lists are not destroyed recursively
+  while (Firstchannel) {
+    Firstchannel = std::move(Firstchannel->next);
   }
-  Firstchannel = nullptr;
+  Currchannel = nullptr;
 }
 char *GetChannelList() {
   int ichan_list_length = 0;
@@ -1059,13 +1056,13 @@ char *GetChannelList() {
 
   Chan_list.reset();
 
-  Currchannel = Firstchannel;
+  Currchannel = Firstchannel.get();
   while (Currchannel) {
     ichan_list_length += strlen(Currchannel->topic) + 1 + strlen(Currchannel->channel_name) + 1 +
                          5; // 1 for the space, and 4 for the number of users 0000-9999 + space
-    Currchannel = Currchannel->next;
+    Currchannel = Currchannel->next.get();
   }
-  Currchannel = Firstchannel;
+  Currchannel = Firstchannel.get();
   Chan_list = std::make_unique<char[]>(ichan_list_length + 1);
   while (Currchannel) {
     strcat(Chan_list.get(), "$");
@@ -1075,7 +1072,7 @@ char *GetChannelList() {
     strcat(Chan_list.get(), sznumusers);
     strcat(Chan_list.get(), Currchannel->topic); // fgets
     strcat(Chan_list.get(), " ");
-    Currchannel = Currchannel->next;
+    Currchannel = Currchannel->next.get();
   }
   FlushChannelList();
   GettingChannelList = 0;
@@ -1083,27 +1080,23 @@ char *GetChannelList() {
 }
 
 void AddChannel(char *channel, uint16_t numusers, char *topic) {
-  Currchannel = Firstchannel;
+  Currchannel = Firstchannel.get();
   if (Firstchannel == nullptr) {
-    Firstchannel = (Chat_channel *)DLLmem_malloc(sizeof(Chat_channel));
-    // ASSERT(Firstchannel);
+    Firstchannel = std::make_unique<Chat_channel>();
     strcpy(Firstchannel->channel_name, channel);
     strcpy(Firstchannel->topic, topic);
     Firstchannel->users = numusers;
-    Firstchannel->next = nullptr;
-    Currchannel = Firstchannel;
+    Currchannel = Firstchannel.get();
   } else {
     while (Currchannel->next) {
-      Currchannel = Currchannel->next;
+      Currchannel = Currchannel->next.get();
     }
-    Currchannel->next = (Chat_channel *)DLLmem_malloc(sizeof(Chat_channel));
-    // ASSERT(Currchannel->next);
-    Currchannel = Currchannel->next;
+    Currchannel->next = std::make_unique<Chat_channel>();
+    Currchannel = Currchannel->next.get();
     strcpy(Currchannel->channel_name, channel);
     strcpy(Currchannel->topic, topic);
     Currchannel->users = numusers;
   }
-  Currchannel->next = nullptr;
 }
 
 char *GetTrackerIdByUser(const char *nickname) {

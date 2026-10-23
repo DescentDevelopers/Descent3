@@ -40,7 +40,7 @@ typedef struct Chat_channel {
   char channel_name[33];
   uint16_t users;
   char topic[100];
-  Chat_channel *next;
+  std::unique_ptr<Chat_channel> next;
 } Chat_channel;
 
 typedef struct Chat_command {
