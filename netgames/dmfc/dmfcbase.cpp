@@ -519,8 +519,6 @@ DMFCBase::DMFCBase(void) {
 
   DatabaseRegisteredName[0] = '\0';
 
-  SPRoot = nullptr; // no special packet handlers yet
-
   int i;
 
   for (i = 0; i < MAX_DEATH_MSGS; i++) {
@@ -594,16 +592,6 @@ DMFCBase::~DMFCBase(void) {
     DLLbm_FreeBitmap(TauntIndicatorBMP);
     TauntIndicatorBMP = BAD_BITMAP_HANDLE;
   }
-
-  // remove all the special packet handlers
-  tSPHandler *current, *next;
-  current = next = SPRoot;
-  while (current) {
-    next = current->next;
-    free(current);
-    current = next;
-  }
-  SPRoot = nullptr;
 }
 
 // ##################Setup and processing functions#######################

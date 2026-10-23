@@ -291,7 +291,7 @@ struct tDeathMsg {
 struct tSPHandler {
   void (*func)(uint8_t *); // Function handler to handle the packet
   void (DMFCBase::*DMFCfunc)(uint8_t *);
-  tSPHandler *next; // Pointer to next handler
+  std::unique_ptr<tSPHandler> next; // Pointer to next handler
   int type;
   uint8_t ID; // ID of special packet
 };
@@ -2051,7 +2051,7 @@ protected:
   int MenuBackgroundBMP;
 
   int *Game_interface_mode;
-  tSPHandler *SPRoot;                        // Root node of the Special packet handler list
+  std::unique_ptr<tSPHandler> SPRoot;        // Root node of the Special packet handler list
   tBanItem *m_BanList;                       // root node of ban addresses
   tInputCommandNode *m_InputCommandRootNode; // root node for input commands ($ messages)
 
