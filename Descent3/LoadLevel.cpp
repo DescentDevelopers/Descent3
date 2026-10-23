@@ -1305,7 +1305,7 @@
 #include "editor/editor_lighting.h"
 #endif
 
-MD5 *Level_md5 = nullptr;
+std::unique_ptr<MD5> Level_md5;
 
 char *LocalizeLevelName(char *level);
 

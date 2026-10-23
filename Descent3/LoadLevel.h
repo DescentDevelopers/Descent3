@@ -443,6 +443,8 @@
  * $NoKeywords: $
  */
 
+#include <memory>
+
 #include "cfile.h"
 #include "Mission.h"
 #include "room.h"
@@ -677,12 +679,8 @@ void ReadTextureList(CFILE *ifile);
 // Primarily for multiplayer, makes sure the client and server levels are the same
 
 #include "../md5/md5.h"
-extern MD5 *Level_md5;
-inline void RestartLevelMD5() {
-  if (Level_md5)
-    delete Level_md5;
-  Level_md5 = new MD5();
-}
+extern std::unique_ptr<MD5> Level_md5;
+inline void RestartLevelMD5() { Level_md5 = std::make_unique<MD5>(); }
 
 inline void AppendToLevelChecksum(int val) {
   if (!Level_md5) {
