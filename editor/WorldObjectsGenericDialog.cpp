@@ -521,7 +521,7 @@ void CWorldObjectsGenericDialog::UpdateDialog() {
   if (!Object_info[m_current].description)
     ebox->SetWindowText("<no description>");
   else
-    ebox->SetWindowText(Object_info[m_current].description);
+    ebox->SetWindowText(Object_info[m_current].description.get());
 
   ebox = (CEdit *)GetDlgItem(IDC_GENERIC_INVEN_ICONNAME);
   if (!Object_info[m_current].icon_name[0])
@@ -563,7 +563,7 @@ BOOL CWorldObjectsGenericDialog::OnInitDialog() {
   m_type_name = Object_type_names[m_type];
   m_lod = 0;
 
-  Copy_object.description = nullptr;
+  Copy_object.description.reset();
 
   CDialog::OnInitDialog();
 
@@ -1281,19 +1281,16 @@ void CWorldObjectsGenericDialog::OnKillfocusGenericScriptIDEdit() {
 
 void CWorldObjectsGenericDialog::OnGenericCopy() {
   if (m_current != -1) {
-    if (Copy_object.description) {
-      mem_free(Copy_object.description);
-    }
+    Copy_object.description.reset();
 
     CopyObjectInfoPlainFields(&Copy_object, &Object_info[m_current]);
     CopyObjectInfoBlocks(&Copy_object, &Object_info[m_current]);
 
-    Copy_object.description = nullptr;
-
-    if (!Object_info[m_current].description)
-      Copy_object.description = mem_strdup("<no description>");
-    else
-      Copy_object.description = mem_strdup(Object_info[m_current].description);
+    if (!Object_info[m_current].description) {
+      Copy_object.description = mem_strdup_unique("<no description>");
+    } else {
+      Copy_object.description = mem_strdup_unique(Object_info[m_current].description.get());
+    }
   }
 
   UpdateDialog();
@@ -1341,8 +1338,7 @@ void CWorldObjectsGenericDialog::OnGenericPaste() {
   CopyObjectInfoPlainFields(&Object_info[n], &Copy_object);
   CopyObjectInfoBlocks(&Object_info[n], &Copy_object);
 
-  Object_info[n].description = Copy_object.description;
-  Copy_object.description = nullptr;
+  Object_info[n].description = std::move(Copy_object.description);
 
   // Set type and name
   Object_info[n].type = m_type;
@@ -1388,10 +1384,7 @@ void CWorldObjectsGenericDialog::SaveGenericsOnClose() {
 void CWorldObjectsGenericDialog::OnDestroy() {
   CDialog::OnDestroy();
 
-  if (Copy_object.description) {
-    mem_free(Copy_object.description);
-    Copy_object.description = nullptr;
-  }
+  Copy_object.description.reset();
 
   SaveGenericsOnClose();
 
@@ -1607,13 +1600,10 @@ void CWorldObjectsGenericDialog::OnKillfocusGenericInvenDescription() {
   ebox = (CEdit *)GetDlgItem(IDC_GENERIC_INVEN_DESCRIPTION);
   ebox->GetWindowText(str, 180);
 
-  if (Object_info[m_current].description) {
-    mem_free(Object_info[m_current].description);
-    Object_info[m_current].description = nullptr;
-  }
+  Object_info[m_current].description.reset();
 
   if ((strlen(str) > 0) && (strcmp(str, "<no description>"))) {
-    Object_info[m_current].description = mem_strdup(str);
+    Object_info[m_current].description = mem_strdup_unique(str);
   } else {
     ebox->SetWindowText("<no description>");
   }
