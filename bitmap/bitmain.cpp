@@ -529,7 +529,7 @@ int bm_AllocBitmap(int w, int h, int add_mem) {
     Int3();
     return -1;
   }
-  memset(&GameBitmaps[n], 0, sizeof(bms_bitmap));
+  GameBitmaps[n] = {};
   int ret = bm_AllocateMemoryForIndex(n, w, h, add_mem);
   if (ret >= 0) {
     GameBitmaps[n].used = 1;
@@ -560,7 +560,7 @@ int bm_AllocNoMemBitmap(int w, int h) {
   }
   // If no go on the malloc, bail out with -1
 
-  memset(&GameBitmaps[n], 0, sizeof(bms_bitmap));
+  GameBitmaps[n] = {};
 
   GameBitmaps[n].width = w;
   GameBitmaps[n].height = h;
