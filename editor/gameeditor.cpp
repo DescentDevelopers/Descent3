@@ -588,7 +588,7 @@ vector editor_player_pos;
 matrix editor_player_orient;
 int editor_player_roomnum;
 
-uint16_t *Save_sky_data = nullptr;
+static std::unique_ptr<uint16_t[]> Save_sky_data;
 
 void GameToEditor(bool set_viewer_from_player) {
   /*	We have to reinitialize the DDGR system for windowed mode.
@@ -691,11 +691,10 @@ void GameToEditor(bool set_viewer_from_player) {
       // It was changed during rendering
       bm_ChangeSize(dome_bm, 256, 256);
       uint16_t *dest_data = (uint16_t *)bm_data(dome_bm, 0);
-      memcpy(dest_data, Save_sky_data, 256 * 256 * 2);
+      memcpy(dest_data, Save_sky_data.get(), 256 * 256 * 2);
     }
 
-    mem_free(Save_sky_data);
-    Save_sky_data = nullptr;
+    Save_sky_data.reset();
   }
 
   //	initialize systems back to editor.
@@ -729,11 +728,10 @@ void EditorToGame() {
   // Save the sky in case it gets changed
   int dome_bm = GetTextureBitmap(Terrain_sky.dome_texture, 0);
   if (bm_w(dome_bm, 0) == 256) {
-    Save_sky_data = (uint16_t *)mem_malloc(256 * 256 * 2);
-    ASSERT(Save_sky_data);
+    Save_sky_data = std::make_unique<uint16_t[]>(256 * 256);
 
     uint16_t *src_data = bm_data(dome_bm, 0);
-    memcpy(Save_sky_data, src_data, 256 * 256 * 2);
+    memcpy(Save_sky_data.get(), src_data, 256 * 256 * 2);
   }
 
   /*	We have to reinitialize the DDGR system for full screen mode.
