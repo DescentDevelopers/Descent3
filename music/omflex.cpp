@@ -73,6 +73,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <memory>
 
 #include "log.h"
 #include "music.h"
@@ -133,7 +134,7 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
   int temp_ins_idx = 0;
   int16_t cur_region;
   struct {
-    char *name;
+    std::unique_ptr<char[]> name;
     int16_t index;
     int16_t region;
   } labels[MAX_FILE_LABELS];
@@ -170,7 +171,7 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
         }
         labels[n_labels].index = temp_ins_idx;
         labels[n_labels].region = cur_region;
-        labels[n_labels++].name = mem_strdup(operand);
+        labels[n_labels++].name = mem_strdup_unique(operand);
         break;
       case OMFCMD_SECTION:
       case OMFCMD_REGION:
@@ -274,7 +275,7 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
       case OMFCMD_BEQ:
       case OMFCMD_GOTO:
         for (i = 0; i < n_labels; i++) {
-          if (labels[i].region == cur_region && strcmp(operand, labels[i].name) == 0) {
+          if (labels[i].region == cur_region && strcmp(operand, labels[i].name.get()) == 0) {
             ADD_NEW_INS_NUM(cmd, labels[i].index);
             break;
           }
@@ -368,12 +369,6 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
       LOG_ERROR.printf("Error in music file %s line %d (too many instructions).", file, inf.line());
       Int3();
     }
-  }
-
-  // free any memory
-  while (n_labels) {
-    mem_free(labels[n_labels - 1].name);
-    n_labels--;
   }
 
   // close file
