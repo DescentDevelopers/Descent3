@@ -142,6 +142,7 @@ public:
   };
   UITextItem(const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
   UITextItem(int font, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
+  UITextItem(const UITextItem &item);
   virtual ~UITextItem();
 
   //	if returns false, then it didn't draw.
@@ -193,6 +194,7 @@ public:
   UISnazzyTextItem() { m_flags = m_data.i = m_internaldata.i = 0; };
   UISnazzyTextItem(unsigned flags, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
   UISnazzyTextItem(unsigned flags, int font, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
+  UISnazzyTextItem(const UISnazzyTextItem &item) = default;
 
   void set_data(int data) { m_data.i = data; };
   void set_data(float data) { m_data.f = data; };
