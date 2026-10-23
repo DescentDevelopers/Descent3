@@ -1460,7 +1460,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
     } else {
       if (obj->custom_default_module_name) {
         // we have a custom default script
-        default_module_name = obj->custom_default_module_name;
+        default_module_name = obj->custom_default_module_name.get();
       } else {
         // use what was set in Object_info
         default_module_name = Object_info[obj->id].module_name;
@@ -1468,7 +1468,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
 
       if (obj->custom_default_script_name) {
         // we have a custom default script
-        page_name = obj->custom_default_script_name;
+        page_name = obj->custom_default_script_name.get();
       } else {
         // use what was set in Object_info
         if (Object_info[obj->id].script_name_override[0] != '\0')

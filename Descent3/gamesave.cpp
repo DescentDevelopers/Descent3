@@ -1151,15 +1151,15 @@ void SGSObjects(CFILE *fp) {
     gs_WriteFloat(fp, op->impact_force);
 
     // write out custom default script info
-    ii = (op->custom_default_script_name) ? strlen(op->custom_default_script_name) : 0;
+    ii = (op->custom_default_script_name) ? strlen(op->custom_default_script_name.get()) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((uint8_t *)op->custom_default_script_name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->custom_default_script_name.get(), ii, fp);
 
-    ii = (op->custom_default_module_name) ? strlen(op->custom_default_module_name) : 0;
+    ii = (op->custom_default_module_name) ? strlen(op->custom_default_module_name.get()) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((uint8_t *)op->custom_default_module_name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->custom_default_module_name.get(), ii, fp);
 
     INSURE_SAVEFILE;
 
