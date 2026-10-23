@@ -298,6 +298,7 @@
 #include "descent.h"
 #include "vecmat.h"
 
+#include <memory>
 #include <stdlib.h>
 
 // For putting up editor messageboxes in the main body (& should be in the editor code too, probably)
@@ -402,7 +403,7 @@ struct d3edit_state {
 extern d3edit_state D3EditState;
 
 //	Editor.cpp:: Surface describing the actual desktop where the editor is running.
-extern grSurface *Desktop_surf;
+extern std::unique_ptr<grSurface> Desktop_surf;
 
 // flags for the textured views changed
 extern int TV_changed;

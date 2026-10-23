@@ -406,7 +406,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 d3edit_state D3EditState;
-grSurface *Desktop_surf = nullptr;
+std::unique_ptr<grSurface> Desktop_surf;
 bool Editor_active = true;
 
 //	ADDED FOR OLE SUPPORT

@@ -1437,10 +1437,7 @@ void CMainFrame::OnDestroy() {
   SaveEditorSettings();
 
   //	kill game and editor objects outside MFC.
-  if (Desktop_surf) {
-    delete Desktop_surf;
-    Desktop_surf = nullptr;
-  }
+  Desktop_surf.reset();
   if (Database) {
     delete Database;
     Database = nullptr;
@@ -1463,6 +1460,14 @@ void InitCScripts() {
   ddio_MakePath(path, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "data", "levels", nullptr);
 }
 
+// Runs at exit, before static destruction.  OnDestroy frees the editor's objects on a normal exit, but when the
+// editor leaves through exit() (e.g. Error()) they are still alive here, and the subsystems their destructors use
+// have already been shut down by earlier atexit handlers.  Leak them on that path, as the editor always did.
+static void AbandonEditorObjectsAtExit() {
+  // ~grSurface would close the video surface after ddgr_Close.
+  (void)Desktop_surf.release();
+}
+
 // Copied from winmain.cpp
 void WinMainInitEditor(unsigned hwnd, unsigned hinst) {
   tLnxAppInfo appinfo;
@@ -1474,6 +1479,8 @@ void WinMainInitEditor(unsigned hwnd, unsigned hinst) {
 
   Descent = new oeLnxApplication(&appinfo);
   Database = new oeLnxAppDatabase;
+
+  atexit(AbandonEditorObjectsAtExit);
 }
 //	Initializes OS components for Descent3.  MUST BE DONE BEFORE ANYTHING ELSE!
 
@@ -1890,7 +1897,7 @@ void CMainFrame::OnFilePlayin640x480() {
   if (m_FloatingKeypadDialog)
     m_FloatingKeypadDialog->Deactivate();
   CKeypadDialog::Deactivate();
-  delete Desktop_surf;
+  Desktop_surf.reset();
 
   //	hide keypad if it's visible
   if (keypad_was_visible)
@@ -1924,7 +1931,7 @@ void CMainFrame::OnFilePlayin640x480() {
     OnViewKeypadToggle();
 
   //	Restore view system
-  Desktop_surf = new grSurface(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
+  Desktop_surf = std::make_unique<grSurface>(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
   if (m_FloatingKeypadDialog)
     m_FloatingKeypadDialog->Activate();
   CKeypadDialog::Activate();
@@ -1950,7 +1957,7 @@ void CMainFrame::OnFileLeaveEditor() {
   if (m_FloatingKeypadDialog)
     m_FloatingKeypadDialog->Deactivate();
   CKeypadDialog::Deactivate();
-  delete Desktop_surf;
+  Desktop_surf.reset();
 
   //	hide keypad if it's visible
   if (keypad_was_visible)
@@ -1980,7 +1987,7 @@ void CMainFrame::OnFileLeaveEditor() {
     OnViewKeypadToggle();
 
   //	Restore view system
-  Desktop_surf = new grSurface(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
+  Desktop_surf = std::make_unique<grSurface>(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
   if (m_FloatingKeypadDialog)
     m_FloatingKeypadDialog->Activate();
   CKeypadDialog::Activate();
