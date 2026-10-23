@@ -17,6 +17,7 @@
  */
 
 #include <cstdint>
+#include <memory>
 
 // Commands
 #define CC_USER_JOINING 1 // A user had joined this channel (add him/her from the user listbox if any)
@@ -32,7 +33,7 @@
 
 typedef struct Chat_user {
   char nick_name[33];
-  Chat_user *next;
+  std::unique_ptr<Chat_user> next;
 } Chat_user;
 
 typedef struct Chat_channel {
