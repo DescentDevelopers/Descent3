@@ -973,8 +973,8 @@ protected:
 
 class UIConsoleGadget final : public UIGadget {
   int m_ConsoleFont = -1;            // standard font for text in console
-  ddgr_color *m_ColorRows = nullptr; // color per row.
-  char *m_ConsoleBuffer = nullptr;   // text buffer of console.
+  std::unique_ptr<ddgr_color[]> m_ColorRows; // color per row.
+  std::unique_ptr<char[]> m_ConsoleBuffer;   // text buffer of console.
   int m_Rows, m_Cols;      // dimensions in text.
   int m_VisRows;           // visible rows and columns
   int m_VisRowStart;       // scroll start of visible region of buffer.
@@ -984,7 +984,7 @@ class UIConsoleGadget final : public UIGadget {
   ddgr_color m_LineColor; // color of current line.
   int m_LineIndex;        // index within current row memory-wise(not column wise).
   int m_PutsBufLen;       // current length of puts buffer
-  char *m_PutsBuffer = nullptr;      // puts buffer.
+  std::unique_ptr<char[]> m_PutsBuffer; // puts buffer.
 
 private:
   void PutChar(int ch); // outputs a character onto the console.
