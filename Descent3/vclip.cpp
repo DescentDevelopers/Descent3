@@ -203,7 +203,7 @@ int AllocVClip() {
 
   for (i = 0; i < MAX_VCLIPS; i++) {
     if (GameVClips[i].used == 0) {
-      memset(&GameVClips[i], 0, sizeof(vclip));
+      GameVClips[i] = {};
       GameVClips[i].frames = mem_rmalloc<int16_t>(VCLIP_MAX_FRAMES);
       ASSERT(GameVClips[i].frames);
       GameVClips[i].frame_time = DEFAULT_FRAMETIME;
