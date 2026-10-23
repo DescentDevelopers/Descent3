@@ -72,6 +72,8 @@
 #include <winsock.h>
 #include <objbase.h>
 
+#include <memory>
+
 #include "descent.h"
 #include "player.h"
 #include "appdatabase.h"
@@ -109,7 +111,7 @@ uint32_t Pending_dp_conn[MAX_PENDING_NEW_CONNECTIONS];
 
 struct dpconnections {
   char name[100];
-  void *conn;
+  std::unique_ptr<uint8_t[]> conn;
 };
 
 dpconnections dpconns[MAX_DIRECTPLAY_CONNECTIONS];
@@ -121,8 +123,8 @@ BOOL FAR PASCAL DirectPlayEnumConnectionsCallback(LPCGUID lpguidSP, LPVOID lpCon
   // Do something with the list of connections
   for (int i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
     if (dpconns[i].conn == nullptr) {
-      dpconns[i].conn = mem_malloc(dwConnectionSize);
-      memcpy(dpconns[i].conn, lpConnection, dwConnectionSize);
+      dpconns[i].conn = std::make_unique<uint8_t[]>(dwConnectionSize);
+      memcpy(dpconns[i].conn.get(), lpConnection, dwConnectionSize);
       strcpy(dpconns[i].name, lpName->lpszShortNameA);
       return (TRUE);
     }
@@ -167,7 +169,7 @@ int dp_SelectDirectPlayConnection(char *name) {
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (stricmp(dpconns[i].name, name) == 0) {
         LOG_DEBUG.printf("Found DirectPlay connection: %s", name);
-        connection = dpconns[i].conn;
+        connection = dpconns[i].conn.get();
         break;
       }
     }
@@ -182,8 +184,7 @@ int dp_SelectDirectPlayConnection(char *name) {
 
   for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
     if (dpconns[i].conn != nullptr) {
-      mem_free(dpconns[i].conn);
-      dpconns[i].conn = nullptr;
+      dpconns[i].conn.reset();
       dpconns[i].name[0] = '\0';
     }
   }
@@ -502,8 +503,7 @@ void dp_ShutdownDirectPlay() {
   LOG_DEBUG << "Freeing DirectPlay memory";
   for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
     if (dpconns[i].conn != nullptr) {
-      mem_free(dpconns[i].conn);
-      dpconns[i].conn = nullptr;
+      dpconns[i].conn.reset();
       dpconns[i].name[0] = '\0';
     }
   }
@@ -577,7 +577,7 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (stricmp(dpconns[i].name, "Modem Connection For DirectPlay") == 0) {
         // mprintf(0,"Found DirectPlay connection: %s\n",name);
-        connection = dpconns[i].conn;
+        connection = dpconns[i].conn.get();
         break;
       }
     }
@@ -590,8 +590,7 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
 
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (dpconns[i].conn != nullptr) {
-        mem_free(dpconns[i].conn);
-        dpconns[i].conn = nullptr;
+        dpconns[i].conn.reset();
         dpconns[i].name[0] = '\0';
       }
     }
