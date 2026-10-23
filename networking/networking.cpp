@@ -1527,7 +1527,7 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
         for (i = 1; i < MAXRELIABLESOCKETS; i++) {
           if (reliable_sockets[i].status == RNF_UNUSED) {
             // Add the new connection here.
-            memset(&reliable_sockets[i], 0, sizeof(reliable_socket));
+            reliable_sockets[i] = {};
             reliable_sockets[i].connection_type = server_addr->connection_type;
             memcpy(&reliable_sockets[i].net_addr, server_addr, sizeof(network_address));
             reliable_sockets[i].last_packet_received = timer_GetTime();
@@ -1552,7 +1552,7 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
             if (rcode == SOCKET_ERROR) {
               Net_connect_socket_id = INVALID_SOCKET;
               reliable_sockets[i].status = RNF_UNUSED;
-              memset(&reliable_sockets[i], 0, sizeof(reliable_socket));
+              reliable_sockets[i] = {};
               LOG_WARNING << "Unable to send packet in nw_ConnectToServer()";
 
               Net_connect_sequence = R_NET_SEQUENCE_FAILED;
@@ -1707,7 +1707,7 @@ void nw_CloseSocket(SOCKET *sockp) {
 
   nw_SendWithID(NWT_RELIABLE, (uint8_t *)&diss_conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
 
-  memset(&reliable_sockets[*sockp], 0, sizeof(reliable_socket));
+  reliable_sockets[*sockp] = {};
   reliable_sockets[*sockp].status = RNF_UNUSED;
 }
 
@@ -2504,7 +2504,7 @@ void nw_ReliableResend(void) {
       if (rsocket->status == RNF_LIMBO)
         if ((timer_GetTime() - rsocket->last_packet_received) > NETTIMEOUT) {
           LOG_WARNING.printf("Reliable (but in limbo) socket (%d) timed out in nw_WorkReliable().", j);
-          memset(rsocket, 0, sizeof(reliable_socket));
+          *rsocket = {};
           rsocket->status = RNF_UNUSED; // Won't work if this is an outgoing connection.
         }
     } else {
