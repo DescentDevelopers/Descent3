@@ -1322,7 +1322,7 @@ bool SimpleStartLevel(const std::filesystem::path& level_name) {
   Current_mission.num_levels = 1;
 
   Current_level = nullptr;
-  Current_mission.levels[0].filename = mem_strdup(PATH_TO_CSTR(level_name));
+  Current_mission.levels[0].filename = mem_strdup_unique(PATH_TO_CSTR(level_name));
   InitMissionScript();
 
   return true;
@@ -1385,7 +1385,7 @@ bool DoLevelIntro() {
 #endif
   //	if this level has a movie:
   if (lvl->flags & LVLFLAG_STARTMOVIE) {
-    DoMissionMovie(Current_mission.levels[Current_mission.cur_level - 1].moviename);
+    DoMissionMovie(Current_mission.levels[Current_mission.cur_level - 1].moviename.get());
   }
 
   //	if this level has a briefing:
@@ -1494,7 +1494,7 @@ void StartLevel() {
   // Start sound & music
   StartLevelSounds();
   Sound_system.PauseSounds(); // HACK!! pause sounds started up to now.
-  D3MusicStart(Current_level->score);
+  D3MusicStart(Current_level->score.get());
 
   // Get the list of waypoints from the waypoint objects
   MakeAtuoWaypointList();
@@ -1591,7 +1591,7 @@ void StartLevel() {
   Localization_SetLanguage(LANGUAGE_ENGLISH);
 
   // Load the English text so the goal stuff will initialize correctly
-  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename);
+  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename.get());
 
   // Restore the correct language
   Localization_SetLanguage(save_lang);
@@ -1600,7 +1600,7 @@ void StartLevel() {
   InitLevelScript();
 
   // Load the localized text
-  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename);
+  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename.get());
 
   Gametime = 0.0f;
   // Start the clock
@@ -1879,7 +1879,7 @@ void EndLevel(int state) {
   //	Sequencing here.
   // if this level has an endmovie
   if ((state == 1) && (lvl->flags & LVLFLAG_ENDMOVIE) && !(Game_mode & GM_MULTI)) {
-    DoMissionMovie(lvl->endmovie);
+    DoMissionMovie(lvl->endmovie.get());
   }
 
   //	display postlevel results.
