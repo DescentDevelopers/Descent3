@@ -495,15 +495,11 @@ void InitVisEffects() {
   if (old_max_vis == max_vis_effects)
     return;
 
-  if (VisEffects != nullptr) {
-    VisEffects = (vis_effect *)mem_realloc(VisEffects, sizeof(vis_effect) * max_vis_effects);
-    VisDeadList = (uint16_t *)mem_realloc(VisDeadList, sizeof(uint16_t) * max_vis_effects);
-    Vis_free_list = (int16_t *)mem_realloc(Vis_free_list, sizeof(int16_t) * max_vis_effects);
-  } else if (VisEffects == nullptr) {
-    VisEffects = mem_rmalloc<vis_effect>(max_vis_effects);
-    VisDeadList = mem_rmalloc<uint16_t>(max_vis_effects);
-    Vis_free_list = mem_rmalloc<int16_t>(max_vis_effects);
-  }
+  // max_vis_effects is constant, so we only get here once, with nothing allocated yet
+  VisEffects = mem_rmalloc<vis_effect>(max_vis_effects);
+  VisDeadList = mem_rmalloc<uint16_t>(max_vis_effects);
+  Vis_free_list = mem_rmalloc<int16_t>(max_vis_effects);
+
   for (int i = 0; i < max_vis_effects; i++) {
     VisEffects[i].type = VIS_NONE;
     VisEffects[i].roomnum = -1;
