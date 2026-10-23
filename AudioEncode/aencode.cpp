@@ -989,8 +989,7 @@ void EncodeFlush(Encoder &enc) {
 
 int32_t AudioEncode(ReadSampleFunction *read, void *data, unsigned channels, unsigned sample_rate, float volume,
                     FILE *out, int levels, int samples_per_subband, float comp_ratio) {
-  Encoder enc;
-  memset(&enc, 0, sizeof(enc));
+  Encoder enc{};
 
   if (!ReadSample_init(enc, read, data)) {
     DestroyEncoder(enc);
