@@ -526,6 +526,7 @@
 //	local globals
 //	---------------------------------------------------------------------------
 static oeApplication *Saved_editor_app = nullptr; // the editor's app object
+static std::unique_ptr<oeLnxApplication> Game_app; // the game window's app object, while the game runs
 static char Editor_dir[_MAX_PATH];             // old editor directory
 static RECT Editor_wndrect;                    // editor window rect.
 unsigned hGameWnd;                             // used for hack. window handle to draw to.
@@ -648,12 +649,12 @@ void GameToEditor(bool set_viewer_from_player) {
 
   if (PROGRAM(windowed)) {
     //	reinitialize IO system for editor
-    delete Descent;
+    Game_app.reset();
     Descent = Saved_editor_app;
     io_info.obj = Descent;
   } else if (D3EditState.fullscreen_debug_state) {
     //	reinitialize IO system for editor
-    delete Descent;
+    Game_app.reset();
     Descent = Saved_editor_app;
     io_info.obj = Descent;
 
@@ -805,7 +806,8 @@ void EditorToGame() {
   //	create window and start game.
   if (PROGRAM(windowed)) {
     flags = OEAPP_WINDOWED;
-    Descent = new oeLnxApplication(flags);
+    Game_app = std::make_unique<oeLnxApplication>(flags);
+    Descent = Game_app.get();
     Descent->init();
     set_size = true;
     Descent->get_info(&app_info);
@@ -822,7 +824,8 @@ void EditorToGame() {
     theApp.main_frame->SetMenu(nullptr);
 
     flags = OEAPP_FULLSCREEN;
-    Descent = new oeLnxApplication(flags);
+    Game_app = std::make_unique<oeLnxApplication>(flags);
+    Descent = Game_app.get();
     Descent->init();
     set_size = true;
     Descent->get_info(&app_info);
