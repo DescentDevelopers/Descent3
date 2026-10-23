@@ -153,7 +153,7 @@ void BriefEditInitScreens(void) {
 void BriefEditInitEffect(tBriefEffect *efx) {
   ASSERT(efx);
 
-  memset(efx, 0, sizeof(tBriefEffect));
+  *efx = tBriefEffect();
 
   efx->type = BE_NONE;
   efx->used = false;
