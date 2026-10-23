@@ -1330,8 +1330,8 @@ void CWorldWeaponsDialog::UpdateWeaponView() {
     vm_AnglesToMatrix(&rot_matrix, 0, frame * 400, 0);
 
     m_WeaponSurf.create(128, 128, BPP_16);
-    grViewport *vport = new grViewport(&m_WeaponSurf);
-    StartEditorFrame(vport, &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
+    auto vport = std::make_unique<grViewport>(&m_WeaponSurf);
+    StartEditorFrame(vport.get(), &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
     DrawPolygonModel(&zero_vector, &rot_matrix, bm_handle, nullptr, 0, 1.0, 1.0, 1.0);
     EndEditorFrame();
 
@@ -1339,7 +1339,7 @@ void CWorldWeaponsDialog::UpdateWeaponView() {
     y = rect.top + ((rect.bottom - rect.top) / 2) - m_WeaponSurf.height() / 2;
     Desktop_surf->blt(x, y, &m_WeaponSurf);
 
-    delete vport;
+    vport.reset();
     m_WeaponSurf.free();
   }
 

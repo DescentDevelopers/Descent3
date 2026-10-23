@@ -743,7 +743,7 @@ void CMegacellDialog::UpdateTextureView() {
 
       if (texnum == n) // draw a white box if this is the current texture
       {
-        grViewport *vport = new grViewport(&m_TextureSurf);
+        auto vport = std::make_unique<grViewport>(&m_TextureSurf);
 
         int x = 0, y = 0;
 
@@ -753,8 +753,6 @@ void CMegacellDialog::UpdateTextureView() {
         vport->line(GR_RGB(255, 255, 255), x + vport->width() - 1, y + vport->height() - 1, x, y + vport->height() - 1);
         vport->line(GR_RGB(255, 255, 255), x, y + vport->height() - 1, x, y);
         vport->unlock();
-
-        delete vport;
       }
 
       Desktop_surf->blt(x, y, &m_TextureSurf);
@@ -938,7 +936,7 @@ void CMegacellDialog::UpdateMegacellView() {
 
       // Draw a separation line on the right and bottom side
       {
-        grViewport *vport = new grViewport(&m_TextureSurf);
+        auto vport = std::make_unique<grViewport>(&m_TextureSurf);
 
         int x = 0, y = 0;
 
@@ -947,7 +945,6 @@ void CMegacellDialog::UpdateMegacellView() {
         vport->line(GR_RGB(0, 0, 0), vport->width() - 1, 0, vport->width() - 1, vport->height() - 1);
 
         vport->unlock();
-        delete vport;
       }
 
       Desktop_surf->blt(x, y, &m_TextureSurf);
