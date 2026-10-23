@@ -86,6 +86,8 @@ UITextItem::UITextItem(int font, const char *text, ddgr_color color, uint8_t alp
   m_Font = font;
 }
 
+UITextItem::UITextItem(const UITextItem &item) : UIItem(item) { *this = item; }
+
 UITextItem::~UITextItem() {
   if (m_Text && m_Text != (&UITextItem::dummy_str[0])) {
     mem_free(m_Text);
