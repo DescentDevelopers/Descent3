@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "pserror.h"
 #include "audiotaunts.h"
@@ -42,8 +43,8 @@ struct tWaveFile {
   int samples_per_second;
   int16_t bits_per_sample;
   int16_t number_channels;
-  uint8_t *sample_8bit;
-  int16_t *sample_16bit;
+  std::unique_ptr<uint8_t[]> sample_8bit;
+  std::unique_ptr<int16_t[]> sample_16bit;
 };
 
 // returns:
@@ -223,7 +224,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   int samples, rate, chan;
   std::filesystem::path temp_filename;
   std::filesystem::path osftemp_filename;
-  uint8_t *StaticFileBuffer = nullptr;
+  std::unique_ptr<uint8_t[]> StaticFileBuffer;
   OSFArchive osf;
   CFILE *fpin = nullptr;
   bool osfopened;
@@ -338,7 +339,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
     wavdata.sample_16bit[count] = INTEL_SHORT(wavdata.sample_16bit[count]);
   }
 
-  cf_WriteBytes((uint8_t *)wavdata.sample_16bit, amount_to_flush, file);
+  cf_WriteBytes((uint8_t *)wavdata.sample_16bit.get(), amount_to_flush, file);
   cfclose(file);
   file = nullptr;
 
@@ -369,7 +370,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   uint32_t filelen, nblocks, i;
   int format;
 
-  StaticFileBuffer = mem_rmalloc<uint8_t>(FILEBUFFER_LENGTH);
+  StaticFileBuffer = std::make_unique<uint8_t[]>(FILEBUFFER_LENGTH);
   if (!StaticFileBuffer) {
     ret = false;
     LOG_ERROR << "Out of memory";
@@ -398,13 +399,13 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   //	write out data.
   for (i = 0; i < nblocks; i++) {
-    if (!cf_ReadBytes(StaticFileBuffer, FILEBUFFER_LENGTH, fpin)) {
+    if (!cf_ReadBytes(StaticFileBuffer.get(), FILEBUFFER_LENGTH, fpin)) {
       LOG_WARNING << "Error reading from osf temp";
       ret = false;
       TauntLastError = TAUNTIMPERR_INTERNALERR;
       goto error;
     }
-    if (!osf.WriteBlock(StaticFileBuffer, FILEBUFFER_LENGTH)) {
+    if (!osf.WriteBlock(StaticFileBuffer.get(), FILEBUFFER_LENGTH)) {
       LOG_WARNING << "Error writing to osf";
       TauntLastError = TAUNTIMPERR_INTERNALERR;
       ret = false;
@@ -413,13 +414,13 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   }
 
   if (filelen % FILEBUFFER_LENGTH) {
-    if (!cf_ReadBytes(StaticFileBuffer, filelen % FILEBUFFER_LENGTH, fpin)) {
+    if (!cf_ReadBytes(StaticFileBuffer.get(), filelen % FILEBUFFER_LENGTH, fpin)) {
       LOG_WARNING << "Error reading from osf temp";
       TauntLastError = TAUNTIMPERR_INTERNALERR;
       ret = false;
       goto error;
     }
-    if (!osf.WriteBlock(StaticFileBuffer, filelen % FILEBUFFER_LENGTH)) {
+    if (!osf.WriteBlock(StaticFileBuffer.get(), filelen % FILEBUFFER_LENGTH)) {
       LOG_WARNING << "Error writing to osf";
       TauntLastError = TAUNTIMPERR_INTERNALERR;
       ret = false;
@@ -475,16 +476,6 @@ error:
     std::filesystem::remove(temp_filename);
   }
 
-  if (StaticFileBuffer) {
-    mem_free(StaticFileBuffer);
-  }
-
-  // free memory for wave file
-  if (wavdata.sample_16bit)
-    mem_free(wavdata.sample_16bit);
-  if (wavdata.sample_8bit)
-    mem_free(wavdata.sample_8bit);
-
   return ret;
 }
 
@@ -493,8 +484,8 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   // File pointer to sound file
   CFILE *cfptr;
 
-  wave->sample_16bit = nullptr;
-  wave->sample_8bit = nullptr;
+  wave->sample_16bit.reset();
+  wave->sample_8bit.reset();
   wave->np_sample_length = 0;
   wave->sample_length = 0;
 
@@ -711,12 +702,13 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
 
         wave->sample_length = aligned_size;
         wave->np_sample_length = cksize;
-        wave->sample_8bit = mem_rmalloc<uint8_t>(aligned_size);
+        wave->sample_8bit = std::make_unique<uint8_t[]>(aligned_size);
 
-        cf_ReadBytes((uint8_t *)wave->sample_8bit, cksize, cfptr);
+        cf_ReadBytes(wave->sample_8bit.get(), cksize, cfptr);
 
-        if (aligned_size != cksize)
-          memset(wave->sample_8bit + cksize, 128, num_needed);
+        if (aligned_size != cksize) {
+          memset(wave->sample_8bit.get() + cksize, 128, num_needed);
+        }
       } else {
         int num_needed = 0;
 
@@ -728,15 +720,13 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
           wave->sample_length = cksize / 2 + num_needed / 2;
         }
 
-        wave->sample_16bit = (int16_t *)mem_malloc(cksize + num_needed);
+        // zero-filled, which also pads the num_needed alignment bytes with silence
+        wave->sample_16bit = std::make_unique<int16_t[]>((cksize + num_needed + 1) / 2);
 
-        cf_ReadBytes((uint8_t *)wave->sample_16bit, cksize, cfptr);
+        cf_ReadBytes((uint8_t *)wave->sample_16bit.get(), cksize, cfptr);
         for (count = 0; count < (int)cksize / 2; count++) {
           wave->sample_16bit[count] = INTEL_SHORT(wave->sample_16bit[count]);
         }
-
-        if (num_needed)
-          memset(wave->sample_16bit + (cksize / 2), 0, num_needed);
       }
 
       // We found data, clear format flag
@@ -757,7 +747,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   if (wave->sample_16bit == nullptr) {
     ASSERT(wave->sample_8bit);
 
-    wave->sample_16bit = mem_rmalloc<int16_t>(wave->sample_length);
+    wave->sample_16bit = std::make_unique<int16_t[]>(wave->sample_length);
 
     // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
     // (+128 biase).
@@ -765,20 +755,15 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
       wave->sample_16bit[count] = (((int16_t)wave->sample_8bit[count]) - 128) * 256;
     }
 
-    mem_free(wave->sample_8bit);
-    wave->sample_8bit = nullptr;
+    wave->sample_8bit.reset();
   }
 
 error_state:
 
   if (error_code != 0) {
-    // free memory and set to NULL
-    if (wave->sample_16bit)
-      mem_free(wave->sample_16bit);
-    if (wave->sample_8bit)
-      mem_free(wave->sample_8bit);
-    wave->sample_16bit = nullptr;
-    wave->sample_8bit = nullptr;
+    // free memory
+    wave->sample_16bit.reset();
+    wave->sample_8bit.reset();
   } else {
     wave->samples_per_second = samples_per_second;
     wave->bits_per_sample = bits_per_sample;
