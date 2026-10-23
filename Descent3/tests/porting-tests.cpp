@@ -25,10 +25,11 @@
 // This is copy of actual Osiris_CreateGameChecksum(void) from OsirisLoadandBind.cpp
 uint32_t Osiris_CreateGameChecksumTest() {
   uint32_t value = 0xe1e1b0b0;
+  tOSIRISModuleInit tmp;
 
   value += sizeof(object);
   value += sizeof(player) * 2;
-  value += sizeof(tOSIRISModuleInit) * 3;
+  value += tmp.serial_version * 3;
   value += sizeof(tOSIRISEventInfo) * 5;
   value += sizeof(tOSIRISTIMER) * 7;
   value += sizeof(tOSIRISSCRIPTID) * 11;
@@ -43,7 +44,7 @@ uint32_t Osiris_CreateGameChecksumTest() {
   value = value << 2;
 
   /* Adds count of Osiris_module_init.fp */
-  value += 123;
+  value += 126;
 
   return value;
 }

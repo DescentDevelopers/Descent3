@@ -640,6 +640,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <filesystem>
+#include <string>
+#include <vector>
 
 #include "args.h"
 #include "ddio.h"
@@ -651,6 +653,8 @@
 #include "cfile.h"
 #include "gamefont.h"
 #include "grdefs.h"
+#include "levelgoal.h"
+#include "localization.h"
 #include "descent.h"
 #include "d3movie.h"
 #include "program.h"
@@ -675,8 +679,6 @@
 #include "multi.h"
 #include "module.h"
 #include "hud.h"
-#include "localization.h"
-#include "levelgoal.h"
 
 //	---------------------------------------------------------------------------
 //	Data
@@ -1253,23 +1255,19 @@ void FreeMission() {
   Current_mission.filename = nullptr;
   Current_level = nullptr;
 }
-
-// Load the text (goal strings) for a level
 void LoadLevelText(const std::filesystem::path &level_filename) {
-  int n_strings;
   std::filesystem::path pathname = level_filename;
   pathname.replace_extension(".str");
-
-  char **goal_strings;
-  if (CreateStringTable(PATH_TO_CSTR(pathname), &goal_strings, &n_strings)) {
+  std::vector<std::string> goal_strings;
+  if (CreateStringTable(PATH_TO_CSTR(pathname), goal_strings)) {
     int n_goals = Level_goals.GetNumGoals();
-    ASSERT(n_strings == (n_goals * 3));
+    ASSERT(goal_strings.size() == (n_goals * 3));
     for (int i = 0; i < n_goals; i++) {
-      Level_goals.GoalSetName(i, goal_strings[i * 3]);
-      Level_goals.GoalSetItemName(i, goal_strings[i * 3 + 1]);
-      Level_goals.GoalSetDesc(i, goal_strings[i * 3 + 2]);
+      Level_goals.GoalSetName(i, (char *)goal_strings[i * 3].c_str());
+      Level_goals.GoalSetItemName(i, (char *)goal_strings[i * 3 + 1].c_str());
+      Level_goals.GoalSetDesc(i, (char *)goal_strings[i * 3 + 2].c_str());
     }
-    DestroyStringTable(goal_strings, n_strings);
+    DestroyStringTable(goal_strings);
   }
 }
 

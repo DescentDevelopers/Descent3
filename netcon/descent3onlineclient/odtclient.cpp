@@ -238,9 +238,9 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
   Auto_start = false;
 
   DLLmprintf(0, "About to create string table...\n");
-  DLLCreateStringTable("d3online.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("d3online.str", StringTable);
+  DLLmprintf(0, "%d strings loaded from string table\n", StringTable.size());
+  if (StringTable.empty()) {
     All_ok = false;
     return;
   }
@@ -251,7 +251,7 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 // Called when the DLL is shutdown
 void DLLFUNCCALL DLLMultiClose() {
   DLLmprintf(0, "Closing down Online Direct TCP-IP DLL\n");
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  DLLDestroyStringTable(StringTable);
 }
 
 // The main entry point where the game calls the dll
