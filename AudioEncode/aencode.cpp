@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "aencode.h"
 
@@ -81,7 +82,7 @@ struct Encoder {
   int32_t m_someVal;                       // var1C         | offset 0x44
   float *m_lo_filter;                      // var18         | offset 0x48
   float *m_hi_filter;                      // var14         | offset 0x4C
-  uint32_t *m_pFormatIdPerColumn;          // var10         | offset 0x50
+  std::unique_ptr<uint32_t[]> m_pFormatIdPerColumn; // var10 | offset 0x50
   int32_t m_currBlockBitPower;             // var0C         | offset 0x54
   int32_t m_currBlockBitValue;             // var08         | offset 0x58
   int32_t m_threshold;                     // var04         | offset 0x5C
@@ -677,9 +678,7 @@ int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_
     }
   }
 
-  enc.m_pFormatIdPerColumn = reinterpret_cast<uint32_t *>(malloc(enc.m_numColumns * sizeof(uint32_t)));
-  if (enc.m_pFormatIdPerColumn == nullptr)
-    return 0;
+  enc.m_pFormatIdPerColumn = std::make_unique<uint32_t[]>(enc.m_numColumns);
 
   enc.m_sampleCount = 0;
 
@@ -708,9 +707,7 @@ void DestroyEncoder(Encoder &enc) {
     free(enc.m_levelSlots);
   }
 
-  if (enc.m_pFormatIdPerColumn != nullptr) {
-    free(enc.m_pFormatIdPerColumn);
-  }
+  enc.m_pFormatIdPerColumn.reset();
 }
 
 void transform_subband(Encoder &enc, float *pD0, float *pD1, int32_t subBandCount, int32_t sampleCount) {
