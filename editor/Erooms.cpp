@@ -1766,7 +1766,7 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
 void DeleteRoomPortal(room *rp, int portalnum) {
   portal *pp = &rp->portals[portalnum];
   face *fp = &rp->faces[pp->portal_face];
-  portal *newportals;
+  std::unique_ptr<portal[]> newportals;
 
   // Clear the portal field of the portal's face
   ASSERT(fp->portal_num == portalnum);
@@ -1786,25 +1786,21 @@ void DeleteRoomPortal(room *rp, int portalnum) {
   }
 
   // Alloc new portal list
-  if (rp->num_portals == 1)
-    newportals = nullptr;
-  else {
-    newportals = mem_rmalloc<portal>(rp->num_portals - 1);
-    ASSERT(newportals != nullptr);
+  if (rp->num_portals != 1) {
+    newportals = std::make_unique<portal[]>(rp->num_portals - 1);
   }
 
   // Copy portals over
   int p;
-  for (p = 0; p < portalnum; p++)
+  for (p = 0; p < portalnum; p++) {
     newportals[p] = rp->portals[p];
-  for (p++; p < rp->num_portals; p++)
+  }
+  for (p++; p < rp->num_portals; p++) {
     newportals[p - 1] = rp->portals[p];
+  }
 
-  // Free old portal list
-  mem_free(rp->portals);
-
-  // Use the new list
-  rp->portals = newportals;
+  // Use the new list (frees the old one)
+  rp->portals = std::move(newportals);
   rp->num_portals--;
 }
 
@@ -1951,19 +1947,15 @@ void CopyRoom(room *destp, room *srcp) {
 // Adds a new portal for this room.  Returns the portal number.
 // Initializes the flags
 int AddPortal(room *rp) {
-  auto newlist = mem_rmalloc<portal>(rp->num_portals + 1);
+  auto newlist = std::make_unique<portal[]>(rp->num_portals + 1);
 
-  // Copy from old list to new list, and free old list
-  if (rp->num_portals) {
-
-    for (int i = 0; i < rp->num_portals; i++)
-      newlist[i] = rp->portals[i];
-
-    mem_free(rp->portals);
+  // Copy from old list to new list
+  for (int i = 0; i < rp->num_portals; i++) {
+    newlist[i] = rp->portals[i];
   }
 
-  // Point at new list
-  rp->portals = newlist;
+  // Point at new list (frees the old one)
+  rp->portals = std::move(newlist);
 
   // Init flags
   rp->portals[rp->num_portals].flags = 0;
@@ -2205,7 +2197,7 @@ int CheckPortals(room *rp) {
   int r = ROOMNUM(rp);
   int errors = 0;
 
-  for (p = 0, pp = rp->portals; p < rp->num_portals; pp++, p++) {
+  for (p = 0, pp = rp->portals.get(); p < rp->num_portals; pp++, p++) {
 
     // Make sure the connecting portal points back to this portal
     if ((Rooms[pp->croom].portals[pp->cportal].croom != r) || (Rooms[pp->croom].portals[pp->cportal].cportal != p)) {
