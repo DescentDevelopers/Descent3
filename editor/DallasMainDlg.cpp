@@ -9198,7 +9198,7 @@ int CDallasMainDlg::ParseMsgTableFile(char *filename) {
 
 // Initializes the data storage space
 void CDallasMainDlg::InitCustomScriptStorage(void) {
-  m_CustomScriptLines = nullptr;
+  m_CustomScriptLines.reset();
 
   m_NumCustomScriptLines = 0;
   m_MaxNumCustomScriptLines = 0;
@@ -9206,17 +9206,8 @@ void CDallasMainDlg::InitCustomScriptStorage(void) {
 
 // Clears any memory allocated for storage
 void CDallasMainDlg::ClearCustomScriptStorage(void) {
-  // Clear all the lines
-  for (int j = 0; j < m_NumCustomScriptLines; j++) {
-    mem_free(m_CustomScriptLines[j]);
-    m_CustomScriptLines[j] = nullptr;
-  }
-
-  // Clear the array of line pointers
-  if (m_CustomScriptLines != nullptr) {
-    mem_free(m_CustomScriptLines);
-    m_CustomScriptLines = nullptr;
-  }
+  // Clear the array of lines (and the lines themselves)
+  m_CustomScriptLines.reset();
 
   m_NumCustomScriptLines = 0;
   m_MaxNumCustomScriptLines = 0;
@@ -9305,13 +9296,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
       ClearCustomScriptStorage();
       m_MaxNumCustomScriptLines = CountCustomScriptLines(infile);
       if (m_MaxNumCustomScriptLines > 0) {
-        m_CustomScriptLines = mem_rmalloc<char *>(m_MaxNumCustomScriptLines);
-        if (m_CustomScriptLines == nullptr) {
-          MessageBox("ERROR: Ran out of memory allocating custom script block", "Custom Script Parse Error",
-                     MB_OK | MB_ICONEXCLAMATION);
-          cfclose(infile);
-          return FALSE;
-        }
+        m_CustomScriptLines = std::make_unique<std::unique_ptr<char[]>[]>(m_MaxNumCustomScriptLines);
       }
 
       // Read all the lines in the block
@@ -9329,13 +9314,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
 
         // Store this line
         if (m_NumCustomScriptLines < m_MaxNumCustomScriptLines) {
-          m_CustomScriptLines[m_NumCustomScriptLines] = mem_strdup(linebuf);
-          if (m_CustomScriptLines[m_NumCustomScriptLines] == nullptr) {
-            MessageBox("ERROR: Ran out of memory parsing custom script block", "Custom Script Parse Error",
-                       MB_OK | MB_ICONEXCLAMATION);
-            cfclose(infile);
-            return FALSE;
-          }
+          m_CustomScriptLines[m_NumCustomScriptLines] = mem_strdup_unique(linebuf);
           m_NumCustomScriptLines++;
         } else {
           MessageBox("ERROR: The maximum custom script block line limit has been exceeded.\n\nThe excess lines will "
@@ -9372,8 +9351,9 @@ void CDallasMainDlg::WriteCustomScriptBlock(void) {
     O(("// Enter your custom script code here"));
     O((" "));
   } else {
-    for (int j = 0; j < m_NumCustomScriptLines; j++)
-      O(("%s", m_CustomScriptLines[j]));
+    for (int j = 0; j < m_NumCustomScriptLines; j++) {
+      O(("%s", m_CustomScriptLines[j].get()));
+    }
   }
 
   O(("%s", CUSTOM_SCRIPT_BLOCK_END_TAG));
