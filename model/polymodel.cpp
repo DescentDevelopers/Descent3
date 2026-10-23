@@ -841,27 +841,12 @@ void FreePolymodelData(int i) {
     mem_free(Poly_models[i].model_data);
     Poly_models[i].model_data = nullptr;
   }
-  if (Poly_models[i].gun_slots) {
-    mem_free(Poly_models[i].gun_slots);
-    Poly_models[i].gun_slots = nullptr;
-  }
-  if (Poly_models[i].poly_wb) {
-    mem_free(Poly_models[i].poly_wb);
-    Poly_models[i].poly_wb = nullptr;
-  }
-  if (Poly_models[i].attach_slots) {
-    mem_free(Poly_models[i].attach_slots);
-    Poly_models[i].attach_slots = nullptr;
-  }
+  Poly_models[i].gun_slots.reset();
+  Poly_models[i].poly_wb.reset();
+  Poly_models[i].attach_slots.reset();
 
-  if (Poly_models[i].ground_slots) {
-    mem_free(Poly_models[i].ground_slots);
-    Poly_models[i].ground_slots = nullptr;
-  }
-  if (Poly_models[i].submodel) {
-    mem_free(Poly_models[i].submodel);
-    Poly_models[i].submodel = nullptr;
-  }
+  Poly_models[i].ground_slots.reset();
+  Poly_models[i].submodel.reset();
 
   Poly_models[i].flags |= PMF_NOT_RESIDENT;
   Poly_models[i].n_models = 0;
@@ -1330,9 +1315,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->n_models = cf_ReadInt(infile);
       pm->rad = cf_ReadFloat(infile);
 
-      pm->submodel = mem_rmalloc<bsp_info>(pm->n_models);
-      ASSERT(pm->submodel != nullptr);
-      memset(pm->submodel, 0, sizeof(bsp_info) * pm->n_models);
+      pm->submodel = std::make_unique<bsp_info[]>(pm->n_models);
 
       ReadModelVector(&pm->mins, infile);
       ReadModelVector(&pm->maxs, infile);
@@ -1617,8 +1600,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_GPNT:
       pm->n_guns = cf_ReadInt(infile);
-      pm->gun_slots = mem_rmalloc<w_bank>(pm->n_guns);
-      ASSERT(pm->gun_slots != nullptr);
+      pm->gun_slots = std::make_unique<w_bank[]>(pm->n_guns);
 
       for (i = 0; i < pm->n_guns; i++) {
         w_bank *bank = &pm->gun_slots[i];
@@ -1638,8 +1620,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_ATTACH:
       pm->n_attach = cf_ReadInt(infile);
       if (pm->n_attach) {
-        pm->attach_slots = mem_rmalloc<a_bank>(pm->n_attach);
-        ASSERT(pm->attach_slots != nullptr);
+        pm->attach_slots = std::make_unique<a_bank[]>(pm->n_attach);
 
         for (i = 0; i < pm->n_attach; i++) {
           a_bank *bank = &pm->attach_slots[i];
@@ -1650,7 +1631,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           bank->f_uvec = false;
         }
       } else {
-        pm->attach_slots = nullptr;
+        pm->attach_slots.reset();
       }
       break;
 
@@ -1678,7 +1659,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           bank->f_uvec = f_uvec;
         }
       } else {
-        pm->attach_slots = nullptr;
+        pm->attach_slots.reset();
       }
       break;
     }
@@ -1691,7 +1672,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->num_wbs = cf_ReadInt(infile);
 
       if (pm->num_wbs) {
-        pm->poly_wb = mem_rmalloc<poly_wb_info>(pm->num_wbs);
+        pm->poly_wb = std::make_unique<poly_wb_info[]>(pm->num_wbs);
 
         // Get each individual wb info struct
         for (i = 0; i < pm->num_wbs; i++) {
@@ -1717,7 +1698,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
             pm->poly_wb[i].num_turrets = 8;
         }
       } else {
-        pm->poly_wb = nullptr;
+        pm->poly_wb.reset();
       }
 
       break;
@@ -1725,8 +1706,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_GROUND:
       pm->n_ground = cf_ReadInt(infile);
-      pm->ground_slots = mem_rmalloc<w_bank>(pm->n_ground);
-      ASSERT(pm->ground_slots != nullptr);
+      pm->ground_slots = std::make_unique<w_bank[]>(pm->n_ground);
 
       for (i = 0; i < pm->n_ground; i++) {
         w_bank *bank = &pm->ground_slots[i];
