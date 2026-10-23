@@ -69,7 +69,7 @@ int bump_AllocBumpmap(int w, int h) {
 
   // If no go on the malloc, bail out with -1
 
-  memset(&GameBumpmaps[n], 0, sizeof(bms_bumpmap));
+  GameBumpmaps[n] = {};
 
   GameBumpmaps[n].data = (uint16_t *)mem_malloc(w * h * 2);
   if (!GameBumpmaps[n].data) {

@@ -60,7 +60,7 @@ int lm_AllocLightmap(int w, int h) {
   ASSERT(GameLightmaps[n].used == 0);
   // If no go on the malloc, bail out with -1
 
-  memset(&GameLightmaps[n], 0, sizeof(bms_lightmap));
+  GameLightmaps[n] = {};
   GameLightmaps[n].data = (uint16_t *)mem_malloc((w * h * 2));
   if (!GameLightmaps[n].data) {
     LOG_DEBUG << "NOT ENOUGH MEMORY FOR LIGHTMAP!";
