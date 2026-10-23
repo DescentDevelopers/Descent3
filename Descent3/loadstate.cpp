@@ -1028,10 +1028,7 @@ int LGSObjects(CFILE *fp, int version) {
         AIDestroyObj(op);
         op->ai_info.reset();
       }
-      if (op->dynamic_wb != nullptr) {
-        mem_free(op->dynamic_wb);
-        op->dynamic_wb = nullptr;
-      }
+      op->dynamic_wb.reset();
       op->attach_children.reset();
     }
     op->type = type;
@@ -1505,7 +1502,6 @@ int LGSObjEffects(CFILE *fp, object *op) {
 
 //	loads fx
 int LGSObjWB(CFILE *fp, object *op) {
-  dynamic_wb_info *dwba = nullptr;
   int i;
   int8_t num_wbs;
 
@@ -1513,13 +1509,13 @@ int LGSObjWB(CFILE *fp, object *op) {
   if (!num_wbs)
     return LGS_OK;
 
-  dwba = mem_rmalloc<dynamic_wb_info>(num_wbs);
+  auto dwba = std::make_unique<dynamic_wb_info[]>(num_wbs);
 
   for (i = 0; i < num_wbs; i++) {
     dynamic_wb_info *dwb = &dwba[i];
     cf_ReadBytes((uint8_t *)dwb, sizeof(dynamic_wb_info), fp);
   }
-  op->dynamic_wb = dwba;
+  op->dynamic_wb = std::move(dwba);
 
   return LGS_OK;
 }

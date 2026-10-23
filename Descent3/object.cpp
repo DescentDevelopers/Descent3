@@ -1945,10 +1945,7 @@ void ObjDelete(int objnum) {
     obj->ai_info.reset();
   }
 
-  if (obj->dynamic_wb != nullptr) {
-    mem_free(obj->dynamic_wb);
-    obj->dynamic_wb = nullptr;
-  }
+  obj->dynamic_wb.reset();
 
   obj->attach_children.reset();
 
@@ -3357,10 +3354,10 @@ void SetObjectControlType(object *obj, int control_type) {
 
     if (obj->dynamic_wb == nullptr) {
       if (obj->type == OBJ_PLAYER) {
-        obj->dynamic_wb = mem_rmalloc<dynamic_wb_info>(MAX_WBS_PER_OBJ);
+        obj->dynamic_wb = std::make_unique<dynamic_wb_info[]>(MAX_WBS_PER_OBJ);
       } else {
         if (num_wbs)
-          obj->dynamic_wb = mem_rmalloc<dynamic_wb_info>(num_wbs);
+          obj->dynamic_wb = std::make_unique<dynamic_wb_info[]>(num_wbs);
       }
     }
   }

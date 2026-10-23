@@ -702,7 +702,7 @@ int ObjInitPlayer(object *objp) {
   // These are always set for a player
   objp->mtype.phys_info.num_bounces = PHYSICS_UNLIMITED_BOUNCE;
   if (objp->dynamic_wb == nullptr) {
-    objp->dynamic_wb = mem_rmalloc<dynamic_wb_info>(MAX_WBS_PER_OBJ);
+    objp->dynamic_wb = std::make_unique<dynamic_wb_info[]>(MAX_WBS_PER_OBJ);
   }
   WBClearInfo(objp);
   // Set a few misc things
@@ -808,12 +808,11 @@ int ObjInitGeneric(object *objp, bool reinit) {
 
     // On a fresh init, SetObjectControlType() has just sized dynamic_wb for this model. A reinitialized object
     // may have changed models, so replace its array (WBClearInfo() below resets every field in use anyway).
-    if ((objp->dynamic_wb != nullptr) && reinit) {
-      mem_free(objp->dynamic_wb);
-      objp->dynamic_wb = nullptr;
+    if (reinit) {
+      objp->dynamic_wb.reset();
     }
     if ((objp->dynamic_wb == nullptr) && num_wbs) {
-      objp->dynamic_wb = mem_rmalloc<dynamic_wb_info>(num_wbs);
+      objp->dynamic_wb = std::make_unique<dynamic_wb_info[]>(num_wbs);
     }
     // Setup the weapon batteries (must be after polymodel stuff)
     WBClearInfo(objp);
@@ -1190,7 +1189,7 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->lifeleft = 0;
   objp->effect_info.reset();
   objp->ai_info.reset();
-  objp->dynamic_wb = nullptr;
+  objp->dynamic_wb.reset();
   objp->attach_children.reset();
   // Now initialize the type-specific data
   return ObjInitTypeSpecific(objp, 0);

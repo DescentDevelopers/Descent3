@@ -464,7 +464,7 @@ struct object {
   vector min_xyz, max_xyz; // the current min & max extents of this object's sphere
 
   // Current weapon battery info for this object
-  dynamic_wb_info *dynamic_wb;
+  std::unique_ptr<dynamic_wb_info[]> dynamic_wb;
 
   // Explosion information
   float impact_size;
