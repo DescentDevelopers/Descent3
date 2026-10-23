@@ -166,6 +166,8 @@
  * $NoKeywords: $
  */
 
+#include <memory>
+
 #include "UIlib.h"
 #include "application.h"
 #include "bitmap.h"
@@ -183,8 +185,8 @@ constexpr int ui_FrameTimeMS = 50;
 //	VARIABLES
 struct tUIWindowNode {
   UIWindow *wnd;
-  struct tUIWindowNode *next;
-  struct tUIWindowNode *prev;
+  std::unique_ptr<tUIWindowNode> next; // owns the rest of the list
+  tUIWindowNode *prev;
 };
 //	user input structure
 tUIInput UI_input;
@@ -197,7 +199,7 @@ float UI_aspect_y = 1.0f;
 static bool UI_init = false;
 static oeApplication *UI_app = nullptr;
 static int UI_cursor_bm = -1;
-static tUIWindowNode *UIWindowList = nullptr;
+static std::unique_ptr<tUIWindowNode> UIWindowList;
 static tUIWindowNode *UIWindowTail = nullptr;
 static UIWindow *UIWindowFocus = nullptr;
 static int UI_cursor_show = 0;
@@ -218,7 +220,7 @@ void ui_Init(oeApplication *app, tUIInitInfo *init_info) {
   UI_cursor_bm = -1;
   UI_cursor_show = 0;
   UI_app = app;
-  UIWindowList = nullptr;
+  UIWindowList.reset();
   UIWindowTail = nullptr;
   UITextItem::SetDefaultFont(init_info->window_font);
   ui_SetScreenMode(init_info->w, init_info->h);
@@ -351,24 +353,24 @@ void ui_UseCursor(const char *fname) {
 }
 //	adds a window to the ui list.
 void ui_AddWindow(UIWindow *wnd) {
-  tUIWindowNode *newnode = new tUIWindowNode;
+  auto newnode = std::make_unique<tUIWindowNode>();
+  tUIWindowNode *newtail = newnode.get();
 
+  newnode->wnd = wnd;
   if (!UIWindowList) {
     // first item to add to list.
-    UIWindowList = newnode;
     newnode->prev = nullptr;
+    UIWindowList = std::move(newnode);
   } else {
     // add to existing list.
-    tUIWindowNode *node = UIWindowList;
+    tUIWindowNode *node = UIWindowList.get();
     while (node->next) {
-      node = node->next;
+      node = node->next.get();
     }
-    node->next = newnode;
     newnode->prev = node;
+    node->next = std::move(newnode);
   }
-  newnode->next = nullptr;
-  newnode->wnd = wnd;
-  UIWindowTail = newnode;
+  UIWindowTail = newtail;
 }
 //	removes a window from ui list.if topmost, the next topmost window has focus.
 void ui_RemoveAllWindows() {
@@ -384,30 +386,24 @@ void ui_RemoveAllWindows() {
 }
 //	removes a window from ui list.
 void ui_RemoveWindow(UIWindow *wnd) {
-  tUIWindowNode *node = UIWindowList;
+  tUIWindowNode *node = UIWindowList.get();
   bool found_wnd = false;
   while (node) {
     if (node->wnd == wnd) {
       // we found a node.
-      if (node->prev) {
-        node->prev->next = node->next;
-      }
+      std::unique_ptr<tUIWindowNode> &owner = node->prev ? node->prev->next : UIWindowList;
       if (node->next) {
         node->next->prev = node->prev;
       }
-      if (node == UIWindowList) {
-        UIWindowList = nullptr;
-        UIWindowList = node->next;
-      }
       if (node == UIWindowTail) {
-        UIWindowTail = nullptr;
         UIWindowTail = node->prev;
       }
-      delete node;
+      // relink the owner past this node, which frees it.
+      owner = std::move(node->next);
       found_wnd = true;
       break;
     }
-    node = node->next;
+    node = node->next.get();
   }
   ASSERT(found_wnd);
 }
@@ -448,12 +444,12 @@ int ui_ProcessFocusedWindow() {
 }
 //	updates all visible windows.
 void ui_UpdateWindows() {
-  tUIWindowNode *wndnode = UIWindowList;
+  tUIWindowNode *wndnode = UIWindowList.get();
   while (wndnode) {
     if (wndnode->next == nullptr) {
     }
     wndnode->wnd->Render();
-    wndnode = wndnode->next;
+    wndnode = wndnode->next.get();
   }
 }
 //	do cursor display and update
