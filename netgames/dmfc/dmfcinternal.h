@@ -298,9 +298,9 @@ struct tSPHandler {
 
 // Struct for Input Command nodes (commands that begin with $)
 struct tInputCommandNode {
-  char *data;
-  char *desc;
-  tInputCommandNode *next;
+  std::unique_ptr<char[]> data;
+  std::unique_ptr<char[]> desc;
+  std::unique_ptr<tInputCommandNode> next;
   void (*handler)(const char *);
   bool allow_remote;
 };
@@ -2053,7 +2053,7 @@ protected:
   int *Game_interface_mode;
   std::unique_ptr<tSPHandler> SPRoot;        // Root node of the Special packet handler list
   std::unique_ptr<tBanItem> m_BanList;       // root node of ban addresses
-  tInputCommandNode *m_InputCommandRootNode; // root node for input commands ($ messages)
+  std::unique_ptr<tInputCommandNode> m_InputCommandRootNode; // root node for input commands ($ messages)
 
   MenuItem *TeamMenuItem;
   MenuItem *AutoBalanceItem;
