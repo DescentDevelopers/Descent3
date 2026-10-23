@@ -3790,16 +3790,14 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 
         num_rooms = cf_ReadInt(ifile);
 
-        extern void RoomMemInit(int nverts, int nfaces, int nfaceverts, int nportals); // MOVE TO HEADER FILE
         if (version >= 85) {
-          int nverts, nfaces, nfaceverts, nportals;
-          nverts = cf_ReadInt(ifile);
-          nfaces = cf_ReadInt(ifile);
-          nfaceverts = cf_ReadInt(ifile);
-          nportals = cf_ReadInt(ifile);
-          RoomMemInit(nverts, nfaces, nfaceverts, nportals);
-        } else
-          RoomMemInit(0, 0, 0, 0); // 0 means we don't know how much memory we need
+          // Total vert/face/facevert/portal counts, once used to size a room memory arena; rooms are now
+          // allocated individually, so skip them
+          cf_ReadInt(ifile); // nverts
+          cf_ReadInt(ifile); // nfaces
+          cf_ReadInt(ifile); // nfaceverts
+          cf_ReadInt(ifile); // nportals
+        }
 
         n_degenerate_faces_removed = 0;
         int roomnum;
