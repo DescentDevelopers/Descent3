@@ -37,16 +37,9 @@ static inline void opti_16m_mix(int16_t *cur_sample_16bit, const int num_write, 
 static inline void opti_16s_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played,
                                 int16_t *mixer_buffer16, const float l_volume, const float r_volume);
 
-software_mixer::software_mixer() {
-  m_init = false;
-  m_buffer = nullptr;
-}
+software_mixer::software_mixer() { m_init = false; }
 
-software_mixer::~software_mixer() {
-  if (m_buffer) {
-    free(m_buffer);
-  }
-}
+software_mixer::~software_mixer() = default;
 
 bool software_mixer::Initialize(tMixerInit *mi) {
   if (m_init) {
@@ -83,7 +76,7 @@ bool software_mixer::Initialize(tMixerInit *mi) {
   m_fpErrorText = mi->fp_ErrorText;
 
   if (m_BufferSize) {
-    m_buffer = (uint8_t *)malloc(m_BufferSize);
+    m_buffer = std::make_unique<uint8_t[]>(m_BufferSize);
   }
 
   return true;
@@ -96,8 +89,8 @@ void software_mixer::DoFrame(void) {
 
   int amount = m_BufferSize;
 
-  StreamMixer((char *)m_buffer, amount);
-  m_primary_buffer->Write(m_buffer, amount);
+  StreamMixer((char *)m_buffer.get(), amount);
+  m_primary_buffer->Write(m_buffer.get(), amount);
 }
 
 // The actual mixer code that sum's the sounds on each channel and does all the actual
