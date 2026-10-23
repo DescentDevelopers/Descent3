@@ -219,7 +219,7 @@ struct room {
   face *faces;     // pointer to list of faces
   portal *portals; // pointer to list of portals
   vector *verts;   // array of vertices for this room
-  vector4 *verts4; // array of 16byte vertices for this room
+  std::unique_ptr<vector4[]> verts4; // array of 16byte vertices for this room
 
   std::unique_ptr<doorway> doorway_data; // this room's doorway data, or NULL if not a doorway
   char *name;              // name of this room, or NULL
