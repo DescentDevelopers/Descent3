@@ -451,13 +451,11 @@ void DebugGraph_DisplayOptions(void) {
   newuiTiledWindow window;
   newuiSheet *sheet;
 
-  bool **bool_values = nullptr;
   bool exit_menu = false;
   tGraphNode *node;
 
-  bool_values = mem_rmalloc<bool *>(graph_num_nodes);
-  if (!bool_values)
-    return;
+  // Owns the array only; the bools belong to the sheet's check boxes
+  auto bool_values = std::make_unique<bool *[]>(graph_num_nodes);
 
   window.Create("Debug Graph", 0, 0, 256, 384);
   sheet = window.GetSheet();
@@ -523,6 +521,4 @@ void DebugGraph_DisplayOptions(void) {
 
   window.Close();
   window.Destroy();
-
-  mem_free(bool_values);
 }
