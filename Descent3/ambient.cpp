@@ -75,6 +75,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <utility>
 
 #include "ambient.h"
 
@@ -182,7 +183,7 @@ void InitAmbientSoundSystem() {
     asp *asp = &Ambient_sound_patterns[p];
 
     if (!asp->name[0]) {
-      Ambient_sound_patterns[p] = Ambient_sound_patterns[Num_ambient_sound_patterns - 1];
+      Ambient_sound_patterns[p] = std::move(Ambient_sound_patterns[Num_ambient_sound_patterns - 1]);
       Num_ambient_sound_patterns--;
     }
   }
