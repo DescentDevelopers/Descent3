@@ -1045,7 +1045,7 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
       // Last 2 colors are the same
       texpage->proc_palette[255] = texpage->proc_palette[254];
 
-      memcpy(GameTextures[n].procedural->palette, texpage->proc_palette, 256 * 2);
+      memcpy(GameTextures[n].procedural->palette.get(), texpage->proc_palette, 256 * 2);
 
       for (int i = 0; i < texpage->num_proc_elements; i++) {
         static_proc_element *proc = &GameTextures[n].procedural->static_proc_elements[i];
@@ -1089,7 +1089,7 @@ void mng_AssignTextureToTexPage(int n, mngs_texture_page *texpage) {
 
   // assign procedural if there is one
   if (tex->flags & TF_PROCEDURAL) {
-    memcpy(texpage->proc_palette, tex->procedural->palette, 256 * 2);
+    memcpy(texpage->proc_palette, tex->procedural->palette.get(), 256 * 2);
     texpage->num_proc_elements = tex->procedural->num_static_elements;
     texpage->proc_heat = tex->procedural->heat;
     texpage->proc_light = tex->procedural->light;

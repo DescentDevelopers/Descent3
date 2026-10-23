@@ -428,37 +428,30 @@ int AllocateProceduralForTexture(int handle) {
 
   GameTextures[handle].procedural->memory_type = PROC_MEMORY_TYPE_NONE;
 
-  GameTextures[handle].procedural->palette = (uint16_t *)mem_malloc(256 * 2);
+  GameTextures[handle].procedural->palette = std::make_unique<uint16_t[]>(256);
 
   GameTextures[handle].procedural->last_procedural_frame = -1;
   GameTextures[handle].procedural->heat = 128;
 
   GameTextures[handle].procedural->dynamic_proc_elements = -1;
-  GameTextures[handle].procedural->static_proc_elements = nullptr;
 
   GameTextures[handle].procedural->num_static_elements = 0;
 
   GameTextures[handle].procedural->light = 1;
   GameTextures[handle].procedural->thickness = 4;
 
-  memcpy(GameTextures[handle].procedural->palette, DefaultProcPalette, 256 * 2);
+  memcpy(GameTextures[handle].procedural->palette.get(), DefaultProcPalette, 256 * 2);
 
   return 1;
 }
 
 // Allocates the memory needed for static elements for a procedural texture
 void AllocateStaticProceduralsForTexture(int handle, int num_elements) {
-  GameTextures[handle].procedural->static_proc_elements =
-      mem_rmalloc<static_proc_element>(num_elements);
-  ASSERT(GameTextures[handle].procedural->static_proc_elements);
+  GameTextures[handle].procedural->static_proc_elements = std::make_unique<static_proc_element[]>(num_elements);
 }
 
 // Frees the memory used by static procedural elements
-void FreeStaticProceduralsForTexture(int handle) {
-  if (GameTextures[handle].procedural->static_proc_elements)
-    mem_free(GameTextures[handle].procedural->static_proc_elements);
-  GameTextures[handle].procedural->static_proc_elements = nullptr;
-}
+void FreeStaticProceduralsForTexture(int handle) { GameTextures[handle].procedural->static_proc_elements.reset(); }
 
 // Given a texture handle, returns that textures bitmap
 // If the texture is animated, returns framenum mod num_of_frames in the animation
@@ -804,11 +797,9 @@ void BuildTextureBumpmaps(int texhandle) {
 // Frees all the procedural memory for a texture
 void FreeProceduralForTexture(int n) {
   if (GameTextures[n].procedural != nullptr) {
-    FreeStaticProceduralsForTexture(n);
     mem_free(GameTextures[n].procedural->proc1);
     mem_free(GameTextures[n].procedural->proc2);
     bm_FreeBitmap(GameTextures[n].procedural->procedural_bitmap);
-    mem_free(GameTextures[n].procedural->palette);
     delete GameTextures[n].procedural;
 
     GameTextures[n].procedural = nullptr;

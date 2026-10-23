@@ -532,7 +532,7 @@ void DoDynamicRisingEmber(int handle, dynamic_proc_element *proc) {
 void AddProcSpinners(int handle, static_proc_element *proc) {
   if (proc->frequency == 0 || (FrameCount % proc->frequency) == 0) {
 
-    int proc_num = (proc - GameTextures[handle].procedural->static_proc_elements) * 60;
+    int proc_num = (proc - GameTextures[handle].procedural->static_proc_elements.get()) * 60;
     int speed_adjust = 1 + ((proc->speed / 255.0) * 5.0);
     int cur_angle = (((FrameCount + proc_num) * speed_adjust) % 64) * 1024;
 
@@ -1011,7 +1011,7 @@ void AddProcHeightBlob(static_proc_element *proc, int handle) {
   int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1;
   int x = proc->x1;
   int y = proc->y1;
-  int procnum = proc - GameTextures[handle].procedural->static_proc_elements;
+  int procnum = proc - GameTextures[handle].procedural->static_proc_elements.get();
   if (proc->frequency && ((FrameCount + procnum) % proc->frequency))
     return;
   int radius = proc->size;
@@ -1040,7 +1040,7 @@ void AddProcHeightBlob(static_proc_element *proc, int handle) {
   }
 }
 void AddProcRaindrops(static_proc_element *proc, int handle) {
-  int procnum = proc - GameTextures[handle].procedural->static_proc_elements;
+  int procnum = proc - GameTextures[handle].procedural->static_proc_elements.get();
   if (proc->frequency && ((FrameCount + procnum) % proc->frequency))
     return;
   uint8_t proc_frequency = proc->frequency;
@@ -1061,7 +1061,7 @@ void AddProcRaindrops(static_proc_element *proc, int handle) {
   proc->frequency = proc_frequency;
 }
 void AddProcBlobdrops(static_proc_element *proc, int handle) {
-  int procnum = proc - GameTextures[handle].procedural->static_proc_elements;
+  int procnum = proc - GameTextures[handle].procedural->static_proc_elements.get();
   if (proc->frequency && ((FrameCount + procnum) % proc->frequency))
     return;
   uint8_t proc_frequency = proc->frequency;
@@ -1082,7 +1082,7 @@ void AddProcBlobdrops(static_proc_element *proc, int handle) {
   proc->frequency = proc_frequency;
 }
 void AddProcSineBlob(static_proc_element *proc, int handle) {
-  int procnum = proc - GameTextures[handle].procedural->static_proc_elements;
+  int procnum = proc - GameTextures[handle].procedural->static_proc_elements.get();
   if (proc->frequency && ((FrameCount + procnum) % proc->frequency))
     return;
   int x = proc->x1;
@@ -1327,7 +1327,7 @@ void EvaluateFireProcedural(int handle) {
   ProcDestData = (uint8_t *)procedural->proc2;
   int total = PROC_SIZE * PROC_SIZE;
   uint16_t *data = bm_data(dest_bitmap, 0);
-  uint16_t *pal = procedural->palette;
+  uint16_t *pal = procedural->palette.get();
   for (i = 0; i < total; i++, data++, ProcDestData++) {
     *data = pal[*ProcDestData];
   }
