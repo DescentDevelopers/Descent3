@@ -3128,27 +3128,24 @@ struct tOMMSNode {
   uint32_t unique_id;
   uint16_t reference_count;
   uint8_t free_called;
-  void *memory_ptr;
-  tOMMSNode *next;
+  std::unique_ptr<uint8_t[]> memory_ptr;
+  std::unique_ptr<tOMMSNode> next;
 };
 
 struct tOMMSHashNode {
-  char *script_name;
+  std::unique_ptr<char[]> script_name;
   uint16_t base_id;
-  tOMMSNode *root;
-  tOMMSHashNode *next;
+  std::unique_ptr<tOMMSNode> root;
+  std::unique_ptr<tOMMSHashNode> next;
 };
 
-tOMMSHashNode *OMMS_Hash_node_root = nullptr;
+std::unique_ptr<tOMMSHashNode> OMMS_Hash_node_root;
 uint16_t OMMS_Current_base_id = 0;
 uint16_t OMMS_Current_id = 0;
 
 //	Searches through the hash nodes and looks for the one associated with
 //	the script name, if one doesn't exist it will create one (if autocreate is true).
 tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate);
-//	frees all memory associated with the OMMSHashNode given (includes all script
-//	memory...returns the next node in the list, NULL if none
-tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node);
 //	finds an OMMS node, given the hash node to start at.  If it isn't
 //	found than one is created. NULL if out of memory.
 tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocreate);
@@ -3205,20 +3202,17 @@ static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t 
 void Osiris_InitOMMS(void) {
   OMMS_Current_base_id = 0;
   OMMS_Current_id = 0;
-  OMMS_Hash_node_root = nullptr;
+  OMMS_Hash_node_root.reset();
   atexit(Osiris_CloseOMMS);
 }
 
 void Osiris_CloseOMMS(void) {
   LOG_DEBUG << "OSIRIS: Reseting OMMS memory";
 
-  tOMMSHashNode *curr = OMMS_Hash_node_root;
-
-  while (curr) {
-    curr = Osiris_OMMS_DeleteHashNode(curr);
+  // frees all memory associated with each hash node (includes all script memory)
+  while (OMMS_Hash_node_root) {
+    OMMS_Hash_node_root = std::move(OMMS_Hash_node_root->next);
   }
-
-  OMMS_Hash_node_root = nullptr;
 }
 
 void Osiris_SaveOMMS(CFILE *file) {
@@ -3227,7 +3221,7 @@ void Osiris_SaveOMMS(CFILE *file) {
   cf_WriteShort(file, OMMS_Current_id);
 
   // go through all the hash nodes write their information out
-  tOMMSHashNode *currhash = OMMS_Hash_node_root;
+  tOMMSHashNode *currhash = OMMS_Hash_node_root.get();
   while (currhash) {
     // write out a 1, saying that we have a hash node here
     cf_WriteByte(file, 1);
@@ -3236,14 +3230,14 @@ void Osiris_SaveOMMS(CFILE *file) {
 
     // write out the info about this hash node
     int length;
-    length = (currhash->script_name) ? strlen(currhash->script_name) : 0;
+    length = (currhash->script_name) ? strlen(currhash->script_name.get()) : 0;
     cf_WriteByte(file, length);
     if (length)
-      cf_WriteBytes((uint8_t *)currhash->script_name, length, file);
+      cf_WriteBytes((uint8_t *)currhash->script_name.get(), length, file);
 
     // now go through all the nodes and write their data
     tOMMSNode *node;
-    node = currhash->root;
+    node = currhash->root.get();
     while (node) {
       // write out 1, for valid hash
       cf_WriteByte(file, 1);
@@ -3255,15 +3249,15 @@ void Osiris_SaveOMMS(CFILE *file) {
       cf_WriteInt(file, node->unique_id);
       cf_WriteInt(file, node->size_of_memory);
       if (node->size_of_memory)
-        cf_WriteBytes((uint8_t *)node->memory_ptr, node->size_of_memory, file);
+        cf_WriteBytes(node->memory_ptr.get(), node->size_of_memory, file);
 
-      node = node->next;
+      node = node->next.get();
     }
     // write out terminating 0
     cf_WriteByte(file, 0);
 
     // go to the next hash node
-    currhash = currhash->next;
+    currhash = currhash->next.get();
   }
 
   // write out terminating 0
@@ -3284,29 +3278,21 @@ void Osiris_RestoreOMMS(CFILE *file) {
   // we have to rebuild the nodes
   while (cf_ReadByte(file)) {
     if (!currhash) {
-      currhash = OMMS_Hash_node_root = mem_rmalloc<tOMMSHashNode>();
+      OMMS_Hash_node_root = std::make_unique<tOMMSHashNode>();
+      currhash = OMMS_Hash_node_root.get();
     } else {
-      currhash->next = mem_rmalloc<tOMMSHashNode>();
-      currhash = currhash->next;
+      currhash->next = std::make_unique<tOMMSHashNode>();
+      currhash = currhash->next.get();
     }
-
-    if (!currhash)
-      Error("Out of memory");
-
-    currhash->next = nullptr;
-    currhash->root = nullptr;
-    currhash->script_name = nullptr;
 
     currhash->base_id = (uint16_t)cf_ReadShort(file);
 
     // read length of string
     int length = cf_ReadByte(file);
     if (length) {
-      currhash->script_name = (char *)mem_malloc(length + 1);
-      if (!currhash->script_name)
-        Error("Out of Memory");
-      else
-        cf_ReadBytes((uint8_t *)currhash->script_name, length, file);
+      // zero-filled, so the name is terminated
+      currhash->script_name = std::make_unique<char[]>(length + 1);
+      cf_ReadBytes((uint8_t *)currhash->script_name.get(), length, file);
     }
 
     node = nullptr;
@@ -3314,17 +3300,12 @@ void Osiris_RestoreOMMS(CFILE *file) {
     // now go through all the nodes and right their data
     while (cf_ReadByte(file)) {
       if (!node) {
-        node = currhash->root = mem_rmalloc<tOMMSNode>();
+        currhash->root = std::make_unique<tOMMSNode>();
+        node = currhash->root.get();
       } else {
-        node->next = mem_rmalloc<tOMMSNode>();
-        node = node->next;
+        node->next = std::make_unique<tOMMSNode>();
+        node = node->next.get();
       }
-
-      if (!node)
-        Error("Out of memory");
-
-      node->memory_ptr = nullptr;
-      node->next = nullptr;
 
       node->id = (uint16_t)cf_ReadShort(file);
 
@@ -3333,11 +3314,8 @@ void Osiris_RestoreOMMS(CFILE *file) {
       node->unique_id = cf_ReadInt(file);
       node->size_of_memory = cf_ReadInt(file);
       if (node->size_of_memory) {
-        node->memory_ptr = mem_malloc(node->size_of_memory);
-        if (!node->memory_ptr)
-          Error("Out of memory");
-
-        cf_ReadBytes((uint8_t *)node->memory_ptr, node->size_of_memory, file);
+        node->memory_ptr = std::make_unique<uint8_t[]>(node->size_of_memory);
+        cf_ReadBytes(node->memory_ptr.get(), node->size_of_memory, file);
       }
     } // end reading nodes
   } // end reading hash nodes
@@ -3346,83 +3324,58 @@ void Osiris_RestoreOMMS(CFILE *file) {
 //	Searches through the hash nodes and looks for the one associated with
 //	the script name, if one doesn't exist it will create one (if autocreate is true).
 tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate) {
-  tOMMSHashNode *curr = OMMS_Hash_node_root;
+  tOMMSHashNode *curr = OMMS_Hash_node_root.get();
 
   if (!OMMS_Hash_node_root) {
     // allocate the root node
     if (!autocreate)
       return nullptr;
 
-    curr = OMMS_Hash_node_root = mem_rmalloc<tOMMSHashNode>();
+    OMMS_Hash_node_root = std::make_unique<tOMMSHashNode>();
+    curr = OMMS_Hash_node_root.get();
   } else {
-    if (curr->script_name && !stricmp(curr->script_name, script_name)) {
+    if (curr->script_name && !stricmp(curr->script_name.get(), script_name)) {
       // the root node matches
       return curr;
     }
 
     // search through to see if we can find the node
     while (curr->next) {
-      if (curr->next->script_name && !stricmp(curr->next->script_name, script_name)) {
+      if (curr->next->script_name && !stricmp(curr->next->script_name.get(), script_name)) {
         // curr->next is a matching node
-        return curr->next;
+        return curr->next.get();
       }
 
-      curr = curr->next;
+      curr = curr->next.get();
     }
 
     // allocate a node and tack it on the end
     if (!autocreate)
       return nullptr;
 
-    curr->next = mem_rmalloc<tOMMSHashNode>();
-    curr = curr->next;
+    curr->next = std::make_unique<tOMMSHashNode>();
+    curr = curr->next.get();
   }
 
   // if we get here then curr is a freshly allocated node
-  curr->next = nullptr;
-  curr->root = nullptr;
-  curr->script_name = mem_strdup(script_name);
+  curr->script_name = mem_strdup_unique(script_name);
   curr->base_id = ++OMMS_Current_base_id;
 
   return curr;
 }
 
-//	frees all memory associated with the OMMSHashNode given (includes all script
-//	memory...returns the next node in the list, NULL if none
-tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node) {
-  if (!node)
-    return nullptr;
-  tOMMSHashNode *ret = node->next;
-
-  if (node->script_name)
-    mem_free(node->script_name);
-
-  tOMMSNode *curr, *next;
-  curr = next = node->root;
-
-  while (curr) {
-    next = curr->next;
-    mem_free(curr->memory_ptr);
-    mem_free(curr);
-    curr = next;
-  }
-
-  mem_free(node);
-
-  return ret;
-}
-
 //	finds an OMMS node, given the hash node to start at.  If it isn't
 //	found than one is created. NULL if out of memory.
 tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocreate) {
-  tOMMSNode *curr = root->root;
+  tOMMSNode *curr = root->root.get();
 
   if (!root->root) {
     // allocate the root node
     if (!autocreate)
       return nullptr;
 
-    curr = root->root = mem_rmalloc<tOMMSNode>();
+    root->root = std::make_unique<tOMMSNode>();
+    curr = root->root.get();
   } else {
     if (curr->unique_id == uid) {
       // the root node matches
@@ -3433,24 +3386,22 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
     while (curr->next) {
       if (curr->next->unique_id == uid) {
         // curr->next is a matching node
-        return curr->next;
+        return curr->next.get();
       }
 
-      curr = curr->next;
+      curr = curr->next.get();
     }
 
     // allocate a node and tack it on the end
     if (!autocreate)
       return nullptr;
 
-    curr->next = mem_rmalloc<tOMMSNode>();
-    curr = curr->next;
+    curr->next = std::make_unique<tOMMSNode>();
+    curr = curr->next.get();
   }
 
   // if we get here then curr is a freshly allocated node
   curr->free_called = 0;
-  curr->memory_ptr = nullptr;
-  curr->next = nullptr;
   curr->reference_count = 0;
   curr->size_of_memory = 0;
   curr->unique_id = uid;
@@ -3461,38 +3412,15 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
 
 //	Removes the OMMS node for the given HashNode (completly remove)
 void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid) {
-  tOMMSNode *curr = root->root;
-  tOMMSNode *node_to_free = nullptr;
-
-  if (!root->root)
-    return;
-
-  if (root->root->unique_id == uid) {
-    // the root node matches
-    node_to_free = root->root;
-    root->root = root->root->next;
-    goto free_mem;
-  }
-
   // search through to see if we can find the node
-  while (curr->next) {
-    if (curr->next->unique_id == uid) {
-      // curr->next is a matching node
-      node_to_free = curr->next;
-      curr->next = curr->next->next;
-      goto free_mem;
+  for (std::unique_ptr<tOMMSNode> *link = &root->root; *link; link = &(*link)->next) {
+    if ((*link)->unique_id == uid) {
+      LOG_DEBUG.printf("OMMS: deleting uid 0x%x", (*link)->unique_id);
+      // unlink the matching node; this frees it and its memory
+      *link = std::move((*link)->next);
+      return;
     }
-    curr = curr->next;
   }
-
-free_mem:
-  if (!node_to_free)
-    return;
-
-  LOG_DEBUG.printf("OMMS: deleting uid 0x%x", node_to_free->unique_id);
-  if (node_to_free->memory_ptr)
-    mem_free(node_to_free->memory_ptr);
-  mem_free(node_to_free);
 }
 
 //	Reduces the reference count for an OMMSNode by 1
@@ -3524,7 +3452,7 @@ void Osiris_OMMS_CallFreeForNode(tOMMSHashNode *root, tOMMSNode *node) {
 //	Searches for the given OMMSHANDLE, returns NULL if not found.  if hash is
 //	given it will return the hash root that the node was found in.
 tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
-  tOMMSHashNode *hashcurr = OMMS_Hash_node_root;
+  tOMMSHashNode *hashcurr = OMMS_Hash_node_root.get();
   tOMMSNode *nodecurr;
   uint16_t base_id;
   uint16_t id;
@@ -3534,7 +3462,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
   while (hashcurr) {
     if (hashcurr->base_id == base_id) {
 
-      nodecurr = hashcurr->root;
+      nodecurr = hashcurr->root.get();
       while (nodecurr) {
         if (nodecurr->id == id) {
           if (hash)
@@ -3542,11 +3470,11 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
           return nodecurr;
         }
 
-        nodecurr = nodecurr->next;
+        nodecurr = nodecurr->next.get();
       }
     }
 
-    hashcurr = hashcurr->next;
+    hashcurr = hashcurr->next.get();
   }
 
   return nullptr;
@@ -3582,9 +3510,7 @@ OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint32_t unique_identifie
   }
 
   // we need to allocate the memory
-  node->memory_ptr = mem_malloc(amount_of_memory);
-  if (!node->memory_ptr)
-    return -1; // out of memory
+  node->memory_ptr = std::make_unique<uint8_t[]>(amount_of_memory);
 
   node->size_of_memory = amount_of_memory;
   node->unique_id = unique_identifier;
@@ -3604,7 +3530,7 @@ void *Osiris_OMMS_Attach(OMMSHANDLE handle) {
   if (node->memory_ptr) {
     node->reference_count++;
   }
-  return node->memory_ptr;
+  return node->memory_ptr.get();
 }
 
 //	Detaches a block of global OMMS memory. (Reduces the reference count).
