@@ -181,7 +181,7 @@ void CAmbientSoundPattern::OnASPDelete() {
     asp *asp = &Ambient_sound_patterns[m_current_asp];
 
     asp->name[0] = 0; // null string for name
-    mem_free(asp->sounds);
+    asp->sounds.reset();
     asp->num_sounds = 0;
     m_current_asp = -1;
 
@@ -217,14 +217,13 @@ void CAmbientSoundPattern::OnASPNewElement() {
 
   if (new_element.handle != -1) {
 
-    auto new_sounds = mem_rmalloc<ase>(asp->num_sounds + 1);
+    auto new_sounds = std::make_unique<ase[]>(asp->num_sounds + 1);
 
-    for (int s = 0; s < asp->num_sounds; s++)
+    for (int s = 0; s < asp->num_sounds; s++) {
       new_sounds[s] = asp->sounds[s];
+    }
 
-    mem_free(asp->sounds);
-
-    asp->sounds = new_sounds;
+    asp->sounds = std::move(new_sounds);
     asp->sounds[asp->num_sounds++] = new_element;
 
     m_current_element = asp->num_sounds;
@@ -247,22 +246,21 @@ void CAmbientSoundPattern::OnASPEditElement() {
 
 void CAmbientSoundPattern::OnASPDeleteElement() {
   asp *asp = &Ambient_sound_patterns[m_current_asp];
-  ase *new_sounds;
 
   if (m_current_element > -1) {
     if (OutrageMessageBox(MBOX_YESNO, "Do you really want to delete sound '%s' from pattern '%s'?",
                           Sounds[asp->sounds[m_current_element].handle].name, asp->name) == IDYES) {
-      new_sounds = mem_rmalloc<ase>(asp->num_sounds - 1);
+      auto new_sounds = std::make_unique<ase[]>(asp->num_sounds - 1);
 
-      for (int s = 0; s < m_current_element; s++)
+      for (int s = 0; s < m_current_element; s++) {
         new_sounds[s] = asp->sounds[s];
+      }
 
-      for (int s = m_current_element; s < asp->num_sounds - 1; s++)
+      for (int s = m_current_element; s < asp->num_sounds - 1; s++) {
         new_sounds[s] = asp->sounds[s + 1];
+      }
 
-      mem_free(asp->sounds);
-
-      asp->sounds = new_sounds;
+      asp->sounds = std::move(new_sounds);
 
       asp->num_sounds--;
 
