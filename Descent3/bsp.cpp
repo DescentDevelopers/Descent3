@@ -157,15 +157,11 @@ std::unique_ptr<bspnode> NewBSPNode(void) {
 // Returns pointer to polygon
 bsppolygon *NewPolygon(int roomnum, int facenum, int numverts) {
   bsppolygon *newpoly;
-  vector *verts;
 
   newpoly = new bsppolygon;
 
-  verts = mem_rmalloc<vector>(numverts);
-  ASSERT(verts != nullptr);
-
   newpoly->nv = numverts;
-  newpoly->verts = verts;
+  newpoly->verts = std::make_unique<vector[]>(numverts);
 
   newpoly->roomnum = roomnum;
   newpoly->facenum = facenum;
@@ -233,10 +229,6 @@ void LoadBSPNode(CFILE *infile, std::unique_ptr<bspnode> &node) {
 void FreePolygon(bsppolygon *poly) {
   ASSERT(poly != nullptr);
   ASSERT(poly->nv > 2);
-
-  if (poly->nv > 0) {
-    mem_free(poly->verts);
-  }
 
   delete poly;
 }

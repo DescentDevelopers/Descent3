@@ -65,7 +65,7 @@ struct bspplane {
 };
 
 struct bsppolygon {
-  vector *verts;
+  std::unique_ptr<vector[]> verts;
   int nv;
   bspplane plane;
 
