@@ -21,6 +21,7 @@
 #define VCLIP_H
 
 #include <filesystem>
+#include <memory>
 
 #include "fix.h"
 #include "manage.h"
@@ -34,7 +35,7 @@
 struct vclip {
   char name[PAGENAME_LEN];
   int16_t num_frames;
-  int16_t *frames;    // bitmap indices
+  std::unique_ptr<int16_t[]> frames; // bitmap indices
   float frame_time; // time (in seconds) of each frame
   int flags;
   uint8_t target_size; // what size this vclip should use (texture wise)
