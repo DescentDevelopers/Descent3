@@ -774,36 +774,6 @@ void FreePolymodelData(int i) {
         Poly_models[i].submodel[t].keyframe_pos = nullptr;
       }
 
-      if (Poly_models[i].submodel[t].verts) {
-        mem_free(Poly_models[i].submodel[t].verts);
-        Poly_models[i].submodel[t].verts = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].vertnorms) {
-        mem_free(Poly_models[i].submodel[t].vertnorms);
-        Poly_models[i].submodel[t].vertnorms = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].alpha) {
-        mem_free(Poly_models[i].submodel[t].alpha);
-        Poly_models[i].submodel[t].alpha = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].vertnum_memory) {
-        mem_free(Poly_models[i].submodel[t].vertnum_memory);
-        Poly_models[i].submodel[t].vertnum_memory = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].u_memory) {
-        mem_free(Poly_models[i].submodel[t].u_memory);
-        Poly_models[i].submodel[t].u_memory = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].v_memory) {
-        mem_free(Poly_models[i].submodel[t].v_memory);
-        Poly_models[i].submodel[t].v_memory = nullptr;
-      }
-
       if (Poly_models[i].flags & PMF_TIMED) {
         if (Poly_models[i].submodel[t].rot_start_time) {
           mem_free(Poly_models[i].submodel[t].rot_start_time);
@@ -819,20 +789,6 @@ void FreePolymodelData(int i) {
       if (Poly_models[i].submodel[t].flags & (SOF_GLOW | SOF_THRUSTER)) {
         mem_free(Poly_models[i].submodel[t].glow_info);
         Poly_models[i].submodel[t].glow_info = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].faces) {
-        mem_free(Poly_models[i].submodel[t].faces);
-        Poly_models[i].submodel[t].faces = nullptr;
-
-        if (Poly_models[i].submodel[t].face_min) {
-          mem_free(Poly_models[i].submodel[t].face_min);
-          Poly_models[i].submodel[t].face_min = nullptr;
-        }
-        if (Poly_models[i].submodel[t].face_max) {
-          mem_free(Poly_models[i].submodel[t].face_max);
-          Poly_models[i].submodel[t].face_max = nullptr;
-        }
       }
     }
   }
@@ -1402,19 +1358,16 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       ASSERT(nverts < MAX_POLYGON_VECS);
 
       if (nverts) {
-        pm->submodel[n].verts = mem_rmalloc<vector>(nverts);
-        pm->submodel[n].vertnorms = mem_rmalloc<vector>(nverts);
-        pm->submodel[n].alpha = mem_rmalloc<float>(nverts);
-        ASSERT(pm->submodel[n].verts);
-        ASSERT(pm->submodel[n].vertnorms);
-        ASSERT(pm->submodel[n].alpha);
+        pm->submodel[n].verts = std::make_unique<vector[]>(nverts);
+        pm->submodel[n].vertnorms = std::make_unique<vector[]>(nverts);
+        pm->submodel[n].alpha = std::make_unique<float[]>(nverts);
       } else {
         // Let me take a moment right here to say how annoying it is that I can't
         // set all these pointers to nullptr with one assignment on the same line due
         // to the stupid strong typying they've added to C.
-        pm->submodel[n].verts = nullptr;
-        pm->submodel[n].vertnorms = nullptr;
-        pm->submodel[n].alpha = nullptr;
+        pm->submodel[n].verts.reset();
+        pm->submodel[n].vertnorms.reset();
+        pm->submodel[n].alpha.reset();
       }
 
       pm->submodel[n].nverts = nverts;
@@ -1457,14 +1410,13 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->submodel[n].num_faces = nfaces;
 
       if (nfaces) {
-        pm->submodel[n].faces = mem_rmalloc<polyface>(nfaces);
-        pm->submodel[n].face_min = mem_rmalloc<vector>(nfaces);
-        pm->submodel[n].face_max = mem_rmalloc<vector>(nfaces);
-        ASSERT(pm->submodel[n].faces);
+        pm->submodel[n].faces = std::make_unique<polyface[]>(nfaces);
+        pm->submodel[n].face_min = std::make_unique<vector[]>(nfaces);
+        pm->submodel[n].face_max = std::make_unique<vector[]>(nfaces);
       } else {
-        pm->submodel[n].faces = nullptr;
-        pm->submodel[n].face_max = nullptr;
-        pm->submodel[n].face_min = nullptr;
+        pm->submodel[n].faces.reset();
+        pm->submodel[n].face_max.reset();
+        pm->submodel[n].face_min.reset();
       }
 
       // Find out how much space we'll need
@@ -1474,13 +1426,11 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       int current_count = 0;
 
       int save_position = cftell(infile);
-      int *start_index;
+      std::unique_ptr<int[]> start_index;
 
       if (nfaces) {
-        start_index = mem_rmalloc<int>(nfaces);
-        ASSERT(start_index);
-      } else
-        start_index = nullptr;
+        start_index = std::make_unique<int[]>(nfaces);
+      }
 
       uint8_t tempbuf[2000];
 
@@ -1507,18 +1457,13 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       // Allocate our space
       if (current_count) {
-        sm->vertnum_memory = mem_rmalloc<int16_t>(current_count);
-        ASSERT(sm->vertnum_memory);
-
-        sm->u_memory = mem_rmalloc<float>(current_count);
-        ASSERT(sm->u_memory);
-
-        sm->v_memory = mem_rmalloc<float>(current_count);
-        ASSERT(sm->v_memory);
+        sm->vertnum_memory = std::make_unique<int16_t[]>(current_count);
+        sm->u_memory = std::make_unique<float[]>(current_count);
+        sm->v_memory = std::make_unique<float[]>(current_count);
       } else {
-        sm->vertnum_memory = nullptr;
-        sm->u_memory = nullptr;
-        sm->v_memory = nullptr;
+        sm->vertnum_memory.reset();
+        sm->u_memory.reset();
+        sm->v_memory.reset();
       }
 
       // Now go through and set up our fake pointers
@@ -1531,8 +1476,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       // Reset our file pointer and free the temp memory
       cfseek(infile, save_position, SEEK_SET);
 
-      if (start_index)
-        mem_free(start_index);
+      start_index.reset();
 
       for (i = 0; i < nfaces; i++) {
         ReadModelVector(&pm->submodel[n].faces[i].normal, infile);

@@ -167,16 +167,16 @@ struct bsp_info {
                            // Reference as all other vertices in this submodel. (Relative to pivot point)
   float rad;               // radius for each submodel
 
-  vector *verts; // vertices for the submodel (NEWSTYLE)
-  vector *vertnorms;
-  float *alpha;
-  polyface *faces; // faces for the submodel (NEWSTYLE)
-  vector *face_min;
-  vector *face_max;
+  std::unique_ptr<vector[]> verts; // vertices for the submodel (NEWSTYLE)
+  std::unique_ptr<vector[]> vertnorms;
+  std::unique_ptr<float[]> alpha;
+  std::unique_ptr<polyface[]> faces; // faces for the submodel (NEWSTYLE)
+  std::unique_ptr<vector[]> face_min;
+  std::unique_ptr<vector[]> face_max;
 
-  int16_t *vertnum_memory;
-  float *u_memory;
-  float *v_memory;
+  std::unique_ptr<int16_t[]> vertnum_memory;
+  std::unique_ptr<float[]> u_memory;
+  std::unique_ptr<float[]> v_memory;
 
   int nverts;
   int num_faces; // amount of faces (NEWSTYLE);
