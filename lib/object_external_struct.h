@@ -513,7 +513,7 @@ struct object {
   uint16_t position_counter;
 
   // OSIRIS Script Info (new OSIRIS)
-  tOSIRISScript *osiris_script;
+  std::unique_ptr<tOSIRISScript> osiris_script;
 
   std::unique_ptr<char[]> custom_default_script_name;
   std::unique_ptr<char[]> custom_default_module_name;

@@ -1172,7 +1172,7 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->pos = objp->last_pos = *pos;
   objp->parent_handle = parent_handle;
   objp->creation_time = creation_time;
-  objp->osiris_script = nullptr;
+  objp->osiris_script.reset();
   // Initialize some general stuff
   objp->roomnum = -1;
   objp->orient = Identity_matrix;
