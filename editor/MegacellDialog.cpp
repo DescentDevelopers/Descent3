@@ -371,12 +371,12 @@ void CMegacellDialog::OnDeleteMegacell() {
     }
 
     int num_to_delete = 0;
+    auto texname_buf = std::make_unique<char[]>(MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT * PAGENAME_LEN);
     char *texnames[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
     uint16_t texindices[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
 
     for (i = 0; i < MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT; i++) {
-      texnames[i] = mem_rmalloc<char>(PAGENAME_LEN);
-      ASSERT(texnames[i]);
+      texnames[i] = &texname_buf[i * PAGENAME_LEN];
       if (!can_delete[i])
         continue;
 
@@ -414,9 +414,6 @@ void CMegacellDialog::OnDeleteMegacell() {
 
       FreeTexture(texindices[i]);
     }
-
-    for (i = 0; i < MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT; i++)
-      mem_free(texnames[i]);
   }
 
   AutoChecking = 0;
