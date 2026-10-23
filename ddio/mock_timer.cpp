@@ -64,6 +64,11 @@ int64_t ChronoTimer::GetTimeMS() { return s_time_us / 1000; }
 int64_t ChronoTimer::GetTimeUS() { return s_time_us; }
 
 void ChronoTimer::SleepMS(int delay) {
+  // Like the real clock, a sleep of zero or less returns at once, rather than moving time backwards
+  if (delay <= 0) {
+    return;
+  }
+
   s_advanced = true;
   Advance(static_cast<int64_t>(delay) * 1000);
 }

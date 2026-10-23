@@ -67,6 +67,18 @@ TEST_F(MockTimerUnpaced, SleepsAccumulate) {
   EXPECT_EQ(ChronoTimer::GetTimeMS(), 7);
 }
 
+TEST_F(MockTimerUnpaced, NonPositiveSleepDoesNothing) {
+  ChronoTimer::SleepMS(5);
+  ChronoTimer::Pump();
+  ChronoTimer::SleepMS(0);
+  ChronoTimer::SleepMS(-3);
+  EXPECT_EQ(ChronoTimer::GetTimeMS(), 5);
+
+  // ...and does not count as advancing the clock, so the next pump still steps
+  ChronoTimer::Pump();
+  EXPECT_EQ(ChronoTimer::GetTimeMS(), 5 + ChronoTimer::kFixedStepMS);
+}
+
 TEST_F(MockTimerUnpaced, PumpStepsWhenIdle) {
   const int64_t step_us = ChronoTimer::kFixedStepMS * 1000;
 
