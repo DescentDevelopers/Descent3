@@ -61,8 +61,6 @@ static char THIS_FILE[] = __FILE__;
 // CGrWnd
 
 CGrWnd::CGrWnd(const char *name) {
-  m_grScreen = nullptr;
-  m_grViewport = nullptr;
   if (name)
     strncpy(m_Name, name, 15);
   m_Name[31] = 0;
@@ -94,14 +92,8 @@ void CGrWnd::OnDestroy() {
 
   // TODO: Add your message handler code here
   //	destroy screen element
-  if (m_grViewport) {
-    delete m_grViewport;
-    m_grViewport = nullptr;
-  }
-  if (m_grScreen) {
-    delete m_grScreen;
-    m_grScreen = nullptr;
-  }
+  m_grViewport.reset();
+  m_grScreen.reset();
 
   m_grCreated = FALSE;
 }
@@ -120,9 +112,9 @@ int CGrWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
   client_height = (rect.bottom - rect.top);
   if (client_width && client_height) {
     ASSERT(m_grScreen == nullptr);
-    m_grScreen = new grScreen(client_width, client_height, BPP_16, m_Name);
+    m_grScreen = std::make_unique<grScreen>(client_width, client_height, BPP_16, m_Name);
     m_grScreen->attach_to_window((unsigned)m_hWnd);
-    m_grViewport = new grViewport(m_grScreen);
+    m_grViewport = std::make_unique<grViewport>(m_grScreen.get());
   }
 
   return 0;
@@ -139,10 +131,8 @@ void CGrWnd::OnSize(UINT nType, int cx, int cy) {
 
   // TODO: Add your message handler code here
   if (m_grViewport) {
-    delete m_grViewport;
-    delete m_grScreen;
-    m_grViewport = nullptr;
-    m_grScreen = nullptr;
+    m_grViewport.reset();
+    m_grScreen.reset();
   }
   if (cx && cy && !m_grViewport) {
     RECT rect;
@@ -152,9 +142,9 @@ void CGrWnd::OnSize(UINT nType, int cx, int cy) {
     client_width = (rect.right - rect.left);
     client_height = (rect.bottom - rect.top);
 
-    m_grScreen = new grScreen(client_width, client_height, BPP_16, m_Name);
+    m_grScreen = std::make_unique<grScreen>(client_width, client_height, BPP_16, m_Name);
     m_grScreen->attach_to_window((unsigned)m_hWnd);
-    m_grViewport = new grViewport(m_grScreen);
+    m_grViewport = std::make_unique<grViewport>(m_grScreen.get());
   }
 }
 
