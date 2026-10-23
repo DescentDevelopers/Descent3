@@ -1217,7 +1217,6 @@ bool FaceIsPlanar(int nv, int16_t *face_verts, vector *normal, vector *verts) {
 // Fixes all the concave/nonplanar faces of facelist of room rp
 void FixConcaveFaces(room *rp, int *facelist, int facecount) {
   int i, t, k;
-  face *newfaces;
 
   for (i = 0; i < facecount; i++) {
     // If this face is concave, build a triangle strip out of the concave face
@@ -1239,8 +1238,7 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
       // Allocate memory for our new faces
       int nfaces = rp->num_faces + num_new_faces;
 
-      newfaces = mem_rmalloc<face>(nfaces);
-      ASSERT(newfaces != nullptr);
+      auto newfaces = std::make_unique<face[]>(nfaces);
 
       // Copy all the faces into our new array
       for (t = 0; t < rp->num_faces; t++) {
@@ -1299,8 +1297,7 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
       }
 
       // Free up the old list of faces
-      mem_free(rp->faces);
-      rp->faces = newfaces;
+      rp->faces = std::move(newfaces);
       rp->num_faces = nfaces;
 
       if (rp->num_bbf_regions) {
@@ -1428,16 +1425,13 @@ int RoomAddFaces(room *rp, int num_new_faces) {
   if (num_new_faces == 0)
     return 0;
 
-  auto newfaces = mem_rmalloc<face>(rp->num_faces + num_new_faces);
+  auto newfaces = std::make_unique<face[]>(rp->num_faces + num_new_faces);
 
-  ASSERT(newfaces != nullptr);
-
-  for (int i = 0; i < rp->num_faces; i++)
+  for (int i = 0; i < rp->num_faces; i++) {
     newfaces[i] = rp->faces[i];
+  }
 
-  mem_free(rp->faces);
-
-  rp->faces = newfaces;
+  rp->faces = std::move(newfaces);
   rp->num_faces += num_new_faces;
 
   if (rp->num_bbf_regions) {
@@ -1633,7 +1627,7 @@ void DeleteRoomVert(room *rp, int vertnum) {
   vector *newverts;
 
   // Remap vertices in faces
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       if (fp->face_verts[v] == vertnum)
         Int3(); // THIS IS VERY BAD!  DELETING A VERTEX STILL IN USE!
@@ -1678,7 +1672,7 @@ int DeleteUnusedRoomVerts(room *rp) {
     vert_used[v] = 0;
 
   // Go through all the faces & flag the used verts
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       vert_used[fp->face_verts[v]] = 1;
 
@@ -1698,7 +1692,6 @@ int DeleteUnusedRoomVerts(room *rp) {
 //					facenum - the face to be deleted
 void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
   int p, f, i, t;
-  face *newfaces;
 
   // Check for trigger on this face
   if (rp->faces[facenum].flags & FF_HAS_TRIGGER)
@@ -1723,14 +1716,15 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
   }
 
   // Allocate new face list
-  newfaces = mem_rmalloc<face>(rp->num_faces - 1);
-  ASSERT(newfaces != nullptr);
+  auto newfaces = std::make_unique<face[]>(rp->num_faces - 1);
 
   // Copy faces over
-  for (f = 0; f < facenum; f++)
+  for (f = 0; f < facenum; f++) {
     newfaces[f] = rp->faces[f];
-  for (f++; f < rp->num_faces; f++)
+  }
+  for (f++; f < rp->num_faces; f++) {
     newfaces[f - 1] = rp->faces[f];
+  }
 
 #ifdef NEWEDITOR
   // Decrement texture usage
@@ -1747,11 +1741,8 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
   // Free deleted face memeory
   FreeRoomFace(&rp->faces[facenum]);
 
-  // Free old face list
-  mem_free(rp->faces);
-
-  // Use new face list
-  rp->faces = newfaces;
+  // Use new face list (frees the old one)
+  rp->faces = std::move(newfaces);
   rp->num_faces--;
 
   // Adjust the current and marked faces if necessary
@@ -2133,7 +2124,7 @@ int CheckConcaveFaces(room *rp) {
   int errors = 0;
 
   // Go through all the faces
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
 
     int vert = CheckFaceConcavity(fp->num_verts, fp->face_verts, &fp->normal, rp->verts);
     if (vert != -1) {
@@ -2151,7 +2142,7 @@ int CheckDegenerateFaces(room *rp) {
   face *fp;
 
   // Go through all the faces
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
     for (v = 0; v < fp->num_verts; v++)
       if (fp->face_verts[v] == fp->face_verts[(v + 2) % fp->num_verts]) {
         CheckError("Room %3d face %3d is degenerate\n", ROOMNUM(rp), f);
@@ -2369,7 +2360,7 @@ int CheckUnusedPoints(room *rp) {
     vert_used[v] = 0;
 
   // Go through all the faces & flag the used verts
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       vert_used[fp->face_verts[v]] = 1;
 
@@ -2391,7 +2382,7 @@ int CheckDuplicateFacePoints(room *rp) {
   int f, v, errors = 0;
   face *fp;
 
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       if (fp->face_verts[v] == fp->face_verts[(v + 1) % fp->num_verts]) {
         CheckError("Room %d, face %d: vert #%d (%d) is the same as #%d\n", r, f, (v + 1) % fp->num_verts,
@@ -2476,10 +2467,10 @@ int FindTJoints(room *rp) {
   int points_added = 0;
 
   // Now search for and fix t-joints
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
     for (v = 0; v < fp->num_verts; v++) {
       int vv0 = fp->face_verts[v], vv1 = fp->face_verts[(v + 1) % fp->num_verts];
-      for (f2 = 0, fp2 = rp->faces; f2 < rp->num_faces; f2++, fp2++) {
+      for (f2 = 0, fp2 = rp->faces.get(); f2 < rp->num_faces; f2++, fp2++) {
         if (f2 != f) {
           for (v2 = 0; v2 < fp2->num_verts; v2++) {
             int tt0 = fp2->face_verts[v2], tt1 = fp2->face_verts[(v2 + 1) % fp2->num_verts];
@@ -2494,7 +2485,7 @@ int FindTJoints(room *rp) {
       if (f2 == rp->num_faces) { // didn't find a match
 
         // Look for vert on this edge
-        for (f2 = 0, fp2 = rp->faces; f2 < rp->num_faces; f2++, fp2++) {
+        for (f2 = 0, fp2 = rp->faces.get(); f2 < rp->num_faces; f2++, fp2++) {
           if (f2 != f) {
             for (v2 = 0; v2 < fp2->num_verts; v2++) {
               int tt0 = fp2->face_verts[v2], tt1 = fp2->face_verts[(v2 + 1) % fp2->num_verts];
@@ -2624,7 +2615,7 @@ void NormalizeFaceUVs() {
       int f;
       face *fp;
 
-      for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+      for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
         float base_u = floor(fp->face_uvls[0].u);
         float base_v = floor(fp->face_uvls[0].v);
 
@@ -2882,7 +2873,7 @@ int RemoveDuplicatePoints(room *rp) {
       if (PointsAreSame(&rp->verts[i], &rp->verts[j])) {
 
         // Replace the higher-numbered point with the lower-numbered in all the faces in this room
-        for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+        for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
           for (v = 0; v < fp->num_verts; v++)
             if (fp->face_verts[v] == i)
               fp->face_verts[v] = j;
@@ -2906,7 +2897,7 @@ int RemoveDuplicateFacePoints(room *rp) {
   int f, v, n_fixed = 0;
   face *fp;
 
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       if (fp->face_verts[v] == fp->face_verts[(v + 1) % fp->num_verts]) {
         int new_verts[MAX_VERTS_PER_FACE];
@@ -2970,7 +2961,7 @@ void FixDegenerateFaces() {
 
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++, rp++) {
     if (rp->used) {
-      for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+      for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
         bool face_fixed = 0;
       recheck_face:;
         if (fp->num_verts < 3) {
