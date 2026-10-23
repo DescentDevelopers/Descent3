@@ -113,7 +113,7 @@ int AllocEvent() {
   for (i = 0; i < MAX_EVENTS; i++) {
     if (GameEvent[i].used == 0) {
       ASSERT(GameEvent[i].data == nullptr);
-      memset(&GameEvent[i], 0, sizeof(game_event));
+      GameEvent[i] = {};
       GameEvent[i].used = 1;
       GameEvent[i].objhandle_detonator = OBJECT_HANDLE_NONE;
       Num_events++;
