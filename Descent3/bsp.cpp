@@ -134,11 +134,7 @@ int BSPGetMineChecksum() {
 // Allocates memory for a bspnode
 // Returns pointer to node
 bspnode *NewBSPNode(void) {
-  bspnode *node;
-
-  if ((node = mem_rmalloc<bspnode>()) == nullptr) {
-    return nullptr;
-  }
+  bspnode *node = new bspnode;
 
   /* Initialize the node, set its variables to zero */
 
@@ -165,12 +161,7 @@ bsppolygon *NewPolygon(int roomnum, int facenum, int numverts) {
   bsppolygon *newpoly;
   vector *verts;
 
-  newpoly = mem_rmalloc<bsppolygon>();
-
-  if (newpoly == nullptr) {
-    LOG_ERROR << "NewPolygon: Couldn't allocate polygon";
-    return nullptr;
-  }
+  newpoly = new bsppolygon;
 
   verts = mem_rmalloc<vector>(numverts);
   ASSERT(verts != nullptr);
@@ -250,7 +241,7 @@ void FreePolygon(bsppolygon *poly) {
     mem_free(poly->verts);
   }
 
-  mem_free(poly);
+  delete poly;
 }
 
 // Calculates the plane equation for a given polygon
@@ -752,7 +743,7 @@ void DestroyBSPNode(bspnode *node) {
   if (np > 0)
     DestroyList(&node->polylist);
 
-  mem_free(node);
+  delete node;
 }
 
 // Walks the BSP tree and frees up any nodes/polygons that we might be using
