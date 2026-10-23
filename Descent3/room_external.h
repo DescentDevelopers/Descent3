@@ -222,7 +222,7 @@ struct room {
   std::unique_ptr<vector4[]> verts4; // array of 16byte vertices for this room
 
   std::unique_ptr<doorway> doorway_data; // this room's doorway data, or NULL if not a doorway
-  char *name;              // name of this room, or NULL
+  std::unique_ptr<char[]> name;          // name of this room, or NULL
   int objects;             // index of first object in this room
   vector max_xyz, min_xyz; // for external room visibility checking
 

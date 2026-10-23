@@ -437,7 +437,7 @@ void CRoomKeypadDialog::OnLoadRoom() {
   }
 
   ASSERT(Rooms[n].name == nullptr);
-  Rooms[n].name = mem_strdup(roomname);
+  Rooms[n].name = mem_strdup_unique(roomname);
 
   D3EditState.current_room = n;
 
@@ -503,7 +503,7 @@ void CRoomKeypadDialog::UpdateDialog() {
   int i;
 
   // Show the number of verts, faces, & portals in the current room
-  PrintToDlgItem(this, IDC_ROOM_NAME, "Name:\t%s", Curroomp->name ? Curroomp->name : "<none>");
+  PrintToDlgItem(this, IDC_ROOM_NAME, "Name:\t%s", Curroomp->name ? Curroomp->name.get() : "<none>");
   PrintToDlgItem(this, IDC_VERTEX_COUNT, "Vertices:\t%d", Curroomp->num_verts);
   PrintToDlgItem(this, IDC_FACE_COUNT, "Faces:\t%d", Curroomp->num_faces);
   PrintToDlgItem(this, IDC_PORTAL_COUNT, "Portals:\t%d", Curroomp->num_portals);
@@ -638,9 +638,9 @@ void CRoomKeypadDialog::UpdateDialog() {
 
     for (int i = FIRST_PALETTE_ROOM; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++) {
       if (Rooms[i].used && Rooms[i].name) // if a placed door, won't have a name
-        SendDlgItemMessage(IDC_ROOM_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Rooms[i].name);
+        SendDlgItemMessage(IDC_ROOM_PULLDOWN, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)Rooms[i].name.get());
     }
-    SendDlgItemMessage(IDC_ROOM_PULLDOWN, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Rooms[n].name);
+    SendDlgItemMessage(IDC_ROOM_PULLDOWN, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Rooms[n].name.get());
   }
 }
 

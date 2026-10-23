@@ -2438,12 +2438,12 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
   InitRoom(rp, nverts, nfaces, nportals);
 
   // Get room name
-  rp->name = nullptr;
+  rp->name.reset();
   if (version >= 96) {
     char tempname[ROOM_NAME_LEN + 1];
     cf_ReadString(tempname, sizeof(tempname), ifile);
     if (strlen(tempname)) {
-      rp->name = mem_strdup(tempname);
+      rp->name = mem_strdup_unique(tempname);
     }
   }
 
@@ -4417,7 +4417,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
   cf_WriteInt(ofile, rp->num_portals);
 
   // Write name
-  cf_WriteString(ofile, rp->name ? rp->name : "");
+  cf_WriteString(ofile, rp->name ? rp->name.get() : "");
 
   // Write out the path point
   cf_WriteVector(ofile, &rp->path_pnt);

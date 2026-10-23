@@ -520,7 +520,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   // Default to no ambient sound
   rp->ambient_sound = -1;
 
-  rp->name = nullptr;
+  rp->name.reset();
   rp->doorway_data.reset();
 
   rp->env_reverb = 0; // reverb for sound system.
@@ -623,8 +623,7 @@ void FreeRoom(room *rp) {
 
   rp->volume_lights.reset();
 
-  if (rp->name)
-    mem_free(rp->name);
+  rp->name.reset();
 
   rp->doorway_data.reset();
 

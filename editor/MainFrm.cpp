@@ -2583,7 +2583,7 @@ void ShowRooms() {
   sprintf(t, "");
   for (i = n = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used && Rooms[i].name) {
-      sprintf(t, "Room %d is named \"%s\"\n", i, Rooms[i].name);
+      sprintf(t, "Room %d is named \"%s\"\n", i, Rooms[i].name.get());
       n++;
       t += strlen(t);
       if ((t - text_buf) > (sizeof(text_buf) - 200)) {
