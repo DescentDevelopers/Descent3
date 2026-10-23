@@ -97,6 +97,7 @@
  * $NoKeywords: $
  */
 
+#include <memory>
 
 #include "memory.h"
 #include "bnode.h"
@@ -179,7 +180,7 @@ static float BNode_QuickDist(vector *pos1, vector *pos2) {
 int BNode_Path[MAX_BNODES_PER_ROOM];
 int BNode_PathNumNodes;
 
-static void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
+static void BNode_UpdatePathInfo(const std::unique_ptr<pq_item> node_list[], int start, int end) {
   int cur_node = end;
   int i;
 
@@ -214,7 +215,6 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
     return false;
   bpq PQPath;
   int counter;
-  pq_item *start_node = new pq_item(i, -1, 0.0f);
   pq_item *cur_node;
   bool f_found = false;
 
@@ -222,22 +222,22 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
 
   start_room = BOA_INDEX(start_room);
 
-  pq_item **node_list;
   bn_list *bnlist = BNode_GetBNListPtr(start_room);
 
   ASSERT(bnlist);
   ASSERT(i >= 0 && i < bnlist->num_nodes && j >= 0 && j < bnlist->num_nodes);
 
-  node_list = mem_rmalloc<pq_item *>(bnlist->num_nodes);
-  memset(node_list, 0, bnlist->num_nodes * sizeof(pq_item *));
+  // Owns every queue node; PQPath only links them
+  auto node_list = std::make_unique<std::unique_ptr<pq_item>[]>(bnlist->num_nodes);
 
-  PQPath.push(start_node);
+  node_list[i] = std::make_unique<pq_item>(i, -1, 0.0f);
+  PQPath.push(node_list[i].get());
 
   while ((cur_node = PQPath.pop())) {
-    node_list[cur_node->node] = cur_node;
+    ASSERT(node_list[cur_node->node].get() == cur_node);
 
     if (cur_node->node == j) {
-      BNode_UpdatePathInfo(node_list, i, j);
+      BNode_UpdatePathInfo(node_list.get(), i, j);
       f_found = true;
       goto done;
     }
@@ -262,15 +262,14 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
       ASSERT(bnlist->nodes[cur_node->node].edges[counter].cost > 0);
       new_cost = cur_node->cost + bnlist->nodes[cur_node->node].edges[counter].cost;
 
-      list_item = node_list[next_node];
+      list_item = node_list[next_node].get();
 
       if (list_item != nullptr && list_item->cost < new_cost)
         continue;
 
       if (list_item == nullptr) {
-        list_item = new pq_item(next_node, cur_node->node, new_cost);
-
-        node_list[next_node] = list_item;
+        node_list[next_node] = std::make_unique<pq_item>(next_node, cur_node->node, new_cost);
+        list_item = node_list[next_node].get();
         PQPath.push(list_item);
       } else {
         list_item->cost = new_cost;
@@ -280,12 +279,6 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
   }
 
 done:
-  for (counter = 0; counter < bnlist->num_nodes; counter++) {
-    if (node_list[counter])
-      delete node_list[counter];
-  }
-
-  mem_free(node_list); // DAJ LEAKFIX
   return f_found;
 }
 
