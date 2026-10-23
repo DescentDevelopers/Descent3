@@ -178,8 +178,6 @@ int dp_SelectDirectPlayConnection(char *name) {
   } else
     connection = lpAddress;
 
-  memset(&dpconns, 0, sizeof(dpconnections) * MAX_DIRECTPLAY_CONNECTIONS);
-
   hr = lpDirectPlay4A->InitializeConnection(connection, 0);
 
   for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
@@ -587,8 +585,6 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
       LOG_ERROR << "Unable to find DirectPlay Modem connection.";
       return 0;
     }
-
-    memset(&dpconns, 0, sizeof(dpconnections) * MAX_DIRECTPLAY_CONNECTIONS);
 
     hr = lpTempDP4->InitializeConnection(connection, 0);
 
