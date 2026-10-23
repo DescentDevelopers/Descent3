@@ -170,9 +170,9 @@
 
 void UIListBox::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
   m_NumItems = 0;
-  m_ItemList = nullptr;
-  m_Virt2Real = nullptr;
-  m_Real2Virt = nullptr;
+  m_ItemList.reset();
+  m_Virt2Real.reset();
+  m_Real2Virt.reset();
   m_SelectedIndex = 0;
   m_Index = 0;
   m_MouseState = 0;
@@ -198,9 +198,9 @@ void UIListBox::Create(UIWindow *parent, int id, int x, int y, int w, int h, int
 
 // adds an item to the list, no sorting
 void UIListBox::AddItem(const UIItem *item) {
-  UIItem **temp;
+  std::unique_ptr<UIItem *[]> temp;
   int i;
-  int *tempvirt2real, *tempreal2virt;
+  std::unique_ptr<int[]> tempvirt2real, tempreal2virt;
   int real_index = -1;
 
   if (m_Flags & UILB_NOSORT) {
@@ -208,9 +208,9 @@ void UIListBox::AddItem(const UIItem *item) {
 
     if ((m_NumItems % LISTBOX_BUFFER_SIZE) == 0) {
       //	dynamically allocated memory for listbox, expand as needed.
-      temp = new UIItem *[m_NumItems + LISTBOX_BUFFER_SIZE];
-      tempvirt2real = new int[m_NumItems + LISTBOX_BUFFER_SIZE];
-      tempreal2virt = new int[m_NumItems + LISTBOX_BUFFER_SIZE];
+      temp = std::make_unique<UIItem *[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempvirt2real = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempreal2virt = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
 
       if (m_ItemList) {
         for (i = 0; i < m_NumItems; i++) {
@@ -218,14 +218,10 @@ void UIListBox::AddItem(const UIItem *item) {
           tempvirt2real[i] = m_Virt2Real[i];
           tempreal2virt[i] = m_Real2Virt[i];
         }
-
-        delete[] m_ItemList;
-        delete[] m_Virt2Real;
-        delete[] m_Real2Virt;
       }
-      m_ItemList = temp;
-      m_Virt2Real = tempvirt2real;
-      m_Real2Virt = tempreal2virt;
+      m_ItemList = std::move(temp);
+      m_Virt2Real = std::move(tempvirt2real);
+      m_Real2Virt = std::move(tempreal2virt);
     }
 
     real_index = m_NumItems;
@@ -236,9 +232,9 @@ void UIListBox::AddItem(const UIItem *item) {
     // insert with sorting
     if ((m_NumItems % LISTBOX_BUFFER_SIZE) == 0) {
       //	dynamically allocated memory for listbox, expand as needed.
-      temp = new UIItem *[m_NumItems + LISTBOX_BUFFER_SIZE];
-      tempvirt2real = new int[m_NumItems + LISTBOX_BUFFER_SIZE];
-      tempreal2virt = new int[m_NumItems + LISTBOX_BUFFER_SIZE];
+      temp = std::make_unique<UIItem *[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempvirt2real = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempreal2virt = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
       int oidx = 0, cidx = 0;
       int pidx = 0;
       real_index = -1;
@@ -294,17 +290,13 @@ void UIListBox::AddItem(const UIItem *item) {
               tempvirt2real[oidx]++;
           }
         }
-
-        delete[] m_ItemList;
-        delete[] m_Virt2Real;
-        delete[] m_Real2Virt;
       } else {
         real_index = 0;
       }
 
-      m_ItemList = temp;
-      m_Virt2Real = tempvirt2real;
-      m_Real2Virt = tempreal2virt;
+      m_ItemList = std::move(temp);
+      m_Virt2Real = std::move(tempvirt2real);
+      m_Real2Virt = std::move(tempreal2virt);
     } else {
       // find where to insert, without allocating memory
       int oidx = 0, cidx = 0;
@@ -448,15 +440,9 @@ void UIListBox::RemoveItem(const UIItem *item) {
 //	empties listbox
 void UIListBox::RemoveAll() {
   m_Index = m_SelectedIndex = m_NumItems = 0;
-  if (m_ItemList)
-    delete[] m_ItemList;
-  if (m_Virt2Real)
-    delete[] m_Virt2Real;
-  if (m_Real2Virt)
-    delete[] m_Real2Virt;
-  m_ItemList = nullptr;
-  m_Virt2Real = nullptr;
-  m_Real2Virt = nullptr;
+  m_ItemList.reset();
+  m_Virt2Real.reset();
+  m_Real2Virt.reset();
 }
 
 // selects the given item in the list.
@@ -589,16 +575,9 @@ void UIListBox::SetSelectChangeCallback(void (*fn)(int, void *), void *ptr) {
 void UIListBox::OnDestroy() {
   UIGadget::OnDestroy();
 
-  if (m_ItemList)
-    delete[] m_ItemList;
-  if (m_Real2Virt)
-    delete[] m_Real2Virt;
-  if (m_Virt2Real)
-    delete[] m_Virt2Real;
-
-  m_ItemList = nullptr;
-  m_Real2Virt = nullptr;
-  m_Virt2Real = nullptr;
+  m_ItemList.reset();
+  m_Real2Virt.reset();
+  m_Virt2Real.reset();
 }
 
 // behavior when gadget is being drawn.
