@@ -2565,7 +2565,7 @@ void CMainFrame::OnTestTest1() {
         mem_free(fp->u2);
         mem_free(fp->v2);
       }
-      mem_free(Objects[i].lm_object.lightmap_faces[m]);
+      Objects[i].lm_object.lightmap_faces[m].reset();
     }
 
     Objects[i].lm_object.used = 0;
