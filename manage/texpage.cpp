@@ -259,6 +259,7 @@
 
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "manage.h"
@@ -1248,16 +1249,16 @@ int mng_GetGuaranteedTexturePage(char *name, CFILE *infile) {
   if (i != -1)
     return i;
 
-  auto texpage = mem_rmalloc<mngs_texture_page>();
+  auto texpage = std::make_unique<mngs_texture_page>();
 
   // Not in memory.  Load it from the table file.  Start searching from the
   // current spot in the open table file
-  int ret = mng_FindSpecificTexPage(name, texpage, infile ? infile->position : 0);
+  int ret = mng_FindSpecificTexPage(name, texpage.get(), infile ? infile->position : 0);
   if (!ret)
     return -1;
 
   // We've found it in the table file, now load it.
-  ret = mng_SetAndLoadTexture(texpage, infile);
+  ret = mng_SetAndLoadTexture(texpage.get(), infile);
   // ASSERT (ret>=0);
   if (ret < 0)
     DataError("Cannot load texture <%s>, bitmap name <%s>\n", texpage->tex_struct.name, texpage->bitmap_name);
@@ -1266,7 +1267,6 @@ int mng_GetGuaranteedTexturePage(char *name, CFILE *infile) {
     // we're loading addon table pages, this will not overlay anything
     mng_PushAddonPage(PAGETYPE_TEXTURE, texpage->tex_struct.name, 0);
   }
-  mem_free(texpage);
 
   return ret;
 }
