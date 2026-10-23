@@ -556,13 +556,8 @@ void InitRoomFace(face *fp, int nverts) {
   fp->special_handle = BAD_SPECIAL_FACE_INDEX;
   fp->light_multiple = 4;
 
-  fp->face_verts = mem_rmalloc<int16_t>(nverts);
-  ASSERT(fp->face_verts != nullptr);
-  fp->face_uvls = mem_rmalloc<roomUVL>(nverts);
-  ASSERT(fp->face_uvls != nullptr);
-
-  ASSERT(fp->face_verts);
-  ASSERT(fp->face_uvls);
+  fp->face_verts = std::make_unique<int16_t[]>(nverts);
+  fp->face_uvls = std::make_unique<roomUVL[]>(nverts);
   for (int i = 0; i < nverts; i++)
     fp->face_uvls[i].alpha = 255;
 }
@@ -680,8 +675,8 @@ void FreeRoomFace(face *fp) {
     fp->special_handle = BAD_SPECIAL_FACE_INDEX;
   }
 
-  mem_free(fp->face_verts);
-  mem_free(fp->face_uvls);
+  fp->face_verts.reset();
+  fp->face_uvls.reset();
 }
 
 // Finds the center point of a room
@@ -727,7 +722,7 @@ bool ComputeFaceNormal(room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
   bool ok;
 
-  ok = ComputeNormal(&fp->normal, fp->num_verts, fp->face_verts, rp->verts);
+  ok = ComputeNormal(&fp->normal, fp->num_verts, fp->face_verts.get(), rp->verts);
 
   if (!ok) {
     LOG_WARNING.printf("Warning: Low precision normal for room:face = %d:%d", ROOMNUM(rp), facenum);
