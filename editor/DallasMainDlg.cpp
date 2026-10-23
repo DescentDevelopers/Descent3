@@ -3513,7 +3513,7 @@ int id_list_compare(const void *arg1, const void *arg2) {
 
 // Looks through scripts to determine the lowest unused script ID
 int CDallasMainDlg::GetLowestUnusedScriptID(void) {
-  int *list;
+  std::unique_ptr<int[]> list;
   int size;
   int max_size;
   int lowest_id;
@@ -3525,9 +3525,7 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   max_size = GetChildCount(TVI_ROOT);
   if (max_size == 0)
     return (lowest_id);
-  list = mem_rmalloc<int>(max_size);
-  if (list == nullptr)
-    return (m_NextScriptID);
+  list = std::make_unique<int[]>(max_size);
 
   // Fill up the list
   size = 0;
@@ -3542,7 +3540,7 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   }
 
   // Sort and determine the lowest unused ID
-  qsort((void *)list, size, sizeof(int), id_list_compare);
+  qsort((void *)list.get(), size, sizeof(int), id_list_compare);
 
   // Determine the lowest number
   int j;
@@ -3564,9 +3562,6 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   msg+=num;
   MessageBox(msg,"The Script ID List");
   */
-
-  // Free up the list
-  mem_free(list);
 
   return (lowest_id);
 }
@@ -6996,18 +6991,14 @@ void CDallasMainDlg::FillActionMenu(CMenu *action_menu, int command_offset) {
     actions_added = 0;
 
     // Scan the list, adding Actions that match the current category
-    for (k = 0; k < m_NumActions; k++)
+    for (k = 0; k < m_NumActions; k++) {
       if (m_ActionDatabase[k].category == j) {
-        char *temp_desc = mem_rmalloc<char>(strlen(m_ActionDatabase[k].desc.get()) + 1);
-        if (temp_desc == nullptr) {
-          MessageBox("Out of memory error in FillActionMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
-          return;
-        }
-        ParseOutActionVarTypes(temp_desc, m_ActionDatabase[k].desc.get());
-        category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc);
-        mem_free(temp_desc);
+        auto temp_desc = std::make_unique<char[]>(strlen(m_ActionDatabase[k].desc.get()) + 1);
+        ParseOutActionVarTypes(temp_desc.get(), m_ActionDatabase[k].desc.get());
+        category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc.get());
         actions_added++;
       }
+    }
 
     // Detach and add this submenu to the action menu
     ColumnizePopupMenu(&category_submenu);
@@ -7035,14 +7026,10 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
     queries_added = 0;
 
     // Scan the list, adding queries that match the current category
-    for (k = 0; k < m_NumActions; k++)
+    for (k = 0; k < m_NumActions; k++) {
       if (m_QueryDatabase[k].category == j) {
-        char *temp_desc = mem_rmalloc<char>(strlen(m_QueryDatabase[k].desc.get()) + 1);
-        if (temp_desc == nullptr) {
-          MessageBox("Out of memory error in FillQueryMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
-          return;
-        }
-        ParseOutQueryVarTypes(temp_desc, m_QueryDatabase[k].desc.get());
+        auto temp_desc = std::make_unique<char[]>(strlen(m_QueryDatabase[k].desc.get()) + 1);
+        ParseOutQueryVarTypes(temp_desc.get(), m_QueryDatabase[k].desc.get());
 
         query_ret_type = GetQueryReturnType(k, query_ret_name);
 
@@ -7061,12 +7048,13 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
         }
 
         if (types_match) {
-          category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc);
+          category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc.get());
           queries_added++;
-        } else
-          category_submenu.AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc);
-        mem_free(temp_desc);
+        } else {
+          category_submenu.AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc.get());
+        }
       }
+    }
 
     // Detach and add this submenu to the action menu
     ColumnizePopupMenu(&category_submenu);
