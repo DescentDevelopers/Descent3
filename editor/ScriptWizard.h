@@ -25,6 +25,8 @@
 // ScriptWizard.h : header file
 //
 
+#include <memory>
+
 /////////////////////////////////////////////////////////////////////////////
 // CScriptWizard dialog
 
@@ -73,7 +75,7 @@ private:
   int m_CurScriptSel; // The current script selected from LISTBOX
   int m_CurEventSel;  // Current event selected from LISTBOX index.
 
-  char *m_ScriptSource;      // script source
+  std::unique_ptr<char[]> m_ScriptSource; // script source
   tD3XProgram *m_ScriptCode; // script code.
 
 private:
