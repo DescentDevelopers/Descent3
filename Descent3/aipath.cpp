@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <memory>
+
 #include "aipath.h"
 #include "gamepath.h"
 #include "AIGoal.h"
@@ -37,7 +39,7 @@ ai_dynamic_path AIDynamicPath[MAX_DYNAMIC_PATHS];
 int AIAltPath[MAX_ROOMS];
 int AIAltPathNumNodes;
 
-static void AIUpdatePathInfo(q_item **node_list, int start, int end) {
+static void AIUpdatePathInfo(const std::unique_ptr<q_item> node_list[], int start, int end) {
   int cur_room = end;
   int i;
 
@@ -67,23 +69,21 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
 
   pq PQPath;
   int counter;
-  q_item *start_node = new q_item(i, -1, 0.0f);
   q_item *cur_node;
   bool f_found = false;
 
-  q_item *node_list[MAX_ROOMS + 8];
+  // Owns every queue node; PQPath only links them
+  std::unique_ptr<q_item> node_list[MAX_ROOMS + 8];
 
   if (i == -1 || j == -1) {
-    delete start_node;
     return false;
   }
 
-  memset(node_list, 0, sizeof(q_item *) * (MAX_ROOMS + 8));
-
-  PQPath.push(start_node);
+  node_list[i] = std::make_unique<q_item>(i, -1, 0.0f);
+  PQPath.push(node_list[i].get());
 
   while ((cur_node = PQPath.pop())) {
-    node_list[BOA_INDEX(cur_node->roomnum)] = cur_node;
+    ASSERT(node_list[BOA_INDEX(cur_node->roomnum)].get() == cur_node);
     ASSERT(BOA_INDEX(cur_node->roomnum) >= 0 && BOA_INDEX(cur_node->roomnum) <= Highest_room_index + 8);
 
     if (cur_node->roomnum == j) {
@@ -150,16 +150,16 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
         continue;
 
       // new_cost = cur_node->cost + BOA_cost_array[cur_node->roomnum][counter];
-      list_item = node_list[BOA_INDEX(next_room)];
+      list_item = node_list[BOA_INDEX(next_room)].get();
 
       if (list_item != nullptr && list_item->cost < new_cost)
         continue;
 
       if (list_item == nullptr) {
-        list_item = new q_item(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
         ASSERT(BOA_INDEX(cur_node->roomnum) >= 0 && BOA_INDEX(cur_node->roomnum) <= Highest_room_index + 8);
 
-        node_list[BOA_INDEX(next_room)] = list_item;
+        node_list[BOA_INDEX(next_room)] = std::make_unique<q_item>(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
+        list_item = node_list[BOA_INDEX(next_room)].get();
         ASSERT(BOA_INDEX(next_room) >= 0 && BOA_INDEX(next_room) <= Highest_room_index + 8);
         PQPath.push(list_item);
       } else {
@@ -170,11 +170,6 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
   }
 
 done:
-  for (counter = 0; counter < MAX_ROOMS + 8; counter++) {
-    if (node_list[counter])
-      delete node_list[counter];
-  }
-
   if (f_found && dist) {
     *dist = 0.0f;
 
