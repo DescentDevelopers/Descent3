@@ -90,7 +90,7 @@ struct spectra {
 #define EF_SMALL 2 // Don't blend this one into the lightmap - it will corrupt!
 
 struct rad_element {
-  vector *verts;
+  std::unique_ptr<vector[]> verts;
   spectra exitance;
   float area;
   uint8_t num_verts;
@@ -123,9 +123,9 @@ struct rad_surface {
   float reflectivity;  // how much light bounces off
   uint8_t xresolution; // how many elements (resolution x resolution) for this face
   uint8_t yresolution;
-  rad_element *elements; // list of elements for this surface
-  vector normal;         // normal of this surface
-  vector *verts;
+  std::unique_ptr<rad_element[]> elements; // list of elements for this surface
+  vector normal;                           // normal of this surface
+  std::unique_ptr<vector[]> verts;
 
   uint8_t surface_type; // See ST_ types above
 

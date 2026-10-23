@@ -315,18 +315,15 @@ int ComputeSurfacesForObjects(int surface_index, int terrain) {
           ComputeObjectSurfaceRes(&Light_surfaces[surface_index], &Objects[i], t, j);
 
           if (sm->faces[j].nverts > 0) {
-            Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
-            ASSERT(Light_surfaces[surface_index].verts != nullptr);
+            Light_surfaces[surface_index].verts = std::make_unique<vector[]>(sm->faces[j].nverts);
           } else
-            Light_surfaces[surface_index].verts = nullptr;
+            Light_surfaces[surface_index].verts.reset();
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
-            Light_surfaces[surface_index].elements =
-                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
-                                         Light_surfaces[surface_index].yresolution);
-            ASSERT(Light_surfaces[surface_index].elements != nullptr);
+            Light_surfaces[surface_index].elements = std::make_unique<rad_element[]>(
+                Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution);
           } else
-            Light_surfaces[surface_index].elements = nullptr;
+            Light_surfaces[surface_index].elements.reset();
 
           Light_surfaces[surface_index].flags = 0;
 
@@ -401,18 +398,15 @@ int ComputeSurfacesForObjectsForSingleRoom(int surface_index, int roomnum) {
           ComputeObjectSurfaceRes(&Light_surfaces[surface_index], &Objects[i], t, j);
 
           if (sm->faces[j].nverts > 0) {
-            Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
-            ASSERT(Light_surfaces[surface_index].verts != nullptr);
+            Light_surfaces[surface_index].verts = std::make_unique<vector[]>(sm->faces[j].nverts);
           } else
-            Light_surfaces[surface_index].verts = nullptr;
+            Light_surfaces[surface_index].verts.reset();
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
-            Light_surfaces[surface_index].elements =
-                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
-                                         Light_surfaces[surface_index].yresolution);
-            ASSERT(Light_surfaces[surface_index].elements != nullptr);
+            Light_surfaces[surface_index].elements = std::make_unique<rad_element[]>(
+                Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution);
           } else
-            Light_surfaces[surface_index].elements = nullptr;
+            Light_surfaces[surface_index].elements.reset();
 
           if (sm->faces[j].texnum == -1) {
             Light_surfaces[surface_index].emittance.r = 0;
