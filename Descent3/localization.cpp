@@ -704,20 +704,6 @@ void GrowString::Destroy(void) {
   curr = &root;
 }
 
-GrowString GrowString::operator+(char *str) {
-  *this += str;
-  return *this;
-}
-
-GrowString GrowString::operator+(GrowString &gs) {
-  char *str = nullptr;
-  gs.GetString(&str);
-  *this += str;
-  if (str)
-    mem_free(str);
-  return *this;
-}
-
 void GrowString::operator+=(GrowString &gs) {
   char *str = nullptr;
   gs.GetString(&str);
