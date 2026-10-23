@@ -1024,7 +1024,7 @@ private:
   int m_MessageNameListSize;
 
   // Drag and Drop Vars
-  CImageList *m_pDragImage;
+  std::unique_ptr<CImageList> m_pDragImage;
   BOOL m_bLDragging;
   HTREEITEM m_hitemDrag, m_hitemDrop;
 
