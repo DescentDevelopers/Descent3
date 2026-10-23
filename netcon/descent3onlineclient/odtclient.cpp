@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <memory>
+
 #include "ui.h"
 #include "newui.h"
 #include "grdefs.h"
@@ -613,14 +615,12 @@ int MainMultiplayerMenu() {
     }
     p = GetChannelList();
     if (p) {
-      char *pchanlist;
-      pchanlist = (char *)DLLmem_malloc(strlen(p) + 1);
-      memset(pchanlist, 0, strlen(p));
-      strcpy(pchanlist, p);
+      auto pchanlist = std::make_unique<char[]>(strlen(p) + 1);
+      strcpy(pchanlist.get(), p);
       char *tokp = nullptr;
       char *nexttok;
 
-      nexttok = strchr(pchanlist, '$');
+      nexttok = strchr(pchanlist.get(), '$');
       if (nexttok) {
         *nexttok = '\0';
         nexttok++;
@@ -744,7 +744,6 @@ int MainMultiplayerMenu() {
             break;
         }
       }
-      DLLmem_free(pchanlist);
     }
 
     res = DLLPollUI();
