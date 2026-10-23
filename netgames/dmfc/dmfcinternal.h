@@ -255,6 +255,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
+#include <memory>
 #include "idmfc.h"
 #include "DMFC.h"
 #include "gamedll_header.h"
@@ -282,7 +283,7 @@ class DMFCBase;
 #define CM_UNPAUSETIME 0xF9      // tell the player to unpause gametime
 
 struct tDeathMsg {
-  char *message;     // pointer to the actual message
+  std::unique_ptr<char[]> message; // the actual message
   bool inuse;        // whether the node is being used
   bool victim_first; // whether the victim is listed first or second in the message
 };
@@ -439,7 +440,7 @@ struct tDMFCTimerInfo {
 struct tWeaponKillMsg {
   bool inuse;
   bool victim_first;
-  char *message;
+  std::unique_ptr<char[]> message;
 };
 
 struct tBanItem {
