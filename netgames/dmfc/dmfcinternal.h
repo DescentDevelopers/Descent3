@@ -2868,14 +2868,14 @@ void Remote_Logout(int precnum);
 struct tRecord {
   char name[MAX_RECORD_NAME];
   char type;
-  void *data;
-  tRecord *next;
+  std::unique_ptr<char[]> data; // a string (REGT_STRING) or an int (REGT_DWORD)
+  std::unique_ptr<tRecord> next;
 };
 
 struct tKey {
   char name[MAX_RECORD_NAME];
-  tKey *next;
-  tRecord *records;
+  std::unique_ptr<tKey> next;
+  std::unique_ptr<tRecord> records;
 };
 
 class CRegistry {
@@ -2892,15 +2892,13 @@ public:
 
 private:
   void Destroy(void);
-  void DestroyKey(tKey *key);
-  void DestroyRecord(tRecord *record);
   void ExportKey(tKey *key, CFILE *file);
   void ExportRecord(tRecord *record, CFILE *file);
   char *SkipWhite(char *p);
   char *ParseString(char *p, char *buf, int bufsize, char sdelim, char edelim);
   char *ParseToken(char *p, char *buf, int bufsize);
   char name[MAX_RECORD_NAME];
-  tKey *root;
+  std::unique_ptr<tKey> root;
   tKey *currentkey;
 };
 
