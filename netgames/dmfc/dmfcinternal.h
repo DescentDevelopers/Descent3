@@ -501,9 +501,9 @@ protected:
   // number of columns for the detailed list
   int m_iDColCount;
   // information for the player list columns
-  tDmfcStatsColumnInfo *m_PLColInfo;
+  std::unique_ptr<tDmfcStatsColumnInfo[]> m_PLColInfo;
   // information for the detailed columns
-  tDmfcStatsColumnInfo *m_DColInfo;
+  std::unique_ptr<tDmfcStatsColumnInfo[]> m_DColInfo;
   // callback for DSCOL_CUSTOM column types for Player list
   void (*m_PLColCallback)(int precord_num, int column_num, char *buffer, int buffer_size);
   // callback for DSCOL_CUSTOM column types for detailed
@@ -515,7 +515,7 @@ protected:
   // callback for team data
   void (*m_TeamCallback)(int team, char *buffer, int buffer_size);
   // name of the multiplayer game
-  char *m_GameName;
+  std::unique_ptr<char[]> m_GameName;
 
   // starting scroll index
   int m_top_index;
