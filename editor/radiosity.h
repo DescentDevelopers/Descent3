@@ -65,6 +65,8 @@
 #ifndef RADIOSITY_H
 #define RADIOSITY_H
 
+#include <memory>
+
 #include "pserror.h"
 #include "pstypes.h"
 #include "3d.h"
@@ -164,7 +166,7 @@ extern int rad_NumElements;
 
 extern float *rad_FormFactors;
 extern rad_surface *rad_Surfaces;
-extern volume_element *Volume_elements[];
+extern std::unique_ptr<volume_element[]> Volume_elements[];
 
 extern int UseVolumeLights;
 extern int Calculate_specular_lighting;
