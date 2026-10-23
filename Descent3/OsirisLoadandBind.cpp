@@ -2800,18 +2800,18 @@ bool Osiris_RestoreSystemState(CFILE *file) {
 
 struct tOSIRISMEMNODE {
   tOSIRISMEMCHUNK chunk_id;
-  void *memory;
-  tOSIRISMEMNODE *next;
+  std::unique_ptr<uint8_t[]> memory;
+  std::unique_ptr<tOSIRISMEMNODE> next;
 };
 
-tOSIRISMEMNODE *Osiris_mem_root;
+std::unique_ptr<tOSIRISMEMNODE> Osiris_mem_root;
 
 //	Osiris_InitMemoryManager
 //	Purpose:
 //		Initializes the memory manager for the scripts, for buffers that the scripts want
 //	automatically restored/save.
 void Osiris_InitMemoryManager(void) {
-  Osiris_mem_root = nullptr;
+  Osiris_mem_root.reset();
   atexit(Osiris_CloseMemoryManager);
 }
 
@@ -2819,16 +2819,10 @@ void Osiris_InitMemoryManager(void) {
 //	Purpose:
 //		Shuts down the Osiris memory manager, freeing any unfreed memory
 void Osiris_CloseMemoryManager(void) {
-  tOSIRISMEMNODE *curr, *next;
-  curr = Osiris_mem_root;
-  while (curr) {
-    next = curr->next;
-    if (curr->memory)
-      mem_free(curr->memory);
-    mem_free(curr);
-    curr = next;
+  // unlink one node at a time, so a long list is not destroyed recursively
+  while (Osiris_mem_root) {
+    Osiris_mem_root = std::move(Osiris_mem_root->next);
   }
-  Osiris_mem_root = nullptr;
 }
 
 //	Osiris_AllocateMemory
@@ -2837,87 +2831,33 @@ void Osiris_CloseMemoryManager(void) {
 //	save this memory to disk on game save, and will pass the pointer to this memory on EVT_RESTORE
 void *Osiris_AllocateMemory(tOSIRISMEMCHUNK *mc) {
   // find the end of the list
-  tOSIRISMEMNODE *curr, **error_node;
-
-  if (!Osiris_mem_root) {
-    // it'll be the first node
-    Osiris_mem_root = mem_rmalloc<tOSIRISMEMNODE>();
-    if (!Osiris_mem_root)
-      return nullptr;
-
-    curr = Osiris_mem_root;
-    error_node = &Osiris_mem_root;
-  } else {
-    // traverse to the tail
-    curr = Osiris_mem_root;
-    while (curr->next) {
-      curr = curr->next;
-    }
-
-    curr->next = mem_rmalloc<tOSIRISMEMNODE>();
-    if (!curr->next)
-      return nullptr;
-    error_node = &curr->next;
-    curr = curr->next;
+  std::unique_ptr<tOSIRISMEMNODE> *tail = &Osiris_mem_root;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
 
   // setup the data
-  curr->next = nullptr;
-  curr->memory = mem_malloc(mc->size);
-  if (!curr->memory) {
-    // ack...out of memory
-    *error_node = nullptr; // make sure we cut off the list
-    mem_free(curr);
-    return nullptr;
-  }
+  auto curr = std::make_unique<tOSIRISMEMNODE>();
+  curr->memory = std::make_unique<uint8_t[]>(mc->size);
   memcpy(&curr->chunk_id, mc, sizeof(tOSIRISMEMCHUNK));
 
-  return curr->memory;
+  // the script only borrows the memory; the list keeps ownership
+  *tail = std::move(curr);
+  return (*tail)->memory.get();
 }
 
 //	Osiris_FreeMemory
 //	Purpose:
 //		Frees a chunk of memory that was allocated by Osiris_AllocateMemory().
 void Osiris_FreeMemory(void *mem_ptr) {
-  tOSIRISMEMNODE *tofree;
-
-  if (!Osiris_mem_root)
-    return;
-
-  if (Osiris_mem_root->memory == mem_ptr) {
-    // free the base pointer
-    tofree = Osiris_mem_root;
-    Osiris_mem_root = Osiris_mem_root->next;
-  } else {
-    // traverse until we find the node
-    tOSIRISMEMNODE *curr;
-    curr = Osiris_mem_root;
-    bool done = false;
-    tofree = nullptr;
-    while (!done) {
-      if (!curr->next) {
-        done = true; // we didn't find it
-      } else if (curr->next->memory == mem_ptr) {
-        // this is the guy to free
-        tofree = curr->next;
-        done = true;
-      } else
-        curr = curr->next;
-    }
-
-    if (tofree) {
-      // ok there is a value to free, pull the list back one from curr on
-      curr->next = tofree->next;
-    } else {
-      // nothing to do
+  // traverse until we find the node
+  for (std::unique_ptr<tOSIRISMEMNODE> *link = &Osiris_mem_root; *link; link = &(*link)->next) {
+    if ((*link)->memory.get() == mem_ptr) {
+      // pull the list back one; this frees the node and its memory
+      *link = std::move((*link)->next);
       return;
     }
   }
-
-  // free the memory associated with tofree
-  if (tofree->memory)
-    mem_free(tofree->memory);
-  mem_free(tofree);
 }
 
 bool compareid(tOSIRISSCRIPTID *sid, tOSIRISSCRIPTID *oid) {
@@ -2936,41 +2876,13 @@ bool compareid(tOSIRISSCRIPTID *sid, tOSIRISSCRIPTID *oid) {
 //	Purpose:
 //		Frees all memory allocated for a given script
 void Osiris_FreeMemoryForScript(tOSIRISSCRIPTID *sid) {
-  if (!Osiris_mem_root)
-    return;
-  bool done = false;
-  tOSIRISMEMNODE *curr, *next, *prev;
-  curr = Osiris_mem_root;
-  prev = nullptr;
-
-  while (!done) {
-    if (!curr) {
-      done = true;
+  std::unique_ptr<tOSIRISMEMNODE> *link = &Osiris_mem_root;
+  while (*link) {
+    if (compareid(sid, &(*link)->chunk_id.my_id)) {
+      // this has to go: remove from list and pull back (frees the node and its memory)
+      *link = std::move((*link)->next);
     } else {
-      next = curr->next;
-
-      if (compareid(sid, &curr->chunk_id.my_id)) {
-        // this has to go
-        if (curr == Osiris_mem_root) {
-          // removing root
-          Osiris_mem_root = curr->next;
-
-          if (curr->memory)
-            mem_free(curr->memory);
-          mem_free(curr);
-        } else {
-          // remove from list and pull back
-          prev->next = curr->next;
-
-          if (curr->memory)
-            mem_free(curr->memory);
-          mem_free(curr);
-        }
-      } else {
-        prev = curr;
-      }
-
-      curr = next;
+      link = &(*link)->next;
     }
   }
 }
@@ -2980,7 +2892,7 @@ void Osiris_FreeMemoryForScript(tOSIRISSCRIPTID *sid) {
 //		Saves out the 'auto manage' script memory to file
 void Osiris_SaveMemoryChunks(CFILE *file) {
   tOSIRISMEMNODE *curr;
-  curr = Osiris_mem_root;
+  curr = Osiris_mem_root.get();
 
   while (curr) {
     cf_WriteInt(file, curr->chunk_id.size);
@@ -2996,8 +2908,8 @@ void Osiris_SaveMemoryChunks(CFILE *file) {
       break;
     }
     cf_WriteInt(file, curr->chunk_id.id);
-    cf_WriteBytes((uint8_t *)curr->memory, curr->chunk_id.size, file);
-    curr = curr->next;
+    cf_WriteBytes(curr->memory.get(), curr->chunk_id.size, file);
+    curr = curr->next.get();
   }
 
   cf_WriteInt(file, 0);
@@ -3007,16 +2919,13 @@ void Osiris_SaveMemoryChunks(CFILE *file) {
 //	Purpose:
 //		Restores the 'auto manage' from file, calls the EVT_MEMRESTORE
 void Osiris_RestoreMemoryChunks(CFILE *file) {
-  tOSIRISMEMNODE *curr;
   tOSIRISMEMNODE *memchunk;
 
   // Osiris_CloseMemoryManager(); We might not want to close this down...due to some objects don't get destroyed
   // Osiris_mem_root = NULL;
-  curr = Osiris_mem_root;
-  if (curr) {
-    while (curr->next) {
-      curr = curr->next;
-    }
+  std::unique_ptr<tOSIRISMEMNODE> *tail = &Osiris_mem_root;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
 
   bool done = false;
@@ -3027,10 +2936,8 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
       done = true;
     } else {
       // handle this node
-      memchunk = mem_rmalloc<tOSIRISMEMNODE>();
-      if (!memchunk) {
-        Error("Out of memory");
-      }
+      auto newchunk = std::make_unique<tOSIRISMEMNODE>();
+      memchunk = newchunk.get();
 
       memchunk->chunk_id.size = size;
       memchunk->chunk_id.my_id.type = (script_type)cf_ReadByte(file);
@@ -3045,24 +2952,16 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
         break;
       }
       memchunk->chunk_id.id = cf_ReadInt(file);
-      memchunk->memory = mem_malloc(memchunk->chunk_id.size);
-      if (!memchunk->memory) {
-        Error("Out of memory");
-      }
-      cf_ReadBytes((uint8_t *)memchunk->memory, memchunk->chunk_id.size, file);
-      memchunk->next = nullptr;
+      memchunk->memory = std::make_unique<uint8_t[]>(memchunk->chunk_id.size);
+      cf_ReadBytes(memchunk->memory.get(), memchunk->chunk_id.size, file);
 
       // ok, the node is setup, add it to the linked list
-      if (!Osiris_mem_root) {
-        Osiris_mem_root = curr = memchunk;
-      } else {
-        curr->next = memchunk;
-        curr = curr->next;
-      }
+      *tail = std::move(newchunk);
+      tail = &memchunk->next;
 
       tOSIRISEventInfo ei;
       ei.evt_memrestore.id = memchunk->chunk_id.id;
-      ei.evt_memrestore.memory_ptr = memchunk->memory;
+      ei.evt_memrestore.memory_ptr = memchunk->memory.get();
 
       // send an event to the object
       switch (memchunk->chunk_id.my_id.type) {
@@ -3079,6 +2978,11 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
         Osiris_CallLevelEvent(EVT_MEMRESTORE, &ei);
         break;
       };
+
+      // the restore handler may have allocated more script memory, which was appended after this chunk
+      while (*tail) {
+        tail = &(*tail)->next;
+      }
     }
   }
 }
