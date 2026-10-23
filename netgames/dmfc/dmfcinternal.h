@@ -256,6 +256,7 @@
 #include <stdarg.h>
 #include <time.h>
 #include <memory>
+#include <vector>
 #include "idmfc.h"
 #include "DMFC.h"
 #include "gamedll_header.h"
@@ -406,8 +407,9 @@ private:
   int m_iState;
   // List of player nums according to the submenu index
   int Pnums[DLLMAX_PLAYERS];
-  // The array of Submenus
-  IMenuItem **SubMenus;
+  // The array of Submenus (for MIT_PLIST/MIT_CUSTOM this holds a single dummy item while SubMenuCount
+  // is the number of list entries)
+  std::vector<std::unique_ptr<IMenuItem>> SubMenus;
   // The title for this Menu
   char m_sTitle[MAX_STRING_LEN];
   // Handler for execute
