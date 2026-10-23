@@ -442,7 +442,7 @@ struct object {
 
   int32_t attach_ultimate_handle;
   int32_t attach_parent_handle;
-  int32_t *attach_children;   // List of object handles for connected children
+  std::unique_ptr<int32_t[]> attach_children; // List of object handles for connected children
 
   uint8_t weapon_fire_flags;  // Used to indicate special weapon effects.  See flags above.
 
