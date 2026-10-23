@@ -71,7 +71,7 @@ float Room_multiplier[MAX_ROOMS + MAX_PALETTE_ROOMS];
 float Room_ambience_r[MAX_ROOMS + MAX_PALETTE_ROOMS], Room_ambience_g[MAX_ROOMS + MAX_PALETTE_ROOMS],
     Room_ambience_b[MAX_ROOMS + MAX_PALETTE_ROOMS];
 
-uint8_t *TerrainLightSpeedup[MAX_SATELLITES];
+std::unique_ptr<uint8_t[]> TerrainLightSpeedup[MAX_SATELLITES];
 
 int LightSpacing = LIGHTMAP_SPACING;
 int BestFit = 0;
@@ -1797,7 +1797,7 @@ void DoRadiosityForTerrain() {
   int i, t, raynum = 0;
   int extra_surfaces = 0, total_surfaces = 0;
   int surf_index = 0;
-  spectra *terrain_sums[2];
+  std::unique_ptr<spectra[]> terrain_sums[2];
   int room_surf_start, obj_surf_start;
 
   int do_dynamic = 0;
@@ -1816,8 +1816,7 @@ void DoRadiosityForTerrain() {
   }
 
   for (i = 0; i < Terrain_sky.num_satellites; i++) {
-    TerrainLightSpeedup[i] = (uint8_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH);
-    ASSERT(TerrainLightSpeedup[i]);
+    TerrainLightSpeedup[i] = std::make_unique<uint8_t[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
   }
 
   if ((MessageBox(nullptr,
@@ -1850,9 +1849,8 @@ void DoRadiosityForTerrain() {
   ClearAllObjectLightmaps(1);
 
   // Allocate memory
-  terrain_sums[0] = mem_rmalloc<spectra>(TERRAIN_WIDTH * TERRAIN_DEPTH);
-  terrain_sums[1] = mem_rmalloc<spectra>(TERRAIN_WIDTH * TERRAIN_DEPTH);
-  ASSERT(terrain_sums[0] && terrain_sums[1]);
+  terrain_sums[0] = std::make_unique<spectra[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
+  terrain_sums[1] = std::make_unique<spectra[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
 
   Light_surfaces = mem_rmalloc<rad_surface>(total_surfaces);
   ASSERT(Light_surfaces != nullptr);
@@ -2176,11 +2174,12 @@ void DoRadiosityForTerrain() {
   }
 
   mem_free(Light_surfaces);
-  mem_free(terrain_sums[0]);
-  mem_free(terrain_sums[1]);
+  terrain_sums[0].reset();
+  terrain_sums[1].reset();
 
-  for (i = 0; i < Terrain_sky.num_satellites; i++)
-    mem_free(TerrainLightSpeedup[i]);
+  for (i = 0; i < Terrain_sky.num_satellites; i++) {
+    TerrainLightSpeedup[i].reset();
+  }
 
   UpdateTerrainLightmaps();
   SqueezeLightmaps(1, -1);
