@@ -2013,12 +2013,14 @@ int CreateBlastRing(vector *pos, int index, float lifetime, float max_size, int 
 
   return objnum;
 }
+// Creates a standard blast ring for an object of the given size at pos/roomnum
+static int CreateObjectBlastRing(vector *pos, float size, int roomnum) {
+  float ring_size = ROOMNUM_OUTSIDE(roomnum) ? (size * 3) : size;
+  return CreateBlastRing(pos, BLAST_RING_INDEX, DAMAGE_RING_TIME, ring_size, roomnum);
+}
 // TODO: MTS: only used in this file.
 // Creates a standard blast ring for an object
-int CreateObjectBlastRing(object *objp) {
-  float ring_size = OBJECT_OUTSIDE(objp) ? (objp->size * 3) : objp->size;
-  return CreateBlastRing(&objp->pos, BLAST_RING_INDEX, DAMAGE_RING_TIME, ring_size, objp->roomnum);
-}
+int CreateObjectBlastRing(object *objp) { return CreateObjectBlastRing(&objp->pos, objp->size, objp->roomnum); }
 // TODO: MTS: Not used?
 // Creates a smolding smoke to be drawn
 int CreateSmolderingObject(vector *pos, int index, float lifetime, float max_size, int roomnum) {
@@ -2335,8 +2337,8 @@ void DrawBlastRingObject(object *obj) {
 
 // Creates a blast ring
 void DoBlastRingEvent(int eventnum, void *data) {
-  object *obj = (object *)data;
-  CreateObjectBlastRing(obj);
+  auto *ring = (blast_ring_event_data *)data;
+  CreateObjectBlastRing(&ring->pos, ring->size, ring->roomnum);
 }
 // TODO: MTS: only used in this file.
 //  Creates an explosion
