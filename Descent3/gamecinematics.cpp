@@ -223,7 +223,7 @@ extern bool Game_being_played_from_quick_play;
 #endif
 extern uint16_t Demo_obj_map[MAX_OBJECTS];
 
-struct {
+struct tGameCinema {
   // some important, pre-computed times
   float text_display_start, text_display_stop;
   float track_start, track_stop;
@@ -265,7 +265,9 @@ struct {
   float early_trans_end_start_time;
 
   bool controls_suspended;
-} GameCinema;
+};
+
+tGameCinema GameCinema;
 
 #define CDI_NOT_CANNED 0
 #define CDI_CANNED 1
@@ -362,7 +364,7 @@ void Cinematic_Init(void) {
   static bool called_once = false;
   Cinematic_inuse = false;
 
-  memset(&GameCinema, 0, sizeof(GameCinema));
+  GameCinema = {};
 
   GameCinema.doing_end_transition = false;
   gc_fade_bmp_handle = BAD_BITMAP_HANDLE;
@@ -554,7 +556,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
 #endif
 
   // take the given values and setup the struct
-  memset(&GameCinema, 0, sizeof(GameCinema));
+  GameCinema = {};
 
   // verify passed in values
   verify_percentranage(&info->text_display);
