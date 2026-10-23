@@ -450,6 +450,7 @@ struct t_ai_info {
 #ifndef NEWEDITOR
 
 // Info for robots, powerups, debris, etc.
+// (When adding a field, add it to CopyObjectInfoPlainFields() too.)
 struct object_info {
   char name[PAGENAME_LEN]; // the name on the page
 
@@ -532,6 +533,9 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai);
 
 // Frees object index n
 void FreeObjectID(int n);
+
+// Copies all the plain fields of src to dst, i.e. everything except the owned description, ai_info, static_wb and anim
+void CopyObjectInfoPlainFields(object_info *dst, const object_info *src);
 
 // Find an object with the given type.  Returns -1 if none found.
 int GetObjectID(int type);
