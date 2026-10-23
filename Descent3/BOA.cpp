@@ -121,6 +121,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #ifdef EDITOR
 #include "editor\d3edit.h"
@@ -192,7 +193,7 @@ static void compute_terrain_region_info();
 static void compute_sound_dist_info();
 static void clear_BOA();
 static void compute_costs();
-static void update_path_info(q_item *node_list[MAX_ROOMS], int start, int end);
+static void update_path_info(const std::unique_ptr<q_item> node_list[], int start, int end);
 static void FindPath(int i, int j);
 static void compute_next_segs();
 static void compute_blockage_info();
@@ -909,7 +910,7 @@ void compute_costs() {
   }
 }
 
-void update_path_info(q_item *node_list[MAX_ROOMS], int start, int end) {
+void update_path_info(const std::unique_ptr<q_item> node_list[], int start, int end) {
   int cur_room;
   int par_room;
 
@@ -931,23 +932,22 @@ void update_path_info(q_item *node_list[MAX_ROOMS], int start, int end) {
 void FindPath(int i, int j) {
   pq PQPath;
   int counter;
-  q_item *start_node = new q_item(BOA_INDEX(i), -1, 0.0);
   q_item *cur_node;
 
-  q_item *node_list[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+  // Owns every queue node; PQPath only links them
+  std::unique_ptr<q_item> node_list[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 
   if (i == -1 || j == -1) {
-    delete start_node;
     return;
   }
 
-  memset(node_list, 0, sizeof(q_item *) * (MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS));
-
+  node_list[BOA_INDEX(i)] = std::make_unique<q_item>(BOA_INDEX(i), -1, 0.0);
+  q_item *start_node = node_list[BOA_INDEX(i)].get();
   PQPath.push(start_node);
   ASSERT(start_node->roomnum <= Highest_room_index + BOA_num_terrain_regions);
 
   while ((cur_node = PQPath.pop())) {
-    node_list[BOA_INDEX(cur_node->roomnum)] = cur_node;
+    ASSERT(node_list[BOA_INDEX(cur_node->roomnum)].get() == cur_node);
     ASSERT(BOA_INDEX(cur_node->roomnum) >= 0 &&
            BOA_INDEX(cur_node->roomnum) <= Highest_room_index + MAX_BOA_TERRAIN_REGIONS);
 
@@ -1003,13 +1003,13 @@ void FindPath(int i, int j) {
         new_cost = cur_node->cost + BOA_cost_array[BOA_INDEX(cur_node->roomnum)][counter] +
                    BOA_cost_array[BOA_INDEX(next_room)][next_portal];
 
-        list_item = node_list[BOA_INDEX(next_room)];
+        list_item = node_list[BOA_INDEX(next_room)].get();
         if (list_item != nullptr && list_item->cost <= new_cost)
           continue;
 
         if (list_item == nullptr) {
-          list_item = new q_item(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
-          node_list[BOA_INDEX(next_room)] = list_item;
+          node_list[BOA_INDEX(next_room)] = std::make_unique<q_item>(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
+          list_item = node_list[BOA_INDEX(next_room)].get();
           PQPath.push(list_item);
           ASSERT(list_item->roomnum <= Highest_room_index + BOA_num_terrain_regions);
         } else {
@@ -1061,13 +1061,13 @@ void FindPath(int i, int j) {
         new_cost = cur_node->cost + BOA_cost_array[BOA_INDEX(cur_node->roomnum)][counter] +
                    BOA_cost_array[BOA_INDEX(next_room)][next_portal];
 
-        list_item = node_list[BOA_INDEX(next_room)];
+        list_item = node_list[BOA_INDEX(next_room)].get();
         if (list_item != nullptr && list_item->cost <= new_cost)
           continue;
 
         if (list_item == nullptr) {
-          list_item = new q_item(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
-          node_list[BOA_INDEX(next_room)] = list_item;
+          node_list[BOA_INDEX(next_room)] = std::make_unique<q_item>(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
+          list_item = node_list[BOA_INDEX(next_room)].get();
           PQPath.push(list_item);
           ASSERT(list_item->roomnum <= Highest_room_index + BOA_num_terrain_regions);
         } else {
@@ -1082,11 +1082,6 @@ void FindPath(int i, int j) {
   BOA_Array[i][j] = BOA_NO_PATH;
 
 done:
-  for (counter = 0; counter <= Highest_room_index + MAX_BOA_TERRAIN_REGIONS; counter++) {
-    if (node_list[counter])
-      delete node_list[counter];
-  }
-
   return;
 }
 
