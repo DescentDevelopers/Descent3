@@ -585,7 +585,7 @@ void MarkFacesForRendering(int roomnum, clip_wnd *wnd) {
     // everyone has the intel compiler!
 #if (defined(RELEASE) && defined(KATMAI))
     if (Katmai)
-      RotateRoomPoints(rp, rp->verts4);
+      RotateRoomPoints(rp, rp->verts4.get());
     else
 #endif
       RotateRoomPoints(rp, rp->verts);
@@ -1114,7 +1114,7 @@ void BuildRoomList(int start_room_num) {
 #if (defined(RELEASE) && defined(KATMAI))
   if (Katmai)
 
-    RotateRoomPoints(rp, rp->verts4);
+    RotateRoomPoints(rp, rp->verts4.get());
   else
 #endif
     RotateRoomPoints(rp, rp->verts);
@@ -2147,7 +2147,7 @@ void RenderRoomSorted(room *rp) {
     // everyone has the intel compiler!
 #if (defined(RELEASE) && defined(KATMAI))
     if (Katmai)
-      RotateRoomPoints(rp, rp->verts4);
+      RotateRoomPoints(rp, rp->verts4.get());
     else
 #endif
       RotateRoomPoints(rp, rp->verts);
@@ -2248,7 +2248,7 @@ void RenderRoomUnsorted(room *rp) {
 // everyone has the intel compiler!
 #if (defined(RELEASE) && defined(KATMAI))
     if (Katmai) {
-      RotateRoomPoints(rp, rp->verts4);
+      RotateRoomPoints(rp, rp->verts4.get());
     } else
 #endif
     {

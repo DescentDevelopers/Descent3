@@ -505,8 +505,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   ASSERT(rp->verts != nullptr);
 
   if (Katmai) {
-    rp->verts4 = mem_rmalloc<vector4>(nverts);
-    ASSERT(rp->verts4 != nullptr);
+    rp->verts4 = std::make_unique<vector4[]>(nverts);
   }
 
   rp->pulse_time = 0;
@@ -605,8 +604,7 @@ void FreeRoom(room *rp) {
   mem_free(rp->portals);
   mem_free(rp->verts);
 
-  if (Katmai )
-    mem_free(rp->verts4);
+  rp->verts4.reset();
 
   if (rp->num_bbf_regions) {
     for (i = 0; i < rp->num_bbf_regions; i++) {
