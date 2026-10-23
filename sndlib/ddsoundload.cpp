@@ -139,8 +139,8 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     *e_type = SND_LOAD_ERROR_INVALID;
 
   // Setup the initial sound_file state
-  SoundFiles[sound_file_index].sample_8bit = nullptr;
-  SoundFiles[sound_file_index].sample_16bit = nullptr;
+  SoundFiles[sound_file_index].sample_8bit.reset();
+  SoundFiles[sound_file_index].sample_16bit.reset();
   SoundFiles[sound_file_index].sample_length = 0;
 
   // Open the wave file
@@ -369,12 +369,12 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
         SoundFiles[sound_file_index].sample_length = aligned_size;
         SoundFiles[sound_file_index].np_sample_length = cksize;
 
-        SoundFiles[sound_file_index].sample_8bit = mem_rmalloc<uint8_t>(aligned_size);
+        SoundFiles[sound_file_index].sample_8bit = std::make_unique<uint8_t[]>(aligned_size);
 
-        cf_ReadBytes((uint8_t *)SoundFiles[sound_file_index].sample_8bit, cksize, cfptr);
+        cf_ReadBytes(SoundFiles[sound_file_index].sample_8bit.get(), cksize, cfptr);
 
         if (aligned_size != cksize)
-          memset(SoundFiles[sound_file_index].sample_8bit + cksize, 128, num_needed);
+          memset(SoundFiles[sound_file_index].sample_8bit.get() + cksize, 128, num_needed);
       } else {
         int num_needed = 0;
 
@@ -388,15 +388,15 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
           SoundFiles[sound_file_index].sample_length = cksize / 2 + num_needed / 2;
         }
 
-        SoundFiles[sound_file_index].sample_16bit = (int16_t *)mem_malloc(cksize + num_needed);
-        cf_ReadBytes((uint8_t *)SoundFiles[sound_file_index].sample_16bit, cksize, cfptr);
+        SoundFiles[sound_file_index].sample_16bit = std::make_unique<int16_t[]>((cksize + num_needed + 1) / 2);
+        cf_ReadBytes((uint8_t *)SoundFiles[sound_file_index].sample_16bit.get(), cksize, cfptr);
         for (count = 0; count < (int)cksize / 2; count++) {
           SoundFiles[sound_file_index].sample_16bit[count] =
               INTEL_SHORT(SoundFiles[sound_file_index].sample_16bit[count]);
         }
 
         if (num_needed)
-          memset(SoundFiles[sound_file_index].sample_16bit + (cksize / 2), 0, num_needed);
+          memset(SoundFiles[sound_file_index].sample_16bit.get() + (cksize / 2), 0, num_needed);
       }
 
       // We found data, clear format flag
@@ -435,8 +435,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     }
   } else if (SoundFiles[sound_file_index].sample_8bit == nullptr && !f_high_quality) {
 
-    SoundFiles[sound_file_index].sample_8bit =
-        mem_rmalloc<uint8_t>(SoundFiles[sound_file_index].sample_length);
+    SoundFiles[sound_file_index].sample_8bit = std::make_unique<uint8_t[]>(SoundFiles[sound_file_index].sample_length);
 
     // Do the volume clipping with the high quality sound
     for (count = 0; count < (int)SoundFiles[sound_file_index].sample_length; count++) {
@@ -450,12 +449,10 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
           (uint8_t)((((int)SoundFiles[sound_file_index].sample_16bit[count]) + 32767) >> 8);
     }
 
-    mem_free(SoundFiles[sound_file_index].sample_16bit);
-    SoundFiles[sound_file_index].sample_16bit = nullptr;
+    SoundFiles[sound_file_index].sample_16bit.reset();
 
   } else if (SoundFiles[sound_file_index].sample_16bit == nullptr && f_high_quality) {
-    SoundFiles[sound_file_index].sample_16bit =
-        mem_rmalloc<int16_t>(SoundFiles[sound_file_index].sample_length);
+    SoundFiles[sound_file_index].sample_16bit = std::make_unique<int16_t[]>(SoundFiles[sound_file_index].sample_length);
 
     // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
     // (+128 biase).
@@ -468,8 +465,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
       SoundFiles[sound_file_index].sample_16bit[count] *= CLIP_ATTENUATION * percent_volume;
     }
 
-    mem_free(SoundFiles[sound_file_index].sample_8bit);
-    SoundFiles[sound_file_index].sample_8bit = nullptr;
+    SoundFiles[sound_file_index].sample_8bit.reset();
   }
 
   // reset use count
@@ -484,15 +480,8 @@ error_state:
   if (cfptr)
     cfclose(cfptr);
 
-  if (SoundFiles[sound_file_index].sample_8bit) {
-    mem_free(SoundFiles[sound_file_index].sample_8bit);
-    SoundFiles[sound_file_index].sample_8bit = nullptr;
-  }
-
-  if (SoundFiles[sound_file_index].sample_16bit) {
-    mem_free(SoundFiles[sound_file_index].sample_16bit);
-    SoundFiles[sound_file_index].sample_16bit = nullptr;
-  }
+  SoundFiles[sound_file_index].sample_8bit.reset();
+  SoundFiles[sound_file_index].sample_16bit.reset();
 
   return 0;
 }
@@ -500,14 +489,6 @@ error_state:
 void SoundLoadFree(int sound_file_index) {
   int i = sound_file_index;
 
-  if (SoundFiles[i].used != 0) {
-    if (SoundFiles[i].sample_8bit)
-      mem_free(SoundFiles[i].sample_8bit);
-
-    if (SoundFiles[i].sample_16bit)
-      mem_free(SoundFiles[i].sample_16bit);
-  }
-
-  SoundFiles[i].sample_8bit = nullptr;
-  SoundFiles[i].sample_16bit = nullptr;
+  SoundFiles[i].sample_8bit.reset();
+  SoundFiles[i].sample_16bit.reset();
 }

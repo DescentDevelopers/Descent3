@@ -2193,7 +2193,7 @@ void ProcessTestKeys(int key) {
     }
 
     Sound_system.CheckAndForceSoundDataAlloc(SOUND_REFUELING);
-    Sound_system.PlayStream(0, SoundFiles[Sounds[SOUND_REFUELING].sample_index].sample_8bit,
+    Sound_system.PlayStream(0, SoundFiles[Sounds[SOUND_REFUELING].sample_index].sample_8bit.get(),
                             SoundFiles[Sounds[SOUND_REFUELING].sample_index].sample_length, SIF_STREAMING_8_M, 1.0,
                             nullptr);
   } break;

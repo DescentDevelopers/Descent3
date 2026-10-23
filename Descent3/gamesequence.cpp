@@ -1818,14 +1818,8 @@ void FlushDataCache() {
     {
       soundsfreed++;
       int index = Sounds[i].sample_index;
-      if (SoundFiles[index].sample_16bit) {
-        mem_free(SoundFiles[index].sample_16bit);
-        SoundFiles[index].sample_16bit = nullptr;
-      }
-      if (SoundFiles[index].sample_8bit) {
-        mem_free(SoundFiles[index].sample_8bit);
-        SoundFiles[index].sample_8bit = nullptr;
-      }
+      SoundFiles[index].sample_16bit.reset();
+      SoundFiles[index].sample_8bit.reset();
     }
   }
 
