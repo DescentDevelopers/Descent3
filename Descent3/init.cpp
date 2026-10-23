@@ -1820,6 +1820,13 @@ void InitD3Systems1(bool editor) {
   if (pxoportarg)
     PXOPort = atoi(GameArgs[pxoportarg + 1]);
 
+  // Seed both random number generators before anything uses them; I/O init already draws temp file names from rand()
+  int iseedarg = FindArg("-randseed");
+  uint32_t seed = static_cast<uint32_t>(iseedarg ? strtoul(GameArgs[iseedarg + 1], nullptr, 10) : time(nullptr));
+  LOG_INFO << "seeding RNG with " << seed;
+  ps_srand(seed);
+  srand(seed);
+
   // perform user i/o system initialization
   INIT_MESSAGE(("Initializing I/O system."));
   InitIOSystems(editor);
@@ -1855,9 +1862,6 @@ void InitD3Systems1(bool editor) {
 
   // This function needs be called before ANY 3d stuff can get done. I mean it.
   InitMathTables();
-
-  // Initialize a random seed.
-  ps_srand(time(nullptr));
 
   // This function has to be done before any sound stuff is called
   InitSounds();

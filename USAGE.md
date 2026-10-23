@@ -585,6 +585,16 @@ The following command-line options are available in Descent 3. You can set comma
 
     **Description:** Specifies the pilot to use, skipping the pilot selection dialog when the game starts.
 
+- `-randseed <seed>`
+
+    **Type:** integer
+
+    **Default:** current time
+
+    **Platform:** all
+
+    **Description:** Seeds all of the game's random number generators with a fixed value instead of the current time, so runs with the same inputs make the same random choices.
+
 - `-service`
 
     **Type:** boolean
