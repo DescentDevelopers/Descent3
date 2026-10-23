@@ -477,7 +477,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->volume_lights = nullptr;
   rp->mirror_face = -1;
   rp->num_mirror_faces = 0;
-  rp->mirror_faces_list = nullptr;
+  rp->mirror_faces_list.reset();
   rp->room_change_flags = 0;
 
 #ifndef NEWEDITOR // the new editor must allow users to create a room from scratch
@@ -631,8 +631,7 @@ void FreeRoom(room *rp) {
 
   rp->doorway_data.reset();
 
-  if (rp->mirror_faces_list)
-    mem_free(rp->mirror_faces_list);
+  rp->mirror_faces_list.reset();
 
   rp->used = 0;
 
