@@ -2715,8 +2715,7 @@ void mng_ClearAddonTables() {
 
     if (AddOnDataTables[count - 1].Addon_tracklocks) {
       mng_PopAddonPages();
-      mem_free(AddOnDataTables[count - 1].Addon_tracklocks);
-      AddOnDataTables[count - 1].Addon_tracklocks = nullptr;
+      AddOnDataTables[count - 1].Addon_tracklocks.reset();
       AddOnDataTables[count - 1].Num_addon_tracklocks = 0;
     }
 
@@ -2735,11 +2734,8 @@ bool mng_SetAddonTable(const char *name) {
     return false;
 
   strcpy(AddOnDataTables[Num_addon_tables].AddOnTableFilename, name);
-  AddOnDataTables[Num_addon_tables].Addon_tracklocks =
-      mem_rmalloc<mngs_track_lock>(MAX_ADDON_TRACKLOCKS);
+  AddOnDataTables[Num_addon_tables].Addon_tracklocks = std::make_unique<mngs_track_lock[]>(MAX_ADDON_TRACKLOCKS);
   AddOnDataTables[Num_addon_tables].Num_addon_tracklocks = 0;
-  ASSERT(AddOnDataTables[Num_addon_tables].Addon_tracklocks);
-  memset(AddOnDataTables[Num_addon_tables].Addon_tracklocks, 0, MAX_ADDON_TRACKLOCKS * sizeof(mngs_track_lock));
 
   Num_addon_tables++;
   return true;
