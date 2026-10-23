@@ -490,7 +490,7 @@ static int GoalAllocSlot(object *obj, int level, float influence);
 #define MAX_BASH_TO_FLINCH_TIME 2.5f
 
 void GoalInitWanderAround(object *obj, goal *goal_ptr) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   int roomnum;
   vector pos;
 
@@ -526,7 +526,7 @@ void GoalInitWanderAround(object *obj, goal *goal_ptr) {
 }
 
 void GoalClearGoal(object *obj, goal *cur_goal, int reason) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   bool f_continue = true;
 
   // Set the in clear flag so that we know if this goal is updated in script
@@ -604,7 +604,7 @@ float GoalDetermineTrackDist(object *obj) {
 }
 
 void GoalDoFrame(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   goal *cur_goal;
   int i;
 
@@ -832,7 +832,7 @@ void GoalDoFrame(object *obj) {
 }
 
 void GoalPathComplete(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   goal *cur_goal = GoalGetCurrentGoal(obj);
 
   if (!cur_goal)
@@ -859,7 +859,7 @@ void GoalPathComplete(object *obj) {
 
 void GoalClearAll(object *obj) {
   int i;
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   for (i = 0; i < MAX_GOALS; i++) {
     GoalClearGoal(obj, &ai_info->goals[i]);
@@ -869,7 +869,7 @@ void GoalClearAll(object *obj) {
 int GoalAllocSlot(object *obj, int level, float influence) {
   float lowest_influence_slot = -1.0;
   float lowest_influence = MAX_INFLUENCE + 1.0;
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   int cur_slot;
 
   ASSERT((level >= 0 && level < NUM_ACTIVATION_LEVELS) || (level == ACTIVATION_BLEND_LEVEL));
@@ -941,7 +941,7 @@ int GoalAllocSlot(object *obj, int level, float influence) {
 // Adds a goal to the object
 int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, float influence, int f_goal, int guid,
                 char subtype) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   int goal_index = AI_INVALID_INDEX;
   goal *goal_ptr = nullptr;
 
@@ -1228,7 +1228,7 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
 }
 
 int GoalAddEnabler(object *obj, int goal_index, uint8_t enabler_type, void *arg_struct, float percent, float interval) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   goal_enabler *e_info;
 
   int enabler_index = ai_info->goals[goal_index].num_enablers;
@@ -1293,7 +1293,7 @@ int GoalAddEnabler(object *obj, int goal_index, uint8_t enabler_type, void *arg_
 }
 
 void GoalInitTypeGoals(object *obj, int ai_type) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   float aware = AWARE_BARELY;
   float time = 25.0f;
 
@@ -1407,7 +1407,7 @@ void GoalInitTypeGoals(object *obj, int ai_type) {
 }
 
 bool GoalIsGoalEnabled(object *obj, int goal_index) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   goal *cur_goal = &ai_info->goals[goal_index];
   bool f_enabled = true;
   int i;
@@ -1520,7 +1520,7 @@ bool GoalIsGoalEnabled(object *obj, int goal_index) {
 }
 
 goal *GoalGetCurrentGoal(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   int i;
   goal *cur_goal = nullptr;
 

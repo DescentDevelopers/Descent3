@@ -1942,8 +1942,7 @@ void ObjDelete(int objnum) {
 
   if (obj->ai_info != nullptr) {
     AIDestroyObj(obj);
-    mem_free(obj->ai_info);
-    obj->ai_info = nullptr;
+    obj->ai_info.reset();
   }
 
   if (obj->dynamic_wb != nullptr) {
@@ -3333,8 +3332,7 @@ void SetObjectControlType(object *obj, int control_type) {
     int count = 0;
     int i;
 
-    obj->ai_info = mem_rmalloc<ai_frame>();
-    memset(obj->ai_info, 0x00, sizeof(ai_frame)); // DAJ clear the baby
+    obj->ai_info = std::make_unique<ai_frame>(); // zero-filled
 
     for (i = 0; i < num_wbs; i++) {
       ASSERT(pm->poly_wb[i].num_turrets >= 0 && pm->poly_wb[i].num_turrets <= 6400);

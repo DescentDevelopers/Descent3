@@ -1026,8 +1026,7 @@ int LGSObjects(CFILE *fp, int version) {
       op->effect_info.reset();
       if (op->ai_info != nullptr) {
         AIDestroyObj(op);
-        mem_free(op->ai_info);
-        op->ai_info = nullptr;
+        op->ai_info.reset();
       }
       if (op->dynamic_wb != nullptr) {
         mem_free(op->dynamic_wb);
@@ -1178,7 +1177,7 @@ int LGSObjects(CFILE *fp, int version) {
     }
 
     // save ai information.
-    retval = LGSObjAI(fp, &op->ai_info);
+    retval = LGSObjAI(fp, op->ai_info);
     if (retval != LGS_OK)
       goto lgsobjs_fail;
 
@@ -1413,11 +1412,11 @@ done:;
 }
 
 //	loads ai
-int LGSObjAI(CFILE *fp, ai_frame **pai) {
+int LGSObjAI(CFILE *fp, std::unique_ptr<ai_frame> &pai) {
   int16_t size;
   int8_t read_ai;
 
-  *pai = nullptr;
+  pai.reset();
 
   gs_ReadByte(fp, read_ai);
   if (!read_ai)
@@ -1427,8 +1426,8 @@ int LGSObjAI(CFILE *fp, ai_frame **pai) {
   if (size != sizeof(ai_frame))
     return LGS_OUTDATEDVER;
 
-  auto ai = *pai = mem_rmalloc<ai_frame>();
-  cf_ReadBytes((uint8_t *)ai, size, fp);
+  pai = std::make_unique<ai_frame>();
+  cf_ReadBytes((uint8_t *)pai.get(), size, fp);
 
   return LGS_OK;
 }

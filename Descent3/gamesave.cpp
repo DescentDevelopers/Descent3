@@ -1181,7 +1181,7 @@ void SGSObjects(CFILE *fp) {
     INSURE_SAVEFILE;
 
     // save ai information.
-    SGSObjAI(fp, op->ai_info);
+    SGSObjAI(fp, op->ai_info.get());
 
     INSURE_SAVEFILE;
     // save out rendering information

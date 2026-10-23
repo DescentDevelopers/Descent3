@@ -958,7 +958,7 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
     return;
   }
 
-  ai_frame *ai_info = objp->ai_info;
+  ai_frame *ai_info = objp->ai_info.get();
 
   switch (vtype) {
   case AIV_F_MAX_SPEED:
@@ -2044,7 +2044,7 @@ int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, uint8_t f_en
     return 0;
   }
 
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   if (goal_handle >= 0 && goal_handle < MAX_GOALS && ai_info->goals[goal_handle].used != 0) {
     if (f_enable)
@@ -2069,7 +2069,7 @@ void osipf_AISetGoalCircleDist(int objhandle, int goal_handle, float dist) {
     return;
   }
 
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   if (goal_handle >= 0 && goal_handle < MAX_GOALS && ai_info->goals[goal_handle].used != 0) {
     ai_info->goals[goal_handle].circle_distance = dist;
@@ -2981,7 +2981,7 @@ void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void
   if (!obj)
     return;
 
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   if (!ai_info)
     return;
 

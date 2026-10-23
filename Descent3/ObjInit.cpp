@@ -1189,7 +1189,7 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->contains_type = -1;
   objp->lifeleft = 0;
   objp->effect_info.reset();
-  objp->ai_info = nullptr;
+  objp->ai_info.reset();
   objp->dynamic_wb = nullptr;
   objp->attach_children.reset();
   // Now initialize the type-specific data

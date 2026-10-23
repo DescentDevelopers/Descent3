@@ -493,7 +493,7 @@ struct object {
     soundsource_info_s soundsource_info;
   } ctype;
 
-  ai_frame *ai_info; // AI information pointer
+  std::unique_ptr<ai_frame> ai_info; // AI information pointer
 
   // Render info, determined by RENDER_TYPE
   union {
