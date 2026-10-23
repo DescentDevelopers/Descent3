@@ -113,7 +113,7 @@ public:
   virtual uint8_t get_alpha() const { return 0; };
   virtual void set_color(ddgr_color col){};
   virtual ddgr_color get_color() const { return GR_BLACK; };
-  virtual UIItem *CopyUIItem() { return nullptr; };
+  virtual std::unique_ptr<UIItem> CopyUIItem() { return nullptr; };
 };
 
 //	UITextItem
@@ -152,7 +152,7 @@ public:
   virtual int width();
   virtual int height();
   virtual tUIResClass class_type() const { return uiTextItem; };
-  virtual UIItem *CopyUIItem();
+  virtual std::unique_ptr<UIItem> CopyUIItem();
 
   //	set visual characteristics of text item
   virtual void set_alpha(uint8_t alpha) { m_Alpha = alpha; };
@@ -203,7 +203,7 @@ public:
   void set_flags(unsigned flags);
 
   virtual bool draw(int x, int y, tUIDrawClass draw_class = uiDrawNormal);
-  virtual UIItem *CopyUIItem();
+  virtual std::unique_ptr<UIItem> CopyUIItem();
 
   const UISnazzyTextItem &operator=(const UISnazzyTextItem &item);
 };
@@ -245,7 +245,7 @@ public:
   virtual int width();
   virtual int height();
   virtual tUIResClass class_type() const { return uiBitmapItem; };
-  virtual UIItem *CopyUIItem();
+  virtual std::unique_ptr<UIItem> CopyUIItem();
 
   //	flag checking
   bool is_chunked() const { return m_IsChunked; };
@@ -290,7 +290,7 @@ public:
     alpha = alph;
   };
 
-  virtual UIItem *CopyUIItem();
+  virtual std::unique_ptr<UIItem> CopyUIItem();
 
   virtual void set_color(ddgr_color col) { color = col; };
   virtual ddgr_color get_color() const { return color; };

@@ -86,23 +86,19 @@ void UISlider::Create(UIWindow *parent, int id, int x, int y, int w, int h, int 
 
 //	sets visual characteristics of slider.
 void UISlider::SetSliderSwitchItem(UIItem *item) {
-  if (switch_item)
-    delete switch_item;
-
   if (item) {
     switch_item = item->CopyUIItem();
-  } else
+  } else {
     switch_item = UIPrimativeItem(GR_DARKGRAY).CopyUIItem();
+  }
 }
 
 void UISlider::SetSliderItem(UIItem *item) {
-  if (slider_item)
-    delete slider_item;
-
   if (item) {
     slider_item = item->CopyUIItem();
-  } else
+  } else {
     slider_item = UIPrimativeItem(GR_DARKGRAY).CopyUIItem();
+  }
 }
 
 //	settings
@@ -138,10 +134,8 @@ void UISlider::OnFormat() {
 
 // behavior when gadget is being destroyed.
 void UISlider::OnDestroy() {
-  if (slider_item)
-    delete slider_item;
-  if (switch_item)
-    delete switch_item;
+  slider_item.reset();
+  switch_item.reset();
 }
 
 // behavior when gadget is being drawn.
