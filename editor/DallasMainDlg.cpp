@@ -5389,7 +5389,7 @@ int CDallasMainDlg::FillUserTypeBox(CComboBox *box) {
   // Add the User Type Names
   for (j = 0; j < m_NumEnums; j++) {
     if (m_EnumDatabase[j].is_user_type) {
-      box->AddString(m_EnumDatabase[j].name);
+      box->AddString(m_EnumDatabase[j].name.get());
       types_added++;
     }
   }
@@ -5417,7 +5417,7 @@ int CDallasMainDlg::FillValuesBox(CListBox *box, char *utype_name) {
   for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++) {
     tEnumValueEntry *value_entry = &m_EnumDatabase[DBslot].values[j];
     if (value_entry->value != -1) {
-      box->AddString(value_entry->name);
+      box->AddString(value_entry->name.get());
       values_added++;
     }
   }
@@ -5454,7 +5454,7 @@ int CDallasMainDlg::AddUserTypeValue(char *utype_name, char *value_name) {
       // Bump the higher ones down the list
       for (k = entry->num_values; k > j; k--) {
         entry->values[k].value = entry->values[k - 1].value;
-        entry->values[k].name = entry->values[k - 1].name;
+        entry->values[k].name = std::move(entry->values[k - 1].name);
       }
       break;
     }
@@ -5464,11 +5464,8 @@ int CDallasMainDlg::AddUserTypeValue(char *utype_name, char *value_name) {
   // Store the new value at the current position
   tEnumValueEntry *value_entry = &entry->values[j];
   value_entry->value = new_value;
-  value_entry->name = mem_strdup(value_name);
-  if (value_entry->name == nullptr) {
-    MessageBox("ERROR: Out of mem in AddUserTypeValue()!", "Error!");
-    return (-1);
-  }
+  value_entry->name = mem_strdup_unique(value_name);
+
   entry->num_values++;
 
   SetModified(TRUE);
@@ -5492,17 +5489,17 @@ int CDallasMainDlg::DeleteUserTypeValue(char *utype_name, char *value_name) {
   // Find the value name in the list
   for (j = 0; j < entry->num_values; j++) {
     tEnumValueEntry *value_entry = &entry->values[j];
-    if (strcmp(value_name, value_entry->name) == 0) {
+    if (strcmp(value_name, value_entry->name.get()) == 0) {
       // Free the name memory
-      mem_free(value_entry->name);
+      value_entry->name.reset();
 
       // Compact the list
       entry->num_values--;
       for (k = j; k < (entry->num_values); k++) {
         entry->values[k].value = entry->values[k + 1].value;
-        entry->values[k].name = entry->values[k + 1].name;
+        entry->values[k].name = std::move(entry->values[k + 1].name);
       }
-      entry->values[k].name = nullptr;
+      entry->values[k].name.reset();
       SetModified(TRUE);
       return TRUE;
     }
@@ -5527,16 +5524,9 @@ int CDallasMainDlg::ChangeValueName(char *utype_name, char *old_name, char *new_
   // Find the value name in the list
   for (j = 0; j < entry->num_values; j++) {
     tEnumValueEntry *value_entry = &entry->values[j];
-    if (strcmp(old_name, value_entry->name) == 0) {
-      // Free the name memory
-      mem_free(value_entry->name);
-
-      // Add the new name
-      value_entry->name = mem_strdup(new_name);
-      if (value_entry->name == nullptr) {
-        MessageBox("ERROR: Out of mem in ChangeValueName()!", "Error!");
-        return FALSE;
-      }
+    if (strcmp(old_name, value_entry->name.get()) == 0) {
+      // Replace the name
+      value_entry->name = mem_strdup_unique(new_name);
       SetModified(TRUE);
 
       return TRUE;
@@ -5555,9 +5545,9 @@ void CDallasMainDlg::InitEnumDatabase(void) {
   int j, k;
 
   for (j = 0; j < MAX_ENUMS; j++) {
-    m_EnumDatabase[j].name = nullptr;
+    m_EnumDatabase[j].name.reset();
     for (k = 0; k < MAX_ENUM_VALUES; k++) {
-      m_EnumDatabase[j].values[k].name = nullptr;
+      m_EnumDatabase[j].values[k].name.reset();
       m_EnumDatabase[j].values[k].value = 0;
     }
     m_EnumDatabase[j].num_values = 0;
@@ -5570,15 +5560,9 @@ void CDallasMainDlg::ClearEnumDatabase(void) {
   int j, k;
 
   for (j = 0; j < m_NumEnums; j++) {
-    if (m_EnumDatabase[j].name != nullptr) {
-      mem_free(m_EnumDatabase[j].name);
-      m_EnumDatabase[j].name = nullptr;
-    }
+    m_EnumDatabase[j].name.reset();
     for (k = 0; k < m_EnumDatabase[j].num_values; k++) {
-      if (m_EnumDatabase[j].values[k].name != nullptr) {
-        mem_free(m_EnumDatabase[j].values[k].name);
-        m_EnumDatabase[j].values[k].name = nullptr;
-      }
+      m_EnumDatabase[j].values[k].name.reset();
       m_EnumDatabase[j].values[k].value = 0;
     }
     m_EnumDatabase[j].num_values = 0;
@@ -5593,9 +5577,11 @@ int CDallasMainDlg::GetEnumID(char *name) {
   if (name == nullptr)
     return INVALID_ENUM;
 
-  for (i = 0; i < m_NumEnums; i++)
-    if (strcmp(m_EnumDatabase[i].name, name) == 0)
+  for (i = 0; i < m_NumEnums; i++) {
+    if (strcmp(m_EnumDatabase[i].name.get(), name) == 0) {
       return i;
+    }
+  }
 
   return INVALID_ENUM;
 }
@@ -5608,9 +5594,11 @@ char *CDallasMainDlg::GetEnumValueName(char *name, int value) {
   if (DBslot == INVALID_ENUM)
     return nullptr;
 
-  for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++)
-    if (m_EnumDatabase[DBslot].values[j].value == value)
-      return (m_EnumDatabase[DBslot].values[j].name);
+  for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++) {
+    if (m_EnumDatabase[DBslot].values[j].value == value) {
+      return (m_EnumDatabase[DBslot].values[j].name.get());
+    }
+  }
 
   return nullptr;
 }
@@ -5624,11 +5612,12 @@ bool CDallasMainDlg::GetEnumValue(char *name, char *value_name, int &value) {
   if (DBslot == INVALID_ENUM)
     return FALSE;
 
-  for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++)
-    if (strcmp(m_EnumDatabase[DBslot].values[j].name, value_name) == 0) {
+  for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++) {
+    if (strcmp(m_EnumDatabase[DBslot].values[j].name.get(), value_name) == 0) {
       value = m_EnumDatabase[DBslot].values[j].value;
       return TRUE;
     }
+  }
 
   return FALSE;
 }
@@ -5645,14 +5634,15 @@ int CDallasMainDlg::FillEnumTypesMenu(CMenu *enum_menu, int command_offset, char
 
   // Fill the menu with names of matching enumeration values
   for (i = 0; i < m_NumEnums; i++) {
-    name = m_EnumDatabase[i].name;
+    name = m_EnumDatabase[i].name.get();
     if (m_EnumDatabase[i].is_user_type)
       name += "  (USER TYPE)";
-    if (strlen(valid_name) == 0 || strcmp(valid_name, m_EnumDatabase[i].name) == 0) {
+    if (strlen(valid_name) == 0 || strcmp(valid_name, m_EnumDatabase[i].name.get()) == 0) {
       enum_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, name.GetBuffer(0));
       enum_types_added++;
-    } else
+    } else {
       enum_menu->AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, command_offset + i, name.GetBuffer(0));
+    }
   }
 
   return (enum_types_added);
@@ -5677,7 +5667,7 @@ int CDallasMainDlg::FillEnumValuesMenu(CMenu *enum_menu, int command_offset, cha
 
   // Fill the menu with names of matching enumeration values
   for (i = 0; i < enum_entry->num_values; i++) {
-    enum_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, enum_entry->values[i].name);
+    enum_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, enum_entry->values[i].name.get());
     enum_values_added++;
   }
 
@@ -5693,9 +5683,9 @@ void CDallasMainDlg::InitFlagDatabase(void) {
   int j, k;
 
   for (j = 0; j < MAX_FLAGS; j++) {
-    m_FlagDatabase[j].name = nullptr;
+    m_FlagDatabase[j].name.reset();
     for (k = 0; k < MAX_FLAG_VALUES; k++) {
-      m_FlagDatabase[j].values[k].name = nullptr;
+      m_FlagDatabase[j].values[k].name.reset();
       m_FlagDatabase[j].values[k].value = 0;
     }
     m_FlagDatabase[j].num_values = 0;
@@ -5708,15 +5698,9 @@ void CDallasMainDlg::ClearFlagDatabase(void) {
   int j, k;
 
   for (j = 0; j < m_NumFlags; j++) {
-    if (m_FlagDatabase[j].name != nullptr) {
-      mem_free(m_FlagDatabase[j].name);
-      m_FlagDatabase[j].name = nullptr;
-    }
+    m_FlagDatabase[j].name.reset();
     for (k = 0; k < m_FlagDatabase[j].num_values; k++) {
-      if (m_FlagDatabase[j].values[k].name != nullptr) {
-        mem_free(m_FlagDatabase[j].values[k].name);
-        m_FlagDatabase[j].values[k].name = nullptr;
-      }
+      m_FlagDatabase[j].values[k].name.reset();
       m_FlagDatabase[j].values[k].value = 0;
     }
     m_FlagDatabase[j].num_values = 0;
@@ -5731,9 +5715,11 @@ int CDallasMainDlg::GetFlagID(char *name) {
   if (name == nullptr)
     return INVALID_FLAG;
 
-  for (i = 0; i < m_NumFlags; i++)
-    if (strcmp(m_FlagDatabase[i].name, name) == 0)
+  for (i = 0; i < m_NumFlags; i++) {
+    if (strcmp(m_FlagDatabase[i].name.get(), name) == 0) {
       return i;
+    }
+  }
 
   return INVALID_FLAG;
 }
@@ -5746,9 +5732,11 @@ char *CDallasMainDlg::GetFlagValueName(char *name, int value) {
   if (DBslot == INVALID_FLAG)
     return nullptr;
 
-  for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++)
-    if (m_FlagDatabase[DBslot].values[j].value == value)
-      return (m_FlagDatabase[DBslot].values[j].name);
+  for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++) {
+    if (m_FlagDatabase[DBslot].values[j].value == value) {
+      return (m_FlagDatabase[DBslot].values[j].name.get());
+    }
+  }
 
   return nullptr;
 }
@@ -5772,7 +5760,7 @@ bool CDallasMainDlg::FormatFlagValueNames(char *name, int value, CString &text) 
         text += '[';
         first_added = FALSE;
       }
-      text += m_FlagDatabase[DBslot].values[j].name;
+      text += m_FlagDatabase[DBslot].values[j].name.get();
     }
   }
 
@@ -5793,11 +5781,12 @@ bool CDallasMainDlg::GetFlagValue(char *name, char *value_name, int &value) {
   if (DBslot == INVALID_FLAG)
     return FALSE;
 
-  for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++)
-    if (strcmp(m_FlagDatabase[DBslot].values[j].name, value_name) == 0) {
+  for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++) {
+    if (strcmp(m_FlagDatabase[DBslot].values[j].name.get(), value_name) == 0) {
       value = m_FlagDatabase[DBslot].values[j].value;
       return TRUE;
     }
+  }
 
   return FALSE;
 }
@@ -5813,11 +5802,12 @@ int CDallasMainDlg::FillFlagTypesMenu(CMenu *flag_menu, int command_offset, char
 
   // Fill the menu with names of matching Flageration values
   for (i = 0; i < m_NumFlags; i++) {
-    if (strlen(valid_name) == 0 || strcmp(valid_name, m_FlagDatabase[i].name) == 0) {
-      flag_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, m_FlagDatabase[i].name);
+    if (strlen(valid_name) == 0 || strcmp(valid_name, m_FlagDatabase[i].name.get()) == 0) {
+      flag_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, m_FlagDatabase[i].name.get());
       flag_types_added++;
-    } else
-      flag_menu->AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, command_offset + i, m_FlagDatabase[i].name);
+    } else {
+      flag_menu->AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, command_offset + i, m_FlagDatabase[i].name.get());
+    }
   }
 
   return (flag_types_added);
@@ -5843,7 +5833,7 @@ int CDallasMainDlg::FillFlagValuesBox(CCheckListBox *box, char *flag_name, int f
   for (i = 0; i < flag_entry->num_values; i++) {
     if (valid_flags_mask == 0 || (flag_entry->values[i].value & valid_flags_mask)) {
       int index;
-      index = box->AddString(flag_entry->values[i].name);
+      index = box->AddString(flag_entry->values[i].name.get());
       if (index != LB_ERR) {
         box->SetItemData(index, flag_entry->values[i].value);
         if (flag_entry->values[i].value & flags_value)
@@ -6170,12 +6160,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         enum_entry = nullptr;
       } else {
         enum_entry = &m_EnumDatabase[m_NumEnums++];
-        enum_entry->name = mem_strdup(enum_name);
-        if (enum_entry->name == nullptr) {
-          FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-          cfclose(ifile);
-          return;
-        }
+        enum_entry->name = mem_strdup_unique(enum_name);
         enum_entry->num_values = 0;
         enum_entry->is_user_type = TRUE;
         enum_entry->max_values = atoi(max_value_text);
@@ -6187,12 +6172,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         // Add the default (-1:None) value
         tEnumValueEntry *value_entry;
         value_entry = &enum_entry->values[enum_entry->num_values++];
-        value_entry->name = mem_strdup(USERTYPE_NONE);
-        if (value_entry->name == nullptr) {
-          FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-          cfclose(ifile);
-          return;
-        }
+        value_entry->name = mem_strdup_unique(USERTYPE_NONE);
         value_entry->value = -1;
       }
     } else if (strncmp(line, TAG_ENUM, strlen(TAG_ENUM)) == 0) { // Parse an enumeration block
@@ -6212,12 +6192,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         enum_entry = nullptr;
       } else {
         enum_entry = &m_EnumDatabase[m_NumEnums++];
-        enum_entry->name = mem_strdup(enum_name);
-        if (enum_entry->name == nullptr) {
-          FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-          cfclose(ifile);
-          return;
-        }
+        enum_entry->name = mem_strdup_unique(enum_name);
         enum_entry->num_values = 0;
         enum_entry->is_user_type = FALSE;
         enum_entry->max_values = 0;
@@ -6250,7 +6225,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
           }
 
           if (enum_value_string == nullptr || enum_value_name == nullptr ||
-              GetEnumValueName(enum_entry->name, enum_value) != nullptr) {
+              GetEnumValueName(enum_entry->name.get(), enum_value) != nullptr) {
             FunctionFileParseError(INV_ENUM_VALUE_ERR, linenum, filename);
             value_entry = nullptr;
           } else if (enum_entry->num_values == MAX_ENUM_VALUES) {
@@ -6258,12 +6233,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
             value_entry = nullptr;
           } else {
             value_entry = &enum_entry->values[enum_entry->num_values++];
-            value_entry->name = mem_strdup(enum_value_name);
-            if (value_entry->name == nullptr) {
-              FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-              cfclose(ifile);
-              return;
-            }
+            value_entry->name = mem_strdup_unique(enum_value_name);
             value_entry->value = enum_value;
           }
         }
@@ -6289,12 +6259,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         flag_entry = nullptr;
       } else {
         flag_entry = &m_FlagDatabase[m_NumFlags++];
-        flag_entry->name = mem_strdup(flag_name);
-        if (flag_entry->name == nullptr) {
-          FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-          cfclose(ifile);
-          return;
-        }
+        flag_entry->name = mem_strdup_unique(flag_name);
         flag_entry->num_values = 0;
       }
 
@@ -6325,7 +6290,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
           }
 
           if (flag_value_string == nullptr || flag_value_name == nullptr ||
-              GetFlagValueName(flag_entry->name, flag_value) != nullptr) {
+              GetFlagValueName(flag_entry->name.get(), flag_value) != nullptr) {
             FunctionFileParseError(INV_FLAG_VALUE_ERR, linenum, filename);
             value_entry = nullptr;
           } else if (flag_entry->num_values == MAX_FLAG_VALUES) {
@@ -6333,12 +6298,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
             value_entry = nullptr;
           } else {
             value_entry = &flag_entry->values[flag_entry->num_values++];
-            value_entry->name = mem_strdup(flag_value_name);
-            if (value_entry->name == nullptr) {
-              FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-              cfclose(ifile);
-              return;
-            }
+            value_entry->name = mem_strdup_unique(flag_value_name);
             value_entry->value = flag_value;
           }
         }
@@ -7775,19 +7735,14 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
               }
 
               if (enum_value_string == nullptr || enum_value_name == nullptr ||
-                  GetEnumValueName(enum_entry->name, enum_value) != nullptr) {
+                  GetEnumValueName(enum_entry->name.get(), enum_value) != nullptr) {
                 value_entry = nullptr;
               } else if (enum_entry->num_values >= MAX_ENUM_VALUES ||
                          enum_entry->num_values >= (enum_entry->max_values + 2)) {
                 value_entry = nullptr;
               } else {
                 value_entry = &enum_entry->values[enum_entry->num_values++];
-                value_entry->name = mem_strdup(enum_value_name);
-                if (value_entry->name == nullptr) {
-                  FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-                  cfclose(infile);
-                  return FALSE;
-                }
+                value_entry->name = mem_strdup_unique(enum_value_name);
                 value_entry->value = enum_value;
               }
             }
@@ -10908,11 +10863,12 @@ void CDallasMainDlg::WriteUserTypeVals(void) {
 
   for (j = 0; j < m_NumEnums; j++) {
     if (m_EnumDatabase[j].is_user_type) {
-      O(("%s %s", USERTYPE_VALS_START_TAG, m_EnumDatabase[j].name));
+      O(("%s %s", USERTYPE_VALS_START_TAG, m_EnumDatabase[j].name.get()));
       for (k = 0; k < m_EnumDatabase[j].num_values; k++) {
         tEnumValueEntry *value_entry = &m_EnumDatabase[j].values[k];
-        if (value_entry->value != -1)
-          O(("%d:%s", value_entry->value, value_entry->name));
+        if (value_entry->value != -1) {
+          O(("%d:%s", value_entry->value, value_entry->name.get()));
+        }
       }
       O(("%s", USERTYPE_VALS_END_TAG));
       O((" "));
@@ -13935,14 +13891,15 @@ void CDallasMainDlg::ReplaceWithLiteralNode(int literal_type, int index) {
   if (data->type == EXPRESSION_NODE || data->type == PARAMETER_NODE) {
 
     CString tmp_str;
-    if (literal_type == ENUM_PARAMETER_TYPE)
-      tmp_str = m_EnumDatabase[index].name;
-    else if (literal_type == FLAG_PARAMETER_TYPE)
-      tmp_str = m_FlagDatabase[index].name;
-    else if (GetNodeType(m_ScriptTree.GetParentItem(selected_node)) == CONDITIONAL_STATEMENT_NODE)
+    if (literal_type == ENUM_PARAMETER_TYPE) {
+      tmp_str = m_EnumDatabase[index].name.get();
+    } else if (literal_type == FLAG_PARAMETER_TYPE) {
+      tmp_str = m_FlagDatabase[index].name.get();
+    } else if (GetNodeType(m_ScriptTree.GetParentItem(selected_node)) == CONDITIONAL_STATEMENT_NODE) {
       tmp_str = GetLiteralName(literal_type);
-    else
+    } else {
       tmp_str = data->name;
+    }
 
     // Create a default parameter node for the chosen literal
     CString name_text, default_text, range_text;
