@@ -438,7 +438,7 @@ void FreePaletteRooms();
 void InitRooms() {
   int i;
   for (i = 0; i < MAX_ROOMS + MAX_PALETTE_ROOMS; i++) {
-    memset(&Rooms[i], 0, sizeof(room));
+    Rooms[i] = room{};
     Rooms[i].objects = -1;     // DAJ
     Rooms[i].vis_effects = -1; // DAJ
   }
