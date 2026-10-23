@@ -28,6 +28,8 @@
 #ifndef _STATUS_DLG_H_
 #define _STATUS_DLG_H_
 
+#include <memory>
+
 #include "fix.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -75,7 +77,7 @@ public:
 
 private:
   int m_Max, m_Min;
-  CStatusDlg *m_StatusDlg;
+  std::unique_ptr<CStatusDlg> m_StatusDlg;
 };
 
 //{{AFX_INSERT_LOCATION}}
