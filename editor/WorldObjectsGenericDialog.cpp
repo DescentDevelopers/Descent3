@@ -59,32 +59,29 @@ object_info Copy_object;
 static void CopyObjectInfoBlocks(object_info *dst, const object_info *src) {
   if (src->ai_info) {
     if (!dst->ai_info) {
-      dst->ai_info = mem_rmalloc<t_ai_info>();
+      dst->ai_info = std::make_unique<t_ai_info>();
     }
     *dst->ai_info = *src->ai_info;
-  } else if (dst->ai_info) {
-    mem_free(dst->ai_info);
-    dst->ai_info = nullptr;
+  } else {
+    dst->ai_info.reset();
   }
 
   if (src->static_wb) {
     if (!dst->static_wb) {
-      dst->static_wb = mem_rmalloc<otype_wb_info>(MAX_WBS_PER_OBJ);
+      dst->static_wb = std::make_unique<otype_wb_info[]>(MAX_WBS_PER_OBJ);
     }
-    memcpy(dst->static_wb, src->static_wb, sizeof(otype_wb_info) * MAX_WBS_PER_OBJ);
-  } else if (dst->static_wb) {
-    mem_free(dst->static_wb);
-    dst->static_wb = nullptr;
+    memcpy(dst->static_wb.get(), src->static_wb.get(), sizeof(otype_wb_info) * MAX_WBS_PER_OBJ);
+  } else {
+    dst->static_wb.reset();
   }
 
   if (src->anim) {
     if (!dst->anim) {
-      dst->anim = mem_rmalloc<anim_elem>(NUM_MOVEMENT_CLASSES);
+      dst->anim = std::make_unique<anim_elem[]>(NUM_MOVEMENT_CLASSES);
     }
-    memcpy(dst->anim, src->anim, sizeof(anim_elem) * NUM_MOVEMENT_CLASSES);
-  } else if (dst->anim) {
-    mem_free(dst->anim);
-    dst->anim = nullptr;
+    memcpy(dst->anim.get(), src->anim.get(), sizeof(anim_elem) * NUM_MOVEMENT_CLASSES);
+  } else {
+    dst->anim.reset();
   }
 }
 
@@ -601,7 +598,7 @@ BOOL CWorldObjectsGenericDialog::OnInitDialog() {
 }
 
 void CWorldObjectsGenericDialog::OnGenericEditAI() {
-  CAISettingsDlg dlg(Object_info[m_current].ai_info);
+  CAISettingsDlg dlg(Object_info[m_current].ai_info.get());
 
   dlg.DoModal();
 }
@@ -871,10 +868,10 @@ void CWorldObjectsGenericDialog::OnGenericDefineAnimStates() {
   if (m_current == -1)
     return;
 
-  CAnimStatesDialog dlg(Object_info[m_current].render_handle, Object_info[m_current].anim);
+  CAnimStatesDialog dlg(Object_info[m_current].render_handle, Object_info[m_current].anim.get());
 
   if (dlg.DoModal() == IDOK) // Copy back into object
-    dlg.GetAnimData(Object_info[m_current].anim);
+    dlg.GetAnimData(Object_info[m_current].anim.get());
 }
 
 void CWorldObjectsGenericDialog::OnGenericDelete() {
@@ -1076,7 +1073,7 @@ void CWorldObjectsGenericDialog::OnGenericChangeModel() {
 
   // A new model might induce a new weapon stucture
   if (OutrageMessageBox(MBOX_YESNO, "Would you like to clear the weapon battery info?") == IDYES) {
-    WBClearInfo(Object_info[m_current].static_wb);
+    WBClearInfo(Object_info[m_current].static_wb.get());
   }
   // Finally, save a local copy of the model
 
@@ -1472,7 +1469,7 @@ void CWorldObjectsGenericDialog::OnKillfocusGenericHitpointEdit() {
 }
 
 void CWorldObjectsGenericDialog::OnGenericWeaponInfoButton() {
-  RobotEditWeaponsDialog dlg(Object_info[m_current].static_wb,
+  RobotEditWeaponsDialog dlg(Object_info[m_current].static_wb.get(),
                              GetPolymodelPointer(Object_info[m_current].render_handle));
 
   if (dlg.DoModal() == IDOK)

@@ -116,20 +116,17 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
 
       extern void AISetDefault(t_ai_info * ai_info_ptr);
       if (f_ai) {
-        Object_info[i].ai_info = mem_rmalloc<t_ai_info>();
-        memset(Object_info[i].ai_info, 0, sizeof(t_ai_info));
-        AISetDefault(Object_info[i].ai_info);
+        Object_info[i].ai_info = std::make_unique<t_ai_info>();
+        AISetDefault(Object_info[i].ai_info.get());
       }
       // Make sure the weapon battery info is cleared for a new object
       if (f_weapons) {
-        Object_info[i].static_wb = mem_rmalloc<otype_wb_info>(MAX_WBS_PER_OBJ);
-        memset(Object_info[i].static_wb, 0, sizeof(otype_wb_info) * MAX_WBS_PER_OBJ);
-        WBClearInfo(Object_info[i].static_wb);
+        Object_info[i].static_wb = std::make_unique<otype_wb_info[]>(MAX_WBS_PER_OBJ);
+        WBClearInfo(Object_info[i].static_wb.get());
       }
 
       if (f_anim) {
-        Object_info[i].anim = mem_rmalloc<anim_elem>(NUM_MOVEMENT_CLASSES);
-        memset(Object_info[i].anim, 0, sizeof(anim_elem) * NUM_MOVEMENT_CLASSES);
+        Object_info[i].anim = std::make_unique<anim_elem[]>(NUM_MOVEMENT_CLASSES);
         for (j = 0; j < NUM_MOVEMENT_CLASSES; j++)
           for (k = 0; k < NUM_ANIMS_PER_CLASS; k++) {
             Object_info[i].anim[j].elem[k].spc = 1.0f;
@@ -196,26 +193,14 @@ void FreeObjectID(int n) {
     mem_free(Object_info[n].description);
     Object_info[n].description = nullptr;
   }
-  if (Object_info[n].anim) // DAJ LEAK FIX
-  {
-    mem_free(Object_info[n].anim);
-    Object_info[n].anim = nullptr;
-  }
-  if (Object_info[n].ai_info) // DAJ LEAK FIX
-  {
-    mem_free(Object_info[n].ai_info);
-    Object_info[n].ai_info = nullptr;
-  }
+  Object_info[n].anim.reset();
+  Object_info[n].ai_info.reset();
   if (Object_info[n].description) // DAJ LEAK FIX
   {
     mem_free(Object_info[n].description);
     Object_info[n].description = nullptr;
   }
-  if (Object_info[n].static_wb) // DAJ LEAK FIX
-  {
-    mem_free(Object_info[n].static_wb);
-    Object_info[n].static_wb = nullptr;
-  }
+  Object_info[n].static_wb.reset();
 }
 
 // Frees up all the Objects and any memory allocated
@@ -401,13 +386,13 @@ void RemapStaticIDs() {
         f_ai = true;
       int new_index = AllocObjectID(Object_info[i].type, f_anim, f_weapons, f_ai);
       if (new_index >= 0) { // DAJ -1FIX
-        Object_info[new_index] = Object_info[i];
+        Object_info[new_index] = std::move(Object_info[i]);
         RemapObjects(i, new_index);
       }
     }
 
     // Copy static ID into new slot
-    Object_info[i] = Object_info[cur_index];
+    Object_info[i] = std::move(Object_info[cur_index]);
 
     // Free up the old slot
     Object_info[cur_index].type = OBJ_NONE;

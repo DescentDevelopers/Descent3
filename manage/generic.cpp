@@ -1918,13 +1918,13 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
 
   strcpy(objinfopointer->name, genericpage->objinfo_struct.name);
   if (objinfopointer->anim)
-    memcpy(objinfopointer->anim, &genericpage->anim, sizeof(genericpage->anim));
+    memcpy(objinfopointer->anim.get(), &genericpage->anim, sizeof(genericpage->anim));
 
   if (objinfopointer->static_wb)
-    memcpy(objinfopointer->static_wb, &genericpage->static_wb, sizeof(genericpage->static_wb));
+    memcpy(objinfopointer->static_wb.get(), &genericpage->static_wb, sizeof(genericpage->static_wb));
 
   if (objinfopointer->ai_info)
-    memcpy(objinfopointer->ai_info, &genericpage->ai_info, sizeof(genericpage->ai_info));
+    memcpy(objinfopointer->ai_info.get(), &genericpage->ai_info, sizeof(genericpage->ai_info));
 
   objinfopointer->multi_allowed = true;
 
@@ -2105,13 +2105,13 @@ void mng_AssignObjInfoToGenericPage(int n, mngs_generic_page *genericpage) {
   strcpy(genericpage->objinfo_struct.name, objinfopointer->name);
 
   if (objinfopointer->anim)
-    memcpy(&genericpage->anim, objinfopointer->anim, sizeof(genericpage->anim));
+    memcpy(&genericpage->anim, objinfopointer->anim.get(), sizeof(genericpage->anim));
 
   if (objinfopointer->static_wb)
-    memcpy(&genericpage->static_wb, objinfopointer->static_wb, sizeof(genericpage->static_wb));
+    memcpy(&genericpage->static_wb, objinfopointer->static_wb.get(), sizeof(genericpage->static_wb));
 
   if (objinfopointer->ai_info)
-    memcpy(&genericpage->ai_info, objinfopointer->ai_info, sizeof(genericpage->ai_info));
+    memcpy(&genericpage->ai_info, objinfopointer->ai_info.get(), sizeof(genericpage->ai_info));
 
   if (objinfopointer->description != nullptr) {
     int len = strlen(objinfopointer->description);
