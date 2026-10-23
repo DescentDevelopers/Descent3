@@ -102,7 +102,8 @@ int Num_modems_found = 0;
 LPVOID lpConnectionBuffer;
 LPDIRECTPLAY4A lpDirectPlay4A = nullptr;
 LPDIRECTPLAYLOBBY3A lpDirectPlayLobby3A = nullptr;
-LPDPLCONNECTION lpdplconnection = nullptr;
+// Variable-size DPLCONNECTION blob (the struct is followed by the data its pointers refer to)
+std::unique_ptr<uint8_t[]> lpdplconnection;
 
 // {915CE160-3125-11d2-BB3D-00104B27BFF0}
 static const GUID DPD3_GUID = {0x915ce160, 0x3125, 0x11d2, {0xbb, 0x3d, 0x0, 0x10, 0x4b, 0x27, 0xbf, 0xf0}};
@@ -503,10 +504,8 @@ void dp_ShutdownDirectPlay() {
       dpconns[i].name[0] = '\0';
     }
   }
-  if (lpdplconnection)
-    mem_free(lpdplconnection);
+  lpdplconnection.reset();
   lpAddress.reset();
-  lpdplconnection = nullptr;
   // Delete any previous directplay instance
   LOG_DEBUG << "Releasing DirectPlay COM object (lpDirectPlay4A)";
   // if(lpDirectPlay4A)
@@ -691,8 +690,8 @@ bool dp_DidLobbyLaunchGame() {
       lpDirectPlayLobby3A = nullptr;
       return false;
     }
-    lpdplconnection = (LPDPLCONNECTION)mem_malloc(buffersize);
-    hr = lpDirectPlayLobby3A->GetConnectionSettings(0, lpdplconnection, &buffersize);
+    lpdplconnection = std::make_unique<uint8_t[]>(buffersize);
+    hr = lpDirectPlayLobby3A->GetConnectionSettings(0, lpdplconnection.get(), &buffersize);
     lpDirectPlayLobby3A->Release();
     lpDirectPlayLobby3A = nullptr;
     if (FAILED(hr)) {
@@ -720,12 +719,13 @@ bool dp_AutoConnect() {
   if (!Directplay_lobby_launched_game)
     return false;
 
-  if (lpdplconnection->dwFlags == DPLCONNECTION_CREATESESSION) {
+  auto dplconnection = reinterpret_cast<LPDPLCONNECTION>(lpdplconnection.get());
+  if (dplconnection->dwFlags == DPLCONNECTION_CREATESESSION) {
     //	We are hosting a game
     Use_DirectPlay = true;
     // What level do we use? what dll? what pps, etc....
 
-  } else if (lpdplconnection->dwFlags == DPLCONNECTION_JOINSESSION) {
+  } else if (dplconnection->dwFlags == DPLCONNECTION_JOINSESSION) {
     //	We are joining a game
     Use_DirectPlay = true;
   }
