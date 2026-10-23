@@ -75,20 +75,22 @@ struct trigger;
 
 // A group.  Used for cut, paste, copy, etc.
 struct group {
-  int nrooms;        // number of rooms in this group
-  room *rooms;       // pointer to list of rooms
-  int attachroom;    // which room is attached when pasting
-  int attachface;    // which face is attached when pasting
-  int nobjects;      // how many objects
-  int ndoors;        // how many doors
-  object *objects;   // pointer to list of objects
-  int ntriggers;     // how many triggers
-  trigger *triggers; // pointer to list of triggers
-};
+  int nrooms = 0;              // number of rooms in this group
+  room *rooms = nullptr;       // pointer to list of rooms
+  int attachroom = 0;          // which room is attached when pasting
+  int attachface = 0;          // which face is attached when pasting
+  int nobjects = 0;            // how many objects
+  int ndoors = 0;              // how many doors
+  object *objects = nullptr;   // pointer to list of objects
+  int ntriggers = 0;           // how many triggers
+  trigger *triggers = nullptr; // pointer to list of triggers
 
-// Free a group.
-// Parameters:	g - the group to be freed
-void FreeGroup(group *g);
+  group() = default;
+  // Frees the rooms (FreeRoom) and the object & trigger lists
+  ~group();
+  group(const group &) = delete;
+  group &operator=(const group &) = delete;
+};
 
 // Copy the given list of rooms to a group
 // Parameters:	nrooms - the number of rooms in list
