@@ -62,7 +62,7 @@ struct zipentry {
   uint16_t internal_file_attrib;
   uint32_t external_file_attrib;
   uint32_t offset_lcl_hdr_frm_frst_disk;
-  char *name;
+  std::unique_ptr<char[]> name;
 };
 
 class ZIP {
