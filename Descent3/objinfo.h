@@ -310,6 +310,8 @@
 #ifndef _OBJINFO_H
 #define _OBJINFO_H
 
+#include <memory>
+
 #include "object.h"
 #include "manage.h"
 #include "DeathInfo.h"
@@ -504,16 +506,15 @@ struct object_info {
   uint8_t death_probabilities[MAX_DEATH_TYPES]; // how likely each death is, from 0-100 (percent)
 
   // Valid for AI objects only
-  t_ai_info *ai_info; // the AI info for this obj type
+  std::unique_ptr<t_ai_info> ai_info; // the AI info for this obj type
 
   // Valid for polygon models with weapons
-  otype_wb_info *static_wb;
+  std::unique_ptr<otype_wb_info[]> static_wb; // MAX_WBS_PER_OBJ entries
   //	otype_wb_info static_wb[MAX_WBS_PER_OBJ];
 
   // Valid for polygon model objects only
-  anim_elem *anim; // which anim states are active
+  std::unique_ptr<anim_elem[]> anim; // which anim states are active (NUM_MOVEMENT_CLASSES entries)
   //	anim_elem		anim[NUM_MOVEMENT_CLASSES];	// which anim states are active
-
 };
 
 // The big array of object info

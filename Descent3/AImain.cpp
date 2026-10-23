@@ -3592,7 +3592,7 @@ void ObjSetAIInfo(object *objp) {
   if (!(Object_info[objp->id].ai_info))
     return;
 
-  t_ai_info *src = Object_info[objp->id].ai_info;
+  t_ai_info *src = Object_info[objp->id].ai_info.get();
 
   dest->ai_class = src->ai_class;
   dest->ai_type = src->ai_type;
