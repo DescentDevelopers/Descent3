@@ -506,7 +506,7 @@ void mng_WriteNewTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
 }
 
 void mng_InitTexturePage(mngs_texture_page *texpage) {
-  memset(texpage, 0, sizeof(mngs_texture_page));
+  *texpage = {};
   texpage->proc_thickness = 4;
   texpage->proc_heat = 200;
   texpage->proc_light = 1;
@@ -764,7 +764,7 @@ int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
   CFILE *infile, *outfile;
   uint8_t pagetype;
   int done = 0;
-  memset(&texpage1, 0, sizeof(mngs_texture_page));
+  texpage1 = {};
 
   if (local)
     infile = cfopen(LocalTableFilename, "rb");
@@ -1114,7 +1114,7 @@ void mng_AssignTextureToTexPage(int n, mngs_texture_page *texpage) {
 
 // Loads in a texture page
 void mng_LoadNetTexturePage(CFILE *infile, bool overlay) {
-  memset(&texpage1, 0, sizeof(mngs_texture_page));
+  texpage1 = {};
 
   if (mng_ReadNewTexturePage(infile, &texpage1)) {
     int n;
@@ -1138,7 +1138,7 @@ void mng_LoadNetTexturePage(CFILE *infile, bool overlay) {
 // already in memory
 void mng_LoadLocalTexturePage(CFILE *infile) {
   int ok = 0;
-  memset(&texpage1, 0, sizeof(mngs_texture_page));
+  texpage1 = {};
 
   if (mng_ReadNewTexturePage(infile, &texpage1)) {
     int i = FindTextureName(texpage1.tex_struct.name);
