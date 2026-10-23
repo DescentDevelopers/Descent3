@@ -182,6 +182,7 @@
 #include <algorithm>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "gamesave.h"
 #include "cfile.h"
@@ -829,7 +830,7 @@ int LGSObjects(CFILE *fp, int version) {
   int i, j, highest_index;
   int max_terr;
 
-  auto objmat = mem_rmalloc<matrix>(MAX_OBJECTS);
+  auto objmat = std::make_unique<matrix[]>(MAX_OBJECTS);
 
   Osiris_DisableCreateEvents();
   // we must reset some data before continuing.
@@ -1424,8 +1425,6 @@ lgsobjs_fail:
   Osiris_EnableCreateEvents();
 
 done:;
-
-  mem_free(objmat);
 
   return retval;
 }

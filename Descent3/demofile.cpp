@@ -267,6 +267,7 @@
 
 #include <cstdio>
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "ddio.h"
@@ -1691,7 +1692,6 @@ void DemoReadPersistantHUDMessage() {
   float time;
   int flags;
   int sound_index;
-  char *fmt;
 
   color = (uint32_t)cf_ReadInt(Demo_cfp);
   x = cf_ReadInt(Demo_cfp);
@@ -1700,10 +1700,9 @@ void DemoReadPersistantHUDMessage() {
   flags = cf_ReadInt(Demo_cfp);
   sound_index = cf_ReadInt(Demo_cfp);
   int msglen = cf_ReadShort(Demo_cfp);
-  fmt = mem_rmalloc<char>(msglen);
-  cf_ReadBytes((uint8_t *)fmt, msglen, Demo_cfp);
-  AddPersistentHUDMessage(color, x, y, time, flags, sound_index, fmt);
-  mem_free(fmt);
+  auto fmt = std::make_unique<char[]>(msglen);
+  cf_ReadBytes((uint8_t *)fmt.get(), msglen, Demo_cfp);
+  AddPersistentHUDMessage(color, x, y, time, flags, sound_index, fmt.get());
 }
 
 void DemoWriteSetObjDead(object *obj) {
