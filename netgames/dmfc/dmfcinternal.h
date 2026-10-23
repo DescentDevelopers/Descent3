@@ -447,7 +447,7 @@ struct tBanItem {
   network_address addr;
   char callsign[MAX_CALLSIGN_SIZE];
   char tracker_id[24];
-  tBanItem *next;
+  std::unique_ptr<tBanItem> next;
 };
 
 // This class handles displaying and processing a customizable and detailed stats screen (in-game)
@@ -2052,7 +2052,7 @@ protected:
 
   int *Game_interface_mode;
   std::unique_ptr<tSPHandler> SPRoot;        // Root node of the Special packet handler list
-  tBanItem *m_BanList;                       // root node of ban addresses
+  std::unique_ptr<tBanItem> m_BanList;       // root node of ban addresses
   tInputCommandNode *m_InputCommandRootNode; // root node for input commands ($ messages)
 
   MenuItem *TeamMenuItem;
