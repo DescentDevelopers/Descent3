@@ -38,6 +38,7 @@
  * $NoKeywords: $
  */
 
+#include <memory>
 #include <stdlib.h>
 #include "debuggraph.h"
 #include "grdefs.h"
@@ -116,53 +117,40 @@ private:
 };
 
 struct tDebugGraphNode {
-  tGraphNode *node;
-  tDebugGraphNode *next;
+  std::unique_ptr<tGraphNode> node;
+  std::unique_ptr<tDebugGraphNode> next;
 };
 
-tDebugGraphNode *DebugGraphNode_root = nullptr;
+std::unique_ptr<tDebugGraphNode> DebugGraphNode_root;
 
 tGraphNode *DebugGraph_AddNode(void) {
   if (graph_num_nodes == MAX_GRAPH_NODES)
     return nullptr;
 
-  tDebugGraphNode *curr = DebugGraphNode_root;
-
-  if (!curr) {
-    curr = DebugGraphNode_root = mem_rmalloc<tDebugGraphNode>();
-  } else {
-    while (curr->next) {
-      curr = curr->next;
-    }
-    curr->next = mem_rmalloc<tDebugGraphNode>();
-    curr = curr->next;
+  // Find the empty link at the end of the list
+  std::unique_ptr<tDebugGraphNode> *link = &DebugGraphNode_root;
+  while (*link) {
+    link = &(*link)->next;
   }
-
-  if (!curr) {
-    Error("Out of Memory");
-  }
+  *link = std::make_unique<tDebugGraphNode>();
+  tDebugGraphNode *curr = link->get();
 
   graph_num_nodes++;
-  curr->next = nullptr;
-  curr->node = new tGraphNode;
+  curr->node = std::make_unique<tGraphNode>();
 
-  if (!curr->node) {
-    Error("Out of Memory");
-  }
-
-  return curr->node;
+  return curr->node.get();
 }
 
 tGraphNode *DebugGraph_FindNode(int index) {
   if (index >= graph_num_nodes)
     return nullptr;
-  tDebugGraphNode *curr = DebugGraphNode_root;
+  tDebugGraphNode *curr = DebugGraphNode_root.get();
   int ci = 0;
   while (curr) {
     if (ci == index) {
-      return curr->node;
+      return curr->node.get();
     }
-    curr = curr->next;
+    curr = curr->next.get();
     ci++;
   }
 
@@ -170,17 +158,7 @@ tGraphNode *DebugGraph_FindNode(int index) {
 }
 
 void DebugGraph_Free(void) {
-  tDebugGraphNode *curr, *next;
-  curr = DebugGraphNode_root;
-
-  while (curr) {
-    delete curr->node;
-    next = curr->next;
-    mem_free(curr);
-    curr = next;
-  }
-
-  DebugGraphNode_root = nullptr;
+  DebugGraphNode_root.reset();
 
   if (graph_bmp > BAD_BITMAP_HANDLE) {
     bm_FreeBitmap(graph_bmp);
@@ -191,7 +169,7 @@ void DebugGraph_Free(void) {
 
 void DebugGraph_Initialize(void) {
   atexit(DebugGraph_Free);
-  DebugGraphNode_root = nullptr;
+  DebugGraphNode_root.reset();
   graph_bmp = -1;
   graph_mask = 0;
   graph_num_nodes = 0;
