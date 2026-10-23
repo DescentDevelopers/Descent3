@@ -448,7 +448,7 @@ extern char *TablefileNameOverride;
 void mng_InitGenericPage(mngs_generic_page *genericpage) {
   int i;
 
-  memset(genericpage, 0, sizeof(mngs_generic_page));
+  *genericpage = {};
   strcpy(genericpage->image_name, "");
 
   strcpy(genericpage->med_image_name, "");
@@ -2192,7 +2192,6 @@ void mng_AssignObjInfoToGenericPage(int n, mngs_generic_page *genericpage) {
 // with it
 void mng_LoadNetGenericPage(CFILE *infile, bool overlay) {
   mngs_generic_page genericpage{};
-  memset(&genericpage, 0, sizeof(mngs_generic_page));
 
   if (mng_ReadNewGenericPage(infile, &genericpage)) {
     int n = FindObjectIDName(genericpage.objinfo_struct.name);
@@ -2224,9 +2223,8 @@ void mng_LoadNetGenericPage(CFILE *infile, bool overlay) {
 // Reads a generic page from a local table file.  It then allocs a generic and
 // loads any images/models associated with that generic
 void mng_LoadLocalGenericPage(CFILE *infile) {
-  mngs_generic_page genericpage;
+  mngs_generic_page genericpage{};
   int ok = 0;
-  memset(&genericpage, 0, sizeof(mngs_generic_page));
 
   if (mng_ReadNewGenericPage(infile, &genericpage)) {
     // Check to see if this is a local copy that is supposed

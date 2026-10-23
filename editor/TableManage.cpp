@@ -229,7 +229,7 @@ bool GenericPageList::SaveTable(char *table_filename) {
   }
 
   // Clear out the generic page
-  memset(&genericpage, 0, sizeof(mngs_generic_page));
+  genericpage = {};
 
   // Read through the entire pagefile and replace the page we want replaced
   // If we can't find the one we want, we simply append it to the end of the file
