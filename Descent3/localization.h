@@ -78,10 +78,9 @@ class GrowString {
 public:
   GrowString();
   ~GrowString();
+  GrowString(const GrowString &) = delete;
   void Destroy(void);
   void operator+=(char *str);
-  GrowString operator+(char *str);
-  GrowString operator+(GrowString &gs);
   void operator+=(GrowString &gs);
   void operator=(char *str);
   void operator=(GrowString &gs);
