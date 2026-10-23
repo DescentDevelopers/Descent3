@@ -25,7 +25,6 @@
 #include <SDL3/SDL_filesystem.h>
 
 #include "IOOps.h"
-#include "chrono_timer.h"
 #include "ddio.h"
 #include "mem.h"
 #include "pserror.h"
@@ -173,8 +172,6 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
   size_t len_result = strlen((const char*)(basedir / prefix).u8string().c_str());
   char *random_name = (char *)mem_malloc(len_result + len + strlen(ext) + 1);
   strncpy(random_name, (const char*)(basedir / prefix).u8string().c_str(), len_result);
-
-  srand(D3::ChronoTimer::GetTimeMS());
 
   int tries = 20;
   while (tries > 0) {
