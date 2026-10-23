@@ -61,7 +61,7 @@ struct spec_vertex {
 int AllowCombining = 1;
 float GlobalMultiplier = 1.0;
 
-rad_surface *Light_surfaces = nullptr;
+std::unique_ptr<rad_surface[]> Light_surfaces;
 
 vector ScratchCenters[MAX_LIGHTMAP_INFOS];
 vector ScratchRVecs[MAX_LIGHTMAP_INFOS];
@@ -944,8 +944,7 @@ void DoRadiosityForRooms() {
 
   // Allocate enough memory to hold all surfaces
 
-  Light_surfaces = mem_rmalloc<rad_surface>(facecount);
-  ASSERT(Light_surfaces != nullptr);
+  Light_surfaces = std::make_unique<rad_surface[]>(facecount);
 
   // Set initial surface properties
   max_index = surface_index = 0;
@@ -960,20 +959,17 @@ void DoRadiosityForRooms() {
         ComputeSurfaceRes(&Light_surfaces[surface_index], &Rooms[i], t);
 
         if (Rooms[i].faces[t].num_verts) {
-          Light_surfaces[surface_index].verts = mem_rmalloc<vector>(Rooms[i].faces[t].num_verts);
-          ASSERT(Light_surfaces[surface_index].verts != nullptr);
+          Light_surfaces[surface_index].verts = std::make_unique<vector[]>(Rooms[i].faces[t].num_verts);
         } else {
-          Light_surfaces[surface_index].verts = nullptr;
+          Light_surfaces[surface_index].verts.reset();
           mprintf(0, "Room=%d Face %d has no verts!\n", i, t);
         }
 
         if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution) {
-          Light_surfaces[surface_index].elements =
-               mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
-                                        Light_surfaces[surface_index].yresolution);
-          ASSERT(Light_surfaces[surface_index].elements != nullptr);
+          Light_surfaces[surface_index].elements = std::make_unique<rad_element[]>(
+              Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution);
         } else {
-          Light_surfaces[surface_index].elements = nullptr;
+          Light_surfaces[surface_index].elements.reset();
           mprintf(0, "Room=%d Face %d is slivered!\n", i, t);
         }
 
@@ -1030,14 +1026,11 @@ void DoRadiosityForRooms() {
 
   // Setup satellites
   for (i = 0; i < Terrain_sky.num_satellites; i++, surface_index++) {
-    Light_surfaces[surface_index].verts = mem_rmalloc<vector>(3);
-    ASSERT(Light_surfaces[surface_index].verts != nullptr);
+    Light_surfaces[surface_index].verts = std::make_unique<vector[]>(3);
 
-    Light_surfaces[surface_index].elements = mem_rmalloc<rad_element>();
-    ASSERT(Light_surfaces[surface_index].elements != nullptr);
+    Light_surfaces[surface_index].elements = std::make_unique<rad_element[]>(1);
 
-    Light_surfaces[surface_index].elements[0].verts = mem_rmalloc<vector>(3);
-    ASSERT(Light_surfaces[surface_index].elements[0].verts);
+    Light_surfaces[surface_index].elements[0].verts = std::make_unique<vector[]>(3);
 
     Light_surfaces[surface_index].surface_type = ST_SATELLITE;
     Light_surfaces[surface_index].emittance.r = Terrain_sky.satellite_r[i];
@@ -1072,9 +1065,9 @@ void DoRadiosityForRooms() {
   mprintf(0, "This radiosity run is using %d lightmaps.\n", Lightmaps_for_rad);
   mprintf(0, "Solving radiosity equation (press tilde key to stop)...\n");
   if (D3EditState.hemicube_radiosity)
-    DoRadiosityRun(SM_HEMICUBE, Light_surfaces, facecount);
+    DoRadiosityRun(SM_HEMICUBE, Light_surfaces.get(), facecount);
   else
-    DoRadiosityRun(SM_RAYCAST, Light_surfaces, facecount);
+    DoRadiosityRun(SM_RAYCAST, Light_surfaces.get(), facecount);
   mprintf(0, "Done solving radiosity - cleaning up...\n");
 
   surface_index = 0;
@@ -1106,19 +1099,7 @@ void DoRadiosityForRooms() {
 
   // Free our memory
 
-  for (i = 0; i < facecount; i++) {
-    if (Light_surfaces[i].verts)
-      mem_free(Light_surfaces[i].verts);
-    for (t = 0; t < Light_surfaces[i].xresolution * Light_surfaces[i].yresolution; t++)
-      if (Light_surfaces[i].elements[t].num_verts > 0)
-        mem_free(Light_surfaces[i].elements[t].verts);
-
-    if (Light_surfaces[i].elements)
-      mem_free(Light_surfaces[i].elements);
-    Light_surfaces[i].elements = nullptr;
-  }
-  mem_free(Light_surfaces);
-  Light_surfaces = nullptr;
+  Light_surfaces.reset();
   Do_volume_lighting = 0;
 
   // Free specular lighting stuff
@@ -1197,8 +1178,7 @@ void DoRadiosityForCurrentRoom(room *rp) {
 
   // Allocate enough memory to hold all surfaces
 
-  Light_surfaces = mem_rmalloc<rad_surface>(facecount);
-  ASSERT(Light_surfaces != nullptr);
+  Light_surfaces = std::make_unique<rad_surface[]>(facecount);
 
   // Set initial surface properties
   max_index = surface_index = 0;
@@ -1207,19 +1187,17 @@ void DoRadiosityForCurrentRoom(room *rp) {
     ComputeSurfaceRes(&Light_surfaces[surface_index], rp, t);
 
     if (rp->faces[t].num_verts) {
-      Light_surfaces[surface_index].verts = mem_rmalloc<vector>(rp->faces[t].num_verts);
-      ASSERT(Light_surfaces[surface_index].verts != nullptr);
+      Light_surfaces[surface_index].verts = std::make_unique<vector[]>(rp->faces[t].num_verts);
     } else {
-      Light_surfaces[surface_index].verts = nullptr;
+      Light_surfaces[surface_index].verts.reset();
       mprintf(0, "Room=%d Face %d has no verts!\n", rp - Rooms, t);
     }
 
     if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution) {
-      Light_surfaces[surface_index].elements = mem_rmalloc<rad_element>(
+      Light_surfaces[surface_index].elements = std::make_unique<rad_element[]>(
           Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution);
-      ASSERT(Light_surfaces[surface_index].elements != nullptr);
     } else {
-      Light_surfaces[surface_index].elements = nullptr;
+      Light_surfaces[surface_index].elements.reset();
       mprintf(0, "Room=%d Face %d is slivered!\n", rp - Rooms, t);
     }
 
@@ -1257,9 +1235,9 @@ void DoRadiosityForCurrentRoom(room *rp) {
 
   mprintf(0, "Solving radiosity equation (press tilde key to stop)...\n");
   if (D3EditState.hemicube_radiosity)
-    DoRadiosityRun(SM_HEMICUBE, Light_surfaces, facecount);
+    DoRadiosityRun(SM_HEMICUBE, Light_surfaces.get(), facecount);
   else
-    DoRadiosityRun(SM_RAYCAST, Light_surfaces, facecount);
+    DoRadiosityRun(SM_RAYCAST, Light_surfaces.get(), facecount);
   mprintf(0, "Done solving radiosity - cleaning up...\n");
 
   surface_index = 0;
@@ -1279,17 +1257,7 @@ void DoRadiosityForCurrentRoom(room *rp) {
 
   // Free our memory
 
-  for (int i = 0; i < facecount; i++) {
-    mem_free(Light_surfaces[i].verts);
-    for (t = 0; t < Light_surfaces[i].xresolution * Light_surfaces[i].yresolution; t++)
-      if (Light_surfaces[i].elements[t].num_verts > 0)
-        mem_free(Light_surfaces[i].elements[t].verts);
-
-    mem_free(Light_surfaces[i].elements);
-    Light_surfaces[i].elements = nullptr;
-  }
-  mem_free(Light_surfaces);
-  Light_surfaces = nullptr;
+  Light_surfaces.reset();
 
   // Finally, squeeze the lightmaps
   SqueezeLightmaps(0, rp - Rooms);
@@ -1550,8 +1518,7 @@ void ClipSurfaceElement(vector *surf_verts, rad_element *ep, vector *clip_verts,
   if (ep->num_verts == 0)
     ep->flags |= EF_IGNORE;
   else {
-    ep->verts = mem_rmalloc<vector>(nnv);
-    ASSERT(ep->verts);
+    ep->verts = std::make_unique<vector[]>(nnv);
 
     for (i = 0; i < nnv; i++) {
       ep->verts[i] = dlist[i].pos;
@@ -1851,8 +1818,7 @@ void DoRadiosityForTerrain() {
   terrain_sums[0] = std::make_unique<spectra[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
   terrain_sums[1] = std::make_unique<spectra[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
 
-  Light_surfaces = mem_rmalloc<rad_surface>(total_surfaces);
-  ASSERT(Light_surfaces != nullptr);
+  Light_surfaces = std::make_unique<rad_surface[]>(total_surfaces);
 
   // Setup radiosity surfaces
   if (!Ignore_terrain) {
@@ -1885,14 +1851,11 @@ void DoRadiosityForTerrain() {
       }
 
       // Do upper left triangle
-      Light_surfaces[i * 2].elements = mem_rmalloc<rad_element>();
-      ASSERT(Light_surfaces[i * 2].elements != nullptr);
+      Light_surfaces[i * 2].elements = std::make_unique<rad_element[]>(1);
 
-      Light_surfaces[i * 2].elements[0].verts = mem_rmalloc<vector>(3);
-      ASSERT(Light_surfaces[i * 2].elements[0].verts);
+      Light_surfaces[i * 2].elements[0].verts = std::make_unique<vector[]>(3);
 
-      Light_surfaces[i * 2].verts = mem_rmalloc<vector>(3);
-      ASSERT(Light_surfaces[i * 2].verts != nullptr);
+      Light_surfaces[i * 2].verts = std::make_unique<vector[]>(3);
 
       Light_surfaces[i * 2].normal = TerrainNormals[MAX_TERRAIN_LOD - 1][seg].normal1;
 
@@ -1925,14 +1888,11 @@ void DoRadiosityForTerrain() {
 
       // Now do lower right
 
-      Light_surfaces[i * 2 + 1].elements = mem_rmalloc<rad_element>();
-      ASSERT(Light_surfaces[i * 2 + 1].elements != nullptr);
+      Light_surfaces[i * 2 + 1].elements = std::make_unique<rad_element[]>(1);
 
-      Light_surfaces[i * 2 + 1].elements[0].verts = mem_rmalloc<vector>(3);
-      ASSERT(Light_surfaces[i * 2 + 1].elements[0].verts);
+      Light_surfaces[i * 2 + 1].elements[0].verts = std::make_unique<vector[]>(3);
 
-      Light_surfaces[i * 2 + 1].verts = mem_rmalloc<vector>(3);
-      ASSERT(Light_surfaces[i * 2 + 1].verts != nullptr);
+      Light_surfaces[i * 2 + 1].verts = std::make_unique<vector[]>(3);
 
       Light_surfaces[i * 2 + 1].normal = TerrainNormals[MAX_TERRAIN_LOD - 1][seg].normal2;
 
@@ -1967,14 +1927,11 @@ void DoRadiosityForTerrain() {
 
   // Setup satellites
   for (i = 0; i < Terrain_sky.num_satellites; i++, surf_index++) {
-    Light_surfaces[surf_index].verts = mem_rmalloc<vector>(3);
-    ASSERT(Light_surfaces[surf_index].verts != nullptr);
+    Light_surfaces[surf_index].verts = std::make_unique<vector[]>(3);
 
-    Light_surfaces[surf_index].elements = mem_rmalloc<rad_element>();
-    ASSERT(Light_surfaces[surf_index].elements != nullptr);
+    Light_surfaces[surf_index].elements = std::make_unique<rad_element[]>(1);
 
-    Light_surfaces[surf_index].elements[0].verts = mem_rmalloc<vector>(3);
-    ASSERT(Light_surfaces[surf_index].elements[0].verts);
+    Light_surfaces[surf_index].elements[0].verts = std::make_unique<vector[]>(3);
 
     Light_surfaces[surf_index].surface_type = ST_SATELLITE;
     Light_surfaces[surf_index].emittance.r = Terrain_sky.satellite_r[i];
@@ -2015,12 +1972,10 @@ void DoRadiosityForTerrain() {
 
         ComputeSurfaceRes(&Light_surfaces[surf_index], &Rooms[i], t);
 
-        Light_surfaces[surf_index].verts = mem_rmalloc<vector>(Rooms[i].faces[t].num_verts);
-        ASSERT(Light_surfaces[surf_index].verts != nullptr);
+        Light_surfaces[surf_index].verts = std::make_unique<vector[]>(Rooms[i].faces[t].num_verts);
 
-        Light_surfaces[surf_index].elements = mem_rmalloc<rad_element>(
-            Light_surfaces[surf_index].xresolution * Light_surfaces[surf_index].yresolution);
-        ASSERT(Light_surfaces[surf_index].elements != nullptr);
+        Light_surfaces[surf_index].elements = std::make_unique<rad_element[]>(Light_surfaces[surf_index].xresolution *
+                                                                              Light_surfaces[surf_index].yresolution);
 
         if (Rooms[i].faces[t].portal_num != -1 &&
             !(Rooms[i].portals[Rooms[i].faces[t].portal_num].flags & PF_RENDER_FACES))
@@ -2065,9 +2020,9 @@ void DoRadiosityForTerrain() {
   mprintf(0, "Solving radiosity equation (press tilde key to stop)...\n");
 
   if (D3EditState.hemicube_radiosity)
-    DoRadiosityRun(SM_SWITCH_AFTER_SATELLITES, Light_surfaces, total_surfaces);
+    DoRadiosityRun(SM_SWITCH_AFTER_SATELLITES, Light_surfaces.get(), total_surfaces);
   else
-    DoRadiosityRun(SM_RAYCAST, Light_surfaces, total_surfaces);
+    DoRadiosityRun(SM_RAYCAST, Light_surfaces.get(), total_surfaces);
 
   // Figure out lighting by averaging the two triangles per terrain cell
 
@@ -2164,15 +2119,7 @@ void DoRadiosityForTerrain() {
 
   // Free memory
 
-  for (i = 0; i < total_surfaces; i++) {
-    mem_free(Light_surfaces[i].verts);
-    for (int t = 0; t < Light_surfaces[i].xresolution * Light_surfaces[i].yresolution; t++)
-      if (Light_surfaces[i].elements[t].num_verts > 0)
-        mem_free(Light_surfaces[i].elements[t].verts);
-    mem_free(Light_surfaces[i].elements);
-  }
-
-  mem_free(Light_surfaces);
+  Light_surfaces.reset();
   terrain_sums[0].reset();
   terrain_sums[1].reset();
 
