@@ -352,13 +352,13 @@ protected:
   virtual void OnGainFocus();
 
   UIBitmapItem *m_bkg, *m_litbkg; // used to define visual characteristics of button
-  UISnazzyTextItem *m_text;
+  std::unique_ptr<UISnazzyTextItem> m_text;
 
   // this is used in multiple inheritance cases.(flags are additional attributes usually passed when creating gadget)
   void InitStates(const char *name, bool is_long, int16_t flags = 0);
 
 public:
-  UISnazzyTextItem *GetTitle() { return m_text; };
+  UISnazzyTextItem *GetTitle() { return m_text.get(); };
 };
 
 //	CLASS a large option button used in menus.
