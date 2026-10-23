@@ -998,29 +998,29 @@ private:
   int m_MaxNumCustomScriptLines;
 
   // Name Lists
-  char *m_DoorList[MAX_NAMED_DOORS];
+  std::unique_ptr<char[]> m_DoorList[MAX_NAMED_DOORS];
   int m_DoorListSize;
-  char *m_ObjectList[MAX_NAMED_OBJECTS];
+  std::unique_ptr<char[]> m_ObjectList[MAX_NAMED_OBJECTS];
   int m_ObjectListSize;
-  char *m_RoomList[MAX_NAMED_ROOMS];
+  std::unique_ptr<char[]> m_RoomList[MAX_NAMED_ROOMS];
   int m_RoomListSize;
-  char *m_TriggerList[MAX_NAMED_TRIGGERS];
+  std::unique_ptr<char[]> m_TriggerList[MAX_NAMED_TRIGGERS];
   int m_TriggerListSize;
-  char *m_SoundList[MAX_NAMED_SOUNDS];
+  std::unique_ptr<char[]> m_SoundList[MAX_NAMED_SOUNDS];
   int m_SoundListSize;
-  char *m_TextureList[MAX_NAMED_TEXTURES];
+  std::unique_ptr<char[]> m_TextureList[MAX_NAMED_TEXTURES];
   int m_TextureListSize;
-  char *m_SpecnameList[MAX_SPECNAMES];
+  std::unique_ptr<char[]> m_SpecnameList[MAX_SPECNAMES];
   int m_SpecnameListSize;
-  char *m_PathList[MAX_NAMED_PATHS];
+  std::unique_ptr<char[]> m_PathList[MAX_NAMED_PATHS];
   int m_PathListSize;
-  char *m_MatcenList[MAX_NAMED_MATCENS];
+  std::unique_ptr<char[]> m_MatcenList[MAX_NAMED_MATCENS];
   int m_MatcenListSize;
-  char *m_GoalList[MAX_NAMED_GOALS];
+  std::unique_ptr<char[]> m_GoalList[MAX_NAMED_GOALS];
   int m_GoalListSize;
-  char *m_StrmAudioList[MAX_NAMED_STRM_AUDIO];
+  std::unique_ptr<char[]> m_StrmAudioList[MAX_NAMED_STRM_AUDIO];
   int m_StrmAudioListSize;
-  char *m_MessageNameList[MAX_MESSAGE_LIST_ENTRIES];
+  std::unique_ptr<char[]> m_MessageNameList[MAX_MESSAGE_LIST_ENTRIES];
   int m_MessageNameListSize;
 
   // Drag and Drop Vars
