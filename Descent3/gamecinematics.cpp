@@ -190,6 +190,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "pserror.h"
 #include "grtext.h"
@@ -251,7 +252,7 @@ struct tGameCinema {
   int num_lines;
   int end_transition_type;   // what kind of ending transition should the cinematic have
   int start_transition_type; // what kind of starting transition should the cinematic have
-  char *text;
+  std::unique_ptr<char[]> text;
   bool target_triggered; // whether the notify event has been sent to the object yet
 
   bool doing_end_transition;       // we're processing an end transition still
@@ -611,8 +612,8 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
 
   // parse the text line and extract the lines
   GameCinema.num_lines = 0;
-  GameCinema.text = mem_strdup(text_string);
-  char *ptr = GameCinema.text;
+  GameCinema.text = mem_strdup_unique(text_string);
+  char *ptr = GameCinema.text.get();
   if (!ptr) {
     Error("Out of Memory\n");
   }
@@ -898,10 +899,7 @@ void Cinematic_Stop(void) {
   if (!Cinematic_inuse)
     return;
 
-  if (GameCinema.text) {
-    mem_free(GameCinema.text);
-    GameCinema.text = nullptr;
-  }
+  GameCinema.text.reset();
 
   // tell the target object the cinematic is over
   object *target = ObjGet(GameCinema.target_objhandle);
