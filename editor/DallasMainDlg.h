@@ -993,7 +993,7 @@ private:
   HTREEITEM m_ClipboardNode;
 
   // Custom Script Storage Data
-  char **m_CustomScriptLines;
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_CustomScriptLines;
   int m_NumCustomScriptLines;
   int m_MaxNumCustomScriptLines;
 
