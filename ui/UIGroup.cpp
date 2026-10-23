@@ -67,8 +67,7 @@ void UIGroup::Create(UIWindow *parent, char *label, int x, int y, int w, int h, 
 
   int length = strlen(label);
   if (length) {
-    m_Label = (char *)mem_malloc(length + 1);
-    strcpy(m_Label, label);
+    m_Label = mem_strdup_unique(label);
   }
 }
 
@@ -80,7 +79,7 @@ void UIGroup::OnDraw() {
 
   if (m_Label) {
     text_height = ui_GetTextHeight("X") / 2;
-    text_width = ui_GetTextWidth(m_Label);
+    text_width = ui_GetTextWidth(m_Label.get());
   }
 
   ui_DrawLine(m_BoxColor, 0, text_height, 0, m_H - 1);             // left side
@@ -101,12 +100,9 @@ void UIGroup::OnDraw() {
 
   if (!m_bTextCreated) {
     m_bTextCreated = true;
-    UITextItem item{(m_Label) ? m_Label : "", m_LabelColor};
+    UITextItem item{(m_Label) ? m_Label.get() : "", m_LabelColor};
     m_tLabel.Create(m_Wnd, &item, m_X + top_edge_length + 3, m_Y);
   }
 }
 
-void UIGroup::OnDestroy() {
-  if (m_Label)
-    mem_free(m_Label);
-}
+void UIGroup::OnDestroy() { m_Label.reset(); }

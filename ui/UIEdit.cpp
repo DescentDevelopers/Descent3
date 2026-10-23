@@ -151,8 +151,7 @@ static UIEdit *UI_current_editbox = nullptr;
 
 void UIEdit::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
   m_BufSize = 32;
-  m_TextBuf = (char *)mem_malloc(m_BufSize + 1);
-  m_TextBuf[0] = 0;
+  m_TextBuf = std::make_unique<char[]>(m_BufSize + 1);
   m_CursorPosX = 0;
   m_Color = GR_WHITE;
   m_Active = false;
@@ -178,16 +177,12 @@ void UIEdit::SetColor(ddgr_color col) { m_Color = col; }
 //	setings
 // sets the length of the input buffer.
 void UIEdit::SetBufferLen(int length) {
-  char *newbuf;
   ASSERT(length < EDIT_BUFLEN_MAX); // there are several places in the code that depend on something like this.
 
-  newbuf = (char *)mem_malloc(length + 1);
-  strncpy(newbuf, m_TextBuf, length);
+  auto newbuf = std::make_unique<char[]>(length + 1);
+  strncpy(newbuf.get(), m_TextBuf.get(), length);
   newbuf[length] = 0;
-  if (m_TextBuf) {
-    mem_free(m_TextBuf);
-  }
-  m_TextBuf = newbuf;
+  m_TextBuf = std::move(newbuf);
   m_BufSize = length;
   m_UpdateCount = false;
 }
@@ -198,12 +193,12 @@ void UIEdit::SetText(const char *text) {
 
   if (CHECK_FLAG(m_Flags, UIED_NUMBERS)) {
     int num = atoi(text);
-    sprintf(m_TextBuf, "%d", num);
+    sprintf(m_TextBuf.get(), "%d", num);
   } else {
-    strcpy(m_TextBuf, text);
+    strcpy(m_TextBuf.get(), text);
   }
 
-  m_CurPos = strlen(m_TextBuf);
+  m_CurPos = strlen(m_TextBuf.get());
   m_StartPos = -1;
   m_UpdateCount = false;
 }
@@ -215,7 +210,7 @@ void UIEdit::GetText(char *buffer, int len) {
     buffer[0] = '\0';
     return;
   }
-  strncpy(buffer, m_TextBuf, len - 1);
+  strncpy(buffer, m_TextBuf.get(), len - 1);
   buffer[len - 1] = 0;
 }
 
@@ -249,9 +244,7 @@ void UIEdit::Deactivate() {
 void UIEdit::OnDestroy() {
   UIGadget::OnDestroy();
 
-  if (m_TextBuf) {
-    mem_free(m_TextBuf);
-  }
+  m_TextBuf.reset();
 
   // if editbox is being destroyed and is the current editbox, reset to NULL.
   if (UI_current_editbox == this)
@@ -286,13 +279,13 @@ void UIEdit::DrawText() {
     ui_DrawSetFont(m_FontHandle);
 
   // I need an extra character.
-  ASSERT(strlen(m_TextBuf) < sizeof(buffer));
+  ASSERT(strlen(m_TextBuf.get()) < sizeof(buffer));
 
   if (m_Flags & UIED_PASSWORD) {
-    memset(buffer, '*', strlen(m_TextBuf));
-    buffer[strlen(m_TextBuf)] = 0;
+    memset(buffer, '*', strlen(m_TextBuf.get()));
+    buffer[strlen(m_TextBuf.get())] = 0;
   } else {
-    strcpy(buffer, m_TextBuf);
+    strcpy(buffer, m_TextBuf.get());
   }
 
   if (m_Active || HasFocus())
@@ -352,7 +345,7 @@ void UIEdit::DrawText() {
 //	behavior when key is pressed.
 void UIEdit::OnKeyDown(int key) {
   int ascii = grfont_KeyToAscii(m_FontHandle, key);
-  int len = strlen(m_TextBuf);
+  int len = strlen(m_TextBuf.get());
   int i;
 
   if (!m_Active) {
