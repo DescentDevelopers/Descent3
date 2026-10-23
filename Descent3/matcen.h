@@ -20,6 +20,8 @@
 #define _MATCEN_H_
 
 #include <cstdint>
+#include <memory>
+
 #include "cfile.h"
 #include "vecmat.h"
 #include "matcen_external.h"
@@ -124,7 +126,7 @@ protected:
 
 class matcen : private matcen_state {
 private:
-  int *m_alive_list; // list of alive children (m_max_alive_children entries, m_num_alive used)
+  std::unique_ptr<int[]> m_alive_list; // list of alive children (m_max_alive_children entries, m_num_alive used)
 
   // Private functions that are not available outside of the matcen internals
   bool StartObjProd();
@@ -142,7 +144,6 @@ public:
   matcen();
   matcen(const matcen &other);
   matcen &operator=(const matcen &other);
-  ~matcen();
 
   void SetCreationTexture(int16_t texnum);
   int16_t GetCreationTexture();
