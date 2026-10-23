@@ -169,7 +169,7 @@ void CFilePageDialog::UpdateDialog() {
   }
 }
 
-int CFilePageDialog::CreateIndexMap(int **index_map, int listbox_id) {
+int CFilePageDialog::CreateIndexMap(std::unique_ptr<int[]> &index_map, int listbox_id) {
   int r, n;
   CCheckListBox *list = (CCheckListBox *)GetDlgItem(listbox_id);
   if (!list)
@@ -184,11 +184,8 @@ int CFilePageDialog::CreateIndexMap(int **index_map, int listbox_id) {
   if (listbox_count == 0)
     return 0;
 
-  int *map;
-
-  map = *index_map = mem_rmalloc<int>(listbox_count);
-  if (!map)
-    return 0;
+  index_map = std::make_unique<int[]>(listbox_count);
+  int *map = index_map.get();
   n = 0;
   for (r = 0; r < listbox_size; r++) {
     if (list->GetCheck(r)) {
@@ -214,13 +211,12 @@ void CFilePageDialog::OnCheckinFile() {
   if (Num_gamefiles < 1)
     return;
 
-  int *listbox_map;
-  int listbox_count = CreateIndexMap(&listbox_map, IDC_CHECKEDOUT_LIST);
+  std::unique_ptr<int[]> listbox_map;
+  int listbox_count = CreateIndexMap(listbox_map, IDC_CHECKEDOUT_LIST);
   if (!listbox_count)
     return;
 
   if (!mng_MakeLocker()) {
-    mem_free(listbox_map);
     return;
   }
 
@@ -288,7 +284,6 @@ void CFilePageDialog::OnCheckinFile() {
 
   mng_EraseLocker();
   OutrageMessageBox("File(s) checked in.");
-  mem_free(listbox_map);
   UpdateDialog();
 }
 
@@ -300,13 +295,12 @@ void CFilePageDialog::OnDeleteFile() {
   if (Num_gamefiles < 1)
     return;
 
-  int *listbox_map;
-  int listbox_count = CreateIndexMap(&listbox_map, IDC_CHECKEDOUT_LIST);
+  std::unique_ptr<int[]> listbox_map;
+  int listbox_count = CreateIndexMap(listbox_map, IDC_CHECKEDOUT_LIST);
   if (!listbox_count)
     return;
 
   if (!mng_MakeLocker()) {
-    mem_free(listbox_map);
     return;
   }
 
@@ -354,7 +348,6 @@ void CFilePageDialog::OnDeleteFile() {
 
   mng_EraseLocker();
   OutrageMessageBox("Gamefile(s) deleted.");
-  mem_free(listbox_map);
   UpdateDialog();
 }
 
@@ -366,13 +359,12 @@ void CFilePageDialog::OnLockFile() {
   if (Num_gamefiles < 1)
     return;
 
-  int *listbox_map;
-  int listbox_count = CreateIndexMap(&listbox_map, IDC_FILELIST);
+  std::unique_ptr<int[]> listbox_map;
+  int listbox_count = CreateIndexMap(listbox_map, IDC_FILELIST);
   if (!listbox_count)
     return;
 
   if (!mng_MakeLocker()) {
-    mem_free(listbox_map);
     return;
   }
 
@@ -445,7 +437,6 @@ void CFilePageDialog::OnLockFile() {
 
   mng_EraseLocker();
   OutrageMessageBox("File(s) locked.");
-  mem_free(listbox_map);
   UpdateDialog();
 }
 
@@ -475,8 +466,8 @@ void CFilePageDialog::OnOverride() {
   if (Num_gamefiles < 1)
     return;
 
-  int *listbox_map;
-  int listbox_count = CreateIndexMap(&listbox_map, IDC_FILELIST);
+  std::unique_ptr<int[]> listbox_map;
+  int listbox_count = CreateIndexMap(listbox_map, IDC_FILELIST);
   if (!listbox_count)
     return;
 
@@ -494,8 +485,6 @@ void CFilePageDialog::OnOverride() {
 
     mng_OverrideToUnlocked(&temp_pl);
   }
-
-  mem_free(listbox_map);
 }
 
 void CFilePageDialog::OnFilesOut() {
