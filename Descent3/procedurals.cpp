@@ -44,6 +44,8 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <memory>
+#include <utility>
 
 #include "procedurals.h"
 #include "bitmap.h"
@@ -366,8 +368,8 @@ void HeatProcTexture(int tex_handle) {
 // Fades and entire bitmap one step closer to black
 void BlendProcTexture(int tex_handle) {
   int total = PROC_SIZE * PROC_SIZE;
-  uint8_t *src_data = (uint8_t *)GameTextures[tex_handle].procedural->proc1;
-  uint8_t *dest_data = (uint8_t *)GameTextures[tex_handle].procedural->proc2;
+  uint8_t *src_data = GameTextures[tex_handle].procedural->proc1.get();
+  uint8_t *dest_data = GameTextures[tex_handle].procedural->proc2.get();
   uint8_t *start_data = src_data;
   for (int i = 0; i < PROC_SIZE; i++) {
     uint8_t *downrow;
@@ -808,8 +810,8 @@ void CalcWater2(int handle, int density) {
   int count = PROC_SIZE + 1;
   proc_struct *procedural = GameTextures[handle].procedural;
 
-  int16_t *newptr = (int16_t *)procedural->proc2;
-  int16_t *oldptr = (int16_t *)procedural->proc1;
+  int16_t *newptr = (int16_t *)procedural->proc2.get();
+  int16_t *oldptr = (int16_t *)procedural->proc1.get();
 
   int x, y;
 
@@ -871,8 +873,8 @@ void CalcWater(int handle, int density) {
   int count = PROC_SIZE + 1;
   proc_struct *procedural = GameTextures[handle].procedural;
 
-  int16_t *newptr = (int16_t *)procedural->proc2;
-  int16_t *oldptr = (int16_t *)procedural->proc1;
+  int16_t *newptr = (int16_t *)procedural->proc2.get();
+  int16_t *oldptr = (int16_t *)procedural->proc1.get();
 
   int x, y;
 
@@ -930,7 +932,7 @@ void DrawWaterNoLight(int handle) {
   int dest_bitmap = procedural->procedural_bitmap;
   uint16_t *dest_data = (uint16_t *)bm_data(dest_bitmap, 0);
   uint16_t *src_data = (uint16_t *)bm_data(GameTextures[handle].bm_handle, 0);
-  int16_t *ptr = (int16_t *)procedural->proc1;
+  int16_t *ptr = (int16_t *)procedural->proc1.get();
   for (y = 0; y < PROC_SIZE; y++) {
     for (x = 0; x < PROC_SIZE; x++, offset++) {
       if (x == PROC_SIZE - 1)
@@ -961,7 +963,7 @@ void DrawWaterWithLight(int handle, int lightval) {
   int dest_bitmap = procedural->procedural_bitmap;
   uint16_t *dest_data = (uint16_t *)bm_data(dest_bitmap, 0);
   uint16_t *src_data = (uint16_t *)bm_data(GameTextures[handle].bm_handle, 0);
-  int16_t *ptr = (int16_t *)procedural->proc1;
+  int16_t *ptr = (int16_t *)procedural->proc1.get();
   for (y = 0; y < PROC_SIZE; y++) {
     int ychange, ychange2;
     if (y == PROC_SIZE - 1) {
@@ -1008,7 +1010,7 @@ void AddProcHeightBlob(static_proc_element *proc, int handle) {
   int rquad;
   int cx, cy, cyq;
   int left, top, right, bottom;
-  int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1;
+  int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1.get();
   int x = proc->x1;
   int y = proc->y1;
   int procnum = proc - GameTextures[handle].procedural->static_proc_elements.get();
@@ -1093,7 +1095,7 @@ void AddProcSineBlob(static_proc_element *proc, int handle) {
   int radius = proc->size;
   int radsquare = radius * radius;
   float length = (1024.0 / (float)radius) * (1024.0 / (float)radius);
-  int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1;
+  int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1.get();
   int height = proc->speed;
   radsquare = (radius * radius);
   left = -radius;
@@ -1125,17 +1127,8 @@ void AllocateMemoryForWaterProcedural(int handle) {
   proc_struct *procedural = GameTextures[handle].procedural;
   int w = PROC_SIZE;
   int h = PROC_SIZE;
-  if (procedural->proc1)
-    mem_free(procedural->proc1);
-  if (procedural->proc2)
-    mem_free(procedural->proc2);
-  GameTextures[handle].procedural->proc1 = (uint16_t *)mem_malloc(w * h * 2);
-  ASSERT(GameTextures[handle].procedural->proc1);
-  memset(GameTextures[handle].procedural->proc1, 0, w * h * 2);
-
-  GameTextures[handle].procedural->proc2 = (uint16_t *)mem_malloc(w * h * 2);
-  ASSERT(GameTextures[handle].procedural->proc2);
-  memset(GameTextures[handle].procedural->proc2, 0, w * h * 2);
+  procedural->proc1 = std::make_unique<uint8_t[]>(w * h * 2);
+  procedural->proc2 = std::make_unique<uint8_t[]>(w * h * 2);
   procedural->memory_type = PROC_MEMORY_TYPE_WATER;
 }
 // Does a water effect for this texture
@@ -1166,7 +1159,7 @@ void EvaluateWaterProcedural(int handle) {
   if (EasterEgg) {
     if (Easter_egg_handle != -1) {
       uint16_t *src_data = bm_data(Easter_egg_handle, 0);
-      int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1;
+      int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1.get();
       int sw = bm_w(Easter_egg_handle, 0);
       int sh = bm_w(Easter_egg_handle, 0);
       int x1 = (PROC_SIZE / 2) - (sw / 2);
@@ -1216,25 +1209,14 @@ void EvaluateWaterProcedural(int handle) {
   }
   CalcWater(handle, thickness);
   // Swap for next time
-  int16_t *temp = (int16_t *)procedural->proc1;
-  procedural->proc1 = procedural->proc2;
-  procedural->proc2 = temp;
+  std::swap(procedural->proc1, procedural->proc2);
 }
 void AllocateMemoryForFireProcedural(int handle) {
   proc_struct *procedural = GameTextures[handle].procedural;
   int w = PROC_SIZE;
   int h = PROC_SIZE;
-  if (procedural->proc1)
-    mem_free(procedural->proc1);
-  if (procedural->proc2)
-    mem_free(procedural->proc2);
-  GameTextures[handle].procedural->proc1 = (uint8_t *)mem_malloc(w * h * 1);
-  ASSERT(GameTextures[handle].procedural->proc1);
-  memset(GameTextures[handle].procedural->proc1, 0, w * h * 1);
-
-  GameTextures[handle].procedural->proc2 = (uint8_t *)mem_malloc(w * h * 1);
-  ASSERT(GameTextures[handle].procedural->proc2);
-  memset(GameTextures[handle].procedural->proc2, 0, w * h * 1);
+  procedural->proc1 = std::make_unique<uint8_t[]>(w * h * 1);
+  procedural->proc2 = std::make_unique<uint8_t[]>(w * h * 1);
   procedural->memory_type = PROC_MEMORY_TYPE_FIRE;
 }
 void EvaluateFireProcedural(int handle) {
@@ -1244,7 +1226,7 @@ void EvaluateFireProcedural(int handle) {
   if (procedural->memory_type != PROC_MEMORY_TYPE_FIRE) {
     AllocateMemoryForFireProcedural(handle);
   }
-  ProcDestData = (uint8_t *)procedural->proc1;
+  ProcDestData = procedural->proc1.get();
   // fade and the current texture
   FadeProcTexture(handle);
   // HeatProcTexture (handle);
@@ -1324,7 +1306,7 @@ void EvaluateFireProcedural(int handle) {
 
   // blend the current texture
   BlendProcTexture(handle);
-  ProcDestData = (uint8_t *)procedural->proc2;
+  ProcDestData = procedural->proc2.get();
   int total = PROC_SIZE * PROC_SIZE;
   uint16_t *data = bm_data(dest_bitmap, 0);
   uint16_t *pal = procedural->palette.get();
@@ -1332,9 +1314,7 @@ void EvaluateFireProcedural(int handle) {
     *data = pal[*ProcDestData];
   }
   // Swap for next time
-  uint8_t *temp = (uint8_t *)procedural->proc1;
-  procedural->proc1 = procedural->proc2;
-  procedural->proc2 = temp;
+  std::swap(procedural->proc1, procedural->proc2);
 }
 // Does a procedural for this texture
 void EvaluateProcedural(int handle) {

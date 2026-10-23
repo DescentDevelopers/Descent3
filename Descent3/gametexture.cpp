@@ -416,9 +416,6 @@ int AllocateProceduralForTexture(int handle) {
 
   GameTextures[handle].procedural = new proc_struct();
 
-  GameTextures[handle].procedural->proc1 = nullptr;
-  GameTextures[handle].procedural->proc2 = nullptr;
-
   GameTextures[handle].procedural->last_evaluation_time = 0;
   GameTextures[handle].procedural->osc_time = 0;
   GameTextures[handle].procedural->osc_value = 8;
@@ -797,8 +794,6 @@ void BuildTextureBumpmaps(int texhandle) {
 // Frees all the procedural memory for a texture
 void FreeProceduralForTexture(int n) {
   if (GameTextures[n].procedural != nullptr) {
-    mem_free(GameTextures[n].procedural->proc1);
-    mem_free(GameTextures[n].procedural->proc2);
     bm_FreeBitmap(GameTextures[n].procedural->procedural_bitmap);
     delete GameTextures[n].procedural;
 
