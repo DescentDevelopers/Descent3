@@ -25,6 +25,7 @@
  */
 
 #include <algorithm>
+#include <memory>
 #include <windows.h>
 #include "3d.h"
 #include "gametexture.h"
@@ -82,8 +83,8 @@ float Ambient_red = 0.0f, Ambient_green = 0.0f, Ambient_blue = 0.0f;
 
 void DoTerrainDynamicTable();
 
-uint8_t *Lightmap_mask = nullptr;
-static uint8_t *Lmi_spoken_for;
+std::unique_ptr<uint8_t[]> Lightmap_mask;
+static std::unique_ptr<uint8_t[]> Lmi_spoken_for;
 int Squeeze_lightmap_handle = -1;
 
 int FindEmptyMaskSpot(int w, int h, int *dest_x, int *dest_y) {
@@ -422,14 +423,9 @@ void SqueezeLightmaps(int external, int target_roomnum) {
   int i, t, k;
   mprintf(0, "Squeezing %s lightmaps, please wait...\n", external ? "external" : "internal");
 
-  Lmi_spoken_for = mem_rmalloc<uint8_t>(MAX_LIGHTMAP_INFOS);
-  Lightmap_mask = (uint8_t *)mem_malloc(128 * 128);
+  Lmi_spoken_for = std::make_unique<uint8_t[]>(MAX_LIGHTMAP_INFOS);
+  Lightmap_mask = std::make_unique<uint8_t[]>(128 * 128);
   Squeeze_lightmap_handle = -1;
-
-  ASSERT(Lightmap_mask);
-  ASSERT(Lmi_spoken_for);
-  memset(Lmi_spoken_for, 0, MAX_LIGHTMAP_INFOS);
-  memset(Lightmap_mask, 0, 128 * 128);
 
   // Go through all the rooms and sqeeze them one by one
   for (i = 0; i <= Highest_room_index; i++) {
@@ -470,7 +466,7 @@ void SqueezeLightmaps(int external, int target_roomnum) {
       int src_h = lmi->height;
 
       if (Squeeze_lightmap_handle == -1) {
-        memset(Lightmap_mask, 0, 128 * 128);
+        memset(Lightmap_mask.get(), 0, 128 * 128);
         Squeeze_lightmap_handle = lm_AllocLightmap(128, 128);
         uint16_t *fill_data = (uint16_t *)lm_data(Squeeze_lightmap_handle);
         memset(fill_data, 0, 128 * 128 * 2);
@@ -507,7 +503,7 @@ void SqueezeLightmaps(int external, int target_roomnum) {
         ASSERT(GameLightmaps[Squeeze_lightmap_handle].used != 1);
         GameLightmaps[Squeeze_lightmap_handle].used--;
 
-        memset(Lightmap_mask, 0, 128 * 128);
+        memset(Lightmap_mask.get(), 0, 128 * 128);
         Squeeze_lightmap_handle = lm_AllocLightmap(128, 128);
         uint16_t *fill_data = (uint16_t *)lm_data(Squeeze_lightmap_handle);
         memset(fill_data, 0, 128 * 128 * 2);
@@ -549,7 +545,7 @@ void SqueezeLightmaps(int external, int target_roomnum) {
           int src_h = lmi->height;
 
           if (Squeeze_lightmap_handle == -1) {
-            memset(Lightmap_mask, 0, 128 * 128);
+            memset(Lightmap_mask.get(), 0, 128 * 128);
             Squeeze_lightmap_handle = lm_AllocLightmap(128, 128);
             uint16_t *fill_data = (uint16_t *)lm_data(Squeeze_lightmap_handle);
             memset(fill_data, 0, 128 * 128 * 2);
@@ -596,7 +592,7 @@ void SqueezeLightmaps(int external, int target_roomnum) {
             ASSERT(GameLightmaps[Squeeze_lightmap_handle].used != 1);
             GameLightmaps[Squeeze_lightmap_handle].used--;
 
-            memset(Lightmap_mask, 0, 128 * 128);
+            memset(Lightmap_mask.get(), 0, 128 * 128);
             Squeeze_lightmap_handle = lm_AllocLightmap(128, 128);
             uint16_t *fill_data = (uint16_t *)lm_data(Squeeze_lightmap_handle);
             memset(fill_data, 0, 128 * 128 * 2);
@@ -653,7 +649,7 @@ void SqueezeLightmaps(int external, int target_roomnum) {
           int src_h = lmi->height;
 
           if (Squeeze_lightmap_handle == -1) {
-            memset(Lightmap_mask, 0, 128 * 128);
+            memset(Lightmap_mask.get(), 0, 128 * 128);
             Squeeze_lightmap_handle = lm_AllocLightmap(128, 128);
             uint16_t *fill_data = (uint16_t *)lm_data(Squeeze_lightmap_handle);
             memset(fill_data, 0, 128 * 128 * 2);
@@ -700,7 +696,7 @@ void SqueezeLightmaps(int external, int target_roomnum) {
             ASSERT(GameLightmaps[Squeeze_lightmap_handle].used != 1);
             GameLightmaps[Squeeze_lightmap_handle].used--;
 
-            memset(Lightmap_mask, 0, 128 * 128);
+            memset(Lightmap_mask.get(), 0, 128 * 128);
             Squeeze_lightmap_handle = lm_AllocLightmap(128, 128);
             uint16_t *fill_data = (uint16_t *)lm_data(Squeeze_lightmap_handle);
             memset(fill_data, 0, 128 * 128 * 2);
@@ -723,8 +719,8 @@ void SqueezeLightmaps(int external, int target_roomnum) {
     }
   }
 
-  mem_free(Lightmap_mask);
-  mem_free(Lmi_spoken_for);
+  Lightmap_mask.reset();
+  Lmi_spoken_for.reset();
   mprintf(0, "Done squeezing lightmaps.\n");
 }
 
