@@ -139,6 +139,7 @@
 #define __STREAMAUDIO_H_
 
 #include <filesystem>
+#include <memory>
 
 #include "adecode.h"
 #include "ssl_lib.h"
@@ -234,7 +235,7 @@ public:
 #define STRM_BUFF_LOOPEND 0x4  // marks last buffer in measure
 class AudioStream {
   OSFArchive m_archive;                   // audio stream archive object.
-  AudioDecoder::IAudioDecoder *m_decoder; // audio codec object
+  std::unique_ptr<AudioDecoder::IAudioDecoder> m_decoder; // audio codec object
   struct { // mixing buffers
     uint8_t *data;
     int nbytes; // number of bytes of valid data.

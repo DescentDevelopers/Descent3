@@ -295,7 +295,6 @@ void AudioStream::ResumeAll() {
 //	AudioStream object Interface
 //		allows dynamic playing of streams
 AudioStream::AudioStream() {
-  m_decoder = nullptr; // audio decomp object
   m_llshandle = -1; // snd system handle
   m_sbufidx = 0;    // stream position markers for synching.
   m_fbufidx = 0;
@@ -405,10 +404,7 @@ void AudioStream::Close() {
       }
     }
 
-    if (m_decoder) {
-      delete m_decoder;
-      m_decoder = nullptr;
-    }
+    m_decoder.reset();
   }
   m_playcount = 0;
   m_nbufs = 0;
@@ -440,10 +436,7 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
   m_readahead = false;
 
   // free current decoder.
-  if (m_decoder) {
-    delete m_decoder;
-    m_decoder = nullptr;
-  }
+  m_decoder.reset();
 
   // instatiate decompression facility or use raw source data
   uint32_t sample_count = 0;
@@ -452,8 +445,6 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
     uint32_t sample_rate;
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
     if (!m_decoder) {
-      delete m_decoder;
-      m_decoder = nullptr;
       return false;
     }
   } else {
@@ -737,7 +728,7 @@ void AudioStream::Reset() {
   m_readahead = true;
   m_playbytesleft = m_playbytestotal;
   if (m_decoder) {
-    delete m_decoder;
+    m_decoder.reset();
 
     uint32_t channels;
     uint32_t sample_rate;
