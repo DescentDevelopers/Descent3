@@ -364,23 +364,21 @@ extern bool Disable_editor_rendering;
 //					roomnums - pointer to list of room numbers
 void DeleteGroup(int nrooms, int *roomnums) {
   int i;
-  int *troomnums;
   bool save_disable_flag = Disable_editor_rendering;
 
   Disable_editor_rendering = 1;
 
   // Make copy of list of rooms to delete.  We must do this because roomnums may be a pointer
   // to the global Selected_list, the contents of which may be changed by DeleteRoomFromMine()
-  troomnums = (int *)mem_malloc(sizeof(*troomnums) * nrooms);
-  for (i = 0; i < nrooms; i++)
+  auto troomnums = std::make_unique<int[]>(nrooms);
+  for (i = 0; i < nrooms; i++) {
     troomnums[i] = roomnums[i];
+  }
 
   // Now delete the rooms
-  for (i = 0; i < nrooms; i++)
+  for (i = 0; i < nrooms; i++) {
     DeleteRoomFromMine(&Rooms[troomnums[i]]);
-
-  // Free up our array
-  mem_free(troomnums);
+  }
 
   // Regenerate external object rooms
   CreateRoomObjects();
