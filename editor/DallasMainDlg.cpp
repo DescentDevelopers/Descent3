@@ -3936,63 +3936,75 @@ void CDallasMainDlg::InitNameLists(void) {
   int j;
 
   // Init the Door list
-  for (j = 0; j < MAX_NAMED_DOORS; j++)
-    m_DoorList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_DOORS; j++) {
+    m_DoorList[j].reset();
+  }
   m_DoorListSize = 0;
 
   // Init the object list
-  for (j = 0; j < MAX_NAMED_OBJECTS; j++)
-    m_ObjectList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_OBJECTS; j++) {
+    m_ObjectList[j].reset();
+  }
   m_ObjectListSize = 0;
 
   // Init the Room list
-  for (j = 0; j < MAX_NAMED_ROOMS; j++)
-    m_RoomList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_ROOMS; j++) {
+    m_RoomList[j].reset();
+  }
   m_RoomListSize = 0;
 
   // Init the Trigger list
-  for (j = 0; j < MAX_NAMED_TRIGGERS; j++)
-    m_TriggerList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_TRIGGERS; j++) {
+    m_TriggerList[j].reset();
+  }
   m_TriggerListSize = 0;
 
   // Init the sound list
-  for (j = 0; j < MAX_NAMED_SOUNDS; j++)
-    m_SoundList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_SOUNDS; j++) {
+    m_SoundList[j].reset();
+  }
   m_SoundListSize = 0;
 
   // Init the Texture list
-  for (j = 0; j < MAX_NAMED_TEXTURES; j++)
-    m_TextureList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_TEXTURES; j++) {
+    m_TextureList[j].reset();
+  }
   m_TextureListSize = 0;
 
   // Init the Specname list
-  for (j = 0; j < MAX_SPECNAMES; j++)
-    m_SpecnameList[j] = nullptr;
+  for (j = 0; j < MAX_SPECNAMES; j++) {
+    m_SpecnameList[j].reset();
+  }
   m_SpecnameListSize = 0;
 
   // Init the Path list
-  for (j = 0; j < MAX_NAMED_PATHS; j++)
-    m_PathList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_PATHS; j++) {
+    m_PathList[j].reset();
+  }
   m_PathListSize = 0;
 
   // Init the Matcen list
-  for (j = 0; j < MAX_NAMED_MATCENS; j++)
-    m_MatcenList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_MATCENS; j++) {
+    m_MatcenList[j].reset();
+  }
   m_MatcenListSize = 0;
 
   // Init the Goal list
-  for (j = 0; j < MAX_NAMED_GOALS; j++)
-    m_GoalList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_GOALS; j++) {
+    m_GoalList[j].reset();
+  }
   m_GoalListSize = 0;
 
   // Init the StrmAudio list
-  for (j = 0; j < MAX_NAMED_STRM_AUDIO; j++)
-    m_StrmAudioList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_STRM_AUDIO; j++) {
+    m_StrmAudioList[j].reset();
+  }
   m_StrmAudioListSize = 0;
 
   // Init the Message name list
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    m_MessageNameList[j] = nullptr;
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
+    m_MessageNameList[j].reset();
+  }
   m_MessageNameListSize = 0;
 }
 
@@ -4001,99 +4013,75 @@ void CDallasMainDlg::ClearNameLists(void) {
   int j;
 
   // Clear the Door list
-  for (j = 0; j < m_DoorListSize; j++)
-    if (m_DoorList[j] != nullptr) {
-      mem_free(m_DoorList[j]);
-      m_DoorList[j] = nullptr;
-    }
+  for (j = 0; j < m_DoorListSize; j++) {
+    m_DoorList[j].reset();
+  }
   m_DoorListSize = 0;
 
   // Clear the object list
-  for (j = 0; j < m_ObjectListSize; j++)
-    if (m_ObjectList[j] != nullptr) {
-      mem_free(m_ObjectList[j]);
-      m_ObjectList[j] = nullptr;
-    }
+  for (j = 0; j < m_ObjectListSize; j++) {
+    m_ObjectList[j].reset();
+  }
   m_ObjectListSize = 0;
 
   // Clear the Room list
-  for (j = 0; j < m_RoomListSize; j++)
-    if (m_RoomList[j] != nullptr) {
-      mem_free(m_RoomList[j]);
-      m_RoomList[j] = nullptr;
-    }
+  for (j = 0; j < m_RoomListSize; j++) {
+    m_RoomList[j].reset();
+  }
   m_RoomListSize = 0;
 
   // Clear the Trigger list
-  for (j = 0; j < m_TriggerListSize; j++)
-    if (m_TriggerList[j] != nullptr) {
-      mem_free(m_TriggerList[j]);
-      m_TriggerList[j] = nullptr;
-    }
+  for (j = 0; j < m_TriggerListSize; j++) {
+    m_TriggerList[j].reset();
+  }
   m_TriggerListSize = 0;
 
   // Clear the sound list
-  for (j = 0; j < m_SoundListSize; j++)
-    if (m_SoundList[j] != nullptr) {
-      mem_free(m_SoundList[j]);
-      m_SoundList[j] = nullptr;
-    }
+  for (j = 0; j < m_SoundListSize; j++) {
+    m_SoundList[j].reset();
+  }
   m_SoundListSize = 0;
 
   // Clear the Texture list
-  for (j = 0; j < m_TextureListSize; j++)
-    if (m_TextureList[j] != nullptr) {
-      mem_free(m_TextureList[j]);
-      m_TextureList[j] = nullptr;
-    }
+  for (j = 0; j < m_TextureListSize; j++) {
+    m_TextureList[j].reset();
+  }
   m_TextureListSize = 0;
 
   // Clear the Specname list
-  for (j = 0; j < m_SpecnameListSize; j++)
-    if (m_SpecnameList[j] != nullptr) {
-      mem_free(m_SpecnameList[j]);
-      m_SpecnameList[j] = nullptr;
-    }
+  for (j = 0; j < m_SpecnameListSize; j++) {
+    m_SpecnameList[j].reset();
+  }
   m_SpecnameListSize = 0;
 
   // Clear the Path list
-  for (j = 0; j < m_PathListSize; j++)
-    if (m_PathList[j] != nullptr) {
-      mem_free(m_PathList[j]);
-      m_PathList[j] = nullptr;
-    }
+  for (j = 0; j < m_PathListSize; j++) {
+    m_PathList[j].reset();
+  }
   m_PathListSize = 0;
 
   // Clear the Matcen list
-  for (j = 0; j < m_MatcenListSize; j++)
-    if (m_MatcenList[j] != nullptr) {
-      mem_free(m_MatcenList[j]);
-      m_MatcenList[j] = nullptr;
-    }
+  for (j = 0; j < m_MatcenListSize; j++) {
+    m_MatcenList[j].reset();
+  }
   m_MatcenListSize = 0;
 
   // Clear the Goal list
-  for (j = 0; j < m_GoalListSize; j++)
-    if (m_GoalList[j] != nullptr) {
-      mem_free(m_GoalList[j]);
-      m_GoalList[j] = nullptr;
-    }
+  for (j = 0; j < m_GoalListSize; j++) {
+    m_GoalList[j].reset();
+  }
   m_GoalListSize = 0;
 
   // Clear the StrmAudio list
-  for (j = 0; j < m_StrmAudioListSize; j++)
-    if (m_StrmAudioList[j] != nullptr) {
-      mem_free(m_StrmAudioList[j]);
-      m_StrmAudioList[j] = nullptr;
-    }
+  for (j = 0; j < m_StrmAudioListSize; j++) {
+    m_StrmAudioList[j].reset();
+  }
   m_StrmAudioListSize = 0;
 
   // Clear the Message Name list
-  for (j = 0; j < m_MessageNameListSize; j++)
-    if (m_MessageNameList[j] != nullptr) {
-      mem_free(m_MessageNameList[j]);
-      m_MessageNameList[j] = nullptr;
-    }
+  for (j = 0; j < m_MessageNameListSize; j++) {
+    m_MessageNameList[j].reset();
+  }
   m_MessageNameListSize = 0;
 }
 
@@ -4980,11 +4968,7 @@ int CDallasMainDlg::AddDoorToList(char *name) {
     return FALSE;
 
   int pos = m_DoorListSize;
-  m_DoorList[pos] = mem_strdup(name);
-  if (m_DoorList[pos] == nullptr) {
-    MessageBox("Out of memory in AddDoorToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_DoorList[pos] = mem_strdup_unique(name);
   m_DoorListSize++;
 
   return TRUE;
@@ -4995,9 +4979,11 @@ int CDallasMainDlg::FindDoorInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_DoorListSize; j++)
-    if (strcmp(m_DoorList[j], name) == 0)
+  for (int j = 0; j < m_DoorListSize; j++) {
+    if (strcmp(m_DoorList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5017,11 +5003,7 @@ int CDallasMainDlg::AddObjectToList(char *name) {
     return FALSE;
 
   int pos = m_ObjectListSize;
-  m_ObjectList[pos] = mem_strdup(name);
-  if (m_ObjectList[pos] == nullptr) {
-    MessageBox("Out of memory in AddObjectToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_ObjectList[pos] = mem_strdup_unique(name);
   m_ObjectListSize++;
 
   return TRUE;
@@ -5032,9 +5014,11 @@ int CDallasMainDlg::FindObjectInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_ObjectListSize; j++)
-    if (strcmp(m_ObjectList[j], name) == 0)
+  for (int j = 0; j < m_ObjectListSize; j++) {
+    if (strcmp(m_ObjectList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5054,11 +5038,7 @@ int CDallasMainDlg::AddRoomToList(char *name) {
     return FALSE;
 
   int pos = m_RoomListSize;
-  m_RoomList[pos] = mem_strdup(name);
-  if (m_RoomList[pos] == nullptr) {
-    MessageBox("Out of memory in AddRoomToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_RoomList[pos] = mem_strdup_unique(name);
   m_RoomListSize++;
 
   return TRUE;
@@ -5069,9 +5049,11 @@ int CDallasMainDlg::FindRoomInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_RoomListSize; j++)
-    if (strcmp(m_RoomList[j], name) == 0)
+  for (int j = 0; j < m_RoomListSize; j++) {
+    if (strcmp(m_RoomList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5091,11 +5073,7 @@ int CDallasMainDlg::AddTriggerToList(char *name) {
     return FALSE;
 
   int pos = m_TriggerListSize;
-  m_TriggerList[pos] = mem_strdup(name);
-  if (m_TriggerList[pos] == nullptr) {
-    MessageBox("Out of memory in AddTriggerToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_TriggerList[pos] = mem_strdup_unique(name);
   m_TriggerListSize++;
 
   return TRUE;
@@ -5106,9 +5084,11 @@ int CDallasMainDlg::FindTriggerInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_TriggerListSize; j++)
-    if (strcmp(m_TriggerList[j], name) == 0)
+  for (int j = 0; j < m_TriggerListSize; j++) {
+    if (strcmp(m_TriggerList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5128,11 +5108,7 @@ int CDallasMainDlg::AddSoundToList(char *name) {
     return FALSE;
 
   int pos = m_SoundListSize;
-  m_SoundList[pos] = mem_strdup(name);
-  if (m_SoundList[pos] == nullptr) {
-    MessageBox("Out of memory in AddSoundToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_SoundList[pos] = mem_strdup_unique(name);
   m_SoundListSize++;
 
   return TRUE;
@@ -5143,9 +5119,11 @@ int CDallasMainDlg::FindSoundInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_SoundListSize; j++)
-    if (strcmp(m_SoundList[j], name) == 0)
+  for (int j = 0; j < m_SoundListSize; j++) {
+    if (strcmp(m_SoundList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5165,11 +5143,7 @@ int CDallasMainDlg::AddTextureToList(char *name) {
     return FALSE;
 
   int pos = m_TextureListSize;
-  m_TextureList[pos] = mem_strdup(name);
-  if (m_TextureList[pos] == nullptr) {
-    MessageBox("Out of memory in AddTextureToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_TextureList[pos] = mem_strdup_unique(name);
   m_TextureListSize++;
 
   return TRUE;
@@ -5180,9 +5154,11 @@ int CDallasMainDlg::FindTextureInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_TextureListSize; j++)
-    if (strcmp(m_TextureList[j], name) == 0)
+  for (int j = 0; j < m_TextureListSize; j++) {
+    if (strcmp(m_TextureList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5202,11 +5178,7 @@ int CDallasMainDlg::AddSpecnameToList(char *name) {
     return FALSE;
 
   int pos = m_SpecnameListSize;
-  m_SpecnameList[pos] = mem_strdup(name);
-  if (m_SpecnameList[pos] == nullptr) {
-    MessageBox("Out of memory in AddSpecnameToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_SpecnameList[pos] = mem_strdup_unique(name);
   m_SpecnameListSize++;
 
   return TRUE;
@@ -5217,9 +5189,11 @@ int CDallasMainDlg::FindSpecnameInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_SpecnameListSize; j++)
-    if (strcmp(m_SpecnameList[j], name) == 0)
+  for (int j = 0; j < m_SpecnameListSize; j++) {
+    if (strcmp(m_SpecnameList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5239,11 +5213,7 @@ int CDallasMainDlg::AddPathToList(char *name) {
     return FALSE;
 
   int pos = m_PathListSize;
-  m_PathList[pos] = mem_strdup(name);
-  if (m_PathList[pos] == nullptr) {
-    MessageBox("Out of memory in AddPathToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_PathList[pos] = mem_strdup_unique(name);
   m_PathListSize++;
 
   return TRUE;
@@ -5254,9 +5224,11 @@ int CDallasMainDlg::FindPathInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_PathListSize; j++)
-    if (strcmp(m_PathList[j], name) == 0)
+  for (int j = 0; j < m_PathListSize; j++) {
+    if (strcmp(m_PathList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5276,11 +5248,7 @@ int CDallasMainDlg::AddMatcenToList(char *name) {
     return FALSE;
 
   int pos = m_MatcenListSize;
-  m_MatcenList[pos] = mem_strdup(name);
-  if (m_MatcenList[pos] == nullptr) {
-    MessageBox("Out of memory in AddMatcenToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_MatcenList[pos] = mem_strdup_unique(name);
   m_MatcenListSize++;
 
   return TRUE;
@@ -5291,9 +5259,11 @@ int CDallasMainDlg::FindMatcenInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_MatcenListSize; j++)
-    if (strcmp(m_MatcenList[j], name) == 0)
+  for (int j = 0; j < m_MatcenListSize; j++) {
+    if (strcmp(m_MatcenList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5313,11 +5283,7 @@ int CDallasMainDlg::AddGoalToList(char *name) {
     return FALSE;
 
   int pos = m_GoalListSize;
-  m_GoalList[pos] = mem_strdup(name);
-  if (m_GoalList[pos] == nullptr) {
-    MessageBox("Out of memory in AddGoalToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_GoalList[pos] = mem_strdup_unique(name);
   m_GoalListSize++;
 
   return TRUE;
@@ -5328,9 +5294,11 @@ int CDallasMainDlg::FindGoalInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_GoalListSize; j++)
-    if (strcmp(m_GoalList[j], name) == 0)
+  for (int j = 0; j < m_GoalListSize; j++) {
+    if (strcmp(m_GoalList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5350,11 +5318,7 @@ int CDallasMainDlg::AddStrmAudioToList(char *name) {
     return FALSE;
 
   int pos = m_StrmAudioListSize;
-  m_StrmAudioList[pos] = mem_strdup(name);
-  if (m_StrmAudioList[pos] == nullptr) {
-    MessageBox("Out of memory in AddStrmAudioToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_StrmAudioList[pos] = mem_strdup_unique(name);
   m_StrmAudioListSize++;
 
   return TRUE;
@@ -5365,9 +5329,11 @@ int CDallasMainDlg::FindStrmAudioInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_StrmAudioListSize; j++)
-    if (strcmp(m_StrmAudioList[j], name) == 0)
+  for (int j = 0; j < m_StrmAudioListSize; j++) {
+    if (strcmp(m_StrmAudioList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5387,11 +5353,7 @@ int CDallasMainDlg::AddMessageNameToList(char *name) {
     return FALSE;
 
   int pos = m_MessageNameListSize;
-  m_MessageNameList[pos] = mem_strdup(name);
-  if (m_MessageNameList[pos] == nullptr) {
-    MessageBox("Out of memory in AddMessageNameToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_MessageNameList[pos] = mem_strdup_unique(name);
   m_MessageNameListSize++;
 
   return TRUE;
@@ -5402,9 +5364,11 @@ int CDallasMainDlg::FindMessageNameInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_MessageNameListSize; j++)
-    if (strcmp(m_MessageNameList[j], name) == 0)
+  for (int j = 0; j < m_MessageNameListSize; j++) {
+    if (strcmp(m_MessageNameList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -8479,10 +8443,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_SoundListSize)
+      if (index < 0 || index >= m_SoundListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = FindSoundName(m_SoundList[atoi(line)]);
+      } else {
+        node_data.int_val = FindSoundName(m_SoundList[atoi(line)].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8490,7 +8455,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_SoundList[atoi(line)]);
+        strcpy(node_data.str_val, m_SoundList[atoi(line)].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8510,10 +8475,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_TextureListSize)
+      if (index < 0 || index >= m_TextureListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = FindTextureName(m_TextureList[atoi(line)]);
+      } else {
+        node_data.int_val = FindTextureName(m_TextureList[atoi(line)].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8521,7 +8487,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_TextureList[atoi(line)]);
+        strcpy(node_data.str_val, m_TextureList[atoi(line)].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8541,10 +8507,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_PathListSize)
+      if (index < 0 || index >= m_PathListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = osipf_FindPathName(m_PathList[index]);
+      } else {
+        node_data.int_val = osipf_FindPathName(m_PathList[index].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8552,7 +8519,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_PathList[index]);
+        strcpy(node_data.str_val, m_PathList[index].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8566,10 +8533,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_MatcenListSize)
+      if (index < 0 || index >= m_MatcenListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = osipf_FindMatcenName(m_MatcenList[index]);
+      } else {
+        node_data.int_val = osipf_FindMatcenName(m_MatcenList[index].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8577,7 +8545,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_MatcenList[index]);
+        strcpy(node_data.str_val, m_MatcenList[index].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8591,10 +8559,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_GoalListSize)
+      if (index < 0 || index >= m_GoalListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = osipf_FindLevelGoalName(m_GoalList[index]);
+      } else {
+        node_data.int_val = osipf_FindLevelGoalName(m_GoalList[index].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8602,7 +8571,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_GoalList[index]);
+        strcpy(node_data.str_val, m_GoalList[index].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8613,10 +8582,10 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_StrmAudioListSize || !GamefileExists(m_StrmAudioList[index]))
+      if (index < 0 || index >= m_StrmAudioListSize || !GamefileExists(m_StrmAudioList[index].get())) {
         strcpy(node_data.str_val, "");
-      else {
-        strcpy(node_data.str_val, m_StrmAudioList[index]);
+      } else {
+        strcpy(node_data.str_val, m_StrmAudioList[index].get());
 
         // Display warning message here...
       }
@@ -8688,12 +8657,12 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 
     if (node_data.ID == OBJECT_TYPE) {
       if (index >= 0 && index < m_ObjectListSize) {
-        node_data.int_val = osipf_FindObjectName(m_ObjectList[index]);
+        node_data.int_val = osipf_FindObjectName(m_ObjectList[index].get());
         if (node_data.int_val != OBJECT_HANDLE_NONE) {
-          strcpy(node_data.str_val, m_ObjectList[index]);
+          strcpy(node_data.str_val, m_ObjectList[index].get());
         } else {
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Object Script Owner", m_ObjectList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Object Script Owner", m_ObjectList[index].get());
         }
       } else {
         node_data.int_val = OBJECT_HANDLE_NONE;
@@ -8701,13 +8670,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       }
     } else if (node_data.ID == TRIGGER_TYPE) {
       if (index >= 0 && index < m_TriggerListSize) {
-        node_data.int_val = osipf_FindTriggerName(m_TriggerList[index]);
+        node_data.int_val = osipf_FindTriggerName(m_TriggerList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_TriggerList[index]);
+          strcpy(node_data.str_val, m_TriggerList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Trigger Script Owner", m_TriggerList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Trigger Script Owner", m_TriggerList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8812,12 +8781,12 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 
       if (node_data.subID == USE_OBJECT_HANDLE) {
         if (index >= 0 && index < m_DoorListSize) {
-          node_data.int_val = osipf_FindDoorName(m_DoorList[index]);
+          node_data.int_val = osipf_FindDoorName(m_DoorList[index].get());
           if (node_data.int_val != OBJECT_HANDLE_NONE) {
-            strcpy(node_data.str_val, m_DoorList[index]);
+            strcpy(node_data.str_val, m_DoorList[index].get());
           } else {
             strcpy(node_data.str_val, "");
-            SpecialScriptFileParseError(linenum, scriptID, "Door", m_DoorList[index]);
+            SpecialScriptFileParseError(linenum, scriptID, "Door", m_DoorList[index].get());
           }
         } else {
           node_data.int_val = OBJECT_HANDLE_NONE;
@@ -8843,12 +8812,12 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 
       if (node_data.subID == USE_OBJECT_HANDLE) {
         if (index >= 0 && index < m_ObjectListSize) {
-          node_data.int_val = osipf_FindObjectName(m_ObjectList[index]);
+          node_data.int_val = osipf_FindObjectName(m_ObjectList[index].get());
           if (node_data.int_val != OBJECT_HANDLE_NONE) {
-            strcpy(node_data.str_val, m_ObjectList[index]);
+            strcpy(node_data.str_val, m_ObjectList[index].get());
           } else {
             strcpy(node_data.str_val, "");
-            SpecialScriptFileParseError(linenum, scriptID, "Object", m_ObjectList[index]);
+            SpecialScriptFileParseError(linenum, scriptID, "Object", m_ObjectList[index].get());
           }
         } else {
           node_data.int_val = OBJECT_HANDLE_NONE;
@@ -8870,13 +8839,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_RoomListSize) {
-        node_data.int_val = osipf_FindRoomName(m_RoomList[index]);
+        node_data.int_val = osipf_FindRoomName(m_RoomList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_RoomList[index]);
+          strcpy(node_data.str_val, m_RoomList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Room", m_RoomList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Room", m_RoomList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8894,13 +8863,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_TriggerListSize) {
-        node_data.int_val = osipf_FindTriggerName(m_TriggerList[index]);
+        node_data.int_val = osipf_FindTriggerName(m_TriggerList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_TriggerList[index]);
+          strcpy(node_data.str_val, m_TriggerList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Trigger", m_TriggerList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Trigger", m_TriggerList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9010,13 +8979,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_SoundListSize) {
-        node_data.int_val = osipf_FindSoundName(m_SoundList[index]);
+        node_data.int_val = osipf_FindSoundName(m_SoundList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_SoundList[index]);
+          strcpy(node_data.str_val, m_SoundList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Sound", m_SoundList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Sound", m_SoundList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9033,10 +9002,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
         return nullptr;
       strcpy(node_data.name, line);
 
-      if (index >= 0 && index < m_SpecnameListSize)
-        strcpy(node_data.str_val, m_SpecnameList[index]);
-      else
+      if (index >= 0 && index < m_SpecnameListSize) {
+        strcpy(node_data.str_val, m_SpecnameList[index].get());
+      } else {
         strcpy(node_data.str_val, "");
+      }
 
       add_node = TRUE;
       break;
@@ -9049,13 +9019,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_TextureListSize) {
-        node_data.int_val = osipf_FindTextureName(m_TextureList[index]);
+        node_data.int_val = osipf_FindTextureName(m_TextureList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_TextureList[index]);
+          strcpy(node_data.str_val, m_TextureList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Texture", m_TextureList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Texture", m_TextureList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9082,13 +9052,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_PathListSize) {
-        node_data.int_val = osipf_FindPathName(m_PathList[index]);
+        node_data.int_val = osipf_FindPathName(m_PathList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_PathList[index]);
+          strcpy(node_data.str_val, m_PathList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Path", m_PathList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Path", m_PathList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9109,13 +9079,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_MatcenListSize) {
-        node_data.int_val = osipf_FindMatcenName(m_MatcenList[index]);
+        node_data.int_val = osipf_FindMatcenName(m_MatcenList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_MatcenList[index]);
+          strcpy(node_data.str_val, m_MatcenList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Matcen", m_MatcenList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Matcen", m_MatcenList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9136,13 +9106,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_GoalListSize) {
-        node_data.int_val = osipf_FindLevelGoalName(m_GoalList[index]);
+        node_data.int_val = osipf_FindLevelGoalName(m_GoalList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_GoalList[index]);
+          strcpy(node_data.str_val, m_GoalList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Level Goal", m_GoalList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Level Goal", m_GoalList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9160,11 +9130,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_StrmAudioListSize) {
-        if (GamefileExists(m_StrmAudioList[index])) {
-          strcpy(node_data.str_val, m_StrmAudioList[index]);
+        if (GamefileExists(m_StrmAudioList[index].get())) {
+          strcpy(node_data.str_val, m_StrmAudioList[index].get());
         } else {
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Streaming Audio File", m_StrmAudioList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Streaming Audio File", m_StrmAudioList[index].get());
         }
       } else {
         strcpy(node_data.str_val, "");
@@ -10959,78 +10929,89 @@ void CDallasMainDlg::WriteNameLists(void) {
 
   // Write out the door list
   O(("%s", DOOR_LIST_START_TAG));
-  for (j = 0; j < m_DoorListSize; j++)
-    O(("%s", m_DoorList[j]));
+  for (j = 0; j < m_DoorListSize; j++) {
+    O(("%s", m_DoorList[j].get()));
+  }
   O(("%s", DOOR_LIST_END_TAG));
   O((" "));
 
   // Write out the object list
   O(("%s", OBJECT_LIST_START_TAG));
-  for (j = 0; j < m_ObjectListSize; j++)
-    O(("%s", m_ObjectList[j]));
+  for (j = 0; j < m_ObjectListSize; j++) {
+    O(("%s", m_ObjectList[j].get()));
+  }
   O(("%s", OBJECT_LIST_END_TAG));
   O((" "));
 
   // Write out the room list
   O(("%s", ROOM_LIST_START_TAG));
-  for (j = 0; j < m_RoomListSize; j++)
-    O(("%s", m_RoomList[j]));
+  for (j = 0; j < m_RoomListSize; j++) {
+    O(("%s", m_RoomList[j].get()));
+  }
   O(("%s", ROOM_LIST_END_TAG));
   O((" "));
 
   // Write out the trigger list
   O(("%s", TRIGGER_LIST_START_TAG));
-  for (j = 0; j < m_TriggerListSize; j++)
-    O(("%s", m_TriggerList[j]));
+  for (j = 0; j < m_TriggerListSize; j++) {
+    O(("%s", m_TriggerList[j].get()));
+  }
   O(("%s", TRIGGER_LIST_END_TAG));
   O((" "));
 
   // Write out the sound list
   O(("%s", SOUND_LIST_START_TAG));
-  for (j = 0; j < m_SoundListSize; j++)
-    O(("%s", m_SoundList[j]));
+  for (j = 0; j < m_SoundListSize; j++) {
+    O(("%s", m_SoundList[j].get()));
+  }
   O(("%s", SOUND_LIST_END_TAG));
   O((" "));
 
   // Write out the texture list
   O(("%s", TEXTURE_LIST_START_TAG));
-  for (j = 0; j < m_TextureListSize; j++)
-    O(("%s", m_TextureList[j]));
+  for (j = 0; j < m_TextureListSize; j++) {
+    O(("%s", m_TextureList[j].get()));
+  }
   O(("%s", TEXTURE_LIST_END_TAG));
   O((" "));
 
   // Write out the specname list
   O(("%s", SPECNAME_LIST_START_TAG));
-  for (j = 0; j < m_SpecnameListSize; j++)
-    O(("%s", m_SpecnameList[j]));
+  for (j = 0; j < m_SpecnameListSize; j++) {
+    O(("%s", m_SpecnameList[j].get()));
+  }
   O(("%s", SPECNAME_LIST_END_TAG));
   O((" "));
 
   // Write out the Path list
   O(("%s", PATH_LIST_START_TAG));
-  for (j = 0; j < m_PathListSize; j++)
-    O(("%s", m_PathList[j]));
+  for (j = 0; j < m_PathListSize; j++) {
+    O(("%s", m_PathList[j].get()));
+  }
   O(("%s", PATH_LIST_END_TAG));
   O((" "));
 
   // Write out the Matcen list
   O(("%s", MATCEN_LIST_START_TAG));
-  for (j = 0; j < m_MatcenListSize; j++)
-    O(("%s", m_MatcenList[j]));
+  for (j = 0; j < m_MatcenListSize; j++) {
+    O(("%s", m_MatcenList[j].get()));
+  }
   O(("%s", MATCEN_LIST_END_TAG));
   O((" "));
 
   // Write out the Goal list
   O(("%s", GOAL_LIST_START_TAG));
-  for (j = 0; j < m_GoalListSize; j++)
-    O(("%s", m_GoalList[j]));
+  for (j = 0; j < m_GoalListSize; j++) {
+    O(("%s", m_GoalList[j].get()));
+  }
   O(("%s", GOAL_LIST_END_TAG));
   O((" "));
 
   // Write out the StrmAudio list
   O(("%s", STRM_AUDIO_LIST_START_TAG));
-  for (j = 0; j < m_StrmAudioListSize; j++)
-    O(("%s", m_StrmAudioList[j]));
+  for (j = 0; j < m_StrmAudioListSize; j++) {
+    O(("%s", m_StrmAudioList[j].get()));
+  }
   O(("%s", STRM_AUDIO_LIST_END_TAG));
   O((" "));
 }
@@ -11052,9 +11033,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_DOOR_NAMES		%d", m_DoorListSize));
   if (m_DoorListSize > 0) {
     O(("const char *Door_names[NUM_DOOR_NAMES] = {"));
-    for (j = 0; j < (m_DoorListSize - 1); j++)
-      O(("	\"%s\",", m_DoorList[j]));
-    O(("	\"%s\"", m_DoorList[j]));
+    for (j = 0; j < (m_DoorListSize - 1); j++) {
+      O(("	\"%s\",", m_DoorList[j].get()));
+    }
+    O(("	\"%s\"", m_DoorList[j].get()));
     O(("};"));
     O(("int Door_handles[NUM_DOOR_NAMES];"));
   } else {
@@ -11067,9 +11049,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_OBJECT_NAMES		%d", m_ObjectListSize));
   if (m_ObjectListSize > 0) {
     O(("const char *Object_names[NUM_OBJECT_NAMES] = {"));
-    for (j = 0; j < (m_ObjectListSize - 1); j++)
-      O(("	\"%s\",", m_ObjectList[j]));
-    O(("	\"%s\"", m_ObjectList[j]));
+    for (j = 0; j < (m_ObjectListSize - 1); j++) {
+      O(("	\"%s\",", m_ObjectList[j].get()));
+    }
+    O(("	\"%s\"", m_ObjectList[j].get()));
     O(("};"));
     O(("int Object_handles[NUM_OBJECT_NAMES];"));
   } else {
@@ -11082,9 +11065,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_ROOM_NAMES		%d", m_RoomListSize));
   if (m_RoomListSize > 0) {
     O(("const char *Room_names[NUM_ROOM_NAMES] = {"));
-    for (j = 0; j < (m_RoomListSize - 1); j++)
-      O(("	\"%s\",", m_RoomList[j]));
-    O(("	\"%s\"", m_RoomList[j]));
+    for (j = 0; j < (m_RoomListSize - 1); j++) {
+      O(("	\"%s\",", m_RoomList[j].get()));
+    }
+    O(("	\"%s\"", m_RoomList[j].get()));
     O(("};"));
     O(("int Room_indexes[NUM_ROOM_NAMES];"));
   } else {
@@ -11097,9 +11081,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_TRIGGER_NAMES		%d", m_TriggerListSize));
   if (m_TriggerListSize > 0) {
     O(("const char *Trigger_names[NUM_TRIGGER_NAMES] = {"));
-    for (j = 0; j < (m_TriggerListSize - 1); j++)
-      O(("	\"%s\",", m_TriggerList[j]));
-    O(("	\"%s\"", m_TriggerList[j]));
+    for (j = 0; j < (m_TriggerListSize - 1); j++) {
+      O(("	\"%s\",", m_TriggerList[j].get()));
+    }
+    O(("	\"%s\"", m_TriggerList[j].get()));
     O(("};"));
     O(("int Trigger_indexes[NUM_TRIGGER_NAMES];"));
     O(("int Trigger_faces[NUM_TRIGGER_NAMES];"));
@@ -11116,9 +11101,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_SOUND_NAMES		%d", m_SoundListSize));
   if (m_SoundListSize > 0) {
     O(("const char *Sound_names[NUM_SOUND_NAMES] = {"));
-    for (j = 0; j < (m_SoundListSize - 1); j++)
-      O(("	\"%s\",", m_SoundList[j]));
-    O(("	\"%s\"", m_SoundList[j]));
+    for (j = 0; j < (m_SoundListSize - 1); j++) {
+      O(("	\"%s\",", m_SoundList[j].get()));
+    }
+    O(("	\"%s\"", m_SoundList[j].get()));
     O(("};"));
     O(("int Sound_indexes[NUM_SOUND_NAMES];"));
   } else {
@@ -11131,9 +11117,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_TEXTURE_NAMES		%d", m_TextureListSize));
   if (m_TextureListSize > 0) {
     O(("const char *Texture_names[NUM_TEXTURE_NAMES] = {"));
-    for (j = 0; j < (m_TextureListSize - 1); j++)
-      O(("	\"%s\",", m_TextureList[j]));
-    O(("	\"%s\"", m_TextureList[j]));
+    for (j = 0; j < (m_TextureListSize - 1); j++) {
+      O(("	\"%s\",", m_TextureList[j].get()));
+    }
+    O(("	\"%s\"", m_TextureList[j].get()));
     O(("};"));
     O(("int Texture_indexes[NUM_TEXTURE_NAMES];"));
   } else {
@@ -11146,9 +11133,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_PATH_NAMES		%d", m_PathListSize));
   if (m_PathListSize > 0) {
     O(("const char *Path_names[NUM_PATH_NAMES] = {"));
-    for (j = 0; j < (m_PathListSize - 1); j++)
-      O(("	\"%s\",", m_PathList[j]));
-    O(("	\"%s\"", m_PathList[j]));
+    for (j = 0; j < (m_PathListSize - 1); j++) {
+      O(("	\"%s\",", m_PathList[j].get()));
+    }
+    O(("	\"%s\"", m_PathList[j].get()));
     O(("};"));
     O(("int Path_indexes[NUM_PATH_NAMES];"));
   } else {
@@ -11161,9 +11149,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_MATCEN_NAMES		%d", m_MatcenListSize));
   if (m_MatcenListSize > 0) {
     O(("const char *Matcen_names[NUM_MATCEN_NAMES] = {"));
-    for (j = 0; j < (m_MatcenListSize - 1); j++)
-      O(("	\"%s\",", m_MatcenList[j]));
-    O(("	\"%s\"", m_MatcenList[j]));
+    for (j = 0; j < (m_MatcenListSize - 1); j++) {
+      O(("	\"%s\",", m_MatcenList[j].get()));
+    }
+    O(("	\"%s\"", m_MatcenList[j].get()));
     O(("};"));
     O(("int Matcen_indexes[NUM_MATCEN_NAMES];"));
   } else {
@@ -11176,9 +11165,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_GOAL_NAMES		%d", m_GoalListSize));
   if (m_GoalListSize > 0) {
     O(("const char *Goal_names[NUM_GOAL_NAMES] = {"));
-    for (j = 0; j < (m_GoalListSize - 1); j++)
-      O(("	\"%s\",", m_GoalList[j]));
-    O(("	\"%s\"", m_GoalList[j]));
+    for (j = 0; j < (m_GoalListSize - 1); j++) {
+      O(("	\"%s\",", m_GoalList[j].get()));
+    }
+    O(("	\"%s\"", m_GoalList[j].get()));
     O(("};"));
     O(("int Goal_indexes[NUM_GOAL_NAMES];"));
   } else {
@@ -11191,9 +11181,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_MESSAGE_NAMES		%d", m_MessageNameListSize));
   if (m_MessageNameListSize > 0) {
     O(("const char *Message_names[NUM_MESSAGE_NAMES] = {"));
-    for (j = 0; j < (m_MessageNameListSize - 1); j++)
-      O(("	\"%s\",", m_MessageNameList[j]));
-    O(("	\"%s\"", m_MessageNameList[j]));
+    for (j = 0; j < (m_MessageNameListSize - 1); j++) {
+      O(("	\"%s\",", m_MessageNameList[j].get()));
+    }
+    O(("	\"%s\"", m_MessageNameList[j].get()));
     O(("};"));
     O(("const char *Message_strings[NUM_MESSAGE_NAMES];"));
   } else {
