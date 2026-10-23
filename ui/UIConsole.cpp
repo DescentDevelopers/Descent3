@@ -100,12 +100,11 @@ void UIConsoleGadget::Create(UIWindow *parent, int id, int x, int y, int font, i
   grtext_Reset();
 
   // extra 32 bytes per row for color coding.
-  m_ConsoleBuffer = (char *)mem_malloc(m_Rows * m_Rowsize);
+  m_ConsoleBuffer = std::make_unique<char[]>(m_Rows * m_Rowsize);
   m_PutsBufLen = 512;
-  m_PutsBuffer = mem_rmalloc<char>(m_PutsBufLen);
+  m_PutsBuffer = std::make_unique<char[]>(m_PutsBufLen);
 
-  m_ColorRows = new ddgr_color[m_Rows];
-  memset(m_ConsoleBuffer, 0, m_Rows * m_Rowsize);
+  m_ColorRows = std::make_unique<ddgr_color[]>(m_Rows);
   for (i = 0; i < m_Rows; i++)
     m_ColorRows[i] = GR_GREEN;
 
@@ -114,12 +113,9 @@ void UIConsoleGadget::Create(UIWindow *parent, int id, int x, int y, int font, i
 }
 
 void UIConsoleGadget::OnDestroy() {
-  if (m_ColorRows)
-    delete[] m_ColorRows;
-  if (m_ConsoleBuffer)
-    mem_free(m_ConsoleBuffer);
-  if (m_PutsBuffer)
-    mem_free(m_PutsBuffer);
+  m_ColorRows.reset();
+  m_ConsoleBuffer.reset();
+  m_PutsBuffer.reset();
 
   UIGadget::OnDestroy();
 }
@@ -131,13 +127,12 @@ void UIConsoleGadget::puts(ddgr_color col, const char *str) {
   char *linebuf;
 
   if (len >= m_PutsBufLen) {
-    mem_free(m_PutsBuffer);
     m_PutsBufLen = len + 1;
-    m_PutsBuffer = mem_rmalloc<char>(m_PutsBufLen);
+    m_PutsBuffer = std::make_unique<char[]>(m_PutsBufLen);
   }
 
-  textaux_WordWrap(str, m_PutsBuffer, m_W - 2 * m_OffX, m_ConsoleFont);
-  len = strlen(m_PutsBuffer);
+  textaux_WordWrap(str, m_PutsBuffer.get(), m_W - 2 * m_OffX, m_ConsoleFont);
+  len = strlen(m_PutsBuffer.get());
 
   m_LineColor = col;
   if (m_CurCol == 0)
@@ -158,7 +153,7 @@ void UIConsoleGadget::puts(ddgr_color col, const char *str) {
   }
 
   //		Error("Console line overflow in UIConsoleGadget line index (%d).\n", m_LineIndex);
-  linebuf = m_ConsoleBuffer + (m_Rowsize * m_CurRow);
+  linebuf = m_ConsoleBuffer.get() + (m_Rowsize * m_CurRow);
   linebuf[m_LineIndex++] = GR_COLOR_CHAR;
   linebuf[m_LineIndex++] = (r == 0 ? 1 : r);
   linebuf[m_LineIndex++] = (g == 0 ? 1 : g);
@@ -189,7 +184,7 @@ void UIConsoleGadget::OnDraw() {
   index = 0;
 
   for (cy = m_VisRowStart; cy < (m_VisRowStart + m_VisRows); cy++) {
-    linebuf = m_ConsoleBuffer + (m_Rowsize * cy);
+    linebuf = m_ConsoleBuffer.get() + (m_Rowsize * cy);
     ui_DrawString(m_ColorRows[cy], x, y, linebuf);
     y = y + ui_GetFontHeight() + 1;
   }
@@ -215,7 +210,7 @@ void UIConsoleGadget::PutChar(int ch) {
     if (m_CurRow < (m_VisRowStart + m_VisRows))
       m_ColorRows[m_CurRow] = m_LineColor;
   } else {
-    linebuf = m_ConsoleBuffer + (m_CurRow * m_Rowsize);
+    linebuf = m_ConsoleBuffer.get() + (m_CurRow * m_Rowsize);
     linebuf[m_LineIndex] = (char)ch;
     linebuf[m_LineIndex + 1] = 0;
 
@@ -247,8 +242,8 @@ void UIConsoleGadget::Scroll() {
     m_VisRowStart++;
   } else {
     for (row = 1; row < m_Rows; row++) {
-      linebuf = (m_ConsoleBuffer + (m_Rowsize)*row);
-      linebuf2 = (m_ConsoleBuffer + (m_Rowsize) * (row - 1));
+      linebuf = (m_ConsoleBuffer.get() + (m_Rowsize)*row);
+      linebuf2 = (m_ConsoleBuffer.get() + (m_Rowsize) * (row - 1));
       memcpy(linebuf2, linebuf, m_Rowsize);
       memset(linebuf, 0, m_Rowsize);
       m_ColorRows[row - 1] = m_ColorRows[row];
