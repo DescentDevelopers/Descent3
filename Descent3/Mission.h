@@ -216,15 +216,15 @@ struct tLevelNode {
   uint32_t objective_flags; // level objective flags
 
   // Movies
-  char *moviename;
-  char *endmovie;
+  char *moviename = nullptr;
+  char *endmovie = nullptr;
 
   // Level filename
-  char *filename;  // mine filename.
-  char *briefname; // briefing filename
-  char *hog;       // hog file name for this level
-  char *score;     // music score of level
-  char *progress;  // File name containing the progress background screen
+  char *filename = nullptr;  // mine filename.
+  char *briefname = nullptr; // briefing filename
+  char *hog = nullptr;       // hog file name for this level
+  char *score = nullptr;     // music score of level
+  char *progress = nullptr;  // File name containing the progress background screen
 
   // Level branching
   uint8_t lvlbranch0, lvlbranch1; // FORK or BRANCH command
@@ -239,11 +239,11 @@ struct tMission {
   int mn3_handle; // if this mission was loaded from an MN3, this is the handle.
 
   unsigned game_state_flags;  // game state information stored here (manipulated by scripting)
-  char *filename;             // filename of mission.
+  char *filename = nullptr;   // filename of mission.
   char name[MSN_NAMELEN];     // name of mission
   char author[MSN_NAMELEN];   // author of mission.
   char desc[MSN_NAMELEN * 4]; // description of mission
-  char *hog;                  // default hog filename
+  char *hog = nullptr;        // default hog filename
   char email[MSN_URLLEN];     // email and web location
   char web[MSN_URLLEN];
   bool multiplayable;    // this level is multiplayer playable
