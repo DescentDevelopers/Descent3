@@ -97,7 +97,6 @@
 #include "log.h"
 
 sound_info Sounds[MAX_SOUNDS];
-sound_file_info SoundFiles[MAX_SOUND_FILES];
 
 #define CLIP_ATTENUATION .5f
 

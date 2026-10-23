@@ -466,6 +466,9 @@
 
 #include "sdlsound.h"
 
+// ~hlsSystem frees the sample data held by SoundFiles, so SoundFiles must be destroyed after Sound_system at exit.
+// Defining both in this file, SoundFiles first, guarantees that order.
+sound_file_info SoundFiles[MAX_SOUND_FILES];
 hlsSystem Sound_system;
 char Sound_quality = SQT_NORMAL;
 char Sound_mixer = SOUND_MIXER_SOFTWARE_16;
