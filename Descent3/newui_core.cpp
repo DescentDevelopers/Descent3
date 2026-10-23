@@ -1188,7 +1188,6 @@ void newuiMessageBox::OnDraw() {
 #define GADGET_CHANGEABLE_TXT 17 // changeable text
 
 newuiSheet::newuiSheet() {
-  m_gadgetlist = nullptr;
   m_gadgetlimit = 0;
   m_ngadgets = 0;
   m_realized = false;
@@ -1197,17 +1196,13 @@ newuiSheet::newuiSheet() {
 void newuiSheet::Create(UIWindow *menu, const char *title, int n_items, int sx, int sy) {
   int i;
 
-  if (title) {
-    m_title = mem_strdup(title);
-  } else {
-    m_title = nullptr;
-  }
+  m_title = mem_strdup_unique(title);
   m_gadgetlimit = n_items;
   m_ngadgets = 0;
   if (n_items) {
-    m_gadgetlist = mem_rmalloc<t_gadget_desc>(n_items);
+    m_gadgetlist = std::make_unique<t_gadget_desc[]>(n_items);
   } else {
-    m_gadgetlist = nullptr;
+    m_gadgetlist.reset();
   }
 
   m_parent = menu;
@@ -1218,7 +1213,6 @@ void newuiSheet::Create(UIWindow *menu, const char *title, int n_items, int sx, 
 
   for (i = 0; i < m_gadgetlimit; i++) {
     m_gadgetlist[i].obj.gadget = nullptr;
-    m_gadgetlist[i].title = nullptr;
     m_gadgetlist[i].id = -1;
     m_gadgetlist[i].internal = nullptr;
   }
@@ -1230,12 +1224,8 @@ void newuiSheet::Destroy() {
 
   newuiSheet::Reset();
 
-  if (m_gadgetlist)
-    mem_free(m_gadgetlist);
-  if (m_title)
-    mem_free(m_title);
-  m_title = nullptr;
-  m_gadgetlist = nullptr;
+  m_title.reset();
+  m_gadgetlist.reset();
   m_ngadgets = 0;
 }
 
@@ -1245,9 +1235,7 @@ void newuiSheet::Reset() {
   ASSERT(!m_realized);
 
   for (i = 0; i < m_ngadgets; i++) {
-    if (m_gadgetlist[i].title) {
-      mem_free(m_gadgetlist[i].title);
-    }
+    m_gadgetlist[i].title.reset();
     if (m_gadgetlist[i].internal) {
       if (m_gadgetlist[i].type == GADGET_LISTBOX) {
         newuiListBox *lb = (newuiListBox *)m_gadgetlist[i].internal;
@@ -1311,7 +1299,7 @@ void newuiSheet::Realize() {
       gy = desc->parm.s[1] + m_sy;
       if (desc->title) {
         text = new UIText;
-        UITextItem item{MONITOR9_NEWUI_FONT, desc->title, NEWUI_MONITORFONT_COLOR};
+        UITextItem item{MONITOR9_NEWUI_FONT, desc->title.get(), NEWUI_MONITORFONT_COLOR};
         text->Create(m_parent, &item, gx, gy);
         desc->obj.gadget = text;
 
@@ -1339,7 +1327,7 @@ void newuiSheet::Realize() {
 
     case GADGET_STATIC_TXT: {
       text = new UIText;
-      UITextItem item{MONITOR9_NEWUI_FONT, desc->title, NEWUI_MONITORFONT_COLOR};
+      UITextItem item{MONITOR9_NEWUI_FONT, desc->title.get(), NEWUI_MONITORFONT_COLOR};
       text->Create(m_parent, &item, gx, gy);
       if (horizontal_align)
         gx += text->W() + 2;
@@ -1373,7 +1361,7 @@ void newuiSheet::Realize() {
     }
     case GADGET_BUTTON:
       btn = new newuiButton;
-      btn->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.i);
+      btn->Create(m_parent, desc->id, desc->title.get(), gx, gy, desc->parm.i);
       if (horizontal_align)
         gx += btn->W() + 2;
       else
@@ -1383,7 +1371,7 @@ void newuiSheet::Realize() {
 
     case GADGET_CHECKBOX:
       cbox = new newuiCheckBox;
-      cbox->Create(m_parent, desc->id, desc->title, gx, gy, false);
+      cbox->Create(m_parent, desc->id, desc->title.get(), gx, gy, false);
       if (!toggles_group) {
         toggles_group = true;
         cbox->SetFlag(UIF_GROUP_START);
@@ -1402,7 +1390,7 @@ void newuiSheet::Realize() {
       if (first_radio_index == -1)
         first_radio_index = i;
       radio = new newuiRadioButton;
-      radio->Create(m_parent, prev_radio, desc->id, desc->title, gx, gy, false);
+      radio->Create(m_parent, prev_radio, desc->id, desc->title.get(), gx, gy, false);
       if (m_gadgetlist[first_radio_index].parm.i == (i - first_radio_index)) {
         radio->Activate();
       }
@@ -1416,7 +1404,7 @@ void newuiSheet::Realize() {
 
     case GADGET_LBUTTON:
       btn = new newuiButton;
-      btn->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.i | NEWUI_BTNF_LONG);
+      btn->Create(m_parent, desc->id, desc->title.get(), gx, gy, desc->parm.i | NEWUI_BTNF_LONG);
       if (horizontal_align)
         gx += btn->W() + 2;
       else
@@ -1426,7 +1414,7 @@ void newuiSheet::Realize() {
 
     case GADGET_LCHECKBOX:
       cbox = new newuiCheckBox;
-      cbox->Create(m_parent, desc->id, desc->title, gx, gy, true);
+      cbox->Create(m_parent, desc->id, desc->title.get(), gx, gy, true);
       if (!toggles_group) {
         toggles_group = true;
         cbox->SetFlag(UIF_GROUP_START);
@@ -1445,7 +1433,7 @@ void newuiSheet::Realize() {
       if (first_radio_index == -1)
         first_radio_index = i;
       radio = new newuiRadioButton;
-      radio->Create(m_parent, prev_radio, desc->id, desc->title, gx, gy, true);
+      radio->Create(m_parent, prev_radio, desc->id, desc->title.get(), gx, gy, true);
       if (m_gadgetlist[first_radio_index].parm.i == (i - first_radio_index)) {
         radio->Activate();
       }
@@ -1460,7 +1448,7 @@ void newuiSheet::Realize() {
     case GADGET_HOTSPOT:
       hot = new newuiHotspot;
       bval = desc->internal ? true : false;
-      hot->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.s[0], desc->parm.s[1],
+      hot->Create(m_parent, desc->id, desc->title.get(), gx, gy, desc->parm.s[0], desc->parm.s[1],
                   (bval && !hotspot_group)  ? UIF_GROUP_START
                   : (bval && hotspot_group) ? UIF_GROUP_END
                                             : 0);
@@ -1480,7 +1468,7 @@ void newuiSheet::Realize() {
 
     case GADGET_SLIDER:
       slider = new newuiSlider;
-      slider->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.s[1]);
+      slider->Create(m_parent, desc->id, desc->title.get(), gx, gy, desc->parm.s[1]);
       slider->SetPos(desc->parm.s[0]);
       if (desc->internal) {
         slider->SetUnits((tSliderSettings *)desc->internal);
@@ -1501,7 +1489,7 @@ void newuiSheet::Realize() {
 
       // awful hack, but no more room to store passed in parameters.  note that we should never have an edit
       // box with a width greater than 4096 pixels in the lifetime of this system.
-      edit->Create(m_parent, desc->id, desc->title, gx, gy, (desc->parm.s[0] & 0xfff), flags);
+      edit->Create(m_parent, desc->id, desc->title.get(), gx, gy, (desc->parm.s[0] & 0xfff), flags);
       edit->SetBufferLen(desc->parm.s[1]);
       edit->SetText((char *)desc->internal);
 
@@ -1940,7 +1928,7 @@ newuiSheet::t_gadget_desc *newuiSheet::AddGadget(int16_t id, int8_t type, const 
 
   m_gadgetlist[i].id = id;
   m_gadgetlist[i].type = type;
-  m_gadgetlist[i].title = title ? mem_strdup(title) : nullptr;
+  m_gadgetlist[i].title = mem_strdup_unique(title);
   m_gadgetlist[i].obj.gadget = nullptr;
   m_gadgetlist[i].parm.i = 0;
   m_gadgetlist[i].changed = false;
