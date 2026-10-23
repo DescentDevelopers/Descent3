@@ -38,12 +38,6 @@
 
 extern const char *GetString(int d);
 
-typedef void *(*mem_malloc_fp)(int size);
-extern mem_malloc_fp DLLmem_malloc;
-
-typedef void (*mem_free_fp)(void *memblock);
-extern mem_free_fp DLLmem_free;
-
 typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, const char *hostname);
 extern nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
@@ -81,7 +75,8 @@ int GettingUserChannel = 0;
 
 std::unique_ptr<Chat_user> Firstuser;
 Chat_user *Curruser;
-Chat_command *Firstcommand, *Currcommand;
+std::unique_ptr<Chat_command> Firstcommand;
+Chat_command *Currcommand;
 std::unique_ptr<Chat_channel> Firstchannel;
 Chat_channel *Currchannel;
 
@@ -133,7 +128,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
     strcpy(Chat_tracker_id, trackerid);
 
     Firstuser.reset();
-    Firstcommand = nullptr;
+    Firstcommand.reset();
     Chat_server_connected = 0;
     FlushChatCommandQueue();
 
@@ -992,50 +987,39 @@ char *ParseIRCMessage(char *Line, int iMode) {
 }
 
 void AddChatCommandToQueue(int command, const void *data, int len) {
-  Currcommand = Firstcommand;
+  Currcommand = Firstcommand.get();
   if (Firstcommand == nullptr) {
-    Firstcommand = (Chat_command *)DLLmem_malloc(sizeof(Chat_command));
-    // ASSERT(Firstcommand);
-    Firstcommand->next = nullptr;
-    Currcommand = Firstcommand;
+    Firstcommand = std::make_unique<Chat_command>();
+    Currcommand = Firstcommand.get();
   } else {
     while (Currcommand->next) {
-      Currcommand = Currcommand->next;
+      Currcommand = Currcommand->next.get();
     }
-    Currcommand->next = (Chat_command *)DLLmem_malloc(sizeof(Chat_command));
-    // ASSERT(Currcommand->next);
-    Currcommand = Currcommand->next;
+    Currcommand->next = std::make_unique<Chat_command>();
+    Currcommand = Currcommand->next.get();
   }
   Currcommand->command = command;
   if (len && data)
     memcpy(&Currcommand->data, data, len);
-  Currcommand->next = nullptr;
 }
 
 Chat_command *GetChatCommandFromQueue() {
   static Chat_command response_cmd;
-  Chat_command *tmp_cmd;
   if (!Firstcommand)
     return nullptr;
-  Currcommand = Firstcommand;
+  Currcommand = Firstcommand.get();
   response_cmd.command = Currcommand->command;
   memcpy(response_cmd.data, Currcommand->data, sizeof(response_cmd.data));
-  tmp_cmd = Currcommand->next;
-  DLLmem_free(Firstcommand);
-  Firstcommand = tmp_cmd;
+  Firstcommand = std::move(Currcommand->next);
   return &response_cmd;
 }
 
 void FlushChatCommandQueue() {
-  Chat_command *tmp_cmd;
-  Currcommand = Firstcommand;
-
-  while (Currcommand) {
-    tmp_cmd = Currcommand->next;
-    DLLmem_free(Currcommand);
-    Currcommand = tmp_cmd;
+  // Unlink one node at a time so long queues are not destroyed recursively
+  while (Firstcommand) {
+    Firstcommand = std::move(Firstcommand->next);
   }
-  Firstcommand = nullptr;
+  Currcommand = nullptr;
 }
 
 void FlushChannelList() {
