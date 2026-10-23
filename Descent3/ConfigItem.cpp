@@ -108,22 +108,15 @@ ConfigItem::ConfigItem() {
   m_fCurrentValue = 0;
   m_iFlags = 0;
   m_iType = 0;
-  m_iID = nullptr;
   m_iNumIDs = 0;
   m_iItems = 0;
   m_iValueType = 0;
   m_hWnd = nullptr;
-  m_tiList = nullptr;
   m_tiCount = 0;
-  m_hsList = nullptr;
   m_hsCount = 0;
-  m_sList = nullptr;
   m_sCount = 0;
-  m_rbList = nullptr;
   m_rbCount = 0;
-  m_bList = nullptr;
   m_bCount = 0;
-  m_lbList = nullptr;
   m_lbCount = 0;
   m_fMin = 0;
   m_fMax = 100;
@@ -131,7 +124,6 @@ ConfigItem::ConfigItem() {
   m_fUnit = 1;
   m_auxX = 0;
   m_bAlive = false;
-  m_labeltext = nullptr;
   m_fCallback = nullptr;
   m_iCallback = nullptr;
   m_bCallback = nullptr;
@@ -185,7 +177,7 @@ bool ConfigItem::Create(NewUIGameWindow *parentwnd, int type, int flags, int x, 
       m_tLabel.Create(parentwnd, &item, x, y, UIF_FIT);
     } else {
       // save the label text
-      m_labeltext = mem_strdup(label);
+      m_labeltext = mem_strdup_unique(label);
     }
   }
 
@@ -238,57 +230,21 @@ void ConfigItem::Destroy(void) {
   if (!m_bAlive)
     return;
 
-  int i;
+  m_labeltext.reset();
 
-  if (m_labeltext) {
-    mem_free(m_labeltext);
-    m_labeltext = nullptr;
-  }
+  m_tiList.reset();
 
-  if ((m_tiCount) && (m_tiList)) {
-    for (i = 0; i < m_tiCount; i++)
-      if (m_tiList[i])
-        delete m_tiList[i];
-    mem_free(m_tiList);
-  }
+  m_hsList.reset();
 
-  if ((m_hsCount) && (m_hsList)) {
-    for (i = 0; i < m_hsCount; i++)
-      if (m_hsList[i])
-        delete m_hsList[i];
-    mem_free(m_hsList);
-  }
+  m_sList.reset();
 
-  if ((m_sCount) && (m_sList)) {
-    for (i = 0; i < m_sCount; i++)
-      if (m_sList[i])
-        delete m_sList[i];
-    mem_free(m_sList);
-  }
+  m_rbList.reset();
 
-  if ((m_rbCount) && (m_rbList)) {
-    for (i = 0; i < m_rbCount; i++)
-      if (m_rbList[i])
-        delete m_rbList[i];
-    mem_free(m_rbList);
-  }
+  m_bList.reset();
 
-  if ((m_bCount) && (m_bList)) {
-    for (i = 0; i < m_bCount; i++)
-      if (m_bList[i])
-        delete m_bList[i];
-    mem_free(m_bList);
-  }
+  m_lbList.reset();
 
-  if ((m_lbCount) && (m_lbList)) {
-    for (i = 0; i < m_lbCount; i++)
-      if (m_lbList[i])
-        delete m_lbList[i];
-    mem_free(m_lbList);
-  }
-
-  if ((m_iNumIDs) && (m_iID))
-    mem_free(m_iID);
+  m_iID.reset();
 
   m_bAlive = false;
 }
@@ -413,16 +369,16 @@ bool ConfigItem::SetCurrentValue(bool currvalue, bool call_back) {
     break;
   case CIT_CHECKBOX:
     if (currvalue)
-      m_hsList[0]->SetStates(m_tiList[2], m_tiList[3]); // Checked
+      m_hsList[0]->SetStates(m_tiList[2].get(), m_tiList[3].get()); // Checked
     else
-      m_hsList[0]->SetStates(m_tiList[0], m_tiList[1]); // Unchecked
+      m_hsList[0]->SetStates(m_tiList[0].get(), m_tiList[1].get()); // Unchecked
     break;
   case CIT_ONOFFBUTTON:
   case CIT_YESNOBUTTON:
     if (currvalue)
-      m_bList[0]->SetTitle(m_tiList[1]); // Yes
+      m_bList[0]->SetTitle(m_tiList[1].get()); // Yes
     else
-      m_bList[0]->SetTitle(m_tiList[0]); // No
+      m_bList[0]->SetTitle(m_tiList[0].get()); // No
     break;
   }
 
@@ -603,9 +559,9 @@ void ConfigItem::UpdateOnOffButton(int index) {
   ASSERT((index >= 0) && (index < m_bCount));
   m_bCurrentValue = !m_bCurrentValue;
   if (m_bCurrentValue)
-    m_bList[index]->SetTitle(m_tiList[1]); // On
+    m_bList[index]->SetTitle(m_tiList[1].get()); // On
   else
-    m_bList[index]->SetTitle(m_tiList[0]); // Off
+    m_bList[index]->SetTitle(m_tiList[0].get()); // Off
   if (m_bCallback)
     (*m_bCallback)(m_bCurrentValue);
 }
@@ -621,9 +577,9 @@ void ConfigItem::UpdateYesNoButton(int index) {
   ASSERT((index >= 0) && (index < m_bCount));
   m_bCurrentValue = !m_bCurrentValue;
   if (m_bCurrentValue)
-    m_bList[index]->SetTitle(m_tiList[1]); // Yes
+    m_bList[index]->SetTitle(m_tiList[1].get()); // Yes
   else
-    m_bList[index]->SetTitle(m_tiList[0]); // No
+    m_bList[index]->SetTitle(m_tiList[0].get()); // No
   if (m_bCallback)
     (*m_bCallback)(m_bCurrentValue);
 }
@@ -632,9 +588,9 @@ void ConfigItem::UpdateCheckBox(int index) {
   ASSERT((index >= 0) && (index < m_hsCount));
   m_bCurrentValue = !m_bCurrentValue;
   if (m_bCurrentValue)
-    m_hsList[index]->SetStates(m_tiList[2], m_tiList[3]); // Checked
+    m_hsList[index]->SetStates(m_tiList[2].get(), m_tiList[3].get()); // Checked
   else
-    m_hsList[index]->SetStates(m_tiList[0], m_tiList[1]); // Unchecked
+    m_hsList[index]->SetStates(m_tiList[0].get(), m_tiList[1].get()); // Unchecked
 
   if (m_bCallback)
     (*m_bCallback)(m_bCurrentValue);
@@ -668,11 +624,11 @@ void ConfigItem::Add(int count, ...) {
     // we need count radiobuttons
     // we need count IDs
     m_tiCount = count;
-    m_tiList = mem_rmalloc<UITextItem *>(m_tiCount);
+    m_tiList = std::make_unique<std::unique_ptr<UITextItem>[]>(m_tiCount);
     m_rbCount = count;
-    m_rbList = mem_rmalloc<UIRadioButton *>(m_rbCount);
+    m_rbList = std::make_unique<std::unique_ptr<UIRadioButton>[]>(m_rbCount);
     m_iNumIDs = count;
-    m_iID = mem_rmalloc<int>(m_iNumIDs);
+    m_iID = std::make_unique<int[]>(m_iNumIDs);
     // make sure mallocs are ok
     ASSERT((m_tiList) && (m_rbList) && (m_iID));
     // initialize variables
@@ -683,29 +639,29 @@ void ConfigItem::Add(int count, ...) {
       // get unique ID
       m_iID[i] = GetUniqueID();
       // allocate text item
-      m_tiList[i] = new UITextItem;
+      m_tiList[i] = std::make_unique<UITextItem>();
       // make sure allocation ok
       ASSERT(m_tiList[i]);
       uitemp = va_arg(marker, UITextItem *);
       *m_tiList[i] = *uitemp;
       m_tiList[i]->set_alpha(255);
       // allocate radio button
-      m_rbList[i] = new UIRadioButton;
+      m_rbList[i] = std::make_unique<UIRadioButton>();
       // make sure allocation ok
       ASSERT(m_rbList[i]);
       if (i)
-        m_rbList[i]->Create(m_hWnd, m_rbList[i - 1], m_iID[i], m_tiList[i], m_X + curr_x, m_Y + curr_y,
+        m_rbList[i]->Create(m_hWnd, m_rbList[i - 1].get(), m_iID[i], m_tiList[i].get(), m_X + curr_x, m_Y + curr_y,
                             m_tiList[i]->width(), m_tiList[i]->height(), UIF_FIT | UIRB_NOBUTTON);
       else
-        m_rbList[i]->Create(m_hWnd, nullptr, m_iID[i], m_tiList[i], m_X + curr_x, m_Y + curr_y, m_tiList[i]->width(),
-                            m_tiList[i]->height(), UIF_FIT | UIRB_NOBUTTON);
+        m_rbList[i]->Create(m_hWnd, nullptr, m_iID[i], m_tiList[i].get(), m_X + curr_x, m_Y + curr_y,
+                            m_tiList[i]->width(), m_tiList[i]->height(), UIF_FIT | UIRB_NOBUTTON);
 
       m_tiList[i]->set_color(UICOL_HOTSPOT_HI);
-      m_rbList[i]->SetStateItem(UI_BTS_ACTIVATED, m_tiList[i]);
+      m_rbList[i]->SetStateItem(UI_BTS_ACTIVATED, m_tiList[i].get());
       m_tiList[i]->set_color(UICOL_HOTSPOT_LO);
-      m_rbList[i]->SetStateItem(UI_BTS_INACTIVE, m_tiList[i]);
+      m_rbList[i]->SetStateItem(UI_BTS_INACTIVE, m_tiList[i].get());
       m_tiList[i]->set_color(UICOL_HOTSPOT_HI);
-      m_rbList[i]->SetStateItem(UI_BTS_HILITE, m_tiList[i]);
+      m_rbList[i]->SetStateItem(UI_BTS_HILITE, m_tiList[i].get());
 
       // adjust curr x/y
       curr_x += (m_rbList[i]->W() + HOTSPOTLIST_GAP);
@@ -721,15 +677,15 @@ void ConfigItem::Add(int count, ...) {
     // we need 1 slider
     // we need 1 ID
     m_sCount = 1;
-    m_sList = mem_rmalloc<NewUISlider *>(1);
+    m_sList = std::make_unique<std::unique_ptr<NewUISlider>[]>(1);
     m_iNumIDs = 1;
-    m_iID = mem_rmalloc<int>(1);
+    m_iID = std::make_unique<int[]>(1);
     // make sure mallocs are ok
     ASSERT((m_sList) && (m_iID));
     // get unique ID
     m_iID[0] = GetUniqueID();
     // allocate slider
-    m_sList[0] = new NewUISlider;
+    m_sList[0] = std::make_unique<NewUISlider>();
     // make sure allocation ok
     ASSERT(m_sList[0]);
     m_sList[0]->Create(m_hWnd, m_iID[0], m_X, m_Y, UIF_FIT);
@@ -761,11 +717,11 @@ void ConfigItem::Add(int count, ...) {
     // we need 1 button
     // we need 1 ID
     m_bCount = 1;
-    m_bList = mem_rmalloc<NewUIButton *>(1);
+    m_bList = std::make_unique<std::unique_ptr<NewUIButton>[]>(1);
     m_tiCount = 2;
-    m_tiList = mem_rmalloc<UITextItem *>(2);
+    m_tiList = std::make_unique<std::unique_ptr<UITextItem>[]>(2);
     m_iNumIDs = 1;
-    m_iID = mem_rmalloc<int>(1);
+    m_iID = std::make_unique<int[]>(1);
     // make sure mallocs mallocs are ok
     ASSERT((m_tiList) && (m_bList) && (m_iID));
     // adjust the curr x/y for the button
@@ -774,22 +730,22 @@ void ConfigItem::Add(int count, ...) {
     // get unique ID
     m_iID[0] = GetUniqueID();
     // allocate text items
-    m_tiList[0] = new UITextItem(TXT_OFF, UICOL_BUTTON_LO);
-    m_tiList[1] = new UITextItem(TXT_ON, UICOL_BUTTON_HI);
+    m_tiList[0] = std::make_unique<UITextItem>(TXT_OFF, UICOL_BUTTON_LO);
+    m_tiList[1] = std::make_unique<UITextItem>(TXT_ON, UICOL_BUTTON_HI);
     // make sure allocation ok
     ASSERT((m_tiList[0]) && (m_tiList[1]));
     // allocate buttonCreate
-    m_bList[0] = new NewUIButton;
+    m_bList[0] = std::make_unique<NewUIButton>();
     // make sure allocation ok
     ASSERT(m_bList[0]);
-    m_bList[0]->Create(m_hWnd, m_iID[0], m_tiList[0], m_X + curr_x, m_Y + curr_y, m_tiList[0]->width(),
+    m_bList[0]->Create(m_hWnd, m_iID[0], m_tiList[0].get(), m_X + curr_x, m_Y + curr_y, m_tiList[0]->width(),
                        m_tiList[0]->height(), UIF_FIT);
     // Initialize Config Item to initial value
     ASSERT(m_iValueType == CIV_BOOL);
     if (m_bInitial)
-      m_bList[0]->SetTitle(m_tiList[1]); // On
+      m_bList[0]->SetTitle(m_tiList[1].get()); // On
     else
-      m_bList[0]->SetTitle(m_tiList[0]); // Off
+      m_bList[0]->SetTitle(m_tiList[0].get()); // Off
     break;
   case CIT_LISTBOX:
     ASSERT(count > 0);
@@ -798,11 +754,11 @@ void ConfigItem::Add(int count, ...) {
     // we need 1 listbox
     // we need 1 ID
     m_lbCount = 1;
-    m_lbList = mem_rmalloc<NewUIListBox *>(1);
+    m_lbList = std::make_unique<std::unique_ptr<NewUIListBox>[]>(1);
     m_tiCount = count;
-    m_tiList = mem_rmalloc<UITextItem *>(m_tiCount);
+    m_tiList = std::make_unique<std::unique_ptr<UITextItem>[]>(m_tiCount);
     m_iNumIDs = 1;
-    m_iID = mem_rmalloc<int>(1);
+    m_iID = std::make_unique<int[]>(1);
     // make sure mallocs ok
     ASSERT((m_lbList) && (m_tiList) && (m_iID));
     // adjust the curr x/y for the listbox
@@ -811,19 +767,19 @@ void ConfigItem::Add(int count, ...) {
     // get unique ID
     m_iID[0] = GetUniqueID();
     // allocate list box
-    m_lbList[0] = new NewUIListBox;
+    m_lbList[0] = std::make_unique<NewUIListBox>();
     // check allocation
     ASSERT(m_lbList[0]);
     m_lbList[0]->Create(m_hWnd, m_iID[0], m_X + curr_x, m_Y + curr_y, m_W, m_H, UIF_FIT);
     // allocate text items and put them in
     for (i = 0; i < m_tiCount; i++) {
       // create the text item
-      m_tiList[i] = new UITextItem;
+      m_tiList[i] = std::make_unique<UITextItem>();
       // make sure allocation ok
       ASSERT(m_tiList[i]);
       (*m_tiList[i]) = (*(va_arg(marker, UITextItem *)));
       // add textitem to listbox
-      m_lbList[0]->AddItem(m_tiList[i]);
+      m_lbList[0]->AddItem(m_tiList[i].get());
     }
     // Initialize Config Item to initial value
     ASSERT(m_iValueType == CIV_INT);
@@ -838,11 +794,11 @@ void ConfigItem::Add(int count, ...) {
     // we need 1 button
     // we need 1 ID
     m_bCount = 1;
-    m_bList = mem_rmalloc<NewUIButton *>(1);
+    m_bList = std::make_unique<std::unique_ptr<NewUIButton>[]>(1);
     m_tiCount = 2;
-    m_tiList = mem_rmalloc<UITextItem *>(2);
+    m_tiList = std::make_unique<std::unique_ptr<UITextItem>[]>(2);
     m_iNumIDs = 1;
-    m_iID = mem_rmalloc<int>(1);
+    m_iID = std::make_unique<int[]>(1);
     // make sure mallocs mallocs are ok
     ASSERT((m_tiList) && (m_bList) && (m_iID));
     // adjust the curr x/y for the button
@@ -851,22 +807,22 @@ void ConfigItem::Add(int count, ...) {
     // get unique ID
     m_iID[0] = GetUniqueID();
     // allocate text items
-    m_tiList[0] = new UITextItem(TXT_NO, UICOL_BUTTON_LO);
-    m_tiList[1] = new UITextItem(TXT_YES, UICOL_BUTTON_HI);
+    m_tiList[0] = std::make_unique<UITextItem>(TXT_NO, UICOL_BUTTON_LO);
+    m_tiList[1] = std::make_unique<UITextItem>(TXT_YES, UICOL_BUTTON_HI);
     // make sure allocation ok
     ASSERT((m_tiList[0]) && (m_tiList[1]));
     // allocate buttonCreate
-    m_bList[0] = new NewUIButton;
+    m_bList[0] = std::make_unique<NewUIButton>();
     // make sure allocation ok
     ASSERT(m_bList[0]);
-    m_bList[0]->Create(m_hWnd, m_iID[0], m_tiList[0], m_X + curr_x, m_Y + curr_y, m_tiList[0]->width(),
+    m_bList[0]->Create(m_hWnd, m_iID[0], m_tiList[0].get(), m_X + curr_x, m_Y + curr_y, m_tiList[0]->width(),
                        m_tiList[0]->height(), UIF_FIT);
     // Initialize Config Item to initial value
     ASSERT(m_iValueType == CIV_BOOL);
     if (m_bInitial)
-      m_bList[0]->SetTitle(m_tiList[1]); // Yes
+      m_bList[0]->SetTitle(m_tiList[1].get()); // Yes
     else
-      m_bList[0]->SetTitle(m_tiList[0]); // No
+      m_bList[0]->SetTitle(m_tiList[0].get()); // No
     break;
   case CIT_CHECKBOX:
     // only 1 checkbox per config item
@@ -875,11 +831,11 @@ void ConfigItem::Add(int count, ...) {
     // we need 1 hotspot
     // we need 1 ID
     m_hsCount = 1;
-    m_hsList = mem_rmalloc<UIHotspot *>(1);
+    m_hsList = std::make_unique<std::unique_ptr<UIHotspot>[]>(1);
     m_tiCount = 4;
-    m_tiList = mem_rmalloc<UITextItem *>(4);
+    m_tiList = std::make_unique<std::unique_ptr<UITextItem>[]>(4);
     m_iNumIDs = 1;
-    m_iID = mem_rmalloc<int>(1);
+    m_iID = std::make_unique<int[]>(1);
     // make sure mallocs are ok
     ASSERT((m_hsList) && (m_tiList) && (m_iID));
     // adjust the curr x/y for the checkbox
@@ -890,25 +846,25 @@ void ConfigItem::Add(int count, ...) {
     // allocate text items
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "%c %s", UI_CHECKBOX_OFF_CHAR, ((UITextItem *)m_tLabel.GetItem())->GetBuffer());
-    m_tiList[0] = new UITextItem(buffer, UICOL_HOTSPOT_LO);
-    m_tiList[1] = new UITextItem(buffer, UICOL_HOTSPOT_HI);
+    m_tiList[0] = std::make_unique<UITextItem>(buffer, UICOL_HOTSPOT_LO);
+    m_tiList[1] = std::make_unique<UITextItem>(buffer, UICOL_HOTSPOT_HI);
     snprintf(buffer, sizeof(buffer), "%c %s", UI_CHECKBOX_ON_CHAR, ((UITextItem *)m_tLabel.GetItem())->GetBuffer());
-    m_tiList[2] = new UITextItem(buffer, UICOL_HOTSPOT_LO);
-    m_tiList[3] = new UITextItem(buffer, UICOL_HOTSPOT_HI);
+    m_tiList[2] = std::make_unique<UITextItem>(buffer, UICOL_HOTSPOT_LO);
+    m_tiList[3] = std::make_unique<UITextItem>(buffer, UICOL_HOTSPOT_HI);
     // make sure allocation ok
     ASSERT((m_tiList[0]) && (m_tiList[1]));
     // allocate hot spots
-    m_hsList[0] = new UIHotspot;
+    m_hsList[0] = std::make_unique<UIHotspot>();
     // make sure allocation ok
     ASSERT(m_hsList[0]);
-    m_hsList[0]->Create(m_hWnd, m_iID[0], -1, m_tiList[0], m_tiList[1], m_X + curr_x, m_Y + curr_y,
+    m_hsList[0]->Create(m_hWnd, m_iID[0], -1, m_tiList[0].get(), m_tiList[1].get(), m_X + curr_x, m_Y + curr_y,
                         m_tiList[0]->width(), m_tiList[0]->height(), UIF_FIT);
     // Initialize Config Item to initial value
     ASSERT(m_iValueType == CIV_BOOL);
     if (m_bInitial)
-      m_hsList[0]->SetStates(m_tiList[2], m_tiList[3]);
+      m_hsList[0]->SetStates(m_tiList[2].get(), m_tiList[3].get());
     else
-      m_hsList[0]->SetStates(m_tiList[0], m_tiList[1]);
+      m_hsList[0]->SetStates(m_tiList[0].get(), m_tiList[1].get());
     // remove the title so it's not drawn
     m_tLabel.Destroy();
     break;
@@ -919,11 +875,11 @@ void ConfigItem::Add(int count, ...) {
     // we need count radio buttons
     // we need count IDs
     m_tiCount = count;
-    m_tiList = mem_rmalloc<UITextItem *>(m_tiCount);
+    m_tiList = std::make_unique<std::unique_ptr<UITextItem>[]>(m_tiCount);
     m_rbCount = count;
-    m_rbList = mem_rmalloc<UIRadioButton *>(m_rbCount);
+    m_rbList = std::make_unique<std::unique_ptr<UIRadioButton>[]>(m_rbCount);
     m_iNumIDs = count;
-    m_iID = mem_rmalloc<int>(m_iNumIDs);
+    m_iID = std::make_unique<int[]>(m_iNumIDs);
     // make sure mallocs are ok
     ASSERT((m_tiList) && (m_rbList) && (m_iID));
     // adjust the curr x/y for the list of radio buttons
@@ -956,7 +912,7 @@ void ConfigItem::Add(int count, ...) {
       // get unique ID
       m_iID[i] = GetUniqueID();
       // allocate text items
-      m_tiList[i] = new UITextItem;
+      m_tiList[i] = std::make_unique<UITextItem>();
       // make sure allocation ok
       ASSERT(m_tiList[i]);
       (*m_tiList[i]) = (*(va_arg(marker, UITextItem *)));
@@ -965,13 +921,13 @@ void ConfigItem::Add(int count, ...) {
 
       // m_tiList[i]->set_alpha(UIALPHA_HOTSPOT_LO);
       // allocate radio button
-      m_rbList[i] = new UIRadioButton;
+      m_rbList[i] = std::make_unique<UIRadioButton>();
       ASSERT(m_rbList[i]);
       if (i)
-        m_rbList[i]->Create(m_hWnd, m_rbList[i - 1], m_iID[i], m_tiList[i], m_X + curr_x + offset, m_Y + curr_y, m_W,
-                            m_H, UIF_FIT);
+        m_rbList[i]->Create(m_hWnd, m_rbList[i - 1].get(), m_iID[i], m_tiList[i].get(), m_X + curr_x + offset,
+                            m_Y + curr_y, m_W, m_H, UIF_FIT);
       else
-        m_rbList[i]->Create(m_hWnd, nullptr, m_iID[i], m_tiList[i], m_X + curr_x + offset, m_Y + curr_y, m_W, m_H,
+        m_rbList[i]->Create(m_hWnd, nullptr, m_iID[i], m_tiList[i].get(), m_X + curr_x + offset, m_Y + curr_y, m_W, m_H,
                             UIF_FIT);
 
       // store the max width
@@ -988,7 +944,7 @@ void ConfigItem::Add(int count, ...) {
 
       // we may need to update the width depending on width of title
       grtext_SetFont(SMALL_FONT);
-      int w = grtext_GetTextLineWidth(m_labeltext);
+      int w = grtext_GetTextLineWidth(m_labeltext.get());
       if (w > max_width)
         max_width = w;
 
@@ -996,7 +952,7 @@ void ConfigItem::Add(int count, ...) {
       m_W = max_width + 20;        // generate real width
 
       // Create the group box
-      m_gGroup.Create(m_hWnd, m_labeltext, m_auxX, m_Y, m_W, m_H, UICOL_TEXT_NORMAL, UICOL_HOTSPOT_LO);
+      m_gGroup.Create(m_hWnd, m_labeltext.get(), m_auxX, m_Y, m_W, m_H, UICOL_TEXT_NORMAL, UICOL_HOTSPOT_LO);
     }
 
     // Initialize Config Item to initial value
