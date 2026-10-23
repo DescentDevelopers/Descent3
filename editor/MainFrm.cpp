@@ -3171,7 +3171,6 @@ void CMainFrame::OnHotspotTga() {
   // TODO: Add your command handler code here
   CString tga_filter = "TGA (*.tga)|*.tga|All Files (*.*)|*.*||";
   CString tga_path;
-  char *buffer;
   int anim = 0, bm_handle;
   char filename[200];
 
@@ -3183,15 +3182,12 @@ void CMainFrame::OnHotspotTga() {
     return;
   }
 
-  buffer = mem_strdup(tga_path.GetBuffer(1));
-  if (!buffer) {
-    Int3(); // find Jeff
-    return;
-  }
-  if (menutga_ConvertTGAtoHSM(buffer))
+  auto buffer = mem_strdup_unique(tga_path.GetBuffer(1));
+  if (menutga_ConvertTGAtoHSM(buffer.get())) {
     OutrageMessageBox("HotSpot Map Extracted");
+  }
 
-  bm_handle = LoadTextureImage(buffer, &anim, NOT_TEXTURE, 0);
+  bm_handle = LoadTextureImage(buffer.get(), &anim, NOT_TEXTURE, 0);
 
   if (bm_handle < 0) {
     OutrageMessageBox("Couldn't open that bitmap/anim file.");
@@ -3203,9 +3199,6 @@ void CMainFrame::OnHotspotTga() {
     bm_SaveFileBitmap(filename, bm_handle);
     bm_FreeBitmap(bm_handle);
   }
-
-  if (buffer)
-    mem_free(buffer);
 }
 
 void CMainFrame::OnEditorsFiles() {
@@ -3467,8 +3460,8 @@ void CMainFrame::OnShowAllCheckedOut() {
   char text_buf[10000], *t;
 
   // Get all locked pages
-  mngs_Pagelock *LockList = mem_rmalloc<mngs_Pagelock>(MAX_LOCKLIST_ELEMENTS);
-  int n = mng_GetListOfLocks(LockList, MAX_LOCKLIST_ELEMENTS, nullptr);
+  auto LockList = std::make_unique<mngs_Pagelock[]>(MAX_LOCKLIST_ELEMENTS);
+  int n = mng_GetListOfLocks(LockList.get(), MAX_LOCKLIST_ELEMENTS, nullptr);
 
   // ASSERT(n >= 1);		//always dummy page?
   // ASSERT(!strcmp(LockList[0].name,"DUMMY PAGE"));
@@ -3484,8 +3477,6 @@ void CMainFrame::OnShowAllCheckedOut() {
       break;
     }
   }
-
-  mem_free(LockList);
 
   dump_text_to_clipboard(text_buf);
 

@@ -1083,16 +1083,17 @@ bool SaveFileDialog(CWnd *wnd, LPCTSTR filter, char *pathname, char *initialdir,
 }
 
 bool FileDialog(CWnd *wnd, BOOL open, LPCTSTR filter, char *pathname, char *initialdir, int dirlen) {
-  CFileDialog *dlg;
+  std::unique_ptr<CFileDialog> dlg;
   char saved_path[_MAX_PATH];
   char search_path[_MAX_PATH];
 
   theApp.pause();
 
-  if (open)
-    dlg = new CFileDialog(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST, filter, wnd);
-  else
-    dlg = new CFileDialog(FALSE, nullptr, nullptr, OFN_OVERWRITEPROMPT, filter, wnd);
+  if (open) {
+    dlg = std::make_unique<CFileDialog>(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST, filter, wnd);
+  } else {
+    dlg = std::make_unique<CFileDialog>(FALSE, nullptr, nullptr, OFN_OVERWRITEPROMPT, filter, wnd);
+  }
 
   //	save current directory and set new directory.
   if (initialdir) {
@@ -1108,7 +1109,6 @@ bool FileDialog(CWnd *wnd, BOOL open, LPCTSTR filter, char *pathname, char *init
     if (initialdir)
       ddio_SetWorkingDir(saved_path);
     theApp.resume();
-    delete dlg;
     return false;
   }
 
@@ -1123,7 +1123,6 @@ bool FileDialog(CWnd *wnd, BOOL open, LPCTSTR filter, char *pathname, char *init
 
   theApp.resume();
 
-  delete dlg;
   return true;
 }
 
