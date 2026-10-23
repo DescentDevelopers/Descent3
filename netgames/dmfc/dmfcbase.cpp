@@ -525,14 +525,11 @@ DMFCBase::DMFCBase(void) {
 
   for (i = 0; i < MAX_DEATH_MSGS; i++) {
     DeathMsgs[i].inuse = false;
-    DeathMsgs[i].message = nullptr;
     SuicideMsgs[i].inuse = false;
-    SuicideMsgs[i].message = nullptr;
   }
 
   for (i = 0; i < MAX_WEAPONS; i++) {
     WeaponMessages[i].inuse = false;
-    WeaponMessages[i].message = nullptr;
     WeaponHash[i] = -1;
   }
 
@@ -596,28 +593,6 @@ DMFCBase::~DMFCBase(void) {
   if (TauntIndicatorBMP > BAD_BITMAP_HANDLE) {
     DLLbm_FreeBitmap(TauntIndicatorBMP);
     TauntIndicatorBMP = BAD_BITMAP_HANDLE;
-  }
-
-  for (i = 0; i < MAX_DEATH_MSGS; i++) {
-    if (DeathMsgs[i].inuse) {
-      if (DeathMsgs[i].message)
-        free(DeathMsgs[i].message);
-      DeathMsgs[i].inuse = false;
-    }
-    if (SuicideMsgs[i].inuse) {
-      if (SuicideMsgs[i].message)
-        free(SuicideMsgs[i].message);
-      SuicideMsgs[i].inuse = false;
-    }
-  }
-
-  for (i = 0; i < MAX_WEAPONS; i++) {
-    if (WeaponMessages[i].inuse) {
-      if (WeaponMessages[i].message) {
-        free(WeaponMessages[i].message);
-        WeaponMessages[i].message = nullptr;
-      }
-    }
   }
 
   // remove all the special packet handlers
@@ -1910,13 +1885,11 @@ void DMFCBase::AutoDeathMessage(bool turnon) {
 //    victim_first = Set this to true if the victim is listed first in the format
 void DMFCBase::AddDeathMessage(const char *string, bool victim_first) {
   if ((m_iDeathMsgCount >= 0) && (m_iDeathMsgCount < MAX_DEATH_MSGS)) {
-    DeathMsgs[m_iDeathMsgCount].message = (char *)malloc(strlen(string) + 1);
-    if (DeathMsgs[m_iDeathMsgCount].message) {
-      DeathMsgs[m_iDeathMsgCount].inuse = true;
-      DeathMsgs[m_iDeathMsgCount].victim_first = victim_first;
-      strcpy(DeathMsgs[m_iDeathMsgCount].message, string);
-      m_iDeathMsgCount++;
-    }
+    DeathMsgs[m_iDeathMsgCount].message = std::make_unique<char[]>(strlen(string) + 1);
+    DeathMsgs[m_iDeathMsgCount].inuse = true;
+    DeathMsgs[m_iDeathMsgCount].victim_first = victim_first;
+    strcpy(DeathMsgs[m_iDeathMsgCount].message.get(), string);
+    m_iDeathMsgCount++;
   }
 }
 
@@ -1926,12 +1899,10 @@ void DMFCBase::AddDeathMessage(const char *string, bool victim_first) {
 //    format = string in a "printf" type format (using %s for player callsigns) of the message
 void DMFCBase::AddSuicideMessage(const char *string) {
   if ((m_iSuicideMsgCount >= 0) && (m_iSuicideMsgCount < MAX_DEATH_MSGS)) {
-    SuicideMsgs[m_iSuicideMsgCount].message = (char *)malloc(strlen(string) + 1);
-    if (SuicideMsgs[m_iSuicideMsgCount].message) {
-      SuicideMsgs[m_iSuicideMsgCount].inuse = true;
-      strcpy(SuicideMsgs[m_iSuicideMsgCount].message, string);
-      m_iSuicideMsgCount++;
-    }
+    SuicideMsgs[m_iSuicideMsgCount].message = std::make_unique<char[]>(strlen(string) + 1);
+    SuicideMsgs[m_iSuicideMsgCount].inuse = true;
+    strcpy(SuicideMsgs[m_iSuicideMsgCount].message.get(), string);
+    m_iSuicideMsgCount++;
   }
 }
 
@@ -2921,17 +2892,10 @@ bool DMFCBase::SetWeaponDeathMessage(const char *weapon_name, const char *messag
     return false;
   }
 
-  if ((WeaponMessages[real_weapon].inuse) && (WeaponMessages[real_weapon].message)) {
-    free(WeaponMessages[real_weapon].message);
-    WeaponMessages[real_weapon].message = nullptr;
-  }
-
-  WeaponMessages[real_weapon].message = (char *)malloc(strlen(message) + 1);
-  if (WeaponMessages[real_weapon].message) {
-    strcpy(WeaponMessages[real_weapon].message, message);
-    WeaponMessages[real_weapon].inuse = true;
-    WeaponMessages[real_weapon].victim_first = victim_first;
-  }
+  WeaponMessages[real_weapon].message = std::make_unique<char[]>(strlen(message) + 1);
+  strcpy(WeaponMessages[real_weapon].message.get(), message);
+  WeaponMessages[real_weapon].inuse = true;
+  WeaponMessages[real_weapon].victim_first = victim_first;
 
   return WeaponMessages[real_weapon].inuse;
 }
@@ -2954,7 +2918,7 @@ char *DMFCBase::GetWeaponDeathMessage(int index, bool *victim_first) {
     return nullptr;
 
   *victim_first = WeaponMessages[real_weapon].victim_first;
-  return WeaponMessages[real_weapon].message;
+  return WeaponMessages[real_weapon].message.get();
 }
 
 // DMFCBase::AddWeaponHash
