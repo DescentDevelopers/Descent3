@@ -2058,7 +2058,7 @@ void CBriefEdit::UpdateView(void) {
   } else
     Desktop_surf->clear(rect.left, rect.top, w, h);
 
-  grViewport *vport = new grViewport(&m_ObjectSurf);
+  auto vport = std::make_unique<grViewport>(&m_ObjectSurf);
   vport->lock();
 
   // now we need to go through all the effects in the screen and draw a rep of em
@@ -2077,7 +2077,7 @@ void CBriefEdit::UpdateView(void) {
         switch (effects[node].type) {
         case BE_TEXT:
           DrawRect(GR_RGB(255, 40, 255), effects[node].text_desc.textbox.left, effects[node].text_desc.textbox.top,
-                   effects[node].text_desc.textbox.right, effects[node].text_desc.textbox.bottom, vport);
+                   effects[node].text_desc.textbox.right, effects[node].text_desc.textbox.bottom, vport.get());
           break;
         case BE_BMP: {
           if (effects[node].w == -1) {
@@ -2096,7 +2096,7 @@ void CBriefEdit::UpdateView(void) {
           y = effects[node].bmp_desc.y;
           w = effects[node].w - 1;
           h = effects[node].h - 1;
-          DrawRect(GR_RGB(40, 255, 40), x, y, x + w, y + h, vport);
+          DrawRect(GR_RGB(40, 255, 40), x, y, x + w, y + h, vport.get());
         } break;
         case BE_MOVIE:
           break;
@@ -2121,7 +2121,7 @@ void CBriefEdit::UpdateView(void) {
           y = effects[node].button_desc.y;
           w = effects[node].w - 1;
           h = effects[node].h - 1;
-          DrawRect(GR_RGB(255, 255, 40), x, y, x + w, y + h, vport);
+          DrawRect(GR_RGB(255, 255, 40), x, y, x + w, y + h, vport.get());
           break;
         }
       }
@@ -2137,7 +2137,7 @@ void CBriefEdit::UpdateView(void) {
 
   rend_EndFrame();
 
-  delete vport;
+  vport.reset();
   m_ObjectSurf.free();
   Desktop_surf->attach_to_window(0);
 
