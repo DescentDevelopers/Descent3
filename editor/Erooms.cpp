@@ -1389,17 +1389,13 @@ int RoomAddVertices(room *rp, int num_new_verts) {
   if (num_new_verts == 0)
     return 0;
 
-  auto newverts = mem_rmalloc<vector>(rp->num_verts + num_new_verts);
-
-  ASSERT(newverts != nullptr);
+  auto newverts = std::make_unique<vector[]>(rp->num_verts + num_new_verts);
 
   for (int i = 0; i < rp->num_verts; i++) {
     newverts[i] = rp->verts[i];
   }
 
-  mem_free(rp->verts);
-
-  rp->verts = newverts;
+  rp->verts = std::move(newverts);
 
   rp->num_verts += num_new_verts;
 
@@ -1615,7 +1611,6 @@ bool FindSharedEdgeAcrossRooms(room *rp0, int face0, room *rp1, int face1, int *
 void DeleteRoomVert(room *rp, int vertnum) {
   int f, v;
   face *fp;
-  vector *newverts;
 
   // Remap vertices in faces
   for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
@@ -1626,8 +1621,7 @@ void DeleteRoomVert(room *rp, int vertnum) {
         fp->face_verts[v]--;
 
   // malloc new list
-  newverts = mem_rmalloc<vector>(rp->num_verts - 1);
-  ASSERT(newverts != nullptr);
+  auto newverts = std::make_unique<vector[]>(rp->num_verts - 1);
 
   // Copy verts to new list
   for (v = 0; v < vertnum; v++) {
@@ -1638,11 +1632,8 @@ void DeleteRoomVert(room *rp, int vertnum) {
     newverts[v] = rp->verts[v + 1];
   }
 
-  // Delete old list
-  mem_free(rp->verts);
-
-  // Use new list
-  rp->verts = newverts;
+  // Use new list (deletes the old one)
+  rp->verts = std::move(newverts);
 
   // Update count
   rp->num_verts--;
@@ -2117,7 +2108,7 @@ int CheckConcaveFaces(room *rp) {
   // Go through all the faces
   for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
 
-    int vert = CheckFaceConcavity(fp->num_verts, fp->face_verts.get(), &fp->normal, rp->verts);
+    int vert = CheckFaceConcavity(fp->num_verts, fp->face_verts.get(), &fp->normal, rp->verts.get());
     if (vert != -1) {
       CheckError("Room %3d face %3d is concave at vertex %d\n", ROOMNUM(rp), f, vert);
       errors++;

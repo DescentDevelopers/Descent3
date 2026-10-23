@@ -1625,17 +1625,17 @@ bool CombineFaces(room *rp, int face0, int face1) {
 
   // Calculate new normal
   vector new_normal;
-  ComputeNormal(&new_normal, nv, vertlist, rp->verts);
+  ComputeNormal(&new_normal, nv, vertlist, rp->verts.get());
 
   // Check if new face is planar
-  if (!FaceIsPlanar(nv, vertlist, &new_normal, rp->verts)) {
+  if (!FaceIsPlanar(nv, vertlist, &new_normal, rp->verts.get())) {
     SetErrorMessage("The new face would not be planar.");
     return 0;
   }
 
   // Check if new face is convex
   int t;
-  if ((t = CheckFaceConcavity(nv, vertlist, &new_normal, rp->verts)) != -1) {
+  if ((t = CheckFaceConcavity(nv, vertlist, &new_normal, rp->verts.get())) != -1) {
     SetErrorMessage("The new face would be concave (at vertex %d).", vertlist[t]);
     return 0;
   }

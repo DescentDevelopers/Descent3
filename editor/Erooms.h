@@ -420,7 +420,7 @@ bool FaceIsPlanar(int nv, int16_t *face_verts, vector *normal, vector *verts);
 inline bool FaceIsPlanar(room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
 
-  return FaceIsPlanar(fp->num_verts, fp->face_verts.get(), &fp->normal, rp->verts);
+  return FaceIsPlanar(fp->num_verts, fp->face_verts.get(), &fp->normal, rp->verts.get());
 }
 
 // Finds the shell for the specified room.  If the shell is found with no errors, sets
