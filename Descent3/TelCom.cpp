@@ -818,8 +818,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
     if (!cfexist(TELCOM_DISPLAY_TGA)) {
       LOG_DEBUG.printf("Unable to find %s to extract HotSqpots...skipping TelCom System", TELCOM_DISPLAY_TGA);
       FreeViewports();
-      if (windowmap.wm)
-        mem_free(windowmap.wm);
+      windowmap.wm.reset();
       goto telcom_bad_error;
     }
     menutga_ConvertTGAtoHSM(TELCOM_DISPLAY_TGA);
@@ -944,8 +943,7 @@ void TelComDeactivate(void) {
   FreeTelComOnBitmaps(hotspot_bitmaps.get());
   FreeHotSpotMapInternals(&hotspotmap);
   FreeViewports();
-  if (windowmap.wm)
-    mem_free(windowmap.wm);
+  windowmap.wm.reset();
 }
 
 // draws a hotspot with the on bitmap
@@ -1074,8 +1072,7 @@ int LoadTelcomBitmap(const char *filename, chunked_bitmap *chunk) {
 
   FreeHotSpotMapInternals(&hotspotmap);
   FreeViewports();
-  if (windowmap.wm)
-    mem_free(windowmap.wm);
+  windowmap.wm.reset();
 
   bm_CreateChunkedBitmap(bm_handle, chunk);
 
