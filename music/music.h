@@ -220,8 +220,8 @@ public:
 };
 
 class oms_tracklist {
-  char **m_fnamelist; // filename list
-  char **m_symlist;   // symbolic list
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_fnamelist; // filename list
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_symlist;   // symbolic list
   int16_t m_numtracks;  // number of tracks
   int16_t m_maxtracks;
   bool m_init; // determines if initialized
