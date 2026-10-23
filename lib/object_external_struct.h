@@ -505,7 +505,7 @@ struct object {
     ddgr_color sphere_color;  // for RT_EDITOR_SPHERE
   } rtype;
 
-  effect_info_s *effect_info;
+  std::unique_ptr<effect_info_s> effect_info;
   std::unique_ptr<light_info> lighting_info; // Pointer to lighting info, or NULL if inherits from type
 
   // Something to do with multiplayer, possibly, but it's hard to know for sure

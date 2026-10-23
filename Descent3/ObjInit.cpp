@@ -621,12 +621,7 @@
 #include "psrand.h"
 // Allocate and initialize an effect_info struct for an object
 void ObjCreateEffectInfo(object *objp) {
-  if (objp->effect_info)
-    mem_free(objp->effect_info);
-
-  objp->effect_info = mem_rmalloc<effect_info_s>();
-  memset(objp->effect_info, 0, sizeof(effect_info_s));
-  ASSERT(objp->effect_info);
+  objp->effect_info = std::make_unique<effect_info_s>();
   objp->effect_info->sound_handle = SOUND_NONE_INDEX;
 }
 void ObjSetRenderPolyobj(object *objp, int model_num, int dying_model_num = -1);
@@ -1196,7 +1191,7 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->custom_default_module_name.reset();
   objp->contains_type = -1;
   objp->lifeleft = 0;
-  objp->effect_info = nullptr;
+  objp->effect_info.reset();
   objp->ai_info = nullptr;
   objp->dynamic_wb = nullptr;
   objp->attach_children = nullptr;

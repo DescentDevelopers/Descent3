@@ -1266,7 +1266,7 @@ void SGSObjAI(CFILE *fp, const ai_frame *ai) {
 
 //	saves fx
 void SGSObjEffects(CFILE *fp, const object *op) {
-  effect_info_s *ei = op->effect_info;
+  effect_info_s *ei = op->effect_info.get();
 
   gs_WriteByte(fp, (ei ? 1 : 0));
   if (ei) {
