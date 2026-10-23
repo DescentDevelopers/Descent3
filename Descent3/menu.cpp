@@ -1295,10 +1295,10 @@ int DisplayLevelWarpDlg(int max_level) {
   int mn3_handle = -1;
 
   // Because of D3: Retribution split mission nature we have to load library early
-  if (stricmp(Current_mission.filename, "d3.mn3") == 0) {
+  if (stricmp(Current_mission.filename.get(), "d3.mn3") == 0) {
     mn3_handle = cf_OpenLibrary(std::filesystem::path("missions") / "d3_2.mn3");
   }
-  if (stricmp(Current_mission.filename, "d3_2.mn3") == 0) {
+  if (stricmp(Current_mission.filename.get(), "d3_2.mn3") == 0) {
     mn3_handle = cf_OpenLibrary(std::filesystem::path("missions") / "d3.mn3");
   }
 

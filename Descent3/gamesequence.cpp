@@ -1287,10 +1287,10 @@ void CheckHogfile() {
   const char *new_mn3;
   LOG_DEBUG << "Checking to see if we need to open another hog off of disk or CDROM";
 
-  if (Current_mission.filename && (stricmp(Current_mission.filename, "d3.mn3") == 0) &&
+  if (Current_mission.filename && (stricmp(Current_mission.filename.get(), "d3.mn3") == 0) &&
       (Current_mission.cur_level > 4)) {
     new_mn3 = "d3_2.mn3";
-  } else if (Current_mission.filename && (stricmp(Current_mission.filename, "d3_2.mn3") == 0) &&
+  } else if (Current_mission.filename && (stricmp(Current_mission.filename.get(), "d3_2.mn3") == 0) &&
              (Current_mission.cur_level <= 4)) {
     new_mn3 = "d3.mn3";
   } else {
@@ -1304,8 +1304,7 @@ void CheckHogfile() {
     auto absolute_path = cf_LocatePath(relative_path);
     if (std::filesystem::exists(absolute_path)) {
       mn3_Open(relative_path);
-      mem_free(Current_mission.filename);
-      Current_mission.filename = mem_strdup(new_mn3);
+      Current_mission.filename = mem_strdup_unique(new_mn3);
     } else {
       SetFunctionMode(MENU_MODE);
     }
@@ -2052,7 +2051,7 @@ void RunGameMenu() {
       int ret = 0;
       ui_ShowCursor();
       // Weird code for the training mission and the first time you play...
-      if (Current_mission.filename && (stricmp(Current_mission.filename, "training.mn3") == 0) && (FirstGame)) {
+      if (Current_mission.filename && (stricmp(Current_mission.filename.get(), "training.mn3") == 0) && (FirstGame)) {
         ret = DoMessageBoxAdvanced(TXT_TRAININGABORTTITLE, TXT_TRAININGABORTTEXT, TXT_SKIP, KEY_S, TXT_ABORT, KEY_A,
                                    TXT_CANCEL, KEY_ESC, nullptr);
         if (ret == 2) {

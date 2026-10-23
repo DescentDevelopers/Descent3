@@ -240,11 +240,11 @@ struct tMission {
   int mn3_handle; // if this mission was loaded from an MN3, this is the handle.
 
   unsigned game_state_flags;  // game state information stored here (manipulated by scripting)
-  char *filename = nullptr;   // filename of mission.
+  std::unique_ptr<char[]> filename; // filename of mission.
   char name[MSN_NAMELEN];     // name of mission
   char author[MSN_NAMELEN];   // author of mission.
   char desc[MSN_NAMELEN * 4]; // description of mission
-  char *hog = nullptr;        // default hog filename
+  std::unique_ptr<char[]> hog; // default hog filename
   char email[MSN_URLLEN];     // email and web location
   char web[MSN_URLLEN];
   bool multiplayable;    // this level is multiplayer playable

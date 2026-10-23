@@ -732,8 +732,8 @@ void InitMission() {
   memset(Current_mission.author, 0, MSN_NAMELEN);
   memset(Current_mission.email, 0, MSN_URLLEN);
   memset(Current_mission.web, 0, MSN_URLLEN);
-  Current_mission.hog = nullptr;
-  Current_mission.filename = nullptr;
+  Current_mission.hog.reset();
+  Current_mission.filename.reset();
   Current_mission.game_state_flags = 0;
   Current_mission.mn3_handle = 0;
   //	create add on mission directory
@@ -776,9 +776,9 @@ void ResetMission() {
   memset(Current_mission.author, 0, MSN_NAMELEN);
   memset(Current_mission.email, 0, MSN_URLLEN);
   memset(Current_mission.web, 0, MSN_URLLEN);
-  Current_mission.hog = nullptr;
+  Current_mission.hog.reset();
   Current_mission.levels.clear();
-  Current_mission.filename = nullptr;
+  Current_mission.filename.reset();
   Current_mission.game_state_flags = 0;
 
   // clear out old URLs from memory
@@ -808,11 +808,11 @@ bool DemoMission(int mode = 0) {
     msn->multiplayable = false;
     strcpy(msn->name, "Descent 3: Demo2");
     msn->num_levels = 1;
-    msn->filename = mem_strdup("d3demo.mn3");
+    msn->filename = mem_strdup_unique("d3demo.mn3");
 #else
     strcpy(msn->name, "Descent 3: Sol Ascent");
     msn->num_levels = 5;
-    msn->filename = mem_strdup("d3oem.mn3");
+    msn->filename = mem_strdup_unique("d3oem.mn3");
 #endif
     // strncpy(msn->levels[0].name, "Search for Sweitzer", MSN_NAMELEN-1);
     msn->levels[0].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
@@ -852,7 +852,7 @@ bool DemoMission(int mode = 0) {
   }
   case 1: {
     strcpy(msn->name, "Polaris");
-    msn->filename = mem_strdup("Polaris.d3l");
+    msn->filename = mem_strdup_unique("Polaris.d3l");
     // strncpy(msn->levels[0].name, "Polaris", MSN_NAMELEN-1);
     msn->levels[0].filename = mem_strdup_unique("polaris.d3l");
     msn->levels[0].flags |= LVLFLAG_BRANCH;
@@ -862,7 +862,7 @@ bool DemoMission(int mode = 0) {
   }
   case 2: {
     strcpy(msn->name, "The Core");
-    msn->filename = mem_strdup("TheCore.d3l");
+    msn->filename = mem_strdup_unique("TheCore.d3l");
     // strncpy(msn->levels[0].name, "The Core", MSN_NAMELEN-1);
     msn->levels[0].filename = mem_strdup_unique("thecore.d3l");
     msn->levels[0].flags |= LVLFLAG_BRANCH;
@@ -872,7 +872,7 @@ bool DemoMission(int mode = 0) {
   }
   case 3: {
     strcpy(msn->name, "Taurus");
-    msn->filename = mem_strdup("Taurus.d3l");
+    msn->filename = mem_strdup_unique("Taurus.d3l");
     // strncpy(msn->levels[0].name, "Taurus", MSN_NAMELEN-1);
     msn->levels[0].filename = mem_strdup_unique("taurus.d3l");
     msn->levels[0].flags |= LVLFLAG_BRANCH;
@@ -883,7 +883,7 @@ bool DemoMission(int mode = 0) {
 #ifndef DEMO
   case 4: {
     strcpy(msn->name, "Pilot Training");
-    msn->filename = mem_strdup("training.mn3");
+    msn->filename = mem_strdup_unique("training.mn3");
     // strncpy(msn->levels[0].name, "Training", MSN_NAMELEN-1);
     msn->levels[0].filename = mem_strdup_unique("trainingmission.d3l");
     msn->levels[0].briefname.reset(); // mem_strdup("training.brf");
@@ -1075,7 +1075,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
         }
       } else if (!stricmp(command, "HOG")) {
         if (curlvlnum == 0) {
-          msn->hog = mem_strdup(operand);
+          msn->hog = mem_strdup_unique(operand);
           if (!msn->hog)
             goto fatal_error;
         } else {
@@ -1191,7 +1191,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
   //	set up current mission (movies are already set above)
   msn->cur_level = 1;
   msn->num_levels = numlevels;
-  msn->filename = mem_strdup(PATH_TO_CSTR(mission));
+  msn->filename = mem_strdup_unique(PATH_TO_CSTR(mission));
   msn->game_state_flags = 0;
   strcpy(Net_msn_URLs.msnname, PATH_TO_CSTR(mission));
   res = true; // everything is ok.
@@ -1230,13 +1230,8 @@ void FreeMission() {
   // free up any data allocated per level node.
   Current_mission.levels.clear();
 
-  if (Current_mission.hog)
-    mem_free(Current_mission.hog);
-  if (Current_mission.filename) {
-    mem_free(Current_mission.filename);
-  }
-  Current_mission.hog = nullptr;
-  Current_mission.filename = nullptr;
+  Current_mission.hog.reset();
+  Current_mission.filename.reset();
   Current_level = nullptr;
 }
 
