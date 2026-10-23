@@ -729,7 +729,7 @@ int AllocPolyModel() {
   for (int i = 0; i < MAX_POLY_MODELS; i++)
     if (Poly_models[i].used == 0) {
       WBClearInfo(&Poly_models[i]);
-      memset(&Poly_models[i], 0, sizeof(poly_model));
+      Poly_models[i] = {};
       Poly_models[i].used = 1;
       Poly_models[i].flags |= PMF_NOT_RESIDENT; // not in memory yet!
       return i;
@@ -2082,7 +2082,7 @@ int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
     Poly_models[i].used = 1;
     FreePolyModel(i);
 
-    memset(&Poly_models[i], 0, sizeof(poly_model));
+    Poly_models[i] = {};
     WBClearInfo(&Poly_models[i]);
     Poly_models[i].used = old_used + 1;
     if (not_res)
@@ -3040,7 +3040,7 @@ void FreeAllModels() {
 // Inits our models array and loads our ship pof
 int InitModels() {
   for (auto &Poly_model : Poly_models) {
-    memset(&Poly_model, 0, sizeof(poly_model));
+    Poly_model = {};
     Poly_model.used = 0;
   }
 
