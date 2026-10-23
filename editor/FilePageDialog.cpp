@@ -97,11 +97,12 @@ void CFilePageDialog::OnAddFile() {
 
   for (int q = 0; q < dlg.m_NumberOfSelectedFiles; q++) {
     ASSERT(dlg.m_SelectedFiles[q]);
-    if (!dlg.m_SelectedFiles[q])
+    if (!dlg.m_SelectedFiles[q]) {
       continue;
+    }
 
     //	Okay, we selected a file. Lets do what needs to be done here.
-    ddio_SplitPath(dlg.m_SelectedFiles[q], pathname, name, extension);
+    ddio_SplitPath(dlg.m_SelectedFiles[q].get(), pathname, name, extension);
     sprintf(cur_name, "%s%s", name, extension);
 
     if ((FindGamefileName(cur_name)) != -1) {
@@ -113,15 +114,16 @@ void CFilePageDialog::OnAddFile() {
 
     gamefile_handle = AllocGamefile();
     strcpy(Gamefiles[gamefile_handle].name, cur_name);
-    strcpy(Gamefiles[gamefile_handle].dir_name, dlg.m_SelectedDestDir);
+    strcpy(Gamefiles[gamefile_handle].dir_name, dlg.m_SelectedDestDir.get());
 
     // Finally, save a local copy of the model/anim and alloc a tracklock
     mprintf(0, "Making a copy of '%s' locally...\n", cur_name);
 
     char destname[100];
-    ddio_MakePath(destname, LocalD3Dir, "data", dlg.m_SelectedDestDir, Gamefiles[gamefile_handle].name, nullptr);
-    if (stricmp(destname, dlg.m_SelectedFiles[q])) // only copy if they are different
-      cf_CopyFile(destname, dlg.m_SelectedFiles[q]);
+    ddio_MakePath(destname, LocalD3Dir, "data", dlg.m_SelectedDestDir.get(), Gamefiles[gamefile_handle].name, nullptr);
+    if (stricmp(destname, dlg.m_SelectedFiles[q].get())) { // only copy if they are different
+      cf_CopyFile(destname, dlg.m_SelectedFiles[q].get());
+    }
 
     mng_AllocTrackLock(cur_name, PAGETYPE_GAMEFILE);
 
