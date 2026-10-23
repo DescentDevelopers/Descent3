@@ -440,6 +440,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "chrono_timer.h"
 #include "descent.h"
@@ -500,7 +501,7 @@ bool Use_old_update_method = false;
 char *TablefileNameOverride = nullptr;
 // Only valid when first starting the editor
 #define MAX_LOCKLIST_ELEMENTS 1000
-mngs_Pagelock *LockList;
+std::unique_ptr<mngs_Pagelock[]> LockList;
 int Num_locklist, Starting_editor = 0, Loading_locals = 0, Fast_load_trick = 0;
 #define PRIMTYPE_OOF 0
 #define PRIMTYPE_OGF 1
@@ -519,7 +520,7 @@ struct old_file {
 };
 #define MAX_OLDFILE_ELEMENTS 10000
 int Num_old_files = 0;
-old_file *OldFiles;
+std::unique_ptr<old_file[]> OldFiles;
 const char *PageNames[] = {"Unknown",     "Texture", "Weapon",   "Robot", "Powerup",        "Door",
                            "Player ship", "Sound",   "Megacell", "Files", "Generic objects"};
 #ifndef RELEASE
@@ -626,11 +627,10 @@ int mng_InitTableFiles() {
 // Loads our tables
 int mng_LoadTableFiles(int show_progress) {
   if (Network_up) {
-    LockList = mem_rmalloc<mngs_Pagelock>(MAX_LOCKLIST_ELEMENTS);
-    Num_locklist = mng_GetListOfLocks(LockList, MAX_LOCKLIST_ELEMENTS, TableUser);
-    OldFiles = mem_rmalloc<old_file>(MAX_OLDFILE_ELEMENTS);
+    LockList = std::make_unique<mngs_Pagelock[]>(MAX_LOCKLIST_ELEMENTS);
+    Num_locklist = mng_GetListOfLocks(LockList.get(), MAX_LOCKLIST_ELEMENTS, TableUser);
+    OldFiles = std::make_unique<old_file[]>(MAX_OLDFILE_ELEMENTS);
     Num_old_files = 0;
-    ASSERT(OldFiles);
 #if defined(WIN32)
     if (TableTimeThreshold.dwHighDateTime != -1)
       BuildOldFileList(TableTimeThreshold);
@@ -652,8 +652,8 @@ int mng_LoadTableFiles(int show_progress) {
     Starting_editor = 0;
     Num_locklist = 0;
     Num_old_files = 0;
-    mem_free(OldFiles);
-    mem_free(LockList);
+    OldFiles.reset();
+    LockList.reset();
 #ifndef RELEASE
 #if defined(WIN32)
     remove("c:\\edload");
