@@ -2554,7 +2554,7 @@ PInfo *DMFCBase::FindPInfo(int pnum) {
   player_record *pr = GetPlayerRecordByPnum(pnum);
   if (!pr)
     return nullptr;
-  return pr->pinfo;
+  return pr->pinfo.get();
 }
 
 // DMFCBase::UpdatePInfo
@@ -2741,7 +2741,7 @@ bool DMFCBase::FindPInfoStatFirst(int slot, tPInfoStat *stat) {
         dpr = GetPlayerRecord(p);
         deaths = 0;
         if (dpr && dpr->state != STATE_EMPTY && dpr->pinfo) {
-          victim = ((PInfo *)dpr->pinfo)->GetKillerInfo(slot);
+          victim = dpr->pinfo->GetKillerInfo(slot);
           if (victim)
             deaths = victim->kills;
         }
@@ -2763,7 +2763,7 @@ bool DMFCBase::FindPInfoStatFirst(int slot, tPInfoStat *stat) {
   deaths = 0;
   dpr = GetPlayerRecord(killer->slot);
   if (dpr && dpr->state != STATE_EMPTY && dpr->pinfo) {
-    victim = ((PInfo *)dpr->pinfo)->GetKillerInfo(slot);
+    victim = dpr->pinfo->GetKillerInfo(slot);
   }
 
   if (victim)
@@ -2809,7 +2809,7 @@ bool DMFCBase::FindPInfoStatNext(tPInfoStat *stat) {
         dpr = GetPlayerRecord(p);
         deaths = 0;
         if (dpr && dpr->state != STATE_EMPTY && dpr->pinfo) {
-          victim = ((PInfo *)dpr->pinfo)->GetKillerInfo(slot);
+          victim = dpr->pinfo->GetKillerInfo(slot);
           if (victim)
             deaths = victim->kills;
         }

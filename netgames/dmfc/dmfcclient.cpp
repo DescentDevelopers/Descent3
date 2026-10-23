@@ -620,7 +620,7 @@ void DMFCBase::OnPlayerEntersObserver(int pnum, object *piggy) {
   LOG_INFO.printf("Player %d entering observermode %s", pnum, (piggy) ? "Piggyback" : "Roam");
   player_record *pr = PRec_GetPRecordByPnum(pnum);
   if (pr && pr->state == STATE_INGAME) {
-    PInfo *pi = pr->pinfo;
+    PInfo *pi = pr->pinfo.get();
     ASSERT(pi != nullptr);
     pi->EnterObserverMode();
   } else {
@@ -635,7 +635,7 @@ void DMFCBase::OnPlayerExitsObserver(int pnum) {
   LOG_INFO.printf("Player %d leaving observer mode", pnum);
   player_record *pr = PRec_GetPRecordByPnum(pnum);
   if (pr && pr->state == STATE_INGAME) {
-    PInfo *pi = pr->pinfo;
+    PInfo *pi = pr->pinfo.get();
     ASSERT(pi != nullptr);
     pi->ExitObserverMode();
   } else {

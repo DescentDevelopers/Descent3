@@ -104,7 +104,6 @@ void PRec_Init(void) {
     Player_records[i] = {};
     Player_records[i].state = STATE_EMPTY;
     Player_records[i].user_info = nullptr;
-    Player_records[i].pinfo = nullptr;
     Player_records[i].user_info_size = 0;
     Player_records[i].total_time_in_game = 0;
   }
@@ -122,11 +121,7 @@ void PRec_Close(void) {
       free(Player_records[i].user_info);
 
     Player_records[i].tracker_id.reset();
-
-    if (Player_records[i].pinfo) {
-      delete Player_records[i].pinfo;
-      Player_records[i].pinfo = nullptr;
-    }
+    Player_records[i].pinfo.reset();
   }
   Player_record_pack_cb = nullptr;
   Player_record_unpack_cb = nullptr;
@@ -319,10 +314,6 @@ int PRec_GetFreeSlot(void) {
     // clear out this player
     void *save_ptr = Player_records[old_player].user_info;
     int size = Player_records[old_player].user_info_size;
-    if (Player_records[old_player].pinfo) {
-      delete Player_records[old_player].pinfo;
-      Player_records[old_player].pinfo = nullptr;
-    }
     Player_records[old_player] = {};
     Player_records[old_player].state = STATE_EMPTY;
     Player_records[old_player].user_info = save_ptr;
@@ -366,11 +357,7 @@ bool PRec_AssignPlayerToSlot(int pnum, int slot, player *players_array, netplaye
   }
 
   memset(&Player_records[slot].dstats, 0, sizeof(t_dstat));
-  if (Player_records[slot].pinfo) {
-    delete Player_records[slot].pinfo;
-    Player_records[slot].pinfo = nullptr;
-  }
-  Player_records[slot].pinfo = new PInfo(slot);
+  Player_records[slot].pinfo = std::make_unique<PInfo>(slot);
   return true;
 }
 
@@ -396,7 +383,7 @@ bool PRec_ReconnectPlayerToSlot(int pnum, int slot, player *players_array, netpl
 
   if (!Player_records[slot].pinfo) {
     // try to create the pinfo now
-    Player_records[slot].pinfo = new PInfo(slot);
+    Player_records[slot].pinfo = std::make_unique<PInfo>(slot);
   }
   return true;
 }
@@ -621,10 +608,7 @@ void PRec_ReceivePRecFromServer(uint8_t *data) {
     ASSERT(pr->user_info == nullptr);
   }
 
-  if (pr->pinfo) {
-    delete pr->pinfo;
-  }
-  pr->pinfo = new PInfo(slot);
+  pr->pinfo = std::make_unique<PInfo>(slot);
 
   // PInfo stuff
   pinfo_size = MultiGetInt(data, &count);

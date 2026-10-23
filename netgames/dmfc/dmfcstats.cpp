@@ -841,7 +841,7 @@ redisplay_list:
   int x_to_use = curr_x + 5;
   PInfo *pi;
   tPExtraInfo *ei;
-  pi = (PInfo *)pr->pinfo;
+  pi = pr->pinfo.get();
   ei = pi->GetExtraInfo();
 
   // drawline(DLIST_WIN_X,DLIST_WIN_X+DLIST_WIN_W-1,curr_y,perc_done); curr_y += 3;
