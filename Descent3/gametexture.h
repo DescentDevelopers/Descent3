@@ -196,6 +196,8 @@
 #include "..\neweditor\ned_GameTexture.h"
 #else
 
+#include <memory>
+
 #include "manage.h"
 
 #define TF_VOLATILE 1
@@ -265,8 +267,8 @@ struct proc_struct {
   void *proc2;                 // back page of procedural
   int16_t procedural_bitmap;     // handle to the bitmap holding the finished procedural
 
-  uint16_t *palette;
-  static_proc_element *static_proc_elements;
+  std::unique_ptr<uint16_t[]> palette;
+  std::unique_ptr<static_proc_element[]> static_proc_elements;
   uint16_t num_static_elements;
 
   uint8_t memory_type;
