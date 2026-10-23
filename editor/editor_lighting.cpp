@@ -3185,7 +3185,7 @@ void CleanupSpecularLighting(int external) {
       room *rp = &Rooms[i];
 
       for (t = 0; t < 4; t++) {
-        mem_free(Room_strongest_value[i][t]);
+        Room_strongest_value[i][t].reset();
       }
 
       for (t = 0; t < rp->num_faces; t++) {
@@ -3279,8 +3279,7 @@ void SetupSpecularLighting(int external) {
       room *rp = &Rooms[i];
 
       // Calculate vertex normals for this room
-      vector *vertnorms = mem_rmalloc<vector>(rp->num_verts);
-      ASSERT(vertnorms);
+      auto vertnorms = std::make_unique<vector[]>(rp->num_verts);
       for (t = 0; t < rp->num_verts; t++) {
         int total = 0;
         vector normal;
@@ -3303,9 +3302,7 @@ void SetupSpecularLighting(int external) {
       }
 
       for (t = 0; t < 4; t++) {
-        Room_strongest_value[i][t] = mem_rmalloc<float>(rp->num_faces);
-        ASSERT(Room_strongest_value[i][t]);
-        memset(Room_strongest_value[i][t], 0, sizeof(float) * rp->num_faces);
+        Room_strongest_value[i][t] = std::make_unique<float[]>(rp->num_faces);
       }
 
       for (t = 0; t < rp->num_faces; t++) {
@@ -3334,7 +3331,6 @@ void SetupSpecularLighting(int external) {
           }
         }
       }
-      mem_free(vertnorms);
     }
   }
 }
