@@ -536,8 +536,6 @@ DMFCBase::DMFCBase(void) {
   m_iUIWindowID = -1;
   m_UIUserData = nullptr;
 
-  m_DenyList = nullptr;
-  m_AllowList = nullptr;
   Hard_max_players = DLLMAX_PLAYERS;
 
   DecryptData(seeds2, 5);
@@ -3171,26 +3169,26 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
 
   // check the allow list, if the address is specified on this list,
   // than it isn't banned
-  curr = m_AllowList;
+  curr = m_AllowList.get();
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
       // it is a match
       LOG_INFO << "Player not banned";
       return false;
     }
-    curr = curr->next;
+    curr = curr->next.get();
   }
 
   // check the deny list, if the address is specified on this list,
   // than it is banned
-  curr = m_DenyList;
+  curr = m_DenyList.get();
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
       // it is a match
       LOG_INFO << "Player IS banned";
       return true;
     }
-    curr = curr->next;
+    curr = curr->next.get();
   }
 
   LOG_INFO << "Player not banned";
@@ -4581,11 +4579,14 @@ MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, uint8_t flags, 
   return nullptr;
 }
 
-void ParseHostsFile(char *filename, tHostsNode **root) {
+void ParseHostsFile(char *filename, std::unique_ptr<tHostsNode> &root) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "rt");
 
-  tHostsNode *curr = *root;
+  std::unique_ptr<tHostsNode> *tail = &root;
+  while (*tail) {
+    tail = &(*tail)->next;
+  }
 
   if (!file)
     return;
@@ -4705,17 +4706,10 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       mask = DLLnw_GetHostAddressFromNumbers(s_mask);
 
       // add the node
-      if (!curr) {
-        curr = *root = (tHostsNode *)malloc(sizeof(tHostsNode));
-      } else {
-        curr->next = (tHostsNode *)malloc(sizeof(tHostsNode));
-        curr = curr->next;
-      }
-      if (curr) {
-        curr->next = nullptr;
-        curr->ip = ip_address;
-        curr->mask = mask;
-      }
+      *tail = std::make_unique<tHostsNode>();
+      (*tail)->ip = ip_address;
+      (*tail)->mask = mask;
+      tail = &(*tail)->next;
 
       goto noerror_parse;
     }
@@ -4743,17 +4737,17 @@ void DMFCBase::ReadInHostsAllowDeny(void) {
   allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
   deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
 
-  m_DenyList = nullptr;
-  m_AllowList = nullptr;
+  m_DenyList.reset();
+  m_AllowList.reset();
 
   // parse away
   if (deny_exist) {
     LOG_INFO << "Parsing hosts.deny";
-    ParseHostsFile(deny_fn, &m_DenyList);
+    ParseHostsFile(deny_fn, m_DenyList);
   }
   if (allow_exist) {
     LOG_INFO << "Parsing hosts.allow";
-    ParseHostsFile(allow_fn, &m_AllowList);
+    ParseHostsFile(allow_fn, m_AllowList);
   }
 }
 
@@ -4761,21 +4755,8 @@ void DMFCBase::ReadInHostsAllowDeny(void) {
 //
 //	Frees all the memory allocated for the host allow/deny lists
 void DMFCBase::FreeHostsLists(void) {
-  tHostsNode *curr = nullptr, *next;
-
-  curr = m_DenyList;
-  while (curr) {
-    next = curr->next;
-    free(curr);
-    curr = next;
-  }
-
-  curr = m_AllowList;
-  while (curr) {
-    next = curr->next;
-    free(curr);
-    curr = next;
-  }
+  m_DenyList.reset();
+  m_AllowList.reset();
 }
 
 // DMFCBase::RehashAllowDeny
