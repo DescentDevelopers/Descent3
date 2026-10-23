@@ -185,6 +185,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <memory>
 
 #include "newui_core.h"
 #include "bitmap.h"
@@ -380,7 +381,7 @@ class newuiResources {
     };
     int16_t chunked; // is it a bitmap handle or chunk
     int16_t n_count;
-    char *filename;             // filename of bitmap.
+    std::unique_ptr<char[]> filename; // filename of bitmap.
   } m_list[N_NEWUI_BMPS_TOTAL]; // list of bitmaps.
 
 public:
@@ -706,6 +707,7 @@ void newuiResources::Shutdown() {
       }
     }
     m_list[i].n_count = 0;
+    m_list[i].filename.reset();
   }
 }
 
@@ -721,7 +723,7 @@ UIBitmapItem *newuiResources::Load(const char *filename) {
         free_slot = i;
       }
     } else {
-      if (stricmp(filename, m_list[i].filename) == 0) {
+      if (stricmp(filename, m_list[i].filename.get()) == 0) {
         break;
       }
     }
@@ -756,7 +758,7 @@ UIBitmapItem *newuiResources::Load(const char *filename) {
     }
 
     m_list[i].n_count = 0;
-    m_list[i].filename = mem_strdup(filename);
+    m_list[i].filename = mem_strdup_unique(filename);
   }
 
   m_list[i].n_count++;
@@ -810,7 +812,7 @@ void newuiResources::Free(UIBitmapItem *bmitem) {
     } else {
       bm_FreeBitmap(m_list[i].bm_handle);
     }
-    mem_free(m_list[i].filename);
+    m_list[i].filename.reset();
   }
 }
 
