@@ -1023,10 +1023,7 @@ int LGSObjects(CFILE *fp, int version) {
         FreeObjectScripts(op, false);
 
       // Free up effects memory
-      if (op->effect_info) {
-        mem_free(op->effect_info);
-        op->effect_info = nullptr;
-      }
+      op->effect_info.reset();
       if (op->ai_info != nullptr) {
         AIDestroyObj(op);
         mem_free(op->ai_info);
@@ -1444,7 +1441,7 @@ int LGSObjEffects(CFILE *fp, object *op) {
   int16_t size;
   int8_t do_read;
 
-  op->effect_info = nullptr;
+  op->effect_info.reset();
 
   gs_ReadByte(fp, do_read);
   if (do_read) {
@@ -1452,8 +1449,8 @@ int LGSObjEffects(CFILE *fp, object *op) {
     if (size != sizeof(effect_info_s))
       return LGS_OUTDATEDVER;
 
-    auto ei = op->effect_info = mem_rmalloc<effect_info_s>();
-    cf_ReadBytes((uint8_t *)ei, size, fp);
+    op->effect_info = std::make_unique<effect_info_s>();
+    cf_ReadBytes((uint8_t *)op->effect_info.get(), size, fp);
   }
 
   return LGS_OK;

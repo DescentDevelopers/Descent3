@@ -1938,10 +1938,7 @@ void ObjDelete(int objnum) {
     ClearObjectLightmaps(obj);
 
   // Free up effects memory
-  if (obj->effect_info) {
-    mem_free(obj->effect_info);
-    obj->effect_info = nullptr;
-  }
+  obj->effect_info.reset();
 
   if (obj->ai_info != nullptr) {
     AIDestroyObj(obj);
