@@ -82,6 +82,9 @@ public:
     if (m_desc)
       mem_free(m_desc);
   };
+  lgoal(const lgoal &) = delete;
+  lgoal &operator=(const lgoal &) = delete;
+  lgoal &operator=(lgoal &&other) noexcept;
 
   int AddItem();
   bool DeleteItem(int index);
