@@ -158,7 +158,7 @@ void BriefEditInitEffect(tBriefEffect *efx) {
   efx->type = BE_NONE;
   efx->used = false;
   efx->id = 0;
-  efx->text = nullptr;
+  efx->text.reset();
   efx->next = -1;
   efx->prev = -1;
   efx->w = efx->h = -1;
@@ -213,10 +213,7 @@ void BriefEditFreeEffect(tBriefEffect *efx) {
     Int3(); // Get Jeff
   };
 
-  if (efx->text) {
-    mem_free(efx->text);
-    efx->text = nullptr;
-  }
+  efx->text.reset();
 
   efx->used = false;
   efx->next = efx->prev = -1;
@@ -381,7 +378,7 @@ uint8_t BriefEditSaveScreens(char *filename, CComboBox *screen_combo, BriefGloba
         cf_WriteString(file, buffer);
 
         // now write out all the text
-        const char *p = effects[curr_effect].text;
+        const char *p = effects[curr_effect].text.get();
         while (p) {
           p = textaux_CopyTextLine(p, buffer);
           cf_WriteString(file, buffer);
@@ -734,12 +731,7 @@ void BEAddTextEffect(TCTEXTDESC *desc, char *text, char *description, int id) {
   dest->mission_mask_set = desc->mission_mask_set;
   dest->mission_mask_unset = desc->mission_mask_unset;
 
-  if (befx->text) {
-    mem_free(befx->text);
-    befx->text = nullptr;
-  }
-  befx->text = mem_strdup(text);
-  ASSERT(befx->text);
+  befx->text = mem_strdup_unique(text);
 
   // Setup for items not set with caps
   if (!(dest->caps & TCTD_FONT)) {
@@ -1373,7 +1365,7 @@ void CBriefEdit::OnBriefEffectEdit() {
 
   switch (efx->type) {
   case BE_TEXT: {
-    CBriefTextEdit dlg(scr_index, &efx->text_desc, efx->text, efx->id);
+    CBriefTextEdit dlg(scr_index, &efx->text_desc, efx->text.get(), efx->id);
     combo->GetLBText(curr_effect, dlg.m_sDesc);
     if (dlg.DoModal() == IDOK) {
       has_changed = true;
@@ -1402,15 +1394,7 @@ void CBriefEdit::OnBriefEffectEdit() {
 
       Briefing_screens[scr_index].effects[efx_index].id = dlg.m_iID;
 
-      if (Briefing_screens[scr_index].effects[efx_index].text)
-        mem_free(Briefing_screens[scr_index].effects[efx_index].text);
-
-      Briefing_screens[scr_index].effects[efx_index].text = mem_rmalloc<char>(dlg.m_Text.GetLength() + 1);
-      ASSERT(Briefing_screens[scr_index].effects[efx_index].text);
-
-      if (Briefing_screens[scr_index].effects[efx_index].text) {
-        strcpy(Briefing_screens[scr_index].effects[efx_index].text, dlg.m_Text.GetBuffer(1));
-      }
+      Briefing_screens[scr_index].effects[efx_index].text = mem_strdup_unique(dlg.m_Text.GetBuffer(1));
     }
   } break;
   case BE_BMP: {
@@ -1646,15 +1630,7 @@ void CBriefEdit::OnBriefEffectText() {
 
     Briefing_screens[c_scr].effects[c_eff].id = dlg.m_iID;
 
-    if (Briefing_screens[c_scr].effects[c_eff].text)
-      mem_free(Briefing_screens[c_scr].effects[c_eff].text);
-
-    Briefing_screens[c_scr].effects[c_eff].text = mem_rmalloc<char>(dlg.m_Text.GetLength() + 1);
-    ASSERT(Briefing_screens[c_scr].effects[c_eff].text);
-
-    if (Briefing_screens[c_scr].effects[c_eff].text) {
-      strcpy(Briefing_screens[c_scr].effects[c_eff].text, dlg.m_Text.GetBuffer(1));
-    }
+    Briefing_screens[c_scr].effects[c_eff].text = mem_strdup_unique(dlg.m_Text.GetBuffer(1));
   }
 }
 
