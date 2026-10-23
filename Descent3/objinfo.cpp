@@ -112,7 +112,7 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
 
   for (int i = NUM_STATIC_OBJECTS; i < MAX_OBJECT_IDS; i++) {
     if (Object_info[i].type == OBJ_NONE) {
-      memset(&Object_info[i], 0, sizeof(*Object_info));
+      Object_info[i] = {};
 
       extern void AISetDefault(t_ai_info * ai_info_ptr);
       if (f_ai) {
