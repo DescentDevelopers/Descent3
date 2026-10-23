@@ -210,7 +210,7 @@ int GetFreeDynamicLightmap(int w, int h) {
 
 // Makes all the edges of dynamic lighting blend into the body of the lightmap
 void BlendLightingEdges(lightmap_info *lmi_ptr) {
-  int lmi_handle = lmi_ptr - LightmapInfo;
+  int lmi_handle = lmi_ptr - LightmapInfo.get();
   int h = lmi_h(lmi_handle);
   int w = lmi_w(lmi_handle);
   int lm_handle = lmi_ptr->lm_handle;

@@ -30,19 +30,13 @@
 #include "dedicated_server.h"
 
 int Num_of_lightmap_info = 0;
-lightmap_info *LightmapInfo = nullptr;
+std::unique_ptr<lightmap_info[]> LightmapInfo;
 
-static uint16_t *Free_lmi_list = nullptr;
+static std::unique_ptr<uint16_t[]> Free_lmi_list;
 
 void CloseLightmapInfos() {
-  if (LightmapInfo)
-    mem_free(LightmapInfo);
-
-  if (Free_lmi_list)
-    mem_free(Free_lmi_list);
-
-  LightmapInfo = nullptr;
-  Free_lmi_list = nullptr;
+  LightmapInfo.reset();
+  Free_lmi_list.reset();
 }
 
 // Sets all the lightmaps to unused
@@ -53,13 +47,11 @@ void InitLightmapInfo(int nummaps) {
     return;
 
   if (nummaps == 0) {
-    LightmapInfo = mem_rmalloc<lightmap_info>(MAX_LIGHTMAP_INFOS);
-    ASSERT(LightmapInfo);
-    Free_lmi_list = mem_rmalloc<uint16_t>(MAX_LIGHTMAP_INFOS);
-    ASSERT(Free_lmi_list);
+    // zero-filled, so every entry starts out unused
+    LightmapInfo = std::make_unique<lightmap_info[]>(MAX_LIGHTMAP_INFOS);
+    Free_lmi_list = std::make_unique<uint16_t[]>(MAX_LIGHTMAP_INFOS);
 
     for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
-      LightmapInfo[i].used = 0;
       Free_lmi_list[i] = i;
     }
   }
