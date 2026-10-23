@@ -47,7 +47,7 @@
 
 //	creates a combo box
 void UIComboBox::Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags) {
-  m_ItemList = nullptr;
+  m_ItemList.reset();
   m_nItems = 0;
   m_Index = 0;
   m_ShowUp = false;
@@ -69,13 +69,13 @@ void UIComboBox::AddItem(const UIItem *item) {
 
   if ((m_nItems % LISTBOX_BUFFER_SIZE) == 0) {
     //	dynamically allocated memory for listbox, expand as needed.
-    UIItem **temp = new UIItem *[m_nItems + LISTBOX_BUFFER_SIZE];
+    auto temp = std::make_unique<UIItem *[]>(m_nItems + LISTBOX_BUFFER_SIZE);
     if (m_ItemList) {
-      for (i = 0; i < m_nItems; i++)
+      for (i = 0; i < m_nItems; i++) {
         temp[i] = m_ItemList[i];
-      delete[] m_ItemList;
+      }
     }
-    m_ItemList = temp;
+    m_ItemList = std::move(temp);
   }
 
   //	copy item passed to list.
@@ -130,10 +130,7 @@ void UIComboBox::SetSelectChangeCallback(void (*fn)(int)) { selectchange_fn = fn
 void UIComboBox::OnDestroy() {
   UIGadget::OnDestroy();
 
-  if (m_ItemList)
-    delete[] m_ItemList;
-
-  m_ItemList = nullptr;
+  m_ItemList.reset();
 }
 
 // behavior when gadget is being drawn.

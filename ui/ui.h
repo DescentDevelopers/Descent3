@@ -902,9 +902,9 @@ protected:
   virtual void OnUserProcess(); // override: behavior when gadget is processed
 
 private:
-  UIItem **m_ItemList = nullptr; // list of items in listbox
-  int *m_Virt2Real = nullptr;    // translates virtual(user) id to real index
-  int *m_Real2Virt = nullptr;    // translates real index into virtual(user) id
+  std::unique_ptr<UIItem *[]> m_ItemList; // list of items in listbox
+  std::unique_ptr<int[]> m_Virt2Real;     // translates virtual(user) id to real index
+  std::unique_ptr<int[]> m_Real2Virt;     // translates real index into virtual(user) id
 
   float m_ClickTime; // done to check for double clicks?
   int m_MouseState = 0; // done for mouse selection.
@@ -931,8 +931,8 @@ public:
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
 
 private:
-  UIItem **m_ItemList = nullptr; // list of items in listbox
-  int m_nItems = 0;              // number of items.
+  std::unique_ptr<UIItem *[]> m_ItemList; // list of items in listbox
+  int m_nItems = 0;                       // number of items.
   int m_ArrY, m_ArrH;  // up and down arrow dimensions
   int m_UpArrX, m_UpArrW, m_DownArrX, m_DownArrW;
   int m_Index = 0;               // current index.
