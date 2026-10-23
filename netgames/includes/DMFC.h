@@ -496,7 +496,7 @@ struct player_record {
   int user_info_size;       // Size of user_info;
 
   int8_t team;   // The player's team (for when they reconnect)
-  PInfo *pinfo; // Pointer to player info (who killed whom)
+  std::unique_ptr<PInfo> pinfo; // Player info (who killed whom)
 };
 
 #define MIF_INCLUDENONE                                                                                                \
