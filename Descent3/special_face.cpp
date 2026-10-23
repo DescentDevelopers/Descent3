@@ -34,8 +34,8 @@ void InitSpecialFaces() {
 
   for (i = 0; i < MAX_SPECIAL_FACES; i++) {
     SpecialFaces[i].used = 0;
-    SpecialFaces[i].vertnorms = nullptr;
-    SpecialFaces[i].spec_instance = nullptr;
+    SpecialFaces[i].vertnorms.reset();
+    SpecialFaces[i].spec_instance.reset();
     Free_special_face_list[i] = i;
   }
 }
@@ -55,7 +55,7 @@ int AllocSpecialFace(int type, int num, bool vertnorms, int num_vertnorms) {
 
   SpecialFaces[n] = {};
 
-  SpecialFaces[n].spec_instance = mem_rmalloc<specular_instance>(num);
+  SpecialFaces[n].spec_instance = std::make_unique<specular_instance[]>(num);
   ASSERT(SpecialFaces[n].spec_instance);
 
   SpecialFaces[n].type = type;
@@ -64,7 +64,7 @@ int AllocSpecialFace(int type, int num, bool vertnorms, int num_vertnorms) {
   SpecialFaces[n].used = 1;
 
   if (vertnorms) {
-    SpecialFaces[n].vertnorms = mem_rmalloc<vector>(num_vertnorms);
+    SpecialFaces[n].vertnorms = std::make_unique<vector[]>(num_vertnorms);
     ASSERT(SpecialFaces[n].vertnorms);
     SpecialFaces[n].flags |= SFF_SPEC_SMOOTH;
   }
@@ -83,14 +83,7 @@ void FreeSpecialFace(int handle) {
 
   if (SpecialFaces[handle].used == 0) {
     Free_special_face_list[--Num_of_special_faces] = handle;
-    if (SpecialFaces[handle].spec_instance) {
-      mem_free(SpecialFaces[handle].spec_instance);
-      SpecialFaces[handle].spec_instance = nullptr;
-    }
-
-    if (SpecialFaces[handle].vertnorms) {
-      mem_free(SpecialFaces[handle].vertnorms);
-      SpecialFaces[handle].vertnorms = nullptr;
-    }
+    SpecialFaces[handle].spec_instance.reset();
+    SpecialFaces[handle].vertnorms.reset();
   }
 }
