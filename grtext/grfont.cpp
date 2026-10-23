@@ -111,6 +111,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <memory>
 
 #include "bitmap.h"
 #include "cfile.h"
@@ -138,9 +139,9 @@ struct tFontInfo {
   char filename[32];          // filename of font
   int references;             // number of references of that font
   int bmps[MAX_FONT_BITMAPS]; // font bitmap handles
-  uint8_t *ch_u, *ch_v, *ch_w, *ch_h;
-  int *ch_bmp;
-  float *ch_uf, *ch_vf, *ch_wf, *ch_hf;
+  std::unique_ptr<uint8_t[]> ch_u, ch_v, ch_w, ch_h;
+  std::unique_ptr<int[]> ch_bmp;
+  std::unique_ptr<float[]> ch_uf, ch_vf, ch_wf, ch_hf;
   tFontFileInfo font;
 };
 
@@ -413,24 +414,15 @@ void grfont_Free(int handle) {
 
   //	delete font surface info.
   ft = &Fonts[handle];
-  if (ft->ch_bmp)
-    delete[] ft->ch_bmp;
-  if (ft->ch_wf)
-    delete[] ft->ch_wf;
-  if (ft->ch_hf)
-    delete[] ft->ch_hf;
-  if (ft->ch_uf)
-    delete[] ft->ch_uf;
-  if (ft->ch_vf)
-    delete[] ft->ch_vf;
-  if (ft->ch_w)
-    delete[] ft->ch_w;
-  if (ft->ch_h)
-    delete[] ft->ch_h;
-  if (ft->ch_u)
-    delete[] ft->ch_u;
-  if (ft->ch_v)
-    delete[] ft->ch_v;
+  ft->ch_bmp.reset();
+  ft->ch_wf.reset();
+  ft->ch_hf.reset();
+  ft->ch_uf.reset();
+  ft->ch_vf.reset();
+  ft->ch_w.reset();
+  ft->ch_h.reset();
+  ft->ch_u.reset();
+  ft->ch_v.reset();
 
   for (i = 0; i < MAX_FONT_BITMAPS; i++) {
     if (ft->bmps[i] != -1)
@@ -839,15 +831,15 @@ void grfont_TranslateToBitmaps(int handle) {
   num_ch = fntfile->max_ascii - fntfile->min_ascii + 1;
 
   //	initialize memory
-  fnt->ch_w = new uint8_t[num_ch];
-  fnt->ch_h = new uint8_t[num_ch];
-  fnt->ch_u = new uint8_t[num_ch];
-  fnt->ch_v = new uint8_t[num_ch];
-  fnt->ch_bmp = new int[num_ch];
-  fnt->ch_uf = new float[num_ch];
-  fnt->ch_vf = new float[num_ch];
-  fnt->ch_wf = new float[num_ch];
-  fnt->ch_hf = new float[num_ch];
+  fnt->ch_w = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_h = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_u = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_v = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_bmp = std::make_unique<int[]>(num_ch);
+  fnt->ch_uf = std::make_unique<float[]>(num_ch);
+  fnt->ch_vf = std::make_unique<float[]>(num_ch);
+  fnt->ch_wf = std::make_unique<float[]>(num_ch);
+  fnt->ch_hf = std::make_unique<float[]>(num_ch);
 
   for (i = 0; i < MAX_FONT_BITMAPS; i++)
     fnt->bmps[i] = -1;
