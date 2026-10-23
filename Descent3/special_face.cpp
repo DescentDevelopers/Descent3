@@ -53,7 +53,7 @@ int AllocSpecialFace(int type, int num, bool vertnorms, int num_vertnorms) {
 
   ASSERT(n >= 0 && n < MAX_SPECIAL_FACES);
 
-  memset(&SpecialFaces[n], 0, sizeof(special_face));
+  SpecialFaces[n] = {};
 
   SpecialFaces[n].spec_instance = mem_rmalloc<specular_instance>(num);
   ASSERT(SpecialFaces[n].spec_instance);
