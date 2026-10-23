@@ -538,7 +538,6 @@ DMFCBase::DMFCBase(void) {
 
   m_DenyList = nullptr;
   m_AllowList = nullptr;
-  m_InputCommandRootNode = nullptr;
   Hard_max_players = DLLMAX_PLAYERS;
 
   DecryptData(seeds2, 5);
@@ -3393,9 +3392,9 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
   command[index] = '\0'; // tack on an ending NULL
 
   // now go through our list and see if we can find the command added by the user
-  tInputCommandNode *node = m_InputCommandRootNode;
+  tInputCommandNode *node = m_InputCommandRootNode.get();
   while (node) {
-    if (!stricmp(node->data, command)) {
+    if (!stricmp(node->data.get(), command)) {
       // we found a match!
       if (node->handler) {
         (*node->handler)(command_string);
@@ -3403,7 +3402,7 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
       }
       return false; // for some reason the handler is NULL (it should never happen)
     }
-    node = node->next;
+    node = node->next.get();
   }
 
   // if we got here than no nodes match
@@ -3414,21 +3413,8 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
 //
 //	Frees up all memory allocated for the input commands ($ messages)
 void DMFCBase::InputCommandFree(void) {
-  tInputCommandNode *next, *node = m_InputCommandRootNode;
-
   // Destroy the linked list of nodes
-  while (node) {
-    next = node->next;
-    if (node->data)
-      free(node->data);
-    if (node->desc)
-      free(node->desc);
-    free(node);
-    node = next;
-  }
-
-  // set the root to NULL to finish up
-  m_InputCommandRootNode = nullptr;
+  m_InputCommandRootNode.reset();
 }
 
 // DMFCBase::InputCommandInit
@@ -3591,14 +3577,14 @@ void DMFCBase::InputCommandInit(void) {
 // Returns -1 if the input command is not found
 // Returns 0 if the input command can be called remotely
 int DMFCBase::CanInputCommandBeUsedRemotely(char *command) {
-  tInputCommandNode *node = m_InputCommandRootNode;
+  tInputCommandNode *node = m_InputCommandRootNode.get();
 
   while (node) {
-    if (!stricmp(node->data, command)) {
+    if (!stricmp(node->data.get(), command)) {
       // we found a match!
       return (node->allow_remote) ? 1 : 0;
     }
-    node = node->next;
+    node = node->next.get();
   }
 
   return -1;
@@ -3609,7 +3595,7 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
   if (!IAmDedicatedServer())
     return;
 
-  tInputCommandNode *node = m_InputCommandRootNode;
+  tInputCommandNode *node = m_InputCommandRootNode.get();
 
   if (s[0] == '\0') {
     char buffer[80];
@@ -3618,11 +3604,11 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
     // just display the list of commands
     while (node) {
       memset(buffer, ' ', 80);
-      memcpy(&buffer[0], node->data, strlen(node->data));
-      node = node->next;
+      memcpy(&buffer[0], node->data.get(), strlen(node->data.get()));
+      node = node->next.get();
       if (node) {
-        memcpy(&buffer[30], node->data, strlen(node->data));
-        int pos = 30 + strlen(node->data);
+        memcpy(&buffer[30], node->data.get(), strlen(node->data.get()));
+        int pos = 30 + strlen(node->data.get());
         if (pos <= 78) {
           buffer[pos] = '\n';
           buffer[pos + 1] = '\0';
@@ -3634,7 +3620,7 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
       DPrintf(buffer);
 
       if (node)
-        node = node->next;
+        node = node->next.get();
     }
 
     return;
@@ -3642,16 +3628,16 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
 
   // display help description
   while (node) {
-    if (!stricmp(node->data, s)) {
+    if (!stricmp(node->data.get(), s)) {
       // we found a match!
-      DPrintf("%s:\n", node->data);
+      DPrintf("%s:\n", node->data.get());
       if (node->desc)
-        DPrintf("%s\n", node->desc);
+        DPrintf("%s\n", node->desc.get());
       else
         DPrintf(DTXT_IC_NOADDITIONALINFO);
       return;
     }
-    node = node->next;
+    node = node->next.get();
   }
 
   DPrintf(DTXT_IC_COMMANDNOTFOUND);
@@ -3685,72 +3671,26 @@ int8_t DMFCBase::AddInputCommand(const char *command, const char *description, v
   ASSERT(handler != nullptr);
 
   // traverse to the end of the list checking for duplicates along the way
-  tInputCommandNode *node = m_InputCommandRootNode;
-
-  if (!node) {
-    // there is none currently in the list, add it now
-    node = (tInputCommandNode *)malloc(sizeof(tInputCommandNode));
-    if (!node) {
-      return -1;
-    }
-    // fill in data
-    node->next = nullptr;
-    node->handler = handler;
-    node->allow_remote = allow_remotely;
-    node->data = (char *)malloc(strlen(command) + 1);
-    if (!node->data) { // out of memory
-      free(node);
-      return -1;
-    }
-    strlowcpy(node->data, command);
-
-    node->desc = (char *)malloc(strlen(description) + 1);
-    if (node->desc)
-      strcpy(node->desc, description);
-
-    // all went ok
-    m_InputCommandRootNode = node;
-    return 1;
-  }
-
-  while (node->next) {
-    // check this node to make sure it's not a duplicate
-    if (!stricmp(node->data, command)) {
+  std::unique_ptr<tInputCommandNode> *tail = &m_InputCommandRootNode;
+  while (*tail) {
+    if (!stricmp((*tail)->data.get(), command)) {
       // we found a duplicate
       return 0;
     }
-    node = node->next;
+    tail = &(*tail)->next;
   }
 
-  // we need to check the current node since while(node->next) breaks out before checking the last node
-  if (!stricmp(node->data, command)) {
-    // we found a duplicate
-    return 0;
-  }
+  // create a new node and tack it on to the end of the list
+  auto node = std::make_unique<tInputCommandNode>();
+  node->handler = handler;
+  node->allow_remote = allow_remotely;
+  node->data = std::make_unique<char[]>(strlen(command) + 1);
+  strlowcpy(node->data.get(), command);
 
-  // it looks like everything went ok, now just create a new node and tack it on to the end
-  // of the list.  All that can go wrong now is an out of memory error.
-  tInputCommandNode *temp;
-  temp = (tInputCommandNode *)malloc(sizeof(tInputCommandNode));
-  if (!temp) { // out of memory
-    return -1;
-  }
-  temp->next = nullptr;
-  temp->handler = handler;
-  temp->allow_remote = allow_remotely;
-  temp->data = (char *)malloc(strlen(command) + 1);
-  if (!temp->data) { // out of memory
-    free(temp);
-    return -1;
-  }
-  strlowcpy(temp->data, command);
+  node->desc = std::make_unique<char[]>(strlen(description) + 1);
+  strcpy(node->desc.get(), description);
 
-  temp->desc = (char *)malloc(strlen(description) + 1);
-  if (temp->desc)
-    strcpy(temp->desc, description);
-
-  // now tack it on the end of the list and thats all
-  node->next = temp;
+  *tail = std::move(node);
   return 1;
 }
 
