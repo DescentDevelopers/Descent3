@@ -771,7 +771,7 @@ int FindRoomName(char *name) {
   ASSERT(name != nullptr);
 
   for (int i = FIRST_PALETTE_ROOM; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++)
-    if (Rooms[i].used && Rooms[i].name && !stricmp(name, Rooms[i].name))
+    if (Rooms[i].used && Rooms[i].name && !stricmp(name, Rooms[i].name.get()))
       return i;
 
   return -1;

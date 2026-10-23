@@ -3356,7 +3356,7 @@ int osipf_FindSoundName(const char *name) { return FindSoundName(IGNORE_TABLE(na
 int osipf_FindRoomName(const char *name) {
   for (int i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used && Rooms[i].name) {
-      if (!stricmp(name, Rooms[i].name))
+      if (!stricmp(name, Rooms[i].name.get()))
         return i;
     }
   }
