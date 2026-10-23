@@ -536,7 +536,7 @@ CDallasMainDlg::CDallasMainDlg(CWnd *pParent /*=NULL*/) : CDialog(CDallasMainDlg
 
   help_edit_ctrl = &m_HelpEdit;
 
-  m_pDragImage = nullptr;
+  m_pDragImage.reset();
   m_bLDragging = FALSE;
   m_hitemDrag = nullptr;
   m_hitemDrop = nullptr;
@@ -15184,7 +15184,7 @@ void CDallasMainDlg::OnBegindragEventTree(NMHDR *pNMHDR, LRESULT *pResult) {
     return;
 
   // get the image list for dragging
-  m_pDragImage = m_ScriptTree.CreateDragImage(m_hitemDrag);
+  m_pDragImage.reset(m_ScriptTree.CreateDragImage(m_hitemDrag));
 
   // CreateDragImage() returns NULL if no image list
   // associated with the tree view control
@@ -15233,7 +15233,7 @@ void CDallasMainDlg::OnLButtonUp(UINT nFlags, CPoint point) {
     CImageList::DragLeave(this);
     CImageList::EndDrag();
     ReleaseCapture();
-    delete m_pDragImage;
+    m_pDragImage.reset();
 
     // Remove drop target highlighting
     m_ScriptTree.SelectDropTarget(nullptr);
