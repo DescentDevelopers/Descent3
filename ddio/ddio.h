@@ -318,9 +318,6 @@ void ddio_MouseSetVCoords(int width, int height);
 //	File Operations
 //	---------------------------------------------------------------------------
 
-// Gets the full path of the executable file
-bool ddio_GetBinaryPath(char *exec_path, size_t len);
-
 // deletes a file.  Returns 1 if successful, 0 on failure
 //	This pathname is *RELATIVE* not fully qualified
 int ddio_DeleteFile(const char *name);
