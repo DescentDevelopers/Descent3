@@ -447,9 +447,9 @@ protected:
   virtual void OnDetachFromWindow();        // when gadget is detached from window
 
 private:
-  char **m_ItemList; // list of strings.
-  int *m_Virt2Real;  // translates virtual(user) id to real index
-  int *m_Real2Virt;  // translates real index into virtual(user) id
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_ItemList; // list of strings.
+  std::unique_ptr<int[]> m_Virt2Real;                    // translates virtual(user) id to real index
+  std::unique_ptr<int[]> m_Real2Virt;                    // translates real index into virtual(user) id
 
   void (*selectchange_fn)(int);            // callback when selection changes in listbox.
   void (*selectchange_id_fn)(int, void *); // callback when selection changes in listbox..also return the ID
