@@ -254,7 +254,7 @@ struct room {
   float damage;              // The damage per second applied to players (& maybe others) in room
 
   vector path_pnt;      // Point used by the path system
-  uint8_t *volume_lights; // Pointer to memory for our volumetric lighting
+  std::unique_ptr<uint8_t[]> volume_lights; // our volumetric lighting
   int16_t volume_width;   // The dimensions of our volumetric room
   int16_t volume_height;
   int16_t volume_depth;

@@ -896,8 +896,7 @@ void DoRadiosityForRooms() {
       Rooms[roomnum].volume_height = vh;
       Rooms[roomnum].volume_depth = vd;
 
-      Rooms[roomnum].volume_lights = (uint8_t *)mem_malloc(vw * vh * vd);
-      ASSERT(Rooms[roomnum].volume_lights);
+      Rooms[roomnum].volume_lights = std::make_unique<uint8_t[]>(vw * vh * vd);
 
       Volume_elements[roomnum] = std::make_unique<volume_element[]>(vw * vh * vd);
 

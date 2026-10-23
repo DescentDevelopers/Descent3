@@ -474,7 +474,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->flags = 0;
   rp->objects = -1;
   rp->vis_effects = -1;
-  rp->volume_lights = nullptr;
+  rp->volume_lights.reset();
   rp->mirror_face = -1;
   rp->num_mirror_faces = 0;
   rp->mirror_faces_list.reset();
@@ -623,8 +623,7 @@ void FreeRoom(room *rp) {
 
   BNode_FreeRoom(rp);
 
-  if (rp->volume_lights)
-    mem_free(rp->volume_lights);
+  rp->volume_lights.reset();
 
   if (rp->name)
     mem_free(rp->name);
@@ -866,10 +865,7 @@ void ClearVolumeLights(int roomnum) {
 
   ASSERT(!(Rooms[roomnum].flags & RF_EXTERNAL));
 
-  if (Rooms[roomnum].volume_lights) {
-    mem_free(Rooms[roomnum].volume_lights);
-    Rooms[roomnum].volume_lights = nullptr;
-  }
+  Rooms[roomnum].volume_lights.reset();
 }
 
 // Removes all room volume lights from memory
