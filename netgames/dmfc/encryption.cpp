@@ -163,7 +163,7 @@ IceKey::IceKey(int n) {
     _rounds = n * 16;
   }
 
-  _keysched = new IceSubkey[_rounds];
+  _keysched = std::make_unique<IceSubkey[]>(_rounds);
 }
 
 //
@@ -179,8 +179,6 @@ IceKey::~IceKey() {
   }
 
   _rounds = _size = 0;
-
-  delete[] _keysched;
 }
 
 //
