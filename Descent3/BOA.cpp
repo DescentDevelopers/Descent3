@@ -2133,17 +2133,16 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    int16_t *num_structs_per_room = (int16_t *)mem_malloc((Highest_room_index + 1) * sizeof(int16_t));
-    int16_t **r_struct_list;
+    auto num_structs_per_room = std::make_unique<int16_t[]>(Highest_room_index + 1);
 
     // Allocate the structure that tells what struct each face is in
-    r_struct_list = (int16_t **)mem_malloc((Highest_room_index + 1) * sizeof(int16_t *));
+    auto r_struct_list = std::make_unique<std::unique_ptr<int16_t[]>[]>(Highest_room_index + 1);
     for (i = 0; i <= Highest_room_index; i++) {
       if (Rooms[i].used) {
         if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
           continue;
 
-        r_struct_list[i] = mem_rmalloc<int16_t>(Rooms[i].num_faces);
+        r_struct_list[i] = std::make_unique<int16_t[]>(Rooms[i].num_faces);
       }
     }
 
@@ -2234,13 +2233,10 @@ void ComputeAABB(bool f_full) {
         if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
           continue;
 
-        int16_t *nfaces;
-        bool *used;
-
         int n_new;
 
-        nfaces = mem_rmalloc<int16_t>(rp->num_faces);
-        used = mem_rmalloc<bool>(rp->num_faces);
+        auto nfaces = std::make_unique<int16_t[]>(rp->num_faces);
+        auto used = std::make_unique<bool[]>(rp->num_faces);
 
         for (count1 = 0; count1 < rp->num_faces; count1++) {
           used[count1] = false;
@@ -2291,9 +2287,6 @@ void ComputeAABB(bool f_full) {
 
       done:
 
-        mem_free(nfaces);
-        mem_free(used);
-
         ASSERT(num_struct < MAX_REGIONS_PER_ROOM); // get chris
         num_structs_per_room[i] = num_struct;
       }
@@ -2314,8 +2307,8 @@ void ComputeAABB(bool f_full) {
         //
         //			continue;
 
-        vector *s_max_xyz = mem_rmalloc<vector>(num_structs_per_room[i]);
-        vector *s_min_xyz = mem_rmalloc<vector>(num_structs_per_room[i]);
+        auto s_max_xyz = std::make_unique<vector[]>(num_structs_per_room[i]);
+        auto s_min_xyz = std::make_unique<vector[]>(num_structs_per_room[i]);
 
         for (count = 0; count < num_structs_per_room[i]; count++) {
 
@@ -2371,9 +2364,6 @@ void ComputeAABB(bool f_full) {
             }
           }
         }
-
-        mem_free(s_max_xyz);
-        mem_free(s_min_xyz);
       }
     }
 
@@ -2625,18 +2615,8 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    mem_free(num_structs_per_room);
-    for (i = 0; i <= Highest_room_index; i++) {
-      if (Rooms[i].used) {
-        if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
-          continue;
-
-        mem_free(r_struct_list[i]);
-      }
-    }
-    mem_free(r_struct_list);
-    num_structs_per_room = nullptr;
-    r_struct_list = nullptr;
+    num_structs_per_room.reset();
+    r_struct_list.reset();
 
     // Finds the min/max of each region
     for (i = 0; i <= Highest_room_index; i++) {
