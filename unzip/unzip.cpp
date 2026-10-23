@@ -228,7 +228,7 @@ bool ZIP::OpenZip(const char *zipfile) {
   }
 
   // reset zip entry
-  m_ent.name = nullptr;
+  m_ent.name.reset();
 
   // rewind to the begining of central dir
   m_cd_pos = 0;
@@ -246,8 +246,7 @@ void ZIP::CloseZip() {
     return;
 
   /* release all */
-  if (m_ent.name)
-    free(m_ent.name);
+  m_ent.name.reset();
   m_cd.reset();
   m_ecd.reset();
   if (m_fp) {
@@ -292,12 +291,8 @@ zipentry *ZIP::ReadNextZipEntry() {
     return nullptr;
   }
 
-  if (m_ent.name)
-    free(m_ent.name);
-  m_ent.name = (char *)malloc(m_ent.filename_length + 1);
-  if (!m_ent.name)
-    return nullptr;
-  memcpy(m_ent.name, m_cd.get() + m_cd_pos + ZIPCD_CFN, m_ent.filename_length);
+  m_ent.name = std::make_unique<char[]>(m_ent.filename_length + 1);
+  memcpy(m_ent.name.get(), m_cd.get() + m_cd_pos + ZIPCD_CFN, m_ent.filename_length);
   m_ent.name[m_ent.filename_length] = '\0';
 
   // skip to next entry in central dir
