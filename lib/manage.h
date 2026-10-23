@@ -105,11 +105,11 @@ extern int Starting_editor, Loading_locals, Loading_addon_table;
 
 extern char LocalD3Dir[];
 extern char NetD3Dir[];
-extern char TableFilename[];
+extern std::filesystem::path TableFilename;
 extern std::filesystem::path TableLockFilename;
-extern char LocalTableFilename[];
-extern char LocalTempTableFilename[];
-extern char LocalLevelsDir[];
+extern std::filesystem::path LocalTableFilename;
+extern std::filesystem::path LocalTempTableFilename;
+extern std::filesystem::path LocalLevelsDir;
 extern std::filesystem::path ManageGraphicsDir;
 extern std::filesystem::path LocalManageGraphicsDir;
 extern std::filesystem::path LocalModelsDir;
@@ -123,16 +123,16 @@ extern std::filesystem::path NetMiscDir;
 extern std::filesystem::path LocalMiscDir;
 extern std::filesystem::path NetMusicDir;
 extern std::filesystem::path LocalMusicDir;
-extern char NetScriptDir[];
-extern char LocalScriptDir[];
+extern std::filesystem::path NetScriptDir;
+extern std::filesystem::path LocalScriptDir;
 extern std::filesystem::path NetArtDir;
 extern std::filesystem::path LocalArtDir;
 
 extern std::filesystem::path LocalCustomGraphicsDir;
 extern std::filesystem::path LocalCustomSoundsDir;
 
-extern char TempTableFilename[];
-extern char TempTableLockFilename[];
+extern std::filesystem::path TempTableFilename;
+extern std::filesystem::path TempTableLockFilename;
 extern char ErrorString[INFO_STRING_LEN];
 extern char InfoString[INFO_STRING_LEN];
 extern char TableUser[];
@@ -218,7 +218,7 @@ int mng_FindTrackLock(char *name, int pagetype);
 
 // Searches through global array of tracklocks and returns first free one
 // returns -1 if none free
-int mng_AllocTrackLock(char *name, int pagetype);
+int mng_AllocTrackLock(const char *name, int pagetype);
 
 // Frees a tracklock
 void mng_FreeTrackLock(int n);
@@ -233,7 +233,7 @@ int mng_RenamePage(char *oldname, char *newname, int pagetype);
 
 // Removes a file, then renames another file to be the removed file. Get it?
 // Returns 1 on success, else 0 on fail
-int SwitcherooFiles(const char *name, char *tempname);
+int SwitcherooFiles(const std::filesystem::path &name, const std::filesystem::path &tempname);
 
 // Returns true if the passed in pagelock is in the LockList, else false
 bool InLockList(mngs_Pagelock *pl);

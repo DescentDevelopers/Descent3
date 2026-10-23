@@ -203,7 +203,7 @@ int ScriptCompile(tCompilerInfo *ci) {
   cline += ci->source_filename;
   cline += "\"";
   cline += " -dir ";
-  cline += LocalScriptDir;
+  cline += LocalScriptDir.u8string().c_str();
   if (ci->script_type == ST_LEVEL)
     cline += " -level";
   switch (Warning_level) {
@@ -338,7 +338,7 @@ bool ScriptCreateEmptyScript(char *filename, uint8_t script_type) {
 #define O(x) outputtofile x
 CFILE *CurrentFile;
 
-void outputtofile(char *format, ...) {
+void outputtofile(const char *format, ...) {
   char buffer[1024];
   va_list marker;
   va_start(marker, format);
@@ -348,8 +348,7 @@ void outputtofile(char *format, ...) {
 }
 
 bool ScriptCreateEmptyLevelScript(char *filename) {
-  char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / filename;
   CurrentFile = cfopen(fullpath, "wt");
   if (!CurrentFile)
     return false;
@@ -552,8 +551,7 @@ bool ScriptCreateEmptyLevelScript(char *filename) {
 }
 
 bool ScriptCreateEmptyGameScript(char *filename) {
-  char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  std::filesystem::path fullpath = LocalScriptDir / filename;
   CurrentFile = cfopen(fullpath, "wt");
   if (!CurrentFile)
     return false;

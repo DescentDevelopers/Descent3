@@ -290,8 +290,6 @@ void (*DLLHideCursor)(void);
 void (*DLLGameFrame)(void);
 void (*DPrintf)(const char *format, ...);
 void (*DLLassert)(int, const char *, const char *, int);
-void (*DLLddio_SplitPath)(const char *srcPath, char *path, char *filename, char *ext);
-void (*DLLddio_MakePath)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
 int (*DLLPlay2dSound)(int sound_index, float volume);
 void (*DLLTouchSound)(int sound_index);
 bool (*DatabaseRead1)(const char *label, char *entry, int *entrylen);

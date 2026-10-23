@@ -252,9 +252,11 @@
 #ifndef __DMFC_INTERNAL_H
 #define __DMFC_INTERNAL_H
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdarg>
+#include <ctime>
+#include <filesystem>
+
 #include "idmfc.h"
 #include "DMFC.h"
 #include "gamedll_header.h"
@@ -1633,7 +1635,7 @@ public:
   //	the recommended filename to save stats to should be.
   //	root = Multiplayer DLL Name (filename will start with this)
   //	end_of_level = pass true if this is the end of a level stats
-  void GenerateStatFilename(char *filename, const char *root, bool end_of_level);
+  std::filesystem::path GenerateStatFilename(const char *root, bool end_of_level);
 
   //	DMFCBase::IsPlayerObserver
   //

@@ -19,11 +19,12 @@
 // CustDefaultScriptSelect.cpp : implementation file
 //
 
+#include <filesystem>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "CustDefaultScriptSelect.h"
 #include "manage.h"
-#include "ddio.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -72,15 +73,15 @@ void CCustDefaultScriptSelect::OnBrowse() {
   CString filter = "D3 Compiled Scripts (*.dll)|*.dll||";
 
   char filename[_MAX_PATH];
-  char pathname[_MAX_PATH], name[_MAX_PATH];
-  strcpy(pathname, LocalScriptDir);
+  char pathname[_MAX_PATH];
+  strncpy(pathname, LocalScriptDir.u8string().c_str(), _MAX_PATH);
 
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, pathname, sizeof(pathname)))
     return;
 
-  ddio_SplitPath(filename, NULL, name, NULL);
+  std::filesystem::path name = std::filesystem::path(filename).stem();
 
-  m_Module = name;
+  m_Module = name.u8string().c_str();
 
   UpdateData(false);
 }

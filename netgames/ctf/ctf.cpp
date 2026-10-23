@@ -84,8 +84,9 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+
 #include "gamedll_header.h"
-#include <string.h>
 
 #include "idmfc.h"
 #include "ctf.h"
@@ -238,7 +239,7 @@ const char *GetString(int d) {
   else
     return StringTable[d];
 }
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const std::filesystem::path &filename);
 static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
 static void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use);
 
@@ -1380,7 +1381,7 @@ do_disconnected_folk:
 quick_exit:;
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const std::filesystem::path &filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
@@ -1604,21 +1605,18 @@ void SaveStatsToFile(char *filename) {
 }
 
 #define ROOTFILENAME "CTF"
-void OnSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
-void OnLevelEndSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, true);
+void OnLevelEndSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, true);
   SaveStatsToFile(filename);
 }
 
-void OnDisconnectSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnDisconnectSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 

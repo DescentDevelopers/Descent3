@@ -63,12 +63,8 @@
 * $NoKeywords: $
 */
 
-#if !defined(AFX_SCRIPTLEVELINTERFACE_H__7CFE839C_90E9_11D2_AB2B_006008BF0B09__INCLUDED_)
-#define AFX_SCRIPTLEVELINTERFACE_H__7CFE839C_90E9_11D2_AB2B_006008BF0B09__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+
 // ScriptLevelInterface.h : header file
 //
 
@@ -155,7 +151,7 @@ int AreScriptsOutofDate(void);
 //	dir MUST be set to data\scripts before calling this function
 bool IsScriptOutofDate(char *name);
 
+bool IsScriptOutofSync(const std::filesystem::path &name);
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_SCRIPTLEVELINTERFACE_H__7CFE839C_90E9_11D2_AB2B_006008BF0B09__INCLUDED_)
