@@ -187,16 +187,14 @@ void ShadeLightmapInfoEdges(int type) {
 
   for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
     if (LightmapInfo[i].used && LightmapInfo[i].type == type) {
-      uint16_t *src_data;
       uint16_t *dest_data = lm_data(LightmapInfo[i].lm_handle);
       int w = lmi_w(i);
       int h = lmi_h(i);
       int x, y;
 
-      src_data = (uint16_t *)mem_malloc(w * h * 2);
-      ASSERT(src_data);
+      auto src_data = std::make_unique<uint16_t[]>(w * h);
 
-      memcpy(src_data, dest_data, w * h * 2);
+      memcpy(src_data.get(), dest_data, w * h * 2);
 
       for (y = 0; y < h; y++) {
         for (x = 0; x < w; x++) {
@@ -307,7 +305,6 @@ void ShadeLightmapInfoEdges(int type) {
           }
         }
       }
-      mem_free(src_data);
     }
   }
 }
@@ -319,16 +316,14 @@ void BlurLightmapInfos(int type) {
 
   for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
     if (LightmapInfo[i].used && LightmapInfo[i].type == type) {
-      uint16_t *src_data;
       uint16_t *dest_data = lm_data(LightmapInfo[i].lm_handle);
       int w = lmi_w(i);
       int h = lmi_h(i);
       int x, y;
 
-      src_data = (uint16_t *)mem_malloc(w * h * 2);
-      ASSERT(src_data);
+      auto src_data = std::make_unique<uint16_t[]>(w * h);
 
-      memcpy(src_data, dest_data, w * h * 2);
+      memcpy(src_data.get(), dest_data, w * h * 2);
 
       for (y = 0; y < h; y++) {
         for (x = 0; x < w; x++) {
@@ -446,7 +441,6 @@ void BlurLightmapInfos(int type) {
           }
         }
       }
-      mem_free(src_data);
     }
   }
 }
