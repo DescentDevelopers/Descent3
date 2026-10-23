@@ -510,10 +510,10 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->pulse_offset = 0;
 
   if (nportals) {
-    rp->portals = mem_rmalloc<portal>(nportals);
-    ASSERT(rp->portals != nullptr);
-  } else
-    rp->portals = nullptr;
+    rp->portals = std::make_unique<portal[]>(nportals);
+  } else {
+    rp->portals.reset();
+  }
 
   // Default to no ambient sound
   rp->ambient_sound = -1;
@@ -594,7 +594,7 @@ void FreeRoom(room *rp) {
 
   // Free up mem alloced for this room
   rp->faces.reset();
-  mem_free(rp->portals);
+  rp->portals.reset();
   rp->verts.reset();
 
   rp->verts4.reset();

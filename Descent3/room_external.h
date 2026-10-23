@@ -217,7 +217,7 @@ struct room {
   int num_portals; // how many connections in this room
   int num_verts;   // how many verts in the room
   std::unique_ptr<face[]> faces; // list of faces
-  portal *portals; // pointer to list of portals
+  std::unique_ptr<portal[]> portals; // list of portals
   std::unique_ptr<vector[]> verts;   // array of vertices for this room
   std::unique_ptr<vector4[]> verts4; // array of 16byte vertices for this room
 
