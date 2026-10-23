@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "3d.h"
 #include "gametexture.h"
@@ -63,13 +64,13 @@ struct volume_object {
 
 float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 
-static uint16_t *Dynamic_lightmap_memory = nullptr;
+static std::unique_ptr<uint16_t[]> Dynamic_lightmap_memory;
 static float Light_component_scalar[32];
 float Ubyte_to_float[256];
 
 static uint8_t Lmi_spoken_for[MAX_LIGHTMAP_INFOS / 8];
 
-static dynamic_lightmap *Dynamic_lightmaps;
+static std::unique_ptr<dynamic_lightmap[]> Dynamic_lightmaps;
 static dynamic_face Dynamic_face_list[MAX_DYNAMIC_FACES];
 static uint16_t Specular_face_list[MAX_DYNAMIC_FACES];
 static volume_object Dynamic_volume_object_list[MAX_VOLUME_OBJECTS];
@@ -107,10 +108,8 @@ static void ApplyLightingToObjects(vector *pos, int roomnum, float light_dist, f
 
 // Frees memory used by dynamic light structures
 void FreeLighting() {
-  if (Dynamic_lightmap_memory)
-    mem_free(Dynamic_lightmap_memory);
-  if (Dynamic_lightmaps)
-    mem_free(Dynamic_lightmaps);
+  Dynamic_lightmap_memory.reset();
+  Dynamic_lightmaps.reset();
 }
 
 // Sets up our dynamic lighting maps
@@ -138,15 +137,11 @@ void InitDynamicLighting() {
     DYNAMIC_LIGHTMAP_MEMORY = 500000;
   }
 
-  Dynamic_lightmap_memory = (uint16_t *)mem_malloc(DYNAMIC_LIGHTMAP_MEMORY);
+  // DYNAMIC_LIGHTMAP_MEMORY is in bytes. Large scratch pool, left uninitialized as before
+  Dynamic_lightmap_memory = std::unique_ptr<uint16_t[]>(new uint16_t[DYNAMIC_LIGHTMAP_MEMORY / 2]);
 
-  // Init our records list
-  Dynamic_lightmaps = mem_rmalloc<dynamic_lightmap>(MAX_DYNAMIC_LIGHTMAPS);
-  ASSERT(Dynamic_lightmaps);
-
-  for (i = 0; i < MAX_DYNAMIC_LIGHTMAPS; i++) {
-    memset(&Dynamic_lightmaps[i], 0, sizeof(dynamic_lightmap));
-  }
+  // Init our records list (zero-filled)
+  Dynamic_lightmaps = std::make_unique<dynamic_lightmap[]>(MAX_DYNAMIC_LIGHTMAPS);
 
   // Setup uint8_t to float
   for (i = 0; i < 256; i++)
