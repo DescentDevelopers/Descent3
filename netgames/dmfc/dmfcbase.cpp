@@ -2570,9 +2570,8 @@ void DMFCBase::UpdatePInfo(int victim, int killer, int amount) {
 
   PInfo *id;
   int victim_slot = PRec_GetPlayerSlot(victim);
-  tPKillerInfo ki;
+  tPKillerInfo ki{};
 
-  memset(&ki, 0, sizeof(tPKillerInfo));
   id = FindPInfo(killer);
 
   if ((id == nullptr) || (victim_slot == -1)) {
