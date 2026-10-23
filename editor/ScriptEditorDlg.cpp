@@ -54,6 +54,7 @@
 #include "ddio.h"
 #include "ScriptEditorDlg.h"
 #include <process.h>
+#include <memory>
 #include "CFILE.h"
 #include "OsirisStatusDlg.h"
 #include "pserror.h"
@@ -245,9 +246,8 @@ bool CScriptEditorDlg::FindNext(char *w) {
   UpdateData();
 
   // Make a copy of the script to work with
-  char *text;
-  text = mem_rmalloc<char>(GetScriptLength());
-  strcpy(text, GetScript());
+  auto text = std::make_unique<char[]>(GetScriptLength());
+  strcpy(text.get(), GetScript());
   max = GetScriptLength();
 
   // Make sure we aren't gonna try to go past the end of the buffer, start at 0 if we are
@@ -259,7 +259,7 @@ bool CScriptEditorDlg::FindNext(char *w) {
     // check the character it's at in the buffer to the first character of the find string, if they are the same
     // it's a possibility, so Check the word
     if (toupper(text[index]) == toupper(w[0]))
-      if (CheckWord(index, text, w)) {
+      if (CheckWord(index, text.get(), w)) {
         // We got a match, so move the caret, and select the word
         SetCurrentIndex(index);
         SetSelection(index, strlen(w));
@@ -270,8 +270,7 @@ bool CScriptEditorDlg::FindNext(char *w) {
       }
   }
 
-  if (text)
-    mem_free(text);
+  text.reset();
 
   if (!word_found) {
     // This can mean 2 things.  We searched to the end of the file and either never found a word, or we did at one time
