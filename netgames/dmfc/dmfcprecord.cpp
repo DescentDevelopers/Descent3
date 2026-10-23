@@ -161,7 +161,7 @@ int PRec_SetupUserPRec(int sizeof_user_stats, int (*pack_callback)(void *user_in
   int size = MAX_GAME_DATA_SIZE - (104 + 5 * MAX_PLAYER_RECORDS);
   if (sizeof_user_stats > size) {
     // the user mod specified too big of a size
-    mprintf(0, "DMFC Warning: In PRec_SetupUserPRec(), the size given is too large for a packet\n");
+    LOG_FATAL << "In PRec_SetupUserPRec(), the size given is too large for a packet";
     Int3();
     goto user_stats_err;
   }
@@ -361,7 +361,7 @@ bool PRec_AssignPlayerToSlot(int pnum, int slot, player *players_array, netplaye
 
   if (basethis->IsMasterTrackerGame() && (basethis->Players[pnum].tracker_id)) {
     // we are in a master tracker game, so save the tracker ID
-    mprintf(0, "PREC: Got a PXO Player ID of %s\n", basethis->Players[pnum].tracker_id);
+    LOG_INFO.printf("PREC: Got a PXO Player ID of %s", basethis->Players[pnum].tracker_id);
     Player_records[slot].tracker_id = strdup(basethis->Players[pnum].tracker_id);
   } else {
     // either it's not a tracker game or the tracker_id member of players is void
@@ -569,7 +569,7 @@ void PRec_SendPRecToPlayer(int pnum) {
     }
   }
 
-  mprintf(0, "*Player Record: Send out %d packets of total %d bytes to %s\n",
+  LOG_INFO.printf("*Player Record: Send out %d packets of total %d bytes to %s",
           totalcount,
           totalsize,
           basethis->Players[pnum].callsign);
@@ -606,7 +606,7 @@ void PRec_ReceivePRecFromServer(uint8_t *data) {
       memcpy(pr->tracker_id, &data[count], len);
       pr->tracker_id[len] = '\0';
     } else {
-      mprintf(0, "PREC: UH OH!!! OUT OF MEMORY\n");
+      LOG_WARNING << "PREC: UH OH!!! OUT OF MEMORY";
     }
     count += len;
   } else {

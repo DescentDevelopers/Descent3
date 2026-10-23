@@ -105,6 +105,7 @@
 #include "crossplat.h"
 #include "log.h"
 #include "module.h"
+#include "pstypes.h"
 
 int ModLastError = MODERR_NOERROR;
 
