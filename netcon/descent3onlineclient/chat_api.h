@@ -46,7 +46,7 @@ typedef struct Chat_channel {
 typedef struct Chat_command {
   int16_t command;
   char data[100];
-  Chat_command *next;
+  std::unique_ptr<Chat_command> next;
 } Chat_command;
 
 // Prototypes
