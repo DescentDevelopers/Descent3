@@ -965,7 +965,7 @@ typedef float (*vm_GetMagnitude_fp)(vector *vec);
 DMFCDLLOUT(vm_GetMagnitude_fp DLLvm_GetMagnitude;)
 
 // Rotates a vector thru a matrix
-typedef void (*vm_MatrixMulVector_fp)(vector *, vector *, matrix *);
+typedef void (*vm_MatrixMulVector_fp)(vector *, const vector *, const matrix *);
 DMFCDLLOUT(vm_MatrixMulVector_fp DLLvm_MatrixMulVector;)
 
 // Applies an instantaneous force on an object, resulting in an instantaneous
@@ -1013,15 +1013,15 @@ typedef void (*vm_MakeAngleZero_fp)(angvec *a);
 DMFCDLLOUT(vm_MakeAngleZero_fp DLLvm_MakeAngleZero;)
 
 // Multiply a vector times the transpose of a matrix
-typedef void (*vm_VectorMulTMatrix_fp)(vector *result, vector *v, matrix *m);
+typedef void (*vm_VectorMulTMatrix_fp)(vector *result, const vector *v, const matrix *m);
 DMFCDLLOUT(vm_VectorMulTMatrix_fp DLLvm_VectorMulTMatrix;)
 
 // Multiplies 2 3x3 matrixes, returning the result in first argument
-typedef void (*vm_MatrixMul_fp)(matrix *, matrix *, matrix *);
+typedef void (*vm_MatrixMul_fp)(matrix *, const matrix *, const matrix *);
 DMFCDLLOUT(vm_MatrixMul_fp DLLvm_MatrixMul;)
 
 // Multiply a matrix times the transpose of a matrix
-typedef void (*vm_MatrixMulTMatrix_fp)(matrix *dest, matrix *src0, matrix *src1);
+typedef void (*vm_MatrixMulTMatrix_fp)(matrix *dest, const matrix *src0, const matrix *src1);
 DMFCDLLOUT(vm_MatrixMulTMatrix_fp DLLvm_MatrixMulTMatrix;)
 
 // Returns the dot product of the two given vectors
@@ -1033,7 +1033,7 @@ typedef void (*vm_SubVectors_fp)(vector *, const vector *, const vector *);
 DMFCDLLOUT(vm_SubVectors_fp DLLvm_SubVectors;)
 
 // Returns adds two vectors, returns result in first arg
-typedef void (*vm_AddVectors_fp)(vector *, vector *, vector *);
+typedef void (*vm_AddVectors_fp)(vector *, const vector *, const vector *);
 DMFCDLLOUT(vm_AddVectors_fp DLLvm_AddVectors;)
 
 // Given a vector, divides second arg by vector components
@@ -1041,15 +1041,15 @@ typedef void (*vm_AverageVector_fp)(vector *, int);
 DMFCDLLOUT(vm_AverageVector_fp DLLvm_AverageVector;)
 
 // Scales second arg vector by 3rd arg, placing result in first arg
-typedef void (*vm_ScaleVector_fp)(vector *, vector *, float);
+typedef void (*vm_ScaleVector_fp)(vector *, const vector *, float);
 DMFCDLLOUT(vm_ScaleVector_fp DLLvm_ScaleVector;)
 
 // Scales all components of vector v by value s adds the result to p and stores result in vector d
-typedef void (*vm_ScaleAddVector_fp)(vector *d, vector *p, vector *v, float s);
+typedef void (*vm_ScaleAddVector_fp)(vector *d, const vector *p, const vector *v, float s);
 DMFCDLLOUT(vm_ScaleAddVector_fp DLLvm_ScaleAddVector;)
 
 // Divides second vector components by 3rd arg, placing result in first arg.  Useful for parametric lines
-typedef void (*vm_DivVector_fp)(vector *, vector *, float);
+typedef void (*vm_DivVector_fp)(vector *, const vector *, float);
 DMFCDLLOUT(vm_DivVector_fp DLLvm_DivVector;)
 
 // Same as NormalizeVector, but uses approximation
@@ -1116,24 +1116,24 @@ DMFCDLLOUT(vm_VectorDistanceQuick_fp DLLvm_VectorDistanceQuick;)
 // Parameters:	dest - filled in with the normalized direction vector
 //					start,end - the start and end points used to calculate the vector
 // Returns:		the distance between the two input points
-typedef float (*vm_GetNormalizedDir_fp)(vector *dest, vector *end, vector *start);
+typedef float (*vm_GetNormalizedDir_fp)(vector *dest, const vector *end, const vector *start);
 DMFCDLLOUT(vm_GetNormalizedDir_fp DLLvm_GetNormalizedDir;)
 
 // Returns a normalized direction vector between two points
 // Uses sloppier magnitude, less precise
-typedef float (*vm_GetNormalizedDirFast_fp)(vector *dest, vector *end, vector *start);
+typedef float (*vm_GetNormalizedDirFast_fp)(vector *dest, const vector *end, const vector *start);
 DMFCDLLOUT(vm_GetNormalizedDirFast_fp DLLvm_GetNormalizedDirFast;)
 
 // extract angles from a matrix
-typedef angvec *(*vm_ExtractAnglesFromMatrix_fp)(angvec *a, matrix *m);
+typedef angvec *(*vm_ExtractAnglesFromMatrix_fp)(angvec *a, const matrix *m);
 DMFCDLLOUT(vm_ExtractAnglesFromMatrix_fp DLLvm_ExtractAnglesFromMatrix;)
 
 //	returns the angle between two vectors and a forward vector
-typedef angle (*vm_DeltaAngVec_fp)(vector *v0, vector *v1, vector *fvec);
+typedef angle (*vm_DeltaAngVec_fp)(const vector *v0, const vector *v1, const vector *fvec);
 DMFCDLLOUT(vm_DeltaAngVec_fp DLLvm_DeltaAngVec;)
 
 //	returns the angle between two normalized vectors and a forward vector
-typedef angle (*vm_DeltaAngVecNorm_fp)(vector *v0, vector *v1, vector *fvec);
+typedef angle (*vm_DeltaAngVecNorm_fp)(const vector *v0, const vector *v1, const vector *fvec);
 DMFCDLLOUT(vm_DeltaAngVecNorm_fp DLLvm_DeltaAngVecNorm;)
 
 // Computes the distance from a point to a plane.
@@ -1141,11 +1141,11 @@ DMFCDLLOUT(vm_DeltaAngVecNorm_fp DLLvm_DeltaAngVecNorm;)
 // Parms:	norm - the (normalized) surface normal of the plane
 //				planep - a point on the plane
 // Returns:	The signed distance from the plane; negative dist is on the back of the plane
-typedef float (*vm_DistToPlane_fp)(vector *checkp, vector *norm, vector *planep);
+typedef float (*vm_DistToPlane_fp)(const vector *checkp, const vector *norm, const vector *planep);
 DMFCDLLOUT(vm_DistToPlane_fp DLLvm_DistToPlane;)
 
 // returns the value of a determinant
-typedef float (*vm_CalcDetValue_fp)(matrix *det);
+typedef float (*vm_CalcDetValue_fp)(const matrix *det);
 DMFCDLLOUT(vm_CalcDetValue_fp DLLvm_CalcDetValue;)
 
 typedef void (*vm_MakeInverseMatrix_fp)(matrix *dest);
@@ -1155,7 +1155,7 @@ typedef void (*vm_SinCosToMatrix_fp)(matrix *m, float sinp, float cosp, float si
 DMFCDLLOUT(vm_SinCosToMatrix_fp DLLvm_SinCosToMatrix;)
 
 // Gets the real center of a polygon
-typedef float (*vm_GetCentroid_fp)(vector *centroid, vector *src, int nv);
+typedef float (*vm_GetCentroid_fp)(vector *centroid, const vector *src, int nv);
 DMFCDLLOUT(vm_GetCentroid_fp DLLvm_GetCentroid;)
 
 //	retrieves a random vector in values -RAND_MAX/2 to RAND_MAX/2
@@ -1163,12 +1163,12 @@ typedef void (*vm_MakeRandomVector_fp)(vector *vec);
 DMFCDLLOUT(vm_MakeRandomVector_fp DLLvm_MakeRandomVector;)
 
 // Given a set of points, computes the minimum bounding sphere of those points
-typedef float (*vm_ComputeBoundingSphere_fp)(vector *center, vector *vecs, int num_verts);
+typedef float (*vm_ComputeBoundingSphere_fp)(vector *center, const vector *vecs, int num_verts);
 DMFCDLLOUT(vm_ComputeBoundingSphere_fp DLLvm_ComputeBoundingSphere;)
 
 // Gets the real center of a polygon, but uses fast magnitude calculation
 // Returns the size of the passed in stuff
-typedef float (*vm_GetCentroidFast_fp)(vector *centroid, vector *src, int nv);
+typedef float (*vm_GetCentroidFast_fp)(vector *centroid, const vector *src, int nv);
 DMFCDLLOUT(vm_GetCentroidFast_fp DLLvm_GetCentroidFast;)
 
 // returns scaled line width

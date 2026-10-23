@@ -145,6 +145,7 @@
 #endif
 
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 
@@ -239,7 +240,7 @@ matcen::matcen() {
 
   m_status = 0;
 
-  m_create_pnt = Zero_vector;
+  m_create_pnt = vector{};
   m_create_room = MATCEN_ERROR;
 
   m_cached_prod_index = -1;
@@ -567,7 +568,7 @@ bool matcen::ComputeCreatePnt() {
         int num_valid_faces = 0;
         room *rp = &Rooms[m_roomnum];
 
-        m_create_pnt = Zero_vector;
+        m_create_pnt = vector{};
 
         for (i = 0; i < m_num_spawn_pnts; i++) {
           if (m_spawn_pnt[i] >= 0 && m_spawn_pnt[i] < rp->num_faces) {
@@ -623,7 +624,7 @@ bool matcen::ComputeCreatePnt() {
         int i;
         int num_valid_gps = 0;
 
-        m_create_pnt = Zero_vector;
+        m_create_pnt = vector{};
 
         for (i = 0; i < m_num_spawn_pnts; i++) {
           if (WeaponCalcGun(&m_spawn_vec[num_valid_gps], &m_spawn_normal[num_valid_gps], master_obj, m_spawn_pnt[i])) {
@@ -706,14 +707,14 @@ bool matcen::SetCreateRoom(int room) {
   return false;
 }
 
-int matcen::GetSpawnPnt(char s_index) {
+int matcen::GetSpawnPnt(int8_t s_index) {
   if (s_index >= 0 && s_index < MAX_SPAWN_PNTS)
     return m_spawn_pnt[s_index];
 
   return MATCEN_ERROR;
 }
 
-bool matcen::SetSpawnPnt(char s_index, int s_value) {
+bool matcen::SetSpawnPnt(int8_t s_index, int s_value) {
   if (s_index >= 0 && s_index < MAX_SPAWN_PNTS) {
     m_spawn_pnt[s_index] = s_value;
     ComputeCreatePnt();
@@ -988,7 +989,7 @@ bool matcen::SetNumProdTypes(char num_prod_types) {
   return false;
 }
 
-bool matcen::GetProdInfo(char index, int *type_id, int *priority, float *time, int *max_prod) {
+bool matcen::GetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod) {
   if (index >= 0 && index < MAX_PROD_TYPES) {
     if (type_id)
       *type_id = m_prod_type[index];
@@ -1008,7 +1009,7 @@ bool matcen::GetProdInfo(char index, int *type_id, int *priority, float *time, i
   return false;
 }
 
-bool matcen::SetProdInfo(char index, int *type_id, int *priority, float *time, int *max_prod) {
+bool matcen::SetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod) {
   if (index >= 0 && index < MAX_PROD_TYPES) {
     if (type_id && (*type_id >= -1))
       m_prod_type[index] = *type_id;
@@ -1728,7 +1729,7 @@ void matcen::SetCreationTexture(int16_t texnum) { m_creation_texture = texnum; }
 
 int16_t matcen::GetCreationTexture() { return m_creation_texture; }
 
-int matcen::GetSound(char sound_type) {
+int matcen::GetSound(int8_t sound_type) {
   if (sound_type >= 0 && sound_type < MAX_MATCEN_SOUNDS) {
     return m_sounds[sound_type];
   }
@@ -1736,7 +1737,7 @@ int matcen::GetSound(char sound_type) {
   return MATCEN_ERROR;
 }
 
-bool matcen::SetSound(char sound_type, int sound_index) {
+bool matcen::SetSound(int8_t sound_type, int sound_index) {
   if (sound_type >= 0 && sound_type < MAX_MATCEN_SOUNDS) {
     m_sounds[sound_type] = sound_index;
   }

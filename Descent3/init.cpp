@@ -1304,7 +1304,11 @@ void LoadGameSettings() {
   Database->read_int("RoomLeveling", &Default_player_room_leveling);
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
-  Database->read_int("RS_resolution", &Current_video_resolution_id);
+  Database->read_int("RS_resolution", &tempint);
+  if (tempint >= 0 && tempint < std::size(Video_res_list))
+    Current_video_resolution_id = tempint;
+  else
+    LOG_WARNING << "Game settings contain a display resolution index that is out of bounds. Starting with default resolution.";
 
   int tempval = 0;
   Database->read_int("RS_fov", &tempval);
@@ -1539,28 +1543,6 @@ void InitIOSystems(bool editor) {
   // last library opened is the first to be searched for dynamic libs, so put
   // this one at the end to find our newly build script libraries first
   sys_hid = cf_OpenLibrary(PRIMARY_HOG);
-
-  // Check to see if there is a -mission command line option
-  // if there is, attempt to open that hog/mn3 so it can override such
-  // things as the mainmenu movie, or loading screen
-  int mission_arg = FindArg("-mission");
-  if (mission_arg > 0) {
-    char path_to_mission[_MAX_PATH];
-    char filename[256];
-
-    // get the true filename
-    ddio_SplitPath(GameArgs[mission_arg + 1], NULL, filename, NULL);
-    strcat(filename, ".mn3");
-
-    // make the full path (it is forced to be on the harddrive since it contains
-    // textures and stuff).
-    ddio_MakePath(path_to_mission, LocalD3Dir, "missions", filename, NULL);
-    if (cfexist(path_to_mission)) {
-      cf_OpenLibrary(path_to_mission);
-    } else {
-      Int3(); // mission not found
-    }
-  }
 
   // Initialize debug graph early incase any system uses it in its init
   INIT_MESSAGE(("Initializing debug graph."));
@@ -1860,6 +1842,7 @@ void InitD3Systems1(bool editor) {
 
   // Initialize missions
   InitMission();
+  InitDefaultMissionFromCLI();
 
   // Initializes the ship structure
   InitShips();

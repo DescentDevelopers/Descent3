@@ -1010,13 +1010,13 @@ bool ProcessCommandLine() {
     exit_menu = 1;
 #endif
   }
-#ifndef RELEASE
-  int t = FindArg("-loadlevel");
-  if (t) {
-    SimpleStartLevel(GameArgs[t + 1]);
+  // On first load, enter mission directly if the argument is specified
+  int missionArg = FindArg("-mission");
+  static bool missionEntered = false;
+  if (missionArg && !missionEntered) {
+    missionEntered = true;
     exit_menu = 1;
   }
-#endif
   // at some point the code above sets exit_menu, so we're going to game mode.
   if (exit_menu) {
     SetFunctionMode(GAME_MODE);

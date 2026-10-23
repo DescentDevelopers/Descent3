@@ -554,7 +554,7 @@ bool MercEndBoss::DoNotify(int me, tOSIRISEventInfo *data) {
 
       Obj_Value(me, VF_SET, OBJV_V_ROTVELOCITY, &rvel);
 
-      vector dir = Zero_vector;
+      vector dir{};
       AI_Value(me, VF_SET, AIV_V_MOVEMENT_DIR, &dir);
     }
   }

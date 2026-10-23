@@ -548,7 +548,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   ASSERT(nfaces > 0);
 #endif
 
-  rp->wind = Zero_vector;
+  rp->wind = vector{};
 
   rp->num_faces = nfaces;
   rp->num_verts = nverts;
@@ -762,7 +762,7 @@ void FreeRoomFace(face *fp) {
 void ComputeRoomCenter(vector *vp, room *rp) {
   int i;
 
-  *vp = vector::ne();
+  *vp = vector{};
 
   for (i = 0; i < rp->num_verts; i++)
     *vp += rp->verts[i];
@@ -778,7 +778,7 @@ void ComputeCenterPointOnFace(vector *vp, room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
   int i;
 
-  *vp = vector::ne();
+  *vp = vector{};
 
   for (i = 0; i < fp->num_verts; i++)
     *vp += rp->verts[fp->face_verts[i]];
@@ -1210,8 +1210,8 @@ void CreateRoomObjects() {
       objnum = ObjCreate(OBJ_ROOM, r, roomnum, &pos, NULL);
       ASSERT(objnum != -1); // DAJ -1FIX moved up
       Objects[objnum].size = rad;
-      Objects[objnum].wall_sphere_offset = Zero_vector;
-      Objects[objnum].anim_sphere_offset = Zero_vector;
+      Objects[objnum].wall_sphere_offset = vector{};
+      Objects[objnum].anim_sphere_offset = vector{};
 
       if ((rad >= MIN_BIG_OBJ_RAD) && !(Objects[objnum].flags & OF_BIG_OBJECT)) {
         BigObjAdd(objnum);

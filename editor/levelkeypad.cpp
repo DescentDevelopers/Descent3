@@ -209,7 +209,7 @@ void make_goal_dialog_text(char *big_text_message) {
 
   for (i = 0; i < n; i++) {
     int priority;
-    char list;
+    int8_t list;
     int flags;
 
     Level_goals.GoalPriority(i, LO_GET_SPECIFIED, &priority);
@@ -281,7 +281,7 @@ void levelkeypad::UpdateDialog() {
   int flags;
   int lgflags;
   int priority;
-  char g_list;
+  int8_t g_list;
   char name[256];
   char iname[256];
   char desc[2560];
@@ -1062,7 +1062,7 @@ void levelkeypad::OnSelendokLevelgoaltriggerCombo() {
 void levelkeypad::OnKillfocusLevelGoalListEdit()
 {
         int int_g_list;
-        char g_list;
+        int8_t g_list;
         char str[256];
 
         ((CEdit *) GetDlgItem(IDC_LEVEL_GOAL_LIST_EDIT))->GetWindowText(str,255);
@@ -1077,7 +1077,7 @@ void levelkeypad::OnKillfocusLevelGoalListEdit()
 
 void levelkeypad::OnKillfocusEdit57() {
   int int_g_list;
-  char g_list;
+  int8_t g_list;
   char str[256];
 
   ((CEdit *)GetDlgItem(IDC_EDIT57))->GetWindowText(str, 255);

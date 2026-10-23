@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdint>
 #include "attach.h"
 #include "terrain.h"
 #include "log.h"
@@ -142,7 +143,7 @@ PI); rot_angle = acos(dot);
 
 // Finds the position of a attach point on an object
 // The uvec is optional as most attaching objects don't need at complete orientation set (only an fvec)
-static bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *attach_pos, bool f_compute_fvec,
+static bool AttachPointPos(object *obj, int8_t ap, bool f_compute_pos, vector *attach_pos, bool f_compute_fvec,
                            vector *attach_fvec, bool *f_computed_uvec = NULL, vector *attach_uvec = NULL) {
   poly_model *pm;
   vector pnt;
@@ -459,7 +460,7 @@ static void ProprogateUltimateAttachParent(object *parent, int ultimate_handle) 
 
 // Attaches 2 objects via attach points on each.  The f_used_aligned allows for an aligned connection.
 // NOTE: The child always moves to the parent
-bool AttachObject(object *parent, char parent_ap, object *child, char child_ap, bool f_use_aligned) {
+bool AttachObject(object *parent, int8_t parent_ap, object *child, char child_ap, bool f_use_aligned) {
   ASSERT(parent);
   ASSERT(child);
 
@@ -510,7 +511,7 @@ bool AttachObject(object *parent, char parent_ap, object *child, char child_ap, 
 
 // Attaches a child object to a parent object by a percent of the radius of the child.
 // NOTE: The child always moves to the parent and not the reverse
-bool AttachObject(object *parent, char parent_ap, object *child, float percent_rad) {
+bool AttachObject(object *parent, int8_t parent_ap, object *child, float percent_rad) {
   ASSERT(parent);
   ASSERT(child);
 
@@ -661,7 +662,7 @@ bool UnattachFromParent(object *child) {
 }
 
 // Unattaches a child from an attach point
-bool UnattachChild(object *parent, char parent_ap) {
+bool UnattachChild(object *parent, int8_t parent_ap) {
   object *child;
 
   if ((child = ObjGet(parent->attach_children[parent_ap])) != NULL) {

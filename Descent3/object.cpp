@@ -3132,8 +3132,8 @@ void ObjSetOrient(object *obj, const matrix *orient) {
       obj->wall_sphere_offset = Poly_models[obj->rtype.pobj_info.model_num].wall_size_offset * m;
       obj->anim_sphere_offset = Poly_models[obj->rtype.pobj_info.model_num].anim_size_offset * m;
     } else {
-      obj->wall_sphere_offset = Zero_vector;
-      obj->anim_sphere_offset = Zero_vector;
+      obj->wall_sphere_offset = vector{};
+      obj->anim_sphere_offset = vector{};
     }
   }
 }

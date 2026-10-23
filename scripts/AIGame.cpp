@@ -19,6 +19,7 @@
 // AIGame.cpp
 //
 #include <cfloat>
+#include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -400,7 +401,7 @@ public:
 #define MAX_STOLEN_WEAPONS 25
 
 struct weapon_item {
-  char index;
+  int8_t index;
   int owner;
   char amount;
 };
@@ -2364,7 +2365,7 @@ struct barnswallow_data {
 
   int follower;
 
-  char num_friends;
+  int8_t num_friends;
   int friends[BS_MAX_FRIENDS];
   float next_friend_update_time;
 
@@ -3119,7 +3120,7 @@ bool Humonculous::DoNotify(int me, tOSIRISEventInfo *data) {
   case HM_ABOUT_TO_FAKE_DEATH:
   case HM_ABOUT_TO_DIE: {
     if (data->evt_ai_notify.notify_type == AIN_SCRIPTED_ORIENT) {
-      vector uvec = Zero_vector;
+      vector uvec{};
       uvec.y() = 1.0f;
 
       if (AI_TurnTowardsVectors(me, &memory->land_fvec, &uvec))
@@ -3482,7 +3483,7 @@ void Humonculous::DoInterval(int me) {
   switch (memory->mode) {
   case HM_INTRO_CUTSCENE: {
     if (memory->mode_time < H_DOOR_WAIT_TIME && memory->mode_time + Game_GetFrameTime() >= H_DOOR_WAIT_TIME) {
-      vector velocity = Zero_vector;
+      vector velocity{};
       velocity.y() = 65.0f;
 
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &velocity);
@@ -3664,7 +3665,7 @@ void Humonculous::DoInterval(int me) {
 
   case HM_FAKE_DEATH: {
     if (memory->mode_time > 4.0f) {
-      vector velocity = Zero_vector;
+      vector velocity{};
       velocity.y() = 40.0f;
 
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &velocity);
@@ -8352,7 +8353,7 @@ bool Sparky::DoNotify(int me_handle, tOSIRISEventInfo *data) {
 
     Obj_Value(me_handle, VF_SET, OBJV_V_ROTVELOCITY, &rvel);
 
-    vector dir = Zero_vector;
+    vector dir{};
     AI_Value(me_handle, VF_SET, AIV_V_MOVEMENT_DIR, &dir);
   }
 

@@ -2640,7 +2640,7 @@ void PlayerSetControlToAI(int slot, float velocity) {
   pobj->ai_info->last_render_time = -1.0f;
   pobj->ai_info->next_target_update_time = Gametime;
   pobj->ai_info->notify_flags |= AI_NOTIFIES_ALWAYS_ON;
-  pobj->ai_info->last_see_target_pos = Zero_vector;
+  pobj->ai_info->last_see_target_pos = vector{};
   pobj->ai_info->dodge_vel_percent = 1.0f;
   pobj->ai_info->attack_vel_percent = 1.0f;
   pobj->ai_info->fight_same = 0.0f;

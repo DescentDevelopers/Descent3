@@ -1161,7 +1161,7 @@ bool GameSequencer() {
     break;
   case RESTORE_GAME_MODE:
   case LOADDEMO_MODE:
-    SetFunctionMode(GAME_MODE); // need to do so sequencer thiks we're in game.
+    SetFunctionMode(GAME_MODE); // need to do so sequencer thinks we're in game.
     break;
   }
 
@@ -1241,14 +1241,6 @@ bool GameSequencer() {
       SuspendControls();
       EndLevel(1);
       SetGameState(GAMESTATE_LVLNEXT);
-
-      // This is for HEAT.NET and their tournement mode stuff
-      // if(FindArg("-doonelevel"))
-      //	SetGameState(GAMESTATE_LVLSTART);
-      if (FindArg("-doonelevel")) {
-        SetFunctionMode(QUIT_MODE);
-      }
-
       break;
 
     case GAMESTATE_LVLNEXT:

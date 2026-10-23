@@ -173,6 +173,7 @@
 #ifndef __OSIRIS_PREDEF_H_
 #define __OSIRIS_PREDEF_H_
 
+#include <cstdint>
 #include "osiris_dll.h"
 #include "cfile.h"
 
@@ -349,7 +350,7 @@ bool osipf_IsObjectVisible(object *obj);
 
 float osipf_GameTime(void);
 float osipf_FrameTime(void);
-void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *ptr, char g_index = 0);
+void osipf_ObjWBValue(int obj_handle, int8_t wb_index, char op, char vtype, void *ptr, int8_t g_index = 0);
 
 void osipf_ObjectValue(int handle, char op, char vtype, void *ptr, int index = 0);
 void osipf_MatcenValue(int handle, char op, char vtype, void *ptr, int index = 0);
@@ -392,7 +393,7 @@ int osipf_SoundFindId(const char *s_name);
 
 bool osipf_AIIsObjFriend(int obj_handle, int it_handle);
 bool osipf_AIIsObjEnemy(int obj_handle, int it_handle);
-void osipf_AIGoalValue(int obj_handle, char g_index, char op, char vtype, void *ptr, char index = 0);
+void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void *ptr, int8_t index = 0);
 int osipf_AIGetNearbyObjs(vector *pos, int init_roomnum, float rad, int *object_handle_list, int max_elements,
                           bool f_lightmap_only, bool f_only_players_and_ais = true,
                           bool f_include_non_collide_objects = false, bool f_stop_at_closed_doors = true);

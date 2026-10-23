@@ -879,12 +879,12 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
     if (objp->movement_type == MT_PHYSICS || objp->movement_type == MT_WALKING)
       *virtual_vel = objp->mtype.phys_info.velocity;
     else
-      *virtual_vel = Zero_vector;
+      *virtual_vel = vector{};
 
     sound_pos = objp->pos;
     sound_seg = objp->roomnum;
   } else {
-    *virtual_vel = Zero_vector;
+    *virtual_vel = vector{};
     sound_pos = m_sound_objects[sound_obj_index].m_link_info.pos_info.pos;
     sound_seg = m_sound_objects[sound_obj_index].m_link_info.pos_info.segnum;
   }
