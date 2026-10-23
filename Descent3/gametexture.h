@@ -263,8 +263,8 @@ struct static_proc_element {
 
 struct proc_struct {
   int16_t dynamic_proc_elements; // list of dynamic procedural texture elements
-  void *proc1;                 // pointer for procedural page
-  void *proc2;                 // back page of procedural
+  std::unique_ptr<uint8_t[]> proc1; // procedural page (uint8_t for fire, int16_t for water)
+  std::unique_ptr<uint8_t[]> proc2; // back page of procedural
   int16_t procedural_bitmap;     // handle to the bitmap holding the finished procedural
 
   std::unique_ptr<uint16_t[]> palette;
