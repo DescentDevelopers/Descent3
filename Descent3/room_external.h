@@ -142,8 +142,8 @@ struct face {
   uint8_t num_verts;  // how many vertices in this face
   int8_t portal_num; // which portal this face is part of, or -1 if none
 
-  int16_t *face_verts;       // index into list of vertices for this face
-  roomUVL *face_uvls;      // index into list of uvls for this face
+  std::unique_ptr<int16_t[]> face_verts; // index into list of vertices for this face
+  std::unique_ptr<roomUVL[]> face_uvls;  // index into list of uvls for this face
   vector normal;           // the surface normal of this face
   int16_t tmap;              // texture numbers for this face
   uint16_t lmi_handle;       // the lightmap info number for this face

@@ -1246,10 +1246,8 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         if (t != facelist[i]) {
           int nverts = rp->faces[t].num_verts;
 
-          newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
-          ASSERT(newfaces[t].face_verts != nullptr);
-          newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
-          ASSERT(newfaces[t].face_uvls != nullptr);
+          newfaces[t].face_verts = std::make_unique<int16_t[]>(nverts);
+          newfaces[t].face_uvls = std::make_unique<roomUVL[]>(nverts);
 
           newfaces[t].normal = rp->faces[t].normal;
           newfaces[t].tmap = rp->faces[t].tmap;
@@ -1270,10 +1268,8 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         {
           int nverts = 3;
 
-          newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
-          ASSERT(newfaces[t].face_verts != nullptr);
-          newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
-          ASSERT(newfaces[t].face_uvls != nullptr);
+          newfaces[t].face_verts = std::make_unique<int16_t[]>(nverts);
+          newfaces[t].face_uvls = std::make_unique<roomUVL[]>(nverts);
 
           newfaces[t].tmap = rp->faces[t].tmap;
           newfaces[t].flags = rp->faces[t].flags & ~FF_LIGHTMAP; // the rebuilt face has no lightmap
@@ -1296,7 +1292,7 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         }
       }
 
-      // Free up the old list of faces
+      // Free up the old list of faces (and their vert/uvl lists)
       rp->faces = std::move(newfaces);
       rp->num_faces = nfaces;
 
@@ -1341,13 +1337,8 @@ void ReInitRoomFace(face *fp, int nverts) {
 
   fp->num_verts = nverts;
 
-  mem_free(fp->face_verts);
-  mem_free(fp->face_uvls);
-
-  fp->face_verts = (int16_t *)mem_malloc(nverts * sizeof(*fp->face_verts));
-  ASSERT(fp->face_verts != nullptr);
-  fp->face_uvls = mem_rmalloc<roomUVL>(nverts);
-  ASSERT(fp->face_uvls != nullptr);
+  fp->face_verts = std::make_unique<int16_t[]>(nverts);
+  fp->face_uvls = std::make_unique<roomUVL[]>(nverts);
 }
 
 // Determines if two points are close enough together to be considered the same
@@ -1428,7 +1419,7 @@ int RoomAddFaces(room *rp, int num_new_faces) {
   auto newfaces = std::make_unique<face[]>(rp->num_faces + num_new_faces);
 
   for (int i = 0; i < rp->num_faces; i++) {
-    newfaces[i] = rp->faces[i];
+    newfaces[i] = std::move(rp->faces[i]);
   }
 
   rp->faces = std::move(newfaces);
@@ -1720,10 +1711,10 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
 
   // Copy faces over
   for (f = 0; f < facenum; f++) {
-    newfaces[f] = rp->faces[f];
+    newfaces[f] = std::move(rp->faces[f]);
   }
   for (f++; f < rp->num_faces; f++) {
-    newfaces[f - 1] = rp->faces[f];
+    newfaces[f - 1] = std::move(rp->faces[f]);
   }
 
 #ifdef NEWEDITOR
@@ -2126,7 +2117,7 @@ int CheckConcaveFaces(room *rp) {
   // Go through all the faces
   for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
 
-    int vert = CheckFaceConcavity(fp->num_verts, fp->face_verts, &fp->normal, rp->verts);
+    int vert = CheckFaceConcavity(fp->num_verts, fp->face_verts.get(), &fp->normal, rp->verts);
     if (vert != -1) {
       CheckError("Room %3d face %3d is concave at vertex %d\n", ROOMNUM(rp), f, vert);
       errors++;
