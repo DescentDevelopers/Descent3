@@ -100,6 +100,7 @@
 #define MUSIC_H
 
 #include <cstdint>
+#include <memory>
 
 #include "psclass.h"
 #include "streamaudio.h"
@@ -329,10 +330,10 @@ private:
   };
 
 private:
-  music_ins *m_ins_buffer; // music instruction buffer
-  music_ins *m_ins_curptr; // current pointer to free instruction buffer.
-  char *m_str_buffer;      // string buffer.
-  char *m_str_curptr;      // current pointer to free string
+  std::unique_ptr<music_ins[]> m_ins_buffer; // music instruction buffer
+  music_ins *m_ins_curptr;                   // current pointer to free instruction buffer.
+  std::unique_ptr<char[]> m_str_buffer;      // string buffer.
+  char *m_str_curptr;                        // current pointer to free string
 
   music_ins *alloc_and_copy_ins(int len, const music_ins *ins);
   char *alloc_and_copy_str(const char *str);

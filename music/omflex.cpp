@@ -142,8 +142,8 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
 
   // reset list management for new theme.
   m_tracklist.reset();
-  m_ins_curptr = m_ins_buffer;
-  m_str_curptr = m_str_buffer;
+  m_ins_curptr = m_ins_buffer.get();
+  m_str_curptr = m_str_buffer.get();
 
   //	open file
   if (!file)
