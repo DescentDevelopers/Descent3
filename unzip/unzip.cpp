@@ -39,6 +39,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <memory>
 
 #include <zlib.h>
 
@@ -123,7 +124,6 @@ bool ZIP::FindECDSignature(char *buffer, int buflen, int *offset) {
 }
 
 int ZIP::ReadECD() {
-  char *buf;
   int buf_length = 1024;
 
   while (true) {
@@ -136,31 +136,23 @@ int ZIP::ReadECD() {
       return -1;
     }
 
-    buf = (char *)malloc(buf_length);
-    if (!buf) {
+    auto buf = std::make_unique<char[]>(buf_length);
+
+    if (fread(buf.get(), buf_length, 1, m_fp) != 1) {
       return -1;
     }
 
-    if (fread(buf, buf_length, 1, m_fp) != 1) {
-      free(buf);
-      return -1;
-    }
-
-    if (FindECDSignature(buf, buf_length, &offset)) {
+    if (FindECDSignature(buf.get(), buf_length, &offset)) {
       m_ecd_length = buf_length - offset;
       m_ecd = (char *)malloc(m_ecd_length);
 
       if (!m_ecd) {
-        free(buf);
         return -1;
       }
 
-      memcpy(m_ecd, buf + offset, m_ecd_length);
-      free(buf);
+      memcpy(m_ecd, buf.get() + offset, m_ecd_length);
       return 0;
     }
-
-    free(buf);
 
     if (buf_length < m_length) {
       buf_length = 2 * buf_length;
@@ -527,7 +519,6 @@ int ZIP::SeekToCompressedData(zipentry *ent) {
 // uses zlib to inflate the given data
 int ZIP::InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigned out_size) {
   int err;
-  uint8_t *in_buffer;
   z_stream d_stream;
 
   d_stream.zalloc = nullptr;
@@ -549,17 +540,14 @@ int ZIP::InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigne
     return -1;
   }
 
-  in_buffer = (uint8_t *)malloc(INFLATE_INPUT_BUFFER_MAX + 1);
-  if (!in_buffer)
-    return -1;
+  auto in_buffer = std::make_unique<uint8_t[]>(INFLATE_INPUT_BUFFER_MAX + 1);
 
   for (;;) {
     if (in_size <= 0) {
-      free(in_buffer);
       return -1;
     }
-    d_stream.next_in = in_buffer;
-    d_stream.avail_in = fread(in_buffer, 1, std::min<uInt>(in_size, INFLATE_INPUT_BUFFER_MAX), in_file);
+    d_stream.next_in = in_buffer.get();
+    d_stream.avail_in = fread(in_buffer.get(), 1, std::min<uInt>(in_size, INFLATE_INPUT_BUFFER_MAX), in_file);
     in_size -= d_stream.avail_in;
     if (in_size == 0)
       d_stream.avail_in++; // add dummy byte at end of compressed data
@@ -568,18 +556,14 @@ int ZIP::InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigne
     if (err == Z_STREAM_END)
       break;
     if (err != Z_OK) {
-      free(in_buffer);
       return -1;
     }
   }
 
   err = inflateEnd(&d_stream);
   if (err != Z_OK) {
-    free(in_buffer);
     return -1;
   }
-
-  free(in_buffer);
 
   if ((d_stream.avail_out > 0) || (in_size > 0)) {
     return -1;
@@ -593,7 +577,6 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
   uint8_t out_data[DATA_CHUNK_SIZE];
   int err;
   uint32_t last_out;
-  uint8_t *in_buffer;
   uint8_t *next_out;
   z_stream d_stream;
 
@@ -618,9 +601,7 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
     return -1;
   }
 
-  in_buffer = (uint8_t *)malloc(DATA_CHUNK_SIZE + 1);
-  if (!in_buffer)
-    return -1;
+  auto in_buffer = std::make_unique<uint8_t[]>(DATA_CHUNK_SIZE + 1);
 
   for (;;) {
     // reset the output buffer
@@ -628,7 +609,6 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
     next_out = d_stream.next_out;
 
     if (in_size <= 0 && out_size <= 0) {
-      free(in_buffer);
       return -1;
     }
 
@@ -640,8 +620,8 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
     }
 
     if (d_stream.avail_in == 0 && in_size > 0) {
-      d_stream.next_in = in_buffer;
-      d_stream.avail_in = fread(in_buffer, 1, std::min<uInt>(in_size, DATA_CHUNK_SIZE), in_file);
+      d_stream.next_in = in_buffer.get();
+      d_stream.avail_in = fread(in_buffer.get(), 1, std::min<uInt>(in_size, DATA_CHUNK_SIZE), in_file);
       in_size -= d_stream.avail_in;
       if (in_size == 0)
         d_stream.avail_in++; // add dummy byte at end of compressed data
@@ -654,14 +634,12 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
         res = fwrite(next_out, to_write, 1, file);
         if (res == 0) {
           // error writing to file!
-          free(in_buffer);
           return -2;
         }
         break;
       }
     }
     if (err != Z_OK) {
-      free(in_buffer);
       return -1;
     }
     if (d_stream.total_out > last_out) {
@@ -669,7 +647,6 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
       res = fwrite(next_out, to_write, 1, file);
       if (res == 0) {
         // error writing to file!
-        free(in_buffer);
         return -2;
       }
     }
@@ -677,11 +654,8 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
 
   err = inflateEnd(&d_stream);
   if (err != Z_OK) {
-    free(in_buffer);
     return -1;
   }
-
-  free(in_buffer);
 
   if ((d_stream.avail_out > 0) || (in_size > 0)) {
     return -1;
