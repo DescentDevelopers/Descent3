@@ -188,7 +188,7 @@ inline void CLOSE_FONT(FONTFILE ffile) { cfclose(ffile); }
 //	----------------------------------------------------------------------------
 
 gr_font_record grFont::m_FontList[MAX_FONTS];
-grMemorySurface *grFont::m_CharSurf = nullptr;
+std::unique_ptr<grMemorySurface> grFont::m_CharSurf;
 
 void grFont::init_system() {
   for (int i = 0; i < MAX_FONTS; i++) {
@@ -196,13 +196,10 @@ void grFont::init_system() {
     grFont::m_FontList[i].filename[0] = 0;
   }
 
-  if (grFont::m_CharSurf) {
-    delete grFont::m_CharSurf;
-    grFont::m_CharSurf = nullptr;
-  }
+  grFont::m_CharSurf.reset();
 
   if (!grFont::m_CharSurf) {
-    grFont::m_CharSurf = new grMemorySurface;
+    grFont::m_CharSurf = std::make_unique<grMemorySurface>();
     grFont::m_CharSurf->init(0, 0, BPP_16, nullptr, 0, 0, "char_surf");
   }
 
@@ -210,10 +207,7 @@ void grFont::init_system() {
 }
 
 void grFont::close_system() {
-  if (grFont::m_CharSurf) {
-    delete grFont::m_CharSurf;
-    grFont::m_CharSurf = nullptr;
-  }
+  grFont::m_CharSurf.reset();
 
   // we should free any fonts currently allocated here.
   LOG_DEBUG << "Freeing cached fonts...";
@@ -494,7 +488,7 @@ void grFont::translate_to_surfaces(int slot) {
       m_CharSurf->init(w, fntfile->height, BPP_16, (char *)fntfile->char_data[ch], w * BITS_TO_BYTES(BPP_16),
                        SURFFLAG_COLORKEY);
 
-      fnt->surfs[surf_index - 1]->blt(u, v, m_CharSurf);
+      fnt->surfs[surf_index - 1]->blt(u, v, m_CharSurf.get());
     } else { //	font monochrome, convert bits to pixels
       grFont::translate_mono_char(fnt->surfs[surf_index - 1].get(), u, v, ch, fntfile, w);
     }
