@@ -1535,7 +1535,6 @@ void CloseGameMessageConsole() {
 tMsgList::tMsgList() {
   m_nmsg = 0;
   m_limit = 64;
-  m_msg = nullptr;
 }
 
 bool tMsgList::add(const char *msg, uint8_t lvl, uint8_t hr, uint8_t min, uint8_t sec) {
@@ -1545,46 +1544,37 @@ bool tMsgList::add(const char *msg, uint8_t lvl, uint8_t hr, uint8_t min, uint8_
     m_limit = 64;
 
   if (m_msg == nullptr) {
-    m_msg = mem_rmalloc<char *>(m_limit);
+    m_msg = std::make_unique<std::unique_ptr<char[]>[]>(m_limit);
     m_nmsg = 0;
   }
 
   if (m_nmsg == m_limit && m_nmsg > 0) {
-    int i;
-    mem_free(m_msg[0]);
-    for (i = 1; i < m_nmsg; i++)
-      m_msg[i - 1] = m_msg[i];
+    // drop the oldest message by shifting the rest down over it
+    for (int i = 1; i < m_nmsg; i++) {
+      m_msg[i - 1] = std::move(m_msg[i]);
+    }
     m_nmsg--;
   }
 
   if (lvl > 0) {
     snprintf(buf, sizeof(buf), "[%d.%d.%d.%d] %s", lvl, hr, min, sec, msg);
-    m_msg[m_nmsg++] = mem_strdup(buf);
+    m_msg[m_nmsg++] = mem_strdup_unique(buf);
   } else {
-    m_msg[m_nmsg++] = mem_strdup(msg);
+    m_msg[m_nmsg++] = mem_strdup_unique(msg);
   }
 
   return true;
 }
 
 void tMsgList::reset() {
-  if (m_msg) {
-    while (m_nmsg) {
-      m_nmsg--;
-      if (m_msg[m_nmsg]) {
-        mem_free(m_msg[m_nmsg]);
-      }
-    }
-    mem_free(m_msg);
-    m_msg = nullptr;
-  }
+  m_msg.reset();
   m_nmsg = 0;
 }
 
 const char *tMsgList::get(int i) {
   if (m_msg) {
     if (i < m_nmsg) {
-      return m_msg[i];
+      return m_msg[i].get();
     }
   }
   return nullptr;
@@ -1620,7 +1610,7 @@ redo_copy:
   char *bufptr = m_buffer;
 
   for (i = 0; i < m_list->m_nmsg; i++) {
-    const char *msg = m_list->m_msg[i];
+    const char *msg = m_list->m_msg[i].get();
     if ((strlen(m_buffer) + strlen(msg) + 2) >= (unsigned)(m_buflen)) {
       // reallocate buffer
       mem_free(m_buffer);

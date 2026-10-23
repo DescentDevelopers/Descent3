@@ -252,6 +252,8 @@
 #ifndef HUD_H
 #define HUD_H
 
+#include <memory>
+
 #include "pstypes.h"
 #include "grdefs.h"
 
@@ -640,7 +642,7 @@ void HUDUnpauseMessages(void);
 
 struct tMsgList {
   int m_nmsg, m_limit;
-  char **m_msg;
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_msg;
 
   tMsgList();
   void set_limit(int limit) { m_limit = limit; };
