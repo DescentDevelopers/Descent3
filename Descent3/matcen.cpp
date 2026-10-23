@@ -249,6 +249,31 @@ matcen::matcen() {
   Reset();
 }
 
+matcen::matcen(const matcen &other) : matcen_state(other), m_alive_list(nullptr) {
+  if (other.m_alive_list) {
+    m_alive_list = mem_rmalloc<int>(m_max_alive_children);
+    std::copy_n(other.m_alive_list, m_num_alive, m_alive_list);
+  }
+}
+
+matcen &matcen::operator=(const matcen &other) {
+  if (this != &other) {
+    int *alive_list = nullptr;
+    if (other.m_alive_list) {
+      alive_list = mem_rmalloc<int>(other.m_max_alive_children);
+      std::copy_n(other.m_alive_list, other.m_num_alive, alive_list);
+    }
+
+    if (m_alive_list) {
+      mem_free(m_alive_list);
+    }
+
+    matcen_state::operator=(other);
+    m_alive_list = alive_list;
+  }
+  return *this;
+}
+
 matcen::~matcen() {
   if (m_alive_list) {
     mem_free(m_alive_list);
