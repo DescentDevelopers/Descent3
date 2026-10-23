@@ -226,6 +226,39 @@ void FreeObjectInfo(void) {
   }
 }
 
+// Copies all the plain fields of src to dst, i.e. everything except the owned description, ai_info, static_wb and anim
+void CopyObjectInfoPlainFields(object_info *dst, const object_info *src) {
+  memcpy(dst->name, src->name, sizeof(dst->name));
+  dst->type = src->type;
+  dst->size = src->size;
+  dst->flags = src->flags;
+  dst->render_handle = src->render_handle;
+  dst->med_render_handle = src->med_render_handle;
+  dst->lo_render_handle = src->lo_render_handle;
+  dst->med_lod_distance = src->med_lod_distance;
+  dst->lo_lod_distance = src->lo_lod_distance;
+  dst->score = src->score;
+  dst->hit_points = src->hit_points;
+  dst->damage = src->damage;
+  dst->impact_size = src->impact_size;
+  dst->impact_time = src->impact_time;
+  dst->ammo_count = src->ammo_count;
+  memcpy(dst->icon_name, src->icon_name, sizeof(dst->icon_name));
+  memcpy(dst->sounds, src->sounds, sizeof(dst->sounds));
+  memcpy(dst->dspew, src->dspew, sizeof(dst->dspew));
+  memcpy(dst->dspew_percent, src->dspew_percent, sizeof(dst->dspew_percent));
+  memcpy(dst->dspew_number, src->dspew_number, sizeof(dst->dspew_number));
+  dst->f_dspew = src->f_dspew;
+  dst->phys_info = src->phys_info;
+  dst->lighting_info = src->lighting_info;
+  dst->respawn_scalar = src->respawn_scalar;
+  dst->multi_allowed = src->multi_allowed;
+  memcpy(dst->module_name, src->module_name, sizeof(dst->module_name));
+  memcpy(dst->script_name_override, src->script_name_override, sizeof(dst->script_name_override));
+  memcpy(dst->death_types, src->death_types, sizeof(dst->death_types));
+  memcpy(dst->death_probabilities, src->death_probabilities, sizeof(dst->death_probabilities));
+}
+
 // Find an object with the given type.  Returns -1 if none found.
 int GetObjectID(int type) {
   int i;

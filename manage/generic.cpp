@@ -1911,9 +1911,9 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
 
   // copy our values
   //	memcpy (objinfopointer,&genericpage->objinfo_struct,sizeof(*objinfopointer));
+  CopyObjectInfoPlainFields(objinfopointer, &genericpage->objinfo_struct);
   // Description pointer is simply moved
-  memcpy(objinfopointer, &genericpage->objinfo_struct,
-         sizeof(*objinfopointer) - sizeof(anim_elem *) - sizeof(otype_wb_info *) - sizeof(t_ai_info *));
+  objinfopointer->description = genericpage->objinfo_struct.description;
   genericpage->objinfo_struct.description = nullptr;
 
   strcpy(objinfopointer->name, genericpage->objinfo_struct.name);
@@ -2101,7 +2101,7 @@ void mng_AssignObjInfoToGenericPage(int n, mngs_generic_page *genericpage) {
   int i, j;
 
   // Assign the  values
-  memcpy(&genericpage->objinfo_struct, objinfopointer, sizeof(*objinfopointer));
+  CopyObjectInfoPlainFields(&genericpage->objinfo_struct, objinfopointer);
   strcpy(genericpage->objinfo_struct.name, objinfopointer->name);
 
   if (objinfopointer->anim)
