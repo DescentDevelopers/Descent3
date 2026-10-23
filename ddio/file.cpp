@@ -21,6 +21,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iterator>
+#include <memory>
 #include <random>
 #include <regex>
 #include <SDL3/SDL_filesystem.h>
@@ -171,8 +172,8 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
   const char *ext = ".tmp";
   std::filesystem::path result;
   size_t len_result = strlen(PATH_TO_CSTR(basedir / prefix));
-  char *random_name = (char *)mem_malloc(len_result + len + strlen(ext) + 1);
-  strncpy(random_name, PATH_TO_CSTR(basedir / prefix), len_result);
+  auto random_name = std::make_unique<char[]>(len_result + len + strlen(ext) + 1);
+  strncpy(random_name.get(), PATH_TO_CSTR(basedir / prefix), len_result);
 
   // we intentionally do NOT use the same RNG as the "game" logic. that RNG is seed-controlled for tests,
   // and using it here would introduce an uncontrollable source of randomness from potential tmpdir collisions
@@ -185,15 +186,14 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
       random_name[i] = alphanum[pick(gen)];
     }
     random_name[len_result + len] = '\0';
-    strcat(random_name, ext);
-    if (!std::filesystem::exists(random_name)) {
+    strcat(random_name.get(), ext);
+    if (!std::filesystem::exists(random_name.get())) {
       // Found unique name, break the loop
-      result = random_name;
+      result = random_name.get();
       break;
     }
     tries--;
   }
-  mem_free(random_name);
   return result;
 }
 
