@@ -249,7 +249,8 @@ struct room {
   int16_t vis_effects;         // index of first visual effect in this room
   int16_t mirror_face;         // Index of face that this room is to be mirrored by
   uint8_t num_mirror_faces;    // Number of faces in this room that have the same texture as the mirror
-  uint16_t *mirror_faces_list; // the list of faces in this room that have the same texture as the mirror
+  // the list of faces in this room that have the same texture as the mirror
+  std::unique_ptr<uint16_t[]> mirror_faces_list;
   float damage;              // The damage per second applied to players (& maybe others) in room
 
   vector path_pnt;      // Point used by the path system
