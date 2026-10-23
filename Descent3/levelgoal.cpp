@@ -157,6 +157,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <utility>
 
 #include "levelgoal.h"
 #include "log.h"
@@ -212,6 +213,47 @@ void lgoal::GoalComplete(int handle, bool announce) {
     // Add to the game message buffer
     AddGameMessage(message);
   }
+}
+
+// Takes over other's strings (freeing our own) and copies the rest of its state; other is left without strings.
+lgoal &lgoal::operator=(lgoal &&other) noexcept {
+  if (this == &other) {
+    return *this;
+  }
+
+  if (m_name) {
+    mem_free(m_name);
+  }
+  if (m_item_name) {
+    mem_free(m_item_name);
+  }
+  if (m_desc) {
+    mem_free(m_desc);
+  }
+  if (m_completion_message) {
+    mem_free(m_completion_message);
+  }
+
+  m_name = other.m_name;
+  m_item_name = other.m_item_name;
+  m_desc = other.m_desc;
+  m_completion_message = other.m_completion_message;
+  other.m_name = nullptr;
+  other.m_item_name = nullptr;
+  other.m_desc = nullptr;
+  other.m_completion_message = nullptr;
+
+  m_num_items = other.m_num_items;
+  for (int i = 0; i < MAX_GOAL_ITEMS; i++) {
+    m_item[i] = other.m_item[i];
+  }
+  m_g_list = other.m_g_list;
+  m_modified = other.m_modified;
+  m_goal_completed = other.m_goal_completed;
+  m_priority = other.m_priority;
+  m_flags = other.m_flags;
+
+  return *this;
 }
 
 int lgoal::AddItem() {
@@ -626,7 +668,7 @@ bool levelgoals::DeleteGoal(int index) {
   m_goal[index].Reset(false);
 
   for (i = index; i < m_num_goals - 1; i++) {
-    m_goal[i] = m_goal[i + 1];
+    m_goal[i] = std::move(m_goal[i + 1]);
   }
 
   m_num_goals--;
