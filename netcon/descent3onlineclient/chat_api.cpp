@@ -79,7 +79,8 @@ int GettingChannelList = 0;
 int GettingUserTID = 0;
 int GettingUserChannel = 0;
 
-Chat_user *Firstuser, *Curruser;
+std::unique_ptr<Chat_user> Firstuser;
+Chat_user *Curruser;
 Chat_command *Firstcommand, *Currcommand;
 Chat_channel *Firstchannel, *Currchannel;
 
@@ -130,7 +131,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
     strcpy(Orignial_nick_name, nickname);
     strcpy(Chat_tracker_id, trackerid);
 
-    Firstuser = nullptr;
+    Firstuser.reset();
     Firstcommand = nullptr;
     Chat_server_connected = 0;
     FlushChatCommandQueue();
@@ -375,17 +376,17 @@ char *GetChatUserList() {
   if (!Socket_connected)
     return nullptr;
 
-  Curruser = Firstuser;
+  Curruser = Firstuser.get();
   while (Curruser) {
     iuser_list_length += strlen(Curruser->nick_name) + 1;
-    Curruser = Curruser->next;
+    Curruser = Curruser->next.get();
   }
-  Curruser = Firstuser;
+  Curruser = Firstuser.get();
   User_list = std::make_unique<char[]>(iuser_list_length + 1);
   while (Curruser) {
     strcat(User_list.get(), Curruser->nick_name);
     strcat(User_list.get(), " ");
-    Curruser = Curruser->next;
+    Curruser = Curruser->next.get();
   }
 
   return User_list.get();
@@ -506,30 +507,26 @@ const char *GetWordNum(int num, const char *l_String) {
 }
 
 int AddChatUser(const char *nickname) {
-  Curruser = Firstuser;
+  Curruser = Firstuser.get();
   while (Curruser) {
     if (stricmp(nickname, Curruser->nick_name) == 0)
       return 0;
-    Curruser = Curruser->next;
+    Curruser = Curruser->next.get();
   }
 
-  Curruser = Firstuser;
+  Curruser = Firstuser.get();
   if (Firstuser == nullptr) {
-    Firstuser = (Chat_user *)DLLmem_malloc(sizeof(Chat_user));
-    // ASSERT(Firstuser);
+    Firstuser = std::make_unique<Chat_user>();
     strcpy(Firstuser->nick_name, nickname);
-    Firstuser->next = nullptr;
     AddChatCommandToQueue(CC_USER_JOINING, nickname, strlen(nickname) + 1);
     return 1;
   } else {
     while (Curruser->next) {
-      Curruser = Curruser->next;
+      Curruser = Curruser->next.get();
     }
-    Curruser->next = (Chat_user *)DLLmem_malloc(sizeof(Chat_user));
-    Curruser = Curruser->next;
-    // ASSERT(Curruser);
+    Curruser->next = std::make_unique<Chat_user>();
+    Curruser = Curruser->next.get();
     strcpy(Curruser->nick_name, nickname);
-    Curruser->next = nullptr;
     AddChatCommandToQueue(CC_USER_JOINING, nickname, strlen(nickname) + 1);
     return 1;
   }
@@ -538,35 +535,30 @@ int AddChatUser(const char *nickname) {
 int RemoveChatUser(char *nickname) {
   Chat_user *prv_user = nullptr;
 
-  Curruser = Firstuser;
+  Curruser = Firstuser.get();
   while (Curruser) {
     if (stricmp(nickname, Curruser->nick_name) == 0) {
-      if (prv_user) {
-        prv_user->next = Curruser->next;
-
-      } else {
-        Firstuser = Curruser->next;
-      }
       AddChatCommandToQueue(CC_USER_LEAVING, Curruser->nick_name, strlen(Curruser->nick_name) + 1);
-      DLLmem_free(Curruser);
+      // Unlink the node, which frees it
+      if (prv_user) {
+        prv_user->next = std::move(Curruser->next);
+      } else {
+        Firstuser = std::move(Curruser->next);
+      }
       return 1;
     }
     prv_user = Curruser;
-    Curruser = Curruser->next;
+    Curruser = Curruser->next.get();
   }
   return 0;
 }
 
 void RemoveAllChatUsers() {
-  Chat_user *tmp_user = nullptr;
-  Curruser = Firstuser;
-  while (Curruser) {
-    tmp_user = Curruser->next;
-    AddChatCommandToQueue(CC_USER_LEAVING, Curruser->nick_name, strlen(Curruser->nick_name) + 1);
-    DLLmem_free(Curruser);
-    Curruser = tmp_user;
+  while (Firstuser) {
+    AddChatCommandToQueue(CC_USER_LEAVING, Firstuser->nick_name, strlen(Firstuser->nick_name) + 1);
+    Firstuser = std::move(Firstuser->next);
   }
-  Firstuser = nullptr;
+  Curruser = nullptr;
 }
 
 char *ParseIRCMessage(char *Line, int iMode) {
