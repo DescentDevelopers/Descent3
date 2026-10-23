@@ -164,9 +164,9 @@ void InitAmbientSounds() {
 
 // Close down ambient sound system and free data
 static void FreeAmbientSoundData() {
-  for (int p = 0; p < Num_ambient_sound_patterns; p++)
-    if (Ambient_sound_patterns[p].num_sounds)
-      mem_free(Ambient_sound_patterns[p].sounds);
+  for (int p = 0; p < Num_ambient_sound_patterns; p++) {
+    Ambient_sound_patterns[p].sounds.reset();
+  }
 
   Num_ambient_sound_patterns = 0;
 }
@@ -257,10 +257,11 @@ void ReadAmbientData() {
 
     asp->num_sounds = cf_ReadInt(ifile);
 
-    if (asp->num_sounds > 0)
-      asp->sounds = mem_rmalloc<ase>(asp->num_sounds);
-    else
-      asp->sounds = nullptr;
+    if (asp->num_sounds > 0) {
+      asp->sounds = std::make_unique<ase[]>(asp->num_sounds);
+    } else {
+      asp->sounds.reset();
+    }
 
     int prob = 0;
     for (int s = 0; s < asp->num_sounds; s++) {
