@@ -77,7 +77,7 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   }
   std::filesystem::path fileName = prefPath / REGISTRY_FILENAME;
 
-  database = new CRegistry(PATH_TO_CSTR(fileName));
+  database = std::make_unique<CRegistry>(PATH_TO_CSTR(fileName));
   database->Import();
   create_record("Version");
 }
@@ -86,7 +86,7 @@ oeLnxAppDatabase::oeLnxAppDatabase(oeLnxAppDatabase *parent) {
   char name[256];
   CRegistry *db = parent->GetSystemRegistry();
   db->Export();
-  database = new CRegistry("");
+  database = std::make_unique<CRegistry>("");
   db->GetSystemName(name);
   database->SetSystemName(name);
   database->Import();
@@ -95,14 +95,13 @@ oeLnxAppDatabase::oeLnxAppDatabase(oeLnxAppDatabase *parent) {
 oeLnxAppDatabase::~oeLnxAppDatabase() {
   if (database) {
     database->Export();
-    delete database;
     return;
   }
 
   LOG_ERROR << "Can't Export Database Since It's Not There!";
 }
 
-CRegistry *oeLnxAppDatabase::GetSystemRegistry() { return database; }
+CRegistry *oeLnxAppDatabase::GetSystemRegistry() { return database.get(); }
 
 // Record functions
 // these are actual folders of information
