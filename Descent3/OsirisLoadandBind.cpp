@@ -402,6 +402,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <map>
+#include <memory>
 
 #include "cfile.h"
 #include "ddio.h"
@@ -482,7 +483,7 @@ struct tOSIRISModule {
   GetCOScriptList_fp GetCOScriptList;
   SaveRestoreState_fp SaveRestoreState;
   module mod;
-  char *module_name;
+  std::unique_ptr<char[]> module_name;
   char **string_table;
   int strings_loaded;
 
@@ -585,7 +586,7 @@ void Osiris_InitModuleLoader(void) {
   for (i = 0; i < MAX_LOADED_MODULES; i++) {
     OSIRIS_loaded_modules[i].flags = 0;
     OSIRIS_loaded_modules[i].reference_count = 0;
-    OSIRIS_loaded_modules[i].module_name = nullptr;
+    OSIRIS_loaded_modules[i].module_name.reset();
     OSIRIS_loaded_modules[i].CallInstanceEvent = nullptr;
     OSIRIS_loaded_modules[i].CreateInstance = nullptr;
     OSIRIS_loaded_modules[i].DestroyInstance = nullptr;
@@ -719,10 +720,7 @@ void Osiris_FreeModule(int id) {
     OSIRIS_loaded_modules[id].RefRoot = nullptr;
 #endif
 
-    if (OSIRIS_loaded_modules[id].module_name) {
-      mem_free(OSIRIS_loaded_modules[id].module_name);
-      OSIRIS_loaded_modules[id].module_name = nullptr;
-    }
+    OSIRIS_loaded_modules[id].module_name.reset();
   }
 }
 
@@ -755,7 +753,7 @@ void Osiris_DumpLoadedObjects(char *file) {
       tRefObj *node = OSIRIS_loaded_modules[j].RefRoot;
       while (node) {
         snprintf(buffy, sizeof(buffy), "Module: \"%s\" Objnum: %d Type: %d%s Id:%d\n",
-                 OSIRIS_loaded_modules[j].module_name, node->objnum, node->type, (node->dummy) ? "(Dummy)" : "",
+                 OSIRIS_loaded_modules[j].module_name.get(), node->objnum, node->type, (node->dummy) ? "(Dummy)" : "",
                  node->id);
         cf_WriteString(f, buffy);
         node = node->next;
@@ -778,7 +776,7 @@ int Osiris_FindLoadedModule(const std::filesystem::path &module_name) {
   for (int i = 0; i < MAX_LOADED_MODULES; i++) {
     if (OSIRIS_loaded_modules[i].flags & OSIMF_INUSE) {
       if (OSIRIS_loaded_modules[i].module_name &&
-          stricmp(OSIRIS_loaded_modules[i].module_name, PATH_TO_CSTR(real_name)) == 0) {
+          stricmp(OSIRIS_loaded_modules[i].module_name.get(), PATH_TO_CSTR(real_name)) == 0) {
         // we found a match
         return i;
       }
@@ -798,7 +796,8 @@ void Osiris_UnloadModule(int module_id) {
   if (OSIRIS_loaded_modules[module_id].flags & OSIMF_INUSE) {
     // the module is in use
     LOG_DEBUG_IF(Show_osiris_debug)
-        .printf("OSIRIS: Decrementing reference count for module (%s)", OSIRIS_loaded_modules[module_id].module_name);
+        .printf("OSIRIS: Decrementing reference count for module (%s)",
+                OSIRIS_loaded_modules[module_id].module_name.get());
     OSIRIS_loaded_modules[module_id].reference_count--;
 
     ASSERT(OSIRIS_loaded_modules[module_id].reference_count >= 0);
@@ -812,12 +811,12 @@ void Osiris_UnloadModule(int module_id) {
 
         // do not unload this module, due to the forced stay in memory
         LOG_VERBOSE.printf("OSIRIS: Module (%s) staying in memory due to static flag",
-                           OSIRIS_loaded_modules[module_id].module_name);
+                           OSIRIS_loaded_modules[module_id].module_name.get());
       } else {
         // time to unload this module
         LOG_DEBUG_IF(Show_osiris_debug)
             .printf("OSIRIS: Module (%s) reference count is at 0, unloading",
-                    OSIRIS_loaded_modules[module_id].module_name);
+                    OSIRIS_loaded_modules[module_id].module_name.get());
         Osiris_FreeModule(module_id);
       }
     }
@@ -865,7 +864,8 @@ void Osiris_UnloadLevelModule(void) {
 
     if (OSIRIS_loaded_modules[j].flags & OSIMF_INUSE && OSIRIS_loaded_modules[j].flags & OSIMF_NOUNLOAD) {
       // unload this module
-      LOG_DEBUG.printf("OSIRIS: Unloading static module (%s) due to level end\n", OSIRIS_loaded_modules[j].module_name);
+      LOG_DEBUG.printf("OSIRIS: Unloading static module (%s) due to level end\n",
+                       OSIRIS_loaded_modules[j].module_name.get());
       Osiris_FreeModule(j);
     }
 
@@ -1034,7 +1034,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
 
   osm->flags |= OSIMF_INUSE | OSIMF_LEVEL;
-  osm->module_name = mem_strdup(PATH_TO_CSTR(basename));
+  osm->module_name = mem_strdup_unique(PATH_TO_CSTR(basename));
   osm->reference_count = 1;
 
 #ifdef OSIRISDEBUG
@@ -1050,9 +1050,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     LOG_ERROR.printf("OSIRIS: Osiris_LoadLevelModule(%s) couldn't import function.", PATH_TO_CSTR(module_name));
     Int3();
     osm->flags = 0;
-    if (osm->module_name)
-      mem_free(osm->module_name);
-    osm->module_name = nullptr;
+    osm->module_name.reset();
     mod_FreeModule(mod);
     return -3;
   }
@@ -1080,7 +1078,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   Osiris_module_init.string_count = osm->strings_loaded;
   Osiris_module_init.string_table = osm->string_table;
   Osiris_module_init.module_is_static = false;
-  Osiris_module_init.script_identifier = osm->module_name;
+  Osiris_module_init.script_identifier = osm->module_name.get();
   Osiris_module_init.module_identifier = loaded_id;
 
   // when we get to this point we nearly have a loaded module, we just need to initialize it
@@ -1091,9 +1089,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
       DestroyStringTable(osm->string_table, osm->strings_loaded);
     }
     osm->flags = 0;
-    if (osm->module_name)
-      mem_free(osm->module_name);
-    osm->module_name = nullptr;
+    osm->module_name.reset();
     osm->string_table = nullptr;
     osm->strings_loaded = 0;
     mod_FreeModule(mod);
@@ -1227,7 +1223,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
 
   osm->flags |= OSIMF_INUSE;
-  osm->module_name = mem_strdup(PATH_TO_CSTR(basename));
+  osm->module_name = mem_strdup_unique(PATH_TO_CSTR(basename));
   osm->reference_count = 1;
 
 #ifdef OSIRISDEBUG
@@ -1242,9 +1238,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
     LOG_WARNING.printf("OSIRIS: Osiris_LoadGameModule(%s) couldn't import function.", PATH_TO_CSTR(basename));
     Int3();
     osm->flags = 0;
-    if (osm->module_name)
-      mem_free(osm->module_name);
-    osm->module_name = nullptr;
+    osm->module_name.reset();
     mod_FreeModule(mod);
     return -3;
   }
@@ -1271,7 +1265,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   Osiris_module_init.string_count = osm->strings_loaded;
   Osiris_module_init.string_table = osm->string_table;
   Osiris_module_init.module_is_static = false; // set this to false to avoid a fake true
-  Osiris_module_init.script_identifier = osm->module_name;
+  Osiris_module_init.script_identifier = osm->module_name.get();
   Osiris_module_init.module_identifier = loaded_id;
 
   // when we get to this point we nearly have a loaded module, we just need to initialize it
@@ -1284,16 +1278,14 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
     osm->string_table = nullptr;
     osm->strings_loaded = 0;
     osm->flags = 0;
-    if (osm->module_name)
-      mem_free(osm->module_name);
-    osm->module_name = nullptr;
+    osm->module_name.reset();
     mod_FreeModule(mod);
     return -2;
   }
 
   if (Osiris_module_init.module_is_static) {
     // the module is requesting to be static
-    LOG_DEBUG.printf("OSIRIS: Module (%s) is requesting to be static", osm->module_name);
+    LOG_DEBUG.printf("OSIRIS: Module (%s) is requesting to be static", osm->module_name.get());
     osm->flags |= OSIMF_NOUNLOAD;
   }
 
@@ -1369,7 +1361,7 @@ int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
   osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
 
   osm->flags = OSIMF_INUSE | OSIMF_DLLELSEWHERE;
-  osm->module_name = mem_strdup(filename);
+  osm->module_name = mem_strdup_unique(filename);
   osm->reference_count = 1;
 
 #ifdef OSIRISDEBUG
@@ -2624,9 +2616,9 @@ void Osiris_SaveSystemState(CFILE *file) {
   for (i = 0; i < MAX_LOADED_MODULES; i++) {
     if (OSIRIS_loaded_modules[i].flags & OSIMF_INUSE) {
       // get the length of the module name
-      int module_name_length = strlen(OSIRIS_loaded_modules[i].module_name) + 1;
+      int module_name_length = strlen(OSIRIS_loaded_modules[i].module_name.get()) + 1;
       cf_WriteByte(file, module_name_length);
-      cf_WriteBytes((uint8_t *)OSIRIS_loaded_modules[i].module_name, module_name_length, file);
+      cf_WriteBytes((uint8_t *)OSIRIS_loaded_modules[i].module_name.get(), module_name_length, file);
 
       // now here is the tricky part, save the current fileposition, write a dummy 0 int
       int saved_file_pos = cftell(file);
