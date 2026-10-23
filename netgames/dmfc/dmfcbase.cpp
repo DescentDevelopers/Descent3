@@ -1951,14 +1951,12 @@ int DMFCBase::GetTeamForNewPlayer(int player_num, int num_teams) {
     return -1; // place on the special "no team"
   }
 
-  int i;
-  int *Teams;
-  Teams = (int *)malloc(sizeof(int) * num_teams);
-  if (!Teams)
+  // with no teams to count, team 0 is the answer (and a negative count must not reach make_unique)
+  if (num_teams <= 0)
     return 0;
 
-  for (i = 0; i < num_teams; i++)
-    Teams[i] = 0;
+  int i;
+  auto Teams = std::make_unique<int[]>(num_teams);
 
   for (i = 0; i < DLLMAX_PLAYERS; i++) {
     if ((i != player_num) && (CheckPlayerNum(i)) && (Players[i].team != -1)) {
@@ -1978,7 +1976,6 @@ int DMFCBase::GetTeamForNewPlayer(int player_num, int num_teams) {
       low_team = i;
     }
   }
-  free(Teams);
   return low_team;
 }
 
