@@ -20,6 +20,7 @@
 #define AUDIODECODE_H_
 
 #include <cstdint>
+#include <memory>
 
 namespace AudioDecoder {
 
@@ -43,8 +44,8 @@ public:
 // (e.g. 22050), and the number of samples contained in the compressed file
 // (in case you want to pre-allocate a buffer to load them all into memory).
 typedef int32_t (*ReadDataFunction)(void *pData, void *pBuffer, uint32_t amount);
-IAudioDecoder *CreateDecoder(ReadDataFunction reader, void *pData, uint32_t &numChannels, uint32_t &sampleRate,
-                             uint32_t &sampleCount);
+std::unique_ptr<IAudioDecoder> CreateDecoder(ReadDataFunction reader, void *pData, uint32_t &numChannels,
+                                             uint32_t &sampleRate, uint32_t &sampleCount);
 
 } // namespace AudioDecoder
 
