@@ -654,7 +654,7 @@ void CWorldObjectsGenericDialog::OnGenericAddNew() {
   ddio_SplitPath(filename, dir, fname, ext);
 
   std::filesystem::path tmp = ChangePolyModelName(filename);
-  strcpy(cur_name, tmp.u8string().c_str());
+  strcpy(cur_name, PATH_TO_CSTR(tmp));
 
   if ((FindPolyModelName(fname)) != -1) {
     OutrageMessageBox("You must rename your model to something else because there is already a model with that name!");
@@ -1007,7 +1007,7 @@ void CWorldObjectsGenericDialog::OnGenericChangeModel() {
     return;
 
   std::filesystem::path tmp = ChangePolyModelName(filename);
-  strcpy(curname, tmp.u8string().c_str());
+  strcpy(curname, PATH_TO_CSTR(tmp));
 
   ddio_SplitPath(filename, dir, fname, ext);
 
@@ -1049,7 +1049,7 @@ void CWorldObjectsGenericDialog::OnGenericChangeModel() {
   }
   // Finally, save a local copy of the model
 
-  sprintf(curname, "%s\\%s", LocalModelsDir.u8string().c_str(), Poly_models[img_handle].name);
+  sprintf(curname, "%s\\%s", PATH_TO_CSTR(LocalModelsDir), Poly_models[img_handle].name);
   cf_CopyFile(curname, filename);
 
   UpdateDialog();

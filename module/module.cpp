@@ -110,7 +110,7 @@ int ModLastError = MODERR_NOERROR;
 
 std::filesystem::path mod_GetRealModuleName(const std::filesystem::path &mod_filename) {
   std::filesystem::path filename = mod_filename;
-  std::string ext = (const char*)mod_filename.extension().u8string().c_str();
+  std::string ext = PATH_TO_CSTR(mod_filename.extension());
 
   if (ext.empty()) {
     filename.replace_extension(MODULE_EXT);
@@ -152,7 +152,7 @@ bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, i
   handle->handle = nullptr;
   std::filesystem::path modfilename = mod_GetRealModuleName(imodfilename);
 #if defined(WIN32)
-  handle->handle = LoadLibrary(modfilename.u8string().c_str());
+  handle->handle = LoadLibrary(PATH_TO_CSTR(modfilename));
   if (!handle->handle) {
     // There was an error loading the module
     DWORD err = GetLastError();
@@ -180,7 +180,7 @@ bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, i
     f |= RTLD_NOW;
   if (flags & MODF_GLOBAL)
     f |= RTLD_GLOBAL;
-  handle->handle = dlopen((const char*)modfilename.u8string().c_str(), f);
+  handle->handle = dlopen(PATH_TO_CSTR(modfilename), f);
   if (!handle->handle) {
     // ok we couldn't find the given name...try other ways
     std::filesystem::path parent_path = modfilename.parent_path().filename();
@@ -193,10 +193,10 @@ bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, i
     }
 
     // ok we have a different filename
-    LOG_DEBUG.printf("MOD: Attempting to open %s instead of %s", new_filename.u8string().c_str(),
-                     modfilename.u8string().c_str());
+    LOG_DEBUG.printf("MOD: Attempting to open %s instead of %s", PATH_TO_CSTR(new_filename),
+                     PATH_TO_CSTR(modfilename));
     modfilename = parent_path / new_filename;
-    handle->handle = dlopen((const char*)modfilename.u8string().c_str(), f);
+    handle->handle = dlopen(PATH_TO_CSTR(modfilename), f);
     if (!handle->handle) {
       LOG_ERROR.printf("Module Load Err: %s", dlerror());
       ModLastError = MODERR_MODNOTFOUND;

@@ -486,11 +486,11 @@ void CWorldWeaponsDialog::OnAddWeapon() {
   mprintf(0, "Making a copy of this bitmap/anim locally...\n");
 
   if (!anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameBitmaps[Weapons[weapon_handle].hud_image_handle].name);
     bm_SaveFileBitmap(filename, Weapons[weapon_handle].hud_image_handle);
   } else {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameVClips[Weapons[weapon_handle].hud_image_handle].name);
     SaveVClip(filename, Weapons[weapon_handle].hud_image_handle);
   }
@@ -539,11 +539,11 @@ void CWorldWeaponsDialog::OnAddWeapon() {
 
   if (!model) {
     if (!anim) {
-      sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+      sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
         GameBitmaps[Weapons[weapon_handle].fire_image_handle].name);
       bm_SaveFileBitmap(filename, Weapons[weapon_handle].fire_image_handle);
     } else {
-      sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+      sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
         GameVClips[Weapons[weapon_handle].fire_image_handle].name);
       SaveVClip(filename, Weapons[weapon_handle].fire_image_handle);
     }
@@ -1414,11 +1414,11 @@ void CWorldWeaponsDialog::OnLoadWeaponDischarge() {
 
   if (!model) {
     if (!anim) {
-      sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+      sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
         GameBitmaps[Weapons[n].fire_image_handle].name);
       bm_SaveFileBitmap(filename, Weapons[n].fire_image_handle);
     } else {
-      sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+      sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
         GameVClips[Weapons[n].fire_image_handle].name);
       SaveVClip(filename, Weapons[n].fire_image_handle);
     }

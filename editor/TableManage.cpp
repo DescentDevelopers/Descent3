@@ -394,9 +394,8 @@ void GenericPageList::SaveSelected(CEdit *description) {
 
   // Get Copy of new Description text
   description->GetWindowText(new_descrip);
-  new_text = mem_rmalloc<char>(strlen(new_descrip.GetBuffer(0)) + 1);
+  new_text = mem_strdup(new_descrip.GetBuffer(0));
   ASSERT(new_text); // out of memory!
-  sprintf(new_text, "%s", new_descrip.GetBuffer(0));
 
   // Check if new description is empty, if it is, make it NULL
   if (strlen(new_text) == 0 || stricmp(new_text, NO_DESCRIPTION_STRING) == 0) {

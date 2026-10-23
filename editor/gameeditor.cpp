@@ -611,7 +611,7 @@ void GameToEditor(bool set_viewer_from_player) {
   if (Temp_level_saved) {
     char filename[_MAX_PATH];
 
-    ddio_MakePath(filename, cf_GetWritableBaseDirectory().u8string().c_str(), "GameSave.D3L", NULL); // make explicit path
+    ddio_MakePath(filename, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "GameSave.D3L", NULL); // make explicit path
     LoadLevel(filename);
     Temp_level_saved = 0;
   }
@@ -744,7 +744,7 @@ void EditorToGame() {
   //	set game working directory
   bool set_size = false;
   ddio_GetWorkingDir(Editor_dir, sizeof(Editor_dir));
-  ddio_SetWorkingDir(cf_GetWritableBaseDirectory().u8string().c_str());
+  ddio_SetWorkingDir(PATH_TO_CSTR(cf_GetWritableBaseDirectory()));
 
   Osiris_ResetAllTimers();
 

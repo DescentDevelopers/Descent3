@@ -165,7 +165,7 @@ BOOL CScriptWizard::OnInitDialog() {
   std::filesystem::path dir = std::filesystem::path(LocalLevelsDir);
   ddio_DoForeachFile(dir, std::regex(".+\\.scr"), [&modcbox](const std::filesystem::path& path){
     std::filesystem::path file = path.filename();
-    modcbox->AddString(file.u8string().c_str());
+    modcbox->AddString(PATH_TO_CSTR(file));
   });
 
   modcbox->SelectString(-1, LEVEL_SCRIPT_NAME);

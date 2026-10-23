@@ -678,10 +678,9 @@ void GrowString::operator+=(char *str) {
     node->next = NULL;
     curr = node;
   } else {
-    root.string_data = mem_rmalloc<char>(strlen(str) + 1);
+    root.string_data = mem_strdup(str);
     if (!root.string_data)
       return;
-    strcpy(root.string_data, str);
     root.next = NULL;
   }
 }
