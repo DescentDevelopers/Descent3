@@ -52,6 +52,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "args.h"
 #include "d3movie.h"
@@ -64,7 +65,7 @@
 // Subtitle data
 struct subtitle {
   int first_frame, last_frame;
-  char *msg;
+  std::unique_ptr<char[]> msg;
 };
 
 #define MAX_SUBTITLES 500
@@ -186,9 +187,8 @@ void SubtParseSubtitles(CFILE *file) {
 
     Subtitles[Num_subtitles].first_frame = first_frame;
     Subtitles[Num_subtitles].last_frame = last_frame;
-    Subtitles[Num_subtitles].msg = mem_strdup(p); // be sure to free this later
-    if (!Subtitles[Num_subtitles].msg)
-      goto subt_parse_error;
+    Subtitles[Num_subtitles].msg = mem_strdup_unique(p);
+
     Num_subtitles++;
 
     PARSE_NEXT_LINE();
@@ -202,9 +202,7 @@ subt_parse_error:
 // Resets the subtitle information
 void SubtResetSubTitles(void) {
   for (int i = 0; i < Num_subtitles; i++) {
-    if (Subtitles[i].msg)
-      mem_free(Subtitles[i].msg);
-    Subtitles[i].msg = nullptr;
+    Subtitles[i].msg.reset();
   }
   Num_subtitles = 0;
   Movie_subtitle_init = 1;
@@ -287,7 +285,7 @@ void SubtDrawSubtitles(int frame_num) {
       first = Subtitles[active_subtitles[t]].first_frame;
       last = Subtitles[active_subtitles[t]].last_frame;
       PrintSubTitle(y, ((first <= frame_num) && (last >= frame_num)) ? GR_RGB(255, 255, 255) : GR_RGB(128, 128, 128),
-                    Subtitles[active_subtitles[t]].msg);
+                    Subtitles[active_subtitles[t]].msg.get());
       y += line_spacing + 1;
     }
   }
