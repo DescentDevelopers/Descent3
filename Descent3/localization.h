@@ -41,6 +41,8 @@
 #ifndef __LOCALIZATION_H__
 #define __LOCALIZATION_H__
 
+#include <memory>
+
 #define LANGUAGE_ENGLISH 0
 #define LANGUAGE_GERMAN 1
 #define LANGUAGE_SPANISH 2
@@ -70,8 +72,8 @@ void DestroyStringTable(char **table, int size);
 // GrowString class
 // handles a string of increasing size (using +,=,+=)
 struct tbufferinfo {
-  char *string_data;
-  tbufferinfo *next;
+  std::unique_ptr<char[]> string_data;
+  std::unique_ptr<tbufferinfo> next;
 };
 
 class GrowString {
