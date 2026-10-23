@@ -682,7 +682,6 @@ void ShipSelectDeleteLogo(newuiListBox *lb);
 void ShowPilotPicDialog(pilot *Pilot);
 
 UITextItem *pilot_items = nullptr;        // array of UITextItems for use in Pilot listbox
-pilot temp;                               // pilot in use by the listbox
 static std::vector<std::string> filelist; // list of pilot filenames
 static int filecount;                     // number of pilot filenames found
 void PilotListSelectChangeCallback(int index);
@@ -825,7 +824,7 @@ struct {
   bool initial_call;
   bool all_setup;
 } PilotChooseDialogInfo;
-pilot working_pilot;
+static pilot working_pilot;
 
 void PilotListSelectChangeCallback(int index) {
   if (!filecount || !PilotChooseDialogInfo.all_setup)
