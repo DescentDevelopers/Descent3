@@ -3936,7 +3936,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
         InitDefaultBSP();
 
         BSPChecksum = cf_ReadInt(ifile);
-        LoadBSPNode(ifile, &MineBSP.root);
+        LoadBSPNode(ifile, MineBSP.root);
       } else if (ISCHUNK(CHUNK_TERRAIN_SOUND)) {
         int n_bands = cf_ReadInt(ifile);
         for (int b = 0; b < n_bands; b++) {
@@ -5221,7 +5221,7 @@ int SaveLevel(char *filename, bool f_save_room_AABB) {
       chunk_start_pos = StartChunk(ofile, CHUNK_NEW_BSP);
       cf_WriteInt(ofile, BSPChecksum);
 
-      SaveBSPNode(ofile, MineBSP.root);
+      SaveBSPNode(ofile, MineBSP.root.get());
 
       EndChunk(ofile, chunk_start_pos);
     }
