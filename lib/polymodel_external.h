@@ -193,14 +193,14 @@ struct bsp_info {
   matrix mod_matrix; // The angles from parent.  Stuffed by model_set_instance
   vector mod_pos;    // The modified position of this object.  Used for positional interpolation
 
-  vector *keyframe_axis; // the axis of rotation for each keyframe
-  int *keyframe_angles;  // The destination angles for each key frame
-  vector *keyframe_pos;
-  matrix *keyframe_matrix; // the combined rotation matrices up to frame n
-  uint16_t *tick_pos_remap;  // For looking up keyframes fast
-  uint16_t *tick_ang_remap;  // For looking up keyframes fast
-  int *rot_start_time;
-  int *pos_start_time;
+  std::unique_ptr<vector[]> keyframe_axis; // the axis of rotation for each keyframe
+  std::unique_ptr<int[]> keyframe_angles;  // The destination angles for each key frame
+  std::unique_ptr<vector[]> keyframe_pos;
+  std::unique_ptr<matrix[]> keyframe_matrix;  // the combined rotation matrices up to frame n
+  std::unique_ptr<uint16_t[]> tick_pos_remap; // For looking up keyframes fast
+  std::unique_ptr<uint16_t[]> tick_ang_remap; // For looking up keyframes fast
+  std::unique_ptr<int[]> rot_start_time;
+  std::unique_ptr<int[]> pos_start_time;
 
   int num_key_angles;
   int num_key_pos;

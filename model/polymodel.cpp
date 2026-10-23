@@ -745,47 +745,6 @@ void FreePolymodelData(int i) {
 
   for (t = 0; t < Poly_models[i].n_models; t++) {
     if (Poly_models[i].submodel) {
-      if (Poly_models[i].submodel[t].keyframe_axis) {
-        mem_free(Poly_models[i].submodel[t].keyframe_axis);
-        Poly_models[i].submodel[t].keyframe_axis = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].tick_pos_remap) {
-        mem_free(Poly_models[i].submodel[t].tick_pos_remap);
-        Poly_models[i].submodel[t].tick_pos_remap = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].tick_ang_remap) {
-        mem_free(Poly_models[i].submodel[t].tick_ang_remap);
-        Poly_models[i].submodel[t].tick_ang_remap = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].keyframe_angles) {
-        mem_free(Poly_models[i].submodel[t].keyframe_angles);
-        Poly_models[i].submodel[t].keyframe_angles = nullptr;
-      }
-      if (Poly_models[i].submodel[t].keyframe_matrix) {
-        mem_free(Poly_models[i].submodel[t].keyframe_matrix);
-        Poly_models[i].submodel[t].keyframe_matrix = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].keyframe_pos) {
-        mem_free(Poly_models[i].submodel[t].keyframe_pos);
-        Poly_models[i].submodel[t].keyframe_pos = nullptr;
-      }
-
-      if (Poly_models[i].flags & PMF_TIMED) {
-        if (Poly_models[i].submodel[t].rot_start_time) {
-          mem_free(Poly_models[i].submodel[t].rot_start_time);
-          Poly_models[i].submodel[t].rot_start_time = nullptr;
-        }
-
-        if (Poly_models[i].submodel[t].pos_start_time) {
-          mem_free(Poly_models[i].submodel[t].pos_start_time);
-          Poly_models[i].submodel[t].pos_start_time = nullptr;
-        }
-      }
-
       if (Poly_models[i].submodel[t].flags & (SOF_GLOW | SOF_THRUSTER)) {
         mem_free(Poly_models[i].submodel[t].glow_info);
         Poly_models[i].submodel[t].glow_info = nullptr;
@@ -1726,26 +1685,20 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           pm->submodel[i].num_key_angles = nframes;
         }
 
-        pm->submodel[i].keyframe_axis = mem_rmalloc<vector>(pm->submodel[i].num_key_angles + 1);
-        pm->submodel[i].keyframe_angles = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
-        pm->submodel[i].keyframe_matrix = mem_rmalloc<matrix>(pm->submodel[i].num_key_angles + 1);
+        pm->submodel[i].keyframe_axis = std::make_unique<vector[]>(pm->submodel[i].num_key_angles + 1);
+        pm->submodel[i].keyframe_angles = std::make_unique<int[]>(pm->submodel[i].num_key_angles + 1);
+        pm->submodel[i].keyframe_matrix = std::make_unique<matrix[]>(pm->submodel[i].num_key_angles + 1);
         if (timed) {
-          pm->submodel[i].rot_start_time = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
-          ASSERT(pm->submodel[i].rot_start_time != nullptr);
+          pm->submodel[i].rot_start_time = std::make_unique<int[]>(pm->submodel[i].num_key_angles + 1);
 
           int num_ticks = (pm->submodel[i].rot_track_max - pm->submodel[i].rot_track_min);
 
           if (num_ticks > 0) {
-            pm->submodel[i].tick_ang_remap = (uint16_t *)mem_malloc(num_ticks * 2);
-            ASSERT(pm->submodel[i].tick_ang_remap);
+            pm->submodel[i].tick_ang_remap = std::make_unique<uint16_t[]>(num_ticks);
           } else {
-            pm->submodel[i].tick_ang_remap = nullptr;
+            pm->submodel[i].tick_ang_remap.reset();
           }
         }
-
-        ASSERT(pm->submodel[i].keyframe_axis != nullptr);
-        ASSERT(pm->submodel[i].keyframe_angles != nullptr);
-        ASSERT(pm->submodel[i].keyframe_matrix != nullptr);
 
         for (t = 0; t < pm->submodel[i].num_key_angles; t++) {
           vector *axis;
@@ -1807,21 +1760,18 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           int num_ticks = (pm->submodel[i].pos_track_max - pm->submodel[i].pos_track_min);
 
           if (num_ticks > 0) {
-            pm->submodel[i].tick_pos_remap = (uint16_t *)mem_malloc(num_ticks * 2);
-            ASSERT(pm->submodel[i].tick_pos_remap);
+            pm->submodel[i].tick_pos_remap = std::make_unique<uint16_t[]>(num_ticks);
           } else {
-            pm->submodel[i].tick_pos_remap = nullptr;
+            pm->submodel[i].tick_pos_remap.reset();
           }
 
         } else
           pm->submodel[i].num_key_pos = nframes;
 
-        pm->submodel[i].keyframe_pos = mem_rmalloc<vector>(pm->submodel[i].num_key_pos + 1);
-        ASSERT(pm->submodel[i].keyframe_pos != nullptr);
+        pm->submodel[i].keyframe_pos = std::make_unique<vector[]>(pm->submodel[i].num_key_pos + 1);
 
         if (timed) {
-          pm->submodel[i].pos_start_time = (int *)mem_malloc((pm->submodel[i].num_key_pos + 1) * sizeof(int));
-          ASSERT(pm->submodel[i].pos_start_time != nullptr);
+          pm->submodel[i].pos_start_time = std::make_unique<int[]>(pm->submodel[i].num_key_pos + 1);
         }
 
         for (t = 0; t < pm->submodel[i].num_key_pos; t++) {
