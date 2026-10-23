@@ -682,7 +682,6 @@ void ShipSelectDeleteLogo(newuiListBox *lb);
 // -------------------------------------------------------
 void ShowPilotPicDialog(pilot *Pilot);
 
-UITextItem *pilot_items = nullptr;        // array of UITextItems for use in Pilot listbox
 static std::vector<std::string> filelist; // list of pilot filenames
 static int filecount;                     // number of pilot filenames found
 void PilotListSelectChangeCallback(int index);
@@ -1423,11 +1422,6 @@ void NewPltUpdate(newuiListBox *list, int selected, const std::string &filename)
   pilot tPilot;
 
   list->RemoveAll();
-
-  if (pilot_items) {
-    delete[] pilot_items;
-    pilot_items = nullptr;
-  }
 
   if (filecount) {
     // create UIItems
