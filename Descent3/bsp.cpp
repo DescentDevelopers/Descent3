@@ -305,7 +305,8 @@ int SplitPolygon(bspplane *plane, bsppolygon *testpoly, bsppolygon **frontpoly, 
   int numvert, numfront, numback, i, codes[256] = {};
   vector *frontvert[256], *backvert[256], *polyvert[256];
   vector *vertptr1, *vertptr2;
-  vector delta, *newvert[256];
+  vector delta;
+  std::unique_ptr<vector> newvert[256];
   int num_new_verts = 0;
 
   /* Set up the function. Set all counters, variables, lists etc to
@@ -377,7 +378,7 @@ int SplitPolygon(bspplane *plane, bsppolygon *testpoly, bsppolygon **frontpoly, 
 
     vertptr2 = polyvert[(i + 1) % numvert];
     t = dists[i] / (dists[i] - dists[i + 1]);
-    newvert[num_new_verts] = mem_rmalloc<vector>();
+    newvert[num_new_verts] = std::make_unique<vector>();
 
     /* Now we must generate the split point. This is simply
      * an equation in the form Origin + t*Direction
@@ -391,8 +392,8 @@ int SplitPolygon(bspplane *plane, bsppolygon *testpoly, bsppolygon **frontpoly, 
                     if (mag<=BSP_EPSILON)
                             Int3();		*/
 
-    frontvert[numfront++] = newvert[num_new_verts];
-    backvert[numback++] = newvert[num_new_verts];
+    frontvert[numfront++] = newvert[num_new_verts].get();
+    backvert[numback++] = newvert[num_new_verts].get();
     num_new_verts++;
   }
 
@@ -423,9 +424,6 @@ int SplitPolygon(bspplane *plane, bsppolygon *testpoly, bsppolygon **frontpoly, 
     temppoly->roomnum = testpoly->roomnum;
     temppoly->subnum = testpoly->subnum;
   }
-
-  for (i = 0; i < num_new_verts; i++)
-    mem_free(newvert[i]);
 
   return 1;
 }
