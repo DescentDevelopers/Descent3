@@ -1415,7 +1415,7 @@ void CTerrainDialog::OnSatelliteCheck() {
 }
 
 void CTerrainDialog::OnSmoothTerrain() {
-  uint8_t *src_data;
+  std::unique_ptr<uint8_t[]> src_data;
   int y, x;
 
   if (Num_terrain_selected == 0) {
@@ -1427,8 +1427,7 @@ void CTerrainDialog::OnSmoothTerrain() {
                   MB_YESNO)) == IDNO)
     return;
 
-  src_data = (uint8_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH);
-  ASSERT(src_data); // Ran out of memory!
+  src_data = std::make_unique<uint8_t[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
 
   for (int i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++)
     src_data[i] = Terrain_seg[i].ypos;
@@ -1498,7 +1497,7 @@ void CTerrainDialog::OnSmoothTerrain() {
     }
   }
 
-  mem_free(src_data);
+  src_data.reset();
   BuildMinMaxTerrain();
   OutrageMessageBox("Terrain smoothed!");
   World_changed = 1;
@@ -1686,7 +1685,7 @@ void CTerrainDialog::OnNoExtRoomsObjs() {
 }
 
 #define FILL_COLOR 1
-static uint8_t *Terrain_heights, *Terrain_fill;
+static std::unique_ptr<uint8_t[]> Terrain_heights, Terrain_fill;
 
 #define PUSH_FILL(x)                                                                                                   \
   {                                                                                                                    \
@@ -1708,7 +1707,7 @@ void FillTerrainHeights(int cell) {
 
   ASSERT(cell >= 0 && cell < TERRAIN_WIDTH * TERRAIN_DEPTH);
 
-  memset(Terrain_fill, 0, TERRAIN_WIDTH * TERRAIN_DEPTH);
+  memset(Terrain_fill.get(), 0, TERRAIN_WIDTH * TERRAIN_DEPTH);
 
   PUSH_FILL(cell);
 
@@ -1746,28 +1745,18 @@ void CTerrainDialog::OnTerrainOcclusion() {
 
   int count = 0;
   int occlude_count = 0;
-  uint8_t *touch_buffer[256];
+  std::unique_ptr<uint8_t[]> touch_buffer[256];
 
   for (int i = 0; i < 256; i++) {
     memset(Terrain_occlusion_map[i], 0, 32);
-    touch_buffer[i] = mem_rmalloc<uint8_t>(256);
-    ASSERT(touch_buffer[i]);
-    memset(touch_buffer[i], 255, 256);
+    touch_buffer[i] = std::make_unique<uint8_t[]>(256);
+    memset(touch_buffer[i].get(), 255, 256);
   }
 
-  uint8_t *save_buffer;
-
   // Build a height map so we can flood fill
-  Terrain_heights = (uint8_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH);
-  Terrain_fill = (uint8_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH);
-  save_buffer = (uint8_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH);
-
-  ASSERT(Terrain_heights);
-  ASSERT(save_buffer);
-  ASSERT(Terrain_fill);
-
-  memset(save_buffer, 0, TERRAIN_WIDTH * TERRAIN_DEPTH);
-  memset(Terrain_fill, 0, TERRAIN_WIDTH * TERRAIN_DEPTH);
+  Terrain_heights = std::make_unique<uint8_t[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
+  Terrain_fill = std::make_unique<uint8_t[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
+  auto save_buffer = std::make_unique<uint8_t[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
 
   for (int i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++) {
     if (Terrain_seg[i].ypos == 255)
@@ -1828,7 +1817,7 @@ void CTerrainDialog::OnTerrainOcclusion() {
           // vector subvec=dest_vec-src_vec;
 
           // Set our heights to max
-          memset(Terrain_heights, 255, TERRAIN_WIDTH * TERRAIN_DEPTH);
+          memset(Terrain_heights.get(), 255, TERRAIN_WIDTH * TERRAIN_DEPTH);
 
           // Now carve out a path from the src to the dest
           int x_major = 1;
@@ -1929,12 +1918,8 @@ void CTerrainDialog::OnTerrainOcclusion() {
     }
   }
 
-  mem_free(Terrain_heights);
-  mem_free(Terrain_fill);
-  mem_free(save_buffer);
-
-  for (int i = 0; i < 256; i++)
-    mem_free(touch_buffer[i]);
+  Terrain_heights.reset();
+  Terrain_fill.reset();
 
   Terrain_occlusion_checksum = Terrain_checksum + 1;
 
