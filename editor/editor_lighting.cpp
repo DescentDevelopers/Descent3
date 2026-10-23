@@ -887,7 +887,7 @@ void DoRadiosityForRooms() {
   // Figure out memory for volume lights
   int vw, vh, vd;
   for (int roomnum = 0; roomnum < MAX_ROOMS; roomnum++) {
-    Volume_elements[roomnum] = nullptr;
+    Volume_elements[roomnum].reset();
 
     if (Rooms[roomnum].used && !(Rooms[roomnum].flags & RF_EXTERNAL) && !(Rooms[roomnum].flags & RF_NO_LIGHT)) {
       int num_bytes = GetVolumeSizeOfRoom(&Rooms[roomnum], &vw, &vh, &vd);
@@ -899,8 +899,7 @@ void DoRadiosityForRooms() {
       Rooms[roomnum].volume_lights = (uint8_t *)mem_malloc(vw * vh * vd);
       ASSERT(Rooms[roomnum].volume_lights);
 
-      Volume_elements[roomnum] = mem_rmalloc<volume_element>(vw * vh * vd);
-      ASSERT(Volume_elements[roomnum]);
+      Volume_elements[roomnum] = std::make_unique<volume_element[]>(vw * vh * vd);
 
       // Now go through and find all the valid spectra points
       float cur_z = Rooms[roomnum].min_xyz.z() + .1;
@@ -1091,7 +1090,7 @@ void DoRadiosityForRooms() {
       }
 
       AssignVolumeSpectraToRoom(i);
-      mem_free(Volume_elements[i]);
+      Volume_elements[i].reset();
     }
   }
 

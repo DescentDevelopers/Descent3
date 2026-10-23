@@ -64,7 +64,7 @@ float *Room_strongest_value[MAX_ROOMS][4];
 // Tells radiosity renderer to do volume lighting
 int Do_volume_lighting = 0;
 
-volume_element *Volume_elements[MAX_VOLUME_ELEMENTS];
+std::unique_ptr<volume_element[]> Volume_elements[MAX_VOLUME_ELEMENTS];
 
 // Shoot_from_patch tells us whether or not we're shooting from the center of
 // a surface or if we must shoot from the center of each of its individual elements
