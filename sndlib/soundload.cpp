@@ -306,7 +306,7 @@ const char *Static_sound_names[NUM_STATIC_SOUNDS] = {
 int AllocSoundFile() {
   for (int i = 0; i < MAX_SOUND_FILES; i++) {
     if (SoundFiles[i].used == 0) {
-      memset(&SoundFiles[i], 0, sizeof(sound_file_info));
+      SoundFiles[i] = {};
       SoundFiles[i].used = 1;
 
       Num_sound_files++;
