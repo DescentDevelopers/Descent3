@@ -57,6 +57,7 @@
 #define POLYMODEL_EXTERNAL_H_
 
 #include <cstdint>
+#include <memory>
 
 #include "grdefs.h"
 #include "manage_external.h"
@@ -252,7 +253,7 @@ struct poly_model {
   int n_textures;
   int16_t textures[MAX_MODEL_TEXTURES]; // a list of bitmap indices
 
-  bsp_info *submodel; // an array of size n_models of submodel info.
+  std::unique_ptr<bsp_info[]> submodel; // an array of size n_models of submodel info.
   int num_key_angles;
   int num_key_pos;
   int max_keys; // the greater number of num_key_pos or num_key_angles
@@ -260,16 +261,16 @@ struct poly_model {
   int frame_min, frame_max; // For TIMED polymodels, the min/max frames
 
   int n_guns;
-  w_bank *gun_slots; // array of gun banks
+  std::unique_ptr<w_bank[]> gun_slots; // array of gun banks
 
   int n_ground;
-  w_bank *ground_slots; // array of ground planes
+  std::unique_ptr<w_bank[]> ground_slots; // array of ground planes
 
   int n_attach;
-  a_bank *attach_slots;
+  std::unique_ptr<a_bank[]> attach_slots;
 
   int num_wbs;
-  poly_wb_info *poly_wb; // array of weapon batteries
+  std::unique_ptr<poly_wb_info[]> poly_wb; // array of weapon batteries
 
   int *render_order; // internal use
 

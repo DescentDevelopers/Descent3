@@ -205,7 +205,7 @@ static void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
               fvi_hit_data_ptr->num_hits = 1;
 
               fvi_hit_data_ptr->hit_object[0] = fvi_curobj;
-              fvi_hit_data_ptr->hit_subobject[0] = sm - pm->submodel;
+              fvi_hit_data_ptr->hit_subobject[0] = sm - pm->submodel.get();
               fvi_hit_data_ptr->hit_type[0] = HIT_SPHERE_2_POLY_OBJECT;
               fvi_hit_data_ptr->hit_wallnorm[0] = wall_norm;
               fvi_hit_data_ptr->hit_face_pnt[0] = colp;
@@ -314,7 +314,7 @@ void CollideSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
   newstyle_StartInstanceAngles(&temp_vec, &sm->angs);
 
   // Check my bit to see if I get collided with.  :)
-  if (f_render_sub & (0x00000001 << (sm - pm->submodel)))
+  if (f_render_sub & (0x00000001 << (sm - pm->submodel.get())))
     CollideSubmodelFacesUnsorted(pm, sm);
 
   for (int i = 0; i < sm->num_children; i++) {
