@@ -225,7 +225,7 @@ int ShootRayToVolumePoint(vector *src, vector *dest, int start_room) {
   fvi_query fq;
 
   if (UseBSP) {
-    int fate = BSPRayOccluded(src, dest, MineBSP.root);
+    int fate = BSPRayOccluded(src, dest, MineBSP.root.get());
     if (!fate)
       return 1;
     return 0;
@@ -345,7 +345,7 @@ int ShootRayFromPoint(vector *src, vector *dest, rad_surface *src_surf, rad_surf
   if (UseBSP) {
     if (dest_surf->surface_type == ST_ROOM || dest_surf->surface_type == ST_ROOM_OBJECT) {
       if (src_surf->surface_type == ST_ROOM || src_surf->surface_type == ST_ROOM_OBJECT) {
-        int fate = BSPRayOccluded(src, dest, MineBSP.root);
+        int fate = BSPRayOccluded(src, dest, MineBSP.root.get());
         if (!fate)
           return 1;
         return 0;
