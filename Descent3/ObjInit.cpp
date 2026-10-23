@@ -642,12 +642,9 @@ void ObjSetRenderPolyobj(object *objp, int model_num, int dying_model_num) {
   // Initialize attach slots
   if (model_num != -1) {
     poly_model *pm = GetPolymodelPointer(model_num); // get also pages in
-    if (objp->attach_children != nullptr) {
-      mem_free(objp->attach_children);
-      objp->attach_children = nullptr;
-    }
+    objp->attach_children.reset();
     if ((objp->attach_children == nullptr) && pm->n_attach) {
-      objp->attach_children = mem_rmalloc<int>(pm->n_attach);
+      objp->attach_children = std::make_unique<int32_t[]>(pm->n_attach);
       if (objp->type == OBJ_PLAYER)
         ASSERT(pm->n_attach >= NUM_PLAYER_ATTACH_POINTS);
       for (int i = 0; i < pm->n_attach; i++)
@@ -1194,7 +1191,7 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->effect_info.reset();
   objp->ai_info = nullptr;
   objp->dynamic_wb = nullptr;
-  objp->attach_children = nullptr;
+  objp->attach_children.reset();
   // Now initialize the type-specific data
   return ObjInitTypeSpecific(objp, 0);
 }

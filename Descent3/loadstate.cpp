@@ -1033,10 +1033,7 @@ int LGSObjects(CFILE *fp, int version) {
         mem_free(op->dynamic_wb);
         op->dynamic_wb = nullptr;
       }
-      if (op->attach_children != nullptr) {
-        mem_free(op->attach_children);
-        op->attach_children = nullptr;
-      }
+      op->attach_children.reset();
     }
     op->type = type;
     op->handle = handle;
@@ -1109,7 +1106,7 @@ int LGSObjects(CFILE *fp, int version) {
 
       if (f_allocated) {
         // mprintf(0,"Object %d has %d attach points.\n",i,nattach);
-        op->attach_children = mem_rmalloc<int>(nattach);
+        op->attach_children = std::make_unique<int32_t[]>(nattach);
         for (j = 0; j < nattach; j++)
           gs_ReadInt(fp, op->attach_children[j]);
       }

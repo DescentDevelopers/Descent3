@@ -1951,10 +1951,7 @@ void ObjDelete(int objnum) {
     obj->dynamic_wb = nullptr;
   }
 
-  if (obj->attach_children != nullptr) {
-    mem_free(obj->attach_children);
-    obj->attach_children = nullptr;
-  }
+  obj->attach_children.reset();
 
   obj->name.reset();
 
