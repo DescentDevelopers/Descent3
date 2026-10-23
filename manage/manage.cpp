@@ -1469,7 +1469,7 @@ void mng_TransferPages() {
     Int3();
     return;
   }
-  auto local_tracklocks = mem_rmalloc<mngs_track_lock>(5000);
+  auto local_tracklocks = std::make_unique<mngs_track_lock[]>(5000);
   // Do textures
   int done = 0;
   while (!done) {
@@ -1581,7 +1581,6 @@ void mng_TransferPages() {
   mng_EraseLocker();
   LOG_INFO << "Done transferring pages...good luck!";
 done:;
-  mem_free(local_tracklocks);
 }
 // #define DELETING_PAGELOCKS	1
 // #define CLEANING_PAGELOCKS	1
@@ -2062,14 +2061,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     return 0;
   }
   // Allocate memory for copying
-  uint8_t *copybuffer = mem_rmalloc<uint8_t>(COPYBUFFER_SIZE);
-  if (!copybuffer) {
-    LOG_ERROR.printf("Couldn't allocate memory to replace page %s!", srcname);
-    cfclose(infile);
-    cfclose(outfile);
-    Int3();
-    return 0;
-  }
+  auto copybuffer = std::make_unique<uint8_t[]>(COPYBUFFER_SIZE);
   while (!done) {
     if (cfeof(infile)) {
       done = 1;
@@ -2081,11 +2073,11 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     if (pagetype != dest_pagetype) {
       ASSERT(len < COPYBUFFER_SIZE);
 
-      cf_ReadBytes(copybuffer, len - 4, infile);
+      cf_ReadBytes(copybuffer.get(), len - 4, infile);
       cf_WriteByte(outfile, pagetype);
       cf_WriteInt(outfile, len);
       if (len - 4 > 0)
-        cf_WriteBytes(copybuffer, len - 4, outfile);
+        cf_WriteBytes(copybuffer.get(), len - 4, outfile);
 
       continue;
     }
@@ -2192,7 +2184,6 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     LOG_DEBUG << "New page added.";
   cfclose(infile);
   cfclose(outfile);
-  mem_free(copybuffer);
   if (local) {
     if (!SwitcherooFiles(LocalTableFilename, LocalTempTableFilename))
       return 0;
@@ -2232,14 +2223,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
     return 0;
   }
   // Allocate memory for copying
-  uint8_t *copybuffer = mem_rmalloc<uint8_t>(COPYBUFFER_SIZE);
-  if (!copybuffer) {
-    LOG_ERROR << "Couldn't allocate memory to delete page!";
-    cfclose(infile);
-    cfclose(outfile);
-    Int3();
-    return 0;
-  }
+  auto copybuffer = std::make_unique<uint8_t[]>(COPYBUFFER_SIZE);
   while (!done) {
     if (cfeof(infile)) {
       done = 1;
@@ -2250,11 +2234,11 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
     if (pagetype != dest_pagetype) {
       ASSERT(len < COPYBUFFER_SIZE);
 
-      cf_ReadBytes(copybuffer, len - 4, infile);
+      cf_ReadBytes(copybuffer.get(), len - 4, infile);
       cf_WriteByte(outfile, pagetype);
       cf_WriteInt(outfile, len);
       if (len - 4 > 0)
-        cf_WriteBytes(copybuffer, len - 4, outfile);
+        cf_WriteBytes(copybuffer.get(), len - 4, outfile);
 
       continue;
     }
@@ -2344,7 +2328,6 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
   }
   cfclose(infile);
   cfclose(outfile);
-  mem_free(copybuffer);
   // Now, remove our table file and rename the temp file to be the table file
   if (local) {
     if (!SwitcherooFiles(LocalTableFilename, LocalTempTableFilename))
