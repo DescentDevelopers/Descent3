@@ -83,7 +83,7 @@ void InitEvents() {
   int i;
   for (i = 0; i < MAX_EVENTS; i++) {
     GameEvent[i].used = 0;
-    GameEvent[i].data = nullptr;
+    GameEvent[i].data.reset();
   }
 }
 
@@ -131,10 +131,7 @@ void FreeEvent(int index) {
     return;
   }
   GameEvent[index].used = 0;
-  if (GameEvent[index].data != nullptr) {
-    mem_free(GameEvent[index].data);
-    GameEvent[index].data = nullptr;
-  }
+  GameEvent[index].data.reset();
 
   Num_events--;
 }
@@ -224,9 +221,8 @@ int CreateNewEvent(int type, int id, float length, void *data, int size, void (*
   ge->objhandle_detonator = objhandle_detonate;
 
   if (size) {
-    ge->data = (void *)mem_malloc(size);
-    ASSERT(ge->data);
-    memcpy(ge->data, data, size);
+    ge->data = std::make_unique<uint8_t[]>(size);
+    memcpy(ge->data.get(), data, size);
   }
 
   ge->subfunction = subfunction;
@@ -238,10 +234,10 @@ int CreateNewEvent(int type, int id, float length, void *data, int size, void (*
 void HandleEvent(game_event *ge) {
   switch (ge->type) {
   case RENDER_EVENT:
-    ge->subfunction(ge - GameEvent, ge->data);
+    ge->subfunction(ge - GameEvent, ge->data.get());
     break;
   default:
-    ge->subfunction(ge - GameEvent, ge->data);
+    ge->subfunction(ge - GameEvent, ge->data.get());
     break;
   }
 }
