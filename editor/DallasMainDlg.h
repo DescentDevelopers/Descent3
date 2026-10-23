@@ -241,6 +241,8 @@
 // DallasMainDlg.h : header file
 //
 
+#include <memory>
+
 /////////////////////////////////////////////////////////////////////////////
 // The Current Save Version Number
 /////////////////////////////////////////////////////////////////////////////
@@ -959,7 +961,7 @@ private:
   int m_NextScriptID;
 
   // The list of Message entries
-  tMessageListEntry *m_MessageEntryList[MAX_MESSAGE_LIST_ENTRIES];
+  std::unique_ptr<tMessageListEntry> m_MessageEntryList[MAX_MESSAGE_LIST_ENTRIES];
   int m_MessageListErrorCode;
   int m_NextMessageID;
 

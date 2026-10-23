@@ -3823,8 +3823,9 @@ void CDallasMainDlg::InitMessageList(void) {
   int j;
 
   // Init the list of message entries to empty
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    m_MessageEntryList[j] = nullptr;
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
+    m_MessageEntryList[j].reset();
+  }
 }
 
 // Clears the message list
@@ -3832,11 +3833,9 @@ void CDallasMainDlg::ClearMessageList(void) {
   int j;
 
   // Wipeout the list of message entries
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    if (m_MessageEntryList[j] != nullptr) {
-      delete m_MessageEntryList[j];
-      m_MessageEntryList[j] = nullptr;
-    }
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
+    m_MessageEntryList[j].reset();
+  }
 
   // Reset the next message ID
   m_NextMessageID = 1;
@@ -3903,12 +3902,12 @@ int CDallasMainDlg::DeleteMessageListEntry(char *name) {
   int j;
 
   // Scan entry list for given name
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
     if (m_MessageEntryList[j] != nullptr && strcmp(m_MessageEntryList[j]->name, name) == 0) {
-      delete m_MessageEntryList[j];
-      m_MessageEntryList[j] = nullptr;
+      m_MessageEntryList[j].reset();
       return (TRUE);
     }
+  }
 
   return (FALSE);
 }
@@ -3918,11 +3917,12 @@ tMessageListEntry *CDallasMainDlg::GetEmptyMessageListEntry(void) {
   int j;
 
   // Scan entry list for an empty slot
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
     if (m_MessageEntryList[j] == nullptr) {
-      m_MessageEntryList[j] = new tMessageListEntry;
-      return (m_MessageEntryList[j]);
+      m_MessageEntryList[j] = std::make_unique<tMessageListEntry>();
+      return (m_MessageEntryList[j].get());
     }
+  }
 
   return (nullptr);
 }
