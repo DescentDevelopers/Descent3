@@ -3149,8 +3149,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
 
   // Initialize PPicDlgInfo data
   // ---------------------------
-  uint16_t *id_list;
-  id_list = mem_rmalloc<uint16_t>(num_pilots);
+  auto id_list = std::make_unique<uint16_t[]>(num_pilots);
 
   if (!id_list) {
     // out of memory
@@ -3163,7 +3162,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
   PPicDlgInfo.listbox = list;
   PPicDlgInfo.bmp_disp = &bmp_disp;
   PPicDlgInfo.size = num_pilots;
-  PPicDlgInfo.id_list = id_list;
+  PPicDlgInfo.id_list = id_list.get();
 
   // fill in dialog data
   // -------------------
@@ -3242,10 +3241,6 @@ clean_up:
     bm_FreeBitmap(PPicDlgInfo.curr_bmp);
 
   bm_FreeBitmap(blank_bmp_handle);
-
-  if (id_list) {
-    mem_free(id_list);
-  }
 }
 
 // "Current Pilot" access functions
