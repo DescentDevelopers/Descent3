@@ -17,6 +17,7 @@
  */
 
 #include <algorithm>
+#include <memory>
 
 #include "3d.h"
 #include "gametexture.h"
@@ -837,7 +838,7 @@ void BuildElementListForObjectFace(int objnum, int subnum, int facenum, rad_surf
 
 #define MAX_COMBINES 50
 #define LM_ADJACENT_FACE_THRESHOLD .95
-uint8_t *ObjectsAlreadyCombined[MAX_OBJECTS];
+std::unique_ptr<uint8_t[]> ObjectsAlreadyCombined[MAX_OBJECTS];
 
 // Given a submodel and a face, goes through the entire object and checks to see
 // if this face can share a lightmap with any other face
@@ -956,10 +957,7 @@ void CombineObjectLightmapUVs(object *obj, int lmi_type) {
     if (IsNonRenderableSubmodel(pm, i))
       continue;
 
-    ObjectsAlreadyCombined[i] = mem_rmalloc<uint8_t>(sm->num_faces);
-    ASSERT(ObjectsAlreadyCombined[i]);
-    for (k = 0; k < sm->num_faces; k++)
-      ObjectsAlreadyCombined[i][k] = 0;
+    ObjectsAlreadyCombined[i] = std::make_unique<uint8_t[]>(sm->num_faces);
   }
 
   for (i = 0; i < pm->n_models; i++) {
@@ -969,7 +967,7 @@ void CombineObjectLightmapUVs(object *obj, int lmi_type) {
       continue;
 
     for (t = 0; t < sm->num_faces; t++) {
-      if (*(ObjectsAlreadyCombined[i] + t) == 0)
+      if (ObjectsAlreadyCombined[i][t] == 0)
         TestObjectLightAdjacency(obj, i, t, lmi_type);
     }
   }
@@ -1005,6 +1003,6 @@ void CombineObjectLightmapUVs(object *obj, int lmi_type) {
 
     if (IsNonRenderableSubmodel(pm, i))
       continue;
-    mem_free(ObjectsAlreadyCombined[i]);
+    ObjectsAlreadyCombined[i].reset();
   }
 }

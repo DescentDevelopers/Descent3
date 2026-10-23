@@ -2581,7 +2581,7 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
 
 #define MAX_COMBINES 50
 #define LM_ADJACENT_FACE_THRESHOLD .999
-uint8_t *RoomsAlreadyCombined[MAX_ROOMS];
+std::unique_ptr<uint8_t[]> RoomsAlreadyCombined[MAX_ROOMS];
 
 /*
 // Returns number of verts in dest if face a can be safely combined with face b
@@ -2897,10 +2897,7 @@ void ComputeAllRoomLightmapUVs(int external) {
       if (!external && (Rooms[i].flags & RF_EXTERNAL))
         continue;
 
-      RoomsAlreadyCombined[i] = mem_rmalloc<uint8_t>(Rooms[i].num_faces);
-      ASSERT(RoomsAlreadyCombined[i]);
-      for (k = 0; k < Rooms[i].num_faces; k++)
-        RoomsAlreadyCombined[i][k] = 0;
+      RoomsAlreadyCombined[i] = std::make_unique<uint8_t[]>(Rooms[i].num_faces);
     }
   }
 
@@ -2916,7 +2913,7 @@ void ComputeAllRoomLightmapUVs(int external) {
         continue;
 
       for (t = 0; t < Rooms[i].num_faces; t++) {
-        if (*(RoomsAlreadyCombined[i] + t) == 0)
+        if (RoomsAlreadyCombined[i][t] == 0)
           TestLightAdjacency(i, t, external);
       }
     }
@@ -2965,7 +2962,7 @@ void ComputeAllRoomLightmapUVs(int external) {
       if (!external && (Rooms[i].flags & RF_EXTERNAL))
         continue;
 
-      mem_free(RoomsAlreadyCombined[i]);
+      RoomsAlreadyCombined[i].reset();
     }
   }
 }
