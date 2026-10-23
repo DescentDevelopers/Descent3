@@ -124,6 +124,7 @@
 */
 
 #include "d3edit.h"
+#include "group.h"
 #include "room.h"
 
 // Current room, face, edge, & vert.
@@ -182,7 +183,7 @@ int Cur_object_index = 0;
 int Object_move_mode = REL_OBJECT;
 
 // The scrap buffer
-group *Scrap = nullptr;
+std::unique_ptr<group> Scrap;
 
 // Pointer to the scripts for this level
 char *Current_level_script = nullptr;

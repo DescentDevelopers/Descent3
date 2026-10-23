@@ -462,7 +462,7 @@ extern int Mine_changed;
 extern int Current_trigger;
 
 // The scrap buffer
-extern group *Scrap;
+extern std::unique_ptr<group> Scrap;
 
 // Pointer to the scripts for this level
 extern char *Current_level_script;
