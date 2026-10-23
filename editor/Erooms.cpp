@@ -1956,8 +1956,7 @@ void CopyRoom(room *destp, room *srcp) {
 
   // Copy doorway info
   if (srcp->doorway_data) {
-    destp->doorway_data = mem_rmalloc<doorway>();
-    *destp->doorway_data = *srcp->doorway_data;
+    destp->doorway_data = std::make_unique<doorway>(*srcp->doorway_data);
   }
 
   // Copy over the rest of the data

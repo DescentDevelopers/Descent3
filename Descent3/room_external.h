@@ -99,6 +99,8 @@
 #ifndef _ROOM_EXTERNAL_H_
 #define _ROOM_EXTERNAL_H_
 
+#include <memory>
+
 #include "pstypes.h"
 #include "vecmat_external.h"
 #include "bnode.h"
@@ -219,7 +221,7 @@ struct room {
   vector *verts;   // array of vertices for this room
   vector4 *verts4; // array of 16byte vertices for this room
 
-  doorway *doorway_data;   // pointer to this room's doorway data, or NULL if not a doorway
+  std::unique_ptr<doorway> doorway_data; // this room's doorway data, or NULL if not a doorway
   char *name;              // name of this room, or NULL
   int objects;             // index of first object in this room
   vector max_xyz, min_xyz; // for external room visibility checking

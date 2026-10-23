@@ -4448,7 +4448,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
 
   // Save doorway data if this room has a door
   if (rp->flags & RF_DOOR) {
-    doorway *dp = rp->doorway_data;
+    doorway *dp = rp->doorway_data.get();
 
     cf_WriteByte(ofile, dp->flags);
     cf_WriteByte(ofile, dp->keys_needed);
