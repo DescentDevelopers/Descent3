@@ -200,10 +200,10 @@ bool NewScript(const char *filename) {
   return true;
 }
 
-// Loads the script into into memory  (Don't forget to call FreeScript() to free the memory when done)
-// Returns true on success
-char *LoadScript(const char *filename) {
-  char *source;
+// Loads the script into into memory
+// Returns nullptr on failure
+std::unique_ptr<char[]> LoadScript(const char *filename) {
+  std::unique_ptr<char[]> source;
   char file_path[256];
   CFILE *file;
   CString temp;
@@ -228,19 +228,20 @@ char *LoadScript(const char *filename) {
     memset(buffer, 0, size);
   } while (!cfeof(file));
 
-  char *tmp_script;
   size = strlen(temp.GetBuffer(1));
-  tmp_script = (char *)mem_malloc(size + 1);
-  ASSERT(tmp_script);
-  strcpy(tmp_script, temp.GetBuffer(1));
+  auto tmp_script = std::make_unique<char[]>(size + 1);
+  strcpy(tmp_script.get(), temp.GetBuffer(1));
   if (size > 2)
     tmp_script[size - 2] = '\0';
-  temp = tmp_script;
-  if (tmp_script)
-    mem_free(tmp_script);
+  temp = tmp_script.get();
+  tmp_script.reset();
 
   cfclose(file);
-  return mem_strdup(temp.GetBuffer(1));
+
+  source = std::make_unique<char[]>(strlen(temp.GetBuffer(1)) + 1);
+  strcpy(source.get(), temp.GetBuffer(1));
+
+  return source;
 }
 
 void SaveScript(const char *filename, char *script) {
@@ -254,8 +255,6 @@ void SaveScript(const char *filename, char *script) {
   //		mprintf(0,"Saving script to %s\n",file_path);
   cfclose(file);
 }
-
-void FreeScript(char *script) { mem_free(script); }
 
 //	Generates a program from a script
 bool CompileScript(tD3XProgram *program, char *script) {
@@ -577,8 +576,8 @@ int FindEventIDFromName(const char *name) {
 #define SCRHDR_FORMAT "%s script %s()"
 #define SCRIPT_FORMAT "// %s\r\n//\t<comments here>\r\n%s\r\n\r\n\r\nendscript\r\n\r\n\r\n"
 
-char *AddScriptBlockToScript(char *script, const char *newname, const char *type_str) {
-  char *newsrc, *strline;
+std::unique_ptr<char[]> AddScriptBlockToScript(char *script, const char *newname, const char *type_str) {
+  char *strline;
   char newhdr[128];
   char newblk[384];
   int slot, line = 0, type = 0;
@@ -600,13 +599,9 @@ char *AddScriptBlockToScript(char *script, const char *newname, const char *type
   sprintf(newhdr, SCRHDR_FORMAT, type_str, newname);
   sprintf(newblk, SCRIPT_FORMAT, newname, newhdr);
 
-  newsrc = mem_rmalloc<char>(strlen(script) + strlen(newblk) + 1);
-  if (!newsrc) {
-    mprintf(1, "Allocation failure in creating new script buffer.\n");
-    return nullptr;
-  }
+  auto newsrc = std::make_unique<char[]>(strlen(script) + strlen(newblk) + 1);
 
-  sprintf(newsrc, "%s%s", script, newblk);
+  sprintf(newsrc.get(), "%s%s", script, newblk);
   slot = AddScriptToList((char *)newname, type, false);
   Script_names[slot].line = line;
 
@@ -615,9 +610,9 @@ char *AddScriptBlockToScript(char *script, const char *newname, const char *type
 
 #define EVT_STATEMENT "\r\n\r\nevent '%s'\r\n//insert code here\r\ncomplete\r\n"
 
-char *AddEventBlockToScript(char *script, const char *evtname, const char *scriptname) {
+std::unique_ptr<char[]> AddEventBlockToScript(char *script, const char *evtname, const char *scriptname) {
   //	we must first find the requested script, then add the event BEFORE the next 'endscript'
-  char *txtstart, *newtxt;
+  char *txtstart;
   char *preword;
   char word[256];
   bool inword;
@@ -654,21 +649,18 @@ char *AddEventBlockToScript(char *script, const char *evtname, const char *scrip
           // okay, we can now add the event block at preword.
           int prelen = (int)(preword - script);
           int postlen = (int)strlen(script) - prelen;
-          char *preblk = new char[prelen + 1];
-          char *postblk = new char[postlen + 1];
+          auto preblk = std::make_unique<char[]>(prelen + 1);
+          auto postblk = std::make_unique<char[]>(postlen + 1);
           char evtblk[256];
 
-          strncpy(preblk, script, prelen);
+          strncpy(preblk.get(), script, prelen);
           preblk[prelen] = 0;
-          strncpy(postblk, preword, postlen);
+          strncpy(postblk.get(), preword, postlen);
           postblk[postlen] = 0;
           sprintf(evtblk, EVT_STATEMENT, evtname);
 
-          newtxt = mem_rmalloc<char>(strlen(preblk) + strlen(postblk) + strlen(evtblk) + 1);
-          sprintf(newtxt, "%s%s%s", preblk, evtblk, postblk);
-
-          delete[] postblk;
-          delete[] preblk;
+          auto newtxt = std::make_unique<char[]>(strlen(preblk.get()) + strlen(postblk.get()) + strlen(evtblk) + 1);
+          sprintf(newtxt.get(), "%s%s%s", preblk.get(), evtblk, postblk.get());
 
           return newtxt;
         } else
@@ -701,15 +693,12 @@ void GenerateScriptListFromAllFiles(int mask) {
 
 //	generates script list from one file
 void GenerateScriptListFromFile(const char *fname) {
-  char *script;
-  script = LoadScript(fname);
+  std::unique_ptr<char[]> script = LoadScript(fname);
   if (script) {
     if (stricmp(fname, DEFAULT_SCRIPT_NAME) == 0)
-      GenerateScriptWizardInfo(script, false);
+      GenerateScriptWizardInfo(script.get(), false);
     else
-      GenerateScriptWizardInfo(script, true);
-
-    FreeScript(script);
+      GenerateScriptWizardInfo(script.get(), true);
   }
 }
 

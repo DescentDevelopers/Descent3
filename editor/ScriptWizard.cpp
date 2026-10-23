@@ -122,7 +122,6 @@ CScriptWizard::CScriptWizard(CWnd *pParent /*=NULL*/) : CDialog(CScriptWizard::I
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
 
-  m_ScriptSource = nullptr;
   m_ScriptCode = nullptr;
 }
 
@@ -194,15 +193,15 @@ void CScriptWizard::OnDestroy() {
 //	(that's done in the internal script editor.)  It does include text added from operations like
 //	Add Script, Add Event, etc.
 void CScriptWizard::OnOK() {
-  SaveScript(ScriptFileName, m_ScriptSource);
-  FreeScript(m_ScriptSource);
+  SaveScript(ScriptFileName, m_ScriptSource.get());
+  m_ScriptSource.reset();
 
   CDialog::OnOK();
 }
 
 //	We just don't save anything.  We free the script, if there is one
 void CScriptWizard::OnCancel() {
-  FreeScript(m_ScriptSource);
+  m_ScriptSource.reset();
 
   CDialog::OnCancel();
 }
@@ -228,9 +227,7 @@ void CScriptWizard::OnAddScript() {
   if (dlg.DoModal() == IDOK) {
     //	add script to listbox, then select it, then run editor
     CListBox *lb = (CListBox *)GetDlgItem(IDC_SCR_LISTBOX);
-    char *tempstr = AddScriptBlockToScript(m_ScriptSource, (LPCSTR)dlg.m_Name, (LPCSTR)dlg.m_TypeName);
-    mem_free(m_ScriptSource);
-    m_ScriptSource = tempstr;
+    m_ScriptSource = AddScriptBlockToScript(m_ScriptSource.get(), (LPCSTR)dlg.m_Name, (LPCSTR)dlg.m_TypeName);
     UpdateScriptListbox();
     lb->SelectString(-1, (LPCSTR)dlg.m_Name);
     OnEditScript();
@@ -242,7 +239,6 @@ void CScriptWizard::OnAddScript() {
 void CScriptWizard::OnAddEvent() {
   CListBox *listbox = (CListBox *)GetDlgItem(IDC_SCREVT_LISTBOX);
   CListBox *scrlb = (CListBox *)GetDlgItem(IDC_SCR_LISTBOX);
-  char *tempstr;
 
   char evtname[MAX_EVTNAME];
   char scrname[MAX_SCRNAME];
@@ -253,15 +249,14 @@ void CScriptWizard::OnAddEvent() {
   scrlb->GetText(scrlb->GetCurSel(), scrname);
   listbox->GetText(listbox->GetCurSel(), evtname);
 
-  tempstr = AddEventBlockToScript(m_ScriptSource, evtname, scrname);
+  std::unique_ptr<char[]> tempstr = AddEventBlockToScript(m_ScriptSource.get(), evtname, scrname);
 
   if (!tempstr) {
     OutrageMessageBox("Failed to add event to script.\nScript text possibly corrupted.");
     return;
   }
 
-  mem_free(m_ScriptSource);
-  m_ScriptSource = tempstr;
+  m_ScriptSource = std::move(tempstr);
 }
 
 //	This code invokes the original OSIRIS editor dialog with the currently loaded script file.
@@ -309,23 +304,21 @@ void CScriptWizard::OnEditScript() {
   scrlistbox->GetText(scrlistbox->GetCurSel(), buf);
   studio.SelectText(buf);
   studio.SetD3XObject(m_ScriptCode);
-  studio.SetText(CString(m_ScriptSource));
+  studio.SetText(CString(m_ScriptSource.get()));
 
   if (studio.DoModal() == IDOK) {
     // Try and compile now
     CString tempstr;
 
-    FreeScript(m_ScriptSource);
     studio.GetText(tempstr);
-    m_ScriptSource = mem_rmalloc<char>(tempstr.GetLength() + 1);
+    m_ScriptSource = std::make_unique<char[]>(tempstr.GetLength() + 1);
 
     if (m_ScriptSource) {
-      strcpy(m_ScriptSource, (LPCSTR)tempstr);
-      SaveScript(ScriptFileName, m_ScriptSource);
-      FreeScript(m_ScriptSource);
+      strcpy(m_ScriptSource.get(), (LPCSTR)tempstr);
+      SaveScript(ScriptFileName, m_ScriptSource.get());
       m_ScriptSource = LoadScript(ScriptFileName); // After this, Source_script has new edited script.
 
-      if (!CompileScript(studio.GetD3XObject(), m_ScriptSource)) {
+      if (!CompileScript(studio.GetD3XObject(), m_ScriptSource.get())) {
         OutrageMessageBox("Your script did not compile.  Unless you fix it, the script will not work.");
       } else {
         SaveScriptCode(ScriptCodeName, studio.GetD3XObject());
@@ -340,9 +333,9 @@ void CScriptWizard::OnEditScript() {
   //	rebuild list of scripts from changes in source code that may have happened.
   ResetScriptList();
   if (stricmp(ScriptFileName, DEFAULT_SCRIPT_NAME) == 0)
-    GenerateScriptWizardInfo(m_ScriptSource, false);
+    GenerateScriptWizardInfo(m_ScriptSource.get(), false);
   else
-    GenerateScriptWizardInfo(m_ScriptSource, true);
+    GenerateScriptWizardInfo(m_ScriptSource.get(), true);
 
   UpdateScriptListbox();
 
@@ -460,7 +453,7 @@ void CScriptWizard::OnUnlock() {
         // Force the save of the current script file so this actually works
         char destname[100], srcname[100];
 
-        SaveScript(ScriptFileName, m_ScriptSource);
+        SaveScript(ScriptFileName, m_ScriptSource.get());
 
         ddio_MakePath(srcname, LocalD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, nullptr);
         ddio_MakePath(destname, NetD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, nullptr);
@@ -508,10 +501,7 @@ void CScriptWizard::LoadCurrentModule() {
   char str[MAX_SCRNAME];
 
   //	Get current module select and load it in.
-  if (m_ScriptSource)
-    FreeScript(m_ScriptSource);
-
-  m_ScriptSource = nullptr;
+  m_ScriptSource.reset();
 
   if (modcbox->GetLBText(modcbox->GetCurSel(), str) != CB_ERR) {
     char *ptr;
@@ -529,9 +519,9 @@ void CScriptWizard::LoadCurrentModule() {
   ResetScriptList();
   if (m_ScriptSource) {
     if (stricmp(ScriptFileName, DEFAULT_SCRIPT_NAME) == 0)
-      GenerateScriptWizardInfo(m_ScriptSource, false);
+      GenerateScriptWizardInfo(m_ScriptSource.get(), false);
     else
-      GenerateScriptWizardInfo(m_ScriptSource, true);
+      GenerateScriptWizardInfo(m_ScriptSource.get(), true);
   }
 
   UpdateScriptListbox();
