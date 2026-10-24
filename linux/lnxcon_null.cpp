@@ -70,4 +70,4 @@ bool con_null_Create() {
 void con_null_Destroy() {}
 
 // put some data up on the screen
-void con_null_Puts(int window, const char *str) { mprintf(0, str); }
+void con_null_Puts(int window, const char *str) { mprintf(0, "%s", str); }

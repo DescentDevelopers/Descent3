@@ -316,7 +316,7 @@ public:
   int H() const { return m_H; };
 
   //	moves the object.
-  void Move(int x, int y, int w, int h);
+  virtual void Move(int x, int y, int w, int h);
 
   //	inheritable operations
 public:
@@ -1033,6 +1033,8 @@ class UIWindow : public UIObject {
   } m_Accelerators[N_WINDOW_ACCELS]; // used for quick key press interaction
   int m_naccels;
 
+  int m_RealX, m_RealY, m_RealW, m_RealH;
+
   static int m_WindowFont; // global window default font
 
 private:
@@ -1084,6 +1086,9 @@ public:
   void Render();         // renders one window frame.
   void Open();           // adds window to ui list.
   void Close();          // removes window from ui list.
+
+  void Move(int x, int y, int w, int h) override;
+  void AdjustToSafeArea(int safeX, int safeY, int safeW, int safeH);
 
   //	settings
   void SetFont(int handle);        // sets window's font.

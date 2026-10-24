@@ -2644,7 +2644,7 @@ void GameRenderFrame(void) {
 
   // Do UI Frame
   if (Game_interface_mode == GAME_INTERFACE && !Menu_interface_mode) {
-    DoUIFrameWithoutInput();
+    DoUIFrame(false);
     rend_Flip();
   }
 

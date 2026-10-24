@@ -609,7 +609,7 @@ int DoUI() {
 }
 
 //	does one frame of ui.
-void DoUIFrame() {
+void DoUIFrame(bool do_input) {
   if (Multi_bail_ui_menu) {
     UI_frame_result = NEWUIRES_FORCEQUIT;
   } else {
@@ -629,37 +629,12 @@ void DoUIFrame() {
       Sound_system.EndSoundFrame();
     }
 
-    UI_frame_result = ui_DoFrame();
+    UI_frame_result = ui_DoFrame(do_input);
   }
 
-  if (UI_input.printscreen) {
+  if (do_input && UI_input.printscreen) {
     UI_input.printscreen = false;
     DoScreenshot();
-  }
-}
-
-//	does one frame of ui.
-void DoUIFrameWithoutInput() {
-  if (Multi_bail_ui_menu) {
-    UI_frame_result = NEWUIRES_FORCEQUIT;
-  } else {
-    if (UI_callback)
-      (*UI_callback)();
-
-    if (GetFunctionMode() == MENU_MODE) {
-      tMusicSeqInfo music_info;
-
-      Sound_system.BeginSoundFrame(false);
-
-      music_info.frametime = UIFrameTime;
-      music_info.player_dead = false;
-      music_info.started_level = false;
-      D3MusicDoFrame(&music_info);
-
-      Sound_system.EndSoundFrame();
-    }
-
-    UI_frame_result = ui_DoFrame(false);
   }
 }
 

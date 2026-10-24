@@ -1,0 +1,83 @@
+import org.gradle.internal.os.OperatingSystem
+
+def vsDevCmd() {
+  def vswhere = new File(System.getenv("ProgramFiles(x86)"), "Microsoft Visual Studio/Installer/vswhere.exe")
+  if (!vswhere.exists()) return null
+
+  def out = new ByteArrayOutputStream()
+  exec {
+    commandLine vswhere.absolutePath,
+      "-latest", "-products", "*",
+      "-requires", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+      "-property", "installationPath"
+    standardOutput = out
+  }
+  def vsPath = out.toString().trim()
+  if (!vsPath) return null
+  return new File(vsPath, "Common7/Tools/VsDevCmd.bat").absolutePath
+}
+
+def wrapCmd(List<?> args) {
+  args = args.collect { a ->
+    if (a instanceof Provider) a = a.get()
+    if (a instanceof Directory) a = a.asFile
+    if (a instanceof File) a = a.absolutePath
+    a.toString()
+  }
+  if (!OperatingSystem.current().isWindows()) return args
+  def devcmd = vsDevCmd()
+  if (!devcmd) throw new GradleException("vswhere/VsDevCmd not found; install VS C++ build tools.")
+  // Use cmd /c "VsDevCmd && <your command...>"
+  def quoted = args.collect { it.contains(" ") ? "\"${it}\"" : it }.join(" ")
+  return ["cmd", "/c", "\"\"${devcmd}\" -arch=amd64 -host_arch=amd64 && ${quoted}\""]
+}
+
+def hostBuildDir = project.layout.buildDirectory.dir("host_tools")
+def hostInstallDir = hostBuildDir.map { it.dir("install") }
+def configurationOutputs = files hostBuildDir.map { [it.file("CMakeCache.txt"), it.file("build.ninja")] }
+def configureHostTools = tasks.register("configureHostTools", Exec) {
+  group = 'Build'
+
+  inputs.files fileTree(dir: rootProject.layout.projectDirectory, include: ["**/CMakeLists.txt", "**/*.cmake"])
+  outputs.files configurationOutputs
+
+  commandLine wrapCmd([
+    "cmake",
+    "-G", "Ninja",
+    "-B", hostBuildDir,
+    "-S", rootProject.layout.projectDirectory,
+  ])
+}
+ext.hogMakerBinary = hostInstallDir.map { it.file("HogMaker${OperatingSystem.current().isWindows() ? ".exe" : ""}") }
+def buildHogMaker = tasks.register("buildHogMaker") {
+  group = "Build"
+
+  inputs.files configurationOutputs.builtBy(configureHostTools)
+  inputs.dir rootProject.layout.projectDirectory.dir("tools/HogMaker")
+  outputs.file hogMakerBinary
+
+  doLast {
+    exec {
+      commandLine wrapCmd([
+        "cmake",
+        "--build", hostBuildDir,
+        "--config", "Release",
+        "--target", "HogMaker",
+      ])
+    }
+    exec {
+      commandLine wrapCmd([
+        "cmake",
+        "--install", hostBuildDir,
+        "--prefix", hostInstallDir,
+        "--config", "Release",
+        "--component", "HostTools",
+      ])
+    }
+  }
+}
+
+// Ensure the host tool is built before the main Android pre-build steps
+tasks.named("preBuild").configure {
+  dependsOn buildHogMaker
+}

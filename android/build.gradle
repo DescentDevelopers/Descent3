@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+repositories {
+  mavenCentral()
+}
+
+apply from: "host-tools.gradle"
+
+android {
+  namespace "com.descent3.droid"
+  compileSdk = 34
+  defaultConfig {
+    minSdkVersion = 32
+    targetSdkVersion = 34
+    versionCode = 1
+    versionName = "1.0"
+    externalNativeBuild {
+      cmake {
+        arguments "-DANDROID_APP_PLATFORM=android-19",
+                  "-DANDROID_STL=c++_static",
+                  "-DENABLE_LOGGER=ON",
+                  "-DHOGMAKE_BINARY=${hogMakerBinary.get().asFile.absolutePath}"
+        // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        abiFilters 'arm64-v8a'
+      }
+    }
+  }
+  buildTypes {
+    release {
+      minifyEnabled = false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+  applicationVariants.all { variant ->
+    tasks["merge${variant.name.capitalize()}Assets"]
+      .dependsOn("externalNativeBuild${variant.name.capitalize()}")
+  }
+  sourceSets {
+    main {
+      jniLibs.srcDir 'libs'
+      java.srcDirs = ['src/main/java']
+    }
+  }
+  externalNativeBuild {
+    cmake {
+      path "${rootProject.layout.projectDirectory}/CMakeLists.txt"
+    }
+  }
+  lint {
+    abortOnError false
+  }
+}
+
+dependencies {
+  implementation fileTree(include: ['*.jar'], dir: 'libs')
+  implementation 'org.nanohttpd:nanohttpd:2.2.0'
+}
