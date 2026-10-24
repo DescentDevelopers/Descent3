@@ -202,13 +202,28 @@ find_package(plog REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   message("Building for Linux")
-  add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
+  add_compile_definitions(POSIX __LINUX__)
+  set(D3_PRIMARY_HOG "d3-linux.hog")
+  set(D3_STANDARD_PATHS
+    "~/.local/share/Steam/steamapps/common/Descent 3"          # Fedora, arch
+    "~/.steam/debian-installation/steamapps/common/Descent 3"  # Debian & derivatives
+  )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for macOS")
-  add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
+  add_compile_definitions(POSIX MACOSX=1)
+  set(D3_PRIMARY_HOG "d3-osx.hog")
+  set(D3_STANDARD_PATHS
+    "~/Library/Application Support/Steam/steamapps/common/Descent 3/Descent 3.app/Contents/Resources"
+  )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(D3_PRIMARY_HOG "d3-win.hog")
+  set(D3_STANDARD_PATHS
+    "C:\\\\Program Files (x86)\\\\Steam\\\\steamapps\\\\common\\\\Descent 3"
+    "C:\\\\Program Files (x86)\\\\GOG Galaxy\\\\Games\\\\Descent 3"
+  )
+
   # Windows.h defines to avoid as many issues as possible.
-  add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE PRIMARY_HOG=\"d3-win.hog\"
+  add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE
           #[[NOGDI]] # We need GDI for now, enable when GDI is actually not needed (or when all windows.h mentions are gone)
   )
 
@@ -245,6 +260,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
   add_compile_options("/MP")  # so msbuild builds with multiple processes
 endif()
+
+string(REPLACE ";" "\", \"" D3_STANDARD_PATHS_CPP "${D3_STANDARD_PATHS}")
 
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
 add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
