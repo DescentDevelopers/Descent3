@@ -790,9 +790,11 @@ void ResetMission() {
 #if (defined(OEM) || defined(DEMO))
 bool DemoMission(int mode = 0) {
   tMission *msn = &Current_mission;
+  ResetMission(); // Reset everything.
   msn->cur_level = 1;
   msn->num_levels = 1;
-  msn->levels.reserve(5);
+  // Create every level the modes below fill in; the resize after the switch trims to num_levels
+  msn->levels.resize(5);
 
   msn->multiplayable = true;
   msn->singleplayable = true;
