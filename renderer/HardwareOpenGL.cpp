@@ -214,7 +214,7 @@ extern rendering_state gpu_state;
 extern renderer_preferred_state gpu_preferred_state;
 
 bool OpenGL_multitexture_state = false;
-module *OpenGLDLLHandle = nullptr;
+module_t *OpenGLDLLHandle = nullptr;
 int Already_loaded = 0;
 bool opengl_Blending_on = false;
 
