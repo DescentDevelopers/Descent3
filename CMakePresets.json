@@ -7,13 +7,6 @@
 			"binaryDir": "${sourceDir}/builds/${presetName}"
 		},
 		{
-			"name": "mock-clock",
-			"hidden": true,
-			"cacheVariables": {
-				"ENABLE_MOCK_CLOCK": "ON"
-			}
-		},
-		{
 			"name": "win",
 			"inherits": "defaults",
 			"generator": "Ninja Multi-Config",
@@ -68,22 +61,6 @@
 				"VCPKG_TARGET_TRIPLET": "arm64-linux",
 				"CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/linux-aarch64-gcc-toolchain.cmake"
 			}
-		},
-		{
-			"name": "win-mock-clock",
-			"inherits": ["win", "mock-clock"]
-		},
-		{
-			"name": "mac-mock-clock",
-			"inherits": ["mac", "mock-clock"]
-		},
-		{
-			"name": "linux-mock-clock",
-			"inherits": ["linux", "mock-clock"]
-		},
-		{
-			"name": "linux-cross-arm64-mock-clock",
-			"inherits": ["linux-cross-arm64", "mock-clock"]
 		}
 	],
 	"buildPresets": [
@@ -102,22 +79,6 @@
 		{
 			"name": "linux-cross-arm64",
 			"configurePreset": "linux-cross-arm64"
-		},
-		{
-			"name": "win-mock-clock",
-			"configurePreset": "win-mock-clock"
-		},
-		{
-			"name": "mac-mock-clock",
-			"configurePreset": "mac-mock-clock"
-		},
-		{
-			"name": "linux-mock-clock",
-			"configurePreset": "linux-mock-clock"
-		},
-		{
-			"name": "linux-cross-arm64-mock-clock",
-			"configurePreset": "linux-cross-arm64-mock-clock"
 		}
 	],
 	"testPresets": [
@@ -145,24 +106,6 @@
 			"inherits": "defaults",
 			"description": "Testing under Linux",
 			"configurePreset": "linux"
-		},
-		{
-			"name": "win-mock-clock",
-			"inherits": "defaults",
-			"description": "Testing under Windows x64 with the mock clock",
-			"configurePreset": "win-mock-clock"
-		},
-		{
-			"name": "mac-mock-clock",
-			"inherits": "defaults",
-			"description": "Testing under macOS with the mock clock",
-			"configurePreset": "mac-mock-clock"
-		},
-		{
-			"name": "linux-mock-clock",
-			"inherits": "defaults",
-			"description": "Testing under Linux with the mock clock",
-			"configurePreset": "linux-mock-clock"
 		}
 	]
 }

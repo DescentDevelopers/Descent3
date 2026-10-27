@@ -21,7 +21,7 @@ on:
 jobs:
 
   build:
-    name: ${{ matrix.os.name }}, ${{ matrix.build_type }}${{ matrix.mock_clock && ', mock clock' || '' }}
+    name: ${{ matrix.os.name }}, ${{ matrix.build_type }}
     strategy:
       fail-fast: false
       matrix:
@@ -49,19 +49,13 @@ jobs:
         build_type:
           - Debug
           - Release
-        mock_clock:
-          - false
-          - true
-        exclude:
-          # Debug alone is enough to check that the mock clock builds and passes its tests
-          - build_type: Release
-            mock_clock: true
 
     runs-on: ${{ matrix.os.runner }}
 
     env:
-      PRESET: ${{ matrix.os.preset }}${{ matrix.mock_clock && '-mock-clock' || '' }}
-      MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && !matrix.mock_clock && secrets.MACOS_SIGNING_IDENTITY != '' }}
+      # Debug builds use the mock clock, so they are only built and tested, never packaged
+      MOCK_CLOCK: ${{ matrix.build_type == 'Debug' && 'ON' || 'OFF' }}
+      MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && matrix.build_type != 'Debug' && secrets.MACOS_SIGNING_IDENTITY != '' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -114,7 +108,7 @@ jobs:
         run: |
           cmake --preset linux
           ninja -f build-${{ matrix.build_type }}.ninja -C builds/linux/ HogMaker
-          cmake --preset ${{ env.PRESET }} -DHogMaker_DIR=$PWD/builds/linux/ -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
+          cmake --preset linux-cross-arm64 -DHogMaker_DIR=$PWD/builds/linux/ -DENABLE_MOCK_CLOCK=${{ env.MOCK_CLOCK }} -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
 
       - name: Customize vcpkg to create macOS universal binary
         if: ${{ matrix.os.preset == 'mac' }}
@@ -135,18 +129,17 @@ jobs:
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ env.PRESET }} -DCODESIGN_IDENTITY=${{ secrets.MACOS_SIGNING_IDENTITY }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
+        run: cmake --preset ${{ matrix.os.preset }} -DCODESIGN_IDENTITY=${{ secrets.MACOS_SIGNING_IDENTITY }} -DENABLE_MOCK_CLOCK=${{ env.MOCK_CLOCK }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
 
       - name: Build ${{ matrix.build_type }}
-        run: cmake --build --preset ${{ env.PRESET }} --config ${{ matrix.build_type }} --verbose
+        run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
 
       - name: Run ${{ matrix.build_type }} Unittests
         if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
-        run: ctest --preset ${{ env.PRESET }} -C ${{ matrix.build_type }}
+        run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
-      # Mock clock builds are only for testing, so they are not packaged
       - name: Local install
-        if: ${{ !matrix.mock_clock }}
+        if: ${{ env.MOCK_CLOCK != 'ON' }}
         # There no cmake install presets so install in traditional way
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
 
@@ -170,7 +163,7 @@ jobs:
           mv builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg builds/${{ matrix.os.preset }}/installed/
 
       - name: Upload Artifacts
-        if: ${{ !matrix.mock_clock }}
+        if: ${{ env.MOCK_CLOCK != 'ON' }}
         uses: actions/upload-artifact@v4
         with:
           name: Descent3_${{ matrix.build_type }}_${{ matrix.os.name }}

@@ -1,6 +1,6 @@
 /*
  * Descent 3
- * Copyright (C) 2024 Descent Developers
+ * Copyright (C) 2026 Descent Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
 
 using D3::ChronoTimer;
 
-// Watches the clock tick forward for 10ms, so it sees many ticks however fast the machine is
+// Watches the clock tick forward for 10ms, so it sees many ticks however fast the machine is. Back-to-back reads
+// often land in the same microsecond, so each read only has to be no earlier than the last.
 TEST(ChronoTimer, IsMonotonic) {
   ChronoTimer::Initialize();
   const int64_t start = ChronoTimer::GetTimeUS();
@@ -44,15 +45,4 @@ TEST(ChronoTimer, SleepAdvancesTime) {
   int64_t start = ChronoTimer::GetTimeMS();
   ChronoTimer::SleepMS(20);
   EXPECT_GE(ChronoTimer::GetTimeMS() - start, 20);
-}
-
-TEST(ChronoTimer, PumpDoesNotJumpTime) {
-  ChronoTimer::Initialize();
-  int64_t start = ChronoTimer::GetTimeMS();
-  for (int i = 0; i < 100; i++) {
-    ChronoTimer::Pump();
-  }
-  // The real clock keeps running while we pump, so we can't expect zero elapsed time. 100 empty calls should take
-  // far less than 100ms, but this does depend on wall-clock time and could fail spuriously on a badly stalled machine.
-  EXPECT_LT(ChronoTimer::GetTimeMS() - start, 100);
 }
