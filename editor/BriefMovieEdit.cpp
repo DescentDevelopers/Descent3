@@ -113,7 +113,7 @@ END_MESSAGE_MAP()
 void CBriefMovieEdit::OnBriefMChoose() {
   UpdateData(true);
   char szFilter[] = "Outrage Movie Files (*.mve)|*.mve||";
-  CFileDialog dlg(true, NULL, NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     // handle

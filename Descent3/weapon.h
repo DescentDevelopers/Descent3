@@ -447,7 +447,7 @@ void DrawAlphaBlendedScreen(float r, float g, float b, float alpha);
 void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index);
 
 // Plays the animation that accompanies a weapon death
-void DoWeaponExploded(object *, vector *norm = NULL, vector *collision_point = NULL, object *hit_object = NULL);
+void DoWeaponExploded(object *, vector *norm = nullptr, vector *collision_point = nullptr, object *hit_object = nullptr);
 
 void TimeoutWeapon(object *);
 

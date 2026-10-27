@@ -206,7 +206,7 @@ void mng_InitPagelocks() {
     return;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
-  if (infile == NULL) {
+  if (infile == nullptr) {
     outfile = (CFILE *)cfopen(TableLockFilename, "wb");
     if (!outfile) {
       Error("Error creating table lock file!");
@@ -232,7 +232,7 @@ char *mng_CheckIfLockerPresent() {
 
   infile = (CFILE *)cfopen(LockerFile, "rb");
   if (!infile)
-    return NULL;
+    return nullptr;
 
   cf_ReadString(lockname, sizeof(lockname), infile);
 
@@ -368,7 +368,7 @@ int mng_CheckIfPageLocked(mngs_Pagelock *pl) {
     return 1;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
-  if (infile == NULL) {
+  if (infile == nullptr) {
     strcpy(ErrorString, "There was a problem opening the table lock file for reading.");
     return -1;
   }
@@ -410,7 +410,7 @@ int mng_CheckIfPageOwned(mngs_Pagelock *pl, char *owner) {
   int r = -1, done = 0;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
-  if (infile == NULL) {
+  if (infile == nullptr) {
     strcpy(ErrorString, "There was a problem opening the table lock file for reading.");
     Int3();
     return -1;
@@ -537,7 +537,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
     char str[255 + 32];
     char date[255];
     time_t t;
-    t = time(NULL);
+    t = time(nullptr);
     strftime(date, 254, "[%a %m/%d/%y %H:%M:%S]", localtime(&t));
     snprintf(str, sizeof(str), "%s Page %s (%s) last touched by %s\n", date, name, PageNames[pl->pagetype], TableUser);
     fwrite(str, 1, strlen(str), logfile);
@@ -823,8 +823,8 @@ int mng_GetListOfLocks(mngs_Pagelock *pl, int max, char *who) {
     // Read in a page, compare it with the owner we're searching for.  If found, make a copy of it.
 
     if (mng_ReadPagelock(infile, &temp_pl)) {
-      if (((who == NULL) && stricmp(temp_pl.holder, "UNLOCKED")) ||
-          ((who != NULL) && (!stricmp(temp_pl.holder, who)))) {
+      if (((who == nullptr) && stricmp(temp_pl.holder, "UNLOCKED")) ||
+          ((who != nullptr) && (!stricmp(temp_pl.holder, who)))) {
         pl[num] = temp_pl;
         num++;
         if (num >= max)

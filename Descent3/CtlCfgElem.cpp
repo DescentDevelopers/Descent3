@@ -477,7 +477,7 @@ const char *cfg_binding_text(ct_type ctype, uint8_t ctrl, uint8_t binding) {
   const char *str;
 
   if (ctrl == NULL_CONTROLLER) {
-    return NULL;
+    return nullptr;
   }
 
   switch (ctype) {
@@ -530,10 +530,10 @@ protected:
 //////////////////////////////////////////////////////////////////////////////
 //
 
-UIBitmapItem *cfg_element::m_btn_bmp_lit = NULL;
-UIBitmapItem *cfg_element::m_btn_bmp = NULL;
-UIBitmapItem *cfg_element::m_xbtn_bmp_lit = NULL;
-UIBitmapItem *cfg_element::m_xbtn_bmp = NULL;
+UIBitmapItem *cfg_element::m_btn_bmp_lit = nullptr;
+UIBitmapItem *cfg_element::m_btn_bmp = nullptr;
+UIBitmapItem *cfg_element::m_xbtn_bmp_lit = nullptr;
+UIBitmapItem *cfg_element::m_xbtn_bmp = nullptr;
 int16_t cfg_element::m_count = 0;
 
 // MTS: unused?

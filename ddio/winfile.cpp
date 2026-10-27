@@ -196,8 +196,8 @@ void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem:
 
 try_again:;
 
-  desthandle = CreateFile(PATH_TO_CSTR(dest), GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  srchandle = CreateFile(PATH_TO_CSTR(src), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  desthandle = CreateFile(PATH_TO_CSTR(dest), GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+  srchandle = CreateFile(PATH_TO_CSTR(src), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (desthandle == INVALID_HANDLE_VALUE || srchandle == INVALID_HANDLE_VALUE) {
     LOG_WARNING.printf("Couldn't copy file time for %s! Error=%d", PATH_TO_CSTR(dest), GetLastError());
@@ -239,7 +239,7 @@ int ddio_DeleteFile(const char *name) { return (DeleteFile(name)); }
 void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
   const char delimiter = '\\';
   va_list args;
-  char *currentDir = NULL;
+  char *currentDir = nullptr;
   int pathLength = 0;
 
   assert(newPath);
@@ -260,7 +260,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 
   // Add the additional subdirectories
   va_start(args, subDir);
-  while ((currentDir = va_arg(args, char *)) != NULL) {
+  while ((currentDir = va_arg(args, char *)) != nullptr) {
     pathLength = strlen(newPath);
     if (newPath[pathLength - 1] != delimiter) {
       newPath[pathLength] = delimiter; // add the delimiter

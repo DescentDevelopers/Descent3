@@ -124,7 +124,7 @@ inline FONTFILE OPEN_FONT(char *filename) {
 
   fp = (FONTFILE)fopen(filename, "wb");
   if (!fp)
-    return NULL;
+    return nullptr;
 
   return fp;
 }
@@ -140,7 +140,7 @@ CGrFontDialog::CGrFontDialog(CWnd *pParent /*=NULL*/) : CDialog(CGrFontDialog::I
   //}}AFX_DATA_INIT
 
   m_FontPicBm = -1;
-  m_DataBuffer = NULL;
+  m_DataBuffer = nullptr;
 
   ZeroMemory(&m_FontRecord, sizeof(m_FontRecord));
 }
@@ -178,7 +178,7 @@ void CGrFontDialog::OnNew() {
   CString filter = "D3 bitmap files (*.tga; *lbm; *.bbm)|*.tga; *.lbm; *.bbm|Targa files (*.tga)|*.tga|IFF files "
                    "(*.bbm; *.lbm)|*.bbm; *.lbm||";
 
-  CFileDialog dlg_open(TRUE, 0, 0, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
+  CFileDialog dlg_open(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
 
   if (dlg_open.DoModal() == IDCANCEL)
     return;
@@ -284,7 +284,7 @@ BOOL CGrFontDialog::OnInitDialog() {
 void CGrFontDialog::OnSaveAs() {
   CString filter = "Outrage font files (*.fnt)|*.fnt||";
 
-  CFileDialog dlg(FALSE, 0, 0, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, (LPCTSTR)filter, this);
+  CFileDialog dlg(FALSE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, (LPCTSTR)filter, this);
 
   if (dlg.DoModal() == IDCANCEL)
     return;
@@ -437,7 +437,7 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft) {
     cur_char = read_font_line(cur_char, bmx, bmy);
     if (cur_char == -1) {
       delete[] m_DataBuffer;
-      m_DataBuffer = NULL;
+      m_DataBuffer = nullptr;
       mprintf(0, "fuck!\n");
       return FALSE;
     }
@@ -467,9 +467,9 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft) {
   ft->min_ascii = 0;
   ft->max_ascii = cur_char - 1;
   ft->raw_data = (uint8_t *)m_DataBuffer;
-  ft->char_data = NULL;
+  ft->char_data = nullptr;
   ft->char_widths = m_CharWidths;
-  ft->kern_data = NULL;
+  ft->kern_data = nullptr;
 
   CButton *gray_check = (CButton *)GetDlgItem(IDC_PROP_GRADIANT);
   if (ft->flags & FT_COLOR)
@@ -606,10 +606,10 @@ BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft) {
   //	Adjust font record for file write.
   ft->flags = (m_FontProp ? FT_PROPORTIONAL : 0) + ((m_FontType == COLOR_FONT) ? FT_COLOR : 0) +
               ((m_FontType == GRADIENT_FONT) ? FT_GRADIENT : 0) + (grayed_font ? FT_GRADIENT : 0);
-  ft->raw_data = NULL;
-  ft->char_data = NULL;
-  ft->char_widths = NULL;
-  ft->kern_data = NULL;
+  ft->raw_data = nullptr;
+  ft->char_data = nullptr;
+  ft->char_widths = nullptr;
+  ft->kern_data = nullptr;
 
   //	write to file
   mprintf(0, "Saving font data...");

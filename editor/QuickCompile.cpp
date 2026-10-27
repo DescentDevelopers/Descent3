@@ -97,7 +97,7 @@ BOOL CQuickCompile::OnInitDialog() {
   char compiled_filename[_MAX_PATH];
   bool isours = false;
 
-  ddio_SplitPath(m_scriptname, NULL, filename, NULL);
+  ddio_SplitPath(m_scriptname, nullptr, filename, nullptr);
   strcpy(compiled_filename, filename);
   strcat(filename, ".cpp");
   strcat(compiled_filename, ".dll");

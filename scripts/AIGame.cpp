@@ -45,7 +45,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 static int String_table_size = 0;
-static char **String_table = NULL;
+static char **String_table = nullptr;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -224,7 +224,7 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
     else
       parent = OBJECT_HANDLE_NONE;
 
-    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, NULL, parent);
+    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, nullptr, parent);
     if (child_handle != OBJECT_HANDLE_NONE) {
       if (!Obj_AttachObjectAP(me, parent_ap, child_handle, child_ap, f_aligned)) {
         // chrishack (we need a way to instantly kill scripted objects)
@@ -1538,7 +1538,7 @@ struct guidebot_data {
 class GuideBot final : public BaseObjScript {
 private:
   guidebot_data *memory = nullptr;
-  void DoMessage(const char *str, bool f_high_priority, const char *sound_name = NULL, bool f_sound_2d = false);
+  void DoMessage(const char *str, bool f_high_priority, const char *sound_name = nullptr, bool f_sound_2d = false);
   //	void InitPowerup(int me, char pow_id);
   //	void DoPowerupFrame(int me);
   void DoPowerupCheck(int me);
@@ -1794,7 +1794,7 @@ void SuperThief::SpewEverything(int me) {
 
       Player_Value(memory->stolen_weapons[i].owner, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id,
                    memory->stolen_weapons[i].index);
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
 
     memory->stolen_weapons[i].amount = 0;
@@ -2110,7 +2110,7 @@ void SuperThief::DoInterval(int me) {
       int weapon_id;
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
 
     if (memory->mode_time < 3.0f && memory->mode_time + Game_GetFrameTime() >= 3.0f) {
@@ -2136,7 +2136,7 @@ void SuperThief::DoInterval(int me) {
       msafe_struct mstruct;
 
       memory->laser_on = true;
-      memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, NULL, me);
+      memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, nullptr, me);
       mstruct.objhandle = memory->camera_obj;
       MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
 
@@ -2576,7 +2576,7 @@ void STDCALLPTR CreateInstance(int id) {
     mprintf(0, "SCRIPT: Illegal ID (%d)\n", id);
     break;
   };
-  return NULL;
+  return nullptr;
 }
 
 void STDCALL DestroyInstance(int id, void *ptr) {
@@ -4243,7 +4243,7 @@ void DTower::DoFrame(int me) {
     Obj_GetGunPos(me, 1, &pos);
 
     int weapon_id = Wpn_FindID("TubbsHitBlast");
-    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
     Obj_Kill(memory->gun_handle, OBJECT_HANDLE_NONE, 1000.0f,
              DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_LARGE | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES, 0.0f,
@@ -6361,7 +6361,7 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
         memory->stolen_inv[memory->num_stolen_inv].owner = it;
         memory->num_stolen_inv++;
 
-        Player_Value(it, VF_SET, PLYV_I_THIEF_STEALPLAYERITEM, NULL, ThiefableItems[i].index);
+        Player_Value(it, VF_SET, PLYV_I_THIEF_STEALPLAYERITEM, nullptr, ThiefableItems[i].index);
         break;
       }
 
@@ -6672,7 +6672,7 @@ void Thief::DoFrame(int me) {
     Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
     weapon_id = Wpn_FindID("TubbsHitBlast");
-    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
     Obj_Kill(me, OBJECT_HANDLE_NONE, 1000.0f,
              DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES,
@@ -6701,7 +6701,7 @@ void Thief::DoFrame(int me) {
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
 
     if (memory->mode_time < 5.0f && memory->mode_time + Game_GetFrameTime() >= 5.0f) {
@@ -6779,7 +6779,7 @@ void Thief::SpewEverything(int me) {
 
       Player_Value(memory->stolen_weapons[i].owner, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id,
                    memory->stolen_weapons[i].index);
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
 
     memory->stolen_weapons[i].amount = 0;
@@ -6845,7 +6845,7 @@ void Thief::SpewEverything(int me) {
       vm_VectorNormalize(&dir);
       dir *= speed;
 
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
   }
   memory->num_stolen_inv = 0;
@@ -7445,7 +7445,7 @@ bool Tubbs::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
       Obj_GetGunPos(me, 0, &pos);
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
   }
 
@@ -7584,7 +7584,7 @@ bool OldScratch::DoSteal(int me, int it) {
           dir *= speed;
 
           Player_Value(it, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id, SuperThiefableItems[i].index);
-          powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, it, &dir);
+          powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, it, &dir);
         }
       }
 
@@ -9223,7 +9223,7 @@ void MantaRay::UpdateSquad(int me) {
         }
 
         if (!f_on_team) {
-          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, NULL)) {
+          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, nullptr)) {
             memory->flags |= MRF_LEADER;
             memory->teammate[memory->num_teammates++] = scan_objs[i];
           }
@@ -9644,7 +9644,7 @@ void Skiff::UpdateSquad(int me) {
         }
 
         if (!f_on_team) {
-          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, NULL)) {
+          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, nullptr)) {
             memory->flags |= MRF_LEADER;
             memory->teammate[memory->num_teammates++] = scan_objs[i];
           }
@@ -10007,7 +10007,7 @@ bool SpyHunter::DoNotify(int me, tOSIRISEventInfo *data) {
       Obj_Value(me, VF_GET, OBJV_V_VELOCITY, &velocity);
 
       int weapon_id = Wpn_FindID("FragBarrel");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me, &velocity);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me, &velocity);
     }
 
     msafe_struct mstruct;
@@ -10660,7 +10660,7 @@ void Seeker::DoCollide(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   weapon_id = Wpn_FindID("SeekerExplosion");
-  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
   msafe_struct mo;
   mo.objhandle = me;
@@ -11129,7 +11129,7 @@ void ProxMine::DoCollide(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   weapon_id = Wpn_FindID("TubbsHitBlast");
-  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
   msafe_struct mo;
   mo.objhandle = me;

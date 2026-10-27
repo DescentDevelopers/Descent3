@@ -144,7 +144,7 @@ public:
   BriefGlobalValues m_GlobalValues;
   tLayoutScreen *layouts;
   int num_layouts;
-  CBriefEdit(CWnd *pParent = NULL); // standard constructor
+  CBriefEdit(CWnd *pParent = nullptr); // standard constructor
   void ParseLayoutScreenFile(char *filename);
   void SetLayoutBitmap(char *filename);
   bool has_changed;

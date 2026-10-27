@@ -43,7 +43,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 static int String_table_size = 0;
-static char **String_table = NULL;
+static char **String_table = nullptr;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -301,7 +301,7 @@ void STDCALLPTR CreateInstance(int id) {
     return new aiSTBlackBarrel;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 //	DestroyInstance
@@ -385,7 +385,7 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
     else
       parent = OBJECT_HANDLE_NONE;
 
-    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, NULL, parent);
+    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, nullptr, parent);
     if (child_handle != OBJECT_HANDLE_NONE) {
       if (!Obj_AttachObjectAP(me, parent_ap, child_handle, child_ap, f_aligned)) {
         // chrishack (we need a way to instantly kill scripted objects)
@@ -876,7 +876,7 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
   case STATE_SNIPE:
     // snipe for a certain amount of time, then return to base.
     if (memory->laser_targeted == false) {
-      memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, NULL, me_handle);
+      memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, nullptr, me_handle);
       mstruct.objhandle = memory->camera_obj;
       MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
 
@@ -1304,7 +1304,7 @@ bool aiCreeper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
       Obj_GetGunPos(me_handle, 0, &pos);
 
       wpnid = Wpn_FindID("CreeperBlastRing");
-      Obj_Create(OBJ_WEAPON, wpnid, room_number, &pos, NULL, me_handle);
+      Obj_Create(OBJ_WEAPON, wpnid, room_number, &pos, nullptr, me_handle);
 
       memory->energy -= 5;
       //	mprintf(0, "[Creeper] Special attack.\n");
@@ -1470,7 +1470,7 @@ void aiSTBlackBarrel::OnDestroy(int me_handle, tOSIRISEVTDESTROY *evt) {
   Obj_Value(me_handle, VF_GET, OBJV_M_ORIENT, &orient);
 
   new_dir = -orient.fvec;
-  vm_VectorToMatrix(&new_orient, &new_dir, NULL, NULL);
+  vm_VectorToMatrix(&new_orient, &new_dir, nullptr, nullptr);
 
   Obj_Create(OBJ_WEAPON, Wpn_FindID("AlienBossFragBurst"), room, &pos, &new_orient, me_handle);
 

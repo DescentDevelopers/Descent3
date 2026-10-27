@@ -122,8 +122,8 @@ CScriptWizard::CScriptWizard(CWnd *pParent /*=NULL*/) : CDialog(CScriptWizard::I
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
 
-  m_ScriptSource = NULL;
-  m_ScriptCode = NULL;
+  m_ScriptSource = nullptr;
+  m_ScriptCode = nullptr;
 }
 
 void CScriptWizard::DoDataExchange(CDataExchange *pDX) {
@@ -511,7 +511,7 @@ void CScriptWizard::LoadCurrentModule() {
   if (m_ScriptSource)
     FreeScript(m_ScriptSource);
 
-  m_ScriptSource = NULL;
+  m_ScriptSource = nullptr;
 
   if (modcbox->GetLBText(modcbox->GetCurSel(), str) != CB_ERR) {
     char *ptr;

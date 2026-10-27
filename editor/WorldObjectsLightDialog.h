@@ -25,7 +25,7 @@
 class CWorldObjectsLightDialog : public CDialog {
   // Construction
 public:
-  CWorldObjectsLightDialog(CWnd *pParent = NULL); // standard constructor
+  CWorldObjectsLightDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CWorldObjectsLightDialog)

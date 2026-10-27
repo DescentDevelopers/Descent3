@@ -332,7 +332,7 @@ void HTextureFlipY() {
 }
 
 void HTextureSlide(room *rp, int facenum, float right, float up) {
-  ASSERT(rp != NULL);
+  ASSERT(rp != nullptr);
   ASSERT(rp->used);
 
   if (Editor_view_mode == VM_TERRAIN) {
@@ -592,7 +592,7 @@ int HTextureGetLeftVertexForFace(int roomnum, int facenum) {
   // Make the orientation matrix
   fvec = Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
@@ -646,7 +646,7 @@ int HTextureGetTopVertexForFace(int roomnum, int facenum) {
   // Make the orientation matrix
   fvec = Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
@@ -701,7 +701,7 @@ int HTextureGetRightVertexForFace(int roomnum, int facenum) {
   // Make the orientation matrix
   fvec = Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
@@ -755,7 +755,7 @@ int HTextureGetBottomVertexForFace(int roomnum, int facenum) {
   // Make the orientation matrix
   fvec = Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;

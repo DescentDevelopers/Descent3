@@ -314,8 +314,8 @@ void RenderSmallWindow(int left, int top, int right, int bot, object *viewer, ve
     rend_DrawScaledBitmap(0, 0, width - 1, height - 1, bm_handle, 0.0, 0.0, 1.0, 1.0);
   } else {
     // draw 3D view
-    ASSERT(viewer != NULL);
-    ASSERT(viewer_eye != NULL);
+    ASSERT(viewer != nullptr);
+    ASSERT(viewer_eye != nullptr);
     object *save_viewer_object = Viewer_object;
     bool rear_view = ((flags & SVF_REARVIEW) != 0);
 
@@ -378,7 +378,7 @@ int GetGunRoom(vector *p0, int roomnum, int objnum, vector *p1) {
   fq.p1 = p1;
   fq.rad = 0;
   fq.thisobjnum = objnum;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = 0;
 
   fate = fvi_FindIntersection(&fq, &hit_data);
@@ -491,7 +491,7 @@ void DrawSmallViews() {
       // using a gun
       vector gun_vector;
       WeaponCalcGun(&gun_pos, &gun_vector, viewer, svp->gun_num);
-      vm_VectorToMatrix(&gun_orient, &gun_vector, NULL, NULL);
+      vm_VectorToMatrix(&gun_orient, &gun_vector, nullptr, nullptr);
       viewer_eye = &gun_pos;
       viewer_orient = &gun_orient;
       viewer_roomnum = GetGunRoom(&viewer->pos, viewer->roomnum, OBJNUM(viewer), &gun_pos);
@@ -502,8 +502,8 @@ void DrawSmallViews() {
       viewer_roomnum = viewer->roomnum;
     } else {
       ASSERT(svp->flags & SVF_STATIC);
-      viewer_eye = NULL;
-      viewer_orient = NULL;
+      viewer_eye = nullptr;
+      viewer_orient = nullptr;
       viewer_roomnum = -1;
     }
 

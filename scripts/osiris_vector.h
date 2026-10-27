@@ -109,7 +109,7 @@ void vm_Orthogonalize(matrix *m);
 // Parameters:	m - filled in with the orienation matrix
 //					fvec,uvec,rvec - pointers to vectors that determine the matrix.
 //						One or two of these must be specified, with the other(s) set to NULL.
-void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec = NULL, vector *rvec = NULL);
+void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec = nullptr, vector *rvec = nullptr);
 
 // Computes a matrix from a vector and and angle of rotation around that vector
 // Parameters:	m - filled in with the computed matrix

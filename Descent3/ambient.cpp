@@ -259,7 +259,7 @@ void ReadAmbientData() {
     if (asp->num_sounds > 0)
       asp->sounds = mem_rmalloc<ase>(asp->num_sounds);
     else
-      asp->sounds = NULL;
+      asp->sounds = nullptr;
 
     int prob = 0;
     for (int s = 0; s < asp->num_sounds; s++) {

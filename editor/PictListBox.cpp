@@ -78,7 +78,7 @@ editorPictListBox::editorPictListBox() {
 
   m_ItemSelected = -1;
   m_OldItemCount = -1;
-  m_ParentWnd = NULL;
+  m_ParentWnd = nullptr;
 }
 
 //	Initialization

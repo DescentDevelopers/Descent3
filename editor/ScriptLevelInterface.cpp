@@ -282,7 +282,7 @@ void CScriptLevelInterface::OnCompile() {
 
   char buffer[_MAX_PATH], filename[_MAX_PATH];
   m_ScriptToCompile.GetLBText(m_ScriptToCompile.GetCurSel(), buffer);
-  ddio_SplitPath(buffer, NULL, filename, NULL);
+  ddio_SplitPath(buffer, nullptr, filename, nullptr);
   strcat(filename, ".dll");
   if (!cfexist(filename)) {
     // there isn't a dll yet...lets make sure one isn't in the manage system
@@ -385,7 +385,7 @@ void CScriptLevelInterface::OnEditscript() {
   sei.hwnd = m_hWnd;
   sei.lpVerb = "open";
   sei.lpFile = fullpath;
-  sei.lpParameters = NULL;
+  sei.lpParameters = nullptr;
   sei.lpDirectory = LocalScriptDir;
   sei.nShow = SW_NORMAL;
 
@@ -867,7 +867,7 @@ void CScriptLevelInterface::OnCreatescript() {
       if (Network_up) {
         SetStatus("Adding compiled script to manage system");
         char dllname[_MAX_PATH], buffer[_MAX_PATH];
-        ddio_SplitPath(filename, NULL, dllname, NULL);
+        ddio_SplitPath(filename, nullptr, dllname, nullptr);
         strcat(dllname, ".dll");
         if (cfexist(dllname) && added_to_network) {
           ddio_MakePath(buffer, LocalScriptDir, dllname, NULL);
@@ -2268,7 +2268,7 @@ bool IsScriptOutofDate(char *name) {
 
   hFindFilecpp = FindFirstFile(name, &FindFileDatacpp);
   if (hFindFilecpp != INVALID_HANDLE_VALUE) {
-    ddio_SplitPath(FindFileDatacpp.cFileName, NULL, fname, ext);
+    ddio_SplitPath(FindFileDatacpp.cFileName, nullptr, fname, ext);
     strcat(fname, ".dll");
 
     hFindFiledll = FindFirstFile(fname, &FindFileDatadll);
@@ -2310,10 +2310,10 @@ bool IsScriptOutofSync(char *name) {
   char filename[_MAX_PATH], ext[_MAX_EXT];
   char path[_MAX_PATH];
 
-  ddio_SplitPath(name, NULL, filename, ext);
+  ddio_SplitPath(name, nullptr, filename, ext);
 
   Osiris_module_init.string_count = 0;
-  Osiris_module_init.string_table = NULL;
+  Osiris_module_init.string_table = nullptr;
   Osiris_module_init.module_is_static = false;
   Osiris_module_init.module_identifier = 0;
   Osiris_module_init.script_identifier = filename;

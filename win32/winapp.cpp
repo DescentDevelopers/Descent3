@@ -209,16 +209,16 @@ oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstan
   if (oeWin32Application::first_time) {
     int i;
     for (i = 0; i < MAX_WIN32APPS; i++) {
-      Win32_AppObjects[i].hWnd = NULL;
-      Win32_AppObjects[i].app = NULL;
+      Win32_AppObjects[i].hWnd = nullptr;
+      Win32_AppObjects[i].app = nullptr;
     }
     oeWin32Application::first_time = false;
   }
 
   HICON dicon = ExtractIcon(nullptr, "descent 3.exe", 0);
-  wc.hCursor = NULL;
+  wc.hCursor = nullptr;
   wc.hIcon = dicon;
-  wc.lpszMenuName = NULL;
+  wc.lpszMenuName = nullptr;
   wc.lpszClassName = (LPCSTR)name;
   wc.hInstance = (HINSTANCE)hinst;
   wc.style = CS_DBLCLKS;
@@ -282,7 +282,7 @@ oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstan
 
   m_hWnd = NULL;
   m_WasCreated = true;
-  m_DeferFunc = NULL;
+  m_DeferFunc = nullptr;
   w32_mouseman_hack = false;
 }
 
@@ -308,7 +308,7 @@ oeWin32Application::oeWin32Application(tWin32AppInfo *appinfo) : oeApplication()
 
   clear_handlers();
 
-  m_DeferFunc = NULL;
+  m_DeferFunc = nullptr;
   w32_mouseman_hack = false;
 }
 
@@ -349,7 +349,7 @@ void oeWin32Application::init() {
     }
   }
 
-  m_hWnd = (HWnd)CreateWindowEx(style, (LPCSTR)m_WndName, (LPCSTR)m_WndName, winstyle, m_X, m_Y, m_W, m_H, NULL, NULL,
+  m_hWnd = (HWnd)CreateWindowEx(style, (LPCSTR)m_WndName, (LPCSTR)m_WndName, winstyle, m_X, m_Y, m_W, m_H, nullptr, nullptr,
                                 (HINSTANCE)m_hInstance, (LPVOID)this);
 
   if (m_hWnd == NULL) {
@@ -397,7 +397,7 @@ void oeWin32Application::set_sizepos(int x, int y, int w, int h) {
 int oeWin32Application::defer_block() {
   MSG msg;
 
-  if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+  if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
     if (msg.message == WM_QUIT) {
       // QUIT APP.
       exit(1);
@@ -461,7 +461,7 @@ void oeWin32Application::os_init() {
   if (!os_initialized) {
     //	Are we NT for 95.
     if (os == NoWin32) {
-      MessageBox(NULL, "This application will only run under Win32 systems.", "Outrage Error", MB_OK);
+      MessageBox(nullptr, "This application will only run under Win32 systems.", "Outrage Error", MB_OK);
       exit(1);
     }
 
@@ -636,7 +636,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     // here we store the this pointer to the app object this instance belongs to.
     lpCreateStruct = (LPCREATESTRUCT)lParam;
     for (i = 0; i < MAX_WIN32APPS; i++)
-      if (Win32_AppObjects[i].hWnd == NULL)
+      if (Win32_AppObjects[i].hWnd == nullptr)
         break;
     if (i == MAX_WIN32APPS)
       Int3();
@@ -652,8 +652,8 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     //	get window handle and clear it.
     if (i == MAX_WIN32APPS)
       DEBUG_BREAK();
-    Win32_AppObjects[i].hWnd = NULL;
-    Win32_AppObjects[i].app = NULL;
+    Win32_AppObjects[i].hWnd = nullptr;
+    Win32_AppObjects[i].app = nullptr;
     i = -1;
     break;
 
@@ -700,7 +700,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
   }
 
   //	if this window not on list, then run default window proc.
-  if (i < 0 || Win32_AppObjects[i].app == NULL || force_default)
+  if (i < 0 || Win32_AppObjects[i].app == nullptr || force_default)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 
   if (!Win32_AppObjects[i].app->run_handler((HWnd)hWnd, (unsigned)msg, (WParam)wParam, (LParam)lParam))

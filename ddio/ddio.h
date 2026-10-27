@@ -289,7 +289,7 @@ void ddio_InternalMouseResume();
         dx, dy = mouse deltas since last call
         return value is mouse button mask.   values not needed should pass NULL pointers.
 */
-int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z = NULL, int *dz = NULL);
+int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z = nullptr, int *dz = nullptr);
 
 // gets a mouse button event, returns false if none.
 bool ddio_MouseGetEvent(int *btn, bool *state);
@@ -309,7 +309,7 @@ int ddio_MouseBtnUpCount(int btn);
 
 //	set bounds for system polling of coordinates
 void ddio_MouseSetLimits(int left, int top, int right, int bottom, int zmin = 0, int zmax = 0);
-void ddio_MouseGetLimits(int *left, int *top, int *right, int *bottom, int *zmin = 0, int *zmax = 0);
+void ddio_MouseGetLimits(int *left, int *top, int *right, int *bottom, int *zmin = nullptr, int *zmax = nullptr);
 
 // virtual coordinate system for mouse (match to video resolution set for optimal mouse usage.
 void ddio_MouseSetVCoords(int width, int height);

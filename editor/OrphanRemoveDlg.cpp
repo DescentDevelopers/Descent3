@@ -322,7 +322,7 @@ void COrphanRemoveDlg::OnOK() {
     return;
   }
 
-  if (MessageBox("Are you sure you want to remove the orphans permanently?", NULL, MB_YESNO) != IDYES)
+  if (MessageBox("Are you sure you want to remove the orphans permanently?", nullptr, MB_YESNO) != IDYES)
     return;
   SetStatus("Deleting Files");
 

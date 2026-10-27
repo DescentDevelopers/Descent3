@@ -682,7 +682,7 @@ BOOL CWorldObjectsPowerupDialog::OnInitDialog() {
 
   CDialog::OnInitDialog();
 
-  CWnd::SetTimer(1, 100, NULL);
+  CWnd::SetTimer(1, 100, nullptr);
 
   return TRUE; // return TRUE unless you set the focus to a control
                // EXCEPTION: OCX Property Pages should return FALSE

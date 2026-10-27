@@ -129,7 +129,7 @@ void CScriptMassCompile::OnBuild() {
   writeline("Starting Mass Build.");
 
   int i, list_size, listbox_size, index;
-  int *index_map = NULL;
+  int *index_map = nullptr;
   CCheckListBox *list;
   char tempbuffer[_MAX_PATH];
   CWnd *wnd;

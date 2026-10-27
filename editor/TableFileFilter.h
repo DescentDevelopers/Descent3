@@ -52,7 +52,7 @@
 class TableFileFilter : public CDialog {
   // Construction
 public:
-  TableFileFilter(CWnd *pParent = NULL); // standard constructor
+  TableFileFilter(CWnd *pParent = nullptr); // standard constructor
   void SetColumnWidths(void);
 
   PageDataList m_PageList; // the page data list

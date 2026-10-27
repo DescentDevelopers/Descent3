@@ -33,7 +33,7 @@
 class CAISettingsDlg : public CDialog {
   // Construction
 public:
-  CAISettingsDlg(t_ai_info *ai_info, CWnd *pParent = NULL); // standard constructor
+  CAISettingsDlg(t_ai_info *ai_info, CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CAISettingsDlg)

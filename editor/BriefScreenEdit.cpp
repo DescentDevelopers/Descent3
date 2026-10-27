@@ -82,7 +82,7 @@ BOOL CBriefScreenEdit::OnInitDialog() {
   CComboBox *combo = (CComboBox *)GetDlgItem(IDC_BRIEF_ADDS_LAYOUT_LIST);
 
   // Start the timer
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   combo->AddString("<None>");
   int sel = 0;

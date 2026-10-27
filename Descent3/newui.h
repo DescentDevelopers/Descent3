@@ -315,8 +315,8 @@ void NewUIClose();
 //	DoWaitMessage(true,"Please Wait...");
 //	... //some code
 //	DoWaitMessage(false);
-void DoWaitMessage(bool enable, const char *message = NULL);
-void DoWaitPopup(bool enable, const char *message = NULL);
+void DoWaitMessage(bool enable, const char *message = nullptr);
+void DoWaitPopup(bool enable, const char *message = nullptr);
 
 //	puts up a message box with a title and message.
 int DoMessageBox(const char *title, const char *msg, int type, ddgr_color title_color = UICOL_WINDOW_TITLE,
@@ -503,7 +503,7 @@ class NewUIButton final : public UIButton {
   int m_TileWidth;
 
 public:
-  NewUIButton() { m_BtnTitle = NULL; };
+  NewUIButton() { m_BtnTitle = nullptr; };
 
   virtual ~NewUIButton() {
     if (m_BtnTitle)

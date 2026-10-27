@@ -34,7 +34,7 @@
 class CProceduralDialog : public CDialog {
   // Construction
 public:
-  CProceduralDialog(CWnd *pParent = NULL); // standard constructor
+  CProceduralDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CProceduralDialog)

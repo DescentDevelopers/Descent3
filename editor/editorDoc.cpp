@@ -166,7 +166,7 @@ void CEditorDoc::Dump(CDumpContext &dc) const { COleServerDoc::Dump(dc); }
 
 BOOL CEditorDoc::OnNewDocument() {
   // If Dallas is running, don't create a new document
-  if (theApp.m_DallasModelessDlgPtr != NULL) {
+  if (theApp.m_DallasModelessDlgPtr != nullptr) {
     OutrageMessageBox("The Dallas Script Editor is open!\n\n"
                       "You must close down Dallas before creating a New Level...");
     return FALSE;
@@ -203,7 +203,7 @@ BOOL CEditorDoc::OnOpenDocument(LPCTSTR lpszPathName) {
   BOOL opened;
 
   // If Dallas is running, don't open the document
-  if (theApp.m_DallasModelessDlgPtr != NULL) {
+  if (theApp.m_DallasModelessDlgPtr != nullptr) {
     OutrageMessageBox("The Dallas Script Editor is open!\n\n"
                       "You must close down Dallas before loading a new level...");
     return FALSE;
@@ -242,7 +242,7 @@ BOOL CEditorDoc::OnSaveDocument(LPCTSTR lpszPathName) {
   BOOL retval;
 
   strcpy(filename, lpszPathName);
-  if (strchr(filename, '.') == 0)
+  if (strchr(filename, '.') == nullptr)
     strcat(filename, ".d3l"); // check for extension
 
   mprintf(0, "Saving level %s...\n", lpszPathName);
@@ -264,7 +264,7 @@ BOOL CEditorDoc::OnSaveDocument(LPCTSTR lpszPathName) {
   if (retval) {
 
     // If Dallas is up, change its filenames
-    if (theApp.m_DallasModelessDlgPtr != NULL) {
+    if (theApp.m_DallasModelessDlgPtr != nullptr) {
       theApp.m_DallasModelessDlgPtr->SetAllFilenamesToThis((char *)lpszPathName);
     }
 
@@ -279,12 +279,12 @@ BOOL CEditorDoc::OnSaveDocument(LPCTSTR lpszPathName) {
     if (old_level_fname.IsEmpty())
       strcpy(old_filename, "Untitled");
     else
-      ddio_SplitPath(old_level_fname.GetBuffer(0), NULL, old_filename, NULL);
+      ddio_SplitPath(old_level_fname.GetBuffer(0), nullptr, old_filename, nullptr);
 
     if (new_level_fname.IsEmpty())
       strcpy(new_filename, "Untitled");
     else
-      ddio_SplitPath(new_level_fname.GetBuffer(0), NULL, new_filename, NULL);
+      ddio_SplitPath(new_level_fname.GetBuffer(0), nullptr, new_filename, nullptr);
 
     // Make sure names are different (ie 'Save As')
     if (stricmp(old_filename, new_filename) != 0) {
@@ -312,7 +312,7 @@ void CEditorDoc::OnCloseDocument() {
   COleServerDoc::OnCloseDocument();
   mprintf(0, "Closing current level...\n");
 
-  theApp.main_doc = NULL;
+  theApp.main_doc = nullptr;
 }
 
 BOOL CEditorDoc::SaveModified() {

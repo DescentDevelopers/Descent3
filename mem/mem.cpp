@@ -614,7 +614,7 @@ void mem_free_sub(void *memblock) {
 int handle_program_memory_depletion(size_t size) {
   // Release character buffer memory.
   mem_free(Mem_failsafe_block);
-  Mem_failsafe_block = NULL;
+  Mem_failsafe_block = nullptr;
   Error("Unable to allocate %d bytes of memory.", size);
   // Tell new to stop allocation attempts.
   return 0;
@@ -627,7 +627,7 @@ void mem_error_msg(const char *file, int line, int size) {
 char *mem_strdup_sub(const char *src, const char *file, int line) {
 #if defined(WIN32)
   if (!Heap) {
-    return 0;
+    return nullptr;
   }
 #endif
   int len = strlen(src) + 1;
@@ -699,7 +699,7 @@ void mem_shutdown() {
   LOG_DEBUG << "Shutting down memory system.";
   if (Mem_failsafe_block) {
     mem_free(Mem_failsafe_block);
-    Mem_failsafe_block = NULL;
+    Mem_failsafe_block = nullptr;
   }
 #ifdef MEM_DEBUG
   free(hashTable);
@@ -728,7 +728,7 @@ void mem_shutdown() {
 #endif
   if (Heap) {
     HeapDestroy(Heap);
-    Heap = NULL;
+    Heap = nullptr;
   }
 }
 
@@ -891,7 +891,7 @@ Node *insertNode(T data) {
    ************************************************/
   /* insert node at beginning of list */
   bucket = hash(data);
-  if ((p = (Node *)malloc(sizeof(Node))) == 0) {
+  if ((p = (Node *)malloc(sizeof(Node))) == nullptr) {
     fprintf(stderr, "out of memory (insertNode)\n");
     exit(1);
   }
@@ -908,7 +908,7 @@ void deleteNode(T data) {
    *  delete node containing data from table  *
    ********************************************/
   /* find node */
-  p0 = 0;
+  p0 = nullptr;
   bucket = hash(data);
   p = hashTable[bucket];
   while (p && !compEQ(p->data, data)) {

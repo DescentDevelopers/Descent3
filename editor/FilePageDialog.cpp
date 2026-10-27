@@ -227,7 +227,7 @@ void CFilePageDialog::OnCheckinFile() {
 
   for (int i = 0; i < listbox_count; i++) {
     list->GetText(listbox_map[i], buffer);
-    ddio_SplitPath(buffer, NULL, NULL, ext);
+    ddio_SplitPath(buffer, nullptr, nullptr, ext);
     if ((!stricmp(ext, ".d3l")) || (!stricmp(ext, ".cpp"))) {
       if (MessageBox("Tisk Tisk, Now there you go, ignoring Jeff when he told you not to check levels and scripts\nin "
                      "through this dialog.  Are you sure you want to ignore Jeff?\n(He doesn't like to be ignored)",
@@ -379,7 +379,7 @@ void CFilePageDialog::OnLockFile() {
 
   for (int i = 0; i < listbox_count; i++) {
     list->GetText(listbox_map[i], buffer);
-    ddio_SplitPath(buffer, NULL, NULL, ext);
+    ddio_SplitPath(buffer, nullptr, nullptr, ext);
     if ((!stricmp(ext, ".d3l")) || (!stricmp(ext, ".cpp"))) {
       if (MessageBox("Tisk Tisk, Now there you go, ignoring Jeff when he told you not to check levels and scripts\nout "
                      "through this dialog.  Are you sure you want to ignore Jeff?\n(He doesn't like to be ignored)",

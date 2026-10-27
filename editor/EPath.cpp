@@ -128,7 +128,7 @@ int MovePathNodeToPos(int pathnum, int nodenum, vector *attempted_pos) {
   fq.p1 = attempted_pos;
   fq.rad = 0.0f;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
   fvi_FindIntersection(&fq, &hit_info);
@@ -143,7 +143,7 @@ int MovePathNodeToPos(int pathnum, int nodenum, vector *attempted_pos) {
     fq1.p1 = &hit_info.hit_pnt;
     fq1.rad = 0.0f;
     fq1.thisobjnum = -1;
-    fq1.ignore_obj_list = NULL;
+    fq1.ignore_obj_list = nullptr;
     fq1.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
     fvi_FindIntersection(&fq1, &hit_info1);
@@ -163,7 +163,7 @@ int MovePathNodeToPos(int pathnum, int nodenum, vector *attempted_pos) {
     fq1.p1 = &hit_info.hit_pnt;
     fq1.rad = 0.0f;
     fq1.thisobjnum = -1;
-    fq1.ignore_obj_list = NULL;
+    fq1.ignore_obj_list = nullptr;
     fq1.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
     fvi_FindIntersection(&fq1, &hit_info1);
@@ -227,7 +227,7 @@ int InsertNodeIntoPath(int pathnum, int nodenum, int flags, int roomnum, vector 
   fq.p1 = &attempted_pos;
   fq.rad = 0.0f;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
   fvi_FindIntersection(&fq, &hit_info);
@@ -242,7 +242,7 @@ int InsertNodeIntoPath(int pathnum, int nodenum, int flags, int roomnum, vector 
     fq1.p1 = &hit_info.hit_pnt;
     fq1.rad = 0.0f;
     fq1.thisobjnum = -1;
-    fq1.ignore_obj_list = NULL;
+    fq1.ignore_obj_list = nullptr;
     fq1.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
     fvi_FindIntersection(&fq1, &hit_info1);
@@ -262,7 +262,7 @@ int InsertNodeIntoPath(int pathnum, int nodenum, int flags, int roomnum, vector 
     fq1.p1 = &hit_info.hit_pnt;
     fq1.rad = 0.0f;
     fq1.thisobjnum = -1;
-    fq1.ignore_obj_list = NULL;
+    fq1.ignore_obj_list = nullptr;
     fq1.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
     fvi_FindIntersection(&fq1, &hit_info1);

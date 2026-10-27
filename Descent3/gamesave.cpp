@@ -930,7 +930,7 @@ void SGSRooms(CFILE *fp) {
       // save doorway info
       if (Rooms[i].flags & RF_DOOR) {
         doorway *dp = Rooms[i].doorway_data;
-        ASSERT(dp != NULL);
+        ASSERT(dp != nullptr);
         gs_WriteByte(fp, dp->state);
         gs_WriteByte(fp, dp->flags);
         gs_WriteByte(fp, dp->keys_needed);

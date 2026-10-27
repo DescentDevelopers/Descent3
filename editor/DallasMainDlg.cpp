@@ -365,7 +365,7 @@ int CurrentTabLevel;
 void OutToFile(char *format, ...) {
   char buffer[1024];
 
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   va_list marker;
@@ -496,7 +496,7 @@ ParamMenuItem param_menu_item[] = {{DOOR_PARAMETER_TYPE, "Door"},
 // Processes and waiting messages
 void DeferMsgs(void) {
   MSG msg;
-  for (int MsgCount = MAX_MESSAGES; MsgCount && PeekMessage(&msg, NULL, 0, 0, PM_REMOVE); MsgCount--) {
+  for (int MsgCount = MAX_MESSAGES; MsgCount && PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE); MsgCount--) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
@@ -504,14 +504,14 @@ void DeferMsgs(void) {
 
 bool Compiling = FALSE;
 CString CompilerOutputText = "";
-CEdit *help_edit_ctrl = NULL;
+CEdit *help_edit_ctrl = nullptr;
 
 // Gets compiler output and displays it
 #define HELP_EDIT_CTRL_HEIGHT 7
 void CompilerCallback(char *text) {
   CompilerOutputText += text;
 
-  if (help_edit_ctrl == NULL)
+  if (help_edit_ctrl == nullptr)
     return;
   help_edit_ctrl->SetWindowText(CompilerOutputText.GetBuffer(0));
 
@@ -536,10 +536,10 @@ CDallasMainDlg::CDallasMainDlg(CWnd *pParent /*=NULL*/) : CDialog(CDallasMainDlg
 
   help_edit_ctrl = &m_HelpEdit;
 
-  m_pDragImage = NULL;
+  m_pDragImage = nullptr;
   m_bLDragging = FALSE;
-  m_hitemDrag = NULL;
-  m_hitemDrop = NULL;
+  m_hitemDrag = nullptr;
+  m_hitemDrop = nullptr;
 }
 
 void CDallasMainDlg::DoDataExchange(CDataExchange *pDX) {
@@ -648,7 +648,7 @@ void CDallasMainDlg::OnActivate(UINT nState, CWnd *pWndOther, BOOL bMinimized) {
     return;
 #endif
 
-  if (pWndOther == NULL)
+  if (pWndOther == nullptr)
     return;
 
   CWnd *parent_window;
@@ -656,7 +656,7 @@ void CDallasMainDlg::OnActivate(UINT nState, CWnd *pWndOther, BOOL bMinimized) {
 
   // If Dallas has been activated because it's returned from a child popup,
   // then get out of here...
-  if (parent_window != NULL) {
+  if (parent_window != nullptr) {
     if (this->m_hWnd == parent_window->m_hWnd)
       return;
   }
@@ -737,14 +737,14 @@ void CDallasMainDlg::OnDestroy() {
 
 // Destroy this instance
 void CDallasMainDlg::PostNcDestroy() {
-  help_edit_ctrl = NULL;
+  help_edit_ctrl = nullptr;
 
   // Set the pointer back to null so rest of app knows Dallas has shut down
 #ifdef NEWEDITOR
   CNewEditorApp *theApp = (CNewEditorApp *)AfxGetApp();
   theApp->DallasDone();
 #else
-  theApp.m_DallasModelessDlgPtr = NULL;
+  theApp.m_DallasModelessDlgPtr = nullptr;
 #endif
 
   // Delete the Dallas instance
@@ -772,7 +772,7 @@ void CDallasMainDlg::OnOK() {
 
   // Pressing ENTER will now cause an edit popup to appear for selected node
   selected_item = m_ScriptTree.GetSelectedItem();
-  if (selected_item == NULL)
+  if (selected_item == nullptr)
     return;
   AssignSpecificValue();
 }
@@ -798,7 +798,7 @@ void CDallasMainDlg::OnNewMessageButton() {
   new_name.Format("%s%d", DEFAULT_MESSAGE_NAME, m_NextMessageID);
 
   // Make sure the default name isn't already taken
-  while (FindMessageInList(new_name.GetBuffer(0)) != NULL) {
+  while (FindMessageInList(new_name.GetBuffer(0)) != nullptr) {
     m_NextMessageID++;
     new_name.Format("%s%d", DEFAULT_MESSAGE_NAME, m_NextMessageID);
   }
@@ -893,7 +893,7 @@ void CDallasMainDlg::OnDblclkMessageList() {
     }
 
   // Check if the message name already exists in the list
-  if (FindMessageInList(msgname) != NULL && strcmp(msgname, old_name.GetBuffer(0)) != 0) {
+  if (FindMessageInList(msgname) != nullptr && strcmp(msgname, old_name.GetBuffer(0)) != 0) {
     MessageBox("That message ID is already in use!\n\nYou must enter a UNIQUE message ID.", "Invalid Message ID Error",
                MB_OK | MB_ICONEXCLAMATION);
     return;
@@ -938,7 +938,7 @@ void CDallasMainDlg::OnChangeMessageEdit() {
   m_MessageList.GetText(index, name);
 
   message = FindMessageInList(name.GetBuffer(0));
-  if (message == NULL)
+  if (message == nullptr)
     return;
   m_MessageEdit.GetWindowText(new_message);
   strcpy(message, new_message.GetBuffer(0));
@@ -952,7 +952,7 @@ void CDallasMainDlg::OnNewScriptButton() {
   int new_id = GetLowestUnusedScriptID();
 
   new_node = CreateDefaultScriptTree(new_id);
-  if (new_node != NULL) {
+  if (new_node != nullptr) {
     if (new_id == m_NextScriptID)
       m_NextScriptID++;
     m_ScriptTree.SelectItem(new_node);
@@ -967,7 +967,7 @@ void CDallasMainDlg::OnInsertScriptButton() {
   int new_id = GetLowestUnusedScriptID();
 
   new_node = CreateDefaultScriptTree(new_id, m_ScriptTree.GetSelectedItem());
-  if (new_node != NULL) {
+  if (new_node != nullptr) {
     if (new_id == m_NextScriptID)
       m_NextScriptID++;
     m_ScriptTree.SelectItem(new_node);
@@ -980,7 +980,7 @@ void CDallasMainDlg::OnDeleteScriptButton() {
   HTREEITEM script_header_node;
 
   script_header_node = GetParentNodeOfType(m_ScriptTree.GetSelectedItem(), SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return;
 
   if (DeletePrompt("Are you sure you want to delete this script?") == IDYES) {
@@ -1000,7 +1000,7 @@ void CDallasMainDlg::OnExpandAllButton() {
   HTREEITEM selected_node;
 
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   ExpandAll(selected_node, TVE_EXPAND);
@@ -1012,7 +1012,7 @@ void CDallasMainDlg::OnCollapseAllButton() {
   HTREEITEM selected_node;
 
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   ExpandAll(selected_node, TVE_COLLAPSE);
@@ -1025,11 +1025,11 @@ void CDallasMainDlg::OnHighlightButton() {
 
   selected_node = m_ScriptTree.GetSelectedItem();
   owner_node = GetScriptOwnerNode(selected_node);
-  if (owner_node == NULL)
+  if (owner_node == nullptr)
     return;
 
   tTreeNodeData *data = (tTreeNodeData *)m_ScriptTree.GetItemData(owner_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   m_ScriptOwnerType = data->ID;
@@ -1079,11 +1079,11 @@ void CDallasMainDlg::DisplayFloatingPopupMenu(HTREEITEM node, POINT &pt) {
   CString valid_return_name;
   tTreeNodeData *data;
 
-  if (node == NULL)
+  if (node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Call the appropriate Menu Creation function
@@ -1142,22 +1142,22 @@ void CDallasMainDlg::OnSelchangedScriptTree(NMHDR *pNMHDR, LRESULT *pResult) {
   tTreeNodeData *data;
 
   selected_item = m_ScriptTree.GetSelectedItem();
-  if (selected_item == NULL)
+  if (selected_item == nullptr)
     return;
 
   data = GetNearestFunctionNode(selected_item);
-  if (data != NULL) {
+  if (data != nullptr) {
     // If it's an action node, display the help
     if (data->type == ACTION_STATEMENT_NODE) {
       char *help = GetActionHelp(data->ID);
-      if (help != NULL)
+      if (help != nullptr)
         m_HelpEdit.SetWindowText(help);
     }
 
     // If it's a query node, display the help
     if (data->type == EXPRESSION_NODE) {
       char *help = GetQueryHelp(data->ID);
-      if (help != NULL)
+      if (help != nullptr)
         m_HelpEdit.SetWindowText(help);
     }
   }
@@ -1205,21 +1205,21 @@ LRESULT CDallasMainDlg::OnAddScript(WPARAM, LPARAM) {
   int new_id = GetLowestUnusedScriptID();
 
   new_node = CreateDefaultScriptTree(new_id);
-  if (new_node != NULL) {
+  if (new_node != nullptr) {
     if (new_id == m_NextScriptID)
       m_NextScriptID++;
     m_ScriptTree.SelectItem(new_node);
 
     // Assign given data to owner
     HTREEITEM owner_node = GetScriptOwnerNode(new_node);
-    if (owner_node != NULL) {
+    if (owner_node != nullptr) {
       tTreeNodeData *data = (tTreeNodeData *)m_ScriptTree.GetItemData(owner_node);
-      if (data != NULL) {
+      if (data != nullptr) {
         data->ID = m_ScriptOwnerType;
         data->int_val = m_ScriptOwnerHandle;
         if (data->ID == OBJECT_TYPE) {
           object *objp = ObjGet(data->int_val);
-          if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL) {
+          if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr) {
             data->int_val = OBJECT_HANDLE_NONE;
             strcpy(data->str_val, "");
           } else {
@@ -1250,21 +1250,21 @@ LRESULT CDallasMainDlg::OnAddScriptAndHighlight(WPARAM, LPARAM) {
   int new_id = GetLowestUnusedScriptID();
 
   new_node = CreateDefaultScriptTree(new_id);
-  if (new_node != NULL) {
+  if (new_node != nullptr) {
     if (new_id == m_NextScriptID)
       m_NextScriptID++;
     m_ScriptTree.SelectItem(new_node);
 
     // Assign given data to owner
     HTREEITEM owner_node = GetScriptOwnerNode(new_node);
-    if (owner_node != NULL) {
+    if (owner_node != nullptr) {
       tTreeNodeData *data = (tTreeNodeData *)m_ScriptTree.GetItemData(owner_node);
-      if (data != NULL) {
+      if (data != nullptr) {
         data->ID = m_ScriptOwnerType;
         data->int_val = m_ScriptOwnerHandle;
         if (data->ID == OBJECT_TYPE) {
           object *objp = ObjGet(data->int_val);
-          if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL) {
+          if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr) {
             data->int_val = OBJECT_HANDLE_NONE;
             strcpy(data->str_val, "");
           } else {
@@ -1324,7 +1324,7 @@ void CDallasMainDlg::SetTitleBar(void) {
   if (m_ScriptFilename.IsEmpty())
     strcpy(filename, "Untitled");
   else
-    ddio_SplitPath(m_ScriptFilename.GetBuffer(0), NULL, filename, NULL);
+    ddio_SplitPath(m_ScriptFilename.GetBuffer(0), nullptr, filename, nullptr);
 
   title.Format("%s - %s%s", DALLAS_TITLE_STRING, filename, (m_Modified) ? "*" : "");
   SetWindowText(title.GetBuffer(0));
@@ -1528,7 +1528,7 @@ void CDallasMainDlg::OnMenuSelectionOfTypeDelete(UINT nID) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Save the parent of this node
@@ -1536,7 +1536,7 @@ void CDallasMainDlg::OnMenuSelectionOfTypeDelete(UINT nID) {
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Handle Delete all's
@@ -1611,12 +1611,12 @@ void CDallasMainDlg::ConfirmAfterDelete(HTREEITEM parent) {
   tTreeNodeData *data;
   HTREEITEM new_node;
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(parent);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure IF statement has one child!
@@ -1624,7 +1624,7 @@ void CDallasMainDlg::ConfirmAfterDelete(HTREEITEM parent) {
     if (GetChildCount(parent) != 1) {
       FreeTreeItemChildren(parent);
       new_node = CreateDefaultConditionalStatementNode(parent);
-      if (new_node != NULL)
+      if (new_node != nullptr)
         m_ScriptTree.SelectItem(new_node);
     }
     return;
@@ -1634,7 +1634,7 @@ void CDallasMainDlg::ConfirmAfterDelete(HTREEITEM parent) {
   if (data->type == ACTIONS_HEADER_NODE) {
     if (GetChildCount(parent) == 0) {
       new_node = CreateDefaultActionStatementNode(parent);
-      if (new_node != NULL)
+      if (new_node != nullptr)
         m_ScriptTree.SelectItem(new_node);
     }
     return;
@@ -1645,7 +1645,7 @@ void CDallasMainDlg::ConfirmAfterDelete(HTREEITEM parent) {
     if (data->ID == AND_TYPE || data->ID == OR_TYPE) {
       if (GetChildCount(parent) < 2) {
         new_node = CreateDefaultConditionalStatementNode(parent);
-        if (new_node != NULL)
+        if (new_node != nullptr)
           m_ScriptTree.SelectItem(new_node);
       }
     }
@@ -1671,7 +1671,7 @@ void CDallasMainDlg::InitAll(void) {
   InitCustomScriptStorage();
   InitNameLists();
 
-  CurrentOutputFile = NULL;
+  CurrentOutputFile = nullptr;
   CurrentTabLevel = 0;
 
   m_ScriptOwnerType = NONE_TYPE;
@@ -1725,7 +1725,7 @@ void CDallasMainDlg::SetAllFilenames(void) {
   if (level_fname.IsEmpty())
     strcpy(filename, "Untitled");
   else
-    ddio_SplitPath(level_fname.GetBuffer(0), NULL, filename, NULL);
+    ddio_SplitPath(level_fname.GetBuffer(0), nullptr, filename, nullptr);
 
   // Create the script source filename
   m_ScriptFilename.Format("%s.cpp", filename);
@@ -1739,7 +1739,7 @@ void CDallasMainDlg::SetAllFilenames(void) {
 
 // Sets all the filenames to match the given level name
 void CDallasMainDlg::SetAllFilenamesToThis(char *level_path) {
-  if (level_path == NULL)
+  if (level_path == nullptr)
     return;
 
   // Set the Dallas Functions Filename
@@ -1754,7 +1754,7 @@ void CDallasMainDlg::SetAllFilenamesToThis(char *level_path) {
   if (level_fname.IsEmpty())
     strcpy(filename, "Untitled");
   else
-    ddio_SplitPath(level_fname.GetBuffer(0), NULL, filename, NULL);
+    ddio_SplitPath(level_fname.GetBuffer(0), nullptr, filename, nullptr);
 
   // Create the script source filename
   m_ScriptFilename.Format("%s.cpp", filename);
@@ -1803,14 +1803,14 @@ void CDallasMainDlg::DeleteScriptFiles(void) {}
 // Performs any necessary initialization of the tree control (and node data)
 void CDallasMainDlg::InitTree(void) {
   m_NextScriptID = 0;
-  m_ClipboardNode = NULL;
+  m_ClipboardNode = nullptr;
 }
 
 // Performs any necessary de-initialization of the tree control (and node data)
 void CDallasMainDlg::ClearTree(void) {
   FreeTreeItemChildren(TVI_ROOT);
   m_NextScriptID = 0;
-  m_ClipboardNode = NULL;
+  m_ClipboardNode = nullptr;
 }
 
 // Obtains the string name for an event type
@@ -1826,12 +1826,12 @@ char *CDallasMainDlg::GetEventTypeString(int type) {
 void CDallasMainDlg::UpdateTreeText(HTREEITEM parent) {
   HTREEITEM child;
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return;
 
   // Process the children
   child = m_ScriptTree.GetChildItem(parent);
-  while (child != NULL) {
+  while (child != nullptr) {
     UpdateTreeText(child);
     UpdateNodeText(child);
 
@@ -1910,11 +1910,11 @@ bool CDallasMainDlg::ScriptHasADoorMe(HTREEITEM script_node) {
   tTreeNodeData *data;
 
   owner_node = GetScriptOwnerNode(script_node);
-  if (owner_node == NULL)
+  if (owner_node == nullptr)
     return (FALSE);
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(owner_node);
-  if (data == NULL)
+  if (data == nullptr)
     return (FALSE);
 
   // Check the owner type (only an object owner can have a me)
@@ -1923,7 +1923,7 @@ bool CDallasMainDlg::ScriptHasADoorMe(HTREEITEM script_node) {
 
   // Make sure it's a Door object
   object *objp = ObjGet(data->int_val);
-  if (objp == NULL || objp->type != OBJ_DOOR || objp->name == NULL)
+  if (objp == nullptr || objp->type != OBJ_DOOR || objp->name == nullptr)
     return FALSE;
 
   return TRUE;
@@ -2017,11 +2017,11 @@ bool CDallasMainDlg::ScriptHasALevelGoalID(HTREEITEM script_node) {
 bool CDallasMainDlg::NodeIsIfClause(HTREEITEM node) {
   tTreeNodeData *data;
 
-  if (node == NULL)
+  if (node == nullptr)
     return (FALSE);
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL || data->type != CONDITIONAL_HEADER_NODE)
+  if (data == nullptr || data->type != CONDITIONAL_HEADER_NODE)
     return (FALSE);
 
   if (data->ID != NESTED)
@@ -2034,11 +2034,11 @@ bool CDallasMainDlg::NodeIsIfClause(HTREEITEM node) {
 bool CDallasMainDlg::NodeIsClauseOfType(HTREEITEM node, int type) {
   tTreeNodeData *data;
 
-  if (node == NULL)
+  if (node == nullptr)
     return (FALSE);
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL || data->type != ACTIONS_HEADER_NODE)
+  if (data == nullptr || data->type != ACTIONS_HEADER_NODE)
     return (FALSE);
 
   if (data->ID != NESTED)
@@ -2097,11 +2097,11 @@ void CDallasMainDlg::UpdateNodeText(HTREEITEM node) {
   CString new_text;
   tTreeNodeData *data;
 
-  if (node == NULL)
+  if (node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Format and set the new text
@@ -2113,13 +2113,13 @@ void CDallasMainDlg::UpdateNodeText(HTREEITEM node) {
 void CDallasMainDlg::UpdateAllParentNodesText(HTREEITEM node) {
   HTREEITEM parent;
 
-  if (node == NULL)
+  if (node == nullptr)
     return;
 
   UpdateNodeText(node);
 
   parent = m_ScriptTree.GetParentItem(node);
-  while (parent != NULL) {
+  while (parent != nullptr) {
     UpdateNodeText(parent);
     parent = m_ScriptTree.GetParentItem(parent);
   }
@@ -2131,7 +2131,7 @@ void CDallasMainDlg::FormatTreeText(CString &text, tTreeNodeData *data, HTREEITE
   object *objp;
 
   // Make sure given data is valid
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Format the text according to the tree node type
@@ -2147,7 +2147,7 @@ void CDallasMainDlg::FormatTreeText(CString &text, tTreeNodeData *data, HTREEITE
         break;
       }
       objp = ObjGet(data->int_val);
-      if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL)
+      if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr)
         text.Format("Owner: *OBJECT_ERROR*");
       else
         text.Format("Owner: %s (Object)", objp->name);
@@ -2242,14 +2242,14 @@ void CDallasMainDlg::FormatConditionText(CString &text, HTREEITEM condition_node
   HTREEITEM child_node;
 
   // Make sure given node is valid
-  if (condition_node == NULL) {
+  if (condition_node == nullptr) {
     text = "*ERROR*";
     return;
   }
 
   // Get node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(condition_node);
-  if (data == NULL) {
+  if (data == nullptr) {
     text = "*ERROR*";
     return;
   }
@@ -2264,7 +2264,7 @@ void CDallasMainDlg::FormatConditionText(CString &text, HTREEITEM condition_node
 
   // Get the first child (literal or query)
   child_node = m_ScriptTree.GetChildItem(condition_node);
-  if (child_node != NULL) {
+  if (child_node != nullptr) {
     CString temp_str;
     FormatGenericExpressionText(temp_str, child_node);
     text += temp_str;
@@ -2275,9 +2275,9 @@ void CDallasMainDlg::FormatConditionText(CString &text, HTREEITEM condition_node
   text += ") ";
 
   // Get the second child (expression operator)
-  if (child_node != NULL) {
+  if (child_node != nullptr) {
     child_node = m_ScriptTree.GetNextSiblingItem(child_node);
-    if (child_node != NULL) {
+    if (child_node != nullptr) {
       CString temp_str;
       FormatGenericExpressionText(temp_str, child_node);
       text += temp_str;
@@ -2287,9 +2287,9 @@ void CDallasMainDlg::FormatConditionText(CString &text, HTREEITEM condition_node
   }
 
   // If it's a comparison, get the third child (literal or query)
-  if (child_node != NULL && data->ID == COMPARISON_STATEMENT) {
+  if (child_node != nullptr && data->ID == COMPARISON_STATEMENT) {
     child_node = m_ScriptTree.GetNextSiblingItem(child_node);
-    if (child_node != NULL) {
+    if (child_node != nullptr) {
       CString temp_str;
       FormatGenericExpressionText(temp_str, child_node);
       text += " (";
@@ -2306,14 +2306,14 @@ void CDallasMainDlg::FormatGenericExpressionText(CString &text, HTREEITEM gen_ex
   tTreeNodeData *data;
 
   // Make sure given node is valid
-  if (gen_exp_node == NULL) {
+  if (gen_exp_node == nullptr) {
     text = "*ERROR*";
     return;
   }
 
   // Get node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(gen_exp_node);
-  if (data == NULL) {
+  if (data == nullptr) {
     text = "*ERROR*";
     return;
   }
@@ -2346,7 +2346,7 @@ void CDallasMainDlg::FormatParameterValueText(CString &text, tTreeNodeData *data
   char temp_name[_MAX_PATH + 1];
 
   // Make sure given data is valid
-  if (data == NULL) {
+  if (data == nullptr) {
     text = "";
     return;
   }
@@ -2369,7 +2369,7 @@ void CDallasMainDlg::FormatParameterValueText(CString &text, tTreeNodeData *data
       break;
     }
     objp = ObjGet(data->int_val);
-    if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL)
+    if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr)
       text.Format("*DOOR_ERROR*");
     else
       text.Format("%s", objp->name);
@@ -2388,7 +2388,7 @@ void CDallasMainDlg::FormatParameterValueText(CString &text, tTreeNodeData *data
       break;
     }
     objp = ObjGet(data->int_val);
-    if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL)
+    if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr)
       text.Format("*OBJECT_ERROR*");
     else
       text.Format("%s", objp->name);
@@ -2469,7 +2469,7 @@ void CDallasMainDlg::FormatParameterValueText(CString &text, tTreeNodeData *data
       text.Format("MATCEN ID");
     } else {
       temp_str = GetEnumValueName(data->name, data->int_val);
-      if (temp_str == NULL)
+      if (temp_str == nullptr)
         text.Format("*UNKNOWN_ENUM*");
       else
         text.Format("%s", temp_str);
@@ -2574,13 +2574,13 @@ void CDallasMainDlg::FormatActionNodeText(CString &text, HTREEITEM action_node) 
   tTreeNodeData *data;
   HTREEITEM child;
 
-  if (action_node == NULL) {
+  if (action_node == nullptr) {
     text = "*ERROR*";
     return;
   }
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(action_node);
-  if (data == NULL) {
+  if (data == nullptr) {
     text = "*ERROR*";
     return;
   }
@@ -2591,7 +2591,7 @@ void CDallasMainDlg::FormatActionNodeText(CString &text, HTREEITEM action_node) 
   }
 
   desc = GetActionDesc(data->ID);
-  if (desc == NULL) {
+  if (desc == nullptr) {
     text = "*ERROR*";
     return;
   }
@@ -2604,7 +2604,7 @@ void CDallasMainDlg::FormatActionNodeText(CString &text, HTREEITEM action_node) 
     if ((*desc) == '[') {
       ParseParamBlock(desc, name_text, default_text, range_text);
 
-      if (child == NULL)
+      if (child == nullptr)
         text += "???";
       else {
         CString tmp_str;
@@ -2723,13 +2723,13 @@ void CDallasMainDlg::FormatQueryNodeText(CString &text, HTREEITEM query_node) {
   HTREEITEM child;
   tTreeNodeData *data;
 
-  if (query_node == NULL) {
+  if (query_node == nullptr) {
     text = "*ERROR*";
     return;
   }
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(query_node);
-  if (data == NULL) {
+  if (data == nullptr) {
     text = "*ERROR*";
     return;
   }
@@ -2740,7 +2740,7 @@ void CDallasMainDlg::FormatQueryNodeText(CString &text, HTREEITEM query_node) {
   }
 
   desc = GetQueryDesc(data->ID);
-  if (desc == NULL) {
+  if (desc == nullptr) {
     text = "*ERROR*";
     return;
   }
@@ -2752,7 +2752,7 @@ void CDallasMainDlg::FormatQueryNodeText(CString &text, HTREEITEM query_node) {
 
   // Skip over the return type
   desc = strchr(desc, ':');
-  if (desc == NULL)
+  if (desc == nullptr)
     return;
   desc++;
 
@@ -2760,7 +2760,7 @@ void CDallasMainDlg::FormatQueryNodeText(CString &text, HTREEITEM query_node) {
     if ((*desc) == '[') {
       ParseParamBlock(desc, name_text, default_text, range_text);
 
-      if (child == NULL)
+      if (child == nullptr)
         text += "???";
       else {
         CString tmp_str;
@@ -3026,7 +3026,7 @@ int CDallasMainDlg::ConvertParamTypeToChar(int param_type) {
 
 // Turns bold on or off for a specified node
 void CDallasMainDlg::SetBoldNodeText(HTREEITEM node, bool bold_on) {
-  if (node == NULL)
+  if (node == nullptr)
     return;
 
   if (bold_on)
@@ -3041,17 +3041,17 @@ bool CDallasMainDlg::ParentIsComparisonConditional(HTREEITEM node) {
   HTREEITEM parent;
   tTreeNodeData *data;
 
-  if (node == NULL)
+  if (node == nullptr)
     return (FALSE);
 
   // Get the parent
   parent = m_ScriptTree.GetParentItem(node);
-  if (parent == NULL)
+  if (parent == nullptr)
     return (FALSE);
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(parent);
-  if (data == NULL)
+  if (data == nullptr)
     return (FALSE);
 
   // Check the parent node
@@ -3069,7 +3069,7 @@ int CDallasMainDlg::GetValidParamType(HTREEITEM node, CString &name) {
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return (-1);
 
   name = "";
@@ -3097,7 +3097,7 @@ int CDallasMainDlg::GetParamType(HTREEITEM node, CString &name) {
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return (-1);
 
   name = "";
@@ -3120,12 +3120,12 @@ void CDallasMainDlg::SetTreeNodeImage(HTREEITEM node) {
   int temp_id;
 
   // Make sure node is valid
-  if (node == NULL)
+  if (node == nullptr)
     return;
 
   // Get node data, make sure it's valid
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Set the item's display images appropriately
@@ -3279,9 +3279,9 @@ HTREEITEM CDallasMainDlg::AddNodeToTree(HTREEITEM parent, HTREEITEM insertbefore
 
   // Allocate a new data node, and copy given data into it
   new_data_node = new tTreeNodeData;
-  if (new_data_node == NULL) {
+  if (new_data_node == nullptr) {
     MessageBox("Unable to Allocate a New Data Node", "Out of Memory Error!", MB_OK | MB_ICONEXCLAMATION);
-    return NULL;
+    return nullptr;
   }
 
   // Copy given data into new node
@@ -3296,7 +3296,7 @@ HTREEITEM CDallasMainDlg::AddNodeToTree(HTREEITEM parent, HTREEITEM insertbefore
   // Get the previous child node for "insert before"
   if (insertbefore != TVI_FIRST && insertbefore != TVI_LAST && insertbefore != TVI_SORT) {
     insertafter = m_ScriptTree.GetPrevSiblingItem(insertbefore);
-    if (insertafter == NULL)
+    if (insertafter == nullptr)
       insertafter = TVI_FIRST;
     new_parent = parent;
   } else {
@@ -3312,10 +3312,10 @@ HTREEITEM CDallasMainDlg::AddNodeToTree(HTREEITEM parent, HTREEITEM insertbefore
   added_item = m_ScriptTree.InsertItem(&tvs);
 
   // If add was unsuccessful, delete the item data
-  if (added_item == NULL) {
+  if (added_item == nullptr) {
     delete new_data_node;
     MessageBox("Unable to Allocate a New Tree Node", "Out of Memory Error!", MB_OK | MB_ICONEXCLAMATION);
-    return NULL;
+    return nullptr;
   }
 
   // Set the node data and image
@@ -3326,7 +3326,7 @@ HTREEITEM CDallasMainDlg::AddNodeToTree(HTREEITEM parent, HTREEITEM insertbefore
   UpdateNodeText(added_item);
 
   // Expand the parent if necessary
-  if (parent != NULL && expand)
+  if (parent != nullptr && expand)
     m_ScriptTree.Expand(parent, TVE_EXPAND);
 
   return (added_item);
@@ -3336,7 +3336,7 @@ HTREEITEM CDallasMainDlg::AddNodeToTree(HTREEITEM parent, HTREEITEM insertbefore
 void CDallasMainDlg::FreeTreeItem(HTREEITEM item) {
   tTreeNodeData *data;
 
-  if (item == NULL)
+  if (item == nullptr)
     return;
 
   // Free all children of this node
@@ -3354,7 +3354,7 @@ void CDallasMainDlg::FreeTreeItem(HTREEITEM item) {
 void CDallasMainDlg::FreeTreeItemChildren(HTREEITEM item) {
   HTREEITEM child, old_child;
 
-  if (item == NULL)
+  if (item == nullptr)
     return;
 
   child = m_ScriptTree.GetChildItem(item);
@@ -3369,11 +3369,11 @@ void CDallasMainDlg::FreeTreeItemChildren(HTREEITEM item) {
 void CDallasMainDlg::ExpandAll(HTREEITEM node, UINT nCode) {
   HTREEITEM child;
 
-  if (node == NULL)
+  if (node == nullptr)
     return;
 
   child = m_ScriptTree.GetChildItem(node);
-  while (child != NULL) {
+  while (child != nullptr) {
     ExpandAll(child, nCode);
     child = m_ScriptTree.GetNextSiblingItem(child);
   }
@@ -3387,7 +3387,7 @@ HTREEITEM CDallasMainDlg::CopyTree(HTREEITEM dest_parent, HTREEITEM dest_insert_
   HTREEITEM dest_node;
 
   dest_node = AddNodeToTree(dest_parent, dest_insert_before, src_node);
-  if (dest_node != NULL) {
+  if (dest_node != nullptr) {
     CopyChildren(dest_node, src_node);
     UpdateNodeText(dest_node);
   }
@@ -3399,12 +3399,12 @@ HTREEITEM CDallasMainDlg::CopyTree(HTREEITEM dest_parent, HTREEITEM dest_insert_
 HTREEITEM CDallasMainDlg::CopyChildren(HTREEITEM dest_parent, HTREEITEM src_parent) {
   HTREEITEM src_child, dest_child;
 
-  dest_child = NULL;
+  dest_child = nullptr;
   src_child = m_ScriptTree.GetChildItem(src_parent);
-  while (src_child != NULL) {
+  while (src_child != nullptr) {
     dest_child = AddNodeToTree(dest_parent, TVI_LAST, src_child);
-    if (dest_child == NULL)
-      return NULL;
+    if (dest_child == nullptr)
+      return nullptr;
     CopyChildren(dest_child, src_child);
     UpdateNodeText(dest_child);
     src_child = m_ScriptTree.GetNextSiblingItem(src_child);
@@ -3418,12 +3418,12 @@ int CDallasMainDlg::GetChildPosition(HTREEITEM child) {
   HTREEITEM node;
   int count;
 
-  if (child == NULL)
+  if (child == nullptr)
     return 0;
 
   count = 1;
   node = m_ScriptTree.GetPrevSiblingItem(child);
-  while (node != NULL) {
+  while (node != nullptr) {
     node = m_ScriptTree.GetPrevSiblingItem(node);
     count++;
   }
@@ -3436,13 +3436,13 @@ HTREEITEM CDallasMainDlg::GetNthChild(HTREEITEM parent, int n) {
   HTREEITEM child;
   int count;
 
-  if (parent == NULL || n <= 0)
-    return NULL;
+  if (parent == nullptr || n <= 0)
+    return nullptr;
 
   count = 1;
   child = m_ScriptTree.GetChildItem(parent);
 
-  while (child != NULL && count != n) {
+  while (child != nullptr && count != n) {
     child = m_ScriptTree.GetNextSiblingItem(child);
     count++;
   }
@@ -3455,12 +3455,12 @@ int CDallasMainDlg::GetChildCount(HTREEITEM parent) {
   HTREEITEM child;
   int count;
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return 0;
 
   count = 0;
   child = m_ScriptTree.GetChildItem(parent);
-  while (child != NULL) {
+  while (child != nullptr) {
     child = m_ScriptTree.GetNextSiblingItem(child);
     count++;
   }
@@ -3474,11 +3474,11 @@ int CDallasMainDlg::GetScriptID(HTREEITEM script_node) {
   tTreeNodeData *data;
 
   script_header_node = GetParentNodeOfType(script_node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return (-1);
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_header_node);
-  if (data == NULL)
+  if (data == nullptr)
     return (-1);
 
   return (data->ID);
@@ -3490,7 +3490,7 @@ HTREEITEM CDallasMainDlg::FindScriptIDNode(int scriptID) {
 
   // Fill up the list
   node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (node != NULL) {
+  while (node != nullptr) {
     int id = GetScriptID(node);
     if (id == scriptID) {
       return (node);
@@ -3498,7 +3498,7 @@ HTREEITEM CDallasMainDlg::FindScriptIDNode(int scriptID) {
     node = m_ScriptTree.GetNextSiblingItem(node);
   }
 
-  return (NULL);
+  return (nullptr);
 }
 
 // Compare function for GetLowestUnusedScriptID()
@@ -3526,13 +3526,13 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   if (max_size == 0)
     return (lowest_id);
   list = mem_rmalloc<int>(max_size);
-  if (list == NULL)
+  if (list == nullptr)
     return (m_NextScriptID);
 
   // Fill up the list
   size = 0;
   node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (node != NULL) {
+  while (node != nullptr) {
     int id = GetScriptID(node);
     if (id >= 0 && size < max_size) {
       list[size] = id;
@@ -3575,11 +3575,11 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
 int CDallasMainDlg::GetNodeType(HTREEITEM node) {
   tTreeNodeData *data;
 
-  if (node == NULL)
+  if (node == nullptr)
     return (UNKNOWN_NODE);
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return (UNKNOWN_NODE);
 
   return (data->type);
@@ -3591,11 +3591,11 @@ int CDallasMainDlg::GetScriptOwnerType(HTREEITEM script_node) {
   tTreeNodeData *data;
 
   script_owner_node = GetScriptOwnerNode(script_node);
-  if (script_owner_node == NULL)
+  if (script_owner_node == nullptr)
     return (-1);
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_owner_node);
-  if (data == NULL)
+  if (data == nullptr)
     return (-1);
 
   return (data->ID);
@@ -3607,11 +3607,11 @@ int CDallasMainDlg::GetScriptEventType(HTREEITEM script_node) {
   tTreeNodeData *data;
 
   script_event_node = GetScriptEventNode(script_node);
-  if (script_event_node == NULL)
+  if (script_event_node == nullptr)
     return (-1);
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_event_node);
-  if (data == NULL)
+  if (data == nullptr)
     return (-1);
 
   return (data->ID);
@@ -3623,11 +3623,11 @@ bool CDallasMainDlg::SetScriptEventType(HTREEITEM script_node, int type) {
   tTreeNodeData *data;
 
   script_event_node = GetScriptEventNode(script_node);
-  if (script_event_node == NULL)
+  if (script_event_node == nullptr)
     return FALSE;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_event_node);
-  if (data == NULL)
+  if (data == nullptr)
     return FALSE;
 
   data->ID = type;
@@ -3642,9 +3642,9 @@ HTREEITEM CDallasMainDlg::GetParentNodeOfType(HTREEITEM child_node, int node_typ
   tTreeNodeData *data;
 
   parent = child_node;
-  while (parent != NULL) {
+  while (parent != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(parent);
-    if (data != NULL && data->type == node_type)
+    if (data != nullptr && data->type == node_type)
       return (parent);
     parent = m_ScriptTree.GetParentItem(parent);
   }
@@ -3658,14 +3658,14 @@ tTreeNodeData *CDallasMainDlg::GetNearestFunctionNode(HTREEITEM node) {
   tTreeNodeData *data;
 
   parent = node;
-  while (parent != NULL) {
+  while (parent != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(parent);
-    if (data != NULL && (data->type == EXPRESSION_NODE || data->type == ACTION_STATEMENT_NODE))
+    if (data != nullptr && (data->type == EXPRESSION_NODE || data->type == ACTION_STATEMENT_NODE))
       return (data);
     parent = m_ScriptTree.GetParentItem(parent);
   }
 
-  return (NULL);
+  return (nullptr);
 }
 
 // Searches for either an ACTION_STATEMENT_NODE or an EXPRESSION_NODE
@@ -3676,16 +3676,16 @@ HTREEITEM CDallasMainDlg::GetParameterParentNode(HTREEITEM param_node) {
 
   // Make sure given node is a parameter node
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(param_node);
-  if (data == NULL || data->type != PARAMETER_NODE)
-    return NULL;
+  if (data == nullptr || data->type != PARAMETER_NODE)
+    return nullptr;
 
   // Keep getting the parent until we find a good match (or run out of parents)
   parent = m_ScriptTree.GetParentItem(param_node);
-  while (parent != NULL) {
+  while (parent != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(parent);
-    if (data != NULL && data->type == ACTION_STATEMENT_NODE)
+    if (data != nullptr && data->type == ACTION_STATEMENT_NODE)
       return (parent);
-    if (data != NULL && data->type == EXPRESSION_NODE)
+    if (data != nullptr && data->type == EXPRESSION_NODE)
       return (parent);
     parent = m_ScriptTree.GetParentItem(parent);
   }
@@ -3699,8 +3699,8 @@ HTREEITEM CDallasMainDlg::GetScriptOwnerNode(HTREEITEM node) {
 
   // Get the parent Script header node of the given node
   temp_node = GetParentNodeOfType(node, SCRIPT_HEADER_NODE);
-  if (temp_node == NULL)
-    return NULL;
+  if (temp_node == nullptr)
+    return nullptr;
 
   // Get the owner node (first child of script header)
   temp_node = m_ScriptTree.GetChildItem(temp_node);
@@ -3714,8 +3714,8 @@ HTREEITEM CDallasMainDlg::GetScriptEventNode(HTREEITEM node) {
 
   // Get the script owner node
   temp_node = GetScriptOwnerNode(node);
-  if (node == NULL)
-    return NULL;
+  if (node == nullptr)
+    return nullptr;
 
   // Get the event node (next node after owner)
   temp_node = m_ScriptTree.GetNextSiblingItem(temp_node);
@@ -3729,8 +3729,8 @@ HTREEITEM CDallasMainDlg::GetConditionalHeaderNode(HTREEITEM node) {
 
   // Get the script owner node
   temp_node = GetScriptEventNode(node);
-  if (node == NULL)
-    return NULL;
+  if (node == nullptr)
+    return nullptr;
 
   // Get the conditional header node (next node after event node)
   temp_node = m_ScriptTree.GetNextSiblingItem(temp_node);
@@ -3744,8 +3744,8 @@ HTREEITEM CDallasMainDlg::GetActionHeaderNode(HTREEITEM node) {
 
   // Get the script owner node
   temp_node = GetConditionalHeaderNode(node);
-  if (node == NULL)
-    return NULL;
+  if (node == nullptr)
+    return nullptr;
 
   // Get the action header node (next node after conditional header)
   temp_node = m_ScriptTree.GetNextSiblingItem(temp_node);
@@ -3760,7 +3760,7 @@ void CDallasMainDlg::HighlightAllScripts(void) {
 
   // Group each script header node into the list
   script_header_node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (script_header_node != NULL) {
+  while (script_header_node != nullptr) {
     HighlightScript(script_header_node);
     script_header_node = m_ScriptTree.GetNextSiblingItem(script_header_node);
   }
@@ -3772,7 +3772,7 @@ void CDallasMainDlg::HighlightScript(HTREEITEM node) {
   HTREEITEM script_header_node;
 
   script_header_node = GetParentNodeOfType(node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return;
 
   HTREEITEM owner_node, event_node;
@@ -3781,9 +3781,9 @@ void CDallasMainDlg::HighlightScript(HTREEITEM node) {
 
   owners_match = FALSE;
   owner_node = GetScriptOwnerNode(script_header_node);
-  if (owner_node != NULL) {
+  if (owner_node != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(owner_node);
-    if (data != NULL) {
+    if (data != nullptr) {
       if (m_ScriptOwnerType == ALL_OWNERS_TYPE)
         owners_match = TRUE;
       else if (m_ScriptOwnerType == LEVEL_TYPE && data->ID == LEVEL_TYPE)
@@ -3798,9 +3798,9 @@ void CDallasMainDlg::HighlightScript(HTREEITEM node) {
   }
 
   event_node = GetScriptEventNode(script_header_node);
-  if (event_node != NULL) {
+  if (event_node != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(event_node);
-    if (data != NULL) {
+    if (data != nullptr) {
       int event_type = GetHighlightedEvent();
       if (event_type != ALL_EVENT_TYPES && data->ID != event_type)
         owners_match = FALSE;
@@ -3824,7 +3824,7 @@ void CDallasMainDlg::InitMessageList(void) {
 
   // Init the list of message entries to empty
   for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    m_MessageEntryList[j] = NULL;
+    m_MessageEntryList[j] = nullptr;
 }
 
 // Clears the message list
@@ -3833,9 +3833,9 @@ void CDallasMainDlg::ClearMessageList(void) {
 
   // Wipeout the list of message entries
   for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    if (m_MessageEntryList[j] != NULL) {
+    if (m_MessageEntryList[j] != nullptr) {
       delete m_MessageEntryList[j];
-      m_MessageEntryList[j] = NULL;
+      m_MessageEntryList[j] = nullptr;
     }
 
   // Reset the next message ID
@@ -3852,14 +3852,14 @@ bool CDallasMainDlg::AddToMessageList(char *name, char *message) {
   int index;
 
   // Make sure no duplicate entries exist
-  if (FindMessageInList(name) != NULL) {
+  if (FindMessageInList(name) != nullptr) {
     m_MessageListErrorCode = MSG_LIST_DUP_NAME_ERROR;
     return FALSE;
   }
 
   // Search the list for an empty slot, and add the message
   empty_slot = GetEmptyMessageListEntry();
-  if (empty_slot == NULL) {
+  if (empty_slot == nullptr) {
     m_MessageListErrorCode = MSG_LIST_FULL_ERROR;
     return FALSE;
   }
@@ -3892,10 +3892,10 @@ char *CDallasMainDlg::FindMessageInList(char *name) {
 
   // Scan entry list for given name
   for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    if (m_MessageEntryList[j] != NULL && strcmp(m_MessageEntryList[j]->name, name) == 0)
+    if (m_MessageEntryList[j] != nullptr && strcmp(m_MessageEntryList[j]->name, name) == 0)
       return (m_MessageEntryList[j]->message);
 
-  return (NULL);
+  return (nullptr);
 }
 
 // Deletes a message entry
@@ -3904,9 +3904,9 @@ int CDallasMainDlg::DeleteMessageListEntry(char *name) {
 
   // Scan entry list for given name
   for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    if (m_MessageEntryList[j] != NULL && strcmp(m_MessageEntryList[j]->name, name) == 0) {
+    if (m_MessageEntryList[j] != nullptr && strcmp(m_MessageEntryList[j]->name, name) == 0) {
       delete m_MessageEntryList[j];
-      m_MessageEntryList[j] = NULL;
+      m_MessageEntryList[j] = nullptr;
       return (TRUE);
     }
 
@@ -3919,12 +3919,12 @@ tMessageListEntry *CDallasMainDlg::GetEmptyMessageListEntry(void) {
 
   // Scan entry list for an empty slot
   for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    if (m_MessageEntryList[j] == NULL) {
+    if (m_MessageEntryList[j] == nullptr) {
       m_MessageEntryList[j] = new tMessageListEntry;
       return (m_MessageEntryList[j]);
     }
 
-  return (NULL);
+  return (nullptr);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -3937,62 +3937,62 @@ void CDallasMainDlg::InitNameLists(void) {
 
   // Init the Door list
   for (j = 0; j < MAX_NAMED_DOORS; j++)
-    m_DoorList[j] = NULL;
+    m_DoorList[j] = nullptr;
   m_DoorListSize = 0;
 
   // Init the object list
   for (j = 0; j < MAX_NAMED_OBJECTS; j++)
-    m_ObjectList[j] = NULL;
+    m_ObjectList[j] = nullptr;
   m_ObjectListSize = 0;
 
   // Init the Room list
   for (j = 0; j < MAX_NAMED_ROOMS; j++)
-    m_RoomList[j] = NULL;
+    m_RoomList[j] = nullptr;
   m_RoomListSize = 0;
 
   // Init the Trigger list
   for (j = 0; j < MAX_NAMED_TRIGGERS; j++)
-    m_TriggerList[j] = NULL;
+    m_TriggerList[j] = nullptr;
   m_TriggerListSize = 0;
 
   // Init the sound list
   for (j = 0; j < MAX_NAMED_SOUNDS; j++)
-    m_SoundList[j] = NULL;
+    m_SoundList[j] = nullptr;
   m_SoundListSize = 0;
 
   // Init the Texture list
   for (j = 0; j < MAX_NAMED_TEXTURES; j++)
-    m_TextureList[j] = NULL;
+    m_TextureList[j] = nullptr;
   m_TextureListSize = 0;
 
   // Init the Specname list
   for (j = 0; j < MAX_SPECNAMES; j++)
-    m_SpecnameList[j] = NULL;
+    m_SpecnameList[j] = nullptr;
   m_SpecnameListSize = 0;
 
   // Init the Path list
   for (j = 0; j < MAX_NAMED_PATHS; j++)
-    m_PathList[j] = NULL;
+    m_PathList[j] = nullptr;
   m_PathListSize = 0;
 
   // Init the Matcen list
   for (j = 0; j < MAX_NAMED_MATCENS; j++)
-    m_MatcenList[j] = NULL;
+    m_MatcenList[j] = nullptr;
   m_MatcenListSize = 0;
 
   // Init the Goal list
   for (j = 0; j < MAX_NAMED_GOALS; j++)
-    m_GoalList[j] = NULL;
+    m_GoalList[j] = nullptr;
   m_GoalListSize = 0;
 
   // Init the StrmAudio list
   for (j = 0; j < MAX_NAMED_STRM_AUDIO; j++)
-    m_StrmAudioList[j] = NULL;
+    m_StrmAudioList[j] = nullptr;
   m_StrmAudioListSize = 0;
 
   // Init the Message name list
   for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    m_MessageNameList[j] = NULL;
+    m_MessageNameList[j] = nullptr;
   m_MessageNameListSize = 0;
 }
 
@@ -4002,97 +4002,97 @@ void CDallasMainDlg::ClearNameLists(void) {
 
   // Clear the Door list
   for (j = 0; j < m_DoorListSize; j++)
-    if (m_DoorList[j] != NULL) {
+    if (m_DoorList[j] != nullptr) {
       mem_free(m_DoorList[j]);
-      m_DoorList[j] = NULL;
+      m_DoorList[j] = nullptr;
     }
   m_DoorListSize = 0;
 
   // Clear the object list
   for (j = 0; j < m_ObjectListSize; j++)
-    if (m_ObjectList[j] != NULL) {
+    if (m_ObjectList[j] != nullptr) {
       mem_free(m_ObjectList[j]);
-      m_ObjectList[j] = NULL;
+      m_ObjectList[j] = nullptr;
     }
   m_ObjectListSize = 0;
 
   // Clear the Room list
   for (j = 0; j < m_RoomListSize; j++)
-    if (m_RoomList[j] != NULL) {
+    if (m_RoomList[j] != nullptr) {
       mem_free(m_RoomList[j]);
-      m_RoomList[j] = NULL;
+      m_RoomList[j] = nullptr;
     }
   m_RoomListSize = 0;
 
   // Clear the Trigger list
   for (j = 0; j < m_TriggerListSize; j++)
-    if (m_TriggerList[j] != NULL) {
+    if (m_TriggerList[j] != nullptr) {
       mem_free(m_TriggerList[j]);
-      m_TriggerList[j] = NULL;
+      m_TriggerList[j] = nullptr;
     }
   m_TriggerListSize = 0;
 
   // Clear the sound list
   for (j = 0; j < m_SoundListSize; j++)
-    if (m_SoundList[j] != NULL) {
+    if (m_SoundList[j] != nullptr) {
       mem_free(m_SoundList[j]);
-      m_SoundList[j] = NULL;
+      m_SoundList[j] = nullptr;
     }
   m_SoundListSize = 0;
 
   // Clear the Texture list
   for (j = 0; j < m_TextureListSize; j++)
-    if (m_TextureList[j] != NULL) {
+    if (m_TextureList[j] != nullptr) {
       mem_free(m_TextureList[j]);
-      m_TextureList[j] = NULL;
+      m_TextureList[j] = nullptr;
     }
   m_TextureListSize = 0;
 
   // Clear the Specname list
   for (j = 0; j < m_SpecnameListSize; j++)
-    if (m_SpecnameList[j] != NULL) {
+    if (m_SpecnameList[j] != nullptr) {
       mem_free(m_SpecnameList[j]);
-      m_SpecnameList[j] = NULL;
+      m_SpecnameList[j] = nullptr;
     }
   m_SpecnameListSize = 0;
 
   // Clear the Path list
   for (j = 0; j < m_PathListSize; j++)
-    if (m_PathList[j] != NULL) {
+    if (m_PathList[j] != nullptr) {
       mem_free(m_PathList[j]);
-      m_PathList[j] = NULL;
+      m_PathList[j] = nullptr;
     }
   m_PathListSize = 0;
 
   // Clear the Matcen list
   for (j = 0; j < m_MatcenListSize; j++)
-    if (m_MatcenList[j] != NULL) {
+    if (m_MatcenList[j] != nullptr) {
       mem_free(m_MatcenList[j]);
-      m_MatcenList[j] = NULL;
+      m_MatcenList[j] = nullptr;
     }
   m_MatcenListSize = 0;
 
   // Clear the Goal list
   for (j = 0; j < m_GoalListSize; j++)
-    if (m_GoalList[j] != NULL) {
+    if (m_GoalList[j] != nullptr) {
       mem_free(m_GoalList[j]);
-      m_GoalList[j] = NULL;
+      m_GoalList[j] = nullptr;
     }
   m_GoalListSize = 0;
 
   // Clear the StrmAudio list
   for (j = 0; j < m_StrmAudioListSize; j++)
-    if (m_StrmAudioList[j] != NULL) {
+    if (m_StrmAudioList[j] != nullptr) {
       mem_free(m_StrmAudioList[j]);
-      m_StrmAudioList[j] = NULL;
+      m_StrmAudioList[j] = nullptr;
     }
   m_StrmAudioListSize = 0;
 
   // Clear the Message Name list
   for (j = 0; j < m_MessageNameListSize; j++)
-    if (m_MessageNameList[j] != NULL) {
+    if (m_MessageNameList[j] != nullptr) {
       mem_free(m_MessageNameList[j]);
-      m_MessageNameList[j] = NULL;
+      m_MessageNameList[j] = nullptr;
     }
   m_MessageNameListSize = 0;
 }
@@ -4103,13 +4103,13 @@ int CDallasMainDlg::FillNameListsFromTree(HTREEITEM parent, bool show_notspec_wa
   HTREEITEM child;
   int inv_name_count;
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return 0;
 
   // Search the tree for named things
   inv_name_count = 0;
   child = m_ScriptTree.GetChildItem(parent);
-  while (child != NULL) {
+  while (child != nullptr) {
     inv_name_count += FillNameListsFromTree(child, show_notspec_warnings);
     inv_name_count += AddNameToListFromTreeNode(child, show_notspec_warnings);
     child = m_ScriptTree.GetNextSiblingItem(child);
@@ -4125,19 +4125,19 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
   tTreeNodeData *data;
   int scriptID;
 
-  if (node == NULL)
+  if (node == nullptr)
     return 0;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return 0;
 
   // Make sure this node isn't in the clipboard
   HTREEITEM script_header_node;
   script_header_node = GetParentNodeOfType(node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return 0;
-  if (m_ScriptTree.GetParentItem(script_header_node) != NULL)
+  if (m_ScriptTree.GetParentItem(script_header_node) != nullptr)
     return 0;
 
   // Get the script ID
@@ -4164,7 +4164,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
 
       // Check for invalid objects
       object *objp = ObjGet(data->int_val);
-      if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL) {
+      if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr) {
         int handle = osipf_FindObjectName(data->str_val);
         if (handle != OBJECT_HANDLE_NONE) {
           if (InvObjPrompt(scriptID, data->int_val, data->str_val, handle) == IDYES) {
@@ -4281,7 +4281,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
 
       // Check for invalid door objects
       object *objp = ObjGet(data->int_val);
-      if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL) {
+      if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr) {
         int handle = osipf_FindDoorName(data->str_val);
         if (handle != OBJECT_HANDLE_NONE) {
           if (InvObjPrompt(scriptID, data->int_val, data->str_val, handle) == IDYES) {
@@ -4348,7 +4348,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
 
       // Check for invalid objects
       object *objp = ObjGet(data->int_val);
-      if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL) {
+      if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr) {
         int handle = osipf_FindObjectName(data->str_val);
         if (handle != OBJECT_HANDLE_NONE) {
           if (InvObjPrompt(scriptID, data->int_val, data->str_val, handle) == IDYES) {
@@ -4396,7 +4396,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
 
       // Check for invalid rooms
       int r = data->int_val;
-      if (r < 0 || r > Highest_room_index || !Rooms[r].used || Rooms[r].name == NULL) {
+      if (r < 0 || r > Highest_room_index || !Rooms[r].used || Rooms[r].name == nullptr) {
         int index = osipf_FindRoomName(data->str_val);
         if (index >= 0) {
           if (InvIndValPrompt(scriptID, "Room", r, data->str_val, index) == IDYES) {
@@ -4757,7 +4757,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
       }
 
       // Check if message name is invalid
-      if (FindMessageInList(data->str_val) == NULL) {
+      if (FindMessageInList(data->str_val) == nullptr) {
         InvIndValMsg(scriptID, "Message ID", 0, data->str_val);
         strcpy(data->str_val, "");
         UpdateAllParentNodesText(node);
@@ -4797,7 +4797,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
       }
 
       // Check for invalid enums
-      if (GetEnumValueName(data->name, data->int_val) == NULL) {
+      if (GetEnumValueName(data->name, data->int_val) == nullptr) {
         IndValNotSpecMsg(scriptID, "Enumerated Type");
         UpdateAllParentNodesText(node);
         return 1;
@@ -4812,7 +4812,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
       }
 
       // Check for invalid script ID's
-      if (FindScriptIDNode(data->int_val) == NULL) {
+      if (FindScriptIDNode(data->int_val) == nullptr) {
         InvIndValMsg(scriptID, "Script ID", data->int_val, "Unknown");
         data->int_val = NOT_SPECIFIED_TYPE;
         UpdateAllParentNodesText(node);
@@ -4830,7 +4830,7 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
 void CDallasMainDlg::InvSpecParamMsg(int scriptID, char *type_name) {
   CString msg, title;
 
-  if (type_name == NULL)
+  if (type_name == nullptr)
     return;
 
   msg.Format("WARNING: Script #%d references %s even though its selected event (or owner) type does not support one.",
@@ -4843,7 +4843,7 @@ void CDallasMainDlg::InvSpecParamMsg(int scriptID, char *type_name) {
 void CDallasMainDlg::IndValNotSpecMsg(int scriptID, char *type_name) {
   CString msg, title;
 
-  if (type_name == NULL)
+  if (type_name == nullptr)
     return;
 
   msg.Format("WARNING: Script #%d references a %s which has not been specified.", scriptID, type_name);
@@ -4855,7 +4855,7 @@ void CDallasMainDlg::IndValNotSpecMsg(int scriptID, char *type_name) {
 void CDallasMainDlg::InvIndValMsg(int scriptID, char *type_name, int index, char *name) {
   CString msg, title;
 
-  if (type_name == NULL || name == NULL)
+  if (type_name == nullptr || name == nullptr)
     return;
 
   msg.Format("WARNING: Script #%d references a %s (index=%d, name=%s) that no longer exists.  It will be changed to "
@@ -4869,7 +4869,7 @@ void CDallasMainDlg::InvIndValMsg(int scriptID, char *type_name, int index, char
 int CDallasMainDlg::InvIndValPrompt(int scriptID, char *type_name, int index, char *name, int new_index) {
   CString msg, title;
 
-  if (type_name == NULL || name == NULL)
+  if (type_name == nullptr || name == nullptr)
     return (IDNO);
 
   msg.Format("WARNING: Script #%d references a %s (index=%d, name=%s) that no longer exists.  However, another %s "
@@ -4883,7 +4883,7 @@ int CDallasMainDlg::InvIndValPrompt(int scriptID, char *type_name, int index, ch
 void CDallasMainDlg::InvNameIndValMsg(int scriptID, char *type_name, int index, char *name, char *new_name) {
   CString msg, title;
 
-  if (type_name == NULL || name == NULL || new_name == NULL)
+  if (type_name == nullptr || name == nullptr || new_name == nullptr)
     return;
 
   msg.Format("WARNING: Script #%d references a %s (index=%d, name=%s) whose name has changed to \"%s\".  Its name will "
@@ -4898,7 +4898,7 @@ int CDallasMainDlg::InvNameIndValPrompt(int scriptID, char *type_name, int index
                                         int new_index) {
   CString msg, title;
 
-  if (type_name == NULL || name == NULL || new_name == NULL)
+  if (type_name == nullptr || name == nullptr || new_name == nullptr)
     return (IDNO);
 
   msg.Format("WARNING: Script #%d references a %s (index=%d, name=%s) whose name has changed to \"%s\".  However, "
@@ -4912,7 +4912,7 @@ int CDallasMainDlg::InvNameIndValPrompt(int scriptID, char *type_name, int index
 void CDallasMainDlg::InvObjMsg(int scriptID, int handle, char *name) {
   CString msg, title;
 
-  if (name == NULL)
+  if (name == nullptr)
     return;
 
   msg.Format("WARNING: Script #%d references an Object (handle=%d, name=%s) that no longer exists.  It will be changed "
@@ -4926,7 +4926,7 @@ void CDallasMainDlg::InvObjMsg(int scriptID, int handle, char *name) {
 int CDallasMainDlg::InvObjPrompt(int scriptID, int handle, char *name, int new_handle) {
   CString msg, title;
 
-  if (name == NULL)
+  if (name == nullptr)
     return (IDNO);
 
   msg.Format("WARNING: Script #%d references an Object (handle=%d, name=%s) that no longer exists.  However, another "
@@ -4940,7 +4940,7 @@ int CDallasMainDlg::InvObjPrompt(int scriptID, int handle, char *name, int new_h
 void CDallasMainDlg::InvNameObjMsg(int scriptID, int handle, char *name, char *new_name) {
   CString msg, title;
 
-  if (name == NULL || new_name == NULL)
+  if (name == nullptr || new_name == nullptr)
     return;
 
   msg.Format("WARNING: Script #%d references an Object (handle=%d, name=%s) whose name has changed to \"%s\".  Its "
@@ -4954,7 +4954,7 @@ void CDallasMainDlg::InvNameObjMsg(int scriptID, int handle, char *name, char *n
 int CDallasMainDlg::InvNameObjPrompt(int scriptID, int handle, char *name, char *new_name, int new_handle) {
   CString msg, title;
 
-  if (name == NULL || new_name == NULL)
+  if (name == nullptr || new_name == nullptr)
     return (IDNO);
 
   msg.Format(
@@ -4968,7 +4968,7 @@ int CDallasMainDlg::InvNameObjPrompt(int scriptID, int handle, char *name, char 
 // Adds the given door name to the door name list
 int CDallasMainDlg::AddDoorToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -4981,7 +4981,7 @@ int CDallasMainDlg::AddDoorToList(char *name) {
 
   int pos = m_DoorListSize;
   m_DoorList[pos] = mem_strdup(name);
-  if (m_DoorList[pos] == NULL) {
+  if (m_DoorList[pos] == nullptr) {
     MessageBox("Out of memory in AddDoorToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -4992,7 +4992,7 @@ int CDallasMainDlg::AddDoorToList(char *name) {
 
 // Returns the list index of the given door name (or -1 if not found)
 int CDallasMainDlg::FindDoorInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_DoorListSize; j++)
@@ -5005,7 +5005,7 @@ int CDallasMainDlg::FindDoorInList(char *name) {
 // Adds the given object name to the object name list
 int CDallasMainDlg::AddObjectToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5018,7 +5018,7 @@ int CDallasMainDlg::AddObjectToList(char *name) {
 
   int pos = m_ObjectListSize;
   m_ObjectList[pos] = mem_strdup(name);
-  if (m_ObjectList[pos] == NULL) {
+  if (m_ObjectList[pos] == nullptr) {
     MessageBox("Out of memory in AddObjectToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5029,7 +5029,7 @@ int CDallasMainDlg::AddObjectToList(char *name) {
 
 // Returns the list index of the given object name (or -1 if not found)
 int CDallasMainDlg::FindObjectInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_ObjectListSize; j++)
@@ -5042,7 +5042,7 @@ int CDallasMainDlg::FindObjectInList(char *name) {
 // Adds the given Room name to the Room name list
 int CDallasMainDlg::AddRoomToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5055,7 +5055,7 @@ int CDallasMainDlg::AddRoomToList(char *name) {
 
   int pos = m_RoomListSize;
   m_RoomList[pos] = mem_strdup(name);
-  if (m_RoomList[pos] == NULL) {
+  if (m_RoomList[pos] == nullptr) {
     MessageBox("Out of memory in AddRoomToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5066,7 +5066,7 @@ int CDallasMainDlg::AddRoomToList(char *name) {
 
 // Returns the list index of the given room name (or -1 if not found)
 int CDallasMainDlg::FindRoomInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_RoomListSize; j++)
@@ -5079,7 +5079,7 @@ int CDallasMainDlg::FindRoomInList(char *name) {
 // Adds the given Trigger name to the Trigger name list
 int CDallasMainDlg::AddTriggerToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5092,7 +5092,7 @@ int CDallasMainDlg::AddTriggerToList(char *name) {
 
   int pos = m_TriggerListSize;
   m_TriggerList[pos] = mem_strdup(name);
-  if (m_TriggerList[pos] == NULL) {
+  if (m_TriggerList[pos] == nullptr) {
     MessageBox("Out of memory in AddTriggerToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5103,7 +5103,7 @@ int CDallasMainDlg::AddTriggerToList(char *name) {
 
 // Returns the list index of the given Trigger name (or -1 if not found)
 int CDallasMainDlg::FindTriggerInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_TriggerListSize; j++)
@@ -5116,7 +5116,7 @@ int CDallasMainDlg::FindTriggerInList(char *name) {
 // Adds the given sound name to the sound name list
 int CDallasMainDlg::AddSoundToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5129,7 +5129,7 @@ int CDallasMainDlg::AddSoundToList(char *name) {
 
   int pos = m_SoundListSize;
   m_SoundList[pos] = mem_strdup(name);
-  if (m_SoundList[pos] == NULL) {
+  if (m_SoundList[pos] == nullptr) {
     MessageBox("Out of memory in AddSoundToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5140,7 +5140,7 @@ int CDallasMainDlg::AddSoundToList(char *name) {
 
 // Returns the list index of the given sound name (or -1 if not found)
 int CDallasMainDlg::FindSoundInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_SoundListSize; j++)
@@ -5153,7 +5153,7 @@ int CDallasMainDlg::FindSoundInList(char *name) {
 // Adds the given Texture name to the Texture name list
 int CDallasMainDlg::AddTextureToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5166,7 +5166,7 @@ int CDallasMainDlg::AddTextureToList(char *name) {
 
   int pos = m_TextureListSize;
   m_TextureList[pos] = mem_strdup(name);
-  if (m_TextureList[pos] == NULL) {
+  if (m_TextureList[pos] == nullptr) {
     MessageBox("Out of memory in AddTextureToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5177,7 +5177,7 @@ int CDallasMainDlg::AddTextureToList(char *name) {
 
 // Returns the list index of the given Texture name (or -1 if not found)
 int CDallasMainDlg::FindTextureInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_TextureListSize; j++)
@@ -5190,7 +5190,7 @@ int CDallasMainDlg::FindTextureInList(char *name) {
 // Adds the given Specname name to the Specname name list
 int CDallasMainDlg::AddSpecnameToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5203,7 +5203,7 @@ int CDallasMainDlg::AddSpecnameToList(char *name) {
 
   int pos = m_SpecnameListSize;
   m_SpecnameList[pos] = mem_strdup(name);
-  if (m_SpecnameList[pos] == NULL) {
+  if (m_SpecnameList[pos] == nullptr) {
     MessageBox("Out of memory in AddSpecnameToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5214,7 +5214,7 @@ int CDallasMainDlg::AddSpecnameToList(char *name) {
 
 // Returns the list index of the given Specname name (or -1 if not found)
 int CDallasMainDlg::FindSpecnameInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_SpecnameListSize; j++)
@@ -5227,7 +5227,7 @@ int CDallasMainDlg::FindSpecnameInList(char *name) {
 // Adds the given Path name to the Path name list
 int CDallasMainDlg::AddPathToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5240,7 +5240,7 @@ int CDallasMainDlg::AddPathToList(char *name) {
 
   int pos = m_PathListSize;
   m_PathList[pos] = mem_strdup(name);
-  if (m_PathList[pos] == NULL) {
+  if (m_PathList[pos] == nullptr) {
     MessageBox("Out of memory in AddPathToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5251,7 +5251,7 @@ int CDallasMainDlg::AddPathToList(char *name) {
 
 // Returns the list index of the given Path name (or -1 if not found)
 int CDallasMainDlg::FindPathInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_PathListSize; j++)
@@ -5264,7 +5264,7 @@ int CDallasMainDlg::FindPathInList(char *name) {
 // Adds the given Matcen name to the Matcen name list
 int CDallasMainDlg::AddMatcenToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5277,7 +5277,7 @@ int CDallasMainDlg::AddMatcenToList(char *name) {
 
   int pos = m_MatcenListSize;
   m_MatcenList[pos] = mem_strdup(name);
-  if (m_MatcenList[pos] == NULL) {
+  if (m_MatcenList[pos] == nullptr) {
     MessageBox("Out of memory in AddMatcenToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5288,7 +5288,7 @@ int CDallasMainDlg::AddMatcenToList(char *name) {
 
 // Returns the list index of the given Matcen name (or -1 if not found)
 int CDallasMainDlg::FindMatcenInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_MatcenListSize; j++)
@@ -5301,7 +5301,7 @@ int CDallasMainDlg::FindMatcenInList(char *name) {
 // Adds the given Goal name to the Goal name list
 int CDallasMainDlg::AddGoalToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5314,7 +5314,7 @@ int CDallasMainDlg::AddGoalToList(char *name) {
 
   int pos = m_GoalListSize;
   m_GoalList[pos] = mem_strdup(name);
-  if (m_GoalList[pos] == NULL) {
+  if (m_GoalList[pos] == nullptr) {
     MessageBox("Out of memory in AddGoalToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5325,7 +5325,7 @@ int CDallasMainDlg::AddGoalToList(char *name) {
 
 // Returns the list index of the given Goal name (or -1 if not found)
 int CDallasMainDlg::FindGoalInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_GoalListSize; j++)
@@ -5338,7 +5338,7 @@ int CDallasMainDlg::FindGoalInList(char *name) {
 // Adds the given StrmAudio name to the StrmAudio name list
 int CDallasMainDlg::AddStrmAudioToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5351,7 +5351,7 @@ int CDallasMainDlg::AddStrmAudioToList(char *name) {
 
   int pos = m_StrmAudioListSize;
   m_StrmAudioList[pos] = mem_strdup(name);
-  if (m_StrmAudioList[pos] == NULL) {
+  if (m_StrmAudioList[pos] == nullptr) {
     MessageBox("Out of memory in AddStrmAudioToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5362,7 +5362,7 @@ int CDallasMainDlg::AddStrmAudioToList(char *name) {
 
 // Returns the list index of the given StrmAudio name (or -1 if not found)
 int CDallasMainDlg::FindStrmAudioInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_StrmAudioListSize; j++)
@@ -5375,7 +5375,7 @@ int CDallasMainDlg::FindStrmAudioInList(char *name) {
 // Adds the given Message name to the Message name list
 int CDallasMainDlg::AddMessageNameToList(char *name) {
   // Make sure we've got a name
-  if (name == NULL || strlen(name) == 0)
+  if (name == nullptr || strlen(name) == 0)
     return FALSE;
 
   // See if it's already in the list
@@ -5388,7 +5388,7 @@ int CDallasMainDlg::AddMessageNameToList(char *name) {
 
   int pos = m_MessageNameListSize;
   m_MessageNameList[pos] = mem_strdup(name);
-  if (m_MessageNameList[pos] == NULL) {
+  if (m_MessageNameList[pos] == nullptr) {
     MessageBox("Out of memory in AddMessageNameToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
     return FALSE;
   }
@@ -5399,7 +5399,7 @@ int CDallasMainDlg::AddMessageNameToList(char *name) {
 
 // Returns the list index of the given MessageName name (or -1 if not found)
 int CDallasMainDlg::FindMessageNameInList(char *name) {
-  if (name == NULL)
+  if (name == nullptr)
     return (-1);
 
   for (int j = 0; j < m_MessageNameListSize; j++)
@@ -5469,7 +5469,7 @@ int CDallasMainDlg::FillValuesBox(CListBox *box, char *utype_name) {
 int CDallasMainDlg::AddUserTypeValue(char *utype_name, char *value_name) {
   int j, k, DBslot, new_value;
 
-  if (utype_name == NULL || value_name == NULL)
+  if (utype_name == nullptr || value_name == nullptr)
     return (-1);
 
   new_value = -1;
@@ -5501,7 +5501,7 @@ int CDallasMainDlg::AddUserTypeValue(char *utype_name, char *value_name) {
   tEnumValueEntry *value_entry = &entry->values[j];
   value_entry->value = new_value;
   value_entry->name = mem_strdup(value_name);
-  if (value_entry->name == NULL) {
+  if (value_entry->name == nullptr) {
     MessageBox("ERROR: Out of mem in AddUserTypeValue()!", "Error!");
     return (-1);
   }
@@ -5516,7 +5516,7 @@ int CDallasMainDlg::AddUserTypeValue(char *utype_name, char *value_name) {
 int CDallasMainDlg::DeleteUserTypeValue(char *utype_name, char *value_name) {
   int j, k, DBslot;
 
-  if (utype_name == NULL || value_name == NULL)
+  if (utype_name == nullptr || value_name == nullptr)
     return FALSE;
 
   DBslot = GetEnumID(utype_name);
@@ -5538,7 +5538,7 @@ int CDallasMainDlg::DeleteUserTypeValue(char *utype_name, char *value_name) {
         entry->values[k].value = entry->values[k + 1].value;
         entry->values[k].name = entry->values[k + 1].name;
       }
-      entry->values[k].name = NULL;
+      entry->values[k].name = nullptr;
       SetModified(TRUE);
       return TRUE;
     }
@@ -5551,7 +5551,7 @@ int CDallasMainDlg::DeleteUserTypeValue(char *utype_name, char *value_name) {
 int CDallasMainDlg::ChangeValueName(char *utype_name, char *old_name, char *new_name) {
   int j, DBslot;
 
-  if (utype_name == NULL || old_name == NULL || new_name == NULL)
+  if (utype_name == nullptr || old_name == nullptr || new_name == nullptr)
     return FALSE;
 
   DBslot = GetEnumID(utype_name);
@@ -5569,7 +5569,7 @@ int CDallasMainDlg::ChangeValueName(char *utype_name, char *old_name, char *new_
 
       // Add the new name
       value_entry->name = mem_strdup(new_name);
-      if (value_entry->name == NULL) {
+      if (value_entry->name == nullptr) {
         MessageBox("ERROR: Out of mem in ChangeValueName()!", "Error!");
         return FALSE;
       }
@@ -5591,9 +5591,9 @@ void CDallasMainDlg::InitEnumDatabase(void) {
   int j, k;
 
   for (j = 0; j < MAX_ENUMS; j++) {
-    m_EnumDatabase[j].name = NULL;
+    m_EnumDatabase[j].name = nullptr;
     for (k = 0; k < MAX_ENUM_VALUES; k++) {
-      m_EnumDatabase[j].values[k].name = NULL;
+      m_EnumDatabase[j].values[k].name = nullptr;
       m_EnumDatabase[j].values[k].value = 0;
     }
     m_EnumDatabase[j].num_values = 0;
@@ -5606,14 +5606,14 @@ void CDallasMainDlg::ClearEnumDatabase(void) {
   int j, k;
 
   for (j = 0; j < m_NumEnums; j++) {
-    if (m_EnumDatabase[j].name != NULL) {
+    if (m_EnumDatabase[j].name != nullptr) {
       mem_free(m_EnumDatabase[j].name);
-      m_EnumDatabase[j].name = NULL;
+      m_EnumDatabase[j].name = nullptr;
     }
     for (k = 0; k < m_EnumDatabase[j].num_values; k++) {
-      if (m_EnumDatabase[j].values[k].name != NULL) {
+      if (m_EnumDatabase[j].values[k].name != nullptr) {
         mem_free(m_EnumDatabase[j].values[k].name);
-        m_EnumDatabase[j].values[k].name = NULL;
+        m_EnumDatabase[j].values[k].name = nullptr;
       }
       m_EnumDatabase[j].values[k].value = 0;
     }
@@ -5626,7 +5626,7 @@ void CDallasMainDlg::ClearEnumDatabase(void) {
 int CDallasMainDlg::GetEnumID(char *name) {
   int i;
 
-  if (name == NULL)
+  if (name == nullptr)
     return INVALID_ENUM;
 
   for (i = 0; i < m_NumEnums; i++)
@@ -5642,13 +5642,13 @@ char *CDallasMainDlg::GetEnumValueName(char *name, int value) {
 
   DBslot = GetEnumID(name);
   if (DBslot == INVALID_ENUM)
-    return NULL;
+    return nullptr;
 
   for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++)
     if (m_EnumDatabase[DBslot].values[j].value == value)
       return (m_EnumDatabase[DBslot].values[j].name);
 
-  return NULL;
+  return nullptr;
 }
 
 // Obtains the value bound to an enum value name,
@@ -5729,9 +5729,9 @@ void CDallasMainDlg::InitFlagDatabase(void) {
   int j, k;
 
   for (j = 0; j < MAX_FLAGS; j++) {
-    m_FlagDatabase[j].name = NULL;
+    m_FlagDatabase[j].name = nullptr;
     for (k = 0; k < MAX_FLAG_VALUES; k++) {
-      m_FlagDatabase[j].values[k].name = NULL;
+      m_FlagDatabase[j].values[k].name = nullptr;
       m_FlagDatabase[j].values[k].value = 0;
     }
     m_FlagDatabase[j].num_values = 0;
@@ -5744,14 +5744,14 @@ void CDallasMainDlg::ClearFlagDatabase(void) {
   int j, k;
 
   for (j = 0; j < m_NumFlags; j++) {
-    if (m_FlagDatabase[j].name != NULL) {
+    if (m_FlagDatabase[j].name != nullptr) {
       mem_free(m_FlagDatabase[j].name);
-      m_FlagDatabase[j].name = NULL;
+      m_FlagDatabase[j].name = nullptr;
     }
     for (k = 0; k < m_FlagDatabase[j].num_values; k++) {
-      if (m_FlagDatabase[j].values[k].name != NULL) {
+      if (m_FlagDatabase[j].values[k].name != nullptr) {
         mem_free(m_FlagDatabase[j].values[k].name);
-        m_FlagDatabase[j].values[k].name = NULL;
+        m_FlagDatabase[j].values[k].name = nullptr;
       }
       m_FlagDatabase[j].values[k].value = 0;
     }
@@ -5764,7 +5764,7 @@ void CDallasMainDlg::ClearFlagDatabase(void) {
 int CDallasMainDlg::GetFlagID(char *name) {
   int i;
 
-  if (name == NULL)
+  if (name == nullptr)
     return INVALID_FLAG;
 
   for (i = 0; i < m_NumFlags; i++)
@@ -5780,13 +5780,13 @@ char *CDallasMainDlg::GetFlagValueName(char *name, int value) {
 
   DBslot = GetFlagID(name);
   if (DBslot == INVALID_FLAG)
-    return NULL;
+    return nullptr;
 
   for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++)
     if (m_FlagDatabase[DBslot].values[j].value == value)
       return (m_FlagDatabase[DBslot].values[j].name);
 
-  return NULL;
+  return nullptr;
 }
 
 // Returns the name bound to an Flag value
@@ -5910,22 +5910,22 @@ void CDallasMainDlg::InitFunctionDatabases(void) {
   int j;
 
   for (j = 0; j < MAX_CATEGORIES; j++)
-    m_FunctionCategories[j] = NULL;
+    m_FunctionCategories[j] = nullptr;
   m_NumFunctionCategories = 0;
 
   for (j = 0; j < MAX_ACTIONS; j++) {
     m_ActionDatabase[j].category = INVALID_CATEGORY;
-    m_ActionDatabase[j].desc = NULL;
-    m_ActionDatabase[j].func = NULL;
-    m_ActionDatabase[j].help = NULL;
+    m_ActionDatabase[j].desc = nullptr;
+    m_ActionDatabase[j].func = nullptr;
+    m_ActionDatabase[j].help = nullptr;
   }
   m_NumActions = 0;
 
   for (j = 0; j < MAX_QUERIES; j++) {
     m_QueryDatabase[j].category = INVALID_CATEGORY;
-    m_QueryDatabase[j].desc = NULL;
-    m_QueryDatabase[j].func = NULL;
-    m_QueryDatabase[j].help = NULL;
+    m_QueryDatabase[j].desc = nullptr;
+    m_QueryDatabase[j].func = nullptr;
+    m_QueryDatabase[j].help = nullptr;
   }
   m_NumQueries = 0;
 }
@@ -5941,22 +5941,22 @@ void CDallasMainDlg::ClearFunctionDatabases(void) {
   for (j = 0; j < m_NumActions; j++) {
     m_ActionDatabase[j].category = INVALID_CATEGORY;
     mem_free(m_ActionDatabase[j].desc);
-    m_ActionDatabase[j].desc = NULL;
+    m_ActionDatabase[j].desc = nullptr;
     mem_free(m_ActionDatabase[j].func);
-    m_ActionDatabase[j].func = NULL;
+    m_ActionDatabase[j].func = nullptr;
     mem_free(m_ActionDatabase[j].help);
-    m_ActionDatabase[j].help = NULL;
+    m_ActionDatabase[j].help = nullptr;
   }
   m_NumActions = 0;
 
   for (j = 0; j < m_NumQueries; j++) {
     m_QueryDatabase[j].category = INVALID_CATEGORY;
     mem_free(m_QueryDatabase[j].desc);
-    m_QueryDatabase[j].desc = NULL;
+    m_QueryDatabase[j].desc = nullptr;
     mem_free(m_QueryDatabase[j].func);
-    m_QueryDatabase[j].func = NULL;
+    m_QueryDatabase[j].func = nullptr;
     mem_free(m_QueryDatabase[j].help);
-    m_QueryDatabase[j].help = NULL;
+    m_QueryDatabase[j].help = nullptr;
   }
   m_NumQueries = 0;
 }
@@ -6019,7 +6019,7 @@ void CDallasMainDlg::FunctionFileParseError(int error_code, int linenum, const c
 // Returns a pointer to the action description
 char *CDallasMainDlg::GetActionDesc(int ID) {
   if (ID < 0 || ID >= m_NumActions)
-    return NULL;
+    return nullptr;
 
   return (m_ActionDatabase[ID].desc);
 }
@@ -6027,7 +6027,7 @@ char *CDallasMainDlg::GetActionDesc(int ID) {
 // Returns a pointer to the action help text
 char *CDallasMainDlg::GetActionHelp(int ID) {
   if (ID < 0 || ID >= m_NumActions)
-    return NULL;
+    return nullptr;
 
   return (m_ActionDatabase[ID].help);
 }
@@ -6045,7 +6045,7 @@ char *CDallasMainDlg::GetActionFunc(int ID) {
 
 // Searches action list for action matching given function name
 int CDallasMainDlg::GetActionFuncID(char *func_name) {
-  if (func_name == NULL)
+  if (func_name == nullptr)
     return INVALID_FUNCTION_ID;
 
   if (strcmp(DO_NOTHING_STRING, func_name) == 0)
@@ -6061,7 +6061,7 @@ int CDallasMainDlg::GetActionFuncID(char *func_name) {
 // Returns a pointer to the query description
 char *CDallasMainDlg::GetQueryDesc(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
-    return NULL;
+    return nullptr;
 
   return (m_QueryDatabase[ID].desc);
 }
@@ -6069,7 +6069,7 @@ char *CDallasMainDlg::GetQueryDesc(int ID) {
 // Returns a pointer to the query help text
 char *CDallasMainDlg::GetQueryHelp(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
-    return NULL;
+    return nullptr;
 
   return (m_QueryDatabase[ID].help);
 }
@@ -6084,7 +6084,7 @@ char *CDallasMainDlg::GetQueryFunc(int ID) {
 
 // Searches query list for query matching given function name
 int CDallasMainDlg::GetQueryFuncID(char *func_name) {
-  if (func_name == NULL)
+  if (func_name == nullptr)
     return INVALID_FUNCTION_ID;
 
   for (int j = 0; j < m_NumQueries; j++)
@@ -6101,7 +6101,7 @@ int CDallasMainDlg::GetQueryReturnType(int ID, CString &name) {
 
   name = "";
   desc = GetQueryDesc(ID);
-  if (desc == NULL)
+  if (desc == nullptr)
     return (UNKNOWN_PARAMETER_TYPE);
 
   if (!isalpha(desc[0]))
@@ -6134,7 +6134,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
   ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
 
   ifile = cfopen(fullpath, "rt");
-  if (ifile == NULL) {
+  if (ifile == nullptr) {
     if (show_errors) {
       CString msg;
       msg.Format("Unable to open \"%s\"!", filename);
@@ -6171,7 +6171,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         else if (m_NumFunctionCategories < MAX_CATEGORIES) {
           if (GetFunctionCategoryID(line) == INVALID_CATEGORY) { // don't add duplicate categories
             m_FunctionCategories[m_NumFunctionCategories] = mem_strdup(line);
-            if (m_FunctionCategories[m_NumFunctionCategories] == NULL) {
+            if (m_FunctionCategories[m_NumFunctionCategories] == nullptr) {
               FunctionFileParseError(NO_MEM_ERR, linenum, filename);
               cfclose(ifile);
               return;
@@ -6192,22 +6192,22 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       char *max_value_text;
 
       // Strip off the name of this user type
-      max_value_text = NULL;
+      max_value_text = nullptr;
       enum_name = strtok(line, WHITESPACE_CHARS);
-      if (enum_name != NULL)
-        enum_name = strtok(NULL, ":");
-      if (enum_name != NULL)
-        max_value_text = strtok(NULL, "");
-      if (enum_name == NULL || max_value_text == NULL || GetEnumID(enum_name) != INVALID_ENUM) {
+      if (enum_name != nullptr)
+        enum_name = strtok(nullptr, ":");
+      if (enum_name != nullptr)
+        max_value_text = strtok(nullptr, "");
+      if (enum_name == nullptr || max_value_text == nullptr || GetEnumID(enum_name) != INVALID_ENUM) {
         FunctionFileParseError(INV_ENUM_ERR, linenum, filename);
-        enum_entry = NULL;
+        enum_entry = nullptr;
       } else if (m_NumEnums == MAX_ENUMS) {
         FunctionFileParseError(MAX_ENUM_ERR, linenum, filename);
-        enum_entry = NULL;
+        enum_entry = nullptr;
       } else {
         enum_entry = &m_EnumDatabase[m_NumEnums++];
         enum_entry->name = mem_strdup(enum_name);
-        if (enum_entry->name == NULL) {
+        if (enum_entry->name == nullptr) {
           FunctionFileParseError(NO_MEM_ERR, linenum, filename);
           cfclose(ifile);
           return;
@@ -6224,7 +6224,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         tEnumValueEntry *value_entry;
         value_entry = &enum_entry->values[enum_entry->num_values++];
         value_entry->name = mem_strdup(USERTYPE_NONE);
-        if (value_entry->name == NULL) {
+        if (value_entry->name == nullptr) {
           FunctionFileParseError(NO_MEM_ERR, linenum, filename);
           cfclose(ifile);
           return;
@@ -6238,18 +6238,18 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
 
       // Strip off the name of this enumeration type
       enum_name = strtok(line, WHITESPACE_CHARS);
-      if (enum_name != NULL)
-        enum_name = strtok(NULL, "");
-      if (enum_name == NULL || GetEnumID(enum_name) != INVALID_ENUM) {
+      if (enum_name != nullptr)
+        enum_name = strtok(nullptr, "");
+      if (enum_name == nullptr || GetEnumID(enum_name) != INVALID_ENUM) {
         FunctionFileParseError(INV_ENUM_ERR, linenum, filename);
-        enum_entry = NULL;
+        enum_entry = nullptr;
       } else if (m_NumEnums == MAX_ENUMS) {
         FunctionFileParseError(MAX_ENUM_ERR, linenum, filename);
-        enum_entry = NULL;
+        enum_entry = nullptr;
       } else {
         enum_entry = &m_EnumDatabase[m_NumEnums++];
         enum_entry->name = mem_strdup(enum_name);
-        if (enum_entry->name == NULL) {
+        if (enum_entry->name == nullptr) {
           FunctionFileParseError(NO_MEM_ERR, linenum, filename);
           cfclose(ifile);
           return;
@@ -6272,7 +6272,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
 
         if (strncmp(line, TAG_END, strlen(TAG_END)) == 0)
           done = 1;
-        else if (enum_entry != NULL) {
+        else if (enum_entry != nullptr) {
           tEnumValueEntry *value_entry;
           int enum_value;
           char *enum_value_string;
@@ -6280,22 +6280,22 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
 
           // Parse out the enum value and value name
           enum_value_string = strtok(line, ":");
-          if (enum_value_string != NULL) {
+          if (enum_value_string != nullptr) {
             enum_value = atoi(enum_value_string);
-            enum_value_name = strtok(NULL, "");
+            enum_value_name = strtok(nullptr, "");
           }
 
-          if (enum_value_string == NULL || enum_value_name == NULL ||
-              GetEnumValueName(enum_entry->name, enum_value) != NULL) {
+          if (enum_value_string == nullptr || enum_value_name == nullptr ||
+              GetEnumValueName(enum_entry->name, enum_value) != nullptr) {
             FunctionFileParseError(INV_ENUM_VALUE_ERR, linenum, filename);
-            value_entry = NULL;
+            value_entry = nullptr;
           } else if (enum_entry->num_values == MAX_ENUM_VALUES) {
             FunctionFileParseError(MAX_ENUM_VALUES_ERR, linenum, filename);
-            value_entry = NULL;
+            value_entry = nullptr;
           } else {
             value_entry = &enum_entry->values[enum_entry->num_values++];
             value_entry->name = mem_strdup(enum_value_name);
-            if (value_entry->name == NULL) {
+            if (value_entry->name == nullptr) {
               FunctionFileParseError(NO_MEM_ERR, linenum, filename);
               cfclose(ifile);
               return;
@@ -6315,18 +6315,18 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
 
       // Strip off the name of this flag type
       flag_name = strtok(line, WHITESPACE_CHARS);
-      if (flag_name != NULL)
-        flag_name = strtok(NULL, "");
-      if (flag_name == NULL || GetFlagID(flag_name) != INVALID_FLAG) {
+      if (flag_name != nullptr)
+        flag_name = strtok(nullptr, "");
+      if (flag_name == nullptr || GetFlagID(flag_name) != INVALID_FLAG) {
         FunctionFileParseError(INV_FLAG_ERR, linenum, filename);
-        flag_entry = NULL;
+        flag_entry = nullptr;
       } else if (m_NumFlags == MAX_FLAGS) {
         FunctionFileParseError(MAX_FLAG_ERR, linenum, filename);
-        flag_entry = NULL;
+        flag_entry = nullptr;
       } else {
         flag_entry = &m_FlagDatabase[m_NumFlags++];
         flag_entry->name = mem_strdup(flag_name);
-        if (flag_entry->name == NULL) {
+        if (flag_entry->name == nullptr) {
           FunctionFileParseError(NO_MEM_ERR, linenum, filename);
           cfclose(ifile);
           return;
@@ -6347,7 +6347,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
 
         if (strncmp(line, TAG_END, strlen(TAG_END)) == 0)
           done = 1;
-        else if (flag_entry != NULL) {
+        else if (flag_entry != nullptr) {
           tFlagValueEntry *value_entry;
           int flag_value;
           char *flag_value_string;
@@ -6355,22 +6355,22 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
 
           // Parse out the flag value and value name
           flag_value_string = strtok(line, ":");
-          if (flag_value_string != NULL) {
+          if (flag_value_string != nullptr) {
             flag_value = atoi(flag_value_string);
-            flag_value_name = strtok(NULL, "");
+            flag_value_name = strtok(nullptr, "");
           }
 
-          if (flag_value_string == NULL || flag_value_name == NULL ||
-              GetFlagValueName(flag_entry->name, flag_value) != NULL) {
+          if (flag_value_string == nullptr || flag_value_name == nullptr ||
+              GetFlagValueName(flag_entry->name, flag_value) != nullptr) {
             FunctionFileParseError(INV_FLAG_VALUE_ERR, linenum, filename);
-            value_entry = NULL;
+            value_entry = nullptr;
           } else if (flag_entry->num_values == MAX_FLAG_VALUES) {
             FunctionFileParseError(MAX_FLAG_VALUES_ERR, linenum, filename);
-            value_entry = NULL;
+            value_entry = nullptr;
           } else {
             value_entry = &flag_entry->values[flag_entry->num_values++];
             value_entry->name = mem_strdup(flag_value_name);
-            if (value_entry->name == NULL) {
+            if (value_entry->name == nullptr) {
               FunctionFileParseError(NO_MEM_ERR, linenum, filename);
               cfclose(ifile);
               return;
@@ -6418,7 +6418,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       line = SkipInitialWhitespace(linebuf);
 
       action->desc = mem_strdup(line);
-      if (action->desc == NULL) {
+      if (action->desc == nullptr) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
         return;
@@ -6433,7 +6433,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       line = SkipInitialWhitespace(linebuf);
 
       action->func = mem_strdup(line);
-      if (action->func == NULL) {
+      if (action->func == nullptr) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
         return;
@@ -6464,7 +6464,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         FunctionFileParseError(UEOF_ERR, linenum, filename);
 
       action->help = mem_strdup(helpbuf);
-      if (action->help == NULL) {
+      if (action->help == nullptr) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
         return;
@@ -6504,7 +6504,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       line = SkipInitialWhitespace(linebuf);
 
       query->desc = mem_strdup(line);
-      if (query->desc == NULL) {
+      if (query->desc == nullptr) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
         return;
@@ -6519,7 +6519,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       line = SkipInitialWhitespace(linebuf);
 
       query->func = mem_strdup(line);
-      if (query->func == NULL) {
+      if (query->func == nullptr) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
         return;
@@ -6550,7 +6550,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         FunctionFileParseError(UEOF_ERR, linenum, filename);
 
       query->help = mem_strdup(helpbuf);
-      if (query->help == NULL) {
+      if (query->help == nullptr) {
         FunctionFileParseError(NO_MEM_ERR, linenum, filename);
         cfclose(ifile);
         return;
@@ -6618,7 +6618,7 @@ void CDallasMainDlg::ParseOutQueryVarTypes(char *new_desc, char *old_desc) {
 
   // Skip the return type section
   old_desc = strchr(old_desc, ':');
-  if (old_desc == NULL) {
+  if (old_desc == nullptr) {
     strcpy(new_desc, new_desc_text.GetBuffer(0));
     return;
   }
@@ -6662,11 +6662,11 @@ bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum) {
   int ID;
   char *desc;
 
-  if (node == NULL)
+  if (node == nullptr)
     return TRUE;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL || data->type != ACTION_STATEMENT_NODE)
+  if (data == nullptr || data->type != ACTION_STATEMENT_NODE)
     return TRUE;
 
   ID = data->ID;
@@ -6674,7 +6674,7 @@ bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum) {
     return TRUE;
 
   desc = GetActionDesc(ID);
-  if (desc == NULL)
+  if (desc == nullptr)
     return TRUE;
 
   // Get the first child, if one exists
@@ -6693,7 +6693,7 @@ bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum) {
         if (ConformParamNode(node, child_node, param_type, name_text.GetBuffer(0), default_text.GetBuffer(0)))
           modified = TRUE;
 
-        if (child_node != NULL)
+        if (child_node != nullptr)
           child_node = m_ScriptTree.GetNextSiblingItem(child_node);
       }
 
@@ -6703,12 +6703,12 @@ bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum) {
   }
 
   // Delete any remaining child parameter nodes (they are no longer used)
-  if (child_node != NULL) {
+  if (child_node != nullptr) {
     do {
       HTREEITEM temp_node = child_node;
       child_node = m_ScriptTree.GetNextSiblingItem(child_node);
       FreeTreeItem(temp_node);
-    } while (child_node != NULL);
+    } while (child_node != nullptr);
 
     modified = TRUE;
   }
@@ -6827,18 +6827,18 @@ bool CDallasMainDlg::ConformParamNode(HTREEITEM parent_node, HTREEITEM &param_no
   CString query_ret_name;
   int index;
 
-  if (parent_node == NULL)
+  if (parent_node == nullptr)
     return FALSE;
 
   // If the param node doesn't exist, then we need to add a default param
-  if (param_node == NULL) {
+  if (param_node == nullptr) {
     CreateDefaultParameterNode(parent_node, TVI_LAST, type, name, def_value);
     return TRUE;
   }
 
   // See if the node matches the given data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(param_node);
-  if (data != NULL) {
+  if (data != nullptr) {
     // Check parameter node
     if (data->type == PARAMETER_NODE && data->ID == type) {
       // node matches, so copy over the name in case it's changed (not considered a major mod)
@@ -6935,11 +6935,11 @@ bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum) {
   int ID;
   char *desc;
 
-  if (node == NULL)
+  if (node == nullptr)
     return TRUE;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL || data->type != EXPRESSION_NODE)
+  if (data == nullptr || data->type != EXPRESSION_NODE)
     return TRUE;
 
   ID = data->ID;
@@ -6947,7 +6947,7 @@ bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum) {
     return TRUE;
 
   desc = strchr(GetQueryDesc(ID), ':');
-  if (desc == NULL)
+  if (desc == nullptr)
     return TRUE;
   desc++;
 
@@ -6967,7 +6967,7 @@ bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum) {
         if (ConformParamNode(node, child_node, param_type, name_text.GetBuffer(0), default_text.GetBuffer(0)))
           modified = TRUE;
 
-        if (child_node != NULL)
+        if (child_node != nullptr)
           child_node = m_ScriptTree.GetNextSiblingItem(child_node);
       }
     } else {
@@ -6976,12 +6976,12 @@ bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum) {
   }
 
   // Delete any remaining child parameter nodes (they are no longer used)
-  if (child_node != NULL) {
+  if (child_node != nullptr) {
     do {
       HTREEITEM temp_node = child_node;
       child_node = m_ScriptTree.GetNextSiblingItem(child_node);
       FreeTreeItem(temp_node);
-    } while (child_node != NULL);
+    } while (child_node != nullptr);
 
     modified = TRUE;
   }
@@ -7108,7 +7108,7 @@ void CDallasMainDlg::FillActionMenu(CMenu *action_menu, int command_offset) {
     for (k = 0; k < m_NumActions; k++)
       if (m_ActionDatabase[k].category == j) {
         char *temp_desc = mem_rmalloc<char>(strlen(m_ActionDatabase[k].desc) + 1);
-        if (temp_desc == NULL) {
+        if (temp_desc == nullptr) {
           MessageBox("Out of memory error in FillActionMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
           return;
         }
@@ -7146,7 +7146,7 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
     for (k = 0; k < m_NumActions; k++)
       if (m_QueryDatabase[k].category == j) {
         char *temp_desc = mem_rmalloc<char>(strlen(m_QueryDatabase[k].desc) + 1);
-        if (temp_desc == NULL) {
+        if (temp_desc == nullptr) {
           MessageBox("Out of memory error in FillQueryMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
           return;
         }
@@ -7193,11 +7193,11 @@ int CDallasMainDlg::ParseNthParam(HTREEITEM func_node, int n, CString &name_text
                                   CString &range_text) {
   tTreeNodeData *data;
 
-  if (func_node == NULL)
+  if (func_node == nullptr)
     return (-1);
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(func_node);
-  if (data == NULL)
+  if (data == nullptr)
     return (-1);
 
   // Handle action nodes
@@ -7221,20 +7221,20 @@ int CDallasMainDlg::ParseNthParam(HTREEITEM func_node, int n, CString &name_text
 // does not exist
 int CDallasMainDlg::ParseNthParam(char *desc, int n, CString &name_text, CString &default_text, CString &range_text) {
   // Check validity of desc and given n
-  if (n <= 0 || desc == NULL)
+  if (n <= 0 || desc == nullptr)
     return (-1);
 
   // Find the n'th parameter block (bracketed section)
   char *s;
   s = strchr(desc, '[');
   for (int j = 1; j < n; j++)
-    if (s != NULL) {
+    if (s != nullptr) {
       s++;
       s = strchr(s, '[');
     }
 
   // Make sure the requested section was found
-  if (s == NULL)
+  if (s == nullptr)
     return FALSE;
 
   // Parse the parameter block into its different sections
@@ -7417,7 +7417,7 @@ bool CDallasMainDlg::VerifyFloatRange(float value, char *range_desc) {
 
 // Initializes the script grouping list for use
 void CDallasMainDlg::InitScriptGroupingList(void) {
-  m_ScriptGroupingList = NULL;
+  m_ScriptGroupingList = nullptr;
   m_NumScriptGroups = 0;
 }
 
@@ -7431,7 +7431,7 @@ void CDallasMainDlg::ClearScriptGroupingList(void) {
       tEventSection *event_section = &m_ScriptGroupingList[j].event_sections[k];
       if (event_section->num_script_nodes > 0) {
         mem_free(event_section->script_node_list);
-        event_section->script_node_list = NULL;
+        event_section->script_node_list = nullptr;
         event_section->num_script_nodes = 0;
       }
     }
@@ -7440,7 +7440,7 @@ void CDallasMainDlg::ClearScriptGroupingList(void) {
   // Free up the entire script grouping list
   if (m_NumScriptGroups > 0) {
     mem_free(m_ScriptGroupingList);
-    m_ScriptGroupingList = NULL;
+    m_ScriptGroupingList = nullptr;
     m_NumScriptGroups = 0;
   }
 }
@@ -7457,10 +7457,10 @@ int CDallasMainDlg::AddNodeToScriptOwnerGroup(int pos, HTREEITEM script_node) {
 
   // Get the event type
   event_node = GetScriptEventNode(script_node);
-  if (event_node == NULL)
+  if (event_node == nullptr)
     return FALSE;
   event_data = (tTreeNodeData *)m_ScriptTree.GetItemData(event_node);
-  if (event_data == NULL)
+  if (event_data == nullptr)
     return FALSE;
   event_type = event_data->ID;
 
@@ -7477,7 +7477,7 @@ int CDallasMainDlg::AddNodeToScriptOwnerGroup(int pos, HTREEITEM script_node) {
     event_section->script_node_list = (HTREEITEM *)mem_realloc(
         event_section->script_node_list, sizeof(HTREEITEM) * (event_section->num_script_nodes + 1));
 
-  if (event_section->script_node_list == NULL)
+  if (event_section->script_node_list == nullptr)
     return FALSE;
   event_section->num_script_nodes++;
 
@@ -7495,15 +7495,15 @@ int CDallasMainDlg::AddNodeToScriptGroupingList(HTREEITEM script_node) {
 
   // Make sure it's a script header node
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_node);
-  if (data == NULL || data->type != SCRIPT_HEADER_NODE)
+  if (data == nullptr || data->type != SCRIPT_HEADER_NODE)
     return FALSE;
 
   // Get the owner node data
   owner_node = GetScriptOwnerNode(script_node);
-  if (owner_node == NULL)
+  if (owner_node == nullptr)
     return FALSE;
   owner_data = (tTreeNodeData *)m_ScriptTree.GetItemData(owner_node);
-  if (owner_data == NULL)
+  if (owner_data == nullptr)
     return FALSE;
 
   // Search the grouping list for a matching owner group
@@ -7527,7 +7527,7 @@ int CDallasMainDlg::AddNodeToScriptGroupingList(HTREEITEM script_node) {
     m_ScriptGroupingList =
         (tScriptOwnerGroup *)mem_realloc(m_ScriptGroupingList, sizeof(tScriptOwnerGroup) * (m_NumScriptGroups + 1));
 
-  if (m_ScriptGroupingList == NULL)
+  if (m_ScriptGroupingList == nullptr)
     return FALSE;
   m_NumScriptGroups++;
 
@@ -7537,7 +7537,7 @@ int CDallasMainDlg::AddNodeToScriptGroupingList(HTREEITEM script_node) {
   m_ScriptGroupingList[new_pos].owner_handle = owner_data->int_val;
   for (j = 0; j < MAX_EVENT_TYPES; j++) {
     m_ScriptGroupingList[new_pos].event_sections[j].num_script_nodes = 0;
-    m_ScriptGroupingList[new_pos].event_sections[j].script_node_list = NULL;
+    m_ScriptGroupingList[new_pos].event_sections[j].script_node_list = nullptr;
   }
 
   // Now add it officially to the grouping list
@@ -7553,7 +7553,7 @@ int CDallasMainDlg::BuildScriptGroupingList(void) {
 
   // Group each script header node into the list
   script_header_node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (script_header_node != NULL) {
+  while (script_header_node != nullptr) {
     AddNodeToScriptGroupingList(script_header_node);
     script_header_node = m_ScriptTree.GetNextSiblingItem(script_header_node);
   }
@@ -7737,7 +7737,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
       valid_lines_read = 0;
 
       // Set tree node trackers so we know where we are in the actual tree
-      last_node_added = NULL;
+      last_node_added = nullptr;
       current_parent = TVI_ROOT;
 
       // Set variables that allow child nodes to be skipped over
@@ -7774,13 +7774,13 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
           int DBslot;
           bool end_of_usertype_found;
 
-          enum_entry = NULL;
+          enum_entry = nullptr;
 
           // Strip off the name of this enumeration type
           enum_name = strtok(line, WHITESPACE_CHARS);
-          if (enum_name != NULL)
-            enum_name = strtok(NULL, "");
-          if (enum_name != NULL && (DBslot = GetEnumID(enum_name)) != INVALID_ENUM) {
+          if (enum_name != nullptr)
+            enum_name = strtok(nullptr, "");
+          if (enum_name != nullptr && (DBslot = GetEnumID(enum_name)) != INVALID_ENUM) {
             enum_entry = &m_EnumDatabase[DBslot];
           }
 
@@ -7797,7 +7797,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
 
             if (strncmp(line, USERTYPE_VALS_END_TAG, strlen(USERTYPE_VALS_END_TAG)) == 0)
               end_of_usertype_found = TRUE;
-            else if (enum_entry != NULL) {
+            else if (enum_entry != nullptr) {
               tEnumValueEntry *value_entry;
               int enum_value;
               char *enum_value_string;
@@ -7805,21 +7805,21 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
 
               // Parse out the enum value and value name
               enum_value_string = strtok(line, ":");
-              if (enum_value_string != NULL) {
+              if (enum_value_string != nullptr) {
                 enum_value = atoi(enum_value_string);
-                enum_value_name = strtok(NULL, "");
+                enum_value_name = strtok(nullptr, "");
               }
 
-              if (enum_value_string == NULL || enum_value_name == NULL ||
-                  GetEnumValueName(enum_entry->name, enum_value) != NULL) {
-                value_entry = NULL;
+              if (enum_value_string == nullptr || enum_value_name == nullptr ||
+                  GetEnumValueName(enum_entry->name, enum_value) != nullptr) {
+                value_entry = nullptr;
               } else if (enum_entry->num_values >= MAX_ENUM_VALUES ||
                          enum_entry->num_values >= (enum_entry->max_values + 2)) {
-                value_entry = NULL;
+                value_entry = nullptr;
               } else {
                 value_entry = &enum_entry->values[enum_entry->num_values++];
                 value_entry->name = mem_strdup(enum_value_name);
-                if (value_entry->name == NULL) {
+                if (value_entry->name == nullptr) {
                   FunctionFileParseError(NO_MEM_ERR, linenum, filename);
                   cfclose(infile);
                   return FALSE;
@@ -8069,7 +8069,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
           last_node_childless = FALSE;
           if (!skip_children) {
             current_parent = last_node_added;
-            if (current_parent == NULL)
+            if (current_parent == nullptr)
               current_parent = TVI_ROOT;
           } else {
             skip_depth++;
@@ -8078,7 +8078,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
         }
 
         // Handles Validation of childless function nodes
-        if (last_node_added != NULL && last_node_childless) {
+        if (last_node_added != nullptr && last_node_childless) {
           ValidateFunctionNode(last_node_added, linenum);
 
           // Need this to update node text that depends on subnodes
@@ -8096,7 +8096,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
 
             last_node_added = current_parent;
             if (last_node_added == TVI_ROOT)
-              last_node_added = NULL;
+              last_node_added = nullptr;
             else {
               // Need this to validate a function node once all of its params have been added
               ValidateFunctionNode(last_node_added, linenum);
@@ -8107,7 +8107,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
 
             if (current_parent != TVI_ROOT)
               current_parent = m_ScriptTree.GetParentItem(current_parent);
-            if (current_parent == NULL)
+            if (current_parent == nullptr)
               current_parent = TVI_ROOT;
           } else
             skip_depth--;
@@ -8146,14 +8146,14 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
           else
             returned_node = ParseScriptNodeLine_v0(line, linenum, current_parent, skip_children);
 
-          if (returned_node != NULL) {
+          if (returned_node != nullptr) {
             last_node_added = returned_node;
             last_node_childless = TRUE;
             UpdateNodeText(last_node_added);
           } else
-            ScriptFileParseError(INVALID_NODE_ERR, linenum, 0, NULL);
+            ScriptFileParseError(INVALID_NODE_ERR, linenum, 0, nullptr);
 
-          if (returned_node == NULL || skip_children) {
+          if (returned_node == nullptr || skip_children) {
             skip_children = TRUE;
             skip_depth = 0;
           }
@@ -8161,7 +8161,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
       }
 
       if (!done)
-        ScriptFileParseError(UEOS_ERR, linenum, 0, NULL);
+        ScriptFileParseError(UEOS_ERR, linenum, 0, nullptr);
     }
   }
 
@@ -8181,39 +8181,39 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
   int index;
 
   // Make sure given data is ok
-  if (line == NULL || parent == NULL || skip_all_children)
-    return NULL;
+  if (line == nullptr || parent == nullptr || skip_all_children)
+    return nullptr;
 
   // Read in the node type
   line = strtok(line, ":");
-  if (line == NULL)
-    return NULL;
+  if (line == nullptr)
+    return nullptr;
   node_data.type = atoi(line);
 
   // Read in the rest of this node's data
   add_node = FALSE;
   switch (node_data.type) {
   case SCRIPT_HEADER_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     strcpy(node_data.name, line);
     add_node = TRUE;
     break;
   case SCRIPT_OWNER_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.int_val = atoi(line);
 
     // Verify object name
     if (node_data.ID == OBJECT_TYPE) {
       object *objp = ObjGet(node_data.int_val);
-      if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL) {
+      if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr) {
         node_data.int_val = OBJECT_HANDLE_NONE;
         strcpy(node_data.str_val, "");
       } else {
@@ -8235,57 +8235,57 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
     add_node = TRUE;
     break;
   case SCRIPT_EVENT_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     add_node = TRUE;
     break;
   case CONDITIONAL_HEADER_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     add_node = TRUE;
     break;
   case ACTIONS_HEADER_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.subID = atoi(line);
     add_node = TRUE;
     break;
   case CONDITIONAL_STATEMENT_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     add_node = TRUE;
     break;
   case EXPRESSION_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = GetQueryFuncID(line);
     if (node_data.ID == INVALID_FUNCTION_ID) {
       ScriptFileParseError(INVALID_FUNC_ERR, linenum, GetScriptID(parent), line);
       skip_all_children = TRUE;
     }
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     strcpy(node_data.name, line);
     add_node = TRUE;
     break;
   case EXPRESSION_OPERATOR_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.subID = atoi(line);
     add_node = TRUE;
     break;
   case ACTION_STATEMENT_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = GetActionFuncID(line);
     if (node_data.ID == INVALID_FUNCTION_ID) {
       ScriptFileParseError(INVALID_FUNC_ERR, linenum, GetScriptID(parent), line);
@@ -8294,33 +8294,33 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
     add_node = TRUE;
     break;
   case LOGICAL_OPERATOR_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     add_node = TRUE;
     break;
   case PARAMETER_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
 
     // Get param data based upon what kind of parameter it is
     switch (node_data.ID) {
     case DOOR_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.subID = atoi(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       // Verify door name
       if (node_data.subID == USE_OBJECT_HANDLE) {
         object *objp = ObjGet(node_data.int_val);
-        if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL) {
+        if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr) {
           node_data.int_val = OBJECT_HANDLE_NONE;
           strcpy(node_data.str_val, "");
         } else {
@@ -8331,20 +8331,20 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       add_node = TRUE;
       break;
     case OBJECT_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.subID = atoi(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       // Verify object name
       if (node_data.subID == USE_OBJECT_HANDLE) {
         object *objp = ObjGet(node_data.int_val);
-        if (objp == NULL || objp->type == OBJ_NONE || objp->name == NULL) {
+        if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr) {
           node_data.int_val = OBJECT_HANDLE_NONE;
           strcpy(node_data.str_val, "");
         } else {
@@ -8355,16 +8355,16 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       add_node = TRUE;
       break;
     case ROOM_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       // Verify room name
       index = node_data.int_val;
-      if (index < 0 || index > Highest_room_index || !Rooms[index].used || Rooms[index].name == NULL) {
+      if (index < 0 || index > Highest_room_index || !Rooms[index].used || Rooms[index].name == nullptr) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
         strcpy(node_data.str_val, "");
       } else {
@@ -8374,11 +8374,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       add_node = TRUE;
       break;
     case TRIGGER_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       // Verify trigger name
@@ -8393,91 +8393,91 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       add_node = TRUE;
       break;
     case INT_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case BOOL_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case FLOAT_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val1 = atof(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case VECTOR_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val1 = atof(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val2 = atof(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val3 = atof(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case STRING_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       strcpy(node_data.str_val, line);
-      if (FindMessageInList(line) == NULL) {
+      if (FindMessageInList(line) == nullptr) {
         strcpy(node_data.str_val, "");
         if (strcmp(line, NOT_SPECIFIED_MSG) != 0)
           ScriptFileParseError(INVALID_MSGID_ERR, linenum, GetScriptID(parent), line);
       }
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case PERCENTAGE_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val1 = atof(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case ENUM_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case SCRIPT_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case SOUND_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
       if (index < 0 || index >= m_SoundListSize)
         node_data.int_val = -1;
@@ -8492,23 +8492,23 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       } else {
         strcpy(node_data.str_val, m_SoundList[atoi(line)]);
       }
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case SPECNAME_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       strcpy(node_data.str_val, line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case TEXTURE_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
       if (index < 0 || index >= m_TextureListSize)
         node_data.int_val = -1;
@@ -8523,23 +8523,23 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       } else {
         strcpy(node_data.str_val, m_TextureList[atoi(line)]);
       }
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case FLAG_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case PATH_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
       if (index < 0 || index >= m_PathListSize)
         node_data.int_val = -1;
@@ -8554,17 +8554,17 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       } else {
         strcpy(node_data.str_val, m_PathList[index]);
       }
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case MATCEN_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.subID = atoi(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
       if (index < 0 || index >= m_MatcenListSize)
         node_data.int_val = -1;
@@ -8579,17 +8579,17 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       } else {
         strcpy(node_data.str_val, m_MatcenList[index]);
       }
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case LEVEL_GOAL_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.subID = atoi(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
       if (index < 0 || index >= m_GoalListSize)
         node_data.int_val = -1;
@@ -8604,14 +8604,14 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       } else {
         strcpy(node_data.str_val, m_GoalList[index]);
       }
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case STRM_AUDIO_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
       if (index < 0 || index >= m_StrmAudioListSize || !GamefileExists(m_StrmAudioList[index]))
         strcpy(node_data.str_val, "");
@@ -8620,8 +8620,8 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       }
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
@@ -8640,7 +8640,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
   if (add_node)
     return (AddNodeToTree(parent, insert_before, &node_data));
 
-  return NULL;
+  return nullptr;
 }
 
 // VERSION 1: Parses a script node line, and if it's valid, adds it to the given parent
@@ -8652,8 +8652,8 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
   int scriptID;
 
   // Make sure given data is ok
-  if (line == NULL || parent == NULL || skip_all_children)
-    return NULL;
+  if (line == nullptr || parent == nullptr || skip_all_children)
+    return nullptr;
 
   // Determine what script we're in
   scriptID = -1;
@@ -8662,28 +8662,28 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 
   // Read in the node type
   line = strtok(line, ":");
-  if (line == NULL)
-    return NULL;
+  if (line == nullptr)
+    return nullptr;
   node_data.type = atoi(line);
 
   // Read in the rest of this node's data
   add_node = FALSE;
   switch (node_data.type) {
   case SCRIPT_HEADER_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     strcpy(node_data.name, line);
     add_node = TRUE;
     break;
   case SCRIPT_OWNER_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     index = atoi(line);
 
     if (node_data.ID == OBJECT_TYPE) {
@@ -8721,64 +8721,64 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
     add_node = TRUE;
     break;
   case SCRIPT_EVENT_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     add_node = TRUE;
     break;
   case CONDITIONAL_HEADER_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     add_node = TRUE;
     break;
   case ACTIONS_HEADER_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     if (version >= 3) {
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
     } else {
       node_data.int_val = CONTINUE_SCRIPT_CHAIN;
     }
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.subID = atoi(line);
     add_node = TRUE;
     break;
   case CONDITIONAL_STATEMENT_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     add_node = TRUE;
     break;
   case EXPRESSION_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = GetQueryFuncID(line);
     if (node_data.ID == INVALID_FUNCTION_ID) {
       ScriptFileParseError(INVALID_FUNC_ERR, linenum, scriptID, line);
       skip_all_children = TRUE;
     }
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     strcpy(node_data.name, line);
     add_node = TRUE;
     break;
   case EXPRESSION_OPERATOR_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.subID = atoi(line);
     add_node = TRUE;
     break;
   case ACTION_STATEMENT_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = GetActionFuncID(line);
     if (node_data.ID == INVALID_FUNCTION_ID) {
       ScriptFileParseError(INVALID_FUNC_ERR, linenum, scriptID, line);
@@ -8787,27 +8787,27 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
     add_node = TRUE;
     break;
   case LOGICAL_OPERATOR_NODE:
-    if ((line = strtok(NULL, "")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, "")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
     add_node = TRUE;
     break;
   case PARAMETER_NODE:
-    if ((line = strtok(NULL, ":")) == NULL)
-      return NULL;
+    if ((line = strtok(nullptr, ":")) == nullptr)
+      return nullptr;
     node_data.ID = atoi(line);
 
     // Get param data based upon what kind of parameter it is
     switch (node_data.ID) {
     case DOOR_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.subID = atoi(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (node_data.subID == USE_OBJECT_HANDLE) {
@@ -8831,14 +8831,14 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case OBJECT_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.subID = atoi(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (node_data.subID == USE_OBJECT_HANDLE) {
@@ -8862,11 +8862,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case ROOM_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_RoomListSize) {
@@ -8886,11 +8886,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case TRIGGER_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_TriggerListSize) {
@@ -8910,56 +8910,56 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case INT_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case BOOL_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case FLOAT_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val1 = atof(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case VECTOR_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val1 = atof(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val2 = atof(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val3 = atof(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case STRING_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       strcpy(node_data.str_val, line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
-      if (FindMessageInList(node_data.str_val) == NULL) {
+      if (FindMessageInList(node_data.str_val) == nullptr) {
         if (strcmp(node_data.str_val, NOT_SPECIFIED_MSG) != 0)
           ScriptFileParseError(INVALID_MSGID_ERR, linenum, scriptID, line);
         strcpy(node_data.str_val, "");
@@ -8968,45 +8968,45 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case PERCENTAGE_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.float_val1 = atof(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case ENUM_PARAMETER_TYPE:
       if (version >= 2) {
-        if ((line = strtok(NULL, ":")) == NULL)
-          return NULL;
+        if ((line = strtok(nullptr, ":")) == nullptr)
+          return nullptr;
         node_data.subID = atoi(line);
       } else {
         node_data.subID = USE_ENUM_VALUE;
       }
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case SCRIPT_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case SOUND_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_SoundListSize) {
@@ -9026,11 +9026,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case SPECNAME_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_SpecnameListSize)
@@ -9041,11 +9041,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case TEXTURE_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_TextureListSize) {
@@ -9065,20 +9065,20 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case FLAG_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.int_val = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
       add_node = TRUE;
       break;
     case PATH_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_PathListSize) {
@@ -9098,14 +9098,14 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case MATCEN_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.subID = atoi(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_MatcenListSize) {
@@ -9125,14 +9125,14 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case LEVEL_GOAL_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       node_data.subID = atoi(line);
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_GoalListSize) {
@@ -9152,11 +9152,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       add_node = TRUE;
       break;
     case STRM_AUDIO_PARAMETER_TYPE:
-      if ((line = strtok(NULL, ":")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, ":")) == nullptr)
+        return nullptr;
       index = atoi(line);
-      if ((line = strtok(NULL, "")) == NULL)
-        return NULL;
+      if ((line = strtok(nullptr, "")) == nullptr)
+        return nullptr;
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_StrmAudioListSize) {
@@ -9187,14 +9187,14 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
   if (add_node)
     return (AddNodeToTree(parent, insert_before, &node_data));
 
-  return NULL;
+  return nullptr;
 }
 
 // Handle Special Parse Errors (Invalid Named Values)
 void CDallasMainDlg::SpecialScriptFileParseError(int linenum, int script_ID, char *type_name, const char *name) {
   CString err_msg;
 
-  if (name == NULL || type_name == NULL)
+  if (name == nullptr || type_name == nullptr)
     return;
 
   err_msg.Format("ERROR: An invalid %s (%s) was encountered in %s, line %d.\n\n"
@@ -9209,11 +9209,11 @@ void CDallasMainDlg::SpecialScriptFileParseError(int linenum, int script_ID, cha
 bool CDallasMainDlg::ValidateFunctionNode(HTREEITEM node, int linenum) {
   tTreeNodeData *data;
 
-  if (node == NULL)
+  if (node == nullptr)
     return TRUE;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return TRUE;
 
   if (data->type == EXPRESSION_NODE)
@@ -9269,12 +9269,12 @@ int CDallasMainDlg::ParseMsgTableFile(char *filename) {
 
       // Grab the first keyword, make sure it's valid
       line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL || strcmp(line, NEXT_MSG_ID_NUM_KEYWORD) != 0)
+      if (line == nullptr || strcmp(line, NEXT_MSG_ID_NUM_KEYWORD) != 0)
         continue;
 
       // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
+      line = strtok(nullptr, WHITESPACE_CHARS);
+      if (line == nullptr)
         continue;
       m_NextMessageID = atoi(line);
 
@@ -9283,7 +9283,7 @@ int CDallasMainDlg::ParseMsgTableFile(char *filename) {
 
       // Find the start of message, and mark it
       msg_start = strchr(line, '=');
-      if (msg_start == NULL)
+      if (msg_start == nullptr)
         continue;
       msg_start[0] = '\0';
       msg_start++;
@@ -9304,7 +9304,7 @@ int CDallasMainDlg::ParseMsgTableFile(char *filename) {
 
 // Initializes the data storage space
 void CDallasMainDlg::InitCustomScriptStorage(void) {
-  m_CustomScriptLines = NULL;
+  m_CustomScriptLines = nullptr;
 
   m_NumCustomScriptLines = 0;
   m_MaxNumCustomScriptLines = 0;
@@ -9315,13 +9315,13 @@ void CDallasMainDlg::ClearCustomScriptStorage(void) {
   // Clear all the lines
   for (int j = 0; j < m_NumCustomScriptLines; j++) {
     mem_free(m_CustomScriptLines[j]);
-    m_CustomScriptLines[j] = NULL;
+    m_CustomScriptLines[j] = nullptr;
   }
 
   // Clear the array of line pointers
-  if (m_CustomScriptLines != NULL) {
+  if (m_CustomScriptLines != nullptr) {
     mem_free(m_CustomScriptLines);
-    m_CustomScriptLines = NULL;
+    m_CustomScriptLines = nullptr;
   }
 
   m_NumCustomScriptLines = 0;
@@ -9412,7 +9412,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
       m_MaxNumCustomScriptLines = CountCustomScriptLines(infile);
       if (m_MaxNumCustomScriptLines > 0) {
         m_CustomScriptLines = mem_rmalloc<char *>(m_MaxNumCustomScriptLines);
-        if (m_CustomScriptLines == NULL) {
+        if (m_CustomScriptLines == nullptr) {
           MessageBox("ERROR: Ran out of memory allocating custom script block", "Custom Script Parse Error",
                      MB_OK | MB_ICONEXCLAMATION);
           cfclose(infile);
@@ -9436,7 +9436,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
         // Store this line
         if (m_NumCustomScriptLines < m_MaxNumCustomScriptLines) {
           m_CustomScriptLines[m_NumCustomScriptLines] = mem_strdup(linebuf);
-          if (m_CustomScriptLines[m_NumCustomScriptLines] == NULL) {
+          if (m_CustomScriptLines[m_NumCustomScriptLines] == nullptr) {
             MessageBox("ERROR: Ran out of memory parsing custom script block", "Custom Script Parse Error",
                        MB_OK | MB_ICONEXCLAMATION);
             cfclose(infile);
@@ -9452,7 +9452,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
       }
 
       if (!done)
-        ScriptFileParseError(UEOS_ERR, linenum, 0, NULL);
+        ScriptFileParseError(UEOS_ERR, linenum, 0, nullptr);
     }
   }
 
@@ -9463,7 +9463,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
 
 // Writes out the custom script block
 void CDallasMainDlg::WriteCustomScriptBlock(void) {
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   // Create the valid event case statements
@@ -9549,7 +9549,7 @@ int CDallasMainDlg::CreateMsgTableFile(char *filename) {
 void CDallasMainDlg::TabOver(void) {
   int j;
 
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   for (j = 0; j < CurrentTabLevel; j++)
@@ -9578,7 +9578,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   // Open the file for writing
   ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
   CurrentOutputFile = cfopen(fullpath, "wt");
-  if (CurrentOutputFile == NULL) {
+  if (CurrentOutputFile == nullptr) {
     CString msg, title;
     msg.Format("ERROR: Unable to open %s for output.", fullpath);
     title.Format("Script Save Error!");
@@ -9706,9 +9706,9 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   tTreeNodeData *data;
 
   script_node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (script_node != NULL) {
+  while (script_node != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_node);
-    if (data != NULL && data->type == SCRIPT_HEADER_NODE) {
+    if (data != nullptr && data->type == SCRIPT_HEADER_NODE) {
       O(("int %s = 0;", CreateScriptGlobalCtrName(data->ID)));
     }
     script_node = m_ScriptTree.GetNextSiblingItem(script_node);
@@ -9723,9 +9723,9 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
 
   // Write out the clear script statements
   script_node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (script_node != NULL) {
+  while (script_node != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_node);
-    if (data != NULL && data->type == SCRIPT_HEADER_NODE) {
+    if (data != nullptr && data->type == SCRIPT_HEADER_NODE) {
       O(("	%s = 0;", CreateScriptGlobalCtrName(data->ID)));
     }
     script_node = m_ScriptTree.GetNextSiblingItem(script_node);
@@ -9742,9 +9742,9 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
 
   // Write out the clear script statements
   script_node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (script_node != NULL) {
+  while (script_node != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_node);
-    if (data != NULL && data->type == SCRIPT_HEADER_NODE) {
+    if (data != nullptr && data->type == SCRIPT_HEADER_NODE) {
       O(("	File_WriteInt(%s,file_ptr);", CreateScriptGlobalCtrName(data->ID)));
     }
     script_node = m_ScriptTree.GetNextSiblingItem(script_node);
@@ -9761,9 +9761,9 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
 
   // Write out the clear script statements
   script_node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (script_node != NULL) {
+  while (script_node != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_node);
-    if (data != NULL && data->type == SCRIPT_HEADER_NODE) {
+    if (data != nullptr && data->type == SCRIPT_HEADER_NODE) {
       O(("	%s=File_ReadInt(file_ptr);", CreateScriptGlobalCtrName(data->ID)));
     }
     script_node = m_ScriptTree.GetNextSiblingItem(script_node);
@@ -10215,7 +10215,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
 
       handle_text.Format("0x%04x", OBJECT_HANDLE_NONE);
       object *objp = ObjGet(m_ScriptGroupingList[j].owner_handle);
-      if (objp != NULL && objp->type != OBJ_NONE && objp->name != NULL) {
+      if (objp != nullptr && objp->type != OBJ_NONE && objp->name != nullptr) {
         int index = FindObjectInList(objp->name);
         if (index >= 0 && strlen(objp->name) != 0)
           handle_text.Format("Object_handles[%d]", index);
@@ -10253,7 +10253,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   O(("	switch(event) { "));
 
   // Find the level script group (if it exists)
-  tScriptOwnerGroup *owner_group = NULL;
+  tScriptOwnerGroup *owner_group = nullptr;
   ;
   for (j = 0; j < m_NumScriptGroups; j++)
     if (m_ScriptGroupingList[j].owner_type == LEVEL_TYPE)
@@ -10305,7 +10305,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   WriteScriptSaveBlock();
 
   cfclose(CurrentOutputFile);
-  CurrentOutputFile = NULL;
+  CurrentOutputFile = nullptr;
 
   return TRUE;
 }
@@ -10315,7 +10315,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
 void CDallasMainDlg::CreateLevelEventCases(tScriptOwnerGroup *owner_group) {
   int j, k;
 
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   // Handle the saving event
@@ -10347,13 +10347,13 @@ void CDallasMainDlg::CreateLevelEventCases(tScriptOwnerGroup *owner_group) {
   // Create the valid event case statements
   for (j = 0; j < MAX_EVENT_TYPES; j++) {
     tEventSection *event_section;
-    if (owner_group != NULL)
+    if (owner_group != nullptr)
       event_section = &owner_group->event_sections[j];
     else
-      event_section = NULL;
+      event_section = nullptr;
 
     // See if this case has certain events
-    if (j != LEVEL_START_EVENT_TYPE && (event_section == NULL || event_section->num_script_nodes == 0))
+    if (j != LEVEL_START_EVENT_TYPE && (event_section == nullptr || event_section->num_script_nodes == 0))
       continue;
 
     O(("		case %s:", GetEventCodeName(j)));
@@ -10378,7 +10378,7 @@ void CDallasMainDlg::CreateLevelEventCases(tScriptOwnerGroup *owner_group) {
     }
 
     // If there is an owner group, do the scripts
-    if (event_section != NULL) {
+    if (event_section != nullptr) {
       // Write out all the scripts for this event case
       for (k = 0; k < event_section->num_script_nodes; k++)
         WriteScriptCode(event_section->script_node_list[k]);
@@ -10393,7 +10393,7 @@ void CDallasMainDlg::CreateLevelEventCases(tScriptOwnerGroup *owner_group) {
 void CDallasMainDlg::CreateEventCases(tScriptOwnerGroup *owner_group) {
   int j, k;
 
-  if (CurrentOutputFile == NULL || owner_group == NULL)
+  if (CurrentOutputFile == nullptr || owner_group == nullptr)
     return;
 
   // Create the valid event case statements
@@ -10429,11 +10429,11 @@ void CDallasMainDlg::WriteScriptCode(HTREEITEM script_node) {
   HTREEITEM conditional_header_node, action_header_node;
   tTreeNodeData *data;
 
-  if (CurrentOutputFile == NULL || script_node == NULL)
+  if (CurrentOutputFile == nullptr || script_node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_node);
-  if (data == NULL || data->type != SCRIPT_HEADER_NODE)
+  if (data == nullptr || data->type != SCRIPT_HEADER_NODE)
     return;
 
   // Comment this section of script
@@ -10457,28 +10457,28 @@ void CDallasMainDlg::WriteConditionalCodeBlock(HTREEITEM conditional_header_node
   tTreeNodeData *data, *action_hdr_data;
   HTREEITEM child_node, action_hdr_node;
 
-  if (CurrentOutputFile == NULL || conditional_header_node == NULL)
+  if (CurrentOutputFile == nullptr || conditional_header_node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(conditional_header_node);
-  if (data == NULL || data->type != CONDITIONAL_HEADER_NODE)
+  if (data == nullptr || data->type != CONDITIONAL_HEADER_NODE)
     return;
 
   // Get the first child (literal or query)
   child_node = m_ScriptTree.GetChildItem(conditional_header_node);
-  if (child_node == NULL)
+  if (child_node == nullptr)
     return;
 
   TabOver();
   cfprintf(CurrentOutputFile, "if(");
 
   // Write out the max script execution times conditional (if it's not infinite)
-  action_hdr_data = NULL;
+  action_hdr_data = nullptr;
   if (data->ID == TOP_LEVEL) {
     action_hdr_node = GetActionHeaderNode(conditional_header_node);
-    if (action_hdr_node != NULL) {
+    if (action_hdr_node != nullptr) {
       action_hdr_data = (tTreeNodeData *)m_ScriptTree.GetItemData(action_hdr_node);
-      if (action_hdr_data != NULL && action_hdr_data->subID != 0) {
+      if (action_hdr_data != nullptr && action_hdr_data->subID != 0) {
         CString tmp_name = CreateScriptGlobalCtrName(GetScriptID(action_hdr_node));
         cfprintf(CurrentOutputFile, "(%s < %d) && (", tmp_name.GetBuffer(0), action_hdr_data->subID);
       }
@@ -10489,7 +10489,7 @@ void CDallasMainDlg::WriteConditionalCodeBlock(HTREEITEM conditional_header_node
   WriteLogicalOpExpression(child_node);
 
   // If max script execution expression was added, then tack on another parentheses
-  if (action_hdr_data != NULL && action_hdr_data->subID != 0) {
+  if (action_hdr_data != nullptr && action_hdr_data->subID != 0) {
     cfprintf(CurrentOutputFile, ")");
   }
 
@@ -10501,11 +10501,11 @@ void CDallasMainDlg::WriteLogicalOpExpression(HTREEITEM logop_node) {
   tTreeNodeData *data;
   HTREEITEM child_node;
 
-  if (CurrentOutputFile == NULL || logop_node == NULL)
+  if (CurrentOutputFile == nullptr || logop_node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(logop_node);
-  if (data == NULL || (data->type != LOGICAL_OPERATOR_NODE && data->type != CONDITIONAL_STATEMENT_NODE))
+  if (data == nullptr || (data->type != LOGICAL_OPERATOR_NODE && data->type != CONDITIONAL_STATEMENT_NODE))
     return;
 
   // If it's a Condition, write it out
@@ -10517,12 +10517,12 @@ void CDallasMainDlg::WriteLogicalOpExpression(HTREEITEM logop_node) {
   // If it's an AND or an OR, process it
   if (data->ID == AND_TYPE || data->ID == OR_TYPE) {
     child_node = m_ScriptTree.GetChildItem(logop_node);
-    while (child_node != NULL) {
+    while (child_node != nullptr) {
       cfprintf(CurrentOutputFile, "(");
       WriteLogicalOpExpression(child_node);
       cfprintf(CurrentOutputFile, ")");
       child_node = m_ScriptTree.GetNextSiblingItem(child_node);
-      if (child_node != NULL) {
+      if (child_node != nullptr) {
         if (data->ID == AND_TYPE)
           cfprintf(CurrentOutputFile, " && ");
         else
@@ -10537,11 +10537,11 @@ void CDallasMainDlg::WriteConditionalStatement(HTREEITEM condition_node) {
   tTreeNodeData *data;
   HTREEITEM child_node;
 
-  if (CurrentOutputFile == NULL || condition_node == NULL)
+  if (CurrentOutputFile == nullptr || condition_node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(condition_node);
-  if (data == NULL || data->type != CONDITIONAL_STATEMENT_NODE)
+  if (data == nullptr || data->type != CONDITIONAL_STATEMENT_NODE)
     return;
 
   // If it's an ALWAYS statement, just write out a 1 and get outta here
@@ -10552,19 +10552,19 @@ void CDallasMainDlg::WriteConditionalStatement(HTREEITEM condition_node) {
 
   // Get the first child (literal or query)
   child_node = m_ScriptTree.GetChildItem(condition_node);
-  if (child_node != NULL) {
+  if (child_node != nullptr) {
     WriteFunctionParameter(child_node);
   } else {
     cfprintf(CurrentOutputFile, "???");
   }
 
   // Get the second child (expression operator)
-  if (child_node != NULL) {
+  if (child_node != nullptr) {
     child_node = m_ScriptTree.GetNextSiblingItem(child_node);
-    if (child_node != NULL) {
+    if (child_node != nullptr) {
       tTreeNodeData *child_data;
       child_data = (tTreeNodeData *)m_ScriptTree.GetItemData(child_node);
-      if (child_data != NULL && child_data->type == EXPRESSION_OPERATOR_NODE) {
+      if (child_data != nullptr && child_data->type == EXPRESSION_OPERATOR_NODE) {
         cfprintf(CurrentOutputFile, "%s", GetExpressionOperatorCodeName(child_data->subID));
       } else
         cfprintf(CurrentOutputFile, "/* Exp Op Error */");
@@ -10574,9 +10574,9 @@ void CDallasMainDlg::WriteConditionalStatement(HTREEITEM condition_node) {
   }
 
   // If it's a comparison, get the third child (literal or query)
-  if (child_node != NULL && data->ID == COMPARISON_STATEMENT) {
+  if (child_node != nullptr && data->ID == COMPARISON_STATEMENT) {
     child_node = m_ScriptTree.GetNextSiblingItem(child_node);
-    if (child_node != NULL) {
+    if (child_node != nullptr) {
       WriteFunctionParameter(child_node);
     } else {
       cfprintf(CurrentOutputFile, "/* 2nd Comparison Value Missing */");
@@ -10588,11 +10588,11 @@ void CDallasMainDlg::WriteConditionalStatement(HTREEITEM condition_node) {
 void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
   tTreeNodeData *data;
 
-  if (CurrentOutputFile == NULL || query_node == NULL)
+  if (CurrentOutputFile == nullptr || query_node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(query_node);
-  if (data == NULL || data->type != EXPRESSION_NODE)
+  if (data == nullptr || data->type != EXPRESSION_NODE)
     return;
 
   // Check Query ID validity
@@ -10606,10 +10606,10 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
     HTREEITEM child_node;
     tTreeNodeData *child_data;
     child_node = m_ScriptTree.GetChildItem(query_node);
-    if (child_node == NULL)
+    if (child_node == nullptr)
       return;
     child_data = (tTreeNodeData *)m_ScriptTree.GetItemData(child_node);
-    if (child_data == NULL || child_data->type != PARAMETER_NODE || child_data->ID != SCRIPT_PARAMETER_TYPE)
+    if (child_data == nullptr || child_data->type != PARAMETER_NODE || child_data->ID != SCRIPT_PARAMETER_TYPE)
       return;
     CString tmp_name = CreateScriptGlobalCtrName(child_data->int_val);
     cfprintf(CurrentOutputFile, "(%s > 0)", tmp_name.GetBuffer(0));
@@ -10619,10 +10619,10 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
     HTREEITEM child_node;
     tTreeNodeData *child_data;
     child_node = m_ScriptTree.GetChildItem(query_node);
-    if (child_node == NULL)
+    if (child_node == nullptr)
       return;
     child_data = (tTreeNodeData *)m_ScriptTree.GetItemData(child_node);
-    if (child_data == NULL || child_data->type != PARAMETER_NODE || child_data->ID != SCRIPT_PARAMETER_TYPE)
+    if (child_data == nullptr || child_data->type != PARAMETER_NODE || child_data->ID != SCRIPT_PARAMETER_TYPE)
       return;
     CString tmp_name = CreateScriptGlobalCtrName(child_data->int_val);
     cfprintf(CurrentOutputFile, "%s", tmp_name.GetBuffer(0));
@@ -10636,10 +10636,10 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
   HTREEITEM param_node;
 
   param_node = m_ScriptTree.GetChildItem(query_node);
-  while (param_node != NULL) {
+  while (param_node != nullptr) {
     WriteFunctionParameter(param_node);
     param_node = m_ScriptTree.GetNextSiblingItem(param_node);
-    if (param_node != NULL)
+    if (param_node != nullptr)
       cfprintf(CurrentOutputFile, ", ");
   }
   cfprintf(CurrentOutputFile, ")");
@@ -10650,11 +10650,11 @@ void CDallasMainDlg::WriteActionCodeBlock(HTREEITEM action_header_node) {
   HTREEITEM child_node;
   tTreeNodeData *header_data, *data;
 
-  if (action_header_node == NULL)
+  if (action_header_node == nullptr)
     return;
 
   header_data = (tTreeNodeData *)m_ScriptTree.GetItemData(action_header_node);
-  if (header_data == NULL || header_data->type != ACTIONS_HEADER_NODE)
+  if (header_data == nullptr || header_data->type != ACTIONS_HEADER_NODE)
     return;
 
   // Write out starting brace
@@ -10667,11 +10667,11 @@ void CDallasMainDlg::WriteActionCodeBlock(HTREEITEM action_header_node) {
   CurrentTabLevel++;
 
   child_node = m_ScriptTree.GetChildItem(action_header_node);
-  while (child_node != NULL) {
+  while (child_node != nullptr) {
 
     // Get the type of child node this is
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(child_node);
-    if (data != NULL) {
+    if (data != nullptr) {
       if (data->type == ACTION_STATEMENT_NODE) {
         WriteActionFunctionCall(child_node);
       } else if (data->type == CONDITIONAL_HEADER_NODE) {
@@ -10716,11 +10716,11 @@ void CDallasMainDlg::WriteActionCodeBlock(HTREEITEM action_header_node) {
 void CDallasMainDlg::WriteActionFunctionCall(HTREEITEM action_node) {
   tTreeNodeData *data;
 
-  if (CurrentOutputFile == NULL || action_node == NULL)
+  if (CurrentOutputFile == nullptr || action_node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(action_node);
-  if (data == NULL || data->type != ACTION_STATEMENT_NODE)
+  if (data == nullptr || data->type != ACTION_STATEMENT_NODE)
     return;
 
   // Check Action ID validity
@@ -10740,10 +10740,10 @@ void CDallasMainDlg::WriteActionFunctionCall(HTREEITEM action_node) {
   HTREEITEM param_node;
 
   param_node = m_ScriptTree.GetChildItem(action_node);
-  while (param_node != NULL) {
+  while (param_node != nullptr) {
     WriteFunctionParameter(param_node);
     param_node = m_ScriptTree.GetNextSiblingItem(param_node);
-    if (param_node != NULL)
+    if (param_node != nullptr)
       cfprintf(CurrentOutputFile, ", ");
   }
   O((");"));
@@ -10754,11 +10754,11 @@ void CDallasMainDlg::WriteFunctionParameter(HTREEITEM param_node) {
   tTreeNodeData *data;
   int index;
 
-  if (CurrentOutputFile == NULL || param_node == NULL)
+  if (CurrentOutputFile == nullptr || param_node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(param_node);
-  if (data == NULL || (data->type != PARAMETER_NODE && data->type != EXPRESSION_NODE))
+  if (data == nullptr || (data->type != PARAMETER_NODE && data->type != EXPRESSION_NODE))
     return;
 
   // If it's a query, write out the query function
@@ -10904,7 +10904,7 @@ void CDallasMainDlg::WriteFunctionParameter(HTREEITEM param_node) {
 
 // Creates the tree block (for saving scripts)
 void CDallasMainDlg::WriteScriptSaveBlock(void) {
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   // Create the header
@@ -10943,7 +10943,7 @@ void CDallasMainDlg::WriteScriptSaveBlock(void) {
 void CDallasMainDlg::WriteUserTypeVals(void) {
   int j, k;
 
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   for (j = 0; j < m_NumEnums; j++) {
@@ -10964,7 +10964,7 @@ void CDallasMainDlg::WriteUserTypeVals(void) {
 void CDallasMainDlg::WriteNameLists(void) {
   int j;
 
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   // Write out the door list
@@ -11049,7 +11049,7 @@ void CDallasMainDlg::WriteNameLists(void) {
 void CDallasMainDlg::WriteNameListArrays(void) {
   int j;
 
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   O((" "));
@@ -11266,16 +11266,16 @@ void CDallasMainDlg::WriteScriptTreeDump(void) {
   HTREEITEM node;
   tTreeNodeData *data;
 
-  if (CurrentOutputFile == NULL)
+  if (CurrentOutputFile == nullptr)
     return;
 
   CurrentTabLevel = 0;
 
   // Write out each script node (and any children)
   node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (node != NULL) {
+  while (node != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-    if (data != NULL && data->type == SCRIPT_HEADER_NODE) {
+    if (data != nullptr && data->type == SCRIPT_HEADER_NODE) {
       if (DALLAS_SAVE_VERSION >= 1)
         WriteScriptNodeDump_v1U(node);
       else
@@ -11292,19 +11292,19 @@ void CDallasMainDlg::WriteScriptTreeDump(void) {
 void CDallasMainDlg::WriteScriptChildrenDump(HTREEITEM parent, bool filter_on /*=FALSE*/) {
   HTREEITEM child_node;
 
-  if (CurrentOutputFile == NULL || parent == NULL)
+  if (CurrentOutputFile == nullptr || parent == nullptr)
     return;
 
   // Make sure the parent has at least one child
   child_node = m_ScriptTree.GetChildItem(parent);
-  if (child_node == NULL)
+  if (child_node == nullptr)
     return;
 
   // Write out each child node (and any of their children)
   CurrentTabLevel++;
   TabOver();
   O(("%s", CHILD_BLOCK_START_TAG));
-  while (child_node != NULL) {
+  while (child_node != nullptr) {
 
     if (DALLAS_SAVE_VERSION >= 1)
       WriteScriptNodeDump_v1U(child_node, filter_on);
@@ -11326,11 +11326,11 @@ void CDallasMainDlg::WriteScriptNodeDump_v0(HTREEITEM node) {
   int index;
   char goal_name[_MAX_PATH + 1];
 
-  if (CurrentOutputFile == NULL || node == NULL)
+  if (CurrentOutputFile == nullptr || node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   TabOver();
@@ -11487,11 +11487,11 @@ void CDallasMainDlg::WriteScriptNodeDump_v1U(HTREEITEM node, bool filter_on /*=F
   CString tmp_name;
   int index;
 
-  if (CurrentOutputFile == NULL || node == NULL)
+  if (CurrentOutputFile == nullptr || node == nullptr)
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   TabOver();
@@ -11974,7 +11974,7 @@ int CDallasMainDlg::FillScriptMenu(CMenu *script_menu, int command_offset) {
   child_pos = 0;
 
   script_node = m_ScriptTree.GetChildItem(TVI_ROOT);
-  while (script_node != NULL) {
+  while (script_node != nullptr) {
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(script_node);
     if (data->type == SCRIPT_HEADER_NODE) {
       CString menu_string;
@@ -12574,7 +12574,7 @@ void CDallasMainDlg::ColumnizePopupMenu(CMenu *menu) {
   int items_per_column;
   int pos;
 
-  if (menu == NULL)
+  if (menu == nullptr)
     return;
 
   item_count = menu->GetMenuItemCount();
@@ -12624,7 +12624,7 @@ void CDallasMainDlg::ColumnizePopupMenu(CMenu *menu) {
       CMenu *submenu;
 
       submenu = menu->GetSubMenu(pos);
-      if (submenu != NULL) {
+      if (submenu != nullptr) {
         id = (uint32_t)submenu->Detach();
         flags |= MF_POPUP;
       }
@@ -12650,19 +12650,19 @@ void CDallasMainDlg::AssignScriptID(int pos) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Handle entering Script Header node descriptions
   if (data->type == PARAMETER_NODE && data->ID == SCRIPT_PARAMETER_TYPE) {
     HTREEITEM script_node;
     script_node = GetNthChild(TVI_ROOT, pos + 1);
-    if (script_node == NULL)
+    if (script_node == nullptr)
       return;
 
     data->int_val = GetScriptID(script_node);
@@ -12678,12 +12678,12 @@ void CDallasMainDlg::AssignExecTime(int ID) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Handle entering Script Header node descriptions
@@ -12725,12 +12725,12 @@ void CDallasMainDlg::AssignChainOption(int ID) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Handle entering Script Header node descriptions
@@ -12748,12 +12748,12 @@ void CDallasMainDlg::AssignSpecificValue(void) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Handle entering Script Header node descriptions
@@ -13056,12 +13056,12 @@ void CDallasMainDlg::AssignNamedValue(int type, int handle) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // If it's a script event node, then process accordingly
@@ -13083,7 +13083,7 @@ void CDallasMainDlg::AssignNamedValue(int type, int handle) {
         data->int_val = m_ObjectHandleList[handle];
         data->subID = USE_OBJECT_HANDLE;
         object *objp = ObjGet(data->int_val);
-        if (objp != NULL && objp->name != NULL) {
+        if (objp != nullptr && objp->name != nullptr) {
           strncpy(data->str_val, objp->name, MAX_MESSAGE_NAME_LEN);
           data->str_val[MAX_MESSAGE_NAME_LEN] = '\0';
         } else
@@ -13130,7 +13130,7 @@ void CDallasMainDlg::AssignNamedValue(int type, int handle) {
           data->int_val = m_ObjectHandleList[handle];
           data->subID = USE_OBJECT_HANDLE;
           object *objp = ObjGet(data->int_val);
-          if (objp != NULL && objp->name != NULL) {
+          if (objp != nullptr && objp->name != nullptr) {
             strncpy(data->str_val, objp->name, MAX_MESSAGE_NAME_LEN);
             data->str_val[MAX_MESSAGE_NAME_LEN] = '\0';
           } else
@@ -13149,7 +13149,7 @@ void CDallasMainDlg::AssignNamedValue(int type, int handle) {
           data->int_val = m_ObjectHandleList[handle];
           data->subID = USE_OBJECT_HANDLE;
           object *objp = ObjGet(data->int_val);
-          if (objp != NULL && objp->name != NULL) {
+          if (objp != nullptr && objp->name != nullptr) {
             strncpy(data->str_val, objp->name, MAX_MESSAGE_NAME_LEN);
             data->str_val[MAX_MESSAGE_NAME_LEN] = '\0';
           } else
@@ -13242,12 +13242,12 @@ void CDallasMainDlg::AssignEventType(int type) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure it's a script event node
@@ -13265,12 +13265,12 @@ void CDallasMainDlg::AssignBooleanValue(int type) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure it's a boolean parameter node
@@ -13288,12 +13288,12 @@ void CDallasMainDlg::AssignMessageName(int msg_ID) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure it's a boolean parameter node
@@ -13314,12 +13314,12 @@ void CDallasMainDlg::AssignExpOpType(int type) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure it's a script event node
@@ -13337,12 +13337,12 @@ void CDallasMainDlg::AssignEnumValueType(int type) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure it's a parameter-enum node
@@ -13386,12 +13386,12 @@ void CDallasMainDlg::AddNestedIfThenClause(void) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Add node appropriately with respect to selected node
@@ -13411,7 +13411,7 @@ void CDallasMainDlg::AddNestedElseClause(void) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Add node appropriately with respect to selected node
@@ -13421,7 +13421,7 @@ void CDallasMainDlg::AddNestedElseClause(void) {
   // See if there is a node after this one
   next_node = m_ScriptTree.GetNextSiblingItem(selected_node);
 
-  if (next_node == NULL)
+  if (next_node == nullptr)
     CreateDefaultElseClause(m_ScriptTree.GetParentItem(selected_node), TVI_LAST);
   else
     CreateDefaultElseClause(m_ScriptTree.GetParentItem(next_node), next_node);
@@ -13435,12 +13435,12 @@ void CDallasMainDlg::AddNestedIfThenElseClause(void) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Add node appropriately with respect to selected node
@@ -13467,12 +13467,12 @@ void CDallasMainDlg::AddConditionalStatementNode(int type, int query_id /*=-1*/)
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure this node is valid for adding a conditional statement
@@ -13492,7 +13492,7 @@ void CDallasMainDlg::AddConditionalStatementNode(int type, int query_id /*=-1*/)
     // Update the new condition node's text to include the expressions
     UpdateNodeText(new_condition_node);
     SetModified(TRUE);
-    if (new_condition_node != NULL)
+    if (new_condition_node != nullptr)
       m_ScriptTree.Expand(new_condition_node, TVE_EXPAND);
   }
 }
@@ -13508,12 +13508,12 @@ void CDallasMainDlg::InsertLogicalOperatorNode(int type) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure this node is valid for inserting a logical operator
@@ -13553,12 +13553,12 @@ void CDallasMainDlg::AddLogicalOperatorNode(int type) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure this node is valid for inserting a logical operator
@@ -13576,7 +13576,7 @@ void CDallasMainDlg::AddLogicalOperatorNode(int type) {
     CreateDefaultConditionalStatementNode(new_logop_node);
     CreateDefaultConditionalStatementNode(new_logop_node);
 
-    if (new_logop_node != NULL)
+    if (new_logop_node != nullptr)
       m_ScriptTree.Expand(new_logop_node, TVE_EXPAND);
 
     SetModified(TRUE);
@@ -13594,12 +13594,12 @@ void CDallasMainDlg::AddActionStatementNode(int action_ID) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure this node is valid for adding an Action
@@ -13621,7 +13621,7 @@ void CDallasMainDlg::AddActionStatementNode(int action_ID) {
 
     // Update the new action node's text to include the parameters
     UpdateNodeText(new_action_node);
-    if (new_action_node != NULL)
+    if (new_action_node != nullptr)
       m_ScriptTree.Expand(new_action_node, TVE_EXPAND);
 
     SetModified(TRUE);
@@ -13635,12 +13635,12 @@ void CDallasMainDlg::AddActionParameterNodes(HTREEITEM action_node) {
   char *desc;
 
   // Make sure node is valid
-  if (action_node == NULL)
+  if (action_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(action_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure it's a valid action
@@ -13649,7 +13649,7 @@ void CDallasMainDlg::AddActionParameterNodes(HTREEITEM action_node) {
 
   // Get the action description
   desc = GetActionDesc(data->ID);
-  if (desc == NULL)
+  if (desc == nullptr)
     return;
 
   // Parse the description, adding default parameter nodes appropriately
@@ -13755,12 +13755,12 @@ void CDallasMainDlg::AddQueryParameterNodes(HTREEITEM query_node) {
   char *desc;
 
   // Make sure node is valid
-  if (query_node == NULL)
+  if (query_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(query_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure it's a valid action
@@ -13769,7 +13769,7 @@ void CDallasMainDlg::AddQueryParameterNodes(HTREEITEM query_node) {
 
   // Get the action description
   desc = GetQueryDesc(data->ID);
-  if (desc == NULL)
+  if (desc == nullptr)
     return;
 
   // Parse the description, adding default parameter nodes appropriately
@@ -13884,12 +13884,12 @@ void CDallasMainDlg::ReplaceWithQueryNode(int query_ID) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure this node is valid for adding a query
@@ -13924,7 +13924,7 @@ void CDallasMainDlg::ReplaceWithQueryNode(int query_ID) {
     // If this node is the first of a comparison conditional, make sure third node's type matches
     DoComparisonMatchup(new_query_node);
 
-    if (new_query_node != NULL)
+    if (new_query_node != nullptr)
       m_ScriptTree.Expand(new_query_node, TVE_EXPAND);
 
     SetModified(TRUE);
@@ -13942,12 +13942,12 @@ void CDallasMainDlg::ReplaceWithLiteralNode(int literal_type, int index) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure this node is valid for adding a query
@@ -13996,7 +13996,7 @@ void CDallasMainDlg::DoComparisonMatchup(HTREEITEM node) {
   CString node_name, onode_name;
   HTREEITEM other_node, new_param_node;
 
-  if (node == NULL)
+  if (node == nullptr)
     return;
 
   // If it's not the first node of a comparison conditional, nothing need be done
@@ -14005,7 +14005,7 @@ void CDallasMainDlg::DoComparisonMatchup(HTREEITEM node) {
 
   // ok, it is, so now we need to get the other node being compared
   other_node = GetNthChild(m_ScriptTree.GetParentItem(node), 3);
-  if (other_node == NULL)
+  if (other_node == nullptr)
     return;
 
   // Get the other node's data
@@ -14057,12 +14057,12 @@ void CDallasMainDlg::ReplaceWithActionNode(int action_ID) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure this node is valid for adding an Action
@@ -14085,7 +14085,7 @@ void CDallasMainDlg::ReplaceWithActionNode(int action_ID) {
 
     // Update the new action node's text to include the parameters
     UpdateNodeText(new_action_node);
-    if (new_action_node != NULL)
+    if (new_action_node != nullptr)
       m_ScriptTree.Expand(new_action_node, TVE_EXPAND);
     SetModified(TRUE);
   }
@@ -14102,12 +14102,12 @@ void CDallasMainDlg::ReplaceWithLogOpNode(int type) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // If this node IS a logical operator, just change its data
@@ -14137,7 +14137,7 @@ void CDallasMainDlg::ReplaceWithLogOpNode(int type) {
     m_ScriptTree.SelectItem(new_logop_node);
     FreeTreeItem(selected_node);
 
-    if (new_logop_node != NULL)
+    if (new_logop_node != nullptr)
       m_ScriptTree.Expand(new_logop_node, TVE_EXPAND);
     SetModified(TRUE);
   }
@@ -14154,12 +14154,12 @@ void CDallasMainDlg::ReplaceWithConditionNode(int type, int query_id /*=-1*/) {
 
   // Obtain the currently selected node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Get the node's data
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   // Make sure this node is valid for adding a conditional statement
@@ -14183,7 +14183,7 @@ void CDallasMainDlg::ReplaceWithConditionNode(int type, int query_id /*=-1*/) {
     // Update the new condition node's text to include the expressions
     UpdateNodeText(new_condition_node);
 
-    if (new_condition_node != NULL)
+    if (new_condition_node != nullptr)
       m_ScriptTree.Expand(new_condition_node, TVE_EXPAND);
     SetModified(TRUE);
   }
@@ -14199,10 +14199,10 @@ HTREEITEM CDallasMainDlg::CreateDefaultScriptTree(int script_ID, HTREEITEM inser
   tTreeNodeData node_data;
 
   ib_node = GetParentNodeOfType(insert_before, SCRIPT_HEADER_NODE);
-  if (ib_node != NULL && m_ScriptTree.GetParentItem(ib_node) != NULL)
+  if (ib_node != nullptr && m_ScriptTree.GetParentItem(ib_node) != nullptr)
     ib_node = m_ClipboardNode;
-  if (ib_node == NULL) {
-    if (m_ClipboardNode != NULL)
+  if (ib_node == nullptr) {
+    if (m_ClipboardNode != nullptr)
       ib_node = m_ClipboardNode;
     else
       ib_node = TVI_LAST;
@@ -14227,7 +14227,7 @@ HTREEITEM CDallasMainDlg::CreateDefaultScriptTree(int script_ID, HTREEITEM inser
 
   CreateDefaultIfThenClause(parent, TVI_LAST, TOP_LEVEL);
 
-  if (parent != NULL)
+  if (parent != nullptr)
     m_ScriptTree.Expand(parent, TVE_EXPAND);
   SetModified(TRUE);
 
@@ -14239,19 +14239,19 @@ HTREEITEM CDallasMainDlg::CreateDefaultIfThenClause(HTREEITEM parent, HTREEITEM 
   HTREEITEM header;
   tTreeNodeData node_data;
 
-  if (parent == NULL || insert_before == NULL)
-    return NULL;
+  if (parent == nullptr || insert_before == nullptr)
+    return nullptr;
 
   // Create the default Conditional header Node
   node_data.type = CONDITIONAL_HEADER_NODE;
   node_data.ID = type;
   header = AddNodeToTree(parent, insert_before, &node_data);
-  if (header == NULL)
-    return (NULL);
+  if (header == nullptr)
+    return (nullptr);
 
   // Create the default conditional statement Node
   CreateDefaultConditionalStatementNode(header);
-  if (header != NULL)
+  if (header != nullptr)
     m_ScriptTree.Expand(header, TVE_EXPAND);
 
   // Create the default Action header Node
@@ -14268,7 +14268,7 @@ HTREEITEM CDallasMainDlg::CreateDefaultIfThenClause(HTREEITEM parent, HTREEITEM 
 
   // Create the default action statement Node
   CreateDefaultActionStatementNode(header);
-  if (header != NULL)
+  if (header != nullptr)
     m_ScriptTree.Expand(header, TVE_EXPAND);
   SetModified(TRUE);
 
@@ -14280,8 +14280,8 @@ HTREEITEM CDallasMainDlg::CreateDefaultElseClause(HTREEITEM parent, HTREEITEM in
   HTREEITEM header;
   tTreeNodeData node_data;
 
-  if (parent == NULL || insert_before == NULL)
-    return NULL;
+  if (parent == nullptr || insert_before == nullptr)
+    return nullptr;
 
   // Create the default Action header Node
   node_data.type = ACTIONS_HEADER_NODE;
@@ -14292,7 +14292,7 @@ HTREEITEM CDallasMainDlg::CreateDefaultElseClause(HTREEITEM parent, HTREEITEM in
 
   // Create the default action statement Node
   CreateDefaultActionStatementNode(header);
-  if (header != NULL)
+  if (header != nullptr)
     m_ScriptTree.Expand(header, TVE_EXPAND);
   SetModified(TRUE);
 
@@ -14303,8 +14303,8 @@ HTREEITEM CDallasMainDlg::CreateDefaultElseClause(HTREEITEM parent, HTREEITEM in
 HTREEITEM CDallasMainDlg::CreateDefaultConditionalStatementNode(HTREEITEM parent) {
   tTreeNodeData node_data;
 
-  if (parent == NULL)
-    return NULL;
+  if (parent == nullptr)
+    return nullptr;
 
   node_data.type = CONDITIONAL_STATEMENT_NODE;
   node_data.ID = ALWAYS_STATEMENT;
@@ -14317,10 +14317,10 @@ HTREEITEM CDallasMainDlg::CreateDefaultConditionalStatementNode(HTREEITEM parent
 HTREEITEM CDallasMainDlg::CreateDefaultConditionalStatementSubtree(HTREEITEM parent, int type, int query_id /*=-1*/) {
   HTREEITEM last_added_node, first_parm_node;
 
-  if (parent == NULL)
-    return NULL;
+  if (parent == nullptr)
+    return nullptr;
   if (type == ALWAYS_STATEMENT)
-    return NULL;
+    return nullptr;
 
   // Add default binary subtree
   if (type == BINARY_STATEMENT) {
@@ -14336,13 +14336,13 @@ HTREEITEM CDallasMainDlg::CreateDefaultConditionalStatementSubtree(HTREEITEM par
   }
 
   // Replace first node with a query if necessary
-  if (first_parm_node != NULL && query_id >= 0 && query_id < MAX_QUERIES) {
+  if (first_parm_node != nullptr && query_id >= 0 && query_id < MAX_QUERIES) {
 
     // Get the node's data
     tTreeNodeData *data = (tTreeNodeData *)m_ScriptTree.GetItemData(first_parm_node);
 
     // Make sure this node is valid for adding a query
-    if (data != NULL && (data->type == EXPRESSION_NODE || data->type == PARAMETER_NODE)) {
+    if (data != nullptr && (data->type == EXPRESSION_NODE || data->type == PARAMETER_NODE)) {
       tTreeNodeData node_data;
       int query_return_type;
       HTREEITEM new_query_node;
@@ -14375,7 +14375,7 @@ HTREEITEM CDallasMainDlg::CreateDefaultConditionalStatementSubtree(HTREEITEM par
       // If this node is the first of a comparison conditional, make sure third node's type matches
       DoComparisonMatchup(new_query_node);
 
-      if (new_query_node != NULL)
+      if (new_query_node != nullptr)
         m_ScriptTree.Expand(new_query_node, TVE_EXPAND);
     }
   }
@@ -14389,10 +14389,10 @@ HTREEITEM CDallasMainDlg::CreateDefaultConditionalStatementSubtree(HTREEITEM par
 HTREEITEM CDallasMainDlg::CreateDefaultExpressionOperatorNode(HTREEITEM parent, int type) {
   tTreeNodeData node_data;
 
-  if (parent == NULL)
-    return NULL;
+  if (parent == nullptr)
+    return nullptr;
   if (type != BINARY_OPERATOR_TYPE && type != COMPARISON_OPERATOR_TYPE)
-    return NULL;
+    return nullptr;
 
   node_data.type = EXPRESSION_OPERATOR_NODE;
   node_data.ID = type;
@@ -14411,8 +14411,8 @@ HTREEITEM CDallasMainDlg::CreateDefaultExpressionOperatorNode(HTREEITEM parent, 
 HTREEITEM CDallasMainDlg::CreateDefaultActionStatementNode(HTREEITEM parent) {
   tTreeNodeData node_data;
 
-  if (parent == NULL)
-    return NULL;
+  if (parent == nullptr)
+    return nullptr;
 
   node_data.type = ACTION_STATEMENT_NODE;
   node_data.ID = DO_NOTHING_ID;
@@ -14428,8 +14428,8 @@ HTREEITEM CDallasMainDlg::CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM
                                                      char *name, char *def_value /*=NULL*/) {
   tTreeNodeData node_data;
 
-  if (parent == NULL || insert_before == NULL || name == NULL)
-    return NULL;
+  if (parent == nullptr || insert_before == nullptr || name == nullptr)
+    return nullptr;
 
   node_data.type = PARAMETER_NODE;
   node_data.ID = param_type;
@@ -14443,7 +14443,7 @@ HTREEITEM CDallasMainDlg::CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM
     strcpy(node_data.str_val, "");
     break;
   case OBJECT_PARAMETER_TYPE:
-    if (def_value != NULL && strlen(def_value) != 0) {
+    if (def_value != nullptr && strlen(def_value) != 0) {
       if (strcmp(def_value, "ME") == 0) {
         node_data.int_val = OBJECT_HANDLE_NONE;
         node_data.subID = USE_ME_HANDLE;
@@ -14470,13 +14470,13 @@ HTREEITEM CDallasMainDlg::CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM
     strcpy(node_data.str_val, "");
     break;
   case INT_PARAMETER_TYPE:
-    if (def_value == NULL || strlen(def_value) == 0)
+    if (def_value == nullptr || strlen(def_value) == 0)
       node_data.int_val = 0;
     else
       node_data.int_val = atoi(def_value);
     break;
   case BOOL_PARAMETER_TYPE:
-    if (def_value == NULL || strlen(def_value) == 0)
+    if (def_value == nullptr || strlen(def_value) == 0)
       node_data.int_val = TRUE;
     else {
       if (stricmp(def_value, "false") == 0)
@@ -14486,7 +14486,7 @@ HTREEITEM CDallasMainDlg::CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM
     }
     break;
   case FLOAT_PARAMETER_TYPE:
-    if (def_value == NULL || strlen(def_value) == 0)
+    if (def_value == nullptr || strlen(def_value) == 0)
       node_data.float_val1 = 0.0;
     else
       node_data.float_val1 = atof(def_value);
@@ -14500,13 +14500,13 @@ HTREEITEM CDallasMainDlg::CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM
     strcpy(node_data.str_val, "");
     break;
   case PERCENTAGE_PARAMETER_TYPE:
-    if (def_value == NULL || strlen(def_value) == 0)
+    if (def_value == nullptr || strlen(def_value) == 0)
       node_data.float_val1 = 0.0;
     else
       node_data.float_val1 = atof(def_value);
     break;
   case ENUM_PARAMETER_TYPE: {
-    if (def_value != NULL && strlen(def_value) > 0) {
+    if (def_value != nullptr && strlen(def_value) > 0) {
       if (GetEnumValue(name, def_value, node_data.int_val)) {
         node_data.subID = USE_ENUM_VALUE;
         break;
@@ -14538,7 +14538,7 @@ HTREEITEM CDallasMainDlg::CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM
     strcpy(node_data.str_val, "");
     break;
   case FLAG_PARAMETER_TYPE:
-    if (def_value == NULL || strlen(def_value) == 0)
+    if (def_value == nullptr || strlen(def_value) == 0)
       node_data.int_val = 0;
     else
       node_data.int_val = atoi(def_value);
@@ -14573,9 +14573,9 @@ HTREEITEM CDallasMainDlg::CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM
 HTREEITEM CDallasMainDlg::CreateDefaultClipboardNode(void) {
   tTreeNodeData node_data;
 
-  if (m_ClipboardNode != NULL) {
+  if (m_ClipboardNode != nullptr) {
     FreeTreeItem(m_ClipboardNode);
-    m_ClipboardNode = NULL;
+    m_ClipboardNode = nullptr;
   }
 
   node_data.type = CLIPBOARD_HEADER_NODE;
@@ -14596,12 +14596,12 @@ void CDallasMainDlg::PerformScriptCopy(void) {
   HTREEITEM new_script_node;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // Get the selected tree node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // If it's a conditional statement node, let it be the header
@@ -14636,11 +14636,11 @@ void CDallasMainDlg::PerformScriptCopy(void) {
 
   // Get the script header node
   script_header_node = GetParentNodeOfType(selected_node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return;
 
   // If the script header has a parent, then it must be a clipboard node
-  if (m_ScriptTree.GetParentItem(script_header_node) != NULL)
+  if (m_ScriptTree.GetParentItem(script_header_node) != nullptr)
     return;
 
   // If the clipboard, has a script already, kill the old one
@@ -14648,7 +14648,7 @@ void CDallasMainDlg::PerformScriptCopy(void) {
 
   // Now copy the script over to the clipboard
   new_script_node = CopyTree(m_ClipboardNode, TVI_LAST, script_header_node);
-  if (new_script_node != NULL) {
+  if (new_script_node != nullptr) {
     UpdateAllParentNodesText(new_script_node);
     m_ScriptTree.Expand(m_ClipboardNode, TVE_COLLAPSE);
   }
@@ -14660,11 +14660,11 @@ void CDallasMainDlg::PerformActionCopy(HTREEITEM action_node) {
   HTREEITEM new_script_node;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // Get the selected tree node
-  if (action_node == NULL)
+  if (action_node == nullptr)
     return;
 
   // If it's an action node, let it be the header
@@ -14673,11 +14673,11 @@ void CDallasMainDlg::PerformActionCopy(HTREEITEM action_node) {
 
   // Get the script header node
   script_header_node = GetParentNodeOfType(action_node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return;
 
   // If the script header has a parent, then it must be a clipboard node
-  if (m_ScriptTree.GetParentItem(script_header_node) != NULL)
+  if (m_ScriptTree.GetParentItem(script_header_node) != nullptr)
     return;
 
   // If the clipboard, has a script already, kill the old one
@@ -14685,7 +14685,7 @@ void CDallasMainDlg::PerformActionCopy(HTREEITEM action_node) {
 
   // Now copy the action over to the clipboard
   new_script_node = CopyTree(m_ClipboardNode, TVI_LAST, action_node);
-  if (new_script_node != NULL) {
+  if (new_script_node != nullptr) {
     UpdateAllParentNodesText(new_script_node);
     m_ScriptTree.Expand(m_ClipboardNode, TVE_COLLAPSE);
   }
@@ -14697,11 +14697,11 @@ void CDallasMainDlg::PerformConditionalCopy(HTREEITEM conditional_node) {
   HTREEITEM new_script_node;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // Get the selected tree node
-  if (conditional_node == NULL)
+  if (conditional_node == nullptr)
     return;
 
   // If it's an action node, let it be the header
@@ -14710,11 +14710,11 @@ void CDallasMainDlg::PerformConditionalCopy(HTREEITEM conditional_node) {
 
   // Get the script header node
   script_header_node = GetParentNodeOfType(conditional_node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return;
 
   // If the script header has a parent, then it must be a clipboard node
-  if (m_ScriptTree.GetParentItem(script_header_node) != NULL)
+  if (m_ScriptTree.GetParentItem(script_header_node) != nullptr)
     return;
 
   // If the clipboard, has a script already, kill the old one
@@ -14722,7 +14722,7 @@ void CDallasMainDlg::PerformConditionalCopy(HTREEITEM conditional_node) {
 
   // Now copy the conditional statement over to the clipboard
   new_script_node = CopyTree(m_ClipboardNode, TVI_LAST, conditional_node);
-  if (new_script_node != NULL) {
+  if (new_script_node != nullptr) {
     UpdateAllParentNodesText(new_script_node);
     m_ScriptTree.Expand(m_ClipboardNode, TVE_COLLAPSE);
   }
@@ -14734,11 +14734,11 @@ void CDallasMainDlg::PerformLogOpCopy(HTREEITEM logop_node) {
   HTREEITEM new_script_node;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // Get the selected tree node
-  if (logop_node == NULL)
+  if (logop_node == nullptr)
     return;
 
   // If it's a logop node, let it be the header
@@ -14747,11 +14747,11 @@ void CDallasMainDlg::PerformLogOpCopy(HTREEITEM logop_node) {
 
   // Get the script header node
   script_header_node = GetParentNodeOfType(logop_node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return;
 
   // If the script header has a parent, then it must be a clipboard node
-  if (m_ScriptTree.GetParentItem(script_header_node) != NULL)
+  if (m_ScriptTree.GetParentItem(script_header_node) != nullptr)
     return;
 
   // If the clipboard, has a script already, kill the old one
@@ -14759,7 +14759,7 @@ void CDallasMainDlg::PerformLogOpCopy(HTREEITEM logop_node) {
 
   // Now copy the logical operator over to the clipboard
   new_script_node = CopyTree(m_ClipboardNode, TVI_LAST, logop_node);
-  if (new_script_node != NULL) {
+  if (new_script_node != nullptr) {
     UpdateAllParentNodesText(new_script_node);
     m_ScriptTree.Expand(m_ClipboardNode, TVE_COLLAPSE);
   }
@@ -14772,11 +14772,11 @@ void CDallasMainDlg::PerformClauseCopy(HTREEITEM clause_node) {
   HTREEITEM if_node, then_node, else_node;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // Get the selected tree node
-  if (clause_node == NULL)
+  if (clause_node == nullptr)
     return;
 
   // Make sure it's an IF header
@@ -14785,11 +14785,11 @@ void CDallasMainDlg::PerformClauseCopy(HTREEITEM clause_node) {
 
   // Get the script header node
   script_header_node = GetParentNodeOfType(clause_node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return;
 
   // If the script header has a parent, then it must be a clipboard node
-  if (m_ScriptTree.GetParentItem(script_header_node) != NULL)
+  if (m_ScriptTree.GetParentItem(script_header_node) != nullptr)
     return;
 
   // Get the then clause node
@@ -14801,29 +14801,29 @@ void CDallasMainDlg::PerformClauseCopy(HTREEITEM clause_node) {
   // Get the else clause node
   else_node = m_ScriptTree.GetNextSiblingItem(then_node);
   if (!NodeIsClauseOfType(else_node, ELSE_CLAUSE))
-    else_node = NULL;
+    else_node = nullptr;
 
   // If the clipboard, has a script already, kill the old one
   FreeTreeItemChildren(m_ClipboardNode);
 
   // Now copy the IF clause over to the clipboard
   new_script_node = CopyTree(m_ClipboardNode, TVI_LAST, if_node);
-  if (new_script_node != NULL) {
+  if (new_script_node != nullptr) {
     UpdateAllParentNodesText(new_script_node);
     m_ScriptTree.Expand(m_ClipboardNode, TVE_COLLAPSE);
   }
 
   // Now copy the THEN clause over to the clipboard
   new_script_node = CopyTree(m_ClipboardNode, TVI_LAST, then_node);
-  if (new_script_node != NULL) {
+  if (new_script_node != nullptr) {
     UpdateAllParentNodesText(new_script_node);
     m_ScriptTree.Expand(m_ClipboardNode, TVE_COLLAPSE);
   }
 
   // Now copy the ELSE clause over (if one exists)
-  if (else_node != NULL) {
+  if (else_node != nullptr) {
     new_script_node = CopyTree(m_ClipboardNode, TVI_LAST, else_node);
-    if (new_script_node != NULL) {
+    if (new_script_node != nullptr) {
       UpdateAllParentNodesText(new_script_node);
       m_ScriptTree.Expand(m_ClipboardNode, TVE_COLLAPSE);
     }
@@ -14838,12 +14838,12 @@ void CDallasMainDlg::PerformScriptPaste(void) {
   HTREEITEM new_script_header;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // Get the clipboard child script
   src_script_header_node = m_ScriptTree.GetChildItem(m_ClipboardNode);
-  if (src_script_header_node == NULL)
+  if (src_script_header_node == nullptr)
     return;
 
   // See if the clipboard has a conditional statement
@@ -14876,29 +14876,29 @@ void CDallasMainDlg::PerformScriptPaste(void) {
 
   // Get the selected tree node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   if (selected_node == m_ClipboardNode)
     dest_insert_before = m_ClipboardNode;
   else {
     dest_insert_before = GetParentNodeOfType(selected_node, SCRIPT_HEADER_NODE);
-    if (dest_insert_before == NULL)
+    if (dest_insert_before == nullptr)
       return;
 
     // If the script header has a parent, then it must be a clipboard node
-    if (m_ScriptTree.GetParentItem(dest_insert_before) != NULL)
+    if (m_ScriptTree.GetParentItem(dest_insert_before) != nullptr)
       dest_insert_before = m_ClipboardNode;
   }
 
   // Now copy the script over to the clipboard
   new_script_header = CopyTree(TVI_ROOT, dest_insert_before, src_script_header_node);
-  if (new_script_header == NULL)
+  if (new_script_header == nullptr)
     return;
 
   // Change the script ID for the new node
   tTreeNodeData *data = (tTreeNodeData *)m_ScriptTree.GetItemData(new_script_header);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   int new_id = GetLowestUnusedScriptID();
@@ -14921,7 +14921,7 @@ void CDallasMainDlg::PerformActionPaste(HTREEITEM src_action_node) {
   tTreeNodeData *data;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // See if the clipboard has an action
@@ -14930,7 +14930,7 @@ void CDallasMainDlg::PerformActionPaste(HTREEITEM src_action_node) {
 
   // Get the selected tree node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Make sure it's not the same node!
@@ -14942,7 +14942,7 @@ void CDallasMainDlg::PerformActionPaste(HTREEITEM src_action_node) {
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   if (data->type == ACTION_STATEMENT_NODE || (data->type == CONDITIONAL_HEADER_NODE && data->ID == NESTED))
@@ -14954,7 +14954,7 @@ void CDallasMainDlg::PerformActionPaste(HTREEITEM src_action_node) {
   }
 
   // Now copy the script over to the clipboard
-  if (new_action_node == NULL)
+  if (new_action_node == nullptr)
     return;
 
   UpdateAllParentNodesText(new_action_node);
@@ -14969,7 +14969,7 @@ void CDallasMainDlg::PerformConditionalPaste(HTREEITEM src_conditional_node) {
   tTreeNodeData *data;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // See if the clipboard has a conditional statement
@@ -14978,7 +14978,7 @@ void CDallasMainDlg::PerformConditionalPaste(HTREEITEM src_conditional_node) {
 
   // Get the selected tree node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Make sure it's not the same node!
@@ -14990,7 +14990,7 @@ void CDallasMainDlg::PerformConditionalPaste(HTREEITEM src_conditional_node) {
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   if (data->type == CONDITIONAL_STATEMENT_NODE || data->type == LOGICAL_OPERATOR_NODE) {
@@ -15008,7 +15008,7 @@ void CDallasMainDlg::PerformConditionalPaste(HTREEITEM src_conditional_node) {
   }
 
   // Now copy the script over to the clipboard
-  if (new_conditional_node == NULL)
+  if (new_conditional_node == nullptr)
     return;
 
   UpdateAllParentNodesText(new_conditional_node);
@@ -15022,7 +15022,7 @@ void CDallasMainDlg::PerformLogOpPaste(HTREEITEM src_logop_node) {
   tTreeNodeData *data;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // See if the clipboard has a logical operator
@@ -15031,7 +15031,7 @@ void CDallasMainDlg::PerformLogOpPaste(HTREEITEM src_logop_node) {
 
   // Get the selected tree node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Make sure it's not the same node!
@@ -15043,7 +15043,7 @@ void CDallasMainDlg::PerformLogOpPaste(HTREEITEM src_logop_node) {
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   if (data->type == CONDITIONAL_STATEMENT_NODE || data->type == LOGICAL_OPERATOR_NODE) {
@@ -15061,7 +15061,7 @@ void CDallasMainDlg::PerformLogOpPaste(HTREEITEM src_logop_node) {
   }
 
   // Now copy the script over to the clipboard
-  if (new_logop_node == NULL)
+  if (new_logop_node == nullptr)
     return;
 
   UpdateAllParentNodesText(new_logop_node);
@@ -15075,7 +15075,7 @@ void CDallasMainDlg::PerformClausePaste(HTREEITEM src_clause_node) {
   tTreeNodeData *data;
 
   // Make sure we have a clipboard
-  if (m_ClipboardNode == NULL)
+  if (m_ClipboardNode == nullptr)
     return;
 
   // See if the clipboard has an IF clause
@@ -15091,11 +15091,11 @@ void CDallasMainDlg::PerformClausePaste(HTREEITEM src_clause_node) {
   // Get the else clause node
   else_node = m_ScriptTree.GetNextSiblingItem(then_node);
   if (!NodeIsClauseOfType(else_node, ELSE_CLAUSE))
-    else_node = NULL;
+    else_node = nullptr;
 
   // Get the selected tree node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
 
   // Make sure it's not the same node!
@@ -15107,7 +15107,7 @@ void CDallasMainDlg::PerformClausePaste(HTREEITEM src_clause_node) {
     return;
 
   data = (tTreeNodeData *)m_ScriptTree.GetItemData(selected_node);
-  if (data == NULL)
+  if (data == nullptr)
     return;
 
   if (data->type == ACTION_STATEMENT_NODE || (data->type == CONDITIONAL_HEADER_NODE && data->ID == NESTED)) {
@@ -15120,7 +15120,7 @@ void CDallasMainDlg::PerformClausePaste(HTREEITEM src_clause_node) {
     UpdateAllParentNodesText(new_clause_node);
 
     // Copy over ELSE clause (if one exists)
-    if (else_node != NULL) {
+    if (else_node != nullptr) {
       new_clause_node = CopyTree(m_ScriptTree.GetParentItem(selected_node), selected_node, else_node);
       UpdateAllParentNodesText(new_clause_node);
     }
@@ -15134,7 +15134,7 @@ void CDallasMainDlg::PerformClausePaste(HTREEITEM src_clause_node) {
     UpdateAllParentNodesText(new_clause_node);
 
     // Copy over ELSE clause (if one exists)
-    if (else_node != NULL) {
+    if (else_node != nullptr) {
       new_clause_node = CopyTree(selected_node, TVI_LAST, else_node);
       UpdateAllParentNodesText(new_clause_node);
     }
@@ -15143,7 +15143,7 @@ void CDallasMainDlg::PerformClausePaste(HTREEITEM src_clause_node) {
   }
 
   // Now copy the script over to the clipboard
-  if (new_clause_node == NULL)
+  if (new_clause_node == nullptr)
     return;
 
   SetModified(TRUE);
@@ -15155,7 +15155,7 @@ bool CDallasMainDlg::NodeIsInClipboard(HTREEITEM node) {
 
   parent = GetParentNodeOfType(node, CLIPBOARD_HEADER_NODE);
 
-  if (parent == NULL)
+  if (parent == nullptr)
     return FALSE;
   else
     return TRUE;
@@ -15171,18 +15171,18 @@ int CDallasMainDlg::UpdateStringParams(HTREEITEM root, char *old_name, char *new
   tTreeNodeData *data;
   int num_changed;
 
-  if (root == NULL)
+  if (root == nullptr)
     return 0;
 
   // Process the children
   num_changed = 0;
   child = m_ScriptTree.GetChildItem(root);
-  while (child != NULL) {
+  while (child != nullptr) {
     num_changed += UpdateStringParams(child, old_name, new_name);
 
     // Check this child to see if it's a string parameter in need of updating
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(child);
-    if (data != NULL && data->type == PARAMETER_NODE && data->ID == STRING_PARAMETER_TYPE) {
+    if (data != nullptr && data->type == PARAMETER_NODE && data->ID == STRING_PARAMETER_TYPE) {
       if (strcmp(data->str_val, old_name) == 0) {
         strcpy(data->str_val, new_name);
         UpdateAllParentNodesText(child);
@@ -15205,7 +15205,7 @@ int CDallasMainDlg::UpdateStringParams(HTREEITEM root, char *old_name, char *new
 ///////////////////////////////////////////////////////////////////
 
 bool CDallasMainDlg::IsDropSource(HTREEITEM item) {
-  if (item == NULL)
+  if (item == nullptr)
     return FALSE;
 
   // See if it's an action node
@@ -15214,10 +15214,10 @@ bool CDallasMainDlg::IsDropSource(HTREEITEM item) {
 
     // Make sure it's not in the clipboard
     parent = GetParentNodeOfType(item, SCRIPT_HEADER_NODE);
-    if (parent == NULL)
+    if (parent == nullptr)
       return FALSE;
 
-    if (m_ScriptTree.GetParentItem(parent) != NULL)
+    if (m_ScriptTree.GetParentItem(parent) != nullptr)
       return FALSE;
 
     return TRUE;
@@ -15228,7 +15228,7 @@ bool CDallasMainDlg::IsDropSource(HTREEITEM item) {
     return FALSE;
 
   // Make sure it's not in the Clipboard
-  if (m_ScriptTree.GetParentItem(item) != NULL)
+  if (m_ScriptTree.GetParentItem(item) != nullptr)
     return FALSE;
 
   return TRUE;
@@ -15237,8 +15237,8 @@ bool CDallasMainDlg::IsDropSource(HTREEITEM item) {
 HTREEITEM CDallasMainDlg::GetDropTarget(HTREEITEM item) {
   HTREEITEM target_item, parent_item;
 
-  if (item == NULL || m_hitemDrag == NULL)
-    return NULL;
+  if (item == nullptr || m_hitemDrag == nullptr)
+    return nullptr;
 
   // See if the dragged node is an action
   if (GetNodeType(m_hitemDrag) == ACTION_STATEMENT_NODE) {
@@ -15247,16 +15247,16 @@ HTREEITEM CDallasMainDlg::GetDropTarget(HTREEITEM item) {
 
     // Make sure it's not in the clipboard
     parent = GetParentNodeOfType(item, SCRIPT_HEADER_NODE);
-    if (parent == NULL)
-      return NULL;
+    if (parent == nullptr)
+      return nullptr;
 
-    if (m_ScriptTree.GetParentItem(parent) != NULL)
-      return NULL;
+    if (m_ScriptTree.GetParentItem(parent) != nullptr)
+      return nullptr;
 
     // Make sure it's a valid drop node
     data = (tTreeNodeData *)m_ScriptTree.GetItemData(item);
-    if (data == NULL)
-      return NULL;
+    if (data == nullptr)
+      return nullptr;
 
     if (data->type == ACTION_STATEMENT_NODE || (data->type == CONDITIONAL_HEADER_NODE && data->ID == NESTED))
       return (item);
@@ -15264,7 +15264,7 @@ HTREEITEM CDallasMainDlg::GetDropTarget(HTREEITEM item) {
     if (data->type == ACTIONS_HEADER_NODE)
       return (item);
 
-    return NULL;
+    return nullptr;
   }
 
   // See if it's the clipboard
@@ -15273,24 +15273,24 @@ HTREEITEM CDallasMainDlg::GetDropTarget(HTREEITEM item) {
 
   // Get the script header for the selected node
   target_item = GetParentNodeOfType(item, SCRIPT_HEADER_NODE);
-  if (target_item == NULL)
-    return NULL;
+  if (target_item == nullptr)
+    return nullptr;
 
   parent_item = m_ScriptTree.GetParentItem(target_item);
-  if (m_ScriptTree.GetParentItem(target_item) == NULL)
+  if (m_ScriptTree.GetParentItem(target_item) == nullptr)
     return (target_item);
 
   if (GetNodeType(parent_item) == CLIPBOARD_HEADER_NODE)
     return (parent_item);
 
-  return NULL;
+  return nullptr;
 }
 
 void CDallasMainDlg::OnBegindragEventTree(NMHDR *pNMHDR, LRESULT *pResult) {
   NM_TREEVIEW *pNMTreeView = (NM_TREEVIEW *)pNMHDR;
 
   m_hitemDrag = pNMTreeView->itemNew.hItem;
-  m_hitemDrop = NULL;
+  m_hitemDrop = nullptr;
   m_ScriptTree.SelectItem(m_hitemDrag);
 
   if (!IsDropSource(m_hitemDrag))
@@ -15308,7 +15308,7 @@ void CDallasMainDlg::OnBegindragEventTree(NMHDR *pNMHDR, LRESULT *pResult) {
   m_pDragImage->BeginDrag(0, CPoint(0, 0));
   POINT pt = pNMTreeView->ptDrag;
   m_ScriptTree.ClientToScreen(&pt);
-  m_pDragImage->DragEnter(NULL, pt);
+  m_pDragImage->DragEnter(nullptr, pt);
   SetCapture();
 
   *pResult = 0;
@@ -15324,14 +15324,14 @@ void CDallasMainDlg::OnMouseMove(UINT nFlags, CPoint point) {
     POINT tree_pt = pt;
     m_ScriptTree.ScreenToClient(&tree_pt);
     CImageList::DragMove(pt);
-    if ((hitem = m_ScriptTree.HitTest(tree_pt, &flags)) != NULL) {
+    if ((hitem = m_ScriptTree.HitTest(tree_pt, &flags)) != nullptr) {
       CImageList::DragShowNolock(FALSE);
       m_hitemDrop = GetDropTarget(hitem);
       m_ScriptTree.SelectDropTarget(m_hitemDrop);
       CImageList::DragShowNolock(TRUE);
     } else {
       CImageList::DragShowNolock(FALSE);
-      m_hitemDrop = NULL;
+      m_hitemDrop = nullptr;
       m_ScriptTree.SelectDropTarget(m_hitemDrop);
       CImageList::DragShowNolock(TRUE);
     }
@@ -15349,9 +15349,9 @@ void CDallasMainDlg::OnLButtonUp(UINT nFlags, CPoint point) {
     delete m_pDragImage;
 
     // Remove drop target highlighting
-    m_ScriptTree.SelectDropTarget(NULL);
+    m_ScriptTree.SelectDropTarget(nullptr);
 
-    if ((m_hitemDrag == m_hitemDrop) || m_hitemDrop == NULL)
+    if ((m_hitemDrag == m_hitemDrop) || m_hitemDrop == nullptr)
       return;
 
     // See if the dragged node is an action
@@ -15360,7 +15360,7 @@ void CDallasMainDlg::OnLButtonUp(UINT nFlags, CPoint point) {
       tTreeNodeData *data;
 
       data = (tTreeNodeData *)m_ScriptTree.GetItemData(m_hitemDrop);
-      if (data == NULL)
+      if (data == nullptr)
         return;
 
       if (data->type == ACTION_STATEMENT_NODE || (data->type == CONDITIONAL_HEADER_NODE && data->ID == NESTED))
@@ -15369,7 +15369,7 @@ void CDallasMainDlg::OnLButtonUp(UINT nFlags, CPoint point) {
         new_action_node = CopyTree(m_hitemDrop, TVI_LAST, m_hitemDrag);
       }
 
-      if (new_action_node == NULL)
+      if (new_action_node == nullptr)
         return;
       UpdateAllParentNodesText(new_action_node);
       m_ScriptTree.SelectItem(new_action_node);
@@ -15386,7 +15386,7 @@ void CDallasMainDlg::OnLButtonUp(UINT nFlags, CPoint point) {
 
     // Copy the tree to its new location (and select it)
     HTREEITEM new_script_header = CopyTree(TVI_ROOT, m_hitemDrop, m_hitemDrag);
-    if (new_script_header == NULL)
+    if (new_script_header == nullptr)
       return;
     UpdateAllParentNodesText(new_script_header);
     m_ScriptTree.SelectItem(new_script_header);
@@ -15515,13 +15515,13 @@ bool CDallasMainDlg::ScriptLibraryFilePrompt(CString &filename, bool use_import_
   }
 
   if (last_path.IsEmpty())
-    default_fname = NULL;
+    default_fname = nullptr;
   else
     default_fname = last_path.GetBuffer(0);
 
   filename = "";
   filter = "Dallas Script Library Files (*.dsl)|*.dsl|All Files (*.*)|*.*||";
-  CFileDialog dlg_open(dlg_type, NULL, default_fname, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
+  CFileDialog dlg_open(dlg_type, nullptr, default_fname, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
   dlg_open.m_ofn.lpstrTitle = title.GetBuffer(0);
   if (dlg_open.DoModal() == IDCANCEL) {
     return FALSE;
@@ -15554,20 +15554,20 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
 
   // Determine the initial insert before script header node
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return FALSE;
   if (GetNodeType(selected_node) == CLIPBOARD_HEADER_NODE)
     initial_insert_before = selected_node;
   else {
     initial_insert_before = GetParentNodeOfType(selected_node, SCRIPT_HEADER_NODE);
-    if (initial_insert_before == NULL)
+    if (initial_insert_before == nullptr)
       return FALSE;
-    if (m_ScriptTree.GetParentItem(initial_insert_before) != NULL)
+    if (m_ScriptTree.GetParentItem(initial_insert_before) != nullptr)
       return FALSE;
   }
 
   CurrentParsingFilename = filename;
-  new_script_header = NULL;
+  new_script_header = nullptr;
 
   // Try to open the file for loading
   infile = cfopen(filename, "rt");
@@ -15607,7 +15607,7 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
       valid_lines_read = 0;
 
       // Set tree node trackers so we know where we are in the actual tree
-      last_node_added = NULL;
+      last_node_added = nullptr;
       current_parent = TVI_ROOT;
 
       // Set variables that allow child nodes to be skipped over
@@ -15642,7 +15642,7 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
           last_node_childless = FALSE;
           if (!skip_children) {
             current_parent = last_node_added;
-            if (current_parent == NULL)
+            if (current_parent == nullptr)
               current_parent = TVI_ROOT;
           } else {
             skip_depth++;
@@ -15651,7 +15651,7 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
         }
 
         // Handles Validation of childless function nodes
-        if (last_node_added != NULL && last_node_childless) {
+        if (last_node_added != nullptr && last_node_childless) {
           ValidateFunctionNode(last_node_added, linenum);
 
           // Need this to update node text that depends on subnodes
@@ -15669,7 +15669,7 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
 
             last_node_added = current_parent;
             if (last_node_added == TVI_ROOT)
-              last_node_added = NULL;
+              last_node_added = nullptr;
             else {
               // Need this to validate a function node once all of its params have been added
               ValidateFunctionNode(last_node_added, linenum);
@@ -15680,7 +15680,7 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
 
             if (current_parent != TVI_ROOT)
               current_parent = m_ScriptTree.GetParentItem(current_parent);
-            if (current_parent == NULL)
+            if (current_parent == nullptr)
               current_parent = TVI_ROOT;
           } else
             skip_depth--;
@@ -15717,9 +15717,9 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
         // so (if we're not skipping children) parse it and add it to the tree
         if (!skip_children && ScriptToImportFound) {
 
-          if (initial_insert_before != NULL) {
+          if (initial_insert_before != nullptr) {
             insert_before = initial_insert_before;
-            initial_insert_before = NULL;
+            initial_insert_before = nullptr;
           } else
             insert_before = TVI_LAST;
 
@@ -15729,16 +15729,16 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
           else
             returned_node = ParseScriptNodeLine_v0(line, linenum, current_parent, skip_children, insert_before);
 
-          if (returned_node != NULL) {
-            if (new_script_header == NULL)
+          if (returned_node != nullptr) {
+            if (new_script_header == nullptr)
               new_script_header = returned_node;
             last_node_added = returned_node;
             last_node_childless = TRUE;
             UpdateNodeText(last_node_added);
           } else
-            ScriptFileParseError(INVALID_NODE_ERR, linenum, 0, NULL);
+            ScriptFileParseError(INVALID_NODE_ERR, linenum, 0, nullptr);
 
-          if (returned_node == NULL || skip_children) {
+          if (returned_node == nullptr || skip_children) {
             skip_children = TRUE;
             skip_depth = 0;
           }
@@ -15746,16 +15746,16 @@ bool CDallasMainDlg::ImportScriptFromFile(char *filename, char *script_name) {
       }
 
       if (!done)
-        ScriptFileParseError(UEOS_ERR, linenum, 0, NULL);
+        ScriptFileParseError(UEOS_ERR, linenum, 0, nullptr);
     }
   }
 
   cfclose(infile);
 
   // Change the script ID for the new script
-  if (new_script_header != NULL) {
+  if (new_script_header != nullptr) {
     tTreeNodeData *data = (tTreeNodeData *)m_ScriptTree.GetItemData(new_script_header);
-    if (data != NULL && data->type == SCRIPT_HEADER_NODE) {
+    if (data != nullptr && data->type == SCRIPT_HEADER_NODE) {
       int new_id = GetLowestUnusedScriptID();
       data->ID = new_id;
       UpdateNodeText(new_script_header);
@@ -15790,10 +15790,10 @@ bool CDallasMainDlg::ExportScriptToFile(char *filename, char *script_name) {
 
   // Make sure the selected item is valid for exporting
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return FALSE;
   script_header_node = GetParentNodeOfType(selected_node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return FALSE;
 
   // Make sure library file can be written to
@@ -15811,18 +15811,18 @@ bool CDallasMainDlg::ExportScriptToFile(char *filename, char *script_name) {
 
   // Try to open the temp file for writing
   CurrentOutputFile = cfopen(TEMP_EXPORT_FNAME, "wt");
-  if (CurrentOutputFile == NULL) {
+  if (CurrentOutputFile == nullptr) {
     CString msg, title;
     msg.Format("ERROR: Unable to open %s for output.", TEMP_EXPORT_FNAME);
     title.Format("Temp File Save Error!");
     MessageBox(msg, title, MB_OK | MB_ICONEXCLAMATION);
-    if (infile != NULL)
+    if (infile != nullptr)
       cfclose(infile);
     return FALSE;
   }
 
   // If file doesn't exist, Write out the header info
-  if (infile == NULL) {
+  if (infile == nullptr) {
     O(("/////////////////////////////////////////////////////////////////////"));
     O(("// D.A.L.L.A.S. Generated Script Library File "));
     O(("/////////////////////////////////////////////////////////////////////"));
@@ -15834,7 +15834,7 @@ bool CDallasMainDlg::ExportScriptToFile(char *filename, char *script_name) {
   ScriptReplaced = FALSE;
 
   // Read in and parse each line of the file
-  while (infile != NULL && !cfeof(infile)) {
+  while (infile != nullptr && !cfeof(infile)) {
 
     // Clear the buffer
     strcpy(linebuf, "");
@@ -15900,7 +15900,7 @@ bool CDallasMainDlg::ExportScriptToFile(char *filename, char *script_name) {
             if (MessageBox(msg, title, MB_YESNO | MB_ICONQUESTION) == IDNO) {
               cfclose(infile);
               cfclose(CurrentOutputFile);
-              CurrentOutputFile = NULL;
+              CurrentOutputFile = nullptr;
               ddio_DeleteFile(TEMP_EXPORT_FNAME);
               return FALSE;
             }
@@ -15929,7 +15929,7 @@ bool CDallasMainDlg::ExportScriptToFile(char *filename, char *script_name) {
       }
 
       if (!done)
-        ScriptFileParseError(UEOS_ERR, linenum, 0, NULL);
+        ScriptFileParseError(UEOS_ERR, linenum, 0, nullptr);
     } else
       O(("%s", linebuf));
   }
@@ -15951,11 +15951,11 @@ bool CDallasMainDlg::ExportScriptToFile(char *filename, char *script_name) {
     O((" "));
   }
 
-  if (infile != NULL)
+  if (infile != nullptr)
     cfclose(infile);
 
   cfclose(CurrentOutputFile);
-  CurrentOutputFile = NULL;
+  CurrentOutputFile = nullptr;
 
   // Now delete the library input file, and replace it with the temp file
   ddio_DeleteFile(filename);
@@ -15983,15 +15983,15 @@ void CDallasMainDlg::OnImportButton() {
 
   // Make sure the selected item is valid for importing
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
   if (GetNodeType(selected_node) == CLIPBOARD_HEADER_NODE)
     initial_insert_before = selected_node;
   else {
     initial_insert_before = GetParentNodeOfType(selected_node, SCRIPT_HEADER_NODE);
-    if (initial_insert_before == NULL)
+    if (initial_insert_before == nullptr)
       return;
-    if (m_ScriptTree.GetParentItem(initial_insert_before) != NULL)
+    if (m_ScriptTree.GetParentItem(initial_insert_before) != nullptr)
       return;
   }
 
@@ -16018,10 +16018,10 @@ void CDallasMainDlg::OnExportButton() {
 
   // Make sure the selected item is valid for exporting
   selected_node = m_ScriptTree.GetSelectedItem();
-  if (selected_node == NULL)
+  if (selected_node == nullptr)
     return;
   script_header_node = GetParentNodeOfType(selected_node, SCRIPT_HEADER_NODE);
-  if (script_header_node == NULL)
+  if (script_header_node == nullptr)
     return;
 
   // Display the enter name prompt

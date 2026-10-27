@@ -201,7 +201,7 @@ int osipf_WeaponFindID(const char *name);
 // returns how long an object has lived
 float osipf_ObjectGetTimeLived(int objhandle);
 
-void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun_normal = NULL);
+void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun_normal = nullptr);
 
 // Returns room values (Index is optional and not always used)
 void osipf_RoomValue(int roomnum, char op, char vhandle, void *ptr, int index = 0);
@@ -341,8 +341,8 @@ void osipf_SetAllControls(bool enabled);
 void osipf_SetControls(int fn, bool enabled);
 
 // Creates an object
-int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = NULL,
-                    int parent_handle = OBJECT_HANDLE_NONE, vector *velocity = NULL);
+int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = nullptr,
+                    int parent_handle = OBJECT_HANDLE_NONE, vector *velocity = nullptr);
 
 // OBJECT Properties.
 // is an object visible? (rendered current frame)

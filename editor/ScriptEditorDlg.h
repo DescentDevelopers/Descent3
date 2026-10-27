@@ -54,7 +54,7 @@ extern char Default_external_editor[256];
 class CScriptEditorDlg : public CDialog {
   // Construction
 public:
-  CScriptEditorDlg(CWnd *pParent = NULL); // standard constructor
+  CScriptEditorDlg(CWnd *pParent = nullptr); // standard constructor
   void SetScript(char *script, tD3XProgram *d3x);
   void SetExternalEditor(char *external);
   char *GetScript(void);

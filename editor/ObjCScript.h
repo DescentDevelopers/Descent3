@@ -122,8 +122,8 @@ struct tScriptName {
 
   tScriptName() {
     for (int i = 0; i < MAX_SCRPARAMS; i++) {
-      parameters[i] = NULL;
-      paramtypes[i] = NULL;
+      parameters[i] = nullptr;
+      paramtypes[i] = nullptr;
     }
     used = false;
     nparms = 0;

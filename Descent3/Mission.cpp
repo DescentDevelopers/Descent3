@@ -1990,7 +1990,7 @@ void QuickStartMission() {
   if (Editor_quickplay_levelname[0] != '\0')
     Current_level->filename = mem_strdup(Editor_quickplay_levelname);
   else
-    Current_level->filename = NULL;
+    Current_level->filename = nullptr;
   //	proceed with initialization.
   InitMissionScript();
   SetGameState(GAMESTATE_LVLSTART);

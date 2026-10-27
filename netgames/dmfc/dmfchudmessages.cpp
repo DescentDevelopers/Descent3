@@ -255,12 +255,12 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash)
   if (killernum != -1)
     it = &Objects[killernum];
   else
-    it = NULL;
+    it = nullptr;
 
   if (victimnum != -1)
     me = &Objects[victimnum];
   else
-    me = NULL;
+    me = nullptr;
 
   char buffer[400];
   char temp[150];

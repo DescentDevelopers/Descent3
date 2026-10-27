@@ -58,7 +58,7 @@
 #include "streamaudio.h"
 
 OSFArchive::OSFArchive() {
-  m_fp = NULL;
+  m_fp = nullptr;
   m_length = 0;
   m_type = 0;
   m_comp = 0;
@@ -71,7 +71,7 @@ OSFArchive::OSFArchive() {
 OSFArchive::~OSFArchive() {
   if (m_fp) {
     cfclose(m_fp);
-    m_fp = NULL;
+    m_fp = nullptr;
   }
 }
 
@@ -101,7 +101,7 @@ bool OSFArchive::Open(const std::filesystem::path &filename, bool write) {
     if (strcmp(OSF_TAG, tag) != 0) {
       LOG_WARNING.printf("Illegal OSF file format for %s.", PATH_TO_CSTR(filename));
       cfclose(m_fp);
-      m_fp = NULL;
+      m_fp = nullptr;
       return false;
     }
 
@@ -124,7 +124,7 @@ bool OSFArchive::Open(const std::filesystem::path &filename, bool write) {
     } else {
       LOG_WARNING.printf("Unsupported OSF file type in %s!", PATH_TO_CSTR(filename));
       cfclose(m_fp);
-      m_fp = NULL;
+      m_fp = nullptr;
       return false;
     }
 
@@ -135,7 +135,7 @@ bool OSFArchive::Open(const std::filesystem::path &filename, bool write) {
     if (!cf_ReadBytes((uint8_t *)m_name, OSF_HDR_TITLE_LEN, m_fp)) {
       LOG_WARNING.printf("Stream title not found for %s.", PATH_TO_CSTR(filename));
       cfclose(m_fp);
-      m_fp = NULL;
+      m_fp = nullptr;
       return false;
     }
   } catch (...) {
@@ -144,7 +144,7 @@ bool OSFArchive::Open(const std::filesystem::path &filename, bool write) {
         cfclose(m_fp);
       } catch (...) {
       }
-      m_fp = NULL;
+      m_fp = nullptr;
     }
     return false;
   }
@@ -162,7 +162,7 @@ void OSFArchive::Close() {
       cfclose(m_fp);
     } catch (...) {
     }
-    m_fp = NULL;
+    m_fp = nullptr;
   }
 
   m_writemode = false;

@@ -82,7 +82,7 @@ BOOL CGrListBox::Create(CWnd *parent_wnd, int id, const RECT &rect, int surf_dim
   m_SurfDimension = surf_dim;
   m_SelectionBox = selbox;
 
-  return CWnd::Create(NULL, "GrListBox", WS_CHILD | WS_VISIBLE | WS_VSCROLL, rect, parent_wnd, id);
+  return CWnd::Create(nullptr, "GrListBox", WS_CHILD | WS_VISIBLE | WS_VSCROLL, rect, parent_wnd, id);
 }
 
 void CGrListBox::SelectItem(int item) {

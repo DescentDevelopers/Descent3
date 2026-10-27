@@ -212,8 +212,8 @@ void CloseFilterLogFiles(void);
 // PageDataNode Class Members
 ////////////////////////////////////////////////////////////////
 PageDataNode::PageDataNode() {
-  prev = NULL;
-  next = NULL;
+  prev = nullptr;
+  next = nullptr;
 
   name[0] = '\0';
   type = PAGETYPE_UNKNOWN;
@@ -254,8 +254,8 @@ PageDataList::PageDataList() {
   int j;
 
   // Init the list to be empty
-  m_head = NULL;
-  m_tail = NULL;
+  m_head = nullptr;
+  m_tail = nullptr;
   m_size = 0;
 
   // Init the level filename list to be empty
@@ -264,12 +264,12 @@ PageDataList::PageDataList() {
     m_LevelFilenames[j][0] = '\0';
 
   // Init the dialog control pointers
-  m_Dlg = NULL;
-  m_TableParseFile = NULL;
-  m_PageDataListCtrl = NULL;
-  m_LevelListBox = NULL;
-  m_NumPagesText = NULL;
-  m_StatusText = NULL;
+  m_Dlg = nullptr;
+  m_TableParseFile = nullptr;
+  m_PageDataListCtrl = nullptr;
+  m_LevelListBox = nullptr;
+  m_NumPagesText = nullptr;
+  m_StatusText = nullptr;
 
   m_DataListFilename = "";
   m_DataListLoaded = FALSE;
@@ -278,12 +278,12 @@ PageDataList::PageDataList() {
 
 PageDataList::~PageDataList() {
   // Detach the dialog control pointers
-  m_Dlg = NULL;
-  m_TableParseFile = NULL;
-  m_PageDataListCtrl = NULL;
-  m_LevelListBox = NULL;
-  m_NumPagesText = NULL;
-  m_StatusText = NULL;
+  m_Dlg = nullptr;
+  m_TableParseFile = nullptr;
+  m_PageDataListCtrl = nullptr;
+  m_LevelListBox = nullptr;
+  m_NumPagesText = nullptr;
+  m_StatusText = nullptr;
 
   ClearList();
 }
@@ -296,14 +296,14 @@ void PageDataList::ClearList(void) {
   CWaitCursor wc;
 
   node = m_head;
-  while (node != NULL) {
+  while (node != nullptr) {
     temp = node;
     node = node->next;
     delete temp;
   }
   m_size = 0;
-  m_head = NULL;
-  m_tail = NULL;
+  m_head = nullptr;
+  m_tail = nullptr;
 
   // Init the level filename list to be empty
   m_NumLevelFilenames = 0;
@@ -336,15 +336,15 @@ bool PageDataList::AddToList(PageDataNode *new_node) {
 
   CWaitCursor wc;
 
-  if (new_node == NULL)
+  if (new_node == nullptr)
     return FALSE;
 
   // Handle empty list case
-  if (m_head == NULL) {
+  if (m_head == nullptr) {
     m_head = new_node;
     m_tail = new_node;
-    new_node->next = NULL;
-    new_node->prev = NULL;
+    new_node->next = nullptr;
+    new_node->prev = nullptr;
 
     m_size++;
     goto UpdateControls;
@@ -353,7 +353,7 @@ bool PageDataList::AddToList(PageDataNode *new_node) {
   // Handle (new node < list head) case
   if ((*new_node) < (*m_head)) {
     new_node->next = m_head;
-    new_node->prev = NULL;
+    new_node->prev = nullptr;
     m_head->prev = new_node;
     m_head = new_node;
 
@@ -364,13 +364,13 @@ bool PageDataList::AddToList(PageDataNode *new_node) {
   // Search through list until end of list or until the new node is less
   // than the next node, then add the new node after the current node
   node = m_head;
-  while (node->next != NULL && (*(node->next)) < (*new_node))
+  while (node->next != nullptr && (*(node->next)) < (*new_node))
     node = node->next;
 
   new_node->next = node->next;
   new_node->prev = node;
 
-  if (node->next == NULL)
+  if (node->next == nullptr)
     m_tail = new_node;
   else
     node->next->prev = new_node;
@@ -404,7 +404,7 @@ bool PageDataList::AddToList(char *page_name, uint8_t page_type, int page_flags)
 
   // If the node is already in the list, don't add it!
   found_node = FindNode(page_name, page_type);
-  if (found_node != NULL) {
+  if (found_node != nullptr) {
 
     // If the new node has been added for a level, tag it once
     if (page_flags & ADDED_FOR_LEVEL_FLAG) {
@@ -421,7 +421,7 @@ bool PageDataList::AddToList(char *page_name, uint8_t page_type, int page_flags)
 
   // Allocate memory for the new node
   new_node = new PageDataNode;
-  if (new_node == NULL) {
+  if (new_node == nullptr) {
     mprintf(0, "ERROR: Could not allocate new PageDataNode!\n");
     return FALSE;
   }
@@ -448,13 +448,13 @@ bool PageDataList::RemoveFromList(char *page_name, uint8_t page_type) {
   LVFINDINFO find_info;
   CWaitCursor wc;
 
-  if (m_PageDataListCtrl == NULL)
+  if (m_PageDataListCtrl == nullptr)
     return FALSE;
 
   // Find and remove node from the data list
   PageDataNode *found_node;
   found_node = FindNode(page_name, page_type);
-  if (found_node != NULL) {
+  if (found_node != nullptr) {
     // If node has been "level tagged", decrement it
     if (found_node->tag_count > 0)
       found_node->tag_count--;
@@ -482,15 +482,15 @@ bool PageDataList::RemoveFromList(char *page_name, uint8_t page_type) {
 bool PageDataList::RemoveFromList(PageDataNode *goner_node) {
   CWaitCursor wc;
 
-  if (goner_node == NULL)
+  if (goner_node == nullptr)
     return FALSE;
 
   // Connect previous node to the next node
-  if (goner_node->prev != NULL)
+  if (goner_node->prev != nullptr)
     goner_node->prev->next = goner_node->next;
 
   // Connect the next node to the previous node
-  if (goner_node->next != NULL)
+  if (goner_node->next != nullptr)
     goner_node->next->prev = goner_node->prev;
 
   // If node to be removed is the head, make the next node the head
@@ -550,7 +550,7 @@ bool PageDataList::LoadList(char *list_filename) {
 
     // Allocate memory for the new node
     new_node = new PageDataNode;
-    if (new_node == NULL) {
+    if (new_node == nullptr) {
       mprintf(0, "ERROR: Could not allocate new PageDataNode!\n");
       return FALSE;
     }
@@ -600,7 +600,7 @@ bool PageDataList::SaveList(char *list_filename) {
 
   CWaitCursor wc;
 
-  if (list_filename == NULL) {
+  if (list_filename == nullptr) {
     if (!FilenameSpecified())
       return FALSE;
     list_filename = m_DataListFilename.GetBuffer(0);
@@ -657,9 +657,9 @@ bool PageDataList::SaveList(char *list_filename) {
 PageDataNode *PageDataList::FindNode(char *page_name, uint8_t page_type) {
   PageDataNode *node, *found_node;
 
-  found_node = NULL;
+  found_node = nullptr;
   node = m_head;
-  while (node != NULL) {
+  while (node != nullptr) {
     if (node->type == page_type && stricmp(node->name, page_name) == 0) {
       found_node = node;
       break;
@@ -676,7 +676,7 @@ bool PageDataList::AddLevelFilename(char *level_filename) {
 
   CWaitCursor wc;
 
-  if (level_filename == NULL)
+  if (level_filename == nullptr)
     return FALSE;
 
   // Make sure the level hasn't already been added
@@ -714,7 +714,7 @@ bool PageDataList::RemoveSelLevelFilename(void) {
 
   CWaitCursor wc;
 
-  if (m_LevelListBox == NULL)
+  if (m_LevelListBox == nullptr)
     return FALSE;
 
   index = m_LevelListBox->GetCurSel();
@@ -748,13 +748,13 @@ bool PageDataList::RemoveSelLevelFilename(void) {
   return TRUE;
 }
 
-char *gamefile_level_ext[] = {".d3l", ".cpp", ".dll", ".msg", ".omf", ".brf", ".str", ".msn", NULL};
+char *gamefile_level_ext[] = {".d3l", ".cpp", ".dll", ".msg", ".omf", ".brf", ".str", ".msn", nullptr};
 
 // Processes all pages needed by the given level
 bool PageDataList::ProcessPagesForLevel(char *level_filename, int process_type) {
   CWaitCursor wc;
 
-  if (level_filename == NULL)
+  if (level_filename == nullptr)
     return FALSE;
 
   m_StatusText->Format("Loading level - %s...", level_filename);
@@ -781,8 +781,8 @@ bool PageDataList::ProcessPagesForLevel(char *level_filename, int process_type) 
   char filename[_MAX_FNAME + 1];
   char pagename[_MAX_PATH + 1];
 
-  _splitpath(level_filename, NULL, NULL, filename, NULL);
-  for (int j = 0; gamefile_level_ext[j] != NULL; j++) {
+  _splitpath(level_filename, nullptr, nullptr, filename, nullptr);
+  for (int j = 0; gamefile_level_ext[j] != nullptr; j++) {
     sprintf(pagename, "%s%s", filename, gamefile_level_ext[j]);
     ProcessPage(pagename, PAGETYPE_GAMEFILE, process_type);
   }
@@ -1296,7 +1296,7 @@ bool PageDataList::DetermineRequiredPages(int process_type) {
 
     for (t = 0; t < Matcen[i]->GetNumProdTypes(); t++) {
       int index;
-      Matcen[i]->GetProdInfo(t, &index, NULL, NULL, NULL);
+      Matcen[i]->GetProdInfo(t, &index, nullptr, nullptr, nullptr);
       if (index != MATCEN_ERROR)
         AddGenericPage(index, process_type);
     }
@@ -1402,7 +1402,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
 
   CWaitCursor wc;
 
-  if (new_table_filename == NULL || src_table_filename == NULL)
+  if (new_table_filename == nullptr || src_table_filename == nullptr)
     return FALSE;
 
   if (m_StatusText)
@@ -1427,7 +1427,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
   }
 
   // Mark all pages in data list as not having been written out
-  for (node = m_head; node != NULL; node = node->next)
+  for (node = m_head; node != nullptr; node = node->next)
     node->flags &= ~PAGE_WRITTEN_FLAG;
 
   OpenFilterLogFiles();
@@ -1448,7 +1448,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
     case PAGETYPE_TEXTURE:
       // Read it in, write it out.
       mng_ReadNewTexturePage(infile, &texpage);
-      if ((node = FindNode(texpage.tex_struct.name, pagetype)) != NULL) {
+      if ((node = FindNode(texpage.tex_struct.name, pagetype)) != nullptr) {
         WriteToRemainingLog(texpage.tex_struct.name, pagetype);
         mng_WriteNewTexturePage(outfile, &texpage);
         node->flags |= PAGE_WRITTEN_FLAG;
@@ -1467,7 +1467,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
     case PAGETYPE_DOOR:
       // Read it in, write it out.
       mng_ReadNewDoorPage(infile, &doorpage);
-      if ((node = FindNode(doorpage.door_struct.name, pagetype)) != NULL) {
+      if ((node = FindNode(doorpage.door_struct.name, pagetype)) != nullptr) {
         WriteToRemainingLog(doorpage.door_struct.name, pagetype);
         mng_WriteNewDoorPage(outfile, &doorpage);
         node->flags |= PAGE_WRITTEN_FLAG;
@@ -1486,7 +1486,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
     case PAGETYPE_GENERIC:
       // Read it in, write it out.
       mng_ReadNewGenericPage(infile, &genericpage);
-      if ((node = FindNode(genericpage.objinfo_struct.name, pagetype)) != NULL) {
+      if ((node = FindNode(genericpage.objinfo_struct.name, pagetype)) != nullptr) {
         WriteToRemainingLog(genericpage.objinfo_struct.name, pagetype);
         mng_WriteNewGenericPage(outfile, &genericpage);
         node->flags |= PAGE_WRITTEN_FLAG;
@@ -1494,17 +1494,17 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
       } else {
         WriteToRemovedLog(genericpage.objinfo_struct.name, pagetype);
       }
-      if (genericpage.objinfo_struct.description != NULL) {
+      if (genericpage.objinfo_struct.description != nullptr) {
         mem_free(genericpage.objinfo_struct.description);
-        genericpage.objinfo_struct.description = NULL;
+        genericpage.objinfo_struct.description = nullptr;
       }
       break;
     case PAGETYPE_GAMEFILE:
       // Read it in, write it out.
       mng_ReadNewGamefilePage(infile, &gamefilepage);
-      node = NULL;
+      node = nullptr;
       strcpy(ext, "");
-      if ((node = FindNode(gamefilepage.gamefile_struct.name, pagetype)) != NULL || ALWAYS_WRITE_GAMEFILE_PAGES) {
+      if ((node = FindNode(gamefilepage.gamefile_struct.name, pagetype)) != nullptr || ALWAYS_WRITE_GAMEFILE_PAGES) {
         // if(GetFileExt(gamefilepage.gamefile_struct.name,ext) && stricmp(ext,".d3l")!=0) {
         WriteToRemainingLog(gamefilepage.gamefile_struct.name, pagetype);
         mng_WriteNewGamefilePage(outfile, &gamefilepage);
@@ -1521,7 +1521,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
     case PAGETYPE_SOUND:
       // Read it in, write it out.
       mng_ReadNewSoundPage(infile, &soundpage);
-      if ((node = FindNode(soundpage.sound_struct.name, pagetype)) != NULL) {
+      if ((node = FindNode(soundpage.sound_struct.name, pagetype)) != nullptr) {
         WriteToRemainingLog(soundpage.sound_struct.name, pagetype);
         mng_WriteNewSoundPage(outfile, &soundpage);
         node->flags |= PAGE_WRITTEN_FLAG;
@@ -1533,7 +1533,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
     case PAGETYPE_MEGACELL:
       // Read it in, write it out.
       mng_ReadNewMegacellPage(infile, &megacellpage);
-      if ((node = FindNode(megacellpage.megacell_struct.name, pagetype)) != NULL) {
+      if ((node = FindNode(megacellpage.megacell_struct.name, pagetype)) != nullptr) {
         WriteToRemainingLog(megacellpage.megacell_struct.name, pagetype);
         mng_WriteNewMegacellPage(outfile, &megacellpage);
         node->flags |= PAGE_WRITTEN_FLAG;
@@ -1545,7 +1545,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
     case PAGETYPE_SHIP:
       // Read it in, write it out.
       mng_ReadNewShipPage(infile, &shippage);
-      if ((node = FindNode(shippage.ship_struct.name, pagetype)) != NULL) {
+      if ((node = FindNode(shippage.ship_struct.name, pagetype)) != nullptr) {
         WriteToRemainingLog(shippage.ship_struct.name, pagetype);
         mng_WriteNewShipPage(outfile, &shippage);
         node->flags |= PAGE_WRITTEN_FLAG;
@@ -1557,7 +1557,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
     case PAGETYPE_WEAPON:
       // Read it in, write it out.
       mng_ReadNewWeaponPage(infile, &weaponpage);
-      if ((node = FindNode(weaponpage.weapon_struct.name, pagetype)) != NULL) {
+      if ((node = FindNode(weaponpage.weapon_struct.name, pagetype)) != nullptr) {
         WriteToRemainingLog(weaponpage.weapon_struct.name, pagetype);
         mng_WriteNewWeaponPage(outfile, &weaponpage);
         node->flags |= PAGE_WRITTEN_FLAG;
@@ -1590,7 +1590,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
   // Create message summary (if some pages weren't written)
   unwritten_page_found = FALSE;
   summary_msg = "The following pages were not written out (they were not found in the source table file):\n\n";
-  for (node = m_head; node != NULL; node = node->next) {
+  for (node = m_head; node != nullptr; node = node->next) {
     if (node->flags & PAGE_WRITTEN_FLAG)
       continue;
 
@@ -1607,7 +1607,7 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
       m_Dlg->MessageBox(summary_msg, "Not All Pages Were Written");
 
   // Mark all pages in data list as not having been written out
-  for (node = m_head; node != NULL; node = node->next)
+  for (node = m_head; node != nullptr; node = node->next)
     node->flags &= ~PAGE_WRITTEN_FLAG;
 
   return TRUE; // successful!
@@ -1621,9 +1621,9 @@ bool PageDataList::AddToListCtrl(int index, PageDataNode *node) {
   CWaitCursor wc;
 
   // Make sure this is worth doing
-  if (node == NULL)
+  if (node == nullptr)
     return FALSE;
-  if (m_PageDataListCtrl == NULL)
+  if (m_PageDataListCtrl == nullptr)
     return FALSE;
 
   // Add the data to the list control
@@ -1681,7 +1681,7 @@ bool PageDataList::RemoveSelFromListCtrl(void) {
 
   CWaitCursor wc;
 
-  if (m_PageDataListCtrl == NULL)
+  if (m_PageDataListCtrl == nullptr)
     return FALSE;
 
   // How many items in the control list?
@@ -1735,7 +1735,7 @@ bool PageDataList::RemoveSelFromListCtrl(void) {
       // Search for and remove corresponding entry from Document Library
       PageDataNode *found_node;
       found_node = FindNode(name, page_type);
-      if (found_node != NULL) {
+      if (found_node != nullptr) {
         RemoveFromList(found_node);
         wc.Restore();
       } else {
@@ -1757,7 +1757,7 @@ bool PageDataList::RemoveSelFromListCtrl(void) {
 
 // Displays the modified confirmation prompt if appropriate
 int PageDataList::ModifiedPrompt(void) {
-  if (m_Dlg == NULL)
+  if (m_Dlg == nullptr)
     return (IDNO);
 
   // If current file has been modified, check with user first...
@@ -1771,7 +1771,7 @@ int PageDataList::ModifiedPrompt(void) {
 
 // Sets the title bar string
 void PageDataList::SetTitleString(void) {
-  if (m_Dlg == NULL)
+  if (m_Dlg == nullptr)
     return;
 
   char title[1024];
@@ -1843,7 +1843,7 @@ bool PageDataList::AddPageFromUser(char *page_name, uint8_t page_type) {
 uint8_t PageDataList::GetPageTypeFromString(char *text) {
   int type;
 
-  if (text == NULL)
+  if (text == nullptr)
     return (PAGETYPE_UNKNOWN);
 
   type = PAGETYPE_UNKNOWN;
@@ -1989,7 +1989,7 @@ bool PageDataList::ProcessPagesInTextFile(char *filename, int process_type) {
 
     // Grab the page type
     line = strtok(line, " \t\n");
-    if (line == NULL)
+    if (line == nullptr)
       continue;
     pagetype = GetPageTypeFromString(line);
     if (pagetype == PAGETYPE_UNKNOWN) {
@@ -2001,8 +2001,8 @@ bool PageDataList::ProcessPagesInTextFile(char *filename, int process_type) {
     pagetype_text = line;
 
     // Grab the page name
-    pagename = strtok(NULL, "");
-    if (pagename == NULL || strlen(pagename) == 0) {
+    pagename = strtok(nullptr, "");
+    if (pagename == nullptr || strlen(pagename) == 0) {
       CString msg;
       msg.Format("No page name found in %s, line %d", filename, linenum);
       m_Dlg->MessageBox(msg, "Invalid Page Name", MB_OK | MB_ICONEXCLAMATION);
@@ -2015,7 +2015,7 @@ bool PageDataList::ProcessPagesInTextFile(char *filename, int process_type) {
 
       pagename++;
       end_of_name = strchr(pagename, '"');
-      if (end_of_name != NULL)
+      if (end_of_name != nullptr)
         (*end_of_name) = '\0';
     }
 
@@ -2065,15 +2065,15 @@ bool PageDataList::AddAllGamefilePages(void) {
 #define MAX_MESSAGES 10 // max messages to process during a message deferral
 void DeferMessages(void) {
   MSG msg;
-  for (int MsgCount = MAX_MESSAGES; MsgCount && PeekMessage(&msg, NULL, 0, 0, PM_REMOVE); MsgCount--) {
+  for (int MsgCount = MAX_MESSAGES; MsgCount && PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE); MsgCount--) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
 }
 
 // Log file handles
-CFILE *remaining_log_file = NULL;
-CFILE *removed_log_file = NULL;
+CFILE *remaining_log_file = nullptr;
+CFILE *removed_log_file = nullptr;
 
 // Opens the Filter Log Files
 void OpenFilterLogFiles(void) {
@@ -2081,14 +2081,14 @@ void OpenFilterLogFiles(void) {
 
   ddio_MakePath(fullpath, LocalD3Dir, "Remaining Pages.txt", NULL);
   remaining_log_file = cfopen(fullpath, "wt");
-  if (remaining_log_file == NULL) {
+  if (remaining_log_file == nullptr) {
     mprintf(0, "Couldn't open \"Remaining Pages\" log file!\n");
     return;
   }
 
   ddio_MakePath(fullpath, LocalD3Dir, "Removed Pages.txt", NULL);
   removed_log_file = cfopen(fullpath, "wt");
-  if (removed_log_file == NULL) {
+  if (removed_log_file == nullptr) {
     mprintf(0, "Couldn't open \"Removed Pages\" log file!\n");
     return;
   }
@@ -2135,7 +2135,7 @@ void GetPageTypeString(int type, CString &type_text) {
 
 // Writes a page to the "remaining pages" log file
 void WriteToRemainingLog(char *name, int type) {
-  if (remaining_log_file != NULL) {
+  if (remaining_log_file != nullptr) {
     CString line, type_string;
     GetPageTypeString(type, type_string);
     line.Format("%s\t%s", type_string, name);
@@ -2145,7 +2145,7 @@ void WriteToRemainingLog(char *name, int type) {
 
 // Writes a page to the "removed pages" log file
 void WriteToRemovedLog(char *name, int type) {
-  if (removed_log_file != NULL) {
+  if (removed_log_file != nullptr) {
     CString line, type_string;
     GetPageTypeString(type, type_string);
     line.Format("%s\t%s", type_string, name);
@@ -2155,8 +2155,8 @@ void WriteToRemovedLog(char *name, int type) {
 
 // Closes the Filter Log Files
 void CloseFilterLogFiles(void) {
-  if (remaining_log_file != NULL)
+  if (remaining_log_file != nullptr)
     cfclose(remaining_log_file);
-  if (removed_log_file != NULL)
+  if (removed_log_file != nullptr)
     cfclose(removed_log_file);
 }

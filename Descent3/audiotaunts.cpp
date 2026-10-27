@@ -217,15 +217,15 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   ASSERT(wave_filename);
   ASSERT(outputfilename);
   bool ret = true;
-  CFILE *file = NULL;
+  CFILE *file = nullptr;
   int amount_to_flush;
   tWaveFile wavdata;
   int samples, rate, chan;
   std::filesystem::path temp_filename;
   std::filesystem::path osftemp_filename;
-  uint8_t *StaticFileBuffer = NULL;
+  uint8_t *StaticFileBuffer = nullptr;
   OSFArchive osf;
-  CFILE *fpin = NULL;
+  CFILE *fpin = nullptr;
   bool osfopened;
   osfopened = false;
 
@@ -330,7 +330,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   amount_to_flush = (wavdata.sample_8bit) ? wavdata.sample_length : wavdata.sample_length * 2;
 
-  ASSERT(wavdata.sample_16bit != NULL); // only 16 bit should be coming out
+  ASSERT(wavdata.sample_16bit != nullptr); // only 16 bit should be coming out
 
   // flip bytes(?)..NOTE SPEEDUP WARNING..THIS IS DONE IN WAVE LOAD..REMOVE IT?
   int count;
@@ -340,7 +340,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   cf_WriteBytes((uint8_t *)wavdata.sample_16bit, amount_to_flush, file);
   cfclose(file);
-  file = NULL;
+  file = nullptr;
 
   samples = wavdata.bits_per_sample;
   rate = wavdata.samples_per_second;
@@ -354,7 +354,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
     goto error;
   }
 
-  if (!aenc_Compress(PATH_TO_CSTR(temp_filename), PATH_TO_CSTR(osftemp_filename), NULL, &samples, &rate, &chan, NULL, NULL)) {
+  if (!aenc_Compress(PATH_TO_CSTR(temp_filename), PATH_TO_CSTR(osftemp_filename), nullptr, &samples, &rate, &chan, nullptr, nullptr)) {
     // unable to compress
     LOG_WARNING << "Unable to compress";
     ret = false;
@@ -444,7 +444,7 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
 
   //	save header info
   char osftitle[256];
-  ddio_SplitPath(outputfilename, NULL, osftitle, NULL);
+  ddio_SplitPath(outputfilename, nullptr, osftitle, nullptr);
 
   if (!osf.SaveHeader(OSF_DIGITAL_STRM, OSF_DIGIACM_STRM, format, samples, filelen, &digihdr, osftitle)) {
     LOG_WARNING << "Failed to write out OSF header info.";
@@ -493,12 +493,12 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   // File pointer to sound file
   CFILE *cfptr;
 
-  wave->sample_16bit = NULL;
-  wave->sample_8bit = NULL;
+  wave->sample_16bit = nullptr;
+  wave->sample_8bit = nullptr;
   wave->np_sample_length = 0;
   wave->sample_length = 0;
 
-  cfptr = NULL;
+  cfptr = nullptr;
   char format_type[80];       // ASCII name of format type
   uint16_t fmttag = 0;  // Numerical format type
   uint32_t ckid;         // Current chunk's ID
@@ -523,7 +523,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
   int count;
 
   // Open the wave file
-  if ((cfptr = cfopen(filename, "rb")) == NULL) {
+  if ((cfptr = cfopen(filename, "rb")) == nullptr) {
     error_code = 1;
     LOG_WARNING.printf("TAUNT: Wav %s not found", filename);
     goto error_state;
@@ -752,9 +752,9 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
 
   // Close the file
   cfclose(cfptr);
-  cfptr = NULL;
+  cfptr = nullptr;
 
-  if (wave->sample_16bit == NULL) {
+  if (wave->sample_16bit == nullptr) {
     ASSERT(wave->sample_8bit);
 
     wave->sample_16bit = mem_rmalloc<int16_t>(wave->sample_length);
@@ -766,7 +766,7 @@ char taunt_LoadWaveFile(const char *filename, tWaveFile *wave) {
     }
 
     mem_free(wave->sample_8bit);
-    wave->sample_8bit = NULL;
+    wave->sample_8bit = nullptr;
   }
 
 error_state:
@@ -777,8 +777,8 @@ error_state:
       mem_free(wave->sample_16bit);
     if (wave->sample_8bit)
       mem_free(wave->sample_8bit);
-    wave->sample_16bit = NULL;
-    wave->sample_8bit = NULL;
+    wave->sample_16bit = nullptr;
+    wave->sample_8bit = nullptr;
   } else {
     wave->samples_per_second = samples_per_second;
     wave->bits_per_sample = bits_per_sample;

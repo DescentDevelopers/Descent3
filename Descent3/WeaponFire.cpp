@@ -1065,7 +1065,7 @@ bool Enable_omega_collions = false;
 void AquireElectricalTarget(object *obj) {
   int i;
   float closest_dist = 99999, dist;
-  object *closest_obj = NULL, *hit_obj_ptr;
+  object *closest_obj = nullptr, *hit_obj_ptr;
 
   if (obj->mtype.phys_info.flags & PF_HOMING) {
     for (i = 0; i <= Highest_object_index; i++) {
@@ -1119,7 +1119,7 @@ void AquireElectricalTarget(object *obj) {
     }
   }
 
-  if (closest_obj != NULL) {
+  if (closest_obj != nullptr) {
     float old_shield, new_shield;
     if (closest_obj->effect_info && closest_obj != Viewer_object) {
       closest_obj->effect_info->type_flags |= EF_DEFORM;
@@ -1180,7 +1180,7 @@ void AquireElectricalTarget(object *obj) {
     fq.p1 = &dest;
     fq.rad = (scalar).0001f;
     fq.thisobjnum = Objects - obj;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
 
     fate = fvi_FindIntersection(&fq, &hit_info);
@@ -1227,7 +1227,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
   fq.p1 = pos;
   fq.rad = 0;
   fq.thisobjnum = OBJNUM(parent);
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_WEAPONS | FQ_IGNORE_POWERUPS |
              FQ_IGNORE_NON_LIGHTMAP_OBJECTS; // what about trans walls???
 
@@ -1242,7 +1242,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
     return -1;
   }
 
-  objnum = ObjCreate(OBJ_WEAPON, weapon_num, hit_data.hit_room, pos, NULL, parent->handle);
+  objnum = ObjCreate(OBJ_WEAPON, weapon_num, hit_data.hit_room, pos, nullptr, parent->handle);
 
   if (objnum < 0) {
     LOG_WARNING << "Can't create laser - Out of objects!";
@@ -1272,7 +1272,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
   }
 
   // Set direction
-  vm_VectorToMatrix(&obj->orient, dir, &parent->orient.uvec, NULL);
+  vm_VectorToMatrix(&obj->orient, dir, &parent->orient.uvec, nullptr);
 
   float scalar = 1.0f;
   if (!ObjGet(obj->parent_handle) || ObjGet(obj->parent_handle)->type != OBJ_PLAYER)
@@ -1333,7 +1333,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
         fq.p1 = &end_pos;
         fq.rad = obj->size;
         fq.thisobjnum = OBJNUM(obj);
-        fq.ignore_obj_list = NULL;
+        fq.ignore_obj_list = nullptr;
         fq.flags = 0;
 
         fq.flags |= FQ_TRANSPOINT;
@@ -1375,7 +1375,7 @@ void HomingTurnTowardObj(object *weapon, object *target) {
   vector dir_to_target;
   vector movement{};
 
-  if (target == NULL)
+  if (target == nullptr)
     return;
 
   if (target->movement_type == MT_PHYSICS || target->movement_type == MT_WALKING) {
@@ -1431,7 +1431,7 @@ object *HomingAquireTarget(object *obj) {
   object *weapon_parent = ObjGet(obj->parent_handle);
 
   // Forces its parent to itself if there is no parent
-  if (weapon_parent == NULL) {
+  if (weapon_parent == nullptr) {
     weapon_parent = obj;
   }
 
@@ -1478,7 +1478,7 @@ object *HomingAquireTarget(object *obj) {
           fq.p1 = &track_goal->pos;
           fq.rad = 0.0f;
           fq.thisobjnum = OBJNUM(obj);
-          fq.ignore_obj_list = NULL;
+          fq.ignore_obj_list = nullptr;
           fq.flags = /*FQ_TRANSPOINT | */ FQ_CHECK_OBJS | FQ_ONLY_DOOR_OBJ | FQ_NO_RELINK;
 
           fvi_FindIntersection(&fq, &hit_info);
@@ -1505,7 +1505,7 @@ object *HomingAquireTarget(object *obj) {
             fq.p1 = &track_goal->pos;
             fq.rad = 0.0f;
             fq.thisobjnum = OBJNUM(obj);
-            fq.ignore_obj_list = NULL;
+            fq.ignore_obj_list = nullptr;
             fq.flags = /*FQ_TRANSPOINT | */ FQ_CHECK_OBJS | FQ_ONLY_DOOR_OBJ | FQ_NO_RELINK;
 
             fvi_FindIntersection(&fq, &hit_info);
@@ -1520,7 +1520,7 @@ object *HomingAquireTarget(object *obj) {
     }
 
     if (!f_locked) {
-      track_goal = NULL;
+      track_goal = nullptr;
       obj->ctype.laser_info.track_handle = OBJECT_HANDLE_NONE;
     }
   }
@@ -1586,7 +1586,7 @@ object *HomingAquireTarget(object *obj) {
                   fq.p1 = &Objects[i].pos;
                   fq.rad = 0.0f;
                   fq.thisobjnum = OBJNUM(obj);
-                  fq.ignore_obj_list = NULL;
+                  fq.ignore_obj_list = nullptr;
                   fq.flags = FQ_TRANSPOINT | FQ_CHECK_OBJS | FQ_ONLY_DOOR_OBJ | FQ_NO_RELINK;
 
                   fvi_FindIntersection(&fq, &hit_info);
@@ -1838,10 +1838,10 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
       laser_dir = obj->orient.fvec;
     } else {
       if (f_force_forward) {
-        WeaponCalcGun(&laser_pos, NULL, obj, gun_num);
+        WeaponCalcGun(&laser_pos, nullptr, obj, gun_num);
         laser_dir = obj->orient.fvec;
       } else if (f_force_target && obj->ai_info && obj->ai_info->vec_to_target_perceived != vector{}) {
-        WeaponCalcGun(&laser_pos, NULL, obj, gun_num);
+        WeaponCalcGun(&laser_pos, nullptr, obj, gun_num);
         laser_dir = obj->ai_info->vec_to_target_perceived;
       } else {
         WeaponCalcGun(&laser_pos, &laser_dir, obj, gun_num);
@@ -1904,7 +1904,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
 
       // Check if there's already a missile camera
       object *viewer_obj = ObjGet(GetSmallViewer(Missile_camera_window));
-      if ((viewer_obj == NULL) || (viewer_obj->type != OBJ_WEAPON))
+      if ((viewer_obj == nullptr) || (viewer_obj->type != OBJ_WEAPON))
         CreateSmallView(Missile_camera_window, Objects[objnum].handle, SVF_POPUP + SVF_BIGGER);
     }
   }
@@ -1968,7 +1968,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
     fq.p1 = &dest_vec;
     fq.rad = 0;
     fq.thisobjnum = -1;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
 
     fvi_FindIntersection(&fq, &hit_data);
@@ -1977,7 +1977,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
 
     int visnum;
 
-    if (obj == NULL || obj->type != OBJ_BUILDING || stricmp(Object_info[obj->id].name, "FinalbossLITTLETIT") != 0)
+    if (obj == nullptr || obj->type != OBJ_BUILDING || stricmp(Object_info[obj->id].name, "FinalbossLITTLETIT") != 0)
       visnum = VisEffectCreate(VIS_FIREBALL, MASSDRIVER_EFFECT_INDEX, obj->roomnum, &laser_pos);
     else
       visnum = VisEffectCreate(VIS_FIREBALL, MERCBOSS_MASSDRIVER_EFFECT_INDEX, obj->roomnum, &laser_pos);
@@ -1990,7 +1990,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
 
       vis->end_pos = hit_data.hit_pnt;
       vis->billboard_info.width = 1;
-      if (obj == NULL || obj->type != OBJ_BUILDING || stricmp(Object_info[obj->id].name, "FinalbossLITTLETIT") != 0)
+      if (obj == nullptr || obj->type != OBJ_BUILDING || stricmp(Object_info[obj->id].name, "FinalbossLITTLETIT") != 0)
         vis->lighting_color = GR_RGB16(100, 100, 170);
       else
         vis->lighting_color = GR_RGB16(240, 10, 10);
@@ -2043,7 +2043,7 @@ void DrawElectricalWeapon(object *obj) {
 
   WeaponCalcGun(&src_vector, &dir, parent_obj, obj->ctype.laser_info.src_gun_num);
 
-  if (obj->ctype.laser_info.track_handle == OBJECT_HANDLE_NONE || ObjGet(obj->ctype.laser_info.track_handle) == NULL) {
+  if (obj->ctype.laser_info.track_handle == OBJECT_HANDLE_NONE || ObjGet(obj->ctype.laser_info.track_handle) == nullptr) {
     dest_vector = src_vector + (obj->orient.fvec * 50);
   } else {
     object *obj_to_track = ObjGet(obj->ctype.laser_info.track_handle);
@@ -2073,7 +2073,7 @@ void DrawElectricalWeapon(object *obj) {
   fq.p1 = &dest_vector;
   fq.rad = 0;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = 0; // what about trans walls???
 
   fate = fvi_FindIntersection(&fq, &hit_data);
@@ -2102,7 +2102,7 @@ void DrawElectricalWeapon(object *obj) {
 
   matrix mat;
 
-  vm_VectorToMatrix(&mat, &line_norm, NULL, NULL);
+  vm_VectorToMatrix(&mat, &line_norm, nullptr, nullptr);
 
   // Create the center points of our chain
   int num_segments = 20;
@@ -2333,7 +2333,7 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
         fq.p1 = &dest_vector;
         fq.rad = vis->size;
         fq.thisobjnum = -1;
-        fq.ignore_obj_list = NULL;
+        fq.ignore_obj_list = nullptr;
         fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
 
         fate = fvi_FindIntersection(&fq, &hit_data);
@@ -2396,7 +2396,7 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
         fq.p1 = &dest_vector;
         fq.rad = vis->size;
         fq.thisobjnum = -1;
-        fq.ignore_obj_list = NULL;
+        fq.ignore_obj_list = nullptr;
         fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
 
         fate = fvi_FindIntersection(&fq, &hit_data);
@@ -2630,7 +2630,7 @@ void DrawWeaponObject(object *obj) {
       if (use_effect)
         SetPolymodelEffect(&pe);
 
-      DrawPolygonModel(&obj->pos, &obj->orient, obj->rtype.pobj_info.model_num, NULL, 0, 1.0, 1.0, 1.0, 0xFFFFFFFF,
+      DrawPolygonModel(&obj->pos, &obj->orient, obj->rtype.pobj_info.model_num, nullptr, 0, 1.0, 1.0, 1.0, 0xFFFFFFFF,
                        use_effect);
     }
   }
@@ -2718,7 +2718,7 @@ void DoZoomEffect(player_weapon *pw, uint8_t clear) {
     fq.p1 = &dest;
     fq.rad = (scalar).0001f;
     fq.thisobjnum = Objects - obj;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
 
     fate = fvi_FindIntersection(&fq, &hit_info);
@@ -2852,7 +2852,7 @@ void FireWeaponFromPlayer(object *objp, int weapon_type, int down_count, bool do
     down_time = 1.0f / 100.0f;
 
   // Check to see if we can release a guided
-  if (down_count && down_time != 0.0 && Players[objp->id].guided_obj != NULL && weapon_type == PW_SECONDARY &&
+  if (down_count && down_time != 0.0 && Players[objp->id].guided_obj != nullptr && weapon_type == PW_SECONDARY &&
       can_fire_now) {
     ReleaseGuidedMissile(objp->id);
     p_dwb->last_fire_time = Gametime;
@@ -2860,7 +2860,7 @@ void FireWeaponFromPlayer(object *objp, int weapon_type, int down_count, bool do
   }
 
   // Check to see if we can release a user timeout weapon
-  if (down_count && down_time != 0.0 && Players[objp->id].user_timeout_obj != NULL && weapon_type == PW_SECONDARY &&
+  if (down_count && down_time != 0.0 && Players[objp->id].user_timeout_obj != nullptr && weapon_type == PW_SECONDARY &&
       can_fire_now) {
     if (Game_mode & GM_MULTI)
       MultiSendReleaseTimeoutMissile();
@@ -3065,12 +3065,12 @@ void DoWeaponExploded(object *obj, vector *norm, vector *collision_point, object
 
   MakeShockwave(obj, obj->parent_handle);
 
-  if (collision_point == NULL || !(Weapons[obj->id].flags & WF_PLANAR_BLAST))
+  if (collision_point == nullptr || !(Weapons[obj->id].flags & WF_PLANAR_BLAST))
     col_point = obj->pos;
   else
     col_point = *collision_point;
 
-  if (norm == NULL)
+  if (norm == nullptr)
     normal = obj->orient.fvec;
   else
     normal = *norm;
@@ -3261,7 +3261,7 @@ object *FindSpawnHomingTarget(object *obj) {
           fq.p1 = &Objects[i].pos;
           fq.rad = 0.0f;
           fq.thisobjnum = OBJNUM(obj);
-          fq.ignore_obj_list = NULL;
+          fq.ignore_obj_list = nullptr;
           fq.flags = FQ_TRANSPOINT | FQ_CHECK_OBJS | FQ_ONLY_DOOR_OBJ | FQ_NO_RELINK;
 
           fvi_FindIntersection(&fq, &hit_info);
@@ -3276,13 +3276,13 @@ object *FindSpawnHomingTarget(object *obj) {
   if (best_index >= 0)
     return &Objects[best_index];
 
-  return NULL;
+  return nullptr;
 }
 
 // Creates chidren from a dying weapon
 void CreateImpactSpawnFromWeapon(object *obj, vector *normal) {
   int n = obj->id;
-  object *home_target = NULL;
+  object *home_target = nullptr;
 
   ASSERT(Weapons[n].spawn_count > 0 && Weapons[n].spawn_handle >= 0);
 
@@ -3303,7 +3303,7 @@ void CreateImpactSpawnFromWeapon(object *obj, vector *normal) {
   }
 
   for (int i = 0; i < num; i++) {
-    if (home_target != NULL) {
+    if (home_target != nullptr) {
       vector subvec = home_target->pos - obj->pos;
       float mag = vm_GetMagnitudeFast(&subvec);
       subvec /= mag;
@@ -3333,7 +3333,7 @@ void CreateImpactSpawnFromWeapon(object *obj, vector *normal) {
       if (y_twist < 0)
         y_twist = 65536 + y_twist;
 
-      vm_VectorToMatrix(&rot_mat, normal, NULL, NULL);
+      vm_VectorToMatrix(&rot_mat, normal, nullptr, nullptr);
       vm_TransposeMatrix(&rot_mat);
       vm_AnglesToMatrix(&temp_mat, x_twist, y_twist, 0);
 
@@ -3379,7 +3379,7 @@ void TimeoutWeapon(object *obj) {
 
 // Given a parent object and a weapon id, creates that countermeasure
 void CreateCountermeasureFromObject(object *parent, int weapon_id) {
-  ASSERT(parent != NULL);
+  ASSERT(parent != nullptr);
   ASSERT(Weapons[weapon_id].used);
 
   if (Game_mode & GM_MULTI)
@@ -3399,7 +3399,7 @@ void ReleaseGuidedMissile(int slot) {
   }
 
   Players[slot].guided_obj->mtype.phys_info.flags &= ~PF_GUIDED;
-  Players[slot].guided_obj = NULL;
+  Players[slot].guided_obj = nullptr;
 }
 
 // Releases the timeout missile of a passed in player
@@ -3415,5 +3415,5 @@ void ReleaseUserTimeoutMissile(int slot) {
   TimeoutWeapon(Players[slot].user_timeout_obj);
   SetObjectDeadFlag(Players[slot].user_timeout_obj);
 
-  Players[slot].user_timeout_obj = NULL;
+  Players[slot].user_timeout_obj = nullptr;
 }

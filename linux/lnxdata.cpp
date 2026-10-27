@@ -109,7 +109,7 @@ CRegistry *oeLnxAppDatabase::GetSystemRegistry() { return database; }
 
 // creates an empty classification or structure where you can store information
 bool oeLnxAppDatabase::create_record(const char *pathname) {
-  ASSERT(pathname != NULL);
+  ASSERT(pathname != nullptr);
   if (database) {
     database->CreateKey((char *)pathname);
     return true;

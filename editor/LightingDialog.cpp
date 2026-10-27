@@ -580,7 +580,7 @@ void CLightingDialog::UpdateDialog() {
   CheckDlgButton(IDC_USE_BSP_CHECK, UseBSP);
   CheckDlgButton(IDC_VOLUME_LIGHTS, UseVolumeLights);
 
-  if (Curroomp == NULL) {
+  if (Curroomp == nullptr) {
     CheckDlgButton(IDC_CORONA_CHECK, 0);
     CheckDlgButton(IDC_FOG_CHECK, 0);
     CheckDlgButton(IDC_STROBE_CHECK, 0);
@@ -788,7 +788,7 @@ void CLightingDialog::ShootRayForLighting(vector *dest, vector *from, vector *to
   fq.rad = 0.0f;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS | FQ_NO_RELINK | FQ_IGNORE_RENDER_THROUGH_PORTALS;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   fvi_FindIntersection(&fq, &hit_info);
 
@@ -820,7 +820,7 @@ void CLightingDialog::OnCreateVolumeCone() {
   desired_angle = (desired_angle / 360.0) * 65536;
 
   // Get face matrix
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   vm_TransposeMatrix(&face_matrix);
 
   // Get polygon center
@@ -1011,7 +1011,7 @@ void CLightingDialog::OnEdgeVolumetric() {
   matrix tempm, face_matrix;
 
   // Get facematrix
-  vm_VectorToMatrix(&face_matrix, &nvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &nvec, nullptr, nullptr);
   vm_TransposeMatrix(&face_matrix);
 
   // Get adjusted angle of direction
@@ -1447,7 +1447,7 @@ void CLightingDialog::OnUseBspCheck() {
 }
 
 void CLightingDialog::OnKillfocusLightMultiplyEdit() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   CEdit *ebox;
@@ -1640,7 +1640,7 @@ void CLightingDialog::OnVolumeLights() {
 }
 
 void CLightingDialog::OnCoronaCheck() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   int c = IsDlgButtonChecked(IDC_CORONA_CHECK);
@@ -1652,7 +1652,7 @@ void CLightingDialog::OnCoronaCheck() {
 }
 
 void CLightingDialog::OnFogCheck() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   int c = IsDlgButtonChecked(IDC_FOG_CHECK);
@@ -1850,7 +1850,7 @@ void CLightingDialog::OnKillfocusGlobalMultiplierEdit() {
 }
 
 void CLightingDialog::OnStrobeCheck() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   int c = IsDlgButtonChecked(IDC_STROBE_CHECK);
@@ -1862,7 +1862,7 @@ void CLightingDialog::OnStrobeCheck() {
 }
 
 void CLightingDialog::OnFlickerCheck() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   int c = IsDlgButtonChecked(IDC_FLICKER_CHECK);

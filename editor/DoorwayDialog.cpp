@@ -462,7 +462,7 @@ void CDoorwayDialog::OnDoorwayLocked() {
 
   doorway *dp = Rooms[Current_door_room].doorway_data;
 
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   int c = IsDlgButtonChecked(IDC_DOORWAY_LOCKED);
 
@@ -483,7 +483,7 @@ void CDoorwayDialog::OnKeyCheck(int id, int keynum) {
 
   doorway *dp = Rooms[Current_door_room].doorway_data;
 
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   if (IsDlgButtonChecked(id))
     dp->keys_needed |= KEY_FLAG(keynum);
@@ -521,7 +521,7 @@ void CDoorwayDialog::OnDoorwayAuto() {
 
   doorway *dp = Rooms[Current_door_room].doorway_data;
 
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   int c = IsDlgButtonChecked(IDC_DOORWAY_AUTO);
 
@@ -537,7 +537,7 @@ void CDoorwayDialog::OnKillfocusDoorwayPosEdit() {
 
   doorway *dp = Rooms[Current_door_room].doorway_data;
 
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   char str[100];
 
@@ -564,7 +564,7 @@ void CDoorwayDialog::OnKillfocusDoorwayHitpointEdit() {
 
   doorway *dp = Rooms[Current_door_room].doorway_data;
 
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   char str[100];
 
@@ -584,7 +584,7 @@ void CDoorwayDialog::OnDoorwayKeyAll() {
 
   doorway *dp = Rooms[Current_door_room].doorway_data;
 
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   if (IsDlgButtonChecked(IDC_DOORWAY_KEY_ALL))
     dp->flags &= ~DF_KEY_ONLY_ONE;
@@ -602,7 +602,7 @@ void CDoorwayDialog::OnDoorwayKeyOnlyOne() {
 
   doorway *dp = Rooms[Current_door_room].doorway_data;
 
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   if (IsDlgButtonChecked(IDC_DOORWAY_KEY_ONLY_ONE))
     dp->flags |= DF_KEY_ONLY_ONE;
@@ -620,7 +620,7 @@ void CDoorwayDialog::OnDoorwayGBIgnoreLocked() {
 
   doorway *dp = Rooms[Current_door_room].doorway_data;
 
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   int c = IsDlgButtonChecked(IDC_DOORWAY_GB_IGNORE_LOCKED);
 

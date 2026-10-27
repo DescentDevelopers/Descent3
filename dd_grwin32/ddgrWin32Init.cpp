@@ -71,7 +71,7 @@
 char *DDGR_subsystem_names[] = {"GDI32", // Standard Win32 GDI DIBs
                                 "GDIX",  // GDI and DirectDraw for mode settings.
                                 "DX",    // Direct X!
-                                NULL};
+                                nullptr};
 
 int DDGR_subsystems[] = {DDGR_GDI_SUBSYSTEM, DDGR_GDIX_SUBSYSTEM, DDGR_DX_SUBSYSTEM, -1};
 

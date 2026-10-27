@@ -179,7 +179,7 @@
 
 //	this stream is for everyone (used by the StreamPlay interface)
 static AudioStream User_audio_stream;
-llsSystem *AudioStream::m_ll_sndsys = NULL;
+llsSystem *AudioStream::m_ll_sndsys = nullptr;
 AudioStream *AudioStream::m_streams[STRM_LIMIT];
 int AudioStream::m_thisid = -1;
 #define SAMPLES_PER_STREAM_SHORT_BUF 22050
@@ -190,7 +190,7 @@ void AudioStream::InitSystem(llsSystem *sndsys) {
   AudioStream::m_ll_sndsys = sndsys;
   //	reserve sound slots for streams, they should never get replaced, and always should be played.
   for (i = 0; i < STRM_LIMIT; i++) {
-    AudioStream::m_streams[i] = NULL;
+    AudioStream::m_streams[i] = nullptr;
   }
 }
 //	shutdsown
@@ -201,17 +201,17 @@ void AudioStream::Shutdown() {
     for (i = 0; i < STRM_LIMIT; i++) {
       if (AudioStream::m_streams[i]) {
         AudioStream::m_streams[i]->Close();
-        AudioStream::m_streams[i] = NULL;
+        AudioStream::m_streams[i] = nullptr;
       }
     }
-    AudioStream::m_ll_sndsys = NULL;
+    AudioStream::m_ll_sndsys = nullptr;
   }
 }
 // allocates a stream slot for a stream
 bool AudioStream::ActivateStream(AudioStream *stream) {
   int i;
   for (i = 0; i < STRM_LIMIT; i++) {
-    if (AudioStream::m_streams[i] == NULL) {
+    if (AudioStream::m_streams[i] == nullptr) {
       AudioStream::m_streams[i] = stream;
       stream->m_streamindex = i;
       return true;
@@ -222,7 +222,7 @@ bool AudioStream::ActivateStream(AudioStream *stream) {
 }
 void AudioStream::DeactivateStream(AudioStream *stream) {
   if (stream->m_streamindex > -1) {
-    AudioStream::m_streams[stream->m_streamindex] = NULL;
+    AudioStream::m_streams[stream->m_streamindex] = nullptr;
     stream->m_streamindex = -1;
   }
 }
@@ -295,7 +295,7 @@ void AudioStream::ResumeAll() {
 //	AudioStream object Interface
 //		allows dynamic playing of streams
 AudioStream::AudioStream() {
-  m_decoder = NULL; // audio decomp object
+  m_decoder = nullptr; // audio decomp object
   m_llshandle = -1; // snd system handle
   m_sbufidx = 0;    // stream position markers for synching.
   m_fbufidx = 0;
@@ -304,7 +304,7 @@ AudioStream::AudioStream() {
   m_streamindex = -1;
   m_curmeasure = -1;
   m_stopnextmeasure = false;
-  m_stopflag = NULL;
+  m_stopflag = nullptr;
   m_bytesleft = 0;
   m_readahead_finished_loop = false;
   m_playcount = 0;
@@ -370,7 +370,7 @@ bool AudioStream::Open(const std::filesystem::path &filename, int open_flags) {
     for (i = 0; i < STRM_BUFCOUNT; i++) {
       m_buffer[i].flags = 0;
       m_buffer[i].nbytes = 0;
-      m_buffer[i].data = NULL;
+      m_buffer[i].data = nullptr;
       m_buffer[i].id = -1; // marks stream buffer to be allocated.
     }
     // gradual streams don't readahead yet.
@@ -398,7 +398,7 @@ void AudioStream::Close() {
     for (i = 0; i < STRM_BUFCOUNT; i++) {
       if (m_buffer[i].data) {
         mem_free(m_buffer[i].data);
-        m_buffer[i].data = NULL;
+        m_buffer[i].data = nullptr;
         m_buffer[i].nbytes = 0;
         m_buffer[i].flags = 0;
         m_buffer[i].id = -1;
@@ -407,7 +407,7 @@ void AudioStream::Close() {
 
     if (m_decoder) {
       delete m_decoder;
-      m_decoder = NULL;
+      m_decoder = nullptr;
     }
   }
   m_playcount = 0;
@@ -442,7 +442,7 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
   // free current decoder.
   if (m_decoder) {
     delete m_decoder;
-    m_decoder = NULL;
+    m_decoder = nullptr;
   }
 
   // instatiate decompression facility or use raw source data
@@ -453,7 +453,7 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
     if (!m_decoder) {
       delete m_decoder;
-      m_decoder = NULL;
+      m_decoder = nullptr;
       return false;
     }
   } else {
@@ -608,7 +608,7 @@ bool AudioStream::Play(bool start_on_frame) {
   // reset soft stopping.
   m_stopnextmeasure = false;
   m_curmeasure = 0;
-  m_stopflag = NULL;
+  m_stopflag = nullptr;
   if (m_state != STRM_STOPPED) {
     AudioStream::Stop();
   }
@@ -750,7 +750,7 @@ void AudioStream::Reset() {
 #pragma optimize("", off)
 void *AudioStream::StreamCallback(int *size) {
   uint8_t nextbuffer = (m_sbufidx + 1) % STRM_BUFCOUNT;
-  void *data = NULL;
+  void *data = nullptr;
   // we're not done yet.
   // adjust sound buffer to the next buffer
   if (m_state == STRM_STOPPING || m_state == STRM_STOPPED) {
@@ -763,13 +763,13 @@ void *AudioStream::StreamCallback(int *size) {
     m_buffer[m_sbufidx].flags = 0;
     m_buffer[m_sbufidx].nbytes = 0;
     *size = 0;
-    return NULL;
+    return nullptr;
   }
   if (!CHECK_FLAG(m_buffer[nextbuffer].flags, STRM_BUFF_USED)) {
     LOG_DEBUG.printf("STRM[%d]: Playing onetime buffer?", m_curid);
     m_state = STRM_STOPPED;
     *size = 0;
-    return NULL;
+    return nullptr;
     //@@		mprintf(0, "STRMAUD: Repeating last buffer.\n");
     //@@		data = (void *)m_buffer[m_sbufidx].data;
     //@@		*size = m_buffer[m_sbufidx].nbytes;
@@ -806,7 +806,7 @@ void *AudioStream::StreamCallback(int *size) {
     //	*done = true;
     LOG_DEBUG.printf("STRM[%d]: Used buffer has 0 bytes!", m_curid);
     m_state = STRM_STOPPING;
-    data = NULL;
+    data = nullptr;
   }
   return data;
 }

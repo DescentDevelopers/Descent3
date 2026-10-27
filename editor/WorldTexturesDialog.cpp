@@ -1433,7 +1433,7 @@ void CWorldTexturesDialog::OnKillfocusTexNum() {
 
 BOOL CWorldTexturesDialog::OnInitDialog() {
   CDialog::OnInitDialog();
-  CWnd::SetTimer(1, 100, NULL);
+  CWnd::SetTimer(1, 100, nullptr);
 
   int n = D3EditState.texdlg_texture;
   m_ambient_sound_combo.Init(GameTextures[n].sound);
@@ -1589,7 +1589,7 @@ int CWorldTexturesDialog::LoadITLFile(char *filename, int type) {
   int tex_handle, tex_list[200];
   int c = 1, finding_name = 1;
 
-  ASSERT(filename != NULL);
+  ASSERT(filename != nullptr);
 
   infile = (CFILE *)cfopen(filename, "rt");
   if (!infile) {
@@ -1638,7 +1638,7 @@ int CWorldTexturesDialog::LoadITLFile(char *filename, int type) {
 
       // Try and load this file
 
-      int bm = LoadTextureImage(bmname, 0, type, 0);
+      int bm = LoadTextureImage(bmname, nullptr, type, 0);
       if (bm <= 0) {
         mprintf(0, "Error loading frame %d of ITL file %s!\n", total, filename);
         goto Here;

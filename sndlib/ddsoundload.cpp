@@ -140,12 +140,12 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     *e_type = SND_LOAD_ERROR_INVALID;
 
   // Setup the initial sound_file state
-  SoundFiles[sound_file_index].sample_8bit = NULL;
-  SoundFiles[sound_file_index].sample_16bit = NULL;
+  SoundFiles[sound_file_index].sample_8bit = nullptr;
+  SoundFiles[sound_file_index].sample_16bit = nullptr;
   SoundFiles[sound_file_index].sample_length = 0;
 
   // Open the wave file
-  if ((cfptr = cfopen(filename, "rb")) == NULL) {
+  if ((cfptr = cfopen(filename, "rb")) == nullptr) {
     if (e_type)
       *e_type = SND_LOAD_ERROR_NO_FILE;
 
@@ -415,26 +415,26 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   // Close the file
   cfclose(cfptr);
 
-  if (SoundFiles[sound_file_index].sample_8bit != NULL) {
+  if (SoundFiles[sound_file_index].sample_8bit != nullptr) {
     LOG_WARNING.printf("Sound file %s is 8bit, please make a 16bit version", filename);
   }
 
   // Make sure we got data and format information
-  if (SoundFiles[sound_file_index].sample_8bit == NULL && SoundFiles[sound_file_index].sample_16bit == NULL) {
+  if (SoundFiles[sound_file_index].sample_8bit == nullptr && SoundFiles[sound_file_index].sample_16bit == nullptr) {
     LOG_WARNING.printf("SOUND LOADER: Did not find data and/or format in %s.", filename);
     goto error_state;
-  } else if (SoundFiles[sound_file_index].sample_8bit != NULL && !f_high_quality) {
+  } else if (SoundFiles[sound_file_index].sample_8bit != nullptr && !f_high_quality) {
     // Doing the volume clipping with the low quality (8 bit) sound requires some tricky math -- see chris
     for (count = 0; count < (int)SoundFiles[sound_file_index].sample_length; count++) {
       SoundFiles[sound_file_index].sample_8bit[count] =
           ((((int)SoundFiles[sound_file_index].sample_8bit[count]) - 127) * CLIP_ATTENUATION * percent_volume) + 127;
     }
-  } else if (SoundFiles[sound_file_index].sample_16bit != NULL && f_high_quality) {
+  } else if (SoundFiles[sound_file_index].sample_16bit != nullptr && f_high_quality) {
     // Do the volume clipping with the high quality sound
     for (count = 0; count < (int)SoundFiles[sound_file_index].sample_length; count++) {
       SoundFiles[sound_file_index].sample_16bit[count] *= CLIP_ATTENUATION * percent_volume;
     }
-  } else if (SoundFiles[sound_file_index].sample_8bit == NULL && !f_high_quality) {
+  } else if (SoundFiles[sound_file_index].sample_8bit == nullptr && !f_high_quality) {
 
     SoundFiles[sound_file_index].sample_8bit =
         mem_rmalloc<uint8_t>(SoundFiles[sound_file_index].sample_length);
@@ -452,9 +452,9 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     }
 
     mem_free(SoundFiles[sound_file_index].sample_16bit);
-    SoundFiles[sound_file_index].sample_16bit = NULL;
+    SoundFiles[sound_file_index].sample_16bit = nullptr;
 
-  } else if (SoundFiles[sound_file_index].sample_16bit == NULL && f_high_quality) {
+  } else if (SoundFiles[sound_file_index].sample_16bit == nullptr && f_high_quality) {
     SoundFiles[sound_file_index].sample_16bit =
         mem_rmalloc<int16_t>(SoundFiles[sound_file_index].sample_length);
 
@@ -470,7 +470,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     }
 
     mem_free(SoundFiles[sound_file_index].sample_8bit);
-    SoundFiles[sound_file_index].sample_8bit = NULL;
+    SoundFiles[sound_file_index].sample_8bit = nullptr;
   }
 
   // reset use count
@@ -487,12 +487,12 @@ error_state:
 
   if (SoundFiles[sound_file_index].sample_8bit) {
     mem_free(SoundFiles[sound_file_index].sample_8bit);
-    SoundFiles[sound_file_index].sample_8bit = NULL;
+    SoundFiles[sound_file_index].sample_8bit = nullptr;
   }
 
   if (SoundFiles[sound_file_index].sample_16bit) {
     mem_free(SoundFiles[sound_file_index].sample_16bit);
-    SoundFiles[sound_file_index].sample_16bit = NULL;
+    SoundFiles[sound_file_index].sample_16bit = nullptr;
   }
 
   return 0;
@@ -509,6 +509,6 @@ void SoundLoadFree(int sound_file_index) {
       mem_free(SoundFiles[i].sample_16bit);
   }
 
-  SoundFiles[i].sample_8bit = NULL;
-  SoundFiles[i].sample_16bit = NULL;
+  SoundFiles[i].sample_8bit = nullptr;
+  SoundFiles[i].sample_16bit = nullptr;
 }

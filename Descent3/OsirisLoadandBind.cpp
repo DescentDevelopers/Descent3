@@ -585,21 +585,21 @@ void Osiris_InitModuleLoader(void) {
   for (i = 0; i < MAX_LOADED_MODULES; i++) {
     OSIRIS_loaded_modules[i].flags = 0;
     OSIRIS_loaded_modules[i].reference_count = 0;
-    OSIRIS_loaded_modules[i].module_name = NULL;
-    OSIRIS_loaded_modules[i].CallInstanceEvent = NULL;
-    OSIRIS_loaded_modules[i].CreateInstance = NULL;
-    OSIRIS_loaded_modules[i].DestroyInstance = NULL;
-    OSIRIS_loaded_modules[i].GetCOScriptList = NULL;
-    OSIRIS_loaded_modules[i].GetGOScriptID = NULL;
-    OSIRIS_loaded_modules[i].GetTriggerScriptID = NULL;
-    OSIRIS_loaded_modules[i].InitializeDLL = NULL;
-    OSIRIS_loaded_modules[i].SaveRestoreState = NULL;
-    OSIRIS_loaded_modules[i].string_table = NULL;
+    OSIRIS_loaded_modules[i].module_name = nullptr;
+    OSIRIS_loaded_modules[i].CallInstanceEvent = nullptr;
+    OSIRIS_loaded_modules[i].CreateInstance = nullptr;
+    OSIRIS_loaded_modules[i].DestroyInstance = nullptr;
+    OSIRIS_loaded_modules[i].GetCOScriptList = nullptr;
+    OSIRIS_loaded_modules[i].GetGOScriptID = nullptr;
+    OSIRIS_loaded_modules[i].GetTriggerScriptID = nullptr;
+    OSIRIS_loaded_modules[i].InitializeDLL = nullptr;
+    OSIRIS_loaded_modules[i].SaveRestoreState = nullptr;
+    OSIRIS_loaded_modules[i].string_table = nullptr;
     OSIRIS_loaded_modules[i].strings_loaded = 0;
 
 #ifdef OSIRISDEBUG
-    ASSERT(OSIRIS_loaded_modules[i].RefRoot == NULL);
-    OSIRIS_loaded_modules[i].RefRoot = NULL;
+    ASSERT(OSIRIS_loaded_modules[i].RefRoot == nullptr);
+    OSIRIS_loaded_modules[i].RefRoot = nullptr;
 #endif
   }
 
@@ -610,9 +610,9 @@ void Osiris_InitModuleLoader(void) {
   tOSIRISCurrentLevel.level_loaded = false;
   tOSIRISCurrentLevel.num_customs = 0;
   tOSIRISCurrentLevel.dll_id = 0;
-  tOSIRISCurrentLevel.custom_ids = NULL;
-  tOSIRISCurrentLevel.custom_handles = NULL;
-  tOSIRISCurrentLevel.instance = NULL;
+  tOSIRISCurrentLevel.custom_ids = nullptr;
+  tOSIRISCurrentLevel.custom_handles = nullptr;
+  tOSIRISCurrentLevel.instance = nullptr;
 
   tOSIRISCurrentMission.mission_loaded = false;
   tOSIRISCurrentMission.dll_id = 0;
@@ -668,7 +668,7 @@ void Osiris_FreeModule(int id) {
   if (OSIRIS_loaded_modules[id].flags & OSIMF_INUSE) {
 
 #ifdef OSIRISDEBUG
-    ASSERT(OSIRIS_loaded_modules[id].RefRoot == NULL); // not all objects freed
+    ASSERT(OSIRIS_loaded_modules[id].RefRoot == nullptr); // not all objects freed
 #endif
 
     if (OSIRIS_loaded_modules[id].flags & OSIMF_LEVEL) {
@@ -676,9 +676,9 @@ void Osiris_FreeModule(int id) {
       tOSIRISCurrentLevel.level_loaded = false;
       tOSIRISCurrentLevel.num_customs = 0;
       tOSIRISCurrentLevel.dll_id = 0;
-      tOSIRISCurrentLevel.custom_ids = NULL;
-      tOSIRISCurrentLevel.custom_handles = NULL;
-      tOSIRISCurrentLevel.instance = NULL;
+      tOSIRISCurrentLevel.custom_ids = nullptr;
+      tOSIRISCurrentLevel.custom_handles = nullptr;
+      tOSIRISCurrentLevel.instance = nullptr;
     }
 
     if (!(OSIRIS_loaded_modules[id].flags & OSIMF_DLLELSEWHERE)) {
@@ -689,7 +689,7 @@ void Osiris_FreeModule(int id) {
         OSIRIS_loaded_modules[id].ShutdownDLL();
       }
 
-      if (OSIRIS_loaded_modules[id].string_table != NULL) {
+      if (OSIRIS_loaded_modules[id].string_table != nullptr) {
         DestroyStringTable(OSIRIS_loaded_modules[id].string_table, OSIRIS_loaded_modules[id].strings_loaded);
       }
       mod_FreeModule(&OSIRIS_loaded_modules[id].mod);
@@ -701,27 +701,27 @@ void Osiris_FreeModule(int id) {
       tOSIRISCurrentMission.dll_id = 0;
     }
 
-    OSIRIS_loaded_modules[id].CallInstanceEvent = NULL;
-    OSIRIS_loaded_modules[id].CreateInstance = NULL;
-    OSIRIS_loaded_modules[id].DestroyInstance = NULL;
-    OSIRIS_loaded_modules[id].GetCOScriptList = NULL;
-    OSIRIS_loaded_modules[id].GetGOScriptID = NULL;
-    OSIRIS_loaded_modules[id].GetTriggerScriptID = NULL;
-    OSIRIS_loaded_modules[id].InitializeDLL = NULL;
-    OSIRIS_loaded_modules[id].SaveRestoreState = NULL;
-    OSIRIS_loaded_modules[id].string_table = NULL;
+    OSIRIS_loaded_modules[id].CallInstanceEvent = nullptr;
+    OSIRIS_loaded_modules[id].CreateInstance = nullptr;
+    OSIRIS_loaded_modules[id].DestroyInstance = nullptr;
+    OSIRIS_loaded_modules[id].GetCOScriptList = nullptr;
+    OSIRIS_loaded_modules[id].GetGOScriptID = nullptr;
+    OSIRIS_loaded_modules[id].GetTriggerScriptID = nullptr;
+    OSIRIS_loaded_modules[id].InitializeDLL = nullptr;
+    OSIRIS_loaded_modules[id].SaveRestoreState = nullptr;
+    OSIRIS_loaded_modules[id].string_table = nullptr;
     OSIRIS_loaded_modules[id].strings_loaded = 0;
     OSIRIS_loaded_modules[id].flags = 0;
     OSIRIS_loaded_modules[id].reference_count = 0;
 
 #ifdef OSIRISDEBUG
-    ASSERT(OSIRIS_loaded_modules[id].RefRoot == NULL);
-    OSIRIS_loaded_modules[id].RefRoot = NULL;
+    ASSERT(OSIRIS_loaded_modules[id].RefRoot == nullptr);
+    OSIRIS_loaded_modules[id].RefRoot = nullptr;
 #endif
 
     if (OSIRIS_loaded_modules[id].module_name) {
       mem_free(OSIRIS_loaded_modules[id].module_name);
-      OSIRIS_loaded_modules[id].module_name = NULL;
+      OSIRIS_loaded_modules[id].module_name = nullptr;
     }
   }
 }
@@ -750,7 +750,7 @@ void Osiris_DumpLoadedObjects(char *file) {
   char buffy[1024];
 
   for (int j = 0; j < MAX_LOADED_MODULES; j++) {
-    if (OSIRIS_loaded_modules[j].flags & OSIMF_INUSE && OSIRIS_loaded_modules[j].RefRoot != NULL) {
+    if (OSIRIS_loaded_modules[j].flags & OSIMF_INUSE && OSIRIS_loaded_modules[j].RefRoot != nullptr) {
       // uh oh! scripts were not completely decremented
       tRefObj *node = OSIRIS_loaded_modules[j].RefRoot;
       while (node) {
@@ -854,7 +854,7 @@ void Osiris_UnloadLevelModule(void) {
                                                       Triggers[i].osiris_script.script_instance);
       }
       Triggers[i].osiris_script.script_id = -1;
-      Triggers[i].osiris_script.script_instance = NULL;
+      Triggers[i].osiris_script.script_instance = nullptr;
     }
 
     Osiris_UnloadModule(dll_id);
@@ -1038,8 +1038,8 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   osm->reference_count = 1;
 
 #ifdef OSIRISDEBUG
-  ASSERT(osm->RefRoot == NULL);
-  osm->RefRoot = NULL;
+  ASSERT(osm->RefRoot == nullptr);
+  osm->RefRoot = nullptr;
 #endif
 
   // make sure all of the functions imported ok
@@ -1052,7 +1052,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     osm->flags = 0;
     if (osm->module_name)
       mem_free(osm->module_name);
-    osm->module_name = NULL;
+    osm->module_name = nullptr;
     mod_FreeModule(mod);
     return -3;
   }
@@ -1069,11 +1069,11 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
       LOG_ERROR.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
                        PATH_TO_CSTR(basename));
       Int3();
-      osm->string_table = NULL;
+      osm->string_table = nullptr;
       osm->strings_loaded = 0;
     }
   } else {
-    osm->string_table = NULL;
+    osm->string_table = nullptr;
     osm->strings_loaded = 0;
   }
 
@@ -1093,8 +1093,8 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     osm->flags = 0;
     if (osm->module_name)
       mem_free(osm->module_name);
-    osm->module_name = NULL;
-    osm->string_table = NULL;
+    osm->module_name = nullptr;
+    osm->string_table = nullptr;
     osm->strings_loaded = 0;
     mod_FreeModule(mod);
     return -2;
@@ -1106,7 +1106,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     void *instance;
 
     Triggers[i].osiris_script.script_id = -1;
-    Triggers[i].osiris_script.script_instance = NULL;
+    Triggers[i].osiris_script.script_instance = nullptr;
 
     script_id = osm->GetTriggerScriptID(Triggers[i].roomnum, Triggers[i].facenum);
     if (script_id != -1) {
@@ -1281,12 +1281,12 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
     if (osm->string_table) {
       DestroyStringTable(osm->string_table, osm->strings_loaded);
     }
-    osm->string_table = NULL;
+    osm->string_table = nullptr;
     osm->strings_loaded = 0;
     osm->flags = 0;
     if (osm->module_name)
       mem_free(osm->module_name);
-    osm->module_name = NULL;
+    osm->module_name = nullptr;
     mod_FreeModule(mod);
     return -2;
   }
@@ -1358,10 +1358,10 @@ int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
   // CallInstanceEvent@16
   // SaveRestoreState@8
 
-  osm->InitializeDLL = NULL;
-  osm->ShutdownDLL = NULL;
-  osm->GetTriggerScriptID = NULL;
-  osm->GetCOScriptList = NULL;
+  osm->InitializeDLL = nullptr;
+  osm->ShutdownDLL = nullptr;
+  osm->GetTriggerScriptID = nullptr;
+  osm->GetCOScriptList = nullptr;
   osm->GetGOScriptID = (GetGOScriptID_fp)mod_GetSymbol(mod, "GetGOScriptID", 8);
   osm->CreateInstance = (CreateInstance_fp)mod_GetSymbol(mod, "CreateInstance", 4);
   osm->DestroyInstance = (DestroyInstance_fp)mod_GetSymbol(mod, "DestroyInstance", 8);
@@ -1425,7 +1425,7 @@ void Osiris_UnloadMissionModule(void) {
 //	This function will also load any dll's needed for its game script.
 //	returns false if nothing was bound.
 bool Osiris_BindScriptsToObject(object *obj) {
-  ASSERT(obj->osiris_script == NULL);
+  ASSERT(obj->osiris_script == nullptr);
   if (obj->osiris_script) // already has a script bound!
     return true;
 
@@ -1458,8 +1458,8 @@ bool Osiris_BindScriptsToObject(object *obj) {
 
   if (iscustomonly) {
     // this object can only have a custom script for it (i.e. OBJ_CAMERA)
-    default_module_name = NULL;
-    page_name = NULL;
+    default_module_name = nullptr;
+    page_name = nullptr;
   } else {
     if (isdoor) {
       default_module_name = Doors[obj->id].module_name;
@@ -1504,10 +1504,10 @@ bool Osiris_BindScriptsToObject(object *obj) {
         return false;
       }
 
-      obj->osiris_script->default_script.script_instance = NULL;
-      obj->osiris_script->custom_script.script_instance = NULL;
-      obj->osiris_script->mission_script.script_instance = NULL;
-      obj->osiris_script->level_script.script_instance = NULL;
+      obj->osiris_script->default_script.script_instance = nullptr;
+      obj->osiris_script->custom_script.script_instance = nullptr;
+      obj->osiris_script->mission_script.script_instance = nullptr;
+      obj->osiris_script->level_script.script_instance = nullptr;
       os = obj->osiris_script;
 
       // we have the module loaded for the object, now we need to setup its default script
@@ -1539,7 +1539,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
           // add to the list for this object
 #ifdef OSIRISDEBUG
           tRefObj *node;
-          if (OSIRIS_loaded_modules[dll_id].RefRoot == NULL) {
+          if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
             node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
           } else {
             node = OSIRIS_loaded_modules[dll_id].RefRoot;
@@ -1552,7 +1552,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
           node->id = obj->id;
           node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
           node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-          node->next = NULL;
+          node->next = nullptr;
 #endif
         }
       }
@@ -1582,10 +1582,10 @@ bool Osiris_BindScriptsToObject(object *obj) {
               return false;
             }
 
-            obj->osiris_script->default_script.script_instance = NULL;
-            obj->osiris_script->custom_script.script_instance = NULL;
-            obj->osiris_script->mission_script.script_instance = NULL;
-            obj->osiris_script->level_script.script_instance = NULL;
+            obj->osiris_script->default_script.script_instance = nullptr;
+            obj->osiris_script->custom_script.script_instance = nullptr;
+            obj->osiris_script->mission_script.script_instance = nullptr;
+            obj->osiris_script->level_script.script_instance = nullptr;
           }
           os = obj->osiris_script;
 
@@ -1603,7 +1603,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
 
 #ifdef OSIRISDEBUG
             tRefObj *node;
-            if (OSIRIS_loaded_modules[dll_id].RefRoot == NULL) {
+            if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
               node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
             } else {
               node = OSIRIS_loaded_modules[dll_id].RefRoot;
@@ -1616,7 +1616,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
             node->id = obj->id;
             node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
             node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-            node->next = NULL;
+            node->next = nullptr;
 #endif
           }
         }
@@ -1639,10 +1639,10 @@ bool Osiris_BindScriptsToObject(object *obj) {
                 return false;
               }
 
-              obj->osiris_script->default_script.script_instance = NULL;
-              obj->osiris_script->custom_script.script_instance = NULL;
-              obj->osiris_script->mission_script.script_instance = NULL;
-              obj->osiris_script->level_script.script_instance = NULL;
+              obj->osiris_script->default_script.script_instance = nullptr;
+              obj->osiris_script->custom_script.script_instance = nullptr;
+              obj->osiris_script->mission_script.script_instance = nullptr;
+              obj->osiris_script->level_script.script_instance = nullptr;
             }
             os = obj->osiris_script;
 
@@ -1660,7 +1660,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
 
 #ifdef OSIRISDEBUG
               tRefObj *node;
-              if (OSIRIS_loaded_modules[dll_id].RefRoot == NULL) {
+              if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
                 node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
               } else {
                 node = OSIRIS_loaded_modules[dll_id].RefRoot;
@@ -1673,7 +1673,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
               node->id = obj->id;
               node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
               node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-              node->next = NULL;
+              node->next = nullptr;
 #endif
 
               if (iscustomonly) {
@@ -1709,10 +1709,10 @@ bool Osiris_BindScriptsToObject(object *obj) {
               return false;
             }
 
-            obj->osiris_script->default_script.script_instance = NULL;
-            obj->osiris_script->custom_script.script_instance = NULL;
-            obj->osiris_script->mission_script.script_instance = NULL;
-            obj->osiris_script->level_script.script_instance = NULL;
+            obj->osiris_script->default_script.script_instance = nullptr;
+            obj->osiris_script->custom_script.script_instance = nullptr;
+            obj->osiris_script->mission_script.script_instance = nullptr;
+            obj->osiris_script->level_script.script_instance = nullptr;
           }
           os = obj->osiris_script;
 
@@ -1730,7 +1730,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
 
 #ifdef OSIRISDEBUG
             tRefObj *node;
-            if (OSIRIS_loaded_modules[dll_id].RefRoot == NULL) {
+            if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
               node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
             } else {
               node = OSIRIS_loaded_modules[dll_id].RefRoot;
@@ -1743,7 +1743,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
             node->id = obj->id;
             node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
             node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-            node->next = NULL;
+            node->next = nullptr;
 #endif
           }
         }
@@ -1791,7 +1791,7 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->default_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = NULL, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
         // free this node
@@ -1822,7 +1822,7 @@ void Osiris_DetachScriptsFromObject(object *obj) {
 
     os->default_script.DLLID = 0;
     os->default_script.script_id = 0;
-    os->default_script.script_instance = NULL;
+    os->default_script.script_instance = nullptr;
   }
 
   // now check for the level script
@@ -1831,7 +1831,7 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->level_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = NULL, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
         // free this node
@@ -1859,7 +1859,7 @@ void Osiris_DetachScriptsFromObject(object *obj) {
 
     os->level_script.DLLID = 0;
     os->level_script.script_id = 0;
-    os->level_script.script_instance = NULL;
+    os->level_script.script_instance = nullptr;
   }
 
   // check for an attached custom script
@@ -1868,7 +1868,7 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->custom_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = NULL, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
         // free this node
@@ -1896,7 +1896,7 @@ void Osiris_DetachScriptsFromObject(object *obj) {
 
     os->custom_script.DLLID = 0;
     os->custom_script.script_id = 0;
-    os->custom_script.script_instance = NULL;
+    os->custom_script.script_instance = nullptr;
   }
 
   // check for a mission dll script
@@ -1905,7 +1905,7 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->mission_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = NULL, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
         // free this node
@@ -1933,12 +1933,12 @@ void Osiris_DetachScriptsFromObject(object *obj) {
 
     os->mission_script.DLLID = 0;
     os->mission_script.script_id = 0;
-    os->mission_script.script_instance = NULL;
+    os->mission_script.script_instance = nullptr;
   }
 
   // finally free up the memory allocated for the script struct
   mem_free(obj->osiris_script);
-  obj->osiris_script = NULL;
+  obj->osiris_script = nullptr;
 }
 
 //	Osiris_CallLevelEvent
@@ -2823,7 +2823,7 @@ tOSIRISMEMNODE *Osiris_mem_root;
 //		Initializes the memory manager for the scripts, for buffers that the scripts want
 //	automatically restored/save.
 void Osiris_InitMemoryManager(void) {
-  Osiris_mem_root = NULL;
+  Osiris_mem_root = nullptr;
   atexit(Osiris_CloseMemoryManager);
 }
 
@@ -2840,7 +2840,7 @@ void Osiris_CloseMemoryManager(void) {
     mem_free(curr);
     curr = next;
   }
-  Osiris_mem_root = NULL;
+  Osiris_mem_root = nullptr;
 }
 
 //	Osiris_AllocateMemory
@@ -2855,7 +2855,7 @@ void *Osiris_AllocateMemory(tOSIRISMEMCHUNK *mc) {
     // it'll be the first node
     Osiris_mem_root = mem_rmalloc<tOSIRISMEMNODE>();
     if (!Osiris_mem_root)
-      return NULL;
+      return nullptr;
 
     curr = Osiris_mem_root;
     error_node = &Osiris_mem_root;
@@ -2868,19 +2868,19 @@ void *Osiris_AllocateMemory(tOSIRISMEMCHUNK *mc) {
 
     curr->next = mem_rmalloc<tOSIRISMEMNODE>();
     if (!curr->next)
-      return NULL;
+      return nullptr;
     error_node = &curr->next;
     curr = curr->next;
   }
 
   // setup the data
-  curr->next = NULL;
+  curr->next = nullptr;
   curr->memory = mem_malloc(mc->size);
   if (!curr->memory) {
     // ack...out of memory
-    *error_node = NULL; // make sure we cut off the list
+    *error_node = nullptr; // make sure we cut off the list
     mem_free(curr);
-    return NULL;
+    return nullptr;
   }
   memcpy(&curr->chunk_id, mc, sizeof(tOSIRISMEMCHUNK));
 
@@ -2905,7 +2905,7 @@ void Osiris_FreeMemory(void *mem_ptr) {
     tOSIRISMEMNODE *curr;
     curr = Osiris_mem_root;
     bool done = false;
-    tofree = NULL;
+    tofree = nullptr;
     while (!done) {
       if (!curr->next) {
         done = true; // we didn't find it
@@ -2953,7 +2953,7 @@ void Osiris_FreeMemoryForScript(tOSIRISSCRIPTID *sid) {
   bool done = false;
   tOSIRISMEMNODE *curr, *next, *prev;
   curr = Osiris_mem_root;
-  prev = NULL;
+  prev = nullptr;
 
   while (!done) {
     if (!curr) {
@@ -3062,7 +3062,7 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
         Error("Out of memory");
       }
       cf_ReadBytes((uint8_t *)memchunk->memory, memchunk->chunk_id.size, file);
-      memchunk->next = NULL;
+      memchunk->next = nullptr;
 
       // ok, the node is setup, add it to the linked list
       if (!Osiris_mem_root) {
@@ -3247,7 +3247,7 @@ struct tOMMSHashNode {
   tOMMSHashNode *next;
 };
 
-tOMMSHashNode *OMMS_Hash_node_root = NULL;
+tOMMSHashNode *OMMS_Hash_node_root = nullptr;
 uint16_t OMMS_Current_base_id = 0;
 uint16_t OMMS_Current_id = 0;
 
@@ -3268,7 +3268,7 @@ void Osiris_OMMS_ReduceRefCount(tOMMSHashNode *root, tOMMSNode *node);
 void Osiris_OMMS_CallFreeForNode(tOMMSHashNode *root, tOMMSNode *node);
 //	Searches for the given OMMSHANDLE, returns NULL if not found.  if hash is
 //	given it will return the hash root that the node was found in.
-tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash = NULL);
+tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash = nullptr);
 
 // Allocates a block of global memory for this module, of size amount_of_memory.
 // unique_identfier is the script provided unique ID which is used throughout.
@@ -3313,7 +3313,7 @@ static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t 
 void Osiris_InitOMMS(void) {
   OMMS_Current_base_id = 0;
   OMMS_Current_id = 0;
-  OMMS_Hash_node_root = NULL;
+  OMMS_Hash_node_root = nullptr;
   atexit(Osiris_CloseOMMS);
 }
 
@@ -3326,7 +3326,7 @@ void Osiris_CloseOMMS(void) {
     curr = Osiris_OMMS_DeleteHashNode(curr);
   }
 
-  OMMS_Hash_node_root = NULL;
+  OMMS_Hash_node_root = nullptr;
 }
 
 void Osiris_SaveOMMS(CFILE *file) {
@@ -3379,7 +3379,7 @@ void Osiris_SaveOMMS(CFILE *file) {
 }
 
 void Osiris_RestoreOMMS(CFILE *file) {
-  ASSERT(OMMS_Hash_node_root == NULL);
+  ASSERT(OMMS_Hash_node_root == nullptr);
 
   OMMS_Current_base_id = (uint16_t)cf_ReadShort(file);
   OMMS_Current_id = (uint16_t)cf_ReadShort(file);
@@ -3387,7 +3387,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
   tOMMSHashNode *currhash;
   tOMMSNode *node;
 
-  currhash = NULL;
+  currhash = nullptr;
 
   // we have to rebuild the nodes
   while (cf_ReadByte(file)) {
@@ -3401,9 +3401,9 @@ void Osiris_RestoreOMMS(CFILE *file) {
     if (!currhash)
       Error("Out of memory");
 
-    currhash->next = NULL;
-    currhash->root = NULL;
-    currhash->script_name = NULL;
+    currhash->next = nullptr;
+    currhash->root = nullptr;
+    currhash->script_name = nullptr;
 
     currhash->base_id = (uint16_t)cf_ReadShort(file);
 
@@ -3417,7 +3417,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
         cf_ReadBytes((uint8_t *)currhash->script_name, length, file);
     }
 
-    node = NULL;
+    node = nullptr;
 
     // now go through all the nodes and right their data
     while (cf_ReadByte(file)) {
@@ -3431,8 +3431,8 @@ void Osiris_RestoreOMMS(CFILE *file) {
       if (!node)
         Error("Out of memory");
 
-      node->memory_ptr = NULL;
-      node->next = NULL;
+      node->memory_ptr = nullptr;
+      node->next = nullptr;
 
       node->id = (uint16_t)cf_ReadShort(file);
 
@@ -3459,7 +3459,7 @@ tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate) {
   if (!OMMS_Hash_node_root) {
     // allocate the root node
     if (!autocreate)
-      return NULL;
+      return nullptr;
 
     curr = OMMS_Hash_node_root = mem_rmalloc<tOMMSHashNode>();
   } else {
@@ -3480,15 +3480,15 @@ tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate) {
 
     // allocate a node and tack it on the end
     if (!autocreate)
-      return NULL;
+      return nullptr;
 
     curr->next = mem_rmalloc<tOMMSHashNode>();
     curr = curr->next;
   }
 
   // if we get here then curr is a freshly allocated node
-  curr->next = NULL;
-  curr->root = NULL;
+  curr->next = nullptr;
+  curr->root = nullptr;
   curr->script_name = mem_strdup(script_name);
   curr->base_id = ++OMMS_Current_base_id;
 
@@ -3499,7 +3499,7 @@ tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate) {
 //	memory...returns the next node in the list, NULL if none
 tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node) {
   if (!node)
-    return NULL;
+    return nullptr;
   tOMMSHashNode *ret = node->next;
 
   if (node->script_name)
@@ -3528,7 +3528,7 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
   if (!root->root) {
     // allocate the root node
     if (!autocreate)
-      return NULL;
+      return nullptr;
 
     curr = root->root = mem_rmalloc<tOMMSNode>();
   } else {
@@ -3549,7 +3549,7 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
 
     // allocate a node and tack it on the end
     if (!autocreate)
-      return NULL;
+      return nullptr;
 
     curr->next = mem_rmalloc<tOMMSNode>();
     curr = curr->next;
@@ -3557,8 +3557,8 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
 
   // if we get here then curr is a freshly allocated node
   curr->free_called = 0;
-  curr->memory_ptr = NULL;
-  curr->next = NULL;
+  curr->memory_ptr = nullptr;
+  curr->next = nullptr;
   curr->reference_count = 0;
   curr->size_of_memory = 0;
   curr->unique_id = uid;
@@ -3570,7 +3570,7 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
 //	Removes the OMMS node for the given HashNode (completly remove)
 void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid) {
   tOMMSNode *curr = root->root;
-  tOMMSNode *node_to_free = NULL;
+  tOMMSNode *node_to_free = nullptr;
 
   if (!root->root)
     return;
@@ -3578,7 +3578,7 @@ void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid) {
   if (root->root->unique_id == uid) {
     // the root node matches
     node_to_free = root->root;
-    root->root = NULL;
+    root->root = nullptr;
     goto free_mem;
   }
 
@@ -3657,7 +3657,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
     hashcurr = hashcurr->next;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 // Allocates a block of global memory for this module, of size amount_of_memory.
@@ -3707,7 +3707,7 @@ OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint32_t unique_identifie
 void *Osiris_OMMS_Attach(OMMSHANDLE handle) {
   tOMMSNode *node = Osiris_OMMS_FindHandle(handle);
   if (!node)
-    return NULL;
+    return nullptr;
 
   if (node->memory_ptr) {
     node->reference_count++;
@@ -3929,6 +3929,6 @@ void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
 
   // fill in the remaining with NULL
   for (; i < MAX_MODULEFUNCS; i++) {
-    mi->fp[i] = NULL;
+    mi->fp[i] = nullptr;
   }
 }

@@ -185,7 +185,7 @@ msn_urls *msn_GetURL(network_address *net_addr) {
   }
 
   if (tries >= 5 || Got_url != 1)
-    return NULL;
+    return nullptr;
 
   return &msn_URL;
 }
@@ -719,7 +719,7 @@ static int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const st
   bool found_mn3 = false;
   bool process_file;
 
-  while ((ze = zfile.ReadNextZipEntry()) != NULL) {
+  while ((ze = zfile.ReadNextZipEntry()) != nullptr) {
     if (ze->crc32 == 0)
       continue; // skip directories
 
@@ -828,7 +828,7 @@ int CheckGetD3M(char *d3m) {
 
   char modurl[MAX_MISSION_URL_LEN + 1];
   char *lowurl;
-  char *fixedd3m = NULL;
+  char *fixedd3m = nullptr;
 
   if (cfexist(d3m) || cfexist(std::filesystem::path(LocalD3Dir) / "netgames" / d3m)) {
     return 1;

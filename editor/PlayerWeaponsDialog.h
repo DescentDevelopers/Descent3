@@ -31,7 +31,7 @@
 class PlayerWeaponsDialog : public CDialog {
   // Construction
 public:
-  PlayerWeaponsDialog(int current_ship, CWnd *pParent = NULL); // standard constructor
+  PlayerWeaponsDialog(int current_ship, CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(PlayerWeaponsDialog)

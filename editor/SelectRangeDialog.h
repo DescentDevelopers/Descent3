@@ -31,7 +31,7 @@
 class SelectRangeDialog : public CDialog {
   // Construction
 public:
-  SelectRangeDialog(CWnd *pParent = NULL); // standard constructor
+  SelectRangeDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(SelectRangeDialog)

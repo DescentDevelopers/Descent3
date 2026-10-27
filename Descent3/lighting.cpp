@@ -63,7 +63,7 @@ struct volume_object {
 
 float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 
-static uint16_t *Dynamic_lightmap_memory = NULL;
+static uint16_t *Dynamic_lightmap_memory = nullptr;
 static float Light_component_scalar[32];
 float Ubyte_to_float[256];
 
@@ -343,7 +343,7 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
     // Compute face matrix
     matrix facematrix;
     vector fvec = -lmi_ptr->normal;
-    vm_VectorToMatrix(&facematrix, &fvec, NULL, NULL);
+    vm_VectorToMatrix(&facematrix, &fvec, nullptr, nullptr);
 
     // Get upper left vector of face
     vector base_vector = lmi_ptr->upper_left;
@@ -693,7 +693,7 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
     // Compute face matrix
     matrix facematrix;
     vector fvec = -lmi_ptr->normal;
-    vm_VectorToMatrix(&facematrix, &fvec, NULL, NULL);
+    vm_VectorToMatrix(&facematrix, &fvec, nullptr, nullptr);
 
     // Get the area of effect for this light
     float area_of_effect = (1.0 - (dist_from_plane / light_dist)) * light_dist;
@@ -957,7 +957,7 @@ void ApplyVolumeLightToObject(vector *pos, object *obj, float light_dist, float 
     }
   }
 
-  ASSERT(obj->effect_info != NULL);
+  ASSERT(obj->effect_info != nullptr);
 
   if (!obj->effect_info->dynamic_this_frame) {
     if (Num_volume_objects < MAX_VOLUME_OBJECTS) {
@@ -1142,7 +1142,7 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
     // Compute face matrix
     matrix facematrix;
     vector fvec = -lmi_ptr->normal;
-    vm_VectorToMatrix(&facematrix, &fvec, NULL, NULL);
+    vm_VectorToMatrix(&facematrix, &fvec, nullptr, nullptr);
 
     // Get upper left vector of face
     vector base_vector = lmi_ptr->upper_left;
@@ -2075,7 +2075,7 @@ void DestroyLight(int roomnum, int facenum) {
     // Compute face matrix
     matrix facematrix;
     vector fvec = -lmi_ptr->normal;
-    vm_VectorToMatrix(&facematrix, &fvec, NULL, NULL);
+    vm_VectorToMatrix(&facematrix, &fvec, nullptr, nullptr);
 
     // Get upper left vector of face
     vector base_vector = lmi_ptr->upper_left;

@@ -117,10 +117,10 @@ namespace {
 int Localization_language = -1;
 
 int String_table_size = 0;
-char **String_table = NULL;
+char **String_table = nullptr;
 
 // list of the string table files, they will be loaded in the order they are listed
-constexpr const char *String_table_list[] = {"D3.STR", NULL};
+constexpr const char *String_table_list[] = {"D3.STR", nullptr};
 
 const char *_Error_string = "!!ERROR MISSING STRING!!";
 const char *_Empty_string = "\0";
@@ -188,7 +188,7 @@ int LoadStringTables(void) {
   }
 
   for (int tcount = 0; tcount < string_count; tcount++)
-    String_table[tcount] = NULL;
+    String_table[tcount] = nullptr;
 
   int runcount = 0;
   int temp;
@@ -222,7 +222,7 @@ int LoadStringTables(void) {
 // Deallocates all the memory used for the string tables
 void FreeStringTables(void) {
   DestroyStringTable(String_table, String_table_size);
-  String_table = NULL;
+  String_table = nullptr;
 }
 
 const char *GetStringFromTable(int index) {
@@ -268,7 +268,7 @@ bool CreateStringTable(const char *filename, char ***table, int *size) {
   ASSERT(Localization_language != -1);
   if (!filename) {
     if (table)
-      *table = NULL;
+      *table = nullptr;
     if (size)
       *size = 0;
     return false;
@@ -280,7 +280,7 @@ bool CreateStringTable(const char *filename, char ***table, int *size) {
   file = cfopen(fname, "rt");
   if (!file) {
     if (table)
-      *table = NULL;
+      *table = nullptr;
     if (size)
       *size = 0;
     return false;
@@ -316,7 +316,7 @@ try_english:
     // no strings found
     Localization_language = old_language;
     LOG_WARNING << "Localization: Warning, 0 strings found in " << filename;
-    *table = NULL;
+    *table = nullptr;
     *size = 0;
     return true;
   }
@@ -328,7 +328,7 @@ try_english:
   *table = mem_rmalloc<char *>(scount);
   if (!*table) {
     if (table)
-      *table = NULL;
+      *table = nullptr;
     if (size)
       *size = 0;
     Localization_language = old_language;
@@ -337,13 +337,13 @@ try_english:
 
   strtable = *table;
   for (int tcount = 0; tcount < scount; tcount++)
-    strtable[tcount] = NULL;
+    strtable[tcount] = nullptr;
 
   // now load the strings
   file = cfopen(fname, "rt");
   if (!file) {
     if (table)
-      *table = NULL;
+      *table = nullptr;
     if (size)
       *size = 0;
     Localization_language = old_language;
@@ -654,8 +654,8 @@ char *_parse_escape_chars(char *buffer) {
 }
 
 GrowString::GrowString() {
-  root.string_data = NULL;
-  root.next = NULL;
+  root.string_data = nullptr;
+  root.next = nullptr;
   curr = &root;
 }
 GrowString::~GrowString() { Destroy(); }
@@ -675,20 +675,20 @@ void GrowString::operator+=(char *str) {
     }
     sprintf(node->string_data, "\n%s", str);
     curr->next = node;
-    node->next = NULL;
+    node->next = nullptr;
     curr = node;
   } else {
     root.string_data = mem_strdup(str);
     if (!root.string_data)
       return;
-    root.next = NULL;
+    root.next = nullptr;
   }
 }
 
 void GrowString::Destroy(void) {
   if (root.string_data)
     mem_free(root.string_data);
-  root.string_data = NULL;
+  root.string_data = nullptr;
 
   tbufferinfo *c, *next;
   c = next = root.next;
@@ -699,8 +699,8 @@ void GrowString::Destroy(void) {
     mem_free(c);
     c = next;
   }
-  root.next = NULL;
-  root.string_data = NULL;
+  root.next = nullptr;
+  root.string_data = nullptr;
   curr = &root;
 }
 
@@ -710,7 +710,7 @@ GrowString GrowString::operator+(char *str) {
 }
 
 GrowString GrowString::operator+(GrowString &gs) {
-  char *str = NULL;
+  char *str = nullptr;
   gs.GetString(&str);
   *this += str;
   if (str)
@@ -719,7 +719,7 @@ GrowString GrowString::operator+(GrowString &gs) {
 }
 
 void GrowString::operator+=(GrowString &gs) {
-  char *str = NULL;
+  char *str = nullptr;
   gs.GetString(&str);
   *this += str;
   if (str)
@@ -732,7 +732,7 @@ void GrowString::operator=(char *str) {
 }
 
 void GrowString::operator=(GrowString &gs) {
-  char *str = NULL;
+  char *str = nullptr;
   gs.GetString(&str);
   *this = str;
   if (str)
@@ -740,7 +740,7 @@ void GrowString::operator=(GrowString &gs) {
 }
 
 void GrowString::GetString(char **str) {
-  *str = NULL;
+  *str = nullptr;
   int size = Length();
   if (size == -1)
     return;

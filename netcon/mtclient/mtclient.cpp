@@ -2708,7 +2708,7 @@ int GetPilotStats(const char *pilot) {
   GetD3PilotDataCancel();
   GetTrackerIdByUser((char *)-1);
   p = GetTrackerIdByUser(pilot);
-  while (p == NULL) {
+  while (p == nullptr) {
     res = DLLPollUI();
     DLLDescentDefer();
     p = GetChatText();

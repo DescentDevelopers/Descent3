@@ -112,7 +112,7 @@ static module *LoadOpenGLDLL(const char *dllname) {
     const char *sdlErr = SDL_GetError();
     LOG_ERROR.printf("OpenGL: Couldn't open library [%s]: SDL error [%s].",
                      dllname[0] ? dllname : "system default", sdlErr);
-    return NULL;
+    return nullptr;
   }
 
   strcpy(loadedLibrary, dllname);

@@ -138,7 +138,7 @@ bool CProgress::InitProgress(CWnd *parent) {
 
 // YOU MUST call this after you are done with the progress indicator.  This frees up some allocated memory
 void CProgress::DestroyProgress() {
-  ASSERT(m_StatusDlg != NULL);
+  ASSERT(m_StatusDlg != nullptr);
   m_StatusDlg->DestroyWindow();
   if (m_StatusDlg)
     delete m_StatusDlg;
@@ -147,14 +147,14 @@ void CProgress::DestroyProgress() {
 // By default the progress indicator says "Please wait...", here you can change that text...make sure you call
 // this after InitProgress()
 void CProgress::SetProgressText(char *string) {
-  ASSERT(m_StatusDlg != NULL);
+  ASSERT(m_StatusDlg != nullptr);
   m_StatusDlg->Text(string);
 }
 
 // This is the iterator function.  Call this in your loop or whatever to increase the progress indicator.  You can also
 // use CProgress::SetProgressPercentage() instead
 bool CProgress::IncreaseProgress() {
-  ASSERT(m_StatusDlg != NULL);
+  ASSERT(m_StatusDlg != nullptr);
   int ret;
   ret = m_StatusDlg->Step();
   if (ret >= m_Max)
@@ -165,13 +165,13 @@ bool CProgress::IncreaseProgress() {
 
 // Sets the progress indicator to a certain percentage
 void CProgress::SetProgressPercentage(int percent) {
-  ASSERT(m_StatusDlg != NULL);
+  ASSERT(m_StatusDlg != nullptr);
   float per;
   per = ((float)percent) / ((float)100.0);
   m_StatusDlg->SetTo(m_Min + ((int)(per * (m_Max - m_Min))));
 }
 
 void CProgress::SetProgressPercentage(float percent) {
-  ASSERT(m_StatusDlg != NULL);
+  ASSERT(m_StatusDlg != nullptr);
   m_StatusDlg->SetTo(m_Min + ((int)(percent * (m_Max - m_Min))));
 }

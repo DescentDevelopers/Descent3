@@ -47,7 +47,7 @@ CScriptSelect::CScriptSelect(uint16_t scr_type, int custom_type, CWnd *pParent /
   m_ScriptName = _T("");
   //}}AFX_DATA_INIT
 
-  m_ScriptCode = NULL;
+  m_ScriptCode = nullptr;
   m_CurScriptSel = -1;
   m_ScriptType = (uint16_t)scr_type;
   m_NumParms = 0;

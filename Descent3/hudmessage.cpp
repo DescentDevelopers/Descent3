@@ -481,7 +481,7 @@ bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color) {
     strcat(thisline, " ");
     // strcpy(word,p);
 
-    p = strtok(NULL, " ");
+    p = strtok(nullptr, " ");
     if (p) {
       strcpy(nextword, p);
       if ((grtext_GetTextLineWidth(thisline) + grtext_GetTextLineWidth(nextword)) > (Game_window_w * .7)) {
@@ -491,7 +491,7 @@ bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color) {
         added |= AddLineToHUDMessages(thisline, color);
 
         // Scan for color information in the string we just added
-        char *c = NULL, *c2;
+        char *c = nullptr, *c2;
         c2 = strchr(thisline, '\1');
         while (c2) {
           c = c2;
@@ -738,7 +738,7 @@ const char *GetMessageDestination(const char *message, int *destination) {
   const char *ret = message;
 
   // see if there is a colon in the string, and match that up with a name
-  const char *colon_pos = NULL;
+  const char *colon_pos = nullptr;
   colon_pos = strchr(message, ':');
   if (colon_pos > message) {
     // this message might be for one person in particular
@@ -1486,7 +1486,7 @@ void SGSGameMessages(CFILE *fp) {
 
   cf_WriteShort(fp, (int16_t)Game_msg_list.m_nmsg);
 
-  while ((msg = Game_msg_list.get(i++)) != NULL) {
+  while ((msg = Game_msg_list.get(i++)) != nullptr) {
     cf_WriteString(fp, msg);
   }
 }
@@ -1535,7 +1535,7 @@ void CloseGameMessageConsole() {
 tMsgList::tMsgList() {
   m_nmsg = 0;
   m_limit = 64;
-  m_msg = NULL;
+  m_msg = nullptr;
 }
 
 bool tMsgList::add(const char *msg, uint8_t lvl, uint8_t hr, uint8_t min, uint8_t sec) {
@@ -1544,7 +1544,7 @@ bool tMsgList::add(const char *msg, uint8_t lvl, uint8_t hr, uint8_t min, uint8_
   if (!m_limit)
     m_limit = 64;
 
-  if (m_msg == NULL) {
+  if (m_msg == nullptr) {
     m_msg = mem_rmalloc<char *>(m_limit);
     m_nmsg = 0;
   }
@@ -1576,7 +1576,7 @@ void tMsgList::reset() {
       }
     }
     mem_free(m_msg);
-    m_msg = NULL;
+    m_msg = nullptr;
   }
   m_nmsg = 0;
 }
@@ -1587,7 +1587,7 @@ const char *tMsgList::get(int i) {
       return m_msg[i];
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1752,7 +1752,7 @@ void MsgListConsole::Draw() {
   //	draw all lines until bottom
   y += 2;
   for (i = 0; i < n_conlines; i++) {
-    char *sptr = NULL;
+    char *sptr = nullptr;
     if (i < (n_conlines - 1)) {
       sptr = m_conlines[i + 1];
     }

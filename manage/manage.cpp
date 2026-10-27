@@ -497,7 +497,7 @@ char TableUser[TABLE_NAME_LEN];
 char ErrorString[INFO_STRING_LEN], InfoString[INFO_STRING_LEN];
 mngs_track_lock GlobalTrackLocks[MAX_TRACKLOCKS];
 bool Use_old_update_method = false;
-char *TablefileNameOverride = NULL;
+char *TablefileNameOverride = nullptr;
 // Only valid when first starting the editor
 #define MAX_LOCKLIST_ELEMENTS 1000
 mngs_Pagelock *LockList;
@@ -770,7 +770,7 @@ void mng_CheckToCreateNetTables() {
   ASSERT(Stand_alone != 1);
 
   infile = (CFILE *)cfopen(TableFilename, "rb");
-  if (infile == NULL) {
+  if (infile == nullptr) {
     if (errno == ENOENT) {
       outfile = (CFILE *)cfopen(TableFilename, "wb");
       if (!outfile) {
@@ -1012,9 +1012,9 @@ void mng_ReadDummyPage(CFILE *infile, uint8_t pagetype) {
     break;
   case PAGETYPE_GENERIC:
     mng_ReadNewGenericPage(infile, &genericpage);
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
     break;
   case PAGETYPE_GAMEFILE:
@@ -1057,9 +1057,9 @@ void mng_ReadWriteDummyPage(CFILE *infile, CFILE *outfile, uint8_t pagetype) {
     // Read it in, write it out.
     mng_ReadNewGenericPage(infile, &genericpage);
     mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
     break;
   case PAGETYPE_GAMEFILE:
@@ -1348,14 +1348,14 @@ int mng_LoadNetPages(int show_progress) {
     default:
       Int3(); // Unrecognized pagetype, possible corrupt data following
       cfclose(infile);
-      TablefileNameOverride = NULL;
+      TablefileNameOverride = nullptr;
       return 0;
       break;
     }
     n_pages++;
   }
   LOG_INFO.printf("%d extra pages read.", n_pages);
-  TablefileNameOverride = NULL;
+  TablefileNameOverride = nullptr;
   cfclose(infile);
   return 1;
 }
@@ -1711,9 +1711,9 @@ void ReorderPages(int local) {
     mng_ReadNewGenericPage(infile, &genericpage);
     if (genericpage.objinfo_struct.type == OBJ_POWERUP)
       mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
   }
   // Do standard generics
@@ -1734,9 +1734,9 @@ void ReorderPages(int local) {
     mng_ReadNewGenericPage(infile, &genericpage);
     if (genericpage.objinfo_struct.type != OBJ_POWERUP)
       mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
   }
   // Do countermeasure weapons
@@ -2124,9 +2124,9 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
       mng_ReadNewGenericPage(infile, &genericpage);
       if (!stricmp(srcname, genericpage.objinfo_struct.name)) {
         // This is the page we want to replace, so write the new one out.
-        if (genericpage.objinfo_struct.description != NULL) {
+        if (genericpage.objinfo_struct.description != nullptr) {
           mem_free(genericpage.objinfo_struct.description);
-          genericpage.objinfo_struct.description = NULL;
+          genericpage.objinfo_struct.description = nullptr;
         }
         genericpage.objinfo_struct.icon_name[0] = '\0';
 
@@ -2282,9 +2282,9 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
         mng_WriteNewGenericPage(outfile, &genericpage);
       else
         deleted = 1; // Don't write out the one we want to delete
-      if (genericpage.objinfo_struct.description != NULL) {
+      if (genericpage.objinfo_struct.description != nullptr) {
         mem_free(genericpage.objinfo_struct.description);
-        genericpage.objinfo_struct.description = NULL;
+        genericpage.objinfo_struct.description = nullptr;
       }
       genericpage.objinfo_struct.icon_name[0] = '\0';
       break;
@@ -2716,7 +2716,7 @@ void mng_ClearAddonTables() {
     if (AddOnDataTables[count - 1].Addon_tracklocks) {
       mng_PopAddonPages();
       mem_free(AddOnDataTables[count - 1].Addon_tracklocks);
-      AddOnDataTables[count - 1].Addon_tracklocks = NULL;
+      AddOnDataTables[count - 1].Addon_tracklocks = nullptr;
       AddOnDataTables[count - 1].Num_addon_tracklocks = 0;
     }
 
@@ -2796,7 +2796,7 @@ void mng_CompileAddonPages(void) {
       file = cfopen(AddOnDataTables[curr_tablefile - 2].AddOnTableFilename, "rb");
       LOG_DEBUG << "Compiling addon pages of " << AddOnDataTables[curr_tablefile - 2].AddOnTableFilename;
     }
-    ASSERT(file != NULL);
+    ASSERT(file != nullptr);
 
     // start reading the pages from this tablefile
     // as we come across each page, check to see if it was
@@ -2886,7 +2886,7 @@ void mng_CompileAddonPages(void) {
 // Error checking variables
 bool Loading_addon = false;
 int Data_error_count = 0;
-FILE *Data_error_file = NULL;
+FILE *Data_error_file = nullptr;
 char *Addon_filename;
 
 // Loads and allocs all pages found locally
@@ -2968,7 +2968,7 @@ void mng_LoadAddonPages() {
   mng_CompileAddonPages();
 
   // Close error file
-  if (Data_error_file != NULL) {
+  if (Data_error_file != nullptr) {
     fprintf(Data_error_file, "\nTotal errors: %d", Data_error_count);
     fclose(Data_error_file);
   }
@@ -3037,10 +3037,10 @@ void DataError(const char *fmt, ...) {
     va_end(arglist);
 
     // Open file if not already open
-    if (Data_error_file == NULL) {
+    if (Data_error_file == nullptr) {
       Data_error_file = fopen("datacheck.out", "wt");
 
-      if (Data_error_file == NULL)
+      if (Data_error_file == nullptr)
         return;
 
       last_filename[0] = 0;

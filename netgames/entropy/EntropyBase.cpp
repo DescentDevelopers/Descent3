@@ -103,9 +103,9 @@
 #include "EntropyAux.h"
 
 // the DMFC object, used throughout, and required by all mods
-IDMFC *DMFCBase = NULL;
+IDMFC *DMFCBase = nullptr;
 // our DmfcStats object, used for the F7 screen
-static IDmfcStats *dstat = NULL;
+static IDmfcStats *dstat = nullptr;
 // these are some helper pointers, so we don't have to constantly query
 // DMFC for these arrays, we can query once and just save it for just future use.
 object *dObjects;
@@ -171,7 +171,7 @@ int LabText[NUM_TEAMS];
 static tPlayerPos TimeInRoom[DLLMAX_PLAYERS];
 static bool DisplayScoreScreen;
 int virus_id = -1;
-int *RoomList = NULL;
+int *RoomList = nullptr;
 int RoomCount;
 static int Highlight_bmp = -1;
 static bool display_my_welcome = false;
@@ -364,13 +364,13 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   tsi.flags = DSIF_SHOW_PIC | DSIF_SHOW_OBSERVERICON | DSIF_SEPERATE_BY_TEAM;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 6;
-  tsi.clbDetailedColumnBMP = NULL;
-  tsi.clbDetailedColumn = NULL;
+  tsi.clbDetailedColumnBMP = nullptr;
+  tsi.clbDetailedColumn = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
-  tsi.clbPlayerColumnBMP = NULL;
-  tsi.DetailedColumns = NULL;
+  tsi.clbPlayerColumnBMP = nullptr;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
   tsi.clTeamLine = TeamScoreCallback;
@@ -414,20 +414,20 @@ void DLLFUNCCALL DLLGameClose() {
 
   if (RoomList) {
     free(RoomList);
-    RoomList = NULL;
+    RoomList = nullptr;
   }
 
   DLLDestroyStringTable(StringTable, StringTableSize);
 
   if (dstat) {
     dstat->DestroyPointer();
-    dstat = NULL;
+    dstat = nullptr;
   }
 
   if (DMFCBase) {
     DMFCBase->GameClose();
     DMFCBase->DestroyPointer();
-    DMFCBase = NULL;
+    DMFCBase = nullptr;
   }
 }
 
@@ -489,7 +489,7 @@ void OnClientLevelStart(void) {
 
   if (RoomList) {
     free(RoomList);
-    RoomList = NULL;
+    RoomList = nullptr;
   }
   RoomCount = 0;
   int r;
@@ -1671,7 +1671,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
         DLLrend_SetLighting(LS_NONE);
         DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
         DLLrend_DrawScaledBitmap(name_x - 2, y - 2, score_x + score_width + 2, y + height - 1, Highlight_bmp, 0, 0, 1,
-                                 1, 1.0, -1, NULL);
+                                 1, 1.0, -1, nullptr);
         DLLrend_SetZBufferState(1);
       }
     }

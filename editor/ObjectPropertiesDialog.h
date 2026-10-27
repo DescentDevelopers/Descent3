@@ -42,7 +42,7 @@ class CPropertyPhysicsDlg;
 class CObjectPropertiesDialog : public CDialog {
   // Construction
 public:
-  CObjectPropertiesDialog(CWnd *pParent = NULL); // standard constructor
+  CObjectPropertiesDialog(CWnd *pParent = nullptr); // standard constructor
 
   BOOL m_bBounce;
   float m_fDrag;
@@ -93,7 +93,7 @@ public:
   //{{AFX_VIRTUAL(CObjectPropertiesDialog)
 public:
   virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd,
-                      UINT nID, CCreateContext *pContext = NULL);
+                      UINT nID, CCreateContext *pContext = nullptr);
 
 protected:
   virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support

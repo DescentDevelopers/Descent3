@@ -60,7 +60,7 @@ struct spec_vertex {
 int AllowCombining = 1;
 float GlobalMultiplier = 1.0;
 
-rad_surface *Light_surfaces = NULL;
+rad_surface *Light_surfaces = nullptr;
 
 vector ScratchCenters[MAX_LIGHTMAP_INFOS];
 vector ScratchRVecs[MAX_LIGHTMAP_INFOS];
@@ -82,7 +82,7 @@ float Ambient_red = 0.0f, Ambient_green = 0.0f, Ambient_blue = 0.0f;
 
 void DoTerrainDynamicTable();
 
-uint8_t *Lightmap_mask = NULL;
+uint8_t *Lightmap_mask = nullptr;
 static uint8_t *Lmi_spoken_for;
 int Squeeze_lightmap_handle = -1;
 
@@ -891,7 +891,7 @@ void DoRadiosityForRooms() {
   // Figure out memory for volume lights
   int vw, vh, vd;
   for (int roomnum = 0; roomnum < MAX_ROOMS; roomnum++) {
-    Volume_elements[roomnum] = NULL;
+    Volume_elements[roomnum] = nullptr;
 
     if (Rooms[roomnum].used && !(Rooms[roomnum].flags & RF_EXTERNAL) && !(Rooms[roomnum].flags & RF_NO_LIGHT)) {
       int num_bytes = GetVolumeSizeOfRoom(&Rooms[roomnum], &vw, &vh, &vd);
@@ -950,7 +950,7 @@ void DoRadiosityForRooms() {
   // Allocate enough memory to hold all surfaces
 
   Light_surfaces = mem_rmalloc<rad_surface>(facecount);
-  ASSERT(Light_surfaces != NULL);
+  ASSERT(Light_surfaces != nullptr);
 
   // Set initial surface properties
   max_index = surface_index = 0;
@@ -966,9 +966,9 @@ void DoRadiosityForRooms() {
 
         if (Rooms[i].faces[t].num_verts) {
           Light_surfaces[surface_index].verts = mem_rmalloc<vector>(Rooms[i].faces[t].num_verts);
-          ASSERT(Light_surfaces[surface_index].verts != NULL);
+          ASSERT(Light_surfaces[surface_index].verts != nullptr);
         } else {
-          Light_surfaces[surface_index].verts = NULL;
+          Light_surfaces[surface_index].verts = nullptr;
           mprintf(0, "Room=%d Face %d has no verts!\n", i, t);
         }
 
@@ -976,9 +976,9 @@ void DoRadiosityForRooms() {
           Light_surfaces[surface_index].elements =
                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
                                         Light_surfaces[surface_index].yresolution);
-          ASSERT(Light_surfaces[surface_index].elements != NULL);
+          ASSERT(Light_surfaces[surface_index].elements != nullptr);
         } else {
-          Light_surfaces[surface_index].elements = NULL;
+          Light_surfaces[surface_index].elements = nullptr;
           mprintf(0, "Room=%d Face %d is slivered!\n", i, t);
         }
 
@@ -1036,10 +1036,10 @@ void DoRadiosityForRooms() {
   // Setup satellites
   for (i = 0; i < Terrain_sky.num_satellites; i++, surface_index++) {
     Light_surfaces[surface_index].verts = mem_rmalloc<vector>(3);
-    ASSERT(Light_surfaces[surface_index].verts != NULL);
+    ASSERT(Light_surfaces[surface_index].verts != nullptr);
 
     Light_surfaces[surface_index].elements = mem_rmalloc<rad_element>();
-    ASSERT(Light_surfaces[surface_index].elements != NULL);
+    ASSERT(Light_surfaces[surface_index].elements != nullptr);
 
     Light_surfaces[surface_index].elements[0].verts = mem_rmalloc<vector>(3);
     ASSERT(Light_surfaces[surface_index].elements[0].verts);
@@ -1120,10 +1120,10 @@ void DoRadiosityForRooms() {
 
     if (Light_surfaces[i].elements)
       mem_free(Light_surfaces[i].elements);
-    Light_surfaces[i].elements = NULL;
+    Light_surfaces[i].elements = nullptr;
   }
   mem_free(Light_surfaces);
-  Light_surfaces = NULL;
+  Light_surfaces = nullptr;
   Do_volume_lighting = 0;
 
   // Free specular lighting stuff
@@ -1159,7 +1159,7 @@ void DoRadiosityForCurrentRoom(room *rp) {
 
   mprintf(0, "Setting up...\n");
 
-  ASSERT(rp != NULL);
+  ASSERT(rp != nullptr);
   ASSERT(rp->used);
 
   if (rp->flags & RF_EXTERNAL) {
@@ -1203,7 +1203,7 @@ void DoRadiosityForCurrentRoom(room *rp) {
   // Allocate enough memory to hold all surfaces
 
   Light_surfaces = mem_rmalloc<rad_surface>(facecount);
-  ASSERT(Light_surfaces != NULL);
+  ASSERT(Light_surfaces != nullptr);
 
   // Set initial surface properties
   max_index = surface_index = 0;
@@ -1213,18 +1213,18 @@ void DoRadiosityForCurrentRoom(room *rp) {
 
     if (rp->faces[t].num_verts) {
       Light_surfaces[surface_index].verts = mem_rmalloc<vector>(rp->faces[t].num_verts);
-      ASSERT(Light_surfaces[surface_index].verts != NULL);
+      ASSERT(Light_surfaces[surface_index].verts != nullptr);
     } else {
-      Light_surfaces[surface_index].verts = NULL;
+      Light_surfaces[surface_index].verts = nullptr;
       mprintf(0, "Room=%d Face %d has no verts!\n", rp - Rooms, t);
     }
 
     if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution) {
       Light_surfaces[surface_index].elements = mem_rmalloc<rad_element>(
           Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution);
-      ASSERT(Light_surfaces[surface_index].elements != NULL);
+      ASSERT(Light_surfaces[surface_index].elements != nullptr);
     } else {
-      Light_surfaces[surface_index].elements = NULL;
+      Light_surfaces[surface_index].elements = nullptr;
       mprintf(0, "Room=%d Face %d is slivered!\n", rp - Rooms, t);
     }
 
@@ -1291,10 +1291,10 @@ void DoRadiosityForCurrentRoom(room *rp) {
         mem_free(Light_surfaces[i].elements[t].verts);
 
     mem_free(Light_surfaces[i].elements);
-    Light_surfaces[i].elements = NULL;
+    Light_surfaces[i].elements = nullptr;
   }
   mem_free(Light_surfaces);
-  Light_surfaces = NULL;
+  Light_surfaces = nullptr;
 
   // Finally, squeeze the lightmaps
   SqueezeLightmaps(0, rp - Rooms);
@@ -1414,7 +1414,7 @@ void BuildElementListForRoomFace(int roomnum, int facenum, rad_surface *surf) {
   // Reverse the normal because we're looking "at" the face, not from it
   fvec = -LightmapInfo[lmi_handle].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
@@ -1707,7 +1707,7 @@ int ShootRayForTerrainLight(vector *src, vector *dest, int cellnum) {
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS | FQ_OBJ_BACKFACE | FQ_NO_RELINK |
              FQ_IGNORE_RENDER_THROUGH_PORTALS;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   int fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -1824,7 +1824,7 @@ void DoRadiosityForTerrain() {
     ASSERT(TerrainLightSpeedup[i]);
   }
 
-  if ((MessageBox(NULL,
+  if ((MessageBox(nullptr,
                   "Do you wish to calculate dynamic terrain lighting when radiosity is completed? (Note: Dynamic "
                   "lighting takes a long time)",
                   "Question", MB_YESNO)) == IDYES)
@@ -1859,7 +1859,7 @@ void DoRadiosityForTerrain() {
   ASSERT(terrain_sums[0] && terrain_sums[1]);
 
   Light_surfaces = mem_rmalloc<rad_surface>(total_surfaces);
-  ASSERT(Light_surfaces != NULL);
+  ASSERT(Light_surfaces != nullptr);
 
   // Setup radiosity surfaces
   if (!Ignore_terrain) {
@@ -1893,13 +1893,13 @@ void DoRadiosityForTerrain() {
 
       // Do upper left triangle
       Light_surfaces[i * 2].elements = mem_rmalloc<rad_element>();
-      ASSERT(Light_surfaces[i * 2].elements != NULL);
+      ASSERT(Light_surfaces[i * 2].elements != nullptr);
 
       Light_surfaces[i * 2].elements[0].verts = mem_rmalloc<vector>(3);
       ASSERT(Light_surfaces[i * 2].elements[0].verts);
 
       Light_surfaces[i * 2].verts = mem_rmalloc<vector>(3);
-      ASSERT(Light_surfaces[i * 2].verts != NULL);
+      ASSERT(Light_surfaces[i * 2].verts != nullptr);
 
       Light_surfaces[i * 2].normal = TerrainNormals[MAX_TERRAIN_LOD - 1][seg].normal1;
 
@@ -1933,13 +1933,13 @@ void DoRadiosityForTerrain() {
       // Now do lower right
 
       Light_surfaces[i * 2 + 1].elements = mem_rmalloc<rad_element>();
-      ASSERT(Light_surfaces[i * 2 + 1].elements != NULL);
+      ASSERT(Light_surfaces[i * 2 + 1].elements != nullptr);
 
       Light_surfaces[i * 2 + 1].elements[0].verts = mem_rmalloc<vector>(3);
       ASSERT(Light_surfaces[i * 2 + 1].elements[0].verts);
 
       Light_surfaces[i * 2 + 1].verts = mem_rmalloc<vector>(3);
-      ASSERT(Light_surfaces[i * 2 + 1].verts != NULL);
+      ASSERT(Light_surfaces[i * 2 + 1].verts != nullptr);
 
       Light_surfaces[i * 2 + 1].normal = TerrainNormals[MAX_TERRAIN_LOD - 1][seg].normal2;
 
@@ -1975,10 +1975,10 @@ void DoRadiosityForTerrain() {
   // Setup satellites
   for (i = 0; i < Terrain_sky.num_satellites; i++, surf_index++) {
     Light_surfaces[surf_index].verts = mem_rmalloc<vector>(3);
-    ASSERT(Light_surfaces[surf_index].verts != NULL);
+    ASSERT(Light_surfaces[surf_index].verts != nullptr);
 
     Light_surfaces[surf_index].elements = mem_rmalloc<rad_element>();
-    ASSERT(Light_surfaces[surf_index].elements != NULL);
+    ASSERT(Light_surfaces[surf_index].elements != nullptr);
 
     Light_surfaces[surf_index].elements[0].verts = mem_rmalloc<vector>(3);
     ASSERT(Light_surfaces[surf_index].elements[0].verts);
@@ -2023,11 +2023,11 @@ void DoRadiosityForTerrain() {
         ComputeSurfaceRes(&Light_surfaces[surf_index], &Rooms[i], t);
 
         Light_surfaces[surf_index].verts = mem_rmalloc<vector>(Rooms[i].faces[t].num_verts);
-        ASSERT(Light_surfaces[surf_index].verts != NULL);
+        ASSERT(Light_surfaces[surf_index].verts != nullptr);
 
         Light_surfaces[surf_index].elements = mem_rmalloc<rad_element>(
             Light_surfaces[surf_index].xresolution * Light_surfaces[surf_index].yresolution);
-        ASSERT(Light_surfaces[surf_index].elements != NULL);
+        ASSERT(Light_surfaces[surf_index].elements != nullptr);
 
         if (Rooms[i].faces[t].portal_num != -1 &&
             !(Rooms[i].portals[Rooms[i].faces[t].portal_num].flags & PF_RENDER_FACES))
@@ -2383,7 +2383,7 @@ void BuildLightmapUVs(int *room_list, int *face_list, int count, vector *lightma
   // Reverse the normal because we're looking "at" the face, not from it
   fvec = -Rooms[room_list[0]].faces[face_list[0]].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;

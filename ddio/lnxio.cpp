@@ -71,7 +71,7 @@
 #include "log.h"
 
 bool DDIO_init = false;
-oeLnxApplication *Lnx_app_obj = NULL;
+oeLnxApplication *Lnx_app_obj = nullptr;
 
 // ----------------------------------------------------------------------------
 //	Initialization and destruction functions
@@ -89,7 +89,7 @@ void ddio_InternalClose() {
 
   if (DDIO_init) {
     DDIO_init = false;
-    Lnx_app_obj = NULL;
+    Lnx_app_obj = nullptr;
   } // if
 
   LOG_DEBUG << "DDIO: ddio_InternalClose() returning.";
@@ -124,7 +124,7 @@ bool ddio_GetBinaryPath(char *exec_path, size_t len) {
    return false;
   }
 #else
-  if (GetModuleFileName(NULL, exec_path, len) == 0) {
+  if (GetModuleFileName(nullptr, exec_path, len) == 0) {
     DWORD error = GetLastError();
     LOG_ERROR << "GetModuleFileName failed!";
     return false;

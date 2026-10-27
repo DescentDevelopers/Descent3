@@ -350,7 +350,7 @@ public:
   void ExitObserverMode(void);
 
 private:
-  tPKillerInfo *FindKiller(int slot, tPKillerInfo **prev = NULL);
+  tPKillerInfo *FindKiller(int slot, tPKillerInfo **prev = nullptr);
   tPKillerInfo *CreateKiller(int slot);
   tPKillerInfo *killer_list;
   tPKillerInfo *curr;
@@ -377,7 +377,7 @@ public:
   bool Down(void);
 
   void Execute(void);
-  void Draw(int x, int y, int height, int backgroundbmp, float *ratio = NULL);
+  void Draw(int x, int y, int height, int backgroundbmp, float *ratio = nullptr);
 
   void SetInputFocus(void);
   void LoseInputFocus(void);
@@ -1311,7 +1311,7 @@ public:
   // DMFCBase::SetTimerInterval
   //
   //	Starts a timer event running
-  int SetTimerInterval(void (*func)(void), float intval, float longevity, void (*onkill)(void) = NULL);
+  int SetTimerInterval(void (*func)(void), float intval, float longevity, void (*onkill)(void) = nullptr);
 
   // DMFCBase::KillTimer
   //
@@ -1912,7 +1912,7 @@ public:
   int GetObserverModeBitmap(void);
   float GetFrametime(void);
   float GetGametime(void);
-  float GetRealGametime(bool *ispaused = NULL);
+  float GetRealGametime(bool *ispaused = nullptr);
   float *GetShieldDeltaArray(void);
   float GetHudAspectX(void);
   float GetHudAspectY(void);
@@ -1937,7 +1937,7 @@ public:
   float GetRenderZoom(void);
   IMenuItem *GetOnScreenMenu(void);
   tOSIRISModuleInit *GetOsirisModuleData(void);
-  vis_effect *GetVisEffectArray(int **Highest_viseffect_index_ptr = NULL);
+  vis_effect *GetVisEffectArray(int **Highest_viseffect_index_ptr = nullptr);
   level_info *GetLevelInfo(void);
   char *GetGameArg(int index);
   int GetCameraViewType(int window);

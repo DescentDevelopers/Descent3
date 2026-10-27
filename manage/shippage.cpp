@@ -262,8 +262,8 @@ void mng_WriteShipPage(CFILE *outfile, mngs_ship_page *shippage) {
   int j;
   int size;
 
-  ASSERT(outfile != NULL);
-  ASSERT(shippage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(shippage != nullptr);
 
   cf_WriteByte(outfile, PAGETYPE_SHIP);
 
@@ -485,8 +485,8 @@ void mng_WriteShipPage(CFILE *outfile, mngs_ship_page *shippage) {
 void mng_WriteNewShipPage(CFILE *outfile, mngs_ship_page *shippage) {
   int i;
 
-  ASSERT(outfile != NULL);
-  ASSERT(shippage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(shippage != nullptr);
 
   int offset = StartManagePage(outfile, PAGETYPE_SHIP);
 
@@ -539,7 +539,7 @@ void mng_WriteNewShipPage(CFILE *outfile, mngs_ship_page *shippage) {
 int mng_ReadNewShipPage(CFILE *infile, mngs_ship_page *shippage) {
   int i, j;
 
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
 
   // Defaults
   memset(shippage, 0, sizeof(mngs_ship_page));
@@ -622,7 +622,7 @@ int mng_ReadShipPage(CFILE *infile, mngs_ship_page *shippage) {
     return mng_ReadNewShipPage(infile, shippage);
 
   strcpy(shippage->dying_image_name, "");
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
 
   // Defaults
   memset(shippage, 0, sizeof(mngs_ship_page));
@@ -855,7 +855,7 @@ int mng_FindSpecificShipPage(char *name, mngs_ship_page *shippage, int offset) {
 
       infile = cfopen(tablename, "rb");
     } else {
-      infile = NULL;
+      infile = nullptr;
       if (TablefileNameOverride) {
         infile = cfopen(TablefileNameOverride, "rb");
       }

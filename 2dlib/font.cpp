@@ -171,7 +171,7 @@ inline FONTFILE OPEN_FONT(const char *filename, bool &success) {
   success = false;
   FONTFILE fp = (FONTFILE)cfopen(filename, "rb");
   if (!fp)
-    return NULL;
+    return nullptr;
 
   uint32_t file_id = READ_FONT_INT(fp);
   if (file_id != 0xfeedbaba)
@@ -188,7 +188,7 @@ inline void CLOSE_FONT(FONTFILE ffile) { cfclose(ffile); }
 //	----------------------------------------------------------------------------
 
 gr_font_record grFont::m_FontList[MAX_FONTS];
-grMemorySurface *grFont::m_CharSurf = NULL;
+grMemorySurface *grFont::m_CharSurf = nullptr;
 
 void grFont::init_system() {
   for (int i = 0; i < MAX_FONTS; i++) {
@@ -198,12 +198,12 @@ void grFont::init_system() {
 
   if (grFont::m_CharSurf) {
     delete grFont::m_CharSurf;
-    grFont::m_CharSurf = NULL;
+    grFont::m_CharSurf = nullptr;
   }
 
   if (!grFont::m_CharSurf) {
     grFont::m_CharSurf = new grMemorySurface;
-    grFont::m_CharSurf->init(0, 0, BPP_16, NULL, 0, 0, "char_surf");
+    grFont::m_CharSurf->init(0, 0, BPP_16, nullptr, 0, 0, "char_surf");
   }
 
   atexit(grFont::close_system);
@@ -212,7 +212,7 @@ void grFont::init_system() {
 void grFont::close_system() {
   if (grFont::m_CharSurf) {
     delete grFont::m_CharSurf;
-    grFont::m_CharSurf = NULL;
+    grFont::m_CharSurf = nullptr;
   }
 
   // we should free any fonts currently allocated here.
@@ -229,7 +229,7 @@ void grFont::close_system() {
 
 int grFont::register_font(char *fontname, char *filename) {
   /* look for a slot with no fontname and place fontname in it */
-  ASSERT(fontname != NULL);
+  ASSERT(fontname != nullptr);
 
   int i;
 
@@ -269,7 +269,7 @@ void grFont::init(const char *fontname) {
 
   //	Look for this font in the list, check if it has any references, and load it if
   //	there are none.
-  if (fontname == NULL) {
+  if (fontname == nullptr) {
     slot = 0;
   } else {
     for (i = 0; i < MAX_FONTS; i++) {
@@ -288,14 +288,14 @@ void grFont::init(const char *fontname) {
     ASSERT(slot != -1);
 
     //	clear up surface and bitmap lists
-    grFont::m_FontList[slot].ch_w = NULL;
-    grFont::m_FontList[slot].ch_h = NULL;
-    grFont::m_FontList[slot].ch_u = NULL;
-    grFont::m_FontList[slot].ch_v = NULL;
+    grFont::m_FontList[slot].ch_w = nullptr;
+    grFont::m_FontList[slot].ch_h = nullptr;
+    grFont::m_FontList[slot].ch_u = nullptr;
+    grFont::m_FontList[slot].ch_v = nullptr;
 
     for (i = 0; i < MAX_FONT_BITMAPS; i++) {
       grFont::m_FontList[slot].bmps[i] = -1;
-      grFont::m_FontList[slot].surfs[i] = NULL;
+      grFont::m_FontList[slot].surfs[i] = nullptr;
     }
 
     //	We must load this font from the 'hogfile'
@@ -402,7 +402,7 @@ void grFont::load(char *filename, int slot) {
     for (i = 0; i < num_char; i++)
       ft->char_widths[i] = READ_FONT_SHORT(ff);
   } else {
-    ft->char_widths = NULL;
+    ft->char_widths = nullptr;
   }
 
   //	Read in pixel data.
@@ -438,7 +438,7 @@ void grFont::load(char *filename, int slot) {
   }
 
   //	Read in kerning data
-  ft->kern_data = NULL;
+  ft->kern_data = nullptr;
 
   //	Then read in
   CLOSE_FONT(ff);
@@ -711,7 +711,7 @@ uint8_t *grFont::get_kern_info(uint8_t c1, uint8_t c2) {
   //		else p+=3;
   //	}
 
-  return NULL;
+  return nullptr;
 }
 
 void grFont::charblt16(grSurface *dsf, ddgr_color col, int dx, int dy, grSurface *ssf, int sx, int sy, int sw, int sh) {

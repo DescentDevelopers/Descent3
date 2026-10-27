@@ -1599,7 +1599,7 @@ get_height:;
     if (Objects[o].type != OBJ_NONE) {
       vector new_pos = Objects[o].pos;
       new_pos.y() += delta_y;
-      ObjSetPos(&Objects[o], &new_pos, Objects[o].roomnum, NULL, false);
+      ObjSetPos(&Objects[o], &new_pos, Objects[o].roomnum, nullptr, false);
     }
 
   // Drop all the paths

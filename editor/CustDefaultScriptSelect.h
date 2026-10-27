@@ -31,7 +31,7 @@
 class CCustDefaultScriptSelect : public CDialog {
   // Construction
 public:
-  CCustDefaultScriptSelect(CWnd *pParent = NULL); // standard constructor
+  CCustDefaultScriptSelect(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CCustDefaultScriptSelect)

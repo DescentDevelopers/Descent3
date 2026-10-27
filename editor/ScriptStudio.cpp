@@ -110,7 +110,7 @@ CScriptStudio::CScriptStudio(CWnd *pParent /*=NULL*/) : CDialog(CScriptStudio::I
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
 
-  m_pdlgFindReplace = NULL;
+  m_pdlgFindReplace = nullptr;
 }
 
 void CScriptStudio::DoDataExchange(CDataExchange *pDX) {
@@ -313,7 +313,7 @@ void CScriptStudio::OnOsirisImportScript() {
   CString path;
   CString filter = "All Files (*.*)|*.*||";
 
-  CFileDialog dlg(true, 0, 0, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
   if (dlg.DoModal() == IDOK) {
     path = dlg.GetPathName();
     ImportScript(path.GetBuffer(1));
@@ -324,7 +324,7 @@ void CScriptStudio::OnOsirisExportScript() {
   CString path;
   CString filter = "All Files (*.*)|*.*||";
 
-  CFileDialog dlg(false, 0, 0, OFN_OVERWRITEPROMPT, (LPCTSTR)filter, this);
+  CFileDialog dlg(false, nullptr, nullptr, OFN_OVERWRITEPROMPT, (LPCTSTR)filter, this);
   if (dlg.DoModal() == IDOK) {
     path = dlg.GetPathName();
     ExportScript(path.GetBuffer(1));
@@ -366,7 +366,7 @@ void CScriptStudio::OnUpdateOsirisPaste(CCmdUI *pCmdUI) {
 LONG CScriptStudio::OnFindReplace(WPARAM wParam, LPARAM lParam) {
   // Get a pointer to the calling dialog
   CFindReplaceDialog *pDlg = CFindReplaceDialog::GetNotifier(lParam);
-  ASSERT(pDlg != NULL);
+  ASSERT(pDlg != nullptr);
 
   // See what the user is up to out there...
   if (pDlg->IsTerminating()) {
@@ -418,22 +418,22 @@ void CScriptStudio::InitFindReplace(BOOL bFind) {
   // the pointer is still non-NULL, but the object is already
   // dead, so reset the pointer!
   //
-  m_pdlgFindReplace = NULL;
+  m_pdlgFindReplace = nullptr;
   m_LastWord = " ";
 
   // Construct the dialog
   m_pdlgFindReplace = new CFindReplaceDialog;
-  ASSERT(m_pdlgFindReplace != NULL);
+  ASSERT(m_pdlgFindReplace != nullptr);
 
   // Initialize the dialog
-  if (!m_pdlgFindReplace->Create(bFind, 0, 0, FR_DOWN, this)) {
+  if (!m_pdlgFindReplace->Create(bFind, nullptr, nullptr, FR_DOWN, this)) {
     mprintf(0, "Error allocating find/replace dialog!");
-    m_pdlgFindReplace = NULL;
+    m_pdlgFindReplace = nullptr;
     return;
   }
 
   // Display the dialog
-  ASSERT(m_pdlgFindReplace != NULL);
+  ASSERT(m_pdlgFindReplace != nullptr);
   m_pdlgFindReplace->SetActiveWindow();
   m_pdlgFindReplace->ShowWindow(SW_SHOW);
 }

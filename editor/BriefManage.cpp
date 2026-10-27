@@ -127,7 +127,7 @@ void CBriefManage::OnAdd() {
     char directory[32], ext[32];
     bool know_dir = false;
 
-    ddio_SplitPath(filename, NULL, real_filename, ext);
+    ddio_SplitPath(filename, nullptr, real_filename, ext);
     strcat(real_filename, ext);
 
     if (!know_dir && !stricmp(ext, ".ogf")) {
@@ -260,7 +260,7 @@ void CBriefManage::AddString(char *filename, int pagetype) {
     int i;
 
     char ext[32];
-    ddio_SplitPath(filename, NULL, real_filename, ext);
+    ddio_SplitPath(filename, nullptr, real_filename, ext);
     strcat(real_filename, ext);
     pagename = real_filename;
 
