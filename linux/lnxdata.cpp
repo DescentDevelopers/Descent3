@@ -220,7 +220,7 @@ void oeLnxAppDatabase::get_user_name(char *buffer, size_t *size) {
 #if defined(POSIX)
   struct passwd *pwuid = getpwuid(geteuid());
 
-  if ((pwuid != NULL) && (pwuid->pw_name != NULL)) {
+  if ((pwuid != nullptr) && (pwuid->pw_name != nullptr)) {
     strncpy(buffer, pwuid->pw_name, (*size) - 1);
     buffer[(*size) - 1] = '\0';
     *size = strlen(buffer);

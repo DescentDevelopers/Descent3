@@ -119,7 +119,7 @@ bool ddio_GetBinaryPath(char *exec_path, size_t len) {
     return false;
   }
 #elif defined(__LINUX__)
-  if (realpath("/proc/self/exe", exec_path) == NULL) {
+  if (realpath("/proc/self/exe", exec_path) == nullptr) {
    perror("realpath");
    return false;
   }

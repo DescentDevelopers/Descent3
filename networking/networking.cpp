@@ -2106,7 +2106,7 @@ int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
 
       // rcg06212000 join the thread.
 #if defined(POSIX)
-      SDL_WaitThread(lastaslu->threadId, NULL);
+      SDL_WaitThread(lastaslu->threadId, nullptr);
       free(lastaslu);
 #endif
     } // if
@@ -2179,7 +2179,7 @@ int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
 
       // rcg06212000 join the thread.
 #if defined(POSIX)
-      SDL_WaitThread(lastaslu->threadId, NULL);
+      SDL_WaitThread(lastaslu->threadId, nullptr);
 #endif
     } // if
     lastaslu = nullptr;
@@ -2189,7 +2189,7 @@ int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
     if (aslu.done) {
       // rcg06212000 join the thread.
 #if defined(POSIX)
-      SDL_WaitThread(aslu.threadId, NULL);
+      SDL_WaitThread(aslu.threadId, nullptr);
 #endif
 
       lastaslu = nullptr;
@@ -2198,7 +2198,7 @@ int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
     } else if (aslu.error) {
       // rcg06212000 join the thread.
 #if defined(POSIX)
-      SDL_WaitThread(aslu.threadId, NULL);
+      SDL_WaitThread(aslu.threadId, nullptr);
 #else
       mem_free(lastaslu);
 #endif
