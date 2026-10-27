@@ -543,7 +543,7 @@ void *mem_malloc_sub(int size, const char *file, int line) {
   int errors;
   if (mi->ptr == NULL) {
     errors = GetLastError();
-    LOG_DEBUG << "Unable to alloc memory in mem_malloc_sub()!");
+    LOG_DEBUG << "Unable to alloc memory in mem_malloc_sub()!";
     Int3();
     ASSERT(mi->ptr);
     Error("Out of memory, unable to continue.");
