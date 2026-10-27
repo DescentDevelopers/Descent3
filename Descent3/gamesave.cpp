@@ -542,9 +542,9 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 
     LOG_DEBUG.printf("savegame slot=%d", id - SAVE_HOTSPOT_ID);
 
-    ddio_MakePath(savegame_dir, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "savegame", NULL);
+    ddio_MakePath(savegame_dir, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "savegame", nullptr);
     snprintf(filename, sizeof(filename), "saveg00%d", (id - SAVE_HOTSPOT_ID));
-    ddio_MakePath(pathname, savegame_dir, filename, NULL);
+    ddio_MakePath(pathname, savegame_dir, filename, nullptr);
 
     if (GetGameStateInfo(pathname, desc, &bm_handle)) {
       if (bm_handle > 0) {

@@ -542,7 +542,7 @@ int mng_IsNetworkUp() {
   Database->read("net directory", net_dir, &dirlen);
   if (net_dir[0] == 0)
     return 0;
-  ddio_MakePath(dir, net_dir, "data", NULL);
+  ddio_MakePath(dir, net_dir, "data", nullptr);
 
   std::error_code ec;
   std::filesystem::create_directories(dir, ec);
@@ -690,12 +690,12 @@ int mng_InitLocalTables() {
   LocalCustomGraphicsDir = cf_GetWritableBaseDirectory() / "custom" / "graphics";
   LocalRoomsDir = localdir / "data" / "rooms";
   LocalBriefingDir = localdir / "data" / "briefings";
-  ddio_MakePath(LocalScriptDir, LocalD3Dir, "data", "scripts", NULL);
+  ddio_MakePath(LocalScriptDir, LocalD3Dir, "data", "scripts", nullptr);
   LocalMiscDir = localdir / "data" / "misc";
   LocalArtDir = localdir / "data" / "art";
   LocalMusicDir = localdir / "data" / "music";
   LocalVoiceDir = localdir / "data" / "voice";
-  ddio_MakePath(LocalLevelsDir, LocalD3Dir, "data", "levels", NULL);
+  ddio_MakePath(LocalLevelsDir, LocalD3Dir, "data", "levels", nullptr);
   cf_SetSearchPath(LocalD3Dir);
 #ifndef RELEASE
   cf_SetSearchPath(LocalLevelsDir);
@@ -714,8 +714,8 @@ int mng_InitLocalTables() {
 #endif
 
   if (Network_up) {
-    ddio_MakePath(LocalTableFilename, PATH_TO_CSTR(LocalTableDir), LOCAL_TABLE, NULL);
-    ddio_MakePath(LocalTempTableFilename, PATH_TO_CSTR(LocalTableDir), TEMP_LOCAL_TABLE, NULL);
+    ddio_MakePath(LocalTableFilename, PATH_TO_CSTR(LocalTableDir), LOCAL_TABLE, nullptr);
+    ddio_MakePath(LocalTempTableFilename, PATH_TO_CSTR(LocalTableDir), TEMP_LOCAL_TABLE, nullptr);
   } else {
     strcpy(LocalTableFilename, LOCAL_TABLE);
     strcpy(LocalTempTableFilename, TEMP_LOCAL_TABLE);
@@ -739,7 +739,7 @@ int mng_InitNetTables() {
   NetSoundsDir = netdir / "data" / "sounds";
   NetRoomsDir = netdir / "data" / "rooms";
   NetBriefingDir = netdir / "data" / "briefings";
-  ddio_MakePath(NetScriptDir, NetD3Dir, "data", "scripts", NULL);
+  ddio_MakePath(NetScriptDir, NetD3Dir, "data", "scripts", nullptr);
   NetMiscDir = netdir / "data" / "misc";
   ManageGraphicsDir = netdir / "data" / "graphics";
   NetTableDir = netdir / "data" / "tables";
@@ -747,11 +747,11 @@ int mng_InitNetTables() {
   NetMusicDir = netdir / "data" / "music";
   NetVoiceDir = netdir / "data" / "voice";
   TableLockFilename = NetTableDir / "table.lok";
-  ddio_MakePath(BackupLockFilename, PATH_TO_CSTR(NetTableDir), "tablelok.bak", NULL);
-  ddio_MakePath(BackupTableFilename, PATH_TO_CSTR(NetTableDir), "table.bak", NULL);
-  ddio_MakePath(TableFilename, PATH_TO_CSTR(NetTableDir), NET_TABLE, NULL);
-  ddio_MakePath(TempTableLockFilename, PATH_TO_CSTR(NetTableDir), "lock.tmp", NULL);
-  ddio_MakePath(TempTableFilename, PATH_TO_CSTR(NetTableDir), TEMP_NET_TABLE, NULL);
+  ddio_MakePath(BackupLockFilename, PATH_TO_CSTR(NetTableDir), "tablelok.bak", nullptr);
+  ddio_MakePath(BackupTableFilename, PATH_TO_CSTR(NetTableDir), "table.bak", nullptr);
+  ddio_MakePath(TableFilename, PATH_TO_CSTR(NetTableDir), NET_TABLE, nullptr);
+  ddio_MakePath(TempTableLockFilename, PATH_TO_CSTR(NetTableDir), "lock.tmp", nullptr);
+  ddio_MakePath(TempTableFilename, PATH_TO_CSTR(NetTableDir), TEMP_NET_TABLE, nullptr);
   LockerFile = NetTableDir / "locker";
   VersionFile = NetTableDir / "TableVersion";
 

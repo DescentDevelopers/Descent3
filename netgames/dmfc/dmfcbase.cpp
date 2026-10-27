@@ -1238,25 +1238,25 @@ void DMFCBase::GameInit(int teams) {
   RegisterPacketReceiver(SPID_REMOTEKEY, &DMFCBase::GetRemoteKey);
   RegisterPacketReceiver(SPID_REALGAMETIME, &DMFCBase::GetRealGametimePacket);
   AddWeaponHash("Laser", "Laser Level 1 - Red", "Laser Level 2 - Blue", "Laser Level 3 - Purple",
-                "Laser Level 4 - Green", NULL);
-  AddWeaponHash("Vauss", "Vauss Spark", NULL);
-  AddWeaponHash("Raygun", NULL);
-  AddWeaponHash("Plasma", "plasma sparks", NULL);
-  AddWeaponHash("Fusion", NULL);
-  AddWeaponHash("Super Laser", "Laser Level 5 -Yellow", "Laser Level 6 -White", NULL);
-  AddWeaponHash("Mass Driver", NULL);
-  AddWeaponHash("Napalm", NULL);
-  AddWeaponHash("EMDyellowleft", "EMDyellowright", "EMDgreenleft", "EMDgreenright", NULL);
-  AddWeaponHash("Omega", NULL);
-  AddWeaponHash("Concussion", NULL);
-  AddWeaponHash("Homing", NULL);
-  AddWeaponHash("Smart", "SmartPlasmaHomers", NULL);
-  AddWeaponHash("Mega", "MegaExplosion", NULL);
-  AddWeaponHash("Frag", "frag particles", NULL);
-  AddWeaponHash("Guided", NULL);
-  AddWeaponHash("NapalmRocket", "NapalmBlob", "NapalmParticles", NULL);
-  AddWeaponHash("Cyclone Pack", "Swarm", NULL);
-  AddWeaponHash("Yellow Flare", NULL);
+                "Laser Level 4 - Green", nullptr);
+  AddWeaponHash("Vauss", "Vauss Spark", nullptr);
+  AddWeaponHash("Raygun", nullptr);
+  AddWeaponHash("Plasma", "plasma sparks", nullptr);
+  AddWeaponHash("Fusion", nullptr);
+  AddWeaponHash("Super Laser", "Laser Level 5 -Yellow", "Laser Level 6 -White", nullptr);
+  AddWeaponHash("Mass Driver", nullptr);
+  AddWeaponHash("Napalm", nullptr);
+  AddWeaponHash("EMDyellowleft", "EMDyellowright", "EMDgreenleft", "EMDgreenright", nullptr);
+  AddWeaponHash("Omega", nullptr);
+  AddWeaponHash("Concussion", nullptr);
+  AddWeaponHash("Homing", nullptr);
+  AddWeaponHash("Smart", "SmartPlasmaHomers", nullptr);
+  AddWeaponHash("Mega", "MegaExplosion", nullptr);
+  AddWeaponHash("Frag", "frag particles", nullptr);
+  AddWeaponHash("Guided", nullptr);
+  AddWeaponHash("NapalmRocket", "NapalmBlob", "NapalmParticles", nullptr);
+  AddWeaponHash("Cyclone Pack", "Swarm", nullptr);
+  AddWeaponHash("Yellow Flare", nullptr);
 
   SetWeaponDeathMessage("Laser", DTXT_DEATHLASER, false);
   SetWeaponDeathMessage("Vauss", DTXT_DEATHVAUSS, false);
@@ -3950,7 +3950,7 @@ void DMFCBase::GenerateStatFilename(char *filename, const char *root, bool end_o
   }
 
   // build the path info here
-  DLLddio_MakePath(filename, LocalD3Dir, "netgames", fname, NULL);
+  DLLddio_MakePath(filename, LocalD3Dir, "netgames", fname, nullptr);
 }
 
 //	DMFCBase::IsPlayerObserver
@@ -4841,8 +4841,8 @@ void DMFCBase::ReadInHostsAllowDeny(void) {
   bool allow_exist, deny_exist;
 
   // build the path info here
-  DLLddio_MakePath(allow_fn, LocalD3Dir, "netgames", "hosts.allow", NULL);
-  DLLddio_MakePath(deny_fn, LocalD3Dir, "netgames", "hosts.deny", NULL);
+  DLLddio_MakePath(allow_fn, LocalD3Dir, "netgames", "hosts.allow", nullptr);
+  DLLddio_MakePath(deny_fn, LocalD3Dir, "netgames", "hosts.deny", nullptr);
 
   allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
   deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
@@ -4924,7 +4924,7 @@ void DMFCBase::ParseStartupScript(void) {
     mprintf(0, "Override AUTOEXEC.DMFC to %s\n", path);
   } else {
     // use the default autoexec.dmfc
-    DLLddio_MakePath(path, LocalD3Dir, "netgames", "autoexec.dmfc", NULL);
+    DLLddio_MakePath(path, LocalD3Dir, "netgames", "autoexec.dmfc", nullptr);
   }
 
   DLLOpenCFILE(&file, path, "rt");

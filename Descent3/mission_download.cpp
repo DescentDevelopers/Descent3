@@ -680,7 +680,7 @@ void _get_zipfilename(char *output, char *directory, char *zipfilename) {
   else
     s = zipfilename;
 
-  ddio_MakePath(output, directory, s, NULL);
+  ddio_MakePath(output, directory, s, nullptr);
 }
 
 // return 0 on failure
@@ -697,7 +697,7 @@ static int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const st
   char output_filename[_MAX_PATH];
   char buffer[256 + 32];
 
-  ddio_MakePath(mission_directory, LocalD3Dir, "missions", NULL);
+  ddio_MakePath(mission_directory, LocalD3Dir, "missions", nullptr);
 
   // now go through the zip file and extract all the files out that we can
   ZIP zfile;

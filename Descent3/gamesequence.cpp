@@ -2045,7 +2045,7 @@ void RunGameMenu() {
       if (Game_mode & GM_MULTI)
         AddHUDMessage(TXT_NOPAUSEINMULTI);
       else {
-        DoMessageBoxAdvanced(TXT(TXI_HLPPAUSE), TXT_PRESSOKTOCONT, TXT_OK, KEY_PAUSE, NULL);
+        DoMessageBoxAdvanced(TXT(TXI_HLPPAUSE), TXT_PRESSOKTOCONT, TXT_OK, KEY_PAUSE, nullptr);
         // DoMessageBox(TXT(TXI_HLPPAUSE),TXT_PRESSOKTOCONT, MSGBOX_OK);
       }
       break;
@@ -2060,7 +2060,7 @@ void RunGameMenu() {
       // Weird code for the training mission and the first time you play...
       if (Current_mission.filename && (stricmp(Current_mission.filename, "training.mn3") == 0) && (FirstGame)) {
         ret = DoMessageBoxAdvanced(TXT_TRAININGABORTTITLE, TXT_TRAININGABORTTEXT, TXT_SKIP, KEY_S, TXT_ABORT, KEY_A,
-                                   TXT_CANCEL, KEY_ESC, NULL);
+                                   TXT_CANCEL, KEY_ESC, nullptr);
         if (ret == 2) {
           // Cancel
           ret = 0;

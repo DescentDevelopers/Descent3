@@ -1834,7 +1834,7 @@ char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id);
 #define MULTI_ASSERT_NOMESSAGE(x)                                                                                      \
   {                                                                                                                    \
     if ((x) == 0) {                                                                                                    \
-      BailOnMultiplayer(NULL);                                                                                         \
+      BailOnMultiplayer(nullptr);                                                                                         \
       return;                                                                                                          \
     }                                                                                                                  \
   }
@@ -2668,8 +2668,8 @@ void MultiDoPlayerEnteredGame(uint8_t *data) {
   // Verify object number
   int objnum = MultiGetShort(data, &count);
 
-  MULTI_ASSERT(objnum == Players[slot].objnum, NULL);
-  MULTI_ASSERT(Objects[objnum].id == slot, NULL);
+  MULTI_ASSERT(objnum == Players[slot].objnum, nullptr);
+  MULTI_ASSERT(Objects[objnum].id == slot, nullptr);
 
   // Get the player's network address
   memcpy(&NetPlayers[slot].addr, data + count, sizeof(network_address));
@@ -2720,7 +2720,7 @@ void MultiDoPlayerEnteredGame(uint8_t *data) {
 // Sends to "slot" and describes player "which"
 // Server only
 void MultiSendPlayerEnteredGame(int which) {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -2847,7 +2847,7 @@ void MultiSendDamagePlayer(int slot, int weapon_id, int type, float amount) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   size_offset = START_DATA(MP_DAMAGE_PLAYER, data, &count, 1);
   MultiAddByte(slot, data, &count);
@@ -2882,7 +2882,7 @@ void MultiDoDamagePlayer(uint8_t *data) {
 void MultiMakePlayerGhost(int slot) {
   object *obj = &Objects[Players[slot].objnum];
 
-  MULTI_ASSERT(obj->id == slot, NULL); // Get Jason
+  MULTI_ASSERT(obj->id == slot, nullptr); // Get Jason
 
   obj->type = OBJ_GHOST;
   obj->movement_type = MT_NONE;
@@ -2901,7 +2901,7 @@ void MultiMakePlayerGhost(int slot) {
 // Makes the passed in player real (non-ghost)
 void MultiMakePlayerReal(int slot) {
   object *obj = &Objects[Players[slot].objnum];
-  MULTI_ASSERT(obj->id == slot, NULL); // Get Jason
+  MULTI_ASSERT(obj->id == slot, nullptr); // Get Jason
 
   obj->type = OBJ_PLAYER;
 
@@ -2942,7 +2942,7 @@ void MultiDoDonePlayers(uint8_t *data) {
 
 // Server is telling us that it is done sending buildings
 void MultiDoDoneBuildings(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -2953,7 +2953,7 @@ void MultiDoDoneBuildings(uint8_t *data) {
 
 // Server is telling us that it is done sending objects
 void MultiDoDoneObjects(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -2993,7 +2993,7 @@ void MultiDoDoneObjects(uint8_t *data) {
 
 // Server is telling us that it is done sending objects
 void MultiDoDoneWorldStates(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -3538,7 +3538,7 @@ void MultiDoConnectBail() {
 
 // Some DLL is telling us to end the level!
 void MultiEndLevel() {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
   SetGameState(GAMESTATE_LVLEND);
   PrintDedicatedMessage(TXT_DS_ENDINGLEVEL);
   Multi_bail_ui_menu = true;
@@ -3574,7 +3574,7 @@ void MultiDoLevelEnded(uint8_t *data) {
 
 // Tells all the clients to end the level
 void MultiSendLevelEnded(int success, int next_level) {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -3733,7 +3733,7 @@ void MultiDoDisconnect(uint8_t *data) {
 void MultiDoServerRejectedChecksum(uint8_t *data) {
   int count = 0;
 
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   SKIP_HEADER(data, &count);
   ShowProgressScreen(TXT_MLTLEVELNOMATCH);
@@ -3745,7 +3745,7 @@ void MultiDoServerRejectedChecksum(uint8_t *data) {
 void MultiDoJoinResponse(uint8_t *data) {
   int count = 0;
 
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   SKIP_HEADER(data, &count);
 
@@ -7998,23 +7998,23 @@ char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
     break;
   case NETFILE_ID_SHIP_TEX:
     if (NetPlayers[playernum].ship_logo[0])
-      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "graphics", NetPlayers[playernum].ship_logo, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "graphics", NetPlayers[playernum].ship_logo, nullptr);
     break;
   case NETFILE_ID_VOICE_TAUNT1:
     if (NetPlayers[playernum].voice_taunt1[0])
-      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt1, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt1, nullptr);
     break;
   case NETFILE_ID_VOICE_TAUNT2:
     if (NetPlayers[playernum].voice_taunt2[0])
-      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt2, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt2, nullptr);
     break;
   case NETFILE_ID_VOICE_TAUNT3:
     if (NetPlayers[playernum].voice_taunt3[0])
-      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt3, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt3, nullptr);
     break;
   case NETFILE_ID_VOICE_TAUNT4:
     if (NetPlayers[playernum].voice_taunt4[0])
-      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt4, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt4, nullptr);
     break;
   default:
     LOG_FATAL.printf("Unknown id (%d) passed to GetFileNameFromPlayerAndID()", id);

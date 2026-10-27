@@ -275,7 +275,7 @@ void OutrageMusicSeq::SetVolume(float vol) {
       m_active_song->stream_idle = false;                                                                              \
       m_active_song->request_stop = false;                                                                             \
     }                                                                                                                  \
-    m_pending_song = NULL;                                                                                             \
+    m_pending_song = nullptr;                                                                                             \
   } while (0)
 
 //	runs a frame of input.

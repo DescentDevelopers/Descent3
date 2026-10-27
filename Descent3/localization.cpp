@@ -255,7 +255,7 @@ void FixFilenameCase(const char *filename, char *newfile) {
   strcat(file, ext);
 
   if (strlen(path) > 0)
-    ddio_MakePath(newfile, path, file, NULL);
+    ddio_MakePath(newfile, path, file, nullptr);
   else
     strcpy(newfile, file);
 }
