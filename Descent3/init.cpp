@@ -1202,8 +1202,8 @@ void SaveGameSettings() {
   else
     Database->write("Default_pilot", " ", 2);
 
-  Database->write("GAME_base_directory", (const char*)config_base_directory.u8string().c_str(),
-                  strlen((const char*)config_base_directory.u8string().c_str()) + 1);
+  Database->write("GAME_base_directory", PATH_TO_CSTR(config_base_directory),
+                  strlen(PATH_TO_CSTR(config_base_directory)) + 1);
 }
 
 /*
@@ -1984,7 +1984,7 @@ void SetupTempDirectory(void) {
   std::error_code ec;
   std::filesystem::create_directories(Descent3_temp_directory, ec);
   if (ec) {
-    Error("Could not create temporary directory: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Could not create temporary directory: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -1993,7 +1993,7 @@ void SetupTempDirectory(void) {
   // verify that we can write to the temp directory
   if (tempfilename.empty()) {
     LOG_WARNING << "Unable to get temp file name";
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Unable to set temporary directory to: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2002,7 +2002,7 @@ void SetupTempDirectory(void) {
   if (!file) {
     // unable to open file for writing
     LOG_WARNING << "Unable to open temp file name for writing";
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Unable to set temporary directory to: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2015,7 +2015,7 @@ void SetupTempDirectory(void) {
     // unable to open file for reading
     LOG_WARNING << "Unable to open temp file name for reading";
     std::filesystem::remove(tempfilename);
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Unable to set temporary directory to: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2024,7 +2024,7 @@ void SetupTempDirectory(void) {
     LOG_WARNING << "Temp file verify failed";
     cfclose(file);
     std::filesystem::remove(tempfilename);
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory.u8string().c_str());
+    Error("Unable to set temporary directory to: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
 
@@ -2039,19 +2039,19 @@ void SetupTempDirectory(void) {
   if (!ddio_CreateLockFile(std::filesystem::path(Descent3_temp_directory))) {
     LOG_WARNING << "Lock file NOT created in temp dir " << Descent3_temp_directory;
     Error("Unable to set temporary directory to: \"%s\"\nUnable to create lock file",
-          Descent3_temp_directory.u8string().c_str());
+          PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }
   // restore working dir
-  ddio_SetWorkingDir((const char*)cf_GetWritableBaseDirectory().u8string().c_str());
+  ddio_SetWorkingDir(PATH_TO_CSTR(cf_GetWritableBaseDirectory()));
 }
 
 void DeleteTempFiles() {
   ddio_DoForeachFile(Descent3_temp_directory, std::regex("d3[smocti].+\\.tmp"), [](const std::filesystem::path &path) {
     std::error_code ec;
     std::filesystem::remove(path, ec);
-    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", (const char*)path.u8string().c_str(),
-                              (const char*)ec.message().c_str());
+    LOG_WARNING_IF(ec).printf("Unable to remove temporary file %s: %s\n", PATH_TO_CSTR(path),
+                              ec.message().c_str());
   });
 }
 
@@ -2061,12 +2061,9 @@ void DeleteTempFiles() {
  *
  */
 
-static int Init_old_screen_mode;
 static void (*Init_old_ui_callback)() = NULL;
 static bool Init_old_control_mode;
-static bool Init_ui_cursor_visible;
 static bool Init_was_game_paused = false;
-static pilot Init_old_pilot;
 
 // TODO: MTS: Unused in project
 void ShutdownD3() {
@@ -2096,81 +2093,14 @@ void ShutdownD3() {
     Sound_system.PauseSounds();
   }
 
-  SaveControlConfig(&Init_old_pilot);
   CloseControls();
 
   //	shutdown cinematics.
 
   //	shutdown screen.
-  Init_ui_cursor_visible = ui_IsCursorVisible();
-  Init_old_screen_mode = GetScreenMode();
   Init_old_ui_callback = GetUICallback();
   SetScreenMode(SM_NULL);
 
   // shutdown IO
   ddio_Close();
-}
-
-// TODO: MTS: unused in project
-//	This function restarts all game systems
-void RestartD3() {
-  ddio_init_info io_info;
-
-  if (!Init_systems_init)
-    return;
-
-  LOG_INFO << "Restarting D3...";
-
-  if (!FindArg("-windowed")) {
-    if (Dedicated_server) {
-      ddio_MouseMode(MOUSE_STANDARD_MODE);
-    } else {
-      ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
-    }
-  }
-
-  // startup io
-  io_info.obj = Descent;
-  if (!ddio_Init(&io_info)) {
-    Error("I/O initialization failed.");
-  }
-
-  //	startup screen.
-  ddio_KeyFlush();
-  SetScreenMode(Init_old_screen_mode);
-  SetUICallback(Init_old_ui_callback);
-  if (Init_ui_cursor_visible)
-    ui_ShowCursor();
-
-  //	startup game systems
-  InitControls();
-  LoadControlConfig(&Init_old_pilot);
-
-  // resume game sounds and time as needed
-  if (GetFunctionMode() == GAME_MODE) {
-    if (!(Game_mode & GM_MULTI)) {
-      if (!Init_was_game_paused) {
-        ResumeGame();
-      } else {
-        D3MusicResume();
-      }
-    }
-  } else {
-    Sound_system.ResumeSounds();
-    D3MusicResume();
-  }
-
-  // resume controller if it was active before alt-tabbing out.
-  if (Init_old_control_mode) {
-    ResumeControls();
-  }
-
-  // Restart Force Feedback
-  ForceRestart();
-
-  //	startup cinematics.
-
-  //	startup sound.
-  //	Sound_system.ResumeSounds();
-  //	Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
 }

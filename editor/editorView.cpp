@@ -1269,8 +1269,7 @@ try_again:;
   }
 
   if (strlen(tempname)) {
-    Curroomp->name = mem_rmalloc<char>(strlen(tempname) + 1);
-    strcpy(Curroomp->name, tempname);
+    Curroomp->name = mem_strdup(tempname);
   }
 
   World_changed = 1;

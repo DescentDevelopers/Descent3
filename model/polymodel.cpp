@@ -2122,12 +2122,12 @@ int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
   }
 
   // if this is an oof instead of a pof, flag it as such
-  if (!stricmp(".oof", (const char*)filename.extension().u8string().c_str())) {
+  if (!stricmp(".oof", PATH_TO_CSTR(filename.extension()))) {
     Poly_models[polynum].new_style = 1;
   } else
     Poly_models[polynum].new_style = 0;
 
-  strcpy(Poly_models[polynum].name, (const char*)name.u8string().c_str());
+  strcpy(Poly_models[polynum].name, PATH_TO_CSTR(name));
 
   int ret = 0;
   if (!pageable)
@@ -2228,7 +2228,7 @@ std::filesystem::path ChangePolyModelName(const std::filesystem::path &src) {
 // or index of polymodel with name
 int FindPolyModelName(const std::filesystem::path &name) {
   for (int i = 0; i < MAX_POLY_MODELS; i++) {
-    if (Poly_models[i].used && !stricmp((const char*)Poly_models[i].name, (const char*)name.u8string().c_str())) {
+    if (Poly_models[i].used && !stricmp(Poly_models[i].name, PATH_TO_CSTR(name))) {
       return i;
     }
   }

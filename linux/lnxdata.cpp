@@ -77,7 +77,7 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   }
   std::filesystem::path fileName = prefPath / REGISTRY_FILENAME;
 
-  database = new CRegistry((const char*)fileName.u8string().c_str());
+  database = new CRegistry(PATH_TO_CSTR(fileName));
   database->Import();
   create_record("Version");
 }

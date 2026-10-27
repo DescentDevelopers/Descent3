@@ -1160,8 +1160,7 @@ void CObjectDialog::OnObjectSwapButton() {
           int o_index = ObjCreate(Object_info[d_id].type, d_id, room, &pos, &orient, parent);
 
           if (temp_name[0] != '\0') {
-            Objects[o_index].name = mem_rmalloc<char>(strlen(temp_name) + 1);
-            strcpy(Objects[o_index].name, temp_name);
+            Objects[o_index].name = mem_strdup(temp_name);
           }
         }
       }

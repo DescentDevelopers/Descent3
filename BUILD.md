@@ -4,7 +4,7 @@
 ## Dependencies
 The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code also depends on third-party libraries that are not provided as part of the repository:
 - [**SDL3**](https://wiki.libsdl.org/SDL3/FrontPage) which is used as the base to handle video, audio and input.
-- [**cpp-httplib**](https://github.com/yhirose/cpp-httplib) as a HTTP client to download levels.
+- [**cpp-httplib**](https://github.com/yhirose/cpp-httplib) >= 0.23 as a HTTP client to download levels.
 - [**glm**](https://github.com/g-truc/glm) providing useful additions to OpenGL.
 - [**plog**](https://github.com/SergiusTheBest/plog) for logging
 - [**zlib**](https://www.zlib.net/) as a compression utility

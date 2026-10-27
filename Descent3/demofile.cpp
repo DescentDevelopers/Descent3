@@ -401,7 +401,7 @@ void DemoWriteHeader() {
   ASSERT(Demo_flags == DF_RECORDING);
 
   // Start off with the signature
-  cf_WriteString(Demo_cfp, (const char *)szsig);
+  cf_WriteString(Demo_cfp, szsig);
   // Next is the version
   cf_WriteShort(Demo_cfp, GAMESAVE_VERSION);
   // Write the mission filename
@@ -774,7 +774,7 @@ int DemoReadHeader() {
   // Now load the mission
   Osiris_DisableCreateEvents();
   IsRestoredGame = true;
-  if (LoadMission((const char *)demo_mission)) {
+  if (LoadMission(demo_mission)) {
     mng_LoadAddonPages();
 
     SetCurrentLevel(level_num);
@@ -1460,7 +1460,7 @@ void DemoReadNewFrame(void) {
 }
 
 void DemoWriteAttachObjRad(object *parent, char parent_ap, object *child, float rad) {
-  cf_WriteByte(Demo_cfp, DT_ATTACH);
+  cf_WriteByte(Demo_cfp, DT_ATTACH_RAD);
   cf_WriteShort(Demo_cfp, OBJNUM(parent));
   cf_WriteByte(Demo_cfp, parent_ap);
   cf_WriteShort(Demo_cfp, OBJNUM(child));
