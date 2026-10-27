@@ -142,7 +142,7 @@ void CBriefScreenEdit::UpdateView(void) {
   Desktop_surf->blt(x, y, &m_ObjectSurf);
 
   m_ObjectSurf.free();
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 
   if (first_call)
     first_call = false;

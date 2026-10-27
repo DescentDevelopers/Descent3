@@ -404,7 +404,7 @@ void CDoorwayDialog::DrawDoorwayDoorPic() {
 
   delete vport;
   m_DoorSurf.free();
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 //	---------------------------------------------------------------------------

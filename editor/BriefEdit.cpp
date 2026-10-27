@@ -2177,7 +2177,7 @@ void CBriefEdit::UpdateView(void) {
 
   delete vport;
   m_ObjectSurf.free();
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 
   if (first_call)
     first_call = false;

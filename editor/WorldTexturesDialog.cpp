@@ -892,7 +892,7 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame) {
             m_CheckForTextureList = 0;
             D3EditState.texdlg_texture = texnum;
             m_TextureSurf.free();
-            Desktop_surf->attach_to_window((unsigned)NULL);
+            Desktop_surf->attach_to_window(0);
             UpdateDialog();
             return;
           }
@@ -944,7 +944,7 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame) {
   }
 
   m_CheckForTextureList = 0;
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 void CWorldTexturesDialog::OnSelendokTexList() {

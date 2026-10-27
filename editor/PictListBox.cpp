@@ -217,7 +217,7 @@ void editorPictListBox::Update() {
   }
 
   //	restore graphics state
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 //	Handlers called by external source

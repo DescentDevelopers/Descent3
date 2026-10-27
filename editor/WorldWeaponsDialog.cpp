@@ -1343,7 +1343,7 @@ void CWorldWeaponsDialog::UpdateWeaponView() {
     m_WeaponSurf.free();
   }
 
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 BOOL CWorldWeaponsDialog::DestroyWindow() {

@@ -244,7 +244,7 @@ void CGrFontDialog::OnPaint() {
 
     Desktop_surf->attach_to_window((unsigned)m_hWnd);
     Desktop_surf->blt(rect.left + 2, rect.top + 2, &surf, 0, 0, w, h);
-    Desktop_surf->attach_to_window((unsigned)NULL);
+    Desktop_surf->attach_to_window(0);
   }
 }
 
