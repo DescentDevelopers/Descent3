@@ -85,10 +85,14 @@ MATCHERS = {
 
 # -Xclang spellings work in both the GCC and the clang-cl driver modes.
 # Warnings are disabled because their notes would mix with the match output.
+# clang-cl mode defaults to MSVC-style "file(line,col):" locations; NOTE_RE
+# expects clang's "file:line:col:".
 EXTRA_ARGS = [
     '--extra-arg=-Xclang', '--extra-arg=-w',
     '--extra-arg=-Xclang', '--extra-arg=-fmacro-backtrace-limit=0',
     '--extra-arg=-Xclang', '--extra-arg=-fno-caret-diagnostics',
+    '--extra-arg=-Xclang', '--extra-arg=-fdiagnostics-format',
+    '--extra-arg=-Xclang', '--extra-arg=clang',
 ]
 
 NOTE_RE = re.compile(r'^(?P<path>.+?):(?P<line>\d+):(?P<col>\d+): note: '
