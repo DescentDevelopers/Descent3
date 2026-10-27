@@ -51,8 +51,8 @@
 // ----------------------------------------------------------------------------
 #include "application.h"
 #include "ddio.h"
-#include "mono.h"
 #include "ddio_lnx.h"
+#include "mono.h"
 
 volatile struct tLnxKeys {
   union {

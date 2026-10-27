@@ -68,12 +68,12 @@
 
 #include "application.h"
 #include "ddio.h"
-#include "log.h"
 #include "ddio_lnx.h"
+#include "log.h"
 
 bool DDIO_init = false;
 oeLnxApplication *Lnx_app_obj = NULL;
-enum input_mode_t Input_mode;
+input_mode_t Input_mode;
 
 // ----------------------------------------------------------------------------
 //	Initialization and destruction functions
@@ -87,7 +87,7 @@ bool ddio_InternalInit(ddio_init_info *init_info) {
     return false;
   }
 
-  tLnxAppInfo app_info;
+  tLnxAppInfo app_info{};
   Lnx_app_obj->get_info(&app_info);
 
   // determine if we are to use SDL or null mode
