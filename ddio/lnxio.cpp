@@ -108,7 +108,7 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
 
 bool ddio_GetBinaryPath(char *exec_path, size_t len) {
 #ifdef MACOSX
-  if (exec_path == NULL || len == 0) {
+  if (exec_path == nullptr || len == 0) {
     LOG_ERROR << "Invalid arguments";
     return false;
   }
