@@ -344,7 +344,7 @@ int hashTableSize = MEM_MAX_MALLOCS;
 mem_alloc_info mem_info[MEM_MAX_MALLOCS];
 int Mem_next_slot = 0;
 int Mem_highest_used_slot = 0;
-FILE *mem_out = NULL;
+FILE *mem_out = nullptr;
 int Mem_mallocs_since_last_sort = 0;
 /*
 #undef new
@@ -376,7 +376,7 @@ void mem_Init() {
 #ifdef MEM_DEBUG
   hashTable = (Node **)malloc(hashTableSize * sizeof(Node *));
   for (int a = 0; a < hashTableSize; a++) {
-    hashTable[a] = NULL;
+    hashTable[a] = nullptr;
   }
 #ifdef MEM_LOGFILE
   {
@@ -506,7 +506,7 @@ void *mem_malloc_sub(int size, const char *file, int line) {
       }
     }
   }
-  if (bail_now || (mi == NULL))
+  if (bail_now || (mi == nullptr))
 #else
 
 #endif
@@ -738,7 +738,7 @@ struct allocdumpt {
   mem_alloc_info *data;
 };
 
-static int *sorted_allocs = NULL;
+static int *sorted_allocs = nullptr;
 
 int mem_allocdump_cmp(allocdumpt *elem1, allocdumpt *elem2) {
   int res;
