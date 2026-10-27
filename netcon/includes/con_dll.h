@@ -448,7 +448,7 @@ typedef bool (*LoadMission_fp)(char *msn);
 LoadMission_fp DLLLoadMission;
 
 typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
-ddio_MakePath_fp DLLddio_MakePath;
+ddio_MakePath_fp DLLddio_MakePath VA_SENTINEL;
 
 // typedef void( *MultiStartServer_fp) (int playing,char *scriptname,int dedicated_num_teams=-1);
 typedef void (*MultiStartServer_fp)(int playing, char *scriptname, int dedicated_num_teams);

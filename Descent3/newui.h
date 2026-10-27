@@ -188,6 +188,7 @@
 #define NEWUI_H
 
 #include "newui_core.h"
+#include "pstypes.h"
 
 // flags for creating a newui window
 #define NUWF_TITLENONE 0x00000000    // don't display a title bar
@@ -330,7 +331,7 @@ int DoMessageBox(const char *title, const char *msg, int type, ddgr_color title_
 //
 // if button with btn0_title pressed, returns 0, btn1_title, returns 1, etc.
 // safe for up to three buttons.
-int DoMessageBoxAdvanced(const char *title, const char *msg, const char *btn0_title, int key0, ...);
+int DoMessageBoxAdvanced(const char *title, const char *msg, const char *btn0_title, int key0, ...) VA_SENTINEL;
 
 // edit dialog.
 bool DoEditDialog(const char *title, char *buffer, int buflen, bool showcancel = true);

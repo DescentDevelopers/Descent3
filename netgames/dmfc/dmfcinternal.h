@@ -1431,7 +1431,7 @@ public:
   //	Since one weapon may actually consist of many weapons, in order to save space you can create
   //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
   //  get the actual weapon.  End list of children with a NULL
-  void AddWeaponHash(const char *parent, ...);
+  void AddWeaponHash(const char *parent, ...) VA_SENTINEL;
 
   // DMFCBase::AddWeaponHashArray
   //

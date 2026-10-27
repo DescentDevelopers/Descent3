@@ -362,7 +362,7 @@ std::vector<std::filesystem::path> ddio_GetSysRoots();
 //	subdir:	the first subdirectory
 //  takes a variable number of additional subdirectories which will be concatenated on to the path
 //		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
-void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
+void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) VA_SENTINEL;
 
 /**
  * Execute function for each file that matches to regex
