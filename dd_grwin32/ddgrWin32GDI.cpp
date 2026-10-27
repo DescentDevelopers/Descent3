@@ -240,7 +240,7 @@ bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
   gdisf = new tGDISurface;
   gdisf->hbm = nullptr;
   gdisf->data = nullptr;
-  gdisf->rowsize = NULL;
+  gdisf->rowsize = 0;
   gdisf->hwnd = nullptr;
 
   // this means that we are capturing the screen, not creating a screen.

@@ -397,7 +397,7 @@ void CGrListBox::ListBoxProc(bool do_draw) {
     m_ItemSurfSel.free();
     m_ItemSurf.free();
 
-    Desktop_surf->attach_to_window(NULL);
+    Desktop_surf->attach_to_window(0);
   }
 
   in_listboxproc = false;

@@ -361,7 +361,7 @@ void CTerrainDialog::DrawSwatch(int handle, int r, int g, int b) {
 
   Desktop_surf->clear(rect.left, rect.top, w, h, color);
 
-  Desktop_surf->attach_to_window(NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 void CTerrainDialog::UpdateDialog() {

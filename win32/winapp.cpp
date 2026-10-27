@@ -280,7 +280,7 @@ oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstan
 
   os_init();
 
-  m_hWnd = NULL;
+  m_hWnd = 0;
   m_WasCreated = true;
   m_DeferFunc = nullptr;
   w32_mouseman_hack = false;
@@ -352,7 +352,7 @@ void oeWin32Application::init() {
   m_hWnd = (HWnd)CreateWindowEx(style, (LPCSTR)m_WndName, (LPCSTR)m_WndName, winstyle, m_X, m_Y, m_W, m_H, nullptr, nullptr,
                                 (HINSTANCE)m_hInstance, (LPVOID)this);
 
-  if (m_hWnd == NULL) {
+  if (m_hWnd == 0) {
     DWORD err = GetLastError();
     LOG_ERROR.printf("Failed to create game window (err: %x)", err);
     return;
