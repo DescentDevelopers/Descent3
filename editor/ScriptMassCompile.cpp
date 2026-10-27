@@ -500,7 +500,7 @@ bool CScriptMassCompile::Step3(char *filename, bool islevel) {
   char compiled_filename[_MAX_PATH], full_path[_MAX_PATH];
   strcpy(compiled_filename, filename);
   strcat(compiled_filename, ".dll");
-  ddio_MakePath(full_path, LocalScriptDir, compiled_filename, NULL);
+  ddio_MakePath(full_path, LocalScriptDir, compiled_filename, nullptr);
   if (cfexist(full_path)) {
     ddio_DeleteFile(full_path);
   }
@@ -601,7 +601,7 @@ bool CScriptMassCompile::Step4(char *filename) {
       // compiled file doesn't exist, we'll need to add it
       writeline("Step 4: Attempting to add %s to manage system", compiled_filename);
       char fullpath[_MAX_PATH];
-      ddio_MakePath(fullpath, LocalScriptDir, compiled_filename, NULL);
+      ddio_MakePath(fullpath, LocalScriptDir, compiled_filename, nullptr);
       bool ret = AddNewGameFile(fullpath, "scripts");
       if (!ret) {
         writeline("Step 4: Unable to add %s to manage system", compiled_filename);

@@ -374,7 +374,7 @@ skip_combine:;
     rp->name = mem_strdup(roomname);
 
     // Save it out to disk (locally)
-    ddio_MakePath(name, PATH_TO_CSTR(LocalRoomsDir), roomname, NULL);
+    ddio_MakePath(name, PATH_TO_CSTR(LocalRoomsDir), roomname, nullptr);
     SaveRoom(ROOMNUM(rp), name);
   }
 

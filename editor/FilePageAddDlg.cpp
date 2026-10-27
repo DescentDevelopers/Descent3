@@ -430,7 +430,7 @@ bool CFilePageAddDlg::Quit(void) {
       list->GetText(cur_sel, temp);
 
       // ummm, figure out real path here
-      ddio_MakePath(buffer, drive, temp, NULL);
+      ddio_MakePath(buffer, drive, temp, nullptr);
 
       m_SelectedFiles[i] = mem_strdup(buffer);
     }

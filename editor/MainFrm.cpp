@@ -1460,7 +1460,7 @@ void InitCScripts() {
   CreateNewMine();
 
   //	Setup include directories for OSIRIS
-  ddio_MakePath(path, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "data", "levels", NULL);
+  ddio_MakePath(path, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "data", "levels", nullptr);
 }
 
 // Copied from winmain.cpp

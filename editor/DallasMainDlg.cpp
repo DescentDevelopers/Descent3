@@ -692,7 +692,7 @@ void CDallasMainDlg::OnSaveButton() {
   CreateMsgTableFile(m_ScriptMessagesFilename.GetBuffer(0));
 
   // Get the full DLL path, and delete the DLL
-  ddio_MakePath(fullpath, LocalScriptDir, m_ScriptDLLFilename.GetBuffer(0), NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, m_ScriptDLLFilename.GetBuffer(0), nullptr);
   ddio_DeleteFile(fullpath);
 
   // Attempt to compile it and create the dll
@@ -705,7 +705,7 @@ void CDallasMainDlg::OnSaveButton() {
   ScriptCompile(&ci);
 
   // Check to see if the DLL has been created
-  ddio_MakePath(fullpath, LocalScriptDir, m_ScriptDLLFilename.GetBuffer(0), NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, m_ScriptDLLFilename.GetBuffer(0), nullptr);
   if (_access(fullpath, 0x00) == -1) {
     MessageBox("The compile failed.  See output for error details.", "Compiler Error");
   }
@@ -6131,7 +6131,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
   int linenum;
   char fullpath[_MAX_PATH];
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
 
   ifile = cfopen(fullpath, "rt");
   if (ifile == nullptr) {
@@ -7689,7 +7689,7 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
 
   CurrentParsingFilename = m_ScriptFilename;
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
 
   // Try to open the file for loading
   infile = cfopen(fullpath, "rt");
@@ -9233,7 +9233,7 @@ int CDallasMainDlg::ParseMsgTableFile(char *filename) {
   bool next_msgid_found;
   char fullpath[_MAX_PATH];
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
 
   // Try to open the file for loading
   infile = cfopen(fullpath, "rt");
@@ -9373,7 +9373,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
 
   CurrentParsingFilename = m_ScriptFilename;
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
 
   // Try to open the file for loading
   infile = cfopen(fullpath, "rt");
@@ -9501,7 +9501,7 @@ int CDallasMainDlg::CreateMsgTableFile(char *filename) {
   tMessageListEntry *msg_data;
   char fullpath[_MAX_PATH];
 
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
 
   // Try to open the file for writing
   outfile = cfopen(fullpath, "wt");
@@ -9576,7 +9576,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   BuildScriptGroupingList();
 
   // Open the file for writing
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
   CurrentOutputFile = cfopen(fullpath, "wt");
   if (CurrentOutputFile == nullptr) {
     CString msg, title;

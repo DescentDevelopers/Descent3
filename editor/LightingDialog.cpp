@@ -1576,14 +1576,14 @@ void ResaveBitmap(const char *name) {
     // Make sure it is paged in
     bm_data(bm_handle, 0);
 
-    ddio_MakePath(search, LocalD3Dir, "data", "graphics", GameBitmaps[bm_handle].name, NULL);
+    ddio_MakePath(search, LocalD3Dir, "data", "graphics", GameBitmaps[bm_handle].name, nullptr);
     mprintf(0, "Resaving bitmap %s.\n", search);
 
     bm_SaveFileBitmap(search, bm_handle);
   } else {
     char search[256];
 
-    ddio_MakePath(search, LocalD3Dir, "data", "graphics", name, NULL);
+    ddio_MakePath(search, LocalD3Dir, "data", "graphics", name, nullptr);
 
     bm_handle = bm_AllocLoadFileBitmap(search, 0);
     if (bm_handle >= 0) {
@@ -1604,14 +1604,14 @@ void ResaveVClip(const char *name) {
   if (bm_handle >= 0) {
     char search[256];
 
-    ddio_MakePath(search, LocalD3Dir, "data", "graphics", GameVClips[bm_handle].name, NULL);
+    ddio_MakePath(search, LocalD3Dir, "data", "graphics", GameVClips[bm_handle].name, nullptr);
     mprintf(0, "Resaving vclip %s.\n", search);
 
     SaveVClip(search, bm_handle);
   } else {
     char search[256];
 
-    ddio_MakePath(search, LocalD3Dir, "data", "graphics", name, NULL);
+    ddio_MakePath(search, LocalD3Dir, "data", "graphics", name, nullptr);
 
     bm_handle = AllocLoadVClip(search, NOT_TEXTURE, 0);
     if (bm_handle >= 0) {

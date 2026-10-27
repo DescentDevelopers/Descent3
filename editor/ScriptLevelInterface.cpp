@@ -325,7 +325,7 @@ void CScriptLevelInterface::OnCompile() {
               "Congratulations! It looks like a dll was successfully created. I\ndon't see the DLL in the manage "
               "system, so\nwould you like me to add it into the manage system for you?(HIGHLY recommended)");
       if (MessageBox(buffer, "Congratulations", MB_YESNO) == IDYES) {
-        ddio_MakePath(buffer, LocalScriptDir, filename, NULL);
+        ddio_MakePath(buffer, LocalScriptDir, filename, nullptr);
         if (!cfexist(buffer)) {
           sprintf(buffer,
                   "I can't seem to find %s in your data\\scripts directory...Sorry,\nbut I can't automatically add it "
@@ -371,7 +371,7 @@ void CScriptLevelInterface::OnEditscript() {
     MessageBox("This file is NOT checked out, you'll lose all changes on your\nnext data update!", "Warning", MB_OK);
   }
 
-  ddio_MakePath(fullpath, LocalScriptDir, tempbuf, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, tempbuf, nullptr);
   if (!cfexist(fullpath)) {
     sprintf(tempbuf, "Weird, I couldn't find %s to open...", fullpath);
     MessageBox(tempbuf, "Error", MB_OK);
@@ -841,7 +841,7 @@ void CScriptLevelInterface::OnCreatescript() {
         sprintf(buffer, "Do you want to add\n%s\nto the network?", filename);
 
         if (cfexist(filename) && MessageBox(buffer, "Add to Data", MB_YESNO) == IDYES) {
-          ddio_MakePath(buffer, LocalScriptDir, filename, NULL);
+          ddio_MakePath(buffer, LocalScriptDir, filename, nullptr);
           AddNewGameFile(buffer, "scripts");
           UpdateDialog();
           added_to_network = true;
@@ -870,7 +870,7 @@ void CScriptLevelInterface::OnCreatescript() {
         ddio_SplitPath(filename, nullptr, dllname, nullptr);
         strcat(dllname, ".dll");
         if (cfexist(dllname) && added_to_network) {
-          ddio_MakePath(buffer, LocalScriptDir, dllname, NULL);
+          ddio_MakePath(buffer, LocalScriptDir, dllname, nullptr);
           AddNewGameFile(buffer, "scripts");
           UpdateDialog();
         }
@@ -1044,7 +1044,7 @@ bool AddNewGameFile(char *fullpath, char *directory) {
   mprintf(0, "Making a copy of this file locally...\n");
 
   char destname[100];
-  ddio_MakePath(destname, LocalD3Dir, "data", directory, Gamefiles[gamefile_handle].name, NULL);
+  ddio_MakePath(destname, LocalD3Dir, "data", directory, Gamefiles[gamefile_handle].name, nullptr);
   if (stricmp(destname, fullpath)) // only copy if they are different
     cf_CopyFile(destname, fullpath);
 
@@ -1089,8 +1089,8 @@ bool CheckInGamefile(char *tempbuffer, bool show_ok_confirmation) {
 
         char destname[100], srcname[100];
 
-        ddio_MakePath(srcname, LocalD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, NULL);
-        ddio_MakePath(destname, NetD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, NULL);
+        ddio_MakePath(srcname, LocalD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, nullptr);
+        ddio_MakePath(destname, NetD3Dir, "data", Gamefiles[n].dir_name, Gamefiles[n].name, nullptr);
 
         cf_CopyFile(destname, srcname);
 
@@ -2319,7 +2319,7 @@ bool IsScriptOutofSync(char *name) {
   Osiris_module_init.script_identifier = filename;
 
   strcat(filename, ".dll");
-  ddio_MakePath(path, LocalScriptDir, filename, NULL);
+  ddio_MakePath(path, LocalScriptDir, filename, nullptr);
   mprintf(0, "	Checking %s...", filename);
 
   if (mod_LoadModule(&mod, path)) {

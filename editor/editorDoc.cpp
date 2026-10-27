@@ -101,8 +101,8 @@ int CopyScriptFile(char *old_file, char *new_file) {
   char old_fullpath[_MAX_PATH];
   char new_fullpath[_MAX_PATH];
 
-  ddio_MakePath(old_fullpath, LocalScriptDir, old_file, NULL);
-  ddio_MakePath(new_fullpath, LocalScriptDir, new_file, NULL);
+  ddio_MakePath(old_fullpath, LocalScriptDir, old_file, nullptr);
+  ddio_MakePath(new_fullpath, LocalScriptDir, new_file, nullptr);
 
   return (cf_CopyFile(new_fullpath, old_fullpath));
 }
@@ -189,11 +189,11 @@ BOOL CEditorDoc::OnNewDocument() {
 
   // Remove any "Untitled" dallas script files
   char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.cpp", NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.cpp", nullptr);
   ddio_DeleteFile(fullpath);
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.dll", NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.dll", nullptr);
   ddio_DeleteFile(fullpath);
-  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.msg", NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, "Untitled.msg", nullptr);
   ddio_DeleteFile(fullpath);
 
   return TRUE;

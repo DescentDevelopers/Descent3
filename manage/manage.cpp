@@ -1925,11 +1925,11 @@ void BuildOldFileList(FILETIME threshold) {
   BuildOldFilesForDirectory(NetArtDir, threshold);
   BuildOldFilesForDirectory(NetMusicDir, threshold);
   BuildOldFilesForDirectory(NetVoiceDir, threshold);
-  ddio_MakePath(str, NetD3Dir, "data", "levels", NULL);
+  ddio_MakePath(str, NetD3Dir, "data", "levels", nullptr);
   BuildOldFilesForDirectory(str, threshold);
-  ddio_MakePath(str, NetD3Dir, "data", "briefings", NULL);
+  ddio_MakePath(str, NetD3Dir, "data", "briefings", nullptr);
   BuildOldFilesForDirectory(str, threshold);
-  ddio_MakePath(str, NetD3Dir, "data", "scripts", NULL);
+  ddio_MakePath(str, NetD3Dir, "data", "scripts", nullptr);
   BuildOldFilesForDirectory(str, threshold);
   LOG_INFO.printf("Found %d old files.", Num_old_files);
 }

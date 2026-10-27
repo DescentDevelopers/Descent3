@@ -111,7 +111,7 @@ BOOL CQuickCompile::OnInitDialog() {
 
   if (cfexist(filename)) {
     char full_path[_MAX_PATH];
-    ddio_MakePath(full_path, LocalScriptDir, compiled_filename, NULL);
+    ddio_MakePath(full_path, LocalScriptDir, compiled_filename, nullptr);
     if (cfexist(full_path)) {
       ddio_DeleteFile(full_path);
     }

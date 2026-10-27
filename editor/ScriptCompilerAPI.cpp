@@ -349,7 +349,7 @@ void outputtofile(char *format, ...) {
 
 bool ScriptCreateEmptyLevelScript(char *filename) {
   char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
   CurrentFile = cfopen(fullpath, "wt");
   if (!CurrentFile)
     return false;
@@ -553,7 +553,7 @@ bool ScriptCreateEmptyLevelScript(char *filename) {
 
 bool ScriptCreateEmptyGameScript(char *filename) {
   char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
   CurrentFile = cfopen(fullpath, "wt");
   if (!CurrentFile)
     return false;

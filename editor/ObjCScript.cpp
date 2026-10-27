@@ -188,7 +188,7 @@ bool NewScript(const char *filename) {
   char path[_MAX_PATH];
   CFILE *file;
 
-  ddio_MakePath(path, LocalLevelsDir, filename, NULL);
+  ddio_MakePath(path, LocalLevelsDir, filename, nullptr);
 
   //	create the file
   file = cfopen(path, "wt");
@@ -212,7 +212,7 @@ char *LoadScript(const char *filename) {
 
   memset(buffer, 0, MAX_SCRIPT_LINE_SIZE);
 
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
+  ddio_MakePath(file_path, LocalLevelsDir, filename, nullptr);
   //	mprintf(0,"Loading script from %s\n",file_path);
   if (!cfexist(file_path)) {
     return nullptr;
@@ -247,7 +247,7 @@ void SaveScript(const char *filename, char *script) {
   CFILE *file;
   char file_path[256];
 
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
+  ddio_MakePath(file_path, LocalLevelsDir, filename, nullptr);
 
   file = cfopen(file_path, "wt");
   cf_WriteString(file, script);
@@ -294,7 +294,7 @@ void SaveScriptCode(const char *filename, tD3XProgram *program) {
   char file_path[256];
 
   //	write out default script program
-  ddio_MakePath(file_path, LocalLevelsDir, filename, NULL);
+  ddio_MakePath(file_path, LocalLevelsDir, filename, nullptr);
   file = cfopen(file_path, "wb");
   // D3XSaveProgram(file, program); // LGT: function undefined
   mprintf(0, "Saving %s.\n", filename);

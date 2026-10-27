@@ -2079,14 +2079,14 @@ CFILE *removed_log_file = nullptr;
 void OpenFilterLogFiles(void) {
   char fullpath[_MAX_PATH + 1];
 
-  ddio_MakePath(fullpath, LocalD3Dir, "Remaining Pages.txt", NULL);
+  ddio_MakePath(fullpath, LocalD3Dir, "Remaining Pages.txt", nullptr);
   remaining_log_file = cfopen(fullpath, "wt");
   if (remaining_log_file == nullptr) {
     mprintf(0, "Couldn't open \"Remaining Pages\" log file!\n");
     return;
   }
 
-  ddio_MakePath(fullpath, LocalD3Dir, "Removed Pages.txt", NULL);
+  ddio_MakePath(fullpath, LocalD3Dir, "Removed Pages.txt", nullptr);
   removed_log_file = cfopen(fullpath, "wt");
   if (removed_log_file == nullptr) {
     mprintf(0, "Couldn't open \"Removed Pages\" log file!\n");

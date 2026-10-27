@@ -611,7 +611,7 @@ void GameToEditor(bool set_viewer_from_player) {
   if (Temp_level_saved) {
     char filename[_MAX_PATH];
 
-    ddio_MakePath(filename, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "GameSave.D3L", NULL); // make explicit path
+    ddio_MakePath(filename, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "GameSave.D3L", nullptr); // make explicit path
     LoadLevel(filename);
     Temp_level_saved = 0;
   }

@@ -126,7 +126,7 @@ void CBriefMovieEdit::OnOK() {
   UpdateData(true);
 
   char path[_MAX_PATH];
-  ddio_MakePath(path, LocalD3Dir, "Movies", m_sFilename.GetBuffer(1), NULL);
+  ddio_MakePath(path, LocalD3Dir, "Movies", m_sFilename.GetBuffer(1), nullptr);
 
   if (!cfexist(path)) {
     MessageBox("Invalid Filename", "Error");
