@@ -471,20 +471,20 @@ void *mem_malloc_sub(int size, const char *file, int line) {
 #else
 #if defined(WIN32)
   if (!Heap) {
-    return 0;
+    return nullptr;
   }
 #endif
   if (size < 0) {
     LOG_ERROR << "Some bozo is trying to allocate a negative length of memory!";
     LOG_ERROR.printf("Offending file: %s line: %d", file, line);
     Int3();
-    return NULL;
+    return nullptr;
   } else if (size == 0) {
     LOG_ERROR.printf("Warning: Zero byte malloc in %s line %d!", file, line);
     Int3();
     return (void *)MEM_NO_MEMORY_PTR;
   }
-  mem_alloc_info *mi = NULL;
+  mem_alloc_info *mi = nullptr;
   mem_alloc_info no_track_mi;
   bool track_node = true;
 #ifdef MEM_DEBUG
@@ -541,14 +541,14 @@ void *mem_malloc_sub(int size, const char *file, int line) {
 #endif
 #endif
   int errors;
-  if (mi->ptr == NULL) {
+  if (mi->ptr == nullptr) {
     errors = GetLastError();
     LOG_DEBUG << "Unable to alloc memory in mem_malloc_sub()!";
     Int3();
     ASSERT(mi->ptr);
     Error("Out of memory, unable to continue.");
     mem_error_msg(file, line, size);
-    return 0;
+    return nullptr;
   }
 
   retp = mi->ptr;
@@ -579,7 +579,7 @@ void mem_free_sub(void *memblock) {
     return;
   }
 #endif
-  if (memblock == 0)
+  if (memblock == nullptr)
     return;
   if ((void *)MEM_NO_MEMORY_PTR == memblock) {
     return;
@@ -644,7 +644,7 @@ void *mem_realloc_sub(void *memblock, int size) {
 #else
 #if defined(WIN32)
   if (!Heap) {
-    return 0;
+    return nullptr;
   }
 #endif
   if ((void *)MEM_NO_MEMORY_PTR == memblock) {
