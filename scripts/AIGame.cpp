@@ -8369,7 +8369,7 @@ void Sparky::SetMode(int me, char mode) {
     AI_SetType(me, AIT_MELEE1);
   } break;
   case SPARKY_DYING: {
-    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, NULL);
+    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, 0);
 
     float drag = 0.0f;
     Obj_Value(me, VF_SET, OBJV_F_ROTDRAG, &drag);
@@ -10115,7 +10115,7 @@ void Sniper::SetMode(int me, char mode) {
     if ((rand() % 100) > 50) {
       flags |= GF_ORIENT_TARGET;
       AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-                 NULL, GST_NEG_FVEC);
+                 0, GST_NEG_FVEC);
       memory->time_till_next_mode = 4.0f * (float)rand() / (float)RAND_MAX + 2.0f;
     } else {
       float timescaler = 1.0f;
@@ -10252,7 +10252,7 @@ void SniperNoRun::SetMode(int me, char mode) {
     if ((rand() % 100) > 50) {
       flags |= GF_ORIENT_TARGET;
       AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-                 NULL, GST_NEG_FVEC);
+                 0, GST_NEG_FVEC);
       memory->time_till_next_mode = 4.0f * (float)rand() / (float)RAND_MAX + 2.0f;
     } else {
       float timescaler = 1.0f;
@@ -10393,7 +10393,7 @@ void EvaderModA::SetMode(int me, char mode) {
     }
 
     AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-               NULL, vec);
+               0, vec);
   } break;
   case EMA_NORMAL: {
     AI_Value(me, VF_SET, AIV_F_MAX_SPEED, &memory->base_speed);
@@ -10508,7 +10508,7 @@ void FlameRAS::SetMode(int me, char mode) {
     }
 
     AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-               NULL, vec);
+               0, vec);
   } break;
   case EMA_NORMAL: {
     AI_Value(me, VF_SET, AIV_F_MAX_SPEED, &memory->base_speed);

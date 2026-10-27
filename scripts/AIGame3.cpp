@@ -2192,7 +2192,7 @@ void AlienOrganism::SetSquadieFormationGoal(int me) {
   AI_GoalValue(me, 1, VF_SET, AIGV_F_CIRCLE_DIST, &cd);
 
   // Do the custom goal for when squadie can see leader (similar to use bline when sees goal)
-  AI_AddGoal(me, AIG_SCRIPTED, 2, 1.0f, -1, GF_ORIENT_VELOCITY | GF_KEEP_AT_COMPLETION, NULL);
+  AI_AddGoal(me, AIG_SCRIPTED, 2, 1.0f, -1, GF_ORIENT_VELOCITY | GF_KEEP_AT_COMPLETION, 0);
   AI_GoalAddEnabler(me, 2, AIE_SCRIPTED, 1.0, 0.0, &temp);
 }
 

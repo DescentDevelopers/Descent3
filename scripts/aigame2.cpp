@@ -1367,7 +1367,7 @@ retry_set_state:
     AI_Value(me_handle, VF_SET, AIV_F_CIRCLE_DIST, &circle_dist);
     //		AI_AddGoal(me_handle, AIG_WANDER_AROUND, 3, 1.0f, -1, GF_ORIENT_VELOCITY | GF_NOTIFIES |
     // GF_KEEP_AT_COMPLETION, &pos, room_number);
-    AI_AddGoal(me_handle, AIG_MOVE_RELATIVE_OBJ, 2, 1.0f, -1, GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET, NULL, 0);
+    AI_AddGoal(me_handle, AIG_MOVE_RELATIVE_OBJ, 2, 1.0f, -1, GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET, 0, 0);
 
     flags = AIF_DISABLE_MELEE;
     AI_Value(me_handle, VF_SET_FLAGS, AIV_I_FLAGS, &flags);

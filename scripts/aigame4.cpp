@@ -659,7 +659,7 @@ void MercEndBoss::SetMode(int me, char mode) {
     vector vel = {0.0f, 0.0f, 0.0f};
     Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &vel);
 
-    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, NULL);
+    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, 0);
 
     float drag = 0.0f;
     Obj_Value(me, VF_SET, OBJV_F_ROTDRAG, &drag);
@@ -841,7 +841,7 @@ void MercEndBoss::DoFrame(int me) {
         AI_Value(me, VF_CLEAR_FLAGS, AIV_I_STATUS_REG, &flags);
       }
     } else if (memory->mode_time < 5.0f && memory->mode_time + Game_GetFrameTime() >= 4.0f) {
-      AI_AddGoal(me, AIG_SCRIPTED, 3, 1.0f, MEB_TURN_TOWARDS_CAMERA, GF_ORIENT_SCRIPTED, NULL);
+      AI_AddGoal(me, AIG_SCRIPTED, 3, 1.0f, MEB_TURN_TOWARDS_CAMERA, GF_ORIENT_SCRIPTED, 0);
     }
 
   } else if (memory->mode == MERCENDBOSS_DEATH) {
