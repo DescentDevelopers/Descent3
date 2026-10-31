@@ -1184,6 +1184,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
   if ((Game_mode & GM_MULTI) && (Netgame.local_role == LR_SERVER)) {
     int seed = ps_rand();
     MultiSendKillObject(objp, killer, damage, death_flags, delay_time, seed);
+    // legacy re-seed outside `-randseed` allowed: multiplayer only
     ps_srand(seed);
   }
 
@@ -1191,6 +1192,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
   if (Demo_flags == DF_RECORDING) {
     int seed = ps_rand();
     DemoWriteKillObject(objp, killer, damage, death_flags, delay_time, seed);
+    // legacy re-seed outside `-randseed` allowed: demo recording only
     ps_srand(seed);
   }
 

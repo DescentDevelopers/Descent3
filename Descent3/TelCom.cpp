@@ -2164,6 +2164,7 @@ void TelcomCreateStaticOverlays(void) {
         data[i + 4][j] = NEW_TRANSPARENT_COLOR;
 
       // middle 4 bitmaps
+      // legacy re-seed outside `-randseed` allowed: dead code
       ps_srand(t * 674338);
       result = (int)myrand(amount);
       if (!result) {
@@ -2182,6 +2183,7 @@ void TelcomCreateStaticOverlays(void) {
   size = 128 * 128;
   for (j = 0; j < size; j++) {
     for (i = 0; i < 4; i++) {
+      // legacy re-seed outside `-randseed` allowed: dead code
       ps_srand((t * 43243 + ps_rand()));
       result = (int)myrand(amount);
       if (!result) {

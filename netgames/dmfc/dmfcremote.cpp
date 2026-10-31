@@ -101,6 +101,7 @@ int FilterNonRemoteCommands(char *command);
 // Initializes the remote administration system
 void Remote_Initialize(void) {
   // initialize encryption keys
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   srand((uint32_t)time(0));
 
   int i, j;

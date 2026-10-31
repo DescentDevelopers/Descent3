@@ -1213,6 +1213,7 @@ void FindPlayerStarts() {
   Highest_player_start = 0;
 
   if (Game_mode & GM_MULTI) {
+    // legacy re-seed outside `-randseed` allowed: multiplayer only
     ps_srand(400);
   }
 
@@ -1295,6 +1296,7 @@ int PlayerGetRandomStartPosition(int slot) {
     }
   }
 
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   ps_srand((timer_GetTime() * 1000));
   // If this is a team game then pick a spot on that team
   if (Team_game) {

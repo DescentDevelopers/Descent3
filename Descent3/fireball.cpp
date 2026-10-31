@@ -1556,7 +1556,6 @@ void DoGravityFieldEffect(object *obj) {
     }
     // Create lightning from the heavens
     if (!OBJECT_OUTSIDE(obj)) {
-      ps_srand(Gametime * 100);
       int count = 0;
       // Cast 3 rays out from the center
       for (i = 0; i < 3; i++) {

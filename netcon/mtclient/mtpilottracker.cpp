@@ -242,6 +242,7 @@ int InitPilotTrackerClient() {
 
   VersionState = VERSION_STATE_IDLE;
 
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   srand(DLLtimer_GetTime());
   ValidSecurity = (uint32_t)rand();
   // Build the request packet

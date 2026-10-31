@@ -4127,6 +4127,7 @@ void MultiDoBlowupBuilding(uint8_t *data) {
     return;
   }
 
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   ps_srand(seed);
   KillObject(&Objects[hit_objnum], &Objects[killer_objnum], damage);
 
@@ -6740,12 +6741,14 @@ void MultiDoRobotExplode(uint8_t *data) {
   if (killer_objnum != 65535) {
     if ((Objects[killer_objnum].type != OBJ_NONE) && (Objects[hit_objnum].type != OBJ_NONE)) {
       Objects[hit_objnum].flags |= OF_SERVER_SAYS_DELETE;
+      // legacy re-seed outside `-randseed` allowed: multiplayer only
       ps_srand(seed);
       KillObject(&Objects[hit_objnum], &Objects[killer_objnum], damage, death_flags, delay);
     }
   } else {
     if ((Objects[hit_objnum].type != OBJ_NONE)) {
       Objects[hit_objnum].flags |= OF_SERVER_SAYS_DELETE;
+      // legacy re-seed outside `-randseed` allowed: multiplayer only
       ps_srand(seed);
       KillObject(&Objects[hit_objnum], NULL, damage, death_flags, delay);
     }

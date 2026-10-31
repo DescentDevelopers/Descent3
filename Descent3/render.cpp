@@ -2370,7 +2370,6 @@ void ComputeRoomPulseLight(room *rp) {
         Room_light_val = 0;
     }
     if (rp->flags & RF_FLICKER) {
-      ps_srand((Gametime * 1000) + (rp - Rooms));
       if (ps_rand() % 2)
         Room_light_val = 0;
     }
