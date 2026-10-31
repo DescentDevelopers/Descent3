@@ -112,7 +112,7 @@ void BuddyDisplay(void) {
   sheet = gbcommand_wnd.GetSheet();
 
   // add commands
-  sheet->NewGroup(NULL, 10, 10);
+  sheet->NewGroup(nullptr, 10, 10);
   gbcommand_wnd.AddAcceleratorKey(KEY_F4, UID_CANCEL);
 
   for (index = 0; index < Guidebot_menu_data.num_commands; index++) {
@@ -141,7 +141,7 @@ void BuddyDisplay(void) {
   }
 
   // Double space
-  sheet->NewGroup(NULL, WND_HELP_W - 240, WND_HELP_H - 96, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, WND_HELP_W - 240, WND_HELP_H - 96, NEWUI_ALIGN_HORIZ);
   sheet->AddLongButton(TXT_PRESSESCRET, UID_CANCEL);
   gbcommand_wnd.AddAcceleratorKey(KEY_ESC, UID_OK);
 
@@ -334,7 +334,7 @@ void MultiDoGuidebotMenuRequest(uint8_t *data, int slot) {
       command.ptr = data + count;
       count += len;
     } else {
-      command.ptr = NULL;
+      command.ptr = nullptr;
     }
 
     AINotify(b_obj, AIN_USER_DEFINED, (void *)&command);
@@ -393,9 +393,9 @@ int BuddyBotDownloadData(void) {
   newuiSheet *sheet;
   hwnd.Create(TXT_GUIDEBOT, 0, 0, 288, 128);
   sheet = hwnd.GetSheet();
-  sheet->NewGroup(NULL, 5, 10);
+  sheet->NewGroup(nullptr, 5, 10);
   sheet->AddText(TXT_ACCESSGUIDEBOT);
-  sheet->NewGroup(NULL, 40, 30);
+  sheet->NewGroup(nullptr, 40, 30);
   sheet->AddText(TXT_ESCTOCANCEL);
   hwnd.AddAcceleratorKey(KEY_ESC, UID_CANCEL);
 
@@ -445,7 +445,7 @@ void BuddyProcessCommand(int res) {
     DoEditDialog(Guidebot_menu_data.dialog_text[index], answer, sizeof(answer) - 1);
     command.ptr = (void *)answer;
   } else {
-    command.ptr = NULL;
+    command.ptr = nullptr;
   }
 
   if ((!(Game_mode & GM_MULTI)) || (Netgame.local_role != LR_CLIENT)) {

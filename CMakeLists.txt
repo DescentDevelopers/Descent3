@@ -177,6 +177,10 @@ install(
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   add_compile_options("-Wno-multichar;-Wall")
 endif()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  # Warn when a VA_SENTINEL argument list ends with NULL instead of nullptr
+  add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wstrict-null-sentinel>")
+endif()
 
 find_package(SDL3 3.2.6 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 find_package(glm REQUIRED)

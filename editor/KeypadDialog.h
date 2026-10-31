@@ -78,7 +78,7 @@
 class CKeypadDialog : public CDialog {
   // Construction
 public:
-  CKeypadDialog(UINT id, CWnd *pParent = NULL); // standard constructor
+  CKeypadDialog(UINT id, CWnd *pParent = nullptr); // standard constructor
 
   BOOL Create();
 

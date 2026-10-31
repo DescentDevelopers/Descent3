@@ -93,7 +93,7 @@ END_MESSAGE_MAP()
 void CBriefSoundEdit::OnBriefSChoose() {
   UpdateData(true);
   char szFilter[] = "WAV File (*.wav)|*.wav||";
-  CFileDialog dlg(true, NULL, NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     // handle

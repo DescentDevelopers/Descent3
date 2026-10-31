@@ -1294,7 +1294,7 @@ void CheckHogfile() {
              (Current_mission.cur_level <= 4)) {
     new_mn3 = "d3.mn3";
   } else {
-    new_mn3 = NULL;
+    new_mn3 = nullptr;
   }
 
   if (new_mn3) {
@@ -1820,11 +1820,11 @@ void FlushDataCache() {
       int index = Sounds[i].sample_index;
       if (SoundFiles[index].sample_16bit) {
         mem_free(SoundFiles[index].sample_16bit);
-        SoundFiles[index].sample_16bit = NULL;
+        SoundFiles[index].sample_16bit = nullptr;
       }
       if (SoundFiles[index].sample_8bit) {
         mem_free(SoundFiles[index].sample_8bit);
-        SoundFiles[index].sample_8bit = NULL;
+        SoundFiles[index].sample_8bit = nullptr;
       }
     }
   }
@@ -1950,7 +1950,7 @@ void SetNextLevel() {
   } else if (Current_mission.game_state_flags & MSN_STATE_SECRET_LEVEL) {
     if (lvl->flags & LVLFLAG_SPAWNSECRET) {
       // display secret level screen?
-      ShowProgressScreen(TXT_ENTERSECRETLVL, NULL, true);
+      ShowProgressScreen(TXT_ENTERSECRETLVL, nullptr, true);
       Descent->delay(1.0f);
       Current_mission.game_state_flags &= (~MSN_STATE_SECRET_LEVEL);
       SetCurrentLevel(lvl->secretlvl);
@@ -2045,7 +2045,7 @@ void RunGameMenu() {
       if (Game_mode & GM_MULTI)
         AddHUDMessage(TXT_NOPAUSEINMULTI);
       else {
-        DoMessageBoxAdvanced(TXT(TXI_HLPPAUSE), TXT_PRESSOKTOCONT, TXT_OK, KEY_PAUSE, NULL);
+        DoMessageBoxAdvanced(TXT(TXI_HLPPAUSE), TXT_PRESSOKTOCONT, TXT_OK, KEY_PAUSE, nullptr);
         // DoMessageBox(TXT(TXI_HLPPAUSE),TXT_PRESSOKTOCONT, MSGBOX_OK);
       }
       break;
@@ -2060,7 +2060,7 @@ void RunGameMenu() {
       // Weird code for the training mission and the first time you play...
       if (Current_mission.filename && (stricmp(Current_mission.filename, "training.mn3") == 0) && (FirstGame)) {
         ret = DoMessageBoxAdvanced(TXT_TRAININGABORTTITLE, TXT_TRAININGABORTTEXT, TXT_SKIP, KEY_S, TXT_ABORT, KEY_A,
-                                   TXT_CANCEL, KEY_ESC, NULL);
+                                   TXT_CANCEL, KEY_ESC, nullptr);
         if (ret == 2) {
           // Cancel
           ret = 0;
@@ -2142,7 +2142,7 @@ void RunGameMenu() {
     }
 
     ResumeControls();
-    SetUICallback(NULL);
+    SetUICallback(nullptr);
     Game_interface_mode = GAME_INTERFACE;
     NewUIWindow_alpha = 192;
     Clear_screen = 4;

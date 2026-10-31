@@ -679,7 +679,7 @@ void InitFireballs() {
   for (i = 0; i < num_fireballs; i++) {
     if (!(stricmp(Fireballs[i].name, "NOIMAGE")))
       continue;
-    int bm_handle = LoadTextureImage(IGNORE_TABLE(Fireballs[i].name), NULL, Fireballs[i].tex_size, 0);
+    int bm_handle = LoadTextureImage(IGNORE_TABLE(Fireballs[i].name), nullptr, Fireballs[i].tex_size, 0);
     if (bm_handle < 0) {
       Error("Couldn't load fireball %s in InitFireballs.", Fireballs[i].name);
       return;
@@ -843,7 +843,7 @@ int CreateFireball(vector *pos, int fireball_num, int roomnum, int realtype) {
   if (realtype == VISUAL_FIREBALL) // If this is a visual effect then create it instead!
     return (VisEffectCreate(VIS_FIREBALL, fireball_num, roomnum, pos));
   else {
-    objnum = ObjCreate(OBJ_FIREBALL, fireball_num, roomnum, pos, NULL);
+    objnum = ObjCreate(OBJ_FIREBALL, fireball_num, roomnum, pos, nullptr);
     if (objnum < 0) {
       LOG_WARNING << "Couldn't create fireball object!";
       return -1;
@@ -865,7 +865,7 @@ int CreateCustomFireballObject(vector *pos, int fireball_num, int tex_handle, in
 
   if (roomnum == -1)
     return -1;
-  objnum = ObjCreate(OBJ_FIREBALL, fireball_num, roomnum, pos, NULL);
+  objnum = ObjCreate(OBJ_FIREBALL, fireball_num, roomnum, pos, nullptr);
   if (objnum < 0) {
     LOG_WARNING << "Couldn't create fireball object!";
     return -1;
@@ -899,7 +899,7 @@ object *CreateSubobjectDebrisDirected(object *parent, int subobj_num, vector *di
 
   if (objnum < 0 || objnum > Highest_object_index) {
     LOG_WARNING << "WARNING: Debris not created!";
-    return NULL;
+    return nullptr;
   }
   obj = &Objects[objnum];
 
@@ -1085,7 +1085,7 @@ void CreateSplintersFromBody(object *obj, float explosion_mag, float lifetime) {
     dest = center + obj->pos;
 
     // Now create splinter with that faces center position
-    int s_objnum = ObjCreate(OBJ_SPLINTER, pm - Poly_models, obj->roomnum, &dest, NULL);
+    int s_objnum = ObjCreate(OBJ_SPLINTER, pm - Poly_models, obj->roomnum, &dest, nullptr);
     if (s_objnum < 0) {
       LOG_WARNING << "Couldn't create splinter object!";
       return;
@@ -1177,7 +1177,7 @@ void DoDeathSpew(object *parent) {
     num_last_type = 0;
     for (j = 0; j < max_spewed; j++) {
       if (ps_rand() <= rand_val) {
-        int objnum = ObjCreate(type, id, parent->roomnum, &parent->pos, NULL);
+        int objnum = ObjCreate(type, id, parent->roomnum, &parent->pos, nullptr);
         num_last_type++;
         if (objnum < 0) {
           LOG_WARNING << "Couldn't spew object!";
@@ -1329,7 +1329,7 @@ void CreateDeadObject(object *objp) {
         int id = FindObjectIDName(dead_object_types[i * 2 + 1]);
         if (id != -1) {
           vector old_point, pos;
-          PhysCalcGround(&old_point, NULL, objp, 0); // Old ground point
+          PhysCalcGround(&old_point, nullptr, objp, 0); // Old ground point
           poly_model *pm = GetPolymodelPointer(Object_info[id].render_handle);
           pos = old_point - pm->ground_slots[0].pnt * ~objp->orient;
           osipf_ObjCreate(Object_info[id].type, id, objp->roomnum, &pos, &objp->orient);
@@ -1412,7 +1412,7 @@ void DestroyObject(object *objp, float explosion_mag, int death_flags) {
     objp->type = OBJ_DEBRIS; // do it won't do idle animation
     objp->movement_type = MT_NONE;
   } else if (death_flags & DF_FADE_AWAY) {
-    ASSERT(objp->effect_info != NULL);
+    ASSERT(objp->effect_info != nullptr);
     objp->effect_info->type_flags |= EF_FADING_OUT;
     objp->effect_info->fade_time = objp->effect_info->fade_max_time = FADE_TIME;
     objp->lifeleft = FADE_TIME;
@@ -1579,7 +1579,7 @@ void DoGravityFieldEffect(object *obj) {
         fq.rad = 0.0f;
         fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
         fq.thisobjnum = OBJNUM(obj);
-        fq.ignore_obj_list = NULL;
+        fq.ignore_obj_list = nullptr;
         fate = fvi_FindIntersection(&fq, &hit_info);
         dest_pos = hit_info.hit_pnt;
         dest_room = hit_info.hit_room;
@@ -1766,7 +1766,7 @@ void MakeShockwave(object *explode_obj_ptr, int parent_handle) {
     } else {
       handle = OBJECT_HANDLE_NONE;
     }
-    int objnum = ObjCreate(OBJ_SHOCKWAVE, 0, explode_obj_ptr->roomnum, &explode_obj_ptr->pos, NULL, handle);
+    int objnum = ObjCreate(OBJ_SHOCKWAVE, 0, explode_obj_ptr->roomnum, &explode_obj_ptr->pos, nullptr, handle);
     if (objnum >= 0) {
       Objects[objnum].control_type = CT_NONE;
       Objects[objnum].movement_type = MT_SHOCKWAVE;
@@ -1803,7 +1803,7 @@ void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_
     effect_distance = explode_obj_ptr->impact_size;
   }
   parent_obj = ObjGet(parent_handle);
-  if (parent_obj != NULL)
+  if (parent_obj != nullptr)
     parent = OBJNUM(parent_obj);
   objnum = OBJNUM(explode_obj_ptr);
   if (explode_obj_ptr->impact_size <= 0.0)
@@ -1883,7 +1883,7 @@ void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_
               fq.rad = 0.0f;
               fq.flags = FQ_CHECK_OBJS | FQ_ONLY_DOOR_OBJ | FQ_BACKFACE | FQ_NO_RELINK;
               fq.thisobjnum = OBJNUM(explode_obj_ptr);
-              fq.ignore_obj_list = NULL;
+              fq.ignore_obj_list = nullptr;
               fate = fvi_FindIntersection(&fq, &hit_info);
               if (fate != HIT_NONE) {
                 continue;
@@ -1937,7 +1937,7 @@ void CreateBlueBlastRing(vector *pos, int index, float lifetime, float max_size,
     return;
   if (objnum == -1) // Create a new object
   {
-    objnum = ObjCreate(OBJ_FIREBALL, index, roomnum, pos, NULL);
+    objnum = ObjCreate(OBJ_FIREBALL, index, roomnum, pos, nullptr);
     if (objnum < 0) // DAJ -1FIX
     {
       LOG_WARNING << "Couldn't create blast object!";
@@ -1961,7 +1961,7 @@ void CreateBlueBlastRing(vector *pos, int index, float lifetime, float max_size,
     vm_NormalizeVectorFast(&fvec);
     if (fvec.mag() < .5)
       return;
-    vm_VectorToMatrix(&tempm, &fvec, NULL, NULL);
+    vm_VectorToMatrix(&tempm, &fvec, nullptr, nullptr);
   }
   ObjSetOrient(&Objects[objnum], &tempm);
   Objects[objnum].lifeleft = lifetime / 2;
@@ -1984,7 +1984,7 @@ int CreateBlastRing(vector *pos, int index, float lifetime, float max_size, int 
   fq.rad = 0.01f;
   fq.flags = FQ_NO_RELINK;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   int fate = fvi_FindIntersection(&fq, &hit_info);
   if (fate == HIT_NONE) {
     vals[0] = 1.0;
@@ -1994,7 +1994,7 @@ int CreateBlastRing(vector *pos, int index, float lifetime, float max_size, int 
     CreateNewEvent(RENDER_EVENT, 0, 0, &vals, sizeof(float) * 4, DrawAlphaEvent);
   }
 
-  objnum = ObjCreate(OBJ_FIREBALL, index, roomnum, pos, NULL);
+  objnum = ObjCreate(OBJ_FIREBALL, index, roomnum, pos, nullptr);
   if (objnum < 0) {
     LOG_WARNING << "Couldn't create blast object!";
     return -1;
@@ -2027,7 +2027,7 @@ int CreateSmolderingObject(vector *pos, int index, float lifetime, float max_siz
   vector new_pos = *pos;
   new_pos.y() = GetTerrainGroundPoint(&new_pos);
 
-  objnum = ObjCreate(OBJ_FIREBALL, index, roomnum, &new_pos, NULL);
+  objnum = ObjCreate(OBJ_FIREBALL, index, roomnum, &new_pos, nullptr);
   if (objnum < 0) {
     LOG_WARNING << "Couldn't create blast object!";
     return -1;
@@ -2214,7 +2214,7 @@ void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size,
         g3_CodePoint(&draw_points[k]);
         pntlist[k] = &draw_points[k];
       }
-      g3_CheckAndDrawPoly(4, pntlist, bm_handle, NULL, &sphere_vecs[0][0]);
+      g3_CheckAndDrawPoly(4, pntlist, bm_handle, nullptr, &sphere_vecs[0][0]);
     }
   }
   rend_SetZBufferWriteMask(1);
@@ -2462,7 +2462,7 @@ void CreateLightningRodPositions(vector *src, vector *dest, vector *world_vecs, 
   float delta_dist = mag / num_segments;
   delta_vec /= mag;
   // Create matrix for randomization
-  vm_VectorToMatrix(&mat, &delta_vec, NULL, NULL);
+  vm_VectorToMatrix(&mat, &delta_vec, nullptr, nullptr);
 
   vector cur_pos = *src;
 

@@ -195,11 +195,11 @@ float UI_aspect_x = 1.0f;
 float UI_aspect_y = 1.0f;
 //	application object
 static bool UI_init = false;
-static oeApplication *UI_app = NULL;
+static oeApplication *UI_app = nullptr;
 static int UI_cursor_bm = -1;
-static tUIWindowNode *UIWindowList = NULL;
-static tUIWindowNode *UIWindowTail = NULL;
-static UIWindow *UIWindowFocus = NULL;
+static tUIWindowNode *UIWindowList = nullptr;
+static tUIWindowNode *UIWindowTail = nullptr;
+static UIWindow *UIWindowFocus = nullptr;
 static int UI_cursor_show = 0;
 float UIFrameTime = 0.0f;
 bool ui_MousePoll(bool buttons);
@@ -218,8 +218,8 @@ void ui_Init(oeApplication *app, tUIInitInfo *init_info) {
   UI_cursor_bm = -1;
   UI_cursor_show = 0;
   UI_app = app;
-  UIWindowList = NULL;
-  UIWindowTail = NULL;
+  UIWindowList = nullptr;
+  UIWindowTail = nullptr;
   UITextItem::SetDefaultFont(init_info->window_font);
   ui_SetScreenMode(init_info->w, init_info->h);
   UI_init = true;
@@ -255,7 +255,7 @@ void ui_Close() {
   }
   //	delete window node list.
   ui_RemoveAllWindows();
-  UI_app = NULL;
+  UI_app = nullptr;
   UI_init = false;
 }
 //	retrieves input for user interface
@@ -269,7 +269,7 @@ bool ui_MousePoll(bool buttons) {
   bool state;
   if (!buttons) {
     //	get all input, mouse maintains persistent button info. key doesn't.
-    btn_mask = ddio_MouseGetState(&mx, &my, NULL, NULL);
+    btn_mask = ddio_MouseGetState(&mx, &my, nullptr, nullptr);
     UI_input.last_mx = UI_input.mx;
     UI_input.last_my = UI_input.my;
     UI_input.mx = mx / kDefaultMouseScale;
@@ -356,7 +356,7 @@ void ui_AddWindow(UIWindow *wnd) {
   if (!UIWindowList) {
     // first item to add to list.
     UIWindowList = newnode;
-    newnode->prev = NULL;
+    newnode->prev = nullptr;
   } else {
     // add to existing list.
     tUIWindowNode *node = UIWindowList;
@@ -366,7 +366,7 @@ void ui_AddWindow(UIWindow *wnd) {
     node->next = newnode;
     newnode->prev = node;
   }
-  newnode->next = NULL;
+  newnode->next = nullptr;
   newnode->wnd = wnd;
   UIWindowTail = newnode;
 }
@@ -396,11 +396,11 @@ void ui_RemoveWindow(UIWindow *wnd) {
         node->next->prev = node->prev;
       }
       if (node == UIWindowList) {
-        UIWindowList = NULL;
+        UIWindowList = nullptr;
         UIWindowList = node->next;
       }
       if (node == UIWindowTail) {
-        UIWindowTail = NULL;
+        UIWindowTail = nullptr;
         UIWindowTail = node->prev;
       }
       delete node;
@@ -423,7 +423,7 @@ void ui_DoWindowFocus() {
   if (wndnode)
     UIWindowFocus = wndnode->wnd;
   else
-    UIWindowFocus = NULL;
+    UIWindowFocus = nullptr;
 }
 //	returns a result and processes input of a window in focus
 int ui_ProcessFocusedWindow() {
@@ -450,7 +450,7 @@ int ui_ProcessFocusedWindow() {
 void ui_UpdateWindows() {
   tUIWindowNode *wndnode = UIWindowList;
   while (wndnode) {
-    if (wndnode->next == NULL) {
+    if (wndnode->next == nullptr) {
     }
     wndnode->wnd->Render();
     wndnode = wndnode->next;

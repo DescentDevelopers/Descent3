@@ -649,7 +649,7 @@ void TelComMain(bool ingame, bool SelectShip) {
         const char *tag[] = {"", "_GER", "_SPN", "_ITN", "_FRN"};
         bool ok_to_go = false;
 
-        ddio_SplitPath(Current_level->briefname, NULL, basefilename, extension);
+        ddio_SplitPath(Current_level->briefname, nullptr, basefilename, extension);
 
         strcpy(briefingname, basefilename);
         strcat(briefingname, tag[Localization_GetLanguage()]);
@@ -809,7 +809,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
   old_sm = GetScreenMode();
   SetScreenMode(SM_MENU);
 
-  hotspot_bitmaps = NULL;
+  hotspot_bitmaps = nullptr;
 
   int TelCom_bitmap = bm_AllocLoadFileBitmap(IGNORE_TABLE(TELCOM_DISPLAY_OGF), 0);
   if (!cfexist(HOTSPOT_DISPLAY)) {
@@ -1350,7 +1350,7 @@ bool TelComMainMenu(tTelComInfo *tcs) {
 
   DestroyAllScreens();
   TelcomRenderSetScreen(DUMMY_SCREEN);
-  TelcomRenderSetCallback(NULL);
+  TelcomRenderSetCallback(nullptr);
   return true;
 }
 
@@ -1408,7 +1408,7 @@ static void TelcomDoPowerEffect(bool power_down, float frametime);
 
 /// global variables ****************************************
 // Telcom rendering globals
-static void (*TC_callback)() = NULL;
+static void (*TC_callback)() = nullptr;
 static int TC_current_screen = DUMMY_SCREEN;
 int TC_cursor = -1;
 
@@ -1464,7 +1464,7 @@ void TelcomRenderInit(void) {
         windowmap.wm[monitor].y + windowmap.wm[monitor].height - windowmap.wm[monitor].b_bottom_y;
   }
 
-  TC_callback = NULL;
+  TC_callback = nullptr;
   TC_current_screen = DUMMY_SCREEN;
   TelcomCreateScreenOverlays();
   last_rendertime = timer_GetTime();
@@ -1834,9 +1834,9 @@ void TelcomDisplayCorners(void) {
   }
 }
 
-const char *hilites[] = {"hilite0", "hilite1", "hilite2", "hilite3", "hilite4", "hilite5", NULL};
+const char *hilites[] = {"hilite0", "hilite1", "hilite2", "hilite3", "hilite4", "hilite5", nullptr};
 const char *smhilites[] = {"smhilite01", "smhilite11", "smhilite21", "smhilite31", "smhilite41",
-                     "smhilite51", "smhilite61", "smhilite71", NULL};
+                     "smhilite51", "smhilite61", "smhilite71", nullptr};
 
 /*
 $$TABLE_TEXTURE "hilite0"
@@ -1968,7 +1968,7 @@ void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) 
     TelcomHiLiteCount[monitor]++;
 
   if (!TelcomHiLiteCount[monitor])
-    TelcomHiLites[monitor] = NULL;
+    TelcomHiLites[monitor] = nullptr;
 
   TelcomHiLites[monitor] = mem_rmalloc<int>(TelcomHiLiteCount[monitor]);
   if (!TelcomHiLites[monitor]) {
@@ -2667,7 +2667,7 @@ void TelComHandleAllEvents(tTelComInfo *tcs) {
   if (Control_poll_flag) {
     buttons = Controller->get_mouse_raw_values(&x, &y);
   } else {
-    buttons = ddio_MouseGetState(&x, &y, NULL, NULL);
+    buttons = ddio_MouseGetState(&x, &y, nullptr, nullptr);
   }
 
   Telcom_mouse_x = x;
@@ -3573,7 +3573,7 @@ void TelComSingleShipSelect(tTelComInfo *tcs) {
 
   DestroyAllScreens();
   TelcomRenderSetScreen(DUMMY_SCREEN);
-  TelcomRenderSetCallback(NULL);
+  TelcomRenderSetCallback(nullptr);
 
   int ship_index_to_use = TCSSGetSelectedShipIndex();
   LOG_DEBUG.printf("Selected: %s", Ships[ship_index_to_use].name);
@@ -3984,7 +3984,7 @@ struct tCustomKeyEventID {
   int event_id;
   tCustomKeyEventID *next;
 };
-tCustomKeyEventID *Telcom_custom_key_event_root = NULL;
+tCustomKeyEventID *Telcom_custom_key_event_root = nullptr;
 
 /*
         Removes any custom key event translation masks
@@ -3998,7 +3998,7 @@ void TelCom_ClearCustomKeyEvents(void) {
     mem_free(curr);
     curr = next;
   }
-  Telcom_custom_key_event_root = NULL;
+  Telcom_custom_key_event_root = nullptr;
 }
 
 /*
@@ -4017,7 +4017,7 @@ void TelCom_AddCustomKeyEvent(int key_id, int event_id) {
     curr = curr->next;
   }
 
-  curr->next = NULL;
+  curr->next = nullptr;
   curr->event_id = event_id;
   curr->key_id = key_id;
 }

@@ -78,7 +78,7 @@ editorPictListBox::editorPictListBox() {
 
   m_ItemSelected = -1;
   m_OldItemCount = -1;
-  m_ParentWnd = NULL;
+  m_ParentWnd = nullptr;
 }
 
 //	Initialization
@@ -217,7 +217,7 @@ void editorPictListBox::Update() {
   }
 
   //	restore graphics state
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 //	Handlers called by external source

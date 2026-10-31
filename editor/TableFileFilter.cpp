@@ -182,7 +182,7 @@ void TableFileFilter::OnFileSave() {
   }
 
   CWaitCursor wc;
-  if (!m_PageList.SaveList(NULL)) {
+  if (!m_PageList.SaveList(nullptr)) {
     MessageBox("The save was unsuccessful", "Save Table Error!");
     return;
   }
@@ -193,7 +193,7 @@ void TableFileFilter::OnFileSaveAs() {
   // TODO: Add your command handler code here
   CString filters = "Page Data List File (*.pdl)|*.pdl|All Files (*.*)|*.*||";
 
-  CFileDialog dlg_open(FALSE, ".pdl", NULL, 0, (LPCTSTR)filters, this);
+  CFileDialog dlg_open(FALSE, ".pdl", nullptr, 0, (LPCTSTR)filters, this);
   if (dlg_open.DoModal() == IDCANCEL) {
     return;
   }
@@ -214,7 +214,7 @@ void TableFileFilter::OnFileLoad() {
 
   CString filters = "Page Data List File (*.pdl)|*.pdl|All Files (*.*)|*.*||";
 
-  CFileDialog dlg_open(TRUE, ".pdl", NULL, OFN_FILEMUSTEXIST, (LPCTSTR)filters, this);
+  CFileDialog dlg_open(TRUE, ".pdl", nullptr, OFN_FILEMUSTEXIST, (LPCTSTR)filters, this);
   if (dlg_open.DoModal() == IDCANCEL) {
     return;
   }
@@ -239,13 +239,13 @@ void TableFileFilter::OnBtnAddLevel() {
   CString path;
 
   CString filter = "Outrage Level Files (*.d3l)|*.d3l|All Files (*.*)|*.*||";
-  CFileDialog dlg_open(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
+  CFileDialog dlg_open(TRUE, nullptr, nullptr, OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
                        filter.GetBuffer(0), this);
 
   memset(filename_buffer, '\0', MAX_FILENAME_BUFFER);
 
   dlg_open.m_ofn.lpstrTitle = title;
-  dlg_open.m_ofn.lpstrFileTitle = NULL;
+  dlg_open.m_ofn.lpstrFileTitle = nullptr;
   dlg_open.m_ofn.lpstrFile = filename_buffer;
   dlg_open.m_ofn.nMaxFile = MAX_FILENAME_BUFFER;
 
@@ -258,7 +258,7 @@ void TableFileFilter::OnBtnAddLevel() {
   //	iterate through and add selected level filenames.
   POSITION pos;
   pos = dlg_open.GetStartPosition();
-  while (pos != NULL) {
+  while (pos != nullptr) {
     path = dlg_open.GetNextPathName(pos);
 
     if (!m_PageList.AddLevelFilename(path.GetBuffer(0))) {
@@ -297,7 +297,7 @@ void TableFileFilter::OnBtnCreateNewTableFile() {
   CString filters = "D3 Table File (*.gam)|*.gam|All Files (*.*)|*.*||";
   char title[] = "Save New Table File As";
 
-  CFileDialog dlg_open(FALSE, ".gam", NULL, 0, (LPCTSTR)filters, this);
+  CFileDialog dlg_open(FALSE, ".gam", nullptr, 0, (LPCTSTR)filters, this);
   dlg_open.m_ofn.lpstrTitle = title;
   if (dlg_open.DoModal() == IDCANCEL) {
     return;

@@ -299,7 +299,7 @@ BOOL CWireframeGrWnd::Create(RECT &rect, BOOL movable, CWnd *pParent) {
 
   lstrcpy(m_Name, "Wireframe");
 
-  return CWnd::Create(NULL, m_Name, dwstyle, rect, pParent, IDC_WIREFRAME_WND);
+  return CWnd::Create(nullptr, m_Name, dwstyle, rect, pParent, IDC_WIREFRAME_WND);
 }
 
 int CWireframeGrWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
@@ -312,7 +312,7 @@ int CWireframeGrWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 void CWireframeGrWnd::OnDestroy() {
   CGrWnd::OnDestroy();
-  theApp.wireframe_view = NULL;
+  theApp.wireframe_view = nullptr;
 }
 
 void CWireframeGrWnd::OnSize(UINT nType, int cx, int cy) {
@@ -402,7 +402,7 @@ void CWireframeGrWnd::OnLButtonDown(UINT nFlags, CPoint point) {
       vector pos;
 
       ComputeTerrainSegmentCenter(&pos, cellnum);
-      ObjSetPos(Viewer_object, &pos, MAKE_ROOMNUM(cellnum), NULL, false);
+      ObjSetPos(Viewer_object, &pos, MAKE_ROOMNUM(cellnum), nullptr, false);
 
       State_changed = 1;
     } else if (KEY_STATE(KEY_LSHIFT)) {
@@ -543,7 +543,7 @@ void EndWireframeSel(editorSelectorManager *esm) {
     if (!(KEY_STATE(KEY_LCTRL) || KEY_STATE(KEY_RCTRL))) // ctrl + select means add to list
       ClearRoomSelectedList();
 
-    n = SelectRoomsInBox(NULL, left, top, right, bot);
+    n = SelectRoomsInBox(nullptr, left, top, right, bot);
     EditorStatus("%d rooms selected", n);
   }
 

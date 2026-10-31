@@ -316,7 +316,7 @@ public:
                   float offset = 0.0);
 
   int PlayStream(int unique_handle, void *data, int size, int stream_format, float volume,
-                 void *stream_callback(void *user_data, int handle, int *size) = NULL);
+                 void *stream_callback(void *user_data, int handle, int *size) = nullptr);
 
   // 2d functions
   int Play2dSound(int sound_index, float volume = MAX_GAME_VOLUME / 2, float pan = 0.0,

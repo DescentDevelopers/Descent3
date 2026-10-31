@@ -294,7 +294,7 @@ void DumpTextToClipboard(char *text) {
   }
   *ptr = 0; // terminate string
   GlobalUnlock(h_text);
-  OpenClipboard(NULL);
+  OpenClipboard(nullptr);
   EmptyClipboard();
   SetClipboardData(CF_TEXT, h_text);
   CloseClipboard();
@@ -320,7 +320,7 @@ long WINAPI RecordExceptionInfo(PEXCEPTION_POINTERS data) {
     exit(1);
   }
 
-  HANDLE hDumpFile = CreateFile(PATH_TO_CSTR(dumFilePath), GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, 0);
+  HANDLE hDumpFile = CreateFile(PATH_TO_CSTR(dumFilePath), GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr);
   if (hDumpFile == INVALID_HANDLE_VALUE) {
     OutrageMessageBox("Could not create crash dump file, error code: %x", GetLastError());
     exit(1);

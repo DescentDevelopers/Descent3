@@ -205,7 +205,7 @@ void MultiSendMyInfo() {
 
   // pilot picture id
   uint16_t ppic_id;
-  Current_pilot.get_multiplayer_data(NULL, NULL, NULL, &ppic_id);
+  Current_pilot.get_multiplayer_data(nullptr, nullptr, nullptr, &ppic_id);
   MultiAddUshort(ppic_id, data, &count);
 
   // Copy the guidebot name out
@@ -447,7 +447,7 @@ void MultiDoClientFrame() {
       count += add_count;
 
       // Add in guided stuff
-      if (Players[Player_num].guided_obj != NULL) {
+      if (Players[Player_num].guided_obj != nullptr) {
         add_count = MultiStuffGuidedInfo(Player_num, &data[count]);
         count += add_count;
       }

@@ -52,7 +52,7 @@ int rad_DoneCalculating = 0;
 
 float rad_TotalUnsent = 0.0f;
 
-rad_surface *rad_MaxSurface = NULL;
+rad_surface *rad_MaxSurface = nullptr;
 rad_surface *rad_Surfaces;
 
 int UseVolumeLights = 0; // User selectable to do volumelights
@@ -126,7 +126,7 @@ void SetupFormFactors() {
   ASSERT(rad_NumElements > 0);
 
   rad_FormFactors = mem_rmalloc<float>(rad_NumElements);
-  ASSERT(rad_FormFactors != NULL);
+  ASSERT(rad_FormFactors != nullptr);
 }
 
 void CalculateAreaForSurface(rad_surface *sp) {
@@ -246,7 +246,7 @@ void UpdateUnsentValues() {
   static int last_report_time = -10;
 
   rad_TotalUnsent = 0.0f;
-  rad_MaxSurface = NULL;
+  rad_MaxSurface = nullptr;
 
   // Go through all the surfaces searching for the surface with the greatest
   // exitance yet to be shot
@@ -292,7 +292,7 @@ void UpdateUnsentValues() {
   }
 
   // No energy left to shoot?
-  if (rad_MaxSurface == NULL || rad_TotalUnsent == 0)
+  if (rad_MaxSurface == nullptr || rad_TotalUnsent == 0)
     rad_DoneCalculating = 1;
 }
 

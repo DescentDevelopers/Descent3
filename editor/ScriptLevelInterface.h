@@ -78,7 +78,7 @@
 class CScriptLevelInterface : public CDialog {
   // Construction
 public:
-  CScriptLevelInterface(CWnd *pParent = NULL); // standard constructor
+  CScriptLevelInterface(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CScriptLevelInterface)

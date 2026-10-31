@@ -144,7 +144,7 @@ void DMFCBase::RegisterPacketReceiver(uint8_t id, void (*func)(uint8_t *)) {
   }
 
   // fill in the struct
-  current->next = NULL;
+  current->next = nullptr;
   current->ID = id;
   current->type = SPH_FUNC;
   current->func = func;
@@ -175,7 +175,7 @@ void DMFCBase::RegisterPacketReceiver(uint8_t id, void (DMFCBase::*func)(uint8_t
   }
 
   // fill in the struct
-  current->next = NULL;
+  current->next = nullptr;
   current->ID = id;
   current->type = SPH_DMFCFUNC;
   current->DMFCfunc = func;

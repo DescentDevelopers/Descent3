@@ -41,7 +41,7 @@ void MonoPrintf(int n, char *format, ...);
 // checks a players inventory for an object type/id
 bool InvCheckItem(int playernum, int type, int id);
 // adds a type/id to a player inventory
-bool InvAddTypeID(int playernum, int type, int id, int aux_type = -1, int aux_id = -1, int flags = 0, const char *description = NULL);
+bool InvAddTypeID(int playernum, int type, int id, int aux_type = -1, int aux_id = -1, int flags = 0, const char *description = nullptr);
 // removes a type/id from a players inventory
 bool InvRemove(int playernum, int type, int id);
 // returns how many of a type/id a player has in his inventory
@@ -93,21 +93,21 @@ void dSetAudioTaunts(bool enable);
 void ChangePlayerShipIndex(int pnum, int ship_index);
 
 // adds a type/id item to the inventory (returns true on success)
-bool dInven_Add(Inventory *inven, int type, int id, object *parent = NULL, int aux_type = -1, int aux_id = -1,
-                int flags = 0, char *description = NULL);
+bool dInven_Add(Inventory *inven, int type, int id, object *parent = nullptr, int aux_type = -1, int aux_id = -1,
+                int flags = 0, char *description = nullptr);
 // adds an object to the inventory (marked by its objhandle)
-bool dInven_AddObject(Inventory *inven, int object_handle, int flags = 0, char *description = NULL);
+bool dInven_AddObject(Inventory *inven, int object_handle, int flags = 0, char *description = nullptr);
 // adds a special cased CounterMeasure into the inventory
 bool dInven_AddCounterMeasure(Inventory *inven, int id, int aux_type = -1, int aux_id = -1, int flags = 0,
-                              char *description = NULL);
+                              char *description = nullptr);
 //	removes an item from the inventory (reduces its count by one...if there is no more, then it goes bye-bye)
 //	to remove an object that was added via objhandle, then pass the objhandle
 //	in the 'type' parameter, and don't pass in an id.
 bool dInven_Remove(Inventory *inven, int type, int id = -1);
 // uses an item in the inventory (also reduces its count by one...if there is no more, then it goes bye-bye)
-bool dInven_Use(Inventory *inven, int type, int id, object *parent = NULL);
+bool dInven_Use(Inventory *inven, int type, int id, object *parent = nullptr);
 // uses an item in the inventory (given its objhandle).
-bool dInven_UseObjHandle(Inventory *inven, int objhandle, object *parent = NULL);
+bool dInven_UseObjHandle(Inventory *inven, int objhandle, object *parent = nullptr);
 // returns how many unique type/ids are in the inventory
 int dInven_Size(Inventory *inven);
 // returns true if there is an item in the inventory with the given type/id (or objhandle if id is -1, pass the object
@@ -158,7 +158,7 @@ void dInven_GotoPos(Inventory *inven, int newpos);
 // handle in as the type, and make id -1.
 void dInven_GotoPosTypeID(Inventory *inven, int type, int id);
 // uses the currently selected item
-bool dInven_UsePos(Inventory *inven, object *parent = NULL);
+bool dInven_UsePos(Inventory *inven, object *parent = nullptr);
 // returns the 'index' position of the current position
 int dInven_GetPos(Inventory *inven);
 // checks the pos, if it is on a nonselectable item, it will move to the next selectable (NULL if none)

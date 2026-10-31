@@ -170,19 +170,19 @@ CDmfcStats::CDmfcStats() {
   m_cPtrs = 0;
   m_init = false;
   m_flags = 0;
-  m_SortedPRecs = NULL;
-  m_pMaxNumberDisplayed = NULL;
+  m_SortedPRecs = nullptr;
+  m_pMaxNumberDisplayed = nullptr;
   m_MaxCount = 0;
   m_iPLColCount = 0;
   m_iDColCount = 0;
-  m_PLColInfo = NULL;
-  m_DColInfo = NULL;
-  m_PLColCallback = NULL;
-  m_DColCallback = NULL;
-  m_PLColCallbackBMP = NULL;
-  m_DColCallbackBMP = NULL;
-  m_TeamCallback = NULL;
-  m_GameName = NULL;
+  m_PLColInfo = nullptr;
+  m_DColInfo = nullptr;
+  m_PLColCallback = nullptr;
+  m_DColCallback = nullptr;
+  m_PLColCallbackBMP = nullptr;
+  m_DColCallbackBMP = nullptr;
+  m_TeamCallback = nullptr;
+  m_GameName = nullptr;
   m_top_index = 0;
   m_selected_index = 0;
   m_bottom_index = -1;
@@ -816,7 +816,7 @@ redisplay_list:
   DLLRenderHUDQuad(DLIST_WIN_X, DLIST_WIN_Y, DLIST_WIN_W, DLIST_WIN_H, 0, 0, 1, 1, m_background_bmp, perc_done * 200.0f,
                    0);
   pr = PRec_GetPRecord(m_selected_prec);
-  if (!pr || pr->state == STATE_EMPTY || pr->pinfo == NULL)
+  if (!pr || pr->state == STATE_EMPTY || pr->pinfo == nullptr)
     return;
 
   is_dedicated_server = basethis->IsPlayerDedicatedServer(pr);
@@ -1213,7 +1213,7 @@ redisplay_list:
         dpr = basethis->GetPlayerRecord(stat.slot);
         stats_displayed++;
 
-        ASSERT(dpr != NULL);
+        ASSERT(dpr != nullptr);
         if (dpr && start_index < stats_displayed) {
           ddgr_color color;
           color = (dpr->state == STATE_INGAME)
@@ -1241,7 +1241,7 @@ redisplay_list:
           dpr = basethis->GetPlayerRecord(stat.slot);
           stats_displayed++;
 
-          ASSERT(dpr != NULL);
+          ASSERT(dpr != nullptr);
           if (dpr && start_index < stats_displayed) {
             ddgr_color color;
             color = (dpr->state == STATE_INGAME)

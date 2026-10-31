@@ -27,7 +27,7 @@
 class CAnimStatesDialog : public CDialog {
   // Construction
 public:
-  CAnimStatesDialog(int render_handle, anim_elem *anim_info, CWnd *pParent = NULL); // standard constructor
+  CAnimStatesDialog(int render_handle, anim_elem *anim_info, CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CAnimStatesDialog)

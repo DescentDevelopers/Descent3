@@ -101,7 +101,7 @@ int SpewObjectInRoom(int type, int id, int roomnum) {
   int objnum;
 
   DLLComputeRoomCenter(&vpos, &dRooms[roomnum]);
-  objnum = DLLObjCreate(type, id, roomnum, &vpos, NULL, OBJECT_HANDLE_NONE);
+  objnum = DLLObjCreate(type, id, roomnum, &vpos, nullptr, OBJECT_HANDLE_NONE);
   if (objnum == -1)
     return -1;
 

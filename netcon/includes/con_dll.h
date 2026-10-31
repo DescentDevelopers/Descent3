@@ -448,7 +448,7 @@ typedef bool (*LoadMission_fp)(char *msn);
 LoadMission_fp DLLLoadMission;
 
 typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
-ddio_MakePath_fp DLLddio_MakePath;
+ddio_MakePath_fp DLLddio_MakePath VA_SENTINEL;
 
 // typedef void( *MultiStartServer_fp) (int playing,char *scriptname,int dedicated_num_teams=-1);
 typedef void (*MultiStartServer_fp)(int playing, char *scriptname, int dedicated_num_teams);
@@ -786,7 +786,7 @@ network_game *DLLNetwork_games;
 int MT_Initialized = 0;
 uint8_t *DLLNewUIWindow_alpha;
 float LastTrackerDataUpdate;
-void *pconsole = NULL;
+void *pconsole = nullptr;
 bool *DLLDP_active;
 bool *DLLUse_DirectPlay;
 bool *DLLMulti_Gamelist_changed;
@@ -803,7 +803,7 @@ char *DLLHelpText2;
 char *DLLHelpText3;
 char *DLLHelpText4;
 
-char *DLLPXO_hosted_lobby_name = NULL;
+char *DLLPXO_hosted_lobby_name = nullptr;
 
 #define DLLMAX_SHIPS 30
 
@@ -820,7 +820,7 @@ char *DLLAuto_login_port;
 
 bool Use_netgame_flags;
 
-module MTAVDLLHandle = {NULL};
+module MTAVDLLHandle = {nullptr};
 
 #if defined(WIN32)
 typedef void(DLLFUNCCALL DLLAVInit_fp)(int *ptr);
@@ -836,11 +836,11 @@ typedef void DLLFUNCCALL(DLLAVGetVersion_fp)(int *version);
 typedef void DLLFUNCCALL(DLLRunCheck_fp)(char *d3_path);
 #endif
 
-DLLAVInit_fp *DLLAVInit = NULL;
-DLLAVCall_fp *DLLAVCall = NULL;
-DLLAVClose_fp *DLLAVClose = NULL;
-DLLAVGetVersion_fp *DLLAVGetVersion = NULL;
-DLLRunCheck_fp *DLLRunCheck = NULL;
+DLLAVInit_fp *DLLAVInit = nullptr;
+DLLAVCall_fp *DLLAVCall = nullptr;
+DLLAVClose_fp *DLLAVClose = nullptr;
+DLLAVGetVersion_fp *DLLAVGetVersion = nullptr;
+DLLRunCheck_fp *DLLRunCheck = nullptr;
 
 struct msn_list {
   char msn_name[_MAX_PATH];
@@ -1047,7 +1047,7 @@ void AddMsnItem(msn_list *new_msn) {
     FirstMsn = new_msn;
     CurrMsn = FirstMsn;
   }
-  CurrMsn->next = NULL;
+  CurrMsn->next = nullptr;
 }
 
 void RemoveAllMsnItems(void) {
@@ -1062,7 +1062,7 @@ void RemoveAllMsnItems(void) {
     DLLRemoveUITextItem(CurrMsn->ti);
     DLLmem_free(CurrMsn);
   }
-  FirstMsn = NULL;
+  FirstMsn = nullptr;
 }
 
 msn_list *FindMsnItem(const char *name) {
@@ -1076,7 +1076,7 @@ msn_list *FindMsnItem(const char *name) {
     if (strcmp(CurrMsn->msn_name, name) == 0)
       return CurrMsn;
   }
-  return NULL;
+  return nullptr;
 }
 
 void MultiplayerOptionsMenu();

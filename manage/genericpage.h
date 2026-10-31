@@ -62,12 +62,12 @@ int mng_FindSpecificGenericPage(char *name, mngs_generic_page *genericpage, int 
 
 // Given a generic page, allocs a generic and calls AssignGenericPageToGeneric to actually
 // load model and values. Returns generic handle on success, -1 if fail
-int mng_SetAndLoadGeneric(mngs_generic_page *genericpage, CFILE *infile = NULL);
+int mng_SetAndLoadGeneric(mngs_generic_page *genericpage, CFILE *infile = nullptr);
 
 // Given a genericpage and a generic handle, attempts to make generic n correspond to
 // to the genericpage.
 // Returns 1 on success, 0 otherwise
-int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE *infile = NULL);
+int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE *infile = nullptr);
 
 // Copies values from a Generic into a generic_page
 void mng_AssignObjInfoToGenericPage(int n, mngs_generic_page *genericpage);

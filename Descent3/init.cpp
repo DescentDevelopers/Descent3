@@ -1598,7 +1598,7 @@ void InitGraphics(bool editor) {
 
   // Init our renderer
   grSurface::init_system();
-  rend_Init(RENDERER_OPENGL, Descent, NULL);
+  rend_Init(RENDERER_OPENGL, Descent, nullptr);
   Desktop_surf = new grSurface(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
 #else
   strcpy(App_ddvid_subsystem, "GDIX");
@@ -1644,7 +1644,7 @@ void InitGameSystems(bool editor) {
 
 //////////////////////////////////////////////////////////////////////////////
 static float Init_messagebar_portion = 0.0f, Init_messagebar_offset = 0.0f;
-static const char *Init_messagebar_text = NULL;
+static const char *Init_messagebar_text = nullptr;
 
 // portion of total bar to fill (0 to 1)
 void SetInitMessageLength(const char *c, float amount) {
@@ -1762,7 +1762,7 @@ void IntroScreen() {
     bm_FreeBitmap(bm_handle);
 
     Title_bitmap_init = true;
-    InitMessage(NULL);
+    InitMessage(nullptr);
   } else {
     LOG_WARNING << "Unable to find d3.tga.";
   }
@@ -1800,7 +1800,7 @@ uint16_t PXOPort = 0;
 // Initialiaze everything before data load
 void InitD3Systems1(bool editor) {
 #if defined(RELEASE)
-  SetDebugBreakHandlers(NULL, NULL);
+  SetDebugBreakHandlers(nullptr, nullptr);
 #else
   SetDebugBreakHandlers(D3DebugStopHandler, D3DebugResumeHandler);
 #endif
@@ -2061,7 +2061,7 @@ void DeleteTempFiles() {
  *
  */
 
-static void (*Init_old_ui_callback)() = NULL;
+static void (*Init_old_ui_callback)() = nullptr;
 static bool Init_old_control_mode;
 static bool Init_was_game_paused = false;
 

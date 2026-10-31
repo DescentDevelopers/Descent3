@@ -322,7 +322,7 @@ void COrphanRemoveDlg::OnOK() {
     return;
   }
 
-  if (MessageBox("Are you sure you want to remove the orphans permanently?", NULL, MB_YESNO) != IDYES)
+  if (MessageBox("Are you sure you want to remove the orphans permanently?", nullptr, MB_YESNO) != IDYES)
     return;
   SetStatus("Deleting Files");
 
@@ -334,7 +334,7 @@ void COrphanRemoveDlg::OnOK() {
     return;
   combo->GetLBText(sel, dir);
 
-  ddio_MakePath(directory, LocalD3Dir, "data", dir.GetBuffer(0), NULL);
+  ddio_MakePath(directory, LocalD3Dir, "data", dir.GetBuffer(0), nullptr);
   char fullpath[_MAX_PATH];
 
   int size = m_List.GetCount();
@@ -342,7 +342,7 @@ void COrphanRemoveDlg::OnOK() {
     if (m_List.GetCheck(i)) {
       // it's checked...delete!
       m_List.GetText(i, dir);
-      ddio_MakePath(fullpath, directory, dir.GetBuffer(0), NULL);
+      ddio_MakePath(fullpath, directory, dir.GetBuffer(0), nullptr);
       ddio_DeleteFile(fullpath);
     }
   }

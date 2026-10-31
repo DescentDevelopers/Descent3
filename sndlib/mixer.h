@@ -50,7 +50,7 @@ class sound_buffer_info {
 public:
   sound_buffer_info() {
     m_status = SSF_UNUSED;
-    s = NULL;
+    s = nullptr;
   }
 
   play_information *play_info;

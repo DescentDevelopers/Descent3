@@ -242,10 +242,10 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
 
   // Allocate group & room arrays
   auto g = mem_rmalloc<group>();
-  ASSERT(g != NULL);
+  ASSERT(g != nullptr);
   g->nrooms = nrooms;
   g->rooms = mem_rmalloc<room>(nrooms);
-  ASSERT(g->rooms != NULL);
+  ASSERT(g->rooms != nullptr);
 
   // Initialize xlate list
   for (r = 0; r < MAX_ROOMS; r++)
@@ -290,7 +290,7 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
   g->nobjects = n_objects;
   g->ndoors = n_doors;
   if (n_objects == 0)
-    g->objects = NULL;
+    g->objects = nullptr;
   else {
     int objnum = 0;
 
@@ -338,7 +338,7 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
   // Copy triggers
   g->ntriggers = n_triggers;
   if (n_triggers == 0)
-    g->triggers = NULL;
+    g->triggers = nullptr;
   else {
     int trignum = 0;
 
@@ -441,7 +441,7 @@ void PlaceGroupTerrain(int cellnum, group *g, bool align_to_terrain) {
   // Set globals
   Placed_group = g;
   Placed_room_angle = 0;
-  Placed_baseroomp = NULL;
+  Placed_baseroomp = nullptr;
 
   if (align_to_terrain)
     Placed_room_orient.fvec = TerrainNormals[MAX_TERRAIN_LOD - 1][cellnum].normal1;
@@ -469,7 +469,7 @@ void AttachGroup() {
   int room_xlate[MAX_ROOMS];
   int r;
 
-  ASSERT(Placed_group != NULL);
+  ASSERT(Placed_group != nullptr);
 
   // Set some vars
   baseroomp = Placed_baseroomp;
@@ -597,7 +597,7 @@ void AttachGroup() {
         trigger *tp = &Placed_group->triggers[t];
         int trignum;
 
-        trignum = AddTrigger("", room_xlate[tp->roomnum], tp->facenum, tp->activator, NULL);
+        trignum = AddTrigger("", room_xlate[tp->roomnum], tp->facenum, tp->activator, nullptr);
         ASSERT(trignum != -1);
 
         Triggers[trignum].flags = tp->flags;
@@ -614,7 +614,7 @@ void AttachGroup() {
   }
 
   // Un-place the now-attached group
-  Placed_group = NULL;
+  Placed_group = nullptr;
 
   // We're done!  Update flags and leave
   World_changed = 1;
@@ -758,34 +758,34 @@ group *LoadGroup(char *filename) {
   ifile = cfopen(filename, "rb");
 
   if (!ifile)
-    return NULL;
+    return nullptr;
 
   // Read & check tag
   cf_ReadBytes((uint8_t *)tag, 4, ifile);
   if (strncmp(tag, GROUP_FILE_TAG, 4)) {
     cfclose(ifile);
-    return NULL;
+    return nullptr;
   }
 
   // Read & check version number
   version = cf_ReadInt(ifile);
   if (version > GROUP_FILE_VERSION) {
     cfclose(ifile);
-    return NULL;
+    return nullptr;
   }
 
   // Check for out-of-date groups
   if (version < 2) {
     OutrageMessageBox("Sorry - segment groups no longer supported.");
     cfclose(ifile);
-    return NULL;
+    return nullptr;
   }
 
   // Read & check level file version number
   level_version = cf_ReadInt(ifile);
   if (level_version > LEVEL_FILE_VERSION) {
     cfclose(ifile);
-    return NULL;
+    return nullptr;
   }
 
   // Read the textures & build xlate table
@@ -817,8 +817,8 @@ group *LoadGroup(char *filename) {
   }
 
   // Read objects & triggers
-  g->triggers = NULL;
-  g->objects = NULL;
+  g->triggers = nullptr;
+  g->objects = nullptr;
   if (version >= 3) {
 
     // Allocate objects array

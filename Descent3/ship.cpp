@@ -229,7 +229,7 @@ int GetPrevShip(int n) {
 int FindShipName(const char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_SHIPS; i++)
     if (Ships[i].used && !stricmp(name, Ships[i].name))

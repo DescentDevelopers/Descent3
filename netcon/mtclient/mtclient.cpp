@@ -1384,7 +1384,7 @@ int MainMultiplayerMenu() {
             while (DLLgrtext_GetTextLineWidth(fmtchan) < LIST_ROW1) {
               endpos = strlen(fmtchan);
               fmtchan[endpos] = chan_name[charpos];
-              fmtchan[endpos + 1] = NULL;
+              fmtchan[endpos + 1] = '\0';
               charpos++;
             }
             strcat(fmtchan, "\t\0");
@@ -1392,7 +1392,7 @@ int MainMultiplayerMenu() {
             while (DLLgrtext_GetTextLineWidth(fmtchan) < LIST_ROW2) {
               endpos = strlen(fmtchan);
               fmtchan[endpos] = count_list[charpos];
-              fmtchan[endpos + 1] = NULL;
+              fmtchan[endpos + 1] = '\0';
               charpos++;
             }
             strcat(fmtchan, "\t\0");
@@ -2708,7 +2708,7 @@ int GetPilotStats(const char *pilot) {
   GetD3PilotDataCancel();
   GetTrackerIdByUser((char *)-1);
   p = GetTrackerIdByUser(pilot);
-  while (p == NULL) {
+  while (p == nullptr) {
     res = DLLPollUI();
     DLLDescentDefer();
     p = GetChatText();

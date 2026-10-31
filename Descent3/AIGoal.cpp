@@ -501,7 +501,7 @@ void GoalInitWanderAround(object *obj, goal *goal_ptr) {
     return;
 
   if (!ROOMNUM_OUTSIDE(obj->roomnum)) {
-    roomnum = AIFindRandomRoom(obj, ai_info, goal_ptr, obj->roomnum, -1, -1, true, false, NULL);
+    roomnum = AIFindRandomRoom(obj, ai_info, goal_ptr, obj->roomnum, -1, -1, true, false, nullptr);
     if (!ROOMNUM_OUTSIDE(roomnum)) {
       pos = Rooms[roomnum].path_pnt;
     } else {
@@ -609,7 +609,7 @@ void GoalDoFrame(object *obj) {
   int i;
 
   goal *cur_task_goal = GoalGetCurrentGoal(obj);
-  if (ai_info->path.num_paths > 0 && (cur_task_goal == NULL || (cur_task_goal->goal_uid != ai_info->path.goal_uid))) {
+  if (ai_info->path.num_paths > 0 && (cur_task_goal == nullptr || (cur_task_goal->goal_uid != ai_info->path.goal_uid))) {
     LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: In free path";
     AIPathFreePath(&ai_info->path);
   }
@@ -668,7 +668,7 @@ void GoalDoFrame(object *obj) {
         //				mprintf(0, "Obj  %f, %f, %f\n", XYZ(&obj->pos));
 
         cur_goal->dist_to_goal = dist;
-        AIStatusCircleFrame(obj, NULL, dist, cur_goal->circle_distance, &cur_goal->status_reg);
+        AIStatusCircleFrame(obj, nullptr, dist, cur_goal->circle_distance, &cur_goal->status_reg);
       }
     }
 
@@ -680,7 +680,7 @@ void GoalDoFrame(object *obj) {
 
   if (cur_goal) {
     int handle = OBJECT_HANDLE_NONE;
-    object *goal_obj = NULL;
+    object *goal_obj = nullptr;
 
     if (cur_goal->flags & GF_FORCE_AWARENESS) {
       if (obj->ai_info->awareness < AWARE_MOSTLY)
@@ -766,7 +766,7 @@ void GoalDoFrame(object *obj) {
               fq.p1 = &path_pos;
               fq.rad = obj->size / 4.0f;
               fq.thisobjnum = OBJNUM(obj);
-              fq.ignore_obj_list = NULL;
+              fq.ignore_obj_list = nullptr;
               fq.flags = FQ_CHECK_OBJS | FQ_NO_RELINK | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
 
               if (fvi_FindIntersection(&fq, &hit_info) == HIT_NONE) {
@@ -803,7 +803,7 @@ void GoalDoFrame(object *obj) {
             fq.p1 = &path_pos;
             fq.rad = obj->size / 4.0f;
             fq.thisobjnum = OBJNUM(obj);
-            fq.ignore_obj_list = NULL;
+            fq.ignore_obj_list = nullptr;
             fq.flags = FQ_CHECK_OBJS | FQ_NO_RELINK | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
 
             if (fvi_FindIntersection(&fq, &hit_info) == HIT_NONE) {
@@ -943,7 +943,7 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
                 char subtype) {
   ai_frame *ai_info = obj->ai_info;
   int goal_index = AI_INVALID_INDEX;
-  goal *goal_ptr = NULL;
+  goal *goal_ptr = nullptr;
 
   if (!(goal_type & (AIG_SET_ANIM | AIG_DO_MELEE_ANIM | AIG_FIRE_AT_OBJ))) {
     goal_index = GoalAllocSlot(obj, level, influence);
@@ -1216,7 +1216,7 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
     }
 
     goal *cur_goal = GoalGetCurrentGoal(obj);
-    if (cur_goal != NULL && cur_goal == goal_ptr) {
+    if (cur_goal != nullptr && cur_goal == goal_ptr) {
       if (cur_goal->flags & GF_FORCE_AWARENESS) {
         if (obj->ai_info->awareness < AWARE_MOSTLY)
           obj->ai_info->awareness = AWARE_MOSTLY;
@@ -1377,7 +1377,7 @@ void GoalInitTypeGoals(object *obj, int ai_type) {
     GoalAddEnabler(obj, 2, AIE_GT_AWARENESS, (void *)&aware, 1.0, 0.0);
     GoalAddEnabler(obj, 2, AIE_LTE_LAST_SEE_TARGET_INTERVAL, (void *)&time, 1.0, 0.0);
 
-    m_goal = GoalAddGoal(obj, AIG_MELEE_TARGET, NULL, ACTIVATION_BLEND_LEVEL, 1.0f, GF_NONFLUSHABLE);
+    m_goal = GoalAddGoal(obj, AIG_MELEE_TARGET, nullptr, ACTIVATION_BLEND_LEVEL, 1.0f, GF_NONFLUSHABLE);
     if (m_goal != -1) { // DAJ -1FIX
       ai_info->goals[m_goal].flags |= GF_OBJ_IS_TARGET | GF_KEEP_AT_COMPLETION;
       GoalAddEnabler(obj, m_goal, AIE_GT_AWARENESS, (void *)&aware, 1.0, 0.0);
@@ -1416,7 +1416,7 @@ bool GoalIsGoalEnabled(object *obj, int goal_index) {
   ASSERT(goal_index >= 0 && goal_index < MAX_GOALS);
 
   if (OBJGOAL(cur_goal)) {
-    object *gobj = NULL;
+    object *gobj = nullptr;
 
     if (cur_goal->flags & GF_OBJ_IS_TARGET) {
       gobj = ObjGet(obj->ai_info->target_handle);
@@ -1428,7 +1428,7 @@ bool GoalIsGoalEnabled(object *obj, int goal_index) {
       gobj = ObjGet(cur_goal->g_info.handle);
     }
 
-    if (gobj == NULL && cur_goal->type == AIG_DODGE_OBJ)
+    if (gobj == nullptr && cur_goal->type == AIG_DODGE_OBJ)
       return true;
 
     if (!gobj || gobj->type == OBJ_GHOST || (gobj->flags & (OF_DYING | OF_DESTROYED)) ||
@@ -1522,7 +1522,7 @@ bool GoalIsGoalEnabled(object *obj, int goal_index) {
 goal *GoalGetCurrentGoal(object *obj) {
   ai_frame *ai_info = obj->ai_info;
   int i;
-  goal *cur_goal = NULL;
+  goal *cur_goal = nullptr;
 
   for (i = NUM_ACTIVATION_LEVELS - 1; i >= 0; i--) {
     if (ai_info->goals[i].used && GoalIsGoalEnabled(obj, i)) {

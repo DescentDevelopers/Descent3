@@ -209,7 +209,7 @@ void CKeypadDialog::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 
     if (new_pos != si.nPos) {
       //	We will use ScrollWindowEx to scroll the child windows of this dialog box.
-      ScrollWindowEx(0, -(new_pos - si.nPos), NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
+      ScrollWindowEx(0, -(new_pos - si.nPos), nullptr, nullptr, nullptr, nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
       UpdateWindow();
 
       si.cbSize = sizeof(si);
@@ -270,7 +270,7 @@ void CKeypadDialog::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 
     if (new_pos != si.nPos) {
       //	We will use ScrollWindowEx to scroll the child windows of this dialog box.
-      ScrollWindowEx(-(new_pos - si.nPos), 0, NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
+      ScrollWindowEx(-(new_pos - si.nPos), 0, nullptr, nullptr, nullptr, nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
       UpdateWindow();
 
       si.cbSize = sizeof(si);
@@ -307,7 +307,7 @@ void CKeypadDialog::InitScrollBars(int vis_w, int vis_h) {
     vscroll = true;
 
   if (hscroll) {
-    ScrollWindowEx(m_hpos, 0, NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
+    ScrollWindowEx(m_hpos, 0, nullptr, nullptr, nullptr, nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
     si.nMax = m_fullwidth - 1;
     si.nPage = vis_w - (vscroll ? GetSystemMetrics(SM_CXVSCROLL) : 0);
     si.nPos = 0;
@@ -315,12 +315,12 @@ void CKeypadDialog::InitScrollBars(int vis_w, int vis_h) {
     ShowScrollBar(SB_HORZ, TRUE);
   } else {
     ShowScrollBar(SB_HORZ, FALSE);
-    ScrollWindowEx(m_hpos, 0, NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
+    ScrollWindowEx(m_hpos, 0, nullptr, nullptr, nullptr, nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
     //		mprintf(0, "hoff=%d\n", m_hpos);
   }
 
   if (vscroll) {
-    ScrollWindowEx(0, m_vpos, NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
+    ScrollWindowEx(0, m_vpos, nullptr, nullptr, nullptr, nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
     si.nMax = m_fullheight - 1;
     si.nPage = vis_h - (hscroll ? GetSystemMetrics(SM_CYHSCROLL) : 0);
     si.nPos = 0;
@@ -329,7 +329,7 @@ void CKeypadDialog::InitScrollBars(int vis_w, int vis_h) {
     m_vpos = 0;
   } else {
     ShowScrollBar(SB_VERT, FALSE);
-    ScrollWindowEx(0, m_vpos, NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
+    ScrollWindowEx(0, m_vpos, nullptr, nullptr, nullptr, nullptr, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
     //		mprintf(0, "voff=%d\n", m_vpos);
   }
 
