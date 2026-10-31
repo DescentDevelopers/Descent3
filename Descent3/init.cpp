@@ -1820,7 +1820,7 @@ void InitD3Systems1(bool editor) {
   if (pxoportarg)
     PXOPort = atoi(GameArgs[pxoportarg + 1]);
 
-  // Seed both random number generators before anything uses them; I/O init already draws temp file names from rand()
+  // Seed both random number generators before anything else uses them
   int iseedarg = FindArg("-randseed");
   uint32_t seed = static_cast<uint32_t>(iseedarg ? strtoul(GameArgs[iseedarg + 1], nullptr, 10) : time(nullptr));
   LOG_INFO << "seeding RNG with " << seed;
