@@ -1384,7 +1384,7 @@ int MainMultiplayerMenu() {
             while (DLLgrtext_GetTextLineWidth(fmtchan) < LIST_ROW1) {
               endpos = strlen(fmtchan);
               fmtchan[endpos] = chan_name[charpos];
-              fmtchan[endpos + 1] = NULL;
+              fmtchan[endpos + 1] = '\0';
               charpos++;
             }
             strcat(fmtchan, "\t\0");
@@ -1392,7 +1392,7 @@ int MainMultiplayerMenu() {
             while (DLLgrtext_GetTextLineWidth(fmtchan) < LIST_ROW2) {
               endpos = strlen(fmtchan);
               fmtchan[endpos] = count_list[charpos];
-              fmtchan[endpos + 1] = NULL;
+              fmtchan[endpos + 1] = '\0';
               charpos++;
             }
             strcat(fmtchan, "\t\0");
@@ -2126,7 +2126,7 @@ void CheckPXOForAnomalies() {
         // Ok, what we have here is multiple users with the same tracker ID.
         // This is bad. It could be user error, but it could be something worse.
         std::filesystem::path errfilepath = DLLcf_GetWritableBaseDirectory() / "pxo.err";
-        FILE *errfile = fopen((const char*)errfilepath.u8string().c_str(), "at");
+        FILE *errfile = fopen(PATH_TO_CSTR(errfilepath), "at");
         if (errfile) {
           fprintf(errfile, "Dup TID: %s & %s / %s\n", DLLMPlayers[j].callsign, DLLMPlayers[i].callsign,
                   DLLMPlayers[i].tracker_id);
@@ -2708,7 +2708,7 @@ int GetPilotStats(const char *pilot) {
   GetD3PilotDataCancel();
   GetTrackerIdByUser((char *)-1);
   p = GetTrackerIdByUser(pilot);
-  while (p == NULL) {
+  while (p == nullptr) {
     res = DLLPollUI();
     DLLDescentDefer();
     p = GetChatText();

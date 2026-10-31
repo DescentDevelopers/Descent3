@@ -188,6 +188,7 @@
 #define NEWUI_H
 
 #include "newui_core.h"
+#include "pstypes.h"
 
 // flags for creating a newui window
 #define NUWF_TITLENONE 0x00000000    // don't display a title bar
@@ -315,8 +316,8 @@ void NewUIClose();
 //	DoWaitMessage(true,"Please Wait...");
 //	... //some code
 //	DoWaitMessage(false);
-void DoWaitMessage(bool enable, const char *message = NULL);
-void DoWaitPopup(bool enable, const char *message = NULL);
+void DoWaitMessage(bool enable, const char *message = nullptr);
+void DoWaitPopup(bool enable, const char *message = nullptr);
 
 //	puts up a message box with a title and message.
 int DoMessageBox(const char *title, const char *msg, int type, ddgr_color title_color = UICOL_WINDOW_TITLE,
@@ -330,7 +331,7 @@ int DoMessageBox(const char *title, const char *msg, int type, ddgr_color title_
 //
 // if button with btn0_title pressed, returns 0, btn1_title, returns 1, etc.
 // safe for up to three buttons.
-int DoMessageBoxAdvanced(const char *title, const char *msg, const char *btn0_title, int key0, ...);
+int DoMessageBoxAdvanced(const char *title, const char *msg, const char *btn0_title, int key0, ...) VA_SENTINEL;
 
 // edit dialog.
 bool DoEditDialog(const char *title, char *buffer, int buflen, bool showcancel = true);
@@ -503,7 +504,7 @@ class NewUIButton final : public UIButton {
   int m_TileWidth;
 
 public:
-  NewUIButton() { m_BtnTitle = NULL; };
+  NewUIButton() { m_BtnTitle = nullptr; };
 
   virtual ~NewUIButton() {
     if (m_BtnTitle)

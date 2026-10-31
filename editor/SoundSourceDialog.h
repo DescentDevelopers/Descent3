@@ -34,7 +34,7 @@
 class CSoundSourceDialog : public CDialog {
   // Construction
 public:
-  CSoundSourceDialog(soundsource_info_s *data, CWnd *pParent = NULL); // standard constructor
+  CSoundSourceDialog(soundsource_info_s *data, CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CSoundSourceDialog)

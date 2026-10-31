@@ -293,7 +293,7 @@ int GetTerrainRoomFromPos(vector *pos);
 void ComputeTerrainSegmentCenter(vector *pos, int segnum);
 // Given an position, returns the terrain Y coord at that location
 // Also now can return the normal at that ground point
-float GetTerrainGroundPoint(vector *pos, vector *normal = NULL);
+float GetTerrainGroundPoint(vector *pos, vector *normal = nullptr);
 
 void SetupSky(float radius, int flags, uint8_t randit = 0);
 

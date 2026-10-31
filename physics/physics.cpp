@@ -141,7 +141,7 @@ void DoPhysLinkedFrame(object *obj) {
     fvec = fvec * m;
     uvec = uvec * m;
 
-    vm_VectorToMatrix(&new_orient, &fvec, &uvec, NULL);
+    vm_VectorToMatrix(&new_orient, &fvec, &uvec, nullptr);
 
     new_pos += parent->pos;
 
@@ -792,7 +792,7 @@ void do_physics_sim(object *obj) {
       fq.p1 = &w_pos;
       fq.rad = obj->size;
       fq.thisobjnum = objnum;
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = FQ_CHECK_OBJS | FQ_RECORD | FQ_IGNORE_POWERUPS;
       fq.flags |= FQ_NEW_RECORD_LIST;
       fq.flags |= FQ_CHECK_CEILING;
@@ -814,7 +814,7 @@ void do_physics_sim(object *obj) {
         f_start_fvi_record = false;
 
         // update object's position and segment number
-        ObjSetPos(obj, &hit_info.hit_pnt, hit_info.hit_room, NULL, false);
+        ObjSetPos(obj, &hit_info.hit_pnt, hit_info.hit_room, nullptr, false);
       }
     }
   }
@@ -842,7 +842,7 @@ void do_physics_sim(object *obj) {
         (obj->mtype.phys_info.flags & PF_GRAVITY) ||
         ((!ROOMNUM_OUTSIDE(obj->roomnum)) && Rooms[obj->roomnum].wind != vector{}) ||
         (obj->mtype.phys_info.flags & PF_WIGGLE) ||
-        ((obj->ai_info != NULL) && ((obj->ai_info->flags & AIF_REPORT_NEW_ORIENT) != 0)))) {
+        ((obj->ai_info != nullptr) && ((obj->ai_info->flags & AIF_REPORT_NEW_ORIENT) != 0)))) {
     if ((obj->flags & OF_MOVED_THIS_FRAME)) {
       obj->flags &= (~OF_MOVED_THIS_FRAME);
       obj->flags |= OF_STOPPED_THIS_FRAME;
@@ -961,7 +961,7 @@ void do_physics_sim(object *obj) {
       obj->mtype.phys_info.velocity = end_vel;
 
       //			ObjSetOrient(obj,&end_orient);
-      ObjSetPos(obj, &movement_pos, obj->roomnum, NULL, false);
+      ObjSetPos(obj, &movement_pos, obj->roomnum, nullptr, false);
 
       ObjSetAABB(obj);
       obj->last_pos = init_pos;
@@ -1086,7 +1086,7 @@ void do_physics_sim(object *obj) {
 
     if (fate != HIT_NONE) {
       if (Physics_player_verbose) {
-        objnum = ObjCreate(OBJ_DEBUG_LINE, 1, hit_info.hit_room, &hit_info.hit_face_pnt[0], NULL);
+        objnum = ObjCreate(OBJ_DEBUG_LINE, 1, hit_info.hit_room, &hit_info.hit_face_pnt[0], nullptr);
         if (objnum >= 0) { // DAJ -1FIX
           Objects[objnum].rtype.line_info.end_pos = hit_info.hit_face_pnt[0] + hit_info.hit_wallnorm[0];
           Objects[objnum].size = vm_VectorDistance(&Player_object->pos, &hit_info.hit_pnt);
@@ -1124,7 +1124,7 @@ void do_physics_sim(object *obj) {
     if (obj->type == OBJ_PLAYER &&
         ((fate == HIT_OUT_OF_TERRAIN_BOUNDS) ||
          (ROOMNUM_OUTSIDE(hit_info.hit_room) && GetTerrainCellFromPos(&hit_info.hit_pnt) == -1))) {
-      ObjSetPos(obj, &init_pos, init_room, NULL, false);
+      ObjSetPos(obj, &init_pos, init_room, nullptr, false);
       obj->last_pos = init_pos;
 
       return;
@@ -1139,7 +1139,7 @@ void do_physics_sim(object *obj) {
     obj->last_pos = obj->pos;
 
     // update object's position and segment number
-    ObjSetPos(obj, &hit_info.hit_pnt, hit_info.hit_room, NULL, false);
+    ObjSetPos(obj, &hit_info.hit_pnt, hit_info.hit_room, nullptr, false);
 
     // Calulate amount of sim time left
     if (fate == HIT_NONE) {
@@ -1165,7 +1165,7 @@ void do_physics_sim(object *obj) {
       // We where sitting in a wall -- invalid starting point
       // moved backwards
       if (fate == HIT_WALL && vm_Dot3Product(moved_vec_n, movement_vec) < -0.000001 && actual_dist != 0.0) {
-        ObjSetPos(obj, &start_pos, start_room, NULL, false);
+        ObjSetPos(obj, &start_pos, start_room, nullptr, false);
 
         moved_time = 0.0;
       } else {
@@ -1213,7 +1213,7 @@ void do_physics_sim(object *obj) {
     case HIT_NONE:
       if (obj->type == OBJ_WEAPON && (obj->mtype.phys_info.flags & (PF_GRAVITY | PF_WIND))) {
         if (obj->mtype.phys_info.velocity != vector{})
-          vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
+          vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, nullptr);
       }
       f_continue_sim = false;
       break;
@@ -1438,7 +1438,7 @@ void do_physics_sim(object *obj) {
           // Weapons should face their new heading.  This is so missiles are pointing in the correct direct.
           if (obj->type == OBJ_WEAPON && (bounced || (obj->mtype.phys_info.flags & (PF_GRAVITY | PF_WIND))))
             if (obj->mtype.phys_info.velocity != vector{})
-              vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
+              vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, nullptr);
         }
       }
       f_continue_sim = true;
@@ -1495,7 +1495,7 @@ void do_physics_sim(object *obj) {
 
       // Weapons should face their new heading.  This is so missiles are pointing in the correct direct.
       if (obj->type == OBJ_WEAPON && (bounced || (obj->mtype.phys_info.flags & (PF_GRAVITY | PF_WIND))))
-        vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
+        vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, nullptr);
 
       f_continue_sim = true;
     } break;
@@ -1609,8 +1609,8 @@ end_of_sim:
   return;
 }
 
-int PhysCastWalkRay(object *obj, vector *p0, vector *p1, vector *hitpnt, int *start_roomnum = NULL,
-                    int *end_roomnum = NULL, vector *hit_normal = NULL) {
+int PhysCastWalkRay(object *obj, vector *p0, vector *p1, vector *hitpnt, int *start_roomnum = nullptr,
+                    int *end_roomnum = nullptr, vector *hit_normal = nullptr) {
   int fate;
 
   fvi_info hit_info;
@@ -1631,7 +1631,7 @@ int PhysCastWalkRay(object *obj, vector *p0, vector *p1, vector *hitpnt, int *st
     fq.flags |= FQ_NO_RELINK;
 
   fq.thisobjnum = OBJNUM(obj);
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   fate = fvi_FindIntersection(&fq, &hit_info);
   if (end_roomnum)
@@ -1671,7 +1671,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
   obj->orient = *orient;
 
   for (i = 0; i < num_gps; i++) {
-    PhysCalcGround(&pnt[i], NULL, obj, i);
+    PhysCalcGround(&pnt[i], nullptr, obj, i);
   }
 
   obj->pos = tpnt;
@@ -1691,7 +1691,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
       vector x;
       vector norm;
 
-      int fate = PhysCastWalkRay(obj, &obj->pos, &pp[i], &x, NULL, &proom[i], &norm);
+      int fate = PhysCastWalkRay(obj, &obj->pos, &pp[i], &x, nullptr, &proom[i], &norm);
       if (fate != HIT_NONE) {
         if (vm_Dot3Product(norm, obj->orient.uvec) < 0.4717f) {
           return false;
@@ -1709,7 +1709,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
       vector foot_pnt = pp[i] + obj->orient.uvec * -(obj->size * 1.5f);
       vector norm;
 
-      fate = PhysCastWalkRay(obj, &pp[i], &foot_pnt, &hp[i], &proom[i], NULL, &norm);
+      fate = PhysCastWalkRay(obj, &pp[i], &foot_pnt, &hp[i], &proom[i], nullptr, &norm);
 
       if (fate != HIT_NONE) {
         if (vm_Dot3Product(norm, obj->orient.uvec) < 0.4717f) {
@@ -1740,7 +1740,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
     fvec -= (uvec * dot);
     vm_NormalizeVector(&fvec);
 
-    vm_VectorToMatrix(orient, &fvec, &uvec, NULL);
+    vm_VectorToMatrix(orient, &fvec, &uvec, nullptr);
     *pos += ave_diff;
   } else { // Alignd to Y-axis
     int fate;
@@ -1980,7 +1980,7 @@ void do_walking_sim(object *obj) {
         (obj->mtype.phys_info.flags & PF_GRAVITY) ||
         ((!ROOMNUM_OUTSIDE(obj->roomnum)) && Rooms[obj->roomnum].wind != vector{}) ||
         (obj->mtype.phys_info.flags & PF_WIGGLE) ||
-        ((obj->ai_info != NULL) && ((obj->ai_info->flags & AIF_REPORT_NEW_ORIENT) != 0)))) {
+        ((obj->ai_info != nullptr) && ((obj->ai_info->flags & AIF_REPORT_NEW_ORIENT) != 0)))) {
     if ((obj->flags & OF_MOVED_THIS_FRAME)) {
       obj->flags &= (~OF_MOVED_THIS_FRAME);
       obj->flags |= OF_STOPPED_THIS_FRAME;
@@ -2075,7 +2075,7 @@ void do_walking_sim(object *obj) {
             fq.p1 = &footstep;
             fq.rad = obj->size;
             fq.thisobjnum = objnum;
-            fq.ignore_obj_list = NULL;
+            fq.ignore_obj_list = nullptr;
             fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_WEAPONS | FQ_IGNORE_POWERUPS | FQ_IGNORE_TERRAIN;
 
             if (obj->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS) {
@@ -2129,7 +2129,7 @@ void do_walking_sim(object *obj) {
     if (obj->type == OBJ_PLAYER &&
         ((fate == HIT_OUT_OF_TERRAIN_BOUNDS) ||
          (ROOMNUM_OUTSIDE(hit_info.hit_room) && GetTerrainCellFromPos(&hit_info.hit_pnt) == -1))) {
-      ObjSetPos(obj, &init_pos, init_room, NULL, false);
+      ObjSetPos(obj, &init_pos, init_room, nullptr, false);
       obj->last_pos = init_pos;
 
       goto end_of_sim;
@@ -2171,7 +2171,7 @@ void do_walking_sim(object *obj) {
                         XYZ(&obj->pos))); // don't change position or sim_time_remaining
         */
 
-        ObjSetPos(obj, &start_pos, start_room, NULL, false);
+        ObjSetPos(obj, &start_pos, start_room, nullptr, false);
 
         moved_time = 0.0;
       } else {
@@ -2320,7 +2320,7 @@ void do_walking_sim(object *obj) {
           // Weapons should face their new heading.  This is so missiles are pointing in the correct direct.
           if (obj->type == OBJ_WEAPON && (bounced || (obj->mtype.phys_info.flags & (PF_GRAVITY | PF_WIND))))
             if (obj->mtype.phys_info.velocity != vector{})
-              vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
+              vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, nullptr);
         }
       }
       f_continue_sim = true;
@@ -2520,7 +2520,7 @@ void do_vis_physics_sim(vis_effect *vis) {
   fq.p1 = &vis->pos;
   fq.rad = 0.0f;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_CHECK_OBJS | FQ_ONLY_DOOR_OBJ | FQ_IGNORE_WALLS;
 
   fate = fvi_FindIntersection(&fq, &hit_info);

@@ -81,8 +81,8 @@
 #include "idmfc.h"
 #include "tanDMFC.h"
 #include "tanarchystr.h"
-IDMFC *DMFCBase = NULL;
-static IDmfcStats *dstat = NULL;
+IDMFC *DMFCBase = nullptr;
+static IDmfcStats *dstat = nullptr;
 static player *dPlayers;
 
 #define SPID_NEWPLAYER 0
@@ -246,13 +246,13 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   tsi.flags = DSIF_SHOW_PIC | DSIF_SHOW_OBSERVERICON | DSIF_SEPERATE_BY_TEAM;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 6;
-  tsi.clbDetailedColumnBMP = NULL;
-  tsi.clbDetailedColumn = NULL;
+  tsi.clbDetailedColumnBMP = nullptr;
+  tsi.clbDetailedColumn = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
-  tsi.clbPlayerColumnBMP = NULL;
-  tsi.DetailedColumns = NULL;
+  tsi.clbPlayerColumnBMP = nullptr;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
   tsi.clTeamLine = TeamScoreCallback;
@@ -298,13 +298,13 @@ void DLLFUNCCALL DLLGameClose() {
 
   if (dstat) {
     dstat->DestroyPointer();
-    dstat = NULL;
+    dstat = nullptr;
   }
 
   if (DMFCBase) {
     DMFCBase->GameClose();
     DMFCBase->DestroyPointer();
-    DMFCBase = NULL;
+    DMFCBase = nullptr;
   }
 }
 
@@ -910,7 +910,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
         DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
 
         DLLrend_DrawScaledBitmap(name_x - 2, y - 2, score_x + score_width + 2, y + height - 1, Highlight_bmp, 0, 0, 1,
-                                 1, 1.0, -1, NULL);
+                                 1, 1.0, -1, nullptr);
         DLLrend_SetZBufferState(1);
       }
     }

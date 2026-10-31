@@ -147,8 +147,8 @@ MenuItem::MenuItem() {
   SubMenuCount = 0;
   CurrSubMenu = -1;
   m_iState = 0;
-  SubMenus = NULL;
-  func = NULL;
+  SubMenus = nullptr;
+  func = nullptr;
   HasInputFocus = false;
   m_cType = MIT_NORMAL;
 
@@ -167,7 +167,7 @@ MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
   SubMenuCount = 0;
   CurrSubMenu = -1;
   m_iState = 0;
-  SubMenus = NULL;
+  SubMenus = nullptr;
   func = fp;
   HasInputFocus = false;
   m_cType = type;
@@ -236,21 +236,21 @@ MenuItem::~MenuItem() {
     if ((m_cType == MIT_PLIST) || (m_cType == MIT_CUSTOM)) {
       p = (MenuItem *)SubMenus[0];
       if (p) {
-        SubMenus[0] = NULL;
+        SubMenus[0] = nullptr;
         delete p;
       }
     } else {
       for (int i = 0; i < SubMenuCount; i++) {
         p = (MenuItem *)SubMenus[i];
         if (p) {
-          SubMenus[i] = NULL;
+          SubMenus[i] = nullptr;
           delete p;
         }
       }
     }
 
     free(SubMenus);
-    SubMenus = NULL;
+    SubMenus = nullptr;
   }
 
   SubMenuCount = 0;
@@ -330,7 +330,7 @@ bool MenuItem::DetachSubMenu(IMenuItem *p) {
 
     if (temp)
       free(temp);
-    SubMenus = NULL;
+    SubMenus = nullptr;
   }
 
   return true;
@@ -655,7 +655,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
     DLLrend_SetTextureType(TT_LINEAR);
     DLLrend_SetLighting(LS_NONE);
     DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
-    DLLrend_DrawScaledBitmap(x, y, maxx, y + (height * (end_index - m_iTopIndex + 1)), bmp, 0, 0, 1, 1, 1.0, 1, NULL);
+    DLLrend_DrawScaledBitmap(x, y, maxx, y + (height * (end_index - m_iTopIndex + 1)), bmp, 0, 0, 1, 1, 1.0, 1, nullptr);
     DLLrend_SetZBufferState(1);
   }
 
@@ -860,12 +860,12 @@ bool MenuItem::SetStateItemList(int count, ...) {
   for (int i = 0; i < SubMenuCount; i++) {
     if (SubMenus[i]) {
       delete SubMenus[i];
-      SubMenus[i] = NULL;
+      SubMenus[i] = nullptr;
     }
   }
   if (SubMenus) {
     free(SubMenus);
-    SubMenus = NULL;
+    SubMenus = nullptr;
   }
 
   va_list marker;
@@ -898,12 +898,12 @@ bool MenuItem::SetStateItemListArray(int count, char **array) {
   for (int i = 0; i < SubMenuCount; i++) {
     if (SubMenus[i]) {
       delete SubMenus[i];
-      SubMenus[i] = NULL;
+      SubMenus[i] = nullptr;
     }
   }
   if (SubMenus) {
     free(SubMenus);
-    SubMenus = NULL;
+    SubMenus = nullptr;
   }
 
   SubMenuCount = count;
@@ -935,7 +935,7 @@ char *GetBannedPlayerString(int index) {
     snprintf(r, sizeof(r), "[%d]%s", index, ptr);
     return r;
   } else
-    return NULL;
+    return nullptr;
 }
 
 // Removes a ban for a player, give the ban index #

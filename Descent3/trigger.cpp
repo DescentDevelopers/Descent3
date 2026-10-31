@@ -145,7 +145,7 @@ void InitTriggers() {
     Triggers[i].flags = 0;
 
     Triggers[i].osiris_script.script_id = -1;
-    Triggers[i].osiris_script.script_instance = NULL;
+    Triggers[i].osiris_script.script_instance = nullptr;
   }
 
   Num_triggers = 0;
@@ -178,7 +178,7 @@ trigger *FindTrigger(int roomnum, int facenum) {
 
   Int3(); // Didn't find the requested trigger -- very bad!
 
-  return NULL;
+  return nullptr;
 }
 
 // Called to see if a trigger was tripped
@@ -193,9 +193,9 @@ void CheckTrigger(int roomnum, int facenum, object *objp, int event_type) {
     int type;
 
     tp = FindTrigger(roomnum, facenum);
-    ASSERT(tp != NULL);
+    ASSERT(tp != nullptr);
 
-    if (tp == NULL) {
+    if (tp == nullptr) {
       Int3(); // very bad!  Get Matt.
       return;
     }
@@ -352,7 +352,7 @@ void DeleteTrigger(int roomnum, int facenum) {
 
   tp = FindTrigger(roomnum, facenum);
 
-  ASSERT(tp != NULL);
+  ASSERT(tp != nullptr);
 
   DeleteTrigger(tp - Triggers);
 }

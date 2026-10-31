@@ -418,7 +418,7 @@ int MainMultiplayerMenu() {
   void *net_game_txt_items[MAX_NET_GAMES];
   int a;
   for (a = 0; a < MAX_NET_GAMES; a++)
-    net_game_txt_items[a] = NULL;
+    net_game_txt_items[a] = nullptr;
   int ret = 0;
   uint8_t oldalpha = *DLLNewUIWindow_alpha;
   int cury = 40;
@@ -458,7 +458,7 @@ int MainMultiplayerMenu() {
   int lastgamesfound = 0;
   int itemp;
   int looklocal = 1;
-  void *selti = NULL;
+  void *selti = nullptr;
 
   float lastpoll = DLLtimer_GetTime();
   DLLSearchForLocalGamesTCP(0xffffffffl, htons(DEFAULT_GAME_PORT));
@@ -473,14 +473,14 @@ int MainMultiplayerMenu() {
       if (*DLLMulti_Gamelist_changed) {
         // We found a new game!
         *DLLMulti_Gamelist_changed = false;
-        selti = NULL;
+        selti = nullptr;
         lastgamesfound = itemp;
         // Get the currently selected item
         // char * psel = DLLListGetItem(main_list,DLLListGetSelectedIndex(main_list))				;
         // selno = DLLListGetSelectedIndex(main_list);
         // strcpy(selgame,DLLNetwork_games[selno].name);
         DLLmprintf(0, "Selected item = %s\n", selgame);
-        selti = NULL;
+        selti = nullptr;
         DLLListRemoveAll(main_list);
         for (int k = 0; k < *DLLNum_network_games_known; k++) {
           char fmtline[200];
@@ -559,7 +559,7 @@ int MainMultiplayerMenu() {
         s_address.connection_type = NP_TCP;
         // s_address.port=&DLLNetwork_games[gameno].addr.port;//DEFAULT_GAME_PORT;
         *DLLGame_is_master_tracker_game = 0;
-        DLLMultiStartClient(NULL);
+        DLLMultiStartClient(nullptr);
         if (DLLDoPlayerMouselookCheck(DLLNetwork_games[gameno].flags)) {
           if (DLLmsn_CheckGetMission(&s_address, DLLNetwork_games[gameno].mission)) {
             if ((DLLTryToJoinServer(&s_address))) {
@@ -607,7 +607,7 @@ int MainMultiplayerMenu() {
         if (net_game_txt_items[a])
           DLLRemoveUITextItem(net_game_txt_items[a]);
       for (a = 0; a < MAX_NET_GAMES; a++)
-        net_game_txt_items[a] = NULL;
+        net_game_txt_items[a] = nullptr;
       break;
     case 9: {
       // Scan a specific IP
@@ -637,7 +637,7 @@ int MainMultiplayerMenu() {
         if (net_game_txt_items[a])
           DLLRemoveUITextItem(net_game_txt_items[a]);
       for (a = 0; a < MAX_NET_GAMES; a++)
-        net_game_txt_items[a] = NULL;
+        net_game_txt_items[a] = nullptr;
     } break;
     case GET_INFO_ID: {
       if (*DLLNum_network_games_known) {
@@ -709,7 +709,7 @@ void AutoLoginAndJoinGame(void) {
   s_address.port = port;
   s_address.connection_type = NP_TCP;
   *DLLGame_is_master_tracker_game = 0;
-  DLLMultiStartClient(NULL);
+  DLLMultiStartClient(nullptr);
 
   if ((DLLTryToJoinServer(&s_address))) {
     DLLmprintf(0, "Menu: Game joined!\n");

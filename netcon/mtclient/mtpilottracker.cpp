@@ -563,7 +563,7 @@ void HandlePilotData(uint8_t *data, int len, network_address *from) {
 //   1	User valid
 int ValidateUser(validate_id_request *valid_id, char *trackerid) {
   ValidIdle();
-  if (valid_id == NULL) {
+  if (valid_id == nullptr) {
     switch (ValidState) {
     case VALID_STATE_IDLE:
       return 0;

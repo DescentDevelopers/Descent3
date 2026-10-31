@@ -1491,8 +1491,8 @@ void InitPlayerNewShip(int slot, int inven_reset) {
   Players[slot].killer_objnum = -1;
   Players[slot].light_dist = 0;
   Players[slot].oldroom = -1;
-  Players[slot].guided_obj = NULL;
-  Players[slot].user_timeout_obj = NULL;
+  Players[slot].guided_obj = nullptr;
+  Players[slot].user_timeout_obj = nullptr;
   Players[slot].afterburn_time_left = AFTERBURN_TIME;
   Players[slot].last_thrust_time = 0;
   Players[slot].last_afterburner_time = 0;
@@ -1736,7 +1736,7 @@ void UpdatePlayerCameraPosition() {
   fq.startroom = dest_room;
   fq.rad = .5;
   fq.thisobjnum = OBJNUM(playerobj);
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
   fvi_FindIntersection(&fq, &hit_data);
 
@@ -1842,7 +1842,7 @@ void DoPlayerFrameForOne(int slot) {
       }
 
       if (scalar > .7) {
-        SetNapalmDamageEffect(obj, NULL, napalm_id);
+        SetNapalmDamageEffect(obj, nullptr, napalm_id);
         obj->effect_info->damage_time = 1;
         obj->effect_info->damage_per_second = 2;
       }
@@ -2034,7 +2034,7 @@ struct tDeathSeq {
   int saved_player_modelnum;
   bool in_cockpit;
 
-  tDeathSeq() { camera = NULL; };
+  tDeathSeq() { camera = nullptr; };
 
 };
 
@@ -2120,11 +2120,11 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
   Players[playerobj->id].num_deaths_total++;
   // Do killer object stuff
   if (killer_num < 0 || killer_num > MAX_OBJECTS)
-    killer = NULL;
+    killer = nullptr;
   else {
     killer = &Objects[killer_num];
     if (killer->type == OBJ_NONE)
-      killer = NULL;
+      killer = nullptr;
   }
 
   //	determine current state of player object.
@@ -2160,7 +2160,7 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
   Death[slot].saved_rotthrust = playerobj->mtype.phys_info.rotthrust;
   Death[slot].breakup_count = 0;
 
-  if (killer == NULL) // If the killer isn't valid, just use the reverse forward direction
+  if (killer == nullptr) // If the killer isn't valid, just use the reverse forward direction
     Death[slot].force_dir = -playerobj->orient.fvec;
   else
     Death[slot].force_dir = playerobj->pos - killer->pos;
@@ -2329,7 +2329,7 @@ void DoNewPlayerDeathFrame(int slot) {
       fq.startroom = Death[slot].camera->roomnum;
       fq.rad = .5;
       fq.thisobjnum = OBJNUM(Death[slot].camera);
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = 0;
       fvi_FindIntersection(&fq, &hit_data);
 
@@ -2343,7 +2343,7 @@ void DoNewPlayerDeathFrame(int slot) {
       directional = playerobj->pos - Death[slot].camera->pos;
       if (vm_GetMagnitudeFast(&directional) == 0.0f)
         directional.x() += 1.0f;
-      vm_VectorToMatrix(&Death[slot].camera->orient, &directional, NULL, NULL);
+      vm_VectorToMatrix(&Death[slot].camera->orient, &directional, nullptr, nullptr);
     }
 
     //	perform fate specific actions here
@@ -2436,7 +2436,7 @@ void EndPlayerDeath(int slot) {
   if (slot == Player_num) {
     if (Death[slot].camera) {
       ObjDelete(OBJNUM(Death[slot].camera));
-      Death[slot].camera = NULL;
+      Death[slot].camera = nullptr;
       Viewer_object = Death[slot].oldviewer;
     }
     SetHUDMode(Death[slot].saved_cockpit);
@@ -2704,7 +2704,7 @@ void DeadPlayerShipHit(object *obj, int hit_room, vector *hitpt, float magnitude
     fq.startroom = hit_room;
     fq.rad = obj->size;
     fq.thisobjnum = obj - Objects;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = FQ_CHECK_OBJS | FQ_OBJ_BACKFACE | FQ_ONLY_PLAYER_OBJ;
 
     fvi_FindIntersection(&fq, &hit_data);
@@ -2832,7 +2832,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
     return -1;
   }
 
-  int objnum = ObjCreate(type, id, parent->roomnum, &parent->pos, NULL, parent->handle);
+  int objnum = ObjCreate(type, id, parent->roomnum, &parent->pos, nullptr, parent->handle);
 
   if (objnum < 0) {
     LOG_DEBUG.printf("Couldn't spew object!");
@@ -2841,7 +2841,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
 
   object *obj = &Objects[objnum];
 
-  PlayerSpewObject(obj, timed, parent->roomnum, &parent->pos, NULL);
+  PlayerSpewObject(obj, timed, parent->roomnum, &parent->pos, nullptr);
 
   // Send object to other players
   if (Game_mode & GM_MULTI) {
@@ -2908,11 +2908,11 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
   if (spew_energy_and_shield) {
     id = FindObjectIDName("Shield");
     if (id >= 0)
-      PlayerSpewObject(obj, OBJ_POWERUP, id, 1, NULL);
+      PlayerSpewObject(obj, OBJ_POWERUP, id, 1, nullptr);
 
     id = FindObjectIDName("Energy");
     if (id >= 0)
-      PlayerSpewObject(obj, OBJ_POWERUP, id, 1, NULL);
+      PlayerSpewObject(obj, OBJ_POWERUP, id, 1, nullptr);
   }
 
   // Spew the primary weapon powerups
@@ -2921,7 +2921,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
       id = Ships[playp->ship_index].spew_powerup[playp->weapon[PW_PRIMARY].index];
       if (id != -1) {
         ASSERT(Object_info[id].type == OBJ_POWERUP);
-        PlayerSpewObject(obj, OBJ_POWERUP, id, 2, NULL);
+        PlayerSpewObject(obj, OBJ_POWERUP, id, 2, nullptr);
       }
     }
 
@@ -2931,7 +2931,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
       ASSERT(Object_info[id].type == OBJ_POWERUP);
       int count = std::min<int>(playp->weapon_ammo[playp->weapon[PW_SECONDARY].index], MAX_SECONDARY_SPEW);
       for (int t = 0; t < count; t++)
-        PlayerSpewObject(obj, OBJ_POWERUP, id, 2, NULL);
+        PlayerSpewObject(obj, OBJ_POWERUP, id, 2, nullptr);
     }
   } else // Single player
   {
@@ -2943,7 +2943,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
         id = Ships[playp->ship_index].spew_powerup[w];
         if (id != -1) {
           ASSERT(Object_info[id].type == OBJ_POWERUP);
-          int objnum = PlayerSpewObject(obj, OBJ_POWERUP, id, 0, NULL);
+          int objnum = PlayerSpewObject(obj, OBJ_POWERUP, id, 0, nullptr);
 
           // Set ammo
           if (objnum != -1) {
@@ -2970,13 +2970,13 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
           if (multi_id != -1) {
             int objnum;
             ASSERT(Object_info[multi_id].type == OBJ_POWERUP);
-            objnum = PlayerSpewObject(obj, OBJ_POWERUP, multi_id, 0, NULL);
+            objnum = PlayerSpewObject(obj, OBJ_POWERUP, multi_id, 0, nullptr);
             if (objnum != -1)
               Objects[objnum].ctype.powerup_info.count = playp->weapon_ammo[w];
           } else {
             int count = std::min<int>(playp->weapon_ammo[w], MAX_SECONDARY_SPEW);
             for (int t = 0; t < count; t++)
-              PlayerSpewObject(obj, OBJ_POWERUP, id, 0, NULL);
+              PlayerSpewObject(obj, OBJ_POWERUP, id, 0, nullptr);
           }
         }
       }
@@ -3024,17 +3024,17 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
             }
 
             if (Game_mode & GM_MULTI)
-              PlayerSpewObject(temp_obj, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, obj->roomnum, &obj->pos, NULL);
+              PlayerSpewObject(temp_obj, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, obj->roomnum, &obj->pos, nullptr);
             else
-              PlayerSpewObject(temp_obj, 0, obj->roomnum, &obj->pos, NULL);
+              PlayerSpewObject(temp_obj, 0, obj->roomnum, &obj->pos, nullptr);
           }
 
         } else {
           ASSERT(type != OBJ_NONE);
           if (Game_mode & GM_MULTI)
-            PlayerSpewObject(obj, type, id, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, NULL);
+            PlayerSpewObject(obj, type, id, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, nullptr);
           else
-            PlayerSpewObject(obj, type, id, 0, NULL);
+            PlayerSpewObject(obj, type, id, 0, nullptr);
           playp->inventory.Remove(type, id);
         }
       }
@@ -3059,9 +3059,9 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
         ASSERT(type != OBJ_NONE);
 
         if (Game_mode & GM_MULTI)
-          PlayerSpewObject(obj, type, id, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, NULL);
+          PlayerSpewObject(obj, type, id, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, nullptr);
         else
-          PlayerSpewObject(obj, type, id, 0, NULL);
+          PlayerSpewObject(obj, type, id, 0, nullptr);
 
         playp->counter_measures.GetPosTypeID(type, id);
         playp->counter_measures.Remove(type, id);
@@ -3081,7 +3081,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
 void PlayerShipExplode(object *obj, float magnitude) {
   int visnum;
 
-  ASSERT(obj != NULL);
+  ASSERT(obj != nullptr);
 
   DLLInfo.me_handle = obj->handle;
   DLLInfo.it_handle = obj->handle;
@@ -3277,7 +3277,7 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
     fq.startroom = playobj->roomnum;
     fq.rad = .5;
     fq.thisobjnum = OBJNUM(playobj);
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = 0;
 
     ASSERT(std::isfinite(next_vec.x()));
@@ -3293,14 +3293,14 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
       fq.startroom = playobj->roomnum;
       fq.rad = 0.75f;
       fq.thisobjnum = OBJNUM(playobj);
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = 0;
       fvi_FindIntersection(&fq, &hit_data);
 
       if (hit_data.hit_type[0] != HIT_NONE)
-        ObjSetPos(Death[slot].camera, &hit_data.hit_pnt, hit_data.hit_room, NULL, false);
+        ObjSetPos(Death[slot].camera, &hit_data.hit_pnt, hit_data.hit_room, nullptr, false);
       else
-        ObjSetPos(Death[slot].camera, &best_vec, hit_data.hit_room, NULL, false);
+        ObjSetPos(Death[slot].camera, &best_vec, hit_data.hit_room, nullptr, false);
     } else {
       float ray_dist = vm_VectorDistanceQuick(&hit_data.hit_pnt, &playobj->pos);
       if (ray_dist < distance) {
@@ -3590,7 +3590,7 @@ int PlayerSetCustomTexture(int slot, char *filename) {
 
   // Now load the new one
   texp->bm_handle = 0;
-  if (filename == NULL)
+  if (filename == nullptr)
     return 1;
 
   int anim;

@@ -181,8 +181,8 @@ extern char *TablefileNameOverride;
 void mng_WriteDoorPage(CFILE *outfile, mngs_door_page *doorpage) {
   int i;
 
-  ASSERT(outfile != NULL);
-  ASSERT(doorpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(doorpage != nullptr);
 
   cf_WriteByte(outfile, PAGETYPE_DOOR);
 
@@ -233,8 +233,8 @@ void mng_WriteDoorPage(CFILE *outfile, mngs_door_page *doorpage) {
 
 // Given an open file pointer and a door_page struct, writes that door page out
 void mng_WriteNewDoorPage(CFILE *outfile, mngs_door_page *doorpage) {
-  ASSERT(outfile != NULL);
-  ASSERT(doorpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(doorpage != nullptr);
 
   int offset = StartManagePage(outfile, PAGETYPE_DOOR);
 
@@ -259,7 +259,7 @@ void mng_WriteNewDoorPage(CFILE *outfile, mngs_door_page *doorpage) {
 
 // Reads a door page from an open file.  Returns 0 on error.
 int mng_ReadNewDoorPage(CFILE *infile, mngs_door_page *doorpage) {
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
 
   int version = cf_ReadShort(infile);
 
@@ -305,7 +305,7 @@ int mng_ReadDoorPage(CFILE *infile, mngs_door_page *doorpage) {
   strcpy(doorpage->open_sound_name, "INVALID SOUND NAME");
   strcpy(doorpage->close_sound_name, "INVALID SOUND NAME");
 
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
 
   while (!done) {
     // Read in command byte then read in the length of that commands data
@@ -385,7 +385,7 @@ int mng_FindSpecificDoorPage(char *name, mngs_door_page *doorpage, int offset) {
 
       infile = cfopen(tablename, "rb");
     } else {
-      infile = NULL;
+      infile = nullptr;
       if (TablefileNameOverride) {
         infile = cfopen(TablefileNameOverride, "rb");
       }

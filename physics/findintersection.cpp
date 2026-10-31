@@ -1689,7 +1689,7 @@ int check_line_to_face(vector *newp, vector *colp, float *col_dist, vector *wall
   vector *test = vertex_ptr_list[0];
   int i;
 
-  ASSERT(newp != nullptr && p0 != 0 && p1 != nullptr && rad >= 0.0);
+  ASSERT(newp != nullptr && p0 != nullptr && p1 != nullptr && rad >= 0.0);
 
   // This is so we always use the same vertex
   for (i = 1; i < nv; i++) {

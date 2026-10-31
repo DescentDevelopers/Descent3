@@ -267,10 +267,10 @@ void ReadPlayerControls(game_controls *controls);
 void RestoreDefaultControls();
 
 //	load in controller configurations
-void LoadControlConfig(pilot *plt = NULL);
+void LoadControlConfig(pilot *plt = nullptr);
 
 //	save controller configurations.
-void SaveControlConfig(pilot *plt = NULL);
+void SaveControlConfig(pilot *plt = nullptr);
 
 // Reads movement only
 void DoMovement(game_controls *controls);

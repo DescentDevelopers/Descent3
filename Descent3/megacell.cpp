@@ -128,7 +128,7 @@ int GetPrevMegacell(int n) {
 int FindMegacellName(char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_MEGACELLS; i++)
     if (Megacells[i].used && !stricmp(name, Megacells[i].name))

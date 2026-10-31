@@ -36,7 +36,7 @@
 class CScriptParmDialog : public CDialog {
   // Construction
 public:
-  CScriptParmDialog(CWnd *pParent = NULL); // standard constructor
+  CScriptParmDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CScriptParmDialog)

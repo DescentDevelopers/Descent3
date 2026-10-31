@@ -56,7 +56,7 @@ CBriefEdit::CBriefEdit(CWnd *pParent /*=NULL*/) : CDialog(CBriefEdit::IDD, pPare
   m_fStatic = 0.0f;
   m_sTitle = _T("");
   //}}AFX_DATA_INIT
-  layouts = NULL;
+  layouts = nullptr;
   num_layouts = 0;
   ParseLayoutScreenFile("BriefingLayouts.txt");
   PBlayouts = layouts;
@@ -159,7 +159,7 @@ void BriefEditInitEffect(tBriefEffect *efx) {
   efx->type = BE_NONE;
   efx->used = false;
   efx->id = 0;
-  efx->text = NULL;
+  efx->text = nullptr;
   efx->next = -1;
   efx->prev = -1;
   efx->w = efx->h = -1;
@@ -216,7 +216,7 @@ void BriefEditFreeEffect(tBriefEffect *efx) {
 
   if (efx->text) {
     mem_free(efx->text);
-    efx->text = NULL;
+    efx->text = nullptr;
   }
 
   efx->used = false;
@@ -657,7 +657,7 @@ void BEGetCurScreenEffect(int *ret_screen, int *ret_effect) {
 bool BEAllocEffect(int *ret_screen, int *ret_effect) {
   // Get the current screen
   int curr_screen;
-  BEGetCurScreenEffect(&curr_screen, NULL);
+  BEGetCurScreenEffect(&curr_screen, nullptr);
   if (curr_screen == -1) {
     return false;
   }
@@ -737,11 +737,10 @@ void BEAddTextEffect(TCTEXTDESC *desc, char *text, char *description, int id) {
 
   if (befx->text) {
     mem_free(befx->text);
-    befx->text = NULL;
+    befx->text = nullptr;
   }
-  befx->text = mem_rmalloc<char>(strlen(text) + 1);
+  befx->text = mem_strdup(text);
   ASSERT(befx->text);
-  strcpy(befx->text, text);
 
   // Setup for items not set with caps
   if (!(dest->caps & TCTD_FONT)) {
@@ -1089,7 +1088,7 @@ uint8_t BriefEditLoadScreens(char *filename, CComboBox *screen_combo, CComboBox 
   pb_callbacks.AddButtonEffect = BEAddButtonEffect;
   pb_callbacks.StartScreen = BEStartScreen;
   pb_callbacks.EndScreen = BEEndScreen;
-  pb_callbacks.LoopCallback = NULL;
+  pb_callbacks.LoopCallback = nullptr;
   pb_callbacks.SetTitle = BESetTitle;
   pb_callbacks.SetStatic = BESetStatic;
   pb_callbacks.SetGlitch = BESetGlitch;
@@ -1107,7 +1106,7 @@ bool CBriefEdit::BriefEditAllocateEffect(int *ret_screen, int *ret_effect) {
 
   // Get the current screen
   int curr_screen;
-  BriefEditGetCurScreenEffect(&curr_screen, NULL);
+  BriefEditGetCurScreenEffect(&curr_screen, nullptr);
   if (curr_screen == -1) {
     MessageBox("You Need To Create A Screen", "Error");
     return false;
@@ -1246,7 +1245,7 @@ void CBriefEdit::OnOK() {
 
 void CBriefEdit::OnBriefEffectBitmap() {
   int curr;
-  BriefEditGetCurScreenEffect(&curr, NULL);
+  BriefEditGetCurScreenEffect(&curr, nullptr);
 
   CBriefBitmapEdit dlg(curr);
   if (dlg.DoModal() == IDOK) {
@@ -1613,7 +1612,7 @@ void CBriefEdit::OnBriefEffectSound() {
 
 void CBriefEdit::OnBriefEffectText() {
   int curr;
-  BriefEditGetCurScreenEffect(&curr, NULL);
+  BriefEditGetCurScreenEffect(&curr, nullptr);
 
   CBriefTextEdit dlg(curr);
   if (dlg.DoModal() == IDOK) {
@@ -1708,7 +1707,7 @@ void CBriefEdit::OnBriefScreenAdd() {
 void CBriefEdit::OnBriefScreenDel() {
   UpdateData(true);
   int curr_screen;
-  BriefEditGetCurScreenEffect(&curr_screen, NULL);
+  BriefEditGetCurScreenEffect(&curr_screen, nullptr);
   if (curr_screen == -1) {
     MessageBox("No Screens To Delete", "Error");
     return;
@@ -1750,7 +1749,7 @@ void CBriefEdit::OnBriefScreenEdit() {
   int curr_screen = combo->GetCurSel();
 
   int scr_index;
-  BriefEditGetCurScreenEffect(&scr_index, NULL);
+  BriefEditGetCurScreenEffect(&scr_index, nullptr);
 
   if (scr_index == -1) {
     MessageBox("No Screens To Edit", "Error");
@@ -1781,7 +1780,7 @@ BOOL CBriefEdit::OnInitDialog() {
   CDialog::OnInitDialog();
 
   // Start the timer
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   BriefEditInitScreens();
 
@@ -1804,7 +1803,7 @@ void CBriefEdit::OnSelchangeBriefScreenList() {
 
   int curr_screen;
 
-  BriefEditGetCurScreenEffect(&curr_screen, NULL);
+  BriefEditGetCurScreenEffect(&curr_screen, nullptr);
   if (curr_screen == -1)
     return;
 
@@ -1836,7 +1835,7 @@ void CBriefEdit::OnSelchangeBriefScreenList() {
 void CBriefEdit::OnBriefSave() {
   UpdateData(true);
   char szFilter[] = "Descent3 Briefing Files (*.brf)|*.brf||";
-  CFileDialog dlg(false, ".brf", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter);
+  CFileDialog dlg(false, ".brf", nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     has_changed = false;
@@ -1851,7 +1850,7 @@ void CBriefEdit::OnBriefSave() {
 
 void CBriefEdit::OnLoad() {
   char szFilter[] = "Descent3 Briefing Files (*.brf)|*.brf||";
-  CFileDialog dlg(true, ".brf", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter);
+  CFileDialog dlg(true, ".brf", nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     CComboBox *combo = (CComboBox *)GetDlgItem(IDC_BRIEF_SCREEN_LIST);
@@ -1875,7 +1874,7 @@ void CBriefEdit::OnLoad() {
 
 void CBriefEdit::UpdateLayoutBitmap(void) {
   int scr;
-  BriefEditGetCurScreenEffect(&scr, NULL);
+  BriefEditGetCurScreenEffect(&scr, nullptr);
   if (scr == -1)
     return;
 
@@ -1901,7 +1900,7 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename) {
   num_layouts = 0;
   if (layouts) {
     mem_free(layouts);
-    layouts = NULL;
+    layouts = nullptr;
   }
 
   char buffer[512];
@@ -1954,7 +1953,7 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename) {
 
       // now parse to pull out the individual values
       char *lxp, *rxp, *typ, *byp;
-      lxp = rxp = typ = byp = NULL;
+      lxp = rxp = typ = byp = nullptr;
 
       char *p = buffer;
 
@@ -1996,7 +1995,7 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename) {
 
       // now parse to pull out the individual values
       char *xp, *yp;
-      xp = yp = NULL;
+      xp = yp = nullptr;
 
       char *p = buffer;
 
@@ -2178,7 +2177,7 @@ void CBriefEdit::UpdateView(void) {
 
   delete vport;
   m_ObjectSurf.free();
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 
   if (first_call)
     first_call = false;

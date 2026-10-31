@@ -1080,12 +1080,12 @@ void CWorldSoundsDialog::OnKillfocusSoundImportVolumeEdit() {
   if (j >= 0 && SoundFiles[j].used) {
     if (SoundFiles[j].sample_16bit) {
       GlobalFree(SoundFiles[j].sample_16bit);
-      SoundFiles[j].sample_16bit = NULL;
+      SoundFiles[j].sample_16bit = nullptr;
     }
 
     if (SoundFiles[j].sample_8bit) {
       GlobalFree(SoundFiles[j].sample_8bit);
-      SoundFiles[j].sample_8bit = NULL;
+      SoundFiles[j].sample_8bit = nullptr;
     }
   }
 

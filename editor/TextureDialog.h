@@ -116,7 +116,7 @@ protected:
 class CTextureDialog : public CKeypadDialog {
   // Construction
 public:
-  CTextureDialog(CWnd *pParent = NULL); // standard constructor
+  CTextureDialog(CWnd *pParent = nullptr); // standard constructor
 
   //	selects a texture in the texture dialog
   void SelectTexture(int texnum);

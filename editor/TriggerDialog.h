@@ -59,7 +59,7 @@
 class CTriggerDialog : public CKeypadDialog {
   // Construction
 public:
-  CTriggerDialog(CWnd *pParent = NULL); // standard constructor
+  CTriggerDialog(CWnd *pParent = nullptr); // standard constructor
   void UpdateKeypad(int mask);
 
   // Dialog Data

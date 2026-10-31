@@ -757,7 +757,7 @@ void CheckFogPortalExtents(int roomnum, int portalnum) {
     }
 
     found_room = Num_fogged_rooms_this_frame++;
-    Fog_portal_data[found_room].close_face = NULL;
+    Fog_portal_data[found_room].close_face = nullptr;
     Fog_portal_data[found_room].close_dist = 10000000.0f;
     Fog_portal_data[found_room].roomnum = roomnum;
   }
@@ -2053,7 +2053,7 @@ draw_fog:
       uint16_t *src_data = (uint16_t *)lm_data(lmi->lm_handle);
       matrix facematrix;
       vector fvec = -lmi->normal;
-      vm_VectorToMatrix(&facematrix, &fvec, NULL, NULL);
+      vm_VectorToMatrix(&facematrix, &fvec, nullptr, nullptr);
       vector rvec = facematrix.rvec * lmi->xspacing;
       vector uvec = facematrix.uvec * lmi->yspacing;
       vm_TransposeMatrix(&facematrix);
@@ -2219,7 +2219,7 @@ void SetupRoomFog(room *rp, vector *eye, matrix *orient, int viewer_room) {
     }
   }
 
-  if (found_room == -1 || Fog_portal_data[found_room].close_face == NULL) {
+  if (found_room == -1 || Fog_portal_data[found_room].close_face == nullptr) {
     // we won't be rendering this room
     Room_fog_plane_check = -1;
     return;
@@ -2479,7 +2479,7 @@ void RenderSingleLightGlow2(int index) {
   vector fvec, uvec, temp_vec, rvec;
   temp_vec = -fp->normal;
 
-  vm_VectorToMatrix(&mat, NULL, &temp_vec, NULL);
+  vm_VectorToMatrix(&mat, nullptr, &temp_vec, nullptr);
 
   // Rotate view vector into billboard space
   fvec = Viewer_eye - corona_pos;
@@ -2493,7 +2493,7 @@ void RenderSingleLightGlow2(int index) {
   uvec.y() = 1;
   uvec.x() = 0;
   uvec.z() = 0;
-  vm_VectorToMatrix(&rot_mat, NULL, &uvec, &rvec);
+  vm_VectorToMatrix(&rot_mat, nullptr, &uvec, &rvec);
   vm_TransposeMatrix(&mat);
   temp_vec = rot_mat.rvec * mat;
   rot_mat.rvec = temp_vec;
@@ -2570,7 +2570,7 @@ void CheckLightGlowsForRoom(room *rp) {
     fq.rad = 0.0f;
     fq.flags = FQ_CHECK_OBJS | FQ_NO_RELINK | FQ_IGNORE_WEAPONS | FQ_ROBOTS_AS_SPHERE | FQ_PLAYERS_AS_SPHERE;
     fq.thisobjnum = -1;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     int fate = fvi_FindIntersection(&fq, &hit_info);
     if (fate != HIT_NONE)
       continue;
@@ -2927,7 +2927,7 @@ void RenderMirroredRoom(room *rp) {
 
   RenderRoomObjects(rp);
   rp->last_render_time = Gametime;
-  g3_SetCustomClipPlane(0, NULL, NULL);
+  g3_SetCustomClipPlane(0, nullptr, nullptr);
 }
 // Renders a specific room.  If pos_offset is not NULL, adds that offset to each of the
 // rooms vertices
@@ -3151,10 +3151,10 @@ void RenderRoomObjects(room *rp) {
     vector negz_vec = {0, 0, -1};
 
     matrix mirror_matrix, inv_mirror_matrix, dest_matrix, negz_matrix;
-    vm_VectorToMatrix(&mirror_matrix, norm, NULL, NULL);
+    vm_VectorToMatrix(&mirror_matrix, norm, nullptr, nullptr);
     inv_mirror_matrix = mirror_matrix;
     vm_TransposeMatrix(&inv_mirror_matrix);
-    vm_VectorToMatrix(&negz_matrix, &negz_vec, NULL, NULL);
+    vm_VectorToMatrix(&negz_matrix, &negz_vec, nullptr, nullptr);
     negz_matrix.rvec *= -1;
 
     for (i = n_objs - 1; i >= 0; i--) {
@@ -3631,7 +3631,7 @@ void ConsolidateMineMirrors() {
       continue;
     if (rp->mirror_faces_list) {
       mem_free(rp->mirror_faces_list);
-      rp->mirror_faces_list = NULL;
+      rp->mirror_faces_list = nullptr;
       rp->num_mirror_faces = 0;
     }
     if (rp->mirror_face == -1)

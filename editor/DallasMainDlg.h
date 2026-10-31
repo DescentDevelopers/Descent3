@@ -1028,7 +1028,7 @@ private:
 
 public:
   // Construction
-  CDallasMainDlg(CWnd *pParent = NULL); // standard constructor
+  CDallasMainDlg(CWnd *pParent = nullptr); // standard constructor
 
   ///////////////////////////////////
   // Public Interface Data
@@ -1063,7 +1063,7 @@ public:
 
   void UpdateNodeText(HTREEITEM node);
   void UpdateAllParentNodesText(HTREEITEM node);
-  void FormatTreeText(CString &text, tTreeNodeData *data, HTREEITEM node = NULL);
+  void FormatTreeText(CString &text, tTreeNodeData *data, HTREEITEM node = nullptr);
   void FormatConditionText(CString &text, HTREEITEM condition_node);
   void FormatGenericExpressionText(CString &text, HTREEITEM gen_exp_node);
   void FormatParameterValueText(CString &text, tTreeNodeData *data);
@@ -1273,7 +1273,7 @@ public:
   bool ValidateQueryNode(HTREEITEM node, int linenum);
   void FillActionMenu(CMenu *action_menu, int command_offset);
   void FillQueryMenu(CMenu *query_menu, int command_offset, int valid_return_type, char *valid_return_name);
-  bool ConformParamNode(HTREEITEM parent_node, HTREEITEM &param_node, int type, char *name, char *def_value = NULL);
+  bool ConformParamNode(HTREEITEM parent_node, HTREEITEM &param_node, int type, char *name, char *def_value = nullptr);
 
   int ParseNthParam(HTREEITEM func_node, int n, CString &name_text, CString &default_text, CString &range_text);
   int ParseNthParam(char *desc, int n, CString &name_text, CString &default_text, CString &range_text);
@@ -1424,7 +1424,7 @@ public:
   ///////////////////////////////////
   // Functions to Add Default Trees
   ///////////////////////////////////
-  HTREEITEM CreateDefaultScriptTree(int script_ID, HTREEITEM insert_before = NULL);
+  HTREEITEM CreateDefaultScriptTree(int script_ID, HTREEITEM insert_before = nullptr);
   HTREEITEM CreateDefaultIfThenClause(HTREEITEM parent, HTREEITEM insert_before, int type);
   HTREEITEM CreateDefaultElseClause(HTREEITEM parent, HTREEITEM insert_before);
   HTREEITEM CreateDefaultConditionalStatementNode(HTREEITEM parent);
@@ -1432,7 +1432,7 @@ public:
   HTREEITEM CreateDefaultExpressionOperatorNode(HTREEITEM parent, int type);
   HTREEITEM CreateDefaultActionStatementNode(HTREEITEM parent);
   HTREEITEM CreateDefaultParameterNode(HTREEITEM parent, HTREEITEM insert_before, int param_type, char *name,
-                                       char *def_value = NULL);
+                                       char *def_value = nullptr);
   HTREEITEM CreateDefaultClipboardNode(void);
 
   ///////////////////////////////////

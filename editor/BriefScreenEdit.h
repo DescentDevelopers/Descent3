@@ -32,7 +32,7 @@
 class CBriefScreenEdit : public CDialog {
   // Construction
 public:
-  CBriefScreenEdit(int screen_idx = -1, CWnd *pParent = NULL); // standard constructor
+  CBriefScreenEdit(int screen_idx = -1, CWnd *pParent = nullptr); // standard constructor
   CString layout_str;
   void UpdateView(void);
   int m_Screen;

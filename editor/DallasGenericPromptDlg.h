@@ -47,7 +47,7 @@
 class CDallasGenericPromptDlg : public CDialog {
   // Construction
 public:
-  CDallasGenericPromptDlg(CWnd *pParent = NULL); // standard constructor
+  CDallasGenericPromptDlg(CWnd *pParent = nullptr); // standard constructor
 
   CString m_DialogTitle;
   CString m_PromptText;

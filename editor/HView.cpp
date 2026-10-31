@@ -166,7 +166,7 @@ void SetViewerFromRoomFace(room *roomp, int facenum, bool room_center) {
     } else {
       // Get orientation
       vp -= newpos; // vector from center of room to face
-      vm_VectorToMatrix(&orient, &vp, NULL, NULL);
+      vm_VectorToMatrix(&orient, &vp, nullptr, nullptr);
     }
   } else {
     face *fp = &roomp->faces[facenum];
@@ -174,7 +174,7 @@ void SetViewerFromRoomFace(room *roomp, int facenum, bool room_center) {
     newpos = vp + fp->normal * FACE_VIEW_DIST;
 
     vector t = -fp->normal;
-    vm_VectorToMatrix(&orient, &t, NULL, NULL);
+    vm_VectorToMatrix(&orient, &t, nullptr, nullptr);
 
     if (roomp->flags & RF_EXTERNAL) {
       if (newpos.x() < 1.0)
@@ -297,7 +297,7 @@ int CreateViewerObject(int view_mode, vector *pos, int roomnum) {
   }
 
   // Create the new object
-  objnum = ObjCreate(OBJ_VIEWER, id, roomnum, pos, NULL);
+  objnum = ObjCreate(OBJ_VIEWER, id, roomnum, pos, nullptr);
 
   if (objnum == -1) {
     Int3();
@@ -359,7 +359,7 @@ void SelectNextViewer() {
     return;
   }
 
-  ASSERT(Viewer_object != NULL);
+  ASSERT(Viewer_object != nullptr);
 
   objnum = FindNextViewerObject(Viewer_object->id + 1, -1);
 
@@ -443,14 +443,14 @@ void SetEditorViewer() {
 
     // If no free viewer slots, grab any viewer and move it
     if (objnum == -1) {
-      ASSERT(Viewer_object != NULL);
+      ASSERT(Viewer_object != nullptr);
       if (Viewer_object->type == OBJ_VIEWER)
         objnum = OBJNUM(Viewer_object);
       else {
         objnum = FindNextViewerObject(Editor_viewer_id, -1);
         ASSERT(objnum != -1);
       }
-      ObjSetPos(&Objects[objnum], &pos, roomnum, NULL, true);
+      ObjSetPos(&Objects[objnum], &pos, roomnum, nullptr, true);
     }
   }
 

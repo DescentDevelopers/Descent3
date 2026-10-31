@@ -25,7 +25,7 @@
 class CWorldSoundsDialog : public CDialog {
   // Construction
 public:
-  CWorldSoundsDialog(CWnd *pParent = NULL); // standard constructor
+  CWorldSoundsDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CWorldSoundsDialog)

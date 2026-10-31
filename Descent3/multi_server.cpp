@@ -739,14 +739,14 @@ void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_te
     NetPlayers[i].voice_taunt4[0] = 0;
     NetPlayers[i].pilot_pic_id = PPIC_INVALID_ID;
     NetPlayers[i].custom_file_seq = NETFILE_ID_NOFILE;
-    PlayerSetCustomTexture(i, NULL);
+    PlayerSetCustomTexture(i, nullptr);
 
     NetPlayers[i].ping_time = 0;
     NetPlayers[i].last_ping_time = 0;
   }
   NetPlayers[Player_num].custom_file_seq = 0xff;
   Current_pilot.get_multiplayer_data(NetPlayers[Player_num].ship_logo, NetPlayers[Player_num].voice_taunt1,
-                                     NetPlayers[Player_num].voice_taunt2, NULL, NetPlayers[Player_num].voice_taunt3,
+                                     NetPlayers[Player_num].voice_taunt2, nullptr, NetPlayers[Player_num].voice_taunt3,
                                      NetPlayers[Player_num].voice_taunt4);
 
   // ship_logo
@@ -792,7 +792,7 @@ void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_te
   Current_pilot.get_name(Players[Player_num].callsign);
 
   // setup the server's pilot id
-  Current_pilot.get_multiplayer_data(NULL, NULL, NULL, &NetPlayers[Player_num].pilot_pic_id);
+  Current_pilot.get_multiplayer_data(nullptr, nullptr, nullptr, &NetPlayers[Player_num].pilot_pic_id);
 
   // Choose ship
   char pshipmodel[PAGENAME_LEN];
@@ -1724,7 +1724,7 @@ void MultiSendWorldStates(int slot) {
     }
 
     // Check to see if we have an attached object
-    if (obj->attach_children != NULL) {
+    if (obj->attach_children != nullptr) {
       cur_count = 0;
 
       poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
@@ -1962,7 +1962,7 @@ void MultiCheckToRespawnPowerups() {
       LOG_DEBUG.printf("Respawning powerup with id of %d.", Powerup_timer[i].id);
       Powerup_respawn[t].used = 1;
       int objnum =
-          ObjCreate(OBJ_POWERUP, Powerup_timer[i].id, Powerup_respawn[t].roomnum, &Powerup_respawn[t].pos, NULL);
+          ObjCreate(OBJ_POWERUP, Powerup_timer[i].id, Powerup_respawn[t].roomnum, &Powerup_respawn[t].pos, nullptr);
       if (objnum > -1)
         MultiSendObject(&Objects[objnum], 1);
 
@@ -2048,7 +2048,7 @@ void MultiSendPositionalUpdates(int to_slot) {
     srcs[0] = Players[to_slot].objnum;
 
     // Check for guideds
-    if (Players[to_slot].guided_obj != NULL)
+    if (Players[to_slot].guided_obj != nullptr)
       srcs[num_src_to_check++] = Players[to_slot].guided_obj - Objects;
 
     if (Players[to_slot].small_dll_obj != -1) {
@@ -2126,7 +2126,7 @@ void MultiSendPositionalUpdates(int to_slot) {
           add_count = MultiStuffPlayerFire(i, &data[count]);
         count += add_count;
         // Add in guided stuff
-        if (Players[i].guided_obj != NULL) {
+        if (Players[i].guided_obj != nullptr) {
           add_count = MultiStuffGuidedInfo(i, &data[count]);
           count += add_count;
         }
@@ -2320,7 +2320,7 @@ bool MultiIsGenericVisibleToPlayer(int test_objnum, int to_slot) {
 
   srcs[0] = Players[to_slot].objnum;
 
-  if (Players[to_slot].guided_obj != NULL)
+  if (Players[to_slot].guided_obj != nullptr)
     srcs[num_src_to_check++] = Players[to_slot].guided_obj - Objects;
 
   if (Players[to_slot].small_dll_obj != -1) {
@@ -2513,7 +2513,7 @@ void MultiGetDestFireRooms() {
     fq.p1 = &dest_vector;
     fq.rad = .05f;
     fq.thisobjnum = -1;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = FQ_IGNORE_NON_LIGHTMAP_OBJECTS | FQ_CHECK_OBJS;
 
     fate = fvi_FindIntersection(&fq, &hit_data);

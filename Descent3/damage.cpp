@@ -635,7 +635,7 @@ void SetNapalmDamageEffect(object *obj, object *killer, int weapon_id) {
     if (Gametime - obj->effect_info->last_damage_time > 1.0f)
       obj->effect_info->last_damage_time = 0;
 
-    if (killer != NULL)
+    if (killer != nullptr)
       obj->effect_info->damage_handle = killer->handle;
     else
       obj->effect_info->damage_handle = OBJECT_HANDLE_NONE;
@@ -672,7 +672,7 @@ void DoDamageEffect(int eventnum, void *data) {
   if (Players[Player_num].damage_magnitude < .0001f)
     Players[Player_num].damage_magnitude = 0.0;
   else
-    CreateNewEvent(RENDER_EVENT, DAMAGE_EFFECT, 0, NULL, 0, DoDamageEffect);
+    CreateNewEvent(RENDER_EVENT, DAMAGE_EFFECT, 0, nullptr, 0, DoDamageEffect);
 }
 
 // Decreases a players shields
@@ -683,7 +683,7 @@ void DecreasePlayerShields(int slot, float damage) {
 
   if (slot == Player_num) {
     if ((FindEventID(DAMAGE_EFFECT)) == -1)
-      CreateNewEvent(RENDER_EVENT, DAMAGE_EFFECT, 0, NULL, 0, DoDamageEffect);
+      CreateNewEvent(RENDER_EVENT, DAMAGE_EFFECT, 0, nullptr, 0, DoDamageEffect);
 
     if (Game_mode & GM_MULTI)
       Multi_bail_ui_menu = true;
@@ -705,7 +705,7 @@ void DoEDrainEffect(int eventnum, void *data) {
   if (Players[Player_num].edrain_magnitude < .0001f)
     Players[Player_num].edrain_magnitude = 0.0;
   else
-    CreateNewEvent(RENDER_EVENT, EDRAIN_EFFECT, 0, NULL, 0, DoEDrainEffect);
+    CreateNewEvent(RENDER_EVENT, EDRAIN_EFFECT, 0, nullptr, 0, DoEDrainEffect);
 }
 
 // Decreases a players shields
@@ -715,7 +715,7 @@ void DecreasePlayerEnergy(int slot, float energy) {
 
   if (slot == Player_num) {
     if ((FindEventID(EDRAIN_EFFECT)) == -1)
-      CreateNewEvent(RENDER_EVENT, EDRAIN_EFFECT, 0, NULL, 0, DoEDrainEffect);
+      CreateNewEvent(RENDER_EVENT, EDRAIN_EFFECT, 0, nullptr, 0, DoEDrainEffect);
   }
 }
 
@@ -782,7 +782,7 @@ void KillPlayer(object *playerobj, object *killer, float damage_amount, int weap
     // Call DLL stuff
     DLLInfo.me_handle = playerobj->handle;
 
-    if (killer != NULL)
+    if (killer != nullptr)
       DLLInfo.it_handle = killer->handle;
     else
       DLLInfo.it_handle = OBJECT_HANDLE_NONE;
@@ -812,9 +812,9 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
   }
 
   //	apply damage to the current player!
-  object *weapon_obj = NULL;
+  object *weapon_obj = nullptr;
 
-  if (killer != NULL && killer->type == OBJ_WEAPON) {
+  if (killer != nullptr && killer->type == OBJ_WEAPON) {
     weapon_obj = killer;
     killer = ObjGetUltimateParent(killer);
 
@@ -833,7 +833,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
     if (damage_type != PD_NONE)
       PlayPlayerInvulnerabilitySound(playerobj);
 
-    if (weapon_obj != NULL) {
+    if (weapon_obj != nullptr) {
       Players[playerobj->id].invul_magnitude = 1;
       Players[playerobj->id].invul_vector = weapon_obj->pos - playerobj->pos;
       vm_NormalizeVectorFast(&Players[playerobj->id].invul_vector);
@@ -849,10 +849,10 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
       if (damage_amount > 0 && playsound)
         PlayPlayerDamageSound(playerobj, damage_type);
 
-      if (Players[playerobj->id].guided_obj != NULL)
+      if (Players[playerobj->id].guided_obj != nullptr)
         ReleaseGuidedMissile(playerobj->id);
 
-      if (Players[playerobj->id].user_timeout_obj != NULL)
+      if (Players[playerobj->id].user_timeout_obj != nullptr)
         ReleaseUserTimeoutMissile(playerobj->id);
 
       if (weapon_id != 255) {
@@ -884,7 +884,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
       if (Netgame.local_role == LR_SERVER || server_says) {
         if (Netgame.local_role == LR_SERVER) {
           // Check to see if we're on the same team
-          if (killer != NULL && killer->type == OBJ_PLAYER) {
+          if (killer != nullptr && killer->type == OBJ_PLAYER) {
             if (killer->id != playerobj->id) {
               if (Players[killer->id].team == Players[playerobj->id].team && !(Netgame.flags & NF_DAMAGE_FRIENDLY))
                 return false; // don't hurt players on your own team
@@ -900,10 +900,10 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
         DecreasePlayerShields(playerobj->id, damage_amount);
         if (damage_amount > 0 && playsound)
           PlayPlayerDamageSound(playerobj, damage_type);
-        if (playerobj->id == Player_num && Players[playerobj->id].guided_obj != NULL)
+        if (playerobj->id == Player_num && Players[playerobj->id].guided_obj != nullptr)
           ReleaseGuidedMissile(playerobj->id);
 
-        if (playerobj->id == Player_num && Players[playerobj->id].user_timeout_obj != NULL)
+        if (playerobj->id == Player_num && Players[playerobj->id].user_timeout_obj != nullptr)
           ReleaseUserTimeoutMissile(playerobj->id);
 
         if (weapon_id != 255) {
@@ -925,7 +925,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
             } else
               MultiSendDamagePlayer(playerobj->id, weapon_id, damage_type, damage_amount);
           } else {
-            if (weapon_obj != NULL)
+            if (weapon_obj != nullptr)
               MultiSendDamagePlayer(playerobj->id, 255, damage_type, damage_amount);
             else {
               Multi_additional_damage[playerobj->id] += damage_amount;
@@ -938,7 +938,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
       if (Netgame.local_role == LR_SERVER) {
         // Call DLL stuff
         DLLInfo.me_handle = playerobj->handle;
-        if (killer != NULL)
+        if (killer != nullptr)
           DLLInfo.it_handle = killer->handle;
         else
           DLLInfo.it_handle = OBJECT_HANDLE_NONE;
@@ -1275,7 +1275,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
 
     // Deal with objects that fade out
     if (death_flags & DF_DELAY_FADE_AWAY) {
-      ASSERT(objp->effect_info != NULL);
+      ASSERT(objp->effect_info != nullptr);
       objp->effect_info->type_flags |= EF_FADING_OUT;
       objp->effect_info->fade_time = objp->effect_info->fade_max_time = objp->ctype.dying_info.delay_time;
     }
@@ -1291,7 +1291,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
 //	Applies damage to robot objects.  Handled differently than damage to players for obvious reasons.
 bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, float damage, int server_says,
                           int weapon_id) {
-  ASSERT(hit_obj != NULL);
+  ASSERT(hit_obj != nullptr);
 
   if (hit_obj->type == OBJ_DUMMY) {
     // as per ChrisP, dummies should be ignored here
@@ -1312,7 +1312,7 @@ bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, floa
       !(IS_GENERIC(hit_obj->type) && (Object_info[hit_obj->id].flags & OIF_NO_DIFF_SCALE_DAMAGE)))
     damage *= Diff_robot_damage[DIFF_LEVEL];
 
-  if (killer != NULL && killer->type == OBJ_WEAPON) {
+  if (killer != nullptr && killer->type == OBJ_WEAPON) {
     killer = ObjGetUltimateParent(killer);
 
     if (!(Game_mode & GM_MULTI) || (Game_mode & GM_MULTI && Netgame.local_role == LR_SERVER))
@@ -1329,7 +1329,7 @@ bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, floa
 
     if ((!(Game_mode & GM_MULTI)) || server_says || ((Netgame.local_role == LR_SERVER) && (Game_mode & GM_MULTI))) {
       tOSIRISEventInfo ei;
-      if (killer != NULL)
+      if (killer != nullptr)
         ei.evt_damaged.it_handle = killer->handle;
       else
         ei.evt_damaged.it_handle = OBJECT_HANDLE_NONE;
@@ -1352,7 +1352,7 @@ bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, floa
       hit_obj->shields -= damage;
 
       if (Game_mode & GM_MULTI) { // only the server will be calling this
-        if (killer != NULL)
+        if (killer != nullptr)
           DLLInfo.it_handle = killer->handle;
         else
           DLLInfo.it_handle = OBJECT_HANDLE_NONE;
@@ -1493,13 +1493,13 @@ void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
     return;
 
   // Set hitpnt if not specified
-  if (hitpnt == NULL) {
+  if (hitpnt == nullptr) {
     ComputeCenterPointOnFace(&t_hitpnt, rp, facenum);
     hitpnt = &t_hitpnt;
   }
 
   // Set hitvec if not specified
-  if (hitvec == NULL) {
+  if (hitvec == nullptr) {
     t_hitvec = -fp->normal;
     hitvec = &t_hitvec;
   }
@@ -1553,7 +1553,7 @@ void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
     center = (curpoint + prevpoint + *hitpnt) / (scalar)3.0;
 
     // Create the object
-    objnum = ObjCreate(OBJ_SHARD, 0, roomnum, &center, NULL);
+    objnum = ObjCreate(OBJ_SHARD, 0, roomnum, &center, nullptr);
 
     // Setup shard info
     if (objnum != -1) {

@@ -168,7 +168,7 @@ void UpdateTeamPlacementDialog(void) {
 
     if (tpdi.text[i]) {
       DLLRemoveUITextItem(tpdi.text[i]);
-      tpdi.text[i] = NULL;
+      tpdi.text[i] = nullptr;
     }
 
     // as we go through all the players, we need to update the trans[][]
@@ -297,7 +297,7 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
   }
 
   bool exit_menu = false;
-  UIObject *list_red = NULL, *list_blue = NULL, *list_green = NULL, *list_yellow = NULL;
+  UIObject *list_red = nullptr, *list_blue = nullptr, *list_green = nullptr, *list_yellow = nullptr;
   UIItem *icon_b_hs[DLLMAX_TEAMS][DLLMAX_TEAMS - 1];
   UIObject *icon_hs[DLLMAX_TEAMS][DLLMAX_TEAMS - 1];
   UIObject *team_text[DLLMAX_TEAMS];
@@ -324,7 +324,7 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
     for (int j = 0; j < DLLMAX_TEAMS; j++) {
       if (i != j) {
         icon_b_hs[i][count] = DLLCreateNewUIBmpItem(team_icons[j], 255);
-        icon_hs[i][count] = NULL;
+        icon_hs[i][count] = nullptr;
         count++;
       }
     }
@@ -335,7 +335,7 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
   }
 
   for (i = 0; i < DLLMAX_TEAMS; i++) {
-    team_text[i] = NULL;
+    team_text[i] = nullptr;
   }
 
   //////////////////////////////////////////////////
@@ -497,7 +497,7 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
   tpdi.lb[GREEN_TEAM] = list_green;
   tpdi.lb[YELLOW_TEAM] = list_yellow;
   for (i = 0; i < DLLMAX_PLAYERS; i++) {
-    tpdi.text[i] = NULL;
+    tpdi.text[i] = nullptr;
     for (int t = 0; t < DLLMAX_TEAMS; t++) {
       tpdi.trans[t][i] = -1;
     }
@@ -663,7 +663,7 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
   for (i = 0; i < DLLMAX_PLAYERS; i++) {
     if (tpdi.text[i]) {
       DLLRemoveUITextItem(tpdi.text[i]);
-      tpdi.text[i] = NULL;
+      tpdi.text[i] = nullptr;
     }
   }
   for (i = 0; i < DLLMAX_TEAMS; i++) {
@@ -728,7 +728,7 @@ void UpdateWaitForPlayersDialog(void) {
   for (int i = 0; i < DLLMAX_PLAYERS; i++) {
     if (wfpi.text[i]) {
       DLLRemoveUITextItem(wfpi.text[i]);
-      wfpi.text[i] = NULL;
+      wfpi.text[i] = nullptr;
     }
 
     if (basethis->CheckPlayerNum(i)) {
@@ -767,7 +767,7 @@ void DMFCBase::DoDMFCUIWaitForPlayers(bool clients_wait) {
   wfpi.last_update = 0;
   int i;
   for (i = 0; i < DLLMAX_PLAYERS; i++)
-    wfpi.text[i] = NULL;
+    wfpi.text[i] = nullptr;
 
   // turn on client waiting
   if (clients_wait) {
@@ -899,7 +899,7 @@ void DMFCBase::DoDMFCUIWaitForPlayers(bool clients_wait) {
   for (i = 0; i < DLLMAX_PLAYERS; i++) {
     if (wfpi.text[i]) {
       DLLRemoveUITextItem(wfpi.text[i]);
-      wfpi.text[i] = NULL;
+      wfpi.text[i] = nullptr;
     }
   }
 

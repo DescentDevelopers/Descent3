@@ -361,7 +361,7 @@ void CTerrainDialog::DrawSwatch(int handle, int r, int g, int b) {
 
   Desktop_surf->clear(rect.left, rect.top, w, h, color);
 
-  Desktop_surf->attach_to_window(NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 void CTerrainDialog::UpdateDialog() {
@@ -1599,7 +1599,7 @@ get_height:;
     if (Objects[o].type != OBJ_NONE) {
       vector new_pos = Objects[o].pos;
       new_pos.y() += delta_y;
-      ObjSetPos(&Objects[o], &new_pos, Objects[o].roomnum, NULL, false);
+      ObjSetPos(&Objects[o], &new_pos, Objects[o].roomnum, nullptr, false);
     }
 
   // Drop all the paths

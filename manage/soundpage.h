@@ -69,6 +69,6 @@ void mng_LoadNetSoundPage(CFILE *, bool overlay = false);
 // First searches through the sound index to see if the sound is already
 // loaded.  If not, searches in the table file and loads it.
 // Returns index of sound if found, -1 if not
-int mng_GetGuaranteedSoundPage(char *name, CFILE *infile = NULL);
+int mng_GetGuaranteedSoundPage(char *name, CFILE *infile = nullptr);
 
 #endif

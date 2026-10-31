@@ -58,7 +58,7 @@
 #include "streamaudio.h"
 
 OSFArchive::OSFArchive() {
-  m_fp = NULL;
+  m_fp = nullptr;
   m_length = 0;
   m_type = 0;
   m_comp = 0;
@@ -71,7 +71,7 @@ OSFArchive::OSFArchive() {
 OSFArchive::~OSFArchive() {
   if (m_fp) {
     cfclose(m_fp);
-    m_fp = NULL;
+    m_fp = nullptr;
   }
 }
 
@@ -99,9 +99,9 @@ bool OSFArchive::Open(const std::filesystem::path &filename, bool write) {
     cfseek(m_fp, -OSF_HDR_SIZE, SEEK_END);
     cf_ReadBytes((uint8_t *)tag, strlen(OSF_TAG), m_fp);
     if (strcmp(OSF_TAG, tag) != 0) {
-      LOG_WARNING.printf("Illegal OSF file format for %s.", filename.u8string().c_str());
+      LOG_WARNING.printf("Illegal OSF file format for %s.", PATH_TO_CSTR(filename));
       cfclose(m_fp);
-      m_fp = NULL;
+      m_fp = nullptr;
       return false;
     }
 
@@ -122,9 +122,9 @@ bool OSFArchive::Open(const std::filesystem::path &filename, bool write) {
       //	read in aux header based off of type.
       m_hdr.digi.measure = (uint32_t)cf_ReadInt(m_fp);
     } else {
-      LOG_WARNING.printf("Unsupported OSF file type in %s!", filename.u8string().c_str());
+      LOG_WARNING.printf("Unsupported OSF file type in %s!", PATH_TO_CSTR(filename));
       cfclose(m_fp);
-      m_fp = NULL;
+      m_fp = nullptr;
       return false;
     }
 
@@ -133,9 +133,9 @@ bool OSFArchive::Open(const std::filesystem::path &filename, bool write) {
 
     cfseek(m_fp, -OSF_HDR_TITLE_OFS, SEEK_END);
     if (!cf_ReadBytes((uint8_t *)m_name, OSF_HDR_TITLE_LEN, m_fp)) {
-      LOG_WARNING.printf("Stream title not found for %s.", filename.u8string().c_str());
+      LOG_WARNING.printf("Stream title not found for %s.", PATH_TO_CSTR(filename));
       cfclose(m_fp);
-      m_fp = NULL;
+      m_fp = nullptr;
       return false;
     }
   } catch (...) {
@@ -144,7 +144,7 @@ bool OSFArchive::Open(const std::filesystem::path &filename, bool write) {
         cfclose(m_fp);
       } catch (...) {
       }
-      m_fp = NULL;
+      m_fp = nullptr;
     }
     return false;
   }
@@ -162,7 +162,7 @@ void OSFArchive::Close() {
       cfclose(m_fp);
     } catch (...) {
     }
-    m_fp = NULL;
+    m_fp = nullptr;
   }
 
   m_writemode = false;
