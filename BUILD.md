@@ -17,12 +17,12 @@ Every pull request to `main` and every push to `main` is built in Debug and Rele
 
 | Platform | CI runner | Compiler |
 |---|---|---|
-| Windows x64 | Windows Server 2025 (`windows-latest`) | MSVC from Visual Studio 2026 |
+| Windows x64 | Windows Server 2025 (`windows-2025-vs2026`) | MSVC from Visual Studio 2026 |
 | macOS, universal arm64 and x86_64 binary | macOS 15 on Apple Silicon (`macos-15`) | Apple Clang 17 from Xcode 16.4 |
 | Linux x64 | Ubuntu 26.04 (`ubuntu-26.04`) | GCC 15 |
 | Linux ARM64, cross-compiled on x64 | Ubuntu 26.04 (`ubuntu-26.04`) | GCC 15 (`aarch64-linux-gnu`) |
 
-The Linux builds use CMake 3.30. The Windows and macOS builds use the CMake version installed on the runner image. The `windows-latest` label moves to newer Windows releases as GitHub adds them, so CI may be running a newer Windows version than the one listed here.
+The Linux builds use CMake 3.30. The Windows and macOS builds use the CMake version installed on the runner image.
 
 ## Installing and using vcpkg
 * When building for Windows, vcpkg is already installed and configured when using any of the Visual Studio command prompts (either actual Command Prompt, or PowerShell).
