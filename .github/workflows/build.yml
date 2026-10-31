@@ -31,7 +31,7 @@ jobs:
             cc: cl
             cxx: cl
             name: Windows-x64
-          - runner: macos-14  # Apple Silicon, but we make a universal binary
+          - runner: macos-26  # Apple Silicon, but we make a universal binary
             preset: mac
             cc: cc
             cxx: c++
