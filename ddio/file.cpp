@@ -21,6 +21,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iterator>
+#include <random>
 #include <regex>
 #include <SDL3/SDL_filesystem.h>
 
@@ -173,10 +174,15 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
   char *random_name = (char *)mem_malloc(len_result + len + strlen(ext) + 1);
   strncpy(random_name, (const char*)(basedir / prefix).u8string().c_str(), len_result);
 
+  // Temp names come from their own generator, not rand(), so creating temp files does not
+  // change the sequence of random numbers the game sees after seeding with -randseed.
+  thread_local std::minstd_rand gen{std::random_device{}()};
+  std::uniform_int_distribution<size_t> pick(0, sizeof(alphanum) - 2);
+
   int tries = 20;
   while (tries > 0) {
     for (size_t i = len_result; i < len_result + len; i++) {
-      random_name[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+      random_name[i] = alphanum[pick(gen)];
     }
     random_name[len_result + len] = '\0';
     strcat(random_name, ext);
