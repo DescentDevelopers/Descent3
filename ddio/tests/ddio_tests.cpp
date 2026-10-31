@@ -30,8 +30,8 @@ TEST(D3, DDIO_GetTmpFileName) {
   EXPECT_TRUE(canonical(result.parent_path()) == canonical(temp_dir));
 }
 
-// Temp file names must not consume rand(), or creating temp files would shift the
-// random sequence the game sees after it is seeded with -randseed.
+  // we intentionally do NOT use the same RNG as the "game" logic. that RNG is seed-controlled for tests,
+  // and using it here would introduce an uncontrollable source of randomness from potential tmpdir collisions
 TEST(D3, DDIO_GetTmpFileNameDoesNotUseRand) {
   std::filesystem::path temp_dir = std::filesystem::temp_directory_path();
   srand(1234);

@@ -174,8 +174,8 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
   char *random_name = (char *)mem_malloc(len_result + len + strlen(ext) + 1);
   strncpy(random_name, (const char*)(basedir / prefix).u8string().c_str(), len_result);
 
-  // Temp names come from their own generator, not rand(), so creating temp files does not
-  // change the sequence of random numbers the game sees after seeding with -randseed.
+  // we intentionally do NOT use the same RNG as the "game" logic. that RNG is seed-controlled for tests,
+  // and using it here would introduce an uncontrollable source of randomness from potential tmpdir collisions
   thread_local std::minstd_rand gen{std::random_device{}()};
   std::uniform_int_distribution<size_t> pick(0, sizeof(alphanum) - 2);
 

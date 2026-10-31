@@ -911,6 +911,7 @@
 // Initialization routines for Descent3/Editor
 
 #include <charconv>
+#include <cinttypes>
 #include <cstring>
 #include <ctime>
 #include <filesystem>
@@ -1830,7 +1831,7 @@ void InitD3Systems1(bool editor) {
     uint32_t parsed;
     auto [ptr, ec] = std::from_chars(begin, end, parsed);
     if (ec != std::errc{} || ptr != end) {
-      Error("-randseed requires a number from 0 to 4294967295, got \"%s\".", begin);
+      Error("-randseed requires a number from 0 to %" PRIu32 ", got \"%s\".", UINT32_MAX, begin);
       exit(1);
     }
     seed = parsed;
