@@ -206,17 +206,21 @@ public:
   void set_ship(const char *ship);
   void get_ship(char *ship);
 
-  void set_multiplayer_data(const char *logo = nullptr, const char *audio1 = nullptr, const char *audio2 = nullptr, const uint16_t *ppic = nullptr,
+  void set_multiplayer_data(const char *logo = nullptr, const char *audio1 = nullptr,
+                            const char *audio2 = nullptr, const uint16_t *ppic = nullptr,
                             const char *audio3 = nullptr, const char *audio4 = nullptr);
-  void get_multiplayer_data(char *logo = nullptr, char *audio1 = nullptr, char *audio2 = nullptr, uint16_t *ppic = nullptr,
+  void get_multiplayer_data(char *logo = nullptr, char *audio1 = nullptr,
+                            char *audio2 = nullptr, uint16_t *ppic = nullptr,
                             char *audio3 = nullptr, char *audio4 = nullptr);
 
   void set_difficulty(uint8_t diff);
   void get_difficulty(uint8_t *diff);
 
-  void set_hud_data(uint8_t *hmode = nullptr, uint16_t *hstat = nullptr, uint16_t *hgraphicalstat = nullptr, int *gw_w = nullptr,
+  void set_hud_data(uint8_t *hmode = nullptr, uint16_t *hstat = nullptr,
+                    uint16_t *hgraphicalstat = nullptr, int *gw_w = nullptr,
                     int *gw_h = nullptr);
-  void get_hud_data(uint8_t *hmode = nullptr, uint16_t *hstat = nullptr, uint16_t *hgraphicalstat = nullptr, int *gw_w = nullptr,
+  void get_hud_data(uint8_t *hmode = nullptr, uint16_t *hstat = nullptr,
+                    uint16_t *hgraphicalstat = nullptr, int *gw_w = nullptr,
                     int *gw_h = nullptr);
 
   void set_profanity_filter(bool enable);
