@@ -711,7 +711,6 @@ bool Auto_connected = false;
 bool ProcessCommandLine();
 // new game selection
 bool MenuNewGame();
-extern bool Mem_quick_exit;
 bool IsRestoredGame = false;
 //////////////////////////////////////////////////////////////////////////////
 extern bool Demo_looping;
@@ -822,7 +821,6 @@ int MainMenu() {
       if (DoMessageBox(TXT_MENUQUIT, TXT_QUITMESSAGE, MSGBOX_YESNO)) {
         exit_game = true;
         exit_menu = true;
-        Mem_quick_exit = true; // tell the mem library to not free up each chunk individually
       }
       break;
     case IDV_LOADGAME:

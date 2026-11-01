@@ -139,7 +139,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
   if (i) {
     error_Init(false, false, APPNAME);
     SetMessageBoxTitle(APPNAME " Message");
-    mem_Init();
     FontEditor = &fontkern;
     InitIO(&fontkern);
     grfont_Reset();
@@ -157,7 +156,6 @@ void InitSystems(oeApplication *app, bool debug, bool mono, renderer_type render
   error_Init(debug, mono, APPNAME);
   SetMessageBoxTitle(APPNAME " Message");
 
-  mem_Init();
   InitIO(app);
 
   cf_OpenLibrary("fonteditor.hog");
