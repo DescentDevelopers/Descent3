@@ -415,18 +415,16 @@ void CScriptSyncDialog::DoStuff(void) {
               m_Files[m_Index].state == STATE_ERROOS) {
             m_ErrorCount++;
             std::unique_ptr<char[]> string = mem_strdup_unique(SS_CompileOutputData.GetBuffer(0));
-            if (string) {
-              char buffer[2048];
-              const char *next_line;
+            char buffer[2048];
+            const char *next_line;
 
-              mprintf(0, "===========================================\n");
-              next_line = textaux_CopyTextLine(string.get(), buffer);
-              while (next_line) {
-                mprintf(0, "%s\n", buffer);
-                next_line = textaux_CopyTextLine(next_line, buffer);
-              }
-              mprintf(0, "===========================================\n");
+            mprintf(0, "===========================================\n");
+            next_line = textaux_CopyTextLine(string.get(), buffer);
+            while (next_line) {
+              mprintf(0, "%s\n", buffer);
+              next_line = textaux_CopyTextLine(next_line, buffer);
             }
+            mprintf(0, "===========================================\n");
           }
         } else {
           m_Files[m_Index].state = STATE_NOCOMPILER;

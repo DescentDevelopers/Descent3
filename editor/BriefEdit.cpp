@@ -157,7 +157,6 @@ void BriefEditInitEffect(tBriefEffect *efx) {
   efx->type = BE_NONE;
   efx->used = false;
   efx->id = 0;
-  efx->text.reset();
   efx->next = -1;
   efx->prev = -1;
   efx->w = efx->h = -1;
