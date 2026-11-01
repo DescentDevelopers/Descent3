@@ -613,12 +613,10 @@ void PRec_ReceivePRecFromServer(uint8_t *data) {
   // PInfo stuff
   pinfo_size = MultiGetInt(data, &count);
   if (pinfo_size > 0) {
-    if (pr->pinfo)
-      pr->pinfo->UnpackData(&data[count], pinfo_size);
+    pr->pinfo->UnpackData(&data[count], pinfo_size);
     count += pinfo_size;
   } else {
-    if (pr->pinfo)
-      pr->pinfo->ResetAll();
+    pr->pinfo->ResetAll();
   }
 
   if (pr->pnum != 255) {
