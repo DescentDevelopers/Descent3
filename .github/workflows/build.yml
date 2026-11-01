@@ -53,7 +53,7 @@ jobs:
     runs-on: ${{ matrix.os.runner }}
 
     env:
-      # Debug builds use the mock clock, so they are only built and tested, never packaged
+      # Debug builds use the mock clock. They are only built and tested, never installed, signed or uploaded.
       MOCK_CLOCK: ${{ matrix.build_type == 'Debug' && 'ON' || 'OFF' }}
       MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && matrix.build_type != 'Debug' && secrets.MACOS_SIGNING_IDENTITY != '' }}
 
@@ -139,7 +139,7 @@ jobs:
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
       - name: Local install
-        if: ${{ env.MOCK_CLOCK != 'ON' }}
+        if: ${{ matrix.build_type != 'Debug' }}
         # There no cmake install presets so install in traditional way
         run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
 
@@ -163,7 +163,7 @@ jobs:
           mv builds/${{ matrix.os.preset }}/Descent3-${{ matrix.build_type }}-${{ matrix.os.name }}.dmg builds/${{ matrix.os.preset }}/installed/
 
       - name: Upload Artifacts
-        if: ${{ env.MOCK_CLOCK != 'ON' }}
+        if: ${{ matrix.build_type != 'Debug' }}
         uses: actions/upload-artifact@v4
         with:
           name: Descent3_${{ matrix.build_type }}_${{ matrix.os.name }}
