@@ -16,27 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstdio>
+#include <cstdlib>
 #include <chrono>
 #include <thread>
 
 #include "chrono_timer.h"
+#include "chrono_timer_internal.h"
 
 namespace D3 {
 
-void ChronoTimer::Initialize() { m_start_tstamp = std::chrono::steady_clock::now(); }
+namespace ChronoTimerInternals {
+  std::chrono::time_point<std::chrono::steady_clock> start_;
+}
+using namespace ChronoTimerInternals;
+
+void ChronoTimer::Initialize() {
+  if (start_ != std::chrono::time_point<std::chrono::steady_clock>{}) {
+    std::fprintf(stderr, "ChronoTimer double-initialized\n");
+    std::abort();
+  }
+  start_ = std::chrono::steady_clock::now();
+}
 
 float ChronoTimer::GetTime() {
-  return std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - m_start_tstamp)
+  return std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - start_)
       .count();
 }
 
 int64_t ChronoTimer::GetTimeMS() {
-  return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - m_start_tstamp)
+  return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_)
       .count();
 }
 
 int64_t ChronoTimer::GetTimeUS() {
-  return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - m_start_tstamp)
+  return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start_)
       .count();
 }
 

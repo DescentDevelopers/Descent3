@@ -19,12 +19,19 @@
 #include <gtest/gtest.h>
 
 #include "chrono_timer.h"
+#include "chrono_timer_internal.h"
 
 using D3::ChronoTimer;
 
+struct ChronoTimerTest : testing::Test {
+  ~ChronoTimerTest() override {
+    D3::ChronoTimerInternals::start_ = {};
+  }
+};
+
 // Watches the clock tick forward for 10ms, so it sees many ticks however fast the machine is. Back-to-back reads
 // often land in the same microsecond, so each read only has to be no earlier than the last.
-TEST(ChronoTimer, IsMonotonic) {
+TEST_F(ChronoTimerTest, IsMonotonic) {
   ChronoTimer::Initialize();
   const int64_t start = ChronoTimer::GetTimeUS();
   int64_t prev = start;
@@ -40,9 +47,18 @@ TEST(ChronoTimer, IsMonotonic) {
   EXPECT_GT(ticks, 1);
 }
 
-TEST(ChronoTimer, SleepAdvancesTime) {
+TEST_F(ChronoTimerTest, SleepAdvancesTime) {
   ChronoTimer::Initialize();
   int64_t start = ChronoTimer::GetTimeMS();
   ChronoTimer::SleepMS(20);
   EXPECT_GE(ChronoTimer::GetTimeMS() - start, 20);
+}
+
+TEST(ChronoTimerDeathTest, SecondInitializeAborts) {
+  EXPECT_DEATH(
+      {
+        ChronoTimer::Initialize();
+        ChronoTimer::Initialize();
+      },
+      "ChronoTimer double-initialized");
 }

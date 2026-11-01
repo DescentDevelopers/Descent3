@@ -1,5 +1,7 @@
 set(HEADERS
   chrono_timer.h
+  chrono_timer_internal.h
+  mock_timer_internal.h
   ddio.h
   ddio_common.h
   ddio_lnx.h
