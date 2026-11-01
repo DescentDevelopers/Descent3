@@ -1542,18 +1542,19 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
                   num_normals);
       }
 
-      if (num_normals) {
-        for (i = 0; i < num_normals; i++) {
-          vector temp;
-          a_bank *bank = &pm->attach_slots[i];
+      // Read every normal to keep the file position, but only store the ones that have an attach point: a
+      // mismatched count can name more normals than there are points. With no normals the points stay valid,
+      // just without uvecs.
+      for (i = 0; i < num_normals; i++) {
+        vector temp, uvec;
 
-          cf_ReadInt(infile);
-          ReadModelVector(&temp, infile);
-          ReadModelVector(&bank->uvec, infile);
-          bank->f_uvec = f_uvec;
+        cf_ReadInt(infile);
+        ReadModelVector(&temp, infile);
+        ReadModelVector(&uvec, infile);
+        if (i < pm->n_attach) {
+          pm->attach_slots[i].uvec = uvec;
+          pm->attach_slots[i].f_uvec = f_uvec;
         }
-      } else {
-        pm->attach_slots.reset();
       }
       break;
     }
