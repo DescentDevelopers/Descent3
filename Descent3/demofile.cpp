@@ -648,6 +648,7 @@ void DemoReadKillObject(void) {
   if (!(IS_GENERIC(Objects[hit_objnum].type) || (Objects[hit_objnum].type == OBJ_DOOR)))
     return; // bail if invalid object type
 
+  // legacy re-seed outside `-randseed` allowed: demo playback only
   ps_srand(seed);
   KillObject(&Objects[hit_objnum], (killer != 65535) ? &Objects[killer] : nullptr, damage, death_flags, delay);
 }

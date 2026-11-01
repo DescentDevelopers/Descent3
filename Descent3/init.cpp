@@ -910,6 +910,8 @@
 
 // Initialization routines for Descent3/Editor
 
+#include <charconv>
+#include <cinttypes>
 #include <cstring>
 #include <ctime>
 #include <filesystem>
@@ -1820,6 +1822,24 @@ void InitD3Systems1(bool editor) {
   if (pxoportarg)
     PXOPort = atoi(GameArgs[pxoportarg + 1]);
 
+  // Seed both random number generators before anything else uses them
+  uint32_t seed = static_cast<uint32_t>(time(nullptr));
+  if (int iseedarg = FindArg("-randseed")) {
+    const char *value = GetArg(iseedarg + 1);
+    const char *begin = value ? value : "";
+    const char *end = begin + strlen(begin);
+    uint32_t parsed;
+    auto [ptr, ec] = std::from_chars(begin, end, parsed);
+    if (ec != std::errc{} || ptr != end) {
+      Error("-randseed requires a number from 0 to %" PRIu32 ", got \"%s\".", UINT32_MAX, begin);
+      exit(1);
+    }
+    seed = parsed;
+  }
+  LOG_INFO << "seeding RNG with " << seed;
+  ps_srand(seed);
+  srand(seed);
+
   // perform user i/o system initialization
   INIT_MESSAGE(("Initializing I/O system."));
   InitIOSystems(editor);
@@ -1855,9 +1875,6 @@ void InitD3Systems1(bool editor) {
 
   // This function needs be called before ANY 3d stuff can get done. I mean it.
   InitMathTables();
-
-  // Initialize a random seed.
-  ps_srand(time(nullptr));
 
   // This function has to be done before any sound stuff is called
   InitSounds();

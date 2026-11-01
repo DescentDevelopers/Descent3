@@ -21,11 +21,11 @@
 #include <filesystem>
 #include <fstream>
 #include <iterator>
+#include <random>
 #include <regex>
 #include <SDL3/SDL_filesystem.h>
 
 #include "IOOps.h"
-#include "chrono_timer.h"
 #include "ddio.h"
 #include "mem.h"
 #include "pserror.h"
@@ -174,12 +174,15 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
   char *random_name = (char *)mem_malloc(len_result + len + strlen(ext) + 1);
   strncpy(random_name, PATH_TO_CSTR(basedir / prefix), len_result);
 
-  srand(D3::ChronoTimer::GetTimeMS());
+  // we intentionally do NOT use the same RNG as the "game" logic. that RNG is seed-controlled for tests,
+  // and using it here would introduce an uncontrollable source of randomness from potential tmpdir collisions
+  thread_local std::minstd_rand gen{std::random_device{}()};
+  std::uniform_int_distribution<size_t> pick(0, sizeof(alphanum) - 2);
 
   int tries = 20;
   while (tries > 0) {
     for (size_t i = len_result; i < len_result + len; i++) {
-      random_name[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+      random_name[i] = alphanum[pick(gen)];
     }
     random_name[len_result + len] = '\0';
     strcat(random_name, ext);

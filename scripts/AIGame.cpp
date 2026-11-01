@@ -1845,11 +1845,6 @@ bool SuperThief::DoSteal(int me, int it) {
   if (!attempted_steals)
     return false;
 
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
-
   for (i = 0; i < numSuperThiefableItems; i++) {
     attempted_steals[i] = false;
   }
@@ -6207,11 +6202,6 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
   if (!attempted_steals)
     return false;
 
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
-
   for (i = 0; i < numThiefableItems; i++) {
     attempted_steals[i] = false;
   }
@@ -7486,11 +7476,6 @@ bool OldScratch::DoSteal(int me, int it) {
   attempted_steals = (bool *)malloc(numSuperThiefableItems * sizeof(bool));
   if (!attempted_steals)
     return false;
-
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
 
   for (i = 0; i < numSuperThiefableItems; i++) {
     attempted_steals[i] = false;

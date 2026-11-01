@@ -811,6 +811,7 @@ void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_te
 
   gspy_StartGame(Netgame.name);
   // We use this to identify clients....
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   ps_srand(timer_GetTime());
   Secret_net_id = ps_rand() * ps_rand();
   LastPacketReceived = timer_GetTime();

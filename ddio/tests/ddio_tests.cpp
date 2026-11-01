@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
 #include <filesystem>
 #include <gtest/gtest.h>
 
@@ -27,4 +28,15 @@ TEST(D3, DDIO_GetTmpFileName) {
   EXPECT_FALSE(result.empty());
   EXPECT_EQ(result.extension(), ".tmp");
   EXPECT_TRUE(canonical(result.parent_path()) == canonical(temp_dir));
+}
+
+  // we intentionally do NOT use the same RNG as the "game" logic. that RNG is seed-controlled for tests,
+  // and using it here would introduce an uncontrollable source of randomness from potential tmpdir collisions
+TEST(D3, DDIO_GetTmpFileNameDoesNotUseRand) {
+  std::filesystem::path temp_dir = std::filesystem::temp_directory_path();
+  srand(1234);
+  int expected = rand();
+  srand(1234);
+  ddio_GetTmpFileName(temp_dir, "prefix_");
+  EXPECT_EQ(rand(), expected);
 }

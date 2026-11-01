@@ -3296,6 +3296,7 @@ void CreateImpactSpawnFromWeapon(object *obj, vector *normal) {
   }
 
   if (Game_mode & GM_MULTI)
+    // legacy re-seed outside `-randseed` allowed: multiplayer only
     ps_srand(num);
 
   if (Weapons[n].flags & WF_HOMING_SPLIT) {
