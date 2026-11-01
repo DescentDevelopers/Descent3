@@ -129,7 +129,8 @@ jobs:
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ matrix.os.preset }} -DCODESIGN_IDENTITY=${{ secrets.MACOS_SIGNING_IDENTITY }} -DENABLE_MOCK_CLOCK=${{ env.MOCK_CLOCK }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
+        # Only pass the signing identity when the certificate was imported above, otherwise the post-build codesign calls fail.
+        run: cmake --preset ${{ matrix.os.preset }} -DCODESIGN_IDENTITY=${{ env.MACOS_AND_CODE_SIGNING == 'true' && secrets.MACOS_SIGNING_IDENTITY || '' }} -DENABLE_MOCK_CLOCK=${{ env.MOCK_CLOCK }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
 
       - name: Build ${{ matrix.build_type }}
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
