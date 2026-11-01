@@ -55,6 +55,7 @@
 #include "cfile.h"
 #include "log.h"
 #include "pserror.h"
+#include "pstypes.h"
 #include "streamaudio.h"
 
 OSFArchive::OSFArchive() {
