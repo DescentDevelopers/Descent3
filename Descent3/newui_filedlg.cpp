@@ -146,21 +146,18 @@ void FDlg_EnableWaitMessage(bool enable) {
 
   if (enable) {
     msgbox = std::make_unique<NewUIGameWindow>();
-    if (msgbox) {
+    msgbox->Create(0, 0, FDWM_WIDTH, FDWM_HEIGHT, UIF_PROCESS_ALL | UIF_CENTER);
 
-      msgbox->Create(0, 0, FDWM_WIDTH, FDWM_HEIGHT, UIF_PROCESS_ALL | UIF_CENTER);
+    sheet = msgbox->GetSheet();
+    sheet->NewGroup(nullptr, 45, 25);
+    sheet->AddText(TXT_GETTINGFILES);
 
-      sheet = msgbox->GetSheet();
-      sheet->NewGroup(nullptr, 45, 25);
-      sheet->AddText(TXT_GETTINGFILES);
+    msgbox->Open();
+    sheet->Realize();
 
-      msgbox->Open();
-      sheet->Realize();
-
-      // fake a DoUI
-      DoUIFrame();
-      rend_Flip();
-    }
+    // fake a DoUI
+    DoUIFrame();
+    rend_Flip();
   } else {
 
     if (msgbox) {

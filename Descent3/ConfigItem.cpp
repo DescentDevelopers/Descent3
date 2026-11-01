@@ -641,14 +641,12 @@ void ConfigItem::Add(int count, ...) {
       // allocate text item
       m_tiList[i] = std::make_unique<UITextItem>();
       // make sure allocation ok
-      ASSERT(m_tiList[i]);
       uitemp = va_arg(marker, UITextItem *);
       *m_tiList[i] = *uitemp;
       m_tiList[i]->set_alpha(255);
       // allocate radio button
       m_rbList[i] = std::make_unique<UIRadioButton>();
       // make sure allocation ok
-      ASSERT(m_rbList[i]);
       if (i)
         m_rbList[i]->Create(m_hWnd, m_rbList[i - 1].get(), m_iID[i], m_tiList[i].get(), m_X + curr_x, m_Y + curr_y,
                             m_tiList[i]->width(), m_tiList[i]->height(), UIF_FIT | UIRB_NOBUTTON);
@@ -687,7 +685,6 @@ void ConfigItem::Add(int count, ...) {
     // allocate slider
     m_sList[0] = std::make_unique<NewUISlider>();
     // make sure allocation ok
-    ASSERT(m_sList[0]);
     m_sList[0]->Create(m_hWnd, m_iID[0], m_X, m_Y, UIF_FIT);
     char temp[10];
     switch (m_iValueType) {
@@ -737,7 +734,6 @@ void ConfigItem::Add(int count, ...) {
     // allocate buttonCreate
     m_bList[0] = std::make_unique<NewUIButton>();
     // make sure allocation ok
-    ASSERT(m_bList[0]);
     m_bList[0]->Create(m_hWnd, m_iID[0], m_tiList[0].get(), m_X + curr_x, m_Y + curr_y, m_tiList[0]->width(),
                        m_tiList[0]->height(), UIF_FIT);
     // Initialize Config Item to initial value
@@ -769,14 +765,12 @@ void ConfigItem::Add(int count, ...) {
     // allocate list box
     m_lbList[0] = std::make_unique<NewUIListBox>();
     // check allocation
-    ASSERT(m_lbList[0]);
     m_lbList[0]->Create(m_hWnd, m_iID[0], m_X + curr_x, m_Y + curr_y, m_W, m_H, UIF_FIT);
     // allocate text items and put them in
     for (i = 0; i < m_tiCount; i++) {
       // create the text item
       m_tiList[i] = std::make_unique<UITextItem>();
       // make sure allocation ok
-      ASSERT(m_tiList[i]);
       (*m_tiList[i]) = (*(va_arg(marker, UITextItem *)));
       // add textitem to listbox
       m_lbList[0]->AddItem(m_tiList[i].get());
@@ -814,7 +808,6 @@ void ConfigItem::Add(int count, ...) {
     // allocate buttonCreate
     m_bList[0] = std::make_unique<NewUIButton>();
     // make sure allocation ok
-    ASSERT(m_bList[0]);
     m_bList[0]->Create(m_hWnd, m_iID[0], m_tiList[0].get(), m_X + curr_x, m_Y + curr_y, m_tiList[0]->width(),
                        m_tiList[0]->height(), UIF_FIT);
     // Initialize Config Item to initial value
@@ -856,7 +849,6 @@ void ConfigItem::Add(int count, ...) {
     // allocate hot spots
     m_hsList[0] = std::make_unique<UIHotspot>();
     // make sure allocation ok
-    ASSERT(m_hsList[0]);
     m_hsList[0]->Create(m_hWnd, m_iID[0], -1, m_tiList[0].get(), m_tiList[1].get(), m_X + curr_x, m_Y + curr_y,
                         m_tiList[0]->width(), m_tiList[0]->height(), UIF_FIT);
     // Initialize Config Item to initial value
@@ -914,7 +906,6 @@ void ConfigItem::Add(int count, ...) {
       // allocate text items
       m_tiList[i] = std::make_unique<UITextItem>();
       // make sure allocation ok
-      ASSERT(m_tiList[i]);
       (*m_tiList[i]) = (*(va_arg(marker, UITextItem *)));
 
       m_tiList[i]->set_color(UICOL_HOTSPOT_LO);
@@ -922,7 +913,6 @@ void ConfigItem::Add(int count, ...) {
       // m_tiList[i]->set_alpha(UIALPHA_HOTSPOT_LO);
       // allocate radio button
       m_rbList[i] = std::make_unique<UIRadioButton>();
-      ASSERT(m_rbList[i]);
       if (i)
         m_rbList[i]->Create(m_hWnd, m_rbList[i - 1].get(), m_iID[i], m_tiList[i].get(), m_X + curr_x + offset,
                             m_Y + curr_y, m_W, m_H, UIF_FIT);
