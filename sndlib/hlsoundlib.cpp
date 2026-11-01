@@ -528,9 +528,6 @@ int hlsSystem::InitSoundLib(oeApplication *sos, char mixer_type, char quality, b
   if (m_ll_sound_ptr == nullptr) {
     m_ll_sound_ptr = std::make_unique<lnxsound>();
   }
-  ASSERT(m_ll_sound_ptr);
-  if (m_ll_sound_ptr == nullptr)
-    return 0;
   if (Sound_card_name[0]) {
     m_ll_sound_ptr->SetSoundCard(Sound_card_name);
   } else {
