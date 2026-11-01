@@ -399,6 +399,7 @@ struct tOSIRISScript {
 };
 
 // The data for an object
+// (When adding a field the object doesn't own, add it to CopyObjectPlainFields() in editor/ObjectClipboard.cpp too.)
 struct object {
   uint8_t type;       // what type of object this is... robot, weapon, hostage, powerup, fireball
   uint8_t dummy_type; // stored type of an OBJ_DUMMY
