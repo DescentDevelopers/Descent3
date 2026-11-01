@@ -600,32 +600,29 @@ void DoWaitPopup(bool enable, const char *message) {
   if (enable) {
     Wait_popup = std::make_unique<newuiTiledWindow>();
 
-    if (Wait_popup) {
+    Wait_popup->Create(nullptr, 0, 0, FDWM_WIDTH, FDWM_HEIGHT);
 
-      Wait_popup->Create(nullptr, 0, 0, FDWM_WIDTH, FDWM_HEIGHT);
+    sheet = Wait_popup->GetSheet();
+    if (message) {
+      char msg[512];
+      int w, h;
+      textaux_WordWrap(message, msg, FDWM_WIDTH, MONITOR9_NEWUI_FONT);
+      grtext_SetFont(MONITOR9_NEWUI_FONT);
+      w = grtext_GetTextLineWidth(msg);
+      h = grtext_GetTextHeight(msg);
+      UITextItem item{MONITOR9_NEWUI_FONT, msg, NEWUI_MONITORFONT_COLOR};
+      text.Create(Wait_popup.get(), &item, (Wait_popup->W() - w) / 2, (Wait_popup->H() - h) / 2);
 
-      sheet = Wait_popup->GetSheet();
-      if (message) {
-        char msg[512];
-        int w, h;
-        textaux_WordWrap(message, msg, FDWM_WIDTH, MONITOR9_NEWUI_FONT);
-        grtext_SetFont(MONITOR9_NEWUI_FONT);
-        w = grtext_GetTextLineWidth(msg);
-        h = grtext_GetTextHeight(msg);
-        UITextItem item{MONITOR9_NEWUI_FONT, msg, NEWUI_MONITORFONT_COLOR};
-        text.Create(Wait_popup.get(), &item, (Wait_popup->W() - w) / 2, (Wait_popup->H() - h) / 2);
-
-        //				sheet->NewGroup(NULL, , 25);
-        //				sheet->AddText(msg);
-      }
-
-      Wait_popup->Open();
-      //			sheet->Realize();
-
-      // fake a DoUI
-      DoUIFrame();
-      rend_Flip();
+      //				sheet->NewGroup(NULL, , 25);
+      //				sheet->AddText(msg);
     }
+
+    Wait_popup->Open();
+    //			sheet->Realize();
+
+    // fake a DoUI
+    DoUIFrame();
+    rend_Flip();
   } else {
 
     if (Wait_popup) {
