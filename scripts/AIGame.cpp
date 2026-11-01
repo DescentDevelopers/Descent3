@@ -20,9 +20,11 @@
 //
 #include <cfloat>
 #include <cstdint>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "osiris_vector.h"
@@ -44,16 +46,15 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 }
 #endif
 
-static int String_table_size = 0;
-static char **String_table = nullptr;
+static std::vector<std::string> String_table;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
-const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table_size))
+const char *GetStringFromTable(uint32_t index) {
+  if (index >= String_table.size())
     return _Error_string;
-  if (!String_table[index])
+  if (String_table[index].empty())
     return _Empty_string;
-  return String_table[index];
+  return String_table[index].c_str();
 }
 #define TXT(x) GetStringFromTable(x)
 #define TXT_GBM_RENAME 0            //"Rename GB Unit"
@@ -2418,7 +2419,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
     return 0;
   }
   aigame_mod_id = func_list->module_identifier;
-  String_table_size = func_list->string_count;
   String_table = func_list->string_table;
 
   return 1;

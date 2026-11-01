@@ -84,8 +84,11 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+#include <string>
+#include <vector>
+
 #include "gamedll_header.h"
-#include <string.h>
 
 #include "idmfc.h"
 #include "ctf.h"
@@ -229,14 +232,13 @@ static void LoseFlagForPlayer(int pnum, uint8_t team, bool remove_from_inven = t
 
 ///////////////////////////////////////////////
 // localization info/functions
-static char **StringTable;
-static int StringTableSize = 0;
+static std::vector<std::string> StringTable;
 static const char *_ErrorString = "Missing String";
 const char *GetString(int d) {
-  if ((d < 0) || (d >= StringTableSize))
+  if ((d < 0) || (d >= StringTable.size()))
     return _ErrorString;
   else
-    return StringTable[d];
+    return StringTable[d].c_str();
 }
 static void SaveStatsToFile(const char *filename);
 static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
@@ -351,8 +353,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   CTFNumOfTeams = num_teams_to_use;
 
   DMFCBase->GameInit(CTFNumOfTeams);
-  DLLCreateStringTable("CTF.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("CTF.str", StringTable);
+  if (StringTable.empty()) {
     *all_ok = 0;
     return;
   }
@@ -553,7 +555,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  DLLDestroyStringTable(StringTable);
 
   if (dstat) {
     dstat->DestroyPointer();
