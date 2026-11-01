@@ -505,7 +505,6 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
     cfseek(infile, savepos, SEEK_SET);
 
     Tga_file_data = std::unique_ptr<char[]>(new char[numleft]); // filled by cf_ReadBytes below
-    ASSERT(Tga_file_data != nullptr);
     Fake_pos = 0;
     Bad_tga = 0;
     Fake_file_size = numleft;
@@ -617,10 +616,6 @@ int bm_page_in_file(int n) {
   int size = (width * height * 2) + (mipped * ((width * height * 2) / 3)) + 2;
   // size is in bytes and may be odd; left uninitialised because the file data overwrites it
   GameBitmaps[n].data16 = std::unique_ptr<uint16_t[]>(new uint16_t[(size + 1) / 2]);
-  if (!GameBitmaps[n].data16) {
-    LOG_ERROR << "Out of memory in bm_page_in_file!";
-    return 0;
-  }
 
   Bitmap_memory_used += size;
 
@@ -663,7 +658,6 @@ int bm_page_in_file(int n) {
     cfseek(infile, savepos, SEEK_SET);
 
     Tga_file_data = std::unique_ptr<char[]>(new char[numleft]); // filled by cf_ReadBytes below
-    ASSERT(Tga_file_data != nullptr);
     Fake_pos = 0;
     Bad_tga = 0;
     Fake_file_size = numleft;

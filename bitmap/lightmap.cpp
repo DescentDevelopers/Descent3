@@ -62,11 +62,6 @@ int lm_AllocLightmap(int w, int h) {
 
   GameLightmaps[n] = {};
   GameLightmaps[n].data = std::make_unique<uint16_t[]>(w * h);
-  if (!GameLightmaps[n].data) {
-    LOG_DEBUG << "NOT ENOUGH MEMORY FOR LIGHTMAP!";
-    Int3();
-    return BAD_LM_INDEX;
-  }
 
   GameLightmaps[n].width = w;
   GameLightmaps[n].height = h;

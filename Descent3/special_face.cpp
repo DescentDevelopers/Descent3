@@ -56,7 +56,6 @@ int AllocSpecialFace(int type, int num, bool vertnorms, int num_vertnorms) {
   SpecialFaces[n] = {};
 
   SpecialFaces[n].spec_instance = std::make_unique<specular_instance[]>(num);
-  ASSERT(SpecialFaces[n].spec_instance);
 
   SpecialFaces[n].type = type;
   SpecialFaces[n].num = num;
@@ -65,7 +64,6 @@ int AllocSpecialFace(int type, int num, bool vertnorms, int num_vertnorms) {
 
   if (vertnorms) {
     SpecialFaces[n].vertnorms = std::make_unique<vector[]>(num_vertnorms);
-    ASSERT(SpecialFaces[n].vertnorms);
     SpecialFaces[n].flags |= SFF_SPEC_SMOOTH;
   }
 

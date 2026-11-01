@@ -72,11 +72,6 @@ int bump_AllocBumpmap(int w, int h) {
   GameBumpmaps[n] = {};
 
   GameBumpmaps[n].data = std::make_unique<uint16_t[]>(w * h);
-  if (!GameBumpmaps[n].data) {
-    LOG_ERROR << "NOT ENOUGH MEMORY FOR BUMPMAP!";
-    Int3();
-    return BAD_BUMP_INDEX;
-  }
 
   GameBumpmaps[n].cache_slot = -1;
   GameBumpmaps[n].flags = BUMPF_USED | BUMPF_CHANGED;

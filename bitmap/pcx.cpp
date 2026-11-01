@@ -120,8 +120,6 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
   total = width * height;
 
   auto rawdata = std::make_unique<uint8_t[]>(width * height);
-  if (!rawdata)
-    return -1; // no memory!
 
   run = 0;
   while (run < total) {
@@ -228,10 +226,6 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
   total = 3 * BytesPerLine;
 
   auto rawdata = std::make_unique<uint8_t[]>(total * height);
-  if (!rawdata) {
-    LOG_ERROR << "PCXLoad: Out of memory";
-    return -1; // no memory!
-  }
 
   // Load in the data
   // the data is divided into scanlines

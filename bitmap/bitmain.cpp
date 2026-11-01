@@ -463,10 +463,6 @@ int bm_AllocateMemoryForIndex(int n, int w, int h, int add_mem) {
   int size = (w * h * 2) + (add_mem) + 2;
   // size is in bytes and may be odd; left uninitialised here because it is 0xAA-filled below
   GameBitmaps[n].data16 = std::unique_ptr<uint16_t[]>(new uint16_t[(size + 1) / 2]);
-  if (!GameBitmaps[n].data16) {
-    Int3(); // Ran out of memory!
-    return -1;
-  }
   Bitmap_memory_used += (size);
   memset(GameBitmaps[n].data16.get(), 0xAA, size);
 

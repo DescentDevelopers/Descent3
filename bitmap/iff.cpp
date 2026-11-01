@@ -396,8 +396,6 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
       else {
 
         bmheader->raw_data = std::make_unique<uint8_t[]>(bmheader->w * bmheader->h);
-        if (!bmheader->raw_data)
-          return IFF_NO_MEM;
       }
 
     } break;
@@ -412,9 +410,6 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
       bmheader->h = prev_bm->h;
       bmheader->type = prev_bm->type;
       bmheader->raw_data = std::make_unique<uint8_t[]>(bmheader->w * bmheader->h);
-
-      if (!bmheader->raw_data)
-        return IFF_NO_MEM;
 
       memcpy(bmheader->raw_data.get(), prev_bm->raw_data.get(), bmheader->w * bmheader->h);
 
