@@ -1061,8 +1061,6 @@ bool LoadMission(const std::filesystem::path& mssn) {
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_SCORE;
           msn->levels[curlvlnum - 1].score = mem_strdup_unique(operand);
-          if (!msn->levels[curlvlnum - 1].score)
-            goto fatal_error;
         }
       } else if (!stricmp(command, "PROGRESS")) {
         if (curlvlnum == 0) {
@@ -1070,18 +1068,13 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else {
           msn->levels[curlvlnum - 1].progress = mem_strdup_unique(operand);
-          if (!msn->levels[curlvlnum - 1].progress)
-            goto fatal_error;
         }
       } else if (!stricmp(command, "HOG")) {
         if (curlvlnum == 0) {
           msn->hog = mem_strdup_unique(operand);
-          if (!msn->hog)
-            goto fatal_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_SPECIALHOG;
-          if (!(msn->levels[curlvlnum - 1].hog = mem_strdup_unique(operand)))
-            goto fatal_error;
+          msn->levels[curlvlnum - 1].hog = mem_strdup_unique(operand);
         }
       } else if (!stricmp(command, "NUMLEVELS")) {
         if (curlvlnum != 0) {
@@ -1114,8 +1107,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_STARTMOVIE;
-          if (!(msn->levels[curlvlnum - 1].moviename = mem_strdup_unique(operand)))
-            goto fatal_error;
+          msn->levels[curlvlnum - 1].moviename = mem_strdup_unique(operand);
         }
       } else if (!stricmp(command, "INTRODEFAULT")) {
         if (curlvlnum == 0) {
@@ -1123,8 +1115,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else if (!Descent_overrided_intro) {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_STARTMOVIE;
-          if (!(msn->levels[curlvlnum - 1].moviename = mem_strdup_unique(operand)))
-            goto fatal_error;
+          msn->levels[curlvlnum - 1].moviename = mem_strdup_unique(operand);
         }
       } else if (!stricmp(command, "ENDMOVIE")) {
         if (curlvlnum == 0) {
@@ -1132,16 +1123,14 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_ENDMOVIE;
-          if (!(msn->levels[curlvlnum - 1].endmovie = mem_strdup_unique(operand)))
-            goto fatal_error;
+          msn->levels[curlvlnum - 1].endmovie = mem_strdup_unique(operand);
         }
       } else if (!stricmp(command, "MINE")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
         } else {
-          if (!(msn->levels[curlvlnum - 1].filename = mem_strdup_unique(operand)))
-            goto fatal_error;
+          msn->levels[curlvlnum - 1].filename = mem_strdup_unique(operand);
         }
       } else if (!stricmp(command, "SECRET")) {
         if (curlvlnum == 0) {
@@ -1157,8 +1146,7 @@ bool LoadMission(const std::filesystem::path& mssn) {
           goto msnfile_error;
         } else {
           msn->levels[curlvlnum - 1].flags |= LVLFLAG_BRIEFING;
-          if (!(msn->levels[curlvlnum - 1].briefname = mem_strdup_unique(operand)))
-            goto fatal_error;
+          msn->levels[curlvlnum - 1].briefname = mem_strdup_unique(operand);
         }
       } else if (!stricmp(command, "BRANCH")) {
         // first check if number of level is greater than num_levels
@@ -1214,9 +1202,6 @@ msnfile_error:
     return false;
   }
   return res;
-fatal_error:
-  Error("Out of memory loading mission %s.", PATH_TO_CSTR(mssn));
-  return false;
 #endif
   return false;
 }

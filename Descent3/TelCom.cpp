@@ -1963,10 +1963,6 @@ void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) 
   while (filelist[TelcomHiLiteCount[monitor]])
     TelcomHiLiteCount[monitor]++;
 
-  if (!TelcomHiLiteCount[monitor]) {
-    TelcomHiLites[monitor].reset();
-  }
-
   TelcomHiLites[monitor] = std::make_unique<int[]>(TelcomHiLiteCount[monitor]);
 
   int *HiLites;

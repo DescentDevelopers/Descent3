@@ -2346,8 +2346,6 @@ bool PltSelectShip(pilot *Pilot) {
       count++;
   }
   ship_info.idlist = std::make_unique<int[]>(count);
-  if (!ship_info.idlist)
-    goto ship_id_err;
 
   bool found_ship;
   bool shipoktoadd;
@@ -3145,12 +3143,6 @@ void ShowPilotPicDialog(pilot *Pilot) {
   // ---------------------------
   auto id_list = std::make_unique<uint16_t[]>(num_pilots);
 
-  if (!id_list) {
-    // out of memory
-    LOG_ERROR << "Out of memory";
-    goto clean_up;
-  }
-
   PPicDlgInfo.curr_bmp = PPicDlgInfo.blank_bmp = blank_bmp_handle;
   PPicDlgInfo.curr_index = 0;
   PPicDlgInfo.listbox = list;
@@ -3228,7 +3220,6 @@ void ShowPilotPicDialog(pilot *Pilot) {
   hwnd.Close();
   hwnd.Destroy();
 
-clean_up:
   // free data
   // ---------
   if ((PPicDlgInfo.curr_bmp != PPicDlgInfo.blank_bmp) && (PPicDlgInfo.curr_bmp > BAD_BITMAP_HANDLE))

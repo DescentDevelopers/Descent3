@@ -540,10 +540,8 @@ void pilot::set_name(const char *n) {
     int length = strlen(n);
     int size = std::min(PILOT_STRING_SIZE - 1, length);
     name = std::make_unique<char[]>(size + 1);
-    if (name) {
-      strncpy(name.get(), n, size);
-      name[size] = '\0';
-    }
+    strncpy(name.get(), n, size);
+    name[size] = '\0';
   }
   write_pending = true;
 }
@@ -563,10 +561,8 @@ void pilot::set_ship(const char *ship) {
     int length = strlen(ship);
     int size = std::min(PAGENAME_LEN - 1, length);
     ship_model = std::make_unique<char[]>(size + 1);
-    if (ship_model) {
-      strncpy(ship_model.get(), ship, size);
-      ship_model[size] = '\0';
-    }
+    strncpy(ship_model.get(), ship, size);
+    ship_model[size] = '\0';
   }
   write_pending = true;
 }
@@ -583,33 +579,27 @@ void pilot::get_ship(char *ship) {
 void pilot::set_multiplayer_data(const char *logo, const char *audio1, const char *audio2, const uint16_t *ppic, const char *audio3, const char *audio4) {
   if (logo) {
     ship_logo = mem_strdup_unique(logo);
-    if (ship_logo) {
-      int len = strlen(ship_logo.get());
-      if (len >= PAGENAME_LEN) {
-        ship_logo[PAGENAME_LEN - 1] = '\0';
-      }
+    int len = strlen(ship_logo.get());
+    if (len >= PAGENAME_LEN) {
+      ship_logo[PAGENAME_LEN - 1] = '\0';
     }
     write_pending = true;
   }
   ////////////
   if (audio1) {
     audio1_file = mem_strdup_unique(audio1);
-    if (audio1_file) {
-      int len = strlen(audio1_file.get());
-      if (len >= PAGENAME_LEN) {
-        audio1_file[PAGENAME_LEN - 1] = '\0';
-      }
+    int len = strlen(audio1_file.get());
+    if (len >= PAGENAME_LEN) {
+      audio1_file[PAGENAME_LEN - 1] = '\0';
     }
     write_pending = true;
   }
   ////////////
   if (audio2) {
     audio2_file = mem_strdup_unique(audio2);
-    if (audio2_file) {
-      int len = strlen(audio2_file.get());
-      if (len >= PAGENAME_LEN) {
-        audio2_file[PAGENAME_LEN - 1] = '\0';
-      }
+    int len = strlen(audio2_file.get());
+    if (len >= PAGENAME_LEN) {
+      audio2_file[PAGENAME_LEN - 1] = '\0';
     }
     write_pending = true;
   }
@@ -621,22 +611,18 @@ void pilot::set_multiplayer_data(const char *logo, const char *audio1, const cha
   ////////////
   if (audio3) {
     audio3_file = mem_strdup_unique(audio3);
-    if (audio3_file) {
-      int len = strlen(audio3_file.get());
-      if (len >= PAGENAME_LEN) {
-        audio3_file[PAGENAME_LEN - 1] = '\0';
-      }
+    int len = strlen(audio3_file.get());
+    if (len >= PAGENAME_LEN) {
+      audio3_file[PAGENAME_LEN - 1] = '\0';
     }
     write_pending = true;
   }
   ////////////
   if (audio4) {
     audio4_file = mem_strdup_unique(audio4);
-    if (audio4_file) {
-      int len = strlen(audio4_file.get());
-      if (len >= PAGENAME_LEN) {
-        audio4_file[PAGENAME_LEN - 1] = '\0';
-      }
+    int len = strlen(audio4_file.get());
+    if (len >= PAGENAME_LEN) {
+      audio4_file[PAGENAME_LEN - 1] = '\0';
     }
     write_pending = true;
   }
