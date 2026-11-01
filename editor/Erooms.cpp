@@ -1254,10 +1254,10 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
           newfaces[t].flags = rp->faces[t].flags;
           newfaces[t].portal_num = rp->faces[t].portal_num;
           newfaces[t].num_verts = rp->faces[t].num_verts;
-          // This face is unchanged, so it takes over its lightmap. The old face array is freed below
-          // without FreeRoomFace, so nothing else releases the handle.
+          // This face is unchanged, so it takes over its lightmap and special face. The old face array is
+          // freed below without FreeRoomFace, so nothing else releases the handles.
           newfaces[t].lmi_handle = rp->faces[t].lmi_handle;
-          newfaces[t].special_handle = BAD_SPECIAL_FACE_INDEX;
+          newfaces[t].special_handle = rp->faces[t].special_handle;
           newfaces[t].light_multiple = rp->faces[t].light_multiple;
 
           for (k = 0; k < nverts; k++) {
@@ -1291,6 +1291,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
           newfaces[t].normal = rp->faces[t].normal;
         }
       }
+
+      // The split face's lightmap and special face don't carry over to its triangles
+      FreeRoomFace(&rp->faces[facelist[i]]);
 
       // Free up the old list of faces (and their vert/uvl lists)
       rp->faces = std::move(newfaces);
