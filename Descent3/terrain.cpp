@@ -965,10 +965,8 @@ void InitTerrain(void) {
   // Setup stuff for rendering
   if (!Dedicated_server) {
     Terrain_rotate_list = std::make_unique<uint16_t[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
-    ASSERT(Terrain_rotate_list);
 
     World_point_buffer = std::make_unique<g3Point[]>(TERRAIN_WIDTH * TERRAIN_DEPTH);
-    ASSERT(World_point_buffer);
 
     // Allocate space for lod delta tree and unique texture IDs
     for (i = 0; i < MAX_TERRAIN_LOD - 1; i++) {
@@ -996,9 +994,6 @@ void InitTerrain(void) {
     // Index 1 cuts the whole thing into 4ths, index 2 into 8ths, etc
     Terrain_min_height_int[i] = std::make_unique<uint8_t[]>(w * h);
     Terrain_max_height_int[i] = std::make_unique<uint8_t[]>(w * h);
-
-    ASSERT(Terrain_min_height_int[i] != nullptr);
-    ASSERT(Terrain_max_height_int[i] != nullptr);
   }
 
   Terrain_sky.lightangle = 0;

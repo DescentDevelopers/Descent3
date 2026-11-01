@@ -665,10 +665,7 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
   }
 
   if (frontlist != nullptr) {
-    if ((frontnode = NewBSPNode()) == nullptr) {
-      LOG_ERROR << "BuildBSPNode: Error, can't allocate front node";
-      return 0;
-    }
+    frontnode = NewBSPNode();
 
     if (!BuildBSPNode(frontnode.get(), &frontlist, numfront)) {
       LOG_ERROR << "BuildBSPNode: Error building front node";
@@ -678,19 +675,13 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
     tree->front = std::move(frontnode);
     DestroyList(&frontlist);
   } else {
-    if ((frontnode = NewBSPNode()) == nullptr) {
-      LOG_ERROR << "BuildBSPNode: Error, can't allocate front node";
-      return 0;
-    }
+    frontnode = NewBSPNode();
     frontnode->type = BSP_EMPTY_LEAF;
     tree->front = std::move(frontnode);
   }
 
   if (backlist != nullptr) {
-    if ((backnode = NewBSPNode()) == nullptr) {
-      LOG_ERROR << "BuildBSPNode: Error, can't allocate front node";
-      return 0;
-    }
+    backnode = NewBSPNode();
 
     if (!BuildBSPNode(backnode.get(), &backlist, numback)) {
       LOG_ERROR << "BuildBSPNode: Error building back node";
@@ -700,10 +691,7 @@ int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
     tree->back = std::move(backnode);
     DestroyList(&backlist);
   } else {
-    if ((backnode = NewBSPNode()) == nullptr) {
-      LOG_ERROR << "BuildBSPNode: Error, can't allocate front node";
-      return 0;
-    }
+    backnode = NewBSPNode();
 
     backnode->type = BSP_SOLID_LEAF;
     tree->back = std::move(backnode);
@@ -773,7 +761,6 @@ void BuildBSPTree() {
   InitDefaultBSP();
 
   MineBSP.root = NewBSPNode();
-  ASSERT(MineBSP.root);
 
   LOG_INFO << "Building BSP Tree...";
 
@@ -921,7 +908,6 @@ void BuildSingleBSPTree(int roomnum) {
   InitDefaultBSP();
 
   MineBSP.root = NewBSPNode();
-  ASSERT(MineBSP.root);
 
   LOG_INFO << "Building BSP Tree...";
 
