@@ -146,7 +146,7 @@ jobs:
 
       - name: Sign, package, and notarize for macOS
         if: ${{ env.MACOS_AND_CODE_SIGNING == 'true' }}
-        uses: DescentDevelopers/macos-sign-package-notarize@v1
+        uses: DescentDevelopers/macos-sign-package-notarize@82f8d21e2eeb0db1ee824ee9f52a8a7c09a9e94e # v2
         with:
           path-to-binaries: builds/${{ matrix.os.preset }}/installed/Descent3.app builds/${{ matrix.os.preset }}/installed/netgames/*
           signing-identity: ${{ secrets.MACOS_SIGNING_IDENTITY }}
