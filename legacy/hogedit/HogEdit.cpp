@@ -198,8 +198,6 @@ BOOL CHogEditApp::InitInstance() {
   m_pMainWnd->ShowWindow(SW_SHOW);
   m_pMainWnd->UpdateWindow();
 
-  // Initialize the memory library
-
   return TRUE;
 }
 
