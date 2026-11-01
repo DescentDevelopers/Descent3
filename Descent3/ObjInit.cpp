@@ -1171,7 +1171,6 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->pos = objp->last_pos = *pos;
   objp->parent_handle = parent_handle;
   objp->creation_time = creation_time;
-  objp->osiris_script.reset();
   // Initialize some general stuff
   objp->roomnum = -1;
   objp->orient = Identity_matrix;
@@ -1182,15 +1181,8 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->change_flags = 0;
   objp->generic_nonvis_flags = 0;
   objp->generic_sent_nonvis = 0;
-  objp->name.reset();
-  objp->custom_default_script_name.reset();
-  objp->custom_default_module_name.reset();
   objp->contains_type = -1;
   objp->lifeleft = 0;
-  objp->effect_info.reset();
-  objp->ai_info.reset();
-  objp->dynamic_wb.reset();
-  objp->attach_children.reset();
   // Now initialize the type-specific data
   return ObjInitTypeSpecific(objp, 0);
 }
