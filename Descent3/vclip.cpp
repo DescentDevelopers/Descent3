@@ -205,7 +205,6 @@ int AllocVClip() {
     if (GameVClips[i].used == 0) {
       GameVClips[i] = {};
       GameVClips[i].frames = std::make_unique<int16_t[]>(VCLIP_MAX_FRAMES);
-      ASSERT(GameVClips[i].frames);
       GameVClips[i].frame_time = DEFAULT_FRAMETIME;
       GameVClips[i].flags = VCF_NOT_RESIDENT;
       GameVClips[i].used = 1;
