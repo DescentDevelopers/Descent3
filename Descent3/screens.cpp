@@ -343,8 +343,9 @@ bool PostLevelResults(bool success) {
       float time_to_wait = 2;
 
       while ((timer_GetTime() - start_time) < time_to_wait) {
-        while ((timer_GetTime() - timelast) < MAX_PLR_FPS_TIME) {
-          Descent->delay(0);
+        float frame_elapsed = timer_GetTime() - timelast;
+        if (frame_elapsed < MAX_PLR_FPS_TIME) {
+          Descent->delay(static_cast<float>(MAX_PLR_FPS_TIME) - frame_elapsed);
         }
         timelast = timer_GetTime();
 
@@ -366,8 +367,9 @@ bool PostLevelResults(bool success) {
         break;
       }
     }
-    while ((timer_GetTime() - timelast) < MAX_PLR_FPS_TIME) {
-      Descent->delay(0);
+    float frame_elapsed = timer_GetTime() - timelast;
+    if (frame_elapsed < MAX_PLR_FPS_TIME) {
+      Descent->delay(static_cast<float>(MAX_PLR_FPS_TIME) - frame_elapsed);
     }
     timelast = timer_GetTime();
 

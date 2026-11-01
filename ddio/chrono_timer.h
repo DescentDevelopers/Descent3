@@ -22,15 +22,26 @@
 
 namespace D3 {
 
-static std::chrono::time_point<std::chrono::steady_clock> m_start_tstamp;
-
 /**
  * Static class for handling timers and time durations
+ *
+ * Threading rules:
+ * - The thread that calls Initialize is the main thread. Only the main thread may call Pump.
+ * - Only the main thread's SleepMS moves time on the mock clock. On any other thread, SleepMS waits until the main
+ *   thread has moved time forward by the delay. On the real clock, SleepMS sleeps for real time on every thread.
+ * - Any thread may call GetTime, GetTimeMS and GetTimeUS.
+ * - It is an error to:
+ *   - Call Initialize more than once
+ *   - Call Pump, SleepMS, or any GetTime before Initialize
+ *   - Call Pump from a thread other than the main thread
+ * - The main thread must never wait for a background thread, whether by joining it or by waiting for a flag it sets.
+ *   It may take a lock that a background thread also takes, but no background thread may hold such a lock while it
+ *   sleeps or waits. Either mistake stalls frames, and on the mock clock it can deadlock.
  */
 class ChronoTimer {
 public:
 
-  /// Initialize internal timestamp
+  /// Start the clock from zero. May only be called once. Sets internal notion of "main thread".
   static void Initialize();
 
   /// Get time in seconds after class initialization (i.e. application start)
@@ -44,6 +55,15 @@ public:
 
   /// Sleep for delay milliseconds
   static void SleepMS(int delay);
+
+  /// Let time pass while waiting on the timer without sleeping. Call once per wait-loop iteration.
+  /// Does nothing on the real clock.
+  static void Pump();
+
+#ifdef MOCK_CLOCK
+  /// Length of every game frame on the mock clock. Matches the default 60fps framecap, which truncates to 16ms.
+  static constexpr int kFixedStepMS = 16;
+#endif
 };
 
 }
