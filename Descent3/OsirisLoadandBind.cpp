@@ -2962,7 +2962,6 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
 
       // ok, the node is setup, add it to the linked list
       *tail = std::move(newchunk);
-      tail = &memchunk->next;
 
       tOSIRISEventInfo ei;
       ei.evt_memrestore.id = memchunk->chunk_id.id;
@@ -2984,7 +2983,9 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
         break;
       };
 
-      // the restore handler may have allocated more script memory, which was appended after this chunk
+      // the restore handler may have allocated more script memory, which was appended after this chunk, or
+      // freed this chunk, which would leave tail dangling; so find the end of the list from its root
+      tail = &Osiris_mem_root;
       while (*tail) {
         tail = &(*tail)->next;
       }
