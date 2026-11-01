@@ -167,7 +167,7 @@ extern int AI_debug_robot_index;
 // Is my buddy in the level? (no if the handle is invalid)
 extern int Buddy_handle[MAX_PLAYERS];
 
-bool AINotify(object *obj, uint8_t notify_type, void *info = NULL);
+bool AINotify(object *obj, uint8_t notify_type, void *info = nullptr);
 void AIDoFrame(object *obj);
 void AIFrameAll(void);
 bool AIInit(object *obj, uint8_t ai_class, uint8_t ai_type, uint8_t ai_movement);

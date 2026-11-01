@@ -272,9 +272,9 @@ void TCGoalsBuildLineData(void) {
       TG_SortedList[j + 1] = t;
     }
   } else {
-    TG_Lines = NULL;
+    TG_Lines = nullptr;
     TG_NumLines = 0;
-    TG_SortedList = NULL;
+    TG_SortedList = nullptr;
   }
 }
 
@@ -532,7 +532,7 @@ void TCGoalsRenderCallback(void) {
 
   // Display tooltip box
   int mouse_x, mouse_y;
-  ddio_MouseGetState(&mouse_x, &mouse_y, NULL, NULL);
+  ddio_MouseGetState(&mouse_x, &mouse_y, nullptr, nullptr);
   int index = FindHighlightedItem(mouse_x, mouse_y);
   char desc_buffer[1024], s_desc_buffer[1024], *ptr;
   ptr = desc_buffer;
@@ -694,8 +694,8 @@ bool TelComGoalStatus(tTelComInfo *tcs) {
   TGminy = tcs->Monitor_coords[MONITOR_MAIN].top + 10;
   TGmaxy = tcs->Monitor_coords[MONITOR_MAIN].bottom - 10;
   TGmaxx = tcs->Monitor_coords[MONITOR_MAIN].right - 10;
-  TG_Lines = NULL;
-  TG_SortedList = NULL;
+  TG_Lines = nullptr;
+  TG_SortedList = nullptr;
   TG_NumLines = 0;
   memset(&TG_TT_dest, 0, sizeof(tToolTipData));
   memset(&TG_TT_curr, 0, sizeof(tToolTipData));
@@ -754,15 +754,15 @@ bool TelComGoalStatus(tTelComInfo *tcs) {
 
   DestroyAllScreens();
   TelcomRenderSetScreen(DUMMY_SCREEN);
-  TelcomRenderSetCallback(NULL);
+  TelcomRenderSetCallback(nullptr);
 
   if (TG_Lines) {
     mem_free(TG_Lines);
-    TG_Lines = NULL;
+    TG_Lines = nullptr;
   }
   if (TG_SortedList) {
     mem_free(TG_SortedList);
-    TG_SortedList = NULL;
+    TG_SortedList = nullptr;
   }
   TG_NumLines = 0;
 

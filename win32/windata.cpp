@@ -118,7 +118,7 @@ bool oeWin32AppDatabase::create_record(const char *pathname) {
 
   assert(hBaseKey);
 
-  lres = RegCreateKeyEx((HKEY)hBaseKey, pathname, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &disp);
+  lres = RegCreateKeyEx((HKEY)hBaseKey, pathname, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, nullptr, &hkey, &disp);
   if (lres != ERROR_SUCCESS) {
     LOG_WARNING.printf("Unable to create key %s (%x)", pathname, lres);
     return 0;
@@ -157,11 +157,11 @@ bool oeWin32AppDatabase::read(const char *label, char *entry, int *entrylen) {
   DWORD type;
 
   assert(hBaseKey);
-  assert(label != NULL);
-  assert(entry != NULL);
-  assert(entrylen != NULL);
+  assert(label != nullptr);
+  assert(entry != nullptr);
+  assert(entrylen != nullptr);
 
-  lres = RegQueryValueEx((HKEY)hCurKey, label, NULL, &type, (LPBYTE)entry, (LPDWORD)entrylen);
+  lres = RegQueryValueEx((HKEY)hCurKey, label, nullptr, &type, (LPBYTE)entry, (LPDWORD)entrylen);
 
   assert(type != REG_DWORD);
 
@@ -180,10 +180,10 @@ bool oeWin32AppDatabase::read(const char *label, void *entry, int wordsize) {
   int t;
 
   assert(hBaseKey);
-  assert(label != NULL);
-  assert(entry != NULL);
+  assert(label != nullptr);
+  assert(entry != nullptr);
 
-  lres = RegQueryValueEx((HKEY)hCurKey, label, NULL, &type, (LPBYTE)&t, &len);
+  lres = RegQueryValueEx((HKEY)hCurKey, label, nullptr, &type, (LPBYTE)&t, &len);
 
   assert(len == 4);
 
@@ -227,8 +227,8 @@ bool oeWin32AppDatabase::write(const char *label, const char *entry, int entryle
   LONG lres;
 
   assert(hBaseKey);
-  assert(label != NULL);
-  assert(entry != NULL);
+  assert(label != nullptr);
+  assert(entry != nullptr);
   //	assert(entrylen > 0);
 
   lres = RegSetValueEx((HKEY)hCurKey, label, 0, REG_SZ, (LPBYTE)entry, entrylen);
@@ -244,7 +244,7 @@ bool oeWin32AppDatabase::write(const char *label, int entry) {
   LONG lres;
 
   assert(hBaseKey);
-  assert(label != NULL);
+  assert(label != nullptr);
 
   lres = RegSetValueEx((HKEY)hCurKey, label, 0, REG_DWORD, (LPBYTE)&entry, sizeof(int));
 
@@ -263,12 +263,12 @@ void oeWin32AppDatabase::get_user_name(char *buffer, size_t *size) { GetUserName
 // pass name of dll which contains desired language
 // NULL library is the default resource DLL
 
-static HINSTANCE hThisResourceModule = NULL;
+static HINSTANCE hThisResourceModule = nullptr;
 
 bool win32_SetResourceDLL(const char *libname) {
   if (hThisResourceModule) {
     FreeLibrary(hThisResourceModule);
-    hThisResourceModule = NULL;
+    hThisResourceModule = nullptr;
   }
 
   if (libname) {

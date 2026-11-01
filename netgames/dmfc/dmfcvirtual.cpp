@@ -73,67 +73,67 @@
 //	DMFCBase::InitializeVirtualHandles
 //		Prepares the virtual handles
 void DMFCBase::InitializeVirtualHandles(void) {
-  UserOnServerPlayerKilled = NULL;
-  UserOnServerPlayerExploded = NULL;
-  UserOnServerCollide = NULL;
-  UserOnServerCollide2 = NULL;
-  UserOnServerPlayerChangeSegment = NULL;
-  UserOnServerObjectChangeSegment = NULL;
-  UserOnServerPlayerEntersGame = NULL;
-  UserOnServerPlayerDisconnect = NULL;
-  UserOnServerGameCreated = NULL;
-  UserOnServerLevelChange = NULL;
-  UserOnServerLevelStart = NULL;
-  UserOnServerLevelEnd = NULL;
-  UserOnServerObjectShieldsChanged = NULL;
-  UserOnServerIsAddressBanned = NULL;
-  UserOnServerWallCollide = NULL;
-  UserOnServerObjectKilled = NULL;
-  UserOnServerObjectDestroyed = NULL;
-  UserOnClientPlayerKilled = NULL;
-  UserOnClientPlayerExploded = NULL;
-  UserOnClientCollide = NULL;
-  UserOnClientCollide2 = NULL;
-  UserOnClientPlayerChangeSegment = NULL;
-  UserOnClientObjectChangeSegment = NULL;
-  UserOnClientPlayerEntersGame = NULL;
-  UserOnClientPlayerDisconnect = NULL;
-  UserOnMeDisconnectFromServer = NULL;
-  UserOnClientGameCreated = NULL;
-  UserOnClientObjectShieldsChanged = NULL;
-  UserOnWeaponFired = NULL;
-  UserOnClientLevelChange = NULL;
-  UserOnClientLevelStart = NULL;
-  UserOnClientLevelEnd = NULL;
-  UserOnClientWallCollide = NULL;
-  UserOnClientObjectKilled = NULL;
-  UserOnClientObjectDestroyed = NULL;
-  UserOnPlayerEntersObserver = NULL;
-  UserOnPlayerExitsObserver = NULL;
-  UserOnCanChangeTeam = NULL;
-  UserOnSpecialPacket = NULL;
-  UserOnInterval = NULL;
-  UserOnHUDInterval = NULL;
-  UserOnPLRInterval = NULL;
-  UserOnPLRInit = NULL;
-  UserOnKeypress = NULL;
-  UserOnInputString = NULL;
-  UserOnPlayerChangeTeam = NULL;
-  UserOnGameStateRequest = NULL;
-  UserOnSaveStatsToFile = NULL;
-  UserOnPlayerReconnect = NULL;
-  UserOnPlayerConnect = NULL;
-  UserOnControlMessage = NULL;
-  UserOnAllowObserverChange = NULL;
-  UserOnClientShowUI = NULL;
-  UserOnPrintScores = NULL;
-  UserOnDisconnectSaveStatsToFile = NULL;
-  UserOnLevelEndSaveStatsToFile = NULL;
-  UserOnGetHudCallSignColor = NULL;
-  UserOnTeamChangeName = NULL;
-  UserOnDoControls = NULL;
-  UserOnPlayAudioTaunt = NULL;
-  UserOnGetTokenString = NULL;
+  UserOnServerPlayerKilled = nullptr;
+  UserOnServerPlayerExploded = nullptr;
+  UserOnServerCollide = nullptr;
+  UserOnServerCollide2 = nullptr;
+  UserOnServerPlayerChangeSegment = nullptr;
+  UserOnServerObjectChangeSegment = nullptr;
+  UserOnServerPlayerEntersGame = nullptr;
+  UserOnServerPlayerDisconnect = nullptr;
+  UserOnServerGameCreated = nullptr;
+  UserOnServerLevelChange = nullptr;
+  UserOnServerLevelStart = nullptr;
+  UserOnServerLevelEnd = nullptr;
+  UserOnServerObjectShieldsChanged = nullptr;
+  UserOnServerIsAddressBanned = nullptr;
+  UserOnServerWallCollide = nullptr;
+  UserOnServerObjectKilled = nullptr;
+  UserOnServerObjectDestroyed = nullptr;
+  UserOnClientPlayerKilled = nullptr;
+  UserOnClientPlayerExploded = nullptr;
+  UserOnClientCollide = nullptr;
+  UserOnClientCollide2 = nullptr;
+  UserOnClientPlayerChangeSegment = nullptr;
+  UserOnClientObjectChangeSegment = nullptr;
+  UserOnClientPlayerEntersGame = nullptr;
+  UserOnClientPlayerDisconnect = nullptr;
+  UserOnMeDisconnectFromServer = nullptr;
+  UserOnClientGameCreated = nullptr;
+  UserOnClientObjectShieldsChanged = nullptr;
+  UserOnWeaponFired = nullptr;
+  UserOnClientLevelChange = nullptr;
+  UserOnClientLevelStart = nullptr;
+  UserOnClientLevelEnd = nullptr;
+  UserOnClientWallCollide = nullptr;
+  UserOnClientObjectKilled = nullptr;
+  UserOnClientObjectDestroyed = nullptr;
+  UserOnPlayerEntersObserver = nullptr;
+  UserOnPlayerExitsObserver = nullptr;
+  UserOnCanChangeTeam = nullptr;
+  UserOnSpecialPacket = nullptr;
+  UserOnInterval = nullptr;
+  UserOnHUDInterval = nullptr;
+  UserOnPLRInterval = nullptr;
+  UserOnPLRInit = nullptr;
+  UserOnKeypress = nullptr;
+  UserOnInputString = nullptr;
+  UserOnPlayerChangeTeam = nullptr;
+  UserOnGameStateRequest = nullptr;
+  UserOnSaveStatsToFile = nullptr;
+  UserOnPlayerReconnect = nullptr;
+  UserOnPlayerConnect = nullptr;
+  UserOnControlMessage = nullptr;
+  UserOnAllowObserverChange = nullptr;
+  UserOnClientShowUI = nullptr;
+  UserOnPrintScores = nullptr;
+  UserOnDisconnectSaveStatsToFile = nullptr;
+  UserOnLevelEndSaveStatsToFile = nullptr;
+  UserOnGetHudCallSignColor = nullptr;
+  UserOnTeamChangeName = nullptr;
+  UserOnDoControls = nullptr;
+  UserOnPlayAudioTaunt = nullptr;
+  UserOnGetTokenString = nullptr;
 }
 
 void DMFCBase::Set_OnServerPlayerKilled(void (*callback)(object *killer_obj, int victim_pnum)) {
@@ -763,7 +763,7 @@ void DMFCBase::TranslateEvent(int eventnum, dllinfo *data) {
     me_objp = &Objects[me_objnum];
   } else {
     me_objnum = -1;
-    me_objp = NULL;
+    me_objp = nullptr;
   }
 
   if (data->it_handle > OBJECT_HANDLE_NONE) {
@@ -771,7 +771,7 @@ void DMFCBase::TranslateEvent(int eventnum, dllinfo *data) {
     it_objp = &Objects[it_objnum];
   } else {
     it_objnum = -1;
-    it_objp = NULL;
+    it_objp = nullptr;
   }
 
   // handle the event
@@ -957,7 +957,7 @@ void DMFCBase::TranslateEvent(int eventnum, dllinfo *data) {
     }
 
     m_iUIWindowID = -1;
-    m_UIUserData = NULL;
+    m_UIUserData = nullptr;
   } break;
 
   case EVT_GAMEDOCONTROLS: {

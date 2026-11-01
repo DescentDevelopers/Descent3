@@ -484,13 +484,13 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   tsi.flags = DSIF_SHOW_PIC | DSIF_SHOW_OBSERVERICON | DSIF_SEPERATE_BY_TEAM;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 7;
-  tsi.clbDetailedColumnBMP = NULL;
-  tsi.clbDetailedColumn = NULL;
+  tsi.clbDetailedColumnBMP = nullptr;
+  tsi.clbDetailedColumn = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
   tsi.clbPlayerColumnBMP = ShowStatBitmap;
-  tsi.DetailedColumns = NULL;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
   tsi.clTeamLine = TeamScoreCallback;
@@ -558,13 +558,13 @@ void DLLFUNCCALL DLLGameClose() {
 
   if (dstat) {
     dstat->DestroyPointer();
-    dstat = NULL;
+    dstat = nullptr;
   }
 
   if (DMFCBase) {
     DMFCBase->GameClose();
     DMFCBase->DestroyPointer();
-    DMFCBase = NULL;
+    DMFCBase = nullptr;
   }
 }
 
@@ -619,7 +619,7 @@ void OnInterval(void) {
                 (!ROOMNUM_OUTSIDE(home)) && (dRooms[home].used)) {
               // Safe to create the flag
               DLLComputeRoomCenter(&home_pos, &dRooms[home]);
-              objnum = DLLObjCreate(OBJ_POWERUP, flagid, home, &home_pos, NULL, OBJECT_HANDLE_NONE);
+              objnum = DLLObjCreate(OBJ_POWERUP, flagid, home, &home_pos, nullptr, OBJECT_HANDLE_NONE);
               DLLMultiSendObject(&dObjects[objnum], 0, true);
             }
           }
@@ -627,7 +627,7 @@ void OnInterval(void) {
           if ((home >= 0) && (home <= DMFCBase->GetHighestRoomIndex()) && (!ROOMNUM_OUTSIDE(home)) &&
               (dRooms[home].used)) {
             DLLComputeRoomCenter(&home_pos, &dRooms[home]);
-            DLLObjSetPos(&dObjects[objnum], &home_pos, home, NULL, false);
+            DLLObjSetPos(&dObjects[objnum], &home_pos, home, nullptr, false);
           }
         }
       }
@@ -757,7 +757,7 @@ void OnClientLevelStart(void) {
   }
 
   DMFCBase->SetNumberOfTeams(CTFNumOfTeams);
-  DLLMultiPaintGoalRooms(NULL);
+  DLLMultiPaintGoalRooms(nullptr);
 
   // Bash the inventory since it doesn't get reset for the server
   DLLInvReset(DMFCBase->GetPlayerNum(), true);
@@ -784,7 +784,7 @@ void OnClientLevelStart(void) {
       // Safe to create the flag
       DLLmprintf(0, "Creating %s Flag\n", DMFCBase->GetTeamString(i));
       DLLComputeRoomCenter(&vpos, &dRooms[goalroom]);
-      objnum = DLLObjCreate(OBJ_POWERUP, flagid, goalroom, &vpos, NULL, OBJECT_HANDLE_NONE);
+      objnum = DLLObjCreate(OBJ_POWERUP, flagid, goalroom, &vpos, nullptr, OBJECT_HANDLE_NONE);
       DLLMultiSendObject(&dObjects[objnum], 0, true);
     }
   }
@@ -906,7 +906,7 @@ void OnClientCollide(uint8_t *data) {
             if (DMFCBase->GetLocalRole() == LR_SERVER) {
               // if we are the server, create the object and send it on its way to the players
               DLLComputeRoomCenter(&fpos, &dRooms[groom]);
-              int objnum = DLLObjCreate(OBJ_POWERUP, FlagIDs[i], groom, &fpos, NULL, OBJECT_HANDLE_NONE);
+              int objnum = DLLObjCreate(OBJ_POWERUP, FlagIDs[i], groom, &fpos, nullptr, OBJECT_HANDLE_NONE);
               DLLMultiSendObject(&dObjects[objnum], 1, true);
             } // end server create
           }   // end room ok
@@ -1049,7 +1049,7 @@ void OnClientCollide(uint8_t *data) {
 
     if ((home >= 0) && (home <= DMFCBase->GetHighestRoomIndex()) && (!ROOMNUM_OUTSIDE(home)) && (dRooms[home].used)) {
       DLLComputeRoomCenter(&home_pos, &dRooms[home]);
-      DLLObjSetPos(it_obj, &home_pos, home, NULL, false);
+      DLLObjSetPos(it_obj, &home_pos, home, nullptr, false);
     }
 
   } // end Player Collides with own team's flag
@@ -1758,7 +1758,7 @@ void HandlePlayerSpew(int pnum) {
         if (DMFCBase->GetLocalRole() == LR_SERVER) {
           // if we are the server put the flag back in the center of the goal and tell all the players to do the same
           DLLComputeRoomCenter(&fpos, &dRooms[GoalRooms[color]]);
-          int objnum = DLLObjCreate(OBJ_POWERUP, FlagIDs[color], GoalRooms[color], &fpos, NULL, OBJECT_HANDLE_NONE);
+          int objnum = DLLObjCreate(OBJ_POWERUP, FlagIDs[color], GoalRooms[color], &fpos, nullptr, OBJECT_HANDLE_NONE);
           DLLMultiSendObject(&dObjects[objnum], 1, true);
         }
       } else {
@@ -1902,7 +1902,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
         DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
 
         DLLrend_DrawScaledBitmap(name_x - 2, y - 2, score_x + score_width + 2, y + height - 1, Highlight_bmp, 0, 0, 1,
-                                 1, 1.0, BITMAP_FORMAT_1555, NULL);
+                                 1, 1.0, BITMAP_FORMAT_1555, nullptr);
         DLLrend_SetZBufferState(1);
       }
 
@@ -1985,7 +1985,7 @@ void SetColoredBalls(int playernum, bool reset) {
   float blueb[4];
 
   if (reset) {
-    DLLPlayerSetRotatingBall(playernum, 0, 0, NULL, NULL, NULL);
+    DLLPlayerSetRotatingBall(playernum, 0, 0, nullptr, nullptr, nullptr);
     return;
   }
 
@@ -1999,7 +1999,7 @@ void SetColoredBalls(int playernum, bool reset) {
   flagmask = GetFlagMaskForPlayer(playernum);
 
   if (flagcount == 0) {
-    DLLPlayerSetRotatingBall(playernum, 0, 0, NULL, NULL, NULL);
+    DLLPlayerSetRotatingBall(playernum, 0, 0, nullptr, nullptr, nullptr);
     return;
   }
 
@@ -2079,7 +2079,7 @@ bool AddFlagToPlayer(int pnum, int team, int flagobjnum) {
 
   if (DMFCBase->GetLocalRole() == LR_SERVER) {
     // We're the server, so we need to create the flag and tell the clients, and then attach it
-    flagobjnum = DLLObjCreate(OBJ_POWERUP, AFlagIDs[team], pobj->roomnum, &pobj->pos, NULL, OBJECT_HANDLE_NONE);
+    flagobjnum = DLLObjCreate(OBJ_POWERUP, AFlagIDs[team], pobj->roomnum, &pobj->pos, nullptr, OBJECT_HANDLE_NONE);
 
     if (flagobjnum != -1) {
       // tell the clients that the flag has been created and they should attach it
@@ -2405,7 +2405,7 @@ void ReceiveGameState(uint8_t *data) {
   // go through the HasFlag array and put items in the inventory, and add colored balls
   for (i = 0; i < DLLMAX_TEAMS; i++) {
     if (HasFlag[i] != -1) {
-      DLLInvAddTypeID(HasFlag[i], OBJ_POWERUP, FlagIDs[i], -1, -1, 0, NULL);
+      DLLInvAddTypeID(HasFlag[i], OBJ_POWERUP, FlagIDs[i], -1, -1, 0, nullptr);
 
       // put some balls on the guy
       SetColoredBalls(HasFlag[i]);
@@ -2571,7 +2571,7 @@ bool GivePlayerFlag(int pnum, uint8_t team) {
   }
 
   // ok, when we get here everything should be ducky, just add the flag and do the necessary things
-  DLLInvAddTypeID(pnum, OBJ_POWERUP, FlagIDs[team], -1, -1, 0, NULL);
+  DLLInvAddTypeID(pnum, OBJ_POWERUP, FlagIDs[team], -1, -1, 0, nullptr);
   HasFlag[team] = pnum;
   SetColoredBalls(pnum);
 

@@ -72,7 +72,7 @@ bool PlayMovie(const std::filesystem::path &moviename) {
   std::filesystem::path filename = moviename;
   // check extension
   std::filesystem::path extension = moviename.extension();
-  if (stricmp((const char*)extension.u8string().c_str(), ".mve") != 0 && stricmp((const char*)extension.u8string().c_str(), ".mv8") != 0) {
+  if (stricmp(PATH_TO_CSTR(extension), ".mve") != 0 && stricmp(PATH_TO_CSTR(extension), ".mv8") != 0) {
     // we need an extension
     filename.replace_extension(".mve");
   }
@@ -98,7 +98,7 @@ bool PlayMovie(const std::filesystem::path &moviename) {
 
 tCinematic *StartMovie(const char *moviename, bool looping) {
   if (!Cinematic_lib_init)
-    return NULL;
+    return nullptr;
 
   // get in the right directory
   char filename[_MAX_PATH];
@@ -107,7 +107,7 @@ tCinematic *StartMovie(const char *moviename, bool looping) {
 
   // check extension
   const char *extension = strrchr(filename, '.');
-  if (extension == NULL || (stricmp(extension, ".mve") != 0 && stricmp(extension, ".mv8") != 0)) {
+  if (extension == nullptr || (stricmp(extension, ".mve") != 0 && stricmp(extension, ".mv8") != 0)) {
     // we need an extension
     strncat(filename, ".mve", sizeof(filename) - strlen(filename) - 1);
     filename[sizeof(filename) - 1] = 0;
@@ -118,17 +118,17 @@ tCinematic *StartMovie(const char *moviename, bool looping) {
   FILE *filehandle;
   intptr_t hMovie = mve_SequenceStart(filename, &filehandle, Descent, looping);
   if (hMovie == 0)
-    return NULL;
+    return nullptr;
 
   tCinematic *mve = new tCinematic;
   mve->mvehandle = hMovie;
   mve->filehandle = filehandle;
-  mve->frame_chunk.bm_array = NULL;
+  mve->frame_chunk.bm_array = nullptr;
   return mve;
 }
 
 bool FrameMovie(tCinematic *mve, int x, int y, bool sequence) {
-  if (!Cinematic_lib_init || mve == NULL)
+  if (!Cinematic_lib_init || mve == nullptr)
     return false;
 
   int bm_handle;
@@ -156,7 +156,7 @@ bool FrameMovie(tCinematic *mve, int x, int y, bool sequence) {
 }
 
 void EndMovie(tCinematic *mve) {
-  if (mve == NULL || !Cinematic_lib_init)
+  if (mve == nullptr || !Cinematic_lib_init)
     return;
 
   mve_SequenceClose(mve->mvehandle, mve->filehandle);

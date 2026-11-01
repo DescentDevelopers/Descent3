@@ -373,7 +373,7 @@ bool HObjectPlace(int obj_type, int obj_id) {
     pos += dist * *surface_norm;
 
     // Compute source and destination matrices
-    vm_VectorToMatrix(&groundplane_orient, &pm->ground_slots[0].norm, NULL, NULL);
+    vm_VectorToMatrix(&groundplane_orient, &pm->ground_slots[0].norm, nullptr, nullptr);
     vm_VectorToMatrix(&surface_orient, surface_norm);
 
     // Compute orientation matrix
@@ -461,7 +461,7 @@ void ResetGroundObject(object *objp) {
   pos += dist * surface_norm;
 
   // Compute source and destination matrices
-  vm_VectorToMatrix(&groundplane_orient, &pm->ground_slots[0].norm, NULL, NULL);
+  vm_VectorToMatrix(&groundplane_orient, &pm->ground_slots[0].norm, nullptr, nullptr);
   vm_VectorToMatrix(&surface_orient, &surface_norm);
 
   // Compute orientation matrix
@@ -556,7 +556,7 @@ void HObjectMoveToViewer(object *objp) {
   vector pos;
 
   // First move player to viewer's position
-  ObjSetPos(objp, &Viewer_object->pos, Viewer_object->roomnum, NULL, false);
+  ObjSetPos(objp, &Viewer_object->pos, Viewer_object->roomnum, nullptr, false);
 
   // Second try to move the player a little in front of the viewer
   pos = Viewer_object->pos + Viewer_object->orient.fvec * OBJECT_PLACE_DIST;
@@ -585,7 +585,7 @@ bool MoveObject(object *obj, vector *newpos) {
   fq.startroom = obj->roomnum;
   fq.p1 = newpos;
   fq.thisobjnum = OBJNUM(obj);
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_IGNORE_RENDER_THROUGH_PORTALS;
   fq.rad = use_radius ? obj->size : 0.0f;
 
@@ -603,7 +603,7 @@ bool MoveObject(object *obj, vector *newpos) {
       return 0; // didn't move
 
   // Set object position on where FVI told us we are
-  ObjSetPos(obj, &hit_info.hit_pnt, hit_info.hit_room, NULL, false);
+  ObjSetPos(obj, &hit_info.hit_pnt, hit_info.hit_room, nullptr, false);
 
   // Say object moved
   return 1;

@@ -428,7 +428,7 @@ int SlewFrame(object *obj, int movement_limitations) {
         fq.p1 = &new_pos;
         fq.rad = 0;
         fq.thisobjnum = OBJNUM(obj);
-        fq.ignore_obj_list = NULL;
+        fq.ignore_obj_list = nullptr;
         fq.flags = FQ_IGNORE_RENDER_THROUGH_PORTALS;
         fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -471,7 +471,7 @@ int SlewFrame(object *obj, int movement_limitations) {
       }
 
     // Now we have the new room, so update the object position
-    ObjSetPos(obj, &new_pos, new_room, NULL, false);
+    ObjSetPos(obj, &new_pos, new_room, nullptr, false);
 
     // Set outside-mine flag if we're outside
     if (outside_mine)

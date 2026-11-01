@@ -31,7 +31,7 @@
 class CManageCheckin : public CDialog {
   // Construction
 public:
-  CManageCheckin(CWnd *pParent = NULL); // standard constructor
+  CManageCheckin(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CManageCheckin)

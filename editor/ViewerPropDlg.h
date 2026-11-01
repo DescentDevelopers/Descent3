@@ -50,7 +50,7 @@
 class CViewerPropDlg : public CDialog {
   // Construction
 public:
-  CViewerPropDlg(CWnd *pParent = NULL); // standard constructor
+  CViewerPropDlg(CWnd *pParent = nullptr); // standard constructor
 
   void UpdateOrientation();
   void UpdatePosition();

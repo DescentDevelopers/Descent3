@@ -371,7 +371,7 @@ void ForceEffectsPlay(int id, float *scale, int *direction) {
     return;
 
   if (scale || direction) {
-    uint32_t *ns = NULL;
+    uint32_t *ns = nullptr;
     uint32_t new_gain;
 
     if (scale) {
@@ -379,7 +379,7 @@ void ForceEffectsPlay(int id, float *scale, int *direction) {
       ns = &new_gain;
     }
 
-    ddio_ffb_effectModify(low_id, direction, NULL, ns, NULL, NULL, NULL);
+    ddio_ffb_effectModify(low_id, direction, nullptr, ns, nullptr, nullptr, nullptr);
   }
 
   ddio_ffb_effectPlay(low_id);
@@ -410,8 +410,8 @@ void ForceEffectsPlay(int id, float *scale, vector *direction) {
   }
 
   if (scale || direction) {
-    int *d = NULL;
-    uint32_t *ns = NULL;
+    int *d = nullptr;
+    uint32_t *ns = nullptr;
     uint32_t new_gain;
 
     if (direction)
@@ -422,7 +422,7 @@ void ForceEffectsPlay(int id, float *scale, vector *direction) {
       ns = &new_gain;
     }
 
-    ddio_ffb_effectModify(low_id, d, NULL, ns, NULL, NULL, NULL);
+    ddio_ffb_effectModify(low_id, d, nullptr, ns, nullptr, nullptr, nullptr);
   }
 
   ddio_ffb_effectPlay(low_id);
@@ -652,7 +652,7 @@ void ForceEffectsInit(void) {
     cf_CopyFile(path, "D3Force.ifr", 0);
     prj = ddio_ForceLoadProject(IGNORE_TABLE(path), kJoy1);
   } else {
-    prj = NULL;
+    prj = nullptr;
   }
   /*
   $$TABLE_GAMEFILE "D3Force.ifr"

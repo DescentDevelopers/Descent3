@@ -669,7 +669,7 @@ BOOL CWorldObjectsPlayerDialog::DestroyWindow() {
 BOOL CWorldObjectsPlayerDialog::OnInitDialog() {
   CDialog::OnInitDialog();
 
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   m_lod = 0;
 
@@ -968,15 +968,15 @@ void CWorldObjectsPlayerDialog::OnPshipCockpit() {
 
   CString filter = "Descent III files (*.inf)|*.inf||";
 
-  if (!OpenFileDialog(this, (LPCTSTR)filter, filename, NULL, 0))
+  if (!OpenFileDialog(this, (LPCTSTR)filter, filename, nullptr, 0))
     return;
 
   //	Okay, we selected a file. Lets do what needs to be done here.
-  ddio_SplitPath(filename, NULL, curname, ext);
+  ddio_SplitPath(filename, nullptr, curname, ext);
   sprintf(Ships[D3EditState.current_ship].cockpit_name, "%s%s", curname, ext);
 
   // Finally, save a local copy of the inf file.
-  sprintf(curname, "%s\\%s", LocalMiscDir.u8string().c_str(), Ships[D3EditState.current_ship].cockpit_name);
+  sprintf(curname, "%s\\%s", PATH_TO_CSTR(LocalMiscDir), Ships[D3EditState.current_ship].cockpit_name);
   cf_CopyFile(curname, filename);
 
   UpdateDialog();

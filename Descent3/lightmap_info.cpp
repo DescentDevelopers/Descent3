@@ -30,9 +30,9 @@
 #include "dedicated_server.h"
 
 int Num_of_lightmap_info = 0;
-lightmap_info *LightmapInfo = NULL;
+lightmap_info *LightmapInfo = nullptr;
 
-static uint16_t *Free_lmi_list = NULL;
+static uint16_t *Free_lmi_list = nullptr;
 
 void CloseLightmapInfos() {
   if (LightmapInfo)
@@ -41,8 +41,8 @@ void CloseLightmapInfos() {
   if (Free_lmi_list)
     mem_free(Free_lmi_list);
 
-  LightmapInfo = NULL;
-  Free_lmi_list = NULL;
+  LightmapInfo = nullptr;
+  Free_lmi_list = nullptr;
 }
 
 // Sets all the lightmaps to unused

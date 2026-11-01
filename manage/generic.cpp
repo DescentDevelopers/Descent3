@@ -464,7 +464,7 @@ void mng_InitGenericPage(mngs_generic_page *genericpage) {
     strcpy(genericpage->dspew_name[i], "\0");
   }
 
-  genericpage->objinfo_struct.description = NULL;
+  genericpage->objinfo_struct.description = nullptr;
   genericpage->objinfo_struct.icon_name[0] = '\0';
 
   for (i = 0; i < NUM_MOVEMENT_CLASSES; i++)
@@ -504,8 +504,8 @@ void mng_InitGenericPage(mngs_generic_page *genericpage) {
 void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
   int i, size;
 
-  ASSERT(outfile != NULL);
-  ASSERT(genericpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(genericpage != nullptr);
   ASSERT((strlen(genericpage->image_name)) > 2);
 
   cf_WriteByte(outfile, PAGETYPE_GENERIC);
@@ -551,7 +551,7 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
   cf_WriteByte(outfile, strlen("") + 1); // genericpage->objinfo_struct.script_name
   cf_WriteString(outfile, "");
 
-  if (genericpage->objinfo_struct.description != NULL) {
+  if (genericpage->objinfo_struct.description != nullptr) {
     cf_WriteByte(outfile, GENERICPAGE_COMMAND_DESCRIPTION);
     cf_WriteByte(outfile, strlen(genericpage->objinfo_struct.description) + 1);
     cf_WriteString(outfile, genericpage->objinfo_struct.description);
@@ -848,8 +848,8 @@ void mng_WriteGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
 void mng_WriteNewGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
   int i, j;
 
-  ASSERT(outfile != NULL);
-  ASSERT(genericpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(genericpage != nullptr);
   ASSERT((strlen(genericpage->image_name)) > 2);
 
   int offset = StartManagePage(outfile, PAGETYPE_GENERIC);
@@ -887,7 +887,7 @@ void mng_WriteNewGenericPage(CFILE *outfile, mngs_generic_page *genericpage) {
   // Write scriptname override
   cf_WriteString(outfile, genericpage->objinfo_struct.script_name_override);
 
-  if (genericpage->objinfo_struct.description != NULL) {
+  if (genericpage->objinfo_struct.description != nullptr) {
     // Write description if there is one
     cf_WriteByte(outfile, 1);
     cf_WriteString(outfile, genericpage->objinfo_struct.description);
@@ -1083,7 +1083,7 @@ void GenericPageSetPowerupDefaultAmmo(object_info *ip) {
 int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
   int i, j;
 
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   mng_InitGenericPage(genericpage);
 
   int version = cf_ReadShort(infile);
@@ -1146,7 +1146,7 @@ int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
     ASSERT(genericpage->objinfo_struct.description);
     strcpy(genericpage->objinfo_struct.description, tempbuf);
   } else
-    genericpage->objinfo_struct.description = NULL;
+    genericpage->objinfo_struct.description = nullptr;
 
   // Read icon name
   cf_ReadString(genericpage->objinfo_struct.icon_name, PAGENAME_LEN, infile);
@@ -1346,7 +1346,7 @@ int mng_ReadGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
   if (!Old_table_method)
     return mng_ReadNewGenericPage(infile, genericpage);
 
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   mng_InitGenericPage(genericpage);
 
   while (!done) {
@@ -1771,7 +1771,7 @@ int mng_FindSpecificGenericPage(char *name, mngs_generic_page *genericpage, int 
 
       infile = cfopen(tablename, "rb");
     } else {
-      infile = NULL;
+      infile = nullptr;
       if (TablefileNameOverride) {
         infile = cfopen(TablefileNameOverride, "rb");
       }
@@ -1815,9 +1815,9 @@ try_again:;
       found = 1;
       done = 1;
     } else {
-      if (genericpage->objinfo_struct.description != NULL) {
+      if (genericpage->objinfo_struct.description != nullptr) {
         mem_free(genericpage->objinfo_struct.description);
-        genericpage->objinfo_struct.description = NULL;
+        genericpage->objinfo_struct.description = nullptr;
       }
       genericpage->objinfo_struct.icon_name[0] = '\0';
     }
@@ -2113,13 +2113,13 @@ void mng_AssignObjInfoToGenericPage(int n, mngs_generic_page *genericpage) {
   if (objinfopointer->ai_info)
     memcpy(&genericpage->ai_info, objinfopointer->ai_info, sizeof(genericpage->ai_info));
 
-  if (objinfopointer->description != NULL) {
+  if (objinfopointer->description != nullptr) {
     int len = strlen(objinfopointer->description);
     genericpage->objinfo_struct.description = (char *)mem_malloc(len + 1);
     ASSERT(genericpage->objinfo_struct.description);
     strcpy(genericpage->objinfo_struct.description, objinfopointer->description);
   } else
-    genericpage->objinfo_struct.description = NULL;
+    genericpage->objinfo_struct.description = nullptr;
 
   strcpy(genericpage->objinfo_struct.icon_name, objinfopointer->icon_name);
 

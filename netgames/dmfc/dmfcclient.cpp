@@ -425,9 +425,9 @@ void DMFCBase::OnClientPlayerEntersGame(int player_num) {
     int slot;
 
     if (IsMasterTrackerGame())
-      slot = PRec_FindPlayer(Players[player_num].callsign, NULL, Players[player_num].tracker_id);
+      slot = PRec_FindPlayer(Players[player_num].callsign, nullptr, Players[player_num].tracker_id);
     else
-      slot = PRec_FindPlayer(Players[player_num].callsign, &NetPlayers[player_num].addr, NULL);
+      slot = PRec_FindPlayer(Players[player_num].callsign, &NetPlayers[player_num].addr, nullptr);
 
     if (slot == -1) {
       // we have a new player
@@ -459,7 +459,7 @@ void DMFCBase::OnClientPlayerEntersGame(int player_num) {
     }
 
     if (GetNumTeams() < 2 && (!(m_iProtectedFlags & DMFC_PRF_NOWAITFORPLAYERS))) {
-      StartUIWindow(UIID_WAITFORPLAYERS, NULL);
+      StartUIWindow(UIID_WAITFORPLAYERS, nullptr);
     }
   }
 
@@ -620,7 +620,7 @@ void DMFCBase::OnPlayerEntersObserver(int pnum, object *piggy) {
   player_record *pr = PRec_GetPRecordByPnum(pnum);
   if (pr && pr->state == STATE_INGAME) {
     PInfo *pi = pr->pinfo;
-    ASSERT(pi != NULL);
+    ASSERT(pi != nullptr);
     pi->EnterObserverMode();
   } else {
     Int3();
@@ -635,7 +635,7 @@ void DMFCBase::OnPlayerExitsObserver(int pnum) {
   player_record *pr = PRec_GetPRecordByPnum(pnum);
   if (pr && pr->state == STATE_INGAME) {
     PInfo *pi = pr->pinfo;
-    ASSERT(pi != NULL);
+    ASSERT(pi != nullptr);
     pi->ExitObserverMode();
   } else {
     Int3();

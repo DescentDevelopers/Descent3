@@ -230,7 +230,7 @@ static void IncreaseRestoreCount(const std::filesystem::path &file);
 int Times_game_restored = 0;
 // static gs_tables *gs_Xlates = NULL;
 
-gs_tables *gs_Xlates = NULL;
+gs_tables *gs_Xlates = nullptr;
 // int Gamesave_read_version=0;
 
 void IncreaseRestoreCount(const std::filesystem::path &file) {
@@ -586,7 +586,7 @@ int LGSRooms(CFILE *fp) {
       // load doorway info
       if (Rooms[i].flags & RF_DOOR) {
         doorway *dp = Rooms[i].doorway_data;
-        ASSERT(dp != NULL);
+        ASSERT(dp != nullptr);
         gs_ReadByte(fp, dp->state);
         gs_ReadByte(fp, dp->flags);
         gs_ReadByte(fp, dp->keys_needed);
@@ -1017,7 +1017,7 @@ int LGSObjects(CFILE *fp, int version) {
       cf_ReadBytes((uint8_t *)op->name, j, fp);
       op->name[j] = '\0';
     } else {
-      op->name = NULL;
+      op->name = nullptr;
     }
 
     //	Kill any script thread associated with this object.
@@ -1029,20 +1029,20 @@ int LGSObjects(CFILE *fp, int version) {
       // Free up effects memory
       if (op->effect_info) {
         mem_free(op->effect_info);
-        op->effect_info = NULL;
+        op->effect_info = nullptr;
       }
-      if (op->ai_info != NULL) {
+      if (op->ai_info != nullptr) {
         AIDestroyObj(op);
         mem_free(op->ai_info);
-        op->ai_info = NULL;
+        op->ai_info = nullptr;
       }
-      if (op->dynamic_wb != NULL) {
+      if (op->dynamic_wb != nullptr) {
         mem_free(op->dynamic_wb);
-        op->dynamic_wb = NULL;
+        op->dynamic_wb = nullptr;
       }
-      if (op->attach_children != NULL) {
+      if (op->attach_children != nullptr) {
         mem_free(op->attach_children);
-        op->attach_children = NULL;
+        op->attach_children = nullptr;
       }
     }
     op->type = type;
@@ -1145,7 +1145,7 @@ int LGSObjects(CFILE *fp, int version) {
       cf_ReadBytes((uint8_t *)op->custom_default_script_name, j, fp);
       op->custom_default_script_name[j] = '\0';
     } else {
-      op->custom_default_script_name = NULL;
+      op->custom_default_script_name = nullptr;
     }
 
     gs_ReadByte(fp, j);
@@ -1157,7 +1157,7 @@ int LGSObjects(CFILE *fp, int version) {
       cf_ReadBytes((uint8_t *)op->custom_default_module_name, j, fp);
       op->custom_default_module_name[j] = '\0';
     } else {
-      op->custom_default_module_name = NULL;
+      op->custom_default_module_name = nullptr;
     }
 
     VERIFY_SAVEFILE;
@@ -1297,7 +1297,7 @@ int LGSObjects(CFILE *fp, int version) {
 
       p_info->multi_turret_info.num_turrets = count;
 
-      if ((count > 0) && (p_info->multi_turret_info.keyframes == NULL)) {
+      if ((count > 0) && (p_info->multi_turret_info.keyframes == nullptr)) {
         p_info->multi_turret_info.time = 0;
         p_info->multi_turret_info.keyframes = mem_rmalloc<float>(count);
         p_info->multi_turret_info.last_keyframes = mem_rmalloc<float>(count);
@@ -1435,7 +1435,7 @@ int LGSObjAI(CFILE *fp, ai_frame **pai) {
   int16_t size;
   int8_t read_ai;
 
-  *pai = NULL;
+  *pai = nullptr;
 
   gs_ReadByte(fp, read_ai);
   if (!read_ai)
@@ -1456,7 +1456,7 @@ int LGSObjEffects(CFILE *fp, object *op) {
   int16_t size;
   int8_t do_read;
 
-  op->effect_info = NULL;
+  op->effect_info = nullptr;
 
   gs_ReadByte(fp, do_read);
   if (do_read) {
@@ -1524,7 +1524,7 @@ int LGSObjEffects(CFILE *fp, object *op) {
 
 //	loads fx
 int LGSObjWB(CFILE *fp, object *op) {
-  dynamic_wb_info *dwba = NULL;
+  dynamic_wb_info *dwba = nullptr;
   int i;
   int8_t num_wbs;
 

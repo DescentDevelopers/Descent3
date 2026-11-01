@@ -172,48 +172,22 @@ extern float Key_ramp_speed;
 
 pilot::~pilot() { clean(false); }
 
-pilot::pilot() {
-  write_pending = false;
-  initialize();
+pilot::pilot() :
+	difficulty{DIFFICULTY_ROOKIE},
+	hud_mode{HUD_COCKPIT},
+	hud_graphical_stat{STAT_STANDARD}
+{
 }
 
-pilot::pilot(pilot *copy) {
-  write_pending = true;
-  initialize();
-}
-
-pilot::pilot(char *fname) {
-  write_pending = true;
-  initialize();
-}
-
-// initializes all the data (for constructors)
+// Two-stage construction (because it references global vars)
 void pilot::initialize(void) {
   int i;
 
   filename.clear();
-  name = NULL;
   ship_model = mem_strdup("Pyro-GL");
-  ship_logo = NULL;
-  audio1_file = NULL;
-  audio2_file = NULL;
-  audio3_file = NULL;
-  audio4_file = NULL;
   guidebot_name = mem_strdup("GB");
-  picture_id = PPIC_INVALID_ID;
-  difficulty = DIFFICULTY_ROOKIE;
-  hud_mode = (uint8_t)HUD_COCKPIT;
-  hud_stat = 0;
-  hud_graphical_stat = STAT_STANDARD;
   game_window_w = Video_res_list[Current_video_resolution_id].width;
   game_window_h = Video_res_list[Current_video_resolution_id].height;
-  num_missions_flown = 0;
-  mission_data = NULL;
-  mouselook_control = false;
-  key_ramping = 0.35f;
-  lrearview_enabled = false;
-  rrearview_enabled = false;
-
   bool kiddie_settings = true;
 
   if (Database) {
@@ -236,8 +210,6 @@ void pilot::initialize(void) {
   for (i = 0; i < MAX_PILOT_TAUNTS; i++) {
     strcpy(taunts[i], TXT(TXT_TAUNT_TEXT + i));
   }
-
-  read_controller = READF_MOUSE + READF_JOY;
 
   if (Controller) {
     for (i = 0; i < NUM_CONTROLLER_FUNCTIONS; i++) {
@@ -273,47 +245,47 @@ void pilot::clean(bool reset) {
 
   if (name) {
     mem_free(name);
-    name = NULL;
+    name = nullptr;
   }
 
   if (ship_model) {
     mem_free(ship_model);
-    ship_model = NULL;
+    ship_model = nullptr;
   }
 
   if (ship_logo) {
     mem_free(ship_logo);
-    ship_logo = NULL;
+    ship_logo = nullptr;
   }
 
   if (audio1_file) {
     mem_free(audio1_file);
-    audio1_file = NULL;
+    audio1_file = nullptr;
   }
 
   if (audio2_file) {
     mem_free(audio2_file);
-    audio2_file = NULL;
+    audio2_file = nullptr;
   }
 
   if (audio3_file) {
     mem_free(audio3_file);
-    audio3_file = NULL;
+    audio3_file = nullptr;
   }
 
   if (audio4_file) {
     mem_free(audio4_file);
-    audio4_file = NULL;
+    audio4_file = nullptr;
   }
 
   if (mission_data) {
     mem_free(mission_data);
-    mission_data = NULL;
+    mission_data = nullptr;
   }
 
   if (guidebot_name) {
     mem_free(guidebot_name);
-    guidebot_name = NULL;
+    guidebot_name = nullptr;
   }
 
   if (reset)
@@ -419,7 +391,7 @@ int pilot::flush(bool new_file) {
 
   if (new_file && cfexist(real_filename)) {
     // the file already exists, we can't write out
-    LOG_WARNING.printf("PLTW: File (%s) exists, can't create", real_filename.u8string().c_str());
+    LOG_WARNING.printf("PLTW: File (%s) exists, can't create", PATH_TO_CSTR(real_filename));
     return PLTW_FILE_EXISTS;
   }
 
@@ -428,7 +400,7 @@ int pilot::flush(bool new_file) {
 
     file = cfopen(real_filename, "wb");
     if (!file) {
-      LOG_WARNING.printf("PLTW: File (%s) can't be opened", real_filename.u8string().c_str());
+      LOG_WARNING.printf("PLTW: File (%s) can't be opened", PATH_TO_CSTR(real_filename));
       return PLTW_FILE_CANTOPEN;
     }
 
@@ -501,14 +473,14 @@ int pilot::read(bool skip_config, bool skip_mission_data) {
 
   if (!cfexist(real_filename)) {
     // the file already exists, we can't write out
-    LOG_WARNING.printf("PLTR: File (%s) does not exist", real_filename.u8string().c_str());
+    LOG_WARNING.printf("PLTR: File (%s) does not exist", PATH_TO_CSTR(real_filename));
     return PLTR_FILE_NOEXIST;
   }
 
   try {
     file = cfopen(real_filename, "rb");
     if (!file) {
-      LOG_WARNING.printf("PLTR: File (%s) can't be opened", real_filename.u8string().c_str());
+      LOG_WARNING.printf("PLTR: File (%s) can't be opened", PATH_TO_CSTR(real_filename));
       return PLTR_FILE_CANTOPEN;
     }
 
@@ -598,7 +570,7 @@ int pilot::read(bool skip_config, bool skip_mission_data) {
 void pilot::set_name(const char *n) {
   if (name) {
     mem_free(name);
-    name = NULL;
+    name = nullptr;
   }
   if (n) {
     int length = strlen(n);
@@ -624,7 +596,7 @@ void pilot::get_name(char *n) {
 void pilot::set_ship(const char *ship) {
   if (ship_model) {
     mem_free(ship_model);
-    ship_model = NULL;
+    ship_model = nullptr;
   }
   if (ship) {
     int length = strlen(ship);
@@ -651,7 +623,7 @@ void pilot::set_multiplayer_data(const char *logo, const char *audio1, const cha
   if (logo) {
     if (ship_logo) {
       mem_free(ship_logo);
-      ship_logo = NULL;
+      ship_logo = nullptr;
     }
     ship_logo = mem_strdup(logo);
     if (ship_logo) {
@@ -666,7 +638,7 @@ void pilot::set_multiplayer_data(const char *logo, const char *audio1, const cha
   if (audio1) {
     if (audio1_file) {
       mem_free(audio1_file);
-      audio1_file = NULL;
+      audio1_file = nullptr;
     }
     audio1_file = mem_strdup(audio1);
     if (audio1_file) {
@@ -681,7 +653,7 @@ void pilot::set_multiplayer_data(const char *logo, const char *audio1, const cha
   if (audio2) {
     if (audio2_file) {
       mem_free(audio2_file);
-      audio2_file = NULL;
+      audio2_file = nullptr;
     }
     audio2_file = mem_strdup(audio2);
     if (audio2_file) {
@@ -701,7 +673,7 @@ void pilot::set_multiplayer_data(const char *logo, const char *audio1, const cha
   if (audio3) {
     if (audio3_file) {
       mem_free(audio3_file);
-      audio3_file = NULL;
+      audio3_file = nullptr;
     }
     audio3_file = mem_strdup(audio3);
     if (audio3_file) {
@@ -716,7 +688,7 @@ void pilot::set_multiplayer_data(const char *logo, const char *audio1, const cha
   if (audio4) {
     if (audio4_file) {
       mem_free(audio4_file);
-      audio4_file = NULL;
+      audio4_file = nullptr;
     }
     audio4_file = mem_strdup(audio4);
     if (audio4_file) {
@@ -811,7 +783,7 @@ void pilot::get_audiotaunts(bool *enabled) {
 void pilot::set_guidebot_name(char *name) {
   if (guidebot_name) {
     mem_free(guidebot_name);
-    guidebot_name = NULL;
+    guidebot_name = nullptr;
   }
 
   if (name) {
@@ -1001,7 +973,7 @@ void pilot::read_name(CFILE *file, bool skip) {
   if (!skip) {
     if (name) {
       mem_free(name);
-      name = NULL;
+      name = nullptr;
     }
     name = mem_strdup(buffer);
   }
@@ -1023,7 +995,7 @@ void pilot::read_ship_info(CFILE *file, bool skip) {
   if (!skip) {
     if (ship_model) {
       mem_free(ship_model);
-      ship_model = NULL;
+      ship_model = nullptr;
     }
     ship_model = mem_strdup(buffer);
   }
@@ -1071,7 +1043,7 @@ void pilot::read_custom_multiplayer_data(CFILE *file, bool skip) {
   if (!skip) {
     if (ship_logo) {
       mem_free(ship_logo);
-      ship_logo = NULL;
+      ship_logo = nullptr;
     }
     ship_logo = mem_strdup(buffer);
   }
@@ -1080,7 +1052,7 @@ void pilot::read_custom_multiplayer_data(CFILE *file, bool skip) {
   if (!skip) {
     if (audio1_file) {
       mem_free(audio1_file);
-      audio1_file = NULL;
+      audio1_file = nullptr;
     }
     audio1_file = mem_strdup(buffer);
   }
@@ -1089,7 +1061,7 @@ void pilot::read_custom_multiplayer_data(CFILE *file, bool skip) {
   if (!skip) {
     if (audio2_file) {
       mem_free(audio2_file);
-      audio2_file = NULL;
+      audio2_file = nullptr;
     }
     audio2_file = mem_strdup(buffer);
   }
@@ -1099,7 +1071,7 @@ void pilot::read_custom_multiplayer_data(CFILE *file, bool skip) {
     if (!skip) {
       if (audio3_file) {
         mem_free(audio3_file);
-        audio3_file = NULL;
+        audio3_file = nullptr;
       }
       audio3_file = mem_strdup(buffer);
     }
@@ -1108,7 +1080,7 @@ void pilot::read_custom_multiplayer_data(CFILE *file, bool skip) {
     if (!skip) {
       if (audio4_file) {
         mem_free(audio4_file);
-        audio4_file = NULL;
+        audio4_file = nullptr;
       }
       audio4_file = mem_strdup(buffer);
     }
@@ -1167,7 +1139,7 @@ void pilot::write_guidebot_name(CFILE *file) {
 void pilot::read_guidebot_name(CFILE *file, bool skip) {
   if (guidebot_name) {
     mem_free(guidebot_name);
-    guidebot_name = NULL;
+    guidebot_name = nullptr;
   }
 
   int len = cf_ReadByte(file);
@@ -1277,7 +1249,7 @@ void pilot::read_mission_data(CFILE *file, bool skip) {
     // allocate needed memory
     if (mission_data) {
       mem_free(mission_data);
-      mission_data = NULL;
+      mission_data = nullptr;
     }
     mission_data = mem_rmalloc<tMissionData>(num_missions_flown);
     if (!mission_data) {

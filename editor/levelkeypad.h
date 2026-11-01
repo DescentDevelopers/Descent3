@@ -44,7 +44,7 @@ class levelkeypad : public CKeypadDialog {
 
   // Construction
 public:
-  levelkeypad(CWnd *pParent = NULL); // standard constructor
+  levelkeypad(CWnd *pParent = nullptr); // standard constructor
   void UpdateKeypad(int mask);
 
   // Dialog Data

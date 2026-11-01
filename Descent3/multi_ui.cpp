@@ -430,10 +430,10 @@ int MainMultiplayerMenu() {
   lists = sheet->AddListBox(256, 128, UID_MULTILB, UILB_NOSORT);
   lists->RemoveAll();
 
-  sheet->NewGroup(NULL, 75, 145);
+  sheet->NewGroup(nullptr, 75, 145);
   sheet->AddLongButton(TXT_SETITEMDEFAULT, 0x30);
 
-  sheet->NewGroup(NULL, 55, 160, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 55, 160, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_REALHELP, 0x20);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
@@ -574,13 +574,13 @@ void DisplayNetDLLHelp(const char *topic) {
   menu_wnd.Create(str, 0, 0, HELP_MULTI_MENU_W, HELP_MULTI_MENU_H);
   sheet = menu_wnd.GetSheet();
 
-  sheet->NewGroup(NULL, 10, 30);
+  sheet->NewGroup(nullptr, 10, 30);
   sheet->AddText(HelpText1);
   sheet->AddText(HelpText2);
   sheet->AddText(HelpText3);
   sheet->AddText(HelpText4);
 
-  sheet->NewGroup(NULL, (HELP_MULTI_MENU_W - 140), HELP_MULTI_MENU_H - 95, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, (HELP_MULTI_MENU_W - 140), HELP_MULTI_MENU_H - 95, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_CLOSE, UID_OK);
 
   menu_wnd.Open();
@@ -1746,7 +1746,7 @@ void ShowNetgameInfo(network_game *game) {
   lists = sheet->AddListBox(256, 128, UID_GAMEINFO_PLAYERS);
   lists->RemoveAll();
 
-  sheet->NewGroup(NULL, (GAME_INFO_MENU_W - 140), GAME_INFO_MENU_H - 95, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, (GAME_INFO_MENU_W - 140), GAME_INFO_MENU_H - 95, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_DONE, UID_CANCEL);
   // Get players
   Multi_recieved_player_list = (char *)mem_malloc(((CALLSIGN_LEN + 1) * MAX_NET_PLAYERS) + 1);
@@ -1797,7 +1797,7 @@ void ShowNetgameInfo(network_game *game) {
 
   if (Multi_recieved_player_list) {
     mem_free(Multi_recieved_player_list);
-    Multi_recieved_player_list = NULL;
+    Multi_recieved_player_list = nullptr;
   }
 
   menu_wnd.Open();
@@ -1820,6 +1820,6 @@ void ShowNetgameInfo(network_game *game) {
 no_players:
   if (Multi_recieved_player_list) {
     mem_free(Multi_recieved_player_list);
-    Multi_recieved_player_list = NULL;
+    Multi_recieved_player_list = nullptr;
   }
 }

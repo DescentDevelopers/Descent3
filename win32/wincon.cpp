@@ -78,13 +78,13 @@
 
 static bool Con_init = false;
 static bool Con_newline = false;
-static char *Con_buffer = NULL;
+static char *Con_buffer = nullptr;
 static int Con_row, Con_col;
 static char Con_read_buf[CON_SCROLL_COLS + 4];
 static char Con_inp_buf[CON_SCROLL_COLS + 4], Con_inp_pos = 0;
 static char Con_last_command[CON_MAX_STRINGLEN];
 static int Con_ch_w, Con_ch_h;
-static HWND hConWnd = NULL;
+static HWND hConWnd = nullptr;
 
 void con_Create(HWND hWnd, LPCREATESTRUCT lpcs);
 void con_Paint(HWND hWnd);
@@ -131,7 +131,7 @@ void con_Printf(const char *fmt, ...) {
   con_Puts(filter_buf);
 
   if (hConWnd) {
-    InvalidateRect(hConWnd, NULL, TRUE);
+    InvalidateRect(hConWnd, nullptr, TRUE);
     UpdateWindow(hConWnd);
   }
 }
@@ -152,7 +152,7 @@ void con_Defer() {
     Con_newline = false;
     con_Puts("%");
     if (hConWnd) {
-      InvalidateRect(hConWnd, NULL, TRUE);
+      InvalidateRect(hConWnd, nullptr, TRUE);
       UpdateWindow(hConWnd);
     }
   }
@@ -188,7 +188,7 @@ LRESULT WINAPI MyConProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
     oldfont = (HFONT)SelectObject(hdc, (HFONT)GetStockObject(ANSI_FIXED_FONT));
     SelectObject(hdc, oldfont);
-    CreateCaret(hWnd, NULL, Con_ch_w, Con_ch_h);
+    CreateCaret(hWnd, nullptr, Con_ch_w, Con_ch_h);
     SetCaretPos(Con_col * Con_ch_w, Con_row * Con_ch_h);
     ShowCaret(hWnd);
 
@@ -285,7 +285,7 @@ void con_Destroy(HWND hWnd) {
   if (Con_buffer)
     delete[] Con_buffer;
 
-  hConWnd = NULL;
+  hConWnd = nullptr;
 }
 
 void con_Puts(const char *str) {
@@ -373,7 +373,7 @@ int con_KeyDown(HWND hWnd, UINT vkey) {
 
       // Redraw the line, adjusted for the
       // deleted character.
-      InvalidateRect(hWnd, NULL, TRUE);
+      InvalidateRect(hWnd, nullptr, TRUE);
       UpdateWindow(hWnd);
 
       // Display the caret.
@@ -397,7 +397,7 @@ int con_KeyDown(HWND hWnd, UINT vkey) {
 
     // Redraw the line, adjusted for the
     // deleted character.
-    InvalidateRect(hWnd, NULL, TRUE);
+    InvalidateRect(hWnd, nullptr, TRUE);
     UpdateWindow(hWnd);
 
     // Display the caret.
@@ -475,7 +475,7 @@ int con_Char(HWND hWnd, UINT vkey) {
 
     // Redraw the line, adjusted for the
     // deleted character.
-    InvalidateRect(hWnd, NULL, TRUE);
+    InvalidateRect(hWnd, nullptr, TRUE);
     UpdateWindow(hWnd);
 
     // Display the caret.

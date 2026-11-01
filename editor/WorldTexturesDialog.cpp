@@ -458,11 +458,11 @@ void CWorldTexturesDialog::OnWtexdlgAddnew() {
   mprintf(0, "Making a copy of this bitmap/anim locally...\n");
 
   if (!anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameBitmaps[GameTextures[tex_handle].bm_handle].name);
     bm_SaveFileBitmap(filename, GameTextures[tex_handle].bm_handle);
   } else {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameVClips[GameTextures[tex_handle].bm_handle].name);
     SaveVClip(filename, GameTextures[tex_handle].bm_handle);
   }
@@ -892,7 +892,7 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame) {
             m_CheckForTextureList = 0;
             D3EditState.texdlg_texture = texnum;
             m_TextureSurf.free();
-            Desktop_surf->attach_to_window((unsigned)NULL);
+            Desktop_surf->attach_to_window(0);
             UpdateDialog();
             return;
           }
@@ -944,7 +944,7 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame) {
   }
 
   m_CheckForTextureList = 0;
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 void CWorldTexturesDialog::OnSelendokTexList() {
@@ -1332,11 +1332,11 @@ void CWorldTexturesDialog::OnLoadBitmap() {
   mprintf(0, "Making a copy of this bitmap locally...\n");
 
   if (anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameVClips[GameTextures[n].bm_handle].name);
     SaveVClip(filename, GameTextures[n].bm_handle);
   } else {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameBitmaps[GameTextures[n].bm_handle].name);
     bm_SaveFileBitmap(filename, GameTextures[n].bm_handle);
   }
@@ -1433,7 +1433,7 @@ void CWorldTexturesDialog::OnKillfocusTexNum() {
 
 BOOL CWorldTexturesDialog::OnInitDialog() {
   CDialog::OnInitDialog();
-  CWnd::SetTimer(1, 100, NULL);
+  CWnd::SetTimer(1, 100, nullptr);
 
   int n = D3EditState.texdlg_texture;
   m_ambient_sound_combo.Init(GameTextures[n].sound);
@@ -1589,7 +1589,7 @@ int CWorldTexturesDialog::LoadITLFile(char *filename, int type) {
   int tex_handle, tex_list[200];
   int c = 1, finding_name = 1;
 
-  ASSERT(filename != NULL);
+  ASSERT(filename != nullptr);
 
   infile = (CFILE *)cfopen(filename, "rt");
   if (!infile) {
@@ -1638,7 +1638,7 @@ int CWorldTexturesDialog::LoadITLFile(char *filename, int type) {
 
       // Try and load this file
 
-      int bm = LoadTextureImage(bmname, 0, type, 0);
+      int bm = LoadTextureImage(bmname, nullptr, type, 0);
       if (bm <= 0) {
         mprintf(0, "Error loading frame %d of ITL file %s!\n", total, filename);
         goto Here;
@@ -1691,7 +1691,7 @@ Here:
   for (i = 0; i < total; i++) {
     tex_handle = tex_list[i];
 
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameBitmaps[GameTextures[tex_handle].bm_handle].name);
     bm_SaveFileBitmap(filename, GameTextures[tex_handle].bm_handle);
   }
@@ -1846,11 +1846,11 @@ void CWorldTexturesDialog::OnAddNewSmall() {
   mprintf(0, "Making a copy of this bitmap/anim locally...\n");
 
   if (!anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameBitmaps[GameTextures[tex_handle].bm_handle].name);
     bm_SaveFileBitmap(filename, GameTextures[tex_handle].bm_handle);
   } else {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameVClips[GameTextures[tex_handle].bm_handle].name);
     SaveVClip(filename, GameTextures[tex_handle].bm_handle);
   }
@@ -1937,11 +1937,11 @@ void CWorldTexturesDialog::OnAddNewTiny() {
   mprintf(0, "Making a copy of this bitmap/anim locally...\n");
 
   if (!anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameBitmaps[GameTextures[tex_handle].bm_handle].name);
     bm_SaveFileBitmap(filename, GameTextures[tex_handle].bm_handle);
   } else {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameVClips[GameTextures[tex_handle].bm_handle].name);
     SaveVClip(filename, GameTextures[tex_handle].bm_handle);
   }
@@ -2156,7 +2156,7 @@ void CWorldTexturesDialog::DrawSwatch(int handle, float r, float g, float b) {
 
   Desktop_surf->clear(rect.left, rect.top, w, h, color);
 
-  Desktop_surf->attach_to_window(NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 void CWorldTexturesDialog::ChangeSize(int w, int h) {
@@ -2551,11 +2551,11 @@ void CWorldTexturesDialog::OnAddNewHuge() {
   mprintf(0, "Making a copy of this bitmap/anim locally...\n");
 
   if (!anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameBitmaps[GameTextures[tex_handle].bm_handle].name);
     bm_SaveFileBitmap(filename, GameTextures[tex_handle].bm_handle);
   } else {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameVClips[GameTextures[tex_handle].bm_handle].name);
     SaveVClip(filename, GameTextures[tex_handle].bm_handle);
   }

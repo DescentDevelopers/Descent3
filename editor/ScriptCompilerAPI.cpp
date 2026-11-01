@@ -160,18 +160,18 @@ int ScriptCompile(tCompilerInfo *ci) {
 
   SECURITY_ATTRIBUTES sa = {0};
   STARTUPINFO si = {0};
-  PROCESS_INFORMATION pi = {0};
-  HANDLE hPipeOutputRead = NULL;
-  HANDLE hPipeOutputWrite = NULL;
-  HANDLE hPipeInputRead = NULL;
-  HANDLE hPipeInputWrite = NULL;
+  PROCESS_INFORMATION pi = {nullptr};
+  HANDLE hPipeOutputRead = nullptr;
+  HANDLE hPipeOutputWrite = nullptr;
+  HANDLE hPipeInputRead = nullptr;
+  HANDLE hPipeInputWrite = nullptr;
   BOOL bTest = 0;
   DWORD dwNumberOfBytesRead = 0;
   CHAR szBuffer[256];
 
   sa.nLength = sizeof(sa);
   sa.bInheritHandle = TRUE;
-  sa.lpSecurityDescriptor = NULL;
+  sa.lpSecurityDescriptor = nullptr;
 
   // Create pipe for standard output redirection.
   CreatePipe(&hPipeOutputRead,  // read handle
@@ -242,7 +242,7 @@ int ScriptCompile(tCompilerInfo *ci) {
   cline += temp_c;
 #endif
 
-  CreateProcess(NULL, cline.GetBuffer(0), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi);
+  CreateProcess(nullptr, cline.GetBuffer(0), nullptr, nullptr, TRUE, 0, nullptr, nullptr, &si, &pi);
 
   // Now that handles have been inherited, close it to be safe.
   // You don't want to read or write to them accidentally.
@@ -258,7 +258,7 @@ int ScriptCompile(tCompilerInfo *ci) {
                      &szBuffer,            // address of buffer that receives data
                      256,                  // number of bytes to read
                      &dwNumberOfBytesRead, // address of number of bytes read
-                     NULL                  // non-overlapped.
+                     nullptr                  // non-overlapped.
     );
 
     if (!bTest) {
@@ -349,7 +349,7 @@ void outputtofile(char *format, ...) {
 
 bool ScriptCreateEmptyLevelScript(char *filename) {
   char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
   CurrentFile = cfopen(fullpath, "wt");
   if (!CurrentFile)
     return false;
@@ -553,7 +553,7 @@ bool ScriptCreateEmptyLevelScript(char *filename) {
 
 bool ScriptCreateEmptyGameScript(char *filename) {
   char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalScriptDir, filename, NULL);
+  ddio_MakePath(fullpath, LocalScriptDir, filename, nullptr);
   CurrentFile = cfopen(fullpath, "wt");
   if (!CurrentFile)
     return false;

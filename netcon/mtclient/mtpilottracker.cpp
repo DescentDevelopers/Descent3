@@ -242,6 +242,7 @@ int InitPilotTrackerClient() {
 
   VersionState = VERSION_STATE_IDLE;
 
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   srand(DLLtimer_GetTime());
   ValidSecurity = (uint32_t)rand();
   // Build the request packet
@@ -562,7 +563,7 @@ void HandlePilotData(uint8_t *data, int len, network_address *from) {
 //   1	User valid
 int ValidateUser(validate_id_request *valid_id, char *trackerid) {
   ValidIdle();
-  if (valid_id == NULL) {
+  if (valid_id == nullptr) {
     switch (ValidState) {
     case VALID_STATE_IDLE:
       return 0;

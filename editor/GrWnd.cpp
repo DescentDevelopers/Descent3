@@ -61,8 +61,8 @@ static char THIS_FILE[] = __FILE__;
 // CGrWnd
 
 CGrWnd::CGrWnd(const char *name) {
-  m_grScreen = NULL;
-  m_grViewport = NULL;
+  m_grScreen = nullptr;
+  m_grViewport = nullptr;
   if (name)
     strncpy(m_Name, name, 15);
   m_Name[31] = 0;
@@ -96,11 +96,11 @@ void CGrWnd::OnDestroy() {
   //	destroy screen element
   if (m_grViewport) {
     delete m_grViewport;
-    m_grViewport = NULL;
+    m_grViewport = nullptr;
   }
   if (m_grScreen) {
     delete m_grScreen;
-    m_grScreen = NULL;
+    m_grScreen = nullptr;
   }
 
   m_grCreated = FALSE;
@@ -119,7 +119,7 @@ int CGrWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
   client_width = (rect.right - rect.left);
   client_height = (rect.bottom - rect.top);
   if (client_width && client_height) {
-    ASSERT(m_grScreen == NULL);
+    ASSERT(m_grScreen == nullptr);
     m_grScreen = new grScreen(client_width, client_height, BPP_16, m_Name);
     m_grScreen->attach_to_window((unsigned)m_hWnd);
     m_grViewport = new grViewport(m_grScreen);
@@ -141,8 +141,8 @@ void CGrWnd::OnSize(UINT nType, int cx, int cy) {
   if (m_grViewport) {
     delete m_grViewport;
     delete m_grScreen;
-    m_grViewport = NULL;
-    m_grScreen = NULL;
+    m_grViewport = nullptr;
+    m_grScreen = nullptr;
   }
   if (cx && cy && !m_grViewport) {
     RECT rect;

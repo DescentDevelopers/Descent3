@@ -46,8 +46,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 oms_tracklist::oms_tracklist() {
-  m_fnamelist = NULL;
-  m_symlist = NULL;
+  m_fnamelist = nullptr;
+  m_symlist = nullptr;
   m_numtracks = 0;
   m_maxtracks = 0;
   m_init = false;
@@ -122,5 +122,5 @@ const char *oms_tracklist::get(const char *sym) {
     }
   }
 
-  return NULL;
+  return nullptr;
 }

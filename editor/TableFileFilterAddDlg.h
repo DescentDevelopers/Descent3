@@ -47,7 +47,7 @@
 class CTableFileFilterAddDlg : public CDialog {
   // Construction
 public:
-  CTableFileFilterAddDlg(CWnd *pParent = NULL); // standard constructor
+  CTableFileFilterAddDlg(CWnd *pParent = nullptr); // standard constructor
 
   CString page_name;
   int page_type;

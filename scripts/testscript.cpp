@@ -70,7 +70,7 @@ struct tShieldOrbInfo {
 //------------------
 class ShieldOrb final : public BaseObjScript {
 public:
-  ShieldOrb() { info = NULL; }
+  ShieldOrb() { info = nullptr; }
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 private:
@@ -114,7 +114,7 @@ void STDCALLPTR CreateInstance(int id) {
     mprintf(0, "SCRIPT: Illegal ID (%d)\n", id);
     break;
   };
-  return NULL;
+  return nullptr;
 }
 
 void STDCALL DestroyInstance(int id, void *ptr) {

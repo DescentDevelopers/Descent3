@@ -267,7 +267,7 @@ int SaveVClip(const std::filesystem::path& filename, int num) {
   // Now save each frame of this vclip
   for (int i = 0; i < vc->num_frames; i++) {
     if (bm_SaveBitmap(outfile, vc->frames[i]) != 1) {
-      LOG_ERROR.printf("Couldn't save frame %d of vclip %s!", i, filename.u8string().c_str());
+      LOG_ERROR.printf("Couldn't save frame %d of vclip %s!", i, PATH_TO_CSTR(filename));
       Int3();
       cfclose(outfile);
       return 0;
@@ -409,7 +409,7 @@ int AllocLoadVClip(const char *filename, int texture_size, int mipped, int pagea
   char name[PAGENAME_LEN];
   int i;
 
-  ASSERT(filename != NULL);
+  ASSERT(filename != nullptr);
 
   i = strlen(filename);
 
@@ -462,7 +462,7 @@ int AllocLoadIFLVClip(const char *filename, int texture_size, int mipped, int fo
   char name[PAGENAME_LEN];
   uint32_t i, done = 0;
 
-  ASSERT(filename != NULL);
+  ASSERT(filename != nullptr);
 
   ChangeVClipName(filename, name);
 

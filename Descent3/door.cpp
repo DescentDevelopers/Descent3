@@ -220,7 +220,7 @@ int GetPrevDoor(int n) {
 int FindDoorName(const char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_DOORS; i++)
     if (Doors[i].used && !stricmp(name, Doors[i].name))

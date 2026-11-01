@@ -36,7 +36,7 @@
 class CStatusDlg : public CDialog {
   // Construction
 public:
-  CStatusDlg(CWnd *pParent = NULL); // standard constructor
+  CStatusDlg(CWnd *pParent = nullptr); // standard constructor
   int Step();
   void Init(int min, int max, int delta);
   void Text(char *s);
@@ -65,8 +65,8 @@ protected:
 
 class CProgress {
 public:
-  bool InitProgress(fix min, fix max, int32_t iterations, CWnd *parent = NULL);
-  bool InitProgress(CWnd *parent = NULL);
+  bool InitProgress(fix min, fix max, int32_t iterations, CWnd *parent = nullptr);
+  bool InitProgress(CWnd *parent = nullptr);
   void DestroyProgress();
   bool IncreaseProgress();
   void SetProgressText(char *string);

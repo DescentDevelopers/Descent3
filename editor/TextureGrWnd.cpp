@@ -648,9 +648,9 @@ void CTextureGrWnd::Render() {
 
   FrameCount++;
 
-  if (m_grScreen == NULL)
+  if (m_grScreen == nullptr)
     return;
-  if (m_grViewport == NULL)
+  if (m_grViewport == nullptr)
     return;
 
   rad_Viewport = m_grViewport;
@@ -753,7 +753,7 @@ BOOL CTextureGrWnd::Create(RECT &rect, BOOL movable, CWnd *pParent) {
 
   ObjectInBuffer = false;
 
-  return CWnd::Create(NULL, m_Name, dwstyle, rect, pParent, IDC_TEXTURE_WND);
+  return CWnd::Create(nullptr, m_Name, dwstyle, rect, pParent, IDC_TEXTURE_WND);
 }
 
 void CTextureGrWnd::OnSize(UINT nType, int cx, int cy) {
@@ -815,7 +815,7 @@ void CTextureGrWnd::OnPaint() {
 void CTextureGrWnd::OnDestroy() {
   //	mprintf(0, "CTextureGrWnd::OnDestroy:: m_grScreen\n");
   CGrWnd::OnDestroy();
-  theApp.textured_view = NULL;
+  theApp.textured_view = nullptr;
 }
 
 void CTextureGrWnd::OnMove(int x, int y) {
@@ -1090,7 +1090,7 @@ void CTextureGrWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         static int last_copy_room = -1, last_copy_face = -1;
         static int count;
 
-        if (Markedroomp == NULL) {
+        if (Markedroomp == nullptr) {
           OutrageMessageBox("You must have a marked face for this operation.");
           return;
         }
@@ -1253,7 +1253,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point) {
       SelectObject(newobjnum);
 
       Render();
-      RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+      RedrawWindow(nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW);
     }
   }
   // Code to put up popup menu when right clicking
@@ -1285,14 +1285,14 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     }
 
     Render();
-    RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+    RedrawWindow(nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW);
   }
 
   //	right click popup menu
   if (do_popup) {
     CMenu popup;
     bool ret = true;
-    char *title = NULL;
+    char *title = nullptr;
 
     if (newobjnum > -1)
       title = Objects[newobjnum].name;
@@ -1324,7 +1324,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     }
 
     if (ret)
-      if (!popup.TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y + 20, this, NULL))
+      if (!popup.TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y + 20, this, nullptr))
         mprintf(0, "TrackPopupMenu error!\n");
   }
 
@@ -1477,7 +1477,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
       // Nate: Add code here to edit/view an object's scripts
 
       // Make sure Dallas is open
-      if (theApp.m_DallasModelessDlgPtr == NULL) {
+      if (theApp.m_DallasModelessDlgPtr == nullptr) {
         theApp.m_DallasModelessDlgPtr = new CDallasMainDlg;
         theApp.m_DallasModelessDlgPtr->Create(IDD_DALLAS_MAIN_DIALOG, this);
         theApp.m_DallasModelessDlgPtr->ShowWindow(SW_SHOW);
@@ -1485,7 +1485,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
         theApp.m_DallasModelessDlgPtr->ShowWindow(SW_RESTORE);
 
       object *curobj = &Objects[Cur_object_index];
-      if (curobj->name == NULL)
+      if (curobj->name == nullptr)
         break;
 
       // Tell Dallas to add a new script with this object as the owner
@@ -1499,7 +1499,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
       // Nate: Add code here to create a new script for an object
 
       // Make sure Dallas is open
-      if (theApp.m_DallasModelessDlgPtr == NULL) {
+      if (theApp.m_DallasModelessDlgPtr == nullptr) {
         theApp.m_DallasModelessDlgPtr = new CDallasMainDlg;
         theApp.m_DallasModelessDlgPtr->Create(IDD_DALLAS_MAIN_DIALOG, this);
         theApp.m_DallasModelessDlgPtr->ShowWindow(SW_SHOW);
@@ -1507,7 +1507,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
         theApp.m_DallasModelessDlgPtr->ShowWindow(SW_RESTORE);
 
       object *curobj = &Objects[Cur_object_index];
-      if (curobj->name == NULL)
+      if (curobj->name == nullptr)
         break;
 
       // Tell Dallas to highlight all scripts that have this object as the owner
@@ -1544,12 +1544,11 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
 
       if (curobj->name) {
         mem_free(curobj->name);
-        curobj->name = NULL;
+        curobj->name = nullptr;
       }
 
       if (strlen(tempname)) {
-        curobj->name = mem_rmalloc<char>(strlen(tempname) + 1);
-        strcpy(curobj->name, tempname);
+        curobj->name = mem_strdup(tempname);
       }
 
       World_changed = 1;
@@ -1576,19 +1575,19 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
 
         if (curobj->custom_default_module_name) {
           mem_free(curobj->custom_default_module_name);
-          curobj->custom_default_module_name = NULL;
+          curobj->custom_default_module_name = nullptr;
         }
 
         if (curobj->custom_default_script_name) {
           mem_free(curobj->custom_default_script_name);
-          curobj->custom_default_script_name = NULL;
+          curobj->custom_default_script_name = nullptr;
         }
 
         if (!dlg.m_Module.IsEmpty()) {
           char module_name[MAX_MODULENAME_LEN];
           curobj->custom_default_module_name = mem_rmalloc<char>(dlg.m_Module.GetLength() + 1);
 
-          ddio_SplitPath(dlg.m_Module.GetBuffer(0), NULL, module_name, NULL);
+          ddio_SplitPath(dlg.m_Module.GetBuffer(0), nullptr, module_name, nullptr);
           strcpy(curobj->custom_default_module_name, module_name);
         }
 

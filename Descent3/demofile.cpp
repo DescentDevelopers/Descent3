@@ -401,7 +401,7 @@ void DemoWriteHeader() {
   ASSERT(Demo_flags == DF_RECORDING);
 
   // Start off with the signature
-  cf_WriteString(Demo_cfp, (const char *)szsig);
+  cf_WriteString(Demo_cfp, szsig);
   // Next is the version
   cf_WriteShort(Demo_cfp, GAMESAVE_VERSION);
   // Write the mission filename
@@ -648,8 +648,9 @@ void DemoReadKillObject(void) {
   if (!(IS_GENERIC(Objects[hit_objnum].type) || (Objects[hit_objnum].type == OBJ_DOOR)))
     return; // bail if invalid object type
 
+  // legacy re-seed outside `-randseed` allowed: demo playback only
   ps_srand(seed);
-  KillObject(&Objects[hit_objnum], (killer != 65535) ? &Objects[killer] : NULL, damage, death_flags, delay);
+  KillObject(&Objects[hit_objnum], (killer != 65535) ? &Objects[killer] : nullptr, damage, death_flags, delay);
 }
 
 void DemoWritePlayerDeath(object *player, bool melee, int fate) {
@@ -725,7 +726,7 @@ int DemoPlaybackFile(const std::filesystem::path &filename) {
   }
   Demo_cfp = cfopen(filename, "rb");
 
-  if (Demo_cfp == NULL) {
+  if (Demo_cfp == nullptr) {
     DoMessageBox(TXT_ERROR, TXT_CANTLOAD, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
     return 0;
   }
@@ -774,7 +775,7 @@ int DemoReadHeader() {
   // Now load the mission
   Osiris_DisableCreateEvents();
   IsRestoredGame = true;
-  if (LoadMission((const char *)demo_mission)) {
+  if (LoadMission(demo_mission)) {
     mng_LoadAddonPages();
 
     SetCurrentLevel(level_num);
@@ -1072,7 +1073,7 @@ void DemoReadWeaponFire() {
     fq.p1 = &dest_vec;
     fq.rad = 0;
     fq.thisobjnum = -1;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS;
 
     fvi_FindIntersection(&fq, &hit_data);
@@ -1081,7 +1082,7 @@ void DemoReadWeaponFire() {
 
     int visnum;
 
-    if (obj == NULL || obj->type != OBJ_BUILDING || stricmp(Object_info[obj->id].name, "FinalbossLITTLETIT") != 0)
+    if (obj == nullptr || obj->type != OBJ_BUILDING || stricmp(Object_info[obj->id].name, "FinalbossLITTLETIT") != 0)
       visnum = VisEffectCreate(VIS_FIREBALL, MASSDRIVER_EFFECT_INDEX, obj->roomnum, &laser_pos);
     else
       visnum = VisEffectCreate(VIS_FIREBALL, MERCBOSS_MASSDRIVER_EFFECT_INDEX, obj->roomnum, &laser_pos);
@@ -1094,7 +1095,7 @@ void DemoReadWeaponFire() {
 
       vis->end_pos = hit_data.hit_pnt;
       vis->billboard_info.width = 1;
-      if (obj == NULL || obj->type != OBJ_BUILDING || stricmp(Object_info[obj->id].name, "FinalbossLITTLETIT") != 0)
+      if (obj == nullptr || obj->type != OBJ_BUILDING || stricmp(Object_info[obj->id].name, "FinalbossLITTLETIT") != 0)
         vis->lighting_color = GR_RGB16(100, 100, 170);
       else
         vis->lighting_color = GR_RGB16(170, 100, 100);
@@ -1143,7 +1144,7 @@ void DemoReadObjCreate() {
     Int3(); // What is this?
   }
 
-  int16_t new_objnum = ObjCreate(type, id, roomnum, &pos, use_orient ? &orient : NULL, parent_handle);
+  int16_t new_objnum = ObjCreate(type, id, roomnum, &pos, use_orient ? &orient : nullptr, parent_handle);
   if (new_objnum > -1) { // DAJ -1FIX
     obj = &Objects[new_objnum];
 
@@ -1376,7 +1377,7 @@ void DemoReadCollidePlayerWeapon(void) {
   real_weapnum = Demo_obj_map[wep_objnum];
   if (real_weapnum != 65535) {
     collide_player_and_weapon(&Objects[plr_objnum], &Objects[real_weapnum], &collision_p, &collision_n,
-                              f_reverse_normal, NULL);
+                              f_reverse_normal, nullptr);
   } else {
     LOG_WARNING << "Unable to map weapon number for collision in demo playback!";
   }
@@ -1407,7 +1408,7 @@ void DemoReadCollideGenericWeapon(void) {
   real_weapnum = Demo_obj_map[wep_objnum];
   if (real_weapnum != 65535) {
     collide_generic_and_weapon(&Objects[gen_objnum], &Objects[real_weapnum], &collision_p, &collision_n,
-                               f_reverse_normal, NULL);
+                               f_reverse_normal, nullptr);
   } else {
     LOG_WARNING << "Unable to map weapon number for collision in demo playback!";
   }
@@ -1435,7 +1436,7 @@ void DemoAbort(bool deletefile) {
   if (Demo_flags != DF_NONE) {
     // We're done with the xlate table, so free it
     mem_free(gs_Xlates);
-    gs_Xlates = NULL;
+    gs_Xlates = nullptr;
 
     cfclose(Demo_cfp);
     Demo_flags = DF_NONE;

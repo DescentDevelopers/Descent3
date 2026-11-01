@@ -27,7 +27,7 @@
 class CMegacellDialog : public CDialog {
   // Construction
 public:
-  CMegacellDialog(CWnd *pParent = NULL); // standard constructor
+  CMegacellDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CMegacellDialog)

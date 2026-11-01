@@ -353,7 +353,7 @@ bool TelComCargo(tTelComInfo *tcs) {
 
   DestroyAllScreens();
   TelcomRenderSetScreen(DUMMY_SCREEN);
-  TelcomRenderSetCallback(NULL);
+  TelcomRenderSetCallback(nullptr);
 
   return true;
 }
