@@ -1375,6 +1375,7 @@ int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
     // there was an error importing a function
     LOG_FATAL.printf("OSIRIS: Osiris_LoadMissionModule(%s) couldn't import function.", filename);
     osm->flags = 0;
+    osm->module_name.reset();
     tOSIRISCurrentMission.mission_loaded = false;
     Int3();
     // mod_FreeModule(mod);	//don't unload it! it's needed by the mission
