@@ -156,8 +156,11 @@ void CRegistry::GetSystemName(char *n) { strcpy(n, name); }
 void CRegistry::SetSystemName(const char *n) { strcpy(name, n); }
 
 void CRegistry::Destroy(void) {
-  // unlink keys one at a time so destroying a long chain does not recurse
+  // unlink keys, and each key's records, one at a time so destroying a long chain does not recurse
   while (root) {
+    while (root->records) {
+      root->records = std::move(root->records->next);
+    }
     root = std::move(root->next);
   }
 }
