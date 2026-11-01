@@ -312,19 +312,14 @@ void CScriptWizard::OnEditScript() {
 
     studio.GetText(tempstr);
     m_ScriptSource = std::make_unique<char[]>(tempstr.GetLength() + 1);
+    strcpy(m_ScriptSource.get(), (LPCSTR)tempstr);
+    SaveScript(ScriptFileName, m_ScriptSource.get());
+    m_ScriptSource = LoadScript(ScriptFileName); // After this, Source_script has new edited script.
 
-    if (m_ScriptSource) {
-      strcpy(m_ScriptSource.get(), (LPCSTR)tempstr);
-      SaveScript(ScriptFileName, m_ScriptSource.get());
-      m_ScriptSource = LoadScript(ScriptFileName); // After this, Source_script has new edited script.
-
-      if (!CompileScript(studio.GetD3XObject(), m_ScriptSource.get())) {
-        OutrageMessageBox("Your script did not compile.  Unless you fix it, the script will not work.");
-      } else {
-        SaveScriptCode(ScriptCodeName, studio.GetD3XObject());
-      }
+    if (!CompileScript(studio.GetD3XObject(), m_ScriptSource.get())) {
+      OutrageMessageBox("Your script did not compile.  Unless you fix it, the script will not work.");
     } else {
-      OutrageMessageBox("Couldn't allocate memory to save script!");
+      SaveScriptCode(ScriptCodeName, studio.GetD3XObject());
     }
   }
 

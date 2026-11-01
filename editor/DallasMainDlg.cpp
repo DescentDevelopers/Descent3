@@ -536,7 +536,6 @@ CDallasMainDlg::CDallasMainDlg(CWnd *pParent /*=NULL*/) : CDialog(CDallasMainDlg
 
   help_edit_ctrl = &m_HelpEdit;
 
-  m_pDragImage.reset();
   m_bLDragging = FALSE;
   m_hitemDrag = nullptr;
   m_hitemDrop = nullptr;

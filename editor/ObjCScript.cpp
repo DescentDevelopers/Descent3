@@ -203,7 +203,6 @@ bool NewScript(const char *filename) {
 // Loads the script into into memory
 // Returns nullptr on failure
 std::unique_ptr<char[]> LoadScript(const char *filename) {
-  std::unique_ptr<char[]> source;
   char file_path[256];
   CFILE *file;
   CString temp;
@@ -238,10 +237,7 @@ std::unique_ptr<char[]> LoadScript(const char *filename) {
 
   cfclose(file);
 
-  source = std::make_unique<char[]>(strlen(temp.GetBuffer(1)) + 1);
-  strcpy(source.get(), temp.GetBuffer(1));
-
-  return source;
+  return mem_strdup_unique(temp.GetBuffer(1));
 }
 
 void SaveScript(const char *filename, char *script) {
