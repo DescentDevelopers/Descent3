@@ -45,6 +45,7 @@
 #include "gamepath.h"
 #include "ObjectClipboard.h"
 #include "HObject.h"
+#include "mem.h"
 
 object ClipBoardObject;
 bool ObjectInBuffer;
@@ -114,6 +115,19 @@ static void CopyObjectPlainFields(object *dst, const object *src) {
   }
 }
 
+// Gives dst its own copies of the per-object settings that can be duplicated: the lighting override and the custom
+// default script and module names. Everything else src owns stays out of the copy (see CopyObjectPlainFields); the
+// name in particular has to stay unique to each object.
+static void CopyObjectSettings(object *dst, const object *src) {
+  if (src->lighting_info) {
+    dst->lighting_info = std::make_unique<light_info>(*src->lighting_info);
+  } else {
+    dst->lighting_info.reset();
+  }
+  dst->custom_default_script_name = mem_strdup_unique(src->custom_default_script_name.get());
+  dst->custom_default_module_name = mem_strdup_unique(src->custom_default_module_name.get());
+}
+
 // Returns the number if OBJ_PLAYER in the Objects list
 int GetNumberPlayerObjs() {
   int count;
@@ -141,6 +155,7 @@ bool ObjectCut() {
     }
     mprintf(0, "Attempting to cut object #%d into buffer...", objnum);
     CopyObjectPlainFields(&ClipBoardObject, &Objects[objnum]);
+    CopyObjectSettings(&ClipBoardObject, &Objects[objnum]);
     mprintf(0, "Done!\n");
     ObjectInBuffer = true;
     HObjectDelete();
@@ -157,6 +172,7 @@ bool ObjectCopy() {
     int objnum = Cur_object_index;
     mprintf(0, "Attempting to copy object #%d into buffer...", objnum);
     CopyObjectPlainFields(&ClipBoardObject, &Objects[objnum]);
+    CopyObjectSettings(&ClipBoardObject, &Objects[objnum]);
     mprintf(0, "Done!\n");
     ObjectInBuffer = true;
     return true;
@@ -187,9 +203,6 @@ bool ObjectDelete() {
 bool ObjectPaste() {
   mprintf(0, "ObjectPaste()\n");
 
-  Int3(); // I'm not so sure about this routine -- by copying everything over, it may copy
-          // some data it shouldn't, such as script info.
-
   if (!ObjectInBuffer)
     return false;
 
@@ -216,6 +229,7 @@ bool ObjectPaste() {
 
   mprintf(0, "Overwriting with buffer data\n");
   CopyObjectPlainFields(&Objects[Cur_object_index], &ClipBoardObject);
+  CopyObjectSettings(&Objects[Cur_object_index], &ClipBoardObject);
 
   mprintf(0, "Restoring data...\n");
   Objects[Cur_object_index].handle = handle;
