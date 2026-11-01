@@ -881,7 +881,7 @@ void d3d_FreeTextureCache() {
       UploadSurfaces[i]->Release();
     }
 
-    mem_free(UploadSurfaces);
+    free(UploadSurfaces);
     UploadSurfaces = NULL;
   }
 
@@ -890,7 +890,7 @@ void d3d_FreeTextureCache() {
       Upload4444Surfaces[i]->Release();
     }
 
-    mem_free(Upload4444Surfaces);
+    free(Upload4444Surfaces);
     Upload4444Surfaces = NULL;
   }
 
@@ -907,7 +907,7 @@ void d3d_FreeTextureCache() {
       }
     }
 
-    mem_free(BitmapTextureSurfaces);
+    free(BitmapTextureSurfaces);
     BitmapTextureSurfaces = NULL;
   }
 
@@ -918,7 +918,7 @@ void d3d_FreeTextureCache() {
         d3d_FreePreUploadedTexture(i, MAP_TYPE_BUMPMAP);
       }
     }
-    mem_free(BumpmapTextureSurfaces);
+    free(BumpmapTextureSurfaces);
     BumpmapTextureSurfaces = NULL;
   }
 
@@ -929,7 +929,7 @@ void d3d_FreeTextureCache() {
         d3d_FreePreUploadedTexture(i, MAP_TYPE_LIGHTMAP);
       }
     }
-    mem_free(LightmapTextureSurfaces);
+    free(LightmapTextureSurfaces);
     LightmapTextureSurfaces = NULL;
   }
 }
@@ -3123,7 +3123,7 @@ void d3d_SetFrameBufferCopyState(bool state) {
     ASSERT(d3d_Framebuffer_ready == 0);
     ASSERT(D3D_preferred_state.bit_depth == 16);
     d3d_Framebuffer_ready = 1;
-    d3d_Framebuffer_translate = (uint16_t *)mem_malloc(32768 * 2);
+    d3d_Framebuffer_translate = (uint16_t *)malloc(32768 * 2);
 
     ASSERT(d3d_Framebuffer_translate);
 
@@ -3154,7 +3154,7 @@ void d3d_SetFrameBufferCopyState(bool state) {
   } else {
     ASSERT(d3d_Framebuffer_ready == 1);
     d3d_Framebuffer_ready = 0;
-    mem_free(d3d_Framebuffer_translate);
+    free(d3d_Framebuffer_translate);
   }
 }
 

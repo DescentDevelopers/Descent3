@@ -1165,14 +1165,14 @@ void FramePop(int *x1, int *y1, int *x2, int *y2, bool *clear) {
 
   if (frame == FrameStackRoot) {
     // we're popping off the root
-    // DAJ		mem_free(FrameStackRoot);
+    // DAJ		free(FrameStackRoot);
     FrameStackRoot = nullptr;
     FrameStackPtr = nullptr;
   } else {
     // we're just going back a frame, but still have a stack
     FrameStackPtr = FrameStackPtr->prev; // pop back a frame
     FrameStackPtr->next = nullptr;
-    // DAJ		mem_free(frame);
+    // DAJ		free(frame);
   }
   FrameStackDepth--;
 }

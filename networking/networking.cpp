@@ -2199,7 +2199,7 @@ int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
 #if defined(POSIX)
       SDL_WaitThread(aslu.threadId, nullptr);
 #else
-      mem_free(lastaslu);
+      free(lastaslu);
 #endif
 
       lastaslu = nullptr;
@@ -2247,7 +2247,7 @@ void CDECLCALL gethostbynameworker(void *parm)
 
 // rcg06252000 don't free this, 'cause we need the threadId.
 #if !defined(POSIX)
-  mem_free(lookup);
+  free(lookup);
 #endif
 
 #if defined(POSIX)

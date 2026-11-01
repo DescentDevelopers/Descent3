@@ -314,7 +314,7 @@ BOOL CFilePageAddDlg::OnInitDialog() {
     if (!strnicmp(root_drives[i], initial_d, 2))
       c_drive = i;
     combo->AddString(root_drives[i]);
-    mem_free(root_drives[i]);
+    free(root_drives[i]);
   }
   combo->SetCurSel(c_drive);
 

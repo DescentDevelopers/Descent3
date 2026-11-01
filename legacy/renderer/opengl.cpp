@@ -276,9 +276,9 @@ int opengl_MakeTextureObject(int tn) {
 }
 
 int opengl_InitCache() {
-  OpenGL_bitmap_remap = (uint16_t *)mem_malloc(MAX_BITMAPS * 2);
+  OpenGL_bitmap_remap = (uint16_t *)malloc(MAX_BITMAPS * 2);
   ASSERT(OpenGL_bitmap_remap);
-  OpenGL_lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * 2);
+  OpenGL_lightmap_remap = (uint16_t *)malloc(MAX_LIGHTMAPS * 2);
   ASSERT(OpenGL_lightmap_remap);
 
   OpenGL_bitmap_states = mem_rmalloc<uint8_t>(MAX_BITMAPS);
@@ -829,9 +829,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     OpenGL_multitexture = false;
 
   if (OpenGL_packed_pixels) {
-    opengl_packed_Upload_data = (uint16_t *)mem_malloc(256 * 256 * 2);
-    opengl_packed_Translate_table = (uint16_t *)mem_malloc(65536 * 2);
-    opengl_packed_4444_translate_table = (uint16_t *)mem_malloc(65536 * 2);
+    opengl_packed_Upload_data = (uint16_t *)malloc(256 * 256 * 2);
+    opengl_packed_Translate_table = (uint16_t *)malloc(65536 * 2);
+    opengl_packed_4444_translate_table = (uint16_t *)malloc(65536 * 2);
 
     ASSERT(opengl_packed_Upload_data);
     ASSERT(opengl_packed_Translate_table);
@@ -877,9 +877,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
       opengl_packed_4444_translate_table[i] = pix;
     }
   } else {
-    opengl_Upload_data = (uint32_t *)mem_malloc(256 * 256 * 4);
-    opengl_Translate_table = (uint32_t *)mem_malloc(65536 * 4);
-    opengl_4444_translate_table = (uint32_t *)mem_malloc(65536 * 4);
+    opengl_Upload_data = (uint32_t *)malloc(256 * 256 * 4);
+    opengl_Translate_table = (uint32_t *)malloc(65536 * 4);
+    opengl_4444_translate_table = (uint32_t *)malloc(65536 * 4);
 
     ASSERT(opengl_Upload_data);
     ASSERT(opengl_Translate_table);
@@ -965,7 +965,7 @@ D3DError:
 void opengl_Close(const bool just_resizing) {
   CHECK_ERROR(5)
 
-  uint32_t *delete_list = (uint32_t *)mem_malloc(Cur_texture_object_num * sizeof(int));
+  uint32_t *delete_list = (uint32_t *)malloc(Cur_texture_object_num * sizeof(int));
   ASSERT(delete_list);
   for (int i = 1; i < Cur_texture_object_num; i++)
     delete_list[i] = i;
@@ -973,7 +973,7 @@ void opengl_Close(const bool just_resizing) {
   if (Cur_texture_object_num > 1)
     dglDeleteTextures(Cur_texture_object_num, (const uint32_t *)delete_list);
 
-  mem_free(delete_list);
+  free(delete_list);
 
 #if defined(WIN32)
   if (dwglMakeCurrent)
@@ -1001,31 +1001,31 @@ void opengl_Close(const bool just_resizing) {
 
   if (OpenGL_packed_pixels) {
     if (opengl_packed_Upload_data)
-      mem_free(opengl_packed_Upload_data);
+      free(opengl_packed_Upload_data);
     if (opengl_packed_Translate_table)
-      mem_free(opengl_packed_Translate_table);
+      free(opengl_packed_Translate_table);
     if (opengl_packed_4444_translate_table)
-      mem_free(opengl_packed_4444_translate_table);
+      free(opengl_packed_4444_translate_table);
     opengl_packed_Upload_data = NULL;
     opengl_packed_Translate_table = NULL;
     opengl_packed_4444_translate_table = NULL;
   } else {
     if (opengl_Upload_data)
-      mem_free(opengl_Upload_data);
+      free(opengl_Upload_data);
     if (opengl_Translate_table)
-      mem_free(opengl_Translate_table);
+      free(opengl_Translate_table);
     if (opengl_4444_translate_table)
-      mem_free(opengl_4444_translate_table);
+      free(opengl_4444_translate_table);
     opengl_Upload_data = NULL;
     opengl_Translate_table = NULL;
     opengl_4444_translate_table = NULL;
   }
 
   if (OpenGL_cache_initted) {
-    mem_free(OpenGL_lightmap_remap);
-    mem_free(OpenGL_bitmap_remap);
-    mem_free(OpenGL_lightmap_states);
-    mem_free(OpenGL_bitmap_states);
+    free(OpenGL_lightmap_remap);
+    free(OpenGL_bitmap_remap);
+    free(OpenGL_lightmap_states);
+    free(OpenGL_bitmap_states);
     OpenGL_cache_initted = 0;
   }
 
@@ -1830,7 +1830,7 @@ void opengl_Screenshot(int bm_handle) {
   int w = bm_w(bm_handle, 0);
   int h = bm_h(bm_handle, 0);
 
-  temp_data = (uint32_t *)mem_malloc(total * 4);
+  temp_data = (uint32_t *)malloc(total * 4);
   ASSERT(temp_data); // Ran out of memory?
 
   dest_data = bm_data(bm_handle, 0);
@@ -1850,7 +1850,7 @@ void opengl_Screenshot(int bm_handle) {
     }
   }
 
-  mem_free(temp_data);
+  free(temp_data);
 }
 
 // Flips the screen
@@ -2412,10 +2412,10 @@ int opengl_SetPreferredState(renderer_preferred_state *pref_state) {
 // Resets the texture cache
 void opengl_ResetCache() {
   if (OpenGL_cache_initted) {
-    mem_free(OpenGL_lightmap_remap);
-    mem_free(OpenGL_bitmap_remap);
-    mem_free(OpenGL_lightmap_states);
-    mem_free(OpenGL_bitmap_states);
+    free(OpenGL_lightmap_remap);
+    free(OpenGL_bitmap_remap);
+    free(OpenGL_lightmap_states);
+    free(OpenGL_bitmap_states);
     OpenGL_cache_initted = 0;
   }
 

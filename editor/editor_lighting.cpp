@@ -2168,7 +2168,7 @@ Dynamic lighting takes a long time)","Question",MB_YESNO))==IDYES) do_dynamic=1;
         mprintf(0,"Calculating terrain radiosity for %d points! (be patient!)\n",maxrays);
 
         // Malloc some memory
-        exitance=(spectra *)mem_malloc (TERRAIN_DEPTH*TERRAIN_WIDTH*sizeof(spectra));
+        exitance=(spectra *)malloc (TERRAIN_DEPTH*TERRAIN_WIDTH*sizeof(spectra));
         ASSERT (exitance!=NULL);
 
         for (i=0;i<TERRAIN_DEPTH*TERRAIN_WIDTH;i++)
@@ -3006,7 +3006,7 @@ void CreateNormalMapForFace (room *rp,face *fp)
         vector fvec=-lmi_ptr->normal;
         vm_VectorToMatrix(&facematrix,&fvec,NULL,NULL);
 
-        sfp->normal_map=(uint8_t *)mem_malloc (w*h*3);
+        sfp->normal_map=(uint8_t *)malloc (w*h*3);
         ASSERT (sfp->normal_map);
 
         for (int i=0;i<(w*h);i++)
@@ -3290,7 +3290,7 @@ void SetupSpecularLighting(int external) {
         int t,k;
         int not_combined=0;
 
-        RoomsAlreadyCombined[roomnum]=(uint8_t *)mem_malloc (Rooms[roomnum].num_faces);
+        RoomsAlreadyCombined[roomnum]=(uint8_t *)malloc (Rooms[roomnum].num_faces);
         ASSERT (RoomsAlreadyCombined[roomnum]);
         for (k=0;k<Rooms[roomnum].num_faces;k++)
                 RoomsAlreadyCombined[roomnum][k]=0;

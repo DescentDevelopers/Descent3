@@ -95,7 +95,7 @@ void fonttool_set_kerning(int c1, int c2, int dist) {
 
   if (!kern_data) {
     // create a one entry kern table.
-    kern_data = (uint8_t *)mem_malloc(KERNINFO_PAIR_SIZE * 2);
+    kern_data = (uint8_t *)malloc(KERNINFO_PAIR_SIZE * 2);
     kern_data[0] = (uint8_t)c1;
     kern_data[1] = (uint8_t)c2;
     kern_data[2] = (int8_t)dist;
@@ -124,7 +124,7 @@ void fonttool_set_kerning(int c1, int c2, int dist) {
         if (i == 0) {
           // last pair, deallocate kern_data and end.
           mprintf(0, "removing last kerning pair\n");
-          mem_free(kern_data);
+          free(kern_data);
           kern_data = NULL;
         } else {
           mprintf(0, "removing kerning pair %d,%d\n", c1, c2);
@@ -140,7 +140,7 @@ void fonttool_set_kerning(int c1, int c2, int dist) {
   uint8_t *new_kern_data;
   int n_pairs = i / KERNINFO_PAIR_SIZE;
 
-  new_kern_data = (uint8_t *)mem_malloc((n_pairs + 2) * sizeof(uint8_t) * KERNINFO_PAIR_SIZE);
+  new_kern_data = (uint8_t *)malloc((n_pairs + 2) * sizeof(uint8_t) * KERNINFO_PAIR_SIZE);
   for (i = 0; i < n_pairs; i++) {
     new_kern_data[i * KERNINFO_PAIR_SIZE] = kern_data[i * 3];
     new_kern_data[i * KERNINFO_PAIR_SIZE + 1] = kern_data[i * 3 + 1];
@@ -154,7 +154,7 @@ void fonttool_set_kerning(int c1, int c2, int dist) {
   new_kern_data[i * KERNINFO_PAIR_SIZE + 1] = 255;
   new_kern_data[i * KERNINFO_PAIR_SIZE + 2] = 0;
 
-  mem_free(kern_data);
+  free(kern_data);
 
   Font_template.kern_data = new_kern_data;
 
@@ -163,7 +163,7 @@ void fonttool_set_kerning(int c1, int c2, int dist) {
 
 void fonttool_remove_kerning() {
   if (Font_template.kern_data) {
-    mem_free(Font_template.kern_data);
+    free(Font_template.kern_data);
     Font_template.kern_data = NULL;
   }
 }

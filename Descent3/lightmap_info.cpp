@@ -57,9 +57,9 @@ void InitLightmapInfo(int nummaps) {
   }
   /* //DAJ this did not work! the lm_FreeLightmap() is refcount-- not a free()
                   else {
-                  LightmapInfo=(lightmap_info *)mem_malloc (nummaps*sizeof(lightmap_info));
+                  LightmapInfo=(lightmap_info *)malloc (nummaps*sizeof(lightmap_info));
                   ASSERT (LightmapInfo);
-                  Free_lmi_list=(uint16_t *)mem_malloc (nummaps*sizeof(uint16_t));
+                  Free_lmi_list=(uint16_t *)malloc (nummaps*sizeof(uint16_t));
                   ASSERT (Free_lmi_list);
 
 

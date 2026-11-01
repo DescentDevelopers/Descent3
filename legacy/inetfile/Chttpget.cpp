@@ -125,8 +125,6 @@
 #ifndef WIN32
 #include "mem.h"
 #else
-#define mem_malloc(a) malloc(a)
-#define mem_free(a) free(a)
 #endif
 
 #if defined(POSIX)
@@ -694,7 +692,7 @@ int http_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
       memcpy(ip, &httpaslu.ip, sizeof(uint32_t));
       return 1;
     } else if (httpaslu.error) {
-      mem_free(http_lastaslu);
+      free(http_lastaslu);
       http_lastaslu = NULL;
       return -1;
     } else
@@ -727,7 +725,7 @@ void *http_gethostbynameworker(void *parm)
     lookup->done = true;
     memcpy(&httpaslu, lookup, sizeof(async_dns_lookup));
   }
-  mem_free(lookup);
+  free(lookup);
 
 #if defined(POSIX)
   return NULL;

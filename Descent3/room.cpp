@@ -601,13 +601,13 @@ void FreeRoom(room *rp) {
 
   if (rp->num_bbf_regions) {
     for (i = 0; i < rp->num_bbf_regions; i++) {
-      mem_free(rp->bbf_list[i]);
+      free(rp->bbf_list[i]);
     }
-    mem_free(rp->bbf_list);
-    mem_free(rp->num_bbf);
-    mem_free(rp->bbf_list_min_xyz);
-    mem_free(rp->bbf_list_max_xyz);
-    mem_free(rp->bbf_list_sector);
+    free(rp->bbf_list);
+    free(rp->num_bbf);
+    free(rp->bbf_list_min_xyz);
+    free(rp->bbf_list_max_xyz);
+    free(rp->bbf_list_sector);
 
     rp->num_bbf_regions = 0;
   }

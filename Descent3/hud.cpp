@@ -835,7 +835,7 @@ void InitHUDItem(int new_item, tHUDItem *item) {
 
   case HUD_ITEM_CUSTOMTEXT:
     if (item->data.text) {
-      char *text = mem_strdup(item->data.text);
+      char *text = strdup(item->data.text);
       HUD_array[new_item].data.text = text;
     }
     stat = STAT_CUSTOM;
@@ -1038,7 +1038,7 @@ void FreeHUDItem(int item) {
   HUD_array[item].id = HUD_INVALID_ID;
   if (((HUD_array[item].type == HUD_ITEM_CUSTOMTEXT) || (HUD_array[item].type == HUD_ITEM_CUSTOMTEXT2)) &&
       HUD_array[item].data.text) {
-    mem_free(HUD_array[item].data.text);
+    free(HUD_array[item].data.text);
     HUD_array[item].data.text = nullptr;
   }
 }
