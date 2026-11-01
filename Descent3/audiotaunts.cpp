@@ -371,12 +371,6 @@ bool taunt_ImportWave(const char *wave_filename, const char *outputfilename) {
   int format;
 
   StaticFileBuffer = std::make_unique<uint8_t[]>(FILEBUFFER_LENGTH);
-  if (!StaticFileBuffer) {
-    ret = false;
-    LOG_ERROR << "Out of memory";
-    TauntLastError = TAUNTIMPERR_OUTOFMEM;
-    goto error;
-  }
 
   fpin = cfopen(osftemp_filename, "rb");
   if (!fpin) {
