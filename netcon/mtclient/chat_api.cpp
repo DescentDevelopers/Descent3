@@ -128,7 +128,6 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
     strcpy(Chat_tracker_id, trackerid);
 
     Firstuser.reset();
-    Firstcommand.reset();
     Chat_server_connected = 0;
     FlushChatCommandQueue();
 
