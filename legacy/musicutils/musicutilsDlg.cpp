@@ -219,7 +219,6 @@ BOOL CMusicutilsDlg::OnInitDialog() {
   //	set focus to tree control
   GetDlgItem(IDC_THEME_TREE)->SetFocus();
 
-
   return FALSE; // return TRUE  unless you set the focus to a control
 }
 
