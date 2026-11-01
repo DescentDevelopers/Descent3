@@ -83,12 +83,6 @@
 #define mem_strdup(d) strdup(d)
 #define mem_realloc(d, e) realloc(d, e)
 
-extern bool Mem_low_memory_mode;
-extern bool Mem_superlow_memory_mode; // DAJ
-
-// Returns the usable size of a block allocated with mem_malloc
-int mem_size(void *memblock);
-
 // type aware memory allocation
 template<typename T> static inline T *mem_rmalloc()
 {

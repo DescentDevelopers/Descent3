@@ -903,6 +903,8 @@ int GetScreenMode() { return Screen_mode; }
 //	use to sync to debug break handlers
 int rend_initted = 0;
 int Low_vidmem = 0;
+bool Mem_low_memory_mode = false;
+bool Mem_superlow_memory_mode = false;
 
 void SetScreenMode(int sm, bool force_res_change) {
   static int old_sm = SM_NULL;
