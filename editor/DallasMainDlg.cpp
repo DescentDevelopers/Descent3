@@ -9936,11 +9936,11 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
   O(("	if(name==NULL) return INV_MSGNAME_STRING;"));
   O((" "));
   O(("	// Search message list for name"));
-  O(("  for (int j = 0; j < num_messages; j++) {"));
-  O(("    if (strcmp(message_list[j]->name.get(), name) == 0) {"));
-  O(("      return message_list[j]->message.get();"));
-  O(("    }"));
-  O(("  }"));
+  O(("	for (int j = 0; j < num_messages; j++) {"));
+  O(("		if (strcmp(message_list[j]->name.get(), name) == 0) {"));
+  O(("			return message_list[j]->message.get();"));
+  O(("		}"));
+  O(("	}"));
   O((" "));
   O(("	// Couldn't find it"));
   O(("	return NO_MESSAGE_STRING;"));
