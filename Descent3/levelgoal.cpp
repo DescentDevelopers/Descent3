@@ -510,6 +510,7 @@ void lgoal::Reset(bool f_from_editor) {
   m_name.reset();
   m_item_name.reset();
   m_desc.reset();
+  m_completion_message.reset();
   m_num_items = 0;
   m_priority = 0;
   m_g_list = 0;
