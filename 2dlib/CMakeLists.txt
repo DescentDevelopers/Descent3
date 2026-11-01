@@ -18,7 +18,6 @@ target_link_libraries(2dlib PRIVATE
   cfile
   ddebug
   logger
-  mem
 )
 target_include_directories(2dlib PUBLIC
   $<BUILD_INTERFACE:

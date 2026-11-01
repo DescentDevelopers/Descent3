@@ -814,8 +814,9 @@ int ObjInitGeneric(object *objp, bool reinit) {
     poly_model *pm = &Poly_models[objp->rtype.pobj_info.model_num];
     int num_wbs = pm->num_wbs;
 
-    if ((objp->dynamic_wb != nullptr) && ((uint32_t)num_wbs != mem_size(objp->dynamic_wb) / sizeof(dynamic_wb_info)))
-    {
+    // On a fresh init, SetObjectControlType() has just sized dynamic_wb for this model. A reinitialized object
+    // may have changed models, so replace its array (WBClearInfo() below resets every field in use anyway).
+    if ((objp->dynamic_wb != nullptr) && reinit) {
       mem_free(objp->dynamic_wb);
       objp->dynamic_wb = nullptr;
     }

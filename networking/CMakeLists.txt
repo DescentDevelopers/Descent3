@@ -15,7 +15,6 @@ target_link_libraries(networking PRIVATE
   ddebug
   ddio
   logger
-  mem
   module
   ${PLATFORM_LIBS}
 )

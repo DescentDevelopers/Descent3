@@ -27,7 +27,6 @@ target_include_directories(ddebug PUBLIC
 )
 target_link_libraries(ddebug PRIVATE
   $<$<PLATFORM_ID:Windows>:
-    mem
     misc
   >
   PUBLIC

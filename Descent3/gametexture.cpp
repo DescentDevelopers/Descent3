@@ -285,8 +285,6 @@
 int Num_textures = 0;
 texture GameTextures[MAX_TEXTURES];
 
-extern bool Mem_superlow_memory_mode;
-
 static int Total_memory_saved = 0;
 
 void FreeAllTextures() {

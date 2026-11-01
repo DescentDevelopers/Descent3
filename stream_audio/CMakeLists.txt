@@ -10,7 +10,6 @@ target_link_libraries(stream_audio PRIVATE
   ddebug
   ddio
   logger
-  mem
   sndlib
 )
 target_link_libraries(stream_audio PUBLIC
