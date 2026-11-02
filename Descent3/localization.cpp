@@ -573,8 +573,10 @@ bool CreateMessageMap(const std::filesystem::path &filename, std::map<std::strin
 
   // Try to open the file for loading
   CFILE *infile = cfopen(filename, "rt");
-  if (!infile)
+  if (!infile) {
+    LOG_WARNING << "Could not load message file " << filename;
     return false;
+  }
 
   // Clear the message list
   map.clear();
@@ -621,10 +623,6 @@ const char *GetMessageMap(const std::string &name, std::map<std::string, std::st
   }
 
   // We have key in map
-  if (map.count(name) > 0) {
-    return map[name].c_str();
-  }
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
+  const auto it = map.find(name);
+  return it == map.end() ? NO_MESSAGE_STRING : it->second.c_str();
 }

@@ -27,6 +27,7 @@
 #include "osiris_import.h"
 #include "osiris_common.h"
 
+#include "crossplat.h"
 #include "module.h"
 
 #ifdef __cplusplus

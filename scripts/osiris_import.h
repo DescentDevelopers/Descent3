@@ -25,10 +25,6 @@
 
 #include "osiris_common.h"
 
-#if defined(POSIX)
-#include "linux_lib.h"
-#endif
-
 // ===========================================================
 
 // void mprintf(int n, const char *format, ... );

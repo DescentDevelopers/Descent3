@@ -22,7 +22,7 @@
 // Filename:	piccustation.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <cstring>
+#include <filesystem>
 #include <map>
 #include <string>
 
@@ -1135,14 +1135,19 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   dfInit();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 32];
-  if (func_list->script_identifier != nullptr) {
-    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
-    strcat(filename, ".msg");
+  std::filesystem::path filename = "piccuStation.msg";
+  std::filesystem::path eng_filename = "piccuStation.msg";
+  int lang_type = Game_GetLanguage();
+  if (func_list->script_identifier != nullptr && lang_type < LANGUAGE_TOTAL) {
+    filename = std::filesystem::path(func_list->script_identifier).stem();
+    filename += lang_suffixes[lang_type];
+    filename.replace_extension(".msg");
   } else {
-    strcpy(filename, "piccustation.msg");
+    lang_type = LANGUAGE_ENGLISH;
   }
-  ReadMessageFile(filename);
+  if (!ReadMessageFile(filename) && lang_type != LANGUAGE_ENGLISH) {
+    ReadMessageFile(eng_filename);
+  }
 
   int j;
 
