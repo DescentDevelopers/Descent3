@@ -29,7 +29,6 @@ target_link_libraries(ui PRIVATE
   ddio
   grtext
   logger
-  mem
 )
 target_include_directories(ui PUBLIC
   $<BUILD_INTERFACE:

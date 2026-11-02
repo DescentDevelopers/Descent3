@@ -27,7 +27,6 @@ target_link_libraries(manage PRIVATE
   ddebug
   ddio
   logger
-  mem
   model
   sndlib
   stream_audio

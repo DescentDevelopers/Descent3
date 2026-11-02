@@ -23,7 +23,6 @@ target_link_libraries(sndlib PRIVATE
   ddebug
   ddio
   logger
-  mem
   stream_audio
   physics
   SDL3::SDL3

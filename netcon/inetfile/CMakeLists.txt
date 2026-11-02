@@ -18,7 +18,6 @@ target_include_directories(inetfile PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/netcon/inetfile
   >
-  mem
 )
 target_include_directories(inetfile PRIVATE ${SDL3_INCLUDE_DIRS})
 
