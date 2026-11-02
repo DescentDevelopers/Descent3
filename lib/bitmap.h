@@ -20,6 +20,7 @@
 #define PSBITMAP_H
 
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "crossplat.h" //needed for stricmp's throughout bitmap lib
@@ -54,7 +55,7 @@
 #define BITMAP_FORMAT_4444 1
 
 struct bms_bitmap {
-  uint16_t *data16;       // 16bit data
+  std::unique_ptr<uint16_t[]> data16; // 16bit data
   uint16_t width, height; // Width and height in pixels
   uint16_t used;          // Is this bitmap free to be allocated?
 

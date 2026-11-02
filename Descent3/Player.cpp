@@ -3187,7 +3187,7 @@ void PlayerShipSpewPart(object *obj, int subobjnum, float magnitude) {
 
 void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
   vector rand_vec;
-  int subobjnum = submodel - Poly_models[obj->rtype.pobj_info.model_num].submodel;
+  int subobjnum = submodel - Poly_models[obj->rtype.pobj_info.model_num].submodel.get();
   int i;
   int visnum;
 

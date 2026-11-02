@@ -729,7 +729,7 @@ int AllocPolyModel() {
   for (int i = 0; i < MAX_POLY_MODELS; i++)
     if (Poly_models[i].used == 0) {
       WBClearInfo(&Poly_models[i]);
-      memset(&Poly_models[i], 0, sizeof(poly_model));
+      Poly_models[i] = {};
       Poly_models[i].used = 1;
       Poly_models[i].flags |= PMF_NOT_RESIDENT; // not in memory yet!
       return i;
@@ -741,127 +741,16 @@ int AllocPolyModel() {
 
 // Frees all the polymodel data, but doesn't free the actual polymodel itself
 void FreePolymodelData(int i) {
-  int t;
-
-  for (t = 0; t < Poly_models[i].n_models; t++) {
-    if (Poly_models[i].submodel) {
-      if (Poly_models[i].submodel[t].keyframe_axis) {
-        mem_free(Poly_models[i].submodel[t].keyframe_axis);
-        Poly_models[i].submodel[t].keyframe_axis = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].tick_pos_remap) {
-        mem_free(Poly_models[i].submodel[t].tick_pos_remap);
-        Poly_models[i].submodel[t].tick_pos_remap = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].tick_ang_remap) {
-        mem_free(Poly_models[i].submodel[t].tick_ang_remap);
-        Poly_models[i].submodel[t].tick_ang_remap = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].keyframe_angles) {
-        mem_free(Poly_models[i].submodel[t].keyframe_angles);
-        Poly_models[i].submodel[t].keyframe_angles = nullptr;
-      }
-      if (Poly_models[i].submodel[t].keyframe_matrix) {
-        mem_free(Poly_models[i].submodel[t].keyframe_matrix);
-        Poly_models[i].submodel[t].keyframe_matrix = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].keyframe_pos) {
-        mem_free(Poly_models[i].submodel[t].keyframe_pos);
-        Poly_models[i].submodel[t].keyframe_pos = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].verts) {
-        mem_free(Poly_models[i].submodel[t].verts);
-        Poly_models[i].submodel[t].verts = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].vertnorms) {
-        mem_free(Poly_models[i].submodel[t].vertnorms);
-        Poly_models[i].submodel[t].vertnorms = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].alpha) {
-        mem_free(Poly_models[i].submodel[t].alpha);
-        Poly_models[i].submodel[t].alpha = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].vertnum_memory) {
-        mem_free(Poly_models[i].submodel[t].vertnum_memory);
-        Poly_models[i].submodel[t].vertnum_memory = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].u_memory) {
-        mem_free(Poly_models[i].submodel[t].u_memory);
-        Poly_models[i].submodel[t].u_memory = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].v_memory) {
-        mem_free(Poly_models[i].submodel[t].v_memory);
-        Poly_models[i].submodel[t].v_memory = nullptr;
-      }
-
-      if (Poly_models[i].flags & PMF_TIMED) {
-        if (Poly_models[i].submodel[t].rot_start_time) {
-          mem_free(Poly_models[i].submodel[t].rot_start_time);
-          Poly_models[i].submodel[t].rot_start_time = nullptr;
-        }
-
-        if (Poly_models[i].submodel[t].pos_start_time) {
-          mem_free(Poly_models[i].submodel[t].pos_start_time);
-          Poly_models[i].submodel[t].pos_start_time = nullptr;
-        }
-      }
-
-      if (Poly_models[i].submodel[t].flags & (SOF_GLOW | SOF_THRUSTER)) {
-        mem_free(Poly_models[i].submodel[t].glow_info);
-        Poly_models[i].submodel[t].glow_info = nullptr;
-      }
-
-      if (Poly_models[i].submodel[t].faces) {
-        mem_free(Poly_models[i].submodel[t].faces);
-        Poly_models[i].submodel[t].faces = nullptr;
-
-        if (Poly_models[i].submodel[t].face_min) {
-          mem_free(Poly_models[i].submodel[t].face_min);
-          Poly_models[i].submodel[t].face_min = nullptr;
-        }
-        if (Poly_models[i].submodel[t].face_max) {
-          mem_free(Poly_models[i].submodel[t].face_max);
-          Poly_models[i].submodel[t].face_max = nullptr;
-        }
-      }
-    }
-  }
-
   if (Poly_models[i].model_data) {
     mem_free(Poly_models[i].model_data);
     Poly_models[i].model_data = nullptr;
   }
-  if (Poly_models[i].gun_slots) {
-    mem_free(Poly_models[i].gun_slots);
-    Poly_models[i].gun_slots = nullptr;
-  }
-  if (Poly_models[i].poly_wb) {
-    mem_free(Poly_models[i].poly_wb);
-    Poly_models[i].poly_wb = nullptr;
-  }
-  if (Poly_models[i].attach_slots) {
-    mem_free(Poly_models[i].attach_slots);
-    Poly_models[i].attach_slots = nullptr;
-  }
+  Poly_models[i].gun_slots.reset();
+  Poly_models[i].poly_wb.reset();
+  Poly_models[i].attach_slots.reset();
 
-  if (Poly_models[i].ground_slots) {
-    mem_free(Poly_models[i].ground_slots);
-    Poly_models[i].ground_slots = nullptr;
-  }
-  if (Poly_models[i].submodel) {
-    mem_free(Poly_models[i].submodel);
-    Poly_models[i].submodel = nullptr;
-  }
+  Poly_models[i].ground_slots.reset();
+  Poly_models[i].submodel.reset();
 
   Poly_models[i].flags |= PMF_NOT_RESIDENT;
   Poly_models[i].n_models = 0;
@@ -1086,8 +975,9 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
 
     subobj->flags |= SOF_GLOW;
 
-    if (subobj->glow_info == nullptr) // DAJ may already exist
-      subobj->glow_info = mem_rmalloc<glowinfo>();
+    if (subobj->glow_info == nullptr) { // DAJ may already exist
+      subobj->glow_info = std::make_unique<glowinfo>();
+    }
 
     subobj->glow_info->glow_r = r;
     subobj->glow_info->glow_g = g;
@@ -1110,8 +1000,9 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
 
     subobj->flags |= SOF_THRUSTER;
 
-    if (subobj->glow_info == nullptr) // DAJ may already exist
-      subobj->glow_info = mem_rmalloc<glowinfo>();
+    if (subobj->glow_info == nullptr) { // DAJ may already exist
+      subobj->glow_info = std::make_unique<glowinfo>();
+    }
 
     subobj->glow_info->glow_r = r;
     subobj->glow_info->glow_g = g;
@@ -1330,9 +1221,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->n_models = cf_ReadInt(infile);
       pm->rad = cf_ReadFloat(infile);
 
-      pm->submodel = mem_rmalloc<bsp_info>(pm->n_models);
-      ASSERT(pm->submodel != nullptr);
-      memset(pm->submodel, 0, sizeof(bsp_info) * pm->n_models);
+      pm->submodel = std::make_unique<bsp_info[]>(pm->n_models);
 
       ReadModelVector(&pm->mins, infile);
       ReadModelVector(&pm->maxs, infile);
@@ -1419,19 +1308,16 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       ASSERT(nverts < MAX_POLYGON_VECS);
 
       if (nverts) {
-        pm->submodel[n].verts = mem_rmalloc<vector>(nverts);
-        pm->submodel[n].vertnorms = mem_rmalloc<vector>(nverts);
-        pm->submodel[n].alpha = mem_rmalloc<float>(nverts);
-        ASSERT(pm->submodel[n].verts);
-        ASSERT(pm->submodel[n].vertnorms);
-        ASSERT(pm->submodel[n].alpha);
+        pm->submodel[n].verts = std::make_unique<vector[]>(nverts);
+        pm->submodel[n].vertnorms = std::make_unique<vector[]>(nverts);
+        pm->submodel[n].alpha = std::make_unique<float[]>(nverts);
       } else {
         // Let me take a moment right here to say how annoying it is that I can't
         // set all these pointers to nullptr with one assignment on the same line due
         // to the stupid strong typying they've added to C.
-        pm->submodel[n].verts = nullptr;
-        pm->submodel[n].vertnorms = nullptr;
-        pm->submodel[n].alpha = nullptr;
+        pm->submodel[n].verts.reset();
+        pm->submodel[n].vertnorms.reset();
+        pm->submodel[n].alpha.reset();
       }
 
       pm->submodel[n].nverts = nverts;
@@ -1474,14 +1360,13 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->submodel[n].num_faces = nfaces;
 
       if (nfaces) {
-        pm->submodel[n].faces = mem_rmalloc<polyface>(nfaces);
-        pm->submodel[n].face_min = mem_rmalloc<vector>(nfaces);
-        pm->submodel[n].face_max = mem_rmalloc<vector>(nfaces);
-        ASSERT(pm->submodel[n].faces);
+        pm->submodel[n].faces = std::make_unique<polyface[]>(nfaces);
+        pm->submodel[n].face_min = std::make_unique<vector[]>(nfaces);
+        pm->submodel[n].face_max = std::make_unique<vector[]>(nfaces);
       } else {
-        pm->submodel[n].faces = nullptr;
-        pm->submodel[n].face_max = nullptr;
-        pm->submodel[n].face_min = nullptr;
+        pm->submodel[n].faces.reset();
+        pm->submodel[n].face_max.reset();
+        pm->submodel[n].face_min.reset();
       }
 
       // Find out how much space we'll need
@@ -1491,13 +1376,11 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       int current_count = 0;
 
       int save_position = cftell(infile);
-      int *start_index;
+      std::unique_ptr<int[]> start_index;
 
       if (nfaces) {
-        start_index = mem_rmalloc<int>(nfaces);
-        ASSERT(start_index);
-      } else
-        start_index = nullptr;
+        start_index = std::make_unique<int[]>(nfaces);
+      }
 
       uint8_t tempbuf[2000];
 
@@ -1524,18 +1407,13 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       // Allocate our space
       if (current_count) {
-        sm->vertnum_memory = mem_rmalloc<int16_t>(current_count);
-        ASSERT(sm->vertnum_memory);
-
-        sm->u_memory = mem_rmalloc<float>(current_count);
-        ASSERT(sm->u_memory);
-
-        sm->v_memory = mem_rmalloc<float>(current_count);
-        ASSERT(sm->v_memory);
+        sm->vertnum_memory = std::make_unique<int16_t[]>(current_count);
+        sm->u_memory = std::make_unique<float[]>(current_count);
+        sm->v_memory = std::make_unique<float[]>(current_count);
       } else {
-        sm->vertnum_memory = nullptr;
-        sm->u_memory = nullptr;
-        sm->v_memory = nullptr;
+        sm->vertnum_memory.reset();
+        sm->u_memory.reset();
+        sm->v_memory.reset();
       }
 
       // Now go through and set up our fake pointers
@@ -1548,8 +1426,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       // Reset our file pointer and free the temp memory
       cfseek(infile, save_position, SEEK_SET);
 
-      if (start_index)
-        mem_free(start_index);
+      start_index.reset();
 
       for (i = 0; i < nfaces; i++) {
         ReadModelVector(&pm->submodel[n].faces[i].normal, infile);
@@ -1617,8 +1494,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_GPNT:
       pm->n_guns = cf_ReadInt(infile);
-      pm->gun_slots = mem_rmalloc<w_bank>(pm->n_guns);
-      ASSERT(pm->gun_slots != nullptr);
+      pm->gun_slots = std::make_unique<w_bank[]>(pm->n_guns);
 
       for (i = 0; i < pm->n_guns; i++) {
         w_bank *bank = &pm->gun_slots[i];
@@ -1638,8 +1514,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_ATTACH:
       pm->n_attach = cf_ReadInt(infile);
       if (pm->n_attach) {
-        pm->attach_slots = mem_rmalloc<a_bank>(pm->n_attach);
-        ASSERT(pm->attach_slots != nullptr);
+        pm->attach_slots = std::make_unique<a_bank[]>(pm->n_attach);
 
         for (i = 0; i < pm->n_attach; i++) {
           a_bank *bank = &pm->attach_slots[i];
@@ -1650,7 +1525,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           bank->f_uvec = false;
         }
       } else {
-        pm->attach_slots = nullptr;
+        pm->attach_slots.reset();
       }
       break;
 
@@ -1667,18 +1542,19 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
                   num_normals);
       }
 
-      if (num_normals) {
-        for (i = 0; i < num_normals; i++) {
-          vector temp;
-          a_bank *bank = &pm->attach_slots[i];
+      // Read every normal to keep the file position, but only store the ones that have an attach point: a
+      // mismatched count can name more normals than there are points. With no normals the points stay valid,
+      // just without uvecs.
+      for (i = 0; i < num_normals; i++) {
+        vector temp, uvec;
 
-          cf_ReadInt(infile);
-          ReadModelVector(&temp, infile);
-          ReadModelVector(&bank->uvec, infile);
-          bank->f_uvec = f_uvec;
+        cf_ReadInt(infile);
+        ReadModelVector(&temp, infile);
+        ReadModelVector(&uvec, infile);
+        if (i < pm->n_attach) {
+          pm->attach_slots[i].uvec = uvec;
+          pm->attach_slots[i].f_uvec = f_uvec;
         }
-      } else {
-        pm->attach_slots = nullptr;
       }
       break;
     }
@@ -1691,7 +1567,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       pm->num_wbs = cf_ReadInt(infile);
 
       if (pm->num_wbs) {
-        pm->poly_wb = mem_rmalloc<poly_wb_info>(pm->num_wbs);
+        pm->poly_wb = std::make_unique<poly_wb_info[]>(pm->num_wbs);
 
         // Get each individual wb info struct
         for (i = 0; i < pm->num_wbs; i++) {
@@ -1717,7 +1593,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
             pm->poly_wb[i].num_turrets = 8;
         }
       } else {
-        pm->poly_wb = nullptr;
+        pm->poly_wb.reset();
       }
 
       break;
@@ -1725,8 +1601,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
     case ID_GROUND:
       pm->n_ground = cf_ReadInt(infile);
-      pm->ground_slots = mem_rmalloc<w_bank>(pm->n_ground);
-      ASSERT(pm->ground_slots != nullptr);
+      pm->ground_slots = std::make_unique<w_bank[]>(pm->n_ground);
 
       for (i = 0; i < pm->n_ground; i++) {
         w_bank *bank = &pm->ground_slots[i];
@@ -1802,26 +1677,20 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           pm->submodel[i].num_key_angles = nframes;
         }
 
-        pm->submodel[i].keyframe_axis = mem_rmalloc<vector>(pm->submodel[i].num_key_angles + 1);
-        pm->submodel[i].keyframe_angles = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
-        pm->submodel[i].keyframe_matrix = mem_rmalloc<matrix>(pm->submodel[i].num_key_angles + 1);
+        pm->submodel[i].keyframe_axis = std::make_unique<vector[]>(pm->submodel[i].num_key_angles + 1);
+        pm->submodel[i].keyframe_angles = std::make_unique<int[]>(pm->submodel[i].num_key_angles + 1);
+        pm->submodel[i].keyframe_matrix = std::make_unique<matrix[]>(pm->submodel[i].num_key_angles + 1);
         if (timed) {
-          pm->submodel[i].rot_start_time = (int *)mem_malloc((pm->submodel[i].num_key_angles + 1) * sizeof(int));
-          ASSERT(pm->submodel[i].rot_start_time != nullptr);
+          pm->submodel[i].rot_start_time = std::make_unique<int[]>(pm->submodel[i].num_key_angles + 1);
 
           int num_ticks = (pm->submodel[i].rot_track_max - pm->submodel[i].rot_track_min);
 
           if (num_ticks > 0) {
-            pm->submodel[i].tick_ang_remap = (uint16_t *)mem_malloc(num_ticks * 2);
-            ASSERT(pm->submodel[i].tick_ang_remap);
+            pm->submodel[i].tick_ang_remap = std::make_unique<uint16_t[]>(num_ticks);
           } else {
-            pm->submodel[i].tick_ang_remap = nullptr;
+            pm->submodel[i].tick_ang_remap.reset();
           }
         }
-
-        ASSERT(pm->submodel[i].keyframe_axis != nullptr);
-        ASSERT(pm->submodel[i].keyframe_angles != nullptr);
-        ASSERT(pm->submodel[i].keyframe_matrix != nullptr);
 
         for (t = 0; t < pm->submodel[i].num_key_angles; t++) {
           vector *axis;
@@ -1883,21 +1752,18 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           int num_ticks = (pm->submodel[i].pos_track_max - pm->submodel[i].pos_track_min);
 
           if (num_ticks > 0) {
-            pm->submodel[i].tick_pos_remap = (uint16_t *)mem_malloc(num_ticks * 2);
-            ASSERT(pm->submodel[i].tick_pos_remap);
+            pm->submodel[i].tick_pos_remap = std::make_unique<uint16_t[]>(num_ticks);
           } else {
-            pm->submodel[i].tick_pos_remap = nullptr;
+            pm->submodel[i].tick_pos_remap.reset();
           }
 
         } else
           pm->submodel[i].num_key_pos = nframes;
 
-        pm->submodel[i].keyframe_pos = mem_rmalloc<vector>(pm->submodel[i].num_key_pos + 1);
-        ASSERT(pm->submodel[i].keyframe_pos != nullptr);
+        pm->submodel[i].keyframe_pos = std::make_unique<vector[]>(pm->submodel[i].num_key_pos + 1);
 
         if (timed) {
-          pm->submodel[i].pos_start_time = (int *)mem_malloc((pm->submodel[i].num_key_pos + 1) * sizeof(int));
-          ASSERT(pm->submodel[i].pos_start_time != nullptr);
+          pm->submodel[i].pos_start_time = std::make_unique<int[]>(pm->submodel[i].num_key_pos + 1);
         }
 
         for (t = 0; t < pm->submodel[i].num_key_pos; t++) {
@@ -2082,7 +1948,7 @@ int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
     Poly_models[i].used = 1;
     FreePolyModel(i);
 
-    memset(&Poly_models[i], 0, sizeof(poly_model));
+    Poly_models[i] = {};
     WBClearInfo(&Poly_models[i]);
     Poly_models[i].used = old_used + 1;
     if (not_res)
@@ -3040,7 +2906,7 @@ void FreeAllModels() {
 // Inits our models array and loads our ship pof
 int InitModels() {
   for (auto &Poly_model : Poly_models) {
-    memset(&Poly_model, 0, sizeof(poly_model));
+    Poly_model = {};
     Poly_model.used = 0;
   }
 

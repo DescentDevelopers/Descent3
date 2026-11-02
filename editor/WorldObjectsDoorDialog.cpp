@@ -222,7 +222,7 @@ bool VerifyDoorModel(int handle) {
       room check_room;
       face check_face;
 
-      check_room.verts = sm->verts;
+      check_room.verts = sm->verts.get();
       check_room.faces = &check_face;
 
       for (int f = 0; f < sm->num_faces; f++) {

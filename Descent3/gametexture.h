@@ -196,6 +196,8 @@
 #include "..\neweditor\ned_GameTexture.h"
 #else
 
+#include <memory>
+
 #include "manage.h"
 
 #define TF_VOLATILE 1
@@ -261,12 +263,12 @@ struct static_proc_element {
 
 struct proc_struct {
   int16_t dynamic_proc_elements; // list of dynamic procedural texture elements
-  void *proc1;                 // pointer for procedural page
-  void *proc2;                 // back page of procedural
+  std::unique_ptr<uint8_t[]> proc1; // procedural page (uint8_t for fire, int16_t for water)
+  std::unique_ptr<uint8_t[]> proc2; // back page of procedural
   int16_t procedural_bitmap;     // handle to the bitmap holding the finished procedural
 
-  uint16_t *palette;
-  static_proc_element *static_proc_elements;
+  std::unique_ptr<uint16_t[]> palette;
+  std::unique_ptr<static_proc_element[]> static_proc_elements;
   uint16_t num_static_elements;
 
   uint8_t memory_type;
@@ -297,7 +299,7 @@ struct texture {
   float alpha;            // alpha value (from 0 to 1)
   float speed;            // how fast this texture animates
 
-  proc_struct *procedural;
+  std::unique_ptr<proc_struct> procedural;
 
   int sound;          // The sound this texture makes
   float sound_volume; // The volume for this texture's sound
@@ -306,6 +308,7 @@ struct texture {
   uint8_t corona_type; // what type of corona this thing uses
   uint8_t used;        // is this texture free to be allocated?
 
+  // When adding members, update CopyTextureValues()
 };
 
 extern texture GameTextures[MAX_TEXTURES];
@@ -362,6 +365,9 @@ void FreeProceduralForTexture(int n);
 
 // Allocates memory for a procedural that is attached to a texture
 int AllocateProceduralForTexture(int handle);
+
+// Copies all of src's values into dest, except for the procedural, which stays with its texture
+void CopyTextureValues(texture *dest, const texture *src);
 
 #endif
 

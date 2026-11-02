@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <memory>
 #include <optional>
 
 // TODO: Use SDL_FunctionPointer properly instead
@@ -197,18 +198,18 @@ extern int gpu_last_uploaded;
 extern float gpu_Alpha_factor;
 extern float gpu_Alpha_multiplier;
 
-uint16_t *OpenGL_bitmap_remap = nullptr;
-uint16_t *OpenGL_lightmap_remap = nullptr;
-uint8_t *OpenGL_bitmap_states = nullptr;
-uint8_t *OpenGL_lightmap_states = nullptr;
+static std::unique_ptr<uint16_t[]> OpenGL_bitmap_remap;
+static std::unique_ptr<uint16_t[]> OpenGL_lightmap_remap;
+static std::unique_ptr<uint8_t[]> OpenGL_bitmap_states;
+static std::unique_ptr<uint8_t[]> OpenGL_lightmap_states;
 
-uint32_t *opengl_Upload_data = nullptr;
-uint32_t *opengl_Translate_table = nullptr;
-uint32_t *opengl_4444_translate_table = nullptr;
+static std::unique_ptr<uint32_t[]> opengl_Upload_data;
+static std::unique_ptr<uint32_t[]> opengl_Translate_table;
+static std::unique_ptr<uint32_t[]> opengl_4444_translate_table;
 
-uint16_t *opengl_packed_Upload_data = nullptr;
-uint16_t *opengl_packed_Translate_table = nullptr;
-uint16_t *opengl_packed_4444_translate_table = nullptr;
+static std::unique_ptr<uint16_t[]> opengl_packed_Upload_data;
+static std::unique_ptr<uint16_t[]> opengl_packed_Translate_table;
+static std::unique_ptr<uint16_t[]> opengl_packed_4444_translate_table;
 
 extern rendering_state gpu_state;
 extern renderer_preferred_state gpu_preferred_state;
@@ -270,15 +271,11 @@ int opengl_MakeTextureObject(int tn) {
 
 int opengl_InitCache() {
 
-  OpenGL_bitmap_remap = mem_rmalloc<uint16_t>(MAX_BITMAPS);
-  ASSERT(OpenGL_bitmap_remap);
-  OpenGL_lightmap_remap = mem_rmalloc<uint16_t>(MAX_LIGHTMAPS);
-  ASSERT(OpenGL_lightmap_remap);
+  OpenGL_bitmap_remap = std::make_unique<uint16_t[]>(MAX_BITMAPS);
+  OpenGL_lightmap_remap = std::make_unique<uint16_t[]>(MAX_LIGHTMAPS);
 
-  OpenGL_bitmap_states = mem_rmalloc<uint8_t>(MAX_BITMAPS);
-  ASSERT(OpenGL_bitmap_states);
-  OpenGL_lightmap_states = mem_rmalloc<uint8_t>(MAX_LIGHTMAPS);
-  ASSERT(OpenGL_lightmap_states);
+  OpenGL_bitmap_states = std::make_unique<uint8_t[]>(MAX_BITMAPS);
+  OpenGL_lightmap_states = std::make_unique<uint8_t[]>(MAX_LIGHTMAPS);
 
   // Setup textures and cacheing
   int i;
@@ -578,13 +575,10 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   opengl_InitCache();
 
   if (OpenGL_packed_pixels) {
-    opengl_packed_Upload_data = mem_rmalloc<uint16_t>(2048 * 2048);
-    opengl_packed_Translate_table = mem_rmalloc<uint16_t>(65536);
-    opengl_packed_4444_translate_table = mem_rmalloc<uint16_t>(65536);
-
-    ASSERT(opengl_packed_Upload_data);
-    ASSERT(opengl_packed_Translate_table);
-    ASSERT(opengl_packed_4444_translate_table);
+    // 2048x2048 staging buffer, rewritten for each upload: left uninitialised as before
+    opengl_packed_Upload_data = std::unique_ptr<uint16_t[]>(new uint16_t[2048 * 2048]);
+    opengl_packed_Translate_table = std::make_unique<uint16_t[]>(65536);
+    opengl_packed_4444_translate_table = std::make_unique<uint16_t[]>(65536);
 
     LOG_INFO << "Building packed OpenGL translate table...";
 
@@ -625,13 +619,10 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
       opengl_packed_4444_translate_table[i] = INTEL_INT(pix);
     }
   } else {
-    opengl_Upload_data = mem_rmalloc<uint32_t>(2048 * 2048);
-    opengl_Translate_table = mem_rmalloc<uint32_t>(65536);
-    opengl_4444_translate_table = mem_rmalloc<uint32_t>(65536);
-
-    ASSERT(opengl_Upload_data);
-    ASSERT(opengl_Translate_table);
-    ASSERT(opengl_4444_translate_table);
+    // 2048x2048 staging buffer, rewritten for each upload: left uninitialised as before
+    opengl_Upload_data = std::unique_ptr<uint32_t[]>(new uint32_t[2048 * 2048]);
+    opengl_Translate_table = std::make_unique<uint32_t[]>(65536);
+    opengl_4444_translate_table = std::make_unique<uint32_t[]>(65536);
 
     LOG_INFO << "Building OpenGL translate table...";
 
@@ -726,35 +717,20 @@ void opengl_Close(const bool just_resizing) {
   }
 
   if (OpenGL_packed_pixels) {
-    if (opengl_packed_Upload_data) {
-      mem_free(opengl_packed_Upload_data);
-    }
-    if (opengl_packed_Translate_table) {
-      mem_free(opengl_packed_Translate_table);
-    }
-    if (opengl_packed_4444_translate_table) {
-      mem_free(opengl_packed_4444_translate_table);
-    }
-    opengl_packed_Upload_data = nullptr;
-    opengl_packed_Translate_table = nullptr;
-    opengl_packed_4444_translate_table = nullptr;
+    opengl_packed_Upload_data.reset();
+    opengl_packed_Translate_table.reset();
+    opengl_packed_4444_translate_table.reset();
   } else {
-    if (opengl_Upload_data)
-      mem_free(opengl_Upload_data);
-    if (opengl_Translate_table)
-      mem_free(opengl_Translate_table);
-    if (opengl_4444_translate_table)
-      mem_free(opengl_4444_translate_table);
-    opengl_Upload_data = nullptr;
-    opengl_Translate_table = nullptr;
-    opengl_4444_translate_table = nullptr;
+    opengl_Upload_data.reset();
+    opengl_Translate_table.reset();
+    opengl_4444_translate_table.reset();
   }
 
   if (OpenGL_cache_initted) {
-    mem_free(OpenGL_lightmap_remap);
-    mem_free(OpenGL_bitmap_remap);
-    mem_free(OpenGL_lightmap_states);
-    mem_free(OpenGL_bitmap_states);
+    OpenGL_lightmap_remap.reset();
+    OpenGL_bitmap_remap.reset();
+    OpenGL_lightmap_states.reset();
+    OpenGL_bitmap_states.reset();
     OpenGL_cache_initted = 0;
   }
 
@@ -800,7 +776,7 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
   if (OpenGL_packed_pixels) {
     if (map_type == MAP_TYPE_LIGHTMAP) {
-      uint16_t *left_data = (uint16_t *)opengl_packed_Upload_data;
+      uint16_t *left_data = opengl_packed_Upload_data.get();
       int bm_left = 0;
 
       for (int i = 0; i < h; i++, left_data += size, bm_left += w) {
@@ -812,10 +788,10 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
       if (replace) {
         dglTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size, size, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-                         opengl_packed_Upload_data);
+                         opengl_packed_Upload_data.get());
       } else {
         dglTexImage2D(GL_TEXTURE_2D, 0, GL_RGB5_A1, size, size, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-                      opengl_packed_Upload_data);
+                      opengl_packed_Upload_data.get());
       }
     } else {
       int limit = 0;
@@ -855,10 +831,10 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
           if (replace) {
             dglTexSubImage2D(GL_TEXTURE_2D, m, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4,
-                             opengl_packed_Upload_data);
+                             opengl_packed_Upload_data.get());
           } else {
             dglTexImage2D(GL_TEXTURE_2D, m, GL_RGBA4, w, h, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4,
-                          opengl_packed_Upload_data);
+                          opengl_packed_Upload_data.get());
           }
         } else {
           // Do 1555
@@ -868,17 +844,17 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
           if (replace) {
             dglTexSubImage2D(GL_TEXTURE_2D, m, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-                             opengl_packed_Upload_data);
+                             opengl_packed_Upload_data.get());
           } else {
             dglTexImage2D(GL_TEXTURE_2D, m, GL_RGB5_A1, w, h, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-                          opengl_packed_Upload_data);
+                          opengl_packed_Upload_data.get());
           }
         }
       }
     }
   } else {
     if (map_type == MAP_TYPE_LIGHTMAP) {
-      uint32_t *left_data = (uint32_t *)opengl_Upload_data;
+      uint32_t *left_data = opengl_Upload_data.get();
       int bm_left = 0;
 
       for (int i = 0; i < h; i++, left_data += size, bm_left += w) {
@@ -889,9 +865,9 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
       }
       if (size > 0) {
         if (replace) {
-          dglTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, opengl_Upload_data);
+          dglTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, opengl_Upload_data.get());
         } else {
-          dglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, opengl_Upload_data);
+          dglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, opengl_Upload_data.get());
         }
       }
     } else {
@@ -928,9 +904,9 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
         // rcg06262000 my if wrapper.
         if ((w > 0) && (h > 0)) {
           if (replace) {
-            dglTexSubImage2D(GL_TEXTURE_2D, m, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, opengl_Upload_data);
+            dglTexSubImage2D(GL_TEXTURE_2D, m, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, opengl_Upload_data.get());
           } else {
-            dglTexImage2D(GL_TEXTURE_2D, m, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, opengl_Upload_data);
+            dglTexImage2D(GL_TEXTURE_2D, m, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, opengl_Upload_data.get());
           }
         }
       }
@@ -1168,10 +1144,10 @@ bool rend_InitWindowMode() {
 // Resets the texture cache
 void opengl_ResetCache() {
   if (OpenGL_cache_initted) {
-    mem_free(OpenGL_lightmap_remap);
-    mem_free(OpenGL_bitmap_remap);
-    mem_free(OpenGL_lightmap_states);
-    mem_free(OpenGL_bitmap_states);
+    OpenGL_lightmap_remap.reset();
+    OpenGL_bitmap_remap.reset();
+    OpenGL_lightmap_states.reset();
+    OpenGL_bitmap_states.reset();
     OpenGL_cache_initted = 0;
   }
 

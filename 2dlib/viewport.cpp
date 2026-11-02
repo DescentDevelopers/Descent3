@@ -331,7 +331,7 @@ ddgr_color grViewport::getpixelc(int x, int y) {
 
 void grViewport::lock_clear(ddgr_color col) {
   int l = CLIP_LEFT, t = CLIP_TOP, r = CLIP_RIGHT, b = CLIP_BOTTOM;
-  ddgr_surface *memsurf = sf_Parent->scratch_mem_surf;
+  ddgr_surface *memsurf = sf_Parent->scratch_mem_surf.get();
 
   ASSERT(vp_Locked);
 
@@ -346,7 +346,7 @@ void grViewport::lock_clear(ddgr_color col) {
 }
 
 void grViewport::lock_clear(ddgr_color col, int l, int t, int r, int b) {
-  ddgr_surface *memsurf = sf_Parent->scratch_mem_surf;
+  ddgr_surface *memsurf = sf_Parent->scratch_mem_surf.get();
 
   ASSERT(vp_Locked);
 

@@ -37,7 +37,7 @@ void bump_InitBumpmaps() {
 
   for (i = 0; i < MAX_BUMPMAPS; i++) {
     GameBumpmaps[i].flags = 0;
-    GameBumpmaps[i].data = nullptr;
+    GameBumpmaps[i].data.reset();
     GameBumpmaps[i].cache_slot = -1;
     Free_bumpmap_list[i] = i;
   }
@@ -69,14 +69,9 @@ int bump_AllocBumpmap(int w, int h) {
 
   // If no go on the malloc, bail out with -1
 
-  memset(&GameBumpmaps[n], 0, sizeof(bms_bumpmap));
+  GameBumpmaps[n] = {};
 
-  GameBumpmaps[n].data = (uint16_t *)mem_malloc(w * h * 2);
-  if (!GameBumpmaps[n].data) {
-    LOG_ERROR << "NOT ENOUGH MEMORY FOR BUMPMAP!";
-    Int3();
-    return BAD_BUMP_INDEX;
-  }
+  GameBumpmaps[n].data = std::make_unique<uint16_t[]>(w * h);
 
   GameBumpmaps[n].cache_slot = -1;
   GameBumpmaps[n].flags = BUMPF_USED | BUMPF_CHANGED;
@@ -92,12 +87,9 @@ int bump_AllocBumpmap(int w, int h) {
 void bump_FreeBumpmap(int handle) {
   ASSERT(GameBumpmaps[handle].flags & BUMPF_USED);
 
-  if (GameBumpmaps[handle].data != nullptr)
-    mem_free(GameBumpmaps[handle].data);
-
   Bumpmap_mem_used -= (GameBumpmaps[handle].width * GameBumpmaps[handle].height * 2);
 
-  GameBumpmaps[handle].data = nullptr;
+  GameBumpmaps[handle].data.reset();
   GameBumpmaps[handle].flags &= ~BUMPF_USED;
 
   Free_bumpmap_list[--Num_of_bumpmaps] = handle;
@@ -112,7 +104,7 @@ uint16_t *bump_data(int handle) {
     return nullptr;
   }
 
-  d = GameBumpmaps[handle].data;
+  d = GameBumpmaps[handle].data.get();
 
   return (d);
 }

@@ -57,6 +57,7 @@
 #define POLYMODEL_EXTERNAL_H_
 
 #include <cstdint>
+#include <memory>
 
 #include "grdefs.h"
 #include "manage_external.h"
@@ -166,16 +167,16 @@ struct bsp_info {
                            // Reference as all other vertices in this submodel. (Relative to pivot point)
   float rad;               // radius for each submodel
 
-  vector *verts; // vertices for the submodel (NEWSTYLE)
-  vector *vertnorms;
-  float *alpha;
-  polyface *faces; // faces for the submodel (NEWSTYLE)
-  vector *face_min;
-  vector *face_max;
+  std::unique_ptr<vector[]> verts; // vertices for the submodel (NEWSTYLE)
+  std::unique_ptr<vector[]> vertnorms;
+  std::unique_ptr<float[]> alpha;
+  std::unique_ptr<polyface[]> faces; // faces for the submodel (NEWSTYLE)
+  std::unique_ptr<vector[]> face_min;
+  std::unique_ptr<vector[]> face_max;
 
-  int16_t *vertnum_memory;
-  float *u_memory;
-  float *v_memory;
+  std::unique_ptr<int16_t[]> vertnum_memory;
+  std::unique_ptr<float[]> u_memory;
+  std::unique_ptr<float[]> v_memory;
 
   int nverts;
   int num_faces; // amount of faces (NEWSTYLE);
@@ -192,14 +193,14 @@ struct bsp_info {
   matrix mod_matrix; // The angles from parent.  Stuffed by model_set_instance
   vector mod_pos;    // The modified position of this object.  Used for positional interpolation
 
-  vector *keyframe_axis; // the axis of rotation for each keyframe
-  int *keyframe_angles;  // The destination angles for each key frame
-  vector *keyframe_pos;
-  matrix *keyframe_matrix; // the combined rotation matrices up to frame n
-  uint16_t *tick_pos_remap;  // For looking up keyframes fast
-  uint16_t *tick_ang_remap;  // For looking up keyframes fast
-  int *rot_start_time;
-  int *pos_start_time;
+  std::unique_ptr<vector[]> keyframe_axis; // the axis of rotation for each keyframe
+  std::unique_ptr<int[]> keyframe_angles;  // The destination angles for each key frame
+  std::unique_ptr<vector[]> keyframe_pos;
+  std::unique_ptr<matrix[]> keyframe_matrix;  // the combined rotation matrices up to frame n
+  std::unique_ptr<uint16_t[]> tick_pos_remap; // For looking up keyframes fast
+  std::unique_ptr<uint16_t[]> tick_ang_remap; // For looking up keyframes fast
+  std::unique_ptr<int[]> rot_start_time;
+  std::unique_ptr<int[]> pos_start_time;
 
   int num_key_angles;
   int num_key_pos;
@@ -215,7 +216,7 @@ struct bsp_info {
 
   float normalized_angle;
 
-  glowinfo *glow_info;
+  std::unique_ptr<glowinfo> glow_info;
 };
 
 #define PMF_LIGHTMAP_RES 1
@@ -252,7 +253,7 @@ struct poly_model {
   int n_textures;
   int16_t textures[MAX_MODEL_TEXTURES]; // a list of bitmap indices
 
-  bsp_info *submodel; // an array of size n_models of submodel info.
+  std::unique_ptr<bsp_info[]> submodel; // an array of size n_models of submodel info.
   int num_key_angles;
   int num_key_pos;
   int max_keys; // the greater number of num_key_pos or num_key_angles
@@ -260,16 +261,16 @@ struct poly_model {
   int frame_min, frame_max; // For TIMED polymodels, the min/max frames
 
   int n_guns;
-  w_bank *gun_slots; // array of gun banks
+  std::unique_ptr<w_bank[]> gun_slots; // array of gun banks
 
   int n_ground;
-  w_bank *ground_slots; // array of ground planes
+  std::unique_ptr<w_bank[]> ground_slots; // array of ground planes
 
   int n_attach;
-  a_bank *attach_slots;
+  std::unique_ptr<a_bank[]> attach_slots;
 
   int num_wbs;
-  poly_wb_info *poly_wb; // array of weapon batteries
+  std::unique_ptr<poly_wb_info[]> poly_wb; // array of weapon batteries
 
   int *render_order; // internal use
 
