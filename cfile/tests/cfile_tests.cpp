@@ -115,3 +115,17 @@ TEST(D3, CFileLocatePath) {
     EXPECT_TRUE(cf_LocatePath(file_uc).empty());
   }
 }
+
+TEST(D3, CFileLocatePathCaseInsensitiveHelperDirectory) {
+  auto cwd = std::filesystem::current_path();
+
+  // Exact match.
+  EXPECT_EQ(cf_LocatePathCaseInsensitiveHelper("TestDir", cwd), cwd / "TestDir");
+
+  // A wrongly cased directory name resolves to the directory that exists.
+  EXPECT_EQ(cf_LocatePathCaseInsensitiveHelper("testdir", cwd), cwd / "TestDir");
+  EXPECT_EQ(cf_LocatePathCaseInsensitiveHelper("TESTDIR", cwd), cwd / "TestDir");
+
+  // Nothing matches.
+  EXPECT_TRUE(cf_LocatePathCaseInsensitiveHelper("no-exist-dir", cwd).empty());
+}

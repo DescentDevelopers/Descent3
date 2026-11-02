@@ -1413,7 +1413,7 @@ void InitIOSystems(bool editor) {
    * Populate base directories. In result, we have the following list of directories (in priority order):
    * - Writable preference path
    * - User defined paths (cmd-line and configuration)
-   * - Platform defined paths (such as /usr/share/Descent3 on Linux or Steam installation paths)
+   * - Platform defined paths (such as /usr/share/descent3 on Linux or Steam installation paths)
    * - Directory of executable
    */
 
@@ -1445,9 +1445,17 @@ void InitIOSystems(bool editor) {
     cf_AddBaseDirectory(config_base_directory);
   }
 
-  // Platform dependent paths
-  std::filesystem::path platform_dir = std::filesystem::canonical(D3_DATADIR);
-  cf_AddBaseDirectory(platform_dir);
+  // Platform dependent paths. The last component of D3_DATADIR is matched
+  // without regard to case, so data installed in /usr/share/Descent3 by
+  // earlier versions is still found when D3_DATADIR is /usr/share/descent3.
+  std::filesystem::path datadir = D3_DATADIR;
+  std::filesystem::path platform_dir = cf_LocatePathCaseInsensitiveHelper(datadir.filename(), datadir.parent_path());
+  if (platform_dir.empty()) {
+    LOG_WARNING << "Platform data directory not found: " << datadir;
+  } else {
+    platform_dir = std::filesystem::canonical(platform_dir);
+    cf_AddBaseDirectory(platform_dir);
+  }
   // TODO: add Steam/registry locations
 
   // Add path of executable
