@@ -154,9 +154,9 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
 #endif
 }
 
-void *CallbackAlloc(uint32_t size) { return mem_malloc(size); }
+void *CallbackAlloc(uint32_t size) { return malloc(size); }
 
-void CallbackFree(void *p) { mem_free(p); }
+void CallbackFree(void *p) { free(p); }
 
 uint32_t CallbackFileRead(void *stream, void *pBuffer, uint32_t bufferCount) {
   uint32_t numRead = fread(pBuffer, 1, bufferCount, (FILE *)stream);

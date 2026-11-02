@@ -1415,7 +1415,7 @@ bool bm_CreateChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
   ASSERT(how_many_across > 0);
   ASSERT(how_many_down > 0);
   // Allocate memory to hold our list of pieces
-  bm_array = (int *)mem_malloc(how_many_down * how_many_across * sizeof(int));
+  bm_array = (int *)malloc(how_many_down * how_many_across * sizeof(int));
   ASSERT(bm_array);
   for (i = 0; i < how_many_down * how_many_across; i++) {
     bm_array[i] = bm_AllocBitmap(iopt, iopt, 0);
@@ -1487,7 +1487,7 @@ void bm_DestroyChunkedBitmap(chunked_bitmap *chunk) {
   int i, num_bmps = chunk->w * chunk->h;
   for (i = 0; i < num_bmps; i++)
     bm_FreeBitmap(chunk->bm_array[i]);
-  mem_free(chunk->bm_array);
+  free(chunk->bm_array);
   chunk->bm_array = nullptr;
 }
 // Changes the size of a bitmap to a new size

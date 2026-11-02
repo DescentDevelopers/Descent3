@@ -262,7 +262,7 @@ int ddio_GetFileSysRoots(char **roots, int max_roots) {
   if (max_roots < 1)
     return 0;
 
-  roots[0] = mem_strdup("/");
+  roots[0] = strdup("/");
   return 1;
 }
 

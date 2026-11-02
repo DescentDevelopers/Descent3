@@ -1842,8 +1842,8 @@ void ObjDelete(int objnum) {
   if (obj->flags & OF_POLYGON_OBJECT) {
     polyobj_info *p_info = &obj->rtype.pobj_info;
     if (p_info->multi_turret_info.keyframes != nullptr) {
-      mem_free(p_info->multi_turret_info.keyframes);
-      mem_free(p_info->multi_turret_info.last_keyframes);
+      free(p_info->multi_turret_info.keyframes);
+      free(p_info->multi_turret_info.last_keyframes);
 
       p_info->multi_turret_info.keyframes = nullptr;
       p_info->multi_turret_info.last_keyframes = nullptr;

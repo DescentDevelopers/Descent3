@@ -431,12 +431,12 @@ void DestroyStringTable(char **table, int size) {
   if ((size > 0) && (table)) {
     for (int i = 0; i < size; i++) {
       if (table[i])
-        mem_free(table[i]);
+        free(table[i]);
     }
   }
 
   if (table)
-    mem_free(table);
+    free(table);
 }
 
 // returns the total number of strings in all the string table files
@@ -685,7 +685,7 @@ void GrowString::operator+=(GrowString &gs) {
   gs.GetString(&str);
   *this += str;
   if (str)
-    mem_free(str);
+    free(str);
 }
 
 void GrowString::operator=(char *str) {
@@ -698,7 +698,7 @@ void GrowString::operator=(GrowString &gs) {
   gs.GetString(&str);
   *this = str;
   if (str)
-    mem_free(str);
+    free(str);
 }
 
 void GrowString::GetString(char **str) {
@@ -709,7 +709,7 @@ void GrowString::GetString(char **str) {
 
   tbufferinfo *next;
 
-  *str = (char *)mem_malloc(size + 1);
+  *str = (char *)malloc(size + 1);
 
   strcpy(*str, root.string_data.get());
   next = root.next.get();

@@ -421,7 +421,7 @@ void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_
     uint16_t *p = m_DataBuffer;
     uint8_t *bits;
 
-    bits = (uint8_t *)mem_malloc(256 * MAX_FONT_CHARS);
+    bits = (uint8_t *)malloc(256 * MAX_FONT_CHARS);
 
     for (i = 0; i < num_char; i++) {
       for (y = 0; y < ft.height; y++) {
@@ -451,7 +451,7 @@ void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_
 
     WRITE_FONT_INT(ffile, cnt);
     WRITE_FONT_DATA(ffile, bits, cnt, 1);
-    mem_free(bits);
+    free(bits);
   }
 
   //	We should add kerning support here.

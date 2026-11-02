@@ -886,7 +886,7 @@ bool DemoMission(int mode = 0) {
     msn->filename = mem_strdup_unique("training.mn3");
     // strncpy(msn->levels[0].name, "Training", MSN_NAMELEN-1);
     msn->levels[0].filename = mem_strdup_unique("trainingmission.d3l");
-    msn->levels[0].briefname.reset(); // mem_strdup("training.brf");
+    msn->levels[0].briefname.reset(); // strdup("training.brf");
     msn->levels[0].flags = 0;
     msn->levels[0].lvlbranch0 = 0;
     msn->levels[0].progress = mem_strdup_unique("trainingload.ogf");
@@ -1967,7 +1967,7 @@ void QuickEndMission() {
   //@@	Current_mission.d3xmod = NULL;
   //	free up mini mission.
   //@@	Current_level = NULL;
-  //@@	mem_free(Current_mission.levels);
+  //@@	free(Current_mission.levels);
   //@@	Current_mission.levels = NULL;
   ResetMission();
 }

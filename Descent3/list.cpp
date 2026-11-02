@@ -98,14 +98,14 @@ int RemoveListItem(listnode **listp, void *item) {
     *listp = node->next;
     if (*listp != nullptr)
       (*listp)->prev = nullptr;
-    mem_free(node);
+    free(node);
     return 1;
   } else {
     if (node->prev != nullptr)
       node->prev->next = node->next;
     if (node->next != nullptr)
       node->next->prev = node->prev;
-    mem_free(node);
+    free(node);
   }
   return 1;
 }
@@ -117,7 +117,7 @@ void DestroyList(listnode **listp) {
 
   for (node = *listp; node != nullptr; node = next) {
     next = node->next;
-    mem_free(node);
+    free(node);
   }
 }
 

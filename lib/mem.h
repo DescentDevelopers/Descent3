@@ -78,21 +78,16 @@
 #include <memory>
 #include <type_traits>
 
-#define mem_malloc(d) malloc(d)
-#define mem_free(d) free(d)
-#define mem_strdup(d) strdup(d)
-#define mem_realloc(d, e) realloc(d, e)
-
 // type aware memory allocation
 template<typename T> static inline T *mem_rmalloc()
 {
   static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
-  return static_cast<T *>(mem_malloc(sizeof(T)));
+  return static_cast<T *>(malloc(sizeof(T)));
 }
 template<typename T> static inline T *mem_rmalloc(std::size_t nelem)
 {
   static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
-  return static_cast<T *>(mem_malloc(nelem * sizeof(T)));
+  return static_cast<T *>(malloc(nelem * sizeof(T)));
 }
 
 // duplicates a string into an owned buffer; a null source yields a null pointer

@@ -856,7 +856,7 @@ int DemoReadHeader() {
   PageInAllData();
 
   // Don't free this variable here, because we need to xlate ids when creating objects during playback
-  // mem_free(gs_Xlates);
+  // free(gs_Xlates);
   // gs_Xlates = NULL;
 
   // Turn sounds back on

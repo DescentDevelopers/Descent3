@@ -6629,7 +6629,7 @@ bool CDallasMainDlg::ValidateActionNode(HTREEITEM node, int linenum)
         child_node=m_ScriptTree.GetChildItem(node);
 
         // Make a copy of description (so null chars can be added)
-        desc_copy=mem_strdup(desc);
+        desc_copy=strdup(desc);
         if(desc_copy==NULL) {
                 MessageBox("ERROR: Out of memory in ValidateActionNode()!","Out of Memory
 Error!",MB_OK|MB_ICONEXCLAMATION); return FALSE;
@@ -6684,7 +6684,7 @@ Error!",MB_OK|MB_ICONEXCLAMATION); return FALSE;
         }
 
         // Free up the copy memory
-        mem_free(desc_copy);
+        free(desc_copy);
 
         // Delete any remaining child parameter nodes (they are no longer used)
         if(child_node!=NULL) {
@@ -6903,7 +6903,7 @@ bool CDallasMainDlg::ValidateQueryNode(HTREEITEM node, int linenum)
         child_node=m_ScriptTree.GetChildItem(node);
 
         // Make a copy of description (so null chars can be added)
-        desc_copy=mem_strdup(desc);
+        desc_copy=strdup(desc);
         if(desc_copy==NULL) {
                 MessageBox("ERROR: Out of memory in ValidateQueryNode()!","Out of Memory
 Error!",MB_OK|MB_ICONEXCLAMATION); return FALSE;
@@ -6958,7 +6958,7 @@ Error!",MB_OK|MB_ICONEXCLAMATION); return FALSE;
         }
 
         // Free up the copy memory
-        mem_free(desc_copy);
+        free(desc_copy);
 
         // Delete any remaining child parameter nodes (they are no longer used)
         if(child_node!=NULL) {
@@ -7310,7 +7310,7 @@ void CDallasMainDlg::ClearScriptGroupingList(void) {
     for (k = 0; k < MAX_EVENT_TYPES; k++) {
       tEventSection *event_section = &m_ScriptGroupingList[j].event_sections[k];
       if (event_section->num_script_nodes > 0) {
-        mem_free(event_section->script_node_list);
+        free(event_section->script_node_list);
         event_section->script_node_list = nullptr;
         event_section->num_script_nodes = 0;
       }
@@ -7319,7 +7319,7 @@ void CDallasMainDlg::ClearScriptGroupingList(void) {
 
   // Free up the entire script grouping list
   if (m_NumScriptGroups > 0) {
-    mem_free(m_ScriptGroupingList);
+    free(m_ScriptGroupingList);
     m_ScriptGroupingList = nullptr;
     m_NumScriptGroups = 0;
   }
@@ -7354,7 +7354,7 @@ int CDallasMainDlg::AddNodeToScriptOwnerGroup(int pos, HTREEITEM script_node) {
   if (event_section->num_script_nodes == 0)
     event_section->script_node_list = mem_rmalloc<HTREEITEM>(1);
   else
-    event_section->script_node_list = (HTREEITEM *)mem_realloc(
+    event_section->script_node_list = (HTREEITEM *)realloc(
         event_section->script_node_list, sizeof(HTREEITEM) * (event_section->num_script_nodes + 1));
 
   if (event_section->script_node_list == nullptr)
@@ -7405,7 +7405,7 @@ int CDallasMainDlg::AddNodeToScriptGroupingList(HTREEITEM script_node) {
     m_ScriptGroupingList = mem_rmalloc<tScriptOwnerGroup>(1);
   else
     m_ScriptGroupingList =
-        (tScriptOwnerGroup *)mem_realloc(m_ScriptGroupingList, sizeof(tScriptOwnerGroup) * (m_NumScriptGroups + 1));
+        (tScriptOwnerGroup *)realloc(m_ScriptGroupingList, sizeof(tScriptOwnerGroup) * (m_NumScriptGroups + 1));
 
   if (m_ScriptGroupingList == nullptr)
     return FALSE;
@@ -13569,7 +13569,7 @@ void CDallasMainDlg::AddActionParameterNodes(HTREEITEM action_node)
         if(desc==NULL) return;
 
         // Make a copy of description (so null chars can be added)
-        desc_copy=mem_strdup(desc);
+        desc_copy=strdup(desc);
         if(desc_copy==NULL) {
                 MessageBox("ERROR: Out of memory adding action parameter node!","Out of Memory
 Error!",MB_OK|MB_ICONEXCLAMATION); return;
@@ -13619,7 +13619,7 @@ Error!",MB_OK|MB_ICONEXCLAMATION); return;
         }
 
         // Free up the copy memory
-        mem_free(desc_copy);
+        free(desc_copy);
 }
 */
 
@@ -13688,7 +13688,7 @@ void CDallasMainDlg::AddQueryParameterNodes(HTREEITEM query_node)
         if(desc==NULL) return;
 
         // Make a copy of description (so null chars can be added)
-        desc_copy=mem_strdup(desc);
+        desc_copy=strdup(desc);
         if(desc_copy==NULL) {
                 MessageBox("ERROR: Out of memory adding query parameter node!","Out of Memory
 Error!",MB_OK|MB_ICONEXCLAMATION); return;
@@ -13738,7 +13738,7 @@ Error!",MB_OK|MB_ICONEXCLAMATION); return;
         }
 
         // Free up the copy memory
-        mem_free(desc_copy);
+        free(desc_copy);
 }
 */
 

@@ -2562,8 +2562,8 @@ void CMainFrame::OnTestTest1() {
       for (t = 0; t < Objects[i].lm_object.num_faces[m]; t++) {
         lightmap_object_face *fp = &Objects[i].lm_object.lightmap_faces[m][t];
         fp->lmi_handle = BAD_LMI_INDEX;
-        mem_free(fp->u2);
-        mem_free(fp->v2);
+        free(fp->u2);
+        free(fp->v2);
       }
       Objects[i].lm_object.lightmap_faces[m].reset();
     }
@@ -3084,8 +3084,8 @@ to save your work, lock first."); locked=false;
         {
                 if(level_script)
                 {
-                        if(Current_level_script) mem_free(Current_level_script);
-                        Current_level_script = (char *) mem_malloc(lstrlen(editor.GetScript())+1);
+                        if(Current_level_script) free(Current_level_script);
+                        Current_level_script = (char *) malloc(lstrlen(editor.GetScript())+1);
                         if(Current_level_script)
                                 strcpy(Current_level_script,editor.GetScript());
                         else
@@ -3099,8 +3099,8 @@ to save your work, lock first."); locked=false;
                         }
                         else
                         {
-                                if(Default_script) mem_free(Default_script);
-                                Default_script = (char *) mem_malloc(editor.GetScriptLength());
+                                if(Default_script) free(Default_script);
+                                Default_script = (char *) malloc(editor.GetScriptLength());
                                 if(Default_script)
                                         strcpy(Default_script,editor.GetScript());
                                 else
@@ -3129,8 +3129,8 @@ to save your work, lock first."); locked=false;
 
                         if(level_script)
                         {
-                                if(Current_level_script) mem_free(Current_level_script);
-                                Current_level_script = (char *) mem_malloc(lstrlen(editor.GetScript())+1);
+                                if(Current_level_script) free(Current_level_script);
+                                Current_level_script = (char *) malloc(lstrlen(editor.GetScript())+1);
                                 if(Current_level_script)
                                         strcpy(Current_level_script,editor.GetScript());
                                 else
@@ -3145,7 +3145,7 @@ to save your work, lock first."); locked=false;
                                 else
                                 {
                                         if(Default_script) free(Default_script);
-                                        Default_script = (char *) mem_malloc(editor.GetScriptLength());
+                                        Default_script = (char *) malloc(editor.GetScriptLength());
                                         if(Default_script)
                                                 strcpy(Default_script,editor.GetScript());
                                         else
