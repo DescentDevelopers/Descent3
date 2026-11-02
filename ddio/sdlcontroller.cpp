@@ -705,12 +705,8 @@ unsigned sdlgameController::get_joy_raw_values(int *x, int *y) {
   return 0;
 }
 
-gameController *CreateController(int num_funcs, ct_function *funcs) {
-  return new sdlgameController(num_funcs, funcs);
-}
-
-void DestroyController(gameController *ctl) {
-  delete ctl;
+std::unique_ptr<gameController> CreateController(int num_funcs, ct_function *funcs) {
+  return std::make_unique<sdlgameController>(num_funcs, funcs);
 }
 
 // activates or deactivates mouse and or controller

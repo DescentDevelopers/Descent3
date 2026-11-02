@@ -40,6 +40,7 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <memory>
 
 struct zipentry {
   uint32_t cent_file_header_sig;
@@ -61,7 +62,7 @@ struct zipentry {
   uint16_t internal_file_attrib;
   uint32_t external_file_attrib;
   uint32_t offset_lcl_hdr_frm_frst_disk;
-  char *name;
+  std::unique_ptr<char[]> name;
 };
 
 class ZIP {
@@ -118,14 +119,14 @@ private:
 
 private:
   bool m_open;
-  char *m_zip;      // zip name
+  std::unique_ptr<char[]> m_zip; // zip name
   FILE *m_fp;       // zip handler
   int32_t m_length; // length of zip file
 
-  char *m_ecd;           // end_of_cent_dir data
+  std::unique_ptr<char[]> m_ecd; // end_of_cent_dir data
   unsigned m_ecd_length; // end_of_cent_dir length
 
-  char *m_cd; // cent_dir data
+  std::unique_ptr<char[]> m_cd; // cent_dir data
 
   unsigned m_cd_pos; // position in cent_dir
 

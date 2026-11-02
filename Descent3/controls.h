@@ -240,7 +240,7 @@ struct game_controls {
 };
 
 //	Controller object.
-extern gameController *Controller;
+extern std::unique_ptr<gameController> Controller;
 
 // determines if controller is being polled.
 extern bool Control_poll_flag;

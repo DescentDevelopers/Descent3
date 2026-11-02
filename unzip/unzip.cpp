@@ -39,6 +39,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <memory>
 
 #include <zlib.h>
 
@@ -123,7 +124,6 @@ bool ZIP::FindECDSignature(char *buffer, int buflen, int *offset) {
 }
 
 int ZIP::ReadECD() {
-  char *buf;
   int buf_length = 1024;
 
   while (true) {
@@ -136,31 +136,18 @@ int ZIP::ReadECD() {
       return -1;
     }
 
-    buf = (char *)malloc(buf_length);
-    if (!buf) {
+    auto buf = std::make_unique<char[]>(buf_length);
+
+    if (fread(buf.get(), buf_length, 1, m_fp) != 1) {
       return -1;
     }
 
-    if (fread(buf, buf_length, 1, m_fp) != 1) {
-      free(buf);
-      return -1;
-    }
-
-    if (FindECDSignature(buf, buf_length, &offset)) {
+    if (FindECDSignature(buf.get(), buf_length, &offset)) {
       m_ecd_length = buf_length - offset;
-      m_ecd = (char *)malloc(m_ecd_length);
-
-      if (!m_ecd) {
-        free(buf);
-        return -1;
-      }
-
-      memcpy(m_ecd, buf + offset, m_ecd_length);
-      free(buf);
+      m_ecd = std::make_unique<char[]>(m_ecd_length);
+      memcpy(m_ecd.get(), buf.get() + offset, m_ecd_length);
       return 0;
     }
-
-    free(buf);
 
     if (buf_length < m_length) {
       buf_length = 2 * buf_length;
@@ -206,59 +193,48 @@ bool ZIP::OpenZip(const char *zipfile) {
     return false;
   }
 
-  m_end_of_cent_dir_sig = get_buffer_int(m_ecd + ECD_ESIG);
-  m_number_of_this_disk = get_buffer_short(m_ecd + ECD_EDSK);
-  m_number_of_disk_start_cent_dir = get_buffer_short(m_ecd + ECD_ECEN);
-  m_total_entries_cent_dir_this_disk = get_buffer_short(m_ecd + ECD_ENUM);
-  m_total_entries_cent_dir = get_buffer_short(m_ecd + ECD_ECENN);
-  m_size_of_cent_dir = get_buffer_int(m_ecd + ECD_ECSZ);
-  m_offset_to_start_of_cent_dir = get_buffer_int(m_ecd + ECD_EOFST);
-  m_zipfile_comment_length = get_buffer_short(m_ecd + ECD_ECOML);
-  m_zipfile_comment = m_ecd + ECD_ECOM;
+  m_end_of_cent_dir_sig = get_buffer_int(m_ecd.get() + ECD_ESIG);
+  m_number_of_this_disk = get_buffer_short(m_ecd.get() + ECD_EDSK);
+  m_number_of_disk_start_cent_dir = get_buffer_short(m_ecd.get() + ECD_ECEN);
+  m_total_entries_cent_dir_this_disk = get_buffer_short(m_ecd.get() + ECD_ENUM);
+  m_total_entries_cent_dir = get_buffer_short(m_ecd.get() + ECD_ECENN);
+  m_size_of_cent_dir = get_buffer_int(m_ecd.get() + ECD_ECSZ);
+  m_offset_to_start_of_cent_dir = get_buffer_int(m_ecd.get() + ECD_EOFST);
+  m_zipfile_comment_length = get_buffer_short(m_ecd.get() + ECD_ECOML);
+  m_zipfile_comment = m_ecd.get() + ECD_ECOM;
 
   // make sure there is no disk spanning
   if ((m_number_of_this_disk != m_number_of_disk_start_cent_dir) ||
       (m_total_entries_cent_dir_this_disk != m_total_entries_cent_dir) || (m_total_entries_cent_dir < 1)) {
-    free(m_ecd);
+    m_ecd.reset();
     fclose(m_fp);
     return false;
   }
 
   if (fseek(m_fp, m_offset_to_start_of_cent_dir, SEEK_SET) != 0) {
-    free(m_ecd);
+    m_ecd.reset();
     fclose(m_fp);
     return false;
   }
 
   // begin reading for the begining of central directory
-  m_cd = (char *)malloc(m_size_of_cent_dir);
-  if (!m_cd) {
-    free(m_ecd);
-    fclose(m_fp);
-    return false;
-  }
+  m_cd = std::make_unique<char[]>(m_size_of_cent_dir);
 
-  if (fread(m_cd, m_size_of_cent_dir, 1, m_fp) != 1) {
-    free(m_cd);
-    free(m_ecd);
+  if (fread(m_cd.get(), m_size_of_cent_dir, 1, m_fp) != 1) {
+    m_cd.reset();
+    m_ecd.reset();
     fclose(m_fp);
     return false;
   }
 
   // reset zip entry
-  m_ent.name = nullptr;
+  m_ent.name.reset();
 
   // rewind to the begining of central dir
   m_cd_pos = 0;
 
-  m_zip = (char *)malloc(strlen(zipfile) + 1);
-  if (!m_zip) {
-    free(m_cd);
-    free(m_ecd);
-    fclose(m_fp);
-    return false;
-  }
-  strcpy(m_zip, zipfile);
+  m_zip = std::make_unique<char[]>(strlen(zipfile) + 1);
+  strcpy(m_zip.get(), zipfile);
   m_open = true;
 
   return true;
@@ -270,16 +246,13 @@ void ZIP::CloseZip() {
     return;
 
   /* release all */
-  if (m_ent.name)
-    free(m_ent.name);
-  if (m_cd)
-    free(m_cd);
-  if (m_ecd)
-    free(m_ecd);
-  if (m_fp)
+  m_ent.name.reset();
+  m_cd.reset();
+  m_ecd.reset();
+  if (m_fp) {
     fclose(m_fp);
-  if (m_zip)
-    free(m_zip);
+  }
+  m_zip.reset();
   m_open = false;
 }
 
@@ -293,37 +266,33 @@ zipentry *ZIP::ReadNextZipEntry() {
   if (m_cd_pos >= m_size_of_cent_dir)
     return nullptr;
 
-  m_ent.cent_file_header_sig = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CENSIG);
-  m_ent.version_made_by = *(m_cd + m_cd_pos + ZIPCD_CVER);
-  m_ent.host_os = *(m_cd + m_cd_pos + ZIPCD_COS);
-  m_ent.version_needed_to_extract = *(m_cd + m_cd_pos + ZIPCD_CVXT);
-  m_ent.os_needed_to_extract = *(m_cd + m_cd_pos + ZIPCD_CEXOS);
-  m_ent.general_purpose_bit_flag = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CFLG);
-  m_ent.compression_method = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CMTHD);
-  m_ent.last_mod_file_time = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CTIME);
-  m_ent.last_mod_file_date = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CDATE);
-  m_ent.crc32 = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CCRC);
-  m_ent.compressed_size = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CSIZ);
-  m_ent.uncompressed_size = get_buffer_int(m_cd + m_cd_pos + ZIPCD_CUNC);
-  m_ent.filename_length = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CFNL);
-  m_ent.extra_field_length = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CXTL);
-  m_ent.file_comment_length = get_buffer_short(m_cd + m_cd_pos + ZIPCD_CCML);
-  m_ent.disk_number_start = get_buffer_short(m_cd + m_cd_pos + ZIPCD_DSK);
-  m_ent.internal_file_attrib = get_buffer_short(m_cd + m_cd_pos + ZIPCD_INT);
-  m_ent.external_file_attrib = get_buffer_int(m_cd + m_cd_pos + ZIPCD_EXT);
-  m_ent.offset_lcl_hdr_frm_frst_disk = get_buffer_int(m_cd + m_cd_pos + ZIPCD_OFST);
+  m_ent.cent_file_header_sig = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_CENSIG);
+  m_ent.version_made_by = *(m_cd.get() + m_cd_pos + ZIPCD_CVER);
+  m_ent.host_os = *(m_cd.get() + m_cd_pos + ZIPCD_COS);
+  m_ent.version_needed_to_extract = *(m_cd.get() + m_cd_pos + ZIPCD_CVXT);
+  m_ent.os_needed_to_extract = *(m_cd.get() + m_cd_pos + ZIPCD_CEXOS);
+  m_ent.general_purpose_bit_flag = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CFLG);
+  m_ent.compression_method = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CMTHD);
+  m_ent.last_mod_file_time = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CTIME);
+  m_ent.last_mod_file_date = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CDATE);
+  m_ent.crc32 = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_CCRC);
+  m_ent.compressed_size = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_CSIZ);
+  m_ent.uncompressed_size = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_CUNC);
+  m_ent.filename_length = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CFNL);
+  m_ent.extra_field_length = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CXTL);
+  m_ent.file_comment_length = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_CCML);
+  m_ent.disk_number_start = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_DSK);
+  m_ent.internal_file_attrib = get_buffer_short(m_cd.get() + m_cd_pos + ZIPCD_INT);
+  m_ent.external_file_attrib = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_EXT);
+  m_ent.offset_lcl_hdr_frm_frst_disk = get_buffer_int(m_cd.get() + m_cd_pos + ZIPCD_OFST);
 
   // Make sure the filename isn't too long
   if (m_cd_pos + ZIPCD_CFN + m_ent.filename_length > m_size_of_cent_dir) {
     return nullptr;
   }
 
-  if (m_ent.name)
-    free(m_ent.name);
-  m_ent.name = (char *)malloc(m_ent.filename_length + 1);
-  if (!m_ent.name)
-    return nullptr;
-  memcpy(m_ent.name, m_cd + m_cd_pos + ZIPCD_CFN, m_ent.filename_length);
+  m_ent.name = std::make_unique<char[]>(m_ent.filename_length + 1);
+  memcpy(m_ent.name.get(), m_cd.get() + m_cd_pos + ZIPCD_CFN, m_ent.filename_length);
   m_ent.name[m_ent.filename_length] = '\0';
 
   // skip to next entry in central dir
@@ -527,7 +496,6 @@ int ZIP::SeekToCompressedData(zipentry *ent) {
 // uses zlib to inflate the given data
 int ZIP::InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigned out_size) {
   int err;
-  uint8_t *in_buffer;
   z_stream d_stream;
 
   d_stream.zalloc = nullptr;
@@ -549,17 +517,14 @@ int ZIP::InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigne
     return -1;
   }
 
-  in_buffer = (uint8_t *)malloc(INFLATE_INPUT_BUFFER_MAX + 1);
-  if (!in_buffer)
-    return -1;
+  auto in_buffer = std::make_unique<uint8_t[]>(INFLATE_INPUT_BUFFER_MAX + 1);
 
   for (;;) {
     if (in_size <= 0) {
-      free(in_buffer);
       return -1;
     }
-    d_stream.next_in = in_buffer;
-    d_stream.avail_in = fread(in_buffer, 1, std::min<uInt>(in_size, INFLATE_INPUT_BUFFER_MAX), in_file);
+    d_stream.next_in = in_buffer.get();
+    d_stream.avail_in = fread(in_buffer.get(), 1, std::min<uInt>(in_size, INFLATE_INPUT_BUFFER_MAX), in_file);
     in_size -= d_stream.avail_in;
     if (in_size == 0)
       d_stream.avail_in++; // add dummy byte at end of compressed data
@@ -568,18 +533,14 @@ int ZIP::InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigne
     if (err == Z_STREAM_END)
       break;
     if (err != Z_OK) {
-      free(in_buffer);
       return -1;
     }
   }
 
   err = inflateEnd(&d_stream);
   if (err != Z_OK) {
-    free(in_buffer);
     return -1;
   }
-
-  free(in_buffer);
 
   if ((d_stream.avail_out > 0) || (in_size > 0)) {
     return -1;
@@ -593,7 +554,6 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
   uint8_t out_data[DATA_CHUNK_SIZE];
   int err;
   uint32_t last_out;
-  uint8_t *in_buffer;
   uint8_t *next_out;
   z_stream d_stream;
 
@@ -618,9 +578,7 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
     return -1;
   }
 
-  in_buffer = (uint8_t *)malloc(DATA_CHUNK_SIZE + 1);
-  if (!in_buffer)
-    return -1;
+  auto in_buffer = std::make_unique<uint8_t[]>(DATA_CHUNK_SIZE + 1);
 
   for (;;) {
     // reset the output buffer
@@ -628,7 +586,6 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
     next_out = d_stream.next_out;
 
     if (in_size <= 0 && out_size <= 0) {
-      free(in_buffer);
       return -1;
     }
 
@@ -640,8 +597,8 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
     }
 
     if (d_stream.avail_in == 0 && in_size > 0) {
-      d_stream.next_in = in_buffer;
-      d_stream.avail_in = fread(in_buffer, 1, std::min<uInt>(in_size, DATA_CHUNK_SIZE), in_file);
+      d_stream.next_in = in_buffer.get();
+      d_stream.avail_in = fread(in_buffer.get(), 1, std::min<uInt>(in_size, DATA_CHUNK_SIZE), in_file);
       in_size -= d_stream.avail_in;
       if (in_size == 0)
         d_stream.avail_in++; // add dummy byte at end of compressed data
@@ -654,14 +611,12 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
         res = fwrite(next_out, to_write, 1, file);
         if (res == 0) {
           // error writing to file!
-          free(in_buffer);
           return -2;
         }
         break;
       }
     }
     if (err != Z_OK) {
-      free(in_buffer);
       return -1;
     }
     if (d_stream.total_out > last_out) {
@@ -669,7 +624,6 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
       res = fwrite(next_out, to_write, 1, file);
       if (res == 0) {
         // error writing to file!
-        free(in_buffer);
         return -2;
       }
     }
@@ -677,11 +631,8 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
 
   err = inflateEnd(&d_stream);
   if (err != Z_OK) {
-    free(in_buffer);
     return -1;
   }
-
-  free(in_buffer);
 
   if ((d_stream.avail_out > 0) || (in_size > 0)) {
     return -1;

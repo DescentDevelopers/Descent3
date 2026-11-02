@@ -51,6 +51,7 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <memory>
 
 #include "ddgrWin32.h"
 #include "ddgrWin32GDI.h"
@@ -169,7 +170,7 @@ void ddgr_GetSubsystem(char *name, bool *fullscreen) {
 
 #define DDGR_MAX_ERRORS 10
 
-static char *DDGR_error_msgs[DDGR_MAX_ERRORS];
+static std::unique_ptr<char[]> DDGR_error_msgs[DDGR_MAX_ERRORS];
 static int DDGR_num_msgs = 0;
 
 void ddgr_FatalError(const char *fmt, ...) {
@@ -198,8 +199,8 @@ void ddgr_FatalError(const char *fmt, ...) {
   strcat(buf, "\n\nError stack:");
   for (i = 0; i < DDGR_num_msgs; i++) {
     strcat(buf, "\n");
-    strcat(buf, DDGR_error_msgs[i]);
-    delete[] DDGR_error_msgs[i];
+    strcat(buf, DDGR_error_msgs[i].get());
+    DDGR_error_msgs[i].reset();
   }
 
   Error(buf);
@@ -213,7 +214,7 @@ void ddgr_PushError(const char *fmt, ...) {
   std::vsnprintf(buf, 128, fmt, arglist);
   va_end(arglist);
 
-  DDGR_error_msgs[DDGR_num_msgs] = new char[strlen(buf) + 1];
-  strcpy(DDGR_error_msgs[DDGR_num_msgs], buf);
+  DDGR_error_msgs[DDGR_num_msgs] = std::make_unique<char[]>(strlen(buf) + 1);
+  strcpy(DDGR_error_msgs[DDGR_num_msgs].get(), buf);
   DDGR_num_msgs++;
 }
