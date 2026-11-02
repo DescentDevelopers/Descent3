@@ -163,8 +163,7 @@ bool lnxsound::SetSoundQuality(char quality) {
       int j = Sounds[i].sample_index;
 
       if (SoundFiles[j].sample_8bit && m_sound_quality == SQT_HIGH) {
-        mem_free(SoundFiles[j].sample_8bit);
-        SoundFiles[j].sample_8bit = nullptr;
+        SoundFiles[j].sample_8bit.reset();
 
         CheckAndForceSoundDataAlloc(i);
       }
@@ -172,7 +171,7 @@ bool lnxsound::SetSoundQuality(char quality) {
         int count;
 
         ASSERT(SoundFiles[j].sample_8bit == nullptr);
-        SoundFiles[j].sample_8bit = mem_rmalloc<uint8_t>(SoundFiles[j].sample_length);
+        SoundFiles[j].sample_8bit = std::make_unique<uint8_t[]>(SoundFiles[j].sample_length);
 
         // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
         // (+128 biase).
@@ -180,8 +179,7 @@ bool lnxsound::SetSoundQuality(char quality) {
           SoundFiles[j].sample_8bit[count] = (uint8_t)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
         }
 
-        mem_free(SoundFiles[j].sample_16bit);
-        SoundFiles[j].sample_16bit = nullptr;
+        SoundFiles[j].sample_16bit.reset();
       }
     }
   }

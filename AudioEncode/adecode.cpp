@@ -124,17 +124,15 @@ uint32_t InternalAudioDecoder::Read(void *pBuffer, uint32_t amount) {
 // and also returns the number of channels (1 or 2), the sample rate
 // (e.g. 22050), and the number of samples contained in the compressed file
 // (in case you want to pre-allocate a buffer to load them all into memory).
-IAudioDecoder *AudioDecoder::CreateDecoder(ReadDataFunction readerFunction, void *pReaderData, uint32_t &numChannels,
-                                           uint32_t &sampleRate, uint32_t &sampleCount) {
+std::unique_ptr<IAudioDecoder> AudioDecoder::CreateDecoder(ReadDataFunction readerFunction, void *pReaderData,
+                                                           uint32_t &numChannels, uint32_t &sampleRate,
+                                                           uint32_t &sampleCount) {
   // allocate our decoder
-  InternalAudioDecoder *pDecoder = new InternalAudioDecoder(readerFunction, pReaderData);
-  if (pDecoder == nullptr)
-    return nullptr;
+  auto pDecoder = std::make_unique<InternalAudioDecoder>(readerFunction, pReaderData);
 
   // initialize
   if (!pDecoder->Initialize()) {
     // Failed
-    delete pDecoder;
     return nullptr;
   }
 

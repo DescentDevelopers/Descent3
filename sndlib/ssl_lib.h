@@ -252,6 +252,8 @@
 #ifndef __SSL_LIB_H__
 #define __SSL_LIB_H__
 
+#include <memory>
+
 #include "vecmat.h"
 
 #ifndef NEWEDITOR
@@ -313,8 +315,8 @@ struct sound_file_info {
   char used;
   int use_count; // how many buffers does this sound take up.
 
-  uint8_t *sample_8bit; // 8bit sound data
-  int16_t *sample_16bit;        // 16bit sound data
+  std::unique_ptr<uint8_t[]> sample_8bit;  // 8bit sound data
+  std::unique_ptr<int16_t[]> sample_16bit; // 16bit sound data
 
   int sample_length;    // Length of sound in samples
   int np_sample_length; // non-padded

@@ -157,8 +157,6 @@
 OutrageMusicSeq::OutrageMusicSeq() {
   m_sequencer_run = false;
   m_sequencer_init = false;
-  m_str_buffer = nullptr;
-  m_ins_buffer = nullptr;
   m_curregion = -1;
   m_pending_song = m_active_song = m_playing_song = nullptr;
 }
@@ -178,10 +176,10 @@ bool OutrageMusicSeq::Init(const char *theme_file) {
   Stop();
 
   // initialize memory buffers
-  m_ins_buffer = mem_rmalloc<music_ins>(MAX_MUSIC_INSTRUCTIONS);
-  m_str_buffer = mem_rmalloc<char>(MAX_MUSIC_STRLEN);
-  m_ins_curptr = m_ins_buffer;
-  m_str_curptr = m_str_buffer;
+  m_ins_buffer = std::make_unique<music_ins[]>(MAX_MUSIC_INSTRUCTIONS);
+  m_str_buffer = std::make_unique<char[]>(MAX_MUSIC_STRLEN);
+  m_ins_curptr = m_ins_buffer.get();
+  m_str_curptr = m_str_buffer.get();
   m_str_curptr[0] = 0;
 
   //	initialize music lists
@@ -208,8 +206,8 @@ void OutrageMusicSeq::Shutdown() {
   m_tracklist.free();
 
   // free allocated buffers
-  mem_free(m_ins_buffer);
-  mem_free(m_str_buffer);
+  m_ins_buffer.reset();
+  m_str_buffer.reset();
 
   // free streams
   for (int i = 0; i < OMS_NUM_STRM; i++)
@@ -618,7 +616,7 @@ tMusicVal OutrageMusicSeq::GetRegister(int parm) {
 // memory management
 OutrageMusicSeq::music_ins *OutrageMusicSeq::alloc_and_copy_ins(int len, const music_ins *ins) {
   // copy instructions to static buffer and return a pointer to it
-  if ((m_ins_curptr + len) > (m_ins_buffer + MAX_MUSIC_INSTRUCTIONS)) {
+  if ((m_ins_curptr + len) > (m_ins_buffer.get() + MAX_MUSIC_INSTRUCTIONS)) {
     Int3();
     return nullptr;
   } else {
@@ -631,7 +629,7 @@ OutrageMusicSeq::music_ins *OutrageMusicSeq::alloc_and_copy_ins(int len, const m
 char *OutrageMusicSeq::alloc_and_copy_str(const char *str) {
   // copy string to static buffer and return a pointer to it
   int slen = strlen(str) + 1;
-  if ((m_str_curptr + slen) > (m_str_buffer + MAX_MUSIC_STRLEN)) {
+  if ((m_str_curptr + slen) > (m_str_buffer.get() + MAX_MUSIC_STRLEN)) {
     Int3();
     return nullptr;
   } else {
