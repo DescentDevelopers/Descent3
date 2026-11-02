@@ -252,6 +252,8 @@
 #ifndef HUD_H
 #define HUD_H
 
+#include <memory>
+
 #include "pstypes.h"
 #include "grdefs.h"
 
@@ -640,7 +642,7 @@ void HUDUnpauseMessages(void);
 
 struct tMsgList {
   int m_nmsg, m_limit;
-  char **m_msg;
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_msg;
 
   tMsgList();
   void set_limit(int limit) { m_limit = limit; };
@@ -656,9 +658,9 @@ class MsgListConsole {
   int m_x, m_y, m_w, m_h;
   int m_bufline = 0, m_buflen, m_curmsgs, m_numlines;
   bool m_opened = false;
-  char *m_buffer = nullptr;
+  std::unique_ptr<char[]> m_buffer;
   char m_title[32];
-  char **m_conlines = nullptr;
+  std::unique_ptr<char *[]> m_conlines; // borrowed pointers into m_buffer
   int n_conlines = 0;
   int m_keydownstate; // -1 for up key, 1 for down key, 0 for none.
   float m_keydowntime;

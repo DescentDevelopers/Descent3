@@ -413,6 +413,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "hud.h"
 #include "grdefs.h"
@@ -985,10 +986,9 @@ bool LGSHudState(CFILE *fp) {
     huditem.stat = stat_mask;
 
     switch (item_type) {
-      char *buffer;
       extern void RenderHUDTimer(tHUDItem * item);
 
-    case HUD_ITEM_CUSTOMTEXT2:
+    case HUD_ITEM_CUSTOMTEXT2: {
       huditem.x = cf_ReadShort(fp);
       huditem.y = cf_ReadShort(fp);
       huditem.color = (ddgr_color)cf_ReadInt(fp);
@@ -999,12 +999,12 @@ bool LGSHudState(CFILE *fp) {
       huditem.render_fn = nullptr; // use pointer to function void (*fn)(struct tHUDItem *)
       AddHUDItem(&huditem);
 
-      buffer = mem_rmalloc<char>(huditem.buffer_size);
-      cf_ReadString(buffer, huditem.buffer_size, fp);
-      UpdateCustomtext2HUDItem(buffer);
-      mem_free(buffer);
+      auto buffer = std::make_unique<char[]>(huditem.buffer_size);
+      cf_ReadString(buffer.get(), huditem.buffer_size, fp);
+      UpdateCustomtext2HUDItem(buffer.get());
       LOG_DEBUG.printf("lg: restored customtext2 (%x,%x,bufsize=%d)", huditem.x, huditem.y, huditem.buffer_size);
       break;
+    }
 
     case HUD_ITEM_TIMER:
       huditem.x = cf_ReadShort(fp);

@@ -106,6 +106,7 @@
 #include "hlsoundlib.h"
 
 #include <algorithm>
+#include <memory>
 
 #define TITLE_X 30 + TGminx
 #define VALUE_X 400 + TGminx
@@ -123,9 +124,9 @@ struct tGoalLineInfo {
   int lx, rx, ty, by; // bounding box
 };
 
-static tGoalLineInfo *TG_Lines;
+static std::unique_ptr<tGoalLineInfo[]> TG_Lines;
 static int TG_NumLines;
-static int *TG_SortedList;
+static std::unique_ptr<int[]> TG_SortedList;
 static int TG_CurrObjectiveArrow;
 
 struct tToolTipData {
@@ -188,14 +189,9 @@ void TCGoalsBuildLineData(void) {
   //'count' goals are what we have to display
   // allocate memory needed and start filling in
   if (count) {
-    TG_Lines = mem_rmalloc<tGoalLineInfo>(count);
+    TG_Lines = std::make_unique<tGoalLineInfo[]>(count);
     TG_NumLines = count;
-    TG_SortedList = mem_rmalloc<int>(count);
-    if (!TG_SortedList || !TG_Lines) {
-      // out of memory
-      Telcom_system.current_status = TS_OFF;
-      return;
-    }
+    TG_SortedList = std::make_unique<int[]>(count);
 
     // fill in data
     i = 0;
@@ -272,9 +268,9 @@ void TCGoalsBuildLineData(void) {
       TG_SortedList[j + 1] = t;
     }
   } else {
-    TG_Lines = nullptr;
+    TG_Lines.reset();
     TG_NumLines = 0;
-    TG_SortedList = nullptr;
+    TG_SortedList.reset();
   }
 }
 
@@ -694,8 +690,8 @@ bool TelComGoalStatus(tTelComInfo *tcs) {
   TGminy = tcs->Monitor_coords[MONITOR_MAIN].top + 10;
   TGmaxy = tcs->Monitor_coords[MONITOR_MAIN].bottom - 10;
   TGmaxx = tcs->Monitor_coords[MONITOR_MAIN].right - 10;
-  TG_Lines = nullptr;
-  TG_SortedList = nullptr;
+  TG_Lines.reset();
+  TG_SortedList.reset();
   TG_NumLines = 0;
   memset(&TG_TT_dest, 0, sizeof(tToolTipData));
   memset(&TG_TT_curr, 0, sizeof(tToolTipData));
@@ -756,14 +752,8 @@ bool TelComGoalStatus(tTelComInfo *tcs) {
   TelcomRenderSetScreen(DUMMY_SCREEN);
   TelcomRenderSetCallback(nullptr);
 
-  if (TG_Lines) {
-    mem_free(TG_Lines);
-    TG_Lines = nullptr;
-  }
-  if (TG_SortedList) {
-    mem_free(TG_SortedList);
-    TG_SortedList = nullptr;
-  }
+  TG_Lines.reset();
+  TG_SortedList.reset();
   TG_NumLines = 0;
 
   if (TG_CurrObjectiveArrow > BAD_BITMAP_HANDLE)

@@ -118,6 +118,8 @@
 #ifndef __TELCOM_EFFECTS_H_
 #define __TELCOM_EFFECTS_H_
 
+#include <memory>
+
 #include "pstypes.h"
 #include "renderer.h"
 #include "grdefs.h"
@@ -254,7 +256,7 @@ struct tceffect {
 
   int id; // user given ID of effect (should be unique)
 
-  char *text_buffer; // Pointer to allocated memory for text string
+  std::unique_ptr<char[]> text_buffer; // Pointer to allocated memory for text string
 
   int flags; // flags for effect
 

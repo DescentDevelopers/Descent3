@@ -181,6 +181,8 @@
 #ifndef __INVENTORY_H__
 #define __INVENTORY_H__
 
+#include <memory>
+
 #include "pstypes.h"
 #include "cfile.h"
 
@@ -232,9 +234,9 @@ struct inven_item {
 
   int count; // how many of this type/id (not INVF_OBJECT)
 
-  char *description;
-  char *icon_name;
-  char *name;
+  std::unique_ptr<char[]> description;
+  std::unique_ptr<char[]> icon_name;
+  std::unique_ptr<char[]> name;
 
   uint16_t iflags; // Inventory item flags
 

@@ -51,6 +51,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "TelComEffects.h"
 #include "hlsoundlib.h"
@@ -118,7 +119,7 @@ void RenderTextStatic(tceffect *tce, float frametime, int xoff, int yoff, bool o
   char buff[256];
   const char *nextline;
   int count = 0; // get to the first line of text (scrolling)
-  nextline = textaux_CopyTextLine(tce->text_buffer, buff);
+  nextline = textaux_CopyTextLine(tce->text_buffer.get(), buff);
   if ((tce->textinfo.line_index) && (nextline)) {
     count++;
     while (count <= tce->textinfo.line_index) {
@@ -174,12 +175,12 @@ void RenderTextType(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
     return;
   float flash_step;
   ddgr_color hi_color = tce->color; //@JEFF: GR_RGB(255,255,255);
-  int strlength = strlen(tce->text_buffer);
+  int strlength = strlen(tce->text_buffer.get());
   if (tce->textinfo.last_letter >= strlength - 1) {
     TelcomStopSound(TCSND_TYPING);
   }
   flash_step = frametime * (((float)strlength) / tce->speed);
-  char *temp;
+  std::unique_ptr<char[]> temp;
   if (tce->textinfo.last_letter < strlength - 1) {
     TelcomStartSound(TCSND_TYPING);
   }
@@ -187,12 +188,8 @@ void RenderTextType(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
   if (tce->textinfo.last_letter > strlength)
     tce->textinfo.last_letter = strlength;
   int ll = (int)tce->textinfo.last_letter;
-  temp = (char *)mem_malloc(strlength + 10);
-  if (!temp) {
-    tce->age += frametime;
-    return;
-  }
-  strcpy(temp, tce->text_buffer);
+  temp = std::make_unique<char[]>(strlength + 10);
+  strcpy(temp.get(), tce->text_buffer.get());
   temp[ll] = '\0';
 
   uint8_t old_alpha = grtext_GetAlpha();
@@ -215,7 +212,7 @@ void RenderTextType(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
   grtext_SetAlpha(255.0);
 
   int count = 0; // get to the first line of text (scrolling)
-  nextline = textaux_CopyTextLine(temp, buff);
+  nextline = textaux_CopyTextLine(temp.get(), buff);
   if ((tce->textinfo.line_index) && (nextline)) {
     count++;
     while (count <= tce->textinfo.line_index) {
@@ -279,7 +276,6 @@ void RenderTextType(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
           tce->textinfo.scroll_d = false;
   */
   grtext_SetAlpha(old_alpha);
-  mem_free(temp);
   tce->age += frametime;
 }
 void RenderTextFade(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_render) {
@@ -365,7 +361,7 @@ void RenderTextFade(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
   char buff[256];
   const char *nextline;
   int count = 0; // get to the first line of text (scrolling)
-  nextline = textaux_CopyTextLine(tce->text_buffer, buff);
+  nextline = textaux_CopyTextLine(tce->text_buffer.get(), buff);
   if ((tce->textinfo.line_index) && (nextline)) {
     count++;
     while (count <= tce->textinfo.line_index) {

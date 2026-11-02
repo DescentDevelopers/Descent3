@@ -204,6 +204,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "Briefing.h"
 #include "BriefingParse.h"
@@ -244,7 +245,7 @@ static int skipped_screens;
 
 static bool IsMissionMaskOK(uint32_t set, uint32_t unset);
 static void ReplaceHotTag(char *string, int tag);
-static bool ParseForHotTags(const char *src, char **dest);
+static std::unique_ptr<char[]> ParseForHotTags(const char *src);
 static bool PlayBriefing(tTelComInfo *tcs);
 static void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id);
 static void PBAddBmpEffect(TCBMPDESC* desc, char *description);
@@ -292,22 +293,20 @@ void ReplaceHotTag(char *string, int tag) {
   }
 }
 
-// returns true if there were hot tags and it had to allocate memory for dest (so it needs to be freed)
+// returns the text with hot tags replaced, or nullptr if there were no hot tags
 #define MEMORY_BLOCK 50
-bool ParseForHotTags(const char *src, char **dest) {
+std::unique_ptr<char[]> ParseForHotTags(const char *src) {
   bool ret = false;
   const char *curr_ptr = src;
   char *dest_ptr;
-  *dest = nullptr;
 
   bool done = false;
   int length = strlen(src) + 1;
   int curr_size = length;
   int curr_index = 0;
 
-  dest_ptr = *dest = mem_rmalloc<char>(length);
-  if (!dest_ptr)
-    return false;
+  auto dest = std::make_unique<char[]>(length);
+  dest_ptr = dest.get();
   char replacement[256];
 
   while (!done) {
@@ -323,18 +322,10 @@ bool ParseForHotTags(const char *src, char **dest) {
 
         if (length < 1) {
           // we need to allocate some more memory
-          char *new_mem = (char *)mem_malloc(curr_size + MEMORY_BLOCK);
-          if (!new_mem) {
-            // out of memory
-            mem_free((*dest));
-            *dest = nullptr;
-            return false;
-          }
-
-          memcpy(new_mem, (*dest), curr_index);
-          mem_free(*dest);
-          *dest = new_mem;
-          dest_ptr = &new_mem[curr_index];
+          auto new_mem = std::make_unique<char[]>(curr_size + MEMORY_BLOCK);
+          memcpy(new_mem.get(), dest.get(), curr_index);
+          dest = std::move(new_mem);
+          dest_ptr = &dest[curr_index];
           curr_size += MEMORY_BLOCK;
           length += MEMORY_BLOCK;
         }
@@ -366,18 +357,10 @@ bool ParseForHotTags(const char *src, char **dest) {
 
         if (length < 1) {
           // we need to allocate some more memory
-          char *new_mem = (char *)mem_malloc(curr_size + MEMORY_BLOCK);
-          if (!new_mem) {
-            // out of memory
-            mem_free((*dest));
-            *dest = nullptr;
-            return false;
-          }
-
-          memcpy(new_mem, (*dest), curr_index);
-          mem_free(*dest);
-          *dest = new_mem;
-          dest_ptr = &new_mem[curr_index];
+          auto new_mem = std::make_unique<char[]>(curr_size + MEMORY_BLOCK);
+          memcpy(new_mem.get(), dest.get(), curr_index);
+          dest = std::move(new_mem);
+          dest_ptr = &dest[curr_index];
           curr_size += MEMORY_BLOCK;
           length += MEMORY_BLOCK;
         }
@@ -397,18 +380,10 @@ bool ParseForHotTags(const char *src, char **dest) {
 
           if (length < 1) {
             // we need to allocate some more memory
-            char *new_mem = (char *)mem_malloc(curr_size + MEMORY_BLOCK);
-            if (!new_mem) {
-              // out of memory
-              mem_free((*dest));
-              *dest = nullptr;
-              return false;
-            }
-
-            memcpy(new_mem, (*dest), curr_index);
-            mem_free(*dest);
-            *dest = new_mem;
-            dest_ptr = &new_mem[curr_index];
+            auto new_mem = std::make_unique<char[]>(curr_size + MEMORY_BLOCK);
+            memcpy(new_mem.get(), dest.get(), curr_index);
+            dest = std::move(new_mem);
+            dest_ptr = &dest[curr_index];
             curr_size += MEMORY_BLOCK;
             length += MEMORY_BLOCK;
           }
@@ -422,11 +397,10 @@ bool ParseForHotTags(const char *src, char **dest) {
   *dest_ptr = '\0';
 
   if (!ret) {
-    mem_free((*dest));
-    *dest = nullptr;
+    dest.reset();
   }
 
-  return ret;
+  return dest;
 }
 
 bool PlayBriefing(tTelComInfo *tcs) {
@@ -455,14 +429,9 @@ bool PlayBriefing(tTelComInfo *tcs) {
 
 void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
-    char *new_text = nullptr;
-    const bool new_stuff = ParseForHotTags(text, &new_text);
+    const std::unique_ptr<char[]> new_text = ParseForHotTags(text);
 
-    CreateTextEffect(desc, new_stuff ? new_text : text, MONITOR_MAIN, current_screen, id);
-
-    if (new_text) {
-      mem_free(new_text);
-    }
+    CreateTextEffect(desc, new_text ? new_text.get() : text, MONITOR_MAIN, current_screen, id);
   }
 }
 
