@@ -185,6 +185,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <memory>
 
 #include "newui_core.h"
 #include "bitmap.h"
@@ -380,7 +381,7 @@ class newuiResources {
     };
     int16_t chunked; // is it a bitmap handle or chunk
     int16_t n_count;
-    char *filename;             // filename of bitmap.
+    std::unique_ptr<char[]> filename; // filename of bitmap.
   } m_list[N_NEWUI_BMPS_TOTAL]; // list of bitmaps.
 
 public:
@@ -447,7 +448,7 @@ class newuiSlider : public UIGadget {
   int16_t m_pos;
   int16_t m_unitrange;
   UIBitmapItem *m_bar_bmp;
-  UISnazzyTextItem *m_title;
+  std::unique_ptr<UISnazzyTextItem> m_title;
   newuiArrowButton m_minus_btn;
   newuiArrowButton m_plus_btn;
   tSliderSettings m_unit_settings;
@@ -491,24 +492,24 @@ protected:
   virtual void OnKeyDown(int key);
 
 private:
-  UISnazzyTextItem *m_title;
+  std::unique_ptr<UISnazzyTextItem> m_title;
   bool m_quick_escape_enable;
 };
 
-static inline UISnazzyTextItem *MonitorSmallText(const char *text) {
-  return new UISnazzyTextItem(0, MONITOR9_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
+static inline std::unique_ptr<UISnazzyTextItem> MonitorSmallText(const char *text) {
+  return std::make_unique<UISnazzyTextItem>(0, MONITOR9_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
 }
 
-static inline UISnazzyTextItem *MonitorLargeText(const char *text) {
-  return new UISnazzyTextItem(0, MONITOR15_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
+static inline std::unique_ptr<UISnazzyTextItem> MonitorLargeText(const char *text) {
+  return std::make_unique<UISnazzyTextItem>(0, MONITOR15_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
 }
 
-static inline UISnazzyTextItem *GadgetSmallText(const char *text) {
-  return new UISnazzyTextItem(0, GADGET9_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
+static inline std::unique_ptr<UISnazzyTextItem> GadgetSmallText(const char *text) {
+  return std::make_unique<UISnazzyTextItem>(0, GADGET9_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
 }
 
-static inline UISnazzyTextItem *GadgetLargeText(const char *text) {
-  return new UISnazzyTextItem(0, GADGET15_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
+static inline std::unique_ptr<UISnazzyTextItem> GadgetLargeText(const char *text) {
+  return std::make_unique<UISnazzyTextItem>(0, GADGET15_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -706,6 +707,7 @@ void newuiResources::Shutdown() {
       }
     }
     m_list[i].n_count = 0;
+    m_list[i].filename.reset();
   }
 }
 
@@ -721,7 +723,7 @@ UIBitmapItem *newuiResources::Load(const char *filename) {
         free_slot = i;
       }
     } else {
-      if (stricmp(filename, m_list[i].filename) == 0) {
+      if (stricmp(filename, m_list[i].filename.get()) == 0) {
         break;
       }
     }
@@ -756,7 +758,7 @@ UIBitmapItem *newuiResources::Load(const char *filename) {
     }
 
     m_list[i].n_count = 0;
-    m_list[i].filename = mem_strdup(filename);
+    m_list[i].filename = mem_strdup_unique(filename);
   }
 
   m_list[i].n_count++;
@@ -810,7 +812,7 @@ void newuiResources::Free(UIBitmapItem *bmitem) {
     } else {
       bm_FreeBitmap(m_list[i].bm_handle);
     }
-    mem_free(m_list[i].filename);
+    m_list[i].filename.reset();
   }
 }
 
@@ -1186,7 +1188,6 @@ void newuiMessageBox::OnDraw() {
 #define GADGET_CHANGEABLE_TXT 17 // changeable text
 
 newuiSheet::newuiSheet() {
-  m_gadgetlist = nullptr;
   m_gadgetlimit = 0;
   m_ngadgets = 0;
   m_realized = false;
@@ -1195,17 +1196,13 @@ newuiSheet::newuiSheet() {
 void newuiSheet::Create(UIWindow *menu, const char *title, int n_items, int sx, int sy) {
   int i;
 
-  if (title) {
-    m_title = mem_strdup(title);
-  } else {
-    m_title = nullptr;
-  }
+  m_title = mem_strdup_unique(title);
   m_gadgetlimit = n_items;
   m_ngadgets = 0;
   if (n_items) {
-    m_gadgetlist = mem_rmalloc<t_gadget_desc>(n_items);
+    m_gadgetlist = std::make_unique<t_gadget_desc[]>(n_items);
   } else {
-    m_gadgetlist = nullptr;
+    m_gadgetlist.reset();
   }
 
   m_parent = menu;
@@ -1216,7 +1213,6 @@ void newuiSheet::Create(UIWindow *menu, const char *title, int n_items, int sx, 
 
   for (i = 0; i < m_gadgetlimit; i++) {
     m_gadgetlist[i].obj.gadget = nullptr;
-    m_gadgetlist[i].title = nullptr;
     m_gadgetlist[i].id = -1;
     m_gadgetlist[i].internal = nullptr;
   }
@@ -1228,12 +1224,8 @@ void newuiSheet::Destroy() {
 
   newuiSheet::Reset();
 
-  if (m_gadgetlist)
-    mem_free(m_gadgetlist);
-  if (m_title)
-    mem_free(m_title);
-  m_title = nullptr;
-  m_gadgetlist = nullptr;
+  m_title.reset();
+  m_gadgetlist.reset();
   m_ngadgets = 0;
 }
 
@@ -1243,9 +1235,7 @@ void newuiSheet::Reset() {
   ASSERT(!m_realized);
 
   for (i = 0; i < m_ngadgets; i++) {
-    if (m_gadgetlist[i].title) {
-      mem_free(m_gadgetlist[i].title);
-    }
+    m_gadgetlist[i].title.reset();
     if (m_gadgetlist[i].internal) {
       if (m_gadgetlist[i].type == GADGET_LISTBOX) {
         newuiListBox *lb = (newuiListBox *)m_gadgetlist[i].internal;
@@ -1309,7 +1299,7 @@ void newuiSheet::Realize() {
       gy = desc->parm.s[1] + m_sy;
       if (desc->title) {
         text = new UIText;
-        UITextItem item{MONITOR9_NEWUI_FONT, desc->title, NEWUI_MONITORFONT_COLOR};
+        UITextItem item{MONITOR9_NEWUI_FONT, desc->title.get(), NEWUI_MONITORFONT_COLOR};
         text->Create(m_parent, &item, gx, gy);
         desc->obj.gadget = text;
 
@@ -1337,7 +1327,7 @@ void newuiSheet::Realize() {
 
     case GADGET_STATIC_TXT: {
       text = new UIText;
-      UITextItem item{MONITOR9_NEWUI_FONT, desc->title, NEWUI_MONITORFONT_COLOR};
+      UITextItem item{MONITOR9_NEWUI_FONT, desc->title.get(), NEWUI_MONITORFONT_COLOR};
       text->Create(m_parent, &item, gx, gy);
       if (horizontal_align)
         gx += text->W() + 2;
@@ -1371,7 +1361,7 @@ void newuiSheet::Realize() {
     }
     case GADGET_BUTTON:
       btn = new newuiButton;
-      btn->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.i);
+      btn->Create(m_parent, desc->id, desc->title.get(), gx, gy, desc->parm.i);
       if (horizontal_align)
         gx += btn->W() + 2;
       else
@@ -1381,7 +1371,7 @@ void newuiSheet::Realize() {
 
     case GADGET_CHECKBOX:
       cbox = new newuiCheckBox;
-      cbox->Create(m_parent, desc->id, desc->title, gx, gy, false);
+      cbox->Create(m_parent, desc->id, desc->title.get(), gx, gy, false);
       if (!toggles_group) {
         toggles_group = true;
         cbox->SetFlag(UIF_GROUP_START);
@@ -1400,7 +1390,7 @@ void newuiSheet::Realize() {
       if (first_radio_index == -1)
         first_radio_index = i;
       radio = new newuiRadioButton;
-      radio->Create(m_parent, prev_radio, desc->id, desc->title, gx, gy, false);
+      radio->Create(m_parent, prev_radio, desc->id, desc->title.get(), gx, gy, false);
       if (m_gadgetlist[first_radio_index].parm.i == (i - first_radio_index)) {
         radio->Activate();
       }
@@ -1414,7 +1404,7 @@ void newuiSheet::Realize() {
 
     case GADGET_LBUTTON:
       btn = new newuiButton;
-      btn->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.i | NEWUI_BTNF_LONG);
+      btn->Create(m_parent, desc->id, desc->title.get(), gx, gy, desc->parm.i | NEWUI_BTNF_LONG);
       if (horizontal_align)
         gx += btn->W() + 2;
       else
@@ -1424,7 +1414,7 @@ void newuiSheet::Realize() {
 
     case GADGET_LCHECKBOX:
       cbox = new newuiCheckBox;
-      cbox->Create(m_parent, desc->id, desc->title, gx, gy, true);
+      cbox->Create(m_parent, desc->id, desc->title.get(), gx, gy, true);
       if (!toggles_group) {
         toggles_group = true;
         cbox->SetFlag(UIF_GROUP_START);
@@ -1443,7 +1433,7 @@ void newuiSheet::Realize() {
       if (first_radio_index == -1)
         first_radio_index = i;
       radio = new newuiRadioButton;
-      radio->Create(m_parent, prev_radio, desc->id, desc->title, gx, gy, true);
+      radio->Create(m_parent, prev_radio, desc->id, desc->title.get(), gx, gy, true);
       if (m_gadgetlist[first_radio_index].parm.i == (i - first_radio_index)) {
         radio->Activate();
       }
@@ -1458,7 +1448,7 @@ void newuiSheet::Realize() {
     case GADGET_HOTSPOT:
       hot = new newuiHotspot;
       bval = desc->internal ? true : false;
-      hot->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.s[0], desc->parm.s[1],
+      hot->Create(m_parent, desc->id, desc->title.get(), gx, gy, desc->parm.s[0], desc->parm.s[1],
                   (bval && !hotspot_group)  ? UIF_GROUP_START
                   : (bval && hotspot_group) ? UIF_GROUP_END
                                             : 0);
@@ -1478,7 +1468,7 @@ void newuiSheet::Realize() {
 
     case GADGET_SLIDER:
       slider = new newuiSlider;
-      slider->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.s[1]);
+      slider->Create(m_parent, desc->id, desc->title.get(), gx, gy, desc->parm.s[1]);
       slider->SetPos(desc->parm.s[0]);
       if (desc->internal) {
         slider->SetUnits((tSliderSettings *)desc->internal);
@@ -1499,7 +1489,7 @@ void newuiSheet::Realize() {
 
       // awful hack, but no more room to store passed in parameters.  note that we should never have an edit
       // box with a width greater than 4096 pixels in the lifetime of this system.
-      edit->Create(m_parent, desc->id, desc->title, gx, gy, (desc->parm.s[0] & 0xfff), flags);
+      edit->Create(m_parent, desc->id, desc->title.get(), gx, gy, (desc->parm.s[0] & 0xfff), flags);
       edit->SetBufferLen(desc->parm.s[1]);
       edit->SetText((char *)desc->internal);
 
@@ -1938,7 +1928,7 @@ newuiSheet::t_gadget_desc *newuiSheet::AddGadget(int16_t id, int8_t type, const 
 
   m_gadgetlist[i].id = id;
   m_gadgetlist[i].type = type;
-  m_gadgetlist[i].title = title ? mem_strdup(title) : nullptr;
+  m_gadgetlist[i].title = mem_strdup_unique(title);
   m_gadgetlist[i].obj.gadget = nullptr;
   m_gadgetlist[i].parm.i = 0;
   m_gadgetlist[i].changed = false;
@@ -2116,7 +2106,6 @@ char *newuiSheet::AddEditBox(const char *title, int16_t maxlen, int16_t w, int16
 newuiButton::newuiButton() {
   m_bkg = nullptr;
   m_litbkg = nullptr;
-  m_text = nullptr;
 }
 
 void newuiButton::Create(UIWindow *menu, int16_t id, const char *name, int16_t x, int16_t y, int16_t flags) {
@@ -2180,10 +2169,7 @@ void newuiButton::OnDestroy() {
     Newui_resources.Free(m_litbkg);
     m_litbkg = nullptr;
   }
-  if (m_text) {
-    delete m_text;
-    m_text = nullptr;
-  }
+  m_text.reset();
 
   UIButton::OnDestroy();
 }
@@ -2426,7 +2412,6 @@ void newuiRadioButton::OnDraw() { newuiButton::OnDraw(); }
 newuiSlider::newuiSlider() {
   m_pos = m_unitrange = 0;
   m_bar_bmp = nullptr;
-  m_title = nullptr;
 }
 
 void newuiSlider::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t range) {
@@ -2596,10 +2581,7 @@ void newuiSlider::OnDestroy() {
     Newui_resources.Free(m_bar_bmp);
     m_bar_bmp = nullptr;
   }
-  if (m_title) {
-    delete m_title;
-    m_title = nullptr;
-  }
+  m_title.reset();
 }
 
 // this function will handle when an arrow button was pressed
@@ -2619,9 +2601,6 @@ void newuiSlider::OnNotifySelect(UIGadget *g) {
 //	CLASS a new listbox. uses less memory than the old listbox hopefully.
 
 newuiListBox::newuiListBox() {
-  m_ItemList = nullptr;
-  m_Virt2Real = nullptr;
-  m_Real2Virt = nullptr;
   selectchange_fn = nullptr;
   selectchange_id_fn = nullptr;
   m_callbackptr = nullptr;
@@ -2637,9 +2616,9 @@ newuiListBox::newuiListBox() {
 }
 
 void newuiListBox::Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, int16_t w, int16_t h, uint16_t flags) {
-  m_ItemList = nullptr;
-  m_Virt2Real = nullptr;
-  m_Real2Virt = nullptr;
+  m_ItemList.reset();
+  m_Virt2Real.reset();
+  m_Real2Virt.reset();
   selectchange_fn = nullptr;
   selectchange_id_fn = nullptr;
   m_callbackptr = nullptr;
@@ -2677,9 +2656,9 @@ void newuiListBox::Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, int16
 
 // functions to add or remove items,
 void newuiListBox::AddItem(const char *name) {
-  char **temp;
+  std::unique_ptr<std::unique_ptr<char[]>[]> temp;
   int i;
-  int *tempvirt2real, *tempreal2virt;
+  std::unique_ptr<int[]> tempvirt2real, tempreal2virt;
   int real_index = -1;
 
   if (m_Flags & UILB_NOSORT) {
@@ -2687,24 +2666,20 @@ void newuiListBox::AddItem(const char *name) {
 
     if ((m_NumItems % LISTBOX_BUFFER_SIZE) == 0) {
       //	dynamically allocated memory for listbox, expand as needed.
-      temp = (char **)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(char *));
-      tempvirt2real = (int *)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(int));
-      tempreal2virt = (int *)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(int));
+      temp = std::make_unique<std::unique_ptr<char[]>[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempvirt2real = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempreal2virt = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
 
       if (m_ItemList) {
         for (i = 0; i < m_NumItems; i++) {
-          temp[i] = m_ItemList[i];
+          temp[i] = std::move(m_ItemList[i]);
           tempvirt2real[i] = m_Virt2Real[i];
           tempreal2virt[i] = m_Real2Virt[i];
         }
-
-        mem_free(m_ItemList);
-        mem_free(m_Virt2Real);
-        mem_free(m_Real2Virt);
       }
-      m_ItemList = temp;
-      m_Virt2Real = tempvirt2real;
-      m_Real2Virt = tempreal2virt;
+      m_ItemList = std::move(temp);
+      m_Virt2Real = std::move(tempvirt2real);
+      m_Real2Virt = std::move(tempreal2virt);
     }
 
     real_index = m_NumItems;
@@ -2718,9 +2693,9 @@ void newuiListBox::AddItem(const char *name) {
       int pidx = 0;
       int result;
 
-      temp = (char **)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(char *));
-      tempvirt2real = (int *)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(int));
-      tempreal2virt = (int *)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(int));
+      temp = std::make_unique<std::unique_ptr<char[]>[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempvirt2real = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempreal2virt = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
 
       real_index = -1;
 
@@ -2730,20 +2705,21 @@ void newuiListBox::AddItem(const char *name) {
             if (real_index == -1) {
               real_index = oidx;
             } else {
-              temp[cidx] = m_ItemList[pidx];
+              temp[cidx] = std::move(m_ItemList[pidx]);
               tempreal2virt[cidx] = m_Real2Virt[pidx];
             }
             oidx++;
             continue;
           }
 
-          if (m_Flags & UILB_CASESENSITIVE)
-            result = strcmp(m_ItemList[cidx], name);
-          else
-            result = stricmp(m_ItemList[cidx], name);
+          if (m_Flags & UILB_CASESENSITIVE) {
+            result = strcmp(m_ItemList[cidx].get(), name);
+          } else {
+            result = stricmp(m_ItemList[cidx].get(), name);
+          }
           if (result < 0) {
             // copy old
-            temp[cidx] = m_ItemList[pidx];
+            temp[cidx] = std::move(m_ItemList[pidx]);
             tempreal2virt[cidx] = m_Real2Virt[pidx];
             cidx++;
             pidx++;
@@ -2753,7 +2729,7 @@ void newuiListBox::AddItem(const char *name) {
               real_index = cidx;
               cidx++;
             } else {
-              temp[cidx] = m_ItemList[pidx];
+              temp[cidx] = std::move(m_ItemList[pidx]);
               tempreal2virt[cidx] = m_Real2Virt[pidx];
               cidx++;
               pidx++;
@@ -2774,17 +2750,13 @@ void newuiListBox::AddItem(const char *name) {
               tempvirt2real[oidx]++;
           }
         }
-
-        mem_free(m_ItemList);
-        mem_free(m_Virt2Real);
-        mem_free(m_Real2Virt);
       } else {
         real_index = 0;
       }
 
-      m_ItemList = temp;
-      m_Virt2Real = tempvirt2real;
-      m_Real2Virt = tempreal2virt;
+      m_ItemList = std::move(temp);
+      m_Virt2Real = std::move(tempvirt2real);
+      m_Real2Virt = std::move(tempreal2virt);
     } else {
       // find where to insert, without allocating memory
       int oidx = 0, cidx = 0;
@@ -2792,7 +2764,7 @@ void newuiListBox::AddItem(const char *name) {
       int result;
 
       int old_r2v;
-      char *old_item = nullptr;
+      std::unique_ptr<char[]> old_item;
 
       while (oidx <= m_NumItems) {
 
@@ -2804,15 +2776,16 @@ void newuiListBox::AddItem(const char *name) {
           } else {
             // the real index has been set, we're still pulling back
             m_Real2Virt[cidx] = old_r2v;
-            m_ItemList[cidx] = old_item;
+            m_ItemList[cidx] = std::move(old_item);
           }
           oidx++;
           continue;
         } else {
-          if (m_Flags & UILB_CASESENSITIVE)
-            result = strcmp(m_ItemList[cidx], name);
-          else
-            result = stricmp(m_ItemList[cidx], name);
+          if (m_Flags & UILB_CASESENSITIVE) {
+            result = strcmp(m_ItemList[cidx].get(), name);
+          } else {
+            result = stricmp(m_ItemList[cidx].get(), name);
+          }
         }
 
         if (result < 0) {
@@ -2823,22 +2796,22 @@ void newuiListBox::AddItem(const char *name) {
           if (real_index == -1) {
             // we need to insert here
             real_index = cidx;
-            old_item = m_ItemList[cidx];
+            old_item = std::move(m_ItemList[cidx]);
             old_r2v = m_Real2Virt[cidx];
             cidx++;
           } else {
             // old_item and old_r2v should be set!
             ASSERT(old_item);
-            char *oi;
+            std::unique_ptr<char[]> oi;
             int or2v;
 
             or2v = m_Real2Virt[cidx];
-            oi = m_ItemList[cidx];
+            oi = std::move(m_ItemList[cidx]);
 
             m_Real2Virt[cidx] = old_r2v;
-            m_ItemList[cidx] = old_item;
+            m_ItemList[cidx] = std::move(old_item);
             old_r2v = or2v;
-            old_item = oi;
+            old_item = std::move(oi);
 
             cidx++;
           }
@@ -2864,7 +2837,7 @@ void newuiListBox::AddItem(const char *name) {
   }
 
   //	copy item passed to list.
-  m_ItemList[real_index] = mem_strdup(name);
+  m_ItemList[real_index] = mem_strdup_unique(name);
   m_Virt2Real[m_NumItems] = real_index;
   m_Real2Virt[real_index] = m_NumItems;
   m_NumItems++;
@@ -2881,11 +2854,10 @@ void newuiListBox::RemoveItem(const char *name) {
 
   for (i = 0; i < m_NumItems; i++) {
     int res;
-    res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
+    res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i].get(), name) : strcmp(m_ItemList[i].get(), name);
     if (res == 0) {
       found = i;
-      mem_free(m_ItemList[found]);
-      m_ItemList[found] = nullptr;
+      m_ItemList[found].reset();
       break;
     }
   }
@@ -2905,7 +2877,7 @@ void newuiListBox::RemoveItem(const char *name) {
 
   for (j = 0; j < (m_NumItems - 1); j++) {
     if (j >= real_index) {
-      m_ItemList[j] = m_ItemList[j + 1];
+      m_ItemList[j] = std::move(m_ItemList[j + 1]);
       m_Real2Virt[j] = m_Real2Virt[j + 1];
     }
 
@@ -2931,24 +2903,9 @@ void newuiListBox::RemoveItem(const char *name) {
 void newuiListBox::RemoveAll() {
   m_SelectedIndex = -1;
 
-  if (m_ItemList) {
-    int i;
-    for (i = 0; i < m_NumItems; i++) {
-      if (m_ItemList[i])
-        mem_free(m_ItemList[i]);
-    }
-    mem_free(m_ItemList);
-  }
-
-  if (m_Virt2Real)
-    mem_free(m_Virt2Real);
-
-  if (m_Real2Virt)
-    mem_free(m_Real2Virt);
-
-  m_ItemList = nullptr;
-  m_Virt2Real = nullptr;
-  m_Real2Virt = nullptr;
+  m_ItemList.reset();
+  m_Virt2Real.reset();
+  m_Real2Virt.reset();
   m_Index = m_NumItems = 0;
 }
 
@@ -2981,7 +2938,7 @@ void newuiListBox::SetCurrentIndex(int index) {
 
     // determine how many items fit in a listbox the long way.
     for (i = 0, y = m_boffs; i < m_NumItems; i++) {
-      UITextItem item(m_ItemList[i]);
+      UITextItem item(m_ItemList[i].get());
       item.set_font(MONITOR9_NEWUI_FONT);
 
       y += item.height();
@@ -3026,7 +2983,7 @@ bool newuiListBox::GetItem(int index, char *buffer, int buflen) {
   if (index >= 0 && index < m_NumItems) {
     int real_index = m_Virt2Real[index];
     ASSERT(real_index >= 0 && real_index < m_NumItems);
-    strncpy(buffer, m_ItemList[real_index], buflen - 1);
+    strncpy(buffer, m_ItemList[real_index].get(), buflen - 1);
     buffer[buflen - 1] = 0;
     return true;
   }
@@ -3038,7 +2995,7 @@ bool newuiListBox::SetCurrentItem(const char *name) {
   int i, found = 0;
 
   for (i = 0; i < m_NumItems; i++) {
-    int res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
+    int res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i].get(), name) : strcmp(m_ItemList[i].get(), name);
     if (res == 0) {
       SetCurrentIndex(m_Real2Virt[i]);
       found = 1;
@@ -3125,7 +3082,7 @@ void newuiListBox::OnDraw() {
   ui_SetTextClip(m_boffs, m_boffs, m_W - m_boffs - m_up_btn.W(), m_H - m_boffs);
 
   for (i = m_Index, y = m_boffs; i < m_NumItems; i++) {
-    UITextItem item(m_ItemList[i]);
+    UITextItem item(m_ItemList[i].get());
     item.set_font(MONITOR9_NEWUI_FONT);
 
     if (m_mse_clicked) {
@@ -3150,7 +3107,7 @@ void newuiListBox::OnDraw() {
   }
 
   for (i = m_Index, y = m_boffs; i < m_NumItems; i++) {
-    UITextItem item(m_ItemList[i]);
+    UITextItem item(m_ItemList[i].get());
 
     item.set_font(MONITOR9_NEWUI_FONT);
     item.set_color(NEWUI_MONITORFONT_COLOR);
@@ -3259,7 +3216,7 @@ void newuiListBox::OnMouseBtnDown(int btn) {
           if (m_NumItems > 0 && m_SelectedIndex > -1) {
             int y, i;
             for (i = m_Index, y = m_boffs; i < m_NumItems; i++) {
-              UITextItem item(m_ItemList[i]);
+              UITextItem item(m_ItemList[i].get());
               item.set_font(MONITOR9_NEWUI_FONT);
 
               if (m_mse_y >= y && m_mse_y <= (y + item.height() - 1)) {
@@ -3321,27 +3278,14 @@ void newuiListBox::OnSelect() { UIGadget::OnSelect(); }
 
 // called when destroyed.
 void newuiListBox::OnDestroy() {
-  int i;
-
   if (m_up_btn.IsCreated())
     m_up_btn.Destroy();
   if (m_down_btn.IsCreated())
     m_down_btn.Destroy();
 
-  for (i = 0; i < m_NumItems; i++) {
-    mem_free(m_ItemList[i]);
-  }
-
-  if (m_ItemList)
-    mem_free(m_ItemList);
-  if (m_Real2Virt)
-    mem_free(m_Real2Virt);
-  if (m_Virt2Real)
-    mem_free(m_Virt2Real);
-
-  m_ItemList = nullptr;
-  m_Real2Virt = nullptr;
-  m_Virt2Real = nullptr;
+  m_ItemList.reset();
+  m_Real2Virt.reset();
+  m_Virt2Real.reset();
 
   Newui_resources.Free(m_pieces[N_PIECE_IDX]);
   Newui_resources.Free(m_pieces[NE_PIECE_IDX]);
@@ -3388,18 +3332,15 @@ void newuiListBox::Offset(int16_t offs) {
 //	CLASS a new listbox. uses less memory than the old listbox hopefully.
 
 newuiComboBox::newuiComboBox() {
-  m_ItemList = nullptr;
-  m_Virt2Real = nullptr;
-  m_Real2Virt = nullptr;
   selectchange_fn = nullptr;
   m_NumItems = 0;
   m_Index = 0;
 }
 
 void newuiComboBox::Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, uint16_t flags) {
-  m_ItemList = nullptr;
-  m_Virt2Real = nullptr;
-  m_Real2Virt = nullptr;
+  m_ItemList.reset();
+  m_Virt2Real.reset();
+  m_Real2Virt.reset();
   selectchange_fn = nullptr;
   m_NumItems = 0;
   m_Index = 0;
@@ -3414,9 +3355,9 @@ void newuiComboBox::Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, uint
 
 // functions to add or remove items,
 void newuiComboBox::AddItem(const char *name) {
-  char **temp;
+  std::unique_ptr<std::unique_ptr<char[]>[]> temp;
   int i;
-  int *tempvirt2real, *tempreal2virt;
+  std::unique_ptr<int[]> tempvirt2real, tempreal2virt;
   int real_index = -1;
 
   if (m_Flags & UILB_NOSORT) {
@@ -3424,24 +3365,20 @@ void newuiComboBox::AddItem(const char *name) {
 
     if ((m_NumItems % LISTBOX_BUFFER_SIZE) == 0) {
       //	dynamically allocated memory for listbox, expand as needed.
-      temp = (char **)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(char *));
-      tempvirt2real = (int *)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(int));
-      tempreal2virt = (int *)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(int));
+      temp = std::make_unique<std::unique_ptr<char[]>[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempvirt2real = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempreal2virt = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
 
       if (m_ItemList) {
         for (i = 0; i < m_NumItems; i++) {
-          temp[i] = m_ItemList[i];
+          temp[i] = std::move(m_ItemList[i]);
           tempvirt2real[i] = m_Virt2Real[i];
           tempreal2virt[i] = m_Real2Virt[i];
         }
-
-        mem_free(m_ItemList);
-        mem_free(m_Virt2Real);
-        mem_free(m_Real2Virt);
       }
-      m_ItemList = temp;
-      m_Virt2Real = tempvirt2real;
-      m_Real2Virt = tempreal2virt;
+      m_ItemList = std::move(temp);
+      m_Virt2Real = std::move(tempvirt2real);
+      m_Real2Virt = std::move(tempreal2virt);
     }
 
     real_index = m_NumItems;
@@ -3455,9 +3392,9 @@ void newuiComboBox::AddItem(const char *name) {
       int pidx = 0;
       int result;
 
-      temp = (char **)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(char *));
-      tempvirt2real = (int *)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(int));
-      tempreal2virt = (int *)mem_malloc((m_NumItems + LISTBOX_BUFFER_SIZE) * sizeof(int));
+      temp = std::make_unique<std::unique_ptr<char[]>[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempvirt2real = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
+      tempreal2virt = std::make_unique<int[]>(m_NumItems + LISTBOX_BUFFER_SIZE);
 
       real_index = -1;
 
@@ -3467,20 +3404,21 @@ void newuiComboBox::AddItem(const char *name) {
             if (real_index == -1) {
               real_index = oidx;
             } else {
-              temp[cidx] = m_ItemList[pidx];
+              temp[cidx] = std::move(m_ItemList[pidx]);
               tempreal2virt[cidx] = m_Real2Virt[pidx];
             }
             oidx++;
             continue;
           }
 
-          if (m_Flags & UILB_CASESENSITIVE)
-            result = strcmp(m_ItemList[cidx], name);
-          else
-            result = stricmp(m_ItemList[cidx], name);
+          if (m_Flags & UILB_CASESENSITIVE) {
+            result = strcmp(m_ItemList[cidx].get(), name);
+          } else {
+            result = stricmp(m_ItemList[cidx].get(), name);
+          }
           if (result < 0) {
             // copy old
-            temp[cidx] = m_ItemList[pidx];
+            temp[cidx] = std::move(m_ItemList[pidx]);
             tempreal2virt[cidx] = m_Real2Virt[pidx];
             cidx++;
             pidx++;
@@ -3490,7 +3428,7 @@ void newuiComboBox::AddItem(const char *name) {
               real_index = cidx;
               cidx++;
             } else {
-              temp[cidx] = m_ItemList[pidx];
+              temp[cidx] = std::move(m_ItemList[pidx]);
               tempreal2virt[cidx] = m_Real2Virt[pidx];
               cidx++;
               pidx++;
@@ -3511,17 +3449,13 @@ void newuiComboBox::AddItem(const char *name) {
               tempvirt2real[oidx]++;
           }
         }
-
-        mem_free(m_ItemList);
-        mem_free(m_Virt2Real);
-        mem_free(m_Real2Virt);
       } else {
         real_index = 0;
       }
 
-      m_ItemList = temp;
-      m_Virt2Real = tempvirt2real;
-      m_Real2Virt = tempreal2virt;
+      m_ItemList = std::move(temp);
+      m_Virt2Real = std::move(tempvirt2real);
+      m_Real2Virt = std::move(tempreal2virt);
     } else {
       // find where to insert, without allocating memory
       int oidx = 0, cidx = 0;
@@ -3529,7 +3463,7 @@ void newuiComboBox::AddItem(const char *name) {
       int result;
 
       int old_r2v;
-      char *old_item = nullptr;
+      std::unique_ptr<char[]> old_item;
 
       while (oidx <= m_NumItems) {
 
@@ -3541,15 +3475,16 @@ void newuiComboBox::AddItem(const char *name) {
           } else {
             // the real index has been set, we're still pulling back
             m_Real2Virt[cidx] = old_r2v;
-            m_ItemList[cidx] = old_item;
+            m_ItemList[cidx] = std::move(old_item);
           }
           oidx++;
           continue;
         } else {
-          if (m_Flags & UILB_CASESENSITIVE)
-            result = strcmp(m_ItemList[cidx], name);
-          else
-            result = stricmp(m_ItemList[cidx], name);
+          if (m_Flags & UILB_CASESENSITIVE) {
+            result = strcmp(m_ItemList[cidx].get(), name);
+          } else {
+            result = stricmp(m_ItemList[cidx].get(), name);
+          }
         }
 
         if (result < 0) {
@@ -3560,22 +3495,22 @@ void newuiComboBox::AddItem(const char *name) {
           if (real_index == -1) {
             // we need to insert here
             real_index = cidx;
-            old_item = m_ItemList[cidx];
+            old_item = std::move(m_ItemList[cidx]);
             old_r2v = m_Real2Virt[cidx];
             cidx++;
           } else {
             // old_item and old_r2v should be set!
             ASSERT(old_item);
-            char *oi;
+            std::unique_ptr<char[]> oi;
             int or2v;
 
             or2v = m_Real2Virt[cidx];
-            oi = m_ItemList[cidx];
+            oi = std::move(m_ItemList[cidx]);
 
             m_Real2Virt[cidx] = old_r2v;
-            m_ItemList[cidx] = old_item;
+            m_ItemList[cidx] = std::move(old_item);
             old_r2v = or2v;
-            old_item = oi;
+            old_item = std::move(oi);
 
             cidx++;
           }
@@ -3601,7 +3536,7 @@ void newuiComboBox::AddItem(const char *name) {
   }
 
   //	copy item passed to list.
-  m_ItemList[real_index] = mem_strdup(name);
+  m_ItemList[real_index] = mem_strdup_unique(name);
   m_Virt2Real[m_NumItems] = real_index;
   m_Real2Virt[real_index] = m_NumItems;
   m_NumItems++;
@@ -3618,11 +3553,10 @@ void newuiComboBox::RemoveItem(const char *name) {
 
   for (i = 0; i < m_NumItems; i++) {
     int res;
-    res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
+    res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i].get(), name) : strcmp(m_ItemList[i].get(), name);
     if (res == 0) {
       found = i;
-      mem_free(m_ItemList[found]);
-      m_ItemList[found] = nullptr;
+      m_ItemList[found].reset();
       break;
     }
   }
@@ -3642,7 +3576,7 @@ void newuiComboBox::RemoveItem(const char *name) {
 
   for (j = 0; j < (m_NumItems - 1); j++) {
     if (j >= real_index) {
-      m_ItemList[j] = m_ItemList[j + 1];
+      m_ItemList[j] = std::move(m_ItemList[j + 1]);
       m_Real2Virt[j] = m_Real2Virt[j + 1];
     }
 
@@ -3665,24 +3599,9 @@ void newuiComboBox::RemoveItem(const char *name) {
 }
 
 void newuiComboBox::RemoveAll() {
-  if (m_ItemList) {
-    int i;
-    for (i = 0; i < m_NumItems; i++) {
-      if (m_ItemList[i])
-        mem_free(m_ItemList[i]);
-    }
-    mem_free(m_ItemList);
-  }
-
-  if (m_Virt2Real)
-    mem_free(m_Virt2Real);
-
-  if (m_Real2Virt)
-    mem_free(m_Real2Virt);
-
-  m_ItemList = nullptr;
-  m_Virt2Real = nullptr;
-  m_Real2Virt = nullptr;
+  m_ItemList.reset();
+  m_Virt2Real.reset();
+  m_Real2Virt.reset();
   m_Index = m_NumItems = 0;
 }
 
@@ -3733,7 +3652,7 @@ bool newuiComboBox::GetItem(int index, char *buffer, int buflen) {
   if (index >= 0 && index < m_NumItems) {
     int real_index = m_Virt2Real[index];
     ASSERT(real_index >= 0 && real_index < m_NumItems);
-    strncpy(buffer, m_ItemList[real_index], buflen - 1);
+    strncpy(buffer, m_ItemList[real_index].get(), buflen - 1);
     buffer[buflen - 1] = 0;
     return true;
   }
@@ -3745,7 +3664,7 @@ bool newuiComboBox::SetCurrentItem(const char *name) {
   int i, found = 0;
 
   for (i = 0; i < m_NumItems; i++) {
-    int res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
+    int res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i].get(), name) : strcmp(m_ItemList[i].get(), name);
     if (res == 0) {
       SetCurrentIndex(m_Real2Virt[i]);
       found = 1;
@@ -3792,7 +3711,7 @@ void newuiComboBox::OnDraw() {
 
   // use gamma 192 for non focus.
   if (m_NumItems && m_Index < m_NumItems && m_Index >= 0) {
-    UITextItem text(MONITOR9_NEWUI_FONT, m_ItemList[m_Index], NEWUI_MONITORFONT_COLOR);
+    UITextItem text(MONITOR9_NEWUI_FONT, m_ItemList[m_Index].get(), NEWUI_MONITORFONT_COLOR);
     text.draw(m_boffs + 8, 4);
   }
 
@@ -3832,27 +3751,14 @@ void newuiComboBox::OnSelect() { UIGadget::OnSelect(); }
 
 // called when destroyed.
 void newuiComboBox::OnDestroy() {
-  int i;
-
   if (m_up_btn.IsCreated())
     m_up_btn.Destroy();
   if (m_down_btn.IsCreated())
     m_down_btn.Destroy();
 
-  for (i = 0; i < m_NumItems; i++) {
-    mem_free(m_ItemList[i]);
-  }
-
-  if (m_ItemList)
-    mem_free(m_ItemList);
-  if (m_Real2Virt)
-    mem_free(m_Real2Virt);
-  if (m_Virt2Real)
-    mem_free(m_Virt2Real);
-
-  m_ItemList = nullptr;
-  m_Real2Virt = nullptr;
-  m_Virt2Real = nullptr;
+  m_ItemList.reset();
+  m_Real2Virt.reset();
+  m_Virt2Real.reset();
 
   Newui_resources.Free(m_barbmp);
 
@@ -3892,7 +3798,7 @@ void newuiComboBox::OnDetachFromWindow() {
 
 //	CLASS newuiEditBox
 
-newuiEditBox::newuiEditBox() { m_title = nullptr; }
+newuiEditBox::newuiEditBox() {}
 
 void newuiEditBox::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t w, int16_t flags) {
   //	if (name) {
@@ -3916,10 +3822,7 @@ void newuiEditBox::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x
 void newuiEditBox::EnableOnQuickEscapeBehavior(bool do_it) { m_quick_escape_enable = do_it; }
 
 void newuiEditBox::OnDestroy() {
-  if (m_title) {
-    delete m_title;
-    m_title = nullptr;
-  }
+  m_title.reset();
 
   UIEdit::OnDestroy();
 }
@@ -3948,14 +3851,10 @@ void newuiEditBox::OnKeyDown(int key) {
 
 // the new classic hotspot CLASS
 
-newuiHotspot::newuiHotspot() { m_title = nullptr; }
+newuiHotspot::newuiHotspot() {}
 
 void newuiHotspot::Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags) {
-  if (title) {
-    m_title = mem_strdup(title);
-  } else {
-    m_title = nullptr;
-  }
+  m_title = mem_strdup_unique(title);
 
   m_alpha = 0;
   m_alpha_adjust = 0;
@@ -3969,7 +3868,7 @@ void newuiHotspot::OnDraw() {
   char *strptr;
   int y = 2, x = 2;
 
-  textaux_WordWrap(m_title, buf, m_W - 22, MONITOR9_NEWUI_FONT);
+  textaux_WordWrap(m_title.get(), buf, m_W - 22, MONITOR9_NEWUI_FONT);
 
   strptr = strtok(buf, "\n");
   while (strptr) {
@@ -4002,10 +3901,7 @@ void newuiHotspot::OnDraw() {
 }
 
 void newuiHotspot::OnDestroy() {
-  if (m_title) {
-    mem_free(m_title);
-    m_title = nullptr;
-  }
+  m_title.reset();
 
   UIGadget::OnDestroy();
 }

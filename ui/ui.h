@@ -268,6 +268,7 @@
 #define UI_H
 
 #include <cstdint>
+#include <memory>
 
 #include "grdefs.h"
 #include "uires.h"
@@ -493,8 +494,8 @@ public:
 //		or key pressed, does something.
 
 class UIHotspot final : public UIGadget {
-  UIItem *m_ItemOff = nullptr, *m_ItemOn = nullptr; // off and on states items.
-  UIItem *m_ItemCur = nullptr;            // current item.
+  std::unique_ptr<UIItem> m_ItemOff, m_ItemOn; // off and on states items.
+  UIItem *m_ItemCur = nullptr;                 // current item.
 
 protected:
   virtual void OnKeyDown(int key);      // override: behavior when key is pressed.
@@ -538,7 +539,7 @@ public:
 
 class UIButton : public UIGadget {
 private:
-  UIItem *m_Items[UI_BTS_NUM]{};   // UI Items for each state
+  std::unique_ptr<UIItem> m_Items[UI_BTS_NUM]; // UI Items for each state
   ddgr_color m_Colors[UI_BTS_NUM]; // Backgrounds for states
 
   static int m_ButtonFont; // button fonts.
@@ -654,14 +655,14 @@ protected:
 
 class UIStatic : public UIGadget {
 protected:
-  UIPrimativeItem *m_Background = nullptr;
-  UIItem *m_Title = nullptr;
+  std::unique_ptr<UIItem> m_Background;
+  std::unique_ptr<UIItem> m_Title;
 
 public:
   void Create(UIWindow *parent, UIItem *item, int x, int y, int w, int h, int flags = 0);
   void SetBackground(UIPrimativeItem *prim);
   void SetTitle(UIItem *item);
-  UIItem *GetItem() const { return m_Title; };
+  UIItem *GetItem() const { return m_Title.get(); };
 
 protected:
   virtual void OnDraw();    // behavior when gadget is being drawn.
@@ -712,7 +713,7 @@ public:
 protected:
   bool m_bTextCreated = false;
   UIText m_tLabel;
-  char *m_Label = nullptr;
+  std::unique_ptr<char[]> m_Label;
   ddgr_color m_LabelColor;
   ddgr_color m_BoxColor;
   virtual void OnDraw();
@@ -727,7 +728,7 @@ protected:
 #define KEYDOWN_REPEAT_DELAY 0.10f
 
 class UIEdit : public UIGadget {
-  char *m_TextBuf = nullptr; // Text buffer for edit control.
+  std::unique_ptr<char[]> m_TextBuf; // Text buffer for edit control.
   int m_FontHandle = -1;     // font for edit control. (default -1 = window's font)
   int m_BufSize = 0;         // buffersize
   int m_Color;            // color of text.
@@ -791,8 +792,8 @@ class UISlider : public UIGadget {
   int switch_x, switch_y;                  // little box width and height.
   int switch_w, switch_h;
 
-  UIItem *switch_item = nullptr; // slider switch item
-  UIItem *slider_item = nullptr; // slider item
+  std::unique_ptr<UIItem> switch_item; // slider switch item
+  std::unique_ptr<UIItem> slider_item; // slider item
 
 public:
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
@@ -901,9 +902,9 @@ protected:
   virtual void OnUserProcess(); // override: behavior when gadget is processed
 
 private:
-  UIItem **m_ItemList = nullptr; // list of items in listbox
-  int *m_Virt2Real = nullptr;    // translates virtual(user) id to real index
-  int *m_Real2Virt = nullptr;    // translates real index into virtual(user) id
+  std::unique_ptr<UIItem *[]> m_ItemList; // list of items in listbox
+  std::unique_ptr<int[]> m_Virt2Real;     // translates virtual(user) id to real index
+  std::unique_ptr<int[]> m_Real2Virt;     // translates real index into virtual(user) id
 
   float m_ClickTime; // done to check for double clicks?
   int m_MouseState = 0; // done for mouse selection.
@@ -930,8 +931,8 @@ public:
   void Create(UIWindow *parent, int id, int x, int y, int w, int h, int flags = 0);
 
 private:
-  UIItem **m_ItemList = nullptr; // list of items in listbox
-  int m_nItems = 0;              // number of items.
+  std::unique_ptr<UIItem *[]> m_ItemList; // list of items in listbox
+  int m_nItems = 0;                       // number of items.
   int m_ArrY, m_ArrH;  // up and down arrow dimensions
   int m_UpArrX, m_UpArrW, m_DownArrX, m_DownArrW;
   int m_Index = 0;               // current index.
@@ -972,8 +973,8 @@ protected:
 
 class UIConsoleGadget final : public UIGadget {
   int m_ConsoleFont = -1;            // standard font for text in console
-  ddgr_color *m_ColorRows = nullptr; // color per row.
-  char *m_ConsoleBuffer = nullptr;   // text buffer of console.
+  std::unique_ptr<ddgr_color[]> m_ColorRows; // color per row.
+  std::unique_ptr<char[]> m_ConsoleBuffer;   // text buffer of console.
   int m_Rows, m_Cols;      // dimensions in text.
   int m_VisRows;           // visible rows and columns
   int m_VisRowStart;       // scroll start of visible region of buffer.
@@ -983,7 +984,7 @@ class UIConsoleGadget final : public UIGadget {
   ddgr_color m_LineColor; // color of current line.
   int m_LineIndex;        // index within current row memory-wise(not column wise).
   int m_PutsBufLen;       // current length of puts buffer
-  char *m_PutsBuffer = nullptr;      // puts buffer.
+  std::unique_ptr<char[]> m_PutsBuffer; // puts buffer.
 
 private:
   void PutChar(int ch); // outputs a character onto the console.
@@ -1015,7 +1016,7 @@ class UIWindow : public UIObject {
   UIGadget *m_GadgetTail;
   UIGadget *m_GadgetCur;
   UIGadget *m_LockedGadget; // marks a particular gadget that will always have focus
-  UIItem *m_BackItem;       // background UI item.
+  std::unique_ptr<UIItem> m_BackItem; // background UI item.
 
   float m_KeyTime; // time when key went down.
 
@@ -1088,11 +1089,10 @@ public:
   //	settings
   void SetFont(int handle);        // sets window's font.
   void SetBackItem(UIItem *item) { // sets the background drawing item.
-    if (m_BackItem)
-      delete m_BackItem;
-    m_BackItem = nullptr;
-    if (item)
+    m_BackItem.reset();
+    if (item) {
       m_BackItem = item->CopyUIItem();
+    }
   };                                  //
   void SetBackColor(ddgr_color col) { // sets the background color.  this is ALWAYS first, then the backitem
     m_BackColor = col;

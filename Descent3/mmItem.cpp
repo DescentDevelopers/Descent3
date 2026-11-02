@@ -142,12 +142,9 @@ $$TABLE_SOUND "MenuBeepSelect"
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-mmItem::mmItem() { m_text = nullptr; }
+mmItem::mmItem() = default;
 
-mmItem::~mmItem() {
-  if (m_text)
-    mem_free(m_text);
-}
+mmItem::~mmItem() = default;
 
 //	attaches a window to all mmitems.
 void mmItem::AttachInterface(mmInterface *wnd) { mmItem::m_window = wnd; }
@@ -157,7 +154,7 @@ void mmItem::Create(int id, int key, int x, int y, const char *text, int flags, 
   m_satcount = 0;
   m_fxqueue.flush();
 
-  m_text = text ? mem_strdup(text) : nullptr;
+  m_text = mem_strdup_unique(text);
   m_fxqueue.send(init_fx);
   m_curfx = mmItemFXNull;
   m_process_speed = 0.0f;
@@ -179,20 +176,15 @@ void mmItem::OnFormat() {
   if (m_Flags & UIF_FIT) {
     ui_DrawSetFont(MMITEM_FONT);
 
-    m_W = (m_text ? ui_GetTextWidth(m_text) : 0);
-    m_H = (m_text ? ui_GetTextHeight(m_text) : 0);
+    m_W = (m_text ? ui_GetTextWidth(m_text.get()) : 0);
+    m_H = (m_text ? ui_GetTextHeight(m_text.get()) : 0);
   }
 
   UIGadget::OnFormat();
 }
 
 // override: behavior when gadget is destroyed.
-void mmItem::OnDestroy() {
-  if (m_text) {
-    mem_free(m_text);
-    m_text = nullptr;
-  }
-}
+void mmItem::OnDestroy() { m_text.reset(); }
 
 void mmItem::OnSelect() {
   PlayMenuSound(m_window->SoundHandles[MM_SELECT_SOUND], true);
@@ -243,11 +235,11 @@ void mmItem::OnDraw() {
     ui_DrawSetFont(MMITEM_FONT);
     ui_DrawSetTextType(0);
     ui_SetCharAlpha(255);
-    ui_DrawString(m_colors[0], 0, 0, m_text);
+    ui_DrawString(m_colors[0], 0, 0, m_text.get());
     ui_DrawSetTextType(UI_TEXTTYPE_SATURATE);
     ui_SetCharAlpha((uint8_t)m_alpha);
     for (i = 0; i < m_satcount; i++)
-      ui_DrawString(m_colors[0], 0, 0, m_text);
+      ui_DrawString(m_colors[0], 0, 0, m_text.get());
   }
 
   if ((UI_TIME() - m_last_frametime) >= m_process_speed) {

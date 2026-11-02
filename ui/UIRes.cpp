@@ -46,21 +46,9 @@
 
 int UITextItem::m_Sat = 0;
 int UITextItem::m_DefaultFont = 0;
-char UITextItem::dummy_str[4] = "";
 
 UITextItem::UITextItem(const char *text, ddgr_color color, uint8_t alpha) {
-  int slen = strlen(text);
-  if (slen > 0) {
-    m_Text = mem_strdup(text);
-    if (!m_Text) {
-      Error("Memory allocation failed in UITextItem.");
-    }
-  } else {
-    m_Text = &UITextItem::dummy_str[0];
-    dummy_str[0] = 0;
-  }
-
-  strcpy(m_Text, text);
+  m_Text = mem_strdup_unique(text);
 
   m_Color = color;
   m_Alpha = alpha;
@@ -68,29 +56,18 @@ UITextItem::UITextItem(const char *text, ddgr_color color, uint8_t alpha) {
 }
 
 UITextItem::UITextItem(int font, const char *text, ddgr_color color, uint8_t alpha) {
-  int slen = strlen(text);
-  if (slen > 0) {
-    m_Text = mem_strdup(text);
-    if (!m_Text) {
-      Error("Memory allocation failed in UITextItem.");
-    }
-  } else {
-    m_Text = &UITextItem::dummy_str[0];
-    dummy_str[0] = 0;
-  }
-
-  strcpy(m_Text, text);
+  m_Text = mem_strdup_unique(text);
 
   m_Color = color;
   m_Alpha = alpha;
   m_Font = font;
 }
 
-UITextItem::~UITextItem() {
-  if (m_Text && m_Text != (&UITextItem::dummy_str[0])) {
-    mem_free(m_Text);
-  }
-}
+UITextItem::UITextItem(const UITextItem &item)
+    : UIItem(item), m_Alpha(item.m_Alpha), m_Color(item.m_Color), m_Font(item.m_Font),
+      m_Text(mem_strdup_unique(item.m_Text.get())) {}
+
+UITextItem::~UITextItem() = default;
 
 //	Inheritable functions
 bool UITextItem::draw(int x, int y, tUIDrawClass draw_class) {
@@ -101,22 +78,22 @@ bool UITextItem::draw(int x, int y, tUIDrawClass draw_class) {
 
   if (draw_class == uiDrawAlphaSaturate) {
     ui_DrawSetTextType(UI_TEXTTYPE_SATURATE);
-    ui_DrawString(m_Color, x, y, m_Text);
+    ui_DrawString(m_Color, x, y, m_Text.get());
     for (i = 0; i < UITextItem::m_Sat; i++)
-      ui_DrawString(m_Color, x, y, m_Text);
+      ui_DrawString(m_Color, x, y, m_Text.get());
   } else if (draw_class == uiDrawFaded) {
     ui_DrawSetTextType(0);
     ui_SetCharAlpha(m_Alpha / 2);
-    ui_DrawString(m_Color, x, y, m_Text);
+    ui_DrawString(m_Color, x, y, m_Text.get());
     ui_DrawSetTextType(UI_TEXTTYPE_SATURATE);
     for (i = 0; i < UITextItem::m_Sat; i++)
-      ui_DrawString(m_Color, x, y, m_Text);
+      ui_DrawString(m_Color, x, y, m_Text.get());
   } else {
     ui_DrawSetTextType(0);
-    ui_DrawString(m_Color, x, y, m_Text);
+    ui_DrawString(m_Color, x, y, m_Text.get());
     ui_DrawSetTextType(UI_TEXTTYPE_SATURATE);
     for (i = 0; i < UITextItem::m_Sat; i++)
-      ui_DrawString(m_Color, x, y, m_Text);
+      ui_DrawString(m_Color, x, y, m_Text.get());
   }
 
   return true;
@@ -124,40 +101,27 @@ bool UITextItem::draw(int x, int y, tUIDrawClass draw_class) {
 
 int UITextItem::width() {
   ui_DrawSetFont(m_Font);
-  return (m_Text ? ui_GetTextWidth(m_Text) : 0);
+  return (m_Text ? ui_GetTextWidth(m_Text.get()) : 0);
 }
 
 int UITextItem::height() {
   ui_DrawSetFont(m_Font);
-  return (m_Text ? ui_GetTextHeight(m_Text) : 0);
+  return (m_Text ? ui_GetTextHeight(m_Text.get()) : 0);
 }
 
 //	operators
-UIItem *UITextItem::CopyUIItem() {
-  UITextItem *newitem = ::new UITextItem();
-  if (newitem) {
-    *newitem = *this;
-  }
+std::unique_ptr<UIItem> UITextItem::CopyUIItem() {
+  auto newitem = std::make_unique<UITextItem>();
+  *newitem = *this;
   return newitem;
 }
 
 const UITextItem &UITextItem::operator=(const UITextItem &item) {
-  if (m_Text && m_Text != (&UITextItem::dummy_str[0])) {
-    mem_free(m_Text);
+  if (this == &item) {
+    return *this;
   }
 
-  if (strlen(item.m_Text) > 0) {
-    m_Text = mem_strdup(item.m_Text);
-    if (!m_Text)
-      Error("Memory allocation failed in UITextItem.");
-  } else {
-    m_Text = &UITextItem::dummy_str[0];
-    dummy_str[0] = 0;
-  }
-
-  if (m_Text != item.m_Text) {
-    strcpy(m_Text, item.m_Text);
-  }
+  m_Text = mem_strdup_unique(item.m_Text.get());
   m_Color = item.m_Color;
   m_Alpha = item.m_Alpha;
   m_Font = item.m_Font;
@@ -240,30 +204,19 @@ bool UISnazzyTextItem::draw(int x, int y, tUIDrawClass draw_class) {
   return UITextItem::draw(x, y, draw_class);
 }
 
-UIItem *UISnazzyTextItem::CopyUIItem() {
-  UISnazzyTextItem *newitem = ::new UISnazzyTextItem();
-  if (newitem) {
-    *newitem = *this;
-  }
+std::unique_ptr<UIItem> UISnazzyTextItem::CopyUIItem() {
+  auto newitem = std::make_unique<UISnazzyTextItem>();
+  *newitem = *this;
   return newitem;
 }
 
 const UISnazzyTextItem &UISnazzyTextItem::operator=(const UISnazzyTextItem &item) {
   // reproduce UITextItem's = operator
-  if (m_Text && m_Text != (&UITextItem::dummy_str[0])) {
-    mem_free(m_Text);
+  if (this == &item) {
+    return *this;
   }
 
-  if (strlen(item.m_Text) > 0) {
-    m_Text = mem_strdup(item.m_Text);
-    if (!m_Text)
-      Error("Memory allocation failed in UITextItem.");
-  } else {
-    m_Text = &UITextItem::dummy_str[0];
-    dummy_str[0] = 0;
-  }
-
-  strcpy(m_Text, item.m_Text);
+  m_Text = mem_strdup_unique(item.m_Text.get());
 
   set_color(item.get_color());
   set_alpha(item.get_alpha());
@@ -292,11 +245,9 @@ int UIBitmapItem::width() { return (m_IsValid ? ui_GetBitmapWidth(this) : 0); }
 int UIBitmapItem::height() { return (m_IsValid ? ui_GetBitmapHeight(this) : 0); }
 
 //	operators
-UIItem *UIBitmapItem::CopyUIItem() {
-  UIBitmapItem *newitem = ::new UIBitmapItem();
-  if (newitem) {
-    *newitem = *this;
-  }
+std::unique_ptr<UIItem> UIBitmapItem::CopyUIItem() {
+  auto newitem = std::make_unique<UIBitmapItem>();
+  *newitem = *this;
   return newitem;
 }
 
@@ -320,7 +271,4 @@ bool UIPrimativeItem::draw(int x, int y, int w, int h) {
   return true;
 }
 
-UIItem *UIPrimativeItem::CopyUIItem() {
-  UIPrimativeItem *newitem = ::new UIPrimativeItem(color, alpha);
-  return newitem;
-}
+std::unique_ptr<UIItem> UIPrimativeItem::CopyUIItem() { return std::make_unique<UIPrimativeItem>(color, alpha); }
