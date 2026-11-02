@@ -889,7 +889,7 @@ void AddVertToAllEdges(room *rp, int v0, int v1, int new_v) {
   face *fp;
   int f, v;
 
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
     for (v = 0; v < fp->num_verts; v++) {
       if (((fp->face_verts[v] == v0) && (fp->face_verts[(v + 1) % fp->num_verts] == v1)) ||
           ((fp->face_verts[v] == v1) && (fp->face_verts[(v + 1) % fp->num_verts] == v0)))
@@ -1625,17 +1625,17 @@ bool CombineFaces(room *rp, int face0, int face1) {
 
   // Calculate new normal
   vector new_normal;
-  ComputeNormal(&new_normal, nv, vertlist, rp->verts);
+  ComputeNormal(&new_normal, nv, vertlist, rp->verts.get());
 
   // Check if new face is planar
-  if (!FaceIsPlanar(nv, vertlist, &new_normal, rp->verts)) {
+  if (!FaceIsPlanar(nv, vertlist, &new_normal, rp->verts.get())) {
     SetErrorMessage("The new face would not be planar.");
     return 0;
   }
 
   // Check if new face is convex
   int t;
-  if ((t = CheckFaceConcavity(nv, vertlist, &new_normal, rp->verts)) != -1) {
+  if ((t = CheckFaceConcavity(nv, vertlist, &new_normal, rp->verts.get())) != -1) {
     SetErrorMessage("The new face would be concave (at vertex %d).", vertlist[t]);
     return 0;
   }
@@ -1776,7 +1776,7 @@ void DeleteRoomFromMine(room *rp) {
 
   // Delete any triggers in this room
   face *fp;
-  for (i = 0, fp = rp->faces; i < rp->num_faces; fp++, i++)
+  for (i = 0, fp = rp->faces.get(); i < rp->num_faces; fp++, i++)
     if (fp->flags & FF_HAS_TRIGGER)
       DeleteTrigger(ROOMNUM(rp), i);
 
@@ -1890,14 +1890,14 @@ int JoinAllMatchingFaces(room *rp0, room *rp1) {
   int join_count = 0;
 
   // Check each face in room 0 against each in room 1
-  for (f0 = 0, fp0 = rp0->faces; f0 < rp0->num_faces; f0++, fp0++) {
+  for (f0 = 0, fp0 = rp0->faces.get(); f0 < rp0->num_faces; f0++, fp0++) {
 
     // Check if face 0 is already part of portal
     if (fp0->portal_num != -1)
       continue;
 
     // Check current face against all faces in room 1
-    for (f1 = 0, fp1 = rp1->faces; f1 < rp1->num_faces; f1++, fp1++) {
+    for (f1 = 0, fp1 = rp1->faces.get(); f1 < rp1->num_faces; f1++, fp1++) {
 
       // Check if face 1 is already part of portal
       if (fp1->portal_num != -1)
@@ -1954,14 +1954,14 @@ int JoinAllOverlappingFaces(room *rp0, room *rp1) {
   int join_count = 0;
 
   // Check each face in room 0 against each in room 1
-  for (f0 = 0, fp0 = rp0->faces; f0 < rp0->num_faces; f0++, fp0++) {
+  for (f0 = 0, fp0 = rp0->faces.get(); f0 < rp0->num_faces; f0++, fp0++) {
 
     // Check if face 0 is already part of portal
     if (fp0->portal_num != -1)
       continue;
 
     // Check current face against all faces in room 1
-    for (f1 = 0, fp1 = rp1->faces; f1 < rp1->num_faces; f1++, fp1++) {
+    for (f1 = 0, fp1 = rp1->faces.get(); f1 < rp1->num_faces; f1++, fp1++) {
 
       // Check if face 1 is already part of portal
       if (fp1->portal_num != -1)
@@ -2048,7 +2048,7 @@ int FindNeighbor(room *rp, int facenum, int edgenum) {
   v0 = fp->face_verts[edgenum];
   v1 = fp->face_verts[(edgenum + 1) % fp->num_verts];
 
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       if ((fp->face_verts[v] == v1) && (fp->face_verts[(v + 1) % fp->num_verts] == v0))
         return f;
@@ -2268,13 +2268,13 @@ void FixCracks() {
   // Now search for and fix t-joints
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++, rp++) {
     if (rp->used)
-      for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+      for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
         // if (fp->portal_num == -1)
         { // don't check portal faces
         recheck_face:;
           for (v = 0; v < fp->num_verts; v++) {
             int vv0 = fp->face_verts[v], vv1 = fp->face_verts[(v + 1) % fp->num_verts];
-            for (f2 = 0, fp2 = rp->faces; f2 < rp->num_faces; f2++, fp2++) {
+            for (f2 = 0, fp2 = rp->faces.get(); f2 < rp->num_faces; f2++, fp2++) {
               if (f2 != f) {
                 for (v2 = 0; v2 < fp2->num_verts; v2++) {
                   int tt0 = fp2->face_verts[v2], tt1 = fp2->face_verts[(v2 + 1) % fp2->num_verts];
@@ -2291,7 +2291,7 @@ void FixCracks() {
               possible_tjoints++;
 
               // Look for vert on this edge
-              for (f2 = 0, fp2 = rp->faces; f2 < rp->num_faces; f2++, fp2++) {
+              for (f2 = 0, fp2 = rp->faces.get(); f2 < rp->num_faces; f2++, fp2++) {
                 if (f2 != f) {
                   for (v2 = 0; v2 < fp2->num_verts; v2++) {
                     int tt0 = fp2->face_verts[v2], tt1 = fp2->face_verts[(v2 + 1) % fp2->num_verts];

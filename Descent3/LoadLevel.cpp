@@ -2438,12 +2438,12 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
   InitRoom(rp, nverts, nfaces, nportals);
 
   // Get room name
-  rp->name = nullptr;
+  rp->name.reset();
   if (version >= 96) {
     char tempname[ROOM_NAME_LEN + 1];
     cf_ReadString(tempname, sizeof(tempname), ifile);
     if (strlen(tempname)) {
-      rp->name = mem_strdup(tempname);
+      rp->name = mem_strdup_unique(tempname);
     }
   }
 
@@ -2563,13 +2563,12 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
       int size = w * h * d;
 
       if (size) {
+        rp->volume_lights = std::make_unique<uint8_t[]>(size);
+      } else {
+        rp->volume_lights.reset();
+      }
 
-        rp->volume_lights = mem_rmalloc<uint8_t>(size);
-        ASSERT(rp->volume_lights); // ran out of memory!
-      } else
-        rp->volume_lights = nullptr;
-
-      ReadCompressionByte(ifile, rp->volume_lights, w * h * d);
+      ReadCompressionByte(ifile, rp->volume_lights.get(), w * h * d);
 
       rp->volume_width = w;
       rp->volume_height = h;
@@ -3790,16 +3789,14 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 
         num_rooms = cf_ReadInt(ifile);
 
-        extern void RoomMemInit(int nverts, int nfaces, int nfaceverts, int nportals); // MOVE TO HEADER FILE
         if (version >= 85) {
-          int nverts, nfaces, nfaceverts, nportals;
-          nverts = cf_ReadInt(ifile);
-          nfaces = cf_ReadInt(ifile);
-          nfaceverts = cf_ReadInt(ifile);
-          nportals = cf_ReadInt(ifile);
-          RoomMemInit(nverts, nfaces, nfaceverts, nportals);
-        } else
-          RoomMemInit(0, 0, 0, 0); // 0 means we don't know how much memory we need
+          // Total vert/face/facevert/portal counts, once used to size a room memory arena; rooms are now
+          // allocated individually, so skip them
+          cf_ReadInt(ifile); // nverts
+          cf_ReadInt(ifile); // nfaces
+          cf_ReadInt(ifile); // nfaceverts
+          cf_ReadInt(ifile); // nportals
+        }
 
         n_degenerate_faces_removed = 0;
         int roomnum;
@@ -4420,7 +4417,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
   cf_WriteInt(ofile, rp->num_portals);
 
   // Write name
-  cf_WriteString(ofile, rp->name ? rp->name : "");
+  cf_WriteString(ofile, rp->name ? rp->name.get() : "");
 
   // Write out the path point
   cf_WriteVector(ofile, &rp->path_pnt);
@@ -4450,7 +4447,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
 
   // Save doorway data if this room has a door
   if (rp->flags & RF_DOOR) {
-    doorway *dp = rp->doorway_data;
+    doorway *dp = rp->doorway_data.get();
 
     cf_WriteByte(ofile, dp->flags);
     cf_WriteByte(ofile, dp->keys_needed);
@@ -4470,7 +4467,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
     cf_WriteInt(ofile, h);
     cf_WriteInt(ofile, d);
 
-    CheckToWriteCompressByte(ofile, rp->volume_lights, w * h * d);
+    CheckToWriteCompressByte(ofile, rp->volume_lights.get(), w * h * d);
   }
 
   cf_WriteFloat(ofile, rp->fog_depth);

@@ -182,7 +182,7 @@ void AddActiveDoorway(int roomnum) {
   room *rp = &Rooms[roomnum];
   ASSERT(rp->flags & RF_DOOR);
 
-  doorway *dp = rp->doorway_data;
+  doorway *dp = rp->doorway_data.get();
   ASSERT(dp != nullptr);
 
   if (dp->activenum != -1) { // already active
@@ -211,7 +211,7 @@ doorway *GetDoorwayFromObject(int door_obj_handle) {
   ASSERT(rp->flags & RF_DOOR);
   ASSERT(rp->doorway_data != nullptr);
 
-  return rp->doorway_data;
+  return rp->doorway_data.get();
 }
 
 // Plays a sound for this door
@@ -219,7 +219,7 @@ void DoorwayPlaySound(object *objp) {
   room *rp = &Rooms[objp->roomnum];
   ASSERT(rp->flags & RF_DOOR);
 
-  doorway *dp = rp->doorway_data;
+  doorway *dp = rp->doorway_data.get();
   ASSERT(dp != nullptr);
 
   door *door = &Doors[dp->doornum];
@@ -359,7 +359,7 @@ void DoorwayStop(int door_obj_handle) {
 // Called when a door is blown up
 void DoorwayDestroy(object *objp) {
   room *rp = &Rooms[objp->roomnum];
-  doorway *dp = rp->doorway_data;
+  doorway *dp = rp->doorway_data.get();
 
   ASSERT(rp->flags & RF_DOOR);
   ASSERT(dp);
@@ -382,7 +382,7 @@ void DoorwayDeactivateAll() {
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++) {
     if (rp->used && (rp->flags & RF_DOOR)) {
       if (rp->doorway_data->state != DOORWAY_STOPPED) {
-        doorway *dp = rp->doorway_data;
+        doorway *dp = rp->doorway_data.get();
         ASSERT(dp != nullptr);
         dp->position = dp->dest_pos;
         dp->activenum = -1;
@@ -406,7 +406,7 @@ void DoorwayUpdateAnimation(room *rp) {
   int doornum;
   float norm;
 
-  dway = rp->doorway_data;
+  dway = rp->doorway_data.get();
 
   object *objp = GetDoorObject(rp);
   if (!objp)
@@ -431,7 +431,7 @@ void DoorwayDoFrame() {
     int roomnum = Active_doorways[i_doorway];
     room *rp = &Rooms[roomnum];
     ASSERT(rp->flags & RF_DOOR);
-    doorway *dway = rp->doorway_data;
+    doorway *dway = rp->doorway_data.get();
     ASSERT(dway != nullptr);
     door *door = &Doors[dway->doornum];
     float delta; // movement delta
@@ -530,7 +530,7 @@ bool DoorwayLocked(int door_obj_handle) {
 bool DoorwayLocked(room *rp) {
   ASSERT(rp->flags & RF_DOOR);
 
-  doorway *dp = rp->doorway_data;
+  doorway *dp = rp->doorway_data.get();
   ASSERT(dp != nullptr);
 
   return ((dp->flags & DF_LOCKED) != 0);
@@ -646,7 +646,8 @@ doorway *DoorwayAdd(room *rp, int doornum) {
 
   rp->flags |= RF_DOOR;
 
-  auto dp = rp->doorway_data = mem_rmalloc<doorway>();
+  rp->doorway_data = std::make_unique<doorway>();
+  doorway *dp = rp->doorway_data.get();
 
   // Initialize
   dp->doornum = doornum;

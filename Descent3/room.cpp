@@ -438,7 +438,7 @@ void FreePaletteRooms();
 void InitRooms() {
   int i;
   for (i = 0; i < MAX_ROOMS + MAX_PALETTE_ROOMS; i++) {
-    memset(&Rooms[i], 0, sizeof(room));
+    Rooms[i] = room{};
     Rooms[i].objects = -1;     // DAJ
     Rooms[i].vis_effects = -1; // DAJ
   }
@@ -464,69 +464,6 @@ int CountRoomFaceVerts(room *rp) {
 
 #endif
 
-// Vars for the room memory system
-uint8_t *Room_mem_buf = nullptr; // pointer to the rooms block of memory
-uint8_t *Room_mem_ptr = nullptr; // pointer to free memory in the rooms block
-int Room_mem_size;          // How big our chunk is
-
-// Closes down the room memory system.
-void RoomMemClose() {
-  if (Room_mem_buf)
-    mem_free(Room_mem_buf);
-
-  Room_mem_buf = Room_mem_ptr = nullptr;
-}
-
-// Initialized the memory buffer for a room
-// Parameters:	size - the total amount of memory needed for the room
-void RoomMemInit(int nverts, int nfaces, int nfaceverts, int nportals) {
-#if (defined(EDITOR) || defined(NEWEDITOR))
-  return; // This system is disabled in the editor
-#endif
-
-  if (nverts == 0) // We don't know how much mem the room will use, so do the old way
-    return;
-
-  size_t size = 0;
-  size += nfaces * (sizeof(*Rooms[0].faces) + sizeof(std::max_align_t));
-  size += nverts * (sizeof(*Rooms[0].verts) + sizeof(std::max_align_t));
-  size += nportals * (sizeof(*Rooms[0].portals) + sizeof(std::max_align_t));
-  size += nfaceverts * (sizeof(*Rooms[0].faces[0].face_verts) + sizeof(std::max_align_t) +
-          sizeof(*Rooms[0].faces[0].face_uvls) + sizeof(std::max_align_t));
-
-  if (Room_mem_buf)
-    mem_free(Room_mem_buf);
-
-  Room_mem_buf = mem_rmalloc<uint8_t>(size);
-  Room_mem_size = size;
-
-  Room_mem_ptr = Room_mem_buf;
-}
-
-// Allocates memory for a room or face
-template<typename T> static T *RoomMemAlloc(size_t nelem) {
-  static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
-  if (Room_mem_buf) {
-    uint8_t *p = reinterpret_cast<uint8_t *>((reinterpret_cast<uintptr_t>(Room_mem_ptr) + alignof(T) - 1) / alignof(T) * alignof(T));
-    Room_mem_ptr = p + nelem * sizeof(T);
-    ASSERT(Room_mem_ptr <= (Room_mem_buf + Room_mem_size));
-    return static_cast<T *>(static_cast<void *>(p));
-  } else
-    return static_cast<T *>(mem_malloc(nelem * sizeof(T)));
-}
-
-// Frees memory in a room
-// Doesn't actually do anything
-void RoomMemFree(void *buf) {
-  if (!buf)
-    return;
-
-  if (Room_mem_buf) {
-    ASSERT(((buf) >= Room_mem_buf) && ((buf) < (Room_mem_buf + Room_mem_size)));
-  } else
-    mem_free(buf);
-}
-
 // Initalize a room, allocating memory and filling in fields
 // Parameters:	rp - the room to be initialized
 //					nverts - how many vertices this room will have
@@ -537,10 +474,10 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->flags = 0;
   rp->objects = -1;
   rp->vis_effects = -1;
-  rp->volume_lights = nullptr;
+  rp->volume_lights.reset();
   rp->mirror_face = -1;
   rp->num_mirror_faces = 0;
-  rp->mirror_faces_list = nullptr;
+  rp->mirror_faces_list.reset();
   rp->room_change_flags = 0;
 
 #ifndef NEWEDITOR // the new editor must allow users to create a room from scratch
@@ -559,33 +496,30 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->fog_g = 1.0;
   rp->fog_b = 1.0;
 
-  rp->faces = RoomMemAlloc<face>(nfaces);
-  ASSERT(rp->faces != nullptr);
+  rp->faces = std::make_unique<face[]>(nfaces);
 
   rp->num_bbf_regions = 0;
 
-  rp->verts = RoomMemAlloc<vector>(nverts);
-  ASSERT(rp->verts != nullptr);
+  rp->verts = std::make_unique<vector[]>(nverts);
 
   if (Katmai) {
-    rp->verts4 = mem_rmalloc<vector4>(nverts);
-    ASSERT(rp->verts4 != nullptr);
+    rp->verts4 = std::make_unique<vector4[]>(nverts);
   }
 
   rp->pulse_time = 0;
   rp->pulse_offset = 0;
 
   if (nportals) {
-    rp->portals = RoomMemAlloc<portal>(nportals);
-    ASSERT(rp->portals != nullptr);
-  } else
-    rp->portals = nullptr;
+    rp->portals = std::make_unique<portal[]>(nportals);
+  } else {
+    rp->portals.reset();
+  }
 
   // Default to no ambient sound
   rp->ambient_sound = -1;
 
-  rp->name = nullptr;
-  rp->doorway_data = nullptr;
+  rp->name.reset();
+  rp->doorway_data.reset();
 
   rp->env_reverb = 0; // reverb for sound system.
 
@@ -621,13 +555,8 @@ void InitRoomFace(face *fp, int nverts) {
   fp->special_handle = BAD_SPECIAL_FACE_INDEX;
   fp->light_multiple = 4;
 
-  fp->face_verts = RoomMemAlloc<short>(nverts);
-  ASSERT(fp->face_verts != nullptr);
-  fp->face_uvls = RoomMemAlloc<roomUVL>(nverts);
-  ASSERT(fp->face_uvls != nullptr);
-
-  ASSERT(fp->face_verts);
-  ASSERT(fp->face_uvls);
+  fp->face_verts = std::make_unique<int16_t[]>(nverts);
+  fp->face_uvls = std::make_unique<roomUVL[]>(nverts);
   for (int i = 0; i < nverts; i++)
     fp->face_uvls[i].alpha = 255;
 }
@@ -664,12 +593,11 @@ void FreeRoom(room *rp) {
     FreeRoomFace(&rp->faces[i]);
 
   // Free up mem alloced for this room
-  RoomMemFree(rp->faces);
-  RoomMemFree(rp->portals);
-  RoomMemFree(rp->verts);
+  rp->faces.reset();
+  rp->portals.reset();
+  rp->verts.reset();
 
-  if (Katmai )
-    mem_free(rp->verts4);
+  rp->verts4.reset();
 
   if (rp->num_bbf_regions) {
     for (i = 0; i < rp->num_bbf_regions; i++) {
@@ -686,17 +614,13 @@ void FreeRoom(room *rp) {
 
   BNode_FreeRoom(rp);
 
-  if (rp->volume_lights)
-    mem_free(rp->volume_lights);
+  rp->volume_lights.reset();
 
-  if (rp->name)
-    mem_free(rp->name);
+  rp->name.reset();
 
-  if (rp->doorway_data)
-    mem_free(rp->doorway_data);
+  rp->doorway_data.reset();
 
-  if (rp->mirror_faces_list)
-    mem_free(rp->mirror_faces_list);
+  rp->mirror_faces_list.reset();
 
   rp->used = 0;
 
@@ -721,8 +645,6 @@ void FreeAllRooms() {
   }
 
   ASSERT(Highest_room_index == -1);
-
-  RoomMemClose();
 
   //	mprintf(2,"Done\n");
 }
@@ -752,8 +674,8 @@ void FreeRoomFace(face *fp) {
     fp->special_handle = BAD_SPECIAL_FACE_INDEX;
   }
 
-  RoomMemFree(fp->face_verts);
-  RoomMemFree(fp->face_uvls);
+  fp->face_verts.reset();
+  fp->face_uvls.reset();
 }
 
 // Finds the center point of a room
@@ -799,7 +721,7 @@ bool ComputeFaceNormal(room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
   bool ok;
 
-  ok = ComputeNormal(&fp->normal, fp->num_verts, fp->face_verts, rp->verts);
+  ok = ComputeNormal(&fp->normal, fp->num_verts, fp->face_verts.get(), rp->verts.get());
 
   if (!ok) {
     LOG_WARNING.printf("Warning: Low precision normal for room:face = %d:%d", ROOMNUM(rp), facenum);
@@ -933,10 +855,7 @@ void ClearVolumeLights(int roomnum) {
 
   ASSERT(!(Rooms[roomnum].flags & RF_EXTERNAL));
 
-  if (Rooms[roomnum].volume_lights) {
-    mem_free(Rooms[roomnum].volume_lights);
-    Rooms[roomnum].volume_lights = nullptr;
-  }
+  Rooms[roomnum].volume_lights.reset();
 }
 
 // Removes all room volume lights from memory
@@ -1118,7 +1037,7 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
   min_x = max_x = min_y = max_y = min_z = max_z = &rp->verts[0];
 
   // First, find the points with the min & max x,y, & z coordinates
-  for (i = 0, vp = rp->verts; i < rp->num_verts; i++, vp++) {
+  for (i = 0, vp = rp->verts.get(); i < rp->num_verts; i++, vp++) {
 
     if (vp->x() < min_x->x())
       min_x = vp;
@@ -1163,7 +1082,7 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
 
   // Go through all points and look for ones that don't fit
   rad2 = rad * rad;
-  for (i = 0, vp = rp->verts; i < rp->num_verts; i++, vp++) {
+  for (i = 0, vp = rp->verts.get(); i < rp->num_verts; i++, vp++) {
     vector delta;
     float t2;
 

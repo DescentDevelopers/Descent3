@@ -64,7 +64,7 @@ void CRoomListCombo::Init(int selected) {
   // Now add all the sounsd
   for (int i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used && Rooms[i].name) {
-      int index = AddString(Rooms[i].name);
+      int index = AddString(Rooms[i].name.get());
       SetItemData(index, i);
       if (selected == i)
         SetCurSel(index);

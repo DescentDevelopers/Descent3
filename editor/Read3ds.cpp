@@ -372,7 +372,7 @@ skip_combine:;
     }
 
     ASSERT(rp->name == nullptr);
-    rp->name = mem_strdup(roomname);
+    rp->name = mem_strdup_unique(roomname);
 
     // Save it out to disk (locally)
     ddio_MakePath(name, PATH_TO_CSTR(LocalRoomsDir), roomname, nullptr);
