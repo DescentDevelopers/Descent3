@@ -28,6 +28,7 @@
 #include "osiris_vector.h"
 #include "DallasFuncs.h"
 
+#include "crossplat.h"
 #include "module.h"
 
 #ifdef __cplusplus

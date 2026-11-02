@@ -22,7 +22,7 @@
 // Filename:	paranoia.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <cstring>
+#include <filesystem>
 #include <map>
 #include <string>
 
@@ -177,7 +177,19 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  ReadMessageFile("paranoia.msg");
+  std::filesystem::path filename = "paranoia.msg";
+  std::filesystem::path eng_filename = "paranoia.msg";
+  int lang_type = Game_GetLanguage();
+  if (func_list->script_identifier != nullptr && lang_type < LANGUAGE_TOTAL) {
+    filename = std::filesystem::path(func_list->script_identifier).stem();
+    filename += lang_suffixes[lang_type];
+    filename.replace_extension(".msg");
+  } else {
+    lang_type = LANGUAGE_ENGLISH;
+  }
+  if (!ReadMessageFile(filename) && lang_type != LANGUAGE_ENGLISH) {
+    ReadMessageFile(eng_filename);
+  }
 
   int j;
 

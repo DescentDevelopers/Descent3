@@ -22,7 +22,7 @@
 // Filename:	Merc5.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <cstring>
+#include <filesystem>
 #include <map>
 #include <string>
 
@@ -30,6 +30,7 @@
 #include "osiris_common.h"
 #include "DallasFuncs.h"
 
+#include "crossplat.h"
 #include "module.h"
 
 #ifdef __cplusplus
@@ -1249,17 +1250,18 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   dfInit();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 32];
-  if (func_list->script_identifier != nullptr) {
-    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
-    int lang_type = Game_GetLanguage();
-    strcat(filename, lang_suffixes[lang_type].c_str());
-    strcat(filename, ".msg");
+  std::filesystem::path filename = "merc5.msg";
+  std::filesystem::path eng_filename = "merc5.msg";
+  int lang_type = Game_GetLanguage();
+  if (func_list->script_identifier != nullptr && lang_type < LANGUAGE_TOTAL) {
+    filename = std::filesystem::path(func_list->script_identifier).stem();
+    filename += lang_suffixes[lang_type];
+    filename.replace_extension(".msg");
   } else {
-    strcpy(filename, "Merc5.msg");
+    lang_type = LANGUAGE_ENGLISH;
   }
-  if (!ReadMessageFile(filename)) {
-    mprintf(0, "ERROR: Could not load message file - %s\n", filename);
+  if (!ReadMessageFile(filename) && lang_type != LANGUAGE_ENGLISH) {
+    ReadMessageFile(eng_filename);
   }
 
   int j;
