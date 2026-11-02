@@ -21,6 +21,7 @@
 
 #include <cstdio>
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "bitmap.h"
@@ -76,7 +77,7 @@ struct mngs_track_lock {
 struct AddOnTablefile {
   char AddOnTableFilename[TABLE_NAME_LEN];
   int Num_addon_tracklocks;
-  mngs_track_lock *Addon_tracklocks;
+  std::unique_ptr<mngs_track_lock[]> Addon_tracklocks;
 };
 extern AddOnTablefile AddOnDataTables[MAX_ADDON_TABLES];
 extern int Num_addon_tables;

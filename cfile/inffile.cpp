@@ -46,8 +46,8 @@ void InfFile::AddSymbol(const char *name, const char *text) {
   tListNode<sym_info> *symbol = new tListNode<sym_info>;
 
   strcpy(symbol->t.name, name);
-  symbol->t.text = new char[strlen(text) + 1];
-  strcpy(symbol->t.text, text);
+  symbol->t.text = std::make_unique<char[]>(strlen(text) + 1);
+  strcpy(symbol->t.text.get(), text);
 
   m_sym_list.link(symbol);
 }
@@ -59,8 +59,6 @@ void InfFile::FreeSymbols() {
 
   while ((sym = m_sym_list.start()) != nullptr) {
     sym = m_sym_list.unlink();
-    if (sym->t.text)
-      delete[] sym->t.text;
     delete sym;
   }
 }
@@ -70,8 +68,9 @@ const char *InfFile::GetSymbolText(const char *name) {
 
   m_sym_list.start();
   for (sym = m_sym_list.start(); sym; sym = sym->next) {
-    if (strcmp(sym->t.name, name) == 0)
-      return (const char *)sym->t.text;
+    if (strcmp(sym->t.name, name) == 0) {
+      return sym->t.text.get();
+    }
   }
 
   return nullptr;

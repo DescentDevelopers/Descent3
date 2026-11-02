@@ -180,6 +180,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "crossplat.h"
@@ -657,11 +658,9 @@ int mng_DeleteDuplicatePagelocks() {
   CFILE *infile; //,*outfile;
   int done = 0;
   mngs_Pagelock temp_pl;
-  mngs_Pagelock *already_read;
   int num = 0, duplicates = 0, i;
 
-  already_read = mem_rmalloc<mngs_Pagelock>(8000);
-  ASSERT(already_read);
+  auto already_read = std::make_unique<mngs_Pagelock[]>(8000);
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
   if (!infile) {
@@ -714,7 +713,6 @@ int mng_DeleteDuplicatePagelocks() {
 
                   return (0);
           }*/
-  mem_free(already_read);
   return 1; // successful!
 }
 

@@ -146,6 +146,7 @@
 #include <cstdio>
 #include <sys/stat.h>
 #include <io.h>
+#include <memory>
 #include <fcntl.h>
 
 #include "ddio.h"
@@ -322,22 +323,18 @@ std::vector<std::filesystem::path> ddio_GetSysRoots() {
 
   bool done = false;
   char *strptr = buffer;
-  char *string;
   int strsize;
 
   while (!done) {
     if (*strptr != 0) {
       strsize = strlen(strptr);
-      string = mem_rmalloc<char>(strsize);
-      if (!string)
-        break;
+      auto string = std::make_unique<char[]>(strsize);
       // remove the trailing \ from windows
-      strncpy(string, strptr, strsize - 1);
+      strncpy(string.get(), strptr, strsize - 1);
       string[strsize - 1] = '\0';
 
       strptr += (strsize + 1);
-      result.push_back(string);
-      mem_free(string);
+      result.push_back(string.get());
     } else {
       done = true;
     }
