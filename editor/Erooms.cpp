@@ -2565,7 +2565,7 @@ int CheckSoundsourceObjects() {
         named++;
       if (objp->ctype.soundsource_info.sound_index == -1) {
         CheckError("Soundsource object %d (\"%s\") has no sound specified.\n", objnum,
-                   objp->name ? objp->name : "<no name>");
+                   objp->name ? objp->name.get() : "<no name>");
         quiet++;
         if (!objp->name)
           quiet_unnamed++;

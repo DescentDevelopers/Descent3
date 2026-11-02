@@ -310,6 +310,8 @@
 #ifndef _OBJINFO_H
 #define _OBJINFO_H
 
+#include <memory>
+
 #include "object.h"
 #include "manage.h"
 #include "DeathInfo.h"
@@ -450,6 +452,7 @@ struct t_ai_info {
 #ifndef NEWEDITOR
 
 // Info for robots, powerups, debris, etc.
+// (When adding a field, add it to CopyObjectInfoPlainFields() too.)
 struct object_info {
   char name[PAGENAME_LEN]; // the name on the page
 
@@ -474,7 +477,7 @@ struct object_info {
 
   int ammo_count; // if a powerup, how much ammo it has
 
-  char *description;                   // used for inventory
+  std::unique_ptr<char[]> description; // used for inventory
   char icon_name[MAX_INVEN_ICON_SIZE]; // used for inventory
 
   int16_t sounds[MAX_OBJ_SOUNDS]; // list of sound handles
@@ -503,16 +506,15 @@ struct object_info {
   uint8_t death_probabilities[MAX_DEATH_TYPES]; // how likely each death is, from 0-100 (percent)
 
   // Valid for AI objects only
-  t_ai_info *ai_info; // the AI info for this obj type
+  std::unique_ptr<t_ai_info> ai_info; // the AI info for this obj type
 
   // Valid for polygon models with weapons
-  otype_wb_info *static_wb;
+  std::unique_ptr<otype_wb_info[]> static_wb; // MAX_WBS_PER_OBJ entries
   //	otype_wb_info static_wb[MAX_WBS_PER_OBJ];
 
   // Valid for polygon model objects only
-  anim_elem *anim; // which anim states are active
+  std::unique_ptr<anim_elem[]> anim; // which anim states are active (NUM_MOVEMENT_CLASSES entries)
   //	anim_elem		anim[NUM_MOVEMENT_CLASSES];	// which anim states are active
-
 };
 
 // The big array of object info
@@ -532,6 +534,9 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai);
 
 // Frees object index n
 void FreeObjectID(int n);
+
+// Copies all the plain fields of src to dst, i.e. everything except the owned description, ai_info, static_wb and anim
+void CopyObjectInfoPlainFields(object_info *dst, const object_info *src);
 
 // Find an object with the given type.  Returns -1 if none found.
 int GetObjectID(int type);

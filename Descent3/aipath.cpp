@@ -1120,7 +1120,7 @@ bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_
 
 bool AIPathSetAsStaticPath(object *obj, void *goal_ptr, int path_id, int start_node, int end_node, int cur_node) {
   bool status;
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   ai_path_info *aip = &ai_info->path;
 
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {

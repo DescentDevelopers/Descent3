@@ -1222,7 +1222,7 @@ LRESULT CDallasMainDlg::OnAddScript(WPARAM, LPARAM) {
             data->int_val = OBJECT_HANDLE_NONE;
             strcpy(data->str_val, "");
           } else {
-            strcpy(data->str_val, objp->name);
+            strcpy(data->str_val, objp->name.get());
           }
         } else if (data->ID == TRIGGER_TYPE) {
           if (data->int_val < 0 || data->int_val >= Num_triggers) {
@@ -1267,7 +1267,7 @@ LRESULT CDallasMainDlg::OnAddScriptAndHighlight(WPARAM, LPARAM) {
             data->int_val = OBJECT_HANDLE_NONE;
             strcpy(data->str_val, "");
           } else {
-            strcpy(data->str_val, objp->name);
+            strcpy(data->str_val, objp->name.get());
           }
         } else if (data->ID == TRIGGER_TYPE) {
           if (data->int_val < 0 || data->int_val >= Num_triggers) {
@@ -2149,7 +2149,7 @@ void CDallasMainDlg::FormatTreeText(CString &text, tTreeNodeData *data, HTREEITE
       if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr)
         text.Format("Owner: *OBJECT_ERROR*");
       else
-        text.Format("Owner: %s (Object)", objp->name);
+        text.Format("Owner: %s (Object)", objp->name.get());
       break;
     case TRIGGER_TYPE:
       if (data->int_val == NOT_SPECIFIED_TYPE) {
@@ -2371,7 +2371,7 @@ void CDallasMainDlg::FormatParameterValueText(CString &text, tTreeNodeData *data
     if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr)
       text.Format("*DOOR_ERROR*");
     else
-      text.Format("%s", objp->name);
+      text.Format("%s", objp->name.get());
     break;
   case OBJECT_PARAMETER_TYPE:
     if (data->subID == USE_IT_HANDLE) {
@@ -2390,7 +2390,7 @@ void CDallasMainDlg::FormatParameterValueText(CString &text, tTreeNodeData *data
     if (objp == nullptr || objp->type == OBJ_NONE || objp->name == nullptr)
       text.Format("*OBJECT_ERROR*");
     else
-      text.Format("%s", objp->name);
+      text.Format("%s", objp->name.get());
     break;
   case ROOM_PARAMETER_TYPE:
     if (data->int_val == NOT_SPECIFIED_TYPE) {
@@ -4164,25 +4164,25 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
       }
 
       // Check for invalid object names
-      if (strcmp(data->str_val, objp->name) != 0) {
+      if (strcmp(data->str_val, objp->name.get()) != 0) {
         int handle = osipf_FindObjectName(data->str_val);
         if (handle != OBJECT_HANDLE_NONE) {
-          if (InvNameObjPrompt(scriptID, data->int_val, data->str_val, objp->name, handle) == IDYES) {
+          if (InvNameObjPrompt(scriptID, data->int_val, data->str_val, objp->name.get(), handle) == IDYES) {
             data->int_val = handle;
             UpdateAllParentNodesText(node);
             AddObjectToList(data->str_val);
             return 0;
           }
         }
-        InvNameObjMsg(scriptID, data->int_val, data->str_val, objp->name);
-        strcpy(data->str_val, objp->name);
+        InvNameObjMsg(scriptID, data->int_val, data->str_val, objp->name.get());
+        strcpy(data->str_val, objp->name.get());
         UpdateAllParentNodesText(node);
         AddObjectToList(data->str_val);
         return 0;
       }
 
       // All is cool, so just add the name
-      AddObjectToList(objp->name);
+      AddObjectToList(objp->name.get());
       return 0;
     }
     if (data->ID == TRIGGER_TYPE) {
@@ -4281,25 +4281,25 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
       }
 
       // Check for invalid door object names
-      if (strcmp(data->str_val, objp->name) != 0) {
+      if (strcmp(data->str_val, objp->name.get()) != 0) {
         int handle = osipf_FindDoorName(data->str_val);
         if (handle != OBJECT_HANDLE_NONE) {
-          if (InvNameObjPrompt(scriptID, data->int_val, data->str_val, objp->name, handle) == IDYES) {
+          if (InvNameObjPrompt(scriptID, data->int_val, data->str_val, objp->name.get(), handle) == IDYES) {
             data->int_val = handle;
             UpdateAllParentNodesText(node);
             AddObjectToList(data->str_val);
             return 0;
           }
         }
-        InvNameObjMsg(scriptID, data->int_val, data->str_val, objp->name);
-        strcpy(data->str_val, objp->name);
+        InvNameObjMsg(scriptID, data->int_val, data->str_val, objp->name.get());
+        strcpy(data->str_val, objp->name.get());
         UpdateAllParentNodesText(node);
         AddObjectToList(data->str_val);
         return 0;
       }
 
       // All is cool, so just add the name
-      AddDoorToList(objp->name);
+      AddDoorToList(objp->name.get());
     } break;
     case OBJECT_PARAMETER_TYPE: {
       // Check for ME and IT handles
@@ -4348,25 +4348,25 @@ int CDallasMainDlg::AddNameToListFromTreeNode(HTREEITEM node, bool show_notspec_
       }
 
       // Check for invalid object names
-      if (strcmp(data->str_val, objp->name) != 0) {
+      if (strcmp(data->str_val, objp->name.get()) != 0) {
         int handle = osipf_FindObjectName(data->str_val);
         if (handle != OBJECT_HANDLE_NONE) {
-          if (InvNameObjPrompt(scriptID, data->int_val, data->str_val, objp->name, handle) == IDYES) {
+          if (InvNameObjPrompt(scriptID, data->int_val, data->str_val, objp->name.get(), handle) == IDYES) {
             data->int_val = handle;
             UpdateAllParentNodesText(node);
             AddObjectToList(data->str_val);
             return 0;
           }
         }
-        InvNameObjMsg(scriptID, data->int_val, data->str_val, objp->name);
-        strcpy(data->str_val, objp->name);
+        InvNameObjMsg(scriptID, data->int_val, data->str_val, objp->name.get());
+        strcpy(data->str_val, objp->name.get());
         UpdateAllParentNodesText(node);
         AddObjectToList(data->str_val);
         return 0;
       }
 
       // All is cool, so just add the name
-      AddObjectToList(objp->name);
+      AddObjectToList(objp->name.get());
     } break;
     case ROOM_PARAMETER_TYPE: {
       // Check for not specified rooms
@@ -8092,7 +8092,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
         node_data.int_val = OBJECT_HANDLE_NONE;
         strcpy(node_data.str_val, "");
       } else {
-        strcpy(node_data.str_val, objp->name);
+        strcpy(node_data.str_val, objp->name.get());
       }
     }
 
@@ -8199,7 +8199,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
           node_data.int_val = OBJECT_HANDLE_NONE;
           strcpy(node_data.str_val, "");
         } else {
-          strcpy(node_data.str_val, objp->name);
+          strcpy(node_data.str_val, objp->name.get());
         }
       }
 
@@ -8223,7 +8223,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
           node_data.int_val = OBJECT_HANDLE_NONE;
           strcpy(node_data.str_val, "");
         } else {
-          strcpy(node_data.str_val, objp->name);
+          strcpy(node_data.str_val, objp->name.get());
         }
       }
 
@@ -10067,8 +10067,8 @@ int CDallasMainDlg::CreateScriptFile(char *filename) {
       handle_text.Format("0x%04x", OBJECT_HANDLE_NONE);
       object *objp = ObjGet(m_ScriptGroupingList[j].owner_handle);
       if (objp != nullptr && objp->type != OBJ_NONE && objp->name != nullptr) {
-        int index = FindObjectInList(objp->name);
-        if (index >= 0 && strlen(objp->name) != 0)
+        int index = FindObjectInList(objp->name.get());
+        if (index >= 0 && strlen(objp->name.get()) != 0)
           handle_text.Format("Object_handles[%d]", index);
       }
 
@@ -11631,31 +11631,32 @@ void CDallasMainDlg::FillObjectMenu(CMenu *object_menu, int command_offset, bool
       switch (objp->type) {
       case OBJ_POWERUP:
         powerup_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles,
-                                   objp->name);
+                                   objp->name.get());
         powerups_added++;
         break;
       case OBJ_ROBOT:
         robot_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles,
-                                 objp->name);
+                                 objp->name.get());
         robots_added++;
         break;
       case OBJ_CLUTTER:
         clutter_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles,
-                                   objp->name);
+                                   objp->name.get());
         clutter_added++;
         break;
       case OBJ_BUILDING:
         building_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles,
-                                    objp->name);
+                                    objp->name.get());
         buildings_added++;
         break;
       case OBJ_DOOR:
-        door_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles, objp->name);
+        door_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles,
+                                objp->name.get());
         doors_added++;
         break;
       default:
         other_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles,
-                                 objp->name);
+                                 objp->name.get());
         others_added++;
         break;
       }
@@ -11727,7 +11728,8 @@ int CDallasMainDlg::FillObjectTypeMenu(CMenu *object_menu, int command_offset, i
       m_ObjectHandleList[m_NumObjectHandles] = objp->handle;
 
       // Add the menu item
-      object_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles, objp->name);
+      object_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + m_NumObjectHandles,
+                              objp->name.get());
       objects_added++;
       m_NumObjectHandles++;
     }
@@ -12957,7 +12959,7 @@ void CDallasMainDlg::AssignNamedValue(int type, int handle) {
         data->subID = USE_OBJECT_HANDLE;
         object *objp = ObjGet(data->int_val);
         if (objp != nullptr && objp->name != nullptr) {
-          strncpy(data->str_val, objp->name, MAX_MESSAGE_NAME_LEN);
+          strncpy(data->str_val, objp->name.get(), MAX_MESSAGE_NAME_LEN);
           data->str_val[MAX_MESSAGE_NAME_LEN] = '\0';
         } else
           strcpy(data->str_val, "");
@@ -13004,7 +13006,7 @@ void CDallasMainDlg::AssignNamedValue(int type, int handle) {
           data->subID = USE_OBJECT_HANDLE;
           object *objp = ObjGet(data->int_val);
           if (objp != nullptr && objp->name != nullptr) {
-            strncpy(data->str_val, objp->name, MAX_MESSAGE_NAME_LEN);
+            strncpy(data->str_val, objp->name.get(), MAX_MESSAGE_NAME_LEN);
             data->str_val[MAX_MESSAGE_NAME_LEN] = '\0';
           } else
             strcpy(data->str_val, "");
@@ -13023,7 +13025,7 @@ void CDallasMainDlg::AssignNamedValue(int type, int handle) {
           data->subID = USE_OBJECT_HANDLE;
           object *objp = ObjGet(data->int_val);
           if (objp != nullptr && objp->name != nullptr) {
-            strncpy(data->str_val, objp->name, MAX_MESSAGE_NAME_LEN);
+            strncpy(data->str_val, objp->name.get(), MAX_MESSAGE_NAME_LEN);
             data->str_val[MAX_MESSAGE_NAME_LEN] = '\0';
           } else
             strcpy(data->str_val, "");

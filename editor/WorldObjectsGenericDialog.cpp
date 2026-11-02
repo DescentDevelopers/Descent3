@@ -55,6 +55,36 @@ static char THIS_FILE[] = __FILE__;
 // Data for copy/paste object
 object_info Copy_object;
 
+// Gives dst its own copy of src's AI, weapon battery and animation blocks (dst drops any block src doesn't have)
+static void CopyObjectInfoBlocks(object_info *dst, const object_info *src) {
+  if (src->ai_info) {
+    if (!dst->ai_info) {
+      dst->ai_info = std::make_unique<t_ai_info>();
+    }
+    *dst->ai_info = *src->ai_info;
+  } else {
+    dst->ai_info.reset();
+  }
+
+  if (src->static_wb) {
+    if (!dst->static_wb) {
+      dst->static_wb = std::make_unique<otype_wb_info[]>(MAX_WBS_PER_OBJ);
+    }
+    memcpy(dst->static_wb.get(), src->static_wb.get(), sizeof(otype_wb_info) * MAX_WBS_PER_OBJ);
+  } else {
+    dst->static_wb.reset();
+  }
+
+  if (src->anim) {
+    if (!dst->anim) {
+      dst->anim = std::make_unique<anim_elem[]>(NUM_MOVEMENT_CLASSES);
+    }
+    memcpy(dst->anim.get(), src->anim.get(), sizeof(anim_elem) * NUM_MOVEMENT_CLASSES);
+  } else {
+    dst->anim.reset();
+  }
+}
+
 CWorldObjectsGenericDialog::CWorldObjectsGenericDialog(CWnd *pParent /*=NULL*/)
     : CDialog(CWorldObjectsGenericDialog::IDD, pParent) {
   //{{AFX_DATA_INIT(CWorldObjectsGenericDialog)
@@ -491,7 +521,7 @@ void CWorldObjectsGenericDialog::UpdateDialog() {
   if (!Object_info[m_current].description)
     ebox->SetWindowText("<no description>");
   else
-    ebox->SetWindowText(Object_info[m_current].description);
+    ebox->SetWindowText(Object_info[m_current].description.get());
 
   ebox = (CEdit *)GetDlgItem(IDC_GENERIC_INVEN_ICONNAME);
   if (!Object_info[m_current].icon_name[0])
@@ -533,7 +563,7 @@ BOOL CWorldObjectsGenericDialog::OnInitDialog() {
   m_type_name = Object_type_names[m_type];
   m_lod = 0;
 
-  Copy_object.description = nullptr;
+  Copy_object.description.reset();
 
   CDialog::OnInitDialog();
 
@@ -568,7 +598,7 @@ BOOL CWorldObjectsGenericDialog::OnInitDialog() {
 }
 
 void CWorldObjectsGenericDialog::OnGenericEditAI() {
-  CAISettingsDlg dlg(Object_info[m_current].ai_info);
+  CAISettingsDlg dlg(Object_info[m_current].ai_info.get());
 
   dlg.DoModal();
 }
@@ -838,10 +868,10 @@ void CWorldObjectsGenericDialog::OnGenericDefineAnimStates() {
   if (m_current == -1)
     return;
 
-  CAnimStatesDialog dlg(Object_info[m_current].render_handle, Object_info[m_current].anim);
+  CAnimStatesDialog dlg(Object_info[m_current].render_handle, Object_info[m_current].anim.get());
 
   if (dlg.DoModal() == IDOK) // Copy back into object
-    dlg.GetAnimData(Object_info[m_current].anim);
+    dlg.GetAnimData(Object_info[m_current].anim.get());
 }
 
 void CWorldObjectsGenericDialog::OnGenericDelete() {
@@ -1043,7 +1073,7 @@ void CWorldObjectsGenericDialog::OnGenericChangeModel() {
 
   // A new model might induce a new weapon stucture
   if (OutrageMessageBox(MBOX_YESNO, "Would you like to clear the weapon battery info?") == IDYES) {
-    WBClearInfo(Object_info[m_current].static_wb);
+    WBClearInfo(Object_info[m_current].static_wb.get());
   }
   // Finally, save a local copy of the model
 
@@ -1251,18 +1281,16 @@ void CWorldObjectsGenericDialog::OnKillfocusGenericScriptIDEdit() {
 
 void CWorldObjectsGenericDialog::OnGenericCopy() {
   if (m_current != -1) {
-    if (Copy_object.description) {
-      mem_free(Copy_object.description);
+    Copy_object.description.reset();
+
+    CopyObjectInfoPlainFields(&Copy_object, &Object_info[m_current]);
+    CopyObjectInfoBlocks(&Copy_object, &Object_info[m_current]);
+
+    if (!Object_info[m_current].description) {
+      Copy_object.description = mem_strdup_unique("<no description>");
+    } else {
+      Copy_object.description = mem_strdup_unique(Object_info[m_current].description.get());
     }
-
-    Copy_object = Object_info[m_current];
-
-    Copy_object.description = nullptr;
-
-    if (!Object_info[m_current].description)
-      Copy_object.description = mem_strdup("<no description>");
-    else
-      Copy_object.description = mem_strdup(Object_info[m_current].description);
   }
 
   UpdateDialog();
@@ -1307,10 +1335,10 @@ void CWorldObjectsGenericDialog::OnGenericPaste() {
   }
 
   // Copy into new slot
-  Object_info[n] = Copy_object;
+  CopyObjectInfoPlainFields(&Object_info[n], &Copy_object);
+  CopyObjectInfoBlocks(&Object_info[n], &Copy_object);
 
-  Object_info[n].description = Copy_object.description;
-  Copy_object.description = nullptr;
+  Object_info[n].description = std::move(Copy_object.description);
 
   // Set type and name
   Object_info[n].type = m_type;
@@ -1356,10 +1384,7 @@ void CWorldObjectsGenericDialog::SaveGenericsOnClose() {
 void CWorldObjectsGenericDialog::OnDestroy() {
   CDialog::OnDestroy();
 
-  if (Copy_object.description) {
-    mem_free(Copy_object.description);
-    Copy_object.description = nullptr;
-  }
+  Copy_object.description.reset();
 
   SaveGenericsOnClose();
 
@@ -1437,7 +1462,7 @@ void CWorldObjectsGenericDialog::OnKillfocusGenericHitpointEdit() {
 }
 
 void CWorldObjectsGenericDialog::OnGenericWeaponInfoButton() {
-  RobotEditWeaponsDialog dlg(Object_info[m_current].static_wb,
+  RobotEditWeaponsDialog dlg(Object_info[m_current].static_wb.get(),
                              GetPolymodelPointer(Object_info[m_current].render_handle));
 
   if (dlg.DoModal() == IDOK)
@@ -1575,13 +1600,10 @@ void CWorldObjectsGenericDialog::OnKillfocusGenericInvenDescription() {
   ebox = (CEdit *)GetDlgItem(IDC_GENERIC_INVEN_DESCRIPTION);
   ebox->GetWindowText(str, 180);
 
-  if (Object_info[m_current].description) {
-    mem_free(Object_info[m_current].description);
-    Object_info[m_current].description = nullptr;
-  }
+  Object_info[m_current].description.reset();
 
   if ((strlen(str) > 0) && (strcmp(str, "<no description>"))) {
-    Object_info[m_current].description = mem_strdup(str);
+    Object_info[m_current].description = mem_strdup_unique(str);
   } else {
     ebox->SetWindowText("<no description>");
   }

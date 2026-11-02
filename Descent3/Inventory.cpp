@@ -448,7 +448,7 @@ bool Inventory::AddObject(int object_handle, int flags, const char *description)
   newnode->oid = obj->id;
 
   if (Object_info[newnode->oid].description) {
-    newnode->description = mem_strdup_unique(Object_info[newnode->oid].description);
+    newnode->description = mem_strdup_unique(Object_info[newnode->oid].description.get());
   } else {
     newnode->description = std::make_unique<char[]>(1);
   }
@@ -571,7 +571,7 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
     newnode->oid = aux_id;
 
     if ((aux_type != -1) && (aux_id != -1) && (Object_info[aux_id].description)) {
-      newnode->description = mem_strdup_unique(Object_info[aux_id].description);
+      newnode->description = mem_strdup_unique(Object_info[aux_id].description.get());
     } else {
       newnode->description = mem_strdup_unique(Weapons[id].name);
     }
@@ -644,7 +644,7 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
     newnode->oid = oauxi;
 
     if (Object_info[oid].description) {
-      newnode->description = mem_strdup_unique(Object_info[oid].description);
+      newnode->description = mem_strdup_unique(Object_info[oid].description.get());
     } else {
       newnode->description = std::make_unique<char[]>(1);
     }
