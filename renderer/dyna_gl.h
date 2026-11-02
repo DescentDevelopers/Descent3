@@ -85,7 +85,7 @@ private:
 
 #if defined(DECLARE_OPENGL)
 extern char loadedLibrary[_MAX_PATH];
-static module OpenGLDLLInst;
+static module_t OpenGLDLLInst;
 
 
 static std::vector<std::tuple<void **, std::string_view, bool>> inits_;
@@ -104,7 +104,7 @@ FnPtr<Ret GLFUNCCALL(Args...)>::FnPtr(std::string_view name, bool optional) : fn
   inits_.push_back(std::make_tuple(reinterpret_cast<void **>(&fn_), name, optional));
 }
 
-static module *LoadOpenGLDLL(const char *dllname) {
+static module_t *LoadOpenGLDLL(const char *dllname) {
   LOG_INFO << "Loading OpenGL dll...";
   int rc = SDL_GL_LoadLibrary(dllname[0] ? dllname : nullptr);
 
@@ -112,7 +112,7 @@ static module *LoadOpenGLDLL(const char *dllname) {
     const char *sdlErr = SDL_GetError();
     LOG_ERROR.printf("OpenGL: Couldn't open library [%s]: SDL error [%s].",
                      dllname[0] ? dllname : "system default", sdlErr);
-    return NULL;
+    return nullptr;
   }
 
   strcpy(loadedLibrary, dllname);

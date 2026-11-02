@@ -31,7 +31,7 @@
 class CDallasImportDlg : public CDialog {
   // Construction
 public:
-  CDallasImportDlg(CWnd *pParent = NULL); // standard constructor
+  CDallasImportDlg(CWnd *pParent = nullptr); // standard constructor
 
   CString m_ScriptName;
   CString m_Filename;

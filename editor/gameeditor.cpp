@@ -525,7 +525,7 @@
 //	---------------------------------------------------------------------------
 //	local globals
 //	---------------------------------------------------------------------------
-static oeApplication *Saved_editor_app = NULL; // the editor's app object
+static oeApplication *Saved_editor_app = nullptr; // the editor's app object
 static char Editor_dir[_MAX_PATH];             // old editor directory
 static RECT Editor_wndrect;                    // editor window rect.
 unsigned hGameWnd;                             // used for hack. window handle to draw to.
@@ -587,7 +587,7 @@ vector editor_player_pos;
 matrix editor_player_orient;
 int editor_player_roomnum;
 
-uint16_t *Save_sky_data = NULL;
+uint16_t *Save_sky_data = nullptr;
 
 void GameToEditor(bool set_viewer_from_player) {
   /*	We have to reinitialize the DDGR system for windowed mode.
@@ -602,7 +602,7 @@ void GameToEditor(bool set_viewer_from_player) {
   Sleep(2000);
 
   // Close down whatever renderer we were using and restore the software renderer
-  rend_Init(RENDERER_OPENGL, Saved_editor_app, NULL);
+  rend_Init(RENDERER_OPENGL, Saved_editor_app, nullptr);
 
   if (Game_screen)
     delete Game_screen;
@@ -611,7 +611,7 @@ void GameToEditor(bool set_viewer_from_player) {
   if (Temp_level_saved) {
     char filename[_MAX_PATH];
 
-    ddio_MakePath(filename, cf_GetWritableBaseDirectory().u8string().c_str(), "GameSave.D3L", NULL); // make explicit path
+    ddio_MakePath(filename, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "GameSave.D3L", nullptr); // make explicit path
     LoadLevel(filename);
     Temp_level_saved = 0;
   }
@@ -694,7 +694,7 @@ void GameToEditor(bool set_viewer_from_player) {
     }
 
     mem_free(Save_sky_data);
-    Save_sky_data = NULL;
+    Save_sky_data = nullptr;
   }
 
   //	initialize systems back to editor.
@@ -702,7 +702,7 @@ void GameToEditor(bool set_viewer_from_player) {
   theApp.resume();
 
   // If Dallas is running, restore it to where it was
-  if (theApp.m_DallasModelessDlgPtr != NULL)
+  if (theApp.m_DallasModelessDlgPtr != nullptr)
     theApp.m_DallasModelessDlgPtr->ShowWindow(SW_SHOWNA);
 
   Disable_editor_rendering = false;
@@ -714,7 +714,7 @@ void EditorToGame() {
   Disable_editor_rendering = true;
 
   // Hide Dallas (if it's running) so it doesn't get any keypresses
-  if (theApp.m_DallasModelessDlgPtr != NULL)
+  if (theApp.m_DallasModelessDlgPtr != nullptr)
     theApp.m_DallasModelessDlgPtr->ShowWindow(SW_HIDE);
 
   /*	Create a new window and display it.  Initialize a new GameOS Object and use this
@@ -744,7 +744,7 @@ void EditorToGame() {
   //	set game working directory
   bool set_size = false;
   ddio_GetWorkingDir(Editor_dir, sizeof(Editor_dir));
-  ddio_SetWorkingDir(cf_GetWritableBaseDirectory().u8string().c_str());
+  ddio_SetWorkingDir(PATH_TO_CSTR(cf_GetWritableBaseDirectory()));
 
   Osiris_ResetAllTimers();
 
@@ -819,7 +819,7 @@ void EditorToGame() {
     CMenu *menu = theApp.main_frame->GetMenu();
 
     hEditorMenu = menu->m_hMenu;
-    theApp.main_frame->SetMenu(NULL);
+    theApp.main_frame->SetMenu(nullptr);
 
     flags = OEAPP_FULLSCREEN;
     Descent = new oeLnxApplication(flags);
@@ -840,7 +840,7 @@ void EditorToGame() {
 
     hGameWnd = (unsigned)theApp.main_frame->m_hWnd;
     hEditorMenu = menu->m_hMenu;
-    theApp.main_frame->SetMenu(NULL);
+    theApp.main_frame->SetMenu(nullptr);
     EditorWndStyle = GetWindowLong(theApp.main_frame->m_hWnd, GWL_STYLE);
     EditorBackBrush = GetClassLong(theApp.main_frame->m_hWnd, GCL_HBRBACKGROUND);
     SetWindowLong(theApp.main_frame->m_hWnd, GWL_STYLE, EditorWndStyle & ~(WS_CAPTION | WS_THICKFRAME | WS_BORDER));
@@ -873,7 +873,7 @@ void EditorToGame() {
 void InitEditGameSystems() {
   tUIInitInfo uiinit;
 #if defined(RELEASE)
-  SetDebugBreakHandlers(NULL, NULL);
+  SetDebugBreakHandlers(nullptr, nullptr);
 #else
   SetDebugBreakHandlers(D3DebugStopHandler, D3DebugResumeHandler);
 #endif
@@ -931,17 +931,17 @@ void InitGameEditSystems() {
   NewUIClose();
   ui_Close();
 
-  SetDebugBreakHandlers(NULL, NULL);
+  SetDebugBreakHandlers(nullptr, nullptr);
 }
 
 //	THESE FUNCTIONS DEAL WITH INTERFACING EDITOR AND GAME 3D system
 
-static grViewport *Editor_g3_vp = NULL;
+static grViewport *Editor_g3_vp = nullptr;
 
 void StartEditorFrame(grViewport *vp, vector *viewer_eye, matrix *viewer_orient, float zoom) {
   grSurface *surf;
 
-  ASSERT(vp != NULL);
+  ASSERT(vp != nullptr);
 
   Editor_g3_vp = vp;
   surf = Editor_g3_vp->lock();
@@ -954,7 +954,7 @@ void StartEditorFrame(grViewport *vp, vector *viewer_eye, matrix *viewer_orient,
 
 void EndEditorFrame() {
   Editor_g3_vp->unlock();
-  Editor_g3_vp = NULL;
+  Editor_g3_vp = nullptr;
   g3_EndFrame();
   rend_EndFrame();
 }

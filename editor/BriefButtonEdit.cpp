@@ -206,7 +206,7 @@ void CBriefButtonEdit::OnBriefBtChoose() {
   UpdateData(true);
   char szFilter[] = "Outrage Graphic Files (*.ogf)|*.ogf|32bit Uncompressed Targa (*.tga)|*.tga|PCX (*.pcx)|*.pcx|All "
                     "Files (*.*)|*.*||";
-  CFileDialog dlg(true, NULL, NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     // handle
@@ -219,7 +219,7 @@ void CBriefButtonEdit::OnBriefBtFlashChoose() {
   UpdateData(true);
   char szFilter[] = "Outrage Graphic Files (*.ogf)|*.ogf|32bit Uncompressed Targa (*.tga)|*.tga|PCX (*.pcx)|*.pcx|All "
                     "Files (*.*)|*.*||";
-  CFileDialog dlg(true, NULL, NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     // handle
@@ -429,7 +429,7 @@ void CBriefButtonEdit::OnBriefBtChooseFocus() {
   UpdateData(true);
   char szFilter[] = "Outrage Graphic Files (*.ogf)|*.ogf|32bit Uncompressed Targa (*.tga)|*.tga|PCX (*.pcx)|*.pcx|All "
                     "Files (*.*)|*.*||";
-  CFileDialog dlg(true, NULL, NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     // handle
@@ -442,7 +442,7 @@ void CBriefButtonEdit::OnBriefBtFlashChooseFocus() {
   UpdateData(true);
   char szFilter[] = "Outrage Graphic Files (*.ogf)|*.ogf|32bit Uncompressed Targa (*.tga)|*.tga|PCX (*.pcx)|*.pcx|All "
                     "Files (*.*)|*.*||";
-  CFileDialog dlg(true, NULL, NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     // handle

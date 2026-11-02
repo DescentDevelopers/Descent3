@@ -45,7 +45,7 @@ struct object;
 class CObjectListDialog : public CDialog {
   // Construction
 public:
-  CObjectListDialog(CWnd *pParent = NULL); // standard constructor
+  CObjectListDialog(CWnd *pParent = nullptr); // standard constructor
 
   void Refresh();
   void ClearTree();
@@ -108,7 +108,7 @@ private:
 class CObjectListModeless : public CObjectListDialog {
 
 public:
-  CObjectListModeless(CWnd *pParent = NULL);
+  CObjectListModeless(CWnd *pParent = nullptr);
 
   BOOL Create();
 

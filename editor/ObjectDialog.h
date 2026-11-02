@@ -134,7 +134,7 @@ class CObjectDialog;
 class CObjectDialog : public CKeypadDialog {
   // Construction
 public:
-  CObjectDialog(CWnd *pParent = NULL); // standard constructor
+  CObjectDialog(CWnd *pParent = nullptr); // standard constructor
 
   void PlaceObject();
   void DeleteObject();

@@ -201,7 +201,7 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
     LOG_DEBUG.printf("JOYSTICK: (%d) axes, (%d) hats, and (%d) buttons.", axes, hats, caps.num_btns);
   }
 
-  return (Joysticks[joy].handle != NULL);
+  return (Joysticks[joy].handle != nullptr);
 }
 
 //  closes connection with controller.
@@ -217,7 +217,7 @@ bool joy_IsValid(tJoystick joy) {
       return false;
     }
   }
-  return (Joysticks[joy].handle != NULL);
+  return (Joysticks[joy].handle != nullptr);
 }
 
 //	retreive information about joystick.
@@ -324,7 +324,7 @@ static int joyGetNumDevs(void) {
   // rcg06182000 add support for specific joydev.
   int rc = FindArgChar("-joystick", 'j');
   specificJoy = -1;
-  if ((rc > 0) && (GameArgs[rc + 1] != NULL)) {
+  if ((rc > 0) && (GameArgs[rc + 1] != nullptr)) {
     specificJoy = atoi(GameArgs[rc + 1]);
     if ((specificJoy >= 0) && (specificJoy < joyCount)) {
       found = 1;

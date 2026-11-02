@@ -345,7 +345,7 @@ void QuickSaveGame() {
     filename << "saveg" << std::setw(3) << std::setfill('0') << Quicksave_game_slot;
     std::filesystem::path pathname = cf_GetWritableBaseDirectory() / "savegame" / filename.str();
 
-    FILE *fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+    FILE *fp = fopen(PATH_TO_CSTR(pathname), "rb");
 
     if (fp) {
       // slot valid, save here.
@@ -419,7 +419,7 @@ void SaveGameDialog() {
 
     occupied_slot[i] = false;
 
-    fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+    fp = fopen(PATH_TO_CSTR(pathname), "rb");
 
     if (fp) {
       fclose(fp);
@@ -542,9 +542,9 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 
     LOG_DEBUG.printf("savegame slot=%d", id - SAVE_HOTSPOT_ID);
 
-    ddio_MakePath(savegame_dir, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "savegame", NULL);
+    ddio_MakePath(savegame_dir, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "savegame", nullptr);
     snprintf(filename, sizeof(filename), "saveg00%d", (id - SAVE_HOTSPOT_ID));
-    ddio_MakePath(pathname, savegame_dir, filename, NULL);
+    ddio_MakePath(pathname, savegame_dir, filename, nullptr);
 
     if (GetGameStateInfo(pathname, desc, &bm_handle)) {
       if (bm_handle > 0) {
@@ -615,7 +615,7 @@ bool LoadGameDialog() {
 
     occupied_slot[i] = false;
 
-    fp = fopen((const char*)pathname.u8string().c_str(), "rb");
+    fp = fopen(PATH_TO_CSTR(pathname), "rb");
 
     if (fp) {
       int bm_handle = -1;
@@ -930,7 +930,7 @@ void SGSRooms(CFILE *fp) {
       // save doorway info
       if (Rooms[i].flags & RF_DOOR) {
         doorway *dp = Rooms[i].doorway_data;
-        ASSERT(dp != NULL);
+        ASSERT(dp != nullptr);
         gs_WriteByte(fp, dp->state);
         gs_WriteByte(fp, dp->flags);
         gs_WriteByte(fp, dp->keys_needed);

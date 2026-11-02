@@ -63,7 +63,7 @@ void UIGroup::Create(UIWindow *parent, char *label, int x, int y, int w, int h, 
   m_LabelColor = label_color;
   m_BoxColor = box_color;
 
-  UIStatic::Create(parent, NULL, x, y, w, h, flags);
+  UIStatic::Create(parent, nullptr, x, y, w, h, flags);
 
   int length = strlen(label);
   if (length) {

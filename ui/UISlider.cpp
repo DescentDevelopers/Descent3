@@ -74,9 +74,9 @@ void UISlider::Create(UIWindow *parent, int id, int x, int y, int w, int h, int 
 
   m_Pos = 0;
   m_Range = 1;
-  selectchange_fn = NULL;
-  selectchange_id_fn = NULL;
-  m_callbackptr = NULL;
+  selectchange_fn = nullptr;
+  selectchange_id_fn = nullptr;
+  m_callbackptr = nullptr;
 
   switch_item = UIPrimativeItem(GR_DARKGRAY).CopyUIItem();
   slider_item = UIPrimativeItem(GR_DARKGRAY).CopyUIItem();

@@ -1831,7 +1831,7 @@ Parameters:
   None.
 $$END
 */
-void aClosePopupView() { MSafe_CallFunction(MSAFE_MISC_CLOSE_POPUP, NULL); }
+void aClosePopupView() { MSafe_CallFunction(MSAFE_MISC_CLOSE_POPUP, nullptr); }
 
 /*
 $$ACTION
@@ -3806,7 +3806,7 @@ void aCinematicSimple(int pathid, const char *Text, int Target, float Seconds, b
   info.flags = (GCF_LETTERBOX | GCF_USEPATH | GCF_TEXT_WIPEIN | GCF_LAYOUT_BOTTOM);
   info.target_objhandle = Target;
   info.max_time_play = Seconds;
-  info.callback = NULL;
+  info.callback = nullptr;
   info.text_display.min = 0.40f;
   info.text_display.max = 1.0f;
   info.track_target.min = 0.0f;
@@ -3896,7 +3896,7 @@ void aComplexCinematicStart(void) {
   ccinematic.info.flags = (GCF_LETTERBOX | GCF_USEPATH | GCF_TEXT_WIPEIN | GCF_LAYOUT_BOTTOM | GCF_STOPIFTAGETDEAD);
   ccinematic.info.target_objhandle = OBJECT_HANDLE_NONE;
   ccinematic.info.max_time_play = 10.0f;
-  ccinematic.info.callback = NULL;
+  ccinematic.info.callback = nullptr;
   ccinematic.info.text_display.min = 0.40f;
   ccinematic.info.text_display.max = 1.0f;
   ccinematic.info.track_target.min = 0.0f;
@@ -4518,7 +4518,7 @@ struct tKillRobotListNode {
 
 class CKillRobotList {
 public:
-  CKillRobotList() { list = NULL; };
+  CKillRobotList() { list = nullptr; };
   ~CKillRobotList() { clear(); }
 
   void clear(void);
@@ -4537,7 +4537,7 @@ void CKillRobotList::clear(void) {
     curr = next;
   }
 
-  list = NULL;
+  list = nullptr;
 }
 
 void CKillRobotList::add(tKillObjectItem *data) {
@@ -4557,7 +4557,7 @@ void CKillRobotList::add(tKillObjectItem *data) {
   if (!curr)
     return;
 
-  curr->next = NULL;
+  curr->next = nullptr;
   memcpy(&curr->item, data, sizeof(tKillObjectItem));
 }
 
@@ -4641,7 +4641,7 @@ void aDestroyAllRobotsEnd(void) {
   }
 
   curr = KillRobotList.list;
-  tKillObjectItem *kolist = NULL;
+  tKillObjectItem *kolist = nullptr;
 
   kolist = (tKillObjectItem *)malloc(sizeof(tKillObjectItem) * count);
   if (!kolist)

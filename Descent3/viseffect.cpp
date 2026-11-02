@@ -467,10 +467,10 @@
 // DAJ uint16_t VisDeadList[max_vis_effects];
 // DAJ static int16_t Vis_free_list[max_vis_effects];
 
-vis_effect *VisEffects = NULL;
+vis_effect *VisEffects = nullptr;
 
-static int16_t *Vis_free_list = NULL;
-uint16_t *VisDeadList = NULL;
+static int16_t *Vis_free_list = nullptr;
+uint16_t *VisDeadList = nullptr;
 
 uint16_t max_vis_effects = 0;
 
@@ -495,11 +495,11 @@ void InitVisEffects() {
   if (old_max_vis == max_vis_effects)
     return;
 
-  if (VisEffects != NULL) {
+  if (VisEffects != nullptr) {
     VisEffects = (vis_effect *)mem_realloc(VisEffects, sizeof(vis_effect) * max_vis_effects);
     VisDeadList = (uint16_t *)mem_realloc(VisDeadList, sizeof(uint16_t) * max_vis_effects);
     Vis_free_list = (int16_t *)mem_realloc(Vis_free_list, sizeof(int16_t) * max_vis_effects);
-  } else if (VisEffects == NULL) {
+  } else if (VisEffects == nullptr) {
     VisEffects = mem_rmalloc<vis_effect>(max_vis_effects);
     VisDeadList = mem_rmalloc<uint16_t>(max_vis_effects);
     Vis_free_list = mem_rmalloc<int16_t>(max_vis_effects);
@@ -641,7 +641,7 @@ int VisEffectCreateControlled(uint8_t type, object *parent, uint8_t id, int room
     napalm_id = FindWeaponName("Napalm");
 
   if (isreal) {
-    ASSERT(parent != NULL); // You have a spew that has no parent object?
+    ASSERT(parent != nullptr); // You have a spew that has no parent object?
 
     if (ROOMNUM_OUTSIDE(roomnum)) {
       if (CELLNUM(roomnum) > TERRAIN_WIDTH * TERRAIN_DEPTH)
@@ -1012,7 +1012,7 @@ void DrawVisBlastRing(vis_effect *vis) {
 
   if (vm_GetMagnitudeFast(&fvec) < .5)
     return;
-  vm_VectorToMatrix(&orient, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&orient, &fvec, nullptr, nullptr);
 
   int num_segments = 20;
 
@@ -1284,7 +1284,7 @@ void DrawVisSineWave(vis_effect *vis) {
 
   alpha_norm = vis->lifeleft / vis->lifetime;
 
-  vm_VectorToMatrix(&mat, &line_norm, &vis->velocity, NULL);
+  vm_VectorToMatrix(&mat, &line_norm, &vis->velocity, nullptr);
   rvec = mat.rvec * vis->velocity.y(); // /4
   uvec = mat.uvec * vis->velocity.y(); // /4
 
@@ -1657,7 +1657,7 @@ void DrawVisMassDriverEffect(vis_effect *vis, bool f_boss) {
   matrix orient;
 
   vm_NormalizeVector(&normvec);
-  vm_VectorToMatrix(&orient, &normvec, NULL, NULL);
+  vm_VectorToMatrix(&orient, &normvec, nullptr, nullptr);
 
   float size = ((float)vis->billboard_info.width) * .25;
   int circle_pieces = 16;
@@ -2083,8 +2083,8 @@ void VisEffectMoveOne(vis_effect *vis) {
           if (obj->rtype.pobj_info.model_num != vis->attach_info.modelnum) {
             VisEffectSetDeadFlag(vis);
           } else {
-            WeaponCalcGun(&vis->pos, NULL, obj, vis->attach_info.vertnum);
-            WeaponCalcGun(&vis->end_pos, NULL, obj, vis->attach_info.end_vertnum);
+            WeaponCalcGun(&vis->pos, nullptr, obj, vis->attach_info.vertnum);
+            WeaponCalcGun(&vis->end_pos, nullptr, obj, vis->attach_info.end_vertnum);
           }
         }
       } else {
@@ -2107,11 +2107,11 @@ void VisEffectMoveOne(vis_effect *vis) {
                 this_vis->id != THICK_LIGHTNING_INDEX) {
               bsp_info *sm = &pm->submodel[this_vis->attach_info.subnum];
               GetPolyModelPointInWorld(&this_vis->pos, pm, &obj->pos, &obj->orient, this_vis->attach_info.subnum,
-                                       normalized_time, &sm->verts[this_vis->attach_info.vertnum], NULL);
+                                       normalized_time, &sm->verts[this_vis->attach_info.vertnum], nullptr);
 
               if (this_vis->attach_info.end_vertnum != -1)
                 GetPolyModelPointInWorld(&this_vis->end_pos, pm, &obj->pos, &obj->orient, this_vis->attach_info.subnum,
-                                         normalized_time, &sm->verts[this_vis->attach_info.end_vertnum], NULL);
+                                         normalized_time, &sm->verts[this_vis->attach_info.end_vertnum], nullptr);
             }
           }
         }

@@ -416,8 +416,8 @@ void mng_InitWeaponPage(mngs_weapon_page *weaponpage) {
 void mng_WriteWeaponPage(CFILE *outfile, mngs_weapon_page *weaponpage) {
   int i;
 
-  ASSERT(outfile != NULL);
-  ASSERT(weaponpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(weaponpage != nullptr);
 
   cf_WriteByte(outfile, PAGETYPE_WEAPON);
 
@@ -653,8 +653,8 @@ void mng_WriteWeaponPage(CFILE *outfile, mngs_weapon_page *weaponpage) {
 void mng_WriteNewWeaponPage(CFILE *outfile, mngs_weapon_page *weaponpage) {
   int i;
 
-  ASSERT(outfile != NULL);
-  ASSERT(weaponpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(weaponpage != nullptr);
 
   int offset = StartManagePage(outfile, PAGETYPE_WEAPON);
 
@@ -911,7 +911,7 @@ int mng_ReadWeaponPage(CFILE *infile, mngs_weapon_page *weaponpage) {
   if (!Old_table_method)
     return mng_ReadNewWeaponPage(infile, weaponpage);
 
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
 
   mng_InitWeaponPage(weaponpage);
 
@@ -1181,7 +1181,7 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage) {
 
       infile = cfopen(tablename, "rb");
     } else {
-      infile = NULL;
+      infile = nullptr;
       if (TablefileNameOverride) {
         infile = cfopen(TablefileNameOverride, "rb");
       }
@@ -1258,7 +1258,7 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage, int off
 
       infile = cfopen(tablename, "rb");
     } else {
-      infile = NULL;
+      infile = nullptr;
       if (TablefileNameOverride) {
         infile = cfopen(TablefileNameOverride, "rb");
       }
@@ -1306,8 +1306,8 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage, int off
   return found; // successful!
 }
 
-const char *Weapon_error = NULL;
-const char *Weapon_error_filename = NULL;
+const char *Weapon_error = nullptr;
+const char *Weapon_error_filename = nullptr;
 
 // First searches through the weapon index to see if the weapon is already
 // loaded.  If not, searches in the table file and loads it.

@@ -491,7 +491,7 @@ BOOL CObjectDialog::OnInitDialog() {
 
   ObjMoveManager.SetMoveAxis(D3EditState.object_move_axis);
 
-  CButton *btn = NULL;
+  CButton *btn = nullptr;
 
   switch (D3EditState.object_move_axis) {
   case OBJMOVEAXIS_X:
@@ -778,7 +778,7 @@ void CObjectDialog::OnObjPadDelobj() { HObjectDelete(); }
 // Set the current object
 void SelectObject(int objnum) {
   char *type_name, *obj_name;
-  char *id_name = NULL;
+  char *id_name = nullptr;
 
   ASSERT(objnum != -1);
 
@@ -960,7 +960,7 @@ void DrawItemModel(grHardwareSurface *surf, int model_num) {
 
   // Draw to our surface
   StartEditorFrame(vport, &view_pos, &id_matrix, D3_DEFAULT_ZOOM);
-  DrawPolygonModel(&zero_vector, &rot_matrix, model_num, NULL, 0, 1.0, 1.0, 1.0);
+  DrawPolygonModel(&zero_vector, &rot_matrix, model_num, nullptr, 0, 1.0, 1.0, 1.0);
   EndEditorFrame();
 
   // Copy to the screen
@@ -1160,8 +1160,7 @@ void CObjectDialog::OnObjectSwapButton() {
           int o_index = ObjCreate(Object_info[d_id].type, d_id, room, &pos, &orient, parent);
 
           if (temp_name[0] != '\0') {
-            Objects[o_index].name = mem_rmalloc<char>(strlen(temp_name) + 1);
-            strcpy(Objects[o_index].name, temp_name);
+            Objects[o_index].name = mem_strdup(temp_name);
           }
         }
       }
@@ -1193,7 +1192,7 @@ void CObjectDialog::OnRegroundButton() {
       object *obj = &Objects[i];
 
       if (obj->type == OBJ_ROBOT || obj->type == OBJ_CLUTTER || obj->type == OBJ_POWERUP || obj->type == OBJ_BUILDING) {
-        if (obj->id == Reground_id && PhysCalcGround(&gp, NULL, &Objects[i], 0)) {
+        if (obj->id == Reground_id && PhysCalcGround(&gp, nullptr, &Objects[i], 0)) {
           fvi_info hit_info;
           fvi_query fq;
           int fate;
@@ -1207,7 +1206,7 @@ void CObjectDialog::OnRegroundButton() {
           fq.rad = 0.0f;
           fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS;
           fq.thisobjnum = OBJNUM(obj);
-          fq.ignore_obj_list = NULL;
+          fq.ignore_obj_list = nullptr;
 
           fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -1222,7 +1221,7 @@ void CObjectDialog::OnRegroundButton() {
             if (ps != pr) {
               diff = ps - pr;
               obj->pos -= diff * obj->orient.uvec;
-              ObjSetPos(obj, &obj->pos, obj->roomnum, NULL, false);
+              ObjSetPos(obj, &obj->pos, obj->roomnum, nullptr, false);
 
               World_changed = 1;
             }

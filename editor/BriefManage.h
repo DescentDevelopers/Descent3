@@ -34,7 +34,7 @@
 class CBriefManage : public CDialog {
   // Construction
 public:
-  CBriefManage(CWnd *pParent = NULL); // standard constructor
+  CBriefManage(CWnd *pParent = nullptr); // standard constructor
   void UpdateDialog(void);
   void AddString(char *filename, int pagetype = PAGETYPE_GAMEFILE);
 

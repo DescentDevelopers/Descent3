@@ -320,7 +320,7 @@ skip_combine:;
   //	int n=AllocRoom (Reading_room.num_verts,Reading_room.num_faces);
   room *rp = CreateNewRoom(Reading_room.num_verts, Reading_room.num_faces, 1);
 
-  if (rp != NULL) {
+  if (rp != nullptr) {
     for (i = 0; i < Reading_room.num_verts; i++)
       rp->verts[i] = Reading_room.verts[i];
 
@@ -370,12 +370,11 @@ skip_combine:;
       sprintf(roomname, "%s%d.ORF", name, count);
     }
 
-    ASSERT(rp->name == NULL);
-    rp->name = mem_rmalloc<char>(strlen(roomname) + 1);
-    strcpy(rp->name, roomname);
+    ASSERT(rp->name == nullptr);
+    rp->name = mem_strdup(roomname);
 
     // Save it out to disk (locally)
-    ddio_MakePath(name, LocalRoomsDir.u8string().c_str(), roomname, NULL);
+    ddio_MakePath(name, PATH_TO_CSTR(LocalRoomsDir), roomname, nullptr);
     SaveRoom(ROOMNUM(rp), name);
   }
 
@@ -563,7 +562,7 @@ void Parse3DSMaxChunk(CFILE *fp, int size) {
       mprintf(0, "Reading in %d faces!\n", num_faces);
 
       Reading_room.num_faces = num_faces;
-      ASSERT(Reading_room.faces != NULL);
+      ASSERT(Reading_room.faces != nullptr);
 
       for (i = 0; i < num_faces; i++) {
         // a,b, and c are indices into the list of vertices for this room

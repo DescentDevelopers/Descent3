@@ -36,7 +36,7 @@
 class CPropertyPhysicsDlg : public CKeypadDialog {
   // Construction
 public:
-  CPropertyPhysicsDlg(CWnd *pParent = NULL); // standard constructor
+  CPropertyPhysicsDlg(CWnd *pParent = nullptr); // standard constructor
   void Enable(UINT control);
   void Disable(UINT control);
   void UpdateCheckBoxes();

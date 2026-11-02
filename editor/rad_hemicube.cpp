@@ -240,14 +240,14 @@ void InitHemicube(int resolution) {
   rad_Hemicube.grid_dim = resolution / 2;
 
   rad_Hemicube.id_grid = (int *)mem_malloc(rad_Hemicube.ff_res * rad_Hemicube.ff_res * sizeof(int));
-  ASSERT(rad_Hemicube.id_grid != NULL);
+  ASSERT(rad_Hemicube.id_grid != nullptr);
   rad_Hemicube.depth_grid = (float *)mem_malloc(rad_Hemicube.ff_res * rad_Hemicube.ff_res * sizeof(float));
-  ASSERT(rad_Hemicube.depth_grid != NULL);
+  ASSERT(rad_Hemicube.depth_grid != nullptr);
 
   rad_Hemicube.top_array = (float *)mem_malloc(rad_Hemicube.grid_dim * rad_Hemicube.grid_dim * sizeof(float));
-  ASSERT(rad_Hemicube.top_array != NULL);
+  ASSERT(rad_Hemicube.top_array != nullptr);
   rad_Hemicube.side_array = (float *)mem_malloc(rad_Hemicube.grid_dim * rad_Hemicube.grid_dim * sizeof(float));
-  ASSERT(rad_Hemicube.side_array != NULL);
+  ASSERT(rad_Hemicube.side_array != nullptr);
 
   CalculateDeltaFormFactors();
 
@@ -302,7 +302,7 @@ void SetElementView(rad_element *ep) {
   rad_Hemicube.head_matrix.uvec = v;
   rad_Hemicube.head_matrix.fvec = n;
 
-  vm_VectorToMatrix(&rad_Hemicube.head_matrix, &n, NULL, NULL);
+  vm_VectorToMatrix(&rad_Hemicube.head_matrix, &n, nullptr, nullptr);
 
   rad_Hemicube.shooting_element = ep;
 }
@@ -330,7 +330,7 @@ void SetSurfaceView(rad_surface *surf) {
   rad_Hemicube.head_matrix.uvec = v;
   rad_Hemicube.head_matrix.fvec = n;
 
-  vm_VectorToMatrix(&rad_Hemicube.head_matrix, &n, NULL, NULL);
+  vm_VectorToMatrix(&rad_Hemicube.head_matrix, &n, nullptr, nullptr);
 
   rad_Hemicube.shooting_surface = surf;
 }

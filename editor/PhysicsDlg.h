@@ -33,7 +33,7 @@
 class CPhysicsDlg : public CDialog {
   // Construction
 public:
-  CPhysicsDlg(physics_info *phys_info, CWnd *pParent = NULL); // standard constructor
+  CPhysicsDlg(physics_info *phys_info, CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CPhysicsDlg)

@@ -177,8 +177,8 @@ void PrintToDlgItem(CDialog *dlg, int id, char *fmt, ...);
 //		initialdir = what directory to start browsing from.  will also contain the new browsing directory if
 //						 user changed directories.
 //		dirlen = max length of initialdir buffer including terminating null.
-bool OpenFileDialog(CWnd *wnd, LPCTSTR filter, char *pathname, char *initialdir = NULL, int dirlen = 0);
-bool SaveFileDialog(CWnd *wnd, LPCTSTR filter, char *pathname, char *initialdir = NULL, int dirlen = 0);
+bool OpenFileDialog(CWnd *wnd, LPCTSTR filter, char *pathname, char *initialdir = nullptr, int dirlen = 0);
+bool SaveFileDialog(CWnd *wnd, LPCTSTR filter, char *pathname, char *initialdir = nullptr, int dirlen = 0);
 
 // Move the viewer object.  This should be called whenever the viewer object is moved
 void MoveViewer(vector *pos, int roomnum, matrix *orient);

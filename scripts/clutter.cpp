@@ -42,7 +42,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 static int String_table_size = 0;
-static char **String_table = NULL;
+static char **String_table = nullptr;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 static const char *GetStringFromTable(int index) {
@@ -210,7 +210,7 @@ void STDCALLPTR CreateInstance(int id) {
     return new LavaRock;
     break;
   };
-  return NULL;
+  return nullptr;
 }
 
 //	DestroyInstance
@@ -300,7 +300,7 @@ int16_t FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
     Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
     weapon_id = Wpn_FindID("fragbarrel");
 
-    handle = Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, data->me_handle);
+    handle = Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, data->me_handle);
 
     break;
   }
@@ -356,7 +356,7 @@ int16_t AliencuplinkScript::CallEvent(int event, tOSIRISEventInfo *data) {
       Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
       Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
 
-      handle = Obj_Create(OBJ_CLUTTER, id, room, &pos, NULL, data->me_handle);
+      handle = Obj_Create(OBJ_CLUTTER, id, room, &pos, nullptr, data->me_handle);
 
       Obj_AttachObjectAP(data->me_handle, 0, handle, 0, 1);
     }

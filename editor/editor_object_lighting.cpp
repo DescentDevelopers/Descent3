@@ -315,17 +315,17 @@ int ComputeSurfacesForObjects(int surface_index, int terrain) {
 
           if (sm->faces[j].nverts > 0) {
             Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
-            ASSERT(Light_surfaces[surface_index].verts != NULL);
+            ASSERT(Light_surfaces[surface_index].verts != nullptr);
           } else
-            Light_surfaces[surface_index].verts = NULL;
+            Light_surfaces[surface_index].verts = nullptr;
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
             Light_surfaces[surface_index].elements =
                 mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
                                          Light_surfaces[surface_index].yresolution);
-            ASSERT(Light_surfaces[surface_index].elements != NULL);
+            ASSERT(Light_surfaces[surface_index].elements != nullptr);
           } else
-            Light_surfaces[surface_index].elements = NULL;
+            Light_surfaces[surface_index].elements = nullptr;
 
           Light_surfaces[surface_index].flags = 0;
 
@@ -401,17 +401,17 @@ int ComputeSurfacesForObjectsForSingleRoom(int surface_index, int roomnum) {
 
           if (sm->faces[j].nverts > 0) {
             Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
-            ASSERT(Light_surfaces[surface_index].verts != NULL);
+            ASSERT(Light_surfaces[surface_index].verts != nullptr);
           } else
-            Light_surfaces[surface_index].verts = NULL;
+            Light_surfaces[surface_index].verts = nullptr;
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
             Light_surfaces[surface_index].elements =
                 mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
                                          Light_surfaces[surface_index].yresolution);
-            ASSERT(Light_surfaces[surface_index].elements != NULL);
+            ASSERT(Light_surfaces[surface_index].elements != nullptr);
           } else
-            Light_surfaces[surface_index].elements = NULL;
+            Light_surfaces[surface_index].elements = nullptr;
 
           if (sm->faces[j].texnum == -1) {
             Light_surfaces[surface_index].emittance.r = 0;
@@ -520,7 +520,7 @@ void BuildObjectLightmapUVs(object *obj, int *sublist, int *facelist, int count,
   fvec = -fvec;
 
   if ((vm_NormalizeVector(&fvec)) != 0)
-    vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+    vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   else
     vm_MakeIdentity(&face_matrix);
   // Make the transformation matrix
@@ -758,7 +758,7 @@ void BuildElementListForObjectFace(int objnum, int subnum, int facenum, rad_surf
   fvec = -LightmapInfo[lmi_handle].normal;
 
   if ((vm_NormalizeVector(&fvec)) != 0)
-    vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+    vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   else
     vm_MakeIdentity(&face_matrix);
 

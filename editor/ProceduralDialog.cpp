@@ -82,7 +82,7 @@ END_MESSAGE_MAP()
 static static_proc_element save_elements[8000];
 BOOL CProceduralDialog::OnInitDialog() {
   CDialog::OnInitDialog();
-  CWnd::SetTimer(1, 33, NULL); // 30 frames per second
+  CWnd::SetTimer(1, 33, nullptr); // 30 frames per second
 
   int save_num = 0;
   int n = D3EditState.texdlg_texture;
@@ -353,7 +353,7 @@ static_proc_element *CProceduralDialog::CreateElement(int x, int y) {
   int index;
 
   if (GameTextures[n].procedural->num_static_elements >= MAX_PROC_ELEMENTS)
-    return NULL;
+    return nullptr;
   else
     index = GameTextures[n].procedural->num_static_elements;
 
@@ -447,7 +447,7 @@ void CProceduralDialog::OnLButtonUp(UINT nFlags, CPoint point) {
 
     static_proc_element *proc_elem = CreateElement(0, 0);
 
-    if (proc_elem != NULL) {
+    if (proc_elem != nullptr) {
       proc_elem->x1 = m_save_x;
       proc_elem->y1 = m_save_y;
       proc_elem->x2 = dest_x;
@@ -500,7 +500,7 @@ void CProceduralDialog::OnImportPalette() {
   if (!OpenFileDialog(this, (LPCSTR)filter, filename, Current_bitmap_dir, sizeof(Current_bitmap_dir)))
     return;
 
-  if ((infile = cfopen(filename, "rb")) == NULL) {
+  if ((infile = cfopen(filename, "rb")) == nullptr) {
     OutrageMessageBox("Couldn't open that PCX file!");
     return;
   }

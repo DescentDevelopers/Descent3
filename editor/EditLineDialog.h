@@ -73,7 +73,7 @@ public:
 //					prompt - the prompt for the input box
 // Returns:	false if cancel was pressed on the dialog, else true
 //				If false returned, buf is unchanged
-bool InputString(char *buf, int maxsize, char *title, char *prompt, CWnd *wnd = NULL);
+bool InputString(char *buf, int maxsize, char *title, char *prompt, CWnd *wnd = nullptr);
 
 // Gets a number from the user
 // Parameters:	n - filled in the with return value
@@ -81,4 +81,4 @@ bool InputString(char *buf, int maxsize, char *title, char *prompt, CWnd *wnd = 
 //					prompt - the prompt for the input box
 // Returns:	false if cancel was pressed on the dialog, else true
 //				If false returned, n is unchanged
-bool InputNumber(int *n, char *title, char *prompt, CWnd *wnd = NULL);
+bool InputNumber(int *n, char *title, char *prompt, CWnd *wnd = nullptr);

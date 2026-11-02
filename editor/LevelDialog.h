@@ -31,7 +31,7 @@
 class CLevelDialog : public CDialog {
   // Construction
 public:
-  CLevelDialog(CWnd *pParent = NULL); // standard constructor
+  CLevelDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CLevelDialog)

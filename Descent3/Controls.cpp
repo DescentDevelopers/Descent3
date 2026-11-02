@@ -446,7 +446,7 @@ struct tSensitivity {
 
 //	GLOBALS
 
-gameController *Controller = NULL;
+gameController *Controller = nullptr;
 bool Control_poll_flag = false; // determines if system is polling controls now.
 
 static bool Control_system_init = false;
@@ -569,7 +569,7 @@ void InitControls() {
   Control_system_init = true;
 
   Controller = CreateController(NUM_CONTROLLER_FUNCTIONS, Controller_needs);
-  if (Controller == NULL)
+  if (Controller == nullptr)
     Error(TXT_ERRUNINITCNT);
   Controller->mask_controllers(false, false);
   Controller->mask_controllers(true, true);
@@ -619,7 +619,7 @@ void CloseControls() {
     return;
   ResumeControls();
   DestroyController(Controller);
-  Controller = NULL;
+  Controller = nullptr;
   LOG_INFO << "Closing control system.";
   Control_system_init = false;
 }
@@ -629,7 +629,7 @@ void RestoreDefaultControls() {
   ResumeControls();
   DestroyController(Controller);
   Controller = CreateController(NUM_CONTROLLER_FUNCTIONS, Controller_needs);
-  if (Controller == NULL)
+  if (Controller == nullptr)
     Error(TXT_ERRUNINITCNT);
   SuspendControls();
 

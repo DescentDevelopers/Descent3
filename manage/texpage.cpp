@@ -312,8 +312,8 @@ extern char *TablefileNameOverride;
 void mng_WriteTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
   int i = 0;
 
-  ASSERT(outfile != NULL);
-  ASSERT(texpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(texpage != nullptr);
 
   cf_WriteByte(outfile, PAGETYPE_TEXTURE);
 
@@ -429,8 +429,8 @@ void mng_WriteTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
 void mng_WriteNewTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
   int i = 0;
 
-  ASSERT(outfile != NULL);
-  ASSERT(texpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(texpage != nullptr);
 
   int offset = StartManagePage(outfile, PAGETYPE_TEXTURE);
 
@@ -541,7 +541,7 @@ int mng_ReadTexturePage(CFILE *infile, mngs_texture_page *texpage) {
   if (!Old_table_method)
     return mng_ReadNewTexturePage(infile, texpage);
 
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   mng_InitTexturePage(texpage);
 
   while (!done) {
@@ -669,7 +669,7 @@ int mng_ReadTexturePage(CFILE *infile, mngs_texture_page *texpage) {
 int mng_ReadNewTexturePage(CFILE *infile, mngs_texture_page *texpage) {
   int i;
 
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   mng_InitTexturePage(texpage);
 
   int version = cf_ReadShort(infile);
@@ -859,7 +859,7 @@ int mng_FindSpecificTexPage(char *name, mngs_texture_page *texpage, int offset) 
 
       infile = cfopen(tablename, "rb");
     } else {
-      infile = NULL;
+      infile = nullptr;
       if (TablefileNameOverride) {
         infile = cfopen(TablefileNameOverride, "rb");
       }
@@ -979,14 +979,14 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
   }*/
 
   if (tex->flags & TF_TEXTURE_64) {
-    bm_handle = LoadTextureImage(texpage->bitmap_name, NULL, SMALL_TEXTURE, mipped, pageable);
+    bm_handle = LoadTextureImage(texpage->bitmap_name, nullptr, SMALL_TEXTURE, mipped, pageable);
   } else if (tex->flags & TF_TEXTURE_32) {
-    bm_handle = LoadTextureImage(texpage->bitmap_name, NULL, TINY_TEXTURE, mipped, pageable);
+    bm_handle = LoadTextureImage(texpage->bitmap_name, nullptr, TINY_TEXTURE, mipped, pageable);
   } else if (tex->flags & TF_TEXTURE_256) {
     mipped = 0;
-    bm_handle = LoadTextureImage(texpage->bitmap_name, NULL, HUGE_TEXTURE, mipped, pageable);
+    bm_handle = LoadTextureImage(texpage->bitmap_name, nullptr, HUGE_TEXTURE, mipped, pageable);
   } else
-    bm_handle = LoadTextureImage(texpage->bitmap_name, NULL, NORMAL_TEXTURE, mipped, pageable);
+    bm_handle = LoadTextureImage(texpage->bitmap_name, nullptr, NORMAL_TEXTURE, mipped, pageable);
 
   if (bm_handle < 0) {
     LOG_ERROR.printf("Couldn't load bitmap '%s' in AssignTexPage...", texpage->bitmap_name);
@@ -1025,7 +1025,7 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
 
   // Set procedural if there is one
   if (tex->flags & TF_PROCEDURAL) {
-    if (tex->procedural != NULL)
+    if (tex->procedural != nullptr)
       FreeProceduralForTexture(n);
 
     if (texpage->num_proc_elements == 0) {

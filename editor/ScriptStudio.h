@@ -62,7 +62,7 @@ struct tD3XProgram;
 class CScriptStudio : public CDialog {
   // Construction
 public:
-  CScriptStudio(CWnd *pParent = NULL); // standard constructor
+  CScriptStudio(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CScriptStudio)

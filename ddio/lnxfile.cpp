@@ -91,10 +91,10 @@ bool ddio_SetWorkingDir(const char *path) { return (chdir(path)) ? false : true;
 bool ddio_FileDiff(const std::filesystem::path &path1, const std::filesystem::path &path2) {
   struct stat abuf{}, bbuf{};
 
-  if (stat((const char*)path1.u8string().c_str(), &abuf))
+  if (stat(PATH_TO_CSTR(path1), &abuf))
     Int3(); // error getting stat info
 
-  if (stat((const char*)path2.u8string().c_str(), &bbuf))
+  if (stat(PATH_TO_CSTR(path2), &bbuf))
     Int3(); // error getting stat info
 
   if ((abuf.st_size != bbuf.st_size) || (abuf.st_mtime != bbuf.st_mtime))
@@ -197,14 +197,14 @@ void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext) 
 void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src) {
   struct stat abuf{};
 
-  if (stat((const char*)src.u8string().c_str(), &abuf))
+  if (stat(PATH_TO_CSTR(src), &abuf))
     Int3();
 
   struct utimbuf bbuf{};
   bbuf.actime = abuf.st_atime;
   bbuf.modtime = abuf.st_mtime;
 
-  if (utime((const char*)dest.u8string().c_str(), &bbuf))
+  if (utime(PATH_TO_CSTR(dest), &bbuf))
     Int3();
 }
 
@@ -220,7 +220,7 @@ int ddio_DeleteFile(const char *name) { return (!unlink(name)); }
 void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
   const char delimiter = '/';
   va_list args;
-  char *currentDir = NULL;
+  char *currentDir = nullptr;
   int pathLength = 0;
 
   ASSERT(newPath);
@@ -241,7 +241,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 
   // Add the additional subdirectories
   va_start(args, subDir);
-  while ((currentDir = va_arg(args, char *)) != NULL) {
+  while ((currentDir = va_arg(args, char *)) != nullptr) {
     pathLength = strlen(newPath);
     if (newPath[pathLength - 1] != delimiter) {
       newPath[pathLength] = delimiter; // add the delimiter

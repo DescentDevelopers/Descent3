@@ -31,7 +31,7 @@
 class CVirtualCompilerConfig : public CDialog {
   // Construction
 public:
-  CVirtualCompilerConfig(CWnd *pParent = NULL); // standard constructor
+  CVirtualCompilerConfig(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CVirtualCompilerConfig)
