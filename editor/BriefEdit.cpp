@@ -74,8 +74,7 @@ CBriefEdit::CBriefEdit(CWnd *pParent /*=NULL*/) : CDialog(CBriefEdit::IDD, pPare
 
     FreeHotSpotMapInternals(&hotspotmap);
     FreeViewports();
-    if (windowmap.wm)
-      mem_free(windowmap.wm);
+    windowmap.wm.reset();
     bm_FreeBitmap(bm_handle);
   }
 }

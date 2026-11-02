@@ -1287,10 +1287,10 @@ void CheckHogfile() {
   const char *new_mn3;
   LOG_DEBUG << "Checking to see if we need to open another hog off of disk or CDROM";
 
-  if (Current_mission.filename && (stricmp(Current_mission.filename, "d3.mn3") == 0) &&
+  if (Current_mission.filename && (stricmp(Current_mission.filename.get(), "d3.mn3") == 0) &&
       (Current_mission.cur_level > 4)) {
     new_mn3 = "d3_2.mn3";
-  } else if (Current_mission.filename && (stricmp(Current_mission.filename, "d3_2.mn3") == 0) &&
+  } else if (Current_mission.filename && (stricmp(Current_mission.filename.get(), "d3_2.mn3") == 0) &&
              (Current_mission.cur_level <= 4)) {
     new_mn3 = "d3.mn3";
   } else {
@@ -1304,8 +1304,7 @@ void CheckHogfile() {
     auto absolute_path = cf_LocatePath(relative_path);
     if (std::filesystem::exists(absolute_path)) {
       mn3_Open(relative_path);
-      mem_free(Current_mission.filename);
-      Current_mission.filename = mem_strdup(new_mn3);
+      Current_mission.filename = mem_strdup_unique(new_mn3);
     } else {
       SetFunctionMode(MENU_MODE);
     }
@@ -1322,7 +1321,7 @@ bool SimpleStartLevel(const std::filesystem::path& level_name) {
   Current_mission.num_levels = 1;
 
   Current_level = nullptr;
-  Current_mission.levels[0].filename = mem_strdup(PATH_TO_CSTR(level_name));
+  Current_mission.levels[0].filename = mem_strdup_unique(PATH_TO_CSTR(level_name));
   InitMissionScript();
 
   return true;
@@ -1385,7 +1384,7 @@ bool DoLevelIntro() {
 #endif
   //	if this level has a movie:
   if (lvl->flags & LVLFLAG_STARTMOVIE) {
-    DoMissionMovie(Current_mission.levels[Current_mission.cur_level - 1].moviename);
+    DoMissionMovie(Current_mission.levels[Current_mission.cur_level - 1].moviename.get());
   }
 
   //	if this level has a briefing:
@@ -1494,7 +1493,7 @@ void StartLevel() {
   // Start sound & music
   StartLevelSounds();
   Sound_system.PauseSounds(); // HACK!! pause sounds started up to now.
-  D3MusicStart(Current_level->score);
+  D3MusicStart(Current_level->score.get());
 
   // Get the list of waypoints from the waypoint objects
   MakeAtuoWaypointList();
@@ -1591,7 +1590,7 @@ void StartLevel() {
   Localization_SetLanguage(LANGUAGE_ENGLISH);
 
   // Load the English text so the goal stuff will initialize correctly
-  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename);
+  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename.get());
 
   // Restore the correct language
   Localization_SetLanguage(save_lang);
@@ -1600,7 +1599,7 @@ void StartLevel() {
   InitLevelScript();
 
   // Load the localized text
-  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename);
+  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename.get());
 
   Gametime = 0.0f;
   // Start the clock
@@ -1879,7 +1878,7 @@ void EndLevel(int state) {
   //	Sequencing here.
   // if this level has an endmovie
   if ((state == 1) && (lvl->flags & LVLFLAG_ENDMOVIE) && !(Game_mode & GM_MULTI)) {
-    DoMissionMovie(lvl->endmovie);
+    DoMissionMovie(lvl->endmovie.get());
   }
 
   //	display postlevel results.
@@ -2052,7 +2051,7 @@ void RunGameMenu() {
       int ret = 0;
       ui_ShowCursor();
       // Weird code for the training mission and the first time you play...
-      if (Current_mission.filename && (stricmp(Current_mission.filename, "training.mn3") == 0) && (FirstGame)) {
+      if (Current_mission.filename && (stricmp(Current_mission.filename.get(), "training.mn3") == 0) && (FirstGame)) {
         ret = DoMessageBoxAdvanced(TXT_TRAININGABORTTITLE, TXT_TRAININGABORTTEXT, TXT_SKIP, KEY_S, TXT_ABORT, KEY_A,
                                    TXT_CANCEL, KEY_ESC, nullptr);
         if (ret == 2) {

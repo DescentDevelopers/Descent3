@@ -62,6 +62,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstdio>
+#include <memory>
 
 #include "bitmap.h"
 #include "pilot.h"
@@ -473,8 +474,8 @@ struct tPilotPicIdOffset {
   int offset;
   uint16_t id;
 };
-tPilotPicIdOffset *Pilot_id_to_offset = nullptr;
-uint16_t *Sorted_Pilot_id_to_offset = nullptr;
+std::unique_ptr<tPilotPicIdOffset[]> Pilot_id_to_offset;
+std::unique_ptr<uint16_t[]> Sorted_Pilot_id_to_offset;
 int PilotPic_count = 0;
 
 // this maps the alphabet to an index file offset (first pilot_name that begins with the letter)
@@ -515,16 +516,8 @@ bool PPic_BuildDatabases(void) {
 
   // allocate all the memory we're going to need
   // -------------------------------------------
-  Pilot_id_to_offset = mem_rmalloc<tPilotPicIdOffset>(PilotPic_count);
-  Sorted_Pilot_id_to_offset = mem_rmalloc<uint16_t>(PilotPic_count);
-  if (!Pilot_id_to_offset) {
-    // out of memory!!!
-    LOG_FATAL << "PPIC: Out of memory allocating index database";
-    Int3();
-    PilotPic_count = 0;
-    cf_Rewind(file);
-    return false;
-  }
+  Pilot_id_to_offset = std::make_unique<tPilotPicIdOffset[]>(PilotPic_count);
+  Sorted_Pilot_id_to_offset = std::make_unique<uint16_t[]>(PilotPic_count);
 
   // now it is time to go through the index file and build the databases
   // -------------------------------------------------------------------
@@ -606,14 +599,8 @@ void PPic_FreeDatabase(void) {
   for (int i = 0; i < 27; i++)
     Alphabet_to_offset[i] = -1;
 
-  if (Pilot_id_to_offset) {
-    mem_free(Pilot_id_to_offset);
-    Pilot_id_to_offset = nullptr;
-  }
-  if (Sorted_Pilot_id_to_offset) {
-    mem_free(Sorted_Pilot_id_to_offset);
-    Sorted_Pilot_id_to_offset = nullptr;
-  }
+  Pilot_id_to_offset.reset();
+  Sorted_Pilot_id_to_offset.reset();
 
   PilotPic_count = 0;
 }

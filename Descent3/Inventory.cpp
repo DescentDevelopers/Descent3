@@ -448,10 +448,9 @@ bool Inventory::AddObject(int object_handle, int flags, const char *description)
   newnode->oid = obj->id;
 
   if (Object_info[newnode->oid].description) {
-    newnode->description = mem_strdup(Object_info[newnode->oid].description);
+    newnode->description = mem_strdup_unique(Object_info[newnode->oid].description);
   } else {
-    newnode->description = mem_rmalloc<char>();
-    newnode->description[0] = 0;
+    newnode->description = std::make_unique<char[]>(1);
   }
 
   if (Object_info[newnode->oid].flags & OIF_INVEN_SELECTABLE)
@@ -482,12 +481,12 @@ bool Inventory::AddObject(int object_handle, int flags, const char *description)
     }
   }
 
-  newnode->icon_name = mem_strdup(Object_info[newnode->oid].icon_name);
+  newnode->icon_name = mem_strdup_unique(Object_info[newnode->oid].icon_name);
 
   if (description) {
-    newnode->name = mem_strdup(description);
+    newnode->name = mem_strdup_unique(description);
   } else {
-    newnode->name = mem_strdup(Object_info[newnode->oid].name);
+    newnode->name = mem_strdup_unique(Object_info[newnode->oid].name);
   }
 
   count++;
@@ -572,23 +571,23 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
     newnode->oid = aux_id;
 
     if ((aux_type != -1) && (aux_id != -1) && (Object_info[aux_id].description)) {
-      newnode->description = mem_strdup(Object_info[aux_id].description);
+      newnode->description = mem_strdup_unique(Object_info[aux_id].description);
     } else {
-      newnode->description = mem_strdup(Weapons[id].name);
+      newnode->description = mem_strdup_unique(Weapons[id].name);
     }
 
     newnode->iflags |= INVF_SELECTABLE | INVF_USEABLE | INVF_MISSIONITEM | INVF_TIMEOUTONSPEW;
 
     if (Weapons[id].icon_handle >= 0) {
-      newnode->icon_name = mem_strdup(GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name);
+      newnode->icon_name = mem_strdup_unique(GameBitmaps[GameTextures[Weapons[id].icon_handle].bm_handle].name);
     } else {
-      newnode->icon_name = nullptr;
+      newnode->icon_name.reset();
     }
 
     if (description) {
-      newnode->name = mem_strdup(description);
+      newnode->name = mem_strdup_unique(description);
     } else {
-      newnode->name = mem_strdup(Weapons[id].name);
+      newnode->name = mem_strdup_unique(Weapons[id].name);
     }
 
     count++;
@@ -645,10 +644,9 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
     newnode->oid = oauxi;
 
     if (Object_info[oid].description) {
-      newnode->description = mem_strdup(Object_info[oid].description);
+      newnode->description = mem_strdup_unique(Object_info[oid].description);
     } else {
-      newnode->description = mem_rmalloc<char>();
-      newnode->description[0] = 0;
+      newnode->description = std::make_unique<char[]>(1);
     }
 
     if (Object_info[oid].flags & OIF_INVEN_SELECTABLE)
@@ -669,12 +667,12 @@ bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flag
     if (flags & INVAF_LEVELLAST)
       newnode->iflags |= INVAF_LEVELLAST;
 
-    newnode->icon_name = mem_strdup(Object_info[oid].icon_name);
+    newnode->icon_name = mem_strdup_unique(Object_info[oid].icon_name);
 
     if (description) {
-      newnode->name = mem_strdup(description);
+      newnode->name = mem_strdup_unique(description);
     } else {
-      newnode->name = mem_strdup(Object_info[oid].name);
+      newnode->name = mem_strdup_unique(Object_info[oid].name);
     }
 
     count++;
@@ -912,13 +910,6 @@ void Inventory::RemoveNode(inven_item *node) {
   prev = node->prev;
   next = node->next;
 
-  if (node->description)
-    mem_free(node->description);
-  if (node->icon_name)
-    mem_free(node->icon_name);
-  if (node->name)
-    mem_free(node->name);
-
   if (pos == node) {
     if (pos->next != node) {
       movepos = true;
@@ -1024,17 +1015,17 @@ int Inventory::SaveInventory(CFILE *file) {
       cf_WriteInt(file, curr->count);
 
       if (curr->description)
-        cf_WriteString(file, curr->description);
+        cf_WriteString(file, curr->description.get());
       else
         cf_WriteByte(file, 0);
 
       if (curr->icon_name)
-        cf_WriteString(file, curr->icon_name);
+        cf_WriteString(file, curr->icon_name.get());
       else
         cf_WriteByte(file, 0);
 
       if (curr->name)
-        cf_WriteString(file, curr->name);
+        cf_WriteString(file, curr->name.get());
       else
         cf_WriteByte(file, 0);
 
@@ -1117,13 +1108,13 @@ int Inventory::ReadInventory(CFILE *file) {
       item->count = cf_ReadInt(file);
 
       cf_ReadString(temp, 512, file);
-      item->description = mem_strdup(temp);
+      item->description = mem_strdup_unique(temp);
 
       cf_ReadString(temp, 512, file);
-      item->icon_name = mem_strdup(temp);
+      item->icon_name = mem_strdup_unique(temp);
 
       cf_ReadString(temp, 512, file);
-      item->name = mem_strdup(temp);
+      item->name = mem_strdup_unique(temp);
 
       item->iflags = cf_ReadInt(file);
 
@@ -1230,21 +1221,21 @@ bool Inventory::GetAuxPosTypeID(int &type, int &id) {
 char *Inventory::GetPosDescription(void) {
   if (!pos)
     return nullptr;
-  return pos->description;
+  return pos->description.get();
 }
 
 // returns the name of the item at the current position
 char *Inventory::GetPosName(void) {
   if (!pos)
     return nullptr;
-  return pos->name;
+  return pos->name.get();
 }
 
 // returns the icon name of the item at the current position
 char *Inventory::GetPosIconName(void) {
   if (!pos)
     return nullptr;
-  return pos->icon_name;
+  return pos->icon_name.get();
 }
 
 // returns the count of the item at the current position
@@ -1465,7 +1456,7 @@ int Inventory::GetInventoryItemList(tInvenList *list, int max_amount, int *cur_s
       }
 
       list[cur_count].amount = current->count;
-      list[cur_count].hud_name = current->name;
+      list[cur_count].hud_name = current->name.get();
       list[cur_count].selectable = (current->iflags & INVF_SELECTABLE) ? true : false;
       cur_count++;
     }

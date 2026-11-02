@@ -727,7 +727,7 @@ void DoMultiAllowed(void) {
   bool shipsallowed[MAX_SHIPS];
   bool objsallowed[MAX_OBJECTS];
   size_t strMax = std::max(strlen(TXT_ALLOW), strlen(TXT_DISALLOW)) + 3;
-  char *str = mem_rmalloc<char>(strMax);
+  auto str = std::make_unique<char[]>(strMax);
 
   // Create Text Items and Window
   UITextItem cancel_on_text(TXT_CANCEL, UICOL_HOTSPOT_HI);
@@ -736,14 +736,14 @@ void DoMultiAllowed(void) {
   UITextItem exit_on_text(TXT_DONE, UICOL_HOTSPOT_HI);
   UITextItem exit_off_text(TXT_DONE, UICOL_HOTSPOT_LO);
 
-  snprintf(str, strMax, "\x18 %s", TXT_ALLOW);
-  UITextItem add_on(str, UICOL_HOTSPOT_HI);
-  UITextItem add_off(str, UICOL_HOTSPOT_LO);
+  snprintf(str.get(), strMax, "\x18 %s", TXT_ALLOW);
+  UITextItem add_on(str.get(), UICOL_HOTSPOT_HI);
+  UITextItem add_off(str.get(), UICOL_HOTSPOT_LO);
 
-  snprintf(str, strMax, "%s \x1a", TXT_DISALLOW);
-  UITextItem remove_on(str, UICOL_HOTSPOT_HI);
-  UITextItem remove_off(str, UICOL_HOTSPOT_LO);
-  mem_free(str);
+  snprintf(str.get(), strMax, "%s \x1a", TXT_DISALLOW);
+  UITextItem remove_on(str.get(), UICOL_HOTSPOT_HI);
+  UITextItem remove_off(str.get(), UICOL_HOTSPOT_LO);
+  str.reset();
 
   UITextItem allowed_ships(TXT_ALLOWEDSHIPS, UICOL_TEXT_NORMAL);
   UITextItem banned_ships(TXT_DISALLOWDSHIPS, UICOL_TEXT_NORMAL);
