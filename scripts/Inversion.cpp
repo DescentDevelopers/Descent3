@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <memory>
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -403,12 +404,12 @@ void RestoreGlobalActionCtrs(void *file_ptr) {
 
 // Structure for storing a script message
 struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
+  std::unique_ptr<char[]> name;    // the name of the message
+  std::unique_ptr<char[]> message; // the actual message text
 };
 
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
+std::unique_ptr<tScriptMessage> message_list[MAX_SCRIPT_MESSAGES];
 int num_messages;
 
 // ======================
@@ -417,18 +418,16 @@ int num_messages;
 
 // Initializes the Message List
 void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = nullptr;
+  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++) {
+    message_list[j].reset();
+  }
   num_messages = 0;
 }
 
 // Clear the Message List
 void ClearMessageList(void) {
   for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = nullptr;
+    message_list[j].reset();
   }
   num_messages = 0;
 }
@@ -443,26 +442,15 @@ int AddMessageToList(char *name, char *msg) {
 
   // Allocate memory for this message entry
   pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == nullptr)
-    return false;
+  message_list[pos] = std::make_unique<tScriptMessage>();
 
   // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == nullptr) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
+  message_list[pos]->name = std::make_unique<char[]>(strlen(name) + 1);
+  strcpy(message_list[pos]->name.get(), name);
 
   // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == nullptr) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
+  message_list[pos]->message = std::make_unique<char[]>(strlen(msg) + 1);
+  strcpy(message_list[pos]->message.get(), msg);
   num_messages++;
 
   return true;
@@ -562,9 +550,11 @@ const char *GetMessage(const char *name) {
     return INV_MSGNAME_STRING;
 
   // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
+  for (int j = 0; j < num_messages; j++) {
+    if (strcmp(message_list[j]->name.get(), name) == 0) {
+      return message_list[j]->message.get();
+    }
+  }
 
   // Couldn't find it
   return NO_MESSAGE_STRING;
