@@ -55,18 +55,8 @@
 #define BITOP_RUP08__(x) (BITOP_RUP04__(x) | (BITOP_RUP04__(x) >>  8))
 #define BITOP_RUP16__(x) (BITOP_RUP08__(x) | (BITOP_RUP08__(x) >> 16))
 #define BITOP_RUP32__(x) (BITOP_RUP16__(x) | (BITOP_RUP16__(x) >> 32))
-#define BITOP_RUP64__(x) (BITOP_RUP32__(x) | (BITOP_RUP32__(x) >> 64))
 
-constexpr static inline uintmax_t VM_BIT_CEIL (uintmax_t x) {
-switch(std::numeric_limits<uintmax_t>::digits)
-{
-	case   8: return (BITOP_RUP04__(uint8_t (x) - 1) + 1);
-	case  16: return (BITOP_RUP08__(uint16_t(x) - 1) + 1);
-	default:
-	case  32: return (BITOP_RUP16__(uint32_t(x) - 1) + 1);
-	case  64: return (BITOP_RUP32__(uint64_t(x) - 1) + 1);
-}
-}
+constexpr static inline uint64_t VM_BIT_CEIL (uint64_t x) { return BITOP_RUP32__(x - 1) + 1; }
 
 constexpr static inline bool      VM_ISPOW2   (uintmax_t x) { return x && (!(x & (x-1)));                                            }
 constexpr static inline uintmax_t VM_BIT_FLOOR(uintmax_t x) { return ((x == 0) || VM_ISPOW2(x) ? x : ((VM_BIT_FLOOR(x >> 1)) << 1)); }
@@ -389,7 +379,7 @@ constexpr inline void set_col(size_t i, const vector4 v)
 }
 constexpr inline vector4 col(size_t i) const
 {
-	return vector4{ a2d[0][i % 4], a2d[1][i % 4], a2d[2][i % 4], a2d[2][i % 4] };
+	return vector4{ a2d[0][i % 4], a2d[1][i % 4], a2d[2][i % 4], a2d[3][i % 4] };
 }
 constexpr inline matrix4 transposed() const
 {

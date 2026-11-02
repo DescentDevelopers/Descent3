@@ -752,7 +752,9 @@ scalar vm_GetCentroidFast(vector *centroid, const vector *src, int nv) {
 
 //	creates a completely random, non-normalized vector with a range of values from -1023 to +1024 values)
 void vm_MakeRandomVector(vector *vec) {
-  vec->fill(ps_rand() - D3_RAND_MAX / 2);
+  vec->x() = ps_rand() - D3_RAND_MAX / 2;
+  vec->y() = ps_rand() - D3_RAND_MAX / 2;
+  vec->z() = ps_rand() - D3_RAND_MAX / 2;
 }
 
 // Given a set of points, computes the minimum bounding sphere of those points
