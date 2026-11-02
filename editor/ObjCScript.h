@@ -87,6 +87,8 @@
 #ifndef OBJCSCRIPT_H
 #define OBJCSCRIPT_H
 
+#include <memory>
+
 #include "pstypes.h"
 #include "objscript.h"
 
@@ -117,21 +119,13 @@ struct tScriptName {
 
   //	parameters
   int nparms;
-  char *paramtypes[MAX_SCRPARAMS];
-  char *parameters[MAX_SCRPARAMS];
+  std::unique_ptr<char[]> paramtypes[MAX_SCRPARAMS];
+  std::unique_ptr<char[]> parameters[MAX_SCRPARAMS];
 
   tScriptName() {
-    for (int i = 0; i < MAX_SCRPARAMS; i++) {
-      parameters[i] = nullptr;
-      paramtypes[i] = nullptr;
-    }
     used = false;
     nparms = 0;
   }
-  ~tScriptName() {
-    free_parameters();
-    used = false;
-  };
 
   void add_parameter(const char *type, const char *parm);
   void free_parameters();
@@ -152,9 +146,8 @@ extern char *Script_evt_names[];
 extern uint16_t Script_evt_ids[];
 
 bool NewScript(const char *filename);
-char *LoadScript(const char *filename);
+std::unique_ptr<char[]> LoadScript(const char *filename);
 void SaveScript(const char *filename, char *script);
-void FreeScript(char *script);
 
 // resets script list.
 void ResetScriptList();
@@ -172,8 +165,8 @@ char *FindEventNameFromID(int id);
 int FindEventIDFromName(const char *name);
 
 //	these functions add ScriptWizard formatting
-char *AddScriptBlockToScript(char *script, const char *newname, const char *type_str);
-char *AddEventBlockToScript(char *script, const char *evtname, const char *scriptname);
+std::unique_ptr<char[]> AddScriptBlockToScript(char *script, const char *newname, const char *type_str);
+std::unique_ptr<char[]> AddEventBlockToScript(char *script, const char *evtname, const char *scriptname);
 
 //	generates script list from all script files.
 void GenerateScriptListFromAllFiles(int mask = ALL_SCRIPT_MASK);

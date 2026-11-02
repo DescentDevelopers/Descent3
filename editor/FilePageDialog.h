@@ -19,6 +19,8 @@
 // FilePageDialog.h : header file
 //
 
+#include <memory>
+
 /////////////////////////////////////////////////////////////////////////////
 // CFilePageDialog dialog
 
@@ -43,7 +45,7 @@ protected:
   //}}AFX_VIRTUAL
 
   // Implementation
-  int CreateIndexMap(int **index_map, int listbox_id);
+  int CreateIndexMap(std::unique_ptr<int[]> &index_map, int listbox_id);
 
 private:
   void UpdateDialog();

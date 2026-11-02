@@ -19,6 +19,8 @@
 #ifndef EDITOR_LIGHTING_H
 #define EDITOR_LIGHTING_H
 
+#include <memory>
+
 #include "3d.h"
 #include "radiosity.h"
 #include "room.h"
@@ -110,10 +112,10 @@ void SetupSpecularLighting(int external);
 // Calculates radiosity and sets lightmaps for indoor faces only
 void DoRadiosityForCurrentRoom(room *rp);
 
-extern rad_surface *Light_surfaces;
+extern std::unique_ptr<rad_surface[]> Light_surfaces;
 extern rad_surface *Terrain_light_surfaces;
 
-extern uint8_t *TerrainLightSpeedup[];
+extern std::unique_ptr<uint8_t[]> TerrainLightSpeedup[];
 
 extern int Square_surfaces;
 extern int LightSpacing;

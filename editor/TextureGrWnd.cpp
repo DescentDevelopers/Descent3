@@ -653,7 +653,7 @@ void CTextureGrWnd::Render() {
   if (m_grViewport == nullptr)
     return;
 
-  rad_Viewport = m_grViewport;
+  rad_Viewport = m_grViewport.get();
 
   TexGrStartOpenGL();
 
@@ -683,7 +683,7 @@ void CTextureGrWnd::Render() {
         Viewer_object->pos.y() = GetTerrainGroundPoint(&Viewer_object->pos) + 5;
     }
 
-    StartEditorFrame(m_grViewport, &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
+    StartEditorFrame(m_grViewport.get(), &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
     RenderTerrain(0);
     //	we need to save these for object movement.
     g3_GetViewPosition(&m_ViewPos);
@@ -710,8 +710,8 @@ void CTextureGrWnd::Render() {
   PostRender(Viewer_object->roomnum);
 
   // Draws all User Defined Paths
-  DrawAllPaths(m_grViewport, &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
-  EBNode_Draw(EBN_draw_type, m_grViewport, &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
+  DrawAllPaths(m_grViewport.get(), &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
+  EBNode_Draw(EBN_draw_type, m_grViewport.get(), &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
 
   TexGrStopOpenGL();
 
@@ -908,7 +908,7 @@ void CTextureGrWnd::TGWRenderMine(vector *pos, matrix *orient, float zoom, int s
   m_last_zoom = zoom;
   m_last_start_room = start_roomnum;
 
-  StartEditorFrame(m_grViewport, pos, orient, zoom);
+  StartEditorFrame(m_grViewport.get(), pos, orient, zoom);
   FrameCount++;
 
   RenderMine(start_roomnum, 0, 0);
@@ -953,7 +953,7 @@ void CTextureGrWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     TSearch_x = point.x;
     TSearch_y = point.y;
 
-    StartEditorFrame(m_grViewport, &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
+    StartEditorFrame(m_grViewport.get(), &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
     RenderTerrain(0);
     PostRender(Viewer_object->roomnum);
     EndEditorFrame();
@@ -1173,7 +1173,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     TSearch_y = point.y;
     TSearch_found_type = -1;
 
-    StartEditorFrame(m_grViewport, &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
+    StartEditorFrame(m_grViewport.get(), &Viewer_object->pos, &Viewer_object->orient, D3_DEFAULT_ZOOM);
     RenderTerrain(0);
     PostRender(Viewer_object->roomnum);
     EndEditorFrame();

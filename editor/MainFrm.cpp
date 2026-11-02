@@ -1429,6 +1429,11 @@ void CMainFrame::DoKeypadTabNotify(NMHDR *nmhdr) {
 //	Put all non client window destruction here!
 void CMainFrame::OnNcDestroy() { CFrameWnd::OnNcDestroy(); }
 
+// The editor's own application and database objects.  Descent/Database borrow these while the
+// editor is active (the game window swaps in its own application object, see gameeditor.cpp).
+static std::unique_ptr<oeLnxApplication> Editor_app;
+static std::unique_ptr<oeLnxAppDatabase> Editor_database;
+
 void CMainFrame::OnDestroy() {
   CFrameWnd::OnDestroy();
 
@@ -1437,18 +1442,11 @@ void CMainFrame::OnDestroy() {
   SaveEditorSettings();
 
   //	kill game and editor objects outside MFC.
-  if (Desktop_surf) {
-    delete Desktop_surf;
-    Desktop_surf = nullptr;
-  }
-  if (Database) {
-    delete Database;
-    Database = nullptr;
-  }
-  if (Descent) {
-    delete Descent;
-    Descent = nullptr;
-  }
+  Desktop_surf.reset();
+  Editor_database.reset();
+  Database = nullptr;
+  Editor_app.reset();
+  Descent = nullptr;
 }
 
 void InitCScripts() {
@@ -1463,6 +1461,22 @@ void InitCScripts() {
   ddio_MakePath(path, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "data", "levels", nullptr);
 }
 
+// Runs at exit, before static destruction.  OnDestroy frees the editor's objects on a normal exit, but when the
+// editor leaves through exit() (e.g. Error()) they are still alive here, and the subsystems their destructors use
+// have already been shut down by earlier atexit handlers.  Leak them on that path, as the editor always did.
+static void AbandonEditorObjectsAtExit() {
+  // ~oeLnxAppDatabase would export the registry, which an exit() from the editor never did.
+  (void)Editor_database.release();
+  (void)Editor_app.release();
+
+  // ~grSurface would close the video surface after ddgr_Close.
+  (void)Desktop_surf.release();
+
+  // The scrap buffer has always been left allocated at exit, on every path: ~group calls FreeRoom, which touches
+  // global room, bnode and lightmap state.
+  (void)Scrap.release();
+}
+
 // Copied from winmain.cpp
 void WinMainInitEditor(unsigned hwnd, unsigned hinst) {
   tLnxAppInfo appinfo;
@@ -1472,8 +1486,12 @@ void WinMainInitEditor(unsigned hwnd, unsigned hinst) {
   // appinfo.hinst = (HInstance)hinst;
   appinfo.flags = OEAPP_WINDOWED;
 
-  Descent = new oeLnxApplication(&appinfo);
-  Database = new oeLnxAppDatabase;
+  Editor_app = std::make_unique<oeLnxApplication>(&appinfo);
+  Descent = Editor_app.get();
+  Editor_database = std::make_unique<oeLnxAppDatabase>();
+  Database = Editor_database.get();
+
+  atexit(AbandonEditorObjectsAtExit);
 }
 //	Initializes OS components for Descent3.  MUST BE DONE BEFORE ANYTHING ELSE!
 
@@ -1890,7 +1908,7 @@ void CMainFrame::OnFilePlayin640x480() {
   if (m_FloatingKeypadDialog)
     m_FloatingKeypadDialog->Deactivate();
   CKeypadDialog::Deactivate();
-  delete Desktop_surf;
+  Desktop_surf.reset();
 
   //	hide keypad if it's visible
   if (keypad_was_visible)
@@ -1924,7 +1942,7 @@ void CMainFrame::OnFilePlayin640x480() {
     OnViewKeypadToggle();
 
   //	Restore view system
-  Desktop_surf = new grSurface(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
+  Desktop_surf = std::make_unique<grSurface>(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
   if (m_FloatingKeypadDialog)
     m_FloatingKeypadDialog->Activate();
   CKeypadDialog::Activate();
@@ -1950,7 +1968,7 @@ void CMainFrame::OnFileLeaveEditor() {
   if (m_FloatingKeypadDialog)
     m_FloatingKeypadDialog->Deactivate();
   CKeypadDialog::Deactivate();
-  delete Desktop_surf;
+  Desktop_surf.reset();
 
   //	hide keypad if it's visible
   if (keypad_was_visible)
@@ -1980,7 +1998,7 @@ void CMainFrame::OnFileLeaveEditor() {
     OnViewKeypadToggle();
 
   //	Restore view system
-  Desktop_surf = new grSurface(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
+  Desktop_surf = std::make_unique<grSurface>(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
   if (m_FloatingKeypadDialog)
     m_FloatingKeypadDialog->Activate();
   CKeypadDialog::Activate();
@@ -2273,7 +2291,7 @@ void CMainFrame::OnEditSaveScrap() {
   if (!strchr(filename, '.'))
     strcat(filename, ".grp");
 
-  SaveGroup(filename, Scrap);
+  SaveGroup(filename, Scrap.get());
 
   EditorStatus("Group saved to %s", filename);
 }
@@ -2281,7 +2299,6 @@ void CMainFrame::OnEditSaveScrap() {
 void CMainFrame::OnEditLoadScrap() {
   CString filter = "D3 Group Files (*.grp)|*.grp||";
   char filename[255];
-  group *newscrap;
 
   if (!OpenFileDialog(this, (LPCSTR)filter, filename, Current_scrap_dir, sizeof(Current_scrap_dir)))
     return;
@@ -2289,12 +2306,10 @@ void CMainFrame::OnEditLoadScrap() {
   if (!strchr(filename, '.'))
     strcat(filename, ".grp");
 
-  newscrap = LoadGroup(filename);
+  std::unique_ptr<group> newscrap = LoadGroup(filename);
 
   if (newscrap) {
-    if (Scrap)
-      FreeGroup(Scrap);
-    Scrap = newscrap;
+    Scrap = std::move(newscrap);
     EditorStatus("Group loaded from %s", filename);
   }
 }
@@ -2325,8 +2340,7 @@ int CopySelectedRooms() {
   }
 
   // Get rid of old contents of scrap buffer
-  if (Scrap)
-    FreeGroup(Scrap);
+  Scrap.reset();
 
   Scrap = CopyGroup(N_selected_rooms, Selected_rooms, ROOMNUM(Markedroomp), Markedface);
 
@@ -2349,7 +2363,7 @@ void CMainFrame::OnEditPlace() {
     return;
   }
 
-  PlaceGroup(Curroomp, Curface, Scrap);
+  PlaceGroup(Curroomp, Curface, Scrap.get());
 }
 
 void CMainFrame::OnEditPlaceTerrain() {
@@ -2376,7 +2390,7 @@ void CMainFrame::OnEditPlaceTerrain() {
   if (result == IDCANCEL)
     return;
 
-  PlaceGroupTerrain(cellnum, Scrap, (result == IDYES));
+  PlaceGroupTerrain(cellnum, Scrap.get(), (result == IDYES));
 }
 
 void CMainFrame::OnEditAttach() {
@@ -3157,7 +3171,6 @@ void CMainFrame::OnHotspotTga() {
   // TODO: Add your command handler code here
   CString tga_filter = "TGA (*.tga)|*.tga|All Files (*.*)|*.*||";
   CString tga_path;
-  char *buffer;
   int anim = 0, bm_handle;
   char filename[200];
 
@@ -3169,15 +3182,12 @@ void CMainFrame::OnHotspotTga() {
     return;
   }
 
-  buffer = mem_strdup(tga_path.GetBuffer(1));
-  if (!buffer) {
-    Int3(); // find Jeff
-    return;
-  }
-  if (menutga_ConvertTGAtoHSM(buffer))
+  auto buffer = mem_strdup_unique(tga_path.GetBuffer(1));
+  if (menutga_ConvertTGAtoHSM(buffer.get())) {
     OutrageMessageBox("HotSpot Map Extracted");
+  }
 
-  bm_handle = LoadTextureImage(buffer, &anim, NOT_TEXTURE, 0);
+  bm_handle = LoadTextureImage(buffer.get(), &anim, NOT_TEXTURE, 0);
 
   if (bm_handle < 0) {
     OutrageMessageBox("Couldn't open that bitmap/anim file.");
@@ -3189,9 +3199,6 @@ void CMainFrame::OnHotspotTga() {
     bm_SaveFileBitmap(filename, bm_handle);
     bm_FreeBitmap(bm_handle);
   }
-
-  if (buffer)
-    mem_free(buffer);
 }
 
 void CMainFrame::OnEditorsFiles() {
@@ -3453,8 +3460,8 @@ void CMainFrame::OnShowAllCheckedOut() {
   char text_buf[10000], *t;
 
   // Get all locked pages
-  mngs_Pagelock *LockList = mem_rmalloc<mngs_Pagelock>(MAX_LOCKLIST_ELEMENTS);
-  int n = mng_GetListOfLocks(LockList, MAX_LOCKLIST_ELEMENTS, nullptr);
+  auto LockList = std::make_unique<mngs_Pagelock[]>(MAX_LOCKLIST_ELEMENTS);
+  int n = mng_GetListOfLocks(LockList.get(), MAX_LOCKLIST_ELEMENTS, nullptr);
 
   // ASSERT(n >= 1);		//always dummy page?
   // ASSERT(!strcmp(LockList[0].name,"DUMMY PAGE"));
@@ -3470,8 +3477,6 @@ void CMainFrame::OnShowAllCheckedOut() {
       break;
     }
   }
-
-  mem_free(LockList);
 
   dump_text_to_clipboard(text_buf);
 

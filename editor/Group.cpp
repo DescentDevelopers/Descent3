@@ -214,20 +214,10 @@
 #include "door.h"
 
 // Free a group.
-// Parameters:	g - the group to be freed
-void FreeGroup(group *g) {
-  for (int r = 0; r < g->nrooms; r++)
-    FreeRoom(&g->rooms[r]);
-
-  mem_free(g->rooms);
-
-  if (g->nobjects)
-    mem_free(g->objects);
-
-  if (g->ntriggers)
-    mem_free(g->triggers);
-
-  mem_free(g);
+group::~group() {
+  for (int r = 0; r < nrooms; r++) {
+    FreeRoom(&rooms[r]);
+  }
 }
 
 // Copy the given list of rooms to a group
@@ -235,17 +225,15 @@ void FreeGroup(group *g) {
 //					roomnums - pointer to list of room numbers
 //					attachroom, attachface - where group attaches when pasted
 // Returns:		pointer to group
-group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
+std::unique_ptr<group> CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
   int r;
   int room_xlate[MAX_ROOMS];
   int n_objects = 0, n_triggers = 0, n_doors = 0;
 
   // Allocate group & room arrays
-  auto g = mem_rmalloc<group>();
-  ASSERT(g != nullptr);
+  auto g = std::make_unique<group>();
   g->nrooms = nrooms;
-  g->rooms = mem_rmalloc<room>(nrooms);
-  ASSERT(g->rooms != nullptr);
+  g->rooms = std::make_unique<room[]>(nrooms);
 
   // Initialize xlate list
   for (r = 0; r < MAX_ROOMS; r++)
@@ -273,7 +261,7 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
 
         // link the two rooms
         if (r < room_xlate[pp->croom]) // only link lower to higher, so we don't double link
-          LinkRoomsSimple(g->rooms, r, pp->portal_face, room_xlate[pp->croom],
+          LinkRoomsSimple(g->rooms.get(), r, pp->portal_face, room_xlate[pp->croom],
                           Rooms[pp->croom].portals[pp->cportal].portal_face);
 
         // Copy the portal flags
@@ -289,13 +277,11 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
   // Copy objects
   g->nobjects = n_objects;
   g->ndoors = n_doors;
-  if (n_objects == 0)
-    g->objects = nullptr;
-  else {
+  if (n_objects != 0) {
     int objnum = 0;
 
     // Get memory for objects
-    g->objects = mem_rmalloc<object>(n_objects);
+    g->objects = std::make_unique<object[]>(n_objects);
 
     // Go through list of rooms & copy the objects
     for (r = 0; r < nrooms; r++) {
@@ -337,13 +323,11 @@ group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface) {
 
   // Copy triggers
   g->ntriggers = n_triggers;
-  if (n_triggers == 0)
-    g->triggers = nullptr;
-  else {
+  if (n_triggers != 0) {
     int trignum = 0;
 
     // Get memory for triggers
-    g->triggers = mem_rmalloc<trigger>(n_triggers);
+    g->triggers = std::make_unique<trigger[]>(n_triggers);
 
     for (int t = 0; t < Num_triggers; t++)
       if (room_xlate[Triggers[t].roomnum] != -1) {
@@ -364,23 +348,21 @@ extern bool Disable_editor_rendering;
 //					roomnums - pointer to list of room numbers
 void DeleteGroup(int nrooms, int *roomnums) {
   int i;
-  int *troomnums;
   bool save_disable_flag = Disable_editor_rendering;
 
   Disable_editor_rendering = 1;
 
   // Make copy of list of rooms to delete.  We must do this because roomnums may be a pointer
   // to the global Selected_list, the contents of which may be changed by DeleteRoomFromMine()
-  troomnums = (int *)mem_malloc(sizeof(*troomnums) * nrooms);
-  for (i = 0; i < nrooms; i++)
+  auto troomnums = std::make_unique<int[]>(nrooms);
+  for (i = 0; i < nrooms; i++) {
     troomnums[i] = roomnums[i];
+  }
 
   // Now delete the rooms
-  for (i = 0; i < nrooms; i++)
+  for (i = 0; i < nrooms; i++) {
     DeleteRoomFromMine(&Rooms[troomnums[i]]);
-
-  // Free up our array
-  mem_free(troomnums);
+  }
 
   // Regenerate external object rooms
   CreateRoomObjects();
@@ -749,7 +731,7 @@ void ReadGroupTrigger(CFILE *ifile, trigger *tp) {
 }
 
 // Loads a group from disk
-group *LoadGroup(char *filename) {
+std::unique_ptr<group> LoadGroup(char *filename) {
   CFILE *ifile;
   char tag[4];
   int version, level_version;
@@ -792,7 +774,7 @@ group *LoadGroup(char *filename) {
   ReadTextureList(ifile);
 
   // Allocate group
-  auto g = mem_rmalloc<group>();
+  auto g = std::make_unique<group>();
 
   // Read group info
   g->nrooms = cf_ReadInt(ifile);
@@ -808,7 +790,7 @@ group *LoadGroup(char *filename) {
     g->nobjects = g->ndoors = g->ntriggers = 0;
 
   // Allocate room and vertex arrays
-  g->rooms = mem_rmalloc<room>(g->nrooms);
+  g->rooms = std::make_unique<room[]>(g->nrooms);
 
   // Read rooms
   for (i = 0; i < g->nrooms; i++) {
@@ -817,17 +799,17 @@ group *LoadGroup(char *filename) {
   }
 
   // Read objects & triggers
-  g->triggers = nullptr;
-  g->objects = nullptr;
   if (version >= 3) {
 
     // Allocate objects array
-    if (g->nobjects)
-      g->objects = mem_rmalloc<object>(g->nobjects);
+    if (g->nobjects) {
+      g->objects = std::make_unique<object[]>(g->nobjects);
+    }
 
     // Allocate triggers array
-    if (g->ntriggers)
-      g->triggers = mem_rmalloc<trigger>(g->ntriggers);
+    if (g->ntriggers) {
+      g->triggers = std::make_unique<trigger[]>(g->ntriggers);
+    }
 
     // Read objects
     for (i = 0; i < g->nobjects; i++)

@@ -241,6 +241,8 @@
 // DallasMainDlg.h : header file
 //
 
+#include <memory>
+
 /////////////////////////////////////////////////////////////////////////////
 // The Current Save Version Number
 /////////////////////////////////////////////////////////////////////////////
@@ -627,12 +629,12 @@ stores the sound array index position str_val:		stores the name of the sound for
 #define INVALID_ENUM -1
 
 struct tEnumValueEntry {
-  char *name; // the name of this enum value
-  int value;  // the value bound to this name
+  std::unique_ptr<char[]> name; // the name of this enum value
+  int value;                    // the value bound to this name
 };
 
 struct tEnumDBEntry {
-  char *name;                              // the name for this enumeration type
+  std::unique_ptr<char[]> name;            // the name for this enumeration type
   tEnumValueEntry values[MAX_ENUM_VALUES]; // the enumerated value storage
   int num_values;                          // the number of values stored
   bool is_user_type;                       // indicates if it's a user type
@@ -651,12 +653,12 @@ struct tEnumDBEntry {
 #define INVALID_FLAG -1
 
 struct tFlagValueEntry {
-  char *name; // the name of this flag value
-  int value;  // the value bound to this name
+  std::unique_ptr<char[]> name; // the name of this flag value
+  int value;                    // the value bound to this name
 };
 
 struct tFlagDBEntry {
-  char *name;                              // the name for this flag type
+  std::unique_ptr<char[]> name;            // the name for this flag type
   tFlagValueEntry values[MAX_FLAG_VALUES]; // the flag value storage
   int num_values;                          // the number of values stored
 };
@@ -696,18 +698,18 @@ struct tFlagDBEntry {
 
 // Structure that defines an action
 struct tActionDBEntry {
-  int category; // Which group this action belongs to
-  char *desc;   // What the user sees
-  char *func;   // The glue function to call for this action
-  char *help;   // The help info for this function
+  int category;                 // Which group this action belongs to
+  std::unique_ptr<char[]> desc; // What the user sees
+  std::unique_ptr<char[]> func; // The glue function to call for this action
+  std::unique_ptr<char[]> help; // The help info for this function
 };
 
 // Structure that defines a query
 struct tQueryDBEntry {
-  int category; // Which group this query belongs to
-  char *desc;   // What the user sees
-  char *func;   // The glue function to call for this query
-  char *help;   // The help info for this function
+  int category;                 // Which group this query belongs to
+  std::unique_ptr<char[]> desc; // What the user sees
+  std::unique_ptr<char[]> func; // The glue function to call for this query
+  std::unique_ptr<char[]> help; // The help info for this function
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -959,7 +961,7 @@ private:
   int m_NextScriptID;
 
   // The list of Message entries
-  tMessageListEntry *m_MessageEntryList[MAX_MESSAGE_LIST_ENTRIES];
+  std::unique_ptr<tMessageListEntry> m_MessageEntryList[MAX_MESSAGE_LIST_ENTRIES];
   int m_MessageListErrorCode;
   int m_NextMessageID;
 
@@ -972,7 +974,7 @@ private:
   int m_NumFlags;
 
   // The Action function database
-  char *m_FunctionCategories[MAX_CATEGORIES];
+  std::unique_ptr<char[]> m_FunctionCategories[MAX_CATEGORIES];
   tActionDBEntry m_ActionDatabase[MAX_ACTIONS];
   tQueryDBEntry m_QueryDatabase[MAX_QUERIES];
   int m_NumFunctionCategories;
@@ -991,38 +993,38 @@ private:
   HTREEITEM m_ClipboardNode;
 
   // Custom Script Storage Data
-  char **m_CustomScriptLines;
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_CustomScriptLines;
   int m_NumCustomScriptLines;
   int m_MaxNumCustomScriptLines;
 
   // Name Lists
-  char *m_DoorList[MAX_NAMED_DOORS];
+  std::unique_ptr<char[]> m_DoorList[MAX_NAMED_DOORS];
   int m_DoorListSize;
-  char *m_ObjectList[MAX_NAMED_OBJECTS];
+  std::unique_ptr<char[]> m_ObjectList[MAX_NAMED_OBJECTS];
   int m_ObjectListSize;
-  char *m_RoomList[MAX_NAMED_ROOMS];
+  std::unique_ptr<char[]> m_RoomList[MAX_NAMED_ROOMS];
   int m_RoomListSize;
-  char *m_TriggerList[MAX_NAMED_TRIGGERS];
+  std::unique_ptr<char[]> m_TriggerList[MAX_NAMED_TRIGGERS];
   int m_TriggerListSize;
-  char *m_SoundList[MAX_NAMED_SOUNDS];
+  std::unique_ptr<char[]> m_SoundList[MAX_NAMED_SOUNDS];
   int m_SoundListSize;
-  char *m_TextureList[MAX_NAMED_TEXTURES];
+  std::unique_ptr<char[]> m_TextureList[MAX_NAMED_TEXTURES];
   int m_TextureListSize;
-  char *m_SpecnameList[MAX_SPECNAMES];
+  std::unique_ptr<char[]> m_SpecnameList[MAX_SPECNAMES];
   int m_SpecnameListSize;
-  char *m_PathList[MAX_NAMED_PATHS];
+  std::unique_ptr<char[]> m_PathList[MAX_NAMED_PATHS];
   int m_PathListSize;
-  char *m_MatcenList[MAX_NAMED_MATCENS];
+  std::unique_ptr<char[]> m_MatcenList[MAX_NAMED_MATCENS];
   int m_MatcenListSize;
-  char *m_GoalList[MAX_NAMED_GOALS];
+  std::unique_ptr<char[]> m_GoalList[MAX_NAMED_GOALS];
   int m_GoalListSize;
-  char *m_StrmAudioList[MAX_NAMED_STRM_AUDIO];
+  std::unique_ptr<char[]> m_StrmAudioList[MAX_NAMED_STRM_AUDIO];
   int m_StrmAudioListSize;
-  char *m_MessageNameList[MAX_MESSAGE_LIST_ENTRIES];
+  std::unique_ptr<char[]> m_MessageNameList[MAX_MESSAGE_LIST_ENTRIES];
   int m_MessageNameListSize;
 
   // Drag and Drop Vars
-  CImageList *m_pDragImage;
+  std::unique_ptr<CImageList> m_pDragImage;
   BOOL m_bLDragging;
   HTREEITEM m_hitemDrag, m_hitemDrop;
 

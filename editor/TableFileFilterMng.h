@@ -19,6 +19,8 @@
 #ifndef _TABLE_FILE_FILTER_MNG_H_
 #define _TABLE_FILE_FILTER_MNG_H_
 
+#include <memory>
+
 #include "pstypes.h"
 #include "manage.h"
 
@@ -52,7 +54,7 @@ class PageDataNode {
 
 private:
   PageDataNode *prev;
-  PageDataNode *next;
+  std::unique_ptr<PageDataNode> next;
 
   // The page data
   uint8_t type;            // stores the page type
@@ -79,7 +81,7 @@ public:
 
 class PageDataList {
 private:
-  PageDataNode *m_head;
+  std::unique_ptr<PageDataNode> m_head;
   PageDataNode *m_tail;
   int m_size;
 
@@ -108,7 +110,7 @@ public:
   bool FilenameSpecified(void) { return (!m_DataListFilename.IsEmpty()); }
 
   void ClearList(void);
-  bool AddToList(PageDataNode *node);
+  bool AddToList(std::unique_ptr<PageDataNode> node);
   bool AddToList(char *page_name, uint8_t page_type, int page_flags);
   bool RemoveFromList(PageDataNode *goner_node);
   bool RemoveFromList(char *page_name, uint8_t page_type);

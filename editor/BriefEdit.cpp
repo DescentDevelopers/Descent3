@@ -56,10 +56,9 @@ CBriefEdit::CBriefEdit(CWnd *pParent /*=NULL*/) : CDialog(CBriefEdit::IDD, pPare
   m_fStatic = 0.0f;
   m_sTitle = _T("");
   //}}AFX_DATA_INIT
-  layouts = nullptr;
   num_layouts = 0;
   ParseLayoutScreenFile("BriefingLayouts.txt");
-  PBlayouts = layouts;
+  PBlayouts = layouts.get();
   PBnum_layouts = &num_layouts;
   layout_bmp = -1;
   TCx = TCy = 0;
@@ -153,12 +152,11 @@ void BriefEditInitScreens(void) {
 void BriefEditInitEffect(tBriefEffect *efx) {
   ASSERT(efx);
 
-  memset(efx, 0, sizeof(tBriefEffect));
+  *efx = tBriefEffect();
 
   efx->type = BE_NONE;
   efx->used = false;
   efx->id = 0;
-  efx->text = nullptr;
   efx->next = -1;
   efx->prev = -1;
   efx->w = efx->h = -1;
@@ -213,10 +211,7 @@ void BriefEditFreeEffect(tBriefEffect *efx) {
     Int3(); // Get Jeff
   };
 
-  if (efx->text) {
-    mem_free(efx->text);
-    efx->text = nullptr;
-  }
+  efx->text.reset();
 
   efx->used = false;
   efx->next = efx->prev = -1;
@@ -381,7 +376,7 @@ uint8_t BriefEditSaveScreens(char *filename, CComboBox *screen_combo, BriefGloba
         cf_WriteString(file, buffer);
 
         // now write out all the text
-        const char *p = effects[curr_effect].text;
+        const char *p = effects[curr_effect].text.get();
         while (p) {
           p = textaux_CopyTextLine(p, buffer);
           cf_WriteString(file, buffer);
@@ -734,12 +729,7 @@ void BEAddTextEffect(TCTEXTDESC *desc, char *text, char *description, int id) {
   dest->mission_mask_set = desc->mission_mask_set;
   dest->mission_mask_unset = desc->mission_mask_unset;
 
-  if (befx->text) {
-    mem_free(befx->text);
-    befx->text = nullptr;
-  }
-  befx->text = mem_strdup(text);
-  ASSERT(befx->text);
+  befx->text = mem_strdup_unique(text);
 
   // Setup for items not set with caps
   if (!(dest->caps & TCTD_FONT)) {
@@ -1235,8 +1225,7 @@ void CBriefEdit::OnOK() {
 
   has_changed = false;
 
-  if (layouts)
-    mem_free(layouts);
+  layouts.reset();
   if (layout_bmp > BAD_BITMAP_HANDLE)
     bm_FreeBitmap(layout_bmp);
   CDialog::OnOK();
@@ -1373,7 +1362,7 @@ void CBriefEdit::OnBriefEffectEdit() {
 
   switch (efx->type) {
   case BE_TEXT: {
-    CBriefTextEdit dlg(scr_index, &efx->text_desc, efx->text, efx->id);
+    CBriefTextEdit dlg(scr_index, &efx->text_desc, efx->text.get(), efx->id);
     combo->GetLBText(curr_effect, dlg.m_sDesc);
     if (dlg.DoModal() == IDOK) {
       has_changed = true;
@@ -1402,15 +1391,7 @@ void CBriefEdit::OnBriefEffectEdit() {
 
       Briefing_screens[scr_index].effects[efx_index].id = dlg.m_iID;
 
-      if (Briefing_screens[scr_index].effects[efx_index].text)
-        mem_free(Briefing_screens[scr_index].effects[efx_index].text);
-
-      Briefing_screens[scr_index].effects[efx_index].text = mem_rmalloc<char>(dlg.m_Text.GetLength() + 1);
-      ASSERT(Briefing_screens[scr_index].effects[efx_index].text);
-
-      if (Briefing_screens[scr_index].effects[efx_index].text) {
-        strcpy(Briefing_screens[scr_index].effects[efx_index].text, dlg.m_Text.GetBuffer(1));
-      }
+      Briefing_screens[scr_index].effects[efx_index].text = mem_strdup_unique(dlg.m_Text.GetBuffer(1));
     }
   } break;
   case BE_BMP: {
@@ -1646,15 +1627,7 @@ void CBriefEdit::OnBriefEffectText() {
 
     Briefing_screens[c_scr].effects[c_eff].id = dlg.m_iID;
 
-    if (Briefing_screens[c_scr].effects[c_eff].text)
-      mem_free(Briefing_screens[c_scr].effects[c_eff].text);
-
-    Briefing_screens[c_scr].effects[c_eff].text = mem_rmalloc<char>(dlg.m_Text.GetLength() + 1);
-    ASSERT(Briefing_screens[c_scr].effects[c_eff].text);
-
-    if (Briefing_screens[c_scr].effects[c_eff].text) {
-      strcpy(Briefing_screens[c_scr].effects[c_eff].text, dlg.m_Text.GetBuffer(1));
-    }
+    Briefing_screens[c_scr].effects[c_eff].text = mem_strdup_unique(dlg.m_Text.GetBuffer(1));
   }
 }
 
@@ -1897,10 +1870,7 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename) {
     return;
 
   num_layouts = 0;
-  if (layouts) {
-    mem_free(layouts);
-    layouts = nullptr;
-  }
+  layouts.reset();
 
   char buffer[512];
 
@@ -1913,15 +1883,7 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename) {
     return;
   }
 
-  layouts = mem_rmalloc<tLayoutScreen>(num_layouts);
-  if (!layouts) {
-    mprintf(0, "Out of memory loading layout screens...trying to load %d screens\n", num_layouts);
-    num_layouts = 0;
-    cfclose(file);
-    return;
-  }
-
-  memset(layouts, 0, sizeof(tLayoutScreen) * num_layouts);
+  layouts = std::make_unique<tLayoutScreen[]>(num_layouts);
 
   // format of a layout def.
   //--filename
@@ -2095,7 +2057,7 @@ void CBriefEdit::UpdateView(void) {
   } else
     Desktop_surf->clear(rect.left, rect.top, w, h);
 
-  grViewport *vport = new grViewport(&m_ObjectSurf);
+  auto vport = std::make_unique<grViewport>(&m_ObjectSurf);
   vport->lock();
 
   // now we need to go through all the effects in the screen and draw a rep of em
@@ -2114,7 +2076,7 @@ void CBriefEdit::UpdateView(void) {
         switch (effects[node].type) {
         case BE_TEXT:
           DrawRect(GR_RGB(255, 40, 255), effects[node].text_desc.textbox.left, effects[node].text_desc.textbox.top,
-                   effects[node].text_desc.textbox.right, effects[node].text_desc.textbox.bottom, vport);
+                   effects[node].text_desc.textbox.right, effects[node].text_desc.textbox.bottom, vport.get());
           break;
         case BE_BMP: {
           if (effects[node].w == -1) {
@@ -2133,7 +2095,7 @@ void CBriefEdit::UpdateView(void) {
           y = effects[node].bmp_desc.y;
           w = effects[node].w - 1;
           h = effects[node].h - 1;
-          DrawRect(GR_RGB(40, 255, 40), x, y, x + w, y + h, vport);
+          DrawRect(GR_RGB(40, 255, 40), x, y, x + w, y + h, vport.get());
         } break;
         case BE_MOVIE:
           break;
@@ -2158,7 +2120,7 @@ void CBriefEdit::UpdateView(void) {
           y = effects[node].button_desc.y;
           w = effects[node].w - 1;
           h = effects[node].h - 1;
-          DrawRect(GR_RGB(255, 255, 40), x, y, x + w, y + h, vport);
+          DrawRect(GR_RGB(255, 255, 40), x, y, x + w, y + h, vport.get());
           break;
         }
       }
@@ -2174,7 +2136,7 @@ void CBriefEdit::UpdateView(void) {
 
   rend_EndFrame();
 
-  delete vport;
+  vport.reset();
   m_ObjectSurf.free();
   Desktop_surf->attach_to_window(0);
 

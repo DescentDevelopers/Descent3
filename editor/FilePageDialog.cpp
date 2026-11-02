@@ -97,11 +97,12 @@ void CFilePageDialog::OnAddFile() {
 
   for (int q = 0; q < dlg.m_NumberOfSelectedFiles; q++) {
     ASSERT(dlg.m_SelectedFiles[q]);
-    if (!dlg.m_SelectedFiles[q])
+    if (!dlg.m_SelectedFiles[q]) {
       continue;
+    }
 
     //	Okay, we selected a file. Lets do what needs to be done here.
-    ddio_SplitPath(dlg.m_SelectedFiles[q], pathname, name, extension);
+    ddio_SplitPath(dlg.m_SelectedFiles[q].get(), pathname, name, extension);
     sprintf(cur_name, "%s%s", name, extension);
 
     if ((FindGamefileName(cur_name)) != -1) {
@@ -113,15 +114,16 @@ void CFilePageDialog::OnAddFile() {
 
     gamefile_handle = AllocGamefile();
     strcpy(Gamefiles[gamefile_handle].name, cur_name);
-    strcpy(Gamefiles[gamefile_handle].dir_name, dlg.m_SelectedDestDir);
+    strcpy(Gamefiles[gamefile_handle].dir_name, dlg.m_SelectedDestDir.get());
 
     // Finally, save a local copy of the model/anim and alloc a tracklock
     mprintf(0, "Making a copy of '%s' locally...\n", cur_name);
 
     char destname[100];
-    ddio_MakePath(destname, LocalD3Dir, "data", dlg.m_SelectedDestDir, Gamefiles[gamefile_handle].name, nullptr);
-    if (stricmp(destname, dlg.m_SelectedFiles[q])) // only copy if they are different
-      cf_CopyFile(destname, dlg.m_SelectedFiles[q]);
+    ddio_MakePath(destname, LocalD3Dir, "data", dlg.m_SelectedDestDir.get(), Gamefiles[gamefile_handle].name, nullptr);
+    if (stricmp(destname, dlg.m_SelectedFiles[q].get())) { // only copy if they are different
+      cf_CopyFile(destname, dlg.m_SelectedFiles[q].get());
+    }
 
     mng_AllocTrackLock(cur_name, PAGETYPE_GAMEFILE);
 
@@ -167,7 +169,7 @@ void CFilePageDialog::UpdateDialog() {
   }
 }
 
-int CFilePageDialog::CreateIndexMap(int **index_map, int listbox_id) {
+int CFilePageDialog::CreateIndexMap(std::unique_ptr<int[]> &index_map, int listbox_id) {
   int r, n;
   CCheckListBox *list = (CCheckListBox *)GetDlgItem(listbox_id);
   if (!list)
@@ -182,11 +184,8 @@ int CFilePageDialog::CreateIndexMap(int **index_map, int listbox_id) {
   if (listbox_count == 0)
     return 0;
 
-  int *map;
-
-  map = *index_map = mem_rmalloc<int>(listbox_count);
-  if (!map)
-    return 0;
+  index_map = std::make_unique<int[]>(listbox_count);
+  int *map = index_map.get();
   n = 0;
   for (r = 0; r < listbox_size; r++) {
     if (list->GetCheck(r)) {
@@ -212,13 +211,12 @@ void CFilePageDialog::OnCheckinFile() {
   if (Num_gamefiles < 1)
     return;
 
-  int *listbox_map;
-  int listbox_count = CreateIndexMap(&listbox_map, IDC_CHECKEDOUT_LIST);
+  std::unique_ptr<int[]> listbox_map;
+  int listbox_count = CreateIndexMap(listbox_map, IDC_CHECKEDOUT_LIST);
   if (!listbox_count)
     return;
 
   if (!mng_MakeLocker()) {
-    mem_free(listbox_map);
     return;
   }
 
@@ -286,7 +284,6 @@ void CFilePageDialog::OnCheckinFile() {
 
   mng_EraseLocker();
   OutrageMessageBox("File(s) checked in.");
-  mem_free(listbox_map);
   UpdateDialog();
 }
 
@@ -298,13 +295,12 @@ void CFilePageDialog::OnDeleteFile() {
   if (Num_gamefiles < 1)
     return;
 
-  int *listbox_map;
-  int listbox_count = CreateIndexMap(&listbox_map, IDC_CHECKEDOUT_LIST);
+  std::unique_ptr<int[]> listbox_map;
+  int listbox_count = CreateIndexMap(listbox_map, IDC_CHECKEDOUT_LIST);
   if (!listbox_count)
     return;
 
   if (!mng_MakeLocker()) {
-    mem_free(listbox_map);
     return;
   }
 
@@ -352,7 +348,6 @@ void CFilePageDialog::OnDeleteFile() {
 
   mng_EraseLocker();
   OutrageMessageBox("Gamefile(s) deleted.");
-  mem_free(listbox_map);
   UpdateDialog();
 }
 
@@ -364,13 +359,12 @@ void CFilePageDialog::OnLockFile() {
   if (Num_gamefiles < 1)
     return;
 
-  int *listbox_map;
-  int listbox_count = CreateIndexMap(&listbox_map, IDC_FILELIST);
+  std::unique_ptr<int[]> listbox_map;
+  int listbox_count = CreateIndexMap(listbox_map, IDC_FILELIST);
   if (!listbox_count)
     return;
 
   if (!mng_MakeLocker()) {
-    mem_free(listbox_map);
     return;
   }
 
@@ -443,7 +437,6 @@ void CFilePageDialog::OnLockFile() {
 
   mng_EraseLocker();
   OutrageMessageBox("File(s) locked.");
-  mem_free(listbox_map);
   UpdateDialog();
 }
 
@@ -473,8 +466,8 @@ void CFilePageDialog::OnOverride() {
   if (Num_gamefiles < 1)
     return;
 
-  int *listbox_map;
-  int listbox_count = CreateIndexMap(&listbox_map, IDC_FILELIST);
+  std::unique_ptr<int[]> listbox_map;
+  int listbox_count = CreateIndexMap(listbox_map, IDC_FILELIST);
   if (!listbox_count)
     return;
 
@@ -492,8 +485,6 @@ void CFilePageDialog::OnOverride() {
 
     mng_OverrideToUnlocked(&temp_pl);
   }
-
-  mem_free(listbox_map);
 }
 
 void CFilePageDialog::OnFilesOut() {

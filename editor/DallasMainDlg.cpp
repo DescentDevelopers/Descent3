@@ -536,7 +536,6 @@ CDallasMainDlg::CDallasMainDlg(CWnd *pParent /*=NULL*/) : CDialog(CDallasMainDlg
 
   help_edit_ctrl = &m_HelpEdit;
 
-  m_pDragImage = nullptr;
   m_bLDragging = FALSE;
   m_hitemDrag = nullptr;
   m_hitemDrop = nullptr;
@@ -3513,7 +3512,7 @@ int id_list_compare(const void *arg1, const void *arg2) {
 
 // Looks through scripts to determine the lowest unused script ID
 int CDallasMainDlg::GetLowestUnusedScriptID(void) {
-  int *list;
+  std::unique_ptr<int[]> list;
   int size;
   int max_size;
   int lowest_id;
@@ -3525,9 +3524,7 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   max_size = GetChildCount(TVI_ROOT);
   if (max_size == 0)
     return (lowest_id);
-  list = mem_rmalloc<int>(max_size);
-  if (list == nullptr)
-    return (m_NextScriptID);
+  list = std::make_unique<int[]>(max_size);
 
   // Fill up the list
   size = 0;
@@ -3542,7 +3539,7 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   }
 
   // Sort and determine the lowest unused ID
-  qsort((void *)list, size, sizeof(int), id_list_compare);
+  qsort((void *)list.get(), size, sizeof(int), id_list_compare);
 
   // Determine the lowest number
   int j;
@@ -3564,9 +3561,6 @@ int CDallasMainDlg::GetLowestUnusedScriptID(void) {
   msg+=num;
   MessageBox(msg,"The Script ID List");
   */
-
-  // Free up the list
-  mem_free(list);
 
   return (lowest_id);
 }
@@ -3823,8 +3817,9 @@ void CDallasMainDlg::InitMessageList(void) {
   int j;
 
   // Init the list of message entries to empty
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    m_MessageEntryList[j] = nullptr;
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
+    m_MessageEntryList[j].reset();
+  }
 }
 
 // Clears the message list
@@ -3832,11 +3827,9 @@ void CDallasMainDlg::ClearMessageList(void) {
   int j;
 
   // Wipeout the list of message entries
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    if (m_MessageEntryList[j] != nullptr) {
-      delete m_MessageEntryList[j];
-      m_MessageEntryList[j] = nullptr;
-    }
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
+    m_MessageEntryList[j].reset();
+  }
 
   // Reset the next message ID
   m_NextMessageID = 1;
@@ -3903,12 +3896,12 @@ int CDallasMainDlg::DeleteMessageListEntry(char *name) {
   int j;
 
   // Scan entry list for given name
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
     if (m_MessageEntryList[j] != nullptr && strcmp(m_MessageEntryList[j]->name, name) == 0) {
-      delete m_MessageEntryList[j];
-      m_MessageEntryList[j] = nullptr;
+      m_MessageEntryList[j].reset();
       return (TRUE);
     }
+  }
 
   return (FALSE);
 }
@@ -3918,11 +3911,12 @@ tMessageListEntry *CDallasMainDlg::GetEmptyMessageListEntry(void) {
   int j;
 
   // Scan entry list for an empty slot
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
     if (m_MessageEntryList[j] == nullptr) {
-      m_MessageEntryList[j] = new tMessageListEntry;
-      return (m_MessageEntryList[j]);
+      m_MessageEntryList[j] = std::make_unique<tMessageListEntry>();
+      return (m_MessageEntryList[j].get());
     }
+  }
 
   return (nullptr);
 }
@@ -3936,63 +3930,75 @@ void CDallasMainDlg::InitNameLists(void) {
   int j;
 
   // Init the Door list
-  for (j = 0; j < MAX_NAMED_DOORS; j++)
-    m_DoorList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_DOORS; j++) {
+    m_DoorList[j].reset();
+  }
   m_DoorListSize = 0;
 
   // Init the object list
-  for (j = 0; j < MAX_NAMED_OBJECTS; j++)
-    m_ObjectList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_OBJECTS; j++) {
+    m_ObjectList[j].reset();
+  }
   m_ObjectListSize = 0;
 
   // Init the Room list
-  for (j = 0; j < MAX_NAMED_ROOMS; j++)
-    m_RoomList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_ROOMS; j++) {
+    m_RoomList[j].reset();
+  }
   m_RoomListSize = 0;
 
   // Init the Trigger list
-  for (j = 0; j < MAX_NAMED_TRIGGERS; j++)
-    m_TriggerList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_TRIGGERS; j++) {
+    m_TriggerList[j].reset();
+  }
   m_TriggerListSize = 0;
 
   // Init the sound list
-  for (j = 0; j < MAX_NAMED_SOUNDS; j++)
-    m_SoundList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_SOUNDS; j++) {
+    m_SoundList[j].reset();
+  }
   m_SoundListSize = 0;
 
   // Init the Texture list
-  for (j = 0; j < MAX_NAMED_TEXTURES; j++)
-    m_TextureList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_TEXTURES; j++) {
+    m_TextureList[j].reset();
+  }
   m_TextureListSize = 0;
 
   // Init the Specname list
-  for (j = 0; j < MAX_SPECNAMES; j++)
-    m_SpecnameList[j] = nullptr;
+  for (j = 0; j < MAX_SPECNAMES; j++) {
+    m_SpecnameList[j].reset();
+  }
   m_SpecnameListSize = 0;
 
   // Init the Path list
-  for (j = 0; j < MAX_NAMED_PATHS; j++)
-    m_PathList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_PATHS; j++) {
+    m_PathList[j].reset();
+  }
   m_PathListSize = 0;
 
   // Init the Matcen list
-  for (j = 0; j < MAX_NAMED_MATCENS; j++)
-    m_MatcenList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_MATCENS; j++) {
+    m_MatcenList[j].reset();
+  }
   m_MatcenListSize = 0;
 
   // Init the Goal list
-  for (j = 0; j < MAX_NAMED_GOALS; j++)
-    m_GoalList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_GOALS; j++) {
+    m_GoalList[j].reset();
+  }
   m_GoalListSize = 0;
 
   // Init the StrmAudio list
-  for (j = 0; j < MAX_NAMED_STRM_AUDIO; j++)
-    m_StrmAudioList[j] = nullptr;
+  for (j = 0; j < MAX_NAMED_STRM_AUDIO; j++) {
+    m_StrmAudioList[j].reset();
+  }
   m_StrmAudioListSize = 0;
 
   // Init the Message name list
-  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++)
-    m_MessageNameList[j] = nullptr;
+  for (j = 0; j < MAX_MESSAGE_LIST_ENTRIES; j++) {
+    m_MessageNameList[j].reset();
+  }
   m_MessageNameListSize = 0;
 }
 
@@ -4001,99 +4007,75 @@ void CDallasMainDlg::ClearNameLists(void) {
   int j;
 
   // Clear the Door list
-  for (j = 0; j < m_DoorListSize; j++)
-    if (m_DoorList[j] != nullptr) {
-      mem_free(m_DoorList[j]);
-      m_DoorList[j] = nullptr;
-    }
+  for (j = 0; j < m_DoorListSize; j++) {
+    m_DoorList[j].reset();
+  }
   m_DoorListSize = 0;
 
   // Clear the object list
-  for (j = 0; j < m_ObjectListSize; j++)
-    if (m_ObjectList[j] != nullptr) {
-      mem_free(m_ObjectList[j]);
-      m_ObjectList[j] = nullptr;
-    }
+  for (j = 0; j < m_ObjectListSize; j++) {
+    m_ObjectList[j].reset();
+  }
   m_ObjectListSize = 0;
 
   // Clear the Room list
-  for (j = 0; j < m_RoomListSize; j++)
-    if (m_RoomList[j] != nullptr) {
-      mem_free(m_RoomList[j]);
-      m_RoomList[j] = nullptr;
-    }
+  for (j = 0; j < m_RoomListSize; j++) {
+    m_RoomList[j].reset();
+  }
   m_RoomListSize = 0;
 
   // Clear the Trigger list
-  for (j = 0; j < m_TriggerListSize; j++)
-    if (m_TriggerList[j] != nullptr) {
-      mem_free(m_TriggerList[j]);
-      m_TriggerList[j] = nullptr;
-    }
+  for (j = 0; j < m_TriggerListSize; j++) {
+    m_TriggerList[j].reset();
+  }
   m_TriggerListSize = 0;
 
   // Clear the sound list
-  for (j = 0; j < m_SoundListSize; j++)
-    if (m_SoundList[j] != nullptr) {
-      mem_free(m_SoundList[j]);
-      m_SoundList[j] = nullptr;
-    }
+  for (j = 0; j < m_SoundListSize; j++) {
+    m_SoundList[j].reset();
+  }
   m_SoundListSize = 0;
 
   // Clear the Texture list
-  for (j = 0; j < m_TextureListSize; j++)
-    if (m_TextureList[j] != nullptr) {
-      mem_free(m_TextureList[j]);
-      m_TextureList[j] = nullptr;
-    }
+  for (j = 0; j < m_TextureListSize; j++) {
+    m_TextureList[j].reset();
+  }
   m_TextureListSize = 0;
 
   // Clear the Specname list
-  for (j = 0; j < m_SpecnameListSize; j++)
-    if (m_SpecnameList[j] != nullptr) {
-      mem_free(m_SpecnameList[j]);
-      m_SpecnameList[j] = nullptr;
-    }
+  for (j = 0; j < m_SpecnameListSize; j++) {
+    m_SpecnameList[j].reset();
+  }
   m_SpecnameListSize = 0;
 
   // Clear the Path list
-  for (j = 0; j < m_PathListSize; j++)
-    if (m_PathList[j] != nullptr) {
-      mem_free(m_PathList[j]);
-      m_PathList[j] = nullptr;
-    }
+  for (j = 0; j < m_PathListSize; j++) {
+    m_PathList[j].reset();
+  }
   m_PathListSize = 0;
 
   // Clear the Matcen list
-  for (j = 0; j < m_MatcenListSize; j++)
-    if (m_MatcenList[j] != nullptr) {
-      mem_free(m_MatcenList[j]);
-      m_MatcenList[j] = nullptr;
-    }
+  for (j = 0; j < m_MatcenListSize; j++) {
+    m_MatcenList[j].reset();
+  }
   m_MatcenListSize = 0;
 
   // Clear the Goal list
-  for (j = 0; j < m_GoalListSize; j++)
-    if (m_GoalList[j] != nullptr) {
-      mem_free(m_GoalList[j]);
-      m_GoalList[j] = nullptr;
-    }
+  for (j = 0; j < m_GoalListSize; j++) {
+    m_GoalList[j].reset();
+  }
   m_GoalListSize = 0;
 
   // Clear the StrmAudio list
-  for (j = 0; j < m_StrmAudioListSize; j++)
-    if (m_StrmAudioList[j] != nullptr) {
-      mem_free(m_StrmAudioList[j]);
-      m_StrmAudioList[j] = nullptr;
-    }
+  for (j = 0; j < m_StrmAudioListSize; j++) {
+    m_StrmAudioList[j].reset();
+  }
   m_StrmAudioListSize = 0;
 
   // Clear the Message Name list
-  for (j = 0; j < m_MessageNameListSize; j++)
-    if (m_MessageNameList[j] != nullptr) {
-      mem_free(m_MessageNameList[j]);
-      m_MessageNameList[j] = nullptr;
-    }
+  for (j = 0; j < m_MessageNameListSize; j++) {
+    m_MessageNameList[j].reset();
+  }
   m_MessageNameListSize = 0;
 }
 
@@ -4980,11 +4962,7 @@ int CDallasMainDlg::AddDoorToList(char *name) {
     return FALSE;
 
   int pos = m_DoorListSize;
-  m_DoorList[pos] = mem_strdup(name);
-  if (m_DoorList[pos] == nullptr) {
-    MessageBox("Out of memory in AddDoorToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_DoorList[pos] = mem_strdup_unique(name);
   m_DoorListSize++;
 
   return TRUE;
@@ -4995,9 +4973,11 @@ int CDallasMainDlg::FindDoorInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_DoorListSize; j++)
-    if (strcmp(m_DoorList[j], name) == 0)
+  for (int j = 0; j < m_DoorListSize; j++) {
+    if (strcmp(m_DoorList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5017,11 +4997,7 @@ int CDallasMainDlg::AddObjectToList(char *name) {
     return FALSE;
 
   int pos = m_ObjectListSize;
-  m_ObjectList[pos] = mem_strdup(name);
-  if (m_ObjectList[pos] == nullptr) {
-    MessageBox("Out of memory in AddObjectToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_ObjectList[pos] = mem_strdup_unique(name);
   m_ObjectListSize++;
 
   return TRUE;
@@ -5032,9 +5008,11 @@ int CDallasMainDlg::FindObjectInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_ObjectListSize; j++)
-    if (strcmp(m_ObjectList[j], name) == 0)
+  for (int j = 0; j < m_ObjectListSize; j++) {
+    if (strcmp(m_ObjectList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5054,11 +5032,7 @@ int CDallasMainDlg::AddRoomToList(char *name) {
     return FALSE;
 
   int pos = m_RoomListSize;
-  m_RoomList[pos] = mem_strdup(name);
-  if (m_RoomList[pos] == nullptr) {
-    MessageBox("Out of memory in AddRoomToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_RoomList[pos] = mem_strdup_unique(name);
   m_RoomListSize++;
 
   return TRUE;
@@ -5069,9 +5043,11 @@ int CDallasMainDlg::FindRoomInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_RoomListSize; j++)
-    if (strcmp(m_RoomList[j], name) == 0)
+  for (int j = 0; j < m_RoomListSize; j++) {
+    if (strcmp(m_RoomList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5091,11 +5067,7 @@ int CDallasMainDlg::AddTriggerToList(char *name) {
     return FALSE;
 
   int pos = m_TriggerListSize;
-  m_TriggerList[pos] = mem_strdup(name);
-  if (m_TriggerList[pos] == nullptr) {
-    MessageBox("Out of memory in AddTriggerToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_TriggerList[pos] = mem_strdup_unique(name);
   m_TriggerListSize++;
 
   return TRUE;
@@ -5106,9 +5078,11 @@ int CDallasMainDlg::FindTriggerInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_TriggerListSize; j++)
-    if (strcmp(m_TriggerList[j], name) == 0)
+  for (int j = 0; j < m_TriggerListSize; j++) {
+    if (strcmp(m_TriggerList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5128,11 +5102,7 @@ int CDallasMainDlg::AddSoundToList(char *name) {
     return FALSE;
 
   int pos = m_SoundListSize;
-  m_SoundList[pos] = mem_strdup(name);
-  if (m_SoundList[pos] == nullptr) {
-    MessageBox("Out of memory in AddSoundToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_SoundList[pos] = mem_strdup_unique(name);
   m_SoundListSize++;
 
   return TRUE;
@@ -5143,9 +5113,11 @@ int CDallasMainDlg::FindSoundInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_SoundListSize; j++)
-    if (strcmp(m_SoundList[j], name) == 0)
+  for (int j = 0; j < m_SoundListSize; j++) {
+    if (strcmp(m_SoundList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5165,11 +5137,7 @@ int CDallasMainDlg::AddTextureToList(char *name) {
     return FALSE;
 
   int pos = m_TextureListSize;
-  m_TextureList[pos] = mem_strdup(name);
-  if (m_TextureList[pos] == nullptr) {
-    MessageBox("Out of memory in AddTextureToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_TextureList[pos] = mem_strdup_unique(name);
   m_TextureListSize++;
 
   return TRUE;
@@ -5180,9 +5148,11 @@ int CDallasMainDlg::FindTextureInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_TextureListSize; j++)
-    if (strcmp(m_TextureList[j], name) == 0)
+  for (int j = 0; j < m_TextureListSize; j++) {
+    if (strcmp(m_TextureList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5202,11 +5172,7 @@ int CDallasMainDlg::AddSpecnameToList(char *name) {
     return FALSE;
 
   int pos = m_SpecnameListSize;
-  m_SpecnameList[pos] = mem_strdup(name);
-  if (m_SpecnameList[pos] == nullptr) {
-    MessageBox("Out of memory in AddSpecnameToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_SpecnameList[pos] = mem_strdup_unique(name);
   m_SpecnameListSize++;
 
   return TRUE;
@@ -5217,9 +5183,11 @@ int CDallasMainDlg::FindSpecnameInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_SpecnameListSize; j++)
-    if (strcmp(m_SpecnameList[j], name) == 0)
+  for (int j = 0; j < m_SpecnameListSize; j++) {
+    if (strcmp(m_SpecnameList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5239,11 +5207,7 @@ int CDallasMainDlg::AddPathToList(char *name) {
     return FALSE;
 
   int pos = m_PathListSize;
-  m_PathList[pos] = mem_strdup(name);
-  if (m_PathList[pos] == nullptr) {
-    MessageBox("Out of memory in AddPathToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_PathList[pos] = mem_strdup_unique(name);
   m_PathListSize++;
 
   return TRUE;
@@ -5254,9 +5218,11 @@ int CDallasMainDlg::FindPathInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_PathListSize; j++)
-    if (strcmp(m_PathList[j], name) == 0)
+  for (int j = 0; j < m_PathListSize; j++) {
+    if (strcmp(m_PathList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5276,11 +5242,7 @@ int CDallasMainDlg::AddMatcenToList(char *name) {
     return FALSE;
 
   int pos = m_MatcenListSize;
-  m_MatcenList[pos] = mem_strdup(name);
-  if (m_MatcenList[pos] == nullptr) {
-    MessageBox("Out of memory in AddMatcenToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_MatcenList[pos] = mem_strdup_unique(name);
   m_MatcenListSize++;
 
   return TRUE;
@@ -5291,9 +5253,11 @@ int CDallasMainDlg::FindMatcenInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_MatcenListSize; j++)
-    if (strcmp(m_MatcenList[j], name) == 0)
+  for (int j = 0; j < m_MatcenListSize; j++) {
+    if (strcmp(m_MatcenList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5313,11 +5277,7 @@ int CDallasMainDlg::AddGoalToList(char *name) {
     return FALSE;
 
   int pos = m_GoalListSize;
-  m_GoalList[pos] = mem_strdup(name);
-  if (m_GoalList[pos] == nullptr) {
-    MessageBox("Out of memory in AddGoalToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_GoalList[pos] = mem_strdup_unique(name);
   m_GoalListSize++;
 
   return TRUE;
@@ -5328,9 +5288,11 @@ int CDallasMainDlg::FindGoalInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_GoalListSize; j++)
-    if (strcmp(m_GoalList[j], name) == 0)
+  for (int j = 0; j < m_GoalListSize; j++) {
+    if (strcmp(m_GoalList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5350,11 +5312,7 @@ int CDallasMainDlg::AddStrmAudioToList(char *name) {
     return FALSE;
 
   int pos = m_StrmAudioListSize;
-  m_StrmAudioList[pos] = mem_strdup(name);
-  if (m_StrmAudioList[pos] == nullptr) {
-    MessageBox("Out of memory in AddStrmAudioToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_StrmAudioList[pos] = mem_strdup_unique(name);
   m_StrmAudioListSize++;
 
   return TRUE;
@@ -5365,9 +5323,11 @@ int CDallasMainDlg::FindStrmAudioInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_StrmAudioListSize; j++)
-    if (strcmp(m_StrmAudioList[j], name) == 0)
+  for (int j = 0; j < m_StrmAudioListSize; j++) {
+    if (strcmp(m_StrmAudioList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5387,11 +5347,7 @@ int CDallasMainDlg::AddMessageNameToList(char *name) {
     return FALSE;
 
   int pos = m_MessageNameListSize;
-  m_MessageNameList[pos] = mem_strdup(name);
-  if (m_MessageNameList[pos] == nullptr) {
-    MessageBox("Out of memory in AddMessageNameToList()!", "Error!", MB_OK | MB_ICONEXCLAMATION);
-    return FALSE;
-  }
+  m_MessageNameList[pos] = mem_strdup_unique(name);
   m_MessageNameListSize++;
 
   return TRUE;
@@ -5402,9 +5358,11 @@ int CDallasMainDlg::FindMessageNameInList(char *name) {
   if (name == nullptr)
     return (-1);
 
-  for (int j = 0; j < m_MessageNameListSize; j++)
-    if (strcmp(m_MessageNameList[j], name) == 0)
+  for (int j = 0; j < m_MessageNameListSize; j++) {
+    if (strcmp(m_MessageNameList[j].get(), name) == 0) {
       return (j);
+    }
+  }
 
   return (-1);
 }
@@ -5425,7 +5383,7 @@ int CDallasMainDlg::FillUserTypeBox(CComboBox *box) {
   // Add the User Type Names
   for (j = 0; j < m_NumEnums; j++) {
     if (m_EnumDatabase[j].is_user_type) {
-      box->AddString(m_EnumDatabase[j].name);
+      box->AddString(m_EnumDatabase[j].name.get());
       types_added++;
     }
   }
@@ -5453,7 +5411,7 @@ int CDallasMainDlg::FillValuesBox(CListBox *box, char *utype_name) {
   for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++) {
     tEnumValueEntry *value_entry = &m_EnumDatabase[DBslot].values[j];
     if (value_entry->value != -1) {
-      box->AddString(value_entry->name);
+      box->AddString(value_entry->name.get());
       values_added++;
     }
   }
@@ -5490,7 +5448,7 @@ int CDallasMainDlg::AddUserTypeValue(char *utype_name, char *value_name) {
       // Bump the higher ones down the list
       for (k = entry->num_values; k > j; k--) {
         entry->values[k].value = entry->values[k - 1].value;
-        entry->values[k].name = entry->values[k - 1].name;
+        entry->values[k].name = std::move(entry->values[k - 1].name);
       }
       break;
     }
@@ -5500,11 +5458,8 @@ int CDallasMainDlg::AddUserTypeValue(char *utype_name, char *value_name) {
   // Store the new value at the current position
   tEnumValueEntry *value_entry = &entry->values[j];
   value_entry->value = new_value;
-  value_entry->name = mem_strdup(value_name);
-  if (value_entry->name == nullptr) {
-    MessageBox("ERROR: Out of mem in AddUserTypeValue()!", "Error!");
-    return (-1);
-  }
+  value_entry->name = mem_strdup_unique(value_name);
+
   entry->num_values++;
 
   SetModified(TRUE);
@@ -5528,17 +5483,17 @@ int CDallasMainDlg::DeleteUserTypeValue(char *utype_name, char *value_name) {
   // Find the value name in the list
   for (j = 0; j < entry->num_values; j++) {
     tEnumValueEntry *value_entry = &entry->values[j];
-    if (strcmp(value_name, value_entry->name) == 0) {
+    if (strcmp(value_name, value_entry->name.get()) == 0) {
       // Free the name memory
-      mem_free(value_entry->name);
+      value_entry->name.reset();
 
       // Compact the list
       entry->num_values--;
       for (k = j; k < (entry->num_values); k++) {
         entry->values[k].value = entry->values[k + 1].value;
-        entry->values[k].name = entry->values[k + 1].name;
+        entry->values[k].name = std::move(entry->values[k + 1].name);
       }
-      entry->values[k].name = nullptr;
+      entry->values[k].name.reset();
       SetModified(TRUE);
       return TRUE;
     }
@@ -5563,16 +5518,9 @@ int CDallasMainDlg::ChangeValueName(char *utype_name, char *old_name, char *new_
   // Find the value name in the list
   for (j = 0; j < entry->num_values; j++) {
     tEnumValueEntry *value_entry = &entry->values[j];
-    if (strcmp(old_name, value_entry->name) == 0) {
-      // Free the name memory
-      mem_free(value_entry->name);
-
-      // Add the new name
-      value_entry->name = mem_strdup(new_name);
-      if (value_entry->name == nullptr) {
-        MessageBox("ERROR: Out of mem in ChangeValueName()!", "Error!");
-        return FALSE;
-      }
+    if (strcmp(old_name, value_entry->name.get()) == 0) {
+      // Replace the name
+      value_entry->name = mem_strdup_unique(new_name);
       SetModified(TRUE);
 
       return TRUE;
@@ -5591,9 +5539,9 @@ void CDallasMainDlg::InitEnumDatabase(void) {
   int j, k;
 
   for (j = 0; j < MAX_ENUMS; j++) {
-    m_EnumDatabase[j].name = nullptr;
+    m_EnumDatabase[j].name.reset();
     for (k = 0; k < MAX_ENUM_VALUES; k++) {
-      m_EnumDatabase[j].values[k].name = nullptr;
+      m_EnumDatabase[j].values[k].name.reset();
       m_EnumDatabase[j].values[k].value = 0;
     }
     m_EnumDatabase[j].num_values = 0;
@@ -5606,15 +5554,9 @@ void CDallasMainDlg::ClearEnumDatabase(void) {
   int j, k;
 
   for (j = 0; j < m_NumEnums; j++) {
-    if (m_EnumDatabase[j].name != nullptr) {
-      mem_free(m_EnumDatabase[j].name);
-      m_EnumDatabase[j].name = nullptr;
-    }
+    m_EnumDatabase[j].name.reset();
     for (k = 0; k < m_EnumDatabase[j].num_values; k++) {
-      if (m_EnumDatabase[j].values[k].name != nullptr) {
-        mem_free(m_EnumDatabase[j].values[k].name);
-        m_EnumDatabase[j].values[k].name = nullptr;
-      }
+      m_EnumDatabase[j].values[k].name.reset();
       m_EnumDatabase[j].values[k].value = 0;
     }
     m_EnumDatabase[j].num_values = 0;
@@ -5629,9 +5571,11 @@ int CDallasMainDlg::GetEnumID(char *name) {
   if (name == nullptr)
     return INVALID_ENUM;
 
-  for (i = 0; i < m_NumEnums; i++)
-    if (strcmp(m_EnumDatabase[i].name, name) == 0)
+  for (i = 0; i < m_NumEnums; i++) {
+    if (strcmp(m_EnumDatabase[i].name.get(), name) == 0) {
       return i;
+    }
+  }
 
   return INVALID_ENUM;
 }
@@ -5644,9 +5588,11 @@ char *CDallasMainDlg::GetEnumValueName(char *name, int value) {
   if (DBslot == INVALID_ENUM)
     return nullptr;
 
-  for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++)
-    if (m_EnumDatabase[DBslot].values[j].value == value)
-      return (m_EnumDatabase[DBslot].values[j].name);
+  for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++) {
+    if (m_EnumDatabase[DBslot].values[j].value == value) {
+      return (m_EnumDatabase[DBslot].values[j].name.get());
+    }
+  }
 
   return nullptr;
 }
@@ -5660,11 +5606,12 @@ bool CDallasMainDlg::GetEnumValue(char *name, char *value_name, int &value) {
   if (DBslot == INVALID_ENUM)
     return FALSE;
 
-  for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++)
-    if (strcmp(m_EnumDatabase[DBslot].values[j].name, value_name) == 0) {
+  for (j = 0; j < m_EnumDatabase[DBslot].num_values; j++) {
+    if (strcmp(m_EnumDatabase[DBslot].values[j].name.get(), value_name) == 0) {
       value = m_EnumDatabase[DBslot].values[j].value;
       return TRUE;
     }
+  }
 
   return FALSE;
 }
@@ -5681,14 +5628,15 @@ int CDallasMainDlg::FillEnumTypesMenu(CMenu *enum_menu, int command_offset, char
 
   // Fill the menu with names of matching enumeration values
   for (i = 0; i < m_NumEnums; i++) {
-    name = m_EnumDatabase[i].name;
+    name = m_EnumDatabase[i].name.get();
     if (m_EnumDatabase[i].is_user_type)
       name += "  (USER TYPE)";
-    if (strlen(valid_name) == 0 || strcmp(valid_name, m_EnumDatabase[i].name) == 0) {
+    if (strlen(valid_name) == 0 || strcmp(valid_name, m_EnumDatabase[i].name.get()) == 0) {
       enum_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, name.GetBuffer(0));
       enum_types_added++;
-    } else
+    } else {
       enum_menu->AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, command_offset + i, name.GetBuffer(0));
+    }
   }
 
   return (enum_types_added);
@@ -5713,7 +5661,7 @@ int CDallasMainDlg::FillEnumValuesMenu(CMenu *enum_menu, int command_offset, cha
 
   // Fill the menu with names of matching enumeration values
   for (i = 0; i < enum_entry->num_values; i++) {
-    enum_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, enum_entry->values[i].name);
+    enum_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, enum_entry->values[i].name.get());
     enum_values_added++;
   }
 
@@ -5729,9 +5677,9 @@ void CDallasMainDlg::InitFlagDatabase(void) {
   int j, k;
 
   for (j = 0; j < MAX_FLAGS; j++) {
-    m_FlagDatabase[j].name = nullptr;
+    m_FlagDatabase[j].name.reset();
     for (k = 0; k < MAX_FLAG_VALUES; k++) {
-      m_FlagDatabase[j].values[k].name = nullptr;
+      m_FlagDatabase[j].values[k].name.reset();
       m_FlagDatabase[j].values[k].value = 0;
     }
     m_FlagDatabase[j].num_values = 0;
@@ -5744,15 +5692,9 @@ void CDallasMainDlg::ClearFlagDatabase(void) {
   int j, k;
 
   for (j = 0; j < m_NumFlags; j++) {
-    if (m_FlagDatabase[j].name != nullptr) {
-      mem_free(m_FlagDatabase[j].name);
-      m_FlagDatabase[j].name = nullptr;
-    }
+    m_FlagDatabase[j].name.reset();
     for (k = 0; k < m_FlagDatabase[j].num_values; k++) {
-      if (m_FlagDatabase[j].values[k].name != nullptr) {
-        mem_free(m_FlagDatabase[j].values[k].name);
-        m_FlagDatabase[j].values[k].name = nullptr;
-      }
+      m_FlagDatabase[j].values[k].name.reset();
       m_FlagDatabase[j].values[k].value = 0;
     }
     m_FlagDatabase[j].num_values = 0;
@@ -5767,9 +5709,11 @@ int CDallasMainDlg::GetFlagID(char *name) {
   if (name == nullptr)
     return INVALID_FLAG;
 
-  for (i = 0; i < m_NumFlags; i++)
-    if (strcmp(m_FlagDatabase[i].name, name) == 0)
+  for (i = 0; i < m_NumFlags; i++) {
+    if (strcmp(m_FlagDatabase[i].name.get(), name) == 0) {
       return i;
+    }
+  }
 
   return INVALID_FLAG;
 }
@@ -5782,9 +5726,11 @@ char *CDallasMainDlg::GetFlagValueName(char *name, int value) {
   if (DBslot == INVALID_FLAG)
     return nullptr;
 
-  for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++)
-    if (m_FlagDatabase[DBslot].values[j].value == value)
-      return (m_FlagDatabase[DBslot].values[j].name);
+  for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++) {
+    if (m_FlagDatabase[DBslot].values[j].value == value) {
+      return (m_FlagDatabase[DBslot].values[j].name.get());
+    }
+  }
 
   return nullptr;
 }
@@ -5808,7 +5754,7 @@ bool CDallasMainDlg::FormatFlagValueNames(char *name, int value, CString &text) 
         text += '[';
         first_added = FALSE;
       }
-      text += m_FlagDatabase[DBslot].values[j].name;
+      text += m_FlagDatabase[DBslot].values[j].name.get();
     }
   }
 
@@ -5829,11 +5775,12 @@ bool CDallasMainDlg::GetFlagValue(char *name, char *value_name, int &value) {
   if (DBslot == INVALID_FLAG)
     return FALSE;
 
-  for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++)
-    if (strcmp(m_FlagDatabase[DBslot].values[j].name, value_name) == 0) {
+  for (j = 0; j < m_FlagDatabase[DBslot].num_values; j++) {
+    if (strcmp(m_FlagDatabase[DBslot].values[j].name.get(), value_name) == 0) {
       value = m_FlagDatabase[DBslot].values[j].value;
       return TRUE;
     }
+  }
 
   return FALSE;
 }
@@ -5849,11 +5796,12 @@ int CDallasMainDlg::FillFlagTypesMenu(CMenu *flag_menu, int command_offset, char
 
   // Fill the menu with names of matching Flageration values
   for (i = 0; i < m_NumFlags; i++) {
-    if (strlen(valid_name) == 0 || strcmp(valid_name, m_FlagDatabase[i].name) == 0) {
-      flag_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, m_FlagDatabase[i].name);
+    if (strlen(valid_name) == 0 || strcmp(valid_name, m_FlagDatabase[i].name.get()) == 0) {
+      flag_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset + i, m_FlagDatabase[i].name.get());
       flag_types_added++;
-    } else
-      flag_menu->AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, command_offset + i, m_FlagDatabase[i].name);
+    } else {
+      flag_menu->AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, command_offset + i, m_FlagDatabase[i].name.get());
+    }
   }
 
   return (flag_types_added);
@@ -5879,7 +5827,7 @@ int CDallasMainDlg::FillFlagValuesBox(CCheckListBox *box, char *flag_name, int f
   for (i = 0; i < flag_entry->num_values; i++) {
     if (valid_flags_mask == 0 || (flag_entry->values[i].value & valid_flags_mask)) {
       int index;
-      index = box->AddString(flag_entry->values[i].name);
+      index = box->AddString(flag_entry->values[i].name.get());
       if (index != LB_ERR) {
         box->SetItemData(index, flag_entry->values[i].value);
         if (flag_entry->values[i].value & flags_value)
@@ -5909,23 +5857,24 @@ int CDallasMainDlg::FillFlagValuesBox(CCheckListBox *box, char *flag_name, int f
 void CDallasMainDlg::InitFunctionDatabases(void) {
   int j;
 
-  for (j = 0; j < MAX_CATEGORIES; j++)
-    m_FunctionCategories[j] = nullptr;
+  for (j = 0; j < MAX_CATEGORIES; j++) {
+    m_FunctionCategories[j].reset();
+  }
   m_NumFunctionCategories = 0;
 
   for (j = 0; j < MAX_ACTIONS; j++) {
     m_ActionDatabase[j].category = INVALID_CATEGORY;
-    m_ActionDatabase[j].desc = nullptr;
-    m_ActionDatabase[j].func = nullptr;
-    m_ActionDatabase[j].help = nullptr;
+    m_ActionDatabase[j].desc.reset();
+    m_ActionDatabase[j].func.reset();
+    m_ActionDatabase[j].help.reset();
   }
   m_NumActions = 0;
 
   for (j = 0; j < MAX_QUERIES; j++) {
     m_QueryDatabase[j].category = INVALID_CATEGORY;
-    m_QueryDatabase[j].desc = nullptr;
-    m_QueryDatabase[j].func = nullptr;
-    m_QueryDatabase[j].help = nullptr;
+    m_QueryDatabase[j].desc.reset();
+    m_QueryDatabase[j].func.reset();
+    m_QueryDatabase[j].help.reset();
   }
   m_NumQueries = 0;
 }
@@ -5934,38 +5883,35 @@ void CDallasMainDlg::InitFunctionDatabases(void) {
 void CDallasMainDlg::ClearFunctionDatabases(void) {
   int j;
 
-  for (j = 0; j < m_NumFunctionCategories; j++)
-    mem_free(m_FunctionCategories[j]);
+  for (j = 0; j < m_NumFunctionCategories; j++) {
+    m_FunctionCategories[j].reset();
+  }
   m_NumFunctionCategories = 0;
 
   for (j = 0; j < m_NumActions; j++) {
     m_ActionDatabase[j].category = INVALID_CATEGORY;
-    mem_free(m_ActionDatabase[j].desc);
-    m_ActionDatabase[j].desc = nullptr;
-    mem_free(m_ActionDatabase[j].func);
-    m_ActionDatabase[j].func = nullptr;
-    mem_free(m_ActionDatabase[j].help);
-    m_ActionDatabase[j].help = nullptr;
+    m_ActionDatabase[j].desc.reset();
+    m_ActionDatabase[j].func.reset();
+    m_ActionDatabase[j].help.reset();
   }
   m_NumActions = 0;
 
   for (j = 0; j < m_NumQueries; j++) {
     m_QueryDatabase[j].category = INVALID_CATEGORY;
-    mem_free(m_QueryDatabase[j].desc);
-    m_QueryDatabase[j].desc = nullptr;
-    mem_free(m_QueryDatabase[j].func);
-    m_QueryDatabase[j].func = nullptr;
-    mem_free(m_QueryDatabase[j].help);
-    m_QueryDatabase[j].help = nullptr;
+    m_QueryDatabase[j].desc.reset();
+    m_QueryDatabase[j].func.reset();
+    m_QueryDatabase[j].help.reset();
   }
   m_NumQueries = 0;
 }
 
 // Matches an integer ID to a given category name
 int CDallasMainDlg::GetFunctionCategoryID(char *catname) {
-  for (int i = 0; i < m_NumFunctionCategories; i++)
-    if (strcmp(m_FunctionCategories[i], catname) == 0)
+  for (int i = 0; i < m_NumFunctionCategories; i++) {
+    if (strcmp(m_FunctionCategories[i].get(), catname) == 0) {
       return i;
+    }
+  }
 
   return INVALID_CATEGORY;
 }
@@ -6021,7 +5967,7 @@ char *CDallasMainDlg::GetActionDesc(int ID) {
   if (ID < 0 || ID >= m_NumActions)
     return nullptr;
 
-  return (m_ActionDatabase[ID].desc);
+  return (m_ActionDatabase[ID].desc.get());
 }
 
 // Returns a pointer to the action help text
@@ -6029,7 +5975,7 @@ char *CDallasMainDlg::GetActionHelp(int ID) {
   if (ID < 0 || ID >= m_NumActions)
     return nullptr;
 
-  return (m_ActionDatabase[ID].help);
+  return (m_ActionDatabase[ID].help.get());
 }
 
 // Returns a pointer to the action function name
@@ -6040,7 +5986,7 @@ char *CDallasMainDlg::GetActionFunc(int ID) {
   if (ID < 0 || ID >= m_NumActions)
     return INVALID_FUNCTION_NAME;
 
-  return (m_ActionDatabase[ID].func);
+  return (m_ActionDatabase[ID].func.get());
 }
 
 // Searches action list for action matching given function name
@@ -6051,9 +5997,11 @@ int CDallasMainDlg::GetActionFuncID(char *func_name) {
   if (strcmp(DO_NOTHING_STRING, func_name) == 0)
     return DO_NOTHING_ID;
 
-  for (int j = 0; j < m_NumActions; j++)
-    if (strcmp(m_ActionDatabase[j].func, func_name) == 0)
+  for (int j = 0; j < m_NumActions; j++) {
+    if (strcmp(m_ActionDatabase[j].func.get(), func_name) == 0) {
       return (j);
+    }
+  }
 
   return INVALID_FUNCTION_ID;
 }
@@ -6063,7 +6011,7 @@ char *CDallasMainDlg::GetQueryDesc(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
     return nullptr;
 
-  return (m_QueryDatabase[ID].desc);
+  return (m_QueryDatabase[ID].desc.get());
 }
 
 // Returns a pointer to the query help text
@@ -6071,7 +6019,7 @@ char *CDallasMainDlg::GetQueryHelp(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
     return nullptr;
 
-  return (m_QueryDatabase[ID].help);
+  return (m_QueryDatabase[ID].help.get());
 }
 
 // Returns a pointer to the query function name
@@ -6079,7 +6027,7 @@ char *CDallasMainDlg::GetQueryFunc(int ID) {
   if (ID < 0 || ID >= m_NumQueries)
     return INVALID_FUNCTION_NAME;
 
-  return (m_QueryDatabase[ID].func);
+  return (m_QueryDatabase[ID].func.get());
 }
 
 // Searches query list for query matching given function name
@@ -6087,9 +6035,11 @@ int CDallasMainDlg::GetQueryFuncID(char *func_name) {
   if (func_name == nullptr)
     return INVALID_FUNCTION_ID;
 
-  for (int j = 0; j < m_NumQueries; j++)
-    if (strcmp(m_QueryDatabase[j].func, func_name) == 0)
+  for (int j = 0; j < m_NumQueries; j++) {
+    if (strcmp(m_QueryDatabase[j].func.get(), func_name) == 0) {
       return (j);
+    }
+  }
 
   return INVALID_FUNCTION_ID;
 }
@@ -6170,12 +6120,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
           done = 1;
         else if (m_NumFunctionCategories < MAX_CATEGORIES) {
           if (GetFunctionCategoryID(line) == INVALID_CATEGORY) { // don't add duplicate categories
-            m_FunctionCategories[m_NumFunctionCategories] = mem_strdup(line);
-            if (m_FunctionCategories[m_NumFunctionCategories] == nullptr) {
-              FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-              cfclose(ifile);
-              return;
-            }
+            m_FunctionCategories[m_NumFunctionCategories] = mem_strdup_unique(line);
             m_NumFunctionCategories++;
             if (m_NumFunctionCategories == MAX_CATEGORIES)
               MessageBox("Warning: The Maximum Category limit has been reached!", "Warning!");
@@ -6206,12 +6151,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         enum_entry = nullptr;
       } else {
         enum_entry = &m_EnumDatabase[m_NumEnums++];
-        enum_entry->name = mem_strdup(enum_name);
-        if (enum_entry->name == nullptr) {
-          FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-          cfclose(ifile);
-          return;
-        }
+        enum_entry->name = mem_strdup_unique(enum_name);
         enum_entry->num_values = 0;
         enum_entry->is_user_type = TRUE;
         enum_entry->max_values = atoi(max_value_text);
@@ -6223,12 +6163,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         // Add the default (-1:None) value
         tEnumValueEntry *value_entry;
         value_entry = &enum_entry->values[enum_entry->num_values++];
-        value_entry->name = mem_strdup(USERTYPE_NONE);
-        if (value_entry->name == nullptr) {
-          FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-          cfclose(ifile);
-          return;
-        }
+        value_entry->name = mem_strdup_unique(USERTYPE_NONE);
         value_entry->value = -1;
       }
     } else if (strncmp(line, TAG_ENUM, strlen(TAG_ENUM)) == 0) { // Parse an enumeration block
@@ -6248,12 +6183,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         enum_entry = nullptr;
       } else {
         enum_entry = &m_EnumDatabase[m_NumEnums++];
-        enum_entry->name = mem_strdup(enum_name);
-        if (enum_entry->name == nullptr) {
-          FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-          cfclose(ifile);
-          return;
-        }
+        enum_entry->name = mem_strdup_unique(enum_name);
         enum_entry->num_values = 0;
         enum_entry->is_user_type = FALSE;
         enum_entry->max_values = 0;
@@ -6286,7 +6216,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
           }
 
           if (enum_value_string == nullptr || enum_value_name == nullptr ||
-              GetEnumValueName(enum_entry->name, enum_value) != nullptr) {
+              GetEnumValueName(enum_entry->name.get(), enum_value) != nullptr) {
             FunctionFileParseError(INV_ENUM_VALUE_ERR, linenum, filename);
             value_entry = nullptr;
           } else if (enum_entry->num_values == MAX_ENUM_VALUES) {
@@ -6294,12 +6224,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
             value_entry = nullptr;
           } else {
             value_entry = &enum_entry->values[enum_entry->num_values++];
-            value_entry->name = mem_strdup(enum_value_name);
-            if (value_entry->name == nullptr) {
-              FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-              cfclose(ifile);
-              return;
-            }
+            value_entry->name = mem_strdup_unique(enum_value_name);
             value_entry->value = enum_value;
           }
         }
@@ -6325,12 +6250,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
         flag_entry = nullptr;
       } else {
         flag_entry = &m_FlagDatabase[m_NumFlags++];
-        flag_entry->name = mem_strdup(flag_name);
-        if (flag_entry->name == nullptr) {
-          FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-          cfclose(ifile);
-          return;
-        }
+        flag_entry->name = mem_strdup_unique(flag_name);
         flag_entry->num_values = 0;
       }
 
@@ -6361,7 +6281,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
           }
 
           if (flag_value_string == nullptr || flag_value_name == nullptr ||
-              GetFlagValueName(flag_entry->name, flag_value) != nullptr) {
+              GetFlagValueName(flag_entry->name.get(), flag_value) != nullptr) {
             FunctionFileParseError(INV_FLAG_VALUE_ERR, linenum, filename);
             value_entry = nullptr;
           } else if (flag_entry->num_values == MAX_FLAG_VALUES) {
@@ -6369,12 +6289,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
             value_entry = nullptr;
           } else {
             value_entry = &flag_entry->values[flag_entry->num_values++];
-            value_entry->name = mem_strdup(flag_value_name);
-            if (value_entry->name == nullptr) {
-              FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-              cfclose(ifile);
-              return;
-            }
+            value_entry->name = mem_strdup_unique(flag_value_name);
             value_entry->value = flag_value;
           }
         }
@@ -6417,12 +6332,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      action->desc = mem_strdup(line);
-      if (action->desc == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      action->desc = mem_strdup_unique(line);
 
       // Read action function
       cf_ReadString(linebuf, sizeof(linebuf), ifile);
@@ -6432,12 +6342,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      action->func = mem_strdup(line);
-      if (action->func == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      action->func = mem_strdup_unique(line);
 
       // Read help
       bool done = 0;
@@ -6463,12 +6368,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       if (!done)
         FunctionFileParseError(UEOF_ERR, linenum, filename);
 
-      action->help = mem_strdup(helpbuf);
-      if (action->help == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      action->help = mem_strdup_unique(helpbuf);
     } else if (strncmp(line, TAG_QUERY, strlen(TAG_QUERY)) == 0) { // Parse Query block
       if (m_NumQueries >= MAX_QUERIES) {
         MessageBox("ERROR: The Maximum Query limit has been exceeded!\n\nParsing must stop immediately.", "ERROR!");
@@ -6503,12 +6403,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      query->desc = mem_strdup(line);
-      if (query->desc == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      query->desc = mem_strdup_unique(line);
 
       // Read action function
       cf_ReadString(linebuf, sizeof(linebuf), ifile);
@@ -6518,12 +6413,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       RemoveTrailingWhitespace(linebuf);
       line = SkipInitialWhitespace(linebuf);
 
-      query->func = mem_strdup(line);
-      if (query->func == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      query->func = mem_strdup_unique(line);
 
       // Read help
       bool done = 0;
@@ -6549,12 +6439,7 @@ void CDallasMainDlg::ParseFunctionFile(char *filename, bool show_errors /*=TRUE*
       if (!done)
         FunctionFileParseError(UEOF_ERR, linenum, filename);
 
-      query->help = mem_strdup(helpbuf);
-      if (query->help == nullptr) {
-        FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-        cfclose(ifile);
-        return;
-      }
+      query->help = mem_strdup_unique(helpbuf);
     }
   }
 
@@ -7105,25 +6990,22 @@ void CDallasMainDlg::FillActionMenu(CMenu *action_menu, int command_offset) {
     actions_added = 0;
 
     // Scan the list, adding Actions that match the current category
-    for (k = 0; k < m_NumActions; k++)
+    for (k = 0; k < m_NumActions; k++) {
       if (m_ActionDatabase[k].category == j) {
-        char *temp_desc = mem_rmalloc<char>(strlen(m_ActionDatabase[k].desc) + 1);
-        if (temp_desc == nullptr) {
-          MessageBox("Out of memory error in FillActionMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
-          return;
-        }
-        ParseOutActionVarTypes(temp_desc, m_ActionDatabase[k].desc);
-        category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc);
-        mem_free(temp_desc);
+        auto temp_desc = std::make_unique<char[]>(strlen(m_ActionDatabase[k].desc.get()) + 1);
+        ParseOutActionVarTypes(temp_desc.get(), m_ActionDatabase[k].desc.get());
+        category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc.get());
         actions_added++;
       }
+    }
 
     // Detach and add this submenu to the action menu
     ColumnizePopupMenu(&category_submenu);
-    if (actions_added == 0)
-      action_menu->AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j]);
-    else
-      action_menu->AppendMenu(MF_POPUP, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j]);
+    if (actions_added == 0) {
+      action_menu->AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j].get());
+    } else {
+      action_menu->AppendMenu(MF_POPUP, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j].get());
+    }
   }
 }
 
@@ -7143,14 +7025,10 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
     queries_added = 0;
 
     // Scan the list, adding queries that match the current category
-    for (k = 0; k < m_NumActions; k++)
+    for (k = 0; k < m_NumActions; k++) {
       if (m_QueryDatabase[k].category == j) {
-        char *temp_desc = mem_rmalloc<char>(strlen(m_QueryDatabase[k].desc) + 1);
-        if (temp_desc == nullptr) {
-          MessageBox("Out of memory error in FillQueryMenu()!", "Memory Error!", MB_OK | MB_ICONEXCLAMATION);
-          return;
-        }
-        ParseOutQueryVarTypes(temp_desc, m_QueryDatabase[k].desc);
+        auto temp_desc = std::make_unique<char[]>(strlen(m_QueryDatabase[k].desc.get()) + 1);
+        ParseOutQueryVarTypes(temp_desc.get(), m_QueryDatabase[k].desc.get());
 
         query_ret_type = GetQueryReturnType(k, query_ret_name);
 
@@ -7169,19 +7047,21 @@ void CDallasMainDlg::FillQueryMenu(CMenu *query_menu, int command_offset, int va
         }
 
         if (types_match) {
-          category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc);
+          category_submenu.AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc.get());
           queries_added++;
-        } else
-          category_submenu.AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc);
-        mem_free(temp_desc);
+        } else {
+          category_submenu.AppendMenu(MF_GRAYED | MF_UNCHECKED | MF_STRING, (command_offset + k), temp_desc.get());
+        }
       }
+    }
 
     // Detach and add this submenu to the action menu
     ColumnizePopupMenu(&category_submenu);
-    if (queries_added == 0)
-      query_menu->AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j]);
-    else
-      query_menu->AppendMenu(MF_POPUP, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j]);
+    if (queries_added == 0) {
+      query_menu->AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j].get());
+    } else {
+      query_menu->AppendMenu(MF_POPUP, (UINT_PTR)category_submenu.Detach(), m_FunctionCategories[j].get());
+    }
   }
 }
 
@@ -7811,19 +7691,14 @@ int CDallasMainDlg::ParseSourceScript(char *filename) {
               }
 
               if (enum_value_string == nullptr || enum_value_name == nullptr ||
-                  GetEnumValueName(enum_entry->name, enum_value) != nullptr) {
+                  GetEnumValueName(enum_entry->name.get(), enum_value) != nullptr) {
                 value_entry = nullptr;
               } else if (enum_entry->num_values >= MAX_ENUM_VALUES ||
                          enum_entry->num_values >= (enum_entry->max_values + 2)) {
                 value_entry = nullptr;
               } else {
                 value_entry = &enum_entry->values[enum_entry->num_values++];
-                value_entry->name = mem_strdup(enum_value_name);
-                if (value_entry->name == nullptr) {
-                  FunctionFileParseError(NO_MEM_ERR, linenum, filename);
-                  cfclose(infile);
-                  return FALSE;
-                }
+                value_entry->name = mem_strdup_unique(enum_value_name);
                 value_entry->value = enum_value;
               }
             }
@@ -8479,10 +8354,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_SoundListSize)
+      if (index < 0 || index >= m_SoundListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = FindSoundName(m_SoundList[atoi(line)]);
+      } else {
+        node_data.int_val = FindSoundName(m_SoundList[atoi(line)].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8490,7 +8366,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_SoundList[atoi(line)]);
+        strcpy(node_data.str_val, m_SoundList[atoi(line)].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8510,10 +8386,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_TextureListSize)
+      if (index < 0 || index >= m_TextureListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = FindTextureName(m_TextureList[atoi(line)]);
+      } else {
+        node_data.int_val = FindTextureName(m_TextureList[atoi(line)].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8521,7 +8398,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_TextureList[atoi(line)]);
+        strcpy(node_data.str_val, m_TextureList[atoi(line)].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8541,10 +8418,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_PathListSize)
+      if (index < 0 || index >= m_PathListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = osipf_FindPathName(m_PathList[index]);
+      } else {
+        node_data.int_val = osipf_FindPathName(m_PathList[index].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8552,7 +8430,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_PathList[index]);
+        strcpy(node_data.str_val, m_PathList[index].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8566,10 +8444,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_MatcenListSize)
+      if (index < 0 || index >= m_MatcenListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = osipf_FindMatcenName(m_MatcenList[index]);
+      } else {
+        node_data.int_val = osipf_FindMatcenName(m_MatcenList[index].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8577,7 +8456,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_MatcenList[index]);
+        strcpy(node_data.str_val, m_MatcenList[index].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8591,10 +8470,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_GoalListSize)
+      if (index < 0 || index >= m_GoalListSize) {
         node_data.int_val = -1;
-      else
-        node_data.int_val = osipf_FindLevelGoalName(m_GoalList[index]);
+      } else {
+        node_data.int_val = osipf_FindLevelGoalName(m_GoalList[index].get());
+      }
 
       if (node_data.int_val < 0) {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8602,7 +8482,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
 
         // Display warning message here...
       } else {
-        strcpy(node_data.str_val, m_GoalList[index]);
+        strcpy(node_data.str_val, m_GoalList[index].get());
       }
       if ((line = strtok(nullptr, "")) == nullptr)
         return nullptr;
@@ -8613,10 +8493,10 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v0(char *line, int linenum, HTREEI
       if ((line = strtok(nullptr, ":")) == nullptr)
         return nullptr;
       index = atoi(line);
-      if (index < 0 || index >= m_StrmAudioListSize || !GamefileExists(m_StrmAudioList[index]))
+      if (index < 0 || index >= m_StrmAudioListSize || !GamefileExists(m_StrmAudioList[index].get())) {
         strcpy(node_data.str_val, "");
-      else {
-        strcpy(node_data.str_val, m_StrmAudioList[index]);
+      } else {
+        strcpy(node_data.str_val, m_StrmAudioList[index].get());
 
         // Display warning message here...
       }
@@ -8688,12 +8568,12 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 
     if (node_data.ID == OBJECT_TYPE) {
       if (index >= 0 && index < m_ObjectListSize) {
-        node_data.int_val = osipf_FindObjectName(m_ObjectList[index]);
+        node_data.int_val = osipf_FindObjectName(m_ObjectList[index].get());
         if (node_data.int_val != OBJECT_HANDLE_NONE) {
-          strcpy(node_data.str_val, m_ObjectList[index]);
+          strcpy(node_data.str_val, m_ObjectList[index].get());
         } else {
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Object Script Owner", m_ObjectList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Object Script Owner", m_ObjectList[index].get());
         }
       } else {
         node_data.int_val = OBJECT_HANDLE_NONE;
@@ -8701,13 +8581,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       }
     } else if (node_data.ID == TRIGGER_TYPE) {
       if (index >= 0 && index < m_TriggerListSize) {
-        node_data.int_val = osipf_FindTriggerName(m_TriggerList[index]);
+        node_data.int_val = osipf_FindTriggerName(m_TriggerList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_TriggerList[index]);
+          strcpy(node_data.str_val, m_TriggerList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Trigger Script Owner", m_TriggerList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Trigger Script Owner", m_TriggerList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8812,12 +8692,12 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 
       if (node_data.subID == USE_OBJECT_HANDLE) {
         if (index >= 0 && index < m_DoorListSize) {
-          node_data.int_val = osipf_FindDoorName(m_DoorList[index]);
+          node_data.int_val = osipf_FindDoorName(m_DoorList[index].get());
           if (node_data.int_val != OBJECT_HANDLE_NONE) {
-            strcpy(node_data.str_val, m_DoorList[index]);
+            strcpy(node_data.str_val, m_DoorList[index].get());
           } else {
             strcpy(node_data.str_val, "");
-            SpecialScriptFileParseError(linenum, scriptID, "Door", m_DoorList[index]);
+            SpecialScriptFileParseError(linenum, scriptID, "Door", m_DoorList[index].get());
           }
         } else {
           node_data.int_val = OBJECT_HANDLE_NONE;
@@ -8843,12 +8723,12 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 
       if (node_data.subID == USE_OBJECT_HANDLE) {
         if (index >= 0 && index < m_ObjectListSize) {
-          node_data.int_val = osipf_FindObjectName(m_ObjectList[index]);
+          node_data.int_val = osipf_FindObjectName(m_ObjectList[index].get());
           if (node_data.int_val != OBJECT_HANDLE_NONE) {
-            strcpy(node_data.str_val, m_ObjectList[index]);
+            strcpy(node_data.str_val, m_ObjectList[index].get());
           } else {
             strcpy(node_data.str_val, "");
-            SpecialScriptFileParseError(linenum, scriptID, "Object", m_ObjectList[index]);
+            SpecialScriptFileParseError(linenum, scriptID, "Object", m_ObjectList[index].get());
           }
         } else {
           node_data.int_val = OBJECT_HANDLE_NONE;
@@ -8870,13 +8750,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_RoomListSize) {
-        node_data.int_val = osipf_FindRoomName(m_RoomList[index]);
+        node_data.int_val = osipf_FindRoomName(m_RoomList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_RoomList[index]);
+          strcpy(node_data.str_val, m_RoomList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Room", m_RoomList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Room", m_RoomList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -8894,13 +8774,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_TriggerListSize) {
-        node_data.int_val = osipf_FindTriggerName(m_TriggerList[index]);
+        node_data.int_val = osipf_FindTriggerName(m_TriggerList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_TriggerList[index]);
+          strcpy(node_data.str_val, m_TriggerList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Trigger", m_TriggerList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Trigger", m_TriggerList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9010,13 +8890,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_SoundListSize) {
-        node_data.int_val = osipf_FindSoundName(m_SoundList[index]);
+        node_data.int_val = osipf_FindSoundName(m_SoundList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_SoundList[index]);
+          strcpy(node_data.str_val, m_SoundList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Sound", m_SoundList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Sound", m_SoundList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9033,10 +8913,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
         return nullptr;
       strcpy(node_data.name, line);
 
-      if (index >= 0 && index < m_SpecnameListSize)
-        strcpy(node_data.str_val, m_SpecnameList[index]);
-      else
+      if (index >= 0 && index < m_SpecnameListSize) {
+        strcpy(node_data.str_val, m_SpecnameList[index].get());
+      } else {
         strcpy(node_data.str_val, "");
+      }
 
       add_node = TRUE;
       break;
@@ -9049,13 +8930,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_TextureListSize) {
-        node_data.int_val = osipf_FindTextureName(m_TextureList[index]);
+        node_data.int_val = osipf_FindTextureName(m_TextureList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_TextureList[index]);
+          strcpy(node_data.str_val, m_TextureList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Texture", m_TextureList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Texture", m_TextureList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9082,13 +8963,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_PathListSize) {
-        node_data.int_val = osipf_FindPathName(m_PathList[index]);
+        node_data.int_val = osipf_FindPathName(m_PathList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_PathList[index]);
+          strcpy(node_data.str_val, m_PathList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Path", m_PathList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Path", m_PathList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9109,13 +8990,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_MatcenListSize) {
-        node_data.int_val = osipf_FindMatcenName(m_MatcenList[index]);
+        node_data.int_val = osipf_FindMatcenName(m_MatcenList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_MatcenList[index]);
+          strcpy(node_data.str_val, m_MatcenList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Matcen", m_MatcenList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Matcen", m_MatcenList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9136,13 +9017,13 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_GoalListSize) {
-        node_data.int_val = osipf_FindLevelGoalName(m_GoalList[index]);
+        node_data.int_val = osipf_FindLevelGoalName(m_GoalList[index].get());
         if (node_data.int_val >= 0) {
-          strcpy(node_data.str_val, m_GoalList[index]);
+          strcpy(node_data.str_val, m_GoalList[index].get());
         } else {
           node_data.int_val = NOT_SPECIFIED_TYPE;
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Level Goal", m_GoalList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Level Goal", m_GoalList[index].get());
         }
       } else {
         node_data.int_val = NOT_SPECIFIED_TYPE;
@@ -9160,11 +9041,11 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
       strcpy(node_data.name, line);
 
       if (index >= 0 && index < m_StrmAudioListSize) {
-        if (GamefileExists(m_StrmAudioList[index])) {
-          strcpy(node_data.str_val, m_StrmAudioList[index]);
+        if (GamefileExists(m_StrmAudioList[index].get())) {
+          strcpy(node_data.str_val, m_StrmAudioList[index].get());
         } else {
           strcpy(node_data.str_val, "");
-          SpecialScriptFileParseError(linenum, scriptID, "Streaming Audio File", m_StrmAudioList[index]);
+          SpecialScriptFileParseError(linenum, scriptID, "Streaming Audio File", m_StrmAudioList[index].get());
         }
       } else {
         strcpy(node_data.str_val, "");
@@ -9304,7 +9185,7 @@ int CDallasMainDlg::ParseMsgTableFile(char *filename) {
 
 // Initializes the data storage space
 void CDallasMainDlg::InitCustomScriptStorage(void) {
-  m_CustomScriptLines = nullptr;
+  m_CustomScriptLines.reset();
 
   m_NumCustomScriptLines = 0;
   m_MaxNumCustomScriptLines = 0;
@@ -9312,17 +9193,8 @@ void CDallasMainDlg::InitCustomScriptStorage(void) {
 
 // Clears any memory allocated for storage
 void CDallasMainDlg::ClearCustomScriptStorage(void) {
-  // Clear all the lines
-  for (int j = 0; j < m_NumCustomScriptLines; j++) {
-    mem_free(m_CustomScriptLines[j]);
-    m_CustomScriptLines[j] = nullptr;
-  }
-
-  // Clear the array of line pointers
-  if (m_CustomScriptLines != nullptr) {
-    mem_free(m_CustomScriptLines);
-    m_CustomScriptLines = nullptr;
-  }
+  // Clear the array of lines (and the lines themselves)
+  m_CustomScriptLines.reset();
 
   m_NumCustomScriptLines = 0;
   m_MaxNumCustomScriptLines = 0;
@@ -9411,13 +9283,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
       ClearCustomScriptStorage();
       m_MaxNumCustomScriptLines = CountCustomScriptLines(infile);
       if (m_MaxNumCustomScriptLines > 0) {
-        m_CustomScriptLines = mem_rmalloc<char *>(m_MaxNumCustomScriptLines);
-        if (m_CustomScriptLines == nullptr) {
-          MessageBox("ERROR: Ran out of memory allocating custom script block", "Custom Script Parse Error",
-                     MB_OK | MB_ICONEXCLAMATION);
-          cfclose(infile);
-          return FALSE;
-        }
+        m_CustomScriptLines = std::make_unique<std::unique_ptr<char[]>[]>(m_MaxNumCustomScriptLines);
       }
 
       // Read all the lines in the block
@@ -9435,13 +9301,7 @@ int CDallasMainDlg::ParseCustomScriptFile(char *filename, bool show_errors /*=TR
 
         // Store this line
         if (m_NumCustomScriptLines < m_MaxNumCustomScriptLines) {
-          m_CustomScriptLines[m_NumCustomScriptLines] = mem_strdup(linebuf);
-          if (m_CustomScriptLines[m_NumCustomScriptLines] == nullptr) {
-            MessageBox("ERROR: Ran out of memory parsing custom script block", "Custom Script Parse Error",
-                       MB_OK | MB_ICONEXCLAMATION);
-            cfclose(infile);
-            return FALSE;
-          }
+          m_CustomScriptLines[m_NumCustomScriptLines] = mem_strdup_unique(linebuf);
           m_NumCustomScriptLines++;
         } else {
           MessageBox("ERROR: The maximum custom script block line limit has been exceeded.\n\nThe excess lines will "
@@ -9478,8 +9338,9 @@ void CDallasMainDlg::WriteCustomScriptBlock(void) {
     O(("// Enter your custom script code here"));
     O((" "));
   } else {
-    for (int j = 0; j < m_NumCustomScriptLines; j++)
-      O(("%s", m_CustomScriptLines[j]));
+    for (int j = 0; j < m_NumCustomScriptLines; j++) {
+      O(("%s", m_CustomScriptLines[j].get()));
+    }
   }
 
   O(("%s", CUSTOM_SCRIPT_BLOCK_END_TAG));
@@ -10592,7 +10453,7 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
   }
 
   // Handle the DALLAS custom queries first
-  if (strcmp(m_QueryDatabase[data->ID].func, "qScriptExecuted_DALLAS") == 0) {
+  if (strcmp(m_QueryDatabase[data->ID].func.get(), "qScriptExecuted_DALLAS") == 0) {
     HTREEITEM child_node;
     tTreeNodeData *child_data;
     child_node = m_ScriptTree.GetChildItem(query_node);
@@ -10605,7 +10466,7 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
     cfprintf(CurrentOutputFile, "(%s > 0)", tmp_name.GetBuffer(0));
     return;
   }
-  if (strcmp(m_QueryDatabase[data->ID].func, "qTimesScriptExecuted_DALLAS") == 0) {
+  if (strcmp(m_QueryDatabase[data->ID].func.get(), "qTimesScriptExecuted_DALLAS") == 0) {
     HTREEITEM child_node;
     tTreeNodeData *child_data;
     child_node = m_ScriptTree.GetChildItem(query_node);
@@ -10620,7 +10481,7 @@ void CDallasMainDlg::WriteQueryFunctionCall(HTREEITEM query_node) {
   }
 
   // Write out the function name
-  cfprintf(CurrentOutputFile, "%s(", m_QueryDatabase[data->ID].func);
+  cfprintf(CurrentOutputFile, "%s(", m_QueryDatabase[data->ID].func.get());
 
   // Write out the parameter arguments
   HTREEITEM param_node;
@@ -10724,7 +10585,7 @@ void CDallasMainDlg::WriteActionFunctionCall(HTREEITEM action_node) {
 
   // Write out the function name
   TabOver();
-  cfprintf(CurrentOutputFile, "%s(", m_ActionDatabase[data->ID].func);
+  cfprintf(CurrentOutputFile, "%s(", m_ActionDatabase[data->ID].func.get());
 
   // Write out the parameter arguments
   HTREEITEM param_node;
@@ -10938,11 +10799,12 @@ void CDallasMainDlg::WriteUserTypeVals(void) {
 
   for (j = 0; j < m_NumEnums; j++) {
     if (m_EnumDatabase[j].is_user_type) {
-      O(("%s %s", USERTYPE_VALS_START_TAG, m_EnumDatabase[j].name));
+      O(("%s %s", USERTYPE_VALS_START_TAG, m_EnumDatabase[j].name.get()));
       for (k = 0; k < m_EnumDatabase[j].num_values; k++) {
         tEnumValueEntry *value_entry = &m_EnumDatabase[j].values[k];
-        if (value_entry->value != -1)
-          O(("%d:%s", value_entry->value, value_entry->name));
+        if (value_entry->value != -1) {
+          O(("%d:%s", value_entry->value, value_entry->name.get()));
+        }
       }
       O(("%s", USERTYPE_VALS_END_TAG));
       O((" "));
@@ -10959,78 +10821,89 @@ void CDallasMainDlg::WriteNameLists(void) {
 
   // Write out the door list
   O(("%s", DOOR_LIST_START_TAG));
-  for (j = 0; j < m_DoorListSize; j++)
-    O(("%s", m_DoorList[j]));
+  for (j = 0; j < m_DoorListSize; j++) {
+    O(("%s", m_DoorList[j].get()));
+  }
   O(("%s", DOOR_LIST_END_TAG));
   O((" "));
 
   // Write out the object list
   O(("%s", OBJECT_LIST_START_TAG));
-  for (j = 0; j < m_ObjectListSize; j++)
-    O(("%s", m_ObjectList[j]));
+  for (j = 0; j < m_ObjectListSize; j++) {
+    O(("%s", m_ObjectList[j].get()));
+  }
   O(("%s", OBJECT_LIST_END_TAG));
   O((" "));
 
   // Write out the room list
   O(("%s", ROOM_LIST_START_TAG));
-  for (j = 0; j < m_RoomListSize; j++)
-    O(("%s", m_RoomList[j]));
+  for (j = 0; j < m_RoomListSize; j++) {
+    O(("%s", m_RoomList[j].get()));
+  }
   O(("%s", ROOM_LIST_END_TAG));
   O((" "));
 
   // Write out the trigger list
   O(("%s", TRIGGER_LIST_START_TAG));
-  for (j = 0; j < m_TriggerListSize; j++)
-    O(("%s", m_TriggerList[j]));
+  for (j = 0; j < m_TriggerListSize; j++) {
+    O(("%s", m_TriggerList[j].get()));
+  }
   O(("%s", TRIGGER_LIST_END_TAG));
   O((" "));
 
   // Write out the sound list
   O(("%s", SOUND_LIST_START_TAG));
-  for (j = 0; j < m_SoundListSize; j++)
-    O(("%s", m_SoundList[j]));
+  for (j = 0; j < m_SoundListSize; j++) {
+    O(("%s", m_SoundList[j].get()));
+  }
   O(("%s", SOUND_LIST_END_TAG));
   O((" "));
 
   // Write out the texture list
   O(("%s", TEXTURE_LIST_START_TAG));
-  for (j = 0; j < m_TextureListSize; j++)
-    O(("%s", m_TextureList[j]));
+  for (j = 0; j < m_TextureListSize; j++) {
+    O(("%s", m_TextureList[j].get()));
+  }
   O(("%s", TEXTURE_LIST_END_TAG));
   O((" "));
 
   // Write out the specname list
   O(("%s", SPECNAME_LIST_START_TAG));
-  for (j = 0; j < m_SpecnameListSize; j++)
-    O(("%s", m_SpecnameList[j]));
+  for (j = 0; j < m_SpecnameListSize; j++) {
+    O(("%s", m_SpecnameList[j].get()));
+  }
   O(("%s", SPECNAME_LIST_END_TAG));
   O((" "));
 
   // Write out the Path list
   O(("%s", PATH_LIST_START_TAG));
-  for (j = 0; j < m_PathListSize; j++)
-    O(("%s", m_PathList[j]));
+  for (j = 0; j < m_PathListSize; j++) {
+    O(("%s", m_PathList[j].get()));
+  }
   O(("%s", PATH_LIST_END_TAG));
   O((" "));
 
   // Write out the Matcen list
   O(("%s", MATCEN_LIST_START_TAG));
-  for (j = 0; j < m_MatcenListSize; j++)
-    O(("%s", m_MatcenList[j]));
+  for (j = 0; j < m_MatcenListSize; j++) {
+    O(("%s", m_MatcenList[j].get()));
+  }
   O(("%s", MATCEN_LIST_END_TAG));
   O((" "));
 
   // Write out the Goal list
   O(("%s", GOAL_LIST_START_TAG));
-  for (j = 0; j < m_GoalListSize; j++)
-    O(("%s", m_GoalList[j]));
+  for (j = 0; j < m_GoalListSize; j++) {
+    O(("%s", m_GoalList[j].get()));
+  }
   O(("%s", GOAL_LIST_END_TAG));
   O((" "));
 
   // Write out the StrmAudio list
   O(("%s", STRM_AUDIO_LIST_START_TAG));
-  for (j = 0; j < m_StrmAudioListSize; j++)
-    O(("%s", m_StrmAudioList[j]));
+  for (j = 0; j < m_StrmAudioListSize; j++) {
+    O(("%s", m_StrmAudioList[j].get()));
+  }
   O(("%s", STRM_AUDIO_LIST_END_TAG));
   O((" "));
 }
@@ -11052,9 +10925,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_DOOR_NAMES		%d", m_DoorListSize));
   if (m_DoorListSize > 0) {
     O(("const char *Door_names[NUM_DOOR_NAMES] = {"));
-    for (j = 0; j < (m_DoorListSize - 1); j++)
-      O(("	\"%s\",", m_DoorList[j]));
-    O(("	\"%s\"", m_DoorList[j]));
+    for (j = 0; j < (m_DoorListSize - 1); j++) {
+      O(("	\"%s\",", m_DoorList[j].get()));
+    }
+    O(("	\"%s\"", m_DoorList[j].get()));
     O(("};"));
     O(("int Door_handles[NUM_DOOR_NAMES];"));
   } else {
@@ -11067,9 +10941,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_OBJECT_NAMES		%d", m_ObjectListSize));
   if (m_ObjectListSize > 0) {
     O(("const char *Object_names[NUM_OBJECT_NAMES] = {"));
-    for (j = 0; j < (m_ObjectListSize - 1); j++)
-      O(("	\"%s\",", m_ObjectList[j]));
-    O(("	\"%s\"", m_ObjectList[j]));
+    for (j = 0; j < (m_ObjectListSize - 1); j++) {
+      O(("	\"%s\",", m_ObjectList[j].get()));
+    }
+    O(("	\"%s\"", m_ObjectList[j].get()));
     O(("};"));
     O(("int Object_handles[NUM_OBJECT_NAMES];"));
   } else {
@@ -11082,9 +10957,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_ROOM_NAMES		%d", m_RoomListSize));
   if (m_RoomListSize > 0) {
     O(("const char *Room_names[NUM_ROOM_NAMES] = {"));
-    for (j = 0; j < (m_RoomListSize - 1); j++)
-      O(("	\"%s\",", m_RoomList[j]));
-    O(("	\"%s\"", m_RoomList[j]));
+    for (j = 0; j < (m_RoomListSize - 1); j++) {
+      O(("	\"%s\",", m_RoomList[j].get()));
+    }
+    O(("	\"%s\"", m_RoomList[j].get()));
     O(("};"));
     O(("int Room_indexes[NUM_ROOM_NAMES];"));
   } else {
@@ -11097,9 +10973,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_TRIGGER_NAMES		%d", m_TriggerListSize));
   if (m_TriggerListSize > 0) {
     O(("const char *Trigger_names[NUM_TRIGGER_NAMES] = {"));
-    for (j = 0; j < (m_TriggerListSize - 1); j++)
-      O(("	\"%s\",", m_TriggerList[j]));
-    O(("	\"%s\"", m_TriggerList[j]));
+    for (j = 0; j < (m_TriggerListSize - 1); j++) {
+      O(("	\"%s\",", m_TriggerList[j].get()));
+    }
+    O(("	\"%s\"", m_TriggerList[j].get()));
     O(("};"));
     O(("int Trigger_indexes[NUM_TRIGGER_NAMES];"));
     O(("int Trigger_faces[NUM_TRIGGER_NAMES];"));
@@ -11116,9 +10993,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_SOUND_NAMES		%d", m_SoundListSize));
   if (m_SoundListSize > 0) {
     O(("const char *Sound_names[NUM_SOUND_NAMES] = {"));
-    for (j = 0; j < (m_SoundListSize - 1); j++)
-      O(("	\"%s\",", m_SoundList[j]));
-    O(("	\"%s\"", m_SoundList[j]));
+    for (j = 0; j < (m_SoundListSize - 1); j++) {
+      O(("	\"%s\",", m_SoundList[j].get()));
+    }
+    O(("	\"%s\"", m_SoundList[j].get()));
     O(("};"));
     O(("int Sound_indexes[NUM_SOUND_NAMES];"));
   } else {
@@ -11131,9 +11009,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_TEXTURE_NAMES		%d", m_TextureListSize));
   if (m_TextureListSize > 0) {
     O(("const char *Texture_names[NUM_TEXTURE_NAMES] = {"));
-    for (j = 0; j < (m_TextureListSize - 1); j++)
-      O(("	\"%s\",", m_TextureList[j]));
-    O(("	\"%s\"", m_TextureList[j]));
+    for (j = 0; j < (m_TextureListSize - 1); j++) {
+      O(("	\"%s\",", m_TextureList[j].get()));
+    }
+    O(("	\"%s\"", m_TextureList[j].get()));
     O(("};"));
     O(("int Texture_indexes[NUM_TEXTURE_NAMES];"));
   } else {
@@ -11146,9 +11025,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_PATH_NAMES		%d", m_PathListSize));
   if (m_PathListSize > 0) {
     O(("const char *Path_names[NUM_PATH_NAMES] = {"));
-    for (j = 0; j < (m_PathListSize - 1); j++)
-      O(("	\"%s\",", m_PathList[j]));
-    O(("	\"%s\"", m_PathList[j]));
+    for (j = 0; j < (m_PathListSize - 1); j++) {
+      O(("	\"%s\",", m_PathList[j].get()));
+    }
+    O(("	\"%s\"", m_PathList[j].get()));
     O(("};"));
     O(("int Path_indexes[NUM_PATH_NAMES];"));
   } else {
@@ -11161,9 +11041,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_MATCEN_NAMES		%d", m_MatcenListSize));
   if (m_MatcenListSize > 0) {
     O(("const char *Matcen_names[NUM_MATCEN_NAMES] = {"));
-    for (j = 0; j < (m_MatcenListSize - 1); j++)
-      O(("	\"%s\",", m_MatcenList[j]));
-    O(("	\"%s\"", m_MatcenList[j]));
+    for (j = 0; j < (m_MatcenListSize - 1); j++) {
+      O(("	\"%s\",", m_MatcenList[j].get()));
+    }
+    O(("	\"%s\"", m_MatcenList[j].get()));
     O(("};"));
     O(("int Matcen_indexes[NUM_MATCEN_NAMES];"));
   } else {
@@ -11176,9 +11057,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_GOAL_NAMES		%d", m_GoalListSize));
   if (m_GoalListSize > 0) {
     O(("const char *Goal_names[NUM_GOAL_NAMES] = {"));
-    for (j = 0; j < (m_GoalListSize - 1); j++)
-      O(("	\"%s\",", m_GoalList[j]));
-    O(("	\"%s\"", m_GoalList[j]));
+    for (j = 0; j < (m_GoalListSize - 1); j++) {
+      O(("	\"%s\",", m_GoalList[j].get()));
+    }
+    O(("	\"%s\"", m_GoalList[j].get()));
     O(("};"));
     O(("int Goal_indexes[NUM_GOAL_NAMES];"));
   } else {
@@ -11191,9 +11073,10 @@ void CDallasMainDlg::WriteNameListArrays(void) {
   O(("#define NUM_MESSAGE_NAMES		%d", m_MessageNameListSize));
   if (m_MessageNameListSize > 0) {
     O(("const char *Message_names[NUM_MESSAGE_NAMES] = {"));
-    for (j = 0; j < (m_MessageNameListSize - 1); j++)
-      O(("	\"%s\",", m_MessageNameList[j]));
-    O(("	\"%s\"", m_MessageNameList[j]));
+    for (j = 0; j < (m_MessageNameListSize - 1); j++) {
+      O(("	\"%s\",", m_MessageNameList[j].get()));
+    }
+    O(("	\"%s\"", m_MessageNameList[j].get()));
     O(("};"));
     O(("const char *Message_strings[NUM_MESSAGE_NAMES];"));
   } else {
@@ -13944,14 +13827,15 @@ void CDallasMainDlg::ReplaceWithLiteralNode(int literal_type, int index) {
   if (data->type == EXPRESSION_NODE || data->type == PARAMETER_NODE) {
 
     CString tmp_str;
-    if (literal_type == ENUM_PARAMETER_TYPE)
-      tmp_str = m_EnumDatabase[index].name;
-    else if (literal_type == FLAG_PARAMETER_TYPE)
-      tmp_str = m_FlagDatabase[index].name;
-    else if (GetNodeType(m_ScriptTree.GetParentItem(selected_node)) == CONDITIONAL_STATEMENT_NODE)
+    if (literal_type == ENUM_PARAMETER_TYPE) {
+      tmp_str = m_EnumDatabase[index].name.get();
+    } else if (literal_type == FLAG_PARAMETER_TYPE) {
+      tmp_str = m_FlagDatabase[index].name.get();
+    } else if (GetNodeType(m_ScriptTree.GetParentItem(selected_node)) == CONDITIONAL_STATEMENT_NODE) {
       tmp_str = GetLiteralName(literal_type);
-    else
+    } else {
       tmp_str = data->name;
+    }
 
     // Create a default parameter node for the chosen literal
     CString name_text, default_text, range_text;
@@ -15287,7 +15171,7 @@ void CDallasMainDlg::OnBegindragEventTree(NMHDR *pNMHDR, LRESULT *pResult) {
     return;
 
   // get the image list for dragging
-  m_pDragImage = m_ScriptTree.CreateDragImage(m_hitemDrag);
+  m_pDragImage.reset(m_ScriptTree.CreateDragImage(m_hitemDrag));
 
   // CreateDragImage() returns NULL if no image list
   // associated with the tree view control
@@ -15336,7 +15220,7 @@ void CDallasMainDlg::OnLButtonUp(UINT nFlags, CPoint point) {
     CImageList::DragLeave(this);
     CImageList::EndDrag();
     ReleaseCapture();
-    delete m_pDragImage;
+    m_pDragImage.reset();
 
     // Remove drop target highlighting
     m_ScriptTree.SelectDropTarget(nullptr);

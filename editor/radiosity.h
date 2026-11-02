@@ -65,6 +65,8 @@
 #ifndef RADIOSITY_H
 #define RADIOSITY_H
 
+#include <memory>
+
 #include "pserror.h"
 #include "pstypes.h"
 #include "3d.h"
@@ -88,7 +90,7 @@ struct spectra {
 #define EF_SMALL 2 // Don't blend this one into the lightmap - it will corrupt!
 
 struct rad_element {
-  vector *verts;
+  std::unique_ptr<vector[]> verts;
   spectra exitance;
   float area;
   uint8_t num_verts;
@@ -121,9 +123,9 @@ struct rad_surface {
   float reflectivity;  // how much light bounces off
   uint8_t xresolution; // how many elements (resolution x resolution) for this face
   uint8_t yresolution;
-  rad_element *elements; // list of elements for this surface
-  vector normal;         // normal of this surface
-  vector *verts;
+  std::unique_ptr<rad_element[]> elements; // list of elements for this surface
+  vector normal;                           // normal of this surface
+  std::unique_ptr<vector[]> verts;
 
   uint8_t surface_type; // See ST_ types above
 
@@ -142,7 +144,7 @@ struct rad_point {
   uint8_t code;
 };
 
-extern float *Room_strongest_value[][4];
+extern std::unique_ptr<float[]> Room_strongest_value[][4];
 
 extern int Ignore_terrain;
 extern int Ignore_satellites;
@@ -162,9 +164,9 @@ extern rad_surface *rad_MaxSurface;
 extern int rad_NumSurfaces;
 extern int rad_NumElements;
 
-extern float *rad_FormFactors;
+extern std::unique_ptr<float[]> rad_FormFactors;
 extern rad_surface *rad_Surfaces;
-extern volume_element *Volume_elements[];
+extern std::unique_ptr<volume_element[]> Volume_elements[];
 
 extern int UseVolumeLights;
 extern int Calculate_specular_lighting;

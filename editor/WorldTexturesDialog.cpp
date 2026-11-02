@@ -901,7 +901,7 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame) {
 
       if (texnum == n) // draw a white box if this is the current texture
       {
-        grViewport *vport = new grViewport(&m_TextureSurf);
+        auto vport = std::make_unique<grViewport>(&m_TextureSurf);
 
         int x = 0, y = 0;
 
@@ -911,8 +911,6 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame) {
         vport->line(GR_RGB(255, 255, 255), x + vport->width() - 1, y + vport->height() - 1, x, y + vport->height() - 1);
         vport->line(GR_RGB(255, 255, 255), x, y + vport->height() - 1, x, y);
         vport->unlock();
-
-        delete vport;
       }
 
       Desktop_surf->blt(x, y, &m_TextureSurf);
@@ -1998,24 +1996,22 @@ void CWorldTexturesDialog::OnPingPong() {
 // Returns true if got new name, false if cancelled.
 // the data in buf not changed if cancel is pressed
 bool InputTextureName(char *buf, int len, char *title, char *prompt, CWnd *wnd) {
-  char *tempbuf = mem_rmalloc<char>(len);
+  auto tempbuf = std::make_unique<char[]>(len);
 
-  strcpy(tempbuf, buf);
+  strcpy(tempbuf.get(), buf);
 
 try_again:
 
-  if (!InputString(tempbuf, len, title, prompt, wnd)) {
-    mem_free(tempbuf);
+  if (!InputString(tempbuf.get(), len, title, prompt, wnd)) {
     return 0;
   }
 
-  if (FindTextureName(tempbuf) != -1) {
+  if (FindTextureName(tempbuf.get()) != -1) {
     OutrageMessageBox("The name you specified is already in use.  Enter another name.");
     goto try_again;
   }
 
-  strcpy(buf, tempbuf);
-  mem_free(tempbuf);
+  strcpy(buf, tempbuf.get());
 
   return 1;
 }

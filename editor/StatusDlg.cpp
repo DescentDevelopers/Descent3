@@ -111,9 +111,7 @@ bool CProgress::InitProgress(fix min, fix max, int32_t iterations, CWnd *parent)
 
   if (!iterations)
     return false;
-  m_StatusDlg = new CStatusDlg;
-  if (!m_StatusDlg)
-    return false;
+  m_StatusDlg = std::make_unique<CStatusDlg>();
   m_StatusDlg->Create(IDD_STATUSDLG, parent);
   m_StatusDlg->ShowWindow(SW_SHOW);
   m_StatusDlg->Init(nmin, nmax, Step);
@@ -127,9 +125,7 @@ bool CProgress::InitProgress(CWnd *parent) {
   m_Max = 100;
   m_Min = 0;
 
-  m_StatusDlg = new CStatusDlg;
-  if (!m_StatusDlg)
-    return false;
+  m_StatusDlg = std::make_unique<CStatusDlg>();
   m_StatusDlg->Create(IDD_STATUSDLG, parent);
   m_StatusDlg->ShowWindow(SW_SHOW);
   m_StatusDlg->Init(0, 100, 1);
@@ -140,8 +136,7 @@ bool CProgress::InitProgress(CWnd *parent) {
 void CProgress::DestroyProgress() {
   ASSERT(m_StatusDlg != nullptr);
   m_StatusDlg->DestroyWindow();
-  if (m_StatusDlg)
-    delete m_StatusDlg;
+  m_StatusDlg.reset();
 }
 
 // By default the progress indicator says "Please wait...", here you can change that text...make sure you call

@@ -80,6 +80,8 @@
 // ScriptStudio.cpp : implementation file
 //
 
+#include <memory>
+
 #include "mfc_compatibility.h"
 #include "editor.h"
 #include "ScriptStudio.h"
@@ -462,11 +464,8 @@ bool CScriptStudio::FindNext(char *w) {
   UpdateEditText();
 
   // Make a copy of the script to work with
-  char *text;
-  text = mem_rmalloc<char>(m_EditText.GetLength() + 1);
-  if (!text)
-    Int3();
-  strcpy(text, (LPCSTR)m_EditText);
+  auto text = std::make_unique<char[]>(m_EditText.GetLength() + 1);
+  strcpy(text.get(), (LPCSTR)m_EditText);
   max = m_EditText.GetLength();
 
   // Make sure we aren't gonna try to go past the end of the buffer, start at 0 if we are
@@ -478,7 +477,7 @@ bool CScriptStudio::FindNext(char *w) {
     // check the character it's at in the buffer to the first character of the find string, if they are the same
     // it's a possibility, so Check the word
     if (toupper(text[index]) == toupper(w[0]))
-      if (CheckWord(index, text, w)) {
+      if (CheckWord(index, text.get(), w)) {
         // We got a match, so move the caret, and select the word
         SetCurrentIndex(index);
         SetSelection(index, strlen(w));
@@ -489,8 +488,7 @@ bool CScriptStudio::FindNext(char *w) {
       }
   }
 
-  if (text)
-    mem_free(text);
+  text.reset();
 
   if (!word_found) {
     // This can mean 2 things.  We searched to the end of the file and either never found a word, or we did at one time

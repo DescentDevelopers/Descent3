@@ -40,24 +40,10 @@ CFilePageAddDlg::CFilePageAddDlg(CWnd *pParent /*=NULL*/) : CDialog(CFilePageAdd
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
   m_NumberOfSelectedFiles = 0;
-  m_SelectedFiles = nullptr;
-  m_SelectedDestDir = nullptr;
   initial_path = "";
 }
 
-CFilePageAddDlg::~CFilePageAddDlg(void) {
-  if (m_SelectedFiles) {
-    for (int i = 0; i < m_NumberOfSelectedFiles; i++) {
-      if (m_SelectedFiles[i])
-        mem_free(m_SelectedFiles[i]);
-    }
-    mem_free(m_SelectedFiles);
-  }
-
-  if (m_SelectedDestDir) {
-    mem_free(m_SelectedDestDir);
-  }
-}
+CFilePageAddDlg::~CFilePageAddDlg(void) {}
 
 void CFilePageAddDlg::SetInitialPath(char *path) {
   char olddir[_MAX_PATH];
@@ -276,25 +262,18 @@ inline BOOL CFileList::RefreshBox(CString path) {
 
 inline void CFileList::setPath(CString path) {
   CString temp = path;
-  char *buffer;
 
   // check for valid entry
   if (temp.Right(1) != "\\")
     temp += "\\";
 
-  buffer = mem_rmalloc<char>(temp.GetLength() + 1);
+  auto buffer = mem_strdup_unique(temp.GetBuffer(0));
 
-  if (!buffer)
-    return;
+  m_csPath = buffer.get();
 
-  strcpy(buffer, temp.GetBuffer(0));
-
-  m_csPath = buffer;
-
-  if (callback)
-    (*callback)(buffer);
-
-  mem_free(buffer);
+  if (callback) {
+    (*callback)(buffer.get());
+  }
 }
 
 BOOL CFilePageAddDlg::OnInitDialog() {
@@ -394,31 +373,20 @@ bool CFilePageAddDlg::Quit(void) {
     return false;
   }
 
-  m_SelectedDestDir = mem_strdup(buffer);
+  m_SelectedDestDir = mem_strdup_unique(buffer);
 
   CListBox *list = (CListBox *)GetDlgItem(IDC_LIST_FILES);
   m_NumberOfSelectedFiles = list->GetSelCount();
 
   if (m_NumberOfSelectedFiles == 0) {
-    m_SelectedFiles = nullptr;
+    m_SelectedFiles.reset();
   } else {
 
-    m_SelectedFiles = mem_rmalloc<char *>(m_NumberOfSelectedFiles);
-    if (!m_SelectedFiles) {
-      m_SelectedFiles = nullptr;
-      m_NumberOfSelectedFiles = 0;
-      return true;
-    }
+    m_SelectedFiles = std::make_unique<std::unique_ptr<char[]>[]>(m_NumberOfSelectedFiles);
 
-    int *sel_items = mem_rmalloc<int>(m_NumberOfSelectedFiles);
-    if (!sel_items) {
-      mem_free(m_SelectedFiles);
-      m_SelectedFiles = nullptr;
-      m_NumberOfSelectedFiles = 0;
-      return true;
-    }
+    auto sel_items = std::make_unique<int[]>(m_NumberOfSelectedFiles);
 
-    list->GetSelItems(m_NumberOfSelectedFiles, sel_items);
+    list->GetSelItems(m_NumberOfSelectedFiles, sel_items.get());
     char temp[_MAX_PATH];
 
     char drive[_MAX_PATH];
@@ -432,7 +400,7 @@ bool CFilePageAddDlg::Quit(void) {
       // ummm, figure out real path here
       ddio_MakePath(buffer, drive, temp, nullptr);
 
-      m_SelectedFiles[i] = mem_strdup(buffer);
+      m_SelectedFiles[i] = mem_strdup_unique(buffer);
     }
   }
 

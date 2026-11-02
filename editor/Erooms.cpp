@@ -2522,9 +2522,7 @@ int FindTJoints(room *rp) {
 
 // Counts the number of unique textures in a level, plus gives names of textures used
 void CountUniqueTextures() {
-  uint16_t *texture_tracking = (uint16_t *)mem_malloc(MAX_TEXTURES * 2);
-  ASSERT(texture_tracking);
-  memset(texture_tracking, 0, MAX_TEXTURES * 2);
+  auto texture_tracking = std::make_unique<uint16_t[]>(MAX_TEXTURES);
 
   for (int i = 0; i <= Highest_room_index; i++) {
     room *rp = &Rooms[i];
@@ -2579,8 +2577,6 @@ void CountUniqueTextures() {
                  (GameTextures[i].flags & TF_ANIMATED) ? "" : GameBitmaps[GameTextures[i].bm_handle].name);
     }
   }
-
-  mem_free(texture_tracking);
 }
 
 // Returns the number of soundsource objects that don't have a sound attached

@@ -83,6 +83,8 @@
  * $NoKeywords: $
  */
 
+#include <memory>
+
 #include "mfc_compatibility.h"
 #include "editor.h"
 #include "AnimStatesDialog.h"
@@ -518,8 +520,8 @@ void CAnimStatesDialog::UpdateAnimStateView() {
   view_vector.z() = -(fabs(pm->maxs.z() - pm->mins.z()) * 2);
 
   surf.create(128, 128, BPP_16);
-  grViewport *vport = new grViewport(&surf);
-  StartEditorFrame(vport, &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
+  auto vport = std::make_unique<grViewport>(&surf);
+  StartEditorFrame(vport.get(), &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
   DrawPolygonModel(&zero_vector, &rot_matrix, bm_handle, norm_angles, 0, 1.0, 1.0, 1.0);
   EndEditorFrame();
 
@@ -527,7 +529,7 @@ void CAnimStatesDialog::UpdateAnimStateView() {
   y = rect.top + ((rect.bottom - rect.top) / 2) - surf.height() / 2;
   Desktop_surf->blt(x, y, &surf);
 
-  delete vport;
+  vport.reset();
   surf.free();
 }
 
