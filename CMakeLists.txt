@@ -107,9 +107,24 @@ if(FORCE_PORTABLE_INSTALL)
 
   set(D3_DATADIR "${CMAKE_INSTALL_DATADIR}")
 else()
-  set(CMAKE_INSTALL_DATADIR "${CMAKE_INSTALL_DATADIR}/Descent3")
-  # On system install files will go into /usr/share/Descent3
-  set(D3_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/Descent3")
+  # On Linux and OpenBSD, use lower-case directory names to match packaging
+  # conventions: data goes into <prefix>/share/descent3 and documentation into
+  # <prefix>/share/doc/descent3. Other platforms keep the Descent3 name.
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+    set(D3_INSTALL_SUBDIR "descent3")
+    # GNUInstallDirs leaves the CMAKE_INSTALL_DOCDIR cache entry empty unless
+    # the user sets it, and then defaults to share/doc/${PROJECT_NAME}. Replace
+    # only that default, so an explicit value is kept.
+    if("$CACHE{CMAKE_INSTALL_DOCDIR}" STREQUAL "")
+      set(CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc/${D3_INSTALL_SUBDIR}")
+    endif()
+  else()
+    set(D3_INSTALL_SUBDIR "Descent3")
+  endif()
+  set(CMAKE_INSTALL_DATADIR "${CMAKE_INSTALL_DATADIR}/${D3_INSTALL_SUBDIR}")
+  # D3_DATADIR is compiled into the game as a data search path, so derive it
+  # from the install location to keep the two in agreement.
+  GNUInstallDirs_get_absolute_install_dir(D3_DATADIR CMAKE_INSTALL_DATADIR DATADIR)
 endif()
 
 # Get info about multi-config environment
