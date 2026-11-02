@@ -85,6 +85,7 @@
 #define GAMESAVE_H
 
 #include <filesystem>
+#include <memory>
 
 #include "bitmap.h"
 #include "cfile.h"
@@ -110,6 +111,9 @@ struct gs_tables {
   int16_t ship_handles[MAX_SHIPS];
   int16_t wpn_handles[MAX_WEAPONS];
 };
+
+// translation tables used while loading a savegame or playing back a demo
+extern std::unique_ptr<gs_tables> gs_Xlates;
 
 //	savegame version info.
 // this should be handled like level file version, as to prevent invalidating old savegames

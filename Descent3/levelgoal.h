@@ -20,6 +20,7 @@
 #define _LEVELGOAL_H_
 
 #include <cstdint>
+#include <memory>
 #include "object.h"
 #include "cfile.h"
 #include <cstdlib>
@@ -41,10 +42,10 @@ public:
 
 class lgoal {
 private:
-  char *m_name;
-  char *m_item_name;
-  char *m_desc;
-  char *m_completion_message;
+  std::unique_ptr<char[]> m_name;
+  std::unique_ptr<char[]> m_item_name;
+  std::unique_ptr<char[]> m_desc;
+  std::unique_ptr<char[]> m_completion_message;
 
   int m_num_items;
   litem m_item[MAX_GOAL_ITEMS];
@@ -63,25 +64,16 @@ private:
 
 public:
   lgoal() {
-    m_name = nullptr;
-    m_item_name = nullptr;
-    m_desc = nullptr;
     m_num_items = 0;
-    m_completion_message = nullptr;
     m_priority = 0;
     m_g_list = 0;
     m_flags = LGF_ENABLED | LGF_TELCOM_LISTS;
     m_modified = 0;
     m_goal_completed = false;
   };
-  ~lgoal() {
-    if (m_name)
-      mem_free(m_name);
-    if (m_item_name)
-      mem_free(m_item_name);
-    if (m_desc)
-      mem_free(m_desc);
-  };
+  lgoal(const lgoal &) = delete;
+  lgoal &operator=(const lgoal &) = delete;
+  lgoal &operator=(lgoal &&other) noexcept = default;
 
   int AddItem();
   bool DeleteItem(int index);

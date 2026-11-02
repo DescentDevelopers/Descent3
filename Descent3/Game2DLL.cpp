@@ -532,7 +532,7 @@ void GetGameAPI(game_api *api) {
   api->vp[19] = (int *)&Game_window_x;
   api->vp[20] = (int *)&Game_window_y;
   api->vp[21] = (int *)&Poly_models;
-  api->vp[22] = (int *)VisEffects;
+  api->vp[22] = (int *)VisEffects.get();
   api->vp[23] = (int *)&Highest_vis_effect_index;
   api->vp[24] = (int *)&Multi_next_level;
   api->vp[25] = (int *)&Level_info;

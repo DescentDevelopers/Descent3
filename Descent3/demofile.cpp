@@ -267,6 +267,7 @@
 
 #include <cstdio>
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "ddio.h"
@@ -324,8 +325,6 @@ bool Demo_make_movie = false;
 #define DEMO_PINFO_UPDATE .1
 #define MAX_COOP_TURRETS 400
 extern float turret_holder[MAX_COOP_TURRETS];
-
-extern gs_tables *gs_Xlates;
 
 extern float Min_frametime;
 extern float Max_frametime;
@@ -794,9 +793,7 @@ int DemoReadHeader() {
   FrameCount = frame_count;
   Demo_next_frame = demo_gametime;
 
-  if (gs_Xlates)
-    mem_free(gs_Xlates);
-  gs_Xlates = mem_rmalloc<gs_tables>();
+  gs_Xlates = std::make_unique<gs_tables>();
 
   try {
     LGSXlateTables(Demo_cfp);
@@ -1435,8 +1432,7 @@ void DemoAbort(bool deletefile) {
   is_multi_demo = false;
   if (Demo_flags != DF_NONE) {
     // We're done with the xlate table, so free it
-    mem_free(gs_Xlates);
-    gs_Xlates = nullptr;
+    gs_Xlates.reset();
 
     cfclose(Demo_cfp);
     Demo_flags = DF_NONE;
@@ -1696,7 +1692,6 @@ void DemoReadPersistantHUDMessage() {
   float time;
   int flags;
   int sound_index;
-  char *fmt;
 
   color = (uint32_t)cf_ReadInt(Demo_cfp);
   x = cf_ReadInt(Demo_cfp);
@@ -1705,10 +1700,9 @@ void DemoReadPersistantHUDMessage() {
   flags = cf_ReadInt(Demo_cfp);
   sound_index = cf_ReadInt(Demo_cfp);
   int msglen = cf_ReadShort(Demo_cfp);
-  fmt = mem_rmalloc<char>(msglen);
-  cf_ReadBytes((uint8_t *)fmt, msglen, Demo_cfp);
-  AddPersistentHUDMessage(color, x, y, time, flags, sound_index, fmt);
-  mem_free(fmt);
+  auto fmt = std::make_unique<char[]>(msglen);
+  cf_ReadBytes((uint8_t *)fmt.get(), msglen, Demo_cfp);
+  AddPersistentHUDMessage(color, x, y, time, flags, sound_index, fmt.get());
 }
 
 void DemoWriteSetObjDead(object *obj) {
