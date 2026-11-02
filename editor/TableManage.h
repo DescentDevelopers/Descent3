@@ -19,6 +19,8 @@
 #ifndef _TABLE_MANAGE_H_
 #define _TABLE_MANAGE_H_
 
+#include <memory>
+
 #include "genericpage.h"
 #include "pstypes.h"
 
@@ -31,7 +33,7 @@ class GenericPageNode {
 
 private:
   GenericPageNode *prev;
-  GenericPageNode *next;
+  std::unique_ptr<GenericPageNode> next;
 
   mngs_generic_page genericpage; // Generic Page Data
   uint32_t page_id;              // Page's file index (i.e. the page_id'th page in file)
@@ -46,7 +48,7 @@ public:
 // Generic Page List class (maintains linked list of pages)
 class GenericPageList {
 private:
-  GenericPageNode *m_head;
+  std::unique_ptr<GenericPageNode> m_head;
   GenericPageNode *m_tail;
   uint32_t m_size;
 
@@ -67,7 +69,7 @@ public:
   bool IsLoaded(void) { return (m_TableLoaded); }
 
   void ClearList(void);
-  bool AddToList(GenericPageNode *node);
+  bool AddToList(std::unique_ptr<GenericPageNode> node);
   bool LoadTable(char *table_filename);
   bool SaveTable(char *table_filename);
   bool FillFromList(CComboBox *list);

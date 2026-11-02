@@ -68,6 +68,8 @@
 #ifndef _GROUP_H
 #define _GROUP_H
 
+#include <memory>
+
 // Define room, so we don't have to include room.h
 struct room;
 struct object;
@@ -75,27 +77,29 @@ struct trigger;
 
 // A group.  Used for cut, paste, copy, etc.
 struct group {
-  int nrooms;        // number of rooms in this group
-  room *rooms;       // pointer to list of rooms
-  int attachroom;    // which room is attached when pasting
-  int attachface;    // which face is attached when pasting
-  int nobjects;      // how many objects
-  int ndoors;        // how many doors
-  object *objects;   // pointer to list of objects
-  int ntriggers;     // how many triggers
-  trigger *triggers; // pointer to list of triggers
-};
+  int nrooms = 0;                      // number of rooms in this group
+  std::unique_ptr<room[]> rooms;       // list of rooms
+  int attachroom = 0;                  // which room is attached when pasting
+  int attachface = 0;                  // which face is attached when pasting
+  int nobjects = 0;                    // how many objects
+  int ndoors = 0;                      // how many doors
+  std::unique_ptr<object[]> objects;   // list of objects
+  int ntriggers = 0;                   // how many triggers
+  std::unique_ptr<trigger[]> triggers; // list of triggers
 
-// Free a group.
-// Parameters:	g - the group to be freed
-void FreeGroup(group *g);
+  group() = default;
+  // Frees the rooms' contents (FreeRoom); the arrays themselves are freed by their owners
+  ~group();
+  group(const group &) = delete;
+  group &operator=(const group &) = delete;
+};
 
 // Copy the given list of rooms to a group
 // Parameters:	nrooms - the number of rooms in list
 //					roomnums - pointer to list of room numbers
 //					attachroom, attachface - where group attaches when pasted
 // Returns:		pointer to group
-group *CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface);
+std::unique_ptr<group> CopyGroup(int nrooms, int *roomnums, int attachroom, int attachface);
 
 // Delete the given list of rooms
 // Parameters:	nrooms - the number of rooms in list
@@ -124,6 +128,6 @@ void SaveGroup(char *filename, group *g);
 
 // Loads a group from disk
 // Returns:	pointer to the group loaded
-group *LoadGroup(char *filename);
+std::unique_ptr<group> LoadGroup(char *filename);
 
 #endif // ifdef _GROUP_H

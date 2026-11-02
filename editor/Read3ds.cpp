@@ -164,8 +164,8 @@ struct reading_room {
   int num_faces;       // how many poygons in this room
   int num_portals;     // how many connections in this room
   int num_verts;       // how many verts in the room
-  reading_face *faces; // pointer to list of faces
-  vector *verts;       // array of vertices for this room
+  std::unique_ptr<reading_face[]> faces; // pointer to list of faces
+  std::unique_ptr<vector[]> verts;       // array of vertices for this room
   int objects;         // index of first object in this room
   float static_light;  // the amount of light in this room
 };
@@ -204,8 +204,8 @@ int Read3DSMaxFile(char *filename) {
   Nest_level = 0;
 
   // Alloc space for reading stuff in
-  Reading_room.faces = mem_rmalloc<reading_face>(MAX_READING_ROOM_FACES);
-  Reading_room.verts = mem_rmalloc<vector>(MAX_VERTS_PER_ROOM);
+  Reading_room.faces = std::make_unique<reading_face[]>(MAX_READING_ROOM_FACES);
+  Reading_room.verts = std::make_unique<vector[]>(MAX_VERTS_PER_ROOM);
 
   Reading_room.num_faces = 0;
   Reading_room.num_verts = 0;
@@ -258,7 +258,8 @@ int Read3DSMaxFile(char *filename) {
     reading_room *rp = &Reading_room;
     reading_face *mfp = &rp->faces[i];
     // vm_GetNormal(&Reading_room.faces[i].normal,&rp->verts[mfp->face_verts[0]],&rp->verts[mfp->face_verts[1]],&rp->verts[mfp->face_verts[2]]);
-    if (!ComputeNormal(&Reading_room.faces[i].normal, Reading_room.faces[i].num_verts, mfp->face_verts, rp->verts)) {
+    if (!ComputeNormal(&Reading_room.faces[i].normal, Reading_room.faces[i].num_verts, mfp->face_verts,
+                       rp->verts.get())) {
       mprintf(1, "Warning: Low precision normal for face %d\n", i);
       bad_normals++;
     }
@@ -380,10 +381,8 @@ skip_combine:;
 
   // Free our verts
 
-  if (Reading_room.faces)
-    mem_free(Reading_room.faces);
-  if (Reading_room.verts)
-    mem_free(Reading_room.verts);
+  Reading_room.faces.reset();
+  Reading_room.verts.reset();
 
   return ROOMNUM(rp);
 }
@@ -779,7 +778,7 @@ int CombineFaces(reading_face *dest, reading_face *a, reading_face *b) {
         }
         ASSERT(dest->num_verts > 2);
 
-        if ((CheckFaceConcavity(dest->num_verts, dest->face_verts, &dest->normal, Reading_room.verts)) >= 0)
+        if ((CheckFaceConcavity(dest->num_verts, dest->face_verts, &dest->normal, Reading_room.verts.get())) >= 0)
           return 0;
 
         // Now check for degenerate face

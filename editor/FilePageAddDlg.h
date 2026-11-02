@@ -25,6 +25,8 @@
 // FilePageAddDlg.h : header file
 //
 
+#include <memory>
+
 /////////////////////////////////////////////////////////////////////////////
 // CFilePageAddDlg dialog
 
@@ -92,8 +94,8 @@ public:
   void SetInitialPath(char *path);
 
   int m_NumberOfSelectedFiles;
-  char **m_SelectedFiles;
-  char *m_SelectedDestDir;
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_SelectedFiles;
+  std::unique_ptr<char[]> m_SelectedDestDir;
 
 private:
   bool Quit(void);

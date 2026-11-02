@@ -73,6 +73,7 @@
 #include "ScriptCompilerAPI.h"
 #include <string.h>
 #include <stdarg.h>
+#include <memory>
 #include "mem.h"
 #include "pserror.h"
 
@@ -129,7 +130,7 @@ void CScriptMassCompile::OnBuild() {
   writeline("Starting Mass Build.");
 
   int i, list_size, listbox_size, index;
-  int *index_map = nullptr;
+  std::unique_ptr<int[]> index_map;
   CCheckListBox *list;
   char tempbuffer[_MAX_PATH];
   CWnd *wnd;
@@ -145,9 +146,7 @@ void CScriptMassCompile::OnBuild() {
 
   if (list_size == 0)
     return;
-  index_map = mem_rmalloc<int>(list_size);
-  if (!index_map)
-    return;
+  index_map = std::make_unique<int[]>(list_size);
 
   index = 0;
   for (i = 0; i < listbox_size; i++) {
@@ -193,8 +192,6 @@ void CScriptMassCompile::OnBuild() {
   }
 
   OutrageMessageBox("Mass Compile Complete");
-
-  mem_free(index_map);
 }
 
 void CScriptMassCompile::OnOK() {

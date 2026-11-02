@@ -122,6 +122,7 @@
  */
 
 #include <filesystem>
+#include <memory>
 
 #include "mfc_compatibility.h"
 #include "editor.h"
@@ -884,8 +885,8 @@ void CWorldObjectsPlayerDialog::UpdateShipView(void) {
   vm_AnglesToMatrix(&rot_matrix, 0, spin_frame * 400, 0);
 
   m_ShipSurf.create(128, 128, BPP_16);
-  grViewport *vport = new grViewport(&m_ShipSurf);
-  StartEditorFrame(vport, &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
+  auto vport = std::make_unique<grViewport>(&m_ShipSurf);
+  StartEditorFrame(vport.get(), &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
   DrawPolygonModel(&zero_vector, &rot_matrix, bm_handle, norm_angles, 0, 1.0, 1.0, 1.0);
   EndEditorFrame();
 
@@ -893,7 +894,7 @@ void CWorldObjectsPlayerDialog::UpdateShipView(void) {
   y = rect.top + ((rect.bottom - rect.top) / 2) - m_ShipSurf.height() / 2;
   Desktop_surf->blt(x, y, &m_ShipSurf);
 
-  delete vport;
+  vport.reset();
   m_ShipSurf.free();
 }
 

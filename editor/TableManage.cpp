@@ -47,7 +47,6 @@
 ////////////////////////////////////////////////////////////////
 GenericPageNode::GenericPageNode() {
   prev = nullptr;
-  next = nullptr;
   page_id = 0;
 }
 
@@ -67,7 +66,6 @@ bool GenericPageNode::operator<(const GenericPageNode &node) {
 // GenericPageList Class Members
 ////////////////////////////////////////////////////////////////
 GenericPageList::GenericPageList() {
-  m_head = nullptr;
   m_tail = nullptr;
   m_size = 0;
   m_TableFilename = "";
@@ -80,16 +78,11 @@ GenericPageList::GenericPageList() {
 GenericPageList::~GenericPageList() { ClearList(); }
 
 void GenericPageList::ClearList(void) {
-  GenericPageNode *temp, *node;
-
-  node = m_head;
-  while (node != nullptr) {
-    temp = node;
-    node = node->next;
-    delete temp;
+  // Unlink one node at a time so a long list isn't destroyed recursively
+  while (m_head != nullptr) {
+    m_head = std::move(m_head->next);
   }
   m_size = 0;
-  m_head = nullptr;
   m_tail = nullptr;
   m_TableFilename = "";
   m_TableLoaded = FALSE;
@@ -100,7 +93,7 @@ void GenericPageList::ClearList(void) {
 
 // Adds the node to the list in ascending alphabetical order
 // according to the page names of the nodes
-bool GenericPageList::AddToList(GenericPageNode *new_node) {
+bool GenericPageList::AddToList(std::unique_ptr<GenericPageNode> new_node) {
   GenericPageNode *node;
 
   if (new_node == nullptr)
@@ -108,10 +101,9 @@ bool GenericPageList::AddToList(GenericPageNode *new_node) {
 
   // Handle empty list case
   if (m_head == nullptr) {
-    m_head = new_node;
-    m_tail = new_node;
-    new_node->next = nullptr;
+    m_tail = new_node.get();
     new_node->prev = nullptr;
+    m_head = std::move(new_node);
 
     m_size++;
     return TRUE;
@@ -119,10 +111,10 @@ bool GenericPageList::AddToList(GenericPageNode *new_node) {
 
   // Handle (new node < list head) case
   if ((*new_node) < (*m_head)) {
-    new_node->next = m_head;
     new_node->prev = nullptr;
-    m_head->prev = new_node;
-    m_head = new_node;
+    m_head->prev = new_node.get();
+    new_node->next = std::move(m_head);
+    m_head = std::move(new_node);
 
     m_size++;
     return TRUE;
@@ -130,19 +122,21 @@ bool GenericPageList::AddToList(GenericPageNode *new_node) {
 
   // Search through list until end of list or until the new node is less
   // than the next node, then add the new node after the current node
-  node = m_head;
-  while (node->next != nullptr && (*(node->next)) < (*new_node))
-    node = node->next;
+  node = m_head.get();
+  while (node->next != nullptr && (*(node->next)) < (*new_node)) {
+    node = node->next.get();
+  }
 
-  new_node->next = node->next;
   new_node->prev = node;
 
-  if (node->next == nullptr)
-    m_tail = new_node;
-  else
-    node->next->prev = new_node;
+  if (node->next == nullptr) {
+    m_tail = new_node.get();
+  } else {
+    node->next->prev = new_node.get();
+  }
 
-  node->next = new_node;
+  new_node->next = std::move(node->next);
+  node->next = std::move(new_node);
 
   m_size++;
 
@@ -155,7 +149,7 @@ bool GenericPageList::LoadTable(char *table_filename) {
   int done;
   uint32_t page_id;
 
-  GenericPageNode *generic_page_node;
+  std::unique_ptr<GenericPageNode> generic_page_node;
 
   infile = cfopen(table_filename, "rb");
 
@@ -187,13 +181,10 @@ bool GenericPageList::LoadTable(char *table_filename) {
       continue;
     }
 
-    generic_page_node = new GenericPageNode;
-    if (generic_page_node == nullptr) {
-      return FALSE;
-    }
+    generic_page_node = std::make_unique<GenericPageNode>();
     mng_ReadNewGenericPage(infile, &(generic_page_node->genericpage));
     generic_page_node->page_id = page_id;
-    AddToList(generic_page_node);
+    AddToList(std::move(generic_page_node));
 
     page_id++;
   }
@@ -312,10 +303,10 @@ bool GenericPageList::FillFromList(CComboBox *list) {
 
   list->ResetContent();
 
-  node = m_head;
+  node = m_head.get();
   while (node != nullptr) {
     list->InsertString(-1, node->genericpage.objinfo_struct.name);
-    node = node->next;
+    node = node->next.get();
   }
 
   // Select the start of the list
@@ -329,10 +320,10 @@ void GenericPageList::SelectNext(void) {
     return;
 
   if (m_SelectedNode->next == nullptr) {
-    m_SelectedNode = m_head;
+    m_SelectedNode = m_head.get();
     m_SelectedIndex = 0;
   } else {
-    m_SelectedNode = m_SelectedNode->next;
+    m_SelectedNode = m_SelectedNode->next.get();
     m_SelectedIndex++;
   }
 }
@@ -357,10 +348,12 @@ void GenericPageList::SelectNode(uint32_t list_index) {
   if (list_index < 0 || list_index > (m_size - 1))
     return;
 
-  node = m_head;
-  for (j = 0; j < list_index; j++)
-    if (node != nullptr)
-      node = node->next;
+  node = m_head.get();
+  for (j = 0; j < list_index; j++) {
+    if (node != nullptr) {
+      node = node->next.get();
+    }
+  }
 
   m_SelectedNode = node;
   m_SelectedIndex = list_index;
@@ -431,13 +424,13 @@ GenericPageNode *GenericPageList::FindNode(uint32_t page_id) {
   GenericPageNode *node, *found_node;
 
   found_node = nullptr;
-  node = m_head;
+  node = m_head.get();
   while (node != nullptr) {
     if (node->page_id == page_id) {
       found_node = node;
       break;
     }
-    node = node->next;
+    node = node->next.get();
   }
 
   return (found_node);

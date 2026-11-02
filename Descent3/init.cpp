@@ -1610,7 +1610,7 @@ void InitGraphics(bool editor) {
   // Init our renderer
   grSurface::init_system();
   rend_Init(RENDERER_OPENGL, Descent, nullptr);
-  Desktop_surf = new grSurface(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
+  Desktop_surf = std::make_unique<grSurface>(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
 #else
   strcpy(App_ddvid_subsystem, "GDIX");
 

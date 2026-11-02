@@ -224,16 +224,13 @@ void CScriptSelect::OnScriptselAdd() {
 
   //	in this case, load the script source file level.scr and add to it.
   if (dlg.DoModal() == IDOK) {
-    char *source;
-
-    source = LoadScript(LEVEL_SCRIPT_NAME);
+    std::unique_ptr<char[]> source = LoadScript(LEVEL_SCRIPT_NAME);
     if (!source) {
       OutrageMessageBox("Unable to find script for level. Something is wrong!");
       return;
     }
-    source = AddScriptBlockToScript(source, (LPCSTR)dlg.m_Name, (LPCSTR)dlg.m_TypeName);
-    SaveScript(LEVEL_SCRIPT_NAME, source);
-    FreeScript(source);
+    source = AddScriptBlockToScript(source.get(), (LPCSTR)dlg.m_Name, (LPCSTR)dlg.m_TypeName);
+    SaveScript(LEVEL_SCRIPT_NAME, source.get());
     EditScript(LEVEL_SCRIPT_NAME, dlg.m_Name);
   }
 }

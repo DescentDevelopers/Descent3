@@ -46,17 +46,6 @@ CObjectListDialog::CObjectListDialog(CWnd *pParent /*=NULL*/) : CDialog(CObjectL
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
 
-  m_Leafs[CLIPBOARD_LEAF] = nullptr;
-  m_Leafs[POWERUP_LEAF] = nullptr;
-  m_Leafs[ROBOT_LEAF] = nullptr;
-  m_Leafs[BUILDING_LEAF] = nullptr;
-  m_Leafs[DOOR_LEAF] = nullptr;
-  m_Leafs[CLUTTER_LEAF] = nullptr;
-  m_Leafs[PLAYER_LEAF] = nullptr;
-  m_Leafs[CAMERA_LEAF] = nullptr;
-  m_Leafs[SOUNDSOURCE_LEAF] = nullptr;
-  m_Leafs[MISC_LEAF] = nullptr;
-
   nclipboard = 0;
   npowerup = 0;
   nrobot = 0;
@@ -135,26 +124,36 @@ void CObjectListDialog::Refresh() {
 
   ClearTree();
 
-  if (nclipboard)
-    m_Leafs[CLIPBOARD_LEAF] = new CObjectListDialog::tObjNode[nclipboard];
-  if (npowerup)
-    m_Leafs[POWERUP_LEAF] = new CObjectListDialog::tObjNode[npowerup];
-  if (nrobot)
-    m_Leafs[ROBOT_LEAF] = new CObjectListDialog::tObjNode[nrobot];
-  if (nbuilding)
-    m_Leafs[BUILDING_LEAF] = new CObjectListDialog::tObjNode[nbuilding];
-  if (nclutter)
-    m_Leafs[CLUTTER_LEAF] = new CObjectListDialog::tObjNode[nclutter];
-  if (nplayer)
-    m_Leafs[PLAYER_LEAF] = new CObjectListDialog::tObjNode[nplayer];
-  if (ndoor)
-    m_Leafs[DOOR_LEAF] = new CObjectListDialog::tObjNode[ndoor];
-  if (ncamera)
-    m_Leafs[CAMERA_LEAF] = new CObjectListDialog::tObjNode[ncamera];
-  if (nsndsrc)
-    m_Leafs[SOUNDSOURCE_LEAF] = new CObjectListDialog::tObjNode[nsndsrc];
-  if (nmisc)
-    m_Leafs[MISC_LEAF] = new CObjectListDialog::tObjNode[nmisc];
+  if (nclipboard) {
+    m_Leafs[CLIPBOARD_LEAF] = std::make_unique<tObjNode[]>(nclipboard);
+  }
+  if (npowerup) {
+    m_Leafs[POWERUP_LEAF] = std::make_unique<tObjNode[]>(npowerup);
+  }
+  if (nrobot) {
+    m_Leafs[ROBOT_LEAF] = std::make_unique<tObjNode[]>(nrobot);
+  }
+  if (nbuilding) {
+    m_Leafs[BUILDING_LEAF] = std::make_unique<tObjNode[]>(nbuilding);
+  }
+  if (nclutter) {
+    m_Leafs[CLUTTER_LEAF] = std::make_unique<tObjNode[]>(nclutter);
+  }
+  if (nplayer) {
+    m_Leafs[PLAYER_LEAF] = std::make_unique<tObjNode[]>(nplayer);
+  }
+  if (ndoor) {
+    m_Leafs[DOOR_LEAF] = std::make_unique<tObjNode[]>(ndoor);
+  }
+  if (ncamera) {
+    m_Leafs[CAMERA_LEAF] = std::make_unique<tObjNode[]>(ncamera);
+  }
+  if (nsndsrc) {
+    m_Leafs[SOUNDSOURCE_LEAF] = std::make_unique<tObjNode[]>(nsndsrc);
+  }
+  if (nmisc) {
+    m_Leafs[MISC_LEAF] = std::make_unique<tObjNode[]>(nmisc);
+  }
 
   //	add sections to tree
   tree->DeleteAllItems();
@@ -221,37 +220,9 @@ void CObjectListDialog::Refresh() {
 }
 
 void CObjectListDialog::ClearTree() {
-  if (m_Leafs[CLIPBOARD_LEAF])
-    delete[] m_Leafs[CLIPBOARD_LEAF];
-  if (m_Leafs[POWERUP_LEAF])
-    delete[] m_Leafs[POWERUP_LEAF];
-  if (m_Leafs[ROBOT_LEAF])
-    delete[] m_Leafs[ROBOT_LEAF];
-  if (m_Leafs[BUILDING_LEAF])
-    delete[] m_Leafs[BUILDING_LEAF];
-  if (m_Leafs[CLUTTER_LEAF])
-    delete[] m_Leafs[CLUTTER_LEAF];
-  if (m_Leafs[DOOR_LEAF])
-    delete[] m_Leafs[DOOR_LEAF];
-  if (m_Leafs[PLAYER_LEAF])
-    delete[] m_Leafs[PLAYER_LEAF];
-  if (m_Leafs[CAMERA_LEAF])
-    delete[] m_Leafs[CAMERA_LEAF];
-  if (m_Leafs[SOUNDSOURCE_LEAF])
-    delete[] m_Leafs[SOUNDSOURCE_LEAF];
-  if (m_Leafs[MISC_LEAF])
-    delete[] m_Leafs[MISC_LEAF];
-
-  m_Leafs[CLIPBOARD_LEAF] = nullptr;
-  m_Leafs[POWERUP_LEAF] = nullptr;
-  m_Leafs[ROBOT_LEAF] = nullptr;
-  m_Leafs[BUILDING_LEAF] = nullptr;
-  m_Leafs[DOOR_LEAF] = nullptr;
-  m_Leafs[CLUTTER_LEAF] = nullptr;
-  m_Leafs[PLAYER_LEAF] = nullptr;
-  m_Leafs[CAMERA_LEAF] = nullptr;
-  m_Leafs[SOUNDSOURCE_LEAF] = nullptr;
-  m_Leafs[MISC_LEAF] = nullptr;
+  for (auto &leaf : m_Leafs) {
+    leaf.reset();
+  }
 
   m_ObjectHandle = -1;
 }
@@ -277,34 +248,34 @@ int CObjectListDialog::GetObjHandleFromItem(HTREEITEM hItem) {
 
   //	check each leaf
   if (hParent == hClipboardTree) {
-    leaf = m_Leafs[CLIPBOARD_LEAF];
+    leaf = m_Leafs[CLIPBOARD_LEAF].get();
     count = nclipboard;
   } else if (hParent == hRobotTree) {
-    leaf = m_Leafs[ROBOT_LEAF];
+    leaf = m_Leafs[ROBOT_LEAF].get();
     count = nrobot;
   } else if (hParent == hPowerupTree) {
-    leaf = m_Leafs[POWERUP_LEAF];
+    leaf = m_Leafs[POWERUP_LEAF].get();
     count = npowerup;
   } else if (hParent == hBuildingTree) {
-    leaf = m_Leafs[BUILDING_LEAF];
+    leaf = m_Leafs[BUILDING_LEAF].get();
     count = nbuilding;
   } else if (hParent == hDoorTree) {
-    leaf = m_Leafs[DOOR_LEAF];
+    leaf = m_Leafs[DOOR_LEAF].get();
     count = ndoor;
   } else if (hParent == hClutterTree) {
-    leaf = m_Leafs[CLUTTER_LEAF];
+    leaf = m_Leafs[CLUTTER_LEAF].get();
     count = nclutter;
   } else if (hParent == hPlayerTree) {
-    leaf = m_Leafs[PLAYER_LEAF];
+    leaf = m_Leafs[PLAYER_LEAF].get();
     count = nplayer;
   } else if (hParent == hCameraTree) {
-    leaf = m_Leafs[CAMERA_LEAF];
+    leaf = m_Leafs[CAMERA_LEAF].get();
     count = ncamera;
   } else if (hParent == hSoundSourceTree) {
-    leaf = m_Leafs[SOUNDSOURCE_LEAF];
+    leaf = m_Leafs[SOUNDSOURCE_LEAF].get();
     count = nsndsrc;
   } else if (hParent == hMiscTree) {
-    leaf = m_Leafs[MISC_LEAF];
+    leaf = m_Leafs[MISC_LEAF].get();
     count = nmisc;
   } else {
     count = 0;

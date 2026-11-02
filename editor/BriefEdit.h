@@ -25,6 +25,8 @@
 // BriefEdit.h : header file
 //
 
+#include <memory>
+
 #include "pstypes.h"
 #include "telcomefxstructs.h"
 #include "telcom.h"
@@ -59,7 +61,7 @@ struct tBriefEffect {
   uint8_t type; // type of effect (for union)
   bool used;    // is the effect being used
   int id;       // ID# used
-  char *text;   // buffer of text
+  std::unique_ptr<char[]> text; // buffer of text
   char description[128];
   int w, h; // used for bitmaps
   union {
@@ -142,7 +144,7 @@ class CBriefEdit : public CDialog {
   // Construction
 public:
   BriefGlobalValues m_GlobalValues;
-  tLayoutScreen *layouts;
+  std::unique_ptr<tLayoutScreen[]> layouts;
   int num_layouts;
   CBriefEdit(CWnd *pParent = nullptr); // standard constructor
   void ParseLayoutScreenFile(char *filename);
