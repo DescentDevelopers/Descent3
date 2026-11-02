@@ -318,7 +318,7 @@
 #endif
 
 void *callback = nullptr;
-module MultiDLLHandle = {nullptr};
+module_t MultiDLLHandle = {nullptr};
 int SearchForLocalGamesTCP(uint32_t ask, uint16_t port);
 int SearchForGamesPXO(uint32_t ask, uint16_t port);
 extern uint8_t NewUIWindow_alpha;
