@@ -41,6 +41,8 @@
 #ifndef BSP_H
 #define BSP_H
 
+#include <memory>
+
 #include "list.h"
 #include "vecmat.h"
 #include "cfile.h"
@@ -63,7 +65,7 @@ struct bspplane {
 };
 
 struct bsppolygon {
-  vector *verts;
+  std::unique_ptr<vector[]> verts;
   int nv;
   bspplane plane;
 
@@ -82,8 +84,8 @@ struct bspnode {
   uint16_t node_roomnum;
   int8_t node_subnum;
 
-  bspnode *front;
-  bspnode *back;
+  std::unique_ptr<bspnode> front;
+  std::unique_ptr<bspnode> back;
 
   listnode *polylist;
   int num_polys;
@@ -92,7 +94,7 @@ struct bspnode {
 struct bsptree {
   listnode *vertlist;
   listnode *polylist;
-  bspnode *root;
+  std::unique_ptr<bspnode> root;
 };
 
 // Builds a bsp tree for the indoor rooms
@@ -109,7 +111,7 @@ void DestroyBSPTree(bsptree *tree);
 void SaveBSPNode(CFILE *outfile, bspnode *node);
 
 // Loads a bsp node from an open file and recurses with its children
-void LoadBSPNode(CFILE *infile, bspnode **node);
+void LoadBSPNode(CFILE *infile, std::unique_ptr<bspnode> &node);
 
 // Initializes some variables for the indoor bsp tree
 void InitDefaultBSP();

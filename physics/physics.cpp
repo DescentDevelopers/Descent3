@@ -2527,7 +2527,7 @@ void do_vis_physics_sim(vis_effect *vis) {
 
   if (fate == HIT_NONE && hit_info.hit_room != -1) {
     if (hit_info.hit_room != vis->roomnum) {
-      VisEffectRelink(vis - VisEffects, hit_info.hit_room);
+      VisEffectRelink(vis - VisEffects.get(), hit_info.hit_room);
     }
 
     if (ROOMNUM_OUTSIDE(hit_info.hit_room)) {
@@ -2537,7 +2537,7 @@ void do_vis_physics_sim(vis_effect *vis) {
       ASSERT(hit_info.hit_room >= 0 && hit_info.hit_room <= Highest_room_index && Rooms[hit_info.hit_room].used);
     }
   } else {
-    VisEffectDelete(vis - VisEffects);
+    VisEffectDelete(vis - VisEffects.get());
   }
 }
 

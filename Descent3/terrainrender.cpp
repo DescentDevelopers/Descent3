@@ -1192,7 +1192,7 @@ void RenderAllTerrainObjects() {
       continue;
     // Special case snow
     if (vis->id == SNOWFLAKE_INDEX) {
-      snows[num_snows] = vis - VisEffects;
+      snows[num_snows] = vis - VisEffects.get();
       num_snows++;
     } else {
       if ((vis->flags & VF_WINDSHIELD_EFFECT) || IsPointVisible(&vis->pos, vis->size, &zdist)) {
@@ -1202,11 +1202,11 @@ void RenderAllTerrainObjects() {
           if (Num_postrenders < MAX_POSTRENDERS) {
             Postrender_list[Num_postrenders].type = PRT_VISEFFECT;
             Postrender_list[Num_postrenders].z = zdist;
-            Postrender_list[Num_postrenders++].objnum = vis - VisEffects;
+            Postrender_list[Num_postrenders++].objnum = vis - VisEffects.get();
           }
         } else {
           objs_to_render[obj_count].vis_effect = 1;
-          objs_to_render[obj_count].objnum = vis - VisEffects;
+          objs_to_render[obj_count].objnum = vis - VisEffects.get();
           objs_to_render[obj_count].dist = zdist;
           obj_count++;
         }

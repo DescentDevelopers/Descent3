@@ -39,6 +39,7 @@
 #define GAME_PATH_H
 
 #include <cstdlib>
+#include <memory>
 
 #include "3d.h"
 #include "manage.h"
@@ -65,16 +66,10 @@ class game_path {
 public:
   game_path() {
     num_nodes = 0;
-    pathnodes = nullptr;
-    used = false;
-  }
-  ~game_path() {
-    if (used)
-      mem_free(pathnodes);
     used = false;
   }
 
-  node *pathnodes;
+  std::unique_ptr<node[]> pathnodes;
   int num_nodes;           // how many nodes in this path?
   char name[PAGENAME_LEN]; // the name of this path
   uint8_t flags;             // special properties of this path

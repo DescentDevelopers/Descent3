@@ -2209,7 +2209,7 @@ void ProcessTestKeys(int key) {
 
   case KEY_F9: {
     vector vec = Player_object->pos + (Player_object->orient.fvec * 20);
-    if (BSPRayOccluded(&Player_object->pos, &vec, MineBSP.root))
+    if (BSPRayOccluded(&Player_object->pos, &vec, MineBSP.root.get()))
       LOG_DEBUG << "Occluded!";
     else
       LOG_DEBUG << "NOT occluded!";

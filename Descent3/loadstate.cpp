@@ -182,6 +182,7 @@
 #include <algorithm>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "gamesave.h"
 #include "cfile.h"
@@ -230,7 +231,7 @@ static void IncreaseRestoreCount(const std::filesystem::path &file);
 int Times_game_restored = 0;
 // static gs_tables *gs_Xlates = NULL;
 
-gs_tables *gs_Xlates = nullptr;
+std::unique_ptr<gs_tables> gs_Xlates;
 // int Gamesave_read_version=0;
 
 void IncreaseRestoreCount(const std::filesystem::path &file) {
@@ -274,7 +275,7 @@ int LoadGameState(const std::filesystem::path &pathname) {
   }
 
   START_VERIFY_SAVEFILE(fp);
-  gs_Xlates = new gs_tables;
+  gs_Xlates = std::make_unique<gs_tables>();
 
   // read in header and do version check.
   cf_ReadBytes((uint8_t *)desc, sizeof(desc), fp);
@@ -397,7 +398,7 @@ int LoadGameState(const std::filesystem::path &pathname) {
   }
 
 loadsg_error:
-  delete gs_Xlates;
+  gs_Xlates.reset();
 
   END_VERIFY_SAVEFILE(fp, "Total load");
   cfclose(fp);
@@ -829,7 +830,7 @@ int LGSObjects(CFILE *fp, int version) {
   int i, j, highest_index;
   int max_terr;
 
-  auto objmat = mem_rmalloc<matrix>(MAX_OBJECTS);
+  auto objmat = std::make_unique<matrix[]>(MAX_OBJECTS);
 
   Osiris_DisableCreateEvents();
   // we must reset some data before continuing.
@@ -1424,8 +1425,6 @@ lgsobjs_fail:
   Osiris_EnableCreateEvents();
 
 done:;
-
-  mem_free(objmat);
 
   return retval;
 }

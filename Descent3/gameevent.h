@@ -19,6 +19,9 @@
 #ifndef GAMEEVENT_H
 #define GAMEEVENT_H
 
+#include <cstdint>
+#include <memory>
+
 #include "game.h"
 #include "object.h"
 
@@ -47,7 +50,7 @@ struct game_event {
   float start_time, end_time;
   int frame_born;
 
-  void *data;
+  std::unique_ptr<uint8_t[]> data;
 
   void (*subfunction)(int, void *);
 };

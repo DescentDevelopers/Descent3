@@ -189,7 +189,7 @@ char *MatcenEffectStrings[NUM_MATCEN_EFFECTS] = {"Line lightning", "Line sinewav
 #endif
 
 int Num_matcens = 0;
-matcen *Matcen[MAX_MATCENS];
+std::unique_ptr<matcen> Matcen[MAX_MATCENS];
 bool Matcen_created = false;
 
 matcen::matcen() {
@@ -233,7 +233,6 @@ matcen::matcen() {
 
   m_max_alive_children = -1;
   m_num_alive = 0;
-  m_alive_list = nullptr;
 
   m_preprod_time = 1.5f;
   m_postprod_time = 1.0f;
@@ -249,10 +248,25 @@ matcen::matcen() {
   Reset();
 }
 
-matcen::~matcen() {
-  if (m_alive_list) {
-    mem_free(m_alive_list);
+matcen::matcen(const matcen &other) : matcen_state(other) {
+  if (other.m_alive_list) {
+    m_alive_list = std::make_unique<int[]>(m_max_alive_children);
+    std::copy_n(other.m_alive_list.get(), m_num_alive, m_alive_list.get());
   }
+}
+
+matcen &matcen::operator=(const matcen &other) {
+  if (this != &other) {
+    std::unique_ptr<int[]> alive_list;
+    if (other.m_alive_list) {
+      alive_list = std::make_unique<int[]>(other.m_max_alive_children);
+      std::copy_n(other.m_alive_list.get(), other.m_num_alive, alive_list.get());
+    }
+
+    matcen_state::operator=(other);
+    m_alive_list = std::move(alive_list);
+  }
+  return *this;
 }
 
 bool matcen::SetMaxProd(int max_p) {
@@ -922,14 +936,14 @@ void matcen::LoadData(CFILE *fp) {
   m_max_alive_children = cf_ReadShort(fp);
   if (m_max_alive_children > 0) {
     m_num_alive = cf_ReadShort(fp);
-    m_alive_list = mem_rmalloc<int>(m_max_alive_children);
+    m_alive_list = std::make_unique<int[]>(m_max_alive_children);
 
     for (i = 0; i < m_num_alive; i++) {
       m_alive_list[i] = cf_ReadInt(fp);
     }
   } else {
     m_num_alive = 0;
-    m_alive_list = nullptr;
+    m_alive_list.reset();
   }
 
   m_preprod_time = cf_ReadFloat(fp);
@@ -1781,14 +1795,12 @@ int matcen::GetMaxAliveChildren() { return m_max_alive_children; }
 bool matcen::SetMaxAliveChildren(int max_alive) {
   // If the max_alive value is valid...
   if (max_alive >= -1 && max_alive != 0 && max_alive <= MAX_MATCEN_ALIVE_CHILDREN) {
-    int *temp;
+    std::unique_ptr<int[]> temp;
     int i;
 
     // Allocate the alive children list
     if (max_alive > 0) {
-      temp = mem_rmalloc<int>(max_alive);
-    } else {
-      temp = nullptr;
+      temp = std::make_unique<int[]>(max_alive);
     }
 
     // Determine the current number of alive (and tracked) children
@@ -1802,13 +1814,8 @@ bool matcen::SetMaxAliveChildren(int max_alive) {
       m_num_alive = 0;
     }
 
-    // Cleanup the old list
-    if (m_alive_list) {
-      mem_free(m_alive_list);
-    }
-
     // Setup the new list pointer and max alive children value
-    m_alive_list = temp;
+    m_alive_list = std::move(temp);
     m_max_alive_children = max_alive;
 
     return true;
@@ -1885,7 +1892,7 @@ int FindMatcenIndex(const char *name) {
 
 int CreateMatcen(const char *name, bool *f_name_changed) {
   if (Num_matcens < MAX_MATCENS) {
-    Matcen[Num_matcens] = new matcen;
+    Matcen[Num_matcens] = std::make_unique<matcen>();
     Matcen[Num_matcens++]->SetName(name);
 
     *f_name_changed = false;
@@ -1902,7 +1909,7 @@ void InitMatcens() {
   Num_matcens = 0;
 
   for (i = 0; i < MAX_MATCENS; i++) {
-    Matcen[i] = nullptr;
+    Matcen[i].reset();
   }
 
   atexit(DestroyAllMatcens);
@@ -1917,9 +1924,7 @@ void __cdecl DestroyAllMatcens()
   int i;
 
   for (i = 0; i < Num_matcens; i++) {
-    if (Matcen[i]) {
-      delete Matcen[i];
-    }
+    Matcen[i].reset();
   }
 
   Num_matcens = 0;
@@ -1969,14 +1974,13 @@ void DestroyMatcen(int id, bool f_resort = false) {
 #endif
 
   if (MatcenValid(id)) {
-    delete Matcen[id];
-    Matcen[id] = nullptr;
+    Matcen[id].reset();
 
     Num_matcens--;
 
     if (f_resort) {
       while (id < Num_matcens) {
-        Matcen[id] = Matcen[id + 1];
+        Matcen[id] = std::move(Matcen[id + 1]);
         id++;
       }
     }
