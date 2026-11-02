@@ -505,7 +505,7 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
     ft->kern_data[i * 3 + 1] = 255;
     ft->kern_data[i * 3 + 2] = 0;
   } else {
-    ft->kern_data = NULL;
+    ft->kern_data = nullptr;
   }
 
   ft->ch_height = (uint8_t)ft_height;

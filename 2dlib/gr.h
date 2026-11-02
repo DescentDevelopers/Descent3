@@ -215,7 +215,7 @@ private:
 public: // Accessor functions
   char *get_name() const {
     if (m_FontHandle == -1)
-      return NULL;
+      return nullptr;
     else
       return m_FontList[m_FontHandle].name;
   };
@@ -290,12 +290,12 @@ public:
   virtual ~grSurface();
 
   //	creates a surface, allocates memory based off of parameters.
-  grSurface(int w, int h, int bpp, unsigned type, unsigned flags = 0, const char *name = NULL);
+  grSurface(int w, int h, int bpp, unsigned type, unsigned flags = 0, const char *name = nullptr);
 
 public:
   unsigned get_flags() const { return ddsfObj.flags; };
 
-  void create(int w, int h, int bpp, unsigned type, unsigned flags = 0, const char *name = NULL);
+  void create(int w, int h, int bpp, unsigned type, unsigned flags = 0, const char *name = nullptr);
 
   void load(char *data, int w, int h, int bpp, int format = 0);
   void load(int handle);
@@ -361,13 +361,13 @@ public:
   virtual ~grMemorySurface();
 
   //	allocates a surface from system memory (quicker version of grSurface)
-  grMemorySurface(int w, int h, int bpp, unsigned flags = 0, const char *name = NULL);
+  grMemorySurface(int w, int h, int bpp, unsigned flags = 0, const char *name = nullptr);
 
   //	initializes a surface using a bitmap handle (no allocation)
   grMemorySurface(int bm);
 
   //	inititalizes a surface using raw data,width,rowsize info information.
-  bool init(int w, int h, int bpp, char *data, int rowsize, unsigned flags = 0, const char *name = NULL);
+  bool init(int w, int h, int bpp, char *data, int rowsize, unsigned flags = 0, const char *name = nullptr);
 };
 
 //	----------------------------------------------------------------------------
@@ -378,10 +378,10 @@ public:
 class grHardwareSurface final : public grSurface {
 public:
   grHardwareSurface() = default;
-  grHardwareSurface(int w, int h, int bpp, unsigned flags = 0, const char *name = NULL);
+  grHardwareSurface(int w, int h, int bpp, unsigned flags = 0, const char *name = nullptr);
   virtual ~grHardwareSurface() = default;
 
-  bool create(int w, int h, int bpp, unsigned flags = 0, const char *name = NULL);
+  bool create(int w, int h, int bpp, unsigned flags = 0, const char *name = nullptr);
 };
 
 //	----------------------------------------------------------------------------
@@ -394,7 +394,7 @@ class grScreen final : public grSurface {
   friend class grViewport;
 
 public:
-  grScreen(int w, int h, int bpp, const char *name = NULL);
+  grScreen(int w, int h, int bpp, const char *name = nullptr);
   virtual ~grScreen() = default;
 
   void flip();

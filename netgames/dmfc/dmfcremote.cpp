@@ -101,7 +101,7 @@ int FilterNonRemoteCommands(char *command);
 // Initializes the remote administration system
 void Remote_Initialize(void) {
   // initialize encryption keys
-  srand((uint32_t)time(0));
+  srand((uint32_t)time(nullptr));
 
   int i, j;
   for (i = 0; i < MAX_PLAYER_RECORDS; i++) {
@@ -152,7 +152,7 @@ void Remote_ProcessFrame(void) {
       // make sure they are in the game
       if (!pr || pr->state != STATE_INGAME) {
         // the player is no longer in the game
-        mprintf(0, "REMOTE: Removing authorization for %s\n", (pr->callsign) ? (pr->callsign) : "<UNKNOWN>");
+        LOG_INFO.printf("REMOTE: Removing authorization for %s", (pr->callsign) ? (pr->callsign) : "<UNKNOWN>");
         Remote_Logout(p);
 
         // change the key for the slot
@@ -185,7 +185,7 @@ void Remote_Enable(bool enable) {
     Use_remote_admin = false;
   }
 
-  mprintf(0, "Remote Administration: %s\n", (Use_remote_admin) ? "On" : "Off");
+  LOG_INFO.printf("Remote Administration: %s", (Use_remote_admin) ? "On" : "Off");
 
   if (!Use_remote_admin) {
     // log out all the logged in players
@@ -303,7 +303,7 @@ void Remote_SetMyKey(uint8_t key[8]) {
   pr = PRec_GetPRecordByPnum(basethis->GetPlayerNum());
   int prec = translate_precptr_to_index(pr);
   if (prec == -1) {
-    mprintf(0, "INVALID PREC!\n");
+    LOG_ERROR << "INVALID PREC!";
     Int3();
     return;
   }
@@ -318,7 +318,7 @@ void Remote_ClientProcess(const char *command) {
   if (!IAmAnAdmin) {
     // only let "login" go through
     if (!strnicmp(command, "login", strlen("login"))) {
-      mprintf(0, "Sending login attempt for remote administration\n");
+      LOG_INFO << "Sending login attempt for remote administration";
     } else {
       return;
     }
@@ -416,7 +416,7 @@ void Remote_SendMessage(int client, const char *message) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
-  char *allocated = NULL;
+  char *allocated = nullptr;
   int len = strlen(message);
   const int maxlen = ((MAX_GAME_DATA_SIZE - 5) < 511) ? (MAX_GAME_DATA_SIZE - 5) : 511;
   if (len > maxlen) {
@@ -463,7 +463,7 @@ void Remote_SendStringToServer(const char *string) {
   pr = PRec_GetPRecordByPnum(basethis->GetPlayerNum());
   int prec = translate_precptr_to_index(pr);
   if (prec == -1) {
-    mprintf(0, "INVALID PREC!\n");
+    LOG_ERROR << "INVALID PREC!";
     Int3();
     return;
   }
@@ -471,7 +471,7 @@ void Remote_SendStringToServer(const char *string) {
   Remote_encrypt(Authorized_players[prec].curr_key, slen, (uint8_t *)string, &new_strlen, &packet_data);
 
   if (new_strlen == 0) {
-    mprintf(0, "COULDN'T ENCRYPT\n");
+    LOG_ERROR << "COULDN'T ENCRYPT";
     Int3();
     return;
   }
@@ -513,7 +513,7 @@ void Remote_RecieveStringFromServer(uint8_t *data, char *buffer, int size) {
   pr = PRec_GetPRecordByPnum(basethis->GetPlayerNum());
   int prec = translate_precptr_to_index(pr);
   if (prec == -1) {
-    mprintf(0, "INVALID PREC!\n");
+    LOG_ERROR << "INVALID PREC!";
     Int3();
     return;
   }
@@ -557,7 +557,7 @@ void Remote_SendStringToClient(int client, const char *string) {
   pr = PRec_GetPRecordByPnum(client);
   int prec = translate_precptr_to_index(pr);
   if (prec == -1) {
-    mprintf(0, "INVALID PREC!\n");
+    LOG_ERROR << "INVALID PREC!";
     Int3();
     return;
   }
@@ -571,7 +571,7 @@ void Remote_SendStringToClient(int client, const char *string) {
   Remote_encrypt(Authorized_players[prec].curr_key, slen, (uint8_t *)string, &new_strlen, &packet_data);
 
   if (new_strlen == 0) {
-    mprintf(0, "COULDN'T ENCRYPT\n");
+    LOG_ERROR << "COULDN'T ENCRYPT";
     Int3();
     return;
   }
@@ -652,7 +652,7 @@ void Remote_pad_buffer(int orig_size, const uint8_t *orig_buffer, int *new_size,
 }
 
 static void Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer) {
-  *new_buffer = NULL;
+  *new_buffer = nullptr;
 
   uint8_t *buff;
   Remote_pad_buffer(size_buffer, buffer, new_size, &buff);
@@ -681,7 +681,7 @@ static void Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int
 }
 
 static void Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer) {
-  *new_buffer = NULL;
+  *new_buffer = nullptr;
 
   uint8_t *buff;
   Remote_pad_buffer(size_buffer, buffer, new_size, &buff);

@@ -642,16 +642,16 @@ void ObjSetRenderPolyobj(object *objp, int model_num, int dying_model_num) {
   p_info->tmap_override = -1;
   p_info->subobj_flags = 0xFFFFFFFF;
   p_info->multi_turret_info.num_turrets = 0;
-  p_info->multi_turret_info.keyframes = NULL;
-  p_info->multi_turret_info.last_keyframes = NULL;
+  p_info->multi_turret_info.keyframes = nullptr;
+  p_info->multi_turret_info.last_keyframes = nullptr;
   // Initialize attach slots
   if (model_num != -1) {
     poly_model *pm = GetPolymodelPointer(model_num); // get also pages in
-    if (objp->attach_children != NULL) {
+    if (objp->attach_children != nullptr) {
       mem_free(objp->attach_children);
-      objp->attach_children = NULL;
+      objp->attach_children = nullptr;
     }
-    if ((objp->attach_children == NULL) && pm->n_attach) {
+    if ((objp->attach_children == nullptr) && pm->n_attach) {
       objp->attach_children = mem_rmalloc<int>(pm->n_attach);
       if (objp->type == OBJ_PLAYER)
         ASSERT(pm->n_attach >= NUM_PLAYER_ATTACH_POINTS);
@@ -709,7 +709,7 @@ int ObjInitPlayer(object *objp) {
   // Set up physics info
   // These are always set for a player
   objp->mtype.phys_info.num_bounces = PHYSICS_UNLIMITED_BOUNCE;
-  if (objp->dynamic_wb == NULL) {
+  if (objp->dynamic_wb == nullptr) {
     objp->dynamic_wb = mem_rmalloc<dynamic_wb_info>(MAX_WBS_PER_OBJ);
   }
   WBClearInfo(objp);
@@ -814,12 +814,12 @@ int ObjInitGeneric(object *objp, bool reinit) {
     poly_model *pm = &Poly_models[objp->rtype.pobj_info.model_num];
     int num_wbs = pm->num_wbs;
 
-    if ((objp->dynamic_wb != NULL) && ((uint32_t)num_wbs != mem_size(objp->dynamic_wb) / sizeof(dynamic_wb_info)))
+    if ((objp->dynamic_wb != nullptr) && ((uint32_t)num_wbs != mem_size(objp->dynamic_wb) / sizeof(dynamic_wb_info)))
     {
       mem_free(objp->dynamic_wb);
-      objp->dynamic_wb = NULL;
+      objp->dynamic_wb = nullptr;
     }
-    if ((objp->dynamic_wb == NULL) && num_wbs) {
+    if ((objp->dynamic_wb == nullptr) && num_wbs) {
       objp->dynamic_wb = mem_rmalloc<dynamic_wb_info>(num_wbs);
     }
     // Setup the weapon batteries (must be after polymodel stuff)
@@ -1175,7 +1175,7 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->pos = objp->last_pos = *pos;
   objp->parent_handle = parent_handle;
   objp->creation_time = creation_time;
-  objp->osiris_script = NULL;
+  objp->osiris_script = nullptr;
   // Initialize some general stuff
   objp->roomnum = -1;
   objp->orient = Identity_matrix;
@@ -1186,15 +1186,15 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->change_flags = 0;
   objp->generic_nonvis_flags = 0;
   objp->generic_sent_nonvis = 0;
-  objp->name = NULL;
-  objp->custom_default_script_name = NULL;
-  objp->custom_default_module_name = NULL;
+  objp->name = nullptr;
+  objp->custom_default_script_name = nullptr;
+  objp->custom_default_module_name = nullptr;
   objp->contains_type = -1;
   objp->lifeleft = 0;
-  objp->effect_info = NULL;
-  objp->ai_info = NULL;
-  objp->dynamic_wb = NULL;
-  objp->attach_children = NULL;
+  objp->effect_info = nullptr;
+  objp->ai_info = nullptr;
+  objp->dynamic_wb = nullptr;
+  objp->attach_children = nullptr;
   // Now initialize the type-specific data
   return ObjInitTypeSpecific(objp, 0);
 }

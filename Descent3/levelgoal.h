@@ -19,6 +19,7 @@
 #ifndef _LEVELGOAL_H_
 #define _LEVELGOAL_H_
 
+#include <cstdint>
 #include "object.h"
 #include "cfile.h"
 #include <cstdlib>
@@ -62,11 +63,11 @@ private:
 
 public:
   lgoal() {
-    m_name = NULL;
-    m_item_name = NULL;
-    m_desc = NULL;
+    m_name = nullptr;
+    m_item_name = nullptr;
+    m_desc = nullptr;
     m_num_items = 0;
-    m_completion_message = NULL;
+    m_completion_message = nullptr;
     m_priority = 0;
     m_g_list = 0;
     m_flags = LGF_ENABLED | LGF_TELCOM_LISTS;
@@ -99,7 +100,7 @@ public:
   int GetCompletionMessage(char *message, int buffer_size);
 
   bool Priority(int handle, char operation, int *value);
-  bool GoalList(char operation, char *value);
+  bool GoalList(char operation, int8_t *value);
   bool GetStatus(int handle, char operation, int *value, bool f_save_load = false, bool announce = true);
 
   void SendStateToPlayer(int index, int pnum);
@@ -145,7 +146,7 @@ public:
   int GoalGetCompletionMessage(int goal_index, char *message, int buffer_size);
 
   bool GoalPriority(int goal_index, char operation, int *value);
-  bool GoalGoalList(int goal_index, char operation, char *value);
+  bool GoalGoalList(int goal_index, char operation, int8_t *value);
   bool GoalStatus(int goal_index, char operation, int *value, bool announce = true);
 
   int GoalFindId(const char *goal_name);

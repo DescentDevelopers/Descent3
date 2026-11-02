@@ -1161,7 +1161,7 @@ bool GameSequencer() {
     break;
   case RESTORE_GAME_MODE:
   case LOADDEMO_MODE:
-    SetFunctionMode(GAME_MODE); // need to do so sequencer thiks we're in game.
+    SetFunctionMode(GAME_MODE); // need to do so sequencer thinks we're in game.
     break;
   }
 
@@ -1241,14 +1241,6 @@ bool GameSequencer() {
       SuspendControls();
       EndLevel(1);
       SetGameState(GAMESTATE_LVLNEXT);
-
-      // This is for HEAT.NET and their tournement mode stuff
-      // if(FindArg("-doonelevel"))
-      //	SetGameState(GAMESTATE_LVLSTART);
-      if (FindArg("-doonelevel")) {
-        SetFunctionMode(QUIT_MODE);
-      }
-
       break;
 
     case GAMESTATE_LVLNEXT:
@@ -1302,7 +1294,7 @@ void CheckHogfile() {
              (Current_mission.cur_level <= 4)) {
     new_mn3 = "d3.mn3";
   } else {
-    new_mn3 = NULL;
+    new_mn3 = nullptr;
   }
 
   if (new_mn3) {
@@ -1311,7 +1303,7 @@ void CheckHogfile() {
     auto relative_path = std::filesystem::path("missions") / new_mn3;
     auto absolute_path = cf_LocatePath(relative_path);
     if (std::filesystem::exists(absolute_path)) {
-      mn3_Open(relative_path.u8string().c_str());
+      mn3_Open(relative_path);
       mem_free(Current_mission.filename);
       Current_mission.filename = mem_strdup(new_mn3);
     } else {
@@ -1330,7 +1322,7 @@ bool SimpleStartLevel(const std::filesystem::path& level_name) {
   Current_mission.num_levels = 1;
 
   Current_level = nullptr;
-  Current_mission.levels[0].filename = mem_strdup((const char*)level_name.u8string().c_str());
+  Current_mission.levels[0].filename = mem_strdup(PATH_TO_CSTR(level_name));
   InitMissionScript();
 
   return true;
@@ -1362,7 +1354,7 @@ bool StartNewGame() {
   InitPlayerNewShip(Player_num, INVRESET_ALL);
   InitPlayerNewGame(Player_num);
 
-  InitCameraViews(1); // Turn off all camera views, including rear views
+  InitCameraViews(true); // Turn off all camera views, including rear views
 
   Quicksave_game_slot = -1; // reset so that quicksave key will always go to savegame menu first
 
@@ -1560,7 +1552,7 @@ void StartLevel() {
   ResetGameMessages();
   ResetReticle();
   ResetSmallViews();  // ResetSmallViews() must come before InitCameraViews()
-  InitCameraViews(0); // ResetSmallViews() must come before InitCameraViews()
+  InitCameraViews(false); // ResetSmallViews() must come before InitCameraViews()
   RestoreCameraRearviews();
   SetHUDMode(GetHUDMode()); // what does this do?
 
@@ -1828,11 +1820,11 @@ void FlushDataCache() {
       int index = Sounds[i].sample_index;
       if (SoundFiles[index].sample_16bit) {
         mem_free(SoundFiles[index].sample_16bit);
-        SoundFiles[index].sample_16bit = NULL;
+        SoundFiles[index].sample_16bit = nullptr;
       }
       if (SoundFiles[index].sample_8bit) {
         mem_free(SoundFiles[index].sample_8bit);
-        SoundFiles[index].sample_8bit = NULL;
+        SoundFiles[index].sample_8bit = nullptr;
       }
     }
   }
@@ -1958,7 +1950,7 @@ void SetNextLevel() {
   } else if (Current_mission.game_state_flags & MSN_STATE_SECRET_LEVEL) {
     if (lvl->flags & LVLFLAG_SPAWNSECRET) {
       // display secret level screen?
-      ShowProgressScreen(TXT_ENTERSECRETLVL, NULL, true);
+      ShowProgressScreen(TXT_ENTERSECRETLVL, nullptr, true);
       Descent->delay(1.0f);
       Current_mission.game_state_flags &= (~MSN_STATE_SECRET_LEVEL);
       SetCurrentLevel(lvl->secretlvl);
@@ -2053,7 +2045,7 @@ void RunGameMenu() {
       if (Game_mode & GM_MULTI)
         AddHUDMessage(TXT_NOPAUSEINMULTI);
       else {
-        DoMessageBoxAdvanced(TXT(TXI_HLPPAUSE), TXT_PRESSOKTOCONT, TXT_OK, KEY_PAUSE, NULL);
+        DoMessageBoxAdvanced(TXT(TXI_HLPPAUSE), TXT_PRESSOKTOCONT, TXT_OK, KEY_PAUSE, nullptr);
         // DoMessageBox(TXT(TXI_HLPPAUSE),TXT_PRESSOKTOCONT, MSGBOX_OK);
       }
       break;
@@ -2068,7 +2060,7 @@ void RunGameMenu() {
       // Weird code for the training mission and the first time you play...
       if (Current_mission.filename && (stricmp(Current_mission.filename, "training.mn3") == 0) && (FirstGame)) {
         ret = DoMessageBoxAdvanced(TXT_TRAININGABORTTITLE, TXT_TRAININGABORTTEXT, TXT_SKIP, KEY_S, TXT_ABORT, KEY_A,
-                                   TXT_CANCEL, KEY_ESC, NULL);
+                                   TXT_CANCEL, KEY_ESC, nullptr);
         if (ret == 2) {
           // Cancel
           ret = 0;
@@ -2150,7 +2142,7 @@ void RunGameMenu() {
     }
 
     ResumeControls();
-    SetUICallback(NULL);
+    SetUICallback(nullptr);
     Game_interface_mode = GAME_INTERFACE;
     NewUIWindow_alpha = 192;
     Clear_screen = 4;

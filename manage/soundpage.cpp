@@ -152,8 +152,8 @@ extern char *TablefileNameOverride;
 // Given an open file pointer and a sound_page struct, writes that sound page out
 void mng_WriteSoundPage(CFILE *outfile, mngs_sound_page *soundpage) {
   int i;
-  ASSERT(outfile != NULL);
-  ASSERT(soundpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(soundpage != nullptr);
 
   cf_WriteByte(outfile, PAGETYPE_SOUND);
 
@@ -199,8 +199,8 @@ void mng_WriteSoundPage(CFILE *outfile, mngs_sound_page *soundpage) {
 }
 // Given an open file pointer and a sound_page struct, writes that sound page out
 void mng_WriteNewSoundPage(CFILE *outfile, mngs_sound_page *soundpage) {
-  ASSERT(outfile != NULL);
-  ASSERT(soundpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(soundpage != nullptr);
 
   int offset = StartManagePage(outfile, PAGETYPE_SOUND);
   cf_WriteShort(outfile, SOUNDPAGE_VERSION);
@@ -220,7 +220,7 @@ void mng_WriteNewSoundPage(CFILE *outfile, mngs_sound_page *soundpage) {
 }
 // Reads a sound page from an open file.  Returns 0 on error.
 int mng_ReadNewSoundPage(CFILE *infile, mngs_sound_page *soundpage) {
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   /* int version = */ cf_ReadShort(infile);
   // read in name,rawfile name
   cf_ReadString(soundpage->sound_struct.name, PAGENAME_LEN, infile);
@@ -261,7 +261,7 @@ int mng_ReadSoundPage(CFILE *infile, mngs_sound_page *soundpage) {
   int i;
   if (!Old_table_method)
     return mng_ReadNewSoundPage(infile, soundpage);
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   soundpage->sound_struct.import_volume = 1.0f;
   while (!done) {
     // Read in command byte then read in the length of that commands data
@@ -338,7 +338,7 @@ int mng_FindSpecificSoundPage(char *name, mngs_sound_page *soundpage, int offset
         tablename = LocalTableDir / NET_TABLE;
       infile = cfopen(tablename, "rb");
     } else {
-      infile = NULL;
+      infile = nullptr;
       if (TablefileNameOverride) {
         infile = cfopen(TablefileNameOverride, "rb");
       }

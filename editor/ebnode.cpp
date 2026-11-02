@@ -492,14 +492,14 @@ void EBNode_ClearLevel() {
       if (nlist->nodes[j].edges) {
         mem_free(nlist->nodes[j].edges);
       }
-      nlist->nodes[j].edges = NULL;
+      nlist->nodes[j].edges = nullptr;
       nlist->nodes[j].num_edges = 0;
     }
 
     if (nlist->nodes) {
       mem_free(nlist->nodes);
     }
-    nlist->nodes = NULL;
+    nlist->nodes = nullptr;
     nlist->num_nodes = 0;
   }
 
@@ -586,7 +586,7 @@ void EBNode_RemoveNode(int roomnum, int pnt) {
 
   if (nlist->num_nodes == 0) {
     mem_free(nlist->nodes);
-    nlist->nodes = NULL;
+    nlist->nodes = nullptr;
   } else {
     nlist->nodes = (bn_node *)mem_realloc(nlist->nodes, sizeof(bn_node) * nlist->num_nodes);
   }
@@ -643,7 +643,7 @@ void EBNode_RemoveEdge(int spnt, int sroom, int epnt, int eroom, bool f_remove_r
 
   if (snlist->nodes[spnt].num_edges == 0) {
     mem_free(snlist->nodes[spnt].edges);
-    snlist->nodes[spnt].edges = NULL;
+    snlist->nodes[spnt].edges = nullptr;
   } else {
     snlist->nodes[spnt].edges =
         (bn_edge *)mem_realloc(snlist->nodes[spnt].edges, sizeof(bn_edge) * snlist->nodes[spnt].num_edges);
@@ -704,7 +704,7 @@ int EBNode_AddNode(int roomnum, vector *pnt, bool f_from_editor, bool f_check_fo
   }
   // Makes sure that if there are no nodes, then the node pointer is NULL and that if
   // there are nodes that the node pointer isn't NULL
-  ASSERT(!((nlist->num_nodes == 0) ^ (nlist->nodes == NULL)));
+  ASSERT(!((nlist->num_nodes == 0) ^ (nlist->nodes == nullptr)));
 
   new_node = nlist->num_nodes;
   nlist->num_nodes++;
@@ -714,7 +714,7 @@ int EBNode_AddNode(int roomnum, vector *pnt, bool f_from_editor, bool f_check_fo
   else
     nlist->nodes = mem_rmalloc<bn_node>();
 
-  nlist->nodes[new_node].edges = NULL;
+  nlist->nodes[new_node].edges = nullptr;
   nlist->nodes[new_node].num_edges = 0;
   nlist->nodes[new_node].pos = *pnt;
 
@@ -763,7 +763,7 @@ int EBNode_InsertNodeOnEdge(int spnt, int sroom, int epnt, int eroom) {
     fq.rad = 0.0f;
     fq.flags = FQ_IGNORE_RENDER_THROUGH_PORTALS;
     fq.thisobjnum = -1;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
 
     fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -796,7 +796,7 @@ float EBNode_DetermineMaxSizeForEdge(int spnt, int sroom, int epnt, int eroom) {
   // shoot a ray from the light position to the current vertex
   fq.flags = FQ_IGNORE_RENDER_THROUGH_PORTALS;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   do {
     fq.p0 = &snlist->nodes[spnt].pos;
@@ -850,7 +850,7 @@ void EBNode_AutoEdgeNode(int spnt, int sroom) {
       fq.rad = 3.0f;
       fq.flags = FQ_NO_RELINK;
       fq.thisobjnum = -1;
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
 
       if (fvi_FindIntersection(&fq, &hit_info) == HIT_NONE) {
         EBNode_AddEdge(spnt, sroom, i, sroom);
@@ -891,7 +891,7 @@ void EBNode_AddEdge(int spnt, int sroom, int epnt, int eroom, bool f_add_reverse
 
     // Makes sure that if there are no edges, then the edge pointer is NULL and that if
     // there are edges that the edge pointer isn't NULL
-    ASSERT(!((snlist->nodes[spnt].num_edges == 0) ^ (snlist->nodes[spnt].edges == NULL)));
+    ASSERT(!((snlist->nodes[spnt].num_edges == 0) ^ (snlist->nodes[spnt].edges == nullptr)));
 
     new_edge = snlist->nodes[spnt].num_edges;
     snlist->nodes[spnt].num_edges++;
@@ -973,7 +973,7 @@ void EBNode_MakeDefaultIntraRoomNodes(int roomnum) {
       fq.rad = 0.1f;
       fq.flags = FQ_SOLID_PORTALS | FQ_NO_RELINK;
       fq.thisobjnum = -1;
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
 
       if (fvi_FindIntersection(&fq, &hit_info) != HIT_NONE) {
         continue;
@@ -1345,7 +1345,7 @@ void EBNode_Move(bool f_offset, int roomnum, int pnt, vector *pos) {
     fq.flags =
         FQ_SOLID_PORTALS | FQ_NO_RELINK; // chrishack -- Might want to make FQ_IGNORE_MOVING_OBJECTS into a passed arg
     fq.thisobjnum = -1;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
 
     fvi_FindIntersection(&fq, &hit_info);
 

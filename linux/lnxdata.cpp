@@ -77,7 +77,7 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   }
   std::filesystem::path fileName = prefPath / REGISTRY_FILENAME;
 
-  database = new CRegistry((const char*)fileName.u8string().c_str());
+  database = new CRegistry(PATH_TO_CSTR(fileName));
   database->Import();
   create_record("Version");
 }
@@ -109,7 +109,7 @@ CRegistry *oeLnxAppDatabase::GetSystemRegistry() { return database; }
 
 // creates an empty classification or structure where you can store information
 bool oeLnxAppDatabase::create_record(const char *pathname) {
-  ASSERT(pathname != NULL);
+  ASSERT(pathname != nullptr);
   if (database) {
     database->CreateKey((char *)pathname);
     return true;
@@ -220,7 +220,7 @@ void oeLnxAppDatabase::get_user_name(char *buffer, size_t *size) {
 #if defined(POSIX)
   struct passwd *pwuid = getpwuid(geteuid());
 
-  if ((pwuid != NULL) && (pwuid->pw_name != NULL)) {
+  if ((pwuid != nullptr) && (pwuid->pw_name != nullptr)) {
     strncpy(buffer, pwuid->pw_name, (*size) - 1);
     buffer[(*size) - 1] = '\0';
     *size = strlen(buffer);

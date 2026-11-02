@@ -80,7 +80,7 @@ protected:
 class CScriptSyncDialog : public CDialog {
   // Construction
 public:
-  CScriptSyncDialog(CWnd *pParent = NULL); // standard constructor
+  CScriptSyncDialog(CWnd *pParent = nullptr); // standard constructor
   void DoStuff(void);
   void BuildList(void);
   void defer(void);

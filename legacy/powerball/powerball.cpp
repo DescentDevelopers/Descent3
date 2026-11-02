@@ -918,12 +918,12 @@ void GetGameStartPacket(uint8_t *data) {
 
   // who has the powerball
   int8_t temp;
-  memcpy(&temp, &data[size], sizeof(char));
-  size += sizeof(char);
+  memcpy(&temp, &data[size], 1);
+  size += 1;
   WhoHasPowerBall = temp;
 
-  memcpy(&temp, &data[size], sizeof(char));
-  size += sizeof(char);
+  memcpy(&temp, &data[size], 1);
+  size += 1;
   NumOfTeams = temp;
 
   // Now based on what we have from the server set up our info
@@ -947,7 +947,7 @@ void GetGameStartPacket(uint8_t *data) {
 }
 
 void SendGameStartPacket(int pnum) {
-  int maxsize = sizeof(int) * DLLMAX_TEAMS + 2 * sizeof(char);
+  int maxsize = sizeof(int) * DLLMAX_TEAMS + 2;
   int size = 0;
 
   uint8_t *data = PBall.StartPacket(maxsize, SPID_NEWPLAYER);
@@ -960,13 +960,13 @@ void SendGameStartPacket(int pnum) {
   int8_t temp;
   // who has the powerball if anyone
   temp = WhoHasPowerBall;
-  memcpy(&data[size], &temp, sizeof(char));
-  size += sizeof(char);
+  memcpy(&data[size], &temp, 1);
+  size += 1;
 
   // number of teams
   temp = NumOfTeams;
-  memcpy(&data[size], &temp, sizeof(char));
-  size += sizeof(char);
+  memcpy(&data[size], &temp, 1);
+  size += 1;
 
   // we're done
   DLLmprintf(0, "Sending Game State to %s\n", PBall.Players[pnum].callsign);

@@ -357,7 +357,7 @@ int num_messages;
 // Initializes the Message List
 void InitMessageList(void) {
   for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
+    message_list[j] = nullptr;
   num_messages = 0;
 }
 
@@ -367,7 +367,7 @@ void ClearMessageList(void) {
     free(message_list[j]->name);
     free(message_list[j]->message);
     free(message_list[j]);
-    message_list[j] = NULL;
+    message_list[j] = nullptr;
   }
   num_messages = 0;
 }
@@ -383,12 +383,12 @@ int AddMessageToList(char *name, char *msg) {
   // Allocate memory for this message entry
   pos = num_messages;
   message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
+  if (message_list[pos] == nullptr)
     return false;
 
   // Allocate memory for the message name
   message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
+  if (message_list[pos]->name == nullptr) {
     free(message_list[pos]);
     return false;
   }
@@ -396,7 +396,7 @@ int AddMessageToList(char *name, char *msg) {
 
   // Allocate memory for the message name
   message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
+  if (message_list[pos]->message == nullptr) {
     free(message_list[pos]->name);
     free(message_list[pos]);
     return false;
@@ -467,12 +467,12 @@ int ReadMessageFile(const char *filename) {
 
       // Grab the first keyword, make sure it's valid
       line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
+      if (line == nullptr)
         continue;
 
       // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
+      line = strtok(nullptr, WHITESPACE_CHARS);
+      if (line == nullptr)
         continue;
 
       next_msgid_found = true;
@@ -480,7 +480,7 @@ int ReadMessageFile(const char *filename) {
 
       // Find the start of message, and mark it
       msg_start = strchr(line, '=');
-      if (msg_start == NULL)
+      if (msg_start == nullptr)
         continue;
       msg_start[0] = '\0';
       msg_start++;
@@ -497,7 +497,7 @@ int ReadMessageFile(const char *filename) {
 // Find a message
 const char *GetMessage(const char *name) {
   // Make sure given name is valid
-  if (name == NULL)
+  if (name == nullptr)
     return INV_MSGNAME_STRING;
 
   // Search message list for name
@@ -514,8 +514,8 @@ const char *GetMessage(const char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 0
-const char **Door_names = NULL;
-int *Door_handles = NULL;
+const char **Door_names = nullptr;
+int *Door_handles = nullptr;
 
 #define NUM_OBJECT_NAMES 18
 const char *Object_names[NUM_OBJECT_NAMES] = {
@@ -529,30 +529,30 @@ const char *Room_names[NUM_ROOM_NAMES] = {"Valcanic Shaft", "Death Reach 2", "De
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 0
-const char **Trigger_names = NULL;
-int *Trigger_indexes = NULL;
-int *Trigger_faces = NULL;
-int *Trigger_rooms = NULL;
+const char **Trigger_names = nullptr;
+int *Trigger_indexes = nullptr;
+int *Trigger_faces = nullptr;
+int *Trigger_rooms = nullptr;
 
 #define NUM_SOUND_NAMES 2
 const char *Sound_names[NUM_SOUND_NAMES] = {"Drop weapon", "AmbVolcanoErupt"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
-const char **Texture_names = NULL;
-int *Texture_indexes = NULL;
+const char **Texture_names = nullptr;
+int *Texture_indexes = nullptr;
 
 #define NUM_PATH_NAMES 1
 const char *Path_names[NUM_PATH_NAMES] = {"BallonCrazyPath"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 0
-const char **Matcen_names = NULL;
-int *Matcen_indexes = NULL;
+const char **Matcen_names = nullptr;
+int *Matcen_indexes = nullptr;
 
 #define NUM_GOAL_NAMES 0
-const char **Goal_names = NULL;
-int *Goal_indexes = NULL;
+const char **Goal_names = nullptr;
+int *Goal_indexes = nullptr;
 
 #define NUM_MESSAGE_NAMES 2
 const char *Message_names[NUM_MESSAGE_NAMES] = {"HackBot", "Message1"};
@@ -577,8 +577,8 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   char filename[_MAX_PATH + 32];
   char english_filename[(_MAX_PATH + 32) * 2];
   int lang_type;
-  if (func_list->script_identifier != NULL) {
-    _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
+  if (func_list->script_identifier != nullptr) {
+    _splitpath(func_list->script_identifier, nullptr, nullptr, filename, nullptr);
     snprintf(english_filename, sizeof(english_filename), "%s.msg", filename);
     lang_type = Game_GetLanguage();
     if (lang_type == LANGUAGE_FRENCH)
@@ -707,7 +707,7 @@ void STDCALLPTR CreateInstance(int id) {
     mprintf(0, "SCRIPT: Illegal ID (%d)\n", id);
     break;
   }
-  return NULL;
+  return nullptr;
 }
 
 // =================

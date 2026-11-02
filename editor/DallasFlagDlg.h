@@ -31,7 +31,7 @@
 class CDallasFlagDlg : public CDialog {
   // Construction
 public:
-  CDallasFlagDlg(CWnd *pParent = NULL); // standard constructor
+  CDallasFlagDlg(CWnd *pParent = nullptr); // standard constructor
 
   int m_FlagsValue;
   int m_ValidFlagsMask;

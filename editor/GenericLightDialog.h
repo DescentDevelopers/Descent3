@@ -33,7 +33,7 @@
 class CGenericLightDialog : public CDialog {
   // Construction
 public:
-  CGenericLightDialog(light_info *current, CWnd *pParent = NULL); // standard constructor
+  CGenericLightDialog(light_info *current, CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CGenericLightDialog)

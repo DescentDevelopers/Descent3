@@ -497,7 +497,7 @@ char TableUser[TABLE_NAME_LEN];
 char ErrorString[INFO_STRING_LEN], InfoString[INFO_STRING_LEN];
 mngs_track_lock GlobalTrackLocks[MAX_TRACKLOCKS];
 bool Use_old_update_method = false;
-char *TablefileNameOverride = NULL;
+char *TablefileNameOverride = nullptr;
 // Only valid when first starting the editor
 #define MAX_LOCKLIST_ELEMENTS 1000
 mngs_Pagelock *LockList;
@@ -542,7 +542,7 @@ int mng_IsNetworkUp() {
   Database->read("net directory", net_dir, &dirlen);
   if (net_dir[0] == 0)
     return 0;
-  ddio_MakePath(dir, net_dir, "data", NULL);
+  ddio_MakePath(dir, net_dir, "data", nullptr);
 
   std::error_code ec;
   std::filesystem::create_directories(dir, ec);
@@ -690,12 +690,12 @@ int mng_InitLocalTables() {
   LocalCustomGraphicsDir = cf_GetWritableBaseDirectory() / "custom" / "graphics";
   LocalRoomsDir = localdir / "data" / "rooms";
   LocalBriefingDir = localdir / "data" / "briefings";
-  ddio_MakePath(LocalScriptDir, LocalD3Dir, "data", "scripts", NULL);
+  ddio_MakePath(LocalScriptDir, LocalD3Dir, "data", "scripts", nullptr);
   LocalMiscDir = localdir / "data" / "misc";
   LocalArtDir = localdir / "data" / "art";
   LocalMusicDir = localdir / "data" / "music";
   LocalVoiceDir = localdir / "data" / "voice";
-  ddio_MakePath(LocalLevelsDir, LocalD3Dir, "data", "levels", NULL);
+  ddio_MakePath(LocalLevelsDir, LocalD3Dir, "data", "levels", nullptr);
   cf_SetSearchPath(LocalD3Dir);
 #ifndef RELEASE
   cf_SetSearchPath(LocalLevelsDir);
@@ -714,8 +714,8 @@ int mng_InitLocalTables() {
 #endif
 
   if (Network_up) {
-    ddio_MakePath(LocalTableFilename, (const char*)LocalTableDir.u8string().c_str(), LOCAL_TABLE, NULL);
-    ddio_MakePath(LocalTempTableFilename, (const char*)LocalTableDir.u8string().c_str(), TEMP_LOCAL_TABLE, NULL);
+    ddio_MakePath(LocalTableFilename, PATH_TO_CSTR(LocalTableDir), LOCAL_TABLE, nullptr);
+    ddio_MakePath(LocalTempTableFilename, PATH_TO_CSTR(LocalTableDir), TEMP_LOCAL_TABLE, nullptr);
   } else {
     strcpy(LocalTableFilename, LOCAL_TABLE);
     strcpy(LocalTempTableFilename, TEMP_LOCAL_TABLE);
@@ -739,7 +739,7 @@ int mng_InitNetTables() {
   NetSoundsDir = netdir / "data" / "sounds";
   NetRoomsDir = netdir / "data" / "rooms";
   NetBriefingDir = netdir / "data" / "briefings";
-  ddio_MakePath(NetScriptDir, NetD3Dir, "data", "scripts", NULL);
+  ddio_MakePath(NetScriptDir, NetD3Dir, "data", "scripts", nullptr);
   NetMiscDir = netdir / "data" / "misc";
   ManageGraphicsDir = netdir / "data" / "graphics";
   NetTableDir = netdir / "data" / "tables";
@@ -747,11 +747,11 @@ int mng_InitNetTables() {
   NetMusicDir = netdir / "data" / "music";
   NetVoiceDir = netdir / "data" / "voice";
   TableLockFilename = NetTableDir / "table.lok";
-  ddio_MakePath(BackupLockFilename, (const char*)NetTableDir.u8string().c_str(), "tablelok.bak", NULL);
-  ddio_MakePath(BackupTableFilename, (const char*)NetTableDir.u8string().c_str(), "table.bak", NULL);
-  ddio_MakePath(TableFilename, (const char*)NetTableDir.u8string().c_str(), NET_TABLE, NULL);
-  ddio_MakePath(TempTableLockFilename, (const char*)NetTableDir.u8string().c_str(), "lock.tmp", NULL);
-  ddio_MakePath(TempTableFilename, (const char*)NetTableDir.u8string().c_str(), TEMP_NET_TABLE, NULL);
+  ddio_MakePath(BackupLockFilename, PATH_TO_CSTR(NetTableDir), "tablelok.bak", nullptr);
+  ddio_MakePath(BackupTableFilename, PATH_TO_CSTR(NetTableDir), "table.bak", nullptr);
+  ddio_MakePath(TableFilename, PATH_TO_CSTR(NetTableDir), NET_TABLE, nullptr);
+  ddio_MakePath(TempTableLockFilename, PATH_TO_CSTR(NetTableDir), "lock.tmp", nullptr);
+  ddio_MakePath(TempTableFilename, PATH_TO_CSTR(NetTableDir), TEMP_NET_TABLE, nullptr);
   LockerFile = NetTableDir / "locker";
   VersionFile = NetTableDir / "TableVersion";
 
@@ -770,7 +770,7 @@ void mng_CheckToCreateNetTables() {
   ASSERT(Stand_alone != 1);
 
   infile = (CFILE *)cfopen(TableFilename, "rb");
-  if (infile == NULL) {
+  if (infile == nullptr) {
     if (errno == ENOENT) {
       outfile = (CFILE *)cfopen(TableFilename, "wb");
       if (!outfile) {
@@ -878,7 +878,7 @@ void mng_BackupTableFile() {
     TableTimeThreshold.dwLowDateTime = 0;
   } else {
     WIN32_FIND_DATA filedata;
-    HANDLE filehandle = FindFirstFile(str.u8string().c_str(), &filedata);
+    HANDLE filehandle = FindFirstFile(PATH_TO_CSTR(str), &filedata);
     if (filehandle == INVALID_HANDLE_VALUE) {
       Error("Couldn't open net table file for some reason!");
       return;
@@ -1012,9 +1012,9 @@ void mng_ReadDummyPage(CFILE *infile, uint8_t pagetype) {
     break;
   case PAGETYPE_GENERIC:
     mng_ReadNewGenericPage(infile, &genericpage);
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
     break;
   case PAGETYPE_GAMEFILE:
@@ -1057,9 +1057,9 @@ void mng_ReadWriteDummyPage(CFILE *infile, CFILE *outfile, uint8_t pagetype) {
     // Read it in, write it out.
     mng_ReadNewGenericPage(infile, &genericpage);
     mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
     break;
   case PAGETYPE_GAMEFILE:
@@ -1348,14 +1348,14 @@ int mng_LoadNetPages(int show_progress) {
     default:
       Int3(); // Unrecognized pagetype, possible corrupt data following
       cfclose(infile);
-      TablefileNameOverride = NULL;
+      TablefileNameOverride = nullptr;
       return 0;
       break;
     }
     n_pages++;
   }
   LOG_INFO.printf("%d extra pages read.", n_pages);
-  TablefileNameOverride = NULL;
+  TablefileNameOverride = nullptr;
   cfclose(infile);
   return 1;
 }
@@ -1573,7 +1573,7 @@ void mng_TransferPages() {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     goto done;
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     goto done;
@@ -1711,9 +1711,9 @@ void ReorderPages(int local) {
     mng_ReadNewGenericPage(infile, &genericpage);
     if (genericpage.objinfo_struct.type == OBJ_POWERUP)
       mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
   }
   // Do standard generics
@@ -1734,9 +1734,9 @@ void ReorderPages(int local) {
     mng_ReadNewGenericPage(infile, &genericpage);
     if (genericpage.objinfo_struct.type != OBJ_POWERUP)
       mng_WriteNewGenericPage(outfile, &genericpage);
-    if (genericpage.objinfo_struct.description != NULL) {
+    if (genericpage.objinfo_struct.description != nullptr) {
       mem_free(genericpage.objinfo_struct.description);
-      genericpage.objinfo_struct.description = NULL;
+      genericpage.objinfo_struct.description = nullptr;
     }
   }
   // Do countermeasure weapons
@@ -1860,13 +1860,13 @@ bool InLockList(mngs_Pagelock *pl) {
 int GetPrimType(const std::filesystem::path &name) {
   int primtype;
   std::filesystem::path ext = name.extension();
-  if (!stricmp(".oof", (const char*)ext.u8string().c_str()))
+  if (!stricmp(".oof", PATH_TO_CSTR(ext)))
     primtype = PRIMTYPE_OOF;
-  else if (!stricmp(".ogf", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".ogf", PATH_TO_CSTR(ext)))
     primtype = PRIMTYPE_OGF;
-  else if (!stricmp(".oaf", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".oaf", PATH_TO_CSTR(ext)))
     primtype = PRIMTYPE_OAF;
-  else if (!stricmp(".wav", (const char*)ext.u8string().c_str()))
+  else if (!stricmp(".wav", PATH_TO_CSTR(ext)))
     primtype = PRIMTYPE_WAV;
   else
     primtype = PRIMTYPE_FILE;
@@ -1879,7 +1879,7 @@ void BuildOldFilesForDirectory(const std::filesystem::path& path, FILETIME thres
   HANDLE filehandle;
   WIN32_FIND_DATA filedata;
   std::filesystem::path newpath = path / "*.*";
-  filehandle = FindFirstFile(newpath.u8string().c_str(), &filedata);
+  filehandle = FindFirstFile(PATH_TO_CSTR(newpath), &filedata);
   bool go_ahead = true;
   if (filehandle == INVALID_HANDLE_VALUE)
     go_ahead = false;
@@ -1925,11 +1925,11 @@ void BuildOldFileList(FILETIME threshold) {
   BuildOldFilesForDirectory(NetArtDir, threshold);
   BuildOldFilesForDirectory(NetMusicDir, threshold);
   BuildOldFilesForDirectory(NetVoiceDir, threshold);
-  ddio_MakePath(str, NetD3Dir, "data", "levels", NULL);
+  ddio_MakePath(str, NetD3Dir, "data", "levels", nullptr);
   BuildOldFilesForDirectory(str, threshold);
-  ddio_MakePath(str, NetD3Dir, "data", "briefings", NULL);
+  ddio_MakePath(str, NetD3Dir, "data", "briefings", nullptr);
   BuildOldFilesForDirectory(str, threshold);
-  ddio_MakePath(str, NetD3Dir, "data", "scripts", NULL);
+  ddio_MakePath(str, NetD3Dir, "data", "scripts", nullptr);
   BuildOldFilesForDirectory(str, threshold);
   LOG_INFO.printf("Found %d old files.", Num_old_files);
 }
@@ -2124,9 +2124,9 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
       mng_ReadNewGenericPage(infile, &genericpage);
       if (!stricmp(srcname, genericpage.objinfo_struct.name)) {
         // This is the page we want to replace, so write the new one out.
-        if (genericpage.objinfo_struct.description != NULL) {
+        if (genericpage.objinfo_struct.description != nullptr) {
           mem_free(genericpage.objinfo_struct.description);
-          genericpage.objinfo_struct.description = NULL;
+          genericpage.objinfo_struct.description = nullptr;
         }
         genericpage.objinfo_struct.icon_name[0] = '\0';
 
@@ -2282,9 +2282,9 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
         mng_WriteNewGenericPage(outfile, &genericpage);
       else
         deleted = 1; // Don't write out the one we want to delete
-      if (genericpage.objinfo_struct.description != NULL) {
+      if (genericpage.objinfo_struct.description != nullptr) {
         mem_free(genericpage.objinfo_struct.description);
-        genericpage.objinfo_struct.description = NULL;
+        genericpage.objinfo_struct.description = nullptr;
       }
       genericpage.objinfo_struct.icon_name[0] = '\0';
       break;
@@ -2716,7 +2716,7 @@ void mng_ClearAddonTables() {
     if (AddOnDataTables[count - 1].Addon_tracklocks) {
       mng_PopAddonPages();
       mem_free(AddOnDataTables[count - 1].Addon_tracklocks);
-      AddOnDataTables[count - 1].Addon_tracklocks = NULL;
+      AddOnDataTables[count - 1].Addon_tracklocks = nullptr;
       AddOnDataTables[count - 1].Num_addon_tracklocks = 0;
     }
 
@@ -2796,7 +2796,7 @@ void mng_CompileAddonPages(void) {
       file = cfopen(AddOnDataTables[curr_tablefile - 2].AddOnTableFilename, "rb");
       LOG_DEBUG << "Compiling addon pages of " << AddOnDataTables[curr_tablefile - 2].AddOnTableFilename;
     }
-    ASSERT(file != NULL);
+    ASSERT(file != nullptr);
 
     // start reading the pages from this tablefile
     // as we come across each page, check to see if it was
@@ -2886,7 +2886,7 @@ void mng_CompileAddonPages(void) {
 // Error checking variables
 bool Loading_addon = false;
 int Data_error_count = 0;
-FILE *Data_error_file = NULL;
+FILE *Data_error_file = nullptr;
 char *Addon_filename;
 
 // Loads and allocs all pages found locally
@@ -2968,7 +2968,7 @@ void mng_LoadAddonPages() {
   mng_CompileAddonPages();
 
   // Close error file
-  if (Data_error_file != NULL) {
+  if (Data_error_file != nullptr) {
     fprintf(Data_error_file, "\nTotal errors: %d", Data_error_count);
     fclose(Data_error_file);
   }
@@ -3037,10 +3037,10 @@ void DataError(const char *fmt, ...) {
     va_end(arglist);
 
     // Open file if not already open
-    if (Data_error_file == NULL) {
+    if (Data_error_file == nullptr) {
       Data_error_file = fopen("datacheck.out", "wt");
 
-      if (Data_error_file == NULL)
+      if (Data_error_file == nullptr)
         return;
 
       last_filename[0] = 0;

@@ -83,7 +83,7 @@ void InitEvents() {
   int i;
   for (i = 0; i < MAX_EVENTS; i++) {
     GameEvent[i].used = 0;
-    GameEvent[i].data = NULL;
+    GameEvent[i].data = nullptr;
   }
 }
 
@@ -112,7 +112,7 @@ int AllocEvent() {
 
   for (i = 0; i < MAX_EVENTS; i++) {
     if (GameEvent[i].used == 0) {
-      ASSERT(GameEvent[i].data == NULL);
+      ASSERT(GameEvent[i].data == nullptr);
       memset(&GameEvent[i], 0, sizeof(game_event));
       GameEvent[i].used = 1;
       GameEvent[i].objhandle_detonator = OBJECT_HANDLE_NONE;
@@ -131,9 +131,9 @@ void FreeEvent(int index) {
     return;
   }
   GameEvent[index].used = 0;
-  if (GameEvent[index].data != NULL) {
+  if (GameEvent[index].data != nullptr) {
     mem_free(GameEvent[index].data);
-    GameEvent[index].data = NULL;
+    GameEvent[index].data = nullptr;
   }
 
   Num_events--;

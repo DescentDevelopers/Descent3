@@ -138,8 +138,8 @@ void UIHotspot::OnDestroy() {
   if (m_ItemOn)
     delete m_ItemOn;
 
-  m_ItemOff = NULL;
-  m_ItemOn = NULL;
+  m_ItemOff = nullptr;
+  m_ItemOn = nullptr;
 }
 
 // behavior when key is pressed.

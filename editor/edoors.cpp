@@ -66,7 +66,7 @@ void PlaceDoor(room *baseroomp, int baseface, int placed_door) {
 
   rp = CreateNewRoom(num_verts, num_faces, 1);
 
-  ASSERT(rp != NULL);
+  ASSERT(rp != nullptr);
 
   // Create the actual room walls
   int index = 0;

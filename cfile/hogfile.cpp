@@ -123,7 +123,7 @@ bool ReadHogHeader(FILE *fp, tHogHeader *header) {
 }
 
 bool ReadHogEntry(FILE *fp, tHogFileEntry *entry) {
-  if (fread(entry->name, sizeof(char), HOG_FILENAME_LEN, fp) != HOG_FILENAME_LEN)
+  if (fread(entry->name, 1, HOG_FILENAME_LEN, fp) != HOG_FILENAME_LEN)
     return false;
   if (fread(&entry->flags, sizeof(entry->flags), 1, fp) != 1)
     return false;

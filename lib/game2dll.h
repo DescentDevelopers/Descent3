@@ -90,7 +90,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use = -1);
 
 // If this function is called than the DLL is to be closed, because there was an error running it
 // if reason is not NULL than that is the reason why
-void DLLFatalError(const char *reason = NULL);
+void DLLFatalError(const char *reason = nullptr);
 
 // Call this function right after a player connects to the game to see if a player is banned
 bool GameDLLIsAddressBanned(network_address *addr, const char *tracker_id);

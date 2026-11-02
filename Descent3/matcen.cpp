@@ -145,6 +145,7 @@
 #endif
 
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 
@@ -232,14 +233,14 @@ matcen::matcen() {
 
   m_max_alive_children = -1;
   m_num_alive = 0;
-  m_alive_list = NULL;
+  m_alive_list = nullptr;
 
   m_preprod_time = 1.5f;
   m_postprod_time = 1.0f;
 
   m_status = 0;
 
-  m_create_pnt = Zero_vector;
+  m_create_pnt = vector{};
   m_create_room = MATCEN_ERROR;
 
   m_cached_prod_index = -1;
@@ -338,7 +339,7 @@ bool matcen::DoObjProd() {
   vector fvec = Player_object->pos - m_create_pnt;
   vm_NormalizeVector(&fvec);
 
-  vm_VectorToMatrix(&orient, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&orient, &fvec, nullptr, nullptr);
 
   if (m_prod_type[m_cached_prod_index] >= 0) {
     int croom = m_create_room;
@@ -357,7 +358,7 @@ bool matcen::DoObjProd() {
       vector gp;
       object *obj = &Objects[objnum];
 
-      if (PhysCalcGround(&gp, NULL, obj, 0)) {
+      if (PhysCalcGround(&gp, nullptr, obj, 0)) {
         fvi_info hit_info;
         fvi_query fq;
         int fate;
@@ -371,7 +372,7 @@ bool matcen::DoObjProd() {
         fq.rad = 0.0f;
         fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS;
         fq.thisobjnum = OBJNUM(obj);
-        fq.ignore_obj_list = NULL;
+        fq.ignore_obj_list = nullptr;
 
         fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -386,7 +387,7 @@ bool matcen::DoObjProd() {
           if (ps != pr) {
             diff = ps - pr;
             obj->pos -= diff * obj->orient.uvec;
-            ObjSetPos(obj, &obj->pos, obj->roomnum, NULL, false);
+            ObjSetPos(obj, &obj->pos, obj->roomnum, nullptr, false);
             obj->flags |= OF_MOVED_THIS_FRAME;
 
             m_create_pnt = obj->pos;
@@ -567,7 +568,7 @@ bool matcen::ComputeCreatePnt() {
         int num_valid_faces = 0;
         room *rp = &Rooms[m_roomnum];
 
-        m_create_pnt = Zero_vector;
+        m_create_pnt = vector{};
 
         for (i = 0; i < m_num_spawn_pnts; i++) {
           if (m_spawn_pnt[i] >= 0 && m_spawn_pnt[i] < rp->num_faces) {
@@ -623,7 +624,7 @@ bool matcen::ComputeCreatePnt() {
         int i;
         int num_valid_gps = 0;
 
-        m_create_pnt = Zero_vector;
+        m_create_pnt = vector{};
 
         for (i = 0; i < m_num_spawn_pnts; i++) {
           if (WeaponCalcGun(&m_spawn_vec[num_valid_gps], &m_spawn_normal[num_valid_gps], master_obj, m_spawn_pnt[i])) {
@@ -663,7 +664,7 @@ bool matcen::ComputeCreatePnt() {
       fq.p1 = &m_create_pnt;
       fq.rad = 0.0f;
       fq.thisobjnum = -1;
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = FQ_IGNORE_WALLS;
 
       fvi_FindIntersection(&fq, &hit_info);
@@ -706,14 +707,14 @@ bool matcen::SetCreateRoom(int room) {
   return false;
 }
 
-int matcen::GetSpawnPnt(char s_index) {
+int matcen::GetSpawnPnt(int8_t s_index) {
   if (s_index >= 0 && s_index < MAX_SPAWN_PNTS)
     return m_spawn_pnt[s_index];
 
   return MATCEN_ERROR;
 }
 
-bool matcen::SetSpawnPnt(char s_index, int s_value) {
+bool matcen::SetSpawnPnt(int8_t s_index, int s_value) {
   if (s_index >= 0 && s_index < MAX_SPAWN_PNTS) {
     m_spawn_pnt[s_index] = s_value;
     ComputeCreatePnt();
@@ -928,7 +929,7 @@ void matcen::LoadData(CFILE *fp) {
     }
   } else {
     m_num_alive = 0;
-    m_alive_list = NULL;
+    m_alive_list = nullptr;
   }
 
   m_preprod_time = cf_ReadFloat(fp);
@@ -988,7 +989,7 @@ bool matcen::SetNumProdTypes(char num_prod_types) {
   return false;
 }
 
-bool matcen::GetProdInfo(char index, int *type_id, int *priority, float *time, int *max_prod) {
+bool matcen::GetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod) {
   if (index >= 0 && index < MAX_PROD_TYPES) {
     if (type_id)
       *type_id = m_prod_type[index];
@@ -1008,7 +1009,7 @@ bool matcen::GetProdInfo(char index, int *type_id, int *priority, float *time, i
   return false;
 }
 
-bool matcen::SetProdInfo(char index, int *type_id, int *priority, float *time, int *max_prod) {
+bool matcen::SetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod) {
   if (index >= 0 && index < MAX_PROD_TYPES) {
     if (type_id && (*type_id >= -1))
       m_prod_type[index] = *type_id;
@@ -1219,7 +1220,7 @@ void matcen::CheckActivateStatus() {
       fq.p1 = &Player_object->pos;
       fq.rad = 0.0f;
       fq.thisobjnum = -1;
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = FQ_NO_RELINK | FQ_CHECK_OBJS | FQ_ONLY_DOOR_OBJ;
 
       fate = fvi_FindIntersection(&fq, &hit_info);
@@ -1728,7 +1729,7 @@ void matcen::SetCreationTexture(int16_t texnum) { m_creation_texture = texnum; }
 
 int16_t matcen::GetCreationTexture() { return m_creation_texture; }
 
-int matcen::GetSound(char sound_type) {
+int matcen::GetSound(int8_t sound_type) {
   if (sound_type >= 0 && sound_type < MAX_MATCEN_SOUNDS) {
     return m_sounds[sound_type];
   }
@@ -1736,7 +1737,7 @@ int matcen::GetSound(char sound_type) {
   return MATCEN_ERROR;
 }
 
-bool matcen::SetSound(char sound_type, int sound_index) {
+bool matcen::SetSound(int8_t sound_type, int sound_index) {
   if (sound_type >= 0 && sound_type < MAX_MATCEN_SOUNDS) {
     m_sounds[sound_type] = sound_index;
   }
@@ -1787,7 +1788,7 @@ bool matcen::SetMaxAliveChildren(int max_alive) {
     if (max_alive > 0) {
       temp = mem_rmalloc<int>(max_alive);
     } else {
-      temp = NULL;
+      temp = nullptr;
     }
 
     // Determine the current number of alive (and tracked) children
@@ -1901,7 +1902,7 @@ void InitMatcens() {
   Num_matcens = 0;
 
   for (i = 0; i < MAX_MATCENS; i++) {
-    Matcen[i] = NULL;
+    Matcen[i] = nullptr;
   }
 
   atexit(DestroyAllMatcens);
@@ -1969,7 +1970,7 @@ void DestroyMatcen(int id, bool f_resort = false) {
 
   if (MatcenValid(id)) {
     delete Matcen[id];
-    Matcen[id] = NULL;
+    Matcen[id] = nullptr;
 
     Num_matcens--;
 

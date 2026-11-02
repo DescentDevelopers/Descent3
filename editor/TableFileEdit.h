@@ -35,7 +35,7 @@
 class CTableFileEdit : public CDialog {
   // Construction
 public:
-  CTableFileEdit(CWnd *pParent = NULL); // standard constructor
+  CTableFileEdit(CWnd *pParent = nullptr); // standard constructor
 
   void EnableAll(bool flag); // Enables or disables all dialog items
 

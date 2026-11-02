@@ -127,17 +127,17 @@
 #include "room.h"
 
 // Current room, face, edge, & vert.
-room *Curroomp = NULL;
+room *Curroomp = nullptr;
 int Curface = 0, Curedge = 0, Curvert = 0, Curportal = -1;
 
 // Marked room & face
-room *Markedroomp = NULL;
+room *Markedroomp = nullptr;
 int Markedface = 0, Markededge = 0, Markedvert = 0;
 
 // Placed room info
 int Placed_door = -1;
 int Placed_room = -1;
-group *Placed_group = NULL;
+group *Placed_group = nullptr;
 int Placed_room_face;
 float Placed_room_angle;
 vector Placed_room_origin;
@@ -182,10 +182,10 @@ int Cur_object_index = 0;
 int Object_move_mode = REL_OBJECT;
 
 // The scrap buffer
-group *Scrap = NULL;
+group *Scrap = nullptr;
 
 // Pointer to the scripts for this level
-char *Current_level_script = NULL;
+char *Current_level_script = nullptr;
 
 // What mode we're currently in
 int Editor_view_mode = VM_MINE;

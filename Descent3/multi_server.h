@@ -18,6 +18,8 @@
 
 #ifndef MULTI_SERVER_H
 
+#include <filesystem>
+
 #include "pstypes.h"
 #include "multi.h"
 #include "game2dll.h"
@@ -51,6 +53,15 @@ void MultiDoServerFrame();
 // Set the local machine as a server
 void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_teams = -1);
 
+/**
+ * Checks if the selected mission and script are compatible
+ * @param mission requested mission
+ * @param script script name
+ * @param dedicated_server_num_teams requested number of teams from dedicated server
+ * @return number of teams supported for this mod & level (>=0) or -1 if mission incompatible
+ */
+int CheckMissionForScript(const std::filesystem::path &mission, char *script, int dedicated_server_num_teams);
+
 // Disconnects all players that haven't been heard from in a while
 // Server only
 void MultiDisconnectDeadPlayers();
@@ -67,7 +78,7 @@ void MultiSendPlayer(int slot, int which);
 void MultiSendReliablyToAllExcept(int except, uint8_t *data, int size, int seq_threshold = 0, bool urgent = 1);
 
 // Tells clients to execute dlls on their machines
-void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info = NULL);
+void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info = nullptr);
 
 // Resets the settings that a server uses
 void MultiResetSettings();
@@ -78,6 +89,6 @@ void GetNewRankings(object *killed, object *killer);
 // Returns a ranking index based on the player rating
 // If rankbuf is non-null, fills in the string corresponding to that rank
 // Returns -1 if not a pxo game (ie no rankings in this game)
-int GetRankIndex(int pnum, char *rankbuf = NULL);
+int GetRankIndex(int pnum, char *rankbuf = nullptr);
 
 #endif

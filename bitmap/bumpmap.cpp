@@ -37,7 +37,7 @@ void bump_InitBumpmaps() {
 
   for (i = 0; i < MAX_BUMPMAPS; i++) {
     GameBumpmaps[i].flags = 0;
-    GameBumpmaps[i].data = NULL;
+    GameBumpmaps[i].data = nullptr;
     GameBumpmaps[i].cache_slot = -1;
     Free_bumpmap_list[i] = i;
   }
@@ -92,12 +92,12 @@ int bump_AllocBumpmap(int w, int h) {
 void bump_FreeBumpmap(int handle) {
   ASSERT(GameBumpmaps[handle].flags & BUMPF_USED);
 
-  if (GameBumpmaps[handle].data != NULL)
+  if (GameBumpmaps[handle].data != nullptr)
     mem_free(GameBumpmaps[handle].data);
 
   Bumpmap_mem_used -= (GameBumpmaps[handle].width * GameBumpmaps[handle].height * 2);
 
-  GameBumpmaps[handle].data = NULL;
+  GameBumpmaps[handle].data = nullptr;
   GameBumpmaps[handle].flags &= ~BUMPF_USED;
 
   Free_bumpmap_list[--Num_of_bumpmaps] = handle;
@@ -109,7 +109,7 @@ uint16_t *bump_data(int handle) {
 
   if (!(GameBumpmaps[handle].flags & BUMPF_USED)) {
     Int3();
-    return NULL;
+    return nullptr;
   }
 
   d = GameBumpmaps[handle].data;

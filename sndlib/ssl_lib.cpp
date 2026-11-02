@@ -45,7 +45,7 @@
 
 llsSystem::llsSystem() {
   m_lib_error_code = SSL_OK;
-  m_geometry = NULL;
+  m_geometry = nullptr;
 }
 
 void llsSystem::CheckForErrors() {

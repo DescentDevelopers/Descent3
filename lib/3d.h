@@ -325,7 +325,7 @@ uint8_t g3_AddDeltaVec(g3Point *dest, g3Point *src, vector *deltav);
 // Parameters:	nv - the number of verts in the poly
 //					pointlist - a pointer to a list of pointers to points
 //					bm - the bitmap handle if texturing.  ignored if flat shading
-int g3_DrawPoly(int nv, g3Point **pointlist, int bm, int map_type = 0, g3Codes *clip_codes = NULL);
+int g3_DrawPoly(int nv, g3Point **pointlist, int bm, int map_type = 0, g3Codes *clip_codes = nullptr);
 
 // draw a sortof sphere - i.e., the 2d radius is proportional to the 3d
 // radius, but not to the distance from the eye

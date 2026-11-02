@@ -108,8 +108,8 @@
 
 #include <algorithm>
 
-IDMFC *DMFCBase = NULL;
-static IDmfcStats *dstat = NULL;
+IDMFC *DMFCBase = nullptr;
+static IDmfcStats *dstat = nullptr;
 static player *dPlayers;
 
 struct tPlayerStat {
@@ -216,7 +216,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   dPlayers = DMFCBase->GetPlayers();
 
   DLLCreateStringTable("Coop.str", &StringTable, &StringTableSize);
-  mprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -258,13 +257,13 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
               DSIF_SHOWPLAYERVIEW;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 5;
-  tsi.clbDetailedColumn = NULL;
-  tsi.clbDetailedColumnBMP = NULL;
+  tsi.clbDetailedColumn = nullptr;
+  tsi.clbDetailedColumnBMP = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
-  tsi.clbPlayerColumnBMP = NULL;
-  tsi.DetailedColumns = NULL;
+  tsi.clbPlayerColumnBMP = nullptr;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
 
@@ -304,14 +303,19 @@ void DLLFUNCCALL DLLGameClose() {
 
   if (dstat) {
     dstat->DestroyPointer();
-    dstat = NULL;
+    dstat = nullptr;
   }
 
   if (DMFCBase) {
     DMFCBase->GameClose();
     DMFCBase->DestroyPointer();
-    DMFCBase = NULL;
+    DMFCBase = nullptr;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 void OnHUDInterval(void) {
@@ -453,7 +457,7 @@ void OnServerGameCreated(void) {
     if (pr)
       stat = (tPlayerStat *)pr->user_info;
     else
-      stat = NULL;
+      stat = nullptr;
     if (stat) {
       stat->Score[DSTAT_LEVEL] = 0;
       stat->Score[DSTAT_OVERALL] = 0;
@@ -471,7 +475,7 @@ void OnClientLevelStart(void) {
     if (pr)
       stat = (tPlayerStat *)pr->user_info;
     else
-      stat = NULL;
+      stat = nullptr;
 
     if (stat) {
       stat->Score[DSTAT_LEVEL] = 0;
@@ -525,7 +529,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
   DLLGetUltimateParentForObject(&parent, killer);
 
   if ((parent->type != OBJ_PLAYER) && (parent->type != OBJ_OBSERVER)) {
-    mprintf(0, "Robot killed wasn't by a OBJ_PLAYER or OBJ_OBSERVER (%d)\n", parent->type);
+    LOG_WARNING.printf("Robot killed wasn't by a OBJ_PLAYER or OBJ_OBSERVER (%d)", parent->type);
     return;
   }
 
@@ -533,7 +537,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
 
   player_record *pr = DMFCBase->GetPlayerRecordByPnum(killer_pnum);
   if (!pr) {
-    mprintf(0, "Invalid player record!\n");
+    LOG_ERROR << "Invalid player record!";
     Int3();
     return;
   }
@@ -543,7 +547,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
   stat->Score[DSTAT_LEVEL]++;
   stat->Score[DSTAT_OVERALL]++;
 
-  mprintf(0, "%s's score is now %d\n", dPlayers[killer_pnum].callsign, stat->Score[DSTAT_LEVEL]);
+  LOG_INFO.printf("%s's score is now %d", dPlayers[killer_pnum].callsign, stat->Score[DSTAT_LEVEL]);
 
   DMFCBase->OnClientObjectKilled(obj, killer);
 }
@@ -611,7 +615,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
           DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
 
           DLLrend_DrawScaledBitmap(name_x - 2, start_y - 2, DMFCBase->GetGameWindowW() - 8, start_y + height + 1,
-                                   Highlight_bmp, 0, 0, 1, 1, 1.0, -1, NULL);
+                                   Highlight_bmp, 0, 0, 1, 1, 1.0, -1, nullptr);
           DLLrend_SetZBufferState(1);
         }
       }

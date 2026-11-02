@@ -28,7 +28,7 @@
 class CWorldTexturesDialog : public CDialog {
   // Construction
 public:
-  CWorldTexturesDialog(CWnd *pParent = NULL); // standard constructor
+  CWorldTexturesDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CWorldTexturesDialog)

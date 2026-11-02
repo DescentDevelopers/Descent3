@@ -712,7 +712,7 @@ redo_hud_switch:
     saved_window_w = 0;
     saved_window_h = 0;
 
-    Current_pilot.get_hud_data(NULL, &cp_hud_stat, &cp_hud_graphical_stat);
+    Current_pilot.get_hud_data(nullptr, &cp_hud_stat, &cp_hud_graphical_stat);
 
     SetHUDState(cp_hud_stat | STAT_SCORE | (Hud_stat_mask & STAT_FPS), cp_hud_graphical_stat);
 
@@ -734,7 +734,7 @@ redo_hud_switch:
     saved_window_w = 0;
     saved_window_h = 0;
 
-    Current_pilot.get_hud_data(NULL, &cp_hud_stat, &cp_hud_graphical_stat);
+    Current_pilot.get_hud_data(nullptr, &cp_hud_stat, &cp_hud_graphical_stat);
 
     SetHUDState(STAT_MESSAGES | STAT_SHIELDS | STAT_ENERGY | STAT_GOALS | STAT_CUSTOM | STAT_AFTERBURN |
                     STAT_INVENTORY | STAT_CNTRMEASURE | STAT_SCORE | (Hud_stat_mask & STAT_WARNING) |
@@ -913,7 +913,7 @@ void UpdateCustomtext2HUDItem(char *text) {
 
   for (i = 0; i < MAX_HUD_ITEMS; i++) {
     if (HUD_array[i].stat && (HUD_array[i].type == HUD_ITEM_CUSTOMTEXT2)) {
-      ASSERT(HUD_array[i].data.text != NULL);
+      ASSERT(HUD_array[i].data.text != nullptr);
       strncpy(HUD_array[i].data.text, text, HUD_array[i].buffer_size);
       HUD_array[i].data.text[HUD_array[i].buffer_size - 1];
       break;
@@ -996,7 +996,7 @@ bool LGSHudState(CFILE *fp) {
       huditem.alpha = (uint8_t)cf_ReadByte(fp);
 
       huditem.buffer_size = (int)cf_ReadShort(fp);
-      huditem.render_fn = NULL; // use pointer to function void (*fn)(struct tHUDItem *)
+      huditem.render_fn = nullptr; // use pointer to function void (*fn)(struct tHUDItem *)
       AddHUDItem(&huditem);
 
       buffer = mem_rmalloc<char>(huditem.buffer_size);
@@ -1039,7 +1039,7 @@ void FreeHUDItem(int item) {
   if (((HUD_array[item].type == HUD_ITEM_CUSTOMTEXT) || (HUD_array[item].type == HUD_ITEM_CUSTOMTEXT2)) &&
       HUD_array[item].data.text) {
     mem_free(HUD_array[item].data.text);
-    HUD_array[item].data.text = NULL;
+    HUD_array[item].data.text = nullptr;
   }
 }
 
@@ -1341,11 +1341,11 @@ char *GetControllerBindingText(int fidcont) {
   ct_config_data cfgdata;
   tCfgDataParts cfgparts;
   if (-1 == fidcont)
-    return NULL;
-  cont_bind_txt = NULL;
+    return nullptr;
+  cont_bind_txt = nullptr;
   fidcont = CtlFindBinding(fidcont, false);
   if (fidcont == -1) // DAJ -1FIX
-    return NULL;
+    return nullptr;
 
   Controller->get_controller_function(Cfg_joy_elements[fidcont].fn_id, ctype, &cfgdata, cfgflags);
   parse_config_data(&cfgparts, ctype[0], ctype[1], cfgdata);
@@ -1363,11 +1363,11 @@ char *GetKeyBindingText(int fidkey) {
   ct_config_data cfgdata;
   tCfgDataParts cfgparts;
   if (-1 == fidkey)
-    return NULL;
-  key_bind_txt = NULL;
+    return nullptr;
+  key_bind_txt = nullptr;
   fidkey = CtlFindBinding(fidkey, true);
   if (fidkey == -1) // DAJ -1FIX
-    return NULL;
+    return nullptr;
 
   Controller->get_controller_function(Cfg_key_elements[fidkey].fn_id, ctype, &cfgdata, cfgflags);
   parse_config_data(&cfgparts, ctype[0], ctype[1], cfgdata);
@@ -1378,7 +1378,7 @@ char *GetKeyBindingText(int fidkey) {
   return key_bind_txt;
 }
 
-void DoEnabledControlsLine(const char *controlp, const char *keyp, const char *label, int y, const char *axis = NULL) {
+void DoEnabledControlsLine(const char *controlp, const char *keyp, const char *label, int y, const char *axis = nullptr) {
   char control_text[200] = "";
 
   strcpy(control_text, label);
@@ -1498,9 +1498,9 @@ void RenderHUDItems(tStatMask stat_mask) {
 
   // This is a big pain in the butt. It's for the training mission.
   if (Hud_show_controls && (Players[Player_num].controller_bitflags != 0xffffffff)) {
-    char *controlp = NULL;
-    char *keyp = NULL;
-    char *axis = NULL;
+    char *controlp = nullptr;
+    char *keyp = nullptr;
+    char *axis = nullptr;
     player *pp = &Players[Player_num];
     int hudconty = 130;
 
@@ -1557,7 +1557,7 @@ void RenderHUDItems(tStatMask stat_mask) {
       }
     }
     if (pp->controller_bitflags & PCBF_PITCHUP) {
-      axis = NULL;
+      axis = nullptr;
       if ((pp->controller_bitflags & PCBF_PITCHUP) && (pp->controller_bitflags & PCBF_PITCHDOWN)) {
         axis = GetControllerBindingText(ctfPITCH_DOWNAXIS);
       }
@@ -1569,7 +1569,7 @@ void RenderHUDItems(tStatMask stat_mask) {
       }
     }
     if (pp->controller_bitflags & PCBF_PITCHDOWN) {
-      axis = NULL;
+      axis = nullptr;
       if ((pp->controller_bitflags & PCBF_PITCHUP) && (pp->controller_bitflags & PCBF_PITCHDOWN)) {
         axis = GetControllerBindingText(ctfPITCH_DOWNAXIS);
       }
@@ -1590,7 +1590,7 @@ void RenderHUDItems(tStatMask stat_mask) {
     }
     */
     if (pp->controller_bitflags & PCBF_HEADINGLEFT) {
-      axis = NULL;
+      axis = nullptr;
       if ((pp->controller_bitflags & PCBF_HEADINGLEFT) && (pp->controller_bitflags & PCBF_HEADINGRIGHT)) {
         axis = GetControllerBindingText(ctfHEADING_RIGHTAXIS);
       }
@@ -1602,7 +1602,7 @@ void RenderHUDItems(tStatMask stat_mask) {
       }
     }
     if (pp->controller_bitflags & PCBF_HEADINGRIGHT) {
-      axis = NULL;
+      axis = nullptr;
       if ((pp->controller_bitflags & PCBF_HEADINGLEFT) && (pp->controller_bitflags & PCBF_HEADINGRIGHT)) {
         axis = GetControllerBindingText(ctfHEADING_RIGHTAXIS);
       }
@@ -1614,7 +1614,7 @@ void RenderHUDItems(tStatMask stat_mask) {
       }
     }
     if (pp->controller_bitflags & PCBF_BANKLEFT) {
-      axis = NULL;
+      axis = nullptr;
       if ((pp->controller_bitflags & PCBF_BANKLEFT) && (pp->controller_bitflags & PCBF_BANKLEFT)) {
         axis = GetControllerBindingText(ctfBANK_RIGHTAXIS);
       }
@@ -1626,7 +1626,7 @@ void RenderHUDItems(tStatMask stat_mask) {
       }
     }
     if (pp->controller_bitflags & PCBF_BANKRIGHT) {
-      axis = NULL;
+      axis = nullptr;
       if ((pp->controller_bitflags & PCBF_BANKLEFT) && (pp->controller_bitflags & PCBF_BANKLEFT)) {
         axis = GetControllerBindingText(ctfBANK_RIGHTAXIS);
       }
@@ -1781,18 +1781,18 @@ const char *Reticle_image_names[MAX_RETICLE_ELEMS][3] = {
     {"_pr13a.ogf", "_pr3b.ogf", "l"}, // since off version is same as gp1
     {"_pr24a.ogf", "_pr4b.ogf", "r"}, // since off version is same as gp2
     {"_pr5a.ogf", "_pr5b.ogf", "c"},  // center gunpoint version of gp0 (ammo based, single gp)
-    {NULL, NULL, "l"},
-    {NULL, NULL, "l"},
+    {nullptr, nullptr, "l"},
+    {nullptr, nullptr, "l"},
     {"_se0a.ogf", "_se0b.ogf", "c"},
     {"_se1a.ogf", "_se1b.ogf", "l"},
     {"_se2a.ogf", "_se2b.ogf", "r"},
     {"_se3a.ogf", "_se3b.ogf", "l"},
     {"_se4a.ogf", "_se4b.ogf", "r"},
-    {NULL, NULL, "l"},
-    {NULL, NULL, "l"},
-    {NULL, NULL, "l"},
-    {"_lguna.ogf", NULL, "l"},
-    {"_rguna.ogf", NULL, "r"}};
+    {nullptr, nullptr, "l"},
+    {nullptr, nullptr, "l"},
+    {nullptr, nullptr, "l"},
+    {"_lguna.ogf", nullptr, "l"},
+    {"_rguna.ogf", nullptr, "r"}};
 
 //	reticle slot element array
 static struct {

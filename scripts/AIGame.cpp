@@ -19,6 +19,7 @@
 // AIGame.cpp
 //
 #include <cfloat>
+#include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,7 +45,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 static int String_table_size = 0;
-static char **String_table = NULL;
+static char **String_table = nullptr;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -223,7 +224,7 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
     else
       parent = OBJECT_HANDLE_NONE;
 
-    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, NULL, parent);
+    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, nullptr, parent);
     if (child_handle != OBJECT_HANDLE_NONE) {
       if (!Obj_AttachObjectAP(me, parent_ap, child_handle, child_ap, f_aligned)) {
         // chrishack (we need a way to instantly kill scripted objects)
@@ -400,7 +401,7 @@ public:
 #define MAX_STOLEN_WEAPONS 25
 
 struct weapon_item {
-  char index;
+  int8_t index;
   int owner;
   char amount;
 };
@@ -1537,7 +1538,7 @@ struct guidebot_data {
 class GuideBot final : public BaseObjScript {
 private:
   guidebot_data *memory = nullptr;
-  void DoMessage(const char *str, bool f_high_priority, const char *sound_name = NULL, bool f_sound_2d = false);
+  void DoMessage(const char *str, bool f_high_priority, const char *sound_name = nullptr, bool f_sound_2d = false);
   //	void InitPowerup(int me, char pow_id);
   //	void DoPowerupFrame(int me);
   void DoPowerupCheck(int me);
@@ -1793,7 +1794,7 @@ void SuperThief::SpewEverything(int me) {
 
       Player_Value(memory->stolen_weapons[i].owner, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id,
                    memory->stolen_weapons[i].index);
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
 
     memory->stolen_weapons[i].amount = 0;
@@ -1843,11 +1844,6 @@ bool SuperThief::DoSteal(int me, int it) {
   attempted_steals = (bool *)malloc(numSuperThiefableItems * sizeof(bool));
   if (!attempted_steals)
     return false;
-
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
 
   for (i = 0; i < numSuperThiefableItems; i++) {
     attempted_steals[i] = false;
@@ -2109,7 +2105,7 @@ void SuperThief::DoInterval(int me) {
       int weapon_id;
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
 
     if (memory->mode_time < 3.0f && memory->mode_time + Game_GetFrameTime() >= 3.0f) {
@@ -2135,7 +2131,7 @@ void SuperThief::DoInterval(int me) {
       msafe_struct mstruct;
 
       memory->laser_on = true;
-      memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, NULL, me);
+      memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, nullptr, me);
       mstruct.objhandle = memory->camera_obj;
       MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
 
@@ -2364,7 +2360,7 @@ struct barnswallow_data {
 
   int follower;
 
-  char num_friends;
+  int8_t num_friends;
   int friends[BS_MAX_FRIENDS];
   float next_friend_update_time;
 
@@ -2575,7 +2571,7 @@ void STDCALLPTR CreateInstance(int id) {
     mprintf(0, "SCRIPT: Illegal ID (%d)\n", id);
     break;
   };
-  return NULL;
+  return nullptr;
 }
 
 void STDCALL DestroyInstance(int id, void *ptr) {
@@ -3119,7 +3115,7 @@ bool Humonculous::DoNotify(int me, tOSIRISEventInfo *data) {
   case HM_ABOUT_TO_FAKE_DEATH:
   case HM_ABOUT_TO_DIE: {
     if (data->evt_ai_notify.notify_type == AIN_SCRIPTED_ORIENT) {
-      vector uvec = Zero_vector;
+      vector uvec{};
       uvec.y() = 1.0f;
 
       if (AI_TurnTowardsVectors(me, &memory->land_fvec, &uvec))
@@ -3482,7 +3478,7 @@ void Humonculous::DoInterval(int me) {
   switch (memory->mode) {
   case HM_INTRO_CUTSCENE: {
     if (memory->mode_time < H_DOOR_WAIT_TIME && memory->mode_time + Game_GetFrameTime() >= H_DOOR_WAIT_TIME) {
-      vector velocity = Zero_vector;
+      vector velocity{};
       velocity.y() = 65.0f;
 
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &velocity);
@@ -3664,7 +3660,7 @@ void Humonculous::DoInterval(int me) {
 
   case HM_FAKE_DEATH: {
     if (memory->mode_time > 4.0f) {
-      vector velocity = Zero_vector;
+      vector velocity{};
       velocity.y() = 40.0f;
 
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &velocity);
@@ -4242,7 +4238,7 @@ void DTower::DoFrame(int me) {
     Obj_GetGunPos(me, 1, &pos);
 
     int weapon_id = Wpn_FindID("TubbsHitBlast");
-    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
     Obj_Kill(memory->gun_handle, OBJECT_HANDLE_NONE, 1000.0f,
              DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_LARGE | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES, 0.0f,
@@ -6206,11 +6202,6 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
   if (!attempted_steals)
     return false;
 
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
-
   for (i = 0; i < numThiefableItems; i++) {
     attempted_steals[i] = false;
   }
@@ -6360,7 +6351,7 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
         memory->stolen_inv[memory->num_stolen_inv].owner = it;
         memory->num_stolen_inv++;
 
-        Player_Value(it, VF_SET, PLYV_I_THIEF_STEALPLAYERITEM, NULL, ThiefableItems[i].index);
+        Player_Value(it, VF_SET, PLYV_I_THIEF_STEALPLAYERITEM, nullptr, ThiefableItems[i].index);
         break;
       }
 
@@ -6671,7 +6662,7 @@ void Thief::DoFrame(int me) {
     Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
     weapon_id = Wpn_FindID("TubbsHitBlast");
-    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
     Obj_Kill(me, OBJECT_HANDLE_NONE, 1000.0f,
              DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES,
@@ -6700,7 +6691,7 @@ void Thief::DoFrame(int me) {
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
 
     if (memory->mode_time < 5.0f && memory->mode_time + Game_GetFrameTime() >= 5.0f) {
@@ -6778,7 +6769,7 @@ void Thief::SpewEverything(int me) {
 
       Player_Value(memory->stolen_weapons[i].owner, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id,
                    memory->stolen_weapons[i].index);
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
 
     memory->stolen_weapons[i].amount = 0;
@@ -6844,7 +6835,7 @@ void Thief::SpewEverything(int me) {
       vm_VectorNormalize(&dir);
       dir *= speed;
 
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
   }
   memory->num_stolen_inv = 0;
@@ -7444,7 +7435,7 @@ bool Tubbs::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
       Obj_GetGunPos(me, 0, &pos);
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
   }
 
@@ -7485,11 +7476,6 @@ bool OldScratch::DoSteal(int me, int it) {
   attempted_steals = (bool *)malloc(numSuperThiefableItems * sizeof(bool));
   if (!attempted_steals)
     return false;
-
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
 
   for (i = 0; i < numSuperThiefableItems; i++) {
     attempted_steals[i] = false;
@@ -7583,7 +7569,7 @@ bool OldScratch::DoSteal(int me, int it) {
           dir *= speed;
 
           Player_Value(it, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id, SuperThiefableItems[i].index);
-          powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, it, &dir);
+          powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, it, &dir);
         }
       }
 
@@ -8352,7 +8338,7 @@ bool Sparky::DoNotify(int me_handle, tOSIRISEventInfo *data) {
 
     Obj_Value(me_handle, VF_SET, OBJV_V_ROTVELOCITY, &rvel);
 
-    vector dir = Zero_vector;
+    vector dir{};
     AI_Value(me_handle, VF_SET, AIV_V_MOVEMENT_DIR, &dir);
   }
 
@@ -8368,7 +8354,7 @@ void Sparky::SetMode(int me, char mode) {
     AI_SetType(me, AIT_MELEE1);
   } break;
   case SPARKY_DYING: {
-    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, NULL);
+    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, 0);
 
     float drag = 0.0f;
     Obj_Value(me, VF_SET, OBJV_F_ROTDRAG, &drag);
@@ -9222,7 +9208,7 @@ void MantaRay::UpdateSquad(int me) {
         }
 
         if (!f_on_team) {
-          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, NULL)) {
+          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, nullptr)) {
             memory->flags |= MRF_LEADER;
             memory->teammate[memory->num_teammates++] = scan_objs[i];
           }
@@ -9643,7 +9629,7 @@ void Skiff::UpdateSquad(int me) {
         }
 
         if (!f_on_team) {
-          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, NULL)) {
+          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, nullptr)) {
             memory->flags |= MRF_LEADER;
             memory->teammate[memory->num_teammates++] = scan_objs[i];
           }
@@ -10006,7 +9992,7 @@ bool SpyHunter::DoNotify(int me, tOSIRISEventInfo *data) {
       Obj_Value(me, VF_GET, OBJV_V_VELOCITY, &velocity);
 
       int weapon_id = Wpn_FindID("FragBarrel");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me, &velocity);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me, &velocity);
     }
 
     msafe_struct mstruct;
@@ -10114,7 +10100,7 @@ void Sniper::SetMode(int me, char mode) {
     if ((rand() % 100) > 50) {
       flags |= GF_ORIENT_TARGET;
       AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-                 NULL, GST_NEG_FVEC);
+                 0, GST_NEG_FVEC);
       memory->time_till_next_mode = 4.0f * (float)rand() / (float)RAND_MAX + 2.0f;
     } else {
       float timescaler = 1.0f;
@@ -10251,7 +10237,7 @@ void SniperNoRun::SetMode(int me, char mode) {
     if ((rand() % 100) > 50) {
       flags |= GF_ORIENT_TARGET;
       AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-                 NULL, GST_NEG_FVEC);
+                 0, GST_NEG_FVEC);
       memory->time_till_next_mode = 4.0f * (float)rand() / (float)RAND_MAX + 2.0f;
     } else {
       float timescaler = 1.0f;
@@ -10392,7 +10378,7 @@ void EvaderModA::SetMode(int me, char mode) {
     }
 
     AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-               NULL, vec);
+               0, vec);
   } break;
   case EMA_NORMAL: {
     AI_Value(me, VF_SET, AIV_F_MAX_SPEED, &memory->base_speed);
@@ -10507,7 +10493,7 @@ void FlameRAS::SetMode(int me, char mode) {
     }
 
     AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-               NULL, vec);
+               0, vec);
   } break;
   case EMA_NORMAL: {
     AI_Value(me, VF_SET, AIV_F_MAX_SPEED, &memory->base_speed);
@@ -10659,7 +10645,7 @@ void Seeker::DoCollide(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   weapon_id = Wpn_FindID("SeekerExplosion");
-  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
   msafe_struct mo;
   mo.objhandle = me;
@@ -11128,7 +11114,7 @@ void ProxMine::DoCollide(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   weapon_id = Wpn_FindID("TubbsHitBlast");
-  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
   msafe_struct mo;
   mo.objhandle = me;

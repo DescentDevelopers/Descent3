@@ -268,6 +268,7 @@
 #include "grdefs.h"
 #include "player.h"
 #include "game.h"
+#include "log.h"
 #include "pilot.h"
 #include "module.h"
 #include "ddio_common.h"
@@ -319,12 +320,13 @@ extern int MTAVersionCheck(uint32_t oldver, char *URL);
 /////////////////////////////
 // Defines
 
-// These next two function prototypes MUST appear in the extern "C" block if called
+// These next function prototypes MUST appear in the extern "C" block if called
 // from a CPP file.
 extern "C" {
 DLLEXPORT void DLLFUNCCALL DLLMultiInit(int *api_func);
 DLLEXPORT void DLLFUNCCALL DLLMultiCall(int eventnum);
 DLLEXPORT void DLLFUNCCALL DLLMultiClose();
+DLLEXPORT void DLLFUNCCALL DLLMultiInitLogger(plog::Severity severity, plog::IAppender* appender);
 }
 
 static bool All_ok = true;
@@ -333,7 +335,6 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
   Use_netgame_flags = true;
   CommonDLLInit(api_func);
   DLLCreateStringTable("lanclient.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     All_ok = false;
     return;
@@ -392,6 +393,11 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
   }
 }
 
+void DLLFUNCCALL DLLMultiInitLogger(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
+}
+
 namespace lanclient {
 #define GET_INFO_ID 50
 // The first multiplayer menu that the user will see...all multiplayer stuff is
@@ -418,7 +424,7 @@ int MainMultiplayerMenu() {
   void *net_game_txt_items[MAX_NET_GAMES];
   int a;
   for (a = 0; a < MAX_NET_GAMES; a++)
-    net_game_txt_items[a] = NULL;
+    net_game_txt_items[a] = nullptr;
   int ret = 0;
   uint8_t oldalpha = *DLLNewUIWindow_alpha;
   int cury = 40;
@@ -458,7 +464,7 @@ int MainMultiplayerMenu() {
   int lastgamesfound = 0;
   int itemp;
   int looklocal = 1;
-  void *selti = NULL;
+  void *selti = nullptr;
 
   float lastpoll = DLLtimer_GetTime();
   DLLSearchForLocalGamesTCP(0xffffffffl, htons(DEFAULT_GAME_PORT));
@@ -473,14 +479,14 @@ int MainMultiplayerMenu() {
       if (*DLLMulti_Gamelist_changed) {
         // We found a new game!
         *DLLMulti_Gamelist_changed = false;
-        selti = NULL;
+        selti = nullptr;
         lastgamesfound = itemp;
         // Get the currently selected item
         // char * psel = DLLListGetItem(main_list,DLLListGetSelectedIndex(main_list))				;
         // selno = DLLListGetSelectedIndex(main_list);
         // strcpy(selgame,DLLNetwork_games[selno].name);
-        DLLmprintf(0, "Selected item = %s\n", selgame);
-        selti = NULL;
+        LOG_DEBUG.printf("Selected item = %s", selgame);
+        selti = nullptr;
         DLLListRemoveAll(main_list);
         for (int k = 0; k < *DLLNum_network_games_known; k++) {
           char fmtline[200];
@@ -498,7 +504,7 @@ int MainMultiplayerMenu() {
             strcat(server_mode, "-ML");
           }
 
-          DLLmprintf(0, "Found game: %s\n", DLLNetwork_games[k].name);
+          LOG_INFO.printf("Found game: %s", DLLNetwork_games[k].name);
           snprintf(fmtline, sizeof(fmtline), "%.20s\t\x02\x02b%s %.10s\x02\x45%.15s\x02\x63%d\x02\x6d%d/%d\x02\x7e%.3f",
                    DLLNetwork_games[k].name, server_mode, DLLNetwork_games[k].scriptname,
                    DLLNetwork_games[k].mission_name, DLLNetwork_games[k].level_num,
@@ -514,7 +520,7 @@ int MainMultiplayerMenu() {
           selgame[20] = '\0';
           if (strncmp(selgame, DLLNetwork_games[k].name, 19) == 0) {
             selti = net_game_txt_items[k];
-            DLLmprintf(0, "Found previously selected game in list, reselecting...\n");
+            LOG_INFO << "Found previously selected game in list, reselecting...";
           }
           DLLListAddItem(main_list, net_game_txt_items[k]);
         }
@@ -553,17 +559,17 @@ int MainMultiplayerMenu() {
         // Get the appropriate game address
         int gameno;
         gameno = DLLListGetSelectedIndex(main_list);
-        DLLmprintf(0, "Selected item is %d\n", gameno);
+        LOG_INFO.printf("Selected item is %d", gameno);
         network_address s_address;
         memcpy(&s_address, &DLLNetwork_games[gameno].addr, sizeof(network_address));
         s_address.connection_type = NP_TCP;
         // s_address.port=&DLLNetwork_games[gameno].addr.port;//DEFAULT_GAME_PORT;
         *DLLGame_is_master_tracker_game = 0;
-        DLLMultiStartClient(NULL);
+        DLLMultiStartClient(nullptr);
         if (DLLDoPlayerMouselookCheck(DLLNetwork_games[gameno].flags)) {
           if (DLLmsn_CheckGetMission(&s_address, DLLNetwork_games[gameno].mission)) {
             if ((DLLTryToJoinServer(&s_address))) {
-              DLLmprintf(0, "Menu: Game joined!\n");
+              LOG_INFO << "Menu: Game joined!";
               DLLNewUIWindowClose(main_wnd);
               exit_menu = 1;
               ret = 1;
@@ -607,7 +613,7 @@ int MainMultiplayerMenu() {
         if (net_game_txt_items[a])
           DLLRemoveUITextItem(net_game_txt_items[a]);
       for (a = 0; a < MAX_NET_GAMES; a++)
-        net_game_txt_items[a] = NULL;
+        net_game_txt_items[a] = nullptr;
       break;
     case 9: {
       // Scan a specific IP
@@ -627,17 +633,17 @@ int MainMultiplayerMenu() {
       }
 
       iaddr = inet_addr(szdip);
-      DLLmprintf(0, "Local inet_addr %x\n", iaddr);
+      LOG_INFO.printf("Local inet_addr %x", iaddr);
       if (iaddr && (INADDR_NONE != iaddr))
         DLLSearchForLocalGamesTCP(iaddr, htons(iport));
       else
-        DLLmprintf(0, "Invalid IP for local search\n");
+        LOG_WARNING << "Invalid IP for local search";
       DLLListRemoveAll(main_list);
       for (a = 0; a < MAX_NET_GAMES; a++)
         if (net_game_txt_items[a])
           DLLRemoveUITextItem(net_game_txt_items[a]);
       for (a = 0; a < MAX_NET_GAMES; a++)
-        net_game_txt_items[a] = NULL;
+        net_game_txt_items[a] = nullptr;
     } break;
     case GET_INFO_ID: {
       if (*DLLNum_network_games_known) {
@@ -692,7 +698,7 @@ void AutoLoginAndJoinGame(void) {
   *DLLMultiGameStarting = 0;
 
   if (!*DLLAuto_login_addr) {
-    DLLmprintf(0, "Can't autostart because no IP address was specified!!\n");
+    LOG_WARNING << "Can't autostart because no IP address was specified!!";
     return;
   }
   if (*DLLAuto_login_port) {
@@ -709,10 +715,10 @@ void AutoLoginAndJoinGame(void) {
   s_address.port = port;
   s_address.connection_type = NP_TCP;
   *DLLGame_is_master_tracker_game = 0;
-  DLLMultiStartClient(NULL);
+  DLLMultiStartClient(nullptr);
 
   if ((DLLTryToJoinServer(&s_address))) {
-    DLLmprintf(0, "Menu: Game joined!\n");
+    LOG_INFO << "Menu: Game joined!";
     *DLLMultiGameStarting = 1;
   }
 }

@@ -48,10 +48,10 @@
                                         IDMFC
 ***********************************************
 */
-DMFCBase *basethis = NULL;
+DMFCBase *basethis = nullptr;
 IDMFC DLLFUNCCALLPTR CreateDMFC(void) {
   if (basethis) {
-    return NULL;
+    return nullptr;
   }
 
   basethis = new DMFCBase;
@@ -65,16 +65,16 @@ IDMFC DLLFUNCCALLPTR CreateDMFC(void) {
 
 void DMFCBase::Delete(void) {
   delete this;
-  basethis = NULL;
+  basethis = nullptr;
 }
 
 void *DMFCBase::Dynamic_Cast(const char *pszType) {
-  void *pvResult = NULL;
+  void *pvResult = nullptr;
 
   if (strcmp(pszType, "IDMFC") == 0)
     pvResult = static_cast<IDMFC *>(this);
   else
-    return NULL;
+    return nullptr;
 
   ((IObject *)pvResult)->DuplicatePointer();
   return pvResult;
@@ -84,7 +84,7 @@ void DMFCBase::DuplicatePointer(void) { ++m_cPtrs; }
 
 void DMFCBase::DestroyPointer(void) {
   if (--m_cPtrs == 0) {
-    basethis = NULL;
+    basethis = nullptr;
     delete this;
   }
 }
@@ -110,9 +110,9 @@ IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(const char *title, char type, uint8
     p = new MenuItem(title, type, flags, fp);
   } else {
     if (type == MIT_CUSTOM) {
-      ASSERT(custom_menu != NULL);
-      if (custom_menu == NULL)
-        return NULL;
+      ASSERT(custom_menu != nullptr);
+      if (custom_menu == nullptr)
+        return nullptr;
 
       p = new MenuItem(title, type, flags, fp, custom_menu);
     } else {
@@ -129,12 +129,12 @@ IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(const char *title, char type, uint8
 void MenuItem::Delete(void) { delete this; }
 
 void *MenuItem::Dynamic_Cast(const char *pszType) {
-  void *pvResult = NULL;
+  void *pvResult = nullptr;
 
   if (strcmp(pszType, "IMenuItem") == 0)
     pvResult = static_cast<IMenuItem *>(this);
   else
-    return NULL;
+    return nullptr;
 
   ((IObject *)pvResult)->DuplicatePointer();
   return pvResult;
@@ -162,12 +162,12 @@ IDmfcStats DLLFUNCCALLPTR CreateDmfcStats(void) {
 void CDmfcStats::Delete(void) { delete this; }
 
 void *CDmfcStats::Dynamic_Cast(const char *pszType) {
-  void *pvResult = NULL;
+  void *pvResult = nullptr;
 
   if (strcmp(pszType, "IDmfcStats") == 0)
     pvResult = static_cast<IDmfcStats *>(this);
   else
-    return NULL;
+    return nullptr;
 
   ((IObject *)pvResult)->DuplicatePointer();
   return pvResult;

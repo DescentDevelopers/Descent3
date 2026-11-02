@@ -431,6 +431,7 @@
  * $NoKeywords: $
  */
 #include <cstdarg>
+#include <cstdint>
 
 #include "osiris_predefs.h"
 #include "object.h"
@@ -471,7 +472,7 @@
 #include "psrand.h"
 #include "demofile.h"
 
-int *hack_ilist = NULL;
+int *hack_ilist = nullptr;
 int hack_list[100];
 
 //	osipf_CallObjectEvent
@@ -688,7 +689,7 @@ void osipf_RoomValue(int roomnum, char op, char vtype, void *ptr, int index) {
       if (index < 0 || index >= rp->num_faces || rp->faces[index].num_verts <= 0) {
         *(vector *)ptr = rp->path_pnt;
       } else {
-        *(vector *)ptr = Zero_vector;
+        *(vector *)ptr = vector{};
 
         for (i = 0; i < rp->faces[index].num_verts; i++) {
           *(vector *)ptr += rp->verts[rp->faces[index].face_verts[i]];
@@ -1366,7 +1367,7 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
   switch (var_handle) {
   case OBJV_PI_HACK_FVI_IGNORE_LIST: {
     if (op == VF_SET) {
-      if (ptr != NULL) {
+      if (ptr != nullptr) {
         int count = 0;
 
         do {
@@ -1376,7 +1377,7 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
 
         hack_ilist = hack_list;
       } else {
-        hack_ilist = NULL;
+        hack_ilist = nullptr;
       }
     }
   } break;
@@ -1410,7 +1411,7 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
     break;
   case OBJV_V_POS:
     if (op == VF_SET) {
-      ObjSetPos(obj, (vector *)ptr, obj->roomnum, NULL, true);
+      ObjSetPos(obj, (vector *)ptr, obj->roomnum, nullptr, true);
       obj->flags |= OF_MOVED_THIS_FRAME;
       obj->flags &= ~OF_STOPPED_THIS_FRAME;
     } else if (op == VF_GET)
@@ -1426,7 +1427,7 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
     break;
   case OBJV_I_ROOMNUM:
     if (op == VF_SET) {
-      ObjSetPos(obj, &obj->pos, *(int *)ptr, NULL, false);
+      ObjSetPos(obj, &obj->pos, *(int *)ptr, nullptr, false);
       obj->flags |= OF_MOVED_THIS_FRAME;
       obj->flags &= ~OF_STOPPED_THIS_FRAME;
     } else if (op == VF_GET)
@@ -1646,7 +1647,7 @@ uint8_t osipf_AITurnTowardsVectors(int objhandle, vector *fvec, vector *uvec) {
   }
 
   matrix g_orient;
-  vm_VectorToMatrix(&g_orient, fvec, uvec, NULL);
+  vm_VectorToMatrix(&g_orient, fvec, uvec, nullptr);
 
   return AITurnTowardsMatrix(objp, objp->ai_info->max_turn_rate, &g_orient);
 }
@@ -1677,19 +1678,19 @@ vector osipf_AIFindHidePos(int hideobjhandle, int viewobjhandle, float time, int
   vector hpos;
   int hroom;
 
-  if (hide_obj == NULL) {
+  if (hide_obj == nullptr) {
     LOG_ERROR << "Illegal Hide Object Passed To AIFindHidePos";
     *hide_room = -1;
-    return Zero_vector;
+    return vector{};
   }
 
   if (hide_obj->control_type != CT_AI) {
     LOG_ERROR << "Illegal Object CT Passed To AIFindHidePos";
     *hide_room = -1;
-    return Zero_vector;
+    return vector{};
   }
 
-  if (view_obj == NULL) {
+  if (view_obj == nullptr) {
     LOG_ERROR << "Illegal View Object Passed To AIFindHidePos";
     *hide_room = hide_obj->roomnum;
     return hide_obj->pos;
@@ -1715,7 +1716,7 @@ int osipf_AIGoalAddEnabler(int objhandle, int goal_index, int enabler_type, floa
 
   obj = ObjGet(objhandle);
 
-  if (obj == NULL || obj->ai_info == NULL) {
+  if (obj == nullptr || obj->ai_info == nullptr) {
     LOG_ERROR << "Illegal object passed to AIGoalAddEnabler";
     return -1;
   }
@@ -1732,7 +1733,7 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
   va_list marker;
 
   obj = ObjGet(objhandle);
-  if (obj == NULL || obj->ai_info == NULL) {
+  if (obj == nullptr || obj->ai_info == nullptr) {
     LOG_ERROR << "Illegal object passed to AIGoalAdd";
     return -1;
   }
@@ -1856,7 +1857,7 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
 
   case AIG_MELEE_TARGET: {
     // Do the actual goal and return;
-    return GoalAddGoal(obj, goal_type, (void *)NULL, level, influence, flags, guid);
+    return GoalAddGoal(obj, goal_type, (void *)nullptr, level, influence, flags, guid);
   } break;
 
   case AIG_SET_ANIM:          // Animation index
@@ -1904,7 +1905,7 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
 void osipf_AIGoalClear(int objhandle, int goal_index) {
   object *obj = ObjGet(objhandle);
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Invalid Object Passed To AIGoalClear";
     return;
   }
@@ -1925,7 +1926,7 @@ int osipf_AIFindObjOfType(int objhandle, int type, int id, bool f_ignore_init_ro
   object *obj = ObjGet(objhandle);
   object *f_obj;
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Illegal Object Passed To AIFindObjOfType";
     return OBJECT_HANDLE_NONE;
   }
@@ -1943,7 +1944,7 @@ int osipf_ObjMakeListOfType(int objhandle, int type, int id, bool f_ignore_init_
   int num_recorded = 0;
   int i;
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Illegal Object Passed To Obj_MakeListOfType";
     return OBJECT_HANDLE_NONE;
   }
@@ -1980,7 +1981,7 @@ vector osipf_AIGetRoomPathPoint(int roomnum) {
     int cell = CELLNUM(roomnum);
 
     if (cell >= TERRAIN_DEPTH * TERRAIN_WIDTH) {
-      return Zero_vector;
+      return vector{};
     } else {
       vector pos;
 
@@ -1993,13 +1994,13 @@ vector osipf_AIGetRoomPathPoint(int roomnum) {
     return Rooms[roomnum].path_pnt;
   }
 
-  return Zero_vector;
+  return vector{};
 }
 
 int osipf_AIFindEnergyCenter(int objhandle) {
   object *obj = ObjGet(objhandle);
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Illegal Object Passed To AIFindEnergyCenter";
     return -1;
   }
@@ -2014,17 +2015,17 @@ float osipf_AIGetDistToObj(int objhandle, int otherobjhandle) {
 
   float dist;
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Illegal Object Passed To AIGetDistToObj";
     return 0;
   }
 
-  if (fobj == NULL) {
+  if (fobj == nullptr) {
     LOG_ERROR << "Illegal Find Object Passed To AIGetDistToObj";
     return 0;
   }
 
-  BOA_ComputeMinDist(obj->roomnum, fobj->roomnum, 0.0f, &dist, NULL);
+  BOA_ComputeMinDist(obj->roomnum, fobj->roomnum, 0.0f, &dist, nullptr);
 
   return dist;
 }
@@ -2032,7 +2033,7 @@ float osipf_AIGetDistToObj(int objhandle, int otherobjhandle) {
 int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, uint8_t f_enable) {
   object *obj = ObjGet(objhandle);
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Illegal Object Passed To AISetGoalFlags";
     return 0;
   }
@@ -2057,7 +2058,7 @@ int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, uint8_t f_en
 void osipf_AISetGoalCircleDist(int objhandle, int goal_handle, float dist) {
   object *obj = ObjGet(objhandle);
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Illegal Object Passed To AISetGoalCircleDist";
     return;
   }
@@ -2077,10 +2078,10 @@ void osipf_AISetGoalCircleDist(int objhandle, int goal_handle, float dist) {
 void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun_normal) {
   object *obj = ObjGet(objhandle);
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Illegal Object Passed To AIGetGunPosition";
-    *gun_pnt = Zero_vector;
-    *gun_normal = Zero_vector;
+    *gun_pnt = vector{};
+    *gun_normal = vector{};
     return;
   }
 
@@ -2090,10 +2091,10 @@ void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun
 void osipf_GetGroundPos(int objhandle, int ground_number, vector *ground_pnt, vector *ground_normal) {
   object *obj = ObjGet(objhandle);
 
-  if (obj == NULL) {
+  if (obj == nullptr) {
     LOG_ERROR << "Illegal Object Passed To Obj_GetGroundPos";
-    *ground_pnt = Zero_vector;
-    *ground_normal = Zero_vector;
+    *ground_pnt = vector{};
+    *ground_normal = vector{};
     return;
   }
 
@@ -2145,7 +2146,7 @@ int osipf_GetNumAttachSlots(int objhandle) {
 
 int osipf_GetAttachChildHandle(int objhandle, char attachpoint) {
   object *parent = ObjGet(objhandle);
-  char parent_ap = attachpoint;
+  int8_t parent_ap = attachpoint;
 
   if ((parent) && (parent->flags & OF_POLYGON_OBJECT)) {
     poly_model *parent_pm = &Poly_models[parent->rtype.pobj_info.model_num];
@@ -2332,27 +2333,27 @@ void osipf_MatcenValue(int matcen_id, char op, char var_handle, void *ptr, int i
     break;
   case MTNSV_I_PROD_ITEM_ID:
     if (op == VF_GET)
-      Matcen[matcen_id]->GetProdInfo(index, (int *)ptr, NULL, NULL, NULL);
+      Matcen[matcen_id]->GetProdInfo(index, (int *)ptr, nullptr, nullptr, nullptr);
     else if (op == VF_SET)
-      Matcen[matcen_id]->SetProdInfo(index, (int *)ptr, NULL, NULL, NULL);
+      Matcen[matcen_id]->SetProdInfo(index, (int *)ptr, nullptr, nullptr, nullptr);
     break;
   case MTNSV_I_PROD_ITEM_PRIORITY:
     if (op == VF_GET)
-      Matcen[matcen_id]->GetProdInfo(index, NULL, (int *)ptr, NULL, NULL);
+      Matcen[matcen_id]->GetProdInfo(index, nullptr, (int *)ptr, nullptr, nullptr);
     else if (op == VF_SET)
-      Matcen[matcen_id]->SetProdInfo(index, NULL, (int *)ptr, NULL, NULL);
+      Matcen[matcen_id]->SetProdInfo(index, nullptr, (int *)ptr, nullptr, nullptr);
     break;
   case MTNSV_F_PROD_ITEM_TIME:
     if (op == VF_GET)
-      Matcen[matcen_id]->GetProdInfo(index, NULL, NULL, (float *)ptr, NULL);
+      Matcen[matcen_id]->GetProdInfo(index, nullptr, nullptr, (float *)ptr, nullptr);
     else if (op == VF_SET)
-      Matcen[matcen_id]->SetProdInfo(index, NULL, NULL, (float *)ptr, NULL);
+      Matcen[matcen_id]->SetProdInfo(index, nullptr, nullptr, (float *)ptr, nullptr);
     break;
   case MTNSV_I_PROD_ITEM_MAX_PROD:
     if (op == VF_GET)
-      Matcen[matcen_id]->GetProdInfo(index, NULL, NULL, NULL, (int *)ptr);
+      Matcen[matcen_id]->GetProdInfo(index, nullptr, nullptr, nullptr, (int *)ptr);
     else if (op == VF_SET)
-      Matcen[matcen_id]->SetProdInfo(index, NULL, NULL, NULL, (int *)ptr);
+      Matcen[matcen_id]->SetProdInfo(index, nullptr, nullptr, nullptr, (int *)ptr);
     break;
   }
 }
@@ -2437,7 +2438,7 @@ int osipf_RayCast(int objhandle, vector *p0, vector *p1, int start_roomnum, floa
     ignore_obj_list[num_items] = -1;
     fq.ignore_obj_list = ignore_obj_list;
   } else {
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
   }
 
   fate = fvi_FindIntersection(&fq, &hit_info);
@@ -2633,7 +2634,7 @@ float osipf_GameTime(void) { return Gametime; }
 
 float osipf_FrameTime(void) { return Frametime; }
 
-void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *ptr, char g_index) {
+void osipf_ObjWBValue(int obj_handle, int8_t wb_index, char op, char vtype, void *ptr, int8_t g_index) {
   object *objp = ObjGet(obj_handle);
 
   if (!objp) {
@@ -2719,9 +2720,9 @@ void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *
   case WBSV_V_GUNPT_POS:
     if (op == VF_GET) {
       if (objp->type == OBJ_PLAYER || objp->type == OBJ_OBSERVER)
-        WeaponCalcGun(((vector *)ptr), NULL, objp, pm->poly_wb[0].gp_index[g_index]);
+        WeaponCalcGun(((vector *)ptr), nullptr, objp, pm->poly_wb[0].gp_index[g_index]);
       else
-        WeaponCalcGun(((vector *)ptr), NULL, objp, pm->poly_wb[wb_index].gp_index[g_index]);
+        WeaponCalcGun(((vector *)ptr), nullptr, objp, pm->poly_wb[wb_index].gp_index[g_index]);
     }
     break;
 
@@ -2974,7 +2975,7 @@ bool osipf_AIIsObjEnemy(int obj_handle, int it_handle) {
   return false;
 }
 
-void osipf_AIGoalValue(int obj_handle, char g_index, char op, char vtype, void *ptr, char index) {
+void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void *ptr, int8_t index) {
   object *obj = ObjGet(obj_handle);
   if (!obj)
     return;
@@ -3376,7 +3377,7 @@ int osipf_FindTriggerName(const char *name) {
 
 int osipf_FindObjectName(const char *name) {
   for (int i = 0; i < MAX_OBJECTS; i++) {
-    if (Objects[i].type != OBJ_NONE && Objects[i].name != NULL) {
+    if (Objects[i].type != OBJ_NONE && Objects[i].name != nullptr) {
       if (!stricmp(name, Objects[i].name))
         return Objects[i].handle;
     }
@@ -3473,7 +3474,7 @@ bool osipf_PathGetInformation(int pathid, int point, vector *pos, int *room, mat
     *room = GamePaths[pathid].pathnodes[point].roomnum;
 
   if (orient)
-    vm_VectorToMatrix(orient, &GamePaths[pathid].pathnodes[point].fvec, &GamePaths[pathid].pathnodes[point].uvec, NULL);
+    vm_VectorToMatrix(orient, &GamePaths[pathid].pathnodes[point].fvec, &GamePaths[pathid].pathnodes[point].uvec, nullptr);
 
   return true;
 }
@@ -3558,9 +3559,9 @@ void osipf_LGoalValue(char op, char vtype, void *ptr, int g_index, int i_index) 
   } break;
   case LGSV_C_GOAL_LIST: {
     if (op == VF_GET) {
-      Level_goals.GoalGoalList(g_index, LO_GET_SPECIFIED, (char *)ptr);
+      Level_goals.GoalGoalList(g_index, LO_GET_SPECIFIED, static_cast<int8_t *>(ptr));
     } else if (op == VF_SET) {
-      Level_goals.GoalGoalList(g_index, LO_SET_SPECIFIED, (char *)ptr);
+      Level_goals.GoalGoalList(g_index, LO_SET_SPECIFIED, static_cast<int8_t *>(ptr));
     }
   } break;
   case LGSV_I_STATUS: {
@@ -3591,23 +3592,23 @@ void osipf_LGoalValue(char op, char vtype, void *ptr, int g_index, int i_index) 
   } break;
   case LGSSV_C_ITEM_TYPE: {
     if (op == VF_GET) {
-      Level_goals.GoalItemInfo(g_index, i_index, LO_GET_SPECIFIED, (char *)ptr, NULL, NULL);
+      Level_goals.GoalItemInfo(g_index, i_index, LO_GET_SPECIFIED, (char *)ptr, nullptr, nullptr);
     } else if (op == VF_SET) {
-      Level_goals.GoalItemInfo(g_index, i_index, LO_SET_SPECIFIED, (char *)ptr, NULL, NULL);
+      Level_goals.GoalItemInfo(g_index, i_index, LO_SET_SPECIFIED, (char *)ptr, nullptr, nullptr);
     }
   } break;
   case LGSSV_I_ITEM_HANDLE: {
     if (op == VF_GET) {
-      Level_goals.GoalItemInfo(g_index, i_index, LO_GET_SPECIFIED, NULL, (int *)ptr, NULL);
+      Level_goals.GoalItemInfo(g_index, i_index, LO_GET_SPECIFIED, nullptr, (int *)ptr, nullptr);
     } else if (op == VF_SET) {
-      Level_goals.GoalItemInfo(g_index, i_index, LO_SET_SPECIFIED, NULL, (int *)ptr, NULL);
+      Level_goals.GoalItemInfo(g_index, i_index, LO_SET_SPECIFIED, nullptr, (int *)ptr, nullptr);
     }
   } break;
   case LGSSV_B_ITEM_DONE: {
     if (op == VF_GET) {
-      Level_goals.GoalItemInfo(g_index, i_index, LO_GET_SPECIFIED, NULL, NULL, (bool *)ptr);
+      Level_goals.GoalItemInfo(g_index, i_index, LO_GET_SPECIFIED, nullptr, nullptr, (bool *)ptr);
     } else if (op == VF_SET) {
-      Level_goals.GoalItemInfo(g_index, i_index, LO_SET_SPECIFIED, NULL, NULL, (bool *)ptr);
+      Level_goals.GoalItemInfo(g_index, i_index, LO_SET_SPECIFIED, nullptr, nullptr, (bool *)ptr);
     }
   } break;
   }
@@ -3617,7 +3618,7 @@ void osipf_ObjKill(int handle, int killer_handle, float damage, int flags, float
   object *obj = ObjGet(handle);
   object *killer = ObjGet(killer_handle);
 
-  if (obj == NULL)
+  if (obj == nullptr)
     return;
 
   if (obj->type == OBJ_PLAYER || obj->type == OBJ_GHOST || obj->type == OBJ_OBSERVER) {

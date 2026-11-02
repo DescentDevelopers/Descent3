@@ -85,7 +85,7 @@ int mng_FindSpecificTexPage(char *name, mngs_texture_page *texpage, int offset =
 
 // Given a texpage and a texture handle, attempts to make texture n correspond to
 // to the texpage.
-int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile = NULL);
+int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile = nullptr);
 
 // Copies values from a texture_page into a texture
 void mng_AssignTextureToTexPage(int n, mngs_texture_page *texpage);
@@ -93,7 +93,7 @@ void mng_AssignTextureToTexPage(int n, mngs_texture_page *texpage);
 // First searches through the texture index to see if the texture is already
 // loaded.  If not, searches in the table file and loads it.
 // Returns index of texture found, -1 if not
-int mng_GetGuaranteedTexturePage(char *name, CFILE *infile = NULL);
+int mng_GetGuaranteedTexturePage(char *name, CFILE *infile = nullptr);
 
 // Given some texture names, finds them in the table file and deletes them
 // If local is 1, deletes from the local table file

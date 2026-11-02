@@ -42,7 +42,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 int String_table_size = 0;
-char **String_table = NULL;
+char **String_table = nullptr;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -214,7 +214,7 @@ void STDCALLPTR CreateInstance(int id) {
     break;
   };
 
-  return NULL;
+  return nullptr;
 }
 
 //	DestroyInstance

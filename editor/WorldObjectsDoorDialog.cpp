@@ -866,7 +866,7 @@ void CWorldObjectsDoorDialog::OnLockDoor() {
 BOOL CWorldObjectsDoorDialog::OnInitDialog() {
   CDialog::OnInitDialog();
 
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   UpdateDialog();
 
@@ -977,7 +977,7 @@ void CWorldObjectsDoorDialog::OnBrowse() {
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, pathname, sizeof(pathname)))
     return;
 
-  ddio_SplitPath(filename, NULL, name, NULL);
+  ddio_SplitPath(filename, nullptr, name, nullptr);
   sprintf(filename, "%s.dll", name);
 
   int n = D3EditState.current_door;

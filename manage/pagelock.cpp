@@ -206,7 +206,7 @@ void mng_InitPagelocks() {
     return;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
-  if (infile == NULL) {
+  if (infile == nullptr) {
     outfile = (CFILE *)cfopen(TableLockFilename, "wb");
     if (!outfile) {
       Error("Error creating table lock file!");
@@ -232,7 +232,7 @@ char *mng_CheckIfLockerPresent() {
 
   infile = (CFILE *)cfopen(LockerFile, "rb");
   if (!infile)
-    return NULL;
+    return nullptr;
 
   cf_ReadString(lockname, sizeof(lockname), infile);
 
@@ -368,7 +368,7 @@ int mng_CheckIfPageLocked(mngs_Pagelock *pl) {
     return 1;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
-  if (infile == NULL) {
+  if (infile == nullptr) {
     strcpy(ErrorString, "There was a problem opening the table lock file for reading.");
     return -1;
   }
@@ -410,7 +410,7 @@ int mng_CheckIfPageOwned(mngs_Pagelock *pl, char *owner) {
   int r = -1, done = 0;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
-  if (infile == NULL) {
+  if (infile == nullptr) {
     strcpy(ErrorString, "There was a problem opening the table lock file for reading.");
     Int3();
     return -1;
@@ -524,7 +524,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
   cfclose(infile);
   cfclose(outfile);
 
-  if (!SwitcherooFiles((const char*)TableLockFilename.u8string().c_str(), TempTableLockFilename)) {
+  if (!SwitcherooFiles(PATH_TO_CSTR(TableLockFilename), TempTableLockFilename)) {
     Int3();
     return 0;
   }
@@ -532,12 +532,12 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
 // Log this change
 #ifndef RELEASE
   std::filesystem::path pathstr = std::filesystem::path(NetD3Dir) / "TableLog";
-  FILE *logfile = fopen((const char*)pathstr.u8string().c_str(), "at");
+  FILE *logfile = fopen(PATH_TO_CSTR(pathstr), "at");
   if (logfile) {
     char str[255 + 32];
     char date[255];
     time_t t;
-    t = time(NULL);
+    t = time(nullptr);
     strftime(date, 254, "[%a %m/%d/%y %H:%M:%S]", localtime(&t));
     snprintf(str, sizeof(str), "%s Page %s (%s) last touched by %s\n", date, name, PageNames[pl->pagetype], TableUser);
     fwrite(str, 1, strlen(str), logfile);
@@ -590,7 +590,7 @@ int mng_DeletePagelock(char *name, int pagetype) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
@@ -644,7 +644,7 @@ int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
@@ -781,7 +781,7 @@ int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
-  if (rename(TempTableLockFilename, (const char*)TableLockFilename.u8string().c_str())) {
+  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
@@ -823,8 +823,8 @@ int mng_GetListOfLocks(mngs_Pagelock *pl, int max, char *who) {
     // Read in a page, compare it with the owner we're searching for.  If found, make a copy of it.
 
     if (mng_ReadPagelock(infile, &temp_pl)) {
-      if (((who == NULL) && stricmp(temp_pl.holder, "UNLOCKED")) ||
-          ((who != NULL) && (!stricmp(temp_pl.holder, who)))) {
+      if (((who == nullptr) && stricmp(temp_pl.holder, "UNLOCKED")) ||
+          ((who != nullptr) && (!stricmp(temp_pl.holder, who)))) {
         pl[num] = temp_pl;
         num++;
         if (num >= max)

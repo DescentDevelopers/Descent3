@@ -464,7 +464,7 @@ void AddRoom() {
 
   // Get a pointer to our room
   rp = CreateNewRoom(cnv * 2, nfaces, 0);
-  if (rp == NULL) {
+  if (rp == nullptr) {
     OutrageMessageBox("Cannot add room: No free rooms.");
     return;
   }
@@ -548,14 +548,14 @@ void ComputePlacedRoomMatrix() {
     placedroomp = &Rooms[Placed_room];
     placedface = Placed_room_face;
   } else {
-    ASSERT(Placed_group != NULL);
+    ASSERT(Placed_group != nullptr);
     placedroomp = &Placed_group->rooms[Placed_group->attachroom];
     placedface = Placed_group->attachface;
   }
 
   // Compute source and destination matrices
   t = -placedroomp->faces[placedface].normal;
-  vm_VectorToMatrix(&srcmat, &t, NULL, NULL);
+  vm_VectorToMatrix(&srcmat, &t, nullptr, nullptr);
   vm_VectorAngleToMatrix(&Placed_room_orient, &Placed_room_orient.fvec, Placed_room_angle);
 
   mprintf(0, "srcmat: %f %f %f\n", vm_GetMagnitude(&srcmat.fvec), vm_GetMagnitude(&srcmat.rvec),
@@ -584,7 +584,7 @@ void ComputePlacedRoomMatrix() {
 //					placed_room_face the face on placed_room that's attached
 void PlaceRoom(room *baseroomp, int baseface, int placed_room, int placed_room_face, int placed_room_door) {
   // Clear the placed group if one exists
-  Placed_group = NULL;
+  Placed_group = nullptr;
 
   ASSERT(baseroomp->faces[baseface].portal_num == -1);
 
@@ -630,7 +630,7 @@ void SnapRoom(int basevert) {
     attroomp = &Rooms[Placed_room];
     attface = Placed_room_face;
   } else {
-    ASSERT(Placed_group != NULL);
+    ASSERT(Placed_group != nullptr);
     attroomp = &Placed_group->rooms[Placed_group->attachroom];
     attface = Placed_group->attachface;
   }
@@ -717,7 +717,7 @@ void AttachRoom() {
 
   // Get the new room
   newroomp = CreateNewRoom(attroomp->num_verts, attroomp->num_faces, 0);
-  if (newroomp == NULL) {
+  if (newroomp == nullptr) {
     OutrageMessageBox("Cannot attach room: No free rooms.");
     return;
   }
@@ -743,7 +743,7 @@ void AttachRoom() {
   newroomp->num_portals = 0;
 
   // Check for terrain or mine room
-  if (baseroomp == NULL) { // a terrain room
+  if (baseroomp == nullptr) { // a terrain room
 
     // Flag this as an external room
     newroomp->flags |= RF_EXTERNAL;
@@ -1299,7 +1299,7 @@ void BuildBridge(room *attroomp, int attface, room *baseroomp, int baseface) {
 
   // Get a pointer to our room
   newroomp = CreateNewRoom(nv * 2, nfaces, 0);
-  if (newroomp == NULL) {
+  if (newroomp == nullptr) {
     OutrageMessageBox("Cannot build bridge: No free rooms.");
     return;
   }
@@ -1711,7 +1711,7 @@ void DeleteRoomFromMine(room *rp) {
 
   // If this is current room, set new current room
   if (rp == Curroomp) {
-    room *newroomp = NULL;
+    room *newroomp = nullptr;
 
     // Look for connected room
     for (p = 0; p < rp->num_portals; p++)
@@ -1721,7 +1721,7 @@ void DeleteRoomFromMine(room *rp) {
       }
 
     // If didn't find connected room, look for any room
-    if (newroomp == NULL) {
+    if (newroomp == nullptr) {
       for (i = 0; i <= Highest_room_index; i++) {
         if (Rooms[i].used && (i != ROOMNUM(rp))) {
           newroomp = &Rooms[i];
@@ -1730,7 +1730,7 @@ void DeleteRoomFromMine(room *rp) {
       }
     }
 
-    ASSERT(newroomp != NULL);
+    ASSERT(newroomp != nullptr);
 
 #ifndef NEWEDITOR
     Curroomp = newroomp;
@@ -1753,7 +1753,7 @@ void DeleteRoomFromMine(room *rp) {
 
   // If this is marked room, clear marked room
   if (Markedroomp == rp)
-    Markedroomp = NULL;
+    Markedroomp = nullptr;
 
   // Free the objects in this room
   for (i = rp->objects; i != -1; i = Objects[i].next) {
@@ -1845,7 +1845,7 @@ void PlaceExternalRoom(int cellnum, int placed_room, int placed_room_face, bool 
   room *placedroomp = &Rooms[placed_room];
 
   // Clear the placed group if one exists
-  Placed_group = NULL;
+  Placed_group = nullptr;
 
   // Clear the placed door if one exists
   if (Placed_door != -1) {
@@ -1858,7 +1858,7 @@ void PlaceExternalRoom(int cellnum, int placed_room, int placed_room_face, bool 
   Placed_room = placed_room;
   Placed_room_face = placed_room_face;
   Placed_room_angle = 0;
-  Placed_baseroomp = NULL;
+  Placed_baseroomp = nullptr;
 
   if (align_to_terrain)
     Placed_room_orient.fvec = TerrainNormals[MAX_TERRAIN_LOD - 1][cellnum].normal1;
@@ -2491,7 +2491,7 @@ void BuildSmoothBridge(room *rp0, int facenum0, room *rp1, int facenum1) {
 
   // Get a pointer to our room
   rp = CreateNewRoom(nverts, nfaces);
-  if (rp == NULL) {
+  if (rp == nullptr) {
     OutrageMessageBox("Cannot build bridge: No free rooms.");
     return;
   }

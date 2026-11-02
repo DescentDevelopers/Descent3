@@ -173,6 +173,7 @@
 #ifndef __OSIRIS_PREDEF_H_
 #define __OSIRIS_PREDEF_H_
 
+#include <cstdint>
 #include "osiris_dll.h"
 #include "cfile.h"
 
@@ -200,7 +201,7 @@ int osipf_WeaponFindID(const char *name);
 // returns how long an object has lived
 float osipf_ObjectGetTimeLived(int objhandle);
 
-void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun_normal = NULL);
+void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun_normal = nullptr);
 
 // Returns room values (Index is optional and not always used)
 void osipf_RoomValue(int roomnum, char op, char vhandle, void *ptr, int index = 0);
@@ -340,8 +341,8 @@ void osipf_SetAllControls(bool enabled);
 void osipf_SetControls(int fn, bool enabled);
 
 // Creates an object
-int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = NULL,
-                    int parent_handle = OBJECT_HANDLE_NONE, vector *velocity = NULL);
+int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = nullptr,
+                    int parent_handle = OBJECT_HANDLE_NONE, vector *velocity = nullptr);
 
 // OBJECT Properties.
 // is an object visible? (rendered current frame)
@@ -349,7 +350,7 @@ bool osipf_IsObjectVisible(object *obj);
 
 float osipf_GameTime(void);
 float osipf_FrameTime(void);
-void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *ptr, char g_index = 0);
+void osipf_ObjWBValue(int obj_handle, int8_t wb_index, char op, char vtype, void *ptr, int8_t g_index = 0);
 
 void osipf_ObjectValue(int handle, char op, char vtype, void *ptr, int index = 0);
 void osipf_MatcenValue(int handle, char op, char vtype, void *ptr, int index = 0);
@@ -392,7 +393,7 @@ int osipf_SoundFindId(const char *s_name);
 
 bool osipf_AIIsObjFriend(int obj_handle, int it_handle);
 bool osipf_AIIsObjEnemy(int obj_handle, int it_handle);
-void osipf_AIGoalValue(int obj_handle, char g_index, char op, char vtype, void *ptr, char index = 0);
+void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void *ptr, int8_t index = 0);
 int osipf_AIGetNearbyObjs(vector *pos, int init_roomnum, float rad, int *object_handle_list, int max_elements,
                           bool f_lightmap_only, bool f_only_players_and_ais = true,
                           bool f_include_non_collide_objects = false, bool f_stop_at_closed_doors = true);

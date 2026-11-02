@@ -326,11 +326,11 @@ void FreeSoundFile(int n) {
   SoundFiles[n].name[0] = 0;
   if (SoundFiles[n].sample_8bit) {
     mem_free(SoundFiles[n].sample_8bit);
-    SoundFiles[n].sample_8bit = NULL;
+    SoundFiles[n].sample_8bit = nullptr;
   }
   if (SoundFiles[n].sample_16bit) {
     mem_free(SoundFiles[n].sample_16bit);
-    SoundFiles[n].sample_16bit = NULL;
+    SoundFiles[n].sample_16bit = nullptr;
   }
   Num_sound_files--;
 }
@@ -382,7 +382,7 @@ int GetPrevSoundFile(int n) {
 int FindSoundFileName(char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_SOUND_FILES; i++)
     if (SoundFiles[i].used && !stricmp(name, SoundFiles[i].name))
@@ -560,7 +560,7 @@ int GetPrevSound(int n) {
 int FindSoundName(const char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_SOUNDS; i++)
     if (Sounds[i].used && !stricmp(name, Sounds[i].name))

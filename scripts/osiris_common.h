@@ -934,10 +934,6 @@ typedef uint16_t uint16_t;
 typedef uint32_t uint32_t;
 typedef uint32_t ddgr_color;
 
-#ifndef NULL
-#define NULL 0
-#endif
-
 inline ddgr_color GR_RGB(int r, int g, int b) { return ((r << 16) + (g << 8) + b); }
 
 #endif // end #ifndef INCLUDED_FROM_D3

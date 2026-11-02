@@ -71,7 +71,7 @@ uint8_t DetermineScriptType(char *filename);
 class CScriptMassCompile : public CDialog {
   // Construction
 public:
-  CScriptMassCompile(CWnd *pParent = NULL); // standard constructor
+  CScriptMassCompile(CWnd *pParent = nullptr); // standard constructor
 
   void SetStepText(int step, char *format, ...);
   bool Step1(char *filename);
