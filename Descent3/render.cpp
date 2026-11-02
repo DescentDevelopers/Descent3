@@ -575,7 +575,7 @@ int ExternalRoomVisibleFromPortal(int index, clip_wnd *wnd) {
 void MarkFacesForRendering(int roomnum, clip_wnd *wnd) {
   room *rp = &Rooms[roomnum];
   int i;
-  MarkFacingFaces(roomnum, rp->verts);
+  MarkFacingFaces(roomnum, rp->verts.get());
 
   // Rotate all the points in this room
   if (rp->wpb_index == -1) {
@@ -585,10 +585,10 @@ void MarkFacesForRendering(int roomnum, clip_wnd *wnd) {
     // everyone has the intel compiler!
 #if (defined(RELEASE) && defined(KATMAI))
     if (Katmai)
-      RotateRoomPoints(rp, rp->verts4);
+      RotateRoomPoints(rp, rp->verts4.get());
     else
 #endif
-      RotateRoomPoints(rp, rp->verts);
+      RotateRoomPoints(rp, rp->verts.get());
 
     Global_buffer_index += rp->num_verts;
   }
@@ -1098,7 +1098,7 @@ void BuildRoomList(int start_room_num) {
   for (i = 0; i < rp->num_faces; i++)
     rp->faces[i].flags |= FF_VISIBLE;
 
-  MarkFacingFaces(start_room_num, rp->verts);
+  MarkFacingFaces(start_room_num, rp->verts.get());
   // Enable mirror if there is one
   if (rp->mirror_face != -1 && Detail_settings.Mirrored_surfaces &&
       !(rp->faces[rp->mirror_face].flags & FF_NOT_FACING)) {
@@ -1114,10 +1114,10 @@ void BuildRoomList(int start_room_num) {
 #if (defined(RELEASE) && defined(KATMAI))
   if (Katmai)
 
-    RotateRoomPoints(rp, rp->verts4);
+    RotateRoomPoints(rp, rp->verts4.get());
   else
 #endif
-    RotateRoomPoints(rp, rp->verts);
+    RotateRoomPoints(rp, rp->verts.get());
 
   Global_buffer_index += rp->num_verts;
 
@@ -1141,7 +1141,7 @@ void BuildRoomList(int start_room_num) {
         if (rp->used && (rp->flags & RF_EXTERNAL)) {
           for (int t = 0; t < rp->num_faces; t++)
             rp->faces[t].flags |= FF_VISIBLE;
-          MarkFacingFaces(i, rp->verts);
+          MarkFacingFaces(i, rp->verts.get());
 
           if (!Rooms_visited[i])
             Render_list[N_render_rooms++] = i;
@@ -1469,7 +1469,7 @@ void RenderSpecularFacesFlat(room *rp) {
       }
     }
     if (GameTextures[fp->tmap].flags & TF_SMOOTH_SPECULAR) {
-      smooth_faces[num_smooth_faces] = fp - rp->faces;
+      smooth_faces[num_smooth_faces] = fp - rp->faces.get();
       num_smooth_faces++;
     } else {
       if (fp->flags & FF_TRIANGULATED)
@@ -1534,7 +1534,7 @@ void UpdateSpecularFace(room *rp, face *fp) {
   int n = Num_specular_faces_to_render;
   if (n >= MAX_SPECULAR_FACES)
     return;
-  Specular_faces[n] = fp - rp->faces;
+  Specular_faces[n] = fp - rp->faces.get();
   Num_specular_faces_to_render++;
   if (!(fp->flags & FF_SPEC_INVISIBLE))
     Num_real_specular_faces_to_render++;
@@ -1550,7 +1550,7 @@ bool Fog_disabled = 0;
 void UpdateFogFace(room *rp, face *fp) {
   if (Fog_disabled || !Detail_settings.Fog_enabled)
     return;
-  Fog_faces[Num_fog_faces_to_render++] = fp - rp->faces;
+  Fog_faces[Num_fog_faces_to_render++] = fp - rp->faces.get();
 }
 
 // Render a fog layer on top of a face
@@ -2147,10 +2147,10 @@ void RenderRoomSorted(room *rp) {
     // everyone has the intel compiler!
 #if (defined(RELEASE) && defined(KATMAI))
     if (Katmai)
-      RotateRoomPoints(rp, rp->verts4);
+      RotateRoomPoints(rp, rp->verts4.get());
     else
 #endif
-      RotateRoomPoints(rp, rp->verts);
+      RotateRoomPoints(rp, rp->verts.get());
 
     Global_buffer_index += rp->num_verts;
   }
@@ -2248,11 +2248,11 @@ void RenderRoomUnsorted(room *rp) {
 // everyone has the intel compiler!
 #if (defined(RELEASE) && defined(KATMAI))
     if (Katmai) {
-      RotateRoomPoints(rp, rp->verts4);
+      RotateRoomPoints(rp, rp->verts4.get());
     } else
 #endif
     {
-      RotateRoomPoints(rp, rp->verts);
+      RotateRoomPoints(rp, rp->verts.get());
     }
 
     Global_buffer_index += rp->num_verts;
@@ -3630,8 +3630,7 @@ void ConsolidateMineMirrors() {
     if (!rp->used)
       continue;
     if (rp->mirror_faces_list) {
-      mem_free(rp->mirror_faces_list);
-      rp->mirror_faces_list = nullptr;
+      rp->mirror_faces_list.reset();
       rp->num_mirror_faces = 0;
     }
     if (rp->mirror_face == -1)
@@ -3648,8 +3647,7 @@ void ConsolidateMineMirrors() {
       rp->mirror_face = 0;
       continue;
     }
-    rp->mirror_faces_list = mem_rmalloc<uint16_t>(num_mirror_faces);
-    ASSERT(rp->mirror_faces_list);
+    rp->mirror_faces_list = std::make_unique<uint16_t[]>(num_mirror_faces);
     rp->num_mirror_faces = num_mirror_faces;
     // Now go through and fill in our list
     int count = 0;

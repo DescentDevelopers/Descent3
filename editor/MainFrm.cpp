@@ -2583,7 +2583,7 @@ void ShowRooms() {
   sprintf(t, "");
   for (i = n = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used && Rooms[i].name) {
-      sprintf(t, "Room %d is named \"%s\"\n", i, Rooms[i].name);
+      sprintf(t, "Room %d is named \"%s\"\n", i, Rooms[i].name.get());
       n++;
       t += strlen(t);
       if ((t - text_buf) > (sizeof(text_buf) - 200)) {
@@ -2668,7 +2668,7 @@ void LookForFVICracks() {
 
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++, rp++) {
     if (rp->used) {
-      for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+      for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
         vector *vertex_ptr_list[MAX_VERTS_PER_FACE];
         for (v = 0; v < fp->num_verts; v++)
           vertex_ptr_list[v] = &rp->verts[fp->face_verts[v]];

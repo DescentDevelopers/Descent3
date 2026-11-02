@@ -111,7 +111,7 @@ void RotateRooms(angle p, angle h, angle b) {
   ComputePortalCenter(&rotpoint, Curroomp, cur_portalnum);
   vm_AnglesToMatrix(&rotmat, p, h, b); // get desired rotation
   face *fp = &Curroomp->faces[Curroomp->portals[cur_portalnum].portal_face];
-  ComputeNormal(&portal_normal, fp->num_verts, fp->face_verts, Curroomp->verts);
+  ComputeNormal(&portal_normal, fp->num_verts, fp->face_verts.get(), Curroomp->verts.get());
   portal_normal *= -1.0; // reverse it!
 
   vm_VectorToMatrix(&roommat, &portal_normal, nullptr, nullptr);

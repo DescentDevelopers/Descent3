@@ -586,7 +586,7 @@ int LGSRooms(CFILE *fp) {
 
       // load doorway info
       if (Rooms[i].flags & RF_DOOR) {
-        doorway *dp = Rooms[i].doorway_data;
+        doorway *dp = Rooms[i].doorway_data.get();
         ASSERT(dp != nullptr);
         gs_ReadByte(fp, dp->state);
         gs_ReadByte(fp, dp->flags);

@@ -99,6 +99,8 @@
 #ifndef _ROOM_EXTERNAL_H_
 #define _ROOM_EXTERNAL_H_
 
+#include <memory>
+
 #include "pstypes.h"
 #include "vecmat_external.h"
 #include "bnode.h"
@@ -140,8 +142,8 @@ struct face {
   uint8_t num_verts;  // how many vertices in this face
   int8_t portal_num; // which portal this face is part of, or -1 if none
 
-  int16_t *face_verts;       // index into list of vertices for this face
-  roomUVL *face_uvls;      // index into list of uvls for this face
+  std::unique_ptr<int16_t[]> face_verts; // index into list of vertices for this face
+  std::unique_ptr<roomUVL[]> face_uvls;  // index into list of uvls for this face
   vector normal;           // the surface normal of this face
   int16_t tmap;              // texture numbers for this face
   uint16_t lmi_handle;       // the lightmap info number for this face
@@ -214,13 +216,13 @@ struct room {
   int num_faces;   // how many poygons in this room
   int num_portals; // how many connections in this room
   int num_verts;   // how many verts in the room
-  face *faces;     // pointer to list of faces
-  portal *portals; // pointer to list of portals
-  vector *verts;   // array of vertices for this room
-  vector4 *verts4; // array of 16byte vertices for this room
+  std::unique_ptr<face[]> faces; // list of faces
+  std::unique_ptr<portal[]> portals; // list of portals
+  std::unique_ptr<vector[]> verts;   // array of vertices for this room
+  std::unique_ptr<vector4[]> verts4; // array of 16byte vertices for this room
 
-  doorway *doorway_data;   // pointer to this room's doorway data, or NULL if not a doorway
-  char *name;              // name of this room, or NULL
+  std::unique_ptr<doorway> doorway_data; // this room's doorway data, or NULL if not a doorway
+  std::unique_ptr<char[]> name;          // name of this room, or NULL
   int objects;             // index of first object in this room
   vector max_xyz, min_xyz; // for external room visibility checking
 
@@ -247,11 +249,12 @@ struct room {
   int16_t vis_effects;         // index of first visual effect in this room
   int16_t mirror_face;         // Index of face that this room is to be mirrored by
   uint8_t num_mirror_faces;    // Number of faces in this room that have the same texture as the mirror
-  uint16_t *mirror_faces_list; // the list of faces in this room that have the same texture as the mirror
+  // the list of faces in this room that have the same texture as the mirror
+  std::unique_ptr<uint16_t[]> mirror_faces_list;
   float damage;              // The damage per second applied to players (& maybe others) in room
 
   vector path_pnt;      // Point used by the path system
-  uint8_t *volume_lights; // Pointer to memory for our volumetric lighting
+  std::unique_ptr<uint8_t[]> volume_lights; // our volumetric lighting
   int16_t volume_width;   // The dimensions of our volumetric room
   int16_t volume_height;
   int16_t volume_depth;

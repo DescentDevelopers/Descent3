@@ -218,21 +218,12 @@ bool VerifyDoorModel(int handle) {
         return 0;
       }
 
-      // check polygons in the shell.  we do this by copying the poly face into a room
-      room check_room;
-      face check_face;
-
-      check_room.verts = sm->verts.get();
-      check_room.faces = &check_face;
-
+      // check polygons in the shell by computing each poly face's normal from the model's verts
       for (int f = 0; f < sm->num_faces; f++) {
         polyface *polyface = &sm->faces[f];
+        vector normal;
 
-        // copy polygon face into the room face
-        check_face.num_verts = polyface->nverts;
-        check_face.face_verts = polyface->vertnums;
-
-        if (!ComputeFaceNormal(&check_room, 0)) {
+        if (!ComputeNormal(&normal, polyface->nverts, polyface->vertnums, sm->verts.get())) {
           OutrageMessageBox("Invalid door model: Face %d in shell has bad normal.", f);
           return 0;
         }
