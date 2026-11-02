@@ -402,6 +402,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <map>
+#include <memory>
 
 #include "cfile.h"
 #include "ddio.h"
@@ -465,7 +466,7 @@ struct tRefObj {
   int objnum;
   int type, id;
   bool dummy;
-  tRefObj *next;
+  std::unique_ptr<tRefObj> next;
 };
 
 struct tOSIRISModule {
@@ -482,12 +483,12 @@ struct tOSIRISModule {
   GetCOScriptList_fp GetCOScriptList;
   SaveRestoreState_fp SaveRestoreState;
   module mod;
-  char *module_name;
+  std::unique_ptr<char[]> module_name;
   char **string_table;
   int strings_loaded;
 
 #ifdef OSIRISDEBUG
-  tRefObj *RefRoot;
+  std::unique_ptr<tRefObj> RefRoot;
 #endif
 };
 
@@ -585,7 +586,7 @@ void Osiris_InitModuleLoader(void) {
   for (i = 0; i < MAX_LOADED_MODULES; i++) {
     OSIRIS_loaded_modules[i].flags = 0;
     OSIRIS_loaded_modules[i].reference_count = 0;
-    OSIRIS_loaded_modules[i].module_name = nullptr;
+    OSIRIS_loaded_modules[i].module_name.reset();
     OSIRIS_loaded_modules[i].CallInstanceEvent = nullptr;
     OSIRIS_loaded_modules[i].CreateInstance = nullptr;
     OSIRIS_loaded_modules[i].DestroyInstance = nullptr;
@@ -599,7 +600,7 @@ void Osiris_InitModuleLoader(void) {
 
 #ifdef OSIRISDEBUG
     ASSERT(OSIRIS_loaded_modules[i].RefRoot == nullptr);
-    OSIRIS_loaded_modules[i].RefRoot = nullptr;
+    OSIRIS_loaded_modules[i].RefRoot.reset();
 #endif
   }
 
@@ -716,13 +717,10 @@ void Osiris_FreeModule(int id) {
 
 #ifdef OSIRISDEBUG
     ASSERT(OSIRIS_loaded_modules[id].RefRoot == nullptr);
-    OSIRIS_loaded_modules[id].RefRoot = nullptr;
+    OSIRIS_loaded_modules[id].RefRoot.reset();
 #endif
 
-    if (OSIRIS_loaded_modules[id].module_name) {
-      mem_free(OSIRIS_loaded_modules[id].module_name);
-      OSIRIS_loaded_modules[id].module_name = nullptr;
-    }
+    OSIRIS_loaded_modules[id].module_name.reset();
   }
 }
 
@@ -752,13 +750,13 @@ void Osiris_DumpLoadedObjects(char *file) {
   for (int j = 0; j < MAX_LOADED_MODULES; j++) {
     if (OSIRIS_loaded_modules[j].flags & OSIMF_INUSE && OSIRIS_loaded_modules[j].RefRoot != nullptr) {
       // uh oh! scripts were not completely decremented
-      tRefObj *node = OSIRIS_loaded_modules[j].RefRoot;
+      tRefObj *node = OSIRIS_loaded_modules[j].RefRoot.get();
       while (node) {
         snprintf(buffy, sizeof(buffy), "Module: \"%s\" Objnum: %d Type: %d%s Id:%d\n",
-                 OSIRIS_loaded_modules[j].module_name, node->objnum, node->type, (node->dummy) ? "(Dummy)" : "",
+                 OSIRIS_loaded_modules[j].module_name.get(), node->objnum, node->type, (node->dummy) ? "(Dummy)" : "",
                  node->id);
         cf_WriteString(f, buffy);
-        node = node->next;
+        node = node->next.get();
       }
     }
   }
@@ -778,7 +776,7 @@ int Osiris_FindLoadedModule(const std::filesystem::path &module_name) {
   for (int i = 0; i < MAX_LOADED_MODULES; i++) {
     if (OSIRIS_loaded_modules[i].flags & OSIMF_INUSE) {
       if (OSIRIS_loaded_modules[i].module_name &&
-          stricmp(OSIRIS_loaded_modules[i].module_name, PATH_TO_CSTR(real_name)) == 0) {
+          stricmp(OSIRIS_loaded_modules[i].module_name.get(), PATH_TO_CSTR(real_name)) == 0) {
         // we found a match
         return i;
       }
@@ -798,7 +796,8 @@ void Osiris_UnloadModule(int module_id) {
   if (OSIRIS_loaded_modules[module_id].flags & OSIMF_INUSE) {
     // the module is in use
     LOG_DEBUG_IF(Show_osiris_debug)
-        .printf("OSIRIS: Decrementing reference count for module (%s)", OSIRIS_loaded_modules[module_id].module_name);
+        .printf("OSIRIS: Decrementing reference count for module (%s)",
+                OSIRIS_loaded_modules[module_id].module_name.get());
     OSIRIS_loaded_modules[module_id].reference_count--;
 
     ASSERT(OSIRIS_loaded_modules[module_id].reference_count >= 0);
@@ -812,12 +811,12 @@ void Osiris_UnloadModule(int module_id) {
 
         // do not unload this module, due to the forced stay in memory
         LOG_VERBOSE.printf("OSIRIS: Module (%s) staying in memory due to static flag",
-                           OSIRIS_loaded_modules[module_id].module_name);
+                           OSIRIS_loaded_modules[module_id].module_name.get());
       } else {
         // time to unload this module
         LOG_DEBUG_IF(Show_osiris_debug)
             .printf("OSIRIS: Module (%s) reference count is at 0, unloading",
-                    OSIRIS_loaded_modules[module_id].module_name);
+                    OSIRIS_loaded_modules[module_id].module_name.get());
         Osiris_FreeModule(module_id);
       }
     }
@@ -865,7 +864,8 @@ void Osiris_UnloadLevelModule(void) {
 
     if (OSIRIS_loaded_modules[j].flags & OSIMF_INUSE && OSIRIS_loaded_modules[j].flags & OSIMF_NOUNLOAD) {
       // unload this module
-      LOG_DEBUG.printf("OSIRIS: Unloading static module (%s) due to level end\n", OSIRIS_loaded_modules[j].module_name);
+      LOG_DEBUG.printf("OSIRIS: Unloading static module (%s) due to level end\n",
+                       OSIRIS_loaded_modules[j].module_name.get());
       Osiris_FreeModule(j);
     }
 
@@ -1034,12 +1034,12 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
 
   osm->flags |= OSIMF_INUSE | OSIMF_LEVEL;
-  osm->module_name = mem_strdup(PATH_TO_CSTR(basename));
+  osm->module_name = mem_strdup_unique(PATH_TO_CSTR(basename));
   osm->reference_count = 1;
 
 #ifdef OSIRISDEBUG
   ASSERT(osm->RefRoot == nullptr);
-  osm->RefRoot = nullptr;
+  osm->RefRoot.reset();
 #endif
 
   // make sure all of the functions imported ok
@@ -1050,9 +1050,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     LOG_ERROR.printf("OSIRIS: Osiris_LoadLevelModule(%s) couldn't import function.", PATH_TO_CSTR(module_name));
     Int3();
     osm->flags = 0;
-    if (osm->module_name)
-      mem_free(osm->module_name);
-    osm->module_name = nullptr;
+    osm->module_name.reset();
     mod_FreeModule(mod);
     return -3;
   }
@@ -1080,7 +1078,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   Osiris_module_init.string_count = osm->strings_loaded;
   Osiris_module_init.string_table = osm->string_table;
   Osiris_module_init.module_is_static = false;
-  Osiris_module_init.script_identifier = osm->module_name;
+  Osiris_module_init.script_identifier = osm->module_name.get();
   Osiris_module_init.module_identifier = loaded_id;
 
   // when we get to this point we nearly have a loaded module, we just need to initialize it
@@ -1091,9 +1089,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
       DestroyStringTable(osm->string_table, osm->strings_loaded);
     }
     osm->flags = 0;
-    if (osm->module_name)
-      mem_free(osm->module_name);
-    osm->module_name = nullptr;
+    osm->module_name.reset();
     osm->string_table = nullptr;
     osm->strings_loaded = 0;
     mod_FreeModule(mod);
@@ -1227,12 +1223,12 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
 
   osm->flags |= OSIMF_INUSE;
-  osm->module_name = mem_strdup(PATH_TO_CSTR(basename));
+  osm->module_name = mem_strdup_unique(PATH_TO_CSTR(basename));
   osm->reference_count = 1;
 
 #ifdef OSIRISDEBUG
   ASSERT(osm->RefRoot == nullptr);
-  osm->RefRoot = nullptr;
+  osm->RefRoot.reset();
 #endif
 
   // make sure all of the functions imported ok
@@ -1242,9 +1238,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
     LOG_WARNING.printf("OSIRIS: Osiris_LoadGameModule(%s) couldn't import function.", PATH_TO_CSTR(basename));
     Int3();
     osm->flags = 0;
-    if (osm->module_name)
-      mem_free(osm->module_name);
-    osm->module_name = nullptr;
+    osm->module_name.reset();
     mod_FreeModule(mod);
     return -3;
   }
@@ -1271,7 +1265,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   Osiris_module_init.string_count = osm->strings_loaded;
   Osiris_module_init.string_table = osm->string_table;
   Osiris_module_init.module_is_static = false; // set this to false to avoid a fake true
-  Osiris_module_init.script_identifier = osm->module_name;
+  Osiris_module_init.script_identifier = osm->module_name.get();
   Osiris_module_init.module_identifier = loaded_id;
 
   // when we get to this point we nearly have a loaded module, we just need to initialize it
@@ -1284,16 +1278,14 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
     osm->string_table = nullptr;
     osm->strings_loaded = 0;
     osm->flags = 0;
-    if (osm->module_name)
-      mem_free(osm->module_name);
-    osm->module_name = nullptr;
+    osm->module_name.reset();
     mod_FreeModule(mod);
     return -2;
   }
 
   if (Osiris_module_init.module_is_static) {
     // the module is requesting to be static
-    LOG_DEBUG.printf("OSIRIS: Module (%s) is requesting to be static", osm->module_name);
+    LOG_DEBUG.printf("OSIRIS: Module (%s) is requesting to be static", osm->module_name.get());
     osm->flags |= OSIMF_NOUNLOAD;
   }
 
@@ -1369,12 +1361,12 @@ int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
   osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
 
   osm->flags = OSIMF_INUSE | OSIMF_DLLELSEWHERE;
-  osm->module_name = mem_strdup(filename);
+  osm->module_name = mem_strdup_unique(filename);
   osm->reference_count = 1;
 
 #ifdef OSIRISDEBUG
   ASSERT(osm->RefRoot == nullptr);
-  osm->RefRoot = nullptr;
+  osm->RefRoot.reset();
 #endif
 
   // make sure all of the functions imported ok
@@ -1383,6 +1375,7 @@ int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
     // there was an error importing a function
     LOG_FATAL.printf("OSIRIS: Osiris_LoadMissionModule(%s) couldn't import function.", filename);
     osm->flags = 0;
+    osm->module_name.reset();
     tOSIRISCurrentMission.mission_loaded = false;
     Int3();
     // mod_FreeModule(mod);	//don't unload it! it's needed by the mission
@@ -1540,19 +1533,20 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
           tRefObj *node;
           if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
-            node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
+            OSIRIS_loaded_modules[dll_id].RefRoot = std::make_unique<tRefObj>();
+            node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
           } else {
-            node = OSIRIS_loaded_modules[dll_id].RefRoot;
-            while (node->next)
-              node = node->next;
-            node->next = mem_rmalloc<tRefObj>();
-            node = node->next;
+            node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
+            while (node->next) {
+              node = node->next.get();
+            }
+            node->next = std::make_unique<tRefObj>();
+            node = node->next.get();
           }
           node->objnum = OBJNUM(obj);
           node->id = obj->id;
           node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
           node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-          node->next = nullptr;
 #endif
         }
       }
@@ -1604,19 +1598,20 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
             tRefObj *node;
             if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
+              OSIRIS_loaded_modules[dll_id].RefRoot = std::make_unique<tRefObj>();
+              node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
             } else {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot;
-              while (node->next)
-                node = node->next;
-              node->next = mem_rmalloc<tRefObj>();
-              node = node->next;
+              node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
+              while (node->next) {
+                node = node->next.get();
+              }
+              node->next = std::make_unique<tRefObj>();
+              node = node->next.get();
             }
             node->objnum = OBJNUM(obj);
             node->id = obj->id;
             node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
             node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-            node->next = nullptr;
 #endif
           }
         }
@@ -1661,19 +1656,20 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
               tRefObj *node;
               if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
-                node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
+                OSIRIS_loaded_modules[dll_id].RefRoot = std::make_unique<tRefObj>();
+                node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
               } else {
-                node = OSIRIS_loaded_modules[dll_id].RefRoot;
-                while (node->next)
-                  node = node->next;
-                node->next = mem_rmalloc<tRefObj>();
-                node = node->next;
+                node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
+                while (node->next) {
+                  node = node->next.get();
+                }
+                node->next = std::make_unique<tRefObj>();
+                node = node->next.get();
               }
               node->objnum = OBJNUM(obj);
               node->id = obj->id;
               node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
               node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-              node->next = nullptr;
 #endif
 
               if (iscustomonly) {
@@ -1731,19 +1727,20 @@ bool Osiris_BindScriptsToObject(object *obj) {
 #ifdef OSIRISDEBUG
             tRefObj *node;
             if (OSIRIS_loaded_modules[dll_id].RefRoot == nullptr) {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot = mem_rmalloc<tRefObj>();
+              OSIRIS_loaded_modules[dll_id].RefRoot = std::make_unique<tRefObj>();
+              node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
             } else {
-              node = OSIRIS_loaded_modules[dll_id].RefRoot;
-              while (node->next)
-                node = node->next;
-              node->next = mem_rmalloc<tRefObj>();
-              node = node->next;
+              node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
+              while (node->next) {
+                node = node->next.get();
+              }
+              node->next = std::make_unique<tRefObj>();
+              node = node->next.get();
             }
             node->objnum = OBJNUM(obj);
             node->id = obj->id;
             node->dummy = (obj->type == OBJ_DUMMY) ? true : false;
             node->type = (node->dummy == false) ? obj->type : obj->dummy_type;
-            node->next = nullptr;
 #endif
           }
         }
@@ -1791,22 +1788,20 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->default_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
-        // free this node
-        if (prev)
-          prev->next = node->next;
-        else {
-          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot);
-          OSIRIS_loaded_modules[dll_id].RefRoot = node->next;
+        // free this node (unlinking it destroys it)
+        if (prev) {
+          prev->next = std::move(node->next);
+        } else {
+          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot.get());
+          OSIRIS_loaded_modules[dll_id].RefRoot = std::move(node->next);
         }
-
-        mem_free(node);
         break;
       }
       prev = node;
-      node = node->next;
+      node = node->next.get();
     }
     ASSERT(node); // make sure we found the node
 #endif
@@ -1831,22 +1826,20 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->level_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
-        // free this node
-        if (prev)
-          prev->next = node->next;
-        else {
-          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot);
-          OSIRIS_loaded_modules[dll_id].RefRoot = node->next;
+        // free this node (unlinking it destroys it)
+        if (prev) {
+          prev->next = std::move(node->next);
+        } else {
+          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot.get());
+          OSIRIS_loaded_modules[dll_id].RefRoot = std::move(node->next);
         }
-
-        mem_free(node);
         break;
       }
       prev = node;
-      node = node->next;
+      node = node->next.get();
     }
     ASSERT(node); // make sure we found the node
 #endif
@@ -1868,22 +1861,20 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->custom_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
-        // free this node
-        if (prev)
-          prev->next = node->next;
-        else {
-          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot);
-          OSIRIS_loaded_modules[dll_id].RefRoot = node->next;
+        // free this node (unlinking it destroys it)
+        if (prev) {
+          prev->next = std::move(node->next);
+        } else {
+          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot.get());
+          OSIRIS_loaded_modules[dll_id].RefRoot = std::move(node->next);
         }
-
-        mem_free(node);
         break;
       }
       prev = node;
-      node = node->next;
+      node = node->next.get();
     }
     ASSERT(node); // make sure we found the node
 #endif
@@ -1905,22 +1896,20 @@ void Osiris_DetachScriptsFromObject(object *obj) {
     dll_id = os->mission_script.DLLID;
 
 #ifdef OSIRISDEBUG
-    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot;
+    tRefObj *prev = nullptr, *node = OSIRIS_loaded_modules[dll_id].RefRoot.get();
     while (node) {
       if (node->objnum == OBJNUM(obj)) {
-        // free this node
-        if (prev)
-          prev->next = node->next;
-        else {
-          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot);
-          OSIRIS_loaded_modules[dll_id].RefRoot = node->next;
+        // free this node (unlinking it destroys it)
+        if (prev) {
+          prev->next = std::move(node->next);
+        } else {
+          ASSERT(node == OSIRIS_loaded_modules[dll_id].RefRoot.get());
+          OSIRIS_loaded_modules[dll_id].RefRoot = std::move(node->next);
         }
-
-        mem_free(node);
         break;
       }
       prev = node;
-      node = node->next;
+      node = node->next.get();
     }
     ASSERT(node); // make sure we found the node
 #endif
@@ -2624,9 +2613,9 @@ void Osiris_SaveSystemState(CFILE *file) {
   for (i = 0; i < MAX_LOADED_MODULES; i++) {
     if (OSIRIS_loaded_modules[i].flags & OSIMF_INUSE) {
       // get the length of the module name
-      int module_name_length = strlen(OSIRIS_loaded_modules[i].module_name) + 1;
+      int module_name_length = strlen(OSIRIS_loaded_modules[i].module_name.get()) + 1;
       cf_WriteByte(file, module_name_length);
-      cf_WriteBytes((uint8_t *)OSIRIS_loaded_modules[i].module_name, module_name_length, file);
+      cf_WriteBytes((uint8_t *)OSIRIS_loaded_modules[i].module_name.get(), module_name_length, file);
 
       // now here is the tricky part, save the current fileposition, write a dummy 0 int
       int saved_file_pos = cftell(file);
@@ -2812,18 +2801,18 @@ bool Osiris_RestoreSystemState(CFILE *file) {
 
 struct tOSIRISMEMNODE {
   tOSIRISMEMCHUNK chunk_id;
-  void *memory;
-  tOSIRISMEMNODE *next;
+  std::unique_ptr<uint8_t[]> memory;
+  std::unique_ptr<tOSIRISMEMNODE> next;
 };
 
-tOSIRISMEMNODE *Osiris_mem_root;
+std::unique_ptr<tOSIRISMEMNODE> Osiris_mem_root;
 
 //	Osiris_InitMemoryManager
 //	Purpose:
 //		Initializes the memory manager for the scripts, for buffers that the scripts want
 //	automatically restored/save.
 void Osiris_InitMemoryManager(void) {
-  Osiris_mem_root = nullptr;
+  Osiris_mem_root.reset();
   atexit(Osiris_CloseMemoryManager);
 }
 
@@ -2831,16 +2820,10 @@ void Osiris_InitMemoryManager(void) {
 //	Purpose:
 //		Shuts down the Osiris memory manager, freeing any unfreed memory
 void Osiris_CloseMemoryManager(void) {
-  tOSIRISMEMNODE *curr, *next;
-  curr = Osiris_mem_root;
-  while (curr) {
-    next = curr->next;
-    if (curr->memory)
-      mem_free(curr->memory);
-    mem_free(curr);
-    curr = next;
+  // unlink one node at a time, so a long list is not destroyed recursively
+  while (Osiris_mem_root) {
+    Osiris_mem_root = std::move(Osiris_mem_root->next);
   }
-  Osiris_mem_root = nullptr;
 }
 
 //	Osiris_AllocateMemory
@@ -2849,87 +2832,33 @@ void Osiris_CloseMemoryManager(void) {
 //	save this memory to disk on game save, and will pass the pointer to this memory on EVT_RESTORE
 void *Osiris_AllocateMemory(tOSIRISMEMCHUNK *mc) {
   // find the end of the list
-  tOSIRISMEMNODE *curr, **error_node;
-
-  if (!Osiris_mem_root) {
-    // it'll be the first node
-    Osiris_mem_root = mem_rmalloc<tOSIRISMEMNODE>();
-    if (!Osiris_mem_root)
-      return nullptr;
-
-    curr = Osiris_mem_root;
-    error_node = &Osiris_mem_root;
-  } else {
-    // traverse to the tail
-    curr = Osiris_mem_root;
-    while (curr->next) {
-      curr = curr->next;
-    }
-
-    curr->next = mem_rmalloc<tOSIRISMEMNODE>();
-    if (!curr->next)
-      return nullptr;
-    error_node = &curr->next;
-    curr = curr->next;
+  std::unique_ptr<tOSIRISMEMNODE> *tail = &Osiris_mem_root;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
 
   // setup the data
-  curr->next = nullptr;
-  curr->memory = mem_malloc(mc->size);
-  if (!curr->memory) {
-    // ack...out of memory
-    *error_node = nullptr; // make sure we cut off the list
-    mem_free(curr);
-    return nullptr;
-  }
+  auto curr = std::make_unique<tOSIRISMEMNODE>();
+  curr->memory = std::make_unique<uint8_t[]>(mc->size);
   memcpy(&curr->chunk_id, mc, sizeof(tOSIRISMEMCHUNK));
 
-  return curr->memory;
+  // the script only borrows the memory; the list keeps ownership
+  *tail = std::move(curr);
+  return (*tail)->memory.get();
 }
 
 //	Osiris_FreeMemory
 //	Purpose:
 //		Frees a chunk of memory that was allocated by Osiris_AllocateMemory().
 void Osiris_FreeMemory(void *mem_ptr) {
-  tOSIRISMEMNODE *tofree;
-
-  if (!Osiris_mem_root)
-    return;
-
-  if (Osiris_mem_root->memory == mem_ptr) {
-    // free the base pointer
-    tofree = Osiris_mem_root;
-    Osiris_mem_root = Osiris_mem_root->next;
-  } else {
-    // traverse until we find the node
-    tOSIRISMEMNODE *curr;
-    curr = Osiris_mem_root;
-    bool done = false;
-    tofree = nullptr;
-    while (!done) {
-      if (!curr->next) {
-        done = true; // we didn't find it
-      } else if (curr->next->memory == mem_ptr) {
-        // this is the guy to free
-        tofree = curr->next;
-        done = true;
-      } else
-        curr = curr->next;
-    }
-
-    if (tofree) {
-      // ok there is a value to free, pull the list back one from curr on
-      curr->next = tofree->next;
-    } else {
-      // nothing to do
+  // traverse until we find the node
+  for (std::unique_ptr<tOSIRISMEMNODE> *link = &Osiris_mem_root; *link; link = &(*link)->next) {
+    if ((*link)->memory.get() == mem_ptr) {
+      // pull the list back one; this frees the node and its memory
+      *link = std::move((*link)->next);
       return;
     }
   }
-
-  // free the memory associated with tofree
-  if (tofree->memory)
-    mem_free(tofree->memory);
-  mem_free(tofree);
 }
 
 bool compareid(tOSIRISSCRIPTID *sid, tOSIRISSCRIPTID *oid) {
@@ -2948,41 +2877,13 @@ bool compareid(tOSIRISSCRIPTID *sid, tOSIRISSCRIPTID *oid) {
 //	Purpose:
 //		Frees all memory allocated for a given script
 void Osiris_FreeMemoryForScript(tOSIRISSCRIPTID *sid) {
-  if (!Osiris_mem_root)
-    return;
-  bool done = false;
-  tOSIRISMEMNODE *curr, *next, *prev;
-  curr = Osiris_mem_root;
-  prev = nullptr;
-
-  while (!done) {
-    if (!curr) {
-      done = true;
+  std::unique_ptr<tOSIRISMEMNODE> *link = &Osiris_mem_root;
+  while (*link) {
+    if (compareid(sid, &(*link)->chunk_id.my_id)) {
+      // this has to go: remove from list and pull back (frees the node and its memory)
+      *link = std::move((*link)->next);
     } else {
-      next = curr->next;
-
-      if (compareid(sid, &curr->chunk_id.my_id)) {
-        // this has to go
-        if (curr == Osiris_mem_root) {
-          // removing root
-          Osiris_mem_root = curr->next;
-
-          if (curr->memory)
-            mem_free(curr->memory);
-          mem_free(curr);
-        } else {
-          // remove from list and pull back
-          prev->next = curr->next;
-
-          if (curr->memory)
-            mem_free(curr->memory);
-          mem_free(curr);
-        }
-      } else {
-        prev = curr;
-      }
-
-      curr = next;
+      link = &(*link)->next;
     }
   }
 }
@@ -2992,7 +2893,7 @@ void Osiris_FreeMemoryForScript(tOSIRISSCRIPTID *sid) {
 //		Saves out the 'auto manage' script memory to file
 void Osiris_SaveMemoryChunks(CFILE *file) {
   tOSIRISMEMNODE *curr;
-  curr = Osiris_mem_root;
+  curr = Osiris_mem_root.get();
 
   while (curr) {
     cf_WriteInt(file, curr->chunk_id.size);
@@ -3008,8 +2909,8 @@ void Osiris_SaveMemoryChunks(CFILE *file) {
       break;
     }
     cf_WriteInt(file, curr->chunk_id.id);
-    cf_WriteBytes((uint8_t *)curr->memory, curr->chunk_id.size, file);
-    curr = curr->next;
+    cf_WriteBytes(curr->memory.get(), curr->chunk_id.size, file);
+    curr = curr->next.get();
   }
 
   cf_WriteInt(file, 0);
@@ -3019,16 +2920,13 @@ void Osiris_SaveMemoryChunks(CFILE *file) {
 //	Purpose:
 //		Restores the 'auto manage' from file, calls the EVT_MEMRESTORE
 void Osiris_RestoreMemoryChunks(CFILE *file) {
-  tOSIRISMEMNODE *curr;
   tOSIRISMEMNODE *memchunk;
 
   // Osiris_CloseMemoryManager(); We might not want to close this down...due to some objects don't get destroyed
   // Osiris_mem_root = NULL;
-  curr = Osiris_mem_root;
-  if (curr) {
-    while (curr->next) {
-      curr = curr->next;
-    }
+  std::unique_ptr<tOSIRISMEMNODE> *tail = &Osiris_mem_root;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
 
   bool done = false;
@@ -3039,10 +2937,8 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
       done = true;
     } else {
       // handle this node
-      memchunk = mem_rmalloc<tOSIRISMEMNODE>();
-      if (!memchunk) {
-        Error("Out of memory");
-      }
+      auto newchunk = std::make_unique<tOSIRISMEMNODE>();
+      memchunk = newchunk.get();
 
       memchunk->chunk_id.size = size;
       memchunk->chunk_id.my_id.type = (script_type)cf_ReadByte(file);
@@ -3057,24 +2953,15 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
         break;
       }
       memchunk->chunk_id.id = cf_ReadInt(file);
-      memchunk->memory = mem_malloc(memchunk->chunk_id.size);
-      if (!memchunk->memory) {
-        Error("Out of memory");
-      }
-      cf_ReadBytes((uint8_t *)memchunk->memory, memchunk->chunk_id.size, file);
-      memchunk->next = nullptr;
+      memchunk->memory = std::make_unique<uint8_t[]>(memchunk->chunk_id.size);
+      cf_ReadBytes(memchunk->memory.get(), memchunk->chunk_id.size, file);
 
       // ok, the node is setup, add it to the linked list
-      if (!Osiris_mem_root) {
-        Osiris_mem_root = curr = memchunk;
-      } else {
-        curr->next = memchunk;
-        curr = curr->next;
-      }
+      *tail = std::move(newchunk);
 
       tOSIRISEventInfo ei;
       ei.evt_memrestore.id = memchunk->chunk_id.id;
-      ei.evt_memrestore.memory_ptr = memchunk->memory;
+      ei.evt_memrestore.memory_ptr = memchunk->memory.get();
 
       // send an event to the object
       switch (memchunk->chunk_id.my_id.type) {
@@ -3091,6 +2978,13 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
         Osiris_CallLevelEvent(EVT_MEMRESTORE, &ei);
         break;
       };
+
+      // the restore handler may have allocated more script memory, which was appended after this chunk, or
+      // freed this chunk, which would leave tail dangling; so find the end of the list from its root
+      tail = &Osiris_mem_root;
+      while (*tail) {
+        tail = &(*tail)->next;
+      }
     }
   }
 }
@@ -3236,27 +3130,24 @@ struct tOMMSNode {
   uint32_t unique_id;
   uint16_t reference_count;
   uint8_t free_called;
-  void *memory_ptr;
-  tOMMSNode *next;
+  std::unique_ptr<uint8_t[]> memory_ptr;
+  std::unique_ptr<tOMMSNode> next;
 };
 
 struct tOMMSHashNode {
-  char *script_name;
+  std::unique_ptr<char[]> script_name;
   uint16_t base_id;
-  tOMMSNode *root;
-  tOMMSHashNode *next;
+  std::unique_ptr<tOMMSNode> root;
+  std::unique_ptr<tOMMSHashNode> next;
 };
 
-tOMMSHashNode *OMMS_Hash_node_root = nullptr;
+std::unique_ptr<tOMMSHashNode> OMMS_Hash_node_root;
 uint16_t OMMS_Current_base_id = 0;
 uint16_t OMMS_Current_id = 0;
 
 //	Searches through the hash nodes and looks for the one associated with
 //	the script name, if one doesn't exist it will create one (if autocreate is true).
 tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate);
-//	frees all memory associated with the OMMSHashNode given (includes all script
-//	memory...returns the next node in the list, NULL if none
-tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node);
 //	finds an OMMS node, given the hash node to start at.  If it isn't
 //	found than one is created. NULL if out of memory.
 tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocreate);
@@ -3313,20 +3204,17 @@ static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t 
 void Osiris_InitOMMS(void) {
   OMMS_Current_base_id = 0;
   OMMS_Current_id = 0;
-  OMMS_Hash_node_root = nullptr;
+  OMMS_Hash_node_root.reset();
   atexit(Osiris_CloseOMMS);
 }
 
 void Osiris_CloseOMMS(void) {
   LOG_DEBUG << "OSIRIS: Reseting OMMS memory";
 
-  tOMMSHashNode *curr = OMMS_Hash_node_root;
-
-  while (curr) {
-    curr = Osiris_OMMS_DeleteHashNode(curr);
+  // frees all memory associated with each hash node (includes all script memory)
+  while (OMMS_Hash_node_root) {
+    OMMS_Hash_node_root = std::move(OMMS_Hash_node_root->next);
   }
-
-  OMMS_Hash_node_root = nullptr;
 }
 
 void Osiris_SaveOMMS(CFILE *file) {
@@ -3335,7 +3223,7 @@ void Osiris_SaveOMMS(CFILE *file) {
   cf_WriteShort(file, OMMS_Current_id);
 
   // go through all the hash nodes write their information out
-  tOMMSHashNode *currhash = OMMS_Hash_node_root;
+  tOMMSHashNode *currhash = OMMS_Hash_node_root.get();
   while (currhash) {
     // write out a 1, saying that we have a hash node here
     cf_WriteByte(file, 1);
@@ -3344,14 +3232,14 @@ void Osiris_SaveOMMS(CFILE *file) {
 
     // write out the info about this hash node
     int length;
-    length = (currhash->script_name) ? strlen(currhash->script_name) : 0;
+    length = (currhash->script_name) ? strlen(currhash->script_name.get()) : 0;
     cf_WriteByte(file, length);
     if (length)
-      cf_WriteBytes((uint8_t *)currhash->script_name, length, file);
+      cf_WriteBytes((uint8_t *)currhash->script_name.get(), length, file);
 
     // now go through all the nodes and write their data
     tOMMSNode *node;
-    node = currhash->root;
+    node = currhash->root.get();
     while (node) {
       // write out 1, for valid hash
       cf_WriteByte(file, 1);
@@ -3363,15 +3251,15 @@ void Osiris_SaveOMMS(CFILE *file) {
       cf_WriteInt(file, node->unique_id);
       cf_WriteInt(file, node->size_of_memory);
       if (node->size_of_memory)
-        cf_WriteBytes((uint8_t *)node->memory_ptr, node->size_of_memory, file);
+        cf_WriteBytes(node->memory_ptr.get(), node->size_of_memory, file);
 
-      node = node->next;
+      node = node->next.get();
     }
     // write out terminating 0
     cf_WriteByte(file, 0);
 
     // go to the next hash node
-    currhash = currhash->next;
+    currhash = currhash->next.get();
   }
 
   // write out terminating 0
@@ -3392,29 +3280,21 @@ void Osiris_RestoreOMMS(CFILE *file) {
   // we have to rebuild the nodes
   while (cf_ReadByte(file)) {
     if (!currhash) {
-      currhash = OMMS_Hash_node_root = mem_rmalloc<tOMMSHashNode>();
+      OMMS_Hash_node_root = std::make_unique<tOMMSHashNode>();
+      currhash = OMMS_Hash_node_root.get();
     } else {
-      currhash->next = mem_rmalloc<tOMMSHashNode>();
-      currhash = currhash->next;
+      currhash->next = std::make_unique<tOMMSHashNode>();
+      currhash = currhash->next.get();
     }
-
-    if (!currhash)
-      Error("Out of memory");
-
-    currhash->next = nullptr;
-    currhash->root = nullptr;
-    currhash->script_name = nullptr;
 
     currhash->base_id = (uint16_t)cf_ReadShort(file);
 
     // read length of string
     int length = cf_ReadByte(file);
     if (length) {
-      currhash->script_name = (char *)mem_malloc(length + 1);
-      if (!currhash->script_name)
-        Error("Out of Memory");
-      else
-        cf_ReadBytes((uint8_t *)currhash->script_name, length, file);
+      // zero-filled, so the name is terminated
+      currhash->script_name = std::make_unique<char[]>(length + 1);
+      cf_ReadBytes((uint8_t *)currhash->script_name.get(), length, file);
     }
 
     node = nullptr;
@@ -3422,17 +3302,12 @@ void Osiris_RestoreOMMS(CFILE *file) {
     // now go through all the nodes and right their data
     while (cf_ReadByte(file)) {
       if (!node) {
-        node = currhash->root = mem_rmalloc<tOMMSNode>();
+        currhash->root = std::make_unique<tOMMSNode>();
+        node = currhash->root.get();
       } else {
-        node->next = mem_rmalloc<tOMMSNode>();
-        node = node->next;
+        node->next = std::make_unique<tOMMSNode>();
+        node = node->next.get();
       }
-
-      if (!node)
-        Error("Out of memory");
-
-      node->memory_ptr = nullptr;
-      node->next = nullptr;
 
       node->id = (uint16_t)cf_ReadShort(file);
 
@@ -3441,11 +3316,8 @@ void Osiris_RestoreOMMS(CFILE *file) {
       node->unique_id = cf_ReadInt(file);
       node->size_of_memory = cf_ReadInt(file);
       if (node->size_of_memory) {
-        node->memory_ptr = mem_malloc(node->size_of_memory);
-        if (!node->memory_ptr)
-          Error("Out of memory");
-
-        cf_ReadBytes((uint8_t *)node->memory_ptr, node->size_of_memory, file);
+        node->memory_ptr = std::make_unique<uint8_t[]>(node->size_of_memory);
+        cf_ReadBytes(node->memory_ptr.get(), node->size_of_memory, file);
       }
     } // end reading nodes
   } // end reading hash nodes
@@ -3454,83 +3326,58 @@ void Osiris_RestoreOMMS(CFILE *file) {
 //	Searches through the hash nodes and looks for the one associated with
 //	the script name, if one doesn't exist it will create one (if autocreate is true).
 tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate) {
-  tOMMSHashNode *curr = OMMS_Hash_node_root;
+  tOMMSHashNode *curr = OMMS_Hash_node_root.get();
 
   if (!OMMS_Hash_node_root) {
     // allocate the root node
     if (!autocreate)
       return nullptr;
 
-    curr = OMMS_Hash_node_root = mem_rmalloc<tOMMSHashNode>();
+    OMMS_Hash_node_root = std::make_unique<tOMMSHashNode>();
+    curr = OMMS_Hash_node_root.get();
   } else {
-    if (curr->script_name && !stricmp(curr->script_name, script_name)) {
+    if (curr->script_name && !stricmp(curr->script_name.get(), script_name)) {
       // the root node matches
       return curr;
     }
 
     // search through to see if we can find the node
     while (curr->next) {
-      if (curr->next->script_name && !stricmp(curr->next->script_name, script_name)) {
+      if (curr->next->script_name && !stricmp(curr->next->script_name.get(), script_name)) {
         // curr->next is a matching node
-        return curr->next;
+        return curr->next.get();
       }
 
-      curr = curr->next;
+      curr = curr->next.get();
     }
 
     // allocate a node and tack it on the end
     if (!autocreate)
       return nullptr;
 
-    curr->next = mem_rmalloc<tOMMSHashNode>();
-    curr = curr->next;
+    curr->next = std::make_unique<tOMMSHashNode>();
+    curr = curr->next.get();
   }
 
   // if we get here then curr is a freshly allocated node
-  curr->next = nullptr;
-  curr->root = nullptr;
-  curr->script_name = mem_strdup(script_name);
+  curr->script_name = mem_strdup_unique(script_name);
   curr->base_id = ++OMMS_Current_base_id;
 
   return curr;
 }
 
-//	frees all memory associated with the OMMSHashNode given (includes all script
-//	memory...returns the next node in the list, NULL if none
-tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node) {
-  if (!node)
-    return nullptr;
-  tOMMSHashNode *ret = node->next;
-
-  if (node->script_name)
-    mem_free(node->script_name);
-
-  tOMMSNode *curr, *next;
-  curr = next = node->root;
-
-  while (curr) {
-    next = curr->next;
-    mem_free(curr->memory_ptr);
-    mem_free(curr);
-    curr = next;
-  }
-
-  mem_free(node);
-
-  return ret;
-}
-
 //	finds an OMMS node, given the hash node to start at.  If it isn't
 //	found than one is created. NULL if out of memory.
 tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocreate) {
-  tOMMSNode *curr = root->root;
+  tOMMSNode *curr = root->root.get();
 
   if (!root->root) {
     // allocate the root node
     if (!autocreate)
       return nullptr;
 
-    curr = root->root = mem_rmalloc<tOMMSNode>();
+    root->root = std::make_unique<tOMMSNode>();
+    curr = root->root.get();
   } else {
     if (curr->unique_id == uid) {
       // the root node matches
@@ -3541,24 +3388,22 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
     while (curr->next) {
       if (curr->next->unique_id == uid) {
         // curr->next is a matching node
-        return curr->next;
+        return curr->next.get();
       }
 
-      curr = curr->next;
+      curr = curr->next.get();
     }
 
     // allocate a node and tack it on the end
     if (!autocreate)
       return nullptr;
 
-    curr->next = mem_rmalloc<tOMMSNode>();
-    curr = curr->next;
+    curr->next = std::make_unique<tOMMSNode>();
+    curr = curr->next.get();
   }
 
   // if we get here then curr is a freshly allocated node
   curr->free_called = 0;
-  curr->memory_ptr = nullptr;
-  curr->next = nullptr;
   curr->reference_count = 0;
   curr->size_of_memory = 0;
   curr->unique_id = uid;
@@ -3569,38 +3414,15 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocrea
 
 //	Removes the OMMS node for the given HashNode (completly remove)
 void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid) {
-  tOMMSNode *curr = root->root;
-  tOMMSNode *node_to_free = nullptr;
-
-  if (!root->root)
-    return;
-
-  if (root->root->unique_id == uid) {
-    // the root node matches
-    node_to_free = root->root;
-    root->root = nullptr;
-    goto free_mem;
-  }
-
   // search through to see if we can find the node
-  while (curr->next) {
-    if (curr->next->unique_id == uid) {
-      // curr->next is a matching node
-      node_to_free = curr->next;
-      curr->next = curr->next->next;
-      goto free_mem;
+  for (std::unique_ptr<tOMMSNode> *link = &root->root; *link; link = &(*link)->next) {
+    if ((*link)->unique_id == uid) {
+      LOG_DEBUG.printf("OMMS: deleting uid 0x%x", (*link)->unique_id);
+      // unlink the matching node; this frees it and its memory
+      *link = std::move((*link)->next);
+      return;
     }
-    curr = curr->next;
   }
-
-free_mem:
-  if (!node_to_free)
-    return;
-
-  LOG_DEBUG.printf("OMMS: deleting uid 0x%x", node_to_free->unique_id);
-  if (node_to_free->memory_ptr)
-    mem_free(node_to_free->memory_ptr);
-  mem_free(node_to_free);
 }
 
 //	Reduces the reference count for an OMMSNode by 1
@@ -3632,7 +3454,7 @@ void Osiris_OMMS_CallFreeForNode(tOMMSHashNode *root, tOMMSNode *node) {
 //	Searches for the given OMMSHANDLE, returns NULL if not found.  if hash is
 //	given it will return the hash root that the node was found in.
 tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
-  tOMMSHashNode *hashcurr = OMMS_Hash_node_root;
+  tOMMSHashNode *hashcurr = OMMS_Hash_node_root.get();
   tOMMSNode *nodecurr;
   uint16_t base_id;
   uint16_t id;
@@ -3642,7 +3464,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
   while (hashcurr) {
     if (hashcurr->base_id == base_id) {
 
-      nodecurr = hashcurr->root;
+      nodecurr = hashcurr->root.get();
       while (nodecurr) {
         if (nodecurr->id == id) {
           if (hash)
@@ -3650,11 +3472,11 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
           return nodecurr;
         }
 
-        nodecurr = nodecurr->next;
+        nodecurr = nodecurr->next.get();
       }
     }
 
-    hashcurr = hashcurr->next;
+    hashcurr = hashcurr->next.get();
   }
 
   return nullptr;
@@ -3690,9 +3512,7 @@ OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint32_t unique_identifie
   }
 
   // we need to allocate the memory
-  node->memory_ptr = mem_malloc(amount_of_memory);
-  if (!node->memory_ptr)
-    return -1; // out of memory
+  node->memory_ptr = std::make_unique<uint8_t[]>(amount_of_memory);
 
   node->size_of_memory = amount_of_memory;
   node->unique_id = unique_identifier;
@@ -3712,7 +3532,7 @@ void *Osiris_OMMS_Attach(OMMSHANDLE handle) {
   if (node->memory_ptr) {
     node->reference_count++;
   }
-  return node->memory_ptr;
+  return node->memory_ptr.get();
 }
 
 //	Detaches a block of global OMMS memory. (Reduces the reference count).

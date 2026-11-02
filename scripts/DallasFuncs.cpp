@@ -715,6 +715,7 @@
 #include <cstring>
 #include <cstdarg>
 #include <cfloat>
+#include <memory>
 
 #include "osiris_vector.h"
 #include "psrand.h"
@@ -4513,52 +4514,41 @@ void aObjFireWeapon(const char *weapon_name, int gun_num, int objhandle) {
 
 struct tKillRobotListNode {
   tKillObjectItem item;
-  tKillRobotListNode *next;
+  std::unique_ptr<tKillRobotListNode> next;
 };
 
 class CKillRobotList {
 public:
-  CKillRobotList() { list = nullptr; };
   ~CKillRobotList() { clear(); }
 
   void clear(void);
   void add(tKillObjectItem *data);
 
-  tKillRobotListNode *list;
+  std::unique_ptr<tKillRobotListNode> list;
 };
 CKillRobotList KillRobotList;
 
 void CKillRobotList::clear(void) {
-  tKillRobotListNode *next, *curr = list;
-
-  while (curr) {
-    next = curr->next;
-    free(curr);
-    curr = next;
+  // free node by node, so a long list is not destroyed recursively
+  while (list) {
+    list = std::move(list->next);
   }
-
-  list = nullptr;
 }
 
 void CKillRobotList::add(tKillObjectItem *data) {
-  tKillRobotListNode *curr = list;
+  auto node = std::make_unique<tKillRobotListNode>();
+  memcpy(&node->item, data, sizeof(tKillObjectItem));
 
-  if (!curr) {
-    list = curr = (tKillRobotListNode *)malloc(sizeof(tKillRobotListNode));
+  if (!list) {
+    list = std::move(node);
   } else {
+    tKillRobotListNode *curr = list.get();
     while (curr->next) {
-      curr = curr->next;
+      curr = curr->next.get();
     }
 
-    curr->next = (tKillRobotListNode *)malloc(sizeof(tKillRobotListNode));
-    curr = curr->next;
+    curr->next = std::move(node);
   }
-
-  if (!curr)
-    return;
-
-  curr->next = nullptr;
-  memcpy(&curr->item, data, sizeof(tKillObjectItem));
 }
 
 /*
@@ -4629,7 +4619,7 @@ Destroys the robots (except those spared) in the level
 $$END
 */
 void aDestroyAllRobotsEnd(void) {
-  tKillRobotListNode *curr = KillRobotList.list;
+  tKillRobotListNode *curr = KillRobotList.list.get();
   int count = 0;
 
   if (!curr)
@@ -4637,29 +4627,23 @@ void aDestroyAllRobotsEnd(void) {
 
   while (curr) {
     count++;
-    curr = curr->next;
+    curr = curr->next.get();
   }
 
-  curr = KillRobotList.list;
-  tKillObjectItem *kolist = nullptr;
-
-  kolist = (tKillObjectItem *)malloc(sizeof(tKillObjectItem) * count);
-  if (!kolist)
-    return;
+  curr = KillRobotList.list.get();
+  auto kolist = std::make_unique<tKillObjectItem[]>(count);
 
   count = 0;
   while (curr) {
     memcpy(&kolist[count], &curr->item, sizeof(tKillObjectItem));
     count++;
-    curr = curr->next;
+    curr = curr->next.get();
   }
 
   msafe_struct ms;
   ms.count = count;
-  ms.list = kolist;
+  ms.list = kolist.get();
   MSafe_CallFunction(MSAFE_OBJECT_DESTROY_ROBOTS_EXCEPT, &ms);
-
-  free(kolist);
 
   KillRobotList.clear();
 }
