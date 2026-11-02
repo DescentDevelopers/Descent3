@@ -682,7 +682,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
 
   // setup camera AI
   SetObjectControlType(camera, CT_AI);
-  memset(camera->ai_info, 0, sizeof(ai_frame));
+  memset(camera->ai_info.get(), 0, sizeof(ai_frame));
 
   camera->ai_info->ai_class = AIC_STATIC;
   camera->ai_info->ai_type = AIT_AIS;

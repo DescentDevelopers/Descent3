@@ -1070,7 +1070,7 @@ void SGSObjects(CFILE *fp) {
     // Store whether or not we have a pointer to lighting_info
     gs_WriteByte(fp, op->lighting_info ? 1 : 0);
     if (op->lighting_info) {
-      cf_WriteBytes((uint8_t *)op->lighting_info, sizeof(*op->lighting_info), fp);
+      cf_WriteBytes((uint8_t *)op->lighting_info.get(), sizeof(*op->lighting_info), fp);
     }
 
     // these objects FOR NOW won't be saved
@@ -1087,10 +1087,11 @@ void SGSObjects(CFILE *fp) {
 
     // write out object name
     int ii;
-    ii = (op->name) ? strlen(op->name) : 0;
+    ii = (op->name) ? strlen(op->name.get()) : 0;
     gs_WriteByte(fp, ii);
-    if (ii > 0)
-      cf_WriteBytes((uint8_t *)op->name, ii, fp);
+    if (ii > 0) {
+      cf_WriteBytes((uint8_t *)op->name.get(), ii, fp);
+    }
 
     //	data universal to all objects that need to be saved.
     gs_WriteShort(fp, (int16_t)op->id);
@@ -1150,15 +1151,15 @@ void SGSObjects(CFILE *fp) {
     gs_WriteFloat(fp, op->impact_force);
 
     // write out custom default script info
-    ii = (op->custom_default_script_name) ? strlen(op->custom_default_script_name) : 0;
+    ii = (op->custom_default_script_name) ? strlen(op->custom_default_script_name.get()) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((uint8_t *)op->custom_default_script_name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->custom_default_script_name.get(), ii, fp);
 
-    ii = (op->custom_default_module_name) ? strlen(op->custom_default_module_name) : 0;
+    ii = (op->custom_default_module_name) ? strlen(op->custom_default_module_name.get()) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((uint8_t *)op->custom_default_module_name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->custom_default_module_name.get(), ii, fp);
 
     INSURE_SAVEFILE;
 
@@ -1180,7 +1181,7 @@ void SGSObjects(CFILE *fp) {
     INSURE_SAVEFILE;
 
     // save ai information.
-    SGSObjAI(fp, op->ai_info);
+    SGSObjAI(fp, op->ai_info.get());
 
     INSURE_SAVEFILE;
     // save out rendering information
@@ -1265,7 +1266,7 @@ void SGSObjAI(CFILE *fp, const ai_frame *ai) {
 
 //	saves fx
 void SGSObjEffects(CFILE *fp, const object *op) {
-  effect_info_s *ei = op->effect_info;
+  effect_info_s *ei = op->effect_info.get();
 
   gs_WriteByte(fp, (ei ? 1 : 0));
   if (ei) {

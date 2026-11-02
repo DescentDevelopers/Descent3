@@ -127,7 +127,7 @@ struct lightmap_object {
   uint8_t num_models;
 
   int16_t num_faces[MAX_SUBOBJECTS];
-  lightmap_object_face *lightmap_faces[MAX_SUBOBJECTS];
+  std::unique_ptr<lightmap_object_face[]> lightmap_faces[MAX_SUBOBJECTS];
   uint8_t used;
 
 };

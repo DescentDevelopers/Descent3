@@ -1295,7 +1295,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     char *title = nullptr;
 
     if (newobjnum > -1)
-      title = Objects[newobjnum].name;
+      title = Objects[newobjnum].name.get();
 
     if (popup.CreatePopupMenu())
       ret = SetupPopup(&popup, title);
@@ -1525,8 +1525,8 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
       char tempname[OBJ_NAME_LEN + 1] = "";
       object *curobj = &Objects[Cur_object_index];
       if (curobj->name) {
-        ASSERT(strlen(curobj->name) <= OBJ_NAME_LEN);
-        strcpy(tempname, curobj->name);
+        ASSERT(strlen(curobj->name.get()) <= OBJ_NAME_LEN);
+        strcpy(tempname, curobj->name.get());
       }
 
     try_again:;
@@ -1542,13 +1542,10 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
         goto try_again;
       }
 
-      if (curobj->name) {
-        mem_free(curobj->name);
-        curobj->name = nullptr;
-      }
+      curobj->name.reset();
 
       if (strlen(tempname)) {
-        curobj->name = mem_strdup(tempname);
+        curobj->name = mem_strdup_unique(tempname);
       }
 
       World_changed = 1;
@@ -1562,38 +1559,30 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam) {
       CCustDefaultScriptSelect dlg;
 
       if (curobj->custom_default_script_name)
-        dlg.m_Name = curobj->custom_default_script_name;
+        dlg.m_Name = curobj->custom_default_script_name.get();
       else
         dlg.m_Name = "";
 
       if (curobj->custom_default_module_name)
-        dlg.m_Module = curobj->custom_default_module_name;
+        dlg.m_Module = curobj->custom_default_module_name.get();
       else
         dlg.m_Module = "";
 
       if (dlg.DoModal()) {
 
-        if (curobj->custom_default_module_name) {
-          mem_free(curobj->custom_default_module_name);
-          curobj->custom_default_module_name = nullptr;
-        }
-
-        if (curobj->custom_default_script_name) {
-          mem_free(curobj->custom_default_script_name);
-          curobj->custom_default_script_name = nullptr;
-        }
+        curobj->custom_default_module_name.reset();
+        curobj->custom_default_script_name.reset();
 
         if (!dlg.m_Module.IsEmpty()) {
           char module_name[MAX_MODULENAME_LEN];
-          curobj->custom_default_module_name = mem_rmalloc<char>(dlg.m_Module.GetLength() + 1);
+          curobj->custom_default_module_name = std::make_unique<char[]>(dlg.m_Module.GetLength() + 1);
 
           ddio_SplitPath(dlg.m_Module.GetBuffer(0), nullptr, module_name, nullptr);
-          strcpy(curobj->custom_default_module_name, module_name);
+          strcpy(curobj->custom_default_module_name.get(), module_name);
         }
 
         if (!dlg.m_Name.IsEmpty()) {
-          curobj->custom_default_script_name = mem_rmalloc<char>(dlg.m_Name.GetLength() + 1);
-          strcpy(curobj->custom_default_script_name, dlg.m_Name.GetBuffer(0));
+          curobj->custom_default_script_name = mem_strdup_unique(dlg.m_Name.GetBuffer(0));
         }
       }
 

@@ -112,24 +112,21 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
 
   for (int i = NUM_STATIC_OBJECTS; i < MAX_OBJECT_IDS; i++) {
     if (Object_info[i].type == OBJ_NONE) {
-      memset(&Object_info[i], 0, sizeof(*Object_info));
+      Object_info[i] = {};
 
       extern void AISetDefault(t_ai_info * ai_info_ptr);
       if (f_ai) {
-        Object_info[i].ai_info = mem_rmalloc<t_ai_info>();
-        memset(Object_info[i].ai_info, 0, sizeof(t_ai_info));
-        AISetDefault(Object_info[i].ai_info);
+        Object_info[i].ai_info = std::make_unique<t_ai_info>();
+        AISetDefault(Object_info[i].ai_info.get());
       }
       // Make sure the weapon battery info is cleared for a new object
       if (f_weapons) {
-        Object_info[i].static_wb = mem_rmalloc<otype_wb_info>(MAX_WBS_PER_OBJ);
-        memset(Object_info[i].static_wb, 0, sizeof(otype_wb_info) * MAX_WBS_PER_OBJ);
-        WBClearInfo(Object_info[i].static_wb);
+        Object_info[i].static_wb = std::make_unique<otype_wb_info[]>(MAX_WBS_PER_OBJ);
+        WBClearInfo(Object_info[i].static_wb.get());
       }
 
       if (f_anim) {
-        Object_info[i].anim = mem_rmalloc<anim_elem>(NUM_MOVEMENT_CLASSES);
-        memset(Object_info[i].anim, 0, sizeof(anim_elem) * NUM_MOVEMENT_CLASSES);
+        Object_info[i].anim = std::make_unique<anim_elem[]>(NUM_MOVEMENT_CLASSES);
         for (j = 0; j < NUM_MOVEMENT_CLASSES; j++)
           for (k = 0; k < NUM_ANIMS_PER_CLASS; k++) {
             Object_info[i].anim[j].elem[k].spc = 1.0f;
@@ -161,7 +158,7 @@ int AllocObjectID(int type, bool f_anim, bool f_weapons, bool f_ai) {
 
       // Object_info[i].script_name[0] = 0;
       Object_info[i].icon_name[0] = 0;
-      Object_info[i].description = nullptr;
+      Object_info[i].description.reset();
       Object_info[i].flags |= OIF_INVEN_SELECTABLE;
 
       // init spew types
@@ -192,30 +189,10 @@ void FreeObjectID(int n) {
   Object_info[n].icon_name[0] = 0;
   Object_info[n].script_name_override[0] = 0;
   Object_info[n].module_name[0] = 0;
-  if (Object_info[n].description) {
-    mem_free(Object_info[n].description);
-    Object_info[n].description = nullptr;
-  }
-  if (Object_info[n].anim) // DAJ LEAK FIX
-  {
-    mem_free(Object_info[n].anim);
-    Object_info[n].anim = nullptr;
-  }
-  if (Object_info[n].ai_info) // DAJ LEAK FIX
-  {
-    mem_free(Object_info[n].ai_info);
-    Object_info[n].ai_info = nullptr;
-  }
-  if (Object_info[n].description) // DAJ LEAK FIX
-  {
-    mem_free(Object_info[n].description);
-    Object_info[n].description = nullptr;
-  }
-  if (Object_info[n].static_wb) // DAJ LEAK FIX
-  {
-    mem_free(Object_info[n].static_wb);
-    Object_info[n].static_wb = nullptr;
-  }
+  Object_info[n].description.reset();
+  Object_info[n].anim.reset();
+  Object_info[n].ai_info.reset();
+  Object_info[n].static_wb.reset();
 }
 
 // Frees up all the Objects and any memory allocated
@@ -224,6 +201,39 @@ void FreeObjectInfo(void) {
     if (Object_info[i].type != OBJ_NONE)
       FreeObjectID(i);
   }
+}
+
+// Copies all the plain fields of src to dst, i.e. everything except the owned description, ai_info, static_wb and anim
+void CopyObjectInfoPlainFields(object_info *dst, const object_info *src) {
+  memcpy(dst->name, src->name, sizeof(dst->name));
+  dst->type = src->type;
+  dst->size = src->size;
+  dst->flags = src->flags;
+  dst->render_handle = src->render_handle;
+  dst->med_render_handle = src->med_render_handle;
+  dst->lo_render_handle = src->lo_render_handle;
+  dst->med_lod_distance = src->med_lod_distance;
+  dst->lo_lod_distance = src->lo_lod_distance;
+  dst->score = src->score;
+  dst->hit_points = src->hit_points;
+  dst->damage = src->damage;
+  dst->impact_size = src->impact_size;
+  dst->impact_time = src->impact_time;
+  dst->ammo_count = src->ammo_count;
+  memcpy(dst->icon_name, src->icon_name, sizeof(dst->icon_name));
+  memcpy(dst->sounds, src->sounds, sizeof(dst->sounds));
+  memcpy(dst->dspew, src->dspew, sizeof(dst->dspew));
+  memcpy(dst->dspew_percent, src->dspew_percent, sizeof(dst->dspew_percent));
+  memcpy(dst->dspew_number, src->dspew_number, sizeof(dst->dspew_number));
+  dst->f_dspew = src->f_dspew;
+  dst->phys_info = src->phys_info;
+  dst->lighting_info = src->lighting_info;
+  dst->respawn_scalar = src->respawn_scalar;
+  dst->multi_allowed = src->multi_allowed;
+  memcpy(dst->module_name, src->module_name, sizeof(dst->module_name));
+  memcpy(dst->script_name_override, src->script_name_override, sizeof(dst->script_name_override));
+  memcpy(dst->death_types, src->death_types, sizeof(dst->death_types));
+  memcpy(dst->death_probabilities, src->death_probabilities, sizeof(dst->death_probabilities));
 }
 
 // Find an object with the given type.  Returns -1 if none found.
@@ -368,13 +378,13 @@ void RemapStaticIDs() {
         f_ai = true;
       int new_index = AllocObjectID(Object_info[i].type, f_anim, f_weapons, f_ai);
       if (new_index >= 0) { // DAJ -1FIX
-        Object_info[new_index] = Object_info[i];
+        Object_info[new_index] = std::move(Object_info[i]);
         RemapObjects(i, new_index);
       }
     }
 
     // Copy static ID into new slot
-    Object_info[i] = Object_info[cur_index];
+    Object_info[i] = std::move(Object_info[cur_index]);
 
     // Free up the old slot
     Object_info[cur_index].type = OBJ_NONE;

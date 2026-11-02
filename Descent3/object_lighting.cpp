@@ -488,10 +488,7 @@ void ClearObjectLightmaps(object *obj) {
         lof->num_verts = 0;
       }
 
-      if (obj->lm_object.num_faces[Mnum]) {
-        mem_free(obj->lm_object.lightmap_faces[Mnum]);
-        obj->lm_object.lightmap_faces[Mnum] = nullptr;
-      }
+      obj->lm_object.lightmap_faces[Mnum].reset();
       obj->lm_object.num_faces[Mnum] = 0;
     }
   }
@@ -532,14 +529,12 @@ void SetupObjectLightmapMemory(object *obj) {
   for (Mnum = 0; Mnum < pm->n_models; Mnum++) {
     if (IsNonRenderableSubmodel(pm, Mnum)) {
       obj->lm_object.num_faces[Mnum] = 0;
-      obj->lm_object.lightmap_faces[Mnum] = nullptr;
+      obj->lm_object.lightmap_faces[Mnum].reset();
       continue;
     }
 
     obj->lm_object.num_faces[Mnum] = pm->submodel[Mnum].num_faces;
-    obj->lm_object.lightmap_faces[Mnum] =
-        mem_rmalloc<lightmap_object_face>(obj->lm_object.num_faces[Mnum]);
-    ASSERT(obj->lm_object.lightmap_faces[Mnum]);
+    obj->lm_object.lightmap_faces[Mnum] = std::make_unique<lightmap_object_face[]>(obj->lm_object.num_faces[Mnum]);
 
     for (Fnum = 0; Fnum < pm->submodel[Mnum].num_faces; Fnum++) {
       lof = &obj->lm_object.lightmap_faces[Mnum][Fnum];
@@ -628,7 +623,7 @@ void ObjSetLocalLighting(object *objp) {
            (objp->type == OBJ_BUILDING));
 
     // allocate a light info for this object
-    objp->lighting_info = mem_rmalloc<light_info>();
+    objp->lighting_info = std::make_unique<light_info>();
 
     // copy the lighting info from the type for this object
     *objp->lighting_info = Object_info[objp->id].lighting_info;
@@ -637,8 +632,9 @@ void ObjSetLocalLighting(object *objp) {
 
 // Returns a pointer to the lighting info for the specified object
 light_info *ObjGetLightInfo(object *objp) {
-  if (objp->lighting_info)
-    return objp->lighting_info;
+  if (objp->lighting_info) {
+    return objp->lighting_info.get();
+  }
 
   if ((objp->type == OBJ_POWERUP) || (objp->type == OBJ_ROBOT) || (objp->type == OBJ_CLUTTER) ||
       (objp->type == OBJ_BUILDING))

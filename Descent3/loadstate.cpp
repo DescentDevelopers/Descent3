@@ -984,9 +984,9 @@ int LGSObjects(CFILE *fp, int version) {
     gs_ReadByte(fp, has_lightinfo);
     if (has_lightinfo) {
       if (!op->lighting_info) {
-        op->lighting_info = mem_rmalloc<light_info>();
+        op->lighting_info = std::make_unique<light_info>();
       }
-      cf_ReadBytes((uint8_t *)op->lighting_info, sizeof(*op->lighting_info), fp);
+      cf_ReadBytes((uint8_t *)op->lighting_info.get(), sizeof(*op->lighting_info), fp);
     }
 
     // validate handle.
@@ -1009,16 +1009,11 @@ int LGSObjects(CFILE *fp, int version) {
     // object name
     gs_ReadByte(fp, j);
     if (j > 0) {
-      if (op->name)
-        mem_free(op->name);
-      op->name = (char *)mem_malloc(j + 1);
-      if (!op->name)
-        Error("Out of memory");
-
-      cf_ReadBytes((uint8_t *)op->name, j, fp);
+      op->name = std::make_unique<char[]>(j + 1);
+      cf_ReadBytes((uint8_t *)op->name.get(), j, fp);
       op->name[j] = '\0';
     } else {
-      op->name = nullptr;
+      op->name.reset();
     }
 
     //	Kill any script thread associated with this object.
@@ -1028,23 +1023,13 @@ int LGSObjects(CFILE *fp, int version) {
         FreeObjectScripts(op, false);
 
       // Free up effects memory
-      if (op->effect_info) {
-        mem_free(op->effect_info);
-        op->effect_info = nullptr;
-      }
+      op->effect_info.reset();
       if (op->ai_info != nullptr) {
         AIDestroyObj(op);
-        mem_free(op->ai_info);
-        op->ai_info = nullptr;
+        op->ai_info.reset();
       }
-      if (op->dynamic_wb != nullptr) {
-        mem_free(op->dynamic_wb);
-        op->dynamic_wb = nullptr;
-      }
-      if (op->attach_children != nullptr) {
-        mem_free(op->attach_children);
-        op->attach_children = nullptr;
-      }
+      op->dynamic_wb.reset();
+      op->attach_children.reset();
     }
     op->type = type;
     op->handle = handle;
@@ -1117,7 +1102,7 @@ int LGSObjects(CFILE *fp, int version) {
 
       if (f_allocated) {
         // mprintf(0,"Object %d has %d attach points.\n",i,nattach);
-        op->attach_children = mem_rmalloc<int>(nattach);
+        op->attach_children = std::make_unique<int32_t[]>(nattach);
         for (j = 0; j < nattach; j++)
           gs_ReadInt(fp, op->attach_children[j]);
       }
@@ -1139,26 +1124,20 @@ int LGSObjects(CFILE *fp, int version) {
     // custom default script info
     gs_ReadByte(fp, j);
     if (j > 0) {
-      op->custom_default_script_name = (char *)mem_malloc(j + 1);
-      if (!op->custom_default_script_name)
-        Error("Out of memory");
-
-      cf_ReadBytes((uint8_t *)op->custom_default_script_name, j, fp);
+      op->custom_default_script_name = std::make_unique<char[]>(j + 1);
+      cf_ReadBytes((uint8_t *)op->custom_default_script_name.get(), j, fp);
       op->custom_default_script_name[j] = '\0';
     } else {
-      op->custom_default_script_name = nullptr;
+      op->custom_default_script_name.reset();
     }
 
     gs_ReadByte(fp, j);
     if (j > 0) {
-      op->custom_default_module_name = (char *)mem_malloc(j + 1);
-      if (!op->custom_default_module_name)
-        Error("Out of memory");
-
-      cf_ReadBytes((uint8_t *)op->custom_default_module_name, j, fp);
+      op->custom_default_module_name = std::make_unique<char[]>(j + 1);
+      cf_ReadBytes((uint8_t *)op->custom_default_module_name.get(), j, fp);
       op->custom_default_module_name[j] = '\0';
     } else {
-      op->custom_default_module_name = nullptr;
+      op->custom_default_module_name.reset();
     }
 
     VERIFY_SAVEFILE;
@@ -1195,7 +1174,7 @@ int LGSObjects(CFILE *fp, int version) {
     }
 
     // save ai information.
-    retval = LGSObjAI(fp, &op->ai_info);
+    retval = LGSObjAI(fp, op->ai_info);
     if (retval != LGS_OK)
       goto lgsobjs_fail;
 
@@ -1430,11 +1409,11 @@ done:;
 }
 
 //	loads ai
-int LGSObjAI(CFILE *fp, ai_frame **pai) {
+int LGSObjAI(CFILE *fp, std::unique_ptr<ai_frame> &pai) {
   int16_t size;
   int8_t read_ai;
 
-  *pai = nullptr;
+  pai.reset();
 
   gs_ReadByte(fp, read_ai);
   if (!read_ai)
@@ -1444,8 +1423,8 @@ int LGSObjAI(CFILE *fp, ai_frame **pai) {
   if (size != sizeof(ai_frame))
     return LGS_OUTDATEDVER;
 
-  auto ai = *pai = mem_rmalloc<ai_frame>();
-  cf_ReadBytes((uint8_t *)ai, size, fp);
+  pai = std::make_unique<ai_frame>();
+  cf_ReadBytes((uint8_t *)pai.get(), size, fp);
 
   return LGS_OK;
 }
@@ -1455,7 +1434,7 @@ int LGSObjEffects(CFILE *fp, object *op) {
   int16_t size;
   int8_t do_read;
 
-  op->effect_info = nullptr;
+  op->effect_info.reset();
 
   gs_ReadByte(fp, do_read);
   if (do_read) {
@@ -1463,8 +1442,8 @@ int LGSObjEffects(CFILE *fp, object *op) {
     if (size != sizeof(effect_info_s))
       return LGS_OUTDATEDVER;
 
-    auto ei = op->effect_info = mem_rmalloc<effect_info_s>();
-    cf_ReadBytes((uint8_t *)ei, size, fp);
+    op->effect_info = std::make_unique<effect_info_s>();
+    cf_ReadBytes((uint8_t *)op->effect_info.get(), size, fp);
   }
 
   return LGS_OK;
@@ -1523,7 +1502,6 @@ int LGSObjEffects(CFILE *fp, object *op) {
 
 //	loads fx
 int LGSObjWB(CFILE *fp, object *op) {
-  dynamic_wb_info *dwba = nullptr;
   int i;
   int8_t num_wbs;
 
@@ -1531,13 +1509,13 @@ int LGSObjWB(CFILE *fp, object *op) {
   if (!num_wbs)
     return LGS_OK;
 
-  dwba = mem_rmalloc<dynamic_wb_info>(num_wbs);
+  auto dwba = std::make_unique<dynamic_wb_info[]>(num_wbs);
 
   for (i = 0; i < num_wbs; i++) {
     dynamic_wb_info *dwb = &dwba[i];
     cf_ReadBytes((uint8_t *)dwb, sizeof(dynamic_wb_info), fp);
   }
-  op->dynamic_wb = dwba;
+  op->dynamic_wb = std::move(dwba);
 
   return LGS_OK;
 }

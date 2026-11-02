@@ -571,13 +571,13 @@ void CheckLevelNames() {
   object *objp;
   for (i = 0, objp = Objects; i <= Highest_object_index; i++, objp++) {
     if ((objp->type != OBJ_NONE) && objp->name) {
-      int handle = osipf_FindObjectName(objp->name);
+      int handle = osipf_FindObjectName(objp->name.get());
       if (handle != objp->handle)
-        EditorMessageBox("Error: Objects %d and %d are both named \"%s\"", i, OBJNUM(ObjGet(handle)), objp->name);
-      if (StripLeadingTrailingSpaces(objp->name))
+        EditorMessageBox("Error: Objects %d and %d are both named \"%s\"", i, OBJNUM(ObjGet(handle)), objp->name.get());
+      if (StripLeadingTrailingSpaces(objp->name.get()))
         EditorMessageBox(
             "Note: Object %d (\"%s\") had leading and/or trailing spaces in its name that have been removed.", i,
-            objp->name);
+            objp->name.get());
     }
   }
 
