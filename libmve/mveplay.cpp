@@ -206,15 +206,14 @@ static int audio_data_handler(unsigned char major, unsigned char minor, unsigned
     int chan = get_ushort(data + 2);
     int size = get_ushort(data + 4);
     if (chan & selected_chan) {
-      void *buf = malloc(size);
+      auto buf = std::make_unique<char[]>(size);
       if (major == MVE_OPCODE_AUDIOFRAMEDATA) {
-        mveaudio_process((char *)buf, data, snd_ds->GetSampleSize(), snd_ds->IsCompressed());
+        mveaudio_process(buf.get(), data, snd_ds->GetSampleSize(), snd_ds->IsCompressed());
       } else {
         // SILENCE, MORTALS!
         memset(data, 0, size);
       }
-      snd_ds->FillBuffer((char *)buf, size);
-      free(buf);
+      snd_ds->FillBuffer(buf.get(), size);
     }
   }
 #endif

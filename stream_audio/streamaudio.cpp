@@ -295,7 +295,6 @@ void AudioStream::ResumeAll() {
 //	AudioStream object Interface
 //		allows dynamic playing of streams
 AudioStream::AudioStream() {
-  m_decoder = nullptr; // audio decomp object
   m_llshandle = -1; // snd system handle
   m_sbufidx = 0;    // stream position markers for synching.
   m_fbufidx = 0;
@@ -370,7 +369,7 @@ bool AudioStream::Open(const std::filesystem::path &filename, int open_flags) {
     for (i = 0; i < STRM_BUFCOUNT; i++) {
       m_buffer[i].flags = 0;
       m_buffer[i].nbytes = 0;
-      m_buffer[i].data = nullptr;
+      m_buffer[i].data.reset();
       m_buffer[i].id = -1; // marks stream buffer to be allocated.
     }
     // gradual streams don't readahead yet.
@@ -397,18 +396,14 @@ void AudioStream::Close() {
     // free streaming buffers and decoder if we need to.
     for (i = 0; i < STRM_BUFCOUNT; i++) {
       if (m_buffer[i].data) {
-        mem_free(m_buffer[i].data);
-        m_buffer[i].data = nullptr;
+        m_buffer[i].data.reset();
         m_buffer[i].nbytes = 0;
         m_buffer[i].flags = 0;
         m_buffer[i].id = -1;
       }
     }
 
-    if (m_decoder) {
-      delete m_decoder;
-      m_decoder = nullptr;
-    }
+    m_decoder.reset();
   }
   m_playcount = 0;
   m_nbufs = 0;
@@ -440,10 +435,7 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
   m_readahead = false;
 
   // free current decoder.
-  if (m_decoder) {
-    delete m_decoder;
-    m_decoder = nullptr;
-  }
+  m_decoder.reset();
 
   // instatiate decompression facility or use raw source data
   uint32_t sample_count = 0;
@@ -452,8 +444,6 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
     uint32_t sample_rate;
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
     if (!m_decoder) {
-      delete m_decoder;
-      m_decoder = nullptr;
       return false;
     }
   } else {
@@ -535,10 +525,7 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
     // if our stream's current id does not match the streaming buffer's id, then we need to reallocate
     // the stream buffer with the new memory size
     if (m_buffer[m_fbufidx].id != (int)m_curid) {
-      if (m_buffer[m_fbufidx].data) {
-        mem_free(m_buffer[m_fbufidx].data);
-      }
-      m_buffer[m_fbufidx].data = mem_rmalloc<uint8_t>(m_bufsize);
+      m_buffer[m_fbufidx].data = std::make_unique<uint8_t[]>(m_bufsize);
     }
     m_buffer[m_fbufidx].nbytes = AudioStream::ReadFileData(m_fbufidx, m_bufsize);
     m_buffer[m_fbufidx].flags = 0;
@@ -547,7 +534,7 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
     m_playbytesleft -= m_buffer[m_fbufidx].nbytes;
     if (m_playbytesleft <= (m_bufsize / 4)) {
       if (m_buffer[m_fbufidx].nbytes == 0) {
-        memset(m_buffer[m_fbufidx].data, 0, 4);
+        memset(m_buffer[m_fbufidx].data.get(), 0, 4);
         m_buffer[m_fbufidx].nbytes = 4;
       }
       m_buffer[m_fbufidx].flags |= STRM_BUFF_TERMINAL;
@@ -644,7 +631,7 @@ bool AudioStream::Play(bool start_on_frame) {
   m_playinfo.samples_per_22khz_sample = 1.0;
   m_playinfo.sample_skip_interval = 0;
   m_playinfo.m_stream_cback = AudioStreamCB;
-  m_playinfo.m_stream_data = m_buffer[m_sbufidx].data;
+  m_playinfo.m_stream_data = m_buffer[m_sbufidx].data.get();
   m_playinfo.m_stream_format = sflag;
   m_playinfo.m_stream_size = m_buffer[m_sbufidx].nbytes;
   m_playinfo.m_stream_handle = m_streamindex;
@@ -737,7 +724,7 @@ void AudioStream::Reset() {
   m_readahead = true;
   m_playbytesleft = m_playbytestotal;
   if (m_decoder) {
-    delete m_decoder;
+    m_decoder.reset();
 
     uint32_t channels;
     uint32_t sample_rate;
@@ -788,7 +775,7 @@ void *AudioStream::StreamCallback(int *size) {
   // if we reached the last buffer in an opened stream, and we're not switching prepare to stop
   //	if we are switching, release the switch lock and continue
   //	otherwise just continue.
-  data = (void *)m_buffer[m_sbufidx].data;
+  data = m_buffer[m_sbufidx].data.get();
   *size = m_buffer[m_sbufidx].nbytes;
   //	ASSERT((*size) > 0);
   if (CHECK_FLAG(m_buffer[m_sbufidx].flags, STRM_BUFF_TERMINAL)) {
@@ -818,7 +805,7 @@ int AudioStream::ReadFileData(int buf, int len) {
 
   if (m_decoder) {
     // We have a compressed stream
-    return m_decoder->Read(m_buffer[buf].data, len);
+    return m_decoder->Read(m_buffer[buf].data.get(), len);
   }
 
   // We have a non-compressed stream
@@ -829,7 +816,7 @@ int AudioStream::ReadFileData(int buf, int len) {
     m_bytesleft -= len;
   }
 
-  return m_archive.Read(m_buffer[buf].data, len);
+  return m_archive.Read(m_buffer[buf].data.get(), len);
 }
 // TURN OFF OPTIMIZATIONS HERE.  Placement of instructions is VERY IMPORTANT here.  synched with StreamCallback,
 //	which also has optimizations off.
@@ -854,10 +841,7 @@ void AudioStream::UpdateData() {
     // if our stream's current id does not match the streaming buffer's id, then we need to reallocate
     // the stream buffer with the new memory size
     if (m_buffer[m_fbufidx].id != (int)m_curid) {
-      if (m_buffer[m_fbufidx].data) {
-        mem_free(m_buffer[m_fbufidx].data);
-      }
-      m_buffer[m_fbufidx].data = mem_rmalloc<uint8_t>(m_bufsize);
+      m_buffer[m_fbufidx].data = std::make_unique<uint8_t[]>(m_bufsize);
     }
     m_buffer[m_fbufidx].nbytes = AudioStream::ReadFileData(m_fbufidx, m_bufsize);
     m_buffer[m_fbufidx].flags = 0;
@@ -866,7 +850,7 @@ void AudioStream::UpdateData() {
     m_playbytesleft -= m_buffer[m_fbufidx].nbytes;
     if (m_playbytesleft <= (m_bufsize / 4)) {
       if (m_buffer[m_fbufidx].nbytes == 0) {
-        memset(m_buffer[m_fbufidx].data, 0, 4);
+        memset(m_buffer[m_fbufidx].data.get(), 0, 4);
         m_buffer[m_fbufidx].nbytes = 4;
       }
       m_buffer[m_fbufidx].flags |= STRM_BUFF_TERMINAL;

@@ -19,6 +19,8 @@
 #ifndef __SOUND_MIXER_H______
 #define __SOUND_MIXER_H______
 
+#include <memory>
+
 #include "ssl_lib.h"
 
 class sound_buffer {
@@ -110,7 +112,7 @@ private:
   int m_primary_alignment;
   int m_BufferSize;
 
-  uint8_t *m_buffer;
+  std::unique_ptr<uint8_t[]> m_buffer;
 
   int *m_max_sounds_available;
   sound_buffer_info *m_sound_cache;

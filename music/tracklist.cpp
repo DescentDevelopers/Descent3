@@ -46,8 +46,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 oms_tracklist::oms_tracklist() {
-  m_fnamelist = nullptr;
-  m_symlist = nullptr;
   m_numtracks = 0;
   m_maxtracks = 0;
   m_init = false;
@@ -61,8 +59,8 @@ void oms_tracklist::init(int16_t maxtracks) {
     m_maxtracks = maxtracks;
     m_numtracks = 0;
 
-    m_fnamelist = new char *[m_maxtracks];
-    m_symlist = new char *[m_maxtracks];
+    m_fnamelist = std::make_unique<std::unique_ptr<char[]>[]>(m_maxtracks);
+    m_symlist = std::make_unique<std::unique_ptr<char[]>[]>(m_maxtracks);
     m_init = true;
   }
 }
@@ -71,8 +69,8 @@ void oms_tracklist::init(int16_t maxtracks) {
 void oms_tracklist::free() {
   if (m_init) {
     oms_tracklist::reset();
-    delete[] m_symlist;
-    delete[] m_fnamelist;
+    m_symlist.reset();
+    m_fnamelist.reset();
 
     m_init = false;
   }
@@ -86,8 +84,8 @@ void oms_tracklist::reset() {
     return;
 
   for (i = 0; i < m_numtracks; i++) {
-    ::mem_free(m_fnamelist[i]);
-    ::mem_free(m_symlist[i]);
+    m_fnamelist[i].reset();
+    m_symlist[i].reset();
   }
 
   m_numtracks = 0;
@@ -104,8 +102,8 @@ bool oms_tracklist::add(const char *fname, const char *sym) {
   }
 
   // add symbol and track name
-  m_fnamelist[m_numtracks] = mem_strdup(fname);
-  m_symlist[m_numtracks] = mem_strdup(sym);
+  m_fnamelist[m_numtracks] = mem_strdup_unique(fname);
+  m_symlist[m_numtracks] = mem_strdup_unique(sym);
   m_numtracks++;
 
   return true;
@@ -117,8 +115,9 @@ const char *oms_tracklist::get(const char *sym) {
 
   if (sym) {
     for (i = 0; i < m_numtracks; i++) {
-      if (strcmp(m_symlist[i], sym) == 0)
-        return m_fnamelist[i];
+      if (strcmp(m_symlist[i].get(), sym) == 0) {
+        return m_fnamelist[i].get();
+      }
     }
   }
 
