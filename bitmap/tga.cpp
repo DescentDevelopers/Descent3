@@ -134,6 +134,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "bitmap.h"
 #include "byteswap.h"
@@ -144,7 +145,7 @@
 #include "mem.h"
 #include "pserror.h"
 
-static char *Tga_file_data = nullptr;
+static std::unique_ptr<char[]> Tga_file_data;
 static int Fake_pos = 0;
 static int Bad_tga = 0;
 static int Fake_file_size = 0;
@@ -173,7 +174,7 @@ inline int tga_read_int() {
     return 0;
   }
 
-  i = *(int *)(Tga_file_data + Fake_pos);
+  i = *(int *)(Tga_file_data.get() + Fake_pos);
   Fake_pos += 4;
 
   return INTEL_INT(i);
@@ -187,7 +188,7 @@ inline int16_t tga_read_short() {
     return 0;
   }
 
-  memcpy(&i, Tga_file_data + Fake_pos, sizeof(i));
+  memcpy(&i, Tga_file_data.get() + Fake_pos, sizeof(i));
   Fake_pos += 2;
 
   return INTEL_SHORT(i);
@@ -503,13 +504,12 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
 
     cfseek(infile, savepos, SEEK_SET);
 
-    Tga_file_data = mem_rmalloc<char>(numleft);
-    ASSERT(Tga_file_data != nullptr);
+    Tga_file_data = std::unique_ptr<char[]>(new char[numleft]); // filled by cf_ReadBytes below
     Fake_pos = 0;
     Bad_tga = 0;
     Fake_file_size = numleft;
 
-    cf_ReadBytes((uint8_t *)Tga_file_data, numleft, infile);
+    cf_ReadBytes((uint8_t *)Tga_file_data.get(), numleft, infile);
 
     read_ok = bm_tga_read_outrage_compressed16(infile, n, num_mips, image_type);
   }
@@ -522,8 +522,7 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
   // bm_tga_read_outrage_compressed8 (infile,n);
 
   if (Tga_file_data != nullptr) {
-    mem_free(Tga_file_data);
-    Tga_file_data = nullptr;
+    Tga_file_data.reset();
     cfseek(infile, savepos + Fake_pos, SEEK_SET);
   }
 
@@ -615,11 +614,8 @@ int bm_page_in_file(int n) {
     mipped = 1;
 
   int size = (width * height * 2) + (mipped * ((width * height * 2) / 3)) + 2;
-  GameBitmaps[n].data16 = (uint16_t *)mem_malloc(size);
-  if (!GameBitmaps[n].data16) {
-    LOG_ERROR << "Out of memory in bm_page_in_file!";
-    return 0;
-  }
+  // size is in bytes and may be odd; left uninitialised because the file data overwrites it
+  GameBitmaps[n].data16 = std::unique_ptr<uint16_t[]>(new uint16_t[(size + 1) / 2]);
 
   Bitmap_memory_used += size;
 
@@ -661,13 +657,12 @@ int bm_page_in_file(int n) {
 
     cfseek(infile, savepos, SEEK_SET);
 
-    Tga_file_data = mem_rmalloc<char>(numleft);
-    ASSERT(Tga_file_data != nullptr);
+    Tga_file_data = std::unique_ptr<char[]>(new char[numleft]); // filled by cf_ReadBytes below
     Fake_pos = 0;
     Bad_tga = 0;
     Fake_file_size = numleft;
 
-    cf_ReadBytes((uint8_t *)Tga_file_data, numleft, infile);
+    cf_ReadBytes((uint8_t *)Tga_file_data.get(), numleft, infile);
 
     bm_tga_read_outrage_compressed16(infile, n, num_mips, image_type);
   }
@@ -680,8 +675,7 @@ int bm_page_in_file(int n) {
   // bm_tga_read_outrage_compressed8 (infile,n);
 
   if (Tga_file_data != nullptr) {
-    mem_free(Tga_file_data);
-    Tga_file_data = nullptr;
+    Tga_file_data.reset();
     cfseek(infile, savepos + Fake_pos, SEEK_SET);
   }
 

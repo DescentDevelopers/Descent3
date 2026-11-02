@@ -111,6 +111,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <memory>
 
 #include "bitmap.h"
 #include "cfile.h"
@@ -138,9 +139,9 @@ struct tFontInfo {
   char filename[32];          // filename of font
   int references;             // number of references of that font
   int bmps[MAX_FONT_BITMAPS]; // font bitmap handles
-  uint8_t *ch_u, *ch_v, *ch_w, *ch_h;
-  int *ch_bmp;
-  float *ch_uf, *ch_vf, *ch_wf, *ch_hf;
+  std::unique_ptr<uint8_t[]> ch_u, ch_v, ch_w, ch_h;
+  std::unique_ptr<int[]> ch_bmp;
+  std::unique_ptr<float[]> ch_uf, ch_vf, ch_wf, ch_hf;
   tFontFileInfo font;
 };
 
@@ -331,17 +332,17 @@ int grfont_Load(const char *fname) {
 
   //	Read in all widths
   if (fnt.flags & FT_PROPORTIONAL) {
-    fnt.char_widths = mem_rmalloc<uint8_t>(num_char);
+    fnt.char_widths = std::make_unique<uint8_t[]>(num_char);
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
   } else {
-    fnt.char_widths = nullptr;
+    fnt.char_widths.reset();
   }
 
   //	Read in kerning data
   if (fnt.flags & FT_KERNED) {
     int n_pairs = (int)READ_FONT_SHORT(ff);
-    fnt.kern_data = mem_rmalloc<uint8_t>(sizeof(uint8_t) * 3 * (n_pairs + 1));
+    fnt.kern_data = std::make_unique<uint8_t[]>(3 * (n_pairs + 1));
     for (i = 0; i < n_pairs; i++) {
       fnt.kern_data[i * 3] = READ_FONT_BYTE(ff);
       fnt.kern_data[i * 3 + 1] = READ_FONT_BYTE(ff);
@@ -351,7 +352,7 @@ int grfont_Load(const char *fname) {
     fnt.kern_data[i * 3 + 1] = 255;
     fnt.kern_data[i * 3 + 2] = 0;
   } else {
-    fnt.kern_data = nullptr;
+    fnt.kern_data.reset();
   }
 
   //	Read in pixel data.
@@ -361,23 +362,23 @@ int grfont_Load(const char *fname) {
   //		generate character data pointer table
   int bytesize = READ_FONT_INT(ff);
 
-  fnt.raw_data = mem_rmalloc<uint8_t>(bytesize);
-  fnt.char_data = mem_rmalloc<uint8_t *>(num_char);
+  fnt.raw_data = std::make_unique<uint8_t[]>(bytesize);
+  fnt.char_data = std::make_unique<uint8_t *[]>(num_char);
 
-  READ_FONT_DATA(ff, fnt.raw_data, bytesize, 1);
+  READ_FONT_DATA(ff, fnt.raw_data.get(), bytesize, 1);
 
   if (fnt.flags & FT_COLOR) {
     int off = 0;
     //		mprintf(0, "::color");
     for (i = 0; i < num_char; i++) {
-      fnt.char_data[i] = fnt.raw_data + off;
+      fnt.char_data[i] = fnt.raw_data.get() + off;
       if (fnt.flags & FT_PROPORTIONAL)
         off += (fnt.char_widths[i] * fnt.height * BITS_TO_BYTES(BPP_16));
       else
         off += (fnt.width * fnt.height * BITS_TO_BYTES(BPP_16));
     }
   } else { // Monochrome
-    uint8_t *ptr = fnt.raw_data;
+    uint8_t *ptr = fnt.raw_data.get();
     //		mprintf(0, "::mono");
     for (i = 0; i < num_char; i++) {
       fnt.char_data[i] = ptr;
@@ -395,7 +396,7 @@ int grfont_Load(const char *fname) {
 
   strcpy(Fonts[handle].filename, fname);
   Fonts[handle].references = 1;
-  Fonts[handle].font = fnt;
+  Fonts[handle].font = std::move(fnt);
 
   //	draw font to bitmaps, load into surfaces too.
   grfont_TranslateToBitmaps(handle);
@@ -413,24 +414,15 @@ void grfont_Free(int handle) {
 
   //	delete font surface info.
   ft = &Fonts[handle];
-  if (ft->ch_bmp)
-    delete[] ft->ch_bmp;
-  if (ft->ch_wf)
-    delete[] ft->ch_wf;
-  if (ft->ch_hf)
-    delete[] ft->ch_hf;
-  if (ft->ch_uf)
-    delete[] ft->ch_uf;
-  if (ft->ch_vf)
-    delete[] ft->ch_vf;
-  if (ft->ch_w)
-    delete[] ft->ch_w;
-  if (ft->ch_h)
-    delete[] ft->ch_h;
-  if (ft->ch_u)
-    delete[] ft->ch_u;
-  if (ft->ch_v)
-    delete[] ft->ch_v;
+  ft->ch_bmp.reset();
+  ft->ch_wf.reset();
+  ft->ch_hf.reset();
+  ft->ch_uf.reset();
+  ft->ch_vf.reset();
+  ft->ch_w.reset();
+  ft->ch_h.reset();
+  ft->ch_u.reset();
+  ft->ch_v.reset();
 
   for (i = 0; i < MAX_FONT_BITMAPS; i++) {
     if (ft->bmps[i] != -1)
@@ -438,18 +430,13 @@ void grfont_Free(int handle) {
   }
 
   //	delete font file info.
-  if ((ft->font.flags & FT_KERNED) && ft->font.kern_data) {
-    mem_free(ft->font.kern_data);
-  }
-
-  if (ft->font.flags & FT_PROPORTIONAL) {
-    mem_free(ft->font.char_widths);
-  }
+  ft->font.kern_data.reset();
+  ft->font.char_widths.reset();
 
   ft->references = 0;
 
-  mem_free(ft->font.raw_data);
-  mem_free(ft->font.char_data);
+  ft->font.raw_data.reset();
+  ft->font.char_data.reset();
 }
 
 // loads a font template
@@ -486,16 +473,16 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
 
   //	Read in all widths
   if (ft_flags & FT_PROPORTIONAL) {
-    ft->ch_widths = mem_rmalloc<uint8_t>(num_char);
+    ft->ch_widths = std::make_unique<uint8_t[]>(num_char);
     for (i = 0; i < num_char; i++)
       ft->ch_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
   } else {
-    ft->ch_widths = nullptr;
+    ft->ch_widths.reset();
   }
 
   if (ft_flags & FT_KERNED) {
     int n_pairs = (int)READ_FONT_SHORT(ff);
-    ft->kern_data = mem_rmalloc<uint8_t>(sizeof(uint8_t) * 3 * (n_pairs + 1));
+    ft->kern_data = std::make_unique<uint8_t[]>(3 * (n_pairs + 1));
     for (i = 0; i < n_pairs; i++) {
       ft->kern_data[i * 3] = READ_FONT_BYTE(ff);
       ft->kern_data[i * 3 + 1] = READ_FONT_BYTE(ff);
@@ -505,7 +492,7 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
     ft->kern_data[i * 3 + 1] = 255;
     ft->kern_data[i * 3 + 2] = 0;
   } else {
-    ft->kern_data = nullptr;
+    ft->kern_data.reset();
   }
 
   ft->ch_height = (uint8_t)ft_height;
@@ -527,14 +514,8 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
 
 // frees a font template
 void grfont_FreeTemplate(tFontTemplate *ft) {
-  if (ft->kern_data) {
-    mem_free(ft->kern_data);
-    ft->kern_data = nullptr;
-  }
-  if (ft->ch_widths) {
-    mem_free(ft->ch_widths);
-    ft->ch_widths = nullptr;
-  }
+  ft->kern_data.reset();
+  ft->ch_widths.reset();
 }
 
 // MTS: unused?
@@ -578,17 +559,17 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
 
   //	Read in all widths
   if (fnt.flags & FT_PROPORTIONAL) {
-    fnt.char_widths = mem_rmalloc<uint8_t>(num_char);
+    fnt.char_widths = std::make_unique<uint8_t[]>(num_char);
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ffin);
   } else {
-    fnt.char_widths = nullptr;
+    fnt.char_widths.reset();
   }
 
   //	Read in kerning data
   if (fnt.flags & FT_KERNED) {
     int n_pairs = (int)READ_FONT_SHORT(ffin);
-    fnt.kern_data = mem_rmalloc<uint8_t>(sizeof(uint8_t) * 3 * (n_pairs + 1));
+    fnt.kern_data = std::make_unique<uint8_t[]>(3 * (n_pairs + 1));
     for (i = 0; i < n_pairs; i++) {
       fnt.kern_data[i * 3] = READ_FONT_BYTE(ffin);
       fnt.kern_data[i * 3 + 1] = READ_FONT_BYTE(ffin);
@@ -598,15 +579,15 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
     fnt.kern_data[i * 3 + 1] = 255;
     fnt.kern_data[i * 3 + 2] = 0;
   } else {
-    fnt.kern_data = nullptr;
+    fnt.kern_data.reset();
   }
 
   //	Read in pixel data.
   int bytesize = READ_FONT_INT(ffin);
 
-  fnt.raw_data = mem_rmalloc<uint8_t>(bytesize);
+  fnt.raw_data = std::make_unique<uint8_t[]>(bytesize);
 
-  READ_FONT_DATA(ffin, fnt.raw_data, bytesize, 1);
+  READ_FONT_DATA(ffin, fnt.raw_data.get(), bytesize, 1);
 
   CLOSE_FONT(ffin);
 
@@ -621,14 +602,11 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   if (ft->ffi2)
     fnt.flags |= FT_FFI2;
 
-  if (fnt.kern_data) {
-    mem_free(fnt.kern_data);
-  }
-  if (fnt.char_widths) {
-    mem_free(fnt.char_widths);
-  }
-  fnt.kern_data = ft->kern_data;
-  fnt.char_widths = ft->ch_widths;
+  // write out the template's widths and kerning instead of the ones read from the file.
+  fnt.kern_data.reset();
+  fnt.char_widths.reset();
+  const uint8_t *kern_data = ft->kern_data.get();
+  const uint8_t *char_widths = ft->ch_widths.get();
 
   // write out font.
   ffout = OPEN_FONT2(pathname);
@@ -656,12 +634,12 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   //	Write widths now if necessary.(FT_PROPORTIONAL)
   if (fnt.flags & FT_PROPORTIONAL) {
     for (i = 0; i < num_char; i++)
-      WRITE_FONT_SHORT(ffout, (int16_t)fnt.char_widths[i]);
+      WRITE_FONT_SHORT(ffout, (int16_t)char_widths[i]);
   }
 
   if (fnt.flags & FT_KERNED) {
     // iterate new kerning info bytes
-    uint8_t *ch = fnt.kern_data;
+    const uint8_t *ch = kern_data;
     int n_bytes = 0, n_pairs;
     while (ch[n_bytes] != 255) {
       n_bytes += 3;
@@ -679,12 +657,9 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   }
 
   WRITE_FONT_INT(ffout, bytesize);
-  WRITE_FONT_DATA(ffout, fnt.raw_data, bytesize, 1);
+  WRITE_FONT_DATA(ffout, fnt.raw_data.get(), bytesize, 1);
 
   CLOSE_FONT2(ffout);
-
-  // free raw data loaded, don't free kern and widths, already freed, template versions remain
-  mem_free(fnt.raw_data);
 
   return true;
 }
@@ -696,16 +671,13 @@ bool grfont_SetKerning(int font, uint8_t *kern_data) {
   int n_pairs = 0;
 
   // reset kerning...
-  if (oldft->font.kern_data) {
-    mem_free(oldft->font.kern_data);
-    oldft->font.kern_data = nullptr;
-  }
+  oldft->font.kern_data.reset();
 
   if (kern_data) {
     while (kern_data[n_pairs * 3] != 255)
       n_pairs++;
 
-    oldft->font.kern_data = (uint8_t *)mem_malloc((n_pairs + 1) * 3 * sizeof(uint8_t));
+    oldft->font.kern_data = std::make_unique<uint8_t[]>((n_pairs + 1) * 3);
     n_pairs = 0;
     while (kern_data[n_pairs * 3] != 255) {
       oldft->font.kern_data[n_pairs * 3] = kern_data[n_pairs * 3];
@@ -839,15 +811,15 @@ void grfont_TranslateToBitmaps(int handle) {
   num_ch = fntfile->max_ascii - fntfile->min_ascii + 1;
 
   //	initialize memory
-  fnt->ch_w = new uint8_t[num_ch];
-  fnt->ch_h = new uint8_t[num_ch];
-  fnt->ch_u = new uint8_t[num_ch];
-  fnt->ch_v = new uint8_t[num_ch];
-  fnt->ch_bmp = new int[num_ch];
-  fnt->ch_uf = new float[num_ch];
-  fnt->ch_vf = new float[num_ch];
-  fnt->ch_wf = new float[num_ch];
-  fnt->ch_hf = new float[num_ch];
+  fnt->ch_w = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_h = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_u = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_v = std::make_unique<uint8_t[]>(num_ch);
+  fnt->ch_bmp = std::make_unique<int[]>(num_ch);
+  fnt->ch_uf = std::make_unique<float[]>(num_ch);
+  fnt->ch_vf = std::make_unique<float[]>(num_ch);
+  fnt->ch_wf = std::make_unique<float[]>(num_ch);
+  fnt->ch_hf = std::make_unique<float[]>(num_ch);
 
   for (i = 0; i < MAX_FONT_BITMAPS; i++)
     fnt->bmps[i] = -1;
@@ -1112,7 +1084,7 @@ int grfont_GetKernedSpacing(int font, int ch1, int ch2) {
   ft = &Fonts[font].font;
 
   if (ft->kern_data) {
-    uint8_t *kern = ft->kern_data;
+    uint8_t *kern = ft->kern_data.get();
     while (kern[0] != 255) {
       if (ch1 == kern[0] && ch2 == kern[1]) {
         return (int)((int8_t)kern[2]);
@@ -1126,7 +1098,7 @@ int grfont_GetKernedSpacing(int font, int ch1, int ch2) {
 //	returns a character's width
 int grfont_GetKernedSpacingTemp(const tFontTemplate *ft, int ch1, int ch2) {
   if (ft->kern_data) {
-    uint8_t *kern = ft->kern_data;
+    uint8_t *kern = ft->kern_data.get();
     while (kern[0] != 255) {
       if (ch1 == kern[0] && ch2 == kern[1]) {
         return (int)((int8_t)kern[2]);

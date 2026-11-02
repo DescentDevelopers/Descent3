@@ -328,43 +328,31 @@ typedef bms_bitmap *bm_T;      /* type of item to be stored */
 typedef int bm_hashTableIndex; /* index into hash table */
 #define compEQ(a, b) (stricmp((a)->name, (b)->name) == 0)
 struct bm_Node {
-  struct bm_Node *next; /* next bm_Node */
-  bm_T data;            /* data stored in bm_Node */
+  std::unique_ptr<bm_Node> next; /* next bm_Node */
+  bm_T data;                     /* data stored in bm_Node */
 };
 static bm_Node *bm_findNode(bm_T data);
 static void bm_deleteNode(bm_T data);
 static bm_Node *bm_insertNode(bm_T data);
 static bm_hashTableIndex bm_hash(bm_T data);
-static bm_Node **bm_hashTable = nullptr;
+static std::unique_ptr<std::unique_ptr<bm_Node>[]> bm_hashTable;
 static const int bm_hashTableSize = (MAX_BITMAPS / 2);
 static void bm_InitHashTable();
 static void bm_DeleteHashTable();
 static int bm_TestName(const char *src);
 
-void bm_InitHashTable() {
-  bm_hashTable = mem_rmalloc<bm_Node *>(bm_hashTableSize);
-  for (int a = 0; a < bm_hashTableSize; a++) {
-    bm_hashTable[a] = nullptr;
-  }
-}
+void bm_InitHashTable() { bm_hashTable = std::make_unique<std::unique_ptr<bm_Node>[]>(bm_hashTableSize); }
 void bm_DeleteHashTable() {
   if (bm_hashTable) {
     int idx;
     for (idx = 0; idx < bm_hashTableSize; idx++) {
-      if (bm_hashTable[idx]) {
-        bm_Node *curr, *next;
-        curr = bm_hashTable[idx];
-        while (curr) {
-          next = curr->next;
-          mem_free(curr);
-          curr = next;
-        }
-        bm_hashTable[idx] = nullptr;
+      // unlink nodes one at a time so long chains don't recurse in ~bm_Node
+      while (bm_hashTable[idx]) {
+        bm_hashTable[idx] = std::move(bm_hashTable[idx]->next);
       }
     }
 
-    mem_free(bm_hashTable);
-    bm_hashTable = nullptr;
+    bm_hashTable.reset();
   }
 }
 
@@ -383,46 +371,35 @@ bm_hashTableIndex bm_hash(bm_T data) {
   return (hval % (MAX_BITMAPS / 2));
 }
 bm_Node *bm_insertNode(bm_T data) {
-  bm_Node *p, *p0;
   bm_hashTableIndex bucket;
   /************************************************
    *  allocate bm_Node for data and insert in table  *
    ************************************************/
   /* insert bm_Node at beginning of list */
   bucket = bm_hash(data);
-  if ((p = mem_rmalloc<bm_Node>()) == nullptr) {
-    exit(1);
-  }
-  p0 = bm_hashTable[bucket];
-  bm_hashTable[bucket] = p;
-  p->next = p0;
+  auto p = std::make_unique<bm_Node>();
+  p->next = std::move(bm_hashTable[bucket]);
   p->data = data;
-  return p;
+  bm_hashTable[bucket] = std::move(p);
+  return bm_hashTable[bucket].get();
 }
 void bm_deleteNode(bm_T data) {
-  bm_Node *p0, *p;
+  std::unique_ptr<bm_Node> *link;
   bm_hashTableIndex bucket;
   /********************************************
    *  delete bm_Node containing data from table  *
    ********************************************/
-  /* find bm_Node */
-  p0 = nullptr;
+  /* find bm_Node; link is the owning pointer that points at it */
   bucket = bm_hash(data);
-  p = bm_hashTable[bucket];
-  while (p && !compEQ(p->data, data)) {
-    p0 = p;
-    p = p->next;
+  link = &bm_hashTable[bucket];
+  while (*link && !compEQ((*link)->data, data)) {
+    link = &(*link)->next;
   }
-  if (!p)
+  if (!*link) {
     return;
-  /* p designates bm_Node to delete, remove it from list */
-  if (p0)
-    /* not first bm_Node, p0 points to previous bm_Node */
-    p0->next = p->next;
-  else
-    /* first bm_Node on chain */
-    bm_hashTable[bucket] = p->next;
-  mem_free(p);
+  }
+  /* unlink the bm_Node and free it */
+  *link = std::move((*link)->next);
 }
 bm_Node *bm_findNode(bm_T data) {
   bm_Node *p;
@@ -431,9 +408,10 @@ bm_Node *bm_findNode(bm_T data) {
   /*******************************
    *  find bm_Node containing data  *
    *******************************/
-  p = bm_hashTable[bm_hash(data)];
-  while (p && !compEQ(p->data, data))
-    p = p->next;
+  p = bm_hashTable[bm_hash(data)].get();
+  while (p && !compEQ(p->data, data)) {
+    p = p->next.get();
+  }
   return p;
 }
 //	simply frees up a bitmap
@@ -445,7 +423,7 @@ void bm_InitBitmaps() {
   Bitmaps_initted = 1;
   for (i = 0; i < MAX_BITMAPS; i++) {
     GameBitmaps[i].used = 0;
-    GameBitmaps[i].data16 = nullptr;
+    GameBitmaps[i].data16.reset();
     GameBitmaps[i].format = BITMAP_FORMAT_STANDARD;
     GameBitmaps[i].cache_slot = -1;
     GameBitmaps[i].flags = 0;
@@ -483,13 +461,10 @@ int bm_AllocateMemoryForIndex(int n, int w, int h, int add_mem) {
   // If no go on the malloc, bail out with -1
 
   int size = (w * h * 2) + (add_mem) + 2;
-  GameBitmaps[n].data16 = (uint16_t *)mem_malloc(size);
-  if (!GameBitmaps[n].data16) {
-    Int3(); // Ran out of memory!
-    return -1;
-  }
+  // size is in bytes and may be odd; left uninitialised here because it is 0xAA-filled below
+  GameBitmaps[n].data16 = std::unique_ptr<uint16_t[]>(new uint16_t[(size + 1) / 2]);
   Bitmap_memory_used += (size);
-  memset(GameBitmaps[n].data16, 0xAA, size);
+  memset(GameBitmaps[n].data16.get(), 0xAA, size);
 
   GameBitmaps[n].format = BITMAP_FORMAT_STANDARD;
   GameBitmaps[n].width = w;
@@ -529,7 +504,7 @@ int bm_AllocBitmap(int w, int h, int add_mem) {
     Int3();
     return -1;
   }
-  memset(&GameBitmaps[n], 0, sizeof(bms_bitmap));
+  GameBitmaps[n] = {};
   int ret = bm_AllocateMemoryForIndex(n, w, h, add_mem);
   if (ret >= 0) {
     GameBitmaps[n].used = 1;
@@ -560,7 +535,7 @@ int bm_AllocNoMemBitmap(int w, int h) {
   }
   // If no go on the malloc, bail out with -1
 
-  memset(&GameBitmaps[n], 0, sizeof(bms_bitmap));
+  GameBitmaps[n] = {};
 
   GameBitmaps[n].width = w;
   GameBitmaps[n].height = h;
@@ -609,19 +584,17 @@ void bm_FreeBitmapData(int handle) {
       if (GameBitmaps[handle].flags & BF_MIPMAPPED)
         Bitmap_memory_used -= (mem_used / 3);
     }
-    mem_free(GameBitmaps[handle].data16);
   }
   GameBitmaps[handle].cache_slot = -1;
   GameBitmaps[handle].flags |= BF_NOT_RESIDENT;
   if (GameBitmaps[handle].flags & BF_MIPMAPPED)
     GameBitmaps[handle].flags |= BF_WANTS_MIP;
-  GameBitmaps[handle].data16 = nullptr;
+  GameBitmaps[handle].data16.reset();
 }
 //	simply frees up a bitmap
 void bm_FreeBitmapMain(int handle) {
   bm_deleteNode(&GameBitmaps[handle]);
   bm_FreeBitmapData(handle);
-  GameBitmaps[handle].data16 = nullptr;
   GameBitmaps[handle].cache_slot = -1;
   GameBitmaps[handle].used = 0;
   Num_of_bitmaps--;
@@ -1187,7 +1160,7 @@ uint16_t *bm_data(int handle, int miplevel) {
     if (!bm_MakeBitmapResident(handle))
       return nullptr;
 
-  d = GameBitmaps[handle].data16;
+  d = GameBitmaps[handle].data16.get();
   for (i = 0; i < miplevel; i++) {
     d += (GameBitmaps[handle].width >> i) * (GameBitmaps[handle].height >> i);
   }
@@ -1531,8 +1504,7 @@ void bm_ChangeSize(int handle, int new_w, int new_h) {
 
   bm_ScaleBitmapToBitmap(n, handle);
   Bitmap_memory_used -= mem_used + (mipped * (mem_used / 3));
-  mem_free(GameBitmaps[handle].data16);
-  GameBitmaps[handle].data16 = GameBitmaps[n].data16;
+  GameBitmaps[handle].data16 = std::move(GameBitmaps[n].data16);
   GameBitmaps[handle].width = new_w;
   GameBitmaps[handle].height = new_h;
   GameBitmaps[n].used = 0;

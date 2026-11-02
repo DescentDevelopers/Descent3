@@ -259,6 +259,7 @@
 
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "manage.h"
@@ -506,7 +507,7 @@ void mng_WriteNewTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
 }
 
 void mng_InitTexturePage(mngs_texture_page *texpage) {
-  memset(texpage, 0, sizeof(mngs_texture_page));
+  *texpage = {};
   texpage->proc_thickness = 4;
   texpage->proc_heat = 200;
   texpage->proc_light = 1;
@@ -764,7 +765,7 @@ int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
   CFILE *infile, *outfile;
   uint8_t pagetype;
   int done = 0;
-  memset(&texpage1, 0, sizeof(mngs_texture_page));
+  texpage1 = {};
 
   if (local)
     infile = cfopen(LocalTableFilename, "rb");
@@ -937,8 +938,13 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
   texture *tex = &GameTextures[n];
   int bm_handle;
 
+  // Drop any old procedural; it is rebuilt from the page below
+  if (tex->procedural != nullptr) {
+    FreeProceduralForTexture(n);
+  }
+
   // copy our values
-  memcpy(tex, &texpage->tex_struct, sizeof(texture));
+  CopyTextureValues(tex, &texpage->tex_struct);
 
 // Check to see if this image differs from the one on the net
 // If so, make a local copy
@@ -1025,9 +1031,6 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
 
   // Set procedural if there is one
   if (tex->flags & TF_PROCEDURAL) {
-    if (tex->procedural != nullptr)
-      FreeProceduralForTexture(n);
-
     if (texpage->num_proc_elements == 0) {
       tex->flags &= ~TF_PROCEDURAL;
 
@@ -1045,7 +1048,7 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
       // Last 2 colors are the same
       texpage->proc_palette[255] = texpage->proc_palette[254];
 
-      memcpy(GameTextures[n].procedural->palette, texpage->proc_palette, 256 * 2);
+      memcpy(GameTextures[n].procedural->palette.get(), texpage->proc_palette, 256 * 2);
 
       for (int i = 0; i < texpage->num_proc_elements; i++) {
         static_proc_element *proc = &GameTextures[n].procedural->static_proc_elements[i];
@@ -1067,7 +1070,7 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
 void mng_AssignTextureToTexPage(int n, mngs_texture_page *texpage) {
   texture *tex = &GameTextures[n];
 
-  memcpy(&texpage->tex_struct, tex, sizeof(texture));
+  CopyTextureValues(&texpage->tex_struct, tex);
 
   if (tex->bm_handle != -1) {
     if (tex->flags & TF_ANIMATED)
@@ -1089,7 +1092,7 @@ void mng_AssignTextureToTexPage(int n, mngs_texture_page *texpage) {
 
   // assign procedural if there is one
   if (tex->flags & TF_PROCEDURAL) {
-    memcpy(texpage->proc_palette, tex->procedural->palette, 256 * 2);
+    memcpy(texpage->proc_palette, tex->procedural->palette.get(), 256 * 2);
     texpage->num_proc_elements = tex->procedural->num_static_elements;
     texpage->proc_heat = tex->procedural->heat;
     texpage->proc_light = tex->procedural->light;
@@ -1114,7 +1117,7 @@ void mng_AssignTextureToTexPage(int n, mngs_texture_page *texpage) {
 
 // Loads in a texture page
 void mng_LoadNetTexturePage(CFILE *infile, bool overlay) {
-  memset(&texpage1, 0, sizeof(mngs_texture_page));
+  texpage1 = {};
 
   if (mng_ReadNewTexturePage(infile, &texpage1)) {
     int n;
@@ -1138,7 +1141,7 @@ void mng_LoadNetTexturePage(CFILE *infile, bool overlay) {
 // already in memory
 void mng_LoadLocalTexturePage(CFILE *infile) {
   int ok = 0;
-  memset(&texpage1, 0, sizeof(mngs_texture_page));
+  texpage1 = {};
 
   if (mng_ReadNewTexturePage(infile, &texpage1)) {
     int i = FindTextureName(texpage1.tex_struct.name);
@@ -1246,16 +1249,16 @@ int mng_GetGuaranteedTexturePage(char *name, CFILE *infile) {
   if (i != -1)
     return i;
 
-  auto texpage = mem_rmalloc<mngs_texture_page>();
+  auto texpage = std::make_unique<mngs_texture_page>();
 
   // Not in memory.  Load it from the table file.  Start searching from the
   // current spot in the open table file
-  int ret = mng_FindSpecificTexPage(name, texpage, infile ? infile->position : 0);
+  int ret = mng_FindSpecificTexPage(name, texpage.get(), infile ? infile->position : 0);
   if (!ret)
     return -1;
 
   // We've found it in the table file, now load it.
-  ret = mng_SetAndLoadTexture(texpage, infile);
+  ret = mng_SetAndLoadTexture(texpage.get(), infile);
   // ASSERT (ret>=0);
   if (ret < 0)
     DataError("Cannot load texture <%s>, bitmap name <%s>\n", texpage->tex_struct.name, texpage->bitmap_name);
@@ -1264,7 +1267,6 @@ int mng_GetGuaranteedTexturePage(char *name, CFILE *infile) {
     // we're loading addon table pages, this will not overlay anything
     mng_PushAddonPage(PAGETYPE_TEXTURE, texpage->tex_struct.name, 0);
   }
-  mem_free(texpage);
 
   return ret;
 }

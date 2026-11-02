@@ -19,6 +19,8 @@
 #ifndef BUMPMAP_H
 #define BUMPMAP_H
 
+#include <memory>
+
 #include "pstypes.h"
 
 #define MAX_BUMPMAPS 500
@@ -28,7 +30,7 @@
 #define BUMPF_CHANGED 2
 
 struct bms_bumpmap {
-  uint16_t *data;     // 8bit data
+  std::unique_ptr<uint16_t[]> data; // 8bit data
   int16_t cache_slot; // for the renderers use
   uint8_t width, height;
   uint8_t flags, pad;

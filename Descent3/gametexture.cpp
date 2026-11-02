@@ -328,13 +328,12 @@ int AllocTexture(void) {
 
   Num_textures++;
 
-  memset(&GameTextures[i], 0, sizeof(texture));
+  GameTextures[i] = {};
 
   GameTextures[i].used = 1;
 
   GameTextures[i].corona_type = 0;
   GameTextures[i].bumpmap = -1;
-  GameTextures[i].procedural = nullptr;
   GameTextures[i].name[0] = 0;
   GameTextures[i].flags = 0; // default to no type
   GameTextures[i].alpha = 1.0;
@@ -414,11 +413,7 @@ int AllocateProceduralForTexture(int handle) {
     w = h = 128;
   }
 
-  GameTextures[handle].procedural = mem_rmalloc<proc_struct>();
-  ASSERT(GameTextures[handle].procedural);
-
-  GameTextures[handle].procedural->proc1 = nullptr;
-  GameTextures[handle].procedural->proc2 = nullptr;
+  GameTextures[handle].procedural = std::make_unique<proc_struct>();
 
   GameTextures[handle].procedural->last_evaluation_time = 0;
   GameTextures[handle].procedural->osc_time = 0;
@@ -429,37 +424,30 @@ int AllocateProceduralForTexture(int handle) {
 
   GameTextures[handle].procedural->memory_type = PROC_MEMORY_TYPE_NONE;
 
-  GameTextures[handle].procedural->palette = (uint16_t *)mem_malloc(256 * 2);
+  GameTextures[handle].procedural->palette = std::make_unique<uint16_t[]>(256);
 
   GameTextures[handle].procedural->last_procedural_frame = -1;
   GameTextures[handle].procedural->heat = 128;
 
   GameTextures[handle].procedural->dynamic_proc_elements = -1;
-  GameTextures[handle].procedural->static_proc_elements = nullptr;
 
   GameTextures[handle].procedural->num_static_elements = 0;
 
   GameTextures[handle].procedural->light = 1;
   GameTextures[handle].procedural->thickness = 4;
 
-  memcpy(GameTextures[handle].procedural->palette, DefaultProcPalette, 256 * 2);
+  memcpy(GameTextures[handle].procedural->palette.get(), DefaultProcPalette, 256 * 2);
 
   return 1;
 }
 
 // Allocates the memory needed for static elements for a procedural texture
 void AllocateStaticProceduralsForTexture(int handle, int num_elements) {
-  GameTextures[handle].procedural->static_proc_elements =
-      mem_rmalloc<static_proc_element>(num_elements);
-  ASSERT(GameTextures[handle].procedural->static_proc_elements);
+  GameTextures[handle].procedural->static_proc_elements = std::make_unique<static_proc_element[]>(num_elements);
 }
 
 // Frees the memory used by static procedural elements
-void FreeStaticProceduralsForTexture(int handle) {
-  if (GameTextures[handle].procedural->static_proc_elements)
-    mem_free(GameTextures[handle].procedural->static_proc_elements);
-  GameTextures[handle].procedural->static_proc_elements = nullptr;
-}
+void FreeStaticProceduralsForTexture(int handle) { GameTextures[handle].procedural->static_proc_elements.reset(); }
 
 // Given a texture handle, returns that textures bitmap
 // If the texture is animated, returns framenum mod num_of_frames in the animation
@@ -735,7 +723,6 @@ void FreeTextureBumpmaps(int tex_handle) {
 // Builds the bumpmaps for the past in texture
 void BuildTextureBumpmaps(int texhandle) {
   int i, t;
-  int8_t *buffer;
 
   if (GameTextures[texhandle].flags & TF_ANIMATED)
     return; // No bumps for animated textures
@@ -755,8 +742,7 @@ void BuildTextureBumpmaps(int texhandle) {
   GameTextures[texhandle].bumpmap = bump;
 
   // allocate memory for our buffer
-  buffer = (int8_t *)mem_malloc(w * h);
-  ASSERT(buffer);
+  auto buffer = std::make_unique<int8_t[]>(w * h);
 
   uint16_t *src_data = (uint16_t *)bm_data(GameTextures[texhandle].bm_handle, 0);
 
@@ -798,22 +784,36 @@ void BuildTextureBumpmaps(int texhandle) {
       *pDst++ = (int8_t)iDv;
     }
   }
-
-  mem_free(buffer);
 }
 
 // Frees all the procedural memory for a texture
 void FreeProceduralForTexture(int n) {
   if (GameTextures[n].procedural != nullptr) {
-    FreeStaticProceduralsForTexture(n);
-    mem_free(GameTextures[n].procedural->proc1);
-    mem_free(GameTextures[n].procedural->proc2);
     bm_FreeBitmap(GameTextures[n].procedural->procedural_bitmap);
-    mem_free(GameTextures[n].procedural->palette);
-    mem_free(GameTextures[n].procedural);
-
-    GameTextures[n].procedural = nullptr;
+    GameTextures[n].procedural.reset();
   }
+}
+
+// Copies all of src's values into dest, except for the procedural, which stays with its texture
+void CopyTextureValues(texture *dest, const texture *src) {
+  memcpy(dest->name, src->name, sizeof(dest->name));
+  dest->flags = src->flags;
+  dest->bm_handle = src->bm_handle;
+  dest->destroy_handle = src->destroy_handle;
+  dest->damage = src->damage;
+  dest->reflectivity = src->reflectivity;
+  dest->r = src->r;
+  dest->g = src->g;
+  dest->b = src->b;
+  dest->slide_u = src->slide_u;
+  dest->slide_v = src->slide_v;
+  dest->alpha = src->alpha;
+  dest->speed = src->speed;
+  dest->sound = src->sound;
+  dest->sound_volume = src->sound_volume;
+  dest->bumpmap = src->bumpmap;
+  dest->corona_type = src->corona_type;
+  dest->used = src->used;
 }
 
 // Frees a texture that is being used and

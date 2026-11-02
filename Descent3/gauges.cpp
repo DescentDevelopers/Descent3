@@ -778,7 +778,7 @@ void RenderShipMonitor(tGauge *gauge, bool modified) {
 void RotateMonitorPosition(tGauge *gauge) {
   ASSERT(gauge->monitor);
   ASSERT(gauge->monitor->num_faces == 1);
-  int subnum = gauge->monitor - gauge->cockpit->submodel;
+  int subnum = gauge->monitor - gauge->cockpit->submodel.get();
 
   if (gauge->monitor->faces[0].nverts != 4)
     Int3();

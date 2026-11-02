@@ -40,6 +40,7 @@
 // Lightmap info header
 
 #include <cstdint>
+#include <memory>
 #include "vecmat.h"
 
 #define BAD_LMI_INDEX 65535
@@ -66,7 +67,7 @@ struct lightmap_info {
   uint8_t type; // see LMI_types above
 };
 
-extern lightmap_info *LightmapInfo;
+extern std::unique_ptr<lightmap_info[]> LightmapInfo;
 extern int Num_of_lightmap_info;
 extern int Num_lightmap_infos_read;
 

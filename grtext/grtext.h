@@ -109,6 +109,7 @@
 #define GRTEXT_H
 
 #include <cstdint>
+#include <memory>
 
 #include "grdefs.h"
 
@@ -199,8 +200,8 @@ void grtext_Render();
 // we can load a font template into this structure.  call grfont_FreeTemplate(tFontTemplate) to free memory here.
 struct tFontTemplate {
   uint16_t min_ascii, max_ascii;
-  uint8_t *ch_widths;
-  uint8_t *kern_data;
+  std::unique_ptr<uint8_t[]> ch_widths;
+  std::unique_ptr<uint8_t[]> kern_data;
   uint8_t ch_height;
   uint8_t ch_maxwidth;  // max width of character in font.
   bool proportional;  // is this font proportional? if so use array of widths, else use maxwidth
@@ -285,10 +286,10 @@ struct tFontFileInfo {
   uint8_t min_ascii;     // minimum ascii value used by font
   uint8_t max_ascii;     // max ascii value used by the font
   int16_t byte_width;    // width of a character in the font in bytes
-  uint8_t *raw_data;     // pixel, map data.
-  uint8_t **char_data;   // pointers to each character
-  uint8_t *char_widths;  // individual pixel widths of each character
-  uint8_t *kern_data;    // kerning information for specific letter combos
+  std::unique_ptr<uint8_t[]> raw_data;    // pixel, map data.
+  std::unique_ptr<uint8_t *[]> char_data; // pointers to each character
+  std::unique_ptr<uint8_t[]> char_widths; // individual pixel widths of each character
+  std::unique_ptr<uint8_t[]> kern_data;   // kerning information for specific letter combos
 
   // FFI2 (newstyle) data
   tFontFileInfo2 ffi2;
