@@ -106,6 +106,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "crossplat.h"
 #include "pserror.h"
@@ -815,10 +816,10 @@ struct dedicated_socket {
   char input[255];
   bool validated;
   dedicated_socket *prev;
-  dedicated_socket *next;
+  std::unique_ptr<dedicated_socket> next;
 };
 
-dedicated_socket *Head_sock = nullptr;
+std::unique_ptr<dedicated_socket> Head_sock;
 
 SOCKET dedicated_listen_socket = INVALID_SOCKET;
 
@@ -881,13 +882,14 @@ void ListenDedicatedSocket(void) {
     // At this point it's considered a valid connection
     PrintDedicatedMessage(TXT_DS_NEWCONNECT, inet_ntoa(conn_addr.sin_addr));
     PrintDedicatedMessage("\n");
-    dedicated_socket *new_socket;
-    new_socket = mem_rmalloc<dedicated_socket>();
-    if (Head_sock)
+    auto new_sock_owner = std::make_unique<dedicated_socket>();
+    dedicated_socket *new_socket = new_sock_owner.get();
+    if (Head_sock) {
       Head_sock->prev = new_socket;
-    new_socket->next = Head_sock;
+    }
+    new_socket->next = std::move(Head_sock);
     new_socket->prev = nullptr;
-    Head_sock = new_socket;
+    Head_sock = std::move(new_sock_owner);
     memcpy(&new_socket->addr, &conn_addr, sizeof(new_socket->addr));
     new_socket->input[0] = '\0';
     new_socket->sock = incoming_socket;
@@ -914,12 +916,12 @@ void DedicatedSocketputs(char *str) {
   }
 
   dedicated_socket *conn;
-  conn = Head_sock;
+  conn = Head_sock.get();
   while (conn) {
     if (conn->validated) {
       send(conn->sock, newstr, strlen(newstr) + 1, 0);
     }
-    conn = conn->next;
+    conn = conn->next.get();
   }
 }
 
@@ -937,24 +939,26 @@ dedicated_socket *DedicatedLogoutTelnet(dedicated_socket *conn) {
   close(conn->sock);
 #endif
 
+  // Replacing conn in its owning link frees it, so take conn->next out first
+  std::unique_ptr<dedicated_socket> next = std::move(conn->next);
   dedicated_socket *prev;
   prev = conn->prev;
   if (prev) {
-    prev->next = conn->next;
+    prev->next = std::move(next);
   } else {
-    Head_sock = conn->next;
-    if (Head_sock)
+    Head_sock = std::move(next);
+    if (Head_sock) {
       Head_sock->prev = nullptr;
+    }
   }
 
-  mem_free(conn);
   return prev;
 }
 
 void DedicatedReadTelnet(void) {
   dedicated_socket *conn;
   char buf[5];
-  conn = Head_sock;
+  conn = Head_sock.get();
 
   while (conn) {
     int bytesread = 1;
@@ -1050,7 +1054,8 @@ void DedicatedReadTelnet(void) {
         }
       }
     }
-    if (conn)
-      conn = conn->next;
+    if (conn) {
+      conn = conn->next.get();
+    }
   }
 }

@@ -291,6 +291,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <ctime>
+#include <memory>
 #include <SDL3/SDL_assert.h>
 
 #include "gamedll_header.h"
@@ -482,7 +483,7 @@ class PInfo;
 struct player_record {
   slot_state state;                 // state of this slot
   char callsign[MAX_CALLSIGN_SIZE]; // Player's callsign
-  char *tracker_id;                 // Player's master tracker ID, NULL if there isn't one
+  std::unique_ptr<char[]> tracker_id; // Player's master tracker ID, NULL if there isn't one
   network_address net_addr;         // Player's address
   int pnum;                         // Player's pnum
   union {
@@ -495,7 +496,7 @@ struct player_record {
   int user_info_size;       // Size of user_info;
 
   int8_t team;   // The player's team (for when they reconnect)
-  PInfo *pinfo; // Pointer to player info (who killed whom)
+  std::unique_ptr<PInfo> pinfo; // Player info (who killed whom)
 };
 
 #define MIF_INCLUDENONE                                                                                                \

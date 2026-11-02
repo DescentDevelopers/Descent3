@@ -1644,6 +1644,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <memory>
 
 #include "chrono_timer.h"
 #include "pserror.h"
@@ -9311,7 +9312,7 @@ void DoReqPlayerList(network_address *addr) {
   nw_Send(addr, outdata, count, 0);
 }
 
-char *Multi_recieved_player_list = nullptr;
+std::unique_ptr<char[]> Multi_recieved_player_list;
 bool Multi_got_player_list = false;
 
 void DoPlayerListData(uint8_t *data, int len) {
@@ -9321,7 +9322,7 @@ void DoPlayerListData(uint8_t *data, int len) {
     return;
   }
   SKIP_HEADER(data, &count);
-  memcpy(Multi_recieved_player_list, data + count, len);
+  memcpy(Multi_recieved_player_list.get(), data + count, len);
   Multi_got_player_list = true;
 }
 

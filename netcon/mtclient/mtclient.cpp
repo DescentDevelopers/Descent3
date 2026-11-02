@@ -411,6 +411,8 @@
 * $NoKeywords: $
 */
 
+#include <memory>
+
 #include "ui.h"
 #include "newui.h"
 #include "grdefs.h"
@@ -1284,14 +1286,12 @@ int MainMultiplayerMenu() {
     }
     p = GetChannelList();
     if (p) {
-      char *pchanlist;
-      pchanlist = (char *)DLLmem_malloc(strlen(p) + 1);
-      memset(pchanlist, 0, strlen(p));
-      strcpy(pchanlist, p);
+      auto pchanlist = std::make_unique<char[]>(strlen(p) + 1);
+      strcpy(pchanlist.get(), p);
       char *tokp = nullptr;
       char *nexttok;
       // tokp = strtok(pchanlist,seps);
-      nexttok = strchr(pchanlist, '$');
+      nexttok = strchr(pchanlist.get(), '$');
       if (nexttok) {
         *nexttok = '\0';
         nexttok++;
@@ -1419,7 +1419,6 @@ int MainMultiplayerMenu() {
             break;
         }
       }
-      DLLmem_free(pchanlist);
     }
 
     res = DLLPollUI();
@@ -1677,15 +1676,14 @@ void ResortGameList(void *lb, int type, bool invert) {
     return;
   }
   // Make a copy of the games list
-  network_game *net_game_copy;
-  net_game_copy = (network_game *)DLLmem_malloc(sizeof(network_game) * (*DLLNum_network_games_known));
-  memcpy(net_game_copy, &DLLNetwork_games[0], sizeof(network_game) * (*DLLNum_network_games_known));
+  auto net_game_copy = std::make_unique<network_game[]>(*DLLNum_network_games_known);
+  memcpy(net_game_copy.get(), &DLLNetwork_games[0], sizeof(network_game) * (*DLLNum_network_games_known));
 
   // Set the sort type
   sort_type = type;
 
   // Do the actual sort
-  qsort(net_game_copy, *DLLNum_network_games_known, sizeof(network_game), net_game_compare);
+  qsort(net_game_copy.get(), *DLLNum_network_games_known, sizeof(network_game), net_game_compare);
 
   // Now populate the list in the order sorted...
   NextGameItemNo = 0;
@@ -1710,8 +1708,6 @@ void ResortGameList(void *lb, int type, bool invert) {
       }
     }
   }
-
-  DLLmem_free(net_game_copy);
 }
 
 #define GET_MT_GAME_TIME 5

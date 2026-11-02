@@ -19,6 +19,8 @@
 #ifndef __ENTROPY_AUX_H__
 #define __ENTROPY_AUX_H__
 
+#include <memory>
+
 /*
 =====================================================================
 Entropy Special Packet IDs
@@ -84,7 +86,8 @@ extern int EnergyText[NUM_TEAMS];                       // texture handles to En
 extern int RepairText[NUM_TEAMS];                       // texture handles to Repair room textures
 extern int LabText[NUM_TEAMS];                          // texture handles to Lab room textures
 extern int virus_id;                                    // Object ID of the Virus object
-extern int *RoomList; // List of room index's that are special for Entropy (i.e. all the labs, repairs and energy rooms)
+// List of room index's that are special for Entropy (i.e. all the labs, repairs and energy rooms)
+extern std::unique_ptr<int[]> RoomList;
 extern int RoomCount; // Size of RoomList when it's finally allocated
 extern room *dRooms;
 extern object *dObjects;
