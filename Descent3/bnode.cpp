@@ -487,10 +487,10 @@ void BNode_ClearBNodeInfo(void) {
     if (BNode_allocated) {
       for (j = 0; j < BNode_terrain_list[i].num_nodes; j++) {
         if (BNode_terrain_list[i].nodes[j].num_edges) {
-          mem_free(BNode_terrain_list[i].nodes[j].edges);
+          free(BNode_terrain_list[i].nodes[j].edges);
         }
       }
-      mem_free(BNode_terrain_list[i].nodes);
+      free(BNode_terrain_list[i].nodes);
     }
 
     BNode_terrain_list[i].num_nodes = 0;
@@ -512,12 +512,12 @@ void BNode_FreeRoom(room *rp) {
 
   for (i = 0; i < rp->bn_info.num_nodes; i++) {
     if (rp->bn_info.nodes[i].num_edges) {
-      mem_free(rp->bn_info.nodes[i].edges);
+      free(rp->bn_info.nodes[i].edges);
     }
   }
 
   if (rp->bn_info.num_nodes) {
-    mem_free(rp->bn_info.nodes);
+    free(rp->bn_info.nodes);
     rp->bn_info.nodes = nullptr;
     rp->bn_info.num_nodes = 0;
   }

@@ -30,7 +30,7 @@
  * replaced gr.h with grdefs.h and fixed resulting compile bugs.
  *
  * 14    10/13/98 10:31a Sean
- * Fixed a mem_free (free()) conflict
+ * Fixed a free (free()) conflict
  *
  * 13    4/23/98 6:38p Jason
  * made bitmaps use 1555 format
@@ -350,8 +350,8 @@ void grFont::free_font(gr_font_record *ft) {
     delete[] ft->font.char_widths;
   }
 
-  ::mem_free(ft->font.raw_data);
-  ::mem_free(ft->font.char_data);
+  ::free(ft->font.raw_data);
+  ::free(ft->font.char_data);
 }
 
 void grFont::load(char *filename, int slot) {

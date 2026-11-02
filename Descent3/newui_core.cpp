@@ -1242,16 +1242,16 @@ void newuiSheet::Reset() {
         lb->Destroy();
         delete lb;
       } else if (m_gadgetlist[i].type == GADGET_SLIDER) {
-        mem_free(m_gadgetlist[i].internal);
+        free(m_gadgetlist[i].internal);
       } else if (m_gadgetlist[i].type == GADGET_EDITBOX || m_gadgetlist[i].type == GADGET_EDITBOXNUM ||
                  m_gadgetlist[i].type == GADGET_EDITBOXPASS) {
-        mem_free(m_gadgetlist[i].internal);
+        free(m_gadgetlist[i].internal);
       } else if (m_gadgetlist[i].type == GADGET_COMBOBOX) {
         newuiComboBox *cb = (newuiComboBox *)m_gadgetlist[i].internal;
         cb->Destroy();
         delete cb;
       } else if (m_gadgetlist[i].type == GADGET_CHANGEABLE_TXT) {
-        mem_free(m_gadgetlist[i].parm.p);
+        free(m_gadgetlist[i].parm.p);
       } else if (m_gadgetlist[i].type != GADGET_HOTSPOT) {
         Int3(); // get samir.
       }
@@ -2006,7 +2006,7 @@ int16_t *newuiSheet::AddSlider(const char *title, int16_t range, int16_t init_po
   gadget->parm.s[1] = range;
 
   if (settings) {
-    gadget->internal = mem_malloc(sizeof(tSliderSettings));
+    gadget->internal = malloc(sizeof(tSliderSettings));
     memcpy(gadget->internal, settings, sizeof(tSliderSettings));
   } else {
     gadget->internal = nullptr;
@@ -2040,7 +2040,7 @@ void newuiSheet::AddBitmap(int bm_handle) {
 char *newuiSheet::AddChangeableText(int buflen) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(-1, GADGET_CHANGEABLE_TXT, nullptr);
   gadget->internal = (void *)(size_t)buflen;
-  gadget->parm.p = mem_malloc(buflen);
+  gadget->parm.p = malloc(buflen);
   return (char *)gadget->parm.p;
 }
 
@@ -2086,7 +2086,7 @@ char *newuiSheet::AddEditBox(const char *title, int16_t maxlen, int16_t w, int16
   ASSERT(maxlen < EDIT_BUFLEN_MAX);
   ASSERT(w <= 0xfff);
 
-  char *strbuf = (char *)mem_malloc(maxlen + 1);
+  char *strbuf = (char *)malloc(maxlen + 1);
   strbuf[0] = 0;
   gadget->internal = strbuf;
   gadget->parm.s[0] = (w & 0xfff);

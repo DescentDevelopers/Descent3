@@ -33,7 +33,7 @@
  *
  * 120   3/20/00 12:01p Matt
  * Merge of Duane's post-1.3 changes.
- * Changed some malloc/free calls to mem_malloc/mem_free (Mac only)
+ * Changed some malloc/free calls to mem_malloc/free (Mac only)
  *
  * 119   10/08/99 4:27p Chris
  * Fixed a bug with terrain regioning
@@ -2384,13 +2384,13 @@ void ComputeAABB(bool f_full) {
 
         if (rp->num_bbf_regions != 0) {
           for (x = 0; x < rp->num_bbf_regions; x++) {
-            mem_free(rp->bbf_list[x]);
+            free(rp->bbf_list[x]);
           }
-          mem_free(rp->bbf_list);
-          mem_free(rp->num_bbf);
-          mem_free(rp->bbf_list_min_xyz);
-          mem_free(rp->bbf_list_max_xyz);
-          mem_free(rp->bbf_list_sector);
+          free(rp->bbf_list);
+          free(rp->num_bbf);
+          free(rp->bbf_list_min_xyz);
+          free(rp->bbf_list_max_xyz);
+          free(rp->bbf_list_sector);
           rp->num_bbf_regions = 0;
         }
 
@@ -2908,18 +2908,18 @@ void ComputeAABB(bool f_full) {
           continue;
 
         for (j = 0; j < rp->num_bbf_regions; j++) {
-          rp->bbf_list[j] = (int16_t *)mem_realloc(rp->bbf_list[j], (sizeof(int16_t) * rp->num_bbf[j]));
+          rp->bbf_list[j] = (int16_t *)realloc(rp->bbf_list[j], (sizeof(int16_t) * rp->num_bbf[j]));
         }
         for (j = rp->num_bbf_regions; j < MAX_REGIONS_PER_ROOM; j++) {
-          mem_free(rp->bbf_list[j]);
+          free(rp->bbf_list[j]);
         }
 
-        rp->bbf_list = (int16_t **)mem_realloc(rp->bbf_list, rp->num_bbf_regions * sizeof(int16_t *));
-        rp->num_bbf = (int16_t *)mem_realloc(rp->num_bbf, rp->num_bbf_regions * sizeof(int16_t));
-        rp->bbf_list_min_xyz = (vector *)mem_realloc(rp->bbf_list_min_xyz, rp->num_bbf_regions * sizeof(vector));
-        rp->bbf_list_max_xyz = (vector *)mem_realloc(rp->bbf_list_max_xyz, rp->num_bbf_regions * sizeof(vector));
+        rp->bbf_list = (int16_t **)realloc(rp->bbf_list, rp->num_bbf_regions * sizeof(int16_t *));
+        rp->num_bbf = (int16_t *)realloc(rp->num_bbf, rp->num_bbf_regions * sizeof(int16_t));
+        rp->bbf_list_min_xyz = (vector *)realloc(rp->bbf_list_min_xyz, rp->num_bbf_regions * sizeof(vector));
+        rp->bbf_list_max_xyz = (vector *)realloc(rp->bbf_list_max_xyz, rp->num_bbf_regions * sizeof(vector));
         rp->bbf_list_sector =
-            (uint8_t *)mem_realloc(rp->bbf_list_sector, rp->num_bbf_regions * sizeof(uint8_t));
+            (uint8_t *)realloc(rp->bbf_list_sector, rp->num_bbf_regions * sizeof(uint8_t));
       }
     }
 

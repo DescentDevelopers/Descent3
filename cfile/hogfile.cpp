@@ -46,7 +46,7 @@
  * fixed some case-sensitive #includes
  *
  * 13    10/15/98 2:52p Nate
- * Fixed FileCopy() by changing free() to mem_free()
+ * Fixed FileCopy() by changing free() to free()
  *
  * 12    10/08/98 4:23p Kevin
  * Changed code to comply with memory library usage. Always use mem_malloc

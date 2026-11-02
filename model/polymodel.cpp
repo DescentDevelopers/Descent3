@@ -742,7 +742,7 @@ int AllocPolyModel() {
 // Frees all the polymodel data, but doesn't free the actual polymodel itself
 void FreePolymodelData(int i) {
   if (Poly_models[i].model_data) {
-    mem_free(Poly_models[i].model_data);
+    free(Poly_models[i].model_data);
     Poly_models[i].model_data = nullptr;
   }
   Poly_models[i].gun_slots.reset();

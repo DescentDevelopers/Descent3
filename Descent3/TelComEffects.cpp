@@ -322,7 +322,7 @@ void EfxFreeEffect(tceffect *tce) {
         if (tce->bmpinfo.bitmaps[i] > BAD_BITMAP_HANDLE)
           bm_FreeBitmap(tce->bmpinfo.bitmaps[i]);
       }
-      mem_free(tce->bmpinfo.bitmaps);
+      free(tce->bmpinfo.bitmaps);
       tce->bmpinfo.bitmaps = nullptr;
     }
 
@@ -340,7 +340,7 @@ void EfxFreeEffect(tceffect *tce) {
     }
 
     if (tce->movieinfo.filename) {
-      mem_free(tce->movieinfo.filename);
+      free(tce->movieinfo.filename);
       tce->movieinfo.filename = nullptr;
     }
     break;
@@ -1233,7 +1233,7 @@ bool CreateMovie(tceffect *tce, const char *filename) {
   tce->movieinfo.filename = nullptr;
   tce->w = tce->h = 100;
 
-  tce->movieinfo.filename = mem_strdup(filename);
+  tce->movieinfo.filename = strdup(filename);
   if (!tce->movieinfo.filename)
     return false;
   tce->movieinfo.handle = StartMovie(filename);

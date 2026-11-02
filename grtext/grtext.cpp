@@ -481,7 +481,7 @@ void grtext_Puts(int x, int y, const char *str) {
         p = strstr(lowerstr, (char *)bad_word);
       };
     }
-    // DAJ		mem_free(lowerstr);
+    // DAJ		free(lowerstr);
   }
 
   Grtext_ptr += (strlen(str) + 1);

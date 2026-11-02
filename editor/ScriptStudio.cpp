@@ -665,10 +665,10 @@ bool InvokeScriptStudio(const char *filename, const char *scrname) {
 	if (studio.DoModal() == IDOK) {
 		CString tempstr;
 		studio.GetText(tempstr);
-		source = (char *) mem_malloc(tempstr.GetLength()+1);
+		source = (char *) malloc(tempstr.GetLength()+1);
 		strcpy(source, tempstr);
 		SaveScript(filename, source);
-		mem_free(source);
+		free(source);
  		ret = true;
 	}
 	else {
