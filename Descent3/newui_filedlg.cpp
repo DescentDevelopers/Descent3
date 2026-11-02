@@ -101,8 +101,10 @@
  * $NoKeywords: $
  */
 
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "cfile.h"
 #include "ddio.h"
@@ -129,8 +131,11 @@ void FDlg_EnableWaitMessage(bool enable) {
 #define FDWM_HEIGHT 128
 #define FDWM_WIDTH 256
 
-  static NewUIGameWindow *msgbox = nullptr;
+  static std::unique_ptr<NewUIGameWindow> msgbox;
   static bool opened = false;
+  // If the game exits while the message is up (e.g. Error() during a slow directory scan), leak the window as the raw
+  // pointer used to: destroying it during static destruction would free its resources after NewUIClose has run.
+  [[maybe_unused]] static const bool abandon_at_exit = (atexit([] { (void)msgbox.release(); }), true);
   newuiSheet *sheet;
 
   if (opened == enable) {
@@ -140,30 +145,26 @@ void FDlg_EnableWaitMessage(bool enable) {
   opened = enable;
 
   if (enable) {
-    msgbox = new NewUIGameWindow;
-    if (msgbox) {
+    msgbox = std::make_unique<NewUIGameWindow>();
+    msgbox->Create(0, 0, FDWM_WIDTH, FDWM_HEIGHT, UIF_PROCESS_ALL | UIF_CENTER);
 
-      msgbox->Create(0, 0, FDWM_WIDTH, FDWM_HEIGHT, UIF_PROCESS_ALL | UIF_CENTER);
+    sheet = msgbox->GetSheet();
+    sheet->NewGroup(nullptr, 45, 25);
+    sheet->AddText(TXT_GETTINGFILES);
 
-      sheet = msgbox->GetSheet();
-      sheet->NewGroup(nullptr, 45, 25);
-      sheet->AddText(TXT_GETTINGFILES);
+    msgbox->Open();
+    sheet->Realize();
 
-      msgbox->Open();
-      sheet->Realize();
-
-      // fake a DoUI
-      DoUIFrame();
-      rend_Flip();
-    }
+    // fake a DoUI
+    DoUIFrame();
+    rend_Flip();
   } else {
 
     if (msgbox) {
       msgbox->Close();
       msgbox->Destroy();
-      delete msgbox;
     }
-    msgbox = nullptr;
+    msgbox.reset();
   }
 }
 

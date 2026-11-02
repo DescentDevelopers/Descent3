@@ -91,12 +91,14 @@ void UIHotspot::Create(UIWindow *wnd, int id, int key, UIItem *itemoff, UIItem *
   ASSERT(itemoff);
   ASSERT(itemon);
 
-  if (itemoff)
+  if (itemoff) {
     m_ItemOff = itemoff->CopyUIItem();
-  if (itemon)
+  }
+  if (itemon) {
     m_ItemOn = itemon->CopyUIItem();
+  }
 
-  m_ItemCur = m_ItemOff;
+  m_ItemCur = m_ItemOff.get();
 
   UIGadget::Create(wnd, id, x, y, w, h, flags);
 
@@ -112,34 +114,26 @@ void UIHotspot::SetStates(UIItem *itemoff, UIItem *itemon) {
   // determine which state it currently set, so we can set it on the new state
   bool currstate = false;
 
-  if (m_ItemOn == m_ItemCur)
+  if (m_ItemOn.get() == m_ItemCur) {
     currstate = true;
-
-  if (m_ItemOff)
-    delete m_ItemOff;
-  if (m_ItemOn)
-    delete m_ItemOn;
+  }
 
   m_ItemOff = itemoff->CopyUIItem();
   m_ItemOn = itemon->CopyUIItem();
 
-  if (currstate)
-    m_ItemCur = m_ItemOn;
-  else
-    m_ItemCur = m_ItemOff;
+  if (currstate) {
+    m_ItemCur = m_ItemOn.get();
+  } else {
+    m_ItemCur = m_ItemOff.get();
+  }
 }
 
 // override: behavior when gadget is destroyed.
 void UIHotspot::OnDestroy() {
   UIGadget::OnDestroy();
 
-  if (m_ItemOff)
-    delete m_ItemOff;
-  if (m_ItemOn)
-    delete m_ItemOn;
-
-  m_ItemOff = nullptr;
-  m_ItemOn = nullptr;
+  m_ItemOff.reset();
+  m_ItemOn.reset();
 }
 
 // behavior when key is pressed.
@@ -169,10 +163,10 @@ void UIHotspot::OnMouseBtnUp(int btn) {
 }
 
 // override: behavior when gadget loses input focus.
-void UIHotspot::OnLostFocus() { m_ItemCur = m_ItemOff; }
+void UIHotspot::OnLostFocus() { m_ItemCur = m_ItemOff.get(); }
 
 // override: behavior when gadget gains input focus.
-void UIHotspot::OnGainFocus() { m_ItemCur = m_ItemOn; }
+void UIHotspot::OnGainFocus() { m_ItemCur = m_ItemOn.get(); }
 
 // override: called when resized or before drawing.
 void UIHotspot::OnFormat() {

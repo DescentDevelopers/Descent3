@@ -87,6 +87,8 @@
 #ifndef UIRES_H
 #define UIRES_H
 
+#include <memory>
+
 #include "bitmap.h"
 #include "grdefs.h"
 
@@ -111,7 +113,7 @@ public:
   virtual uint8_t get_alpha() const { return 0; };
   virtual void set_color(ddgr_color col){};
   virtual ddgr_color get_color() const { return GR_BLACK; };
-  virtual UIItem *CopyUIItem() { return nullptr; };
+  virtual std::unique_ptr<UIItem> CopyUIItem() { return nullptr; };
 };
 
 //	UITextItem
@@ -129,12 +131,11 @@ class UITextItem : public UIItem {
   static int m_Sat;
 
 protected:
-  char *m_Text = nullptr;
+  std::unique_ptr<char[]> m_Text;
 
 public:
   static void SetDefaultFont(int font) { UITextItem::m_DefaultFont = font; }
   static void SetSaturationFactor(int sat) { UITextItem::m_Sat = sat; }
-  static char dummy_str[4];
 
 public:
   UITextItem() {
@@ -142,6 +143,7 @@ public:
   };
   UITextItem(const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
   UITextItem(int font, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
+  UITextItem(const UITextItem &item);
   virtual ~UITextItem();
 
   //	if returns false, then it didn't draw.
@@ -150,7 +152,7 @@ public:
   virtual int width();
   virtual int height();
   virtual tUIResClass class_type() const { return uiTextItem; };
-  virtual UIItem *CopyUIItem();
+  virtual std::unique_ptr<UIItem> CopyUIItem();
 
   //	set visual characteristics of text item
   virtual void set_alpha(uint8_t alpha) { m_Alpha = alpha; };
@@ -165,10 +167,10 @@ public:
 
   //	operators
   operator const char *() const { // access m_Text
-    return m_Text;
+    return m_Text.get();
   };
 
-  const char *GetBuffer() const { return m_Text; };
+  const char *GetBuffer() const { return m_Text.get(); };
 
   const UITextItem &operator=(const UITextItem &item);
 };
@@ -193,6 +195,7 @@ public:
   UISnazzyTextItem() { m_flags = m_data.i = m_internaldata.i = 0; };
   UISnazzyTextItem(unsigned flags, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
   UISnazzyTextItem(unsigned flags, int font, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
+  UISnazzyTextItem(const UISnazzyTextItem &item) = default;
 
   void set_data(int data) { m_data.i = data; };
   void set_data(float data) { m_data.f = data; };
@@ -200,7 +203,7 @@ public:
   void set_flags(unsigned flags);
 
   virtual bool draw(int x, int y, tUIDrawClass draw_class = uiDrawNormal);
-  virtual UIItem *CopyUIItem();
+  virtual std::unique_ptr<UIItem> CopyUIItem();
 
   const UISnazzyTextItem &operator=(const UISnazzyTextItem &item);
 };
@@ -242,7 +245,7 @@ public:
   virtual int width();
   virtual int height();
   virtual tUIResClass class_type() const { return uiBitmapItem; };
-  virtual UIItem *CopyUIItem();
+  virtual std::unique_ptr<UIItem> CopyUIItem();
 
   //	flag checking
   bool is_chunked() const { return m_IsChunked; };
@@ -287,7 +290,7 @@ public:
     alpha = alph;
   };
 
-  virtual UIItem *CopyUIItem();
+  virtual std::unique_ptr<UIItem> CopyUIItem();
 
   virtual void set_color(ddgr_color col) { color = col; };
   virtual ddgr_color get_color() const { return color; };

@@ -187,6 +187,8 @@
 #ifndef NEWUI_H
 #define NEWUI_H
 
+#include <memory>
+
 #include "newui_core.h"
 #include "pstypes.h"
 
@@ -499,17 +501,12 @@ class NewUIButton final : public UIButton {
   UIBitmapItem m_BtnDownL, m_BtnDownC, m_BtnDownR;
   UIBitmapItem m_BtnHiliteL, m_BtnHiliteC, m_BtnHiliteR;
 
-  UIItem *m_BtnTitle;
+  std::unique_ptr<UIItem> m_BtnTitle;
 
   int m_TileWidth;
 
 public:
-  NewUIButton() { m_BtnTitle = nullptr; };
-
-  virtual ~NewUIButton() {
-    if (m_BtnTitle)
-      delete m_BtnTitle;
-  };
+  NewUIButton() {};
 
   void Create(UIWindow *parent, int id, UIItem *item, int x, int y, int w, int h, int flags = 0);
   void SetTitle(UIItem *item);

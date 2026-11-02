@@ -62,6 +62,8 @@
 #ifndef NEWUI_CORE_H
 #define NEWUI_CORE_H
 
+#include <memory>
+
 #include "ui.h"
 
 #define N_NEWUI_BMPS 32  // number of ui bitmaps.
@@ -299,7 +301,7 @@ private:
     int8_t type;   // enumerated ui gadget type
     bool changed; // parameters are different than defaults?
     int16_t id;     // id value
-    char *title;  // title of gadget
+    std::unique_ptr<char[]> title; // title of gadget
     union {
       int i;
       int16_t s[2];
@@ -319,17 +321,18 @@ private:
       newuiHotspot *hot;
     } obj;
     void *internal; // internal info.
-  } *m_gadgetlist;
+  };
+  std::unique_ptr<t_gadget_desc[]> m_gadgetlist;
 
   UIWindow *m_parent;
   int m_ngadgets, m_gadgetlimit;
   bool m_realized;
-  char *m_title;
+  std::unique_ptr<char[]> m_title;
 
   t_gadget_desc *AddGadget(int16_t id, int8_t type, const char *title);
 
 public:
-  const char *GetTitle() { return m_title; };
+  const char *GetTitle() { return m_title.get(); };
 };
 
 //	CLASS new button class.
@@ -349,13 +352,13 @@ protected:
   virtual void OnGainFocus();
 
   UIBitmapItem *m_bkg, *m_litbkg; // used to define visual characteristics of button
-  UISnazzyTextItem *m_text;
+  std::unique_ptr<UISnazzyTextItem> m_text;
 
   // this is used in multiple inheritance cases.(flags are additional attributes usually passed when creating gadget)
   void InitStates(const char *name, bool is_long, int16_t flags = 0);
 
 public:
-  UISnazzyTextItem *GetTitle() { return m_text; };
+  UISnazzyTextItem *GetTitle() { return m_text.get(); };
 };
 
 //	CLASS a large option button used in menus.
@@ -444,9 +447,9 @@ protected:
   virtual void OnDetachFromWindow();        // when gadget is detached from window
 
 private:
-  char **m_ItemList; // list of strings.
-  int *m_Virt2Real;  // translates virtual(user) id to real index
-  int *m_Real2Virt;  // translates real index into virtual(user) id
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_ItemList; // list of strings.
+  std::unique_ptr<int[]> m_Virt2Real;                    // translates virtual(user) id to real index
+  std::unique_ptr<int[]> m_Real2Virt;                    // translates real index into virtual(user) id
 
   void (*selectchange_fn)(int);            // callback when selection changes in listbox.
   void (*selectchange_id_fn)(int, void *); // callback when selection changes in listbox..also return the ID
@@ -507,9 +510,9 @@ protected:
   virtual void OnDetachFromWindow();        // when gadget is detached from window
 
 private:
-  char **m_ItemList; // list of strings.
-  int *m_Virt2Real;  // translates virtual(user) id to real index
-  int *m_Real2Virt;  // translates real index into virtual(user) id
+  std::unique_ptr<std::unique_ptr<char[]>[]> m_ItemList; // list of strings.
+  std::unique_ptr<int[]> m_Virt2Real;                    // translates virtual(user) id to real index
+  std::unique_ptr<int[]> m_Real2Virt;                    // translates real index into virtual(user) id
 
   void (*selectchange_fn)(int); // callback when selection changes in listbox.
 
@@ -528,7 +531,7 @@ private:
 
 class newuiHotspot final : public UIGadget {
 private:
-  char *m_title;
+  std::unique_ptr<char[]> m_title;
   int16_t m_alpha, m_alpha_adjust;
   float m_mse_timer;
 
@@ -536,7 +539,7 @@ public:
   newuiHotspot();
 
   void Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags = 0);
-  const char *GetTitle() const { return m_title; };
+  const char *GetTitle() const { return m_title.get(); };
 
 protected:
   virtual void OnDraw(); // this will use the newuiButton drawing scheme

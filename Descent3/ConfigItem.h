@@ -56,6 +56,8 @@
 #ifndef __CONFIGITEM_H_
 #define __CONFIGITEM_H_
 
+#include <memory>
+
 #include "newui.h"
 
 #if defined(POSIX)
@@ -165,7 +167,7 @@ private:
   int curr_x, curr_y;       // current x and y (relative to m_X and m_Y)
   int m_iFlags;             // flags for config item
   int m_iType;              // how is this config item represented
-  int *m_iID;               // unique ID[s] of the config item
+  std::unique_ptr<int[]> m_iID; // unique ID[s] of the config item
   int m_iNumIDs;            // number of IDs
   int m_iItems;             // number of items associated with this config item
   int m_iValueType;         // what kind of value is this config item holding
@@ -175,22 +177,22 @@ private:
   int m_auxY;               // contains the original y passed in
   UIText m_tLabel2;         // Used for Sliders
   NewUIGameWindow *m_hWnd;  // parent window
-  UITextItem **m_tiList;    // list of text items for config item
+  std::unique_ptr<std::unique_ptr<UITextItem>[]> m_tiList; // list of text items for config item
   int m_tiCount;            // number of text items
-  UIHotspot **m_hsList;     // list of hotspot items
+  std::unique_ptr<std::unique_ptr<UIHotspot>[]> m_hsList; // list of hotspot items
   int m_hsCount;            // number of hotspot items
-  NewUISlider **m_sList;    // list of slider items
+  std::unique_ptr<std::unique_ptr<NewUISlider>[]> m_sList; // list of slider items
   int m_sCount;             // number of sliders
-  UIRadioButton **m_rbList; // list of radio buttons
+  std::unique_ptr<std::unique_ptr<UIRadioButton>[]> m_rbList; // list of radio buttons
   int m_rbCount;            // number of radio buttons
-  NewUIButton **m_bList;    // list of button items
+  std::unique_ptr<std::unique_ptr<NewUIButton>[]> m_bList; // list of button items
   int m_bCount;             // number of buttons
-  NewUIListBox **m_lbList;  // list of list boxes
+  std::unique_ptr<std::unique_ptr<NewUIListBox>[]> m_lbList; // list of list boxes
   int m_lbCount;            // number of list boxes
   float m_fMin, m_fMax;     // range min/max
   int m_iRange;             // range
   float m_fUnit;            // scale between min->max to fit in range
-  char *m_labeltext;        // we need to save the label for group boxes
+  std::unique_ptr<char[]> m_labeltext; // we need to save the label for group boxes
   void (*m_fCallback)(float);
   void (*m_iCallback)(int);
   void (*m_bCallback)(bool);

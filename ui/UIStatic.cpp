@@ -88,29 +88,28 @@ void UIText::OnFormat() {
 }
 
 void UIStatic::Create(UIWindow *parent, UIItem *item, int x, int y, int w, int h, int flags) {
-  m_Background = nullptr;
-  if (item)
+  m_Background.reset();
+  if (item) {
     m_Title = item->CopyUIItem();
-  else
-    m_Title = nullptr;
+  } else {
+    m_Title.reset();
+  }
   UIGadget::Create(parent, -1, x, y, w, h, flags);
   UIGadget::Disable();
 }
 
 void UIStatic::SetBackground(UIPrimativeItem *item) {
-  if (m_Background)
-    delete m_Background;
-  m_Background = nullptr;
-  if (item)
-    m_Background = (UIPrimativeItem *)item->CopyUIItem();
+  m_Background.reset();
+  if (item) {
+    m_Background = item->CopyUIItem();
+  }
 }
 
 void UIStatic::SetTitle(UIItem *item) {
-  if (m_Title)
-    delete m_Title;
-  m_Title = nullptr;
-  if (item)
+  m_Title.reset();
+  if (item) {
     m_Title = item->CopyUIItem();
+  }
 }
 
 void UIStatic::OnDraw() {
@@ -142,13 +141,8 @@ void UIStatic::OnFormat() {
 
 // called when gadget is being nuked.
 void UIStatic::OnDestroy() {
-  if (m_Title)
-    delete m_Title;
-  if (m_Background)
-    delete m_Background;
-
-  m_Title = nullptr;
-  m_Background = nullptr;
+  m_Title.reset();
+  m_Background.reset();
 }
 
 //	----------------------------------------------------------------------------

@@ -69,6 +69,8 @@
 #ifndef MMITEM_H
 #define MMITEM_H
 
+#include <memory>
+
 #include "cinematics.h"
 #include "gamefont.h"
 #include "newui.h"
@@ -141,7 +143,7 @@ public:
 class mmInterface;
 // class mmItem
 class mmItem final : public UIGadget {
-  char *m_text;  // text for item
+  std::unique_ptr<char[]> m_text; // text for item
   int16_t m_alpha; // alpha for text item
   int16_t m_satcount;
   tmmItemFX m_curfx; // current effect
