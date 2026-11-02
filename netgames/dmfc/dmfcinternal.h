@@ -255,6 +255,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
+#include <memory>
+#include <vector>
 #include "idmfc.h"
 #include "DMFC.h"
 #include "gamedll_header.h"
@@ -282,7 +284,7 @@ class DMFCBase;
 #define CM_UNPAUSETIME 0xF9      // tell the player to unpause gametime
 
 struct tDeathMsg {
-  char *message;     // pointer to the actual message
+  std::unique_ptr<char[]> message; // the actual message
   bool inuse;        // whether the node is being used
   bool victim_first; // whether the victim is listed first or second in the message
 };
@@ -290,16 +292,16 @@ struct tDeathMsg {
 struct tSPHandler {
   void (*func)(uint8_t *); // Function handler to handle the packet
   void (DMFCBase::*DMFCfunc)(uint8_t *);
-  tSPHandler *next; // Pointer to next handler
+  std::unique_ptr<tSPHandler> next; // Pointer to next handler
   int type;
   uint8_t ID; // ID of special packet
 };
 
 // Struct for Input Command nodes (commands that begin with $)
 struct tInputCommandNode {
-  char *data;
-  char *desc;
-  tInputCommandNode *next;
+  std::unique_ptr<char[]> data;
+  std::unique_ptr<char[]> desc;
+  std::unique_ptr<tInputCommandNode> next;
   void (*handler)(const char *);
   bool allow_remote;
 };
@@ -307,7 +309,7 @@ struct tInputCommandNode {
 struct tPKillerInfo {
   uint8_t slot;
   int kills;
-  tPKillerInfo *next;
+  std::unique_ptr<tPKillerInfo> next;
 };
 
 struct tPExtraInfo {
@@ -347,7 +349,7 @@ public:
 private:
   tPKillerInfo *FindKiller(int slot, tPKillerInfo **prev = nullptr);
   tPKillerInfo *CreateKiller(int slot);
-  tPKillerInfo *killer_list;
+  std::unique_ptr<tPKillerInfo> killer_list;
   tPKillerInfo *curr;
   tPExtraInfo extra_info;
   int m_slot;
@@ -405,8 +407,9 @@ private:
   int m_iState;
   // List of player nums according to the submenu index
   int Pnums[DLLMAX_PLAYERS];
-  // The array of Submenus
-  IMenuItem **SubMenus;
+  // The array of Submenus (for MIT_PLIST/MIT_CUSTOM this holds a single dummy item while SubMenuCount
+  // is the number of list entries)
+  std::vector<std::unique_ptr<IMenuItem>> SubMenus;
   // The title for this Menu
   char m_sTitle[MAX_STRING_LEN];
   // Handler for execute
@@ -439,14 +442,14 @@ struct tDMFCTimerInfo {
 struct tWeaponKillMsg {
   bool inuse;
   bool victim_first;
-  char *message;
+  std::unique_ptr<char[]> message;
 };
 
 struct tBanItem {
   network_address addr;
   char callsign[MAX_CALLSIGN_SIZE];
   char tracker_id[24];
-  tBanItem *next;
+  std::unique_ptr<tBanItem> next;
 };
 
 // This class handles displaying and processing a customizable and detailed stats screen (in-game)
@@ -498,9 +501,9 @@ protected:
   // number of columns for the detailed list
   int m_iDColCount;
   // information for the player list columns
-  tDmfcStatsColumnInfo *m_PLColInfo;
+  std::unique_ptr<tDmfcStatsColumnInfo[]> m_PLColInfo;
   // information for the detailed columns
-  tDmfcStatsColumnInfo *m_DColInfo;
+  std::unique_ptr<tDmfcStatsColumnInfo[]> m_DColInfo;
   // callback for DSCOL_CUSTOM column types for Player list
   void (*m_PLColCallback)(int precord_num, int column_num, char *buffer, int buffer_size);
   // callback for DSCOL_CUSTOM column types for detailed
@@ -512,7 +515,7 @@ protected:
   // callback for team data
   void (*m_TeamCallback)(int team, char *buffer, int buffer_size);
   // name of the multiplayer game
-  char *m_GameName;
+  std::unique_ptr<char[]> m_GameName;
 
   // starting scroll index
   int m_top_index;
@@ -566,7 +569,7 @@ protected:
 struct tHostsNode {
   uint32_t ip;
   uint32_t mask;
-  tHostsNode *next;
+  std::unique_ptr<tHostsNode> next;
 }; // Allow/Deny IP address nodes
 
 // DMFCBase class
@@ -2050,9 +2053,9 @@ protected:
   int MenuBackgroundBMP;
 
   int *Game_interface_mode;
-  tSPHandler *SPRoot;                        // Root node of the Special packet handler list
-  tBanItem *m_BanList;                       // root node of ban addresses
-  tInputCommandNode *m_InputCommandRootNode; // root node for input commands ($ messages)
+  std::unique_ptr<tSPHandler> SPRoot;        // Root node of the Special packet handler list
+  std::unique_ptr<tBanItem> m_BanList;       // root node of ban addresses
+  std::unique_ptr<tInputCommandNode> m_InputCommandRootNode; // root node for input commands ($ messages)
 
   MenuItem *TeamMenuItem;
   MenuItem *AutoBalanceItem;
@@ -2092,8 +2095,8 @@ private:
   void *m_UIUserData;
   uint16_t *Local_object_list;
   uint16_t *Server_object_list;
-  tHostsNode *m_DenyList;
-  tHostsNode *m_AllowList;
+  std::unique_ptr<tHostsNode> m_DenyList;
+  std::unique_ptr<tHostsNode> m_AllowList;
   bool LossGuageEnabled;
   bool DMFCInit;
   bool DisplayTauntIndicator;
@@ -2865,14 +2868,14 @@ void Remote_Logout(int precnum);
 struct tRecord {
   char name[MAX_RECORD_NAME];
   char type;
-  void *data;
-  tRecord *next;
+  std::unique_ptr<char[]> data; // a string (REGT_STRING) or an int (REGT_DWORD)
+  std::unique_ptr<tRecord> next;
 };
 
 struct tKey {
   char name[MAX_RECORD_NAME];
-  tKey *next;
-  tRecord *records;
+  std::unique_ptr<tKey> next;
+  std::unique_ptr<tRecord> records;
 };
 
 class CRegistry {
@@ -2889,15 +2892,13 @@ public:
 
 private:
   void Destroy(void);
-  void DestroyKey(tKey *key);
-  void DestroyRecord(tRecord *record);
   void ExportKey(tKey *key, CFILE *file);
   void ExportRecord(tRecord *record, CFILE *file);
   char *SkipWhite(char *p);
   char *ParseString(char *p, char *buf, int bufsize, char sdelim, char edelim);
   char *ParseToken(char *p, char *buf, int bufsize);
   char name[MAX_RECORD_NAME];
-  tKey *root;
+  std::unique_ptr<tKey> root;
   tKey *currentkey;
 };
 

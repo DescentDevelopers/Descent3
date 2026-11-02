@@ -300,6 +300,7 @@ typedef int socklen_t;
 #endif
 #include <stdlib.h>
 #include <string.h>
+#include <memory>
 #if defined(POSIX)
 #if defined(__LINUX__)
 #include <netinet/in.h>
@@ -496,9 +497,9 @@ struct reliable_socket {
 
   network_address net_addr;         // A D3 network address structure
   network_protocol connection_type; // IPX, IP, modem, etc.
-  reliable_net_rcvbuffer *rbuffers[MAXNETBUFFERS];
+  std::unique_ptr<reliable_net_rcvbuffer> rbuffers[MAXNETBUFFERS];
   SOCKADDR addr;                                    // SOCKADDR of our peer
-  reliable_net_sendbuffer *sbuffers[MAXNETBUFFERS]; // This is an array of pointers for quick sorting
+  std::unique_ptr<reliable_net_sendbuffer> sbuffers[MAXNETBUFFERS]; // This is an array of pointers for quick sorting
   uint16_t ssequence[MAXNETBUFFERS];          // This is the sequence number of the given packet
   uint8_t send_urgent;
 };
@@ -986,8 +987,7 @@ int nw_ReceiveReliable(SOCKET socketid, uint8_t *buffer, int max_len) {
   for (i = 0; i < MAXNETBUFFERS; i++) {
     if ((rsocket->rsequence[i] == rsocket->oursequence) && (rsocket->rbuffers[i])) {
       memcpy(buffer, rsocket->rbuffers[i]->buffer, rsocket->recv_len[i]);
-      mem_free(rsocket->rbuffers[i]);
-      rsocket->rbuffers[i] = nullptr;
+      rsocket->rbuffers[i].reset();
       rsocket->rsequence[i] = 0;
 /*
       mprintf(0,"Found packet for upper layer in nw_ReceiveReliable() %d bytes. seq:%d.\n",
@@ -1124,7 +1124,7 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
       network_address send_address;
       memset(&send_address, 0, sizeof(network_address));
 
-      memcpy(send_header.data, rsocket->sbuffers[pnum], rsocket->send_len[pnum]);
+      memcpy(send_header.data, rsocket->sbuffers[pnum]->buffer, rsocket->send_len[pnum]);
       send_header.data_len = INTEL_SHORT(rsocket->send_len[pnum]);
       send_header.type = RNT_DATA;
       send_header.send_time = INTEL_FLOAT(timer_GetTime());
@@ -1166,7 +1166,7 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
       // mprintf(0,"Sending in nw_SendReliable() %d bytes seq=%d.\n",length,rsocket->theirsequence);
 
       rsocket->send_len[i] = length;
-      rsocket->sbuffers[i] = mem_rmalloc<reliable_net_sendbuffer>();
+      rsocket->sbuffers[i] = std::unique_ptr<reliable_net_sendbuffer>(new reliable_net_sendbuffer);
 
       memcpy(rsocket->sbuffers[i]->buffer, data, length);
 
@@ -1425,14 +1425,15 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
         for (i = 0; i < MAXNETBUFFERS; i++) {
           uint32_t *acksig = (uint32_t *)&rcv_buff.data;
           *acksig = INTEL_INT(*acksig);
-          if (rsocket)
-            if (rsocket->sbuffers[i])
+          if (rsocket) {
+            if (rsocket->sbuffers[i]) {
               if (rsocket->ssequence[i] == *acksig) {
                 // mprintf(0,"Received ACK %d\n",*acksig);
-                mem_free(rsocket->sbuffers[i]);
-                rsocket->sbuffers[i] = nullptr;
+                rsocket->sbuffers[i].reset();
                 rsocket->ssequence[i] = 0;
               }
+            }
+          }
         }
         // remove that packet from the send buffer
         rsocket->last_packet_received = timer_GetTime();
@@ -1488,7 +1489,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
                 rsocket->recv_len[i] = max_len; // INTEL_SHORT(rcv_buff.data_len);
               else
                 rsocket->recv_len[i] = INTEL_SHORT(rcv_buff.data_len);
-              rsocket->rbuffers[i] = mem_rmalloc<reliable_net_rcvbuffer>();
+              rsocket->rbuffers[i] = std::unique_ptr<reliable_net_rcvbuffer>(new reliable_net_rcvbuffer);
               memcpy(rsocket->rbuffers[i]->buffer, rcv_buff.data, rsocket->recv_len[i]);
               rsocket->rsequence[i] = INTEL_SHORT(rcv_buff.seq);
               // mprintf(0,"Adding packet to receive buffer in nw_ReceiveReliable().\n");
@@ -1527,7 +1528,7 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
         for (i = 1; i < MAXRELIABLESOCKETS; i++) {
           if (reliable_sockets[i].status == RNF_UNUSED) {
             // Add the new connection here.
-            memset(&reliable_sockets[i], 0, sizeof(reliable_socket));
+            reliable_sockets[i] = {};
             reliable_sockets[i].connection_type = server_addr->connection_type;
             memcpy(&reliable_sockets[i].net_addr, server_addr, sizeof(network_address));
             reliable_sockets[i].last_packet_received = timer_GetTime();
@@ -1552,7 +1553,7 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
             if (rcode == SOCKET_ERROR) {
               Net_connect_socket_id = INVALID_SOCKET;
               reliable_sockets[i].status = RNF_UNUSED;
-              memset(&reliable_sockets[i], 0, sizeof(reliable_socket));
+              reliable_sockets[i] = {};
               LOG_WARNING << "Unable to send packet in nw_ConnectToServer()";
 
               Net_connect_sequence = R_NET_SEQUENCE_FAILED;
@@ -1678,13 +1679,11 @@ void nw_CloseSocket(SOCKET *sockp) {
   int i;
   for (i = 0; i < MAXNETBUFFERS; i++) {
     if (reliable_sockets[*sockp].rbuffers[i]) {
-      mem_free(reliable_sockets[*sockp].rbuffers[i]);
-      reliable_sockets[*sockp].rbuffers[i] = nullptr;
+      reliable_sockets[*sockp].rbuffers[i].reset();
       reliable_sockets[*sockp].rsequence[i] = 0;
     }
     if (reliable_sockets[*sockp].sbuffers[i]) {
-      mem_free(reliable_sockets[*sockp].sbuffers[i]);
-      reliable_sockets[*sockp].sbuffers[i] = nullptr;
+      reliable_sockets[*sockp].sbuffers[i].reset();
       reliable_sockets[*sockp].rsequence[i] = 0;
     }
   }
@@ -1707,7 +1706,7 @@ void nw_CloseSocket(SOCKET *sockp) {
 
   nw_SendWithID(NWT_RELIABLE, (uint8_t *)&diss_conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
 
-  memset(&reliable_sockets[*sockp], 0, sizeof(reliable_socket));
+  reliable_sockets[*sockp] = {};
   reliable_sockets[*sockp].status = RNF_UNUSED;
 }
 
@@ -2504,7 +2503,7 @@ void nw_ReliableResend(void) {
       if (rsocket->status == RNF_LIMBO)
         if ((timer_GetTime() - rsocket->last_packet_received) > NETTIMEOUT) {
           LOG_WARNING.printf("Reliable (but in limbo) socket (%d) timed out in nw_WorkReliable().", j);
-          memset(rsocket, 0, sizeof(reliable_socket));
+          *rsocket = {};
           rsocket->status = RNF_UNUSED; // Won't work if this is an outgoing connection.
         }
     } else {

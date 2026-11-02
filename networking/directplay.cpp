@@ -72,6 +72,8 @@
 #include <winsock.h>
 #include <objbase.h>
 
+#include <memory>
+
 #include "descent.h"
 #include "player.h"
 #include "appdatabase.h"
@@ -91,7 +93,7 @@ int Num_directplay_games = 0;
 
 char Directplay_session_desc[MAX_DP_GAMES][200];
 bool Directplay_lobby_launched_game = false;
-void *lpAddress = nullptr;
+std::unique_ptr<uint8_t[]> lpAddress;
 
 // char Directplay_modem_list[MAX_MODEMS][200];
 modem_list Modems_found[MAX_MODEMS];
@@ -100,7 +102,8 @@ int Num_modems_found = 0;
 LPVOID lpConnectionBuffer;
 LPDIRECTPLAY4A lpDirectPlay4A = nullptr;
 LPDIRECTPLAYLOBBY3A lpDirectPlayLobby3A = nullptr;
-LPDPLCONNECTION lpdplconnection = nullptr;
+// Variable-size DPLCONNECTION blob (the struct is followed by the data its pointers refer to)
+std::unique_ptr<uint8_t[]> lpdplconnection;
 
 // {915CE160-3125-11d2-BB3D-00104B27BFF0}
 static const GUID DPD3_GUID = {0x915ce160, 0x3125, 0x11d2, {0xbb, 0x3d, 0x0, 0x10, 0x4b, 0x27, 0xbf, 0xf0}};
@@ -109,7 +112,7 @@ uint32_t Pending_dp_conn[MAX_PENDING_NEW_CONNECTIONS];
 
 struct dpconnections {
   char name[100];
-  void *conn;
+  std::unique_ptr<uint8_t[]> conn;
 };
 
 dpconnections dpconns[MAX_DIRECTPLAY_CONNECTIONS];
@@ -121,8 +124,8 @@ BOOL FAR PASCAL DirectPlayEnumConnectionsCallback(LPCGUID lpguidSP, LPVOID lpCon
   // Do something with the list of connections
   for (int i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
     if (dpconns[i].conn == nullptr) {
-      dpconns[i].conn = mem_malloc(dwConnectionSize);
-      memcpy(dpconns[i].conn, lpConnection, dwConnectionSize);
+      dpconns[i].conn = std::make_unique<uint8_t[]>(dwConnectionSize);
+      memcpy(dpconns[i].conn.get(), lpConnection, dwConnectionSize);
       strcpy(dpconns[i].name, lpName->lpszShortNameA);
       return (TRUE);
     }
@@ -161,13 +164,11 @@ int dp_SelectDirectPlayConnection(char *name) {
   if (!lpDirectPlay4A)
     return 0;
   if (name) {
-    if (lpAddress)
-      mem_free(lpAddress);
-    lpAddress = nullptr;
+    lpAddress.reset();
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (stricmp(dpconns[i].name, name) == 0) {
         LOG_DEBUG.printf("Found DirectPlay connection: %s", name);
-        connection = dpconns[i].conn;
+        connection = dpconns[i].conn.get();
         break;
       }
     }
@@ -176,16 +177,13 @@ int dp_SelectDirectPlayConnection(char *name) {
       return 0;
     }
   } else
-    connection = lpAddress;
-
-  memset(&dpconns, 0, sizeof(dpconnections) * MAX_DIRECTPLAY_CONNECTIONS);
+    connection = lpAddress.get();
 
   hr = lpDirectPlay4A->InitializeConnection(connection, 0);
 
   for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
     if (dpconns[i].conn != nullptr) {
-      mem_free(dpconns[i].conn);
-      dpconns[i].conn = nullptr;
+      dpconns[i].conn.reset();
       dpconns[i].name[0] = '\0';
     }
   }
@@ -225,11 +223,9 @@ int dp_InitDirectPlay(char *conn_name, void *parms, int num_elements) {
       hr = lpDirectPlayLobby3A->CreateCompoundAddress((LPDPCOMPOUNDADDRESSELEMENT)parms, num_elements, nullptr,
                                                       &dwAddressSize);
       if (hr == DPERR_BUFFERTOOSMALL) {
-        if (lpAddress)
-          mem_free(lpAddress);
-        lpAddress = mem_malloc(dwAddressSize);
-        hr = lpDirectPlayLobby3A->CreateCompoundAddress((LPDPCOMPOUNDADDRESSELEMENT)parms, num_elements, lpAddress,
-                                                        &dwAddressSize);
+        lpAddress = std::make_unique<uint8_t[]>(dwAddressSize);
+        hr = lpDirectPlayLobby3A->CreateCompoundAddress((LPDPCOMPOUNDADDRESSELEMENT)parms, num_elements,
+                                                        lpAddress.get(), &dwAddressSize);
         if (FAILED(hr)) {
           LOG_ERROR << "lpDirectPlayLobby3A->CreateCompoundAddress() failed. DirectPlay *NOT* initialized!";
           return 0;
@@ -504,17 +500,12 @@ void dp_ShutdownDirectPlay() {
   LOG_DEBUG << "Freeing DirectPlay memory";
   for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
     if (dpconns[i].conn != nullptr) {
-      mem_free(dpconns[i].conn);
-      dpconns[i].conn = nullptr;
+      dpconns[i].conn.reset();
       dpconns[i].name[0] = '\0';
     }
   }
-  if (lpdplconnection)
-    mem_free(lpdplconnection);
-  if (lpAddress)
-    mem_free(lpAddress);
-  lpAddress = nullptr;
-  lpdplconnection = nullptr;
+  lpdplconnection.reset();
+  lpAddress.reset();
   // Delete any previous directplay instance
   LOG_DEBUG << "Releasing DirectPlay COM object (lpDirectPlay4A)";
   // if(lpDirectPlay4A)
@@ -579,7 +570,7 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (stricmp(dpconns[i].name, "Modem Connection For DirectPlay") == 0) {
         // mprintf(0,"Found DirectPlay connection: %s\n",name);
-        connection = dpconns[i].conn;
+        connection = dpconns[i].conn.get();
         break;
       }
     }
@@ -588,14 +579,11 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
       return 0;
     }
 
-    memset(&dpconns, 0, sizeof(dpconnections) * MAX_DIRECTPLAY_CONNECTIONS);
-
     hr = lpTempDP4->InitializeConnection(connection, 0);
 
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (dpconns[i].conn != nullptr) {
-        mem_free(dpconns[i].conn);
-        dpconns[i].conn = nullptr;
+        dpconns[i].conn.reset();
         dpconns[i].name[0] = '\0';
       }
     }
@@ -702,8 +690,8 @@ bool dp_DidLobbyLaunchGame() {
       lpDirectPlayLobby3A = nullptr;
       return false;
     }
-    lpdplconnection = (LPDPLCONNECTION)mem_malloc(buffersize);
-    hr = lpDirectPlayLobby3A->GetConnectionSettings(0, lpdplconnection, &buffersize);
+    lpdplconnection = std::make_unique<uint8_t[]>(buffersize);
+    hr = lpDirectPlayLobby3A->GetConnectionSettings(0, lpdplconnection.get(), &buffersize);
     lpDirectPlayLobby3A->Release();
     lpDirectPlayLobby3A = nullptr;
     if (FAILED(hr)) {
@@ -731,12 +719,13 @@ bool dp_AutoConnect() {
   if (!Directplay_lobby_launched_game)
     return false;
 
-  if (lpdplconnection->dwFlags == DPLCONNECTION_CREATESESSION) {
+  auto dplconnection = reinterpret_cast<LPDPLCONNECTION>(lpdplconnection.get());
+  if (dplconnection->dwFlags == DPLCONNECTION_CREATESESSION) {
     //	We are hosting a game
     Use_DirectPlay = true;
     // What level do we use? what dll? what pps, etc....
 
-  } else if (lpdplconnection->dwFlags == DPLCONNECTION_JOINSESSION) {
+  } else if (dplconnection->dwFlags == DPLCONNECTION_JOINSESSION) {
     //	We are joining a game
     Use_DirectPlay = true;
   }

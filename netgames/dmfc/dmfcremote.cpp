@@ -53,6 +53,7 @@
 #include "dmfcinternal.h"
 #include "encryption.h"
 
+#include <memory>
 #include <stdlib.h>
 #include <memory.h>
 
@@ -68,8 +69,8 @@ static char Remote_Admin_pass[64];
 bool Use_remote_admin = false;
 static bool IAmAnAdmin = false;
 
-static void Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer);
-static void Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer);
+static std::unique_ptr<uint8_t[]> Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size);
+static std::unique_ptr<uint8_t[]> Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size);
 
 // Sends a string to the server (function encrypts it before sending)
 void Remote_SendStringToServer(const char *string);
@@ -416,14 +417,14 @@ void Remote_SendMessage(int client, const char *message) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
-  char *allocated = nullptr;
+  std::unique_ptr<char[]> allocated;
   int len = strlen(message);
   const int maxlen = ((MAX_GAME_DATA_SIZE - 5) < 511) ? (MAX_GAME_DATA_SIZE - 5) : 511;
   if (len > maxlen) {
-    allocated = new char[maxlen + 1];
-    memcpy(allocated, message, maxlen);
+    allocated = std::make_unique<char[]>(maxlen + 1);
+    memcpy(allocated.get(), message, maxlen);
     allocated[maxlen] = '\0';
-    message = allocated;
+    message = allocated.get();
     len = maxlen;
   }
 
@@ -434,7 +435,6 @@ void Remote_SendMessage(int client, const char *message) {
   MultiAddString(message, data, &count);
 
   basethis->SendPacket(data, count, client);
-  delete[] allocated;
 }
 
 // Receives a message from the server
@@ -456,7 +456,6 @@ void Remote_SendStringToServer(const char *string) {
 
   int slen;
   int new_strlen;
-  uint8_t *packet_data;
 
   slen = strlen(string);
   player_record *pr;
@@ -468,7 +467,8 @@ void Remote_SendStringToServer(const char *string) {
     return;
   }
 
-  Remote_encrypt(Authorized_players[prec].curr_key, slen, (uint8_t *)string, &new_strlen, &packet_data);
+  std::unique_ptr<uint8_t[]> packet_data =
+      Remote_encrypt(Authorized_players[prec].curr_key, slen, (uint8_t *)string, &new_strlen);
 
   if (new_strlen == 0) {
     LOG_ERROR << "COULDN'T ENCRYPT";
@@ -483,11 +483,10 @@ void Remote_SendStringToServer(const char *string) {
 
   MultiAddByte(prec, data, &count);
   MultiAddInt(new_strlen, data, &count);
-  memcpy(&data[count], packet_data, new_strlen);
+  memcpy(&data[count], packet_data.get(), new_strlen);
   count += new_strlen;
 
   basethis->SendPacket(data, count, SP_SERVER);
-  free(packet_data);
 }
 
 // Handles remote admin packets from a client
@@ -522,23 +521,19 @@ void Remote_RecieveStringFromServer(uint8_t *data, char *buffer, int size) {
   if (len <= 0)
     return;
 
-  uint8_t *packet;
-  packet = (uint8_t *)malloc(len);
-  memcpy(packet, &data[count], len);
+  auto packet = std::make_unique<uint8_t[]>(len);
+  memcpy(packet.get(), &data[count], len);
   count += len;
 
   int new_size;
-  uint8_t *new_buffer;
-  Remote_decrypt(Authorized_players[prec].curr_key, len, packet, &new_size, &new_buffer);
+  std::unique_ptr<uint8_t[]> new_buffer =
+      Remote_decrypt(Authorized_players[prec].curr_key, len, packet.get(), &new_size);
   if (new_buffer) {
-    strncpy(buffer, (char *)new_buffer, size - 1);
+    strncpy(buffer, (char *)new_buffer.get(), size - 1);
     buffer[size - 1] = '\0';
-    free(new_buffer);
   } else {
     *buffer = '\0';
   }
-
-  free(packet);
 }
 
 // Sends a string to a client (function encrypts it before sending)
@@ -550,7 +545,6 @@ void Remote_SendStringToClient(int client, const char *string) {
 
   int slen;
   int new_strlen;
-  uint8_t *packet_data;
 
   slen = strlen(string);
   player_record *pr;
@@ -568,7 +562,8 @@ void Remote_SendStringToClient(int client, const char *string) {
     return;
   }
 
-  Remote_encrypt(Authorized_players[prec].curr_key, slen, (uint8_t *)string, &new_strlen, &packet_data);
+  std::unique_ptr<uint8_t[]> packet_data =
+      Remote_encrypt(Authorized_players[prec].curr_key, slen, (uint8_t *)string, &new_strlen);
 
   if (new_strlen == 0) {
     LOG_ERROR << "COULDN'T ENCRYPT";
@@ -582,11 +577,10 @@ void Remote_SendStringToClient(int client, const char *string) {
   basethis->StartPacket(data, SPID_REMOTETOCLIENT, &count);
 
   MultiAddInt(new_strlen, data, &count);
-  memcpy(&data[count], packet_data, new_strlen);
+  memcpy(&data[count], packet_data.get(), new_strlen);
   count += new_strlen;
 
   basethis->SendPacket(data, count, client);
-  free(packet_data);
 }
 
 // Handles remote admin packets from a client
@@ -612,28 +606,25 @@ int Remote_RecieveStringFromClient(uint8_t *data, char *buffer, int size) {
   if (len <= 0)
     return -1;
 
-  uint8_t *packet;
-  packet = (uint8_t *)malloc(len);
-  memcpy(packet, &data[count], len);
+  auto packet = std::make_unique<uint8_t[]>(len);
+  memcpy(packet.get(), &data[count], len);
   count += len;
 
   int new_size;
-  uint8_t *new_buffer;
-  Remote_decrypt(Authorized_players[prec].curr_key, len, packet, &new_size, &new_buffer);
+  std::unique_ptr<uint8_t[]> new_buffer =
+      Remote_decrypt(Authorized_players[prec].curr_key, len, packet.get(), &new_size);
   if (new_buffer) {
     size = (len < size) ? len + 1 : size;
-    strncpy(buffer, (char *)new_buffer, size - 1);
+    strncpy(buffer, (char *)new_buffer.get(), size - 1);
     buffer[size - 1] = '\0';
-    free(new_buffer);
   } else {
     *buffer = '\0';
   }
 
-  free(packet);
   return prec;
 }
 
-void Remote_pad_buffer(int orig_size, const uint8_t *orig_buffer, int *new_size, uint8_t **new_buffer) {
+std::unique_ptr<uint8_t[]> Remote_pad_buffer(int orig_size, const uint8_t *orig_buffer, int *new_size) {
   // bump buffer up to size of mod 8
   *new_size = orig_size;
   if (orig_size < 8 || (orig_size % 8) != 0) {
@@ -642,22 +633,13 @@ void Remote_pad_buffer(int orig_size, const uint8_t *orig_buffer, int *new_size,
     *new_size = (chunks + 1) * 8;
   }
 
-  *new_buffer = (uint8_t *)malloc(*new_size);
-  if (!(*new_buffer)) {
-    *new_size = 0;
-    return;
-  }
-  memset(*new_buffer, 0, *new_size);
-  memcpy(*new_buffer, orig_buffer, orig_size);
+  auto new_buffer = std::make_unique<uint8_t[]>(*new_size);
+  memcpy(new_buffer.get(), orig_buffer, orig_size);
+  return new_buffer;
 }
 
-static void Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer) {
-  *new_buffer = nullptr;
-
-  uint8_t *buff;
-  Remote_pad_buffer(size_buffer, buffer, new_size, &buff);
-  if (*new_size == 0)
-    return;
+static std::unique_ptr<uint8_t[]> Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size) {
+  std::unique_ptr<uint8_t[]> buff = Remote_pad_buffer(size_buffer, buffer, new_size);
 
   IceKey ice(0);
 
@@ -665,10 +647,7 @@ static void Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int
 
   int i, num_chunks = 0;
   int chunk_offset = 0;
-  uint8_t *cipher;
-  cipher = (uint8_t *)malloc(*new_size);
-  if (!cipher)
-    return;
+  auto cipher = std::make_unique<uint8_t[]>(*new_size);
 
   num_chunks = (*new_size) / 8;
   for (i = 0; i < num_chunks; i++) {
@@ -676,17 +655,11 @@ static void Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int
     chunk_offset += 8;
   }
 
-  free(buff);
-  *new_buffer = cipher;
+  return cipher;
 }
 
-static void Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer) {
-  *new_buffer = nullptr;
-
-  uint8_t *buff;
-  Remote_pad_buffer(size_buffer, buffer, new_size, &buff);
-  if (*new_size == 0)
-    return;
+static std::unique_ptr<uint8_t[]> Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size) {
+  std::unique_ptr<uint8_t[]> buff = Remote_pad_buffer(size_buffer, buffer, new_size);
 
   IceKey ice(0);
 
@@ -694,10 +667,7 @@ static void Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int
 
   int i, num_chunks = 0;
   int chunk_offset = 0;
-  uint8_t *cipher;
-  cipher = (uint8_t *)malloc(*new_size);
-  if (!cipher)
-    return;
+  auto cipher = std::make_unique<uint8_t[]>(*new_size);
 
   num_chunks = (*new_size) / 8;
   for (i = 0; i < num_chunks; i++) {
@@ -705,6 +675,5 @@ static void Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int
     chunk_offset += 8;
   }
 
-  free(buff);
-  *new_buffer = cipher;
+  return cipher;
 }

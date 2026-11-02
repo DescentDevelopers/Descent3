@@ -120,62 +120,32 @@
 // func = Function handler to handle the packet.  Must be declared like void MyFunction(uint8_t *data);
 void DMFCBase::RegisterPacketReceiver(uint8_t id, void (*func)(uint8_t *)) {
   // go to the last handler
-  tSPHandler *current, *last;
-
-  if (!SPRoot) {
-    // handle special case for first node being added
-    SPRoot = (tSPHandler *)malloc(sizeof(tSPHandler));
-    if (!SPRoot)
-      return;
-    current = SPRoot;
-  } else {
-    last = current = SPRoot;
-    while (current) {
-      last = current;
-      current = current->next;
-    }
-
-    // allocate memory for the node
-    current = (tSPHandler *)malloc(sizeof(tSPHandler));
-    if (!current)
-      return;
-    // add it to the list
-    last->next = current;
+  std::unique_ptr<tSPHandler> *tail = &SPRoot;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
 
+  // allocate the node and add it to the list
+  *tail = std::make_unique<tSPHandler>();
+  tSPHandler *current = tail->get();
+
   // fill in the struct
-  current->next = nullptr;
   current->ID = id;
   current->type = SPH_FUNC;
   current->func = func;
 }
 void DMFCBase::RegisterPacketReceiver(uint8_t id, void (DMFCBase::*func)(uint8_t *)) {
   // go to the last handler
-  tSPHandler *current, *last;
-
-  if (!SPRoot) {
-    // handle special case for first node being added
-    SPRoot = (tSPHandler *)malloc(sizeof(tSPHandler));
-    if (!SPRoot)
-      return;
-    current = SPRoot;
-  } else {
-    last = current = SPRoot;
-    while (current) {
-      last = current;
-      current = current->next;
-    }
-
-    // allocate memory for the node
-    current = (tSPHandler *)malloc(sizeof(tSPHandler));
-    if (!current)
-      return;
-    // add it to the list
-    last->next = current;
+  std::unique_ptr<tSPHandler> *tail = &SPRoot;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
 
+  // allocate the node and add it to the list
+  *tail = std::make_unique<tSPHandler>();
+  tSPHandler *current = tail->get();
+
   // fill in the struct
-  current->next = nullptr;
   current->ID = id;
   current->type = SPH_DMFCFUNC;
   current->DMFCfunc = func;

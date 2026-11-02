@@ -267,6 +267,7 @@
 #include <filesystem>
 #include <functional>
 #include <map>
+#include <memory>
 #include <regex>
 #include <string>
 
@@ -838,10 +839,11 @@ struct msn_list {
   char msn_name[_MAX_PATH];
   char msn_file[_MAX_PATH];
   void *ti;
-  struct msn_list *next;
+  std::unique_ptr<msn_list> next;
 };
 
-msn_list *FirstMsn, *CurrMsn, *TmpMsn;
+std::unique_ptr<msn_list> FirstMsn;
+msn_list *CurrMsn;
 
 #ifdef WIN32
 #include "directplay.h"
@@ -1027,43 +1029,36 @@ void CommonDLLInit(int *api_func) {
   *DLLSupports_score_api = false;
 }
 
-void AddMsnItem(msn_list *new_msn) {
-  CurrMsn = FirstMsn;
+void AddMsnItem(std::unique_ptr<msn_list> new_msn) {
+  CurrMsn = FirstMsn.get();
   if (CurrMsn) {
     while (CurrMsn->next) {
-      CurrMsn = CurrMsn->next;
+      CurrMsn = CurrMsn->next.get();
     }
-    CurrMsn->next = new_msn;
-    CurrMsn = CurrMsn->next;
+    CurrMsn->next = std::move(new_msn);
+    CurrMsn = CurrMsn->next.get();
   } else {
-    FirstMsn = new_msn;
-    CurrMsn = FirstMsn;
+    FirstMsn = std::move(new_msn);
+    CurrMsn = FirstMsn.get();
   }
-  CurrMsn->next = nullptr;
 }
 
 void RemoveAllMsnItems(void) {
-  CurrMsn = FirstMsn;
-  if (CurrMsn) {
-    while (CurrMsn->next) {
-      TmpMsn = CurrMsn;
-      DLLRemoveUITextItem(CurrMsn->ti);
-      CurrMsn = CurrMsn->next;
-      DLLmem_free(TmpMsn);
-    }
-    DLLRemoveUITextItem(CurrMsn->ti);
-    DLLmem_free(CurrMsn);
+  // The UI text items belong to the engine; release them before the nodes go away
+  while (FirstMsn) {
+    DLLRemoveUITextItem(FirstMsn->ti);
+    FirstMsn = std::move(FirstMsn->next);
   }
-  FirstMsn = nullptr;
+  CurrMsn = nullptr;
 }
 
 msn_list *FindMsnItem(const char *name) {
-  CurrMsn = FirstMsn;
+  CurrMsn = FirstMsn.get();
   if (CurrMsn) {
     while (CurrMsn->next) {
       if (strcmp(CurrMsn->msn_name, name) == 0)
         return CurrMsn;
-      CurrMsn = CurrMsn->next;
+      CurrMsn = CurrMsn->next.get();
     }
     if (strcmp(CurrMsn->msn_name, name) == 0)
       return CurrMsn;
@@ -1204,11 +1199,12 @@ int StartMultiplayerGameMenu() {
       if (DLLIsMissionMultiPlayable(mission_name) &&
           (stricmp("d3_2.mn3", PATH_TO_CSTR(mission_name)) != 0)) {
         LOG_INFO << "Found a mission: " << mission_name;
-        mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
+        auto new_mi = std::make_unique<msn_list>();
+        mi = new_mi.get();
         strcpy(mi->msn_name, DLLGetMissionName(mission_name));
         strcpy(mi->msn_file, PATH_TO_CSTR(mission_name));
         mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
-        AddMsnItem(mi);
+        AddMsnItem(std::move(new_mi));
         DLLListAddItem(list_1, mi->ti);
       }
     });
@@ -1217,11 +1213,12 @@ int StartMultiplayerGameMenu() {
 #ifdef RELEASE
   // TODO: Make sure the main mission is always listed -- even on a minimal install
   if (!FindMsnItem("Descent 3: Retribution")) {
-    mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
+    auto new_mi = std::make_unique<msn_list>();
+    mi = new_mi.get();
 
     strcpy(mi->msn_name, "Descent 3: Retribution");
     strcpy(mi->msn_file, "d3.mn3");
-    AddMsnItem(mi);
+    AddMsnItem(std::move(new_mi));
     mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO);
     DLLListAddItem(list_1, mi->ti);
   }

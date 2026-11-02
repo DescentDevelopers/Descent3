@@ -101,11 +101,9 @@ void PRec_Init(void) {
   int i;
 
   for (i = 0; i < MAX_PLAYER_RECORDS; i++) {
-    memset(&Player_records[i], 0, sizeof(player_record));
+    Player_records[i] = {};
     Player_records[i].state = STATE_EMPTY;
     Player_records[i].user_info = nullptr;
-    Player_records[i].pinfo = nullptr;
-    Player_records[i].tracker_id = nullptr;
     Player_records[i].user_info_size = 0;
     Player_records[i].total_time_in_game = 0;
   }
@@ -122,13 +120,8 @@ void PRec_Close(void) {
     if (Player_records[i].user_info)
       free(Player_records[i].user_info);
 
-    if (Player_records[i].tracker_id)
-      free(Player_records[i].tracker_id);
-
-    if (Player_records[i].pinfo) {
-      delete Player_records[i].pinfo;
-      Player_records[i].pinfo = nullptr;
-    }
+    Player_records[i].tracker_id.reset();
+    Player_records[i].pinfo.reset();
   }
   Player_record_pack_cb = nullptr;
   Player_record_unpack_cb = nullptr;
@@ -267,7 +260,7 @@ int PRec_FindPlayer(const char *callsign, network_address *addr, const char *tra
         if (tracker_id && good_to_use) {
           // we need to check the master tracker_id
           if (Player_records[i].tracker_id) {
-            if (strcmp(Player_records[i].tracker_id, tracker_id)) {
+            if (strcmp(Player_records[i].tracker_id.get(), tracker_id)) {
               good_to_use = false; // the tracker_id doesn't match
             }
           } else {
@@ -319,15 +312,9 @@ int PRec_GetFreeSlot(void) {
     }
 
     // clear out this player
-    if (Player_records[old_player].tracker_id)
-      free(Player_records[old_player].tracker_id);
     void *save_ptr = Player_records[old_player].user_info;
     int size = Player_records[old_player].user_info_size;
-    if (Player_records[old_player].pinfo) {
-      delete Player_records[old_player].pinfo;
-      Player_records[old_player].pinfo = nullptr;
-    }
-    memset(&Player_records[old_player], 0, sizeof(player_record));
+    Player_records[old_player] = {};
     Player_records[old_player].state = STATE_EMPTY;
     Player_records[old_player].user_info = save_ptr;
     Player_records[old_player].user_info_size = size;
@@ -362,18 +349,15 @@ bool PRec_AssignPlayerToSlot(int pnum, int slot, player *players_array, netplaye
   if (basethis->IsMasterTrackerGame() && (basethis->Players[pnum].tracker_id)) {
     // we are in a master tracker game, so save the tracker ID
     LOG_INFO.printf("PREC: Got a PXO Player ID of %s", basethis->Players[pnum].tracker_id);
-    Player_records[slot].tracker_id = strdup(basethis->Players[pnum].tracker_id);
+    Player_records[slot].tracker_id = std::make_unique<char[]>(strlen(basethis->Players[pnum].tracker_id) + 1);
+    strcpy(Player_records[slot].tracker_id.get(), basethis->Players[pnum].tracker_id);
   } else {
     // either it's not a tracker game or the tracker_id member of players is void
-    Player_records[slot].tracker_id = nullptr;
+    Player_records[slot].tracker_id.reset();
   }
 
   memset(&Player_records[slot].dstats, 0, sizeof(t_dstat));
-  if (Player_records[slot].pinfo) {
-    delete Player_records[slot].pinfo;
-    Player_records[slot].pinfo = nullptr;
-  }
-  Player_records[slot].pinfo = new PInfo(slot);
+  Player_records[slot].pinfo = std::make_unique<PInfo>(slot);
   return true;
 }
 
@@ -399,7 +383,7 @@ bool PRec_ReconnectPlayerToSlot(int pnum, int slot, player *players_array, netpl
 
   if (!Player_records[slot].pinfo) {
     // try to create the pinfo now
-    Player_records[slot].pinfo = new PInfo(slot);
+    Player_records[slot].pinfo = std::make_unique<PInfo>(slot);
   }
   return true;
 }
@@ -514,7 +498,7 @@ void PRec_SendPRecToPlayer(int pnum) {
       uint8_t tracker_len = 0;
 
       if (Player_records[i].tracker_id) {
-        tracker_len = strlen(Player_records[i].tracker_id);
+        tracker_len = strlen(Player_records[i].tracker_id.get());
       }
 
       count = 0;
@@ -533,7 +517,7 @@ void PRec_SendPRecToPlayer(int pnum) {
         MultiAddByte(1, data, &count);
         MultiAddByte(tracker_len, data, &count); // pack byte (tracker len)
         if (tracker_len) {
-          memcpy(&data[count], Player_records[i].tracker_id, tracker_len);
+          memcpy(&data[count], Player_records[i].tracker_id.get(), tracker_len);
           count += tracker_len; // pack bytes (tracker_id)
         }
       } else {
@@ -600,14 +584,9 @@ void PRec_ReceivePRecFromServer(uint8_t *data) {
     ASSERT(basethis->IsMasterTrackerGame() != 0);
     // there is tracker_id data coming in
     uint8_t len = MultiGetByte(data, &count);
-    pr->tracker_id = (char *)malloc(len + 1);
-
-    if (pr->tracker_id) {
-      memcpy(pr->tracker_id, &data[count], len);
-      pr->tracker_id[len] = '\0';
-    } else {
-      LOG_WARNING << "PREC: UH OH!!! OUT OF MEMORY";
-    }
+    pr->tracker_id = std::make_unique<char[]>(len + 1);
+    memcpy(pr->tracker_id.get(), &data[count], len);
+    pr->tracker_id[len] = '\0';
     count += len;
   } else {
     ASSERT(basethis->IsMasterTrackerGame() == 0);
@@ -629,20 +608,15 @@ void PRec_ReceivePRecFromServer(uint8_t *data) {
     ASSERT(pr->user_info == nullptr);
   }
 
-  if (pr->pinfo) {
-    delete pr->pinfo;
-  }
-  pr->pinfo = new PInfo(slot);
+  pr->pinfo = std::make_unique<PInfo>(slot);
 
   // PInfo stuff
   pinfo_size = MultiGetInt(data, &count);
   if (pinfo_size > 0) {
-    if (pr->pinfo)
-      pr->pinfo->UnpackData(&data[count], pinfo_size);
+    pr->pinfo->UnpackData(&data[count], pinfo_size);
     count += pinfo_size;
   } else {
-    if (pr->pinfo)
-      pr->pinfo->ResetAll();
+    pr->pinfo->ResetAll();
   }
 
   if (pr->pnum != 255) {

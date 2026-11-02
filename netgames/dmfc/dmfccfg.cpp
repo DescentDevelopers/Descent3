@@ -52,8 +52,7 @@
 #include "DMFC.h"
 #include "dmfcinternal.h"
 
-
-CRegistry *reg = nullptr;
+std::unique_ptr<CRegistry> reg;
 
 // DMFCBase::CFGOpen
 //
@@ -65,9 +64,7 @@ int DMFCBase::CFGOpen(char *filename) {
   if (reg)
     return CFG_ALREADYOPEN;
 
-  reg = new CRegistry(filename);
-  if (!reg)
-    return CFG_OUTOFMEMORY;
+  reg = std::make_unique<CRegistry>(filename);
 
   reg->Import();
 
@@ -80,8 +77,7 @@ int DMFCBase::CFGOpen(char *filename) {
 void DMFCBase::CFGClose(void) {
   if (reg) {
     reg->Export();
-    delete reg;
-    reg = nullptr;
+    reg.reset();
   }
 }
 
@@ -240,48 +236,20 @@ char *CRegistry::ParseToken(char *p, char *buf, int bufsize) {
   } while (0)
 
 CRegistry::CRegistry(const char *str) {
-  currentkey = root = nullptr;
+  currentkey = nullptr;
   strcpy(name, str);
 }
 
 CRegistry::~CRegistry() { Destroy(); }
 
 void CRegistry::Destroy(void) {
-  tKey *curr, *next;
-  curr = next = root;
-
-  while (curr) {
-    next = curr->next;
-    DestroyKey(curr);
-    curr = next;
-  }
-  root = nullptr;
-}
-
-void CRegistry::DestroyKey(tKey *key) {
-  tRecord *curr, *next;
-  curr = next = key->records;
-
-  while (curr) {
-    next = curr->next;
-    DestroyRecord(curr);
-    curr = next;
-  }
-
-  free(key);
-}
-
-void CRegistry::DestroyRecord(tRecord *record) {
-  if (record->data) {
-    free(record->data);
-    record->data = nullptr;
-  }
-  free(record);
+  currentkey = nullptr;
+  root.reset();
 }
 
 void CRegistry::Export() {
   tKey *curr, *next;
-  curr = next = root;
+  curr = next = root.get();
   CFILE *file;
   DLLOpenCFILE(&file, name, "wt");
 
@@ -289,7 +257,7 @@ void CRegistry::Export() {
     return;
 
   while (curr) {
-    next = curr->next;
+    next = curr->next.get();
     ExportKey(curr, file);
     curr = next;
   }
@@ -298,14 +266,14 @@ void CRegistry::Export() {
 
 void CRegistry::ExportKey(tKey *key, CFILE *file) {
   tRecord *curr, *next;
-  curr = next = key->records;
+  curr = next = key->records.get();
 
   // write out name
   char buffer[258];
   snprintf(buffer, sizeof(buffer), "[%s]", key->name);
   DLLcf_WriteString(file, buffer);
   while (curr) {
-    next = curr->next;
+    next = curr->next.get();
     ExportRecord(curr, file);
     curr = next;
   }
@@ -317,11 +285,11 @@ void CRegistry::ExportRecord(tRecord *record, CFILE *file) {
   char buffer[512];
   switch (record->type) {
   case REGT_STRING: {
-    st = (char *)record->data;
+    st = record->data.get();
     snprintf(buffer, sizeof(buffer), "\"%s\"=\"%s\"", record->name, st);
   } break;
   case REGT_DWORD: {
-    dw = (int *)record->data;
+    dw = (int *)record->data.get();
     snprintf(buffer, sizeof(buffer), "\"%s\"=dword:%X", record->name, *dw);
   } break;
   };
@@ -423,45 +391,32 @@ bool CRegistry::Import() {
 }
 
 void CRegistry::CreateKey(const char *name) {
-  tKey *curr;
   if (LookupKey(name)) {
     LOG_DEBUG.printf("Key: %s already exists", name);
     return;
   }
 
-  if (!root) {
-    root = (tKey *)malloc(sizeof(tKey));
-    if (!root)
-      return;
-    curr = root;
-  } else {
-    curr = root;
-    while (curr->next) {
-      curr = curr->next;
-    }
-
-    curr->next = (tKey *)malloc(sizeof(tKey));
-    if (!curr->next)
-      return;
-    curr = curr->next;
+  std::unique_ptr<tKey> *tail = &root;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
+  *tail = std::make_unique<tKey>();
 
-  curr->next = nullptr;
+  tKey *curr = tail->get();
   strcpy(curr->name, name);
-  curr->records = nullptr;
   currentkey = curr;
 }
 
 bool CRegistry::LookupKey(const char *name) {
   tKey *curr;
-  curr = root;
+  curr = root.get();
   while (curr) {
     if (!stricmp(name, curr->name)) {
       // found a match
       currentkey = curr;
       return true;
     }
-    curr = curr->next;
+    curr = curr->next.get();
   }
   return false;
 }
@@ -471,25 +426,25 @@ tRecord *CRegistry::LookupRecord(const char *record, void *data) {
     return nullptr;
 
   tRecord *curr;
-  curr = currentkey->records;
+  curr = currentkey->records.get();
   while (curr) {
     if (!stricmp(record, curr->name)) {
       // found the record
       switch (curr->type) {
       case REGT_STRING:
         char *st;
-        st = (char *)curr->data;
+        st = curr->data.get();
         strcpy((char *)data, st);
         break;
       case REGT_DWORD:
         int *dw;
-        dw = (int *)curr->data;
+        dw = (int *)curr->data.get();
         *((int *)data) = *dw;
         break;
       };
       return curr;
     }
-    curr = curr->next;
+    curr = curr->next.get();
   }
   return nullptr;
 }
@@ -498,13 +453,13 @@ int CRegistry::GetDataSize(const char *record) {
   if (!currentkey)
     return false;
   tRecord *curr;
-  curr = currentkey->records;
+  curr = currentkey->records.get();
   while (curr) {
     if (!stricmp(record, curr->name)) {
       // found the record
       switch (curr->type) {
       case REGT_STRING:
-        return strlen((char *)curr->data) + 1;
+        return strlen(curr->data.get()) + 1;
         break;
       case REGT_DWORD:
         return sizeof(int);
@@ -512,7 +467,7 @@ int CRegistry::GetDataSize(const char *record) {
       };
       return 0;
     }
-    curr = curr->next;
+    curr = curr->next.get();
   }
   return 0;
 }
@@ -525,61 +480,46 @@ bool CRegistry::CreateRecord(const char *name, char type, void *data) {
   // first see if the record exists under this key
   int datasize = GetDataSize(name);
   if (datasize) {
-    char *olddata = (char *)malloc(datasize);
-    if (olddata) {
-      curr = LookupRecord(name, olddata);
-      if (curr) {
-        // ok we have an old value, replace it!
-        LOG_DEBUG.printf("Replacing %s", name);
-        if (curr->data)
-          free(curr->data);
-        free(olddata);
-        curr->type = type;
+    auto olddata = std::make_unique<char[]>(datasize);
+    curr = LookupRecord(name, olddata.get());
+    if (curr) {
+      // ok we have an old value, replace it!
+      LOG_DEBUG.printf("Replacing %s", name);
+      curr->type = type;
 
-        switch (type) {
-        case REGT_STRING:
-          curr->data = malloc(strlen((char *)data) + 1);
-          strcpy((char *)curr->data, (char *)data);
-          break;
-        case REGT_DWORD:
-          curr->data = malloc(sizeof(int));
-          *((int *)curr->data) = *((int *)data);
-          break;
-        }
-        return true;
+      switch (type) {
+      case REGT_STRING:
+        curr->data = std::make_unique<char[]>(strlen((char *)data) + 1);
+        strcpy(curr->data.get(), (char *)data);
+        break;
+      case REGT_DWORD:
+        curr->data = std::make_unique<char[]>(sizeof(int));
+        *((int *)curr->data.get()) = *((int *)data);
+        break;
       }
+      return true;
     }
   }
 
   // it is a new record
-  if (currentkey->records) {
-    curr = currentkey->records;
-    while (curr->next)
-      curr = curr->next;
-
-    curr->next = (tRecord *)malloc(sizeof(tRecord));
-    if (!curr->next)
-      return false;
-    curr = curr->next;
-  } else {
-    currentkey->records = (tRecord *)malloc(sizeof(tRecord));
-    if (!currentkey->records)
-      return false;
-    curr = currentkey->records;
+  std::unique_ptr<tRecord> *tail = &currentkey->records;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
+  *tail = std::make_unique<tRecord>();
+  curr = tail->get();
 
-  curr->next = nullptr;
   strcpy(curr->name, name);
   switch (type) {
   case REGT_STRING:
-    curr->data = malloc(strlen((char *)data) + 1);
+    curr->data = std::make_unique<char[]>(strlen((char *)data) + 1);
     curr->type = REGT_STRING;
-    strcpy((char *)curr->data, (char *)data);
+    strcpy(curr->data.get(), (char *)data);
     break;
   case REGT_DWORD:
-    curr->data = malloc(sizeof(int));
+    curr->data = std::make_unique<char[]>(sizeof(int));
     curr->type = REGT_DWORD;
-    *((int *)curr->data) = *((int *)data);
+    *((int *)curr->data.get()) = *((int *)data);
     break;
   };
   return true;

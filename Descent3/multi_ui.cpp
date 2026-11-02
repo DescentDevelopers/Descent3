@@ -312,6 +312,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
+#include <memory>
 #include <regex>
 #include <string>
 
@@ -1642,7 +1643,7 @@ bool DoPlayerMouselookCheck(uint32_t flags) {
 
 #define UID_GAMEINFO_PLAYERS 1000
 
-extern char *Multi_recieved_player_list;
+extern std::unique_ptr<char[]> Multi_recieved_player_list;
 extern bool Multi_got_player_list;
 
 void RequestPlayerList(network_address *addr);
@@ -1749,8 +1750,7 @@ void ShowNetgameInfo(network_game *game) {
   sheet->NewGroup(nullptr, (GAME_INFO_MENU_W - 140), GAME_INFO_MENU_H - 95, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_DONE, UID_CANCEL);
   // Get players
-  Multi_recieved_player_list = (char *)mem_malloc(((CALLSIGN_LEN + 1) * MAX_NET_PLAYERS) + 1);
-  memset(Multi_recieved_player_list, 0, ((CALLSIGN_LEN + 1) * MAX_NET_PLAYERS) + 1);
+  Multi_recieved_player_list = std::make_unique<char[]>(((CALLSIGN_LEN + 1) * MAX_NET_PLAYERS) + 1);
 
   Multi_got_player_list = false;
 
@@ -1783,7 +1783,7 @@ void ShowNetgameInfo(network_game *game) {
   CloseSplashScreen();
 
   // Ok, now we've got the list of players.. let's parse it and add the players to the list
-  plyr = Multi_recieved_player_list;
+  plyr = Multi_recieved_player_list.get();
 
   while (*plyr) {
     lists->AddItem(plyr);
@@ -1795,10 +1795,7 @@ void ShowNetgameInfo(network_game *game) {
     plyr++;
   }
 
-  if (Multi_recieved_player_list) {
-    mem_free(Multi_recieved_player_list);
-    Multi_recieved_player_list = nullptr;
-  }
+  Multi_recieved_player_list.reset();
 
   menu_wnd.Open();
 
@@ -1818,8 +1815,5 @@ void ShowNetgameInfo(network_game *game) {
   menu_wnd.Destroy();
 
 no_players:
-  if (Multi_recieved_player_list) {
-    mem_free(Multi_recieved_player_list);
-    Multi_recieved_player_list = nullptr;
-  }
+  Multi_recieved_player_list.reset();
 }
