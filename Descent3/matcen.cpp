@@ -725,7 +725,8 @@ bool matcen::SetSpawnPnt(int8_t s_index, int s_value) {
 }
 
 bool matcen::SetName(const char *name) {
-  strcpy(m_name, name);
+  strncpy(m_name, name, MAX_MATCEN_NAME_LEN - 1);
+  m_name[MAX_MATCEN_NAME_LEN - 1] = '\0';
 
   return true;
 }

@@ -835,7 +835,8 @@ void osipf_PlayerValue(int obj_handle, char op, char vhandle, void *ptr, int ind
       ASSERT(src);
       msafe_struct mstruct;
       mstruct.objhandle = obj_handle;
-      strcpy(mstruct.name, src);
+      strncpy(mstruct.name, src, MSAFE_NAME_LENGTH - 1);
+      mstruct.name[MSAFE_NAME_LENGTH - 1] = '\0';
       msafe_CallFunction(MSAFE_MISC_GUIDEBOT_NAME, &mstruct);
     }
 
@@ -1368,12 +1369,14 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
   case OBJV_PI_HACK_FVI_IGNORE_LIST: {
     if (op == VF_SET) {
       if (ptr != nullptr) {
+        // The list ends with -1; keep at most 99 entries so the terminator fits.
         int count = 0;
-
-        do {
+        constexpr int max_entries = sizeof(hack_list) / sizeof(hack_list[0]) - 1;
+        while (count < max_entries && ((int *)ptr)[count] != -1) {
           hack_list[count] = ((int *)ptr)[count];
           count++;
-        } while (hack_list[count - 1] != -1);
+        }
+        hack_list[count] = -1;
 
         hack_ilist = hack_list;
       } else {
@@ -3423,7 +3426,8 @@ void osipf_CreateRandomSparks(int num_sparks, vector *pos, int roomnum, int whic
 // disable/enable ship
 void osipf_EnableShip(char *ship_name, bool enable) {
   msafe_struct ms;
-  strcpy(ms.name, ship_name);
+  strncpy(ms.name, ship_name, MSAFE_NAME_LENGTH - 1);
+  ms.name[MSAFE_NAME_LENGTH - 1] = '\0';
   ms.state = enable;
   msafe_CallFunction(MSAFE_MISC_ENABLE_SHIP, &ms);
 }
@@ -3431,7 +3435,8 @@ void osipf_EnableShip(char *ship_name, bool enable) {
 // is ship enabled
 bool osipf_IsShipEnabled(char *ship_name) {
   msafe_struct ms;
-  strcpy(ms.name, ship_name);
+  strncpy(ms.name, ship_name, MSAFE_NAME_LENGTH - 1);
+  ms.name[MSAFE_NAME_LENGTH - 1] = '\0';
   msafe_GetValue(MSAFE_MISC_ENABLE_SHIP, &ms);
   return (bool)(ms.state != 0);
 }

@@ -1273,9 +1273,9 @@ int GetPlayerSlot(int objhandle) {
 // If the src message is from the guidebot, xlates it into the proper format.  If not a GB
 // message, just copies the string over.
 // Returns true if is a GB message
-bool XlateGBMessage(char *dest, char *src) {
+bool XlateGBMessage(char *dest, size_t dest_size, char *src) {
   if (strnicmp(src, GB_TOKEN, sizeof(GB_TOKEN) - 1) != 0) {
-    strcpy(dest, src);
+    snprintf(dest, dest_size, "%s", src);
     return 0;
   }
   char *t = src + strlen(GB_TOKEN); // skip the first part of the string
@@ -1285,10 +1285,10 @@ bool XlateGBMessage(char *dest, char *src) {
     t++;
   char gbname[100];
   Current_pilot.get_guidebot_name(gbname);
-  sprintf(dest, "\1\255\255\1%s:\1\1\255\1 %s", gbname, t);
-  while (dest[strlen(dest) - 1] == ' ') // strip spaces at end
+  snprintf(dest, dest_size, "\1\255\255\1%s:\1\1\255\1 %s", gbname, t);
+  while (dest[0] && dest[strlen(dest) - 1] == ' ') // strip spaces at end
     dest[strlen(dest) - 1] = 0;
-  if (dest[strlen(dest) - 1] == '"') // Remove the trailing quote
+  if (dest[0] && dest[strlen(dest) - 1] == '"') // Remove the trailing quote
     dest[strlen(dest) - 1] = 0;
   return 1;
 }
@@ -2029,7 +2029,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
       slot = -1; // all players
     if ((slot == -1) || (slot == Player_num)) {
       char message[256];
-      bool gb = XlateGBMessage(message, mstruct->message);
+      bool gb = XlateGBMessage(message, sizeof(message), mstruct->message);
       bool added;
       if (type == MSAFE_MISC_HUD_MESSAGE)
         added = AddColoredHUDMessage(mstruct->color, "%s", message); // "%s" because message could contain % signs!
@@ -2056,7 +2056,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     if ((slot == -1) || (slot == Player_num)) {
       AddGameMessage(mstruct->message);
       char message2[256];
-      XlateGBMessage(message2, mstruct->message2);
+      XlateGBMessage(message2, sizeof(message2), mstruct->message2);
       int y = Game_window_h / 4 - 15;
       if (Demo_flags == DF_RECORDING) {
         DemoWritePersistantHUDMessage(mstruct->color, HUD_MSG_PERSISTENT_CENTER, y, 10.0,
