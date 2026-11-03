@@ -60,3 +60,7 @@
 *.stamp binary
 *.tlog binary
 *.wav binary
+
+# Original-release sources used as test data: shown as vendored code.
+# Their line endings may be normalized; the data check ignores whitespace.
+tests/osiris_sandbox/data/level1/** linguist-vendored

@@ -6,3 +6,4 @@ libacm/util.c
 third_party/tiny386/*
 third_party/wasm2c/*
 x86sandbox/generated/*
+tests/osiris_sandbox/data/level1/*
