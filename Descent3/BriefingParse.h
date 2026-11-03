@@ -104,7 +104,7 @@ private:
   void (*SetGlitch)(float amount) = nullptr;
   void (*AddVoice)(char *filename, int flags, char *description) = nullptr;
 
-  void ParseError(const char *msg, const char *p = NULL);
+  void ParseError(const char *msg, const char *p = nullptr);
   const char *ParseComma(const char *p);
   const char *ParseFloat(const char *p, float *f);
   const char *ParseInt(const char *p, int *i);

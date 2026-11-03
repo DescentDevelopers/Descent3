@@ -154,36 +154,36 @@ int MultiLoadSettings(const std::filesystem::path &filename) {
   while (cf_ReadString(szinput, MAX_MPS_LINE_LEN - 1, cf)) {
 
     toklabel = strtok(szinput, seps);
-    tokval = strtok(NULL, seps);
+    tokval = strtok(nullptr, seps);
     if (!tokval) {
       continue;
     }
     if (stricmp(toklabel, "NAME") == 0) {
       strcpy(Netgame.name, tokval);
       // Do this so the name can still have spaces
-      tokval = strtok(NULL, seps);
+      tokval = strtok(nullptr, seps);
       while (tokval) {
         strcat(Netgame.name, " ");
         strcat(Netgame.name, tokval);
-        tokval = strtok(NULL, seps);
+        tokval = strtok(nullptr, seps);
       }
     } else if (stricmp(toklabel, "MISSION") == 0) {
       strcpy(Netgame.mission, tokval);
       // Do this so the mission can still have spaces
-      tokval = strtok(NULL, seps);
+      tokval = strtok(nullptr, seps);
       while (tokval) {
         strcat(Netgame.mission, " ");
         strcat(Netgame.mission, tokval);
-        tokval = strtok(NULL, seps);
+        tokval = strtok(nullptr, seps);
       }
     } else if (stricmp(toklabel, "SCRIPT") == 0) {
       strcpy(Netgame.scriptname, tokval);
       // Do this so the script can still have spaces
-      tokval = strtok(NULL, seps);
+      tokval = strtok(nullptr, seps);
       while (tokval) {
         strcat(Netgame.scriptname, " ");
         strcat(Netgame.scriptname, tokval);
-        tokval = strtok(NULL, seps);
+        tokval = strtok(nullptr, seps);
       }
     } else if (stricmp(toklabel, "PPS") == 0) {
       Netgame.packets_per_second = atoi(tokval);
@@ -248,11 +248,11 @@ int MultiLoadSettings(const std::filesystem::path &filename) {
       // Do this so the name can have spaces
       char buf[100];
       strcpy(buf, tokval);
-      tokval = strtok(NULL, seps);
+      tokval = strtok(nullptr, seps);
       while (tokval) {
         strcat(buf, " ");
         strcat(buf, tokval);
-        tokval = strtok(NULL, seps);
+        tokval = strtok(nullptr, seps);
       }
       PlayerSetShipPermission(-1, buf, 0);
     } else if (stricmp(toklabel, "MLOOK") == 0) {

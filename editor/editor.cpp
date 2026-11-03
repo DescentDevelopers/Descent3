@@ -406,7 +406,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 d3edit_state D3EditState;
-grSurface *Desktop_surf = NULL;
+grSurface *Desktop_surf = nullptr;
 bool Editor_active = true;
 
 //	ADDED FOR OLE SUPPORT
@@ -440,15 +440,15 @@ CEditorApp::CEditorApp() {
   // TODO: add construction code here,
   // Place all significant initialization in InitInstance
 
-  textured_view = NULL;
-  wireframe_view = NULL;
-  main_view = NULL;
-  main_doc = NULL;
-  main_frame = NULL;
+  textured_view = nullptr;
+  wireframe_view = nullptr;
+  main_view = nullptr;
+  main_doc = nullptr;
+  main_frame = nullptr;
   m_Paused = FALSE;
 
-  m_DallasModelessDlgPtr = NULL;
-  m_ViewerPropDlgPtr = NULL;
+  m_DallasModelessDlgPtr = nullptr;
+  m_ViewerPropDlgPtr = nullptr;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -648,14 +648,14 @@ BOOL CEditorApp::OnIdle(LONG lCount) {
     }
     //	attaching rooms.
     else if (KEY_STATE(KEY_T)) {
-      if ((Placed_room != -1) || (Placed_group != NULL)) {
+      if ((Placed_room != -1) || (Placed_group != nullptr)) {
         int x, y, dx, dy;
         ddio_MouseGetState(&x, &y, &dx, &dy);
 
         if (KEY_STATE(KEY_LCTRL) || KEY_STATE(KEY_RCTRL))
           Placed_room_attachpoint +=
               (Placed_room_orient.rvec * (float)dx / 20.0) + (Placed_room_orient.uvec * (float)dy / 20.0);
-        else if ((Placed_baseroomp == NULL) &&
+        else if ((Placed_baseroomp == nullptr) &&
                  (KEY_STATE(KEY_LSHIFT) || KEY_STATE(KEY_RSHIFT))) // If on terrain, slide up/down
           Placed_room_attachpoint += (Placed_room_orient.fvec * (float)dx / 20.0);
         else {
@@ -757,7 +757,7 @@ BOOL CEditorApp::OnIdle(LONG lCount) {
   // Redraw the textured view if the world changed or the viewer moved
   if (textured_view && (World_changed || State_changed || Viewer_moved || viewer_rotated || Object_moved)) {
     textured_view->Render();
-    textured_view->InvalidateRect(NULL, FALSE);
+    textured_view->InvalidateRect(nullptr, FALSE);
   }
 
   // Keep track of whether viewer moved for next frame, since we only redraw the
@@ -770,7 +770,7 @@ BOOL CEditorApp::OnIdle(LONG lCount) {
        (!Viewer_moved && !viewer_rotated && Dirty_wireframe && !(Editor_view_mode == VM_TERRAIN)))) {
     if (!Object_moved) {
       wireframe_view->Render();
-      wireframe_view->InvalidateRect(NULL, FALSE);
+      wireframe_view->InvalidateRect(nullptr, FALSE);
       Dirty_wireframe = 0;
     }
   }
@@ -1060,7 +1060,7 @@ void PrintToDlgItem(CDialog *dlg, int id, char *fmt, ...) {
   ASSERT(len < 3000);
 
   ebox = (CEdit *)dlg->GetDlgItem(id);
-  if (ebox == NULL) {
+  if (ebox == nullptr) {
     Int3();
     return;
   }
@@ -1090,9 +1090,9 @@ bool FileDialog(CWnd *wnd, BOOL open, LPCTSTR filter, char *pathname, char *init
   theApp.pause();
 
   if (open)
-    dlg = new CFileDialog(TRUE, 0, 0, OFN_FILEMUSTEXIST, filter, wnd);
+    dlg = new CFileDialog(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST, filter, wnd);
   else
-    dlg = new CFileDialog(FALSE, 0, 0, OFN_OVERWRITEPROMPT, filter, wnd);
+    dlg = new CFileDialog(FALSE, nullptr, nullptr, OFN_OVERWRITEPROMPT, filter, wnd);
 
   //	save current directory and set new directory.
   if (initialdir) {

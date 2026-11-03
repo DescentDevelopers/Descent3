@@ -159,6 +159,6 @@ extern void SetShakeMagnitude(float delta);
 // point of
 // face 					hitvec - the direction in which the thing that's breaking the glass is
 // moving.  If NULL, 						uses the negative of the surface normal
-void BreakGlassFace(room *rp, int facenum, vector *hitpnt = NULL, vector *hitvec = NULL);
+void BreakGlassFace(room *rp, int facenum, vector *hitpnt = nullptr, vector *hitvec = nullptr);
 
 #endif

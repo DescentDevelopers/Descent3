@@ -43,8 +43,8 @@ CObjectPropertiesDialog::CObjectPropertiesDialog(CWnd *pParent /*=NULL*/)
   //}}AFX_DATA_INIT
   m_Parent = pParent;
   m_Initializing = FALSE;
-  m_KeypadTabDialog = NULL;
-  m_PropPhysicsDlg = NULL;
+  m_KeypadTabDialog = nullptr;
+  m_PropPhysicsDlg = nullptr;
   m_current_tab = 0;
 }
 

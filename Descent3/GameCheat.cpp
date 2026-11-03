@@ -536,7 +536,7 @@ void DemoCheats(int key) {
 
     int quad_id = FindObjectIDName("QuadLaser");
     if (quad_id > -1) {
-      Players[Player_num].inventory.Add(OBJ_POWERUP, quad_id, NULL, -1, -1, INVF_MISSIONITEM | INVF_TIMEOUTONSPEW);
+      Players[Player_num].inventory.Add(OBJ_POWERUP, quad_id, nullptr, -1, -1, INVF_MISSIONITEM | INVF_TIMEOUTONSPEW);
     }
 
     int c_id, b_id, s_id, g_id, p_id;
@@ -647,7 +647,7 @@ void DemoCheats(int key) {
     }
 
     AddHUDMessage(tb);
-    ApplyDamageToPlayer(&Objects[Players[Player_num].objnum], NULL, PD_ENERGY_WEAPON,
+    ApplyDamageToPlayer(&Objects[Players[Player_num].objnum], nullptr, PD_ENERGY_WEAPON,
                         Objects[Players[Player_num].objnum].shields + 10);
     memset(tb, 0, 20);
   }

@@ -82,7 +82,7 @@ BOOL CBriefScreenEdit::OnInitDialog() {
   CComboBox *combo = (CComboBox *)GetDlgItem(IDC_BRIEF_ADDS_LAYOUT_LIST);
 
   // Start the timer
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   combo->AddString("<None>");
   int sel = 0;
@@ -142,7 +142,7 @@ void CBriefScreenEdit::UpdateView(void) {
   Desktop_surf->blt(x, y, &m_ObjectSurf);
 
   m_ObjectSurf.free();
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 
   if (first_call)
     first_call = false;

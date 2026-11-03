@@ -391,7 +391,7 @@ void SpewEmitAll(void) {
           vel_vector = spew->pt.normal * speed;
 
           // Create the viseffect
-          VisEffectCreateControlled(VIS_FIREBALL, NULL, (int)spew->effect_type, spew->pt.room_num, &spew->pt.origin,
+          VisEffectCreateControlled(VIS_FIREBALL, nullptr, (int)spew->effect_type, spew->pt.room_num, &spew->pt.origin,
                                     lifetime, &vel_vector, spew->phys_info, size, spew->drag, spew->mass,
                                     spew->real_obj);
 

@@ -105,6 +105,7 @@
 #include "crossplat.h"
 #include "log.h"
 #include "module.h"
+#include "pstypes.h"
 
 int ModLastError = MODERR_NOERROR;
 
@@ -140,7 +141,7 @@ std::filesystem::path mod_GetRealModuleName(const std::filesystem::path &mod_fil
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
 // modfilename is the name of the module (without an extension such as DLL, or so)
-bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, int flags) {
+bool mod_LoadModule(module_t *handle, const std::filesystem::path &imodfilename, int flags) {
   if (imodfilename.empty()) {
     ModLastError = MODERR_OTHER;
     return false;
@@ -209,7 +210,7 @@ bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, i
 }
 // Frees a previously loaded module from memory, it can no longer be used
 // Returns true on success, false otherwise
-bool mod_FreeModule(module *handle) {
+bool mod_FreeModule(module_t *handle) {
   bool ret = true;
 
   if (!handle) {
@@ -232,7 +233,7 @@ bool mod_FreeModule(module *handle) {
 // Returns a pointer to a function within a loaded module.  If it returns NULL there was an error.  Check
 // mod_GetLastError to see if there was an error symstr is the name of the function you want to get the symbol for (Do
 // NOT give any pre/suffix to this name) parmbytes is the size (in bytes) of the parameter list the function should have
-MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, uint8_t parmbytes) {
+MODPROCADDRESS mod_GetSymbol(module_t *handle, const char *symstr, uint8_t parmbytes) {
   MODPROCADDRESS sym;
   if (!handle) {
     ModLastError = MODERR_INVALIDHANDLE;
@@ -283,7 +284,7 @@ MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, uint8_t parmbyt
       ModLastError = MODERR_OTHER;
       break;
     }
-    return NULL;
+    return nullptr;
   }
 #elif defined(POSIX)
   sym = dlsym(handle->handle, symstr);

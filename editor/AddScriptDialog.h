@@ -31,7 +31,7 @@
 class CAddScriptDialog : public CDialog {
   // Construction
 public:
-  CAddScriptDialog(CWnd *pParent = NULL); // standard constructor
+  CAddScriptDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CAddScriptDialog)

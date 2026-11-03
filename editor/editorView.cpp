@@ -553,7 +553,7 @@ void CEditorView::OnSize(UINT nType, int cx, int cy) {
 }
 
 void CEditorView::OnDestroy() {
-  theApp.main_view = NULL;
+  theApp.main_view = nullptr;
   CView::OnDestroy();
 }
 
@@ -625,7 +625,7 @@ void CEditorView::OnButtonOutline() {
   POINT pnt;
   GetCursorPos(&pnt);
 
-  if (!popup.TrackPopupMenu(TPM_LEFTALIGN, pnt.x - 20, pnt.y - 10, this, NULL))
+  if (!popup.TrackPopupMenu(TPM_LEFTALIGN, pnt.x - 20, pnt.y - 10, this, nullptr))
     mprintf(0, "TrackPopupMenu error!\n");
 
   //	Outline_mode ^= OM_ON;
@@ -859,7 +859,7 @@ void CEditorView::OnRoomAttachRoom() {
 }
 
 void CEditorView::OnRoomBuildBridge() {
-  if ((Markedroomp == NULL) || (Markedface == -1)) {
+  if ((Markedroomp == nullptr) || (Markedface == -1)) {
     OutrageMessageBox("You must have a marked face to use this function.");
     return;
   }
@@ -873,7 +873,7 @@ void CEditorView::OnRoomBuildBridge() {
 }
 
 void CEditorView::OnRoomJoinRooms() {
-  if ((Markedroomp == NULL) || (Markedface == -1)) {
+  if ((Markedroomp == nullptr) || (Markedface == -1)) {
     OutrageMessageBox("You must have a marked face to use this function.");
     return;
   }
@@ -892,7 +892,7 @@ void CEditorView::OnRoomUnPlaceRoom() {
   }
 
   Placed_room = -1;
-  Placed_group = NULL;
+  Placed_group = nullptr;
 
   State_changed = 1;
 }
@@ -901,7 +901,7 @@ void CEditorView::OnUpdateRoomUnPlaceRoom(CCmdUI *pCmdUI) {
   if (Placed_room != -1) {
     pCmdUI->SetText((Placed_door != -1) ? "Un-place Door" : "Un-place Room");
     pCmdUI->Enable(1);
-  } else if (Placed_group != NULL) {
+  } else if (Placed_group != nullptr) {
     pCmdUI->SetText("Un-place Group");
     pCmdUI->Enable(1);
   } else
@@ -990,7 +990,7 @@ void CEditorView::OnRoomPlaceTerrainRoom() {
 }
 
 void CEditorView::OnRoomSwapMarkedAndCurrentRoomFace() {
-  if (Markedroomp == NULL)
+  if (Markedroomp == nullptr)
     return;
 
   room *troomp = Markedroomp;
@@ -1041,7 +1041,7 @@ void CEditorView::OnRoomDeleteFace() {
 }
 
 void CEditorView::OnRoomSnapPlacedRoom() {
-  ASSERT((Placed_room != -1) || (Placed_group != NULL));
+  ASSERT((Placed_room != -1) || (Placed_group != nullptr));
 
   if ((Curroomp != Placed_baseroomp) || (Curface != Placed_baseface)) {
     OutrageMessageBox("The current room & face must be the same as the base room & face for this operation.");
@@ -1052,12 +1052,12 @@ void CEditorView::OnRoomSnapPlacedRoom() {
 }
 
 void CEditorView::OnUpdateRoomSnapPlacedRoom(CCmdUI *pCmdUI) {
-  pCmdUI->Enable(((Placed_room != -1) || (Placed_group != NULL)) && (Placed_baseroomp != NULL));
+  pCmdUI->Enable(((Placed_room != -1) || (Placed_group != nullptr)) && (Placed_baseroomp != nullptr));
 
   if (Placed_room != -1) {
     pCmdUI->SetText((Placed_door != -1) ? "Snap Placed Door" : "Snap Placed Room");
     pCmdUI->Enable(1);
-  } else if (Placed_group != NULL) {
+  } else if (Placed_group != nullptr) {
     pCmdUI->SetText("Snap Placed Group");
     pCmdUI->Enable(1);
   } else
@@ -1065,7 +1065,7 @@ void CEditorView::OnUpdateRoomSnapPlacedRoom(CCmdUI *pCmdUI) {
 }
 
 void CEditorView::OnRoomJoinAdjacentFaces() {
-  if (Markedroomp == NULL) {
+  if (Markedroomp == nullptr) {
     OutrageMessageBox("You must have a Marked Room for this operation.");
     return;
   }
@@ -1110,7 +1110,7 @@ void CEditorView::OnRoomDeletePortal() {
 }
 
 void CEditorView::OnRoomSnapPointToEdge() {
-  if (Markedroomp == NULL) {
+  if (Markedroomp == nullptr) {
     OutrageMessageBox("You must have a marked vertex to use this function.");
     return;
   }
@@ -1126,7 +1126,7 @@ void CEditorView::OnRoomUndoSnap() { UndoSnap(); }
 void CEditorView::OnUpdateRoomUndoSnap(CCmdUI *pCmdUI) { pCmdUI->Enable(Snap_roomnum != -1); }
 
 void CEditorView::OnRoomSnapPointToPoint() {
-  if (Markedroomp == NULL) {
+  if (Markedroomp == nullptr) {
     OutrageMessageBox("You must have a marked vertex to use this function.");
     return;
   }
@@ -1151,7 +1151,7 @@ void CEditorView::OnUpdateReinitOpengl(CCmdUI *pCmdUI) {}
 void CEditorView::OnFileRemoveExtraPoints() { RemoveAllDuplicateAndUnusedPoints(); }
 
 void CEditorView::OnRoomBuildSmoothBridge() {
-  if ((Markedroomp == NULL) || (Markedface == -1)) {
+  if ((Markedroomp == nullptr) || (Markedface == -1)) {
     OutrageMessageBox("You must have a marked face to use this function.");
     return;
   }
@@ -1165,7 +1165,7 @@ void CEditorView::OnRoomBuildSmoothBridge() {
 }
 
 void CEditorView::OnRoomJoinRoomsExact() {
-  if ((Markedroomp == NULL) || (Markedface == -1)) {
+  if ((Markedroomp == nullptr) || (Markedface == -1)) {
     OutrageMessageBox("You must have a marked face to use this function.");
     return;
   }
@@ -1265,7 +1265,7 @@ try_again:;
 
   if (Curroomp->name) {
     mem_free(Curroomp->name);
-    Curroomp->name = NULL;
+    Curroomp->name = nullptr;
   }
 
   if (strlen(tempname)) {
@@ -1312,7 +1312,7 @@ void CEditorView::OnRoomClearCenterPoint() {
 }
 
 void CEditorView::OnRoomCombine() {
-  if (Markedroomp == NULL) {
+  if (Markedroomp == nullptr) {
     OutrageMessageBox("You must have a Marked Room for this operation.");
     return;
   }
@@ -1328,7 +1328,7 @@ void FixDegenerateFaces();
 void CEditorView::OnFileFixDegenerateFaces() { FixDegenerateFaces(); }
 
 void CEditorView::OnRoomSnapPointToFace() {
-  if (Markedroomp == NULL) {
+  if (Markedroomp == nullptr) {
     OutrageMessageBox("You must have a marked vertex to use this function.");
     return;
   }
@@ -1409,7 +1409,7 @@ void CEditorView::OnRoomFaceSplitFace() {
 
   Curface = n_faces - 1;
   Curedge = Curvert = 0;
-  Markedroomp = NULL;
+  Markedroomp = nullptr;
 }
 
 void CEditorView::OnRoomFaceDeleteVertOnEdge() {
@@ -1436,7 +1436,7 @@ void CEditorView::OnRoomDeleteConnectedFaces() {
   Curface = 0;
 
   if (Markedroomp == Curroomp)
-    Markedroomp = NULL;
+    Markedroomp = nullptr;
 }
 
 void CEditorView::OnRoomRotatePlacedRoom45Degrees() {

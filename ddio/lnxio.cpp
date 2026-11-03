@@ -72,7 +72,7 @@
 #include "log.h"
 
 bool DDIO_init = false;
-oeLnxApplication *Lnx_app_obj = NULL;
+oeLnxApplication *Lnx_app_obj = nullptr;
 input_mode_t Input_mode;
 
 // ----------------------------------------------------------------------------
@@ -102,7 +102,7 @@ void ddio_InternalClose() {
 
   if (DDIO_init) {
     DDIO_init = false;
-    Lnx_app_obj = NULL;
+    Lnx_app_obj = nullptr;
   } // if
 
   LOG_DEBUG << "DDIO: ddio_InternalClose() returning.";
@@ -121,7 +121,7 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
 
 bool ddio_GetBinaryPath(char *exec_path, size_t len) {
 #ifdef MACOSX
-  if (exec_path == NULL || len == 0) {
+  if (exec_path == nullptr || len == 0) {
     LOG_ERROR << "Invalid arguments";
     return false;
   }
@@ -132,12 +132,12 @@ bool ddio_GetBinaryPath(char *exec_path, size_t len) {
     return false;
   }
 #elif defined(__LINUX__)
-  if (realpath("/proc/self/exe", exec_path) == NULL) {
+  if (realpath("/proc/self/exe", exec_path) == nullptr) {
    perror("realpath");
    return false;
   }
 #else
-  if (GetModuleFileName(NULL, exec_path, len) == 0) {
+  if (GetModuleFileName(nullptr, exec_path, len) == 0) {
     DWORD error = GetLastError();
     LOG_ERROR << "GetModuleFileName failed!";
     return false;

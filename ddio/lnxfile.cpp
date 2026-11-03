@@ -220,7 +220,7 @@ int ddio_DeleteFile(const char *name) { return (!unlink(name)); }
 void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
   const char delimiter = '/';
   va_list args;
-  char *currentDir = NULL;
+  char *currentDir = nullptr;
   int pathLength = 0;
 
   ASSERT(newPath);
@@ -241,7 +241,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 
   // Add the additional subdirectories
   va_start(args, subDir);
-  while ((currentDir = va_arg(args, char *)) != NULL) {
+  while ((currentDir = va_arg(args, char *)) != nullptr) {
     pathLength = strlen(newPath);
     if (newPath[pathLength - 1] != delimiter) {
       newPath[pathLength] = delimiter; // add the delimiter

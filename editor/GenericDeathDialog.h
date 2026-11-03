@@ -33,7 +33,7 @@
 class CGenericDeathDialog : public CDialog {
   // Construction
 public:
-  CGenericDeathDialog(object_info *objinfo, CWnd *pParent = NULL); // standard constructor
+  CGenericDeathDialog(object_info *objinfo, CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CGenericDeathDialog)

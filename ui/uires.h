@@ -111,7 +111,7 @@ public:
   virtual uint8_t get_alpha() const { return 0; };
   virtual void set_color(ddgr_color col){};
   virtual ddgr_color get_color() const { return GR_BLACK; };
-  virtual UIItem *CopyUIItem() { return NULL; };
+  virtual UIItem *CopyUIItem() { return nullptr; };
 };
 
 //	UITextItem

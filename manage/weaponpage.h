@@ -67,7 +67,7 @@ int mng_SetAndLoadWeapon(mngs_weapon_page *weaponpage, CFILE *infile);
 // Given a weaponpage and a weapon handle, attempts to make weapon n correspond to
 // to the weaponpage.
 // Returns 1 on success, 0 otherwise
-int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *infile = NULL);
+int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *infile = nullptr);
 
 // Copies values from a Weapon into a weapon_page
 void mng_AssignWeaponToWeaponPage(int n, mngs_weapon_page *weaponpage);
@@ -79,6 +79,6 @@ void mng_LoadLocalWeaponPage(CFILE *);
 // Reads in a page off the net
 void mng_LoadNetWeaponPage(CFILE *, bool overlay = false);
 
-int mng_GetGuaranteedWeaponPage(char *name, CFILE *infile = NULL);
+int mng_GetGuaranteedWeaponPage(char *name, CFILE *infile = nullptr);
 
 #endif

@@ -703,18 +703,18 @@ static void config_gamma() {
   sheet = gamma_wnd.GetSheet();
 
   // ok, cancel buttons.
-  sheet->NewGroup(NULL, 130, 224, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 130, 224, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_APPLY, IDV_GAMMAAPPLY);
   sheet->AddText(" ");
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
-  sheet->NewGroup(NULL, 0, 145);
+  sheet->NewGroup(nullptr, 0, 145);
   sheet->AddText(TXT_GAMMAADJUSTA);
   sheet->AddText(TXT_GAMMAADJUSTB);
 
   // add slider!
-  sheet->NewGroup(NULL, 0, 175);
+  sheet->NewGroup(nullptr, 0, 175);
   slider_set.min_val.f = 1.0f;
   slider_set.max_val.f = 3.0f;
   slider_set.type = SLIDER_UNITS_FLOAT;
@@ -818,7 +818,7 @@ struct video_menu {
       sheet->AddRadioButton(TXT_CFG_THIRTYTWOBIT);
       *bitdepth = iTemp;
     } else {
-      bitdepth = NULL;
+      bitdepth = nullptr;
     }
 #endif
     // video settings
@@ -858,7 +858,7 @@ struct video_menu {
 
       int temp_w = Video_res_list[Current_video_resolution_id].width;
       int temp_h = Video_res_list[Current_video_resolution_id].height;
-      Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
+      Current_pilot.set_hud_data(nullptr, nullptr, nullptr, &temp_w, &temp_h);
     }
 
     Render_FOV_setting = static_cast<float>(fov[0]) + D3_DEFAULT_FOV;
@@ -866,7 +866,7 @@ struct video_menu {
       Render_FOV = Render_FOV_setting; // ISB: this may cause discontinuities if FOV is changed while zoomed.
     }
 
-    sheet = NULL;
+    sheet = nullptr;
   };
 
   // process
@@ -880,9 +880,9 @@ struct video_menu {
 
       menu.Create("Resolution", 0, 0, 300, 400);
       select_sheet = menu.GetSheet();
-      select_sheet->NewGroup(NULL, 10, 0);
+      select_sheet->NewGroup(nullptr, 10, 0);
       resolution_list = select_sheet->AddListBox(208, 257, UID_RESOLUTION, UILB_NOSORT);
-      select_sheet->NewGroup(NULL, 100, 300, NEWUI_ALIGN_HORIZ);
+      select_sheet->NewGroup(nullptr, 100, 300, NEWUI_ALIGN_HORIZ);
       select_sheet->AddButton(TXT_OK, UID_OK);
       select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
@@ -949,7 +949,7 @@ struct sound_menu {
     ASSERT(sound_id != -1); // DAJ -1FIX
 
     // volume sliders
-    sheet->NewGroup(NULL, 0, 0);
+    sheet->NewGroup(nullptr, 0, 0);
 
     slider_set.type = SLIDER_UNITS_PERCENT;
     fxvolume = sheet->AddSlider(TXT_SOUNDVOL, 10, (int16_t)(Sound_system.GetMasterVolume() * 10), &slider_set);
@@ -971,8 +971,8 @@ struct sound_menu {
       old_fxquantity = (Sound_system.GetLLSoundQuantity() - MIN_SOUNDS_MIXED);
 
     } else {
-      fxquality = NULL;
-      fxquantity = NULL;
+      fxquality = nullptr;
+      fxquantity = nullptr;
     }
 
 #if defined(_DEBUG)
@@ -1156,7 +1156,7 @@ struct toggles_menu {
     *guided_toggle = Game_toggles.guided_mainview;
     *shipsnd_toggle = Game_toggles.ship_noises;
 
-    ddio_ff_GetInfo(&ff_found, NULL);
+    ddio_ff_GetInfo(&ff_found, nullptr);
     sheet->NewGroup(TXT_ADJUSTCONTROLSETTINGS, 110, 140);
     sheet->AddLongButton(TXT_JOYSENSBTN, UID_SHORTCUT_JOYSETTINGS);
     sheet->AddLongButton(TXT_KEYRAMPING, UID_SHORTCUT_KEYSETTINGS);
@@ -1249,7 +1249,7 @@ struct hud_menu {
     sheet = menu->AddOption(IDV_HCONFIG, TXT_OPTHUD, NEWUIMENU_MEDIUM);
     parent_menu = menu;
 
-    Current_pilot.get_hud_data(NULL, &stat, &grstat);
+    Current_pilot.get_hud_data(nullptr, &stat, &grstat);
 
     sel = (stat & STAT_SHIP) ? 1 : (grstat & STAT_SHIP) ? 2 : 0;
     y = add_hud_option(TXT_HUDSHIPSTATUS, &ship_status, 0, sel, true);
@@ -1322,7 +1322,7 @@ struct hud_menu {
     if (sel == 1)
       hud_new_stat |= STAT_INVENTORY;
 
-    Current_pilot.set_hud_data(NULL, &hud_new_stat, &hud_new_grstat);
+    Current_pilot.set_hud_data(nullptr, &hud_new_stat, &hud_new_grstat);
 
     // modify current hud stats if in game.
     if ((GetFunctionMode() == EDITOR_GAME_MODE || GetFunctionMode() == GAME_MODE) && GetHUDMode() == HUD_FULLSCREEN) {
@@ -1425,7 +1425,7 @@ struct details_menu {
     Default_detail_level = *detail_level;
     Database->write("PredefDetailSetting", Default_detail_level);
 
-    sheet = NULL;
+    sheet = nullptr;
   };
 
   // process output and do stuff accordintly

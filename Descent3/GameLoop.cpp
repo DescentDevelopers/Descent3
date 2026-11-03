@@ -950,7 +950,7 @@ void GrowWindow() {
   Game_window_x = (Max_window_w - Game_window_w) / 2;
   Game_window_y = (Max_window_h - Game_window_h) / 2;
 
-  Current_pilot.set_hud_data(NULL, NULL, NULL, &Game_window_w, &Game_window_h);
+  Current_pilot.set_hud_data(nullptr, nullptr, nullptr, &Game_window_w, &Game_window_h);
 
   Clear_screen = 4;
 
@@ -980,7 +980,7 @@ void ShrinkWindow() {
 
     ResizeCockpit();
 
-    Current_pilot.set_hud_data(NULL, NULL, NULL, &Game_window_w, &Game_window_h);
+    Current_pilot.set_hud_data(nullptr, nullptr, nullptr, &Game_window_w, &Game_window_h);
   }
 }
 
@@ -1208,7 +1208,7 @@ void ProcessGuidebotKeys(int key) {
   gb_com command;
   command.action = COM_DO_ACTION;
   command.index = command_id;
-  command.ptr = NULL;
+  command.ptr = nullptr;
 
   if ((!(Game_mode & GM_MULTI)) || (Netgame.local_role != LR_CLIENT)) {
     AINotify(buddy, AIN_USER_DEFINED, (void *)&command);
@@ -1627,7 +1627,7 @@ void ProcessTestKeys(int key) {
     int GetRankIndex(int pnum, char *rankbuf);
     void ChangeRankIndex(int old_index, int pnum);
 
-    int oldrank = GetRankIndex(1, NULL);
+    int oldrank = GetRankIndex(1, nullptr);
     Players[1].rank += 100;
     ChangeRankIndex(oldrank, 1);
 
@@ -2149,7 +2149,7 @@ void ProcessTestKeys(int key) {
     fq.p1 = &test_pos;
     fq.rad = 0.0;
     fq.thisobjnum = OBJNUM(Player_object);
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     if (this_key == KEY_F6)
       fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_RENDER_THROUGH_PORTALS;
     else
@@ -2184,7 +2184,7 @@ void ProcessTestKeys(int key) {
     if (fate) {
       int objnum;
 
-      objnum = ObjCreate(OBJ_DEBUG_LINE, 1, Player_object->roomnum, &Player_object->pos, NULL);
+      objnum = ObjCreate(OBJ_DEBUG_LINE, 1, Player_object->roomnum, &Player_object->pos, nullptr);
       if (objnum >= 0) { // DAJ -1FIX
         Objects[objnum].rtype.line_info.end_pos = hit_info.hit_pnt;
         Objects[objnum].size = vm_VectorDistance(&Player_object->pos, &hit_info.hit_pnt);
@@ -2195,7 +2195,7 @@ void ProcessTestKeys(int key) {
     Sound_system.CheckAndForceSoundDataAlloc(SOUND_REFUELING);
     Sound_system.PlayStream(0, SoundFiles[Sounds[SOUND_REFUELING].sample_index].sample_8bit,
                             SoundFiles[Sounds[SOUND_REFUELING].sample_index].sample_length, SIF_STREAMING_8_M, 1.0,
-                            NULL);
+                            nullptr);
   } break;
 
   case KEY_F7:
@@ -2463,7 +2463,7 @@ void GameRenderWorld(object *viewer, vector *viewer_eye, int viewer_roomnum, mat
   if (ROOMNUM_OUTSIDE(viewer_roomnum))
     RenderTerrain(0);
   else {
-    bool flag_automap = (viewer != NULL) ? (viewer->type != OBJ_ROBOT) : 0;
+    bool flag_automap = (viewer != nullptr) ? (viewer->type != OBJ_ROBOT) : 0;
     RenderMine(viewer_roomnum, flag_automap, 0);
 
 #ifdef _DEBUG
@@ -2493,7 +2493,7 @@ void GameDrawMainView() {
   StartFrame(false);
 
   // Set guided view
-  if (!Cinematic_inuse && Players[Player_num].guided_obj != NULL && !Guided_missile_smallview) {
+  if (!Cinematic_inuse && Players[Player_num].guided_obj != nullptr && !Guided_missile_smallview) {
     save_view = Viewer_object;
     Viewer_object = Players[Player_num].guided_obj;
 
@@ -2507,7 +2507,7 @@ void GameDrawMainView() {
   Rendering_main_view = false;
 
   // Restore viewer object if guided
-  if (!Cinematic_inuse && Players[Player_num].guided_obj != NULL && !Guided_missile_smallview)
+  if (!Cinematic_inuse && Players[Player_num].guided_obj != nullptr && !Guided_missile_smallview)
     Viewer_object = save_view;
 
   // Room changes
@@ -2571,7 +2571,7 @@ void GameRenderFrame(void) {
   // Don't render if receiving data
   if ((Game_mode & GM_MULTI) && NetPlayers[Player_num].sequence != NETSEQ_PLAYING) {
     no_render = true;
-    ShowProgressScreen(TXT_RECEIVINGDATA, NULL, 0);
+    ShowProgressScreen(TXT_RECEIVINGDATA, nullptr, 0);
   }
 
   // Generate "shaken" view for player
@@ -3166,6 +3166,6 @@ void EndGameMenu() {
   Menu_interface_mode = false;
 
   ResumeControls();
-  SetUICallback(NULL);
+  SetUICallback(nullptr);
   Clear_screen = 4;
 }

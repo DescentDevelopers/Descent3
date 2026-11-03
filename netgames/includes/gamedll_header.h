@@ -844,7 +844,7 @@ DMFCDLLOUT(ddio_SplitPath_fp DLLddio_SplitPath;)
 //  takes a variable number of additional subdirectories which will be concatenated on to the path
 //		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
 typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
-DMFCDLLOUT(ddio_MakePath_fp DLLddio_MakePath;)
+DMFCDLLOUT(ddio_MakePath_fp DLLddio_MakePath VA_SENTINEL;)
 
 //	Plays a 2d sound
 // typedef int (*Play2dSound_fp)(int sound_index, float volume =MAX_GAME_VOLUME/2);

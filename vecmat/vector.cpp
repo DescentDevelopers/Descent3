@@ -469,7 +469,7 @@ void vm_Orthogonalize(matrix *m) {
 
   // Normaize new right vector
   if (vm_NormalizeVector(&m->rvec) == 0) {
-    vm_VectorToMatrix(m, &m->fvec, NULL, NULL); // error, so generate from forward vector only
+    vm_VectorToMatrix(m, &m->fvec, nullptr, nullptr); // error, so generate from forward vector only
     return;
   }
 
@@ -481,7 +481,7 @@ void vm_Orthogonalize(matrix *m) {
 void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
   vector *xvec = &m->rvec, *yvec = &m->uvec, *zvec = &m->fvec;
 
-  ASSERT(fvec != NULL);
+  ASSERT(fvec != nullptr);
 
   *zvec = *fvec;
   if (vm_NormalizeVector(zvec) == 0) {
@@ -489,9 +489,9 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
     return;
   }
 
-  if (uvec == NULL) {
+  if (uvec == nullptr) {
 
-    if (rvec == NULL) { // just forward vec
+    if (rvec == nullptr) { // just forward vec
 
     bad_vector2:;
 
@@ -551,14 +551,14 @@ void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
     matrix tmatrix;
 
     if (uvec) { // got up vector. use up and, if specified, right vectors.
-      DoVectorToMatrix(&tmatrix, uvec, NULL, rvec);
+      DoVectorToMatrix(&tmatrix, uvec, nullptr, rvec);
       m->fvec = -tmatrix.uvec;
       m->uvec = tmatrix.fvec;
       m->rvec = tmatrix.rvec;
       return;
     } else { // no up vector.  Use right vector only.
       ASSERT(rvec);
-      DoVectorToMatrix(&tmatrix, rvec, NULL, NULL);
+      DoVectorToMatrix(&tmatrix, rvec, nullptr, nullptr);
       m->fvec = -tmatrix.rvec;
       m->uvec = tmatrix.uvec;
       m->rvec = tmatrix.fvec;

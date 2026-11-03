@@ -49,7 +49,7 @@ public:
   void setPath(CString path);
   CString getPath();
   BOOL InitBox(UINT res, CWnd *parent, LPSTR lpszPath, LPSTR lpszFileMask, UINT flags, UINT msg,
-               void (*cb)(char *path) = NULL);
+               void (*cb)(char *path) = nullptr);
   CFileList();
 
   // Attributes
@@ -86,7 +86,7 @@ private:
 class CFilePageAddDlg : public CDialog {
   // Construction
 public:
-  CFilePageAddDlg(CWnd *pParent = NULL); // standard constructor
+  CFilePageAddDlg(CWnd *pParent = nullptr); // standard constructor
   ~CFilePageAddDlg(void);
 
   void SetInitialPath(char *path);

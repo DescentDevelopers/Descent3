@@ -74,6 +74,6 @@ void mng_LoadNetPowerupPage(CFILE *);
 // First searches through the powerup index to see if the powerup is already
 // loaded.  If not, searches in the table file and loads it.
 // Returns index of powerup if found, -1 if not
-int mng_GetGuaranteedPowerupPage(char *name, CFILE *infile = NULL);
+int mng_GetGuaranteedPowerupPage(char *name, CFILE *infile = nullptr);
 
 #endif

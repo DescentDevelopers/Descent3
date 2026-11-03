@@ -164,7 +164,7 @@ void RemoveActiveDoorway(int adway) {
   room *rp = &Rooms[Active_doorways[adway]];
 
   ASSERT(rp->flags & RF_DOOR);
-  ASSERT(rp->doorway_data != NULL);
+  ASSERT(rp->doorway_data != nullptr);
 
   rp->doorway_data->activenum = -1;
 
@@ -183,7 +183,7 @@ void AddActiveDoorway(int roomnum) {
   ASSERT(rp->flags & RF_DOOR);
 
   doorway *dp = rp->doorway_data;
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   if (dp->activenum != -1) { // already active
     ASSERT(dp->activenum < Num_active_doorways);
@@ -202,14 +202,14 @@ doorway *GetDoorwayFromObject(int door_obj_handle) {
   object *objp = ObjGet(door_obj_handle);
 
   if (!objp)
-    return NULL;
+    return nullptr;
 
   ASSERT(objp->type == OBJ_DOOR);
 
   room *rp = &Rooms[objp->roomnum];
 
   ASSERT(rp->flags & RF_DOOR);
-  ASSERT(rp->doorway_data != NULL);
+  ASSERT(rp->doorway_data != nullptr);
 
   return rp->doorway_data;
 }
@@ -220,7 +220,7 @@ void DoorwayPlaySound(object *objp) {
   ASSERT(rp->flags & RF_DOOR);
 
   doorway *dp = rp->doorway_data;
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   door *door = &Doors[dp->doornum];
 
@@ -383,7 +383,7 @@ void DoorwayDeactivateAll() {
     if (rp->used && (rp->flags & RF_DOOR)) {
       if (rp->doorway_data->state != DOORWAY_STOPPED) {
         doorway *dp = rp->doorway_data;
-        ASSERT(dp != NULL);
+        ASSERT(dp != nullptr);
         dp->position = dp->dest_pos;
         dp->activenum = -1;
         dp->state = DOORWAY_STOPPED;
@@ -432,7 +432,7 @@ void DoorwayDoFrame() {
     room *rp = &Rooms[roomnum];
     ASSERT(rp->flags & RF_DOOR);
     doorway *dway = rp->doorway_data;
-    ASSERT(dway != NULL);
+    ASSERT(dway != nullptr);
     door *door = &Doors[dway->doornum];
     float delta; // movement delta
 
@@ -469,7 +469,7 @@ void DoorwayDoFrame() {
 
         // Send notification event
         object *objp = GetDoorObject(rp);
-        ASSERT(objp != NULL);
+        ASSERT(objp != nullptr);
         tOSIRISEventInfo ei;
         Osiris_CallEvent(objp, EVT_DOOR_CLOSE, &ei);
       }
@@ -482,7 +482,7 @@ void DoorwayDoFrame() {
       if (dway->dest_pos <= 0.0) {
 
         object *door_objp = GetDoorObject(rp);
-        ASSERT(door_objp != NULL);
+        ASSERT(door_objp != nullptr);
 
         // Time to start closing.  See if there's anything in the way
         if (!((door_objp->next != -1) || (door_objp->prev != -1))) {
@@ -513,7 +513,7 @@ object *GetDoorObject(room *rp) {
     if (Objects[objnum].type == OBJ_DOOR)
       return &Objects[objnum];
 
-  return NULL;
+  return nullptr;
 }
 
 // Returns true if the doorway is locked, else false
@@ -531,7 +531,7 @@ bool DoorwayLocked(room *rp) {
   ASSERT(rp->flags & RF_DOOR);
 
   doorway *dp = rp->doorway_data;
-  ASSERT(dp != NULL);
+  ASSERT(dp != nullptr);
 
   return ((dp->flags & DF_LOCKED) != 0);
 }
@@ -606,7 +606,7 @@ void DoorwayLockUnlock(int door_obj_handle, bool state) {
 // Returns the current position of the door.  0.0 = totally closed, 1.0 = totally open
 float DoorwayPosition(room *rp) {
   ASSERT(rp->flags & RF_DOOR);
-  ASSERT(rp->doorway_data != NULL);
+  ASSERT(rp->doorway_data != nullptr);
 
   return rp->doorway_data->position;
 }
@@ -632,7 +632,7 @@ void DoorwayRebuildActiveList() {
   // Go through all rooms and look for active doors
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++) {
     if (rp->used && (rp->flags & RF_DOOR)) {
-      ASSERT(rp->doorway_data != NULL);
+      ASSERT(rp->doorway_data != nullptr);
       if (rp->doorway_data->state != DOORWAY_STOPPED)
         AddActiveDoorway(r);
     }
@@ -642,7 +642,7 @@ void DoorwayRebuildActiveList() {
 // Adds a doorway to the specified room
 // Returns a pointer to the doorway struct
 doorway *DoorwayAdd(room *rp, int doornum) {
-  ASSERT(rp->doorway_data == NULL);
+  ASSERT(rp->doorway_data == nullptr);
 
   rp->flags |= RF_DOOR;
 

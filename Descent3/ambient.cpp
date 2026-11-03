@@ -259,7 +259,7 @@ void ReadAmbientData() {
     if (asp->num_sounds > 0)
       asp->sounds = mem_rmalloc<ase>(asp->num_sounds);
     else
-      asp->sounds = NULL;
+      asp->sounds = nullptr;
 
     int prob = 0;
     for (int s = 0; s < asp->num_sounds; s++) {
@@ -294,7 +294,7 @@ void WriteAmbientData() {
   CFILE *ofile;
 
 #ifndef NEWEDITOR
-  ddio_MakePath(filename, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "data", "misc", AMBIENT_FILE_NAME, NULL);
+  ddio_MakePath(filename, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "data", "misc", AMBIENT_FILE_NAME, nullptr);
 #else
   ddio_MakePath(filename, D3HogDir, "data", "misc", AMBIENT_FILE_NAME, NULL);
 #endif

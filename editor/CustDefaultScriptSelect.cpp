@@ -78,7 +78,7 @@ void CCustDefaultScriptSelect::OnBrowse() {
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, pathname, sizeof(pathname)))
     return;
 
-  ddio_SplitPath(filename, NULL, name, NULL);
+  ddio_SplitPath(filename, nullptr, name, nullptr);
 
   m_Module = name;
 

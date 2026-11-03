@@ -779,7 +779,7 @@ float GetTerrainGroundPoint(vector *pos, vector *normal) {
   y = -y;
   y += Terrain_seg[t].y;
 
-  if (normal != NULL)
+  if (normal != nullptr)
     *normal = norm;
 
   return (y);

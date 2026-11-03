@@ -649,7 +649,7 @@ bool LoadLevelInfo(const std::filesystem::path &filename, level_info &info);
 // cb_fn returns current chunk, parm1 = # bytes in chunk, parm2 = number of bytes in file
 //	parm1 = -1, for 1st just opened level
 //	parm2 = -2, for done loading.
-int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int) = NULL);
+int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int) = nullptr);
 
 // Save a level file
 // Returns 1 if file saved ok, else 0

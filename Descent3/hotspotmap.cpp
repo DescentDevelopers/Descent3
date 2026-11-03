@@ -236,7 +236,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
     } else {
       hsmap->hs[count].scanlines = 0;
       hsmap->hs[count].starting_y = 0;
-      hsmap->hs[count].x = NULL;
+      hsmap->hs[count].x = nullptr;
     } // end ifelse (hotspot_there)
   }   // end for (count)
 
@@ -249,7 +249,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
       if (hsmap->hs[count].x) {
         mem_free(hsmap->hs[count].x);
       }
-      hsmap->hs[count].x = NULL;
+      hsmap->hs[count].x = nullptr;
     }
   }
 
@@ -273,10 +273,10 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
   ASSERT(wndmap->wm);
 
   for (int index = 0; index < wndmap->num_of_windows; index++) {
-    wndmap->wm[index].lt = NULL;
-    wndmap->wm[index].rt = NULL;
-    wndmap->wm[index].lb = NULL;
-    wndmap->wm[index].rb = NULL;
+    wndmap->wm[index].lt = nullptr;
+    wndmap->wm[index].rt = nullptr;
+    wndmap->wm[index].lb = nullptr;
+    wndmap->wm[index].rb = nullptr;
   }
 
   for (count = 0; count < wndmap->num_of_windows; count++) {
@@ -695,7 +695,7 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
         hsmap->hs[curr_hs].x[curr_sl].end = cf_ReadInt(infile);
       }
     } else {
-      hsmap->hs[curr_hs].x = NULL;
+      hsmap->hs[curr_hs].x = nullptr;
     }
   }
 
@@ -838,13 +838,13 @@ void FreeHotSpotMapInternals(hotspotmap_t *hsmap) {
     if (hsmap->hs[curr_hs].scanlines) {
       if (hsmap->hs[curr_hs].x) {
         mem_free(hsmap->hs[curr_hs].x);
-        hsmap->hs[curr_hs].x = NULL;
+        hsmap->hs[curr_hs].x = nullptr;
       }
     }
   }
   if (hsmap->hs) {
     mem_free(hsmap->hs);
-    hsmap->hs = NULL;
+    hsmap->hs = nullptr;
   }
 }
 
@@ -861,8 +861,8 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
   windowmap_t wndmap;
 
   wndmap.num_of_windows = 0;
-  wndmap.wm = NULL;
-  hsmap.hs = NULL;
+  wndmap.wm = nullptr;
+  hsmap.hs = nullptr;
   hsmap.num_of_hotspots = 0;
 
   for (index = (signed)strlen(filename); index >= 0; index--) {

@@ -28,7 +28,7 @@
 class CMegacellKeypad : public CKeypadDialog {
   // Construction
 public:
-  CMegacellKeypad(CWnd *pParent = NULL); // standard constructor
+  CMegacellKeypad(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CMegacellKeypad)

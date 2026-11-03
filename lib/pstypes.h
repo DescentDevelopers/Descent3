@@ -48,4 +48,13 @@
  */
 #define PATH_TO_CSTR(/*std::filesystem::path*/ p) reinterpret_cast<const char *>((p).u8string().c_str())
 
+// Marks a variadic function whose argument list must end with a null pointer, so that
+// GCC and Clang warn about calls without one. Pass nullptr, not NULL: NULL may be an
+// integer, which is not pointer-sized on every platform.
+#if defined(__GNUC__) || defined(__clang__)
+#define VA_SENTINEL __attribute__((sentinel))
+#else
+#define VA_SENTINEL
+#endif
+
 #endif

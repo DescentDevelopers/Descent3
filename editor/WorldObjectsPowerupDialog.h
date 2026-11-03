@@ -27,7 +27,7 @@
 class CWorldObjectsPowerupDialog : public CDialog {
   // Construction
 public:
-  CWorldObjectsPowerupDialog(CWnd *pParent = NULL); // standard constructor
+  CWorldObjectsPowerupDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CWorldObjectsPowerupDialog)

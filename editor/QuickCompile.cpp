@@ -97,7 +97,7 @@ BOOL CQuickCompile::OnInitDialog() {
   char compiled_filename[_MAX_PATH];
   bool isours = false;
 
-  ddio_SplitPath(m_scriptname, NULL, filename, NULL);
+  ddio_SplitPath(m_scriptname, nullptr, filename, nullptr);
   strcpy(compiled_filename, filename);
   strcat(filename, ".cpp");
   strcat(compiled_filename, ".dll");
@@ -111,7 +111,7 @@ BOOL CQuickCompile::OnInitDialog() {
 
   if (cfexist(filename)) {
     char full_path[_MAX_PATH];
-    ddio_MakePath(full_path, LocalScriptDir, compiled_filename, NULL);
+    ddio_MakePath(full_path, LocalScriptDir, compiled_filename, nullptr);
     if (cfexist(full_path)) {
       ddio_DeleteFile(full_path);
     }

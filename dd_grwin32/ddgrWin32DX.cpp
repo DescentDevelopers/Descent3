@@ -45,12 +45,12 @@ tDDGRDXInternalData DDGR_DX_lib_data;
 bool ddgr_dx_Init(oeApplication *app) {
   DX_DATA(hPrimaryWnd) = (HWND)((oeWin32Application *)app)->m_hWnd;
 
-  DX_DATA(lpDD) = NULL;
+  DX_DATA(lpDD) = nullptr;
 
   //	Initialize DirectDraw system if we're going fullscreen, and GDIX system
   HRESULT hres;
 
-  hres = DirectDrawCreate(NULL, &DX_DATA(lpDD), NULL);
+  hres = DirectDrawCreate(nullptr, &DX_DATA(lpDD), nullptr);
   if (hres != DD_OK) {
     ddgr_PushError("Failure to initialize DirectDraw driver (%d)", LOWORD(hres));
     return false;
@@ -80,8 +80,8 @@ void ddgr_dx_Close() {
     DX_DATA(lpDD)->RestoreDisplayMode();
     DX_DATA(lpDD)->Release();
   }
-  DX_DATA(lpDD) = NULL;
-  DX_DATA(hPrimaryWnd) = NULL;
+  DX_DATA(lpDD) = nullptr;
+  DX_DATA(hPrimaryWnd) = nullptr;
   DX_DATA(init) = false;
 
   LOG_DEBUG << "DX system closed.";
@@ -110,7 +110,7 @@ bool ddgr_dx_surf_InitVideo(ddgr_surface *sf) {
     ddsd.dwBackBufferCount = 1;
     ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
 
-    hres = DX_DATA(lpDD)->CreateSurface(&ddsd, &DX_DATA(vidsurf.lpdds), NULL);
+    hres = DX_DATA(lpDD)->CreateSurface(&ddsd, &DX_DATA(vidsurf.lpdds), nullptr);
     if (hres != DD_OK) {
       ddgr_PushError("Unable to capture DirectDraw display surface (%d)\n", LOWORD(hres));
       return false;
@@ -149,7 +149,7 @@ bool ddgr_dx_surf_InitVideo(ddgr_surface *sf) {
     dxsf->lpddsback = DX_DATA(vidsurf.lpddsback);
     dxsf->backbuffer = true;
   } else {
-    dxsf->lpddsback = NULL;
+    dxsf->lpddsback = nullptr;
     dxsf->backbuffer = false;
   }
 
@@ -167,8 +167,8 @@ void ddgr_dx_surf_CloseVideo(ddgr_surface *sf) {
   DX_DATA(vidrefs)--;
   if (DX_DATA(vidrefs) == 0) {
     DX_DATA(vidsurf.lpdds)->Release();
-    DX_DATA(vidsurf.lpdds) = NULL;
-    DX_DATA(vidsurf.lpddsback) = NULL;
+    DX_DATA(vidsurf.lpdds) = nullptr;
+    DX_DATA(vidsurf.lpddsback) = nullptr;
   }
 
   delete bm;
@@ -180,7 +180,7 @@ bool ddgr_dx_surf_FlipVideo(ddgr_surface *sf) {
   HRESULT hres;
 
   if (bm->backbuffer && (sf->flags & SURFFLAG_BACKBUFFER)) {
-    hres = bm->lpdds->Flip(NULL, 0);
+    hres = bm->lpdds->Flip(nullptr, 0);
     if (hres == DDERR_WASSTILLDRAWING || hres == DD_OK)
       return true;
     else
@@ -215,9 +215,9 @@ bool ddgr_dx_surf_Lock(ddgr_surface *sf, void **ptr, int *rowsize) {
   ddsd.dwSize = sizeof(ddsd);
 
   if (bm->backbuffer)
-    hres = bm->lpddsback->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
+    hres = bm->lpddsback->Lock(nullptr, &ddsd, DDLOCK_WAIT, nullptr);
   else
-    hres = bm->lpdds->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
+    hres = bm->lpdds->Lock(nullptr, &ddsd, DDLOCK_WAIT, nullptr);
 
   if (hres != DD_OK) {
     ddgr_PushError("Unable to set lock DirectDraw surface(%d)\n", LOWORD(hres));
@@ -268,8 +268,8 @@ void ddgr_dx_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, 
   SetRect(&rect, l, t, l + w - 1, t + h - 1);
 
   hres = lpdds->Blt(&rect, // dest rect
-                    NULL,  // src surface
-                    NULL,  // src rect
+                    nullptr,  // src surface
+                    nullptr,  // src rect
                     DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
 }
 
@@ -294,7 +294,7 @@ bool ddgr_dx_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int 
   SetRect(&srect, sx, sy, sx + sw - 1, sy + sh - 1);
   SetRect(&drect, dx, dy, dx + sw - 1, dy + sh + 1);
 
-  hres = lpddsd->Blt(&drect, lpddss, &srect, DDBLT_WAIT, NULL);
+  hres = lpddsd->Blt(&drect, lpddss, &srect, DDBLT_WAIT, nullptr);
   if (hres != DD_OK) {
     ddgr_PushError("Unable to blt surface %s to DirectDraw surface %s(%d)\n", ssf->name, dsf->name, LOWORD(hres));
     return false;

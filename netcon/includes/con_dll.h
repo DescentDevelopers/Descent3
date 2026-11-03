@@ -273,6 +273,7 @@
 #include "crossplat.h"
 #include "ship.h"
 #include "pstypes.h"
+#include "module.h"
 
 // Uncomment out this line of code to build the demo version of the multiplayer connection dlls
 // #define DEMO	1
@@ -444,11 +445,11 @@ MultiStartClient_fp DLLMultiStartClient;
 typedef void (*rend_GetRenderState_fp)(rendering_state *rstate);
 rend_GetRenderState_fp DLLrend_GetRenderState;
 
-typedef bool (*LoadMission_fp)(char *msn);
+typedef bool (*LoadMission_fp)(const std::filesystem::path& msn);
 LoadMission_fp DLLLoadMission;
 
 typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
-ddio_MakePath_fp DLLddio_MakePath;
+ddio_MakePath_fp DLLddio_MakePath VA_SENTINEL;
 
 // typedef void( *MultiStartServer_fp) (int playing,char *scriptname,int dedicated_num_teams=-1);
 typedef void (*MultiStartServer_fp)(int playing, char *scriptname, int dedicated_num_teams);
@@ -476,7 +477,7 @@ HotSpotCreate_fp DLLHotSpotCreate;
 typedef int (*PollUI_fp)(void);
 PollUI_fp DLLPollUI;
 
-typedef const char *(*GetMissionName_fp)(const char *mission);
+typedef const char *(*GetMissionName_fp)(const std::filesystem::path &mission);
 GetMissionName_fp DLLGetMissionName;
 
 typedef void (*RemoveUITextItem_fp)(void *item);
@@ -597,7 +598,7 @@ DatabaseWriteInt_fp DLLDatabaseWriteInt;
 typedef void (*DoScreenshot_fp)();
 DoScreenshot_fp DLLDoScreenshot;
 
-typedef bool (*IsMissionMultiPlayable_fp)(const char *mission);
+typedef bool (*IsMissionMultiPlayable_fp)(const std::filesystem::path &mission);
 IsMissionMultiPlayable_fp DLLIsMissionMultiPlayable;
 
 //	returns width of text in current font.
@@ -657,18 +658,18 @@ MultiGameOptionsMenu_fp DLLMultiGameOptionsMenu;
 
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
-typedef bool (*mod_LoadModule_fp)(module *handle, const std::filesystem::path &modfilename, int flags);
+typedef bool (*mod_LoadModule_fp)(module_t *handle, const std::filesystem::path &modfilename, int flags);
 mod_LoadModule_fp DLLmod_LoadModule;
 
 // Frees a previously loaded module from memory, it can no longer be used
 // Returns true on success, false otherwise
-typedef bool (*mod_FreeModule_fp)(module *handle);
+typedef bool (*mod_FreeModule_fp)(module_t *handle);
 mod_FreeModule_fp DLLmod_FreeModule;
 
 // Returns a pointer to a function within a loaded module.  If it returns NULL there was an error.  Check
 // mod_GetLastError to see if there was an error symstr is the name of the function you want to get the symbol for (Do
 // NOT give any pre/suffix to this name) parmbytes is the size (in bytes) of the parameter list the function should have
-typedef MODPROCADDRESS (*mod_GetSymbol_fp)(module *handle, const char *symstr, uint8_t parmbytes);
+typedef MODPROCADDRESS (*mod_GetSymbol_fp)(module_t *handle, const char *symstr, uint8_t parmbytes);
 mod_GetSymbol_fp DLLmod_GetSymbol;
 
 // Returns an error code to what the last error was.  When this function is called the last error is cleared, so by
@@ -690,7 +691,7 @@ MultiLevelSelection_fp DLLMultiLevelSelection;
 typedef bool (*DoPlayerMouselookCheck_fp)(uint32_t flags);
 DoPlayerMouselookCheck_fp DLLDoPlayerMouselookCheck;
 
-typedef int (*CheckMissionForScript_fp)(char *mission, char *script, int dedicated_server_num_teams);
+typedef int (*CheckMissionForScript_fp)(const std::filesystem::path &mission, char *script, int dedicated_server_num_teams);
 CheckMissionForScript_fp DLLCheckMissionForScript;
 
 typedef void (*ShowNetgameInfo_fp)(network_game *game);
@@ -755,14 +756,6 @@ struct vmt_descent3_struct {
 #pragma pack()
 #endif
 
-/////////////////////////////
-// Defines
-#ifndef RELEASE
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-#else
-#define DLLmprintf(...)
-#endif
-
 uint32_t MTClientVer = 100;
 
 multi_api API;
@@ -786,7 +779,7 @@ network_game *DLLNetwork_games;
 int MT_Initialized = 0;
 uint8_t *DLLNewUIWindow_alpha;
 float LastTrackerDataUpdate;
-void *pconsole = NULL;
+void *pconsole = nullptr;
 bool *DLLDP_active;
 bool *DLLUse_DirectPlay;
 bool *DLLMulti_Gamelist_changed;
@@ -803,7 +796,7 @@ char *DLLHelpText2;
 char *DLLHelpText3;
 char *DLLHelpText4;
 
-char *DLLPXO_hosted_lobby_name = NULL;
+char *DLLPXO_hosted_lobby_name = nullptr;
 
 #define DLLMAX_SHIPS 30
 
@@ -820,7 +813,7 @@ char *DLLAuto_login_port;
 
 bool Use_netgame_flags;
 
-module MTAVDLLHandle = {NULL};
+module_t MTAVDLLHandle = {nullptr};
 
 #if defined(WIN32)
 typedef void(DLLFUNCCALL DLLAVInit_fp)(int *ptr);
@@ -836,11 +829,11 @@ typedef void DLLFUNCCALL(DLLAVGetVersion_fp)(int *version);
 typedef void DLLFUNCCALL(DLLRunCheck_fp)(char *d3_path);
 #endif
 
-DLLAVInit_fp *DLLAVInit = NULL;
-DLLAVCall_fp *DLLAVCall = NULL;
-DLLAVClose_fp *DLLAVClose = NULL;
-DLLAVGetVersion_fp *DLLAVGetVersion = NULL;
-DLLRunCheck_fp *DLLRunCheck = NULL;
+DLLAVInit_fp *DLLAVInit = nullptr;
+DLLAVCall_fp *DLLAVCall = nullptr;
+DLLAVClose_fp *DLLAVClose = nullptr;
+DLLAVGetVersion_fp *DLLAVGetVersion = nullptr;
+DLLRunCheck_fp *DLLRunCheck = nullptr;
 
 struct msn_list {
   char msn_name[_MAX_PATH];
@@ -1047,7 +1040,7 @@ void AddMsnItem(msn_list *new_msn) {
     FirstMsn = new_msn;
     CurrMsn = FirstMsn;
   }
-  CurrMsn->next = NULL;
+  CurrMsn->next = nullptr;
 }
 
 void RemoveAllMsnItems(void) {
@@ -1062,7 +1055,7 @@ void RemoveAllMsnItems(void) {
     DLLRemoveUITextItem(CurrMsn->ti);
     DLLmem_free(CurrMsn);
   }
-  FirstMsn = NULL;
+  FirstMsn = nullptr;
 }
 
 msn_list *FindMsnItem(const char *name) {
@@ -1076,7 +1069,7 @@ msn_list *FindMsnItem(const char *name) {
     if (strcmp(CurrMsn->msn_name, name) == 0)
       return CurrMsn;
   }
-  return NULL;
+  return nullptr;
 }
 
 void MultiplayerOptionsMenu();
@@ -1209,11 +1202,11 @@ int StartMultiplayerGameMenu() {
   for (auto const &i : search_paths) {
     DLLddio_DoForeachFile(i.first, i.second, [&mi, &list_1](const std::filesystem::path &path) {
       std::filesystem::path mission_name = path.filename();
-      if (DLLIsMissionMultiPlayable(PATH_TO_CSTR(mission_name)) &&
-          stricmp("d3_2.mn3", PATH_TO_CSTR(mission_name)) != 0) {
-        DLLmprintf(0, "Found a mission: %s\n", PATH_TO_CSTR(mission_name));
+      if (DLLIsMissionMultiPlayable(mission_name) &&
+          (stricmp("d3_2.mn3", PATH_TO_CSTR(mission_name)) != 0)) {
+        LOG_INFO << "Found a mission: " << mission_name;
         mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
-        strcpy(mi->msn_name, DLLGetMissionName(PATH_TO_CSTR(mission_name)));
+        strcpy(mi->msn_name, DLLGetMissionName(mission_name));
         strcpy(mi->msn_file, PATH_TO_CSTR(mission_name));
         mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
         AddMsnItem(mi);
@@ -1354,7 +1347,7 @@ int StartMultiplayerGameMenu() {
         {
           // Do warp dialog here if needed
           if (-1 != DLLMultiLevelSelection()) {
-            DLLmprintf(0, "Mission loaded successfully!\n");
+            LOG_INFO << "Mission loaded successfully!";
             DLLMultiStartServer(1, DLLNetgame->scriptname, teams);
             exit_menu = 1;
             ret = 1;

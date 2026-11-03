@@ -409,7 +409,7 @@ int AllocLoadVClip(const char *filename, int texture_size, int mipped, int pagea
   char name[PAGENAME_LEN];
   int i;
 
-  ASSERT(filename != NULL);
+  ASSERT(filename != nullptr);
 
   i = strlen(filename);
 
@@ -462,7 +462,7 @@ int AllocLoadIFLVClip(const char *filename, int texture_size, int mipped, int fo
   char name[PAGENAME_LEN];
   uint32_t i, done = 0;
 
-  ASSERT(filename != NULL);
+  ASSERT(filename != nullptr);
 
   ChangeVClipName(filename, name);
 

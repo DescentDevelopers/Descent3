@@ -169,6 +169,20 @@ void cf_AddDefaultBaseDirectories();
 void cf_ClearBaseDirectories();
 
 /**
+ * Looks for relative_path inside starting_dir. On platforms other than
+ * Windows, the last component of relative_path is matched without regard to
+ * case if no entry matches it exactly. The other components must match
+ * exactly.
+ *
+ * @param relative_path A relative path to look for.
+ * @param starting_dir The directory to look in.
+ *
+ * @return The path that was found, or an empty path if nothing matches.
+ */
+std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::path &relative_path,
+                                                         const std::filesystem::path &starting_dir);
+
+/**
  * Tries to find a relative path inside of one of the Base_directories.
  *
  * @param relative_path A relative path that we’ll hopefully find in

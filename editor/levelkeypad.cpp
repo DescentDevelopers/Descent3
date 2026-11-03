@@ -410,7 +410,7 @@ void levelkeypad::UpdateDialog() {
   }
 
   if (ValidateCurrentItem()) {
-    Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_GET_SPECIFIED, &item_type, &item_handle, NULL);
+    Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_GET_SPECIFIED, &item_type, &item_handle, nullptr);
   } else {
     item_type = LIT_OBJECT;
     item_handle = OBJECT_HANDLE_NONE;
@@ -673,7 +673,7 @@ void levelkeypad::OnLevelGoalRoomItemRadio() {
   char type = LIT_INTERNAL_ROOM;
   int handle = -1;
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, nullptr);
 
   UpdateDialog();
 }
@@ -682,7 +682,7 @@ void levelkeypad::OnLevelGoalCellItemRadio() {
   char type = LIT_TERRAIN_CELL;
   int handle = -1;
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, nullptr);
   UpdateDialog();
 }
 
@@ -690,7 +690,7 @@ void levelkeypad::OnLevelGoalObjItemRadio() {
   char type = LIT_OBJECT;
   int handle = -1;
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, nullptr);
   UpdateDialog();
 }
 
@@ -698,7 +698,7 @@ void levelkeypad::OnTriggerRadio() {
   char type = LIT_TRIGGER;
   int handle = -1;
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, nullptr);
 
   UpdateDialog();
 }
@@ -707,7 +707,7 @@ void levelkeypad::OnLevelGoalMineRadio() {
   char type = LIT_ANY_MINE;
   int handle = -1;
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, &type, &handle, nullptr);
 
   UpdateDialog();
 }
@@ -745,7 +745,7 @@ void levelkeypad::OnLevelGoalNlbCheck() { DoGoalFlagToggle(LGF_NOT_LOC_BASED); }
 void levelkeypad::OnLevelGoalPasteObjrefItemButton() {
   int handle = Copied_object_id;
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, NULL, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, nullptr, &handle, nullptr);
   UpdateDialog();
 }
 
@@ -753,7 +753,7 @@ void levelkeypad::OnLevelGoalGotoItemButton() {
   char type;
   int handle;
 
-  if (Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_GET_SPECIFIED, &type, &handle, NULL)) {
+  if (Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_GET_SPECIFIED, &type, &handle, nullptr)) {
     bool valid = false;
     vector pnt;
     int roomnum;
@@ -786,7 +786,7 @@ void levelkeypad::OnLevelGoalGotoItemButton() {
     }
 
     if (valid) {
-      ObjSetPos(Viewer_object, &pnt, roomnum, NULL, false);
+      ObjSetPos(Viewer_object, &pnt, roomnum, nullptr, false);
       Viewer_moved = 1;
     } else {
       OutrageMessageBox(MBOX_OK, "Cannot move viewer: This item is not valid.");
@@ -805,7 +805,7 @@ void levelkeypad::OnKillfocusLevelGoalItemEdit() {
   ((CEdit *)GetDlgItem(IDC_LEVEL_GOAL_ITEM_EDIT))->GetWindowText(str, 255);
   sscanf(str, "%d", &handle);
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, NULL, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, nullptr, &handle, nullptr);
   UpdateDialog();
 }
 
@@ -1041,21 +1041,21 @@ void levelkeypad::OnLgDallasRadio() {
 void levelkeypad::OnSelendokLevelgoalRoomCombo() {
   int handle = m_room_combo.GetSelected();
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, NULL, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, nullptr, &handle, nullptr);
   UpdateDialog();
 }
 
 void levelkeypad::OnSelendokLevelgoalobjectCombo() {
   int handle = m_object_combo.GetSelected();
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, NULL, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, nullptr, &handle, nullptr);
   UpdateDialog();
 }
 
 void levelkeypad::OnSelendokLevelgoaltriggerCombo() {
   int handle = m_trigger_combo.GetSelected();
 
-  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, NULL, &handle, NULL);
+  Level_goals.GoalItemInfo(m_current_goal, m_current_item, LO_SET_SPECIFIED, nullptr, &handle, nullptr);
   UpdateDialog();
 }
 /*

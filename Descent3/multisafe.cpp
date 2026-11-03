@@ -1234,7 +1234,7 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
         } else {
           ship *ship = &Ships[Players[pnum].ship_index];
           otype_wb_info *wb = &ship->static_wb[mstruct->index];
-          ASSERT(wb != NULL);
+          ASSERT(wb != nullptr);
           if (wb->ammo_usage) {
             // this guy is an ammo weapon!
             mstruct->count = Players[pnum].weapon_ammo[mstruct->index];
@@ -1351,8 +1351,8 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
         vis->attach_info.modelnum = MOBJ->rtype.pobj_info.model_num;
         vis->attach_info.vertnum = mstruct->g1;
         vis->attach_info.end_vertnum = mstruct->g2;
-        WeaponCalcGun(&vis->pos, NULL, MOBJ, vis->attach_info.vertnum);
-        WeaponCalcGun(&vis->end_pos, NULL, MOBJ, vis->attach_info.end_vertnum);
+        WeaponCalcGun(&vis->pos, nullptr, MOBJ, vis->attach_info.vertnum);
+        WeaponCalcGun(&vis->end_pos, nullptr, MOBJ, vis->attach_info.end_vertnum);
       } else {
         vis->flags |= VF_ATTACHED | VF_PLANAR;
         vis->attach_info.obj_handle = MOBJ->handle;
@@ -1604,7 +1604,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
       if (keyobj) {
         LOG_DEBUG.printf("Adding key from multisafe to player %d", slot);
         Sound_system.Play3dSound(SOUND_POWERUP_PICKUP, SND_PRIORITY_HIGH, keyobj);
-        Players[slot].inventory.Add(keyobj->type, keyobj->id, NULL, -1, -1, INVAF_NOTSPEWABLE, mstruct->message);
+        Players[slot].inventory.Add(keyobj->type, keyobj->id, nullptr, -1, -1, INVAF_NOTSPEWABLE, mstruct->message);
 
         if (!(Game_mode & GM_MULTI)) // If not multiplayer, delete the key
         {
@@ -1661,12 +1661,12 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     send_it = 0; // Don't need to send because ApplyDamage does the work
     if (MOBJ->type == OBJ_PLAYER) {
       if (mstruct->killer_handle == OBJECT_HANDLE_NONE)
-        ApplyDamageToPlayer(MOBJ, NULL, mstruct->damage_type, mstruct->amount);
+        ApplyDamageToPlayer(MOBJ, nullptr, mstruct->damage_type, mstruct->amount);
       else
         ApplyDamageToPlayer(MOBJ, KOBJ, mstruct->damage_type, mstruct->amount);
     } else {
       if (mstruct->killer_handle == OBJECT_HANDLE_NONE)
-        ApplyDamageToGeneric(MOBJ, NULL, mstruct->damage_type, mstruct->amount);
+        ApplyDamageToGeneric(MOBJ, nullptr, mstruct->damage_type, mstruct->amount);
       else
         ApplyDamageToGeneric(MOBJ, KOBJ, mstruct->damage_type, mstruct->amount);
     }
@@ -2127,7 +2127,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
       huditem.buffer_size = MSAFE_MESSAGE_LENGTH;
       huditem.stat = STAT_CUSTOM;
       huditem.flags = HUD_FLAG_LEVEL;
-      huditem.render_fn = NULL;
+      huditem.render_fn = nullptr;
       AddHUDItem(&huditem);
       ASSERT(FindCustomtext2HUDItem() != -1);
     }
@@ -2159,7 +2159,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     if (player && item && (player->type == OBJ_PLAYER)) {
       int slot = player->id;
       ret = Players[slot].inventory.AddObject(item->handle, mstruct->flags,
-                                              (mstruct->message[0] != '\0') ? mstruct->message : NULL);
+                                              (mstruct->message[0] != '\0') ? mstruct->message : nullptr);
       if (ret)
         send_it = 1;
     }
@@ -2182,9 +2182,9 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
       int slot = objp->id;
 
       if (mstruct->type == OBJ_WEAPON)
-        Players[slot].counter_measures.Add(mstruct->type, mstruct->id, NULL, -1, -1, mstruct->flags);
+        Players[slot].counter_measures.Add(mstruct->type, mstruct->id, nullptr, -1, -1, mstruct->flags);
       else
-        Players[slot].inventory.Add(mstruct->type, mstruct->id, NULL, -1, -1, mstruct->flags);
+        Players[slot].inventory.Add(mstruct->type, mstruct->id, nullptr, -1, -1, mstruct->flags);
     }
     break;
   }
@@ -2334,7 +2334,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     if (player && player->type == OBJ_PLAYER) {
       ship *ship = &Ships[Players[player->id].ship_index];
       otype_wb_info *wb = &ship->static_wb[mstruct->index];
-      ASSERT(wb != NULL);
+      ASSERT(wb != nullptr);
       // check if the player has the weapon
       bool have_weapon = PlayerHasWeapon(player->id, mstruct->index);
       if (!have_weapon && mstruct->count <= 0) {
@@ -2433,7 +2433,7 @@ int AddWeaponAmmo(int slot, int weap_index, int ammo) {
   player *player = &Players[slot];
   ship *ship = &Ships[player->ship_index];
   otype_wb_info *wb = &ship->static_wb[weap_index];
-  ASSERT(wb != NULL);
+  ASSERT(wb != nullptr);
   // if secondary or primary that uses ammo, then use the ammo
   if ((weap_index >= SECONDARY_INDEX) || wb->ammo_usage) {
     // figure out much ammo to add
@@ -2728,7 +2728,7 @@ bool HandleCommonPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup) {
       if (quad_id == -2)
         quad_id = FindObjectIDName(IGNORE_TABLE(pname));
       if (quad_id > -1) {
-        Players[pnum].inventory.Add(OBJ_POWERUP, quad_id, NULL, -1, -1, INVAF_LEVELLAST | INVAF_TIMEOUTONSPEW);
+        Players[pnum].inventory.Add(OBJ_POWERUP, quad_id, nullptr, -1, -1, INVAF_LEVELLAST | INVAF_TIMEOUTONSPEW);
       }
     } else if (pnum == Player_num)
       AddFilteredHUDMessage(TXT_MSG_QUADHAVE);
@@ -2994,7 +2994,7 @@ bool HandleInventoryPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup
       if (inv_count == 0) {
         // pickit up
         *pickup = 1;
-        Players[pnum].inventory.Add(OBJ_POWERUP, ab_id, NULL, -1, -1, INVAF_TIMEOUTONSPEW, TXT_ABCOOLER);
+        Players[pnum].inventory.Add(OBJ_POWERUP, ab_id, nullptr, -1, -1, INVAF_TIMEOUTONSPEW, TXT_ABCOOLER);
         if (pnum == Player_num)
           AddFilteredHUDMessage(TXT_AFTERBURNERCOOLER);
       } else if (pnum == Player_num) {
@@ -3011,7 +3011,7 @@ bool HandleInventoryPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup
       if (inv_count == 0) {
         // pick it up
         *pickup = 1;
-        Players[pnum].inventory.Add(OBJ_POWERUP, es_id, NULL, -1, -1, INVAF_TIMEOUTONSPEW);
+        Players[pnum].inventory.Add(OBJ_POWERUP, es_id, nullptr, -1, -1, INVAF_TIMEOUTONSPEW);
         if (pnum == Player_num)
           AddFilteredHUDMessage(TXT_ETOSCONVERTER);
       } else if (pnum == Player_num) {

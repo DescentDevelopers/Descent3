@@ -31,13 +31,13 @@ extern bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int 
                             int *end_room, vector *end_pos, float rad, int flags, int handle, int ignore_obj = -1);
 extern bool AIPathInitPath(ai_path_info *aip);
 extern bool AIPathFreePath(ai_path_info *aip);
-extern bool AIFindAltPath(object *obj, int i, int j, float *dist = NULL);
+extern bool AIFindAltPath(object *obj, int i, int j, float *dist = nullptr);
 
 extern bool AIPathAtEnd(ai_path_info *aip);
 extern bool AIPathAtStart(ai_path_info *aip);
-extern bool AIPathGetNextNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
-extern bool AIPathGetPrevNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
-extern bool AIPathGetCurrentNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
+extern bool AIPathGetNextNodePos(ai_path_info *aip, vector *pos, int *room = nullptr);
+extern bool AIPathGetPrevNodePos(ai_path_info *aip, vector *pos, int *room = nullptr);
+extern bool AIPathGetCurrentNodePos(ai_path_info *aip, vector *pos, int *room = nullptr);
 
 #ifdef _DEBUG
 extern bool MakeTestPath(int *start_room, vector *pos);

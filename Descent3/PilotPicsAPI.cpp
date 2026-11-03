@@ -76,7 +76,7 @@
 #define PILOTPIC_DATABASE_HOG "PPics.Hog"
 #define PILOTPIC_DATABASE_INDEX "PPics.idx"
 
-static CFILE *PilotPic_database_index_handle = NULL;
+static CFILE *PilotPic_database_index_handle = nullptr;
 static int PilotPic_database_hog_handle = 0;
 static int PilotPic_find_offset;
 static char PilotPic_find_name[PILOT_STRING_SIZE];
@@ -139,7 +139,7 @@ bool PPic_InitDatabase(void) {
     // there was an error opening the hog database
     // -----------------------------------------
     LOG_WARNING.printf("PPIC: Error opening %s database", PILOTPIC_DATABASE_HOG);
-    PilotPic_database_index_handle = NULL;
+    PilotPic_database_index_handle = nullptr;
     return false;
   }
 
@@ -147,7 +147,7 @@ bool PPic_InitDatabase(void) {
   // -----------------------------------------------
   PilotPic_database_index_handle = cfopen(PILOTPIC_DATABASE_INDEX, "rb");
 
-  if (PilotPic_database_index_handle == NULL) {
+  if (PilotPic_database_index_handle == nullptr) {
     // there was an error opening the database index
     // ---------------------------------------------
     LOG_WARNING.printf("PPIC: Error opening database index '%s'", PILOTPIC_DATABASE_INDEX);
@@ -164,7 +164,7 @@ bool PPic_InitDatabase(void) {
     // -----------------------------------------
     LOG_WARNING << "PPIC: Error building databases";
     cfclose(PilotPic_database_index_handle);
-    PilotPic_database_index_handle = NULL;
+    PilotPic_database_index_handle = nullptr;
     cf_CloseLibrary(PilotPic_database_hog_handle);
     PilotPic_database_hog_handle = 0;
     return false;
@@ -192,7 +192,7 @@ void PPic_CloseDatabase(void) {
   // close up files
   if (PilotPic_database_index_handle) {
     cfclose(PilotPic_database_index_handle);
-    PilotPic_database_index_handle = NULL;
+    PilotPic_database_index_handle = nullptr;
   }
 
   if (PilotPic_database_hog_handle) {
@@ -473,8 +473,8 @@ struct tPilotPicIdOffset {
   int offset;
   uint16_t id;
 };
-tPilotPicIdOffset *Pilot_id_to_offset = NULL;
-uint16_t *Sorted_Pilot_id_to_offset = NULL;
+tPilotPicIdOffset *Pilot_id_to_offset = nullptr;
+uint16_t *Sorted_Pilot_id_to_offset = nullptr;
 int PilotPic_count = 0;
 
 // this maps the alphabet to an index file offset (first pilot_name that begins with the letter)
@@ -608,11 +608,11 @@ void PPic_FreeDatabase(void) {
 
   if (Pilot_id_to_offset) {
     mem_free(Pilot_id_to_offset);
-    Pilot_id_to_offset = NULL;
+    Pilot_id_to_offset = nullptr;
   }
   if (Sorted_Pilot_id_to_offset) {
     mem_free(Sorted_Pilot_id_to_offset);
-    Sorted_Pilot_id_to_offset = NULL;
+    Sorted_Pilot_id_to_offset = nullptr;
   }
 
   PilotPic_count = 0;

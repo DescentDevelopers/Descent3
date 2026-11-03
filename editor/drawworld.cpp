@@ -422,7 +422,7 @@ void CheckRoom(room *rp) {
           oldcolor = Draw_viewport->getpixel(Search_x, Search_y); // will be different in 15/16-bit color
           rend_SetFlatColor(GR_RGB(255, 255, 255));
 
-          g3_CheckAndDrawPoly(fp->num_verts, vert_list, 0, NULL, NULL);
+          g3_CheckAndDrawPoly(fp->num_verts, vert_list, 0, nullptr, nullptr);
 
           if (Draw_viewport->getpixel(Search_x, Search_y) != oldcolor) {
             vector t;
@@ -507,7 +507,7 @@ void DrawRoom(room *rp, int room_type = -1);
 //					find_mode - see values in header file
 // Returns:		true if found a room/face
 bool WireframeFindRoomFace(grViewport *vp, int x, int y, int *roomnum, int *facenum, int find_mode) {
-  if (last_vp == NULL)
+  if (last_vp == nullptr)
     return 0;
 
   if (vp != last_vp) {
@@ -779,7 +779,7 @@ void DrawWorld(grViewport *vp, vector *view_target, matrix *view_orient, float v
   vector viewer_position;
   float zoom = D3_DEFAULT_ZOOM;
 
-  ASSERT(Curroomp != NULL);
+  ASSERT(Curroomp != nullptr);
 
   viewer_position = *view_target - (view_orient->fvec * view_dist);
 
