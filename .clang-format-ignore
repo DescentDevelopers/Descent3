@@ -5,3 +5,4 @@ libacm/decode.c
 libacm/util.c
 third_party/tiny386/*
 third_party/wasm2c/*
+x86sandbox/generated/*
