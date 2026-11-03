@@ -43,3 +43,7 @@ target_link_libraries(renderer PRIVATE
   module
   rtperformance
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
