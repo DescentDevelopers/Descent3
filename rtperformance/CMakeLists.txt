@@ -13,3 +13,7 @@ target_include_directories(rtperformance PUBLIC
     ${PROJECT_SOURCE_DIR}/rtperformance
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
