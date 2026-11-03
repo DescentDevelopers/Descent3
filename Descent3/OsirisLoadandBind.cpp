@@ -3177,6 +3177,45 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
   return count;
 }
 
+//	Osiris_ExtractWin32ScriptsFromHog
+//	Purpose:
+//		Extracts the Win32 script DLLs from a mission hog. They are marked so that they
+//	only ever run in the x86 sandbox, on every platform. A name that is already
+//	extracted (a first-party script) keeps the first-party version.
+int Osiris_ExtractWin32ScriptsFromHog(int library_handle) {
+  if (library_handle == 0)
+    return 0;
+  if (OSIRIS_Extracted_script_dir.empty())
+    OSIRIS_Extracted_script_dir = Descent3_temp_directory;
+  std::filesystem::path tempdir = OSIRIS_Extracted_script_dir;
+
+  int count = cf_DoForeachFileInLibrary(library_handle, ".dll", [&tempdir](const std::filesystem::path &filename) {
+    std::string name = PATH_TO_CSTR(std::filesystem::path(filename).stem());
+    std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return std::tolower(c); });
+    if (OSIRIS_Extracted_scripts.count(name) != 0) {
+      LOG_DEBUG.printf("OSIRIS: mission script %s skipped; a script with that name is already loaded", name.c_str());
+      return;
+    }
+    std::filesystem::path temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
+    if (temp_filename.empty() || !cf_CopyFile(temp_filename, filename))
+      return;
+    if (!Osiris_SandboxIsWin32Module(temp_filename)) {
+      LOG_WARNING.printf("OSIRIS: mission script %s is not a 32-bit Windows DLL; ignored", name.c_str());
+      std::error_code ec;
+      std::filesystem::remove(temp_filename, ec);
+      return;
+    }
+    tExtractedScriptInfo t;
+    t.flags = OESF_MISSION | OESF_SANDBOX;
+    t.temp_filename = temp_filename.filename();
+    OSIRIS_Extracted_scripts.insert_or_assign(name, t);
+    LOG_DEBUG.printf("OSIRIS: extracted Win32 mission script %s", name.c_str());
+  });
+
+  atexit(_clearextractedall);
+  return count;
+}
+
 void Osiris_ClearExtractedScripts(bool mission_only) {
   LOG_DEBUG << "OSIRIS: Removing Extracted DLLs";
 
