@@ -14,3 +14,7 @@ target_include_directories(mem PUBLIC
     ${PROJECT_SOURCE_DIR}/mem
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
