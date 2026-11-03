@@ -36,3 +36,7 @@ target_include_directories(ui PUBLIC
     ${PROJECT_SOURCE_DIR}/ui
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
