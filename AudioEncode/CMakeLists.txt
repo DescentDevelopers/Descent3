@@ -18,3 +18,7 @@ target_include_directories(AudioEncode PUBLIC
     ${PROJECT_SOURCE_DIR}/AudioEncode
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
