@@ -45,3 +45,7 @@ install(
   FILES "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Parallax Online.d3c"
   DESTINATION ${CMAKE_INSTALL_DATADIR}/online
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
