@@ -1,6 +1,7 @@
 d3_test_sources(ddio_tests TO d3_tests
-  SOURCES ddio_tests.cpp
-  LIBRARIES ddio
+  SOURCES ddio_tests.cpp file_tests.cpp key_tests.cpp support/key_queue.cpp support/lock_file.cpp
+  LIBRARIES ddio ddebug d3_test_game d3_test_renderer
+  INCLUDES ${PROJECT_SOURCE_DIR}/ddio
 )
 
 # ddio contains one of the game's two clocks, the one ENABLE_MOCK_CLOCK picks, and its tests run in d3_tests. The
