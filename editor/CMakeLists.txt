@@ -623,3 +623,6 @@ add_dependencies(Descent3Editor get_git_hash)
 #   install(FILES $<TARGET_PDB_FILE:Descent3Editor> DESTINATION ${CMAKE_INSTALL_BINDIR})
 # endif()
 
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
