@@ -16,3 +16,7 @@ target_link_libraries(dd_grwin32 PRIVATE
 )
 target_compile_definitions(dd_grwin32 PRIVATE DX_APP)
 target_link_libraries(dd_grwin32 PRIVATE ${DDRAW_LIBRARY})
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
