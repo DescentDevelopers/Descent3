@@ -1,0 +1,4 @@
+LIBRARY kernel32.dll
+EXPORTS
+CreateFileA@28
+GetDiskFreeSpaceA@20
