@@ -11,3 +11,7 @@ add_subdirectory(hyperanarchy)
 add_subdirectory(monsterball)
 add_subdirectory(roboanarchy)
 add_subdirectory(tanarchy)
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
