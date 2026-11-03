@@ -35,3 +35,7 @@ target_link_libraries(ddebug PRIVATE
   SDL3::SDL3
   logger
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
