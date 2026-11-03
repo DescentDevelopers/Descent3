@@ -90,6 +90,10 @@
 
 #include <cstdlib>
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 #include <SDL3/SDL.h>
 
 #include "ddio.h"
