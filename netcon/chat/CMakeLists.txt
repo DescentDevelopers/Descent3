@@ -7,3 +7,7 @@ target_link_libraries(netcon_chat PRIVATE
   logger
   $<$<PLATFORM_ID:Windows>:ws2_32>
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
