@@ -2,7 +2,7 @@
 # Building Descent 3 Open Source 
 
 ## Dependencies
-The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja**](https://ninja-build.org/). You must install these; the project cannot locate them for you. The source code also depends on third-party libraries that are not provided as part of the repository:
+The build process uses [**CMake**](https://cmake.org/), by default [**Ninja**](https://ninja-build.org/), and [**Python 3**](https://www.python.org/). You must install these; the project cannot locate them for you. The source code also depends on third-party libraries that are not provided as part of the repository:
 - [**SDL3**](https://wiki.libsdl.org/SDL3/FrontPage) which is used as the base to handle video, audio and input.
 - [**cpp-httplib**](https://github.com/yhirose/cpp-httplib) >= 0.23 as a HTTP client to download levels.
 - [**glm**](https://github.com/g-truc/glm) providing useful additions to OpenGL.
@@ -31,7 +31,7 @@ The Linux builds use CMake 3.30. The Windows and macOS builds use the CMake vers
 ## Building - Windows
 1. **Install the prerequisite build tools.**
 
-    Make sure that you have Git and Visual Studio 2026 with the “Desktop development with C++” workload and the “C++ MFC for x64/x86 (Latest MSVC)” component. If you don’t already have those installed or you aren’t sure, then open an elevated Command Prompt and run:
+    Make sure that you have Git, Python 3, and Visual Studio 2026 with the “Desktop development with C++” workload and the “C++ MFC for x64/x86 (Latest MSVC)” component. If you don’t already have those installed or you aren’t sure, then open an elevated Command Prompt and run:
     <!--
     The following code block specifies the full path to the Visual Studio Installer because the Visual Studio Installer doesn’t add itself to the user’s Path. The installer is guaranteed to be in a specific location on 64-bit systems [1]. The installer will be in a different location on 32-bit systems [2], but Visual Studio 2026 doesn’t support 32-bit systems [3] so we can ignore that detail.
 
@@ -40,7 +40,7 @@ The Linux builds use CMake 3.30. The Windows and macOS builds use the CMake vers
     [3]: <https://learn.microsoft.com/en-us/visualstudio/releases/2026/vs-system-requirements>
     -->
     ```batch
-    winget install Git.Git Microsoft.VisualStudio.Community
+    winget install Git.Git Python.Python.3.14 Microsoft.VisualStudio.Community
 
     "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\setup.exe" modify^
         --passive^
@@ -125,12 +125,12 @@ Once CMake finishes, the built files will be put in `builds/mac/build/Debug` or 
     * APT users (Debian, Ubuntu)
         ```sh
         sudo apt update
-        sudo apt install -y --no-install-recommends git ninja-build cmake g++ ca-certificates curl zip unzip tar
+        sudo apt install -y --no-install-recommends git ninja-build cmake g++ python3 ca-certificates curl zip unzip tar
         ```
     * DNF users (Red Hat, Fedora)
         ```sh
         sudo dnf update --refresh
-        sudo dnf install -y git ninja-build cmake gcc-c++
+        sudo dnf install -y git ninja-build cmake gcc-c++ python3
         ```
 
 2. **Acquire the library dependencies.**
