@@ -51,7 +51,6 @@
 // ----------------------------------------------------------------------------
 #include "application.h"
 #include "ddio.h"
-#include "ddio_lnx.h"
 #include "mono.h"
 
 volatile struct tLnxKeys {
@@ -65,17 +64,6 @@ volatile struct tLnxKeys {
   };
   bool status;
 } LKeys[DDIO_MAX_KEYS];
-
-// null mode ddio
-bool ddio_null_InternalKeyInit(ddio_init_info *init_info);
-void ddio_null_InternalKeyClose();
-bool ddio_null_InternalKeyState(uint8_t key);
-void ddio_null_InternalKeySuspend();
-void ddio_null_InternalKeyResume();
-float ddio_null_InternalKeyDownTime(uint8_t key);
-void ddio_null_InternalResetKey(uint8_t key);
-bool ddio_null_KeyFrame();
-void ddio_null_InternalKeyFrame(void);
 
 // sdl mode ddio
 bool ddio_sdl_InternalKeyInit(ddio_init_info *init_info);
@@ -93,96 +81,39 @@ void ddio_sdl_InternalKeyFrame(void);
 // ----------------------------------------------------------------------------
 
 bool ddio_InternalKeyInit(ddio_init_info *init_info) {
-  switch (Input_mode) {
-  case Input_null:
-    return ddio_null_InternalKeyInit(init_info);
-  case Input_sdl:
-    return ddio_sdl_InternalKeyInit(init_info);
-  }
-
-  return false;
+  return ddio_sdl_InternalKeyInit(init_info);
 }
 
 void ddio_InternalKeyClose() {
-  switch (Input_mode) {
-  case Input_null:
-    return ddio_null_InternalKeyClose();
-  case Input_sdl:
-    return ddio_sdl_InternalKeyClose();
-  }
+  ddio_sdl_InternalKeyClose();
 }
 
 bool ddio_InternalKeyState(uint8_t key) {
-  switch (Input_mode) {
-  case Input_null:
-    return ddio_null_InternalKeyState(key);
-  case Input_sdl:
-    return ddio_sdl_InternalKeyState(key);
-  }
-
-  return false;
+  return ddio_sdl_InternalKeyState(key);
 }
 
 void ddio_InternalKeySuspend() {
-  switch (Input_mode) {
-  case Input_null:
-    ddio_null_InternalKeySuspend();
-    break;
-  case Input_sdl:
-    return ddio_sdl_InternalKeySuspend();
-  }
+  ddio_sdl_InternalKeySuspend();
 }
 
 void ddio_InternalKeyResume() {
-  switch (Input_mode) {
-  case Input_null:
-    ddio_null_InternalKeyResume();
-    break;
-  case Input_sdl:
-    return ddio_sdl_InternalKeyResume();
-  }
+  ddio_sdl_InternalKeyResume();
 }
 
 float ddio_InternalKeyDownTime(uint8_t key) {
-  switch (Input_mode) {
-  case Input_null:
-    return ddio_null_InternalKeyDownTime(key);
-  case Input_sdl:
-    return ddio_sdl_InternalKeyDownTime(key);
-  }
-
-  return 0.0f;
+  return ddio_sdl_InternalKeyDownTime(key);
 }
 
 void ddio_InternalResetKey(uint8_t key) {
-  switch (Input_mode) {
-  case Input_null:
-    ddio_null_InternalResetKey(key);
-    break;
-  case Input_sdl:
-    return ddio_sdl_InternalResetKey(key);
-  }
+  ddio_sdl_InternalResetKey(key);
 }
 
 bool ddio_KeyFrame() {
-  switch (Input_mode) {
-  case Input_sdl:
-    break;
-  case Input_null:
-    return ddio_null_KeyFrame();
-  }
-
   return true;
 }
 
 void ddio_InternalKeyFrame(void) {
-  switch (Input_mode) {
-  case Input_null:
-    ddio_null_InternalKeyFrame();
-    break;
-  case Input_sdl:
-    return ddio_sdl_InternalKeyFrame();
-  }
+  ddio_sdl_InternalKeyFrame();
 }
 
 void ddio_SetKeyboardLanguage(int) {}

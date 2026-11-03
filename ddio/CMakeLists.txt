@@ -17,7 +17,6 @@ set(CPPS
   lnxio.cpp
   sdljoy.cpp
   lnxkey.cpp
-  lnxkey_null.cpp
   lnxmouse.cpp
   lnxkey_sdl.cpp
   sdlcontroller.cpp

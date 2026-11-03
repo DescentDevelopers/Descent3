@@ -67,6 +67,7 @@
 #include <SDL3/SDL.h>
 
 #include "ddio.h"
+#include "ddio_lnx.h"
 #include "pserror.h"
 #include "renderer.h"
 #include "config.h"
