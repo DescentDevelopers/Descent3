@@ -37,3 +37,6 @@ target_link_libraries(dmfc PUBLIC
   ddio
 )
 target_include_directories(dmfc PRIVATE ${SDL3_INCLUDE_DIRS})
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
