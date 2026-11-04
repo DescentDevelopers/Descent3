@@ -292,10 +292,8 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
       if ((i + 3) >= (int)strlen(str))
         Int3(); // This shouldn't happen!  bad string!
       set_text_color(GR_RGB(str[i + 1], str[i + 2], str[i + 3]));
-      i += 4;
-      if (i >= (int)strlen(str))
-        Int3(); // This shouldn't happen too.
-      ch = (uint8_t)str[i];
+      i += 3;
+      continue;
     } else if (ch == '\t') { // tab char
       int space_width;
       text_Font.get_char_info(' ', &space_width);
@@ -340,10 +338,7 @@ void grViewport::draw_text_line(int x, int y, char *str) {
       if ((i + 3) >= strlen(str))
         Int3(); // This shouldn't happen!  bad string!
       set_text_color(GR_RGB(str[i + 1], str[i + 2], str[i + 3]));
-      i += 4;
-      if (i >= strlen(str))
-        Int3(); // This shouldn't happen too.
-      ch = (uint8_t)str[i];
+      i += 3;
     } else if (ch == '\t') { // tab char
       int space_width;
       text_Font.get_char_info(' ', &space_width);
