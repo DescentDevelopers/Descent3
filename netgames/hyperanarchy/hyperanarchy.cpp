@@ -53,12 +53,16 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+
 #include "gamedll_header.h"
 #include "idmfc.h"
 #include "HyperAnarchy.h"
 #include "hyperstr.h"
+
 IDMFC *DMFCBase = nullptr;
 static IDmfcStats *dstat = nullptr;
 static object *dObjects;
@@ -107,14 +111,13 @@ static void OnClientPlayerEntersGame(int player_num);
 
 ///////////////////////////////////////////////
 // localization info
-static char **StringTable;
-static int StringTableSize = 0;
+static std::vector<std::string> StringTable;
 static const char *_ErrorString = "Missing String";
-const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
+const char *GetStringFromTable(uint32_t index) {
+  if (index >= StringTable.size())
     return _ErrorString;
   else
-    return StringTable[d];
+    return StringTable[index].c_str();
 }
 ///////////////////////////////////////////////
 
@@ -231,8 +234,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   DMFCBase->Set_OnPlayerEntersObserver(OnPlayerEntersObserver);
   DMFCBase->Set_OnClientPlayerEntersGame(OnClientPlayerEntersGame);
 
-  DLLCreateStringTable("hyper.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("hyper.str", StringTable);
+  if (StringTable.empty()) {
     *all_ok = 0;
     return;
   }
@@ -364,7 +367,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  DLLDestroyStringTable(StringTable);
   if (HyperOrbIcon > 0)
     DLLbm_FreeBitmap(HyperOrbIcon);
 
