@@ -79,8 +79,8 @@ int main(int argc, char *argv[]) {
       auto resolved_file = resolve_path(search_paths, line);
       if (resolved_file.empty()) {
         std::cout << "Warning! File " << line << " from " << input_filename << " not found! Skipping..." << std::endl;
-      } else if (line.size() > 36) {
-        std::cout << "Warning! Length of name of file " << line << " is more than 36 symbols! Skipping..." << std::endl;
+      } else if (resolved_file.filename().u8string().size() > 35) {
+        std::cout << "Warning! Length of name of file " << line << " is more than 35 symbols! Skipping..." << std::endl;
       } else {
         hog_table.AddEntry(D3::HogFileEntry(resolved_file));
       }
