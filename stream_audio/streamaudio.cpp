@@ -377,6 +377,7 @@ bool AudioStream::Open(const std::filesystem::path &filename, int open_flags) {
     nbufs = CHECK_FLAG(m_flags, STRM_OPNF_GRADUAL) ? 1 : STRM_BUFCOUNT;
 
     if (!AudioStream::ReopenDigitalStream(0, nbufs)) {
+      AudioStream::Close();
       return false;
     }
     AudioStream::SetLoopCount(1);
