@@ -261,8 +261,6 @@ int cf_OpenLibrary(const std::filesystem::path &libname) {
   lib->nfiles = header.nfiles;
   //	allocate CFILE hog info.
   lib->entries.reserve(lib->nfiles);
-  lib->next = Libraries;
-  Libraries = lib;
   // set data offset of first file
   offset = header.file_data_offset;
   // Go to index start
@@ -291,6 +289,8 @@ int cf_OpenLibrary(const std::filesystem::path &libname) {
   lib->handle = ++lib_handle;
   // Save the file pointer
   lib->file = fp;
+  lib->next = Libraries;
+  Libraries = lib;
   // Success.  Return the handle
   return lib->handle;
 }
