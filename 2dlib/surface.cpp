@@ -685,7 +685,7 @@ void grSurface::xlat24_16(char *data, int w, int h) {
       dptr[dcol] = pix;
     }
     sptr += (w * 3);
-    dptr += m_DataRowsize;
+    dptr += m_DataRowsize / 2;
   }
 }
 
