@@ -2044,7 +2044,6 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
   if (pm->n_models > MAX_SUBOBJECTS) {
     LOG_ERROR.printf("This model has more than the max number of subobjects! (%d)", MAX_SUBOBJECTS);
     Int3();
-    FreePolyModel(pm - Poly_models);
     return 0;
   }
 
@@ -2143,6 +2142,7 @@ int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
   if (ret)
     return polynum; // loaded successfully
 
+  FreePolyModel(polynum);
   return -1; // damn, didn't load
 }
 
