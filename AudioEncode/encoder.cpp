@@ -33,7 +33,7 @@ int32_t aenc_ReadSamp(void *data) {
   b = getc(f);
   if (b == EOF)
     return ReadSampleEof;
-  return (b << 8) | a;
+  return (int16_t)((b << 8) | a);
 }
 
 bool aenc_Compress(const char *input_filename, const char *output_filename, const int *input_levels, const int *input_samples,
