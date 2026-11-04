@@ -200,6 +200,8 @@ void textaux_ClipString(int width, char *string, float horizont_ratio, char end)
       if (end) {
         string[size] = end;
         string[size + 1] = '\0';
+      } else {
+        string[size] = '\0';
       }
       return;
     }
