@@ -1839,6 +1839,11 @@ void nw_psnet_buffer_packet(uint8_t *data, int length, network_address *from) {
   int idx;
   int found_buf = 0;
 
+  if (length > MAX_PACKET_SIZE) {
+    LOG_WARNING.printf("WARNING - Dropping %d byte packet in psnet (max %d)", length, MAX_PACKET_SIZE);
+    return;
+  }
+
   // find the first empty packet
   for (idx = 0; idx < MAX_PACKET_BUFFERS; idx++) {
     if (Psnet_buffers[idx].sequence_number == -1) {
