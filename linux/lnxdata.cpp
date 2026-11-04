@@ -145,10 +145,9 @@ bool oeLnxAppDatabase::read(const char *label, char *entry, int *entrylen) {
 
   // See if it exists
   int size = database->GetDataSize((char *)label);
-  if (size > 0)
-    *entrylen = size - 1; //-1 because of NULL
-  else
+  if (size <= 0 || size > *entrylen)
     return false;
+  *entrylen = size - 1; //-1 because of NULL
 
   // ok it exists, no look it up
   database->LookupRecord((char *)label, entry);
