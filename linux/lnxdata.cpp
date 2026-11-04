@@ -235,7 +235,7 @@ void oeLnxAppDatabase::get_user_name(char *buffer, size_t *size) {
     *size = strlen(buffer);
   }
 #else
-DWORD unamelen = 0;
+DWORD unamelen = static_cast<DWORD>(*size);
 GetUserName(buffer, &unamelen);
 *size = static_cast<size_t>(unamelen);
 #endif
