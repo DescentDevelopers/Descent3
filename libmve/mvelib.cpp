@@ -124,7 +124,7 @@ int mvefile_get_next_segment_size(MVEFILE *movie) {
     return -1;
 
   /* otherwise, get the data length */
-  return _mve_get_short(movie->cur_chunk + movie->next_segment);
+  return _mve_get_ushort(movie->cur_chunk + movie->next_segment);
 }
 
 /*
