@@ -313,10 +313,10 @@ void IceKey::set(const uint8_t *key) {
 
     for (j = 0; j < 4; j++) {
       kb[3 - j] = (key[i * 8 + j * 2] << 8) | key[i * 8 + j * 2 + 1];
-
-      scheduleBuild(kb, i * 8, ice_keyrot);
-      scheduleBuild(kb, _rounds - 8 - i * 8, &ice_keyrot[8]);
     }
+
+    scheduleBuild(kb, i * 8, ice_keyrot);
+    scheduleBuild(kb, _rounds - 8 - i * 8, &ice_keyrot[8]);
   }
 }
 
