@@ -91,6 +91,10 @@ void UIComboBox::RemoveItem(const UIItem *item) {
       for (j = i; j < (m_nItems - 1); j++)
         m_ItemList[j] = m_ItemList[j + 1];
       m_nItems--;
+
+      // keep the selection on a remaining item, as UIListBox::RemoveItem does
+      if (i <= m_Index && m_Index > 0)
+        m_Index--;
       break;
     }
   }
