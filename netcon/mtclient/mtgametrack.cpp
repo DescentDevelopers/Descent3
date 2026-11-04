@@ -296,19 +296,23 @@ void HandleGamePacket(uint8_t *data, int len, network_address *from) {
         Game_over_send = GameOverSend::Acked;
       }
       break;
-    case GNT_GAMELIST_LITE_DATA:
+    case GNT_GAMELIST_LITE_DATA: {
       if (len < (GAME_HEADER_ONLY_SIZE + sizeof(game_list))) {
         LOG_WARNING.printf("(%d) packet is too small!", len);
       }
+      size_t list_len = len - GAME_HEADER_ONLY_SIZE;
+      if (list_len > sizeof(game_list))
+        list_len = sizeof(game_list);
       // Woohoo! Game data! put it in the buffer (if one's free)
       for (int i = 0; i < MAX_GAME_BUFFERS; i++) {
         if (GameBuffer[i].game_type == GT_UNUSED) {
           memset(&GameBuffer[i], 0, sizeof(game_list));
-          memcpy(&GameBuffer[i], inpacket.data, len - GAME_HEADER_ONLY_SIZE);
+          memcpy(&GameBuffer[i], inpacket.data, list_len);
           i = MAX_GAME_BUFFERS + 1;
         }
       }
       break;
+    }
     case GNT_NAT_HOLE_PUNCH_REQ:
       if (len == (GAME_HEADER_ONLY_SIZE+sizeof(hole_punch_addr_ip6))) {
         // we don't support IPv6 yet so skip this one
