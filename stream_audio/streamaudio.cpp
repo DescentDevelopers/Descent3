@@ -586,6 +586,9 @@ bool AudioStream::Play(bool start_on_frame) {
 #endif
     return false;
   }
+  if (m_state != STRM_STOPPED) {
+    AudioStream::Stop();
+  }
   //	play stream if there's room to.
   if (!ActivateStream(this))
     return false;
@@ -610,9 +613,6 @@ bool AudioStream::Play(bool start_on_frame) {
   m_stopnextmeasure = false;
   m_curmeasure = 0;
   m_stopflag = nullptr;
-  if (m_state != STRM_STOPPED) {
-    AudioStream::Stop();
-  }
   if (m_playcount > 0) {
     AudioStream::Reset();
   }
