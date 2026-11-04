@@ -677,7 +677,7 @@ void grSurface::xlat24_16(char *data, int w, int h) {
     scol = 0;
     for (dcol = 0; dcol < width; dcol++) {
       uint16_t pix;
-      char r, g, b;
+      uint8_t r, g, b;
       r = sptr[scol++];
       g = sptr[scol++];
       b = sptr[scol++];
