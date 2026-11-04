@@ -49,32 +49,8 @@
 // ----------------------------------------------------------------------------
 //	Keyboard Interface
 // ----------------------------------------------------------------------------
-#include "application.h"
 #include "ddio.h"
-#include "mono.h"
-
-volatile struct tLnxKeys {
-  union {
-    int up_ticks;
-    float up_time;
-  };
-  union {
-    int down_ticks;
-    float down_time;
-  };
-  bool status;
-} LKeys[DDIO_MAX_KEYS];
-
-// sdl mode ddio
-bool ddio_sdl_InternalKeyInit(ddio_init_info *init_info);
-void ddio_sdl_InternalKeyClose();
-bool ddio_sdl_InternalKeyState(uint8_t key);
-void ddio_sdl_InternalKeySuspend();
-void ddio_sdl_InternalKeyResume();
-float ddio_sdl_InternalKeyDownTime(uint8_t key);
-void ddio_sdl_InternalResetKey(uint8_t key);
-bool ddio_sdl_KeyFrame();
-void ddio_sdl_InternalKeyFrame(void);
+#include "lnxkey_sdl.h"
 
 // ----------------------------------------------------------------------------
 //	Initialization of keyboard device.

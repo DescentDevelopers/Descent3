@@ -5,6 +5,7 @@ set(HEADERS
   ddio.h
   ddio_common.h
   ddio_lnx.h
+  lnxkey_sdl.h
   controller.h
   sdlcontroller.h
 )
