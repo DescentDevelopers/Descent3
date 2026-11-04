@@ -80,7 +80,8 @@ void GatherArgs(char **argv) {
 
   for (int i = 0; ((i < MAX_ARGS) && (argv[i] != nullptr)); i++) {
     TotalArgs++;
-    strncpy(GameArgs[i], argv[i], MAX_CHARS_PER_ARG);
+    strncpy(GameArgs[i], argv[i], MAX_CHARS_PER_ARG - 1);
+    GameArgs[i][MAX_CHARS_PER_ARG - 1] = '\0';
   } // for
 
   for (int q = 0; q < TotalArgs; q++)
