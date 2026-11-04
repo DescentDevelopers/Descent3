@@ -584,8 +584,8 @@ static void dispatchDecoder16(unsigned short **pFrame, unsigned char codeType, u
           (*pFrame)[j + 2 * k] = p[k];
           (*pFrame)[g_width + j + 2 * k] = p[k];
         }
-        *pFrame += g_width;
       }
+      *pFrame += 2 * g_width;
       *pData += 8;
       *pDataRemain -= 8;
     }
