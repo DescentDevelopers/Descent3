@@ -237,7 +237,8 @@ static inline int GRCHAR_HEIGHT_TEMP(const tFontTemplate *ft) { return (int)ft->
 static inline int GRCHAR_WIDTH_TEMP(const tFontTemplate *ft, int ch) {
   if (ch > ft->max_ascii && ft->uppercase) {
     ch = toupper(ch);
-  } else if (ch < ft->min_ascii || ch > ft->max_ascii) {
+  }
+  if (ch < ft->min_ascii || ch > ft->max_ascii) {
     return 0;
   }
 
