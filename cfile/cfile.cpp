@@ -838,7 +838,8 @@ int cfprintf(CFILE *cfp, const char *format, ...) {
   va_start(args, format);
   count = vfprintf(cfp->file, format, args);
   va_end(args);
-  cfp->position += count + 1; // count doesn't include terminator
+  if (count > 0)
+    cfp->position += count;
   return count;
 }
 
