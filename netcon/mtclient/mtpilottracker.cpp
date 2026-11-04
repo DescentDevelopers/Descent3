@@ -520,6 +520,7 @@ void HandlePilotData(uint8_t *data, int len, network_address *from) {
         }
         break;
       }
+      break;
     case UNT_LOGIN_NO_AUTH:
       if (ValidState == VALID_STATE_WAITING) {
         ValidState = VALID_STATE_INVALID;
