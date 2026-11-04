@@ -341,6 +341,4 @@ static int joyGetNumDevs(void) {
   return found;
 }
 
-void ddio_InternalJoyFrame(void) {
-  // All the work is done already in SDL_PumpEvents()
-}
+void ddio_InternalJoyFrame(void) {}
