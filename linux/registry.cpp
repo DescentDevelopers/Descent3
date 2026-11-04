@@ -61,11 +61,11 @@
 
 // Convert a string that represents a hex value into an int
 int hextoi(char *hexstring) {
-  int value;
+  unsigned int value;
   std::stringstream ss;
   ss << std::hex << hexstring;
   ss >> value;
-  return value;
+  return static_cast<int>(value);
 }
 
 // Removes whitespace from the start of the given string.
