@@ -376,20 +376,18 @@ CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle
   int i, first = 0, last = lib->nfiles - 1, c;
   bool found = false;
 
-  do {
+  while (first <= last) {
     i = (first + last) / 2;
     c = stricmp(PATH_TO_CSTR(filename), lib->entries[i]->name); // compare to current
     if (c == 0) {
       found = true;
       break;
     }
-    if (first >= last) // exhausted search
-      break;
     if (c > 0) // search key after check key
       first = i + 1;
     else // search key before check key
       last = i - 1;
-  } while (true);
+  }
 
   if (!found)
     return nullptr; // file not in library
@@ -433,20 +431,18 @@ CFILE *open_file_in_lib(const char *filename) {
     int i;
     // Do binary search for the file
     int first = 0, last = lib->nfiles - 1, c, found = 0;
-    do {
+    while (first <= last) {
       i = (first + last) / 2;
       c = stricmp(filename, lib->entries[i]->name); // compare to current
       if (c == 0) {                                 // found it
         found = 1;
         break;
       }
-      if (first >= last) // exhausted search
-        break;
       if (c > 0) // search key after check key
         first = i + 1;
       else // search key before check key
         last = i - 1;
-    } while (true);
+    }
     if (found) {
       FILE *fp;
       int r;
