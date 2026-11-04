@@ -112,7 +112,7 @@ int FindArg(const char *which, int start) {
     return strcasecmp(which, SkipArgPrefix(arg)) == 0;
   };
 
-  for (int i = start; i <= TotalArgs; i++) {
+  for (int i = start; i < TotalArgs; i++) {
     if (which_matches(GameArgs[i])) {
       LOG_INFO.printf("FindArg: Found [%s] at argument index (%d).", which, i);
       return i;
@@ -129,7 +129,7 @@ int FindArg(const char *which, int start) {
 
 // Returns index of argument sought, or 0 if not found
 int FindArgChar(const char *which, char singleCharArg) {
-  for (int i = 1; i <= TotalArgs; i++) {
+  for (int i = 1; i < TotalArgs; i++) {
     char *str = GameArgs[i];
     if (str[0] == '-' && str[1] == singleCharArg && str[2] == '\0') {
       LOG_INFO.printf("FindArg: Found [-%c] at argument index (%d).", singleCharArg, i);
