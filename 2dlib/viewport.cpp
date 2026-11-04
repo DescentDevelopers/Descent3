@@ -245,6 +245,12 @@ void grViewport::blt(int dx, int dy, grSurface *ssf, int sx, int sy, int sw, int
   y1 = global_y(dy);
   x2 = x1 + sw - 1;
   y2 = y1 + sh - 1;
+
+  if (x1 < CLIP_LEFT)
+    sx += CLIP_LEFT - x1;
+  if (y1 < CLIP_TOP)
+    sy += CLIP_TOP - y1;
+
   if (clip_rect(x1, y1, x2, y2) == 2)
     return;
 
