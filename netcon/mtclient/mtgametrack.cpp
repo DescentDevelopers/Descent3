@@ -253,7 +253,7 @@ void IdleGameTracker() {
     LastSentToTracker = DLLtimer_GetTime();
   }
 
-  if (Game_over_send != GameOverSend::Idle) {
+  if (Game_over_send == GameOverSend::AwaitingAck) {
     if ((DLLtimer_GetTime() - LastGameOverPacket) > TRACKER_RESEND_TIME) {
       // resend
       LastGameOverPacket = DLLtimer_GetTime();
