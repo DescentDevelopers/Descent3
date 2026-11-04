@@ -236,22 +236,19 @@ int grViewport::get_text_line_width(char *str) {
 
     // note that if we hit the GR_COLOR_CHAR then the next three values should
     //	not count when defining the width of the line.
-    if (rgb_define_mode == 3)
-      rgb_define_mode = 0;
-    else if (str[i] == GR_COLOR_CHAR)
-      rgb_define_mode = 1;
-    if (!rgb_define_mode) {
-      if (str[i] == '\t') { // tab char
-        int space_width;
-        text_Font.get_char_info(' ', &space_width);
-        space_width += text_Spacing;
-        line_width = (line_width + space_width - 1) / space_width * space_width;
-      } else {
-        text_Font.get_char_info((int)str[i], &width);
-        line_width += (width + get_text_spacing());
-      }
-    } else
-      rgb_define_mode++;
+    if (rgb_define_mode) {
+      rgb_define_mode--;
+    } else if (str[i] == GR_COLOR_CHAR) {
+      rgb_define_mode = 3;
+    } else if (str[i] == '\t') { // tab char
+      int space_width;
+      text_Font.get_char_info(' ', &space_width);
+      space_width += text_Spacing;
+      line_width = (line_width + space_width - 1) / space_width * space_width;
+    } else {
+      text_Font.get_char_info((int)str[i], &width);
+      line_width += (width + get_text_spacing());
+    }
   }
 
   return line_width - get_text_spacing();
