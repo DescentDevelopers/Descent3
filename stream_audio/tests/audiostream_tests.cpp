@@ -102,6 +102,19 @@ TEST_F(AudioStreamTest, OpenRejectsNonOsfFileAndStaysUsable) {
   EXPECT_EQ(s->State(), STRM_STOPPED);
 }
 
+TEST_F(AudioStreamTest, OpenRejectsUnrecognizedSampleFormat) {
+  std::vector<uint8_t> bytes = d3_test::ReadFileBytes(s_streams[kOneBuffer].osf);
+  ASSERT_GT(bytes.size(), size_t(OSF_HDR_SIZE));
+  const size_t format_at = bytes.size() - OSF_HDR_SIZE + (sizeof(OSF_TAG) - 1) + 2;
+  ASSERT_EQ(bytes[format_at], SAF_16BIT_M);
+  bytes[format_at] = 0x02;
+  const std::filesystem::path path = s_dir->Write("unknown_format.osf", bytes);
+
+  auto s = std::make_unique<AudioStream>();
+  EXPECT_FALSE(s->Open(path));
+  EXPECT_EQ(s->State(), STRM_INVALID);
+}
+
 TEST_F(AudioStreamTest, FailedSetupDoesNotPreventOpeningAnotherStream) {
   const std::filesystem::path raw_path = s_dir->path() / "raw.osf";
   {
