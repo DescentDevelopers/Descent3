@@ -195,7 +195,8 @@ void textaux_ClipString(int width, char *string, float horizont_ratio, char end)
     string[size] = '\0';
     if ((((float)grtext_GetTextLineWidth(string)) * ratio) >= width) {
       // We have to clip
-      size--;
+      if (size > 0)
+        size--;
       if (end) {
         string[size] = end;
         string[size + 1] = '\0';
