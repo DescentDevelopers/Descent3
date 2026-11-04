@@ -1316,37 +1316,39 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
                                  INTEL_FLOAT(rcv_buff.send_time));
               // We will change this as a hack to prevent later code from hooking us up
               rcv_buff.type = 0xff;
-              continue;
+              break;
             }
         }
-        for (i = 1; i < MAXRELIABLESOCKETS; i++) {
-          if (reliable_sockets[i].status == RNF_UNUSED) {
-            // Add the new connection here.
-            reliable_sockets[i].connection_type = link_type;
-            memcpy(&reliable_sockets[i].net_addr, naddr, sizeof(network_address));
-            memcpy(&reliable_sockets[i].addr, &rcv_addr, sizeof(SOCKADDR));
-            reliable_sockets[i].ping_pos = 0;
-            reliable_sockets[i].num_ping_samples = 0;
-            reliable_sockets[i].status = RNF_LIMBO;
-            reliable_sockets[i].last_packet_received = timer_GetTime();
-            reliable_sockets[i].last_sent = timer_GetTime();
-            reliable_sockets[i].waiting_packet_number = -1;
-            reliable_sockets[i].send_urgent = 0;
+        if (rcv_buff.type == RNT_REQ_CONN) {
+          for (i = 1; i < MAXRELIABLESOCKETS; i++) {
+            if (reliable_sockets[i].status == RNF_UNUSED) {
+              // Add the new connection here.
+              reliable_sockets[i].connection_type = link_type;
+              memcpy(&reliable_sockets[i].net_addr, naddr, sizeof(network_address));
+              memcpy(&reliable_sockets[i].addr, &rcv_addr, sizeof(SOCKADDR));
+              reliable_sockets[i].ping_pos = 0;
+              reliable_sockets[i].num_ping_samples = 0;
+              reliable_sockets[i].status = RNF_LIMBO;
+              reliable_sockets[i].last_packet_received = timer_GetTime();
+              reliable_sockets[i].last_sent = timer_GetTime();
+              reliable_sockets[i].waiting_packet_number = -1;
+              reliable_sockets[i].send_urgent = 0;
 
-            rsocket = &reliable_sockets[i];
-            rcvaddr = (SOCKADDR_IN *)&rcv_addr;
-            // Int3();
-            LOG_DEBUG.printf("Connect from %s:%d", inet_ntoa(rcvaddr->sin_addr), htons(rcvaddr->sin_port));
-            break;
+              rsocket = &reliable_sockets[i];
+              rcvaddr = (SOCKADDR_IN *)&rcv_addr;
+              // Int3();
+              LOG_DEBUG.printf("Connect from %s:%d", inet_ntoa(rcvaddr->sin_addr), htons(rcvaddr->sin_port));
+              break;
+            }
           }
+          if (i == MAXRELIABLESOCKETS) {
+            // No more connections!
+            LOG_WARNING << "Out of incoming reliable connection sockets";
+            // Int3();//See Kevin
+            continue;
+          }
+          nw_SendReliableAck(&rsocket->addr, INTEL_SHORT(rcv_buff.seq), link_type, INTEL_FLOAT(rcv_buff.send_time));
         }
-        if (i == MAXRELIABLESOCKETS) {
-          // No more connections!
-          LOG_WARNING << "Out of incoming reliable connection sockets";
-          // Int3();//See Kevin
-          continue;
-        }
-        nw_SendReliableAck(&rsocket->addr, INTEL_SHORT(rcv_buff.seq), link_type, INTEL_FLOAT(rcv_buff.send_time));
       }
 
       // Find out if this is a packet from someone we were expecting a packet.
