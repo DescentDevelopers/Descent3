@@ -186,8 +186,8 @@ void rtp_WriteBufferLog() {
       RTP_CLOCKSECONDS(fi->fvi_time, fvi_time);
 
       snprintf(buffer, sizeof(buffer),
-               "%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f "
-               "%d %lld",
+               "%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,"
+               "%d,%lld",
                (int)fi->frame_num, fi->frame_time, renderframe_time, multiframe_time, musicframe_time,
                ambsound_frame_time, weatherframe_time, playerframe_time, doorframe_time, levelgoal_time,
                matcenframe_time, objframe_time, aiframeall_time, processkeys_time, fi->texture_uploads, fi->polys_drawn,
