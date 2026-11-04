@@ -59,8 +59,10 @@ void AddApiHostToDirectIpList(const std::string &str) {
     strncpy(ipbuf, address, count);
     ipbuf[count] = '\0';
   } else {
-    strncpy(ipbuf, address, 15);
-    ipbuf[15] = '\0';
+    if (str.size() > 15)
+      return;
+
+    strcpy(ipbuf, address);
   }
 
   uint32_t iaddr = inet_addr(ipbuf);
@@ -78,6 +80,7 @@ void DecodeApiAnswer(std::stringstream &data) {
   while (!data.eof()) {
     std::string s1;
     getline(data, s1, '\n');
+    s1.erase(s1.find_last_not_of(" \t\r") + 1);
     AddApiHostToDirectIpList(s1);
   }
 }
