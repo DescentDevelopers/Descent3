@@ -76,8 +76,8 @@ void mveaudio_process(char *buffer, unsigned char *data, int sample_size, bool i
       memcpy(buffer + i * sample_size, &nCurOffsets[i & 1], sample_size);
     }
   } else {
-    data += 2;
+    data += 4;
     int size = getWord(&data);
-    memcpy(buffer, &data, size);
+    memcpy(buffer, data, size);
   }
 }
