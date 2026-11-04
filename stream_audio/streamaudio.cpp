@@ -588,12 +588,6 @@ bool AudioStream::Play(bool start_on_frame) {
 #endif
     return false;
   }
-  if (m_state != STRM_STOPPED) {
-    AudioStream::Stop();
-  }
-  //	play stream if there's room to.
-  if (!ActivateStream(this))
-    return false;
   switch (m_archive.StreamFormat()) {
   case SAF_8BIT_M:
     sflag = SIF_STREAMING_8_M;
@@ -611,6 +605,12 @@ bool AudioStream::Play(bool start_on_frame) {
     Int3();
     return false;
   }
+  if (m_state != STRM_STOPPED) {
+    AudioStream::Stop();
+  }
+  //	play stream if there's room to.
+  if (!ActivateStream(this))
+    return false;
   // reset soft stopping.
   m_stopnextmeasure = false;
   m_curmeasure = 0;
