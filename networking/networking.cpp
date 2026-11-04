@@ -1467,7 +1467,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
 
         } else {
           // Sequence is high, so prepare for wrap around
-          if (((uint16_t)(INTEL_SHORT(rcv_buff.seq) + rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
+          if (((uint16_t)(INTEL_SHORT(rcv_buff.seq) - rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
             LOG_WARNING.printf("Received old packet with seq of %d", INTEL_SHORT(rcv_buff.seq));
             savepacket = 0;
           }
