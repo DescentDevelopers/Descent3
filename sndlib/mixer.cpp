@@ -241,7 +241,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
           if (loop_end < samples_played) {
             if (loop_end != loop_start) {
               while (loop_end < samples_played) {
-                samples_played -= loop_end - loop_start;
+                samples_played -= loop_end - loop_start + 1;
               }
 
               ASSERT(samples_played >= 0);
