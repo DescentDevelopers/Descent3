@@ -162,15 +162,15 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
 #include <cmath>
+#include <cstring>
+#include <filesystem>
 
 #include "gamedll_header.h"
 #include "idmfc.h"
 #include "monsterball.h"
-#include <string.h>
 #include "monsterstr.h"
-
-#include <algorithm>
 
 IDMFC *DMFCBase = nullptr;
 static IDmfcStats *dstat = nullptr;
@@ -295,7 +295,7 @@ static void OnTimerScoreKill(void);
 static void OnTimerKill(void);
 static void OnTimerRegen(void);
 static void OnTimerRegenKill(void);
-static void SaveStatsToFile(const char *filename);
+static void SaveStatsToFile(const std::filesystem::path &filename);
 static void SortPlayerSlots(int *sorted_list, int count);
 static void SendLastHitInfo(void);
 static void GetLastHitInfo(uint8_t *data);
@@ -1433,7 +1433,7 @@ void OnPrintScores(int level) {
   }
 }
 
-void SaveStatsToFile(const char *filename) {
+void SaveStatsToFile(const std::filesystem::path &filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
@@ -1639,21 +1639,18 @@ void SaveStatsToFile(const char *filename) {
 }
 
 #define ROOTFILENAME "MonsterBall"
-void OnSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
-void OnLevelEndSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, true);
+void OnLevelEndSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, true);
   SaveStatsToFile(filename);
 }
 
-void OnDisconnectSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnDisconnectSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 

@@ -927,9 +927,9 @@ void DLLFUNCCALL IDMFC_EnableAutoSaveDisconnect(IDMFC *instance, bool enable) {
   instance->EnableAutoSaveDisconnect(enable);
 }
 
-void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, char *filename, const char *root, bool end_of_level) {
+void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, const char *root, std::filesystem::path &filename, bool end_of_level) {
   assert(instance != nullptr);
-  instance->GenerateStatFilename(filename, root, end_of_level);
+  filename = instance->GenerateStatFilename(root, end_of_level);
 }
 
 bool DLLFUNCCALL IDMFC_IsPlayerObserver(IDMFC *instance, int pnum) {

@@ -435,7 +435,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[32] = (int *)MultiStartClient;
   api->fp[33] = (int *)rend_GetRenderState;
   api->fp[34] = (int *)LoadMission;
-  api->fp[35] = (int *)ddio_MakePath;
+  api->fp[35] = (int *)nullptr; // ddio_MakePath;
   api->fp[36] = (int *)nullptr; // ddio_FindFileStart;
   api->fp[37] = (int *)nullptr; // ddio_FindFileClose;
   api->fp[38] = (int *)nullptr; // ddio_FindNextFile;

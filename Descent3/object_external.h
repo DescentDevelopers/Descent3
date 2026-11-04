@@ -153,7 +153,7 @@
 #define OBJECT_HANDLE_BAD 0
 
 // Use this handle when you want a handle that will never be a valid object
-#define OBJECT_HANDLE_NONE -1
+#define OBJECT_HANDLE_NONE (-1)
 
 // Object types
 #define OBJ_NONE 255        // unused object
