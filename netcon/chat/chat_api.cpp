@@ -802,7 +802,7 @@ char *ParseIRCMessage(char *Line, int iMode) {
     }
     // sprintf(szResponse,"*** %s has kicked %s from channel %s (%s)",szNick,szHackPrefix,szTarget,pszTempStr);
     // Remove them to the userlist too!
-    RemoveChatUser(szNick);
+    RemoveChatUser(szHackPrefix);
     return nullptr; // szResponse;
   }
   if (stricmp(szCmd, "NICK") == 0) {
