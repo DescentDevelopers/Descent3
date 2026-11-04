@@ -51,6 +51,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <string>
 
 #include "grtext.h"
 
@@ -171,44 +172,36 @@ void textaux_ClipString(int width, char *string, float horizont_ratio, char end)
 
   float ratio = horizont_ratio;
 
-  int string_length = strlen(string);
-  char arrow_string[2];
-  int arrow_length = 0;
-
-  if (end) {
-    snprintf(arrow_string, sizeof(arrow_string), "%c", end);
-    arrow_length = (int)(ratio * ((float)grtext_GetTextLineWidth(arrow_string)));
+  if ((((float)grtext_GetTextLineWidth(string)) * ratio) <= width) {
+    // The string doesn't need to be clipped
+    return;
   }
 
-  if (width < arrow_length) {
+  int string_length = strlen(string);
+  const char arrow_string[2] = {end, '\0'};
+
+  if (end && (((float)grtext_GetTextLineWidth(arrow_string)) * ratio) > width) {
     // Nothing can fit
     strcpy(string, "");
     return;
   }
 
-  // adjust width based on the arrow
-  width -= arrow_length;
-
+  // Keep the longest prefix that fits, measured together with the end char when there is one.
+  // The whole string doesn't fit, so this stops before the last character.
+  std::string candidate;
   int size = 0;
-  char save = string[0];
   while (size < string_length) {
-    string[size] = '\0';
-    if ((((float)grtext_GetTextLineWidth(string)) * ratio) >= width) {
-      // We have to clip
-      if (size > 0)
-        size--;
-      if (end) {
-        string[size] = end;
-        string[size + 1] = '\0';
-      } else {
-        string[size] = '\0';
-      }
-      return;
-    }
-    // replace the char and move to the next
-    string[size] = save;
+    candidate.assign(string, size + 1);
+    if (end)
+      candidate += end;
+    if ((((float)grtext_GetTextLineWidth(candidate.c_str())) * ratio) > width)
+      break;
     size++;
-    save = string[size];
   }
-  // The string didn't need to be clipped
+  if (end) {
+    string[size] = end;
+    string[size + 1] = '\0';
+  } else {
+    string[size] = '\0';
+  }
 }
