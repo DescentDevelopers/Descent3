@@ -326,7 +326,7 @@ void mng_EraseLocker() {
     else
       cfclose(fp);
 
-    if (remove(LockerFile)) {
+    if (remove(PATH_TO_CSTR(LockerFile))) {
       if (count >= 10) {
         OutrageMessageBox("There was a problem deleting the locker file...get Jason immediately!");
         return;
@@ -586,7 +586,7 @@ int mng_DeletePagelock(char *name, int pagetype) {
     Int3(); // Get Jason!
   }
 
-  if (remove(TableLockFilename)) {
+  if (remove(PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
@@ -640,7 +640,7 @@ int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
   cfclose(infile);
   cfclose(outfile);
 
-  if (remove(TableLockFilename)) {
+  if (remove(PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
@@ -777,7 +777,7 @@ int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
 
   LOG_DEBUG.printf("Unlocked %d pages\n", total);
 
-  if (remove(TableLockFilename)) {
+  if (remove(PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
