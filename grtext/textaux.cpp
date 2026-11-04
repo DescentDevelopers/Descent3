@@ -63,8 +63,10 @@ void textaux_WordWrap(const char *src, char *dest, int width, int font) {
   // make sure we are kosher with the values past in
   if ((!src) || (!dest))
     return;
-  if (src[0] == '\0')
+  if (src[0] == '\0') {
+    dest[0] = '\0';
     return;
+  }
 
   char *last_word;  // points to the character after the last complete word
   char *start_line; // points to the starting char of the line
