@@ -1248,16 +1248,12 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         if (t != facelist[i]) {
           int nverts = rp->faces[t].num_verts;
 
+          newfaces[t] = rp->faces[t];
           newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
           ASSERT(newfaces[t].face_verts != nullptr);
           newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
           ASSERT(newfaces[t].face_uvls != nullptr);
 
-          newfaces[t].normal = rp->faces[t].normal;
-          newfaces[t].tmap = rp->faces[t].tmap;
-          newfaces[t].flags = rp->faces[t].flags;
-          newfaces[t].portal_num = rp->faces[t].portal_num;
-          newfaces[t].num_verts = rp->faces[t].num_verts;
           newfaces[t].special_handle = BAD_SPECIAL_FACE_INDEX;
 
           for (k = 0; k < nverts; k++) {
@@ -1268,14 +1264,12 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         {
           int nverts = 3;
 
+          newfaces[t] = rp->faces[t];
           newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
           ASSERT(newfaces[t].face_verts != nullptr);
           newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
           ASSERT(newfaces[t].face_uvls != nullptr);
 
-          newfaces[t].tmap = rp->faces[t].tmap;
-          newfaces[t].flags = rp->faces[t].flags;
-          newfaces[t].portal_num = rp->faces[t].portal_num;
           newfaces[t].num_verts = 3;
           newfaces[t].special_handle = BAD_SPECIAL_FACE_INDEX;
 
