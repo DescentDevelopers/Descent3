@@ -136,7 +136,7 @@ angle FixAsin(scalar v) {
   vv = FloatToFix(std::fabs(v));
 
   if (vv >= F1_0) // check for out of range
-    return 0x4000;
+    return (v < 0) ? 0xC000 : 0x4000;
 
   i = (vv >> 8) & 0xff;
   f = vv & 0xff;
@@ -158,7 +158,7 @@ angle FixAcos(scalar v) {
   vv = FloatToFix(std::fabs(v));
 
   if (vv >= F1_0) // check for out of range
-    return 0;
+    return (v < 0) ? 0x8000 : 0;
 
   i = (vv >> 8) & 0xff;
   f = vv & 0xff;
