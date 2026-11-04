@@ -426,9 +426,9 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
             pixel = cf_ReadInt(infile);
           else {
             int r, g, b;
-            r = cf_ReadByte(infile);
-            g = cf_ReadByte(infile);
-            b = cf_ReadByte(infile);
+            b = (uint8_t)cf_ReadByte(infile);
+            g = (uint8_t)cf_ReadByte(infile);
+            r = (uint8_t)cf_ReadByte(infile);
             pixel = (255 << 24) | (r << 16) | (g << 8) | b;
           }
 
