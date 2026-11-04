@@ -277,7 +277,7 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
     draw_y = CLIP_TOP;
   }
   if (CLIP_BOTTOM < (y + text_Font.height())) {
-    ch_h = CLIP_BOTTOM - y;
+    ch_h = CLIP_BOTTOM - y + 1;
   }
   ch_h = ch_h - ch_y; // do this to clip both top and bottom
 
@@ -313,7 +313,7 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
         draw_x = CLIP_LEFT;
       }
       if (CLIP_RIGHT < (cur_x + w)) {
-        ch_w = CLIP_RIGHT - cur_x;
+        ch_w = CLIP_RIGHT - cur_x + 1;
       }
       ch_w = ch_w - ch_x;
 
