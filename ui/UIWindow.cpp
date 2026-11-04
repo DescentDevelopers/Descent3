@@ -457,7 +457,15 @@ void UIWindow::OnKeyDown(int key) {
       return;
     }
     start_gadget = gadget = m_GadgetCur;
-    in_group = m_CurGadgetInGroup;
+    // leaving a group backwards: skip back to its first gadget, so the search starts outside it
+    if (m_CurGadgetInGroup) {
+      while (!CHECK_FLAG(gadget->GetFlags(), UIF_GROUP_START)) {
+        gadget = (gadget->m_Prev) ? gadget->m_Prev : m_GadgetTail;
+        if (gadget == start_gadget)
+          break;
+      }
+    }
+    in_group = false;
     do {
       gadget = (gadget->m_Prev) ? gadget->m_Prev : m_GadgetTail;
       if (CHECK_FLAG(gadget->GetFlags(), UIF_GROUP_END)) {
