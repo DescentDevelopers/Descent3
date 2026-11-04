@@ -468,7 +468,8 @@ int ZIP::ReadZipData(zipentry *ent, char *data) {
   if (err != 0)
     return -2;
 
-  if (fread(data, ent->compressed_size, 1, m_fp) != 1) {
+  // fread() returns 0 for a zero-length read, so an empty entry has nothing to read.
+  if (ent->compressed_size > 0 && fread(data, ent->compressed_size, 1, m_fp) != 1) {
     return -2;
   }
 
