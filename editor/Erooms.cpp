@@ -1298,8 +1298,8 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
       rp->num_faces = nfaces;
 
       if (rp->num_bbf_regions) {
-        for (i = 0; i < rp->num_bbf_regions; i++) {
-          mem_free(rp->bbf_list[i]);
+        for (int j = 0; j < rp->num_bbf_regions; j++) {
+          mem_free(rp->bbf_list[j]);
         }
         mem_free(rp->bbf_list);
         mem_free(rp->num_bbf);
