@@ -914,6 +914,11 @@ static void w2c_x86sandbox_append_callers(w2c_x86sandbox*);
 static void w2c_x86sandbox_sb_ret(w2c_x86sandbox*, u32);
 static void w2c_x86sandbox_sb_ret64(w2c_x86sandbox*, u32, u32);
 static void w2c_x86sandbox_sb_ret_f64(w2c_x86sandbox*, f64);
+static u32 w2c_x86sandbox_sb_resolve_import(w2c_x86sandbox*, u32, u32);
+static u32 w2c_x86sandbox_new_import(w2c_x86sandbox*, u32, u32, u32);
+static u32 w2c_x86sandbox_sb_find_own_export(w2c_x86sandbox*, u32);
+static u32 w2c_x86sandbox_find_export(w2c_x86sandbox*, u32);
+static u32 w2c_x86sandbox_img32(w2c_x86sandbox*, u32, u32);
 static u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox*, u32);
 static u32 w2c_x86sandbox_mem_write_string(w2c_x86sandbox*, u32, u32, u32, u32);
 static void w2c_x86sandbox_mem_write32(w2c_x86sandbox*, u32, u32, u32);
@@ -945,7 +950,6 @@ static u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox*, u32, u32, u32);
 static u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox*, u32, u32);
 static void w2c_x86sandbox_heap_init(w2c_x86sandbox*, u32, u32);
 static u32 w2c_x86sandbox_sb_find_export_0(w2c_x86sandbox*);
-static u32 w2c_x86sandbox_img32(w2c_x86sandbox*, u32, u32);
 static u32 w2c_x86sandbox_sb_call_0(w2c_x86sandbox*, u32, u32);
 static u32 w2c_x86sandbox_sb_call_any_0(w2c_x86sandbox*, u32, u32);
 static u32 w2c_x86sandbox_sb_eax_0(w2c_x86sandbox*);
@@ -965,6 +969,7 @@ static void w2c_x86sandbox_sb_win32_reset(w2c_x86sandbox*);
 static void w2c_x86sandbox_sb_run_atexit(w2c_x86sandbox*);
 static u32 w2c_x86sandbox_sb_find_import(w2c_x86sandbox*, u32, u32);
 static void w2c_x86sandbox_sb_win32_init_data(w2c_x86sandbox*, u32, u32);
+static void w2c_x86sandbox_crtdll_GetMainArgs(w2c_x86sandbox*);
 static void w2c_x86sandbox_crt_malloc(w2c_x86sandbox*);
 static void w2c_x86sandbox_crt_free(w2c_x86sandbox*);
 static void w2c_x86sandbox_crt_calloc(w2c_x86sandbox*);
@@ -1064,6 +1069,9 @@ static void w2c_x86sandbox_crt_qsort(w2c_x86sandbox*);
 static void w2c_x86sandbox_crt_purecall(w2c_x86sandbox*);
 static void w2c_x86sandbox_crt_fatal(w2c_x86sandbox*);
 static void w2c_x86sandbox_k32_GetModuleHandleA(w2c_x86sandbox*);
+static u32 w2c_x86sandbox_module_handle(w2c_x86sandbox*, u32);
+static void w2c_x86sandbox_k32_GetProcAddress(w2c_x86sandbox*);
+static void w2c_x86sandbox_k32_LoadLibraryA(w2c_x86sandbox*);
 static void w2c_x86sandbox_crt_ret1(w2c_x86sandbox*);
 static void w2c_x86sandbox_k32_GetTickCount(w2c_x86sandbox*);
 static void w2c_x86sandbox_k32_QueryPerformanceCounter(w2c_x86sandbox*);
@@ -1115,6 +1123,11 @@ static void w2c_x86sandbox_k32_GetSystemTimeAsFileTime(w2c_x86sandbox*);
 static void w2c_x86sandbox_k32_GetLocalTime(w2c_x86sandbox*);
 static void w2c_x86sandbox_k32_CreateFileA(w2c_x86sandbox*);
 static void w2c_x86sandbox_k32_GetTimeZoneInformation(w2c_x86sandbox*);
+static void w2c_x86sandbox_k32_DebugBreak(w2c_x86sandbox*);
+static void w2c_x86sandbox_k32_CompareStringA(w2c_x86sandbox*);
+static void w2c_x86sandbox_compare_string(w2c_x86sandbox*, u32);
+static void w2c_x86sandbox_k32_CompareStringW(w2c_x86sandbox*);
+static void w2c_x86sandbox_k32_GetUserDefaultLCID(w2c_x86sandbox*);
 static void w2c_x86sandbox_user32_MessageBoxA(w2c_x86sandbox*);
 static void w2c_x86sandbox_user32_wsprintfA(w2c_x86sandbox*);
 static void w2c_x86sandbox_put_int(w2c_x86sandbox*, u32, u64, u32, u32, u32, u32, u32, u32);
@@ -1345,6 +1358,9 @@ static u32 wrap_w2c_x86sandbox_io_read8(void *instance, u32 var_0, u32 var_1) {
 }
 static u32 wrap_w2c_x86sandbox_pic_read_irq(void *instance, u32 var_0) {
   return w2c_x86sandbox_pic_read_irq((struct w2c_x86sandbox*) instance, var_0);
+}
+static void wrap_w2c_x86sandbox_crtdll_GetMainArgs(void *instance) {
+  return w2c_x86sandbox_crtdll_GetMainArgs((struct w2c_x86sandbox*) instance);
 }
 static void wrap_w2c_x86sandbox_crt_malloc(void *instance) {
   return w2c_x86sandbox_crt_malloc((struct w2c_x86sandbox*) instance);
@@ -1634,6 +1650,12 @@ static void wrap_w2c_x86sandbox_crt_fatal(void *instance) {
 static void wrap_w2c_x86sandbox_k32_GetModuleHandleA(void *instance) {
   return w2c_x86sandbox_k32_GetModuleHandleA((struct w2c_x86sandbox*) instance);
 }
+static void wrap_w2c_x86sandbox_k32_GetProcAddress(void *instance) {
+  return w2c_x86sandbox_k32_GetProcAddress((struct w2c_x86sandbox*) instance);
+}
+static void wrap_w2c_x86sandbox_k32_LoadLibraryA(void *instance) {
+  return w2c_x86sandbox_k32_LoadLibraryA((struct w2c_x86sandbox*) instance);
+}
 static void wrap_w2c_x86sandbox_crt_ret1(void *instance) {
   return w2c_x86sandbox_crt_ret1((struct w2c_x86sandbox*) instance);
 }
@@ -1787,6 +1809,18 @@ static void wrap_w2c_x86sandbox_k32_CreateFileA(void *instance) {
 static void wrap_w2c_x86sandbox_k32_GetTimeZoneInformation(void *instance) {
   return w2c_x86sandbox_k32_GetTimeZoneInformation((struct w2c_x86sandbox*) instance);
 }
+static void wrap_w2c_x86sandbox_k32_DebugBreak(void *instance) {
+  return w2c_x86sandbox_k32_DebugBreak((struct w2c_x86sandbox*) instance);
+}
+static void wrap_w2c_x86sandbox_k32_CompareStringA(void *instance) {
+  return w2c_x86sandbox_k32_CompareStringA((struct w2c_x86sandbox*) instance);
+}
+static void wrap_w2c_x86sandbox_k32_CompareStringW(void *instance) {
+  return w2c_x86sandbox_k32_CompareStringW((struct w2c_x86sandbox*) instance);
+}
+static void wrap_w2c_x86sandbox_k32_GetUserDefaultLCID(void *instance) {
+  return w2c_x86sandbox_k32_GetUserDefaultLCID((struct w2c_x86sandbox*) instance);
+}
 static void wrap_w2c_x86sandbox_user32_MessageBoxA(void *instance) {
   return w2c_x86sandbox_user32_MessageBoxA((struct w2c_x86sandbox*) instance);
 }
@@ -1795,7 +1829,7 @@ static void wrap_w2c_x86sandbox_user32_wsprintfA(void *instance) {
 }
 
 static void init_globals(w2c_x86sandbox* instance) {
-  instance->w2c_0x5F_stack_pointer = 1131136u;
+  instance->w2c_0x5F_stack_pointer = 1135760u;
 }
 
 static const u8 data_segment_data_w2c_x86sandbox_0x2Erodata[] = {
@@ -1885,35 +1919,38 @@ static const u8 data_segment_data_w2c_x86sandbox_0x2Erodata[] = {
   0x73, 0x74, 0x65, 0x64, 0x20, 0x62, 0x79, 0x20, 0x6e, 0x65, 0x73, 0x74, 
   0x65, 0x64, 0x20, 0x63, 0x61, 0x6c, 0x6c, 0x73, 0x00, 0x44, 0x69, 0x73, 
   0x61, 0x62, 0x6c, 0x65, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x4c, 0x69, 
-  0x62, 0x72, 0x61, 0x72, 0x79, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x00, 0x47, 
-  0x65, 0x74, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 
-  0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x73, 0x00, 0x5f, 0x5f, 0x63, 
-  0x61, 0x6c, 0x6c, 0x5f, 0x69, 0x73, 0x72, 0x5f, 0x63, 0x68, 0x65, 0x63, 
-  0x6b, 0x5f, 0x63, 0x73, 0x00, 0x6c, 0x61, 0x62, 0x73, 0x00, 0x66, 0x61, 
-  0x62, 0x73, 0x00, 0x62, 0x61, 0x64, 0x20, 0x69, 0x6d, 0x61, 0x67, 0x65, 
-  0x3a, 0x20, 0x25, 0x73, 0x00, 0x5f, 0x73, 0x74, 0x72, 0x6c, 0x77, 0x72, 
-  0x00, 0x73, 0x74, 0x72, 0x73, 0x74, 0x72, 0x00, 0x49, 0x73, 0x42, 0x61, 
-  0x64, 0x57, 0x72, 0x69, 0x74, 0x65, 0x50, 0x74, 0x72, 0x00, 0x49, 0x73, 
-  0x42, 0x61, 0x64, 0x43, 0x6f, 0x64, 0x65, 0x50, 0x74, 0x72, 0x00, 0x49, 
-  0x73, 0x42, 0x61, 0x64, 0x52, 0x65, 0x61, 0x64, 0x50, 0x74, 0x72, 0x00, 
-  0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x69, 0x73, 0x72, 0x00, 0x5f, 0x73, 0x74, 
-  0x72, 0x75, 0x70, 0x72, 0x00, 0x53, 0x65, 0x74, 0x4c, 0x61, 0x73, 0x74, 
-  0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x47, 0x65, 0x74, 0x4c, 0x61, 0x73, 
-  0x74, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x66, 0x6c, 0x6f, 0x6f, 0x72, 
-  0x00, 0x73, 0x74, 0x72, 0x63, 0x68, 0x72, 0x00, 0x73, 0x74, 0x72, 0x72, 
-  0x63, 0x68, 0x72, 0x00, 0x6d, 0x65, 0x6d, 0x63, 0x68, 0x72, 0x00, 0x69, 
-  0x73, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x00, 0x74, 0x6f, 0x6c, 0x6f, 0x77, 
-  0x65, 0x72, 0x00, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x65, 0x72, 0x66, 
-  0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63, 0x65, 0x43, 0x6f, 0x75, 0x6e, 0x74, 
-  0x65, 0x72, 0x00, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x20, 0x72, 0x65, 
-  0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x20, 0x61, 0x6e, 0x20, 0x69, 0x6e, 
-  0x76, 0x61, 0x6c, 0x69, 0x64, 0x20, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 
-  0x72, 0x00, 0x53, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x50, 0x6f, 0x69, 
-  0x6e, 0x74, 0x65, 0x72, 0x00, 0x5f, 0x58, 0x63, 0x70, 0x74, 0x46, 0x69, 
-  0x6c, 0x74, 0x65, 0x72, 0x00, 0x53, 0x65, 0x74, 0x55, 0x6e, 0x68, 0x61, 
-  0x6e, 0x64, 0x6c, 0x65, 0x64, 0x45, 0x78, 0x63, 0x65, 0x70, 0x74, 0x69, 
-  0x6f, 0x6e, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x00, 0x69, 0x73, 0x75, 
-  0x70, 0x70, 0x65, 0x72, 0x00, 0x74, 0x6f, 0x75, 0x70, 0x70, 0x65, 0x72, 
+  0x62, 0x72, 0x61, 0x72, 0x79, 0x43, 0x61, 0x6c, 0x6c, 0x73, 0x00, 0x5f, 
+  0x5f, 0x47, 0x65, 0x74, 0x4d, 0x61, 0x69, 0x6e, 0x41, 0x72, 0x67, 0x73, 
+  0x00, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 
+  0x65, 0x6e, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x73, 0x00, 0x5f, 
+  0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x69, 0x73, 0x72, 0x5f, 0x63, 0x68, 
+  0x65, 0x63, 0x6b, 0x5f, 0x63, 0x73, 0x00, 0x6c, 0x61, 0x62, 0x73, 0x00, 
+  0x66, 0x61, 0x62, 0x73, 0x00, 0x62, 0x61, 0x64, 0x20, 0x69, 0x6d, 0x61, 
+  0x67, 0x65, 0x3a, 0x20, 0x25, 0x73, 0x00, 0x5f, 0x73, 0x74, 0x72, 0x6c, 
+  0x77, 0x72, 0x00, 0x73, 0x74, 0x72, 0x73, 0x74, 0x72, 0x00, 0x49, 0x73, 
+  0x42, 0x61, 0x64, 0x57, 0x72, 0x69, 0x74, 0x65, 0x50, 0x74, 0x72, 0x00, 
+  0x49, 0x73, 0x42, 0x61, 0x64, 0x43, 0x6f, 0x64, 0x65, 0x50, 0x74, 0x72, 
+  0x00, 0x49, 0x73, 0x42, 0x61, 0x64, 0x52, 0x65, 0x61, 0x64, 0x50, 0x74, 
+  0x72, 0x00, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 0x69, 0x73, 0x72, 0x00, 0x5f, 
+  0x73, 0x74, 0x72, 0x75, 0x70, 0x72, 0x00, 0x53, 0x65, 0x74, 0x4c, 0x61, 
+  0x73, 0x74, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x47, 0x65, 0x74, 0x4c, 
+  0x61, 0x73, 0x74, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x00, 0x66, 0x6c, 0x6f, 
+  0x6f, 0x72, 0x00, 0x73, 0x74, 0x72, 0x63, 0x68, 0x72, 0x00, 0x73, 0x74, 
+  0x72, 0x72, 0x63, 0x68, 0x72, 0x00, 0x6d, 0x65, 0x6d, 0x63, 0x68, 0x72, 
+  0x00, 0x69, 0x73, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x00, 0x74, 0x6f, 0x6c, 
+  0x6f, 0x77, 0x65, 0x72, 0x00, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x65, 
+  0x72, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63, 0x65, 0x43, 0x6f, 0x75, 
+  0x6e, 0x74, 0x65, 0x72, 0x00, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x20, 
+  0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x20, 0x61, 0x6e, 0x20, 
+  0x69, 0x6e, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x20, 0x70, 0x6f, 0x69, 0x6e, 
+  0x74, 0x65, 0x72, 0x00, 0x53, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x50, 
+  0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x00, 0x5f, 0x58, 0x63, 0x70, 0x74, 
+  0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x00, 0x53, 0x65, 0x74, 0x55, 0x6e, 
+  0x68, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x64, 0x45, 0x78, 0x63, 0x65, 0x70, 
+  0x74, 0x69, 0x6f, 0x6e, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x00, 0x69, 
+  0x73, 0x75, 0x70, 0x70, 0x65, 0x72, 0x00, 0x74, 0x6f, 0x75, 0x70, 0x70, 
+  0x65, 0x72, 0x00, 0x53, 0x65, 0x74, 0x43, 0x6f, 0x6e, 0x73, 0x6f, 0x6c, 
+  0x65, 0x43, 0x74, 0x72, 0x6c, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 
   0x00, 0x5f, 0x5f, 0x43, 0x78, 0x78, 0x46, 0x72, 0x61, 0x6d, 0x65, 0x48, 
   0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x00, 0x76, 0x73, 0x70, 0x72, 0x69, 
   0x6e, 0x74, 0x66, 0x20, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x00, 0x5f, 
@@ -1963,65 +2000,71 @@ static const u8 data_segment_data_w2c_x86sandbox_0x2Erodata[] = {
   0x75, 0x6d, 0x00, 0x5f, 0x69, 0x6e, 0x69, 0x74, 0x74, 0x65, 0x72, 0x6d, 
   0x00, 0x73, 0x74, 0x72, 0x74, 0x6f, 0x75, 0x6c, 0x00, 0x73, 0x74, 0x72, 
   0x74, 0x6f, 0x6c, 0x00, 0x5f, 0x66, 0x74, 0x6f, 0x6c, 0x00, 0x61, 0x74, 
-  0x6f, 0x6c, 0x00, 0x2e, 0x64, 0x6c, 0x6c, 0x00, 0x6f, 0x70, 0x74, 0x69, 
-  0x6f, 0x6e, 0x61, 0x6c, 0x20, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x20, 
-  0x74, 0x6f, 0x6f, 0x20, 0x73, 0x6d, 0x61, 0x6c, 0x6c, 0x00, 0x70, 0x6d, 
-  0x63, 0x61, 0x6c, 0x6c, 0x00, 0x5f, 0x70, 0x75, 0x72, 0x65, 0x63, 0x61, 
-  0x6c, 0x6c, 0x00, 0x70, 0x75, 0x72, 0x65, 0x20, 0x76, 0x69, 0x72, 0x74, 
-  0x75, 0x61, 0x6c, 0x20, 0x66, 0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 
-  0x20, 0x63, 0x61, 0x6c, 0x6c, 0x00, 0x63, 0x65, 0x69, 0x6c, 0x00, 0x73, 
-  0x74, 0x72, 0x74, 0x6f, 0x6b, 0x00, 0x63, 0x6c, 0x6f, 0x63, 0x6b, 0x00, 
-  0x72, 0x65, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x62, 
-  0x6c, 0x6f, 0x63, 0x6b, 0x00, 0x5f, 0x73, 0x74, 0x72, 0x63, 0x6d, 0x70, 
-  0x69, 0x00, 0x61, 0x74, 0x6f, 0x69, 0x00, 0x5f, 0x73, 0x70, 0x6c, 0x69, 
-  0x74, 0x70, 0x61, 0x74, 0x68, 0x00, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x73, 
-  0x77, 0x69, 0x74, 0x63, 0x68, 0x00, 0x5f, 0x43, 0x49, 0x6c, 0x6f, 0x67, 
-  0x00, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x20, 0x72, 0x65, 0x63, 0x65, 
-  0x69, 0x76, 0x65, 0x64, 0x20, 0x61, 0x20, 0x6e, 0x75, 0x6c, 0x6c, 0x20, 
-  0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x75, 0x6e, 0x74, 0x65, 0x72, 
-  0x6d, 0x69, 0x6e, 0x61, 0x74, 0x65, 0x64, 0x20, 0x73, 0x74, 0x72, 0x69, 
-  0x6e, 0x67, 0x00, 0x76, 0x73, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x66, 0x00, 
-  0x5f, 0x76, 0x73, 0x6e, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x66, 0x00, 0x5f, 
-  0x73, 0x6e, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x66, 0x00, 0x61, 0x74, 0x6f, 
-  0x66, 0x00, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 
-  0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x00, 0x5f, 0x6d, 0x73, 0x69, 0x7a, 
-  0x65, 0x00, 0x72, 0x65, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 
-  0x20, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x20, 0x73, 0x69, 0x7a, 0x65, 0x00, 
-  0x48, 0x65, 0x61, 0x70, 0x53, 0x69, 0x7a, 0x65, 0x00, 0x64, 0x65, 0x73, 
-  0x63, 0x65, 0x6e, 0x74, 0x33, 0x2e, 0x65, 0x78, 0x65, 0x00, 0x6d, 0x65, 
-  0x6d, 0x6d, 0x6f, 0x76, 0x65, 0x00, 0x54, 0x6c, 0x73, 0x53, 0x65, 0x74, 
-  0x56, 0x61, 0x6c, 0x75, 0x65, 0x00, 0x54, 0x6c, 0x73, 0x47, 0x65, 0x74, 
-  0x56, 0x61, 0x6c, 0x75, 0x65, 0x00, 0x57, 0x69, 0x64, 0x65, 0x43, 0x68, 
-  0x61, 0x72, 0x54, 0x6f, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x42, 0x79, 0x74, 
-  0x65, 0x00, 0x5f, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x65, 0x00, 0x48, 0x65, 
-  0x61, 0x70, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x00, 0x48, 0x65, 0x61, 
-  0x70, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x00, 0x5f, 0x66, 
-  0x74, 0x6f, 0x6c, 0x32, 0x5f, 0x73, 0x73, 0x65, 0x00, 0x66, 0x63, 0x6c, 
-  0x6f, 0x73, 0x65, 0x00, 0x6e, 0x6f, 0x20, 0x50, 0x45, 0x20, 0x73, 0x69, 
-  0x67, 0x6e, 0x61, 0x74, 0x75, 0x72, 0x65, 0x00, 0x73, 0x74, 0x72, 0x69, 
-  0x6e, 0x67, 0x20, 0x63, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x65, 0x00, 0x5f, 
-  0x70, 0x63, 0x74, 0x79, 0x70, 0x65, 0x00, 0x75, 0x6e, 0x73, 0x75, 0x70, 
-  0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x20, 0x72, 0x65, 0x6c, 0x6f, 0x63, 
-  0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x74, 0x79, 0x70, 0x65, 0x00, 0x47, 
-  0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x00, 0x74, 
+  0x6f, 0x6c, 0x00, 0x63, 0x72, 0x74, 0x64, 0x6c, 0x6c, 0x00, 0x2e, 0x64, 
+  0x6c, 0x6c, 0x00, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x61, 0x6c, 0x20, 
+  0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x20, 0x74, 0x6f, 0x6f, 0x20, 0x73, 
+  0x6d, 0x61, 0x6c, 0x6c, 0x00, 0x70, 0x6d, 0x63, 0x61, 0x6c, 0x6c, 0x00, 
+  0x5f, 0x70, 0x75, 0x72, 0x65, 0x63, 0x61, 0x6c, 0x6c, 0x00, 0x70, 0x75, 
+  0x72, 0x65, 0x20, 0x76, 0x69, 0x72, 0x74, 0x75, 0x61, 0x6c, 0x20, 0x66, 
+  0x75, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x63, 0x61, 0x6c, 0x6c, 
+  0x00, 0x63, 0x65, 0x69, 0x6c, 0x00, 0x73, 0x74, 0x72, 0x74, 0x6f, 0x6b, 
+  0x00, 0x63, 0x6c, 0x6f, 0x63, 0x6b, 0x00, 0x72, 0x65, 0x6c, 0x6f, 0x63, 
+  0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x00, 
+  0x67, 0x75, 0x65, 0x73, 0x74, 0x20, 0x63, 0x61, 0x6c, 0x6c, 0x65, 0x64, 
+  0x20, 0x44, 0x65, 0x62, 0x75, 0x67, 0x42, 0x72, 0x65, 0x61, 0x6b, 0x00, 
+  0x5f, 0x73, 0x74, 0x72, 0x63, 0x6d, 0x70, 0x69, 0x00, 0x61, 0x74, 0x6f, 
+  0x69, 0x00, 0x5f, 0x73, 0x70, 0x6c, 0x69, 0x74, 0x70, 0x61, 0x74, 0x68, 
+  0x00, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x73, 0x77, 0x69, 0x74, 0x63, 0x68, 
+  0x00, 0x5f, 0x43, 0x49, 0x6c, 0x6f, 0x67, 0x00, 0x69, 0x6d, 0x70, 0x6f, 
+  0x72, 0x74, 0x20, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x20, 
+  0x61, 0x20, 0x6e, 0x75, 0x6c, 0x6c, 0x20, 0x73, 0x74, 0x72, 0x69, 0x6e, 
+  0x67, 0x00, 0x75, 0x6e, 0x74, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x74, 
+  0x65, 0x64, 0x20, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 0x43, 0x6f, 
+  0x6d, 0x70, 0x61, 0x72, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00, 
+  0x76, 0x73, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x66, 0x00, 0x5f, 0x76, 0x73, 
+  0x6e, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x66, 0x00, 0x5f, 0x73, 0x6e, 0x70, 
+  0x72, 0x69, 0x6e, 0x74, 0x66, 0x00, 0x61, 0x74, 0x6f, 0x66, 0x00, 0x30, 
+  0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x61, 0x62, 0x63, 
+  0x64, 0x65, 0x66, 0x00, 0x5f, 0x6d, 0x73, 0x69, 0x7a, 0x65, 0x00, 0x72, 
+  0x65, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x62, 0x6c, 
+  0x6f, 0x63, 0x6b, 0x20, 0x73, 0x69, 0x7a, 0x65, 0x00, 0x48, 0x65, 0x61, 
+  0x70, 0x53, 0x69, 0x7a, 0x65, 0x00, 0x64, 0x65, 0x73, 0x63, 0x65, 0x6e, 
+  0x74, 0x33, 0x2e, 0x65, 0x78, 0x65, 0x00, 0x6d, 0x65, 0x6d, 0x6d, 0x6f, 
+  0x76, 0x65, 0x00, 0x54, 0x6c, 0x73, 0x53, 0x65, 0x74, 0x56, 0x61, 0x6c, 
+  0x75, 0x65, 0x00, 0x54, 0x6c, 0x73, 0x47, 0x65, 0x74, 0x56, 0x61, 0x6c, 
+  0x75, 0x65, 0x00, 0x57, 0x69, 0x64, 0x65, 0x43, 0x68, 0x61, 0x72, 0x54, 
+  0x6f, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x42, 0x79, 0x74, 0x65, 0x00, 0x5f, 
+  0x66, 0x69, 0x6e, 0x69, 0x74, 0x65, 0x00, 0x48, 0x65, 0x61, 0x70, 0x43, 
+  0x72, 0x65, 0x61, 0x74, 0x65, 0x00, 0x48, 0x65, 0x61, 0x70, 0x56, 0x61, 
+  0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x00, 0x5f, 0x66, 0x74, 0x6f, 0x6c, 
+  0x32, 0x5f, 0x73, 0x73, 0x65, 0x00, 0x66, 0x63, 0x6c, 0x6f, 0x73, 0x65, 
+  0x00, 0x6e, 0x6f, 0x20, 0x50, 0x45, 0x20, 0x73, 0x69, 0x67, 0x6e, 0x61, 
+  0x74, 0x75, 0x72, 0x65, 0x00, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x20, 
+  0x63, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x65, 0x00, 0x5f, 0x70, 0x63, 0x74, 
+  0x79, 0x70, 0x65, 0x00, 0x75, 0x6e, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 
+  0x74, 0x65, 0x64, 0x20, 0x72, 0x65, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 
+  0x6f, 0x6e, 0x20, 0x74, 0x79, 0x70, 0x65, 0x00, 0x47, 0x65, 0x74, 0x46, 
+  0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x00, 0x74, 0x69, 0x6d, 0x65, 
+  0x00, 0x47, 0x65, 0x74, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x54, 0x69, 
+  0x6d, 0x65, 0x00, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x54, 
   0x69, 0x6d, 0x65, 0x00, 0x47, 0x65, 0x74, 0x53, 0x79, 0x73, 0x74, 0x65, 
-  0x6d, 0x54, 0x69, 0x6d, 0x65, 0x00, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63, 
-  0x61, 0x6c, 0x54, 0x69, 0x6d, 0x65, 0x00, 0x47, 0x65, 0x74, 0x53, 0x79, 
-  0x73, 0x74, 0x65, 0x6d, 0x54, 0x69, 0x6d, 0x65, 0x41, 0x73, 0x46, 0x69, 
-  0x6c, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x00, 0x69, 0x6d, 0x70, 0x6f, 0x72, 
-  0x74, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x00, 0x69, 0x6d, 0x70, 0x6f, 0x72, 
-  0x74, 0x20, 0x44, 0x4c, 0x4c, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x00, 0x74, 
-  0x72, 0x75, 0x6e, 0x63, 0x61, 0x74, 0x65, 0x64, 0x20, 0x66, 0x69, 0x6c, 
-  0x65, 0x00, 0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x00, 
-  0x52, 0x65, 0x61, 0x64, 0x46, 0x69, 0x6c, 0x65, 0x00, 0x43, 0x6c, 0x6f, 
-  0x73, 0x65, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x00, 0x53, 0x65, 0x74, 
-  0x53, 0x74, 0x64, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x00, 0x47, 0x65, 
-  0x74, 0x53, 0x74, 0x64, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x00, 0x69, 
-  0x6d, 0x70, 0x6f, 0x72, 0x74, 0x20, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 
-  0x73, 0x20, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x00, 0x69, 0x6d, 0x70, 0x6f, 
-  0x72, 0x74, 0x20, 0x6c, 0x6f, 0x6f, 0x6b, 0x75, 0x70, 0x20, 0x74, 0x61, 
-  0x62, 0x6c, 0x65, 0x00, 0x5f, 0x69, 0x6e, 0x69, 0x74, 0x74, 0x65, 0x72, 
-  0x6d, 0x20, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x00, 0x69, 0x6d, 0x61, 0x67, 
+  0x6d, 0x54, 0x69, 0x6d, 0x65, 0x41, 0x73, 0x46, 0x69, 0x6c, 0x65, 0x54, 
+  0x69, 0x6d, 0x65, 0x00, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x20, 0x6e, 
+  0x61, 0x6d, 0x65, 0x00, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x20, 0x44, 
+  0x4c, 0x4c, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x00, 0x74, 0x72, 0x75, 0x6e, 
+  0x63, 0x61, 0x74, 0x65, 0x64, 0x20, 0x66, 0x69, 0x6c, 0x65, 0x00, 0x53, 
+  0x65, 0x74, 0x45, 0x6e, 0x64, 0x4f, 0x66, 0x46, 0x69, 0x6c, 0x65, 0x00, 
+  0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x00, 0x52, 0x65, 
+  0x61, 0x64, 0x46, 0x69, 0x6c, 0x65, 0x00, 0x43, 0x6c, 0x6f, 0x73, 0x65, 
+  0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x00, 0x53, 0x65, 0x74, 0x53, 0x74, 
+  0x64, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x00, 0x47, 0x65, 0x74, 0x53, 
+  0x74, 0x64, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x00, 0x69, 0x6d, 0x70, 
+  0x6f, 0x72, 0x74, 0x20, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x20, 
+  0x74, 0x61, 0x62, 0x6c, 0x65, 0x00, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 
+  0x20, 0x6c, 0x6f, 0x6f, 0x6b, 0x75, 0x70, 0x20, 0x74, 0x61, 0x62, 0x6c, 
+  0x65, 0x00, 0x5f, 0x69, 0x6e, 0x69, 0x74, 0x74, 0x65, 0x72, 0x6d, 0x20, 
+  0x74, 0x61, 0x62, 0x6c, 0x65, 0x00, 0x49, 0x73, 0x56, 0x61, 0x6c, 0x69, 
+  0x64, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x00, 0x69, 0x6d, 0x61, 0x67, 
   0x65, 0x20, 0x74, 0x6f, 0x6f, 0x20, 0x6c, 0x61, 0x72, 0x67, 0x65, 0x00, 
   0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x20, 0x64, 0x69, 0x72, 0x65, 0x63, 
   0x74, 0x6f, 0x72, 0x79, 0x20, 0x6f, 0x75, 0x74, 0x20, 0x6f, 0x66, 0x20, 
@@ -2070,537 +2113,572 @@ static const u8 data_segment_data_w2c_x86sandbox_0x2Erodata[] = {
   0x6d, 0x65, 0x6e, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x73, 0x57, 
   0x00, 0x46, 0x72, 0x65, 0x65, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 
   0x6d, 0x65, 0x6e, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x73, 0x57, 
-  0x00, 0x4c, 0x43, 0x4d, 0x61, 0x70, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 
-  0x57, 0x00, 0x47, 0x65, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x54, 
-  0x79, 0x70, 0x65, 0x57, 0x00, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 
-  0x61, 0x6e, 0x64, 0x4c, 0x69, 0x6e, 0x65, 0x57, 0x00, 0x38, 0x2d, 0x62, 
-  0x69, 0x74, 0x20, 0x4f, 0x55, 0x54, 0x00, 0x31, 0x36, 0x2d, 0x62, 0x69, 
-  0x74, 0x20, 0x4f, 0x55, 0x54, 0x00, 0x47, 0x65, 0x74, 0x4f, 0x45, 0x4d, 
-  0x43, 0x50, 0x00, 0x47, 0x65, 0x74, 0x41, 0x43, 0x50, 0x00, 0x73, 0x74, 
-  0x72, 0x69, 0x6e, 0x67, 0x20, 0x49, 0x2f, 0x4f, 0x00, 0x30, 0x31, 0x32, 
-  0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 
-  0x46, 0x00, 0x44, 0x6c, 0x6c, 0x4d, 0x61, 0x69, 0x6e, 0x20, 0x72, 0x65, 
-  0x74, 0x75, 0x72, 0x6e, 0x65, 0x64, 0x20, 0x46, 0x41, 0x4c, 0x53, 0x45, 
-  0x00, 0x5f, 0x48, 0x55, 0x47, 0x45, 0x00, 0x4c, 0x6f, 0x61, 0x64, 0x4c, 
-  0x69, 0x62, 0x72, 0x61, 0x72, 0x79, 0x41, 0x00, 0x4d, 0x65, 0x73, 0x73, 
-  0x61, 0x67, 0x65, 0x42, 0x6f, 0x78, 0x41, 0x00, 0x47, 0x65, 0x74, 0x56, 
-  0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x41, 0x00, 0x46, 0x61, 
-  0x74, 0x61, 0x6c, 0x41, 0x70, 0x70, 0x45, 0x78, 0x69, 0x74, 0x41, 0x00, 
-  0x47, 0x65, 0x74, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 
-  0x6e, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x73, 0x41, 0x00, 0x46, 
-  0x72, 0x65, 0x65, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 
-  0x6e, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x73, 0x41, 0x00, 0x47, 
-  0x65, 0x74, 0x53, 0x74, 0x61, 0x72, 0x74, 0x75, 0x70, 0x49, 0x6e, 0x66, 
-  0x6f, 0x41, 0x00, 0x4c, 0x43, 0x4d, 0x61, 0x70, 0x53, 0x74, 0x72, 0x69, 
-  0x6e, 0x67, 0x41, 0x00, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x44, 0x65, 
-  0x62, 0x75, 0x67, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x41, 0x00, 0x77, 
-  0x73, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x66, 0x41, 0x00, 0x47, 0x65, 0x74, 
-  0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x54, 0x79, 0x70, 0x65, 0x41, 0x00, 
-  0x47, 0x65, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4c, 0x69, 
-  0x6e, 0x65, 0x41, 0x00, 0x47, 0x65, 0x74, 0x4d, 0x6f, 0x64, 0x75, 0x6c, 
-  0x65, 0x46, 0x69, 0x6c, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x41, 0x00, 0x43, 
-  0x72, 0x65, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x41, 0x00, 0x47, 
-  0x65, 0x74, 0x4d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x48, 0x61, 0x6e, 0x64, 
-  0x6c, 0x65, 0x41, 0x00, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x76, 0x69, 0x72, 
-  0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 
-  0x6c, 0x65, 0x41, 0x00, 0x20, 0x3f, 0x3f, 0x00, 0x5f, 0x63, 0x6f, 0x6e, 
-  0x74, 0x72, 0x6f, 0x6c, 0x38, 0x37, 0x00, 0x5f, 0x65, 0x78, 0x63, 0x65, 
-  0x70, 0x74, 0x5f, 0x68, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x33, 0x00, 
-  0x5f, 0x43, 0x49, 0x61, 0x74, 0x61, 0x6e, 0x32, 0x00, 0x5f, 0x66, 0x74, 
-  0x6f, 0x6c, 0x32, 0x00, 0x75, 0x73, 0x65, 0x72, 0x33, 0x32, 0x00, 0x6b, 
-  0x65, 0x72, 0x6e, 0x65, 0x6c, 0x33, 0x32, 0x00, 0x5f, 0x43, 0x49, 0x6c, 
-  0x6f, 0x67, 0x31, 0x30, 0x00, 0x28, 0x6e, 0x75, 0x6c, 0x6c, 0x29, 0x00, 
-  0x73, 0x74, 0x61, 0x63, 0x6b, 0x3a, 0x20, 0x00, 0x63, 0x6f, 0x64, 0x65, 
-  0x3a, 0x20, 0x00, 0x73, 0x74, 0x6b, 0x66, 0x20, 0x3a, 0x20, 0x00, 0x5f, 
-  0x5f, 0x70, 0x6d, 0x69, 0x72, 0x65, 0x74, 0x5f, 0x63, 0x68, 0x65, 0x63, 
-  0x6b, 0x5f, 0x63, 0x73, 0x5f, 0x6f, 0x75, 0x74, 0x65, 0x72, 0x3a, 0x20, 
-  0x73, 0x65, 0x6c, 0x20, 0x25, 0x30, 0x34, 0x78, 0x0a, 0x00, 0x5f, 0x5f, 
-  0x70, 0x6d, 0x69, 0x72, 0x65, 0x74, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 
-  0x5f, 0x63, 0x73, 0x5f, 0x73, 0x61, 0x6d, 0x65, 0x3a, 0x20, 0x73, 0x65, 
-  0x6c, 0x20, 0x25, 0x30, 0x34, 0x78, 0x0a, 0x00, 0x49, 0x52, 0x45, 0x54, 
-  0x20, 0x4e, 0x54, 0x3a, 0x20, 0x74, 0x73, 0x73, 0x20, 0x63, 0x75, 0x72, 
-  0x72, 0x3a, 0x20, 0x25, 0x30, 0x34, 0x78, 0x20, 0x62, 0x61, 0x63, 0x6b, 
-  0x3a, 0x20, 0x25, 0x30, 0x34, 0x78, 0x0a, 0x00, 0x72, 0x65, 0x61, 0x64, 
-  0x5f, 0x64, 0x65, 0x73, 0x63, 0x3a, 0x20, 0x73, 0x65, 0x6c, 0x20, 0x25, 
-  0x30, 0x34, 0x78, 0x20, 0x62, 0x61, 0x73, 0x65, 0x20, 0x25, 0x78, 0x20, 
-  0x6c, 0x69, 0x6d, 0x69, 0x74, 0x20, 0x25, 0x78, 0x20, 0x6f, 0x66, 0x66, 
-  0x20, 0x25, 0x78, 0x0a, 0x00, 0x61, 0x62, 0x6f, 0x72, 0x74, 0x3a, 0x20, 
-  0x25, 0x64, 0x20, 0x25, 0x78, 0x20, 0x63, 0x79, 0x63, 0x6c, 0x65, 0x20, 
-  0x25, 0x6c, 0x64, 0x0a, 0x00, 0x40, 0x20, 0x25, 0x73, 0x20, 0x25, 0x73, 
-  0x20, 0x25, 0x64, 0x0a, 0x00, 0x5f, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 
-  0x69, 0x73, 0x72, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x5f, 0x63, 0x73, 
-  0x20, 0x66, 0x61, 0x69, 0x6c, 0x32, 0x3a, 0x20, 0x25, 0x64, 0x20, 0x25, 
-  0x64, 0x20, 0x25, 0x64, 0x0a, 0x00, 0x5f, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 
-  0x5f, 0x69, 0x73, 0x72, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x5f, 0x63, 
-  0x73, 0x20, 0x66, 0x61, 0x69, 0x6c, 0x31, 0x3a, 0x20, 0x25, 0x64, 0x20, 
-  0x25, 0x64, 0x20, 0x25, 0x64, 0x0a, 0x00, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 
-  0x69, 0x73, 0x72, 0x20, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x30, 0x20, 0x25, 
-  0x64, 0x20, 0x25, 0x64, 0x0a, 0x00, 0x67, 0x61, 0x74, 0x65, 0x20, 0x74, 
-  0x79, 0x70, 0x65, 0x20, 0x3d, 0x20, 0x25, 0x64, 0x0a, 0x00, 0x49, 0x50, 
-  0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x41, 0x58, 0x20, 0x25, 0x30, 0x38, 
-  0x78, 0x7c, 0x43, 0x58, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x44, 0x58, 
-  0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x42, 0x58, 0x20, 0x25, 0x30, 0x38, 
-  0x78, 0x7c, 0x53, 0x50, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x42, 0x50, 
-  0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x53, 0x49, 0x20, 0x25, 0x30, 0x38, 
-  0x78, 0x7c, 0x44, 0x49, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x46, 0x4c, 
-  0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x43, 0x53, 0x20, 0x25, 0x30, 0x34, 
-  0x78, 0x7c, 0x44, 0x53, 0x20, 0x25, 0x30, 0x34, 0x78, 0x7c, 0x53, 0x53, 
-  0x20, 0x25, 0x30, 0x34, 0x78, 0x7c, 0x45, 0x53, 0x20, 0x25, 0x30, 0x34, 
-  0x78, 0x7c, 0x46, 0x53, 0x20, 0x25, 0x30, 0x34, 0x78, 0x7c, 0x47, 0x53, 
-  0x20, 0x25, 0x30, 0x34, 0x78, 0x7c, 0x43, 0x52, 0x30, 0x20, 0x25, 0x30, 
-  0x38, 0x78, 0x7c, 0x43, 0x52, 0x32, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 
-  0x43, 0x52, 0x33, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x43, 0x50, 0x4c, 
-  0x20, 0x25, 0x64, 0x7c, 0x49, 0x4f, 0x50, 0x4c, 0x20, 0x25, 0x64, 0x7c, 
-  0x43, 0x53, 0x42, 0x41, 0x53, 0x45, 0x20, 0x25, 0x30, 0x38, 0x78, 0x2f, 
-  0x25, 0x30, 0x38, 0x78, 0x7c, 0x44, 0x53, 0x42, 0x41, 0x53, 0x45, 0x20, 
-  0x25, 0x30, 0x38, 0x78, 0x2f, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x53, 0x53, 
+  0x00, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x49, 0x6e, 
+  0x66, 0x6f, 0x57, 0x00, 0x4c, 0x43, 0x4d, 0x61, 0x70, 0x53, 0x74, 0x72, 
+  0x69, 0x6e, 0x67, 0x57, 0x00, 0x43, 0x6f, 0x6d, 0x70, 0x61, 0x72, 0x65, 
+  0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x57, 0x00, 0x47, 0x65, 0x74, 0x53, 
+  0x74, 0x72, 0x69, 0x6e, 0x67, 0x54, 0x79, 0x70, 0x65, 0x57, 0x00, 0x47, 
+  0x65, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4c, 0x69, 0x6e, 
+  0x65, 0x57, 0x00, 0x38, 0x2d, 0x62, 0x69, 0x74, 0x20, 0x4f, 0x55, 0x54, 
+  0x00, 0x31, 0x36, 0x2d, 0x62, 0x69, 0x74, 0x20, 0x4f, 0x55, 0x54, 0x00, 
+  0x47, 0x65, 0x74, 0x4f, 0x45, 0x4d, 0x43, 0x50, 0x00, 0x47, 0x65, 0x74, 
+  0x41, 0x43, 0x50, 0x00, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x20, 0x49, 
+  0x2f, 0x4f, 0x00, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 
+  0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x00, 0x44, 0x6c, 0x6c, 0x4d, 
+  0x61, 0x69, 0x6e, 0x20, 0x72, 0x65, 0x74, 0x75, 0x72, 0x6e, 0x65, 0x64, 
+  0x20, 0x46, 0x41, 0x4c, 0x53, 0x45, 0x00, 0x5f, 0x48, 0x55, 0x47, 0x45, 
+  0x00, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x44, 0x65, 0x66, 0x61, 
+  0x75, 0x6c, 0x74, 0x4c, 0x43, 0x49, 0x44, 0x00, 0x4c, 0x6f, 0x61, 0x64, 
+  0x4c, 0x69, 0x62, 0x72, 0x61, 0x72, 0x79, 0x41, 0x00, 0x4d, 0x65, 0x73, 
+  0x73, 0x61, 0x67, 0x65, 0x42, 0x6f, 0x78, 0x41, 0x00, 0x47, 0x65, 0x74, 
+  0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x41, 0x00, 0x46, 
+  0x61, 0x74, 0x61, 0x6c, 0x41, 0x70, 0x70, 0x45, 0x78, 0x69, 0x74, 0x41, 
+  0x00, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 
+  0x65, 0x6e, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x73, 0x41, 0x00, 
+  0x46, 0x72, 0x65, 0x65, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 
+  0x65, 0x6e, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x73, 0x41, 0x00, 
+  0x45, 0x6e, 0x75, 0x6d, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x4c, 0x6f, 
+  0x63, 0x61, 0x6c, 0x65, 0x73, 0x41, 0x00, 0x47, 0x65, 0x74, 0x53, 0x74, 
+  0x61, 0x72, 0x74, 0x75, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x41, 0x00, 0x47, 
+  0x65, 0x74, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x65, 0x49, 0x6e, 0x66, 0x6f, 
+  0x41, 0x00, 0x4c, 0x43, 0x4d, 0x61, 0x70, 0x53, 0x74, 0x72, 0x69, 0x6e, 
+  0x67, 0x41, 0x00, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x44, 0x65, 0x62, 
+  0x75, 0x67, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x41, 0x00, 0x43, 0x6f, 
+  0x6d, 0x70, 0x61, 0x72, 0x65, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x41, 
+  0x00, 0x77, 0x73, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x66, 0x41, 0x00, 0x47, 
+  0x65, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x54, 0x79, 0x70, 0x65, 
+  0x41, 0x00, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 
+  0x4c, 0x69, 0x6e, 0x65, 0x41, 0x00, 0x47, 0x65, 0x74, 0x4d, 0x6f, 0x64, 
+  0x75, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x41, 
+  0x00, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x41, 
+  0x00, 0x47, 0x65, 0x74, 0x4d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x48, 0x61, 
+  0x6e, 0x64, 0x6c, 0x65, 0x41, 0x00, 0x53, 0x65, 0x74, 0x45, 0x6e, 0x76, 
+  0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x56, 0x61, 0x72, 0x69, 
+  0x61, 0x62, 0x6c, 0x65, 0x41, 0x00, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x76, 
+  0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x56, 0x61, 0x72, 0x69, 
+  0x61, 0x62, 0x6c, 0x65, 0x41, 0x00, 0x20, 0x3f, 0x3f, 0x00, 0x5f, 0x63, 
+  0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x38, 0x37, 0x00, 0x5f, 0x65, 0x78, 
+  0x63, 0x65, 0x70, 0x74, 0x5f, 0x68, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 
+  0x33, 0x00, 0x5f, 0x43, 0x49, 0x61, 0x74, 0x61, 0x6e, 0x32, 0x00, 0x5f, 
+  0x66, 0x74, 0x6f, 0x6c, 0x32, 0x00, 0x75, 0x73, 0x65, 0x72, 0x33, 0x32, 
+  0x00, 0x6b, 0x65, 0x72, 0x6e, 0x65, 0x6c, 0x33, 0x32, 0x00, 0x5f, 0x43, 
+  0x49, 0x6c, 0x6f, 0x67, 0x31, 0x30, 0x00, 0x28, 0x6e, 0x75, 0x6c, 0x6c, 
+  0x29, 0x00, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x3a, 0x20, 0x00, 0x63, 0x6f, 
+  0x64, 0x65, 0x3a, 0x20, 0x00, 0x73, 0x74, 0x6b, 0x66, 0x20, 0x3a, 0x20, 
+  0x00, 0x5f, 0x5f, 0x70, 0x6d, 0x69, 0x72, 0x65, 0x74, 0x5f, 0x63, 0x68, 
+  0x65, 0x63, 0x6b, 0x5f, 0x63, 0x73, 0x5f, 0x6f, 0x75, 0x74, 0x65, 0x72, 
+  0x3a, 0x20, 0x73, 0x65, 0x6c, 0x20, 0x25, 0x30, 0x34, 0x78, 0x0a, 0x00, 
+  0x5f, 0x5f, 0x70, 0x6d, 0x69, 0x72, 0x65, 0x74, 0x5f, 0x63, 0x68, 0x65, 
+  0x63, 0x6b, 0x5f, 0x63, 0x73, 0x5f, 0x73, 0x61, 0x6d, 0x65, 0x3a, 0x20, 
+  0x73, 0x65, 0x6c, 0x20, 0x25, 0x30, 0x34, 0x78, 0x0a, 0x00, 0x49, 0x52, 
+  0x45, 0x54, 0x20, 0x4e, 0x54, 0x3a, 0x20, 0x74, 0x73, 0x73, 0x20, 0x63, 
+  0x75, 0x72, 0x72, 0x3a, 0x20, 0x25, 0x30, 0x34, 0x78, 0x20, 0x62, 0x61, 
+  0x63, 0x6b, 0x3a, 0x20, 0x25, 0x30, 0x34, 0x78, 0x0a, 0x00, 0x72, 0x65, 
+  0x61, 0x64, 0x5f, 0x64, 0x65, 0x73, 0x63, 0x3a, 0x20, 0x73, 0x65, 0x6c, 
+  0x20, 0x25, 0x30, 0x34, 0x78, 0x20, 0x62, 0x61, 0x73, 0x65, 0x20, 0x25, 
+  0x78, 0x20, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x20, 0x25, 0x78, 0x20, 0x6f, 
+  0x66, 0x66, 0x20, 0x25, 0x78, 0x0a, 0x00, 0x61, 0x62, 0x6f, 0x72, 0x74, 
+  0x3a, 0x20, 0x25, 0x64, 0x20, 0x25, 0x78, 0x20, 0x63, 0x79, 0x63, 0x6c, 
+  0x65, 0x20, 0x25, 0x6c, 0x64, 0x0a, 0x00, 0x40, 0x20, 0x25, 0x73, 0x20, 
+  0x25, 0x73, 0x20, 0x25, 0x64, 0x0a, 0x00, 0x5f, 0x5f, 0x63, 0x61, 0x6c, 
+  0x6c, 0x5f, 0x69, 0x73, 0x72, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x5f, 
+  0x63, 0x73, 0x20, 0x66, 0x61, 0x69, 0x6c, 0x32, 0x3a, 0x20, 0x25, 0x64, 
+  0x20, 0x25, 0x64, 0x20, 0x25, 0x64, 0x0a, 0x00, 0x5f, 0x5f, 0x63, 0x61, 
+  0x6c, 0x6c, 0x5f, 0x69, 0x73, 0x72, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 
+  0x5f, 0x63, 0x73, 0x20, 0x66, 0x61, 0x69, 0x6c, 0x31, 0x3a, 0x20, 0x25, 
+  0x64, 0x20, 0x25, 0x64, 0x20, 0x25, 0x64, 0x0a, 0x00, 0x63, 0x61, 0x6c, 
+  0x6c, 0x5f, 0x69, 0x73, 0x72, 0x20, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x30, 
+  0x20, 0x25, 0x64, 0x20, 0x25, 0x64, 0x0a, 0x00, 0x67, 0x61, 0x74, 0x65, 
+  0x20, 0x74, 0x79, 0x70, 0x65, 0x20, 0x3d, 0x20, 0x25, 0x64, 0x0a, 0x00, 
+  0x49, 0x50, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x41, 0x58, 0x20, 0x25, 
+  0x30, 0x38, 0x78, 0x7c, 0x43, 0x58, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 
+  0x44, 0x58, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x42, 0x58, 0x20, 0x25, 
+  0x30, 0x38, 0x78, 0x7c, 0x53, 0x50, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 
+  0x42, 0x50, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x53, 0x49, 0x20, 0x25, 
+  0x30, 0x38, 0x78, 0x7c, 0x44, 0x49, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 
+  0x46, 0x4c, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x43, 0x53, 0x20, 0x25, 
+  0x30, 0x34, 0x78, 0x7c, 0x44, 0x53, 0x20, 0x25, 0x30, 0x34, 0x78, 0x7c, 
+  0x53, 0x53, 0x20, 0x25, 0x30, 0x34, 0x78, 0x7c, 0x45, 0x53, 0x20, 0x25, 
+  0x30, 0x34, 0x78, 0x7c, 0x46, 0x53, 0x20, 0x25, 0x30, 0x34, 0x78, 0x7c, 
+  0x47, 0x53, 0x20, 0x25, 0x30, 0x34, 0x78, 0x7c, 0x43, 0x52, 0x30, 0x20, 
+  0x25, 0x30, 0x38, 0x78, 0x7c, 0x43, 0x52, 0x32, 0x20, 0x25, 0x30, 0x38, 
+  0x78, 0x7c, 0x43, 0x52, 0x33, 0x20, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x43, 
+  0x50, 0x4c, 0x20, 0x25, 0x64, 0x7c, 0x49, 0x4f, 0x50, 0x4c, 0x20, 0x25, 
+  0x64, 0x7c, 0x43, 0x53, 0x42, 0x41, 0x53, 0x45, 0x20, 0x25, 0x30, 0x38, 
+  0x78, 0x2f, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x44, 0x53, 0x42, 0x41, 0x53, 
+  0x45, 0x20, 0x25, 0x30, 0x38, 0x78, 0x2f, 0x25, 0x30, 0x38, 0x78, 0x7c, 
+  0x53, 0x53, 0x42, 0x41, 0x53, 0x45, 0x20, 0x25, 0x30, 0x38, 0x78, 0x2f, 
+  0x25, 0x30, 0x38, 0x78, 0x7c, 0x45, 0x53, 0x42, 0x41, 0x53, 0x45, 0x20, 
+  0x25, 0x30, 0x38, 0x78, 0x2f, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x47, 0x53, 
   0x42, 0x41, 0x53, 0x45, 0x20, 0x25, 0x30, 0x38, 0x78, 0x2f, 0x25, 0x30, 
-  0x38, 0x78, 0x7c, 0x45, 0x53, 0x42, 0x41, 0x53, 0x45, 0x20, 0x25, 0x30, 
-  0x38, 0x78, 0x2f, 0x25, 0x30, 0x38, 0x78, 0x7c, 0x47, 0x53, 0x42, 0x41, 
-  0x53, 0x45, 0x20, 0x25, 0x30, 0x38, 0x78, 0x2f, 0x25, 0x30, 0x38, 0x78, 
-  0x20, 0x25, 0x63, 0x25, 0x63, 0x0a, 0x00, 0x63, 0x61, 0x6c, 0x6c, 0x5f, 
-  0x69, 0x73, 0x72, 0x20, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x33, 0x0a, 0x00, 
-  0xe7, 0xe1, 0xf4, 0xf4, 0x50, 0x45, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xb5, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x0e, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xc4, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xbc, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xb3, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x15, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x79, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x5e, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x6b, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x50, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x6a, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xa7, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xae, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x48, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x19, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x4f, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xf4, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xfb, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x0a, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x0b, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x21, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x22, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x13, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x14, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xbd, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x1f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xc4, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x5d, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x03, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x22, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x2f, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x23, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xec, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xed, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x55, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x25, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x56, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x25, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x95, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x26, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x96, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x26, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xb6, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xe6, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x18, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x03, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x29, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xcc, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x5d, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x2b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xdb, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x48, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x2d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x10, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x2e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x3f, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x2f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x87, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x55, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xd3, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x32, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x33, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x83, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x40, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x35, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x2a, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x36, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xae, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x36, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x9d, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xa1, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x99, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x39, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x47, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x42, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x43, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x3c, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x43, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x3d, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x80, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x93, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x7f, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x3f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x88, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x96, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x60, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x43, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xcf, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x7c, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x45, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x58, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x46, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xc7, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x47, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x74, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x48, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x67, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x12, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x4a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xea, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x4b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xe8, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x4c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x49, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x4d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x87, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x4e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x42, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x4f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xb7, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xfe, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x51, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x51, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x52, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x5d, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xcc, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x54, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x79, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x55, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x56, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xc4, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x57, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x71, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x58, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x64, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x59, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x0f, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x5a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xe7, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x5b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xe5, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x5c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x46, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x5d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x84, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x5e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x4e, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x5f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xa8, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x6d, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x3a, 0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x26, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x48, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x1d, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x1f, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x80, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x63, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x1a, 0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x61, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x60, 0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x66, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x9b, 0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x0a, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x8f, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x69, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xf4, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xe8, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xe1, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x17, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xd9, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xfc, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x02, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x01, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x34, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x91, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x65, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x53, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x2d, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x64, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x45, 0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xee, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0xf4, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x37, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x6b, 0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x06, 0x02, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 
-  0x39, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x1b, 0x12, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x6d, 0x07, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x3f, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x9b, 0x04, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xf9, 0x07, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x67, 0x06, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xe3, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x73, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xc9, 0x04, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x31, 0x0a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xc0, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x75, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xaa, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x76, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x9d, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x77, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xb7, 0x06, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x78, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xcc, 0x06, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xb9, 0x0e, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x7a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x9e, 0x0e, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x7b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x66, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x7c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xee, 0x0a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x41, 0x06, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xd9, 0x0a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x08, 0x0b, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x1d, 0x0b, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xcb, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x7d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x13, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x7e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xfa, 0x0c, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x7f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xee, 0x0c, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x22, 0x0d, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x81, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xbd, 0x04, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x37, 0x0a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x82, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xd4, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x83, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x1b, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xeb, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 
-  0x85, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xd0, 0x0c, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x2d, 0x0d, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xde, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 
-  0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x24, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x4a, 0x0b, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x58, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x8a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xa2, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x8b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x8e, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x8c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x7c, 0x07, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x8d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x7d, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x8e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x11, 0x0e, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x7f, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x8f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x64, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x8f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x72, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xec, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x91, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xd1, 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x92, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x13, 0x08, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x93, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x74, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x93, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x86, 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x94, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x8b, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x9d, 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x2c, 0x12, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xa3, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x95, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x2a, 0x0e, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x96, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x8f, 0x0d, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x97, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x74, 0x06, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x98, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xff, 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x99, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xf6, 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x9a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x46, 0x0a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x9b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xfe, 0x0e, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xd1, 0x09, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 
-  0x9c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x06, 0x0d, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 
-  0x9d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xb3, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xb5, 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xdd, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xc2, 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xfc, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 
-  0x9e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x8e, 0x07, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x9a, 0x07, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x66, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xa4, 0x0a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x56, 0x0f, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 
-  0x6f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x3c, 0x09, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x39, 0x09, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xfe, 0x0d, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 
-  0x9f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xab, 0x07, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x1e, 0x09, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x1d, 0x0e, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-  0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xbb, 0x0d, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0xa0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xae, 0x0d, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0xa1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0xa0, 0x0d, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0xa1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x9d, 0x06, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x8b, 0x06, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x0f, 0x12, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 
-  0xa2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x08, 0x0e, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 
-  0x62, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7b, 0x12, 0x00, 0x00, 
-  0x33, 0x0b, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 
-  0xa3, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x12, 0x00, 0x00, 
-  0x4c, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 
-  0xa4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x74, 0x12, 0x00, 0x00, 
-  0xd3, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0xa5, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, 0x43, 0x3a, 0x5c, 0x44, 0x65, 0x73, 0x63, 0x65, 
+  0x38, 0x78, 0x20, 0x25, 0x63, 0x25, 0x63, 0x0a, 0x00, 0x63, 0x61, 0x6c, 
+  0x6c, 0x5f, 0x69, 0x73, 0x72, 0x20, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x33, 
+  0x0a, 0x00, 0xe7, 0xe1, 0xf4, 0xf4, 0x50, 0x45, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0xd7, 0x0b, 0x00, 0x00, 0x13, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x21, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x12, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x7a, 0x0f, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x13, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x30, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x28, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x15, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x04, 0x0d, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xe5, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x12, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xca, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x13, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xd7, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x12, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xbc, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x13, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x8e, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x17, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xa7, 0x04, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xae, 0x04, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x19, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x48, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x4f, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x18, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x1f, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x2e, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x2f, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x64, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x65, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x37, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x38, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xcb, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xd2, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x6b, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x22, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x2e, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x72, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x10, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x11, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x63, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x26, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x64, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x26, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xa3, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x27, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xa4, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x27, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xb6, 0x04, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x37, 0x0d, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x18, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x27, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xda, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x6b, 0x09, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xe9, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xb4, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x10, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xab, 0x0f, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xab, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x31, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x63, 0x09, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x32, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xe1, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x07, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x34, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x83, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x35, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x40, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x6d, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x37, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xd2, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x37, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xee, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xc5, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x39, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xbd, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xb3, 0x0f, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xae, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xaf, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xa8, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x51, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x4b, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xd1, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xe4, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xd0, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xd9, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xe7, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x42, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x57, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x84, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x44, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xcf, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x45, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xa0, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x7c, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x47, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xc7, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x98, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x4d, 0x13, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x12, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xea, 0x05, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x0c, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x8c, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x6d, 0x13, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x50, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xc5, 0x08, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x51, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x29, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xbd, 0x0f, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x53, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x81, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x54, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xcc, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x9d, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x79, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x57, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xc4, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x58, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x95, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x4a, 0x13, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x5a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x0f, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x5b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xe7, 0x05, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x5c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x09, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x5d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x89, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x5e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x6a, 0x13, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x5f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xba, 0x0f, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xcc, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x53, 0x13, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x8b, 0x0d, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x4a, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x62, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x2e, 0x13, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x62, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x41, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x1f, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xa4, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x6b, 0x0d, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xcd, 0x0f, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x66, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xcc, 0x0f, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x67, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xec, 0x0d, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x35, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xb3, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xf4, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xe8, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xe1, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x17, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x04, 0x0c, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xfc, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x02, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x01, 0x07, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x34, 0x06, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xb5, 0x0a, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x89, 0x09, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x39, 0x13, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x3b, 0x09, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x88, 0x0b, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0x96, 0x0d, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xee, 0x05, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x04, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xf4, 0x04, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x04, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xa3, 0x10, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x60, 0x00, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xbc, 0x0d, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x06, 0x02, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xc3, 0x11, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x08, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xe9, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x71, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x6d, 0x07, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xdc, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x73, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x9b, 0x04, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xf9, 0x07, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x67, 0x06, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xf1, 0x08, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x76, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xc9, 0x04, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x77, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x55, 0x0a, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x7f, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x78, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xb8, 0x08, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xab, 0x08, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x7a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xb7, 0x06, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x7b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xcc, 0x06, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x7c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x25, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x7d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x0a, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x7e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xd2, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x7f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x12, 0x0b, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x41, 0x06, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xfd, 0x0a, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x2c, 0x0b, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x41, 0x0b, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x37, 0x10, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x7f, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x81, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x4b, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x82, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x3f, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x83, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x73, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x84, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xbd, 0x04, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x5b, 0x0a, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x85, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x40, 0x10, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x86, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x87, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x87, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x57, 0x10, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x88, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x21, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x89, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x7e, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x4a, 0x10, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x8a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x90, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x8b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x6e, 0x0b, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x8c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xf5, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x8d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x0e, 0x10, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x8e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xfa, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x8f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x7c, 0x07, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xe9, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x91, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x6f, 0x0e, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x8d, 0x08, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x92, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x72, 0x08, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x92, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x80, 0x08, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x93, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xba, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x94, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x5b, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x95, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x21, 0x08, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x96, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x11, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x96, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xf2, 0x10, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x97, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x28, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x09, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x12, 0x13, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x53, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x98, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x88, 0x0e, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x99, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xe0, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x9a, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x74, 0x06, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x9b, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x89, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x9c, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x80, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x9d, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x6a, 0x0a, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x9e, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x6a, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xf5, 0x09, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x9f, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x57, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x72, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x30, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xab, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x4c, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xca, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0xa1, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x8e, 0x07, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x9a, 0x07, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x03, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xc8, 0x0a, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xc2, 0x0f, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x4a, 0x09, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x47, 0x09, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x5c, 0x0e, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0xa2, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xab, 0x07, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x2c, 0x09, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x7b, 0x0e, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x0c, 0x0e, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0xa3, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xff, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0xa4, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xf1, 0x0d, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0xa4, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x9d, 0x06, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x8b, 0x06, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xdd, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0xa5, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x66, 0x0e, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x57, 0x0b, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0xa6, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x59, 0x0c, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xa7, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x92, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0xa8, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x3d, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0xa9, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x63, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x21, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xce, 0x0e, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x40, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xc9, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xaa, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x73, 0x09, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0xfa, 0x12, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x61, 0x13, 0x00, 0x00, 0x4f, 0x0e, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x63, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x5a, 0x13, 0x00, 0x00, 0xe9, 0x11, 0x00, 0x00, 
+  0x01, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0xab, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x5a, 0x13, 0x00, 0x00, 0xa1, 0x12, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xac, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x61, 0x13, 0x00, 0x00, 0x3a, 0x06, 0x00, 0x00, 0xd7, 0x0b, 0x00, 0x00, 
+  0x5a, 0x13, 0x00, 0x00, 0x43, 0x3a, 0x5c, 0x44, 0x65, 0x73, 0x63, 0x65, 
   0x6e, 0x74, 0x33, 0x5c, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x2e, 0x64, 
   0x6c, 0x6c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x01, 0x00, 0x00, 0x01, 0x01, 0x00, 
@@ -2629,7 +2707,7 @@ static const u8 data_segment_data_w2c_x86sandbox_0x2Erodata[] = {
 };
 
 static const u8 data_segment_data_w2c_x86sandbox_0x2Edata[] = {
-  0x68, 0x42, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x7c, 0x54, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 
@@ -2646,8 +2724,8 @@ static const u8 data_segment_data_w2c_x86sandbox_0x2Edata[] = {
 
 static void init_memories(w2c_x86sandbox* instance) {
   wasm_rt_allocate_memory(&instance->w2c_memory, 1024, 1024, 0, 65536);
-  LOAD_DATA(instance->w2c_memory, 1024u, data_segment_data_w2c_x86sandbox_0x2Erodata, 9920);
-  LOAD_DATA(instance->w2c_memory, 10944u, data_segment_data_w2c_x86sandbox_0x2Edata, 144);
+  LOAD_DATA(instance->w2c_memory, 1024u, data_segment_data_w2c_x86sandbox_0x2Erodata, 10448);
+  LOAD_DATA(instance->w2c_memory, 11472u, data_segment_data_w2c_x86sandbox_0x2Edata, 144);
 }
 
 static void init_data_instances(w2c_x86sandbox *instance) {
@@ -2670,6 +2748,7 @@ static const wasm_elem_segment_expr_t elem_segment_exprs_w2c_x86sandbox_e0[] = {
   {RefFunc, w2c_x86sandbox_t2, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_io_write8, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t1, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_io_read8, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t11, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_pic_read_irq, {NULL}, 0},
+  {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_crtdll_GetMainArgs, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_crt_malloc, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_crt_free, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_crt_calloc, {NULL}, 0},
@@ -2766,6 +2845,8 @@ static const wasm_elem_segment_expr_t elem_segment_exprs_w2c_x86sandbox_e0[] = {
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_crt_purecall, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_crt_fatal, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_GetModuleHandleA, {NULL}, 0},
+  {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_GetProcAddress, {NULL}, 0},
+  {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_LoadLibraryA, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_crt_ret1, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_GetTickCount, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_QueryPerformanceCounter, {NULL}, 0},
@@ -2817,13 +2898,17 @@ static const wasm_elem_segment_expr_t elem_segment_exprs_w2c_x86sandbox_e0[] = {
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_GetLocalTime, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_CreateFileA, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_GetTimeZoneInformation, {NULL}, 0},
+  {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_DebugBreak, {NULL}, 0},
+  {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_CompareStringA, {NULL}, 0},
+  {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_CompareStringW, {NULL}, 0},
+  {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_k32_GetUserDefaultLCID, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_user32_MessageBoxA, {NULL}, 0},
   {RefFunc, w2c_x86sandbox_t0, (wasm_rt_function_ptr_t)wrap_w2c_x86sandbox_user32_wsprintfA, {NULL}, 0},
 };
 
 static void init_tables(w2c_x86sandbox* instance) {
-  wasm_rt_allocate_funcref_table(&instance->w2c_T0, 166, 166);
-  funcref_table_init(&instance->w2c_T0, elem_segment_exprs_w2c_x86sandbox_e0, 165, 1u, 0, 165, instance);
+  wasm_rt_allocate_funcref_table(&instance->w2c_T0, 173, 173);
+  funcref_table_init(&instance->w2c_T0, elem_segment_exprs_w2c_x86sandbox_e0, 172, 1u, 0, 172, instance);
 }
 
 static void init_elem_instances(w2c_x86sandbox *instance) {
@@ -3757,7 +3842,7 @@ void w2c_x86sandbox_sb_set_error(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_i0 = var_l2;
   var_i1 = var_p1;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u, var_i1);
-  var_i0 = 80796u;
+  var_i0 = 85420u;
   var_i1 = 512u;
   var_i2 = var_p0;
   var_i3 = var_p1;
@@ -3781,13 +3866,13 @@ u32 w2c_x86sandbox_sb_range_ok(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1)
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_l3 = var_i0;
   var_i1 = var_p0;
   var_i0 = var_i0 < var_i1;
@@ -3815,14 +3900,14 @@ u32 w2c_x86sandbox_sb_read32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l3 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_l4 = var_i0;
   var_i1 = var_p0;
   var_i0 = var_i0 < var_i1;
@@ -3867,14 +3952,14 @@ u32 w2c_x86sandbox_sb_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) 
   var_i0 = 0u;
   var_p1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l3 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_p1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_l4 = var_i0;
   var_i1 = var_p0;
   var_i0 = var_i0 < var_i1;
@@ -3915,12 +4000,12 @@ u32 w2c_x86sandbox_sb_read8(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i1 = 0u;
   var_i0 = var_i0 != var_i1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i2 = var_p0;
   var_i1 = var_i1 > var_i2;
   var_i0 &= var_i1;
@@ -3949,12 +4034,12 @@ u32 w2c_x86sandbox_sb_write8(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i1 = 0u;
   var_i0 = var_i0 != var_i1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i2 = var_p0;
   var_i1 = var_i1 > var_i2;
   var_i0 &= var_i1;
@@ -3988,7 +4073,7 @@ u32 w2c_x86sandbox_sb_strlen(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   var_l2 = var_i0;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_l3 = var_i1;
   var_i2 = var_p0;
   var_i1 -= var_i2;
@@ -3999,7 +4084,7 @@ u32 w2c_x86sandbox_sb_strlen(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   var_i0 = var_i2 ? var_i0 : var_i1;
   var_l3 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_p0;
   var_i0 += var_i1;
   var_p0 = var_i0;
@@ -4047,18 +4132,18 @@ u32 w2c_x86sandbox_sb_arg(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = 0u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_l3 = var_i0;
   var_i1 = var_p0;
   var_i2 = 2u;
   var_i1 <<= (var_i2 & 31);
   var_i2 = 0u;
-  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 11116u);
+  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 11644u);
   var_i1 += var_i2;
   var_i2 = 4u;
   var_i1 += var_i2;
@@ -4086,15 +4171,15 @@ u32 w2c_x86sandbox_sb_arg(w2c_x86sandbox* instance, u32 var_p0) {
   goto var_B0;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
   var_i1 = 11u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l1;
   var_i1 = 1087u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l1;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -4102,7 +4187,7 @@ u32 w2c_x86sandbox_sb_arg(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_p0 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_l2 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -4134,21 +4219,21 @@ void w2c_x86sandbox_sb_abort(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   var_l2 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = var_p0;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l2;
   var_i1 = var_p1;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l2;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_p1 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
@@ -4189,16 +4274,16 @@ f64 w2c_x86sandbox_sb_arg_f64(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = 0u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 40u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_l3 = var_i0;
   var_i1 = var_p0;
   var_i2 = 0u;
-  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 11116u);
+  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 11644u);
   var_i1 += var_i2;
   var_i2 = 4u;
   var_i1 += var_i2;
@@ -4226,15 +4311,15 @@ f64 w2c_x86sandbox_sb_arg_f64(w2c_x86sandbox* instance, u32 var_p0) {
   goto var_B0;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
   var_i1 = 11u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l1;
   var_i1 = 1087u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l1;
   var_i2 = 16u;
   var_i1 += var_i2;
@@ -4244,7 +4329,7 @@ f64 w2c_x86sandbox_sb_arg_f64(w2c_x86sandbox* instance, u32 var_p0) {
   var_j0 = 0ull;
   var_l5 = var_j0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_l4 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -4257,16 +4342,16 @@ f64 w2c_x86sandbox_sb_arg_f64(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = 0u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 40u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l4 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B4;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_l2 = var_i0;
   var_i1 = var_p0;
   var_i2 = 0u;
-  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 11116u);
+  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 11644u);
   var_i1 += var_i2;
   var_i2 = 8u;
   var_i1 += var_i2;
@@ -4296,15 +4381,15 @@ f64 w2c_x86sandbox_sb_arg_f64(w2c_x86sandbox* instance, u32 var_p0) {
   goto var_B3;
   var_B4:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B5;}
   var_i0 = 0u;
   var_i1 = 11u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l1;
   var_i1 = 1087u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l1;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -4312,7 +4397,7 @@ f64 w2c_x86sandbox_sb_arg_f64(w2c_x86sandbox* instance, u32 var_p0) {
   var_j0 = 0ull;
   var_l6 = var_j0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_p0 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B3;}
@@ -4370,7 +4455,7 @@ u32 w2c_x86sandbox_sb_heap_alloc(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u);
   var_l2 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -4383,7 +4468,7 @@ u32 w2c_x86sandbox_sb_heap_alloc(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
   var_l4 = var_i0;
   var_i0 = 12u;
   var_p0 = var_i0;
@@ -4415,7 +4500,7 @@ u32 w2c_x86sandbox_sb_heap_alloc(w2c_x86sandbox* instance, u32 var_p0) {
     goto var_B4;
     var_B5:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81724u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86348u);
     var_l5 = var_i0;
     var_i1 = var_l2;
     var_i2 = 1u;
@@ -4449,31 +4534,31 @@ u32 w2c_x86sandbox_sb_heap_alloc(w2c_x86sandbox* instance, u32 var_p0) {
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B1;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
     var_l2 = var_i0;
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B8;}
     var_i0 = var_l4;
     var_i1 = var_l2;
     var_i2 = 0u;
-    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 81704u);
+    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 86328u);
     var_i3 = 12u;
     var_i2 *= var_i3;
     var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
     w2c_x86sandbox_free(instance, var_i0);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_B8:;
     var_i0 = 0u;
     var_i1 = var_l5;
-    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81724u, var_i1);
+    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86348u, var_i1);
     var_i0 = 0u;
     var_i1 = var_l4;
-    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u, var_i1);
+    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u, var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u);
     var_l2 = var_i0;
     var_B6:;
     var_i0 = var_l4;
@@ -4493,7 +4578,7 @@ u32 w2c_x86sandbox_sb_heap_alloc(w2c_x86sandbox* instance, u32 var_p0) {
     var_i0 = w2c_x86sandbox_memmove(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
     var_i1 = var_p0;
     var_i0 += var_i1;
     var_l1 = var_i0;
@@ -4523,10 +4608,10 @@ u32 w2c_x86sandbox_sb_heap_alloc(w2c_x86sandbox* instance, u32 var_p0) {
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81704u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86328u);
     var_i2 = 1u;
     var_i1 += var_i2;
-    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u, var_i1);
+    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u, var_i1);
     var_i0 = var_l5;
     var_i1 = var_l3;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -4535,7 +4620,7 @@ u32 w2c_x86sandbox_sb_heap_alloc(w2c_x86sandbox* instance, u32 var_p0) {
     var_i1 = 1u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_p0;
     var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
     var_i0 += var_i1;
@@ -4588,7 +4673,7 @@ void w2c_x86sandbox_sb_heap_free(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u);
   var_l3 = var_i0;
   var_i1 = 1u;
   var_i0 = (u32)((s32)var_i0 < (s32)var_i1);
@@ -4598,7 +4683,7 @@ void w2c_x86sandbox_sb_heap_free(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 += var_i1;
   var_l4 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
   var_l5 = var_i0;
   var_L4: 
     var_i0 = var_l5;
@@ -4708,11 +4793,11 @@ void w2c_x86sandbox_sb_heap_free(w2c_x86sandbox* instance, u32 var_p0) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81704u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86328u);
   var_i2 = 4294967295u;
   var_i1 += var_i2;
   var_l3 = var_i1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u, var_i1);
   var_B5:;
   var_i0 = var_l6;
   var_i1 = 2u;
@@ -4723,7 +4808,7 @@ void w2c_x86sandbox_sb_heap_free(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_i0 >= var_i1;
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
   var_l2 = var_i0;
   var_i1 = var_l7;
   var_i2 = 4294967295u;
@@ -4773,10 +4858,10 @@ void w2c_x86sandbox_sb_heap_free(w2c_x86sandbox* instance, u32 var_p0) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81704u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86328u);
   var_i2 = 4294967295u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u, var_i1);
   var_B0:;
   var_i0 = var_l1;
   var_i1 = 16u;
@@ -4796,7 +4881,7 @@ u32 w2c_x86sandbox_sb_heap_size(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u);
   var_l2 = var_i0;
   var_i1 = 1u;
   var_i0 = (u32)((s32)var_i0 < (s32)var_i1);
@@ -4808,7 +4893,7 @@ u32 w2c_x86sandbox_sb_heap_size(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
   var_l3 = var_i0;
   var_L2: 
     var_i0 = var_l3;
@@ -4900,7 +4985,7 @@ u32 w2c_x86sandbox_sb_heap_realloc(w2c_x86sandbox* instance, u32 var_p0, u32 var
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u);
   var_l3 = var_i0;
   var_i1 = 1u;
   var_i0 = (u32)((s32)var_i0 < (s32)var_i1);
@@ -4912,7 +4997,7 @@ u32 w2c_x86sandbox_sb_heap_realloc(w2c_x86sandbox* instance, u32 var_p0, u32 var
   var_i0 = 0u;
   var_l3 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
   var_l4 = var_i0;
   var_L4: 
     var_i0 = var_l4;
@@ -4987,7 +5072,7 @@ u32 w2c_x86sandbox_sb_heap_realloc(w2c_x86sandbox* instance, u32 var_p0, u32 var
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i1 = var_l6;
   var_i0 += var_i1;
@@ -5027,21 +5112,21 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_i0 = 1u;
   var_l5 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u);
   var_i1 = 0u;
-  var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11088u);
+  var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11616u);
   var_i0 |= var_i1;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 8u;
   var_l5 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11090u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11618u);
   if (var_i0) {goto var_B0;}
   var_i0 = 9u;
   var_l5 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11104u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11632u);
   var_l6 = var_i0;
   var_i1 = 15u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
@@ -5055,7 +5140,7 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_i0 = 0u;
   var_l7 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11116u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11644u);
   var_l8 = var_i0;
   var_i0 = var_l6;
   var_i1 = 1u;
@@ -5072,12 +5157,12 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   goto var_B0;
   var_B3:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = var_l7;
   w2c_x86sandbox_sbcpu_save(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 4u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -5090,14 +5175,14 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_B2:;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11108u);
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11112u, var_i1);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11636u);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11640u, var_i1);
   var_i0 = 0u;
   var_i1 = 0u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = 0u;
   var_i1 = 0u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u, var_i1);
   var_i0 = 2097152u;
   var_l5 = var_i0;
   var_B1:;
@@ -5135,7 +5220,7 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_i0 -= var_i1;
   var_l11 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l9 = var_i0;
   var_i0 = var_l10;
   var_l5 = var_i0;
@@ -5152,7 +5237,7 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B9;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
     var_l9 = var_i0;
     var_i1 = var_l5;
     var_i0 = var_i0 >= var_i1;
@@ -5179,7 +5264,7 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
     var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l9 = var_i0;
     var_B9:;
     var_i0 = var_l11;
@@ -5208,66 +5293,66 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = var_p0;
   var_i2 = var_l5;
   var_i3 = 196608u;
   w2c_x86sandbox_sbcpu_enter_user(instance, var_i0, var_i1, var_i2, var_i3);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   w2c_x86sandbox_sbfpu_clear_stack(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11104u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11632u);
   var_i2 = 1u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11104u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11632u, var_i1);
   var_i0 = 0u;
   var_i1 = 0u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11091u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11619u, var_i1);
   var_i0 = w2c_x86sandbox_run(instance);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_p1 = var_i0;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11104u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11632u);
   var_i2 = 4294967295u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11104u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11632u, var_i1);
   var_B4:;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i2 = 0u;
   var_i1 = w2c_x86sandbox_sbcpu_reg(instance, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11120u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11648u, var_i1);
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i2 = 2u;
   var_i1 = w2c_x86sandbox_sbcpu_reg(instance, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11124u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11652u, var_i1);
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_fpu(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i2 = 0u;
   var_d1 = w2c_x86sandbox_sbfpu_st(instance, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  f64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11128u, var_d1);
+  f64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11656u, var_d1);
   var_i0 = var_p3;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B12;}
   var_i0 = var_p3;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11120u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11648u);
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_B12:;
   var_i0 = var_l6;
@@ -5277,7 +5362,7 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_i0 = 0u;
   var_l5 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = var_l7;
   w2c_x86sandbox_sbcpu_restore(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -5286,18 +5371,18 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
   var_i1 = var_l8;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11116u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11644u, var_i1);
   var_i0 = var_p1;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11090u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11618u, var_i1);
   var_i0 = 0u;
   var_i1 = 0u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 80796u;
+  var_i1 = 85420u;
   var_i2 = 512u;
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -5315,7 +5400,7 @@ u32 w2c_x86sandbox_sb_call_guest(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_B15:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11090u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11618u, var_i1);
   var_B13:;
   var_i0 = var_p1;
   var_l5 = var_i0;
@@ -5343,11 +5428,11 @@ u32 w2c_x86sandbox_run(w2c_x86sandbox* instance) {
   var_l0 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   var_l1 = var_i0;
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11112u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11640u);
   var_l2 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
@@ -5359,7 +5444,7 @@ u32 w2c_x86sandbox_run(w2c_x86sandbox* instance) {
     var_i1 = 0u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 40u, var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
     var_i1 = var_l2;
     var_i2 = 4096u;
     var_i3 = var_l2;
@@ -5378,7 +5463,7 @@ u32 w2c_x86sandbox_run(w2c_x86sandbox* instance) {
     var_i0 = 0u;
     var_i1 = 0u;
     var_i2 = 0u;
-    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 11112u);
+    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 11640u);
     var_l4 = var_i2;
     var_i3 = var_l0;
     var_i3 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i3) + 44u);
@@ -5390,29 +5475,29 @@ u32 w2c_x86sandbox_run(w2c_x86sandbox* instance) {
     var_i3 = var_i3 > var_i4;
     var_i1 = var_i3 ? var_i1 : var_i2;
     var_l2 = var_i1;
-    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11112u, var_i1);
+    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11640u, var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11091u);
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11619u);
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B3;}
     var_i0 = 0u;
     var_l1 = var_i0;
     var_i0 = 0u;
     var_i1 = 0u;
-    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11091u, var_i1);
+    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11619u, var_i1);
     goto var_B0;
     var_B3:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
     var_l1 = var_i0;
     if (var_i0) {goto var_B0;}
     var_i0 = 0u;
-    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u);
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u);
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B4;}
     var_i0 = var_l0;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11096u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11624u);
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
     var_i0 = 1391u;
     var_i1 = var_l0;
@@ -5431,7 +5516,7 @@ u32 w2c_x86sandbox_run(w2c_x86sandbox* instance) {
     var_l2 = var_i0;
     var_i0 = var_l0;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
     var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 20u, var_i1);
@@ -5457,7 +5542,7 @@ u32 w2c_x86sandbox_run(w2c_x86sandbox* instance) {
   var_B1:;
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -5493,48 +5578,48 @@ void w2c_x86sandbox_append_callers(w2c_x86sandbox* instance) {
   var_l0 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 4u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
   var_i0 = var_l0;
-  var_i1 = 80796u;
+  var_i1 = 85420u;
   var_i1 = w2c_x86sandbox_strlen(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 60u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 0u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 1u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l3 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 2u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l4 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 3u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l5 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 5u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l6 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 6u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -5543,7 +5628,7 @@ void w2c_x86sandbox_append_callers(w2c_x86sandbox* instance) {
   var_i1 = 44u;
   var_i0 += var_i1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i2 = 7u;
   var_i1 = w2c_x86sandbox_sbcpu_reg(instance, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -5594,12 +5679,12 @@ void w2c_x86sandbox_append_callers(w2c_x86sandbox* instance) {
   var_l6 = var_i0;
   var_L1: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l4 = var_i0;
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B0;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
     var_l5 = var_i0;
     var_i1 = var_l1;
     var_i0 = var_i0 < var_i1;
@@ -5623,7 +5708,7 @@ void w2c_x86sandbox_append_callers(w2c_x86sandbox* instance) {
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 56u);
     var_l4 = var_i0;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
     var_l5 = var_i1;
     var_i0 = var_i0 < var_i1;
     if (var_i0) {goto var_B2;}
@@ -5631,7 +5716,7 @@ void w2c_x86sandbox_append_callers(w2c_x86sandbox* instance) {
     var_i1 = var_l5;
     var_i0 -= var_i1;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81720u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86344u);
     var_i0 = var_i0 >= var_i1;
     if (var_i0) {goto var_B2;}
     var_i0 = var_l0;
@@ -5688,10 +5773,10 @@ void w2c_x86sandbox_sb_ret(w2c_x86sandbox* instance, u32 var_p0) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 0u;
   var_i2 = var_p0;
   w2c_x86sandbox_sbcpu_set_reg(instance, var_i0, var_i1, var_i2);
@@ -5708,16 +5793,16 @@ void w2c_x86sandbox_sb_ret64(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 0u;
   var_i2 = var_p0;
   w2c_x86sandbox_sbcpu_set_reg(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 2u;
   var_i2 = var_p1;
   w2c_x86sandbox_sbcpu_set_reg(instance, var_i0, var_i1, var_i2);
@@ -5735,10 +5820,10 @@ void w2c_x86sandbox_sb_ret_f64(w2c_x86sandbox* instance, f64 var_p0) {
   u32 var_i0;
   f64 var_d1;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_d1 = var_p0;
@@ -5746,6 +5831,1075 @@ void w2c_x86sandbox_sb_ret_f64(w2c_x86sandbox* instance, f64 var_p0) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
   FUNC_EPILOGUE;
+}
+
+u32 w2c_x86sandbox_sb_resolve_import(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
+  u32 var_l2 = 0, var_l3 = 0, var_l4 = 0, var_l5 = 0;
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1, var_i2;
+  var_i0 = instance->w2c_0x5F_stack_pointer;
+  var_i1 = 64u;
+  var_i0 -= var_i1;
+  var_l2 = var_i0;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = 0u;
+  var_l3 = var_i0;
+  var_i0 = var_p0;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+  var_l4 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_p0;
+  var_i1 = 1u;
+  var_i0 += var_i1;
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_p0 = var_i0;
+  var_L1: 
+    var_i0 = var_l2;
+    var_i1 = var_p0;
+    var_i0 += var_i1;
+    var_i1 = var_l4;
+    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+    var_i0 = var_p0;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l3 = var_i0;
+    var_i0 = var_p0;
+    var_i1 = 61u;
+    var_i0 = var_i0 > var_i1;
+    if (var_i0) {goto var_B0;}
+    var_i0 = var_l5;
+    var_i1 = var_p0;
+    var_i0 += var_i1;
+    var_l4 = var_i0;
+    var_i0 = var_l3;
+    var_p0 = var_i0;
+    var_i0 = var_l4;
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+    var_l4 = var_i0;
+    var_i1 = 255u;
+    var_i0 &= var_i1;
+    if (var_i0) {goto var_L1;}
+  var_B0:;
+  var_i0 = var_l2;
+  var_i1 = var_l3;
+  var_i0 += var_i1;
+  var_i1 = 0u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  var_i0 = var_l2;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+  var_p0 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B2;}
+  var_i0 = var_l2;
+  var_l3 = var_i0;
+  var_L3: 
+    var_i0 = var_p0;
+    var_i1 = 4294967231u;
+    var_i0 += var_i1;
+    var_i1 = 255u;
+    var_i0 &= var_i1;
+    var_i1 = 25u;
+    var_i0 = var_i0 > var_i1;
+    if (var_i0) {goto var_B4;}
+    var_i0 = var_l3;
+    var_i1 = var_p0;
+    var_i2 = 32u;
+    var_i1 |= var_i2;
+    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+    var_B4:;
+    var_i0 = var_l3;
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 1u);
+    var_p0 = var_i0;
+    var_i0 = var_l3;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l3 = var_i0;
+    var_i0 = var_p0;
+    if (var_i0) {goto var_L3;}
+  var_B2:;
+  var_i0 = var_l2;
+  var_i0 = w2c_x86sandbox_strlen(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_p0 = var_i0;
+  var_i1 = 4u;
+  var_i0 = var_i0 <= var_i1;
+  if (var_i0) {goto var_B5;}
+  var_i0 = var_l2;
+  var_i1 = var_p0;
+  var_i0 += var_i1;
+  var_i1 = 4294967292u;
+  var_i0 += var_i1;
+  var_p0 = var_i0;
+  var_i1 = 3038u;
+  var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  if (var_i0) {goto var_B5;}
+  var_i0 = var_p0;
+  var_i1 = 0u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  var_B5:;
+  var_i0 = var_l2;
+  var_i1 = var_p1;
+  var_i0 = w2c_x86sandbox_sb_find_import(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l4 = var_i0;
+  if (var_i0) {goto var_B7;}
+  var_i0 = 0u;
+  var_l5 = var_i0;
+  goto var_B6;
+  var_B7:;
+  var_i0 = 0u;
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 85416u);
+  var_l3 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B8;}
+  var_i0 = 11692u;
+  var_p0 = var_i0;
+  var_L9: 
+    var_i0 = var_p0;
+    var_i1 = 4294967292u;
+    var_i0 += var_i1;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+    var_i1 = var_l4;
+    var_i0 = var_i0 != var_i1;
+    if (var_i0) {goto var_B10;}
+    var_i0 = var_p0;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+    var_l5 = var_i0;
+    goto var_B6;
+    var_B10:;
+    var_i0 = var_p0;
+    var_i1 = 72u;
+    var_i0 += var_i1;
+    var_p0 = var_i0;
+    var_i0 = var_l3;
+    var_i1 = 4294967295u;
+    var_i0 += var_i1;
+    var_l3 = var_i0;
+    if (var_i0) {goto var_L9;}
+  var_B8:;
+  var_i0 = var_l2;
+  var_i1 = var_p1;
+  var_i2 = var_l4;
+  var_i0 = w2c_x86sandbox_new_import(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_p0 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B6;}
+  var_i0 = var_l4;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u);
+  if (var_i0) {goto var_B11;}
+  var_i0 = var_l4;
+  var_i1 = var_p0;
+  w2c_x86sandbox_sb_win32_init_data(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_B11:;
+  var_i0 = var_p0;
+  var_l5 = var_i0;
+  var_B6:;
+  var_i0 = var_l2;
+  var_i1 = 64u;
+  var_i0 += var_i1;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = var_l5;
+  FUNC_EPILOGUE;
+  return var_i0;
+}
+
+u32 w2c_x86sandbox_new_import(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 var_p2) {
+  u32 var_l3 = 0, var_l4 = 0, var_l5 = 0, var_l6 = 0, var_l7 = 0, var_l8 = 0, var_l9 = 0, var_l10 = 0;
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1, var_i2;
+  var_i0 = instance->w2c_0x5F_stack_pointer;
+  var_i1 = 16u;
+  var_i0 -= var_i1;
+  var_l3 = var_i0;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = 0u;
+  var_l4 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 85416u);
+  var_l5 = var_i0;
+  var_i1 = 1023u;
+  var_i0 = var_i0 > var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_l4 = var_i0;
+  var_i0 = 0u;
+  var_i1 = var_l5;
+  var_i2 = 1u;
+  var_i1 += var_i2;
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 85416u, var_i1);
+  var_i0 = var_l5;
+  var_i1 = 72u;
+  var_i0 *= var_i1;
+  var_l6 = var_i0;
+  var_i1 = 11688u;
+  var_i0 += var_i1;
+  var_i1 = var_p2;
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  var_i0 = var_p0;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+  var_l7 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B1;}
+  var_i0 = var_p0;
+  var_i1 = 1u;
+  var_i0 += var_i1;
+  var_l8 = var_i0;
+  var_i0 = var_l6;
+  var_i1 = 11696u;
+  var_i0 += var_i1;
+  var_l9 = var_i0;
+  var_i0 = 0u;
+  var_p0 = var_i0;
+  var_L2: 
+    var_i0 = var_l9;
+    var_i1 = var_p0;
+    var_i0 += var_i1;
+    var_i1 = var_l7;
+    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+    var_i0 = var_p0;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l4 = var_i0;
+    var_i0 = var_l8;
+    var_i1 = var_p0;
+    var_i0 += var_i1;
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+    var_l7 = var_i0;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B1;}
+    var_i0 = var_p0;
+    var_i1 = 61u;
+    var_i0 = var_i0 < var_i1;
+    var_l10 = var_i0;
+    var_i0 = var_l4;
+    var_p0 = var_i0;
+    var_i0 = var_l10;
+    if (var_i0) {goto var_L2;}
+  var_B1:;
+  var_i0 = var_l6;
+  var_i1 = var_l4;
+  var_i0 += var_i1;
+  var_i1 = 11696u;
+  var_i0 += var_i1;
+  var_i1 = 33u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  var_i0 = var_l4;
+  var_i1 = 1u;
+  var_i0 += var_i1;
+  var_p0 = var_i0;
+  var_i0 = var_p1;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+  var_l7 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B3;}
+  var_i0 = var_l4;
+  var_i1 = 61u;
+  var_i0 = var_i0 > var_i1;
+  if (var_i0) {goto var_B3;}
+  var_i0 = var_p1;
+  var_i1 = 1u;
+  var_i0 += var_i1;
+  var_p0 = var_i0;
+  var_i0 = var_l5;
+  var_i1 = 72u;
+  var_i0 *= var_i1;
+  var_i1 = 11697u;
+  var_i0 += var_i1;
+  var_l10 = var_i0;
+  var_L5: 
+    var_i0 = var_l10;
+    var_i1 = var_l4;
+    var_i0 += var_i1;
+    var_i1 = var_l7;
+    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+    var_i0 = var_l4;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l4 = var_i0;
+    var_i0 = var_p0;
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+    var_l7 = var_i0;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B4;}
+    var_i0 = var_p0;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_p0 = var_i0;
+    var_i0 = var_l4;
+    var_i1 = 62u;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_L5;}
+  var_B4:;
+  var_i0 = var_l4;
+  var_i1 = 1u;
+  var_i0 += var_i1;
+  var_p0 = var_i0;
+  var_B3:;
+  var_i0 = var_l5;
+  var_i1 = 72u;
+  var_i0 *= var_i1;
+  var_i1 = var_p0;
+  var_i0 += var_i1;
+  var_i1 = 11696u;
+  var_i0 += var_i1;
+  var_i1 = 0u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  var_i0 = 0u;
+  var_p0 = var_i0;
+  var_i0 = var_p2;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B7;}
+  var_i0 = var_p2;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u);
+  if (var_i0) {goto var_B8;}
+  var_i0 = 0u;
+  var_l4 = var_i0;
+  var_i0 = var_p2;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 20u);
+  var_i1 = 15u;
+  var_i0 += var_i1;
+  var_i1 = 4294967280u;
+  var_i0 &= var_i1;
+  var_p0 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11676u);
+  var_l7 = var_i0;
+  var_i1 = var_p0;
+  var_i0 += var_i1;
+  var_p0 = var_i0;
+  var_i1 = 262144u;
+  var_i0 = var_i0 > var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i1 = var_p0;
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11676u, var_i1);
+  var_i0 = var_l7;
+  var_l4 = var_i0;
+  goto var_B6;
+  var_B8:;
+  var_i0 = 0u;
+  var_p0 = var_i0;
+  var_i0 = var_p2;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u);
+  var_i1 = 1u;
+  var_i0 = var_i0 != var_i1;
+  if (var_i0) {goto var_B7;}
+  var_i0 = var_p2;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u);
+  var_p0 = var_i0;
+  var_B7:;
+  var_i0 = var_l3;
+  var_i1 = 0u;
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u, var_i1);
+  var_i0 = var_l3;
+  var_i1 = 3806789632u;
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 7u, var_i1);
+  var_i0 = var_l3;
+  var_i1 = 184u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
+  var_i0 = var_l3;
+  var_i1 = var_l5;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 5u, var_i1);
+  var_i0 = 8u;
+  var_l7 = var_i0;
+  var_i0 = var_l3;
+  var_i1 = var_l5;
+  var_i2 = 8u;
+  var_i1 >>= (var_i2 & 31);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 6u, var_i1);
+  var_i0 = var_l5;
+  var_i1 = 4u;
+  var_i0 <<= (var_i1 & 31);
+  var_i1 = 69888u;
+  var_i0 += var_i1;
+  var_l4 = var_i0;
+  var_i0 = var_p0;
+  if (var_i0) {goto var_B10;}
+  var_i0 = 195u;
+  var_p0 = var_i0;
+  goto var_B9;
+  var_B10:;
+  var_i0 = var_l3;
+  var_i1 = var_p0;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u, var_i1);
+  var_i0 = 10u;
+  var_l7 = var_i0;
+  var_i0 = 194u;
+  var_p0 = var_i0;
+  var_B9:;
+  var_i0 = var_l3;
+  var_i1 = var_p0;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11u, var_i1);
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_i1 = var_l4;
+  var_i0 += var_i1;
+  var_i1 = var_l3;
+  var_i2 = 4u;
+  var_i1 += var_i2;
+  var_i2 = var_l7;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_B6:;
+  var_i0 = var_l5;
+  var_i1 = 72u;
+  var_i0 *= var_i1;
+  var_i1 = 11692u;
+  var_i0 += var_i1;
+  var_i1 = var_l4;
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  var_B0:;
+  var_i0 = var_l3;
+  var_i1 = 16u;
+  var_i0 += var_i1;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = var_l4;
+  FUNC_EPILOGUE;
+  return var_i0;
+}
+
+u32 w2c_x86sandbox_sb_find_own_export(w2c_x86sandbox* instance, u32 var_p0) {
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0;
+  var_i0 = var_p0;
+  var_i0 = w2c_x86sandbox_find_export(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  FUNC_EPILOGUE;
+  return var_i0;
+}
+
+u32 w2c_x86sandbox_find_export(w2c_x86sandbox* instance, u32 var_p0) {
+  u32 var_l1 = 0, var_l2 = 0, var_l3 = 0, var_l4 = 0, var_l5 = 0, var_l6 = 0, var_l7 = 0, var_l8 = 0, 
+      var_l9 = 0, var_l10 = 0;
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1, var_i2, var_i3;
+  var_i0 = instance->w2c_0x5F_stack_pointer;
+  var_i1 = 176u;
+  var_i0 -= var_i1;
+  var_l1 = var_i0;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u);
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11664u);
+  var_l3 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+  var_l4 = var_i0;
+  var_i1 = var_l3;
+  var_i2 = 20u;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l4;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_l4 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+  var_l6 = var_i0;
+  var_i1 = var_l5;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l6;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l1;
+  var_i1 = 172u;
+  var_i0 += var_i1;
+  var_i1 = var_l4;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_i2 = 4u;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+  var_l4 = var_i0;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11664u);
+  var_i2 = 24u;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l4;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_l4 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+  var_l6 = var_i0;
+  var_i1 = var_l5;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l6;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l1;
+  var_i1 = 168u;
+  var_i0 += var_i1;
+  var_i1 = var_l4;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_i2 = 4u;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+  var_l4 = var_i0;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11664u);
+  var_i2 = 28u;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l4;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_l4 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+  var_l6 = var_i0;
+  var_i1 = var_l5;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l6;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l1;
+  var_i1 = 164u;
+  var_i0 += var_i1;
+  var_i1 = var_l4;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_i2 = 4u;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+  var_l4 = var_i0;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11664u);
+  var_i2 = 32u;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l4;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_l4 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+  var_l6 = var_i0;
+  var_i1 = var_l5;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l6;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l1;
+  var_i1 = 160u;
+  var_i0 += var_i1;
+  var_i1 = var_l4;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_i2 = 4u;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+  var_l4 = var_i0;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11664u);
+  var_i2 = 36u;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l4;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_l4 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+  var_l6 = var_i0;
+  var_i1 = var_l5;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_l3 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l6;
+  var_i1 = var_l3;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l1;
+  var_i1 = 156u;
+  var_i0 += var_i1;
+  var_i1 = var_l4;
+  var_i2 = var_l3;
+  var_i1 += var_i2;
+  var_i2 = 4u;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = var_l1;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 168u);
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_l3 = var_i0;
+  var_L1: 
+    var_i0 = var_l5;
+    var_i1 = var_l1;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 160u);
+    var_i2 = var_l3;
+    var_i3 = 2u;
+    var_i2 <<= (var_i3 & 31);
+    var_i1 += var_i2;
+    var_l2 = var_i1;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B2;}
+    var_i0 = var_l5;
+    var_i1 = var_l2;
+    var_i0 -= var_i1;
+    var_i1 = 4u;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B2;}
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+    var_l4 = var_i0;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B2;}
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+    var_l6 = var_i0;
+    var_i1 = 0u;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
+    var_i2 = var_l2;
+    var_i1 += var_i2;
+    var_l2 = var_i1;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B2;}
+    var_i0 = var_l6;
+    var_i1 = var_l2;
+    var_i0 -= var_i1;
+    var_i1 = 4u;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B2;}
+    var_i0 = var_l1;
+    var_i1 = 152u;
+    var_i0 += var_i1;
+    var_i1 = var_l4;
+    var_i2 = var_l2;
+    var_i1 += var_i2;
+    var_i2 = 4u;
+    var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_i0 = 0u;
+    var_l2 = var_i0;
+    var_i0 = 0u;
+    var_i1 = 0u;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86344u);
+    var_l5 = var_i1;
+    var_i2 = var_l1;
+    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 152u);
+    var_l6 = var_i2;
+    var_i1 -= var_i2;
+    var_l4 = var_i1;
+    var_i2 = var_l4;
+    var_i3 = var_l5;
+    var_i2 = var_i2 > var_i3;
+    var_i0 = var_i2 ? var_i0 : var_i1;
+    var_l4 = var_i0;
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+    var_i1 = 0u;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
+    var_i0 += var_i1;
+    var_i1 = var_l6;
+    var_i0 += var_i1;
+    var_l7 = var_i0;
+    var_i0 = 1u;
+    var_l8 = var_i0;
+    var_L4: 
+      var_i0 = var_l4;
+      var_i1 = var_l2;
+      var_i0 = var_i0 == var_i1;
+      if (var_i0) {goto var_B2;}
+      var_i0 = var_l1;
+      var_i1 = 16u;
+      var_i0 += var_i1;
+      var_i1 = var_l2;
+      var_i0 += var_i1;
+      var_l9 = var_i0;
+      var_i1 = var_l7;
+      var_i2 = var_l2;
+      var_i1 += var_i2;
+      var_l10 = var_i1;
+      var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
+      var_l6 = var_i1;
+      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+      var_i0 = var_l6;
+      var_i0 = !(var_i0);
+      if (var_i0) {goto var_B5;}
+      var_i0 = var_l2;
+      var_i1 = 1u;
+      var_i0 += var_i1;
+      var_l2 = var_i0;
+      var_i1 = var_l4;
+      var_i0 = var_i0 == var_i1;
+      if (var_i0) {goto var_B2;}
+      var_i0 = var_l9;
+      var_i1 = 1u;
+      var_i0 += var_i1;
+      var_i1 = var_l10;
+      var_i2 = 1u;
+      var_i1 += var_i2;
+      var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
+      var_l6 = var_i1;
+      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+      var_i0 = var_l6;
+      var_i0 = !(var_i0);
+      if (var_i0) {goto var_B3;}
+      var_i0 = var_l2;
+      var_i1 = 127u;
+      var_i0 = var_i0 < var_i1;
+      var_l8 = var_i0;
+      var_i0 = var_l2;
+      var_i1 = 1u;
+      var_i0 += var_i1;
+      var_l2 = var_i0;
+      var_i1 = 128u;
+      var_i0 = var_i0 == var_i1;
+      if (var_i0) {goto var_B2;}
+      goto var_L4;
+      var_B5:;
+    var_i0 = var_l8;
+    var_i1 = 1u;
+    var_i0 &= var_i1;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B2;}
+    var_B3:;
+    var_i0 = var_l1;
+    var_i1 = 16u;
+    var_i0 += var_i1;
+    var_i1 = var_p0;
+    var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_l2 = var_i0;
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+    var_l5 = var_i0;
+    var_i0 = var_l2;
+    if (var_i0) {goto var_B2;}
+    var_i0 = 0u;
+    var_l2 = var_i0;
+    var_i0 = var_l1;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 156u);
+    var_p0 = var_i0;
+    var_i1 = var_l3;
+    var_i2 = 1u;
+    var_i1 <<= (var_i2 & 31);
+    var_l3 = var_i1;
+    var_i0 += var_i1;
+    var_i1 = var_l5;
+    var_i0 = var_i0 >= var_i1;
+    if (var_i0) {goto var_B0;}
+    var_i0 = 0u;
+    var_l2 = var_i0;
+    var_i0 = var_l1;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 172u);
+    var_i1 = 0u;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86320u);
+    var_i2 = 0u;
+    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 86340u);
+    var_i1 += var_i2;
+    var_i2 = var_p0;
+    var_i1 += var_i2;
+    var_i2 = var_l3;
+    var_i1 += var_i2;
+    var_i1 = i32_load16_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
+    var_l3 = var_i1;
+    var_i0 = var_i0 <= var_i1;
+    if (var_i0) {goto var_B0;}
+    var_i0 = var_l1;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 164u);
+    var_i1 = var_l3;
+    var_i2 = 2u;
+    var_i1 <<= (var_i2 & 31);
+    var_i0 += var_i1;
+    var_i1 = var_l1;
+    var_i2 = 12u;
+    var_i1 += var_i2;
+    var_i0 = w2c_x86sandbox_img32(instance, var_i0, var_i1);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B0;}
+    var_i0 = 0u;
+    var_l2 = var_i0;
+    var_i0 = var_l1;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u);
+    var_l3 = var_i0;
+    var_i1 = 0u;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11664u);
+    var_p0 = var_i1;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B6;}
+    var_i0 = var_l3;
+    var_i1 = 0u;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11668u);
+    var_i2 = var_p0;
+    var_i1 += var_i2;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B0;}
+    var_B6:;
+    var_i0 = 0u;
+    var_l2 = var_i0;
+    var_i0 = var_l3;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B0;}
+    var_i0 = var_l3;
+    var_i1 = 0u;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86344u);
+    var_i0 = var_i0 >= var_i1;
+    if (var_i0) {goto var_B0;}
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+    var_i1 = var_l3;
+    var_i0 += var_i1;
+    var_l2 = var_i0;
+    goto var_B0;
+    var_B2:;
+    var_i0 = 0u;
+    var_l2 = var_i0;
+    var_i0 = var_l3;
+    var_i1 = 65534u;
+    var_i0 = var_i0 > var_i1;
+    if (var_i0) {goto var_B0;}
+    var_i0 = var_l3;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l3 = var_i0;
+    var_i1 = var_l1;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 168u);
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_L1;}
+  var_B0:;
+  var_i0 = var_l1;
+  var_i1 = 176u;
+  var_i0 += var_i1;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = var_l2;
+  FUNC_EPILOGUE;
+  return var_i0;
+}
+
+u32 w2c_x86sandbox_img32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
+  u32 var_l2 = 0, var_l3 = 0, var_l4 = 0, var_l5 = 0;
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1, var_i2;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+  var_l3 = var_i0;
+  var_i1 = var_p0;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l3;
+  var_i1 = var_p0;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_l3 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+  var_l4 = var_i0;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+  var_l5 = var_i0;
+  var_i1 = var_l4;
+  var_i2 = var_p0;
+  var_i1 += var_i2;
+  var_p0 = var_i1;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l5;
+  var_i1 = var_p0;
+  var_i0 -= var_i1;
+  var_i1 = 4u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_p1;
+  var_i1 = var_l3;
+  var_i2 = var_p0;
+  var_i1 += var_i2;
+  var_i2 = 4u;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = 1u;
+  var_l2 = var_i0;
+  var_B0:;
+  var_i0 = var_l2;
+  FUNC_EPILOGUE;
+  return var_i0;
 }
 
 u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
@@ -5765,7 +6919,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11088u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11616u);
   if (var_i0) {goto var_B0;}
   var_i0 = 11u;
   var_l2 = var_i0;
@@ -5781,7 +6935,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = w2c_x86sandbox_calloc(instance, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l3 = var_i1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u, var_i1);
   var_i0 = 2u;
   var_l2 = var_i0;
   var_i0 = var_l3;
@@ -5789,14 +6943,14 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = var_p0;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u, var_i1);
   var_i0 = 0u;
   var_i1 = var_l3;
   var_i2 = var_p0;
   var_i1 = w2c_x86sandbox_sbcpu_new(instance, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_p0 = var_i1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u, var_i1);
   var_i0 = var_p0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -5861,25 +7015,25 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = 16u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 639u;
   w2c_x86sandbox_sbfpu_set_cw(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = 65536u;
   var_i0 += var_i1;
-  var_i1 = 5356u;
+  var_i1 = 5586u;
   var_i2 = 3u;
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = 65552u;
   var_i0 += var_i1;
-  var_i1 = 5359u;
+  var_i1 = 5589u;
   var_i2 = 1u;
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -5898,7 +7052,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
     var_i1 = 0u;
     i32_store16_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 14u, var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l3 = var_i0;
     var_i0 = var_l1;
     var_i1 = var_p0;
@@ -5927,12 +7081,12 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = 4294967295u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 196608u;
   var_i0 = var_i0 < var_i1;
@@ -5953,7 +7107,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = var_l1;
   var_i1 = 2097152u;
@@ -5962,7 +7116,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 196612u;
   var_i0 = var_i0 < var_i1;
@@ -5983,7 +7137,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = var_l1;
   var_i1 = 1048576u;
@@ -5992,7 +7146,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 196616u;
   var_i0 = var_i0 < var_i1;
@@ -6013,7 +7167,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = var_l1;
   var_i1 = 196608u;
@@ -6022,7 +7176,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 196632u;
   var_i0 = var_i0 < var_i1;
@@ -6043,7 +7197,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = var_l1;
   var_i1 = 256u;
@@ -6052,7 +7206,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 196640u;
   var_i0 = var_i0 < var_i1;
@@ -6073,7 +7227,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = var_l1;
   var_i1 = 260u;
@@ -6082,7 +7236,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 196644u;
   var_i0 = var_i0 < var_i1;
@@ -6103,7 +7257,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = var_l1;
   var_i1 = 204800u;
@@ -6112,7 +7266,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 196652u;
   var_i0 = var_i0 < var_i1;
@@ -6133,7 +7287,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = var_l1;
   var_i1 = 200704u;
@@ -6142,7 +7296,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 196656u;
   var_i0 = var_i0 < var_i1;
@@ -6163,7 +7317,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i0 = var_l1;
   var_i1 = 327680u;
@@ -6172,7 +7326,7 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   var_p0 = var_i0;
   var_i1 = 200728u;
   var_i0 = var_i0 < var_i1;
@@ -6197,15 +7351,15 @@ u32 w2c_x86sandbox_sb_init_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_l2 = var_i0;
   var_i0 = 0u;
   var_i1 = 208896u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11148u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11676u, var_i1);
   var_i0 = 0u;
   var_i1 = 200000000u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11108u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11636u, var_i1);
   w2c_x86sandbox_sb_win32_reset(instance);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11088u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11616u, var_i1);
   var_B0:;
   var_i0 = var_l1;
   var_i1 = 16u;
@@ -6224,20 +7378,20 @@ u32 w2c_x86sandbox_mem_write_string(w2c_x86sandbox* instance, u32 var_p0, u32 va
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11096u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11624u, var_i1);
   var_B0:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 65552u;
   w2c_x86sandbox_sbcpu_redirect(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -6254,20 +7408,20 @@ void w2c_x86sandbox_mem_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11096u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11624u, var_i1);
   var_B0:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 65552u;
   w2c_x86sandbox_sbcpu_redirect(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -6282,20 +7436,20 @@ u32 w2c_x86sandbox_mem_read32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) 
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11096u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11624u, var_i1);
   var_B0:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 65552u;
   w2c_x86sandbox_sbcpu_redirect(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -6312,20 +7466,20 @@ void w2c_x86sandbox_mem_write16(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11096u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11624u, var_i1);
   var_B0:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 65552u;
   w2c_x86sandbox_sbcpu_redirect(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -6340,20 +7494,20 @@ u32 w2c_x86sandbox_mem_read16(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) 
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11096u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11624u, var_i1);
   var_B0:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 65552u;
   w2c_x86sandbox_sbcpu_redirect(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -6370,20 +7524,20 @@ void w2c_x86sandbox_mem_write8(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11096u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11624u, var_i1);
   var_B0:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 65552u;
   w2c_x86sandbox_sbcpu_redirect(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -6398,20 +7552,20 @@ u32 w2c_x86sandbox_mem_read8(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i1 = w2c_x86sandbox_sbcpu_eip(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11096u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11624u, var_i1);
   var_B0:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11092u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11620u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 65552u;
   w2c_x86sandbox_sbcpu_redirect(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -6434,21 +7588,21 @@ u32 w2c_x86sandbox_io_write_string(w2c_x86sandbox* instance, u32 var_p0, u32 var
   var_l5 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 6u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 4358u;
+  var_i1 = 4496u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l5;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_l6 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
@@ -6480,21 +7634,21 @@ u32 w2c_x86sandbox_io_read_string(w2c_x86sandbox* instance, u32 var_p0, u32 var_
   var_l5 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 6u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 4358u;
+  var_i1 = 4496u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l5;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_l6 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
@@ -6537,26 +7691,26 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   }
   var_B6:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11116u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11644u);
   var_p1 = var_i0;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i2 = 4u;
   var_i1 = w2c_x86sandbox_sbcpu_reg(instance, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l4 = var_i1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11116u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11644u, var_i1);
   var_i0 = var_p2;
   var_i1 = var_l4;
   var_i0 = w2c_env_host_call(instance->w2c_env_instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l4 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B7;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 0u;
   var_i2 = var_l4;
   w2c_x86sandbox_sbcpu_set_reg(instance, var_i0, var_i1, var_i2);
@@ -6564,29 +7718,29 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   var_B7:;
   var_i0 = 0u;
   var_i1 = var_p1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11116u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11644u, var_i1);
   goto var_B0;
   var_B5:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11091u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11619u, var_i1);
   goto var_B0;
   var_B4:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80792u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 85416u);
   var_i1 = var_p2;
   var_i0 = var_i0 > var_i1;
   if (var_i0) {goto var_B8;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B9;}
   var_i0 = 0u;
   var_i1 = 6u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l3;
   var_i1 = 1251u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l3;
   var_i2 = 32u;
   var_i1 += var_i2;
@@ -6594,7 +7748,7 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B9:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_p1 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -6605,10 +7759,10 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   goto var_B0;
   var_B8:;
   var_i0 = var_p2;
-  var_i1 = 68u;
+  var_i1 = 72u;
   var_i0 *= var_i1;
   var_l4 = var_i0;
-  var_i1 = 11160u;
+  var_i1 = 11688u;
   var_i0 += var_i1;
   var_l5 = var_i0;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
@@ -6638,16 +7792,16 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   var_i0 += var_i1;
   var_l6 = var_i0;
   var_i0 = var_l4;
-  var_i1 = 11164u;
+  var_i1 = 11696u;
   var_i0 += var_i1;
   var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_l4 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
   var_i0 = var_p2;
-  var_i1 = 68u;
+  var_i1 = 72u;
   var_i0 *= var_i1;
-  var_i1 = 11165u;
+  var_i1 = 11697u;
   var_i0 += var_i1;
   var_l7 = var_i0;
   var_i0 = 0u;
@@ -6682,15 +7836,15 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
     goto var_B2;
   var_B10:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11116u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11644u);
   var_p1 = var_i0;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81712u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86336u);
   var_i2 = 4u;
   var_i1 = w2c_x86sandbox_sbcpu_reg(instance, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11116u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11644u, var_i1);
   var_i0 = var_l5;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u);
@@ -6701,25 +7855,25 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
   var_i1 = var_p1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11116u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11644u, var_i1);
   goto var_B0;
   var_B3:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B13;}
   var_i0 = 0u;
   var_i1 = 6u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l3;
   var_i1 = 1565u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l3;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B13:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_p1 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -6738,17 +7892,17 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   var_i1 = 0u;
   i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B14;}
   var_i0 = 0u;
   var_i1 = 10u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l3;
   var_i1 = var_l3;
   var_i2 = 48u;
   var_i1 += var_i2;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l3;
   var_i2 = 16u;
   var_i1 += var_i2;
@@ -6756,7 +7910,7 @@ void w2c_x86sandbox_io_write32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B14:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_p1 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -6798,21 +7952,21 @@ void w2c_x86sandbox_io_write16(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   var_l3 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 6u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 4331u;
+  var_i1 = 4469u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l3;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_l4 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
@@ -6854,21 +8008,21 @@ void w2c_x86sandbox_io_write8(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, 
   var_l3 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 6u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 4321u;
+  var_i1 = 4459u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l3;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_l4 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
@@ -6916,7 +8070,7 @@ u32 w2c_x86sandbox_sb_guest_base_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -6929,7 +8083,7 @@ u32 w2c_x86sandbox_sb_guest_size_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -6941,7 +8095,7 @@ u32 w2c_x86sandbox_sb_error_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
-  var_i0 = 80796u;
+  var_i0 = 85420u;
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -6953,7 +8107,7 @@ u32 w2c_x86sandbox_sb_namebuf_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
-  var_i0 = 81308u;
+  var_i0 = 85932u;
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -6965,7 +8119,7 @@ u32 w2c_x86sandbox_sb_argbuf_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
-  var_i0 = 81564u;
+  var_i0 = 86188u;
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -6978,7 +8132,7 @@ u32 w2c_x86sandbox_sb_is_dead_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11090u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11618u);
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -6997,7 +8151,7 @@ void w2c_x86sandbox_sb_set_budget_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i4 = 1u;
   var_i3 = var_i3 > var_i4;
   var_i1 = var_i3 ? var_i1 : var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11108u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11636u, var_i1);
   FUNC_EPILOGUE;
 }
 
@@ -7039,12 +8193,12 @@ u32 w2c_x86sandbox_sb_staging_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_i0 < var_i1;
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11152u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11680u);
   var_l1 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11156u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11684u);
   var_i1 = var_p0;
   var_i0 = var_i0 >= var_i1;
   if (var_i0) {goto var_B0;}
@@ -7057,13 +8211,13 @@ u32 w2c_x86sandbox_sb_staging_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = w2c_x86sandbox_malloc(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11152u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11680u, var_i1);
   var_i0 = 0u;
   var_i1 = var_p0;
   var_i2 = 0u;
   var_i3 = var_l1;
   var_i1 = var_i3 ? var_i1 : var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11156u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11684u, var_i1);
   var_B0:;
   var_i0 = var_l1;
   FUNC_EPILOGUE;
@@ -7088,7 +8242,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_l1 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11088u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11616u);
   if (var_i0) {goto var_B1;}
   var_i0 = 1u;
   var_l2 = var_i0;
@@ -7097,20 +8251,20 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 8u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u);
   var_i1 = 0u;
-  var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11090u);
+  var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11618u);
   var_i0 |= var_i1;
   if (var_i0) {goto var_B0;}
   var_i0 = 11u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11152u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11680u);
   var_l3 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11156u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11684u);
   var_i1 = var_p0;
   var_i0 = var_i0 < var_i1;
   if (var_i0) {goto var_B0;}
@@ -7119,9 +8273,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_i0 > var_i1;
   if (var_i0) {goto var_B3;}
   var_i0 = var_l1;
-  var_i1 = 3567u;
+  var_i1 = 3648u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -7141,9 +8295,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   if (var_i0) {goto var_B4;}
   var_B5:;
   var_i0 = var_l1;
-  var_i1 = 2500u;
+  var_i1 = 2536u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 208u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 208u;
   var_i1 += var_i2;
@@ -7165,9 +8319,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_j0 <= var_j1;
   if (var_i0) {goto var_B6;}
   var_i0 = var_l1;
-  var_i1 = 3567u;
+  var_i1 = 3648u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 16u;
   var_i1 += var_i2;
@@ -7181,16 +8335,16 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = var_l2;
   var_i0 += var_i1;
   var_l6 = var_i0;
-  var_i1 = 5360u;
+  var_i1 = 5590u;
   var_i2 = 4u;
   var_i0 = w2c_x86sandbox_memcmp(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B7;}
   var_i0 = var_l1;
-  var_i1 = 3404u;
+  var_i1 = 3485u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 192u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 192u;
   var_i1 += var_i2;
@@ -7206,9 +8360,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_i0 == var_i1;
   if (var_i0) {goto var_B8;}
   var_i0 = var_l1;
-  var_i1 = 3815u;
+  var_i1 = 3923u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 176u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 176u;
   var_i1 += var_i2;
@@ -7232,9 +8386,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_j0 <= var_j1;
   if (var_i0) {goto var_B9;}
   var_i0 = var_l1;
-  var_i1 = 3567u;
+  var_i1 = 3648u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 32u;
   var_i1 += var_i2;
@@ -7258,9 +8412,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   if (var_i0) {goto var_B10;}
   var_B11:;
   var_i0 = var_l1;
-  var_i1 = 2473u;
+  var_i1 = 2509u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 48u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 48u;
   var_i1 += var_i2;
@@ -7289,9 +8443,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_i0 <= var_i1;
   if (var_i0) {goto var_B12;}
   var_i0 = var_l1;
-  var_i1 = 3000u;
+  var_i1 = 3043u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 64u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 64u;
   var_i1 += var_i2;
@@ -7414,16 +8568,16 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = 4294967295u;
   var_i0 += var_i1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_l4 = var_i1;
   var_i2 = 4286578688u;
   var_i1 += var_i2;
   var_i0 = var_i0 < var_i1;
   if (var_i0) {goto var_B16;}
   var_i0 = var_l1;
-  var_i1 = 3696u;
+  var_i1 = 3804u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 160u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 160u;
   var_i1 += var_i2;
@@ -7445,7 +8599,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_l1;
   var_i1 = 1980u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 80u;
   var_i1 += var_i2;
@@ -7481,7 +8635,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_l1;
   var_i1 = 1117u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 96u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 96u;
   var_i1 += var_i2;
@@ -7493,12 +8647,12 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_B19:;
   var_i0 = 0u;
   var_i1 = var_l15;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u, var_i1);
   var_i0 = 0u;
   var_i1 = var_l18;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l18;
   var_i0 += var_i1;
   var_i1 = 0u;
@@ -7506,7 +8660,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = w2c_x86sandbox_memset(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l18;
   var_i0 += var_i1;
   var_i1 = var_l3;
@@ -7589,9 +8743,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
     if (var_i0) {goto var_B25;}
     var_B26:;
     var_i0 = var_l1;
-    var_i1 = 3789u;
+    var_i1 = 3897u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 128u, var_i1);
-    var_i0 = 2119u;
+    var_i0 = 2133u;
     var_i1 = var_l1;
     var_i2 = 128u;
     var_i1 += var_i2;
@@ -7614,9 +8768,9 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
     var_i0 = var_j0 <= var_j1;
     if (var_i0) {goto var_B27;}
     var_i0 = var_l1;
-    var_i1 = 3567u;
+    var_i1 = 3648u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 144u, var_i1);
-    var_i0 = 2119u;
+    var_i0 = 2133u;
     var_i1 = var_l1;
     var_i2 = 144u;
     var_i1 += var_i2;
@@ -7627,7 +8781,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
     goto var_B2;
     var_B27:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l18;
     var_i0 += var_i1;
     var_i1 = var_l4;
@@ -7676,7 +8830,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B29;}
-  var_i0 = 2640u;
+  var_i0 = 2676u;
   var_i1 = 0u;
   w2c_x86sandbox_sb_logf(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -7686,7 +8840,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_i1 = var_l1;
   var_j1 = i64_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 224u);
-  i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11136u, var_j1);
+  i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11664u, var_j1);
   var_i0 = 0u;
   var_i1 = var_l18;
   var_i2 = var_l17;
@@ -7694,7 +8848,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i2 = 0u;
   var_i3 = var_l17;
   var_i1 = var_i3 ? var_i1 : var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11144u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11672u, var_i1);
   var_i0 = 200712u;
   var_i1 = var_l18;
   var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
@@ -7707,15 +8861,15 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = 4294901760u;
   var_i0 &= var_i1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   w2c_x86sandbox_heap_init(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B2;
   var_B21:;
   var_i0 = var_l1;
-  var_i1 = 3567u;
+  var_i1 = 3648u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 112u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l1;
   var_i2 = 112u;
   var_i1 += var_i2;
@@ -7727,27 +8881,27 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11152u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11680u);
   w2c_x86sandbox_free(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
   var_j1 = 0ull;
-  i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11152u, var_j1);
+  i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11680u, var_j1);
   var_i0 = var_l4;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B30;}
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11090u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11618u, var_i1);
   var_i0 = var_l4;
   var_l2 = var_i0;
   goto var_B0;
   var_B30:;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11144u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11672u);
   var_p0 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -7756,7 +8910,7 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 228u, var_j1);
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 224u, var_i1);
   var_i0 = var_l1;
   var_i1 = 0u;
@@ -7778,8 +8932,8 @@ u32 w2c_x86sandbox_sb_load_0(w2c_x86sandbox* instance, u32 var_p0) {
   if (var_i0) {goto var_B31;}
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11090u, var_i1);
-  var_i0 = 4386u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11618u, var_i1);
+  var_i0 = 4524u;
   var_i1 = 0u;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -7827,7 +8981,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
   var_l6 = var_i0;
   var_L1: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
     var_l4 = var_i0;
     var_i1 = var_l6;
     var_i2 = var_p0;
@@ -7842,15 +8996,15 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
     var_i0 = var_i0 < var_i1;
     if (var_i0) {goto var_B3;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l8 = var_i0;
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B3;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
     var_l9 = var_i0;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
     var_i2 = var_l7;
     var_i1 += var_i2;
     var_l4 = var_i1;
@@ -7872,7 +9026,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
     var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
     var_l8 = var_i0;
     var_i1 = var_l7;
     var_i2 = 4u;
@@ -7887,15 +9041,15 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
     var_i0 = var_i0 < var_i1;
     if (var_i0) {goto var_B3;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l8 = var_i0;
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B3;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
     var_l9 = var_i0;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
     var_i2 = var_l4;
     var_i1 += var_i2;
     var_l4 = var_i1;
@@ -7909,9 +9063,9 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
     if (var_i0) {goto var_B2;}
     var_B3:;
     var_i0 = var_l3;
-    var_i1 = 3088u;
+    var_i1 = 3131u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-    var_i0 = 2119u;
+    var_i0 = 2133u;
     var_i1 = var_l3;
     w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -7949,10 +9103,10 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
     var_i0 -= var_i1;
     var_l11 = var_i0;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l9 = var_i0;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
     var_l8 = var_i0;
     var_i0 = 8u;
     var_l4 = var_i0;
@@ -7961,7 +9115,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       var_i0 = !(var_i0);
       if (var_i0) {goto var_B8;}
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
       var_l12 = var_i0;
       var_i1 = var_l7;
       var_i2 = var_l8;
@@ -7982,7 +9136,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       var_i0 = var_l3;
       var_i1 = 1024u;
       i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
-      var_i0 = 2119u;
+      var_i0 = 2133u;
       var_i1 = var_l3;
       var_i2 = 32u;
       var_i1 += var_i2;
@@ -8011,9 +9165,9 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       var_i0 = var_i0 == var_i1;
       if (var_i0) {goto var_B10;}
       var_i0 = var_l3;
-      var_i1 = 3443u;
+      var_i1 = 3524u;
       i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 64u, var_i1);
-      var_i0 = 2119u;
+      var_i0 = 2133u;
       var_i1 = var_l3;
       var_i2 = 64u;
       var_i1 += var_i2;
@@ -8024,7 +9178,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       goto var_B0;
       var_B10:;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
       var_l14 = var_i0;
       var_i1 = var_l13;
       var_i2 = 4095u;
@@ -8058,7 +9212,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       var_i0 = var_l3;
       var_i1 = 1838u;
       i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 48u, var_i1);
-      var_i0 = 2119u;
+      var_i0 = 2133u;
       var_i1 = var_l3;
       var_i2 = 48u;
       var_i1 += var_i2;
@@ -8078,7 +9232,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
       wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
       var_l8 = var_i0;
       var_i0 = var_l3;
       var_i1 = var_l3;
@@ -8087,7 +9241,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       var_i1 += var_i2;
       i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 92u, var_i1);
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
       var_l9 = var_i0;
       if (var_i0) {goto var_B14;}
       var_i0 = 0u;
@@ -8095,7 +9249,7 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       goto var_B13;
       var_B14:;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
       var_l13 = var_i0;
       var_i1 = var_l8;
       var_i2 = var_l10;
@@ -8119,10 +9273,10 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
       var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
       wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
       var_l9 = var_i0;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
       var_l8 = var_i0;
       var_B13:;
       var_i0 = var_l3;
@@ -8160,9 +9314,9 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
     goto var_B0;
     var_B4:;
   var_i0 = var_l3;
-  var_i1 = 3258u;
+  var_i1 = 3339u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l3;
   var_i2 = 16u;
   var_i1 += var_i2;
@@ -8182,16 +9336,15 @@ u32 w2c_x86sandbox_apply_relocations(w2c_x86sandbox* instance, u32 var_p0, u32 v
 
 u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   u32 var_l2 = 0, var_l3 = 0, var_l4 = 0, var_l5 = 0, var_l6 = 0, var_l7 = 0, var_l8 = 0, var_l9 = 0, 
-      var_l10 = 0, var_l11 = 0, var_l12 = 0, var_l13 = 0, var_l14 = 0, var_l15 = 0, var_l16 = 0, var_l17 = 0, 
-      var_l18 = 0, var_l19 = 0;
+      var_l10 = 0, var_l11 = 0, var_l12 = 0, var_l13 = 0, var_l14 = 0, var_l15 = 0, var_l16 = 0, var_l17 = 0;
   FUNC_PROLOGUE;
   uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
   uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
-  u32 var_i0, var_i1, var_i2, var_i3;
+  u32 var_i0, var_i1, var_i2, var_i3, var_i4;
   var_i0 = instance->w2c_0x5F_stack_pointer;
-  var_i1 = 240u;
+  var_i1 = 224u;
   var_i0 -= var_i1;
   var_l2 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
@@ -8204,7 +9357,7 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
   var_l3 = var_i0;
   var_i1 = var_p0;
   var_i0 = var_i0 < var_i1;
@@ -8220,91 +9373,34 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   var_i0 += var_i1;
   var_l4 = var_i0;
   var_i0 = var_l2;
-  var_i1 = 64u;
-  var_i0 += var_i1;
-  var_i1 = 1u;
-  var_i0 |= var_i1;
-  var_l5 = var_i0;
-  var_i0 = var_l2;
-  var_i1 = 144u;
-  var_i0 += var_i1;
-  var_i1 = 1u;
-  var_i0 |= var_i1;
-  var_l6 = var_i0;
-  var_i0 = var_l2;
-  var_i1 = 228u;
+  var_i1 = 56u;
   var_i0 += var_i1;
   var_i1 = 4294967295u;
   var_i0 += var_i1;
-  var_l7 = var_i0;
+  var_l5 = var_i0;
   var_i0 = var_l2;
-  var_i1 = 228u;
+  var_i1 = 56u;
   var_i0 += var_i1;
   var_i1 = 4294967292u;
   var_i0 += var_i1;
-  var_l8 = var_i0;
-  var_L4: 
+  var_l6 = var_i0;
+  var_L3: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_p1 = var_i0;
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B1;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-    var_l9 = var_i0;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+    var_l7 = var_i0;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
     var_i2 = var_p0;
     var_i1 += var_i2;
     var_l3 = var_i1;
     var_i0 = var_i0 < var_i1;
     if (var_i0) {goto var_B1;}
-    var_i0 = var_l9;
-    var_i1 = var_l3;
-    var_i0 -= var_i1;
-    var_i1 = 4u;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B1;}
-    var_i0 = var_l2;
-    var_i1 = 224u;
-    var_i0 += var_i1;
-    var_i1 = var_p1;
-    var_i2 = var_l3;
-    var_i1 += var_i2;
-    var_i2 = 4u;
-    var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
-    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-    var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-    var_p1 = var_i0;
-    var_i1 = var_p0;
-    var_i2 = 12u;
-    var_i1 += var_i2;
-    var_l3 = var_i1;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B1;}
-    var_i0 = var_p1;
-    var_i1 = var_l3;
-    var_i0 -= var_i1;
-    var_i1 = 4u;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B1;}
-    var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-    var_p1 = var_i0;
-    var_i0 = !(var_i0);
-    if (var_i0) {goto var_B1;}
-    var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-    var_l9 = var_i0;
-    var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
-    var_i2 = var_l3;
-    var_i1 += var_i2;
-    var_l3 = var_i1;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B1;}
-    var_i0 = var_l9;
+    var_i0 = var_l7;
     var_i1 = var_l3;
     var_i0 -= var_i1;
     var_i1 = 4u;
@@ -8320,7 +9416,52 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
     var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+    var_p1 = var_i0;
+    var_i1 = var_p0;
+    var_i2 = 12u;
+    var_i1 += var_i2;
+    var_l3 = var_i1;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B1;}
+    var_i0 = var_p1;
+    var_i1 = var_l3;
+    var_i0 -= var_i1;
+    var_i1 = 4u;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B1;}
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+    var_p1 = var_i0;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B1;}
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+    var_l7 = var_i0;
+    var_i1 = 0u;
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
+    var_i2 = var_l3;
+    var_i1 += var_i2;
+    var_l3 = var_i1;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B1;}
+    var_i0 = var_l7;
+    var_i1 = var_l3;
+    var_i0 -= var_i1;
+    var_i1 = 4u;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B1;}
+    var_i0 = var_l2;
+    var_i1 = 216u;
+    var_i0 += var_i1;
+    var_i1 = var_p1;
+    var_i2 = var_l3;
+    var_i1 += var_i2;
+    var_i2 = 4u;
+    var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
     var_p1 = var_i0;
     var_i1 = var_p0;
     var_i2 = 16u;
@@ -8335,28 +9476,28 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
     var_i0 = var_i0 < var_i1;
     if (var_i0) {goto var_B1;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_p1 = var_i0;
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B1;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-    var_l9 = var_i0;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+    var_l7 = var_i0;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
     var_i2 = var_l3;
     var_i1 += var_i2;
     var_l3 = var_i1;
     var_i0 = var_i0 < var_i1;
     if (var_i0) {goto var_B1;}
-    var_i0 = var_l9;
+    var_i0 = var_l7;
     var_i1 = var_l3;
     var_i0 -= var_i1;
     var_i1 = 3u;
     var_i0 = var_i0 <= var_i1;
     if (var_i0) {goto var_B1;}
     var_i0 = var_l2;
-    var_i1 = 216u;
+    var_i1 = 212u;
     var_i0 += var_i1;
     var_i1 = var_p1;
     var_i2 = var_l3;
@@ -8365,42 +9506,42 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
     var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_i0 = var_l2;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 220u);
-    var_l9 = var_i0;
-    var_i0 = var_l2;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 224u);
-    if (var_i0) {goto var_B5;}
-    var_i0 = var_l9;
-    if (var_i0) {goto var_B5;}
-    var_i0 = var_l2;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 216u);
+    var_l7 = var_i0;
+    var_i0 = var_l2;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 220u);
+    if (var_i0) {goto var_B5;}
+    var_i0 = var_l7;
+    if (var_i0) {goto var_B5;}
+    var_i0 = var_l2;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 212u);
     var_i0 = !(var_i0);
-    if (var_i0) {goto var_B3;}
+    if (var_i0) {goto var_B4;}
     var_B5:;
     var_i0 = 0u;
     var_l3 = var_i0;
     var_i0 = 0u;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81720u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86344u);
     var_p1 = var_i1;
-    var_i2 = var_l9;
+    var_i2 = var_l7;
     var_i1 -= var_i2;
-    var_l10 = var_i1;
-    var_i2 = var_l10;
+    var_l8 = var_i1;
+    var_i2 = var_l8;
     var_i3 = var_p1;
     var_i2 = var_i2 > var_i3;
     var_i0 = var_i2 ? var_i0 : var_i1;
     var_p1 = var_i0;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
     var_i0 += var_i1;
-    var_i1 = var_l9;
+    var_i1 = var_l7;
     var_i0 += var_i1;
-    var_l11 = var_i0;
+    var_l9 = var_i0;
     var_i0 = 1u;
-    var_l12 = var_i0;
+    var_l10 = var_i0;
     var_L8: 
       var_i0 = var_p1;
       var_i1 = var_l3;
@@ -8411,15 +9552,15 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
       var_i0 += var_i1;
       var_i1 = var_l3;
       var_i0 += var_i1;
-      var_l13 = var_i0;
-      var_i1 = var_l11;
+      var_l11 = var_i0;
+      var_i1 = var_l9;
       var_i2 = var_l3;
       var_i1 += var_i2;
-      var_l10 = var_i1;
+      var_l8 = var_i1;
       var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
-      var_l9 = var_i1;
+      var_l7 = var_i1;
       i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-      var_i0 = var_l9;
+      var_i0 = var_l7;
       var_i0 = !(var_i0);
       if (var_i0) {goto var_B9;}
       var_i0 = var_l3;
@@ -8429,22 +9570,22 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
       var_i1 = var_p1;
       var_i0 = var_i0 == var_i1;
       if (var_i0) {goto var_B7;}
-      var_i0 = var_l13;
+      var_i0 = var_l11;
       var_i1 = 1u;
       var_i0 += var_i1;
-      var_i1 = var_l10;
+      var_i1 = var_l8;
       var_i2 = 1u;
       var_i1 += var_i2;
       var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
-      var_l9 = var_i1;
+      var_l7 = var_i1;
       i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-      var_i0 = var_l9;
+      var_i0 = var_l7;
       var_i0 = !(var_i0);
       if (var_i0) {goto var_B6;}
       var_i0 = var_l3;
       var_i1 = 63u;
       var_i0 = var_i0 < var_i1;
-      var_l12 = var_i0;
+      var_l10 = var_i0;
       var_i0 = var_l3;
       var_i1 = 1u;
       var_i0 += var_i1;
@@ -8454,15 +9595,15 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
       if (var_i0) {goto var_B7;}
       goto var_L8;
       var_B9:;
-    var_i0 = var_l12;
+    var_i0 = var_l10;
     var_i1 = 1u;
     var_i0 &= var_i1;
     if (var_i0) {goto var_B6;}
     var_B7:;
     var_i0 = var_l2;
-    var_i1 = 3551u;
+    var_i1 = 3632u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
-    var_i0 = 2119u;
+    var_i0 = 2133u;
     var_i1 = var_l2;
     var_i2 = 16u;
     var_i1 += var_i2;
@@ -8519,7 +9660,7 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
     var_i1 = var_l3;
     var_i0 += var_i1;
     var_l3 = var_i0;
-    var_i1 = 2995u;
+    var_i1 = 3038u;
     var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     if (var_i0) {goto var_B13;}
@@ -8528,55 +9669,55 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_B13:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
     var_p1 = var_i0;
     var_i1 = var_l2;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 224u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 220u);
     var_l3 = var_i1;
     var_i2 = var_l2;
-    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 216u);
+    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 212u);
     var_i3 = var_l3;
     var_i1 = var_i3 ? var_i1 : var_i2;
-    var_l14 = var_i1;
+    var_l12 = var_i1;
     var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B14;}
+    if (var_i0) {goto var_B15;}
     var_i0 = var_p1;
-    var_i1 = var_l14;
+    var_i1 = var_l12;
     var_i0 -= var_i1;
     var_i1 = 4u;
     var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B14;}
+    if (var_i0) {goto var_B15;}
     var_i0 = 0u;
-    var_l15 = var_i0;
+    var_l13 = var_i0;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l3 = var_i0;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-    var_l9 = var_i0;
-    var_i0 = var_l14;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+    var_l7 = var_i0;
+    var_i0 = var_l12;
     var_p1 = var_i0;
     var_i0 = 0u;
-    var_l16 = var_i0;
-    var_L15: 
+    var_l14 = var_i0;
+    var_L16: 
       var_i0 = var_l3;
       var_i0 = !(var_i0);
-      if (var_i0) {goto var_B14;}
+      if (var_i0) {goto var_B15;}
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-      var_l10 = var_i0;
-      var_i1 = var_l9;
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+      var_l8 = var_i0;
+      var_i1 = var_l7;
       var_i2 = var_p1;
       var_i1 += var_i2;
       var_p1 = var_i1;
       var_i0 = var_i0 < var_i1;
-      if (var_i0) {goto var_B14;}
-      var_i0 = var_l10;
+      if (var_i0) {goto var_B15;}
+      var_i0 = var_l8;
       var_i1 = var_p1;
       var_i0 -= var_i1;
       var_i1 = 4u;
       var_i0 = var_i0 < var_i1;
-      if (var_i0) {goto var_B14;}
+      if (var_i0) {goto var_B15;}
       var_i0 = var_l2;
       var_i1 = 140u;
       var_i0 += var_i1;
@@ -8588,27 +9729,27 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
       wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
       var_i0 = var_l2;
       var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 140u);
-      var_l12 = var_i0;
+      var_l10 = var_i0;
       var_i0 = !(var_i0);
-      if (var_i0) {goto var_B17;}
-      var_i0 = var_l12;
+      if (var_i0) {goto var_B14;}
+      var_i0 = var_l10;
       var_i1 = 4294967295u;
       var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
-      if (var_i0) {goto var_B19;}
+      if (var_i0) {goto var_B20;}
       var_i0 = var_l2;
       var_i1 = 35u;
       i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 64u, var_i1);
-      var_i0 = var_l12;
+      var_i0 = var_l10;
       var_i1 = 65535u;
       var_i0 &= var_i1;
       var_l3 = var_i0;
       var_i0 = 0u;
       var_p1 = var_i0;
       var_i0 = 1u;
-      var_l9 = var_i0;
-      var_L20: 
+      var_l7 = var_i0;
+      var_L21: 
         var_i0 = var_l2;
-        var_i1 = 228u;
+        var_i1 = 56u;
         var_i0 += var_i1;
         var_i1 = var_p1;
         var_i0 += var_i1;
@@ -8616,18 +9757,18 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
         var_i2 = var_l3;
         var_i3 = 10u;
         var_i2 = DIV_U(var_i2, var_i3);
-        var_l10 = var_i2;
+        var_l8 = var_i2;
         var_i3 = 10u;
         var_i2 *= var_i3;
         var_i1 -= var_i2;
         var_i2 = 48u;
         var_i1 |= var_i2;
         i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-        var_i0 = var_l9;
-        var_l11 = var_i0;
+        var_i0 = var_l7;
+        var_l9 = var_i0;
         var_i1 = 1u;
         var_i0 += var_i1;
-        var_l9 = var_i0;
+        var_l7 = var_i0;
         var_i0 = var_p1;
         var_i1 = 1u;
         var_i0 += var_i1;
@@ -8635,54 +9776,54 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
         var_i0 = var_l3;
         var_i1 = 9u;
         var_i0 = var_i0 > var_i1;
-        var_l13 = var_i0;
-        var_i0 = var_l10;
+        var_l11 = var_i0;
+        var_i0 = var_l8;
         var_l3 = var_i0;
-        var_i0 = var_l13;
-        if (var_i0) {goto var_L20;}
+        var_i0 = var_l11;
+        if (var_i0) {goto var_L21;}
       var_i0 = var_p1;
-      if (var_i0) {goto var_B22;}
+      if (var_i0) {goto var_B23;}
       var_i0 = 1u;
       var_l3 = var_i0;
-      goto var_B21;
-      var_B22:;
+      goto var_B22;
+      var_B23:;
       var_i0 = 1u;
       var_l3 = var_i0;
       var_i0 = var_p1;
-      var_l10 = var_i0;
+      var_l8 = var_i0;
       var_i0 = var_p1;
       var_i1 = 4294967295u;
       var_i0 += var_i1;
       var_i1 = 3u;
       var_i0 = var_i0 < var_i1;
-      if (var_i0) {goto var_B23;}
+      if (var_i0) {goto var_B24;}
       var_i0 = var_p1;
       var_i1 = 4294967292u;
       var_i0 &= var_i1;
-      var_l12 = var_i0;
-      var_i0 = 0u;
       var_l10 = var_i0;
-      var_i0 = var_l8;
-      var_l13 = var_i0;
-      var_L24: 
+      var_i0 = 0u;
+      var_l8 = var_i0;
+      var_i0 = var_l6;
+      var_l11 = var_i0;
+      var_L25: 
         var_i0 = var_l2;
         var_i1 = 64u;
         var_i0 += var_i1;
-        var_i1 = var_l10;
+        var_i1 = var_l8;
         var_i0 += var_i1;
         var_l3 = var_i0;
         var_i1 = 4u;
         var_i0 += var_i1;
-        var_i1 = var_l13;
+        var_i1 = var_l11;
         var_i2 = var_p1;
         var_i1 += var_i2;
-        var_l9 = var_i1;
+        var_l7 = var_i1;
         var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
         i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
         var_i0 = var_l3;
         var_i1 = 1u;
         var_i0 += var_i1;
-        var_i1 = var_l9;
+        var_i1 = var_l7;
         var_i2 = 3u;
         var_i1 += var_i2;
         var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
@@ -8690,7 +9831,7 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
         var_i0 = var_l3;
         var_i1 = 2u;
         var_i0 += var_i1;
-        var_i1 = var_l9;
+        var_i1 = var_l7;
         var_i2 = 2u;
         var_i1 += var_i2;
         var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
@@ -8698,45 +9839,45 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
         var_i0 = var_l3;
         var_i1 = 3u;
         var_i0 += var_i1;
-        var_i1 = var_l9;
+        var_i1 = var_l7;
         var_i2 = 1u;
         var_i1 += var_i2;
         var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
         i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-        var_i0 = var_l13;
+        var_i0 = var_l11;
         var_i1 = 4294967292u;
         var_i0 += var_i1;
-        var_l13 = var_i0;
-        var_i0 = var_l12;
-        var_i1 = var_l10;
+        var_l11 = var_i0;
+        var_i0 = var_l10;
+        var_i1 = var_l8;
         var_i2 = 4u;
         var_i1 += var_i2;
-        var_l10 = var_i1;
+        var_l8 = var_i1;
         var_i0 = var_i0 != var_i1;
-        if (var_i0) {goto var_L24;}
-      var_i0 = var_l10;
+        if (var_i0) {goto var_L25;}
+      var_i0 = var_l8;
       var_i1 = 1u;
       var_i0 += var_i1;
       var_l3 = var_i0;
       var_i0 = var_p1;
-      var_i1 = var_l10;
+      var_i1 = var_l8;
       var_i0 -= var_i1;
-      var_l10 = var_i0;
-      var_B23:;
+      var_l8 = var_i0;
+      var_B24:;
       var_i0 = var_p1;
       var_i1 = 3u;
       var_i0 &= var_i1;
       var_i0 = !(var_i0);
-      if (var_i0) {goto var_B21;}
-      var_i0 = var_l11;
+      if (var_i0) {goto var_B22;}
+      var_i0 = var_l9;
       var_i1 = 3u;
       var_i0 &= var_i1;
-      var_l9 = var_i0;
-      var_i0 = var_l7;
-      var_i1 = var_l10;
+      var_l7 = var_i0;
+      var_i0 = var_l5;
+      var_i1 = var_l8;
       var_i0 += var_i1;
       var_p1 = var_i0;
-      var_L25: 
+      var_L26: 
         var_i0 = var_l2;
         var_i1 = 64u;
         var_i0 += var_i1;
@@ -8753,14 +9894,12 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
         var_i1 = 1u;
         var_i0 += var_i1;
         var_l3 = var_i0;
-        var_i0 = var_l9;
+        var_i0 = var_l7;
         var_i1 = 4294967295u;
         var_i0 += var_i1;
-        var_l9 = var_i0;
-        if (var_i0) {goto var_L25;}
-      var_B21:;
-      var_i0 = 0u;
-      var_l13 = var_i0;
+        var_l7 = var_i0;
+        if (var_i0) {goto var_L26;}
+      var_B22:;
       var_i0 = var_l2;
       var_i1 = 64u;
       var_i0 += var_i1;
@@ -8768,30 +9907,42 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
       var_i0 += var_i1;
       var_i1 = 0u;
       i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-      goto var_B18;
-      var_B19:;
+      var_i0 = var_l2;
+      var_i1 = 144u;
+      var_i0 += var_i1;
+      var_i1 = var_l2;
+      var_i2 = 64u;
+      var_i1 += var_i2;
+      var_i2 = 0u;
+      var_i0 = w2c_x86sandbox_new_import(instance, var_i0, var_i1, var_i2);
+      wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+      var_l11 = var_i0;
+      var_i0 = !(var_i0);
+      if (var_i0) {goto var_B19;}
+      goto var_B17;
+      var_B20:;
       var_i0 = 0u;
       var_l3 = var_i0;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-      var_i1 = var_l12;
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+      var_i1 = var_l10;
       var_i2 = 0u;
-      var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 81716u);
+      var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 86340u);
       var_i1 += var_i2;
       var_i0 += var_i1;
-      var_l17 = var_i0;
+      var_l15 = var_i0;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
       var_p1 = var_i0;
       var_i0 = 1u;
-      var_l18 = var_i0;
-      var_L27: 
-        var_i0 = 3539u;
-        var_l19 = var_i0;
-        var_i0 = var_l12;
+      var_l16 = var_i0;
+      var_L28: 
+        var_i0 = 3620u;
+        var_l17 = var_i0;
+        var_i0 = var_l10;
         var_i1 = var_l3;
         var_i0 += var_i1;
-        var_l9 = var_i0;
+        var_l7 = var_i0;
         var_i1 = 2u;
         var_i0 += var_i1;
         var_i1 = var_p1;
@@ -8802,43 +9953,43 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
         var_i0 += var_i1;
         var_i1 = var_l3;
         var_i0 += var_i1;
-        var_l11 = var_i0;
-        var_i1 = var_l17;
+        var_l9 = var_i0;
+        var_i1 = var_l15;
         var_i2 = var_l3;
         var_i1 += var_i2;
-        var_l13 = var_i1;
+        var_l11 = var_i1;
         var_i2 = 2u;
         var_i1 += var_i2;
         var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
-        var_l10 = var_i1;
+        var_l8 = var_i1;
         i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-        var_i0 = var_l10;
+        var_i0 = var_l8;
         var_i0 = !(var_i0);
-        if (var_i0) {goto var_B28;}
-        var_i0 = var_l9;
+        if (var_i0) {goto var_B29;}
+        var_i0 = var_l7;
         var_i1 = 3u;
         var_i0 += var_i1;
         var_i1 = var_p1;
         var_i0 = var_i0 >= var_i1;
         if (var_i0) {goto var_B2;}
-        var_i0 = var_l11;
+        var_i0 = var_l9;
         var_i1 = 1u;
         var_i0 += var_i1;
-        var_i1 = var_l13;
+        var_i1 = var_l11;
         var_i2 = 3u;
         var_i1 += var_i2;
         var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
-        var_l9 = var_i1;
+        var_l7 = var_i1;
         i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-        var_i0 = var_l9;
+        var_i0 = var_l7;
         var_i0 = !(var_i0);
-        if (var_i0) {goto var_B26;}
+        if (var_i0) {goto var_B27;}
         var_i0 = var_l3;
         var_i1 = 1u;
         var_i0 += var_i1;
         var_i1 = 63u;
         var_i0 = var_i0 < var_i1;
-        var_l18 = var_i0;
+        var_l16 = var_i0;
         var_i0 = var_l3;
         var_i1 = 2u;
         var_i0 += var_i1;
@@ -8846,288 +9997,63 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
         var_i1 = 64u;
         var_i0 = var_i0 == var_i1;
         if (var_i0) {goto var_B2;}
-        goto var_L27;
-        var_B28:;
-      var_i0 = var_l18;
+        goto var_L28;
+        var_B29:;
+      var_i0 = var_l16;
       var_i1 = 1u;
       var_i0 &= var_i1;
       var_i0 = !(var_i0);
       if (var_i0) {goto var_B2;}
-      var_B26:;
+      var_B27:;
       var_i0 = var_l2;
       var_i1 = 144u;
       var_i0 += var_i1;
       var_i1 = var_l2;
       var_i2 = 64u;
       var_i1 += var_i2;
-      var_i0 = w2c_x86sandbox_sb_find_import(instance, var_i0, var_i1);
+      var_i2 = var_l2;
+      var_i3 = 144u;
+      var_i2 += var_i3;
+      var_i3 = var_l2;
+      var_i4 = 64u;
+      var_i3 += var_i4;
+      var_i2 = w2c_x86sandbox_sb_find_import(instance, var_i2, var_i3);
       wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-      var_l13 = var_i0;
-      var_B18:;
-      var_i0 = 1884u;
-      var_l19 = var_i0;
-      var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80792u);
+      var_l3 = var_i2;
+      var_i0 = w2c_x86sandbox_new_import(instance, var_i0, var_i1, var_i2);
+      wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
       var_l11 = var_i0;
-      var_i1 = 1023u;
-      var_i0 = var_i0 > var_i1;
-      if (var_i0) {goto var_B2;}
-      var_i0 = 0u;
-      var_p1 = var_i0;
-      var_i0 = 0u;
-      var_i1 = var_l11;
-      var_i2 = 1u;
-      var_i1 += var_i2;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80792u, var_i1);
-      var_i0 = var_l11;
-      var_i1 = 68u;
-      var_i0 *= var_i1;
-      var_l12 = var_i0;
-      var_i1 = 11160u;
-      var_i0 += var_i1;
-      var_i1 = var_l13;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-      var_i0 = var_l2;
-      var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 144u);
-      var_l9 = var_i0;
-      var_i0 = !(var_i0);
-      if (var_i0) {goto var_B16;}
-      var_i0 = var_l12;
-      var_i1 = 11164u;
-      var_i0 += var_i1;
-      var_l10 = var_i0;
-      var_i0 = 0u;
-      var_l3 = var_i0;
-      var_L29: 
-        var_i0 = var_l10;
-        var_i1 = var_l3;
-        var_i0 += var_i1;
-        var_i1 = var_l9;
-        i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-        var_i0 = var_l3;
-        var_i1 = 1u;
-        var_i0 += var_i1;
-        var_p1 = var_i0;
-        var_i0 = var_l3;
-        var_i1 = 60u;
-        var_i0 = var_i0 > var_i1;
-        if (var_i0) {goto var_B16;}
-        var_i0 = var_l6;
-        var_i1 = var_l3;
-        var_i0 += var_i1;
-        var_l9 = var_i0;
-        var_i0 = var_p1;
-        var_l3 = var_i0;
-        var_i0 = var_l9;
-        var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-        var_l9 = var_i0;
-        var_i1 = 255u;
-        var_i0 &= var_i1;
-        if (var_i0) {goto var_L29;}
-        goto var_B16;
-      var_B17:;
-      var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-      var_l3 = var_i0;
-      var_i1 = var_p0;
-      var_i2 = 20u;
-      var_i1 += var_i2;
-      var_p0 = var_i1;
-      var_i0 = var_i0 < var_i1;
-      if (var_i0) {goto var_B1;}
-      var_i0 = var_l3;
-      var_i1 = var_p0;
-      var_i0 -= var_i1;
-      var_i1 = 4u;
-      var_i0 = var_i0 >= var_i1;
-      if (var_i0) {goto var_L4;}
-      goto var_B1;
-      var_B16:;
-      var_i0 = var_l12;
-      var_i1 = var_p1;
-      var_i0 += var_i1;
-      var_i1 = 11164u;
-      var_i0 += var_i1;
-      var_i1 = 33u;
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-      var_i0 = var_p1;
-      var_i1 = 1u;
-      var_i0 += var_i1;
-      var_l9 = var_i0;
-      var_i0 = var_p1;
-      var_i1 = 61u;
-      var_i0 = var_i0 > var_i1;
-      if (var_i0) {goto var_B30;}
-      var_i0 = var_l2;
-      var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 64u);
-      var_l3 = var_i0;
-      var_i1 = 255u;
-      var_i0 &= var_i1;
-      var_i0 = !(var_i0);
-      if (var_i0) {goto var_B30;}
-      var_i0 = var_l12;
-      var_i1 = 11165u;
-      var_i0 += var_i1;
-      var_l10 = var_i0;
-      var_i0 = var_l5;
-      var_l9 = var_i0;
-      var_L32: 
-        var_i0 = var_l10;
-        var_i1 = var_p1;
-        var_i0 += var_i1;
-        var_i1 = var_l3;
-        i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-        var_i0 = var_p1;
-        var_i1 = 1u;
-        var_i0 += var_i1;
-        var_p1 = var_i0;
-        var_i1 = 61u;
-        var_i0 = var_i0 > var_i1;
-        if (var_i0) {goto var_B31;}
-        var_i0 = var_l9;
-        var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-        var_l3 = var_i0;
-        var_i0 = var_l9;
-        var_i1 = 1u;
-        var_i0 += var_i1;
-        var_l9 = var_i0;
-        var_i0 = var_l3;
-        var_i1 = 255u;
-        var_i0 &= var_i1;
-        if (var_i0) {goto var_L32;}
-      var_B31:;
-      var_i0 = var_p1;
-      var_i1 = 1u;
-      var_i0 += var_i1;
-      var_l9 = var_i0;
-      var_B30:;
-      var_i0 = 0u;
-      var_l3 = var_i0;
-      var_i0 = var_l12;
-      var_i1 = var_l9;
-      var_i0 += var_i1;
-      var_i1 = 11164u;
-      var_i0 += var_i1;
-      var_i1 = 0u;
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-      var_i0 = var_l13;
-      var_i0 = !(var_i0);
-      if (var_i0) {goto var_B35;}
-      var_i0 = var_l13;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u);
-      if (var_i0) {goto var_B36;}
-      var_i0 = var_l13;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 20u);
-      var_i1 = 15u;
-      var_i0 += var_i1;
-      var_i1 = 4294967280u;
-      var_i0 &= var_i1;
-      var_l3 = var_i0;
-      var_i0 = !(var_i0);
-      if (var_i0) {goto var_B2;}
-      var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11148u);
-      var_p1 = var_i0;
-      var_i1 = var_l3;
-      var_i0 += var_i1;
-      var_l3 = var_i0;
-      var_i1 = 262144u;
-      var_i0 = var_i0 > var_i1;
-      if (var_i0) {goto var_B2;}
-      var_i0 = 0u;
-      var_i1 = var_l3;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11148u, var_i1);
-      var_i0 = var_p1;
-      if (var_i0) {goto var_B34;}
+      if (var_i0) {goto var_B18;}
+      var_B19:;
+      var_i0 = 1884u;
+      var_l17 = var_i0;
       goto var_B2;
-      var_B36:;
-      var_i0 = var_l13;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u);
-      var_i1 = 1u;
-      var_i0 = var_i0 != var_i1;
-      if (var_i0) {goto var_B35;}
-      var_i0 = var_l13;
-      var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u);
-      var_l3 = var_i0;
-      var_B35:;
-      var_i0 = var_l2;
-      var_i1 = 0u;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 236u, var_i1);
-      var_i0 = var_l2;
-      var_i1 = 3806789632u;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 231u, var_i1);
-      var_i0 = var_l2;
-      var_i1 = 184u;
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 228u, var_i1);
-      var_i0 = var_l2;
-      var_i1 = var_l11;
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 229u, var_i1);
-      var_i0 = 8u;
-      var_l9 = var_i0;
-      var_i0 = var_l2;
-      var_i1 = var_l11;
-      var_i2 = 8u;
-      var_i1 >>= (var_i2 & 31);
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 230u, var_i1);
-      var_i0 = var_l11;
-      var_i1 = 4u;
-      var_i0 <<= (var_i1 & 31);
-      var_i1 = 69888u;
-      var_i0 += var_i1;
-      var_p1 = var_i0;
+      var_B18:;
       var_i0 = var_l3;
-      if (var_i0) {goto var_B38;}
-      var_i0 = 195u;
-      var_l3 = var_i0;
-      goto var_B37;
-      var_B38:;
-      var_i0 = var_l2;
-      var_i1 = var_l3;
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 236u, var_i1);
-      var_i0 = 10u;
-      var_l9 = var_i0;
-      var_i0 = 194u;
-      var_l3 = var_i0;
-      var_B37:;
-      var_i0 = var_l2;
-      var_i1 = var_l3;
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 235u, var_i1);
-      var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-      var_i1 = var_p1;
-      var_i0 += var_i1;
-      var_i1 = var_l2;
-      var_i2 = 228u;
-      var_i1 += var_i2;
-      var_i2 = var_l9;
-      var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
-      wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-      var_i0 = var_l13;
       var_i0 = !(var_i0);
-      if (var_i0) {goto var_B33;}
-      var_i0 = var_l13;
+      if (var_i0) {goto var_B17;}
+      var_i0 = var_l3;
       var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u);
-      if (var_i0) {goto var_B33;}
-      var_B34:;
-      var_i0 = var_l13;
-      var_i1 = var_p1;
+      if (var_i0) {goto var_B17;}
+      var_i0 = var_l3;
+      var_i1 = var_l11;
       w2c_x86sandbox_sb_win32_init_data(instance, var_i0, var_i1);
       wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-      var_B33:;
-      var_i0 = 3639u;
-      var_l19 = var_i0;
+      var_B17:;
+      var_i0 = 3733u;
+      var_l17 = var_i0;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-      var_l10 = var_i0;
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+      var_l8 = var_i0;
       var_i1 = var_l2;
-      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 216u);
-      var_i2 = var_l15;
+      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 212u);
+      var_i2 = var_l13;
       var_i1 += var_i2;
-      var_l13 = var_i1;
+      var_p1 = var_i1;
       var_i0 = var_i0 <= var_i1;
       if (var_i0) {goto var_B2;}
-      var_i0 = var_l10;
-      var_i1 = var_l13;
+      var_i0 = var_l8;
+      var_i1 = var_p1;
       var_i0 -= var_i1;
       var_i1 = 4u;
       var_i0 = var_i0 < var_i1;
@@ -9135,99 +10061,116 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
       var_i0 = 0u;
       var_l3 = var_i0;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-      var_l9 = var_i0;
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+      var_l7 = var_i0;
       var_i0 = var_l2;
-      var_i1 = var_p1;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 228u, var_i1);
+      var_i1 = var_l11;
+      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 56u, var_i1);
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-      var_p1 = var_i0;
-      var_i0 = !(var_i0);
-      if (var_i0) {goto var_B39;}
-      var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
       var_l11 = var_i0;
-      var_i1 = var_l13;
-      var_i2 = var_l9;
+      var_i0 = !(var_i0);
+      if (var_i0) {goto var_B30;}
+      var_i0 = 0u;
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86324u);
+      var_l9 = var_i0;
+      var_i1 = var_p1;
+      var_i2 = var_l7;
       var_i1 += var_i2;
       var_l3 = var_i1;
       var_i0 = var_i0 >= var_i1;
-      if (var_i0) {goto var_B40;}
-      var_i0 = var_p1;
-      var_l3 = var_i0;
-      goto var_B39;
-      var_B40:;
+      if (var_i0) {goto var_B31;}
       var_i0 = var_l11;
+      var_l3 = var_i0;
+      goto var_B30;
+      var_B31:;
+      var_i0 = var_l9;
       var_i1 = var_l3;
       var_i0 -= var_i1;
       var_i1 = 4u;
       var_i0 = var_i0 >= var_i1;
-      if (var_i0) {goto var_B41;}
-      var_i0 = var_p1;
+      if (var_i0) {goto var_B32;}
+      var_i0 = var_l11;
       var_l3 = var_i0;
-      goto var_B39;
-      var_B41:;
-      var_i0 = var_p1;
+      goto var_B30;
+      var_B32:;
+      var_i0 = var_l11;
       var_i1 = var_l3;
       var_i0 += var_i1;
       var_i1 = var_l2;
-      var_i2 = 228u;
+      var_i2 = 56u;
       var_i1 += var_i2;
       var_i2 = 4u;
       var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
       wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-      var_l10 = var_i0;
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+      var_l8 = var_i0;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
       var_l3 = var_i0;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-      var_l9 = var_i0;
-      var_B39:;
-      var_i0 = var_l10;
-      var_i1 = var_l16;
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+      var_l7 = var_i0;
+      var_B30:;
+      var_i0 = var_l8;
+      var_i1 = var_l14;
       var_i2 = 1u;
       var_i1 += var_i2;
-      var_l16 = var_i1;
+      var_l14 = var_i1;
       var_i2 = 2u;
       var_i1 <<= (var_i2 & 31);
-      var_l15 = var_i1;
-      var_i2 = var_l14;
+      var_l13 = var_i1;
+      var_i2 = var_l12;
       var_i1 += var_i2;
       var_p1 = var_i1;
       var_i0 = var_i0 < var_i1;
-      if (var_i0) {goto var_B14;}
-      var_i0 = var_l10;
+      if (var_i0) {goto var_B15;}
+      var_i0 = var_l8;
       var_i1 = var_p1;
       var_i0 -= var_i1;
       var_i1 = 3u;
       var_i0 = var_i0 > var_i1;
-      if (var_i0) {goto var_L15;}
+      if (var_i0) {goto var_L16;}
+    var_B15:;
+    var_i0 = var_l2;
+    var_i1 = 3754u;
+    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
+    var_i0 = 2133u;
+    var_i1 = var_l2;
+    var_i2 = 32u;
+    var_i1 += var_i2;
+    w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_i0 = 3u;
+    var_l3 = var_i0;
+    goto var_B0;
     var_B14:;
-  var_i0 = var_l2;
-  var_i1 = 3660u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
-  var_i0 = 2119u;
-  var_i1 = var_l2;
-  var_i2 = 32u;
-  var_i1 += var_i2;
-  w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
-  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_i0 = 3u;
-  var_l3 = var_i0;
-  goto var_B0;
-  var_B3:;
+    var_i0 = 0u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
+    var_l3 = var_i0;
+    var_i1 = var_p0;
+    var_i2 = 20u;
+    var_i1 += var_i2;
+    var_p0 = var_i1;
+    var_i0 = var_i0 < var_i1;
+    if (var_i0) {goto var_B1;}
+    var_i0 = var_l3;
+    var_i1 = var_p0;
+    var_i0 -= var_i1;
+    var_i1 = 4u;
+    var_i0 = var_i0 >= var_i1;
+    if (var_i0) {goto var_L3;}
+    goto var_B1;
+    var_B4:;
   var_i0 = 0u;
   var_l3 = var_i0;
   goto var_B0;
   var_B2:;
   var_i0 = var_l2;
-  var_i1 = var_l19;
+  var_i1 = var_l17;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 48u, var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l2;
   var_i2 = 48u;
   var_i1 += var_i2;
@@ -9238,9 +10181,9 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   goto var_B0;
   var_B1:;
   var_i0 = var_l2;
-  var_i1 = 3712u;
+  var_i1 = 3820u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2119u;
+  var_i0 = 2133u;
   var_i1 = var_l2;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -9248,7 +10191,7 @@ u32 w2c_x86sandbox_bind_imports(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   var_l3 = var_i0;
   var_B0:;
   var_i0 = var_l2;
-  var_i1 = 240u;
+  var_i1 = 224u;
   var_i0 += var_i1;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = var_l3;
@@ -9266,9 +10209,9 @@ void w2c_x86sandbox_heap_init(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) 
   u32 var_i0, var_i1, var_i2, var_i3;
   var_i0 = 0u;
   var_i1 = 0u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81724u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86348u);
   if (var_i0) {goto var_B1;}
   var_i0 = 3072u;
   var_i0 = w2c_x86sandbox_malloc(instance, var_i0);
@@ -9277,36 +10220,36 @@ void w2c_x86sandbox_heap_init(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) 
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
   var_l3 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = var_l2;
   var_i1 = var_l3;
   var_i2 = 0u;
-  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 81704u);
+  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 86328u);
   var_i3 = 12u;
   var_i2 *= var_i3;
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
   w2c_x86sandbox_free(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B2:;
   var_i0 = 0u;
   var_i1 = 256u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81724u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86348u, var_i1);
   var_i0 = 0u;
   var_i1 = var_l2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u, var_i1);
   var_B1:;
   var_i0 = var_p1;
   var_i1 = var_p0;
   var_i0 = var_i0 <= var_i1;
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81708u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86332u);
   var_l2 = var_i0;
   var_i1 = var_p0;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -9320,623 +10263,24 @@ void w2c_x86sandbox_heap_init(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) 
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81704u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86328u, var_i1);
   var_B0:;
   FUNC_EPILOGUE;
 }
 
 u32 w2c_x86sandbox_sb_find_export_0(w2c_x86sandbox* instance) {
-  u32 var_l0 = 0, var_l1 = 0, var_l2 = 0, var_l3 = 0, var_l4 = 0, var_l5 = 0, var_l6 = 0, var_l7 = 0, 
-      var_l8 = 0, var_l9 = 0;
   FUNC_PROLOGUE;
   uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
   uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
-  u32 var_i0, var_i1, var_i2, var_i3;
-  var_i0 = instance->w2c_0x5F_stack_pointer;
-  var_i1 = 176u;
-  var_i0 -= var_i1;
-  var_l0 = var_i0;
-  instance->w2c_0x5F_stack_pointer = var_i0;
-  var_i0 = 0u;
-  var_l1 = var_i0;
+  u32 var_i0, var_i1;
   var_i0 = 0u;
   var_i1 = 0u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81563u, var_i1);
-  var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u);
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11136u);
-  var_l2 = var_i0;
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-  var_l3 = var_i0;
-  var_i1 = var_l2;
-  var_i2 = 20u;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l3;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-  var_l3 = var_i0;
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-  var_l4 = var_i0;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-  var_l5 = var_i0;
-  var_i1 = var_l4;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l5;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l0;
-  var_i1 = 172u;
-  var_i0 += var_i1;
-  var_i1 = var_l3;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_i2 = 4u;
-  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86187u, var_i1);
+  var_i0 = 85932u;
+  var_i0 = w2c_x86sandbox_find_export(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-  var_l3 = var_i0;
-  var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11136u);
-  var_i2 = 24u;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l3;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-  var_l3 = var_i0;
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-  var_l4 = var_i0;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-  var_l5 = var_i0;
-  var_i1 = var_l4;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l5;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l0;
-  var_i1 = 168u;
-  var_i0 += var_i1;
-  var_i1 = var_l3;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_i2 = 4u;
-  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
-  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-  var_l3 = var_i0;
-  var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11136u);
-  var_i2 = 28u;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l3;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-  var_l3 = var_i0;
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-  var_l4 = var_i0;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-  var_l5 = var_i0;
-  var_i1 = var_l4;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l5;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l0;
-  var_i1 = 164u;
-  var_i0 += var_i1;
-  var_i1 = var_l3;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_i2 = 4u;
-  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
-  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-  var_l3 = var_i0;
-  var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11136u);
-  var_i2 = 32u;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l3;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-  var_l3 = var_i0;
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-  var_l4 = var_i0;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-  var_l5 = var_i0;
-  var_i1 = var_l4;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l5;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l0;
-  var_i1 = 160u;
-  var_i0 += var_i1;
-  var_i1 = var_l3;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_i2 = 4u;
-  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
-  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-  var_l3 = var_i0;
-  var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11136u);
-  var_i2 = 36u;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l3;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-  var_l3 = var_i0;
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-  var_l4 = var_i0;
-  var_i0 = 0u;
-  var_l1 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-  var_l5 = var_i0;
-  var_i1 = var_l4;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_l2 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l5;
-  var_i1 = var_l2;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l0;
-  var_i1 = 156u;
-  var_i0 += var_i1;
-  var_i1 = var_l3;
-  var_i2 = var_l2;
-  var_i1 += var_i2;
-  var_i2 = 4u;
-  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
-  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_i0 = var_l0;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 168u);
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-  var_l4 = var_i0;
-  var_i0 = 0u;
-  var_l2 = var_i0;
-  var_L1: 
-    var_i0 = var_l4;
-    var_i1 = var_l0;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 160u);
-    var_i2 = var_l2;
-    var_i3 = 2u;
-    var_i2 <<= (var_i3 & 31);
-    var_i1 += var_i2;
-    var_l1 = var_i1;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B2;}
-    var_i0 = var_l4;
-    var_i1 = var_l1;
-    var_i0 -= var_i1;
-    var_i1 = 4u;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B2;}
-    var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-    var_l3 = var_i0;
-    var_i0 = !(var_i0);
-    if (var_i0) {goto var_B2;}
-    var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-    var_l5 = var_i0;
-    var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
-    var_i2 = var_l1;
-    var_i1 += var_i2;
-    var_l1 = var_i1;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B2;}
-    var_i0 = var_l5;
-    var_i1 = var_l1;
-    var_i0 -= var_i1;
-    var_i1 = 4u;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B2;}
-    var_i0 = var_l0;
-    var_i1 = 152u;
-    var_i0 += var_i1;
-    var_i1 = var_l3;
-    var_i2 = var_l1;
-    var_i1 += var_i2;
-    var_i2 = 4u;
-    var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
-    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-    var_i0 = 0u;
-    var_l1 = var_i0;
-    var_i0 = 0u;
-    var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81720u);
-    var_l4 = var_i1;
-    var_i2 = var_l0;
-    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 152u);
-    var_l5 = var_i2;
-    var_i1 -= var_i2;
-    var_l3 = var_i1;
-    var_i2 = var_l3;
-    var_i3 = var_l4;
-    var_i2 = var_i2 > var_i3;
-    var_i0 = var_i2 ? var_i0 : var_i1;
-    var_l3 = var_i0;
-    var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-    var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
-    var_i0 += var_i1;
-    var_i1 = var_l5;
-    var_i0 += var_i1;
-    var_l6 = var_i0;
-    var_i0 = 1u;
-    var_l7 = var_i0;
-    var_L4: 
-      var_i0 = var_l3;
-      var_i1 = var_l1;
-      var_i0 = var_i0 == var_i1;
-      if (var_i0) {goto var_B2;}
-      var_i0 = var_l0;
-      var_i1 = 16u;
-      var_i0 += var_i1;
-      var_i1 = var_l1;
-      var_i0 += var_i1;
-      var_l8 = var_i0;
-      var_i1 = var_l6;
-      var_i2 = var_l1;
-      var_i1 += var_i2;
-      var_l9 = var_i1;
-      var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
-      var_l5 = var_i1;
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-      var_i0 = var_l5;
-      var_i0 = !(var_i0);
-      if (var_i0) {goto var_B5;}
-      var_i0 = var_l1;
-      var_i1 = 1u;
-      var_i0 += var_i1;
-      var_l1 = var_i0;
-      var_i1 = var_l3;
-      var_i0 = var_i0 == var_i1;
-      if (var_i0) {goto var_B2;}
-      var_i0 = var_l8;
-      var_i1 = 1u;
-      var_i0 += var_i1;
-      var_i1 = var_l9;
-      var_i2 = 1u;
-      var_i1 += var_i2;
-      var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
-      var_l5 = var_i1;
-      i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-      var_i0 = var_l5;
-      var_i0 = !(var_i0);
-      if (var_i0) {goto var_B3;}
-      var_i0 = var_l1;
-      var_i1 = 127u;
-      var_i0 = var_i0 < var_i1;
-      var_l7 = var_i0;
-      var_i0 = var_l1;
-      var_i1 = 1u;
-      var_i0 += var_i1;
-      var_l1 = var_i0;
-      var_i1 = 128u;
-      var_i0 = var_i0 == var_i1;
-      if (var_i0) {goto var_B2;}
-      goto var_L4;
-      var_B5:;
-    var_i0 = var_l7;
-    var_i1 = 1u;
-    var_i0 &= var_i1;
-    var_i0 = !(var_i0);
-    if (var_i0) {goto var_B2;}
-    var_B3:;
-    var_i0 = var_l0;
-    var_i1 = 16u;
-    var_i0 += var_i1;
-    var_i1 = 81308u;
-    var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
-    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-    var_l1 = var_i0;
-    var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-    var_l4 = var_i0;
-    var_i0 = var_l1;
-    if (var_i0) {goto var_B2;}
-    var_i0 = 0u;
-    var_l1 = var_i0;
-    var_i0 = var_l0;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 156u);
-    var_l3 = var_i0;
-    var_i1 = var_l2;
-    var_i2 = 1u;
-    var_i1 <<= (var_i2 & 31);
-    var_l2 = var_i1;
-    var_i0 += var_i1;
-    var_i1 = var_l4;
-    var_i0 = var_i0 >= var_i1;
-    if (var_i0) {goto var_B0;}
-    var_i0 = 0u;
-    var_l1 = var_i0;
-    var_i0 = var_l0;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 172u);
-    var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81696u);
-    var_i2 = 0u;
-    var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 81716u);
-    var_i1 += var_i2;
-    var_i2 = var_l3;
-    var_i1 += var_i2;
-    var_i2 = var_l2;
-    var_i1 += var_i2;
-    var_i1 = i32_load16_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
-    var_l2 = var_i1;
-    var_i0 = var_i0 <= var_i1;
-    if (var_i0) {goto var_B0;}
-    var_i0 = var_l0;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 164u);
-    var_i1 = var_l2;
-    var_i2 = 2u;
-    var_i1 <<= (var_i2 & 31);
-    var_i0 += var_i1;
-    var_i1 = var_l0;
-    var_i2 = 12u;
-    var_i1 += var_i2;
-    var_i0 = w2c_x86sandbox_img32(instance, var_i0, var_i1);
-    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-    var_i0 = !(var_i0);
-    if (var_i0) {goto var_B0;}
-    var_i0 = 0u;
-    var_l1 = var_i0;
-    var_i0 = var_l0;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u);
-    var_l2 = var_i0;
-    var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11136u);
-    var_l3 = var_i1;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B6;}
-    var_i0 = var_l2;
-    var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 11140u);
-    var_i2 = var_l3;
-    var_i1 += var_i2;
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_B0;}
-    var_B6:;
-    var_i0 = 0u;
-    var_l1 = var_i0;
-    var_i0 = var_l2;
-    var_i0 = !(var_i0);
-    if (var_i0) {goto var_B0;}
-    var_i0 = var_l2;
-    var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81720u);
-    var_i0 = var_i0 >= var_i1;
-    if (var_i0) {goto var_B0;}
-    var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-    var_i1 = var_l2;
-    var_i0 += var_i1;
-    var_l1 = var_i0;
-    goto var_B0;
-    var_B2:;
-    var_i0 = 0u;
-    var_l1 = var_i0;
-    var_i0 = var_l2;
-    var_i1 = 65534u;
-    var_i0 = var_i0 > var_i1;
-    if (var_i0) {goto var_B0;}
-    var_i0 = var_l2;
-    var_i1 = 1u;
-    var_i0 += var_i1;
-    var_l2 = var_i0;
-    var_i1 = var_l0;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 168u);
-    var_i0 = var_i0 < var_i1;
-    if (var_i0) {goto var_L1;}
-  var_B0:;
-  var_i0 = var_l0;
-  var_i1 = 176u;
-  var_i0 += var_i1;
-  instance->w2c_0x5F_stack_pointer = var_i0;
-  var_i0 = var_l1;
-  FUNC_EPILOGUE;
-  return var_i0;
-}
-
-u32 w2c_x86sandbox_img32(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
-  u32 var_l2 = 0, var_l3 = 0, var_l4 = 0, var_l5 = 0;
-  FUNC_PROLOGUE;
-  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
-  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  (void)wasm_rt_local_memory_base;
-  (void)wasm_rt_local_memory_size;
-  u32 var_i0, var_i1, var_i2;
-  var_i0 = 0u;
-  var_l2 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
-  var_l3 = var_i0;
-  var_i1 = var_p0;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l3;
-  var_i1 = var_p0;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l2 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
-  var_l3 = var_i0;
-  var_i0 = !(var_i0);
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
-  var_l4 = var_i0;
-  var_i0 = 0u;
-  var_l2 = var_i0;
-  var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81700u);
-  var_l5 = var_i0;
-  var_i1 = var_l4;
-  var_i2 = var_p0;
-  var_i1 += var_i2;
-  var_p0 = var_i1;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_l5;
-  var_i1 = var_p0;
-  var_i0 -= var_i1;
-  var_i1 = 4u;
-  var_i0 = var_i0 < var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = var_p1;
-  var_i1 = var_l3;
-  var_i2 = var_p0;
-  var_i1 += var_i2;
-  var_i2 = 4u;
-  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
-  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_i0 = 1u;
-  var_l2 = var_i0;
-  var_B0:;
-  var_i0 = var_l2;
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -9950,7 +10294,7 @@ u32 w2c_x86sandbox_sb_call_0(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u);
   if (var_i0) {goto var_B0;}
   var_i0 = 1u;
   goto var_Bfunc;
@@ -9958,20 +10302,20 @@ u32 w2c_x86sandbox_sb_call_0(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   var_i0 = 11u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81716u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
   var_l3 = var_i0;
   var_i1 = var_p0;
   var_i0 = var_i0 > var_i1;
   if (var_i0) {goto var_B1;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81720u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86344u);
   var_i1 = var_l3;
   var_i0 += var_i1;
   var_i1 = var_p0;
   var_i0 = var_i0 <= var_i1;
   if (var_i0) {goto var_B1;}
   var_i0 = var_p0;
-  var_i1 = 81564u;
+  var_i1 = 86188u;
   var_i2 = var_p1;
   var_i3 = 0u;
   var_i0 = w2c_x86sandbox_sb_call_guest(instance, var_i0, var_i1, var_i2, var_i3);
@@ -9992,13 +10336,13 @@ u32 w2c_x86sandbox_sb_call_any_0(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u);
   if (var_i0) {goto var_B0;}
   var_i0 = 1u;
   goto var_Bfunc;
   var_B0:;
   var_i0 = var_p0;
-  var_i1 = 81564u;
+  var_i1 = 86188u;
   var_i2 = var_p1;
   var_i3 = 0u;
   var_i0 = w2c_x86sandbox_sb_call_guest(instance, var_i0, var_i1, var_i2, var_i3);
@@ -10016,7 +10360,7 @@ u32 w2c_x86sandbox_sb_eax_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11120u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11648u);
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -10029,7 +10373,7 @@ u32 w2c_x86sandbox_sb_edx_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11124u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11652u);
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -10043,7 +10387,7 @@ f64 w2c_x86sandbox_sb_st0_0(w2c_x86sandbox* instance) {
   u32 var_i0;
   f64 var_d0;
   var_i0 = 0u;
-  var_d0 = f64_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11128u);
+  var_d0 = f64_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11656u);
   FUNC_EPILOGUE;
   return var_d0;
 }
@@ -10059,7 +10403,7 @@ u32 w2c_x86sandbox_sb_alloc_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u);
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = var_p0;
@@ -10080,7 +10424,7 @@ void w2c_x86sandbox_sb_free_0(w2c_x86sandbox* instance, u32 var_p0) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u);
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = var_p0;
@@ -10099,10 +10443,10 @@ void w2c_x86sandbox_sb_push_f64_0(w2c_x86sandbox* instance, f64 var_p0) {
   u32 var_i0;
   f64 var_d1;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_d1 = var_p0;
@@ -10120,10 +10464,10 @@ void w2c_x86sandbox_sb_set_edx_0(w2c_x86sandbox* instance, u32 var_p0) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 2u;
   var_i2 = var_p0;
   w2c_x86sandbox_sbcpu_set_reg(instance, var_i0, var_i1, var_i2);
@@ -10146,24 +10490,24 @@ void w2c_x86sandbox_sb_host_abort_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_l1 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = var_p0;
   var_i2 = 6u;
   var_i3 = var_p0;
   var_i1 = var_i3 ? var_i1 : var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11100u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11628u, var_i1);
   var_i0 = var_l1;
   var_i1 = 1531u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 2130u;
+  var_i0 = 2144u;
   var_i1 = var_l1;
   w2c_x86sandbox_sb_set_error(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_p0 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
@@ -10187,7 +10531,7 @@ u32 w2c_x86sandbox_sb_import_count_0(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80792u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 85416u);
   FUNC_EPILOGUE;
   return var_i0;
 }
@@ -10200,13 +10544,13 @@ u32 w2c_x86sandbox_sb_import_name_0(w2c_x86sandbox* instance, u32 var_p0) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3;
   var_i0 = var_p0;
-  var_i1 = 68u;
+  var_i1 = 72u;
   var_i0 *= var_i1;
-  var_i1 = 11164u;
+  var_i1 = 11696u;
   var_i0 += var_i1;
   var_i1 = 0u;
   var_i2 = 0u;
-  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 80792u);
+  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 85416u);
   var_i3 = var_p0;
   var_i2 = var_i2 > var_i3;
   var_i0 = var_i2 ? var_i0 : var_i1;
@@ -10225,14 +10569,14 @@ u32 w2c_x86sandbox_sb_import_supported_0(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80792u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 85416u);
   var_i1 = var_p0;
   var_i0 = var_i0 <= var_i1;
   if (var_i0) {goto var_B0;}
   var_i0 = var_p0;
-  var_i1 = 68u;
+  var_i1 = 72u;
   var_i0 *= var_i1;
-  var_i1 = 11160u;
+  var_i1 = 11688u;
   var_i0 += var_i1;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_i1 = 0u;
@@ -10261,11 +10605,11 @@ u32 w2c_x86sandbox_sb_unload_0(w2c_x86sandbox* instance) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11089u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11617u);
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11090u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11618u);
   var_i1 = 255u;
   var_i0 &= var_i1;
   if (var_i0) {goto var_B0;}
@@ -10274,12 +10618,12 @@ u32 w2c_x86sandbox_sb_unload_0(w2c_x86sandbox* instance) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11144u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11672u);
   var_l2 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11090u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11618u);
   var_i1 = 255u;
   var_i0 &= var_i1;
   if (var_i0) {goto var_B0;}
@@ -10288,7 +10632,7 @@ u32 w2c_x86sandbox_sb_unload_0(w2c_x86sandbox* instance) {
   i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_j1);
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
   var_i0 = var_l2;
   var_i1 = var_l0;
@@ -10328,7 +10672,7 @@ void w2c_x86sandbox_append_error(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_i0 = var_p0;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_l4 = var_i0;
-  var_i1 = 80796u;
+  var_i1 = 85420u;
   var_i0 += var_i1;
   var_i1 = 512u;
   var_i2 = var_l4;
@@ -10338,7 +10682,7 @@ void w2c_x86sandbox_append_error(w2c_x86sandbox* instance, u32 var_p0, u32 var_p
   var_i0 = w2c_x86sandbox_sb_vformat(instance, var_i0, var_i1, var_i2, var_i3);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = var_p0;
-  var_i1 = 80796u;
+  var_i1 = 85420u;
   var_i1 = w2c_x86sandbox_strlen(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -10356,14 +10700,14 @@ void w2c_x86sandbox_sb_win32_reset(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
-  var_i0 = 81728u;
+  var_i0 = 86352u;
   var_i1 = 0u;
-  var_i2 = 800u;
+  var_i2 = 804u;
   var_i0 = w2c_x86sandbox_memset(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81728u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86352u, var_i1);
   FUNC_EPILOGUE;
 }
 
@@ -10376,7 +10720,7 @@ void w2c_x86sandbox_sb_run_atexit(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u);
   var_l0 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
@@ -10386,11 +10730,11 @@ void w2c_x86sandbox_sb_run_atexit(w2c_x86sandbox* instance) {
     var_i2 = 4294967295u;
     var_i1 += var_i2;
     var_l0 = var_i1;
-    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u, var_i1);
+    i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u, var_i1);
     var_i0 = var_l0;
     var_i1 = 2u;
     var_i0 <<= (var_i1 & 31);
-    var_i1 = 81732u;
+    var_i1 = 86356u;
     var_i0 += var_i1;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     var_l1 = var_i0;
@@ -10404,7 +10748,7 @@ void w2c_x86sandbox_sb_run_atexit(w2c_x86sandbox* instance) {
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     if (var_i0) {goto var_B0;}
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u);
     var_l0 = var_i0;
     var_B2:;
     var_i0 = var_l0;
@@ -10421,96 +10765,96 @@ u32 w2c_x86sandbox_sb_find_import(w2c_x86sandbox* instance, u32 var_p0, u32 var_
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
-  var_i0 = 0u;
-  var_l2 = var_i0;
-  var_i0 = 0u;
-  var_l3 = var_i0;
   var_i0 = var_p0;
   var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_i1 = 109u;
   var_i0 = var_i0 != var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l3 = var_i0;
+  if (var_i0) {goto var_B1;}
   var_i0 = var_p0;
   var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 1u);
   var_i1 = 115u;
   var_i0 = var_i0 != var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l3 = var_i0;
+  if (var_i0) {goto var_B1;}
   var_i0 = var_p0;
   var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 2u);
   var_i1 = 118u;
   var_i0 = var_i0 != var_i1;
-  if (var_i0) {goto var_B0;}
-  var_i0 = 0u;
-  var_l3 = var_i0;
+  if (var_i0) {goto var_B1;}
   var_i0 = var_p0;
   var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 3u);
   var_i1 = 99u;
   var_i0 = var_i0 != var_i1;
-  if (var_i0) {goto var_B0;}
+  if (var_i0) {goto var_B1;}
+  var_i0 = 1u;
+  var_l2 = var_i0;
   var_i0 = var_p0;
   var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u);
   var_i1 = 114u;
   var_i0 = var_i0 == var_i1;
-  var_l3 = var_i0;
+  if (var_i0) {goto var_B0;}
+  var_B1:;
+  var_i0 = var_p0;
+  var_i1 = 3031u;
+  var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = !(var_i0);
+  var_l2 = var_i0;
   var_B0:;
   var_i0 = 0u;
+  var_l3 = var_i0;
+  var_i0 = 0u;
   var_l4 = var_i0;
-  var_L2: 
-    var_i0 = var_l2;
-    var_i1 = 5380u;
+  var_L3: 
+    var_i0 = var_l3;
+    var_i1 = 5604u;
     var_i0 += var_i1;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     var_i1 = var_p1;
     var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-    if (var_i0) {goto var_B3;}
-    var_i0 = var_l2;
-    var_i1 = 5376u;
+    if (var_i0) {goto var_B4;}
+    var_i0 = var_l3;
+    var_i1 = 5600u;
     var_i0 += var_i1;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     var_l5 = var_i0;
-    var_i0 = var_l3;
+    var_i1 = var_p0;
+    var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    if (var_i0) {goto var_B5;}
+    var_i0 = var_l4;
+    var_i1 = 24u;
+    var_i0 *= var_i1;
+    var_i1 = 5600u;
+    var_i0 += var_i1;
+    goto var_Bfunc;
+    var_B5:;
+    var_i0 = var_l2;
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B4;}
     var_i0 = var_l5;
     var_i1 = 1594u;
     var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-    if (var_i0) {goto var_B3;}
-    var_i0 = var_l4;
-    var_i1 = 24u;
-    var_i0 *= var_i1;
-    var_i1 = 5376u;
-    var_i0 += var_i1;
-    goto var_Bfunc;
-    var_B4:;
-    var_i0 = var_l5;
-    var_i1 = var_p0;
-    var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
-    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_i0 = !(var_i0);
-    if (var_i0) {goto var_B1;}
-    var_B3:;
+    if (var_i0) {goto var_B2;}
+    var_B4:;
     var_i0 = var_l4;
     var_i1 = 1u;
     var_i0 += var_i1;
     var_l4 = var_i0;
-    var_i0 = var_l2;
+    var_i0 = var_l3;
     var_i1 = 24u;
     var_i0 += var_i1;
-    var_l2 = var_i0;
-    var_i1 = 5256u;
+    var_l3 = var_i0;
+    var_i1 = 5544u;
     var_i0 = var_i0 != var_i1;
-    if (var_i0) {goto var_L2;}
+    if (var_i0) {goto var_L3;}
   var_i0 = 0u;
   goto var_Bfunc;
-  var_B1:;
-  var_i0 = var_l2;
-  var_i1 = 5376u;
+  var_B2:;
+  var_i0 = var_l3;
+  var_i1 = 5600u;
   var_i0 += var_i1;
   var_Bfunc:;
   FUNC_EPILOGUE;
@@ -10539,7 +10883,7 @@ void w2c_x86sandbox_sb_win32_init_data(w2c_x86sandbox* instance, u32 var_p0, u32
   var_B0:;
   var_i0 = var_p0;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u);
-  var_i1 = 3435u;
+  var_i1 = 3516u;
   var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   if (var_i0) {goto var_B2;}
@@ -10557,7 +10901,7 @@ void w2c_x86sandbox_sb_win32_init_data(w2c_x86sandbox* instance, u32 var_p0, u32
   var_p0 = var_i0;
   var_L3: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_p1;
     var_i0 += var_i1;
     var_i1 = 4294967295u;
@@ -10665,7 +11009,7 @@ void w2c_x86sandbox_sb_win32_init_data(w2c_x86sandbox* instance, u32 var_p0, u32
     var_l3 = var_i1;
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_p1;
     var_i0 += var_i1;
     var_i1 = var_l3;
@@ -10687,7 +11031,7 @@ void w2c_x86sandbox_sb_win32_init_data(w2c_x86sandbox* instance, u32 var_p0, u32
   var_B2:;
   var_i0 = var_p0;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u);
-  var_i1 = 4409u;
+  var_i1 = 4547u;
   var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   if (var_i0) {goto var_B1;}
@@ -10702,6 +11046,158 @@ void w2c_x86sandbox_sb_win32_init_data(w2c_x86sandbox* instance, u32 var_p0, u32
   var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B1:;
+  var_Bfunc:;
+  FUNC_EPILOGUE;
+}
+
+void w2c_x86sandbox_crtdll_GetMainArgs(w2c_x86sandbox* instance) {
+  u32 var_l0 = 0, var_l1 = 0, var_l2 = 0, var_l3 = 0, var_l4 = 0;
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1, var_i2;
+  var_i0 = 0u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l0 = var_i0;
+  var_i0 = 1u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l1 = var_i0;
+  var_i0 = 2u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87132u);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 3370u;
+  var_i0 = w2c_x86sandbox_strlen(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i1 = 1u;
+  var_i0 += var_i1;
+  var_l3 = var_i0;
+  var_i0 = w2c_x86sandbox_sb_heap_alloc(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l4 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B1;}
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_i1 = var_l4;
+  var_i0 += var_i1;
+  var_i1 = 3370u;
+  var_i2 = var_l3;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_B1:;
+  var_i0 = 0u;
+  var_i1 = var_l4;
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87132u, var_i1);
+  var_B0:;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87152u);
+  if (var_i0) {goto var_B2;}
+  var_i0 = 0u;
+  var_i1 = 12u;
+  var_i1 = w2c_x86sandbox_sb_heap_alloc(instance, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l4 = var_i1;
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87152u, var_i1);
+  var_i0 = var_l4;
+  if (var_i0) {goto var_B3;}
+  var_i0 = 2u;
+  var_i1 = 2067u;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_Bfunc;
+  var_B3:;
+  var_i0 = var_l4;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87132u);
+  var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87152u);
+  var_i1 = 4u;
+  var_i0 += var_i1;
+  var_i1 = 0u;
+  var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87152u);
+  var_i1 = 8u;
+  var_i0 += var_i1;
+  var_i1 = 0u;
+  var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_B2:;
+  var_i0 = var_l0;
+  var_i1 = 65536u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B5;}
+  var_i0 = var_l0;
+  var_i1 = 4u;
+  var_i0 = w2c_x86sandbox_sb_range_ok(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  if (var_i0) {goto var_B4;}
+  var_B5:;
+  var_i0 = 11u;
+  var_i1 = 2313u;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_Bfunc;
+  var_B4:;
+  var_i0 = var_l1;
+  var_i1 = 65536u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B7;}
+  var_i0 = var_l1;
+  var_i1 = 4u;
+  var_i0 = w2c_x86sandbox_sb_range_ok(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  if (var_i0) {goto var_B6;}
+  var_B7:;
+  var_i0 = 11u;
+  var_i1 = 2313u;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_Bfunc;
+  var_B6:;
+  var_i0 = var_l2;
+  var_i1 = 65536u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B9;}
+  var_i0 = var_l2;
+  var_i1 = 4u;
+  var_i0 = w2c_x86sandbox_sb_range_ok(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  if (var_i0) {goto var_B8;}
+  var_B9:;
+  var_i0 = 11u;
+  var_i1 = 2313u;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_Bfunc;
+  var_B8:;
+  var_i0 = var_l0;
+  var_i1 = 1u;
+  var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = var_l1;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87152u);
+  var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = var_l2;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87152u);
+  var_i2 = 8u;
+  var_i1 += var_i2;
+  var_i0 = w2c_x86sandbox_sb_write32(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_Bfunc:;
   FUNC_EPILOGUE;
 }
@@ -10832,20 +11328,20 @@ void w2c_x86sandbox_crt_strlen(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = 4294967295u;
   var_l0 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l1 = var_i0;
   goto var_B1;
   var_B2:;
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l1 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -10876,7 +11372,7 @@ void w2c_x86sandbox_crt_strcpy(w2c_x86sandbox* instance) {
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l1 = var_i0;
   var_i0 = 1u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -10887,14 +11383,14 @@ void w2c_x86sandbox_crt_strcpy(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_i0 = var_l2;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l1 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -10920,7 +11416,7 @@ void w2c_x86sandbox_crt_strcpy(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_B3:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = var_l0;
@@ -10929,7 +11425,7 @@ void w2c_x86sandbox_crt_strcpy(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B2:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l3 = var_i0;
   var_i1 = var_l0;
   var_i0 += var_i1;
@@ -10985,13 +11481,13 @@ void w2c_x86sandbox_crt_strncpy(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l2;
   var_i0 += var_i1;
   var_l1 = var_i0;
@@ -11019,7 +11515,7 @@ void w2c_x86sandbox_crt_strncpy(w2c_x86sandbox* instance) {
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     if (var_i0) {goto var_B7;}
     var_i0 = 11u;
-    var_i1 = 3888u;
+    var_i1 = 3996u;
     w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     goto var_B5;
@@ -11131,20 +11627,20 @@ void w2c_x86sandbox_crt_strcat(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = 4294967295u;
   var_l2 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l3 = var_i0;
   goto var_B1;
   var_B2:;
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l2 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l3 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -11152,7 +11648,7 @@ void w2c_x86sandbox_crt_strcat(w2c_x86sandbox* instance) {
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l3 = var_i0;
   var_i0 = var_l1;
   var_i1 = 65536u;
@@ -11160,14 +11656,14 @@ void w2c_x86sandbox_crt_strcat(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B4;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l3 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B3;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l3 = var_i0;
   var_B4:;
   var_i0 = 11u;
@@ -11200,7 +11696,7 @@ void w2c_x86sandbox_crt_strcat(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B6;}
   var_B7:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = var_l0;
@@ -11209,7 +11705,7 @@ void w2c_x86sandbox_crt_strcat(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B6:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l4 = var_i0;
   var_i1 = var_l2;
   var_i0 += var_i1;
@@ -11244,7 +11740,7 @@ void w2c_x86sandbox_crt_strncat(w2c_x86sandbox* instance) {
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l2 = var_i0;
   var_i0 = 1u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -11260,14 +11756,14 @@ void w2c_x86sandbox_crt_strncat(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l5 = var_i0;
   var_i1 = 0u;
   var_i0 = (u32)((s32)var_i0 >= (s32)var_i1);
   if (var_i0) {goto var_B1;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l2 = var_i0;
   var_B2:;
   var_i0 = 11u;
@@ -11396,7 +11892,7 @@ void w2c_x86sandbox_crt_strcmp(w2c_x86sandbox* instance) {
     if (var_i0) {goto var_B3;}
     var_B4:;
     var_i0 = 11u;
-    var_i1 = 3420u;
+    var_i1 = 3501u;
     w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     goto var_B1;
@@ -11486,7 +11982,7 @@ void w2c_x86sandbox_crt_strncmp(w2c_x86sandbox* instance) {
     if (var_i0) {goto var_B3;}
     var_B4:;
     var_i0 = 11u;
-    var_i1 = 3420u;
+    var_i1 = 3501u;
     w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     goto var_B1;
@@ -11580,7 +12076,7 @@ void w2c_x86sandbox_crt_stricmp(w2c_x86sandbox* instance) {
     if (var_i0) {goto var_B3;}
     var_B4:;
     var_i0 = 11u;
-    var_i1 = 3420u;
+    var_i1 = 3501u;
     w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     goto var_B1;
@@ -11690,7 +12186,7 @@ void w2c_x86sandbox_crt_strnicmp(w2c_x86sandbox* instance) {
     if (var_i0) {goto var_B3;}
     var_B4:;
     var_i0 = 11u;
-    var_i1 = 3420u;
+    var_i1 = 3501u;
     w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     goto var_B1;
@@ -11771,7 +12267,7 @@ void w2c_x86sandbox_crt_strchr(w2c_x86sandbox* instance) {
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l1 = var_i0;
   var_i0 = 1u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -11783,14 +12279,14 @@ void w2c_x86sandbox_crt_strchr(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l1 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -11807,7 +12303,7 @@ void w2c_x86sandbox_crt_strchr(w2c_x86sandbox* instance) {
   var_i0 += var_i1;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l3 = var_i0;
   var_i0 = var_l2;
   var_i1 = 255u;
@@ -11854,7 +12350,7 @@ void w2c_x86sandbox_crt_strrchr(w2c_x86sandbox* instance) {
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l1 = var_i0;
   var_i0 = 1u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -11866,14 +12362,14 @@ void w2c_x86sandbox_crt_strrchr(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l1 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -11886,7 +12382,7 @@ void w2c_x86sandbox_crt_strrchr(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_l3 = var_i0;
@@ -11949,20 +12445,20 @@ void w2c_x86sandbox_crt_strstr(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = 4294967295u;
   var_l2 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l3 = var_i0;
   goto var_B1;
   var_B2:;
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l2 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l3 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -11970,7 +12466,7 @@ void w2c_x86sandbox_crt_strstr(w2c_x86sandbox* instance) {
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B0:;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l3 = var_i0;
   var_i0 = var_l1;
   var_i1 = 65536u;
@@ -11980,14 +12476,14 @@ void w2c_x86sandbox_crt_strstr(w2c_x86sandbox* instance) {
   var_l3 = var_i0;
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l4 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B5;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l3 = var_i0;
   var_B6:;
   var_i0 = 11u;
@@ -12008,7 +12504,7 @@ void w2c_x86sandbox_crt_strstr(w2c_x86sandbox* instance) {
   var_l3 = var_i0;
   var_L7: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l5 = var_i0;
     var_i1 = var_l0;
     var_i0 += var_i1;
@@ -12065,7 +12561,7 @@ void w2c_x86sandbox_crt_strtok(w2c_x86sandbox* instance) {
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l2 = var_i0;
   var_i0 = 1u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -12076,14 +12572,14 @@ void w2c_x86sandbox_crt_strtok(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = var_l3;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l4 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B1;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l2 = var_i0;
   var_B2:;
   var_i0 = 11u;
@@ -12094,7 +12590,7 @@ void w2c_x86sandbox_crt_strtok(w2c_x86sandbox* instance) {
   var_B1:;
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 82524u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87148u);
   var_i2 = var_l1;
   var_i0 = var_i2 ? var_i0 : var_i1;
   var_l2 = var_i0;
@@ -12121,7 +12617,7 @@ void w2c_x86sandbox_crt_strtok(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B4;}
   var_L5: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l3;
     var_i0 += var_i1;
     var_i1 = var_l1;
@@ -12195,7 +12691,7 @@ void w2c_x86sandbox_crt_strtok(w2c_x86sandbox* instance) {
   var_l1 = var_i0;
   var_L8: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l3;
     var_i0 += var_i1;
     var_i1 = var_l5;
@@ -12255,7 +12751,7 @@ void w2c_x86sandbox_crt_strtok(w2c_x86sandbox* instance) {
   var_B6:;
   var_i0 = 0u;
   var_i1 = var_l1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82524u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87148u, var_i1);
   var_i0 = var_l5;
   w2c_x86sandbox_sb_ret(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -12280,7 +12776,7 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l1 = var_i0;
   var_i0 = 1u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -12304,14 +12800,14 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l1 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -12329,7 +12825,7 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   var_i0 = var_i0 < var_i1;
   if (var_i0) {goto var_B3;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_i1 = 1u;
@@ -12352,13 +12848,13 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B5;}
   var_B6:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B4;
   var_B5:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l1 = var_i0;
   var_i1 = var_l2;
   var_i0 += var_i1;
@@ -12393,13 +12889,13 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B7;}
   var_B8:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B2;
   var_B7:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l1 = var_i0;
   var_i1 = var_l2;
   var_i0 += var_i1;
@@ -12425,7 +12921,7 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   var_i0 = 0u;
   var_l7 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l8 = var_i0;
   var_i0 = var_l0;
   var_l1 = var_i0;
@@ -12504,13 +13000,13 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B14;}
   var_B15:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B13;
   var_B14:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l8 = var_i0;
   var_i1 = var_l3;
   var_i0 += var_i1;
@@ -12557,13 +13053,13 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B17;}
   var_B18:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B16;
   var_B17:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l7 = var_i0;
   var_i1 = var_l4;
   var_i0 += var_i1;
@@ -12605,13 +13101,13 @@ void w2c_x86sandbox_crt_splitpath(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B20;}
   var_B21:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_Bfunc;
   var_B20:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l10 = var_i0;
   var_i1 = var_l5;
   var_i0 += var_i1;
@@ -12640,7 +13136,7 @@ void w2c_x86sandbox_crt_strdup(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l0 = var_i0;
   var_i0 = 0u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -12651,14 +13147,14 @@ void w2c_x86sandbox_crt_strdup(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l0 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -12684,7 +13180,7 @@ void w2c_x86sandbox_crt_strdup(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B2:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l3 = var_i0;
   var_i1 = var_l0;
   var_i0 += var_i1;
@@ -12709,7 +13205,7 @@ void w2c_x86sandbox_crt_strlwr(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3, var_i4;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l0 = var_i0;
   var_i0 = 0u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -12720,14 +13216,14 @@ void w2c_x86sandbox_crt_strlwr(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l2 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l0 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -12760,7 +13256,7 @@ void w2c_x86sandbox_crt_strlwr(w2c_x86sandbox* instance) {
   var_l0 = var_i0;
   var_L4: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l1;
     var_i0 += var_i1;
     var_i1 = var_l0;
@@ -12780,7 +13276,7 @@ void w2c_x86sandbox_crt_strlwr(w2c_x86sandbox* instance) {
     var_i1 = var_i3 ? var_i1 : var_i2;
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l1;
     var_i0 += var_i1;
     var_i1 = var_l0;
@@ -12813,7 +13309,7 @@ void w2c_x86sandbox_crt_strlwr(w2c_x86sandbox* instance) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_i1 = var_l0;
@@ -12848,7 +13344,7 @@ void w2c_x86sandbox_crt_strupr(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3, var_i4;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l0 = var_i0;
   var_i0 = 0u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -12859,14 +13355,14 @@ void w2c_x86sandbox_crt_strupr(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l2 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l0 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -12899,7 +13395,7 @@ void w2c_x86sandbox_crt_strupr(w2c_x86sandbox* instance) {
   var_l0 = var_i0;
   var_L4: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l1;
     var_i0 += var_i1;
     var_i1 = var_l0;
@@ -12919,7 +13415,7 @@ void w2c_x86sandbox_crt_strupr(w2c_x86sandbox* instance) {
     var_i1 = var_i3 ? var_i1 : var_i2;
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l1;
     var_i0 += var_i1;
     var_i1 = var_l0;
@@ -12952,7 +13448,7 @@ void w2c_x86sandbox_crt_strupr(w2c_x86sandbox* instance) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B2;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_i1 = var_l0;
@@ -13012,7 +13508,7 @@ void w2c_x86sandbox_crt_memcpy(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_B3:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
@@ -13020,7 +13516,7 @@ void w2c_x86sandbox_crt_memcpy(w2c_x86sandbox* instance) {
   goto var_B1;
   var_B2:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_l3 = var_i0;
@@ -13036,7 +13532,7 @@ void w2c_x86sandbox_crt_memcpy(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B4;}
   var_B5:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = var_l0;
@@ -13049,7 +13545,7 @@ void w2c_x86sandbox_crt_memcpy(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B0;}
   var_i0 = var_l3;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81696u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86320u);
   var_i2 = var_l1;
   var_i1 += var_i2;
   var_i2 = var_l2;
@@ -13096,7 +13592,7 @@ void w2c_x86sandbox_crt_memset(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = var_l0;
@@ -13105,7 +13601,7 @@ void w2c_x86sandbox_crt_memset(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_i1 = var_l1;
@@ -13155,7 +13651,7 @@ void w2c_x86sandbox_crt_memcmp(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_B3:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
@@ -13163,7 +13659,7 @@ void w2c_x86sandbox_crt_memcmp(w2c_x86sandbox* instance) {
   goto var_B1;
   var_B2:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_l1 = var_i0;
@@ -13179,7 +13675,7 @@ void w2c_x86sandbox_crt_memcmp(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B4;}
   var_B5:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
@@ -13192,7 +13688,7 @@ void w2c_x86sandbox_crt_memcmp(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B0;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81696u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86320u);
   var_i2 = var_l2;
   var_i1 += var_i2;
   var_i2 = var_l3;
@@ -13242,7 +13738,7 @@ void w2c_x86sandbox_crt_memchr(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
@@ -13256,7 +13752,7 @@ void w2c_x86sandbox_crt_memchr(w2c_x86sandbox* instance) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_l4 = var_i0;
@@ -13892,7 +14388,7 @@ void w2c_x86sandbox_crt_atof(w2c_x86sandbox* instance) {
   var_i0 -= var_i1;
   var_l0 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l1 = var_i0;
   var_i0 = 0u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -13903,14 +14399,14 @@ void w2c_x86sandbox_crt_atof(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = var_l2;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B1;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l1 = var_i0;
   var_B2:;
   var_i0 = 11u;
@@ -13925,7 +14421,7 @@ void w2c_x86sandbox_crt_atof(w2c_x86sandbox* instance) {
   var_i1 = 16u;
   var_i0 += var_i1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81696u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86320u);
   var_i2 = var_l2;
   var_i1 += var_i2;
   var_i2 = var_l1;
@@ -14137,7 +14633,7 @@ void w2c_x86sandbox_crt_strtod(w2c_x86sandbox* instance) {
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l2 = var_i0;
   var_i0 = 1u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -14149,14 +14645,14 @@ void w2c_x86sandbox_crt_strtod(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l2 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B1;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l2 = var_i0;
   var_B2:;
   var_i0 = 11u;
@@ -14171,7 +14667,7 @@ void w2c_x86sandbox_crt_strtod(w2c_x86sandbox* instance) {
   var_i1 = 16u;
   var_i0 += var_i1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81696u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86320u);
   var_i2 = var_l1;
   var_i1 += var_i2;
   var_i2 = var_l2;
@@ -14339,7 +14835,7 @@ void w2c_x86sandbox_crt_itoa(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B3;}
   var_B4:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -14347,7 +14843,7 @@ void w2c_x86sandbox_crt_itoa(w2c_x86sandbox* instance) {
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l8 = var_i0;
   var_i1 = var_l3;
   var_i0 += var_i1;
@@ -14538,7 +15034,7 @@ void w2c_x86sandbox_crt_sprintf_real(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2424u;
+  var_i1 = 2460u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -14551,7 +15047,7 @@ void w2c_x86sandbox_crt_sprintf_real(w2c_x86sandbox* instance) {
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i2 = var_l1;
   var_i1 -= var_i2;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
@@ -14560,7 +15056,7 @@ void w2c_x86sandbox_crt_sprintf_real(w2c_x86sandbox* instance) {
   var_i1 = w2c_x86sandbox_sb_arg(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i2 = 0u;
-  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 81712u);
+  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 86336u);
   var_i3 = 4u;
   var_i2 = w2c_x86sandbox_sbcpu_reg(instance, var_i2, var_i3);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -14633,7 +15129,7 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   var_i0 -= var_i1;
   var_l3 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l4 = var_i0;
   var_i0 = var_p1;
   var_i1 = 65536u;
@@ -14641,14 +15137,14 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   if (var_i0) {goto var_B2;}
   var_i0 = var_p1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l5 = var_i0;
   var_i1 = 0u;
   var_i0 = (u32)((s32)var_i0 >= (s32)var_i1);
   if (var_i0) {goto var_B1;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l4 = var_i0;
   var_B2:;
   var_i0 = 11u;
@@ -14680,7 +15176,7 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   var_l9 = var_i0;
   var_L4: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l10 = var_i0;
     var_i1 = var_l9;
     var_i0 += var_i1;
@@ -14846,7 +15342,7 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
     var_i0 |= var_i1;
     var_l11 = var_i0;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l10 = var_i0;
     var_i1 = var_p1;
     var_i0 += var_i1;
@@ -14942,7 +15438,7 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
     var_i0 += var_i1;
     var_p2 = var_i0;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l10 = var_i0;
     var_i1 = var_l9;
     var_i2 = 2u;
@@ -15362,7 +15858,7 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
       var_i1 = (u32)(var_j1);
       var_i2 = 15u;
       var_i1 &= var_i2;
-      var_i2 = 4369u;
+      var_i2 = 4507u;
       var_i1 += var_i2;
       var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
       i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -15564,7 +16060,7 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
     var_l4 = var_i0;
     if (var_i0) {goto var_B54;}
     var_i0 = var_p0;
-    var_i1 = 4749u;
+    var_i1 = 4979u;
     var_i2 = 6u;
     var_i3 = var_l17;
     var_i4 = var_l11;
@@ -15580,20 +16076,20 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
     var_i1 = 65536u;
     var_i0 = var_i0 >= var_i1;
     if (var_i0) {goto var_B55;}
-    var_i0 = 3149u;
+    var_i0 = 3216u;
     var_l4 = var_i0;
     goto var_B3;
     var_B55:;
     var_i0 = var_l4;
     var_i1 = 0u;
-    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+    var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
     var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     var_l4 = var_i0;
     var_i1 = 0u;
     var_i0 = (u32)((s32)var_i0 >= (s32)var_i1);
     if (var_i0) {goto var_B56;}
-    var_i0 = 3179u;
+    var_i0 = 3246u;
     var_l4 = var_i0;
     goto var_B3;
     var_B56:;
@@ -15708,7 +16204,7 @@ void w2c_x86sandbox_gformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
       var_i0 = var_i0 >= var_i1;
       if (var_i0) {goto var_B64;}
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
       var_i1 = var_l3;
       var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
       var_i0 += var_i1;
@@ -16129,7 +16625,7 @@ void w2c_x86sandbox_crt_snprintf(w2c_x86sandbox* instance) {
   var_i2 = w2c_x86sandbox_sb_arg(instance, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i3 = 0u;
-  var_i3 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i3) + 81712u);
+  var_i3 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i3) + 86336u);
   var_i4 = 4u;
   var_i3 = w2c_x86sandbox_sbcpu_reg(instance, var_i3, var_i4);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -16168,7 +16664,7 @@ void w2c_x86sandbox_ms_snprintf(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2439u;
+  var_i1 = 2475u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -16246,7 +16742,7 @@ void w2c_x86sandbox_crt_vsprintf(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2423u;
+  var_i1 = 2459u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -16259,7 +16755,7 @@ void w2c_x86sandbox_crt_vsprintf(w2c_x86sandbox* instance) {
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i2 = var_l1;
   var_i1 -= var_i2;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
@@ -16363,7 +16859,7 @@ void w2c_x86sandbox_crt_printf(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i1 = 4u;
   var_i0 = w2c_x86sandbox_sbcpu_reg(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -16451,7 +16947,7 @@ void w2c_x86sandbox_crt_puts(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3, var_i4;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l0 = var_i0;
   var_i0 = 0u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -16462,14 +16958,14 @@ void w2c_x86sandbox_crt_puts(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B1;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l0 = var_i0;
   var_B2:;
   var_i0 = 11u;
@@ -16479,7 +16975,7 @@ void w2c_x86sandbox_crt_puts(w2c_x86sandbox* instance) {
   goto var_B0;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_i1 = var_l0;
@@ -16800,7 +17296,7 @@ void w2c_x86sandbox_crt_CIsin(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16808,7 +17304,7 @@ void w2c_x86sandbox_crt_CIsin(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16830,7 +17326,7 @@ void w2c_x86sandbox_crt_CIcos(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16838,7 +17334,7 @@ void w2c_x86sandbox_crt_CIcos(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16860,7 +17356,7 @@ void w2c_x86sandbox_crt_CItan(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16868,7 +17364,7 @@ void w2c_x86sandbox_crt_CItan(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16890,7 +17386,7 @@ void w2c_x86sandbox_crt_CIasin(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16898,7 +17394,7 @@ void w2c_x86sandbox_crt_CIasin(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16920,7 +17416,7 @@ void w2c_x86sandbox_crt_CIacos(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16928,7 +17424,7 @@ void w2c_x86sandbox_crt_CIacos(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16950,7 +17446,7 @@ void w2c_x86sandbox_crt_CIatan(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16958,7 +17454,7 @@ void w2c_x86sandbox_crt_CIatan(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16980,7 +17476,7 @@ void w2c_x86sandbox_crt_CIatan2(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2, var_d3;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -16988,7 +17484,7 @@ void w2c_x86sandbox_crt_CIatan2(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 1u;
@@ -16996,13 +17492,13 @@ void w2c_x86sandbox_crt_CIatan2(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   w2c_x86sandbox_sbfpu_pop(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17025,7 +17521,7 @@ void w2c_x86sandbox_crt_CIsqrt(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17033,7 +17529,7 @@ void w2c_x86sandbox_crt_CIsqrt(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17054,7 +17550,7 @@ void w2c_x86sandbox_crt_CIpow(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2, var_d3;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17062,7 +17558,7 @@ void w2c_x86sandbox_crt_CIpow(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 1u;
@@ -17070,13 +17566,13 @@ void w2c_x86sandbox_crt_CIpow(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   w2c_x86sandbox_sbfpu_pop(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17099,7 +17595,7 @@ void w2c_x86sandbox_crt_CIexp(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17107,7 +17603,7 @@ void w2c_x86sandbox_crt_CIexp(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17129,7 +17625,7 @@ void w2c_x86sandbox_crt_CIlog(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17137,7 +17633,7 @@ void w2c_x86sandbox_crt_CIlog(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17159,7 +17655,7 @@ void w2c_x86sandbox_crt_CIlog10(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17167,7 +17663,7 @@ void w2c_x86sandbox_crt_CIlog10(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17189,7 +17685,7 @@ void w2c_x86sandbox_crt_CIfmod(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1;
   f64 var_d0, var_d2, var_d3;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17197,7 +17693,7 @@ void w2c_x86sandbox_crt_CIfmod(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 1u;
@@ -17205,13 +17701,13 @@ void w2c_x86sandbox_crt_CIfmod(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   w2c_x86sandbox_sbfpu_pop(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17237,7 +17733,7 @@ void w2c_x86sandbox_crt_ftol(w2c_x86sandbox* instance) {
   u64 var_j0, var_j1, var_j2, var_j3;
   f64 var_d0, var_d1, var_d2, var_d3, var_d4;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 0u;
@@ -17245,7 +17741,7 @@ void w2c_x86sandbox_crt_ftol(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_d0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   w2c_x86sandbox_sbfpu_pop(instance, var_i0);
@@ -17310,7 +17806,7 @@ void w2c_x86sandbox_crt_controlfp(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = w2c_x86sandbox_sbfpu_cw(instance, var_i0);
@@ -17344,7 +17840,7 @@ void w2c_x86sandbox_crt_controlfp(w2c_x86sandbox* instance) {
   var_l2 = var_i0;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81712u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86336u);
   var_i0 = w2c_x86sandbox_sbcpu_fpu(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = var_l2;
@@ -17438,13 +17934,13 @@ void w2c_x86sandbox_crt_rand(w2c_x86sandbox* instance) {
   u32 var_i0, var_i1, var_i2;
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81728u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86352u);
   var_i2 = 214013u;
   var_i1 *= var_i2;
   var_i2 = 2531011u;
   var_i1 += var_i2;
   var_l0 = var_i1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81728u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86352u, var_i1);
   var_i0 = var_l0;
   var_i1 = 16u;
   var_i0 >>= (var_i1 & 31);
@@ -17466,7 +17962,7 @@ void w2c_x86sandbox_crt_srand(w2c_x86sandbox* instance) {
   var_i1 = 0u;
   var_i1 = w2c_x86sandbox_sb_arg(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81728u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86352u, var_i1);
   FUNC_EPILOGUE;
 }
 
@@ -17550,7 +18046,7 @@ void w2c_x86sandbox_crt_initterm(w2c_x86sandbox* instance) {
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     if (var_i0) {goto var_B2;}
     var_i0 = 11u;
-    var_i1 = 3680u;
+    var_i1 = 3774u;
     w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     goto var_B0;
@@ -17600,7 +18096,7 @@ void w2c_x86sandbox_crt_onexit(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u);
   var_l1 = var_i0;
   var_i1 = 63u;
   var_i0 = var_i0 > var_i1;
@@ -17609,11 +18105,11 @@ void w2c_x86sandbox_crt_onexit(w2c_x86sandbox* instance) {
   var_i1 = var_l1;
   var_i2 = 1u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u, var_i1);
   var_i0 = var_l1;
   var_i1 = 2u;
   var_i0 <<= (var_i1 & 31);
-  var_i1 = 81732u;
+  var_i1 = 86356u;
   var_i0 += var_i1;
   var_i1 = var_l0;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -17639,7 +18135,7 @@ void w2c_x86sandbox_crt_dllonexit(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u);
   var_l1 = var_i0;
   var_i1 = 63u;
   var_i0 = var_i0 > var_i1;
@@ -17648,11 +18144,11 @@ void w2c_x86sandbox_crt_dllonexit(w2c_x86sandbox* instance) {
   var_i1 = var_l1;
   var_i2 = 1u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u, var_i1);
   var_i0 = var_l1;
   var_i1 = 2u;
   var_i0 <<= (var_i1 & 31);
-  var_i1 = 81732u;
+  var_i1 = 86356u;
   var_i0 += var_i1;
   var_i1 = var_l0;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -17678,7 +18174,7 @@ void w2c_x86sandbox_crt_atexit(w2c_x86sandbox* instance) {
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u);
   var_l1 = var_i0;
   var_i1 = 63u;
   var_i0 = var_i0 > var_i1;
@@ -17687,11 +18183,11 @@ void w2c_x86sandbox_crt_atexit(w2c_x86sandbox* instance) {
   var_i1 = var_l1;
   var_i2 = 1u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81988u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86612u, var_i1);
   var_i0 = var_l1;
   var_i1 = 2u;
   var_i0 <<= (var_i1 & 31);
-  var_i1 = 81732u;
+  var_i1 = 86356u;
   var_i0 += var_i1;
   var_i1 = var_l0;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -17762,7 +18258,7 @@ void w2c_x86sandbox_crt_qsort(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -17808,14 +18304,14 @@ void w2c_x86sandbox_crt_qsort(w2c_x86sandbox* instance) {
       var_i1 = 16u;
       var_i0 += var_i1;
       var_i1 = 0u;
-      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81696u);
+      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86320u);
       var_i2 = var_l8;
       var_i1 += var_i2;
       var_i2 = var_l3;
       var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
       wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
       var_i1 = var_l8;
       var_i0 += var_i1;
       var_l9 = var_i0;
@@ -17826,7 +18322,7 @@ void w2c_x86sandbox_crt_qsort(w2c_x86sandbox* instance) {
       var_i0 = w2c_x86sandbox_memmove(instance, var_i0, var_i1, var_i2);
       wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
       var_i0 = 0u;
-      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+      var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
       var_i1 = var_l3;
       var_i0 += var_i1;
       var_i1 = var_l8;
@@ -17878,7 +18374,7 @@ void w2c_x86sandbox_crt_purecall(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 6u;
-  var_i1 = 3043u;
+  var_i1 = 3086u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   FUNC_EPILOGUE;
@@ -17892,29 +18388,431 @@ void w2c_x86sandbox_crt_fatal(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 6u;
-  var_i1 = 2739u;
+  var_i1 = 2775u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   FUNC_EPILOGUE;
 }
 
 void w2c_x86sandbox_k32_GetModuleHandleA(w2c_x86sandbox* instance) {
-  u32 var_l0 = 0;
   FUNC_PROLOGUE;
   uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
   uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
-  u32 var_i0, var_i1, var_i2;
+  u32 var_i0;
   var_i0 = 0u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_l0 = var_i0;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
   var_i0 = 0u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = w2c_x86sandbox_module_handle(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_Bfunc;
+  var_B0:;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86340u);
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_Bfunc:;
+  FUNC_EPILOGUE;
+}
+
+u32 w2c_x86sandbox_module_handle(w2c_x86sandbox* instance, u32 var_p0) {
+  u32 var_l1 = 0, var_l2 = 0, var_l3 = 0, var_l4 = 0, var_l5 = 0, var_l6 = 0, var_l7 = 0;
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1, var_i2, var_i3, var_i4;
+  var_i0 = instance->w2c_0x5F_stack_pointer;
+  var_i1 = 64u;
+  var_i0 -= var_i1;
+  var_l1 = var_i0;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = 3216u;
+  var_l2 = var_i0;
+  var_i0 = var_p0;
+  var_i1 = 65536u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B2;}
+  var_i0 = 0u;
+  var_l3 = var_i0;
+  var_i0 = var_p0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81716u);
-  var_i2 = var_l0;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
+  var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l4 = var_i0;
+  var_i1 = 4294967295u;
+  var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
+  if (var_i0) {goto var_B1;}
+  var_i0 = 3246u;
+  var_l2 = var_i0;
+  var_B2:;
+  var_i0 = 11u;
+  var_i1 = var_l2;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  goto var_B0;
+  var_B1:;
+  var_i0 = var_l4;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B3;}
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_i1 = var_p0;
+  var_i0 += var_i1;
+  var_l5 = var_i0;
+  var_i0 = 0u;
+  var_l3 = var_i0;
+  var_L4: 
+    var_i0 = var_l5;
+    var_i1 = var_l2;
+    var_i0 += var_i1;
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+    var_l6 = var_i0;
+    var_i1 = 4294967249u;
+    var_i0 += var_i1;
+    switch (var_i0) {
+      case 0: goto var_B6;
+      case 1: goto var_B7;
+      case 2: goto var_B7;
+      case 3: goto var_B7;
+      case 4: goto var_B7;
+      case 5: goto var_B7;
+      case 6: goto var_B7;
+      case 7: goto var_B7;
+      case 8: goto var_B7;
+      case 9: goto var_B7;
+      case 10: goto var_B7;
+      case 11: goto var_B6;
+      default: goto var_B8;
+    }
+    var_B8:;
+    var_i0 = var_l6;
+    var_i1 = 92u;
+    var_i0 = var_i0 == var_i1;
+    if (var_i0) {goto var_B6;}
+    var_B7:;
+    var_i0 = var_l2;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l2 = var_i0;
+    goto var_B5;
+    var_B6:;
+    var_i0 = var_l2;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l2 = var_i0;
+    var_l3 = var_i0;
+    var_B5:;
+    var_i0 = var_l2;
+    var_i1 = var_l4;
+    var_i0 = var_i0 != var_i1;
+    if (var_i0) {goto var_L4;}
+  var_B3:;
+  var_i0 = var_l3;
+  var_i1 = var_l4;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B10;}
+  var_i0 = var_l1;
+  var_i1 = 0u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  goto var_B9;
+  var_B10:;
+  var_i0 = 0u;
+  var_l2 = var_i0;
+  var_i0 = 0u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
+  var_i1 = var_l3;
+  var_i2 = var_p0;
+  var_i1 += var_i2;
+  var_i0 += var_i1;
+  var_p0 = var_i0;
+  var_i0 = var_l1;
+  var_i1 = 4294967292u;
+  var_i0 += var_i1;
+  var_l7 = var_i0;
+  var_L12: 
+    var_i0 = var_l7;
+    var_i1 = var_l2;
+    var_i0 += var_i1;
+    var_i1 = 4u;
+    var_i0 += var_i1;
+    var_i1 = var_p0;
+    var_i2 = var_l2;
+    var_i1 += var_i2;
+    var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
+    var_l6 = var_i1;
+    var_i2 = 32u;
+    var_i1 += var_i2;
+    var_i2 = var_l6;
+    var_i3 = var_l6;
+    var_i4 = 4294967231u;
+    var_i3 += var_i4;
+    var_i4 = 26u;
+    var_i3 = var_i3 < var_i4;
+    var_i1 = var_i3 ? var_i1 : var_i2;
+    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+    var_i0 = var_l2;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l6 = var_i0;
+    var_i1 = var_l3;
+    var_i0 += var_i1;
+    var_i1 = var_l4;
+    var_i0 = var_i0 >= var_i1;
+    if (var_i0) {goto var_B11;}
+    var_i0 = var_l2;
+    var_i1 = 62u;
+    var_i0 = var_i0 < var_i1;
+    var_l5 = var_i0;
+    var_i0 = var_l6;
+    var_l2 = var_i0;
+    var_i0 = var_l5;
+    if (var_i0) {goto var_L12;}
+  var_B11:;
+  var_i0 = var_l1;
+  var_i1 = var_l6;
+  var_i0 += var_i1;
+  var_l2 = var_i0;
+  var_i1 = 0u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  var_i0 = var_l6;
+  var_i1 = 4294967295u;
+  var_i0 += var_i1;
+  var_i1 = 3u;
+  var_i0 = var_i0 <= var_i1;
+  if (var_i0) {goto var_B9;}
+  var_i0 = var_l2;
+  var_i1 = 4294967292u;
+  var_i0 += var_i1;
+  var_l2 = var_i0;
+  var_i1 = 3038u;
+  var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  if (var_i0) {goto var_B9;}
+  var_i0 = var_l2;
+  var_i1 = 0u;
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
+  var_B9:;
+  var_i0 = 2113994752u;
+  var_l2 = var_i0;
+  var_i0 = var_l1;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+  var_i1 = 109u;
+  var_i0 = var_i0 != var_i1;
+  if (var_i0) {goto var_B13;}
+  var_i0 = var_l1;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 1u);
+  var_i1 = 255u;
+  var_i0 &= var_i1;
+  var_i1 = 115u;
+  var_i0 = var_i0 != var_i1;
+  if (var_i0) {goto var_B13;}
+  var_i0 = var_l1;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 2u);
+  var_i1 = 255u;
+  var_i0 &= var_i1;
+  var_i1 = 118u;
+  var_i0 = var_i0 != var_i1;
+  if (var_i0) {goto var_B13;}
+  var_i0 = var_l1;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 3u);
+  var_i1 = 255u;
+  var_i0 &= var_i1;
+  var_i1 = 99u;
+  var_i0 = var_i0 != var_i1;
+  if (var_i0) {goto var_B13;}
+  var_i0 = var_l1;
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u);
+  var_i1 = 255u;
+  var_i0 &= var_i1;
+  var_i1 = 114u;
+  var_i0 = var_i0 == var_i1;
+  if (var_i0) {goto var_B0;}
+  var_B13:;
+  var_i0 = var_l1;
+  var_i1 = 4961u;
+  var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  if (var_i0) {goto var_B14;}
+  var_i0 = 2113929216u;
+  var_l2 = var_i0;
+  goto var_B0;
+  var_B14:;
+  var_i0 = var_l1;
+  var_i1 = 1594u;
+  var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = var_l1;
+  var_i1 = 3031u;
+  var_i0 = w2c_x86sandbox_strcmp(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  if (var_i0) {goto var_B15;}
+  var_i0 = 2114060288u;
+  var_l2 = var_i0;
+  goto var_B0;
+  var_B15:;
+  var_i0 = 0u;
+  var_i1 = 2114125824u;
+  var_i2 = var_l1;
+  var_i3 = 4954u;
+  var_i2 = w2c_x86sandbox_strcmp(instance, var_i2, var_i3);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = var_i2 ? var_i0 : var_i1;
+  var_l2 = var_i0;
+  var_B0:;
+  var_i0 = var_l1;
+  var_i1 = 64u;
+  var_i0 += var_i1;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = var_l2;
+  FUNC_EPILOGUE;
+  return var_i0;
+}
+
+void w2c_x86sandbox_k32_GetProcAddress(w2c_x86sandbox* instance) {
+  u32 var_l0 = 0, var_l1 = 0, var_l2 = 0, var_l3 = 0;
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1, var_i2, var_i3;
+  var_i0 = instance->w2c_0x5F_stack_pointer;
+  var_i1 = 64u;
+  var_i0 -= var_i1;
+  var_l0 = var_i0;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = 0u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l1 = var_i0;
+  var_i0 = 1u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l2 = var_i0;
+  var_i1 = 65535u;
+  var_i0 = var_i0 > var_i1;
+  if (var_i0) {goto var_B1;}
+  var_i0 = 0u;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_B0;
+  var_B1:;
+  var_i0 = var_l2;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
+  var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l3 = var_i0;
+  var_i1 = 4294967295u;
+  var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
+  if (var_i0) {goto var_B2;}
+  var_i0 = 11u;
+  var_i1 = 3246u;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_B0;
+  var_B2:;
+  var_i0 = var_l3;
+  var_i1 = 64u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B3;}
+  var_i0 = 0u;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_B0;
+  var_B3:;
+  var_i0 = var_l0;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86320u);
+  var_i2 = var_l2;
+  var_i1 += var_i2;
+  var_i2 = var_l3;
+  var_i3 = 1u;
+  var_i2 += var_i3;
+  var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = var_l1;
+  var_i1 = 0u;
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86340u);
+  var_i0 = var_i0 != var_i1;
+  if (var_i0) {goto var_B4;}
+  var_i0 = var_l0;
+  var_i0 = w2c_x86sandbox_sb_find_own_export(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_B0;
+  var_B4:;
+  var_i0 = var_l1;
+  var_i1 = 2113929216u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B5;}
+  var_i0 = var_l1;
+  var_i1 = 65535u;
+  var_i0 &= var_i1;
+  if (var_i0) {goto var_B5;}
+  var_i0 = var_l1;
+  var_i1 = 2181038080u;
+  var_i0 += var_i1;
+  var_l2 = var_i0;
+  var_i1 = 262143u;
+  var_i0 = var_i0 > var_i1;
+  if (var_i0) {goto var_B5;}
+  var_i0 = var_l2;
+  var_i1 = 16u;
+  var_i0 >>= (var_i1 & 31);
+  var_i1 = 2u;
+  var_i0 <<= (var_i1 & 31);
+  var_i1 = 11152u;
+  var_i0 += var_i1;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
+  var_i1 = var_l0;
+  var_i0 = w2c_x86sandbox_sb_resolve_import(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_B0;
+  var_B5:;
+  var_i0 = 0u;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_B0:;
+  var_i0 = var_l0;
+  var_i1 = 64u;
+  var_i0 += var_i1;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  FUNC_EPILOGUE;
+}
+
+void w2c_x86sandbox_k32_LoadLibraryA(w2c_x86sandbox* instance) {
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0;
+  var_i0 = 0u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_i0 = w2c_x86sandbox_module_handle(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   w2c_x86sandbox_sb_ret(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   FUNC_EPILOGUE;
@@ -18034,7 +18932,7 @@ void w2c_x86sandbox_k32_OutputDebugStringA(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3, var_i4;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l0 = var_i0;
   var_i0 = 0u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -18045,14 +18943,14 @@ void w2c_x86sandbox_k32_OutputDebugStringA(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l0 = var_i0;
   var_B1:;
   var_i0 = 11u;
@@ -18062,7 +18960,7 @@ void w2c_x86sandbox_k32_OutputDebugStringA(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_i1 = var_l0;
@@ -18153,7 +19051,7 @@ void w2c_x86sandbox_k32_InterlockedIncrement(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -18214,7 +19112,7 @@ void w2c_x86sandbox_k32_InterlockedDecrement(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -18275,7 +19173,7 @@ void w2c_x86sandbox_k32_InterlockedExchange(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -18331,7 +19229,7 @@ void w2c_x86sandbox_k32_InterlockedCompareExchange(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -18395,7 +19293,7 @@ void w2c_x86sandbox_k32_InterlockedExchangeAdd(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -18438,7 +19336,7 @@ void w2c_x86sandbox_k32_TlsAlloc(w2c_x86sandbox* instance) {
   var_i0 = 0u;
   var_l0 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81992u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86616u);
   var_l1 = var_i0;
   var_L4: 
     var_i0 = var_l1;
@@ -18512,7 +19410,7 @@ void w2c_x86sandbox_k32_TlsAlloc(w2c_x86sandbox* instance) {
   var_i1 = var_l1;
   var_i2 = var_l2;
   var_i1 |= var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81992u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86616u, var_i1);
   var_i0 = var_l0;
   var_i1 = 2u;
   var_i0 <<= (var_i1 & 31);
@@ -18545,12 +19443,12 @@ void w2c_x86sandbox_k32_TlsFree(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81992u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86616u);
   var_i2 = 4294967294u;
   var_i3 = var_l0;
   var_i2 = I32_ROTL(var_i2, var_i3);
   var_i1 &= var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81992u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86616u, var_i1);
   var_B0:;
   var_i0 = var_l0;
   var_i1 = 32u;
@@ -18706,22 +19604,53 @@ void w2c_x86sandbox_k32_HeapFree(w2c_x86sandbox* instance) {
 }
 
 void w2c_x86sandbox_k32_HeapReAlloc(w2c_x86sandbox* instance) {
+  u32 var_l0 = 0, var_l1 = 0, var_l2 = 0;
   FUNC_PROLOGUE;
   uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
   uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
-  u32 var_i0, var_i1;
+  u32 var_i0, var_i1, var_i2, var_i3;
+  var_i0 = 1u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l0 = var_i0;
   var_i0 = 2u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
-  var_i1 = 3u;
-  var_i1 = w2c_x86sandbox_sb_arg(instance, var_i1);
+  var_l1 = var_i0;
+  var_i0 = 3u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l2 = var_i0;
+  var_i0 = var_l0;
+  var_i1 = 16u;
+  var_i0 &= var_i1;
+  var_i0 = !(var_i0);
+  if (var_i0) {goto var_B0;}
+  var_i0 = 0u;
+  var_i1 = var_l1;
+  var_i2 = var_l2;
+  var_i3 = var_l1;
+  var_i3 = w2c_x86sandbox_sb_heap_size(instance, var_i3);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l0 = var_i3;
+  var_i2 = var_i2 > var_i3;
+  var_i0 = var_i2 ? var_i0 : var_i1;
+  var_i1 = 0u;
+  var_i2 = var_l0;
+  var_i0 = var_i2 ? var_i0 : var_i1;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_Bfunc;
+  var_B0:;
+  var_i0 = var_l1;
+  var_i1 = var_l2;
   var_i0 = w2c_x86sandbox_sb_heap_realloc(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   w2c_x86sandbox_sb_ret(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_Bfunc:;
   FUNC_EPILOGUE;
 }
 
@@ -18772,7 +19701,7 @@ void w2c_x86sandbox_k32_VirtualAlloc(w2c_x86sandbox* instance) {
   var_l0 = var_i0;
   var_L7: 
     var_i0 = var_l0;
-    var_i1 = 82512u;
+    var_i1 = 87136u;
     var_i0 += var_i1;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     var_l3 = var_i0;
@@ -18780,7 +19709,7 @@ void w2c_x86sandbox_k32_VirtualAlloc(w2c_x86sandbox* instance) {
     if (var_i0) {goto var_B8;}
     var_i0 = var_l1;
     var_i1 = var_l0;
-    var_i2 = 82508u;
+    var_i2 = 87132u;
     var_i1 += var_i2;
     var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
     var_l4 = var_i1;
@@ -18843,12 +19772,12 @@ void w2c_x86sandbox_k32_VirtualAlloc(w2c_x86sandbox* instance) {
     var_i0 <<= (var_i1 & 31);
     var_l4 = var_i0;
     var_i0 = var_l0;
-    var_i1 = 82512u;
+    var_i1 = 87136u;
     var_i0 += var_i1;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     if (var_i0) {goto var_B10;}
     var_i0 = var_l4;
-    var_i1 = 82000u;
+    var_i1 = 86624u;
     var_i0 += var_i1;
     var_l0 = var_i0;
     var_i0 = var_l1;
@@ -18858,19 +19787,19 @@ void w2c_x86sandbox_k32_VirtualAlloc(w2c_x86sandbox* instance) {
     goto var_B0;
     var_B10:;
     var_i0 = var_l0;
-    var_i1 = 82520u;
+    var_i1 = 87144u;
     var_i0 += var_i1;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B1;}
     var_i0 = var_l0;
-    var_i1 = 82528u;
+    var_i1 = 87152u;
     var_i0 += var_i1;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     var_i0 = !(var_i0);
     if (var_i0) {goto var_B2;}
     var_i0 = var_l0;
-    var_i1 = 82536u;
+    var_i1 = 87160u;
     var_i0 += var_i1;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     var_i0 = !(var_i0);
@@ -18901,13 +19830,13 @@ void w2c_x86sandbox_k32_VirtualAlloc(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B3:;
   var_i0 = var_l0;
-  var_i1 = 82536u;
+  var_i1 = 87160u;
   var_i0 += var_i1;
   var_l0 = var_i0;
   goto var_B0;
   var_B2:;
   var_i0 = var_l4;
-  var_i1 = 82016u;
+  var_i1 = 86640u;
   var_i0 += var_i1;
   var_l0 = var_i0;
   var_i0 = var_l1;
@@ -18917,7 +19846,7 @@ void w2c_x86sandbox_k32_VirtualAlloc(w2c_x86sandbox* instance) {
   goto var_B0;
   var_B1:;
   var_i0 = var_l4;
-  var_i1 = 82008u;
+  var_i1 = 86632u;
   var_i0 += var_i1;
   var_l0 = var_i0;
   var_i0 = var_l1;
@@ -18928,7 +19857,7 @@ void w2c_x86sandbox_k32_VirtualAlloc(w2c_x86sandbox* instance) {
   var_i0 = var_l1;
   var_i1 = 3u;
   var_i0 <<= (var_i1 & 31);
-  var_i1 = 81996u;
+  var_i1 = 86620u;
   var_i0 += var_i1;
   var_i1 = var_l6;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -18990,7 +19919,7 @@ void w2c_x86sandbox_k32_GetVersionExA(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B0;}
   var_B1:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
@@ -19156,10 +20085,10 @@ void w2c_x86sandbox_k32_GetCommandLineA(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82508u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87132u);
   var_l0 = var_i0;
   if (var_i0) {goto var_B0;}
-  var_i0 = 3289u;
+  var_i0 = 3370u;
   var_i0 = w2c_x86sandbox_strlen(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i1 = 1u;
@@ -19171,17 +20100,17 @@ void w2c_x86sandbox_k32_GetCommandLineA(w2c_x86sandbox* instance) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
-  var_i1 = 3289u;
+  var_i1 = 3370u;
   var_i2 = var_l1;
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B1:;
   var_i0 = 0u;
   var_i1 = var_l0;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82508u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87132u, var_i1);
   var_B0:;
   var_i0 = var_l0;
   w2c_x86sandbox_sb_ret(instance, var_i0);
@@ -19198,10 +20127,10 @@ void w2c_x86sandbox_k32_GetCommandLineW(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82512u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87136u);
   var_l0 = var_i0;
   if (var_i0) {goto var_B0;}
-  var_i0 = 3289u;
+  var_i0 = 3370u;
   var_i0 = w2c_x86sandbox_strlen(instance, var_i0);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l1 = var_i0;
@@ -19234,16 +20163,16 @@ void w2c_x86sandbox_k32_GetCommandLineW(w2c_x86sandbox* instance) {
   var_l3 = var_i0;
   var_L4: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l2;
     var_i0 += var_i1;
     var_i1 = var_l3;
-    var_i2 = 3289u;
+    var_i2 = 3370u;
     var_i1 += var_i2;
     var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l2;
     var_i0 += var_i1;
     var_i1 = 1u;
@@ -19251,18 +20180,18 @@ void w2c_x86sandbox_k32_GetCommandLineW(w2c_x86sandbox* instance) {
     var_i1 = 0u;
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l2;
     var_i0 += var_i1;
     var_i1 = 2u;
     var_i0 += var_i1;
     var_i1 = var_l3;
-    var_i2 = 3290u;
+    var_i2 = 3371u;
     var_i1 += var_i2;
     var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l2;
     var_i0 += var_i1;
     var_i1 = 3u;
@@ -19286,7 +20215,7 @@ void w2c_x86sandbox_k32_GetCommandLineW(w2c_x86sandbox* instance) {
   var_i0 &= var_i1;
   if (var_i0) {goto var_B1;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l3;
   var_i2 = 1u;
   var_i1 <<= (var_i2 & 31);
@@ -19295,12 +20224,12 @@ void w2c_x86sandbox_k32_GetCommandLineW(w2c_x86sandbox* instance) {
   var_l2 = var_i1;
   var_i0 += var_i1;
   var_i1 = var_l3;
-  var_i2 = 3289u;
+  var_i2 = 3370u;
   var_i1 += var_i2;
   var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
   i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l2;
   var_i0 += var_i1;
   var_i1 = 1u;
@@ -19310,7 +20239,7 @@ void w2c_x86sandbox_k32_GetCommandLineW(w2c_x86sandbox* instance) {
   var_B1:;
   var_i0 = 0u;
   var_i1 = var_l0;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82512u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87136u, var_i1);
   var_B0:;
   var_i0 = var_l0;
   w2c_x86sandbox_sb_ret(instance, var_i0);
@@ -19327,7 +20256,7 @@ void w2c_x86sandbox_k32_GetEnvironmentStrings(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82516u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87140u);
   var_l0 = var_i0;
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
@@ -19335,7 +20264,7 @@ void w2c_x86sandbox_k32_GetEnvironmentStrings(w2c_x86sandbox* instance) {
   var_i1 = w2c_x86sandbox_sb_heap_alloc(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82516u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87140u, var_i1);
   var_B0:;
   var_i0 = var_l0;
   w2c_x86sandbox_sb_ret(instance, var_i0);
@@ -19352,7 +20281,7 @@ void w2c_x86sandbox_k32_GetEnvironmentStringsW(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82520u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87144u);
   var_l0 = var_i0;
   if (var_i0) {goto var_B0;}
   var_i0 = 0u;
@@ -19360,7 +20289,7 @@ void w2c_x86sandbox_k32_GetEnvironmentStringsW(w2c_x86sandbox* instance) {
   var_i1 = w2c_x86sandbox_sb_heap_alloc(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82520u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87144u, var_i1);
   var_B0:;
   var_i0 = var_l0;
   w2c_x86sandbox_sb_ret(instance, var_i0);
@@ -19390,13 +20319,13 @@ void w2c_x86sandbox_k32_GetStartupInfoA(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B0;}
   var_B1:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_Bfunc;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_l0 = var_i0;
@@ -19504,7 +20433,7 @@ void w2c_x86sandbox_k32_GetCPInfo(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B0;}
   var_B1:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
@@ -19513,7 +20442,7 @@ void w2c_x86sandbox_k32_GetCPInfo(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_l0 = var_i0;
@@ -19561,7 +20490,7 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B0;}
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l3 = var_i0;
   var_i0 = var_l0;
   var_i1 = 65536u;
@@ -19569,14 +20498,14 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = var_l0;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l3 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B1;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l3 = var_i0;
   var_B2:;
   var_i0 = 11u;
@@ -19642,7 +20571,7 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
   var_l5 = var_i0;
   var_L7: 
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l7 = var_i0;
     var_i1 = var_l2;
     var_i0 += var_i1;
@@ -19654,7 +20583,7 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
     var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l2;
     var_i0 += var_i1;
     var_i1 = 1u;
@@ -19662,7 +20591,7 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
     var_i1 = 0u;
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l7 = var_i0;
     var_i1 = var_l2;
     var_i0 += var_i1;
@@ -19678,7 +20607,7 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
     var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_i1 = var_l2;
     var_i0 += var_i1;
     var_i1 = 3u;
@@ -19701,7 +20630,7 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B5;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l2 = var_i0;
   var_i1 = var_l5;
   var_i2 = 1u;
@@ -19718,7 +20647,7 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
   var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
   i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_i1 = 1u;
@@ -19732,7 +20661,7 @@ void w2c_x86sandbox_k32_MultiByteToWideChar(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B4:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B3:;
@@ -19892,7 +20821,7 @@ void w2c_x86sandbox_k32_WideCharToMultiByte(w2c_x86sandbox* instance) {
     var_i0 = 63u;
     var_l9 = var_i0;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l10 = var_i0;
     var_i1 = var_l6;
     var_i0 += var_i1;
@@ -19913,7 +20842,7 @@ void w2c_x86sandbox_k32_WideCharToMultiByte(w2c_x86sandbox* instance) {
     var_i1 = var_l9;
     i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
     var_l9 = var_i0;
     var_i1 = var_l6;
     var_i0 += var_i1;
@@ -19955,7 +20884,7 @@ void w2c_x86sandbox_k32_WideCharToMultiByte(w2c_x86sandbox* instance) {
   var_i0 = 63u;
   var_l6 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_l3 = var_i0;
   var_i1 = var_l1;
   var_i0 += var_i1;
@@ -19985,7 +20914,7 @@ void w2c_x86sandbox_k32_WideCharToMultiByte(w2c_x86sandbox* instance) {
   goto var_B3;
   var_B4:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_B3:;
@@ -20030,7 +20959,7 @@ void w2c_x86sandbox_k32_GetModuleFileNameA(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
@@ -20039,10 +20968,10 @@ void w2c_x86sandbox_k32_GetModuleFileNameA(w2c_x86sandbox* instance) {
   goto var_Bfunc;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
-  var_i1 = 10640u;
+  var_i1 = 11168u;
   var_i2 = 22u;
   var_i3 = var_l2;
   var_i4 = 4294967295u;
@@ -20055,7 +20984,7 @@ void w2c_x86sandbox_k32_GetModuleFileNameA(w2c_x86sandbox* instance) {
   var_i0 = w2c_x86sandbox_memcpy(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_i1 = var_l0;
@@ -20104,13 +21033,13 @@ void w2c_x86sandbox_k32_WriteFile(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_i1 = var_l1;
@@ -20163,7 +21092,7 @@ void w2c_x86sandbox_k32_GetSystemTimeAsFileTime(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B0;}
   var_B1:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_Bfunc;
@@ -20214,13 +21143,13 @@ void w2c_x86sandbox_k32_GetLocalTime(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B0;}
   var_B1:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_Bfunc;
   var_B0:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_l0 = var_i0;
@@ -20276,13 +21205,13 @@ void w2c_x86sandbox_k32_GetTimeZoneInformation(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2299u;
+  var_i1 = 2313u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l0;
   var_i0 += var_i1;
   var_i1 = 0u;
@@ -20296,6 +21225,347 @@ void w2c_x86sandbox_k32_GetTimeZoneInformation(w2c_x86sandbox* instance) {
   FUNC_EPILOGUE;
 }
 
+void w2c_x86sandbox_k32_DebugBreak(w2c_x86sandbox* instance) {
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1;
+  var_i0 = 6u;
+  var_i1 = 3148u;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  FUNC_EPILOGUE;
+}
+
+void w2c_x86sandbox_k32_CompareStringA(w2c_x86sandbox* instance) {
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0;
+  var_i0 = 1u;
+  w2c_x86sandbox_compare_string(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  FUNC_EPILOGUE;
+}
+
+void w2c_x86sandbox_compare_string(w2c_x86sandbox* instance, u32 var_p0) {
+  u32 var_l1 = 0, var_l2 = 0, var_l3 = 0, var_l4 = 0, var_l5 = 0, var_l6 = 0, var_l7 = 0, var_l8 = 0, 
+      var_l9 = 0, var_l10 = 0, var_l11 = 0, var_l12 = 0, var_l13 = 0, var_l14 = 0;
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0, var_i1, var_i2, var_i3;
+  var_i0 = instance->w2c_0x5F_stack_pointer;
+  var_i1 = 16u;
+  var_i0 -= var_i1;
+  var_l1 = var_i0;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  var_i0 = 1u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l2 = var_i0;
+  var_i0 = 2u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l3 = var_i0;
+  var_i0 = 4u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l4 = var_i0;
+  var_i0 = 3u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l5 = var_i0;
+  var_i0 = 5u;
+  var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_l6 = var_i0;
+  var_i0 = var_l3;
+  var_i1 = 65536u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B3;}
+  var_i0 = var_l4;
+  var_i1 = 65536u;
+  var_i0 = var_i0 < var_i1;
+  if (var_i0) {goto var_B3;}
+  var_i0 = var_l5;
+  var_i1 = 4294967295u;
+  var_i0 = (u32)((s32)var_i0 < (s32)var_i1);
+  if (var_i0) {goto var_B3;}
+  var_i0 = var_l6;
+  var_i1 = 4294967295u;
+  var_i0 = (u32)((s32)var_i0 < (s32)var_i1);
+  if (var_i0) {goto var_B3;}
+  var_i0 = var_l2;
+  var_i1 = 1u;
+  var_i0 &= var_i1;
+  var_l7 = var_i0;
+  var_i0 = var_p0;
+  var_i1 = 2u;
+  var_i0 = var_i0 != var_i1;
+  var_l8 = var_i0;
+  var_i0 = 0u;
+  var_l9 = var_i0;
+  var_i0 = 0u;
+  var_l10 = var_i0;
+  var_L4: 
+    var_i0 = 0u;
+    var_l2 = var_i0;
+    var_i0 = var_l5;
+    var_i1 = 4294967295u;
+    var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
+    var_i1 = var_l10;
+    var_i2 = var_l5;
+    var_i1 = var_i1 >= var_i2;
+    var_i0 &= var_i1;
+    var_l11 = var_i0;
+    if (var_i0) {goto var_B5;}
+    var_i0 = var_l1;
+    var_i1 = 0u;
+    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u, var_i1);
+    var_i0 = var_l3;
+    var_i1 = var_l9;
+    var_i0 += var_i1;
+    var_l12 = var_i0;
+    var_i1 = var_l1;
+    var_i2 = 13u;
+    var_i1 += var_i2;
+    var_i0 = w2c_x86sandbox_sb_read8(instance, var_i0, var_i1);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B2;}
+    var_i0 = 0u;
+    var_l2 = var_i0;
+    var_i0 = var_l8;
+    if (var_i0) {goto var_B6;}
+    var_i0 = var_l12;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_i1 = var_l1;
+    var_i2 = 12u;
+    var_i1 += var_i2;
+    var_i0 = w2c_x86sandbox_sb_read8(instance, var_i0, var_i1);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B2;}
+    var_i0 = var_l1;
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 12u);
+    var_i1 = 8u;
+    var_i0 <<= (var_i1 & 31);
+    var_l2 = var_i0;
+    var_B6:;
+    var_i0 = var_l2;
+    var_i1 = var_l1;
+    var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 13u);
+    var_i0 |= var_i1;
+    var_l2 = var_i0;
+    var_B5:;
+    var_i0 = 0u;
+    var_l12 = var_i0;
+    var_i0 = var_l6;
+    var_i1 = 4294967295u;
+    var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
+    var_i1 = var_l10;
+    var_i2 = var_l6;
+    var_i1 = var_i1 >= var_i2;
+    var_i0 &= var_i1;
+    var_l13 = var_i0;
+    if (var_i0) {goto var_B7;}
+    var_i0 = var_l1;
+    var_i1 = 0u;
+    i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 14u, var_i1);
+    var_i0 = var_l4;
+    var_i1 = var_l9;
+    var_i0 += var_i1;
+    var_l14 = var_i0;
+    var_i1 = var_l1;
+    var_i2 = 15u;
+    var_i1 += var_i2;
+    var_i0 = w2c_x86sandbox_sb_read8(instance, var_i0, var_i1);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B1;}
+    var_i0 = 0u;
+    var_l12 = var_i0;
+    var_i0 = var_l8;
+    if (var_i0) {goto var_B8;}
+    var_i0 = var_l14;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_i1 = var_l1;
+    var_i2 = 14u;
+    var_i1 += var_i2;
+    var_i0 = w2c_x86sandbox_sb_read8(instance, var_i0, var_i1);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B1;}
+    var_i0 = var_l1;
+    var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 14u);
+    var_i1 = 8u;
+    var_i0 <<= (var_i1 & 31);
+    var_l12 = var_i0;
+    var_B8:;
+    var_i0 = var_l12;
+    var_i1 = var_l1;
+    var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 15u);
+    var_i0 |= var_i1;
+    var_l12 = var_i0;
+    var_B7:;
+    var_i0 = 1u;
+    var_l14 = var_i0;
+    var_i0 = var_l11;
+    if (var_i0) {goto var_B9;}
+    var_i0 = var_l5;
+    var_i1 = 0u;
+    var_i0 = (u32)((s32)var_i0 < (s32)var_i1);
+    var_i1 = var_l2;
+    var_i1 = !(var_i1);
+    var_i0 &= var_i1;
+    var_l14 = var_i0;
+    var_B9:;
+    var_i0 = var_l13;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B12;}
+    var_i0 = 2u;
+    var_l2 = var_i0;
+    goto var_B11;
+    var_B12:;
+    var_i0 = var_l14;
+    var_i1 = var_l6;
+    var_i2 = 0u;
+    var_i1 = (u32)((s32)var_i1 < (s32)var_i2);
+    var_i2 = var_l12;
+    var_i2 = !(var_i2);
+    var_i1 &= var_i2;
+    var_l11 = var_i1;
+    var_i0 |= var_i1;
+    var_i1 = 1u;
+    var_i0 &= var_i1;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B10;}
+    var_i0 = 2u;
+    var_i1 = 1u;
+    var_i2 = var_l11;
+    var_i3 = 1u;
+    var_i2 &= var_i3;
+    var_i0 = var_i2 ? var_i0 : var_i1;
+    var_l2 = var_i0;
+    var_B11:;
+    var_i0 = var_l2;
+    var_i1 = 3u;
+    var_i2 = var_l14;
+    var_i0 = var_i2 ? var_i0 : var_i1;
+    w2c_x86sandbox_sb_ret(instance, var_i0);
+    wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+    goto var_B0;
+    var_B10:;
+    var_i0 = var_l7;
+    var_i0 = !(var_i0);
+    if (var_i0) {goto var_B13;}
+    var_i0 = var_l2;
+    var_i1 = 32u;
+    var_i0 += var_i1;
+    var_i1 = var_l2;
+    var_i2 = var_l2;
+    var_i3 = 4294967231u;
+    var_i2 += var_i3;
+    var_i3 = 26u;
+    var_i2 = var_i2 < var_i3;
+    var_i0 = var_i2 ? var_i0 : var_i1;
+    var_l2 = var_i0;
+    var_i0 = var_l12;
+    var_i1 = 127u;
+    var_i0 = var_i0 > var_i1;
+    if (var_i0) {goto var_B13;}
+    var_i0 = var_l12;
+    var_i1 = 32u;
+    var_i0 += var_i1;
+    var_i1 = var_l12;
+    var_i2 = var_l12;
+    var_i3 = 4294967231u;
+    var_i2 += var_i3;
+    var_i3 = 26u;
+    var_i2 = var_i2 < var_i3;
+    var_i0 = var_i2 ? var_i0 : var_i1;
+    var_l12 = var_i0;
+    var_B13:;
+    var_i0 = var_l9;
+    var_i1 = var_p0;
+    var_i0 += var_i1;
+    var_l9 = var_i0;
+    var_i0 = var_l10;
+    var_i1 = 1u;
+    var_i0 += var_i1;
+    var_l10 = var_i0;
+    var_i0 = var_l2;
+    var_i1 = var_l12;
+    var_i0 = var_i0 == var_i1;
+    if (var_i0) {goto var_L4;}
+  var_i0 = 1u;
+  var_i1 = 3u;
+  var_i2 = var_l2;
+  var_i3 = var_l12;
+  var_i2 = var_i2 < var_i3;
+  var_i0 = var_i2 ? var_i0 : var_i1;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_B0;
+  var_B3:;
+  var_i0 = 0u;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_B0;
+  var_B2:;
+  var_i0 = 11u;
+  var_i1 = 3266u;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  goto var_B0;
+  var_B1:;
+  var_i0 = 11u;
+  var_i1 = 3266u;
+  w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  var_B0:;
+  var_i0 = var_l1;
+  var_i1 = 16u;
+  var_i0 += var_i1;
+  instance->w2c_0x5F_stack_pointer = var_i0;
+  FUNC_EPILOGUE;
+}
+
+void w2c_x86sandbox_k32_CompareStringW(w2c_x86sandbox* instance) {
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0;
+  var_i0 = 2u;
+  w2c_x86sandbox_compare_string(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  FUNC_EPILOGUE;
+}
+
+void w2c_x86sandbox_k32_GetUserDefaultLCID(w2c_x86sandbox* instance) {
+  FUNC_PROLOGUE;
+  uint8_t* const wasm_rt_local_memory_base = (&instance->w2c_memory)->data;
+  uint64_t wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  (void)wasm_rt_local_memory_base;
+  (void)wasm_rt_local_memory_size;
+  u32 var_i0;
+  var_i0 = 1033u;
+  w2c_x86sandbox_sb_ret(instance, var_i0);
+  wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
+  FUNC_EPILOGUE;
+}
+
 void w2c_x86sandbox_user32_MessageBoxA(w2c_x86sandbox* instance) {
   u32 var_l0 = 0, var_l1 = 0;
   FUNC_PROLOGUE;
@@ -20304,7 +21574,7 @@ void w2c_x86sandbox_user32_MessageBoxA(w2c_x86sandbox* instance) {
   (void)wasm_rt_local_memory_base;
   (void)wasm_rt_local_memory_size;
   u32 var_i0, var_i1, var_i2, var_i3, var_i4;
-  var_i0 = 3149u;
+  var_i0 = 3216u;
   var_l0 = var_i0;
   var_i0 = 1u;
   var_i0 = w2c_x86sandbox_sb_arg(instance, var_i0);
@@ -20315,14 +21585,14 @@ void w2c_x86sandbox_user32_MessageBoxA(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B2;}
   var_i0 = var_l1;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 81700u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 86324u);
   var_i0 = w2c_x86sandbox_sb_strlen(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_l0 = var_i0;
   var_i1 = 4294967295u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
   if (var_i0) {goto var_B1;}
-  var_i0 = 3179u;
+  var_i0 = 3246u;
   var_l0 = var_i0;
   var_B2:;
   var_i0 = 11u;
@@ -20332,7 +21602,7 @@ void w2c_x86sandbox_user32_MessageBoxA(w2c_x86sandbox* instance) {
   goto var_B0;
   var_B1:;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 81696u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 86320u);
   var_i1 = var_l1;
   var_i0 += var_i1;
   var_i1 = var_l0;
@@ -20378,7 +21648,7 @@ void w2c_x86sandbox_user32_wsprintfA(w2c_x86sandbox* instance) {
   if (var_i0) {goto var_B1;}
   var_B2:;
   var_i0 = 11u;
-  var_i1 = 2456u;
+  var_i1 = 2492u;
   w2c_x86sandbox_sb_abort(instance, var_i0, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   goto var_B0;
@@ -20397,7 +21667,7 @@ void w2c_x86sandbox_user32_wsprintfA(w2c_x86sandbox* instance) {
   var_i1 = w2c_x86sandbox_sb_arg(instance, var_i1);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i2 = 0u;
-  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 81712u);
+  var_i2 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i2) + 86336u);
   var_i3 = 4u;
   var_i2 = w2c_x86sandbox_sbcpu_reg(instance, var_i2, var_i3);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -20483,8 +21753,8 @@ void w2c_x86sandbox_put_int(w2c_x86sandbox* instance, u32 var_p0, u64 var_p1, u3
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
   var_B1:;
-  var_i0 = 4369u;
-  var_i1 = 3234u;
+  var_i0 = 4507u;
+  var_i1 = 3315u;
   var_i2 = var_p4;
   var_i0 = var_i2 ? var_i0 : var_i1;
   var_l10 = var_i0;
@@ -21640,9 +22910,9 @@ u32 w2c_x86sandbox_malloc(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82528u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87156u);
   if (var_i0) {goto var_B0;}
-  var_i0 = 1131136u;
+  var_i0 = 1135760u;
   var_i1 = 15u;
   var_i0 += var_i1;
   var_l2 = var_i0;
@@ -21664,10 +22934,10 @@ u32 w2c_x86sandbox_malloc(w2c_x86sandbox* instance, u32 var_p0) {
   i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_j1);
   var_i0 = 0u;
   var_i1 = var_l3;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82532u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87160u, var_i1);
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82528u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87156u, var_i1);
   var_B0:;
   var_i0 = var_p0;
   var_i1 = 1u;
@@ -21682,11 +22952,11 @@ u32 w2c_x86sandbox_malloc(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = 0u;
   var_l1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82532u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87160u);
   var_p0 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B1;}
-  var_i0 = 82532u;
+  var_i0 = 87160u;
   var_l4 = var_i0;
   var_i0 = var_p0;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
@@ -21800,9 +23070,9 @@ u32 w2c_x86sandbox_calloc(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82528u);
+  var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87156u);
   if (var_i0) {goto var_B2;}
-  var_i0 = 1131136u;
+  var_i0 = 1135760u;
   var_i1 = 15u;
   var_i0 += var_i1;
   var_p0 = var_i0;
@@ -21824,10 +23094,10 @@ u32 w2c_x86sandbox_calloc(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_j1);
   var_i0 = 0u;
   var_i1 = var_p1;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82532u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87160u, var_i1);
   var_i0 = 0u;
   var_i1 = 1u;
-  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82528u, var_i1);
+  i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87156u, var_i1);
   var_B2:;
   var_i0 = var_l3;
   var_i1 = 1u;
@@ -21842,11 +23112,11 @@ u32 w2c_x86sandbox_calloc(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
   var_i0 = 0u;
   var_l2 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82532u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87160u);
   var_p1 = var_i0;
   var_i0 = !(var_i0);
   if (var_i0) {goto var_B0;}
-  var_i0 = 82532u;
+  var_i0 = 87160u;
   var_l4 = var_i0;
   var_i0 = var_p1;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
@@ -22006,7 +23276,7 @@ void w2c_x86sandbox_free(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = var_l2;
   var_i1 = 0u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
-  var_i0 = 82532u;
+  var_i0 = 87160u;
   var_l3 = var_i0;
   var_L3: 
     var_i0 = var_l3;
@@ -22068,7 +23338,7 @@ void w2c_x86sandbox_free(w2c_x86sandbox* instance, u32 var_p0) {
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_B4:;
   var_i0 = var_l4;
-  var_i1 = 82532u;
+  var_i1 = 87160u;
   var_i0 = var_i0 == var_i1;
   if (var_i0) {goto var_B1;}
   var_i0 = var_l4;
@@ -22341,7 +23611,7 @@ u32 w2c_x86sandbox_sb_vformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, 
       var_j2 *= var_j3;
       var_j1 -= var_j2;
       var_i1 = (u32)(var_j1);
-      var_i2 = 3234u;
+      var_i2 = 3315u;
       var_i1 += var_i2;
       var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
       i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -22490,7 +23760,7 @@ u32 w2c_x86sandbox_sb_vformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, 
       var_j2 *= var_j3;
       var_j1 -= var_j2;
       var_i1 = (u32)(var_j1);
-      var_i2 = 3234u;
+      var_i2 = 3315u;
       var_i1 += var_i2;
       var_i1 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1));
       i32_store8_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
@@ -22624,8 +23894,8 @@ u32 w2c_x86sandbox_sb_vformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, 
     var_i0 += var_i1;
     var_p3 = var_i0;
     var_B37:;
-    var_i0 = 4369u;
-    var_i1 = 3234u;
+    var_i0 = 4507u;
+    var_i1 = 3315u;
     var_i2 = var_l11;
     var_i3 = 88u;
     var_i2 = var_i2 == var_i3;
@@ -22758,7 +24028,7 @@ u32 w2c_x86sandbox_sb_vformat(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, 
     var_i0 = var_p3;
     var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
     var_l8 = var_i0;
-    var_i1 = 4749u;
+    var_i1 = 4979u;
     var_i2 = var_l8;
     var_i0 = var_i2 ? var_i0 : var_i1;
     var_l8 = var_i0;
@@ -22970,8 +24240,8 @@ void w2c_x86sandbox_cpu_abort(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) 
   var_i1 = var_l3;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4929u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5159u;
   var_i2 = var_l2;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -23001,7 +24271,7 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
   var_l1 = var_i0;
   instance->w2c_0x5F_stack_pointer = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82544u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87172u);
   var_l2 = var_i0;
   var_i1 = 0u;
   var_i0 = (u32)((s32)var_i0 > (s32)var_i1);
@@ -23010,7 +24280,7 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = var_l2;
   var_i2 = 1u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82544u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87172u, var_i1);
   var_i0 = var_p0;
   var_i1 = 96u;
   var_i0 += var_i1;
@@ -23067,7 +24337,7 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
   var_j0 = i64_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_l13 = var_j0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
   var_l14 = var_i0;
   var_i0 = var_p0;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u);
@@ -23244,7 +24514,7 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = var_l15;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 48u, var_i1);
   var_i0 = var_l14;
-  var_i1 = 5078u;
+  var_i1 = 5308u;
   var_i2 = var_l1;
   var_i3 = 48u;
   var_i2 += var_i3;
@@ -23260,8 +24530,8 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 216u);
   var_l14 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4764u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 4994u;
   var_i2 = 0u;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -23326,7 +24596,7 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     var_l2 = var_i0;
     var_B5:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
     var_l4 = var_i0;
     var_i0 = var_l2;
     var_i1 = 3758096383u;
@@ -23387,8 +24657,8 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     goto var_B2;
     var_B3:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-    var_i1 = 4676u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+    var_i1 = 4906u;
     var_i2 = 0u;
     var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -23401,14 +24671,14 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     var_i0 = var_i0 != var_i1;
     if (var_i0) {goto var_L1;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 5354u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5584u;
   var_i2 = 0u;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4756u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 4986u;
   var_i2 = 0u;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -23485,7 +24755,7 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     var_l2 = var_i0;
     var_B14:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
     var_l5 = var_i0;
     var_i0 = var_l2;
     var_i1 = 3758096383u;
@@ -23546,8 +24816,8 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     goto var_B11;
     var_B12:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-    var_i1 = 4676u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+    var_i1 = 4906u;
     var_i2 = 0u;
     var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -23560,14 +24830,14 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     var_i0 = var_i0 != var_i1;
     if (var_i0) {goto var_L10;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 5354u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5584u;
   var_i2 = 0u;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4771u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5001u;
   var_i2 = 0u;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -23634,7 +24904,7 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     var_l2 = var_i0;
     var_B23:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
     var_l5 = var_i0;
     var_i0 = var_l2;
     var_i1 = 3758096383u;
@@ -23693,8 +24963,8 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     goto var_B20;
     var_B21:;
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-    var_i1 = 4676u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+    var_i1 = 4906u;
     var_i2 = 0u;
     var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -23707,8 +24977,8 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
     var_i0 = var_i0 != var_i1;
     if (var_i0) {goto var_L19;}
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 5354u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5584u;
   var_i2 = 0u;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -23723,10 +24993,10 @@ void w2c_x86sandbox_cpu_debug(w2c_x86sandbox* instance, u32 var_p0) {
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 216u, var_i1);
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 82544u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87172u);
   var_i2 = 4294967295u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82544u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87172u, var_i1);
   var_B0:;
   var_i0 = var_l1;
   var_i1 = 192u;
@@ -23854,7 +25124,7 @@ u32 w2c_x86sandbox_translate_lpgno(w2c_x86sandbox* instance, u32 var_p0, u32 var
   var_i3 = 48u;
   var_i2 &= var_i3;
   var_i1 |= var_i2;
-  var_i2 = 10960u;
+  var_i2 = 11488u;
   var_i1 += var_i2;
   var_l9 = var_i1;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_i1);
@@ -25559,17 +26829,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   goto var_B24;
   var_B26:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 64u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 68u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4681u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 72u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 64u;
   var_i2 += var_i3;
@@ -26167,8 +27437,8 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   var_i0 = 0u;
   var_p1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 5039u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5269u;
   var_i2 = var_l4;
   var_i3 = 80u;
   var_i2 += var_i3;
@@ -26250,17 +27520,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   goto var_B54;
   var_B56:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 400u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 404u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4714u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 408u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 400u;
   var_i2 += var_i3;
@@ -26350,17 +27620,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   goto var_B57;
   var_B59:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 384u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 388u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4716u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 392u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 384u;
   var_i2 += var_i3;
@@ -26448,8 +27718,8 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   var_i0 = 0u;
   var_p1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 5339u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5569u;
   var_i2 = 0u;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -26633,17 +27903,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   goto var_B70;
   var_B72:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 368u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2089u;
+  var_i1 = 2103u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 372u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4635u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 376u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 368u;
   var_i2 += var_i3;
@@ -26748,8 +28018,8 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   var_i1 = 0u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 336u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 5002u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5232u;
   var_i2 = var_l4;
   var_i3 = 336u;
   var_i2 += var_i3;
@@ -26784,8 +28054,8 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   var_i1 = 0u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 352u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4965u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5195u;
   var_i2 = var_l4;
   var_i3 = 352u;
   var_i2 += var_i3;
@@ -28072,17 +29342,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   goto var_B3;
   var_B22:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4698u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -28105,17 +29375,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B19:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 320u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 324u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4912u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 328u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 320u;
   var_i2 += var_i3;
@@ -28128,17 +29398,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B18:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 304u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 308u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4913u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 312u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 304u;
   var_i2 += var_i3;
@@ -28151,17 +29421,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B17:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 288u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 292u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4914u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 296u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 288u;
   var_i2 += var_i3;
@@ -28174,17 +29444,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B16:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 272u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 276u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4915u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 280u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 272u;
   var_i2 += var_i3;
@@ -28197,17 +29467,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B15:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 256u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 260u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4916u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 264u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 256u;
   var_i2 += var_i3;
@@ -28220,17 +29490,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B14:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 240u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 244u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4917u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 248u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 240u;
   var_i2 += var_i3;
@@ -28243,17 +29513,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B13:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 224u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 228u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4918u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 232u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 224u;
   var_i2 += var_i3;
@@ -28266,17 +29536,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B12:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 208u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 212u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4919u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 216u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 208u;
   var_i2 += var_i3;
@@ -28289,17 +29559,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B11:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 192u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 196u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4920u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 200u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 192u;
   var_i2 += var_i3;
@@ -28312,17 +29582,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B10:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 176u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 180u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4945u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 184u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 176u;
   var_i2 += var_i3;
@@ -28335,17 +29605,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B9:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 160u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 164u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4946u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 168u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 160u;
   var_i2 += var_i3;
@@ -28358,17 +29628,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B8:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 144u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 148u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4947u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 152u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 144u;
   var_i2 += var_i3;
@@ -28381,17 +29651,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B7:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 128u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 132u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4948u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 136u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 128u;
   var_i2 += var_i3;
@@ -28404,17 +29674,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B6:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 112u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 116u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4950u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 120u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 112u;
   var_i2 += var_i3;
@@ -28476,17 +29746,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   goto var_B3;
   var_B94:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 96u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 100u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4959u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 104u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 96u;
   var_i2 += var_i3;
@@ -28509,17 +29779,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   goto var_Bfunc;
   var_B2:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 20u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4690u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 24u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 16u;
   var_i2 += var_i3;
@@ -28532,17 +29802,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B1:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 36u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4689u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 40u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 32u;
   var_i2 += var_i3;
@@ -28555,17 +29825,17 @@ u32 w2c_x86sandbox_call_isr(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u3
   UNREACHABLE;
   var_B0:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 48u, var_i1);
   var_i0 = var_l4;
-  var_i1 = 2188u;
+  var_i1 = 2202u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 52u, var_i1);
   var_i0 = var_l4;
   var_i1 = 4688u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 56u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 48u;
   var_i2 += var_i3;
@@ -40061,10 +41331,10 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B528;}
       var_i0 = 0u;
       var_i1 = 0u;
-      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 82540u);
+      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87168u);
       var_i2 = 1u;
       var_i1 += var_i2;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82540u, var_i1);
+      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87168u, var_i1);
       var_i0 = var_p0;
       var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 296u);
       var_l11 = var_i0;
@@ -40157,10 +41427,10 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 220u, var_i1);
       var_i0 = 0u;
       var_i1 = 0u;
-      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 82540u);
+      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87168u);
       var_i2 = 1u;
       var_i1 += var_i2;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82540u, var_i1);
+      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87168u, var_i1);
       var_i0 = var_p0;
       var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 296u);
       var_l11 = var_i0;
@@ -40519,7 +41789,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B561;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_p1 = var_i0;
@@ -40542,7 +41812,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B562;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_i0 = !(var_i0);
@@ -40975,7 +42245,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B603;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_p1 = var_i0;
@@ -40998,7 +42268,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B604;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_i0 = !(var_i0);
@@ -41443,7 +42713,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B645;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_p1 = var_i0;
@@ -41466,7 +42736,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B646;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_i0 = !(var_i0);
@@ -41920,7 +43190,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B687;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_p1 = var_i0;
@@ -41943,7 +43213,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B688;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_i0 = !(var_i0);
@@ -48151,7 +49421,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B856;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_p1 = var_i0;
@@ -48174,7 +49444,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B857;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_i0 = !(var_i0);
@@ -48604,7 +49874,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B898;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_p1 = var_i0;
@@ -48627,7 +49897,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B899;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_i0 = !(var_i0);
@@ -50753,10 +52023,10 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B0;}
       var_i0 = 0u;
       var_i1 = 0u;
-      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 82540u);
+      var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87168u);
       var_i2 = 1u;
       var_i1 += var_i2;
-      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82540u, var_i1);
+      i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87168u, var_i1);
       var_i0 = var_p0;
       var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 296u);
       var_l11 = var_i0;
@@ -88934,7 +90204,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B2063;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_p1 = var_i0;
@@ -88957,7 +90227,7 @@ u32 w2c_x86sandbox_cpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1) {
       if (var_i0) {goto var_B2064;}
       var_i0 = var_l4;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-      var_i1 = 10672u;
+      var_i1 = 11200u;
       var_i0 += var_i1;
       var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
       var_i0 = !(var_i0);
@@ -93125,7 +94395,7 @@ void w2c_x86sandbox_refresh_flags(w2c_x86sandbox* instance, u32 var_p0) {
   var_i1 = 272u;
   var_i0 += var_i1;
   var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
-  var_i1 = 10672u;
+  var_i1 = 11200u;
   var_i0 += var_i1;
   var_i0 = i32_load8_u_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_l4 = var_i0;
@@ -94041,17 +95311,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   goto var_B28;
   var_B30:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 176u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 180u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4343u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 184u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 176u;
   var_i2 += var_i3;
@@ -94172,17 +95442,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   goto var_B33;
   var_B35:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 144u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 148u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4354u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 152u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 144u;
   var_i2 += var_i3;
@@ -94555,17 +95825,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
     wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
     if (var_i0) {goto var_B48;}
     var_i0 = var_l3;
-    var_i1 = 4087u;
+    var_i1 = 4195u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 64u, var_i1);
     var_i0 = var_l3;
-    var_i1 = 3130u;
+    var_i1 = 3197u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 68u, var_i1);
     var_i0 = var_l3;
     var_i1 = 4371u;
     i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 72u, var_i1);
     var_i0 = 0u;
-    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-    var_i1 = 4953u;
+    var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+    var_i1 = 5183u;
     var_i2 = var_l3;
     var_i3 = 64u;
     var_i2 += var_i3;
@@ -95008,10 +96278,10 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 220u, var_i1);
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 82540u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87168u);
   var_i2 = 1u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82540u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87168u, var_i1);
   var_i0 = var_p0;
   var_i1 = 296u;
   var_i0 += var_i1;
@@ -95083,17 +96353,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   goto var_Bfunc;
   var_B39:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 112u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 116u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4362u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 120u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 112u;
   var_i2 += var_i3;
@@ -95106,17 +96376,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B31:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 160u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 164u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4347u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 168u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 160u;
   var_i2 += var_i3;
@@ -95131,17 +96401,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B10:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4388u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -95152,17 +96422,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B9:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 20u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4383u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 24u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 16u;
   var_i2 += var_i3;
@@ -95175,17 +96445,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B8:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 36u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4377u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 40u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 32u;
   var_i2 += var_i3;
@@ -95198,17 +96468,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B7:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 48u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 52u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4374u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 56u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 48u;
   var_i2 += var_i3;
@@ -95221,17 +96491,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B6:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 84u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4370u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 88u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 80u;
   var_i2 += var_i3;
@@ -95244,17 +96514,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B5:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 96u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 100u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4365u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 104u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 96u;
   var_i2 += var_i3;
@@ -95267,17 +96537,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B4:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 128u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 132u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4361u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 136u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 128u;
   var_i2 += var_i3;
@@ -95290,17 +96560,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B3:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 192u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 196u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4336u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 200u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 192u;
   var_i2 += var_i3;
@@ -95313,17 +96583,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B2:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 208u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 212u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4331u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 216u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 208u;
   var_i2 += var_i3;
@@ -95336,17 +96606,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B1:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 224u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 228u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4324u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 232u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 224u;
   var_i2 += var_i3;
@@ -95359,17 +96629,17 @@ void w2c_x86sandbox_task_switch(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1
   UNREACHABLE;
   var_B0:;
   var_i0 = var_l3;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 240u, var_i1);
   var_i0 = var_l3;
-  var_i1 = 3130u;
+  var_i1 = 3197u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 244u, var_i1);
   var_i0 = var_l3;
   var_i1 = 4320u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 248u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l3;
   var_i3 = 240u;
   var_i2 += var_i3;
@@ -100858,17 +102128,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   goto var_Bfunc;
   var_B12:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 192u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 196u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4454u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 200u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 192u;
   var_i2 += var_i3;
@@ -100884,8 +102154,8 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   var_i1 = var_l6;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 176u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 5062u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5292u;
   var_i2 = var_l5;
   var_i3 = 176u;
   var_i2 += var_i3;
@@ -100898,17 +102168,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B10:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 160u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 164u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4546u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 168u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 160u;
   var_i2 += var_i3;
@@ -100921,17 +102191,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B9:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 144u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 148u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4547u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 152u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 144u;
   var_i2 += var_i3;
@@ -100944,17 +102214,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B8:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 128u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 132u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4548u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 136u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 128u;
   var_i2 += var_i3;
@@ -100967,17 +102237,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B7:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 96u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 100u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4553u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 104u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 96u;
   var_i2 += var_i3;
@@ -100990,17 +102260,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B6:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 84u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4565u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 88u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 80u;
   var_i2 += var_i3;
@@ -101013,17 +102283,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B5:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 64u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 68u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4566u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 72u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 64u;
   var_i2 += var_i3;
@@ -101036,17 +102306,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B4:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 48u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 52u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4567u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 56u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 48u;
   var_i2 += var_i3;
@@ -101059,17 +102329,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B3:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 20u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4572u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 24u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 16u;
   var_i2 += var_i3;
@@ -101082,17 +102352,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B2:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 112u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 116u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4549u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 120u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 112u;
   var_i2 += var_i3;
@@ -101105,17 +102375,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B1:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 36u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4568u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 40u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i3 = 32u;
   var_i2 += var_i3;
@@ -101128,17 +102398,17 @@ u32 w2c_x86sandbox_pmcall(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 
   UNREACHABLE;
   var_B0:;
   var_i0 = var_l5;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = var_l5;
-  var_i1 = 3026u;
+  var_i1 = 3069u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 4u, var_i1);
   var_i0 = var_l5;
   var_i1 = 4607u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l5;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -101655,8 +102925,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i0 = 0u;
   var_l6 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4848u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5078u;
   var_i2 = var_l4;
   var_i3 = 160u;
   var_i2 += var_i3;
@@ -102627,8 +103897,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = var_p3;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 152u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4929u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5159u;
   var_i2 = var_l4;
   var_i3 = 144u;
   var_i2 += var_i3;
@@ -102649,8 +103919,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = var_p3;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 56u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4929u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5159u;
   var_i2 = var_l4;
   var_i3 = 48u;
   var_i2 += var_i3;
@@ -103290,7 +104560,7 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   goto var_B1;
   var_B10:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 128u, var_i1);
   var_i0 = var_l4;
   var_i1 = 1832u;
@@ -103299,8 +104569,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = 5100u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 136u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 128u;
   var_i2 += var_i3;
@@ -103313,7 +104583,7 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   UNREACHABLE;
   var_B9:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 112u, var_i1);
   var_i0 = var_l4;
   var_i1 = 1832u;
@@ -103322,8 +104592,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = 5103u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 120u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 112u;
   var_i2 += var_i3;
@@ -103336,7 +104606,7 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   UNREACHABLE;
   var_B8:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 96u, var_i1);
   var_i0 = var_l4;
   var_i1 = 1832u;
@@ -103345,8 +104615,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = 5104u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 104u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 96u;
   var_i2 += var_i3;
@@ -103359,7 +104629,7 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   UNREACHABLE;
   var_B7:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 80u, var_i1);
   var_i0 = var_l4;
   var_i1 = 1832u;
@@ -103368,8 +104638,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = 5105u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 88u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 80u;
   var_i2 += var_i3;
@@ -103382,7 +104652,7 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   UNREACHABLE;
   var_B6:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 64u, var_i1);
   var_i0 = var_l4;
   var_i1 = 1832u;
@@ -103391,8 +104661,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = 5106u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 72u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 64u;
   var_i2 += var_i3;
@@ -103405,7 +104675,7 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   UNREACHABLE;
   var_B5:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_i1);
   var_i0 = var_l4;
   var_i1 = 1832u;
@@ -103414,8 +104684,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = 5128u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -103426,7 +104696,7 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   UNREACHABLE;
   var_B4:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 32u, var_i1);
   var_i0 = var_l4;
   var_i1 = 1832u;
@@ -103435,8 +104705,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = 5159u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 40u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 32u;
   var_i2 += var_i3;
@@ -103449,7 +104719,7 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   UNREACHABLE;
   var_B3:;
   var_i0 = var_l4;
-  var_i1 = 4087u;
+  var_i1 = 4195u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 16u, var_i1);
   var_i0 = var_l4;
   var_i1 = 1832u;
@@ -103458,8 +104728,8 @@ u32 w2c_x86sandbox_pmret(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u32 v
   var_i1 = 5160u;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 24u, var_i1);
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4953u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5183u;
   var_i2 = var_l4;
   var_i3 = 16u;
   var_i2 += var_i3;
@@ -104937,10 +106207,10 @@ void w2c_x86sandbox_cpui386_reset(w2c_x86sandbox* instance, u32 var_p0) {
   i64_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0), var_j1);
   var_i0 = 0u;
   var_i1 = 0u;
-  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 82540u);
+  var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 87168u);
   var_i2 = 1u;
   var_i1 += var_i2;
-  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 82540u, var_i1);
+  i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 87168u, var_i1);
   var_i0 = var_p0;
   var_i1 = var_p0;
   var_i1 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i1) + 64u);
@@ -105495,8 +106765,8 @@ u32 w2c_x86sandbox_read_desc(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u
   var_i0 = 0u;
   var_l5 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4884u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5114u;
   var_i2 = var_l4;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -105715,8 +106985,8 @@ u32 w2c_x86sandbox_0x5F_pmiret_check_cs_same(w2c_x86sandbox* instance, u32 var_p
   var_i0 = 0u;
   var_p1 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4814u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5044u;
   var_i2 = var_l2;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -105827,8 +107097,8 @@ u32 w2c_x86sandbox_0x5F_pmiret_check_cs_outer(w2c_x86sandbox* instance, u32 var_
   var_i0 = 0u;
   var_l5 = var_i0;
   var_i0 = 0u;
-  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 10944u);
-  var_i1 = 4779u;
+  var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 11472u);
+  var_i1 = 5009u;
   var_i2 = var_l2;
   var_i0 = w2c_x86sandbox_fprintf(instance, var_i0, var_i1, var_i2);
   wasm_rt_local_memory_size = (&instance->w2c_memory)->size;
@@ -106199,7 +107469,7 @@ u32 w2c_x86sandbox_translate8r(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1,
   var_i3 = 48u;
   var_i2 &= var_i3;
   var_i1 |= var_i2;
-  var_i2 = 10960u;
+  var_i2 = 11488u;
   var_i1 += var_i2;
   var_l3 = var_i1;
   i32_store_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0) + 8u, var_i1);
@@ -111699,7 +112969,7 @@ u32 w2c_x86sandbox_fpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u
   var_i0 = var_p3;
   var_i1 = 2u;
   var_i0 <<= (var_i1 & 31);
-  var_i1 = 10928u;
+  var_i1 = 11456u;
   var_i0 += var_i1;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_i1 = var_p1;
@@ -111803,7 +113073,7 @@ u32 w2c_x86sandbox_fpu_exec1(w2c_x86sandbox* instance, u32 var_p0, u32 var_p1, u
   var_i0 = var_p3;
   var_i1 = 2u;
   var_i0 <<= (var_i1 & 31);
-  var_i1 = 10928u;
+  var_i1 = 11456u;
   var_i0 += var_i1;
   var_i0 = i32_load_default32(wasm_rt_local_memory_base, wasm_rt_local_memory_size, &instance->w2c_memory, (u64)(var_i0));
   var_i1 = var_p2;

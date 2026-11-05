@@ -51,6 +51,7 @@ uint32_t g_image_base, g_image_size;
 
 typedef struct {
   const sb_import_def *def;
+  uint32_t addr; /* what the import address table holds: a stub, or a data object */
   char name[64]; /* "dll!function" for diagnostics */
 } import_slot;
 
@@ -712,11 +713,32 @@ static uint32_t new_import(const char *dll, const char *name, const sb_import_de
       return 0;
     uint32_t addr = S.data_next;
     S.data_next += size;
+    slot->addr = addr;
     return addr;
   }
   uint32_t stub = SB_IMPORT_STUB_BASE + idx * SB_IMPORT_STUB_SIZE;
   write_stub(stub, SB_PORT_IMPORT, idx, (def && def->conv == SB_IMP_STDCALL) ? def->arg_bytes : 0);
+  slot->addr = stub;
   return stub;
+}
+
+uint32_t sb_resolve_import(const char *dll_name, const char *name) {
+  char dll[64];
+  uint32_t n = 0;
+  for (; dll_name[n] && n < sizeof(dll) - 1; n++)
+    dll[n] = dll_name[n];
+  dll[n] = 0;
+  lowercase_dll(dll);
+  const sb_import_def *def = sb_find_import(dll, name);
+  if (!def)
+    return 0;
+  for (uint32_t i = 0; i < S.nimports; i++)
+    if (S.imports[i].def == def)
+      return S.imports[i].addr;
+  uint32_t addr = new_import(dll, name, def);
+  if (addr && !def->fn)
+    sb_win32_init_data(def, addr);
+  return addr;
 }
 
 static int bind_imports(uint32_t dir_rva, uint32_t dir_size) {
@@ -917,6 +939,8 @@ static uint32_t find_export(const char *name) {
   }
   return 0;
 }
+
+uint32_t sb_find_own_export(const char *name) { return find_export(name); }
 
 /* ------------------------------------------------------------------ */
 /* Exports to the host                                                  */

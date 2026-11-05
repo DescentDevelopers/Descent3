@@ -181,6 +181,12 @@ TEST_F(X86Sandbox, HostReadOfABadGuestPointerStopsTheGuest) {
   ExpectFatal("HostRead", 4, {0xfffffff0u}, Status::BadArgs);
 }
 
+TEST_F(X86Sandbox, ImportsTheCrtdllRuntime) { EXPECT_EQ(CallOk("CrtdllImports", 0, {}), 1111u); }
+TEST_F(X86Sandbox, ResolvesImportsAtRunTime) { EXPECT_EQ(CallOk("RuntimeImports", 0, {}), 1111u); }
+TEST_F(X86Sandbox, ReallocInPlaceDoesNotMove) { EXPECT_EQ(CallOk("ReallocInPlace", 0, {}), 111u); }
+TEST_F(X86Sandbox, ComparesStrings) { EXPECT_EQ(CallOk("CompareStrings", 0, {}), 111u); }
+TEST_F(X86Sandbox, DebugBreakStops) { ExpectFatal("CallDebugBreak", 0, {}, Status::Aborted); }
+
 TEST_F(X86Sandbox, RunawayLoopHitsTheBudget) { ExpectFatal("Loop", 0, {}, Status::Budget); }
 TEST_F(X86Sandbox, BudgetErrorNamesTheRegisters) {
   sb_->SetInstructionBudget(1000000);

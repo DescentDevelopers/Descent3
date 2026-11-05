@@ -29,6 +29,17 @@ __declspec(dllimport) void qsort(void *, unsigned, unsigned, int(__cdecl *)(cons
 __declspec(dllimport) void *__stdcall CreateFileA(const char *, unsigned, unsigned, void *, unsigned, unsigned,
                                                   void *);
 __declspec(dllimport) int __stdcall GetDiskFreeSpaceA(const char *, unsigned *, unsigned *, unsigned *, unsigned *);
+__declspec(dllimport) void *__stdcall LoadLibraryA(const char *);
+__declspec(dllimport) void *__stdcall GetProcAddress(void *, const char *);
+__declspec(dllimport) void *__stdcall GetModuleHandleA(const char *);
+__declspec(dllimport) void __stdcall DebugBreak(void);
+__declspec(dllimport) void *__stdcall GetProcessHeap(void);
+__declspec(dllimport) void *__stdcall HeapAlloc(void *, unsigned, unsigned);
+__declspec(dllimport) void *__stdcall HeapReAlloc(void *, unsigned, void *, unsigned);
+__declspec(dllimport) int __stdcall CompareStringA(unsigned, unsigned, const char *, int, const char *, int);
+/* From crtdll.dll, the C runtime GCC-built scripts use. */
+__declspec(dllimport) int strcmp(const char *, const char *);
+__declspec(dllimport) void __GetMainArgs(int *, char ***, char ***, int);
 
 int _fltused = 0;
 
@@ -95,6 +106,46 @@ __declspec(dllexport) int __stdcall OpenFile(void) {
 
 /* Asks the host to read guest memory at an address the guest chooses. */
 __declspec(dllexport) int __stdcall HostRead(int addr) { return g_read(addr); }
+
+/* crtdll imports. Returns 1111 if all four checks pass. */
+__declspec(dllexport) int __stdcall CrtdllImports(void) {
+  int argc = 0;
+  char **argv = 0, **env = 0;
+  __GetMainArgs(&argc, &argv, &env, 0);
+  return (strcmp("abc", "abd") < 0) * 1000 + (argc == 1) * 100 + (strcmp(argv[0], "descent3.exe") == 0) * 10 +
+         (env[0] == 0);
+}
+
+/* Imports resolved at run time. Returns 1111 if all four checks pass. */
+__declspec(dllexport) int __stdcall RuntimeImports(void) {
+  typedef unsigned(__cdecl * strlen_fn)(const char *);
+  typedef int(__stdcall * add3_fn)(int, int, int);
+  strlen_fn len = (strlen_fn)GetProcAddress(LoadLibraryA("C:\\WINDOWS\\SYSTEM\\MSVCRT.DLL"), "strlen");
+  add3_fn add3 = (add3_fn)GetProcAddress(GetModuleHandleA(0), "_Add3@12");
+  return (len && len("hello") == 5) * 1000 + (add3 && add3(1, 2, 3) == 6) * 100 +
+         (GetProcAddress(LoadLibraryA("kernel32.dll"), "GetDiskFreeSpaceA") == 0) * 10 + (LoadLibraryA("evil.dll") == 0);
+}
+
+/* CompareStringA. Returns 111 if all three checks pass. */
+__declspec(dllexport) int __stdcall CompareStrings(void) {
+  return (CompareStringA(0x409, 1 /* NORM_IGNORECASE */, "Hello", -1, "hELLO", -1) == 2) * 100 +
+         (CompareStringA(0, 0, "abcX", 3, "abd", 3) == 1) * 10 + (CompareStringA(0, 0, "abcd", -1, "abc", -1) == 3);
+}
+
+/* HeapReAlloc with HEAP_REALLOC_IN_PLACE_ONLY (0x10) fails rather than moving the
+   block. Returns 111 if all three checks pass. */
+__declspec(dllexport) int __stdcall ReallocInPlace(void) {
+  void *heap = GetProcessHeap();
+  void *a = HeapAlloc(heap, 0, 64);
+  void *b = HeapAlloc(heap, 0, 64); /* a cannot grow into b */
+  return (HeapReAlloc(heap, 0x10, a, 48) == a) * 100 + (HeapReAlloc(heap, 0x10, a, 4096) == 0) * 10 +
+         (b && HeapReAlloc(heap, 0, a, 4096) != a);
+}
+
+__declspec(dllexport) int __stdcall CallDebugBreak(void) {
+  DebugBreak();
+  return 1;
+}
 
 /* REP string instructions over more iterations than the sandbox runs in one
    chunk (4096 steps), so they are stopped and resumed. */

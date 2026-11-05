@@ -177,6 +177,11 @@ typedef struct {
 } sb_import_def;
 
 const sb_import_def *sb_find_import(const char *dll, const char *name);
+/* For GetProcAddress: the address of a function or data object the sandbox
+   implements, binding a new import the first time; 0 if it has none. */
+uint32_t sb_resolve_import(const char *dll, const char *name);
+/* The address of one of the loaded DLL's own exports, or 0. */
+uint32_t sb_find_own_export(const char *name);
 void sb_win32_reset(void);
 /* Return values from an import handler. */
 void sb_ret(uint32_t eax);

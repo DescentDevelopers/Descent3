@@ -28,11 +28,12 @@ if(X86SB_CLANG AND X86SB_LLD_LINK AND X86SB_DLLTOOL)
     COMMAND ${CMAKE_COMMAND} -E make_directory ${X86SB_OUT}
     COMMAND ${X86SB_DLLTOOL} -m i386 -d ${X86SB_SRC}/msvcrt.def -l ${X86SB_OUT}/msvcrt.lib
     COMMAND ${X86SB_DLLTOOL} -m i386 -k -d ${X86SB_SRC}/kernel32.def -l ${X86SB_OUT}/kernel32.lib
+    COMMAND ${X86SB_DLLTOOL} -m i386 -d ${X86SB_SRC}/crtdll.def -l ${X86SB_OUT}/crtdll.lib
     COMMAND ${X86SB_CLANG} --target=i686-pc-windows-msvc -O2 -ffreestanding -fno-builtin -march=i686 -mno-sse
             -c ${X86SB_SRC}/test_dll.c -o ${X86SB_OUT}/test_dll.obj
     COMMAND ${X86SB_LLD_LINK} /dll /nodefaultlib /entry:DllMain /out:${X86SB_OUT}/test_dll.dll
-            ${X86SB_OUT}/test_dll.obj ${X86SB_OUT}/msvcrt.lib ${X86SB_OUT}/kernel32.lib
-    DEPENDS ${X86SB_SRC}/test_dll.c ${X86SB_SRC}/msvcrt.def ${X86SB_SRC}/kernel32.def
+            ${X86SB_OUT}/test_dll.obj ${X86SB_OUT}/msvcrt.lib ${X86SB_OUT}/kernel32.lib ${X86SB_OUT}/crtdll.lib
+    DEPENDS ${X86SB_SRC}/test_dll.c ${X86SB_SRC}/msvcrt.def ${X86SB_SRC}/kernel32.def ${X86SB_SRC}/crtdll.def
     COMMENT "Building the Win32 test DLL for x86sandbox_tests"
   )
   add_custom_target(x86sandbox_test_dll DEPENDS ${X86SB_OUT}/test_dll.dll)

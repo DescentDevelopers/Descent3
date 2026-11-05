@@ -67,6 +67,7 @@ static struct {
   uint32_t vregions[64][2];
   uint32_t cmdline, cmdline_w, env, env_w;
   uint32_t strtok_next;
+  uint32_t argv; /* __GetMainArgs: argv[0], NULL, then envp's NULL */
 } W;
 
 void sb_win32_reset(void) {
@@ -1077,7 +1078,64 @@ static void crt_purecall(void) { sb_abort(SB_ERR_ABORTED, "pure virtual function
 
 #define HEAP_HANDLE 0x00050000u
 
-static void k32_GetModuleHandleA(void) { sb_ret(sb_arg(0) ? 0 : g_image_base); }
+/* Module handles for LoadLibraryA, GetModuleHandleA and GetProcAddress: the
+   loaded DLL's image base, or one of these pseudo handles for the system DLLs
+   the sandbox implements. Every C runtime name maps to msvcrt. */
+static const char *const kModules[] = {"kernel32", "msvcrt", "crtdll", "user32"};
+#define MODULE_HANDLE_BASE 0x7e000000u
+
+/* The handle for the DLL named at guest address `addr`, or 0. */
+static uint32_t module_handle(uint32_t addr) {
+  int32_t n = gstrlen(addr);
+  if (n < 0)
+    return 0;
+  char name[64];
+  uint32_t start = 0;
+  for (int32_t i = 0; i < n; i++)
+    if (g_mem[addr + i] == '\\' || g_mem[addr + i] == '/' || g_mem[addr + i] == ':')
+      start = (uint32_t)i + 1; /* a path: only the file name matters */
+  uint32_t len = 0;
+  for (uint32_t i = start; i < (uint32_t)n && len < sizeof(name) - 1; i++)
+    name[len++] = (char)lower(g_mem[addr + i]);
+  name[len] = 0;
+  if (len > 4 && strcmp(name + len - 4, ".dll") == 0)
+    name[len - 4] = 0;
+  if (name[0] == 'm' && name[1] == 's' && name[2] == 'v' && name[3] == 'c' && name[4] == 'r')
+    return MODULE_HANDLE_BASE + (1u << 16);
+  for (uint32_t i = 0; i < sizeof(kModules) / sizeof(kModules[0]); i++)
+    if (strcmp(name, kModules[i]) == 0)
+      return MODULE_HANDLE_BASE + (i << 16);
+  return 0;
+}
+
+static void k32_GetModuleHandleA(void) { sb_ret(sb_arg(0) ? module_handle(sb_arg(0)) : g_image_base); }
+static void k32_LoadLibraryA(void) { sb_ret(module_handle(sb_arg(0))); }
+
+/* GetProcAddress: NULL for a function the sandbox does not implement, as on
+   Windows for a function a DLL does not export. Lookups by ordinal fail. */
+static void k32_GetProcAddress(void) {
+  uint32_t h = sb_arg(0), name = sb_arg(1);
+  if (name < NULL_GUARD) {
+    sb_ret(0);
+    return;
+  }
+  int32_t n = gstrlen(name);
+  if (n < 0)
+    return;
+  char fname[64];
+  if (n >= (int32_t)sizeof(fname)) {
+    sb_ret(0);
+    return;
+  }
+  memcpy(fname, g_mem + name, (size_t)n + 1);
+  uint32_t i = (h - MODULE_HANDLE_BASE) >> 16;
+  if (h == g_image_base)
+    sb_ret(sb_find_own_export(fname));
+  else if (h >= MODULE_HANDLE_BASE && (h & 0xffffu) == 0 && i < sizeof(kModules) / sizeof(kModules[0]))
+    sb_ret(sb_resolve_import(kModules[i], fname));
+  else
+    sb_ret(0);
+}
 static void k32_GetTickCount(void) { sb_ret(host_time_ms()); }
 static void k32_QueryPerformanceCounter(void) {
   uint64_t v = (uint64_t)host_time_ms() * 1000u;
@@ -1179,7 +1237,15 @@ static void k32_HeapFree(void) {
   sb_heap_free(sb_arg(2));
   sb_ret(1);
 }
-static void k32_HeapReAlloc(void) { sb_ret(sb_heap_realloc(sb_arg(2), sb_arg(3))); }
+static void k32_HeapReAlloc(void) {
+  uint32_t flags = sb_arg(1), addr = sb_arg(2), size = sb_arg(3);
+  if (flags & 0x10) { /* HEAP_REALLOC_IN_PLACE_ONLY: the block must not move */
+    uint32_t have = sb_heap_size(addr);
+    sb_ret(have && size <= have ? addr : 0);
+    return;
+  }
+  sb_ret(sb_heap_realloc(addr, size));
+}
 static void k32_HeapSize(void) {
   uint32_t n = sb_heap_size(sb_arg(2));
   sb_ret(n ? n : 0xffffffffu);
@@ -1390,12 +1456,88 @@ static void user32_MessageBoxA(void) {
 /* Import table                                                         */
 /* ------------------------------------------------------------------ */
 
+/* crtdll.dll (the C runtime GCC-built scripts use): fills argc, argv and envp
+   for the DLL startup code. argv is {"descent3.exe", NULL}; the environment is empty. */
+static void crtdll_GetMainArgs(void) {
+  uint32_t pargc = sb_arg(0), pargv = sb_arg(1), penv = sb_arg(2);
+  if (!W.cmdline)
+    W.cmdline = static_string("descent3.exe");
+  if (!W.argv) {
+    W.argv = sb_heap_alloc(12); /* argv[0], argv[1] = NULL, envp[0] = NULL */
+    if (!W.argv) {
+      sb_abort(SB_ERR_NO_MEMORY, "__GetMainArgs");
+      return;
+    }
+    sb_write32(W.argv, W.cmdline);
+    sb_write32(W.argv + 4, 0);
+    sb_write32(W.argv + 8, 0);
+  }
+  if (!gp(pargc, 4) || !gp(pargv, 4) || !gp(penv, 4))
+    return;
+  sb_write32(pargc, 1);
+  sb_write32(pargv, W.argv);
+  sb_write32(penv, W.argv + 8);
+}
+
+static void k32_DebugBreak(void) { sb_abort(SB_ERR_ABORTED, "guest called DebugBreak"); }
+
+/* One character of a CompareString argument: unit is 1 (A) or 2 (W). */
+static bool cs_char(uint32_t s, uint32_t i, uint32_t unit, uint32_t *c) {
+  uint8_t lo, hi = 0;
+  if (!sb_read8(s + i * unit, &lo) || (unit == 2 && !sb_read8(s + i * unit + 1, &hi))) {
+    sb_abort(SB_ERR_BAD_ARGS, "CompareString");
+    return false;
+  }
+  *c = lo | (uint32_t)hi << 8;
+  return true;
+}
+
+/* CompareStringA/W(locale, flags, s1, n1, s2, n2): ordinal comparison, case-folded
+   for ASCII with NORM_IGNORECASE. A count of -1 means NUL-terminated. Returns
+   CSTR_LESS_THAN (1), CSTR_EQUAL (2) or CSTR_GREATER_THAN (3). */
+static void compare_string(uint32_t unit) {
+  uint32_t flags = sb_arg(1), s1 = sb_arg(2), s2 = sb_arg(4);
+  int32_t n1 = (int32_t)sb_arg(3), n2 = (int32_t)sb_arg(5);
+  bool fold = flags & 1; /* NORM_IGNORECASE */
+  if (s1 < NULL_GUARD || s2 < NULL_GUARD || n1 < -1 || n2 < -1) {
+    sb_ret(0);
+    return;
+  }
+  for (uint32_t i = 0;; i++) {
+    uint32_t a = 0, b = 0;
+    bool end1 = n1 >= 0 && i >= (uint32_t)n1, end2 = n2 >= 0 && i >= (uint32_t)n2;
+    if (!end1 && !cs_char(s1, i, unit, &a))
+      return;
+    if (!end2 && !cs_char(s2, i, unit, &b))
+      return;
+    end1 = end1 || (n1 < 0 && a == 0);
+    end2 = end2 || (n2 < 0 && b == 0);
+    if (end1 || end2) {
+      sb_ret(end1 && end2 ? 2 : end1 ? 1 : 3);
+      return;
+    }
+    if (fold) {
+      a = a < 128 ? (uint32_t)lower((int)a) : a;
+      b = b < 128 ? (uint32_t)lower((int)b) : b;
+    }
+    if (a != b) {
+      sb_ret(a < b ? 1 : 3);
+      return;
+    }
+  }
+}
+static void k32_CompareStringA(void) { compare_string(1); }
+static void k32_CompareStringW(void) { compare_string(2); }
+
+static void k32_GetUserDefaultLCID(void) { sb_ret(0x409); } /* en-US */
+
 #define C(dll, name, fn) {dll, name, SB_IMP_CDECL, 0, fn, 0}
 #define S(dll, name, bytes, fn) {dll, name, SB_IMP_STDCALL, bytes, fn, 0}
 #define D(dll, name, size) {dll, name, SB_IMP_CDECL, 0, NULL, size}
 
 static const sb_import_def g_table[] = {
     /* memory */
+    C("crtdll", "__GetMainArgs", crtdll_GetMainArgs),
     C("msvcrt", "malloc", crt_malloc),
     C("msvcrt", "free", crt_free),
     C("msvcrt", "calloc", crt_calloc),
@@ -1532,8 +1674,8 @@ static const sb_import_def g_table[] = {
     D("msvcrt", "_HUGE", 8),
     /* kernel32 (stdcall) */
     S("kernel32", "GetModuleHandleA", 4, k32_GetModuleHandleA),
-    S("kernel32", "GetProcAddress", 8, crt_ret0),
-    S("kernel32", "LoadLibraryA", 4, crt_ret0),
+    S("kernel32", "GetProcAddress", 8, k32_GetProcAddress),
+    S("kernel32", "LoadLibraryA", 4, k32_LoadLibraryA),
     S("kernel32", "FreeLibrary", 4, crt_ret1),
     S("kernel32", "DisableThreadLibraryCalls", 4, crt_ret1),
     S("kernel32", "GetTickCount", 0, k32_GetTickCount),
@@ -1619,6 +1761,20 @@ static const sb_import_def g_table[] = {
     S("kernel32", "CreateFileA", 28, k32_CreateFileA),
     S("kernel32", "ReadFile", 20, crt_ret0),
     S("kernel32", "GetTimeZoneInformation", 4, k32_GetTimeZoneInformation),
+    S("kernel32", "DebugBreak", 0, k32_DebugBreak),
+    /* Locale and console functions the static MSVC runtime imports. There is one
+       locale (the C locale): locale queries fail and setlocale reports that. */
+    S("kernel32", "CompareStringA", 24, k32_CompareStringA),
+    S("kernel32", "CompareStringW", 24, k32_CompareStringW),
+    S("kernel32", "GetLocaleInfoA", 16, crt_ret0),
+    S("kernel32", "GetLocaleInfoW", 16, crt_ret0),
+    S("kernel32", "IsValidLocale", 8, crt_ret0),
+    S("kernel32", "EnumSystemLocalesA", 8, crt_ret0),
+    S("kernel32", "GetUserDefaultLCID", 0, k32_GetUserDefaultLCID),
+    S("kernel32", "SetConsoleCtrlHandler", 8, crt_ret1),
+    /* The environment is empty and stays empty; setting a variable reports success. */
+    S("kernel32", "SetEnvironmentVariableA", 8, crt_ret1),
+    S("kernel32", "SetEndOfFile", 4, crt_ret0),
     /* user32 */
     S("user32", "MessageBoxA", 16, user32_MessageBoxA),
     C("user32", "wsprintfA", user32_wsprintfA),
@@ -1631,13 +1787,16 @@ static uint32_t va_start_addr(int fixed) {
 }
 
 const sb_import_def *sb_find_import(const char *dll, const char *name) {
-  /* The C runtime may be msvcrt, msvcrt20, msvcr70 and so on; treat them alike. */
-  bool crt = dll[0] == 'm' && dll[1] == 's' && dll[2] == 'v' && dll[3] == 'c' && dll[4] == 'r';
+  /* The C runtime may be msvcrt, msvcrt20, msvcr70 and so on, or crtdll (which
+     GCC-built scripts use); treat them alike. Entries listed under crtdll exist
+     only there. */
+  bool crt = (dll[0] == 'm' && dll[1] == 's' && dll[2] == 'v' && dll[3] == 'c' && dll[4] == 'r') ||
+             strcmp(dll, "crtdll") == 0;
   for (uint32_t i = 0; i < sizeof(g_table) / sizeof(g_table[0]); i++) {
     const sb_import_def *d = &g_table[i];
     if (strcmp(d->name, name) != 0)
       continue;
-    if (crt ? strcmp(d->dll, "msvcrt") == 0 : strcmp(d->dll, dll) == 0)
+    if (strcmp(d->dll, dll) == 0 || (crt && strcmp(d->dll, "msvcrt") == 0))
       return d;
   }
   return NULL;
