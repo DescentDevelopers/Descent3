@@ -154,7 +154,13 @@ float LastSentToTracker;
 float LastGameOverPacket;
 float FirstGameOverPacket;
 
-int SendingGameOver;
+enum class GameOverSend {
+  Idle,        // not sending a game over
+  AwaitingAck, // sent, waiting for the tracker's ack
+  Acked,       // the tracker acked it
+  TimedOut,    // no ack within TRACKER_TIMEOUT
+};
+static GameOverSend Game_over_send = GameOverSend::Idle;
 
 uint32_t TrackerAckdUs;
 uint32_t TrackerGameIsRunning;
@@ -207,7 +213,7 @@ int InitGameTrackerClient(int gametype) {
   GameOverPacket.len = INTEL_INT(GAME_HEADER_ONLY_SIZE);
   GameOverPacket.type = INTEL_INT(GNT_GAMEOVER);
 
-  SendingGameOver = 0;
+  Game_over_send = GameOverSend::Idle;
 
   DLLnw_RegisterCallback(HandleGamePacket, PXO_NETID_GAME_TRACKER);
   return 1;
@@ -247,14 +253,14 @@ void IdleGameTracker() {
     LastSentToTracker = DLLtimer_GetTime();
   }
 
-  if (SendingGameOver) {
+  if (Game_over_send != GameOverSend::Idle) {
     if ((DLLtimer_GetTime() - LastGameOverPacket) > TRACKER_RESEND_TIME) {
       // resend
       LastGameOverPacket = DLLtimer_GetTime();
       SendGameTrackerPacker(&GameOverPacket);
     } else if ((DLLtimer_GetTime() - FirstGameOverPacket) > TRACKER_TIMEOUT) {
       // Giving up, it timed out.
-      SendingGameOver = 3;
+      Game_over_send = GameOverSend::TimedOut;
     }
   }
 }
@@ -286,8 +292,8 @@ void HandleGamePacket(uint8_t *data, int len, network_address *from) {
     case GNT_SERVER_ACK:
       // The server got our packet so we can stop sending now
       TrackerAckdUs = 1;
-      if (SendingGameOver) {
-        SendingGameOver = 2;
+      if (Game_over_send != GameOverSend::Idle) {
+        Game_over_send = GameOverSend::Acked;
       }
       break;
     case GNT_GAMELIST_LITE_DATA:
@@ -361,22 +367,22 @@ void RequestGameList() {
 int SendGameOver() {
   IdleGameTracker();
 
-  if (SendingGameOver == 3) {
+  if (Game_over_send == GameOverSend::TimedOut) {
     // Request timed out.
     return 2;
   }
-  if (SendingGameOver == 2) {
-    SendingGameOver = 0;
+  if (Game_over_send == GameOverSend::Acked) {
+    Game_over_send = GameOverSend::Idle;
     return 1;
   }
-  if (SendingGameOver == 1) {
+  if (Game_over_send == GameOverSend::AwaitingAck) {
     // Wait until it's sent.
     return 0;
   }
-  if (SendingGameOver == 0) {
+  if (Game_over_send == GameOverSend::Idle) {
     LastGameOverPacket = DLLtimer_GetTime();
     FirstGameOverPacket = DLLtimer_GetTime();
-    SendingGameOver = 1;
+    Game_over_send = GameOverSend::AwaitingAck;
     TrackerGameIsRunning = 0;
     SendGameTrackerPacker(&GameOverPacket);
     return 0;
