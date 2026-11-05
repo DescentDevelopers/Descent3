@@ -67,133 +67,144 @@ namespace {
 // The API table, in the order of Osiris_CreateModuleInitStruct and of the
 // scripts' osiris_import.h. This order is part of the script ABI.
 // ---------------------------------------------------------------------------
+#define OSIRIS_SANDBOX_APIS(X) \
+  X(mprintf) \
+  X(MSafe_CallFunction) \
+  X(MSafe_GetValue) \
+  X(Obj_CallEvent) \
+  X(Trgr_CallEvent) \
+  X(Sound_TouchFile) \
+  X(Obj_FindID) \
+  X(Wpn_FindID) \
+  X(Obj_GetTimeLived) \
+  X(Obj_GetGunPos) \
+  X(Room_Value) \
+  X(Room_IsValid) \
+  X(Obj_GetAttachParent) \
+  X(Obj_GetNumAttachSlots) \
+  X(Obj_GetAttachChildHandle) \
+  X(Obj_AttachObjectAP) \
+  X(Obj_AttachObjectRad) \
+  X(Obj_UnattachFromParent) \
+  X(Obj_UnattachChild) \
+  X(Obj_UnattachChildren) \
+  X(FVI_RayCast) \
+  X(AI_GetPathID) \
+  X(AI_GoalFollowPathSimple) \
+  X(AI_PowerSwitch) \
+  X(AI_TurnTowardsVectors) \
+  X(AI_SetType) \
+  X(AI_FindHidePos) \
+  X(AI_GoalAddEnabler) \
+  X(AI_AddGoal) \
+  X(AI_ClearGoal) \
+  X(AI_Value) \
+  X(AI_FindObjOfType) \
+  X(AI_GetRoomPathPoint) \
+  X(AI_FindEnergyCenter) \
+  X(AI_GetDistToObj) \
+  X(AI_SetGoalFlags) \
+  X(AI_SetGoalCircleDist) \
+  X(File_ReadBytes) \
+  X(File_ReadInt) \
+  X(File_ReadShort) \
+  X(File_ReadByte) \
+  X(File_ReadFloat) \
+  X(File_ReadDouble) \
+  X(File_ReadString) \
+  X(File_WriteBytes) \
+  X(File_WriteString) \
+  X(File_WriteInt) \
+  X(File_WriteShort) \
+  X(File_WriteByte) \
+  X(File_WriteFloat) \
+  X(File_WriteDouble) \
+  X(Scrpt_MemAlloc) \
+  X(Scrpt_MemFree) \
+  X(Scrpt_CancelTimer) \
+  X(Scrpt_CreateTimer) \
+  X(MSafe_DoPowerup) \
+  X(Obj_Create) \
+  X(Game_GetTime) \
+  X(Game_GetFrameTime) \
+  X(Obj_WBValue) \
+  X(Scrpt_TimerExists) \
+  X(Obj_Value) \
+  X(Matcen_Value) \
+  X(Matcen_Reset) \
+  X(Matcen_Copy) \
+  X(Matcen_Create) \
+  X(Matcen_FindID) \
+  X(Msn_FlagSet) \
+  X(Msn_FlagGet) \
+  X(Player_Value) \
+  X(Obj_SetCustomAnim) \
+  X(Player_AddHudMessage) \
+  X(Obj_Ghost) \
+  X(Obj_Burning) \
+  X(Obj_IsEffect) \
+  X(File_Open) \
+  X(File_Close) \
+  X(File_Tell) \
+  X(File_eof) \
+  X(Sound_Stop) \
+  X(Sound_Play2d) \
+  X(Sound_Play3d) \
+  X(Sound_FindId) \
+  X(AI_IsObjFriend) \
+  X(AI_IsObjEnemy) \
+  X(AI_GoalValue) \
+  X(AI_GetNearbyObjs) \
+  X(AI_GetCurGoalIndex) \
+  X(OMMS_Malloc) \
+  X(OMMS_Attach) \
+  X(OMMS_Detach) \
+  X(OMMS_Free) \
+  X(OMMS_Find) \
+  X(OMMS_GetInfo) \
+  X(Cine_Start) \
+  X(Cine_Stop) \
+  X(Scrpt_FindSoundName) \
+  X(Scrpt_FindRoomName) \
+  X(Scrpt_FindTriggerName) \
+  X(Scrpt_FindObjectName) \
+  X(Scrpt_GetTriggerRoom) \
+  X(Scrpt_GetTriggerFace) \
+  X(Scrpt_FindDoorName) \
+  X(Scrpt_FindTextureName) \
+  X(Game_CreateRandomSparks) \
+  X(Scrpt_CancelTimerID) \
+  X(Obj_GetGroundPos) \
+  X(Game_EnableShip) \
+  X(Game_IsShipEnabled) \
+  X(Path_GetInformation) \
+  X(Cine_StartCanned) \
+  X(Scrpt_FindMatcenName) \
+  X(Scrpt_FindPathName) \
+  X(Scrpt_FindLevelGoalName) \
+  X(Obj_FindType) \
+  X(LGoal_Value) \
+  X(Obj_MakeListOfType) \
+  X(Obj_Kill) \
+  X(AI_IsDestReachable) \
+  X(AI_IsObjReachable) \
+  X(Game_GetDiffLevel) \
+  X(Game_GetLanguage) \
+  X(Path_Value)
+
 enum Api : uint32_t {
-  API_mprintf,
-  API_MSafe_CallFunction,
-  API_MSafe_GetValue,
-  API_Obj_CallEvent,
-  API_Trgr_CallEvent,
-  API_Sound_TouchFile,
-  API_Obj_FindID,
-  API_Wpn_FindID,
-  API_Obj_GetTimeLived,
-  API_Obj_GetGunPos,
-  API_Room_Value,
-  API_Room_IsValid,
-  API_Obj_GetAttachParent,
-  API_Obj_GetNumAttachSlots,
-  API_Obj_GetAttachChildHandle,
-  API_Obj_AttachObjectAP,
-  API_Obj_AttachObjectRad,
-  API_Obj_UnattachFromParent,
-  API_Obj_UnattachChild,
-  API_Obj_UnattachChildren,
-  API_FVI_RayCast,
-  API_AI_GetPathID,
-  API_AI_GoalFollowPathSimple,
-  API_AI_PowerSwitch,
-  API_AI_TurnTowardsVectors,
-  API_AI_SetType,
-  API_AI_FindHidePos,
-  API_AI_GoalAddEnabler,
-  API_AI_AddGoal,
-  API_AI_ClearGoal,
-  API_AI_Value,
-  API_AI_FindObjOfType,
-  API_AI_GetRoomPathPoint,
-  API_AI_FindEnergyCenter,
-  API_AI_GetDistToObj,
-  API_AI_SetGoalFlags,
-  API_AI_SetGoalCircleDist,
-  API_File_ReadBytes,
-  API_File_ReadInt,
-  API_File_ReadShort,
-  API_File_ReadByte,
-  API_File_ReadFloat,
-  API_File_ReadDouble,
-  API_File_ReadString,
-  API_File_WriteBytes,
-  API_File_WriteString,
-  API_File_WriteInt,
-  API_File_WriteShort,
-  API_File_WriteByte,
-  API_File_WriteFloat,
-  API_File_WriteDouble,
-  API_Scrpt_MemAlloc,
-  API_Scrpt_MemFree,
-  API_Scrpt_CancelTimer,
-  API_Scrpt_CreateTimer,
-  API_MSafe_DoPowerup,
-  API_Obj_Create,
-  API_Game_GetTime,
-  API_Game_GetFrameTime,
-  API_Obj_WBValue,
-  API_Scrpt_TimerExists,
-  API_Obj_Value,
-  API_Matcen_Value,
-  API_Matcen_Reset,
-  API_Matcen_Copy,
-  API_Matcen_Create,
-  API_Matcen_FindID,
-  API_Msn_FlagSet,
-  API_Msn_FlagGet,
-  API_Player_Value,
-  API_Obj_SetCustomAnim,
-  API_Player_AddHudMessage,
-  API_Obj_Ghost,
-  API_Obj_Burning,
-  API_Obj_IsEffect,
-  API_File_Open,
-  API_File_Close,
-  API_File_Tell,
-  API_File_eof,
-  API_Sound_Stop,
-  API_Sound_Play2d,
-  API_Sound_Play3d,
-  API_Sound_FindId,
-  API_AI_IsObjFriend,
-  API_AI_IsObjEnemy,
-  API_AI_GoalValue,
-  API_AI_GetNearbyObjs,
-  API_AI_GetCurGoalIndex,
-  API_OMMS_Malloc,
-  API_OMMS_Attach,
-  API_OMMS_Detach,
-  API_OMMS_Free,
-  API_OMMS_Find,
-  API_OMMS_GetInfo,
-  API_Cine_Start,
-  API_Cine_Stop,
-  API_Scrpt_FindSoundName,
-  API_Scrpt_FindRoomName,
-  API_Scrpt_FindTriggerName,
-  API_Scrpt_FindObjectName,
-  API_Scrpt_GetTriggerRoom,
-  API_Scrpt_GetTriggerFace,
-  API_Scrpt_FindDoorName,
-  API_Scrpt_FindTextureName,
-  API_Game_CreateRandomSparks,
-  API_Scrpt_CancelTimerID,
-  API_Obj_GetGroundPos,
-  API_Game_EnableShip,
-  API_Game_IsShipEnabled,
-  API_Path_GetInformation,
-  API_Cine_StartCanned,
-  API_Scrpt_FindMatcenName,
-  API_Scrpt_FindPathName,
-  API_Scrpt_FindLevelGoalName,
-  API_Obj_FindType,
-  API_LGoal_Value,
-  API_Obj_MakeListOfType,
-  API_Obj_Kill,
-  API_AI_IsDestReachable,
-  API_AI_IsObjReachable,
-  API_Game_GetDiffLevel,
-  API_Game_GetLanguage,
-  API_Path_Value,
+#define X(name) API_##name,
+  OSIRIS_SANDBOX_APIS(X)
+#undef X
   API_COUNT
 };
+const char *const kApiNames[] = {
+#define X(name) #name,
+    OSIRIS_SANDBOX_APIS(X)
+#undef X
+};
 static_assert(API_COUNT == 123, "the OSIRIS function table has 123 entries");
+static_assert(sizeof(kApiNames) / sizeof(kApiNames[0]) == API_COUNT, "one name per API");
 
 // Host functions at the indices that can be checked against Osiris_module_init.
 // If these do not match, the table order changed and sandboxed scripts would call
@@ -452,6 +463,7 @@ private:
   std::unique_ptr<Sandbox> sb_;
   bool failed_ = false;
   uint32_t exports_[9] = {};
+  uint32_t last_api_ = UINT32_MAX; // for error messages
   uint32_t init_struct_ = 0;
   uint32_t arena_ = 0, arena_top_ = 0, arena_end_ = 0;
   std::vector<CFILE *> files_;
@@ -530,9 +542,14 @@ bool Module::Load(const std::vector<uint8_t> &image, std::string *error) {
 }
 
 void Module::Fail(const char *what, Status s) {
-  if (!failed_)
-    LOG_ERROR.printf("OSIRIS sandbox: %s: %s failed (%s): %s. The script is disabled.", name_.c_str(), what,
-                     x86sandbox::StatusName(s), sb_ ? sb_->LastError().c_str() : "");
+  if (!failed_) {
+    // Arguments are checked inside the API calls, so name the last one called.
+    std::string api;
+    if (s == Status::BadArgs && last_api_ < API_COUNT)
+      api = std::string(" (last API called: ") + kApiNames[last_api_] + ")";
+    LOG_ERROR.printf("OSIRIS sandbox: %s: %s failed (%s): %s%s. The script is disabled.", name_.c_str(), what,
+                     x86sandbox::StatusName(s), sb_ ? sb_->LastError().c_str() : "", api.c_str());
+  }
   failed_ = true;
 }
 
@@ -1134,6 +1151,7 @@ int32_t Module::FileOpen(Args &a) {
 // ---- The API dispatcher ----
 
 int32_t Module::HostCall(Sandbox &sb, uint32_t index, uint32_t esp) {
+  last_api_ = index;
   Args a(sb, esp);
   auto str = [&](uint32_t p) { return ReadStr(p); };
   switch (static_cast<Api>(index)) {
