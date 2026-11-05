@@ -102,10 +102,8 @@ void mvefile_reset(MVEFILE *file) {
   _mvefile_set_buffer_size(file, 1024);
 
   /* verify the file's header */
-  if (!_mvefile_read_header(file)) {
-    _mvefile_free(file);
-    // return NULL;
-  }
+  if (!_mvefile_read_header(file))
+    return;
 
   /* now, prefetch the next chunk */
   _mvefile_fetch_next_chunk(file);
