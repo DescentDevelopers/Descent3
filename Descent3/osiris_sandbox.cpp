@@ -379,6 +379,7 @@ public:
   int16_t CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
   int GetTriggerScriptID(int room, int face);
   int GetCOScriptList(int **list, int **id_list);
+  bool HasExport(int e) const { return exports_[e] != 0; }
   int SaveRestoreState(void *file_ptr, uint8_t saving);
 
   int32_t HostCall(Sandbox &sb, uint32_t index, uint32_t esp) override;
@@ -437,7 +438,7 @@ private:
   void ToHostEvent(uint32_t gaddr, int event, tOSIRISEventInfo *ei);
   void FromHostEvent(const tOSIRISEventInfo *ei, int event, uint32_t gaddr, uint32_t temp_file);
   void CopyEventBack(uint32_t gaddr, int event, tOSIRISEventInfo *ei);
-  bool ToHostMsafe(uint32_t gaddr, msafe_struct *m);
+  bool ToHostMsafe(uint32_t gaddr, msafe_struct *m, bool with_list);
   void FromHostMsafe(const msafe_struct *m, uint32_t gaddr);
   int32_t CallEventApi(Args &a, bool trigger);
   int32_t AddGoal(Args &a);
@@ -509,7 +510,9 @@ bool Module::Load(const std::vector<uint8_t> &image, std::string *error) {
       std::string decorated = std::string("_") + kExports[i].name + "@" + std::to_string(kExports[i].arg_bytes);
       a = sb_->FindExport(decorated.c_str());
     }
-    if (!a) {
+    // As with native modules, only level scripts need GetTriggerScriptID and
+    // GetCOScriptList; Osiris_LoadLevelModule rejects a level script without them.
+    if (!a && i != E_GETTRIG && i != E_GETCO) {
       *error = std::string("missing export ") + kExports[i].name;
       return false;
     }
@@ -677,7 +680,10 @@ void Module::FromHostEvent(const tOSIRISEventInfo *ei, int event, uint32_t gaddr
 
 // ---- msafe_struct ----
 
-bool Module::ToHostMsafe(uint32_t gaddr, msafe_struct *m) {
+// with_list: the call reads m->list (only MSAFE_OBJECT_DESTROY_ROBOTS_EXCEPT
+// does). Scripts do not clear the structure, so for every other call the list
+// pointer and count may hold stale stack data and are not checked or passed on.
+bool Module::ToHostMsafe(uint32_t gaddr, msafe_struct *m, bool with_list) {
   uint8_t g[guest::kMsafeSize];
   memset(m, 0, sizeof(*m));
   if (!sb_->Read(gaddr, g, sizeof(g))) {
@@ -693,16 +699,19 @@ bool Module::ToHostMsafe(uint32_t gaddr, msafe_struct *m) {
   m->message[sizeof(m->message) - 1] = '\0';
   m->name[sizeof(m->name) - 1] = '\0';
   m->message2[sizeof(m->message2) - 1] = '\0';
-  if (list) {
-    // The only list the engine reads is MSAFE_OBJECT_DESTROY_ROBOTS_EXCEPT's tKillObjectItem array.
+  m->list = nullptr;
+  if (with_list) {
+    // An array of m->count tKillObjectItem.
     if (m->count < 0 || m->count > static_cast<int>(kMaxList)) {
       sb_->AbortGuest(Status::BadArgs);
       return false;
     }
-    m->list = sb_->Ptr(list, static_cast<uint32_t>(m->count) * sizeof(tKillObjectItem));
-    if (!m->list && m->count) {
-      sb_->AbortGuest(Status::BadArgs);
-      return false;
+    if (m->count > 0) {
+      m->list = list ? sb_->Ptr(list, static_cast<uint32_t>(m->count) * sizeof(tKillObjectItem)) : nullptr;
+      if (!m->list) {
+        sb_->AbortGuest(Status::BadArgs);
+        return false;
+      }
     }
   }
   return true;
@@ -827,7 +836,7 @@ int16_t Module::CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo
 }
 
 int Module::GetTriggerScriptID(int room, int face) {
-  if (!Alive())
+  if (!Alive() || !exports_[E_GETTRIG])
     return -1;
   uint32_t r = 0;
   if (!Run("GetTriggerScriptID", exports_[E_GETTRIG], {static_cast<uint32_t>(room), static_cast<uint32_t>(face)},
@@ -839,7 +848,7 @@ int Module::GetTriggerScriptID(int room, int face) {
 int Module::GetCOScriptList(int **list, int **id_list) {
   *list = nullptr;
   *id_list = nullptr;
-  if (!Alive())
+  if (!Alive() || !exports_[E_GETCO])
     return 0;
   ArenaScope arena(*this);
   uint32_t out = arena.Alloc(8);
@@ -1054,6 +1063,9 @@ int32_t Module::CineStart(Args &a) {
   memcpy(&info.max_time_play, g + guest::kCineMaxTime, 4);
   memcpy(&callback, g + guest::kCineCallback, 4);
   memcpy(&info.text_display, g + guest::kCineRanges, guest::kCineSize - guest::kCineRanges);
+  // With a camera path the engine ignores orient, and scripts leave it unset.
+  if ((info.flags & GCF_CAMERAPLACEMENT) == GCF_USEPATH)
+    orient = 0;
   if (orient) {
     if (!sb_->Read(orient, &g_cine_orient, sizeof(matrix))) {
       sb_->AbortGuest(Status::BadArgs);
@@ -1069,7 +1081,11 @@ int32_t Module::CineStart(Args &a) {
         g_cine.module->CineCallback(type);
     };
   }
-  cine_text_ = ReadStr(gtext);
+  cine_text_.clear();
+  if (gtext && !sb_->ReadString(gtext, cine_text_, kMaxString)) {
+    sb_->AbortGuest(Status::BadArgs);
+    return 0;
+  }
   return Cinematic_Start(&info, cine_text_.data()) ? 1 : 0;
 }
 
@@ -1085,7 +1101,14 @@ int32_t Module::CannedCine(Args &a) {
   uint32_t text;
   memcpy(&text, g + guest::kCannedText, 4);
   memcpy(&info.target_objhandle, g + guest::kCannedTargetObj, guest::kCannedSize - guest::kCannedTargetObj);
-  cine_text_ = ReadStr(text);
+  // CANNED_MOVE_PLAYER_FADE has no text, and scripts leave the pointer unset.
+  if (info.type == CANNED_MOVE_PLAYER_FADE)
+    text = 0;
+  cine_text_.clear();
+  if (text && !sb_->ReadString(text, cine_text_, kMaxString)) {
+    sb_->AbortGuest(Status::BadArgs);
+    return 0;
+  }
   info.text_to_display = text ? cine_text_.c_str() : nullptr;
   Cinematic_StartCannedScript(&info);
   return 0;
@@ -1122,7 +1145,8 @@ int32_t Module::HostCall(Sandbox &sb, uint32_t index, uint32_t esp) {
     int type = index == API_MSafe_DoPowerup ? 0 : a.i32();
     uint32_t gm = a.u32();
     msafe_struct m;
-    if (!gm || !ToHostMsafe(gm, &m)) {
+    bool with_list = index == API_MSafe_CallFunction && type == MSAFE_OBJECT_DESTROY_ROBOTS_EXCEPT;
+    if (!gm || !ToHostMsafe(gm, &m, with_list)) {
       sb.AbortGuest(Status::BadArgs);
       return 0;
     }
@@ -1891,8 +1915,12 @@ bool Osiris_SandboxLoadModule(int slot, const std::filesystem::path &path, Osiri
   auto m = std::make_unique<Module>(slot, path.filename().u8string());
   if (!m->Load(image, error))
     return false;
-  g_slots[slot] = m.release();
   *exports = kTrampolines[slot];
+  if (!m->HasExport(E_GETTRIG))
+    exports->GetTriggerScriptID = nullptr;
+  if (!m->HasExport(E_GETCO))
+    exports->GetCOScriptList = nullptr;
+  g_slots[slot] = m.release();
   LOG_INFO.printf("OSIRIS: loaded Win32 script %s in the x86 sandbox", path.filename().u8string().c_str());
   return true;
 }

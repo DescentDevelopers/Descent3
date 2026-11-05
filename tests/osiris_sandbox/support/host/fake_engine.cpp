@@ -140,7 +140,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *m) {
   rec_f(m->volume); rec_f(m->fog_r); rec_f(m->fog_g); rec_f(m->fog_b); rec_f(m->fog_depth);
   rec_f(m->mass); rec_f(m->drag); rec_f(m->lifetime); rec_f(m->interval); rec_f(m->longevity); rec_f(m->size); rec_f(m->speed);
   rec_i(m->effect_type); rec_i(m->gunpoint); rec_i(m->phys_info); rec_i(m->is_real); rec_i(m->random);
-  rec_str(m->message);
+  rec_str(m->message); rec_ptr(m->list); rec_i(m->count);
   rec_end();
   if (type == MSAFE_OBJECT_START_SPEW)
     m->id = g_next_spew++;
@@ -159,7 +159,7 @@ std::map<void *, int> g_chunks;
 void *Osiris_AllocateMemory(tOSIRISMEMCHUNK *mc) { void *p = calloc(1, mc->size); g_chunks[p] = mc->size; rec_begin("Osiris_AllocateMemory"); rec_i(mc->id); rec_i(mc->size); rec_end(); return p; }
 void Osiris_FreeMemory(void *p) { g_chunks.erase(p); free(p); }
 int Osiris_GetMemoryChunkSize(void *p) { auto it = g_chunks.find(p); return it == g_chunks.end() ? -1 : it->second; }
-bool Cinematic_Start(tGameCinematic *info, char *text) { rec_begin("Cinematic_Start"); rec_i(info->flags); rec_str(text); rec_end(); return true; }
+bool Cinematic_Start(tGameCinematic *info, char *text) { rec_begin("Cinematic_Start"); rec_i(info->flags); rec_str(text); rec_ptr(info->orient); rec_end(); return true; }
 void Cinematic_Stop() { rec_begin("Cinematic_Stop"); rec_end(); }
 void Cinematic_StartCannedScript(tCannedCinematicInfo *info) {
   rec_begin("Cinematic_StartCannedScript"); rec_i(info->type); rec_i(info->camera_pathid); rec_i(info->target_pathid);

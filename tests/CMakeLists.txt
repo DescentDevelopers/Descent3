@@ -129,7 +129,26 @@ if(X86SB_CLANG AND X86SB_LLD_LINK AND X86SB_DLLTOOL)
   )
   add_custom_target(osiris_sandbox_level1_dll DEPENDS ${OSB_OUT}/level1.dll)
   add_dependencies(osiris_sandbox_tests osiris_sandbox_level1_dll)
+
+  # A script that passes structures with unset fields; it uses level1's headers.
+  add_custom_command(
+    OUTPUT ${OSB_OUT}/bridge_probe.dll
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${OSB_OUT}
+    COMMAND ${X86SB_DLLTOOL} -m i386 -d ${OSB_GUEST}/msvcrt.def -l ${OSB_OUT}/probe_msvcrt.lib
+    COMMAND ${X86SB_CLANG} ${L1_CFLAGS} -c ${OSB_GUEST}/bridge_probe.cpp -o ${OSB_OUT}/bridge_probe.obj
+    COMMAND ${X86SB_CLANG} ${L1_CFLAGS} -c ${OSB_GUEST}/crt0.cpp -o ${OSB_OUT}/probe_crt0.obj
+    COMMAND ${X86SB_LLD_LINK} /dll /nodefaultlib /entry:_DllMainCRTStartup
+            /def:${PROJECT_SOURCE_DIR}/scripts/MS-LVL.DEF /out:${OSB_OUT}/bridge_probe.dll
+            ${OSB_OUT}/probe_crt0.obj ${OSB_OUT}/bridge_probe.obj ${OSB_OUT}/probe_msvcrt.lib
+    DEPENDS ${OSB_OUT}/level1_verified.stamp ${L1_FILES} ${OSB_GUEST}/bridge_probe.cpp ${OSB_GUEST}/crt0.cpp
+            ${OSB_GUEST}/msvcrt.def ${PROJECT_SOURCE_DIR}/scripts/MS-LVL.DEF
+    COMMENT "Building the bridge probe script as a Win32 DLL for osiris_sandbox_tests"
+  )
+  add_custom_target(osiris_sandbox_probe_dll DEPENDS ${OSB_OUT}/bridge_probe.dll)
+  add_dependencies(osiris_sandbox_tests osiris_sandbox_probe_dll)
+
   target_compile_definitions(osiris_sandbox_tests PRIVATE
+    PROBE_DLL="${OSB_OUT}/bridge_probe.dll"
     LEVEL1_DLL="${OSB_OUT}/level1.dll"
     LEVEL1_SOURCE="${L1_SRC}/level1.cpp"
     LEVEL1_MSG="${L1_SRC}/level1.msg"

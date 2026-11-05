@@ -340,4 +340,85 @@ TEST(OsirisSandboxTable, RefusesToLoadWhenTheTableOrderDoesNotMatch) {
 #endif
 }
 
+// The bridge probe script (support/guest/bridge_probe.cpp) passes structures with
+// fields left unset. The bridge must pass a field on only where the engine reads
+// it, and refuse a bad value there.
+class OsirisSandboxProbe : public ::testing::Test {
+protected:
+  void SetUp() override {
+#ifndef PROBE_DLL
+    GTEST_SKIP() << "bridge_probe.dll not built (needs clang, lld-link and llvm-dlltool)";
+#else
+    fake_reset();
+    fill_module_init(&Osiris_module_init);
+    std::string error;
+    ASSERT_TRUE(Osiris_SandboxLoadModule(0, PROBE_DLL, &ex_, &error)) << error;
+    tOSIRISModuleInit mi = Osiris_module_init;
+    static char ident[] = "bridge_probe";
+    mi.script_identifier = ident;
+    ASSERT_EQ(ex_.InitializeDLL(&mi), 1);
+    instance_ = ex_.CreateInstance(0);
+    ASSERT_NE(instance_, nullptr);
+    g_calls.clear();
+#endif
+  }
+  void TearDown() override {
+    if (Osiris_SandboxIsLoaded(0)) {
+      ex_.ShutdownDLL();
+      Osiris_SandboxUnloadModule(0);
+    }
+  }
+  void Probe(int which) {
+    tOSIRISEventInfo ei{};
+    ei.me_handle = which;
+    ex_.CallInstanceEvent(0, instance_, EVT_INTERVAL, &ei);
+  }
+  // After a refused call the script is disabled: a valid call does nothing.
+  bool Disabled() {
+    g_calls.clear();
+    Probe(1);
+    return g_calls.empty();
+  }
+  OsirisModuleExports ex_{};
+  void *instance_ = nullptr;
+};
+
+TEST_F(OsirisSandboxProbe, MsafeListIsIgnoredWhereTheEngineDoesNotReadIt) {
+  Probe(1);
+  ASSERT_EQ(g_calls.size(), 1u);
+  EXPECT_EQ(g_calls[0].rfind("msafe_CallFunction(" + Str(MSAFE_OBJECT_NO_RENDER) + ", 1234, ", 0), 0u) << g_calls[0];
+  EXPECT_NE(g_calls[0].find(", null, -7)"), std::string::npos) << g_calls[0];
+  EXPECT_FALSE(Disabled());
+}
+
+TEST_F(OsirisSandboxProbe, MsafeListIsCheckedWhereTheEngineReadsIt) {
+  Probe(2);
+  EXPECT_TRUE(g_calls.empty()) << g_calls[0];
+  EXPECT_TRUE(Disabled());
+}
+
+TEST_F(OsirisSandboxProbe, CinematicOrientIsIgnoredForACameraPath) {
+  Probe(3);
+  EXPECT_TRUE(HasCall("Cinematic_Start(" + Str(GCF_USEPATH) + ", \"probe\", null)"));
+  EXPECT_FALSE(Disabled());
+}
+
+TEST_F(OsirisSandboxProbe, CinematicOrientIsCheckedForACameraPoint) {
+  Probe(4);
+  EXPECT_TRUE(g_calls.empty()) << g_calls[0];
+  EXPECT_TRUE(Disabled());
+}
+
+TEST_F(OsirisSandboxProbe, CannedTextIsIgnoredWhereTheEngineDoesNotReadIt) {
+  Probe(5);
+  EXPECT_EQ(CountPrefix("Cinematic_StartCannedScript(" + Str(CANNED_MOVE_PLAYER_FADE) + ", 0, 0, null, 55, "), 1);
+  EXPECT_FALSE(Disabled());
+}
+
+TEST_F(OsirisSandboxProbe, CannedTextIsCheckedWhereTheEngineReadsIt) {
+  Probe(6);
+  EXPECT_TRUE(g_calls.empty()) << g_calls[0];
+  EXPECT_TRUE(Disabled());
+}
+
 } // namespace

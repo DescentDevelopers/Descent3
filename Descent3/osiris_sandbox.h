@@ -81,7 +81,9 @@ constexpr uint32_t OSIRIS_SANDBOX_GUEST_CHECKSUM = 2273873307u;
 bool Osiris_SandboxIsWin32Module(const std::filesystem::path &path);
 
 // Loads the Win32 DLL at `path` into a new sandbox bound to module slot `slot`.
-// On success fills `exports` and returns true.
+// On success fills `exports` and returns true. GetTriggerScriptID and
+// GetCOScriptList are null if the DLL does not export them; only level scripts
+// need them, as with native modules.
 bool Osiris_SandboxLoadModule(int slot, const std::filesystem::path &path, OsirisModuleExports *exports,
                               std::string *error);
 
