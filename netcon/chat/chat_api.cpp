@@ -864,7 +864,7 @@ char *ParseIRCMessage(char *Line, int iMode) {
   // End of whois and we didn't get a channel means they aren't in a channel.
   if (stricmp(szCmd, "318") == 0) {
     if (!*User_req_channel) {
-      User_req_channel[0] = '*';
+      strcpy(User_req_channel, "*");
     }
   }
 
