@@ -100,6 +100,52 @@ __declspec(dllexport) int __stdcall Sort(void) {
   return v[0] * 100000 + v[1] * 10000 + v[2] * 1000 + v[3] * 100 + v[4] * 10 + v[5];
 }
 
+/* Scratch memory for the qsort and REP tests. */
+static unsigned char g_big[3][200000];
+
+/* qsort of n ints (n <= 150000) in pseudo-random order. Returns 1 if sorted. */
+__declspec(dllexport) int __stdcall SortMany(int n) {
+  int *v = (int *)g_big;
+  unsigned s = 12345;
+  for (int i = 0; i < n; i++) {
+    s = s * 1103515245u + 12345u;
+    v[i] = (int)(s >> 8);
+  }
+  qsort(v, (unsigned)n, sizeof(int), CompareInts);
+  for (int i = 1; i < n; i++)
+    if (v[i - 1] > v[i])
+      return 0;
+  return 1;
+}
+
+static unsigned g_rng;
+static int *g_hostile;
+static int __cdecl CompareRandomly(const void *a, const void *b) {
+  (void)a;
+  (void)b;
+  g_rng = g_rng * 1103515245u + 12345u;
+  return (int)((g_rng >> 16) % 3) - 1;
+}
+static int __cdecl CompareAndScribble(const void *a, const void *b) {
+  g_rng = g_rng * 1103515245u + 12345u;
+  g_hostile[(g_rng >> 16) % 999] = (int)g_rng;
+  return *(const int *)a - *(const int *)b;
+}
+/* Sorts 999 ints between two guard words with a comparison function that
+   returns random results (mode 0) or writes into the array (mode 1). Returns 1
+   if qsort returned and the guard words are intact. The count is odd so that
+   the last heap node has one child, where an off-by-one would reach past it. */
+__declspec(dllexport) int __stdcall SortHostile(int mode) {
+  unsigned *g = (unsigned *)g_big;
+  g[0] = g[1000] = 0xdeadbeefu;
+  g_hostile = (int *)(g + 1);
+  for (int i = 0; i < 999; i++)
+    g_hostile[i] = 999 - i;
+  g_rng = 1;
+  qsort(g_hostile, 999, sizeof(int), mode ? CompareAndScribble : CompareRandomly);
+  return g[0] == 0xdeadbeefu && g[1000] == 0xdeadbeefu;
+}
+
 __declspec(dllexport) int __stdcall OpenFile(void) {
   return CreateFileA("C:\\x.txt", 0x40000000, 0, 0, 2, 0, 0) == (void *)-1;
 }
@@ -149,7 +195,6 @@ __declspec(dllexport) int __stdcall CallDebugBreak(void) {
 
 /* REP string instructions over more iterations than the sandbox runs in one
    chunk (4096 steps), so they are stopped and resumed. */
-static unsigned char g_big[3][200000];
 __declspec(dllexport) int __stdcall RepMovs(int n) {
   for (int i = 0; i < n; i++)
     g_big[0][i] = (unsigned char)(i * 7);

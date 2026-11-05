@@ -1045,27 +1045,61 @@ void sb_run_atexit(void) {
   }
 }
 
+/* qsort as a heapsort: O(n log n) comparisons, in place. The comparison
+   function is guest code and may return anything or change the array while the
+   sort runs; the element indices stay below n and every loop ends whatever it
+   returns. Like MSVC's qsort, the sort is not stable. */
+struct qs {
+  uint32_t base, w, cmp;
+  bool failed;
+};
+
+/* True if element a sorts after element b. */
+static bool qs_after(struct qs *q, uint32_t a, uint32_t b) {
+  uint32_t args[2] = {q->base + a * q->w, q->base + b * q->w}, r = 0;
+  if (q->failed || sb_call_guest(q->cmp, args, 2, &r) != SB_OK) {
+    q->failed = true;
+    return false;
+  }
+  return (int32_t)r > 0;
+}
+
+static void qs_swap(struct qs *q, uint32_t a, uint32_t b) {
+  uint8_t tmp[4096];
+  uint8_t *pa = g_mem + q->base + a * q->w, *pb = g_mem + q->base + b * q->w;
+  memcpy(tmp, pa, q->w);
+  memcpy(pa, pb, q->w);
+  memcpy(pb, tmp, q->w);
+}
+
+/* Moves element `root` down the heap of the first `end` elements. Each pass
+   moves root to a child, so the loop ends after at most log2(end) passes. */
+static void qs_sift(struct qs *q, uint32_t root, uint32_t end) {
+  while (!q->failed) {
+    uint32_t child = 2 * root + 1;
+    if (child >= end)
+      return;
+    if (child + 1 < end && qs_after(q, child + 1, child))
+      child++;
+    if (!qs_after(q, child, root))
+      return;
+    qs_swap(q, root, child);
+    root = child;
+  }
+}
+
 static void crt_qsort(void) {
   uint32_t base = sb_arg(0), n = sb_arg(1), w = sb_arg(2), cmp = sb_arg(3);
   if (n < 2 || w == 0)
     return;
   if (w > 4096 || n > 0x7fffffffu / w || !gp(base, n * w))
     return;
-  uint8_t tmp[4096];
-  /* insertion sort: few comparisons for the small arrays scripts sort */
-  for (uint32_t i = 1; i < n; i++) {
-    uint32_t j = i;
-    while (j > 0) {
-      uint32_t args[2] = {base + (j - 1) * w, base + j * w}, r = 0;
-      if (sb_call_guest(cmp, args, 2, &r) != SB_OK)
-        return;
-      if ((int32_t)r <= 0)
-        break;
-      memcpy(tmp, g_mem + base + (j - 1) * w, w);
-      memmove(g_mem + base + (j - 1) * w, g_mem + base + j * w, w);
-      memcpy(g_mem + base + j * w, tmp, w);
-      j--;
-    }
+  struct qs q = {base, w, cmp, false};
+  for (uint32_t i = n / 2; i-- > 0;)
+    qs_sift(&q, i, n);
+  for (uint32_t end = n - 1; end > 0 && !q.failed; end--) {
+    qs_swap(&q, 0, end);
+    qs_sift(&q, 0, end);
   }
 }
 

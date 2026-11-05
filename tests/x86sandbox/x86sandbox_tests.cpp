@@ -149,6 +149,19 @@ TEST_F(X86Sandbox, UsesTheGuestHeap) { EXPECT_EQ(CallOk("Strings", 0, {}), 6u); 
 
 TEST_F(X86Sandbox, QsortCallsBackIntoTheGuest) { EXPECT_EQ(CallOk("Sort", 0, {}), 123579u); }
 
+// About 5 million comparisons for a heapsort; billions for a quadratic sort.
+TEST_F(X86Sandbox, QsortSortsLargeArraysWithinTheBudget) {
+  sb_->SetInstructionBudget(300000000);
+  EXPECT_EQ(CallOk("SortMany", 4, {150000}), 1u);
+}
+
+// The comparison function is guest code: whatever it returns or changes, qsort
+// must return and stay inside the array.
+TEST_F(X86Sandbox, QsortSurvivesHostileComparisonFunctions) {
+  EXPECT_EQ(CallOk("SortHostile", 4, {0}), 1u) << "random results";
+  EXPECT_EQ(CallOk("SortHostile", 4, {1}), 1u) << "writes into the array";
+}
+
 TEST_F(X86Sandbox, RefusesFileAccess) { EXPECT_EQ(CallOk("OpenFile", 0, {}), 1u); }
 
 TEST_F(X86Sandbox, ReportsUnsupportedImports) {
