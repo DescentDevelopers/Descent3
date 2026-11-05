@@ -182,6 +182,11 @@ TEST_F(X86Sandbox, HostReadOfABadGuestPointerStopsTheGuest) {
 }
 
 TEST_F(X86Sandbox, RunawayLoopHitsTheBudget) { ExpectFatal("Loop", 0, {}, Status::Budget); }
+TEST_F(X86Sandbox, BudgetErrorNamesTheRegisters) {
+  sb_->SetInstructionBudget(1000000);
+  ASSERT_EQ(sb_->Call(Export("Loop", 0), {}), Status::Budget);
+  EXPECT_NE(sb_->LastError().find(" eax="), std::string::npos) << sb_->LastError();
+}
 
 // Each iteration of a REP instruction counts against the budget: 1000 rep stosd
 // of 50000 dwords are 50 million iterations but only a few thousand instructions.

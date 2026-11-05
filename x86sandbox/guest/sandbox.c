@@ -314,12 +314,42 @@ void sb_abort(int code, const char *why) {
     sbcpu_redirect(g_cpu, SB_ABORT_STUB);
 }
 
+static void append_error(size_t *n, const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  sb_vformat(S.error + *n, (int)(sizeof(S.error) - *n), fmt, ap);
+  va_end(ap);
+  *n = strlen(S.error);
+}
+
+/* Appends to the error message the guest registers, and the words near the top
+   of the guest stack that point into the loaded DLL's image: probably return
+   addresses, the callers of the code that failed. */
+static void append_callers(void) {
+  uint32_t esp = sbcpu_reg(g_cpu, 4);
+  size_t n = strlen(S.error);
+  append_error(&n, "; eax=%x ecx=%x edx=%x ebx=%x esp=%x ebp=%x esi=%x edi=%x", sbcpu_reg(g_cpu, 0),
+               sbcpu_reg(g_cpu, 1), sbcpu_reg(g_cpu, 2), sbcpu_reg(g_cpu, 3), esp, sbcpu_reg(g_cpu, 5),
+               sbcpu_reg(g_cpu, 6), sbcpu_reg(g_cpu, 7));
+  int found = 0;
+  for (uint32_t i = 0; i < 64 && found < 6; i++) {
+    uint32_t v;
+    if (!sb_read32(esp + 4 * i, &v))
+      break;
+    if (v < g_image_base || v - g_image_base >= g_image_size)
+      continue;
+    append_error(&n, found ? " %x" : "; callers: %x", v);
+    found++;
+  }
+}
+
 static int run(void) {
   for (;;) {
     if (S.abort_code)
       return S.abort_code;
     if (S.budget_left == 0) {
       sb_set_error("instruction budget exhausted at EIP %x", sbcpu_eip(g_cpu));
+      append_callers();
       return SB_ERR_BUDGET;
     }
     int steps = S.budget_left < SB_CHUNK ? (int)S.budget_left : SB_CHUNK;
@@ -339,6 +369,7 @@ static int run(void) {
     }
     if (!ok) {
       sb_set_error("CPU exception %d at EIP %x", exc, sbcpu_eip(g_cpu));
+      append_callers();
       return SB_ERR_EXCEPTION;
     }
   }
