@@ -373,6 +373,7 @@ int SendGameOver() {
 
   if (Game_over_send == GameOverSend::TimedOut) {
     // Request timed out.
+    Game_over_send = GameOverSend::Idle;
     return 2;
   }
   if (Game_over_send == GameOverSend::Acked) {
