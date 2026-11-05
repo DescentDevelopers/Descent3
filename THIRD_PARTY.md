@@ -133,6 +133,10 @@ i386 CPU and x87 FPU emulator used by the x86 sandbox (x86sandbox/). https://git
 * third_party/tiny386/simd.inc
 * third_party/tiny386/LICENSE
 
+i386.c has one local change, kept as third_party/tiny386/patches/0001-count-rep-iterations.patch:
+each iteration of a REP string instruction counts against the x86 sandbox's instruction budget, and a
+REP instruction that runs out of steps stops and resumes later.
+
 The tiny386 code is licensed under the BSD 3-Clause license.
 
 ```

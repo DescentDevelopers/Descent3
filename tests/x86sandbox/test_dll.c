@@ -96,6 +96,50 @@ __declspec(dllexport) int __stdcall OpenFile(void) {
 /* Asks the host to read guest memory at an address the guest chooses. */
 __declspec(dllexport) int __stdcall HostRead(int addr) { return g_read(addr); }
 
+/* REP string instructions over more iterations than the sandbox runs in one
+   chunk (4096 steps), so they are stopped and resumed. */
+static unsigned char g_big[3][200000];
+__declspec(dllexport) int __stdcall RepMovs(int n) {
+  for (int i = 0; i < n; i++)
+    g_big[0][i] = (unsigned char)(i * 7);
+  unsigned char *src = g_big[0], *dst = g_big[1];
+  unsigned c = (unsigned)n;
+  __asm__ volatile("rep movsb" : "+S"(src), "+D"(dst), "+c"(c) : : "memory");
+  unsigned sum = 0;
+  for (int i = 0; i < 200000; i++)
+    sum = sum * 31 + g_big[1][i];
+  return (int)sum;
+}
+/* strlen with repne scasb: the string is n bytes long. */
+__declspec(dllexport) int __stdcall RepScas(int n) {
+  for (int i = 0; i < n; i++)
+    g_big[2][i] = 'x';
+  g_big[2][n] = 0;
+  unsigned char *p = g_big[2];
+  unsigned c = 0xffffffffu;
+  __asm__ volatile("repne scasb" : "+D"(p), "+c"(c) : "a"(0) : "memory", "cc");
+  return (int)(~c - 1);
+}
+/* memcmp with repe cmpsb: returns the index of the first difference, at n. */
+__declspec(dllexport) int __stdcall RepCmps(int n) {
+  for (int i = 0; i < 200000; i++)
+    g_big[0][i] = g_big[1][i] = (unsigned char)i;
+  g_big[1][n] ^= 1;
+  unsigned char *a = g_big[0], *b = g_big[1];
+  unsigned c = 200000;
+  __asm__ volatile("repe cmpsb" : "+S"(a), "+D"(b), "+c"(c) : : "memory", "cc");
+  return (int)(a - g_big[0]) - 1;
+}
+/* Runs `count` rep stosd instructions of 50000 dwords each. */
+__declspec(dllexport) int __stdcall RepStosLoop(int count) {
+  for (int i = 0; i < count; i++) {
+    void *d = g_big[0];
+    unsigned c = 50000;
+    __asm__ volatile("rep stosl" : "+D"(d), "+c"(c) : "a"(i) : "memory");
+  }
+  return 1;
+}
+
 /* Each of these stops the module. */
 __declspec(dllexport) int __stdcall Loop(void) {
   volatile int i = 0;

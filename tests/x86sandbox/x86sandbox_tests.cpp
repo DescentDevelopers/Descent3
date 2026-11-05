@@ -182,6 +182,24 @@ TEST_F(X86Sandbox, HostReadOfABadGuestPointerStopsTheGuest) {
 }
 
 TEST_F(X86Sandbox, RunawayLoopHitsTheBudget) { ExpectFatal("Loop", 0, {}, Status::Budget); }
+
+// Each iteration of a REP instruction counts against the budget: 1000 rep stosd
+// of 50000 dwords are 50 million iterations but only a few thousand instructions.
+TEST_F(X86Sandbox, RepIterationsCountAgainstTheBudget) {
+  sb_->SetInstructionBudget(5000000);
+  EXPECT_EQ(sb_->Call(Export("RepStosLoop", 4), {1000}), Status::Budget) << sb_->LastError();
+}
+
+// A REP instruction stopped at the end of a chunk resumes where it left off.
+TEST_F(X86Sandbox, RepInstructionsResumeAcrossChunks) {
+  sb_->SetInstructionBudget(50000000);
+  uint32_t sum = 0;
+  for (int i = 0; i < 200000; i++)
+    sum = sum * 31 + (i < 150001 ? static_cast<uint8_t>(i * 7) : 0);
+  EXPECT_EQ(CallOk("RepMovs", 4, {150001}), sum);
+  EXPECT_EQ(CallOk("RepScas", 4, {123457}), 123457u);
+  EXPECT_EQ(CallOk("RepCmps", 4, {98765}), 98765u);
+}
 TEST_F(X86Sandbox, UndefinedInstructionStops) { ExpectFatal("Trap", 0, {}, Status::Exception); }
 TEST_F(X86Sandbox, PrivilegedInstructionStops) { ExpectFatal("Privileged", 0, {}, Status::Exception); }
 TEST_F(X86Sandbox, SoftwareInterruptStops) { ExpectFatal("SoftwareInterrupt", 0, {}, Status::Exception); }
