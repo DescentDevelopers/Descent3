@@ -265,7 +265,7 @@ void ddgr_dx_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, 
   memset(&ddbltfx, 0, sizeof(DDBLTFX));
   ddbltfx.dwSize = sizeof(ddbltfx);
   ddbltfx.dwFillColor = RGB(DDGR_COLOR_RED(col), DDGR_COLOR_GREEN(col), DDGR_COLOR_BLUE(col));
-  SetRect(&rect, l, t, l + w - 1, t + h - 1);
+  SetRect(&rect, l, t, l + w, t + h);
 
   hres = lpdds->Blt(&rect, // dest rect
                     nullptr,  // src surface
