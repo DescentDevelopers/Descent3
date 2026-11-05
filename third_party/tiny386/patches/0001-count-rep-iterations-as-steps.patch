@@ -6,7 +6,7 @@ stops with its registers updated so far and runs again at the next step.
 The x86 sandbox relies on this for its instruction budget.
 
 Submitted upstream as https://github.com/hchunhui/tiny386/pull/64 (commit
-9085dd9b8da9 on tophyr/tiny386 rep-steps).
+ff72f7f1358d on tophyr/tiny386 rep-steps).
 
 diff --git a/i386.c b/i386.c
 index 314fef2f..2ec17577 100644
