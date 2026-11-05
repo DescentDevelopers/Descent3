@@ -998,8 +998,9 @@ char *ParseIRCMessage(char *Line, int iMode) {
     SendChatString(szResponse, 1);
     return nullptr;
   }
-  if ((stricmp(szCmd, "473") == 0) || (stricmp(szCmd, "474") == 0)) {
-    // Invite only or banned, we couldn't join the channel
+  if ((stricmp(szCmd, "471") == 0) || (stricmp(szCmd, "473") == 0) || (stricmp(szCmd, "474") == 0) ||
+      (stricmp(szCmd, "475") == 0)) {
+    // Full, invite only, banned or bad key, we couldn't join the channel
     Joined_channel = -1;
     return nullptr;
   }
