@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cctype>
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
@@ -80,7 +81,11 @@ void fake_free_file(CFILE *f) { delete F(f); }
 
 CFILE *cfopen(const std::filesystem::path &filename, const char *mode) {
   rec_begin("cfopen"); rec_str(filename.u8string().c_str()); rec_str(mode); rec_end();
+  // Like the engine's file lookup, names are not case-sensitive.
+  std::string lower = filename.u8string();
+  for (char &c : lower) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
   auto it = g_files.find(filename.u8string());
+  if (it == g_files.end()) it = g_files.find(lower);
   if (it == g_files.end()) return nullptr;
   auto *f = new FakeFile; f->name = it->first; f->data.assign(it->second.begin(), it->second.end());
   return reinterpret_cast<CFILE *>(f);

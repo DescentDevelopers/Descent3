@@ -65,6 +65,7 @@ add_custom_command(
 
 add_executable(osiris_sandbox_tests
   ${OSB_SRC}/osiris_sandbox_tests.cpp
+  ${OSB_SRC}/osiris_sandbox_collection_tests.cpp
   ${OSB_HOST}/fake_engine.cpp
   ${OSB_OUT}/fake_engine_gen.cpp
   ${PROJECT_SOURCE_DIR}/Descent3/osiris_sandbox.cpp
