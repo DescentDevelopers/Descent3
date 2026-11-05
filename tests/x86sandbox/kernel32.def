@@ -10,3 +10,4 @@ CompareStringA@24
 GetProcessHeap@0
 HeapAlloc@12
 HeapReAlloc@16
+IsBadReadPtr@8

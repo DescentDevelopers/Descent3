@@ -36,6 +36,7 @@ __declspec(dllimport) void __stdcall DebugBreak(void);
 __declspec(dllimport) void *__stdcall GetProcessHeap(void);
 __declspec(dllimport) void *__stdcall HeapAlloc(void *, unsigned, unsigned);
 __declspec(dllimport) void *__stdcall HeapReAlloc(void *, unsigned, void *, unsigned);
+__declspec(dllimport) int __stdcall IsBadReadPtr(const void *, unsigned);
 __declspec(dllimport) int __stdcall CompareStringA(unsigned, unsigned, const char *, int, const char *, int);
 /* From crtdll.dll, the C runtime GCC-built scripts use. */
 __declspec(dllimport) int strcmp(const char *, const char *);
@@ -188,6 +189,16 @@ __declspec(dllexport) int __stdcall ReallocInPlace(void) {
          (b && HeapReAlloc(heap, 0, a, 4096) != a);
 }
 
+/* IsBadReadPtr agrees with the guest's page mapping. Returns 1111 if all four
+   checks pass. */
+__declspec(dllexport) int __stdcall BadPointers(void) {
+  void *heap = HeapAlloc(GetProcessHeap(), 0, 64);
+  return IsBadReadPtr((void *)0x00080000, 4) * 1000 +   /* the gap below the stack */
+         IsBadReadPtr((void *)0x0003fff0, 0x20) * 100 + /* runs off the end of a mapped range */
+         IsBadReadPtr((void *)0x08000000, 4) * 10 +     /* past the end of guest memory */
+         (heap && !IsBadReadPtr(heap, 64));
+}
+
 __declspec(dllexport) int __stdcall CallDebugBreak(void) {
   DebugBreak();
   return 1;
@@ -236,6 +247,14 @@ __declspec(dllexport) int __stdcall RepStosLoop(int count) {
   return 1;
 }
 
+/* Memory access at an address the test chooses. */
+__declspec(dllexport) int __stdcall ReadAt(unsigned addr) { return *(volatile int *)addr; }
+__declspec(dllexport) int __stdcall WriteAt(unsigned addr) {
+  *(volatile int *)addr = 1;
+  return 1;
+}
+__declspec(dllexport) int __stdcall CallAt(unsigned addr) { return ((int(__stdcall *)(void))addr)(); }
+
 /* Each of these stops the module. */
 __declspec(dllexport) int __stdcall Loop(void) {
   volatile int i = 0;
@@ -267,7 +286,12 @@ __declspec(dllexport) int __stdcall MissingImport(void) {
   unsigned a, b, c, d;
   return GetDiskFreeSpaceA("C:\\", &a, &b, &c, &d);
 }
-static int __stdcall RecurseForever(int n) { return RecurseForever(n + 1) + 1; }
+/* The volatile frame keeps the compiler from turning the recursion into a loop. */
+__attribute__((noinline)) static int __stdcall RecurseForever(int n) {
+  volatile char frame[256];
+  frame[0] = (char)n;
+  return RecurseForever(n + 1) + frame[0];
+}
 __declspec(dllexport) int __stdcall StackOverflow(void) { return RecurseForever(0); }
 
 int __stdcall DllMain(void *h, unsigned reason, void *r) {

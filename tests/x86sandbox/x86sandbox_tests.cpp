@@ -107,10 +107,14 @@ protected:
   }
 
   // Calls a function that must stop the module with `want`, then checks the module is dead.
-  void ExpectFatal(const char *name, int arg_bytes, std::initializer_list<uint32_t> args, Status want) {
+  // If `in_error` is given, the error message must contain it.
+  void ExpectFatal(const char *name, int arg_bytes, std::initializer_list<uint32_t> args, Status want,
+                   const char *in_error = nullptr) {
     sb_->SetInstructionBudget(5000000);
     Status s = sb_->Call(Export(name, arg_bytes), args);
     EXPECT_EQ(s, want) << name << ": " << x86sandbox::StatusName(s) << ": " << sb_->LastError();
+    if (in_error)
+      EXPECT_NE(sb_->LastError().find(in_error), std::string::npos) << sb_->LastError();
     EXPECT_TRUE(sb_->IsDead());
     EXPECT_EQ(sb_->Call(Export("Add3", 12), {1, 1, 1}), Status::Dead);
   }
@@ -196,6 +200,7 @@ TEST_F(X86Sandbox, HostReadOfABadGuestPointerStopsTheGuest) {
 
 TEST_F(X86Sandbox, ImportsTheCrtdllRuntime) { EXPECT_EQ(CallOk("CrtdllImports", 0, {}), 1111u); }
 TEST_F(X86Sandbox, ResolvesImportsAtRunTime) { EXPECT_EQ(CallOk("RuntimeImports", 0, {}), 1111u); }
+TEST_F(X86Sandbox, IsBadReadPtrFollowsThePageMapping) { EXPECT_EQ(CallOk("BadPointers", 0, {}), 1111u); }
 TEST_F(X86Sandbox, ReallocInPlaceDoesNotMove) { EXPECT_EQ(CallOk("ReallocInPlace", 0, {}), 111u); }
 TEST_F(X86Sandbox, ComparesStrings) { EXPECT_EQ(CallOk("CompareStrings", 0, {}), 111u); }
 TEST_F(X86Sandbox, DebugBreakStops) { ExpectFatal("CallDebugBreak", 0, {}, Status::Aborted); }
@@ -228,16 +233,32 @@ TEST_F(X86Sandbox, UndefinedInstructionStops) { ExpectFatal("Trap", 0, {}, Statu
 TEST_F(X86Sandbox, PrivilegedInstructionStops) { ExpectFatal("Privileged", 0, {}, Status::Exception); }
 TEST_F(X86Sandbox, SoftwareInterruptStops) { ExpectFatal("SoftwareInterrupt", 0, {}, Status::Exception); }
 TEST_F(X86Sandbox, SegmentLoadStops) { ExpectFatal("LoadSegment", 0, {}, Status::Exception); }
-TEST_F(X86Sandbox, IoWindowAccessStops) { ExpectFatal("WildWrite", 0, {}, Status::MemFault); }
+TEST_F(X86Sandbox, IoWindowAccessStops) { ExpectFatal("WildWrite", 0, {}, Status::MemFault, "below the stack"); }
+
+// Guest memory is mapped with paging, and every other address faults.
+TEST_F(X86Sandbox, NullPointerReadStops) { ExpectFatal("ReadAt", 4, {0}, Status::MemFault, "a null pointer"); }
+TEST_F(X86Sandbox, NullPointerWriteStops) { ExpectFatal("WriteAt", 4, {0xfffc}, Status::MemFault, "a null pointer"); }
+TEST_F(X86Sandbox, ReadPastTheEndStops) {
+  ExpectFatal("ReadAt", 4, {0x08000000}, Status::MemFault, "past the end of guest memory");
+}
+TEST_F(X86Sandbox, WritePastTheEndStops) {
+  ExpectFatal("WriteAt", 4, {0x7ffffff0}, Status::MemFault, "past the end of guest memory");
+}
+TEST_F(X86Sandbox, PageTablesAreNotWritable) {
+  // The page tables start where the guest's memory ends.
+  ExpectFatal("WriteAt", 4, {sb_->GuestSize()}, Status::MemFault, "past the end of guest memory");
+}
+TEST_F(X86Sandbox, GapAboveTheStackStops) {
+  ExpectFatal("WriteAt", 4, {0x00300000}, Status::MemFault, "above the stack");
+}
+TEST_F(X86Sandbox, JumpOutsideGuestMemoryStops) {
+  ExpectFatal("CallAt", 4, {0x08000000}, Status::MemFault, "past the end of guest memory");
+}
 TEST_F(X86Sandbox, OutToAnUnknownPortStops) { ExpectFatal("OutToOtherPort", 0, {}, Status::Aborted); }
 TEST_F(X86Sandbox, CallingAnUnsupportedImportStops) { ExpectFatal("MissingImport", 0, {}, Status::MissingImport); }
 TEST_F(X86Sandbox, DeepHostRecursionStops) { ExpectFatal("Recurse", 4, {100}, Status::Nesting); }
 TEST_F(X86Sandbox, GuestStackOverflowStops) {
-  sb_->SetInstructionBudget(5000000);
-  Status s = sb_->Call(Export("StackOverflow", 0), {});
-  EXPECT_NE(s, Status::Ok);
-  EXPECT_NE(s, Status::Trap) << "a guest stack overflow must not trap the Wasm module";
-  EXPECT_TRUE(sb_->IsDead());
+  ExpectFatal("StackOverflow", 0, {}, Status::MemFault, "below the stack");
 }
 
 TEST(X86SandboxImage, RejectsNonPeData) {

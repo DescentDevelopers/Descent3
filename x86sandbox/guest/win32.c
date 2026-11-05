@@ -30,7 +30,7 @@
 #include "libc/string.h"
 #include "sb_internal.h"
 
-#define NULL_GUARD 0x10000u /* addresses below this are treated as null pointers */
+#define NULL_GUARD SB_STUB_BASE /* addresses below this are null pointers: the guest cannot map them */
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                              */
@@ -50,7 +50,7 @@ static int32_t gstrlen(uint32_t addr) {
     sb_abort(SB_ERR_BAD_ARGS, "import received a null string");
     return -1;
   }
-  int32_t n = sb_strlen(addr, g_mem_size);
+  int32_t n = sb_strlen(addr, g_guest_end);
   if (n < 0)
     sb_abort(SB_ERR_BAD_ARGS, "unterminated string");
   return n;
@@ -828,7 +828,7 @@ static void crt_sprintf_real(void) {
     sb_abort(SB_ERR_BAD_ARGS, "sprintf buffer");
     return;
   }
-  gout o = {buf, g_mem_size - buf, 0, NULL};
+  gout o = {buf, sb_guest_extent(buf), 0, NULL};
   gformat(&o, sb_arg(1), va_start_addr(2), false);
   gterm(&o);
   sb_ret(o.pos);
@@ -857,7 +857,7 @@ static void crt_vsprintf(void) {
     sb_abort(SB_ERR_BAD_ARGS, "vsprintf buffer");
     return;
   }
-  gout o = {buf, g_mem_size - buf, 0, NULL};
+  gout o = {buf, sb_guest_extent(buf), 0, NULL};
   gformat(&o, sb_arg(1), sb_arg(2), false);
   gterm(&o);
   sb_ret(o.pos);

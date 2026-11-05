@@ -41,14 +41,25 @@ static void set_flat(CPUI386 *cpu, int seg, uword sel, uword base, uword limit, 
   cpu->seg[seg].flags = flags;
 }
 
-/* Puts the CPU in 32-bit protected mode at privilege level 3 with flat segments.
+static uint32_t g_page_directory;
+
+void sbcpu_set_page_directory(CPUI386 *cpu, uint32_t cr3) {
+  g_page_directory = cr3;
+  tlb_clear(cpu);
+}
+
+uint32_t sbcpu_fault_address(CPUI386 *cpu) { return cpu->cr2; }
+
+/* Puts the CPU in 32-bit protected mode at privilege level 3 with flat segments
+   and paging on, with the page tables sbcpu_set_page_directory set.
    There is no GDT or IDT: loading a segment register, a privileged instruction or a
    software interrupt raises an exception, which ends the call. IOPL is 3 so the
    guest's OUT instructions reach the sandbox. FS points at the fake TEB. */
 void sbcpu_enter_user(CPUI386 *cpu, uint32_t eip, uint32_t esp, uint32_t fs_base) {
   const uword code = SEG_D_BIT | 0x5b | (3 << 5);
   const uword data = SEG_B_BIT | 0x53 | (3 << 5);
-  cpu->cr0 = 1 | 0x10; /* PE, ET; paging off */
+  cpu->cr0 = 1 | 0x10 | CR0_PG; /* PE, ET, paging */
+  cpu->cr3 = g_page_directory;
   cpu->gdt.base = 0;
   cpu->gdt.limit = 0;
   cpu->idt.base = 0;

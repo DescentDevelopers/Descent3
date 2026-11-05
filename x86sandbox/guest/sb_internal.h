@@ -53,7 +53,15 @@
 #define SB_STACK_LIMIT 0x00100000u  /* stack grows down from SB_STACK_TOP to here */
 #define SB_STACK_TOP 0x00200000u
 #define SB_IMAGE_BASE 0x00400000u   /* where DLLs with relocations are loaded */
-/* 0x000A0000-0x000BFFFF is tiny386's VGA I/O window and is never used. */
+/* The page tables are at the top of guest memory, from g_guest_end.
+
+   The guest runs with paging on, and only these ranges are mapped for it:
+   SB_STUB_BASE to SB_DATA_END, the stack (SB_STACK_LIMIT to SB_STACK_TOP), and
+   SB_IMAGE_BASE to g_guest_end. Any other access raises a page fault, which
+   stops the call with SB_ERR_MEMFAULT: the null page below SB_STUB_BASE, the
+   gaps below and above the stack (tiny386's VGA I/O window at 0xA0000 is in the
+   one below), the page tables, and every address past them. */
+#define SB_PAGE_SIZE 4096u
 
 /* ---- I/O ports used as the guest's exits ---- */
 #define SB_PORT_HOSTCALL 0xE0 /* EAX = API index; the host performs the call */
@@ -69,7 +77,7 @@ enum {
   SB_ERR_EXCEPTION = 4,     /* CPU exception in guest code */
   SB_ERR_BUDGET = 5,        /* instruction budget exhausted */
   SB_ERR_ABORTED = 6,       /* the host or an import asked to stop the guest */
-  SB_ERR_MEMFAULT = 7,      /* access to the I/O window */
+  SB_ERR_MEMFAULT = 7,      /* access to memory that is not mapped for the guest */
   SB_ERR_DEAD = 8,          /* the module failed earlier and is no longer usable */
   SB_ERR_NESTING = 9,       /* too many nested calls */
   SB_ERR_MISSING_IMPORT = 10,
@@ -82,6 +90,9 @@ typedef struct FPU FPU;
 
 CPUI386 *sbcpu_new(char *mem, long mem_size);
 void sbcpu_enter_user(CPUI386 *cpu, uint32_t eip, uint32_t esp, uint32_t fs_base);
+/* Sets the page directory that sbcpu_enter_user turns paging on with. */
+void sbcpu_set_page_directory(CPUI386 *cpu, uint32_t cr3);
+uint32_t sbcpu_fault_address(CPUI386 *cpu); /* CR2 */
 /* Runs up to `steps` instructions. Returns false if a CPU exception stopped it. */
 bool sbcpu_exec(CPUI386 *cpu, int steps, uint32_t *executed, int *excno);
 uint32_t sbcpu_reg(CPUI386 *cpu, int i); /* 0=EAX 1=ECX 2=EDX 3=EBX 4=ESP 5=EBP 6=ESI 7=EDI */
@@ -108,11 +119,15 @@ void sbfpu_set_cw(FPU *fpu, uint16_t cw);
 /* ---- Sandbox core (sandbox.c) ---- */
 extern CPUI386 *g_cpu;
 extern uint8_t *g_mem;
-extern uint32_t g_mem_size;
+/* The end of the memory the guest and the host's accessors may use. The page
+   tables follow it, out of reach of both. */
+extern uint32_t g_guest_end;
 extern uint32_t g_image_base, g_image_size;
 
-/* Guest memory access. All return false (and do nothing) if the range is outside guest memory. */
+/* Guest memory access. All return false (and do nothing) if the range is not
+   all mapped for the guest, so imports reach only what the guest itself can. */
 bool sb_range_ok(uint32_t addr, uint32_t len);
+uint32_t sb_guest_extent(uint32_t addr); /* bytes from addr to the end of its mapped range; 0 if unmapped */
 void *sb_ptr(uint32_t addr, uint32_t len); /* NULL if out of range */
 bool sb_read32(uint32_t addr, uint32_t *v);
 bool sb_write32(uint32_t addr, uint32_t v);

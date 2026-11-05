@@ -46,7 +46,10 @@ void sb_win32_init_data(const sb_import_def *def, uint32_t addr);
 
 CPUI386 *g_cpu;
 uint8_t *g_mem;
-uint32_t g_mem_size;
+uint32_t g_guest_end;
+/* All of guest memory, including the page tables. Only sb_init, the CPU and
+   map_guest_memory use it; everything else uses g_guest_end. */
+static uint32_t g_mem_size;
 uint32_t g_image_base, g_image_size;
 
 typedef struct {
@@ -105,8 +108,26 @@ void sb_set_error(const char *fmt, ...) {
 /* Guest memory                                                         */
 /* ------------------------------------------------------------------ */
 
+/* The address ranges mapped for the guest; see the layout in sb_internal.h. */
+static bool mapped_region(uint32_t addr, bool allow_end, uint32_t *end) {
+  const uint32_t regions[3][2] = {
+      {SB_STUB_BASE, SB_DATA_END}, {SB_STACK_LIMIT, SB_STACK_TOP}, {SB_IMAGE_BASE, g_guest_end}};
+  for (int i = 0; i < 3; i++)
+    if (addr >= regions[i][0] && (addr < regions[i][1] || (allow_end && addr == regions[i][1]))) {
+      *end = regions[i][1];
+      return true;
+    }
+  return false;
+}
+
 bool sb_range_ok(uint32_t addr, uint32_t len) {
-  return g_mem && addr <= g_mem_size && len <= g_mem_size - addr;
+  uint32_t end;
+  return g_mem && mapped_region(addr, len == 0, &end) && len <= end - addr;
+}
+
+uint32_t sb_guest_extent(uint32_t addr) {
+  uint32_t end;
+  return mapped_region(addr, false, &end) ? end - addr : 0;
 }
 
 void *sb_ptr(uint32_t addr, uint32_t len) { return sb_range_ok(addr, len) ? g_mem + addr : NULL; }
@@ -141,7 +162,7 @@ bool sb_write8(uint32_t addr, uint8_t v) {
 
 int32_t sb_strlen(uint32_t addr, uint32_t max) {
   for (uint32_t i = 0; i < max; i++) {
-    if (addr + i < addr || addr + i >= g_mem_size)
+    if (addr + i < addr || !sb_range_ok(addr + i, 1))
       return -1;
     if (g_mem[addr + i] == 0)
       return (int32_t)i;
@@ -344,6 +365,19 @@ static void append_callers(void) {
   }
 }
 
+/* What a faulting address was, for the error message. */
+static const char *describe_address(uint32_t a) {
+  if (a < SB_STUB_BASE)
+    return "a null pointer";
+  if (a >= SB_DATA_END && a < SB_STACK_LIMIT)
+    return "below the stack";
+  if (a >= SB_STACK_TOP && a < SB_IMAGE_BASE)
+    return "above the stack";
+  if (a >= g_guest_end)
+    return "past the end of guest memory";
+  return "not mapped";
+}
+
 static int run(void) {
   for (;;) {
     if (S.abort_code)
@@ -366,6 +400,12 @@ static int run(void) {
       return S.abort_code;
     if (S.memfault) {
       sb_set_error("guest accessed the I/O window at EIP %x", S.fault_eip);
+      return SB_ERR_MEMFAULT;
+    }
+    if (!ok && exc == 14) { /* page fault */
+      uint32_t a = sbcpu_fault_address(g_cpu);
+      sb_set_error("page fault at EIP %x: address %x is %s", sbcpu_eip(g_cpu), a, describe_address(a));
+      append_callers();
       return SB_ERR_MEMFAULT;
     }
     if (!ok) {
@@ -555,6 +595,9 @@ static int io_read_string(void *o, int port, uint8_t *buf, int size, int count) 
 static int io_write_string(void *o, int port, uint8_t *buf, int size, int count) {
   return io_read_string(o, port, buf, size, count);
 }
+/* tiny386's I/O memory (the VGA window, and 0xE0000000 up). No page table entry
+   maps it, so the guest's accesses fault before they get here; these callbacks
+   are a second line that stops the guest if one ever does. */
 static u8 mem_read8(void *o, uword a) {
   (void)o;
   (void)a;
@@ -853,7 +896,7 @@ static int load_pe(const uint8_t *f, uint32_t len) {
     dir[i][1] = rd32(f + opt + 100 + 8 * i);
   }
 
-  uint32_t max_image = g_mem_size - SB_IMAGE_BASE - SB_MIN_HEAP;
+  uint32_t max_image = g_guest_end - SB_IMAGE_BASE - SB_MIN_HEAP;
   if (size_image == 0 || size_image > max_image)
     return bad("image too large");
   if (size_headers > size_image || size_headers > len)
@@ -862,7 +905,7 @@ static int load_pe(const uint8_t *f, uint32_t len) {
   uint32_t base;
   if (dir[5][1] != 0) {
     base = SB_IMAGE_BASE;
-  } else if (pref_base >= SB_IMAGE_BASE && pref_base <= g_mem_size - SB_MIN_HEAP - size_image) {
+  } else if (pref_base >= SB_IMAGE_BASE && pref_base <= g_guest_end - SB_MIN_HEAP - size_image) {
     base = pref_base;
   } else {
     return bad("no relocations and the preferred base is outside guest memory");
@@ -905,7 +948,7 @@ static int load_pe(const uint8_t *f, uint32_t len) {
   sb_write32(SB_PEB_ADDR + 0x08, base);
 
   uint32_t heap_start = (base + size_image + 0x1ffffu) & ~0xffffu;
-  heap_init(heap_start, g_mem_size);
+  heap_init(heap_start, g_guest_end);
   return SB_OK;
 #undef NEED
 }
@@ -946,10 +989,30 @@ uint32_t sb_find_own_export(const char *name) { return find_export(name); }
 /* Exports to the host                                                  */
 /* ------------------------------------------------------------------ */
 
+
+static void put32(uint32_t addr, uint32_t v) { memcpy(g_mem + addr, &v, 4); }
+
+/* Builds identity-mapped page tables at the top of guest memory: one page
+   directory and the page tables it needs. Mapped pages are present, writable
+   and user (7); see the layout in sb_internal.h. The page tables themselves are
+   not mapped, so the guest cannot change them. */
+static void map_guest_memory(void) {
+  uint32_t ntables = (g_mem_size / SB_PAGE_SIZE + 1023) / 1024;
+  uint32_t dir = g_mem_size - SB_PAGE_SIZE * (1 + ntables);
+  g_guest_end = dir;
+  for (uint32_t i = 0; i < 1024; i++)
+    put32(dir + 4 * i, i < ntables ? (dir + SB_PAGE_SIZE * (i + 1)) | 7u : 0);
+  for (uint32_t p = 0; p < ntables * 1024; p++) {
+    uint32_t a = p * SB_PAGE_SIZE;
+    put32(dir + SB_PAGE_SIZE + 4 * p, sb_range_ok(a, SB_PAGE_SIZE) ? a | 7u : 0);
+  }
+  sbcpu_set_page_directory(g_cpu, dir);
+}
+
 SB_EXPORT("sb_init") int32_t sb_init(uint32_t mem_size) {
   if (S.initialized)
     return SB_OK;
-  if (mem_size < SB_IMAGE_BASE + 2 * SB_MIN_HEAP || mem_size > 0x40000000u)
+  if (mem_size < SB_IMAGE_BASE + 2 * SB_MIN_HEAP || mem_size > 0x40000000u || mem_size % SB_PAGE_SIZE)
     return SB_ERR_BAD_ARGS;
   g_mem = calloc(1, mem_size);
   if (!g_mem)
@@ -958,6 +1021,7 @@ SB_EXPORT("sb_init") int32_t sb_init(uint32_t mem_size) {
   g_cpu = sbcpu_new((char *)g_mem, (long)mem_size);
   if (!g_cpu)
     return SB_ERR_NO_MEMORY;
+  map_guest_memory();
   install_callbacks();
   sbfpu_set_cw(sbcpu_fpu(g_cpu), 0x027f); /* Win32 default: 53-bit precision, exceptions masked */
   write_fixed_code();
@@ -969,7 +1033,7 @@ SB_EXPORT("sb_init") int32_t sb_init(uint32_t mem_size) {
 }
 
 SB_EXPORT("sb_guest_base") uint32_t sb_guest_base(void) { return (uint32_t)(uintptr_t)g_mem; }
-SB_EXPORT("sb_guest_size") uint32_t sb_guest_size(void) { return g_mem_size; }
+SB_EXPORT("sb_guest_size") uint32_t sb_guest_size(void) { return g_guest_end; }
 SB_EXPORT("sb_error") const char *sb_error(void) { return S.error; }
 SB_EXPORT("sb_namebuf") char *sb_namebuf(void) { return S.namebuf; }
 SB_EXPORT("sb_argbuf") uint32_t *sb_argbuf(void) { return S.argbuf; }
