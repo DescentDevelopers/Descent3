@@ -211,7 +211,7 @@ static int audio_data_handler(unsigned char major, unsigned char minor, unsigned
         mveaudio_process((char *)buf, data, snd_ds->GetSampleSize(), snd_ds->IsCompressed());
       } else {
         // SILENCE, MORTALS!
-        memset(data, 0, size);
+        memset(buf, 0, size);
       }
       snd_ds->FillBuffer((char *)buf, size);
       free(buf);
