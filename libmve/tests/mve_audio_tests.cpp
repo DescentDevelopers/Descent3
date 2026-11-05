@@ -94,4 +94,18 @@ TEST(MveAudioTest, UncompressedCopiesThePcmPayload) {
     EXPECT_EQ(out[i], 0) << "byte " << i << " written past the stream length";
 }
 
+TEST(MveAudioTest, EightBitSilenceIsTheUnsignedMidpoint) {
+  std::vector<uint8_t> out(8, 0xCD);
+  mveaudio_silence(reinterpret_cast<char *>(out.data()), 6, 1);
+
+  EXPECT_EQ(out, (std::vector<uint8_t>{0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0xCD, 0xCD}));
+}
+
+TEST(MveAudioTest, SixteenBitSilenceIsZero) {
+  std::vector<uint8_t> out(8, 0xCD);
+  mveaudio_silence(reinterpret_cast<char *>(out.data()), 6, 2);
+
+  EXPECT_EQ(out, (std::vector<uint8_t>{0, 0, 0, 0, 0, 0, 0xCD, 0xCD}));
+}
+
 } // namespace

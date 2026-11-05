@@ -81,3 +81,5 @@ void mveaudio_process(char *buffer, unsigned char *data, int sample_size, bool i
     memcpy(buffer, data, size);
   }
 }
+
+void mveaudio_silence(char *buffer, int size, int sample_size) { memset(buffer, sample_size == 1 ? 0x80 : 0, size); }
