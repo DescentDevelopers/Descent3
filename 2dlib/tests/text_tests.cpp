@@ -155,3 +155,25 @@ TEST_F(GrViewportTextTest, PutsClipsGlyphAtTopEdge) {
   EXPECT_EQ(CountDrawnPixels(screen), 4 * (kGlyphHeight - 2));
 }
 
+TEST_F(GrViewportTextTest, PutsDrawsTextFollowingEmbeddedColorCode) {
+  grViewport vp(&screen.surf);
+  vp.set_font(kFontName);
+  vp.set_text_spacing(1);
+
+  Puts(vp, 0, 0, "\x01" "ABC" "AB");
+
+  ExpectGlyph(screen, 'A', 0, 0);
+  ExpectGlyph(screen, 'B', 4 + 1, 0);
+}
+
+TEST_F(GrViewportTextTest, PutsClipsTextFollowingEmbeddedColorCodeAtLeftEdge) {
+  grViewport vp(&screen.surf);
+  vp.set_font(kFontName);
+  vp.set_text_spacing(1);
+
+  Puts(vp, -2, 0, "\x01" "ABC" "AB");
+
+  ExpectGlyph(screen, 'A', 0, 0, /*col0=*/2);
+  ExpectGlyph(screen, 'B', -2 + 4 + 1, 0);
+  EXPECT_EQ(CountDrawnPixels(screen), (2 + 5) * kGlyphHeight);
+}
