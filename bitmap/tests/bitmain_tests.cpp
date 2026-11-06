@@ -414,6 +414,43 @@ TEST_F(PageableBitmapTest, MipmapsAreGeneratedOnPageInWhenRequested) {
   EXPECT_EQ(Pixels(handle, 1), std::vector<uint16_t>(16, colour));
 }
 
+TEST_F(PageableBitmapTest, PageableBitmapIsRegisteredByName) {
+  std::filesystem::path path = WriteOgf(temp_dir, "pagein_c.ogf");
+
+  int handle = Track(bm_AllocLoadFileNoMemBitmap(path.string().c_str(), 0));
+  ASSERT_GT(handle, 0);
+  EXPECT_EQ(bm_FindBitmapName("pagein_c.ogf"), handle);
+
+  int again = Track(bm_AllocLoadFileNoMemBitmap(path.string().c_str(), 0));
+  EXPECT_EQ(again, handle);
+}
+
+TEST_F(PageableBitmapTest, PageInKeepsTheFileNameWhenTheOgfStoresAnother) {
+  std::filesystem::path path = WriteOgfStoringName(temp_dir, "pagein_d.ogf", "stock_d.ogf");
+
+  int handle = Track(bm_AllocLoadFileNoMemBitmap(path.string().c_str(), 0));
+  ASSERT_GT(handle, 0);
+  ASSERT_EQ(bm_w(handle, 0), 2);
+
+  EXPECT_STREQ(GameBitmaps[handle].name, "pagein_d.ogf");
+  EXPECT_EQ(bm_FindBitmapName("pagein_d.ogf"), handle);
+}
+
+TEST_F(PageableBitmapTest, BitmapPagedBackInAfterItsDataIsFreedReloadsItsOwnFile) {
+  const uint16_t own = Rgb1555(31, 0, 0);
+  const uint16_t stock = Rgb1555(0, 0, 31);
+  std::filesystem::path path = WriteOgfStoringName(temp_dir, "pagein_e.ogf", "stock_e.ogf", own);
+  WriteOgf(temp_dir, "stock_e.ogf", stock);
+
+  int handle = Track(bm_AllocLoadFileNoMemBitmap(path.string().c_str(), 0));
+  ASSERT_GT(handle, 0);
+  ASSERT_EQ(bm_w(handle, 0), 2);
+
+  bm_FreeBitmapData(handle);
+  ASSERT_EQ(bm_w(handle, 0), 2);
+  EXPECT_EQ(Pixels(handle), std::vector<uint16_t>(4, own));
+}
+
 TEST_F(PageableBitmapTest, FreeingAPagedInBitmapRemovesItsName) {
   std::filesystem::path path = WriteOgfStoringName(temp_dir, "pagein_f.ogf", "stock_f.ogf");
 
@@ -424,6 +461,21 @@ TEST_F(PageableBitmapTest, FreeingAPagedInBitmapRemovesItsName) {
 
   EXPECT_EQ(bm_FindBitmapName("pagein_f.ogf"), -1);
   EXPECT_EQ(bm_FindBitmapName("stock_f.ogf"), -1);
+}
+
+TEST_F(PageableBitmapTest, SharedPageableBitmapGetsMipmapsIfAnyLoadAsksForThem) {
+  int src = MakeBitmap(8, 8, std::vector<uint16_t>(64, Rgb1555(12, 20, 28)));
+  strcpy(GameBitmaps[src].name, "pagein_g.ogf");
+  std::filesystem::path path = temp_dir / "pagein_g.ogf";
+  ASSERT_EQ(bm_SaveFileBitmap(path, src), 1);
+  bm_FreeBitmap(src);
+
+  int unmipped = Track(bm_AllocLoadFileNoMemBitmap(path.string().c_str(), 0));
+  int mipped = Track(bm_AllocLoadFileNoMemBitmap(path.string().c_str(), 1));
+  ASSERT_GT(unmipped, 0);
+  ASSERT_EQ(mipped, unmipped);
+
+  EXPECT_EQ(bm_mipped(unmipped), 1);
 }
 
 } // namespace
