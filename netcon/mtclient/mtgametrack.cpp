@@ -299,6 +299,8 @@ void HandleGamePacket(uint8_t *data, int len, network_address *from) {
     case GNT_GAMELIST_LITE_DATA: {
       if (len < (GAME_HEADER_ONLY_SIZE + sizeof(game_list))) {
         LOG_WARNING.printf("(%d) packet is too small!", len);
+        if (len < GAME_HEADER_ONLY_SIZE)
+          break;
       }
       size_t list_len = len - GAME_HEADER_ONLY_SIZE;
       if (list_len > sizeof(game_list))
