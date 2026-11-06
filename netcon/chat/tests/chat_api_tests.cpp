@@ -237,6 +237,20 @@ TEST_F(ChatApiTest, RefusedJoinMakesSetNewChatChannelFail) {
   }
 }
 
+TEST_F(ChatApiTest, FullOrKeyedChannelMakesSetNewChatChannelFail) {
+  for (const char *numeric : {"471", "475"}) {
+    SCOPED_TRACE(numeric);
+    ResetChat();
+    Welcome("Pilot");
+    ConnectedScope connected;
+    ASSERT_EQ(SetNewChatChannel("#private"), 0);
+
+    Feed(std::string(":irc.test ") + numeric + " Pilot #private :Cannot join channel");
+
+    EXPECT_EQ(SetNewChatChannel("#private"), -1);
+  }
+}
+
 TEST_F(ChatApiTest, ChannelMessageShowsSenderAndText) {
   Welcome("Pilot");
   EXPECT_THAT(Str(Feed(":Bob!bob@host.example PRIVMSG #descent :hello there")), EndsWith("[Bob] hello there"));
