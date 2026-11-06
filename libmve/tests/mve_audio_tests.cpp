@@ -76,4 +76,22 @@ TEST(MveAudioTest, CompressedDeltaTableIsSignSymmetric) {
   }
 }
 
+TEST(MveAudioTest, UncompressedCopiesThePcmPayload) {
+  // Uncompressed frames carry raw PCM after the same 6-byte header; the stream length says how many bytes to copy.
+  Bytes pcm = {0x11, 0x22, 0x33, 0x44};
+  Bytes frame = d3_test::ByteWriter()
+                    .U16(1) // sequence index
+                    .U16(1) // stream mask
+                    .U16(4) // length
+                    .Bytes(pcm)
+                    .bytes();
+
+  std::vector<uint8_t> out(8, 0);
+  mveaudio_process(reinterpret_cast<char *>(out.data()), frame.data(), 2, false);
+
+  EXPECT_EQ(Bytes(out.begin(), out.begin() + 4), pcm);
+  for (size_t i = 4; i < out.size(); i++)
+    EXPECT_EQ(out[i], 0) << "byte " << i << " written past the stream length";
+}
+
 } // namespace
