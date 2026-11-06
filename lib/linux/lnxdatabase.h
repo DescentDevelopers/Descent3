@@ -25,6 +25,7 @@
 #ifndef LINUXDATABASE
 #define LINUXDATABASE
 
+#include <filesystem>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,7 +44,10 @@ protected:
   CRegistry *database;
 
 public:
+  // Keeps the database in the game's preference directory (ddio_GetPrefPath).
   oeLnxAppDatabase();
+  // Keeps the database in pref_dir instead, for example a test's temporary directory.
+  explicit oeLnxAppDatabase(const std::filesystem::path &pref_dir);
   oeLnxAppDatabase(oeLnxAppDatabase *parent);
   virtual ~oeLnxAppDatabase();
   CRegistry *GetSystemRegistry();
