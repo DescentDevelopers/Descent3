@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <utility>
+
 #include "debug.h"
+#include "debug_platform.h"
 #include "log.h"
 
 bool Debug_break = false;
@@ -28,4 +31,18 @@ bool Debug_Init(bool debugger) {
 #endif
 
   return true;
+}
+
+static DebugMessageBoxHandlers message_box_handlers_ = {Debug_PlatformErrorBox, Debug_PlatformMessageBox};
+
+DebugMessageBoxHandlers Debug_SetMessageBoxHandlers(DebugMessageBoxHandlers handlers) {
+  return std::exchange(message_box_handlers_, std::move(handlers));
+}
+
+int Debug_ErrorBox(int type, const char *topstring, const char *title, const char *bottomstring) {
+  return message_box_handlers_.error_box(type, topstring, title, bottomstring);
+}
+
+int Debug_MessageBox(int type, const char *title, const char *str) {
+  return message_box_handlers_.message_box(type, title, str);
 }

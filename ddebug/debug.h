@@ -105,6 +105,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include <functional>
+
 //	---------------------------------------------------------------------------
 //	Debug system is a member of the 'platform' library.
 //	---------------------------------------------------------------------------
@@ -160,6 +162,15 @@ int Debug_ErrorBox(int type, const char *topstring, const char *title, const cha
 // displays a message box
 // Returns the same values as the Win32 MessageBox() function
 int Debug_MessageBox(int type, const char *title, const char *str);
+
+// Debug_ErrorBox and Debug_MessageBox normally show the platform's own boxes. Debug_SetMessageBoxHandlers sends them
+// to other handlers instead, for example in tests, where a dialog would stall an unattended run. A null member keeps
+// the platform box for that function. Returns the handlers that were installed before.
+struct DebugMessageBoxHandlers {
+  std::function<int(int type, const char *topstring, const char *title, const char *bottomstring)> error_box;
+  std::function<int(int type, const char *title, const char *str)> message_box;
+};
+DebugMessageBoxHandlers Debug_SetMessageBoxHandlers(DebugMessageBoxHandlers handlers);
 
 // these functions deal with debug spew support
 void Debug_ConsolePrintf(int n, const char *format, ...);
