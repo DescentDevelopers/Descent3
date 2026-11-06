@@ -194,6 +194,21 @@ TEST_F(GrtextRenderTest, ProfanityFilterMasksEveryOccurrence) {
   EXPECT_TRUE(NoLetters(drawn.substr(12))) << drawn;
 }
 
+TEST_F(GrtextRenderTest, PutCharDrawsTheGlyphAtItsNormalSize) {
+  grtext_Puts(10, 10, "M");
+  grtext_Flush();
+  ASSERT_EQ(DrawnGlyphs().size(), 1u);
+  DrawnGlyph by_puts = DrawnGlyphs()[0];
+
+  d3_test::ResetRenderer();
+  grtext_PutChar(10, 10, 'M');
+  grtext_Flush();
+  ASSERT_EQ(DrawnGlyphs().size(), 1u);
+  const DrawnGlyph &by_putchar = DrawnGlyphs()[0];
+  EXPECT_EQ(by_putchar.x2 - by_putchar.x1, by_puts.x2 - by_puts.x1);
+  EXPECT_EQ(by_putchar.y2 - by_putchar.y1, by_puts.y2 - by_puts.y1);
+}
+
 namespace {
 
 class GrtextClipTest : public GrtextTest {
