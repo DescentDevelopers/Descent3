@@ -248,3 +248,9 @@ TEST_F(GrViewportBltTest, SubRectBltClipsAtBottomRight) {
   vp.blt(4, 4, &src.surf, 1, 0, 3, 2);
   ExpectBlock(dst, src, 4, 4, 1, 0, 2, 1);
 }
+
+TEST_F(GrViewportBltTest, SubRectBltClippedAtTopLeftDrawsVisiblePartOfSource) {
+  grViewport vp(&dst.surf);
+  vp.blt(-1, -1, &src.surf, 0, 0, 3, 3);
+  ExpectBlock(dst, src, 0, 0, 1, 1, 2, 2);
+}
