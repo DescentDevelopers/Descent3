@@ -608,6 +608,8 @@ bool AudioStream::Play(bool start_on_frame) {
   if (m_state != STRM_STOPPED) {
     AudioStream::Stop();
   }
+  // a stream started with start_on_frame holds a slot while still STRM_STOPPED, so release it here too
+  DeactivateStream(this);
   //	play stream if there's room to.
   if (!ActivateStream(this))
     return false;
