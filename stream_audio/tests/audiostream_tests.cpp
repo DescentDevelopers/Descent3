@@ -102,6 +102,28 @@ TEST_F(AudioStreamTest, OpenRejectsNonOsfFileAndStaysUsable) {
   EXPECT_EQ(s->State(), STRM_STOPPED);
 }
 
+TEST_F(AudioStreamTest, FailedSetupDoesNotPreventOpeningAnotherStream) {
+  const std::filesystem::path raw_path = s_dir->path() / "raw.osf";
+  {
+    OSFArchive osf;
+    ASSERT_TRUE(osf.Open(raw_path, true));
+    std::vector<uint8_t> pcm(4000, 0);
+    ASSERT_TRUE(osf.WriteBlock(pcm.data(), static_cast<int>(pcm.size())));
+    tOSFDigiHdr hdr;
+    hdr.measure = 22050;
+    char title[OSF_HDR_TITLE_LEN] = "raw";
+    ASSERT_TRUE(osf.SaveHeader(OSF_DIGITAL_STRM, OSF_DIGIRAW_STRM, SAF_16BIT_M, 22050,
+                               static_cast<uint32_t>(pcm.size()), &hdr, title));
+  }
+
+  auto s = std::make_unique<AudioStream>();
+  ASSERT_FALSE(s->Open(raw_path));
+  ASSERT_EQ(s->State(), STRM_INVALID);
+
+  EXPECT_TRUE(s->Open(s_streams[kOneBuffer].osf));
+  EXPECT_EQ(s->State(), STRM_STOPPED);
+}
+
 struct LoopCase {
   StreamKind kind;
   int loop_count;
