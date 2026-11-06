@@ -14,7 +14,8 @@
 #   - clang and wasm-ld with the wasm32 target (CLANG, WASM_LD to override)
 #   - WABT_DIR: a WABT git checkout at WABT_COMMIT below, for example
 #       git clone https://github.com/WebAssembly/wabt && git -C wabt checkout <WABT_COMMIT>
-#   - cmake and a C++ compiler to build wasm2c from it
+#   - cmake and a C++ compiler to build wasm2c from it, and either OpenSSL's
+#     headers (libssl-dev) or the checkout's third_party/picosha2 submodule
 #
 # Usage: WABT_DIR=<wabt checkout> x86sandbox/regenerate.sh
 
@@ -66,8 +67,11 @@ cmake --build "$work/wabt-build" --target wasm2c --parallel > "$work/wabt-build.
 WASM2C="$work/wabt-build/wasm2c"
 version="$("$WASM2C" --version)"
 
+# -ffile-prefix-map keeps the checkout's location out of the output (__FILE__ is
+# used in tiny386's messages), so the result is the same wherever it is built.
 cflags=(
   --target=wasm32 -O2 -ffreestanding -nostdlib -fno-builtin -Wall -Werror
+  -ffile-prefix-map="$root/="
   -I"$here/guest/libc" -I"$here/guest" -I"$root/third_party/tiny386"
 )
 
