@@ -633,11 +633,8 @@ int bm_page_in_file(int n) {
   GameBitmaps[n].height = height;
   GameBitmaps[n].flags &= ~BF_NOT_RESIDENT;
 
-  // Copy the name
-  //	if ((stricmp(GameBitmaps[n].name,name)))
-  //			Int3(); //Get Jason!
-
-  strcpy(GameBitmaps[n].name, name);
+  // Keep the name the bitmap was registered and opened under. The OGF may store a different one
+  // (often the name of the texture it was copied from), and paging in again later opens this name.
 
   LOG_DEBUG.printf("Paging in bitmap %s!", GameBitmaps[n].name);
 

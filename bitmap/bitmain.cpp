@@ -891,6 +891,9 @@ int bm_AllocLoadFileNoMemBitmap(const char *fname, int mipped, int format) {
   // bitmaps handle
   if ((n = bm_TestName(filename)) != -1) {
     GameBitmaps[n].used++;
+    // A shared bitmap that hasn't been paged in yet gets mipmaps if any of its users want them
+    if (mipped && (GameBitmaps[n].flags & BF_NOT_RESIDENT))
+      GameBitmaps[n].flags |= BF_WANTS_MIP;
     LOG_DEBUG.printf("Found duplicate bitmap %s.", GameBitmaps[n].name);
     return n;
   }
@@ -906,6 +909,7 @@ int bm_AllocLoadFileNoMemBitmap(const char *fname, int mipped, int format) {
     GameBitmaps[n].flags |= BF_WANTS_MIP;
   if (format == BITMAP_FORMAT_4444)
     GameBitmaps[n].flags |= BF_WANTS_4444;
+  bm_insertNode(&GameBitmaps[n]);
 
   return n; // We made it!
 }
