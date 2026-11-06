@@ -1,12 +1,4 @@
-set(CMAKE_FOLDER "tests")
-
-add_executable(
-  misc_tests
-  misc_tests.cpp
+d3_test_sources(misc_tests TO d3_tests
+  SOURCES misc_tests.cpp
+  LIBRARIES misc
 )
-target_link_libraries(
-  misc_tests
-  GTest::gtest_main
-  misc
-)
-gtest_discover_tests(misc_tests)

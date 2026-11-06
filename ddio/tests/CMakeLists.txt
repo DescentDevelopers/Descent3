@@ -1,33 +1,30 @@
-set(CMAKE_FOLDER "tests")
+d3_test_sources(ddio_tests TO d3_tests
+  SOURCES ddio_tests.cpp
+  LIBRARIES ddio
+)
 
-add_executable(ddio_tests
-  ddio_tests.cpp
-)
-target_link_libraries(ddio_tests PRIVATE
-  GTest::gtest_main
-  ddio
-)
-gtest_discover_tests(ddio_tests)
-
-# The timer tests compile their clock directly rather than linking ddio, so both clocks are tested in every build,
-# whichever one ENABLE_MOCK_CLOCK puts in the game
-add_executable(chrono_timer_tests
-  chrono_timer_tests.cpp
-  ../chrono_timer.cpp
-)
-target_link_libraries(chrono_timer_tests PRIVATE
-  GTest::gtest_main
-)
-target_include_directories(chrono_timer_tests PRIVATE ${PROJECT_SOURCE_DIR}/ddio)
-gtest_discover_tests(chrono_timer_tests)
-
-add_executable(mock_timer_tests
-  mock_timer_tests.cpp
-  ../mock_timer.cpp
-)
-target_compile_definitions(mock_timer_tests PRIVATE MOCK_CLOCK)
-target_link_libraries(mock_timer_tests PRIVATE
-  GTest::gtest_main
-)
-target_include_directories(mock_timer_tests PRIVATE ${PROJECT_SOURCE_DIR}/ddio)
-gtest_discover_tests(mock_timer_tests)
+# ddio contains one of the game's two clocks, the one ENABLE_MOCK_CLOCK picks, and its tests run in d3_tests. The
+# other clock is compiled into clock_tests together with its tests, so both clocks are tested in every build.
+d3_test_executable(clock_tests)
+if(ENABLE_MOCK_CLOCK)
+  d3_test_sources(mock_timer_tests TO d3_tests
+    SOURCES mock_timer_tests.cpp
+    LIBRARIES ddio
+    INCLUDES ${PROJECT_SOURCE_DIR}/ddio
+  )
+  d3_test_sources(chrono_timer_tests TO clock_tests
+    SOURCES chrono_timer_tests.cpp ../chrono_timer.cpp
+    INCLUDES ${PROJECT_SOURCE_DIR}/ddio
+  )
+else()
+  d3_test_sources(chrono_timer_tests TO d3_tests
+    SOURCES chrono_timer_tests.cpp
+    LIBRARIES ddio
+    INCLUDES ${PROJECT_SOURCE_DIR}/ddio
+  )
+  d3_test_sources(mock_timer_tests TO clock_tests
+    SOURCES mock_timer_tests.cpp ../mock_timer.cpp
+    INCLUDES ${PROJECT_SOURCE_DIR}/ddio
+    DEFINITIONS MOCK_CLOCK
+  )
+endif()

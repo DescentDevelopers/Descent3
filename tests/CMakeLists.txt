@@ -1,13 +1,12 @@
-set(CMAKE_FOLDER "tests")
+include(D3Testing)
+add_subdirectory(support)
 
-add_executable(
-  byteswap_tests
-  byteswap_tests.cpp
-)
-target_link_libraries(
-  byteswap_tests
-  GTest::gtest_main
-)
-target_include_directories(byteswap_tests PRIVATE ${PROJECT_SOURCE_DIR}/lib)
+# The executable that holds every test that can share one. A test that needs an executable of its own says why next to
+# its d3_test_executable().
+d3_test_executable(d3_tests)
+target_link_libraries(d3_tests PRIVATE d3_test_game d3_test_renderer)
 
-gtest_discover_tests(byteswap_tests)
+d3_test_sources(byteswap_tests TO d3_tests
+  SOURCES byteswap_tests.cpp
+  INCLUDES ${PROJECT_SOURCE_DIR}/lib
+)

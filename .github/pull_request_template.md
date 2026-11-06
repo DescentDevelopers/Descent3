@@ -9,6 +9,7 @@
   - [ ] Audio changes
   - [ ] Input changes
   - [ ] Network changes
+  - [ ] Test changes
   - [ ] Other changes
 
 ### Description

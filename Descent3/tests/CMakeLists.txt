@@ -1,25 +1,8 @@
-set(CMAKE_FOLDER "tests")
-
-add_executable(
-  porting-tests
-  porting-tests.cpp
+d3_test_sources(porting_tests TO d3_tests
+  SOURCES porting-tests.cpp
+  LIBRARIES module
 )
 
-target_link_libraries(
-  porting-tests
-  module
-  GTest::gtest_main
+d3_test_sources(gamespyutils_tests TO d3_tests
+  SOURCES gamespyutils_tests.cpp ../gamespyutils.cpp
 )
-
-gtest_discover_tests(porting-tests)
-
-add_executable(
-  gamespyutils_tests
-  gamespyutils_tests.cpp
-  ../gamespyutils.cpp
-)
-target_link_libraries(
-  gamespyutils_tests
-  GTest::gtest_main
-)
-gtest_discover_tests(gamespyutils_tests)

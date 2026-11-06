@@ -1,14 +1,7 @@
-set(CMAKE_FOLDER "tests")
-
-add_executable(cfile_tests
-  cfile_tests.cpp
-)
-target_link_libraries(cfile_tests PRIVATE
-  GTest::gtest_main
-  cfile
-)
-target_include_directories(cfile_tests PRIVATE ${PROJECT_SOURCE_DIR}/lib)
-
-gtest_discover_tests(cfile_tests
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/cfile/tests
+d3_test_sources(cfile_tests TO d3_tests
+  SOURCES cfile_tests.cpp
+  LIBRARIES cfile
+  INCLUDES ${PROJECT_SOURCE_DIR}/lib
+  # The directory that holds TestDir/, the files the tests read.
+  DEFINITIONS CFILE_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
 )

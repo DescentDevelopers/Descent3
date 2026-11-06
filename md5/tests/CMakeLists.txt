@@ -1,14 +1,5 @@
-set(CMAKE_FOLDER "tests")
-
-add_executable(
-  md5_tests
-  ../md5.cpp
-  md5_tests.cpp
+d3_test_sources(md5_tests TO d3_tests
+  SOURCES md5_tests.cpp
+  LIBRARIES md5
+  INCLUDES ${PROJECT_SOURCE_DIR}/md5 ${PROJECT_SOURCE_DIR}/lib
 )
-target_link_libraries(
-  md5_tests
-  GTest::gtest_main
-)
-target_include_directories(md5_tests PRIVATE ${PROJECT_SOURCE_DIR}/md5 ${PROJECT_SOURCE_DIR}/lib)
-
-gtest_discover_tests(md5_tests)
