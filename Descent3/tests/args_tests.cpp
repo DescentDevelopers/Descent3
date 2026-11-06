@@ -139,4 +139,12 @@ TEST_F(ArgsTest, RegatheringReplacesPreviousArguments) {
   EXPECT_EQ(FindArg("-a"), 0);
 }
 
+TEST_F(ArgsTest, FindArgIgnoresSlotsPastTheGatheredArguments) {
+  Gather({"Descent3", "-a", "-b"});
+  Gather({"Descent3", "-a"});
+
+  EXPECT_EQ(GetArg(2), nullptr);
+  EXPECT_EQ(FindArg("-b"), 0);
+}
+
 } // namespace
