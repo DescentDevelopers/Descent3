@@ -52,6 +52,13 @@ TEST_F(NewBitmapTest, SaveAsPngWritesPngWithBitmapDimensions) {
   EXPECT_EQ(ReadBe32(png, 20), 3u);
 }
 
+TEST_F(NewBitmapTest, SaveAsPngReturnValueReflectsSuccess) {
+  NewBitmap bitmap(2, 2, PixelDataFormat::RGBA32);
+
+  EXPECT_TRUE(bitmap.saveAsPNG((temp_dir / "ok.png").string().c_str()));
+  EXPECT_FALSE(bitmap.saveAsPNG((temp_dir / "missing_dir" / "fail.png").string().c_str()));
+}
+
 class LightmapSquareResTest : public ::testing::TestWithParam<std::tuple<int, int, int>> {
 protected:
   void TearDown() override {
