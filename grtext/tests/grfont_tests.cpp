@@ -17,7 +17,6 @@
  */
 
 #include <cmath>
-#include <cstdlib>
 #include <string>
 #include <string_view>
 
@@ -274,4 +273,14 @@ TEST_F(GrfontTest, SetTemplateRoundTripsThroughLoadTemplate) {
   EXPECT_EQ(grfont_GetKernedSpacingTemp(&back, 'T', 'O'), 2);
   EXPECT_EQ(grfont_GetKernedSpacingTemp(&back, 'A', 'V'), 0);
   grfont_FreeTemplate(&back);
+}
+
+TEST_F(GrfontTest, LoadRejectsFileWithoutFontMagic) {
+  const char junk[] = "this is not a font file, just some text padding it out to a header's length....";
+  ASSERT_TRUE(d3_test::WriteFile(FontPath("notafont.fnt"), std::string_view(junk, sizeof(junk))));
+
+  EXPECT_EQ(grfont_Load("notafont.fnt"), 0);
+  // grfont_Load also reports failure as 0, the first font handle, so check that the rejected file took no font slot:
+  // the next font still gets the first one.
+  EXPECT_EQ(LoadFont(TestFont{}), 0);
 }
