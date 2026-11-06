@@ -329,4 +329,12 @@ TEST_F(MveResetTest, ResetRestartsPlaybackFromTheFirstChunk) {
   mve_close(m);
 }
 
+TEST_F(MveResetTest, ResetDoesNotLeakTheChunkBuffer) {
+  MVESTREAM *m = mve_open(file_);
+  ASSERT_NE(m, nullptr);
+  mve_reset(m);
+  mve_close(m);
+  EXPECT_EQ(LiveAllocations(), 0u);
+}
+
 } // namespace
