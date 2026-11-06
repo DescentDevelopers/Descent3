@@ -379,6 +379,13 @@ TEST(VecmatAngles, DeltaAngVecMeasuresAngleBetweenVectors) {
   EXPECT_LE(std::abs(AngleDiff(vm_DeltaAngVec(&y, &x, &zf), around_b)), 1);
 }
 
+TEST(VecmatAngles, DeltaAngVecOfOppositeVectorsIsHalfCircle) {
+  // This is the boundary case for vm_DeltaAngVecNorm: the dot product is exactly -1, the
+  // edge of acos's domain, and the cross product used to pick the sign is zero.
+  vector a{3, 0, 0}, b{-2, 0, 0};
+  EXPECT_LE(std::abs(AngleDiff(vm_DeltaAngVec(&a, &b, nullptr), 0x8000)), kAngleTol);
+}
+
 namespace {
 const vector kDirections[] = {
     {0, 0, 1}, {0, 0, -1}, {1, 0, 0}, {-3, 0, 0}, {0, 1, 0}, {0, -7, 0}, {1, 2, 3}, {-0.2f, 0.9f, -0.1f}, {5, -1, -4},

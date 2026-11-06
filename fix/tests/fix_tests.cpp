@@ -101,6 +101,18 @@ TEST_F(FixTrig, AcosClampsAtPositiveOne) {
   }
 }
 
+TEST_F(FixTrig, AsinOfNegativeOneIsMinusQuarterTurn) {
+  for (float v : {-1.0f, -1.001f}) {
+    EXPECT_NEAR(AngleError(FixAsin(v), 0xC000), 0.0, kAngleTol) << "v = " << v;
+  }
+}
+
+TEST_F(FixTrig, AcosOfNegativeOneIsHalfTurn) {
+  for (float v : {-1.0f, -1.001f}) {
+    EXPECT_NEAR(AngleError(FixAcos(v), 0x8000), 0.0, kAngleTol) << "v = " << v;
+  }
+}
+
 // FixAtan2 takes (cos, sin) -- note the argument order, opposite to std::atan2.
 TEST_F(FixTrig, Atan2AxesAndArgumentOrder) {
   EXPECT_NEAR(AngleError(FixAtan2(1.0f, 0.0f), 0x0000), 0.0, kAngleTol);
