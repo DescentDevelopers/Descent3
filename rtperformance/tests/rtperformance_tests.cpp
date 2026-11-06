@@ -164,6 +164,17 @@ TEST_F(RtpLogTest, FullBufferIsFlushedToDiskAndLoggingStops) {
   EXPECT_EQ(Column(header_, rows.back(), "REN:PolysDrawn"), frames);
 }
 
+TEST(RtpFlags, DisableFlagsMacroClearsOnlyTheGivenFlags) {
+  INT64 saved = Runtime_performance_flags;
+
+  rtp_EnableFlags(RTI_RENDERFRAMETIME | RTI_POLYSDRAWN);
+  RTP_DISABLEFLAGS(RTI_POLYSDRAWN);
+  EXPECT_EQ(Runtime_performance_flags & RTI_POLYSDRAWN, 0);
+  EXPECT_NE(Runtime_performance_flags & RTI_RENDERFRAMETIME, 0);
+
+  Runtime_performance_flags = saved;
+}
+
 } // namespace
 
 #else
