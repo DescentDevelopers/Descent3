@@ -75,6 +75,18 @@ TEST_F(GameTracker, RequestGameListDiscardsQueuedListsAndAsksForOurLobby) {
       << "lobby name (with its NUL) must be inside the sent length";
 }
 
+TEST_F(GameTracker, OversizedGameListPacketYieldsOnlyOneList) {
+  game_packet_header p = MakePacket(GNT_GAMELIST_LITE_DATA);
+  memset(p.data, GT_D3TNG, sizeof(p.data));
+  p.len = static_cast<uint32_t>(GAME_HEADER_ONLY_SIZE + sizeof(p.data));
+  Deliver(p);
+
+  int lists = 0;
+  while (GetGameList() && lists < MAX_GAME_BUFFERS)
+    lists++;
+  EXPECT_LE(lists, 1);
+}
+
 TEST_F(GameTracker, GameOverIsConfirmedByServerAck) {
   EXPECT_EQ(SendGameOver(), 0);
   EXPECT_EQ(SentToTracker(GNT_GAMEOVER).size(), 1u);
