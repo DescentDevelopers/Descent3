@@ -76,6 +76,14 @@ TEST(MveAudioTest, CompressedDeltaTableIsSignSymmetric) {
   }
 }
 
+TEST(MveAudioTest, CompressedStreamLengthOf32768OrMoreDecodesEverySample) {
+  Bytes codes(20000, Plus(1));
+  std::vector<int16_t> out = DecodeCompressed16(CompressedFrame(0, 0, codes), codes.size());
+
+  for (size_t i = 0; i < out.size(); i++)
+    ASSERT_EQ(out[i], static_cast<int16_t>(i / 2 + 1)) << "sample " << i;
+}
+
 TEST(MveAudioTest, UncompressedCopiesThePcmPayload) {
   // Uncompressed frames carry raw PCM after the same 6-byte header; the stream length says how many bytes to copy.
   Bytes pcm = {0x11, 0x22, 0x33, 0x44};
