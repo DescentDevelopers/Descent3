@@ -167,6 +167,24 @@ TEST(GrMemorySurface, Load4444ProducesOpaquePixelsWithSameColor) {
   }
 }
 
+TEST(GrMemorySurface, Load24BitPlacesEachRowInTheMatchingSurfaceRow) {
+  // All channel values below 0x80 to stay clear of sign-extension issues.
+  const uint8_t image[2][2][3] = {{{0x10, 0x20, 0x30}, {0x18, 0x28, 0x38}},
+                                  {{0x40, 0x08, 0x18}, {0x48, 0x10, 0x20}}};
+
+  OwnedSurface row1_alone(2, 1, 2);
+  row1_alone.surf.load(const_cast<char *>(reinterpret_cast<const char *>(image[1])), 2, 1, BPP_24);
+
+  OwnedSurface s(2, 2, 2, 0, 4);
+  s.surf.load(const_cast<char *>(reinterpret_cast<const char *>(image)), 2, 2, BPP_24);
+
+  EXPECT_EQ(s.at(0, 1), row1_alone.at(0, 0));
+  EXPECT_EQ(s.at(1, 1), row1_alone.at(1, 0));
+  for (int y = 2; y < 6; y++)
+    for (int x = 0; x < 2; x++)
+      EXPECT_EQ(s.at(x, y), kSentinel) << "wrote outside surface at (" << x << "," << y << ")";
+}
+
 namespace {
 struct GrViewportBltTest : ::testing::Test {
   OwnedSurface src{4, 3, 4};
