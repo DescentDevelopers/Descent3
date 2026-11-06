@@ -100,6 +100,17 @@ TEST_F(UIWindowFocusTest, GroupIsOneTabStopNavigatedWithArrows) {
   EXPECT_EQ(wnd.GetFocus(), &g[1]);
 }
 
+TEST_F(UIWindowFocusTest, ShiftTabLeavesAGroupBackwards) {
+  const int flags[] = {0, UIF_GROUP_START, 0, UIF_GROUP_END, 0};
+  CreateGadgets(wnd, g, 5, flags);
+  Idle();
+  Press(KEY_TAB);
+  ASSERT_EQ(wnd.GetFocus(), &g[1]);
+
+  Press(kShiftTab);
+  EXPECT_EQ(wnd.GetFocus(), &g[0]);
+}
+
 TEST_F(UIWindowFocusTest, ArrowKeysDoNotMoveFocusOutsideAGroup) {
   CreateGadgets(wnd, g, 3);
   Idle();
