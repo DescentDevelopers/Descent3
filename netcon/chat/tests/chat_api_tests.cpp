@@ -146,6 +146,13 @@ TEST_F(ChatApiTest, BeingKickedLeavesTheChannel) {
   EXPECT_EQ(SendChatString("anyone?"), nullptr);
 }
 
+TEST_F(ChatApiTest, KickingAnotherUserRemovesTheVictimNotTheKicker) {
+  Welcome("Pilot");
+  Names("@Op Victim Pilot");
+  Feed(":Op!op@host.example KICK #descent Victim :bye");
+  EXPECT_THAT(Users(), UnorderedElementsAre("Op", "Pilot"));
+}
+
 TEST_F(ChatApiTest, OtherUserNickChangeRenamesThemInTheList) {
   Welcome("Pilot");
   Names("Bob Pilot");
