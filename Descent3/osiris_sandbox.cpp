@@ -394,6 +394,7 @@ public:
   int SaveRestoreState(void *file_ptr, uint8_t saving);
 
   int32_t HostCall(Sandbox &sb, uint32_t index, uint32_t esp) override;
+  int32_t DispatchApi(Sandbox &sb, uint32_t index, uint32_t esp);
 
   void CineCallback(int type);
   void SyncChunk(void *host, int size);
@@ -1150,7 +1151,21 @@ int32_t Module::FileOpen(Args &a) {
 
 // ---- The API dispatcher ----
 
+// The engine reports some errors (such as cfile read and write errors) by
+// throwing. An exception must not unwind through the sandbox, so it stops the
+// script instead.
 int32_t Module::HostCall(Sandbox &sb, uint32_t index, uint32_t esp) {
+  try {
+    return DispatchApi(sb, index, esp);
+  } catch (...) {
+    LOG_ERROR.printf("OSIRIS sandbox: %s: %s raised an engine error", name_.c_str(),
+                     index < API_COUNT ? kApiNames[index] : "an unknown API");
+    sb.AbortGuest(Status::Aborted);
+    return 0;
+  }
+}
+
+int32_t Module::DispatchApi(Sandbox &sb, uint32_t index, uint32_t esp) {
   last_api_ = index;
   Args a(sb, esp);
   auto str = [&](uint32_t p) { return ReadStr(p); };
