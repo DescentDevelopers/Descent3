@@ -87,6 +87,14 @@ TEST_F(GameTracker, OversizedGameListPacketYieldsOnlyOneList) {
   EXPECT_LE(lists, 1);
 }
 
+TEST_F(GameTracker, RuntGameListPacketYieldsNoList) {
+  game_packet_header p = MakePacket(GNT_GAMELIST_LITE_DATA);
+  memset(p.data, GT_D3TNG, sizeof(p.data));
+  Deliver(p, static_cast<int>(GAME_HEADER_ONLY_SIZE - 1));
+
+  EXPECT_EQ(GetGameList(), nullptr);
+}
+
 TEST_F(GameTracker, GameOverIsConfirmedByServerAck) {
   EXPECT_EQ(SendGameOver(), 0);
   EXPECT_EQ(SentToTracker(GNT_GAMEOVER).size(), 1u);
