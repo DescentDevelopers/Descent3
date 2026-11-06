@@ -214,6 +214,26 @@ TEST_F(AudioStreamTest, StoppingAStreamFreesItsPlaybackSlot) {
   EXPECT_TRUE(extra->Play());
 }
 
+TEST_F(AudioStreamTest, RestartingAPlayingStreamDoesNotLeakItsSlot) {
+  auto s = OpenTestStream(s_streams[kSixBuffers]);
+  ASSERT_NE(s, nullptr);
+  ASSERT_TRUE(s->Play());
+  ASSERT_TRUE(s->Play());
+  s->Stop();
+  ASSERT_EQ(s->State(), STRM_STOPPED);
+
+  int started = 0;
+  std::vector<std::unique_ptr<AudioStream>> others;
+  for (int i = 0; i < STRM_LIMIT; i++) {
+    auto other = OpenTestStream(s_streams[kOneBuffer]);
+    ASSERT_NE(other, nullptr);
+    if (other->Play())
+      started++;
+    others.push_back(std::move(other));
+  }
+  EXPECT_EQ(started, STRM_LIMIT) << "a stopped stream is still holding a playback slot";
+}
+
 TEST_F(AudioStreamTest, StreamPlayStartsOnNextFramePlaysOnceAndCleansUp) {
   const std::vector<uint8_t> &pcm = s_streams[kSixBuffers].pcm;
   const int handle = StreamPlay(s_streams[kSixBuffers].osf, 1.0f, 0);
