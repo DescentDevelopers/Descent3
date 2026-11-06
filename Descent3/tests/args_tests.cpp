@@ -147,4 +147,16 @@ TEST_F(ArgsTest, FindArgIgnoresSlotsPastTheGatheredArguments) {
   EXPECT_EQ(FindArg("-b"), 0);
 }
 
+TEST_F(ArgsTest, OverlongArgumentIsTruncatedAndTerminated) {
+  std::string long_path(MAX_CHARS_PER_ARG + 20, 'p');
+  Gather({"Descent3", long_path, "-next"});
+
+  const char *arg = GetArg(1);
+  ASSERT_NE(arg, nullptr);
+  size_t len = strnlen(arg, MAX_CHARS_PER_ARG);
+  EXPECT_LT(len, static_cast<size_t>(MAX_CHARS_PER_ARG)) << "argument 1 is not terminated within its slot";
+  EXPECT_EQ(std::string(arg, len), long_path.substr(0, len));
+  EXPECT_STREQ(GetArg(2), "-next");
+}
+
 } // namespace
