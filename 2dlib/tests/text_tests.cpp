@@ -83,6 +83,15 @@ TEST_F(GrViewportTextTest, LineWidthIsGlyphWidthsPlusSpacingBetweenThem) {
   EXPECT_EQ(LineWidth(vp, "A"), 4);
 }
 
+TEST_F(GrViewportTextTest, LineWidthIgnoresEmbeddedColorCode) {
+  grViewport vp(&screen.surf);
+  vp.set_font(kFontName);
+
+  // GR_COLOR_CHAR followed by r,g,b bytes chosen inside the font's range so they would have
+  // a width if mistakenly measured.
+  EXPECT_EQ(LineWidth(vp, "\x01" "ABC" "AB"), LineWidth(vp, "AB"));
+}
+
 TEST_F(GrViewportTextTest, PutsDrawsGlyphsLeftToRightSeparatedBySpacing) {
   grViewport vp(&screen.surf);
   vp.set_font(kFontName);
