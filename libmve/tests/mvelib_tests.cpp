@@ -337,4 +337,19 @@ TEST_F(MveResetTest, ResetDoesNotLeakTheChunkBuffer) {
   EXPECT_EQ(LiveAllocations(), 0u);
 }
 
+TEST_F(MveResetTest, ResetEndsPlaybackWhenTheHeaderCannotBeReread) {
+  MVESTREAM *m = mve_open(file_);
+  ASSERT_NE(m, nullptr);
+  mve_set_handler(m, 2, RecordingHandler);
+  mve_set_handler(m, 3, RecordingHandler);
+
+  mve_read = [](void *, void *, unsigned int) -> unsigned int { return 0; };
+  mve_reset(m);
+  EXPECT_EQ(mve_play_next_chunk(m), 0);
+  EXPECT_TRUE(g_calls.empty());
+
+  mve_close(m);
+  EXPECT_EQ(LiveAllocations(), 0u);
+}
+
 } // namespace
