@@ -32,10 +32,7 @@
 #include "crossplat.h"
 #include "grdefs.h"
 #include "log.h"
-#include "odtstrings.h"
 #include "networking.h"
-
-extern const char *GetString(int d);
 
 typedef void *(*mem_malloc_fp)(int size);
 extern mem_malloc_fp DLLmem_malloc;
@@ -697,10 +694,10 @@ char *ParseIRCMessage(char *Line, int iMode) {
     } else {
       if (iMode == MSG_LOCAL) {
         pszTempStr = GetWordNum(0, szRemLine);
-        snprintf(szResponse, sizeof(szResponse), TXT_ODT_PRIVMSGTO, szTarget, pszTempStr);
+        snprintf(szResponse, sizeof(szResponse), GetChatModuleString(ChatString::PrivMsgTo), szTarget, pszTempStr);
       } else {
         pszTempStr = GetWordNum(0, szRemLine);
-        snprintf(szResponse, sizeof(szResponse), TXT_ODT_PRIVMSGFROM, szNick, pszTempStr);
+        snprintf(szResponse, sizeof(szResponse), GetChatModuleString(ChatString::PrivMsgFrom), szNick, pszTempStr);
       }
       return szResponse;
     }
@@ -840,7 +837,7 @@ char *ParseIRCMessage(char *Line, int iMode) {
     Getting_user_tracker_error = 1;
     Getting_user_channel_error = 1;
 
-    snprintf(szResponse, sizeof(szResponse), TXT_ODT_ERRORNOTONLINE, szWhoisUser);
+    snprintf(szResponse, sizeof(szResponse), GetChatModuleString(ChatString::ErrorNotOnline), szWhoisUser);
     return szResponse;
   }
   if (stricmp(szCmd, "311") == 0) {
@@ -987,7 +984,7 @@ char *ParseIRCMessage(char *Line, int iMode) {
   }
   if (stricmp(szCmd, "432") == 0) {
     // Channel Mode info
-    snprintf(szResponse, sizeof(szResponse), "%s", TXT_ODT_BADNICK);
+    snprintf(szResponse, sizeof(szResponse), "%s", GetChatModuleString(ChatString::BadNick));
     AddChatCommandToQueue(CC_DISCONNECTED, nullptr, 0);
     return szResponse;
   }

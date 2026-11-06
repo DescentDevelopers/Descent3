@@ -450,6 +450,20 @@
 #include "mtclient.h"
 #include "mtpilottrack.h"
 
+const char *GetChatModuleString(ChatString id) {
+  switch (id) {
+  case ChatString::ErrorNotOnline:
+    return TXT_PXO_ERRORNOTONLINE;
+  case ChatString::BadNick:
+    return TXT_PXO_BADNICK;
+  case ChatString::PrivMsgTo:
+    return TXT_PXO_PRIVMSGTO;
+  case ChatString::PrivMsgFrom:
+    return TXT_PXO_PRIVMSGFROM;
+  }
+  return "";
+}
+
 char Ourlobby[50] = "";
 bool Login_aborted = false;
 bool Auto_start = false;

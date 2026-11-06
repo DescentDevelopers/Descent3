@@ -1,6 +1,6 @@
 /*
  * Descent 3
- * Copyright (C) 2024 Descent Developers
+ * Copyright (C) 2024 Parallax Software
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,11 @@ typedef struct Chat_command {
   char data[100];
   Chat_command *next;
 } Chat_command;
+
+// The localized texts chat_api formats some of its messages with. Each online module keeps them in its own string
+// table, so the module that links chat_api defines GetChatModuleString().
+enum class ChatString { ErrorNotOnline, BadNick, PrivMsgTo, PrivMsgFrom };
+const char *GetChatModuleString(ChatString id);
 
 // Prototypes
 int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nickname, char *trackerid);
