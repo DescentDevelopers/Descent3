@@ -192,6 +192,16 @@ TEST_F(ChatApiTest, NickInUseRetriesWithDistinctVariantsOfTheOriginal) {
   EXPECT_NE(second, first);
 }
 
+TEST_F(ChatApiTest, NickInUseRetryNickHasNoSpaces) {
+  char nick[] = "Big Pilot";
+  char tid[] = "1234";
+  ASSERT_EQ(ConnectToChatServer("irc.invalid", 0, nick, tid), -1);
+  ASSERT_STREQ(Nick_name, "Big_Pilot");
+
+  Feed(":irc.test 433 * Big_Pilot :Nickname is already in use");
+  EXPECT_EQ(std::strchr(Nick_name, ' '), nullptr) << "retry nick: \"" << Nick_name << "\"";
+}
+
 TEST_F(ChatApiTest, BadNickDisconnects) {
   EXPECT_EQ(Str(Feed(":irc.test 432 * b@d :Erroneous nickname")), TEST_BAD_NICK);
   EXPECT_THAT(DrainCommands(), Contains(Pair(CC_DISCONNECTED, "")));
