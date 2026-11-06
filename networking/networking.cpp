@@ -1448,12 +1448,10 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
       }
       if (rcv_buff.type == RNT_DATA) {
 
+        // How far seq is ahead of (or, if negative, behind) the next sequence we expect, across the 16-bit wrap
+        int seqdelta = static_cast<int16_t>(INTEL_SHORT(rcv_buff.seq) - rsocket->oursequence);
         // If the data is out of order by >= MAXNETBUFFERS-1 ignore that packet for now
-        int seqdelta;
-        seqdelta = INTEL_SHORT(rcv_buff.seq) - rsocket->oursequence;
-        if (seqdelta < 0)
-          seqdelta = seqdelta * -1;
-        if (seqdelta >= MAXNETBUFFERS - 1) {
+        if (seqdelta >= MAXNETBUFFERS - 1 || seqdelta <= -(MAXNETBUFFERS - 1)) {
           LOG_WARNING << "Received reliable packet out of order!";
           // It's out of order, so we won't ack it, which will mean we will get it again soon.
           continue;
@@ -1461,18 +1459,9 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
         // else move data into the proper buffer position
         int savepacket = 1;
 
-        if (rsocket->oursequence < (0xffff - (MAXNETBUFFERS - 1))) {
-          if (rsocket->oursequence > INTEL_SHORT(rcv_buff.seq)) {
-            LOG_WARNING.printf("Received old packet with seq of %d", INTEL_SHORT(rcv_buff.seq));
-            savepacket = 0;
-          }
-
-        } else {
-          // Sequence is high, so prepare for wrap around
-          if (((uint16_t)(INTEL_SHORT(rcv_buff.seq) - rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
-            LOG_WARNING.printf("Received old packet with seq of %d", INTEL_SHORT(rcv_buff.seq));
-            savepacket = 0;
-          }
+        if (seqdelta < 0) {
+          LOG_WARNING.printf("Received old packet with seq of %d", INTEL_SHORT(rcv_buff.seq));
+          savepacket = 0;
         }
 
         for (i = 0; i < MAXNETBUFFERS; i++) {
