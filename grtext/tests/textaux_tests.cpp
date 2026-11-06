@@ -150,6 +150,13 @@ TEST_F(TextauxTest, ClipStringWithEndCharKeepsLongestPrefixThatFitsWithMarker) {
   EXPECT_LE(grtext_GetTextLineWidth(s), 32);
 }
 
+TEST_F(TextauxTest, ClipStringWithoutEndCharFitsWithinWidth) {
+  char s[] = "ABCDEFGH";
+  textaux_ClipString(22, s); // "ABCD" is 19 pixels, "ABCDE" is 24
+  EXPECT_LE(grtext_GetTextLineWidth(s), 22) << '"' << s << '"';
+  EXPECT_STREQ(s, "ABCD");
+}
+
 TEST_F(TextauxTest, ClipStringNeverWritesBeforeTheString) {
   char buf[] = "#ABCDEF";
   char *s = buf + 1;
