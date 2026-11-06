@@ -111,6 +111,14 @@ TEST_F(AudioEncodeTest, SilenceDecodesToExactSilence) {
   EXPECT_TRUE(std::all_of(dec.pcm.begin(), dec.pcm.end(), [](int16_t s) { return s == 0; }));
 }
 
+TEST_F(AudioEncodeTest, HalfScaleToneAtLowCompressionRoundTrips) {
+  const auto pcm = MakeTone(8192, 440.0, 22050.0, 16000.0);
+  const Decoded dec = Decode(Encode(dir_ / "encoded.acm", pcm, 1, 22050, 7, 16, 0.5f));
+  ASSERT_TRUE(dec.ok);
+  ASSERT_EQ(dec.pcm.size(), pcm.size());
+  EXPECT_GT(SnrDb(pcm, dec.pcm), kMinToneSnrDb);
+}
+
 TEST_F(AudioEncodeTest, VolumeScalesTheEncodedSignal) {
   const auto pcm = MakeTone(4096, 440.0, 22050.0, 10000.0);
   std::vector<int16_t> half(pcm.size());
