@@ -190,6 +190,12 @@ TEST_F(WaveLoadTest, MissingFileFails) {
   EXPECT_FALSE(Load(dir_ / "does_not_exist.wav", kSlotA, true, 1.0f, /*load_data=*/false));
 }
 
+TEST_F(WaveLoadTest, FileWithFormatButNoDataChunkIsRejectedCleanly) {
+  EXPECT_FALSE(Load(dir_.Write("nodata.wav", WavBuilder().PcmFmt(16).Build()), kSlotA, true));
+  EXPECT_EQ(SoundFiles[kSlotA].sample_16bit, nullptr);
+  EXPECT_EQ(SoundFiles[kSlotA].sample_8bit, nullptr);
+}
+
 // The engine only supports mono, 22050 Hz, 8- or 16-bit PCM.
 struct RejectCase {
   const char *name;
