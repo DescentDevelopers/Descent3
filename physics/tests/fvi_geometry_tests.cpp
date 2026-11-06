@@ -74,6 +74,14 @@ TEST(FastVectorBBox, RayThatOvershootsTheBoxMisses) {
   EXPECT_FALSE(RayHitsBox(mn, mx, V(-5, 0, -5), V(1, 0, 0.1f)));
 }
 
+TEST(FastVectorBBox, RayPassingBesideBoxMisses) {
+  const vector mn = V(-1, -1, -1), mx = V(1, 1, 1);
+  EXPECT_FALSE(RayHitsBox(mn, mx, V(-5, 3, 0), V(1, 0, 0)));
+  // Starts level with the box but climbs out of the y-slab (y = 40) before reaching the
+  // x = -1 face.
+  EXPECT_FALSE(RayHitsBox(mn, mx, V(-5, 0, 0), V(1, 10, 0)));
+}
+
 TEST(FastVectorBBox, RayAimedAtAnEdgeSharedByTwoFacesHitsOneOfThem) {
   struct EdgeRay {
     float x0, y0, y1, z0, w;
