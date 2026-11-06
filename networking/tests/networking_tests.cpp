@@ -247,4 +247,16 @@ TEST_F(ReliableServerTest, DataIsDeliveredOnlyToTheSendersConnection) {
   EXPECT_EQ(Receive(alice_sock), Bytes("from alice"));
 }
 
+TEST_F(ReliableServerTest, InOrderStreamSurvivesSequenceNumberWrap) {
+  network_address peer = MakePeer(15, 4321);
+  SOCKET sock = Connect(peer);
+
+  const int total = 0x10000 + 100;
+  for (int n = 0; n < total; n++) {
+    uint16_t seq = static_cast<uint16_t>(n);
+    SendData(peer, seq);
+    ASSERT_EQ(Receive(sock), DataPayload(seq)) << "packet " << n << " (seq " << seq << ") was not delivered";
+  }
+}
+
 } // namespace
