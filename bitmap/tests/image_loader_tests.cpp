@@ -88,6 +88,18 @@ TEST_F(ImageLoaderTest, Uncompressed24BitTgaIsOpaqueWithCorrectChannels) {
   EXPECT_EQ(Pixels(handle), (std::vector<uint16_t>{Rgb1555(31, 0, 0), Rgb1555(0, 31, 0), Rgb1555(0, 0, 31)}));
 }
 
+TEST_F(ImageLoaderTest, Rle24BitTgaDecodesSameAsUncompressed) {
+  const std::vector<std::vector<Bgra>> rows = {
+      {kRed, kRed, kRed, kBlue},
+      {kGreen, kBlue, kBlue, kRed},
+  };
+  int raw = Track(LoadFromBytes(temp_dir, RawTga(rows, 24, false), LoadTga1555));
+  int rle = Track(LoadFromBytes(temp_dir, RleTga(rows, 24), LoadTga1555));
+  ASSERT_GT(raw, 0);
+  ASSERT_GT(rle, 0);
+  EXPECT_EQ(Pixels(rle), Pixels(raw));
+}
+
 TEST_F(ImageLoaderTest, TgaLoadedAs4444KeepsTopFourBitsOfEachChannelAndAlpha) {
   const std::vector<std::vector<Bgra>> rows = {{Bgra{0x10, 0x80, 0xFF, 0x80}, Bgra{0, 0, 0, 0}}};
   int handle = Track(LoadFromBytes(temp_dir, RawTga(rows, 32, false), LoadTga4444));
