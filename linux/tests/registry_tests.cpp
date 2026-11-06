@@ -155,6 +155,23 @@ TEST_F(RegistryTest, ExportThenImportRestoresKeysAndRecords) {
   EXPECT_EQ(ReadString(loaded, "number"), "1.5");
 }
 
+TEST_F(RegistryTest, NegativeDwordSurvivesExportImport) {
+  {
+    CRegistry reg(file.c_str());
+    reg.CreateKey("Descent3");
+    int minusOne = -1, intMin = INT_MIN;
+    ASSERT_TRUE(reg.CreateRecord("minus_one", REGT_DWORD, &minusOne));
+    ASSERT_TRUE(reg.CreateRecord("int_min", REGT_DWORD, &intMin));
+    reg.Export();
+  }
+
+  CRegistry loaded(file.c_str());
+  ASSERT_TRUE(loaded.Import());
+  ASSERT_TRUE(loaded.LookupKey("Descent3"));
+  EXPECT_EQ(ReadDword(loaded, "minus_one"), -1);
+  EXPECT_EQ(ReadDword(loaded, "int_min"), INT_MIN);
+}
+
 TEST_F(RegistryTest, ImportOfMissingFileFails) {
   CRegistry reg((dir.path() / "does_not_exist").string().c_str());
   EXPECT_FALSE(reg.Import());
