@@ -138,6 +138,21 @@ TEST_F(BitmapNameTest, LoadingSameFileTwiceSharesOneRefcountedHandle) {
   EXPECT_EQ(bm_FindBitmapName("shared.ogf"), -1);
 }
 
+TEST_F(BitmapNameTest, FreeingAnUnregisteredBitmapWithTheSameNameKeepsTheRegisteredOne) {
+  std::filesystem::path path = WriteOgf(temp_dir, "namesake.ogf");
+  int registered = Track(bm_AllocLoadFileBitmap(path.string().c_str(), 0));
+  ASSERT_GT(registered, 0);
+  ASSERT_EQ(bm_FindBitmapName("namesake.ogf"), registered);
+
+  int unregistered = MakeBitmap(2, 2, std::vector<uint16_t>(4, Rgb1555(4, 5, 6)));
+  ASSERT_GT(unregistered, 0);
+  ASSERT_NE(unregistered, registered);
+  strcpy(GameBitmaps[unregistered].name, "namesake.ogf");
+  bm_FreeBitmap(unregistered);
+
+  EXPECT_EQ(bm_FindBitmapName("namesake.ogf"), registered);
+}
+
 TEST_F(BitmapNameTest, ChangeEndNameStripsDirectoryAndExtension) {
   std::string src = (temp_dir / "Wall.tga").string();
   char dest[BITMAP_NAME_LEN + 16];
