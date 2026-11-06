@@ -710,6 +710,7 @@
 
 #include <algorithm>
 #include <climits>
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -5556,7 +5557,7 @@ int qUserVarValueInt(int varnum) {
     return INT_MIN;
   if (value >= std::nexttoward(INT_MAX, 0))
     return INT_MAX;
-  return value + 0.5;
+  return std::lround(value);
 }
 
 /*
