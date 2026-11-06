@@ -194,6 +194,7 @@
 #include <filesystem>
 
 #include "debug.h"
+#include "debug_platform.h"
 #include "mem.h"
 #include "pserror.h"
 #include "pstypes.h"
@@ -205,7 +206,7 @@
 // Does a messagebox with a stack dump
 // Messagebox shows topstring, then stack dump, then bottomstring
 // Return types are as the same the Windows return values
-int Debug_ErrorBox(int type, const char *title, const char *topstring, const char *bottomstring) {
+int Debug_PlatformErrorBox(int type, const char *title, const char *topstring, const char *bottomstring) {
   DWORD flags = 0;
   if (type == OSMBOX_OK)
     flags = MB_OK;
@@ -233,7 +234,7 @@ int Debug_ErrorBox(int type, const char *title, const char *topstring, const cha
 }
 
 // Return types are the same the Windows return values
-int Debug_MessageBox(int type, const char *title, const char *str) {
+int Debug_PlatformMessageBox(int type, const char *title, const char *str) {
   DWORD flags = 0;
   if (type == OSMBOX_OK)
     flags = MB_OK;

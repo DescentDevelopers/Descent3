@@ -161,6 +161,15 @@ int Debug_ErrorBox(int type, const char *topstring, const char *title, const cha
 // Returns the same values as the Win32 MessageBox() function
 int Debug_MessageBox(int type, const char *title, const char *str);
 
+// Debug_ErrorBox and Debug_MessageBox normally show the platform's own boxes. Debug_SetMessageBoxHandlers sends them
+// to other handlers instead, for example in tests, where a dialog would stall an unattended run. A null member keeps
+// the platform box for that function. Returns the handlers that were installed before.
+struct DebugMessageBoxHandlers {
+  int (*error_box)(int type, const char *topstring, const char *title, const char *bottomstring);
+  int (*message_box)(int type, const char *title, const char *str);
+};
+DebugMessageBoxHandlers Debug_SetMessageBoxHandlers(DebugMessageBoxHandlers handlers);
+
 // these functions deal with debug spew support
 void Debug_ConsolePrintf(int n, const char *format, ...);
 

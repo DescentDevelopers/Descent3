@@ -1,5 +1,6 @@
 set(HEADERS
   debug.h
+  debug_platform.h
   mono.h
   pserror.h
 )
