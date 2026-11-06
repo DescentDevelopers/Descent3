@@ -141,4 +141,12 @@ TEST_F(ListTest, AddRejectsDuplicateOfNonTailItem) {
   EXPECT_EQ(Forward(list), (std::vector<void *>{&a, &b}));
 }
 
+TEST_F(ListTest, AddRejectsDuplicateOfTailItem) {
+  AddListItem(&list, &a);
+  AddListItem(&list, &b);
+
+  EXPECT_EQ(AddListItem(&list, &b), 0);
+  EXPECT_EQ(Forward(list), (std::vector<void *>{&a, &b}));
+}
+
 } // namespace
