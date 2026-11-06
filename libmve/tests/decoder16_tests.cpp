@@ -164,4 +164,29 @@ TEST_F(Decoder16Test, Op03TakesItsOffsetFromTheMotionStream) {
   ExpectSolid(1, 2, kSentinel);
 }
 
+TEST_F(Decoder16Test, Op0cEachPixelFillsA2x2Block) {
+  // 16 pixels, one per 2x2 square in raster order, as in the 8-bit decoder.
+  InitFrame(16, 16);
+  SetOp(0, 0, 0xc);
+  SetOp(1, 0, 0xe);
+  d3_test::ByteWriter main;
+  for (int i = 0; i < 16; i++)
+    main.U16(static_cast<uint16_t>(0x1000 + i));
+  main.U16(kSentinel);
+  Decode(main);
+
+  const char *expected = R"(
+1000 1000 1001 1001 1002 1002 1003 1003
+1000 1000 1001 1001 1002 1002 1003 1003
+1004 1004 1005 1005 1006 1006 1007 1007
+1004 1004 1005 1005 1006 1006 1007 1007
+1008 1008 1009 1009 100a 100a 100b 100b
+1008 1008 1009 1009 100a 100a 100b 100b
+100c 100c 100d 100d 100e 100e 100f 100f
+100c 100c 100d 100d 100e 100e 100f 100f
+)";
+  EXPECT_EQ(BlockText(0, 0), expected);
+  ExpectSolid(1, 0, kSentinel);
+}
+
 } // namespace
