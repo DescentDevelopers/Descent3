@@ -447,6 +447,8 @@
 #include "room.h"
 #include "objinfo.h"
 #include "weapon.h"
+#include "door.h"
+#include "fireball.h"
 #include "game.h"
 #include "terrain.h"
 #include "attach.h"
@@ -561,9 +563,8 @@ int osipf_AIGoalFollowPathSimple(int objhandle, int path_id, int guid, int flags
     return -1;
   }
 
-  if (path_id == -1) {
-    LOG_FATAL << "Illegal Path Id Passed To AIGoalFollowPathSimple";
-    Int3();
+  if (path_id < 0 || path_id >= MAX_GAME_PATHS || !GamePaths[path_id].used || GamePaths[path_id].num_nodes < 1) {
+    LOG_ERROR.printf("Illegal Path Id %d Passed To AIGoalFollowPathSimple", path_id);
     return -1;
   }
 
@@ -613,6 +614,17 @@ void osipf_SoundTouch(char *str) {
 }
 
 // Gets room values
+// The number of weapon batteries an object's dynamic_wb (and its static_wb)
+// has: MAX_WBS_PER_OBJ for a player's ship, one per battery in the model for
+// any other object (and none if it has no dynamic_wb).
+static int ScriptNumWBs(object *objp) {
+  if (!objp->dynamic_wb)
+    return 0;
+  if (objp->type == OBJ_PLAYER || objp->type == OBJ_OBSERVER)
+    return MAX_WBS_PER_OBJ;
+  return std::min(Poly_models[objp->rtype.pobj_info.model_num].num_wbs, MAX_WBS_PER_OBJ);
+}
+
 void osipf_RoomValue(int roomnum, char op, char vtype, void *ptr, int index) {
   if (roomnum < 0 || roomnum > Highest_room_index || !Rooms[roomnum].used) {
     if (vtype == RMV_C_USED)
@@ -624,6 +636,27 @@ void osipf_RoomValue(int roomnum, char op, char vtype, void *ptr, int index) {
   }
 
   room *rp = &Rooms[roomnum];
+
+  // The face and portal values take a face or portal index.
+  switch (vtype) {
+  case RMSV_I_FACE_TEXTURE_ID:
+  case RMSV_I_FACE_FLAGS:
+  case RMSV_V_FACE_NORMAL:
+    if (index < 0 || index >= rp->num_faces) {
+      LOG_ERROR.printf("RoomValue: room %d has no face %d", roomnum, index);
+      return;
+    }
+    break;
+  case RMSV_V_PORTAL_PATH_PNT:
+  case RMSV_I_PORTAL_CONNECT_ROOM:
+  case RMSV_I_PORTAL_CONNECT_PORTAL:
+  case RMSV_I_PORTAL_FACE:
+    if (index < 0 || index >= rp->num_portals) {
+      LOG_ERROR.printf("RoomValue: room %d has no portal %d", roomnum, index);
+      return;
+    }
+    break;
+  }
 
   switch (vtype) {
   case RMV_I_FLAGS:
@@ -663,9 +696,15 @@ void osipf_RoomValue(int roomnum, char op, char vtype, void *ptr, int index) {
       *(int *)ptr = rp->num_faces;
     break;
   case RMSV_I_FACE_TEXTURE_ID:
-    if (op == VF_SET)
-      rp->faces[index].tmap = *(int *)ptr;
-    else if (op == VF_GET)
+    if (op == VF_SET) {
+      // The renderer indexes GameTextures with it.
+      int tmap = *(int *)ptr;
+      if (tmap < 0 || tmap >= MAX_TEXTURES || !GameTextures[tmap].used) {
+        LOG_ERROR.printf("RoomValue: invalid texture %d", tmap);
+        return;
+      }
+      rp->faces[index].tmap = tmap;
+    } else if (op == VF_GET)
       *(int *)ptr = rp->faces[index].tmap;
     break;
   case RMSV_I_FACE_FLAGS:
@@ -835,15 +874,21 @@ void osipf_PlayerValue(int obj_handle, char op, char vhandle, void *ptr, int ind
       ASSERT(src);
       msafe_struct mstruct;
       mstruct.objhandle = obj_handle;
-      strcpy(mstruct.name, src);
+      strncpy(mstruct.name, src, MSAFE_NAME_LENGTH - 1);
+      mstruct.name[MSAFE_NAME_LENGTH - 1] = '\0';
       msafe_CallFunction(MSAFE_MISC_GUIDEBOT_NAME, &mstruct);
     }
 
   } break;
 
   case PLYSV_US_WEAPON_POWERUP_ID: {
-    if (op == VF_GET)
+    if (op == VF_GET) {
+      if (index < 0 || index >= MAX_PLAYER_WEAPONS) {
+        LOG_ERROR.printf("Player Value: invalid weapon %d", index);
+        return;
+      }
       *(uint16_t *)ptr = Ships[Players[id].ship_index].spew_powerup[index];
+    }
   } break;
   case PLYSV_I_WEAPON_AMMO:
     if (op == VF_GET)
@@ -903,6 +948,10 @@ void osipf_ObjectCustomAnim(int handle, float start, float end, float time, char
   objp->rtype.pobj_info.custom_anim_info.anim_time = time;
   objp->rtype.pobj_info.custom_anim_info.flags = flags;
   objp->rtype.pobj_info.custom_anim_info.anim_sound_index = sound_handle;
+  if (next_anim_type < 0 || next_anim_type > AS_CUSTOM) {
+    LOG_ERROR.printf("ObjectCustomAnim: invalid animation state %d", next_anim_type);
+    next_anim_type = AS_ALERT;
+  }
   objp->rtype.pobj_info.custom_anim_info.next_anim_type = next_anim_type;
 
   if (objp->ai_info)
@@ -1053,7 +1102,13 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
     break;
   case AIV_C_MOVEMENT_TYPE:
     if (op == VF_SET) {
-      ai_info->movement_type = *((char *)ptr);
+      // The engine indexes Object_info[].anim with it.
+      char movement_type = *((char *)ptr);
+      if (movement_type < 0 || movement_type >= NUM_MOVEMENT_CLASSES) {
+        LOG_ERROR.printf("AI_Value: invalid movement type %d", movement_type);
+        return;
+      }
+      ai_info->movement_type = movement_type;
     } else {
       *((char *)ptr) = ai_info->movement_type;
     }
@@ -1067,6 +1122,10 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
     break;
   case AIV_C_ANIMATION_TYPE:
     if (op == VF_SET) {
+      if (*((char *)ptr) < 0 || *((char *)ptr) > AS_CUSTOM) {
+        LOG_ERROR.printf("AI_Value: invalid animation state %d", *((char *)ptr));
+        return;
+      }
       ai_info->animation_type = *((char *)ptr);
     } else {
       *((char *)ptr) = ai_info->animation_type;
@@ -1074,6 +1133,10 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
     break;
   case AIV_C_NEXT_ANIMATION_TYPE:
     if (op == VF_SET) {
+      if (*((char *)ptr) < 0 || *((char *)ptr) > AS_CUSTOM) {
+        LOG_ERROR.printf("AI_Value: invalid animation state %d", *((char *)ptr));
+        return;
+      }
       ai_info->next_animation_type = *((char *)ptr);
     } else {
       *((char *)ptr) = ai_info->next_animation_type;
@@ -1088,6 +1151,11 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
     break;
   case AIV_C_CURRENT_WB_FIRING:
     if (op == VF_SET) {
+      // The AI fires the battery with static_wb and dynamic_wb at this index.
+      if (*((char *)ptr) < 0 || *((char *)ptr) >= ScriptNumWBs(objp) || !Object_info[objp->id].static_wb) {
+        LOG_ERROR.printf("AI_Value: object has no weapon battery %d", *((char *)ptr));
+        return;
+      }
       ai_info->current_wb_firing = *((char *)ptr);
     } else {
       *((char *)ptr) = ai_info->current_wb_firing;
@@ -1352,6 +1420,22 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr) {
   }
 }
 
+// The animation entry `index` of an AI object's current movement class, or
+// nullptr (with an error logged) if the object, its class or the index is out
+// of range.
+static anim_entry *ScriptAnimEntry(object *obj, int index) {
+  if (obj->control_type != CT_AI || !obj->ai_info)
+    return nullptr;
+  int movement_type = obj->ai_info->movement_type;
+  object_info *info = &Object_info[obj->id];
+  if (!info->anim || movement_type < 0 || movement_type >= NUM_MOVEMENT_CLASSES || index < 0 ||
+      index >= NUM_ANIMS_PER_CLASS) {
+    LOG_ERROR.printf("Obj_Value: invalid animation %d for movement class %d", index, movement_type);
+    return nullptr;
+  }
+  return &info->anim[movement_type].elem[index];
+}
+
 void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int index) {
   object *obj = ObjGet(handle);
   if (!obj) {
@@ -1368,12 +1452,14 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
   case OBJV_PI_HACK_FVI_IGNORE_LIST: {
     if (op == VF_SET) {
       if (ptr != nullptr) {
+        // The list ends with -1; keep at most 99 entries so the terminator fits.
         int count = 0;
-
-        do {
+        constexpr int max_entries = sizeof(hack_list) / sizeof(hack_list[0]) - 1;
+        while (count < max_entries && ((int *)ptr)[count] != -1) {
           hack_list[count] = ((int *)ptr)[count];
           count++;
-        } while (hack_list[count - 1] != -1);
+        }
+        hack_list[count] = -1;
 
         hack_ilist = hack_list;
       } else {
@@ -1427,6 +1513,11 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
     break;
   case OBJV_I_ROOMNUM:
     if (op == VF_SET) {
+      // ObjSetPos links the object into this room (or terrain cell).
+      if (!osipf_IsRoomValid(*(int *)ptr)) {
+        LOG_ERROR.printf("Obj_Value: invalid room %d", *(int *)ptr);
+        return;
+      }
       ObjSetPos(obj, &obj->pos, *(int *)ptr, nullptr, false);
       obj->flags |= OF_MOVED_THIS_FRAME;
       obj->flags &= ~OF_STOPPED_THIS_FRAME;
@@ -1556,33 +1647,36 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
       }
     }
     break;
-  case OBJSV_F_ANIM_START:
-    if (obj->control_type != CT_AI)
+  case OBJSV_F_ANIM_START: {
+    anim_entry *anim = ScriptAnimEntry(obj, index);
+    if (!anim)
       return;
 
     if (op == VF_GET)
-      (*(float *)ptr) = Object_info[obj->id].anim[obj->ai_info->movement_type].elem[index].from;
+      (*(float *)ptr) = anim->from;
     else if (op == VF_SET)
-      Object_info[obj->id].anim[obj->ai_info->movement_type].elem[index].from = (*(float *)ptr);
-    break;
-  case OBJSV_F_ANIM_END:
-    if (obj->control_type != CT_AI)
+      anim->from = (*(float *)ptr);
+  } break;
+  case OBJSV_F_ANIM_END: {
+    anim_entry *anim = ScriptAnimEntry(obj, index);
+    if (!anim)
       return;
 
     if (op == VF_GET)
-      (*(float *)ptr) = Object_info[obj->id].anim[obj->ai_info->movement_type].elem[index].to;
+      (*(float *)ptr) = anim->to;
     else if (op == VF_SET)
-      Object_info[obj->id].anim[obj->ai_info->movement_type].elem[index].to = (*(float *)ptr);
-    break;
-  case OBJSV_F_ANIM_TIME:
-    if (obj->control_type != CT_AI)
+      anim->to = (*(float *)ptr);
+  } break;
+  case OBJSV_F_ANIM_TIME: {
+    anim_entry *anim = ScriptAnimEntry(obj, index);
+    if (!anim)
       return;
 
     if (op == VF_GET)
-      (*(float *)ptr) = Object_info[obj->id].anim[obj->ai_info->movement_type].elem[index].spc;
+      (*(float *)ptr) = anim->spc;
     else if (op == VF_SET)
-      Object_info[obj->id].anim[obj->ai_info->movement_type].elem[index].spc = (*(float *)ptr);
-    break;
+      anim->spc = (*(float *)ptr);
+  } break;
 
   case OBJV_C_VIRUS_INFECTED: {
     // the object show signs of virus infection
@@ -1724,6 +1818,11 @@ int osipf_AIGoalAddEnabler(int objhandle, int goal_index, int enabler_type, floa
   if (!ptr)
     return -1;
 
+  if (goal_index < 0 || goal_index >= MAX_GOALS) {
+    LOG_ERROR.printf("AIGoalAddEnabler: invalid goal %d", goal_index);
+    return -1;
+  }
+
   return GoalAddEnabler(obj, goal_index, enabler_type, ptr, percent, interval);
 }
 
@@ -1765,8 +1864,18 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
     path_info.next_node = va_arg(marker, int) - 1;
     va_end(marker);
 
-    if (path_info.path_id >= 0 && path_info.end_node < 0) {
-      path_info.end_node = GamePaths[path_info.path_id].num_nodes - 1;
+    if (path_info.path_id < 0 || path_info.path_id >= MAX_GAME_PATHS || !GamePaths[path_info.path_id].used) {
+      LOG_ERROR.printf("AIGoalAdd: invalid path %d", path_info.path_id);
+      return -1;
+    }
+    int num_nodes = GamePaths[path_info.path_id].num_nodes;
+    if (path_info.end_node < 0) {
+      path_info.end_node = num_nodes - 1;
+    }
+    if (path_info.start_node < 0 || path_info.start_node >= num_nodes || path_info.end_node >= num_nodes ||
+        path_info.next_node < 0 || path_info.next_node >= num_nodes) {
+      LOG_ERROR.printf("AIGoalAdd: invalid nodes for path %d", path_info.path_id);
+      return -1;
     }
 
     return GoalAddGoal(obj, AIG_FOLLOW_PATH, (void *)&path_info, level, influence, flags, guid);
@@ -1803,6 +1912,11 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
     va_start(marker, flags);
     int i = va_arg(marker, int);
     va_end(marker);
+
+    if (i < 0 || i >= ScriptNumWBs(obj) || !Object_info[obj->id].static_wb) {
+      LOG_ERROR.printf("AIGoalAdd: object has no weapon battery %d", i);
+      return -1;
+    }
 
     gi_fire attack_info;
 
@@ -1847,6 +1961,12 @@ int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, in
     vector *pos = va_arg(marker, vector *);
     int roomnum = va_arg(marker, int);
     va_end(marker);
+
+    // Path finding indexes Rooms (or the terrain) with it.
+    if (!osipf_IsRoomValid(roomnum)) {
+      LOG_ERROR.printf("AIGoalAdd: invalid room %d", roomnum);
+      return -1;
+    }
 
     g_info.pos = (*pos);
     g_info.roomnum = roomnum;
@@ -2045,7 +2165,12 @@ int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, uint8_t f_en
 
   ai_frame *ai_info = obj->ai_info;
 
-  if (goal_handle >= 0 && goal_handle < MAX_GOALS && ai_info->goals[goal_handle].used != 0) {
+  if (!ai_info || goal_handle < 0 || goal_handle >= MAX_GOALS) {
+    LOG_ERROR.printf("AISetGoalFlags: invalid goal %d", goal_handle);
+    return 0;
+  }
+
+  if (ai_info->goals[goal_handle].used != 0) {
     if (f_enable)
       ai_info->goals[goal_handle].flags |= flags;
     else
@@ -2567,6 +2692,28 @@ void osipf_OpenMessageWindow(const char *title, ...) {
   Int3(); // ummm, this is a blank function, should we ever be calling it?
 }
 
+// True if a level script may create an object of this type and id: ObjCreate
+// indexes a table with the id for these types.
+static bool ScriptCanCreateObject(uint8_t type, uint16_t id) {
+  if (type >= MAX_OBJECT_TYPES)
+    return false;
+  if (IS_GENERIC(type))
+    return id < MAX_OBJECT_IDS && Object_info[id].type != OBJ_NONE;
+  switch (type) {
+  case OBJ_WEAPON:
+    return id < MAX_WEAPONS && Weapons[id].used;
+  case OBJ_FIREBALL:
+    return id < NUM_FIREBALLS;
+  case OBJ_DOOR:
+    return id < MAX_DOORS && Doors[id].used;
+  case OBJ_PLAYER:
+  case OBJ_OBSERVER:
+  case OBJ_GHOST:
+    return false; // the engine creates these for players
+  }
+  return true;
+}
+
 int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                     vector *initial_velocity) {
   object *obj;
@@ -2574,6 +2721,11 @@ int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const m
 
   if (id == 65535) // since it is a uint16_t, this is == -1
     return OBJECT_HANDLE_NONE;
+
+  if (!ScriptCanCreateObject(type, id)) {
+    LOG_ERROR.printf("ObjCreate: cannot create an object of type %d with id %d", type, id);
+    return OBJECT_HANDLE_NONE;
+  }
 
   if (((roomnum >= 0) && (roomnum <= Highest_room_index) && (Rooms[roomnum].used)) || (ROOMNUM_OUTSIDE(roomnum))) {
     if (IS_GENERIC(type)) {
@@ -2647,28 +2799,59 @@ void osipf_ObjWBValue(int obj_handle, int8_t wb_index, char op, char vtype, void
     return;
   }
 
+  poly_model *pm = &Poly_models[objp->rtype.pobj_info.model_num];
+  bool is_player = objp->type == OBJ_PLAYER || objp->type == OBJ_OBSERVER;
+
+  if (vtype == WBV_C_NUM_WBS) {
+    if (op == VF_GET) {
+      *(char *)ptr = pm->num_wbs;
+    }
+    return;
+  }
+
+  if (wb_index < 0 || wb_index >= ScriptNumWBs(objp)) {
+    LOG_ERROR.printf("Obj_WBValue: object has no weapon battery %d", wb_index);
+    return;
+  }
+
+  // The per gun point and per firing mask arrays.
+  int g_limit = 0;
+  switch (vtype) {
+  case WBSV_US_GUNPT_WEAPON_ID:
+  case WBSV_V_GUNPT_POS:
+    g_limit = MAX_WB_GUNPOINTS;
+    break;
+  case WBSV_C_MASK:
+  case WBSV_I_FIRE_SOUND:
+  case WBSV_F_LATENCY:
+  case WBSV_F_ANIM_TIME:
+  case WBSV_F_ANIM_START:
+  case WBSV_F_ANIM_FIRE:
+  case WBSV_F_ANIM_END:
+    g_limit = MAX_WB_FIRING_MASKS;
+    break;
+  }
+  if (g_limit && (g_index < 0 || g_index >= g_limit)) {
+    LOG_ERROR.printf("Obj_WBValue: invalid gun point or firing mask %d", g_index);
+    return;
+  }
+
   dynamic_wb_info *p_dwb = &objp->dynamic_wb[wb_index];
   otype_wb_info *static_wb;
-  poly_model *pm = &Poly_models[objp->rtype.pobj_info.model_num];
 
-  if (objp->type == OBJ_PLAYER || objp->type == OBJ_OBSERVER) {
+  if (is_player) {
     ship *ship = &Ships[Players[objp->id].ship_index];
     static_wb = &ship->static_wb[wb_index];
   } else {
     object_info *obj_info = &Object_info[objp->id];
+    if (!obj_info->static_wb) {
+      LOG_ERROR << "Obj_WBValue: object type has no weapon batteries";
+      return;
+    }
     static_wb = &obj_info->static_wb[wb_index];
   }
 
-  if (objp->type == OBJ_BUILDING && (wb_index < 0 || wb_index > pm->num_wbs)) {
-    return;
-  }
-
   switch (vtype) {
-  case WBV_C_NUM_WBS: {
-    if (op == VF_GET) {
-      *(char *)ptr = pm->num_wbs;
-    }
-  } break;
   case WBV_F_ANIM_FRAME:
     if (op == VF_GET) {
       int anim_type = static_wb->flags & WBF_ANIM_MASKS;
@@ -2719,10 +2902,12 @@ void osipf_ObjWBValue(int obj_handle, int8_t wb_index, char op, char vtype, void
     break;
   case WBSV_V_GUNPT_POS:
     if (op == VF_GET) {
-      if (objp->type == OBJ_PLAYER || objp->type == OBJ_OBSERVER)
-        WeaponCalcGun(((vector *)ptr), nullptr, objp, pm->poly_wb[0].gp_index[g_index]);
-      else
+      if (is_player) {
+        if (pm->num_wbs > 0)
+          WeaponCalcGun(((vector *)ptr), nullptr, objp, pm->poly_wb[0].gp_index[g_index]);
+      } else {
         WeaponCalcGun(((vector *)ptr), nullptr, objp, pm->poly_wb[wb_index].gp_index[g_index]);
+      }
     }
     break;
 
@@ -2793,7 +2978,7 @@ void osipf_ObjWBValue(int obj_handle, int8_t wb_index, char op, char vtype, void
 //	flag is which mission flag to set/clear (1-32)
 //	value is 0 to clear, or 1 to set
 void osipf_MissionFlagSet(int flag, uint8_t value) {
-  if (flag < 1 && flag > 32) {
+  if (flag < 1 || flag > 32) {
     LOG_ERROR.printf("Invalid flag passed to osipf_MissionFlagSet(%d)", flag);
     return;
   }
@@ -2812,7 +2997,7 @@ void osipf_MissionFlagSet(int flag, uint8_t value) {
 // Gets a mission flag
 //	flag is what mission flag to get.  Returns 1 if set, 0 if not.
 int osipf_MissionFlagGet(int flag) {
-  if (flag < 1 && flag > 32) {
+  if (flag < 1 || flag > 32) {
     LOG_ERROR.printf("Invalid flag passed to osipf_MissionFlagGet(%d)\n", flag);
     return 0;
   }
@@ -2996,6 +3181,30 @@ void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void
     return;
   }
 
+  // The influence distance and enabler values take an index.
+  int index_limit = 0;
+  switch (vtype) {
+  case AIGSV_F_INFLUENCE_DIST:
+    index_limit = sizeof(g_ptr->ramp_influence_dists) / sizeof(g_ptr->ramp_influence_dists[0]);
+    break;
+  case AIGSV_C_ENABLER_TYPE:
+  case AIGSV_F_ENABLER_TIME:
+  case AIGSV_C_ENABLER_MTYPE:
+  case AIGSV_F_ENABLER_FLOAT_VALUE:
+  case AIGSV_I_ENABLER_FLAGS:
+  case AIGSV_F_ENABLER_DIST:
+  case AIGSV_F_ENABLER_PERCENT:
+  case AIGSV_F_ENABLER_CHECK_INTERVAL:
+  case AIGSV_F_ENABLER_LAST_CHECK_TIME:
+  case AIGSV_C_ENABLER_NEXT_ENABLER_OP:
+    index_limit = MAX_ENABLERS_PER_GOAL;
+    break;
+  }
+  if (index_limit && (index < 0 || index >= index_limit)) {
+    LOG_ERROR.printf("AI_GoalValue: invalid index %d", index);
+    return;
+  }
+
   switch (vtype) {
   case AIGV_I_TYPE: {
     if (op == VF_GET)
@@ -3039,8 +3248,14 @@ void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void
   case AIGV_I_ROOMNUM: {
     if (op == VF_GET)
       *(int *)ptr = g_ptr->g_info.roomnum;
-    else if (op == VF_SET)
+    else if (op == VF_SET) {
+      // Path finding indexes Rooms (or the terrain) with it.
+      if (!osipf_IsRoomValid(*(int *)ptr)) {
+        LOG_ERROR.printf("AI_GoalValue: invalid room %d", *(int *)ptr);
+        return;
+      }
       g_ptr->g_info.roomnum = *(int *)ptr;
+    }
   } break;
   case AIGV_I_F_ACTIONS: {
     if (op == VF_GET)
@@ -3234,8 +3449,15 @@ void osipf_AIGoalValue(int obj_handle, int8_t g_index, char op, char vtype, void
   case AIGV_C_NUM_ENABLERS: {
     if (op == VF_GET)
       *(char *)ptr = g_ptr->num_enablers;
-    else if (op == VF_SET)
-      g_ptr->num_enablers = *(char *)ptr;
+    else if (op == VF_SET) {
+      // The AI loops over enabler[0 .. num_enablers - 1].
+      int n = *(char *)ptr;
+      if (n < 0 || n > MAX_ENABLERS_PER_GOAL) {
+        LOG_ERROR.printf("AI_GoalValue: invalid number of enablers %d", n);
+        return;
+      }
+      g_ptr->num_enablers = n;
+    }
   } break;
   case AIGV_V_ORIENT_FVEC: {
     if (op == VF_GET)
@@ -3400,7 +3622,7 @@ int osipf_GetTriggerFace(int trigger_id) {
 }
 
 int osipf_FindDoorName(const char *name) {
-  for (int i = 0; i <= MAX_OBJECTS; i++) {
+  for (int i = 0; i <= Highest_object_index; i++) {
     if (Objects[i].type == OBJ_DOOR && Objects[i].name && !stricmp(Objects[i].name, name)) {
       return Objects[i].handle;
     }
@@ -3423,7 +3645,8 @@ void osipf_CreateRandomSparks(int num_sparks, vector *pos, int roomnum, int whic
 // disable/enable ship
 void osipf_EnableShip(char *ship_name, bool enable) {
   msafe_struct ms;
-  strcpy(ms.name, ship_name);
+  strncpy(ms.name, ship_name, MSAFE_NAME_LENGTH - 1);
+  ms.name[MSAFE_NAME_LENGTH - 1] = '\0';
   ms.state = enable;
   msafe_CallFunction(MSAFE_MISC_ENABLE_SHIP, &ms);
 }
@@ -3431,7 +3654,8 @@ void osipf_EnableShip(char *ship_name, bool enable) {
 // is ship enabled
 bool osipf_IsShipEnabled(char *ship_name) {
   msafe_struct ms;
-  strcpy(ms.name, ship_name);
+  strncpy(ms.name, ship_name, MSAFE_NAME_LENGTH - 1);
+  ms.name[MSAFE_NAME_LENGTH - 1] = '\0';
   msafe_GetValue(MSAFE_MISC_ENABLE_SHIP, &ms);
   return (bool)(ms.state != 0);
 }
@@ -3755,6 +3979,11 @@ void osipf_PathValue(int path_id, int node_id, char op, int changes, void *ptr) 
       node *cnode = &cpath->pathnodes[node_id];
       osiris_path_node_info *pni = (osiris_path_node_info *)ptr;
 
+      // Path following indexes Rooms (or the terrain) with the room.
+      if ((changes & PV_ROOMNUM) && !osipf_IsRoomValid(pni->roomnum)) {
+        LOG_ERROR.printf("PathValue: invalid room %d", pni->roomnum);
+        return;
+      }
       if (changes & PV_POS) {
         cnode->pos = pni->pos;
       }

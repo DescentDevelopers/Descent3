@@ -474,6 +474,7 @@
 #include "log.h"
 #include "terrain.h"
 #include "objinfo.h"
+#include "polymodel.h"
 #include "AIMain.h"
 #include "room.h"
 #include "pserror.h"
@@ -1069,8 +1070,12 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
 
   case AIG_FIRE_AT_OBJ: {
     gi_fire *attack_info = (gi_fire *)arg_struct;
-    if (attack_info->cur_wb > MAX_WBS_PER_OBJ) { // DAJ
-      LOG_DEBUG.printf("GoalAddGoal wb_index %d > MAX_WBS_PER_OBJ", attack_info->cur_wb);
+    // dynamic_wb has one entry per battery in the model (MAX_WBS_PER_OBJ for a
+    // player); the object type's static_wb has MAX_WBS_PER_OBJ.
+    int num_wbs = obj->type == OBJ_PLAYER ? MAX_WBS_PER_OBJ : Poly_models[obj->rtype.pobj_info.model_num].num_wbs;
+    if (attack_info->cur_wb < 0 || attack_info->cur_wb >= num_wbs || attack_info->cur_wb >= MAX_WBS_PER_OBJ ||
+        !obj->dynamic_wb || !Object_info[obj->id].static_wb) {
+      LOG_DEBUG.printf("GoalAddGoal: object has no weapon battery %d", attack_info->cur_wb);
       return 0;
     }
     if ((ai_info->animation_type == AS_ALERT && !(ai_info->next_animation_type == AS_FLINCH)) ||
@@ -1127,7 +1132,10 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
     }
 
     if (new_anim >= 0 && new_anim < NUM_ANIMS_PER_CLASS) {
-      if ((Object_info[obj->id].anim[ai_info->movement_type].elem[ai_info->animation_type].from ==
+      // The current animation can be a ranged attack, recoil or custom
+      // animation (AS_RANGED_ATTACK and up), which have no entry in elem[].
+      if (ai_info->animation_type >= 0 && ai_info->animation_type < NUM_ANIMS_PER_CLASS &&
+          (Object_info[obj->id].anim[ai_info->movement_type].elem[ai_info->animation_type].from ==
            Object_info[obj->id].anim[ai_info->movement_type].elem[new_anim].from) &&
           (Object_info[obj->id].anim[ai_info->movement_type].elem[ai_info->animation_type].to ==
            Object_info[obj->id].anim[ai_info->movement_type].elem[new_anim].to) &&

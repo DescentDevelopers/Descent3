@@ -260,6 +260,9 @@ void CheckTrigger(int roomnum, int facenum, object *objp, int event_type) {
 
 // Enable or disable a trigger
 void TriggerSetState(int trigger_num, bool enabled) {
+  // Level scripts choose the trigger number.
+  if (trigger_num < 0 || trigger_num >= Num_triggers)
+    return;
   trigger *tp = &Triggers[trigger_num];
 
   if (enabled)
@@ -271,6 +274,8 @@ void TriggerSetState(int trigger_num, bool enabled) {
 // Determines if a trigger is enabled or disabled
 // Returns TRUE if enabled, else false
 bool TriggerGetState(int trigger_num) {
+  if (trigger_num < 0 || trigger_num >= Num_triggers)
+    return false;
   trigger *tp = &Triggers[trigger_num];
 
   return ((tp->flags & TF_DISABLED) == 0);

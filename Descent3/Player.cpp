@@ -3748,7 +3748,11 @@ void DoEnergyToShields(int pnum) {
 
 // Sets the start position that the player will respawn at
 void PlayerAddWaypoint(int index) {
-  ASSERT(Players[index].start_roomnum != -1); // Invalid start position specified
+  // A level script can choose the waypoint; respawning uses Players[index]'s start position.
+  if (index < 0 || index >= MAX_PLAYERS || Players[index].start_roomnum == -1) {
+    LOG_ERROR.printf("Invalid waypoint %d", index);
+    return;
+  }
   LOG_DEBUG.printf("Current waypoint is now %d", index);
   Current_waypoint = index;
 

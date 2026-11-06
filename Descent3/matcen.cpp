@@ -698,8 +698,12 @@ int matcen::GetCreateRoom() {
 }
 
 bool matcen::SetCreateRoom(int room) {
-  if ((m_status & MSTAT_MANUAL_UPDATE_CREATE_PNT)) // chrishack -- add room validation
-  {
+  if ((m_status & MSTAT_MANUAL_UPDATE_CREATE_PNT)) {
+    // A room or a terrain cell; production indexes Rooms with it.
+    bool valid = ROOMNUM_OUTSIDE(room) ? CELLNUM(room) >= 0 && CELLNUM(room) < TERRAIN_WIDTH * TERRAIN_DEPTH
+                                       : room >= 0 && room <= Highest_room_index && Rooms[room].used;
+    if (!valid)
+      return false;
     m_create_room = room;
     return true;
   }
@@ -725,7 +729,8 @@ bool matcen::SetSpawnPnt(int8_t s_index, int s_value) {
 }
 
 bool matcen::SetName(const char *name) {
-  strcpy(m_name, name);
+  strncpy(m_name, name, MAX_MATCEN_NAME_LEN - 1);
+  m_name[MAX_MATCEN_NAME_LEN - 1] = '\0';
 
   return true;
 }
@@ -1011,7 +1016,8 @@ bool matcen::GetProdInfo(int8_t index, int *type_id, int *priority, float *time,
 
 bool matcen::SetProdInfo(int8_t index, int *type_id, int *priority, float *time, int *max_prod) {
   if (index >= 0 && index < MAX_PROD_TYPES) {
-    if (type_id && (*type_id >= -1))
+    // Production indexes Object_info with it.
+    if (type_id && (*type_id >= -1) && (*type_id < MAX_OBJECT_IDS))
       m_prod_type[index] = *type_id;
 
     if (priority && (*priority >= 0))
@@ -1725,7 +1731,11 @@ bool matcen::SetCreationEffect(char effect_index) {
   return true;
 }
 
-void matcen::SetCreationTexture(int16_t texnum) { m_creation_texture = texnum; }
+void matcen::SetCreationTexture(int16_t texnum) {
+  // The creation effect is drawn with it.
+  if (texnum >= 0 && texnum < MAX_TEXTURES && GameTextures[texnum].used)
+    m_creation_texture = texnum;
+}
 
 int16_t matcen::GetCreationTexture() { return m_creation_texture; }
 

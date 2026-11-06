@@ -1,0 +1,192 @@
+Count REP string iterations as steps
+
+Each iteration of a REP string instruction counts as a step and in
+cpu->cycle. When the steps run out with iterations left, the instruction
+stops with its registers updated so far and runs again at the next step.
+The x86 sandbox relies on this for its instruction budget.
+
+Submitted upstream as https://github.com/hchunhui/tiny386/pull/64 (commit
+ff72f7f1358d on tophyr/tiny386 rep-steps).
+
+diff --git a/i386.c b/i386.c
+index 314fef2f..2ec17577 100644
+--- a/i386.c
++++ b/i386.c
+@@ -2654,6 +2654,17 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ #define xdir16 int dir = (cpu->flags & DF) ? -2 : 2;
+ #define xdir32 int dir = (cpu->flags & DF) ? -4 : 4;
+ 
++/* REP string instructions: each iteration counts as a step (and in cpu->cycle).
++ * When the steps run out with iterations left, the instruction stops with
++ * (E)CX, (E)SI and (E)DI updated so far and runs again at the next step, so
++ * interrupts and devices are serviced during a long REP, as an x86 CPU does.
++ */
++#define REP_STEP(n) \
++	cpu->cycle += (n); \
++	stepcount -= (n);
++#define REP_YIELD(left) \
++	if (stepcount <= 0 && (left)) { cpu->next_ip = cpu->ip; break; }
++
+ #define STOS_helper2(BIT, ABIT) \
+ 	OptAddr memld; \
+ 	uword cx = lreg ## ABIT(1); \
+@@ -2664,6 +2675,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 			while (lreg ## ABIT(1)) { \
+ 				stdi(BIT, ABIT) \
+ 				sreg ## ABIT(1, lreg ## ABIT(1) - 1); \
++				REP_STEP(1) \
++				REP_YIELD(lreg ## ABIT(1)) \
+ 			} \
+ 			break; \
+ 		} \
+@@ -2680,6 +2693,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 		sreg ## ABIT(7, lreg ## ABIT(7) + count * dir); \
+ 		sreg ## ABIT(1, cx - count); \
+ 		cx = lreg ## ABIT(1); \
++		REP_STEP(count) \
++		REP_YIELD(cx) \
+ 	}
+ 
+ #define STOS_helper(BIT) \
+@@ -2705,12 +2720,16 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 				ldsi(BIT, 16) \
+ 				sreg ## BIT(0, ax); \
+ 				sreg16(1, lreg16(1) - 1); \
++				REP_STEP(1) \
++				REP_YIELD(lreg16(1)) \
+ 			} \
+ 		} else { \
+ 			while (lreg32(1)) { \
+ 				ldsi(BIT, 32) \
+ 				sreg ## BIT(0, ax); \
+ 				sreg32(1, lreg32(1) - 1); \
++				REP_STEP(1) \
++				REP_YIELD(lreg32(1)) \
+ 			} \
+ 		} \
+ 	}
+@@ -2737,8 +2756,10 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 				cpu->cc.dst = sext ## BIT(cpu->cc.src1 - cpu->cc.src2); \
+ 				cpu->cc.op = CC_SUB; \
+ 				cpu->cc.mask = CF | PF | AF | ZF | SF | OF; \
++				REP_STEP(1) \
+ 				bool zf = get_ZF(cpu); \
+ 				if ((zf && rep == 2) || (!zf && rep == 1)) break; \
++				REP_YIELD(lreg16(1)) \
+ 			} \
+ 		} else { \
+ 			while (lreg32(1)) { \
+@@ -2749,8 +2770,10 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 				cpu->cc.dst = sext ## BIT(cpu->cc.src1 - cpu->cc.src2); \
+ 				cpu->cc.op = CC_SUB; \
+ 				cpu->cc.mask = CF | PF | AF | ZF | SF | OF; \
++				REP_STEP(1) \
+ 				bool zf = get_ZF(cpu); \
+ 				if ((zf && rep == 2) || (!zf && rep == 1)) break; \
++				REP_YIELD(lreg32(1)) \
+ 			} \
+ 		} \
+ 	}
+@@ -2766,6 +2789,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 			while (lreg ## ABIT(1)) { \
+ 				ldsistdi(BIT, ABIT) \
+ 				sreg ## ABIT(1, lreg ## ABIT(1) - 1); \
++				REP_STEP(1) \
++				REP_YIELD(lreg ## ABIT(1)) \
+ 			} \
+ 			break; \
+ 		} \
+@@ -2793,6 +2818,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 				sreg ## ABIT(7, lreg ## ABIT(7) + count * dir); \
+ 				sreg ## ABIT(1, cx - count); \
+ 				cx = lreg ## ABIT(1); \
++				REP_STEP(count) \
++				REP_YIELD(cx) \
+ 				continue; \
+ 			} \
+ 		} \
+@@ -2805,6 +2832,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 		sreg ## ABIT(7, lreg ## ABIT(7) + count * dir); \
+ 		sreg ## ABIT(1, cx - count); \
+ 		cx = lreg ## ABIT(1); \
++		REP_STEP(count) \
++		REP_YIELD(cx) \
+ 	}
+ 
+ #define MOVS_helper(BIT) \
+@@ -2838,8 +2867,10 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 				cpu->cc.dst = sext ## BIT(cpu->cc.src1 - cpu->cc.src2); \
+ 				cpu->cc.op = CC_SUB; \
+ 				cpu->cc.mask = CF | PF | AF | ZF | SF | OF; \
++				REP_STEP(1) \
+ 				bool zf = get_ZF(cpu); \
+ 				if ((zf && rep == 2) || (!zf && rep == 1)) break; \
++				REP_YIELD(lreg16(1)) \
+ 			} \
+ 		} else { \
+ 			while (lreg32(1)) { \
+@@ -2850,8 +2881,10 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 				cpu->cc.dst = sext ## BIT(cpu->cc.src1 - cpu->cc.src2); \
+ 				cpu->cc.op = CC_SUB; \
+ 				cpu->cc.mask = CF | PF | AF | ZF | SF | OF; \
++				REP_STEP(1) \
+ 				bool zf = get_ZF(cpu); \
+ 				if ((zf && rep == 2) || (!zf && rep == 1)) break; \
++				REP_YIELD(lreg32(1)) \
+ 			} \
+ 		} \
+ 	}
+@@ -2883,6 +2916,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 			while (lreg ## ABIT(1)) { \
+ 				indxstdi(BIT, ABIT) \
+ 				sreg ## ABIT(1, lreg ## ABIT(1) - 1); \
++				REP_STEP(1) \
++				REP_YIELD(lreg ## ABIT(1)) \
+ 			} \
+ 			break; \
+ 		} \
+@@ -2903,6 +2938,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 				sreg ## ABIT(7, lreg ## ABIT(7) + count * dir); \
+ 				sreg ## ABIT(1, cx - count); \
+ 				cx = lreg ## ABIT(1); \
++				REP_STEP(count) \
++				REP_YIELD(cx) \
+ 				continue; \
+ 			} \
+ 		} \
+@@ -2914,6 +2951,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 		sreg ## ABIT(7, lreg ## ABIT(7) + count * dir); \
+ 		sreg ## ABIT(1, cx - count); \
+ 		cx = lreg ## ABIT(1); \
++		REP_STEP(count) \
++		REP_YIELD(cx) \
+ 	}
+ 
+ #define INS_helper(BIT) \
+@@ -2946,6 +2985,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 			while (lreg ## ABIT(1)) { \
+ 				ldsioutdx(BIT, ABIT) \
+ 				sreg ## ABIT(1, lreg ## ABIT(1) - 1); \
++				REP_STEP(1) \
++				REP_YIELD(lreg ## ABIT(1)) \
+ 			} \
+ 			break; \
+ 		} \
+@@ -2966,6 +3007,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 				sreg ## ABIT(6, lreg ## ABIT(6) + count * dir); \
+ 				sreg ## ABIT(1, cx - count); \
+ 				cx = lreg ## ABIT(1); \
++				REP_STEP(count) \
++				REP_YIELD(cx) \
+ 				continue; \
+ 			} \
+ 		} \
+@@ -2977,6 +3020,8 @@ static bool call_isr(CPUI386 *cpu, int no, bool pusherr, int ext);
+ 		sreg ## ABIT(6, lreg ## ABIT(6) + count * dir); \
+ 		sreg ## ABIT(1, cx - count); \
+ 		cx = lreg ## ABIT(1); \
++		REP_STEP(count) \
++		REP_YIELD(cx) \
+ 	}
+ 
+ #define OUTS_helper(BIT) \
