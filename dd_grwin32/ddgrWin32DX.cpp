@@ -309,8 +309,8 @@ bool ddgr_dx_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int 
   else
     lpddsd = dbm->lpdds;
 
-  SetRect(&srect, sx, sy, sx + sw - 1, sy + sh - 1);
-  SetRect(&drect, dx, dy, dx + sw - 1, dy + sh + 1);
+  SetRect(&srect, sx, sy, sx + sw, sy + sh);
+  SetRect(&drect, dx, dy, dx + sw, dy + sh);
 
   hres = lpddsd->Blt(&drect, lpddss, &srect, DDBLT_WAIT, nullptr);
   if (hres != DD_OK) {
