@@ -84,6 +84,12 @@ TEST_F(TextauxTest, WordWrapPutsOverlongWordOnItsOwnLineUnbroken) {
   EXPECT_EQ(Wrap("supercalifragilistic", 52, font_), "supercalifragilistic");
 }
 
+TEST_F(TextauxTest, WordWrapOfEmptyTextIsEmpty) {
+  char dest[16] = "stale contents";
+  textaux_WordWrap("", dest, 100, font_);
+  EXPECT_STREQ(dest, "");
+}
+
 TEST_F(TextauxTest, CopyTextLineWalksLinesIncludingEmptyOnes) {
   const char *text = "alpha\nbeta\n\ngamma";
   std::vector<std::string> lines;
