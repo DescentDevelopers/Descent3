@@ -84,6 +84,19 @@ TEST_F(UIComboBoxTest, OutOfRangeSelectionIsIgnored) {
   EXPECT_EQ(combo.GetSelectedIndex(), 1);
 }
 
+TEST_F(UIComboBoxTest, RemovingTheSelectedLastItemKeepsSelectionInRange) {
+  combo.SetSelectedIndex(2);
+  combo.RemoveItem(&c);
+  EXPECT_LT(combo.GetSelectedIndex(), 2);
+  EXPECT_NE(combo.GetItem(combo.GetSelectedIndex()), nullptr);
+}
+
+TEST_F(UIComboBoxTest, RemovingAnItemBeforeTheSelectionKeepsTheSameItemSelected) {
+  combo.SetSelectedIndex(2);
+  combo.RemoveItem(&a);
+  EXPECT_EQ(combo.GetItem(combo.GetSelectedIndex()), &c);
+}
+
 // UISlider::GetPos() is documented (ui.h) as ranging over 0 .. GetRange()-1, and SetPos() clamps
 // to that range.
 
