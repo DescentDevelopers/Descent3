@@ -155,6 +155,15 @@ TEST_F(GrViewportTextTest, PutsClipsGlyphAtTopEdge) {
   EXPECT_EQ(CountDrawnPixels(screen), 4 * (kGlyphHeight - 2));
 }
 
+TEST_F(GrViewportTextTest, PutsDrawsGlyphFlushWithBottomRightCornerCompletely) {
+  grViewport vp(&screen.surf);
+  vp.set_font(kFontName);
+
+  Puts(vp, kW - 4, kH - kGlyphHeight, "A");
+
+  ExpectGlyph(screen, 'A', kW - 4, kH - kGlyphHeight);
+}
+
 TEST_F(GrViewportTextTest, PutsDrawsTextFollowingEmbeddedColorCode) {
   grViewport vp(&screen.surf);
   vp.set_font(kFontName);
