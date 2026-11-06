@@ -128,6 +128,15 @@ TEST_F(DallasUserState, UserVarValueIntRoundsPositiveValues) {
   EXPECT_EQ(qUserVarValueInt(0), 0);
 }
 
+TEST_F(DallasUserState, UserVarValueIntRoundsNegativeValuesToNearest) {
+  aUserVarSet(0, -2.6f);
+  EXPECT_EQ(qUserVarValueInt(0), -3);
+  aUserVarSet(0, -0.9f);
+  EXPECT_EQ(qUserVarValueInt(0), -1);
+  aUserVarSet(0, -2.4f);
+  EXPECT_EQ(qUserVarValueInt(0), -2);
+}
+
 TEST_F(DallasUserState, UserVarValueIntSaturatesOutOfRangeFloats) {
   aUserVarSet(0, 1e20f);
   EXPECT_EQ(qUserVarValueInt(0), INT_MAX);
