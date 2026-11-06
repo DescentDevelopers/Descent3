@@ -156,4 +156,13 @@ TEST_F(ModuleTest, EmptyFilenameFailsToLoad) {
   EXPECT_NE(mod_GetLastError(), MODERR_NOERROR);
 }
 
+TEST_F(ModuleTest, MissingModuleReportsModNotFound) {
+  fs::path missing = kFixture.parent_path() / ("module_test_does_not_exist" MODULE_EXT);
+  ASSERT_FALSE(fs::exists(missing));
+
+  module_t mod{};
+  EXPECT_FALSE(mod_LoadModule(&mod, missing));
+  EXPECT_EQ(mod_GetLastError(), MODERR_MODNOTFOUND);
+}
+
 } // namespace
