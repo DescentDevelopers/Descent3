@@ -1132,7 +1132,10 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
     }
 
     if (new_anim >= 0 && new_anim < NUM_ANIMS_PER_CLASS) {
-      if ((Object_info[obj->id].anim[ai_info->movement_type].elem[ai_info->animation_type].from ==
+      // The current animation can be a ranged attack, recoil or custom
+      // animation (AS_RANGED_ATTACK and up), which have no entry in elem[].
+      if (ai_info->animation_type >= 0 && ai_info->animation_type < NUM_ANIMS_PER_CLASS &&
+          (Object_info[obj->id].anim[ai_info->movement_type].elem[ai_info->animation_type].from ==
            Object_info[obj->id].anim[ai_info->movement_type].elem[new_anim].from) &&
           (Object_info[obj->id].anim[ai_info->movement_type].elem[ai_info->animation_type].to ==
            Object_info[obj->id].anim[ai_info->movement_type].elem[new_anim].to) &&
