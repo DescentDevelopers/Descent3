@@ -185,6 +185,30 @@ TEST(GrMemorySurface, Load24BitPlacesEachRowInTheMatchingSurfaceRow) {
       EXPECT_EQ(s.at(x, y), kSentinel) << "wrote outside surface at (" << x << "," << y << ")";
 }
 
+TEST(GrMemorySurface, Load24BitMatchesClearForSameColor) {
+  const uint8_t rgb[4][3] = {{0x10, 0x20, 0x30}, {0x40, 0x60, 0x08}, {0xF8, 0x80, 0x08}, {0xFF, 0xFF, 0xFF}};
+  OwnedSurface s(4, 1, 4);
+
+  s.surf.load(const_cast<char *>(reinterpret_cast<const char *>(rgb)), 4, 1, BPP_24);
+
+  for (int i = 0; i < 4; i++) {
+    SCOPED_TRACE(i);
+    EXPECT_EQ(s.at(i, 0) & 0x7FFF, ClearValue(GR_RGB(rgb[i][0], rgb[i][1], rgb[i][2])) & 0x7FFF);
+  }
+}
+
+TEST(GrMemorySurface, Load32BitMatchesClearForSameColor) {
+  const uint32_t argb[4] = {0x00102030, 0x00406008, 0x00F88008, 0x00FFFFFF};
+  OwnedSurface s(4, 1, 4); // xlat32_16 requires a width that is a multiple of 4
+
+  s.surf.load(const_cast<char *>(reinterpret_cast<const char *>(argb)), 4, 1, BPP_32);
+
+  for (int i = 0; i < 4; i++) {
+    SCOPED_TRACE(i);
+    EXPECT_EQ(s.at(i, 0) & 0x7FFF, ClearValue(argb[i]) & 0x7FFF);
+  }
+}
+
 namespace {
 struct GrViewportBltTest : ::testing::Test {
   OwnedSurface src{4, 3, 4};
