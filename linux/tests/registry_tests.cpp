@@ -204,4 +204,13 @@ TEST_F(RegistryTest, ImportSkipsMalformedLinesAndKeepsGoing) {
   EXPECT_EQ(ReadDword(reg, "num"), 0x1f);
 }
 
+TEST_F(RegistryTest, ImportReadsFinalLineWithoutTrailingNewline) {
+  d3_test::WriteFile(file, "[Descent3]\n\"last\"=\"value\"");
+
+  CRegistry reg(file.c_str());
+  ASSERT_TRUE(reg.Import());
+  ASSERT_TRUE(reg.LookupKey("Descent3"));
+  EXPECT_EQ(ReadString(reg, "last"), "value");
+}
+
 } // namespace
