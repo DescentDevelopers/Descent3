@@ -157,6 +157,13 @@ TEST_F(TextauxTest, ClipStringWithoutEndCharFitsWithinWidth) {
   EXPECT_STREQ(s, "ABCD");
 }
 
+TEST_F(TextauxTest, ClipStringClipsWhenOnlyTheLastCharacterOverflows) {
+  char s[] = "ABCDE"; // 24 pixels; "ABCD" is 19
+  textaux_ClipString(22, s);
+  EXPECT_LE(grtext_GetTextLineWidth(s), 22) << '"' << s << '"';
+  EXPECT_STREQ(s, "ABCD");
+}
+
 TEST_F(TextauxTest, ClipStringNeverWritesBeforeTheString) {
   char buf[] = "#ABCDEF";
   char *s = buf + 1;
