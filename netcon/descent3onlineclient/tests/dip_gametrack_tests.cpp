@@ -65,6 +65,10 @@ TEST_F(DipGameTrackTest, OverlongAddressWithPortIsRejected) {
   EXPECT_THAT(Decode("123.123.123.1234:2092\n"), IsEmpty());
 }
 
+TEST_F(DipGameTrackTest, OverlongAddressWithoutPortIsRejected) {
+  EXPECT_THAT(Decode("123.123.123.1234\n"), IsEmpty());
+}
+
 TEST_F(DipGameTrackTest, CrlfLinesAreParsedLikeLfLines) {
   EXPECT_THAT(Decode("123.123.123.123\r\n10.0.0.1\r\n"),
               ElementsAre(H(123, 123, 123, 123, kDefaultGamePort), H(10, 0, 0, 1, kDefaultGamePort)));
