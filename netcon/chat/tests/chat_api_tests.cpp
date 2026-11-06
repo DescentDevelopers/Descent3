@@ -354,6 +354,19 @@ TEST_F(ChatApiTest, ChannelLookupCompletesForUserInNoChannel) {
   EXPECT_NE(result, kFailed) << "the user is online";
 }
 
+TEST_F(ChatApiTest, ChannelLookupForUserInNoChannelIgnoresThePreviousResult) {
+  Welcome("Pilot");
+  EXPECT_EQ(GetChannelByUser("Bob"), nullptr);
+  Feed(":irc.test 319 Pilot Bob :#lobby");
+  Feed(":irc.test 318 Pilot Bob :End of /WHOIS list.");
+  ASSERT_EQ(Str(GetChannelByUser("Bob")), "#lobby");
+
+  EXPECT_EQ(GetChannelByUser("Carol"), nullptr);
+  Feed(":irc.test 318 Pilot Carol :End of /WHOIS list.");
+
+  EXPECT_EQ(Str(GetChannelByUser("Carol")), "*");
+}
+
 TEST_F(ChatApiTest, ChannelLookupFailsForUnknownUser) {
   Welcome("Pilot");
   EXPECT_EQ(GetChannelByUser("Ghost"), nullptr);
