@@ -117,4 +117,12 @@ TEST_F(UISliderTest, LeftArrowStopsAtZero) {
   EXPECT_TRUE(g_callback_values.empty());
 }
 
+TEST_F(UISliderTest, RightArrowStopsAtTheLastPosition) {
+  slider.SetPos(4);
+  g_callback_values.clear();
+  Press(KEY_RIGHT);
+  EXPECT_EQ(slider.GetPos(), 4);
+  EXPECT_TRUE(g_callback_values.empty());
+}
+
 } // namespace
