@@ -1,12 +1,10 @@
 set(HEADERS
-  chat_api.h
   mt_net.h
   mtclient.h
   mtgametrack.h
   mtpilottrack.h
   mtstrings.h)
 set(CPPS
-  chat_api.cpp
   mt_net.cpp
   mtclient.cpp
   mtgametrack.cpp
@@ -20,6 +18,7 @@ set_target_properties(Parallax_Online PROPERTIES OUTPUT_NAME "Parallax Online")
 target_link_libraries(Parallax_Online PRIVATE
   ddio
   inetfile
+  netcon_chat
   logger
   misc
   module

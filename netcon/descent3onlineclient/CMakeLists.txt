@@ -1,11 +1,9 @@
 set(HEADERS
-  chat_api.h
   odtclient.h
   odtstrings.h
   dip_gametrack.h
   )
 set(CPPS
-  chat_api.cpp
   odtclient.cpp
   dip_gametrack.cpp
 )
@@ -17,6 +15,7 @@ set_target_properties(Descent3_Online_TCP_IP PROPERTIES OUTPUT_NAME "Descent3 On
 target_link_libraries(Descent3_Online_TCP_IP PRIVATE
   ddio
   inetfile
+  netcon_chat
   httplib
   logger
   misc
