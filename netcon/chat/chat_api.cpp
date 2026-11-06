@@ -123,7 +123,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
     for (uint32_t l = 0; l < strlen(Nick_name); l++)
       if (Nick_name[l] == ' ')
         Nick_name[l] = '_';
-    strcpy(Orignial_nick_name, nickname);
+    strcpy(Orignial_nick_name, Nick_name);
     strcpy(Chat_tracker_id, trackerid);
 
     Firstuser = nullptr;
