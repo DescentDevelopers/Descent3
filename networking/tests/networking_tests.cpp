@@ -130,6 +130,23 @@ TEST_F(UnreliableQueueTest, OverflowDropsPacketsButKeepsOrderAndRecovers) {
   EXPECT_EQ(Receive().len, 0);
 }
 
+TEST_F(UnreliableQueueTest, OversizedDatagramIsNotDeliveredBeyondMaxPacketSize) {
+  network_address attacker = MakePeer(5, 2092);
+  network_address player = MakePeer(6, 2092);
+  // Stays within the queue's own storage when it overruns, so the bug shows up as a wrong result rather than a crash.
+  Arrive(std::vector<uint8_t>(MAX_PACKET_SIZE + 100, 0xAB), attacker);
+  Arrive(Bytes("legit"), player);
+
+  bool got_legit = false;
+  int reads = 0;
+  for (Received r = Receive(); r.len > 0 && reads < 10; r = Receive(), reads++) {
+    EXPECT_LE(r.len, MAX_PACKET_SIZE);
+    if (r.data == Bytes("legit"))
+      got_legit = true;
+  }
+  EXPECT_TRUE(got_legit);
+}
+
 class ReliableServerTest : public ::testing::Test {
 protected:
   void SetUp() override {
