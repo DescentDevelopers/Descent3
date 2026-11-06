@@ -644,6 +644,7 @@
 #include "multisafe.h"
 #include "weather.h"
 #include "room.h"
+#include "terrain.h"
 #include "game.h"
 #include "multi.h"
 #include "damage.h"
@@ -709,6 +710,12 @@ bool VALIDATE_ROOM_PORTAL(int roomnum, int portalnum) {
   if (!valid)
     Int3();
   return valid;
+}
+// Returns true if roomnum is a room or a terrain cell an object can be in
+static bool VALIDATE_ROOM_OR_CELL(int roomnum) {
+  if (ROOMNUM_OUTSIDE(roomnum))
+    return CELLNUM(roomnum) >= 0 && CELLNUM(roomnum) < TERRAIN_WIDTH * TERRAIN_DEPTH;
+  return roomnum >= 0 && roomnum <= Highest_room_index && Rooms[roomnum].used;
 }
 // Returns an object pointer from a handle.  Really just ObjGet() with an mprintf()
 object *VALIDATE_OBJECT(int handle) {
@@ -863,7 +870,6 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
       mstruct->shields = Object_info[objp->id].hit_points;
     break;
   case MSAFE_OBJECT_ENERGY:
-    ASSERT(MOBJ->type == OBJ_PLAYER);
     if (!VALIDATE_OBJECT(mstruct->objhandle) || (MOBJ->type != OBJ_PLAYER))
       mstruct->energy = 0;
     else
@@ -1224,7 +1230,10 @@ void msafe_GetValue(int type, msafe_struct *mstruct) {
     // count: ammo (if it's an ammo/secondary) of the weapon, else -1
     object *objp = ObjGet(mstruct->objhandle);
     mstruct->state = 0;
-    ASSERT(mstruct->index >= 0 && mstruct->index < MAX_PRIMARY_WEAPONS + MAX_SECONDARY_WEAPONS);
+    if (mstruct->index < 0 || mstruct->index >= MAX_PRIMARY_WEAPONS + MAX_SECONDARY_WEAPONS) {
+      LOG_ERROR.printf("MSAFE_WEAPON_CHECK: invalid weapon %d", mstruct->index);
+      return;
+    }
     if (objp && (objp->type == OBJ_PLAYER)) {
       int pnum = objp->id;
       if (Players[pnum].weapon_flags & HAS_FLAG(mstruct->index)) {
@@ -1312,8 +1321,9 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     SetLightningState(mstruct->state, mstruct->scalar, mstruct->randval);
     break;
   case MSAFE_WEATHER_LIGHTNING_BOLT: {
-    if (mstruct->texnum == -1) {
-      LOG_WARNING << "Failing bolt because texnum is -1";
+    // The bolt is drawn with GameTextures[texnum].
+    if (mstruct->texnum < 0 || mstruct->texnum >= MAX_TEXTURES || !GameTextures[mstruct->texnum].used) {
+      LOG_WARNING.printf("Failing bolt because texnum %d is not a texture", mstruct->texnum);
       return;
     }
 
@@ -1708,6 +1718,10 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     spew.size = mstruct->size;
     spew.speed = mstruct->speed;
     if ((Game_mode & GM_MULTI) && Netgame.local_role == LR_CLIENT) {
+      if (mstruct->id < 0 || mstruct->id >= MAX_SPEW_EFFECTS) {
+        LOG_ERROR.printf("MSAFE_OBJECT_START_SPEW: invalid spew %d", mstruct->id);
+        return;
+      }
       int spewnum = SpewCreate(&spew);
       if (spewnum < 0)
         return;
@@ -1723,6 +1737,10 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
   }
   case MSAFE_OBJECT_STOP_SPEW: {
     if ((Game_mode & GM_MULTI) && Netgame.local_role == LR_CLIENT) {
+      if (mstruct->id < 0 || mstruct->id >= MAX_SPEW_EFFECTS) {
+        LOG_ERROR.printf("MSAFE_OBJECT_STOP_SPEW: invalid spew %d", mstruct->id);
+        return;
+      }
       SpewClearEvent(SpewEffects[mstruct->id].handle, true);
       Server_spew_list[mstruct->id] = 65535;
     } else {
@@ -1877,6 +1895,10 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     send_it = 0;
     if (objp) {
       if (mstruct->roomnum != -1) {
+        if (!VALIDATE_ROOM_OR_CELL(mstruct->roomnum)) {
+          LOG_ERROR.printf("MSAFE_OBJECT_WORLD_POSITION: invalid room %d", mstruct->roomnum);
+          break;
+        }
         ObjSetPos(objp, &mstruct->pos, mstruct->roomnum, &mstruct->orient, true);
         // When DON'T we want to send this to the clients??
         send_it = 1;
@@ -2330,7 +2352,10 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     //			0: do nothing to the weapon
     // count: ammo (if it's an ammo/secondary) of the weapon
     object *player = ObjGet(mstruct->objhandle);
-    ASSERT(mstruct->index >= 0 && mstruct->index < MAX_PRIMARY_WEAPONS + MAX_SECONDARY_WEAPONS);
+    if (mstruct->index < 0 || mstruct->index >= MAX_PRIMARY_WEAPONS + MAX_SECONDARY_WEAPONS) {
+      LOG_ERROR.printf("MSAFE_WEAPON_ADD: invalid weapon %d", mstruct->index);
+      return;
+    }
     if (player && player->type == OBJ_PLAYER) {
       ship *ship = &Ships[Players[player->id].ship_index];
       otype_wb_info *wb = &ship->static_wb[mstruct->index];
@@ -2465,10 +2490,13 @@ bool HandleCounterMeasurePowerups(char *pname, msafe_struct *mstruct, uint8_t *p
 bool HandleInventoryPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup);
 // Does whatever magic needs to be done to get the default powerups to work
 void msafe_DoPowerup(msafe_struct *mstruct) {
+  // Level scripts pass the handles: the powerup and the player picking it up.
+  if (!MOBJ || MOBJ->type != OBJ_POWERUP || !IOBJ || IOBJ->type != OBJ_PLAYER) {
+    LOG_ERROR << "msafe_DoPowerup: invalid powerup or player";
+    return;
+  }
   char pname[255];
   strcpy(pname, Object_info[MOBJ->id].name);
-  ASSERT(MOBJ->type == OBJ_POWERUP);
-  ASSERT(IOBJ->type == OBJ_PLAYER);
   uint8_t pickup = 0;
   // Now go through and do the magic for each powerup
   bool handled = false;
