@@ -355,4 +355,8 @@ TEST_F(CheckLineToFaceVertex, SphereHittingVertexAtEndOfCrossedEdgeTouchesThatVe
   ExpectDropNearVertexTouchesVertex(tri, A, V(-0.2f, 0, -1), 2, kTol);
 }
 
+TEST_F(CheckLineToFaceVertex, SphereHittingVertexAtStartOfCrossedEdgeTouchesThatVertex) {
+  ExpectDropNearVertexTouchesVertex(tri, A, V(-1, 0, 0.2f), 0, kTol);
+}
+
 } // namespace
