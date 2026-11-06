@@ -259,6 +259,27 @@ TEST_F(ReliableServerTest, InOrderStreamSurvivesSequenceNumberWrap) {
   }
 }
 
+TEST_F(ReliableServerTest, PacketsSentAheadAcrossSequenceNumberWrapAreDeliveredInOrder) {
+  network_address peer = MakePeer(19, 4321);
+  SOCKET sock = Connect(peer);
+
+  const int lockstep = 0x10000 - 6;
+  for (int n = 0; n < lockstep; n++) {
+    uint16_t seq = static_cast<uint16_t>(n);
+    SendData(peer, seq);
+    ASSERT_EQ(Receive(sock), DataPayload(seq)) << "packet " << n << " (seq " << seq << ") was not delivered";
+  }
+
+  const int ahead = 16;
+  for (int n = lockstep; n < lockstep + ahead; n++)
+    SendData(peer, static_cast<uint16_t>(n));
+  for (int n = lockstep; n < lockstep + ahead; n++) {
+    uint16_t seq = static_cast<uint16_t>(n);
+    EXPECT_EQ(Receive(sock), DataPayload(seq)) << "packet " << n << " (seq " << seq << ") was not delivered";
+  }
+  EXPECT_TRUE(Receive(sock).empty());
+}
+
 TEST_F(ReliableServerTest, DuplicateConnectionRequestsDoNotConsumeConnectionSlots) {
   network_address alice = MakePeer(16, 4321);
   SOCKET alice_sock = Connect(alice);
