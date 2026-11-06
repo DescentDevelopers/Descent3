@@ -82,6 +82,32 @@ TEST_P(ProjectionTest, PointStraightAheadProjectsToViewportCenter) {
   EXPECT_NEAR(p.p3_sy, h_ / 2, kPixelTol);
 }
 
+TEST_P(ProjectionTest, PixelsAreSquare) {
+  g3Point p = RotateAndProject(CameraToWorld(kViewPos, orient_, vector{2.0f, 2.0f, 20.0f}));
+
+  float right_px = p.p3_sx - w_ / 2;
+  float up_px = h_ / 2 - p.p3_sy;
+  EXPECT_GT(right_px, 0.0f);
+  EXPECT_NEAR(right_px, up_px, kPixelTol);
+}
+
+TEST_P(ProjectionTest, SoftwareProjectionMatchesGpuTransform) {
+  const vector cam_points[] = {
+      {0.0f, 0.0f, 10.0f}, {3.0f, 0.0f, 10.0f}, {0.0f, -2.0f, 10.0f}, {-4.0f, 1.5f, 17.0f}, {0.5f, 0.25f, 2.0f},
+  };
+  for (const vector &c : cam_points) {
+    SCOPED_TRACE(testing::Message() << "camera-space point " << c.x() << "," << c.y() << "," << c.z());
+    vector world = CameraToWorld(kViewPos, orient_, c);
+
+    g3Point p = RotateAndProject(world);
+    float gpu_sx, gpu_sy;
+    ProjectWithFullTransform(world, gpu_sx, gpu_sy);
+
+    EXPECT_NEAR(p.p3_sx, gpu_sx, kPixelTol);
+    EXPECT_NEAR(p.p3_sy, gpu_sy, kPixelTol);
+  }
+}
+
 TEST_P(ProjectionTest, Point2VecRoundTripsThroughProjection) {
   const int w = GetParam().width;
   const int h = GetParam().height;
