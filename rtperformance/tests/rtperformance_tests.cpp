@@ -112,6 +112,19 @@ TEST_F(RtpLogTest, DataRowsHaveOneFieldPerHeaderColumn) {
   EXPECT_EQ(Split(rows[0], ",").size(), header_.size()) << "header has " << header_.size() << " columns; row: " << rows[0];
 }
 
+TEST_F(RtpLogTest, FviTimeIsReportedInSeconds) {
+  rtp_StartLog();
+  RTP_RECORDVALUE(fvi_calls, 3);
+  RTP_RECORDVALUE(fvi_time, 250); // ticks -> 0.25 s
+  rtp_RecordFrame();
+  rtp_StopLog();
+
+  std::vector<std::string> rows = ReadLogRows(dir_.path(), header_);
+  ASSERT_EQ(rows.size(), 1u);
+  EXPECT_EQ(Column(header_, rows[0], "NumFVICalls"), 3);
+  EXPECT_NEAR(Column(header_, rows[0], "FVITime"), 0.25, 1e-6) << "row: " << rows[0];
+}
+
 TEST_F(RtpLogTest, StartingANewLogDiscardsFramesFromThePreviousOne) {
   rtp_StartLog();
   for (int i = 0; i < 5; i++) {
