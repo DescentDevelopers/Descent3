@@ -294,4 +294,18 @@ TEST_F(AudioEncodeTest, CompressTreatsFactorBelowOneAsReciprocal) {
   EXPECT_NE(a, c);
 }
 
+TEST_F(AudioEncodeTest, CompressRoundTripsSignedSamples) {
+  // The raw input file holds signed 16-bit little-endian PCM.
+  const auto pcm = MakeTone(5000, 440.0, 22050.0, 8000.0);
+  WriteRawPcm(dir_ / "in.raw", pcm);
+  const float volume = 1.0f;
+  ASSERT_TRUE(aenc_Compress((dir_ / "in.raw").string().c_str(), (dir_ / "out.acm").string().c_str(), nullptr, nullptr,
+                            nullptr, nullptr, nullptr, &volume));
+
+  const Decoded dec = Decode(d3_test::ReadFileBytes(dir_ / "out.acm"));
+  ASSERT_TRUE(dec.ok);
+  ASSERT_EQ(dec.pcm.size(), pcm.size());
+  EXPECT_GT(SnrDb(pcm, dec.pcm), kMinToneSnrDb);
+}
+
 } // namespace
