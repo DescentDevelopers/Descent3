@@ -297,3 +297,12 @@ TEST_F(CFileHogTest, LibraryThatFailedToOpenIsNotSearched) {
     cfclose(cf);
   cf_CloseLibrary(0);
 }
+
+TEST_F(CFileHogTest, LookupInAnEmptyLibraryFindsNothing) {
+  ASSERT_NE(OpenHog("empty.hog", {}), 0);
+
+  CFILE *cf = cfopen("missing.txt", "rb");
+  EXPECT_EQ(cf, nullptr);
+  if (cf)
+    cfclose(cf);
+}
