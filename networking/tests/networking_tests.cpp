@@ -259,4 +259,25 @@ TEST_F(ReliableServerTest, InOrderStreamSurvivesSequenceNumberWrap) {
   }
 }
 
+TEST_F(ReliableServerTest, DuplicateConnectionRequestsDoNotConsumeConnectionSlots) {
+  network_address alice = MakePeer(16, 4321);
+  SOCKET alice_sock = Connect(alice);
+
+  for (int i = 0; i < MAXRELIABLESOCKETS; i++)
+    Deliver(alice, ReliablePacket(RNT_REQ_CONN, 0));
+  network_address from;
+  EXPECT_TRUE(IsNoConnection(nw_CheckListenSocket(&from))) << "a duplicate request must not surface as a connection";
+
+  network_address bob = MakePeer(17, 4321);
+  Deliver(bob, ReliablePacket(RNT_REQ_CONN, 0));
+  Deliver(bob, ReliablePacket(RNT_I_AM_HERE, 0));
+  std::memset(&from, 0, sizeof(from));
+  int bob_id = nw_CheckListenSocket(&from);
+  EXPECT_FALSE(IsNoConnection(bob_id)) << "a new peer could not connect";
+  EXPECT_EQ(0, std::memcmp(from.address, bob.address, 4));
+
+  Deliver(alice, ReliablePacket(RNT_DATA, 0, Bytes("still here")));
+  EXPECT_EQ(Receive(alice_sock), Bytes("still here"));
+}
+
 } // namespace
