@@ -48,6 +48,31 @@ TEST(DdgrDxTest, ClearFillsExactlyTheRequestedRect) {
   }
 }
 
+TEST(DdgrDxTest, BltCopiesSubRectToOffsetExactly) {
+  const int SW = 7, SH = 5, DW = 9, DH = 8;
+  const int sx = 2, sy = 1, bw = 4, bh = 3, dx = 3, dy = 4;
+  const uint32_t sentinel = 0x00a5a5a5;
+  auto pattern = [](int x, int y) { return static_cast<uint32_t>(0x00010100 + y * 16 + x); };
+
+  DxSurface src(SW, SH);
+  DxSurface dst(DW, DH);
+  ASSERT_TRUE(src.valid());
+  ASSERT_TRUE(dst.valid());
+  for (int y = 0; y < SH; y++)
+    for (int x = 0; x < SW; x++)
+      src.set(x, y, pattern(x, y));
+  dst.fill(sentinel);
+
+  EXPECT_TRUE(ddgr_dx_surf_Blt(dst.get(), dx, dy, src.get(), sx, sy, bw, bh));
+
+  for (int y = 0; y < DH; y++) {
+    for (int x = 0; x < DW; x++) {
+      const bool inside = x >= dx && x < dx + bw && y >= dy && y < dy + bh;
+      EXPECT_EQ(dst.get(x, y), inside ? pattern(x - dx + sx, y - dy + sy) : sentinel) << "at (" << x << "," << y << ")";
+    }
+  }
+}
+
 struct ClearColourCase {
   const char *name;
   DxPixelFormat format;
