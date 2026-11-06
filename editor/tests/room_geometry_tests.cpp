@@ -519,6 +519,30 @@ TEST_F(EroomsTest, FixConcaveFacesLeavesPlanarFacesAlone) {
   EXPECT_EQ(FaceVerts(rp->faces[0]), (std::vector<int16_t>{0, 1, 2, 3}));
 }
 
+TEST_F(EroomsTest, FixConcaveFacesPreservesOtherFaces) {
+  std::vector<vector> verts = kBentQuad;
+  for (vector p : {V(0, 0, -10), V(0, 10, -10), V(10, 10, -10), V(10, 0, -10)})
+    verts.push_back(p);
+  room *rp = MakeRoom(0, verts, {{4, 5, 6, 7}, {0, 1, 2, 3}});
+  rp->faces[0].light_multiple = 9;
+  rp->faces[0].tmap = 3;
+  rp->faces[0].renderframe = 5;
+  rp->faces[0].min_xyz = V(-1, -2, -3);
+  rp->faces[0].max_xyz = V(4, 5, 6);
+  ASSERT_EQ(rp->faces[0].lmi_handle, BAD_LMI_INDEX);
+  int list[] = {1};
+
+  FixConcaveFaces(rp, list, 1);
+
+  ASSERT_EQ(rp->num_faces, 3);
+  EXPECT_EQ(FaceVerts(rp->faces[0]), (std::vector<int16_t>{4, 5, 6, 7}));
+  EXPECT_EQ(rp->faces[0].tmap, 3);
+  EXPECT_EQ(rp->faces[0].light_multiple, 9);
+  EXPECT_EQ(rp->faces[0].lmi_handle, BAD_LMI_INDEX);
+  EXPECT_EQ(rp->faces[0].renderframe, 5);
+  ExpectSamePositions({rp->faces[0].min_xyz, rp->faces[0].max_xyz}, {V(-1, -2, -3), V(4, 5, 6)});
+}
+
 TEST_F(EroomsTest, FixConcaveFacesFixesAllListedFacesWhenRoomHasBbfRegions) {
   std::vector<vector> verts = kBentQuad;
   for (const vector &p : kBentQuad)
