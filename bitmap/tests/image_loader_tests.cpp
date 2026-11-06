@@ -141,6 +141,16 @@ TEST_F(ImageLoaderTest, Pcx8BitMapsPaletteAndTreatsIndexZeroAsTransparent) {
   EXPECT_EQ(px[7], red);
 }
 
+TEST_F(ImageLoaderTest, Pcx8BitOddWidthHonoursScanlinePadding) {
+  const std::vector<std::vector<uint8_t>> rows = {{1, 2, 3}, {3, 2, 1}};
+  int handle = Track(LoadFromBytes(temp_dir, Pcx8(rows, kPalette), bm_pcx_alloc_file));
+  ASSERT_GT(handle, 0);
+  ASSERT_EQ(bm_w(handle, 0), 3);
+  ASSERT_EQ(bm_h(handle, 0), 2);
+  const uint16_t c1 = Rgb1555(31, 0, 0), c2 = Rgb1555(0, 16, 31), c3 = Rgb1555(1, 2, 3);
+  EXPECT_EQ(Pixels(handle), (std::vector<uint16_t>{c1, c2, c3, c3, c2, c1}));
+}
+
 TEST_F(ImageLoaderTest, Pcx24BitDecodesPlanesAndSkipsScanlinePadding) {
   // Width 3 means each plane line carries one padding byte.
   const std::vector<std::vector<Rgb>> rows = {
