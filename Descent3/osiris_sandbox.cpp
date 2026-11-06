@@ -548,8 +548,13 @@ void Module::Fail(const char *what, Status s) {
     std::string api;
     if (s == Status::BadArgs && last_api_ < API_COUNT)
       api = std::string(" (last API called: ") + kApiNames[last_api_] + ")";
-    LOG_ERROR.printf("OSIRIS sandbox: %s: %s failed (%s): %s%s. The script is disabled.", name_.c_str(), what,
-                     x86sandbox::StatusName(s), sb_ ? sb_->LastError().c_str() : "", api.c_str());
+    // The status name, unless the sandbox's message already starts with it.
+    std::string status = x86sandbox::StatusName(s);
+    std::string message = sb_ ? sb_->LastError() : "";
+    if (message.rfind(status, 0) != 0)
+      message = message.empty() ? status : status + ": " + message;
+    LOG_ERROR.printf("OSIRIS sandbox: %s: %s failed: %s%s. The script is disabled.", name_.c_str(), what,
+                     message.c_str(), api.c_str());
   }
   failed_ = true;
 }

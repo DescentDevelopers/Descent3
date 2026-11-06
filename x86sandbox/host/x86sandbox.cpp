@@ -133,7 +133,10 @@ Status Sandbox::Finish(int trap, int32_t rc) {
     return Status::Trap;
   }
   if (rc != 0) {
-    last_error_ = std::string(StatusName(static_cast<Status>(rc))) + ": " + ReadLinearString(x86sb_error(inst_));
+    // The status is returned separately; the message says what happened.
+    last_error_ = ReadLinearString(x86sb_error(inst_));
+    if (last_error_.empty())
+      last_error_ = StatusName(static_cast<Status>(rc));
     return static_cast<Status>(rc);
   }
   return Status::Ok;
