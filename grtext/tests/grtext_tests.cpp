@@ -128,6 +128,29 @@ TEST_F(GrtextMeasureTest, TemplateMeasurementAgreesWithLoadedFont) {
   grfont_FreeTemplate(&ft);
 }
 
+TEST_F(GrtextMeasureTest, TemplateTreatsCharsAboveUppercaseFontRangeAsMissing) {
+  TestFont spec = MakeMetricsFont();
+  std::array<uint8_t, 256> widths;
+  widths.fill(0xAA);
+  std::copy(spec.widths.begin(), spec.widths.end(), widths.begin());
+
+  tFontTemplate ft{};
+  ft.min_ascii = spec.min_ascii;
+  ft.max_ascii = spec.max_ascii;
+  ft.ch_widths = widths.data();
+  ft.kern_data = nullptr;
+  ft.ch_height = static_cast<uint8_t>(spec.height);
+  ft.ch_maxwidth = static_cast<uint8_t>(spec.width);
+  ft.proportional = true;
+  ft.uppercase = true;
+  ft.monochromatic = true;
+
+  for (const char *s : {"`", "A{B", "~"}) {
+    SCOPED_TRACE(s);
+    EXPECT_EQ(grtext_GetTextLineWidthTemplate(&ft, s), grtext_GetTextLineWidth(s));
+  }
+}
+
 namespace {
 
 class GrtextRenderTest : public GrtextTest {
