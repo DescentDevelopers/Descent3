@@ -93,6 +93,12 @@ TEST_F(GrtextMeasureTest, TabAdvancesToTheNextTabStop) {
   EXPECT_EQ(grtext_GetTextLineWidth("A\tB"), 2 * (3 + 1) + 6);
 }
 
+TEST_F(GrtextMeasureTest, ColorCodesDoNotAddToWidth) {
+  // color (B,B,B) chosen so the color bytes are real glyphs in this font
+  EXPECT_EQ(grtext_GetTextLineWidth("\x01" "BBB" "A"), grtext_GetTextLineWidth("A"));
+  EXPECT_EQ(grtext_GetTextLineWidth("A" "\x01" "BBB"), grtext_GetTextLineWidth("A"));
+}
+
 TEST_F(GrtextMeasureTest, TextHeightGrowsByOneLineHeightPerLine) {
   int one = grtext_GetTextHeight("A");
   EXPECT_GE(one, 8);
