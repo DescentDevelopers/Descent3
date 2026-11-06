@@ -113,6 +113,19 @@ TEST_F(FixTrig, AcosOfNegativeOneIsHalfTurn) {
   }
 }
 
+// Disabled because it fails: the last segment of the asin/acos tables is flat, so every |v| in [255/256, 1)
+// gives acos(255/256), about 5 degrees. AI and homing-weapon turning (AITurnTowardsDir) was tuned against that,
+// so fixing the tables needs its own decision and play-testing. Run it with --gtest_also_run_disabled_tests.
+TEST_F(FixTrig, DISABLED_AsinAcosStayAccurateApproachingDomainEdge) {
+  const double tol = DegToUnits(2.0);
+  for (float v : {0.999f, 0.9999f, 0.99999f, -0.9999f}) {
+    double expected_acos = RadToUnits(std::acos(static_cast<double>(v)));
+    double expected_asin = RadToUnits(std::asin(static_cast<double>(v)));
+    EXPECT_NEAR(AngleError(FixAcos(v), expected_acos), 0.0, tol) << "FixAcos, v = " << v;
+    EXPECT_NEAR(AngleError(FixAsin(v), expected_asin), 0.0, tol) << "FixAsin, v = " << v;
+  }
+}
+
 // FixAtan2 takes (cos, sin) -- note the argument order, opposite to std::atan2.
 TEST_F(FixTrig, Atan2AxesAndArgumentOrder) {
   EXPECT_NEAR(AngleError(FixAtan2(1.0f, 0.0f), 0x0000), 0.0, kAngleTol);
