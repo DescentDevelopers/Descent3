@@ -409,7 +409,7 @@ void bm_deleteNode(bm_T data) {
   p0 = nullptr;
   bucket = bm_hash(data);
   p = bm_hashTable[bucket];
-  while (p && !compEQ(p->data, data)) {
+  while (p && p->data != data) {
     p0 = p;
     p = p->next;
   }
