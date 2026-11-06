@@ -48,4 +48,35 @@ TEST(DdgrDxTest, ClearFillsExactlyTheRequestedRect) {
   }
 }
 
+struct ClearColourCase {
+  const char *name;
+  DxPixelFormat format;
+  uint32_t expected;
+};
+
+class DdgrDxClearColourTest : public ::testing::TestWithParam<ClearColourCase> {};
+
+TEST_P(DdgrDxClearColourTest, ClearWritesColourInSurfacePixelFormat) {
+  const ClearColourCase &c = GetParam();
+  const int W = 4, H = 3;
+
+  DxSurface sf(W, H, c.format);
+  ASSERT_TRUE(sf.valid());
+  sf.fill(0);
+
+  ddgr_dx_surf_Clear(sf.get(), 0x00f84010, 0, 0, W, H);
+
+  for (int y = 0; y < H; y++)
+    for (int x = 0; x < W; x++)
+      EXPECT_EQ(sf.get(x, y), c.expected) << "at (" << x << "," << y << ")";
+}
+
+INSTANTIATE_TEST_SUITE_P(Formats, DdgrDxClearColourTest,
+                         ::testing::Values(ClearColourCase{"X8R8G8B8", kX8R8G8B8, 0x00f84010},
+                                           ClearColourCase{"R5G6B5", {16, 0xf800, 0x07e0, 0x001f}, 0xfa02},
+                                           ClearColourCase{"X1R5G5B5", {16, 0x7c00, 0x03e0, 0x001f}, 0x7d02}),
+                         [](const ::testing::TestParamInfo<ClearColourCase> &info) {
+                           return std::string(info.param.name);
+                         });
+
 } // namespace
