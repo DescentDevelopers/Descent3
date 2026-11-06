@@ -81,6 +81,17 @@ TEST_F(DallasUserState, FloatUserVarArithmetic) {
   EXPECT_FLOAT_EQ(qUserVarValue(4), 0.0f);
 }
 
+TEST_F(DallasUserState, UserVarDecSubtractsOne) {
+  aUserVarSet(0, 5.0f);
+  aUserVarDec(0);
+  EXPECT_FLOAT_EQ(qUserVarValue(0), 4.0f);
+
+  dfInit({1});
+  aUserVarSet(1, 5.0f);
+  aUserVarDec(1);
+  EXPECT_EQ(qUserVarValueInt(1), 4);
+}
+
 TEST_F(DallasUserState, IntegerUserVarKeepsIntegerType) {
   dfInit({4});
   ASSERT_TRUE(std::holds_alternative<int32_t>(User_vars[4]));
