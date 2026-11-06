@@ -272,6 +272,16 @@ TEST_F(UnzipTest, ExtractFileOfEmptyStoredEntryCreatesEmptyFile) {
   EXPECT_EQ(std::filesystem::file_size(out), 0u);
 }
 
+TEST_F(UnzipTest, ReadFileOfEmptyStoredEntrySucceeds) {
+  OpenArchive(zip_, dir_, BuildZip({Stored("empty.txt", {})}));
+  zipentry *ent = NextEntry(zip_, "empty.txt");
+  ASSERT_NE(ent, nullptr);
+
+  int rc = -100;
+  ReadIntoMemory(zip_, ent, &rc);
+  EXPECT_EQ(rc, 0);
+}
+
 TEST_F(UnzipTest, ReadFileOfEmptyDeflatedEntrySucceeds) {
   OpenArchive(zip_, dir_, BuildZip({Deflated("empty.txt", {})}));
   zipentry *ent = NextEntry(zip_, "empty.txt");
