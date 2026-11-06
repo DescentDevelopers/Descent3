@@ -66,6 +66,10 @@ cmake -S "$WABT_DIR" -B "$work/wabt-build" -DCMAKE_BUILD_TYPE=Release -DBUILD_TE
 cmake --build "$work/wabt-build" --target wasm2c --parallel > "$work/wabt-build.log"
 WASM2C="$work/wabt-build/wasm2c"
 version="$("$WASM2C" --version)"
+# WABT adds " (git~<git describe>)" when the checkout has tags; without tags
+# (a shallow fetch) it prints a notice and uses the plain version. Keep the
+# plain version so the stamp is the same either way.
+version="${version%% (git~*}"
 
 # -ffile-prefix-map keeps the checkout's location out of the output (__FILE__ is
 # used in tiny386's messages), so the result is the same wherever it is built.
