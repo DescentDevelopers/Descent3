@@ -99,6 +99,20 @@ TEST_F(GameTracker, GameOverIsResentUntilItTimesOut) {
   EXPECT_GE(SentToTracker(GNT_GAMEOVER).size(), 3u) << "unacknowledged game over should be retransmitted";
 }
 
+TEST_F(GameTracker, GameOverStopsBeingResentAfterGivingUp) {
+  SendGameOver();
+  int result = 0;
+  AdvanceAndPoll(TRACKER_TIMEOUT * 3, [&] {
+    if (result == 0)
+      result = SendGameOver();
+  });
+  ASSERT_EQ(result, 2);
+
+  mt_test::sent.clear();
+  AdvanceAndPoll(TRACKER_TIMEOUT, [] { IdleGameTracker(); });
+  EXPECT_EQ(SentToTracker(GNT_GAMEOVER).size(), 0u);
+}
+
 TEST_F(GameTracker, NewGameIsAnnouncedAndResentUntilAcked) {
   d3_net_game_data_tiny g = MakeTinyGame("#my_lobby");
   StartTrackerGame(&g);
