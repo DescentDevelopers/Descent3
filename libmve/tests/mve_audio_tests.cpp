@@ -102,6 +102,21 @@ TEST(MveAudioTest, UncompressedCopiesThePcmPayload) {
     EXPECT_EQ(out[i], 0) << "byte " << i << " written past the stream length";
 }
 
+TEST(MveAudioTest, UncompressedStreamLengthOf32768OrMoreCopiesThatManyBytes) {
+  const size_t length = 40000;
+  Bytes pcm(length);
+  for (size_t i = 0; i < length; i++)
+    pcm[i] = static_cast<uint8_t>(i * 7 + 3);
+  Bytes frame = d3_test::ByteWriter().U16(1).U16(1).U16(static_cast<uint16_t>(length)).Bytes(pcm).bytes();
+
+  std::vector<uint8_t> out(length + 8, 0xCD);
+  mveaudio_process(reinterpret_cast<char *>(out.data()), frame.data(), 2, false);
+
+  EXPECT_TRUE(Bytes(out.begin(), out.begin() + length) == pcm);
+  for (size_t i = length; i < out.size(); i++)
+    EXPECT_EQ(out[i], 0xCD) << "byte " << i << " written past the stream length";
+}
+
 TEST(MveAudioTest, EightBitSilenceIsTheUnsignedMidpoint) {
   std::vector<uint8_t> out(8, 0xCD);
   mveaudio_silence(reinterpret_cast<char *>(out.data()), 6, 1);
