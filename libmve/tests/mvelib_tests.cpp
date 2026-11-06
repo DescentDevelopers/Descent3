@@ -166,6 +166,21 @@ TEST_F(MveLibTest, ChunkLargerThanTheInitialBufferIsReadIntact) {
   EXPECT_EQ(LiveAllocations(), 0u);
 }
 
+TEST_F(MveLibTest, SegmentLargerThan32KiBReportsItsTrueSize) {
+  // Segment and chunk lengths are unsigned 16-bit fields, so a segment of 40000 bytes is legal.
+  Bytes big = Payload(40000, 0x42);
+  MemStream s{MveBuilder().Chunk({{0x11, 0, big}, {0x07, 0, {}}}).bytes()};
+  MVEFILE *f = mvefile_open(&s);
+  ASSERT_NE(f, nullptr);
+
+  EXPECT_EQ(mvefile_get_next_segment_size(f), 40000);
+
+  mvefile_advance_segment(f);
+  EXPECT_EQ(mvefile_get_next_segment_major(f), 0x07);
+
+  mvefile_close(f);
+}
+
 TEST_F(MveLibTest, TrailingBytesTooShortForASegmentHeaderEndTheChunk) {
   Bytes body = EncodeSegment({4, 0, {0x01, 0x02}});
   body.push_back(0x00); // 3 stray bytes: less than a 4-byte segment header
