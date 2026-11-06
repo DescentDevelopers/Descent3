@@ -125,6 +125,20 @@ TEST_F(GameTracker, GameOverStopsBeingResentAfterGivingUp) {
   EXPECT_EQ(SentToTracker(GNT_GAMEOVER).size(), 0u);
 }
 
+TEST_F(GameTracker, GameOverCanBeSentAgainAfterOneTimedOut) {
+  SendGameOver();
+  int result = 0;
+  AdvanceAndPoll(TRACKER_TIMEOUT * 3, [&] {
+    if (result == 0)
+      result = SendGameOver();
+  });
+  ASSERT_EQ(result, 2);
+
+  mt_test::sent.clear();
+  EXPECT_EQ(SendGameOver(), 0) << "a timed-out game over must not block the next one";
+  EXPECT_EQ(SentToTracker(GNT_GAMEOVER).size(), 1u);
+}
+
 TEST_F(GameTracker, NewGameIsAnnouncedAndResentUntilAcked) {
   d3_net_game_data_tiny g = MakeTinyGame("#my_lobby");
   StartTrackerGame(&g);
