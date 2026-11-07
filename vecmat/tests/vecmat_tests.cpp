@@ -473,6 +473,33 @@ TEST(VecmatVectorToMatrix, UpAndRightKeepsUpAndTiltsRightTowardHint) {
   EXPECT_GT(Dot(m.rvec, vector{1, 0, 0.2f}), 0.0f);
 }
 
+TEST(VecmatVectorToMatrix, HintParallelToForwardFallsBackToForwardOnly) {
+  // Hints along the forward vector, or zero. (2, 4, 6) and (-1, -2, -3) normalize to exactly the normalized (1, 2, 3)
+  // or its negation, so their cross product with it cancels to zero unless the compiler fuses multiply-adds.
+  // (3, 15, 18) against (1, 5, 6) leaves rounding error either way.
+  struct Case {
+    vector f, hint;
+  };
+  const Case cases[] = {
+      {{1, 2, 3}, {2, 4, 6}}, {{1, 2, 3}, {-1, -2, -3}}, {{1, 2, 3}, {0, 0, 0}}, {{1, 5, 6}, {3, 15, 18}},
+  };
+  for (const Case &c : cases) {
+    SCOPED_TRACE(::testing::Message() << "f = (" << c.f.x() << ", " << c.f.y() << ", " << c.f.z() << "), hint = ("
+                                      << c.hint.x() << ", " << c.hint.y() << ", " << c.hint.z() << ")");
+    vector fv = c.f, hv = c.hint;
+    matrix m;
+    vm_VectorToMatrix(&m, &fv, &hv);
+    EXPECT_TRUE(IsOrientation(m, kTol * 10));
+    EXPECT_TRUE(VecNear(m.fvec, Unit(c.f), kTol));
+
+    fv = c.f;
+    hv = c.hint;
+    vm_VectorToMatrix(&m, &fv, nullptr, &hv);
+    EXPECT_TRUE(IsOrientation(m, kTol * 10));
+    EXPECT_TRUE(VecNear(m.fvec, Unit(c.f), kTol));
+  }
+}
+
 TEST(VecmatOrthogonalize, RepairsSkewedMatrixKeepingForwardAndUpSide) {
   matrix m{vector{5, 5, 5}, vector{0.1f, 2, 0.7f}, vector{0, 0.2f, 3}};
   const vector old_f = m.fvec, old_u = m.uvec;
@@ -499,6 +526,14 @@ TEST(VecmatOrthogonalize, UpParallelToForwardStillGivesValidOrientation) {
   vm_Orthogonalize(&m);
   EXPECT_TRUE(IsOrientation(m, kTol * 10));
   EXPECT_TRUE(VecNear(m.fvec, vector{0, 0, 1}, kTol));
+}
+
+TEST(VecmatOrthogonalize, UpParallelToOffAxisForwardStillGivesValidOrientation) {
+  // Unlike the axis-aligned case above, the cross product of these is rounding error rather than exactly zero.
+  matrix m{vector{0, 0, 0}, vector{3, 15, 18}, vector{1, 5, 6}};
+  vm_Orthogonalize(&m);
+  EXPECT_TRUE(IsOrientation(m, kTol * 10));
+  EXPECT_TRUE(VecNear(m.fvec, Unit(vector{1, 5, 6}), kTol));
 }
 
 namespace {
