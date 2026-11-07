@@ -20,14 +20,18 @@
 // returns early without touching the network. Incoming datagrams are injected by calling the receive callbacks that
 // nw_DoReceiveCallbacks() would normally dispatch to.
 
+#include <chrono>
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <gtest/gtest.h>
 
 #include "d3_test/game_clock.h"
+#include "d3_test/sockets.h"
 #include "networking.h"
 #include "support/networking_test_packets.h"
 #include "support/networking_test_reliable.h"
@@ -299,6 +303,45 @@ TEST_F(ReliableServerTest, DuplicateConnectionRequestsDoNotConsumeConnectionSlot
 
   Deliver(alice, ReliablePacket(RNT_DATA, 0, Bytes("still here")));
   EXPECT_EQ(Receive(alice_sock), Bytes("still here"));
+}
+
+// The game's asynchronous name lookup, which the online lobby modules use to find their servers.
+class AsyncNameLookupTest : public ::testing::Test {
+protected:
+  void SetUp() override { d3_test::EnsureSockets(); }
+
+  // Looks up `name` and polls the lookup for up to ten seconds. Returns the last READ result: 1 found (with the
+  // address in `ip`), -1 failed, 0 still looking.
+  static int Lookup(const char *name, uint32_t *ip) {
+    // The lookup runs on its own thread and keeps the name pointer, so the name must outlive it.
+    static char host[256];
+    snprintf(host, sizeof(host), "%s", name);
+    if (nw_Asyncgethostbyname(ip, NW_AGHBN_LOOKUP, host) != 1)
+      return -2;
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    int result;
+    do {
+      result = nw_Asyncgethostbyname(ip, NW_AGHBN_READ, host);
+      if (result != 0)
+        break;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    } while (std::chrono::steady_clock::now() < deadline);
+    return result;
+  }
+};
+
+TEST_F(AsyncNameLookupTest, ResolvesLocalhost) {
+  uint32_t ip = 0;
+  ASSERT_EQ(Lookup("localhost", &ip), 1) << "the lookup did not report finding the name";
+  EXPECT_EQ(ip, htonl(INADDR_LOOPBACK));
+}
+
+TEST_F(AsyncNameLookupTest, ReportsANameThatCannotResolve) {
+  // A DNS label is at most 63 characters, so the resolver rejects this name without asking a DNS server, and the test
+  // doesn't wait on the network.
+  const std::string name = std::string(64, 'x') + ".invalid";
+  uint32_t ip = 0;
+  EXPECT_EQ(Lookup(name.c_str(), &ip), -1);
 }
 
 } // namespace
