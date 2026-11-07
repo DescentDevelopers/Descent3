@@ -162,16 +162,6 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
     int rcode=0;
     uint32_t ip=0;
 
-    // temporary fix until DLLnw_Asyncgethostbyname win support was restored.
-#ifdef WIN32
-    HOSTENT *he;
-    he = gethostbyname(serveraddr);
-    if (!he) {
-      return -1;
-    }
-    memcpy(&Chataddr.sin_addr.s_addr, he->h_addr_list[0], 4);
-    rcode = 1;
-#else
     DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_LOOKUP, serveraddr);
     do {
       rcode = DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_READ, serveraddr);
@@ -186,7 +176,6 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
       return 0;
     }
     memcpy(&Chataddr.sin_addr.s_addr, &ip, 4);
-#endif
 
     Chataddr.sin_port = htons(chat_port);
 
