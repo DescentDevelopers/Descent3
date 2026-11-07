@@ -18,6 +18,10 @@
 
 #pragma once
 
+#include <cstdint>
+#include <string>
+#include <vector>
+
 // The texts the GetChatModuleString() fake returns. The real ones come from each online module's string table.
 #define TEST_FMT_NOT_ONLINE "not-online %s"
 #define TEST_FMT_PRIVMSG_TO "to %s: %s"
@@ -30,8 +34,28 @@ extern mem_free_fp DLLmem_free;
 
 namespace chat_test {
 
-// Points the module API at malloc() and free(). The tests never reach the name lookup or the UI polling, so those
-// stay null.
+// Points the module API at malloc() and free(), and leaves the name lookup and the UI polling null.
 void InstallModuleApi();
+
+// Stands in for the game's asynchronous name lookup (DLLnw_Asyncgethostbyname) and UI polling (DLLPollUI), and
+// records what the chat client asks of them. A READ reports "still looking" `pending_reads` times, then `result`:
+// 1 for found, with the address `ip` (network byte order), or -1 for failed.
+struct FakeNameLookup {
+  struct Call {
+    int command;
+    std::string hostname;
+  };
+  std::vector<Call> calls;
+  int pending_reads = 0;
+  int result = 1;
+  uint32_t ip = 0;
+
+  // What DLLPollUI returns; 99 means the user cancelled.
+  int poll_ui_result = 0;
+  int poll_ui_calls = 0;
+};
+
+// Points DLLnw_Asyncgethostbyname and DLLPollUI at `fake`, or back to null for nullptr.
+void InstallNameLookup(FakeNameLookup *fake);
 
 } // namespace chat_test

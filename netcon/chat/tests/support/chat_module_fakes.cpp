@@ -22,6 +22,7 @@
 #include <cstdlib>
 
 #include "chat_api.h"
+#include "networking.h"
 
 typedef void *(*mem_malloc_fp)(int size);
 typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, const char *hostname);
@@ -37,6 +38,26 @@ namespace {
 void *TestMalloc(int size) { return std::malloc(size); }
 void TestFree(void *p) { std::free(p); }
 
+chat_test::FakeNameLookup *name_lookup = nullptr;
+
+int FakeAsyncgethostbyname(uint32_t *ip, int command, const char *hostname) {
+  name_lookup->calls.push_back({command, hostname ? hostname : ""});
+  if (command != NW_AGHBN_READ)
+    return 1;
+  if (name_lookup->pending_reads > 0) {
+    name_lookup->pending_reads--;
+    return 0;
+  }
+  if (name_lookup->result == 1)
+    *ip = name_lookup->ip;
+  return name_lookup->result;
+}
+
+int FakePollUI() {
+  name_lookup->poll_ui_calls++;
+  return name_lookup->poll_ui_result;
+}
+
 } // namespace
 
 namespace chat_test {
@@ -47,6 +68,12 @@ void InstallModuleApi() {
   DLLnw_Asyncgethostbyname = nullptr;
   DLLPollUI = nullptr;
   DLLDebug_ConsolePrintf = nullptr;
+}
+
+void InstallNameLookup(FakeNameLookup *fake) {
+  name_lookup = fake;
+  DLLnw_Asyncgethostbyname = fake ? FakeAsyncgethostbyname : nullptr;
+  DLLPollUI = fake ? FakePollUI : nullptr;
 }
 
 } // namespace chat_test

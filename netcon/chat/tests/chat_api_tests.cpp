@@ -29,8 +29,10 @@
 
 #include "networking.h"
 #include "chat_api.h"
+#include "d3_test/sockets.h"
 #include "support/chat_api_internals.h"
 #include "support/chat_test_helpers.h"
+#include "support/local_listener.h"
 #include "support/chat_module_fakes.h"
 
 using ::testing::Contains;
@@ -428,6 +430,83 @@ TEST_F(ChatApiTest, TrackerIdLookupFailsForUnknownUser) {
   EXPECT_EQ(GetTrackerIdByUser("Ghost"), nullptr);
   Feed(":irc.test 401 Pilot Ghost :No such nick/channel");
   EXPECT_EQ(GetTrackerIdByUser("Ghost"), kFailed);
+}
+
+// ConnectToChatServer finds the server through the game's asynchronous name lookup (DLLnw_Asyncgethostbyname),
+// polling the UI while it waits, on every platform.
+class ChatConnectTest : public ChatApiTest {
+protected:
+  void SetUp() override {
+    ChatApiTest::SetUp();
+    d3_test::EnsureSockets();
+    InstallNameLookup(&lookup);
+  }
+  void TearDown() override {
+    if (Chatsock != INVALID_SOCKET)
+      CloseSocket(Chatsock);
+    InstallNameLookup(nullptr);
+    ChatApiTest::TearDown();
+  }
+
+  int Connect(const char *server, uint16_t port) {
+    char nick[] = "Pilot";
+    char tid[] = "1234";
+    return ConnectToChatServer(server, static_cast<int16_t>(port), nick, tid);
+  }
+
+  std::vector<int> Commands() const {
+    std::vector<int> commands;
+    for (const auto &call : lookup.calls)
+      commands.push_back(call.command);
+    return commands;
+  }
+
+  FakeNameLookup lookup;
+};
+
+TEST_F(ChatConnectTest, ConnectsToTheAddressTheLookupFound) {
+  LocalListener server;
+  ASSERT_TRUE(server.listening());
+  lookup.ip = htonl(INADDR_LOOPBACK);
+
+  EXPECT_EQ(Connect("irc.example", server.port()), 0);
+
+  ASSERT_FALSE(lookup.calls.empty());
+  EXPECT_EQ(lookup.calls[0].command, NW_AGHBN_LOOKUP);
+  EXPECT_EQ(lookup.calls[0].hostname, "irc.example");
+  EXPECT_EQ(Socket_connecting, 1);
+  EXPECT_TRUE(server.Accept(5000)) << "no connection reached the address the lookup found";
+}
+
+TEST_F(ChatConnectTest, PollsTheUiUntilTheLookupFinishes) {
+  LocalListener server;
+  ASSERT_TRUE(server.listening());
+  lookup.ip = htonl(INADDR_LOOPBACK);
+  lookup.pending_reads = 3;
+
+  Connect("irc.example", server.port());
+
+  EXPECT_THAT(Commands(), ElementsAre(NW_AGHBN_LOOKUP, NW_AGHBN_READ, NW_AGHBN_READ, NW_AGHBN_READ, NW_AGHBN_READ));
+  EXPECT_EQ(lookup.poll_ui_calls, 4);
+}
+
+TEST_F(ChatConnectTest, FailedLookupIsCancelledWithoutConnecting) {
+  lookup.result = -1;
+
+  Connect("irc.invalid", 6667);
+
+  EXPECT_THAT(Commands(), ElementsAre(NW_AGHBN_LOOKUP, NW_AGHBN_READ, NW_AGHBN_CANCEL));
+  EXPECT_EQ(Socket_connecting, 0);
+}
+
+TEST_F(ChatConnectTest, CancellingInTheUiStopsWaitingForTheLookup) {
+  lookup.pending_reads = 1000;
+  lookup.poll_ui_result = 99;
+
+  EXPECT_EQ(Connect("irc.example", 6667), 0);
+
+  EXPECT_EQ(lookup.poll_ui_calls, 1);
+  EXPECT_EQ(Socket_connecting, 0);
 }
 
 } // namespace
