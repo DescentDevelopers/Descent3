@@ -20,3 +20,7 @@ target_include_directories(model PUBLIC
     ${PROJECT_SOURCE_DIR}/model
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

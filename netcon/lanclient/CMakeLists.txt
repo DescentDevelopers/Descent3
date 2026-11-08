@@ -23,6 +23,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   macos_sign(Direct_TCP_IP)
 endif()
 
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
+
 include(HogMaker)
 MakeHog(
   TARGET Direct_TCP_IP_Hog

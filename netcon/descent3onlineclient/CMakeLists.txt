@@ -1,11 +1,9 @@
 set(HEADERS
-  chat_api.h
   odtclient.h
   odtstrings.h
   dip_gametrack.h
   )
 set(CPPS
-  chat_api.cpp
   odtclient.cpp
   dip_gametrack.cpp
 )
@@ -17,6 +15,7 @@ set_target_properties(Descent3_Online_TCP_IP PROPERTIES OUTPUT_NAME "Descent3 On
 target_link_libraries(Descent3_Online_TCP_IP PRIVATE
   ddio
   inetfile
+  netcon_chat
   httplib
   logger
   misc
@@ -44,3 +43,7 @@ install(
   FILES "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/online/Descent3 Online.d3c"
   DESTINATION ${CMAKE_INSTALL_DATADIR}/online
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

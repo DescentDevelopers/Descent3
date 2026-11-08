@@ -8,3 +8,7 @@ target_link_libraries(vecmat PRIVATE
   fix
   misc
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

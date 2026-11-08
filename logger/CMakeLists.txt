@@ -14,3 +14,7 @@ target_include_directories(logger PUBLIC
     ${PROJECT_SOURCE_DIR}/logger
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

@@ -20,23 +20,24 @@
 #include <filesystem>
 #include <gtest/gtest.h>
 
+#include "d3_test/files.h"
 #include "ddio.h"
 
 TEST(D3, DDIO_GetTmpFileName) {
-  std::filesystem::path temp_dir = std::filesystem::temp_directory_path();
-  std::filesystem::path result = ddio_GetTmpFileName(temp_dir, "prefix_");
+  d3_test::TempDir temp_dir;
+  std::filesystem::path result = ddio_GetTmpFileName(temp_dir.path(), "prefix_");
   EXPECT_FALSE(result.empty());
   EXPECT_EQ(result.extension(), ".tmp");
-  EXPECT_TRUE(canonical(result.parent_path()) == canonical(temp_dir));
+  EXPECT_TRUE(canonical(result.parent_path()) == canonical(temp_dir.path()));
 }
 
   // we intentionally do NOT use the same RNG as the "game" logic. that RNG is seed-controlled for tests,
   // and using it here would introduce an uncontrollable source of randomness from potential tmpdir collisions
 TEST(D3, DDIO_GetTmpFileNameDoesNotUseRand) {
-  std::filesystem::path temp_dir = std::filesystem::temp_directory_path();
+  d3_test::TempDir temp_dir;
   srand(1234);
   int expected = rand();
   srand(1234);
-  ddio_GetTmpFileName(temp_dir, "prefix_");
+  ddio_GetTmpFileName(temp_dir.path(), "prefix_");
   EXPECT_EQ(rand(), expected);
 }

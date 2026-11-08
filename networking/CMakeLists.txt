@@ -19,3 +19,7 @@ target_link_libraries(networking PRIVATE
   module
   ${PLATFORM_LIBS}
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

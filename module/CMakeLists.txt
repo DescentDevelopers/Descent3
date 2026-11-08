@@ -16,3 +16,6 @@ target_include_directories(module PUBLIC
   ${PROJECT_SOURCE_DIR}/module
   >
 )
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

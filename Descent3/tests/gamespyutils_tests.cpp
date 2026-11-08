@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <vector>
+
 #include <gtest/gtest.h>
 #include "gamespyutils.h"
 
@@ -38,3 +40,23 @@ TEST(D3, GameSpyUtilsTests) {
   EXPECT_STREQ((char *)encoded_val, result);
 }
 
+// Expected strings are the RFC 4648 section 10 test vectors plus a group that uses both non-alphanumeric characters
+// ('+' = 62, '/' = 63).
+TEST(D3, GameSpyEncodeMatchesBase64ForWholeGroups) {
+  struct Case {
+    std::vector<uint8_t> in;
+    const char *out;
+  } cases[] = {
+      {{}, ""},
+      {{'f', 'o', 'o'}, "Zm9v"},
+      {{'f', 'o', 'o', 'b', 'a', 'r'}, "Zm9vYmFy"},
+      {{0xFB, 0xFF, 0xBF}, "+/+/"},
+      {{0x00, 0x00, 0x00}, "AAAA"},
+  };
+
+  for (auto &c : cases) {
+    std::vector<uint8_t> out(c.in.size() * 4 / 3 + 1, 0xAA);
+    gs_encode(c.in.data(), static_cast<int>(c.in.size()), out.data());
+    EXPECT_STREQ(reinterpret_cast<char *>(out.data()), c.out);
+  }
+}

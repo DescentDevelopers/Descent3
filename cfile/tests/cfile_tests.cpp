@@ -23,7 +23,7 @@
 #include "cfile.h"
 
 void add_cwd_to_base_directories() {
-  cf_AddBaseDirectory(std::filesystem::current_path());
+  cf_AddBaseDirectory(std::filesystem::path(CFILE_TEST_DATA_DIR));
 }
 
 TEST(D3, CFileIO) {
@@ -53,7 +53,7 @@ TEST(D3, CFileLibrary) {
   // Second pass - with search path (files in directory goes first)
   for (int i = 0; i < 2; i++) {
     if (i != 0) {
-      EXPECT_EQ(cf_SetSearchPath("TestDir"), true);
+      EXPECT_EQ(cf_SetSearchPath(std::filesystem::path(CFILE_TEST_DATA_DIR) / "TestDir"), true);
     }
 
     int lib_handle = cf_OpenLibrary("TestDir/test.hog");
@@ -89,7 +89,7 @@ TEST(D3, CFileLocatePath) {
   filename_new = cf_LocatePath("no-exist-file.txt");
   EXPECT_TRUE(filename_new.empty());
 
-  auto cwd = std::filesystem::current_path();
+  auto cwd = std::filesystem::path(CFILE_TEST_DATA_DIR);
 
   for (auto const &item : test_paths) {
     auto directory = cwd / item.parent_path();
@@ -117,7 +117,7 @@ TEST(D3, CFileLocatePath) {
 }
 
 TEST(D3, CFileLocatePathCaseInsensitiveHelperDirectory) {
-  auto cwd = std::filesystem::current_path();
+  auto cwd = std::filesystem::path(CFILE_TEST_DATA_DIR);
 
   // Exact match.
   EXPECT_EQ(cf_LocatePathCaseInsensitiveHelper("TestDir", cwd), cwd / "TestDir");

@@ -24,3 +24,7 @@ target_include_directories(libmve PUBLIC
   >
   ${SDL3_INCLUDE_DIRS}
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

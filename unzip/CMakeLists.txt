@@ -9,3 +9,7 @@ target_include_directories(unzip PUBLIC
     ${PROJECT_SOURCE_DIR}/unzip
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
