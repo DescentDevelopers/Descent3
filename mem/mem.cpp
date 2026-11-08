@@ -344,7 +344,7 @@ int hashTableSize = MEM_MAX_MALLOCS;
 mem_alloc_info mem_info[MEM_MAX_MALLOCS];
 int Mem_next_slot = 0;
 int Mem_highest_used_slot = 0;
-FILE *mem_out = NULL;
+FILE *mem_out = nullptr;
 int Mem_mallocs_since_last_sort = 0;
 /*
 #undef new
@@ -376,7 +376,7 @@ void mem_Init() {
 #ifdef MEM_DEBUG
   hashTable = (Node **)malloc(hashTableSize * sizeof(Node *));
   for (int a = 0; a < hashTableSize; a++) {
-    hashTable[a] = NULL;
+    hashTable[a] = nullptr;
   }
 #ifdef MEM_LOGFILE
   {
@@ -471,20 +471,20 @@ void *mem_malloc_sub(int size, const char *file, int line) {
 #else
 #if defined(WIN32)
   if (!Heap) {
-    return 0;
+    return nullptr;
   }
 #endif
   if (size < 0) {
     LOG_ERROR << "Some bozo is trying to allocate a negative length of memory!";
     LOG_ERROR.printf("Offending file: %s line: %d", file, line);
     Int3();
-    return NULL;
+    return nullptr;
   } else if (size == 0) {
     LOG_ERROR.printf("Warning: Zero byte malloc in %s line %d!", file, line);
     Int3();
     return (void *)MEM_NO_MEMORY_PTR;
   }
-  mem_alloc_info *mi = NULL;
+  mem_alloc_info *mi = nullptr;
   mem_alloc_info no_track_mi;
   bool track_node = true;
 #ifdef MEM_DEBUG
@@ -506,7 +506,7 @@ void *mem_malloc_sub(int size, const char *file, int line) {
       }
     }
   }
-  if (bail_now || (mi == NULL))
+  if (bail_now || (mi == nullptr))
 #else
 
 #endif
@@ -541,14 +541,14 @@ void *mem_malloc_sub(int size, const char *file, int line) {
 #endif
 #endif
   int errors;
-  if (mi->ptr == NULL) {
+  if (mi->ptr == nullptr) {
     errors = GetLastError();
-    LOG_DEBUG << "Unable to alloc memory in mem_malloc_sub()!");
+    LOG_DEBUG << "Unable to alloc memory in mem_malloc_sub()!";
     Int3();
     ASSERT(mi->ptr);
     Error("Out of memory, unable to continue.");
     mem_error_msg(file, line, size);
-    return 0;
+    return nullptr;
   }
 
   retp = mi->ptr;
@@ -579,7 +579,7 @@ void mem_free_sub(void *memblock) {
     return;
   }
 #endif
-  if (memblock == 0)
+  if (memblock == nullptr)
     return;
   if ((void *)MEM_NO_MEMORY_PTR == memblock) {
     return;
@@ -614,7 +614,7 @@ void mem_free_sub(void *memblock) {
 int handle_program_memory_depletion(size_t size) {
   // Release character buffer memory.
   mem_free(Mem_failsafe_block);
-  Mem_failsafe_block = NULL;
+  Mem_failsafe_block = nullptr;
   Error("Unable to allocate %d bytes of memory.", size);
   // Tell new to stop allocation attempts.
   return 0;
@@ -627,7 +627,7 @@ void mem_error_msg(const char *file, int line, int size) {
 char *mem_strdup_sub(const char *src, const char *file, int line) {
 #if defined(WIN32)
   if (!Heap) {
-    return 0;
+    return nullptr;
   }
 #endif
   int len = strlen(src) + 1;
@@ -644,7 +644,7 @@ void *mem_realloc_sub(void *memblock, int size) {
 #else
 #if defined(WIN32)
   if (!Heap) {
-    return 0;
+    return nullptr;
   }
 #endif
   if ((void *)MEM_NO_MEMORY_PTR == memblock) {
@@ -699,7 +699,7 @@ void mem_shutdown() {
   LOG_DEBUG << "Shutting down memory system.";
   if (Mem_failsafe_block) {
     mem_free(Mem_failsafe_block);
-    Mem_failsafe_block = NULL;
+    Mem_failsafe_block = nullptr;
   }
 #ifdef MEM_DEBUG
   free(hashTable);
@@ -728,7 +728,7 @@ void mem_shutdown() {
 #endif
   if (Heap) {
     HeapDestroy(Heap);
-    Heap = NULL;
+    Heap = nullptr;
   }
 }
 
@@ -738,7 +738,7 @@ struct allocdumpt {
   mem_alloc_info *data;
 };
 
-static int *sorted_allocs = NULL;
+static int *sorted_allocs = nullptr;
 
 int mem_allocdump_cmp(allocdumpt *elem1, allocdumpt *elem2) {
   int res;
@@ -891,7 +891,7 @@ Node *insertNode(T data) {
    ************************************************/
   /* insert node at beginning of list */
   bucket = hash(data);
-  if ((p = (Node *)malloc(sizeof(Node))) == 0) {
+  if ((p = (Node *)malloc(sizeof(Node))) == nullptr) {
     fprintf(stderr, "out of memory (insertNode)\n");
     exit(1);
   }
@@ -908,7 +908,7 @@ void deleteNode(T data) {
    *  delete node containing data from table  *
    ********************************************/
   /* find node */
-  p0 = 0;
+  p0 = nullptr;
   bucket = hash(data);
   p = hashTable[bucket];
   while (p && !compEQ(p->data, data)) {

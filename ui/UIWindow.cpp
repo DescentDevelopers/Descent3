@@ -161,10 +161,10 @@ int UIWindow::m_WindowFont = 0;
 //	UIWindow class
 
 UIWindow::UIWindow() : UIObject() {
-  m_GadgetHead = NULL;
-  m_GadgetTail = NULL;
-  m_GadgetCur = NULL;
-  m_BackItem = NULL;
+  m_GadgetHead = nullptr;
+  m_GadgetTail = nullptr;
+  m_GadgetCur = nullptr;
+  m_BackItem = nullptr;
   m_HoldHotkeys = false;
   m_CurGadgetInGroup = false;
   m_ResetCurGadget = false;
@@ -180,12 +180,12 @@ UIWindow::~UIWindow() {
 //	create a window at the specified coords.
 void UIWindow::Create(int x, int y, int w, int h, int flags) {
   m_FontHandle = m_WindowFont;
-  m_LockedGadget = NULL;
+  m_LockedGadget = nullptr;
   m_BackItem = UIPrimativeItem(TRANSPARENT_COLOR32).CopyUIItem();
   m_BackColor = GR_RGB(0, 0, 0);
   m_Flags = flags;
-  m_GadgetTail = NULL;
-  m_GadgetHead = NULL;
+  m_GadgetTail = nullptr;
+  m_GadgetHead = nullptr;
   m_LastKey = 0;
   m_LastKeyTime = 0.0f;
   m_HoldHotkeys = false;
@@ -208,10 +208,10 @@ void UIWindow::Destroy() {
     UIGadget *gadget = m_GadgetTail;
     gadget->Destroy(); // gadget must be destroyed AFTER it's removed from list.
   }
-  m_GadgetTail = NULL;
-  m_GadgetHead = NULL;
+  m_GadgetTail = nullptr;
+  m_GadgetHead = nullptr;
 
-  SetBackItem(NULL);
+  SetBackItem(nullptr);
 
   UIObject::Destroy();
 }
@@ -229,13 +229,13 @@ void UIWindow::AddGadget(UIGadget *gadget) {
   } else {
     m_GadgetTail->m_Next = gadget;
     gadget->m_Prev = m_GadgetTail;
-    gadget->m_Next = NULL;
+    gadget->m_Next = nullptr;
     m_GadgetTail = gadget;
   }
 
   if (m_GadgetCur) {
     m_GadgetCur->LostFocus();
-    m_GadgetCur = NULL;
+    m_GadgetCur = nullptr;
   }
   m_ResetCurGadget = true;
   m_CurGadgetInGroup = false;
@@ -270,24 +270,24 @@ void UIWindow::RemoveGadget(UIGadget *gadget) {
 
   if (gadget == m_GadgetCur) {
     m_GadgetCur->LostFocus();
-    m_GadgetCur = NULL;
+    m_GadgetCur = nullptr;
     m_ResetCurGadget = true;
     m_CurGadgetInGroup = false;
   }
 
   if (gadget == m_LockedGadget)
-    m_LockedGadget = NULL;
+    m_LockedGadget = nullptr;
 
   //	break link.
-  gadget->m_Prev = NULL;
-  gadget->m_Next = NULL;
-  gadget->m_Wnd = NULL;
+  gadget->m_Prev = nullptr;
+  gadget->m_Next = nullptr;
+  gadget->m_Wnd = nullptr;
 }
 
 // forces a particular gadget into focus, always until unlocked.
 void UIWindow::LockFocusOnGadget(UIGadget *gadget) { m_LockedGadget = gadget; }
 
-void UIWindow::UnlockFocusOnGadget() { m_LockedGadget = NULL; }
+void UIWindow::UnlockFocusOnGadget() { m_LockedGadget = nullptr; }
 
 // forces all keyinput onto one gadget.
 void UIWindow::LockKeyFocusOnGadget(UIGadget *gadget) {}
@@ -331,16 +331,16 @@ int UIWindow::Process() {
   }
 
   //	setup default output values
-  UI_output.gadget = NULL;
+  UI_output.gadget = nullptr;
   UI_output.id = -1;
 
   // we can do focus processing if no one gadget has locked the keyboard, mouse focus.
   if (!m_LockedGadget) {
-    UIGadget *test_gadget = NULL;
+    UIGadget *test_gadget = nullptr;
     if (UI_input.b1_status == UIMSEBTN_PRESSED || UI_input.b1_status == UIMSEBTN_CLICKED) {
       // start from top most gadget down for mouse focus check.
       bool in_group = false;
-      for (test_gadget = m_GadgetTail; test_gadget != NULL; test_gadget = test_gadget->m_Prev) {
+      for (test_gadget = m_GadgetTail; test_gadget != nullptr; test_gadget = test_gadget->m_Prev) {
         if (CHECK_FLAG(test_gadget->GetFlags(), UIF_GROUP_END)) { // going from end of list to start, so reverse
           in_group = true;
         }
@@ -349,7 +349,7 @@ int UIWindow::Process() {
             if (!test_gadget->IsDisabled()) {
               break;
             } else {
-              test_gadget = NULL;
+              test_gadget = nullptr;
               no_process = true;
               break;
             }
@@ -365,7 +365,7 @@ int UIWindow::Process() {
       if (test_gadget) {
         if (m_GadgetCur && m_GadgetCur != test_gadget) {
           m_GadgetCur->LostFocus();
-          m_GadgetCur = NULL;
+          m_GadgetCur = nullptr;
         }
         if (!m_GadgetCur) {
           m_GadgetCur = test_gadget;
@@ -524,7 +524,7 @@ void UIWindow::OnKeyDown(int key) {
   if (!m_HoldHotkeys) {
     int i;
 
-    for (gadget = m_GadgetHead; gadget != NULL; gadget = gadget->m_Next) {
+    for (gadget = m_GadgetHead; gadget != nullptr; gadget = gadget->m_Next) {
       if (!gadget->IsDisabled()) {
         if (gadget->GetID() == UID_CANCEL && key == KEY_ESC)
           gadget->OnSelect();
@@ -532,7 +532,7 @@ void UIWindow::OnKeyDown(int key) {
     }
 
     // do hotkeys
-    for (gadget = m_GadgetHead; gadget != NULL; gadget = gadget->m_Next) {
+    for (gadget = m_GadgetHead; gadget != nullptr; gadget = gadget->m_Next) {
       if (!gadget->IsDisabled() && UI_input.key && ISKEYPRESSED(gadget->m_Hotkey))
         gadget->OnSelect();
     }
@@ -540,7 +540,7 @@ void UIWindow::OnKeyDown(int key) {
     // do window accelerators.
     for (i = 0; i < m_naccels; i++) {
       if (UI_input.key && ISKEYPRESSED(m_Accelerators[i].key) && UI_output.id < 0) {
-        UI_output.gadget = NULL;
+        UI_output.gadget = nullptr;
         UI_output.id = m_Accelerators[i].id;
         break;
       }

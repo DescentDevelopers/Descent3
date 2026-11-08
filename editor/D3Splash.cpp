@@ -124,7 +124,7 @@ void CD3Splash::OnPaint() {
 
   m_SplashBmp.GetObject(sizeof(bm), &bm);
 
-  sdc.CreateCompatibleDC(NULL);
+  sdc.CreateCompatibleDC(nullptr);
   bmp = sdc.SelectObject(&m_SplashBmp);
   dc.StretchBlt(uprect.left + 1, uprect.top + 1, uprect.right - uprect.left - 2, uprect.bottom - uprect.top - 2, &sdc,
                 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
@@ -152,5 +152,5 @@ void CD3Splash::OnPaint() {
 void CD3Splash::OnDestroy() {
   CDialog::OnDestroy();
 
-  D3_splash_screen = NULL;
+  D3_splash_screen = nullptr;
 }

@@ -332,7 +332,7 @@ void HTextureFlipY() {
 }
 
 void HTextureSlide(room *rp, int facenum, float right, float up) {
-  ASSERT(rp != NULL);
+  ASSERT(rp != nullptr);
   ASSERT(rp->used);
 
   if (Editor_view_mode == VM_TERRAIN) {
@@ -592,12 +592,12 @@ int HTextureGetLeftVertexForFace(int roomnum, int facenum) {
   // Make the orientation matrix
   fvec = Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -615,9 +615,9 @@ int HTextureGetLeftVertexForFace(int roomnum, int facenum) {
   float leftmost_x = 900000.00f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].x < leftmost_x) {
+    if (verts[i].x() < leftmost_x) {
       leftmost_point = i;
-      leftmost_x = verts[i].x;
+      leftmost_x = verts[i].x();
     }
   }
 
@@ -646,12 +646,12 @@ int HTextureGetTopVertexForFace(int roomnum, int facenum) {
   // Make the orientation matrix
   fvec = Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -669,9 +669,9 @@ int HTextureGetTopVertexForFace(int roomnum, int facenum) {
   float topmost_y = -900000.0f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].y > topmost_y) {
+    if (verts[i].y() > topmost_y) {
       topmost_point = i;
-      topmost_y = verts[i].y;
+      topmost_y = verts[i].y();
     }
   }
 
@@ -701,12 +701,12 @@ int HTextureGetRightVertexForFace(int roomnum, int facenum) {
   // Make the orientation matrix
   fvec = Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -724,9 +724,9 @@ int HTextureGetRightVertexForFace(int roomnum, int facenum) {
   float rightmost_x = -900000.00f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].x > rightmost_x) {
+    if (verts[i].x() > rightmost_x) {
       rightmost_point = i;
-      rightmost_x = verts[i].x;
+      rightmost_x = verts[i].x();
     }
   }
 
@@ -755,12 +755,12 @@ int HTextureGetBottomVertexForFace(int roomnum, int facenum) {
   // Make the orientation matrix
   fvec = Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -778,9 +778,9 @@ int HTextureGetBottomVertexForFace(int roomnum, int facenum) {
   float bottommost_y = 900000.0f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].y < bottommost_y) {
+    if (verts[i].y() < bottommost_y) {
       bottommost_point = i;
-      bottommost_y = verts[i].y;
+      bottommost_y = verts[i].y();
     }
   }
 

@@ -440,7 +440,7 @@ void matcenkeypad::OnSelendokMatProd0Combo() {
   SendDlgItemMessage(IDC_MAT_PROD_0_COMBO, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
   int obj_id = FindObjectIDName(name);
-  Matcen[m_matcen_id]->SetProdInfo(0, &obj_id, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(0, &obj_id, nullptr, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -453,7 +453,7 @@ void matcenkeypad::OnSelendokMatProd1Combo() {
   SendDlgItemMessage(IDC_MAT_PROD_1_COMBO, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
   int obj_id = FindObjectIDName(name);
-  Matcen[m_matcen_id]->SetProdInfo(1, &obj_id, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(1, &obj_id, nullptr, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -466,7 +466,7 @@ void matcenkeypad::OnSelendokMatProd2Combo() {
   SendDlgItemMessage(IDC_MAT_PROD_2_COMBO, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
   int obj_id = FindObjectIDName(name);
-  Matcen[m_matcen_id]->SetProdInfo(2, &obj_id, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(2, &obj_id, nullptr, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -479,7 +479,7 @@ void matcenkeypad::OnSelendokMatProd3Combo() {
   SendDlgItemMessage(IDC_MAT_PROD_3_COMBO, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
   int obj_id = FindObjectIDName(name);
-  Matcen[m_matcen_id]->SetProdInfo(3, &obj_id, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(3, &obj_id, nullptr, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -492,7 +492,7 @@ void matcenkeypad::OnSelendokMatProd4Combo() {
   SendDlgItemMessage(IDC_MAT_PROD_4_COMBO, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
   int obj_id = FindObjectIDName(name);
-  Matcen[m_matcen_id]->SetProdInfo(4, &obj_id, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(4, &obj_id, nullptr, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -505,7 +505,7 @@ void matcenkeypad::OnSelendokMatProd5Combo() {
   SendDlgItemMessage(IDC_MAT_PROD_5_COMBO, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
   int obj_id = FindObjectIDName(name);
-  Matcen[m_matcen_id]->SetProdInfo(5, &obj_id, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(5, &obj_id, nullptr, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -518,7 +518,7 @@ void matcenkeypad::OnSelendokMatProd6Combo() {
   SendDlgItemMessage(IDC_MAT_PROD_6_COMBO, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
   int obj_id = FindObjectIDName(name);
-  Matcen[m_matcen_id]->SetProdInfo(6, &obj_id, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(6, &obj_id, nullptr, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -531,7 +531,7 @@ void matcenkeypad::OnSelendokMatProd7Combo() {
   SendDlgItemMessage(IDC_MAT_PROD_7_COMBO, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
   int obj_id = FindObjectIDName(name);
-  Matcen[m_matcen_id]->SetProdInfo(7, &obj_id, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(7, &obj_id, nullptr, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -543,7 +543,7 @@ void matcenkeypad::OnKillfocusMatProd0QuatityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_0_QUATITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(0, NULL, NULL, NULL, &val);
+  Matcen[m_matcen_id]->SetProdInfo(0, nullptr, nullptr, nullptr, &val);
 
   UpdateDialog();
 }
@@ -555,7 +555,7 @@ void matcenkeypad::OnKillfocusMatProd1QuatityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_1_QUATITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(1, NULL, NULL, NULL, &val);
+  Matcen[m_matcen_id]->SetProdInfo(1, nullptr, nullptr, nullptr, &val);
 
   UpdateDialog();
 }
@@ -567,7 +567,7 @@ void matcenkeypad::OnKillfocusMatProd2QuatityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_2_QUATITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(2, NULL, NULL, NULL, &val);
+  Matcen[m_matcen_id]->SetProdInfo(2, nullptr, nullptr, nullptr, &val);
 
   UpdateDialog();
 }
@@ -579,7 +579,7 @@ void matcenkeypad::OnKillfocusMatProd3QuatityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_3_QUATITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(3, NULL, NULL, NULL, &val);
+  Matcen[m_matcen_id]->SetProdInfo(3, nullptr, nullptr, nullptr, &val);
 
   UpdateDialog();
 }
@@ -591,7 +591,7 @@ void matcenkeypad::OnKillfocusMatProd4QuatityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_4_QUATITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(4, NULL, NULL, NULL, &val);
+  Matcen[m_matcen_id]->SetProdInfo(4, nullptr, nullptr, nullptr, &val);
 
   UpdateDialog();
 }
@@ -603,7 +603,7 @@ void matcenkeypad::OnKillfocusMatProd5QuatityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_5_QUATITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(5, NULL, NULL, NULL, &val);
+  Matcen[m_matcen_id]->SetProdInfo(5, nullptr, nullptr, nullptr, &val);
 
   UpdateDialog();
 }
@@ -615,7 +615,7 @@ void matcenkeypad::OnKillfocusMatProd6QuatityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_6_QUATITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(6, NULL, NULL, NULL, &val);
+  Matcen[m_matcen_id]->SetProdInfo(6, nullptr, nullptr, nullptr, &val);
 
   UpdateDialog();
 }
@@ -627,7 +627,7 @@ void matcenkeypad::OnKillfocusMatProd7QuatityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_7_QUATITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(7, NULL, NULL, NULL, &val);
+  Matcen[m_matcen_id]->SetProdInfo(7, nullptr, nullptr, nullptr, &val);
 
   UpdateDialog();
 }
@@ -639,7 +639,7 @@ void matcenkeypad::OnKillfocusMatProd0SecEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_0_SEC_EDIT))->GetWindowText(str, 20);
 
   val = atof(str);
-  Matcen[m_matcen_id]->SetProdInfo(0, NULL, NULL, &val, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(0, nullptr, nullptr, &val, nullptr);
 
   UpdateDialog();
 }
@@ -651,7 +651,7 @@ void matcenkeypad::OnKillfocusMatProd1SecEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_1_SEC_EDIT))->GetWindowText(str, 20);
 
   val = atof(str);
-  Matcen[m_matcen_id]->SetProdInfo(1, NULL, NULL, &val, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(1, nullptr, nullptr, &val, nullptr);
 
   UpdateDialog();
 }
@@ -663,7 +663,7 @@ void matcenkeypad::OnKillfocusMatProd2SecEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_2_SEC_EDIT))->GetWindowText(str, 20);
 
   val = atof(str);
-  Matcen[m_matcen_id]->SetProdInfo(2, NULL, NULL, &val, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(2, nullptr, nullptr, &val, nullptr);
 
   UpdateDialog();
 }
@@ -675,7 +675,7 @@ void matcenkeypad::OnKillfocusMatProd3SecEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_3_SEC_EDIT))->GetWindowText(str, 20);
 
   val = atof(str);
-  Matcen[m_matcen_id]->SetProdInfo(3, NULL, NULL, &val, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(3, nullptr, nullptr, &val, nullptr);
 
   UpdateDialog();
 }
@@ -687,7 +687,7 @@ void matcenkeypad::OnKillfocusMatProd4SecEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_4_SEC_EDIT))->GetWindowText(str, 20);
 
   val = atof(str);
-  Matcen[m_matcen_id]->SetProdInfo(4, NULL, NULL, &val, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(4, nullptr, nullptr, &val, nullptr);
 
   UpdateDialog();
 }
@@ -699,7 +699,7 @@ void matcenkeypad::OnKillfocusMatProd5SecEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_5_SEC_EDIT))->GetWindowText(str, 20);
 
   val = atof(str);
-  Matcen[m_matcen_id]->SetProdInfo(5, NULL, NULL, &val, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(5, nullptr, nullptr, &val, nullptr);
 
   UpdateDialog();
 }
@@ -711,7 +711,7 @@ void matcenkeypad::OnKillfocusMatProd6SecEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_6_SEC_EDIT))->GetWindowText(str, 20);
 
   val = atof(str);
-  Matcen[m_matcen_id]->SetProdInfo(6, NULL, NULL, &val, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(6, nullptr, nullptr, &val, nullptr);
 
   UpdateDialog();
 }
@@ -723,7 +723,7 @@ void matcenkeypad::OnKillfocusMatProd7SecEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_7_SEC_EDIT))->GetWindowText(str, 20);
 
   val = atof(str);
-  Matcen[m_matcen_id]->SetProdInfo(7, NULL, NULL, &val, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(7, nullptr, nullptr, &val, nullptr);
 
   UpdateDialog();
 }
@@ -735,7 +735,7 @@ void matcenkeypad::OnKillfocusMatProd0PriorityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_0_PRIORITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(0, NULL, &val, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(0, nullptr, &val, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -747,7 +747,7 @@ void matcenkeypad::OnKillfocusMatProd1PriorityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_1_PRIORITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(1, NULL, &val, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(1, nullptr, &val, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -759,7 +759,7 @@ void matcenkeypad::OnKillfocusMatProd2PriorityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_2_PRIORITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(2, NULL, &val, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(2, nullptr, &val, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -771,7 +771,7 @@ void matcenkeypad::OnKillfocusMatProd3PriorityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_3_PRIORITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(3, NULL, &val, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(3, nullptr, &val, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -783,7 +783,7 @@ void matcenkeypad::OnKillfocusMatProd4PriorityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_4_PRIORITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(4, NULL, &val, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(4, nullptr, &val, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -795,7 +795,7 @@ void matcenkeypad::OnKillfocusMatProd5PriorityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_5_PRIORITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(5, NULL, &val, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(5, nullptr, &val, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -807,7 +807,7 @@ void matcenkeypad::OnKillfocusMatProd6PriorityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_6_PRIORITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(6, NULL, &val, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(6, nullptr, &val, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -819,7 +819,7 @@ void matcenkeypad::OnKillfocusMatProd7PriorityEdit() {
   ((CEdit *)GetDlgItem(IDC_MAT_PROD_7_PRIORITY_EDIT))->GetWindowText(str, 20);
 
   val = atoi(str);
-  Matcen[m_matcen_id]->SetProdInfo(7, NULL, &val, NULL, NULL);
+  Matcen[m_matcen_id]->SetProdInfo(7, nullptr, &val, nullptr, nullptr);
 
   UpdateDialog();
 }
@@ -941,7 +941,7 @@ void matcenkeypad::OnMatMoveViewerButton() {
   MakeBOA();
 
   if (a_type == MT_OBJECT && ObjGet(attach) && Matcen[m_matcen_id]->GetCreatePnt(&c_pnt)) {
-    ObjSetPos(Viewer_object, &c_pnt, Objects[attach].roomnum, NULL, false);
+    ObjSetPos(Viewer_object, &c_pnt, Objects[attach].roomnum, nullptr, false);
   } else if (a_type == MT_ROOM && attach >= 0 && attach <= Highest_room_index && Rooms[attach].used &&
              Matcen[m_matcen_id]->GetCreatePnt(&c_pnt)) {
     int roomnum;
@@ -952,7 +952,7 @@ void matcenkeypad::OnMatMoveViewerButton() {
       roomnum = attach;
     }
 
-    ObjSetPos(Viewer_object, &c_pnt, roomnum, NULL, false);
+    ObjSetPos(Viewer_object, &c_pnt, roomnum, nullptr, false);
     Viewer_moved = 1;
   } else {
     OutrageMessageBox(MBOX_OK,
@@ -1130,7 +1130,7 @@ void matcenkeypad::UpdateDialog() {
 
     // Scan for a valid matcen id
     for (i = 0; i < Num_matcens; i++) {
-      if (Matcen[i] != NULL) {
+      if (Matcen[i] != nullptr) {
         m_matcen_id = i;
         f_valid = true;
         break;
@@ -1249,49 +1249,49 @@ void matcenkeypad::UpdateDialog() {
     }
   }
 
-  Matcen[m_matcen_id]->GetProdInfo(0, &i, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(0, &i, nullptr, nullptr, nullptr);
   if (i >= 0 && i < MAX_OBJECT_IDS && Object_info[i].type != OBJ_NONE)
     SendDlgItemMessage(IDC_MAT_PROD_0_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Object_info[i].name);
   else
     SendDlgItemMessage(IDC_MAT_PROD_0_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "None");
 
-  Matcen[m_matcen_id]->GetProdInfo(1, &i, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(1, &i, nullptr, nullptr, nullptr);
   if (i >= 0 && i < MAX_OBJECT_IDS && Object_info[i].type != OBJ_NONE)
     SendDlgItemMessage(IDC_MAT_PROD_1_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Object_info[i].name);
   else
     SendDlgItemMessage(IDC_MAT_PROD_1_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "None");
 
-  Matcen[m_matcen_id]->GetProdInfo(2, &i, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(2, &i, nullptr, nullptr, nullptr);
   if (i >= 0 && i < MAX_OBJECT_IDS && Object_info[i].type != OBJ_NONE)
     SendDlgItemMessage(IDC_MAT_PROD_2_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Object_info[i].name);
   else
     SendDlgItemMessage(IDC_MAT_PROD_2_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "None");
 
-  Matcen[m_matcen_id]->GetProdInfo(3, &i, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(3, &i, nullptr, nullptr, nullptr);
   if (i >= 0 && i < MAX_OBJECT_IDS && Object_info[i].type != OBJ_NONE)
     SendDlgItemMessage(IDC_MAT_PROD_3_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Object_info[i].name);
   else
     SendDlgItemMessage(IDC_MAT_PROD_3_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "None");
 
-  Matcen[m_matcen_id]->GetProdInfo(4, &i, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(4, &i, nullptr, nullptr, nullptr);
   if (i >= 0 && i < MAX_OBJECT_IDS && Object_info[i].type != OBJ_NONE)
     SendDlgItemMessage(IDC_MAT_PROD_4_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Object_info[i].name);
   else
     SendDlgItemMessage(IDC_MAT_PROD_4_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "None");
 
-  Matcen[m_matcen_id]->GetProdInfo(5, &i, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(5, &i, nullptr, nullptr, nullptr);
   if (i >= 0 && i < MAX_OBJECT_IDS && Object_info[i].type != OBJ_NONE)
     SendDlgItemMessage(IDC_MAT_PROD_5_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Object_info[i].name);
   else
     SendDlgItemMessage(IDC_MAT_PROD_5_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "None");
 
-  Matcen[m_matcen_id]->GetProdInfo(6, &i, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(6, &i, nullptr, nullptr, nullptr);
   if (i >= 0 && i < MAX_OBJECT_IDS && Object_info[i].type != OBJ_NONE)
     SendDlgItemMessage(IDC_MAT_PROD_6_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Object_info[i].name);
   else
     SendDlgItemMessage(IDC_MAT_PROD_6_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR) "None");
 
-  Matcen[m_matcen_id]->GetProdInfo(7, &i, NULL, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(7, &i, nullptr, nullptr, nullptr);
   if (i >= 0 && i < MAX_OBJECT_IDS && Object_info[i].type != OBJ_NONE)
     SendDlgItemMessage(IDC_MAT_PROD_7_COMBO, CB_SELECTSTRING, 0, (LPARAM)(LPCTSTR)Object_info[i].name);
   else
@@ -1299,55 +1299,55 @@ void matcenkeypad::UpdateDialog() {
 
   PrintToDlgItem(this, IDC_MAX_OBJ_PROD_EDIT, "%d", Matcen[m_matcen_id]->GetMaxProd());
 
-  Matcen[m_matcen_id]->GetProdInfo(0, NULL, NULL, NULL, &itemp);
+  Matcen[m_matcen_id]->GetProdInfo(0, nullptr, nullptr, nullptr, &itemp);
   PrintToDlgItem(this, IDC_MAT_PROD_0_QUATITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(1, NULL, NULL, NULL, &itemp);
+  Matcen[m_matcen_id]->GetProdInfo(1, nullptr, nullptr, nullptr, &itemp);
   PrintToDlgItem(this, IDC_MAT_PROD_1_QUATITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(2, NULL, NULL, NULL, &itemp);
+  Matcen[m_matcen_id]->GetProdInfo(2, nullptr, nullptr, nullptr, &itemp);
   PrintToDlgItem(this, IDC_MAT_PROD_2_QUATITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(3, NULL, NULL, NULL, &itemp);
+  Matcen[m_matcen_id]->GetProdInfo(3, nullptr, nullptr, nullptr, &itemp);
   PrintToDlgItem(this, IDC_MAT_PROD_3_QUATITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(4, NULL, NULL, NULL, &itemp);
+  Matcen[m_matcen_id]->GetProdInfo(4, nullptr, nullptr, nullptr, &itemp);
   PrintToDlgItem(this, IDC_MAT_PROD_4_QUATITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(5, NULL, NULL, NULL, &itemp);
+  Matcen[m_matcen_id]->GetProdInfo(5, nullptr, nullptr, nullptr, &itemp);
   PrintToDlgItem(this, IDC_MAT_PROD_5_QUATITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(6, NULL, NULL, NULL, &itemp);
+  Matcen[m_matcen_id]->GetProdInfo(6, nullptr, nullptr, nullptr, &itemp);
   PrintToDlgItem(this, IDC_MAT_PROD_6_QUATITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(7, NULL, NULL, NULL, &itemp);
+  Matcen[m_matcen_id]->GetProdInfo(7, nullptr, nullptr, nullptr, &itemp);
   PrintToDlgItem(this, IDC_MAT_PROD_7_QUATITY_EDIT, "%d", itemp);
 
-  Matcen[m_matcen_id]->GetProdInfo(0, NULL, NULL, &ftemp, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(0, nullptr, nullptr, &ftemp, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_0_SEC_EDIT, "%f", ftemp);
-  Matcen[m_matcen_id]->GetProdInfo(1, NULL, NULL, &ftemp, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(1, nullptr, nullptr, &ftemp, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_1_SEC_EDIT, "%f", ftemp);
-  Matcen[m_matcen_id]->GetProdInfo(2, NULL, NULL, &ftemp, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(2, nullptr, nullptr, &ftemp, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_2_SEC_EDIT, "%f", ftemp);
-  Matcen[m_matcen_id]->GetProdInfo(3, NULL, NULL, &ftemp, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(3, nullptr, nullptr, &ftemp, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_3_SEC_EDIT, "%f", ftemp);
-  Matcen[m_matcen_id]->GetProdInfo(4, NULL, NULL, &ftemp, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(4, nullptr, nullptr, &ftemp, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_4_SEC_EDIT, "%f", ftemp);
-  Matcen[m_matcen_id]->GetProdInfo(5, NULL, NULL, &ftemp, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(5, nullptr, nullptr, &ftemp, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_5_SEC_EDIT, "%f", ftemp);
-  Matcen[m_matcen_id]->GetProdInfo(6, NULL, NULL, &ftemp, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(6, nullptr, nullptr, &ftemp, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_6_SEC_EDIT, "%f", ftemp);
-  Matcen[m_matcen_id]->GetProdInfo(7, NULL, NULL, &ftemp, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(7, nullptr, nullptr, &ftemp, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_7_SEC_EDIT, "%f", ftemp);
 
-  Matcen[m_matcen_id]->GetProdInfo(0, NULL, &itemp, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(0, nullptr, &itemp, nullptr, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_0_PRIORITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(1, NULL, &itemp, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(1, nullptr, &itemp, nullptr, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_1_PRIORITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(2, NULL, &itemp, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(2, nullptr, &itemp, nullptr, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_2_PRIORITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(3, NULL, &itemp, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(3, nullptr, &itemp, nullptr, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_3_PRIORITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(4, NULL, &itemp, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(4, nullptr, &itemp, nullptr, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_4_PRIORITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(5, NULL, &itemp, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(5, nullptr, &itemp, nullptr, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_5_PRIORITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(6, NULL, &itemp, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(6, nullptr, &itemp, nullptr, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_6_PRIORITY_EDIT, "%d", itemp);
-  Matcen[m_matcen_id]->GetProdInfo(7, NULL, &itemp, NULL, NULL);
+  Matcen[m_matcen_id]->GetProdInfo(7, nullptr, &itemp, nullptr, nullptr);
   PrintToDlgItem(this, IDC_MAT_PROD_7_PRIORITY_EDIT, "%d", itemp);
 
   PrintToDlgItem(this, IDC_MAT_NUM_TYPES_EDIT, "%d", Matcen[m_matcen_id]->GetNumProdTypes());

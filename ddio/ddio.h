@@ -289,7 +289,7 @@ void ddio_InternalMouseResume();
         dx, dy = mouse deltas since last call
         return value is mouse button mask.   values not needed should pass NULL pointers.
 */
-int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z = NULL, int *dz = NULL);
+int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z = nullptr, int *dz = nullptr);
 
 // gets a mouse button event, returns false if none.
 bool ddio_MouseGetEvent(int *btn, bool *state);
@@ -309,7 +309,7 @@ int ddio_MouseBtnUpCount(int btn);
 
 //	set bounds for system polling of coordinates
 void ddio_MouseSetLimits(int left, int top, int right, int bottom, int zmin = 0, int zmax = 0);
-void ddio_MouseGetLimits(int *left, int *top, int *right, int *bottom, int *zmin = 0, int *zmax = 0);
+void ddio_MouseGetLimits(int *left, int *top, int *right, int *bottom, int *zmin = nullptr, int *zmax = nullptr);
 
 // virtual coordinate system for mouse (match to video resolution set for optimal mouse usage.
 void ddio_MouseSetVCoords(int width, int height);
@@ -362,7 +362,7 @@ std::vector<std::filesystem::path> ddio_GetSysRoots();
 //	subdir:	the first subdirectory
 //  takes a variable number of additional subdirectories which will be concatenated on to the path
 //		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
-void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
+void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) VA_SENTINEL;
 
 /**
  * Execute function for each file that matches to regex

@@ -273,8 +273,8 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CTextureDialog message handlers
 
-static CDialog *ParentDialog = NULL;
-static CTextureDialog *ParentTextureDialog = NULL;
+static CDialog *ParentDialog = nullptr;
+static CTextureDialog *ParentTextureDialog = nullptr;
 uint8_t CurrentlyUsedTextures[MAX_TEXTURES];
 bool Show_used = 0;
 
@@ -585,7 +585,7 @@ void CGrTextureListBox::DrawItem(int x, int y, grHardwareSurface *itemsurf, int 
 void CGrTextureListBox::OnItemSelected(int tex) {
   D3EditState.texdlg_texture = tex;
 
-  if (ParentDialog != NULL) {
+  if (ParentDialog != nullptr) {
     PrintToDlgItem(ParentDialog, IDC_CURRENT_TEXTURE_NAME, "Texture:  %s", GameTextures[tex].name);
     ParentTextureDialog->DrawSwatch(IDC_TEXTURE_SWATCH, GameTextures[tex].r, GameTextures[tex].g, GameTextures[tex].b);
   }
@@ -614,7 +614,7 @@ int ReplaceTextureInRoom(room *rp, int old_tmap, int new_tmap) {
 }
 
 void CTextureDialog::OnReplaceTexture() {
-  ASSERT(Curroomp != NULL);
+  ASSERT(Curroomp != nullptr);
   int n_changes;
 
   int answer = OutrageMessageBox(
@@ -670,7 +670,7 @@ void CTextureDialog::DrawSwatch(int handle, float r, float g, float b) {
 
   Desktop_surf->clear(rect.left, rect.top, w, h, color);
 
-  Desktop_surf->attach_to_window(NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 void CTextureDialog::OnKillfocusTexscaleEdit() {
@@ -695,7 +695,7 @@ void CTextureDialog::OnKillfocusTexscaleEdit() {
 }
 
 void CTextureDialog::OnTexpadExpandU() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   face *fp = &Curroomp->faces[Curface];
@@ -720,7 +720,7 @@ void CTextureDialog::OnTexpadExpandU() {
 }
 
 void CTextureDialog::OnTexpadExpandV() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   face *fp = &Curroomp->faces[Curface];
@@ -745,7 +745,7 @@ void CTextureDialog::OnTexpadExpandV() {
 }
 
 void CTextureDialog::OnTexpadContractU() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   face *fp = &Curroomp->faces[Curface];
@@ -770,7 +770,7 @@ void CTextureDialog::OnTexpadContractU() {
 }
 
 void CTextureDialog::OnTexpadContractV() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   face *fp = &Curroomp->faces[Curface];
@@ -795,7 +795,7 @@ void CTextureDialog::OnTexpadContractV() {
 }
 
 void CTextureDialog::OnFaceMap() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   face *fp = &Curroomp->faces[Curface];

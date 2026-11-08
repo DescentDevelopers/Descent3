@@ -35,7 +35,7 @@
 class matcenkeypad : public CKeypadDialog {
   // Construction
 public:
-  matcenkeypad(CWnd *pParent = NULL); // standard constructor
+  matcenkeypad(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(matcenkeypad)

@@ -34,7 +34,7 @@
 class CWaterProceduralDialog : public CDialog {
   // Construction
 public:
-  CWaterProceduralDialog(CWnd *pParent = NULL); // standard constructor
+  CWaterProceduralDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CWaterProceduralDialog)

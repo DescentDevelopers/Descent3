@@ -31,7 +31,7 @@
 class CCreateNewScriptDlg : public CDialog {
   // Construction
 public:
-  CCreateNewScriptDlg(CWnd *pParent = NULL); // standard constructor
+  CCreateNewScriptDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CCreateNewScriptDlg)

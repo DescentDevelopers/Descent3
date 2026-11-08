@@ -194,7 +194,7 @@ int AM_terrain = 0, AM_realign = 0, AM_center_on_player = 0, AM_current_marker;
 static int Num_AM_rooms;
 static uint16_t AM_room_list[MAX_ROOMS];
 static uint8_t AM_rooms_seen[MAX_ROOMS];
-static g3Point *AM_rotated_points = NULL; //[MAX_VERTS_PER_ROOM];
+static g3Point *AM_rotated_points = nullptr; //[MAX_VERTS_PER_ROOM];
 
 static void TCAMCallback(void);
 
@@ -237,7 +237,7 @@ void FreeAMFaces() {
   for (int i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used) {
       mem_free(Small_faces[i]);
-      Small_faces[i] = NULL;
+      Small_faces[i] = nullptr;
     }
   }
 }
@@ -253,11 +253,11 @@ void TCAMCenterOnPlayer() {
   AM_view_pos = Viewer_object->pos - (Viewer_object->orient.fvec * 10);
   vm_ExtractAnglesFromMatrix(&heading, &Player_object->orient);
 
-  vm_AnglesToMatrix(&newmat, 0, heading.h, 0);
+  vm_AnglesToMatrix(&newmat, 0, heading.h(), 0);
   AM_view_orient = newmat;
 
-  AM_heading = heading.h;
-  AM_pitch = heading.p;
+  AM_heading = heading.h();
+  AM_pitch = heading.p();
 }
 
 // This is the function called by TelCom
@@ -376,7 +376,7 @@ bool TelComAutoMap(tTelComInfo *tcs) {
 
   DestroyAllScreens();
   TelcomRenderSetScreen(DUMMY_SCREEN);
-  TelcomRenderSetCallback(NULL);
+  TelcomRenderSetCallback(nullptr);
 
   FreeAMFaces();
 
@@ -388,7 +388,7 @@ bool TelComAutoMap(tTelComInfo *tcs) {
   TelComEnableSystemKey(TCSYS_F1, false);     // disable the T key, not needed outside of automap
   if (AM_rotated_points) {
     mem_free(AM_rotated_points);
-    AM_rotated_points = NULL;
+    AM_rotated_points = nullptr;
   }
   return true;
 }
@@ -481,7 +481,7 @@ void TCAMRenderRoom(int roomnum) {
 
     // See if this face is backfaced
     vector subvec = rp->verts[fp->face_verts[0]] - AM_view_pos;
-    if (subvec * fp->normal > 0)
+    if (vm_Dot3Product(subvec, fp->normal) > 0)
       continue; // backfaced
 
     int black_face = 0, wacky_face = 0;
@@ -639,7 +639,7 @@ void TCAMRenderTerrain() {
 
   Terrain_from_mine = 0;
 
-  VisibleTerrainZ = (Detail_settings.Terrain_render_distance) * Matrix_scale.z;
+  VisibleTerrainZ = (Detail_settings.Terrain_render_distance) * Matrix_scale.z();
 
   // Set up our z wall
   g3_SetFarClipZ(VisibleTerrainZ);
@@ -675,7 +675,7 @@ void TCAMDrawObjects() {
       if (i == Player_num) {
         object *obj = &Objects[Players[Player_num].objnum];
         if (AM_ship_model_handle != -1 && drawit)
-          DrawPolygonModel(&obj->pos, &obj->orient, AM_ship_model_handle, NULL, 0, 1, 1, 1);
+          DrawPolygonModel(&obj->pos, &obj->orient, AM_ship_model_handle, nullptr, 0, 1, 1, 1);
       } else if (NetPlayers[i].flags & NPF_CONNECTED) {
         object *obj = &Objects[Players[i].objnum];
         if ((obj->type == OBJ_PLAYER && obj->render_type == RT_POLYOBJ) || obj->type == OBJ_OBSERVER)
@@ -686,7 +686,7 @@ void TCAMDrawObjects() {
     object *obj = &Objects[Players[Player_num].objnum];
 
     if (AM_ship_model_handle != -1 && drawit)
-      DrawPolygonModel(&obj->pos, &obj->orient, AM_ship_model_handle, NULL, 0, 1, 1, 1);
+      DrawPolygonModel(&obj->pos, &obj->orient, AM_ship_model_handle, nullptr, 0, 1, 1, 1);
   }
 
   float norm = timer_GetTime();

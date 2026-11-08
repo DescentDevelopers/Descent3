@@ -382,17 +382,12 @@ inline void MultiGetString(char *str, uint8_t *data, int *count) {
 }
 
 inline void MultiAddVector(vector v, uint8_t *data, int *count) {
-  MultiAddFloat(v.x, data, count);
-  MultiAddFloat(v.y, data, count);
-  MultiAddFloat(v.z, data, count);
+  MultiAddFloat(v.x(), data, count);
+  MultiAddFloat(v.y(), data, count);
+  MultiAddFloat(v.z(), data, count);
 }
 
 inline vector MultiGetVector(uint8_t *data, int *count) {
-  vector v;
-
-  v.x = MultiGetFloat(data, count);
-  v.y = MultiGetFloat(data, count);
-  v.z = MultiGetFloat(data, count);
-  return v;
+  return { MultiGetFloat(data, count), MultiGetFloat(data, count), MultiGetFloat(data, count) };
 }
 #endif

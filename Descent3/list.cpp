@@ -26,15 +26,15 @@ listnode *NewListNode(void) {
   listnode *node;
 
   node = mem_rmalloc<listnode>();
-  if (node == NULL) {
+  if (node == nullptr) {
     LOG_FATAL << "Not enough memory for a new listnode!";
     Int3();
-    return NULL;
+    return nullptr;
   }
 
-  node->data = NULL;
-  node->next = NULL;
-  node->prev = NULL;
+  node->data = nullptr;
+  node->next = nullptr;
+  node->prev = nullptr;
 
   return node;
 }
@@ -46,20 +46,20 @@ int AddListItem(listnode **listp, void *item) {
 
   newnode = NewListNode();
 
-  if (newnode == NULL) {
+  if (newnode == nullptr) {
     LOG_FATAL << "There was a problem mallocing list node memory!";
     Int3();
     return 0;
   }
 
-  if (*listp == NULL) // If this list is empty, construct a new head
+  if (*listp == nullptr) // If this list is empty, construct a new head
   {
     newnode->data = item;
     *listp = newnode;
     return 1;
   } else {
     // Go through until the end of the list and add the new item there
-    for (curr = *listp; curr->next != NULL; curr = curr->next) {
+    for (curr = *listp; curr->next != nullptr; curr = curr->next) {
       if (curr->data == item) {
         Int3();
         return 0;
@@ -68,7 +68,7 @@ int AddListItem(listnode **listp, void *item) {
 
     newnode->data = item;
     curr->next = newnode;
-    newnode->next = NULL;
+    newnode->next = nullptr;
     newnode->prev = curr;
   }
 
@@ -80,7 +80,7 @@ int RemoveListItem(listnode **listp, void *item) {
   listnode *curr, *node;
   int inlist = 0;
 
-  for (curr = *listp; curr != NULL; curr = curr->next) {
+  for (curr = *listp; curr != nullptr; curr = curr->next) {
     if (curr->data == item) {
       inlist = 1;
       node = curr;
@@ -96,14 +96,14 @@ int RemoveListItem(listnode **listp, void *item) {
   // Head of list is a special case
   if (node == *listp) {
     *listp = node->next;
-    if (*listp != NULL)
-      (*listp)->prev = NULL;
+    if (*listp != nullptr)
+      (*listp)->prev = nullptr;
     mem_free(node);
     return 1;
   } else {
-    if (node->prev != NULL)
+    if (node->prev != nullptr)
       node->prev->next = node->next;
-    if (node->next != NULL)
+    if (node->next != nullptr)
       node->next->prev = node->prev;
     mem_free(node);
   }
@@ -115,7 +115,7 @@ int RemoveListItem(listnode **listp, void *item) {
 void DestroyList(listnode **listp) {
   listnode *node, *next;
 
-  for (node = *listp; node != NULL; node = next) {
+  for (node = *listp; node != nullptr; node = next) {
     next = node->next;
     mem_free(node);
   }
@@ -126,7 +126,7 @@ int CountListItems(listnode **listp) {
   listnode *node;
   int count = 0;
 
-  for (node = *listp; node != NULL; node = node->next)
+  for (node = *listp; node != nullptr; node = node->next)
     count++;
 
   return count;
@@ -137,12 +137,12 @@ int CountListItems(listnode **listp) {
 void *GetListItem(listnode **listp, int index) {
   listnode *node;
 
-  for (node = *listp; node != NULL; node = node->next) {
+  for (node = *listp; node != nullptr; node = node->next) {
     if (index-- == 0)
       return node->data;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 // Returns how far from the head of the list a given item is
@@ -151,7 +151,7 @@ int GetListItemIndex(listnode **listp, void *item) {
   listnode *node;
   int index = 0;
 
-  for (node = *listp; node != NULL; node = node->next) {
+  for (node = *listp; node != nullptr; node = node->next) {
     if (node->data == item)
       return index;
     index++;

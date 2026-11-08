@@ -157,7 +157,7 @@
 class CLightingDialog : public CKeypadDialog {
   // Construction
 public:
-  CLightingDialog(CWnd *pParent = NULL); // standard constructor
+  CLightingDialog(CWnd *pParent = nullptr); // standard constructor
   void UpdateKeypad(int mask);
 
   // Dialog Data

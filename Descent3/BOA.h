@@ -138,7 +138,7 @@ public:
     roomnum = room_index;
     parent = par;
     cost = n_cost;
-    next = NULL;
+    next = nullptr;
   }
 
   int roomnum;
@@ -152,7 +152,7 @@ class pq {
   q_item *q_head;
 
 public:
-  pq() { q_head = NULL; }
+  pq() { q_head = nullptr; }
 
   void push(q_item *new_node) {
     new_node->next = q_head;
@@ -161,14 +161,14 @@ public:
 
   q_item *pop() {
     q_item *cur_item = q_head;
-    q_item *prev_item = NULL;
+    q_item *prev_item = nullptr;
     q_item *best_item = q_head;
-    q_item *best_prev_item = NULL;
+    q_item *best_prev_item = nullptr;
 
-    if (q_head == NULL)
-      return NULL;
+    if (q_head == nullptr)
+      return nullptr;
 
-    while (cur_item != NULL) {
+    while (cur_item != nullptr) {
       if (cur_item->cost < best_item->cost) {
 
         best_prev_item = prev_item;
@@ -251,18 +251,18 @@ void MakeBOAVisTable(bool from_lighting = 0);
 // Computes the AABBs for the level
 void ComputeAABB(bool f_full);
 
-bool BOA_ComputeMinDist(int start_room, int end_room, float max_check_dist, float *dist, int *num_blockages = NULL);
+bool BOA_ComputeMinDist(int start_room, int end_room, float max_check_dist, float *dist, int *num_blockages = nullptr);
 bool BOA_IsSoundAudible(int start_room, int end_room);
 bool BOA_IsVisible(int start_room, int end_room);
 bool BOA_HasPossibleBlockage(int start_room, int end_room);
 int BOA_GetNextRoom(int start_room, int end_room);
 int BOA_DetermineStartRoomPortal(int start_room, vector *start_pos, int end_room, vector *end_pos,
                                  bool f_for_sound = false, bool f_making_robot_path_invalid_list = false,
-                                 int *blocked_portal = NULL);
+                                 int *blocked_portal = nullptr);
 bool BOA_PassablePortal(int room, int portal_index, bool f_for_sound = false,
                         bool f_making_robot_path_invalid_list = false);
 bool BOA_LockedDoor(object *obj, int roomnum);
-void BOA_ComputePathPoints(char *message = NULL, int len = 0);
+void BOA_ComputePathPoints(char *message = nullptr, int len = 0);
 int BOAGetMineChecksum();
 
 #endif

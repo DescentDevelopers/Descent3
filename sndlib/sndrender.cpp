@@ -61,7 +61,7 @@
 #include "gametexture.h"
 #include "pserror.h"
 
-static llsGeometry *Geometry = NULL;
+static llsGeometry *Geometry = nullptr;
 static int16_t Sound_room_list[SOUND_RENDER_ROOM_LIMIT + 1];
 
 //	resets sound geometry system (called beginning of each level)
@@ -81,7 +81,7 @@ void sound_render_end_frame() {
   if (Geometry) {
     Geometry->EndFrame();
   }
-  Geometry = NULL;
+  Geometry = nullptr;
 }
 
 // render one room's geometry

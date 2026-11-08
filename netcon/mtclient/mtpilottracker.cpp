@@ -154,12 +154,6 @@ struct vmt_descent3_struct {
 
 #include "mtpilottrack.h"
 
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-
-typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
-
-extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
-
 typedef float (*timer_GetTime_fp)();
 extern timer_GetTime_fp DLLtimer_GetTime;
 
@@ -242,6 +236,7 @@ int InitPilotTrackerClient() {
 
   VersionState = VERSION_STATE_IDLE;
 
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   srand(DLLtimer_GetTime());
   ValidSecurity = (uint32_t)rand();
   // Build the request packet
@@ -562,7 +557,7 @@ void HandlePilotData(uint8_t *data, int len, network_address *from) {
 //   1	User valid
 int ValidateUser(validate_id_request *valid_id, char *trackerid) {
   ValidIdle();
-  if (valid_id == NULL) {
+  if (valid_id == nullptr) {
     switch (ValidState) {
     case VALID_STATE_IDLE:
       return 0;

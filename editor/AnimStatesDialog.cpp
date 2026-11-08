@@ -446,7 +446,7 @@ BOOL CAnimStatesDialog::OnInitDialog() {
   m_current_state = 0;
   m_current_anim = 0;
 
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   UpdateDialog();
 
@@ -515,7 +515,7 @@ void CAnimStatesDialog::UpdateAnimStateView() {
   SetNormalizedTimeAnim(keyframe, norm_angles, pm);
 
   vm_AnglesToMatrix(&rot_matrix, 0, m_SpinFrame * 400, 0);
-  view_vector.z = -(fabs(pm->maxs.z - pm->mins.z) * 2);
+  view_vector.z() = -(fabs(pm->maxs.z() - pm->mins.z()) * 2);
 
   surf.create(128, 128, BPP_16);
   grViewport *vport = new grViewport(&surf);

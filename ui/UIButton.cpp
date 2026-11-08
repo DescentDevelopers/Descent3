@@ -164,7 +164,7 @@ void UIButton::SetStateItem(int state, UIItem *item) {
   ASSERT(state < UI_BTS_NUM);
   if (m_Items[state]) {
     delete m_Items[state];
-    m_Items[state] = NULL;
+    m_Items[state] = nullptr;
   }
   if (item)
     m_Items[state] = item->CopyUIItem();
@@ -194,10 +194,10 @@ void UIButton::SetAllStates(UIItem *item) {
 void UIButton::OnDestroy() {
   UIGadget::OnDestroy();
 
-  SetStateItem(UI_BTS_DISABLED, NULL);
-  SetStateItem(UI_BTS_INACTIVE, NULL);
-  SetStateItem(UI_BTS_HILITE, NULL);
-  SetStateItem(UI_BTS_ACTIVATED, NULL);
+  SetStateItem(UI_BTS_DISABLED, nullptr);
+  SetStateItem(UI_BTS_INACTIVE, nullptr);
+  SetStateItem(UI_BTS_HILITE, nullptr);
+  SetStateItem(UI_BTS_ACTIVATED, nullptr);
 }
 
 // behavior when gadget loses input focus.
@@ -310,7 +310,7 @@ void UIButton::Enable() {
 //		This is a simple 2 state button (push down or push up)
 //		Buttons have properties of gadgets, plus bitmap information per state.
 
-UIRadioButton::UIRadioButton() { m_PrevRB = m_NextRB = NULL; }
+UIRadioButton::UIRadioButton() { m_PrevRB = m_NextRB = nullptr; }
 
 void UIRadioButton::Create(UIWindow *parent, UIRadioButton *prev_rb, int id, UIItem *title, int x, int y, int w, int h,
                            int flags) {
@@ -318,7 +318,7 @@ void UIRadioButton::Create(UIWindow *parent, UIRadioButton *prev_rb, int id, UII
 
   //	create link in radio button chain.
   m_PrevRB = prev_rb;
-  m_NextRB = NULL;
+  m_NextRB = nullptr;
   if (m_PrevRB) {
     m_NextRB = m_PrevRB->m_NextRB;
     if (m_NextRB) {

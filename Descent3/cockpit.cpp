@@ -305,7 +305,7 @@ void FreeCockpit() {
 
   if (Cockpit_info.model_num > -1) {
     FreePolyModel(Cockpit_info.model_num);
-    Cockpit_info.model = NULL;
+    Cockpit_info.model = nullptr;
     Cockpit_info.model_num = -1;
   }
   Cockpit_info.ship_index = -1;
@@ -397,7 +397,7 @@ void OpenCockpit() {
   }
   Sound_system.Play2dSound(Cockpit_info.snd_open);
   //	load hud information for cockpit.
-  LoadCockpitInfo(Ships[Cockpit_info.ship_index].cockpit_name, NULL);
+  LoadCockpitInfo(Ships[Cockpit_info.ship_index].cockpit_name, nullptr);
 }
 //	forces complete closing of cockpit
 void CloseCockpit() {
@@ -419,7 +419,7 @@ void QuickOpenCockpit() {
   Cockpit_info.this_keyframe = Cockpit_info.next_keyframe = COCKPIT_COMPLETE_FRAME;
   FlagGaugesFunctional(STAT_ALL);
   //	load hud information for cockpit.
-  LoadCockpitInfo(Ships[Cockpit_info.ship_index].cockpit_name, NULL);
+  LoadCockpitInfo(Ships[Cockpit_info.ship_index].cockpit_name, nullptr);
 }
 //	forces quick closing of cockpit
 void QuickCloseCockpit() {
@@ -461,10 +461,9 @@ void RenderCockpit() {
     LOG_WARNING << "Cockpit missing viewer!";
     return;
   }
-  view_z =
-      viewer_subobj->offset.z - Cockpit_info.buffet_vec.z * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave * 1.1f;
-  view_y = viewer_subobj->offset.y + Cockpit_info.buffet_vec.y * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave;
-  view_x = viewer_subobj->offset.x + Cockpit_info.buffet_vec.x * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave;
+  view_z = viewer_subobj->offset.z() - Cockpit_info.buffet_vec.z() * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave * 1.1f;
+  view_y = viewer_subobj->offset.y() + Cockpit_info.buffet_vec.y() * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave;
+  view_x = viewer_subobj->offset.x() + Cockpit_info.buffet_vec.x() * Cockpit_info.buffet_amp * Cockpit_info.buffet_wave;
   //@@	if (player_phys->rotthrust.x !=0.0f || player_phys->rotthrust.y != 0.0f) {
   //@@		gauge_reset = true;
   //@@		view_x += (player_phys->rotthrust.y*COCKPIT_SHIFT_DELTA/player_phys->full_rotthrust);
@@ -596,7 +595,7 @@ bsp_info *CockpitGetMonitorSubmodel(uint16_t monitor_flag) {
     if (Poly_models[Cockpit_info.model_num].submodel[i].flags & monitor_flag)
       return &Poly_models[Cockpit_info.model_num].submodel[i];
   }
-  return NULL;
+  return nullptr;
 }
 //	returns the polymodel for the hud
 poly_model *CockpitGetPolyModel() {

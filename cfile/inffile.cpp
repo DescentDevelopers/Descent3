@@ -57,7 +57,7 @@ void InfFile::FreeSymbols() {
 
   m_sym_list.start();
 
-  while ((sym = m_sym_list.start()) != 0) {
+  while ((sym = m_sym_list.start()) != nullptr) {
     sym = m_sym_list.unlink();
     if (sym->t.text)
       delete[] sym->t.text;
@@ -93,15 +93,15 @@ bool InfFile::Open(const std::filesystem::path &filename, const char *tag_check,
     cf_ReadString(m_linetext, INFFILE_LINELEN, m_fp);
     if (strcmp(tag_check, m_linetext) != 0) {
       cfclose(m_fp);
-      m_fp = NULL;
+      m_fp = nullptr;
       return false;
     }
   }
 
   //	okay we have a 'valid' inf file.
   m_lexfn = lexfn;
-  m_lineptr = NULL;
-  m_endptr = NULL;
+  m_lineptr = nullptr;
+  m_endptr = nullptr;
   m_line = 0;
 
   return true;
@@ -115,7 +115,7 @@ void InfFile::Close() {
   FreeSymbols();
   m_sym_list.free();
   cfclose(m_fp);
-  m_fp = NULL;
+  m_fp = nullptr;
 }
 
 //	read a command line. returns false on eof.
@@ -143,7 +143,7 @@ int InfFile::ParseLine(char *operand, int oprlen) {
 
   //	tokenize line.
   char command[32]; // Command read from line.
-  char *opr = NULL, *cmd;
+  char *opr = nullptr, *cmd;
   int retval = INFFILE_NULL;
 
   if (strlen(m_lineptr) == 0)
@@ -153,7 +153,7 @@ int InfFile::ParseLine(char *operand, int oprlen) {
   //	m_lineptr = command, opr = operand, nextcmd = next lineptr.
   cmd = strtok(m_lineptr, " \t=:");
   if (cmd)
-    opr = strtok(NULL, ",;");
+    opr = strtok(nullptr, ",;");
   else
     Int3();
 
@@ -197,7 +197,7 @@ int InfFile::ParseLine(char *operand, int oprlen) {
   char *lastptr = (opr) ? opr : cmd;
   m_lineptr = lastptr + strlen(lastptr) + 1;
   if (m_lineptr >= m_endptr)
-    m_lineptr = NULL;
+    m_lineptr = nullptr;
 
   //	end
   return retval;

@@ -119,7 +119,7 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
 
       if (next_room <= Highest_room_index && Rooms[next_room].flags & RF_EXTERNAL) {
         int next_portal;
-        next_portal = BOA_DetermineStartRoomPortal(BOA_INDEX(next_room), NULL, BOA_INDEX(cur_node->roomnum), NULL);
+        next_portal = BOA_DetermineStartRoomPortal(BOA_INDEX(next_room), nullptr, BOA_INDEX(cur_node->roomnum), nullptr);
 
         int cell = GetTerrainCellFromPos(&Rooms[next_room].portals[next_portal].path_pnt);
         ASSERT(cell != -1); // DAJ -1FIX
@@ -135,8 +135,8 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
       int next_portal = 0;
 
       if (BOA_INDEX(next_room) != BOA_INDEX(cur_node->roomnum)) {
-        next_portal = BOA_DetermineStartRoomPortal(BOA_INDEX(next_room), NULL, BOA_INDEX(cur_node->roomnum), NULL,
-                                                   false, false, NULL);
+        next_portal = BOA_DetermineStartRoomPortal(BOA_INDEX(next_room), nullptr, BOA_INDEX(cur_node->roomnum), nullptr,
+                                                   false, false, nullptr);
       }
 
       if (next_portal == -1)
@@ -152,10 +152,10 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
       // new_cost = cur_node->cost + BOA_cost_array[cur_node->roomnum][counter];
       list_item = node_list[BOA_INDEX(next_room)];
 
-      if (list_item != NULL && list_item->cost < new_cost)
+      if (list_item != nullptr && list_item->cost < new_cost)
         continue;
 
-      if (list_item == NULL) {
+      if (list_item == nullptr) {
         list_item = new q_item(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
         ASSERT(BOA_INDEX(cur_node->roomnum) >= 0 && BOA_INDEX(cur_node->roomnum) <= Highest_room_index + 8);
 
@@ -185,8 +185,8 @@ done:
         int cur_room = AIAltPath[x];
         int next_room = AIAltPath[x + 1];
 
-        int cur_portal = BOA_DetermineStartRoomPortal(cur_room, NULL, next_room, NULL);
-        int next_portal = BOA_DetermineStartRoomPortal(next_room, NULL, cur_room, NULL);
+        int cur_portal = BOA_DetermineStartRoomPortal(cur_room, nullptr, next_room, nullptr);
+        int next_portal = BOA_DetermineStartRoomPortal(next_room, nullptr, cur_room, nullptr);
 
         ASSERT(cur_portal != -1 && next_portal != -1);
 
@@ -358,7 +358,7 @@ void AIPathMoveTurnTowardsNode(object *obj, vector *mdir, bool *f_moved) {
     vector dir = cur_pos - obj->pos;
 
     if (obj->movement_type == MT_WALKING) {
-      float dot = dir * obj->orient.uvec;
+      scalar dot = vm_Dot3Product(dir, obj->orient.uvec);
       dir -= dot * obj->orient.uvec;
     }
     vm_NormalizeVector(&dir);
@@ -382,10 +382,10 @@ pass_node:
     vector dir = cur_pos - obj->pos;
 
     if (obj->movement_type == MT_WALKING) {
-      float dot = dir * obj->orient.uvec;
+      scalar dot = vm_Dot3Product(dir, obj->orient.uvec);
       dir -= dot * obj->orient.uvec;
     }
-    float dist = vm_GetMagnitude(&dir);
+    scalar dist = dir.mag();
 
     if (dist < 1.5f) {
       f_pass_node = true;
@@ -400,27 +400,27 @@ pass_node:
     if (!f_reverse) {
       if (AIPathAtStart(aip)) {
         if (AIPathAtEnd(aip)) {
-          if ((obj->pos - cur_pos) * (obj->last_pos - cur_pos) <= 0.0f && !f_too_far_from_end)
+          if (vm_Dot3Product((obj->pos - cur_pos), (obj->last_pos - cur_pos)) <= 0.0f && !f_too_far_from_end)
             f_pass_node = true;
         } else {
           vector next_pos;
-          AIPathGetNextNodePos(aip, &next_pos, NULL);
+          AIPathGetNextNodePos(aip, &next_pos, nullptr);
 
           vector proj_line = obj->pos - cur_pos;
           vector line = next_pos - cur_pos;
-          float proj = proj_line * line;
+          scalar proj = vm_Dot3Product(proj_line, line);
 
           if (proj >= 0.0f)
             f_pass_node = true;
         }
       } else {
         vector prev_pos;
-        AIPathGetPrevNodePos(aip, &prev_pos, NULL);
+        AIPathGetPrevNodePos(aip, &prev_pos, nullptr);
 
         vector proj = obj->pos - prev_pos;
         vector line = cur_pos - prev_pos;
-        float line_len = vm_NormalizeVector(&line);
-        float proj_len = proj * line;
+        scalar line_len = vm_NormalizeVector(&line);
+        scalar proj_len = vm_Dot3Product(proj, line);
 
         if (proj_len >= line_len)
           f_pass_node = true;
@@ -428,27 +428,27 @@ pass_node:
     } else {
       if (AIPathAtEnd(aip)) {
         if (AIPathAtStart(aip)) {
-          if ((obj->pos - cur_pos) * (obj->last_pos - cur_pos) <= 0.0f && !f_too_far_from_end)
+          if (vm_Dot3Product((obj->pos - cur_pos), (obj->last_pos - cur_pos)) <= 0.0f && !f_too_far_from_end)
             f_pass_node = true;
         } else {
           vector prev_pos;
-          AIPathGetPrevNodePos(aip, &prev_pos, NULL);
+          AIPathGetPrevNodePos(aip, &prev_pos, nullptr);
 
           vector proj_line = obj->pos - cur_pos;
           vector line = prev_pos - cur_pos;
-          float proj = proj_line * line;
+          scalar proj = vm_Dot3Product(proj_line, line);
 
           if (proj >= 0.0f)
             f_pass_node = true;
         }
       } else {
         vector next_pos;
-        AIPathGetNextNodePos(aip, &next_pos, NULL);
+        AIPathGetNextNodePos(aip, &next_pos, nullptr);
 
         vector proj = obj->pos - next_pos;
         vector line = cur_pos - next_pos;
-        float line_len = vm_NormalizeVector(&line);
-        float proj_len = proj * line;
+        scalar line_len = vm_NormalizeVector(&line);
+        scalar proj_len = vm_Dot3Product(proj, line);
 
         if (proj_len >= line_len)
           f_pass_node = true;
@@ -519,7 +519,7 @@ static bool AIPathGetDPathSlot(int *slot, int handle) {
       *slot = i;
       AIDynamicPath[i].owner_handle = handle;
       return true;
-    } else if (ObjGet(AIDynamicPath[i].owner_handle) == NULL && AIDynamicPath[i].use_count == 1) {
+    } else if (ObjGet(AIDynamicPath[i].owner_handle) == nullptr && AIDynamicPath[i].use_count == 1) {
       AIPathFreeDPathSlot(i);
 
       AIDynamicPath[i].use_count++;
@@ -651,7 +651,7 @@ static bool AIGenerateAltBNodePath(object *obj, vector *start_pos, int *start_ro
     ASSERT(bnlist);
 
     if (next_room != cur_room && next_room != BOA_NO_PATH) {
-      int portal = BOA_DetermineStartRoomPortal(cur_room, NULL, next_room, NULL);
+      int portal = BOA_DetermineStartRoomPortal(cur_room, nullptr, next_room, nullptr);
       if (portal == -1) {
         f_path_exists = false;
       } else {
@@ -683,7 +683,7 @@ static bool AIGenerateAltBNodePath(object *obj, vector *start_pos, int *start_ro
           AIPathAddDPathNode(aip, slot, cur_node, pos, cur_room, handle);
         }
 
-        int portal = BOA_DetermineStartRoomPortal(next_room, NULL, cur_room, NULL);
+        int portal = BOA_DetermineStartRoomPortal(next_room, nullptr, cur_room, nullptr);
         if (next_room <= Highest_room_index) {
           bnode = Rooms[next_room].portals[portal].bnode_index;
           ASSERT(bnode >= 0);
@@ -740,7 +740,7 @@ done:
 static void AIGenerateAltBOAPath(vector *start_pos, vector *end_pos, ai_path_info *aip, int *slot, int *cur_node,
                                  int handle) {
   int x;
-  vector *pos = NULL;
+  vector *pos = nullptr;
 
   for (x = 0; x < AIAltPathNumNodes - 1; x++) {
     int cur_room = AIAltPath[x];
@@ -750,7 +750,7 @@ static void AIGenerateAltBOAPath(vector *start_pos, vector *end_pos, ai_path_inf
 
     if (next_room >= 0 && next_room <= Highest_room_index) {
       if (cur_room > Highest_room_index) {
-        i = BOA_DetermineStartRoomPortal(next_room, NULL, cur_room, NULL, false, false, NULL);
+        i = BOA_DetermineStartRoomPortal(next_room, nullptr, cur_room, nullptr, false, false, nullptr);
         ASSERT(i != -1);
         pos = &Rooms[next_room].portals[i].path_pnt;
       } else {
@@ -771,7 +771,7 @@ static void AIGenerateAltBOAPath(vector *start_pos, vector *end_pos, ai_path_inf
       AIPathAddDPathNode(aip, slot, cur_node, pos, next_room, handle);
     } else {
       if (BOA_INDEX(cur_room) <= Highest_room_index && cur_room != next_room) {
-        int p_index = BOA_DetermineStartRoomPortal(cur_room, NULL, next_room, NULL);
+        int p_index = BOA_DetermineStartRoomPortal(cur_room, nullptr, next_room, nullptr);
 
         if (p_index >= 0) {
           pos = &Rooms[cur_room].portals[p_index].path_pnt;
@@ -816,7 +816,7 @@ static bool AIGenerateBNodePath(object *obj, vector *start_pos, int *start_room,
     ASSERT(bnlist);
 
     if (next_room != cur_room && next_room != BOA_NO_PATH) {
-      int portal = BOA_DetermineStartRoomPortal(cur_room, NULL, next_room, NULL);
+      int portal = BOA_DetermineStartRoomPortal(cur_room, nullptr, next_room, nullptr);
       if (portal == -1) {
         f_path_exists = false;
       } else {
@@ -848,7 +848,7 @@ static bool AIGenerateBNodePath(object *obj, vector *start_pos, int *start_room,
           AIPathAddDPathNode(aip, slot, cur_node, pos, cur_room, handle);
         }
 
-        int portal = BOA_DetermineStartRoomPortal(next_room, NULL, cur_room, NULL);
+        int portal = BOA_DetermineStartRoomPortal(next_room, nullptr, cur_room, nullptr);
         if (portal < 0) {
           f_path_exists = false;
         } else {
@@ -961,7 +961,7 @@ static bool AIGenerateBOAPath(vector *start_pos, int *start_room, vector *end_po
       if (next_room == BOA_NO_PATH) {
         f_path_exists = false;
       } else if (BOA_INDEX(cur_room) <= Highest_room_index && cur_room != next_room) {
-        int p_index = BOA_DetermineStartRoomPortal(cur_room, NULL, next_room, NULL);
+        int p_index = BOA_DetermineStartRoomPortal(cur_room, nullptr, next_room, nullptr);
 
         if (p_index >= 0) {
           pos = &Rooms[cur_room].portals[p_index].path_pnt;
@@ -1013,7 +1013,7 @@ bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_
       if (fq.rad <= 0.0f)
         fq.rad = .1f;
       fq.thisobjnum = OBJNUM(obj);
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = FQ_CHECK_OBJS | FQ_NO_RELINK | FQ_IGNORE_WEAPONS | FQ_IGNORE_POWERUPS;
 
       int fate = fvi_FindIntersection(&fq, &hit_info);
@@ -1039,7 +1039,7 @@ bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_
           next_room = BOA_GetNextRoom(next_room, *end_room);
 
           if (BOA_INDEX(last_room) != BOA_INDEX(next_room) && next_room != BOA_NO_PATH) {
-            if (BOA_DetermineStartRoomPortal(last_room, NULL, next_room, NULL) == -1) {
+            if (BOA_DetermineStartRoomPortal(last_room, nullptr, next_room, nullptr) == -1) {
               f_make_alt = true;
               break;
             }
@@ -1161,7 +1161,7 @@ bool MakeTestPath(int *start_room, vector *pos) {
 
   AIPathInitPath(&ai_info.path);
 
-  status = AIPathAllocPath(NULL, &ai_info, &ai_info.goals[0], start_room, pos, &AIPath_test_end_room,
+  status = AIPathAllocPath(nullptr, &ai_info, &ai_info.goals[0], start_room, pos, &AIPath_test_end_room,
                            &AIPath_test_end_pos, 0.0f, 0, 0);
 
   while (status) {

@@ -548,7 +548,7 @@ int GetPrevWeapon(int n) {
 int FindWeaponName(const char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_WEAPONS; i++)
     if (Weapons[i].used && !stricmp(name, Weapons[i].name))
@@ -593,7 +593,7 @@ int LoadWeaponHudImage(char *filename, int *type) {
   if ((!strnicmp("oaf", extension, 3)) || (!strnicmp("ifl", extension, 3)) || (!strnicmp("abm", extension, 3)))
     anim = 1;
 
-  if (type != NULL)
+  if (type != nullptr)
     *type = anim;
 
   if (anim)
@@ -640,9 +640,9 @@ int LoadWeaponFireImage(char *filename, int *type, int *anim, int pageable) {
   if ((!strnicmp("pof", extension, 3)) || (!strnicmp("oof", extension, 3)))
     model = 1;
 
-  if (type != NULL)
+  if (type != nullptr)
     *type = model;
-  if (anim != NULL)
+  if (anim != nullptr)
     *anim = is_vclip;
 
   if (model)
@@ -841,7 +841,7 @@ int AddWeaponToPlayer(int slot, int weap_index, int ammo) {
 
   ship *ship = &Ships[Players[slot].ship_index];
   otype_wb_info *wb = &ship->static_wb[weap_index];
-  ASSERT(wb != NULL);
+  ASSERT(wb != nullptr);
 
   // if secondary or primary that uses ammo, then use the ammo
   if ((weap_index >= SECONDARY_INDEX) || wb->ammo_usage) {
@@ -1426,5 +1426,5 @@ weapon *GetWeaponFromIndex(int player, int index) {
     }
   }
 
-  return NULL;
+  return nullptr;
 }

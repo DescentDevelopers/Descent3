@@ -1305,7 +1305,7 @@
 #include "editor/editor_lighting.h"
 #endif
 
-MD5 *Level_md5 = NULL;
+MD5 *Level_md5 = nullptr;
 
 char *LocalizeLevelName(char *level);
 
@@ -1364,9 +1364,7 @@ char *GetFailedXLateItemName(int type, int id) {
 // Useful macros
 #define cf_ReadVector(f, v)                                                                                            \
   do {                                                                                                                 \
-    (v)->x = cf_ReadFloat(f);                                                                                          \
-    (v)->y = cf_ReadFloat(f);                                                                                          \
-    (v)->z = cf_ReadFloat(f);                                                                                          \
+    (*v) = { cf_ReadFloat(f), cf_ReadFloat(f), cf_ReadFloat(f) };                                                      \
   } while (0)
 #define cf_ReadMatrix(f, m)                                                                                            \
   do {                                                                                                                 \
@@ -1686,14 +1684,13 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
 
   // Set the name
   if (tempname[0]) {
-    objp->name = mem_rmalloc<char>(strlen(tempname) + 1);
-    strcpy(objp->name, tempname);
+    objp->name = mem_strdup(tempname);
   }
 
   // Update checksum
-  AppendToLevelChecksum(objp->pos.x);
-  AppendToLevelChecksum(objp->pos.y);
-  AppendToLevelChecksum(objp->pos.z);
+  AppendToLevelChecksum(objp->pos.x());
+  AppendToLevelChecksum(objp->pos.y());
+  AppendToLevelChecksum(objp->pos.z());
 
   objp->contains_type = cf_ReadByte(ifile);
   objp->contains_id = cf_ReadByte(ifile);
@@ -1725,7 +1722,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
       cf_ReadBytes((uint8_t *)objp->custom_default_script_name, i, ifile);
       objp->custom_default_script_name[i] = '\0';
     } else {
-      objp->custom_default_script_name = NULL;
+      objp->custom_default_script_name = nullptr;
     }
 
     i = cf_ReadByte(ifile);
@@ -1734,11 +1731,11 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
       cf_ReadBytes((uint8_t *)objp->custom_default_module_name, i, ifile);
       objp->custom_default_module_name[i] = '\0';
     } else {
-      objp->custom_default_module_name = NULL;
+      objp->custom_default_module_name = nullptr;
     }
   } else {
-    objp->custom_default_module_name = NULL;
-    objp->custom_default_script_name = NULL;
+    objp->custom_default_module_name = nullptr;
+    objp->custom_default_script_name = nullptr;
   }
 
   //	load in obsolete script info
@@ -1832,8 +1829,8 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
           } else {
             vm_MakeZero(&fp->rvec);
             vm_MakeZero(&fp->uvec);
-            fp->rvec.x = 1;
-            fp->uvec.y = 1;
+            fp->rvec.x() = 1;
+            fp->uvec.y() = 1;
           }
 
           num_verts = cf_ReadByte(ifile);
@@ -2203,7 +2200,7 @@ void RemoveDegenerateFaces(room *rp) {
   for (f = rp->num_faces - 1; f >= 0; f--) {
     face *fp = &rp->faces[f];
 
-    if ((fp->normal.x == 0.0) && (fp->normal.y == 0.0) && (fp->normal.z == 0.0)) {
+    if ((fp->normal.x() == 0.0) && (fp->normal.y() == 0.0) && (fp->normal.z() == 0.0)) {
       LOG_DEBUG.printf("Deleting face %d from room %d", f, ROOMNUM(rp));
       DeleteRoomFace(rp, f);
       n_degenerate_faces_removed++;
@@ -2441,13 +2438,12 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
   InitRoom(rp, nverts, nfaces, nportals);
 
   // Get room name
-  rp->name = NULL;
+  rp->name = nullptr;
   if (version >= 96) {
     char tempname[ROOM_NAME_LEN + 1];
     cf_ReadString(tempname, sizeof(tempname), ifile);
     if (strlen(tempname)) {
-      rp->name = mem_rmalloc<char>(strlen(tempname) + 1);
-      strcpy(rp->name, tempname);
+      rp->name = mem_strdup(tempname);
     }
   }
 
@@ -2571,7 +2567,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
         rp->volume_lights = mem_rmalloc<uint8_t>(size);
         ASSERT(rp->volume_lights); // ran out of memory!
       } else
-        rp->volume_lights = NULL;
+        rp->volume_lights = nullptr;
 
       ReadCompressionByte(ifile, rp->volume_lights, w * h * d);
 
@@ -2614,9 +2610,9 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
   if (Katmai) {
     // If katmai, copy all of our verts into our verts4 array
     for (i = 0; i < nverts; i++) {
-      rp->verts4[i].x = rp->verts[i].x;
-      rp->verts4[i].y = rp->verts[i].y;
-      rp->verts4[i].z = rp->verts[i].z;
+      rp->verts4[i].x() = rp->verts[i].x();
+      rp->verts4[i].y() = rp->verts[i].y();
+      rp->verts4[i].z() = rp->verts[i].z();
     }
   }
 
@@ -2794,7 +2790,7 @@ void ReadLightmapChunk(CFILE *fp, int version) {
 
   int nummaps;
   int i, t;
-  uint16_t *ded_dummy_data = NULL;
+  uint16_t *ded_dummy_data = nullptr;
 
   if (Dedicated_server) {
     ded_dummy_data = (uint16_t *)mem_malloc(128 * 128 * 2);
@@ -2858,11 +2854,8 @@ void ReadLightmapChunk(CFILE *fp, int version) {
       cf_ReadVector(fp, &v);
       if (!Dedicated_server)
         LightmapInfo[lmi].normal = v;
-    } else {
-      LightmapInfo[lmi].normal.x = 0;
-      LightmapInfo[lmi].normal.y = 0;
-      LightmapInfo[lmi].normal.z = 1;
-    }
+    } else
+      LightmapInfo[lmi].normal = vector::id(2);
 
     uint16_t *data;
 
@@ -2951,13 +2944,8 @@ void ReadGamePathsChunk(CFILE *fp, int version) {
         cf_ReadVector(fp, &GamePaths[i].pathnodes[j].fvec);
         cf_ReadVector(fp, &GamePaths[i].pathnodes[j].uvec);
       } else {
-        GamePaths[i].pathnodes[j].fvec.x = 0.0;
-        GamePaths[i].pathnodes[j].fvec.y = 0.0;
-        GamePaths[i].pathnodes[j].fvec.z = 1.0;
-
-        GamePaths[i].pathnodes[j].uvec.x = 0.0;
-        GamePaths[i].pathnodes[j].uvec.y = 1.0;
-        GamePaths[i].pathnodes[j].uvec.z = 0.0;
+        GamePaths[i].pathnodes[j].fvec = vector::id(2);
+        GamePaths[i].pathnodes[j].uvec = vector::id(1);
       }
     }
   }
@@ -3017,9 +3005,9 @@ void ReadBNodeChunk(CFILE *fp, int version) {
       if (bnlist->num_nodes) {
         bnlist->nodes = mem_rmalloc<bn_node>(bnlist->num_nodes);
         for (j = 0; j < bnlist->num_nodes; j++) {
-          bnlist->nodes[j].pos.x = cf_ReadFloat(fp);
-          bnlist->nodes[j].pos.y = cf_ReadFloat(fp);
-          bnlist->nodes[j].pos.z = cf_ReadFloat(fp);
+          bnlist->nodes[j].pos.x() = cf_ReadFloat(fp);
+          bnlist->nodes[j].pos.y() = cf_ReadFloat(fp);
+          bnlist->nodes[j].pos.z() = cf_ReadFloat(fp);
 
           bnlist->nodes[j].num_edges = cf_ReadShort(fp);
           if (bnlist->nodes[j].num_edges) {
@@ -3040,11 +3028,11 @@ void ReadBNodeChunk(CFILE *fp, int version) {
               bnlist->nodes[j].edges[k].max_rad = cf_ReadFloat(fp);
             }
           } else {
-            bnlist->nodes[j].edges = NULL;
+            bnlist->nodes[j].edges = nullptr;
           }
         }
       } else {
-        bnlist->nodes = NULL;
+        bnlist->nodes = nullptr;
       }
     }
   }
@@ -3151,31 +3139,31 @@ void ReadRoomAABBChunk(CFILE *fp, int version) {
       ASSERT(Rooms[i].num_faces == n_faces);
 
       for (j = 0; j < Rooms[i].num_faces; j++) {
-        Rooms[i].faces[j].min_xyz.x = cf_ReadFloat(fp);
-        Rooms[i].faces[j].min_xyz.y = cf_ReadFloat(fp);
-        Rooms[i].faces[j].min_xyz.z = cf_ReadFloat(fp);
+        Rooms[i].faces[j].min_xyz.x() = cf_ReadFloat(fp);
+        Rooms[i].faces[j].min_xyz.y() = cf_ReadFloat(fp);
+        Rooms[i].faces[j].min_xyz.z() = cf_ReadFloat(fp);
 
-        Rooms[i].faces[j].max_xyz.x = cf_ReadFloat(fp);
-        Rooms[i].faces[j].max_xyz.y = cf_ReadFloat(fp);
-        Rooms[i].faces[j].max_xyz.z = cf_ReadFloat(fp);
+        Rooms[i].faces[j].max_xyz.x() = cf_ReadFloat(fp);
+        Rooms[i].faces[j].max_xyz.y() = cf_ReadFloat(fp);
+        Rooms[i].faces[j].max_xyz.z() = cf_ReadFloat(fp);
       }
 
       BOA_AABB_ROOM_checksum[i] = cf_ReadInt(fp);
 
-      Rooms[i].bbf_min_xyz.x = cf_ReadFloat(fp);
-      Rooms[i].bbf_min_xyz.y = cf_ReadFloat(fp);
-      Rooms[i].bbf_min_xyz.z = cf_ReadFloat(fp);
+      Rooms[i].bbf_min_xyz.x() = cf_ReadFloat(fp);
+      Rooms[i].bbf_min_xyz.y() = cf_ReadFloat(fp);
+      Rooms[i].bbf_min_xyz.z() = cf_ReadFloat(fp);
 
-      Rooms[i].bbf_max_xyz.x = cf_ReadFloat(fp);
-      Rooms[i].bbf_max_xyz.y = cf_ReadFloat(fp);
-      Rooms[i].bbf_max_xyz.z = cf_ReadFloat(fp);
+      Rooms[i].bbf_max_xyz.x() = cf_ReadFloat(fp);
+      Rooms[i].bbf_max_xyz.y() = cf_ReadFloat(fp);
+      Rooms[i].bbf_max_xyz.z() = cf_ReadFloat(fp);
 
       Rooms[i].num_bbf_regions = cf_ReadShort(fp);
       Rooms[i].num_bbf = mem_rmalloc<int16_t>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list = mem_rmalloc<int16_t *>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_min_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_max_xyz = mem_rmalloc<vector>(Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_sector = mem_rmalloc<uint8_t>(sizeof(char) * Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_sector = mem_rmalloc<uint8_t>(Rooms[i].num_bbf_regions);
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
         Rooms[i].num_bbf[j] = cf_ReadShort(fp);
@@ -3187,13 +3175,13 @@ void ReadRoomAABBChunk(CFILE *fp, int version) {
           Rooms[i].bbf_list[j][k] = cf_ReadShort(fp);
         }
 
-        Rooms[i].bbf_list_min_xyz[j].x = cf_ReadFloat(fp);
-        Rooms[i].bbf_list_min_xyz[j].y = cf_ReadFloat(fp);
-        Rooms[i].bbf_list_min_xyz[j].z = cf_ReadFloat(fp);
+        Rooms[i].bbf_list_min_xyz[j].x() = cf_ReadFloat(fp);
+        Rooms[i].bbf_list_min_xyz[j].y() = cf_ReadFloat(fp);
+        Rooms[i].bbf_list_min_xyz[j].z() = cf_ReadFloat(fp);
 
-        Rooms[i].bbf_list_max_xyz[j].x = cf_ReadFloat(fp);
-        Rooms[i].bbf_list_max_xyz[j].y = cf_ReadFloat(fp);
-        Rooms[i].bbf_list_max_xyz[j].z = cf_ReadFloat(fp);
+        Rooms[i].bbf_list_max_xyz[j].x() = cf_ReadFloat(fp);
+        Rooms[i].bbf_list_max_xyz[j].y() = cf_ReadFloat(fp);
+        Rooms[i].bbf_list_max_xyz[j].z() = cf_ReadFloat(fp);
 
         Rooms[i].bbf_list_sector[j] = cf_ReadByte(fp);
       }
@@ -3475,7 +3463,7 @@ void ReadTerrainChunks(CFILE *fp, int version) {
     terr_chunk_size = cf_ReadInt(fp);
 
     LoadLevelProgress(LOAD_PROGRESS_LOADING_LEVEL,
-                      (filelen) ? (float)(terr_chunk_start + terr_chunk_size) / (float)filelen : 0.0f, NULL);
+                      (filelen) ? (float)(terr_chunk_start + terr_chunk_size) / (float)filelen : 0.0f, nullptr);
 
     if (ISCHUNK(CHUNK_TERRAIN_HEIGHT)) {
       ReadTerrainHeightChunk(fp, version);
@@ -3630,7 +3618,7 @@ bool LoadLevelInfo(const std::filesystem::path &filename, level_info &info) {
   bool found = false;
 
   if (!ifile) {
-    LOG_ERROR.printf("Failed to open mission file %s", filename.u8string().c_str());
+    LOG_ERROR.printf("Failed to open mission file %s", PATH_TO_CSTR(filename));
     return false;
   }
 
@@ -3834,7 +3822,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           if ((i % 10) == 0) {
             LoadLevelProgress(
                 LOAD_PROGRESS_LOADING_LEVEL,
-                (filelen) ? (float)(chunk_start + (((chunk_size) / num_rooms) * i)) / (float)filelen : 0.0f, NULL);
+                (filelen) ? (float)(chunk_start + (((chunk_size) / num_rooms) * i)) / (float)filelen : 0.0f, nullptr);
           }
 
           roomnum = (version >= 96) ? cf_ReadShort(ifile) : i;
@@ -3984,7 +3972,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 #if (defined(EDITOR) || defined(NEWEDITOR))
         if (FindArg("-savescript")) {
           char path[_MAX_PATH], name[_MAX_PATH];
-          ddio_SplitPath(filename, path, name, NULL);
+          ddio_SplitPath(filename, path, name, nullptr);
           strcat(path, name);
           strcat(path, ".scr");
           CFILE *ofile = cfopen(path, "wb");
@@ -4044,7 +4032,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           Curvert = cf_ReadShort(ifile);
         }
         t = cf_ReadShort(ifile);
-        Markedroomp = (t == -1) ? NULL : &Rooms[t];
+        Markedroomp = (t == -1) ? nullptr : &Rooms[t];
         Markedface = cf_ReadShort(ifile);
         if (version >= 81) {
           Markededge = cf_ReadShort(ifile);
@@ -4129,7 +4117,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
     Player_object = &Objects[Players[0].objnum];
 
   // aabbs
-  LoadLevelProgress(LOAD_PROGRESS_LOADING_LEVEL, 1.0f, NULL);
+  LoadLevelProgress(LOAD_PROGRESS_LOADING_LEVEL, 1.0f, nullptr);
 
   // Compute the bounding boxes
   if (!f_read_AABB)
@@ -4202,7 +4190,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
   ConsolidateMineMirrors();
 
   // paging data.
-  LoadLevelProgress(LOAD_PROGRESS_PAGING_DATA, 0.0f, NULL);
+  LoadLevelProgress(LOAD_PROGRESS_PAGING_DATA, 0.0f, nullptr);
 
 #ifndef NEWEDITOR
   CountDataToPageIn();
@@ -4217,7 +4205,7 @@ end_loadlevel:
     for (int i = 0; i <= Highest_room_index; i++) {
       if (Rooms[i].used) {
         Rooms[i].bn_info.num_nodes = 0;
-        Rooms[i].bn_info.nodes = NULL;
+        Rooms[i].bn_info.nodes = nullptr;
       }
     }
   }
@@ -4232,9 +4220,9 @@ end_loadlevel:
 
 #define cf_WriteVector(f, v)                                                                                           \
   do {                                                                                                                 \
-    cf_WriteFloat((f), (v)->x);                                                                                        \
-    cf_WriteFloat((f), (v)->y);                                                                                        \
-    cf_WriteFloat((f), (v)->z);                                                                                        \
+    cf_WriteFloat((f), (v)->x());                                                                                        \
+    cf_WriteFloat((f), (v)->y());                                                                                        \
+    cf_WriteFloat((f), (v)->z());                                                                                        \
   } while (0)
 #define cf_WriteMatrix(f, m)                                                                                           \
   do {                                                                                                                 \
@@ -4656,9 +4644,9 @@ void WriteBNodeChunk(CFILE *fp) {
       cf_WriteShort(fp, bnlist->num_nodes);
       if (bnlist->num_nodes) {
         for (j = 0; j < bnlist->num_nodes; j++) {
-          cf_WriteFloat(fp, bnlist->nodes[j].pos.x);
-          cf_WriteFloat(fp, bnlist->nodes[j].pos.y);
-          cf_WriteFloat(fp, bnlist->nodes[j].pos.z);
+          cf_WriteFloat(fp, bnlist->nodes[j].pos.x());
+          cf_WriteFloat(fp, bnlist->nodes[j].pos.y());
+          cf_WriteFloat(fp, bnlist->nodes[j].pos.z());
 
           cf_WriteShort(fp, bnlist->nodes[j].num_edges);
           if (bnlist->nodes[j].num_edges) {
@@ -4742,24 +4730,24 @@ void WriteRoomAABBChunk(CFILE *fp) {
 
       cf_WriteInt(fp, Rooms[i].num_faces);
       for (j = 0; j < Rooms[i].num_faces; j++) {
-        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.x);
-        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.y);
-        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.z);
+        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.x());
+        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.y());
+        cf_WriteFloat(fp, Rooms[i].faces[j].min_xyz.z());
 
-        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.x);
-        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.y);
-        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.z);
+        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.x());
+        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.y());
+        cf_WriteFloat(fp, Rooms[i].faces[j].max_xyz.z());
       }
 
       cf_WriteInt(fp, BOA_AABB_ROOM_checksum[i]);
 
-      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.x);
-      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.y);
-      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.z);
+      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.x());
+      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.y());
+      cf_WriteFloat(fp, Rooms[i].bbf_min_xyz.z());
 
-      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.x);
-      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.y);
-      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.z);
+      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.x());
+      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.y());
+      cf_WriteFloat(fp, Rooms[i].bbf_max_xyz.z());
 
       cf_WriteShort(fp, Rooms[i].num_bbf_regions);
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
@@ -4771,13 +4759,13 @@ void WriteRoomAABBChunk(CFILE *fp) {
           cf_WriteShort(fp, Rooms[i].bbf_list[j][k]);
         }
 
-        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].x);
-        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].y);
-        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].z);
+        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].x());
+        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].y());
+        cf_WriteFloat(fp, Rooms[i].bbf_list_min_xyz[j].z());
 
-        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].x);
-        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].y);
-        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].z);
+        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].x());
+        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].y());
+        cf_WriteFloat(fp, Rooms[i].bbf_list_max_xyz[j].z());
 
         cf_WriteByte(fp, Rooms[i].bbf_list_sector[j]);
       }
@@ -4997,7 +4985,7 @@ void WriteLightmapChunk(CFILE *fp) {
         cf_WriteShort(fp, h);
 
         uint16_t *data = lm_data(LightmapInfo[i].lm_handle);
-        ASSERT(data != NULL);
+        ASSERT(data != nullptr);
 
         CheckToWriteCompressShort(fp, data, w * h);
       }
@@ -5206,13 +5194,13 @@ int SaveLevel(char *filename, bool f_save_room_AABB) {
 
     // Write room wind, if any rooms have wind
     for (i = nrooms = 0, rp = Rooms; i <= Highest_room_index; i++, rp++) // Count the number of rooms with wind
-      if ((rp->wind.x != 0.0) || (rp->wind.y != 0.0) || (rp->wind.z != 0.0))
+      if ((rp->wind.x() != 0.0) || (rp->wind.y() != 0.0) || (rp->wind.z() != 0.0))
         nrooms++;
     if (nrooms) {
       chunk_start_pos = StartChunk(ofile, CHUNK_ROOM_WIND);
       cf_WriteInt(ofile, nrooms);
       for (i = 0, rp = Rooms; i <= Highest_room_index; i++, rp++) { // write the wind values
-        if ((rp->wind.x != 0.0) || (rp->wind.y != 0.0) || (rp->wind.z != 0.0)) {
+        if ((rp->wind.x() != 0.0) || (rp->wind.y() != 0.0) || (rp->wind.z() != 0.0)) {
           cf_WriteShort(ofile, i);
           cf_WriteVector(ofile, &rp->wind);
         }
@@ -5419,7 +5407,7 @@ void AlmostPageInSound(int id) {
     return;
 
   // Check if the sample data is already loaded
-  if (SoundFiles[id].sample_16bit != NULL || SoundFiles[id].sample_8bit != NULL || sound_counted[id])
+  if (SoundFiles[id].sample_16bit != nullptr || SoundFiles[id].sample_8bit != nullptr || sound_counted[id])
     return;
   sound_counted[id] = 1;
   need_to_page_num++;

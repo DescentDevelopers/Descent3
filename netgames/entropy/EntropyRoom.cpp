@@ -101,7 +101,7 @@ int SpewObjectInRoom(int type, int id, int roomnum) {
   int objnum;
 
   DLLComputeRoomCenter(&vpos, &dRooms[roomnum]);
-  objnum = DLLObjCreate(type, id, roomnum, &vpos, NULL, OBJECT_HANDLE_NONE);
+  objnum = DLLObjCreate(type, id, roomnum, &vpos, nullptr, OBJECT_HANDLE_NONE);
   if (objnum == -1)
     return -1;
 
@@ -112,9 +112,9 @@ int SpewObjectInRoom(int type, int id, int roomnum) {
     return -1;
 
   // Set random velocity for powerups
-  obj->mtype.phys_info.velocity.x = ((float)rand() / static_cast<float>(RAND_MAX)) * 20.0;
-  obj->mtype.phys_info.velocity.z = ((float)rand() / static_cast<float>(RAND_MAX)) * 20.0;
-  obj->mtype.phys_info.velocity.y = ((float)rand() / static_cast<float>(RAND_MAX)) * 20.0;
+  obj->mtype.phys_info.velocity.x() = ((scalar)rand() / static_cast<scalar>(RAND_MAX)) * 20.0;
+  obj->mtype.phys_info.velocity.z() = ((scalar)rand() / static_cast<scalar>(RAND_MAX)) * 20.0;
+  obj->mtype.phys_info.velocity.y() = ((scalar)rand() / static_cast<scalar>(RAND_MAX)) * 20.0;
 
   DLLMultiSendObject(obj, 0, true);
 
@@ -168,7 +168,7 @@ void DoServerConfigureDialog(void) {
       exit_menu = true;
       DLLEditGetText(virus_pk_edit, tempbuffer, 20);
       int newpk = atoi(tempbuffer);
-      DLLmprintf(0, "New Virus/Kill = %d\n", newpk);
+      LOG_INFO.printf("New Virus/Kill = %d", newpk);
       break;
     };
   }

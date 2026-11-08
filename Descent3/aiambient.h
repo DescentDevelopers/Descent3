@@ -19,6 +19,7 @@
 #ifndef _AIAMBIENT_H_
 #define _AIAMBIENT_H_
 
+#include <cstdint>
 #include "cfile.h"
 
 #define MAX_AL_TYPES 6
@@ -51,13 +52,13 @@ class ambient_life {
   uint8_t m_next_size[MAX_AL_TYPES];
   float m_next_do_time[MAX_AL_TYPES];
 
-  void ComputeNextSize(char index);
+  void ComputeNextSize(int8_t index);
 
 public:
   ambient_life() { ALReset(); }
 
-  void GetALValue(char index, char field, void *ptr);
-  void SetALValue(char index, char field, void *ptr);
+  void GetALValue(int8_t index, char field, void *ptr);
+  void SetALValue(int8_t index, char field, void *ptr);
   void SaveData(CFILE *fptr);
   void LoadData(CFILE *fptr);
 

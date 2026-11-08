@@ -238,9 +238,9 @@ void ObjectMoveManager::GetObjectDeltas(float *dx, float *dy, object *obj, int d
   pos = obj->pos - m_ViewPos;
   pos = pos * m_ViewMat;
 
-  if (pos.z == 0.0)
+  if (pos.z() == 0.0)
     return;
 
-  *dx = ((float)dsx * pos.z) / m_WindowW2;
-  *dy = ((float)dsy * pos.z) / m_WindowH2;
+  *dx = ((scalar)dsx * pos.z()) / m_WindowW2;
+  *dy = ((scalar)dsy * pos.z()) / m_WindowH2;
 }

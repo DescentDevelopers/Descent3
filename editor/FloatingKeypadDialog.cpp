@@ -110,7 +110,7 @@ CFloatingKeypadDialog::CFloatingKeypadDialog(CWnd *pParent /*=NULL*/) : CDialog(
 
   m_Parent = pParent;
   m_Initializing = FALSE;
-  m_KeypadTabDialog = NULL;
+  m_KeypadTabDialog = nullptr;
 }
 
 void CFloatingKeypadDialog::DoDataExchange(CDataExchange *pDX) {

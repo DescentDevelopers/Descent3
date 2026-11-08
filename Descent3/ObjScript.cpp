@@ -166,7 +166,7 @@ void AssignScriptsForLevel() {
 
   // Initialize scripts for the objects
   for (i = 0; i <= Highest_object_index; i++) {
-    if (Objects[i].type != OBJ_NONE && Objects[i].osiris_script == NULL) {
+    if (Objects[i].type != OBJ_NONE && Objects[i].osiris_script == nullptr) {
       InitObjectScripts(&Objects[i]);
     }
   }

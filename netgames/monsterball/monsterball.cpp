@@ -172,8 +172,8 @@
 
 #include <algorithm>
 
-IDMFC *DMFCBase = NULL;
-static IDmfcStats *dstat = NULL;
+IDMFC *DMFCBase = nullptr;
+static IDmfcStats *dstat = nullptr;
 static room *dRooms;
 static object *dObjects;
 static player *dPlayers;
@@ -295,7 +295,7 @@ static void OnTimerScoreKill(void);
 static void OnTimerKill(void);
 static void OnTimerRegen(void);
 static void OnTimerRegenKill(void);
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const char *filename);
 static void SortPlayerSlots(int *sorted_list, int count);
 static void SendLastHitInfo(void);
 static void GetLastHitInfo(uint8_t *data);
@@ -418,7 +418,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   DMFCBase->GameInit(NumOfTeams);
   DLLCreateStringTable("monster.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
 
   // add the death and suicide messages
   DMFCBase->AddDeathMessage(TXT_KILLEDA, true);
@@ -467,13 +466,13 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   tsi.flags = DSIF_SHOW_PIC | DSIF_SHOW_OBSERVERICON | DSIF_SEPERATE_BY_TEAM;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 8;
-  tsi.clbDetailedColumnBMP = NULL;
-  tsi.clbDetailedColumn = NULL;
+  tsi.clbDetailedColumnBMP = nullptr;
+  tsi.clbDetailedColumn = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
   tsi.clbPlayerColumnBMP = ShowStatBitmap;
-  tsi.DetailedColumns = NULL;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
   tsi.clTeamLine = TeamScoreCallback;
@@ -530,14 +529,19 @@ void DLLFUNCCALL DLLGameClose() {
 
   if (dstat) {
     dstat->DestroyPointer();
-    dstat = NULL;
+    dstat = nullptr;
   }
 
   if (DMFCBase) {
     DMFCBase->GameClose();
     DMFCBase->DestroyPointer();
-    DMFCBase = NULL;
+    DMFCBase = nullptr;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 bool OnCanChangeTeam(int pnum, int newteam) {
@@ -545,7 +549,7 @@ bool OnCanChangeTeam(int pnum, int newteam) {
     return false;
 
   int p;
-  if (!ValidateOwner(&p, NULL))
+  if (!ValidateOwner(&p, nullptr))
     return true;
 
   if (p == pnum)
@@ -673,24 +677,24 @@ void OnServerCollide(object *me_obj, object *it_obj, vector *point, vector *norm
       }
 
       weapon_collide_info winfo;
-      winfo.rotvel.x = it_obj->mtype.phys_info.rotvel.x;
-      winfo.rotvel.y = it_obj->mtype.phys_info.rotvel.y;
-      winfo.rotvel.z = it_obj->mtype.phys_info.rotvel.z;
-      winfo.velocity.x = it_obj->mtype.phys_info.velocity.x;
-      winfo.velocity.y = it_obj->mtype.phys_info.velocity.y;
-      winfo.velocity.z = it_obj->mtype.phys_info.velocity.z;
-      winfo.pos.x = it_obj->pos.x;
-      winfo.pos.y = it_obj->pos.y;
-      winfo.pos.z = it_obj->pos.z;
-      winfo.orient.fvec.x = it_obj->orient.fvec.x;
-      winfo.orient.fvec.y = it_obj->orient.fvec.y;
-      winfo.orient.fvec.z = it_obj->orient.fvec.z;
-      winfo.orient.uvec.x = it_obj->orient.uvec.x;
-      winfo.orient.uvec.y = it_obj->orient.uvec.y;
-      winfo.orient.uvec.z = it_obj->orient.uvec.z;
-      winfo.orient.rvec.x = it_obj->orient.rvec.x;
-      winfo.orient.rvec.y = it_obj->orient.rvec.y;
-      winfo.orient.rvec.z = it_obj->orient.rvec.z;
+      winfo.rotvel.x() = it_obj->mtype.phys_info.rotvel.x();
+      winfo.rotvel.y() = it_obj->mtype.phys_info.rotvel.y();
+      winfo.rotvel.z() = it_obj->mtype.phys_info.rotvel.z();
+      winfo.velocity.x() = it_obj->mtype.phys_info.velocity.x();
+      winfo.velocity.y() = it_obj->mtype.phys_info.velocity.y();
+      winfo.velocity.z() = it_obj->mtype.phys_info.velocity.z();
+      winfo.pos.x() = it_obj->pos.x();
+      winfo.pos.y() = it_obj->pos.y();
+      winfo.pos.z() = it_obj->pos.z();
+      winfo.orient.fvec.x() = it_obj->orient.fvec.x();
+      winfo.orient.fvec.y() = it_obj->orient.fvec.y();
+      winfo.orient.fvec.z() = it_obj->orient.fvec.z();
+      winfo.orient.uvec.x() = it_obj->orient.uvec.x();
+      winfo.orient.uvec.y() = it_obj->orient.uvec.y();
+      winfo.orient.uvec.z() = it_obj->orient.uvec.z();
+      winfo.orient.rvec.x() = it_obj->orient.rvec.x();
+      winfo.orient.rvec.y() = it_obj->orient.rvec.y();
+      winfo.orient.rvec.z() = it_obj->orient.rvec.z();
       winfo.mass = it_obj->mtype.phys_info.mass;
       winfo.size = it_obj->size;
       HandleMonsterballCollideWithWeapon(me_obj, &winfo, point, normal);
@@ -704,7 +708,7 @@ void OnServerCollide(object *me_obj, object *it_obj, vector *point, vector *norm
       // the collided player isn't alive
     } else {
       int p;
-      if (ValidateOwner(&p, NULL)) {
+      if (ValidateOwner(&p, nullptr)) {
         if (p == me_obj->id) {
           // the player has the powerball
           DMFCBase->CallClientEvent(EVT_CLIENT_GAMECOLLIDE, DMFCBase->GetMeObjNum(), DMFCBase->GetItObjNum(), -1, true);
@@ -719,7 +723,7 @@ void OnServerCollide(object *me_obj, object *it_obj, vector *point, vector *norm
 
 void OnClientPlayerDisconnect(int player_num) {
   int p;
-  if (ValidateOwner(&p, NULL)) {
+  if (ValidateOwner(&p, nullptr)) {
     if (p == player_num) {
       HandleLosePowerball(true);
     }
@@ -729,7 +733,7 @@ void OnClientPlayerDisconnect(int player_num) {
 
 void OnPlayerEntersObserver(int pnum, object *piggy) {
   int p;
-  if (ValidateOwner(&p, NULL)) {
+  if (ValidateOwner(&p, nullptr)) {
     if (p == pnum) {
       HandleLosePowerball(true);
     }
@@ -740,7 +744,7 @@ void OnPlayerEntersObserver(int pnum, object *piggy) {
 
 void OnClientPlayerKilled(object *killer_obj, int victim_pnum) {
   int p;
-  if (ValidateOwner(&p, NULL)) {
+  if (ValidateOwner(&p, nullptr)) {
     if (p == victim_pnum) {
       HandleLosePowerball(true);
     }
@@ -753,7 +757,7 @@ void HandleLosePowerball(bool play_sound) {
   static int sound = -1;
 
   object *owner;
-  if (!ValidateOwner(NULL, &owner))
+  if (!ValidateOwner(nullptr, &owner))
     return;
 
   object *ball;
@@ -793,7 +797,7 @@ void HandlePickupPowerball(object *owner) {
     bool ret = DLLAttachObject(owner, 0, bobj, 0, true);
     if (!ret) {
       // blah!
-      mprintf(0, "COULDN'T ATTACH MONSTERBALL TO PLAYER!!!!!!\n");
+      LOG_WARNING << "COULDN'T ATTACH MONSTERBALL TO PLAYER!!!!!!";
     }
   }
 
@@ -828,7 +832,7 @@ void OnClientCollide(object *me_obj, object *it_obj, vector *point, vector *norm
       // case 1: me_obj = monsterball it_obj = player
       // Result: The player is to pickup the monsterball (as long as it has no owner)
       int p = 0;
-      if (!ValidateOwner(&p, NULL) && p != it_obj->id) {
+      if (!ValidateOwner(&p, nullptr) && p != it_obj->id) {
         ASSERT(it_obj->type == OBJ_PLAYER);
         // HandlePickupPowerball(it_obj);
         HandleMonsterballCollideWithObject(me_obj, it_obj, point, normal);
@@ -866,7 +870,7 @@ void OnServerObjectChangeSegment(object *obj, int newseg, int oldseg) {
       }
     }
 
-    if (is_goal && !ValidateOwner(NULL, NULL)) {
+    if (is_goal && !ValidateOwner(nullptr, nullptr)) {
       // it's a team goal
       SendLastHitInfo();
       DMFCBase->CallClientEvent(EVT_CLIENT_GAMEOBJCHANGESEG, DMFCBase->GetMeObjNum(), DMFCBase->GetItObjNum(), -1,
@@ -909,7 +913,7 @@ void OnClientObjectChangeSegment(object *obj, int newseg, int oldseg) {
 
   DLLvm_MakeVectorZero(&obj->mtype.phys_info.velocity);
   DLLvm_MakeIdentity(&obj->orient);
-  DLLObjSetPos(obj, &Monsterball_info.pos, Monsterball_info.room, NULL, false);
+  DLLObjSetPos(obj, &Monsterball_info.pos, Monsterball_info.room, nullptr, false);
 
   if (!DMFCBase->CheckPlayerNum(LastHitPnum)) {
     if (SCORE_HITIN == 1) {
@@ -974,7 +978,7 @@ void OnServerPlayerChangeSegment(int player_num, int newseg, int oldseg) {
   if (newseg == GoalRooms[DMFCBase->GetPlayerTeam(player_num)]) {
     // check to see if a player dragged the ball into the goal
     int p;
-    if (ValidateOwner(&p, NULL)) {
+    if (ValidateOwner(&p, nullptr)) {
       // a player currently has the monsterball
       if (p == player_num) {
         // it's this player
@@ -997,7 +1001,7 @@ void OnClientPlayerChangeSegment(int player_num, int newseg, int oldseg) {
   if (DMFCBase->IsPlayerDedicatedServer(player_num))
     return; // dedicated server
 
-  if (!ValidateOwner(&p, NULL)) {
+  if (!ValidateOwner(&p, nullptr)) {
     return;
   }
   if (p != player_num)
@@ -1009,7 +1013,7 @@ void OnClientPlayerChangeSegment(int player_num, int newseg, int oldseg) {
     FatalError("MonsterBall Is Missing!\n");
   }
 
-  DLLObjSetPos(bobj, &Monsterball_info.pos, Monsterball_info.room, NULL, false);
+  DLLObjSetPos(bobj, &Monsterball_info.pos, Monsterball_info.room, nullptr, false);
 
   if (SCORE_DRAGIN == 1)
     DLLAddHUDMessage(TXT_SCOREONE, DMFCBase->GetTeamString(dPlayers[player_num].team));
@@ -1050,7 +1054,7 @@ void OnClientLevelStart(void) {
     if (pr)
       stat = (tPlayerStat *)pr->user_info;
     else
-      stat = NULL;
+      stat = nullptr;
     if (stat) {
       stat->Score[DSTAT_LEVEL] = 0;
       stat->BadScore[DSTAT_LEVEL] = 0;
@@ -1063,15 +1067,15 @@ void OnClientLevelStart(void) {
   }
   LastHitPnum = -1;
 
-  DLLMultiPaintGoalRooms(NULL);
+  DLLMultiPaintGoalRooms(nullptr);
 
-  DLLmprintf(0, "Getting Monsterball info\n");
+  LOG_INFO << "Getting Monsterball info";
   if (!GetMonsterballInfo(DLLFindObjectIDName(IGNORE_TABLE(MONSTERBALL_ID_NAME)))) {
     FatalError("Error finding Monsterball room\n");
   }
 
   if (DMFCBase->GetLocalRole() == LR_SERVER) {
-    int objnum = DLLObjCreate(OBJ_ROBOT, Monsterball_info.id, Monsterball_info.room, &Monsterball_info.pos, NULL,
+    int objnum = DLLObjCreate(OBJ_ROBOT, Monsterball_info.id, Monsterball_info.room, &Monsterball_info.pos, nullptr,
                               OBJECT_HANDLE_NONE);
     if (objnum == -1)
       FatalError("Unable to create Monsterball");
@@ -1429,11 +1433,11 @@ void OnPrintScores(int level) {
   }
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf(0, "Unable to open output file\n");
+    LOG_WARNING << "Unable to open output file";
     return;
   }
 
@@ -1671,7 +1675,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
 
   uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)255);
 
-  if (!ValidateOwner(&p, NULL)) {
+  if (!ValidateOwner(&p, nullptr)) {
     p = -1;
   }
 
@@ -1710,7 +1714,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
         DLLrend_SetLighting(LS_NONE);
         DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
         DLLrend_DrawScaledBitmap(name_x - 2, y - 2, score_x + score_width + 2, y + height - 1, Highlight_bmp, 0, 0, 1,
-                                 1, 1.0, -1, NULL);
+                                 1, 1.0, -1, nullptr);
         DLLrend_SetZBufferState(1);
       }
 
@@ -1774,7 +1778,7 @@ void GetGameStartPacket(uint8_t *data) {
   NumOfTeams = temp;
 
   // we need to find the objnum of the Monsterball...it is there somewhere
-  DLLmprintf(0, "Looking for Monsterball in level\n");
+  LOG_INFO << "Looking for Monsterball in level";
   int objnum = -1;
 
   for (i = 0; i < MAX_OBJECTS; i++) {
@@ -1784,7 +1788,7 @@ void GetGameStartPacket(uint8_t *data) {
       break;
     }
   }
-  DLLmprintf(0, "Monsterball %s\n", (objnum == -1) ? "Not Found" : "Found");
+  LOG_INFO.printf("Monsterball %s", (objnum == -1) ? "Not Found" : "Found");
   if (objnum == -1) {
     FatalError("Couldn't Find Monsterball when it should be there");
   }
@@ -1807,7 +1811,7 @@ void SendGameStartPacket(int pnum) {
   int p;
 
   // who has the Monsterball if anyone
-  if (ValidateOwner(&p, NULL)) {
+  if (ValidateOwner(&p, nullptr)) {
     temp = p;
   } else {
     temp = -1;
@@ -1819,7 +1823,7 @@ void SendGameStartPacket(int pnum) {
   MultiAddByte(temp, data, &count);
 
   // we're done
-  DLLmprintf(0, "Sending Game State to %s\n", dPlayers[pnum].callsign);
+  LOG_INFO.printf("Sending Game State to %s", dPlayers[pnum].callsign);
   DMFCBase->SendPacket(data, count, pnum);
 }
 
@@ -1918,18 +1922,18 @@ void HandleMonsterballCollideWithWeapon(object *ball, weapon_collide_info *winfo
 
 void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos, matrix *orient, float mass, float size,
                  vector *collision_point, vector *collision_normal, float rot_scalar, float vel_scalar) {
-  ASSERT(std::isfinite(rotvel->x));
-  ASSERT(std::isfinite(rotvel->y));
-  ASSERT(std::isfinite(rotvel->z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(velocity->x));
-  ASSERT(std::isfinite(velocity->y));
-  ASSERT(std::isfinite(velocity->z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z));
+  ASSERT(std::isfinite(rotvel->x()));
+  ASSERT(std::isfinite(rotvel->y()));
+  ASSERT(std::isfinite(rotvel->z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(velocity->x()));
+  ASSERT(std::isfinite(velocity->y()));
+  ASSERT(std::isfinite(velocity->z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z()));
 
   vector r1 = *collision_point - object0->pos;
   vector r2 = *collision_point - (*pos);
@@ -1960,17 +1964,17 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
   if (temp1 != 0.0f) {
     DLLvm_CrossProduct(&w1, &n1, &r1);
   } else {
-    w1.x = 0;
-    w1.y = 0;
-    w1.z = 0;
+    w1.x() = 0;
+    w1.y() = 0;
+    w1.z() = 0;
   }
 
   if (temp2 != 0.0f) {
     DLLvm_CrossProduct(&w2, &n2, &r2);
   } else {
-    w2.x = 0;
-    w2.y = 0;
-    w2.z = 0;
+    w2.x() = 0;
+    w2.y() = 0;
+    w2.z() = 0;
   }
 
   vector p1 = object0->mtype.phys_info.velocity + w1;
@@ -1982,7 +1986,7 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
 
   ASSERT(m1 != 0.0f && m2 != 0.0f);
 
-  v_rel = *collision_normal * (p1 - p2);
+  v_rel = vm_Dot3Product(*collision_normal, (p1 - p2));
 
   float e;
   e = vel_scalar;
@@ -2011,8 +2015,8 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
   DLLvm_CrossProduct(&cc1, &c1, &r1);
   DLLvm_CrossProduct(&cc2, &c2, &r2);
 
-  cv1 = (*collision_normal) * c1;
-  cv2 = (*collision_normal) * c2;
+  cv1 = vm_Dot3Product(*collision_normal, c1);
+  cv2 = vm_Dot3Product(*collision_normal, c2);
 
   j = (-(1.0f + e)) * v_rel;
   j /= (1 / m1 + 1 / m2 + cv1 + cv2);
@@ -2049,12 +2053,12 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
   // change the player's rotational velocity
   object0->mtype.phys_info.rotvel += (txx1 * object0->orient) * rotscale1;
 
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y));
-  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y()));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z()));
 }
 
 bool ValidateOwner(int *pnum, object **obj) {
@@ -2099,9 +2103,9 @@ void DoMonsterballScoreEffect(void) {
   i_room = Monsterball_info.room;
 
   //////////////////////////////////////
-  float lifetime = 4.0f;
-  float thickness = 17.5f;
-  float slidetime = 0.3f;
+  scalar lifetime = 4.0f;
+  scalar thickness = 17.5f;
+  scalar slidetime = 0.3f;
   uint16_t color = GR_RGB16(30, 255, 30);
   int numtiles = 1;
   bool autotile = true;
@@ -2122,11 +2126,11 @@ void DoMonsterballScoreEffect(void) {
     fq.rad = 3.0f;
     fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
     fq.thisobjnum = Monsterball - dObjects;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
 
     // find top of room
     check_pos = (doing_start) ? m_pos : i_pos;
-    check_pos.y *= 50000;
+    check_pos.y() *= 50000;
     hit_type = DLLfvi_FindIntersection(&fq, &hit_data, false);
 
     if (hit_type == HIT_NONE)
@@ -2136,7 +2140,7 @@ void DoMonsterballScoreEffect(void) {
     start_pos = hit_data.hit_pnt;
 
     check_pos = (doing_start) ? m_pos : i_pos;
-    check_pos.y *= -50000;
+    check_pos.y() *= -50000;
     hit_type = DLLfvi_FindIntersection(&fq, &hit_data, false);
 
     if (hit_type == HIT_NONE)
@@ -2157,9 +2161,7 @@ void DoMonsterballScoreEffect(void) {
       vis->lighting_color = color;
       vis->billboard_info.width = thickness;
       vis->billboard_info.texture = autotile;
-      vis->velocity.x = sat_count;
-      vis->velocity.y = slidetime;
-      vis->velocity.z = numtiles;
+      vis->velocity = { (scalar)sat_count, (scalar)slidetime, (scalar)numtiles };
 
       vis->flags = VF_USES_LIFELEFT | VF_WINDSHIELD_EFFECT | VF_LINK_TO_VIEWER | VF_EXPAND;
       vis->size = DLLvm_VectorDistanceQuick(&vis->pos, &vis->end_pos);

@@ -184,7 +184,7 @@ void SaveRoomSelectedList() {
 
   Save_selected_rooms = (int *)mem_malloc(N_save_selected_rooms * sizeof(*Save_selected_rooms));
 
-  ASSERT(Save_selected_rooms != NULL);
+  ASSERT(Save_selected_rooms != nullptr);
 
   for (i = 0; i < N_selected_rooms; i++)
     Save_selected_rooms[i] = Selected_rooms[i];

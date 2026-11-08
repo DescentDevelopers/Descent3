@@ -168,9 +168,9 @@ int LoadGameState(const std::filesystem::path &pathname);
 
 #define gs_WriteVector(_f, _v)                                                                                         \
   do {                                                                                                                 \
-    cf_WriteFloat((_f), (_v).x);                                                                                       \
-    cf_WriteFloat((_f), (_v).y);                                                                                       \
-    cf_WriteFloat((_f), (_v).z);                                                                                       \
+    cf_WriteFloat((_f), (_v).x());                                                                                       \
+    cf_WriteFloat((_f), (_v).y());                                                                                       \
+    cf_WriteFloat((_f), (_v).z());                                                                                       \
   } while (0)
 #define gs_WriteMatrix(_f, _m)                                                                                         \
   do {                                                                                                                 \
@@ -190,9 +190,9 @@ int LoadGameState(const std::filesystem::path &pathname);
 
 #define gs_ReadVector(_f, _v)                                                                                          \
   do {                                                                                                                 \
-    (_v).x = cf_ReadFloat(_f);                                                                                         \
-    (_v).y = cf_ReadFloat(_f);                                                                                         \
-    (_v).z = cf_ReadFloat(_f);                                                                                         \
+    (_v).x() = cf_ReadFloat(_f);                                                                                         \
+    (_v).y() = cf_ReadFloat(_f);                                                                                         \
+    (_v).z() = cf_ReadFloat(_f);                                                                                         \
   } while (0)
 #define gs_ReadMatrix(_f, _m)                                                                                          \
   do {                                                                                                                 \
@@ -275,7 +275,7 @@ bool GetGameStateInfo(const std::filesystem::path &pathname, char *description, 
 int LGSXlateTables(CFILE *fp);
 
 //	loads in level's mission and level.
-int LGSMission(const char *msnname, int level);
+int LGSMission(const std::filesystem::path &msnname, int level);
 
 //	initializes rooms
 int LGSRooms(CFILE *fp);

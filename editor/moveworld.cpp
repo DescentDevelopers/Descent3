@@ -88,17 +88,17 @@ void GetMouseRotation(int idx, int idy, matrix *RotMat) {
   dxdr = dx / dr;
   dydr = dy / dr;
 
-  RotMat->rvec.x = cos_theta + ((dydr * dydr) * cos_theta1);
-  RotMat->uvec.x = -((dxdr * dydr) * cos_theta1);
-  RotMat->fvec.x = (dxdr * sin_theta);
+  RotMat->rvec.x() = cos_theta + ((dydr * dydr) * cos_theta1);
+  RotMat->uvec.x() = -((dxdr * dydr) * cos_theta1);
+  RotMat->fvec.x() = (dxdr * sin_theta);
 
-  RotMat->rvec.y = RotMat->uvec.x;
-  RotMat->uvec.y = cos_theta + ((dxdr * dxdr) * cos_theta1);
-  RotMat->fvec.y = (dydr * sin_theta);
+  RotMat->rvec.y() = RotMat->uvec.x();
+  RotMat->uvec.y() = cos_theta + ((dxdr * dxdr) * cos_theta1);
+  RotMat->fvec.y() = (dydr * sin_theta);
 
-  RotMat->rvec.z = -RotMat->fvec.x;
-  RotMat->uvec.z = -RotMat->fvec.y;
-  RotMat->fvec.z = cos_theta;
+  RotMat->rvec.z() = -RotMat->fvec.x();
+  RotMat->uvec.z() = -RotMat->fvec.y();
+  RotMat->fvec.z() = cos_theta;
 }
 
 // Variables for current view position and orientation
@@ -112,9 +112,9 @@ wireframe_view Wireframe_view_room = {IDENTITY_MATRIX, {0, 0, 0}, DEFAULT_VIEW_D
 // The current wireframe view
 wireframe_view *Wireframe_view = &Wireframe_view_mine;
 
-#define MOVE_SCALE 3.0
-#define ZOOM_SCALE 10.0
-#define RAD_SCALE 10.0
+#define MOVE_SCALE (scalar)3.0
+#define ZOOM_SCALE (scalar)10.0
+#define RAD_SCALE (scalar)10.0
 
 // Read the mouse and move the wireframe view
 void MoveWorld() {

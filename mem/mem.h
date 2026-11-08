@@ -74,6 +74,8 @@
 #ifndef MEM_H
 #define MEM_H
 #include <cstdlib>
+#include <cstring>
+#include <memory>
 #include <type_traits>
 
 // Memory management debugging
@@ -136,6 +138,17 @@ template<typename T> static inline T *mem_rmalloc(std::size_t nelem)
 {
   static_assert(std::is_trivially_constructible_v<T> && std::is_trivially_destructible_v<T>);
   return static_cast<T *>(mem_malloc(nelem * sizeof(T)));
+}
+
+// duplicates a string into an owned buffer; a null source yields a null pointer
+static inline std::unique_ptr<char[]> mem_strdup_unique(const char *src) {
+  if (!src) {
+    return nullptr;
+  }
+  std::size_t len = std::strlen(src) + 1;
+  auto dest = std::make_unique<char[]>(len);
+  std::memcpy(dest.get(), src, len);
+  return dest;
 }
 
 #endif
