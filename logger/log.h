@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <plog/Log.h>   // This is interface header for chosen logger library. Currently, this is plog.
 #include <plog/Init.h>  // Required for modules.
 
@@ -36,7 +37,7 @@ In case of swapping to another solution here should be redefined following macro
 /**
  * Initialize logger facility.
  * @param log_level desired log level (for example, plog::debug)
- * @param enable_filelog enable logging into Descent.log
+ * @param log_file file to log into, replacing any previous log; empty path disables logging into a file
  * @param enable_win_console enable console windows for WIN32 (no-op for POSIX systems)
  */
-void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_console);
+void InitLog(plog::Severity log_level, const std::filesystem::path &log_file, bool enable_win_console);

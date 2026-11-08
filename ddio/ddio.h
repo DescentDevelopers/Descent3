@@ -404,6 +404,16 @@ std::filesystem::path ddio_GetPrefPath(const char *org, const char *app);
 std::filesystem::path ddio_GetConfigPath(const char *org, const char *app);
 
 /**
+ * Gets the directory for state files such as logs, creating it if needed.
+ * Example directories, in order of use:
+ *   - $XDG_STATE_HOME/descent3 (Linux)
+ *   - /home/user/.local/state/descent3 (Linux)
+ *   - the current working directory
+ * @return directory where state files can be written, empty path on error
+ */
+std::filesystem::path ddio_GetStatePath();
+
+/**
  * Creates a directory and any missing parent directories. Use this for every directory the game creates.
  * Each newly created directory gets the given permissions, which default to owner-only (mode 0700, as the XDG Base
  * Directory spec asks for); directories that already exist are left unchanged.

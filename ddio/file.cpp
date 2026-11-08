@@ -292,6 +292,17 @@ std::filesystem::path ddio_GetConfigPath(const char *org, const char *app) {
   return ddio_GetPrefPath(org, app);
 }
 
+std::filesystem::path ddio_GetStatePath() {
+#if defined(__LINUX__)
+  std::filesystem::path state_home = GetXDGUserDir("XDG_STATE_HOME", ".local/state");
+  if (!state_home.empty() && ddio_CreateDirectories(state_home / D3_SUBDIR)) {
+    return state_home / D3_SUBDIR;
+  }
+#endif
+  std::error_code ec;
+  return std::filesystem::current_path(ec);
+}
+
 std::filesystem::path ddio_GetTempPath() {
 #if defined(__LINUX__)
   std::filesystem::path cache_home = GetXDGUserDir("XDG_CACHE_HOME", ".cache");

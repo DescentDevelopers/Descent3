@@ -250,4 +250,26 @@ TEST_F(DDIO_XDG, ConfigPathFallsBackToPrefPath) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
   EXPECT_EQ(ddio_GetConfigPath("org", "app"), base_ / "data" / "org" / "app");
 }
+
+TEST_F(DDIO_XDG, StatePathUsesXDGStateHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_STATE_HOME", (base_ / "state").c_str(), true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", (base_ / "home").c_str(), true);
+  std::filesystem::path expected = base_ / "state" / "descent3";
+  EXPECT_EQ(ddio_GetStatePath(), expected);
+  EXPECT_TRUE(std::filesystem::is_directory(expected));
+  EXPECT_EQ(std::filesystem::status(expected).permissions(), std::filesystem::perms::owner_all);
+}
+
+TEST_F(DDIO_XDG, StatePathFallsBackToHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_STATE_HOME", "relative/state", true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", base_.c_str(), true);
+  EXPECT_EQ(ddio_GetStatePath(), base_ / ".local" / "state" / "descent3");
+}
+
+TEST_F(DDIO_XDG, StatePathFallsBackToWorkingDirectory) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", "", true);
+  EXPECT_EQ(ddio_GetStatePath(), std::filesystem::current_path());
+}
+#else
+TEST(D3, DDIO_GetStatePathIsWorkingDirectory) { EXPECT_EQ(ddio_GetStatePath(), std::filesystem::current_path()); }
 #endif
