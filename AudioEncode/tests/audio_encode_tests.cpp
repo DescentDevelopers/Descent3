@@ -111,6 +111,14 @@ TEST_F(AudioEncodeTest, SilenceDecodesToExactSilence) {
   EXPECT_TRUE(std::all_of(dec.pcm.begin(), dec.pcm.end(), [](int16_t s) { return s == 0; }));
 }
 
+TEST_F(AudioEncodeTest, HalfScaleToneAtLowCompressionRoundTrips) {
+  const auto pcm = MakeTone(8192, 440.0, 22050.0, 16000.0);
+  const Decoded dec = Decode(Encode(dir_ / "encoded.acm", pcm, 1, 22050, 7, 16, 0.5f));
+  ASSERT_TRUE(dec.ok);
+  ASSERT_EQ(dec.pcm.size(), pcm.size());
+  EXPECT_GT(SnrDb(pcm, dec.pcm), kMinToneSnrDb);
+}
+
 TEST_F(AudioEncodeTest, VolumeScalesTheEncodedSignal) {
   const auto pcm = MakeTone(4096, 440.0, 22050.0, 10000.0);
   std::vector<int16_t> half(pcm.size());
@@ -292,6 +300,20 @@ TEST_F(AudioEncodeTest, CompressTreatsFactorBelowOneAsReciprocal) {
   EXPECT_EQ(a, b);
   // Sanity check that the factor actually matters for this input.
   EXPECT_NE(a, c);
+}
+
+TEST_F(AudioEncodeTest, CompressRoundTripsSignedSamples) {
+  // The raw input file holds signed 16-bit little-endian PCM.
+  const auto pcm = MakeTone(5000, 440.0, 22050.0, 8000.0);
+  WriteRawPcm(dir_ / "in.raw", pcm);
+  const float volume = 1.0f;
+  ASSERT_TRUE(aenc_Compress((dir_ / "in.raw").string().c_str(), (dir_ / "out.acm").string().c_str(), nullptr, nullptr,
+                            nullptr, nullptr, nullptr, &volume));
+
+  const Decoded dec = Decode(d3_test::ReadFileBytes(dir_ / "out.acm"));
+  ASSERT_TRUE(dec.ok);
+  ASSERT_EQ(dec.pcm.size(), pcm.size());
+  EXPECT_GT(SnrDb(pcm, dec.pcm), kMinToneSnrDb);
 }
 
 } // namespace

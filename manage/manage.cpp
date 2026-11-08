@@ -1569,7 +1569,7 @@ void mng_TransferPages() {
   cfclose(infile);
   cfclose(outfile);
 
-  if (remove(TableLockFilename)) {
+  if (remove(PATH_TO_CSTR(TableLockFilename))) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     goto done;
   }

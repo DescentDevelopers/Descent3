@@ -53,5 +53,5 @@ bool NewBitmap::saveAsPNG(const char *filePath) {
   ASSERT(_format == PixelDataFormat::RGBA32);
 
   stbi_flip_vertically_on_write(_flippedY);
-  return stbi_write_png(filePath, _w, _h, getNumComponents(), _data.get(), getStride()) == 0;
+  return stbi_write_png(filePath, _w, _h, getNumComponents(), _data.get(), getStride()) != 0;
 }

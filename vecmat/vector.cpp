@@ -456,6 +456,10 @@ void vm_VectorAngleToMatrix(matrix *m, vector *v, angle a) {
   vm_SinCosToMatrix(m, sinp, cosp, sinb, cosb, sinh, cosh);
 }
 
+// Unit vectors at an angle whose sine is below this count as parallel. Their cross product is then too short for its
+// direction to be anything but rounding error.
+static constexpr scalar PARALLEL_SINE = 1e-3f;
+
 // Ensure that a matrix is orthogonal
 void vm_Orthogonalize(matrix *m) {
   // Normalize forward vector
@@ -467,8 +471,8 @@ void vm_Orthogonalize(matrix *m) {
   // Generate right vector from forward and up vectors
   m->rvec = vm_Cross3Product(m->uvec, m->fvec);
 
-  // Normaize new right vector
-  if (vm_NormalizeVector(&m->rvec) == 0) {
+  // Normaize new right vector. The up vector need not be normalized, so scale the parallel test by its length.
+  if (vm_NormalizeVector(&m->rvec) <= PARALLEL_SINE * vm_GetMagnitude(&m->uvec)) {
     vm_VectorToMatrix(m, &m->fvec, nullptr, nullptr); // error, so generate from forward vector only
     return;
   }
@@ -519,7 +523,7 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
       *yvec = vm_Cross3Product(*zvec, *xvec);
 
       // normalize new perpendicular vector
-      if (vm_NormalizeVector(yvec) == 0)
+      if (vm_NormalizeVector(yvec) < PARALLEL_SINE)
         goto bad_vector2;
 
       // now recompute right vector, in case it wasn't entirely perpendiclar
@@ -534,7 +538,7 @@ void DoVectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
     *xvec = vm_Cross3Product(*yvec, *zvec);
 
     // normalize new perpendicular vector
-    if (vm_NormalizeVector(xvec) == 0)
+    if (vm_NormalizeVector(xvec) < PARALLEL_SINE)
       goto bad_vector2;
 
     // now recompute up vector, in case it wasn't entirely perpendiclar

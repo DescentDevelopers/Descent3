@@ -29,8 +29,10 @@
 
 #include "networking.h"
 #include "chat_api.h"
+#include "d3_test/sockets.h"
 #include "support/chat_api_internals.h"
 #include "support/chat_test_helpers.h"
+#include "support/local_listener.h"
 #include "support/chat_module_fakes.h"
 
 using ::testing::Contains;
@@ -146,6 +148,13 @@ TEST_F(ChatApiTest, BeingKickedLeavesTheChannel) {
   EXPECT_EQ(SendChatString("anyone?"), nullptr);
 }
 
+TEST_F(ChatApiTest, KickingAnotherUserRemovesTheVictimNotTheKicker) {
+  Welcome("Pilot");
+  Names("@Op Victim Pilot");
+  Feed(":Op!op@host.example KICK #descent Victim :bye");
+  EXPECT_THAT(Users(), UnorderedElementsAre("Op", "Pilot"));
+}
+
 TEST_F(ChatApiTest, OtherUserNickChangeRenamesThemInTheList) {
   Welcome("Pilot");
   Names("Bob Pilot");
@@ -185,6 +194,16 @@ TEST_F(ChatApiTest, NickInUseRetriesWithDistinctVariantsOfTheOriginal) {
   EXPECT_NE(second, first);
 }
 
+TEST_F(ChatApiTest, NickInUseRetryNickHasNoSpaces) {
+  char nick[] = "Big Pilot";
+  char tid[] = "1234";
+  ASSERT_EQ(ConnectToChatServer("irc.invalid", 0, nick, tid), -1);
+  ASSERT_STREQ(Nick_name, "Big_Pilot");
+
+  Feed(":irc.test 433 * Big_Pilot :Nickname is already in use");
+  EXPECT_EQ(std::strchr(Nick_name, ' '), nullptr) << "retry nick: \"" << Nick_name << "\"";
+}
+
 TEST_F(ChatApiTest, BadNickDisconnects) {
   EXPECT_EQ(Str(Feed(":irc.test 432 * b@d :Erroneous nickname")), TEST_BAD_NICK);
   EXPECT_THAT(DrainCommands(), Contains(Pair(CC_DISCONNECTED, "")));
@@ -214,6 +233,34 @@ TEST_F(ChatApiTest, AutoselectReportsTheChannelTheServerPutUsIn) {
 
   EXPECT_EQ(SetNewChatChannel("#autoselect"), 1);
   EXPECT_THAT(DrainCommands(), Contains(Pair(CC_YOURCHANNEL, "#descent_2")));
+}
+
+TEST_F(ChatApiTest, RefusedJoinMakesSetNewChatChannelFail) {
+  for (const char *numeric : {"473", "474"}) {
+    SCOPED_TRACE(numeric);
+    ResetChat();
+    Welcome("Pilot");
+    ConnectedScope connected;
+    ASSERT_EQ(SetNewChatChannel("#private"), 0);
+
+    Feed(std::string(":irc.test ") + numeric + " Pilot #private :Cannot join channel");
+
+    EXPECT_EQ(SetNewChatChannel("#private"), -1);
+  }
+}
+
+TEST_F(ChatApiTest, FullOrKeyedChannelMakesSetNewChatChannelFail) {
+  for (const char *numeric : {"471", "475"}) {
+    SCOPED_TRACE(numeric);
+    ResetChat();
+    Welcome("Pilot");
+    ConnectedScope connected;
+    ASSERT_EQ(SetNewChatChannel("#private"), 0);
+
+    Feed(std::string(":irc.test ") + numeric + " Pilot #private :Cannot join channel");
+
+    EXPECT_EQ(SetNewChatChannel("#private"), -1);
+  }
 }
 
 TEST_F(ChatApiTest, ChannelMessageShowsSenderAndText) {
@@ -333,6 +380,19 @@ TEST_F(ChatApiTest, ChannelLookupCompletesForUserInNoChannel) {
   EXPECT_NE(result, kFailed) << "the user is online";
 }
 
+TEST_F(ChatApiTest, ChannelLookupForUserInNoChannelIgnoresThePreviousResult) {
+  Welcome("Pilot");
+  EXPECT_EQ(GetChannelByUser("Bob"), nullptr);
+  Feed(":irc.test 319 Pilot Bob :#lobby");
+  Feed(":irc.test 318 Pilot Bob :End of /WHOIS list.");
+  ASSERT_EQ(Str(GetChannelByUser("Bob")), "#lobby");
+
+  EXPECT_EQ(GetChannelByUser("Carol"), nullptr);
+  Feed(":irc.test 318 Pilot Carol :End of /WHOIS list.");
+
+  EXPECT_EQ(Str(GetChannelByUser("Carol")), "*");
+}
+
 TEST_F(ChatApiTest, ChannelLookupFailsForUnknownUser) {
   Welcome("Pilot");
   EXPECT_EQ(GetChannelByUser("Ghost"), nullptr);
@@ -370,6 +430,83 @@ TEST_F(ChatApiTest, TrackerIdLookupFailsForUnknownUser) {
   EXPECT_EQ(GetTrackerIdByUser("Ghost"), nullptr);
   Feed(":irc.test 401 Pilot Ghost :No such nick/channel");
   EXPECT_EQ(GetTrackerIdByUser("Ghost"), kFailed);
+}
+
+// ConnectToChatServer finds the server through the game's asynchronous name lookup (DLLnw_Asyncgethostbyname),
+// polling the UI while it waits, on every platform.
+class ChatConnectTest : public ChatApiTest {
+protected:
+  void SetUp() override {
+    ChatApiTest::SetUp();
+    d3_test::EnsureSockets();
+    InstallNameLookup(&lookup);
+  }
+  void TearDown() override {
+    if (Chatsock != INVALID_SOCKET)
+      CloseSocket(Chatsock);
+    InstallNameLookup(nullptr);
+    ChatApiTest::TearDown();
+  }
+
+  int Connect(const char *server, uint16_t port) {
+    char nick[] = "Pilot";
+    char tid[] = "1234";
+    return ConnectToChatServer(server, static_cast<int16_t>(port), nick, tid);
+  }
+
+  std::vector<int> Commands() const {
+    std::vector<int> commands;
+    for (const auto &call : lookup.calls)
+      commands.push_back(call.command);
+    return commands;
+  }
+
+  FakeNameLookup lookup;
+};
+
+TEST_F(ChatConnectTest, ConnectsToTheAddressTheLookupFound) {
+  LocalListener server;
+  ASSERT_TRUE(server.listening());
+  lookup.ip = htonl(INADDR_LOOPBACK);
+
+  EXPECT_EQ(Connect("irc.example", server.port()), 0);
+
+  ASSERT_FALSE(lookup.calls.empty());
+  EXPECT_EQ(lookup.calls[0].command, NW_AGHBN_LOOKUP);
+  EXPECT_EQ(lookup.calls[0].hostname, "irc.example");
+  EXPECT_EQ(Socket_connecting, 1);
+  EXPECT_TRUE(server.Accept(5000)) << "no connection reached the address the lookup found";
+}
+
+TEST_F(ChatConnectTest, PollsTheUiUntilTheLookupFinishes) {
+  LocalListener server;
+  ASSERT_TRUE(server.listening());
+  lookup.ip = htonl(INADDR_LOOPBACK);
+  lookup.pending_reads = 3;
+
+  Connect("irc.example", server.port());
+
+  EXPECT_THAT(Commands(), ElementsAre(NW_AGHBN_LOOKUP, NW_AGHBN_READ, NW_AGHBN_READ, NW_AGHBN_READ, NW_AGHBN_READ));
+  EXPECT_EQ(lookup.poll_ui_calls, 4);
+}
+
+TEST_F(ChatConnectTest, FailedLookupIsCancelledWithoutConnecting) {
+  lookup.result = -1;
+
+  Connect("irc.invalid", 6667);
+
+  EXPECT_THAT(Commands(), ElementsAre(NW_AGHBN_LOOKUP, NW_AGHBN_READ, NW_AGHBN_CANCEL));
+  EXPECT_EQ(Socket_connecting, 0);
+}
+
+TEST_F(ChatConnectTest, CancellingInTheUiStopsWaitingForTheLookup) {
+  lookup.pending_reads = 1000;
+  lookup.poll_ui_result = 99;
+
+  EXPECT_EQ(Connect("irc.example", 6667), 0);
+
+  EXPECT_EQ(lookup.poll_ui_calls, 1);
+  EXPECT_EQ(Socket_connecting, 0);
 }
 
 } // namespace

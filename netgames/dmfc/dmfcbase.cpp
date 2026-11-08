@@ -471,6 +471,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstdarg>
+#include <string>
 
 #include "gamedll_header.h"
 #include "DMFC.h"
@@ -2197,46 +2198,38 @@ void DMFCBase::ClipString(int width, char *string, bool arrow) {
   if (!string)
     return;
 
-  // float ratio = DEFAULT_HUD_WIDTH / ((float)*Game_window_w);
-
-  int string_length = strlen(string);
-  char arrow_string[2];
-  int arrow_length = 0;
-  snprintf(arrow_string, sizeof(arrow_string), "%c", CHAR_RIGHT_ARROW);
-  if (arrow) {
-    // arrow_length = ratio * ((float)DLLRenderHUDGetTextLineWidth(arrow_string));
-    arrow_length = DLLgrtext_GetTextLineWidth(arrow_string);
+  if (DLLgrtext_GetTextLineWidth(string) <= width) {
+    // The string doesn't need to be clipped
+    return;
   }
 
-  if (width < arrow_length) {
+  int string_length = strlen(string);
+  const char arrow_string[2] = {CHAR_RIGHT_ARROW, '\0'};
+
+  if (arrow && DLLgrtext_GetTextLineWidth(arrow_string) > width) {
     // Nothing can fit
     strcpy(string, "");
     return;
   }
 
-  // adjust width based on the arrow
-  width -= arrow_length;
-
+  // Keep the longest prefix that fits, measured together with the arrow when there is one.
+  // The whole string doesn't fit, so this stops before the last character.
+  std::string candidate;
   int size = 0;
-  char save = string[0];
   while (size < string_length) {
-    string[size] = '\0';
-    // if((((float)DLLRenderHUDGetTextLineWidth(string))*ratio)>=width){
-    if (DLLgrtext_GetTextLineWidth(string) >= width) {
-      // We have to clip
-      size--;
-      if (arrow) {
-        string[size] = CHAR_RIGHT_ARROW;
-        string[size + 1] = '\0';
-      }
-      return;
-    }
-    // replace the char and move to the next
-    string[size] = save;
+    candidate.assign(string, size + 1);
+    if (arrow)
+      candidate += CHAR_RIGHT_ARROW;
+    if (DLLgrtext_GetTextLineWidth(candidate.c_str()) > width)
+      break;
     size++;
-    save = string[size];
   }
-  // The string didn't need to be clipped
+  if (arrow) {
+    string[size] = CHAR_RIGHT_ARROW;
+    string[size + 1] = '\0';
+  } else {
+    string[size] = '\0';
+  }
 }
 
 // DMFCBase::ConvertHUDAlpha

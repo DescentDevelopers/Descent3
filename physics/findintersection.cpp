@@ -1375,7 +1375,7 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
       valid_t[2] = 1;
       valid_hit = 1;
       // mprintf(0, "Sphere %f,%f,%f to %f,%f, %f\n", XYZ(p0), XYZ(p1));
-      d_vec = *ep1 - ivertex[2];
+      d_vec = *ep0 - ivertex[2];
       vm_NormalizeVector(&d_vec);
       inte[2] = ivertex[2] + rad * (d_vec);
     } else {

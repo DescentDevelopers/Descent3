@@ -468,7 +468,8 @@ int ZIP::ReadZipData(zipentry *ent, char *data) {
   if (err != 0)
     return -2;
 
-  if (fread(data, ent->compressed_size, 1, m_fp) != 1) {
+  // fread() returns 0 for a zero-length read, so an empty entry has nothing to read.
+  if (ent->compressed_size > 0 && fread(data, ent->compressed_size, 1, m_fp) != 1) {
     return -2;
   }
 
@@ -649,6 +650,8 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
 
     err = inflate(&d_stream, Z_NO_FLUSH);
     if (err == Z_STREAM_END) {
+      // The stream can end without producing output in this call (an empty member, or the
+      // end-of-block marker arriving in the final input chunk), so stop either way.
       if (d_stream.total_out > last_out) {
         int res, to_write = (d_stream.total_out - last_out);
         res = fwrite(next_out, to_write, 1, file);
@@ -657,8 +660,8 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
           free(in_buffer);
           return -2;
         }
-        break;
       }
+      break;
     }
     if (err != Z_OK) {
       free(in_buffer);

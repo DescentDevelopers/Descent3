@@ -189,8 +189,10 @@ inline FONTFILE OPEN_FONT(const char *filename) {
     return nullptr;
 
   file_id = READ_FONT_INT(fp);
-  if (file_id != 0xfeedbaba)
+  if (file_id != 0xfeedbaba) {
+    cfclose(fp);
     return (FONTFILE)(-1);
+  }
 
   return fp;
 }
@@ -296,7 +298,7 @@ int grfont_Load(const char *fname) {
   ff = OPEN_FONT(fname);
   if (!ff) {
     return false;
-  } else if (ff == (FONTFILE)0xffffffff) {
+  } else if (ff == (FONTFILE)(-1)) {
     LOG_ERROR.printf("Illegal font file: %s.\n", fname);
     return false;
   }
@@ -463,7 +465,7 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
   ff = OPEN_FONT(fname);
   if (!ff) {
     Error("Unable to open font %s.\n", fname);
-  } else if (ff == (FONTFILE)0xffffffff) {
+  } else if (ff == (FONTFILE)(-1)) {
     Error("Illegal font file: %s.\n", fname);
   }
 
@@ -552,7 +554,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   ffin = OPEN_FONT(pathname);
   if (!ffin) {
     return false;
-  } else if (ffin == (FONTFILE)0xffffffff) {
+  } else if (ffin == (FONTFILE)(-1)) {
     LOG_ERROR.printf("Illegal font file %s\n", pathname);
     return false;
   }

@@ -17,6 +17,7 @@ target_link_libraries(networking PRIVATE
   logger
   mem
   module
+  SDL3::SDL3
   ${PLATFORM_LIBS}
 )
 

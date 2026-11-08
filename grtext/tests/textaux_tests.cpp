@@ -84,6 +84,12 @@ TEST_F(TextauxTest, WordWrapPutsOverlongWordOnItsOwnLineUnbroken) {
   EXPECT_EQ(Wrap("supercalifragilistic", 52, font_), "supercalifragilistic");
 }
 
+TEST_F(TextauxTest, WordWrapOfEmptyTextIsEmpty) {
+  char dest[16] = "stale contents";
+  textaux_WordWrap("", dest, 100, font_);
+  EXPECT_STREQ(dest, "");
+}
+
 TEST_F(TextauxTest, CopyTextLineWalksLinesIncludingEmptyOnes) {
   const char *text = "alpha\nbeta\n\ngamma";
   std::vector<std::string> lines;
@@ -125,6 +131,18 @@ TEST_F(TextauxTest, ClipStringLeavesStringThatExactlyFitsUnchanged) {
   EXPECT_STREQ(t, "ABCD");
 }
 
+TEST_F(TextauxTest, ClipStringWithEndCharNeverExceedsTheWidth) {
+  for (int width = 4; width < 44; width++) {
+    char s[] = "ABCDEFGH";
+    textaux_ClipString(width, s, 1.0f, '>');
+    EXPECT_LE(grtext_GetTextLineWidth(s), width) << "width " << width << ": \"" << s << '"';
+  }
+
+  char exact[] = "ABCDEFGH";
+  textaux_ClipString(29, exact, 1.0f, '>');
+  EXPECT_STREQ(exact, "ABCDE>");
+}
+
 TEST_F(TextauxTest, ClipStringWithEndCharKeepsLongestPrefixThatFitsWithMarker) {
   char s[] = "ABCDEFGH";
   textaux_ClipString(32, s, 1.0f, '>');
@@ -132,3 +150,24 @@ TEST_F(TextauxTest, ClipStringWithEndCharKeepsLongestPrefixThatFitsWithMarker) {
   EXPECT_LE(grtext_GetTextLineWidth(s), 32);
 }
 
+TEST_F(TextauxTest, ClipStringWithoutEndCharFitsWithinWidth) {
+  char s[] = "ABCDEFGH";
+  textaux_ClipString(22, s); // "ABCD" is 19 pixels, "ABCDE" is 24
+  EXPECT_LE(grtext_GetTextLineWidth(s), 22) << '"' << s << '"';
+  EXPECT_STREQ(s, "ABCD");
+}
+
+TEST_F(TextauxTest, ClipStringClipsWhenOnlyTheLastCharacterOverflows) {
+  char s[] = "ABCDE"; // 24 pixels; "ABCD" is 19
+  textaux_ClipString(22, s);
+  EXPECT_LE(grtext_GetTextLineWidth(s), 22) << '"' << s << '"';
+  EXPECT_STREQ(s, "ABCD");
+}
+
+TEST_F(TextauxTest, ClipStringNeverWritesBeforeTheString) {
+  char buf[] = "#ABCDEF";
+  char *s = buf + 1;
+  textaux_ClipString(grtext_GetTextLineWidth(">"), s, 1.0f, '>');
+  EXPECT_EQ(buf[0], '#');
+  EXPECT_LE(grtext_GetTextLineWidth(s), grtext_GetTextLineWidth(">"));
+}

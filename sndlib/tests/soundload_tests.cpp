@@ -119,4 +119,24 @@ TEST(ChangeSoundFileName, ReplacesExtensionWithWav) {
   EXPECT_STREQ(dest, "Explosion.wav");
 }
 
+TEST(ChangeSoundFileName, LongNamesAreTerminatedAndFitInAPageName) {
+  const int limit = PAGENAME_LEN - 5;
+  for (int len : {limit, limit + 10}) {
+    SCOPED_TRACE("base name length " + std::to_string(len));
+    const std::string base(len, 'n');
+
+    char dest[256];
+    memset(dest, 'X', sizeof(dest));
+    dest[128] = '\0';
+    ChangeSoundFileName((base + ".wav").c_str(), dest);
+
+    const std::string result(dest);
+    EXPECT_LT(result.size(), static_cast<size_t>(PAGENAME_LEN));
+    ASSERT_GE(result.size(), 4u);
+    EXPECT_EQ(result.substr(result.size() - 4), ".wav");
+    if (len == limit) // fits exactly
+      EXPECT_EQ(result, base + ".wav");
+  }
+}
+
 } // namespace

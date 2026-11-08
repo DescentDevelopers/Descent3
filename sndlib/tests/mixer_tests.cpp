@@ -166,6 +166,13 @@ TEST_F(MixerTest, LoopingContinuesAcrossMixCalls) {
   ExpectFrames(chunked, Mono({10, 20, 30, 10, 20, 30, 10}));
 }
 
+TEST_F(MixerTest, LoopingBufferEndingExactlyOnLoopEndResumesAtLoopStart) {
+  std::vector<int16_t> data = {10, 20, 30, 40, 50};
+  Play16(cache_, 0, data, 1.0f, 1.0f, /*looping=*/true, /*loop_start=*/1, /*loop_end=*/3);
+  ExpectFrames(Mix(mixer_, 4), Mono({10, 20, 30, 40}));
+  ExpectFrames(Mix(mixer_, 6), Mono({20, 30, 40, 20, 30, 40}));
+}
+
 TEST_F(MixerTest, LoopReleasedMidPlaybackFinishesTheSampleThenStops) {
   // SKT_STOP_AFTER_LOOP is implemented by clearing SSF_PLAY_LOOPING and setting
   // SSF_PLAY_NORMAL.

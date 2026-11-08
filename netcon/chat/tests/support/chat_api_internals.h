@@ -24,6 +24,8 @@
 
 // The chat server socket.
 extern SOCKET Chatsock;
+// Nonzero once ConnectToChatServer has started connecting the socket.
+extern int Socket_connecting;
 // Nonzero once the socket is connected; most of the public API refuses to work without it.
 extern int Socket_connected;
 // Nonzero once the server has confirmed our nickname.

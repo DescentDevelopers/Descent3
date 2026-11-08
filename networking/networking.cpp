@@ -1316,37 +1316,39 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
                                  INTEL_FLOAT(rcv_buff.send_time));
               // We will change this as a hack to prevent later code from hooking us up
               rcv_buff.type = 0xff;
-              continue;
+              break;
             }
         }
-        for (i = 1; i < MAXRELIABLESOCKETS; i++) {
-          if (reliable_sockets[i].status == RNF_UNUSED) {
-            // Add the new connection here.
-            reliable_sockets[i].connection_type = link_type;
-            memcpy(&reliable_sockets[i].net_addr, naddr, sizeof(network_address));
-            memcpy(&reliable_sockets[i].addr, &rcv_addr, sizeof(SOCKADDR));
-            reliable_sockets[i].ping_pos = 0;
-            reliable_sockets[i].num_ping_samples = 0;
-            reliable_sockets[i].status = RNF_LIMBO;
-            reliable_sockets[i].last_packet_received = timer_GetTime();
-            reliable_sockets[i].last_sent = timer_GetTime();
-            reliable_sockets[i].waiting_packet_number = -1;
-            reliable_sockets[i].send_urgent = 0;
+        if (rcv_buff.type == RNT_REQ_CONN) {
+          for (i = 1; i < MAXRELIABLESOCKETS; i++) {
+            if (reliable_sockets[i].status == RNF_UNUSED) {
+              // Add the new connection here.
+              reliable_sockets[i].connection_type = link_type;
+              memcpy(&reliable_sockets[i].net_addr, naddr, sizeof(network_address));
+              memcpy(&reliable_sockets[i].addr, &rcv_addr, sizeof(SOCKADDR));
+              reliable_sockets[i].ping_pos = 0;
+              reliable_sockets[i].num_ping_samples = 0;
+              reliable_sockets[i].status = RNF_LIMBO;
+              reliable_sockets[i].last_packet_received = timer_GetTime();
+              reliable_sockets[i].last_sent = timer_GetTime();
+              reliable_sockets[i].waiting_packet_number = -1;
+              reliable_sockets[i].send_urgent = 0;
 
-            rsocket = &reliable_sockets[i];
-            rcvaddr = (SOCKADDR_IN *)&rcv_addr;
-            // Int3();
-            LOG_DEBUG.printf("Connect from %s:%d", inet_ntoa(rcvaddr->sin_addr), htons(rcvaddr->sin_port));
-            break;
+              rsocket = &reliable_sockets[i];
+              rcvaddr = (SOCKADDR_IN *)&rcv_addr;
+              // Int3();
+              LOG_DEBUG.printf("Connect from %s:%d", inet_ntoa(rcvaddr->sin_addr), htons(rcvaddr->sin_port));
+              break;
+            }
           }
+          if (i == MAXRELIABLESOCKETS) {
+            // No more connections!
+            LOG_WARNING << "Out of incoming reliable connection sockets";
+            // Int3();//See Kevin
+            continue;
+          }
+          nw_SendReliableAck(&rsocket->addr, INTEL_SHORT(rcv_buff.seq), link_type, INTEL_FLOAT(rcv_buff.send_time));
         }
-        if (i == MAXRELIABLESOCKETS) {
-          // No more connections!
-          LOG_WARNING << "Out of incoming reliable connection sockets";
-          // Int3();//See Kevin
-          continue;
-        }
-        nw_SendReliableAck(&rsocket->addr, INTEL_SHORT(rcv_buff.seq), link_type, INTEL_FLOAT(rcv_buff.send_time));
       }
 
       // Find out if this is a packet from someone we were expecting a packet.
@@ -1446,12 +1448,10 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
       }
       if (rcv_buff.type == RNT_DATA) {
 
+        // How far seq is ahead of (or, if negative, behind) the next sequence we expect, across the 16-bit wrap
+        int seqdelta = static_cast<int16_t>(INTEL_SHORT(rcv_buff.seq) - rsocket->oursequence);
         // If the data is out of order by >= MAXNETBUFFERS-1 ignore that packet for now
-        int seqdelta;
-        seqdelta = INTEL_SHORT(rcv_buff.seq) - rsocket->oursequence;
-        if (seqdelta < 0)
-          seqdelta = seqdelta * -1;
-        if (seqdelta >= MAXNETBUFFERS - 1) {
+        if (seqdelta >= MAXNETBUFFERS - 1 || seqdelta <= -(MAXNETBUFFERS - 1)) {
           LOG_WARNING << "Received reliable packet out of order!";
           // It's out of order, so we won't ack it, which will mean we will get it again soon.
           continue;
@@ -1459,18 +1459,9 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
         // else move data into the proper buffer position
         int savepacket = 1;
 
-        if (rsocket->oursequence < (0xffff - (MAXNETBUFFERS - 1))) {
-          if (rsocket->oursequence > INTEL_SHORT(rcv_buff.seq)) {
-            LOG_WARNING.printf("Received old packet with seq of %d", INTEL_SHORT(rcv_buff.seq));
-            savepacket = 0;
-          }
-
-        } else {
-          // Sequence is high, so prepare for wrap around
-          if (((uint16_t)(INTEL_SHORT(rcv_buff.seq) + rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
-            LOG_WARNING.printf("Received old packet with seq of %d", INTEL_SHORT(rcv_buff.seq));
-            savepacket = 0;
-          }
+        if (seqdelta < 0) {
+          LOG_WARNING.printf("Received old packet with seq of %d", INTEL_SHORT(rcv_buff.seq));
+          savepacket = 0;
         }
 
         for (i = 0; i < MAXNETBUFFERS; i++) {
@@ -1839,6 +1830,11 @@ void nw_psnet_buffer_packet(uint8_t *data, int length, network_address *from) {
   int idx;
   int found_buf = 0;
 
+  if (length > MAX_PACKET_SIZE) {
+    LOG_WARNING.printf("WARNING - Dropping %d byte packet in psnet (max %d)", length, MAX_PACKET_SIZE);
+    return;
+  }
+
   // find the first empty packet
   for (idx = 0; idx < MAX_PACKET_BUFFERS; idx++) {
     if (Psnet_buffers[idx].sequence_number == -1) {
@@ -2042,20 +2038,23 @@ uint32_t psnet_ras_status() {
 }
 #endif
 
-static async_dns_lookup aslu;
-static async_dns_lookup *lastaslu = nullptr;
-
-#ifdef WIN32
-#define CDECLCALL __cdecl
-#else
-#define CDECLCALL
-#endif
-
-#if defined(POSIX)
-int CDECLCALL gethostbynameworker(void *parm);
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_thread.h>
 
+// Every lookup uses this one record. The worker thread that fills it in is joined before the record is reused.
+static async_dns_lookup aslu;
+static async_dns_lookup *lastaslu = nullptr;
+static SDL_Thread *lookup_thread = nullptr;
+
+static int SDLCALL gethostbynameworker(void *parm);
+
+// Waits for the worker thread, if there is one, to finish.
+static void JoinLookupThread() {
+  SDL_WaitThread(lookup_thread, nullptr);
+  lookup_thread = nullptr;
+}
+
+#if defined(POSIX)
 // rcg06192000 use SDL threads.
 // #include <pthread.h>
 // #include <dlfcn.h>
@@ -2094,115 +2093,43 @@ void nw_LoadThreadLibrary(void) {
           // and we can't close it on atexit() because linux will segfault for some stupid reason
   */
 }
-#else
-void CDECLCALL gethostbynameworker(void *parm);
 #endif
 
 int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
 
   if (command == NW_AGHBN_LOOKUP) {
-    if (lastaslu) {
+    if (lastaslu)
       lastaslu->abort = true;
+    // rcg06212000 join the thread.
+    JoinLookupThread();
 
-      // rcg06212000 join the thread.
-#if defined(POSIX)
-      SDL_WaitThread(lastaslu->threadId, nullptr);
-      free(lastaslu);
-#endif
-    } // if
-
-    // rcg06262000 don't need all the rigamarole since we join the thread.
-
-#if (!defined(POSIX))
-    async_dns_lookup *newaslu;
-    newaslu = mem_rmalloc<async_dns_lookup>();
-    memset(&newaslu->ip, 0, sizeof(uint32_t));
-    newaslu->host = hostname;
-    newaslu->done = false;
-    newaslu->error = false;
-    newaslu->abort = false;
-    lastaslu = newaslu;
-    aslu.done = false;
-#else
-    memset(&aslu.ip, 0, sizeof(uint32_t));
+    aslu.ip = 0;
     aslu.host = hostname;
     aslu.done = false;
     aslu.error = false;
     aslu.abort = false;
     lastaslu = &aslu;
-    aslu.done = false;
-#endif
 
-#ifdef WIN32
-    _beginthread(gethostbynameworker, 0, newaslu);
-#elif defined(POSIX)
     // rcg06192000 use SDL threads.
-    /*
-            nw_LoadThreadLibrary();
-            if(!dpthread_create)
-            {
-
-                    HOSTENT *he = gethostbyname(lastaslu->host);
-                    if(he==NULL)
-                    {
-                            lastaslu->error = true;
-                    }
-                    else
-                    {
-                            memcpy(&lastaslu->ip,he->h_addr_list[0],sizeof(uint32_t));
-                            lastaslu->done = true;
-                            memcpy(&aslu,lastaslu,sizeof(async_dns_lookup));
-                    }
-            }else
-    */
-
-    {
-      // rcg06192000 SDLified.
-      // pthread_t thread;
-      // dpthread_create(&thread, NULL, gethostbynameworker,newaslu);
-      aslu.threadId = SDL_CreateThread(gethostbynameworker, "dnsworker", &aslu);
-    }
-#else
-    HOSTENT *he = gethostbyname(lastaslu->host);
-    if (he == NULL) {
-      lastaslu->error = true;
-    } else {
-      memcpy(&lastaslu->ip, he->h_addr_list[0], sizeof(uint32_t));
-      lastaslu->done = true;
-      memcpy(&aslu, lastaslu, sizeof(async_dns_lookup));
-    }
-#endif
+    lookup_thread = SDL_CreateThread(gethostbynameworker, "dnsworker", &aslu);
+    if (!lookup_thread)
+      aslu.error = true;
     return 1;
   } else if (command == NW_AGHBN_CANCEL) {
-    if (lastaslu) {
+    if (lastaslu)
       lastaslu->abort = true;
-
-      // rcg06212000 join the thread.
-#if defined(POSIX)
-      SDL_WaitThread(lastaslu->threadId, nullptr);
-#endif
-    } // if
+    JoinLookupThread();
     lastaslu = nullptr;
   } else if (command == NW_AGHBN_READ) {
     if (!lastaslu)
       return -1;
     if (aslu.done) {
-      // rcg06212000 join the thread.
-#if defined(POSIX)
-      SDL_WaitThread(aslu.threadId, nullptr);
-#endif
-
+      JoinLookupThread();
       lastaslu = nullptr;
       memcpy(ip, &aslu.ip, sizeof(uint32_t));
       return 1;
     } else if (aslu.error) {
-      // rcg06212000 join the thread.
-#if defined(POSIX)
-      SDL_WaitThread(aslu.threadId, nullptr);
-#else
-      mem_free(lastaslu);
-#endif
-
+      JoinLookupThread();
       lastaslu = nullptr;
       return -1;
     } else
@@ -2212,28 +2139,13 @@ int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
 }
 
 // This is the worker thread which does the lookup.
-#if defined(POSIX)
-int CDECLCALL gethostbynameworker(void *parm)
-#else
-void CDECLCALL gethostbynameworker(void *parm)
-#endif
-{
-  // rcg06192000 nope.
-  //	#if defined(POSIX)
-  //	dpthread_detach(dpthread_self());
-  //	#endif
-
+static int SDLCALL gethostbynameworker(void *parm) {
   async_dns_lookup *lookup = (async_dns_lookup *)parm;
 
   HOSTENT *he = gethostbyname(lookup->host);
 
   if (he == nullptr) {
     lookup->error = true;
-#if defined(POSIX)
-    return 0;
-#else
-    return;
-#endif
   } else if (!lookup->abort) {
     memcpy(&lookup->ip, he->h_addr_list[0], sizeof(uint32_t));
     LOG_DEBUG.printf("IPLOOKUP: [%s] is %d.%d.%d.%d ...",
@@ -2242,18 +2154,9 @@ void CDECLCALL gethostbynameworker(void *parm)
             (lookup->ip & 0x0000FF00) >> 8,
             (lookup->ip & 0x00FF0000) >> 16,
             (lookup->ip & 0xFF000000) >> 24);
-    // memcpy(&aslu,lookup,sizeof(async_dns_lookup));
     lookup->done = true;
   }
-
-// rcg06252000 don't free this, 'cause we need the threadId.
-#if !defined(POSIX)
-  mem_free(lookup);
-#endif
-
-#if defined(POSIX)
   return 0;
-#endif
 }
 
 int nw_ReccomendPPS() {

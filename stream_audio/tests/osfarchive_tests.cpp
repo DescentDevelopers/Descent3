@@ -147,4 +147,26 @@ TEST_F(OSFArchiveTest, RejectsNonDigitalStreamType) {
   EXPECT_FALSE(osf.Opened());
 }
 
+TEST_F(OSFArchiveTest, LongTitleIsTruncatedToTerminatedString) {
+  const std::string long_title = "An Extremely Long Stream Title That Will Not Fit";
+  ASSERT_GT(long_title.size(), static_cast<size_t>(OSF_HDR_TITLE_LEN));
+  const std::vector<uint8_t> data = MakePattern(64, 7);
+  const auto path = m_dir / "longtitle.osf";
+  {
+    OSFArchive osf;
+    ASSERT_TRUE(osf.Open(path, true));
+    ASSERT_TRUE(osf.WriteBlock(const_cast<uint8_t *>(data.data()), static_cast<int>(data.size())));
+    tOSFDigiHdr hdr;
+    hdr.measure = 1;
+    ASSERT_TRUE(osf.SaveHeader(OSF_DIGITAL_STRM, OSF_DIGIACM_STRM, SAF_16BIT_M, 22050,
+                               static_cast<uint32_t>(data.size()), &hdr, long_title.c_str()));
+  }
+
+  OSFArchive osf;
+  ASSERT_TRUE(osf.Open(path));
+  const char *name = osf.StreamName();
+  ASSERT_NE(std::memchr(name, '\0', OSF_HDR_TITLE_LEN), nullptr) << "stored title is not NUL-terminated";
+  EXPECT_EQ(std::string(name), long_title.substr(0, OSF_HDR_TITLE_LEN - 1));
+}
+
 } // namespace

@@ -166,7 +166,7 @@ void UISlider::OnKeyDown(int key) {
   if (key == KEY_LEFT && m_Pos > 0) {
     m_Pos--;
     OnSelect();
-  } else if (key == KEY_RIGHT && m_Pos < m_Range) {
+  } else if (key == KEY_RIGHT && m_Pos < m_Range - 1) {
     m_Pos++;
     OnSelect();
   }

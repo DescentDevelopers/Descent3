@@ -414,6 +414,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
 
   // Close the file
   cfclose(cfptr);
+  cfptr = nullptr;
 
   if (SoundFiles[sound_file_index].sample_8bit != nullptr) {
     LOG_WARNING.printf("Sound file %s is 8bit, please make a 16bit version", filename);

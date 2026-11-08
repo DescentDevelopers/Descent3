@@ -66,7 +66,7 @@ void mveaudio_process(char *buffer, unsigned char *data, int sample_size, bool i
     int nCurOffsets[2];
 
     data += 4;
-    int samples = getWord(&data) / sample_size;
+    int samples = static_cast<uint16_t>(getWord(&data)) / sample_size;
     // Fill predictors
     nCurOffsets[0] = getWord(&data);
     nCurOffsets[1] = getWord(&data);
@@ -76,8 +76,10 @@ void mveaudio_process(char *buffer, unsigned char *data, int sample_size, bool i
       memcpy(buffer + i * sample_size, &nCurOffsets[i & 1], sample_size);
     }
   } else {
-    data += 2;
-    int size = getWord(&data);
-    memcpy(buffer, &data, size);
+    data += 4;
+    int size = static_cast<uint16_t>(getWord(&data));
+    memcpy(buffer, data, size);
   }
 }
+
+void mveaudio_silence(char *buffer, int size, int sample_size) { memset(buffer, sample_size == 1 ? 0x80 : 0, size); }

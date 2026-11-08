@@ -568,4 +568,13 @@ TEST_F(BriefingParseTest, SecondVoiceInAScreenStopsParsing) {
   EXPECT_TRUE(r.statics.empty());
 }
 
+TEST_F(BriefingParseTest, VoiceAcceptsMissionFlagParameters) {
+  ParseInScreen(parser, dir,
+                "$voice isset 3 isnset 4 play \"voice.osf\"\n"
+                "$static 0.5\n");
+
+  EXPECT_EQ(r.statics.size(), 1u);
+  EXPECT_EQ(r.events.back(), "endscreen");
+}
+
 } // namespace

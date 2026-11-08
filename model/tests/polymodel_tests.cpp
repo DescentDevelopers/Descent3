@@ -722,6 +722,16 @@ TEST_F(PolyModelTest, VersionsOutsideSupportedRangeAreRejected) {
   }
 }
 
+TEST_F(PolyModelTest, RejectedModelDoesNotRemainRegistered) {
+  max_assertions_ = 1; // the loader Int3()s on a bad version
+  pof::Writer w(PM_OBJFILE_VERSION + 100);
+  w.header(1);
+  w.subobject(0, Triangle(-1));
+
+  ASSERT_EQ(models_.Load(w, "future.oof"), -1);
+  EXPECT_EQ(FindPolyModelName("future.oof"), -1);
+}
+
 TEST_F(PolyModelTest, PageableModelWithBadVersionStaysOwnedAfterFailedPageIn) {
   max_assertions_ = 2;
   pof::Writer bad(PM_OBJFILE_VERSION + 100);

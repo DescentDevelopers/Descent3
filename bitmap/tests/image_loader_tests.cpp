@@ -88,6 +88,18 @@ TEST_F(ImageLoaderTest, Uncompressed24BitTgaIsOpaqueWithCorrectChannels) {
   EXPECT_EQ(Pixels(handle), (std::vector<uint16_t>{Rgb1555(31, 0, 0), Rgb1555(0, 31, 0), Rgb1555(0, 0, 31)}));
 }
 
+TEST_F(ImageLoaderTest, Rle24BitTgaDecodesSameAsUncompressed) {
+  const std::vector<std::vector<Bgra>> rows = {
+      {kRed, kRed, kRed, kBlue},
+      {kGreen, kBlue, kBlue, kRed},
+  };
+  int raw = Track(LoadFromBytes(temp_dir, RawTga(rows, 24, false), LoadTga1555));
+  int rle = Track(LoadFromBytes(temp_dir, RleTga(rows, 24), LoadTga1555));
+  ASSERT_GT(raw, 0);
+  ASSERT_GT(rle, 0);
+  EXPECT_EQ(Pixels(rle), Pixels(raw));
+}
+
 TEST_F(ImageLoaderTest, TgaLoadedAs4444KeepsTopFourBitsOfEachChannelAndAlpha) {
   const std::vector<std::vector<Bgra>> rows = {{Bgra{0x10, 0x80, 0xFF, 0x80}, Bgra{0, 0, 0, 0}}};
   int handle = Track(LoadFromBytes(temp_dir, RawTga(rows, 32, false), LoadTga4444));
@@ -109,6 +121,30 @@ TEST_F(ImageLoaderTest, UnsupportedTgaVariantsAreRejectedWithoutAllocating) {
   EXPECT_EQ(Track(LoadFromBytes(temp_dir, sixteen.bytes(), LoadTga1555)), -1);
 
   EXPECT_EQ(UsedSlots(), before);
+}
+
+TEST_F(ImageLoaderTest, TruncatedOgfFailsWithoutLeakingABitmap) {
+  d3_test::ByteWriter ogf;
+  ogf.U8(0).U8(0).U8(OUTRAGE_1555_COMPRESSED_MIPPED);
+  ogf.Text("truncated.ogf").U8(0); // name
+  ogf.U8(1);                       // one mip level
+  ogf.Fill(9, 0);
+  ogf.U16(4).U16(4); // 4x4 = 16 pixels
+  ogf.U8(32).U8(8 + 32);
+  ogf.U8(0).U16(Rgb1555(1, 1, 1)); // a single raw pixel, then the file ends
+
+  const std::set<int> before = UsedSlots();
+  EXPECT_EQ(Track(LoadFromBytes(temp_dir, ogf.bytes(), LoadTga1555)), -1);
+
+  const std::set<int> after = UsedSlots();
+  int leaked = 0;
+  for (int slot : after) {
+    if (!before.count(slot)) {
+      leaked++;
+      Track(slot); // free it so later tests are unaffected
+    }
+  }
+  EXPECT_EQ(leaked, 0);
 }
 
 const std::vector<Rgb> kPalette = {
@@ -139,6 +175,16 @@ TEST_F(ImageLoaderTest, Pcx8BitMapsPaletteAndTreatsIndexZeroAsTransparent) {
   EXPECT_TRUE(IsTransparent1555(px[5]));
   EXPECT_EQ(px[6], Rgb1555(1, 2, 3));
   EXPECT_EQ(px[7], red);
+}
+
+TEST_F(ImageLoaderTest, Pcx8BitOddWidthHonoursScanlinePadding) {
+  const std::vector<std::vector<uint8_t>> rows = {{1, 2, 3}, {3, 2, 1}};
+  int handle = Track(LoadFromBytes(temp_dir, Pcx8(rows, kPalette), bm_pcx_alloc_file));
+  ASSERT_GT(handle, 0);
+  ASSERT_EQ(bm_w(handle, 0), 3);
+  ASSERT_EQ(bm_h(handle, 0), 2);
+  const uint16_t c1 = Rgb1555(31, 0, 0), c2 = Rgb1555(0, 16, 31), c3 = Rgb1555(1, 2, 3);
+  EXPECT_EQ(Pixels(handle), (std::vector<uint16_t>{c1, c2, c3, c3, c2, c1}));
 }
 
 TEST_F(ImageLoaderTest, Pcx24BitDecodesPlanesAndSkipsScanlinePadding) {

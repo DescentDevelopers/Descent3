@@ -170,6 +170,27 @@ TEST_F(PagelockTest, ReplacePagelockAppendsUnknownLock) {
                                                      {PAGETYPE_SOUND, "A", "alice"}}));
 }
 
+TEST_F(PagelockTest, DeletePagelockRemovesOnlyTheMatchingLock) {
+  WriteLockFile({MakeLock(PAGETYPE_TEXTURE, "A", "alice"), MakeLock(PAGETYPE_SOUND, "A", "alice"),
+                 MakeLock(PAGETYPE_TEXTURE, "B", "bob")});
+
+  char name[] = "a";
+  EXPECT_EQ(mng_DeletePagelock(name, PAGETYPE_TEXTURE), 1);
+
+  EXPECT_EQ(ReadLockFile(), (std::vector<LockRecord>{{PAGETYPE_SOUND, "A", "alice"}, {PAGETYPE_TEXTURE, "B", "bob"}}));
+}
+
+TEST_F(PagelockTest, DeletePagelockSeriesRemovesListedLocksOfThatType) {
+  WriteLockFile({MakeLock(PAGETYPE_TEXTURE, "A", "alice"), MakeLock(PAGETYPE_TEXTURE, "B", "alice"),
+                 MakeLock(PAGETYPE_SOUND, "B", "alice"), MakeLock(PAGETYPE_TEXTURE, "C", "alice")});
+
+  char a[] = "A", b[] = "B";
+  char *names[] = {a, b};
+  EXPECT_EQ(mng_DeletePagelockSeries(names, 2, PAGETYPE_TEXTURE), 1);
+
+  EXPECT_EQ(ReadLockFile(), (std::vector<LockRecord>{{PAGETYPE_SOUND, "B", "alice"}, {PAGETYPE_TEXTURE, "C", "alice"}}));
+}
+
 class TrackLockTest : public ::testing::Test {
 protected:
   void SetUp() override { mng_InitTrackLocks(); }

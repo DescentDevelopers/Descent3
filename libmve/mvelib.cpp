@@ -102,10 +102,8 @@ void mvefile_reset(MVEFILE *file) {
   _mvefile_set_buffer_size(file, 1024);
 
   /* verify the file's header */
-  if (!_mvefile_read_header(file)) {
-    _mvefile_free(file);
-    // return NULL;
-  }
+  if (!_mvefile_read_header(file))
+    return;
 
   /* now, prefetch the next chunk */
   _mvefile_fetch_next_chunk(file);
@@ -124,7 +122,7 @@ int mvefile_get_next_segment_size(MVEFILE *movie) {
     return -1;
 
   /* otherwise, get the data length */
-  return _mve_get_short(movie->cur_chunk + movie->next_segment);
+  return _mve_get_ushort(movie->cur_chunk + movie->next_segment);
 }
 
 /*
@@ -332,6 +330,8 @@ static int _mvefile_open(MVEFILE *file, void *stream) {
  */
 static void _mvefile_reset(MVEFILE *file) {
   fseek((FILE *)file->stream, 0, SEEK_SET);
+  if (file->cur_chunk)
+    mve_free(file->cur_chunk);
   file->cur_chunk = nullptr;
   file->buf_size = 0;
   file->cur_fill = 0;

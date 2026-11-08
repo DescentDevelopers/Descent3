@@ -20,14 +20,18 @@
 // returns early without touching the network. Incoming datagrams are injected by calling the receive callbacks that
 // nw_DoReceiveCallbacks() would normally dispatch to.
 
+#include <chrono>
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <gtest/gtest.h>
 
 #include "d3_test/game_clock.h"
+#include "d3_test/sockets.h"
 #include "networking.h"
 #include "support/networking_test_packets.h"
 #include "support/networking_test_reliable.h"
@@ -130,6 +134,23 @@ TEST_F(UnreliableQueueTest, OverflowDropsPacketsButKeepsOrderAndRecovers) {
   EXPECT_EQ(Receive().len, 0);
 }
 
+TEST_F(UnreliableQueueTest, OversizedDatagramIsNotDeliveredBeyondMaxPacketSize) {
+  network_address attacker = MakePeer(5, 2092);
+  network_address player = MakePeer(6, 2092);
+  // Stays within the queue's own storage when it overruns, so the bug shows up as a wrong result rather than a crash.
+  Arrive(std::vector<uint8_t>(MAX_PACKET_SIZE + 100, 0xAB), attacker);
+  Arrive(Bytes("legit"), player);
+
+  bool got_legit = false;
+  int reads = 0;
+  for (Received r = Receive(); r.len > 0 && reads < 10; r = Receive(), reads++) {
+    EXPECT_LE(r.len, MAX_PACKET_SIZE);
+    if (r.data == Bytes("legit"))
+      got_legit = true;
+  }
+  EXPECT_TRUE(got_legit);
+}
+
 class ReliableServerTest : public ::testing::Test {
 protected:
   void SetUp() override {
@@ -228,6 +249,99 @@ TEST_F(ReliableServerTest, DataIsDeliveredOnlyToTheSendersConnection) {
   Deliver(bob, ReliablePacket(RNT_DATA, 0, Bytes("from bob")));
   EXPECT_EQ(Receive(bob_sock), Bytes("from bob"));
   EXPECT_EQ(Receive(alice_sock), Bytes("from alice"));
+}
+
+TEST_F(ReliableServerTest, InOrderStreamSurvivesSequenceNumberWrap) {
+  network_address peer = MakePeer(15, 4321);
+  SOCKET sock = Connect(peer);
+
+  const int total = 0x10000 + 100;
+  for (int n = 0; n < total; n++) {
+    uint16_t seq = static_cast<uint16_t>(n);
+    SendData(peer, seq);
+    ASSERT_EQ(Receive(sock), DataPayload(seq)) << "packet " << n << " (seq " << seq << ") was not delivered";
+  }
+}
+
+TEST_F(ReliableServerTest, PacketsSentAheadAcrossSequenceNumberWrapAreDeliveredInOrder) {
+  network_address peer = MakePeer(19, 4321);
+  SOCKET sock = Connect(peer);
+
+  const int lockstep = 0x10000 - 6;
+  for (int n = 0; n < lockstep; n++) {
+    uint16_t seq = static_cast<uint16_t>(n);
+    SendData(peer, seq);
+    ASSERT_EQ(Receive(sock), DataPayload(seq)) << "packet " << n << " (seq " << seq << ") was not delivered";
+  }
+
+  const int ahead = 16;
+  for (int n = lockstep; n < lockstep + ahead; n++)
+    SendData(peer, static_cast<uint16_t>(n));
+  for (int n = lockstep; n < lockstep + ahead; n++) {
+    uint16_t seq = static_cast<uint16_t>(n);
+    EXPECT_EQ(Receive(sock), DataPayload(seq)) << "packet " << n << " (seq " << seq << ") was not delivered";
+  }
+  EXPECT_TRUE(Receive(sock).empty());
+}
+
+TEST_F(ReliableServerTest, DuplicateConnectionRequestsDoNotConsumeConnectionSlots) {
+  network_address alice = MakePeer(16, 4321);
+  SOCKET alice_sock = Connect(alice);
+
+  for (int i = 0; i < MAXRELIABLESOCKETS; i++)
+    Deliver(alice, ReliablePacket(RNT_REQ_CONN, 0));
+  network_address from;
+  EXPECT_TRUE(IsNoConnection(nw_CheckListenSocket(&from))) << "a duplicate request must not surface as a connection";
+
+  network_address bob = MakePeer(17, 4321);
+  Deliver(bob, ReliablePacket(RNT_REQ_CONN, 0));
+  Deliver(bob, ReliablePacket(RNT_I_AM_HERE, 0));
+  std::memset(&from, 0, sizeof(from));
+  int bob_id = nw_CheckListenSocket(&from);
+  EXPECT_FALSE(IsNoConnection(bob_id)) << "a new peer could not connect";
+  EXPECT_EQ(0, std::memcmp(from.address, bob.address, 4));
+
+  Deliver(alice, ReliablePacket(RNT_DATA, 0, Bytes("still here")));
+  EXPECT_EQ(Receive(alice_sock), Bytes("still here"));
+}
+
+// The game's asynchronous name lookup, which the online lobby modules use to find their servers.
+class AsyncNameLookupTest : public ::testing::Test {
+protected:
+  void SetUp() override { d3_test::EnsureSockets(); }
+
+  // Looks up `name` and polls the lookup for up to ten seconds. Returns the last READ result: 1 found (with the
+  // address in `ip`), -1 failed, 0 still looking.
+  static int Lookup(const char *name, uint32_t *ip) {
+    // The lookup runs on its own thread and keeps the name pointer, so the name must outlive it.
+    static char host[256];
+    snprintf(host, sizeof(host), "%s", name);
+    if (nw_Asyncgethostbyname(ip, NW_AGHBN_LOOKUP, host) != 1)
+      return -2;
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    int result;
+    do {
+      result = nw_Asyncgethostbyname(ip, NW_AGHBN_READ, host);
+      if (result != 0)
+        break;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    } while (std::chrono::steady_clock::now() < deadline);
+    return result;
+  }
+};
+
+TEST_F(AsyncNameLookupTest, ResolvesLocalhost) {
+  uint32_t ip = 0;
+  ASSERT_EQ(Lookup("localhost", &ip), 1) << "the lookup did not report finding the name";
+  EXPECT_EQ(ip, htonl(INADDR_LOOPBACK));
+}
+
+TEST_F(AsyncNameLookupTest, ReportsANameThatCannotResolve) {
+  // A DNS label is at most 63 characters, so the resolver rejects this name without asking a DNS server, and the test
+  // doesn't wait on the network.
+  const std::string name = std::string(64, 'x') + ".invalid";
+  uint32_t ip = 0;
+  EXPECT_EQ(Lookup(name.c_str(), &ip), -1);
 }
 
 } // namespace

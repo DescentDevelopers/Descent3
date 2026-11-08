@@ -93,6 +93,12 @@ TEST_F(GrtextMeasureTest, TabAdvancesToTheNextTabStop) {
   EXPECT_EQ(grtext_GetTextLineWidth("A\tB"), 2 * (3 + 1) + 6);
 }
 
+TEST_F(GrtextMeasureTest, ColorCodesDoNotAddToWidth) {
+  // color (B,B,B) chosen so the color bytes are real glyphs in this font
+  EXPECT_EQ(grtext_GetTextLineWidth("\x01" "BBB" "A"), grtext_GetTextLineWidth("A"));
+  EXPECT_EQ(grtext_GetTextLineWidth("A" "\x01" "BBB"), grtext_GetTextLineWidth("A"));
+}
+
 TEST_F(GrtextMeasureTest, TextHeightGrowsByOneLineHeightPerLine) {
   int one = grtext_GetTextHeight("A");
   EXPECT_GE(one, 8);
@@ -120,6 +126,29 @@ TEST_F(GrtextMeasureTest, TemplateMeasurementAgreesWithLoadedFont) {
     EXPECT_EQ(grtext_GetTextHeightTemplate(&ft, s), grtext_GetTextHeight(s));
   }
   grfont_FreeTemplate(&ft);
+}
+
+TEST_F(GrtextMeasureTest, TemplateTreatsCharsAboveUppercaseFontRangeAsMissing) {
+  TestFont spec = MakeMetricsFont();
+  std::array<uint8_t, 256> widths;
+  widths.fill(0xAA);
+  std::copy(spec.widths.begin(), spec.widths.end(), widths.begin());
+
+  tFontTemplate ft{};
+  ft.min_ascii = spec.min_ascii;
+  ft.max_ascii = spec.max_ascii;
+  ft.ch_widths = widths.data();
+  ft.kern_data = nullptr;
+  ft.ch_height = static_cast<uint8_t>(spec.height);
+  ft.ch_maxwidth = static_cast<uint8_t>(spec.width);
+  ft.proportional = true;
+  ft.uppercase = true;
+  ft.monochromatic = true;
+
+  for (const char *s : {"`", "A{B", "~"}) {
+    SCOPED_TRACE(s);
+    EXPECT_EQ(grtext_GetTextLineWidthTemplate(&ft, s), grtext_GetTextLineWidth(s));
+  }
 }
 
 namespace {
@@ -163,6 +192,21 @@ TEST_F(GrtextRenderTest, ProfanityFilterMasksEveryOccurrence) {
   EXPECT_TRUE(NoLetters(drawn.substr(0, 4))) << drawn;
   EXPECT_EQ(drawn.substr(4, 8), "happens,");
   EXPECT_TRUE(NoLetters(drawn.substr(12))) << drawn;
+}
+
+TEST_F(GrtextRenderTest, PutCharDrawsTheGlyphAtItsNormalSize) {
+  grtext_Puts(10, 10, "M");
+  grtext_Flush();
+  ASSERT_EQ(DrawnGlyphs().size(), 1u);
+  DrawnGlyph by_puts = DrawnGlyphs()[0];
+
+  d3_test::ResetRenderer();
+  grtext_PutChar(10, 10, 'M');
+  grtext_Flush();
+  ASSERT_EQ(DrawnGlyphs().size(), 1u);
+  const DrawnGlyph &by_putchar = DrawnGlyphs()[0];
+  EXPECT_EQ(by_putchar.x2 - by_putchar.x1, by_puts.x2 - by_puts.x1);
+  EXPECT_EQ(by_putchar.y2 - by_putchar.y1, by_puts.y2 - by_puts.y1);
 }
 
 namespace {

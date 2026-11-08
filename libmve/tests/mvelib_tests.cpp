@@ -166,6 +166,21 @@ TEST_F(MveLibTest, ChunkLargerThanTheInitialBufferIsReadIntact) {
   EXPECT_EQ(LiveAllocations(), 0u);
 }
 
+TEST_F(MveLibTest, SegmentLargerThan32KiBReportsItsTrueSize) {
+  // Segment and chunk lengths are unsigned 16-bit fields, so a segment of 40000 bytes is legal.
+  Bytes big = Payload(40000, 0x42);
+  MemStream s{MveBuilder().Chunk({{0x11, 0, big}, {0x07, 0, {}}}).bytes()};
+  MVEFILE *f = mvefile_open(&s);
+  ASSERT_NE(f, nullptr);
+
+  EXPECT_EQ(mvefile_get_next_segment_size(f), 40000);
+
+  mvefile_advance_segment(f);
+  EXPECT_EQ(mvefile_get_next_segment_major(f), 0x07);
+
+  mvefile_close(f);
+}
+
 TEST_F(MveLibTest, TrailingBytesTooShortForASegmentHeaderEndTheChunk) {
   Bytes body = EncodeSegment({4, 0, {0x01, 0x02}});
   body.push_back(0x00); // 3 stray bytes: less than a 4-byte segment header
@@ -312,6 +327,29 @@ TEST_F(MveResetTest, ResetRestartsPlaybackFromTheFirstChunk) {
   EXPECT_EQ(g_calls[0].data, Bytes({0xAA}));
 
   mve_close(m);
+}
+
+TEST_F(MveResetTest, ResetDoesNotLeakTheChunkBuffer) {
+  MVESTREAM *m = mve_open(file_);
+  ASSERT_NE(m, nullptr);
+  mve_reset(m);
+  mve_close(m);
+  EXPECT_EQ(LiveAllocations(), 0u);
+}
+
+TEST_F(MveResetTest, ResetEndsPlaybackWhenTheHeaderCannotBeReread) {
+  MVESTREAM *m = mve_open(file_);
+  ASSERT_NE(m, nullptr);
+  mve_set_handler(m, 2, RecordingHandler);
+  mve_set_handler(m, 3, RecordingHandler);
+
+  mve_read = [](void *, void *, unsigned int) -> unsigned int { return 0; };
+  mve_reset(m);
+  EXPECT_EQ(mve_play_next_chunk(m), 0);
+  EXPECT_TRUE(g_calls.empty());
+
+  mve_close(m);
+  EXPECT_EQ(LiveAllocations(), 0u);
 }
 
 } // namespace

@@ -60,10 +60,14 @@ int AddListItem(listnode **listp, void *item) {
   } else {
     // Go through until the end of the list and add the new item there
     for (curr = *listp; curr->next != nullptr; curr = curr->next) {
-      if (curr->data == item) {
-        Int3();
-        return 0;
-      }
+      if (curr->data == item)
+        break;
+    }
+
+    if (curr->data == item) {
+      mem_free(newnode);
+      Int3();
+      return 0;
     }
 
     newnode->data = item;

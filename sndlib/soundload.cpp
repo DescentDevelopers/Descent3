@@ -402,6 +402,7 @@ void ChangeSoundFileName(const char *src, char *dest) {
 
   // Make sure we don't go over our name length limit
   strncpy(dest, filename, limit);
+  dest[limit] = '\0';
 
   strcat(dest, ".wav");
 }

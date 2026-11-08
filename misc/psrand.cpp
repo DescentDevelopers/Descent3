@@ -36,10 +36,10 @@
 
 #include "psrand.h"
 
-static int32_t ps_holdrand = 1L;
+static uint32_t ps_holdrand = 1;
 
 // These are adapted from the C runtime lib. Pretty simple.
 
-void ps_srand(uint32_t seed) { ps_holdrand = static_cast<int32_t>(seed); }
+void ps_srand(uint32_t seed) { ps_holdrand = seed; }
 
-int32_t ps_rand(void) { return (((ps_holdrand = ps_holdrand * 214013L + 2531011L) >> 16) & 0x7fff); }
+int32_t ps_rand(void) { return (((ps_holdrand = ps_holdrand * 214013u + 2531011u) >> 16) & 0x7fff); }

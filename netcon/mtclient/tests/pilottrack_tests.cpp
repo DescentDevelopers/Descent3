@@ -320,6 +320,12 @@ TEST_F(PilotTrackerLogin, ValidatedNakFromControlPacket) {
   EXPECT_EQ(ValidateUser(nullptr, nullptr), -1);
 }
 
+TEST_F(PilotTrackerLogin, UnrelatedControlPacketDoesNotRejectPendingLogin) {
+  StartLogin(tracker_id);
+  Deliver(MakePacket(UNT_CONTROL, CMD_UPDATED_USER_ACK));
+  EXPECT_EQ(ValidateUser(nullptr, nullptr), 0) << "login should still be pending";
+}
+
 TEST_F(PilotTrackerLogin, LoginTimesOut) {
   StartLogin(tracker_id);
   int result = 0;

@@ -66,6 +66,101 @@ protected:
 const uint32_t kSentinel16 = 0x1234; // a valid 555 value (top bit clear) that no test clears to
 const uint32_t kSentinel32 = 0x00a5a5a5;
 
+// The width is not a multiple of 4, which the library pads internally.
+TEST_F(DdgrGdiTest, Clear32bppFillsRectAndLeavesOutsideAlone) {
+  const int W = 7, H = 6;
+  const int L = 1, T = 1, CW = 5, CH = 4; // covers x in [1,6), y in [1,5)
+  GenericSurface sf(W, H, BPP_32);
+  {
+    LockedPixels px(sf.get());
+    ASSERT_TRUE(px.valid());
+    px.fill(kSentinel32);
+  }
+
+  const ddgr_color color = 0x00123456;
+  ddgr_surf_Clear(sf.get(), color, L, T, CW, CH);
+
+  LockedPixels px(sf.get());
+  ASSERT_TRUE(px.valid());
+  for (int y = 0; y < H; y++) {
+    for (int x = 0; x < W; x++) {
+      const bool inside = x >= L && x < L + CW && y >= T && y < T + CH;
+      if (!inside)
+        EXPECT_EQ(px.get(x, y), kSentinel32) << "outside the cleared rect at (" << x << "," << y << ")";
+      else
+        EXPECT_EQ(px.get(x, y), color) << "inside the cleared rect at (" << x << "," << y << ")";
+    }
+  }
+}
+
+// 16bpp surfaces are X1R5G5B5. Each 8-bit channel used here is an exact multiple of 8, so the
+// 5-bit value is channel/8 with no rounding: red 0xF8 -> 31, green 0x40 -> 8, blue 0x10 -> 2,
+// giving (31 << 10) | (8 << 5) | 2 = 0x7D02.
+TEST_F(DdgrGdiTest, Clear16bppWritesColourInX1R5G5B5) {
+  const int W = 6, H = 5;
+  GenericSurface sf(W, H, BPP_16);
+  {
+    LockedPixels px(sf.get());
+    ASSERT_TRUE(px.valid());
+    px.fill(kSentinel16);
+  }
+
+  ddgr_surf_Clear(sf.get(), 0x00f84010, 0, 0, W, H);
+
+  LockedPixels px(sf.get());
+  ASSERT_TRUE(px.valid());
+  for (int y = 0; y < H; y++)
+    for (int x = 0; x < W; x++)
+      EXPECT_EQ(px.get(x, y), 0x7D02u) << "at (" << x << "," << y << ")";
+}
+
+TEST_F(DdgrGdiTest, ClearCoversTheEdgesOfTheRectToo) {
+  const int W = 8, H = 6;
+  GenericSurface sf(W, H, BPP_32);
+  {
+    LockedPixels px(sf.get());
+    ASSERT_TRUE(px.valid());
+    px.fill(kSentinel32);
+  }
+
+  const ddgr_color color = 0x00ffffff;
+  ddgr_surf_Clear(sf.get(), color, 0, 0, W, H);
+
+  LockedPixels px(sf.get());
+  ASSERT_TRUE(px.valid());
+  int wrong = 0;
+  std::string first_wrong;
+  for (int y = 0; y < H; y++) {
+    for (int x = 0; x < W; x++) {
+      if (px.get(x, y) != color && wrong++ == 0) {
+        first_wrong = "(" + std::to_string(x) + "," + std::to_string(y) + ") = " + std::to_string(px.get(x, y));
+      }
+    }
+  }
+  EXPECT_EQ(wrong, 0) << "of the " << W * H << " pixels cleared to " << color << ", first wrong one: " << first_wrong;
+}
+
+TEST_F(DdgrGdiTest, VideoBackBufferIsDrawableThroughLock) {
+  {
+    LockedPixels px(&m_screen);
+    ASSERT_TRUE(px.valid());
+    EXPECT_GE(px.rowsize(), m_screen.w * 2);
+    px.fill(kSentinel16);
+  }
+
+  ddgr_surf_Clear(&m_screen, 0x00f84010, 10, 20, 8, 6);
+
+  LockedPixels px(&m_screen);
+  ASSERT_TRUE(px.valid());
+  EXPECT_EQ(px.get(13, 23), 0x7D02u);
+  EXPECT_EQ(px.get(10, 20), 0x7D02u);
+  EXPECT_EQ(px.get(17, 25), 0x7D02u);
+  EXPECT_EQ(px.get(9, 23), kSentinel16);
+  EXPECT_EQ(px.get(18, 23), kSentinel16);
+  EXPECT_EQ(px.get(13, 19), kSentinel16);
+  EXPECT_EQ(px.get(13, 26), kSentinel16);
+}
+
 class DdgrGdiBltTest : public DdgrGdiTest, public ::testing::WithParamInterface<int> {};
 
 // Odd surface widths make a wrong reported row stride show up as misplaced pixels.

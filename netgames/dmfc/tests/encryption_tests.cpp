@@ -51,6 +51,25 @@ TEST(IceKey, ThinIceMatchesPublishedTestVector) {
   EXPECT_EQ(Decrypt(key, published_ciphertext), kVectorPlaintext);
 }
 
+TEST(IceKey, Level1MatchesPublishedTestVector) {
+  const uint8_t key_bytes[8] = {0xde, 0xad, 0xbe, 0xef, 0x01, 0x23, 0x45, 0x67};
+
+  IceKey key(1);
+  key.set(key_bytes);
+
+  EXPECT_EQ(Hex(Encrypt(key, kVectorPlaintext)), "7d6ef1ef30d47a96");
+}
+
+TEST(IceKey, Level2MatchesPublishedTestVector) {
+  const uint8_t key_bytes[16] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
+                                 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
+
+  IceKey key(2);
+  key.set(key_bytes);
+
+  EXPECT_EQ(Hex(Encrypt(key, kVectorPlaintext)), "f94840d86972f21c");
+}
+
 TEST(IceKey, DecryptInvertsEncryptForAllLevels) {
   std::mt19937 rng(12345);
   std::uniform_int_distribution<int> byte(0, 255);

@@ -225,4 +225,24 @@ protected:
   }
 };
 
+TEST_F(MvePlayAudioTest, SilenceLeavesTheRestOfItsChunkIntact) {
+  stream_.bytes = MveBuilder()
+                      .Chunk({VideoMode(16, 8), VideoBuffers8(2, 1), {kEndOfChunk, 0, {}}})
+                      .Chunk({AudioBuffersMono8(22050), {kEndOfChunk, 0, {}}})
+                      .Chunk({AudioSilence(64),
+                              {kSetDecodingMap, 0, {0xee}},
+                              VideoData(0, {0x11, 0x22}),
+                              {kDisplayVideo, 0, {}},
+                              {kEndOfChunk, 0, {}}})
+                      .Chunk({{kEndOfStream, 0, {}}})
+                      .bytes();
+  auto movie = PrepMovie(stream_, 0, 0);
+  ASSERT_NE(movie, nullptr);
+
+  ASSERT_EQ(MVE_rmStepMovie(movie.get()), 0);
+  ASSERT_EQ(g_frames.size(), 1u);
+  EXPECT_EQ(g_frames[0].pixels, Solid8(0x11, 0x22));
+  EXPECT_EQ(MVE_rmStepMovie(movie.get()), MVE_ERR_EOF);
+}
+
 } // namespace

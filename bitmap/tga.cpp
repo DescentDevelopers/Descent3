@@ -426,9 +426,9 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
             pixel = cf_ReadInt(infile);
           else {
             int r, g, b;
-            r = cf_ReadByte(infile);
-            g = cf_ReadByte(infile);
-            b = cf_ReadByte(infile);
+            b = (uint8_t)cf_ReadByte(infile);
+            g = (uint8_t)cf_ReadByte(infile);
+            r = (uint8_t)cf_ReadByte(infile);
             pixel = (255 << 24) | (r << 16) | (g << 8) | b;
           }
 
@@ -527,9 +527,10 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
     cfseek(infile, savepos + Fake_pos, SEEK_SET);
   }
 
-  if (!read_ok)
+  if (!read_ok) {
+    bm_FreeBitmap(n);
     return -1;
-  else
+  } else
     return (n);
 }
 
@@ -632,11 +633,8 @@ int bm_page_in_file(int n) {
   GameBitmaps[n].height = height;
   GameBitmaps[n].flags &= ~BF_NOT_RESIDENT;
 
-  // Copy the name
-  //	if ((stricmp(GameBitmaps[n].name,name)))
-  //			Int3(); //Get Jason!
-
-  strcpy(GameBitmaps[n].name, name);
+  // Keep the name the bitmap was registered and opened under. The OGF may store a different one
+  // (often the name of the texture it was copied from), and paging in again later opens this name.
 
   LOG_DEBUG.printf("Paging in bitmap %s!", GameBitmaps[n].name);
 

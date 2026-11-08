@@ -116,9 +116,14 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
 
   width = 1 + xmax - xmin;
   height = 1 + ymax - ymin;
-  total = width * height;
 
-  uint8_t *rawdata = (uint8_t *)mem_malloc(width * height);
+  // Determine BytesPerLine
+  int bytes_per_line = temp[66 - 12] | (temp[67 - 12] << 8);
+  if (bytes_per_line < width)
+    bytes_per_line = width;
+  total = bytes_per_line * height;
+
+  uint8_t *rawdata = (uint8_t *)mem_malloc(total);
   if (!rawdata)
     return -1; // no memory!
 
@@ -159,7 +164,7 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
   for (i = 0; i < height; i++) {
     for (t = 0; t < width; t++) {
       uint16_t pixel;
-      uint8_t c = rawdata[i * width + t];
+      uint8_t c = rawdata[i * bytes_per_line + t];
 
       int r = pred[c];
       int g = pgreen[c];

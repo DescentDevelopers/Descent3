@@ -120,11 +120,46 @@ TEST_F(ClipStringTest, LeavesStringThatExactlyFitsUnchanged) {
   EXPECT_STREQ(t, "ABCD");
 }
 
+TEST_F(ClipStringTest, WithArrowNeverExceedsTheWidth) {
+  for (int width = 4; width < 44; width++) {
+    char s[] = "ABCDEFGH";
+    dmfc->ClipString(width, s, true);
+    EXPECT_LE(DLLgrtext_GetTextLineWidth(s), width) << "width " << width;
+  }
+
+  char exact[] = "ABCDEFGH";
+  dmfc->ClipString(29, exact, true);
+  EXPECT_EQ(std::string(exact), "ABCDE" + kArrow);
+}
+
 TEST_F(ClipStringTest, WithArrowKeepsLongestPrefixThatFitsWithTheArrow) {
   char s[] = "ABCDEFGH";
   dmfc->ClipString(32, s, true);
   EXPECT_EQ(std::string(s), "ABCDE" + kArrow);
   EXPECT_LE(DLLgrtext_GetTextLineWidth(s), 32);
+}
+
+TEST_F(ClipStringTest, WithoutArrowFitsWithinWidth) {
+  char s[] = "ABCDEFGH";
+  dmfc->ClipString(22, s, false);
+  EXPECT_LE(DLLgrtext_GetTextLineWidth(s), 22) << '"' << s << '"';
+  EXPECT_STREQ(s, "ABCD");
+}
+
+TEST_F(ClipStringTest, ClipsWhenOnlyTheLastCharacterOverflows) {
+  char s[] = "ABCDE";
+  dmfc->ClipString(22, s, false);
+  EXPECT_LE(DLLgrtext_GetTextLineWidth(s), 22) << '"' << s << '"';
+  EXPECT_STREQ(s, "ABCD");
+}
+
+TEST_F(ClipStringTest, NeverWritesBeforeTheString) {
+  char buf[] = "#ABCDEF";
+  char *s = buf + 1;
+  const int arrow_width = DLLgrtext_GetTextLineWidth(kArrow.c_str());
+  dmfc->ClipString(arrow_width, s, true);
+  EXPECT_EQ(buf[0], '#');
+  EXPECT_LE(DLLgrtext_GetTextLineWidth(s), arrow_width);
 }
 
 } // namespace

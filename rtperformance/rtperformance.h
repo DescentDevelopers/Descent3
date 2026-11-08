@@ -130,7 +130,7 @@ struct tRTFrameInfo {
 
 #define RTP_ENABLEFLAGS(flags) rtp_EnableFlags(flags)
 
-#define RTP_DISABLEFLAGS(flags) rtp_EnableFlags(flags)
+#define RTP_DISABLEFLAGS(flags) rtp_DisableFlags(flags)
 
 // given 2 clocks (INT64's) it will return the time in seconds between them (double)
 // (internal use)

@@ -881,6 +881,10 @@ int32_t calc_bits(Encoder &enc, int32_t val) {
         ++minValue;
       }
 
+      if (minValue > 16) {
+        minValue = 16;
+      }
+
       if (bitPower < (minValue - 1)) {
         bitPower = minValue - 1;
       }

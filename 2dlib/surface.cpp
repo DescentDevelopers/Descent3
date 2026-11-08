@@ -677,15 +677,15 @@ void grSurface::xlat24_16(char *data, int w, int h) {
     scol = 0;
     for (dcol = 0; dcol < width; dcol++) {
       uint16_t pix;
-      char r, g, b;
+      uint8_t r, g, b;
       r = sptr[scol++];
       g = sptr[scol++];
       b = sptr[scol++];
-      pix = ((uint16_t)(r >> 3) << 11) + ((uint16_t)(g >> 2) << 5) + ((uint16_t)(b >> 3));
+      pix = GR_RGB16(r, g, b);
       dptr[dcol] = pix;
     }
     sptr += (w * 3);
-    dptr += m_DataRowsize;
+    dptr += m_DataRowsize / 2;
   }
 }
 
@@ -709,9 +709,7 @@ void grSurface::xlat32_16(char *data, int w, int h) {
       uint16_t spix;
 
       pix = sptr[col];
-      spix = (uint16_t)(pix & 0x000000f8) >> 3;
-      spix |= (uint16_t)(pix & 0x0000fc00) >> 5;
-      spix |= (uint16_t)(pix & 0x00f80000) >> 8;
+      spix = GR_COLOR_TO_16(pix);
       dptr[col] = spix;
     }
     sptr += w;

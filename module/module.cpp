@@ -161,6 +161,7 @@ bool mod_LoadModule(module_t *handle, const std::filesystem::path &imodfilename,
     case ERROR_DLL_INIT_FAILED:
       ModLastError = MODERR_MODINITFAIL;
       break;
+    case ERROR_MOD_NOT_FOUND:
     case ERROR_DLL_NOT_FOUND:
       ModLastError = MODERR_MODNOTFOUND;
       break;

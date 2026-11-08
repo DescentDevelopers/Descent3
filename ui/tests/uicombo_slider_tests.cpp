@@ -84,6 +84,19 @@ TEST_F(UIComboBoxTest, OutOfRangeSelectionIsIgnored) {
   EXPECT_EQ(combo.GetSelectedIndex(), 1);
 }
 
+TEST_F(UIComboBoxTest, RemovingTheSelectedLastItemKeepsSelectionInRange) {
+  combo.SetSelectedIndex(2);
+  combo.RemoveItem(&c);
+  EXPECT_LT(combo.GetSelectedIndex(), 2);
+  EXPECT_NE(combo.GetItem(combo.GetSelectedIndex()), nullptr);
+}
+
+TEST_F(UIComboBoxTest, RemovingAnItemBeforeTheSelectionKeepsTheSameItemSelected) {
+  combo.SetSelectedIndex(2);
+  combo.RemoveItem(&a);
+  EXPECT_EQ(combo.GetItem(combo.GetSelectedIndex()), &c);
+}
+
 // UISlider::GetPos() is documented (ui.h) as ranging over 0 .. GetRange()-1, and SetPos() clamps
 // to that range.
 
@@ -114,6 +127,14 @@ TEST_F(UISliderTest, ArrowKeysMoveOneStepAndReportThePosition) {
 TEST_F(UISliderTest, LeftArrowStopsAtZero) {
   EXPECT_EQ(Press(KEY_LEFT), -1);
   EXPECT_EQ(slider.GetPos(), 0);
+  EXPECT_TRUE(g_callback_values.empty());
+}
+
+TEST_F(UISliderTest, RightArrowStopsAtTheLastPosition) {
+  slider.SetPos(4);
+  g_callback_values.clear();
+  Press(KEY_RIGHT);
+  EXPECT_EQ(slider.GetPos(), 4);
   EXPECT_TRUE(g_callback_values.empty());
 }
 

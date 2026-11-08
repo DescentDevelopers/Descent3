@@ -246,6 +246,17 @@ TEST_F(CFileIOTest, TellTracksBytesWrittenInBinaryMode) {
   EXPECT_EQ(std::filesystem::file_size(file), 25u);
 }
 
+TEST_F(CFileIOTest, CfprintfAdvancesPositionByBytesWritten) {
+  const auto file = dir_ / "printf.bin";
+  CFILE *out = cfopen(file, "wb");
+  ASSERT_NE(out, nullptr);
+  EXPECT_EQ(cfprintf(out, "%d-%s", 42, "abc"), 6);
+  EXPECT_EQ(cftell(out), 6);
+  cfclose(out);
+
+  EXPECT_EQ(d3_test::ReadFileText(file), "42-abc");
+}
+
 TEST_F(CFileIOTest, CopyFileCopiesContentsAcrossChunkBoundaries) {
   // Larger than the internal copy buffer so more than one chunk is needed;
   // include NUL and high bytes.

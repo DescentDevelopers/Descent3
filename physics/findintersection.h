@@ -295,7 +295,9 @@ static inline bool FastVectorBBox(const float *min, const float *max, const floa
     if (which_plane != i) {
       coord[i] = origin[i] + max_t[which_plane] * dir[i];
 
-      if ((quad[i] == Q_RIGHT && coord[i] < min[i]) || (quad[i] == Q_LEFT && coord[i] > max[i])) {
+      // Allow for rounding in coord so a ray through an edge two boxes share isn't culled by both
+      const float eps = 1e-5f * (std::fabs(origin[i]) + std::fabs(coord[i]));
+      if (coord[i] < min[i] - eps || coord[i] > max[i] + eps) {
         return false;
       }
     } else {

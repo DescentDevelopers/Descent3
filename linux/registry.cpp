@@ -61,11 +61,11 @@
 
 // Convert a string that represents a hex value into an int
 int hextoi(char *hexstring) {
-  int value;
+  unsigned int value;
   std::stringstream ss;
   ss << std::hex << hexstring;
   ss >> value;
-  return value;
+  return static_cast<int>(value);
 }
 
 // Removes whitespace from the start of the given string.
@@ -249,10 +249,9 @@ bool CRegistry::Import() {
     char type = REGT_STRING;
 
     // read in the string
-    fgets(buffer, 500, file);
-    ptr = buffer;
-    if (feof(file)) // we are at the end of the file so there isn't data to continue
+    if (!fgets(buffer, 500, file)) // we are at the end of the file so there isn't data to continue
       oktocreate = false;
+    ptr = buffer;
     // see what we read, a key or record, if the first character is a [ than a key " is record
     if (oktocreate) {
       if (buffer[0] == '[') {

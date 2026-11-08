@@ -250,6 +250,14 @@ bool ddgr_dx_surf_Unlock(ddgr_surface *sf, void *ptr) {
 //	attaches an OS handle to a surface
 void ddgr_dx_surf_AttachHandle(ddgr_surface *sf, unsigned handle) {}
 
+//	Scales an 8-bit colour channel into the bits of a DirectDraw pixel format channel mask.
+static DWORD dx_PackChannel(int value, DWORD mask) {
+  int top = 0;
+  while (top < 32 && (mask >> top))
+    top++;
+  return (top >= 8 ? (DWORD)value << (top - 8) : (DWORD)value >> (8 - top)) & mask;
+}
+
 //	The only graphic primatives
 //	clear
 //	blt.
@@ -264,8 +272,18 @@ void ddgr_dx_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, 
 
   memset(&ddbltfx, 0, sizeof(DDBLTFX));
   ddbltfx.dwSize = sizeof(ddbltfx);
-  ddbltfx.dwFillColor = RGB(DDGR_COLOR_RED(col), DDGR_COLOR_GREEN(col), DDGR_COLOR_BLUE(col));
-  SetRect(&rect, l, t, l + w - 1, t + h - 1);
+  DDPIXELFORMAT ddpf;
+  memset(&ddpf, 0, sizeof(ddpf));
+  ddpf.dwSize = sizeof(ddpf);
+  hres = lpdds->GetPixelFormat(&ddpf);
+  if (hres != DD_OK) {
+    ddgr_PushError("Unable to get DirectDraw surface pixel format(%d)\n", LOWORD(hres));
+    return;
+  }
+  ddbltfx.dwFillColor = dx_PackChannel(DDGR_COLOR_RED(col), ddpf.dwRBitMask) |
+                        dx_PackChannel(DDGR_COLOR_GREEN(col), ddpf.dwGBitMask) |
+                        dx_PackChannel(DDGR_COLOR_BLUE(col), ddpf.dwBBitMask);
+  SetRect(&rect, l, t, l + w, t + h);
 
   hres = lpdds->Blt(&rect, // dest rect
                     nullptr,  // src surface
@@ -291,8 +309,8 @@ bool ddgr_dx_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int 
   else
     lpddsd = dbm->lpdds;
 
-  SetRect(&srect, sx, sy, sx + sw - 1, sy + sh - 1);
-  SetRect(&drect, dx, dy, dx + sw - 1, dy + sh + 1);
+  SetRect(&srect, sx, sy, sx + sw, sy + sh);
+  SetRect(&drect, dx, dy, dx + sw, dy + sh);
 
   hres = lpddsd->Blt(&drect, lpddss, &srect, DDBLT_WAIT, nullptr);
   if (hres != DD_OK) {

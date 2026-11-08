@@ -211,6 +211,55 @@ TEST_F(HogMakerTest, SearchPathsAreConsultedInOrderAfterListDirectory) {
   EXPECT_EQ(read_back["third.txt"], "from extra2");
 }
 
+TEST_F(HogMakerTest, StoredNamesAlwaysFitWithTerminatorInNameField) {
+  // HOG_FILENAME_LEN (36) includes the NUL terminator, so the longest storable name is 35 characters.
+  const std::string name35 = std::string(31, 'a') + ".txt";
+  const std::string name36 = std::string(32, 'b') + ".txt";
+  const std::string name37 = std::string(33, 'c') + ".txt";
+  ASSERT_EQ(name35.size(), 35u);
+  ASSERT_EQ(name36.size(), 36u);
+  ASSERT_EQ(name37.size(), 37u);
+
+  fs::path src = tmp / "src";
+  tmp.Write("src/" + name35, "35");
+  tmp.Write("src/" + name36, "36");
+  tmp.Write("src/" + name37, "37");
+  tmp.Write("src/list.txt", name35 + "\n" + name36 + "\n" + name37 + "\n");
+
+  fs::path hog = tmp / "test.hog";
+  fs::path log = tmp / "log.txt";
+  ASSERT_EQ(RunHogMaker({hog, src / "list.txt"}, log), 0) << d3_test::ReadFileText(log);
+
+  RawHog raw;
+  ASSERT_TRUE(ReadRawHog(hog, raw));
+  bool found35 = false;
+  for (const auto &entry : raw.entries) {
+    const void *nul = std::memchr(entry.name, '\0', HOG_FILENAME_LEN);
+    EXPECT_NE(nul, nullptr) << "unterminated name: " << std::string(entry.name, HOG_FILENAME_LEN);
+    if (nul && name35 == entry.name)
+      found35 = true;
+  }
+  EXPECT_TRUE(found35) << "a 35-character name is valid and must be stored";
+}
+
+TEST_F(HogMakerTest, DirectoryPrefixDoesNotCountTowardsTheNameLimit) {
+  const std::string dir(30, 'd');
+  fs::path src = tmp / "src";
+  tmp.Write("src/" + dir + "/short.txt", "short");
+  tmp.Write("src/list.txt", dir + "/short.txt\n");
+
+  fs::path hog = tmp / "test.hog";
+  fs::path log = tmp / "log.txt";
+  ASSERT_EQ(RunHogMaker({hog, src / "list.txt"}, log), 0) << d3_test::ReadFileText(log);
+
+  RawHog raw;
+  ASSERT_TRUE(ReadRawHog(hog, raw));
+  ASSERT_EQ(raw.entries.size(), 1u);
+  EXPECT_STREQ(raw.entries[0].name, "short.txt");
+  auto read_back = ReadThroughGameLoader(hog, {"short.txt"});
+  EXPECT_EQ(read_back["short.txt"], "short");
+}
+
 TEST_F(HogMakerTest, OverlongFileNameBehindADirectoryIsRejected) {
   const std::string name36 = std::string(32, 'b') + ".txt";
   ASSERT_EQ(name36.size(), 36u);

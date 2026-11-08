@@ -377,6 +377,7 @@ bool AudioStream::Open(const std::filesystem::path &filename, int open_flags) {
     nbufs = CHECK_FLAG(m_flags, STRM_OPNF_GRADUAL) ? 1 : STRM_BUFCOUNT;
 
     if (!AudioStream::ReopenDigitalStream(0, nbufs)) {
+      AudioStream::Close();
       return false;
     }
     AudioStream::SetLoopCount(1);
@@ -478,6 +479,8 @@ bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
     granularity = 4;
     bytesize = digihdr->measure << 2;
     break;
+  default:
+    return false;
   }
 
   //	bufsize is bytes per measure.  now scale according to memory requirements.
@@ -585,9 +588,6 @@ bool AudioStream::Play(bool start_on_frame) {
 #endif
     return false;
   }
-  //	play stream if there's room to.
-  if (!ActivateStream(this))
-    return false;
   switch (m_archive.StreamFormat()) {
   case SAF_8BIT_M:
     sflag = SIF_STREAMING_8_M;
@@ -605,13 +605,18 @@ bool AudioStream::Play(bool start_on_frame) {
     Int3();
     return false;
   }
+  if (m_state != STRM_STOPPED) {
+    AudioStream::Stop();
+  }
+  // a stream started with start_on_frame holds a slot while still STRM_STOPPED, so release it here too
+  DeactivateStream(this);
+  //	play stream if there's room to.
+  if (!ActivateStream(this))
+    return false;
   // reset soft stopping.
   m_stopnextmeasure = false;
   m_curmeasure = 0;
   m_stopflag = nullptr;
-  if (m_state != STRM_STOPPED) {
-    AudioStream::Stop();
-  }
   if (m_playcount > 0) {
     AudioStream::Reset();
   }

@@ -448,7 +448,7 @@ void ddgr_gdi_surf_Destroy(ddgr_surface *sf) {
 //	Clears a GDI surface.
 void ddgr_gdi_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, int h) {
   HBITMAP old_bmp;
-  HBRUSH clr_brush, old_brush;
+  HBRUSH clr_brush;
   HDC hdc;
   tGDISurface *dbm = (tGDISurface *)dsf->obj;
   int red, green, blue;
@@ -484,11 +484,9 @@ void ddgr_gdi_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w,
     hdc = GDI_DATA(hOffscreenDC);
     old_bmp = (HBITMAP)SelectObject(hdc, dbm->hbm);
   }
-  old_brush = (HBRUSH)SelectObject(hdc, clr_brush);
-
-  Rectangle(hdc, l, t, l + w, t + h);
-
-  SelectObject(hdc, old_brush);
+  RECT rect;
+  SetRect(&rect, l, t, l + w, t + h);
+  FillRect(hdc, &rect, clr_brush);
 
   if (dbm->hbm == nullptr) {
     // do if clearing was done on primary display.

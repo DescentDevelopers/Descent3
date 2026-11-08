@@ -237,7 +237,8 @@ static inline int GRCHAR_HEIGHT_TEMP(const tFontTemplate *ft) { return (int)ft->
 static inline int GRCHAR_WIDTH_TEMP(const tFontTemplate *ft, int ch) {
   if (ch > ft->max_ascii && ft->uppercase) {
     ch = toupper(ch);
-  } else if (ch < ft->min_ascii || ch > ft->max_ascii) {
+  }
+  if (ch < ft->min_ascii || ch > ft->max_ascii) {
     return 0;
   }
 
@@ -637,6 +638,7 @@ void grtext_Render() {
       cbi.clipped = false; // if =1, use sx,sy,sw,sh
       cbi.x = cmd.x;
       cbi.y = cmd.y;
+      cbi.dsw = cbi.dsh = Grtext_scale;
       if (Grtext_shadow) {
         //	rend_SetCharacterParameters(0,0,0,0);
         rend_SetFlatColor(0);
@@ -752,7 +754,6 @@ int grtext_GetTextHeight(const char *str) {
 
 int grtext_GetTextLineWidth(const char *str) {
   int line_width = 0, max_width = 0;
-  int rgb_define_mode = 0;
   int strsize = strlen(str);
 
   for (int i = 0; i < strsize; i++) {
@@ -761,31 +762,26 @@ int grtext_GetTextLineWidth(const char *str) {
 
     // note that if we hit the GR_COLOR_CHAR then the next three values should
     //	not count when defining the width of the line.
-    if (rgb_define_mode == 3)
-      rgb_define_mode = 0;
-    else if (ch == GR_COLOR_CHAR)
-      rgb_define_mode = 1;
-    if (!rgb_define_mode) {
-      if (ch == '\t') { // tab char
-        int space_width;
-        space_width = (GRCHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing) * Grtext_tabspace;
-        line_width = (line_width + space_width) / space_width * space_width;
-      } else if (ch == GRTEXT_FORMAT_CHAR) {
-        if ((i + 1) >= strsize)
-          break;
-        line_width = ((int)str[i + 1] * GRTEXT_FORMAT_SCALAR);
-        i++;
-      } else if (ch == '\n') {
-        if (line_width > max_width) {
-          max_width = line_width;
-        }
-        line_width = 0;
-      } else {
-        width = GRCHAR_WIDTH(Grtext_font, ch);
-        line_width += (width + Grtext_spacing + GRCHAR_SPACING(Grtext_font, ch, ch2));
+    if (ch == GR_COLOR_CHAR) {
+      i += 3;
+    } else if (ch == '\t') { // tab char
+      int space_width;
+      space_width = (GRCHAR_WIDTH(Grtext_font, ' ') + Grtext_spacing) * Grtext_tabspace;
+      line_width = (line_width + space_width) / space_width * space_width;
+    } else if (ch == GRTEXT_FORMAT_CHAR) {
+      if ((i + 1) >= strsize)
+        break;
+      line_width = ((int)str[i + 1] * GRTEXT_FORMAT_SCALAR);
+      i++;
+    } else if (ch == '\n') {
+      if (line_width > max_width) {
+        max_width = line_width;
       }
-    } else
-      rgb_define_mode++;
+      line_width = 0;
+    } else {
+      width = GRCHAR_WIDTH(Grtext_font, ch);
+      line_width += (width + Grtext_spacing + GRCHAR_SPACING(Grtext_font, ch, ch2));
+    }
   }
 
   if (line_width > max_width) {
@@ -797,7 +793,6 @@ int grtext_GetTextLineWidth(const char *str) {
 // returns width of text using a font template
 int grtext_GetTextLineWidthTemplate(const tFontTemplate *ft, const char *str) {
   int max_width = 0, i, line_width = 0, strsize = strlen(str);
-  int rgb_define_mode = 0;
 
   for (i = 0; i < strsize; i++) {
     int width;
@@ -805,31 +800,26 @@ int grtext_GetTextLineWidthTemplate(const tFontTemplate *ft, const char *str) {
 
     // note that if we hit the GR_COLOR_CHAR then the next three values should
     //	not count when defining the width of the line.
-    if (rgb_define_mode == 3)
-      rgb_define_mode = 0;
-    else if (ch == GR_COLOR_CHAR)
-      rgb_define_mode = 1;
-    if (!rgb_define_mode) {
-      if (ch == '\t') { // tab char
-        int space_width;
-        space_width = (GRCHAR_WIDTH_TEMP(ft, ' ') + Grtext_spacing) * Grtext_tabspace;
-        line_width = (line_width + space_width) / space_width * space_width;
-      } else if (ch == GRTEXT_FORMAT_CHAR) {
-        if ((i + 1) >= strsize)
-          break;
-        line_width = ((int)str[i + 1] * GRTEXT_FORMAT_SCALAR);
-        i++;
-      } else if (ch == '\n') {
-        if (line_width > max_width) {
-          max_width = line_width;
-        }
-        line_width = 0;
-      } else {
-        width = GRCHAR_WIDTH_TEMP(ft, ch);
-        line_width += (width + Grtext_spacing + GRCHAR_SPACING_TEMP(ft, ch, ch2));
+    if (ch == GR_COLOR_CHAR) {
+      i += 3;
+    } else if (ch == '\t') { // tab char
+      int space_width;
+      space_width = (GRCHAR_WIDTH_TEMP(ft, ' ') + Grtext_spacing) * Grtext_tabspace;
+      line_width = (line_width + space_width) / space_width * space_width;
+    } else if (ch == GRTEXT_FORMAT_CHAR) {
+      if ((i + 1) >= strsize)
+        break;
+      line_width = ((int)str[i + 1] * GRTEXT_FORMAT_SCALAR);
+      i++;
+    } else if (ch == '\n') {
+      if (line_width > max_width) {
+        max_width = line_width;
       }
-    } else
-      rgb_define_mode++;
+      line_width = 0;
+    } else {
+      width = GRCHAR_WIDTH_TEMP(ft, ch);
+      line_width += (width + Grtext_spacing + GRCHAR_SPACING_TEMP(ft, ch, ch2));
+    }
   }
 
   if (max_width < line_width) {

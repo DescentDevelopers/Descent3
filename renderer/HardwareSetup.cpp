@@ -101,7 +101,13 @@ void g3_StartFrame(vector *view_pos, matrix *view_matrix, float zoom) {
   // is not important because we assume pixels are square
   scalar s = (scalar)Window_height / (scalar)Window_width;
 
-  Matrix_scale = { s <= 1.0f ? s : 1.0f / s, 1.0f };
+  if (s <= 1.0f) {
+    Matrix_scale.x() = s;
+    Matrix_scale.y() = 1.0f;
+  } else {
+    Matrix_scale.x() = 1.0f;
+    Matrix_scale.y() = 1.0f / s;
+  }
 
 
   //ISB: Convert zoom into vertical FOV for convenience

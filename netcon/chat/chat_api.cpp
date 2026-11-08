@@ -123,7 +123,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
     for (uint32_t l = 0; l < strlen(Nick_name); l++)
       if (Nick_name[l] == ' ')
         Nick_name[l] = '_';
-    strcpy(Orignial_nick_name, nickname);
+    strcpy(Orignial_nick_name, Nick_name);
     strcpy(Chat_tracker_id, trackerid);
 
     Firstuser = nullptr;
@@ -162,16 +162,6 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
     int rcode=0;
     uint32_t ip=0;
 
-    // temporary fix until DLLnw_Asyncgethostbyname win support was restored.
-#ifdef WIN32
-    HOSTENT *he;
-    he = gethostbyname(serveraddr);
-    if (!he) {
-      return -1;
-    }
-    memcpy(&Chataddr.sin_addr.s_addr, he->h_addr_list[0], 4);
-    rcode = 1;
-#else
     DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_LOOKUP, serveraddr);
     do {
       rcode = DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_READ, serveraddr);
@@ -186,7 +176,6 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
       return 0;
     }
     memcpy(&Chataddr.sin_addr.s_addr, &ip, 4);
-#endif
 
     Chataddr.sin_port = htons(chat_port);
 
@@ -802,7 +791,7 @@ char *ParseIRCMessage(char *Line, int iMode) {
     }
     // sprintf(szResponse,"*** %s has kicked %s from channel %s (%s)",szNick,szHackPrefix,szTarget,pszTempStr);
     // Remove them to the userlist too!
-    RemoveChatUser(szNick);
+    RemoveChatUser(szHackPrefix);
     return nullptr; // szResponse;
   }
   if (stricmp(szCmd, "NICK") == 0) {
@@ -864,7 +853,7 @@ char *ParseIRCMessage(char *Line, int iMode) {
   // End of whois and we didn't get a channel means they aren't in a channel.
   if (stricmp(szCmd, "318") == 0) {
     if (!*User_req_channel) {
-      User_req_channel[0] = '*';
+      strcpy(User_req_channel, "*");
     }
   }
 
@@ -996,6 +985,12 @@ char *ParseIRCMessage(char *Line, int iMode) {
     Nick_variety++;
     snprintf(szResponse, sizeof(szResponse), "/NICK %s", new_nick);
     SendChatString(szResponse, 1);
+    return nullptr;
+  }
+  if ((stricmp(szCmd, "471") == 0) || (stricmp(szCmd, "473") == 0) || (stricmp(szCmd, "474") == 0) ||
+      (stricmp(szCmd, "475") == 0)) {
+    // Full, invite only, banned or bad key, we couldn't join the channel
+    Joined_channel = -1;
     return nullptr;
   }
   // Default print

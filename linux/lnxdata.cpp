@@ -145,10 +145,9 @@ bool oeLnxAppDatabase::read(const char *label, char *entry, int *entrylen) {
 
   // See if it exists
   int size = database->GetDataSize((char *)label);
-  if (size > 0)
-    *entrylen = size - 1; //-1 because of NULL
-  else
+  if (size <= 0 || size > *entrylen)
     return false;
+  *entrylen = size - 1; //-1 because of NULL
 
   // ok it exists, no look it up
   database->LookupRecord((char *)label, entry);
@@ -235,7 +234,7 @@ void oeLnxAppDatabase::get_user_name(char *buffer, size_t *size) {
     *size = strlen(buffer);
   }
 #else
-DWORD unamelen = 0;
+DWORD unamelen = static_cast<DWORD>(*size);
 GetUserName(buffer, &unamelen);
 *size = static_cast<size_t>(unamelen);
 #endif

@@ -157,6 +157,7 @@
 #define NETWORKING_H
 
 #include "pstypes.h"
+#include <atomic>
 #include <cstdint>
 
 #if defined(WIN32)
@@ -463,27 +464,10 @@ int nw_Uncompress(void *compdata, void *uncompdata, int count);
 struct async_dns_lookup {
   uint32_t ip; // resolved host. Write only to worker thread.
   char *host;      // host name to resolve. read only to worker thread
-  bool done;       // write only to the worker thread. Signals that the operation is complete
-  bool error;      // write only to worker thread. Thread sets this if the name doesn't resolve
-  bool abort;      // read only to worker thread. If this is set, don't fill in the struct.
-
-  // rcg06212000 added to let us join the thread at completion...
-#if defined(POSIX)
-  SDL_Thread *threadId;
-#endif
+  std::atomic<bool> done;  // write only to the worker thread. Signals that the operation is complete
+  std::atomic<bool> error; // write only to worker thread. Thread sets this if the name doesn't resolve
+  std::atomic<bool> abort; // read only to worker thread. If this is set, don't fill in the struct.
 };
-
-#ifdef WIN32
-#define CDECLCALL __cdecl
-#else
-#define CDECLCALL
-#endif
-#if defined(POSIX)
-// rcg06192000 used to return void *.
-int CDECLCALL gethostbynameworker(void *parm);
-#else
-void CDECLCALL gethostbynameworker(void *parm);
-#endif
 
 int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname);
 int nw_ReccomendPPS();

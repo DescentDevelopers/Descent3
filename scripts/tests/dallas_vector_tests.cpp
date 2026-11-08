@@ -390,6 +390,11 @@ TEST(DallasVector, DeltaAngleBetweenVectors) {
   EXPECT_LE(std::abs(AngleDiff(vm_DeltaAngVec(&x, &x, nullptr), 0)), 0x10);
 }
 
+TEST(DallasVector, DeltaAngleOfOppositeVectorsIsHalfTurn) {
+  const vector x = V(1, 0, 0), nx = V(-5, 0, 0);
+  EXPECT_LE(std::abs(AngleDiff(vm_DeltaAngVec(&x, &nx, nullptr), 2 * kDeg90)), 0x10);
+}
+
 // The angle is positive when v0 x v1 points along fvec.
 TEST(DallasVector, DeltaAngleIsSignedAroundForwardVector) {
   const vector x = V(1, 0, 0), y = V(0, 1, 0);

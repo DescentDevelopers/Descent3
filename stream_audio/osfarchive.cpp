@@ -218,7 +218,7 @@ bool OSFArchive::SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t 
     cfseek(m_fp, OSF_HDR_TITLE_OFS - (hdrcur - hdrstart), SEEK_CUR);
     strncpy(osftitle, name, OSF_HDR_TITLE_LEN);
     osftitle[OSF_HDR_TITLE_LEN - 1] = 0;
-    if (!cf_WriteBytes((uint8_t *)name, OSF_HDR_TITLE_LEN, m_fp))
+    if (!cf_WriteBytes((uint8_t *)osftitle, OSF_HDR_TITLE_LEN, m_fp))
       return false;
   } catch (...) {
     return false;

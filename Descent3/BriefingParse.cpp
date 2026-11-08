@@ -437,14 +437,14 @@ int CBriefParse::ParseBriefing(const char *filename) {
             vflags |= VF_COMPRESSED;
           } else if (!stricmp(token, "stereo")) {
             vflags |= VF_STEREO;
-          } else if (!stricmp(buffer, "isset")) {
+          } else if (!stricmp(token, "isset")) {
             int value, bit = 0x01;
             PARSE_INT(value);
             if (value >= 0 && value < 32) {
               bit = bit << value;
               // snddesc.mission_mask_set |= bit;
             }
-          } else if (!stricmp(buffer, "isnset")) {
+          } else if (!stricmp(token, "isnset")) {
             int value, bit = 0x01;
             PARSE_INT(value);
             if (value >= 0 && value < 32) {

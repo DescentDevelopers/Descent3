@@ -27,4 +27,12 @@
  */
 void mveaudio_process(char *buffer, unsigned char *data, int sample_size, bool is_compressed = true);
 
+/**
+ * Fill buffer with silence
+ * @param buffer output queue buffer
+ * @param size length of buffer in bytes
+ * @param sample_size size of sample (1 for 8 bit, 2 for 16 bit)
+ */
+void mveaudio_silence(char *buffer, int size, int sample_size);
+
 #endif /* INCLUDED_MVE_AUDIO_H */

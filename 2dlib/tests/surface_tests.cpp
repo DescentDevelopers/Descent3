@@ -167,6 +167,48 @@ TEST(GrMemorySurface, Load4444ProducesOpaquePixelsWithSameColor) {
   }
 }
 
+TEST(GrMemorySurface, Load24BitPlacesEachRowInTheMatchingSurfaceRow) {
+  // All channel values below 0x80 to stay clear of sign-extension issues.
+  const uint8_t image[2][2][3] = {{{0x10, 0x20, 0x30}, {0x18, 0x28, 0x38}},
+                                  {{0x40, 0x08, 0x18}, {0x48, 0x10, 0x20}}};
+
+  OwnedSurface row1_alone(2, 1, 2);
+  row1_alone.surf.load(const_cast<char *>(reinterpret_cast<const char *>(image[1])), 2, 1, BPP_24);
+
+  OwnedSurface s(2, 2, 2, 0, 4);
+  s.surf.load(const_cast<char *>(reinterpret_cast<const char *>(image)), 2, 2, BPP_24);
+
+  EXPECT_EQ(s.at(0, 1), row1_alone.at(0, 0));
+  EXPECT_EQ(s.at(1, 1), row1_alone.at(1, 0));
+  for (int y = 2; y < 6; y++)
+    for (int x = 0; x < 2; x++)
+      EXPECT_EQ(s.at(x, y), kSentinel) << "wrote outside surface at (" << x << "," << y << ")";
+}
+
+TEST(GrMemorySurface, Load24BitMatchesClearForSameColor) {
+  const uint8_t rgb[4][3] = {{0x10, 0x20, 0x30}, {0x40, 0x60, 0x08}, {0xF8, 0x80, 0x08}, {0xFF, 0xFF, 0xFF}};
+  OwnedSurface s(4, 1, 4);
+
+  s.surf.load(const_cast<char *>(reinterpret_cast<const char *>(rgb)), 4, 1, BPP_24);
+
+  for (int i = 0; i < 4; i++) {
+    SCOPED_TRACE(i);
+    EXPECT_EQ(s.at(i, 0) & 0x7FFF, ClearValue(GR_RGB(rgb[i][0], rgb[i][1], rgb[i][2])) & 0x7FFF);
+  }
+}
+
+TEST(GrMemorySurface, Load32BitMatchesClearForSameColor) {
+  const uint32_t argb[4] = {0x00102030, 0x00406008, 0x00F88008, 0x00FFFFFF};
+  OwnedSurface s(4, 1, 4); // xlat32_16 requires a width that is a multiple of 4
+
+  s.surf.load(const_cast<char *>(reinterpret_cast<const char *>(argb)), 4, 1, BPP_32);
+
+  for (int i = 0; i < 4; i++) {
+    SCOPED_TRACE(i);
+    EXPECT_EQ(s.at(i, 0) & 0x7FFF, ClearValue(argb[i]) & 0x7FFF);
+  }
+}
+
 namespace {
 struct GrViewportBltTest : ::testing::Test {
   OwnedSurface src{4, 3, 4};
@@ -205,4 +247,10 @@ TEST_F(GrViewportBltTest, SubRectBltClipsAtBottomRight) {
   grViewport vp(&dst.surf);
   vp.blt(4, 4, &src.surf, 1, 0, 3, 2);
   ExpectBlock(dst, src, 4, 4, 1, 0, 2, 1);
+}
+
+TEST_F(GrViewportBltTest, SubRectBltClippedAtTopLeftDrawsVisiblePartOfSource) {
+  grViewport vp(&dst.surf);
+  vp.blt(-1, -1, &src.surf, 0, 0, 3, 3);
+  ExpectBlock(dst, src, 0, 0, 1, 1, 2, 2);
 }

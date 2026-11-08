@@ -98,6 +98,33 @@ TEST_F(RtpLogTest, RecordedFrameValuesAppearInLogWithTimesInSeconds) {
   EXPECT_EQ(Column(header_, rows[1], "FrameNum") - Column(header_, rows[0], "FrameNum"), 1);
 }
 
+TEST_F(RtpLogTest, DataRowsHaveOneFieldPerHeaderColumn) {
+  rtp_StartLog();
+  RTP_RECORDVALUE(obj_do_frm, 100);
+  RTP_RECORDVALUE(fvi_calls, 3);
+  RTP_RECORDVALUE(fvi_time, 250);
+  rtp_RecordFrame();
+  rtp_StopLog();
+
+  std::vector<std::string> rows = ReadLogRows(dir_.path(), header_);
+  ASSERT_EQ(rows.size(), 1u);
+  ASSERT_FALSE(header_.empty());
+  EXPECT_EQ(Split(rows[0], ",").size(), header_.size()) << "header has " << header_.size() << " columns; row: " << rows[0];
+}
+
+TEST_F(RtpLogTest, FviTimeIsReportedInSeconds) {
+  rtp_StartLog();
+  RTP_RECORDVALUE(fvi_calls, 3);
+  RTP_RECORDVALUE(fvi_time, 250); // ticks -> 0.25 s
+  rtp_RecordFrame();
+  rtp_StopLog();
+
+  std::vector<std::string> rows = ReadLogRows(dir_.path(), header_);
+  ASSERT_EQ(rows.size(), 1u);
+  EXPECT_EQ(Column(header_, rows[0], "NumFVICalls"), 3);
+  EXPECT_NEAR(Column(header_, rows[0], "FVITime"), 0.25, 1e-6) << "row: " << rows[0];
+}
+
 TEST_F(RtpLogTest, StartingANewLogDiscardsFramesFromThePreviousOne) {
   rtp_StartLog();
   for (int i = 0; i < 5; i++) {
@@ -162,6 +189,17 @@ TEST_F(RtpLogTest, FullBufferIsFlushedToDiskAndLoggingStops) {
   ASSERT_EQ(rows.size(), static_cast<size_t>(frames));
   EXPECT_EQ(Column(header_, rows.front(), "REN:PolysDrawn"), 1);
   EXPECT_EQ(Column(header_, rows.back(), "REN:PolysDrawn"), frames);
+}
+
+TEST(RtpFlags, DisableFlagsMacroClearsOnlyTheGivenFlags) {
+  INT64 saved = Runtime_performance_flags;
+
+  rtp_EnableFlags(RTI_RENDERFRAMETIME | RTI_POLYSDRAWN);
+  RTP_DISABLEFLAGS(RTI_POLYSDRAWN);
+  EXPECT_EQ(Runtime_performance_flags & RTI_POLYSDRAWN, 0);
+  EXPECT_NE(Runtime_performance_flags & RTI_RENDERFRAMETIME, 0);
+
+  Runtime_performance_flags = saved;
 }
 
 } // namespace

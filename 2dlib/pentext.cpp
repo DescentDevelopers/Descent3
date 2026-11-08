@@ -236,22 +236,19 @@ int grViewport::get_text_line_width(char *str) {
 
     // note that if we hit the GR_COLOR_CHAR then the next three values should
     //	not count when defining the width of the line.
-    if (rgb_define_mode == 3)
-      rgb_define_mode = 0;
-    else if (str[i] == GR_COLOR_CHAR)
-      rgb_define_mode = 1;
-    if (!rgb_define_mode) {
-      if (str[i] == '\t') { // tab char
-        int space_width;
-        text_Font.get_char_info(' ', &space_width);
-        space_width += text_Spacing;
-        line_width = (line_width + space_width - 1) / space_width * space_width;
-      } else {
-        text_Font.get_char_info((int)str[i], &width);
-        line_width += (width + get_text_spacing());
-      }
-    } else
-      rgb_define_mode++;
+    if (rgb_define_mode) {
+      rgb_define_mode--;
+    } else if (str[i] == GR_COLOR_CHAR) {
+      rgb_define_mode = 3;
+    } else if (str[i] == '\t') { // tab char
+      int space_width;
+      text_Font.get_char_info(' ', &space_width);
+      space_width += text_Spacing;
+      line_width = (line_width + space_width - 1) / space_width * space_width;
+    } else {
+      text_Font.get_char_info((int)str[i], &width);
+      line_width += (width + get_text_spacing());
+    }
   }
 
   return line_width - get_text_spacing();
@@ -280,7 +277,7 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
     draw_y = CLIP_TOP;
   }
   if (CLIP_BOTTOM < (y + text_Font.height())) {
-    ch_h = CLIP_BOTTOM - y;
+    ch_h = CLIP_BOTTOM - y + 1;
   }
   ch_h = ch_h - ch_y; // do this to clip both top and bottom
 
@@ -295,10 +292,8 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
       if ((i + 3) >= (int)strlen(str))
         Int3(); // This shouldn't happen!  bad string!
       set_text_color(GR_RGB(str[i + 1], str[i + 2], str[i + 3]));
-      i += 4;
-      if (i >= (int)strlen(str))
-        Int3(); // This shouldn't happen too.
-      ch = (uint8_t)str[i];
+      i += 3;
+      continue;
     } else if (ch == '\t') { // tab char
       int space_width;
       text_Font.get_char_info(' ', &space_width);
@@ -318,7 +313,7 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
         draw_x = CLIP_LEFT;
       }
       if (CLIP_RIGHT < (cur_x + w)) {
-        ch_w = CLIP_RIGHT - cur_x;
+        ch_w = CLIP_RIGHT - cur_x + 1;
       }
       ch_w = ch_w - ch_x;
 
@@ -343,10 +338,7 @@ void grViewport::draw_text_line(int x, int y, char *str) {
       if ((i + 3) >= strlen(str))
         Int3(); // This shouldn't happen!  bad string!
       set_text_color(GR_RGB(str[i + 1], str[i + 2], str[i + 3]));
-      i += 4;
-      if (i >= strlen(str))
-        Int3(); // This shouldn't happen too.
-      ch = (uint8_t)str[i];
+      i += 3;
     } else if (ch == '\t') { // tab char
       int space_width;
       text_Font.get_char_info(' ', &space_width);

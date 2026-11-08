@@ -281,3 +281,28 @@ TEST_F(CFileHogTest, OpenLibraryRejectsMissingAndNonHogFiles) {
   EXPECT_EQ(cf_OpenLibrary("empty_file.hog"), 0);
 }
 
+TEST_F(CFileHogTest, LibraryThatFailedToOpenIsNotSearched) {
+  std::vector<uint8_t> hog = BuildHog({{"a.txt", "AAAA"}, {"b.txt", "BBBB"}});
+  hog.resize(68 + 48 + 10); // 68-byte header, first 48-byte record, part of the second
+  dir_.Write("truncated.hog", hog);
+
+  ASSERT_EQ(cf_OpenLibrary("truncated.hog"), 0);
+
+  CFILE *cf = cfopen("a.txt", "rb");
+  EXPECT_EQ(cf, nullptr);
+
+  // Cleanup for the buggy behaviour: the leaked library has handle 0. These
+  // are no-ops once the bug is fixed.
+  if (cf)
+    cfclose(cf);
+  cf_CloseLibrary(0);
+}
+
+TEST_F(CFileHogTest, LookupInAnEmptyLibraryFindsNothing) {
+  ASSERT_NE(OpenHog("empty.hog", {}), 0);
+
+  CFILE *cf = cfopen("missing.txt", "rb");
+  EXPECT_EQ(cf, nullptr);
+  if (cf)
+    cfclose(cf);
+}

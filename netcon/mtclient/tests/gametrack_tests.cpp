@@ -75,6 +75,26 @@ TEST_F(GameTracker, RequestGameListDiscardsQueuedListsAndAsksForOurLobby) {
       << "lobby name (with its NUL) must be inside the sent length";
 }
 
+TEST_F(GameTracker, OversizedGameListPacketYieldsOnlyOneList) {
+  game_packet_header p = MakePacket(GNT_GAMELIST_LITE_DATA);
+  memset(p.data, GT_D3TNG, sizeof(p.data));
+  p.len = static_cast<uint32_t>(GAME_HEADER_ONLY_SIZE + sizeof(p.data));
+  Deliver(p);
+
+  int lists = 0;
+  while (GetGameList() && lists < MAX_GAME_BUFFERS)
+    lists++;
+  EXPECT_LE(lists, 1);
+}
+
+TEST_F(GameTracker, RuntGameListPacketYieldsNoList) {
+  game_packet_header p = MakePacket(GNT_GAMELIST_LITE_DATA);
+  memset(p.data, GT_D3TNG, sizeof(p.data));
+  Deliver(p, static_cast<int>(GAME_HEADER_ONLY_SIZE - 1));
+
+  EXPECT_EQ(GetGameList(), nullptr);
+}
+
 TEST_F(GameTracker, GameOverIsConfirmedByServerAck) {
   EXPECT_EQ(SendGameOver(), 0);
   EXPECT_EQ(SentToTracker(GNT_GAMEOVER).size(), 1u);
@@ -97,6 +117,34 @@ TEST_F(GameTracker, GameOverIsResentUntilItTimesOut) {
   });
   EXPECT_EQ(result, 2);
   EXPECT_GE(SentToTracker(GNT_GAMEOVER).size(), 3u) << "unacknowledged game over should be retransmitted";
+}
+
+TEST_F(GameTracker, GameOverStopsBeingResentAfterGivingUp) {
+  SendGameOver();
+  int result = 0;
+  AdvanceAndPoll(TRACKER_TIMEOUT * 3, [&] {
+    if (result == 0)
+      result = SendGameOver();
+  });
+  ASSERT_EQ(result, 2);
+
+  mt_test::sent.clear();
+  AdvanceAndPoll(TRACKER_TIMEOUT, [] { IdleGameTracker(); });
+  EXPECT_EQ(SentToTracker(GNT_GAMEOVER).size(), 0u);
+}
+
+TEST_F(GameTracker, GameOverCanBeSentAgainAfterOneTimedOut) {
+  SendGameOver();
+  int result = 0;
+  AdvanceAndPoll(TRACKER_TIMEOUT * 3, [&] {
+    if (result == 0)
+      result = SendGameOver();
+  });
+  ASSERT_EQ(result, 2);
+
+  mt_test::sent.clear();
+  EXPECT_EQ(SendGameOver(), 0) << "a timed-out game over must not block the next one";
+  EXPECT_EQ(SentToTracker(GNT_GAMEOVER).size(), 1u);
 }
 
 TEST_F(GameTracker, NewGameIsAnnouncedAndResentUntilAcked) {
