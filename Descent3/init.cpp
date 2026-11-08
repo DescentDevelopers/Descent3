@@ -1986,6 +1986,10 @@ void SetupTempDirectory(void) {
     Descent3_temp_directory = GameArgs[t_arg + 1];
   } else {
     Descent3_temp_directory = ddio_GetTempPath();
+    if (Descent3_temp_directory.empty()) {
+      Error("Could not find temporary directory");
+      exit(1);
+    }
   }
 
   std::error_code ec;

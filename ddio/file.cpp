@@ -216,28 +216,24 @@ std::filesystem::path ddio_GetBasePath() {
 }
 
 std::filesystem::path ddio_GetTempPath() {
-  std::filesystem::path result;
-
-#if defined(POSIX)
-  const char *envr = SDL_getenv("XDG_CACHE_HOME");
-  if (envr) {
-    result = std::filesystem::path(envr) / "Descent3";
-  } else {
-    envr = SDL_getenv("HOME");
-    if (envr) {
-      result = std::filesystem::path(envr) / ".cache" / "Descent3";
-    } else {
-#endif
-      std::error_code ec;
-      std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
-      if (ec) {
-        Error("Could not find temporary directory: \"%s\"", ec.message().c_str());
-        exit(1);
-      }
-      result = tempPath / "Descent3" / "cache";
-#if defined(POSIX)
-    }
+#if defined(__LINUX__)
+  // $XDG_CACHE_HOME, falling back to $HOME/.cache (the defaults from the XDG Base Directory spec).
+  // Unset, empty or relative values are ignored, as the spec requires.
+  const char *xdg_cache_home = SDL_getenv("XDG_CACHE_HOME");
+  if (xdg_cache_home && std::filesystem::path(xdg_cache_home).is_absolute()) {
+    return std::filesystem::path(xdg_cache_home) / "Descent3";
+  }
+  const char *home = SDL_getenv("HOME");
+  if (home && std::filesystem::path(home).is_absolute()) {
+    return std::filesystem::path(home) / ".cache" / "Descent3";
   }
 #endif
-  return result;
+
+  std::error_code ec;
+  std::filesystem::path temp_path = std::filesystem::temp_directory_path(ec);
+  if (ec) {
+    LOG_ERROR << "Could not find temporary directory: " << ec.message();
+    return {};
+  }
+  return temp_path / "Descent3" / "cache";
 }

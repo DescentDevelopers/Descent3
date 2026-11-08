@@ -428,7 +428,17 @@ bool ddio_DeleteLockFile(const std::filesystem::path &dir);
 
 /**
  * Gets path where to write temporary/cache files.
- * @return path where user can write cache files.
+ * This is a fixed, per-application directory rather than a uniquely named one: the same path is returned on
+ * every run, so it can hold a lock file that detects another running instance and so that leftover temp files
+ * from a crashed run can be cleaned up on the next start. Use ddio_GetTmpFileName() to get unique file names
+ * inside it.
+ * Example directories, in order of use:
+ *   - $XDG_CACHE_HOME/Descent3 (Linux)
+ *   - /home/user/.cache/Descent3 (Linux)
+ *   - /tmp/Descent3/cache
+ *   - /var/folders/xx/xxxxxxxx/T/Descent3/cache (macOS)
+ *   - C:\Users\user\AppData\Local\Temp\Descent3\cache (Windows)
+ * @return path where user can write cache files, or empty path if no suitable directory was found.
  */
 std::filesystem::path ddio_GetTempPath();
 
