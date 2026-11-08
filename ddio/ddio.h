@@ -384,7 +384,12 @@ void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::reg
 std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, const char *prefix);
 
 /**
- * Gets path where files can be written.
+ * Gets path where files can be written, creating it if needed.
+ * Example directories:
+ *   - $XDG_DATA_HOME/org/app (Linux)
+ *   - /home/user/.local/share/org/app (Linux)
+ *   - /Users/user/Library/Application Support/org/app (macOS)
+ *   - C:\Users\user\AppData\Roaming\org\app (Windows)
  * @param org name of organization
  * @param app name of application
  * @return path that contains org and app components where user can write files, empty path if there some errors

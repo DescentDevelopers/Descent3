@@ -251,6 +251,26 @@ TEST_F(DDIO_XDG, ConfigPathFallsBackToPrefPath) {
   EXPECT_EQ(ddio_GetConfigPath("org", "app"), base_ / "data" / "org" / "app");
 }
 
+TEST_F(DDIO_XDG, PrefPathUsesXDGDataHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", (base_ / "home").c_str(), true);
+  std::filesystem::path expected = base_ / "data" / "org" / "app";
+  EXPECT_EQ(ddio_GetPrefPath("org", "app"), expected);
+  EXPECT_EQ(std::filesystem::status(expected).permissions(), std::filesystem::perms::owner_all);
+}
+
+TEST_F(DDIO_XDG, PrefPathIgnoresEmptyXDGDataHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", "", true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", base_.c_str(), true);
+  EXPECT_EQ(ddio_GetPrefPath("org", "app"), base_ / ".local" / "share" / "org" / "app");
+}
+
+TEST_F(DDIO_XDG, PrefPathFailsWithoutUsableDirectory) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", "relative/data", true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", "", true);
+  EXPECT_TRUE(ddio_GetPrefPath("org", "app").empty());
+}
+
 TEST_F(DDIO_XDG, StatePathUsesXDGStateHome) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_STATE_HOME", (base_ / "state").c_str(), true);
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", (base_ / "home").c_str(), true);

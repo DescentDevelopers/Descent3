@@ -199,6 +199,17 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
 }
 
 std::filesystem::path ddio_GetPrefPath(const char *org, const char *app) {
+#if defined(__LINUX__)
+  // SDL_GetPrefPath() uses $XDG_DATA_HOME and $HOME without checking that they are absolute, as the XDG Base
+  // Directory spec requires (an empty value makes it read out of bounds). Unset unusable values so SDL falls
+  // back the way the spec describes.
+  for (const char *name : {"XDG_DATA_HOME", "HOME"}) {
+    const char *value = SDL_getenv(name);
+    if (value && !std::filesystem::path(value).is_absolute()) {
+      SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), name);
+    }
+  }
+#endif
   char *pref_path = SDL_GetPrefPath(org, app);
   if (!pref_path) {
     LOG_ERROR << "Failed to get writable preference path!";
