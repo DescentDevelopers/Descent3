@@ -2014,9 +2014,7 @@ void SetupTempDirectory(void) {
     }
   }
 
-  std::error_code ec;
-  std::filesystem::create_directories(Descent3_temp_directory, ec);
-  if (ec) {
+  if (!ddio_CreateDirectories(Descent3_temp_directory)) {
     Error("Could not create temporary directory: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }

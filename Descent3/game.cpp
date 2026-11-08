@@ -666,6 +666,7 @@
 #include "cockpit.h"
 #include "config.h"
 #include "controls.h"
+#include "ddio.h"
 #include "dedicated_server.h"
 #include "demofile.h"
 #include "descent.h"
@@ -1260,9 +1261,7 @@ void DoScreenshot() {
 
   std::filesystem::path screenshots_path = cf_GetWritableBaseDirectory() / "screenshots";
 
-  std::error_code ec;
-  std::filesystem::create_directories(screenshots_path, ec);
-  if (ec) {
+  if (!ddio_CreateDirectories(screenshots_path)) {
     LOG_ERROR << "Cannot create " << screenshots_path;
     return;
   }

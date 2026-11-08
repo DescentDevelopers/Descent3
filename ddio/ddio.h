@@ -392,6 +392,19 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
 std::filesystem::path ddio_GetPrefPath(const char *org, const char *app);
 
 /**
+ * Creates a directory and any missing parent directories. Use this for every directory the game creates.
+ * Each newly created directory gets the given permissions, which default to owner-only (mode 0700, as the XDG Base
+ * Directory spec asks for); directories that already exist are left unchanged.
+ * On Windows the permissions only control the read-only attribute. Access there is governed by the access control
+ * list each directory inherits from its parent, and the per-user directories the game writes to are already private.
+ * @param dir directory to create
+ * @param perms permissions for newly created directories
+ * @return true if the directory exists afterwards, false on error
+ */
+bool ddio_CreateDirectories(const std::filesystem::path &dir,
+                            std::filesystem::perms perms = std::filesystem::perms::owner_all);
+
+/**
  * Gets path directory of executable
  * @return parent path of executable or empty path on error
  */

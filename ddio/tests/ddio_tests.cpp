@@ -18,6 +18,7 @@
 
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <gtest/gtest.h>
 
 #include "ddio.h"
@@ -39,4 +40,61 @@ TEST(D3, DDIO_GetTmpFileNameDoesNotUseRand) {
   srand(1234);
   ddio_GetTmpFileName(temp_dir, "prefix_");
   EXPECT_EQ(rand(), expected);
+}
+
+TEST(D3, DDIO_CreateDirectoriesCreatesMissingParents) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_create_parents";
+  std::filesystem::remove_all(base);
+  std::filesystem::path dir = base / "a" / "b";
+
+  EXPECT_TRUE(ddio_CreateDirectories(dir));
+  EXPECT_TRUE(std::filesystem::is_directory(dir));
+#ifndef WIN32
+  EXPECT_EQ(std::filesystem::status(base).permissions(), std::filesystem::perms::owner_all);
+  EXPECT_EQ(std::filesystem::status(base / "a").permissions(), std::filesystem::perms::owner_all);
+  EXPECT_EQ(std::filesystem::status(dir).permissions(), std::filesystem::perms::owner_all);
+#endif
+
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_CreateDirectoriesUsesGivenPermissions) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_given_permissions";
+  std::filesystem::remove_all(base);
+  std::filesystem::path dir = base / "a";
+  const auto perms = std::filesystem::perms::owner_all | std::filesystem::perms::group_read |
+                     std::filesystem::perms::group_exec;
+
+  EXPECT_TRUE(ddio_CreateDirectories(dir, perms));
+  EXPECT_TRUE(std::filesystem::is_directory(dir));
+#ifndef WIN32
+  EXPECT_EQ(std::filesystem::status(base).permissions(), perms);
+  EXPECT_EQ(std::filesystem::status(dir).permissions(), perms);
+#endif
+
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_CreateDirectoriesLeavesExistingDirectoriesAlone) {
+  std::filesystem::path dir = std::filesystem::temp_directory_path() / "ddio_tests_existing";
+  std::filesystem::remove_all(dir);
+  std::filesystem::create_directory(dir);
+  auto perms_before = std::filesystem::status(dir).permissions();
+
+  EXPECT_TRUE(ddio_CreateDirectories(dir));
+  EXPECT_EQ(std::filesystem::status(dir).permissions(), perms_before);
+
+  std::filesystem::remove_all(dir);
+}
+
+TEST(D3, DDIO_CreateDirectoriesFailsWhenFileIsInTheWay) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_file_in_the_way";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directory(base);
+  std::ofstream(base / "file").close();
+
+  EXPECT_FALSE(ddio_CreateDirectories(base / "file"));
+  EXPECT_FALSE(ddio_CreateDirectories(base / "file" / "sub"));
+
+  std::filesystem::remove_all(base);
 }

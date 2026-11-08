@@ -208,6 +208,30 @@ std::filesystem::path ddio_GetPrefPath(const char *org, const char *app) {
   return result;
 }
 
+bool ddio_CreateDirectories(const std::filesystem::path &dir, std::filesystem::perms perms) {
+  std::error_code ec;
+  if (std::filesystem::is_directory(dir, ec)) {
+    return true;
+  }
+  std::filesystem::path parent = dir.parent_path();
+  if (!parent.empty() && parent != dir && !ddio_CreateDirectories(parent, perms)) {
+    return false;
+  }
+  bool created = std::filesystem::create_directory(dir, ec);
+  if (ec) {
+    LOG_ERROR << "Could not create directory " << dir << ": " << ec.message();
+    return false;
+  }
+  // Not created but no error: another process made it, or dir ends in a separator and the parent call made it
+  if (created) {
+    std::filesystem::permissions(dir, perms, ec);
+    if (ec) {
+      LOG_WARNING << "Could not set permissions of directory " << dir << ": " << ec.message();
+    }
+  }
+  return true;
+}
+
 std::filesystem::path ddio_GetBasePath() {
   const char *exe_path = SDL_GetBasePath();
   if (!exe_path) {

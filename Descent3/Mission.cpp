@@ -738,9 +738,7 @@ void InitMission() {
   Current_mission.mn3_handle = 0;
   //	create add on mission directory
   D3MissionsDir = std::filesystem::path(LocalD3Dir) / "missions";
-  std::error_code ec;
-  std::filesystem::create_directories(D3MissionsDir, ec);
-  if (ec) {
+  if (!ddio_CreateDirectories(D3MissionsDir)) {
     Error(TXT_MSN_FAILEDCREATEDIR);
   }
   atexit(ResetMission);
