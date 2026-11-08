@@ -19,7 +19,12 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <optional>
+#include <string>
+#include <utility>
+#include <vector>
 #include <gtest/gtest.h>
+#include <SDL3/SDL_stdinc.h>
 
 #include "ddio.h"
 
@@ -98,3 +103,60 @@ TEST(D3, DDIO_CreateDirectoriesFailsWhenFileIsInTheWay) {
 
   std::filesystem::remove_all(base);
 }
+
+#if defined(__LINUX__)
+// Saves the environment variables used by the XDG lookups before each test and restores them afterwards, and
+// provides an empty scratch directory to point them at
+class DDIO_XDG : public ::testing::Test {
+protected:
+  void SetUp() override {
+    for (const char *name : kVariables) {
+      const char *value = SDL_getenv(name);
+      saved_.emplace_back(name, value ? std::optional<std::string>(value) : std::nullopt);
+      SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), name);
+    }
+    base_ = std::filesystem::temp_directory_path() / "ddio_tests_xdg";
+    std::filesystem::remove_all(base_);
+    std::filesystem::create_directory(base_);
+  }
+
+  void TearDown() override {
+    for (const auto &[name, value] : saved_) {
+      if (value) {
+        SDL_SetEnvironmentVariable(SDL_GetEnvironment(), name, value->c_str(), true);
+      } else {
+        SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), name);
+      }
+    }
+    std::filesystem::remove_all(base_);
+  }
+
+  static constexpr const char *kVariables[] = {"HOME",           "XDG_CACHE_HOME", "XDG_CONFIG_HOME",
+                                               "XDG_STATE_HOME", "XDG_DATA_HOME",  "XDG_DATA_DIRS"};
+  std::vector<std::pair<const char *, std::optional<std::string>>> saved_;
+  std::filesystem::path base_;
+};
+
+TEST_F(DDIO_XDG, TempPathUsesXDGCacheHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_CACHE_HOME", (base_ / "cache").c_str(), true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", (base_ / "home").c_str(), true);
+  EXPECT_EQ(ddio_GetTempPath(), base_ / "cache" / "descent3");
+}
+
+TEST_F(DDIO_XDG, TempPathIgnoresEmptyXDGCacheHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_CACHE_HOME", "", true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", base_.c_str(), true);
+  EXPECT_EQ(ddio_GetTempPath(), base_ / ".cache" / "descent3");
+}
+
+TEST_F(DDIO_XDG, TempPathIgnoresRelativeXDGCacheHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_CACHE_HOME", "relative/cache", true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", base_.c_str(), true);
+  EXPECT_EQ(ddio_GetTempPath(), base_ / ".cache" / "descent3");
+}
+
+TEST_F(DDIO_XDG, TempPathFallsBackToSystemTempDirectory) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", "", true);
+  EXPECT_EQ(ddio_GetTempPath(), std::filesystem::temp_directory_path() / "Descent3" / "cache");
+}
+#endif

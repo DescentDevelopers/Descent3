@@ -6,6 +6,7 @@ add_executable(ddio_tests
 target_link_libraries(ddio_tests PRIVATE
   GTest::gtest_main
   ddio
+  SDL3::SDL3
 )
 gtest_discover_tests(ddio_tests)
 

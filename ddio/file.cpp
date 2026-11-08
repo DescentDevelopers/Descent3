@@ -243,17 +243,30 @@ std::filesystem::path ddio_GetBasePath() {
   return result;
 }
 
-std::filesystem::path ddio_GetTempPath() {
 #if defined(__LINUX__)
-  // $XDG_CACHE_HOME, falling back to $HOME/.cache (the defaults from the XDG Base Directory spec).
-  // Unset, empty or relative values are ignored, as the spec requires.
-  const char *xdg_cache_home = SDL_getenv("XDG_CACHE_HOME");
-  if (xdg_cache_home && std::filesystem::path(xdg_cache_home).is_absolute()) {
-    return std::filesystem::path(xdg_cache_home) / D3_SUBDIR;
+/**
+ * Gets one of the user directories from the XDG Base Directory spec: $<env_var>, falling back to
+ * $HOME/<home_default>. Unset, empty or relative values are ignored, as the spec requires.
+ * @return the directory, or an empty path if neither variable is usable
+ */
+static std::filesystem::path GetXDGUserDir(const char *env_var, const char *home_default) {
+  const char *value = SDL_getenv(env_var);
+  if (value && std::filesystem::path(value).is_absolute()) {
+    return value;
   }
   const char *home = SDL_getenv("HOME");
   if (home && std::filesystem::path(home).is_absolute()) {
-    return std::filesystem::path(home) / ".cache" / D3_SUBDIR;
+    return std::filesystem::path(home) / home_default;
+  }
+  return {};
+}
+#endif
+
+std::filesystem::path ddio_GetTempPath() {
+#if defined(__LINUX__)
+  std::filesystem::path cache_home = GetXDGUserDir("XDG_CACHE_HOME", ".cache");
+  if (!cache_home.empty()) {
+    return cache_home / D3_SUBDIR;
   }
 #endif
 
