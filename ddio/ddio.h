@@ -392,6 +392,18 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
 std::filesystem::path ddio_GetPrefPath(const char *org, const char *app);
 
 /**
+ * Gets the directory where settings are stored, creating it if needed.
+ * Example directories, in order of use:
+ *   - $XDG_CONFIG_HOME/descent3 (Linux)
+ *   - /home/user/.config/descent3 (Linux)
+ *   - the preference path from ddio_GetPrefPath(org, app)
+ * @param org name of organization, used for the preference path
+ * @param app name of application, used for the preference path
+ * @return path where settings can be written, empty path on error
+ */
+std::filesystem::path ddio_GetConfigPath(const char *org, const char *app);
+
+/**
  * Creates a directory and any missing parent directories. Use this for every directory the game creates.
  * Each newly created directory gets the given permissions, which default to owner-only (mode 0700, as the XDG Base
  * Directory spec asks for); directories that already exist are left unchanged.
@@ -403,6 +415,15 @@ std::filesystem::path ddio_GetPrefPath(const char *org, const char *app);
  */
 bool ddio_CreateDirectories(const std::filesystem::path &dir,
                             std::filesystem::perms perms = std::filesystem::perms::owner_all);
+
+/**
+ * Moves a file or directory that an earlier version kept elsewhere to its current location. Nothing is moved if
+ * `from` does not exist, or if `to` exists and is not an empty directory.
+ * @param from old location
+ * @param to current location
+ * @return the location to use: `to`, or `from` if it could not be moved
+ */
+std::filesystem::path ddio_MoveLegacyPath(const std::filesystem::path &from, const std::filesystem::path &to);
 
 /**
  * Gets path directory of executable

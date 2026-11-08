@@ -233,6 +233,26 @@ bool ddio_CreateDirectories(const std::filesystem::path &dir, std::filesystem::p
   return true;
 }
 
+std::filesystem::path ddio_MoveLegacyPath(const std::filesystem::path &from, const std::filesystem::path &to) {
+  std::error_code ec;
+  if (from == to || !std::filesystem::exists(from, ec)) {
+    return to;
+  }
+  if (std::filesystem::exists(to, ec)) {
+    if (!std::filesystem::is_directory(to, ec) || !std::filesystem::is_empty(to, ec)) {
+      return to;
+    }
+    std::filesystem::remove(to, ec);
+  }
+  std::filesystem::rename(from, to, ec);
+  if (ec) {
+    LOG_WARNING << "Could not move " << from << " to " << to << ", using the old location: " << ec.message();
+    return from;
+  }
+  LOG_INFO << "Moved " << from << " to " << to;
+  return to;
+}
+
 std::filesystem::path ddio_GetBasePath() {
   const char *exe_path = SDL_GetBasePath();
   if (!exe_path) {
@@ -261,6 +281,16 @@ static std::filesystem::path GetXDGUserDir(const char *env_var, const char *home
   return {};
 }
 #endif
+
+std::filesystem::path ddio_GetConfigPath(const char *org, const char *app) {
+#if defined(__LINUX__)
+  std::filesystem::path config_home = GetXDGUserDir("XDG_CONFIG_HOME", ".config");
+  if (!config_home.empty() && ddio_CreateDirectories(config_home / D3_SUBDIR)) {
+    return config_home / D3_SUBDIR;
+  }
+#endif
+  return ddio_GetPrefPath(org, app);
+}
 
 std::filesystem::path ddio_GetTempPath() {
 #if defined(__LINUX__)

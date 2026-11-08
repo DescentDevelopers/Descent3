@@ -104,6 +104,76 @@ TEST(D3, DDIO_CreateDirectoriesFailsWhenFileIsInTheWay) {
   std::filesystem::remove_all(base);
 }
 
+TEST(D3, DDIO_MoveLegacyPathMovesFile) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_file";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base / "old");
+  std::filesystem::create_directories(base / "new");
+  std::ofstream(base / "old" / "settings").close();
+
+  EXPECT_EQ(ddio_MoveLegacyPath(base / "old" / "settings", base / "new" / "settings"), base / "new" / "settings");
+  EXPECT_TRUE(std::filesystem::exists(base / "new" / "settings"));
+  EXPECT_FALSE(std::filesystem::exists(base / "old" / "settings"));
+
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_MoveLegacyPathMovesDirectoryOverEmptyDirectory) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_dir";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base / "old");
+  std::filesystem::create_directories(base / "new");
+  std::ofstream(base / "old" / "pilot.plt").close();
+
+  EXPECT_EQ(ddio_MoveLegacyPath(base / "old", base / "new"), base / "new");
+  EXPECT_TRUE(std::filesystem::exists(base / "new" / "pilot.plt"));
+  EXPECT_FALSE(std::filesystem::exists(base / "old"));
+
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_MoveLegacyPathKeepsExistingTarget) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_existing";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base / "old");
+  std::filesystem::create_directories(base / "new");
+  std::ofstream(base / "old" / "old.plt").close();
+  std::ofstream(base / "new" / "new.plt").close();
+
+  EXPECT_EQ(ddio_MoveLegacyPath(base / "old", base / "new"), base / "new");
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / "old.plt"));
+  EXPECT_FALSE(std::filesystem::exists(base / "new" / "old.plt"));
+
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_MoveLegacyPathWithNothingToMove) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_nothing";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base);
+  std::ofstream(base / "settings").close();
+
+  EXPECT_EQ(ddio_MoveLegacyPath(base / "missing", base / "new"), base / "new");
+  EXPECT_FALSE(std::filesystem::exists(base / "new"));
+  EXPECT_EQ(ddio_MoveLegacyPath(base / "settings", base / "settings"), base / "settings");
+  EXPECT_TRUE(std::filesystem::exists(base / "settings"));
+
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_MoveLegacyPathKeepsOldLocationWhenMoveFails) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_fails";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base);
+  std::ofstream(base / "settings").close();
+
+  // The target's parent directory does not exist, so the rename fails
+  EXPECT_EQ(ddio_MoveLegacyPath(base / "settings", base / "missing" / "settings"), base / "settings");
+  EXPECT_TRUE(std::filesystem::exists(base / "settings"));
+
+  std::filesystem::remove_all(base);
+}
+
 #if defined(__LINUX__)
 // Saves the environment variables used by the XDG lookups before each test and restores them afterwards, and
 // provides an empty scratch directory to point them at
@@ -158,5 +228,26 @@ TEST_F(DDIO_XDG, TempPathIgnoresRelativeXDGCacheHome) {
 TEST_F(DDIO_XDG, TempPathFallsBackToSystemTempDirectory) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", "", true);
   EXPECT_EQ(ddio_GetTempPath(), std::filesystem::temp_directory_path() / "Descent3" / "cache");
+}
+
+TEST_F(DDIO_XDG, ConfigPathUsesXDGConfigHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_CONFIG_HOME", (base_ / "config").c_str(), true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", (base_ / "home").c_str(), true);
+  std::filesystem::path expected = base_ / "config" / "descent3";
+  EXPECT_EQ(ddio_GetConfigPath("org", "app"), expected);
+  EXPECT_TRUE(std::filesystem::is_directory(expected));
+  EXPECT_EQ(std::filesystem::status(expected).permissions(), std::filesystem::perms::owner_all);
+}
+
+TEST_F(DDIO_XDG, ConfigPathFallsBackToHome) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_CONFIG_HOME", "", true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", base_.c_str(), true);
+  EXPECT_EQ(ddio_GetConfigPath("org", "app"), base_ / ".config" / "descent3");
+}
+
+TEST_F(DDIO_XDG, ConfigPathFallsBackToPrefPath) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", "", true);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
+  EXPECT_EQ(ddio_GetConfigPath("org", "app"), base_ / "data" / "org" / "app");
 }
 #endif
