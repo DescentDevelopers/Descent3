@@ -446,8 +446,8 @@ bool ddio_DeleteLockFile(const std::filesystem::path &dir);
  * from a crashed run can be cleaned up on the next start. Use ddio_GetTmpFileName() to get unique file names
  * inside it.
  * Example directories, in order of use:
- *   - $XDG_CACHE_HOME/Descent3 (Linux)
- *   - /home/user/.cache/Descent3 (Linux)
+ *   - $XDG_CACHE_HOME/descent3 (Linux)
+ *   - /home/user/.cache/descent3 (Linux)
  *   - /tmp/Descent3/cache
  *   - /var/folders/xx/xxxxxxxx/T/Descent3/cache (macOS)
  *   - C:\Users\user\AppData\Local\Temp\Descent3\cache (Windows)

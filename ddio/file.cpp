@@ -26,6 +26,7 @@
 #include <SDL3/SDL_filesystem.h>
 
 #include "IOOps.h"
+#include "d3_platform_path.h"
 #include "ddio.h"
 #include "mem.h"
 #include "pserror.h"
@@ -248,11 +249,11 @@ std::filesystem::path ddio_GetTempPath() {
   // Unset, empty or relative values are ignored, as the spec requires.
   const char *xdg_cache_home = SDL_getenv("XDG_CACHE_HOME");
   if (xdg_cache_home && std::filesystem::path(xdg_cache_home).is_absolute()) {
-    return std::filesystem::path(xdg_cache_home) / "Descent3";
+    return std::filesystem::path(xdg_cache_home) / D3_SUBDIR;
   }
   const char *home = SDL_getenv("HOME");
   if (home && std::filesystem::path(home).is_absolute()) {
-    return std::filesystem::path(home) / ".cache" / "Descent3";
+    return std::filesystem::path(home) / ".cache" / D3_SUBDIR;
   }
 #endif
 

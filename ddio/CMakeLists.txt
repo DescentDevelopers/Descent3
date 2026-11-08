@@ -41,6 +41,7 @@ target_include_directories(ddio PUBLIC
   >
   ${SDL3_INCLUDE_DIRS}
 )
+target_include_directories(ddio PRIVATE ${PROJECT_BINARY_DIR}/lib)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)

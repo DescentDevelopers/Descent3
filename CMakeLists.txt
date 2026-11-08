@@ -99,6 +99,17 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 include(GNUInstallDirs)
+# Name of Descent 3's directory in system and user locations. On Linux and
+# OpenBSD, use the lower-case name that packaging conventions expect: data goes
+# into <prefix>/share/descent3, documentation into <prefix>/share/doc/descent3
+# and user files into directories such as ~/.config/descent3. Other platforms
+# keep the Descent3 name.
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+  set(D3_INSTALL_SUBDIR "descent3")
+else()
+  set(D3_INSTALL_SUBDIR "Descent3")
+endif()
+
 if(FORCE_PORTABLE_INSTALL)
   set(CMAKE_INSTALL_BINDIR ".")
   set(CMAKE_INSTALL_LIBDIR ".")
@@ -107,19 +118,13 @@ if(FORCE_PORTABLE_INSTALL)
 
   set(D3_DATADIR "${CMAKE_INSTALL_DATADIR}")
 else()
-  # On Linux and OpenBSD, use lower-case directory names to match packaging
-  # conventions: data goes into <prefix>/share/descent3 and documentation into
-  # <prefix>/share/doc/descent3. Other platforms keep the Descent3 name.
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
-    set(D3_INSTALL_SUBDIR "descent3")
     # GNUInstallDirs leaves the CMAKE_INSTALL_DOCDIR cache entry empty unless
     # the user sets it, and then defaults to share/doc/${PROJECT_NAME}. Replace
     # only that default, so an explicit value is kept.
     if("$CACHE{CMAKE_INSTALL_DOCDIR}" STREQUAL "")
       set(CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc/${D3_INSTALL_SUBDIR}")
     endif()
-  else()
-    set(D3_INSTALL_SUBDIR "Descent3")
   endif()
   set(CMAKE_INSTALL_DATADIR "${CMAKE_INSTALL_DATADIR}/${D3_INSTALL_SUBDIR}")
   # D3_DATADIR is compiled into the game as a data search path, so derive it

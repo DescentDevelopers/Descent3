@@ -21,6 +21,9 @@
 // Platform-specific compile-time defined location of data files
 #define D3_DATADIR "@D3_DATADIR@"
 
+// Name of Descent 3's directory in system and user locations, such as /usr/share/descent3 or ~/.cache/descent3
+#define D3_SUBDIR "@D3_INSTALL_SUBDIR@"
+
 // Part of preference path (organization)
 #define D3_PREF_ORG "Outrage Entertainment"
 
