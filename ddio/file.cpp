@@ -23,6 +23,8 @@
 #include <iterator>
 #include <random>
 #include <regex>
+#include <string>
+#include <vector>
 #include <SDL3/SDL_filesystem.h>
 
 #include "IOOps.h"
@@ -301,6 +303,28 @@ std::filesystem::path ddio_GetConfigPath(const char *org, const char *app) {
   }
 #endif
   return ddio_GetPrefPath(org, app);
+}
+
+std::vector<std::filesystem::path> ddio_GetSystemDataPaths() {
+  std::vector<std::filesystem::path> result;
+#if defined(__LINUX__)
+  // Unset or empty $XDG_DATA_DIRS means the spec's default; relative entries are ignored, as the spec requires
+  const char *value = SDL_getenv("XDG_DATA_DIRS");
+  std::string data_dirs = (value && *value) ? value : "/usr/local/share/:/usr/share/";
+  size_t start = 0;
+  while (start <= data_dirs.size()) {
+    size_t end = data_dirs.find(':', start);
+    if (end == std::string::npos) {
+      end = data_dirs.size();
+    }
+    std::filesystem::path dir = data_dirs.substr(start, end - start);
+    if (dir.is_absolute()) {
+      result.push_back(dir / D3_SUBDIR);
+    }
+    start = end + 1;
+  }
+#endif
+  return result;
 }
 
 std::filesystem::path ddio_GetStatePath() {

@@ -195,6 +195,7 @@
 #include <filesystem>
 #include <functional>
 #include <regex>
+#include <vector>
 
 #include "chrono_timer.h"
 #include "ddio_common.h"
@@ -407,6 +408,17 @@ std::filesystem::path ddio_GetPrefPath(const char *org, const char *app);
  * @return path where settings can be written, empty path on error
  */
 std::filesystem::path ddio_GetConfigPath(const char *org, const char *app);
+
+/**
+ * Gets the system-wide directories that may hold read-only game data, most important first. The directories are not
+ * checked for existence.
+ * Example directories, in order of use:
+ *   - each entry of $XDG_DATA_DIRS with descent3 appended (Linux)
+ *   - /usr/local/share/descent3 and /usr/share/descent3, if $XDG_DATA_DIRS is unset or empty (Linux)
+ *   - none on other platforms
+ * @return list of directories
+ */
+std::vector<std::filesystem::path> ddio_GetSystemDataPaths();
 
 /**
  * Gets the directory for state files such as logs, creating it if needed.

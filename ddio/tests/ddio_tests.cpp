@@ -271,6 +271,19 @@ TEST_F(DDIO_XDG, PrefPathFailsWithoutUsableDirectory) {
   EXPECT_TRUE(ddio_GetPrefPath("org", "app").empty());
 }
 
+TEST_F(DDIO_XDG, SystemDataPathsDefault) {
+  std::vector<std::filesystem::path> expected = {"/usr/local/share/descent3", "/usr/share/descent3"};
+  EXPECT_EQ(ddio_GetSystemDataPaths(), expected);
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_DIRS", "", true);
+  EXPECT_EQ(ddio_GetSystemDataPaths(), expected);
+}
+
+TEST_F(DDIO_XDG, SystemDataPathsFollowXDGDataDirs) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_DIRS", "/app/share:relative/share::/opt/share/", true);
+  std::vector<std::filesystem::path> expected = {"/app/share/descent3", "/opt/share/descent3"};
+  EXPECT_EQ(ddio_GetSystemDataPaths(), expected);
+}
+
 TEST_F(DDIO_XDG, StatePathUsesXDGStateHome) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_STATE_HOME", (base_ / "state").c_str(), true);
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", (base_ / "home").c_str(), true);
@@ -292,4 +305,6 @@ TEST_F(DDIO_XDG, StatePathFallsBackToWorkingDirectory) {
 }
 #else
 TEST(D3, DDIO_GetStatePathIsWorkingDirectory) { EXPECT_EQ(ddio_GetStatePath(), std::filesystem::current_path()); }
+
+TEST(D3, DDIO_GetSystemDataPathsIsEmpty) { EXPECT_TRUE(ddio_GetSystemDataPaths().empty()); }
 #endif

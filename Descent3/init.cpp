@@ -916,6 +916,7 @@
 #include <ctime>
 #include <filesystem>
 #include <regex>
+#include <vector>
 
 #include "mono.h"
 #include "gametexture.h"
@@ -1429,7 +1430,8 @@ void InitIOSystems(bool editor) {
    * Populate base directories. In result, we have the following list of directories (in priority order):
    * - Writable preference path
    * - User defined paths (cmd-line and configuration)
-   * - Platform defined paths (such as /usr/share/descent3 on Linux or Steam installation paths)
+   * - Platform defined paths (such as $XDG_DATA_DIRS entries and /usr/share/descent3 on Linux, or Steam installation
+   *   paths)
    * - Directory of executable
    */
 
@@ -1466,10 +1468,31 @@ void InitIOSystems(bool editor) {
   // earlier versions is still found when D3_DATADIR is /usr/share/descent3.
   std::filesystem::path datadir = D3_DATADIR;
   std::filesystem::path platform_dir = cf_LocatePathCaseInsensitiveHelper(datadir.filename(), datadir.parent_path());
+  if (!platform_dir.empty()) {
+    platform_dir = std::filesystem::canonical(platform_dir);
+  }
+
+  // System data directories ($XDG_DATA_DIRS on Linux), matched the same way. Base directories added later take
+  // precedence, so add them least important first, and before D3_DATADIR so the data this build was installed with
+  // wins.
+  std::vector<std::filesystem::path> system_dirs;
+  for (const auto &candidate : ddio_GetSystemDataPaths()) {
+    std::filesystem::path dir = cf_LocatePathCaseInsensitiveHelper(candidate.filename(), candidate.parent_path());
+    if (dir.empty()) {
+      continue;
+    }
+    dir = std::filesystem::canonical(dir);
+    if (dir != platform_dir && std::find(system_dirs.begin(), system_dirs.end(), dir) == system_dirs.end()) {
+      system_dirs.push_back(dir);
+    }
+  }
+  for (auto it = system_dirs.rbegin(); it != system_dirs.rend(); ++it) {
+    cf_AddBaseDirectory(*it);
+  }
+
   if (platform_dir.empty()) {
     LOG_WARNING << "Platform data directory not found: " << datadir;
   } else {
-    platform_dir = std::filesystem::canonical(platform_dir);
     cf_AddBaseDirectory(platform_dir);
   }
   // TODO: add Steam/registry locations
