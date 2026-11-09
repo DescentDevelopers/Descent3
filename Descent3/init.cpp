@@ -912,6 +912,7 @@
 
 #include <charconv>
 #include <cinttypes>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <filesystem>
@@ -1444,19 +1445,27 @@ void InitIOSystems(bool editor) {
 
   // Default Steam and GOG installation paths, for the game data that is not included. They have the lowest priority
   // of the read-only directories, so anything the user or this build provides takes precedence.
+  // Paths that are empty (no paths for this platform), start with "~" while $HOME is not an absolute path, or are not
+  // installed are skipped.
   std::vector<std::filesystem::path> default_platform_dirs = {
     D3_STANDARD_PATHS
   };
 
-  for (const auto& platform_dir: default_platform_dirs) {
-    if (platform_dir.u8string().at(0) == '~') {
+  for (std::filesystem::path dir : default_platform_dirs) {
+    if (dir.empty()) {
+      continue;
+    }
+    if (*dir.begin() == "~") {
       // On Unix, replace "~" in paths by the runtime $HOME directory
-      std::string base_dir_str = platform_dir.u8string();
-      const std::string home_dir = std::getenv("HOME");
-      base_dir_str.replace(0,1,home_dir);
-      cf_AddBaseDirectory(std::filesystem::path(base_dir_str));
-    } else {
-      cf_AddBaseDirectory(platform_dir);
+      const char *home = std::getenv("HOME");
+      if (!home || !std::filesystem::path(home).is_absolute()) {
+        continue;
+      }
+      dir = std::filesystem::path(home) / dir.lexically_relative("~");
+    }
+    std::error_code ec;
+    if (std::filesystem::is_directory(dir, ec)) {
+      cf_AddBaseDirectory(dir);
     }
   }
 
