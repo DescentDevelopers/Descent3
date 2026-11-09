@@ -200,7 +200,7 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
   return result;
 }
 
-std::filesystem::path ddio_GetPrefPath(const char *org, const char *app) {
+std::filesystem::path ddio_GetPrefPath() {
 #if defined(__LINUX__)
   // SDL_GetPrefPath() uses $XDG_DATA_HOME and $HOME without checking that they are absolute, as the XDG Base
   // Directory spec requires (an empty value makes it read out of bounds). Unset unusable values so SDL falls
@@ -212,14 +212,24 @@ std::filesystem::path ddio_GetPrefPath(const char *org, const char *app) {
     }
   }
 #endif
-  char *pref_path = SDL_GetPrefPath(org, app);
+  char *pref_path = SDL_GetPrefPath("", D3_SUBDIR);
   if (!pref_path) {
     LOG_ERROR << "Failed to get writable preference path!";
     return {};
   }
   std::filesystem::path result = std::filesystem::canonical(pref_path);
   SDL_free(pref_path);
-  return result;
+  if (!result.has_filename()) {
+    result = result.parent_path();
+  }
+
+  // Earlier versions used "Outrage Entertainment/Descent 3" next to this directory. SDL_GetPrefPath() has just
+  // created this one if it was missing, so the old one is moved here while this one is still empty.
+  std::filesystem::path legacy_org = result.parent_path() / "Outrage Entertainment";
+  result = ddio_MoveLegacyPath(legacy_org / "Descent 3", result);
+  std::error_code ec;
+  std::filesystem::remove(legacy_org, ec); // only succeeds if nothing else is in it
+  return std::filesystem::canonical(result);
 }
 
 bool ddio_CreateDirectories(const std::filesystem::path &dir, std::filesystem::perms perms) {
@@ -295,14 +305,14 @@ static std::filesystem::path GetXDGUserDir(const char *env_var, const char *home
 }
 #endif
 
-std::filesystem::path ddio_GetConfigPath(const char *org, const char *app) {
+std::filesystem::path ddio_GetConfigPath() {
 #if defined(__LINUX__)
   std::filesystem::path config_home = GetXDGUserDir("XDG_CONFIG_HOME", ".config");
   if (!config_home.empty() && ddio_CreateDirectories(config_home / D3_SUBDIR)) {
     return config_home / D3_SUBDIR;
   }
 #endif
-  return ddio_GetPrefPath(org, app);
+  return ddio_GetPrefPath();
 }
 
 std::vector<std::filesystem::path> ddio_GetSystemDataPaths() {

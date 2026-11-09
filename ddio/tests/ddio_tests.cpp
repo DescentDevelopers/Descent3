@@ -234,7 +234,7 @@ TEST_F(DDIO_XDG, ConfigPathUsesXDGConfigHome) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_CONFIG_HOME", (base_ / "config").c_str(), true);
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", (base_ / "home").c_str(), true);
   std::filesystem::path expected = base_ / "config" / "descent3";
-  EXPECT_EQ(ddio_GetConfigPath("org", "app"), expected);
+  EXPECT_EQ(ddio_GetConfigPath(), expected);
   EXPECT_TRUE(std::filesystem::is_directory(expected));
   EXPECT_EQ(std::filesystem::status(expected).permissions(), std::filesystem::perms::owner_all);
 }
@@ -242,33 +242,72 @@ TEST_F(DDIO_XDG, ConfigPathUsesXDGConfigHome) {
 TEST_F(DDIO_XDG, ConfigPathFallsBackToHome) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_CONFIG_HOME", "", true);
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", base_.c_str(), true);
-  EXPECT_EQ(ddio_GetConfigPath("org", "app"), base_ / ".config" / "descent3");
+  EXPECT_EQ(ddio_GetConfigPath(), base_ / ".config" / "descent3");
 }
 
 TEST_F(DDIO_XDG, ConfigPathFallsBackToPrefPath) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", "", true);
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
-  EXPECT_EQ(ddio_GetConfigPath("org", "app"), base_ / "data" / "org" / "app");
+  EXPECT_EQ(ddio_GetConfigPath(), base_ / "data" / "descent3");
 }
 
 TEST_F(DDIO_XDG, PrefPathUsesXDGDataHome) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", (base_ / "home").c_str(), true);
-  std::filesystem::path expected = base_ / "data" / "org" / "app";
-  EXPECT_EQ(ddio_GetPrefPath("org", "app"), expected);
+  std::filesystem::path expected = base_ / "data" / "descent3";
+  EXPECT_EQ(ddio_GetPrefPath(), expected);
   EXPECT_EQ(std::filesystem::status(expected).permissions(), std::filesystem::perms::owner_all);
 }
 
 TEST_F(DDIO_XDG, PrefPathIgnoresEmptyXDGDataHome) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", "", true);
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", base_.c_str(), true);
-  EXPECT_EQ(ddio_GetPrefPath("org", "app"), base_ / ".local" / "share" / "org" / "app");
+  EXPECT_EQ(ddio_GetPrefPath(), base_ / ".local" / "share" / "descent3");
 }
 
 TEST_F(DDIO_XDG, PrefPathFailsWithoutUsableDirectory) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", "relative/data", true);
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "HOME", "", true);
-  EXPECT_TRUE(ddio_GetPrefPath("org", "app").empty());
+  EXPECT_TRUE(ddio_GetPrefPath().empty());
+}
+
+TEST_F(DDIO_XDG, PrefPathMovesLegacyDirectory) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
+  std::filesystem::path legacy = base_ / "data" / "Outrage Entertainment" / "Descent 3";
+  std::filesystem::create_directories(legacy / "savegame");
+  std::ofstream(legacy / "pilot.plt").close();
+
+  std::filesystem::path expected = base_ / "data" / "descent3";
+  EXPECT_EQ(ddio_GetPrefPath(), expected);
+  EXPECT_TRUE(std::filesystem::exists(expected / "pilot.plt"));
+  EXPECT_TRUE(std::filesystem::is_directory(expected / "savegame"));
+  EXPECT_FALSE(std::filesystem::exists(base_ / "data" / "Outrage Entertainment"));
+}
+
+TEST_F(DDIO_XDG, PrefPathKeepsOtherLegacyOrganizationContents) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
+  std::filesystem::path legacy_org = base_ / "data" / "Outrage Entertainment";
+  std::filesystem::create_directories(legacy_org / "Descent 3");
+  std::filesystem::create_directories(legacy_org / "Other Game");
+
+  EXPECT_EQ(ddio_GetPrefPath(), base_ / "data" / "descent3");
+  EXPECT_FALSE(std::filesystem::exists(legacy_org / "Descent 3"));
+  EXPECT_TRUE(std::filesystem::is_directory(legacy_org / "Other Game"));
+}
+
+TEST_F(DDIO_XDG, PrefPathDoesNotMoveLegacyDirectoryOverExistingFiles) {
+  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
+  std::filesystem::path legacy = base_ / "data" / "Outrage Entertainment" / "Descent 3";
+  std::filesystem::path current = base_ / "data" / "descent3";
+  std::filesystem::create_directories(legacy);
+  std::filesystem::create_directories(current);
+  std::ofstream(legacy / "old.plt").close();
+  std::ofstream(current / "new.plt").close();
+
+  EXPECT_EQ(ddio_GetPrefPath(), current);
+  EXPECT_TRUE(std::filesystem::exists(current / "new.plt"));
+  EXPECT_FALSE(std::filesystem::exists(current / "old.plt"));
+  EXPECT_TRUE(std::filesystem::exists(legacy / "old.plt"));
 }
 
 TEST_F(DDIO_XDG, SystemDataPathsDefault) {

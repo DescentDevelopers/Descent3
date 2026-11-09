@@ -1436,7 +1436,7 @@ void InitIOSystems(bool editor) {
    */
 
   // Writable preference path
-  std::filesystem::path pref_path = ddio_GetPrefPath(D3_PREF_ORG, D3_PREF_APP);
+  std::filesystem::path pref_path = ddio_GetPrefPath();
   if (pref_path.empty()) {
     Error("Failed to get preference path!");
   }

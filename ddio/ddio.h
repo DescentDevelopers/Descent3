@@ -385,29 +385,26 @@ void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::reg
 std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, const char *prefix);
 
 /**
- * Gets path where files can be written, creating it if needed.
+ * Gets the directory where user files such as pilots and savegames are written, creating it if needed. A directory
+ * left by earlier versions, which used "Outrage Entertainment/Descent 3" in the same place, is moved here.
  * Example directories:
- *   - $XDG_DATA_HOME/org/app (Linux)
- *   - /home/user/.local/share/org/app (Linux)
- *   - /Users/user/Library/Application Support/org/app (macOS)
- *   - C:\Users\user\AppData\Roaming\org\app (Windows)
- * @param org name of organization
- * @param app name of application
- * @return path that contains org and app components where user can write files, empty path if there some errors
+ *   - $XDG_DATA_HOME/descent3 (Linux)
+ *   - /home/user/.local/share/descent3 (Linux)
+ *   - /Users/user/Library/Application Support/Descent3 (macOS)
+ *   - C:\Users\user\AppData\Roaming\Descent3 (Windows)
+ * @return path where user files can be written, empty path on error
  */
-std::filesystem::path ddio_GetPrefPath(const char *org, const char *app);
+std::filesystem::path ddio_GetPrefPath();
 
 /**
  * Gets the directory where settings are stored, creating it if needed.
  * Example directories, in order of use:
  *   - $XDG_CONFIG_HOME/descent3 (Linux)
  *   - /home/user/.config/descent3 (Linux)
- *   - the preference path from ddio_GetPrefPath(org, app)
- * @param org name of organization, used for the preference path
- * @param app name of application, used for the preference path
+ *   - the preference path from ddio_GetPrefPath()
  * @return path where settings can be written, empty path on error
  */
-std::filesystem::path ddio_GetConfigPath(const char *org, const char *app);
+std::filesystem::path ddio_GetConfigPath();
 
 /**
  * Gets the system-wide directories that may hold read-only game data, most important first. The directories are not
