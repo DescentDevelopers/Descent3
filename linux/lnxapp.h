@@ -19,16 +19,6 @@
 #ifndef LNXAPP_H
 #define LNXAPP_H
 
-// if no-display/input specifier is given, it will use defaults
-#define APPFLAG_USESERVICE 0x00000100     // console (run no output/input)
-#define APPFLAG_USESVGA 0x00000200        // console (use svgalib for input/output. NOTE: not used in code)
-#define APPFLAG_NOMOUSECAPTURE 0x00000400 // don't capture the mouse in x-win
-#define APPFLAG_NOSHAREDMEMORY 0x00000800 // force no-shared memory
-#define APPFLAG_WINDOWEDMODE 0x00001000   // run in a window
-#define APPFLAG_DGAMOUSE 0x00002000       // use DGA for Mouse
-
-/*	Basic Application Linux data types */
-
 //	This structure is used to retrieve and set
 struct tLnxAppInfo {
   unsigned flags;                 // Application Flags

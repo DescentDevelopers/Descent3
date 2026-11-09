@@ -436,6 +436,10 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, winw);
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, winh);
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, SDL_WINDOW_OPENGL);
+    if (app->flags() & OEAPP_EDITOR) {
+      SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HIDDEN_BOOLEAN, true);
+    }
+
     GSDLWindow = SDL_CreateWindowWithProperties(props);
     SDL_DestroyProperties(props);
     if (!GSDLWindow) {

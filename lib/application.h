@@ -75,10 +75,15 @@
                 about what's needed for the target machine.
 */
 /*	Application flags */
-const int OEAPP_WINDOWED = 1, // App will run in a window. May not be supported.
-    OEAPP_FULLSCREEN = 2,     // App will run in fullscreen.  May not be supported.
-    OEAPP_TOPMOST = 4,        // App will be on the topmost display.  May not be supported.
-    OEAPP_CONSOLE = 8;        // App will run in a console style window.
+enum {
+  OEAPP_WINDOWED = 1,     // App will run in a window. May not be supported.
+  OEAPP_FULLSCREEN = 2,   // App will run in fullscreen.  May not be supported.
+  OEAPP_TOPMOST = 4,      // App will be on the topmost display.  May not be supported.
+  OEAPP_CONSOLE = 8,      // App will run in a console style window.
+  OEAPP_USESERVICE = 16,  // App will run as service
+  OEAPP_EDITOR = 32,      // App will run in editor mode
+};
+
 class oeApplication {
 protected:
   bool m_AppActive = true;

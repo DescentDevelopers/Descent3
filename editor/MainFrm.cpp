@@ -1471,7 +1471,7 @@ void WinMainInitEditor(unsigned hwnd, unsigned hinst) {
   // TODO: HWnd from SDL2 Window
   // appinfo.hwnd = (HWnd)hwnd;
   // appinfo.hinst = (HInstance)hinst;
-  appinfo.flags = OEAPP_WINDOWED;
+  appinfo.flags = OEAPP_WINDOWED | OEAPP_EDITOR;
 
   Descent = new oeLnxApplication(&appinfo);
   Database = new oeLnxAppDatabase;
