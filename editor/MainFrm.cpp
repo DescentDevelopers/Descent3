@@ -1155,57 +1155,57 @@ void CMainFrame::InitKeypadDialog() {
 
   //	Add tabs to tabcontrol in the keypad dialog bar.
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Texture";
+  tc_item.pszText = LPSTR("Texture");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_TEXTURE_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Megacell";
+  tc_item.pszText = LPSTR("Megacell");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_MEGACELL_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Terrain";
+  tc_item.pszText = LPSTR("Terrain");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_TERRAIN_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Object";
+  tc_item.pszText = LPSTR("Object");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_OBJECTS_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Room";
+  tc_item.pszText = LPSTR("Room");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_ROOM_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Doorway";
+  tc_item.pszText = LPSTR("Doorway");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_DOORWAY_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Trigger";
+  tc_item.pszText = LPSTR("Trigger");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_TRIGGER_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Lighting";
+  tc_item.pszText = LPSTR("Lighting");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_LIGHTING_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Paths";
+  tc_item.pszText = LPSTR("Paths");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_PATHS_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Level";
+  tc_item.pszText = LPSTR("Level");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_LEVEL_KEYPAD, &tc_item);
 
   tc_item.mask = TCIF_TEXT;
-  tc_item.pszText = "Matcen";
+  tc_item.pszText = LPSTR("Matcen");
   tc_item.cchTextMax = lstrlen(tc_item.pszText) + 1;
   tab_ctrl->InsertItem(TAB_MATCEN_KEYPAD, &tc_item);
 
@@ -1907,13 +1907,10 @@ void CMainFrame::OnFilePlayin640x480() {
   sr_save = Renderer_type;
 
   //	if we have selected the windowed toggle, assert this.
-  if (D3EditState.game_render_mode == GM_WINDOWED)
-    PROGRAM(windowed) = 1;
-  else
-    PROGRAM(windowed) = 0;
+  PROGRAM(windowed) = D3EditState.game_render_mode == GM_WINDOWED;
 
   RunGameFromEditor();
-  PROGRAM(windowed) = 1;
+  PROGRAM(windowed) = true;
 
   Renderer_type = sr_save;
 
@@ -1965,13 +1962,10 @@ void CMainFrame::OnFileLeaveEditor() {
   SetFunctionMode(MENU_MODE);
 
   //	if we have selected the windowed toggle, assert this.
-  if (D3EditState.game_render_mode == GM_WINDOWED)
-    PROGRAM(windowed) = 1;
-  else
-    PROGRAM(windowed) = 0;
+  PROGRAM(windowed) = D3EditState.game_render_mode == GM_WINDOWED;
 
   RunGameFromEditor();
-  PROGRAM(windowed) = 1;
+  PROGRAM(windowed) = true;
 
   //	hide keypad if it's visible
   if (status_was_visible)
@@ -2829,7 +2823,7 @@ int GetChangeMask() {
   last_curportal = Curportal;
 
   if (Cur_object_index != -1) {
-    char *name = Objects[Cur_object_index].name ? Objects[Cur_object_index].name : "<no name>";
+    const char *name = Objects[Cur_object_index].name ? Objects[Cur_object_index].name : "<no name>";
     if (strcmp(last_name, name))
       mask |= KUF_CUROBJ_NAME_CHANGED;
     strcpy(last_name, name);

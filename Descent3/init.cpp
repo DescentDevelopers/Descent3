@@ -990,10 +990,10 @@
 #define ALLOW_ALL_LANG 1
 
 #ifdef EDITOR
-#include "editor\HFile.h"
-#include "editor\d3edit.h"
-#include "slew.h"
+#include "editor/d3edit.h"
+#include "ddgr.h"
 #include "gr.h"
+#include "slew.h"
 #define INIT_MESSAGE(c) SplashMessage c
 #else
 void IntroScreen();

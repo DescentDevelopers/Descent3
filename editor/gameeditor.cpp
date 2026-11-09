@@ -505,7 +505,6 @@
 #include "player.h"
 #include "loadlevel.h"
 #include "renderer.h"
-#include "ObjScript.h"
 #include "controls.h"
 #include "3d.h"
 #include "gamefont.h"
@@ -513,6 +512,7 @@
 #include "pilot.h"
 #include "D3ForceFeedback.h"
 #include "d3music.h"
+#include "ddgr.h"
 #include "osiris_dll.h"
 #include "d3edit.h"
 #include "editordoc.h"
@@ -900,7 +900,6 @@ void InitEditGameSystems() {
 
   // Load up the pilot selected by default
   if (cfexist(Default_pilot)) {
-    mprintf(0, "Loading up Default Pilot: %s\n", Default_pilot);
     Current_pilot.set_filename(Default_pilot);
     PltReadFile(&Current_pilot, true, true);
   } else {
