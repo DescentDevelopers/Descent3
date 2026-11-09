@@ -1428,8 +1428,9 @@ void InitIOSystems(bool editor) {
   /*
    * Populate base directories. In result, we have the following list of directories (in priority order):
    * - Writable preference path
+   * - Default Steam and GOG installation paths
    * - User defined paths (cmd-line and configuration)
-   * - Platform defined paths (such as /usr/share/descent3 on Linux or Steam installation paths)
+   * - Platform defined paths (such as /usr/share/descent3 on Linux)
    * - Directory of executable
    */
 
@@ -1440,6 +1441,24 @@ void InitIOSystems(bool editor) {
   }
   LOG_INFO << "Setting writable preference path " << pref_path;
   cf_AddBaseDirectory(pref_path);
+
+  // Default Steam and GOG installation paths, for the game data that is not included. They have the lowest priority
+  // of the read-only directories, so anything the user or this build provides takes precedence.
+  std::vector<std::filesystem::path> default_platform_dirs = {
+    D3_STANDARD_PATHS
+  };
+
+  for (const auto& platform_dir: default_platform_dirs) {
+    if (platform_dir.u8string().at(0) == '~') {
+      // On Unix, replace "~" in paths by the runtime $HOME directory
+      std::string base_dir_str = platform_dir.u8string();
+      const std::string home_dir = std::getenv("HOME");
+      base_dir_str.replace(0,1,home_dir);
+      cf_AddBaseDirectory(std::filesystem::path(base_dir_str));
+    } else {
+      cf_AddBaseDirectory(platform_dir);
+    }
+  }
 
   // Set the default base directories
   cf_AddDefaultBaseDirectories();
@@ -1471,22 +1490,6 @@ void InitIOSystems(bool editor) {
   } else {
     platform_dir = std::filesystem::canonical(platform_dir);
     cf_AddBaseDirectory(platform_dir);
-  }
-
-  std::vector<std::filesystem::path> default_platform_dirs = {
-    D3_STANDARD_PATHS
-  };
-
-  for (const auto& platform_dir: default_platform_dirs) {
-    if (platform_dir.u8string().at(0) == '~') {
-      // On Unix, replace "~" in paths by the runtime $HOME directory
-      std::string base_dir_str = platform_dir.u8string();
-      const std::string home_dir = std::getenv("HOME");
-      base_dir_str.replace(0,1,home_dir);
-      cf_AddBaseDirectory(std::filesystem::path(base_dir_str));
-    } else {
-      cf_AddBaseDirectory(platform_dir);
-    }
   }
 
   // Add path of executable
