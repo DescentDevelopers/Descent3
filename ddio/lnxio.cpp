@@ -58,10 +58,6 @@
 #include <cstdarg>
 #include <cstdio>
 
-#ifdef MACOSX
-#include <mach-o/dyld.h>
-#endif
-
 #ifdef WIN32
 #include <windows.h>
 #endif
