@@ -1446,16 +1446,12 @@ void InitIOSystems(bool editor) {
 
   // Default Steam and GOG installation paths, for the game data that is not included. They have the lowest priority
   // of the read-only directories, so anything the user or this build provides takes precedence.
-  // Paths that are empty (no paths for this platform), start with "~" while $HOME is not an absolute path, or are not
-  // installed are skipped.
+  // Paths that start with "~" while $HOME is not an absolute path, or are not installed, are skipped.
   std::vector<std::filesystem::path> default_platform_dirs = {
     D3_STANDARD_PATHS
   };
 
   for (std::filesystem::path dir : default_platform_dirs) {
-    if (dir.empty()) {
-      continue;
-    }
     if (*dir.begin() == "~") {
       // On Unix, replace "~" in paths by the runtime $HOME directory
       const char *home = std::getenv("HOME");
@@ -1470,8 +1466,10 @@ void InitIOSystems(bool editor) {
     }
   }
 
-  // Set the default base directories
-  cf_AddDefaultBaseDirectories();
+  // Read-only base directories from the DEFAULT_ADDITIONAL_DIRS CMake option
+  for (const std::filesystem::path &dir : std::vector<std::filesystem::path>{D3_DEFAULT_ADDITIONAL_DIRS}) {
+    cf_AddBaseDirectory(dir);
+  }
 
   // Additional paths
   int additionaldirarg = 0;

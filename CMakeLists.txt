@@ -286,7 +286,21 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_compile_options("/MP")  # so msbuild builds with multiple processes
 endif()
 
-string(REPLACE ";" "\", \"" D3_STANDARD_PATHS_CPP "${D3_STANDARD_PATHS}")
+# Turns the list named list_var into quoted C++ strings for an initializer list in d3_platform_path.h, leaving out
+# empty items
+function(d3_cpp_path_list out_var list_var)
+  set(result "")
+  foreach(item IN LISTS ${list_var})
+    if(NOT item STREQUAL "")
+      string(APPEND result "\"${item}\", ")
+    endif()
+  endforeach()
+  set(${out_var} "${result}" PARENT_SCOPE)
+endfunction()
+
+set(DEFAULT_ADDITIONAL_DIRS "" CACHE STRING "A list of directories that Descent 3 will use as read-only base directories.")
+d3_cpp_path_list(D3_DEFAULT_ADDITIONAL_DIRS_CPP DEFAULT_ADDITIONAL_DIRS)
+d3_cpp_path_list(D3_STANDARD_PATHS_CPP D3_STANDARD_PATHS)
 
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
 add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
