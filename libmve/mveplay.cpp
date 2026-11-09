@@ -207,11 +207,9 @@ static int audio_data_handler(unsigned char major, unsigned char minor, unsigned
     int size = get_ushort(data + 4);
     if (chan & selected_chan) {
       auto buf = std::make_unique<char[]>(size);
+      // for a silence frame (SILENCE, MORTALS!) the zero-filled buf is already the silence to play
       if (major == MVE_OPCODE_AUDIOFRAMEDATA) {
         mveaudio_process(buf.get(), data, snd_ds->GetSampleSize(), snd_ds->IsCompressed());
-      } else {
-        // SILENCE, MORTALS!
-        memset(data, 0, size);
       }
       snd_ds->FillBuffer(buf.get(), size);
     }
