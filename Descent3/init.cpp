@@ -1428,11 +1428,14 @@ void InitIOSystems(bool editor) {
   LoadGameSettings();
 
   /*
-   * Populate base directories. In result, we have the following list of directories (in priority order):
+   * Populate base directories. In result, we have the following list of directories, lowest priority first (directories
+   * added later are searched first):
    * - Writable preference path
    * - Default Steam and GOG installation paths
+   * - System data directories ($XDG_DATA_DIRS entries on Linux)
+   * - Default additional directories (DEFAULT_ADDITIONAL_DIRS CMake option)
    * - User defined paths (cmd-line and configuration)
-   * - Platform defined paths (such as $XDG_DATA_DIRS entries and /usr/share/descent3 on Linux)
+   * - Platform defined path (D3_DATADIR, such as /usr/share/descent3 on Linux)
    * - Directory of executable
    */
 
@@ -1466,6 +1469,40 @@ void InitIOSystems(bool editor) {
     }
   }
 
+  // Finds a data directory, matching its last component without regard to case, so data installed in
+  // /usr/share/Descent3 by earlier versions is still found as /usr/share/descent3. A directory the game may not look
+  // into is skipped instead of stopping the game.
+  auto find_data_dir = [](const std::filesystem::path &dir) -> std::filesystem::path {
+    try {
+      std::filesystem::path found = cf_LocatePathCaseInsensitiveHelper(dir.filename(), dir.parent_path());
+      return found.empty() ? found : std::filesystem::canonical(found);
+    } catch (const std::filesystem::filesystem_error &e) {
+      LOG_DEBUG << "Skipping data directory " << dir << ": " << e.what();
+      return {};
+    }
+  };
+
+  // D3_DATADIR is added further down, but is looked up here so it is not added twice
+  std::filesystem::path datadir = D3_DATADIR;
+  std::filesystem::path platform_dir = find_data_dir(datadir);
+
+  // System data directories ($XDG_DATA_DIRS on Linux). Base directories added later take precedence, so add them
+  // least important first. They rank below the directories this build is configured with (DEFAULT_ADDITIONAL_DIRS,
+  // D3_DATADIR) and the ones the user chose (-additionaldir, the configured base directory).
+  std::vector<std::filesystem::path> system_dirs;
+  for (const auto &candidate : ddio_GetSystemDataPaths()) {
+    std::filesystem::path dir = find_data_dir(candidate);
+    if (dir.empty()) {
+      continue;
+    }
+    if (dir != platform_dir && std::find(system_dirs.begin(), system_dirs.end(), dir) == system_dirs.end()) {
+      system_dirs.push_back(dir);
+    }
+  }
+  for (auto it = system_dirs.rbegin(); it != system_dirs.rend(); ++it) {
+    cf_AddBaseDirectory(*it);
+  }
+
   // Read-only base directories from the DEFAULT_ADDITIONAL_DIRS CMake option
   for (const std::filesystem::path &dir : std::vector<std::filesystem::path>{D3_DEFAULT_ADDITIONAL_DIRS}) {
     cf_AddBaseDirectory(dir);
@@ -1488,39 +1525,7 @@ void InitIOSystems(bool editor) {
     cf_AddBaseDirectory(config_base_directory);
   }
 
-  // Finds a data directory, matching its last component without regard to case, so data installed in
-  // /usr/share/Descent3 by earlier versions is still found as /usr/share/descent3. A directory the game may not look
-  // into is skipped instead of stopping the game.
-  auto find_data_dir = [](const std::filesystem::path &dir) -> std::filesystem::path {
-    try {
-      std::filesystem::path found = cf_LocatePathCaseInsensitiveHelper(dir.filename(), dir.parent_path());
-      return found.empty() ? found : std::filesystem::canonical(found);
-    } catch (const std::filesystem::filesystem_error &e) {
-      LOG_DEBUG << "Skipping data directory " << dir << ": " << e.what();
-      return {};
-    }
-  };
-
-  // Platform dependent paths
-  std::filesystem::path datadir = D3_DATADIR;
-  std::filesystem::path platform_dir = find_data_dir(datadir);
-
-  // System data directories ($XDG_DATA_DIRS on Linux). Base directories added later take precedence, so add them
-  // least important first, and before D3_DATADIR so the data this build was installed with wins.
-  std::vector<std::filesystem::path> system_dirs;
-  for (const auto &candidate : ddio_GetSystemDataPaths()) {
-    std::filesystem::path dir = find_data_dir(candidate);
-    if (dir.empty()) {
-      continue;
-    }
-    if (dir != platform_dir && std::find(system_dirs.begin(), system_dirs.end(), dir) == system_dirs.end()) {
-      system_dirs.push_back(dir);
-    }
-  }
-  for (auto it = system_dirs.rbegin(); it != system_dirs.rend(); ++it) {
-    cf_AddBaseDirectory(*it);
-  }
-
+  // Platform dependent path (D3_DATADIR)
   if (platform_dir.empty()) {
     LOG_WARNING << "Platform data directory not found: " << datadir;
   } else {
