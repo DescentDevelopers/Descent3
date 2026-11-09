@@ -1488,25 +1488,31 @@ void InitIOSystems(bool editor) {
     cf_AddBaseDirectory(config_base_directory);
   }
 
-  // Platform dependent paths. The last component of D3_DATADIR is matched
-  // without regard to case, so data installed in /usr/share/Descent3 by
-  // earlier versions is still found when D3_DATADIR is /usr/share/descent3.
-  std::filesystem::path datadir = D3_DATADIR;
-  std::filesystem::path platform_dir = cf_LocatePathCaseInsensitiveHelper(datadir.filename(), datadir.parent_path());
-  if (!platform_dir.empty()) {
-    platform_dir = std::filesystem::canonical(platform_dir);
-  }
+  // Finds a data directory, matching its last component without regard to case, so data installed in
+  // /usr/share/Descent3 by earlier versions is still found as /usr/share/descent3. A directory the game may not look
+  // into is skipped instead of stopping the game.
+  auto find_data_dir = [](const std::filesystem::path &dir) -> std::filesystem::path {
+    try {
+      std::filesystem::path found = cf_LocatePathCaseInsensitiveHelper(dir.filename(), dir.parent_path());
+      return found.empty() ? found : std::filesystem::canonical(found);
+    } catch (const std::filesystem::filesystem_error &e) {
+      LOG_DEBUG << "Skipping data directory " << dir << ": " << e.what();
+      return {};
+    }
+  };
 
-  // System data directories ($XDG_DATA_DIRS on Linux), matched the same way. Base directories added later take
-  // precedence, so add them least important first, and before D3_DATADIR so the data this build was installed with
-  // wins.
+  // Platform dependent paths
+  std::filesystem::path datadir = D3_DATADIR;
+  std::filesystem::path platform_dir = find_data_dir(datadir);
+
+  // System data directories ($XDG_DATA_DIRS on Linux). Base directories added later take precedence, so add them
+  // least important first, and before D3_DATADIR so the data this build was installed with wins.
   std::vector<std::filesystem::path> system_dirs;
   for (const auto &candidate : ddio_GetSystemDataPaths()) {
-    std::filesystem::path dir = cf_LocatePathCaseInsensitiveHelper(candidate.filename(), candidate.parent_path());
+    std::filesystem::path dir = find_data_dir(candidate);
     if (dir.empty()) {
       continue;
     }
-    dir = std::filesystem::canonical(dir);
     if (dir != platform_dir && std::find(system_dirs.begin(), system_dirs.end(), dir) == system_dirs.end()) {
       system_dirs.push_back(dir);
     }
