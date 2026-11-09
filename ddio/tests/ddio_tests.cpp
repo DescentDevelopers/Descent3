@@ -176,7 +176,8 @@ TEST(D3, DDIO_MoveLegacyPathKeepsOldLocationWhenMoveFails) {
 
 #if defined(__LINUX__)
 // Saves the environment variables used by the XDG lookups before each test and restores them afterwards, and
-// provides an empty scratch directory to point them at
+// provides an empty scratch directory to point them at. Each test gets its own directory, since ctest -j runs the
+// tests in parallel processes.
 class DDIO_XDG : public ::testing::Test {
 protected:
   void SetUp() override {
@@ -185,7 +186,8 @@ protected:
       saved_.emplace_back(name, value ? std::optional<std::string>(value) : std::nullopt);
       SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), name);
     }
-    base_ = std::filesystem::temp_directory_path() / "ddio_tests_xdg";
+    base_ = std::filesystem::temp_directory_path() /
+            ("ddio_tests_xdg_" + std::string(::testing::UnitTest::GetInstance()->current_test_info()->name()));
     std::filesystem::remove_all(base_);
     std::filesystem::create_directory(base_);
   }
