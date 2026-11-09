@@ -912,6 +912,7 @@
 
 #include <charconv>
 #include <cinttypes>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <filesystem>
@@ -1429,9 +1430,9 @@ void InitIOSystems(bool editor) {
   /*
    * Populate base directories. In result, we have the following list of directories (in priority order):
    * - Writable preference path
+   * - Default Steam and GOG installation paths
    * - User defined paths (cmd-line and configuration)
-   * - Platform defined paths (such as $XDG_DATA_DIRS entries and /usr/share/descent3 on Linux, or Steam installation
-   *   paths)
+   * - Platform defined paths (such as $XDG_DATA_DIRS entries and /usr/share/descent3 on Linux)
    * - Directory of executable
    */
 
@@ -1442,6 +1443,32 @@ void InitIOSystems(bool editor) {
   }
   LOG_INFO << "Setting writable preference path " << pref_path;
   cf_AddBaseDirectory(pref_path);
+
+  // Default Steam and GOG installation paths, for the game data that is not included. They have the lowest priority
+  // of the read-only directories, so anything the user or this build provides takes precedence.
+  // Paths that are empty (no paths for this platform), start with "~" while $HOME is not an absolute path, or are not
+  // installed are skipped.
+  std::vector<std::filesystem::path> default_platform_dirs = {
+    D3_STANDARD_PATHS
+  };
+
+  for (std::filesystem::path dir : default_platform_dirs) {
+    if (dir.empty()) {
+      continue;
+    }
+    if (*dir.begin() == "~") {
+      // On Unix, replace "~" in paths by the runtime $HOME directory
+      const char *home = std::getenv("HOME");
+      if (!home || !std::filesystem::path(home).is_absolute()) {
+        continue;
+      }
+      dir = std::filesystem::path(home) / dir.lexically_relative("~");
+    }
+    std::error_code ec;
+    if (std::filesystem::is_directory(dir, ec)) {
+      cf_AddBaseDirectory(dir);
+    }
+  }
 
   // Set the default base directories
   cf_AddDefaultBaseDirectories();
@@ -1495,7 +1522,6 @@ void InitIOSystems(bool editor) {
   } else {
     cf_AddBaseDirectory(platform_dir);
   }
-  // TODO: add Steam/registry locations
 
   // Add path of executable
   std::filesystem::path exec_path = ddio_GetBasePath();
@@ -1585,7 +1611,7 @@ void InitIOSystems(bool editor) {
 
   // last library opened is the first to be searched for dynamic libs, so put
   // this one at the end to find our newly build script libraries first
-  sys_hid = cf_OpenLibrary(PRIMARY_HOG);
+  sys_hid = cf_OpenLibrary(D3_PRIMARY_HOG);
 
   // Initialize debug graph early incase any system uses it in its init
   INIT_MESSAGE(("Initializing debug graph."));

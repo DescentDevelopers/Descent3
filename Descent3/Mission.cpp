@@ -1803,7 +1803,7 @@ bool mn3_Open(const std::filesystem::path &mn3file) {
     return false;
   } else {
     /* Disabled loading scripts from .mn3 files on purpose:
-    all 64-bit first-party level scripts have already been loaded from `PRIMARY_HOG`.
+    all 64-bit first-party level scripts have already been loaded from `D3_PRIMARY_HOG`.
     Mission files contain only Win32 scripts by default, which cannot not be loaded on 64-bit builds.
     Reactivate this when we have a proper sandbox system to safely run third-party scripts contained in user-made
     levels. */
