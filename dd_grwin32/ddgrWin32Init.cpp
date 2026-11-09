@@ -89,7 +89,7 @@ static bool DDGR_fullscreen;
                 subsystem = subsystem name ('DirectDraw', 'GDI')
                 fullscreen = whether it's full screen or windowed
 */
-bool ddgr_Init(oeApplication *app, char *subsystem, bool fullscreen) {
+bool ddgr_Init(oeApplication *app, const char *subsystem, bool fullscreen) {
   static bool first_time = true;
   int subsys_id;
 

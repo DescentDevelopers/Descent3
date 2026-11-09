@@ -353,8 +353,8 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
 
   SDL_ClearError();
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {
-    const int rc = SDL_Init(SDL_INIT_VIDEO);
-    if (rc != 0) {
+    bool rc = SDL_Init(SDL_INIT_VIDEO);
+    if (!rc) {
       char buffer[512];
       snprintf(buffer, sizeof(buffer), "SDL_GetError() reports \"%s\".\n", SDL_GetError());
       fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
@@ -420,7 +420,11 @@ int opengl_Setup(oeApplication *app, const int *width, const int *height) {
     // High-DPI support
     {
       float scale = SDL_GetDisplayContentScale(Display_id);
-      LOG_WARNING.printf("Using content scale %f", scale);
+      if (scale == 0.0f) {
+        LOG_WARNING.printf("OpenGL: Error getting scale of Display %d: %s", Display_id, SDL_GetError());
+        scale = 1.0f;
+      }
+      LOG_DEBUG.printf("Using content scale %f", scale);
       winw = std::floor(static_cast<float>(winw) * scale);
       winh = std::floor(static_cast<float>(winh) * scale);
     }

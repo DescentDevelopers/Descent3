@@ -111,7 +111,7 @@ struct ddgr_init_info {
         subsystem = subsystem name ('DirectDraw', 'GDI')
         fullscreen = whether it's full screen or windowed
 */
-bool ddgr_Init(oeApplication *app, char *subsystem, bool fullscreen);
+bool ddgr_Init(oeApplication *app, const char *subsystem, bool fullscreen);
 void ddgr_Close();
 void ddgr_GetSubsystem(char *name, bool *fullscreen);
 

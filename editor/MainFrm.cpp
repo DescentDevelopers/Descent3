@@ -839,6 +839,7 @@
 #include "TableFileFilter.h"
 #include "DallasMainDlg.h"
 #include "ViewerPropDlg.h"
+#include "config.h"
 #include "mem.h"
 #include "findintersection.h"
 #include "renderer.h"
@@ -1488,6 +1489,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext *pContext) {
   // Initialize a ton of stuff.
   InitD3Systems1(true);
   InitD3Systems2(true);
+  ConfigureDisplayResolutions();
 
   // Initialize scripts
   InitCScripts();
