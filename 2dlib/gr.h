@@ -101,17 +101,69 @@
  * $NoKeywords: $
  */
 
-#ifndef _GR_H
-#define _GR_H
+#pragma once
 
-#include "Ddgr.h"
-#include "fix.h"
+#include "grdefs.h"
 #include "pserror.h"
 
 class grMemorySurface;
 class grViewport;
 class grSurface;
 class grPen;
+
+/*	Surface structures
+                The surface
+*/
+const int SURF_NAMELEN = 16;
+
+struct ddgr_surface {
+  void *obj;               // internal structure info to library
+  char name[SURF_NAMELEN]; // name
+  int w, h, bpp;           // width, height and bit depth
+  uint16_t type;             // how driver handles this surface
+  uint16_t flags;            // colorkeying, etc.
+  int locks;               // lock count.
+};
+/*	Surface bit depths
+                The bitdepth of the surface determines the color format of the surface.  Renderers
+                should use this value to plot
+*/
+
+//	Green with all 6 bits set to 1 is our transparent color
+//	default transparent color to 16bit, but all code should use the first 2 defines.
+
+/*	Surface types
+                Surfaces symbolize a flat 2d surface where pixels are lit.  Essentially, a surface could
+                be a bitmap, but if it's the display, it's a bitmap managed by the video card.
+                The goal of this library is to provide a clean, device-independent method to accessing
+                surfaces.
+
+        SURFTYPE_VIDEOSCREEN:
+                The video screen is a physical or virtual display.
+                When you create a videoscreen, you may specify either it is monopage or dualpage (backbuffer)
+                When dualpage, the program can RENDER to the 1st page.  To update the video display, you
+                must perform a surface flip.
+
+        SURFTYPE_GENERIC:
+                This is a generic bitmap managed by the operating system.  RENDERING is allowed.
+ */
+const int SURFTYPE_VIDEOSCREEN = 1; // This is equivocal to the display.
+const int SURFTYPE_GENERIC = 2;     // This is an offscreen bitmap.
+
+/*	Surface flags
+                Flags modify a surfaces behavior.  A surface may have a backbuffer, which is only really
+                useful for videoscreens.
+
+        SURFFLAG_BACKBUFFER:
+                This surface has a backbuffer.
+                        v2.0  Supported in only videoscreen surfaces.
+
+        SURFFLAG_COLORKEY:
+                This surface was created with colorkeying in mind.
+                Renderers should keep this in mind, and check this flag.
+ */
+const int SURFFLAG_BACKBUFFER = 1;
+const int SURFFLAG_COLORKEY = 2;
 
 //	a 'pen' structure used by the 2d system to draw things.
 struct gr_pen {
@@ -562,5 +614,3 @@ static inline void VP_BITBLT(grViewport *vp, int dx, int dy, int bm) {
   grMemorySurface surf(bm);
   vp->blt(dx, dy, &surf);
 }
-
-#endif

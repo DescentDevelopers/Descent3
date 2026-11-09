@@ -1,4 +1,5 @@
 set(HEADERS
+  ddgr.h
   gr.h
   lib2d.h
 )

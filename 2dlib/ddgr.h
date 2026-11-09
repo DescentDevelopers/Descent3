@@ -75,11 +75,9 @@
  * $NoKeywords: $
  */
 
-#ifndef _DDGR_H
-#define _DDGR_H
+#pragma once
 
-#include "pstypes.h"
-#include "Macros.h"
+#include "gr.h"
 #include "grdefs.h"
 
 //	----------------------------------------------------------------------------
@@ -117,60 +115,6 @@ void ddgr_GetSubsystem(char *name, bool *fullscreen);
 
 //	returns aspect ratio of current display.
 float ddgr_GetAspectRatio();
-
-/*	Surface bit depths
-                The bitdepth of the surface determines the color format of the surface.  Renderers
-                should use this value to plot
-*/
-
-//	Green with all 6 bits set to 1 is our transparent color
-//	default transparent color to 16bit, but all code should use the first 2 defines.
-
-/*	Surface types
-                Surfaces symbolize a flat 2d surface where pixels are lit.  Essentially, a surface could
-                be a bitmap, but if it's the display, it's a bitmap managed by the video card.
-                The goal of this library is to provide a clean, device-independent method to accessing
-                surfaces.
-
-        SURFTYPE_VIDEOSCREEN:
-                The video screen is a physical or virtual display.
-                When you create a videoscreen, you may specify either it is monopage or dualpage (backbuffer)
-                When dualpage, the program can RENDER to the 1st page.  To update the video display, you
-                must perform a surface flip.
-
-        SURFTYPE_GENERIC:
-                This is a generic bitmap managed by the operating system.  RENDERING is allowed.
- */
-const int SURFTYPE_VIDEOSCREEN = 1, // This is equivical to the display.
-    SURFTYPE_GENERIC = 2;           //	This is an offscreen bitmap.
-
-/*	Surface flags
-                Flags modify a surfaces behavior.  A surface may have a backbuffer, which is only really
-                useful for videoscreens.
-
-        SURFFLAG_BACKBUFFER:
-                This surface has a backbuffer.
-                        v2.0  Supported in only videoscreen surfaces.
-
-        SURFFLAG_COLORKEY:
-                This surface was created with colorkeying in mind.
-                Renderers should keep this in mind, and check this flag.
- */
-const int SURFFLAG_BACKBUFFER = 1, SURFFLAG_COLORKEY = 2;
-
-/*	Surface structures
-                The surface
-*/
-const int SURF_NAMELEN = 16;
-
-struct ddgr_surface {
-  void *obj;               // internal structure info to library
-  char name[SURF_NAMELEN]; // name
-  int w, h, bpp;           // width, height and bit depth
-  uint16_t type;             // how driver handles this surface
-  uint16_t flags;            // colorkeying, etc.
-  int locks;               // lock count.
-};
 
 /*	Surface Functions
  */
@@ -216,9 +160,7 @@ void ddgr_surf_CloseVideo(ddgr_surface *sf);
  */
 bool ddgr_surf_FlipVideo(ddgr_surface *sf);
 
-/*	graphic primatives
+/*	graphic primitives
  */
 void ddgr_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, int h);
 bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh);
-
-#endif

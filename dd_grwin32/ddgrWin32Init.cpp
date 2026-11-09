@@ -68,12 +68,19 @@
                                                 subsystems supported:
                                                                                         GDI32	(fullscreen/windowed)
 */
-char *DDGR_subsystem_names[] = {"GDI32", // Standard Win32 GDI DIBs
-                                "GDIX",  // GDI and DirectDraw for mode settings.
-                                "DX",    // Direct X!
-                                nullptr};
+const char *DDGR_subsystem_names[] = {
+  "GDI32",  // Standard Win32 GDI DIBs
+  "GDIX",   // GDI and DirectDraw for mode settings.
+  "DX",     // Direct X!
+  nullptr
+};
 
-int DDGR_subsystems[] = {DDGR_GDI_SUBSYSTEM, DDGR_GDIX_SUBSYSTEM, DDGR_DX_SUBSYSTEM, -1};
+int DDGR_subsystems[] = {
+  DDGR_GDI_SUBSYSTEM,
+  DDGR_GDIX_SUBSYSTEM,
+  DDGR_DX_SUBSYSTEM,
+  -1
+};
 
 tDDGRInternalData DDGR_lib_data; // Library info.
 // HACKS!!
