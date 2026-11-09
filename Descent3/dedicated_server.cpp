@@ -943,13 +943,13 @@ dedicated_socket *DedicatedLogoutTelnet(dedicated_socket *conn) {
   std::unique_ptr<dedicated_socket> next = std::move(conn->next);
   dedicated_socket *prev;
   prev = conn->prev;
+  if (next) {
+    next->prev = prev;
+  }
   if (prev) {
     prev->next = std::move(next);
   } else {
     Head_sock = std::move(next);
-    if (Head_sock) {
-      Head_sock->prev = nullptr;
-    }
   }
 
   return prev;
