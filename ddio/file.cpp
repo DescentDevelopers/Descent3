@@ -263,6 +263,7 @@ std::filesystem::path ddio_MoveLegacyPath(const std::filesystem::path &from, con
   }
   if (std::filesystem::exists(to, ec)) {
     if (!std::filesystem::is_directory(to, ec) || !std::filesystem::is_empty(to, ec)) {
+      LOG_WARNING << "Not moving " << from << " to " << to << ", which already exists; " << from << " is not used";
       return to;
     }
     std::filesystem::remove(to, ec);

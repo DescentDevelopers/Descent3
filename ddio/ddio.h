@@ -439,7 +439,8 @@ bool ddio_CreateDirectories(const std::filesystem::path &dir,
 
 /**
  * Moves a file or directory that an earlier version kept elsewhere to its current location. Nothing is moved if
- * `from` does not exist, or if `to` exists and is not an empty directory.
+ * `from` does not exist, or if `to` exists and is not an empty directory; the latter logs a warning, since the files
+ * at `from` are then not used.
  * @param from old location
  * @param to current location
  * @return the location to use: `to`, or `from` if it could not be moved
