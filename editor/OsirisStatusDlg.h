@@ -33,7 +33,7 @@
 class COsirisStatusDlg : public CDialog {
   // Construction
 public:
-  COsirisStatusDlg(CWnd *pParent = NULL); // standard constructor
+  COsirisStatusDlg(CWnd *pParent = nullptr); // standard constructor
   void SetScript(char *script, tD3XProgram *d3x);
 
   // Dialog Data

@@ -31,7 +31,7 @@
 class CAmbientSoundPattern : public CDialog {
   // Construction
 public:
-  CAmbientSoundPattern(CWnd *pParent = NULL); // standard constructor
+  CAmbientSoundPattern(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CAmbientSoundPattern)

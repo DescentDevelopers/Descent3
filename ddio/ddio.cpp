@@ -90,7 +90,14 @@
 
 #include <cstdlib>
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
+#include <SDL3/SDL.h>
+
 #include "ddio.h"
+#include "ddio_lnx.h"
 #include "joystick.h"
 #include "log.h"
 #include "pserror.h"
@@ -140,8 +147,38 @@ void ddio_Resume() {
   ddio_InternalKeyResume();
   ddio_InternalMouseResume();
 }
+
 // handles buffered input from devices once per frame.
 void ddio_Frame() {
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+    case SDL_EVENT_KEY_UP:
+    case SDL_EVENT_KEY_DOWN:
+      sdlKeyEvent(&event);
+      break;
+    case SDL_EVENT_JOYSTICK_BALL_MOTION:
+    case SDL_EVENT_MOUSE_MOTION:
+      sdlMouseMotionEvent(&event);
+      break;
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+      sdlMouseButtonUpEvent(&event);
+      break;
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+      sdlMouseButtonDownEvent(&event);
+      break;
+    case SDL_EVENT_MOUSE_WHEEL:
+      sdlMouseWheelEvent(&event);
+      break;
+    case SDL_EVENT_QUIT:
+      SDL_Quit();
+      _exit(0);
+      break;
+    default:
+      break;
+    }
+  }
+
   ddio_InternalKeyFrame();
   ddio_InternalMouseFrame();
   ddio_InternalJoyFrame();

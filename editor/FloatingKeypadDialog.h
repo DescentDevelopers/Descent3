@@ -89,7 +89,7 @@ class matcenkeypad;
 class CFloatingKeypadDialog : public CDialog {
   // Construction
 public:
-  CFloatingKeypadDialog(CWnd *pParent = NULL); // standard constructor
+  CFloatingKeypadDialog(CWnd *pParent = nullptr); // standard constructor
 
   BOOL Create();
 

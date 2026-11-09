@@ -113,7 +113,7 @@ END_MESSAGE_MAP()
 void CBriefMovieEdit::OnBriefMChoose() {
   UpdateData(true);
   char szFilter[] = "Outrage Movie Files (*.mve)|*.mve||";
-  CFileDialog dlg(true, NULL, NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, szFilter);
 
   if (dlg.DoModal() == IDOK) {
     // handle
@@ -126,7 +126,7 @@ void CBriefMovieEdit::OnOK() {
   UpdateData(true);
 
   char path[_MAX_PATH];
-  ddio_MakePath(path, LocalD3Dir, "Movies", m_sFilename.GetBuffer(1), NULL);
+  ddio_MakePath(path, LocalD3Dir, "Movies", m_sFilename.GetBuffer(1), nullptr);
 
   if (!cfexist(path)) {
     MessageBox("Invalid Filename", "Error");

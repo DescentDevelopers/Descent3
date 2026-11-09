@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdint>
 #include <cstdlib>
 
 #include "robotfire.h"
@@ -51,7 +52,7 @@ void FireOnOffWeapon(object *objp) {
       WBFireBattery(objp, &Ships[ship_index].static_wb[wb_index], 0, wb_index);
     }
   } else if (objp->ai_info) {
-    char wb_index = objp->ai_info->last_special_wb_firing;
+    int8_t wb_index = objp->ai_info->last_special_wb_firing;
     if (wb_index > MAX_WBS_PER_OBJ) { // DAJ
       LOG_WARNING.printf("FireOnOffWeapon wb_index %d > MAX_WBS_PER_OBJ", wb_index);
       return;
@@ -68,7 +69,8 @@ void WBSetupFireAnim(object *obj, otype_wb_info *static_wb, int wb_index) {
 
   p_dwb->wb_anim_mask = p_dwb->cur_firing_mask;
 
-  if (static_wb->anim_start_frame != static_wb->anim_end_frame) {
+  // LGT: Awkward array comparison by pointer, needs investivation to understand the actual intent 
+  if (+static_wb->anim_start_frame != static_wb->anim_end_frame) {
     p_dwb->flags |= DWBF_ANIMATING;
     p_dwb->wb_anim_frame = static_wb->anim_start_frame[p_dwb->cur_firing_mask];
   }
@@ -213,7 +215,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
   if ((static_wb->flags & WBF_GUIDED) && obj->type == OBJ_PLAYER) {
     ASSERT(num_fired <= 1); // Only one guided can be fired at a time
     if (num_fired > 0) {
-      if (Players[obj->id].guided_obj != NULL) // if there already is a guided, release it
+      if (Players[obj->id].guided_obj != nullptr) // if there already is a guided, release it
       {
         ReleaseGuidedMissile(obj->id);
       }
@@ -233,7 +235,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
   if ((static_wb->flags & WBF_USER_TIMEOUT) && obj->type == OBJ_PLAYER) {
     ASSERT(num_fired <= 1); // Only one guided can be fired at a time
     if (num_fired > 0) {
-      if (Players[obj->id].user_timeout_obj != NULL) // if there already is a guided, release it
+      if (Players[obj->id].user_timeout_obj != nullptr) // if there already is a guided, release it
       {
         ReleaseUserTimeoutMissile(obj->id);
       }
@@ -278,7 +280,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
         int weapon_id = static_wb->gp_weapon_index[cur_m_bit];
 
         if (Weapons[weapon_id].phys_info.flags & PF_FIXED_VELOCITY)
-          obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.velocity.z;
+          obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.velocity.z();
         else if (Weapons[weapon_id].phys_info.flags & PF_USES_THRUST)
           obj->ai_info->weapon_speed = Weapons[weapon_id].phys_info.full_thrust / Weapons[weapon_id].phys_info.drag;
         else
@@ -336,7 +338,7 @@ void WBClearInfo(otype_wb_info static_wb[]) {
   int i;
   int j;
 
-  if (static_wb == NULL)
+  if (static_wb == nullptr)
     return;
 
   for (i = 0; i < MAX_WBS_PER_OBJ; i++) {

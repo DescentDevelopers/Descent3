@@ -239,7 +239,7 @@ int CHogEditDoc::LoadRib(const char *pathname) {
   }
 
   // Read in the hog filename
-  if (!fread(Library.filename, sizeof(char), _MAX_PATH, rib_fp)) {
+  if (!fread(Library.filename, 1, _MAX_PATH, rib_fp)) {
     fclose(rib_fp);
     return false;
   }
@@ -379,7 +379,7 @@ int CHogEditDoc::SaveRib(const char *pathname) {
   }
 
   // write out the hog filename
-  if (!fwrite(Library.filename, sizeof(char), _MAX_PATH, rib_fp)) {
+  if (!fwrite(Library.filename, 1, _MAX_PATH, rib_fp)) {
     fclose(rib_fp);
     return false;
   }
@@ -499,8 +499,8 @@ int CHogEditDoc::UpdatedFileCheck(hog_library_entry *entry) {
 // Loads a Hog library entry structure
 bool CHogEditDoc::ReadHogLibEntry(FILE *fp, hog_library_entry *entry) {
   int res = 0;
-  res = fread(entry->path, sizeof(char), _MAX_PATH, fp);
-  res = fread(entry->name, sizeof(char), PSFILENAME_LEN + 1, fp);
+  res = fread(entry->path, 1, _MAX_PATH, fp);
+  res = fread(entry->name, 1, PSFILENAME_LEN + 1, fp);
   res = fread(&entry->flags, sizeof(entry->flags), 1, fp);
   res = fread(&entry->length, sizeof(entry->length), 1, fp);
   res = fread(&entry->timestamp, sizeof(entry->timestamp), 1, fp);
@@ -516,8 +516,8 @@ bool CHogEditDoc::ReadHogLibEntry(FILE *fp, hog_library_entry *entry) {
 // Saves a Hog library entry structure
 bool CHogEditDoc::WriteHogLibEntry(FILE *fp, hog_library_entry *entry) {
   int res = 0;
-  res = fwrite(entry->path, sizeof(char), _MAX_PATH, fp);
-  res = fwrite(entry->name, sizeof(char), PSFILENAME_LEN + 1, fp);
+  res = fwrite(entry->path, 1, _MAX_PATH, fp);
+  res = fwrite(entry->name, 1, PSFILENAME_LEN + 1, fp);
   res = fwrite(&entry->flags, sizeof(entry->flags), 1, fp);
   res = fwrite(&entry->length, sizeof(entry->length), 1, fp);
   res = fwrite(&entry->timestamp, sizeof(entry->timestamp), 1, fp);

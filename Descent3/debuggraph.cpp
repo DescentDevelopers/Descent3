@@ -120,11 +120,11 @@ struct tDebugGraphNode {
   tDebugGraphNode *next;
 };
 
-tDebugGraphNode *DebugGraphNode_root = NULL;
+tDebugGraphNode *DebugGraphNode_root = nullptr;
 
 tGraphNode *DebugGraph_AddNode(void) {
   if (graph_num_nodes == MAX_GRAPH_NODES)
-    return NULL;
+    return nullptr;
 
   tDebugGraphNode *curr = DebugGraphNode_root;
 
@@ -143,7 +143,7 @@ tGraphNode *DebugGraph_AddNode(void) {
   }
 
   graph_num_nodes++;
-  curr->next = NULL;
+  curr->next = nullptr;
   curr->node = new tGraphNode;
 
   if (!curr->node) {
@@ -155,7 +155,7 @@ tGraphNode *DebugGraph_AddNode(void) {
 
 tGraphNode *DebugGraph_FindNode(int index) {
   if (index >= graph_num_nodes)
-    return NULL;
+    return nullptr;
   tDebugGraphNode *curr = DebugGraphNode_root;
   int ci = 0;
   while (curr) {
@@ -166,7 +166,7 @@ tGraphNode *DebugGraph_FindNode(int index) {
     ci++;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 void DebugGraph_Free(void) {
@@ -180,7 +180,7 @@ void DebugGraph_Free(void) {
     curr = next;
   }
 
-  DebugGraphNode_root = NULL;
+  DebugGraphNode_root = nullptr;
 
   if (graph_bmp > BAD_BITMAP_HANDLE) {
     bm_FreeBitmap(graph_bmp);
@@ -191,7 +191,7 @@ void DebugGraph_Free(void) {
 
 void DebugGraph_Initialize(void) {
   atexit(DebugGraph_Free);
-  DebugGraphNode_root = NULL;
+  DebugGraphNode_root = nullptr;
   graph_bmp = -1;
   graph_mask = 0;
   graph_num_nodes = 0;
@@ -473,7 +473,7 @@ void DebugGraph_DisplayOptions(void) {
   newuiTiledWindow window;
   newuiSheet *sheet;
 
-  bool **bool_values = NULL;
+  bool **bool_values = nullptr;
   bool exit_menu = false;
   tGraphNode *node;
 
@@ -484,14 +484,14 @@ void DebugGraph_DisplayOptions(void) {
   window.Create("Debug Graph", 0, 0, 256, 384);
   sheet = window.GetSheet();
 
-  sheet->NewGroup(NULL, 0, 0);
+  sheet->NewGroup(nullptr, 0, 0);
   char buffer[256];
   int bit = 0x01;
 
   bool multi_game = (bool)((Game_mode & GM_MULTI) != 0);
 
   for (int i = 0; i < graph_num_nodes; i++) {
-    bool_values[i] = NULL;
+    bool_values[i] = nullptr;
     node = DebugGraph_FindNode(i);
     if (!node) {
       bit = bit << 1;
@@ -520,7 +520,7 @@ void DebugGraph_DisplayOptions(void) {
     bit = bit << 1;
   }
 
-  sheet->NewGroup(NULL, 50, 200);
+  sheet->NewGroup(nullptr, 50, 200);
   sheet->AddButton(TXT_OK, UID_OK);
 
   // process

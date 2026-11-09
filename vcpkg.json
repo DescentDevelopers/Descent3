@@ -1,7 +1,10 @@
 {
-  "builtin-baseline": "baa52c82b9b0e96f6c2557646a74b1f46b0b3071",
+  "builtin-baseline": "9a5dfef5d1a0438a7d24856a85bd60f309d355e9",
   "dependencies": [
-    "cpp-httplib",
+    {
+      "name": "cpp-httplib",
+      "version>=": "0.23.0"
+    },
     "glm",
     "gtest",
     "plog",
@@ -15,6 +18,11 @@
       "name": "sdl3",
       "version>=": "3.2.6",
       "platform": "!linux"
+    },
+    {
+      "name": "libxcrypt",
+      "version>=": "4.4.38",
+      "platform": "linux"
     },
     "zlib"
   ],

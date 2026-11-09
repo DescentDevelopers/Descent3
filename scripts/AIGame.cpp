@@ -19,6 +19,7 @@
 // AIGame.cpp
 //
 #include <cfloat>
+#include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,7 +45,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 static int String_table_size = 0;
-static char **String_table = NULL;
+static char **String_table = nullptr;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -223,7 +224,7 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
     else
       parent = OBJECT_HANDLE_NONE;
 
-    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, NULL, parent);
+    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, nullptr, parent);
     if (child_handle != OBJECT_HANDLE_NONE) {
       if (!Obj_AttachObjectAP(me, parent_ap, child_handle, child_ap, f_aligned)) {
         // chrishack (we need a way to instantly kill scripted objects)
@@ -400,7 +401,7 @@ public:
 #define MAX_STOLEN_WEAPONS 25
 
 struct weapon_item {
-  char index;
+  int8_t index;
   int owner;
   char amount;
 };
@@ -1537,7 +1538,7 @@ struct guidebot_data {
 class GuideBot final : public BaseObjScript {
 private:
   guidebot_data *memory = nullptr;
-  void DoMessage(const char *str, bool f_high_priority, const char *sound_name = NULL, bool f_sound_2d = false);
+  void DoMessage(const char *str, bool f_high_priority, const char *sound_name = nullptr, bool f_sound_2d = false);
   //	void InitPowerup(int me, char pow_id);
   //	void DoPowerupFrame(int me);
   void DoPowerupCheck(int me);
@@ -1784,16 +1785,16 @@ void SuperThief::SpewEverything(int me) {
       float speed = rand() / (float)RAND_MAX * 20.0f + 5.0f;
       vector dir;
 
-      dir.x = rand() / (float)RAND_MAX - 0.5f;
-      dir.y = rand() / (float)RAND_MAX - 0.5f;
-      dir.z = rand() / (float)RAND_MAX - 0.5f;
+      dir.x() = rand() / (float)RAND_MAX - 0.5f;
+      dir.y() = rand() / (float)RAND_MAX - 0.5f;
+      dir.z() = rand() / (float)RAND_MAX - 0.5f;
 
       vm_VectorNormalize(&dir);
       dir *= speed;
 
       Player_Value(memory->stolen_weapons[i].owner, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id,
                    memory->stolen_weapons[i].index);
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
 
     memory->stolen_weapons[i].amount = 0;
@@ -1843,11 +1844,6 @@ bool SuperThief::DoSteal(int me, int it) {
   attempted_steals = (bool *)malloc(numSuperThiefableItems * sizeof(bool));
   if (!attempted_steals)
     return false;
-
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
 
   for (i = 0; i < numSuperThiefableItems; i++) {
     attempted_steals[i] = false;
@@ -2109,7 +2105,7 @@ void SuperThief::DoInterval(int me) {
       int weapon_id;
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
 
     if (memory->mode_time < 3.0f && memory->mode_time + Game_GetFrameTime() >= 3.0f) {
@@ -2135,7 +2131,7 @@ void SuperThief::DoInterval(int me) {
       msafe_struct mstruct;
 
       memory->laser_on = true;
-      memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, NULL, me);
+      memory->camera_obj = Obj_Create(OBJ_POWERUP, Obj_FindID("Invisiblepowerup"), room, &pos, nullptr, me);
       mstruct.objhandle = memory->camera_obj;
       MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
 
@@ -2364,7 +2360,7 @@ struct barnswallow_data {
 
   int follower;
 
-  char num_friends;
+  int8_t num_friends;
   int friends[BS_MAX_FRIENDS];
   float next_friend_update_time;
 
@@ -2575,7 +2571,7 @@ void STDCALLPTR CreateInstance(int id) {
     mprintf(0, "SCRIPT: Illegal ID (%d)\n", id);
     break;
   };
-  return NULL;
+  return nullptr;
 }
 
 void STDCALL DestroyInstance(int id, void *ptr) {
@@ -3084,7 +3080,7 @@ void Humonculous::DetermineDeathPos(int me, vector *dpos, int *droom) {
   Obj_Value(Scrpt_FindObjectName("SafeDeath06"), VF_GET, OBJV_I_ROOMNUM, &dr[5]);
 
   for (i = 0; i < 6; i++) {
-    dp[i].y = -440.0f;
+    dp[i].y() = -440.0f;
 
     float cur_dist = vm_VectorDistance(&mpos, &dp[i]);
 
@@ -3119,8 +3115,8 @@ bool Humonculous::DoNotify(int me, tOSIRISEventInfo *data) {
   case HM_ABOUT_TO_FAKE_DEATH:
   case HM_ABOUT_TO_DIE: {
     if (data->evt_ai_notify.notify_type == AIN_SCRIPTED_ORIENT) {
-      vector uvec = Zero_vector;
-      uvec.y = 1.0f;
+      vector uvec{};
+      uvec.y() = 1.0f;
 
       if (AI_TurnTowardsVectors(me, &memory->land_fvec, &uvec))
         memory->flags |= HF_ORIENTED;
@@ -3230,7 +3226,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
     Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
     memory->land_fvec = orient.fvec;
-    memory->land_fvec.y = 0.0f;
+    memory->land_fvec.y() = 0.0f;
     vm_VectorNormalize(&memory->land_fvec);
     orient.fvec = memory->land_fvec;
 
@@ -3257,7 +3253,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
             FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
     fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
-    if (ray.hit_wallnorm * orient.rvec > -0.95) {
+    if (vm_Dot3Product(ray.hit_wallnorm, orient.rvec) > -0.95) {
       memory->mode = HM_WALL_HIT;
       SetMode(me, HM_MELEE);
       return false;
@@ -3268,7 +3264,7 @@ bool Humonculous::SetMode(int me, uint16_t mode) {
     AI_AddGoal(me, AIG_GET_TO_POS, 1, 1.0, H_GUID_LANDED, GF_ORIENT_SCRIPTED | GF_USE_BLINE_IF_SEES_GOAL | GF_NOTIFIES,
                &memory->land_pos, ray.hit_room);
 
-    float dist = 0.0f;
+    scalar dist = 0.0f;
     AI_GoalValue(me, 1, VF_SET, AIGV_F_CIRCLE_DIST, &dist);
 
     flags = PF_POINT_COLLIDE_WALLS;
@@ -3405,7 +3401,7 @@ void Humonculous::DoInit(int me) {
   Obj_GetGroundPos(me, 0, &g_pos, &g_norm);
 
   vector from_ground = pos - g_pos;
-  memory->ground_pnt_offset = fabs(from_ground * orient.uvec);
+  memory->ground_pnt_offset = fabs(vm_Dot3Product(from_ground, orient.uvec));
 
   AI_Value(me, VF_GET, AIV_F_MAX_SPEED, &memory->max_speed);
   AI_Value(me, VF_GET, AIV_F_MAX_DELTA_SPEED, &memory->max_delta_speed);
@@ -3482,8 +3478,8 @@ void Humonculous::DoInterval(int me) {
   switch (memory->mode) {
   case HM_INTRO_CUTSCENE: {
     if (memory->mode_time < H_DOOR_WAIT_TIME && memory->mode_time + Game_GetFrameTime() >= H_DOOR_WAIT_TIME) {
-      vector velocity = Zero_vector;
-      velocity.y = 65.0f;
+      vector velocity{};
+      velocity.y() = 65.0f;
 
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &velocity);
 
@@ -3618,14 +3614,14 @@ void Humonculous::DoInterval(int me) {
         Obj_Value(me, VF_GET, OBJV_V_POS, &start_pos);
         Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &start_room);
         end_pos = start_pos;
-        end_pos.y -= 2000.0f;
+        end_pos.y() -= 2000.0f;
 
         int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
         FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
         memory->land_pos = ray.hit_point;
-        memory->land_pos.y += memory->ground_pnt_offset;
+        memory->land_pos.y() += memory->ground_pnt_offset;
 
         float max_speed = 20.0f;
         float max_delta_speed = 50.0f;
@@ -3648,7 +3644,7 @@ void Humonculous::DoInterval(int me) {
         Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
         memory->land_fvec = orient.fvec;
-        memory->land_fvec.y = 0.0f;
+        memory->land_fvec.y() = 0.0f;
         vm_VectorNormalize(&memory->land_fvec);
       }
 
@@ -3664,8 +3660,8 @@ void Humonculous::DoInterval(int me) {
 
   case HM_FAKE_DEATH: {
     if (memory->mode_time > 4.0f) {
-      vector velocity = Zero_vector;
-      velocity.y = 40.0f;
+      vector velocity{};
+      velocity.y() = 40.0f;
 
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &velocity);
       SetMode(me, HM_DEATH_CHARGE);
@@ -3688,14 +3684,14 @@ void Humonculous::DoInterval(int me) {
         Obj_Value(me, VF_GET, OBJV_V_POS, &start_pos);
         Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &start_room);
         end_pos = start_pos;
-        end_pos.y -= 2000.0f;
+        end_pos.y() -= 2000.0f;
 
         int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                     FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
         FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
         memory->land_pos = ray.hit_point;
-        memory->land_pos.y += memory->ground_pnt_offset;
+        memory->land_pos.y() += memory->ground_pnt_offset;
 
         float max_speed = 20.0f;
         float max_delta_speed = 50.0f;
@@ -3718,7 +3714,7 @@ void Humonculous::DoInterval(int me) {
         Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
         memory->land_fvec = orient.fvec;
-        memory->land_fvec.y = 0.0f;
+        memory->land_fvec.y() = 0.0f;
         vm_VectorNormalize(&memory->land_fvec);
       }
     }
@@ -4242,7 +4238,7 @@ void DTower::DoFrame(int me) {
     Obj_GetGunPos(me, 1, &pos);
 
     int weapon_id = Wpn_FindID("TubbsHitBlast");
-    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
     Obj_Kill(memory->gun_handle, OBJECT_HANDLE_NONE, 1000.0f,
              DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_LARGE | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES, 0.0f,
@@ -4250,9 +4246,9 @@ void DTower::DoFrame(int me) {
     Obj_Burning(me, 10.0f, 5.0f);
 
     vector vel = {0.0f, 0.0f, 0.0f};
-    vel.y = (float)rand() / (float)RAND_MAX * 30.0f + 90.0f;
-    vel.x = (float)rand() / (float)RAND_MAX * 16.0f - 8.0f;
-    vel.z = (float)rand() / (float)RAND_MAX * 16.0f - 8.0f;
+    vel.y() = (float)rand() / (float)RAND_MAX * 30.0f + 90.0f;
+    vel.x() = (float)rand() / (float)RAND_MAX * 16.0f - 8.0f;
+    vel.z() = (float)rand() / (float)RAND_MAX * 16.0f - 8.0f;
 
     Obj_UnattachFromParent(memory->ball_handle);
     Obj_Value(memory->ball_handle, VF_SET, OBJV_V_VELOCITY, &vel);
@@ -4322,9 +4318,9 @@ void DCollector::DoFrame(int me) {
       Obj_Burning(me, 6.0f, 3.0f);
 
       vector vel = {0.0f, 0.0f, 0.0f};
-      vel.y = (float)rand() / (float)RAND_MAX * 30.0f + 90.0f;
-      vel.x = (float)rand() / (float)RAND_MAX * 8.0f - 4.0f;
-      vel.z = (float)rand() / (float)RAND_MAX * 8.0f - 4.0f;
+      vel.y() = (float)rand() / (float)RAND_MAX * 30.0f + 90.0f;
+      vel.x() = (float)rand() / (float)RAND_MAX * 8.0f - 4.0f;
+      vel.z() = (float)rand() / (float)RAND_MAX * 8.0f - 4.0f;
       Obj_Value(memory->ball_handle, VF_SET, OBJV_V_VELOCITY, &vel);
       Obj_Burning(memory->ball_handle, 15.0f, 3.0f);
     }
@@ -5957,7 +5953,7 @@ void GuideBot::DoFrame(int me) {
         vector dir_to_goal = it_pos - me_pos;
         vm_VectorNormalize(&dir_to_goal);
 
-        if ((flags & AISR_CIRCLE_DIST) && (dir_to_goal * orient.fvec > 0.4717f) && anim >= 23 && anim <= 33)
+        if ((flags & AISR_CIRCLE_DIST) && (vm_Dot3Product(dir_to_goal, orient.fvec) > 0.4717f) && anim >= 23 && anim <= 33)
           memory->extinguish_obj_time += Game_GetFrameTime();
 
         if (memory->extinguish_obj_time > 1.5f) {
@@ -6206,11 +6202,6 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
   if (!attempted_steals)
     return false;
 
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
-
   for (i = 0; i < numThiefableItems; i++) {
     attempted_steals[i] = false;
   }
@@ -6360,7 +6351,7 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
         memory->stolen_inv[memory->num_stolen_inv].owner = it;
         memory->num_stolen_inv++;
 
-        Player_Value(it, VF_SET, PLYV_I_THIEF_STEALPLAYERITEM, NULL, ThiefableItems[i].index);
+        Player_Value(it, VF_SET, PLYV_I_THIEF_STEALPLAYERITEM, nullptr, ThiefableItems[i].index);
         break;
       }
 
@@ -6671,7 +6662,7 @@ void Thief::DoFrame(int me) {
     Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
     weapon_id = Wpn_FindID("TubbsHitBlast");
-    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+    Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
     Obj_Kill(me, OBJECT_HANDLE_NONE, 1000.0f,
              DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES,
@@ -6700,7 +6691,7 @@ void Thief::DoFrame(int me) {
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
 
     if (memory->mode_time < 5.0f && memory->mode_time + Game_GetFrameTime() >= 5.0f) {
@@ -6769,16 +6760,16 @@ void Thief::SpewEverything(int me) {
       float speed = rand() / (float)RAND_MAX * 20.0f + 5.0f;
       vector dir;
 
-      dir.x = rand() / (float)RAND_MAX - 0.5f;
-      dir.y = rand() / (float)RAND_MAX - 0.5f;
-      dir.z = rand() / (float)RAND_MAX - 0.5f;
+      dir.x() = rand() / (float)RAND_MAX - 0.5f;
+      dir.y() = rand() / (float)RAND_MAX - 0.5f;
+      dir.z() = rand() / (float)RAND_MAX - 0.5f;
 
       vm_VectorNormalize(&dir);
       dir *= speed;
 
       Player_Value(memory->stolen_weapons[i].owner, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id,
                    memory->stolen_weapons[i].index);
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
 
     memory->stolen_weapons[i].amount = 0;
@@ -6837,14 +6828,14 @@ void Thief::SpewEverything(int me) {
       float speed = rand() / (float)RAND_MAX * 20.0f + 5.0f;
       vector dir;
 
-      dir.x = rand() / (float)RAND_MAX - 0.5f;
-      dir.y = rand() / (float)RAND_MAX - 0.5f;
-      dir.z = rand() / (float)RAND_MAX - 0.5f;
+      dir.x() = rand() / (float)RAND_MAX - 0.5f;
+      dir.y() = rand() / (float)RAND_MAX - 0.5f;
+      dir.z() = rand() / (float)RAND_MAX - 0.5f;
 
       vm_VectorNormalize(&dir);
       dir *= speed;
 
-      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, OBJECT_HANDLE_NONE, &dir);
+      powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, OBJECT_HANDLE_NONE, &dir);
     }
   }
   memory->num_stolen_inv = 0;
@@ -6928,13 +6919,13 @@ void Sickle::SetMode(int me, char mode) {
     Obj_Value(me, VF_GET, OBJV_V_POS, &start_pos);
     Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &start_room);
     end_pos = start_pos;
-    end_pos.y = end_pos.y + 400.0;
+    end_pos.y() = end_pos.y() + 400.0;
     flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
             FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
     fate = FVI_RayCast(me, &start_pos, &end_pos, start_room, 0.0f, flags, &ray);
 
     memory->ceiling_pos = ray.hit_point;
-    memory->ceiling_pos.y -= 3.2f;
+    memory->ceiling_pos.y() -= 3.2f;
 
     fate = FVI_RayCast(me, &start_pos, &memory->ceiling_pos, start_room, 0.0f, flags, &ray);
     ceiling_room = ray.hit_room;
@@ -6974,7 +6965,7 @@ void Sickle::SetMode(int me, char mode) {
 
     if (memory->mode == SICKLE_LANDED) {
       Obj_Value(me, VF_GET, OBJV_V_VELOCITY, &vel);
-      vel.y -= (8.0f + ((float)rand() / (float)RAND_MAX) * 15.0f);
+      vel.y() -= (8.0f + ((float)rand() / (float)RAND_MAX) * 15.0f);
       Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &vel);
     }
 
@@ -7032,7 +7023,7 @@ void Sickle::DoInit(int me) {
   matrix orient;
   Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
   memory->home_fvec = orient.fvec;
-  memory->home_fvec.y = 0.0f;
+  memory->home_fvec.y() = 0.0f;
   vm_VectorNormalize(&memory->home_fvec);
 
   memory->mode_time = 0.0f;
@@ -7084,9 +7075,9 @@ void Sickle::DoFrame(int me) {
       SetMode(me, SICKLE_LAND_ON_CEILING);
     }
   } else if (memory->mode == SICKLE_LAND_ON_CEILING) {
-    uvec.x = 0.0;
-    uvec.y = -1.0;
-    uvec.z = 0.0;
+    uvec.x() = 0.0;
+    uvec.y() = -1.0;
+    uvec.z() = 0.0;
 
     memory->done_turning = AI_TurnTowardsVectors(me, &memory->home_fvec, &uvec) != 0;
 
@@ -7311,7 +7302,7 @@ void HatePTMC::DoFrame(int me) {
 
             Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
-            if (p_room == room || dist < 60.0f || orient.fvec * dir >= fov) {
+            if (p_room == room || dist < 60.0f || vm_Dot3Product(orient.fvec, dir) >= fov) {
               ray_info ray;
               int flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
                           FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
@@ -7444,7 +7435,7 @@ bool Tubbs::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
       Obj_GetGunPos(me, 0, &pos);
 
       weapon_id = Wpn_FindID("TubbsHitBlast");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
     }
   }
 
@@ -7485,11 +7476,6 @@ bool OldScratch::DoSteal(int me, int it) {
   attempted_steals = (bool *)malloc(numSuperThiefableItems * sizeof(bool));
   if (!attempted_steals)
     return false;
-
-  float ftime = Game_GetFrameTime();
-  if (ftime == 0)
-    ftime = 1.0f;
-  srand(Game_GetTime() / ftime);
 
   for (i = 0; i < numSuperThiefableItems; i++) {
     attempted_steals[i] = false;
@@ -7575,15 +7561,15 @@ bool OldScratch::DoSteal(int me, int it) {
           float speed = rand() / (float)RAND_MAX * 20.0f + 5.0f;
           vector dir;
 
-          dir.x = rand() / (float)RAND_MAX - 0.5f;
-          dir.y = rand() / (float)RAND_MAX - 0.5f;
-          dir.z = rand() / (float)RAND_MAX - 0.5f;
+          dir.x() = rand() / (float)RAND_MAX - 0.5f;
+          dir.y() = rand() / (float)RAND_MAX - 0.5f;
+          dir.z() = rand() / (float)RAND_MAX - 0.5f;
 
           vm_VectorNormalize(&dir);
           dir *= speed;
 
           Player_Value(it, VF_GET, PLYSV_US_WEAPON_POWERUP_ID, &id, SuperThiefableItems[i].index);
-          powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, NULL, it, &dir);
+          powerup_handle = Obj_Create(OBJ_POWERUP, id, room, &pos, nullptr, it, &dir);
         }
       }
 
@@ -7736,11 +7722,11 @@ int16_t OldScratch::CallEvent(int event, tOSIRISEventInfo *data) {
 //---------------------
 
 void BarnSwallow::ComputeNextNestPnt(int me, vector *pos) {
-  pos->x = (0.5f - (float)rand() / (float)RAND_MAX);
-  pos->y = (0.5f - (float)rand() / (float)RAND_MAX);
-  pos->z = (0.5f - (float)rand() / (float)RAND_MAX);
+  pos->x() = (0.5f - (float)rand() / (float)RAND_MAX);
+  pos->y() = (0.5f - (float)rand() / (float)RAND_MAX);
+  pos->z() = (0.5f - (float)rand() / (float)RAND_MAX);
 
-  pos->y *= 0.3f;
+  pos->y() *= 0.3f;
 
   vm_VectorNormalize(pos);
 
@@ -8345,14 +8331,14 @@ bool Sparky::DoNotify(int me_handle, tOSIRISEventInfo *data) {
     Obj_Value(me_handle, VF_GET, OBJV_V_ROTVELOCITY, &rvel);
 
     if (memory->spin_dir == SPARKY_ROT_LEFT) {
-      rvel.y -= DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.y() -= DEATH_ROT_ACC * Game_GetFrameTime();
     } else {
-      rvel.y += DEATH_ROT_ACC * Game_GetFrameTime();
+      rvel.y() += DEATH_ROT_ACC * Game_GetFrameTime();
     }
 
     Obj_Value(me_handle, VF_SET, OBJV_V_ROTVELOCITY, &rvel);
 
-    vector dir = Zero_vector;
+    vector dir{};
     AI_Value(me_handle, VF_SET, AIV_V_MOVEMENT_DIR, &dir);
   }
 
@@ -8368,7 +8354,7 @@ void Sparky::SetMode(int me, char mode) {
     AI_SetType(me, AIT_MELEE1);
   } break;
   case SPARKY_DYING: {
-    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, NULL);
+    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, 0);
 
     float drag = 0.0f;
     Obj_Value(me, VF_SET, OBJV_F_ROTDRAG, &drag);
@@ -8434,7 +8420,7 @@ void Sparky::DoFrame(int me) {
     matrix orient;
     Obj_Value(me, VF_GET, OBJV_M_ORIENT, &orient);
 
-    float dot = orient.rvec * memory->orient.rvec;
+    scalar dot = vm_Dot3Product(orient.rvec, memory->orient.rvec);
     if (dot < -1.0f)
       dot = -1.0f;
     else if (dot > 1.0f)
@@ -8445,7 +8431,7 @@ void Sparky::DoFrame(int me) {
     float aps = (ang * 65535.0f) / (Game_GetFrameTime() * (2.0f * PI));
 
     if (aps >= MIN_MALF_SPEED) {
-      float tdot = memory->orient.rvec * orient.fvec;
+      float tdot = vm_Dot3Product(memory->orient.rvec, orient.fvec);
       if (tdot < 0.0f)
         spin_dir = SPARKY_ROT_LEFT;
       else if (tdot > 0.0f)
@@ -9222,7 +9208,7 @@ void MantaRay::UpdateSquad(int me) {
         }
 
         if (!f_on_team) {
-          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, NULL)) {
+          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, nullptr)) {
             memory->flags |= MRF_LEADER;
             memory->teammate[memory->num_teammates++] = scan_objs[i];
           }
@@ -9643,7 +9629,7 @@ void Skiff::UpdateSquad(int me) {
         }
 
         if (!f_on_team) {
-          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, NULL)) {
+          if (SendCommand(me, scan_objs[i], MRC_JOIN_ME, nullptr)) {
             memory->flags |= MRF_LEADER;
             memory->teammate[memory->num_teammates++] = scan_objs[i];
           }
@@ -10006,7 +9992,7 @@ bool SpyHunter::DoNotify(int me, tOSIRISEventInfo *data) {
       Obj_Value(me, VF_GET, OBJV_V_VELOCITY, &velocity);
 
       int weapon_id = Wpn_FindID("FragBarrel");
-      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me, &velocity);
+      Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me, &velocity);
     }
 
     msafe_struct mstruct;
@@ -10114,7 +10100,7 @@ void Sniper::SetMode(int me, char mode) {
     if ((rand() % 100) > 50) {
       flags |= GF_ORIENT_TARGET;
       AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-                 NULL, GST_NEG_FVEC);
+                 0, GST_NEG_FVEC);
       memory->time_till_next_mode = 4.0f * (float)rand() / (float)RAND_MAX + 2.0f;
     } else {
       float timescaler = 1.0f;
@@ -10251,7 +10237,7 @@ void SniperNoRun::SetMode(int me, char mode) {
     if ((rand() % 100) > 50) {
       flags |= GF_ORIENT_TARGET;
       AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-                 NULL, GST_NEG_FVEC);
+                 0, GST_NEG_FVEC);
       memory->time_till_next_mode = 4.0f * (float)rand() / (float)RAND_MAX + 2.0f;
     } else {
       float timescaler = 1.0f;
@@ -10392,7 +10378,7 @@ void EvaderModA::SetMode(int me, char mode) {
     }
 
     AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-               NULL, vec);
+               0, vec);
   } break;
   case EMA_NORMAL: {
     AI_Value(me, VF_SET, AIV_F_MAX_SPEED, &memory->base_speed);
@@ -10507,7 +10493,7 @@ void FlameRAS::SetMode(int me, char mode) {
     }
 
     AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_SPEED_ATTACK | GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET,
-               NULL, vec);
+               0, vec);
   } break;
   case EMA_NORMAL: {
     AI_Value(me, VF_SET, AIV_F_MAX_SPEED, &memory->base_speed);
@@ -10659,7 +10645,7 @@ void Seeker::DoCollide(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   weapon_id = Wpn_FindID("SeekerExplosion");
-  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
   msafe_struct mo;
   mo.objhandle = me;
@@ -10852,9 +10838,9 @@ int16_t BettyScript::CallEvent(int event, tOSIRISEventInfo *data) {
     if (parent != OBJECT_HANDLE_NONE) {
       // Give it velocity
       Obj_Value(parent, VF_GET, OBJV_V_VELOCITY, &vel);
-      vel.x = vel.x * -0.5;
-      vel.y = vel.y * -0.5;
-      vel.z = vel.z * -0.5;
+      vel.x() = vel.x() * -0.5;
+      vel.y() = vel.y() * -0.5;
+      vel.z() = vel.z() * -0.5;
       Obj_Value(data->me_handle, VF_SET, OBJV_V_VELOCITY, &vel);
     }
 
@@ -10913,9 +10899,9 @@ int16_t BettyScript::CallEvent(int event, tOSIRISEventInfo *data) {
       if (velmag > 120.0f) {
         // limit the velocity
         scale = 120.0f / velmag;
-        vel.x = scale * vel.x;
-        vel.y = scale * vel.y;
-        vel.z = scale * vel.z;
+        vel.x() = scale * vel.x();
+        vel.y() = scale * vel.y();
+        vel.z() = scale * vel.z();
         Obj_Value(data->me_handle, VF_SET, OBJV_V_VELOCITY, &vel);
       }
     }
@@ -10970,9 +10956,9 @@ void ChaffScript::DoInit(int handle) {
     chaffcount = 10;
     for (count = 0; count < chaffcount; count++) {
       v = -vel;
-      v.x += (rand() % 30) - 15;
-      v.y += (rand() % 30) - 15;
-      v.z += (rand() % 30) - 15;
+      v.x() += (rand() % 30) - 15;
+      v.y() += (rand() % 30) - 15;
+      v.z() += (rand() % 30) - 15;
 
       ch = Obj_Create(OBJ_ROBOT, chunk_id, room, &pos, &orient, parent, &v);
     }
@@ -11128,7 +11114,7 @@ void ProxMine::DoCollide(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   weapon_id = Wpn_FindID("TubbsHitBlast");
-  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, me);
+  Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, nullptr, me);
 
   msafe_struct mo;
   mo.objhandle = me;

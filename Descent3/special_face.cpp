@@ -34,8 +34,8 @@ void InitSpecialFaces() {
 
   for (i = 0; i < MAX_SPECIAL_FACES; i++) {
     SpecialFaces[i].used = 0;
-    SpecialFaces[i].vertnorms = NULL;
-    SpecialFaces[i].spec_instance = NULL;
+    SpecialFaces[i].vertnorms = nullptr;
+    SpecialFaces[i].spec_instance = nullptr;
     Free_special_face_list[i] = i;
   }
 }
@@ -85,12 +85,12 @@ void FreeSpecialFace(int handle) {
     Free_special_face_list[--Num_of_special_faces] = handle;
     if (SpecialFaces[handle].spec_instance) {
       mem_free(SpecialFaces[handle].spec_instance);
-      SpecialFaces[handle].spec_instance = NULL;
+      SpecialFaces[handle].spec_instance = nullptr;
     }
 
     if (SpecialFaces[handle].vertnorms) {
       mem_free(SpecialFaces[handle].vertnorms);
-      SpecialFaces[handle].vertnorms = NULL;
+      SpecialFaces[handle].vertnorms = nullptr;
     }
   }
 }

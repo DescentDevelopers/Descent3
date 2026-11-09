@@ -635,7 +635,7 @@ void SetNapalmDamageEffect(object *obj, object *killer, int weapon_id) {
     if (Gametime - obj->effect_info->last_damage_time > 1.0f)
       obj->effect_info->last_damage_time = 0;
 
-    if (killer != NULL)
+    if (killer != nullptr)
       obj->effect_info->damage_handle = killer->handle;
     else
       obj->effect_info->damage_handle = OBJECT_HANDLE_NONE;
@@ -672,7 +672,7 @@ void DoDamageEffect(int eventnum, void *data) {
   if (Players[Player_num].damage_magnitude < .0001f)
     Players[Player_num].damage_magnitude = 0.0;
   else
-    CreateNewEvent(RENDER_EVENT, DAMAGE_EFFECT, 0, NULL, 0, DoDamageEffect);
+    CreateNewEvent(RENDER_EVENT, DAMAGE_EFFECT, 0, nullptr, 0, DoDamageEffect);
 }
 
 // Decreases a players shields
@@ -683,7 +683,7 @@ void DecreasePlayerShields(int slot, float damage) {
 
   if (slot == Player_num) {
     if ((FindEventID(DAMAGE_EFFECT)) == -1)
-      CreateNewEvent(RENDER_EVENT, DAMAGE_EFFECT, 0, NULL, 0, DoDamageEffect);
+      CreateNewEvent(RENDER_EVENT, DAMAGE_EFFECT, 0, nullptr, 0, DoDamageEffect);
 
     if (Game_mode & GM_MULTI)
       Multi_bail_ui_menu = true;
@@ -705,7 +705,7 @@ void DoEDrainEffect(int eventnum, void *data) {
   if (Players[Player_num].edrain_magnitude < .0001f)
     Players[Player_num].edrain_magnitude = 0.0;
   else
-    CreateNewEvent(RENDER_EVENT, EDRAIN_EFFECT, 0, NULL, 0, DoEDrainEffect);
+    CreateNewEvent(RENDER_EVENT, EDRAIN_EFFECT, 0, nullptr, 0, DoEDrainEffect);
 }
 
 // Decreases a players shields
@@ -715,7 +715,7 @@ void DecreasePlayerEnergy(int slot, float energy) {
 
   if (slot == Player_num) {
     if ((FindEventID(EDRAIN_EFFECT)) == -1)
-      CreateNewEvent(RENDER_EVENT, EDRAIN_EFFECT, 0, NULL, 0, DoEDrainEffect);
+      CreateNewEvent(RENDER_EVENT, EDRAIN_EFFECT, 0, nullptr, 0, DoEDrainEffect);
   }
 }
 
@@ -782,7 +782,7 @@ void KillPlayer(object *playerobj, object *killer, float damage_amount, int weap
     // Call DLL stuff
     DLLInfo.me_handle = playerobj->handle;
 
-    if (killer != NULL)
+    if (killer != nullptr)
       DLLInfo.it_handle = killer->handle;
     else
       DLLInfo.it_handle = OBJECT_HANDLE_NONE;
@@ -812,9 +812,9 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
   }
 
   //	apply damage to the current player!
-  object *weapon_obj = NULL;
+  object *weapon_obj = nullptr;
 
-  if (killer != NULL && killer->type == OBJ_WEAPON) {
+  if (killer != nullptr && killer->type == OBJ_WEAPON) {
     weapon_obj = killer;
     killer = ObjGetUltimateParent(killer);
 
@@ -833,7 +833,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
     if (damage_type != PD_NONE)
       PlayPlayerInvulnerabilitySound(playerobj);
 
-    if (weapon_obj != NULL) {
+    if (weapon_obj != nullptr) {
       Players[playerobj->id].invul_magnitude = 1;
       Players[playerobj->id].invul_vector = weapon_obj->pos - playerobj->pos;
       vm_NormalizeVectorFast(&Players[playerobj->id].invul_vector);
@@ -849,10 +849,10 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
       if (damage_amount > 0 && playsound)
         PlayPlayerDamageSound(playerobj, damage_type);
 
-      if (Players[playerobj->id].guided_obj != NULL)
+      if (Players[playerobj->id].guided_obj != nullptr)
         ReleaseGuidedMissile(playerobj->id);
 
-      if (Players[playerobj->id].user_timeout_obj != NULL)
+      if (Players[playerobj->id].user_timeout_obj != nullptr)
         ReleaseUserTimeoutMissile(playerobj->id);
 
       if (weapon_id != 255) {
@@ -884,7 +884,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
       if (Netgame.local_role == LR_SERVER || server_says) {
         if (Netgame.local_role == LR_SERVER) {
           // Check to see if we're on the same team
-          if (killer != NULL && killer->type == OBJ_PLAYER) {
+          if (killer != nullptr && killer->type == OBJ_PLAYER) {
             if (killer->id != playerobj->id) {
               if (Players[killer->id].team == Players[playerobj->id].team && !(Netgame.flags & NF_DAMAGE_FRIENDLY))
                 return false; // don't hurt players on your own team
@@ -900,10 +900,10 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
         DecreasePlayerShields(playerobj->id, damage_amount);
         if (damage_amount > 0 && playsound)
           PlayPlayerDamageSound(playerobj, damage_type);
-        if (playerobj->id == Player_num && Players[playerobj->id].guided_obj != NULL)
+        if (playerobj->id == Player_num && Players[playerobj->id].guided_obj != nullptr)
           ReleaseGuidedMissile(playerobj->id);
 
-        if (playerobj->id == Player_num && Players[playerobj->id].user_timeout_obj != NULL)
+        if (playerobj->id == Player_num && Players[playerobj->id].user_timeout_obj != nullptr)
           ReleaseUserTimeoutMissile(playerobj->id);
 
         if (weapon_id != 255) {
@@ -925,7 +925,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
             } else
               MultiSendDamagePlayer(playerobj->id, weapon_id, damage_type, damage_amount);
           } else {
-            if (weapon_obj != NULL)
+            if (weapon_obj != nullptr)
               MultiSendDamagePlayer(playerobj->id, 255, damage_type, damage_amount);
             else {
               Multi_additional_damage[playerobj->id] += damage_amount;
@@ -938,7 +938,7 @@ bool ApplyDamageToPlayer(object *playerobj, object *killer, int damage_type, flo
       if (Netgame.local_role == LR_SERVER) {
         // Call DLL stuff
         DLLInfo.me_handle = playerobj->handle;
-        if (killer != NULL)
+        if (killer != nullptr)
           DLLInfo.it_handle = killer->handle;
         else
           DLLInfo.it_handle = OBJECT_HANDLE_NONE;
@@ -975,7 +975,7 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
   } else { // slow death
 
     int alternate_death = 0;
-    bool f_upsidedown_walker = (obj->movement_type == MT_WALKING) && (obj->orient.uvec.y < 0.0f);
+    bool f_upsidedown_walker = (obj->movement_type == MT_WALKING) && (obj->orient.uvec.y() < 0.0f);
 
     if (!f_upsidedown_walker && (ps_rand() % 2) == 1) {
       *death_flags = DF_DELAY_SPARKS;
@@ -1001,10 +1001,10 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
         if (obj->control_type == CT_AI &&
             Object_info[obj->id].anim[obj->ai_info->movement_type].elem[AS_DEATH].to != 0.0f) {
           // compute time remaining in current animation
-          float extra_time = obj->rtype.pobj_info.anim_time *
+          scalar extra_time = obj->rtype.pobj_info.anim_time *
                              (obj->rtype.pobj_info.anim_end_frame - obj->rtype.pobj_info.anim_frame) /
                              (obj->rtype.pobj_info.anim_end_frame - obj->rtype.pobj_info.anim_start_frame);
-          extra_time = std::min<float>(extra_time, 3.0); // limit extra time to 3 seconds
+          extra_time = std::min<scalar>(extra_time, 3.0); // limit extra time to 3 seconds
           *delay_time = Object_info[obj->id].anim[obj->ai_info->movement_type].elem[AS_DEATH].spc + 0.25 + extra_time;
           // Walkers last a little longer
           if (obj->movement_type == MT_WALKING)
@@ -1014,7 +1014,7 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
       }
     } else { // If building, make it shoot up
       *death_flags |= DF_DELAY_FLYING;
-      if (obj->orient.uvec.y == 1.0f)
+      if (obj->orient.uvec.y() == 1.0f)
         *delay_time = 2.0f;
       else
         *delay_time = 0.7f;
@@ -1092,21 +1092,21 @@ void SetFallingPhysics(object *objp) {
 
   // Special stuff for walkers
   if (objp->movement_type == MT_WALKING) {
-    objp->mtype.phys_info.rotvel = Zero_vector;
+    objp->mtype.phys_info.rotvel = vector{};
     objp->mtype.phys_info.flags |= PF_POINT_COLLIDE_WALLS;
-    float proj = objp->mtype.phys_info.velocity * objp->orient.uvec;
+    scalar proj = vm_Dot3Product(objp->mtype.phys_info.velocity, objp->orient.uvec);
     if (proj < 0.0f)
       objp->mtype.phys_info.velocity -= proj * objp->orient.uvec;
 
-    objp->mtype.phys_info.velocity += objp->orient.uvec * (3.0f + ((float)ps_rand() / D3_RAND_MAX) * 5.0);
+    objp->mtype.phys_info.velocity += objp->orient.uvec * (3.0f + ((scalar)ps_rand() / D3_RAND_MAX) * 5.0);
     objp->movement_type = MT_PHYSICS;
   } else { // not a walker
 
     // If not spinning much, give the object a good spin
-    if (vm_GetMagnitude(&objp->mtype.phys_info.rotvel) < 4000.0f) {
-      objp->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    if (objp->mtype.phys_info.rotvel.mag() < 4000.0f) {
+      objp->mtype.phys_info.rotvel.x() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.y() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.z() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
     }
   }
 }
@@ -1124,20 +1124,20 @@ void SetFlyingPhysics(object *objp, bool tumbles) {
 
   if (tumbles) {
     // Make y spin a little bit more that x or z
-    objp->mtype.phys_info.rotvel.x = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.z = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.x() = (scalar)((40000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.y() = (scalar)((60000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.z() = (scalar)((40000.0f * (scalar)(D3_RAND_MAX / 2 - ps_rand())) / (scalar)(D3_RAND_MAX / 2));
   }
 
-  if (objp->orient.uvec.y == 1.0f) {
-    objp->mtype.phys_info.velocity.y = (float)(3 * (ps_rand() % 15)) + 20.0;
-    objp->mtype.phys_info.velocity.x = 0;
-    objp->mtype.phys_info.velocity.z = 0;
+  if (objp->orient.uvec.y() == 1.0f) {
+    objp->mtype.phys_info.velocity.y() = (scalar)(3 * (ps_rand() % 15)) + 20.0;
+    objp->mtype.phys_info.velocity.x() = 0;
+    objp->mtype.phys_info.velocity.z() = 0;
 
     // Doubled the velocity on 4/30/99 to make Josh's pop machines cooler. -MT
-    objp->mtype.phys_info.velocity.y *= 2.0;
+    objp->mtype.phys_info.velocity.y() *= 2.0;
   } else {
-    objp->mtype.phys_info.velocity = objp->orient.uvec * ((float)(2.0f * (ps_rand() % 15)) + 7.0f);
+    objp->mtype.phys_info.velocity = objp->orient.uvec * ((scalar)(2.0f * (ps_rand() % 15)) + 7.0f);
   }
 }
 
@@ -1152,10 +1152,10 @@ float GetDeathAnimTime(object *objp) {
     if (Object_info[objp->id].anim[objp->ai_info->movement_type].elem[AS_DEATH].to != 0) {
 
       // calculate how long for the object to finish its current animation before starting death anim
-      float extra_time = objp->rtype.pobj_info.anim_time *
+      scalar extra_time = objp->rtype.pobj_info.anim_time *
                          (objp->rtype.pobj_info.anim_end_frame - objp->rtype.pobj_info.anim_frame) /
                          (objp->rtype.pobj_info.anim_end_frame - objp->rtype.pobj_info.anim_start_frame);
-      extra_time = std::min<float>(extra_time, 3.0); // limit extra time to 3 seconds
+      extra_time = std::min<scalar>(extra_time, 3.0); // limit extra time to 3 seconds
       LOG_DEBUG.printf("extra_time = %2f", extra_time);
 
       death_time = Object_info[objp->id].anim[objp->ai_info->movement_type].elem[AS_DEATH].spc + 0.25 + extra_time;
@@ -1184,6 +1184,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
   if ((Game_mode & GM_MULTI) && (Netgame.local_role == LR_SERVER)) {
     int seed = ps_rand();
     MultiSendKillObject(objp, killer, damage, death_flags, delay_time, seed);
+    // legacy re-seed outside `-randseed` allowed: multiplayer only
     ps_srand(seed);
   }
 
@@ -1191,6 +1192,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
   if (Demo_flags == DF_RECORDING) {
     int seed = ps_rand();
     DemoWriteKillObject(objp, killer, damage, death_flags, delay_time, seed);
+    // legacy re-seed outside `-randseed` allowed: demo recording only
     ps_srand(seed);
   }
 
@@ -1224,7 +1226,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
   } else { // Some sort of delayed death
 
     // For upside-down walkers, force simple delay
-    bool f_upsidedown_walker = (objp->movement_type == MT_WALKING) && (objp->orient.uvec.y < 0.0f);
+    bool f_upsidedown_walker = (objp->movement_type == MT_WALKING) && (objp->orient.uvec.y() < 0.0f);
     if (f_upsidedown_walker)
       death_flags |= DF_DELAY_LOSES_ANTIGRAV;
 
@@ -1273,7 +1275,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
 
     // Deal with objects that fade out
     if (death_flags & DF_DELAY_FADE_AWAY) {
-      ASSERT(objp->effect_info != NULL);
+      ASSERT(objp->effect_info != nullptr);
       objp->effect_info->type_flags |= EF_FADING_OUT;
       objp->effect_info->fade_time = objp->effect_info->fade_max_time = objp->ctype.dying_info.delay_time;
     }
@@ -1289,7 +1291,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
 //	Applies damage to robot objects.  Handled differently than damage to players for obvious reasons.
 bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, float damage, int server_says,
                           int weapon_id) {
-  ASSERT(hit_obj != NULL);
+  ASSERT(hit_obj != nullptr);
 
   if (hit_obj->type == OBJ_DUMMY) {
     // as per ChrisP, dummies should be ignored here
@@ -1310,7 +1312,7 @@ bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, floa
       !(IS_GENERIC(hit_obj->type) && (Object_info[hit_obj->id].flags & OIF_NO_DIFF_SCALE_DAMAGE)))
     damage *= Diff_robot_damage[DIFF_LEVEL];
 
-  if (killer != NULL && killer->type == OBJ_WEAPON) {
+  if (killer != nullptr && killer->type == OBJ_WEAPON) {
     killer = ObjGetUltimateParent(killer);
 
     if (!(Game_mode & GM_MULTI) || (Game_mode & GM_MULTI && Netgame.local_role == LR_SERVER))
@@ -1327,7 +1329,7 @@ bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, floa
 
     if ((!(Game_mode & GM_MULTI)) || server_says || ((Netgame.local_role == LR_SERVER) && (Game_mode & GM_MULTI))) {
       tOSIRISEventInfo ei;
-      if (killer != NULL)
+      if (killer != nullptr)
         ei.evt_damaged.it_handle = killer->handle;
       else
         ei.evt_damaged.it_handle = OBJECT_HANDLE_NONE;
@@ -1350,7 +1352,7 @@ bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, floa
       hit_obj->shields -= damage;
 
       if (Game_mode & GM_MULTI) { // only the server will be calling this
-        if (killer != NULL)
+        if (killer != nullptr)
           DLLInfo.it_handle = killer->handle;
         else
           DLLInfo.it_handle = OBJECT_HANDLE_NONE;
@@ -1491,13 +1493,13 @@ void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
     return;
 
   // Set hitpnt if not specified
-  if (hitpnt == NULL) {
+  if (hitpnt == nullptr) {
     ComputeCenterPointOnFace(&t_hitpnt, rp, facenum);
     hitpnt = &t_hitpnt;
   }
 
   // Set hitvec if not specified
-  if (hitvec == NULL) {
+  if (hitvec == nullptr) {
     t_hitvec = -fp->normal;
     hitvec = &t_hitvec;
   }
@@ -1548,10 +1550,10 @@ void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
       vertnum++;
 
     // Calculate the center point
-    center = (curpoint + prevpoint + *hitpnt) / 3.0;
+    center = (curpoint + prevpoint + *hitpnt) / (scalar)3.0;
 
     // Create the object
-    objnum = ObjCreate(OBJ_SHARD, 0, roomnum, &center, NULL);
+    objnum = ObjCreate(OBJ_SHARD, 0, roomnum, &center, nullptr);
 
     // Setup shard info
     if (objnum != -1) {
@@ -1573,12 +1575,12 @@ void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
       si->tmap = fp->tmap;
 
       // Set velocity
-      objp->mtype.phys_info.velocity = shardvec * (50.0 + 100.0 * (objnum % 3));
+      objp->mtype.phys_info.velocity = shardvec * ((scalar)50.0 + (scalar)100.0 * (objnum % 3));
 
       // Set rotational velocity
-      objp->mtype.phys_info.rotvel.x = 25000.0 * (objnum % 5);
-      objp->mtype.phys_info.rotvel.y = 25000.0 * (objnum % 2);
-      objp->mtype.phys_info.rotvel.z = 25000.0 * (objnum % 3);
+      objp->mtype.phys_info.rotvel.x() = (scalar)25000.0 * (objnum % 5);
+      objp->mtype.phys_info.rotvel.y() = (scalar)25000.0 * (objnum % 2);
+      objp->mtype.phys_info.rotvel.z() = (scalar)25000.0 * (objnum % 3);
 
       prevpoint = curpoint;
       prev_u = cur_u;

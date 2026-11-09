@@ -34,7 +34,7 @@
 class CTerrainSoundDialog : public CDialog {
   // Construction
 public:
-  CTerrainSoundDialog(CWnd *pParent = NULL); // standard constructor
+  CTerrainSoundDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CTerrainSoundDialog)

@@ -28,22 +28,22 @@ static int sUseTransformPassthru = -1;
 extern float Z_bias;
 void g3_GetModelViewMatrix(const vector *viewPos, const matrix *viewMatrix, float *mvMat) {
   matrix localOrient = (*viewMatrix);
-  vector localPos = -(*viewPos);
-  mvMat[0] = localOrient.rvec.x;
-  mvMat[1] = localOrient.uvec.x;
-  mvMat[2] = localOrient.fvec.x;
+  vector localPos = -((vector)*viewPos);
+  mvMat[0] = localOrient.rvec.x();
+  mvMat[1] = localOrient.uvec.x();
+  mvMat[2] = localOrient.fvec.x();
   mvMat[3] = 0.0f;
-  mvMat[4] = localOrient.rvec.y;
-  mvMat[5] = localOrient.uvec.y;
-  mvMat[6] = localOrient.fvec.y;
+  mvMat[4] = localOrient.rvec.y();
+  mvMat[5] = localOrient.uvec.y();
+  mvMat[6] = localOrient.fvec.y();
   mvMat[7] = 0.0f;
-  mvMat[8] = localOrient.rvec.z;
-  mvMat[9] = localOrient.uvec.z;
-  mvMat[10] = localOrient.fvec.z;
+  mvMat[8] = localOrient.rvec.z();
+  mvMat[9] = localOrient.uvec.z();
+  mvMat[10] = localOrient.fvec.z();
   mvMat[11] = 0.0f;
-  mvMat[12] = localPos * localOrient.rvec;
-  mvMat[13] = localPos * localOrient.uvec;
-  mvMat[14] = localPos * localOrient.fvec + Z_bias;
+  mvMat[12] = vm_Dot3Product(localPos, localOrient.rvec);
+  mvMat[13] = vm_Dot3Product(localPos, localOrient.uvec);
+  mvMat[14] = vm_Dot3Product(localPos, localOrient.fvec) + Z_bias;
   mvMat[15] = 1.0f;
 }
 

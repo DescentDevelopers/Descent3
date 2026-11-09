@@ -1213,6 +1213,7 @@ void FindPlayerStarts() {
   Highest_player_start = 0;
 
   if (Game_mode & GM_MULTI) {
+    // legacy re-seed outside `-randseed` allowed: multiplayer only
     ps_srand(400);
   }
 
@@ -1295,6 +1296,7 @@ int PlayerGetRandomStartPosition(int slot) {
     }
   }
 
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   ps_srand((timer_GetTime() * 1000));
   // If this is a team game then pick a spot on that team
   if (Team_game) {
@@ -1489,8 +1491,8 @@ void InitPlayerNewShip(int slot, int inven_reset) {
   Players[slot].killer_objnum = -1;
   Players[slot].light_dist = 0;
   Players[slot].oldroom = -1;
-  Players[slot].guided_obj = NULL;
-  Players[slot].user_timeout_obj = NULL;
+  Players[slot].guided_obj = nullptr;
+  Players[slot].user_timeout_obj = nullptr;
   Players[slot].afterburn_time_left = AFTERBURN_TIME;
   Players[slot].last_thrust_time = 0;
   Players[slot].last_afterburner_time = 0;
@@ -1734,7 +1736,7 @@ void UpdatePlayerCameraPosition() {
   fq.startroom = dest_room;
   fq.rad = .5;
   fq.thisobjnum = OBJNUM(playerobj);
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS;
   fvi_FindIntersection(&fq, &hit_data);
 
@@ -1840,7 +1842,7 @@ void DoPlayerFrameForOne(int slot) {
       }
 
       if (scalar > .7) {
-        SetNapalmDamageEffect(obj, NULL, napalm_id);
+        SetNapalmDamageEffect(obj, nullptr, napalm_id);
         obj->effect_info->damage_time = 1;
         obj->effect_info->damage_per_second = 2;
       }
@@ -2032,7 +2034,7 @@ struct tDeathSeq {
   int saved_player_modelnum;
   bool in_cockpit;
 
-  tDeathSeq() { camera = NULL; };
+  tDeathSeq() { camera = nullptr; };
 
 };
 
@@ -2118,11 +2120,11 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
   Players[playerobj->id].num_deaths_total++;
   // Do killer object stuff
   if (killer_num < 0 || killer_num > MAX_OBJECTS)
-    killer = NULL;
+    killer = nullptr;
   else {
     killer = &Objects[killer_num];
     if (killer->type == OBJ_NONE)
-      killer = NULL;
+      killer = nullptr;
   }
 
   //	determine current state of player object.
@@ -2158,7 +2160,7 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
   Death[slot].saved_rotthrust = playerobj->mtype.phys_info.rotthrust;
   Death[slot].breakup_count = 0;
 
-  if (killer == NULL) // If the killer isn't valid, just use the reverse forward direction
+  if (killer == nullptr) // If the killer isn't valid, just use the reverse forward direction
     Death[slot].force_dir = -playerobj->orient.fvec;
   else
     Death[slot].force_dir = playerobj->pos - killer->pos;
@@ -2218,9 +2220,9 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
     rotate_adj = 32768.0f;
   }
 
-  playerobj->mtype.phys_info.rotvel.x = (float)((rotate_adj));
-  playerobj->mtype.phys_info.rotvel.y = (float)((rotate_adj));
-  playerobj->mtype.phys_info.rotvel.z = (float)((rotate_adj));
+  playerobj->mtype.phys_info.rotvel.x() = (scalar)((rotate_adj));
+  playerobj->mtype.phys_info.rotvel.y() = (scalar)((rotate_adj));
+  playerobj->mtype.phys_info.rotvel.z() = (scalar)((rotate_adj));
 
   //	set times and other stuff for dying.
   if (Death[slot].fate == DEATH_FALL)
@@ -2281,17 +2283,17 @@ void DoNewPlayerDeathFrame(int slot) {
     //	modify physics properties every INTERVAL
     if ((Death[slot].physics_frametime + DEATH_PHYS_INTERVAL) > Gametime) {
       if (Death[slot].fate == DEATH_FALL) {
-        playerobj->mtype.phys_info.rotvel.x /= 1.15f;
-        playerobj->mtype.phys_info.rotvel.y /= 1.1f;
-        playerobj->mtype.phys_info.rotvel.z /= 1.0f;
+        playerobj->mtype.phys_info.rotvel.x() /= 1.15f;
+        playerobj->mtype.phys_info.rotvel.y() /= 1.1f;
+        playerobj->mtype.phys_info.rotvel.z() /= 1.0f;
       } else if (Death[slot].fate == DEATH_D2STYLE) {
-        playerobj->mtype.phys_info.rotvel.x /= 1.15f;
-        playerobj->mtype.phys_info.rotvel.y /= 1.0f;
-        playerobj->mtype.phys_info.rotvel.z /= 1.05f;
+        playerobj->mtype.phys_info.rotvel.x() /= 1.15f;
+        playerobj->mtype.phys_info.rotvel.y() /= 1.0f;
+        playerobj->mtype.phys_info.rotvel.z() /= 1.05f;
       } else {
-        playerobj->mtype.phys_info.rotvel.x /= 1.10f;
-        playerobj->mtype.phys_info.rotvel.y /= 1.05f;
-        playerobj->mtype.phys_info.rotvel.z /= 1.0f;
+        playerobj->mtype.phys_info.rotvel.x() /= 1.10f;
+        playerobj->mtype.phys_info.rotvel.y() /= 1.05f;
+        playerobj->mtype.phys_info.rotvel.z() /= 1.0f;
       }
 
       playerobj->mtype.phys_info.velocity *= Death[slot].accel_mod;
@@ -2327,7 +2329,7 @@ void DoNewPlayerDeathFrame(int slot) {
       fq.startroom = Death[slot].camera->roomnum;
       fq.rad = .5;
       fq.thisobjnum = OBJNUM(Death[slot].camera);
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = 0;
       fvi_FindIntersection(&fq, &hit_data);
 
@@ -2340,8 +2342,8 @@ void DoNewPlayerDeathFrame(int slot) {
       //	orient death camera towards player ship
       directional = playerobj->pos - Death[slot].camera->pos;
       if (vm_GetMagnitudeFast(&directional) == 0.0f)
-        directional.x += 1.0f;
-      vm_VectorToMatrix(&Death[slot].camera->orient, &directional, NULL, NULL);
+        directional.x() += 1.0f;
+      vm_VectorToMatrix(&Death[slot].camera->orient, &directional, nullptr, nullptr);
     }
 
     //	perform fate specific actions here
@@ -2434,7 +2436,7 @@ void EndPlayerDeath(int slot) {
   if (slot == Player_num) {
     if (Death[slot].camera) {
       ObjDelete(OBJNUM(Death[slot].camera));
-      Death[slot].camera = NULL;
+      Death[slot].camera = nullptr;
       Viewer_object = Death[slot].oldviewer;
     }
     SetHUDMode(Death[slot].saved_cockpit);
@@ -2640,7 +2642,7 @@ void PlayerSetControlToAI(int slot, float velocity) {
   pobj->ai_info->last_render_time = -1.0f;
   pobj->ai_info->next_target_update_time = Gametime;
   pobj->ai_info->notify_flags |= AI_NOTIFIES_ALWAYS_ON;
-  pobj->ai_info->last_see_target_pos = Zero_vector;
+  pobj->ai_info->last_see_target_pos = vector{};
   pobj->ai_info->dodge_vel_percent = 1.0f;
   pobj->ai_info->attack_vel_percent = 1.0f;
   pobj->ai_info->fight_same = 0.0f;
@@ -2702,7 +2704,7 @@ void DeadPlayerShipHit(object *obj, int hit_room, vector *hitpt, float magnitude
     fq.startroom = hit_room;
     fq.rad = obj->size;
     fq.thisobjnum = obj - Objects;
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = FQ_CHECK_OBJS | FQ_OBJ_BACKFACE | FQ_ONLY_PLAYER_OBJ;
 
     fvi_FindIntersection(&fq, &hit_data);
@@ -2754,7 +2756,7 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
 
   // Set physics data for this object
 
-  obj->mtype.phys_info.velocity = parent->mtype.phys_info.velocity + parent->orient.fvec * 30.0;
+  obj->mtype.phys_info.velocity = parent->mtype.phys_info.velocity + parent->orient.fvec * (scalar)30;
 
   vm_MakeZero(&obj->mtype.phys_info.rotthrust);
 
@@ -2765,9 +2767,9 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
   obj->mtype.phys_info.flags = (PF_GRAVITY | PF_BOUNCE | PF_FIXED_ROT_VELOCITY);
   obj->mtype.phys_info.coeff_restitution = .25f;
 
-  obj->mtype.phys_info.rotvel.x = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.y = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.z = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.x() = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.y() = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.z() = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
 
   obj->mtype.phys_info.num_bounces = 5;
 
@@ -2788,9 +2790,9 @@ void PlayerSpewObject(object *objp, int timed, int room, vector *pos, matrix *or
   ObjSetPos(objp, pos, room, orient, true);
 
   // Set random velocity for powerups
-  objp->mtype.phys_info.velocity.x = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
-  objp->mtype.phys_info.velocity.z = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
-  objp->mtype.phys_info.velocity.y = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.x() = ((ps_rand() / (scalar)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.z() = ((ps_rand() / (scalar)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.y() = ((ps_rand() / (scalar)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
 
   // Send object to other players
   if (Game_mode & GM_MULTI) {
@@ -2830,7 +2832,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
     return -1;
   }
 
-  int objnum = ObjCreate(type, id, parent->roomnum, &parent->pos, NULL, parent->handle);
+  int objnum = ObjCreate(type, id, parent->roomnum, &parent->pos, nullptr, parent->handle);
 
   if (objnum < 0) {
     LOG_DEBUG.printf("Couldn't spew object!");
@@ -2839,7 +2841,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
 
   object *obj = &Objects[objnum];
 
-  PlayerSpewObject(obj, timed, parent->roomnum, &parent->pos, NULL);
+  PlayerSpewObject(obj, timed, parent->roomnum, &parent->pos, nullptr);
 
   // Send object to other players
   if (Game_mode & GM_MULTI) {
@@ -2906,11 +2908,11 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
   if (spew_energy_and_shield) {
     id = FindObjectIDName("Shield");
     if (id >= 0)
-      PlayerSpewObject(obj, OBJ_POWERUP, id, 1, NULL);
+      PlayerSpewObject(obj, OBJ_POWERUP, id, 1, nullptr);
 
     id = FindObjectIDName("Energy");
     if (id >= 0)
-      PlayerSpewObject(obj, OBJ_POWERUP, id, 1, NULL);
+      PlayerSpewObject(obj, OBJ_POWERUP, id, 1, nullptr);
   }
 
   // Spew the primary weapon powerups
@@ -2919,7 +2921,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
       id = Ships[playp->ship_index].spew_powerup[playp->weapon[PW_PRIMARY].index];
       if (id != -1) {
         ASSERT(Object_info[id].type == OBJ_POWERUP);
-        PlayerSpewObject(obj, OBJ_POWERUP, id, 2, NULL);
+        PlayerSpewObject(obj, OBJ_POWERUP, id, 2, nullptr);
       }
     }
 
@@ -2929,7 +2931,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
       ASSERT(Object_info[id].type == OBJ_POWERUP);
       int count = std::min<int>(playp->weapon_ammo[playp->weapon[PW_SECONDARY].index], MAX_SECONDARY_SPEW);
       for (int t = 0; t < count; t++)
-        PlayerSpewObject(obj, OBJ_POWERUP, id, 2, NULL);
+        PlayerSpewObject(obj, OBJ_POWERUP, id, 2, nullptr);
     }
   } else // Single player
   {
@@ -2941,7 +2943,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
         id = Ships[playp->ship_index].spew_powerup[w];
         if (id != -1) {
           ASSERT(Object_info[id].type == OBJ_POWERUP);
-          int objnum = PlayerSpewObject(obj, OBJ_POWERUP, id, 0, NULL);
+          int objnum = PlayerSpewObject(obj, OBJ_POWERUP, id, 0, nullptr);
 
           // Set ammo
           if (objnum != -1) {
@@ -2968,13 +2970,13 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
           if (multi_id != -1) {
             int objnum;
             ASSERT(Object_info[multi_id].type == OBJ_POWERUP);
-            objnum = PlayerSpewObject(obj, OBJ_POWERUP, multi_id, 0, NULL);
+            objnum = PlayerSpewObject(obj, OBJ_POWERUP, multi_id, 0, nullptr);
             if (objnum != -1)
               Objects[objnum].ctype.powerup_info.count = playp->weapon_ammo[w];
           } else {
             int count = std::min<int>(playp->weapon_ammo[w], MAX_SECONDARY_SPEW);
             for (int t = 0; t < count; t++)
-              PlayerSpewObject(obj, OBJ_POWERUP, id, 0, NULL);
+              PlayerSpewObject(obj, OBJ_POWERUP, id, 0, nullptr);
           }
         }
       }
@@ -3022,17 +3024,17 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
             }
 
             if (Game_mode & GM_MULTI)
-              PlayerSpewObject(temp_obj, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, obj->roomnum, &obj->pos, NULL);
+              PlayerSpewObject(temp_obj, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, obj->roomnum, &obj->pos, nullptr);
             else
-              PlayerSpewObject(temp_obj, 0, obj->roomnum, &obj->pos, NULL);
+              PlayerSpewObject(temp_obj, 0, obj->roomnum, &obj->pos, nullptr);
           }
 
         } else {
           ASSERT(type != OBJ_NONE);
           if (Game_mode & GM_MULTI)
-            PlayerSpewObject(obj, type, id, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, NULL);
+            PlayerSpewObject(obj, type, id, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, nullptr);
           else
-            PlayerSpewObject(obj, type, id, 0, NULL);
+            PlayerSpewObject(obj, type, id, 0, nullptr);
           playp->inventory.Remove(type, id);
         }
       }
@@ -3057,9 +3059,9 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
         ASSERT(type != OBJ_NONE);
 
         if (Game_mode & GM_MULTI)
-          PlayerSpewObject(obj, type, id, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, NULL);
+          PlayerSpewObject(obj, type, id, (inven_flags & INVF_TIMEOUTONSPEW) ? 2 : 0, nullptr);
         else
-          PlayerSpewObject(obj, type, id, 0, NULL);
+          PlayerSpewObject(obj, type, id, 0, nullptr);
 
         playp->counter_measures.GetPosTypeID(type, id);
         playp->counter_measures.Remove(type, id);
@@ -3079,7 +3081,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
 void PlayerShipExplode(object *obj, float magnitude) {
   int visnum;
 
-  ASSERT(obj != NULL);
+  ASSERT(obj != nullptr);
 
   DLLInfo.me_handle = obj->handle;
   DLLInfo.it_handle = obj->handle;
@@ -3200,12 +3202,12 @@ void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
     i++;
   }
 
-  rand_vec.x = (float)(D3_RAND_MAX / 2 - ps_rand());
+  rand_vec.x() = (float)(D3_RAND_MAX / 2 - ps_rand());
   if (obj->movement_type != MT_PHYSICS)
-    rand_vec.y = (float)((float)ps_rand() / 2.0); // A habit of moving upward
+    rand_vec.y() = (float)((float)ps_rand() / 2.0); // A habit of moving upward
   else
-    rand_vec.y = (float)((float)D3_RAND_MAX / 1.5f - (float)ps_rand()); // A habit of moving upward
-  rand_vec.z = (float)(D3_RAND_MAX / 2 - ps_rand());
+    rand_vec.y() = (float)((float)D3_RAND_MAX / 1.5f - (float)ps_rand()); // A habit of moving upward
+  rand_vec.z() = (float)(D3_RAND_MAX / 2 - ps_rand());
   vm_NormalizeVectorFast(&rand_vec);
 
   object *subobj = CreateSubobjectDebrisDirected(obj, subobjnum, &rand_vec, magnitude);
@@ -3255,8 +3257,8 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
   do {
     //	randomize cam_vec just a little bit if possible.
     cam_vec = Death_cam_vectors[cur_vec_index++];
-    cam_vec.x += ((ps_rand() % 5) - 2) * 0.1f;
-    cam_vec.y += ((ps_rand() % 5) - 2) * 0.1f;
+    cam_vec.x() += ((ps_rand() % 5) - 2) * 0.1f;
+    cam_vec.y() += ((ps_rand() % 5) - 2) * 0.1f;
     vm_NormalizeVector(&cam_vec);
 
     cam_vec = cam_vec * distance;
@@ -3275,12 +3277,12 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
     fq.startroom = playobj->roomnum;
     fq.rad = .5;
     fq.thisobjnum = OBJNUM(playobj);
-    fq.ignore_obj_list = NULL;
+    fq.ignore_obj_list = nullptr;
     fq.flags = 0;
 
-    ASSERT(std::isfinite(next_vec.x));
-    ASSERT(std::isfinite(next_vec.y));
-    ASSERT(std::isfinite(next_vec.z));
+    ASSERT(std::isfinite(next_vec.x()));
+    ASSERT(std::isfinite(next_vec.y()));
+    ASSERT(std::isfinite(next_vec.z()));
 
     fvi_FindIntersection(&fq, &hit_data);
 
@@ -3291,14 +3293,14 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
       fq.startroom = playobj->roomnum;
       fq.rad = 0.75f;
       fq.thisobjnum = OBJNUM(playobj);
-      fq.ignore_obj_list = NULL;
+      fq.ignore_obj_list = nullptr;
       fq.flags = 0;
       fvi_FindIntersection(&fq, &hit_data);
 
       if (hit_data.hit_type[0] != HIT_NONE)
-        ObjSetPos(Death[slot].camera, &hit_data.hit_pnt, hit_data.hit_room, NULL, false);
+        ObjSetPos(Death[slot].camera, &hit_data.hit_pnt, hit_data.hit_room, nullptr, false);
       else
-        ObjSetPos(Death[slot].camera, &best_vec, hit_data.hit_room, NULL, false);
+        ObjSetPos(Death[slot].camera, &best_vec, hit_data.hit_room, nullptr, false);
     } else {
       float ray_dist = vm_VectorDistanceQuick(&hit_data.hit_pnt, &playobj->pos);
       if (ray_dist < distance) {
@@ -3588,7 +3590,7 @@ int PlayerSetCustomTexture(int slot, char *filename) {
 
   // Now load the new one
   texp->bm_handle = 0;
-  if (filename == NULL)
+  if (filename == nullptr)
     return 1;
 
   int anim;

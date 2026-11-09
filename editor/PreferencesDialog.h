@@ -58,7 +58,7 @@
 class CPreferencesDialog : public CDialog {
   // Construction
 public:
-  CPreferencesDialog(CWnd *pParent = NULL); // standard constructor
+  CPreferencesDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CPreferencesDialog)

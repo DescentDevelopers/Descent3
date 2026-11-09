@@ -533,12 +533,12 @@ BOOL CWorldObjectsGenericDialog::OnInitDialog() {
   m_type_name = Object_type_names[m_type];
   m_lod = 0;
 
-  Copy_object.description = NULL;
+  Copy_object.description = nullptr;
 
   CDialog::OnInitDialog();
 
   // Start the timer
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   // Make sure we have a valid object
   if (Object_info[m_current].type != m_type)
@@ -654,7 +654,7 @@ void CWorldObjectsGenericDialog::OnGenericAddNew() {
   ddio_SplitPath(filename, dir, fname, ext);
 
   std::filesystem::path tmp = ChangePolyModelName(filename);
-  strcpy(cur_name, tmp.u8string().c_str());
+  strcpy(cur_name, PATH_TO_CSTR(tmp));
 
   if ((FindPolyModelName(fname)) != -1) {
     OutrageMessageBox("You must rename your model to something else because there is already a model with that name!");
@@ -1007,7 +1007,7 @@ void CWorldObjectsGenericDialog::OnGenericChangeModel() {
     return;
 
   std::filesystem::path tmp = ChangePolyModelName(filename);
-  strcpy(curname, tmp.u8string().c_str());
+  strcpy(curname, PATH_TO_CSTR(tmp));
 
   ddio_SplitPath(filename, dir, fname, ext);
 
@@ -1049,7 +1049,7 @@ void CWorldObjectsGenericDialog::OnGenericChangeModel() {
   }
   // Finally, save a local copy of the model
 
-  sprintf(curname, "%s\\%s", LocalModelsDir.u8string().c_str(), Poly_models[img_handle].name);
+  sprintf(curname, "%s\\%s", PATH_TO_CSTR(LocalModelsDir), Poly_models[img_handle].name);
   cf_CopyFile(curname, filename);
 
   UpdateDialog();
@@ -1183,16 +1183,16 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void) {
   vm_MakeZero(&zero_vector);
   vm_MakeIdentity(&id_matrix);
 
-  float norm_angles[256];
+  scalar norm_angles[256];
 
-  float keyframe = pm->frame_min + (pm->frame_max - pm->frame_min) * ((float)frame / (float)NUM_ANIM_FRAMES);
+  scalar keyframe = pm->frame_min + (pm->frame_max - pm->frame_min) * ((scalar)frame / (scalar)NUM_ANIM_FRAMES);
 
   SetNormalizedTimeAnim(keyframe, norm_angles, pm);
 
   spin_frame++;
 
   vm_AnglesToMatrix(&rot_matrix, 0, spin_frame * 400, 0);
-  view_vector.z = -(fabs(pm->maxs.z - pm->mins.z) * 2);
+  view_vector.z() = -(fabs(pm->maxs.z() - pm->mins.z()) * (scalar)2);
 
   m_ObjectSurf.create(128, 128, BPP_16);
   grViewport *vport = new grViewport(&m_ObjectSurf);
@@ -1259,7 +1259,7 @@ void CWorldObjectsGenericDialog::OnGenericCopy() {
 
     Copy_object = Object_info[m_current];
 
-    Copy_object.description = NULL;
+    Copy_object.description = nullptr;
 
     if (!Object_info[m_current].description)
       Copy_object.description = mem_strdup("<no description>");
@@ -1312,7 +1312,7 @@ void CWorldObjectsGenericDialog::OnGenericPaste() {
   Object_info[n] = Copy_object;
 
   Object_info[n].description = Copy_object.description;
-  Copy_object.description = NULL;
+  Copy_object.description = nullptr;
 
   // Set type and name
   Object_info[n].type = m_type;
@@ -1360,7 +1360,7 @@ void CWorldObjectsGenericDialog::OnDestroy() {
 
   if (Copy_object.description) {
     mem_free(Copy_object.description);
-    Copy_object.description = NULL;
+    Copy_object.description = nullptr;
   }
 
   SaveGenericsOnClose();
@@ -1472,7 +1472,7 @@ void CWorldObjectsGenericDialog::OnSelScript() {
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, pathname, sizeof(pathname)))
     return;
 
-  ddio_SplitPath(filename, NULL, name, NULL);
+  ddio_SplitPath(filename, nullptr, name, nullptr);
   sprintf(filename, "%s.dll", name);
 
   strcpy(Object_info[m_current].module_name, filename);
@@ -1579,7 +1579,7 @@ void CWorldObjectsGenericDialog::OnKillfocusGenericInvenDescription() {
 
   if (Object_info[m_current].description) {
     mem_free(Object_info[m_current].description);
-    Object_info[m_current].description = NULL;
+    Object_info[m_current].description = nullptr;
   }
 
   if ((strlen(str) > 0) && (strcmp(str, "<no description>"))) {

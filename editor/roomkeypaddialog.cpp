@@ -436,9 +436,8 @@ void CRoomKeypadDialog::OnLoadRoom() {
     sprintf(roomname, "%s%d.ORF", name, count);
   }
 
-  ASSERT(Rooms[n].name == NULL);
-  Rooms[n].name = mem_rmalloc<char>(strlen(roomname) + 1);
-  strcpy(Rooms[n].name, roomname);
+  ASSERT(Rooms[n].name == nullptr);
+  Rooms[n].name = mem_strdup(roomname);
 
   D3EditState.current_room = n;
 
@@ -456,7 +455,7 @@ void CRoomKeypadDialog::OnLoadRoom() {
 void CRoomKeypadDialog::OnSaveRoomLocally() {
   char filename[255];
 
-  if (Curroomp == NULL || Curroomp->used == 0) {
+  if (Curroomp == nullptr || Curroomp->used == 0) {
     OutrageMessageBox("No valid room selected for saving!");
     return;
   }
@@ -825,7 +824,7 @@ void MoveRoomFace(room *rp, int facenum, float dx, float dy, float dz) {
 
   num_portal_verts = BuildListOfPortalVerts(rp, portal_list);
 
-  vm_VectorToMatrix(&facematrix, &norm, NULL, NULL);
+  vm_VectorToMatrix(&facematrix, &norm, nullptr, nullptr);
 
   for (i = 0; i < fp->num_verts; i++) {
     for (ok_to_scale = 1, t = 0; t < num_portal_verts; t++) {
@@ -895,7 +894,7 @@ void CRoomKeypadDialog::OnRoompadNextVertex() {
 }
 
 void CRoomKeypadDialog::OnRoompadExpandRoom() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   SizeRoomVertices(Curroomp, 1.05f);
@@ -903,7 +902,7 @@ void CRoomKeypadDialog::OnRoompadExpandRoom() {
 }
 
 void CRoomKeypadDialog::OnRoompadContractRoom() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
 
   SizeRoomVertices(Curroomp, .95f);
@@ -911,7 +910,7 @@ void CRoomKeypadDialog::OnRoompadContractRoom() {
 }
 
 void CRoomKeypadDialog::OnRoompadExpandFace() {
-  if (Curroomp == NULL || Curface < 0 || Curface >= Curroomp->num_faces)
+  if (Curroomp == nullptr || Curface < 0 || Curface >= Curroomp->num_faces)
     return;
 
   SizeFaceVertices(Curroomp, Curface, 1.05f);
@@ -919,7 +918,7 @@ void CRoomKeypadDialog::OnRoompadExpandFace() {
 }
 
 void CRoomKeypadDialog::OnRoompadContractFace() {
-  if (Curroomp == NULL || Curface < 0 || Curface >= Curroomp->num_faces)
+  if (Curroomp == nullptr || Curface < 0 || Curface >= Curroomp->num_faces)
     return;
 
   SizeFaceVertices(Curroomp, Curface, .95f);
@@ -928,7 +927,7 @@ void CRoomKeypadDialog::OnRoompadContractFace() {
 
 void CRoomKeypadDialog::OnRoompadExpandEdge() {
 
-  if (Curroomp == NULL || Curface < 0 || Curface >= Curroomp->num_faces)
+  if (Curroomp == nullptr || Curface < 0 || Curface >= Curroomp->num_faces)
     return;
 
   SizeFaceEdge(Curroomp, Curface, Curedge, 1.05f);
@@ -936,7 +935,7 @@ void CRoomKeypadDialog::OnRoompadExpandEdge() {
 }
 
 void CRoomKeypadDialog::OnRoompadContractEdge() {
-  if (Curroomp == NULL || Curface < 0 || Curface >= Curroomp->num_faces)
+  if (Curroomp == nullptr || Curface < 0 || Curface >= Curroomp->num_faces)
     return;
 
   SizeFaceEdge(Curroomp, Curface, Curedge, .95f);
@@ -974,7 +973,7 @@ void CRoomKeypadDialog::OnRoompadMoveDown() {
 }
 
 void CRoomKeypadDialog::OnRoompadCombineFaces() {
-  if (Markedroomp == NULL) {
+  if (Markedroomp == nullptr) {
     OutrageMessageBox("You must have a marked face for this operation.");
     return;
   }
@@ -1343,7 +1342,7 @@ void CRoomKeypadDialog::OnSelendokRoomAmbient() {
 }
 
 void CRoomKeypadDialog::OnMirrorButton() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
   Curroomp->mirror_face = Curface;
   ConsolidateMineMirrors();
@@ -1351,7 +1350,7 @@ void CRoomKeypadDialog::OnMirrorButton() {
 }
 
 void CRoomKeypadDialog::OnNoMirrorButton() {
-  if (Curroomp == NULL)
+  if (Curroomp == nullptr)
     return;
   Curroomp->mirror_face = -1;
   ConsolidateMineMirrors();

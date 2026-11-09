@@ -128,7 +128,7 @@ int MovePathNodeToPos(int pathnum, int nodenum, vector *attempted_pos) {
   fq.p1 = attempted_pos;
   fq.rad = 0.0f;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
   fvi_FindIntersection(&fq, &hit_info);
@@ -143,7 +143,7 @@ int MovePathNodeToPos(int pathnum, int nodenum, vector *attempted_pos) {
     fq1.p1 = &hit_info.hit_pnt;
     fq1.rad = 0.0f;
     fq1.thisobjnum = -1;
-    fq1.ignore_obj_list = NULL;
+    fq1.ignore_obj_list = nullptr;
     fq1.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
     fvi_FindIntersection(&fq1, &hit_info1);
@@ -163,7 +163,7 @@ int MovePathNodeToPos(int pathnum, int nodenum, vector *attempted_pos) {
     fq1.p1 = &hit_info.hit_pnt;
     fq1.rad = 0.0f;
     fq1.thisobjnum = -1;
-    fq1.ignore_obj_list = NULL;
+    fq1.ignore_obj_list = nullptr;
     fq1.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
     fvi_FindIntersection(&fq1, &hit_info1);
@@ -227,7 +227,7 @@ int InsertNodeIntoPath(int pathnum, int nodenum, int flags, int roomnum, vector 
   fq.p1 = &attempted_pos;
   fq.rad = 0.0f;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
   fvi_FindIntersection(&fq, &hit_info);
@@ -242,7 +242,7 @@ int InsertNodeIntoPath(int pathnum, int nodenum, int flags, int roomnum, vector 
     fq1.p1 = &hit_info.hit_pnt;
     fq1.rad = 0.0f;
     fq1.thisobjnum = -1;
-    fq1.ignore_obj_list = NULL;
+    fq1.ignore_obj_list = nullptr;
     fq1.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
     fvi_FindIntersection(&fq1, &hit_info1);
@@ -262,7 +262,7 @@ int InsertNodeIntoPath(int pathnum, int nodenum, int flags, int roomnum, vector 
     fq1.p1 = &hit_info.hit_pnt;
     fq1.rad = 0.0f;
     fq1.thisobjnum = -1;
-    fq1.ignore_obj_list = NULL;
+    fq1.ignore_obj_list = nullptr;
     fq1.flags = FQ_TRANSPOINT | FQ_IGNORE_RENDER_THROUGH_PORTALS;
 
     fvi_FindIntersection(&fq1, &hit_info1);
@@ -407,7 +407,7 @@ void DrawAllPaths(grViewport *vp, vector *viewer_eye, matrix *viewer_orient, flo
 
     for (t = 0; t < gp->num_nodes; t++) {
       for (int k = 0; k < gp->num_nodes; k++) {
-        if (rot_points[k].p3_vec.z < rot_points[t].p3_vec.z) {
+        if (rot_points[k].p3_vec.z() < rot_points[t].p3_vec.z()) {
           g3Point temp;
           int tindex;
 
@@ -450,8 +450,8 @@ void DrawAllPaths(grViewport *vp, vector *viewer_eye, matrix *viewer_orient, flo
 
       g3_DrawSphere(color, &rot_points[t], size);
 
-      vector fpos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].fvec * (size - size / 10.0);
-      vector upos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].uvec * (size - size / 10.0);
+      vector fpos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].fvec * (size - size / (scalar)10.0);
+      vector upos = gp->pathnodes[sort_index[t]].pos + gp->pathnodes[sort_index[t]].uvec * (size - size / (scalar)10.0);
 
       g3Point frot;
       g3Point urot;
@@ -539,8 +539,8 @@ void DrawNumber(int num, vector pos, float size) {
     for (i = 0; i < NumOfPoints[num_array[j]]; i++) {
       rot_pnt[i] = basepnt;
 
-      rot_pnt[i].p3_vec.x += (ArrayX[num_array[j]][i] * size);
-      rot_pnt[i].p3_vec.y += (ArrayY[num_array[j]][i] * size);
+      rot_pnt[i].p3_vec.x() += (ArrayX[num_array[j]][i] * size);
+      rot_pnt[i].p3_vec.y() += (ArrayY[num_array[j]][i] * size);
 
       rot_pnt[i].p3_flags = 0;
       g3_CodePoint(&rot_pnt[i]);

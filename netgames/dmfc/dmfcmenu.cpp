@@ -147,8 +147,8 @@ MenuItem::MenuItem() {
   SubMenuCount = 0;
   CurrSubMenu = -1;
   m_iState = 0;
-  SubMenus = NULL;
-  func = NULL;
+  SubMenus = nullptr;
+  func = nullptr;
   HasInputFocus = false;
   m_cType = MIT_NORMAL;
 
@@ -167,7 +167,7 @@ MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
   SubMenuCount = 0;
   CurrSubMenu = -1;
   m_iState = 0;
-  SubMenus = NULL;
+  SubMenus = nullptr;
   func = fp;
   HasInputFocus = false;
   m_cType = type;
@@ -236,21 +236,21 @@ MenuItem::~MenuItem() {
     if ((m_cType == MIT_PLIST) || (m_cType == MIT_CUSTOM)) {
       p = (MenuItem *)SubMenus[0];
       if (p) {
-        SubMenus[0] = NULL;
+        SubMenus[0] = nullptr;
         delete p;
       }
     } else {
       for (int i = 0; i < SubMenuCount; i++) {
         p = (MenuItem *)SubMenus[i];
         if (p) {
-          SubMenus[i] = NULL;
+          SubMenus[i] = nullptr;
           delete p;
         }
       }
     }
 
     free(SubMenus);
-    SubMenus = NULL;
+    SubMenus = nullptr;
   }
 
   SubMenuCount = 0;
@@ -330,7 +330,7 @@ bool MenuItem::DetachSubMenu(IMenuItem *p) {
 
     if (temp)
       free(temp);
-    SubMenus = NULL;
+    SubMenus = nullptr;
   }
 
   return true;
@@ -655,7 +655,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
     DLLrend_SetTextureType(TT_LINEAR);
     DLLrend_SetLighting(LS_NONE);
     DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
-    DLLrend_DrawScaledBitmap(x, y, maxx, y + (height * (end_index - m_iTopIndex + 1)), bmp, 0, 0, 1, 1, 1.0, 1, NULL);
+    DLLrend_DrawScaledBitmap(x, y, maxx, y + (height * (end_index - m_iTopIndex + 1)), bmp, 0, 0, 1, 1, 1.0, 1, nullptr);
     DLLrend_SetZBufferState(1);
   }
 
@@ -860,12 +860,12 @@ bool MenuItem::SetStateItemList(int count, ...) {
   for (int i = 0; i < SubMenuCount; i++) {
     if (SubMenus[i]) {
       delete SubMenus[i];
-      SubMenus[i] = NULL;
+      SubMenus[i] = nullptr;
     }
   }
   if (SubMenus) {
     free(SubMenus);
-    SubMenus = NULL;
+    SubMenus = nullptr;
   }
 
   va_list marker;
@@ -898,12 +898,12 @@ bool MenuItem::SetStateItemListArray(int count, char **array) {
   for (int i = 0; i < SubMenuCount; i++) {
     if (SubMenus[i]) {
       delete SubMenus[i];
-      SubMenus[i] = NULL;
+      SubMenus[i] = nullptr;
     }
   }
   if (SubMenus) {
     free(SubMenus);
-    SubMenus = NULL;
+    SubMenus = nullptr;
   }
 
   SubMenuCount = count;
@@ -935,7 +935,7 @@ char *GetBannedPlayerString(int index) {
     snprintf(r, sizeof(r), "[%d]%s", index, ptr);
     return r;
   } else
-    return NULL;
+    return nullptr;
 }
 
 // Removes a ban for a player, give the ban index #
@@ -944,16 +944,16 @@ void RemoveBanByIndex(int index) { basethis->RemoveBan(index); }
 // Server Only.  Kicks a player from the game
 void KickPlayer(int pnum) {
   if (basethis->GetLocalRole() != LR_SERVER) {
-    mprintf(0, "KickPlayer Error: You're Not The Server\n");
+    LOG_WARNING << "KickPlayer Error: You're Not The Server";
     return;
   }
   if (pnum == basethis->GetPlayerNum()) {
-    mprintf(0, "KickPlayer Error: Server can't kick themself\n");
+    LOG_WARNING << "KickPlayer Error: Server can't kick themself";
     DLLAddHUDMessage(DTXT_SERVERCANTKICK);
     return;
   }
   if (!basethis->CheckPlayerNum(pnum)) {
-    mprintf(0, "KickPlayer Error: Pnum %d not in game\n", pnum);
+    LOG_WARNING.printf("KickPlayer Error: Pnum %d not in game", pnum);
     DLLAddHUDMessage(DTXT_INVALIDPNUM, pnum);
     return;
   }
@@ -963,16 +963,16 @@ void KickPlayer(int pnum) {
 // Server Only. Temp bans a player from the game
 void BanPlayer(int pnum) {
   if (basethis->GetLocalRole() != LR_SERVER) {
-    mprintf(0, "BanPlayer Error: You're Not The Server\n");
+    LOG_WARNING << "BanPlayer Error: You're Not The Server";
     return;
   }
   if (pnum == basethis->GetPlayerNum()) {
-    mprintf(0, "BanPlayer Error: Server can't ban themself\n");
+    LOG_WARNING << "BanPlayer Error: Server can't ban themself";
     DLLAddHUDMessage(DTXT_SERVERCANTBAN);
     return;
   }
   if (!basethis->CheckPlayerNum(pnum)) {
-    mprintf(0, "BanPlayer Error: Pnum %d not in game\n", pnum);
+    LOG_WARNING.printf("BanPlayer Error: Pnum %d not in game", pnum);
     DLLAddHUDMessage(DTXT_INVALIDPNUM, pnum);
     return;
   }
@@ -983,7 +983,7 @@ void BanPlayer(int pnum) {
 // Server Only. Ends the current level
 void EndMultiLevel(int i) {
   if (basethis->GetLocalRole() != LR_SERVER) {
-    mprintf(0, "You're Not The Server\n");
+    LOG_WARNING << "You're Not The Server";
     return;
   }
   DLLMultiEndLevel();
@@ -992,11 +992,11 @@ void EndMultiLevel(int i) {
 // Server Only. Automatically balances the teams
 void BalanceTeams(int i) {
   if (basethis->GetLocalRole() != LR_SERVER) {
-    mprintf(0, "You're Not The Server\n");
+    LOG_WARNING << "You're Not The Server";
     return;
   }
 
-  mprintf(0, "Balancing Teams\n");
+  LOG_INFO << "Balancing Teams";
   DPrintf(DTXT_BALANCINGTEAMS);
 
   // First we need to get a count of how many are on each team
@@ -1038,7 +1038,7 @@ void BalanceTeams(int i) {
     ShouldHave[i]++;
 
   for (i = 0; i < MAX_TEAMS; i++) {
-    mprintf(0, "%s team should have %d players and has %d now\n",
+    LOG_INFO.printf("%s team should have %d players and has %d now",
             basethis->GetTeamString(i),
             ShouldHave[i],
             TeamCount[i]);
@@ -1089,7 +1089,7 @@ void BalanceTeams(int i) {
 // Server Only.  Switches AutoTeamSelect On/Off
 void SwitchAutoTeamSelect(int i) {
   if (basethis->GetLocalRole() != LR_SERVER) {
-    mprintf(0, "You're Not The Server\n");
+    LOG_WARNING << "You're Not The Server";
     return;
   }
   bool on = (i == 1) ? true : false;
@@ -1099,7 +1099,7 @@ void SwitchAutoTeamSelect(int i) {
 // Server Only. Switches allowing Team Changing on/off
 void SwitchTeamChange(int i) {
   if (basethis->GetLocalRole() != LR_SERVER) {
-    mprintf(0, "You're not the server\n");
+    LOG_WARNING << "You're not the server";
     return;
   }
   bool on = (i == 1) ? true : false;
@@ -1122,7 +1122,7 @@ void SwitchPlayerInfo(int pnum) {
   }
 
   if (!basethis->CheckPlayerNum(pnum)) {
-    mprintf(0, "%d is invalid for playerinfo\n", pnum);
+    LOG_WARNING.printf("%d is invalid for playerinfo", pnum);
     return;
   }
 
@@ -1151,19 +1151,19 @@ void SwitchServerHudPlayerName(int i) {
 // Change teams (or more specifically request to change teams)
 void ChangeTeams(int team) {
   if ((team < 0) || (team > 3)) {
-    mprintf(0, "Invalid team requested (%d)\n", team);
+    LOG_WARNING.printf("Invalid team requested (%d)", team);
     return;
   }
   int curr_team = basethis->Players[basethis->GetPlayerNum()].team;
 
   if (curr_team == -1) {
-    mprintf(0, "Dedicated Server Can't Change Teams\n");
+    LOG_WARNING << "Dedicated Server Can't Change Teams";
     DPrintf(DTXT_NODEDICATEDTEAM);
     return;
   }
 
   if (team == curr_team) {
-    mprintf(0, "You're already on the %s team\n", basethis->GetTeamString(team));
+    LOG_WARNING.printf("You're already on the %s team", basethis->GetTeamString(team));
     DPrintf(DTXT_SAMETEAMCHANGE, basethis->GetTeamString(team));
     return;
   }
@@ -1183,7 +1183,7 @@ void SwitchObserverMode(int i) {
 
   pobj = &basethis->Objects[basethis->Players[pnum].objnum];
 
-  mprintf(0, "SwitchObserverMode %s [%d]\n", (i == 1) ? "On" : "Off", pnum);
+  LOG_INFO.printf("SwitchObserverMode %s [%d]", (i == 1) ? "On" : "Off", pnum);
 
   if (pobj->type == OBJ_OBSERVER) {
     if ((i == 0) && (basethis->CallOnAllowObserverChange(false)))
@@ -1208,12 +1208,12 @@ void SwitchPiggyBack(int pnum) {
       DLLMultiSendRequestToObserve(OBSERVER_MODE_ROAM, 0, 0);
   }
   if (pnum == basethis->GetPlayerNum()) {
-    mprintf(0, "Returning to self\n");
+    LOG_INFO << "Returning to self";
     return;
   }
 
   if (basethis->CallOnAllowObserverChange(true)) {
-    mprintf(0, "Switching to piggyback for player %d\n", pnum);
+    LOG_INFO.printf("Switching to piggyback for player %d", pnum);
     DLLMultiSendRequestToObserve(OBSERVER_MODE_PIGGYBACK, 1, basethis->Players[pnum].objnum);
   }
 }

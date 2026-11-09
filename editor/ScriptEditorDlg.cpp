@@ -151,22 +151,22 @@ void CScriptEditorDlg::InitFindReplace(BOOL bFind) {
   // the pointer is still non-NULL, but the object is already
   // dead, so reset the pointer!
   //
-  m_pdlgFindReplace = NULL;
+  m_pdlgFindReplace = nullptr;
   m_LastWord = " ";
 
   // Construct the dialog
   m_pdlgFindReplace = new CFindReplaceDialog;
-  ASSERT(m_pdlgFindReplace != NULL);
+  ASSERT(m_pdlgFindReplace != nullptr);
 
   // Initialize the dialog
-  if (!m_pdlgFindReplace->Create(bFind, 0, 0, FR_DOWN, this)) {
+  if (!m_pdlgFindReplace->Create(bFind, nullptr, nullptr, FR_DOWN, this)) {
     mprintf(0, "Error allocating find/replace dialog!");
-    m_pdlgFindReplace = NULL;
+    m_pdlgFindReplace = nullptr;
     return;
   }
 
   // Display the dialog
-  ASSERT(m_pdlgFindReplace != NULL);
+  ASSERT(m_pdlgFindReplace != nullptr);
   m_pdlgFindReplace->SetActiveWindow();
   m_pdlgFindReplace->ShowWindow(SW_SHOW);
 }
@@ -176,7 +176,7 @@ void CScriptEditorDlg::InitFindReplace(BOOL bFind) {
 LONG CScriptEditorDlg::OnFindReplace(WPARAM wParam, LPARAM lParam) {
   // Get a pointer to the calling dialog
   CFindReplaceDialog *pDlg = CFindReplaceDialog::GetNotifier(lParam);
-  ASSERT(pDlg != NULL);
+  ASSERT(pDlg != nullptr);
 
   // See what the user is up to out there...
   if (pDlg->IsTerminating()) {
@@ -385,7 +385,7 @@ void CScriptEditorDlg::OnSetExternalViewer() {
 
   OutrageMessageBox("WARNING: DO NOT USE WORDPAD OR WRITE!");
 
-  CFileDialog dlg(true, 0, 0, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
   if (dlg.DoModal() == IDOK) {
     m_ExternalEditor = dlg.GetPathName();
     AdjustExternalName();
@@ -415,7 +415,7 @@ void CScriptEditorDlg::OnUseExternal() {
 
   OutrageMessageBox(
       "You are about to enter an external editor.  Please remember to save your work back as a text file");
-  flag = CreateProcess(NULL, external.GetBuffer(1), NULL, NULL, false, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
+  flag = CreateProcess(nullptr, external.GetBuffer(1), nullptr, nullptr, false, NORMAL_PRIORITY_CLASS, nullptr, nullptr, &si, &pi);
   if (!flag) {
     OutrageMessageBox("Unable to start external editor");
     return;
@@ -529,7 +529,7 @@ void CScriptEditorDlg::OnScripteditorImport() {
   CString path;
   CString filter = "All Files (*.*)|*.*||";
 
-  CFileDialog dlg(true, 0, 0, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
+  CFileDialog dlg(true, nullptr, nullptr, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
   if (dlg.DoModal() == IDOK) {
     path = dlg.GetPathName();
     ImportScript(path.GetBuffer(1));

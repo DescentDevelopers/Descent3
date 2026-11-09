@@ -34,7 +34,7 @@
 class CWorldObjectsGenericDialog : public CDialog {
   // Construction
 public:
-  CWorldObjectsGenericDialog(CWnd *pParent = NULL); // standard constructor
+  CWorldObjectsGenericDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CWorldObjectsGenericDialog)

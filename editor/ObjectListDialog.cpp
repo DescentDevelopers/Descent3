@@ -46,16 +46,16 @@ CObjectListDialog::CObjectListDialog(CWnd *pParent /*=NULL*/) : CDialog(CObjectL
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
 
-  m_Leafs[CLIPBOARD_LEAF] = NULL;
-  m_Leafs[POWERUP_LEAF] = NULL;
-  m_Leafs[ROBOT_LEAF] = NULL;
-  m_Leafs[BUILDING_LEAF] = NULL;
-  m_Leafs[DOOR_LEAF] = NULL;
-  m_Leafs[CLUTTER_LEAF] = NULL;
-  m_Leafs[PLAYER_LEAF] = NULL;
-  m_Leafs[CAMERA_LEAF] = NULL;
-  m_Leafs[SOUNDSOURCE_LEAF] = NULL;
-  m_Leafs[MISC_LEAF] = NULL;
+  m_Leafs[CLIPBOARD_LEAF] = nullptr;
+  m_Leafs[POWERUP_LEAF] = nullptr;
+  m_Leafs[ROBOT_LEAF] = nullptr;
+  m_Leafs[BUILDING_LEAF] = nullptr;
+  m_Leafs[DOOR_LEAF] = nullptr;
+  m_Leafs[CLUTTER_LEAF] = nullptr;
+  m_Leafs[PLAYER_LEAF] = nullptr;
+  m_Leafs[CAMERA_LEAF] = nullptr;
+  m_Leafs[SOUNDSOURCE_LEAF] = nullptr;
+  m_Leafs[MISC_LEAF] = nullptr;
 
   nclipboard = 0;
   npowerup = 0;
@@ -242,16 +242,16 @@ void CObjectListDialog::ClearTree() {
   if (m_Leafs[MISC_LEAF])
     delete[] m_Leafs[MISC_LEAF];
 
-  m_Leafs[CLIPBOARD_LEAF] = NULL;
-  m_Leafs[POWERUP_LEAF] = NULL;
-  m_Leafs[ROBOT_LEAF] = NULL;
-  m_Leafs[BUILDING_LEAF] = NULL;
-  m_Leafs[DOOR_LEAF] = NULL;
-  m_Leafs[CLUTTER_LEAF] = NULL;
-  m_Leafs[PLAYER_LEAF] = NULL;
-  m_Leafs[CAMERA_LEAF] = NULL;
-  m_Leafs[SOUNDSOURCE_LEAF] = NULL;
-  m_Leafs[MISC_LEAF] = NULL;
+  m_Leafs[CLIPBOARD_LEAF] = nullptr;
+  m_Leafs[POWERUP_LEAF] = nullptr;
+  m_Leafs[ROBOT_LEAF] = nullptr;
+  m_Leafs[BUILDING_LEAF] = nullptr;
+  m_Leafs[DOOR_LEAF] = nullptr;
+  m_Leafs[CLUTTER_LEAF] = nullptr;
+  m_Leafs[PLAYER_LEAF] = nullptr;
+  m_Leafs[CAMERA_LEAF] = nullptr;
+  m_Leafs[SOUNDSOURCE_LEAF] = nullptr;
+  m_Leafs[MISC_LEAF] = nullptr;
 
   m_ObjectHandle = -1;
 }
@@ -379,7 +379,7 @@ void CObjectListDialog::OnSelchangedObjtree(NMHDR *pNMHDR, LRESULT *pResult) {
 
 void CObjectListDialog::OnGoto() {
   int objhandle = GetObjectSelected();
-  object *obj = NULL;
+  object *obj = nullptr;
 
   if (objhandle > -1) {
     obj = ObjGet(objhandle);
@@ -399,7 +399,7 @@ void CObjectListDialog::OnGoto() {
 
 void CObjectListDialog::OnDelete() {
   int objhandle = GetObjectSelected();
-  object *obj = NULL;
+  object *obj = nullptr;
 
   if (objhandle > -1) {
     obj = ObjGet(objhandle);

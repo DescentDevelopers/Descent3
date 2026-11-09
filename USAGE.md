@@ -87,7 +87,7 @@ Descent 3 has two types of base directories:
 - The writable base directory can contain both read-write files and read-only files. There is only one writeable base directory. By default, the writable base directory gets set to the current working directory.
 - The read-only base directories can only contain read-only files. There can be any number of read-only base directories. By default, Descent 3 uses zero read-only base directories.
 
-You can set the writable base directory and the list of read-only base directories using the `-setdir`, `-useexedir` and `-additionaldir` command-line options (see [the next section](#command-line-options)).
+You can set the writable base directory and the list of read-only base directories using the `-setdir`, `-useexedir` and `-additionaldir` command-line options (see [the next section](#command-line-options)). Descent 3 also has a list of default read-only base directories. Normally, the list of default read-only base directories is empty, but you can change it by using the `DEFAULT_ADDITIONAL_DIRS` CMake option when compiling Descent 3 (see [BUILD.md’s Build Options section](./BUILD.md#build-options)).
 
 When Descent 3 tries to find a read-only file, then it will look through the list of base directories in this order:
 
@@ -95,10 +95,11 @@ When Descent 3 tries to find a read-only file, then it will look through the lis
 - the second-to-last read-only base directory that was specified on the command-line,
 - the third-to-last read-only base directory that was specified on the command-line,
 - …
-- the first read-only base directory that was specified on the command-line and, finally,
+- the first read-only base directory that was specified on the command-line,
+- all of the items on the `DEFAULT_ADDITIONAL_DIRS` list in reverse order, and, finally,
 - the writable base directory.
 
-Files that are in base directories that are higher on that list will override files that are in base directories that are lower on that list. For example, lets say that you run Descent 3 like this:
+Files that are in base directories that are higher on that list will override files that are in base directories that are lower on that list. For example, lets say that the `DEFAULT_ADDITIONAL_DIRS` list is empty and that you run Descent 3 like this:
 
 ```
 Descent3 -setdir /home/user/my-writable-base-directory -additionaldir /home/user/my-read-only-base-directory
@@ -524,6 +525,16 @@ The following command-line options are available in Descent 3. You can set comma
 
 ### Other Options
 
+- `-loadlevel`
+
+    **Type:** int
+
+    **Default:** Off
+
+    **Platform:** all
+
+    **Description:** Load a specific level from the mission selected with `-mission`. Only has an effect when `-mission` is specified.
+
 - `-logfile`
 
     **Type:** boolean
@@ -562,7 +573,7 @@ The following command-line options are available in Descent 3. You can set comma
 
     **Platform:** all
 
-    **Description:** Loads the specified mission file at startup.
+    **Description:** Loads the specified mission file at startup. Example: `-mission d3` to load the main campaign. Combine this option with `-loadlevel` to load a specific level from the mission.
 
 - `-pilot <name>`
 
@@ -573,6 +584,16 @@ The following command-line options are available in Descent 3. You can set comma
     **Platform:** all
 
     **Description:** Specifies the pilot to use, skipping the pilot selection dialog when the game starts.
+
+- `-randseed <seed>`
+
+    **Type:** integer
+
+    **Default:** current time
+
+    **Platform:** all
+
+    **Description:** Seeds the game's random number generators at startup with a fixed value instead of the current time. Multiplayer games and demos still reseed the generators during play, mostly to keep separate machines (or a recording and its playback) making the same random choices; multiplayer games do not repeat between runs. The seed must be a number from 0 to 4294967295. With any other value, the game shows an error and exits.
 
 - `-service`
 

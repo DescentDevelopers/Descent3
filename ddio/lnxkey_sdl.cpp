@@ -64,24 +64,24 @@
  * $NoKeywords: $
  */
 
+#include <array>
+
 #include <SDL3/SDL.h>
 
 #include "ddio.h"
+#include "ddio_lnx.h"
+#include "lnxkey_sdl.h"
 #include "pserror.h"
 #include "renderer.h"
 #include "config.h"
 
-extern volatile struct tLnxKeys {
-  union {
-    int up_ticks;
-    float up_time;
-  };
-  union {
-    int down_ticks;
-    float down_time;
-  };
-  bool status;
-} LKeys[DDIO_MAX_KEYS];
+struct tLnxKeys {
+  float up_time = 0.0f;
+  float down_time = 0.0f;
+  bool status = false;
+};
+
+static std::array<tLnxKeys, DDIO_MAX_KEYS> LKeys;
 
 int sdlkey_to_ddiocode[27] = {0,     KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_H,
                               KEY_I, KEY_J, KEY_K, KEY_L, KEY_M, KEY_N, KEY_O, KEY_P, KEY_Q,
@@ -340,15 +340,15 @@ static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   return (uint8_t)rc;
 }
 
-bool sdlKeyFilter(const SDL_Event *event) {
+void sdlKeyEvent(const SDL_Event *event) {
   uint8_t kc = 0;
 
   if ((event->type != SDL_EVENT_KEY_UP) && (event->type != SDL_EVENT_KEY_DOWN))
-    return true;
+    return;
 
   if (event->key.down) {
     if (event->key.repeat) {
-      return false; // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
+      return; // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
     }
     kc = sdlkeycode_to_keycode(event->key.key);
     if (event->key.mod & SDL_KMOD_CTRL) {
@@ -358,7 +358,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
         bool grab = !ddio_MouseGetGrab();
         ddio_MouseSetGrab(grab);
         SDL_SetWindowRelativeMouseMode(GSDLWindow, grab);
-        return false;
+        return;
       } // switch
     }   // if
 
@@ -366,7 +366,7 @@ bool sdlKeyFilter(const SDL_Event *event) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
         Game_fullscreen = !Game_fullscreen;
         rend_SetFullScreen(Game_fullscreen);
-        return false;
+        return;
       } // if
     }   // else if
 
@@ -382,17 +382,11 @@ bool sdlKeyFilter(const SDL_Event *event) {
       ddio_UpdateKeyState(kc, false);
     } // if
   }
-
-  return false;
-} // sdlKeyFilter
+}
 
 bool ddio_sdl_InternalKeyInit(ddio_init_info *init_info) {
   // reset key list
-  for (int i = 0; i < DDIO_MAX_KEYS; i++) {
-    LKeys[i].down_ticks = 0;
-    LKeys[i].up_ticks = 0;
-    LKeys[i].status = false;
-  }
+  LKeys.fill({});
   return true;
 }
 

@@ -1,13 +1,16 @@
 set(HEADERS
   chrono_timer.h
+  chrono_timer_internal.h
+  mock_timer_internal.h
   ddio.h
   ddio_common.h
   ddio_lnx.h
+  lnxkey_sdl.h
   controller.h
   sdlcontroller.h
 )
 set(CPPS
-  chrono_timer.cpp
+  $<IF:$<BOOL:${ENABLE_MOCK_CLOCK}>,mock_timer.cpp,chrono_timer.cpp>
   ddio.cpp
   file.cpp
   key.cpp
@@ -15,7 +18,6 @@ set(CPPS
   lnxio.cpp
   sdljoy.cpp
   lnxkey.cpp
-  lnxkey_null.cpp
   lnxmouse.cpp
   lnxkey_sdl.cpp
   sdlcontroller.cpp

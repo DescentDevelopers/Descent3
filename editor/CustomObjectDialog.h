@@ -25,7 +25,7 @@
 class CCustomObjectDialog : public CDialog {
   // Construction
 public:
-  CCustomObjectDialog(CWnd *pParent = NULL); // standard constructor
+  CCustomObjectDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CCustomObjectDialog)

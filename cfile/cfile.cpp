@@ -1,6 +1,7 @@
 /*
  * Descent 3
  * Copyright (C) 2024 Parallax Software
+ * Copyright (C) 2024–2025 Descent Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +31,7 @@
 #include "byteswap.h"
 #include "crossplat.h"
 #include "cfile.h"
+#include "default_base_directories.h"
 #include "ddio.h"
 #include "hogfile.h" //info about library file
 #include "log.h"
@@ -74,6 +76,17 @@ int lib_handle = 0;
 cfile_error cfe;
 // The message for unexpected end of file
 const char *eof_error = "Unexpected end of file";
+
+/* The user can specify a list of default read-only base directories by setting
+ * the -DDEFAULT_ADDITIONAL_DIRS CMake option. This function adds those base
+ * directories to the list of base directories that the game is currently
+ * using.
+ */
+void cf_AddDefaultBaseDirectories() {
+  for (const auto &base_directory : D3::Default_read_only_base_directories) {
+    cf_AddBaseDirectory(base_directory);
+  }
+}
 
 /* This function should be called at least once before you use anything else
  * from this module.
@@ -124,7 +137,7 @@ std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::
   auto const &it = std::filesystem::directory_iterator(search_path);
 
   auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
-    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
+    return stricmp(PATH_TO_CSTR(dir_entry.path().filename()), PATH_TO_CSTR(search_file)) == 0;
   });
 
   if (found != end(it)) {
@@ -231,7 +244,7 @@ int cf_OpenLibrary(const std::filesystem::path &libname) {
   // allocation library structure
   std::shared_ptr<library> lib = std::make_shared<library>();
   lib->name = cf_LocatePath(libname);
-  fp = fopen(lib->name.u8string().c_str(), "rb");
+  fp = fopen(PATH_TO_CSTR(lib->name), "rb");
   if (fp == nullptr) {
     return 0; // CF_NO_FILE;
   }
@@ -365,7 +378,7 @@ CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle
 
   do {
     i = (first + last) / 2;
-    c = stricmp(filename.u8string().c_str(), lib->entries[i]->name); // compare to current
+    c = stricmp(PATH_TO_CSTR(filename), lib->entries[i]->name); // compare to current
     if (c == 0) {
       found = true;
       break;
@@ -389,10 +402,10 @@ CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle
     fp = lib->file;
     lib->file = nullptr;
   } else {
-    fp = fopen(lib->name.u8string().c_str(), "rb");
+    fp = fopen(PATH_TO_CSTR(lib->name), "rb");
     if (!fp) {
-      LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.", lib->name.u8string().c_str(),
-                       filename.u8string().c_str(), errno);
+      LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.", PATH_TO_CSTR(lib->name),
+                       PATH_TO_CSTR(filename), errno);
       Int3();
       return nullptr;
     }
@@ -442,9 +455,9 @@ CFILE *open_file_in_lib(const char *filename) {
         fp = lib->file;
         lib->file = nullptr;
       } else {
-        fp = fopen(lib->name.u8string().c_str(), "rb");
+        fp = fopen(PATH_TO_CSTR(lib->name), "rb");
         if (!fp) {
-          LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.", lib->name.u8string().c_str(),
+          LOG_ERROR.printf("Error opening library <%s> when opening file <%s>; errno=%d.", PATH_TO_CSTR(lib->name),
                            filename, errno);
           Int3();
           return nullptr;
@@ -496,7 +509,7 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   // if mode is "w", then open in text or binary as requested.  If "r", always open in "rb"
   tmode[1] = (mode[0] == 'w') ? mode[1] : 'b';
   // try to open file
-  fp = fopen(using_filename.u8string().c_str(), tmode);
+  fp = fopen(PATH_TO_CSTR(using_filename), tmode);
 
   if (!fp) {
     // File not found
@@ -509,10 +522,9 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   cfile = mem_rmalloc<CFILE>();
   if (!cfile)
     Error("Out of memory in open_file_in_directory()");
-  cfile->name = mem_rmalloc<char>((strlen(using_filename.u8string().c_str()) + 1));
+  cfile->name = mem_strdup(PATH_TO_CSTR(using_filename));
   if (!cfile->name)
     Error("Out of memory in open_file_in_directory()");
-  strcpy(cfile->name, using_filename.u8string().c_str());
   cfile->file = fp;
   cfile->lib_handle = -1;
   cfile->size = ddio_GetFileLength(fp);
@@ -549,7 +561,7 @@ CFILE *cfopen(const std::filesystem::path &filename, const char *mode) {
 
   // First look in the directories for this file's extension
   for (auto const &entry : extensions) {
-    if (!strnicmp(entry.first.u8string().c_str(), ext.u8string().c_str(), _MAX_EXT)) {
+    if (!strnicmp(PATH_TO_CSTR(entry.first), PATH_TO_CSTR(ext), _MAX_EXT)) {
       // found ext
       cfile = open_file_in_directory(filename, mode, entry.second);
       if (cfile) {
@@ -567,7 +579,7 @@ CFILE *cfopen(const std::filesystem::path &filename, const char *mode) {
     }
   }
   // Lastly, try the hog files
-  cfile = open_file_in_lib(filename.u8string().c_str());
+  cfile = open_file_in_lib(PATH_TO_CSTR(filename));
 got_file:;
   if (cfile) {
     if (mode[0] == 'w')
@@ -617,7 +629,7 @@ int cfgetc(CFILE *cfp) {
   if (cfp->position >= cfp->size)
     return EOF;
 
-  fread(ch, sizeof(char), 1, cfp->file);
+  fread(ch, 1, 1, cfp->file);
   c = ch[0];
   // c = getc( cfp->file );
   if (cfeof(cfp))
@@ -631,7 +643,7 @@ int cfgetc(CFILE *cfp) {
       if (c == 10) // return LF as newline
         c = '\n';
       else if (c == 13) { // check for CR/LF pair
-        fread(ch, sizeof(char), 1, cfp->file);
+        fread(ch, 1, 1, cfp->file);
         int cc = ch[0]; // getc(cfp->file);
         // if (cc != EOF) {
         if (!cfeof(cfp)) {
@@ -880,7 +892,7 @@ void cf_WriteDouble(CFILE *cfp, double d) {
 // Throws an exception of type (cfile_error *) if the OS returns an error on read or write
 bool cf_CopyFile(const std::filesystem::path &dest, const std::filesystem::path &src, int copytime) {
   CFILE *infile, *outfile;
-  if (!stricmp(dest.u8string().c_str(), src.u8string().c_str()))
+  if (!stricmp(PATH_TO_CSTR(dest), PATH_TO_CSTR(src)))
     return true; // don't copy files if they are the same
   infile = (CFILE *)cfopen(src, "rb");
   if (!infile)
@@ -1010,7 +1022,7 @@ int cf_DoForeachFileInLibrary(int handle, const std::filesystem::path &ext,
   // Iterate entries on found library
   int result = 0;
   for (const auto &item : search_library->entries) {
-    if (stricmp(std::filesystem::path(item->name).extension().u8string().c_str(), ext.u8string().c_str()) == 0) {
+    if (stricmp(PATH_TO_CSTR(std::filesystem::path(item->name).extension()), PATH_TO_CSTR(ext)) == 0) {
       func(item->name);
       result++;
     }
@@ -1022,7 +1034,7 @@ bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem
   std::shared_ptr<library> lib = Libraries;
 
   while (lib) {
-    if (stricmp(lib->name.u8string().c_str(), hogname.u8string().c_str()) == 0) {
+    if (stricmp(PATH_TO_CSTR(lib->name), PATH_TO_CSTR(hogname)) == 0) {
       // Now look for filename
       CFILE *cf;
       cf = cf_OpenFileInLibrary(filename, lib->handle);

@@ -35,7 +35,7 @@ static int sInstanceDepth = 0;
 
 // instance at specified point with specified orientation
 void g3_StartInstanceMatrix(vector *pos, matrix *orient) {
-  ASSERT(orient != NULL);
+  ASSERT(orient != nullptr);
   ASSERT(sInstanceDepth < MAX_INSTANCE_DEPTH);
 
   sInstanceStack[sInstanceDepth].m_viewMatrix = View_matrix;
@@ -66,7 +66,7 @@ void g3_StartInstanceMatrix(vector *pos, matrix *orient) {
 
 // instance at specified point with specified orientation
 void g3_StartInstanceAngles(vector *pos, angvec *angles) {
-  if (angles == NULL) {
+  if (angles == nullptr) {
     matrix ident;
     vm_MakeIdentity(&ident);
     g3_StartInstanceMatrix(pos, &ident);
@@ -74,7 +74,7 @@ void g3_StartInstanceAngles(vector *pos, angvec *angles) {
   }
 
   matrix tm;
-  vm_AnglesToMatrix(&tm, angles->p, angles->h, angles->b);
+  vm_AnglesToMatrix(&tm, angles->p(), angles->h(), angles->b());
 
   g3_StartInstanceMatrix(pos, &tm);
 }

@@ -621,7 +621,7 @@ room *CreateNewRoom(int nverts, int nfaces, bool palette_room) {
   roomnum = GetFreeRoom(palette_room);
 
   if (roomnum == -1)
-    return NULL;
+    return nullptr;
 
   rp = &Rooms[roomnum];
 
@@ -659,12 +659,12 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   // Reverse the normal because we're looking "at" the face, not from it
   fvec = -Rooms[roomnum].faces[facenum].normal;
 
-  vm_VectorToMatrix(&face_matrix, &fvec, NULL, NULL);
+  vm_VectorToMatrix(&face_matrix, &fvec, nullptr, nullptr);
   // Make the transformation matrix
 
   angvec avec;
   vm_ExtractAnglesFromMatrix(&avec, &face_matrix);
-  vm_AnglesToMatrix(&trans_matrix, avec.p, avec.h, avec.b);
+  vm_AnglesToMatrix(&trans_matrix, avec.p(), avec.h(), avec.b());
 
   // Rotate all the points
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
@@ -681,9 +681,9 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   float leftmost_x = 900000.00f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].x < leftmost_x) {
+    if (verts[i].x() < leftmost_x) {
       leftmost_point = i;
-      leftmost_x = verts[i].x;
+      leftmost_x = verts[i].x();
     }
   }
 
@@ -694,9 +694,9 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   float topmost_y = -900000.0f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].y > topmost_y) {
+    if (verts[i].y() > topmost_y) {
       topmost_point = i;
-      topmost_y = verts[i].y;
+      topmost_y = verts[i].y();
     }
   }
 
@@ -707,9 +707,9 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   float rightmost_x = -900000.00f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].x > rightmost_x) {
+    if (verts[i].x() > rightmost_x) {
       rightmost_point = i;
-      rightmost_x = verts[i].x;
+      rightmost_x = verts[i].x();
     }
   }
 
@@ -720,9 +720,9 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
   float bottommost_y = 900000.0f; // a big number
 
   for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++) {
-    if (verts[i].y < bottommost_y) {
+    if (verts[i].y() < bottommost_y) {
       bottommost_point = i;
-      bottommost_y = verts[i].y;
+      bottommost_y = verts[i].y();
     }
   }
 
@@ -732,14 +732,14 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
 
   vector base_vector;
 
-  base_vector.x = verts[leftmost_point].x;
-  base_vector.y = verts[topmost_point].y;
-  base_vector.z = 0;
+  base_vector.x() = verts[leftmost_point].x();
+  base_vector.y() = verts[topmost_point].y();
+  base_vector.z() = 0;
 
   // now actually find the uv of our specified point
 
-  uvl->u = (verts[vertnum].x - base_vector.x) / 20.0;
-  uvl->v = (base_vector.y - verts[vertnum].y) / 20.0;
+  uvl->u = (verts[vertnum].x() - base_vector.x()) / 20.0;
+  uvl->v = (base_vector.y() - verts[vertnum].y()) / 20.0;
 }
 
 #define DEFAULT_ALPHA 255
@@ -768,7 +768,7 @@ void AssignDefaultUVsToRoomFace(room *rp, int facenum) {
 // Searches thru all rooms for a specific name, returns -1 if not found
 // or index of room with name
 int FindRoomName(char *name) {
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (int i = FIRST_PALETTE_ROOM; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++)
     if (Rooms[i].used && Rooms[i].name && !stricmp(name, Rooms[i].name))
@@ -824,9 +824,9 @@ void SaveRoom(int n, char *filename) {
   cf_WriteInt(outfile, -1);
 
   for (int i = 0; i < Rooms[n].num_verts; i++) {
-    cf_WriteFloat(outfile, Rooms[n].verts[i].x);
-    cf_WriteFloat(outfile, Rooms[n].verts[i].y);
-    cf_WriteFloat(outfile, Rooms[n].verts[i].z);
+    cf_WriteFloat(outfile, Rooms[n].verts[i].x());
+    cf_WriteFloat(outfile, Rooms[n].verts[i].y());
+    cf_WriteFloat(outfile, Rooms[n].verts[i].z());
   }
 
   savepos = cftell(outfile);
@@ -880,9 +880,9 @@ void SaveRoom(int n, char *filename) {
     cf_WriteByte(outfile, Rooms[n].faces[i].light_multiple);
     cf_WriteInt(outfile, Rooms[n].faces[i].num_verts);
 
-    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.x);
-    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.y);
-    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.z);
+    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.x());
+    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.y());
+    cf_WriteFloat(outfile, Rooms[n].faces[i].normal.z());
 
     // Search through our texture list and write out that index
     for (t = 0; t < highest_index; t++) {
@@ -954,7 +954,7 @@ int AllocLoadRoom(char *filename, bool bCenter, bool palette_room) {
       // room_num=AllocRoom (num_verts,num_faces);
       rp = CreateNewRoom(num_verts, num_faces, palette_room);
 
-      if (rp == NULL) {
+      if (rp == nullptr) {
         done = 1;
         continue;
       }
@@ -969,9 +969,9 @@ int AllocLoadRoom(char *filename, bool bCenter, bool palette_room) {
         break;
       }
       for (i = 0; i < rp->num_verts; i++) {
-        rp->verts[i].x = cf_ReadFloat(infile);
-        rp->verts[i].y = cf_ReadFloat(infile);
-        rp->verts[i].z = cf_ReadFloat(infile);
+        rp->verts[i].x() = cf_ReadFloat(infile);
+        rp->verts[i].y() = cf_ReadFloat(infile);
+        rp->verts[i].z() = cf_ReadFloat(infile);
       }
       break;
     case ROOM_TEXTURE_CHUNK:
@@ -1009,9 +1009,9 @@ int AllocLoadRoom(char *filename, bool bCenter, bool palette_room) {
         ASSERT(rp->faces[i].face_verts);
         ASSERT(rp->faces[i].face_uvls);
 
-        rp->faces[i].normal.x = cf_ReadFloat(infile);
-        rp->faces[i].normal.y = cf_ReadFloat(infile);
-        rp->faces[i].normal.z = cf_ReadFloat(infile);
+        rp->faces[i].normal.x() = cf_ReadFloat(infile);
+        rp->faces[i].normal.y() = cf_ReadFloat(infile);
+        rp->faces[i].normal.z() = cf_ReadFloat(infile);
         rp->faces[i].light_multiple = light_multiple;
 
         tex_index = cf_ReadShort(infile);
@@ -1199,13 +1199,13 @@ bool FaceIsPlanar(int nv, int16_t *face_verts, vector *normal, vector *verts) {
   // Get average distance from origin for points on this face
   float average_d = 0;
   for (int v = 0; v < nv; v++)
-    average_d += verts[face_verts[v]] * *normal;
+    average_d += vm_Dot3Product(verts[face_verts[v]], *normal);
   average_d /= nv;
 
   // Look for points too far from the average
   float d;
   for (int v = 0; v < nv; v++) {
-    d = verts[face_verts[v]] * *normal;
+    d = vm_Dot3Product(verts[face_verts[v]], *normal);
     if (fabs(d - average_d) > POINT_TO_PLANE_EPSILON)
       return 0;
   }
@@ -1240,7 +1240,7 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
       int nfaces = rp->num_faces + num_new_faces;
 
       newfaces = mem_rmalloc<face>(nfaces);
-      ASSERT(newfaces != NULL);
+      ASSERT(newfaces != nullptr);
 
       // Copy all the faces into our new array
       for (t = 0; t < rp->num_faces; t++) {
@@ -1249,9 +1249,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
           int nverts = rp->faces[t].num_verts;
 
           newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
-          ASSERT(newfaces[t].face_verts != NULL);
+          ASSERT(newfaces[t].face_verts != nullptr);
           newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
-          ASSERT(newfaces[t].face_uvls != NULL);
+          ASSERT(newfaces[t].face_uvls != nullptr);
 
           newfaces[t].normal = rp->faces[t].normal;
           newfaces[t].tmap = rp->faces[t].tmap;
@@ -1269,9 +1269,9 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
           int nverts = 3;
 
           newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
-          ASSERT(newfaces[t].face_verts != NULL);
+          ASSERT(newfaces[t].face_verts != nullptr);
           newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
-          ASSERT(newfaces[t].face_uvls != NULL);
+          ASSERT(newfaces[t].face_uvls != nullptr);
 
           newfaces[t].tmap = rp->faces[t].tmap;
           newfaces[t].flags = rp->faces[t].flags;
@@ -1342,16 +1342,16 @@ void ReInitRoomFace(face *fp, int nverts) {
   mem_free(fp->face_uvls);
 
   fp->face_verts = (int16_t *)mem_malloc(nverts * sizeof(*fp->face_verts));
-  ASSERT(fp->face_verts != NULL);
+  ASSERT(fp->face_verts != nullptr);
   fp->face_uvls = mem_rmalloc<roomUVL>(nverts);
-  ASSERT(fp->face_uvls != NULL);
+  ASSERT(fp->face_uvls != nullptr);
 }
 
 // Determines if two points are close enough together to be considered the same
 // Parameters:	v0,v1 - the two points
 // Returns:		true if the points are the same or very close; else false
 bool PointsAreSame(vector *v0, vector *v1) {
-  float d = vm_VectorDistance(v0, v1);
+  scalar d = vm_VectorDistance(v0, v1);
 
   return (d < POINT_TO_POINT_EPSILON);
 }
@@ -1361,7 +1361,7 @@ bool PointsAreSame(vector *v0, vector *v1) {
 //					planepoint,normal - the plane we're checking against
 // Returns:		0 if on the plane, -1 if behind, 1 if in front
 int CheckPointToPlane(vector *checkpoint, vector *planepoint, vector *normal) {
-  float d = (*checkpoint - *planepoint) * *normal;
+  scalar d = vm_Dot3Product((*checkpoint - *planepoint), *normal);
 
   if (d < -POINT_TO_PLANE_EPSILON)
     return -1;
@@ -1397,7 +1397,7 @@ int RoomAddVertices(room *rp, int num_new_verts) {
 
   auto newverts = mem_rmalloc<vector>(rp->num_verts + num_new_verts);
 
-  ASSERT(newverts != NULL);
+  ASSERT(newverts != nullptr);
 
   for (int i = 0; i < rp->num_verts; i++) {
     newverts[i] = rp->verts[i];
@@ -1424,7 +1424,7 @@ int RoomAddFaces(room *rp, int num_new_faces) {
 
   auto newfaces = mem_rmalloc<face>(rp->num_faces + num_new_faces);
 
-  ASSERT(newfaces != NULL);
+  ASSERT(newfaces != nullptr);
 
   for (int i = 0; i < rp->num_faces; i++)
     newfaces[i] = rp->faces[i];
@@ -1636,7 +1636,7 @@ void DeleteRoomVert(room *rp, int vertnum) {
 
   // malloc new list
   newverts = mem_rmalloc<vector>(rp->num_verts - 1);
-  ASSERT(newverts != NULL);
+  ASSERT(newverts != nullptr);
 
   // Copy verts to new list
   for (v = 0; v < vertnum; v++) {
@@ -1718,7 +1718,7 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
 
   // Allocate new face list
   newfaces = mem_rmalloc<face>(rp->num_faces - 1);
-  ASSERT(newfaces != NULL);
+  ASSERT(newfaces != nullptr);
 
   // Copy faces over
   for (f = 0; f < facenum; f++)
@@ -1808,10 +1808,10 @@ void DeleteRoomPortal(room *rp, int portalnum) {
 
   // Alloc new portal list
   if (rp->num_portals == 1)
-    newportals = NULL;
+    newportals = nullptr;
   else {
     newportals = mem_rmalloc<portal>(rp->num_portals - 1);
-    ASSERT(newportals != NULL);
+    ASSERT(newportals != nullptr);
   }
 
   // Copy portals over
@@ -2040,23 +2040,23 @@ void LinkRooms(room *roomlist, int room0, int face0, int room1, int face1) {
 // Parameters:	min,max - filled in with the minimum and maximum x,y, & z values, respectively
 //					rp = the room
 void ComputeRoomMinMax(vector *min, vector *max, room *rp) {
-  min->x = min->y = min->z = FLT_MAX;
-  max->x = max->y = max->z = -FLT_MAX;
+  min->fill(FLT_MAX);
+  max->fill(-FLT_MAX);
 
   for (int i = 0; i < rp->num_verts; i++) {
-    if (rp->verts[i].x > max->x)
-      max->x = rp->verts[i].x;
-    if (rp->verts[i].y > max->y)
-      max->y = rp->verts[i].y;
-    if (rp->verts[i].z > max->z)
-      max->z = rp->verts[i].z;
+    if (rp->verts[i].x() > max->x())
+      max->x() = rp->verts[i].x();
+    if (rp->verts[i].y() > max->y())
+      max->y() = rp->verts[i].y();
+    if (rp->verts[i].z() > max->z())
+      max->z() = rp->verts[i].z();
 
-    if (rp->verts[i].x < min->x)
-      min->x = rp->verts[i].x;
-    if (rp->verts[i].y < min->y)
-      min->y = rp->verts[i].y;
-    if (rp->verts[i].z < min->z)
-      min->z = rp->verts[i].z;
+    if (rp->verts[i].x() < min->x())
+      min->x() = rp->verts[i].x();
+    if (rp->verts[i].y() < min->y())
+      min->y() = rp->verts[i].y();
+    if (rp->verts[i].z() < min->z())
+      min->z() = rp->verts[i].z();
   }
 }
 

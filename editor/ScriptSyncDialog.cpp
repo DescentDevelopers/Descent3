@@ -264,7 +264,7 @@ BOOL CScriptSyncDialog::OnInitDialog() {
   m_Index = 0;
   m_NumFiles = 0;
   m_HasCompiler = -1;
-  m_Files = NULL;
+  m_Files = nullptr;
   m_FillingIn = true;
   m_ErrorCount = 0;
   ddio_GetWorkingDir(old_dir, _MAX_PATH);
@@ -279,7 +279,7 @@ void CScriptSyncDialog::defer(void) {
   MSG msg;
 
   while (1) {
-    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+    if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
       if (msg.message == WM_QUIT) {
         //	QUIT APP.
         early_exit = true;
@@ -295,7 +295,7 @@ void CScriptSyncDialog::defer(void) {
 void CScriptSyncDialog::BuildList(void) {
   char buffer[256];
   m_NumFiles = 0;
-  m_Files = NULL;
+  m_Files = nullptr;
 
   if (ManageFindFirst(buffer, "*.cpp")) {
     m_NumFiles++;
@@ -344,7 +344,7 @@ void CScriptSyncDialog::DoStuff(void) {
   if (m_FillingIn) {
     char dllfilename[_MAX_PATH];
 
-    ddio_SplitPath(m_Files[m_Index].filename, NULL, dllfilename, NULL);
+    ddio_SplitPath(m_Files[m_Index].filename, nullptr, dllfilename, nullptr);
     strcat(dllfilename, ".dll");
 
     if (!cfexist(dllfilename)) {
@@ -398,7 +398,7 @@ void CScriptSyncDialog::DoStuff(void) {
           strcpy(ci.source_filename, m_Files[m_Index].filename);
           ScriptCompile(&ci);
 
-          ddio_SplitPath(m_Files[m_Index].filename, NULL, dllfilename, NULL);
+          ddio_SplitPath(m_Files[m_Index].filename, nullptr, dllfilename, nullptr);
           strcat(dllfilename, ".dll");
           if (!cfexist(dllfilename)) {
             m_Files[m_Index].state = STATE_MISSING;
@@ -451,7 +451,7 @@ void CScriptSyncDialog::OnPaint() {
 
   if (first_paint) {
     first_paint = false;
-    SetTimer(0x12, 200, NULL);
+    SetTimer(0x12, 200, nullptr);
   }
 }
 
@@ -468,7 +468,7 @@ void CScriptSyncDialog::OnTimer(UINT nIDEvent) {
   CDialog::OnTimer(nIDEvent);
 
   if (!m_Done)
-    SetTimer(0x12, 50, NULL);
+    SetTimer(0x12, 50, nullptr);
 }
 
 void CScriptSyncDialog::OnDestroy() {

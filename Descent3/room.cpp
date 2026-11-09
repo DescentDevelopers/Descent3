@@ -465,8 +465,8 @@ int CountRoomFaceVerts(room *rp) {
 #endif
 
 // Vars for the room memory system
-uint8_t *Room_mem_buf = NULL; // pointer to the rooms block of memory
-uint8_t *Room_mem_ptr = NULL; // pointer to free memory in the rooms block
+uint8_t *Room_mem_buf = nullptr; // pointer to the rooms block of memory
+uint8_t *Room_mem_ptr = nullptr; // pointer to free memory in the rooms block
 int Room_mem_size;          // How big our chunk is
 
 // Closes down the room memory system.
@@ -474,7 +474,7 @@ void RoomMemClose() {
   if (Room_mem_buf)
     mem_free(Room_mem_buf);
 
-  Room_mem_buf = Room_mem_ptr = NULL;
+  Room_mem_buf = Room_mem_ptr = nullptr;
 }
 
 // Initialized the memory buffer for a room
@@ -537,10 +537,10 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->flags = 0;
   rp->objects = -1;
   rp->vis_effects = -1;
-  rp->volume_lights = NULL;
+  rp->volume_lights = nullptr;
   rp->mirror_face = -1;
   rp->num_mirror_faces = 0;
-  rp->mirror_faces_list = NULL;
+  rp->mirror_faces_list = nullptr;
   rp->room_change_flags = 0;
 
 #ifndef NEWEDITOR // the new editor must allow users to create a room from scratch
@@ -548,7 +548,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   ASSERT(nfaces > 0);
 #endif
 
-  rp->wind = Zero_vector;
+  rp->wind = vector{};
 
   rp->num_faces = nfaces;
   rp->num_verts = nverts;
@@ -560,16 +560,16 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->fog_b = 1.0;
 
   rp->faces = RoomMemAlloc<face>(nfaces);
-  ASSERT(rp->faces != NULL);
+  ASSERT(rp->faces != nullptr);
 
   rp->num_bbf_regions = 0;
 
   rp->verts = RoomMemAlloc<vector>(nverts);
-  ASSERT(rp->verts != NULL);
+  ASSERT(rp->verts != nullptr);
 
   if (Katmai) {
     rp->verts4 = mem_rmalloc<vector4>(nverts);
-    ASSERT(rp->verts4 != NULL);
+    ASSERT(rp->verts4 != nullptr);
   }
 
   rp->pulse_time = 0;
@@ -577,15 +577,15 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
 
   if (nportals) {
     rp->portals = RoomMemAlloc<portal>(nportals);
-    ASSERT(rp->portals != NULL);
+    ASSERT(rp->portals != nullptr);
   } else
-    rp->portals = NULL;
+    rp->portals = nullptr;
 
   // Default to no ambient sound
   rp->ambient_sound = -1;
 
-  rp->name = NULL;
-  rp->doorway_data = NULL;
+  rp->name = nullptr;
+  rp->doorway_data = nullptr;
 
   rp->env_reverb = 0; // reverb for sound system.
 
@@ -593,7 +593,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->damage_type = PD_NONE; // room damage type
 
   rp->bn_info.num_nodes = 0;
-  rp->bn_info.nodes = NULL;
+  rp->bn_info.nodes = nullptr;
 
 #if (defined(EDITOR) || defined(NEWEDITOR))
   Room_multiplier[rp - Rooms] = 1.0;
@@ -622,9 +622,9 @@ void InitRoomFace(face *fp, int nverts) {
   fp->light_multiple = 4;
 
   fp->face_verts = RoomMemAlloc<short>(nverts);
-  ASSERT(fp->face_verts != NULL);
+  ASSERT(fp->face_verts != nullptr);
   fp->face_uvls = RoomMemAlloc<roomUVL>(nverts);
-  ASSERT(fp->face_uvls != NULL);
+  ASSERT(fp->face_uvls != nullptr);
 
   ASSERT(fp->face_verts);
   ASSERT(fp->face_uvls);
@@ -636,7 +636,7 @@ void InitRoomFace(face *fp, int nverts) {
 int FindPointRoom(vector *pnt) {
   int i;
 
-  ASSERT(pnt != NULL);
+  ASSERT(pnt != nullptr);
 
   for (i = 0; i <= Highest_room_index; i++) {
     if ((Rooms[i].used) && !(Rooms[i].flags & RF_EXTERNAL)) {
@@ -762,7 +762,7 @@ void FreeRoomFace(face *fp) {
 void ComputeRoomCenter(vector *vp, room *rp) {
   int i;
 
-  vp->x = vp->y = vp->z = 0;
+  *vp = vector{};
 
   for (i = 0; i < rp->num_verts; i++)
     *vp += rp->verts[i];
@@ -778,7 +778,7 @@ void ComputeCenterPointOnFace(vector *vp, room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
   int i;
 
-  vp->x = vp->y = vp->z = 0;
+  *vp = vector{};
 
   for (i = 0; i < fp->num_verts; i++)
     *vp += rp->verts[fp->face_verts[i]];
@@ -840,9 +840,9 @@ bool ComputeNormal(vector *normal, int num_verts, short *vertnum_list, vector *v
   if (largest_mag < MIN_NORMAL_MAG) {
     LOG_WARNING.printf("Warning: Normal has low precision. mag = %f, norm =  %f,%f,%f",
             largest_mag,
-            normal->x,
-            normal->y,
-            normal->z);
+            normal->x(),
+            normal->y(),
+            normal->z());
     return false;
   } else
     return true;
@@ -935,7 +935,7 @@ void ClearVolumeLights(int roomnum) {
 
   if (Rooms[roomnum].volume_lights) {
     mem_free(Rooms[roomnum].volume_lights);
-    Rooms[roomnum].volume_lights = NULL;
+    Rooms[roomnum].volume_lights = nullptr;
   }
 }
 
@@ -981,9 +981,9 @@ float GetAreaForFace(room *rp, int facenum) {
 void GetIJ(const vector *normal, int *ii, int *jj) {
 
   // To project onto 2d, find the largest element of the surface normal
-  if (fabs(normal->x) > fabs(normal->y))
-    if (fabs(normal->x) > fabs(normal->z)) {
-      if (normal->x > 0) {
+  if (fabs(normal->x()) > fabs(normal->y()))
+    if (fabs(normal->x()) > fabs(normal->z())) {
+      if (normal->x() > 0) {
         *ii = 2;
         *jj = 1; // x > y, x > z
       } else {
@@ -991,7 +991,7 @@ void GetIJ(const vector *normal, int *ii, int *jj) {
         *jj = 2;
       }
     } else {
-      if (normal->z > 0) {
+      if (normal->z() > 0) {
         *ii = 1;
         *jj = 0; // z > x > y
       } else {
@@ -1000,8 +1000,8 @@ void GetIJ(const vector *normal, int *ii, int *jj) {
       }
     }
   else // y > x
-    if (fabs(normal->y) > fabs(normal->z)) {
-      if (normal->y > 0) {
+    if (fabs(normal->y()) > fabs(normal->z())) {
+      if (normal->y() > 0) {
         *ii = 0;
         *jj = 2; // y > x, y > z
       } else {
@@ -1009,7 +1009,7 @@ void GetIJ(const vector *normal, int *ii, int *jj) {
         *jj = 0;
       }
     } else {
-      if (normal->z > 0) {
+      if (normal->z() > 0) {
         *ii = 1;
         *jj = 0; // z > y > x
       } else {
@@ -1107,9 +1107,9 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
 
 #ifdef NEWEDITOR
   if (!rp->num_verts) {
-    center->x = 0.0f;
-    center->y = 0.0f;
-    center->z = 0.0f;
+    center->x() = 0.0f;
+    center->y() = 0.0f;
+    center->z() = 0.0f;
     return 0.0f;
   }
 #endif
@@ -1120,22 +1120,22 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
   // First, find the points with the min & max x,y, & z coordinates
   for (i = 0, vp = rp->verts; i < rp->num_verts; i++, vp++) {
 
-    if (vp->x < min_x->x)
+    if (vp->x() < min_x->x())
       min_x = vp;
 
-    if (vp->x > max_x->x)
+    if (vp->x() > max_x->x())
       max_x = vp;
 
-    if (vp->y < min_y->y)
+    if (vp->y() < min_y->y())
       min_y = vp;
 
-    if (vp->y > max_y->y)
+    if (vp->y() > max_y->y())
       max_y = vp;
 
-    if (vp->z < min_z->z)
+    if (vp->z() < min_z->z())
       min_z = vp;
 
-    if (vp->z > max_z->z)
+    if (vp->z() > max_z->z())
       max_z = vp;
   }
 
@@ -1168,7 +1168,7 @@ float ComputeRoomBoundingSphere(vector *center, room *rp) {
     float t2;
 
     delta = *vp - *center;
-    t2 = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+    t2 = delta.x() * delta.x() + delta.y() * delta.y() + delta.z() * delta.z();
 
     // If point outside, make the sphere bigger
     if (t2 > rad2) {
@@ -1207,11 +1207,11 @@ void CreateRoomObjects() {
 
       ASSERT(roomnum != -1);
 
-      objnum = ObjCreate(OBJ_ROOM, r, roomnum, &pos, NULL);
+      objnum = ObjCreate(OBJ_ROOM, r, roomnum, &pos, nullptr);
       ASSERT(objnum != -1); // DAJ -1FIX moved up
       Objects[objnum].size = rad;
-      Objects[objnum].wall_sphere_offset = Zero_vector;
-      Objects[objnum].anim_sphere_offset = Zero_vector;
+      Objects[objnum].wall_sphere_offset = vector{};
+      Objects[objnum].anim_sphere_offset = vector{};
 
       if ((rad >= MIN_BIG_OBJ_RAD) && !(Objects[objnum].flags & OF_BIG_OBJECT)) {
         BigObjAdd(objnum);
@@ -1313,9 +1313,9 @@ void DoRoomChangeFrame() {
       rp->flags |= RF_FOG;
       rp->room_change_flags |= RCF_CHANGING_WIND_FOG;
 
-      rp->fog_r = scale_color.x;
-      rp->fog_g = scale_color.y;
-      rp->fog_b = scale_color.z;
+      rp->fog_r = scale_color.x();
+      rp->fog_g = scale_color.y();
+      rp->fog_b = scale_color.z();
       rp->fog_depth = scale_depth;
     } else {
       vector scale_wind =
@@ -1370,9 +1370,9 @@ int SetRoomChangeOverTime(int roomnum, bool fog, vector *end, float depth_end, f
 
   if (fog) {
     Room_changes[index].start_depth = rp->fog_depth;
-    Room_changes[index].start_vector.x = rp->fog_r;
-    Room_changes[index].start_vector.y = rp->fog_g;
-    Room_changes[index].start_vector.z = rp->fog_b;
+    Room_changes[index].start_vector.x() = rp->fog_r;
+    Room_changes[index].start_vector.y() = rp->fog_g;
+    Room_changes[index].start_vector.z() = rp->fog_b;
     Room_changes[index].end_depth = depth_end;
   } else
     Room_changes[index].start_vector = rp->wind;

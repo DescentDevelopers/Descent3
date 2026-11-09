@@ -45,7 +45,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 static int String_table_size = 0;
-static char **String_table = NULL;
+static char **String_table = nullptr;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -298,7 +298,7 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
     else
       parent = OBJECT_HANDLE_NONE;
 
-    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, NULL, parent);
+    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, nullptr, parent);
     if (child_handle != OBJECT_HANDLE_NONE) {
       if (!Obj_AttachObjectAP(me, parent_ap, child_handle, child_ap, f_aligned)) {
         // chrishack (we need a way to instantly kill scripted objects)
@@ -505,7 +505,7 @@ float TraverseShotPath(tShotData *shot_data) {
     // If it hit a wall, change the direction (perfect reflection)
     if (fate == HIT_WALL) {
       // Calculate the bounce dir from the current dir and face normal
-      vector new_dir = (-2.0f * (shot_dir * ray.hit_wallnorm)) * ray.hit_wallnorm + shot_dir;
+      vector new_dir = (-2.0f * vm_Dot3Product(shot_dir, ray.hit_wallnorm)) * ray.hit_wallnorm + shot_dir;
       shot_dir = new_dir;
 
       // Now, if necessary, cast another ray to finish off the scan dist
@@ -1559,7 +1559,7 @@ void STDCALLPTR CreateInstance(int id) {
     mprintf(0, "SCRIPT: Illegal ID (%d)\n", id);
     break;
   };
-  return NULL;
+  return nullptr;
 }
 
 //	DestroyInstance
@@ -1909,7 +1909,7 @@ void AlienOrganism::DisperseSquad(int me) {
     return;
 
   for (int i = 0; i < memory->num_teammates; i++) {
-    SendCommand(me, memory->teammate[i].handle, ALIEN_COM_LEAVE_ME, NULL);
+    SendCommand(me, memory->teammate[i].handle, ALIEN_COM_LEAVE_ME, nullptr);
   }
 
   memory->squad_flags = 0;
@@ -1935,7 +1935,7 @@ bool AlienOrganism::LeaveLeader(int me) {
   if (!(memory->squad_flags & ALIEN_SQUADIE))
     return true;
 
-  SendCommand(me, memory->leader_handle, ALIEN_COM_LEAVING_YOU, NULL);
+  SendCommand(me, memory->leader_handle, ALIEN_COM_LEAVING_YOU, nullptr);
   memory->squad_flags = 0;
   memory->leader_handle = OBJECT_HANDLE_NONE;
   memory->num_teammates = 0;
@@ -2192,7 +2192,7 @@ void AlienOrganism::SetSquadieFormationGoal(int me) {
   AI_GoalValue(me, 1, VF_SET, AIGV_F_CIRCLE_DIST, &cd);
 
   // Do the custom goal for when squadie can see leader (similar to use bline when sees goal)
-  AI_AddGoal(me, AIG_SCRIPTED, 2, 1.0f, -1, GF_ORIENT_VELOCITY | GF_KEEP_AT_COMPLETION, NULL);
+  AI_AddGoal(me, AIG_SCRIPTED, 2, 1.0f, -1, GF_ORIENT_VELOCITY | GF_KEEP_AT_COMPLETION, 0);
   AI_GoalAddEnabler(me, 2, AIE_SCRIPTED, 1.0, 0.0, &temp);
 }
 
@@ -2556,7 +2556,7 @@ void AlienOrganism::UpdateEnergyEffect(int me) {
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
 
-      Obj_Create(OBJ_WEAPON, energy_effect_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, energy_effect_id, room, &pos, nullptr, me);
     }
   }
 }
@@ -3163,15 +3163,15 @@ void AlienOrganism::DoInit(int me) {
   // Create and setup the energy effect props
   msafe_struct mstruct;
 
-  memory->pos1_handle = Obj_Create(OBJ_POWERUP, powerup_id, memory->home_room, &memory->home_pos, NULL, me);
+  memory->pos1_handle = Obj_Create(OBJ_POWERUP, powerup_id, memory->home_room, &memory->home_pos, nullptr, me);
   mstruct.objhandle = memory->pos1_handle;
   MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
 
-  memory->pos2_handle = Obj_Create(OBJ_POWERUP, powerup_id, memory->home_room, &memory->home_pos, NULL, me);
+  memory->pos2_handle = Obj_Create(OBJ_POWERUP, powerup_id, memory->home_room, &memory->home_pos, nullptr, me);
   mstruct.objhandle = memory->pos2_handle;
   MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
 
-  memory->pos3_handle = Obj_Create(OBJ_POWERUP, powerup_id, memory->home_room, &memory->home_pos, NULL, me);
+  memory->pos3_handle = Obj_Create(OBJ_POWERUP, powerup_id, memory->home_room, &memory->home_pos, nullptr, me);
   mstruct.objhandle = memory->pos3_handle;
   MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
 
@@ -3231,7 +3231,7 @@ bool AlienOrganism::FindHome(int me) {
       memory->home_room = ray.hit_face_room;
       memory->home_uvec = ray.hit_wallnorm;
 
-      vm_VectorToMatrix(&temp, &memory->home_uvec, NULL, NULL);
+      vm_VectorToMatrix(&temp, &memory->home_uvec, nullptr, nullptr);
       if (rand() % 100 > 50) {
         memory->home_fvec = temp.uvec;
       } else {
@@ -3303,7 +3303,7 @@ void AlienOrganism::DoSquadieFrame(int me) {
       dir = my_pos - memory->squad_goal_pos;
       vm_VectorNormalize(&dir);
       float dot_prod;
-      if ((dot_prod = leader_orient.fvec * dir) < 0.0f) {
+      if ((dot_prod = vm_Dot3Product(leader_orient.fvec,  dir)) < 0.0f) {
         slowdown = dist / ALIEN_APPROACH_DIST;
       }
     }
@@ -3391,7 +3391,7 @@ void AlienOrganism::DoFrame(int me) {
     if (ModeIsAttackSensitive(memory->mode, memory->pending_mode)) {
       // mprintf(0,"Sensitive to Attack!\n");
       if (memory->squad_flags & ALIEN_SQUADIE) {
-        SendCommand(me, memory->leader_handle, ALIEN_COM_I_WAS_HIT, NULL);
+        SendCommand(me, memory->leader_handle, ALIEN_COM_I_WAS_HIT, nullptr);
       } else {
         MeleeAttack(me);
       }
@@ -3512,7 +3512,7 @@ void AlienOrganism::DoFrame(int me) {
         if (die_roll > 70) {
           // If we're a squadie, lie and tell the leader we got hit (so he orders the attack)
           if (memory->squad_flags & ALIEN_SQUADIE) {
-            SendCommand(me, memory->leader_handle, ALIEN_COM_I_WAS_HIT, NULL);
+            SendCommand(me, memory->leader_handle, ALIEN_COM_I_WAS_HIT, nullptr);
           } else {
             if (MeleeAttack(me))
               break;
@@ -3800,7 +3800,7 @@ void AlienOrganism::DoFrame(int me) {
         // See if we need to regroup or break up and attack
         if ((dist >= ALIEN_REGROUP_DIST) && (memory->squad_flags & ALIEN_BROKEN)) {
           // Tell Squad to regroup
-          IssueSquadOrder(me, ALIEN_COM_REGROUP, NULL);
+          IssueSquadOrder(me, ALIEN_COM_REGROUP, nullptr);
 
           // Set up leader for regrouping
           memory->squad_flags &= ~ALIEN_BROKEN;
@@ -3808,7 +3808,7 @@ void AlienOrganism::DoFrame(int me) {
           break;
         } else if ((dist <= ALIEN_BREAKUP_DIST) && !(memory->squad_flags & ALIEN_BROKEN)) {
           // Tell Squad to breakup and attack!
-          IssueSquadOrder(me, ALIEN_COM_BREAK_AND_ATTACK, NULL);
+          IssueSquadOrder(me, ALIEN_COM_BREAK_AND_ATTACK, nullptr);
 
           // Set up leader for regrouping
           memory->squad_flags |= ALIEN_BROKEN;
@@ -4002,7 +4002,7 @@ void AlienOrganism::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
       int room;
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
-      Obj_Create(OBJ_WEAPON, frag_burst_effect_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, frag_burst_effect_id, room, &pos, nullptr, me);
     }
 
     return;
@@ -4663,7 +4663,7 @@ void HeavyTrooper::DoCollide(int me, tOSIRISEVTCOLLIDE *collide_data) {
           // Create the shield blast
           Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
           Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
-          Obj_Create(OBJ_WEAPON, shield_blast_id, room, &pos, NULL, me);
+          Obj_Create(OBJ_WEAPON, shield_blast_id, room, &pos, nullptr, me);
 
           // Set the next valid shield blast time
           memory->next_blast_time = Game_GetTime() + HT_SHIELD_BLAST_DELAY;
@@ -4763,7 +4763,7 @@ bool Lifter::OkToPull(int me, bool initial_check /*=true*/) {
   // NOTE: do my own vec to target here! (chris' doesn't update quick enough)
   AI_Value(me, VF_GET, AIV_V_VEC_TO_TARGET, &vec_to_target);
   vm_VectorNormalize(&vec_to_target);
-  fov_angle = orient.fvec * vec_to_target;
+  fov_angle = vm_Dot3Product(orient.fvec, vec_to_target);
   if (fov_angle < 0.7f)
     return false;
 
@@ -5083,7 +5083,7 @@ void Lifter::DoInit(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
   Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
 
-  memory->pull_target_prop = Obj_Create(OBJ_POWERUP, powerup_id, room, &pos, NULL, me);
+  memory->pull_target_prop = Obj_Create(OBJ_POWERUP, powerup_id, room, &pos, nullptr, me);
   mstruct.objhandle = memory->pull_target_prop;
   MSafe_CallFunction(MSAFE_OBJECT_NO_RENDER, &mstruct);
 
@@ -5129,7 +5129,7 @@ bool Lifter::DoNotify(int me, tOSIRISEventInfo *data) {
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       // Obj_GetGunPos(me, 2, &pos);
-      Obj_Create(OBJ_WEAPON, lifter_blast_effect_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, lifter_blast_effect_id, room, &pos, nullptr, me);
     }
   }
 
@@ -6303,7 +6303,7 @@ bool AlienBoss::OkToStartSpecialAttack(int me) {
   // NOTE: do my own vec to target here! (chris' doesn't update quick enough)
   AI_Value(me, VF_GET, AIV_V_VEC_TO_TARGET, &vec_to_target);
   vm_VectorNormalize(&vec_to_target);
-  fov_angle = orient.fvec * vec_to_target;
+  fov_angle = vm_Dot3Product(orient.fvec, vec_to_target);
   if (fov_angle < 0.7f)
     return false;
 
@@ -6334,7 +6334,7 @@ bool AlienBoss::DoStingAttack(int me) {
   // NOTE: do my own vec to target here! (chris' doesn't update quick enough)
   AI_Value(me, VF_GET, AIV_V_VEC_TO_TARGET, &vec_to_target);
   vm_VectorNormalize(&vec_to_target);
-  fov_angle = orient.fvec * vec_to_target;
+  fov_angle = vm_Dot3Product(orient.fvec, vec_to_target);
   if (fov_angle < 0.7f)
     return false;
 
@@ -6484,7 +6484,7 @@ void AlienBoss::DoFrame(int me) {
       // Do effect before
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
-      Obj_Create(OBJ_WEAPON, teleport_effect_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, teleport_effect_id, room, &pos, nullptr, me);
 
       // Move self
       Obj_Value(me, VF_SET, OBJV_V_POS, &memory->dest_pos);
@@ -6493,7 +6493,7 @@ void AlienBoss::DoFrame(int me) {
       // Do effect after
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
-      Obj_Create(OBJ_WEAPON, teleport_effect_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, teleport_effect_id, room, &pos, nullptr, me);
 
       memory->did_transfer = true;
     }
@@ -6694,7 +6694,7 @@ void AlienBoss::DoFrame(int me) {
     // Update the values
     Obj_Value(me, VF_GET, OBJV_V_POS, &curr_pos);
     dist_vec = curr_pos - memory->last_pos;
-    memory->squared_dist_moved += (dist_vec.x * dist_vec.x + dist_vec.y * dist_vec.y + dist_vec.z * dist_vec.z);
+    memory->squared_dist_moved += (dist_vec.x() * dist_vec.x() + dist_vec.y() * dist_vec.y() + dist_vec.z() * dist_vec.z());
     memory->last_pos = curr_pos;
 
     // See if we need to do a stuck check
@@ -6835,7 +6835,7 @@ bool AlienBoss::DoNotify(int me, tOSIRISEventInfo *data) {
     // Create the concussive hit blast
     Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
     Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
-    Obj_Create(OBJ_WEAPON, lifter_blast_effect_id, room, &pos, NULL, me);
+    Obj_Create(OBJ_WEAPON, lifter_blast_effect_id, room, &pos, nullptr, me);
   } else if (data->evt_ai_notify.notify_type == AIN_USER_DEFINED) {
     bot_com *com = (bot_com *)data->extra_info;
 
@@ -6865,7 +6865,7 @@ void AlienBoss::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
       int room;
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
-      Obj_Create(OBJ_WEAPON, frag_burst_effect_id, room, &pos, NULL, me);
+      Obj_Create(OBJ_WEAPON, frag_burst_effect_id, room, &pos, nullptr, me);
     }
 
     return;
@@ -7108,15 +7108,15 @@ void SecurityCamera::DoFrame(int me) {
 
       // Make it track target on a 2D plane
       dir = local_vec_to_target;
-      dir.y = 0.0f;
-      if ((dir.x + dir.y + dir.z) == 0.0f)
+      dir.y() = 0.0f;
+      if ((dir.x() + dir.y() + dir.z()) == 0.0f)
         break;
       vm_VectorNormalize(&dir);
 
-      local_fvec.x = 0.0f;
-      local_fvec.y = 0.0f;
-      local_fvec.z = 1.0f;
-      dot = dir * local_fvec;
+      local_fvec.x() = 0.0f;
+      local_fvec.y() = 0.0f;
+      local_fvec.z() = 1.0f;
+      dot = vm_Dot3Product(dir, local_fvec);
       if (dot < -1.0f)
         dot = -1.0f;
       if (dot > 1.0f)
@@ -7132,7 +7132,7 @@ void SecurityCamera::DoFrame(int me) {
       // mprintf(0,"Frame offset: %.1f\n",frame_offset);
 
       // Get the dest frame between start and end frames for reference
-      if (dir.x < 0.0f)
+      if (dir.x() < 0.0f)
         frame_offset = -frame_offset;
       dest_frame = SC_MID_FRAME + frame_offset;
 
@@ -7324,10 +7324,10 @@ void CrowdControl::DoFrame(int me) {
       Obj_Value(memory->follow_handle, VF_GET, OBJV_V_POS, &leader_pos);
 
       // It's ok to move in reverse, or away from leader
-      ok_to_move_normally = ((my_vel * my_orient.fvec) <= 0.0f) ? true : false;
+      ok_to_move_normally = (vm_Dot3Product(my_vel, my_orient.fvec) <= 0.0f) ? true : false;
       if (!ok_to_move_normally) {
         leader_dir = leader_pos - my_pos;
-        ok_to_move_normally = ((my_vel * leader_dir) <= 0.0f) ? true : false;
+        ok_to_move_normally = (vm_Dot3Product(my_vel, leader_dir) <= 0.0f) ? true : false;
       }
 
       // Check to see if we're too close to leader (so we can slow down and stop)

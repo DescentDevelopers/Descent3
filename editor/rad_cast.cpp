@@ -240,7 +240,7 @@ int ShootRayToVolumePoint(vector *src, vector *dest, int start_room) {
   fq.rad = 0.0f;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS | FQ_NO_RELINK | FQ_IGNORE_RENDER_THROUGH_PORTALS;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   int fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -252,81 +252,81 @@ int ShootRayToVolumePoint(vector *src, vector *dest, int start_room) {
 
 void ClipSatelliteToTerrain(vector *answer, vector *src_vec, vector *dest_vec) {
   vector cur_vec = *src_vec;
-  float terrain_limit = 256 * TERRAIN_SIZE;
-  float mag, diff;
+  scalar terrain_limit = 256 * TERRAIN_SIZE;
+  scalar mag, diff;
   vector ray;
 
   // Check ceiling
-  if (cur_vec.y > (MAX_TERRAIN_HEIGHT * 30)) {
+  if (cur_vec.y() > ((scalar)MAX_TERRAIN_HEIGHT * 30)) {
     ray = cur_vec - *dest_vec;
 
     mag = vm_GetMagnitude(&ray);
     ray /= mag;
 
-    diff = ((MAX_TERRAIN_HEIGHT * 30) - dest_vec->y) / ray.y;
+    diff = (((scalar)MAX_TERRAIN_HEIGHT * 30) - dest_vec->y()) / ray.y();
 
     cur_vec = (*dest_vec + (ray * diff)) - (ray / 4);
   }
 
   // Check right edge
-  if (cur_vec.x > terrain_limit) {
+  if (cur_vec.x() > terrain_limit) {
     ray = cur_vec - *dest_vec;
 
     mag = vm_GetMagnitude(&ray);
     ray /= mag;
 
-    diff = (terrain_limit - dest_vec->x) / ray.x;
+    diff = (terrain_limit - dest_vec->x()) / ray.x();
 
     cur_vec = (*dest_vec + (ray * diff)) - (ray / 4);
   }
 
   // Check left edge
-  if (cur_vec.x < 0) {
+  if (cur_vec.x() < 0) {
     ray = cur_vec - *dest_vec;
 
     mag = vm_GetMagnitude(&ray);
     ray /= mag;
 
-    diff = (-dest_vec->x) / ray.x;
+    diff = (-dest_vec->x()) / ray.x();
 
     cur_vec = (*dest_vec + (ray * diff)) - (ray / 4);
   }
 
   // Check top edge
-  if (cur_vec.z > terrain_limit) {
+  if (cur_vec.z() > terrain_limit) {
     ray = cur_vec - *dest_vec;
 
     mag = vm_GetMagnitude(&ray);
     ray /= mag;
 
-    diff = (terrain_limit - dest_vec->z) / ray.z;
+    diff = (terrain_limit - dest_vec->z()) / ray.z();
 
     cur_vec = (*dest_vec + (ray * diff)) - (ray / 4);
   }
 
   // Check bottom edge
-  if (cur_vec.z < 0) {
+  if (cur_vec.z() < 0) {
     ray = cur_vec - *dest_vec;
 
     mag = vm_GetMagnitude(&ray);
     ray /= mag;
 
-    diff = (-dest_vec->z) / ray.z;
+    diff = (-dest_vec->z()) / ray.z();
 
     cur_vec = (*dest_vec + (ray * diff)) - (ray / 4);
   }
 
-  if (cur_vec.x > 4095)
-    cur_vec.x = 4095;
-  if (cur_vec.z > 4095)
-    cur_vec.z = 4095;
+  if (cur_vec.x() > 4095)
+    cur_vec.x() = 4095;
+  if (cur_vec.z() > 4095)
+    cur_vec.z() = 4095;
 
   *answer = cur_vec;
 }
 
 // Returns 1 if a src vector can hit dest vector unobstructed, else 0
 int ShootRayFromPoint(vector *src, vector *dest, rad_surface *src_surf, rad_surface *dest_surf) {
-  float dist;
+  scalar dist;
   bool do_backface = 0;
   fvi_info hit_info;
   fvi_query fq;
@@ -355,7 +355,7 @@ int ShootRayFromPoint(vector *src, vector *dest, rad_surface *src_surf, rad_surf
 
   // If this ray is too high, clip it to the ceiling
   if (src_surf->surface_type == ST_SATELLITE) {
-    if (1 || dest->y >= MAX_TERRAIN_HEIGHT) {
+    if (1 || dest->y() >= (scalar)MAX_TERRAIN_HEIGHT) {
       from_satellite = 1;
       // swap the src/dest the variables because we now want to shoot from the ground to the satellite
       rad_surface *temp_surf;
@@ -398,7 +398,7 @@ int ShootRayFromPoint(vector *src, vector *dest, rad_surface *src_surf, rad_surf
   fq.rad = 0.0f;
   fq.flags = FQ_CHECK_OBJS | FQ_IGNORE_NON_LIGHTMAP_OBJECTS | FQ_NO_RELINK | FQ_IGNORE_RENDER_THROUGH_PORTALS;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
 
   int fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -425,7 +425,7 @@ float GetMaxColor(spectra *sp);
 float GetFormFactorForElementAndSatellite(rad_surface *dest_surf, rad_element *dest_element, vector *src_center) {
   vector dest_center;
   vector light_center = *src_center;
-  float form_factor = 0.0;
+  scalar form_factor = 0.0;
 
   if (Ignore_satellites)
     return 0;
@@ -436,7 +436,7 @@ float GetFormFactorForElementAndSatellite(rad_surface *dest_surf, rad_element *d
   for (int j = 0; j < dest_element->num_verts; j++) {
     dest_center = dest_element->verts[j];
     dest_center += (dest_surf->normal / 32.0);
-    float temp_factor = 0;
+    scalar temp_factor = 0;
 
     int hit = 0;
     vector ray = light_center - dest_center;
@@ -503,7 +503,7 @@ void CheckToUpdateSpecularFace(rad_surface *dest_surf, spectra *color, vector *s
   if (Rooms[dest_surf->roomnum].faces[dest_surf->facenum].special_handle == BAD_SPECIAL_FACE_INDEX)
     return;
 
-  if (src_center == NULL)
+  if (src_center == nullptr)
     GetCenterOfSurface(rad_MaxSurface, &light_center);
   else
     light_center = *src_center;
@@ -819,7 +819,7 @@ void CalculateVolumeLightsForRay(float total_sphere_dist, vector *src_center) {
       }
 
       for (int roomnum = 0; roomnum < MAX_VOLUME_ELEMENTS; roomnum++) {
-        if (Volume_elements[roomnum] == NULL)
+        if (Volume_elements[roomnum] == nullptr)
           continue;
         if (check_room[roomnum] == 0)
           continue;
@@ -866,7 +866,7 @@ void CalculateVolumeLightsForRay(float total_sphere_dist, vector *src_center) {
                   subvec /= mag;
                   int hit;
 
-                  float scalar = subvec * rad_MaxSurface->normal;
+                  float scalar = vm_Dot3Product(subvec, rad_MaxSurface->normal);
 
                   if (scalar < 0)
                     continue;
@@ -914,7 +914,7 @@ void CalculateVolumeLightsForRay(float total_sphere_dist, vector *src_center) {
                 subvec /= mag;
                 int hit;
 
-                float scalar = subvec * rad_MaxSurface->normal;
+                float scalar = vm_Dot3Product(subvec, rad_MaxSurface->normal);
 
                 if (scalar < 0)
                   continue;
@@ -972,7 +972,7 @@ void CalculateFormFactorsRaycast() {
     express -= rad_MaxSurface->area;
     sphere_dist = sqrt(express);
     if (sphere_dist > 0)
-      fvi_QuickDistFaceList(rad_MaxSurface->roomnum, &src_center, sphere_dist, NULL, rad_NumSurfaces);
+      fvi_QuickDistFaceList(rad_MaxSurface->roomnum, &src_center, sphere_dist, nullptr, rad_NumSurfaces);
   }
 
   // Do volume lighting
@@ -1098,6 +1098,6 @@ void CalculateFormFactorsRaycast() {
     }
 
     if (rad_MaxSurface->surface_type == ST_ROOM && Calculate_specular_lighting)
-      CheckToUpdateSpecularFace(dest_surf, &Current_max_specular_color, NULL);
+      CheckToUpdateSpecularFace(dest_surf, &Current_max_specular_color, nullptr);
   }
 }

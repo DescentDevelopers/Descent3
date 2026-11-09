@@ -25,7 +25,7 @@
 class CD3Splash : public CDialog {
   // Construction
 public:
-  CD3Splash(CWnd *pParent = NULL); // standard constructor
+  CD3Splash(CWnd *pParent = nullptr); // standard constructor
 
   BOOL Create();
 

@@ -29,7 +29,7 @@
 class CDoorwayDialog : public CKeypadDialog {
   // Construction
 public:
-  CDoorwayDialog(CWnd *pParent = NULL); // standard constructor
+  CDoorwayDialog(CWnd *pParent = nullptr); // standard constructor
   void UpdateKeypad(int mask);
 
   // Dialog Data

@@ -215,7 +215,7 @@ void CMegacellKeypad::UpdateMegaSetView() {
     }
   }
 
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 void CMegacellKeypad::OnFillWithMegacell() { return; }

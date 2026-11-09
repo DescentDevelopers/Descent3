@@ -27,7 +27,7 @@
 class CWorldWeaponsDialog : public CDialog {
   // Construction
 public:
-  CWorldWeaponsDialog(CWnd *pParent = NULL); // standard constructor
+  CWorldWeaponsDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CWorldWeaponsDialog)

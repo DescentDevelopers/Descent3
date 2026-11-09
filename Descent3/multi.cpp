@@ -1834,7 +1834,7 @@ char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id);
 #define MULTI_ASSERT_NOMESSAGE(x)                                                                                      \
   {                                                                                                                    \
     if ((x) == 0) {                                                                                                    \
-      BailOnMultiplayer(NULL);                                                                                         \
+      BailOnMultiplayer(nullptr);                                                                                         \
       return;                                                                                                          \
     }                                                                                                                  \
   }
@@ -1844,7 +1844,7 @@ void BailOnMultiplayer(const char *message) {
   Int3(); // Get Jason
 
   // Show message
-  if (message == NULL)
+  if (message == nullptr)
     ShowProgressScreen(TXT_MULTI_DATACORRUPT);
   else
     ShowProgressScreen(message);
@@ -1855,14 +1855,14 @@ void BailOnMultiplayer(const char *message) {
 
 // Adds the trunctuated position data to an outgoing packet
 void MultiAddPositionData(vector *pos, uint8_t *data, int *count) {
-  MultiAddUshort((pos->x * 16.0), data, count);
-  MultiAddUshort((pos->z * 16.0), data, count);
-  MultiAddFloat(pos->y, data, count);
+  MultiAddUshort((pos->x() * 16.0), data, count);
+  MultiAddUshort((pos->z() * 16.0), data, count);
+  MultiAddFloat(pos->y(), data, count);
 }
 void MultiExtractPositionData(vector *vec, uint8_t *data, int *count) {
-  vec->x = ((float)MultiGetUshort(data, count)) / 16.0;
-  vec->z = ((float)MultiGetUshort(data, count)) / 16.0;
-  vec->y = MultiGetFloat(data, count);
+  vec->x() = ((float)MultiGetUshort(data, count)) / 16.0;
+  vec->z() = ((float)MultiGetUshort(data, count)) / 16.0;
+  vec->y() = MultiGetFloat(data, count);
 }
 
 void MultiSendBadChecksum(int slot) {
@@ -1907,9 +1907,9 @@ int MultiStuffPosition(int slot, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -1935,14 +1935,14 @@ int MultiStuffPosition(int slot, uint8_t *data) {
   vector *vel = &obj->mtype.phys_info.velocity;
   vector *rotvel = &obj->mtype.phys_info.rotvel;
 
-  MultiAddShort((vel->x * 128.0), data, &count);
-  MultiAddShort((vel->y * 128.0), data, &count);
-  MultiAddShort((vel->z * 128.0), data, &count);
+  MultiAddShort((vel->x() * 128.0), data, &count);
+  MultiAddShort((vel->y() * 128.0), data, &count);
+  MultiAddShort((vel->z() * 128.0), data, &count);
 
   if (Netgame.flags & NF_SENDROTVEL) {
-    MultiAddShort(rotvel->x / 4, data, &count);
-    MultiAddShort(rotvel->y / 4, data, &count);
-    MultiAddShort(rotvel->z / 4, data, &count);
+    MultiAddShort(rotvel->x() / 4, data, &count);
+    MultiAddShort(rotvel->y() / 4, data, &count);
+    MultiAddShort(rotvel->z() / 4, data, &count);
 
     MultiAddShort(obj->mtype.phys_info.turnroll, data, &count);
   }
@@ -2002,9 +2002,9 @@ int MultiStuffRobotPosition(uint16_t objectnum, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -2017,9 +2017,9 @@ int MultiStuffRobotPosition(uint16_t objectnum, uint8_t *data) {
 
   vector *vel = &obj->mtype.phys_info.velocity;
 
-  MultiAddShort((vel->x * 128.0), data, &count);
-  MultiAddShort((vel->y * 128.0), data, &count);
-  MultiAddShort((vel->z * 128.0), data, &count);
+  MultiAddShort((vel->x() * 128.0), data, &count);
+  MultiAddShort((vel->y() * 128.0), data, &count);
+  MultiAddShort((vel->z() * 128.0), data, &count);
 
   END_DATA(count, data, size);
   return count;
@@ -2033,7 +2033,7 @@ int MultiSendRobotFireWeapon(uint16_t objectnum, vector *pos, vector *dir, uint1
   uint8_t data[MAX_GAME_DATA_SIZE];
   // Check to make sure we're the server
   if (Netgame.local_role != LR_SERVER) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return 0;
   }
 
@@ -2544,7 +2544,7 @@ void MultiDoPlayer(uint8_t *data) {
 
   // Make sure we have the right object number
   if (objnum != Players[slot].objnum) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return;
   }
 
@@ -2668,8 +2668,8 @@ void MultiDoPlayerEnteredGame(uint8_t *data) {
   // Verify object number
   int objnum = MultiGetShort(data, &count);
 
-  MULTI_ASSERT(objnum == Players[slot].objnum, NULL);
-  MULTI_ASSERT(Objects[objnum].id == slot, NULL);
+  MULTI_ASSERT(objnum == Players[slot].objnum, nullptr);
+  MULTI_ASSERT(Objects[objnum].id == slot, nullptr);
 
   // Get the player's network address
   memcpy(&NetPlayers[slot].addr, data + count, sizeof(network_address));
@@ -2720,7 +2720,7 @@ void MultiDoPlayerEnteredGame(uint8_t *data) {
 // Sends to "slot" and describes player "which"
 // Server only
 void MultiSendPlayerEnteredGame(int which) {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -2847,7 +2847,7 @@ void MultiSendDamagePlayer(int slot, int weapon_id, int type, float amount) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   size_offset = START_DATA(MP_DAMAGE_PLAYER, data, &count, 1);
   MultiAddByte(slot, data, &count);
@@ -2875,14 +2875,14 @@ void MultiDoDamagePlayer(uint8_t *data) {
   uint8_t type = MultiGetByte(data, &count);
   float amount = MultiGetFloat(data, &count);
 
-  ApplyDamageToPlayer(&Objects[Players[slot].objnum], NULL, type, amount, 1, weapon_id);
+  ApplyDamageToPlayer(&Objects[Players[slot].objnum], nullptr, type, amount, 1, weapon_id);
 }
 
 // Makes the passed in player a ghost
 void MultiMakePlayerGhost(int slot) {
   object *obj = &Objects[Players[slot].objnum];
 
-  MULTI_ASSERT(obj->id == slot, NULL); // Get Jason
+  MULTI_ASSERT(obj->id == slot, nullptr); // Get Jason
 
   obj->type = OBJ_GHOST;
   obj->movement_type = MT_NONE;
@@ -2901,7 +2901,7 @@ void MultiMakePlayerGhost(int slot) {
 // Makes the passed in player real (non-ghost)
 void MultiMakePlayerReal(int slot) {
   object *obj = &Objects[Players[slot].objnum];
-  MULTI_ASSERT(obj->id == slot, NULL); // Get Jason
+  MULTI_ASSERT(obj->id == slot, nullptr); // Get Jason
 
   obj->type = OBJ_PLAYER;
 
@@ -2942,7 +2942,7 @@ void MultiDoDonePlayers(uint8_t *data) {
 
 // Server is telling us that it is done sending buildings
 void MultiDoDoneBuildings(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -2953,7 +2953,7 @@ void MultiDoDoneBuildings(uint8_t *data) {
 
 // Server is telling us that it is done sending objects
 void MultiDoDoneObjects(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -2993,7 +2993,7 @@ void MultiDoDoneObjects(uint8_t *data) {
 
 // Server is telling us that it is done sending objects
 void MultiDoDoneWorldStates(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -3009,32 +3009,32 @@ void MultiDoDoneWorldStates(uint8_t *data) {
 
 // Makes an abbrievated version of a matrix
 void MultiMakeMatrix(multi_orientation *dest, matrix *src) {
-  dest->multi_matrix[0] = (src->rvec.x * 32767.0);
-  dest->multi_matrix[1] = (src->rvec.y * 32767.0);
-  dest->multi_matrix[2] = (src->rvec.z * 32767.0);
+  dest->multi_matrix[0] = (src->rvec.x() * 32767.0);
+  dest->multi_matrix[1] = (src->rvec.y() * 32767.0);
+  dest->multi_matrix[2] = (src->rvec.z() * 32767.0);
 
-  dest->multi_matrix[3] = (src->uvec.x * 32767.0);
-  dest->multi_matrix[4] = (src->uvec.y * 32767.0);
-  dest->multi_matrix[5] = (src->uvec.z * 32767.0);
+  dest->multi_matrix[3] = (src->uvec.x() * 32767.0);
+  dest->multi_matrix[4] = (src->uvec.y() * 32767.0);
+  dest->multi_matrix[5] = (src->uvec.z() * 32767.0);
 
-  dest->multi_matrix[6] = (src->fvec.x * 32767.0);
-  dest->multi_matrix[7] = (src->fvec.y * 32767.0);
-  dest->multi_matrix[8] = (src->fvec.z * 32767.0);
+  dest->multi_matrix[6] = (src->fvec.x() * 32767.0);
+  dest->multi_matrix[7] = (src->fvec.y() * 32767.0);
+  dest->multi_matrix[8] = (src->fvec.z() * 32767.0);
 }
 
 // Extracts a matrix from an abbreviated matrix
 void MultiExtractMatrix(matrix *dest, multi_orientation *src) {
-  dest->rvec.x = (float)src->multi_matrix[0] / 32767.0;
-  dest->rvec.y = (float)src->multi_matrix[1] / 32767.0;
-  dest->rvec.z = (float)src->multi_matrix[2] / 32767.0;
+  dest->rvec.x() = (float)src->multi_matrix[0] / 32767.0;
+  dest->rvec.y() = (float)src->multi_matrix[1] / 32767.0;
+  dest->rvec.z() = (float)src->multi_matrix[2] / 32767.0;
 
-  dest->uvec.x = (float)src->multi_matrix[3] / 32767.0;
-  dest->uvec.y = (float)src->multi_matrix[4] / 32767.0;
-  dest->uvec.z = (float)src->multi_matrix[5] / 32767.0;
+  dest->uvec.x() = (float)src->multi_matrix[3] / 32767.0;
+  dest->uvec.y() = (float)src->multi_matrix[4] / 32767.0;
+  dest->uvec.z() = (float)src->multi_matrix[5] / 32767.0;
 
-  dest->fvec.x = (float)src->multi_matrix[6] / 32767.0;
-  dest->fvec.y = (float)src->multi_matrix[7] / 32767.0;
-  dest->fvec.z = (float)src->multi_matrix[8] / 32767.0;
+  dest->fvec.x() = (float)src->multi_matrix[6] / 32767.0;
+  dest->fvec.y() = (float)src->multi_matrix[7] / 32767.0;
+  dest->fvec.z() = (float)src->multi_matrix[8] / 32767.0;
 }
 
 void MultiDoPlayerPos(uint8_t *data) {
@@ -3080,15 +3080,15 @@ void MultiDoPlayerPos(uint8_t *data) {
   //	float dist=vm_VectorDistance (&pos,&obj->pos);
 
   // Get velocity
-  vel.x = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.y = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.z = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.x() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.y() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.z() = ((float)MultiGetShort(data, &count)) / 128.0;
 
   // Get rotational velocity
   if (Netgame.flags & NF_SENDROTVEL) {
-    rotvel.x = MultiGetShort(data, &count) * 4;
-    rotvel.y = MultiGetShort(data, &count) * 4;
-    rotvel.z = MultiGetShort(data, &count) * 4;
+    rotvel.x() = MultiGetShort(data, &count) * 4;
+    rotvel.y() = MultiGetShort(data, &count) * 4;
+    rotvel.z() = MultiGetShort(data, &count) * 4;
 
     turnroll = MultiGetShort(data, &count);
 
@@ -3188,8 +3188,8 @@ void MultiDoPlayerPos(uint8_t *data) {
         pps_player_num = Player_num;
       }
 
-      vector dest_pos = pos + (vel * (1.0 / NetPlayers[pps_player_num].pps));
-      vel = (dest_pos - obj->pos) / (1.0 / NetPlayers[pps_player_num].pps);
+      vector dest_pos = pos + (vel * ((scalar)1.0 / NetPlayers[pps_player_num].pps));
+      vel = (dest_pos - obj->pos) / ((scalar)1.0 / NetPlayers[pps_player_num].pps);
 
       pos = obj->pos;
     }
@@ -3254,9 +3254,9 @@ void MultiDoRobotPos(uint8_t *data) {
   vector vel = {0, 0, 0};
 
   // Get velocity
-  vel.x = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.y = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.z = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.x() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.y() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.z() = ((float)MultiGetShort(data, &count)) / 128.0;
   obj->mtype.phys_info.velocity = vel;
 
   obj->mtype.phys_info.flags &= ~PF_NO_COLLIDE;
@@ -3461,7 +3461,7 @@ void MultiDoReleaseTimeoutMissile(uint8_t *data) {
 
   int pnum = MultiGetByte(data, &count);
 
-  if (Players[pnum].user_timeout_obj != NULL) {
+  if (Players[pnum].user_timeout_obj != nullptr) {
     ReleaseUserTimeoutMissile(pnum);
   }
 
@@ -3475,7 +3475,7 @@ void MultiSendReleaseTimeoutMissile() {
   int count = 0;
   int size_offset;
 
-  ASSERT(Players[Player_num].user_timeout_obj != NULL);
+  ASSERT(Players[Player_num].user_timeout_obj != nullptr);
 
   LOG_DEBUG << "Sending timeout weapon packet!";
 
@@ -3538,7 +3538,7 @@ void MultiDoConnectBail() {
 
 // Some DLL is telling us to end the level!
 void MultiEndLevel() {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
   SetGameState(GAMESTATE_LVLEND);
   PrintDedicatedMessage(TXT_DS_ENDINGLEVEL);
   Multi_bail_ui_menu = true;
@@ -3574,7 +3574,7 @@ void MultiDoLevelEnded(uint8_t *data) {
 
 // Tells all the clients to end the level
 void MultiSendLevelEnded(int success, int next_level) {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -3642,7 +3642,7 @@ void MultiDoLeaveGame(uint8_t *data) {
       char delfile[_MAX_PATH * 2];
       strcpy(delfile, NetPlayers[slot].file_xfer_cfile->name);
       cfclose(NetPlayers[slot].file_xfer_cfile);
-      NetPlayers[slot].file_xfer_cfile = NULL;
+      NetPlayers[slot].file_xfer_cfile = nullptr;
       if (NetPlayers[slot].file_xfer_flags == NETFILE_RECEIVING)
         ddio_DeleteFile(delfile);
     }
@@ -3682,7 +3682,7 @@ void MultiDoServerQuit(uint8_t *data) {
         char delfile[_MAX_PATH * 2];
         strcpy(delfile, NetPlayers[i].file_xfer_cfile->name);
         cfclose(NetPlayers[i].file_xfer_cfile);
-        NetPlayers[i].file_xfer_cfile = NULL;
+        NetPlayers[i].file_xfer_cfile = nullptr;
         if (NetPlayers[i].file_xfer_flags == NETFILE_RECEIVING)
           ddio_DeleteFile(delfile);
       }
@@ -3710,7 +3710,7 @@ void MultiDoDisconnect(uint8_t *data) {
         char delfile[_MAX_PATH * 2];
         strcpy(delfile, NetPlayers[slot].file_xfer_cfile->name);
         cfclose(NetPlayers[slot].file_xfer_cfile);
-        NetPlayers[slot].file_xfer_cfile = NULL;
+        NetPlayers[slot].file_xfer_cfile = nullptr;
         if (NetPlayers[slot].file_xfer_flags == NETFILE_RECEIVING)
           ddio_DeleteFile(delfile);
       }
@@ -3733,7 +3733,7 @@ void MultiDoDisconnect(uint8_t *data) {
 void MultiDoServerRejectedChecksum(uint8_t *data) {
   int count = 0;
 
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   SKIP_HEADER(data, &count);
   ShowProgressScreen(TXT_MLTLEVELNOMATCH);
@@ -3745,7 +3745,7 @@ void MultiDoServerRejectedChecksum(uint8_t *data) {
 void MultiDoJoinResponse(uint8_t *data) {
   int count = 0;
 
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   SKIP_HEADER(data, &count);
 
@@ -3779,7 +3779,7 @@ void MultiDoAskToJoin(uint8_t *data, network_address *from_addr) {
 
   if (Netgame.local_role == LR_SERVER && Multi_accept_state) {
     // First see if this guy is banned
-    if (GameDLLIsAddressBanned(from_addr, NULL)) {
+    if (GameDLLIsAddressBanned(from_addr, nullptr)) {
       MultiAddByte(JOIN_ANSWER_REJECTED, outdata, &count);
 
     } else {
@@ -4127,6 +4127,7 @@ void MultiDoBlowupBuilding(uint8_t *data) {
     return;
   }
 
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   ps_srand(seed);
   KillObject(&Objects[hit_objnum], &Objects[killer_objnum], damage);
 
@@ -4181,15 +4182,15 @@ void MultiDoWorldStates(uint8_t *data) {
       // Room wind
 
       int16_t roomnum = MultiGetShort(data, &count);
-      Rooms[roomnum].wind.x = MultiGetFloat(data, &count);
-      Rooms[roomnum].wind.y = MultiGetFloat(data, &count);
-      Rooms[roomnum].wind.z = MultiGetFloat(data, &count);
+      Rooms[roomnum].wind.x() = MultiGetFloat(data, &count);
+      Rooms[roomnum].wind.y() = MultiGetFloat(data, &count);
+      Rooms[roomnum].wind.z() = MultiGetFloat(data, &count);
 
       LOG_DEBUG.printf("Got room wind packet! Room=%d wind=%f %f %f",
               roomnum,
-              Rooms[roomnum].wind.x,
-              Rooms[roomnum].wind.y,
-              Rooms[roomnum].wind.z);
+              Rooms[roomnum].wind.x(),
+              Rooms[roomnum].wind.y(),
+              Rooms[roomnum].wind.z());
       break;
     }
     case WS_ROOM_FOG: {
@@ -5044,12 +5045,12 @@ void MultiDoExecuteDLL(uint8_t *data) {
     switch (eventnum) {
     case EVT_CLIENT_GAMEWALLCOLLIDE:
     case EVT_GAMEWALLCOLLIDE:
-      DLLInfo.collide_info.point.x = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.point.y = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.point.z = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.x = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.y = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.z = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.x() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.y() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.z() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.x() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.y() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.z() = MultiGetFloat(data, &count);
       DLLInfo.collide_info.hitspeed = MultiGetFloat(data, &count);
       DLLInfo.collide_info.hit_dot = MultiGetFloat(data, &count);
       DLLInfo.collide_info.hitseg = MultiGetInt(data, &count);
@@ -5057,12 +5058,12 @@ void MultiDoExecuteDLL(uint8_t *data) {
       break;
     case EVT_CLIENT_GAMECOLLIDE:
     case EVT_GAMECOLLIDE:
-      DLLInfo.collide_info.point.x = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.point.y = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.point.z = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.x = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.y = MultiGetFloat(data, &count);
-      DLLInfo.collide_info.normal.z = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.x() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.y() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.point.z() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.x() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.y() = MultiGetFloat(data, &count);
+      DLLInfo.collide_info.normal.z() = MultiGetFloat(data, &count);
       break;
     case EVT_GAMEOBJCHANGESEG:
     case EVT_CLIENT_GAMEOBJCHANGESEG:
@@ -5188,7 +5189,7 @@ void MultiDoObject(uint8_t *data) {
   }
 
   vector pos, vel;
-  matrix orient, *orientp = NULL;
+  matrix orient, *orientp = nullptr;
 
   // Extract position
   // memcpy (&pos,&data[count],sizeof(vector));
@@ -5349,9 +5350,9 @@ void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record) {
     angvec angs;
     vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-    MultiAddShort(angs.p, data, &count);
-    MultiAddShort(angs.h, data, &count);
-    MultiAddShort(angs.b, data, &count);
+    MultiAddShort(angs.p(), data, &count);
+    MultiAddShort(angs.h(), data, &count);
+    MultiAddShort(angs.b(), data, &count);
   }
 
   // Send movement type
@@ -5404,7 +5405,7 @@ void MultiDoGuidedInfo(uint8_t *data) {
   uint8_t slot = MultiGetByte(data, &count);
   uint8_t release = MultiGetByte(data, &count);
 
-  if (Players[slot].guided_obj == NULL)
+  if (Players[slot].guided_obj == nullptr)
     return;
 
   object *obj = Players[slot].guided_obj;
@@ -5433,9 +5434,9 @@ void MultiDoGuidedInfo(uint8_t *data) {
 
   // Get velocity
   vector vel;
-  vel.x = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.y = ((float)MultiGetShort(data, &count)) / 128.0;
-  vel.z = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.x() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.y() = ((float)MultiGetShort(data, &count)) / 128.0;
+  vel.z() = ((float)MultiGetShort(data, &count)) / 128.0;
 
   obj->mtype.phys_info.velocity = vel;
 
@@ -5451,7 +5452,7 @@ int MultiStuffGuidedInfo(int slot, uint8_t *data) {
   int size_offset;
   object *obj = Players[slot].guided_obj;
 
-  if (Players[slot].guided_obj == NULL)
+  if (Players[slot].guided_obj == nullptr)
     return 0;
 
   size_offset = START_DATA(MP_GUIDED_INFO, data, &count);
@@ -5466,9 +5467,9 @@ int MultiStuffGuidedInfo(int slot, uint8_t *data) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
 
@@ -5482,9 +5483,9 @@ int MultiStuffGuidedInfo(int slot, uint8_t *data) {
   // Do velocity
   vector *vel = &obj->mtype.phys_info.velocity;
 
-  MultiAddShort(vel->x * 128.0, data, &count);
-  MultiAddShort(vel->y * 128.0, data, &count);
-  MultiAddShort(vel->z * 128.0, data, &count);
+  MultiAddShort(vel->x() * 128.0, data, &count);
+  MultiAddShort(vel->y() * 128.0, data, &count);
+  MultiAddShort(vel->z() * 128.0, data, &count);
 
   END_DATA(count, data, size_offset);
 
@@ -5542,9 +5543,9 @@ void MultiSendMissileRelease(int slot, bool is_guided) {
   if (!(NetPlayers[slot].flags & NPF_CONNECTED) || NetPlayers[slot].sequence != NETSEQ_PLAYING)
     return; // hey this player isn't in the game
 
-  if (is_guided && Players[slot].guided_obj == NULL)
+  if (is_guided && Players[slot].guided_obj == nullptr)
     return; // no guided missile for this player
-  if (!is_guided && Players[slot].user_timeout_obj == NULL)
+  if (!is_guided && Players[slot].user_timeout_obj == nullptr)
     return; // no user timeout object
 
   // everything looks ok, fire off this packet
@@ -5751,7 +5752,7 @@ void MultiDoPowerupReposition(uint8_t *data) {
   if (terrain)
     roomnum = MAKE_ROOMNUM(roomnum);
 
-  obj->mtype.phys_info.velocity = Zero_vector;
+  obj->mtype.phys_info.velocity = vector{};
 
   ObjSetPos(obj, &pos, roomnum, &obj->orient, true);
 }
@@ -5916,7 +5917,7 @@ void MultiDoAdditionalDamage(uint8_t *data) {
       Objects[Players[slot].objnum].shields = MAX_SHIELDS;
   } else // take damage
   {
-    ApplyDamageToPlayer(&Objects[Players[slot].objnum], NULL, type, amount, 1);
+    ApplyDamageToPlayer(&Objects[Players[slot].objnum], nullptr, type, amount, 1);
   }
 }
 
@@ -6274,7 +6275,7 @@ void MultiSendRequestPeerDamage(object *killer, int weapon_id, int damage_type, 
   MultiAddByte(Player_num, data, &count);
 
   // Add killer info
-  if (killer == NULL || Local_object_list[killer - Objects] == 65535 || killer == &Objects[Players[Player_num].objnum])
+  if (killer == nullptr || Local_object_list[killer - Objects] == 65535 || killer == &Objects[Players[Player_num].objnum])
     MultiAddUshort(65535, data, &count);
   else
     MultiAddUshort(Local_object_list[killer - Objects], data, &count);
@@ -6643,7 +6644,7 @@ void MultiPaintGoalRooms(int *texcolors) {
       Rooms[roomnum].room_change_flags |= RCF_TEXTURE;
 
       int tex;
-      if (texcolors == NULL) {
+      if (texcolors == nullptr) {
         tex = FindTextureName(IGNORE_TABLE(tnames[i]));
         if (tex == -1)
           tex = 0;
@@ -6690,7 +6691,7 @@ void MultiSendKillObject(object *hit_obj, object *killer, float damage, int deat
   hit_objnum = OBJNUM(hit_obj);
   // Get the killer objnum
 
-  if (killer != NULL)
+  if (killer != nullptr)
     killer_objnum = OBJNUM(killer);
   else
     killer_objnum = 65535;
@@ -6740,14 +6741,16 @@ void MultiDoRobotExplode(uint8_t *data) {
   if (killer_objnum != 65535) {
     if ((Objects[killer_objnum].type != OBJ_NONE) && (Objects[hit_objnum].type != OBJ_NONE)) {
       Objects[hit_objnum].flags |= OF_SERVER_SAYS_DELETE;
+      // legacy re-seed outside `-randseed` allowed: multiplayer only
       ps_srand(seed);
       KillObject(&Objects[hit_objnum], &Objects[killer_objnum], damage, death_flags, delay);
     }
   } else {
     if ((Objects[hit_objnum].type != OBJ_NONE)) {
       Objects[hit_objnum].flags |= OF_SERVER_SAYS_DELETE;
+      // legacy re-seed outside `-randseed` allowed: multiplayer only
       ps_srand(seed);
-      KillObject(&Objects[hit_objnum], NULL, damage, death_flags, delay);
+      KillObject(&Objects[hit_objnum], nullptr, damage, death_flags, delay);
     }
   }
 }
@@ -6834,7 +6837,7 @@ int MultiStuffObjAnimUpdate(uint16_t objnum, uint8_t *data) {
   int size = 0;
 
   if (Netgame.local_role != LR_SERVER) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return 0;
   }
 
@@ -7016,7 +7019,7 @@ int MultiStuffTurretUpdate(uint16_t objnum, uint8_t *data) {
   int size = 0;
   multi_turret multi_turret_info;
   if (Netgame.local_role != LR_SERVER) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return 0;
   }
 
@@ -7346,7 +7349,7 @@ int MultiStuffObjWBAnimUpdate(uint16_t objnum, uint8_t *data) {
   // multi_anim multi_anim_info;
 
   if (Netgame.local_role != LR_SERVER) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return 0;
   }
 
@@ -7569,7 +7572,7 @@ void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who) {
     nw_SendReliable(NetPlayers[who].reliable_socket, data, count);
     NetPlayers[who].file_xfer_flags = NETFILE_ASKING;
     NetPlayers[who].file_xfer_pos = 0;
-    NetPlayers[who].file_xfer_cfile = NULL;
+    NetPlayers[who].file_xfer_cfile = nullptr;
     NetPlayers[who].file_xfer_who = file_who;
   } else {
     // If we are a client, ask the server for a file
@@ -7577,7 +7580,7 @@ void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who) {
     nw_SendReliable(NetPlayers[Player_num].reliable_socket, data, count);
     NetPlayers[file_who].file_xfer_flags = NETFILE_ASKING;
     NetPlayers[file_who].file_xfer_pos = 0;
-    NetPlayers[file_who].file_xfer_cfile = NULL;
+    NetPlayers[file_who].file_xfer_cfile = nullptr;
     NetPlayers[file_who].file_xfer_who = file_who;
   }
 }
@@ -7631,7 +7634,7 @@ void DenyFile(int playernum, int filenum, int file_who) {
   MultiAddUshort(Player_num, outdata, &count);
   MultiAddUshort(file_who, outdata, &count);
   END_DATA(count, outdata, size);
-  NetPlayers[playernum].file_xfer_cfile = NULL;
+  NetPlayers[playernum].file_xfer_cfile = nullptr;
   if (Netgame.local_role == LR_SERVER) {
     nw_SendReliable(NetPlayers[playernum].reliable_socket, outdata, count);
   } else {
@@ -7653,7 +7656,7 @@ void MultiCancelFile(int playernum, int filenum, int file_who) {
   MultiAddUshort(filenum, outdata, &count);
   MultiAddUshort(file_who, outdata, &count);
   END_DATA(count, outdata, size);
-  NetPlayers[playernum].file_xfer_cfile = NULL;
+  NetPlayers[playernum].file_xfer_cfile = nullptr;
   NetPlayers[playernum].file_xfer_pos = 0;
   NetPlayers[playernum].file_xfer_flags = NETFILE_NONE;
   if (Netgame.local_role == LR_SERVER) {
@@ -7729,7 +7732,7 @@ void MultiDoFileData(uint8_t *data) {
     if (NetPlayers[playernum].file_xfer_pos >= total_len) {
       // We got the whole thing baby!
       cfclose(NetPlayers[playernum].file_xfer_cfile);
-      NetPlayers[playernum].file_xfer_cfile = NULL;
+      NetPlayers[playernum].file_xfer_cfile = nullptr;
       NetPlayers[playernum].file_xfer_pos = 0;
       DoNextPlayerFile(playernum);
       LOG_DEBUG << "Finished downloading file!";
@@ -7799,7 +7802,7 @@ void SendDataChunk(int playernum) {
 
   if (done) {
     cfclose(NetPlayers[playernum].file_xfer_cfile);
-    NetPlayers[playernum].file_xfer_cfile = NULL;
+    NetPlayers[playernum].file_xfer_cfile = nullptr;
     NetPlayers[playernum].file_xfer_pos = 0;
     NetPlayers[playernum].file_xfer_flags = NETFILE_NONE;
   }
@@ -7838,10 +7841,10 @@ void MultiDoFileCancelled(uint8_t *data) {
     char delfile[_MAX_PATH * 2];
     strcpy(delfile, NetPlayers[filewho].file_xfer_cfile->name);
     cfclose(NetPlayers[filewho].file_xfer_cfile);
-    NetPlayers[filewho].file_xfer_cfile = NULL;
+    NetPlayers[filewho].file_xfer_cfile = nullptr;
     ddio_DeleteFile(delfile);
   }
-  NetPlayers[filewho].file_xfer_cfile = NULL;
+  NetPlayers[filewho].file_xfer_cfile = nullptr;
   NetPlayers[filewho].file_xfer_pos = 0;
   DoNextPlayerFile(filewho);
 }
@@ -7998,23 +8001,23 @@ char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
     break;
   case NETFILE_ID_SHIP_TEX:
     if (NetPlayers[playernum].ship_logo[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "graphics", NetPlayers[playernum].ship_logo, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "graphics", NetPlayers[playernum].ship_logo, nullptr);
     break;
   case NETFILE_ID_VOICE_TAUNT1:
     if (NetPlayers[playernum].voice_taunt1[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt1, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt1, nullptr);
     break;
   case NETFILE_ID_VOICE_TAUNT2:
     if (NetPlayers[playernum].voice_taunt2[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt2, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt2, nullptr);
     break;
   case NETFILE_ID_VOICE_TAUNT3:
     if (NetPlayers[playernum].voice_taunt3[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt3, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt3, nullptr);
     break;
   case NETFILE_ID_VOICE_TAUNT4:
     if (NetPlayers[playernum].voice_taunt4[0])
-      ddio_MakePath(rval, cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt4, NULL);
+      ddio_MakePath(rval, PATH_TO_CSTR(cf_GetWritableBaseDirectory()), "custom", "sounds", NetPlayers[playernum].voice_taunt4, nullptr);
     break;
   default:
     LOG_FATAL.printf("Unknown id (%d) passed to GetFileNameFromPlayerAndID()", id);
@@ -8604,9 +8607,9 @@ void MultiSendPermissionToFire(int pnum) {
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   // Do roomnumber and terrain flag
   MultiAddShort(CELLNUM(obj->roomnum), data, &count);
@@ -8864,13 +8867,13 @@ void MultiSendAdjustPosition(int slot, float timestamp) {
   size_offset = START_DATA(MP_ADJUST_POSITION, data, &count);
   MultiAddFloat(timestamp, data, &count);
 
-  MultiAddFloat(obj->pos.x, data, &count);
-  MultiAddFloat(obj->pos.y, data, &count);
-  MultiAddFloat(obj->pos.z, data, &count);
+  MultiAddFloat(obj->pos.x(), data, &count);
+  MultiAddFloat(obj->pos.y(), data, &count);
+  MultiAddFloat(obj->pos.z(), data, &count);
 
-  MultiAddFloat(obj->mtype.phys_info.velocity.x, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.velocity.y, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.velocity.z, data, &count);
+  MultiAddFloat(obj->mtype.phys_info.velocity.x(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.velocity.y(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.velocity.z(), data, &count);
 
   MultiAddInt(obj->roomnum, data, &count);
 
@@ -8942,8 +8945,8 @@ void MultiDoRequestToMove(uint8_t *data) {
 
   do_physics_sim(obj);
 
-  obj->mtype.phys_info.thrust = Zero_vector;
-  obj->mtype.phys_info.rotthrust = Zero_vector;
+  obj->mtype.phys_info.thrust = vector{};
+  obj->mtype.phys_info.rotthrust = vector{};
   obj->orient = orient;
 
   bool client_error = 0;
@@ -8976,27 +8979,27 @@ int MultiStuffRequestToMove(uint8_t *data) {
   // Add timestamp
   MultiAddFloat(Gametime, data, &count);
 
-  MultiAddFloat(obj->pos.x, data, &count);
-  MultiAddFloat(obj->pos.y, data, &count);
-  MultiAddFloat(obj->pos.z, data, &count);
+  MultiAddFloat(obj->pos.x(), data, &count);
+  MultiAddFloat(obj->pos.y(), data, &count);
+  MultiAddFloat(obj->pos.z(), data, &count);
 
   // Do acceleration
-  MultiAddFloat(obj->mtype.phys_info.thrust.x, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.thrust.y, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.thrust.z, data, &count);
+  MultiAddFloat(obj->mtype.phys_info.thrust.x(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.thrust.y(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.thrust.z(), data, &count);
 
   // Do rotational acceleration
-  MultiAddFloat(obj->mtype.phys_info.rotthrust.x, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.rotthrust.y, data, &count);
-  MultiAddFloat(obj->mtype.phys_info.rotthrust.z, data, &count);
+  MultiAddFloat(obj->mtype.phys_info.rotthrust.x(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.rotthrust.y(), data, &count);
+  MultiAddFloat(obj->mtype.phys_info.rotthrust.z(), data, &count);
 
   // Do orientation
   angvec angs;
   vm_ExtractAnglesFromMatrix(&angs, &obj->orient);
 
-  MultiAddShort(angs.p, data, &count);
-  MultiAddShort(angs.h, data, &count);
-  MultiAddShort(angs.b, data, &count);
+  MultiAddShort(angs.p(), data, &count);
+  MultiAddShort(angs.h(), data, &count);
+  MultiAddShort(angs.b(), data, &count);
 
   END_DATA(count, data, size_offset);
 
@@ -9232,7 +9235,7 @@ void MultiClearGuidebot(int slot) {
   }
 
   // BLACKPYRO
-  int objnum = ObjCreate(OBJ_ROBOT, ROBOT_GUIDEBOT, Player_object->roomnum, &Player_object->pos, NULL, parent_handle);
+  int objnum = ObjCreate(OBJ_ROBOT, ROBOT_GUIDEBOT, Player_object->roomnum, &Player_object->pos, nullptr, parent_handle);
 
   ASSERT(objnum != -1);
   if (objnum == -1)
@@ -9308,12 +9311,12 @@ void DoReqPlayerList(network_address *addr) {
   nw_Send(addr, outdata, count, 0);
 }
 
-char *Multi_recieved_player_list = NULL;
+char *Multi_recieved_player_list = nullptr;
 bool Multi_got_player_list = false;
 
 void DoPlayerListData(uint8_t *data, int len) {
   int count = 0;
-  if (Multi_recieved_player_list == NULL) {
+  if (Multi_recieved_player_list == nullptr) {
     LOG_DEBUG << "Received a player list packet when we weren't expecting one. Ignoring.";
     return;
   }

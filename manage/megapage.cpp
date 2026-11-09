@@ -84,8 +84,8 @@
 // Given an open file pointer and a megacell_page struct, writes that megacell page out
 void mng_WriteMegacellPage(CFILE *outfile, mngs_megacell_page *megacellpage) {
   int i;
-  ASSERT(outfile != NULL);
-  ASSERT(megacellpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(megacellpage != nullptr);
 
   cf_WriteByte(outfile, PAGETYPE_MEGACELL);
 
@@ -113,8 +113,8 @@ void mng_WriteMegacellPage(CFILE *outfile, mngs_megacell_page *megacellpage) {
 // Given an open file pointer and a megacell_page struct, writes that megacell page out
 void mng_WriteNewMegacellPage(CFILE *outfile, mngs_megacell_page *megacellpage) {
   int i;
-  ASSERT(outfile != NULL);
-  ASSERT(megacellpage != NULL);
+  ASSERT(outfile != nullptr);
+  ASSERT(megacellpage != nullptr);
   int offset = StartManagePage(outfile, PAGETYPE_MEGACELL);
   cf_WriteShort(outfile, MEGACELL_VERSION);
 
@@ -136,7 +136,7 @@ int mng_ReadMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage) {
   int i, temp;
   if (!Old_table_method)
     return mng_ReadNewMegacellPage(infile, megacellpage);
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   memset(megacellpage, 0, sizeof(mngs_megacell_page));
   while (!done) {
     // Read in command byte then read in the length of that commands data
@@ -174,7 +174,7 @@ int mng_ReadMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage) {
 // Reads a megacell page from an open file.  Returns 0 on error.
 int mng_ReadNewMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage) {
   int i;
-  ASSERT(infile != NULL);
+  ASSERT(infile != nullptr);
   memset(megacellpage, 0, sizeof(mngs_megacell_page));
   /* int version = */ cf_ReadShort(infile);
 

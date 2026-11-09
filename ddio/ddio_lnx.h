@@ -26,6 +26,15 @@
 
 #include "application.h"
 
+union SDL_Event;
+
 extern oeLnxApplication *Lnx_app_obj;
+
+// SDL event handlers called from ddio_Frame()
+void sdlKeyEvent(const SDL_Event *event);
+void sdlMouseButtonUpEvent(const SDL_Event *event);
+void sdlMouseButtonDownEvent(const SDL_Event *event);
+void sdlMouseWheelEvent(const SDL_Event *event);
+void sdlMouseMotionEvent(const SDL_Event *event);
 
 #endif
