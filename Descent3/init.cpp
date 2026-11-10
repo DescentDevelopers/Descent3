@@ -1476,7 +1476,7 @@ void InitIOSystems(bool editor) {
       std::filesystem::path found = cf_LocatePathCaseInsensitiveHelper(dir.filename(), dir.parent_path());
       return found.empty() ? found : std::filesystem::canonical(found);
     } catch (const std::filesystem::filesystem_error &e) {
-      LOG_DEBUG << "Skipping data directory " << dir << ": " << e.what();
+      LOG_WARNING << "Skipping data directory " << dir << ": " << e.what();
       return {};
     }
   };
