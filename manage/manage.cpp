@@ -440,6 +440,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 
 #include "chrono_timer.h"
 #include "descent.h"
@@ -500,7 +501,7 @@ bool Use_old_update_method = false;
 char *TablefileNameOverride = nullptr;
 // Only valid when first starting the editor
 #define MAX_LOCKLIST_ELEMENTS 1000
-mngs_Pagelock *LockList;
+std::unique_ptr<mngs_Pagelock[]> LockList;
 int Num_locklist, Starting_editor = 0, Loading_locals = 0, Fast_load_trick = 0;
 #define PRIMTYPE_OOF 0
 #define PRIMTYPE_OGF 1
@@ -519,7 +520,7 @@ struct old_file {
 };
 #define MAX_OLDFILE_ELEMENTS 10000
 int Num_old_files = 0;
-old_file *OldFiles;
+std::unique_ptr<old_file[]> OldFiles;
 const char *PageNames[] = {"Unknown",     "Texture", "Weapon",   "Robot", "Powerup",        "Door",
                            "Player ship", "Sound",   "Megacell", "Files", "Generic objects"};
 #ifndef RELEASE
@@ -626,11 +627,10 @@ int mng_InitTableFiles() {
 // Loads our tables
 int mng_LoadTableFiles(int show_progress) {
   if (Network_up) {
-    LockList = mem_rmalloc<mngs_Pagelock>(MAX_LOCKLIST_ELEMENTS);
-    Num_locklist = mng_GetListOfLocks(LockList, MAX_LOCKLIST_ELEMENTS, TableUser);
-    OldFiles = mem_rmalloc<old_file>(MAX_OLDFILE_ELEMENTS);
+    LockList = std::make_unique<mngs_Pagelock[]>(MAX_LOCKLIST_ELEMENTS);
+    Num_locklist = mng_GetListOfLocks(LockList.get(), MAX_LOCKLIST_ELEMENTS, TableUser);
+    OldFiles = std::make_unique<old_file[]>(MAX_OLDFILE_ELEMENTS);
     Num_old_files = 0;
-    ASSERT(OldFiles);
 #if defined(WIN32)
     if (TableTimeThreshold.dwHighDateTime != -1)
       BuildOldFileList(TableTimeThreshold);
@@ -652,8 +652,8 @@ int mng_LoadTableFiles(int show_progress) {
     Starting_editor = 0;
     Num_locklist = 0;
     Num_old_files = 0;
-    mem_free(OldFiles);
-    mem_free(LockList);
+    OldFiles.reset();
+    LockList.reset();
 #ifndef RELEASE
 #if defined(WIN32)
     remove("c:\\edload");
@@ -1469,7 +1469,7 @@ void mng_TransferPages() {
     Int3();
     return;
   }
-  auto local_tracklocks = mem_rmalloc<mngs_track_lock>(5000);
+  auto local_tracklocks = std::make_unique<mngs_track_lock[]>(5000);
   // Do textures
   int done = 0;
   while (!done) {
@@ -1581,7 +1581,6 @@ void mng_TransferPages() {
   mng_EraseLocker();
   LOG_INFO << "Done transferring pages...good luck!";
 done:;
-  mem_free(local_tracklocks);
 }
 // #define DELETING_PAGELOCKS	1
 // #define CLEANING_PAGELOCKS	1
@@ -2062,14 +2061,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     return 0;
   }
   // Allocate memory for copying
-  uint8_t *copybuffer = mem_rmalloc<uint8_t>(COPYBUFFER_SIZE);
-  if (!copybuffer) {
-    LOG_ERROR.printf("Couldn't allocate memory to replace page %s!", srcname);
-    cfclose(infile);
-    cfclose(outfile);
-    Int3();
-    return 0;
-  }
+  auto copybuffer = std::make_unique<uint8_t[]>(COPYBUFFER_SIZE);
   while (!done) {
     if (cfeof(infile)) {
       done = 1;
@@ -2081,11 +2073,11 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     if (pagetype != dest_pagetype) {
       ASSERT(len < COPYBUFFER_SIZE);
 
-      cf_ReadBytes(copybuffer, len - 4, infile);
+      cf_ReadBytes(copybuffer.get(), len - 4, infile);
       cf_WriteByte(outfile, pagetype);
       cf_WriteInt(outfile, len);
       if (len - 4 > 0)
-        cf_WriteBytes(copybuffer, len - 4, outfile);
+        cf_WriteBytes(copybuffer.get(), len - 4, outfile);
 
       continue;
     }
@@ -2192,7 +2184,6 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     LOG_DEBUG << "New page added.";
   cfclose(infile);
   cfclose(outfile);
-  mem_free(copybuffer);
   if (local) {
     if (!SwitcherooFiles(LocalTableFilename, LocalTempTableFilename))
       return 0;
@@ -2232,14 +2223,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
     return 0;
   }
   // Allocate memory for copying
-  uint8_t *copybuffer = mem_rmalloc<uint8_t>(COPYBUFFER_SIZE);
-  if (!copybuffer) {
-    LOG_ERROR << "Couldn't allocate memory to delete page!";
-    cfclose(infile);
-    cfclose(outfile);
-    Int3();
-    return 0;
-  }
+  auto copybuffer = std::make_unique<uint8_t[]>(COPYBUFFER_SIZE);
   while (!done) {
     if (cfeof(infile)) {
       done = 1;
@@ -2250,11 +2234,11 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
     if (pagetype != dest_pagetype) {
       ASSERT(len < COPYBUFFER_SIZE);
 
-      cf_ReadBytes(copybuffer, len - 4, infile);
+      cf_ReadBytes(copybuffer.get(), len - 4, infile);
       cf_WriteByte(outfile, pagetype);
       cf_WriteInt(outfile, len);
       if (len - 4 > 0)
-        cf_WriteBytes(copybuffer, len - 4, outfile);
+        cf_WriteBytes(copybuffer.get(), len - 4, outfile);
 
       continue;
     }
@@ -2344,7 +2328,6 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
   }
   cfclose(infile);
   cfclose(outfile);
-  mem_free(copybuffer);
   // Now, remove our table file and rename the temp file to be the table file
   if (local) {
     if (!SwitcherooFiles(LocalTableFilename, LocalTempTableFilename))
@@ -2715,8 +2698,7 @@ void mng_ClearAddonTables() {
 
     if (AddOnDataTables[count - 1].Addon_tracklocks) {
       mng_PopAddonPages();
-      mem_free(AddOnDataTables[count - 1].Addon_tracklocks);
-      AddOnDataTables[count - 1].Addon_tracklocks = nullptr;
+      AddOnDataTables[count - 1].Addon_tracklocks.reset();
       AddOnDataTables[count - 1].Num_addon_tracklocks = 0;
     }
 
@@ -2735,11 +2717,8 @@ bool mng_SetAddonTable(const char *name) {
     return false;
 
   strcpy(AddOnDataTables[Num_addon_tables].AddOnTableFilename, name);
-  AddOnDataTables[Num_addon_tables].Addon_tracklocks =
-      mem_rmalloc<mngs_track_lock>(MAX_ADDON_TRACKLOCKS);
+  AddOnDataTables[Num_addon_tables].Addon_tracklocks = std::make_unique<mngs_track_lock[]>(MAX_ADDON_TRACKLOCKS);
   AddOnDataTables[Num_addon_tables].Num_addon_tracklocks = 0;
-  ASSERT(AddOnDataTables[Num_addon_tables].Addon_tracklocks);
-  memset(AddOnDataTables[Num_addon_tables].Addon_tracklocks, 0, MAX_ADDON_TRACKLOCKS * sizeof(mngs_track_lock));
 
   Num_addon_tables++;
   return true;

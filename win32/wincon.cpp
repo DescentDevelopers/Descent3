@@ -68,6 +68,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <memory>
 #include <windows.h>
 
 #include "Application.h"
@@ -78,7 +79,7 @@
 
 static bool Con_init = false;
 static bool Con_newline = false;
-static char *Con_buffer = nullptr;
+static std::unique_ptr<char[]> Con_buffer;
 static int Con_row, Con_col;
 static char Con_read_buf[CON_SCROLL_COLS + 4];
 static char Con_inp_buf[CON_SCROLL_COLS + 4], Con_inp_pos = 0;
@@ -223,11 +224,10 @@ void con_Create(HWND hWnd, LPCREATESTRUCT lpcs) {
   // create console region
   Con_row = 0;
   Con_col = 0;
-  Con_buffer = new char[CON_SCROLL_ROWS * (CON_SCROLL_COLS + 1)];
+  Con_buffer = std::make_unique<char[]>(CON_SCROLL_ROWS * (CON_SCROLL_COLS + 1));
   Con_read_buf[0] = 0;
   Con_inp_pos = 0;
   memset(Con_inp_buf, 0, sizeof(Con_inp_buf));
-  memset(Con_buffer, 0, CON_SCROLL_ROWS * (CON_SCROLL_COLS + 1));
   memset(Con_last_command, 0, sizeof(Con_last_command));
 
   con_Puts("Outrage PC Console v1.0\n");
@@ -282,8 +282,7 @@ void con_Paint(HWND hWnd) {
 }
 
 void con_Destroy(HWND hWnd) {
-  if (Con_buffer)
-    delete[] Con_buffer;
+  Con_buffer.reset();
 
   hConWnd = nullptr;
 }

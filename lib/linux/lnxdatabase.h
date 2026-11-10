@@ -25,6 +25,7 @@
 #ifndef LINUXDATABASE
 #define LINUXDATABASE
 
+#include <memory>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,7 +41,7 @@ class CRegistry;
 class oeLnxAppDatabase : public oeAppDatabase {
 
 protected:
-  CRegistry *database;
+  std::unique_ptr<CRegistry> database;
 
 public:
   oeLnxAppDatabase();
