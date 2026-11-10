@@ -63,14 +63,15 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <cstring>
+#include <filesystem>
+
 #include "gamedll_header.h"
-#include <string.h>
 #include "idmfc.h"
 #include "Hoard.h"
 #include "hoardstr.h"
 #include "hoardaux.h"
-
-#include <algorithm>
 
 IDMFC *DMFCBase = nullptr;
 static IDmfcStats *dstat = nullptr;
@@ -130,7 +131,7 @@ static void DisplayWelcomeMessage(int player_num);
 static void DoBallsEffect(int i, int count);
 static void ReceiveHoardInv(uint8_t *data);
 static void SendHoardInv(int playernum);
-static void SaveStatsToFile(const char *filename);
+static void SaveStatsToFile(const std::filesystem::path &filename);
 static void ReceiveGameConfig(uint8_t *data);
 static void OnClientPlayerEntersGame(int player_num);
 
@@ -1028,7 +1029,7 @@ void OnPLRInterval(void) {
 quick_exit:;
 }
 
-void SaveStatsToFile(const char *filename) {
+void SaveStatsToFile(const std::filesystem::path &filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
@@ -1203,21 +1204,18 @@ void SaveStatsToFile(const char *filename) {
 }
 
 #define ROOTFILENAME "Hoard"
-void OnSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
-void OnLevelEndSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, true);
+void OnLevelEndSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, true);
   SaveStatsToFile(filename);
 }
 
-void OnDisconnectSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnDisconnectSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 

@@ -14,7 +14,6 @@ target_link_libraries(music
   ddebug
   ddio
   logger
-  mem
   sndlib
   stream_audio
 )

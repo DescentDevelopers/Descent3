@@ -11,7 +11,6 @@ target_link_libraries(model PRIVATE
   cfile
   ddebug
   logger
-  mem
   misc
   physics
 )

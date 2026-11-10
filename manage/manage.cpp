@@ -470,19 +470,18 @@
 int Old_table_method = 0;
 void mng_WriteNewUnknownPage(CFILE *outfile);
 //	This is for levels
-char LocalLevelsDir[TABLE_NAME_LEN];
+std::filesystem::path LocalLevelsDir;
 //	This is for pages
-std::filesystem::path TableLockFilename;
-char TableFilename[TABLE_NAME_LEN];
-char TempTableLockFilename[TABLE_NAME_LEN], TempTableFilename[TABLE_NAME_LEN];
-char LocalTableFilename[TABLE_NAME_LEN], LocalTempTableFilename[TABLE_NAME_LEN];
-char BackupTableFilename[TABLE_NAME_LEN], BackupLockFilename[TABLE_NAME_LEN];
+std::filesystem::path TableLockFilename, TableFilename;
+std::filesystem::path TempTableLockFilename, TempTableFilename;
+std::filesystem::path LocalTableFilename, LocalTempTableFilename;
+std::filesystem::path BackupTableFilename, BackupLockFilename;
 std::filesystem::path ManageGraphicsDir, LocalManageGraphicsDir;
 std::filesystem::path LocalModelsDir, NetModelsDir;
 std::filesystem::path LocalSoundsDir, NetSoundsDir;
 std::filesystem::path LocalRoomsDir, NetRoomsDir;
 std::filesystem::path LocalBriefingDir, NetBriefingDir;
-char LocalScriptDir[TABLE_NAME_LEN], NetScriptDir[TABLE_NAME_LEN];
+std::filesystem::path LocalScriptDir, NetScriptDir;
 std::filesystem::path LocalMiscDir, NetMiscDir;
 std::filesystem::path LocalArtDir, NetArtDir;
 std::filesystem::path LocalMusicDir, NetMusicDir;
@@ -533,7 +532,6 @@ void mng_BackupTableFile();
 
 // returns 1 if network is up, 0 if down
 int mng_IsNetworkUp() {
-  char dir[100];
   if (Stand_alone)
     return 0;
 
@@ -542,16 +540,17 @@ int mng_IsNetworkUp() {
   Database->read("net directory", net_dir, &dirlen);
   if (net_dir[0] == 0)
     return 0;
-  ddio_MakePath(dir, net_dir, "data", nullptr);
+  std::filesystem::path dir = std::filesystem::path(net_dir) / "data";
 
   if (ddio_CreateDirectories(dir)) {
-    char old_dir[100];
-    ddio_GetWorkingDir(old_dir, 100);
-    if (!ddio_SetWorkingDir(dir))
+    std::error_code ec;
+    std::filesystem::path old_dir = std::filesystem::current_path();
+    std::filesystem::current_path(dir, ec);
+    if (ec)
       return 0; // network down
     else {
-      ddio_SetWorkingDir(old_dir); // restore directory
-      return 1;                    // directory is already there
+      std::filesystem::current_path(old_dir); // restore directory
+      return 1;                               // directory is already there
     }
   }
 
@@ -669,9 +668,9 @@ int mng_LoadTableFiles(int show_progress) {
 int mng_InitLocalTables() {
   // Set the local table directory from the base directory.
   auto writable_base_directory_string = cf_GetWritableBaseDirectory().u8string();
-  strncpy(LocalD3Dir, (const char*)writable_base_directory_string.c_str(), sizeof LocalD3Dir);
+  strncpy(LocalD3Dir, (const char *)writable_base_directory_string.c_str(), sizeof LocalD3Dir);
   LocalD3Dir[sizeof LocalD3Dir - 1] = '\0';
-  if (strlen(LocalD3Dir) != strlen((const char*)writable_base_directory_string.c_str())) {
+  if (strlen(LocalD3Dir) != strlen((const char *)writable_base_directory_string.c_str())) {
     LOG_WARNING << "cf_GetWritableBaseDirectory() is too long to fit in LocalD3Dir, so LocalD3Dir was truncated.";
   }
   LOG_INFO << "Local dir: " << LocalD3Dir;
@@ -688,12 +687,12 @@ int mng_InitLocalTables() {
   LocalCustomGraphicsDir = cf_GetWritableBaseDirectory() / "custom" / "graphics";
   LocalRoomsDir = localdir / "data" / "rooms";
   LocalBriefingDir = localdir / "data" / "briefings";
-  ddio_MakePath(LocalScriptDir, LocalD3Dir, "data", "scripts", nullptr);
+  LocalScriptDir = localdir / "data" / "scripts";
   LocalMiscDir = localdir / "data" / "misc";
   LocalArtDir = localdir / "data" / "art";
   LocalMusicDir = localdir / "data" / "music";
   LocalVoiceDir = localdir / "data" / "voice";
-  ddio_MakePath(LocalLevelsDir, LocalD3Dir, "data", "levels", nullptr);
+  LocalLevelsDir = localdir / "data" / "levels";
   cf_SetSearchPath(LocalD3Dir);
 #ifndef RELEASE
   cf_SetSearchPath(LocalLevelsDir);
@@ -712,11 +711,11 @@ int mng_InitLocalTables() {
 #endif
 
   if (Network_up) {
-    ddio_MakePath(LocalTableFilename, PATH_TO_CSTR(LocalTableDir), LOCAL_TABLE, nullptr);
-    ddio_MakePath(LocalTempTableFilename, PATH_TO_CSTR(LocalTableDir), TEMP_LOCAL_TABLE, nullptr);
+    LocalTableFilename = LocalTableDir / LOCAL_TABLE;
+    LocalTempTableFilename = LocalTableDir / TEMP_LOCAL_TABLE;
   } else {
-    strcpy(LocalTableFilename, LOCAL_TABLE);
-    strcpy(LocalTempTableFilename, TEMP_LOCAL_TABLE);
+    LocalTableFilename = LOCAL_TABLE;
+    LocalTempTableFilename = TEMP_LOCAL_TABLE;
   }
 
   return 1;
@@ -737,7 +736,7 @@ int mng_InitNetTables() {
   NetSoundsDir = netdir / "data" / "sounds";
   NetRoomsDir = netdir / "data" / "rooms";
   NetBriefingDir = netdir / "data" / "briefings";
-  ddio_MakePath(NetScriptDir, NetD3Dir, "data", "scripts", nullptr);
+  NetScriptDir = netdir / "data" / "scripts";
   NetMiscDir = netdir / "data" / "misc";
   ManageGraphicsDir = netdir / "data" / "graphics";
   NetTableDir = netdir / "data" / "tables";
@@ -745,11 +744,11 @@ int mng_InitNetTables() {
   NetMusicDir = netdir / "data" / "music";
   NetVoiceDir = netdir / "data" / "voice";
   TableLockFilename = NetTableDir / "table.lok";
-  ddio_MakePath(BackupLockFilename, PATH_TO_CSTR(NetTableDir), "tablelok.bak", nullptr);
-  ddio_MakePath(BackupTableFilename, PATH_TO_CSTR(NetTableDir), "table.bak", nullptr);
-  ddio_MakePath(TableFilename, PATH_TO_CSTR(NetTableDir), NET_TABLE, nullptr);
-  ddio_MakePath(TempTableLockFilename, PATH_TO_CSTR(NetTableDir), "lock.tmp", nullptr);
-  ddio_MakePath(TempTableFilename, PATH_TO_CSTR(NetTableDir), TEMP_NET_TABLE, nullptr);
+  BackupLockFilename = NetTableDir / "tablelok.bak";
+  BackupTableFilename = NetTableDir / "table.bak";
+  TableFilename = NetTableDir / NET_TABLE;
+  TempTableLockFilename = NetTableDir / "lock.tmp";
+  TempTableFilename =  NetTableDir / TEMP_NET_TABLE;
   LockerFile = NetTableDir / "locker";
   VersionFile = NetTableDir / "TableVersion";
 
@@ -792,7 +791,7 @@ void mng_CheckToCreateLocalTables() {
   CFILE *outfile;
 
   if (!Network_up) {
-    strcpy(TableFilename, NET_TABLE);
+    TableFilename = NET_TABLE;
     LOG_DEBUG << "table filename = " << TableFilename;
     return;
   }
@@ -816,7 +815,6 @@ void mng_InitLocalDirectories() {
   ddio_CreateDirectories(dir / "custom" / "sounds");
   ddio_CreateDirectories(dir / "custom" / "settings");
   ddio_CreateDirectories(dir / "savegame");
-
 
   cf_SetSearchPath(LocalCustomGraphicsDir);
   cf_SetSearchPath(LocalCustomSoundsDir);
@@ -929,7 +927,7 @@ int mng_FindTrackLock(char *name, int pagetype) {
 // Searches through global array of tracklocks and returns first free one
 // Sets the tracklock to be named "name" and its type "pagetype"
 // returns -1 if none free
-int mng_AllocTrackLock(char *name, int pagetype) {
+int mng_AllocTrackLock(const char *name, int pagetype) {
   int i;
   for (i = 0; i < MAX_TRACKLOCKS; i++)
     if (GlobalTrackLocks[i].used == 0) {
@@ -1233,8 +1231,8 @@ int mng_LoadNetPages(int show_progress) {
   } else
     infile = cfopen(TableFilename, "rb");
   if (!infile) {
-    LOG_ERROR.printf("Couldn't open table file (%s) to read pages!\n", TableFilename);
-    Error("Cannot open table file <%s>", TableFilename);
+    LOG_ERROR.printf("Couldn't open table file (%s) to read pages!\n", PATH_TO_CSTR(TableFilename));
+    Error("Cannot open table file <%s>", PATH_TO_CSTR(TableFilename));
     return 0;
   }
   if (show_progress) {
@@ -1364,7 +1362,7 @@ int mng_LoadLocalPages() {
   LOG_INFO << "Overlaying local pages...";
   infile = cfopen(LocalTableFilename, "rb");
   if (!infile) {
-    LOG_WARNING.printf("Couldn't open local table file (%s) to read pages!", LocalTableFilename);
+    LOG_WARNING.printf("Couldn't open local table file (%s) to read pages!", PATH_TO_CSTR(LocalTableFilename));
     return 1;
   }
   Loading_locals = 1;
@@ -1418,7 +1416,7 @@ int mng_LoadLocalPages() {
 #define MAX_TRIES 10000
 // Removes a file, then renames another file to be the removed file. Get it?
 // Returns 1 on success, else 0 on fail
-int SwitcherooFiles(const char *name, char *tempname) {
+int SwitcherooFiles(const std::filesystem::path &name, const std::filesystem::path &tempname) {
   /*// If we're changing the net table file, make a backup first!
   if ((!stricmp (name,TableFilename)))
   {
@@ -1426,7 +1424,12 @@ int SwitcherooFiles(const char *name, char *tempname) {
           cf_CopyFile (BackupLockFilename,TableLockFilename);
   }*/
   int num_tries = 0;
-  while (!ddio_DeleteFile(name) && num_tries < MAX_TRIES) {
+  std::error_code ec;
+  while (num_tries < MAX_TRIES) {
+    std::filesystem::remove(name, ec);
+    if (!ec) {
+      break;
+    }
     D3::ChronoTimer::SleepMS(100);
     num_tries++;
   }
@@ -1437,7 +1440,11 @@ int SwitcherooFiles(const char *name, char *tempname) {
     return (0);
   }
   num_tries = 0;
-  while ((rename(tempname, name)) && num_tries <= MAX_TRIES) {
+  while (num_tries <= MAX_TRIES) {
+    std::filesystem::rename(tempname, name, ec);
+    if (!ec) {
+      break;
+    }
     D3::ChronoTimer::SleepMS(100);
     num_tries++;
   }
@@ -1455,6 +1462,7 @@ void mng_TransferPages() {
   CFILE *infile, *outfile;
   int pagetype;
   int num_tracklocks = 0;
+  std::error_code ec;
   LOG_INFO << "Transferring pages, please wait...";
   if (!mng_MakeLocker())
     return;
@@ -1565,12 +1573,15 @@ void mng_TransferPages() {
   cfclose(infile);
   cfclose(outfile);
 
-  if (remove(TableLockFilename)) {
-    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
+  std::filesystem::remove(TableLockFilename, ec);
+  if (ec) {
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file: %s", ec.message().c_str());
     goto done;
   }
-  if (rename(TempTableLockFilename, PATH_TO_CSTR(TableLockFilename))) {
-    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
+
+  std::filesystem::rename(TempTableLockFilename, TableLockFilename, ec);
+  if (ec) {
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file: %s", ec.message().c_str());
 
     goto done;
   }
@@ -1871,7 +1882,7 @@ int GetPrimType(const std::filesystem::path &name) {
 
 #if defined(WIN32)
 // Builds a list of old files in a path
-void BuildOldFilesForDirectory(const std::filesystem::path& path, FILETIME threshold) {
+void BuildOldFilesForDirectory(const std::filesystem::path &path, FILETIME threshold) {
   HANDLE filehandle;
   WIN32_FIND_DATA filedata;
   std::filesystem::path newpath = path / "*.*";
@@ -2361,7 +2372,7 @@ void mng_ReadPhysicsChunk(physics_info *phys_info, CFILE *infile) {
   phys_info->full_rotthrust = cf_ReadFloat(infile);
   phys_info->num_bounces = cf_ReadInt(infile);
   phys_info->velocity.z() = cf_ReadFloat(infile);
-  phys_info->rotvel = { cf_ReadFloat(infile), cf_ReadFloat(infile), cf_ReadFloat(infile) };
+  phys_info->rotvel = {cf_ReadFloat(infile), cf_ReadFloat(infile), cf_ReadFloat(infile)};
   phys_info->wiggle_amplitude = cf_ReadFloat(infile);
   phys_info->wiggles_per_sec = cf_ReadFloat(infile);
   phys_info->coeff_restitution = cf_ReadFloat(infile);
@@ -2731,8 +2742,7 @@ bool mng_SetAddonTable(const char *name) {
     return false;
 
   strcpy(AddOnDataTables[Num_addon_tables].AddOnTableFilename, name);
-  AddOnDataTables[Num_addon_tables].Addon_tracklocks =
-      mem_rmalloc<mngs_track_lock>(MAX_ADDON_TRACKLOCKS);
+  AddOnDataTables[Num_addon_tables].Addon_tracklocks = mem_rmalloc<mngs_track_lock>(MAX_ADDON_TRACKLOCKS);
   AddOnDataTables[Num_addon_tables].Num_addon_tracklocks = 0;
   ASSERT(AddOnDataTables[Num_addon_tables].Addon_tracklocks);
   memset(AddOnDataTables[Num_addon_tables].Addon_tracklocks, 0, MAX_ADDON_TRACKLOCKS * sizeof(mngs_track_lock));
@@ -2858,8 +2868,9 @@ void mng_CompileAddonPages(void) {
 
           // this is it!
           LOG_INFO.printf("Compiling: %s[%s] to %d", AddOnDataTables[tf].Addon_tracklocks[i].name,
-                  (curr_tablefile == 1) ? TableFilename : AddOnDataTables[curr_tablefile - 2].AddOnTableFilename,
-                  page_pos);
+                          (curr_tablefile == 1) ? PATH_TO_CSTR(TableFilename)
+                                                : AddOnDataTables[curr_tablefile - 2].AddOnTableFilename,
+                          page_pos);
           ASSERT(AddOnDataTables[tf].Addon_tracklocks[i].stack_filepos == 0);
           AddOnDataTables[tf].Addon_tracklocks[i].stack_filepos = page_pos;
           found_page = true;

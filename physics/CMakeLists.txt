@@ -14,7 +14,6 @@ target_link_libraries(physics PRIVATE
   ddebug
   ddio
   logger
-  mem
   misc
   model
   module
