@@ -1001,8 +1001,8 @@ int AllocLoadRoom(char *filename, bool bCenter, bool palette_room) {
         int nverts = cf_ReadInt(infile);
 
         // rp->faces[i].num_verts=cf_ReadInt (infile);
-        // rp->faces[i].face_verts=(int16_t *)mem_malloc (sizeof(int16_t)*rp->faces[i].num_verts);
-        // rp->faces[i].face_uvls=(g3UVL *)mem_malloc (sizeof(g3UVL)*rp->faces[i].num_verts);
+        // rp->faces[i].face_verts=(int16_t *)malloc (sizeof(int16_t)*rp->faces[i].num_verts);
+        // rp->faces[i].face_uvls=(g3UVL *)malloc (sizeof(g3UVL)*rp->faces[i].num_verts);
 
         InitRoomFace(&rp->faces[i], nverts);
 
@@ -1301,13 +1301,13 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
 
       if (rp->num_bbf_regions) {
         for (i = 0; i < rp->num_bbf_regions; i++) {
-          mem_free(rp->bbf_list[i]);
+          free(rp->bbf_list[i]);
         }
-        mem_free(rp->bbf_list);
-        mem_free(rp->num_bbf);
-        mem_free(rp->bbf_list_min_xyz);
-        mem_free(rp->bbf_list_max_xyz);
-        mem_free(rp->bbf_list_sector);
+        free(rp->bbf_list);
+        free(rp->num_bbf);
+        free(rp->bbf_list_min_xyz);
+        free(rp->bbf_list_max_xyz);
+        free(rp->bbf_list_sector);
         rp->num_bbf_regions = 0;
       }
 
@@ -1426,13 +1426,13 @@ int RoomAddFaces(room *rp, int num_new_faces) {
 
   if (rp->num_bbf_regions) {
     for (int i = 0; i < rp->num_bbf_regions; i++) {
-      mem_free(rp->bbf_list[i]);
+      free(rp->bbf_list[i]);
     }
-    mem_free(rp->bbf_list);
-    mem_free(rp->num_bbf);
-    mem_free(rp->bbf_list_min_xyz);
-    mem_free(rp->bbf_list_max_xyz);
-    mem_free(rp->bbf_list_sector);
+    free(rp->bbf_list);
+    free(rp->num_bbf);
+    free(rp->bbf_list_min_xyz);
+    free(rp->bbf_list_max_xyz);
+    free(rp->bbf_list_sector);
 
     rp->num_bbf_regions = 0;
   }
@@ -1747,13 +1747,13 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
 
   if (rp->num_bbf_regions) {
     for (i = 0; i < rp->num_bbf_regions; i++) {
-      mem_free(rp->bbf_list[i]);
+      free(rp->bbf_list[i]);
     }
-    mem_free(rp->bbf_list);
-    mem_free(rp->num_bbf);
-    mem_free(rp->bbf_list_min_xyz);
-    mem_free(rp->bbf_list_max_xyz);
-    mem_free(rp->bbf_list_sector);
+    free(rp->bbf_list);
+    free(rp->num_bbf);
+    free(rp->bbf_list_min_xyz);
+    free(rp->bbf_list_max_xyz);
+    free(rp->bbf_list_sector);
 
     rp->num_bbf_regions = 0;
   }

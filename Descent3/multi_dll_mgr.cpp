@@ -388,8 +388,8 @@ extern uint16_t nw_ListenPort;
 extern uint16_t PXOPort;
 
 // The DLLs expect these exact signatures, so give them wrappers rather than the RTL functions
-static void *DLLMemMalloc(int size) { return mem_malloc(size); }
-static void DLLMemFree(void *memblock) { mem_free(memblock); }
+static void *DLLMemMalloc(int size) { return malloc(size); }
+static void DLLMemFree(void *memblock) { free(memblock); }
 
 void GetMultiAPI(multi_api *api) {
   // make the compiler happy

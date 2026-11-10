@@ -490,14 +490,14 @@ void EBNode_ClearLevel() {
 
     for (j = nlist->num_nodes - 1; j >= 0; j--) {
       if (nlist->nodes[j].edges) {
-        mem_free(nlist->nodes[j].edges);
+        free(nlist->nodes[j].edges);
       }
       nlist->nodes[j].edges = nullptr;
       nlist->nodes[j].num_edges = 0;
     }
 
     if (nlist->nodes) {
-      mem_free(nlist->nodes);
+      free(nlist->nodes);
     }
     nlist->nodes = nullptr;
     nlist->num_nodes = 0;
@@ -585,10 +585,10 @@ void EBNode_RemoveNode(int roomnum, int pnt) {
   nlist->num_nodes--;
 
   if (nlist->num_nodes == 0) {
-    mem_free(nlist->nodes);
+    free(nlist->nodes);
     nlist->nodes = nullptr;
   } else {
-    nlist->nodes = (bn_node *)mem_realloc(nlist->nodes, sizeof(bn_node) * nlist->num_nodes);
+    nlist->nodes = (bn_node *)realloc(nlist->nodes, sizeof(bn_node) * nlist->num_nodes);
   }
 
   // Not super efficient, but works.  :)
@@ -642,11 +642,11 @@ void EBNode_RemoveEdge(int spnt, int sroom, int epnt, int eroom, bool f_remove_r
   snlist->nodes[spnt].num_edges--;
 
   if (snlist->nodes[spnt].num_edges == 0) {
-    mem_free(snlist->nodes[spnt].edges);
+    free(snlist->nodes[spnt].edges);
     snlist->nodes[spnt].edges = nullptr;
   } else {
     snlist->nodes[spnt].edges =
-        (bn_edge *)mem_realloc(snlist->nodes[spnt].edges, sizeof(bn_edge) * snlist->nodes[spnt].num_edges);
+        (bn_edge *)realloc(snlist->nodes[spnt].edges, sizeof(bn_edge) * snlist->nodes[spnt].num_edges);
   }
 
   if (f_remove_reverse && enlist) {
@@ -710,7 +710,7 @@ int EBNode_AddNode(int roomnum, vector *pnt, bool f_from_editor, bool f_check_fo
   nlist->num_nodes++;
 
   if (new_node != 0)
-    nlist->nodes = (bn_node *)mem_realloc(nlist->nodes, sizeof(bn_node) * (nlist->num_nodes));
+    nlist->nodes = (bn_node *)realloc(nlist->nodes, sizeof(bn_node) * (nlist->num_nodes));
   else
     nlist->nodes = mem_rmalloc<bn_node>();
 
@@ -900,7 +900,7 @@ void EBNode_AddEdge(int spnt, int sroom, int epnt, int eroom, bool f_add_reverse
       snlist->nodes[spnt].edges = mem_rmalloc<bn_edge>();
     } else {
       snlist->nodes[spnt].edges =
-          (bn_edge *)mem_realloc(snlist->nodes[spnt].edges, sizeof(bn_edge) * snlist->nodes[spnt].num_edges);
+          (bn_edge *)realloc(snlist->nodes[spnt].edges, sizeof(bn_edge) * snlist->nodes[spnt].num_edges);
     }
 
     float cost = vm_VectorDistance(&snlist->nodes[spnt].pos, &enlist->nodes[epnt].pos);
