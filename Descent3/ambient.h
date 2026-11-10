@@ -43,6 +43,8 @@
 #ifndef _AMBIENT_H
 #define _AMBIENT_H
 
+#include <memory>
+
 #include "manage.h"
 
 // An Ambient Sound Element, one part of an Ambient Sound Pattern (ASP)
@@ -57,7 +59,7 @@ struct asp {
   char name[PAGENAME_LEN];    // the name of this pattern
   float min_delay, max_delay; // delay time between sounds
   int num_sounds;             // how many sounds in this pattern
-  ase *sounds;                // array of sounds
+  std::unique_ptr<ase[]> sounds; // array of sounds
   float delay;                // how long until the next sound
 };
 

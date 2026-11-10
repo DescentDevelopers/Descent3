@@ -306,7 +306,7 @@ const char *Static_sound_names[NUM_STATIC_SOUNDS] = {
 int AllocSoundFile() {
   for (int i = 0; i < MAX_SOUND_FILES; i++) {
     if (SoundFiles[i].used == 0) {
-      memset(&SoundFiles[i], 0, sizeof(sound_file_info));
+      SoundFiles[i] = {};
       SoundFiles[i].used = 1;
 
       Num_sound_files++;
@@ -324,14 +324,8 @@ void FreeSoundFile(int n) {
 
   SoundFiles[n].used = 0;
   SoundFiles[n].name[0] = 0;
-  if (SoundFiles[n].sample_8bit) {
-    mem_free(SoundFiles[n].sample_8bit);
-    SoundFiles[n].sample_8bit = nullptr;
-  }
-  if (SoundFiles[n].sample_16bit) {
-    mem_free(SoundFiles[n].sample_16bit);
-    SoundFiles[n].sample_16bit = nullptr;
-  }
+  SoundFiles[n].sample_8bit.reset();
+  SoundFiles[n].sample_16bit.reset();
   Num_sound_files--;
 }
 
