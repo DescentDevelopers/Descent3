@@ -724,8 +724,7 @@ void CallMultiDLL(int eventnum) {
     DLLMultiCall(eventnum);
 }
 void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color) {
-  // This function is currently broken!
-  strcpy(uit->m_Text, newtext);
+  uit->m_Text = mem_strdup_unique(newtext);
   uit->set_color(color);
 }
 UIObject *NewUIWindowCreate(int x, int y, int w, int h, int flags) {

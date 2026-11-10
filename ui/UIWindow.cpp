@@ -164,7 +164,6 @@ UIWindow::UIWindow() : UIObject() {
   m_GadgetHead = nullptr;
   m_GadgetTail = nullptr;
   m_GadgetCur = nullptr;
-  m_BackItem = nullptr;
   m_HoldHotkeys = false;
   m_CurGadgetInGroup = false;
   m_ResetCurGadget = false;
