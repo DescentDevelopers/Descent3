@@ -104,6 +104,8 @@
 #ifndef _GR_H
 #define _GR_H
 
+#include <memory>
+
 #include "Ddgr.h"
 #include "fix.h"
 #include "pserror.h"
@@ -167,16 +169,16 @@ struct gr_font_record {
   char filename[32];          // filename of font
   int references;             // number of references of that font
   int bmps[MAX_FONT_BITMAPS]; // font bitmap handles
-  grMemorySurface *surfs[MAX_FONT_BITMAPS];
-  uint8_t *ch_u, *ch_v, *ch_w, *ch_h, *ch_surf;
-  float *ch_uf, *ch_vf, *ch_wf, *ch_hf;
+  std::unique_ptr<grMemorySurface> surfs[MAX_FONT_BITMAPS];
+  std::unique_ptr<uint8_t[]> ch_u, ch_v, ch_w, ch_h, ch_surf;
+  std::unique_ptr<float[]> ch_uf, ch_vf, ch_wf, ch_hf;
   gr_font_file_record font;
 
 };
 
 class grFont {
   static gr_font_record m_FontList[MAX_FONTS];
-  static grMemorySurface *m_CharSurf;
+  static std::unique_ptr<grMemorySurface> m_CharSurf;
 
   int m_FontHandle; // offset into m_FontList
 
@@ -263,7 +265,7 @@ private:
 
   static ddgr_surface_node *surf_list;     // the surface list
   static ddgr_surface_node *surf_list_cur; // current node on list.
-  static ddgr_surface *scratch_mem_surf;   // use as temporary memory surface
+  static std::unique_ptr<ddgr_surface> scratch_mem_surf; // use as temporary memory surface
 
 private:
   //	coversion blts.

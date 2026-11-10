@@ -30,19 +30,13 @@
 #include "dedicated_server.h"
 
 int Num_of_lightmap_info = 0;
-lightmap_info *LightmapInfo = nullptr;
+std::unique_ptr<lightmap_info[]> LightmapInfo;
 
-static uint16_t *Free_lmi_list = nullptr;
+static std::unique_ptr<uint16_t[]> Free_lmi_list;
 
 void CloseLightmapInfos() {
-  if (LightmapInfo)
-    mem_free(LightmapInfo);
-
-  if (Free_lmi_list)
-    mem_free(Free_lmi_list);
-
-  LightmapInfo = nullptr;
-  Free_lmi_list = nullptr;
+  LightmapInfo.reset();
+  Free_lmi_list.reset();
 }
 
 // Sets all the lightmaps to unused
@@ -53,13 +47,11 @@ void InitLightmapInfo(int nummaps) {
     return;
 
   if (nummaps == 0) {
-    LightmapInfo = mem_rmalloc<lightmap_info>(MAX_LIGHTMAP_INFOS);
-    ASSERT(LightmapInfo);
-    Free_lmi_list = mem_rmalloc<uint16_t>(MAX_LIGHTMAP_INFOS);
-    ASSERT(Free_lmi_list);
+    // zero-filled, so every entry starts out unused
+    LightmapInfo = std::make_unique<lightmap_info[]>(MAX_LIGHTMAP_INFOS);
+    Free_lmi_list = std::make_unique<uint16_t[]>(MAX_LIGHTMAP_INFOS);
 
     for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
-      LightmapInfo[i].used = 0;
       Free_lmi_list[i] = i;
     }
   }
@@ -195,16 +187,14 @@ void ShadeLightmapInfoEdges(int type) {
 
   for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
     if (LightmapInfo[i].used && LightmapInfo[i].type == type) {
-      uint16_t *src_data;
       uint16_t *dest_data = lm_data(LightmapInfo[i].lm_handle);
       int w = lmi_w(i);
       int h = lmi_h(i);
       int x, y;
 
-      src_data = (uint16_t *)mem_malloc(w * h * 2);
-      ASSERT(src_data);
+      auto src_data = std::make_unique<uint16_t[]>(w * h);
 
-      memcpy(src_data, dest_data, w * h * 2);
+      memcpy(src_data.get(), dest_data, w * h * 2);
 
       for (y = 0; y < h; y++) {
         for (x = 0; x < w; x++) {
@@ -315,7 +305,6 @@ void ShadeLightmapInfoEdges(int type) {
           }
         }
       }
-      mem_free(src_data);
     }
   }
 }
@@ -327,16 +316,14 @@ void BlurLightmapInfos(int type) {
 
   for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
     if (LightmapInfo[i].used && LightmapInfo[i].type == type) {
-      uint16_t *src_data;
       uint16_t *dest_data = lm_data(LightmapInfo[i].lm_handle);
       int w = lmi_w(i);
       int h = lmi_h(i);
       int x, y;
 
-      src_data = (uint16_t *)mem_malloc(w * h * 2);
-      ASSERT(src_data);
+      auto src_data = std::make_unique<uint16_t[]>(w * h);
 
-      memcpy(src_data, dest_data, w * h * 2);
+      memcpy(src_data.get(), dest_data, w * h * 2);
 
       for (y = 0; y < h; y++) {
         for (x = 0; x < w; x++) {
@@ -454,7 +441,6 @@ void BlurLightmapInfos(int type) {
           }
         }
       }
-      mem_free(src_data);
     }
   }
 }

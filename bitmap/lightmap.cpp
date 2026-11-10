@@ -35,7 +35,7 @@ void lm_InitLightmaps() {
   for (i = 0; i < MAX_LIGHTMAPS; i++) {
     GameLightmaps[i].flags = 0;
     GameLightmaps[i].used = 0;
-    GameLightmaps[i].data = nullptr;
+    GameLightmaps[i].data.reset();
     GameLightmaps[i].cache_slot = -1;
     Free_lightmap_list[i] = i;
   }
@@ -60,13 +60,8 @@ int lm_AllocLightmap(int w, int h) {
   ASSERT(GameLightmaps[n].used == 0);
   // If no go on the malloc, bail out with -1
 
-  memset(&GameLightmaps[n], 0, sizeof(bms_lightmap));
-  GameLightmaps[n].data = (uint16_t *)mem_malloc((w * h * 2));
-  if (!GameLightmaps[n].data) {
-    LOG_DEBUG << "NOT ENOUGH MEMORY FOR LIGHTMAP!";
-    Int3();
-    return BAD_LM_INDEX;
-  }
+  GameLightmaps[n] = {};
+  GameLightmaps[n].data = std::make_unique<uint16_t[]>(w * h);
 
   GameLightmaps[n].width = w;
   GameLightmaps[n].height = h;
@@ -97,11 +92,9 @@ void lm_FreeLightmap(int handle) {
     return;
   GameLightmaps[handle].used--;
   if (GameLightmaps[handle].used == 0) {
-    if (GameLightmaps[handle].data != nullptr)
-      mem_free(GameLightmaps[handle].data);
     Lightmap_mem_used -= (GameLightmaps[handle].width * GameLightmaps[handle].height * 2);
 
-    GameLightmaps[handle].data = nullptr;
+    GameLightmaps[handle].data.reset();
     GameLightmaps[handle].cache_slot = -1;
 
     Free_lightmap_list[--Num_of_lightmaps] = handle;
@@ -137,6 +130,6 @@ uint16_t *lm_data(int handle) {
     return nullptr;
   }
 
-  d = GameLightmaps[handle].data;
+  d = GameLightmaps[handle].data.get();
   return (d);
 }

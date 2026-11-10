@@ -203,9 +203,8 @@ int AllocVClip() {
 
   for (i = 0; i < MAX_VCLIPS; i++) {
     if (GameVClips[i].used == 0) {
-      memset(&GameVClips[i], 0, sizeof(vclip));
-      GameVClips[i].frames = mem_rmalloc<int16_t>(VCLIP_MAX_FRAMES);
-      ASSERT(GameVClips[i].frames);
+      GameVClips[i] = {};
+      GameVClips[i].frames = std::make_unique<int16_t[]>(VCLIP_MAX_FRAMES);
       GameVClips[i].frame_time = DEFAULT_FRAMETIME;
       GameVClips[i].flags = VCF_NOT_RESIDENT;
       GameVClips[i].used = 1;
@@ -230,7 +229,7 @@ void FreeVClip(int num) {
       bm_FreeBitmap(GameVClips[num].frames[i]);
   }
 
-  mem_free(GameVClips[num].frames);
+  GameVClips[num].frames.reset();
 
   Num_vclips--;
   ASSERT(Num_vclips >= 0);

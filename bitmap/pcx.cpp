@@ -55,6 +55,7 @@
  */
 
 #include <cstdlib>
+#include <memory>
 
 #include "bitmap.h"
 #include "cfile.h"
@@ -118,9 +119,7 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
   height = 1 + ymax - ymin;
   total = width * height;
 
-  uint8_t *rawdata = (uint8_t *)mem_malloc(width * height);
-  if (!rawdata)
-    return -1; // no memory!
+  auto rawdata = std::make_unique<uint8_t[]>(width * height);
 
   run = 0;
   while (run < total) {
@@ -172,7 +171,6 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
       data[i * width + t] = pixel;
     }
   }
-  mem_free(rawdata);
 
   return src_bm; // success!
 }
@@ -227,11 +225,7 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
   // scanline length
   total = 3 * BytesPerLine;
 
-  uint8_t *rawdata = (uint8_t *)mem_malloc(total * height);
-  if (!rawdata) {
-    LOG_ERROR << "PCXLoad: Out of memory";
-    return -1; // no memory!
-  }
+  auto rawdata = std::make_unique<uint8_t[]>(total * height);
 
   // Load in the data
   // the data is divided into scanlines
@@ -311,7 +305,6 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
       data[i * width + t] = pixel;
     }
   }
-  mem_free(rawdata);
 
   return src_bm; // success!
 }

@@ -94,14 +94,16 @@ BOOL CWaterProceduralDialog::DestroyWindow() {
   save_num = GameTextures[n].procedural->num_static_elements;
 
   if (save_num > 0)
-    memcpy(save_elements, GameTextures[n].procedural->static_proc_elements, save_num * sizeof(static_proc_element));
+    memcpy(save_elements, GameTextures[n].procedural->static_proc_elements.get(),
+           save_num * sizeof(static_proc_element));
 
   FreeStaticProceduralsForTexture(n);
   Sleep(2000);
 
   if (save_num > 0) {
     AllocateStaticProceduralsForTexture(n, save_num);
-    memcpy(GameTextures[n].procedural->static_proc_elements, save_elements, save_num * sizeof(static_proc_element));
+    memcpy(GameTextures[n].procedural->static_proc_elements.get(), save_elements,
+           save_num * sizeof(static_proc_element));
     GameTextures[n].procedural->num_static_elements = save_num;
   } else {
     GameTextures[n].flags &= ~(TF_PROCEDURAL | TF_WATER_PROCEDURAL);
@@ -228,14 +230,15 @@ BOOL CWaterProceduralDialog::OnInitDialog() {
   // Make a temp buffer for our static elements
   if (GameTextures[n].procedural->num_static_elements > 0) {
     save_num = GameTextures[n].procedural->num_static_elements;
-    memcpy(save_elements, GameTextures[n].procedural->static_proc_elements, save_num * sizeof(static_proc_element));
+    memcpy(save_elements, GameTextures[n].procedural->static_proc_elements.get(),
+           save_num * sizeof(static_proc_element));
   }
 
   FreeStaticProceduralsForTexture(n);
   Sleep(2000);
   AllocateStaticProceduralsForTexture(n, 8000);
 
-  memcpy(GameTextures[n].procedural->static_proc_elements, save_elements, save_num * sizeof(static_proc_element));
+  memcpy(GameTextures[n].procedural->static_proc_elements.get(), save_elements, save_num * sizeof(static_proc_element));
   GameTextures[n].procedural->num_static_elements = save_num;
 
   m_button_down = 0;
@@ -382,7 +385,7 @@ void CWaterProceduralDialog::OnMouseMove(UINT nFlags, CPoint point) {
 // Creates a procedural element at x,y
 static_proc_element *CWaterProceduralDialog::CreateElement(int x, int y) {
   int n = D3EditState.texdlg_texture;
-  proc_struct *procedural = GameTextures[n].procedural;
+  proc_struct *procedural = GameTextures[n].procedural.get();
 
   int index;
 
@@ -554,7 +557,7 @@ void CWaterProceduralDialog::OnCopyProcedural() {
 
   // Last 2 colors are the same
   dest_page.proc_palette[255] = dest_page.proc_palette[254];
-  memcpy(GameTextures[D3EditState.texdlg_texture].procedural->palette, dest_page.proc_palette, 256 * 2);
+  memcpy(GameTextures[D3EditState.texdlg_texture].procedural->palette.get(), dest_page.proc_palette, 256 * 2);
 
   for (i = 0; i < dest_page.num_proc_elements; i++) {
     static_proc_element *proc = &GameTextures[D3EditState.texdlg_texture].procedural->static_proc_elements[i];

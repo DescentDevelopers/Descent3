@@ -20,6 +20,7 @@
 #define SPECIAL_FACE_H
 
 #include <cstdint>
+#include <memory>
 
 #include "vecmat.h"
 
@@ -43,10 +44,9 @@ struct special_face {
   uint8_t used;
   uint8_t flags;
 
-  specular_instance *spec_instance;
+  std::unique_ptr<specular_instance[]> spec_instance;
 
-  vector *vertnorms;
-
+  std::unique_ptr<vector[]> vertnorms;
 };
 
 extern special_face SpecialFaces[];

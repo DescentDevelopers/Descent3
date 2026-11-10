@@ -88,6 +88,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "bitmap.h"
 #include "lib2d.h"
@@ -105,13 +106,12 @@ static inline unsigned XLAT_RGB_TO_16(ddgr_color c) {
 
 ddgr_surface_node *grSurface::surf_list = nullptr;     // the surface list
 ddgr_surface_node *grSurface::surf_list_cur = nullptr; // current node on list.
-ddgr_surface *grSurface::scratch_mem_surf = nullptr;
+std::unique_ptr<ddgr_surface> grSurface::scratch_mem_surf;
 
 void grSurface::init_system() {
   //	allocate our scratch memory surface used in uniblt
   if (!grSurface::scratch_mem_surf) {
-    grSurface::scratch_mem_surf = new ddgr_surface;
-    memset(grSurface::scratch_mem_surf, 0, sizeof(ddgr_surface));
+    grSurface::scratch_mem_surf = std::make_unique<ddgr_surface>();
   }
 
   atexit(grSurface::close_system);
@@ -120,11 +120,11 @@ void grSurface::init_system() {
 void grSurface::close_system() {
   //	cleanup our scratch memory surface for blt
   if (grSurface::scratch_mem_surf) {
-    if (grSurface::scratch_mem_surf->obj != nullptr)
-      gr_mem_surf_Destroy(grSurface::scratch_mem_surf);
+    if (grSurface::scratch_mem_surf->obj != nullptr) {
+      gr_mem_surf_Destroy(grSurface::scratch_mem_surf.get());
+    }
 
-    delete grSurface::scratch_mem_surf;
-    grSurface::scratch_mem_surf = nullptr;
+    grSurface::scratch_mem_surf.reset();
   }
 }
 
@@ -357,8 +357,8 @@ void grSurface::uniblt(int dx, int dy, grSurface *ssf, int sx, int sy, int sw, i
     grSurface::scratch_mem_surf->type = SURFTYPE_MEMORY;
     grSurface::scratch_mem_surf->flags = ssfs->flags;
 
-    gr_mem_surf_Init(grSurface::scratch_mem_surf, data, rowsize);
-    gr_mem_surf_Blt(dsfs, dx, dy, grSurface::scratch_mem_surf, sx, sy, sw, sh);
+    gr_mem_surf_Init(grSurface::scratch_mem_surf.get(), data, rowsize);
+    gr_mem_surf_Blt(dsfs, dx, dy, grSurface::scratch_mem_surf.get(), sx, sy, sw, sh);
 
     ssf->unlock();
     return;
@@ -378,8 +378,8 @@ void grSurface::uniblt(int dx, int dy, grSurface *ssf, int sx, int sy, int sw, i
     grSurface::scratch_mem_surf->type = SURFTYPE_MEMORY;
     grSurface::scratch_mem_surf->flags = dsfs->flags;
 
-    gr_mem_surf_Init(grSurface::scratch_mem_surf, m_DataPtr, m_DataRowsize);
-    gr_mem_surf_Blt(grSurface::scratch_mem_surf, dx, dy, ssfs, sx, sy, sw, sh);
+    gr_mem_surf_Init(grSurface::scratch_mem_surf.get(), m_DataPtr, m_DataRowsize);
+    gr_mem_surf_Blt(grSurface::scratch_mem_surf.get(), dx, dy, ssfs, sx, sy, sw, sh);
 
     grSurface::unlock();
     return;
