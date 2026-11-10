@@ -224,11 +224,9 @@ std::filesystem::path ddio_GetPrefPath() {
   }
 
   // Earlier versions used "Outrage Entertainment/Descent 3" next to this directory. SDL_GetPrefPath() has just
-  // created this one if it was missing, so the old one is moved here while this one is still empty.
-  std::filesystem::path legacy_org = result.parent_path() / "Outrage Entertainment";
-  result = ddio_MoveLegacyPath(legacy_org / "Descent 3", result);
-  std::error_code ec;
-  std::filesystem::remove(legacy_org, ec); // only succeeds if nothing else is in it
+  // created this one if it was missing, so the old one is copied here while this one is still empty. It is copied,
+  // not moved, so that those versions still find their files.
+  result = ddio_CopyLegacyPath(result.parent_path() / "Outrage Entertainment" / "Descent 3", result);
   return std::filesystem::canonical(result);
 }
 
@@ -256,24 +254,60 @@ bool ddio_CreateDirectories(const std::filesystem::path &dir, std::filesystem::p
   return true;
 }
 
-std::filesystem::path ddio_MoveLegacyPath(const std::filesystem::path &from, const std::filesystem::path &to) {
-  std::error_code ec;
-  if (from == to || !std::filesystem::exists(from, ec)) {
-    return to;
-  }
-  if (std::filesystem::exists(to, ec)) {
-    if (!std::filesystem::is_directory(to, ec) || !std::filesystem::is_empty(to, ec)) {
-      LOG_WARNING << "Not moving " << from << " to " << to << ", which already exists; " << from << " is not used";
+std::filesystem::path ddio_CopyLegacyPath(const std::filesystem::path &from, const std::filesystem::path &to) {
+  // 1. Decide whether to copy. A legacy path that has been copied before has a marker next to it. Only nothing, or an
+  //    empty directory such as the one SDL_GetPrefPath() has just created, may be replaced at `to`.
+  const std::filesystem::path marker = std::filesystem::path(from).concat(DDIO_ABANDONED_SUFFIX);
+  try {
+    if (from == to || !std::filesystem::exists(from) || std::filesystem::exists(marker)) {
+      return to; // nothing to copy, or copied on an earlier run
+    }
+    const bool to_is_empty_directory = std::filesystem::is_directory(to) && std::filesystem::is_empty(to);
+    if (std::filesystem::exists(to) && !to_is_empty_directory) {
+      LOG_WARNING << "Not copying " << from << " to " << to << ", which already exists; " << from << " is not used";
       return to;
     }
-    std::filesystem::remove(to, ec);
+  } catch (const std::filesystem::filesystem_error &e) {
+    LOG_WARNING << "Not copying " << from << " to " << to << ": " << e.code().message();
+    return to;
   }
-  std::filesystem::rename(from, to, ec);
-  if (ec) {
-    LOG_WARNING << "Could not move " << from << " to " << to << ", using the old location: " << ec.message();
+
+  // 2. Copy next to the target and rename the copy into place, so a copy that fails halfway leaves nothing at the
+  //    target and is tried again on the next start
+  const std::filesystem::path partial = std::filesystem::path(to).concat(".partial");
+  try {
+    std::filesystem::remove_all(partial); // left over from an interrupted attempt
+    std::filesystem::copy(from, partial,
+                          std::filesystem::copy_options::recursive | std::filesystem::copy_options::copy_symlinks);
+    std::filesystem::remove(to); // the empty directory, if there is one
+    std::filesystem::rename(partial, to);
+  } catch (const std::filesystem::filesystem_error &e) {
+    LOG_WARNING << "Could not copy " << from << " to " << to << ", using the old location: " << e.code().message();
+    std::error_code ignored;
+    std::filesystem::remove_all(partial, ignored);
     return from;
   }
-  LOG_INFO << "Moved " << from << " to " << to;
+  LOG_INFO << "Copied " << from << " to " << to;
+
+  // 3. Leave the marker, saying where the files went
+  try {
+    std::ofstream out(marker, std::ios::binary);
+    out.exceptions(std::ios::failbit | std::ios::badbit); // throws right away if the open failed
+    out << "Descent 3 has copied\n"
+        << "\n"
+        << "    " << from.lexically_normal().u8string() << "\n"
+        << "\n"
+        << "to\n"
+        << "\n"
+        << "    " << to.lexically_normal().u8string() << "\n"
+        << "\n"
+        << "and now uses it from there. Changes made in one place do not show up in the\n"
+        << "other. The original has been left in place in case an earlier version of\n"
+        << "Descent 3 still uses it. If not, you can delete it.\n";
+    out.close();
+  } catch (const std::exception &e) { // not std::ios_base::failure, which GCC's library may throw with another ABI
+    LOG_WARNING << "Could not write " << marker << ": " << e.what();
+  }
   return to;
 }
 

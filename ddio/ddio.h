@@ -383,7 +383,7 @@ std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, 
 
 /**
  * Gets the directory where user files such as pilots and savegames are written, creating it if needed. A directory
- * left by earlier versions, which used "Outrage Entertainment/Descent 3" in the same place, is moved here.
+ * left by earlier versions, which used "Outrage Entertainment/Descent 3" in the same place, is copied here.
  * Example directories:
  *   - $XDG_DATA_HOME/descent3 (Linux)
  *   - /home/user/.local/share/descent3 (Linux)
@@ -437,15 +437,22 @@ std::filesystem::path ddio_GetStatePath();
 bool ddio_CreateDirectories(const std::filesystem::path &dir,
                             std::filesystem::perms perms = std::filesystem::perms::owner_all);
 
+/// Appended to the name of a path ddio_CopyLegacyPath() has copied, to name the marker it leaves next to it
+inline constexpr const char *DDIO_ABANDONED_SUFFIX = ".ABANDONED.readme";
+
 /**
- * Moves a file or directory that an earlier version kept elsewhere to its current location. Nothing is moved if
- * `from` does not exist, or if `to` exists and is not an empty directory; the latter logs a warning, since the files
- * at `from` are then not used.
+ * Copies a file or directory that an earlier version kept elsewhere to its current location, leaving the original
+ * untouched for that version. After the copy, a marker saying where the copy is used is written next to the original,
+ * named after it with DDIO_ABANDONED_SUFFIX (e.g. "Descent 3.ABANDONED.readme" next to the directory "Descent 3").
+ * Nothing is copied if
+ *   - `from` does not exist,
+ *   - `from` has a marker, so it was copied before, or
+ *   - `to` exists and is not an empty directory. This logs a warning, since the files at `from` are then not used.
  * @param from old location
  * @param to current location
- * @return the location to use: `to`, or `from` if it could not be moved
+ * @return the location to use: `to`, or `from` if it could not be copied
  */
-std::filesystem::path ddio_MoveLegacyPath(const std::filesystem::path &from, const std::filesystem::path &to);
+std::filesystem::path ddio_CopyLegacyPath(const std::filesystem::path &from, const std::filesystem::path &to);
 
 /**
  * Gets path directory of executable

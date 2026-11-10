@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include <optional>
 #include <string>
 #include <utility>
@@ -104,72 +105,182 @@ TEST(D3, DDIO_CreateDirectoriesFailsWhenFileIsInTheWay) {
   std::filesystem::remove_all(base);
 }
 
-TEST(D3, DDIO_MoveLegacyPathMovesFile) {
-  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_file";
+TEST(D3, DDIO_CopyLegacyPathCopiesFile) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_file";
   std::filesystem::remove_all(base);
   std::filesystem::create_directories(base / "old");
   std::filesystem::create_directories(base / "new");
   std::ofstream(base / "old" / "settings").close();
 
-  EXPECT_EQ(ddio_MoveLegacyPath(base / "old" / "settings", base / "new" / "settings"), base / "new" / "settings");
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "old" / "settings", base / "new" / "settings"), base / "new" / "settings");
   EXPECT_TRUE(std::filesystem::exists(base / "new" / "settings"));
-  EXPECT_FALSE(std::filesystem::exists(base / "old" / "settings"));
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / "settings"));
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / (std::string("settings") + DDIO_ABANDONED_SUFFIX)));
 
   std::filesystem::remove_all(base);
 }
 
-TEST(D3, DDIO_MoveLegacyPathMovesDirectoryOverEmptyDirectory) {
-  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_dir";
+TEST(D3, DDIO_CopyLegacyPathDoesNotCopyAbandonedFileAgain) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_abandoned_file";
   std::filesystem::remove_all(base);
   std::filesystem::create_directories(base / "old");
   std::filesystem::create_directories(base / "new");
-  std::ofstream(base / "old" / "pilot.plt").close();
+  std::ofstream(base / "old" / "settings").close();
+  std::ofstream(base / "old" / (std::string("settings") + DDIO_ABANDONED_SUFFIX)).close();
 
-  EXPECT_EQ(ddio_MoveLegacyPath(base / "old", base / "new"), base / "new");
-  EXPECT_TRUE(std::filesystem::exists(base / "new" / "pilot.plt"));
-  EXPECT_FALSE(std::filesystem::exists(base / "old"));
+  // The copy is gone again, e.g. because the user deleted it
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "old" / "settings", base / "new" / "settings"), base / "new" / "settings");
+  EXPECT_FALSE(std::filesystem::exists(base / "new" / "settings"));
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / "settings"));
 
   std::filesystem::remove_all(base);
 }
 
-TEST(D3, DDIO_MoveLegacyPathKeepsExistingTarget) {
-  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_existing";
+TEST(D3, DDIO_CopyLegacyPathCopiesDirectoryOverEmptyDirectory) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_dir";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base / "old" / "savegame");
+  std::filesystem::create_directories(base / "new");
+  std::ofstream(base / "old" / "pilot.plt").close();
+  std::ofstream(base / "old" / "savegame" / "save0").close();
+
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "old", base / "new"), base / "new");
+  EXPECT_TRUE(std::filesystem::exists(base / "new" / "pilot.plt"));
+  EXPECT_TRUE(std::filesystem::exists(base / "new" / "savegame" / "save0"));
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / "pilot.plt"));
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / "savegame" / "save0"));
+  EXPECT_FALSE(std::filesystem::exists(base / "new.partial"));
+  // The marker is next to the old directory, which is left untouched
+  auto old_entries = std::distance(std::filesystem::directory_iterator(base / "old"), {});
+  EXPECT_EQ(old_entries, 2);
+
+  std::ifstream readme(base / (std::string("old") + DDIO_ABANDONED_SUFFIX), std::ios::binary);
+  ASSERT_TRUE(readme.is_open());
+  std::string text{std::istreambuf_iterator<char>(readme), std::istreambuf_iterator<char>()};
+  EXPECT_NE(text.find((base / "old").lexically_normal().u8string()), std::string::npos);
+  EXPECT_NE(text.find((base / "new").lexically_normal().u8string()), std::string::npos);
+  readme.close();
+
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_CopyLegacyPathKeepsExistingTarget) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_existing";
   std::filesystem::remove_all(base);
   std::filesystem::create_directories(base / "old");
   std::filesystem::create_directories(base / "new");
   std::ofstream(base / "old" / "old.plt").close();
   std::ofstream(base / "new" / "new.plt").close();
 
-  EXPECT_EQ(ddio_MoveLegacyPath(base / "old", base / "new"), base / "new");
-  EXPECT_TRUE(std::filesystem::exists(base / "old" / "old.plt"));
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "old", base / "new"), base / "new");
+  EXPECT_TRUE(std::filesystem::exists(base / "new" / "new.plt"));
   EXPECT_FALSE(std::filesystem::exists(base / "new" / "old.plt"));
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / "old.plt"));
+  EXPECT_FALSE(std::filesystem::exists(base / (std::string("old") + DDIO_ABANDONED_SUFFIX)));
 
   std::filesystem::remove_all(base);
 }
 
-TEST(D3, DDIO_MoveLegacyPathWithNothingToMove) {
-  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_nothing";
+TEST(D3, DDIO_CopyLegacyPathDoesNotCopyAbandonedDirectoryAgain) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_abandoned";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base / "old");
+  std::filesystem::create_directories(base / "new");
+  std::ofstream(base / "old" / "pilot.plt").close();
+  std::ofstream(base / (std::string("old") + DDIO_ABANDONED_SUFFIX)).close();
+
+  // The new location is empty again, e.g. because the user deleted its files
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "old", base / "new"), base / "new");
+  EXPECT_TRUE(std::filesystem::is_empty(base / "new"));
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / "pilot.plt"));
+
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_CopyLegacyPathWithNothingToCopy) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_nothing";
   std::filesystem::remove_all(base);
   std::filesystem::create_directories(base);
   std::ofstream(base / "settings").close();
 
-  EXPECT_EQ(ddio_MoveLegacyPath(base / "missing", base / "new"), base / "new");
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "missing", base / "new"), base / "new");
   EXPECT_FALSE(std::filesystem::exists(base / "new"));
-  EXPECT_EQ(ddio_MoveLegacyPath(base / "settings", base / "settings"), base / "settings");
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "settings", base / "settings"), base / "settings");
   EXPECT_TRUE(std::filesystem::exists(base / "settings"));
 
   std::filesystem::remove_all(base);
 }
 
-TEST(D3, DDIO_MoveLegacyPathKeepsOldLocationWhenMoveFails) {
-  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_move_fails";
+TEST(D3, DDIO_CopyLegacyPathReplacesLeftoverPartialCopy) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_leftover";
   std::filesystem::remove_all(base);
-  std::filesystem::create_directories(base);
-  std::ofstream(base / "settings").close();
+  std::filesystem::create_directories(base / "old");
+  std::filesystem::create_directories(base / "new.partial");
+  std::ofstream(base / "old" / "pilot.plt").close();
+  std::ofstream(base / "new.partial" / "stale").close();
 
-  // The target's parent directory does not exist, so the rename fails
-  EXPECT_EQ(ddio_MoveLegacyPath(base / "settings", base / "missing" / "settings"), base / "settings");
-  EXPECT_TRUE(std::filesystem::exists(base / "settings"));
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "old", base / "new"), base / "new");
+  EXPECT_TRUE(std::filesystem::exists(base / "new" / "pilot.plt"));
+  EXPECT_FALSE(std::filesystem::exists(base / "new" / "stale"));
+  EXPECT_FALSE(std::filesystem::exists(base / "new.partial"));
+
+  std::filesystem::remove_all(base);
+}
+
+#ifndef WIN32
+TEST(D3, DDIO_CopyLegacyPathSkipsUnreadableSource) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_unreadable";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base / "locked" / "old");
+  std::ofstream(base / "locked" / "old" / "pilot.plt").close();
+  std::filesystem::permissions(base / "locked", std::filesystem::perms::none);
+
+  std::error_code ec;
+  if (std::filesystem::exists(base / "locked" / "old", ec)) {
+    std::filesystem::permissions(base / "locked", std::filesystem::perms::owner_all);
+    std::filesystem::remove_all(base);
+    GTEST_SKIP() << "permissions are not enforced for this user";
+  }
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "locked" / "old", base / "new"), base / "new");
+  EXPECT_FALSE(std::filesystem::exists(base / "new"));
+
+  std::filesystem::permissions(base / "locked", std::filesystem::perms::owner_all);
+  std::filesystem::remove_all(base);
+}
+
+TEST(D3, DDIO_CopyLegacyPathUsesCopyWhenMarkerCannotBeWritten) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_no_marker";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base / "readonly" / "old");
+  std::ofstream(base / "readonly" / "old" / "pilot.plt").close();
+  std::filesystem::permissions(base / "readonly",
+                               std::filesystem::perms::owner_read | std::filesystem::perms::owner_exec);
+
+  if (std::ofstream(base / "readonly" / "probe")) {
+    std::filesystem::permissions(base / "readonly", std::filesystem::perms::owner_all);
+    std::filesystem::remove_all(base);
+    GTEST_SKIP() << "permissions are not enforced for this user";
+  }
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "readonly" / "old", base / "new"), base / "new");
+  EXPECT_TRUE(std::filesystem::exists(base / "new" / "pilot.plt"));
+  EXPECT_FALSE(std::filesystem::exists(base / "readonly" / (std::string("old") + DDIO_ABANDONED_SUFFIX)));
+
+  std::filesystem::permissions(base / "readonly", std::filesystem::perms::owner_all);
+  std::filesystem::remove_all(base);
+}
+#endif
+
+TEST(D3, DDIO_CopyLegacyPathKeepsOldLocationWhenCopyFails) {
+  std::filesystem::path base = std::filesystem::temp_directory_path() / "ddio_tests_copy_fails";
+  std::filesystem::remove_all(base);
+  std::filesystem::create_directories(base / "old");
+  std::ofstream(base / "old" / "pilot.plt").close();
+
+  // The target's parent directory does not exist, so the copy fails
+  EXPECT_EQ(ddio_CopyLegacyPath(base / "old", base / "missing" / "new"), base / "old");
+  EXPECT_TRUE(std::filesystem::exists(base / "old" / "pilot.plt"));
+  EXPECT_FALSE(std::filesystem::exists(base / "missing"));
+  EXPECT_FALSE(std::filesystem::exists(base / (std::string("old") + DDIO_ABANDONED_SUFFIX)));
 
   std::filesystem::remove_all(base);
 }
@@ -273,7 +384,7 @@ TEST_F(DDIO_XDG, PrefPathFailsWithoutUsableDirectory) {
   EXPECT_TRUE(ddio_GetPrefPath().empty());
 }
 
-TEST_F(DDIO_XDG, PrefPathMovesLegacyDirectory) {
+TEST_F(DDIO_XDG, PrefPathCopiesLegacyDirectory) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
   std::filesystem::path legacy = base_ / "data" / "Outrage Entertainment" / "Descent 3";
   std::filesystem::create_directories(legacy / "savegame");
@@ -283,21 +394,12 @@ TEST_F(DDIO_XDG, PrefPathMovesLegacyDirectory) {
   EXPECT_EQ(ddio_GetPrefPath(), expected);
   EXPECT_TRUE(std::filesystem::exists(expected / "pilot.plt"));
   EXPECT_TRUE(std::filesystem::is_directory(expected / "savegame"));
-  EXPECT_FALSE(std::filesystem::exists(base_ / "data" / "Outrage Entertainment"));
+  EXPECT_TRUE(std::filesystem::exists(legacy / "pilot.plt"));
+  EXPECT_TRUE(std::filesystem::is_directory(legacy / "savegame"));
+  EXPECT_TRUE(std::filesystem::exists(base_ / "data" / "Outrage Entertainment" / "Descent 3.ABANDONED.readme"));
 }
 
-TEST_F(DDIO_XDG, PrefPathKeepsOtherLegacyOrganizationContents) {
-  SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
-  std::filesystem::path legacy_org = base_ / "data" / "Outrage Entertainment";
-  std::filesystem::create_directories(legacy_org / "Descent 3");
-  std::filesystem::create_directories(legacy_org / "Other Game");
-
-  EXPECT_EQ(ddio_GetPrefPath(), base_ / "data" / "descent3");
-  EXPECT_FALSE(std::filesystem::exists(legacy_org / "Descent 3"));
-  EXPECT_TRUE(std::filesystem::is_directory(legacy_org / "Other Game"));
-}
-
-TEST_F(DDIO_XDG, PrefPathDoesNotMoveLegacyDirectoryOverExistingFiles) {
+TEST_F(DDIO_XDG, PrefPathDoesNotCopyLegacyDirectoryOverExistingFiles) {
   SDL_SetEnvironmentVariable(SDL_GetEnvironment(), "XDG_DATA_HOME", (base_ / "data").c_str(), true);
   std::filesystem::path legacy = base_ / "data" / "Outrage Entertainment" / "Descent 3";
   std::filesystem::path current = base_ / "data" / "descent3";

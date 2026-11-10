@@ -76,10 +76,11 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   }
   std::filesystem::path fileName = configPath / REGISTRY_FILENAME;
 
-  // Earlier versions kept the settings in the preference path
+  // Earlier versions kept the settings in the preference path, and ddio_GetPrefPath() has copied them there from
+  // their old preference folder
   std::filesystem::path prefPath = ddio_GetPrefPath();
   if (!prefPath.empty()) {
-    fileName = ddio_MoveLegacyPath(prefPath / REGISTRY_FILENAME, fileName);
+    fileName = ddio_CopyLegacyPath(prefPath / REGISTRY_FILENAME, fileName);
   }
 
   database = new CRegistry(PATH_TO_CSTR(fileName));

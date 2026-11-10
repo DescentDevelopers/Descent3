@@ -84,7 +84,7 @@ A base directory is a directory that Descent 3 expects game files to be in. When
 
 Descent 3 has two types of base directories:
 
-- The writable base directory can contain both read-write files and read-only files. There is only one writable base directory: `$XDG_DATA_HOME/descent3` on Linux (see [File locations on Linux](#file-locations-on-linux)), `%APPDATA%\Descent3` on Windows and `~/Library/Application Support/Descent3` on macOS. Earlier versions used `Outrage Entertainment/Descent 3` in the same place; that directory is moved on first run.
+- The writable base directory can contain both read-write files and read-only files. There is only one writable base directory: `$XDG_DATA_HOME/descent3` on Linux (see [File locations on Linux](#file-locations-on-linux)), `%APPDATA%\Descent3` on Windows and `~/Library/Application Support/Descent3` on macOS. Earlier versions used `Outrage Entertainment/Descent 3` in the same place; that directory is copied on first run and left in place for those versions, with a `Descent 3.ABANDONED.readme` file next to it that says where its files went.
 - The read-only base directories can only contain read-only files. There can be any number of read-only base directories.
 
 You can add read-only base directories with the `-additionaldir` command-line option (see [Command-Line Options](#command-line-options)), and with the `DEFAULT_ADDITIONAL_DIRS` CMake option when compiling Descent 3 (see [BUILD.md’s Build Options section](./BUILD.md#build-options)). Descent 3 also adds the directories it was installed to and, if they exist, the default Steam and GOG installation directories.
@@ -117,8 +117,8 @@ On Linux, Descent 3 follows the [XDG Base Directory Specification](https://speci
 | Files | Location |
 |---|---|
 | Read-only game data, such as `d3.hog` | `descent3` in each directory of `$XDG_DATA_DIRS` (`/usr/local/share/descent3`, `/usr/share/descent3`), and the directory the game was installed to. As a last resort, the default Steam installation folders `~/.local/share/Steam/steamapps/common/Descent 3` and `~/.steam/debian-installation/steamapps/common/Descent 3` are searched too. |
-| Writable files, such as pilots and savegames | `$XDG_DATA_HOME/descent3` (`~/.local/share/descent3`). Earlier versions used `Outrage Entertainment/Descent 3` in the same place; that directory is moved here on first run. |
-| Settings (`.Descent3Registry`) | `$XDG_CONFIG_HOME/descent3` (`~/.config/descent3`). Settings from earlier versions, which kept them with the writable files, are moved here on first run. |
+| Writable files, such as pilots and savegames | `$XDG_DATA_HOME/descent3` (`~/.local/share/descent3`). Earlier versions used `Outrage Entertainment/Descent 3` in the same place; that directory is copied here on first run and left in place for those versions, with a `Descent 3.ABANDONED.readme` file next to it that says where its files went. |
+| Settings (`.Descent3Registry`) | `$XDG_CONFIG_HOME/descent3` (`~/.config/descent3`). Settings from earlier versions, which kept them with the writable files, are copied here on first run. |
 | Temporary files | `$XDG_CACHE_HOME/descent3` (`~/.cache/descent3`), or the `-tempdir` directory |
 | Log file (with `-logfile`) | `$XDG_STATE_HOME/descent3/Descent3.log` (`~/.local/state/descent3/Descent3.log`) |
 
