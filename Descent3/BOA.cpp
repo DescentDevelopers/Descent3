@@ -121,6 +121,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #ifdef EDITOR
 #include "editor\d3edit.h"
@@ -192,7 +193,7 @@ static void compute_terrain_region_info();
 static void compute_sound_dist_info();
 static void clear_BOA();
 static void compute_costs();
-static void update_path_info(q_item *node_list[MAX_ROOMS], int start, int end);
+static void update_path_info(const std::unique_ptr<q_item> node_list[], int start, int end);
 static void FindPath(int i, int j);
 static void compute_next_segs();
 static void compute_blockage_info();
@@ -909,7 +910,7 @@ void compute_costs() {
   }
 }
 
-void update_path_info(q_item *node_list[MAX_ROOMS], int start, int end) {
+void update_path_info(const std::unique_ptr<q_item> node_list[], int start, int end) {
   int cur_room;
   int par_room;
 
@@ -931,23 +932,22 @@ void update_path_info(q_item *node_list[MAX_ROOMS], int start, int end) {
 void FindPath(int i, int j) {
   pq PQPath;
   int counter;
-  q_item *start_node = new q_item(BOA_INDEX(i), -1, 0.0);
   q_item *cur_node;
 
-  q_item *node_list[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+  // Owns every queue node; PQPath only links them
+  std::unique_ptr<q_item> node_list[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 
   if (i == -1 || j == -1) {
-    delete start_node;
     return;
   }
 
-  memset(node_list, 0, sizeof(q_item *) * (MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS));
-
+  node_list[BOA_INDEX(i)] = std::make_unique<q_item>(BOA_INDEX(i), -1, 0.0);
+  q_item *start_node = node_list[BOA_INDEX(i)].get();
   PQPath.push(start_node);
   ASSERT(start_node->roomnum <= Highest_room_index + BOA_num_terrain_regions);
 
   while ((cur_node = PQPath.pop())) {
-    node_list[BOA_INDEX(cur_node->roomnum)] = cur_node;
+    ASSERT(node_list[BOA_INDEX(cur_node->roomnum)].get() == cur_node);
     ASSERT(BOA_INDEX(cur_node->roomnum) >= 0 &&
            BOA_INDEX(cur_node->roomnum) <= Highest_room_index + MAX_BOA_TERRAIN_REGIONS);
 
@@ -1003,13 +1003,13 @@ void FindPath(int i, int j) {
         new_cost = cur_node->cost + BOA_cost_array[BOA_INDEX(cur_node->roomnum)][counter] +
                    BOA_cost_array[BOA_INDEX(next_room)][next_portal];
 
-        list_item = node_list[BOA_INDEX(next_room)];
+        list_item = node_list[BOA_INDEX(next_room)].get();
         if (list_item != nullptr && list_item->cost <= new_cost)
           continue;
 
         if (list_item == nullptr) {
-          list_item = new q_item(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
-          node_list[BOA_INDEX(next_room)] = list_item;
+          node_list[BOA_INDEX(next_room)] = std::make_unique<q_item>(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
+          list_item = node_list[BOA_INDEX(next_room)].get();
           PQPath.push(list_item);
           ASSERT(list_item->roomnum <= Highest_room_index + BOA_num_terrain_regions);
         } else {
@@ -1061,13 +1061,13 @@ void FindPath(int i, int j) {
         new_cost = cur_node->cost + BOA_cost_array[BOA_INDEX(cur_node->roomnum)][counter] +
                    BOA_cost_array[BOA_INDEX(next_room)][next_portal];
 
-        list_item = node_list[BOA_INDEX(next_room)];
+        list_item = node_list[BOA_INDEX(next_room)].get();
         if (list_item != nullptr && list_item->cost <= new_cost)
           continue;
 
         if (list_item == nullptr) {
-          list_item = new q_item(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
-          node_list[BOA_INDEX(next_room)] = list_item;
+          node_list[BOA_INDEX(next_room)] = std::make_unique<q_item>(BOA_INDEX(next_room), cur_node->roomnum, new_cost);
+          list_item = node_list[BOA_INDEX(next_room)].get();
           PQPath.push(list_item);
           ASSERT(list_item->roomnum <= Highest_room_index + BOA_num_terrain_regions);
         } else {
@@ -1082,11 +1082,6 @@ void FindPath(int i, int j) {
   BOA_Array[i][j] = BOA_NO_PATH;
 
 done:
-  for (counter = 0; counter <= Highest_room_index + MAX_BOA_TERRAIN_REGIONS; counter++) {
-    if (node_list[counter])
-      delete node_list[counter];
-  }
-
   return;
 }
 
@@ -2138,17 +2133,16 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    int16_t *num_structs_per_room = (int16_t *)mem_malloc((Highest_room_index + 1) * sizeof(int16_t));
-    int16_t **r_struct_list;
+    auto num_structs_per_room = std::make_unique<int16_t[]>(Highest_room_index + 1);
 
     // Allocate the structure that tells what struct each face is in
-    r_struct_list = (int16_t **)mem_malloc((Highest_room_index + 1) * sizeof(int16_t *));
+    auto r_struct_list = std::make_unique<std::unique_ptr<int16_t[]>[]>(Highest_room_index + 1);
     for (i = 0; i <= Highest_room_index; i++) {
       if (Rooms[i].used) {
         if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
           continue;
 
-        r_struct_list[i] = mem_rmalloc<int16_t>(Rooms[i].num_faces);
+        r_struct_list[i] = std::make_unique<int16_t[]>(Rooms[i].num_faces);
       }
     }
 
@@ -2239,13 +2233,10 @@ void ComputeAABB(bool f_full) {
         if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
           continue;
 
-        int16_t *nfaces;
-        bool *used;
-
         int n_new;
 
-        nfaces = mem_rmalloc<int16_t>(rp->num_faces);
-        used = mem_rmalloc<bool>(rp->num_faces);
+        auto nfaces = std::make_unique<int16_t[]>(rp->num_faces);
+        auto used = std::make_unique<bool[]>(rp->num_faces);
 
         for (count1 = 0; count1 < rp->num_faces; count1++) {
           used[count1] = false;
@@ -2296,9 +2287,6 @@ void ComputeAABB(bool f_full) {
 
       done:
 
-        mem_free(nfaces);
-        mem_free(used);
-
         ASSERT(num_struct < MAX_REGIONS_PER_ROOM); // get chris
         num_structs_per_room[i] = num_struct;
       }
@@ -2319,8 +2307,8 @@ void ComputeAABB(bool f_full) {
         //
         //			continue;
 
-        vector *s_max_xyz = mem_rmalloc<vector>(num_structs_per_room[i]);
-        vector *s_min_xyz = mem_rmalloc<vector>(num_structs_per_room[i]);
+        auto s_max_xyz = std::make_unique<vector[]>(num_structs_per_room[i]);
+        auto s_min_xyz = std::make_unique<vector[]>(num_structs_per_room[i]);
 
         for (count = 0; count < num_structs_per_room[i]; count++) {
 
@@ -2376,9 +2364,6 @@ void ComputeAABB(bool f_full) {
             }
           }
         }
-
-        mem_free(s_max_xyz);
-        mem_free(s_min_xyz);
       }
     }
 
@@ -2630,18 +2615,8 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    mem_free(num_structs_per_room);
-    for (i = 0; i <= Highest_room_index; i++) {
-      if (Rooms[i].used) {
-        if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
-          continue;
-
-        mem_free(r_struct_list[i]);
-      }
-    }
-    mem_free(r_struct_list);
-    num_structs_per_room = nullptr;
-    r_struct_list = nullptr;
+    num_structs_per_room.reset();
+    r_struct_list.reset();
 
     // Finds the min/max of each region
     for (i = 0; i <= Highest_room_index; i++) {

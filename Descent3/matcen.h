@@ -20,6 +20,8 @@
 #define _MATCEN_H_
 
 #include <cstdint>
+#include <memory>
+
 #include "cfile.h"
 #include "vecmat.h"
 #include "matcen_external.h"
@@ -53,8 +55,10 @@ extern char *MatcenEffectStrings[NUM_MATCEN_EFFECTS];
 // 2 - Added matcen effects
 // 3 - Added matcen active_sound_handle
 
-class matcen {
-private:
+// Plain matcen data, kept apart from the alive list so that matcen's copy operations can copy it
+// member-wise and deep-copy only the list.
+class matcen_state {
+protected:
   // Static data -- only changes by OSIRIS
   char m_name[MAX_MATCEN_NAME_LEN];
 
@@ -89,7 +93,6 @@ private:
 
   int16_t m_max_alive_children;
   int16_t m_num_alive;
-  int *m_alive_list; // list of alive children
 
   float m_preprod_time;
   float m_postprod_time;
@@ -119,6 +122,11 @@ private:
   int m_last_prod_objref;
 
   int m_num_prod_type[MAX_PROD_TYPES];
+};
+
+class matcen : private matcen_state {
+private:
+  std::unique_ptr<int[]> m_alive_list; // list of alive children (m_max_alive_children entries, m_num_alive used)
 
   // Private functions that are not available outside of the matcen internals
   bool StartObjProd();
@@ -134,7 +142,8 @@ private:
 
 public:
   matcen();
-  ~matcen();
+  matcen(const matcen &other);
+  matcen &operator=(const matcen &other);
 
   void SetCreationTexture(int16_t texnum);
   int16_t GetCreationTexture();
@@ -201,7 +210,7 @@ public:
   void Reset();
 };
 
-extern matcen *Matcen[MAX_MATCENS];
+extern std::unique_ptr<matcen> Matcen[MAX_MATCENS];
 int FindMatcenIndex(const char *name);
 int CreateMatcen(const char *name, bool *f_name_changed);
 void InitMatcens();
