@@ -33,7 +33,6 @@ target_link_libraries(ddio PRIVATE
   SDL3::SDL3
   ddebug
   logger
-  mem
 )
 target_include_directories(ddio PUBLIC
   $<BUILD_INTERFACE:

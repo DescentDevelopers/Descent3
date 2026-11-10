@@ -1071,7 +1071,6 @@ void PreInitD3Systems() {
     Mem_low_memory_mode = Mem_superlow_memory_mode = true;
   if (FindArg("-dedicated"))
     Mem_low_memory_mode = true;
-  mem_Init();
   if (FindArg("-himem")) {
     Mem_low_memory_mode = false;
     Mem_superlow_memory_mode = false;

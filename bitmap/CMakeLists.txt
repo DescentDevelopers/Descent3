@@ -16,7 +16,6 @@ target_link_libraries(bitmap PRIVATE
   ddebug
   ddio
   logger
-  mem
   misc
   stb
 )

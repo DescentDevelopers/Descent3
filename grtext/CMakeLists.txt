@@ -13,7 +13,6 @@ target_link_libraries(grtext PRIVATE
   ddebug
   ddio
   logger
-  mem
 )
 target_include_directories(grtext PUBLIC
   $<BUILD_INTERFACE:
