@@ -990,10 +990,10 @@
 #define ALLOW_ALL_LANG 1
 
 #ifdef EDITOR
-#include "editor\HFile.h"
-#include "editor\d3edit.h"
-#include "slew.h"
+#include "editor/d3edit.h"
+#include "ddgr.h"
 #include "gr.h"
+#include "slew.h"
 #define INIT_MESSAGE(c) SplashMessage c
 #else
 void IntroScreen();
@@ -1611,14 +1611,18 @@ void InitGraphics(bool editor) {
   rend_InitWindowMode();
 
 #ifdef EDITOR
-  char *driver = "GDIX";
-
-  if (!ddgr_Init(Descent, driver, editor ? false : true))
+  if (!ddgr_Init(Descent, "GDIX", !editor))
     Error("DDGR graphic system init failed.");
 
   // Init our renderer
   grSurface::init_system();
-  rend_Init(RENDERER_OPENGL, Descent, nullptr);
+
+  Render_preferred_state.width = 640;
+  Render_preferred_state.height = 480;
+  Render_preferred_state.bit_depth = 32;
+  Render_preferred_state.fullscreen = false;
+
+  rend_Init(RENDERER_OPENGL, Descent, &Render_preferred_state);
   Desktop_surf = new grSurface(0, 0, 0, SURFTYPE_VIDEOSCREEN, 0);
 #else
   strcpy(App_ddvid_subsystem, "GDIX");

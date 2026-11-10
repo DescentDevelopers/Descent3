@@ -1,5 +1,5 @@
 {
-  "builtin-baseline": "9a5dfef5d1a0438a7d24856a85bd60f309d355e9",
+  "builtin-baseline": "9eec002df1cd109f8f104cd966a763daf9751489",
   "dependencies": [
     {
       "name": "cpp-httplib",
@@ -10,13 +10,13 @@
     "plog",
     {
       "name": "sdl3",
-      "version>=": "3.2.6",
+      "version>=": "3.4.18",
       "features": ["x11","wayland", "alsa"],
       "platform": "linux"
     },
     {
       "name": "sdl3",
-      "version>=": "3.2.6",
+      "version>=": "3.4.18",
       "platform": "!linux"
     },
     {
@@ -29,7 +29,7 @@
   "overrides": [
     {
       "name": "sdl3",
-      "version": "3.2.6"
+      "version": "3.4.18"
     }
  ]
 }

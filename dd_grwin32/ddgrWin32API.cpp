@@ -42,7 +42,6 @@
 #include "ddgrWin32.h"
 #include "ddgrWin32GDI.h"
 #include "ddgrWin32DX.h"
-#include "mono.h"
 #include "pserror.h"
 
 /*	Surface Functions
@@ -57,7 +56,7 @@
                 sf->locks = 0
 */
 bool ddgr_surf_Create(ddgr_surface *sf) {
-  bool success;
+  bool success = false;
 
   switch (LIB_DATA(subsystem)) {
   case DDGR_GDIX_SUBSYSTEM:
@@ -97,7 +96,7 @@ void ddgr_surf_Destroy(ddgr_surface *sf) {
                 rowsize is the size in bytes of one row of memory.
 */
 bool ddgr_surf_Lock(ddgr_surface *sf, void **ptr, int *rowsize) {
-  bool success;
+  bool success = false;
 
   switch (LIB_DATA(subsystem)) {
   case DDGR_GDIX_SUBSYSTEM:
@@ -119,7 +118,7 @@ bool ddgr_surf_Lock(ddgr_surface *sf, void **ptr, int *rowsize) {
 }
 
 bool ddgr_surf_Unlock(ddgr_surface *sf, void *ptr) {
-  bool success;
+  bool success = false;
 
   switch (LIB_DATA(subsystem)) {
   case DDGR_GDIX_SUBSYSTEM:
@@ -165,7 +164,7 @@ void ddgr_surf_AttachHandle(ddgr_surface *sf, unsigned handle) {
                                                 them and display via flip.  monopage surfaces don't have this luxury.
 */
 bool ddgr_surf_InitVideo(ddgr_surface *sf) {
-  bool success;
+  bool success = false;
 
   ASSERT(sf->type == SURFTYPE_VIDEOSCREEN);
 
@@ -208,7 +207,7 @@ void ddgr_surf_CloseVideo(ddgr_surface *sf) {
 /*	flips the buffers in a surface.  really only useful for video screens
  */
 bool ddgr_surf_FlipVideo(ddgr_surface *sf) {
-  bool success;
+  bool success = false;
 
   //	don't report error if there's no backbuffer.
   if (!(sf->flags & SURFFLAG_BACKBUFFER))
@@ -233,8 +232,7 @@ bool ddgr_surf_FlipVideo(ddgr_surface *sf) {
   return success;
 }
 
-/*	graphic primatives
- */
+/* graphic primitives */
 void ddgr_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, int h) {
   switch (LIB_DATA(subsystem)) {
   case DDGR_GDIX_SUBSYSTEM:
@@ -250,7 +248,7 @@ void ddgr_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, int
 }
 
 bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh) {
-  bool success;
+  bool success = false;
 
   switch (LIB_DATA(subsystem)) {
   case DDGR_GDIX_SUBSYSTEM:
@@ -273,6 +271,5 @@ bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx,
 
 //	returns aspect ratio of current display.
 float ddgr_GetAspectRatio() {
-  float aspect_ratio = (float)((3.0 * GetSystemMetrics(SM_CXSCREEN)) / (4.0 * GetSystemMetrics(SM_CYSCREEN)));
-  return aspect_ratio;
+  return 3.0f * static_cast<float>(GetSystemMetrics(SM_CXSCREEN)) / (4.0f * static_cast<float>(GetSystemMetrics(SM_CYSCREEN)));
 }

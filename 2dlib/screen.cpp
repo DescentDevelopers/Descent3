@@ -45,6 +45,7 @@
  * $NoKeywords: $
  */
 
+#include "ddgr.h"
 #include "gr.h"
 #include "pserror.h"
 #include "renderer.h"

@@ -1299,9 +1299,9 @@
 #ifdef EDITOR
 #include "ddio.h"
 #include "editor/d3edit.h"
-#include "editor/HFile.h"
 #include "editor/Erooms.h"
 #include "editor/moveworld.h"
+#include "editor/ebnode.h"
 #include "editor/editor_lighting.h"
 #endif
 
@@ -1340,7 +1340,7 @@ struct {
 
 int Num_failed_xlate_items;
 
-void AddFailedXLateItem(int type, int id, char *name) {
+void AddFailedXLateItem(int type, int id, const char *name) {
   ASSERT(Num_failed_xlate_items < MAX_FAILED_XLATE_ITEMS);
 
   Failed_xlate_items[Num_failed_xlate_items].type = type;
@@ -1350,7 +1350,7 @@ void AddFailedXLateItem(int type, int id, char *name) {
   Num_failed_xlate_items++;
 }
 
-char *GetFailedXLateItemName(int type, int id) {
+const char *GetFailedXLateItemName(int type, int id) {
   for (int i = 0; i < Num_failed_xlate_items; i++) {
     if ((Failed_xlate_items[i].type == type) && (Failed_xlate_items[i].id == id))
       return Failed_xlate_items[i].name;
@@ -1595,7 +1595,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
 
 #if (defined(EDITOR) || defined(NEWEDITOR))
     if (GetFunctionMode() == EDITOR_MODE) {
-      char *old_name = GetFailedXLateItemName((type == OBJ_DOOR) ? XT_DOOR : XT_GENERIC, old_id);
+      const char *old_name = GetFailedXLateItemName((type == OBJ_DOOR) ? XT_DOOR : XT_GENERIC, old_id);
       char *new_name = (type == OBJ_DOOR) ? Doors[id].name : Object_info[id].name;
       OutrageMessageBox("Object %d (type %s) has undefined ID %d, \"%s\".\n\n"
                         "This object will be converted to ID %d, \"%s\".",
@@ -3672,7 +3672,7 @@ extern bool Disable_editor_rendering;
 #define LEVEL_LOADED_PCT_CALC (filelen) ? (float)(chunk_size + chunk_start) / (float)filelen : 0.0f
 // Load a level file
 // Returns 1 if file read ok, else 0
-int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
+int LoadLevel(const char *filename, void (*cb_fn)(const char *, int, int)) {
   CFILE *ifile;
   int n, i, retval = 1;
 
@@ -4513,7 +4513,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
 }
 
 // Writes a chunk header.  Writes chunk id & placeholder length.  Returns chunk start pos
-int StartChunk(CFILE *ofile, char *chunk_name) {
+int StartChunk(CFILE *ofile, const char *chunk_name) {
   int chunk_start_pos;
 
   cf_WriteBytes((uint8_t *)chunk_name, 4, ofile);
@@ -5066,11 +5066,9 @@ void WritePlayerStarts(CFILE *outfile) {
   }
 }
 
-#include "editor/ebnode.h"
-
 // Save a level file
 // Returns 1 if file saved ok, else 0
-int SaveLevel(char *filename, bool f_save_room_AABB) {
+int SaveLevel(const char *filename, bool f_save_room_AABB) {
   CFILE *ofile;
   int i, highest_used_index;
   int chunk_start_pos;

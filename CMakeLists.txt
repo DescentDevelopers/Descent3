@@ -198,7 +198,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wstrict-null-sentinel>")
 endif()
 
-find_package(SDL3 3.2.6 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
+find_package(SDL3 3.4.18 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 find_package(glm REQUIRED)
 find_package(httplib QUIET)
 if (TARGET httplib::httplib)
