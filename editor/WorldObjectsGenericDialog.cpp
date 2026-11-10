@@ -612,25 +612,23 @@ bool InputObjectName(char *buf, int len, char *title, char *prompt, CWnd *wnd) {
   if (len > (PAGENAME_LEN - 1))
     len = PAGENAME_LEN - 1;
 
-  char *tempbuf = mem_rmalloc<char>(len);
+  auto tempbuf = std::make_unique<char[]>(len);
 
-  strncpy(tempbuf, buf, len - 1);
+  strncpy(tempbuf.get(), buf, len - 1);
   tempbuf[len - 1] = '\0';
 
 try_again:
 
-  if (!InputString(tempbuf, len, title, prompt, wnd)) {
-    mem_free(tempbuf);
+  if (!InputString(tempbuf.get(), len, title, prompt, wnd)) {
     return 0;
   }
 
-  if (FindObjectIDName(tempbuf) != -1) {
+  if (FindObjectIDName(tempbuf.get()) != -1) {
     OutrageMessageBox("The name you specified is already in use.  Enter another name.");
     goto try_again;
   }
 
-  strcpy(buf, tempbuf);
-  mem_free(tempbuf);
+  strcpy(buf, tempbuf.get());
 
   return 1;
 }
@@ -1195,8 +1193,8 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void) {
   view_vector.z() = -(fabs(pm->maxs.z() - pm->mins.z()) * (scalar)2);
 
   m_ObjectSurf.create(128, 128, BPP_16);
-  grViewport *vport = new grViewport(&m_ObjectSurf);
-  StartEditorFrame(vport, &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
+  auto vport = std::make_unique<grViewport>(&m_ObjectSurf);
+  StartEditorFrame(vport.get(), &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
   DrawPolygonModel(&zero_vector, &rot_matrix, bm_handle, norm_angles, 0, 1.0, 1.0, 1.0);
   EndEditorFrame();
 
@@ -1204,7 +1202,7 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void) {
   y = rect.top + ((rect.bottom - rect.top) / 2) - m_ObjectSurf.height() / 2;
   Desktop_surf->blt(x, y, &m_ObjectSurf);
 
-  delete vport;
+  vport.reset();
   m_ObjectSurf.free();
 }
 

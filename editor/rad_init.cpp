@@ -44,7 +44,7 @@ float rad_Convergence = 1.0f;
 int rad_NumSurfaces;
 int rad_NumElements;
 
-float *rad_FormFactors;
+std::unique_ptr<float[]> rad_FormFactors;
 
 int rad_StepCount = 0;
 int rad_MaxStep = 1;
@@ -59,12 +59,12 @@ int UseVolumeLights = 0; // User selectable to do volumelights
 int Calculate_specular_lighting = 0;
 
 // Specular variable
-float *Room_strongest_value[MAX_ROOMS][4];
+std::unique_ptr<float[]> Room_strongest_value[MAX_ROOMS][4];
 
 // Tells radiosity renderer to do volume lighting
 int Do_volume_lighting = 0;
 
-volume_element *Volume_elements[MAX_VOLUME_ELEMENTS];
+std::unique_ptr<volume_element[]> Volume_elements[MAX_VOLUME_ELEMENTS];
 
 // Shoot_from_patch tells us whether or not we're shooting from the center of
 // a surface or if we must shoot from the center of each of its individual elements
@@ -125,8 +125,7 @@ void InitRadiosityRun() {
 void SetupFormFactors() {
   ASSERT(rad_NumElements > 0);
 
-  rad_FormFactors = mem_rmalloc<float>(rad_NumElements);
-  ASSERT(rad_FormFactors != nullptr);
+  rad_FormFactors = std::make_unique<float[]>(rad_NumElements);
 }
 
 void CalculateAreaForSurface(rad_surface *sp) {
@@ -297,10 +296,10 @@ void UpdateUnsentValues() {
 }
 
 // Finds the world coordinate center of a surface
-void GetCenterOfSurface(rad_surface *sp, vector *dest) { vm_GetCentroid(dest, sp->verts, sp->num_verts); }
+void GetCenterOfSurface(rad_surface *sp, vector *dest) { vm_GetCentroid(dest, sp->verts.get(), sp->num_verts); }
 
 // Finds the world coordinate center of a surface
-void GetCenterOfElement(rad_element *ep, vector *dest) { vm_GetCentroid(dest, ep->verts, ep->num_verts); }
+void GetCenterOfElement(rad_element *ep, vector *dest) { vm_GetCentroid(dest, ep->verts.get(), ep->num_verts); }
 
 void CalculateRadiosity() {
   int key;
@@ -396,7 +395,7 @@ void CloseRadiosityRun() {
 
   NormalizeExitance();
   if (Shoot_method == SM_HEMICUBE) {
-    mem_free(rad_FormFactors);
+    rad_FormFactors.reset();
     CloseHemicube();
   }
 }

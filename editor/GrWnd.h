@@ -44,6 +44,8 @@
 #ifndef M_GRWND_H
 #define M_GRWND_H
 
+#include <memory>
+
 #include "gr.h"
 #include "stdafx.h"
 
@@ -88,8 +90,8 @@ protected:
 
   //	Variables
 protected:
-  grScreen *m_grScreen;     // screen belonging to window
-  grViewport *m_grViewport; // Viewport belonging to window
+  std::unique_ptr<grScreen> m_grScreen;     // screen belonging to window
+  std::unique_ptr<grViewport> m_grViewport; // Viewport belonging to window
   char m_Name[32];          // screen window name
 
   BOOL m_grCreated; // Create/Destroyed window

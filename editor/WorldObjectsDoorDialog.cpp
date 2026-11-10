@@ -494,8 +494,8 @@ void CWorldObjectsDoorDialog::UpdateDoorView(void) {
   vm_AnglesToMatrix(&rot_matrix, 0, spin_frame * 400, 0);
 
   m_DoorSurf.create(128, 128, BPP_16);
-  grViewport *vport = new grViewport(&m_DoorSurf);
-  StartEditorFrame(vport, &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
+  auto vport = std::make_unique<grViewport>(&m_DoorSurf);
+  StartEditorFrame(vport.get(), &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
   DrawPolygonModel(&zero_vector, &rot_matrix, bm_handle, norm_angles, 0, 1.0, 1.0, 1.0);
   EndEditorFrame();
 
@@ -503,7 +503,7 @@ void CWorldObjectsDoorDialog::UpdateDoorView(void) {
   y = rect.top + ((rect.bottom - rect.top) / 2) - m_DoorSurf.height() / 2;
   Desktop_surf->blt(x, y, &m_DoorSurf);
 
-  delete vport;
+  vport.reset();
   m_DoorSurf.free();
 }
 
@@ -634,24 +634,22 @@ void CWorldObjectsDoorDialog::OnDeleteDoor() {
 // Returns true if got new name, false if cancelled.
 // the data in buf not changed if cancel is pressed
 bool InputDoorName(char *buf, int len, char *title, char *prompt, CWnd *wnd) {
-  char *tempbuf = mem_rmalloc<char>(len);
+  auto tempbuf = std::make_unique<char[]>(len);
 
-  strcpy(tempbuf, buf);
+  strcpy(tempbuf.get(), buf);
 
 try_again:
 
-  if (!InputString(tempbuf, len, title, prompt, wnd)) {
-    mem_free(tempbuf);
+  if (!InputString(tempbuf.get(), len, title, prompt, wnd)) {
     return 0;
   }
 
-  if (FindDoorName(tempbuf) != -1) {
+  if (FindDoorName(tempbuf.get()) != -1) {
     OutrageMessageBox("The name you specified is already in use.  Enter another name.");
     goto try_again;
   }
 
-  strcpy(buf, tempbuf);
-  mem_free(tempbuf);
+  strcpy(buf, tempbuf.get());
 
   return 1;
 }

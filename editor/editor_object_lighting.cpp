@@ -17,6 +17,7 @@
  */
 
 #include <algorithm>
+#include <memory>
 
 #include "3d.h"
 #include "gametexture.h"
@@ -314,18 +315,15 @@ int ComputeSurfacesForObjects(int surface_index, int terrain) {
           ComputeObjectSurfaceRes(&Light_surfaces[surface_index], &Objects[i], t, j);
 
           if (sm->faces[j].nverts > 0) {
-            Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
-            ASSERT(Light_surfaces[surface_index].verts != nullptr);
+            Light_surfaces[surface_index].verts = std::make_unique<vector[]>(sm->faces[j].nverts);
           } else
-            Light_surfaces[surface_index].verts = nullptr;
+            Light_surfaces[surface_index].verts.reset();
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
-            Light_surfaces[surface_index].elements =
-                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
-                                         Light_surfaces[surface_index].yresolution);
-            ASSERT(Light_surfaces[surface_index].elements != nullptr);
+            Light_surfaces[surface_index].elements = std::make_unique<rad_element[]>(
+                Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution);
           } else
-            Light_surfaces[surface_index].elements = nullptr;
+            Light_surfaces[surface_index].elements.reset();
 
           Light_surfaces[surface_index].flags = 0;
 
@@ -400,18 +398,15 @@ int ComputeSurfacesForObjectsForSingleRoom(int surface_index, int roomnum) {
           ComputeObjectSurfaceRes(&Light_surfaces[surface_index], &Objects[i], t, j);
 
           if (sm->faces[j].nverts > 0) {
-            Light_surfaces[surface_index].verts = mem_rmalloc<vector>(sm->faces[j].nverts);
-            ASSERT(Light_surfaces[surface_index].verts != nullptr);
+            Light_surfaces[surface_index].verts = std::make_unique<vector[]>(sm->faces[j].nverts);
           } else
-            Light_surfaces[surface_index].verts = nullptr;
+            Light_surfaces[surface_index].verts.reset();
 
           if (Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution > 0) {
-            Light_surfaces[surface_index].elements =
-                mem_rmalloc<rad_element>(Light_surfaces[surface_index].xresolution *
-                                         Light_surfaces[surface_index].yresolution);
-            ASSERT(Light_surfaces[surface_index].elements != nullptr);
+            Light_surfaces[surface_index].elements = std::make_unique<rad_element[]>(
+                Light_surfaces[surface_index].xresolution * Light_surfaces[surface_index].yresolution);
           } else
-            Light_surfaces[surface_index].elements = nullptr;
+            Light_surfaces[surface_index].elements.reset();
 
           if (sm->faces[j].texnum == -1) {
             Light_surfaces[surface_index].emittance.r = 0;
@@ -837,7 +832,7 @@ void BuildElementListForObjectFace(int objnum, int subnum, int facenum, rad_surf
 
 #define MAX_COMBINES 50
 #define LM_ADJACENT_FACE_THRESHOLD .95
-uint8_t *ObjectsAlreadyCombined[MAX_OBJECTS];
+std::unique_ptr<uint8_t[]> ObjectsAlreadyCombined[MAX_OBJECTS];
 
 // Given a submodel and a face, goes through the entire object and checks to see
 // if this face can share a lightmap with any other face
@@ -956,10 +951,7 @@ void CombineObjectLightmapUVs(object *obj, int lmi_type) {
     if (IsNonRenderableSubmodel(pm, i))
       continue;
 
-    ObjectsAlreadyCombined[i] = mem_rmalloc<uint8_t>(sm->num_faces);
-    ASSERT(ObjectsAlreadyCombined[i]);
-    for (k = 0; k < sm->num_faces; k++)
-      ObjectsAlreadyCombined[i][k] = 0;
+    ObjectsAlreadyCombined[i] = std::make_unique<uint8_t[]>(sm->num_faces);
   }
 
   for (i = 0; i < pm->n_models; i++) {
@@ -969,7 +961,7 @@ void CombineObjectLightmapUVs(object *obj, int lmi_type) {
       continue;
 
     for (t = 0; t < sm->num_faces; t++) {
-      if (*(ObjectsAlreadyCombined[i] + t) == 0)
+      if (ObjectsAlreadyCombined[i][t] == 0)
         TestObjectLightAdjacency(obj, i, t, lmi_type);
     }
   }
@@ -1005,6 +997,6 @@ void CombineObjectLightmapUVs(object *obj, int lmi_type) {
 
     if (IsNonRenderableSubmodel(pm, i))
       continue;
-    mem_free(ObjectsAlreadyCombined[i]);
+    ObjectsAlreadyCombined[i].reset();
   }
 }

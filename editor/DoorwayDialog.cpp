@@ -137,6 +137,8 @@
 // DoorwayDialog.cpp : implementation file
 //
 
+#include <memory>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "DoorwayDialog.h"
@@ -393,8 +395,8 @@ void CDoorwayDialog::DrawDoorwayDoorPic() {
   for (int i = 0; i < 30; i++)
     norm_angles[i] = 0;
 
-  grViewport *vport = new grViewport(&m_DoorSurf);
-  StartEditorFrame(vport, &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
+  auto vport = std::make_unique<grViewport>(&m_DoorSurf);
+  StartEditorFrame(vport.get(), &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
   DrawPolygonModel(&zero_vector, &id_matrix, bm_handle, norm_angles, 0, 1.0, 1.0, 1.0);
   EndEditorFrame();
 
@@ -402,7 +404,7 @@ void CDoorwayDialog::DrawDoorwayDoorPic() {
   y = rect.top + ((rect.bottom - rect.top) / 2) - m_DoorSurf.height() / 2;
   Desktop_surf->blt(0, 0, &m_DoorSurf);
 
-  delete vport;
+  vport.reset();
   m_DoorSurf.free();
   Desktop_surf->attach_to_window(0);
 }

@@ -371,12 +371,12 @@ void CMegacellDialog::OnDeleteMegacell() {
     }
 
     int num_to_delete = 0;
+    auto texname_buf = std::make_unique<char[]>(MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT * PAGENAME_LEN);
     char *texnames[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
     uint16_t texindices[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
 
     for (i = 0; i < MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT; i++) {
-      texnames[i] = mem_rmalloc<char>(PAGENAME_LEN);
-      ASSERT(texnames[i]);
+      texnames[i] = &texname_buf[i * PAGENAME_LEN];
       if (!can_delete[i])
         continue;
 
@@ -414,9 +414,6 @@ void CMegacellDialog::OnDeleteMegacell() {
 
       FreeTexture(texindices[i]);
     }
-
-    for (i = 0; i < MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT; i++)
-      mem_free(texnames[i]);
   }
 
   AutoChecking = 0;
@@ -743,7 +740,7 @@ void CMegacellDialog::UpdateTextureView() {
 
       if (texnum == n) // draw a white box if this is the current texture
       {
-        grViewport *vport = new grViewport(&m_TextureSurf);
+        auto vport = std::make_unique<grViewport>(&m_TextureSurf);
 
         int x = 0, y = 0;
 
@@ -753,8 +750,6 @@ void CMegacellDialog::UpdateTextureView() {
         vport->line(GR_RGB(255, 255, 255), x + vport->width() - 1, y + vport->height() - 1, x, y + vport->height() - 1);
         vport->line(GR_RGB(255, 255, 255), x, y + vport->height() - 1, x, y);
         vport->unlock();
-
-        delete vport;
       }
 
       Desktop_surf->blt(x, y, &m_TextureSurf);
@@ -938,7 +933,7 @@ void CMegacellDialog::UpdateMegacellView() {
 
       // Draw a separation line on the right and bottom side
       {
-        grViewport *vport = new grViewport(&m_TextureSurf);
+        auto vport = std::make_unique<grViewport>(&m_TextureSurf);
 
         int x = 0, y = 0;
 
@@ -947,7 +942,6 @@ void CMegacellDialog::UpdateMegacellView() {
         vport->line(GR_RGB(0, 0, 0), vport->width() - 1, 0, vport->width() - 1, vport->height() - 1);
 
         vport->unlock();
-        delete vport;
       }
 
       Desktop_surf->blt(x, y, &m_TextureSurf);

@@ -955,19 +955,16 @@ void DrawItemModel(grHardwareSurface *surf, int model_num) {
 
   // Set up surface & vuewport
   surf->clear();
-  grViewport *vport = new grViewport(surf);
+  auto vport = std::make_unique<grViewport>(surf);
   vport->clear();
 
   // Draw to our surface
-  StartEditorFrame(vport, &view_pos, &id_matrix, D3_DEFAULT_ZOOM);
+  StartEditorFrame(vport.get(), &view_pos, &id_matrix, D3_DEFAULT_ZOOM);
   DrawPolygonModel(&zero_vector, &rot_matrix, model_num, nullptr, 0, 1.0, 1.0, 1.0);
   EndEditorFrame();
 
   // Copy to the screen
   Desktop_surf->blt(0, 0, surf);
-
-  // Delete our viewport
-  delete vport;
 }
 
 void CObjectDialog::OnObjpadResetCurobjHeight() {

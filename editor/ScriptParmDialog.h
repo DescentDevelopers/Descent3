@@ -91,26 +91,28 @@ private:
   CWnd *m_ContextWnd;
 };
 
-inline void RETURN_SCRIPTPARM_DIALOG(tScriptParm *parmlist, CScriptParmDialog *dlg, char *parmtypelist[MAX_SCRPARAMS]) {
-  dlg->ConvertToScriptParameter(&parmlist[0], parmtypelist[0], dlg->m_ParmEdit1);
-  dlg->ConvertToScriptParameter(&parmlist[1], parmtypelist[1], dlg->m_ParmEdit2);
-  dlg->ConvertToScriptParameter(&parmlist[2], parmtypelist[2], dlg->m_ParmEdit3);
-  dlg->ConvertToScriptParameter(&parmlist[3], parmtypelist[3], dlg->m_ParmEdit4);
-  dlg->ConvertToScriptParameter(&parmlist[4], parmtypelist[4], dlg->m_ParmEdit5);
-  dlg->ConvertToScriptParameter(&parmlist[5], parmtypelist[5], dlg->m_ParmEdit6);
-  dlg->ConvertToScriptParameter(&parmlist[6], parmtypelist[6], dlg->m_ParmEdit7);
-  dlg->ConvertToScriptParameter(&parmlist[7], parmtypelist[7], dlg->m_ParmEdit8);
+inline void RETURN_SCRIPTPARM_DIALOG(tScriptParm *parmlist, CScriptParmDialog *dlg,
+                                     const std::unique_ptr<char[]> parmtypelist[MAX_SCRPARAMS]) {
+  dlg->ConvertToScriptParameter(&parmlist[0], parmtypelist[0].get(), dlg->m_ParmEdit1);
+  dlg->ConvertToScriptParameter(&parmlist[1], parmtypelist[1].get(), dlg->m_ParmEdit2);
+  dlg->ConvertToScriptParameter(&parmlist[2], parmtypelist[2].get(), dlg->m_ParmEdit3);
+  dlg->ConvertToScriptParameter(&parmlist[3], parmtypelist[3].get(), dlg->m_ParmEdit4);
+  dlg->ConvertToScriptParameter(&parmlist[4], parmtypelist[4].get(), dlg->m_ParmEdit5);
+  dlg->ConvertToScriptParameter(&parmlist[5], parmtypelist[5].get(), dlg->m_ParmEdit6);
+  dlg->ConvertToScriptParameter(&parmlist[6], parmtypelist[6].get(), dlg->m_ParmEdit7);
+  dlg->ConvertToScriptParameter(&parmlist[7], parmtypelist[7].get(), dlg->m_ParmEdit8);
 }
 
-inline void SETUP_SCRIPTPARM_DIALOG(CScriptParmDialog *dlg, char *namelist[MAX_SCRPARAMS], tScriptParm *parmlist) {
-  dlg->m_Parm1 = namelist[0];
-  dlg->m_Parm2 = namelist[1];
-  dlg->m_Parm3 = namelist[2];
-  dlg->m_Parm4 = namelist[3];
-  dlg->m_Parm5 = namelist[4];
-  dlg->m_Parm6 = namelist[5];
-  dlg->m_Parm7 = namelist[6];
-  dlg->m_Parm8 = namelist[7];
+inline void SETUP_SCRIPTPARM_DIALOG(CScriptParmDialog *dlg, const std::unique_ptr<char[]> namelist[MAX_SCRPARAMS],
+                                    tScriptParm *parmlist) {
+  dlg->m_Parm1 = namelist[0].get();
+  dlg->m_Parm2 = namelist[1].get();
+  dlg->m_Parm3 = namelist[2].get();
+  dlg->m_Parm4 = namelist[3].get();
+  dlg->m_Parm5 = namelist[4].get();
+  dlg->m_Parm6 = namelist[5].get();
+  dlg->m_Parm7 = namelist[6].get();
+  dlg->m_Parm8 = namelist[7].get();
 
   dlg->ConvertParamToText(dlg->m_ParmEdit1, &parmlist[0]);
   dlg->ConvertParamToText(dlg->m_ParmEdit2, &parmlist[1]);

@@ -89,6 +89,7 @@
 #include "ddio.h"
 #include "osiris_dll.h"
 #include <stdarg.h>
+#include <memory>
 
 #ifdef NEWEDITOR
 #include "../neweditor/globals.h"
@@ -276,28 +277,25 @@ int ScriptCompile(tCompilerInfo *ci) {
           new_line_count++;
         ptr++;
       }
-      char *data, *d_ptr;
-      d_ptr = data = (char *)mem_malloc(dwNumberOfBytesRead + 1 + new_line_count);
-      if (data) {
-        ptr = (char *)szBuffer;
+      auto data = std::make_unique<char[]>(dwNumberOfBytesRead + 1 + new_line_count);
+      char *d_ptr = data.get();
+      ptr = (char *)szBuffer;
 
-        while (*ptr) {
-          if (*ptr == '\n') {
-            *d_ptr = '\r';
-            d_ptr++;
-            *d_ptr = '\n';
-            d_ptr++;
-          } else if (*ptr != '\r') {
-            *d_ptr = *ptr;
-            d_ptr++;
-          }
-          ptr++;
+      while (*ptr) {
+        if (*ptr == '\n') {
+          *d_ptr = '\r';
+          d_ptr++;
+          *d_ptr = '\n';
+          d_ptr++;
+        } else if (*ptr != '\r') {
+          *d_ptr = *ptr;
+          d_ptr++;
         }
-        *d_ptr = '\0';
-
-        (*ci->callback)(data);
-        mem_free(data);
+        ptr++;
       }
+      *d_ptr = '\0';
+
+      (*ci->callback)(data.get());
     }
   }
 
