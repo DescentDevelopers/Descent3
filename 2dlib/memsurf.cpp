@@ -169,7 +169,7 @@ bool gr_mem_surf_Create(ddgr_surface *sf) {
     Int3();
   }
 
-  bm->data = (char *)mem_malloc(bm->rowsize * sf->h);
+  bm->data = (char *)malloc(bm->rowsize * sf->h);
   if (!bm->data) {
     LOG_WARNING.printf("mem_Create malloc fail <%s>\n", sf->name);
     delete bm;
@@ -198,7 +198,7 @@ bool gr_mem_surf_Destroy(ddgr_surface *sf) {
   }
 
   //	otherwise free all objects
-  mem_free(bm->data);
+  free(bm->data);
   delete bm;
 
   return true;

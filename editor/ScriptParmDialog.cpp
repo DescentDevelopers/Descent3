@@ -121,7 +121,7 @@ void CScriptParmDialog::ConvertToScriptParameter(tScriptParm *parm, const char *
 		int num;
 		char *str;
 		parm->type = PARMTYPE_REF;
-		str = _strlwr(mem_strdup(text));
+		str = _strlwr(strdup(text));
 		if (strstr(str, "0x"))
 			sscanf(str+2, "%x",&num);
 		else

@@ -350,8 +350,8 @@ void grFont::free_font(gr_font_record *ft) {
     delete[] ft->font.char_widths;
   }
 
-  ::mem_free(ft->font.raw_data);
-  ::mem_free(ft->font.char_data);
+  ::free(ft->font.raw_data);
+  ::free(ft->font.char_data);
 }
 
 void grFont::load(char *filename, int slot) {

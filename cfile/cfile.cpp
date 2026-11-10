@@ -522,7 +522,7 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   cfile = mem_rmalloc<CFILE>();
   if (!cfile)
     Error("Out of memory in open_file_in_directory()");
-  cfile->name = mem_strdup(PATH_TO_CSTR(using_filename));
+  cfile->name = strdup(PATH_TO_CSTR(using_filename));
   if (!cfile->name)
     Error("Out of memory in open_file_in_directory()");
   cfile->file = fp;
@@ -616,9 +616,9 @@ void cfclose(CFILE *cfp) {
     fclose(cfp->file);
   // free the name, if allocated
   if (!cfp->lib_offset)
-    mem_free(cfp->name);
+    free(cfp->name);
   // free the cfile struct
-  mem_free(cfp);
+  free(cfp);
 }
 
 // Just like stdio fgetc(), except works on a CFILE

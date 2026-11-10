@@ -470,7 +470,7 @@ void ClearObjectLightmaps(object *obj) {
 
     for (Mnum = 0; Mnum < pm->n_models; Mnum++) {
       if (!IsNonRenderableSubmodel(pm, Mnum)) {
-        mem_free(obj->lm_object.lightmap_faces[Mnum][0].u2);
+        free(obj->lm_object.lightmap_faces[Mnum][0].u2);
         break;
       }
     }
@@ -546,7 +546,7 @@ void SetupObjectLightmapMemory(object *obj) {
     }
   }
   if (uv2size) {
-    float *uvblock = (float *)mem_malloc(2 * uv2size * sizeof(float));
+    float *uvblock = (float *)malloc(2 * uv2size * sizeof(float));
 
     for (Mnum = 0; Mnum < pm->n_models; Mnum++) {
       if (!IsNonRenderableSubmodel(pm, Mnum)) {

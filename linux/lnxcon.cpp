@@ -120,15 +120,6 @@ Console_Commands commands[Console_total] = {
 // Global Variables
 bool Con_init = false; // Console has been initialized
 
-#ifdef mem_malloc
-#undef mem_malloc
-#endif
-#ifdef mem_free
-#undef mem_free
-#endif
-#define mem_malloc(x) malloc(x)
-#define mem_free(x) free(x)
-
 //////////////////////////////////////////////////
 // Functions
 
