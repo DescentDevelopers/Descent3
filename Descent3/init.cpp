@@ -1468,31 +1468,42 @@ void InitIOSystems(bool editor) {
     }
   }
 
-  // Finds a data directory, matching its last component without regard to case, so data installed in
-  // /usr/share/Descent3 by earlier versions is still found as /usr/share/descent3. A directory the game may not look
-  // into is skipped instead of stopping the game.
-  auto find_data_dir = [](const std::filesystem::path &dir) -> std::filesystem::path {
-    try {
-      std::filesystem::path found = cf_LocatePathCaseInsensitiveHelper(dir.filename(), dir.parent_path());
-      return found.empty() ? found : std::filesystem::canonical(found);
-    } catch (const std::filesystem::filesystem_error &e) {
-      LOG_WARNING << "Skipping data directory " << dir << ": " << e.what();
-      return {};
-    }
-  };
-
-  // D3_DATADIR is added further down, but is looked up here so it is not added twice
+  // D3_DATADIR is added further down, but is looked up here so it is not added twice. Its last component is matched
+  // without regard to case, so data installed in /usr/share/Descent3 by earlier versions is still found as
+  // /usr/share/descent3. A directory the game may not look into is skipped instead of stopping the game.
   std::filesystem::path datadir = D3_DATADIR;
-  std::filesystem::path platform_dir = find_data_dir(datadir);
+  std::filesystem::path platform_dir;
+  try {
+    platform_dir = cf_LocatePathCaseInsensitiveHelper(datadir.filename(), datadir.parent_path());
+    if (!platform_dir.empty()) {
+      platform_dir = std::filesystem::canonical(platform_dir);
+    }
+  } catch (const std::filesystem::filesystem_error &e) {
+    LOG_WARNING << "Skipping data directory " << datadir << ": " << e.what();
+    platform_dir.clear();
+  }
 
-  // System data directories ($XDG_DATA_DIRS on Linux). Base directories added later take precedence, so add them
-  // least important first. They rank below the directories this build is configured with (DEFAULT_ADDITIONAL_DIRS,
-  // D3_DATADIR) and the ones the user chose (-additionaldir, the configured base directory).
+  // System data directories ($XDG_DATA_DIRS on Linux), used as named, as the XDG Base Directory spec describes. Base
+  // directories added later take precedence, so add them least important first. They rank below the directories this
+  // build is configured with (DEFAULT_ADDITIONAL_DIRS, D3_DATADIR) and the ones the user chose (-additionaldir, the
+  // configured base directory).
   std::vector<std::filesystem::path> system_dirs;
   for (const auto &candidate : ddio_GetSystemDataPaths()) {
-    std::filesystem::path dir = find_data_dir(candidate);
-    if (dir.empty()) {
+    std::error_code ec;
+    std::filesystem::file_status status = std::filesystem::status(candidate, ec);
+    if (status.type() == std::filesystem::file_type::not_found) {
       continue;
+    }
+    std::filesystem::path dir;
+    if (!ec && std::filesystem::is_directory(status)) {
+      dir = std::filesystem::canonical(candidate, ec);
+    }
+    if (ec) {
+      LOG_WARNING << "Skipping data directory " << candidate << ": " << ec.message();
+      continue;
+    }
+    if (dir.empty()) {
+      continue; // not a directory
     }
     if (dir != platform_dir && std::find(system_dirs.begin(), system_dirs.end(), dir) == system_dirs.end()) {
       system_dirs.push_back(dir);
