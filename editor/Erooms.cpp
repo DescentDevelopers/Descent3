@@ -771,7 +771,7 @@ int FindRoomName(char *name) {
   ASSERT(name != nullptr);
 
   for (int i = FIRST_PALETTE_ROOM; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++)
-    if (Rooms[i].used && Rooms[i].name && !stricmp(name, Rooms[i].name))
+    if (Rooms[i].used && Rooms[i].name && !stricmp(name, Rooms[i].name.get()))
       return i;
 
   return -1;
@@ -1217,7 +1217,6 @@ bool FaceIsPlanar(int nv, int16_t *face_verts, vector *normal, vector *verts) {
 // Fixes all the concave/nonplanar faces of facelist of room rp
 void FixConcaveFaces(room *rp, int *facelist, int facecount) {
   int i, t, k;
-  face *newfaces;
 
   for (i = 0; i < facecount; i++) {
     // If this face is concave, build a triangle strip out of the concave face
@@ -1239,8 +1238,7 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
       // Allocate memory for our new faces
       int nfaces = rp->num_faces + num_new_faces;
 
-      newfaces = mem_rmalloc<face>(nfaces);
-      ASSERT(newfaces != nullptr);
+      auto newfaces = std::make_unique<face[]>(nfaces);
 
       // Copy all the faces into our new array
       for (t = 0; t < rp->num_faces; t++) {
@@ -1248,17 +1246,19 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         if (t != facelist[i]) {
           int nverts = rp->faces[t].num_verts;
 
-          newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
-          ASSERT(newfaces[t].face_verts != nullptr);
-          newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
-          ASSERT(newfaces[t].face_uvls != nullptr);
+          newfaces[t].face_verts = std::make_unique<int16_t[]>(nverts);
+          newfaces[t].face_uvls = std::make_unique<roomUVL[]>(nverts);
 
           newfaces[t].normal = rp->faces[t].normal;
           newfaces[t].tmap = rp->faces[t].tmap;
           newfaces[t].flags = rp->faces[t].flags;
           newfaces[t].portal_num = rp->faces[t].portal_num;
           newfaces[t].num_verts = rp->faces[t].num_verts;
-          newfaces[t].special_handle = BAD_SPECIAL_FACE_INDEX;
+          // This face is unchanged, so it takes over its lightmap and special face. The old face array is
+          // freed below without FreeRoomFace, so nothing else releases the handles.
+          newfaces[t].lmi_handle = rp->faces[t].lmi_handle;
+          newfaces[t].special_handle = rp->faces[t].special_handle;
+          newfaces[t].light_multiple = rp->faces[t].light_multiple;
 
           for (k = 0; k < nverts; k++) {
             newfaces[t].face_verts[k] = rp->faces[t].face_verts[k];
@@ -1268,16 +1268,16 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         {
           int nverts = 3;
 
-          newfaces[t].face_verts = mem_rmalloc<int16_t>(nverts);
-          ASSERT(newfaces[t].face_verts != nullptr);
-          newfaces[t].face_uvls = mem_rmalloc<roomUVL>(nverts);
-          ASSERT(newfaces[t].face_uvls != nullptr);
+          newfaces[t].face_verts = std::make_unique<int16_t[]>(nverts);
+          newfaces[t].face_uvls = std::make_unique<roomUVL[]>(nverts);
 
           newfaces[t].tmap = rp->faces[t].tmap;
-          newfaces[t].flags = rp->faces[t].flags;
+          newfaces[t].flags = rp->faces[t].flags & ~FF_LIGHTMAP; // the rebuilt face has no lightmap
           newfaces[t].portal_num = rp->faces[t].portal_num;
           newfaces[t].num_verts = 3;
+          newfaces[t].lmi_handle = BAD_LMI_INDEX;
           newfaces[t].special_handle = BAD_SPECIAL_FACE_INDEX;
+          newfaces[t].light_multiple = rp->faces[t].light_multiple;
 
           for (k = 0; k < nverts; k++) {
             newfaces[t].face_verts[k] = rp->faces[t].face_verts[k];
@@ -1292,9 +1292,11 @@ void FixConcaveFaces(room *rp, int *facelist, int facecount) {
         }
       }
 
-      // Free up the old list of faces
-      mem_free(rp->faces);
-      rp->faces = newfaces;
+      // The split face's lightmap and special face don't carry over to its triangles
+      FreeRoomFace(&rp->faces[facelist[i]]);
+
+      // Free up the old list of faces (and their vert/uvl lists)
+      rp->faces = std::move(newfaces);
       rp->num_faces = nfaces;
 
       if (rp->num_bbf_regions) {
@@ -1338,13 +1340,8 @@ void ReInitRoomFace(face *fp, int nverts) {
 
   fp->num_verts = nverts;
 
-  mem_free(fp->face_verts);
-  mem_free(fp->face_uvls);
-
-  fp->face_verts = (int16_t *)mem_malloc(nverts * sizeof(*fp->face_verts));
-  ASSERT(fp->face_verts != nullptr);
-  fp->face_uvls = mem_rmalloc<roomUVL>(nverts);
-  ASSERT(fp->face_uvls != nullptr);
+  fp->face_verts = std::make_unique<int16_t[]>(nverts);
+  fp->face_uvls = std::make_unique<roomUVL[]>(nverts);
 }
 
 // Determines if two points are close enough together to be considered the same
@@ -1395,17 +1392,13 @@ int RoomAddVertices(room *rp, int num_new_verts) {
   if (num_new_verts == 0)
     return 0;
 
-  auto newverts = mem_rmalloc<vector>(rp->num_verts + num_new_verts);
-
-  ASSERT(newverts != nullptr);
+  auto newverts = std::make_unique<vector[]>(rp->num_verts + num_new_verts);
 
   for (int i = 0; i < rp->num_verts; i++) {
     newverts[i] = rp->verts[i];
   }
 
-  mem_free(rp->verts);
-
-  rp->verts = newverts;
+  rp->verts = std::move(newverts);
 
   rp->num_verts += num_new_verts;
 
@@ -1422,16 +1415,13 @@ int RoomAddFaces(room *rp, int num_new_faces) {
   if (num_new_faces == 0)
     return 0;
 
-  auto newfaces = mem_rmalloc<face>(rp->num_faces + num_new_faces);
+  auto newfaces = std::make_unique<face[]>(rp->num_faces + num_new_faces);
 
-  ASSERT(newfaces != nullptr);
+  for (int i = 0; i < rp->num_faces; i++) {
+    newfaces[i] = std::move(rp->faces[i]);
+  }
 
-  for (int i = 0; i < rp->num_faces; i++)
-    newfaces[i] = rp->faces[i];
-
-  mem_free(rp->faces);
-
-  rp->faces = newfaces;
+  rp->faces = std::move(newfaces);
   rp->num_faces += num_new_faces;
 
   if (rp->num_bbf_regions) {
@@ -1624,10 +1614,9 @@ bool FindSharedEdgeAcrossRooms(room *rp0, int face0, room *rp1, int face1, int *
 void DeleteRoomVert(room *rp, int vertnum) {
   int f, v;
   face *fp;
-  vector *newverts;
 
   // Remap vertices in faces
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       if (fp->face_verts[v] == vertnum)
         Int3(); // THIS IS VERY BAD!  DELETING A VERTEX STILL IN USE!
@@ -1635,8 +1624,7 @@ void DeleteRoomVert(room *rp, int vertnum) {
         fp->face_verts[v]--;
 
   // malloc new list
-  newverts = mem_rmalloc<vector>(rp->num_verts - 1);
-  ASSERT(newverts != nullptr);
+  auto newverts = std::make_unique<vector[]>(rp->num_verts - 1);
 
   // Copy verts to new list
   for (v = 0; v < vertnum; v++) {
@@ -1647,11 +1635,8 @@ void DeleteRoomVert(room *rp, int vertnum) {
     newverts[v] = rp->verts[v + 1];
   }
 
-  // Delete old list
-  mem_free(rp->verts);
-
-  // Use new list
-  rp->verts = newverts;
+  // Use new list (deletes the old one)
+  rp->verts = std::move(newverts);
 
   // Update count
   rp->num_verts--;
@@ -1672,7 +1657,7 @@ int DeleteUnusedRoomVerts(room *rp) {
     vert_used[v] = 0;
 
   // Go through all the faces & flag the used verts
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       vert_used[fp->face_verts[v]] = 1;
 
@@ -1692,7 +1677,6 @@ int DeleteUnusedRoomVerts(room *rp) {
 //					facenum - the face to be deleted
 void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
   int p, f, i, t;
-  face *newfaces;
 
   // Check for trigger on this face
   if (rp->faces[facenum].flags & FF_HAS_TRIGGER)
@@ -1717,14 +1701,15 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
   }
 
   // Allocate new face list
-  newfaces = mem_rmalloc<face>(rp->num_faces - 1);
-  ASSERT(newfaces != nullptr);
+  auto newfaces = std::make_unique<face[]>(rp->num_faces - 1);
 
   // Copy faces over
-  for (f = 0; f < facenum; f++)
-    newfaces[f] = rp->faces[f];
-  for (f++; f < rp->num_faces; f++)
-    newfaces[f - 1] = rp->faces[f];
+  for (f = 0; f < facenum; f++) {
+    newfaces[f] = std::move(rp->faces[f]);
+  }
+  for (f++; f < rp->num_faces; f++) {
+    newfaces[f - 1] = std::move(rp->faces[f]);
+  }
 
 #ifdef NEWEDITOR
   // Decrement texture usage
@@ -1741,11 +1726,8 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
   // Free deleted face memeory
   FreeRoomFace(&rp->faces[facenum]);
 
-  // Free old face list
-  mem_free(rp->faces);
-
-  // Use new face list
-  rp->faces = newfaces;
+  // Use new face list (frees the old one)
+  rp->faces = std::move(newfaces);
   rp->num_faces--;
 
   // Adjust the current and marked faces if necessary
@@ -1787,7 +1769,7 @@ void DeleteRoomFace(room *rp, int facenum, bool delete_unused_verts) {
 void DeleteRoomPortal(room *rp, int portalnum) {
   portal *pp = &rp->portals[portalnum];
   face *fp = &rp->faces[pp->portal_face];
-  portal *newportals;
+  std::unique_ptr<portal[]> newportals;
 
   // Clear the portal field of the portal's face
   ASSERT(fp->portal_num == portalnum);
@@ -1807,25 +1789,21 @@ void DeleteRoomPortal(room *rp, int portalnum) {
   }
 
   // Alloc new portal list
-  if (rp->num_portals == 1)
-    newportals = nullptr;
-  else {
-    newportals = mem_rmalloc<portal>(rp->num_portals - 1);
-    ASSERT(newportals != nullptr);
+  if (rp->num_portals != 1) {
+    newportals = std::make_unique<portal[]>(rp->num_portals - 1);
   }
 
   // Copy portals over
   int p;
-  for (p = 0; p < portalnum; p++)
+  for (p = 0; p < portalnum; p++) {
     newportals[p] = rp->portals[p];
-  for (p++; p < rp->num_portals; p++)
+  }
+  for (p++; p < rp->num_portals; p++) {
     newportals[p - 1] = rp->portals[p];
+  }
 
-  // Free old portal list
-  mem_free(rp->portals);
-
-  // Use the new list
-  rp->portals = newportals;
+  // Use the new list (frees the old one)
+  rp->portals = std::move(newportals);
   rp->num_portals--;
 }
 
@@ -1956,8 +1934,7 @@ void CopyRoom(room *destp, room *srcp) {
 
   // Copy doorway info
   if (srcp->doorway_data) {
-    destp->doorway_data = mem_rmalloc<doorway>();
-    *destp->doorway_data = *srcp->doorway_data;
+    destp->doorway_data = std::make_unique<doorway>(*srcp->doorway_data);
   }
 
   // Copy over the rest of the data
@@ -1973,19 +1950,15 @@ void CopyRoom(room *destp, room *srcp) {
 // Adds a new portal for this room.  Returns the portal number.
 // Initializes the flags
 int AddPortal(room *rp) {
-  auto newlist = mem_rmalloc<portal>(rp->num_portals + 1);
+  auto newlist = std::make_unique<portal[]>(rp->num_portals + 1);
 
-  // Copy from old list to new list, and free old list
-  if (rp->num_portals) {
-
-    for (int i = 0; i < rp->num_portals; i++)
-      newlist[i] = rp->portals[i];
-
-    mem_free(rp->portals);
+  // Copy from old list to new list
+  for (int i = 0; i < rp->num_portals; i++) {
+    newlist[i] = rp->portals[i];
   }
 
-  // Point at new list
-  rp->portals = newlist;
+  // Point at new list (frees the old one)
+  rp->portals = std::move(newlist);
 
   // Init flags
   rp->portals[rp->num_portals].flags = 0;
@@ -2128,9 +2101,9 @@ int CheckConcaveFaces(room *rp) {
   int errors = 0;
 
   // Go through all the faces
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
 
-    int vert = CheckFaceConcavity(fp->num_verts, fp->face_verts, &fp->normal, rp->verts);
+    int vert = CheckFaceConcavity(fp->num_verts, fp->face_verts.get(), &fp->normal, rp->verts.get());
     if (vert != -1) {
       CheckError("Room %3d face %3d is concave at vertex %d\n", ROOMNUM(rp), f, vert);
       errors++;
@@ -2146,7 +2119,7 @@ int CheckDegenerateFaces(room *rp) {
   face *fp;
 
   // Go through all the faces
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
     for (v = 0; v < fp->num_verts; v++)
       if (fp->face_verts[v] == fp->face_verts[(v + 2) % fp->num_verts]) {
         CheckError("Room %3d face %3d is degenerate\n", ROOMNUM(rp), f);
@@ -2227,7 +2200,7 @@ int CheckPortals(room *rp) {
   int r = ROOMNUM(rp);
   int errors = 0;
 
-  for (p = 0, pp = rp->portals; p < rp->num_portals; pp++, p++) {
+  for (p = 0, pp = rp->portals.get(); p < rp->num_portals; pp++, p++) {
 
     // Make sure the connecting portal points back to this portal
     if ((Rooms[pp->croom].portals[pp->cportal].croom != r) || (Rooms[pp->croom].portals[pp->cportal].cportal != p)) {
@@ -2364,7 +2337,7 @@ int CheckUnusedPoints(room *rp) {
     vert_used[v] = 0;
 
   // Go through all the faces & flag the used verts
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       vert_used[fp->face_verts[v]] = 1;
 
@@ -2386,7 +2359,7 @@ int CheckDuplicateFacePoints(room *rp) {
   int f, v, errors = 0;
   face *fp;
 
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       if (fp->face_verts[v] == fp->face_verts[(v + 1) % fp->num_verts]) {
         CheckError("Room %d, face %d: vert #%d (%d) is the same as #%d\n", r, f, (v + 1) % fp->num_verts,
@@ -2471,10 +2444,10 @@ int FindTJoints(room *rp) {
   int points_added = 0;
 
   // Now search for and fix t-joints
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
     for (v = 0; v < fp->num_verts; v++) {
       int vv0 = fp->face_verts[v], vv1 = fp->face_verts[(v + 1) % fp->num_verts];
-      for (f2 = 0, fp2 = rp->faces; f2 < rp->num_faces; f2++, fp2++) {
+      for (f2 = 0, fp2 = rp->faces.get(); f2 < rp->num_faces; f2++, fp2++) {
         if (f2 != f) {
           for (v2 = 0; v2 < fp2->num_verts; v2++) {
             int tt0 = fp2->face_verts[v2], tt1 = fp2->face_verts[(v2 + 1) % fp2->num_verts];
@@ -2489,7 +2462,7 @@ int FindTJoints(room *rp) {
       if (f2 == rp->num_faces) { // didn't find a match
 
         // Look for vert on this edge
-        for (f2 = 0, fp2 = rp->faces; f2 < rp->num_faces; f2++, fp2++) {
+        for (f2 = 0, fp2 = rp->faces.get(); f2 < rp->num_faces; f2++, fp2++) {
           if (f2 != f) {
             for (v2 = 0; v2 < fp2->num_verts; v2++) {
               int tt0 = fp2->face_verts[v2], tt1 = fp2->face_verts[(v2 + 1) % fp2->num_verts];
@@ -2619,7 +2592,7 @@ void NormalizeFaceUVs() {
       int f;
       face *fp;
 
-      for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+      for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
         float base_u = floor(fp->face_uvls[0].u);
         float base_v = floor(fp->face_uvls[0].v);
 
@@ -2877,7 +2850,7 @@ int RemoveDuplicatePoints(room *rp) {
       if (PointsAreSame(&rp->verts[i], &rp->verts[j])) {
 
         // Replace the higher-numbered point with the lower-numbered in all the faces in this room
-        for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+        for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
           for (v = 0; v < fp->num_verts; v++)
             if (fp->face_verts[v] == i)
               fp->face_verts[v] = j;
@@ -2901,7 +2874,7 @@ int RemoveDuplicateFacePoints(room *rp) {
   int f, v, n_fixed = 0;
   face *fp;
 
-  for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++)
+  for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++)
     for (v = 0; v < fp->num_verts; v++)
       if (fp->face_verts[v] == fp->face_verts[(v + 1) % fp->num_verts]) {
         int new_verts[MAX_VERTS_PER_FACE];
@@ -2965,7 +2938,7 @@ void FixDegenerateFaces() {
 
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++, rp++) {
     if (rp->used) {
-      for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+      for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
         bool face_fixed = 0;
       recheck_face:;
         if (fp->num_verts < 3) {

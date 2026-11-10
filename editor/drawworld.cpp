@@ -407,7 +407,7 @@ void CheckRoom(room *rp) {
       rend_SetLighting(LS_NONE);
       rend_SetTextureType(TT_FLAT);
 
-      for (fn = 0, fp = rp->faces; fn < rp->num_faces; fn++, fp++) {
+      for (fn = 0, fp = rp->faces.get(); fn < rp->num_faces; fn++, fp++) {
         g3Point *vert_list[MAX_VERTS_PER_FACE];
 
         codes_and = 0xff;
@@ -614,7 +614,7 @@ void DrawRoom(room *rp, int room_color) {
   for (vn = 0; vn < rp->num_verts; vn++)
     g3_RotatePoint((g3Point *)&World_point_buffer[vn], &rp->verts[vn]);
 
-  for (fn = 0, fp = rp->faces; fn < rp->num_faces; fn++, fp++) {
+  for (fn = 0, fp = rp->faces.get(); fn < rp->num_faces; fn++, fp++) {
     if (fp->flags & FF_FLOATING_TRIG) {
       for (vn = 0; vn < fp->num_verts; vn++)
         DrawLine(FLOAT_TRIG_COLOR, fp->face_verts[vn], fp->face_verts[(vn + 1) % fp->num_verts]);
@@ -660,7 +660,7 @@ void DrawRoomRotated(room *rp, vector *rotpoint, matrix *rotmat, vector *placepo
     g3_RotatePoint((g3Point *)&World_point_buffer[vn], &tv);
   }
 
-  for (fn = 0, fp = rp->faces; fn < rp->num_faces; fn++, fp++)
+  for (fn = 0, fp = rp->faces.get(); fn < rp->num_faces; fn++, fp++)
     for (vn = 0; vn < fp->num_verts; vn++)
       AddEdge(fp->face_verts[vn], fp->face_verts[(vn + 1) % fp->num_verts], ET_FACING);
 

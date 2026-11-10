@@ -1691,7 +1691,7 @@ void StartTextureSounds() {
 
   for (r = 0, rp = Rooms; r <= Highest_room_index; r++, rp++) {
     if (rp->used) {
-      for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
+      for (f = 0, fp = rp->faces.get(); f < rp->num_faces; f++, fp++) {
         int sound = GameTextures[fp->tmap].sound;
         if ((sound != -1) && (sound != SOUND_NONE_INDEX)) {
           vector pos;

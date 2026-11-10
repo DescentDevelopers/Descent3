@@ -1246,8 +1246,8 @@ void RenameRoom() {
   char tempname[ROOM_NAME_LEN + 1] = "";
 
   if (Curroomp->name) {
-    ASSERT(strlen(Curroomp->name) <= ROOM_NAME_LEN);
-    strcpy(tempname, Curroomp->name);
+    ASSERT(strlen(Curroomp->name.get()) <= ROOM_NAME_LEN);
+    strcpy(tempname, Curroomp->name.get());
   }
 
 try_again:;
@@ -1263,13 +1263,10 @@ try_again:;
     goto try_again;
   }
 
-  if (Curroomp->name) {
-    mem_free(Curroomp->name);
-    Curroomp->name = nullptr;
-  }
+  Curroomp->name.reset();
 
   if (strlen(tempname)) {
-    Curroomp->name = mem_strdup(tempname);
+    Curroomp->name = mem_strdup_unique(tempname);
   }
 
   World_changed = 1;

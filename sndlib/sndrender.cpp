@@ -111,7 +111,7 @@ void sound_render_room_geometry(int iroom, int slot) {
     Geometry->StartPolygonGroup(slot);
 
     rp = &Rooms[iroom];
-    rfacelist = rp->faces;
+    rfacelist = rp->faces.get();
 
     //	for now, lets create the geometry for the current room the viewer is in.
     for (iface = 0, reflect_face = 0; iface < rp->num_faces; iface++, reflect_face = (iface / 3)) {

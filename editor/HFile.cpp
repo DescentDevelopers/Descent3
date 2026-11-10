@@ -599,13 +599,13 @@ void CheckLevelNames() {
   room *rp;
   for (i = 0, rp = Rooms; i <= Highest_room_index; i++, rp++) {
     if (rp->used && rp->name) {
-      int n = osipf_FindRoomName(rp->name);
+      int n = osipf_FindRoomName(rp->name.get());
       if (n != i)
-        EditorMessageBox("Error: Rooms %d and %d are both named \"%s\"", i, n, rp->name);
-      if (StripLeadingTrailingSpaces(rp->name))
+        EditorMessageBox("Error: Rooms %d and %d are both named \"%s\"", i, n, rp->name.get());
+      if (StripLeadingTrailingSpaces(rp->name.get()))
         EditorMessageBox(
             "Note: Room %d (\"%s\") had leading and/or trailing spaces in its name that have been removed.", i,
-            rp->name);
+            rp->name.get());
     }
   }
 }

@@ -304,7 +304,7 @@ void CDoorwayDialog::UpdateDialog() {
     sprintf(str, "Door:  %s        ", last_name);
     ebox->SetWindowText(str);
 
-    doorway *dw = Rooms[Current_door_room].doorway_data;
+    doorway *dw = Rooms[Current_door_room].doorway_data.get();
 
     sprintf(str, "%.2f", dw->position);
     ebox = (CEdit *)GetDlgItem(IDC_DOORWAY_POS_EDIT);
@@ -462,7 +462,7 @@ void CDoorwayDialog::OnDoorwayLocked() {
   if (Current_door_room == -1)
     return;
 
-  doorway *dp = Rooms[Current_door_room].doorway_data;
+  doorway *dp = Rooms[Current_door_room].doorway_data.get();
 
   ASSERT(dp != nullptr);
 
@@ -483,7 +483,7 @@ void CDoorwayDialog::OnKeyCheck(int id, int keynum) {
   if (Current_door_room == -1)
     return;
 
-  doorway *dp = Rooms[Current_door_room].doorway_data;
+  doorway *dp = Rooms[Current_door_room].doorway_data.get();
 
   ASSERT(dp != nullptr);
 
@@ -521,7 +521,7 @@ void CDoorwayDialog::OnDoorwayAuto() {
   if (Current_door_room == -1)
     return;
 
-  doorway *dp = Rooms[Current_door_room].doorway_data;
+  doorway *dp = Rooms[Current_door_room].doorway_data.get();
 
   ASSERT(dp != nullptr);
 
@@ -537,7 +537,7 @@ void CDoorwayDialog::OnKillfocusDoorwayPosEdit() {
   if (Current_door_room == -1)
     return;
 
-  doorway *dp = Rooms[Current_door_room].doorway_data;
+  doorway *dp = Rooms[Current_door_room].doorway_data.get();
 
   ASSERT(dp != nullptr);
 
@@ -564,7 +564,7 @@ void CDoorwayDialog::OnKillfocusDoorwayHitpointEdit() {
   if (Current_door_room == -1)
     return;
 
-  doorway *dp = Rooms[Current_door_room].doorway_data;
+  doorway *dp = Rooms[Current_door_room].doorway_data.get();
 
   ASSERT(dp != nullptr);
 
@@ -584,7 +584,7 @@ void CDoorwayDialog::OnDoorwayKeyAll() {
   if (Current_door_room == -1)
     return;
 
-  doorway *dp = Rooms[Current_door_room].doorway_data;
+  doorway *dp = Rooms[Current_door_room].doorway_data.get();
 
   ASSERT(dp != nullptr);
 
@@ -602,7 +602,7 @@ void CDoorwayDialog::OnDoorwayKeyOnlyOne() {
   if (Current_door_room == -1)
     return;
 
-  doorway *dp = Rooms[Current_door_room].doorway_data;
+  doorway *dp = Rooms[Current_door_room].doorway_data.get();
 
   ASSERT(dp != nullptr);
 
@@ -620,7 +620,7 @@ void CDoorwayDialog::OnDoorwayGBIgnoreLocked() {
   if (Current_door_room == -1)
     return;
 
-  doorway *dp = Rooms[Current_door_room].doorway_data;
+  doorway *dp = Rooms[Current_door_room].doorway_data.get();
 
   ASSERT(dp != nullptr);
 

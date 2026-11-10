@@ -3042,7 +3042,7 @@ void ClearSecretFlags(room *rp) {
 
   rp->flags &= ~RF_SECRET;
 
-  for (p = 0, pp = rp->portals; p < rp->num_portals; p++, pp++) {
+  for (p = 0, pp = rp->portals.get(); p < rp->num_portals; p++, pp++) {
     room *rp2 = &Rooms[pp->croom];
     if (rp2->flags & RF_SECRET)
       ClearSecretFlags(rp2);
