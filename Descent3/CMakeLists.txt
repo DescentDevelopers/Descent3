@@ -102,6 +102,7 @@ set(HEADERS
   objinit.h
   osiris_dll.h
   osiris_predefs.h
+  osiris_sandbox.h
   osiris_share.h
   pilot.h
   pilot_class.h
@@ -234,6 +235,7 @@ set(CPPS
   ObjScript.cpp
   OsirisLoadandBind.cpp
   osiris_predefs.cpp
+  osiris_sandbox.cpp
   pilot.cpp
   PilotPicsAPI.cpp
   pilot_class.cpp
@@ -348,6 +350,7 @@ target_link_libraries(Descent3 PRIVATE
   ui
   unzip
   vecmat
+  x86sandbox
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib ${SDL3_INCLUDE_DIRS})
 target_link_options(Descent3 PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)

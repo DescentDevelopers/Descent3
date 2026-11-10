@@ -20,3 +20,14 @@ indent_size = 4
 # to .gitattributes.
 [{*.vcproj,*.vcxproj}]
 end_of_line = crlf
+
+# Original-release sources used as test data (see its README.md): keep
+# editors from reindenting or trimming them. Whitespace changes would not break
+# the data check, but they make diffs of these files unreadable.
+[tests/osiris_sandbox/data/level1/**]
+indent_style = unset
+indent_size = unset
+tab_width = unset
+charset = unset
+trim_trailing_whitespace = false
+insert_final_newline = false

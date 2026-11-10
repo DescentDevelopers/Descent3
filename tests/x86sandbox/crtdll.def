@@ -1,0 +1,4 @@
+LIBRARY crtdll.dll
+EXPORTS
+strcmp
+__GetMainArgs

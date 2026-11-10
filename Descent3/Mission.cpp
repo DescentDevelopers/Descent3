@@ -1804,12 +1804,10 @@ bool mn3_Open(const std::filesystem::path &mn3file) {
   if (mn3_handle == 0) {
     return false;
   } else {
-    /* Disabled loading scripts from .mn3 files on purpose:
-    all 64-bit first-party level scripts have already been loaded from `PRIMARY_HOG`.
-    Mission files contain only Win32 scripts by default, which cannot not be loaded on 64-bit builds.
-    Reactivate this when we have a proper sandbox system to safely run third-party scripts contained in user-made
-    levels. */
-    // Osiris_ExtractScriptsFromHog(mn3_handle, true);
+    /* Scripts in mission files are 32-bit Windows DLLs. They are never loaded natively:
+    they run in the x86 sandbox (see osiris_sandbox.h), on every platform. First-party
+    scripts with the same name, from `PRIMARY_HOG`, take precedence. */
+    Osiris_ExtractWin32ScriptsFromHog(mn3_handle);
   }
   // do table file stuff.
   std::filesystem::path filename = mn3file.stem();

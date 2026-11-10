@@ -303,6 +303,12 @@ extern void Osiris_SaveMemoryChunks(CFILE *file);
 //	Pass false for the second parameter if it's a game hog (d3.hog for example)
 extern int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog = true);
 
+//	Osiris_ExtractWin32ScriptsFromHog
+//	Purpose:
+//		Extracts the Win32 script DLLs from a mission hog so they can run in the x86 sandbox.
+//	Returns the number of DLLs found.
+extern int Osiris_ExtractWin32ScriptsFromHog(int library_handle);
+
 //	Osiris_ClearExtractedScripts
 //	Deletes the temp files created when the scripts where extracted from the hog
 //	Pass false if you want it to remove _all_ extracted hogs...else only mission related ones

@@ -1254,7 +1254,7 @@ bool ChangeRoomFaceTexture(int room_num, int face_num, int texture) {
     return false;
   }
 
-  if (texture == -1) {
+  if (texture < 0 || texture >= MAX_TEXTURES || !GameTextures[texture].used) {
     LOG_FATAL << "not a valid texture, passed to ChangeRoomFaceTexture";
     Int3();
     return false;

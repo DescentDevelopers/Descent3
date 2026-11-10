@@ -588,7 +588,12 @@ static bool AIPathAddDPath(ai_path_info *aip, int handle) {
 }
 
 static bool AIPathAddStaticPath(ai_path_info *aip, int path_id, int start_index, int end_index) {
-  // chrishack -- validation code is needed
+  // The path and nodes can come from a level script (AI_AddGoal, AI_GoalValue).
+  if (path_id < 0 || path_id >= MAX_GAME_PATHS || !GamePaths[path_id].used || start_index < 0 ||
+      start_index >= GamePaths[path_id].num_nodes || end_index < 0 || end_index >= GamePaths[path_id].num_nodes) {
+    LOG_ERROR.printf("AI ERROR: invalid static path %d (nodes %d to %d)", path_id, start_index, end_index);
+    return false;
+  }
 
   if (aip->num_paths >= MAX_JOINED_PATHS) {
     LOG_ERROR << "AI ERROR: Tried to join too many paths (Adding spath)";
@@ -1137,6 +1142,12 @@ bool AIPathSetAsStaticPath(object *obj, void *goal_ptr, int path_id, int start_n
   aip->goal_uid = ((goal *)goal_ptr)->goal_uid;
 
   status = AIPathAddStaticPath(aip, path_id, start_node, end_node);
+
+  if (status && (cur_node < 0 || cur_node >= GamePaths[path_id].num_nodes)) {
+    LOG_ERROR.printf("AI ERROR: invalid current node %d on static path %d", cur_node, path_id);
+    AIPathFreePath(aip);
+    status = false;
+  }
 
   if (status) {
     aip->cur_node = cur_node;
