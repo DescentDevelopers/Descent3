@@ -908,7 +908,7 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
   int exist = cfexist(modfilename);
   switch (exist) {
   case CFES_ON_DISK:
-    fullpath = std::filesystem::path(LocalScriptDir) / modfilename;
+    fullpath = LocalScriptDir / modfilename;
     return -1;
     break;
   case CFES_IN_LIBRARY: {
