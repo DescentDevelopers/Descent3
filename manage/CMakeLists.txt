@@ -32,3 +32,7 @@ target_link_libraries(manage PRIVATE
   sndlib
   stream_audio
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

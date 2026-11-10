@@ -25,3 +25,7 @@ target_include_directories(bitmap PUBLIC
     ${PROJECT_SOURCE_DIR}/bitmap
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

@@ -114,3 +114,7 @@ install(
 #		DEPENDS ${SCRIPTS} HogMaker data/fullhog/d3-${HOG_NAME}-demohog.txt
 #		COMMENT "Generate linuxdemohog/d3-${HOG_NAME}.hog"
 #	)
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

@@ -25,3 +25,7 @@ target_include_directories(2dlib PUBLIC
     ${PROJECT_SOURCE_DIR}/2dlib
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

@@ -1,5 +1,6 @@
 set(HEADERS
   debug.h
+  debug_platform.h
   mono.h
   pserror.h
 )
@@ -34,3 +35,7 @@ target_link_libraries(ddebug PRIVATE
   SDL3::SDL3
   logger
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

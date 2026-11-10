@@ -5,3 +5,7 @@ add_executable(
 )
 target_include_directories(HogMaker PRIVATE ${PROJECT_BINARY_DIR}/lib)
 export(TARGETS HogMaker FILE "${CMAKE_BINARY_DIR}/HogMakerConfig.cmake")
+
+if(BUILD_TESTING)
+	add_subdirectory(HogMaker/tests)
+endif()

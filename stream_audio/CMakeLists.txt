@@ -21,3 +21,7 @@ target_include_directories(stream_audio PUBLIC
   ${PROJECT_SOURCE_DIR}/stream_audio
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

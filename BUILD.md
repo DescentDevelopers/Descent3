@@ -8,12 +8,12 @@ The build process uses [**CMake**](https://cmake.org/) and, by default, [**Ninja
 - [**glm**](https://github.com/g-truc/glm) providing useful additions to OpenGL.
 - [**plog**](https://github.com/SergiusTheBest/plog) for logging
 - [**zlib**](https://www.zlib.net/) as a compression utility
-- [**gtest**](https://github.com/google/googletest) (optional) for testing.
+- [**gtest**](https://github.com/google/googletest) for the unit tests, which are built by default (see [Building without the tests](#building-without-the-tests)).
 
 You can supply these dependencies yourself via your system's library management tools, or the build system can locate the dependencies for you using [vcpkg](https://github.com/microsoft/vcpkg), a cross-platform dependency-management system developed by Microsoft. The official builds source their dependencies from vcpkg.
 
 ## Platforms tested in CI
-Every pull request to `main` and every push to `main` is built in Debug and Release on the following platforms. The unit tests run on all of them except the ARM64 cross-compile.
+Every pull request to `main` and every push to `main` is built in Debug and Release on the following platforms. The unit tests run on all of them except the ARM64 cross-compile. See [Running the tests](#running-the-tests).
 
 | Platform | CI runner | Compiler |
 |---|---|---|
@@ -196,11 +196,72 @@ cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/MyToolChain.cmake -DHogMaker_DIR=.
 cmake --build .
 ```
 
+## Running the tests
+
+The unit tests use [GoogleTest](https://github.com/google/googletest) and are run with [CTest](https://cmake.org/cmake/help/latest/manual/ctest.1.html). They are built by default, as part of the normal build. vcpkg installs GoogleTest along with the other dependencies; if you manage the dependencies yourself, install it as well.
+
+1. **Configure**, using the preset for your platform (`win`, `mac` or `linux`):
+
+    ```sh
+    cmake --preset linux
+    ```
+
+2. **Build.**
+
+    ```sh
+    cmake --build --preset linux --config [Debug|Release]
+    ```
+
+3. **Run every test.**
+
+    ```sh
+    ctest --preset linux -C [Debug|Release]
+    ```
+
+Each GoogleTest case is registered as its own CTest test, named `Suite.Test`. Some useful `ctest` options:
+- `--output-on-failure` prints the output of the tests that fail.
+- `-j <N>` runs up to N tests in parallel.
+- `-R <regex>` runs only the tests whose names match, for example `ctest --preset linux -C Debug -R CFile`.
+
+Most of the tests are in one executable, `d3_tests` (for example `builds/linux/tests/Debug/d3_tests`). The others are in executables of their own, because something in them cannot share one with the rest; each says why next to its `d3_test_executable()` in CMake. They are the online lobby modules (`netcon_tests`), the game clock that `ENABLE_MOCK_CLOCK` did not pick (`clock_tests`), the netgame framework (`dmfc_tests`) and each netgame mode (`netgame_<mode>_tests`), the script runtime (`dallas_tests`) and each script module (`aiscripts_<module>_tests`), and on Windows the editor (`editor_tests`).
+
+You can also run a test executable directly, and pass it GoogleTest options such as `--gtest_filter=<pattern>`. CTest runs every test case in a process of its own, so a test never sees what another one left behind; when you run an executable directly, its tests share one process.
+
+### What the test executables guard against
+
+Every test executable runs with the shared `main()` in `tests/support/test_main.cpp`, which keeps the game's own failure paths from hiding a failure or stalling an unattended run:
+- `Error()` ends the program with `exit(0)`, which CTest would count as a pass. Exiting before the tests have finished fails the run instead.
+- A failed `ASSERT()` or `Int3()` fails the current test. A test that triggers them on purpose declares a `d3_test::ExpectGameAssertions` while it does.
+- The message boxes of `Error()`, `Int3MessageBox()`, `AssertionFailed()` and `OutrageMessageBox()` are never shown; each one fails the current test.
+
+### Matching CI
+
+CI configures with `-DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DUSE_EXTERNAL_PLOG=ON -DBUILD_EDITOR=ON`, adds `-DENABLE_MOCK_CLOCK=ON` to Debug builds, and runs `ctest` on both the Debug and the Release build. To reproduce a CI failure locally, use the same options and configuration. Release builds compile out assertions, so a test can behave differently in Debug and in Release.
+
+Tests of code that is only built on some platforms, or only with `BUILD_EDITOR=ON`, are only built and run there too. The editor is Windows-only, so its tests only run on Windows with `BUILD_EDITOR=ON`.
+
+### Adding tests
+
+Tests for a module live in its `tests` directory, which the module's `CMakeLists.txt` adds inside `if(BUILD_TESTING)`. That directory's `CMakeLists.txt` compiles them with `d3_test_sources()` from `cmake/D3Testing.cmake`, normally into `d3_tests`:
+
+```cmake
+d3_test_sources(cfile_tests TO d3_tests
+  SOURCES cfile_tests.cpp cfile_io_tests.cpp
+  LIBRARIES cfile
+)
+```
+
+CTest finds every test case in the executable, and CI runs them with no further changes, because the workflow runs `ctest` over the whole build rather than a list of tests. A test that cannot share `d3_tests` gets an executable of its own from `d3_test_executable()`, with a comment saying why.
+
+Put helpers that only one module's tests use in the directory's `support` subdirectory, and keep the test files themselves to tests. Helpers that the tests of several modules need are in `tests/support/d3_test/`: temporary directories and whole-file reads and writes (`files.h`), byte images in the game's file formats (`byte_writer.h`), expected game assertions (`game_assertions.h`) and the game clock (`game_clock.h`).
+
+The game libraries reference parts of the `Descent3` executable, which tests cannot link, and of the OpenGL renderer, which needs a window. `d3_tests` links stand-ins for both: `d3_test_game` (`tests/support/game/`) provides the executable's globals and functions, and `d3_test_renderer` (`tests/support/renderer/`) runs the renderer's real device-independent 3D pipeline on a fake backend that draws nothing. Their controls are in `d3_test/game.h` and `d3_test/renderer.h`. When a library under test starts to use another part of the executable or the renderer, add it there rather than in the module's tests.
+
 ## Build Options
 
 The Descent3 build can be customized by [setting CMake variables on the command line](https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-D) during its "Configuration" phase (the command without the `--build` option). To set a variable, you prepend the variable name with `-D` and then append the value, all as one single parameter. For example:
 ```sh
-cmake --preset linux -DBUILD_TESTING=ON
+cmake --preset linux -DENABLE_LOGGER=ON
 ```
 
 **NOTE:** CMake variables, or more technically _CMake cache entries_, will persist in their values until they are explicitly cleared. So, if you set a variable and then run another CMake command _without_ that variable specified, the variable will still be set. Variables must be explicitly unset, or the `builds/` directory cleaned, in order to be cleared.
@@ -211,7 +272,7 @@ You can also use the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmak
 |---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
 | `CMAKE_BUILD_TYPE`        | `Debug` builds are generally larger, slower and contain extra correctness checks that will validate game data and interrupt gameplay when problems are detected.<br>`Release` builds are optimized for size and speed and do not include debugging information, which makes it harder to find problems. The build type can also be set using the `--config` argument with a preset.                                                                            | `Debug`                                                                                      |
 | `BUILD_EDITOR`            | _(Windows-only)_ Build internal editor.                                                                                                                                                                                                                                                                                                                                                                                                                        | `OFF`                                                                                        |
-| `BUILD_TESTING`           | Enable testing. Requires GTest.                                                                                                                                                                                                                                                                                                                                                                                                                                | `OFF`                                                                                        |
+| `BUILD_TESTING`           | Build the unit tests. Requires GTest; see [Building without the tests](#building-without-the-tests).                                                                                                                                                                                                                                                                                                                                                           | `ON`                                                                                         |
 | `DEFAULT_ADDITIONAL_DIRS` | A semi-colon separated list of paths that Descent 3 will use as read-only base directories (see [USAGE.md’s Base directories section][1]). Each item in this list is placed between quotation marks in order to form a C++ expression. This will cause issues if the items in the list are not properly escaped. You can use C++ escape sequences in order to embed special characters (like `\`, `"` and `;`) in paths. Example: `C:\\Games\\Descent3\\;D:\\` | A list with one item in it. The item is an empty string.                                     |
 | `ENABLE_LOGGER`           | Enable logging to the terminal.                                                                                                                                                                                                                                                                                                                                                                                                                                | `OFF`                                                                                        |
 | `ENABLE_MEM_RTL`          | Enable Real-time library memory management functions (disable to verbose memory allocations).                                                                                                                                                                                                                                                                                                                                                                  | `ON`                                                                                         |
@@ -221,5 +282,9 @@ You can also use the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmak
       | `OFF`                                                                                        |
 | `USE_VCPKG`               | Explicitly control whether or not to use vcpkg for dependency resolution. `ON` requires the environment variable `VCPKG_ROOT` to be set.                                                                                                                                                                                                                                                                                                                       | Determined by the existence of `VCPKG_ROOT` in the environment: If it exists, vcpkg is used. |
 | `CODESIGN_IDENTITY`       | Sets the macOS code signing identity. If set to something besides the empty string, then the dynamic libraries put into the hog files will be signed using this identity.                                                                                                                                                                                                                                                                                      | The empty string, `""`.                                                                      |
+
+### Building without the tests
+
+The unit tests are built by default, which is why GoogleTest is one of the [dependencies](#dependencies). If you really don't want to build them, configure with `-DBUILD_TESTING=OFF`, and you won't need GoogleTest; if you use vcpkg, it still installs GoogleTest along with the other dependencies, because the project's `vcpkg.json` lists it.
 
 [1]: ./USAGE.md#base-directories

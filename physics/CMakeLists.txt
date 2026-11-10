@@ -26,3 +26,7 @@ target_include_directories(physics PUBLIC
     ${PROJECT_SOURCE_DIR}/physics
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

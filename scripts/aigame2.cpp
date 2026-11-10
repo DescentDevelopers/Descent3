@@ -59,7 +59,6 @@ const char *GetStringFromTable(int index) {
 // Script IDs
 
 #define NUM_IDS 5 // maximum number of IDs
-#define FIRST_ID 50
 
 #define ID_SAMIRPEST 50       // Samir's test pest.
 #define ID_BLACKSTORMTROOP 51 // The CED Black Stormtrooper
@@ -70,8 +69,16 @@ const char *GetStringFromTable(int index) {
 ///////////////////////////////////////////////////////////////////////////////
 //	Script names
 
-static const char *const Script_names[NUM_IDS] = {"Samir's Pest", "StormTrooperBlack", "Creeper", "LukeTurret",
-                                                  "STBlackBarrel"};
+struct tScriptInfo {
+  int id;
+  const char *name;
+};
+
+static tScriptInfo ScriptInfo[NUM_IDS] = {{ID_SAMIRPEST, "Samir's Pest"},
+                                          {ID_BLACKSTORMTROOP, "StormTrooperBlack"},
+                                          {ID_CREEPER, "Creeper"},
+                                          {ID_LUKETURRET, "LukeTurret"},
+                                          {ID_STBLACKBARREL, "STBlackBarrel"}};
 
 //	Class definitions
 
@@ -271,10 +278,9 @@ void STDCALL ShutdownDLL(void) {}
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
 int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
-  int i;
-  for (i = 0; i < NUM_IDS; i++) {
-    if (strcmp(name, Script_names[i]) == 0) {
-      return (FIRST_ID + i);
+  for (int i = 0; i < NUM_IDS; i++) {
+    if (strcmp(name, ScriptInfo[i].name) == 0) {
+      return ScriptInfo[i].id;
     }
   }
 

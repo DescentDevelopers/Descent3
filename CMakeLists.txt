@@ -41,7 +41,7 @@ if(POLICY CMP0177) # install() DESTINATION path are normalized
   cmake_policy(SET CMP0177 NEW)
 endif()
 
-option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
+option(BUILD_TESTING "Enable testing. Requires GTest." ON)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
 option(ENABLE_MOCK_CLOCK "Replace the real-time clock with a mock one that advances a fixed 16ms per frame, for automated testing" OFF)
@@ -157,7 +157,6 @@ if(BUILD_TESTING)
   find_package(GTest REQUIRED)
   enable_testing()
   include(GoogleTest)
-  add_subdirectory(tests)
 endif()
 
 # Define names for HOG files
@@ -298,6 +297,11 @@ include_directories(
 )
 
 add_subdirectory(third_party)
+
+if(BUILD_TESTING)
+  # The shared test support and the d3_tests executable, which the modules below add their tests to.
+  add_subdirectory(tests)
+endif()
 
 add_subdirectory(2dlib)
 add_subdirectory(AudioEncode)

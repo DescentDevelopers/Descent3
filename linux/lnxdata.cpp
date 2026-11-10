@@ -66,16 +66,21 @@
 
 // Construction and destruction.
 
-oeLnxAppDatabase::oeLnxAppDatabase() {
-  // Open up the database file, for reading, read in all data and keep it in memory
-  // then close the database
-
+static std::filesystem::path GamePrefPath() {
   std::filesystem::path prefPath = ddio_GetPrefPath(D3_PREF_ORG, D3_PREF_APP);
   if (prefPath.empty()) {
     LOG_FATAL << "Couldn't find preference directory!";
     exit(43);
   }
-  std::filesystem::path fileName = prefPath / REGISTRY_FILENAME;
+  return prefPath;
+}
+
+oeLnxAppDatabase::oeLnxAppDatabase() : oeLnxAppDatabase(GamePrefPath()) {}
+
+oeLnxAppDatabase::oeLnxAppDatabase(const std::filesystem::path &pref_dir) {
+  // Open up the database file, for reading, read in all data and keep it in memory
+  // then close the database
+  std::filesystem::path fileName = pref_dir / REGISTRY_FILENAME;
 
   database = new CRegistry(PATH_TO_CSTR(fileName));
   database->Import();

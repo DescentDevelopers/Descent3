@@ -17,6 +17,7 @@
  */
 
 #include "debug.h"
+#include "debug_platform.h"
 #include "log.h"
 
 bool Debug_break = false;
@@ -28,4 +29,24 @@ bool Debug_Init(bool debugger) {
 #endif
 
   return true;
+}
+
+static DebugMessageBoxHandlers Message_box_handlers = {nullptr, nullptr};
+
+DebugMessageBoxHandlers Debug_SetMessageBoxHandlers(DebugMessageBoxHandlers handlers) {
+  DebugMessageBoxHandlers previous = Message_box_handlers;
+  Message_box_handlers = handlers;
+  return previous;
+}
+
+int Debug_ErrorBox(int type, const char *topstring, const char *title, const char *bottomstring) {
+  if (Message_box_handlers.error_box)
+    return Message_box_handlers.error_box(type, topstring, title, bottomstring);
+  return Debug_PlatformErrorBox(type, topstring, title, bottomstring);
+}
+
+int Debug_MessageBox(int type, const char *title, const char *str) {
+  if (Message_box_handlers.message_box)
+    return Message_box_handlers.message_box(type, title, str);
+  return Debug_PlatformMessageBox(type, title, str);
 }

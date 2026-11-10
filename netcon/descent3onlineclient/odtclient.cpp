@@ -53,6 +53,20 @@
 #include "odtclient.h"
 #include "dip_gametrack.h"
 
+const char *GetChatModuleString(ChatString id) {
+  switch (id) {
+  case ChatString::ErrorNotOnline:
+    return TXT_ODT_ERRORNOTONLINE;
+  case ChatString::BadNick:
+    return TXT_ODT_BADNICK;
+  case ChatString::PrivMsgTo:
+    return TXT_ODT_PRIVMSGTO;
+  case ChatString::PrivMsgFrom:
+    return TXT_ODT_PRIVMSGFROM;
+  }
+  return "";
+}
+
 char Ourlobby[50] = "";
 bool Auto_start = false;
 int Bypass_chat = 0;

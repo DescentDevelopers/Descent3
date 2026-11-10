@@ -34,3 +34,7 @@ target_include_directories(sndlib PUBLIC
   >
   ${SDL3_INCLUDE_DIRS}
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

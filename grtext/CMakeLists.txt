@@ -20,3 +20,7 @@ target_include_directories(grtext PUBLIC
     ${PROJECT_SOURCE_DIR}/grtext
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

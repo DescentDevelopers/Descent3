@@ -9,3 +9,7 @@ target_include_directories(fix PUBLIC
   ${PROJECT_SOURCE_DIR}/fix
   >
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()

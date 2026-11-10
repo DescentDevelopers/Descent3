@@ -27,3 +27,7 @@ target_link_libraries(linux PRIVATE
   ddio
   SDL3::SDL3
 )
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
