@@ -1927,15 +1927,8 @@ void ObjDelete(int objnum) {
   //	Kill any script thread associated with this object.
   FreeObjectScripts(obj, false);
 
-  if (obj->custom_default_script_name) {
-    mem_free(obj->custom_default_script_name);
-    obj->custom_default_script_name = nullptr;
-  }
-
-  if (obj->custom_default_module_name) {
-    mem_free(obj->custom_default_module_name);
-    obj->custom_default_module_name = nullptr;
-  }
+  obj->custom_default_script_name.reset();
+  obj->custom_default_module_name.reset();
 
   obj->type = OBJ_NONE; // unused!
   obj->roomnum = -1;    // zero it!
@@ -1945,36 +1938,20 @@ void ObjDelete(int objnum) {
     ClearObjectLightmaps(obj);
 
   // Free up effects memory
-  if (obj->effect_info) {
-    mem_free(obj->effect_info);
-    obj->effect_info = nullptr;
-  }
+  obj->effect_info.reset();
 
   if (obj->ai_info != nullptr) {
     AIDestroyObj(obj);
-    mem_free(obj->ai_info);
-    obj->ai_info = nullptr;
+    obj->ai_info.reset();
   }
 
-  if (obj->dynamic_wb != nullptr) {
-    mem_free(obj->dynamic_wb);
-    obj->dynamic_wb = nullptr;
-  }
+  obj->dynamic_wb.reset();
 
-  if (obj->attach_children != nullptr) {
-    mem_free(obj->attach_children);
-    obj->attach_children = nullptr;
-  }
+  obj->attach_children.reset();
 
-  if (obj->name) {
-    mem_free(obj->name);
-    obj->name = nullptr;
-  }
+  obj->name.reset();
 
-  if (obj->lighting_info) {
-    mem_free(obj->lighting_info);
-    obj->lighting_info = nullptr;
-  }
+  obj->lighting_info.reset();
 
   ObjFree(objnum);
 }
@@ -3352,8 +3329,7 @@ void SetObjectControlType(object *obj, int control_type) {
     int count = 0;
     int i;
 
-    obj->ai_info = mem_rmalloc<ai_frame>();
-    memset(obj->ai_info, 0x00, sizeof(ai_frame)); // DAJ clear the baby
+    obj->ai_info = std::make_unique<ai_frame>(); // zero-filled
 
     for (i = 0; i < num_wbs; i++) {
       ASSERT(pm->poly_wb[i].num_turrets >= 0 && pm->poly_wb[i].num_turrets <= 6400);
@@ -3378,10 +3354,10 @@ void SetObjectControlType(object *obj, int control_type) {
 
     if (obj->dynamic_wb == nullptr) {
       if (obj->type == OBJ_PLAYER) {
-        obj->dynamic_wb = mem_rmalloc<dynamic_wb_info>(MAX_WBS_PER_OBJ);
+        obj->dynamic_wb = std::make_unique<dynamic_wb_info[]>(MAX_WBS_PER_OBJ);
       } else {
         if (num_wbs)
-          obj->dynamic_wb = mem_rmalloc<dynamic_wb_info>(num_wbs);
+          obj->dynamic_wb = std::make_unique<dynamic_wb_info[]>(num_wbs);
       }
     }
   }

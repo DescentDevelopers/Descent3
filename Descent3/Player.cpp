@@ -2615,7 +2615,7 @@ void PlayerSetControlToAI(int slot, float velocity) {
   // Put the player in AI mode
   SetObjectControlType(pobj, CT_AI);
 
-  memset(pobj->ai_info, 0, sizeof(ai_frame));
+  memset(pobj->ai_info.get(), 0, sizeof(ai_frame));
 
   pobj->ai_info->ai_class = AIC_STATIC;
   pobj->ai_info->ai_type = AIT_AIS;

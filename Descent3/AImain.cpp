@@ -1678,7 +1678,7 @@ float AIDetermineObjVisLevel(object *obj, object *target) {
 }
 
 static inline bool ai_target_valid(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   bool f_valid = false;
 
   if (ai_info->target_handle != OBJECT_HANDLE_NONE) {
@@ -1694,7 +1694,7 @@ static inline bool ai_target_valid(object *obj) {
 }
 
 bool AISetTarget(object *obj, int handle) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   ai_info->target_handle = handle;
   if (handle == OBJECT_HANDLE_NONE)
@@ -1710,7 +1710,7 @@ void AIMoveTowardsDir(object *obj, vector *dir, float scale) {
   vector vel_diff;
   float delta_vel;
   float max_delta_vel;
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   float acc_scale;
 
   if (scale < 1.0f)
@@ -1736,7 +1736,7 @@ bool AIMoveTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos, floa
                            vector *mdir, bool *f_moved) {
   vector dir;
   scalar distance;
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   scalar acc_scale;
 
   if (scale < 1.0f)
@@ -1929,7 +1929,7 @@ bool compute_dodge_dir(vector *movement_dir, object *obj, object *dodge_obj) {
 }
 
 bool goal_do_dodge(object *obj, int goal_index) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   object *other_obj = ObjGet(ai_info->goals[goal_index].g_info.handle);
   int reason = AIN_GOAL_COMPLETE;
 
@@ -2245,7 +2245,7 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
 // MTS: Unused?
 void AITurnTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos /*, bool remain_level*/) {
   vector goal_dir = *pos - obj->pos;
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   // If we want to face ourselves, we are done.  :)
   float dist = vm_NormalizeVector(&goal_dir);
@@ -2258,7 +2258,7 @@ void AITurnTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos /*, b
 #define AI_AVE_MELEE_TIME .45f
 
 bool MeleeHitOk(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   vector intp;
   float col_dist;
   int num_attacks = 0;
@@ -2340,7 +2340,7 @@ bool MeleeHitOk(object *obj) {
 }
 
 bool AiMelee(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   vector f_vec;
   float dot;
 
@@ -2406,7 +2406,7 @@ bool AiMelee(object *obj) {
 }
 
 void do_melee_attack(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   float damage;
   notify melee_info;
   int attack_num;
@@ -2483,7 +2483,7 @@ void do_melee_attack(object *obj) {
 }
 
 void do_ranged_attack(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   int cur_wb = ai_info->current_wb_firing;
 
   // Fire Weapon
@@ -2492,7 +2492,7 @@ void do_ranged_attack(object *obj) {
 }
 
 void AIUpdateAnim(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   polyobj_info *p_info = &obj->rtype.pobj_info;
   int new_anim = ai_info->next_animation_type;
   int ai_movement = ai_info->movement_type;
@@ -2771,7 +2771,7 @@ bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float we
 
   scalar vl = AIDetermineObjVisLevel(robot, target);
 
-  ai_frame *ai_info = robot->ai_info;
+  ai_frame *ai_info = robot->ai_info.get();
   vector to_target = target->pos - robot->pos;
   scalar dist_to_target = vm_NormalizeVector(&to_target);
 
@@ -2812,7 +2812,7 @@ bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float we
 }
 
 vector *AIDetermineFovVec(object *obj, vector *fov) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
 
   if ((ai_info->flags & AIF_AIM_PNT_FOV) && pm->num_wbs > 0) {
@@ -2834,7 +2834,7 @@ extern int DoAI;
 #endif
 
 void AISeeTarget(object *obj, bool f_see) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   if (f_see) {
     if ((Gametime - ai_info->last_see_target_time > CHECK_VIS_INFREQUENTLY_TIME) || !(ai_info->awareness)) {
@@ -2876,7 +2876,7 @@ void AISeeTarget(object *obj, bool f_see) {
 
 bool AINotify(object *obj, uint8_t notify_type, void *info) {
   int next_anim;
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   //@$-tD3XEventArgs evtargs;
   object *other_obj = nullptr;
   object *targetptr;
@@ -3040,7 +3040,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
           if (!BOA_IsVisible(Objects[AI_RenderedList[i]].roomnum, other_obj->roomnum))
             continue;
 
-          ai_frame *ai_info = Objects[AI_RenderedList[i]].ai_info;
+          ai_frame *ai_info = Objects[AI_RenderedList[i]].ai_info.get();
           if (ai_info->notify_flags & (0x00000001 << notify_type)) {
             if (!(ai_info->flags & AIF_DISABLED)) {
               if (ai_info->flags & AIF_DODGE) {
@@ -3077,7 +3077,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
           if (!BOA_IsVisible(Objects[i].roomnum, other_obj->roomnum))
             continue;
 
-          ai_frame *ai_info = Objects[i].ai_info;
+          ai_frame *ai_info = Objects[i].ai_info.get();
 
           if (ai_info->notify_flags & (0x00000001 << notify_type)) {
             if (!(ai_info->flags & AIF_DISABLED)) {
@@ -3577,7 +3577,7 @@ int AIFindRandomRoom(object *obj, ai_frame *ai_info, goal *goal_ptr, int avoid_r
 #define MAX_FLUCTUATION_PERCENT 0.08f
 
 void AIDestroyObj(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: In free path";
   AIPathFreePath(&ai_info->path);
@@ -3587,12 +3587,12 @@ void AIDestroyObj(object *obj) {
 void ObjSetAIInfo(object *objp) {
   int i;
 
-  ai_frame *dest = objp->ai_info;
+  ai_frame *dest = objp->ai_info.get();
   ASSERT(dest != nullptr);
   if (!(Object_info[objp->id].ai_info))
     return;
 
-  t_ai_info *src = Object_info[objp->id].ai_info;
+  t_ai_info *src = Object_info[objp->id].ai_info.get();
 
   dest->ai_class = src->ai_class;
   dest->ai_type = src->ai_type;
@@ -3648,7 +3648,7 @@ void ObjSetAIInfo(object *objp) {
 }
 
 bool AIInit(object *obj, uint8_t ai_class, uint8_t ai_type, uint8_t ai_movement) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   ASSERT(ai_info);
   ASSERT(obj->control_type == CT_AI && obj->type != OBJ_NONE);
 
@@ -3866,7 +3866,7 @@ void AIInitAll() {
 }
 
 void AICheckTargetVis(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   object *target = ObjGet(ai_info->target_handle);
 
   LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: Vis 1";
@@ -4060,7 +4060,7 @@ bool ai_move_need_path(object *obj, vector *pos, int roomnum) {
 }
 
 void ai_update_registers(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   if (ObjGet(ai_info->target_handle)) {
     AIStatusCircleFrame(obj, ObjGet(ai_info->target_handle), ai_info->dist_to_target_perceived,
@@ -4220,7 +4220,7 @@ void AIGoalDoAlignment(object *obj, float dist, vector *fvec, goal *goal, vector
 }
 
 void AIDoTrackFrame(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   float track_distance;
 
   AI_FriendNumNear = 0;
@@ -4349,7 +4349,7 @@ float AIDetermineGoalInfluence(object *obj, goal *goal) {
 }
 
 void AIDoOrientVelocity(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   vector dir = obj->mtype.phys_info.velocity;
   float mag = vm_NormalizeVector(&dir);
@@ -4360,7 +4360,7 @@ void AIDoOrientVelocity(object *obj) {
 }
 
 void AIDoOrientDefault(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   if ((obj->movement_type != MT_WALKING && obj->movement_type != MT_PHYSICS) || !(ai_info)) {
     return;
@@ -4381,7 +4381,7 @@ void AIDoOrientDefault(object *obj) {
 }
 
 void AIDoOrient(object *obj, int g_index) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   if (g_index < 0)
     return;
   goal *goal_ptr = &ai_info->goals[g_index];
@@ -4527,7 +4527,7 @@ void AIDetermineSpeed(object *obj, int flags, float *speed) {
 }
 
 void ai_move(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   int i;
   bool f_dodge = false; // Are there any dodge goals
   bool f_avoid = false; // Are there any avoid goals
@@ -5120,7 +5120,7 @@ void ai_fire(object *obj) {
     return; // object can't fire anything...
   }
 
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   int i;
   int j;
   poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
@@ -5458,7 +5458,7 @@ void ai_fire(object *obj) {
 
 static inline void do_awareness_based_anim_stuff(object *obj) {
   int next_anim;
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   if (ai_info->awareness <= AWARE_BARELY) {
     if (ai_info->animation_type == AS_ALERT && ai_info->next_animation_type != AS_GOTO_ALERT_STANDING) {
@@ -5502,7 +5502,7 @@ static inline void do_awareness_based_anim_stuff(object *obj) {
 }
 
 static inline void ai_decrease_awareness(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   if (ai_info->awareness == AWARE_NONE && !(ai_info->flags & AIF_PERSISTANT)) {
     LOG_DEBUG_IF(AI_debug_robot_do && (OBJNUM(obj) == AI_debug_robot_index)) << "AI Note: In free path";
@@ -5532,7 +5532,7 @@ static inline bool ai_do_script_stuff(object *obj) {
 }
 
 static inline void ai_walker_stuff(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
 
   // Do standing->walking and walking->standing stuff
   if (ai_info->movement_type == MC_STANDING) {
@@ -5826,7 +5826,7 @@ void AITargetCheck(object *obj, object *target, object **best_obj, float *best_d
 }
 
 void AIDetermineTarget(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   object *best_obj = nullptr;
   float best_dot = -1.0f;
   float best_dist = MAX_SEE_TARGET_DIST + 1;
@@ -5905,7 +5905,7 @@ void AIDetermineTarget(object *obj) {
 // chrishack -- make sure that some checks are done with a ps_rand() based on the emotion involved
 // also current emotional levels should influence the percent chance of the check being successful
 void AIDoFreud(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   ai_mem *mem = ai_info->memory;
 
   int fear_depth = (ai_info->life_preservation) * (AI_MEM_DEPTH - 1) + 1;
@@ -5961,7 +5961,7 @@ void AIDoFreud(object *obj) {
 }
 
 void AIDoMemFrame(object *obj) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   ai_info->mem_time_till_next_update -= Frametime;
 
   if (ai_info->mem_time_till_next_update <= 0.0f) {
@@ -6040,7 +6040,7 @@ void AIDoFrame(object *obj) {
     multi_saved_weapon_flags = obj->weapon_fire_flags;
   }
 
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   ASSERT((obj->control_type == CT_AI) || (obj->control_type == CT_DYING_AND_AI));
 
   if ((ai_info->flags & AIF_DISABLED) || (obj->type == OBJ_DUMMY)) {
@@ -6229,7 +6229,7 @@ void AIFrameAll(void) {
 }
 
 void AIPowerSwitch(object *obj, bool f_on) {
-  ai_frame *ai_info = obj->ai_info;
+  ai_frame *ai_info = obj->ai_info.get();
   if (obj->control_type != CT_AI)
     return;
 

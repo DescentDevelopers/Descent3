@@ -621,12 +621,7 @@
 #include "psrand.h"
 // Allocate and initialize an effect_info struct for an object
 void ObjCreateEffectInfo(object *objp) {
-  if (objp->effect_info)
-    mem_free(objp->effect_info);
-
-  objp->effect_info = mem_rmalloc<effect_info_s>();
-  memset(objp->effect_info, 0, sizeof(effect_info_s));
-  ASSERT(objp->effect_info);
+  objp->effect_info = std::make_unique<effect_info_s>();
   objp->effect_info->sound_handle = SOUND_NONE_INDEX;
 }
 void ObjSetRenderPolyobj(object *objp, int model_num, int dying_model_num = -1);
@@ -647,12 +642,9 @@ void ObjSetRenderPolyobj(object *objp, int model_num, int dying_model_num) {
   // Initialize attach slots
   if (model_num != -1) {
     poly_model *pm = GetPolymodelPointer(model_num); // get also pages in
-    if (objp->attach_children != nullptr) {
-      mem_free(objp->attach_children);
-      objp->attach_children = nullptr;
-    }
+    objp->attach_children.reset();
     if ((objp->attach_children == nullptr) && pm->n_attach) {
-      objp->attach_children = mem_rmalloc<int>(pm->n_attach);
+      objp->attach_children = std::make_unique<int32_t[]>(pm->n_attach);
       if (objp->type == OBJ_PLAYER)
         ASSERT(pm->n_attach >= NUM_PLAYER_ATTACH_POINTS);
       for (int i = 0; i < pm->n_attach; i++)
@@ -710,7 +702,7 @@ int ObjInitPlayer(object *objp) {
   // These are always set for a player
   objp->mtype.phys_info.num_bounces = PHYSICS_UNLIMITED_BOUNCE;
   if (objp->dynamic_wb == nullptr) {
-    objp->dynamic_wb = mem_rmalloc<dynamic_wb_info>(MAX_WBS_PER_OBJ);
+    objp->dynamic_wb = std::make_unique<dynamic_wb_info[]>(MAX_WBS_PER_OBJ);
   }
   WBClearInfo(objp);
   // Set a few misc things
@@ -742,14 +734,14 @@ int ObjInitGeneric(object *objp, bool reinit) {
 #ifdef EDITOR
     if (GetFunctionMode() == EDITOR_MODE)
       OutrageMessageBox("Object %d (\"%s\") had ID %d which no longer exists.  Changing to %d, \"%s\".", OBJNUM(objp),
-                        objp->name ? objp->name : "<no name>", objp->id, i, obj_info->name);
+                        objp->name ? objp->name.get() : "<no name>", objp->id, i, obj_info->name);
 #endif
   }
   if (obj_info->type != objp->type) {
 #ifdef EDITOR
     if (GetFunctionMode() == EDITOR_MODE)
       OutrageMessageBox("Object %d (\"%s\"), type name \"%s\", changed from type %s to %s", OBJNUM(objp),
-                        objp->name ? objp->name : "<no name>", obj_info->name, Object_type_names[objp->type],
+                        objp->name ? objp->name.get() : "<no name>", obj_info->name, Object_type_names[objp->type],
                         Object_type_names[obj_info->type]);
 #endif
     objp->type = obj_info->type;
@@ -816,12 +808,11 @@ int ObjInitGeneric(object *objp, bool reinit) {
 
     // On a fresh init, SetObjectControlType() has just sized dynamic_wb for this model. A reinitialized object
     // may have changed models, so replace its array (WBClearInfo() below resets every field in use anyway).
-    if ((objp->dynamic_wb != nullptr) && reinit) {
-      mem_free(objp->dynamic_wb);
-      objp->dynamic_wb = nullptr;
+    if (reinit) {
+      objp->dynamic_wb.reset();
     }
     if ((objp->dynamic_wb == nullptr) && num_wbs) {
-      objp->dynamic_wb = mem_rmalloc<dynamic_wb_info>(num_wbs);
+      objp->dynamic_wb = std::make_unique<dynamic_wb_info[]>(num_wbs);
     }
     // Setup the weapon batteries (must be after polymodel stuff)
     WBClearInfo(objp);
@@ -1168,7 +1159,11 @@ int ObjInitTypeSpecific(object *objp, bool reinitializing) {
 int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creation_time, int parent_handle) {
   // Zero out object structure to keep weird bugs from happening in uninitialized fields.
   // I hate doing this because it seems sloppy, but it's probably better to do it
-  memset(objp, 0, sizeof(object));
+  // (The unions are zeroed explicitly because value-initialization only zeroes their first member.)
+  *objp = object{};
+  memset(&objp->mtype, 0, sizeof(objp->mtype));
+  memset(&objp->ctype, 0, sizeof(objp->ctype));
+  memset(&objp->rtype, 0, sizeof(objp->rtype));
   // Set the stuff that's passed in
   objp->type = type;
   objp->id = id;
@@ -1176,7 +1171,6 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->pos = objp->last_pos = *pos;
   objp->parent_handle = parent_handle;
   objp->creation_time = creation_time;
-  objp->osiris_script = nullptr;
   // Initialize some general stuff
   objp->roomnum = -1;
   objp->orient = Identity_matrix;
@@ -1187,15 +1181,8 @@ int ObjInit(object *objp, int type, int id, int handle, vector *pos, float creat
   objp->change_flags = 0;
   objp->generic_nonvis_flags = 0;
   objp->generic_sent_nonvis = 0;
-  objp->name = nullptr;
-  objp->custom_default_script_name = nullptr;
-  objp->custom_default_module_name = nullptr;
   objp->contains_type = -1;
   objp->lifeleft = 0;
-  objp->effect_info = nullptr;
-  objp->ai_info = nullptr;
-  objp->dynamic_wb = nullptr;
-  objp->attach_children = nullptr;
   // Now initialize the type-specific data
   return ObjInitTypeSpecific(objp, 0);
 }

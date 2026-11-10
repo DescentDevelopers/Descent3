@@ -253,7 +253,14 @@ void DrawColoredDisk(vector *pos, float r, float g, float b, float inner_alpha, 
 void DrawColoredRing(vector *pos, float r, float g, float b, float inner_alpha, float outer_alpha, float size,
                      float inner_ring_ratio, uint8_t saturate = 0, uint8_t lod = 1);
 
-// Creates a blast ring from an event
+// Event payload for DoBlastRingEvent: the parts of the dying object a delayed blast ring needs
+struct blast_ring_event_data {
+  vector pos;
+  float size;
+  int roomnum;
+};
+
+// Creates a blast ring from an event (data points to a blast_ring_event_data)
 void DoBlastRingEvent(int eventnum, void *data);
 
 // Makes a fireball have a custom vclip

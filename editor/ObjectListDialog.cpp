@@ -63,12 +63,12 @@ void CObjectListDialog::MakeInfoStr(object *obj, char *str) {
 
   if (obj->type == OBJ_POWERUP || obj->type == OBJ_ROBOT || obj->type == OBJ_BUILDING || obj->type == OBJ_CLUTTER)
     sprintf(tempstr, "%d-(0x%x)[%s](%s) ", static_cast<int>(OBJNUM(obj)), obj->handle, Object_info[obj->id].name,
-            (obj->name) ? obj->name : "No Name Given");
+            (obj->name) ? obj->name.get() : "No Name Given");
   else {
     char *obj_type_name =
         (obj->type >= 0 && obj->type < MAX_OBJECT_TYPES) ? Object_type_names[obj->type] : "Unnamed type";
     sprintf(tempstr, "%d-(0x%x)[%s](%s) ", static_cast<int>(OBJNUM(obj)), obj->handle, obj_type_name,
-            (obj->name) ? obj->name : "No Name Given");
+            (obj->name) ? obj->name.get() : "No Name Given");
   }
 
   strcpy(str, tempstr);
