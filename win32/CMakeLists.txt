@@ -1,7 +1,6 @@
 set(CPPS
   winapp.cpp
   wincon.cpp
-  windata.cpp
 )
 
 add_library(win32 STATIC ${CPPS})

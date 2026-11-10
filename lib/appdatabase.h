@@ -94,16 +94,7 @@ public:
 // Macro to write a string
 #define write_string(label, varp) write(label, varp, strlen(varp))
 
-/*	This section includes the platform-specific header files
-        Add a platform to this list once implemented:
-
-                Win32				Samir		Win32Database.h			06/97
-*/
-
-#if defined(DX_APP)
-#include "win\win32database.h"
-#else
+// oeLnxAppDatabase is the implementation used on every platform.
 #include "linux/lnxdatabase.h"
-#endif
 
 #endif
