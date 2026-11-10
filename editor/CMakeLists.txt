@@ -594,7 +594,6 @@ target_link_libraries(Descent3Editor
     fix
     grtext
     manage
-    mem
     misc
     model
     module

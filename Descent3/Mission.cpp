@@ -1213,7 +1213,7 @@ msnfile_error:
   }
   return res;
 fatal_error:
-  mem_error();
+  Error("Out of memory loading mission %s.", PATH_TO_CSTR(mssn));
   return false;
 #endif
   return false;

@@ -387,6 +387,10 @@ extern int Num_modems_found;
 extern uint16_t nw_ListenPort;
 extern uint16_t PXOPort;
 
+// The DLLs expect these exact signatures, so give them wrappers rather than the RTL functions
+static void *DLLMemMalloc(int size) { return mem_malloc(size); }
+static void DLLMemFree(void *memblock) { mem_free(memblock); }
+
 void GetMultiAPI(multi_api *api) {
   // make the compiler happy
   bool (*fp_PlayerIsShipAllowed)(int, int) = PlayerIsShipAllowed;
@@ -449,8 +453,8 @@ void GetMultiAPI(multi_api *api) {
   api->fp[46] = (int *)GetMissionName;
   api->fp[47] = (int *)RemoveUITextItem;
   api->fp[48] = (int *)CreateNewUITextItem;
-  api->fp[49] = (int *)mem_malloc_sub;
-  api->fp[50] = (int *)mem_free_sub;
+  api->fp[49] = (int *)DLLMemMalloc;
+  api->fp[50] = (int *)DLLMemFree;
   api->fp[51] = (int *)CreateSplashScreen;
   api->fp[52] = (int *)CloseSplashScreen;
   api->fp[53] = (int *)UIConsoleGadgetCreate;

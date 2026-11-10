@@ -25,7 +25,6 @@ target_link_libraries(cfile PRIVATE
   ddebug
   ddio
   logger
-  mem
   misc
 )
 target_include_directories(cfile PUBLIC
