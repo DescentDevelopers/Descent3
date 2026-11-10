@@ -750,10 +750,10 @@ bool SaveGameState(const std::filesystem::path &pathname, const char *descriptio
   //	write out mission level information
   cf_WriteShort(fp, (int16_t)Current_mission.cur_level);
 
-  if (Current_mission.filename && (stricmp("d3_2.mn3", Current_mission.filename) == 0)) {
+  if (Current_mission.filename && (stricmp("d3_2.mn3", Current_mission.filename.get()) == 0)) {
     cf_WriteString(fp, "d3.mn3");
   } else {
-    cf_WriteString(fp, Current_mission.filename ? Current_mission.filename : "");
+    cf_WriteString(fp, Current_mission.filename ? Current_mission.filename.get() : "");
   }
 
   cf_WriteInt(fp, Current_mission.game_state_flags);

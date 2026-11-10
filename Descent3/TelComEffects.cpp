@@ -136,6 +136,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <memory>
 
 #include "TelComEffects.h"
 #include "log.h"
@@ -162,7 +163,7 @@ void EfxInit(void) {
     tce->id = INVALID_EFFECT_ID;
     tce->prev = -1;
     tce->next = -1;
-    tce->text_buffer = nullptr;
+    tce->text_buffer.reset();
     tce->tab_stop = false;
     tce->has_focus = false;
     for (int j = 0; j < MAX_EFFECT_EVENTS; j++)
@@ -211,7 +212,7 @@ void EfxDestroyScreen(int screen) {
     tce->screen = -1;
     tce->prev = tce->next = -1;
     tce->id = INVALID_EFFECT_ID;
-    tce->text_buffer = nullptr;
+    tce->text_buffer.reset();
     for (int j = 0; j < MAX_EFFECT_EVENTS; j++)
       tce->event_queue[j].id = -1;
   }
@@ -272,10 +273,7 @@ void EfxFreeEffect(tceffect *tce) {
   }
   tce->prev = tce->next = -1;
 
-  if (tce->text_buffer) {
-    mem_free(tce->text_buffer);
-    tce->text_buffer = nullptr;
-  }
+  tce->text_buffer.reset();
 
   if (tce->has_focus) {
     // disable the tab stop
@@ -464,7 +462,7 @@ void EfxInit(tceffect *tce, bool tab_stop, bool gets_focus) {
   }   // end else
 
   tce->pos_x = tce->pos_y = 0;
-  tce->text_buffer = nullptr;
+  tce->text_buffer.reset();
   tce->age = 0;
   tce->flags = 0;
   tce->color = GR_GREEN;
@@ -1031,21 +1029,15 @@ bool CreateTextStatic(tceffect *tce, const char *text) {
   if (!text)
     return false;
 
-  tce->text_buffer = mem_rmalloc<char>(strlen(text) + 10);
-  if (!tce->text_buffer)
-    return false;
+  tce->text_buffer = std::make_unique<char[]>(strlen(text) + 10);
 
   tce->alpha = 255;
 
-  char *tempbuffer = mem_rmalloc<char>(strlen(text) + 10);
-  if (!tempbuffer)
-    return false;
-  strcpy(tempbuffer, text);
+  auto tempbuffer = std::make_unique<char[]>(strlen(text) + 10);
+  strcpy(tempbuffer.get(), text);
 
   // apply the word wrap
-  textaux_WordWrap(tempbuffer, tce->text_buffer, tce->w, Game_fonts[tce->textinfo.font_index]);
-
-  mem_free(tempbuffer);
+  textaux_WordWrap(tempbuffer.get(), tce->text_buffer.get(), tce->w, Game_fonts[tce->textinfo.font_index]);
 
   return true;
 }
@@ -1054,19 +1046,13 @@ bool CreateTextFade(tceffect *tce, const char *text) {
   ASSERT(text);
   if (!text || text[0] == '\0')
     return false;
-  tce->text_buffer = mem_rmalloc<char>(strlen(text) + 10);
-  if (!tce->text_buffer)
-    return false;
+  tce->text_buffer = std::make_unique<char[]>(strlen(text) + 10);
 
-  char *tempbuffer = mem_rmalloc<char>(strlen(text) + 10);
-  if (!tempbuffer)
-    return false;
-  strcpy(tempbuffer, text);
+  auto tempbuffer = std::make_unique<char[]>(strlen(text) + 10);
+  strcpy(tempbuffer.get(), text);
 
   // apply the word wrap
-  textaux_WordWrap(tempbuffer, tce->text_buffer, tce->w, Game_fonts[tce->textinfo.font_index]);
-
-  mem_free(tempbuffer);
+  textaux_WordWrap(tempbuffer.get(), tce->text_buffer.get(), tce->w, Game_fonts[tce->textinfo.font_index]);
 
   switch (tce->flags) {
   case TC_TEXTF_OUT:
@@ -1085,19 +1071,13 @@ bool CreateTextType(tceffect *tce, const char *text) {
   ASSERT(text);
   if (!text || text[0] == '\0')
     return false;
-  tce->text_buffer = mem_rmalloc<char>(strlen(text) + 10);
-  if (!tce->text_buffer)
-    return false;
+  tce->text_buffer = std::make_unique<char[]>(strlen(text) + 10);
 
-  char *tempbuffer = mem_rmalloc<char>(strlen(text) + 10);
-  if (!tempbuffer)
-    return false;
-  strcpy(tempbuffer, text);
+  auto tempbuffer = std::make_unique<char[]>(strlen(text) + 10);
+  strcpy(tempbuffer.get(), text);
 
   // apply the word wrap
-  textaux_WordWrap(tempbuffer, tce->text_buffer, tce->w, Game_fonts[tce->textinfo.font_index]);
-
-  mem_free(tempbuffer);
+  textaux_WordWrap(tempbuffer.get(), tce->text_buffer.get(), tce->w, Game_fonts[tce->textinfo.font_index]);
 
   tce->textinfo.last_letter = 0;
   return true;

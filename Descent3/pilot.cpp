@@ -574,6 +574,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -681,7 +682,6 @@ void ShipSelectDeleteLogo(newuiListBox *lb);
 // -------------------------------------------------------
 void ShowPilotPicDialog(pilot *Pilot);
 
-UITextItem *pilot_items = nullptr;        // array of UITextItems for use in Pilot listbox
 static std::vector<std::string> filelist; // list of pilot filenames
 static int filecount;                     // number of pilot filenames found
 void PilotListSelectChangeCallback(int index);
@@ -1423,11 +1423,6 @@ void NewPltUpdate(newuiListBox *list, int selected, const std::string &filename)
 
   list->RemoveAll();
 
-  if (pilot_items) {
-    delete[] pilot_items;
-    pilot_items = nullptr;
-  }
-
   if (filecount) {
     // create UIItems
     char pname[PILOT_STRING_SIZE];
@@ -1851,14 +1846,9 @@ char custom_texture[_MAX_PATH];
 UIBmpWindow *bmpwindow;
 
 struct tShipListInfo {
-  int *idlist; // array of remapping indicies (list index->ship index)
-  void Init() { idlist = nullptr; }
-  void Reset() {
-    if (idlist) {
-      mem_free(idlist);
-      idlist = nullptr;
-    }
-  }
+  std::unique_ptr<int[]> idlist; // array of remapping indicies (list index->ship index)
+  void Init() { idlist.reset(); }
+  void Reset() { idlist.reset(); }
 };
 
 tShipListInfo *lp_ship_info = nullptr;
@@ -2355,9 +2345,7 @@ bool PltSelectShip(pilot *Pilot) {
     if (Ships[i].used)
       count++;
   }
-  ship_info.idlist = mem_rmalloc<int>(count);
-  if (!ship_info.idlist)
-    goto ship_id_err;
+  ship_info.idlist = std::make_unique<int[]>(count);
 
   bool found_ship;
   bool shipoktoadd;
@@ -3153,21 +3141,14 @@ void ShowPilotPicDialog(pilot *Pilot) {
 
   // Initialize PPicDlgInfo data
   // ---------------------------
-  uint16_t *id_list;
-  id_list = mem_rmalloc<uint16_t>(num_pilots);
-
-  if (!id_list) {
-    // out of memory
-    LOG_ERROR << "Out of memory";
-    goto clean_up;
-  }
+  auto id_list = std::make_unique<uint16_t[]>(num_pilots);
 
   PPicDlgInfo.curr_bmp = PPicDlgInfo.blank_bmp = blank_bmp_handle;
   PPicDlgInfo.curr_index = 0;
   PPicDlgInfo.listbox = list;
   PPicDlgInfo.bmp_disp = &bmp_disp;
   PPicDlgInfo.size = num_pilots;
-  PPicDlgInfo.id_list = id_list;
+  PPicDlgInfo.id_list = id_list.get();
 
   // fill in dialog data
   // -------------------
@@ -3239,17 +3220,12 @@ void ShowPilotPicDialog(pilot *Pilot) {
   hwnd.Close();
   hwnd.Destroy();
 
-clean_up:
   // free data
   // ---------
   if ((PPicDlgInfo.curr_bmp != PPicDlgInfo.blank_bmp) && (PPicDlgInfo.curr_bmp > BAD_BITMAP_HANDLE))
     bm_FreeBitmap(PPicDlgInfo.curr_bmp);
 
   bm_FreeBitmap(blank_bmp_handle);
-
-  if (id_list) {
-    mem_free(id_list);
-  }
 }
 
 // "Current Pilot" access functions

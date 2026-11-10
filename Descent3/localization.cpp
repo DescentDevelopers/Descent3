@@ -653,69 +653,31 @@ char *_parse_escape_chars(char *buffer) {
   return buffer;
 }
 
-GrowString::GrowString() {
-  root.string_data = nullptr;
-  root.next = nullptr;
-  curr = &root;
-}
+GrowString::GrowString() { curr = &root; }
 GrowString::~GrowString() { Destroy(); }
 
 void GrowString::operator+=(char *str) {
   if (!str)
     return;
   if (root.string_data) {
-    tbufferinfo *node;
-    node = mem_rmalloc<tbufferinfo>();
-    if (!node)
-      return;
-    node->string_data = mem_rmalloc<char>(strlen(str) + 2);
-    if (!node->string_data) {
-      mem_free(node);
-      return;
-    }
-    sprintf(node->string_data, "\n%s", str);
-    curr->next = node;
-    node->next = nullptr;
-    curr = node;
+    auto node = std::make_unique<tbufferinfo>();
+    node->string_data = std::make_unique<char[]>(strlen(str) + 2);
+    sprintf(node->string_data.get(), "\n%s", str);
+    curr->next = std::move(node);
+    curr = curr->next.get();
   } else {
-    root.string_data = mem_strdup(str);
-    if (!root.string_data)
-      return;
-    root.next = nullptr;
+    root.string_data = mem_strdup_unique(str);
   }
 }
 
 void GrowString::Destroy(void) {
-  if (root.string_data)
-    mem_free(root.string_data);
-  root.string_data = nullptr;
+  root.string_data.reset();
 
-  tbufferinfo *c, *next;
-  c = next = root.next;
-  while (c) {
-    next = c->next;
-    if (c->string_data)
-      mem_free(c->string_data);
-    mem_free(c);
-    c = next;
+  // unlink the nodes one at a time so a long chain is not freed recursively
+  while (root.next) {
+    root.next = std::move(root.next->next);
   }
-  root.next = nullptr;
-  root.string_data = nullptr;
   curr = &root;
-}
-
-GrowString GrowString::operator+(char *str) {
-  *this += str;
-  return *this;
-}
-
-GrowString GrowString::operator+(GrowString &gs) {
-  char *str = nullptr;
-  gs.GetString(&str);
-  *this += str;
-  if (str)
-    mem_free(str);
-  return *this;
 }
 
 void GrowString::operator+=(GrowString &gs) {
@@ -746,17 +708,16 @@ void GrowString::GetString(char **str) {
     return;
 
   tbufferinfo *next;
-  next = root.next;
 
   *str = (char *)mem_malloc(size + 1);
 
-  strcpy(*str, root.string_data);
-  next = root.next;
+  strcpy(*str, root.string_data.get());
+  next = root.next.get();
   while (next) {
     if (next->string_data) {
-      strcat(*str, next->string_data);
+      strcat(*str, next->string_data.get());
     }
-    next = next->next;
+    next = next->next.get();
   }
 }
 
@@ -765,12 +726,13 @@ int GrowString::Length(void) {
     return -1;
 
   tbufferinfo *next;
-  next = root.next;
-  int size = strlen(root.string_data);
+  next = root.next.get();
+  int size = strlen(root.string_data.get());
   while (next) {
-    if (next->string_data)
-      size += strlen(next->string_data);
-    next = next->next;
+    if (next->string_data) {
+      size += strlen(next->string_data.get());
+    }
+    next = next->next.get();
   }
   return size;
 }

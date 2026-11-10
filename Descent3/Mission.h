@@ -167,6 +167,7 @@
 #ifndef MISSION_H
 #define MISSION_H
 
+#include <memory>
 #include <vector>
 
 #include "pstypes.h"
@@ -216,15 +217,15 @@ struct tLevelNode {
   uint32_t objective_flags; // level objective flags
 
   // Movies
-  char *moviename;
-  char *endmovie;
+  std::unique_ptr<char[]> moviename;
+  std::unique_ptr<char[]> endmovie;
 
   // Level filename
-  char *filename;  // mine filename.
-  char *briefname; // briefing filename
-  char *hog;       // hog file name for this level
-  char *score;     // music score of level
-  char *progress;  // File name containing the progress background screen
+  std::unique_ptr<char[]> filename;  // mine filename.
+  std::unique_ptr<char[]> briefname; // briefing filename
+  std::unique_ptr<char[]> hog;       // hog file name for this level
+  std::unique_ptr<char[]> score;     // music score of level
+  std::unique_ptr<char[]> progress;  // File name containing the progress background screen
 
   // Level branching
   uint8_t lvlbranch0, lvlbranch1; // FORK or BRANCH command
@@ -239,11 +240,11 @@ struct tMission {
   int mn3_handle; // if this mission was loaded from an MN3, this is the handle.
 
   unsigned game_state_flags;  // game state information stored here (manipulated by scripting)
-  char *filename;             // filename of mission.
+  std::unique_ptr<char[]> filename; // filename of mission.
   char name[MSN_NAMELEN];     // name of mission
   char author[MSN_NAMELEN];   // author of mission.
   char desc[MSN_NAMELEN * 4]; // description of mission
-  char *hog;                  // default hog filename
+  std::unique_ptr<char[]> hog; // default hog filename
   char email[MSN_URLLEN];     // email and web location
   char web[MSN_URLLEN];
   bool multiplayable;    // this level is multiplayer playable

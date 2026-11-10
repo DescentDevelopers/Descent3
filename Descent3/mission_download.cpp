@@ -121,6 +121,7 @@
 #include <cstdio>
 #include <future>
 #include <fstream>
+#include <memory>
 
 #include "mem.h"
 #include "args.h"
@@ -827,16 +828,14 @@ int CheckGetD3M(char *d3m) {
 #if !defined(OEM)
 
   char modurl[MAX_MISSION_URL_LEN + 1];
-  char *lowurl;
-  char *fixedd3m = nullptr;
 
   if (cfexist(d3m) || cfexist(std::filesystem::path(LocalD3Dir) / "netgames" / d3m)) {
     return 1;
   }
 
   // Now we need to replace evil spaces with underscores, so the downloader will work
-  fixedd3m = mem_strdup(d3m);
-  char *p = fixedd3m;
+  auto fixedd3m = mem_strdup_unique(d3m);
+  char *p = fixedd3m.get();
   while (*p) {
     if (*p == ' ') {
       *p = '_';
@@ -851,18 +850,15 @@ int CheckGetD3M(char *d3m) {
     strcpy(modurl, GameArgs[iurlbase + 1]);
   }
 
-  strcat(modurl, fixedd3m);
+  strcat(modurl, fixedd3m.get());
 
-  lowurl = mem_strdup(_strlwr(modurl));
+  _strlwr(modurl);
   LOG_DEBUG.printf("Downloading mod file from %s", modurl);
 
   if (ModDownloadWithStatus(modurl, d3m)) {
-    mem_free(fixedd3m);
     return 1;
   }
 
-  mem_free(lowurl);
-  mem_free(fixedd3m);
   return 0;
 #endif
 }

@@ -176,8 +176,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
   if (!num_hs)
     return -1;
 
-  hsmap->hs = mem_rmalloc<hotspot>(num_hs);
-  ASSERT(hsmap->hs);
+  hsmap->hs = std::make_unique<hotspot[]>(num_hs);
   for (count = 0; count < num_hs; count++) {
     if (whats_there[count] == HOTSPOT_THERE) {
       hsmap->hs[count].starting_y = MAX_MAP_HEIGHT;
@@ -221,9 +220,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
       // fill in the struct with the start and end values for each scanline
       hsmap->hs[count].scanlines = sl_count;
       if (sl_count) {
-        hsmap->hs[count].x = mem_rmalloc<scanline>(sl_count);
-        ASSERT(hsmap->hs[count].x);
-        memset(hsmap->hs[count].x, 0, sizeof(scanline) * sl_count);
+        hsmap->hs[count].x = std::make_unique<scanline[]>(sl_count);
         y = hsmap->hs[count].starting_y;
         for (curr_sl = 0; curr_sl < sl_count; curr_sl++) {
           hsmap->hs[count].x[curr_sl].start = sl_x[y].start;
@@ -236,7 +233,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
     } else {
       hsmap->hs[count].scanlines = 0;
       hsmap->hs[count].starting_y = 0;
-      hsmap->hs[count].x = nullptr;
+      hsmap->hs[count].x.reset();
     } // end ifelse (hotspot_there)
   }   // end for (count)
 
@@ -246,10 +243,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
       LOG_DEBUG.printf("Notice: HotSpot %d is empty", count);
       hsmap->hs[count].scanlines = 0;
       hsmap->hs[count].starting_y = 0;
-      if (hsmap->hs[count].x) {
-        mem_free(hsmap->hs[count].x);
-      }
-      hsmap->hs[count].x = nullptr;
+      hsmap->hs[count].x.reset();
     }
   }
 
@@ -269,15 +263,7 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
   uint8_t alpha;
   bool newline = true;
 
-  wndmap->wm = mem_rmalloc<window_box>(wndmap->num_of_windows);
-  ASSERT(wndmap->wm);
-
-  for (int index = 0; index < wndmap->num_of_windows; index++) {
-    wndmap->wm[index].lt = nullptr;
-    wndmap->wm[index].rt = nullptr;
-    wndmap->wm[index].lb = nullptr;
-    wndmap->wm[index].rb = nullptr;
-  }
+  wndmap->wm = std::make_unique<window_box[]>(wndmap->num_of_windows);
 
   for (count = 0; count < wndmap->num_of_windows; count++) {
     wndmap->wm[count].x = wndmap->wm[count].y = wndmap->wm[count].width = wndmap->wm[count].height = -1;
@@ -408,8 +394,8 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
     if (*top_y != -1) {
       w = *right_x - *left_x;
       h = *bottom_y - *top_y;
-      wndmap->wm[count].lt = (char *)mem_malloc(w * h);
-      array = wndmap->wm[count].lt;
+      wndmap->wm[count].lt = std::make_unique<char[]>(w * h);
+      array = wndmap->wm[count].lt.get();
       for (real_y = *top_y, y = 0; real_y < *bottom_y; real_y++, y++) {
         for (real_x = *left_x, x = 0; real_x < *right_x; real_x++, x++) {
           alpha = (unsigned)map[real_y * width + real_x];
@@ -429,9 +415,9 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
 
       w = *right_x - *left_x;
       h = *bottom_y - *top_y;
-      wndmap->wm[count].rt = (char *)mem_malloc(w * h);
+      wndmap->wm[count].rt = std::make_unique<char[]>(w * h);
 
-      array = wndmap->wm[count].rt;
+      array = wndmap->wm[count].rt.get();
       for (real_y = *top_y, y = 0; real_y < *bottom_y; real_y++, y++) {
         for (real_x = *left_x, x = 0; real_x < *right_x; real_x++, x++) {
           alpha = (unsigned)map[real_y * width + real_x];
@@ -453,8 +439,8 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
     if (*top_y != -1) {
       w = *right_x - *left_x;
       h = *bottom_y - *top_y;
-      wndmap->wm[count].lb = (char *)mem_malloc(w * h);
-      array = wndmap->wm[count].lb;
+      wndmap->wm[count].lb = std::make_unique<char[]>(w * h);
+      array = wndmap->wm[count].lb.get();
 
       for (real_y = *top_y, y = 0; real_y < *bottom_y; real_y++, y++) {
         for (real_x = *left_x, x = 0; real_x < *right_x; real_x++, x++) {
@@ -475,8 +461,8 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
 
       w = *right_x - *left_x;
       h = *bottom_y - *top_y;
-      wndmap->wm[count].rb = (char *)mem_malloc(w * h);
-      array = wndmap->wm[count].rb;
+      wndmap->wm[count].rb = std::make_unique<char[]>(w * h);
+      array = wndmap->wm[count].rb.get();
       for (real_y = *top_y, y = 0; real_y < *bottom_y; real_y++, y++) {
         for (real_x = *left_x, x = 0; real_x < *right_x; real_x++, x++) {
           alpha = (unsigned)map[real_y * width + real_x];
@@ -506,7 +492,7 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
 
 // TODO: MTS: only used in this file
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
-int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
+int menutga_alloc_file(const char *name, std::unique_ptr<char[]> &hsmap, int *w, int *h) {
   uint8_t image_id_len, color_map_type, image_type, pixsize, descriptor;
   uint8_t upside_down = 0;
   uint16_t width, height;
@@ -539,9 +525,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   *h = height = cf_ReadShort(infile);
   pixsize = cf_ReadByte(infile);
 
-  hsmap[0] = (char *)mem_malloc(width * height);
-
-  ASSERT(hsmap);
+  hsmap = std::make_unique<char[]>(width * height);
 
   if (pixsize != 32) {
     LOG_DEBUG.printf("menutga: This file has a pixsize of field of %d, it should be 32. ", pixsize);
@@ -578,10 +562,10 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
 
       if (upside_down) {
         GameBitmaps[n].data16[((height - 1) - i) * width + t] = newpix;
-        hsmap[0][((height - 1) - i) * width + t] = alphavalue;
+        hsmap[((height - 1) - i) * width + t] = alphavalue;
       } else {
         GameBitmaps[n].data16[i * width + t] = newpix;
-        hsmap[0][i * width + t] = alphavalue;
+        hsmap[i * width + t] = alphavalue;
       }
     }
   }
@@ -682,20 +666,18 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
 
   int curr_hs, curr_sl, num_sl;
 
-  hsmap->hs = mem_rmalloc<hotspot>(hsmap->num_of_hotspots);
-  memset(hsmap->hs, 0, sizeof(hotspot) * hsmap->num_of_hotspots);
+  hsmap->hs = std::make_unique<hotspot[]>(hsmap->num_of_hotspots);
   for (curr_hs = 0; curr_hs < hsmap->num_of_hotspots; curr_hs++) {
     hsmap->hs[curr_hs].starting_y = cf_ReadInt(infile);
     num_sl = hsmap->hs[curr_hs].scanlines = cf_ReadInt(infile);
     if (num_sl) {
-      hsmap->hs[curr_hs].x = mem_rmalloc<scanline>(hsmap->hs[curr_hs].scanlines);
-      memset(hsmap->hs[curr_hs].x, 0, sizeof(scanline) * hsmap->hs[curr_hs].scanlines);
+      hsmap->hs[curr_hs].x = std::make_unique<scanline[]>(hsmap->hs[curr_hs].scanlines);
       for (curr_sl = 0; curr_sl < hsmap->hs[curr_hs].scanlines; curr_sl++) {
         hsmap->hs[curr_hs].x[curr_sl].start = cf_ReadInt(infile);
         hsmap->hs[curr_hs].x[curr_sl].end = cf_ReadInt(infile);
       }
     } else {
-      hsmap->hs[curr_hs].x = nullptr;
+      hsmap->hs[curr_hs].x.reset();
     }
   }
 
@@ -703,7 +685,7 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
   wndmap->num_of_windows = cf_ReadInt(infile);
   LOG_DEBUG.printf("Loading hotspotmap %s Contains: (%d hotspots) (%d Windows)",
                    filename, hsmap->num_of_hotspots, wndmap->num_of_windows);
-  wndmap->wm = mem_rmalloc<window_box>(wndmap->num_of_windows);
+  wndmap->wm = std::make_unique<window_box[]>(wndmap->num_of_windows);
   for (count = 0; count < wndmap->num_of_windows; count++) {
     wndmap->wm[count].x = cf_ReadInt(infile);
     wndmap->wm[count].y = cf_ReadInt(infile);
@@ -722,7 +704,7 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
       // left top
       size = ((wndmap->wm[count].l_end_x) - (wndmap->wm[count].l_start_x)) *
              ((wndmap->wm[count].t_bottom_y) - (wndmap->wm[count].t_top_y));
-      wndmap->wm[count].lt = mem_rmalloc<char>(size);
+      wndmap->wm[count].lt = std::make_unique<char[]>(size);
       for (index = 0; index < size; index++) {
         wndmap->wm[count].lt[index] = cf_ReadByte(infile);
       }
@@ -730,7 +712,7 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
       // right top
       size = ((wndmap->wm[count].r_end_x) - (wndmap->wm[count].r_start_x)) *
              ((wndmap->wm[count].t_bottom_y) - (wndmap->wm[count].t_top_y));
-      wndmap->wm[count].rt = mem_rmalloc<char>(size);
+      wndmap->wm[count].rt = std::make_unique<char[]>(size);
       for (index = 0; index < size; index++) {
         wndmap->wm[count].rt[index] = cf_ReadByte(infile);
       }
@@ -740,14 +722,14 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
       // left bottom
       size = ((wndmap->wm[count].l_end_x) - (wndmap->wm[count].l_start_x)) *
              ((wndmap->wm[count].b_bottom_y) - (wndmap->wm[count].b_top_y));
-      wndmap->wm[count].lb = mem_rmalloc<char>(size);
+      wndmap->wm[count].lb = std::make_unique<char[]>(size);
       for (index = 0; index < size; index++) {
         wndmap->wm[count].lb[index] = cf_ReadByte(infile);
       }
       // right bottom
       size = ((wndmap->wm[count].r_end_x) - (wndmap->wm[count].r_start_x)) *
              ((wndmap->wm[count].b_bottom_y) - (wndmap->wm[count].b_top_y));
-      wndmap->wm[count].rb = mem_rmalloc<char>(size);
+      wndmap->wm[count].rb = std::make_unique<char[]>(size);
       for (index = 0; index < size; index++) {
         wndmap->wm[count].rb[index] = cf_ReadByte(infile);
       }
@@ -761,36 +743,32 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
       // left top
       wndmap->wm[count].lt_bmp = bm_AllocBitmap(wndmap->wm[count].l_end_x - wndmap->wm[count].l_start_x,
                                                 wndmap->wm[count].t_bottom_y - wndmap->wm[count].t_top_y, 0);
-      makecorner(wndmap->wm[count].lt_bmp, back_bmp, wndmap->wm[count].lt, wndmap->wm[count].l_start_x,
+      makecorner(wndmap->wm[count].lt_bmp, back_bmp, wndmap->wm[count].lt.get(), wndmap->wm[count].l_start_x,
                  wndmap->wm[count].t_top_y, wndmap->wm[count].l_end_x, wndmap->wm[count].t_bottom_y);
 
       // right top
       wndmap->wm[count].rt_bmp = bm_AllocBitmap(wndmap->wm[count].r_end_x - wndmap->wm[count].r_start_x,
                                                 wndmap->wm[count].t_bottom_y - wndmap->wm[count].t_top_y, 0);
-      makecorner(wndmap->wm[count].rt_bmp, back_bmp, wndmap->wm[count].rt, wndmap->wm[count].r_start_x,
+      makecorner(wndmap->wm[count].rt_bmp, back_bmp, wndmap->wm[count].rt.get(), wndmap->wm[count].r_start_x,
                  wndmap->wm[count].t_top_y, wndmap->wm[count].r_end_x, wndmap->wm[count].t_bottom_y);
-      if (wndmap->wm[count].lt)
-        mem_free(wndmap->wm[count].lt);
-      if (wndmap->wm[count].rt)
-        mem_free(wndmap->wm[count].rt);
+      wndmap->wm[count].lt.reset();
+      wndmap->wm[count].rt.reset();
     }
 
     if (wndmap->wm[count].b_top_y != -1) {
       // left bottom
       wndmap->wm[count].lb_bmp = bm_AllocBitmap(wndmap->wm[count].l_end_x - wndmap->wm[count].l_start_x,
                                                 wndmap->wm[count].b_bottom_y - wndmap->wm[count].b_top_y, 0);
-      makecorner(wndmap->wm[count].lb_bmp, back_bmp, wndmap->wm[count].lb, wndmap->wm[count].l_start_x,
+      makecorner(wndmap->wm[count].lb_bmp, back_bmp, wndmap->wm[count].lb.get(), wndmap->wm[count].l_start_x,
                  wndmap->wm[count].b_top_y, wndmap->wm[count].l_end_x, wndmap->wm[count].b_bottom_y);
 
       // right bottom
       wndmap->wm[count].rb_bmp = bm_AllocBitmap(wndmap->wm[count].r_end_x - wndmap->wm[count].r_start_x,
                                                 wndmap->wm[count].b_bottom_y - wndmap->wm[count].b_top_y, 0);
-      makecorner(wndmap->wm[count].rb_bmp, back_bmp, wndmap->wm[count].rb, wndmap->wm[count].r_start_x,
+      makecorner(wndmap->wm[count].rb_bmp, back_bmp, wndmap->wm[count].rb.get(), wndmap->wm[count].r_start_x,
                  wndmap->wm[count].b_top_y, wndmap->wm[count].r_end_x, wndmap->wm[count].b_bottom_y);
-      if (wndmap->wm[count].lb)
-        mem_free(wndmap->wm[count].lb);
-      if (wndmap->wm[count].rb)
-        mem_free(wndmap->wm[count].rb);
+      wndmap->wm[count].lb.reset();
+      wndmap->wm[count].rb.reset();
     }
   }
 }
@@ -827,25 +805,8 @@ void FreeHotSpotMapInternals(hotspotmap_t *hsmap) {
 
   ASSERT(hsmap);
 
-  if (!hsmap->hs)
-    return;
-
-  int curr_hs;
-  int num_hs;
-
-  num_hs = hsmap->num_of_hotspots;
-  for (curr_hs = 0; curr_hs < num_hs; curr_hs++) {
-    if (hsmap->hs[curr_hs].scanlines) {
-      if (hsmap->hs[curr_hs].x) {
-        mem_free(hsmap->hs[curr_hs].x);
-        hsmap->hs[curr_hs].x = nullptr;
-      }
-    }
-  }
-  if (hsmap->hs) {
-    mem_free(hsmap->hs);
-    hsmap->hs = nullptr;
-  }
+  // each hotspot frees its own scanlines
+  hsmap->hs.reset();
 }
 
 // This function (given a filename) loads a TGA file, extracts a hotspot map, and saves the hotspot map
@@ -856,13 +817,12 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
 
   // strip file name
   int index, width = 0, height = 0;
-  char *menu_filename;
   hotspotmap_t hsmap;
   windowmap_t wndmap;
 
   wndmap.num_of_windows = 0;
-  wndmap.wm = nullptr;
-  hsmap.hs = nullptr;
+  wndmap.wm.reset();
+  hsmap.hs.reset();
   hsmap.num_of_hotspots = 0;
 
   for (index = (signed)strlen(filename); index >= 0; index--) {
@@ -873,40 +833,27 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
   }
 
   int size = strlen(filename) + 5;
-  menu_filename = mem_rmalloc<char>(size);
-  strcpy(menu_filename, filename);
-  strcat(menu_filename, ".HSM"); // Hot Spot Map
-  LOG_DEBUG.printf("HSM=%s", menu_filename);
+  auto menu_filename = std::make_unique<char[]>(size);
+  strcpy(menu_filename.get(), filename);
+  strcat(menu_filename.get(), ".HSM"); // Hot Spot Map
+  LOG_DEBUG.printf("HSM=%s", menu_filename.get());
 
-  std::filesystem::path save_path = LocalManageGraphicsDir / menu_filename;
+  std::filesystem::path save_path = LocalManageGraphicsDir / menu_filename.get();
 
   // now load up the tga and alloc it, then save it with the alpha hotspots
   int bm_handle;
-  char *map[1];
+  std::unique_ptr<char[]> map;
   bm_handle = menutga_alloc_file(fpath, map, &width, &height);
   if (bm_handle == -1)
     return false;
-  wndmap.num_of_windows = CreateHotSpotMap(map[0], width, height, &hsmap);
+  wndmap.num_of_windows = CreateHotSpotMap(map.get(), width, height, &hsmap);
   if (wndmap.num_of_windows == -1)
     return false; // DAJ -1FIX
-  CreateWindowMap(map[0], width, height, &wndmap);
+  CreateWindowMap(map.get(), width, height, &wndmap);
   menutga_SaveHotSpotMap(save_path, &hsmap, &wndmap);
   ExportHotSpot("C:\\hotspot.txt", &hsmap);
-  mem_free(menu_filename);
-  mem_free(map[0]);
   FreeHotSpotMapInternals(&hsmap);
-  for (index = 0; index < wndmap.num_of_windows; index++) {
-    if (wndmap.wm[index].lt)
-      mem_free(wndmap.wm[index].lt);
-    if (wndmap.wm[index].rt)
-      mem_free(wndmap.wm[index].rt);
-    if (wndmap.wm[index].lb)
-      mem_free(wndmap.wm[index].lb);
-    if (wndmap.wm[index].rb)
-      mem_free(wndmap.wm[index].rb);
-  }
-  if (wndmap.wm)
-    mem_free(wndmap.wm);
+  wndmap.wm.reset();
   return true;
 }
 

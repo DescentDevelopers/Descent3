@@ -494,6 +494,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 
 #include "chrono_timer.h"
 #include "log.h"
@@ -550,7 +551,7 @@ windowmap_t windowmap;   // Holds window data (position)
 tTelComInfo Telcom_system;
 
 chunked_bitmap Telcom_bitmap; // background bitmap for telcom system
-static chunked_bitmap *hotspot_bitmaps;
+static std::unique_ptr<chunked_bitmap[]> hotspot_bitmaps;
 static int LoadTelcomBitmap(const char *filename, chunked_bitmap *bmp);
 static bool TelComMainMenu(tTelComInfo *tcs);
 
@@ -649,7 +650,7 @@ void TelComMain(bool ingame, bool SelectShip) {
         const char *tag[] = {"", "_GER", "_SPN", "_ITN", "_FRN"};
         bool ok_to_go = false;
 
-        ddio_SplitPath(Current_level->briefname, nullptr, basefilename, extension);
+        ddio_SplitPath(Current_level->briefname.get(), nullptr, basefilename, extension);
 
         strcpy(briefingname, basefilename);
         strcat(briefingname, tag[Localization_GetLanguage()]);
@@ -657,7 +658,7 @@ void TelComMain(bool ingame, bool SelectShip) {
 
         if (!cfexist(briefingname)) {
           // language version doesn't exist
-          strcpy(briefingname, Current_level->briefname);
+          strcpy(briefingname, Current_level->briefname.get());
 
           if (cfexist(briefingname)) {
             ok_to_go = true;
@@ -809,7 +810,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
   old_sm = GetScreenMode();
   SetScreenMode(SM_MENU);
 
-  hotspot_bitmaps = nullptr;
+  hotspot_bitmaps.reset();
 
   int TelCom_bitmap = bm_AllocLoadFileBitmap(IGNORE_TABLE(TELCOM_DISPLAY_OGF), 0);
   if (!cfexist(HOTSPOT_DISPLAY)) {
@@ -817,8 +818,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
     if (!cfexist(TELCOM_DISPLAY_TGA)) {
       LOG_DEBUG.printf("Unable to find %s to extract HotSqpots...skipping TelCom System", TELCOM_DISPLAY_TGA);
       FreeViewports();
-      if (windowmap.wm)
-        mem_free(windowmap.wm);
+      windowmap.wm.reset();
       goto telcom_bad_error;
     }
     menutga_ConvertTGAtoHSM(TELCOM_DISPLAY_TGA);
@@ -832,9 +832,8 @@ bool TelComShow(bool ingame, bool ShipSelect) {
   if (hotspotmap.num_of_hotspots) {
     int TelCom_onbmp = bm_AllocLoadFileBitmap(IGNORE_TABLE(TELCOM_DISPLAY_OGF_ON), 0);
     if (TelCom_onbmp != -1) {
-      hotspot_bitmaps = mem_rmalloc<chunked_bitmap>(hotspotmap.num_of_hotspots);
-      ASSERT(hotspot_bitmaps);
-      CompressTelComOnImage(TelCom_onbmp, hotspot_bitmaps);
+      hotspot_bitmaps = std::make_unique<chunked_bitmap[]>(hotspotmap.num_of_hotspots);
+      CompressTelComOnImage(TelCom_onbmp, hotspot_bitmaps.get());
       bm_FreeBitmap(TelCom_onbmp);
     }
   }
@@ -860,8 +859,7 @@ bool TelComShow(bool ingame, bool ShipSelect) {
 
 telcom_bad_error:
 
-  if (hotspot_bitmaps)
-    mem_free(hotspot_bitmaps);
+  hotspot_bitmaps.reset();
 
   // must do this to clear out keyboard events
   ddio_KeyFlush();
@@ -942,11 +940,10 @@ void FreeTelComOnBitmaps(chunked_bitmap *array) {
 // This deactivates the TelCom system
 void TelComDeactivate(void) {
   LOG_DEBUG << "TelCom System being deactivated";
-  FreeTelComOnBitmaps(hotspot_bitmaps);
+  FreeTelComOnBitmaps(hotspot_bitmaps.get());
   FreeHotSpotMapInternals(&hotspotmap);
   FreeViewports();
-  if (windowmap.wm)
-    mem_free(windowmap.wm);
+  windowmap.wm.reset();
 }
 
 // draws a hotspot with the on bitmap
@@ -1075,8 +1072,7 @@ int LoadTelcomBitmap(const char *filename, chunked_bitmap *chunk) {
 
   FreeHotSpotMapInternals(&hotspotmap);
   FreeViewports();
-  if (windowmap.wm)
-    mem_free(windowmap.wm);
+  windowmap.wm.reset();
 
   bm_CreateChunkedBitmap(bm_handle, chunk);
 
@@ -1414,7 +1410,7 @@ int TC_cursor = -1;
 
 // Monitor hilight variables
 static int TelcomHiLiteCount[MAX_MONITOR];
-static int *TelcomHiLites[MAX_MONITOR];
+static std::unique_ptr<int[]> TelcomHiLites[MAX_MONITOR];
 struct {
   int x, y;
 } TelcomHiLiteOffset[MAX_MONITOR];
@@ -1944,7 +1940,7 @@ void TelcomRenderDrawHiLites(void) {
 
     curr_x = TelcomHiLiteOffset[monitor].x + Telcom_system.Monitor_coords[monitor].left;
     curr_y = TelcomHiLiteOffset[monitor].y + Telcom_system.Monitor_coords[monitor].top;
-    HiLites = TelcomHiLites[monitor];
+    HiLites = TelcomHiLites[monitor].get();
 
     for (i = 0; i < TelcomHiLiteCount[monitor]; i++) {
       w = bm_w(HiLites[i], 0);
@@ -1967,18 +1963,10 @@ void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) 
   while (filelist[TelcomHiLiteCount[monitor]])
     TelcomHiLiteCount[monitor]++;
 
-  if (!TelcomHiLiteCount[monitor])
-    TelcomHiLites[monitor] = nullptr;
-
-  TelcomHiLites[monitor] = mem_rmalloc<int>(TelcomHiLiteCount[monitor]);
-  if (!TelcomHiLites[monitor]) {
-    LOG_DEBUG.printf("Unable to allocate memory for hilights monitor=%d", monitor);
-    TelcomHiLiteCount[monitor] = 0;
-    return;
-  }
+  TelcomHiLites[monitor] = std::make_unique<int[]>(TelcomHiLiteCount[monitor]);
 
   int *HiLites;
-  HiLites = TelcomHiLites[monitor];
+  HiLites = TelcomHiLites[monitor].get();
   for (int i = 0; i < TelcomHiLiteCount[monitor]; i++) {
     HiLites[i] = FindTextureName(IGNORE_TABLE(filelist[i]));
     if (HiLites[i] == -1)
@@ -1993,13 +1981,8 @@ void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) 
 
 //	Frees all the memory allocated for the hilites
 void TelcomFreeHiLites(void) {
-  int *HiLites;
   for (int monitor = 0; monitor < MAX_MONITOR; monitor++) {
-    HiLites = TelcomHiLites[monitor];
-
-    if (HiLites) {
-      mem_free(HiLites);
-    }
+    TelcomHiLites[monitor].reset();
     TelcomHiLiteCount[monitor] = 0;
   }
 }
@@ -3984,42 +3967,26 @@ struct tCustomKeyEventID {
   int downcount;
   int key_id;
   int event_id;
-  tCustomKeyEventID *next;
+  std::unique_ptr<tCustomKeyEventID> next;
 };
-tCustomKeyEventID *Telcom_custom_key_event_root = nullptr;
+std::unique_ptr<tCustomKeyEventID> Telcom_custom_key_event_root;
 
 /*
         Removes any custom key event translation masks
 */
-void TelCom_ClearCustomKeyEvents(void) {
-  tCustomKeyEventID *next, *curr = Telcom_custom_key_event_root;
-
-  while (curr) {
-    next = curr->next;
-
-    mem_free(curr);
-    curr = next;
-  }
-  Telcom_custom_key_event_root = nullptr;
-}
+void TelCom_ClearCustomKeyEvents(void) { Telcom_custom_key_event_root.reset(); }
 
 /*
         Adds a custom key event translation mask
 */
 void TelCom_AddCustomKeyEvent(int key_id, int event_id) {
-  tCustomKeyEventID *curr = Telcom_custom_key_event_root;
-
-  if (!curr) {
-    curr = Telcom_custom_key_event_root = mem_rmalloc<tCustomKeyEventID>();
-  } else {
-    while (curr->next) {
-      curr = curr->next;
-    }
-    curr->next = mem_rmalloc<tCustomKeyEventID>();
-    curr = curr->next;
+  std::unique_ptr<tCustomKeyEventID> *tail = &Telcom_custom_key_event_root;
+  while (*tail) {
+    tail = &(*tail)->next;
   }
+  *tail = std::make_unique<tCustomKeyEventID>();
+  tCustomKeyEventID *curr = tail->get();
 
-  curr->next = nullptr;
   curr->event_id = event_id;
   curr->key_id = key_id;
 }
@@ -4028,11 +3995,11 @@ void TelCom_AddCustomKeyEvent(int key_id, int event_id) {
         Prepares to handle custom keys
 */
 void TelCom_PrepareCustomKeyEvents(void) {
-  tCustomKeyEventID *curr = Telcom_custom_key_event_root;
+  tCustomKeyEventID *curr = Telcom_custom_key_event_root.get();
 
   while (curr) {
     curr->downcount = 0;
-    curr = curr->next;
+    curr = curr->next.get();
   }
 }
 
@@ -4040,7 +4007,7 @@ void TelCom_PrepareCustomKeyEvents(void) {
         Post process custom keys
 */
 void TelCom_PostProcessCustomKeyEvents(void) {
-  tCustomKeyEventID *curr = Telcom_custom_key_event_root;
+  tCustomKeyEventID *curr = Telcom_custom_key_event_root.get();
 
   while (curr) {
     if (curr->downcount) {
@@ -4048,7 +4015,7 @@ void TelCom_PostProcessCustomKeyEvents(void) {
       return;
     }
 
-    curr = curr->next;
+    curr = curr->next.get();
   }
 }
 
@@ -4056,7 +4023,7 @@ void TelCom_PostProcessCustomKeyEvents(void) {
         Handles a possible custom key event
 */
 void TelCom_ProcessCustomKeyEvent(int key_id) {
-  tCustomKeyEventID *curr = Telcom_custom_key_event_root;
+  tCustomKeyEventID *curr = Telcom_custom_key_event_root.get();
 
   while (curr) {
     if (key_id == curr->key_id) {
@@ -4064,6 +4031,6 @@ void TelCom_ProcessCustomKeyEvent(int key_id) {
       return;
     }
 
-    curr = curr->next;
+    curr = curr->next.get();
   }
 }

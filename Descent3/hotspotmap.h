@@ -49,6 +49,8 @@
 #define __HOTSPOTMAP_H_
 
 #include <filesystem>
+#include <memory>
+
 #include "grdefs.h"
 
 // for the next two defines this is how they work when converting the alpha values into hotspots/windows
@@ -71,13 +73,13 @@ struct scanline {
 struct hotspot {
   int starting_y;
   int scanlines;
-  scanline *x;
+  std::unique_ptr<scanline[]> x;
 };
 
 // structure for all hotspots
 struct hotspotmap_t {
   char num_of_hotspots;
-  hotspot *hs;
+  std::unique_ptr<hotspot[]> hs;
 };
 
 // structure for 1 window
@@ -87,18 +89,18 @@ struct window_box {
 
   int l_start_x, l_end_x, r_start_x, r_end_x, t_top_y, t_bottom_y, b_top_y, b_bottom_y;
   bool on_left, on_top;    // used for creating window
-  char *lt, *rt, *lb, *rb; // used for holding the transparent information of the corners
+  std::unique_ptr<char[]> lt, rt, lb, rb; // used for holding the transparent information of the corners
   int lt_bmp, rt_bmp, lb_bmp, rb_bmp;
 };
 
 // structure for all the windows
 struct windowmap_t {
   int num_of_windows;
-  window_box *wm;
+  std::unique_ptr<window_box[]> wm;
 };
 
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
-int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h);
+int menutga_alloc_file(const char *name, std::unique_ptr<char[]> &hsmap, int *w, int *h);
 // Given a filename and a HotSpotMap structure, it saves it to disk (.HSM)
 void menutga_SaveHotSpotMap(const std::filesystem::path &filename, hotspotmap_t *hsmap, windowmap_t *wndmap);
 // Given a filename and a HotSpotMap structure, it loads the hotspot map (.HSM)

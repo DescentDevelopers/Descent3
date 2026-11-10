@@ -150,6 +150,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <memory>
 
 #include "cfile.h"
 #include "pserror.h"
@@ -194,11 +195,11 @@ int AM_terrain = 0, AM_realign = 0, AM_center_on_player = 0, AM_current_marker;
 static int Num_AM_rooms;
 static uint16_t AM_room_list[MAX_ROOMS];
 static uint8_t AM_rooms_seen[MAX_ROOMS];
-static g3Point *AM_rotated_points = nullptr; //[MAX_VERTS_PER_ROOM];
+static std::unique_ptr<g3Point[]> AM_rotated_points; //[MAX_VERTS_PER_ROOM];
 
 static void TCAMCallback(void);
 
-static uint8_t *Small_faces[MAX_ROOMS];
+static std::unique_ptr<uint8_t[]> Small_faces[MAX_ROOMS];
 
 // clears out the list of visible rooms that we've seen
 void AutomapClearVisMap() { memset(AutomapVisMap, 0, MAX_ROOMS); }
@@ -207,10 +208,7 @@ void ClassifyAMFaces() {
   int i = 0;
   for (i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used) {
-      Small_faces[i] = mem_rmalloc<uint8_t>(Rooms[i].num_faces);
-      ASSERT(Small_faces[i]);
-
-      memset(Small_faces[i], 0, Rooms[i].num_faces);
+      Small_faces[i] = std::make_unique<uint8_t[]>(Rooms[i].num_faces);
 
       room *rp = &Rooms[i];
 
@@ -236,8 +234,7 @@ void ClassifyAMFaces() {
 void FreeAMFaces() {
   for (int i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used) {
-      mem_free(Small_faces[i]);
-      Small_faces[i] = nullptr;
+      Small_faces[i].reset();
     }
   }
 }
@@ -269,7 +266,7 @@ bool TelComAutoMap(tTelComInfo *tcs) {
   bool done = false;
 
   if (!AM_rotated_points) {
-    AM_rotated_points = mem_rmalloc<g3Point>(MAX_VERTS_PER_ROOM);
+    AM_rotated_points = std::make_unique<g3Point[]>(MAX_VERTS_PER_ROOM);
   }
   AM_tcs = tcs;
   AM_current_marker = -1;
@@ -386,10 +383,7 @@ bool TelComAutoMap(tTelComInfo *tcs) {
 
   TelComEnableSystemKey(TCSYS_MAXKEYS, true); // re-enable all telcom keys
   TelComEnableSystemKey(TCSYS_F1, false);     // disable the T key, not needed outside of automap
-  if (AM_rotated_points) {
-    mem_free(AM_rotated_points);
-    AM_rotated_points = nullptr;
-  }
+  AM_rotated_points.reset();
   return true;
 }
 
