@@ -38,6 +38,8 @@
 #ifndef __ICEENCRYPT_H_
 #define __ICEENCRYPT_H_
 
+#include <memory>
+
 #include "pstypes.h"
 
 class IceSubkey;
@@ -60,7 +62,7 @@ private:
 
   int _size;
   int _rounds;
-  IceSubkey *_keysched;
+  std::unique_ptr<IceSubkey[]> _keysched;
 };
 
 #endif

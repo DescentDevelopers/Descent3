@@ -171,7 +171,7 @@ int LabText[NUM_TEAMS];
 static tPlayerPos TimeInRoom[DLLMAX_PLAYERS];
 static bool DisplayScoreScreen;
 int virus_id = -1;
-int *RoomList = nullptr;
+std::unique_ptr<int[]> RoomList;
 int RoomCount;
 static int Highlight_bmp = -1;
 static bool display_my_welcome = false;
@@ -411,10 +411,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  if (RoomList) {
-    free(RoomList);
-    RoomList = nullptr;
-  }
+  RoomList.reset();
 
   DLLDestroyStringTable(StringTable, StringTableSize);
 
@@ -491,10 +488,7 @@ void OnClientLevelStart(void) {
     DMFCBase->SetTimerInterval(OnLabSpewTimer, VIRUS_SPEW, -1.0f);
   }
 
-  if (RoomList) {
-    free(RoomList);
-    RoomList = nullptr;
-  }
+  RoomList.reset();
   RoomCount = 0;
   int r;
   for (r = 0; r <= DMFCBase->GetHighestRoomIndex(); r++) {
@@ -512,11 +506,7 @@ void OnClientLevelStart(void) {
     return;
   }
 
-  RoomList = (int *)malloc(sizeof(int) * RoomCount);
-  if (!RoomList) {
-    FatalError("Out of memory");
-    return;
-  }
+  RoomList = std::make_unique<int[]>(RoomCount);
 
   bool room_used_already;
   int special_room_index = 0;

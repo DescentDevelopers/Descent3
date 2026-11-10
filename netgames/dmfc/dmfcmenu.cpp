@@ -147,7 +147,6 @@ MenuItem::MenuItem() {
   SubMenuCount = 0;
   CurrSubMenu = -1;
   m_iState = 0;
-  SubMenus = nullptr;
   func = nullptr;
   HasInputFocus = false;
   m_cType = MIT_NORMAL;
@@ -167,7 +166,6 @@ MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
   SubMenuCount = 0;
   CurrSubMenu = -1;
   m_iState = 0;
-  SubMenus = nullptr;
   func = fp;
   HasInputFocus = false;
   m_cType = type;
@@ -188,8 +186,7 @@ MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
   // if the type is MIT_PLIST than add a dummy submenu so it will register
   if (type == MIT_PLIST) {
     SubMenuCount = 1;
-    SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * 1);
-    SubMenus[0] = new MenuItem("Pfuncer", MIT_STATEITEM, 0, fp);
+    SubMenus.push_back(std::make_unique<MenuItem>("Pfuncer", MIT_STATEITEM, 0, fp));
   }
 
   // if the type is MIT_CUSTOM than add a dummy submenu so it will register
@@ -197,8 +194,7 @@ MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
   // contains the needed callbacks
   if (type == MIT_CUSTOM) {
     SubMenuCount = 1;
-    SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * 1);
-    SubMenus[0] = new MenuItem("Pfuncer", MIT_STATEITEM, 0, fp);
+    SubMenus.push_back(std::make_unique<MenuItem>("Pfuncer", MIT_STATEITEM, 0, fp));
 
     va_list marker;
     va_start(marker, fp);
@@ -213,15 +209,10 @@ MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
     SubMenuCount = va_arg(marker, int);
     m_iState = va_arg(marker, int);
     if ((SubMenuCount > 0) && (SubMenuCount < MAX_STATE_SUBMENUS)) {
-      SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * SubMenuCount);
-      if (!SubMenus) {
-        va_end(marker);
-        return;
-      }
       char *string;
       for (int i = 0; i < SubMenuCount; i++) {
         string = va_arg(marker, char *);
-        SubMenus[i] = new MenuItem(string, MIT_STATEITEM, 0, fp);
+        SubMenus.push_back(std::make_unique<MenuItem>(string, MIT_STATEITEM, 0, fp));
       }
     } else
       SubMenuCount = 0;
@@ -229,52 +220,15 @@ MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
   }
 }
 
-MenuItem::~MenuItem() {
-  MenuItem *p;
-
-  if (SubMenus) {
-    if ((m_cType == MIT_PLIST) || (m_cType == MIT_CUSTOM)) {
-      p = (MenuItem *)SubMenus[0];
-      if (p) {
-        SubMenus[0] = nullptr;
-        delete p;
-      }
-    } else {
-      for (int i = 0; i < SubMenuCount; i++) {
-        p = (MenuItem *)SubMenus[i];
-        if (p) {
-          SubMenus[i] = nullptr;
-          delete p;
-        }
-      }
-    }
-
-    free(SubMenus);
-    SubMenus = nullptr;
-  }
-
-  SubMenuCount = 0;
-}
+MenuItem::~MenuItem() = default;
 
 bool MenuItem::AddSubMenu(IMenuItem *p) {
   // No submenus for a Player list submenu or custom or if we are working with a stateitem submenu item
   if ((m_cType == MIT_PLIST) || (m_cType == MIT_STATEITEM) || (m_cType == MIT_STATE) || (m_cType == MIT_CUSTOM))
     return false;
 
-  MenuItem **temp;
-  temp = (MenuItem **)SubMenus;
-
-  // create a new array of submenus and copy the old to it
-  SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * (SubMenuCount + 1));
-  for (int i = 0; i < SubMenuCount; i++) {
-    SubMenus[i] = temp[i];
-  }
-
-  if (temp)
-    free(temp);
-
-  // Put the new submenu item at the end of this one
-  SubMenus[SubMenuCount] = p;
+  // Put the new submenu item at the end of this one (we take ownership of it)
+  SubMenus.emplace_back(p);
   SubMenuCount++;
   return true;
 }
@@ -287,53 +241,19 @@ bool MenuItem::DetachSubMenu(IMenuItem *p) {
   if (SubMenuCount < 1)
     return false;
 
-  int i;
-  bool found = false;
-
   // make sure there is this menu somewhere in our list
-  for (i = 0; i < SubMenuCount; i++) {
-    if (SubMenus[i] == p) {
-      found = true;
-      break;
+  for (auto it = SubMenus.begin(); it != SubMenus.end(); ++it) {
+    if (it->get() == p) {
+      // hand ownership back to the caller
+      (void)it->release();
+      SubMenus.erase(it);
+      SubMenuCount--;
+      return true;
     }
   }
-  if (!found) {
-    // doesn't exist
-    return false;
-  }
 
-  MenuItem **temp;
-  temp = (MenuItem **)SubMenus;
-
-  if (SubMenuCount > 1) {
-    // we need to resize our list
-    // create a new array of submenus and copy the old to it
-    int c;
-
-    SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * (SubMenuCount - 1));
-    for (i = 0, c = 0; i < SubMenuCount; i++) {
-      // make sure it isn't the one we are trying to detach
-      if (temp[i] != p) {
-        ASSERT((c < (SubMenuCount - 1)));
-        SubMenus[c] = temp[i];
-        c++;
-      }
-    }
-
-    if (temp)
-      free(temp);
-
-    SubMenuCount--;
-  } else {
-    // this is the only remaining submenu
-    SubMenuCount = 0;
-
-    if (temp)
-      free(temp);
-    SubMenus = nullptr;
-  }
-
-  return true;
+  // doesn't exist
+  return false;
 }
 
 bool MenuItem::Forward(void) {
@@ -857,16 +777,7 @@ bool MenuItem::SetStateItemList(int count, ...) {
     return false;
 
   // remove original states
-  for (int i = 0; i < SubMenuCount; i++) {
-    if (SubMenus[i]) {
-      delete SubMenus[i];
-      SubMenus[i] = nullptr;
-    }
-  }
-  if (SubMenus) {
-    free(SubMenus);
-    SubMenus = nullptr;
-  }
+  SubMenus.clear();
 
   va_list marker;
   va_start(marker, count);
@@ -874,15 +785,10 @@ bool MenuItem::SetStateItemList(int count, ...) {
   m_iState = 0;
 
   if ((SubMenuCount > 0) && (SubMenuCount < MAX_STATE_SUBMENUS)) {
-    SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * SubMenuCount);
-    if (!SubMenus) {
-      va_end(marker);
-      return false;
-    }
     char *string;
     for (int i = 0; i < SubMenuCount; i++) {
       string = va_arg(marker, char *);
-      SubMenus[i] = new MenuItem(string, MIT_STATEITEM, 0, func);
+      SubMenus.push_back(std::make_unique<MenuItem>(string, MIT_STATEITEM, 0, func));
     }
   } else
     SubMenuCount = 0;
@@ -895,28 +801,16 @@ bool MenuItem::SetStateItemListArray(int count, char **array) {
     return false;
 
   // remove original states
-  for (int i = 0; i < SubMenuCount; i++) {
-    if (SubMenus[i]) {
-      delete SubMenus[i];
-      SubMenus[i] = nullptr;
-    }
-  }
-  if (SubMenus) {
-    free(SubMenus);
-    SubMenus = nullptr;
-  }
+  SubMenus.clear();
 
   SubMenuCount = count;
   m_iState = 0;
 
   if ((SubMenuCount > 0) && (SubMenuCount < MAX_STATE_SUBMENUS)) {
-    SubMenus = (IMenuItem **)malloc(sizeof(IMenuItem *) * SubMenuCount);
-    if (!SubMenus)
-      return false;
     char *string;
     for (int i = 0; i < SubMenuCount; i++) {
       string = array[i];
-      SubMenus[i] = new MenuItem(string, MIT_STATEITEM, 0, func);
+      SubMenus.push_back(std::make_unique<MenuItem>(string, MIT_STATEITEM, 0, func));
     }
   } else
     SubMenuCount = 0;

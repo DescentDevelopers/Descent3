@@ -175,14 +175,11 @@ CDmfcStats::CDmfcStats() {
   m_MaxCount = 0;
   m_iPLColCount = 0;
   m_iDColCount = 0;
-  m_PLColInfo = nullptr;
-  m_DColInfo = nullptr;
   m_PLColCallback = nullptr;
   m_DColCallback = nullptr;
   m_PLColCallbackBMP = nullptr;
   m_DColCallbackBMP = nullptr;
   m_TeamCallback = nullptr;
-  m_GameName = nullptr;
   m_top_index = 0;
   m_selected_index = 0;
   m_bottom_index = -1;
@@ -205,16 +202,6 @@ CDmfcStats::CDmfcStats() {
 
 // destructor
 CDmfcStats::~CDmfcStats() {
-  if (m_GameName) {
-    free(m_GameName);
-  }
-  if (m_PLColInfo) {
-    free(m_PLColInfo);
-  }
-  if (m_DColInfo) {
-    free(m_DColInfo);
-  }
-
   if (m_highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(m_highlight_bmp);
 
@@ -250,22 +237,18 @@ bool CDmfcStats::Initialize(tDmfcStatsInit *init_info) {
     goto error_init;
 
   if (m_iPLColCount > 0) {
-    m_PLColInfo = (tDmfcStatsColumnInfo *)malloc(sizeof(tDmfcStatsColumnInfo) * m_iPLColCount);
-    if (!m_PLColInfo)
-      goto error_init;
-    memcpy(m_PLColInfo, init_info->PlayerListColumns, sizeof(tDmfcStatsColumnInfo) * m_iPLColCount);
+    m_PLColInfo = std::make_unique<tDmfcStatsColumnInfo[]>(m_iPLColCount);
+    std::copy_n(init_info->PlayerListColumns, m_iPLColCount, m_PLColInfo.get());
   }
 
   if (m_iDColCount > 0) {
-    m_DColInfo = (tDmfcStatsColumnInfo *)malloc(sizeof(tDmfcStatsColumnInfo) * m_iDColCount);
-    if (!m_DColInfo) {
-      goto error_init;
-    }
-    memcpy(m_DColInfo, init_info->DetailedColumns, sizeof(tDmfcStatsColumnInfo) * m_iDColCount);
+    m_DColInfo = std::make_unique<tDmfcStatsColumnInfo[]>(m_iDColCount);
+    std::copy_n(init_info->DetailedColumns, m_iDColCount, m_DColInfo.get());
   }
 
   if (init_info->GameName) {
-    m_GameName = strdup(init_info->GameName);
+    m_GameName = std::make_unique<char[]>(strlen(init_info->GameName) + 1);
+    strcpy(m_GameName.get(), init_info->GameName);
   }
 
   m_y_start_plist = PLIST_WIN_Y + 2 * (m_font_height + ROW_PIXEL_GAP);
@@ -300,15 +283,9 @@ bool CDmfcStats::Initialize(tDmfcStatsInit *init_info) {
   return true;
 
 error_init:
-  if (m_GameName) {
-    free(m_GameName);
-  }
-  if (m_PLColInfo) {
-    free(m_PLColInfo);
-  }
-  if (m_DColInfo) {
-    free(m_DColInfo);
-  }
+  m_GameName.reset();
+  m_PLColInfo.reset();
+  m_DColInfo.reset();
   return false;
 }
 
@@ -547,8 +524,8 @@ void CDmfcStats::Render() {
                    0);
 
   DLLgrtext_SetFont(basethis->Game_fonts[HUD_FONT_INDEX]);
-  int l_width = DLLRenderHUDGetTextLineWidth(m_GameName);
-  DLLRenderHUDText(GR_WHITE, m_alpha, 0, (PLIST_WIN_W / 2) - (l_width / 2), curr_y, m_GameName);
+  int l_width = DLLRenderHUDGetTextLineWidth(m_GameName.get());
+  DLLRenderHUDText(GR_WHITE, m_alpha, 0, (PLIST_WIN_W / 2) - (l_width / 2), curr_y, m_GameName.get());
   curr_y += (m_font_height + ROW_PIXEL_GAP);
   for (c = 0; c < m_iPLColCount; c++) {
     strcpy(buffer, m_PLColInfo[c].title);
@@ -864,7 +841,7 @@ redisplay_list:
   int x_to_use = curr_x + 5;
   PInfo *pi;
   tPExtraInfo *ei;
-  pi = (PInfo *)pr->pinfo;
+  pi = pr->pinfo.get();
   ei = pi->GetExtraInfo();
 
   // drawline(DLIST_WIN_X,DLIST_WIN_X+DLIST_WIN_W-1,curr_y,perc_done); curr_y += 3;

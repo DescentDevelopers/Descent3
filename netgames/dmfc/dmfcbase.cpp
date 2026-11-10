@@ -519,20 +519,15 @@ DMFCBase::DMFCBase(void) {
 
   DatabaseRegisteredName[0] = '\0';
 
-  SPRoot = nullptr; // no special packet handlers yet
-
   int i;
 
   for (i = 0; i < MAX_DEATH_MSGS; i++) {
     DeathMsgs[i].inuse = false;
-    DeathMsgs[i].message = nullptr;
     SuicideMsgs[i].inuse = false;
-    SuicideMsgs[i].message = nullptr;
   }
 
   for (i = 0; i < MAX_WEAPONS; i++) {
     WeaponMessages[i].inuse = false;
-    WeaponMessages[i].message = nullptr;
     WeaponHash[i] = -1;
   }
 
@@ -541,9 +536,6 @@ DMFCBase::DMFCBase(void) {
   m_iUIWindowID = -1;
   m_UIUserData = nullptr;
 
-  m_DenyList = nullptr;
-  m_AllowList = nullptr;
-  m_InputCommandRootNode = nullptr;
   Hard_max_players = DLLMAX_PLAYERS;
 
   DecryptData(seeds2, 5);
@@ -552,7 +544,6 @@ DMFCBase::DMFCBase(void) {
   AutoBalanceItem = nullptr;
   AllowTeamChangeItem = nullptr;
   ObserverItem = nullptr;
-  m_BanList = nullptr;
   StatisticMessagesItem = nullptr;
   SaveStatsLevelEndItem = nullptr;
   SaveStatsDisconnectItem = nullptr;
@@ -597,38 +588,6 @@ DMFCBase::~DMFCBase(void) {
     DLLbm_FreeBitmap(TauntIndicatorBMP);
     TauntIndicatorBMP = BAD_BITMAP_HANDLE;
   }
-
-  for (i = 0; i < MAX_DEATH_MSGS; i++) {
-    if (DeathMsgs[i].inuse) {
-      if (DeathMsgs[i].message)
-        free(DeathMsgs[i].message);
-      DeathMsgs[i].inuse = false;
-    }
-    if (SuicideMsgs[i].inuse) {
-      if (SuicideMsgs[i].message)
-        free(SuicideMsgs[i].message);
-      SuicideMsgs[i].inuse = false;
-    }
-  }
-
-  for (i = 0; i < MAX_WEAPONS; i++) {
-    if (WeaponMessages[i].inuse) {
-      if (WeaponMessages[i].message) {
-        free(WeaponMessages[i].message);
-        WeaponMessages[i].message = nullptr;
-      }
-    }
-  }
-
-  // remove all the special packet handlers
-  tSPHandler *current, *next;
-  current = next = SPRoot;
-  while (current) {
-    next = current->next;
-    free(current);
-    current = next;
-  }
-  SPRoot = nullptr;
 }
 
 // ##################Setup and processing functions#######################
@@ -1910,13 +1869,11 @@ void DMFCBase::AutoDeathMessage(bool turnon) {
 //    victim_first = Set this to true if the victim is listed first in the format
 void DMFCBase::AddDeathMessage(const char *string, bool victim_first) {
   if ((m_iDeathMsgCount >= 0) && (m_iDeathMsgCount < MAX_DEATH_MSGS)) {
-    DeathMsgs[m_iDeathMsgCount].message = (char *)malloc(strlen(string) + 1);
-    if (DeathMsgs[m_iDeathMsgCount].message) {
-      DeathMsgs[m_iDeathMsgCount].inuse = true;
-      DeathMsgs[m_iDeathMsgCount].victim_first = victim_first;
-      strcpy(DeathMsgs[m_iDeathMsgCount].message, string);
-      m_iDeathMsgCount++;
-    }
+    DeathMsgs[m_iDeathMsgCount].message = std::make_unique<char[]>(strlen(string) + 1);
+    DeathMsgs[m_iDeathMsgCount].inuse = true;
+    DeathMsgs[m_iDeathMsgCount].victim_first = victim_first;
+    strcpy(DeathMsgs[m_iDeathMsgCount].message.get(), string);
+    m_iDeathMsgCount++;
   }
 }
 
@@ -1926,12 +1883,10 @@ void DMFCBase::AddDeathMessage(const char *string, bool victim_first) {
 //    format = string in a "printf" type format (using %s for player callsigns) of the message
 void DMFCBase::AddSuicideMessage(const char *string) {
   if ((m_iSuicideMsgCount >= 0) && (m_iSuicideMsgCount < MAX_DEATH_MSGS)) {
-    SuicideMsgs[m_iSuicideMsgCount].message = (char *)malloc(strlen(string) + 1);
-    if (SuicideMsgs[m_iSuicideMsgCount].message) {
-      SuicideMsgs[m_iSuicideMsgCount].inuse = true;
-      strcpy(SuicideMsgs[m_iSuicideMsgCount].message, string);
-      m_iSuicideMsgCount++;
-    }
+    SuicideMsgs[m_iSuicideMsgCount].message = std::make_unique<char[]>(strlen(string) + 1);
+    SuicideMsgs[m_iSuicideMsgCount].inuse = true;
+    strcpy(SuicideMsgs[m_iSuicideMsgCount].message.get(), string);
+    m_iSuicideMsgCount++;
   }
 }
 
@@ -1980,14 +1935,12 @@ int DMFCBase::GetTeamForNewPlayer(int player_num, int num_teams) {
     return -1; // place on the special "no team"
   }
 
-  int i;
-  int *Teams;
-  Teams = (int *)malloc(sizeof(int) * num_teams);
-  if (!Teams)
+  // with no teams to count, team 0 is the answer (and a negative count must not reach make_unique)
+  if (num_teams <= 0)
     return 0;
 
-  for (i = 0; i < num_teams; i++)
-    Teams[i] = 0;
+  int i;
+  auto Teams = std::make_unique<int[]>(num_teams);
 
   for (i = 0; i < DLLMAX_PLAYERS; i++) {
     if ((i != player_num) && (CheckPlayerNum(i)) && (Players[i].team != -1)) {
@@ -2007,7 +1960,6 @@ int DMFCBase::GetTeamForNewPlayer(int player_num, int num_teams) {
       low_team = i;
     }
   }
-  free(Teams);
   return low_team;
 }
 
@@ -2602,7 +2554,7 @@ PInfo *DMFCBase::FindPInfo(int pnum) {
   player_record *pr = GetPlayerRecordByPnum(pnum);
   if (!pr)
     return nullptr;
-  return pr->pinfo;
+  return pr->pinfo.get();
 }
 
 // DMFCBase::UpdatePInfo
@@ -2618,9 +2570,8 @@ void DMFCBase::UpdatePInfo(int victim, int killer, int amount) {
 
   PInfo *id;
   int victim_slot = PRec_GetPlayerSlot(victim);
-  tPKillerInfo ki;
+  tPKillerInfo ki{};
 
-  memset(&ki, 0, sizeof(tPKillerInfo));
   id = FindPInfo(killer);
 
   if ((id == nullptr) || (victim_slot == -1)) {
@@ -2790,7 +2741,7 @@ bool DMFCBase::FindPInfoStatFirst(int slot, tPInfoStat *stat) {
         dpr = GetPlayerRecord(p);
         deaths = 0;
         if (dpr && dpr->state != STATE_EMPTY && dpr->pinfo) {
-          victim = ((PInfo *)dpr->pinfo)->GetKillerInfo(slot);
+          victim = dpr->pinfo->GetKillerInfo(slot);
           if (victim)
             deaths = victim->kills;
         }
@@ -2812,7 +2763,7 @@ bool DMFCBase::FindPInfoStatFirst(int slot, tPInfoStat *stat) {
   deaths = 0;
   dpr = GetPlayerRecord(killer->slot);
   if (dpr && dpr->state != STATE_EMPTY && dpr->pinfo) {
-    victim = ((PInfo *)dpr->pinfo)->GetKillerInfo(slot);
+    victim = dpr->pinfo->GetKillerInfo(slot);
   }
 
   if (victim)
@@ -2858,7 +2809,7 @@ bool DMFCBase::FindPInfoStatNext(tPInfoStat *stat) {
         dpr = GetPlayerRecord(p);
         deaths = 0;
         if (dpr && dpr->state != STATE_EMPTY && dpr->pinfo) {
-          victim = ((PInfo *)dpr->pinfo)->GetKillerInfo(slot);
+          victim = dpr->pinfo->GetKillerInfo(slot);
           if (victim)
             deaths = victim->kills;
         }
@@ -2921,17 +2872,10 @@ bool DMFCBase::SetWeaponDeathMessage(const char *weapon_name, const char *messag
     return false;
   }
 
-  if ((WeaponMessages[real_weapon].inuse) && (WeaponMessages[real_weapon].message)) {
-    free(WeaponMessages[real_weapon].message);
-    WeaponMessages[real_weapon].message = nullptr;
-  }
-
-  WeaponMessages[real_weapon].message = (char *)malloc(strlen(message) + 1);
-  if (WeaponMessages[real_weapon].message) {
-    strcpy(WeaponMessages[real_weapon].message, message);
-    WeaponMessages[real_weapon].inuse = true;
-    WeaponMessages[real_weapon].victim_first = victim_first;
-  }
+  WeaponMessages[real_weapon].message = std::make_unique<char[]>(strlen(message) + 1);
+  strcpy(WeaponMessages[real_weapon].message.get(), message);
+  WeaponMessages[real_weapon].inuse = true;
+  WeaponMessages[real_weapon].victim_first = victim_first;
 
   return WeaponMessages[real_weapon].inuse;
 }
@@ -2954,7 +2898,7 @@ char *DMFCBase::GetWeaponDeathMessage(int index, bool *victim_first) {
     return nullptr;
 
   *victim_first = WeaponMessages[real_weapon].victim_first;
-  return WeaponMessages[real_weapon].message;
+  return WeaponMessages[real_weapon].message.get();
 }
 
 // DMFCBase::AddWeaponHash
@@ -3089,22 +3033,12 @@ void DMFCBase::BanPlayerFromGame(int pnum) {
   if (pnum >= 0 && pnum < DLLMAX_PLAYERS) {
     LOG_INFO.printf("Banning %s", Players[pnum].callsign);
     DPrintf(DTXT_DEDS_BAN, Players[pnum].callsign);
-    tBanItem *c;
-    c = m_BanList;
-    if (!m_BanList) {
-      c = m_BanList = (tBanItem *)malloc(sizeof(tBanItem));
-      if (!c)
-        return;
-    } else {
-      while (c->next) {
-        c = c->next;
-      }
-      c->next = (tBanItem *)malloc(sizeof(tBanItem));
-      c = c->next;
-      if (!c)
-        return;
+    std::unique_ptr<tBanItem> *tail = &m_BanList;
+    while (*tail) {
+      tail = &(*tail)->next;
     }
-    c->next = nullptr;
+    *tail = std::make_unique<tBanItem>();
+    tBanItem *c = tail->get();
     memcpy(&c->addr, &NetPlayers[pnum].addr, sizeof(network_address));
     strncpy(c->callsign, Players[pnum].callsign, MAX_CALLSIGN_SIZE - 1);
     c->callsign[MAX_CALLSIGN_SIZE - 1] = '\0';
@@ -3125,14 +3059,7 @@ void DMFCBase::BanPlayerFromGame(int pnum) {
 //
 //	Removes all the temp bans
 void DMFCBase::RemoveAllBans(void) {
-  tBanItem *c, *n;
-  c = n = m_BanList;
-  while (c) {
-    n = c->next;
-    free(c);
-    c = n;
-  }
-  m_BanList = nullptr;
+  m_BanList.reset();
   m_iNumBanPlayers = 0;
 }
 
@@ -3149,13 +3076,13 @@ char *DMFCBase::GetBannedPlayerCallsign(int index) {
     return nullptr;
 
   tBanItem *c;
-  c = m_BanList;
+  c = m_BanList.get();
   while (c) {
     if (index == 0) {
       return c->callsign;
     }
     index--;
-    c = c->next;
+    c = c->next.get();
   }
   return nullptr;
 }
@@ -3167,25 +3094,15 @@ bool DMFCBase::RemoveBan(int index) {
   if (index < 0 || index >= m_iNumBanPlayers)
     return false;
 
-  tBanItem *c, *p;
-  c = m_BanList;
-  p = nullptr;
-  while (c) {
+  std::unique_ptr<tBanItem> *link = &m_BanList;
+  while (*link) {
     if (!index) {
       // we found em, remove em
-      if (p) {
-        p->next = c->next;
-        free(c);
-        m_iNumBanPlayers--;
-      } else {
-        m_BanList = c->next;
-        free(c);
-        m_iNumBanPlayers--;
-      }
+      *link = std::move((*link)->next);
+      m_iNumBanPlayers--;
       return true;
     }
-    p = c;
-    c = c->next;
+    link = &(*link)->next;
     index--;
   }
   return false;
@@ -3214,7 +3131,7 @@ bool DMFCBase::IsPlayerBanned(int pnum) {
 //	returns true if the given address is banned from the game
 bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   tBanItem *c;
-  c = m_BanList;
+  c = m_BanList.get();
 
   while (c) {
     if (addr && CompareNetworkAddress(&c->addr, addr, false)) {
@@ -3228,7 +3145,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
       }
     }
 
-    c = c->next;
+    c = c->next.get();
   }
 
   if (!addr) {
@@ -3251,26 +3168,26 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
 
   // check the allow list, if the address is specified on this list,
   // than it isn't banned
-  curr = m_AllowList;
+  curr = m_AllowList.get();
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
       // it is a match
       LOG_INFO << "Player not banned";
       return false;
     }
-    curr = curr->next;
+    curr = curr->next.get();
   }
 
   // check the deny list, if the address is specified on this list,
   // than it is banned
-  curr = m_DenyList;
+  curr = m_DenyList.get();
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
       // it is a match
       LOG_INFO << "Player IS banned";
       return true;
     }
-    curr = curr->next;
+    curr = curr->next.get();
   }
 
   LOG_INFO << "Player not banned";
@@ -3472,9 +3389,9 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
   command[index] = '\0'; // tack on an ending NULL
 
   // now go through our list and see if we can find the command added by the user
-  tInputCommandNode *node = m_InputCommandRootNode;
+  tInputCommandNode *node = m_InputCommandRootNode.get();
   while (node) {
-    if (!stricmp(node->data, command)) {
+    if (!stricmp(node->data.get(), command)) {
       // we found a match!
       if (node->handler) {
         (*node->handler)(command_string);
@@ -3482,7 +3399,7 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
       }
       return false; // for some reason the handler is NULL (it should never happen)
     }
-    node = node->next;
+    node = node->next.get();
   }
 
   // if we got here than no nodes match
@@ -3493,21 +3410,8 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
 //
 //	Frees up all memory allocated for the input commands ($ messages)
 void DMFCBase::InputCommandFree(void) {
-  tInputCommandNode *next, *node = m_InputCommandRootNode;
-
   // Destroy the linked list of nodes
-  while (node) {
-    next = node->next;
-    if (node->data)
-      free(node->data);
-    if (node->desc)
-      free(node->desc);
-    free(node);
-    node = next;
-  }
-
-  // set the root to NULL to finish up
-  m_InputCommandRootNode = nullptr;
+  m_InputCommandRootNode.reset();
 }
 
 // DMFCBase::InputCommandInit
@@ -3670,14 +3574,14 @@ void DMFCBase::InputCommandInit(void) {
 // Returns -1 if the input command is not found
 // Returns 0 if the input command can be called remotely
 int DMFCBase::CanInputCommandBeUsedRemotely(char *command) {
-  tInputCommandNode *node = m_InputCommandRootNode;
+  tInputCommandNode *node = m_InputCommandRootNode.get();
 
   while (node) {
-    if (!stricmp(node->data, command)) {
+    if (!stricmp(node->data.get(), command)) {
       // we found a match!
       return (node->allow_remote) ? 1 : 0;
     }
-    node = node->next;
+    node = node->next.get();
   }
 
   return -1;
@@ -3688,7 +3592,7 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
   if (!IAmDedicatedServer())
     return;
 
-  tInputCommandNode *node = m_InputCommandRootNode;
+  tInputCommandNode *node = m_InputCommandRootNode.get();
 
   if (s[0] == '\0') {
     char buffer[80];
@@ -3697,11 +3601,11 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
     // just display the list of commands
     while (node) {
       memset(buffer, ' ', 80);
-      memcpy(&buffer[0], node->data, strlen(node->data));
-      node = node->next;
+      memcpy(&buffer[0], node->data.get(), strlen(node->data.get()));
+      node = node->next.get();
       if (node) {
-        memcpy(&buffer[30], node->data, strlen(node->data));
-        int pos = 30 + strlen(node->data);
+        memcpy(&buffer[30], node->data.get(), strlen(node->data.get()));
+        int pos = 30 + strlen(node->data.get());
         if (pos <= 78) {
           buffer[pos] = '\n';
           buffer[pos + 1] = '\0';
@@ -3713,7 +3617,7 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
       DPrintf(buffer);
 
       if (node)
-        node = node->next;
+        node = node->next.get();
     }
 
     return;
@@ -3721,16 +3625,16 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
 
   // display help description
   while (node) {
-    if (!stricmp(node->data, s)) {
+    if (!stricmp(node->data.get(), s)) {
       // we found a match!
-      DPrintf("%s:\n", node->data);
+      DPrintf("%s:\n", node->data.get());
       if (node->desc)
-        DPrintf("%s\n", node->desc);
+        DPrintf("%s\n", node->desc.get());
       else
         DPrintf(DTXT_IC_NOADDITIONALINFO);
       return;
     }
-    node = node->next;
+    node = node->next.get();
   }
 
   DPrintf(DTXT_IC_COMMANDNOTFOUND);
@@ -3764,72 +3668,26 @@ int8_t DMFCBase::AddInputCommand(const char *command, const char *description, v
   ASSERT(handler != nullptr);
 
   // traverse to the end of the list checking for duplicates along the way
-  tInputCommandNode *node = m_InputCommandRootNode;
-
-  if (!node) {
-    // there is none currently in the list, add it now
-    node = (tInputCommandNode *)malloc(sizeof(tInputCommandNode));
-    if (!node) {
-      return -1;
-    }
-    // fill in data
-    node->next = nullptr;
-    node->handler = handler;
-    node->allow_remote = allow_remotely;
-    node->data = (char *)malloc(strlen(command) + 1);
-    if (!node->data) { // out of memory
-      free(node);
-      return -1;
-    }
-    strlowcpy(node->data, command);
-
-    node->desc = (char *)malloc(strlen(description) + 1);
-    if (node->desc)
-      strcpy(node->desc, description);
-
-    // all went ok
-    m_InputCommandRootNode = node;
-    return 1;
-  }
-
-  while (node->next) {
-    // check this node to make sure it's not a duplicate
-    if (!stricmp(node->data, command)) {
+  std::unique_ptr<tInputCommandNode> *tail = &m_InputCommandRootNode;
+  while (*tail) {
+    if (!stricmp((*tail)->data.get(), command)) {
       // we found a duplicate
       return 0;
     }
-    node = node->next;
+    tail = &(*tail)->next;
   }
 
-  // we need to check the current node since while(node->next) breaks out before checking the last node
-  if (!stricmp(node->data, command)) {
-    // we found a duplicate
-    return 0;
-  }
+  // create a new node and tack it on to the end of the list
+  auto node = std::make_unique<tInputCommandNode>();
+  node->handler = handler;
+  node->allow_remote = allow_remotely;
+  node->data = std::make_unique<char[]>(strlen(command) + 1);
+  strlowcpy(node->data.get(), command);
 
-  // it looks like everything went ok, now just create a new node and tack it on to the end
-  // of the list.  All that can go wrong now is an out of memory error.
-  tInputCommandNode *temp;
-  temp = (tInputCommandNode *)malloc(sizeof(tInputCommandNode));
-  if (!temp) { // out of memory
-    return -1;
-  }
-  temp->next = nullptr;
-  temp->handler = handler;
-  temp->allow_remote = allow_remotely;
-  temp->data = (char *)malloc(strlen(command) + 1);
-  if (!temp->data) { // out of memory
-    free(temp);
-    return -1;
-  }
-  strlowcpy(temp->data, command);
+  node->desc = std::make_unique<char[]>(strlen(description) + 1);
+  strcpy(node->desc.get(), description);
 
-  temp->desc = (char *)malloc(strlen(description) + 1);
-  if (temp->desc)
-    strcpy(temp->desc, description);
-
-  // now tack it on the end of the list and thats all
-  node->next = temp;
+  *tail = std::move(node);
   return 1;
 }
 
@@ -3853,7 +3711,7 @@ void DMFCBase::CheckPInfo() {
 
       while (node) {
         ASSERT(node->slot >= 0 && node->slot < 64);
-        node = node->next;
+        node = node->next.get();
       }
     }
   }
@@ -4720,11 +4578,14 @@ MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, uint8_t flags, 
   return nullptr;
 }
 
-void ParseHostsFile(char *filename, tHostsNode **root) {
+void ParseHostsFile(char *filename, std::unique_ptr<tHostsNode> &root) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "rt");
 
-  tHostsNode *curr = *root;
+  std::unique_ptr<tHostsNode> *tail = &root;
+  while (*tail) {
+    tail = &(*tail)->next;
+  }
 
   if (!file)
     return;
@@ -4844,17 +4705,10 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       mask = DLLnw_GetHostAddressFromNumbers(s_mask);
 
       // add the node
-      if (!curr) {
-        curr = *root = (tHostsNode *)malloc(sizeof(tHostsNode));
-      } else {
-        curr->next = (tHostsNode *)malloc(sizeof(tHostsNode));
-        curr = curr->next;
-      }
-      if (curr) {
-        curr->next = nullptr;
-        curr->ip = ip_address;
-        curr->mask = mask;
-      }
+      *tail = std::make_unique<tHostsNode>();
+      (*tail)->ip = ip_address;
+      (*tail)->mask = mask;
+      tail = &(*tail)->next;
 
       goto noerror_parse;
     }
@@ -4882,17 +4736,17 @@ void DMFCBase::ReadInHostsAllowDeny(void) {
   allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
   deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
 
-  m_DenyList = nullptr;
-  m_AllowList = nullptr;
+  m_DenyList.reset();
+  m_AllowList.reset();
 
   // parse away
   if (deny_exist) {
     LOG_INFO << "Parsing hosts.deny";
-    ParseHostsFile(deny_fn, &m_DenyList);
+    ParseHostsFile(deny_fn, m_DenyList);
   }
   if (allow_exist) {
     LOG_INFO << "Parsing hosts.allow";
-    ParseHostsFile(allow_fn, &m_AllowList);
+    ParseHostsFile(allow_fn, m_AllowList);
   }
 }
 
@@ -4900,21 +4754,8 @@ void DMFCBase::ReadInHostsAllowDeny(void) {
 //
 //	Frees all the memory allocated for the host allow/deny lists
 void DMFCBase::FreeHostsLists(void) {
-  tHostsNode *curr = nullptr, *next;
-
-  curr = m_DenyList;
-  while (curr) {
-    next = curr->next;
-    free(curr);
-    curr = next;
-  }
-
-  curr = m_AllowList;
-  while (curr) {
-    next = curr->next;
-    free(curr);
-    curr = next;
-  }
+  m_DenyList.reset();
+  m_AllowList.reset();
 }
 
 // DMFCBase::RehashAllowDeny

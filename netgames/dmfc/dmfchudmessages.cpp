@@ -296,7 +296,7 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash)
             // we shouldn't have gotten here, but display the first message since there is one guaranteed
             msg = 0;
           }
-          snprintf(buffer, sizeof(buffer), SuicideMsgs[msg].message, temp);
+          snprintf(buffer, sizeof(buffer), SuicideMsgs[msg].message.get(), temp);
         }
       } else {
 
@@ -338,9 +338,9 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash)
             // So when we get here we should have the format string in use_msg, although it still needs the callsigns
             // if use_vfirst is true, then the victim's callsign comes first
             if (DeathMsgs[msg].victim_first)
-              snprintf(buffer, sizeof(buffer), DeathMsgs[msg].message, temp, temp2);
+              snprintf(buffer, sizeof(buffer), DeathMsgs[msg].message.get(), temp, temp2);
             else
-              snprintf(buffer, sizeof(buffer), DeathMsgs[msg].message, temp2, temp);
+              snprintf(buffer, sizeof(buffer), DeathMsgs[msg].message.get(), temp2, temp);
           }
         }
         do_statistical = true;
