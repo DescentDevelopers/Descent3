@@ -207,7 +207,12 @@ int main(int argc, char *argv[]) {
   if (loglevel_farg) {
     log_level = plog::severityFromString(GameArgs[loglevel_farg + 1]);
   }
-  InitLog(log_level, FindArg("-logfile"), enable_winconsole);
+  std::filesystem::path log_file;
+  if (FindArg("-logfile")) {
+    log_file = ddio_GetStatePath() / "Descent3.log";
+  }
+  InitLog(log_level, log_file, enable_winconsole);
+  LOG_INFO_IF(!log_file.empty()) << "Logging to " << log_file;
 
   LOG_INFO.printf("Welcome to Descent 3 v%d.%d.%d %s", D3_MAJORVER, D3_MINORVER, D3_BUILD, D3_GIT_HASH);
 

@@ -738,9 +738,7 @@ void InitMission() {
   Current_mission.mn3_handle = 0;
   //	create add on mission directory
   D3MissionsDir = std::filesystem::path(LocalD3Dir) / "missions";
-  std::error_code ec;
-  std::filesystem::create_directories(D3MissionsDir, ec);
-  if (ec) {
+  if (!ddio_CreateDirectories(D3MissionsDir)) {
     Error(TXT_MSN_FAILEDCREATEDIR);
   }
   atexit(ResetMission);
@@ -1805,7 +1803,7 @@ bool mn3_Open(const std::filesystem::path &mn3file) {
     return false;
   } else {
     /* Disabled loading scripts from .mn3 files on purpose:
-    all 64-bit first-party level scripts have already been loaded from `PRIMARY_HOG`.
+    all 64-bit first-party level scripts have already been loaded from `D3_PRIMARY_HOG`.
     Mission files contain only Win32 scripts by default, which cannot not be loaded on 64-bit builds.
     Reactivate this when we have a proper sandbox system to safely run third-party scripts contained in user-made
     levels. */

@@ -195,6 +195,7 @@
 #include <filesystem>
 #include <functional>
 #include <regex>
+#include <vector>
 
 #include "chrono_timer.h"
 #include "ddio_common.h"
@@ -318,9 +319,6 @@ void ddio_MouseSetVCoords(int width, int height);
 //	File Operations
 //	---------------------------------------------------------------------------
 
-// Gets the full path of the executable file
-bool ddio_GetBinaryPath(char *exec_path, size_t len);
-
 // deletes a file.  Returns 1 if successful, 0 on failure
 //	This pathname is *RELATIVE* not fully qualified
 int ddio_DeleteFile(const char *name);
@@ -384,12 +382,77 @@ void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::reg
 std::filesystem::path ddio_GetTmpFileName(const std::filesystem::path &basedir, const char *prefix);
 
 /**
- * Gets path where files can be written.
- * @param org name of organization
- * @param app name of application
- * @return path that contains org and app components where user can write files, empty path if there some errors
+ * Gets the directory where user files such as pilots and savegames are written, creating it if needed. A directory
+ * left by earlier versions, which used "Outrage Entertainment/Descent 3" in the same place, is copied here.
+ * Example directories:
+ *   - $XDG_DATA_HOME/descent3 (Linux)
+ *   - /home/user/.local/share/descent3 (Linux)
+ *   - /Users/user/Library/Application Support/Descent3 (macOS)
+ *   - C:\Users\user\AppData\Roaming\Descent3 (Windows)
+ * @return path where user files can be written, empty path on error
  */
-std::filesystem::path ddio_GetPrefPath(const char *org, const char *app);
+std::filesystem::path ddio_GetPrefPath();
+
+/**
+ * Gets the directory where settings are stored, creating it if needed.
+ * Example directories, in order of use:
+ *   - $XDG_CONFIG_HOME/descent3 (Linux)
+ *   - /home/user/.config/descent3 (Linux)
+ *   - the preference path from ddio_GetPrefPath()
+ * @return path where settings can be written, empty path on error
+ */
+std::filesystem::path ddio_GetConfigPath();
+
+/**
+ * Gets the system-wide directories that may hold read-only game data, most important first. The directories are not
+ * checked for existence.
+ * Example directories, in order of use:
+ *   - each entry of $XDG_DATA_DIRS with descent3 appended (Linux)
+ *   - /usr/local/share/descent3 and /usr/share/descent3, if $XDG_DATA_DIRS is unset or empty (Linux)
+ *   - none on other platforms
+ * @return list of directories
+ */
+std::vector<std::filesystem::path> ddio_GetSystemDataPaths();
+
+/**
+ * Gets the directory for state files such as logs, creating it if needed.
+ * Example directories, in order of use:
+ *   - $XDG_STATE_HOME/descent3 (Linux)
+ *   - /home/user/.local/state/descent3 (Linux)
+ *   - the current working directory
+ * @return directory where state files can be written, empty path on error
+ */
+std::filesystem::path ddio_GetStatePath();
+
+/**
+ * Creates a directory and any missing parent directories. Use this for every directory the game creates.
+ * Each newly created directory gets the given permissions, which default to owner-only (mode 0700, as the XDG Base
+ * Directory spec asks for); directories that already exist are left unchanged.
+ * On Windows the permissions only control the read-only attribute. Access there is governed by the access control
+ * list each directory inherits from its parent, and the per-user directories the game writes to are already private.
+ * @param dir directory to create
+ * @param perms permissions for newly created directories
+ * @return true if the directory exists afterwards, false on error
+ */
+bool ddio_CreateDirectories(const std::filesystem::path &dir,
+                            std::filesystem::perms perms = std::filesystem::perms::owner_all);
+
+/// Appended to the name of a path ddio_CopyLegacyPath() has copied, to name the marker it leaves next to it
+inline constexpr const char *DDIO_ABANDONED_SUFFIX = ".ABANDONED.readme";
+
+/**
+ * Copies a file or directory that an earlier version kept elsewhere to its current location, leaving the original
+ * untouched for that version. After the copy, a marker saying where the copy is used is written next to the original,
+ * named after it with DDIO_ABANDONED_SUFFIX (e.g. "Descent 3.ABANDONED.readme" next to the directory "Descent 3").
+ * Nothing is copied if
+ *   - `from` does not exist,
+ *   - `from` has a marker, so it was copied before, or
+ *   - `to` exists and is not an empty directory. This logs a warning, since the files at `from` are then not used.
+ * @param from old location
+ * @param to current location
+ * @return the location to use: `to`, or `from` if it could not be copied
+ */
+std::filesystem::path ddio_CopyLegacyPath(const std::filesystem::path &from, const std::filesystem::path &to);
 
 /**
  * Gets path directory of executable
@@ -425,5 +488,21 @@ bool ddio_CreateLockFile(const std::filesystem::path &dir);
  * @return true if lock file successfully deleted, false otherwise
  */
 bool ddio_DeleteLockFile(const std::filesystem::path &dir);
+
+/**
+ * Gets path where to write temporary/cache files.
+ * This is a fixed, per-application directory rather than a uniquely named one: the same path is returned on
+ * every run, so it can hold a lock file that detects another running instance and so that leftover temp files
+ * from a crashed run can be cleaned up on the next start. Use ddio_GetTmpFileName() to get unique file names
+ * inside it.
+ * Example directories, in order of use:
+ *   - $XDG_CACHE_HOME/descent3 (Linux)
+ *   - /home/user/.cache/descent3 (Linux)
+ *   - /tmp/Descent3/cache
+ *   - /var/folders/xx/xxxxxxxx/T/Descent3/cache (macOS)
+ *   - C:\Users\user\AppData\Local\Temp\Descent3\cache (Windows)
+ * @return path where user can write cache files, or empty path if no suitable directory was found.
+ */
+std::filesystem::path ddio_GetTempPath();
 
 #endif

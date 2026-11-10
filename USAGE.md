@@ -84,28 +84,43 @@ A base directory is a directory that Descent 3 expects game files to be in. When
 
 Descent 3 has two types of base directories:
 
-- The writable base directory can contain both read-write files and read-only files. There is only one writeable base directory. By default, the writable base directory gets set to the current working directory.
-- The read-only base directories can only contain read-only files. There can be any number of read-only base directories. By default, Descent 3 uses zero read-only base directories.
+- The writable base directory can contain both read-write files and read-only files. There is only one writable base directory: `$XDG_DATA_HOME/descent3` on Linux (see [File locations on Linux](#file-locations-on-linux)), `%APPDATA%\Descent3` on Windows and `~/Library/Application Support/Descent3` on macOS. Earlier versions used `Outrage Entertainment/Descent 3` in the same place; that directory is copied on first run and left in place for those versions, with a `Descent 3.ABANDONED.readme` file next to it that says where its files went.
+- The read-only base directories can only contain read-only files. There can be any number of read-only base directories.
 
-You can set the writable base directory and the list of read-only base directories using the `-setdir`, `-useexedir` and `-additionaldir` command-line options (see [the next section](#command-line-options)). Descent 3 also has a list of default read-only base directories. Normally, the list of default read-only base directories is empty, but you can change it by using the `DEFAULT_ADDITIONAL_DIRS` CMake option when compiling Descent 3 (see [BUILD.md’s Build Options section](./BUILD.md#build-options)).
+You can add read-only base directories with the `-additionaldir` command-line option (see [Command-Line Options](#command-line-options)), and with the `DEFAULT_ADDITIONAL_DIRS` CMake option when compiling Descent 3 (see [BUILD.md’s Build Options section](./BUILD.md#build-options)). Descent 3 also adds the directories it was installed to and, if they exist, the default Steam and GOG installation directories.
 
 When Descent 3 tries to find a read-only file, then it will look through the list of base directories in this order:
 
-- the last read-only base directory that was specified on the command-line,
-- the second-to-last read-only base directory that was specified on the command-line,
-- the third-to-last read-only base directory that was specified on the command-line,
-- …
-- the first read-only base directory that was specified on the command-line,
-- all of the items on the `DEFAULT_ADDITIONAL_DIRS` list in reverse order, and, finally,
+- the directory that contains the Descent 3 executable,
+- the data directory chosen when Descent 3 was compiled: `<prefix>/share/descent3` for a system install on Linux, or the current working directory for a portable build (the default),
+- the base directory stored in the game settings, if there is one,
+- the directories given with `-additionaldir`, the last one on the command line first,
+- the items on the `DEFAULT_ADDITIONAL_DIRS` list, the last one first,
+- on Linux, `descent3` in each directory of `$XDG_DATA_DIRS`, in the order they are listed,
+- the default Steam and GOG installation directories, and, finally,
 - the writable base directory.
 
-Files that are in base directories that are higher on that list will override files that are in base directories that are lower on that list. For example, lets say that the `DEFAULT_ADDITIONAL_DIRS` list is empty and that you run Descent 3 like this:
+Files that are in base directories that are higher on that list will override files that are in base directories that are lower on that list. For example, if you run Descent 3 like this:
 
 ```
-Descent3 -setdir /home/user/my-writable-base-directory -additionaldir /home/user/my-read-only-base-directory
+Descent3 -additionaldir /home/user/my-mods -additionaldir /home/user/my-other-mods
 ```
 
-Let’s also say that both `my-writable-base-directory` and `my-read-only-base-directory` contain a file named `d3.hog`. In this example, Descent 3 will load `/home/user/my-read-only-base-directory/d3.hog` because read-only directories have a higher precedence than the writable base directory. Descent 3 will ignore `/home/user/my-writable-base-directory/d3.hog`.
+and both `my-mods` and `my-other-mods` contain a file named `d3.hog`, Descent 3 will load `/home/user/my-other-mods/d3.hog`, because the last `-additionaldir` is searched first. That is, unless the executable's directory or the data directory also contains a `d3.hog`: those two are searched before any `-additionaldir`. A file in either directory also overrides a file with the same name in the writable base directory.
+
+At startup, Descent 3 logs the list of base directories in this order (`Base directories: …`).
+
+## File locations on Linux
+
+On Linux, Descent 3 follows the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/latest/). Unset, empty or relative XDG variables are ignored and the default in parentheses is used instead.
+
+| Files | Location |
+|---|---|
+| Read-only game data, such as `d3.hog` | `descent3` in each directory of `$XDG_DATA_DIRS` (`/usr/local/share/descent3`, `/usr/share/descent3`), and the directory the game was installed to. As a last resort, the default Steam installation folders `~/.local/share/Steam/steamapps/common/Descent 3` and `~/.steam/debian-installation/steamapps/common/Descent 3` are searched too. |
+| Writable files, such as pilots and savegames | `$XDG_DATA_HOME/descent3` (`~/.local/share/descent3`). Earlier versions used `Outrage Entertainment/Descent 3` in the same place; that directory is copied here on first run and left in place for those versions, with a `Descent 3.ABANDONED.readme` file next to it that says where its files went. |
+| Settings (`.Descent3Registry`) | `$XDG_CONFIG_HOME/descent3` (`~/.config/descent3`). Settings from earlier versions, which kept them with the writable files, are copied here on first run. |
+| Temporary files | `$XDG_CACHE_HOME/descent3` (`~/.cache/descent3`), or the `-tempdir` directory |
+| Log file (with `-logfile`) | `$XDG_STATE_HOME/descent3/Descent3.log` (`~/.local/state/descent3/Descent3.log`) |
 
 ## Command-Line Options
 
@@ -503,26 +518,6 @@ The following command-line options are available in Descent 3. You can set comma
 
     **Description:** Adds a directory to the list of read-only base directories. This options can be used multiple times to add multiple directories to the list.
 
-- `-setdir <path>`
-
-    **Type:** path
-
-    **Default:** .
-
-    **Platform:** all
-
-    **Description:** Sets the writable base directory.
-
-- `-useexedir`
-
-    **Type:** boolean
-
-    **Default:** Off
-
-    **Platform:** all
-
-    **Description:** Tells Descent 3 to use the directory in which the executable is located as the writable base directory.
-
 ### Other Options
 
 - `-loadlevel`
@@ -543,7 +538,7 @@ The following command-line options are available in Descent 3. You can set comma
 
     **Platform:** all
 
-    **Description:** Generates a logfile `d3.log` if using the Debug build. All `mprintf` statements output to the logfile.
+    **Description:** Writes the log to `Descent3.log`. On Linux the file is in `$XDG_STATE_HOME/descent3` (see [File locations on Linux](#file-locations-on-linux)); on other platforms it is in the current working directory.
 
 - `-loglevel <LEVEL>`
 

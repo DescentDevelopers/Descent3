@@ -390,12 +390,9 @@ void SaveGameDialog() {
   savegame_dir = cf_GetWritableBaseDirectory() / "savegame";
 
   // create savegame directory if it didn't exist before.
-  std::error_code ec;
-  if (!std::filesystem::create_directories(savegame_dir, ec)) {
-    if (ec) {
-      DoMessageBox(TXT_ERROR, TXT_ERRCREATEDIR, MSGBOX_OK);
-      return;
-    }
+  if (!ddio_CreateDirectories(savegame_dir)) {
+    DoMessageBox(TXT_ERROR, TXT_ERRCREATEDIR, MSGBOX_OK);
+    return;
   }
 
   // open window

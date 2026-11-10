@@ -912,10 +912,12 @@
 
 #include <charconv>
 #include <cinttypes>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <filesystem>
 #include <regex>
+#include <vector>
 
 #include "mono.h"
 #include "gametexture.h"
@@ -1425,23 +1427,96 @@ void InitIOSystems(bool editor) {
   LoadGameSettings();
 
   /*
-   * Populate base directories. In result, we have the following list of directories (in priority order):
+   * Populate base directories. In result, we have the following list of directories, lowest priority first (directories
+   * added later are searched first):
    * - Writable preference path
+   * - Default Steam and GOG installation paths
+   * - System data directories ($XDG_DATA_DIRS entries on Linux)
+   * - Default additional directories (DEFAULT_ADDITIONAL_DIRS CMake option)
    * - User defined paths (cmd-line and configuration)
-   * - Platform defined paths (such as /usr/share/descent3 on Linux or Steam installation paths)
+   * - Platform defined path (D3_DATADIR, such as /usr/share/descent3 on Linux)
    * - Directory of executable
    */
 
   // Writable preference path
-  std::filesystem::path pref_path = ddio_GetPrefPath(D3_PREF_ORG, D3_PREF_APP);
+  std::filesystem::path pref_path = ddio_GetPrefPath();
   if (pref_path.empty()) {
     Error("Failed to get preference path!");
   }
   LOG_INFO << "Setting writable preference path " << pref_path;
   cf_AddBaseDirectory(pref_path);
 
-  // Set the default base directories
-  cf_AddDefaultBaseDirectories();
+  // Default Steam and GOG installation paths, for the game data that is not included. They have the lowest priority
+  // of the read-only directories, so anything the user or this build provides takes precedence.
+  // Paths that start with "~" while $HOME is not an absolute path, or are not installed, are skipped.
+  std::vector<std::filesystem::path> default_platform_dirs = {
+    D3_STANDARD_PATHS
+  };
+
+  for (std::filesystem::path dir : default_platform_dirs) {
+    if (*dir.begin() == "~") {
+      // On Unix, replace "~" in paths by the runtime $HOME directory
+      const char *home = std::getenv("HOME");
+      if (!home || !std::filesystem::path(home).is_absolute()) {
+        continue;
+      }
+      dir = std::filesystem::path(home) / dir.lexically_relative("~");
+    }
+    std::error_code ec;
+    if (std::filesystem::is_directory(dir, ec)) {
+      cf_AddBaseDirectory(dir);
+    }
+  }
+
+  // D3_DATADIR is added further down, but is looked up here so it is not added twice. Its last component is matched
+  // without regard to case, so data installed in /usr/share/Descent3 by earlier versions is still found as
+  // /usr/share/descent3. A directory the game may not look into is skipped instead of stopping the game.
+  std::filesystem::path datadir = D3_DATADIR;
+  std::filesystem::path platform_dir;
+  try {
+    platform_dir = cf_LocatePathCaseInsensitiveHelper(datadir.filename(), datadir.parent_path());
+    if (!platform_dir.empty()) {
+      platform_dir = std::filesystem::canonical(platform_dir);
+    }
+  } catch (const std::filesystem::filesystem_error &e) {
+    LOG_WARNING << "Skipping data directory " << datadir << ": " << e.what();
+    platform_dir.clear();
+  }
+
+  // System data directories ($XDG_DATA_DIRS on Linux), used as named, as the XDG Base Directory spec describes. Base
+  // directories added later take precedence, so add them least important first. They rank below the directories this
+  // build is configured with (DEFAULT_ADDITIONAL_DIRS, D3_DATADIR) and the ones the user chose (-additionaldir, the
+  // configured base directory).
+  std::vector<std::filesystem::path> system_dirs;
+  for (const auto &candidate : ddio_GetSystemDataPaths()) {
+    std::error_code ec;
+    std::filesystem::file_status status = std::filesystem::status(candidate, ec);
+    if (status.type() == std::filesystem::file_type::not_found) {
+      continue;
+    }
+    std::filesystem::path dir;
+    if (!ec && std::filesystem::is_directory(status)) {
+      dir = std::filesystem::canonical(candidate, ec);
+    }
+    if (ec) {
+      LOG_WARNING << "Skipping data directory " << candidate << ": " << ec.message();
+      continue;
+    }
+    if (dir.empty()) {
+      continue; // not a directory
+    }
+    if (dir != platform_dir && std::find(system_dirs.begin(), system_dirs.end(), dir) == system_dirs.end()) {
+      system_dirs.push_back(dir);
+    }
+  }
+  for (auto it = system_dirs.rbegin(); it != system_dirs.rend(); ++it) {
+    cf_AddBaseDirectory(*it);
+  }
+
+  // Read-only base directories from the DEFAULT_ADDITIONAL_DIRS CMake option
+  for (const std::filesystem::path &dir : std::vector<std::filesystem::path>{D3_DEFAULT_ADDITIONAL_DIRS}) {
+    cf_AddBaseDirectory(dir);
+  }
 
   // Additional paths
   int additionaldirarg = 0;
@@ -1460,18 +1535,12 @@ void InitIOSystems(bool editor) {
     cf_AddBaseDirectory(config_base_directory);
   }
 
-  // Platform dependent paths. The last component of D3_DATADIR is matched
-  // without regard to case, so data installed in /usr/share/Descent3 by
-  // earlier versions is still found when D3_DATADIR is /usr/share/descent3.
-  std::filesystem::path datadir = D3_DATADIR;
-  std::filesystem::path platform_dir = cf_LocatePathCaseInsensitiveHelper(datadir.filename(), datadir.parent_path());
+  // Platform dependent path (D3_DATADIR)
   if (platform_dir.empty()) {
     LOG_WARNING << "Platform data directory not found: " << datadir;
   } else {
-    platform_dir = std::filesystem::canonical(platform_dir);
     cf_AddBaseDirectory(platform_dir);
   }
-  // TODO: add Steam/registry locations
 
   // Add path of executable
   std::filesystem::path exec_path = ddio_GetBasePath();
@@ -1561,7 +1630,7 @@ void InitIOSystems(bool editor) {
 
   // last library opened is the first to be searched for dynamic libs, so put
   // this one at the end to find our newly build script libraries first
-  sys_hid = cf_OpenLibrary(PRIMARY_HOG);
+  sys_hid = cf_OpenLibrary(D3_PRIMARY_HOG);
 
   // Initialize debug graph early incase any system uses it in its init
   INIT_MESSAGE(("Initializing debug graph."));
@@ -2006,18 +2075,14 @@ void SetupTempDirectory(void) {
   if (t_arg) {
     Descent3_temp_directory = GameArgs[t_arg + 1];
   } else {
-    std::error_code ec;
-    std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
-    if (ec) {
-      Error("Could not find temporary directory: \"%s\"", ec.message().c_str());
+    Descent3_temp_directory = ddio_GetTempPath();
+    if (Descent3_temp_directory.empty()) {
+      Error("Could not find temporary directory");
       exit(1);
     }
-    Descent3_temp_directory = tempPath / "Descent3" / "cache";
   }
 
-  std::error_code ec;
-  std::filesystem::create_directories(Descent3_temp_directory, ec);
-  if (ec) {
+  if (!ddio_CreateDirectories(Descent3_temp_directory)) {
     Error("Could not create temporary directory: \"%s\"", PATH_TO_CSTR(Descent3_temp_directory));
     exit(1);
   }

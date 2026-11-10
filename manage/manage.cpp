@@ -542,9 +542,8 @@ int mng_IsNetworkUp() {
     return 0;
   std::filesystem::path dir = std::filesystem::path(net_dir) / "data";
 
-  std::error_code ec;
-  std::filesystem::create_directories(dir, ec);
-  if (!ec) {
+  if (ddio_CreateDirectories(dir)) {
+    std::error_code ec;
     std::filesystem::path old_dir = std::filesystem::current_path();
     std::filesystem::current_path(dir, ec);
     if (ec)
@@ -811,51 +810,49 @@ void mng_CheckToCreateLocalTables() {
 // Creates directories if needed
 void mng_InitLocalDirectories() {
   std::filesystem::path dir = cf_GetWritableBaseDirectory();
-  std::error_code ec;
-  std::filesystem::create_directories(dir / "demo", ec);
-  std::filesystem::create_directories(dir / "custom" / "graphics", ec);
-  std::filesystem::create_directories(dir / "custom" / "sounds", ec);
-  std::filesystem::create_directories(dir / "custom" / "settings", ec);
-  std::filesystem::create_directories(dir / "savegame", ec);
+  ddio_CreateDirectories(dir / "demo");
+  ddio_CreateDirectories(dir / "custom" / "graphics");
+  ddio_CreateDirectories(dir / "custom" / "sounds");
+  ddio_CreateDirectories(dir / "custom" / "settings");
+  ddio_CreateDirectories(dir / "savegame");
 
   cf_SetSearchPath(LocalCustomGraphicsDir);
   cf_SetSearchPath(LocalCustomSoundsDir);
 
   if (Network_up) {
-    std::filesystem::create_directories(dir / "data" / "tables", ec);
-    std::filesystem::create_directories(dir / "data" / "graphics", ec);
-    std::filesystem::create_directories(dir / "data" / "sounds", ec);
-    std::filesystem::create_directories(dir / "data" / "rooms", ec);
-    std::filesystem::create_directories(dir / "data" / "levels", ec);
-    std::filesystem::create_directories(dir / "data" / "models", ec);
-    std::filesystem::create_directories(dir / "data" / "briefings", ec);
-    std::filesystem::create_directories(dir / "data" / "scripts", ec);
-    std::filesystem::create_directories(dir / "data" / "misc", ec);
-    std::filesystem::create_directories(dir / "data" / "art", ec);
-    std::filesystem::create_directories(dir / "data" / "music", ec);
-    std::filesystem::create_directories(dir / "data" / "voice", ec);
+    ddio_CreateDirectories(dir / "data" / "tables");
+    ddio_CreateDirectories(dir / "data" / "graphics");
+    ddio_CreateDirectories(dir / "data" / "sounds");
+    ddio_CreateDirectories(dir / "data" / "rooms");
+    ddio_CreateDirectories(dir / "data" / "levels");
+    ddio_CreateDirectories(dir / "data" / "models");
+    ddio_CreateDirectories(dir / "data" / "briefings");
+    ddio_CreateDirectories(dir / "data" / "scripts");
+    ddio_CreateDirectories(dir / "data" / "misc");
+    ddio_CreateDirectories(dir / "data" / "art");
+    ddio_CreateDirectories(dir / "data" / "music");
+    ddio_CreateDirectories(dir / "data" / "voice");
   }
 }
 
 void mng_InitNetDirectories() {
   std::filesystem::path dir = NetD3Dir;
-  std::error_code ec;
 
   if (Stand_alone)
     return;
-  std::filesystem::create_directories(dir / "data", ec);
-  std::filesystem::create_directories(dir / "data" / "tables", ec);
-  std::filesystem::create_directories(dir / "data" / "graphics", ec);
-  std::filesystem::create_directories(dir / "data" / "sounds", ec);
-  std::filesystem::create_directories(dir / "data" / "rooms", ec);
-  std::filesystem::create_directories(dir / "data" / "levels", ec);
-  std::filesystem::create_directories(dir / "data" / "models", ec);
-  std::filesystem::create_directories(dir / "data" / "briefings", ec);
-  std::filesystem::create_directories(dir / "data" / "scripts", ec);
-  std::filesystem::create_directories(dir / "data" / "misc", ec);
-  std::filesystem::create_directories(dir / "data" / "art", ec);
-  std::filesystem::create_directories(dir / "data" / "music", ec);
-  std::filesystem::create_directories(dir / "data" / "voice", ec);
+  ddio_CreateDirectories(dir / "data");
+  ddio_CreateDirectories(dir / "data" / "tables");
+  ddio_CreateDirectories(dir / "data" / "graphics");
+  ddio_CreateDirectories(dir / "data" / "sounds");
+  ddio_CreateDirectories(dir / "data" / "rooms");
+  ddio_CreateDirectories(dir / "data" / "levels");
+  ddio_CreateDirectories(dir / "data" / "models");
+  ddio_CreateDirectories(dir / "data" / "briefings");
+  ddio_CreateDirectories(dir / "data" / "scripts");
+  ddio_CreateDirectories(dir / "data" / "misc");
+  ddio_CreateDirectories(dir / "data" / "art");
+  ddio_CreateDirectories(dir / "data" / "music");
+  ddio_CreateDirectories(dir / "data" / "voice");
 }
 
 extern int TableVersionCurrent();
