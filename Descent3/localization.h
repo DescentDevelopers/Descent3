@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -38,59 +38,65 @@
  * $NoKeywords: $
  */
 
-#ifndef __LOCALIZATION_H__
-#define __LOCALIZATION_H__
+#ifndef LOCALIZATION_H
+#define LOCALIZATION_H
 
-#define LANGUAGE_ENGLISH 0
-#define LANGUAGE_GERMAN 1
-#define LANGUAGE_SPANISH 2
-#define LANGUAGE_ITALIAN 3
-#define LANGUAGE_FRENCH 4
+#include <map>
+#include <string>
+#include <vector>
+
+#include "localization_external.h"
+
 void Localization_SetLanguage(int type);
-int Localization_GetLanguage(void);
+int Localization_GetLanguage();
 
 // Call this to load up the string tables into memory
 // Returns the number of strings loaded, if this is 0, then the program MUST not continue
-int LoadStringTables(void);
+int LoadStringTables();
 
 // Deallocates all the memory used for the string tables
-void FreeStringTables(void);
+void FreeStringTables();
 
 // Returns a pointer to the string at the index location from the string table
 // if it is a bad index given, then the pointer to the error string "ERROR MISSING STRING" is given
-const char *GetStringFromTable(int index);
+const char *GetStringFromTable(uint32_t index);
 
-// Given a filename, pointer to a char * array and a pointer to an int,
-// it will load the string table and fill in the information
-// returns true on success
-bool CreateStringTable(const char *filename, char ***table, int *size);
-// Given a string table and its count of strings, it will free up its memory
-void DestroyStringTable(char **table, int size);
+/**
+ * Creates table of strings from given filename
+ * @param filename
+ * @param table
+ * @return true on success
+ */
+bool CreateStringTable(const std::filesystem::path &filename, std::vector<std::string> &table);
 
-// GrowString class
-// handles a string of increasing size (using +,=,+=)
-struct tbufferinfo {
-  char *string_data;
-  tbufferinfo *next;
-};
+/**
+ * Clears table from loaded strings
+ * @param table
+ */
+void DestroyStringTable(std::vector<std::string> &table);
 
-class GrowString {
-public:
-  GrowString();
-  ~GrowString();
-  void Destroy(void);
-  void operator+=(char *str);
-  GrowString operator+(char *str);
-  GrowString operator+(GrowString &gs);
-  void operator+=(GrowString &gs);
-  void operator=(char *str);
-  void operator=(GrowString &gs);
-  void GetString(char **str);
-  int Length(void);
+// Message file handling (used in scripts)
 
-private:
-  tbufferinfo root;
-  tbufferinfo *curr;
-};
+/**
+ * Creates map of strings from given filename
+ * @param filename
+ * @param map
+ * @return true on success
+ */
+bool CreateMessageMap(const std::filesystem::path &filename, std::map<std::string, std::string> &map);
+
+/**
+ * Clears map from loaded strings
+ * @param map
+ */
+void DestroyMessageMap(std::map<std::string, std::string> &map);
+
+/**
+ * Gets message by name from corresponding map
+ * @param name
+ * @param map
+ * @return return message by name, NO_MESSAGE_STRING if there no such name
+ */
+const char *GetMessageMap(const std::string &name, std::map<std::string, std::string> &map);
 
 #endif

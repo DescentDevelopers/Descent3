@@ -169,7 +169,6 @@
 
 #include <vector>
 
-#include "pstypes.h"
 #include "descent.h"
 
 //	*** CONSTANTS ***
@@ -178,6 +177,9 @@
 #define LOAD_PROGRESS_PAGING_DATA 3
 #define LOAD_PROGRESS_PREPARE 4
 #define LOAD_PROGRESS_DONE 200
+
+// Load the text (goal strings) for a level
+void LoadLevelText(const std::filesystem::path &level_filename);
 
 // Load level progress worker
 void LoadLevelProgress(int step, float percent, const char *chunk = nullptr);

@@ -2,14 +2,11 @@ set(CMAKE_FOLDER "scripts")
 
 set(HEADERS
   AIGame3_External.h
-  linux_lib.h
   osiris_common.h
   osiris_import.h
-  osiris_vector.h)
+  osiris_vector.h
+)
 set(CPPS
-  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
-    linux_lib.cpp
-  >
 )
 
 set(SCRIPTS
