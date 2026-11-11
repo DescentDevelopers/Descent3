@@ -1,18 +1,23 @@
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.process.ExecOperations
+import javax.inject.Inject
+
+// Project.exec() was removed in Gradle 9; task actions must use an injected ExecOperations.
+interface InjectedExecOps {
+  @Inject ExecOperations getExecOps()
+}
+def execOps = project.objects.newInstance(InjectedExecOps).execOps
 
 def vsDevCmd() {
   def vswhere = new File(System.getenv("ProgramFiles(x86)"), "Microsoft Visual Studio/Installer/vswhere.exe")
   if (!vswhere.exists()) return null
 
-  def out = new ByteArrayOutputStream()
-  exec {
+  def vsPath = providers.exec {
     commandLine vswhere.absolutePath,
       "-latest", "-products", "*",
       "-requires", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
       "-property", "installationPath"
-    standardOutput = out
-  }
-  def vsPath = out.toString().trim()
+  }.standardOutput.asText.get().trim()
   if (!vsPath) return null
   return new File(vsPath, "Common7/Tools/VsDevCmd.bat").absolutePath
 }
@@ -57,7 +62,7 @@ def buildHogMaker = tasks.register("buildHogMaker") {
   outputs.file hogMakerBinary
 
   doLast {
-    exec {
+    execOps.exec {
       commandLine wrapCmd([
         "cmake",
         "--build", hostBuildDir,
@@ -65,7 +70,7 @@ def buildHogMaker = tasks.register("buildHogMaker") {
         "--target", "HogMaker",
       ])
     }
-    exec {
+    execOps.exec {
       commandLine wrapCmd([
         "cmake",
         "--install", hostBuildDir,

@@ -7,7 +7,7 @@ repositories {
 apply from: "host-tools.gradle"
 
 android {
-  namespace "com.descent3.droid"
+  namespace = "com.descent3.droid"
   compileSdk = 34
   defaultConfig {
     minSdkVersion = 32
@@ -28,7 +28,7 @@ android {
   buildTypes {
     release {
       minifyEnabled = false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
   applicationVariants.all { variant ->
@@ -47,7 +47,7 @@ android {
     }
   }
   lint {
-    abortOnError false
+    abortOnError = false
   }
 }
 
