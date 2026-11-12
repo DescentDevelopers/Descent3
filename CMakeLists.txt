@@ -333,7 +333,14 @@ endif()
 
 add_subdirectory(Descent3)
 
-add_subdirectory(tools)
+if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+  # No HOGs are built by CMake on Android (see scripts/CMakeLists.txt), so HogMaker isn't needed.
+elseif (CMAKE_CROSSCOMPILING)
+  find_package(HogMaker REQUIRED)
+else()
+  add_subdirectory(tools)
+endif()
+
 add_subdirectory(netcon)
 add_subdirectory(netgames)
 add_subdirectory(scripts)
