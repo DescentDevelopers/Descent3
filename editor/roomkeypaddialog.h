@@ -160,7 +160,7 @@
 class CRoomKeypadDialog : public CKeypadDialog {
   // Construction
 public:
-  CRoomKeypadDialog(CWnd *pParent = NULL); // standard constructor
+  CRoomKeypadDialog(CWnd *pParent = nullptr); // standard constructor
   void UpdateKeypad(int mask);
 
   virtual void RunKeypadFunction(int code);

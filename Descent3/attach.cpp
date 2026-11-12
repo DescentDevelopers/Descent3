@@ -144,7 +144,7 @@ PI); rot_angle = acos(dot);
 // Finds the position of a attach point on an object
 // The uvec is optional as most attaching objects don't need at complete orientation set (only an fvec)
 static bool AttachPointPos(object *obj, int8_t ap, bool f_compute_pos, vector *attach_pos, bool f_compute_fvec,
-                           vector *attach_fvec, bool *f_computed_uvec = NULL, vector *attach_uvec = NULL) {
+                           vector *attach_fvec, bool *f_computed_uvec = nullptr, vector *attach_uvec = nullptr) {
   poly_model *pm;
   vector pnt;
   vector normal;
@@ -330,8 +330,8 @@ bool AttachDoPosOrient(object *parent, char parent_ap, object *child, char child
   matrix start_m;
   matrix goal_m;
 
-  vm_VectorToMatrix(&start_m, &start_fvec, &start_uvec, NULL);
-  vm_VectorToMatrix(&goal_m, &goal_fvec, &goal_uvec, NULL);
+  vm_VectorToMatrix(&start_m, &start_fvec, &start_uvec, nullptr);
+  vm_VectorToMatrix(&goal_m, &goal_fvec, &goal_uvec, nullptr);
 
   matrix sot;
   matrix srt;
@@ -350,9 +350,9 @@ bool AttachDoPosOrient(object *parent, char parent_ap, object *child, char child
   if (f_dropping_off) {
     object *attached_obj = ObjGet(start_obj->attach_children[0]);
     ASSERT(attached_obj);
-    AttachPointPos(attached_obj, start_ap, true, &start_pos, false, NULL, NULL, NULL);
+    AttachPointPos(attached_obj, start_ap, true, &start_pos, false, nullptr, nullptr, nullptr);
   } else {
-    AttachPointPos(start_obj, start_ap, true, &start_pos, false, NULL, NULL, NULL);
+    AttachPointPos(start_obj, start_ap, true, &start_pos, false, nullptr, nullptr, nullptr);
   }
   start_obj->pos += (goal_pos - start_pos);
 
@@ -451,7 +451,7 @@ static void ProprogateUltimateAttachParent(object *parent, int ultimate_handle) 
   for (i = 0; i < parent_pm->n_attach; i++) {
     object *child;
 
-    if ((child = ObjGet(parent->attach_children[i])) != NULL) {
+    if ((child = ObjGet(parent->attach_children[i])) != nullptr) {
       child->attach_ultimate_handle = ultimate_handle;
       ProprogateUltimateAttachParent(child, ultimate_handle);
     }
@@ -549,7 +549,7 @@ bool AttachObject(object *parent, int8_t parent_ap, object *child, float percent
       if (ROOMNUM_OUTSIDE(room))
         room = GetTerrainRoomFromPos(&new_child_pos);
 
-      ObjSetPos(child, &new_child_pos, room, NULL, false);
+      ObjSetPos(child, &new_child_pos, room, nullptr, false);
 
       AttachUpdateSubObjects(child);
       if ((Game_mode & GM_MULTI) && (Netgame.local_role == LR_SERVER)) {
@@ -580,13 +580,13 @@ void AttachUpdateSubObjects(object *parent) {
     return;
 #endif
 
-  if (parent->attach_children == NULL)
+  if (parent->attach_children == nullptr)
     return;
 
   for (i = 0; i < parent_pm->n_attach; i++) {
     object *child;
 
-    if ((child = ObjGet(parent->attach_children[i])) != NULL) {
+    if ((child = ObjGet(parent->attach_children[i])) != nullptr) {
       ASSERT(child->flags & OF_ATTACHED);
 
       child->mtype.phys_info.velocity = parent->mtype.phys_info.velocity;
@@ -610,7 +610,7 @@ void AttachUpdateSubObjects(object *parent) {
           if (ROOMNUM_OUTSIDE(room))
             room = GetTerrainRoomFromPos(&new_child_pos);
 
-          ObjSetPos(child, &new_child_pos, room, NULL, false);
+          ObjSetPos(child, &new_child_pos, room, nullptr, false);
         } else {
           Int3(); // Get chris
         }
@@ -665,7 +665,7 @@ bool UnattachFromParent(object *child) {
 bool UnattachChild(object *parent, int8_t parent_ap) {
   object *child;
 
-  if ((child = ObjGet(parent->attach_children[parent_ap])) != NULL) {
+  if ((child = ObjGet(parent->attach_children[parent_ap])) != nullptr) {
     return UnattachFromParent(child);
   }
 
@@ -683,7 +683,7 @@ bool UnattachChildren(object *parent) {
   for (i = 0; i < parent_pm->n_attach; i++) {
     object *child;
 
-    if ((child = ObjGet(parent->attach_children[i])) != NULL) {
+    if ((child = ObjGet(parent->attach_children[i])) != nullptr) {
       UnattachFromParent(child);
     }
   }

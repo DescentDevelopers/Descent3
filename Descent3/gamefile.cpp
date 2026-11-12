@@ -106,10 +106,10 @@ int GetPrevGamefile(int n) {
 }
 // Searches thru all gamefiles for a specific name, returns -1 if not found
 // or index of gamefile with name
-int FindGamefileName(char *name) {
+int FindGamefileName(const char *name) {
   int i;
 
-  ASSERT(name != NULL);
+  ASSERT(name != nullptr);
 
   for (i = 0; i < MAX_GAMEFILES; i++)
     if (Gamefiles[i].used && !stricmp(name, Gamefiles[i].name))

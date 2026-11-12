@@ -488,7 +488,7 @@ EnvAudio_Presets[N_ENVAUDIO_PRESETS] = {
 //////////////////////////////////////////////////////////////////////////////
 hlsSystem::hlsSystem() {
   m_f_hls_system_init = 0;
-  m_ll_sound_ptr = NULL;
+  m_ll_sound_ptr = nullptr;
   m_sounds_played = 0;
   m_master_volume = 1.0;
   m_pause_new = false;
@@ -506,7 +506,7 @@ void hlsSystem::SetLLSoundQuantity(int n_sounds) {
   n_lls_sounds = n_sounds;
   LOG_DEBUG.printf("SNDLIB: Allow %d sounds to be mixed.", n_sounds);
   if (m_f_hls_system_init) {
-    InitSoundLib(NULL, Sound_mixer, Sound_quality, false);
+    InitSoundLib(nullptr, Sound_mixer, Sound_quality, false);
   }
 }
 int hlsSystem::GetLLSoundQuantity() { return n_lls_sounds; }
@@ -515,7 +515,7 @@ int hlsSystem::InitSoundLib(oeApplication *sos, char mixer_type, char quality, b
   int status;
   // Turn off sound if desired
   if ((FindArg("-nosound")) || Dedicated_server) {
-    m_ll_sound_ptr = NULL;
+    m_ll_sound_ptr = nullptr;
     return 0;
   }
   if (m_f_hls_system_init) {
@@ -523,15 +523,15 @@ int hlsSystem::InitSoundLib(oeApplication *sos, char mixer_type, char quality, b
   }
 
   // Create and initialize the low-level sound library
-  if (m_ll_sound_ptr == NULL)
+  if (m_ll_sound_ptr == nullptr)
     m_ll_sound_ptr = new lnxsound;
   ASSERT(m_ll_sound_ptr);
-  if (m_ll_sound_ptr == NULL)
+  if (m_ll_sound_ptr == nullptr)
     return 0;
   if (Sound_card_name[0]) {
     m_ll_sound_ptr->SetSoundCard(Sound_card_name);
   } else {
-    m_ll_sound_ptr->SetSoundCard(NULL);
+    m_ll_sound_ptr->SetSoundCard(nullptr);
   }
   status = m_ll_sound_ptr->InitSoundLib(mixer_type, sos, n_lls_sounds);
   // Initialize the high-level sound library
@@ -566,7 +566,7 @@ void hlsSystem::KillSoundLib(bool f_kill_sound_list) {
   }
   if (m_ll_sound_ptr) {
     delete m_ll_sound_ptr;
-    m_ll_sound_ptr = NULL;
+    m_ll_sound_ptr = nullptr;
   }
   // This is independent of the actual sound_lib status.  It happened because sounds
   // use the manage system.
@@ -648,7 +648,7 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
   // non game sound frame, this, just updates currently playing sounds.
   // placed here to leave early and ensure any further processing involves game only.
   if (!f_in_game) {
-    sound_room_list = NULL;
+    sound_room_list = nullptr;
     for (i = 0, counter = 0; i < MAX_SOUND_OBJECTS; i++) {
       if (m_sound_objects[i].m_obj_type_flags && m_sound_objects[i].m_sound_uid != -1) {
         counter++;
@@ -689,7 +689,7 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
     }
   }
   // render all rooms within a certain range from player (traverse rooms through portals)
-  sound_room_list = hwsound_support ? sound_render_audible_rooms(&listener_pos) : NULL;
+  sound_room_list = hwsound_support ? sound_render_audible_rooms(&listener_pos) : nullptr;
   //	SoundQ_process();
   // if sound object is outside listener's cone of audibility, emulate the sound.
   //	if sound is audible, then determine its playback properties.
@@ -796,7 +796,7 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
                 fq.startroom = game_obj->roomnum;
                 fq.rad = .5;
                 fq.thisobjnum = so->m_link_info.object_handle & HANDLE_OBJNUM_MASK;
-                fq.ignore_obj_list = NULL;
+                fq.ignore_obj_list = nullptr;
                 fq.flags = 0;
                 fvi_FindIntersection(&fq, &hit_data);
 
@@ -928,7 +928,7 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
       if (BOA_INDEX(last_room) == BOA_INDEX(cur_room) || cur_room == BOA_NO_PATH)
         return false;
       if (BOA_INDEX(last_room) != BOA_INDEX(cur_room)) {
-        last_portal = BOA_DetermineStartRoomPortal(last_room, NULL, cur_room, NULL);
+        last_portal = BOA_DetermineStartRoomPortal(last_room, nullptr, cur_room, nullptr);
         if (last_portal == -1) {
           return false;
         }
@@ -938,7 +938,7 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
           dir_to_sound = sound_pos - Viewer_object->pos;
           dist = vm_NormalizeVector(&dir_to_sound);
         } else if ((cur_room != last_room) && (cur_room != BOA_NO_PATH)) {
-          int this_portal = BOA_DetermineStartRoomPortal(cur_room, NULL, last_room, NULL);
+          int this_portal = BOA_DetermineStartRoomPortal(cur_room, nullptr, last_room, nullptr);
           dist = this_portal >= 0 ? BOA_cost_array[cur_room][this_portal] : 0;
 
           if (last_room > Highest_room_index) {
@@ -954,14 +954,14 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
         dist += BOA_cost_array[last_room][last_portal];
 
         if (last_room > Highest_room_index) {
-          int this_portal = BOA_DetermineStartRoomPortal(cur_room, NULL, last_room, NULL);
+          int this_portal = BOA_DetermineStartRoomPortal(cur_room, nullptr, last_room, nullptr);
           vector pnt = Rooms[cur_room].portals[this_portal].path_pnt;
           dist += vm_VectorDistance(&Viewer_object->pos, &pnt);
         } else {
           dist += vm_VectorDistance(&Viewer_object->pos, &Rooms[last_room].portals[last_portal].path_pnt);
         }
       } else if ((cur_room != last_room) && (cur_room != BOA_NO_PATH)) {
-        int this_portal = BOA_DetermineStartRoomPortal(cur_room, NULL, last_room, NULL);
+        int this_portal = BOA_DetermineStartRoomPortal(cur_room, nullptr, last_room, nullptr);
         dist += BOA_cost_array[last_room][last_portal] + BOA_cost_array[cur_room][this_portal];
       }
     } while ((cur_room != ear_seg) && (cur_room != last_room) && (cur_room != BOA_NO_PATH));
@@ -1027,7 +1027,7 @@ int hlsSystem::Play3dSound(int sound_index, object *cur_obj, float volume, int f
 int hlsSystem::Play3dSound(int sound_index, int priority, pos_state *cur_pos, float volume, int flags, float offset) {
   if (!m_f_hls_system_init)
     return -1;
-  return Play3dSound(sound_index, cur_pos, NULL, priority, volume, flags, offset);
+  return Play3dSound(sound_index, cur_pos, nullptr, priority, volume, flags, offset);
 }
 // Functions that play a 3d sound -- includes the 2d emulation of 3d sound
 int hlsSystem::Play3dSound(int sound_index, int priority, object *cur_obj, float volume, int flags, float offset) {
@@ -1112,7 +1112,7 @@ int hlsSystem::Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj,
   // Insert the passed flags
   m_sound_objects[i].m_obj_type_flags = flags;
   // Determine if the sound is linked to the object
-  if ((cur_obj != NULL) && (Sounds[sound_index].flags & SPF_LISTENER_UPDATE) &&
+  if ((cur_obj != nullptr) && (Sounds[sound_index].flags & SPF_LISTENER_UPDATE) &&
       (Sounds[sound_index].flags & SPF_OBJ_UPDATE)) {
     m_sound_objects[i].m_obj_type_flags |= SIF_OBJ_UPDATE;
     m_sound_objects[i].m_link_info.object_handle = cur_obj->handle;
@@ -1245,7 +1245,7 @@ int hlsSystem::PlayStream(int unique_handle, void *data, int size, int stream_fo
          stream_format == SIF_STREAMING_8_S || stream_format == SIF_STREAMING_16_S);
   if (!m_f_hls_system_init)
     return -1;
-  if (data == NULL || size <= 0)
+  if (data == nullptr || size <= 0)
     return -1;
   for (i = 0; i < MAX_SOUND_OBJECTS; i++) {
     if (m_sound_objects[i].m_obj_type_flags == SIF_UNUSED)

@@ -290,8 +290,7 @@ bool lgoal::SetName(int handle, char *name) {
   if (m_name)
     mem_free(m_name);
 
-  m_name = mem_rmalloc<char>(strlen(name) + 1);
-  strcpy(m_name, name);
+  m_name = mem_strdup(name);
   m_modified = 1;
 
   if (Game_mode & GM_MULTI && Netgame.local_role != LR_CLIENT) {
@@ -322,9 +321,7 @@ bool lgoal::SetCompletionMessage(char *message) {
   if (m_completion_message)
     mem_free(m_completion_message);
 
-  m_completion_message = mem_rmalloc<char>(strlen(message) + 1);
-  strcpy(m_completion_message, message);
-
+  m_completion_message = mem_strdup(message);
   return true;
 }
 
@@ -335,9 +332,7 @@ bool lgoal::SetItemName(char *iname) {
   if (m_item_name)
     mem_free(m_item_name);
 
-  m_item_name = mem_rmalloc<char>(strlen(iname) + 1);
-  strcpy(m_item_name, iname);
-
+  m_item_name = mem_strdup(iname);
   return true;
 }
 
@@ -444,9 +439,7 @@ bool lgoal::SetDesc(char *desc) {
   if (m_desc)
     mem_free(m_desc);
 
-  m_desc = mem_rmalloc<char>(strlen(desc) + 1);
-  strcpy(m_desc, desc);
-
+  m_desc = mem_strdup(desc);
   return true;
 }
 
@@ -457,7 +450,7 @@ int lgoal::GetName(char *name, int buffer_size) {
   if (buffer_size <= 0)
     return strlen(m_name);
 
-  if (m_name == NULL) {
+  if (m_name == nullptr) {
     name[0] = '\0';
     return 0;
   }
@@ -475,7 +468,7 @@ int lgoal::GetCompletionMessage(char *message, int buffer_size) {
   if (buffer_size <= 0)
     return strlen(m_completion_message);
 
-  if (m_completion_message == NULL) {
+  if (m_completion_message == nullptr) {
     message[0] = '\0';
     return 0;
   }
@@ -493,7 +486,7 @@ int lgoal::GetItemName(char *iname, int buffer_size) {
   if (buffer_size <= 0)
     return strlen(m_item_name);
 
-  if (m_item_name == NULL) {
+  if (m_item_name == nullptr) {
     iname[0] = '\0';
     return 0;
   }
@@ -511,7 +504,7 @@ int lgoal::GetDesc(char *desc, int buffer_size) {
   if (buffer_size <= 0)
     return strlen(m_desc);
 
-  if (m_desc == NULL) {
+  if (m_desc == nullptr) {
     desc[0] = '\0';
     return 0;
   }
@@ -534,9 +527,9 @@ void lgoal::Reset(bool f_from_editor) {
   if (m_desc)
     mem_free(m_desc);
 
-  m_name = NULL;
-  m_item_name = NULL;
-  m_desc = NULL;
+  m_name = nullptr;
+  m_item_name = nullptr;
+  m_desc = nullptr;
   m_num_items = 0;
   m_priority = 0;
   m_g_list = 0;
@@ -1248,13 +1241,13 @@ void levelgoals::Inform(char type, int comp_type, int handle) {
       }
 
       bool done = true;
-      m_goal[i].ItemInfo(j, LO_SET_SPECIFIED, NULL, NULL, &done);
+      m_goal[i].ItemInfo(j, LO_SET_SPECIFIED, nullptr, nullptr, &done);
 
       int k;
       bool f_done = true;
 
       for (k = 0; k < num_items; k++) {
-        m_goal[i].ItemInfo(j, LO_SET_SPECIFIED, NULL, NULL, &done);
+        m_goal[i].ItemInfo(j, LO_SET_SPECIFIED, nullptr, nullptr, &done);
         if (!done) {
           f_done = false;
           break;

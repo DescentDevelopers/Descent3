@@ -446,7 +446,7 @@ BOOL CAnimStatesDialog::OnInitDialog() {
   m_current_state = 0;
   m_current_anim = 0;
 
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   UpdateDialog();
 

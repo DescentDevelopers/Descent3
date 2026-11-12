@@ -565,7 +565,7 @@ int FindCustomtext2HUDItem();
 void ResetHUD();
 
 //	loads in hud configuration file, adds hud items.
-void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, void *) = NULL, void *data = NULL);
+void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, void *) = nullptr, void *data = nullptr);
 
 //	render cockpit and gauges frame
 void RenderHUDFrame();

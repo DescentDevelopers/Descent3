@@ -64,7 +64,7 @@ void RotateRooms(angle p, angle h, angle b) {
   int marked_portalnum = -1;
   int cur_portalnum = -1;
 
-  if (Curroomp == Markedroomp || Markedroomp == NULL) {
+  if (Curroomp == Markedroomp || Markedroomp == nullptr) {
     OutrageMessageBox("You do not have a valid room marked.");
     return;
   }
@@ -114,7 +114,7 @@ void RotateRooms(angle p, angle h, angle b) {
   ComputeNormal(&portal_normal, fp->num_verts, fp->face_verts, Curroomp->verts);
   portal_normal *= -1.0; // reverse it!
 
-  vm_VectorToMatrix(&roommat, &portal_normal, NULL, NULL);
+  vm_VectorToMatrix(&roommat, &portal_normal, nullptr, nullptr);
   rotmat = roommat * ~rotmat * ~roommat; // get rotation relative to start room
 
   // Now rotate all the points

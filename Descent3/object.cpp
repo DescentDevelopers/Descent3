@@ -1189,8 +1189,8 @@
  *  Global variables
  */
 
-object *Player_object = NULL; // the object that is the player
-object *Viewer_object = NULL; // which object we are seeing from
+object *Player_object = nullptr; // the object that is the player
+object *Viewer_object = nullptr; // which object we are seeing from
 
 static int16_t free_obj_list[MAX_OBJECTS];
 
@@ -1311,7 +1311,7 @@ object *obj_find_first_of_type(int type) {
     if (Objects[i].type == type)
       return (&Objects[i]);
 
-  return NULL;
+  return nullptr;
 }
 
 int obj_return_num_of_type(int type) {
@@ -1343,7 +1343,7 @@ void CreatePlayerObject(int roomnum) {
 
   ComputeRoomCenter(&pos, &Rooms[roomnum]);
 
-  objnum = ObjCreate(OBJ_PLAYER, 0, roomnum, &pos, NULL);
+  objnum = ObjCreate(OBJ_PLAYER, 0, roomnum, &pos, nullptr);
 
   ASSERT(objnum == 0); // player must be object 0
 
@@ -1841,12 +1841,12 @@ void ObjDelete(int objnum) {
 
   if (obj->flags & OF_POLYGON_OBJECT) {
     polyobj_info *p_info = &obj->rtype.pobj_info;
-    if (p_info->multi_turret_info.keyframes != NULL) {
+    if (p_info->multi_turret_info.keyframes != nullptr) {
       mem_free(p_info->multi_turret_info.keyframes);
       mem_free(p_info->multi_turret_info.last_keyframes);
 
-      p_info->multi_turret_info.keyframes = NULL;
-      p_info->multi_turret_info.last_keyframes = NULL;
+      p_info->multi_turret_info.keyframes = nullptr;
+      p_info->multi_turret_info.last_keyframes = nullptr;
     }
   }
 
@@ -1890,7 +1890,7 @@ void ObjDelete(int objnum) {
 
     if (Players[pnum].guided_obj == obj) {
       LOG_DEBUG << "Deleting a guided missile!";
-      Players[pnum].guided_obj = NULL;
+      Players[pnum].guided_obj = nullptr;
     }
   }
 
@@ -1899,7 +1899,7 @@ void ObjDelete(int objnum) {
 
     if (Players[pnum].user_timeout_obj == obj) {
       LOG_DEBUG << "Deleting a timeout missile!";
-      Players[pnum].user_timeout_obj = NULL;
+      Players[pnum].user_timeout_obj = nullptr;
     }
   }
 
@@ -1929,12 +1929,12 @@ void ObjDelete(int objnum) {
 
   if (obj->custom_default_script_name) {
     mem_free(obj->custom_default_script_name);
-    obj->custom_default_script_name = NULL;
+    obj->custom_default_script_name = nullptr;
   }
 
   if (obj->custom_default_module_name) {
     mem_free(obj->custom_default_module_name);
-    obj->custom_default_module_name = NULL;
+    obj->custom_default_module_name = nullptr;
   }
 
   obj->type = OBJ_NONE; // unused!
@@ -1947,33 +1947,33 @@ void ObjDelete(int objnum) {
   // Free up effects memory
   if (obj->effect_info) {
     mem_free(obj->effect_info);
-    obj->effect_info = NULL;
+    obj->effect_info = nullptr;
   }
 
-  if (obj->ai_info != NULL) {
+  if (obj->ai_info != nullptr) {
     AIDestroyObj(obj);
     mem_free(obj->ai_info);
-    obj->ai_info = NULL;
+    obj->ai_info = nullptr;
   }
 
-  if (obj->dynamic_wb != NULL) {
+  if (obj->dynamic_wb != nullptr) {
     mem_free(obj->dynamic_wb);
-    obj->dynamic_wb = NULL;
+    obj->dynamic_wb = nullptr;
   }
 
-  if (obj->attach_children != NULL) {
+  if (obj->attach_children != nullptr) {
     mem_free(obj->attach_children);
-    obj->attach_children = NULL;
+    obj->attach_children = nullptr;
   }
 
   if (obj->name) {
     mem_free(obj->name);
-    obj->name = NULL;
+    obj->name = nullptr;
   }
 
   if (obj->lighting_info) {
     mem_free(obj->lighting_info);
-    obj->lighting_info = NULL;
+    obj->lighting_info = nullptr;
   }
 
   ObjFree(objnum);
@@ -2391,7 +2391,7 @@ void DoFlyingControl(object *objp) {
 
   // Update object's physics
   if (objp->movement_type == MT_PHYSICS) {
-    if (objp->type == OBJ_PLAYER && Players[objp->id].guided_obj != NULL) {
+    if (objp->type == OBJ_PLAYER && Players[objp->id].guided_obj != nullptr) {
       ASSERT(objp->id == Player_num);
       object *g_obj = Players[objp->id].guided_obj;
 
@@ -2535,11 +2535,11 @@ void ObjDoEffects(object *obj) {
         int objnum = obj->effect_info->damage_handle & HANDLE_OBJNUM_MASK;
 
         if ((Objects[objnum].handle & HANDLE_COUNT_MASK) != sig)
-          killer = NULL;
+          killer = nullptr;
         else
           killer = &Objects[objnum];
       } else
-        killer = NULL;
+        killer = nullptr;
 
       if (obj->type == OBJ_PLAYER) {
         ApplyDamageToPlayer(obj, killer, PD_NONE, obj->effect_info->damage_per_second);
@@ -3148,7 +3148,7 @@ void ObjSetPos(object *obj, vector *pos, int roomnum, matrix *orient, bool f_upd
   ObjSetAABB(obj);
 
   // Reset the orientation if changed
-  if (orient != NULL)
+  if (orient != nullptr)
     ObjSetOrient(obj, orient);
 
   // Clear the outside-mine flag
@@ -3185,7 +3185,7 @@ void ObjSetPos(object *obj, vector *pos, int roomnum, matrix *orient, bool f_upd
 
     // Slowly change volume lighting if going between rooms, if not in the editor
     if (GetFunctionMode() != EDITOR_MODE) {
-      if ((obj->effect_info != NULL) && (obj->effect_info->type_flags & EF_VOLUME_LIT)) {
+      if ((obj->effect_info != nullptr) && (obj->effect_info->type_flags & EF_VOLUME_LIT)) {
         if (!ROOMNUM_OUTSIDE(oldroomnum) && !ROOMNUM_OUTSIDE(roomnum)) {
           if (!(obj->effect_info->type_flags & EF_VOLUME_CHANGING)) {
             obj->effect_info->type_flags |= EF_VOLUME_CHANGING;
@@ -3230,11 +3230,11 @@ void RemapEverything() {
 // Retruns a pointer to an object given its handle.  Returns NULL if object no longer exists.
 object *ObjGet(int handle) {
   if (handle == OBJECT_HANDLE_NONE)
-    return NULL;
+    return nullptr;
 
   if (handle == OBJECT_HANDLE_BAD) {
     Int3();
-    return NULL;
+    return nullptr;
   }
 
   int objnum = handle & HANDLE_OBJNUM_MASK;
@@ -3248,7 +3248,7 @@ object *ObjGet(int handle) {
   if ((objp->type != OBJ_NONE) && (objp->handle == handle))
     return objp;
   else
-    return NULL;
+    return nullptr;
 }
 
 void GetObjectPointInWorld(vector *dest, object *obj, int subnum, int vertnum) {
@@ -3310,7 +3310,7 @@ bool ObjGetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info) {
     if (pm->anim_flags & AIAF_LOOPING)
       multi_anim_info->flags |= FMA_LOOPING;
 
-    if (obj->ai_info != NULL) {
+    if (obj->ai_info != nullptr) {
       multi_anim_info->anim_sound_index = obj->ai_info->last_played_sound_index;
       multi_anim_info->flags |= FMA_HAS_AI;
     } else {
@@ -3345,7 +3345,7 @@ void SetObjectControlType(object *obj, int control_type) {
   ASSERT(obj);
   ASSERT(OBJNUM(obj) >= 0 && OBJNUM(obj) < MAX_OBJECTS);
 
-  if ((control_type == CT_AI) && (obj->ai_info == NULL)) {
+  if ((control_type == CT_AI) && (obj->ai_info == nullptr)) {
     poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
     polyobj_info *p_info = &obj->rtype.pobj_info;
     int num_wbs = pm->num_wbs;
@@ -3362,7 +3362,7 @@ void SetObjectControlType(object *obj, int control_type) {
 
     p_info->multi_turret_info.num_turrets = count;
 
-    if ((count > 0) && (p_info->multi_turret_info.keyframes == NULL)) {
+    if ((count > 0) && (p_info->multi_turret_info.keyframes == nullptr)) {
       p_info->multi_turret_info.time = 0;
       p_info->multi_turret_info.keyframes = mem_rmalloc<float>(count);
       p_info->multi_turret_info.last_keyframes = mem_rmalloc<float>(count);
@@ -3376,7 +3376,7 @@ void SetObjectControlType(object *obj, int control_type) {
     poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
     int num_wbs = pm->num_wbs;
 
-    if (obj->dynamic_wb == NULL) {
+    if (obj->dynamic_wb == nullptr) {
       if (obj->type == OBJ_PLAYER) {
         obj->dynamic_wb = mem_rmalloc<dynamic_wb_info>(MAX_WBS_PER_OBJ);
       } else {

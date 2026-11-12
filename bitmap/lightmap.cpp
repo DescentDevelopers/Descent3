@@ -35,7 +35,7 @@ void lm_InitLightmaps() {
   for (i = 0; i < MAX_LIGHTMAPS; i++) {
     GameLightmaps[i].flags = 0;
     GameLightmaps[i].used = 0;
-    GameLightmaps[i].data = NULL;
+    GameLightmaps[i].data = nullptr;
     GameLightmaps[i].cache_slot = -1;
     Free_lightmap_list[i] = i;
   }
@@ -97,11 +97,11 @@ void lm_FreeLightmap(int handle) {
     return;
   GameLightmaps[handle].used--;
   if (GameLightmaps[handle].used == 0) {
-    if (GameLightmaps[handle].data != NULL)
+    if (GameLightmaps[handle].data != nullptr)
       mem_free(GameLightmaps[handle].data);
     Lightmap_mem_used -= (GameLightmaps[handle].width * GameLightmaps[handle].height * 2);
 
-    GameLightmaps[handle].data = NULL;
+    GameLightmaps[handle].data = nullptr;
     GameLightmaps[handle].cache_slot = -1;
 
     Free_lightmap_list[--Num_of_lightmaps] = handle;
@@ -134,7 +134,7 @@ uint16_t *lm_data(int handle) {
   uint16_t *d;
   if (!GameLightmaps[handle].used) {
     Int3();
-    return NULL;
+    return nullptr;
   }
 
   d = GameLightmaps[handle].data;

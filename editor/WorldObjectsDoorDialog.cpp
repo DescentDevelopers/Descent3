@@ -120,7 +120,6 @@
 #include "manage.h"
 #include "doorpage.h"
 #include "mono.h"
-#include "vclip.h"
 #include "polymodel.h"
 #include "door.h"
 #include "ddio.h"
@@ -866,7 +865,7 @@ void CWorldObjectsDoorDialog::OnLockDoor() {
 BOOL CWorldObjectsDoorDialog::OnInitDialog() {
   CDialog::OnInitDialog();
 
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   UpdateDialog();
 
@@ -972,12 +971,12 @@ void CWorldObjectsDoorDialog::OnBrowse() {
 
   char filename[_MAX_PATH];
   char pathname[_MAX_PATH], name[_MAX_PATH];
-  strcpy(pathname, LocalScriptDir);
+  strcpy(pathname, LocalScriptDir.u8string().c_str());
 
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, pathname, sizeof(pathname)))
     return;
 
-  ddio_SplitPath(filename, NULL, name, NULL);
+  ddio_SplitPath(filename, nullptr, name, nullptr);
   sprintf(filename, "%s.dll", name);
 
   int n = D3EditState.current_door;

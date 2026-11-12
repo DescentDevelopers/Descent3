@@ -63,11 +63,11 @@ private:
 
 public:
   lgoal() {
-    m_name = NULL;
-    m_item_name = NULL;
-    m_desc = NULL;
+    m_name = nullptr;
+    m_item_name = nullptr;
+    m_desc = nullptr;
     m_num_items = 0;
-    m_completion_message = NULL;
+    m_completion_message = nullptr;
     m_priority = 0;
     m_g_list = 0;
     m_flags = LGF_ENABLED | LGF_TELCOM_LISTS;

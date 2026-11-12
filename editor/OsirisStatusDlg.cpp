@@ -38,7 +38,7 @@ COsirisStatusDlg::COsirisStatusDlg(CWnd *pParent /*=NULL*/) : CDialog(COsirisSta
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
   m_Script = " ";
-  m_Program = NULL;
+  m_Program = nullptr;
 }
 
 void COsirisStatusDlg::DoDataExchange(CDataExchange *pDX) {

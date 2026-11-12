@@ -50,7 +50,7 @@ CEditLineDialog::CEditLineDialog(char *caption, CWnd *pParent) : CDialog(CEditLi
   //  added above should be copied down here.
 
   m_Caption = caption;
-  m_Initial = NULL;
+  m_Initial = nullptr;
   m_Title = caption;
 
   m_Numeric = 0;

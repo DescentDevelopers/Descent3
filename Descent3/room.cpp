@@ -465,8 +465,8 @@ int CountRoomFaceVerts(room *rp) {
 #endif
 
 // Vars for the room memory system
-uint8_t *Room_mem_buf = NULL; // pointer to the rooms block of memory
-uint8_t *Room_mem_ptr = NULL; // pointer to free memory in the rooms block
+uint8_t *Room_mem_buf = nullptr; // pointer to the rooms block of memory
+uint8_t *Room_mem_ptr = nullptr; // pointer to free memory in the rooms block
 int Room_mem_size;          // How big our chunk is
 
 // Closes down the room memory system.
@@ -474,7 +474,7 @@ void RoomMemClose() {
   if (Room_mem_buf)
     mem_free(Room_mem_buf);
 
-  Room_mem_buf = Room_mem_ptr = NULL;
+  Room_mem_buf = Room_mem_ptr = nullptr;
 }
 
 // Initialized the memory buffer for a room
@@ -537,10 +537,10 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->flags = 0;
   rp->objects = -1;
   rp->vis_effects = -1;
-  rp->volume_lights = NULL;
+  rp->volume_lights = nullptr;
   rp->mirror_face = -1;
   rp->num_mirror_faces = 0;
-  rp->mirror_faces_list = NULL;
+  rp->mirror_faces_list = nullptr;
   rp->room_change_flags = 0;
 
 #ifndef NEWEDITOR // the new editor must allow users to create a room from scratch
@@ -560,16 +560,16 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->fog_b = 1.0;
 
   rp->faces = RoomMemAlloc<face>(nfaces);
-  ASSERT(rp->faces != NULL);
+  ASSERT(rp->faces != nullptr);
 
   rp->num_bbf_regions = 0;
 
   rp->verts = RoomMemAlloc<vector>(nverts);
-  ASSERT(rp->verts != NULL);
+  ASSERT(rp->verts != nullptr);
 
   if (Katmai) {
     rp->verts4 = mem_rmalloc<vector4>(nverts);
-    ASSERT(rp->verts4 != NULL);
+    ASSERT(rp->verts4 != nullptr);
   }
 
   rp->pulse_time = 0;
@@ -577,15 +577,15 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
 
   if (nportals) {
     rp->portals = RoomMemAlloc<portal>(nportals);
-    ASSERT(rp->portals != NULL);
+    ASSERT(rp->portals != nullptr);
   } else
-    rp->portals = NULL;
+    rp->portals = nullptr;
 
   // Default to no ambient sound
   rp->ambient_sound = -1;
 
-  rp->name = NULL;
-  rp->doorway_data = NULL;
+  rp->name = nullptr;
+  rp->doorway_data = nullptr;
 
   rp->env_reverb = 0; // reverb for sound system.
 
@@ -593,7 +593,7 @@ void InitRoom(room *rp, int nverts, int nfaces, int nportals) {
   rp->damage_type = PD_NONE; // room damage type
 
   rp->bn_info.num_nodes = 0;
-  rp->bn_info.nodes = NULL;
+  rp->bn_info.nodes = nullptr;
 
 #if (defined(EDITOR) || defined(NEWEDITOR))
   Room_multiplier[rp - Rooms] = 1.0;
@@ -622,9 +622,9 @@ void InitRoomFace(face *fp, int nverts) {
   fp->light_multiple = 4;
 
   fp->face_verts = RoomMemAlloc<short>(nverts);
-  ASSERT(fp->face_verts != NULL);
+  ASSERT(fp->face_verts != nullptr);
   fp->face_uvls = RoomMemAlloc<roomUVL>(nverts);
-  ASSERT(fp->face_uvls != NULL);
+  ASSERT(fp->face_uvls != nullptr);
 
   ASSERT(fp->face_verts);
   ASSERT(fp->face_uvls);
@@ -636,7 +636,7 @@ void InitRoomFace(face *fp, int nverts) {
 int FindPointRoom(vector *pnt) {
   int i;
 
-  ASSERT(pnt != NULL);
+  ASSERT(pnt != nullptr);
 
   for (i = 0; i <= Highest_room_index; i++) {
     if ((Rooms[i].used) && !(Rooms[i].flags & RF_EXTERNAL)) {
@@ -935,7 +935,7 @@ void ClearVolumeLights(int roomnum) {
 
   if (Rooms[roomnum].volume_lights) {
     mem_free(Rooms[roomnum].volume_lights);
-    Rooms[roomnum].volume_lights = NULL;
+    Rooms[roomnum].volume_lights = nullptr;
   }
 }
 
@@ -1207,7 +1207,7 @@ void CreateRoomObjects() {
 
       ASSERT(roomnum != -1);
 
-      objnum = ObjCreate(OBJ_ROOM, r, roomnum, &pos, NULL);
+      objnum = ObjCreate(OBJ_ROOM, r, roomnum, &pos, nullptr);
       ASSERT(objnum != -1); // DAJ -1FIX moved up
       Objects[objnum].size = rad;
       Objects[objnum].wall_sphere_offset = vector{};

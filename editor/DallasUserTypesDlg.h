@@ -31,7 +31,7 @@
 class CDallasUserTypesDlg : public CDialog {
   // Construction
 public:
-  CDallasUserTypesDlg(CWnd *pParent = NULL); // standard constructor
+  CDallasUserTypesDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CDallasUserTypesDlg)

@@ -35,6 +35,8 @@
 // QuickCompile.cpp : implementation file
 //
 
+#include <filesystem>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "QuickCompile.h"
@@ -97,7 +99,7 @@ BOOL CQuickCompile::OnInitDialog() {
   char compiled_filename[_MAX_PATH];
   bool isours = false;
 
-  ddio_SplitPath(m_scriptname, NULL, filename, NULL);
+  ddio_SplitPath(m_scriptname, nullptr, filename, nullptr);
   strcpy(compiled_filename, filename);
   strcat(filename, ".cpp");
   strcat(compiled_filename, ".dll");
@@ -110,10 +112,10 @@ BOOL CQuickCompile::OnInitDialog() {
   wnd->EnableWindow(false);
 
   if (cfexist(filename)) {
-    char full_path[_MAX_PATH];
-    ddio_MakePath(full_path, LocalScriptDir, compiled_filename, NULL);
+    std::filesystem::path full_path = LocalScriptDir / compiled_filename;
     if (cfexist(full_path)) {
-      ddio_DeleteFile(full_path);
+      std::error_code ec;
+      std::filesystem::remove(full_path, ec);
     }
 
     if (!isours) {

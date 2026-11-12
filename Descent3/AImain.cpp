@@ -1645,7 +1645,7 @@ static vector AI_EnemyDir[2];    // Direction to the enemies
 float AIDetermineObjVisLevel(object *obj, object *target) {
   float vis_level = AIVIS_FULL;
 
-  if (target == NULL)
+  if (target == nullptr)
     return AIVIS_NONE;
 
   if ((target->effect_info) && (target->effect_info->type_flags & EF_CLOAKED)) {
@@ -2143,7 +2143,7 @@ void AITurnTowardsDir(object *obj, /*velocity *new_vel,*/ vector *goal_dir /*, b
       u_axis = vector::cross3(obj->orient.fvec, *goal_dir);
 
       // Using the forward(original orient's forward) and the up (computed), get the orientation matrix
-      vm_VectorToMatrix(&rot_matrix, &obj->orient.fvec, &u_axis, NULL);
+      vm_VectorToMatrix(&rot_matrix, &obj->orient.fvec, &u_axis, nullptr);
     } else {
       rot_matrix = obj->orient;
     }
@@ -2280,7 +2280,7 @@ bool MeleeHitOk(object *obj) {
 
   object *target = ObjGet(ai_info->target_handle);
 
-  if (target == NULL || ai_info->dist_to_target_perceived > 100.0f) {
+  if (target == nullptr || ai_info->dist_to_target_perceived > 100.0f) {
     return false;
   }
 
@@ -2346,7 +2346,7 @@ bool AiMelee(object *obj) {
 
   object *target = ObjGet(ai_info->target_handle);
 
-  if (target == NULL) {
+  if (target == nullptr) {
     ai_info->status_reg &= ~AISR_MELEE;
     return false;
   }
@@ -2817,7 +2817,7 @@ vector *AIDetermineFovVec(object *obj, vector *fov) {
 
   if ((ai_info->flags & AIF_AIM_PNT_FOV) && pm->num_wbs > 0) {
     int aiming_gp_index = Object_info[obj->id].static_wb[0].aiming_gp_index;
-    WeaponCalcGun(NULL, fov, obj, pm->poly_wb[0].gp_index[aiming_gp_index]);
+    WeaponCalcGun(nullptr, fov, obj, pm->poly_wb[0].gp_index[aiming_gp_index]);
   } else if (ai_info->flags & AIF_UVEC_FOV) {
     *fov = obj->orient.uvec;
   } else {
@@ -2878,7 +2878,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
   int next_anim;
   ai_frame *ai_info = obj->ai_info;
   //@$-tD3XEventArgs evtargs;
-  object *other_obj = NULL;
+  object *other_obj = nullptr;
   object *targetptr;
   int parent;
   object *new_enemy;
@@ -3005,7 +3005,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
     if (other_obj->control_type == CT_AI) {
       targetptr = ObjGet(other_obj->ai_info->target_handle);
     } else {
-      targetptr = NULL;
+      targetptr = nullptr;
     }
 
     // CHRISHACK - WTF - What was this actually for????  Hmmm.....
@@ -3258,7 +3258,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
   if (notify_type != AIN_OBJ_FIRED && notify_type != AIN_HEAR_NOISE) {
     //@$-return (D3XExecScript(obj, EVT_AI_NOTIFY, other_obj, REF_OBJTYPE, &evtargs));
     if (!f_it_set) {
-      ei.evt_ai_notify.it_handle = ((other_obj != NULL) ? other_obj->handle : OBJECT_HANDLE_NONE);
+      ei.evt_ai_notify.it_handle = ((other_obj != nullptr) ? other_obj->handle : OBJECT_HANDLE_NONE);
     }
 
     return Osiris_CallEvent(obj, EVT_AI_NOTIFY, &ei);
@@ -3450,7 +3450,7 @@ start_loop:
 
       if (f_notify) {
         //				mprintf(0, "Animation ended\n");
-        AINotify(obj, AIN_ANIM_COMPLETE, NULL);
+        AINotify(obj, AIN_ANIM_COMPLETE, nullptr);
       }
 
       goto start_loop;
@@ -3476,7 +3476,7 @@ start_loop:
 done:
 
   if (f_notify) {
-    AINotify(obj, AIN_ANIM_COMPLETE, NULL);
+    AINotify(obj, AIN_ANIM_COMPLETE, nullptr);
   }
 
   return;
@@ -3547,7 +3547,7 @@ int AIFindRandomRoom(object *obj, ai_frame *ai_info, goal *goal_ptr, int avoid_r
     int num_next_rooms = AIMakeNextRoomList(obj->roomnum, next_rooms, 100);
     for (i = 0; i < num_next_rooms; i++) {
       if (next_rooms[i] <= Highest_room_index &&
-          BOA_DetermineStartRoomPortal(obj->roomnum, NULL, next_rooms[i], NULL) >= 0) {
+          BOA_DetermineStartRoomPortal(obj->roomnum, nullptr, next_rooms[i], nullptr) >= 0) {
         pick_list[num_pickable++] = next_rooms[i];
       }
     }
@@ -3588,7 +3588,7 @@ void ObjSetAIInfo(object *objp) {
   int i;
 
   ai_frame *dest = objp->ai_info;
-  ASSERT(dest != NULL);
+  ASSERT(dest != nullptr);
   if (!(Object_info[objp->id].ai_info))
     return;
 
@@ -3832,7 +3832,7 @@ void AIInitAll() {
 
   if (!(Game_mode & GM_MULTI)) {
     int objnum =
-        ObjCreate(OBJ_ROBOT, ROBOT_GUIDEBOT, Player_object->roomnum, &Player_object->pos, NULL, Player_object->handle);
+        ObjCreate(OBJ_ROBOT, ROBOT_GUIDEBOT, Player_object->roomnum, &Player_object->pos, nullptr, Player_object->handle);
     if (objnum > -1) { // DAJ -1FIX
       Buddy_handle[0] = Objects[objnum].handle;
       ObjGhostObject(objnum);
@@ -3853,7 +3853,7 @@ void AIInitAll() {
 
         // BLACKPYRO
         int objnum =
-            ObjCreate(OBJ_ROBOT, ROBOT_GUIDEBOT, Player_object->roomnum, &Player_object->pos, NULL, parent_handle);
+            ObjCreate(OBJ_ROBOT, ROBOT_GUIDEBOT, Player_object->roomnum, &Player_object->pos, nullptr, parent_handle);
         if (objnum > -1) { // DAJ -1FIX
           Buddy_handle[i] = Objects[objnum].handle;
           ObjGhostObject(objnum);
@@ -3879,7 +3879,7 @@ void AICheckTargetVis(object *obj) {
   }
 #endif
 
-  if (target == NULL) {
+  if (target == nullptr) {
     ai_info->status_reg &= ~AISR_SEES_GOAL;
     ai_info->last_see_target_pos = obj->pos;
     return;
@@ -3974,7 +3974,7 @@ void AICheckTargetVis(object *obj) {
       for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
         object *child;
 
-        if ((child = ObjGet(obj->attach_children[i])) != NULL && num_ignored < 99) {
+        if ((child = ObjGet(obj->attach_children[i])) != nullptr && num_ignored < 99) {
           ignore_obj_list[num_ignored++] = OBJNUM(child);
         }
       }
@@ -4391,7 +4391,7 @@ void AIDoOrient(object *obj, int g_index) {
   }
 
   if ((g_index >= 0) && ISORIENTGOAL(&ai_info->goals[g_index])) {
-    object *g_obj = NULL;
+    object *g_obj = nullptr;
 
     if (goal_ptr->flags & GF_ORIENT_FOR_ATTACH) {
       Int3(); // chrishack -- not done
@@ -4448,7 +4448,7 @@ void AIDoOrient(object *obj, int g_index) {
 
         if ((f_reverse) && (!AIPathAtEnd(aip))) {
           vector next_pos;
-          AIPathGetNextNodePos(aip, &next_pos, NULL);
+          AIPathGetNextNodePos(aip, &next_pos, nullptr);
 
           vector proj = obj->pos - next_pos;
           vector line = cur_pos - next_pos;
@@ -4467,7 +4467,7 @@ void AIDoOrient(object *obj, int g_index) {
           }
         } else if ((!f_reverse) && (!AIPathAtStart(aip))) {
           vector prev_pos;
-          AIPathGetPrevNodePos(aip, &prev_pos, NULL);
+          AIPathGetPrevNodePos(aip, &prev_pos, nullptr);
 
           vector proj = obj->pos - prev_pos;
           vector line = cur_pos - prev_pos;
@@ -4487,13 +4487,13 @@ void AIDoOrient(object *obj, int g_index) {
         }
 
         matrix orient;
-        vm_VectorToMatrix(&orient, &fvec, &uvec, NULL);
+        vm_VectorToMatrix(&orient, &fvec, &uvec, nullptr);
 
         AITurnTowardsMatrix(obj, ai_info->max_turn_rate, &orient);
       }
     } else if (goal_ptr->flags & GF_ORIENT_SET_FVEC_UVEC) {
       matrix orient;
-      vm_VectorToMatrix(&orient, &goal_ptr->set_fvec, &goal_ptr->set_uvec, NULL);
+      vm_VectorToMatrix(&orient, &goal_ptr->set_fvec, &goal_ptr->set_uvec, nullptr);
 
       AITurnTowardsMatrix(obj, ai_info->max_turn_rate, &orient);
     } else if (goal_ptr->flags & GF_ORIENT_SET_FVEC) {
@@ -4559,9 +4559,9 @@ void ai_move(object *obj) {
       ASSERT(g_obj->type != OBJ_WEAPON);
       ASSERT(g_obj != obj);
 
-      AIGoalDoRepulse(obj, AI_FriendDist[temp], &AI_FriendDir[temp], NULL, &composite_dir);
-      AIGoalDoAlignment(obj, AI_FriendDist[temp], &g_obj->orient.fvec, NULL, &composite_dir);
-      AIGoalDoCohesion(obj, g_obj, AI_FriendDist[temp], NULL, &composite_dir);
+      AIGoalDoRepulse(obj, AI_FriendDist[temp], &AI_FriendDir[temp], nullptr, &composite_dir);
+      AIGoalDoAlignment(obj, AI_FriendDist[temp], &g_obj->orient.fvec, nullptr, &composite_dir);
+      AIGoalDoCohesion(obj, g_obj, AI_FriendDist[temp], nullptr, &composite_dir);
       f_goal_found = true;
     }
 
@@ -4767,12 +4767,12 @@ void ai_move(object *obj) {
             if ((cur_goal->type == AIG_ATTACH_TO_OBJ || cur_goal->type == AIG_PLACE_OBJ_ON_OBJ) &&
                 (cur_goal->status_reg & AISR_CIRCLE_DIST)) {
               object *g_obj = ObjGet(cur_goal->g_info.handle);
-              object *child_obj = NULL;
+              object *child_obj = nullptr;
 
               if (cur_goal->type == AIG_PLACE_OBJ_ON_OBJ) {
                 child_obj = ObjGet(obj->attach_children[0]);
 
-                if (child_obj == NULL) {
+                if (child_obj == nullptr) {
                   cur_goal->flags &= ~(GF_NONFLUSHABLE | GF_KEEP_AT_COMPLETION);
                   GoalClearGoal(obj, cur_goal, AIN_GOAL_INVALID);
                   return;
@@ -5198,7 +5198,7 @@ void ai_fire(object *obj) {
           }
         }
         if (obj_info->static_wb[i].flags & WBF_FIRE_FVEC) {
-          WeaponCalcGun(&gun_point[WB_MOVE_STILL], NULL, obj, pm->poly_wb[i].gp_index[aiming_gp_index]);
+          WeaponCalcGun(&gun_point[WB_MOVE_STILL], nullptr, obj, pm->poly_wb[i].gp_index[aiming_gp_index]);
           gun_normal[WB_MOVE_STILL] = obj->orient.fvec;
         } else {
           WeaponCalcGun(&gun_point[WB_MOVE_STILL], &gun_normal[WB_MOVE_STILL], obj,
@@ -5401,7 +5401,7 @@ void ai_fire(object *obj) {
               for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
                 object *child;
 
-                if ((child = ObjGet(obj->attach_children[i])) != NULL && num_ignored < 99) {
+                if ((child = ObjGet(obj->attach_children[i])) != nullptr && num_ignored < 99) {
                   ignore_obj_list[num_ignored++] = OBJNUM(child);
                 }
               }
@@ -5806,7 +5806,7 @@ void AITargetCheck(object *obj, object *target, object **best_obj, float *best_d
     for (i = 0; i < Poly_models[obj->rtype.pobj_info.model_num].n_attach; i++) {
       object *child;
 
-      if ((child = ObjGet(obj->attach_children[i])) != NULL && num_ignored < 99) {
+      if ((child = ObjGet(obj->attach_children[i])) != nullptr && num_ignored < 99) {
         ignore_obj_list[num_ignored++] = OBJNUM(child);
       }
     }
@@ -5827,7 +5827,7 @@ void AITargetCheck(object *obj, object *target, object **best_obj, float *best_d
 
 void AIDetermineTarget(object *obj) {
   ai_frame *ai_info = obj->ai_info;
-  object *best_obj = NULL;
+  object *best_obj = nullptr;
   float best_dot = -1.0f;
   float best_dist = MAX_SEE_TARGET_DIST + 1;
   int i;
@@ -5849,7 +5849,7 @@ void AIDetermineTarget(object *obj) {
 
   // They forget their enemies after a few seconds
   if ((ai_info->flags & AIF_TEAM_MASK) == AIF_TEAM_NEUTRAL || (ai_info->flags & AIF_ACT_AS_NEUTRAL_UNTIL_SHOT)) {
-    best_obj = NULL;
+    best_obj = nullptr;
   } else if ((ai_info->flags & AIF_TEAM_MASK) != AIF_TEAM_PTMC) {
     int16_t list[50];
     int num = fvi_QuickDistObjectList(&obj->pos, obj->roomnum, MAX_SEE_TARGET_DIST, list, 50, false, true, false, true);
@@ -5888,7 +5888,7 @@ void AIDetermineTarget(object *obj) {
         else if (Buddy_handle[0] != OBJECT_HANDLE_NONE && ObjGet(Buddy_handle[0])->type != OBJ_GHOST)
           best_obj = ObjGet(Buddy_handle[0]);
         else
-          best_obj = NULL;
+          best_obj = nullptr;
       } else {
         best_obj = ObjGet(obj->ai_info->target_handle);
       }
@@ -5925,7 +5925,7 @@ void AIDoFreud(object *obj) {
         (float)ps_rand() / (float)D3_RAND_MAX < ai_info->life_preservation) {
       float time = 10.0f * ai_info->life_preservation + 5.0f;
 
-      GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
+      GoalAddGoal(obj, AIG_WANDER_AROUND, nullptr, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
       LOG_DEBUG << "Fear!!!!";
@@ -5939,7 +5939,7 @@ void AIDoFreud(object *obj) {
         (float)ps_rand() / (float)D3_RAND_MAX < ai_info->life_preservation) {
       float time = 10.0f * ai_info->life_preservation + 5.0f;
 
-      GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
+      GoalAddGoal(obj, AIG_WANDER_AROUND, nullptr, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
       LOG_DEBUG << "Fear!!!!";
@@ -5951,7 +5951,7 @@ void AIDoFreud(object *obj) {
         mem[0].num_enemies > 0) {
       float time = 10.0f * ai_info->life_preservation + 5.0f;
 
-      GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
+      GoalAddGoal(obj, AIG_WANDER_AROUND, nullptr, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
       LOG_DEBUG << "Fear!!!!";
@@ -6218,12 +6218,12 @@ void AIFrameAll(void) {
   if (Game_mode & GM_MULTI) {
     for (i = 0; i <= Highest_object_index; i++) {
       if (Objects[i].ai_info) {
-        AINotify(&Objects[i], AIN_PLAYER_SEES_YOU, NULL);
+        AINotify(&Objects[i], AIN_PLAYER_SEES_YOU, nullptr);
       }
     }
   } else {
     for (i = 0; i < AI_NumRendered; i++) {
-      AINotify(&Objects[AI_RenderedList[i]], AIN_PLAYER_SEES_YOU, NULL);
+      AINotify(&Objects[AI_RenderedList[i]], AIN_PLAYER_SEES_YOU, nullptr);
     }
   }
 }
@@ -6247,7 +6247,7 @@ void AIPowerSwitch(object *obj, bool f_on) {
   for (i = 0; i < parent_pm->n_attach; i++) {
     object *child;
 
-    if ((child = ObjGet(obj->attach_children[i])) != NULL) {
+    if ((child = ObjGet(obj->attach_children[i])) != nullptr) {
       AIPowerSwitch(child, f_on);
     }
   }
@@ -6263,7 +6263,7 @@ int AIFindRoomWithFlag(object *obj, int flag) {
     if ((Rooms[i].used) && (Rooms[i].flags & flag)) {
       float cur_dist;
 
-      if (BOA_ComputeMinDist(obj->roomnum, i, 0.0f, &cur_dist, NULL)) {
+      if (BOA_ComputeMinDist(obj->roomnum, i, 0.0f, &cur_dist, nullptr)) {
         if (best_room == -1 || cur_dist < best_dist) {
           bool f_path_exists = AIFindAltPath(obj, cur_room, i, &cur_dist);
 
@@ -6284,7 +6284,7 @@ bool AIFindHidePos(object *hide_obj, object *view_obj, vector *hpos, int *hroom,
 object *AIFindObjOfType(object *obj, int type, int id, bool f_ignore_init_room, int parent_handle) {
   int cur_room = obj->roomnum;
   float best_dist = 0.0f;
-  object *best_obj = NULL;
+  object *best_obj = nullptr;
   int i;
   int my_obj_index = OBJNUM(obj);
 
@@ -6320,11 +6320,11 @@ object *AIFindObjOfType(object *obj, int type, int id, bool f_ignore_init_room, 
           Object_info[Objects[i].id].static_wb[0].gp_fire_masks[0] == 0)
         continue;
 
-      if (BOA_ComputeMinDist(obj->roomnum, Objects[i].roomnum, 0.0f, &cur_dist, NULL)) {
-        if (best_obj == NULL || cur_dist < best_dist) {
+      if (BOA_ComputeMinDist(obj->roomnum, Objects[i].roomnum, 0.0f, &cur_dist, nullptr)) {
+        if (best_obj == nullptr || cur_dist < best_dist) {
           bool f_path_exists = AIFindAltPath(obj, cur_room, Objects[i].roomnum, &cur_dist);
 
-          if (f_path_exists && (best_obj == NULL || cur_dist < best_dist)) {
+          if (f_path_exists && (best_obj == nullptr || cur_dist < best_dist)) {
             best_dist = cur_dist;
             best_obj = &Objects[i];
           }

@@ -68,7 +68,7 @@ void CLightingStatus::OnStopLighting() {
 
 BOOL CLightingStatus::OnInitDialog() {
   CDialog::OnInitDialog();
-  CWnd::SetTimer(1, 500, NULL); // twice per second
+  CWnd::SetTimer(1, 500, nullptr); // twice per second
 
   return TRUE; // return TRUE unless you set the focus to a control
                // EXCEPTION: OCX Property Pages should return FALSE

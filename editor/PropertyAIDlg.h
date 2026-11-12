@@ -35,7 +35,7 @@
 class CPropertyAIDlg : public CKeypadDialog {
   // Construction
 public:
-  CPropertyAIDlg(CWnd *pParent = NULL); // standard constructor
+  CPropertyAIDlg(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CPropertyAIDlg)

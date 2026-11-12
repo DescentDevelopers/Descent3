@@ -18,6 +18,7 @@ target_link_libraries(Descent3_Online_TCP_IP PRIVATE
   ddio
   inetfile
   httplib
+  logger
   misc
   module
   ui

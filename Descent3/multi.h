@@ -935,7 +935,7 @@ void MultiSendMessageToServer(int, char *, int to = MULTI_SEND_MESSAGE_ALL);
 void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record = false);
 
 // Paints all the goal rooms in a level with their colors
-void MultiPaintGoalRooms(int *texcolors = NULL);
+void MultiPaintGoalRooms(int *texcolors = nullptr);
 
 // Sends a special script packet to a player
 void MultiSendSpecialPacket(int slot, uint8_t *outdata, int size);

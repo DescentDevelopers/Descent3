@@ -486,11 +486,11 @@ void CWorldWeaponsDialog::OnAddWeapon() {
   mprintf(0, "Making a copy of this bitmap/anim locally...\n");
 
   if (!anim) {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameBitmaps[Weapons[weapon_handle].hud_image_handle].name);
     bm_SaveFileBitmap(filename, Weapons[weapon_handle].hud_image_handle);
   } else {
-    sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+    sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
       GameVClips[Weapons[weapon_handle].hud_image_handle].name);
     SaveVClip(filename, Weapons[weapon_handle].hud_image_handle);
   }
@@ -539,11 +539,11 @@ void CWorldWeaponsDialog::OnAddWeapon() {
 
   if (!model) {
     if (!anim) {
-      sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+      sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
         GameBitmaps[Weapons[weapon_handle].fire_image_handle].name);
       bm_SaveFileBitmap(filename, Weapons[weapon_handle].fire_image_handle);
     } else {
-      sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+      sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
         GameVClips[Weapons[weapon_handle].fire_image_handle].name);
       SaveVClip(filename, Weapons[weapon_handle].fire_image_handle);
     }
@@ -1332,7 +1332,7 @@ void CWorldWeaponsDialog::UpdateWeaponView() {
     m_WeaponSurf.create(128, 128, BPP_16);
     grViewport *vport = new grViewport(&m_WeaponSurf);
     StartEditorFrame(vport, &view_vector, &id_matrix, D3_DEFAULT_ZOOM);
-    DrawPolygonModel(&zero_vector, &rot_matrix, bm_handle, NULL, 0, 1.0, 1.0, 1.0);
+    DrawPolygonModel(&zero_vector, &rot_matrix, bm_handle, nullptr, 0, 1.0, 1.0, 1.0);
     EndEditorFrame();
 
     x = rect.left + ((rect.right - rect.left) / 2) - m_WeaponSurf.width() / 2;
@@ -1343,7 +1343,7 @@ void CWorldWeaponsDialog::UpdateWeaponView() {
     m_WeaponSurf.free();
   }
 
-  Desktop_surf->attach_to_window((unsigned)NULL);
+  Desktop_surf->attach_to_window(0);
 }
 
 BOOL CWorldWeaponsDialog::DestroyWindow() {
@@ -1356,7 +1356,7 @@ BOOL CWorldWeaponsDialog::DestroyWindow() {
 BOOL CWorldWeaponsDialog::OnInitDialog() {
   CDialog::OnInitDialog();
 
-  CWnd::SetTimer(1, 50, NULL);
+  CWnd::SetTimer(1, 50, nullptr);
 
   UpdateDialog();
 
@@ -1414,11 +1414,11 @@ void CWorldWeaponsDialog::OnLoadWeaponDischarge() {
 
   if (!model) {
     if (!anim) {
-      sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+      sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
         GameBitmaps[Weapons[n].fire_image_handle].name);
       bm_SaveFileBitmap(filename, Weapons[n].fire_image_handle);
     } else {
-      sprintf(filename, "%s\\%s", LocalManageGraphicsDir.u8string().c_str(),
+      sprintf(filename, "%s\\%s", PATH_TO_CSTR(LocalManageGraphicsDir),
         GameVClips[Weapons[n].fire_image_handle].name);
       SaveVClip(filename, Weapons[n].fire_image_handle);
     }

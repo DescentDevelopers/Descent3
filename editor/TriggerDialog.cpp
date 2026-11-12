@@ -209,7 +209,7 @@ void CTriggerDialog::OnSize(UINT nType, int cx, int cy) {
   CComboBox *box = (CComboBox *)GetDlgItem(IDC_TRIGGERTYPE);
   if (box) {
     box->GetClientRect(&rect);
-    box->SetWindowPos(NULL, 0, 0, rect.right - rect.left, box->GetItemHeight(0) * 10, SWP_NOMOVE | SWP_NOZORDER);
+    box->SetWindowPos(nullptr, 0, 0, rect.right - rect.left, box->GetItemHeight(0) * 10, SWP_NOMOVE | SWP_NOZORDER);
   }
 }
 
@@ -409,7 +409,7 @@ void CTriggerDialog::OnTrigAddToCurface() {
 
   int activator = (Curroomp->faces[Curface].portal_num != -1) ? AF_PLAYER : AF_PLAYER_WEAPON;
 
-  Current_trigger = AddTrigger(name, ROOMNUM(Curroomp), Curface, activator, NULL);
+  Current_trigger = AddTrigger(name, ROOMNUM(Curroomp), Curface, activator, nullptr);
   UpdateDialog();
 }
 
@@ -485,7 +485,7 @@ void CTriggerDialog::OnTrigAddToCurportal() {
   if (!InputString(name, sizeof(name), "Trigger Name", "Enter a name for this trigger"))
     return;
 
-  Current_trigger = AddTrigger(name, ROOMNUM(Curroomp), Curroomp->portals[Curportal].portal_face, AF_PLAYER, NULL);
+  Current_trigger = AddTrigger(name, ROOMNUM(Curroomp), Curroomp->portals[Curportal].portal_face, AF_PLAYER, nullptr);
   UpdateDialog();
 }
 
@@ -531,7 +531,7 @@ void CTriggerDialog::OnTrigAddFloating() {
   fq.p1 = &center;
   fq.rad = 0;
   fq.thisobjnum = -1;
-  fq.ignore_obj_list = NULL;
+  fq.ignore_obj_list = nullptr;
   fq.flags = 0;
   fate = fvi_FindIntersection(&fq, &hit_info);
 
@@ -575,7 +575,7 @@ void CTriggerDialog::OnTrigAddFloating() {
   fp->flags |= FF_FLOATING_TRIG;
 
   // Add the trigger for the new face
-  Current_trigger = AddTrigger(name, ROOMNUM(rp), facenum, AF_PLAYER, NULL);
+  Current_trigger = AddTrigger(name, ROOMNUM(rp), facenum, AF_PLAYER, nullptr);
 
   // Set the current room:face to the new face
   SetCurroomFromTrigger();
@@ -798,7 +798,7 @@ void CTriggerDialog::OnTrigEditScript() {
   mprintf(0, "Edit script for trigger %d\n", Current_trigger);
 
   // Make sure Dallas is open
-  if (theApp.m_DallasModelessDlgPtr == NULL) {
+  if (theApp.m_DallasModelessDlgPtr == nullptr) {
     theApp.m_DallasModelessDlgPtr = new CDallasMainDlg;
     theApp.m_DallasModelessDlgPtr->Create(IDD_DALLAS_MAIN_DIALOG, this);
     theApp.m_DallasModelessDlgPtr->ShowWindow(SW_SHOW);

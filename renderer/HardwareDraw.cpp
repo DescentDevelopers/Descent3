@@ -347,7 +347,7 @@ void g3_DrawRotatedBitmap(vector *pos, angle rot_angle, float width, float heigh
 // Draws a bitmap on a specific plane.  Also does rotation.  Angle of rotation is passed as 'rot_angle'
 void g3_DrawPlanarRotatedBitmap(vector *pos, vector *norm, angle rot_angle, float width, float height, int bm) {
   matrix rot_matrix;
-  vm_VectorToMatrix(&rot_matrix, norm, NULL, NULL);
+  vm_VectorToMatrix(&rot_matrix, norm, nullptr, nullptr);
   vm_TransposeMatrix(&rot_matrix);
 
   matrix twist_matrix;

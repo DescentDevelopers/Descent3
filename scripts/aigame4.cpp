@@ -43,7 +43,7 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 int String_table_size = 0;
-char **String_table = NULL;
+char **String_table = nullptr;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -87,7 +87,7 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
     else
       parent = OBJECT_HANDLE_NONE;
 
-    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, NULL, parent);
+    child_handle = Obj_Create(child_type, child_id, m.roomnum, &m.pos, nullptr, parent);
     if (child_handle != OBJECT_HANDLE_NONE) {
       if (!Obj_AttachObjectAP(me, parent_ap, child_handle, child_ap, f_aligned)) {
         // chrishack (we need a way to instantly kill scripted objects)
@@ -335,7 +335,7 @@ void STDCALLPTR CreateInstance(int id) {
     mprintf(0, "SCRIPT: Illegal ID (%d)\n", id);
     break;
   };
-  return NULL;
+  return nullptr;
 }
 
 void STDCALL DestroyInstance(int id, void *ptr) {
@@ -659,7 +659,7 @@ void MercEndBoss::SetMode(int me, char mode) {
     vector vel = {0.0f, 0.0f, 0.0f};
     Obj_Value(me, VF_SET, OBJV_V_VELOCITY, &vel);
 
-    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, NULL);
+    AI_AddGoal(me, AIG_SCRIPTED, 0, 1000.0f, -1, GF_NONFLUSHABLE | GF_ORIENT_SCRIPTED, 0);
 
     float drag = 0.0f;
     Obj_Value(me, VF_SET, OBJV_F_ROTDRAG, &drag);
@@ -841,7 +841,7 @@ void MercEndBoss::DoFrame(int me) {
         AI_Value(me, VF_CLEAR_FLAGS, AIV_I_STATUS_REG, &flags);
       }
     } else if (memory->mode_time < 5.0f && memory->mode_time + Game_GetFrameTime() >= 4.0f) {
-      AI_AddGoal(me, AIG_SCRIPTED, 3, 1.0f, MEB_TURN_TOWARDS_CAMERA, GF_ORIENT_SCRIPTED, NULL);
+      AI_AddGoal(me, AIG_SCRIPTED, 3, 1.0f, MEB_TURN_TOWARDS_CAMERA, GF_ORIENT_SCRIPTED, 0);
     }
 
   } else if (memory->mode == MERCENDBOSS_DEATH) {
@@ -949,7 +949,7 @@ void MercEndBoss::DoFrame(int me) {
                              (FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_OBJ_BACKFACE | FQ_BACKFACE |
                               FQ_PLAYERS_AS_SPHERE | FQ_IGNORE_WALLS | FQ_NO_RELINK),
                              &ray);
-          Obj_Value(me, VF_SET, OBJV_PI_HACK_FVI_IGNORE_LIST, NULL);
+          Obj_Value(me, VF_SET, OBJV_PI_HACK_FVI_IGNORE_LIST, nullptr);
 
           if (fate != HIT_NONE) {
             start_pos = ray.hit_point + (orient.fvec * 13.0f);
@@ -1176,7 +1176,7 @@ int16_t Gun::CallEvent(int event, tOSIRISEventInfo *data) {
 
         Obj_GetGunPos(data->me_handle, 5, &pos, &dir);
         dir *= -1.0f;
-        vm_VectorToMatrix(&orient, &dir, NULL, NULL);
+        vm_VectorToMatrix(&orient, &dir, nullptr, nullptr);
 
         velocity = dir * qRandomValue(30.0f, 35.0f);
 

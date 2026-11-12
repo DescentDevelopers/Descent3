@@ -33,7 +33,7 @@ class CDallasStrmAudioDlg : public CDialog {
 public:
   CString m_Filename;
 
-  CDallasStrmAudioDlg(CWnd *pParent = NULL); // standard constructor
+  CDallasStrmAudioDlg(CWnd *pParent = nullptr); // standard constructor
 
   void FillStrmAudioList(void);
 

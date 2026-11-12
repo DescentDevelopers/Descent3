@@ -218,21 +218,21 @@ void HelpDisplay(void) {
   while (HelpText[strs_to_print] > 0)
     strs_to_print++;
 
-  sheet->NewGroup(NULL, 30, 10);
+  sheet->NewGroup(nullptr, 30, 10);
   for (index = 0; index < strs_to_print; index += 2) {
     if (index < strs_to_print) {
       sheet->AddText(TXT(HelpText[index]));
     }
   }
 
-  sheet->NewGroup(NULL, 130, 10);
+  sheet->NewGroup(nullptr, 130, 10);
   for (index = 1; index < strs_to_print; index += 2) {
     if (index < strs_to_print) {
       sheet->AddText(TXT(HelpText[index]));
     }
   }
 
-  sheet->NewGroup(NULL, WND_HELP_W - 160, WND_HELP_H - 96, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, WND_HELP_W - 160, WND_HELP_H - 96, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_CANCEL);
 
   //	quit_hot.Create(&help_wnd, UID_CANCEL, 0, &UITextItem(TXT_PRESSESCRET, UICOL_HOTSPOT_LO,UIALPHA_HOTSPOT_LO),

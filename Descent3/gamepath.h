@@ -65,7 +65,7 @@ class game_path {
 public:
   game_path() {
     num_nodes = 0;
-    pathnodes = NULL;
+    pathnodes = nullptr;
     used = false;
   }
   ~game_path() {

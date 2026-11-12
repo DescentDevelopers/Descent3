@@ -71,12 +71,12 @@ uint8_t DetermineScriptType(char *filename);
 class CScriptMassCompile : public CDialog {
   // Construction
 public:
-  CScriptMassCompile(CWnd *pParent = NULL); // standard constructor
+  CScriptMassCompile(CWnd *pParent = nullptr); // standard constructor
 
-  void SetStepText(int step, char *format, ...);
+  void SetStepText(int step, const char *format, ...);
   bool Step1(char *filename);
   bool Step2(char *filename);
-  bool Step3(char *filename, bool islevel);
+  bool Step3(const char *filename, bool islevel);
   bool Step4(char *filename);
   void BuildList(void);
 

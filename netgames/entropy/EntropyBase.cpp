@@ -95,17 +95,19 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+#include <filesystem>
+
 #include "gamedll_header.h" //included by all mods, it includes all needed headers, etc.
-#include <string.h>
 #include "idmfc.h" //dmfc! (required)
 #include "Entropy.h"
 #include "Entropystr.h" //our string table for Entropy
 #include "EntropyAux.h"
 
 // the DMFC object, used throughout, and required by all mods
-IDMFC *DMFCBase = NULL;
+IDMFC *DMFCBase = nullptr;
 // our DmfcStats object, used for the F7 screen
-static IDmfcStats *dstat = NULL;
+static IDmfcStats *dstat = nullptr;
 // these are some helper pointers, so we don't have to constantly query
 // DMFC for these arrays, we can query once and just save it for just future use.
 object *dObjects;
@@ -171,7 +173,7 @@ int LabText[NUM_TEAMS];
 static tPlayerPos TimeInRoom[DLLMAX_PLAYERS];
 static bool DisplayScoreScreen;
 int virus_id = -1;
-int *RoomList = NULL;
+int *RoomList = nullptr;
 int RoomCount;
 static int Highlight_bmp = -1;
 static bool display_my_welcome = false;
@@ -189,7 +191,7 @@ static int snd_virus_pickup = -1;
 static void DisplayHUDScores(struct tHUDItem *hitem);
 static void DisplayWelcomeMessage(int player_num);
 static void SortTeamScores(int *sortedindex, int *scores);
-static void SaveStatsToFile(char *filename);
+static void SaveStatsToFile(const std::filesystem::path &filename);
 static void OnLabSpewTimer(void);
 void RemoveVirusFromPlayer(int player_num, bool remove_all);
 static bool ScanForLaboratory(int team, int *newlab);
@@ -298,7 +300,6 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   DMFCBase->GameInit(NUM_TEAMS);
   DLLCreateStringTable("entropy.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -364,13 +365,13 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   tsi.flags = DSIF_SHOW_PIC | DSIF_SHOW_OBSERVERICON | DSIF_SEPERATE_BY_TEAM;
   tsi.cColumnCountDetailed = 0;
   tsi.cColumnCountPlayerList = 6;
-  tsi.clbDetailedColumnBMP = NULL;
-  tsi.clbDetailedColumn = NULL;
+  tsi.clbDetailedColumnBMP = nullptr;
+  tsi.clbDetailedColumn = nullptr;
   tsi.clbPlayerColumn = DetermineScore;
-  tsi.clbPlayerColumnBMP = NULL;
-  tsi.DetailedColumns = NULL;
+  tsi.clbPlayerColumnBMP = nullptr;
+  tsi.DetailedColumns = nullptr;
   tsi.GameName = gname;
-  tsi.MaxNumberDisplayed = NULL;
+  tsi.MaxNumberDisplayed = nullptr;
   tsi.PlayerListColumns = pl_col;
   tsi.SortedPlayerRecords = SortedPlayers;
   tsi.clTeamLine = TeamScoreCallback;
@@ -414,21 +415,26 @@ void DLLFUNCCALL DLLGameClose() {
 
   if (RoomList) {
     free(RoomList);
-    RoomList = NULL;
+    RoomList = nullptr;
   }
 
   DLLDestroyStringTable(StringTable, StringTableSize);
 
   if (dstat) {
     dstat->DestroyPointer();
-    dstat = NULL;
+    dstat = nullptr;
   }
 
   if (DMFCBase) {
     DMFCBase->GameClose();
     DMFCBase->DestroyPointer();
-    DMFCBase = NULL;
+    DMFCBase = nullptr;
   }
+}
+
+void DLLFUNCCALL DLLLoggerInit(plog::Severity severity, plog::IAppender* appender) {
+  plog::init(severity, appender);
+  LOG_DEBUG << "Logger for module initialized";
 }
 
 // The server has just started, so clear out all the stats and game info
@@ -489,7 +495,7 @@ void OnClientLevelStart(void) {
 
   if (RoomList) {
     free(RoomList);
-    RoomList = NULL;
+    RoomList = nullptr;
   }
   RoomCount = 0;
   int r;
@@ -804,7 +810,7 @@ void OnServerCollide(object *me_obj, object *it_obj) {
     }
     if (virus_team == -1) {
       // hey! we hit a virus that doesn't belong to any team!!
-      DLLmprintf(0, "Virus (%d) doesn't belong to any team, removing...\n", virus_objnum);
+      LOG_INFO.printf("Virus (%d) doesn't belong to any team, removing...", virus_objnum);
       DMFCBase->OnServerCollide(me_obj, it_obj);
       DLLSetObjectDeadFlag(it_obj, true, false);
       return;
@@ -944,13 +950,13 @@ void TakeOverRoom(int newteam, int oldteam, int roomnum, int victor) {
   }
 
   if (!success) {
-    DLLmprintf(0, "Invalid Takeover!!!!!!!\n");
+    LOG_WARNING << "Invalid Takeover!!!!!!!";
     return;
   }
 
   // print out hud message (and sound?)
   char buffer[256];
-  DLLmprintf(0, "old=%d new=%d\n", oldteam, newteam);
+  LOG_DEBUG.printf("old=%d new=%d", oldteam, newteam);
   snprintf(buffer, sizeof(buffer), TXT_TAKEOVER, (victor != -1) ? dPlayers[victor].callsign : TXT_NONAME,
            DMFCBase->GetTeamString(oldteam), room_buf);
   DLLAddHUDMessage(buffer);
@@ -1394,11 +1400,11 @@ void OnControlMessage(uint8_t msg, int from_pnum) {
   }
 }
 
-void SaveStatsToFile(char *filename) {
+void SaveStatsToFile(const std::filesystem::path &filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf(0, "Unable to open output file\n");
+    LOG_WARNING << "Unable to open output file";
     return;
   }
 
@@ -1593,21 +1599,18 @@ void SaveStatsToFile(char *filename) {
 }
 
 #define ROOTFILENAME "Entropy"
-void OnSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
-void OnLevelEndSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, true);
+void OnLevelEndSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, true);
   SaveStatsToFile(filename);
 }
 
-void OnDisconnectSaveStatsToFile(void) {
-  char filename[256];
-  DMFCBase->GenerateStatFilename(filename, ROOTFILENAME, false);
+void OnDisconnectSaveStatsToFile() {
+  std::filesystem::path filename = DMFCBase->GenerateStatFilename(ROOTFILENAME, false);
   SaveStatsToFile(filename);
 }
 
@@ -1671,7 +1674,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
         DLLrend_SetLighting(LS_NONE);
         DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
         DLLrend_DrawScaledBitmap(name_x - 2, y - 2, score_x + score_width + 2, y + height - 1, Highlight_bmp, 0, 0, 1,
-                                 1, 1.0, -1, NULL);
+                                 1, 1.0, -1, nullptr);
         DLLrend_SetZBufferState(1);
       }
     }

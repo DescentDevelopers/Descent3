@@ -27,7 +27,7 @@
 class CPathPadDialog : public CKeypadDialog {
   // Construction
 public:
-  CPathPadDialog(CWnd *pParent = NULL); // standard constructor
+  CPathPadDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CPathPadDialog)

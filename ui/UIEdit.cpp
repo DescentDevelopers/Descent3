@@ -143,7 +143,7 @@
 #include "mem.h"
 #include "pserror.h"
 
-static UIEdit *UI_current_editbox = NULL;
+static UIEdit *UI_current_editbox = nullptr;
 
 //	----------------------------------------------------------------------------
 //	UIEdit
@@ -243,7 +243,7 @@ void UIEdit::Deactivate() {
   //	mprintf(0, "deactivating edit box\n");
 
   m_Active = false;
-  UI_current_editbox = NULL;
+  UI_current_editbox = nullptr;
   m_Wnd->ResumeHotkeys();
 
   SDL_StopTextInput(GSDLWindow);
@@ -260,7 +260,7 @@ void UIEdit::OnDestroy() {
 
   // if editbox is being destroyed and is the current editbox, reset to NULL.
   if (UI_current_editbox == this)
-    UI_current_editbox = NULL;
+    UI_current_editbox = nullptr;
 }
 
 // override: behavior when gadget loses input focus.

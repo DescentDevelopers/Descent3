@@ -259,7 +259,7 @@ void ReadAmbientData() {
     if (asp->num_sounds > 0)
       asp->sounds = mem_rmalloc<ase>(asp->num_sounds);
     else
-      asp->sounds = NULL;
+      asp->sounds = nullptr;
 
     int prob = 0;
     for (int s = 0; s < asp->num_sounds; s++) {
@@ -284,21 +284,10 @@ void ReadAmbientData() {
   cfclose(ifile);
 }
 
-#ifdef NEWEDITOR
-extern char D3HogDir[_MAX_PATH * 2];
-#endif
-
 // Writes data from the ambient sound data file
 void WriteAmbientData() {
-  char filename[_MAX_PATH];
-  CFILE *ofile;
-
-#ifndef NEWEDITOR
-  ddio_MakePath(filename, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "data", "misc", AMBIENT_FILE_NAME, NULL);
-#else
-  ddio_MakePath(filename, D3HogDir, "data", "misc", AMBIENT_FILE_NAME, NULL);
-#endif
-  ofile = cfopen(filename, "wb");
+  std::filesystem::path filename = cf_GetWritableBaseDirectory() / "data" / "misc" / AMBIENT_FILE_NAME;
+  CFILE *ofile = cfopen(filename, "wb");
 
   if (!ofile) {
     Int3();

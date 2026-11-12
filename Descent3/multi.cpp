@@ -1644,6 +1644,8 @@
 
 #include <algorithm>
 #include <cstring>
+#include <filesystem>
+#include <string>
 
 #include "chrono_timer.h"
 #include "pserror.h"
@@ -1656,6 +1658,7 @@
 #include "init.h"
 #include "hud.h"
 #include "log.h"
+#include "pstring.h"
 #include "robotfire.h"
 #include "ship.h"
 #include "descent.h"
@@ -1812,7 +1815,14 @@ void SendDataChunk(int playernum);
 void DenyFile(int playernum, int filenum, int file_who);
 void MultiDoFileCancelled(uint8_t *data);
 void MultiDoCustomPlayerData(uint8_t *data);
-char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id);
+
+/**
+ * Return filename for player's customizable data (logo and taunts)
+ * @param playernum requested player id
+ * @param id requested resource id
+ * @return filename or empty path if no such resource for requested player
+ */
+std::filesystem::path GetFileNameFromPlayerAndID(uint16_t playernum, uint16_t id);
 
 // Multiplayer position flags
 #define MPF_AFTERBURNER 1 // Afterburner is on
@@ -1834,7 +1844,7 @@ char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id);
 #define MULTI_ASSERT_NOMESSAGE(x)                                                                                      \
   {                                                                                                                    \
     if ((x) == 0) {                                                                                                    \
-      BailOnMultiplayer(NULL);                                                                                         \
+      BailOnMultiplayer(nullptr);                                                                                         \
       return;                                                                                                          \
     }                                                                                                                  \
   }
@@ -1844,7 +1854,7 @@ void BailOnMultiplayer(const char *message) {
   Int3(); // Get Jason
 
   // Show message
-  if (message == NULL)
+  if (message == nullptr)
     ShowProgressScreen(TXT_MULTI_DATACORRUPT);
   else
     ShowProgressScreen(message);
@@ -2033,7 +2043,7 @@ int MultiSendRobotFireWeapon(uint16_t objectnum, vector *pos, vector *dir, uint1
   uint8_t data[MAX_GAME_DATA_SIZE];
   // Check to make sure we're the server
   if (Netgame.local_role != LR_SERVER) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return 0;
   }
 
@@ -2544,7 +2554,7 @@ void MultiDoPlayer(uint8_t *data) {
 
   // Make sure we have the right object number
   if (objnum != Players[slot].objnum) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return;
   }
 
@@ -2668,8 +2678,8 @@ void MultiDoPlayerEnteredGame(uint8_t *data) {
   // Verify object number
   int objnum = MultiGetShort(data, &count);
 
-  MULTI_ASSERT(objnum == Players[slot].objnum, NULL);
-  MULTI_ASSERT(Objects[objnum].id == slot, NULL);
+  MULTI_ASSERT(objnum == Players[slot].objnum, nullptr);
+  MULTI_ASSERT(Objects[objnum].id == slot, nullptr);
 
   // Get the player's network address
   memcpy(&NetPlayers[slot].addr, data + count, sizeof(network_address));
@@ -2720,7 +2730,7 @@ void MultiDoPlayerEnteredGame(uint8_t *data) {
 // Sends to "slot" and describes player "which"
 // Server only
 void MultiSendPlayerEnteredGame(int which) {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -2847,7 +2857,7 @@ void MultiSendDamagePlayer(int slot, int weapon_id, int type, float amount) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   size_offset = START_DATA(MP_DAMAGE_PLAYER, data, &count, 1);
   MultiAddByte(slot, data, &count);
@@ -2875,14 +2885,14 @@ void MultiDoDamagePlayer(uint8_t *data) {
   uint8_t type = MultiGetByte(data, &count);
   float amount = MultiGetFloat(data, &count);
 
-  ApplyDamageToPlayer(&Objects[Players[slot].objnum], NULL, type, amount, 1, weapon_id);
+  ApplyDamageToPlayer(&Objects[Players[slot].objnum], nullptr, type, amount, 1, weapon_id);
 }
 
 // Makes the passed in player a ghost
 void MultiMakePlayerGhost(int slot) {
   object *obj = &Objects[Players[slot].objnum];
 
-  MULTI_ASSERT(obj->id == slot, NULL); // Get Jason
+  MULTI_ASSERT(obj->id == slot, nullptr); // Get Jason
 
   obj->type = OBJ_GHOST;
   obj->movement_type = MT_NONE;
@@ -2901,7 +2911,7 @@ void MultiMakePlayerGhost(int slot) {
 // Makes the passed in player real (non-ghost)
 void MultiMakePlayerReal(int slot) {
   object *obj = &Objects[Players[slot].objnum];
-  MULTI_ASSERT(obj->id == slot, NULL); // Get Jason
+  MULTI_ASSERT(obj->id == slot, nullptr); // Get Jason
 
   obj->type = OBJ_PLAYER;
 
@@ -2942,7 +2952,7 @@ void MultiDoDonePlayers(uint8_t *data) {
 
 // Server is telling us that it is done sending buildings
 void MultiDoDoneBuildings(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -2953,7 +2963,7 @@ void MultiDoDoneBuildings(uint8_t *data) {
 
 // Server is telling us that it is done sending objects
 void MultiDoDoneObjects(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -2993,7 +3003,7 @@ void MultiDoDoneObjects(uint8_t *data) {
 
 // Server is telling us that it is done sending objects
 void MultiDoDoneWorldStates(uint8_t *data) {
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   int count = 0;
 
@@ -3461,7 +3471,7 @@ void MultiDoReleaseTimeoutMissile(uint8_t *data) {
 
   int pnum = MultiGetByte(data, &count);
 
-  if (Players[pnum].user_timeout_obj != NULL) {
+  if (Players[pnum].user_timeout_obj != nullptr) {
     ReleaseUserTimeoutMissile(pnum);
   }
 
@@ -3475,7 +3485,7 @@ void MultiSendReleaseTimeoutMissile() {
   int count = 0;
   int size_offset;
 
-  ASSERT(Players[Player_num].user_timeout_obj != NULL);
+  ASSERT(Players[Player_num].user_timeout_obj != nullptr);
 
   LOG_DEBUG << "Sending timeout weapon packet!";
 
@@ -3538,7 +3548,7 @@ void MultiDoConnectBail() {
 
 // Some DLL is telling us to end the level!
 void MultiEndLevel() {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
   SetGameState(GAMESTATE_LVLEND);
   PrintDedicatedMessage(TXT_DS_ENDINGLEVEL);
   Multi_bail_ui_menu = true;
@@ -3574,7 +3584,7 @@ void MultiDoLevelEnded(uint8_t *data) {
 
 // Tells all the clients to end the level
 void MultiSendLevelEnded(int success, int next_level) {
-  MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_SERVER, nullptr);
 
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -3642,7 +3652,7 @@ void MultiDoLeaveGame(uint8_t *data) {
       char delfile[_MAX_PATH * 2];
       strcpy(delfile, NetPlayers[slot].file_xfer_cfile->name);
       cfclose(NetPlayers[slot].file_xfer_cfile);
-      NetPlayers[slot].file_xfer_cfile = NULL;
+      NetPlayers[slot].file_xfer_cfile = nullptr;
       if (NetPlayers[slot].file_xfer_flags == NETFILE_RECEIVING)
         ddio_DeleteFile(delfile);
     }
@@ -3682,7 +3692,7 @@ void MultiDoServerQuit(uint8_t *data) {
         char delfile[_MAX_PATH * 2];
         strcpy(delfile, NetPlayers[i].file_xfer_cfile->name);
         cfclose(NetPlayers[i].file_xfer_cfile);
-        NetPlayers[i].file_xfer_cfile = NULL;
+        NetPlayers[i].file_xfer_cfile = nullptr;
         if (NetPlayers[i].file_xfer_flags == NETFILE_RECEIVING)
           ddio_DeleteFile(delfile);
       }
@@ -3710,7 +3720,7 @@ void MultiDoDisconnect(uint8_t *data) {
         char delfile[_MAX_PATH * 2];
         strcpy(delfile, NetPlayers[slot].file_xfer_cfile->name);
         cfclose(NetPlayers[slot].file_xfer_cfile);
-        NetPlayers[slot].file_xfer_cfile = NULL;
+        NetPlayers[slot].file_xfer_cfile = nullptr;
         if (NetPlayers[slot].file_xfer_flags == NETFILE_RECEIVING)
           ddio_DeleteFile(delfile);
       }
@@ -3733,7 +3743,7 @@ void MultiDoDisconnect(uint8_t *data) {
 void MultiDoServerRejectedChecksum(uint8_t *data) {
   int count = 0;
 
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   SKIP_HEADER(data, &count);
   ShowProgressScreen(TXT_MLTLEVELNOMATCH);
@@ -3745,7 +3755,7 @@ void MultiDoServerRejectedChecksum(uint8_t *data) {
 void MultiDoJoinResponse(uint8_t *data) {
   int count = 0;
 
-  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
+  MULTI_ASSERT(Netgame.local_role == LR_CLIENT, nullptr);
 
   SKIP_HEADER(data, &count);
 
@@ -3779,7 +3789,7 @@ void MultiDoAskToJoin(uint8_t *data, network_address *from_addr) {
 
   if (Netgame.local_role == LR_SERVER && Multi_accept_state) {
     // First see if this guy is banned
-    if (GameDLLIsAddressBanned(from_addr, NULL)) {
+    if (GameDLLIsAddressBanned(from_addr, nullptr)) {
       MultiAddByte(JOIN_ANSWER_REJECTED, outdata, &count);
 
     } else {
@@ -4127,6 +4137,7 @@ void MultiDoBlowupBuilding(uint8_t *data) {
     return;
   }
 
+  // legacy re-seed outside `-randseed` allowed: multiplayer only
   ps_srand(seed);
   KillObject(&Objects[hit_objnum], &Objects[killer_objnum], damage);
 
@@ -5188,7 +5199,7 @@ void MultiDoObject(uint8_t *data) {
   }
 
   vector pos, vel;
-  matrix orient, *orientp = NULL;
+  matrix orient, *orientp = nullptr;
 
   // Extract position
   // memcpy (&pos,&data[count],sizeof(vector));
@@ -5404,7 +5415,7 @@ void MultiDoGuidedInfo(uint8_t *data) {
   uint8_t slot = MultiGetByte(data, &count);
   uint8_t release = MultiGetByte(data, &count);
 
-  if (Players[slot].guided_obj == NULL)
+  if (Players[slot].guided_obj == nullptr)
     return;
 
   object *obj = Players[slot].guided_obj;
@@ -5451,7 +5462,7 @@ int MultiStuffGuidedInfo(int slot, uint8_t *data) {
   int size_offset;
   object *obj = Players[slot].guided_obj;
 
-  if (Players[slot].guided_obj == NULL)
+  if (Players[slot].guided_obj == nullptr)
     return 0;
 
   size_offset = START_DATA(MP_GUIDED_INFO, data, &count);
@@ -5542,9 +5553,9 @@ void MultiSendMissileRelease(int slot, bool is_guided) {
   if (!(NetPlayers[slot].flags & NPF_CONNECTED) || NetPlayers[slot].sequence != NETSEQ_PLAYING)
     return; // hey this player isn't in the game
 
-  if (is_guided && Players[slot].guided_obj == NULL)
+  if (is_guided && Players[slot].guided_obj == nullptr)
     return; // no guided missile for this player
-  if (!is_guided && Players[slot].user_timeout_obj == NULL)
+  if (!is_guided && Players[slot].user_timeout_obj == nullptr)
     return; // no user timeout object
 
   // everything looks ok, fire off this packet
@@ -5916,7 +5927,7 @@ void MultiDoAdditionalDamage(uint8_t *data) {
       Objects[Players[slot].objnum].shields = MAX_SHIELDS;
   } else // take damage
   {
-    ApplyDamageToPlayer(&Objects[Players[slot].objnum], NULL, type, amount, 1);
+    ApplyDamageToPlayer(&Objects[Players[slot].objnum], nullptr, type, amount, 1);
   }
 }
 
@@ -6274,7 +6285,7 @@ void MultiSendRequestPeerDamage(object *killer, int weapon_id, int damage_type, 
   MultiAddByte(Player_num, data, &count);
 
   // Add killer info
-  if (killer == NULL || Local_object_list[killer - Objects] == 65535 || killer == &Objects[Players[Player_num].objnum])
+  if (killer == nullptr || Local_object_list[killer - Objects] == 65535 || killer == &Objects[Players[Player_num].objnum])
     MultiAddUshort(65535, data, &count);
   else
     MultiAddUshort(Local_object_list[killer - Objects], data, &count);
@@ -6643,7 +6654,7 @@ void MultiPaintGoalRooms(int *texcolors) {
       Rooms[roomnum].room_change_flags |= RCF_TEXTURE;
 
       int tex;
-      if (texcolors == NULL) {
+      if (texcolors == nullptr) {
         tex = FindTextureName(IGNORE_TABLE(tnames[i]));
         if (tex == -1)
           tex = 0;
@@ -6690,7 +6701,7 @@ void MultiSendKillObject(object *hit_obj, object *killer, float damage, int deat
   hit_objnum = OBJNUM(hit_obj);
   // Get the killer objnum
 
-  if (killer != NULL)
+  if (killer != nullptr)
     killer_objnum = OBJNUM(killer);
   else
     killer_objnum = 65535;
@@ -6740,14 +6751,16 @@ void MultiDoRobotExplode(uint8_t *data) {
   if (killer_objnum != 65535) {
     if ((Objects[killer_objnum].type != OBJ_NONE) && (Objects[hit_objnum].type != OBJ_NONE)) {
       Objects[hit_objnum].flags |= OF_SERVER_SAYS_DELETE;
+      // legacy re-seed outside `-randseed` allowed: multiplayer only
       ps_srand(seed);
       KillObject(&Objects[hit_objnum], &Objects[killer_objnum], damage, death_flags, delay);
     }
   } else {
     if ((Objects[hit_objnum].type != OBJ_NONE)) {
       Objects[hit_objnum].flags |= OF_SERVER_SAYS_DELETE;
+      // legacy re-seed outside `-randseed` allowed: multiplayer only
       ps_srand(seed);
-      KillObject(&Objects[hit_objnum], NULL, damage, death_flags, delay);
+      KillObject(&Objects[hit_objnum], nullptr, damage, death_flags, delay);
     }
   }
 }
@@ -6834,7 +6847,7 @@ int MultiStuffObjAnimUpdate(uint16_t objnum, uint8_t *data) {
   int size = 0;
 
   if (Netgame.local_role != LR_SERVER) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return 0;
   }
 
@@ -7016,7 +7029,7 @@ int MultiStuffTurretUpdate(uint16_t objnum, uint8_t *data) {
   int size = 0;
   multi_turret multi_turret_info;
   if (Netgame.local_role != LR_SERVER) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return 0;
   }
 
@@ -7346,7 +7359,7 @@ int MultiStuffObjWBAnimUpdate(uint16_t objnum, uint8_t *data) {
   // multi_anim multi_anim_info;
 
   if (Netgame.local_role != LR_SERVER) {
-    BailOnMultiplayer(NULL);
+    BailOnMultiplayer(nullptr);
     return 0;
   }
 
@@ -7530,23 +7543,22 @@ void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who) {
     return;
   }
   // Check to see if this file exists already
-  char *p = GetFileNameFromPlayerAndID(file_who, file_id);
-  if (*p) {
-    if (CFES_ON_DISK == cfexist(p)) {
+  std::filesystem::path p = GetFileNameFromPlayerAndID(file_who, file_id);
+  if (!p.empty()) {
+    if (cfexist(p) == CFES_ON_DISK) {
       char szcrc[_MAX_PATH];
-      char path[_MAX_PATH];
-      char ext[_MAX_PATH];
-      char file[_MAX_PATH];
 
-      ddio_SplitPath(p, path, file, ext);
-      snprintf(szcrc, sizeof(szcrc), "_%.8x", cf_GetfileCRC(p));
-      // See if the the CRC is already in the filename
-      if (strnicmp(szcrc, file + (strlen(file) - 9), 9) != 0) {
-        LOG_WARNING.printf("Bad CRC on file %s! It must be corrupt! File will not be used, and is being deleted!", p);
-        ddio_DeleteFile(p);
+      std::vector<std::string> parts = StringSplit(PATH_TO_CSTR(p.stem()), "_");
+      snprintf(szcrc, sizeof(szcrc), "%.8x", cf_GetfileCRC(p));
+      // See if the CRC is already in the filename
+      if (stricmp(szcrc, parts.back().c_str()) != 0) {
+        LOG_WARNING.printf("Bad CRC on file %s! It must be corrupt! File will not be used, and is being deleted!",
+                           PATH_TO_CSTR(p));
+        std::error_code ec;
+        std::filesystem::remove(p, ec);
       } else {
         // Hey hey, we already have this file
-        LOG_DEBUG.printf("Using existing file: %s", p);
+        LOG_DEBUG << "Using existing file: " << p;
         DoNextPlayerFile(file_who);
         return;
       }
@@ -7569,7 +7581,7 @@ void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who) {
     nw_SendReliable(NetPlayers[who].reliable_socket, data, count);
     NetPlayers[who].file_xfer_flags = NETFILE_ASKING;
     NetPlayers[who].file_xfer_pos = 0;
-    NetPlayers[who].file_xfer_cfile = NULL;
+    NetPlayers[who].file_xfer_cfile = nullptr;
     NetPlayers[who].file_xfer_who = file_who;
   } else {
     // If we are a client, ask the server for a file
@@ -7577,7 +7589,7 @@ void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who) {
     nw_SendReliable(NetPlayers[Player_num].reliable_socket, data, count);
     NetPlayers[file_who].file_xfer_flags = NETFILE_ASKING;
     NetPlayers[file_who].file_xfer_pos = 0;
-    NetPlayers[file_who].file_xfer_cfile = NULL;
+    NetPlayers[file_who].file_xfer_cfile = nullptr;
     NetPlayers[file_who].file_xfer_who = file_who;
   }
 }
@@ -7593,15 +7605,14 @@ void MultiDoFileReq(uint8_t *data) {
     // FIXME!! Figure out what file to open
     CFILE *cfp;
     // char filename[_MAX_PATH];
-    char filewithpath[_MAX_PATH * 2];
-    strcpy(filewithpath, GetFileNameFromPlayerAndID(filewho, filenum));
-    if (filewithpath[0] == 0) {
-      LOG_DEBUG.printf("Got a file request for a file that doesn't exist (%s).", filewithpath);
+    std::filesystem::path filewithpath = GetFileNameFromPlayerAndID(filewho, filenum);
+    if (filewithpath.empty()) {
+      LOG_DEBUG.printf("Got a file request for a file that doesn't exist (%s).", PATH_TO_CSTR(filewithpath));
       DenyFile(playernum, filenum, NetPlayers[playernum].file_xfer_who);
     } else {
       cfp = cfopen(filewithpath, "rb");
       if (!cfp) {
-        LOG_WARNING.printf("Couldn't open a file (%s) for transfer.", filewithpath);
+        LOG_WARNING.printf("Couldn't open a file (%s) for transfer.", PATH_TO_CSTR(filewithpath));
         DenyFile(playernum, filenum, NetPlayers[playernum].file_xfer_who);
         return;
         // We couldn't create the file, so cancel the attempt to transfer it.
@@ -7631,7 +7642,7 @@ void DenyFile(int playernum, int filenum, int file_who) {
   MultiAddUshort(Player_num, outdata, &count);
   MultiAddUshort(file_who, outdata, &count);
   END_DATA(count, outdata, size);
-  NetPlayers[playernum].file_xfer_cfile = NULL;
+  NetPlayers[playernum].file_xfer_cfile = nullptr;
   if (Netgame.local_role == LR_SERVER) {
     nw_SendReliable(NetPlayers[playernum].reliable_socket, outdata, count);
   } else {
@@ -7653,7 +7664,7 @@ void MultiCancelFile(int playernum, int filenum, int file_who) {
   MultiAddUshort(filenum, outdata, &count);
   MultiAddUshort(file_who, outdata, &count);
   END_DATA(count, outdata, size);
-  NetPlayers[playernum].file_xfer_cfile = NULL;
+  NetPlayers[playernum].file_xfer_cfile = nullptr;
   NetPlayers[playernum].file_xfer_pos = 0;
   NetPlayers[playernum].file_xfer_flags = NETFILE_NONE;
   if (Netgame.local_role == LR_SERVER) {
@@ -7700,14 +7711,12 @@ void MultiDoFileData(uint8_t *data) {
     // Find out if this is the first packet of this file. if so, create and open the file
     if (NetPlayers[playernum].file_xfer_pos == 0) {
       LOG_DEBUG << "Creating file...";
-      CFILE *cfp;
       // char filename[_MAX_PATH];
-      char filewithpath[_MAX_PATH * 2];
-      strcpy(filewithpath, GetFileNameFromPlayerAndID(playernum, file_id));
+      std::filesystem::path filewithpath = GetFileNameFromPlayerAndID(playernum, file_id);
 
-      cfp = cfopen(filewithpath, "wb");
+      CFILE *cfp = cfopen(filewithpath, "wb");
       if (!cfp) {
-        LOG_WARNING.printf("Can't create file %s", filewithpath);
+        LOG_WARNING << "Can't create file " << filewithpath;
         // We couldn't create the file, so cancel the attempt to transfer it.
         MultiCancelFile(playernum, file_id, NetPlayers[playernum].file_xfer_who);
         return;
@@ -7729,7 +7738,7 @@ void MultiDoFileData(uint8_t *data) {
     if (NetPlayers[playernum].file_xfer_pos >= total_len) {
       // We got the whole thing baby!
       cfclose(NetPlayers[playernum].file_xfer_cfile);
-      NetPlayers[playernum].file_xfer_cfile = NULL;
+      NetPlayers[playernum].file_xfer_cfile = nullptr;
       NetPlayers[playernum].file_xfer_pos = 0;
       DoNextPlayerFile(playernum);
       LOG_DEBUG << "Finished downloading file!";
@@ -7799,7 +7808,7 @@ void SendDataChunk(int playernum) {
 
   if (done) {
     cfclose(NetPlayers[playernum].file_xfer_cfile);
-    NetPlayers[playernum].file_xfer_cfile = NULL;
+    NetPlayers[playernum].file_xfer_cfile = nullptr;
     NetPlayers[playernum].file_xfer_pos = 0;
     NetPlayers[playernum].file_xfer_flags = NETFILE_NONE;
   }
@@ -7838,10 +7847,10 @@ void MultiDoFileCancelled(uint8_t *data) {
     char delfile[_MAX_PATH * 2];
     strcpy(delfile, NetPlayers[filewho].file_xfer_cfile->name);
     cfclose(NetPlayers[filewho].file_xfer_cfile);
-    NetPlayers[filewho].file_xfer_cfile = NULL;
+    NetPlayers[filewho].file_xfer_cfile = nullptr;
     ddio_DeleteFile(delfile);
   }
-  NetPlayers[filewho].file_xfer_cfile = NULL;
+  NetPlayers[filewho].file_xfer_cfile = nullptr;
   NetPlayers[filewho].file_xfer_pos = 0;
   DoNextPlayerFile(filewho);
 }
@@ -7949,14 +7958,14 @@ void MultiDoCustomPlayerData(uint8_t *data) {
     return;
   LOG_DEBUG << "Got custom data in MultiDoCustomPlayerData()";
   NetPlayers[playernum].custom_file_seq = NETFILE_ID_SHIP_TEX; // First in the sequence of files we will request
-  int16_t logo_len = MultiGetUshort(data, &count);
+  uint16_t logo_len = MultiGetUshort(data, &count);
   memcpy(NetPlayers[playernum].ship_logo, data + count, logo_len);
   count += logo_len;
   LOG_DEBUG.printf("%s uses custom ship logo %s", Players[playernum].callsign, NetPlayers[playernum].ship_logo);
 
   for (int t = 0; t < 4; t++) {
     char *filename;
-    int16_t vt_len;
+    uint16_t vt_len;
 
     switch (t) {
     case 0:
@@ -7979,17 +7988,15 @@ void MultiDoCustomPlayerData(uint8_t *data) {
   }
 }
 
-char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
-  static char rval[_MAX_PATH * 2];
-
-  rval[0] = '\0';
+std::filesystem::path GetFileNameFromPlayerAndID(uint16_t playernum, uint16_t id) {
+  std::filesystem::path rval;
 
   if (playernum >= MAX_NET_PLAYERS) {
-    LOG_WARNING.printf("Invalid playernum (%d) passed to GetFileNameFromPlayerAndID()", playernum);
+    LOG_WARNING.printf("Invalid playernum (%d) passed to function", playernum);
     return rval;
   }
   if (id > NETFILE_ID_LAST_FILE) {
-    LOG_WARNING.printf("Invalid file id (%d) passed to GetFileNameFromPlayerAndID()", id);
+    LOG_WARNING.printf("Invalid file id (%d) passed to function", id);
     return rval;
   }
   switch (id) {
@@ -7998,38 +8005,36 @@ char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
     break;
   case NETFILE_ID_SHIP_TEX:
     if (NetPlayers[playernum].ship_logo[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "graphics", NetPlayers[playernum].ship_logo, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "graphics" / std::filesystem::path(NetPlayers[playernum].ship_logo).filename();
     break;
   case NETFILE_ID_VOICE_TAUNT1:
     if (NetPlayers[playernum].voice_taunt1[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt1, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "sounds" / std::filesystem::path(NetPlayers[playernum].voice_taunt1).filename();
     break;
   case NETFILE_ID_VOICE_TAUNT2:
     if (NetPlayers[playernum].voice_taunt2[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt2, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "sounds" / std::filesystem::path(NetPlayers[playernum].voice_taunt2).filename();
     break;
   case NETFILE_ID_VOICE_TAUNT3:
     if (NetPlayers[playernum].voice_taunt3[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt3, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "sounds" / std::filesystem::path(NetPlayers[playernum].voice_taunt3).filename();
     break;
   case NETFILE_ID_VOICE_TAUNT4:
     if (NetPlayers[playernum].voice_taunt4[0])
-      ddio_MakePath(rval, (const char*)cf_GetWritableBaseDirectory().u8string().c_str(), "custom", "sounds", NetPlayers[playernum].voice_taunt4, NULL);
+      rval = cf_GetWritableBaseDirectory() / "custom" / "sounds" / std::filesystem::path(NetPlayers[playernum].voice_taunt4).filename();
     break;
   default:
-    LOG_FATAL.printf("Unknown id (%d) passed to GetFileNameFromPlayerAndID()", id);
+    LOG_FATAL.printf("Unknown id (%d) passed to function", id);
     Int3();
     break;
   }
-  if (*rval) {
-    CFILE *cfp;
-    cfp = cfopen(rval, "rb");
+  if (!rval.empty()) {
+    CFILE *cfp = cfopen(rval, "rb");
     if (!cfp) {
       LOG_WARNING.printf("Multiplayer file xfer File does not exist, not using file %d for player %d!", id, playernum);
-      // rval[0] = '\0';
     } else if (32768 < cfilelength(cfp)) {
       LOG_WARNING.printf("Multiplayer file xfer File to long, not using file %d for player %d!", id, playernum);
-      rval[0] = '\0';
+      rval.clear();
     }
     if (cfp)
       cfclose(cfp);
@@ -8332,7 +8337,7 @@ void MultiDoAiWeaponFlags(uint8_t *data) {
 
   int flags;
   int wb_index;
-  int16_t obj_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t obj_num = Server_object_list[MultiGetUshort(data, &count)];
   flags = MultiGetInt(data, &count);
   wb_index = MultiGetByte(data, &count);
   if (obj_num == 65535) {
@@ -9232,7 +9237,7 @@ void MultiClearGuidebot(int slot) {
   }
 
   // BLACKPYRO
-  int objnum = ObjCreate(OBJ_ROBOT, ROBOT_GUIDEBOT, Player_object->roomnum, &Player_object->pos, NULL, parent_handle);
+  int objnum = ObjCreate(OBJ_ROBOT, ROBOT_GUIDEBOT, Player_object->roomnum, &Player_object->pos, nullptr, parent_handle);
 
   ASSERT(objnum != -1);
   if (objnum == -1)
@@ -9308,12 +9313,12 @@ void DoReqPlayerList(network_address *addr) {
   nw_Send(addr, outdata, count, 0);
 }
 
-char *Multi_recieved_player_list = NULL;
+char *Multi_recieved_player_list = nullptr;
 bool Multi_got_player_list = false;
 
 void DoPlayerListData(uint8_t *data, int len) {
   int count = 0;
-  if (Multi_recieved_player_list == NULL) {
+  if (Multi_recieved_player_list == nullptr) {
     LOG_DEBUG << "Received a player list packet when we weren't expecting one. Ignoring.";
     return;
   }

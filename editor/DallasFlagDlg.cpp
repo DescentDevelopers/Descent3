@@ -74,7 +74,7 @@ BOOL CDallasFlagDlg::OnInitDialog() {
   m_DallasModelessDlgPtr = GetDallasDialogPtr();
 
   // If Dallas is up, fill in the list box
-  if (m_DallasModelessDlgPtr != NULL) {
+  if (m_DallasModelessDlgPtr != nullptr) {
     m_DallasModelessDlgPtr->FillFlagValuesBox(&m_FlagListBox, m_FlagsName.GetBuffer(0), m_FlagsValue, m_ValidFlagsMask);
   }
 

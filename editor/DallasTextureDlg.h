@@ -34,7 +34,7 @@ public:
   CString m_TextureName;
   int m_TextureIndex;
 
-  CDallasTextureDlg(CWnd *pParent = NULL); // standard constructor
+  CDallasTextureDlg(CWnd *pParent = nullptr); // standard constructor
 
   void FillTextureList(void);
 

@@ -36,16 +36,16 @@ editorSelectorManager SelManager;
 
 editorSelectorManager::editorSelectorManager() {
   m_l = m_t = m_r = m_b = -1;
-  m_OwnerWnd = NULL;
+  m_OwnerWnd = nullptr;
   m_DragX = m_DragY = -1;
   m_DragState = 0;
-  m_EndFunc = NULL;
+  m_EndFunc = nullptr;
 }
 
 //	sets the owner window of selection
 //	starts a selection at x,y
 void editorSelectorManager::StartSelection(CWnd *wnd, void (*func)(editorSelectorManager *), int x, int y) {
-  ASSERT(wnd != NULL);
+  ASSERT(wnd != nullptr);
 
   if (m_DragState != 1) {
     POINT pt;
@@ -75,7 +75,7 @@ void editorSelectorManager::StartSelection(CWnd *wnd, void (*func)(editorSelecto
       if (r_b > client_rect.bottom)
         r_b = client_rect.bottom;
       SetRect(&rect, r_l, r_t, r_r, r_b);
-      dc.DrawDragRect(&rect, size, NULL, size, NULL, NULL);
+      dc.DrawDragRect(&rect, size, nullptr, size, nullptr, nullptr);
     }
 
     CClientDC dc(wnd);
@@ -89,7 +89,7 @@ void editorSelectorManager::StartSelection(CWnd *wnd, void (*func)(editorSelecto
     m_r = x;
     m_b = y;
     SetRect(&rect, m_l, m_t, m_r, m_b);
-    dc.DrawDragRect(&rect, size, NULL, size, NULL, NULL);
+    dc.DrawDragRect(&rect, size, nullptr, size, nullptr, nullptr);
 
     GetCursorPos(&pt);
     m_DragX = pt.x;
@@ -204,7 +204,7 @@ void editorSelectorManager::Defer() {
       r_b = client_rect.bottom;
     SetRect(&draw_rect, r_l, r_t, r_r, r_b);
 
-    dc.DrawDragRect(&draw_rect, size, &old_draw_rect, size, NULL, NULL);
+    dc.DrawDragRect(&draw_rect, size, &old_draw_rect, size, nullptr, nullptr);
   }
 #ifdef NEWEDITOR
   else if (mouse.left && m_DragState == 1) {
@@ -248,7 +248,7 @@ void editorSelectorManager::EndSelection() {
   if (r_b > client_rect.bottom)
     r_b = client_rect.bottom;
   SetRect(&rect, r_l, r_t, r_r, r_b);
-  dc.DrawDragRect(&rect, size, NULL, size, NULL, NULL);
+  dc.DrawDragRect(&rect, size, nullptr, size, nullptr, nullptr);
   m_l = -1;
   m_t = -1;
   m_r = -1;

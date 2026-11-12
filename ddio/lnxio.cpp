@@ -69,11 +69,9 @@
 #include "application.h"
 #include "ddio.h"
 #include "log.h"
-#include "ddio_lnx.h"
 
 bool DDIO_init = false;
-oeLnxApplication *Lnx_app_obj = NULL;
-enum input_mode_t Input_mode;
+oeLnxApplication *Lnx_app_obj = nullptr;
 
 // ----------------------------------------------------------------------------
 //	Initialization and destruction functions
@@ -82,17 +80,6 @@ enum input_mode_t Input_mode;
 bool ddio_InternalInit(ddio_init_info *init_info) {
   LOG_DEBUG << "DDIO: ddio_InternalInit() called.";
   Lnx_app_obj = (oeLnxApplication *)init_info->obj;
-
-  if (!Lnx_app_obj) {
-    return false;
-  }
-
-  tLnxAppInfo app_info;
-  Lnx_app_obj->get_info(&app_info);
-
-  // determine if we are to use SDL or null mode
-  Input_mode = (app_info.flags & APPFLAG_USESERVICE) ? Input_null : Input_sdl;
-
   DDIO_init = true;
   return true;
 }
@@ -102,7 +89,7 @@ void ddio_InternalClose() {
 
   if (DDIO_init) {
     DDIO_init = false;
-    Lnx_app_obj = NULL;
+    Lnx_app_obj = nullptr;
   } // if
 
   LOG_DEBUG << "DDIO: ddio_InternalClose() returning.";
@@ -121,7 +108,7 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
 
 bool ddio_GetBinaryPath(char *exec_path, size_t len) {
 #ifdef MACOSX
-  if (exec_path == NULL || len == 0) {
+  if (exec_path == nullptr || len == 0) {
     LOG_ERROR << "Invalid arguments";
     return false;
   }
@@ -132,12 +119,12 @@ bool ddio_GetBinaryPath(char *exec_path, size_t len) {
     return false;
   }
 #elif defined(__LINUX__) || defined(ANDROID)
-  if (realpath("/proc/self/exe", exec_path) == NULL) {
+  if (realpath("/proc/self/exe", exec_path) == nullptr) {
    perror("realpath");
    return false;
   }
 #else
-  if (GetModuleFileName(NULL, exec_path, len) == 0) {
+  if (GetModuleFileName(nullptr, exec_path, len) == 0) {
     DWORD error = GetLastError();
     LOG_ERROR << "GetModuleFileName failed!";
     return false;

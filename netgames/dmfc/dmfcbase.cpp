@@ -467,15 +467,20 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <chrono>
+#include <cstdlib>
+#include <cstdarg>
+#include <filesystem>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "dmfcinternal.h"
 #include "dmfcinputcommands.h"
-
-#include <cstdint>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <algorithm>
+#include "log.h"
 
 char **DMFCStringTable;
 int DMFCStringTableSize = 0;
@@ -518,50 +523,50 @@ DMFCBase::DMFCBase(void) {
 
   DatabaseRegisteredName[0] = '\0';
 
-  SPRoot = NULL; // no special packet handlers yet
+  SPRoot = nullptr; // no special packet handlers yet
 
   int i;
 
   for (i = 0; i < MAX_DEATH_MSGS; i++) {
     DeathMsgs[i].inuse = false;
-    DeathMsgs[i].message = NULL;
+    DeathMsgs[i].message = nullptr;
     SuicideMsgs[i].inuse = false;
-    SuicideMsgs[i].message = NULL;
+    SuicideMsgs[i].message = nullptr;
   }
 
   for (i = 0; i < MAX_WEAPONS; i++) {
     WeaponMessages[i].inuse = false;
-    WeaponMessages[i].message = NULL;
+    WeaponMessages[i].message = nullptr;
     WeaponHash[i] = -1;
   }
 
   m_iDeathMsgCount = 0;
   m_iSuicideMsgCount = 0;
   m_iUIWindowID = -1;
-  m_UIUserData = NULL;
+  m_UIUserData = nullptr;
 
-  m_DenyList = NULL;
-  m_AllowList = NULL;
-  m_InputCommandRootNode = NULL;
+  m_DenyList = nullptr;
+  m_AllowList = nullptr;
+  m_InputCommandRootNode = nullptr;
   Hard_max_players = DLLMAX_PLAYERS;
 
   DecryptData(seeds2, 5);
 
-  TeamMenuItem = NULL;
-  AutoBalanceItem = NULL;
-  AllowTeamChangeItem = NULL;
-  ObserverItem = NULL;
-  m_BanList = NULL;
-  StatisticMessagesItem = NULL;
-  SaveStatsLevelEndItem = NULL;
-  SaveStatsDisconnectItem = NULL;
-  NetGameInfoItem = NULL;
-  MenuBackgroundItem = NULL;
-  ServerHUDCallsignsItem = NULL;
-  HUDCallsignsItem = NULL;
-  DeathMessageFilterItem = NULL;
-  ShipLogosItem = NULL;
-  HUDIndicatorItem = NULL;
+  TeamMenuItem = nullptr;
+  AutoBalanceItem = nullptr;
+  AllowTeamChangeItem = nullptr;
+  ObserverItem = nullptr;
+  m_BanList = nullptr;
+  StatisticMessagesItem = nullptr;
+  SaveStatsLevelEndItem = nullptr;
+  SaveStatsDisconnectItem = nullptr;
+  NetGameInfoItem = nullptr;
+  MenuBackgroundItem = nullptr;
+  ServerHUDCallsignsItem = nullptr;
+  HUDCallsignsItem = nullptr;
+  DeathMessageFilterItem = nullptr;
+  ShipLogosItem = nullptr;
+  HUDIndicatorItem = nullptr;
 
   DisplayTauntIndicator = false;
   TauntIndicatorPlayerNum = -1;
@@ -614,7 +619,7 @@ DMFCBase::~DMFCBase(void) {
     if (WeaponMessages[i].inuse) {
       if (WeaponMessages[i].message) {
         free(WeaponMessages[i].message);
-        WeaponMessages[i].message = NULL;
+        WeaponMessages[i].message = nullptr;
       }
     }
   }
@@ -627,7 +632,7 @@ DMFCBase::~DMFCBase(void) {
     free(current);
     current = next;
   }
-  SPRoot = NULL;
+  SPRoot = nullptr;
 }
 
 // ##################Setup and processing functions#######################
@@ -936,8 +941,8 @@ void DMFCBase::LoadFunctions(int *api_func) {
   DLLHideCursor = (ui_HideCursor_fp)API.fp[149];
   DLLGameFrame = (GameFrame_fp)API.fp[150];
   DPrintf = (DPrintf_fp)API.fp[151];
-  DLLddio_MakePath = (ddio_MakePath_fp)API.fp[152];
-  DLLddio_SplitPath = (ddio_SplitPath_fp)API.fp[153];
+  // DLLddio_MakePath = (ddio_MakePath_fp)API.fp[152];
+  // DLLddio_SplitPath = (ddio_SplitPath_fp)API.fp[153];
   DLLPlay2dSound = (Play2dSound_fp)API.fp[154];
   DLLTouchSound = (TouchSound_fp)API.fp[155];
   DatabaseRead1 = (dDatabaseRead_fp1)API.fp[156];
@@ -1199,7 +1204,6 @@ void DMFCBase::GameInit(int teams) {
   LoadSettings();
 
   DLLCreateStringTable("dmfc.str", &DMFCStringTable, &DMFCStringTableSize);
-  mprintf(0, "DMFC Note: %d strings loaded from string table\n", DMFCStringTableSize);
 
   // initialize player records
   PRec_Init();
@@ -1238,25 +1242,25 @@ void DMFCBase::GameInit(int teams) {
   RegisterPacketReceiver(SPID_REMOTEKEY, &DMFCBase::GetRemoteKey);
   RegisterPacketReceiver(SPID_REALGAMETIME, &DMFCBase::GetRealGametimePacket);
   AddWeaponHash("Laser", "Laser Level 1 - Red", "Laser Level 2 - Blue", "Laser Level 3 - Purple",
-                "Laser Level 4 - Green", NULL);
-  AddWeaponHash("Vauss", "Vauss Spark", NULL);
-  AddWeaponHash("Raygun", NULL);
-  AddWeaponHash("Plasma", "plasma sparks", NULL);
-  AddWeaponHash("Fusion", NULL);
-  AddWeaponHash("Super Laser", "Laser Level 5 -Yellow", "Laser Level 6 -White", NULL);
-  AddWeaponHash("Mass Driver", NULL);
-  AddWeaponHash("Napalm", NULL);
-  AddWeaponHash("EMDyellowleft", "EMDyellowright", "EMDgreenleft", "EMDgreenright", NULL);
-  AddWeaponHash("Omega", NULL);
-  AddWeaponHash("Concussion", NULL);
-  AddWeaponHash("Homing", NULL);
-  AddWeaponHash("Smart", "SmartPlasmaHomers", NULL);
-  AddWeaponHash("Mega", "MegaExplosion", NULL);
-  AddWeaponHash("Frag", "frag particles", NULL);
-  AddWeaponHash("Guided", NULL);
-  AddWeaponHash("NapalmRocket", "NapalmBlob", "NapalmParticles", NULL);
-  AddWeaponHash("Cyclone Pack", "Swarm", NULL);
-  AddWeaponHash("Yellow Flare", NULL);
+                "Laser Level 4 - Green", nullptr);
+  AddWeaponHash("Vauss", "Vauss Spark", nullptr);
+  AddWeaponHash("Raygun", nullptr);
+  AddWeaponHash("Plasma", "plasma sparks", nullptr);
+  AddWeaponHash("Fusion", nullptr);
+  AddWeaponHash("Super Laser", "Laser Level 5 -Yellow", "Laser Level 6 -White", nullptr);
+  AddWeaponHash("Mass Driver", nullptr);
+  AddWeaponHash("Napalm", nullptr);
+  AddWeaponHash("EMDyellowleft", "EMDyellowright", "EMDgreenleft", "EMDgreenright", nullptr);
+  AddWeaponHash("Omega", nullptr);
+  AddWeaponHash("Concussion", nullptr);
+  AddWeaponHash("Homing", nullptr);
+  AddWeaponHash("Smart", "SmartPlasmaHomers", nullptr);
+  AddWeaponHash("Mega", "MegaExplosion", nullptr);
+  AddWeaponHash("Frag", "frag particles", nullptr);
+  AddWeaponHash("Guided", nullptr);
+  AddWeaponHash("NapalmRocket", "NapalmBlob", "NapalmParticles", nullptr);
+  AddWeaponHash("Cyclone Pack", "Swarm", nullptr);
+  AddWeaponHash("Yellow Flare", nullptr);
 
   SetWeaponDeathMessage("Laser", DTXT_DEATHLASER, false);
   SetWeaponDeathMessage("Vauss", DTXT_DEATHVAUSS, false);
@@ -1340,7 +1344,7 @@ void DMFCBase::GameInit(int teams) {
 
   if (GetLocalRole() == LR_SERVER) {
     // Start Server Commands Menu
-    lev1 = new MenuItem(DTXT_MNUSRVRCOMMAND, MIT_NORMAL, 0, NULL); // Server
+    lev1 = new MenuItem(DTXT_MNUSRVRCOMMAND, MIT_NORMAL, 0, nullptr); // Server
     lev2 = new MenuItem(DTXT_MNUKICK, MIT_PLIST, 0, KickPlayer);   // |- Kick
     lev1->AddSubMenu(lev2);
     lev2 = new MenuItem(DTXT_MNUBAN, MIT_PLIST, 0, BanPlayer); // |- Ban
@@ -1363,7 +1367,7 @@ void DMFCBase::GameInit(int teams) {
     lev1->AddSubMenu(lev2);
     if (teams > 1) {
       // Team Game Stuff here
-      lev2 = new MenuItem(DTXT_MNUTEAMCONTROL, MIT_NORMAL, 0, NULL);     // |- Team Control
+      lev2 = new MenuItem(DTXT_MNUTEAMCONTROL, MIT_NORMAL, 0, nullptr);     // |- Team Control
       lev3 = new MenuItem(DTXT_MNUBALANCE, MIT_NORMAL, 0, BalanceTeams); //		|- Balance Teams
       lev2->AddSubMenu(lev3);                                            //    |- AutoTeam Balance Off/On
       AutoBalanceItem = lev3 =
@@ -1395,7 +1399,7 @@ void DMFCBase::GameInit(int teams) {
   }
 
   // Do General stuff here
-  lev1 = new MenuItem(DTXT_MNUOBSERVER, MIT_NORMAL, 0, NULL);
+  lev1 = new MenuItem(DTXT_MNUOBSERVER, MIT_NORMAL, 0, nullptr);
   ObserverItem = lev2 = new MenuItem(DTXT_MNUOBSERVER, MIT_STATE, 0, SwitchObserverMode, 2, 0, DTXT_MNUOFF, DTXT_MNUON);
   lev1->AddSubMenu(lev2);
 
@@ -1427,7 +1431,7 @@ void DMFCBase::GameInit(int teams) {
   Menu.AddSubMenu(lev1);
 
   // File Statitics menu
-  lev1 = new MenuItem(DTXT_OSM_STATSTOFILE, MIT_NORMAL, 0, NULL);
+  lev1 = new MenuItem(DTXT_OSM_STATSTOFILE, MIT_NORMAL, 0, nullptr);
 
   lev2 = new MenuItem(DTXT_SAVESTATS, MIT_NORMAL, 0, SaveStatsToFile);
   lev1->AddSubMenu(lev2);
@@ -1450,7 +1454,7 @@ void DMFCBase::GameInit(int teams) {
                    (m_iProtectedFlags & DMFC_PRF_DISPNETGAMEINFO) ? 1 : 0, DTXT_MNUOFF, DTXT_MNUON);
   Menu.AddSubMenu(lev1);
 
-  lev1 = new MenuItem(DTXT_OSM_HUDFILTER, MIT_NORMAL, 0, NULL);
+  lev1 = new MenuItem(DTXT_OSM_HUDFILTER, MIT_NORMAL, 0, nullptr);
   lev2 = DeathMessageFilterItem = new MenuItem(DTXT_OSM_KILLMESSAGES, MIT_STATE, 0, SwitchDeathMessageFilter, 3,
                                                m_iDeathMessageFilter, DTXT_PLAIN_NONE, DTXT_OSM_SIMPLE, DTXT_OSM_FULL);
   lev1->AddSubMenu(lev2);
@@ -1643,7 +1647,7 @@ void DMFCBase::DisplayPlayerInfo(int background_bmp, bool dedicated_server) {
     DLLrend_SetTextureType(TT_LINEAR);
     DLLrend_SetLighting(LS_NONE);
     DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
-    DLLrend_DrawScaledBitmap(0, 0, *Game_window_w, 6 * height, background_bmp, 0, 0, 1, 1, 1.0, -1, NULL);
+    DLLrend_DrawScaledBitmap(0, 0, *Game_window_w, 6 * height, background_bmp, 0, 0, 1, 1, 1.0, -1, nullptr);
     DLLrend_SetZBufferState(1);
   }
 
@@ -1830,7 +1834,7 @@ void DMFCBase::CallClientEvent(int event, int me_objnum, int it_objnum, int dest
     return;
   if ((destination < -1) || (destination > DLLMAX_PLAYERS))
     return;
-  DLLMultiSendClientExecuteDLL(event, me_objnum, it_objnum, destination, parms ? Data : NULL);
+  DLLMultiSendClientExecuteDLL(event, me_objnum, it_objnum, destination, parms ? Data : nullptr);
 }
 
 // DMFCBase::GetTimeLeft
@@ -1962,7 +1966,7 @@ int DMFCBase::GetMeObjNum(void) {
 void DMFCBase::OnGameStateRequest(int pnum) {
   if (pnum == -1)
     return;
-  mprintf(0, "%s is requesting Game State information\n", Players[pnum].callsign);
+  LOG_INFO.printf("%s is requesting Game State information", Players[pnum].callsign);
 }
 
 // DMFCBase::GetTeamForNewPlayer
@@ -2021,7 +2025,7 @@ void DMFCBase::SetNumberOfTeams(int teams) {
     return;
 
   DLLSetMaxTeams(teams);
-  DLLMultiPaintGoalRooms(NULL);
+  DLLMultiPaintGoalRooms(nullptr);
 
   m_iNumTeams = teams;
 
@@ -2113,7 +2117,7 @@ void DMFCBase::AddHUDItemCallback(int type, void (*func)(struct tHUDItem *)) {
   }
   item.stat = STAT_CUSTOM;
   item.flags = HUD_FLAG_PERSISTANT;
-  item.data.text = NULL;
+  item.data.text = nullptr;
   item.render_fn = func;
   item.y = 0;
   item.x = 0;
@@ -2470,7 +2474,7 @@ void DMFCBase::SwitchShowHudCallsignLevel(uint8_t level, bool announce) {
       DLLAddHUDMessage(DTXT_HUDLEVEL_NONE);
     break;
   default:
-    mprintf(0, "DMFC: Invalid HUD Name Level\n");
+    LOG_WARNING << "DMFC: Invalid HUD Name Level";
     return;
     break;
   };
@@ -2495,7 +2499,7 @@ void DMFCBase::SwitchServerHudCallsignLevel(uint8_t level) {
     DLLAddHUDMessage(DTXT_SHUDLEVEL_NONE);
     break;
   default:
-    mprintf(0, "DMFC: Invalid Server HUD Name Level\n");
+    LOG_WARNING << "DMFC: Invalid Server HUD Name Level";
     return;
     break;
   }
@@ -2601,7 +2605,7 @@ PInfo *DMFCBase::FindPInfo(int pnum) {
   ASSERT((pnum >= 0) && (pnum < DLLMAX_PLAYERS));
   player_record *pr = GetPlayerRecordByPnum(pnum);
   if (!pr)
-    return NULL;
+    return nullptr;
   return pr->pinfo;
 }
 
@@ -2623,8 +2627,8 @@ void DMFCBase::UpdatePInfo(int victim, int killer, int amount) {
   memset(&ki, 0, sizeof(tPKillerInfo));
   id = FindPInfo(killer);
 
-  if ((id == NULL) || (victim_slot == -1)) {
-    mprintf(0, "Unable to find PInfos\n");
+  if ((id == nullptr) || (victim_slot == -1)) {
+    LOG_WARNING << "Unable to find PInfos";
     return;
   }
 
@@ -2637,8 +2641,8 @@ void DMFCBase::UpdatePInfo(int victim, int killer, int amount) {
   vpi = FindPInfo(victim);
   int killer_slot = PRec_GetPlayerSlot(killer);
 
-  if ((vpi == NULL) || (killer_slot == -1)) {
-    mprintf(0, "Unable to find PInfos\n");
+  if ((vpi == nullptr) || (killer_slot == -1)) {
+    LOG_WARNING << "Unable to find PInfos";
     return;
   }
 
@@ -2671,7 +2675,7 @@ void DMFCBase::ResetPInfo(void) {
 //	This function will write out DMFC's stats to the file given (it must be opened for writing)
 void DMFCBase::WriteDMFCStatsToFile(CFILE *file) {
 #define BUFSIZE 150
-  ASSERT(file != NULL);
+  ASSERT(file != nullptr);
   char buffer[BUFSIZE];
   player_record *pr, *dpr;
   tPInfoStat stat;
@@ -2779,7 +2783,7 @@ bool DMFCBase::FindPInfoStatFirst(int slot, tPInfoStat *stat) {
     return false;
 
   killer = pr->pinfo->GetFirstKiller();
-  victim = NULL;
+  victim = nullptr;
 
   if (!killer) {
     _DoneWithKills = true;
@@ -2847,7 +2851,7 @@ bool DMFCBase::FindPInfoStatNext(tPInfoStat *stat) {
     return false;
 
   killer = pr->pinfo->GetNextKiller();
-  victim = NULL;
+  victim = nullptr;
 
   if (!killer) {
     _DoneWithKills = true;
@@ -2905,25 +2909,25 @@ void DMFCBase::FindPInfoStatClose(void) {
 //
 //	Sets a death message for a weapon kill
 bool DMFCBase::SetWeaponDeathMessage(const char *weapon_name, const char *message, bool victim_first) {
-  ASSERT(weapon_name != NULL);
-  ASSERT(message != NULL);
+  ASSERT(weapon_name != nullptr);
+  ASSERT(message != nullptr);
 
   int weapon_index = DLLFindWeaponName(IGNORE_TABLE(weapon_name));
   if (weapon_index == -1) {
-    mprintf(0, "Unable to set WeaponMessage for %s...can't find it\n", weapon_name);
+    LOG_WARNING.printf("Unable to set WeaponMessage for %s...can't find it", weapon_name);
     return false;
   }
 
   int real_weapon = WeaponHash[weapon_index];
 
   if (real_weapon == -1) {
-    mprintf(0, "You forgot to call AddWeaponHash before adding this Message\n");
+    LOG_WARNING.printf("You forgot to call AddWeaponHash before adding this Message");
     return false;
   }
 
   if ((WeaponMessages[real_weapon].inuse) && (WeaponMessages[real_weapon].message)) {
     free(WeaponMessages[real_weapon].message);
-    WeaponMessages[real_weapon].message = NULL;
+    WeaponMessages[real_weapon].message = nullptr;
   }
 
   WeaponMessages[real_weapon].message = (char *)malloc(strlen(message) + 1);
@@ -2941,17 +2945,17 @@ bool DMFCBase::SetWeaponDeathMessage(const char *weapon_name, const char *messag
 //  Returns the format string for a weapon death message, NULL if it doesn't exist
 char *DMFCBase::GetWeaponDeathMessage(int index, bool *victim_first) {
   if ((index < 0) || (index >= MAX_WEAPONS))
-    return NULL;
+    return nullptr;
 
   int real_weapon;
 
   real_weapon = WeaponHash[index];
 
   if (real_weapon == -1)
-    return NULL;
+    return nullptr;
 
   if (!WeaponMessages[real_weapon].inuse)
-    return NULL;
+    return nullptr;
 
   *victim_first = WeaponMessages[real_weapon].victim_first;
   return WeaponMessages[real_weapon].message;
@@ -2963,11 +2967,11 @@ char *DMFCBase::GetWeaponDeathMessage(int index, bool *victim_first) {
 //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
 //  get the actual weapon.  End list of children with a NULL
 void DMFCBase::AddWeaponHash(const char *parent, ...) {
-  ASSERT(parent != NULL);
+  ASSERT(parent != nullptr);
 
   int parent_id = DLLFindWeaponName(IGNORE_TABLE(parent));
   if (parent_id == -1) {
-    mprintf(0, "Unable to find parent weapon ID in AddWeaponHash (%s)\n", parent);
+    LOG_WARNING.printf("Unable to find parent weapon ID in AddWeaponHash (%s)", parent);
     return;
   }
 
@@ -3007,11 +3011,11 @@ void DMFCBase::AddWeaponHash(const char *parent, ...) {
 //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
 //  get the actual weapon.
 void DMFCBase::AddWeaponHashArray(const char *parent, int count, char **array) {
-  ASSERT(parent != NULL);
+  ASSERT(parent != nullptr);
 
   int parent_id = DLLFindWeaponName(IGNORE_TABLE(parent));
   if (parent_id == -1) {
-    mprintf(0, "Unable to find parent weapon ID in AddWeaponHash (%s)\n", parent);
+    LOG_WARNING.printf("Unable to find parent weapon ID in AddWeaponHash (%s)", parent);
     return;
   }
 
@@ -3061,7 +3065,7 @@ void *DMFCBase::GetPlayerRecordData(int pnum) {
   int slot;
   slot = PRec_GetPlayerSlot(pnum);
   if (slot == -1)
-    return NULL;
+    return nullptr;
   return PRec_GetUserStats(slot);
 }
 
@@ -3078,7 +3082,7 @@ player_record *DMFCBase::GetPlayerRecordByPnum(int pnum) {
   int slot;
   slot = PRec_GetPlayerSlot(pnum);
   if (slot == -1)
-    return NULL;
+    return nullptr;
   return PRec_GetPRecord(slot);
 }
 
@@ -3087,7 +3091,7 @@ player_record *DMFCBase::GetPlayerRecordByPnum(int pnum) {
 //   Puts a temp ban on a player which will only last the duration of the game
 void DMFCBase::BanPlayerFromGame(int pnum) {
   if (pnum >= 0 && pnum < DLLMAX_PLAYERS) {
-    mprintf(0, "Banning %s\n", Players[pnum].callsign);
+    LOG_INFO.printf("Banning %s", Players[pnum].callsign);
     DPrintf(DTXT_DEDS_BAN, Players[pnum].callsign);
     tBanItem *c;
     c = m_BanList;
@@ -3104,7 +3108,7 @@ void DMFCBase::BanPlayerFromGame(int pnum) {
       if (!c)
         return;
     }
-    c->next = NULL;
+    c->next = nullptr;
     memcpy(&c->addr, &NetPlayers[pnum].addr, sizeof(network_address));
     strncpy(c->callsign, Players[pnum].callsign, MAX_CALLSIGN_SIZE - 1);
     c->callsign[MAX_CALLSIGN_SIZE - 1] = '\0';
@@ -3116,7 +3120,7 @@ void DMFCBase::BanPlayerFromGame(int pnum) {
 
     m_iNumBanPlayers++;
   } else {
-    mprintf(0, "Unable to ban player...pnum not valid\n");
+    LOG_WARNING.printf("Unable to ban player...pnum not valid");
     DPrintf(DTXT_DEDS_BAN_ERROR);
   }
 }
@@ -3132,7 +3136,7 @@ void DMFCBase::RemoveAllBans(void) {
     free(c);
     c = n;
   }
-  m_BanList = NULL;
+  m_BanList = nullptr;
   m_iNumBanPlayers = 0;
 }
 
@@ -3146,7 +3150,7 @@ int DMFCBase::GetNumBannedPlayers(void) { return m_iNumBanPlayers; }
 //	Returns the callsign of the banned player at position index, NULL on error
 char *DMFCBase::GetBannedPlayerCallsign(int index) {
   if (index < 0 || index >= m_iNumBanPlayers)
-    return NULL;
+    return nullptr;
 
   tBanItem *c;
   c = m_BanList;
@@ -3157,7 +3161,7 @@ char *DMFCBase::GetBannedPlayerCallsign(int index) {
     index--;
     c = c->next;
   }
-  return NULL;
+  return nullptr;
 }
 
 // DMFCBase::RemoveBan
@@ -3169,7 +3173,7 @@ bool DMFCBase::RemoveBan(int index) {
 
   tBanItem *c, *p;
   c = m_BanList;
-  p = NULL;
+  p = nullptr;
   while (c) {
     if (!index) {
       // we found em, remove em
@@ -3195,10 +3199,10 @@ bool DMFCBase::RemoveBan(int index) {
 //
 //	returns true is the given pnum is banned from the game
 bool DMFCBase::IsPlayerBanned(int pnum) {
-  mprintf(0, "Checking a ban on a player...");
+  LOG_DEBUG << "Checking a ban on a player...";
 
   if (pnum < 0 || pnum >= DLLMAX_PLAYERS) {
-    mprintf(0, "Playernum not valid\n");
+    LOG_WARNING << "Playernum not valid";
     return false;
   }
 
@@ -3216,16 +3220,14 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   tBanItem *c;
   c = m_BanList;
 
-  mprintf(0, "Checking a ban on an address...");
-
   while (c) {
     if (addr && CompareNetworkAddress(&c->addr, addr, false)) {
-      mprintf(0, "Player addr IS BANNED\n");
+      LOG_INFO.printf("Player addr IS BANNED");
       return true;
     }
     if (*m_bTrackerGame) {
       if (tracker_id && !strcmp(tracker_id, c->tracker_id)) {
-        mprintf(0, "Player tid IS BANNED\n");
+        LOG_INFO.printf("Player tid %s IS BANNED", tracker_id);
         return true;
       }
     }
@@ -3234,7 +3236,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   }
 
   if (!addr) {
-    mprintf(0, "Player not banned\n");
+    LOG_INFO << "Player not banned";
     return false;
   }
 
@@ -3242,7 +3244,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   // the hosts.allow/.deny
 
   if (addr->connection_type != NP_TCP) {
-    mprintf(0, "Player not banned\n");
+    LOG_INFO << "Player not banned";
     return false;
   }
 
@@ -3257,7 +3259,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
       // it is a match
-      mprintf(0, "Player not banned\n");
+      LOG_INFO << "Player not banned";
       return false;
     }
     curr = curr->next;
@@ -3269,13 +3271,13 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
       // it is a match
-      mprintf(0, "Player IS banned\n");
+      LOG_INFO << "Player IS banned";
       return true;
     }
     curr = curr->next;
   }
 
-  mprintf(0, "Player not banned\n");
+  LOG_INFO << "Player not banned";
   return false;
 }
 
@@ -3293,11 +3295,11 @@ void DMFCBase::DoDamageToPlayer(int pnum, int type, float amount, bool playsound
       // just add it...no damage sound
       Objects[Players[pnum].objnum].shields -= amount;
     } else {
-      DLLApplyDamageToPlayer(&Objects[Players[pnum].objnum], NULL, type, amount, 1, 255, playsound);
+      DLLApplyDamageToPlayer(&Objects[Players[pnum].objnum], nullptr, type, amount, 1, 255, playsound);
     }
   } else {
     // add it to additional damage
-    DLLApplyDamageToPlayer(&Objects[Players[pnum].objnum], NULL, type, amount, 1, 255, playsound);
+    DLLApplyDamageToPlayer(&Objects[Players[pnum].objnum], nullptr, type, amount, 1, 255, playsound);
   }
 }
 
@@ -3306,7 +3308,7 @@ void DMFCBase::DoDamageToPlayer(int pnum, int type, float amount, bool playsound
 //	Prepares the game so that you can display UI stuff
 void DMFCBase::StartUIWindow(int id, void *user_data) {
   if (m_iUIWindowID != -1) {
-    mprintf(0, "DMFCBase::StartUIWindow(): A Window ID (0x%X) is already defined\n", m_iUIWindowID);
+    LOG_DEBUG.printf("DMFCBase::StartUIWindow(): A Window ID (0x%X) is already defined", m_iUIWindowID);
     return;
   }
 
@@ -3415,7 +3417,7 @@ void DMFCBase::PauseRealGameTime(bool enable) {
 //	Goes through the list of input commands and calls the associated handle (if it exists).  Returns
 //	true if it called a handler, else false.
 bool DMFCBase::InputCommandHandle(char *command_string) {
-  ASSERT(command_string != NULL);
+  ASSERT(command_string != nullptr);
 
   // make sure it's a valid command (starts with a $)
   if (command_string[0] != '$')
@@ -3509,7 +3511,7 @@ void DMFCBase::InputCommandFree(void) {
   }
 
   // set the root to NULL to finish up
-  m_InputCommandRootNode = NULL;
+  m_InputCommandRootNode = nullptr;
 }
 
 // DMFCBase::InputCommandInit
@@ -3517,116 +3519,153 @@ void DMFCBase::InputCommandFree(void) {
 //	Initializes the variables and data for the input commands.  Default DMFC commands are to
 //	be placed in here.
 void DMFCBase::InputCommandInit(void) {
-  if (AddInputCommand(DTXT_IC_ALLOWTEAMCHANGE, DTXT_IC_ALLOWTEAMCHANGED, DMFCInputCommand_AllowTeamChange, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_ALLOWTEAMCHANGE, DTXT_IC_ALLOWTEAMCHANGED, DMFCInputCommand_AllowTeamChange, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_AUTOBALANCE, DTXT_IC_AUTOBALANCED, DMFCInputCommand_AutoBalance, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_AUTOBALANCE, DTXT_IC_AUTOBALANCED, DMFCInputCommand_AutoBalance, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_AUTOSAVEDISC, DTXT_IC_AUTOSAVEDISCD, DMFCInputCommand_AutoSaveDisconnect, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_AUTOSAVEDISC, DTXT_IC_AUTOSAVEDISCD, DMFCInputCommand_AutoSaveDisconnect, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_AUTOSAVELEVEL, DTXT_IC_AUTOSAVELEVELD, DMFCInputCommand_AutoSaveLevel, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_AUTOSAVELEVEL, DTXT_IC_AUTOSAVELEVELD, DMFCInputCommand_AutoSaveLevel, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_BALANCE, DTXT_IC_BALANCED, DMFCInputCommand_Balance, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_BALANCE, DTXT_IC_BALANCED, DMFCInputCommand_Balance, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_BAN, DTXT_IC_BAND, DMFCInputCommand_Ban, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_BAN, DTXT_IC_BAND, DMFCInputCommand_Ban, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_BANLIST, DTXT_IC_BANLISTD, DMFCInputCommand_BanList) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_BANLIST, DTXT_IC_BANLISTD, DMFCInputCommand_BanList) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_CHANGETEAM, DTXT_IC_CHANGETEAMD, DMFCInputCommand_ChangeTeam, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_CHANGETEAM, DTXT_IC_CHANGETEAMD, DMFCInputCommand_ChangeTeam, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_ENDLEVEL, DTXT_IC_ENDLEVELD, DMFCInputCommand_EndLevel, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_ENDLEVEL, DTXT_IC_ENDLEVELD, DMFCInputCommand_EndLevel, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_HELP, DTXT_IC_HELPD, DMFCInputCommand_Help) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_HELP, DTXT_IC_HELPD, DMFCInputCommand_Help) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_HUDNAME, DTXT_IC_HUDNAMED, DMFCInputCommand_HudCallsigns) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_HUDNAME, DTXT_IC_HUDNAMED, DMFCInputCommand_HudCallsigns) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_KICK, DTXT_IC_KICKD, DMFCInputCommand_Kick, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_KICK, DTXT_IC_KICKD, DMFCInputCommand_Kick, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_KILLMSGFILTER, DTXT_IC_KILLMSGFILTERD, DMFCInputCommand_KillMsgFilter) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_KILLMSGFILTER, DTXT_IC_KILLMSGFILTERD, DMFCInputCommand_KillMsgFilter) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_NETGAMEINFO, DTXT_IC_NETGAMEINFO, DMFCInputCommand_NetGameInfo) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_NETGAMEINFO, DTXT_IC_NETGAMEINFO, DMFCInputCommand_NetGameInfo) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_OBSERVER, DTXT_IC_OBSERVERD, DMFCInputCommand_Observer) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_OBSERVER, DTXT_IC_OBSERVERD, DMFCInputCommand_Observer) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_PIGGYBACK, DTXT_IC_PIGGYBACKD, DMFCInputCommand_Piggyback) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_PIGGYBACK, DTXT_IC_PIGGYBACKD, DMFCInputCommand_Piggyback) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_PLAYERINFO, DTXT_IC_PLAYERINFOD, DMFCInputCommand_PlayerInfo) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_PLAYERINFO, DTXT_IC_PLAYERINFOD, DMFCInputCommand_PlayerInfo) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_PLAYERS, DTXT_IC_PLAYERSD, DMFCInputCommand_Players) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_PLAYERS, DTXT_IC_PLAYERSD, DMFCInputCommand_Players) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_REHASH, DTXT_IC_REHASHD, DMFCInputCommand_Rehash, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_REHASH, DTXT_IC_REHASHD, DMFCInputCommand_Rehash, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_REMOTE, DTXT_IC_REMOTED, DMFCInputCommand_Remote) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_REMOTE, DTXT_IC_REMOTED, DMFCInputCommand_Remote) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_REMOTEADMIN, DTXT_IC_REMOTEADMIND, DMFCInputCommand_RemoteAdmin, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_REMOTEADMIN, DTXT_IC_REMOTEADMIND, DMFCInputCommand_RemoteAdmin, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_REMOTEADMINLOGOUT, DTXT_IC_REMOTEADMINLOGOUTD, DMFCInputCommand_RemoteAdminLogout) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_REMOTEADMINLOGOUT, DTXT_IC_REMOTEADMINLOGOUTD, DMFCInputCommand_RemoteAdminLogout) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_REMOTEADMINPASS, DTXT_IC_REMOTEADMINPASSD, DMFCInputCommand_RemoteAdminPass, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_REMOTEADMINPASS, DTXT_IC_REMOTEADMINPASSD, DMFCInputCommand_RemoteAdminPass, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_REMOVEBAN, DTXT_IC_REMOVEBAND, DMFCInputCommand_RemoveBan, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_REMOVEBAN, DTXT_IC_REMOVEBAND, DMFCInputCommand_RemoveBan, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SAVESTATS, DTXT_IC_SAVESTATSD, DMFCInputCommand_SaveStats, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SAVESTATS, DTXT_IC_SAVESTATSD, DMFCInputCommand_SaveStats, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SCORES, DTXT_IC_SCORESD, DMFCInputCommand_Scores) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SCORES, DTXT_IC_SCORESD, DMFCInputCommand_Scores) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SERVERHUDNAMES, DTXT_IC_SERVERHUDNAMESD, DMFCInputCommand_ServerHudCallsigns, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SERVERHUDNAMES, DTXT_IC_SERVERHUDNAMESD, DMFCInputCommand_ServerHudCallsigns, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SETGOALLIMIT, DTXT_IC_SETGOALLIMITD, DMFCInputCommand_SetGoalLimit, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SETGOALLIMIT, DTXT_IC_SETGOALLIMITD, DMFCInputCommand_SetGoalLimit, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SETMAXPLAYERS, DTXT_IC_SETMAXPLAYERSD, DMFCInputCommand_SetMaxPlayers, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SETMAXPLAYERS, DTXT_IC_SETMAXPLAYERSD, DMFCInputCommand_SetMaxPlayers, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SETPPS, DTXT_IC_SETPPSD, DMFCInputCommand_SetPPS, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SETPPS, DTXT_IC_SETPPSD, DMFCInputCommand_SetPPS, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SETRESPAWNTIME, DTXT_IC_SETRESPAWNTIMED, DMFCInputCommand_SetRespawnTime, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SETRESPAWNTIME, DTXT_IC_SETRESPAWNTIMED, DMFCInputCommand_SetRespawnTime, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SETTEAMNAME, DTXT_IC_SETTEAMNAMED, DMFCInputCommand_SetTeamName, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SETTEAMNAME, DTXT_IC_SETTEAMNAMED, DMFCInputCommand_SetTeamName, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_SETTIMELIMIT, DTXT_IC_SETTIMELIMITD, DMFCInputCommand_SetTimeLimit, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_SETTIMELIMIT, DTXT_IC_SETTIMELIMITD, DMFCInputCommand_SetTimeLimit, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_STATMSGS, DTXT_IC_STATMSGSD, DMFCInputCommand_StatMsgs) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_STATMSGS, DTXT_IC_STATMSGSD, DMFCInputCommand_StatMsgs) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_TEAM, DTXT_IC_TEAMD, DMFCInputCommand_Team) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_TEAM, DTXT_IC_TEAMD, DMFCInputCommand_Team) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_WAIT, DTXT_IC_WAITD, DMFCInputCommand_Wait, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_WAIT, DTXT_IC_WAITD, DMFCInputCommand_Wait, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 
-  if (AddInputCommand(DTXT_IC_WARP, DTXT_IC_WARPD, DMFCInputCommand_Warp, true) < 1)
-    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
+  if (AddInputCommand(DTXT_IC_WARP, DTXT_IC_WARPD, DMFCInputCommand_Warp, true) < 1) {
+    LOG_WARNING << "DMFC: Error Adding Input Command";
+  }
 }
 
 // Returns true if the input command can be called remotely
@@ -3703,7 +3742,7 @@ void DMFCBase::DisplayInputCommandHelp(const char *s) {
 
 // copies a string from src to dest, making dest all lower case
 void strlowcpy(char *dest, const char *src) {
-  ASSERT((dest != NULL) && (src != NULL));
+  ASSERT((dest != nullptr) && (src != nullptr));
   char *s, *d;
   s = (char *)src;
   d = dest;
@@ -3725,8 +3764,8 @@ void strlowcpy(char *dest, const char *src) {
 //	exists. These commands are not case sensitive.
 //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
 int8_t DMFCBase::AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely) {
-  ASSERT(command != NULL);
-  ASSERT(handler != NULL);
+  ASSERT(command != nullptr);
+  ASSERT(handler != nullptr);
 
   // traverse to the end of the list checking for duplicates along the way
   tInputCommandNode *node = m_InputCommandRootNode;
@@ -3738,7 +3777,7 @@ int8_t DMFCBase::AddInputCommand(const char *command, const char *description, v
       return -1;
     }
     // fill in data
-    node->next = NULL;
+    node->next = nullptr;
     node->handler = handler;
     node->allow_remote = allow_remotely;
     node->data = (char *)malloc(strlen(command) + 1);
@@ -3779,7 +3818,7 @@ int8_t DMFCBase::AddInputCommand(const char *command, const char *description, v
   if (!temp) { // out of memory
     return -1;
   }
-  temp->next = NULL;
+  temp->next = nullptr;
   temp->handler = handler;
   temp->allow_remote = allow_remotely;
   temp->data = (char *)malloc(strlen(command) + 1);
@@ -3813,7 +3852,7 @@ void DMFCBase::CheckPInfo() {
       // now go through the victim list and check
       tPKillerInfo *node;
 
-      ASSERT(pr->pinfo != NULL);
+      ASSERT(pr->pinfo != nullptr);
       node = pr->pinfo->GetFirstKiller();
 
       while (node) {
@@ -3854,103 +3893,22 @@ void DMFCBase::EnableAutoSaveDisconnect(bool enable) {
     DISABLE_FLAGS(m_iProtectedFlags, DMFC_PRF_AUTOSAVEDISC);
 }
 
-//	DMFCBase::GenerateStatFilename
-//
-//	Given the following information it will return a full path to what
-//	the recommended filename to save stats to should be.
-//	root = Multiplayer DLL Name (filename will start with this)
-//	end_of_level = pass true if this is the end of a level stats
-void DMFCBase::GenerateStatFilename(char *filename, const char *root, bool end_of_level) {
+std::filesystem::path DMFCBase::GenerateStatFilename(const char *root, bool end_of_level) {
   int level = Current_mission->cur_level;
   char *name = Netgame->name;
-  struct tm *newtime;
-  time_t long_time;
 
-  time(&long_time);
-  newtime = localtime(&long_time);
-
-  char fname[256];
-  char timestr[100];
-  char day[8], month[8];
-
-  switch (newtime->tm_wday) {
-  case 0:
-    strcpy(day, DTXT_SUNDAY);
-    break;
-  case 1:
-    strcpy(day, DTXT_MONDAY);
-    break;
-  case 2:
-    strcpy(day, DTXT_TUESDAY);
-    break;
-  case 3:
-    strcpy(day, DTXT_WEDNESDAY);
-    break;
-  case 4:
-    strcpy(day, DTXT_THURSDAY);
-    break;
-  case 5:
-    strcpy(day, DTXT_FRIDAY);
-    break;
-  case 6:
-    strcpy(day, DTXT_SATURDAY);
-    break;
-  }
-
-  switch (newtime->tm_mon) {
-  case 0:
-    strcpy(month, DTXT_JANUARY);
-    break;
-  case 1:
-    strcpy(month, DTXT_FEBRUARY);
-    break;
-  case 2:
-    strcpy(month, DTXT_MARCH);
-    break;
-  case 3:
-    strcpy(month, DTXT_APRIL);
-    break;
-  case 4:
-    strcpy(month, DTXT_MAY);
-    break;
-  case 5:
-    strcpy(month, DTXT_JUNE);
-    break;
-  case 6:
-    strcpy(month, DTXT_JULY);
-    break;
-  case 7:
-    strcpy(month, DTXT_AUGUST);
-    break;
-  case 8:
-    strcpy(month, DTXT_SEPTEMBER);
-    break;
-  case 9:
-    strcpy(month, DTXT_OCTOBER);
-    break;
-  case 10:
-    strcpy(month, DTXT_NOVEMBER);
-    break;
-  case 11:
-    strcpy(month, DTXT_DECEMBER);
-    break;
-  }
-
-  snprintf(timestr, sizeof(timestr), "%s._%s._%d_%d_%02d%02d", day, month, newtime->tm_mday, newtime->tm_year + 1900,
-           newtime->tm_hour, newtime->tm_min);
-  snprintf(fname, sizeof(fname), "%s_%s_%d_%s%s.stats", root, name, level, (end_of_level) ? DTXT_ENDOFLEVELCONCAT : "",
-           timestr);
+  const auto now = std::chrono::system_clock::now();
+  auto in_time_t = std::chrono::system_clock::to_time_t(now);
+  std::stringstream ss;
+  ss << root << "_" << name << "_" << level << "_" << (end_of_level ? DTXT_ENDOFLEVELCONCAT : "")
+     << std::put_time(std::localtime(&in_time_t), "%Y_%m_%d_%H%M") << ".stats";
+  std::string fname = ss.str();
 
   // remove all spaces (convert to _)
-  char *p = fname;
-  while ((*p)) {
-    if (*p == ' ')
-      *p = '_';
-    p++;
-  }
+  std::replace(fname.begin(), fname.end(), ' ', '_');
 
   // build the path info here
-  DLLddio_MakePath(filename, LocalD3Dir, "netgames", fname, NULL);
+  return std::filesystem::path(LocalD3Dir) / "netgames" / fname;
 }
 
 //	DMFCBase::IsPlayerObserver
@@ -4006,7 +3964,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
     DLLrend_SetTextureType(TT_LINEAR);
     DLLrend_SetLighting(LS_NONE);
     DLLrend_SetAlphaType(AT_CONSTANT_TEXTURE);
-    DLLrend_DrawScaledBitmap(0, 0, *Game_window_w, 8 * height, background_bmp, 0, 0, 1, 1, 1.0, -1, NULL);
+    DLLrend_DrawScaledBitmap(0, 0, *Game_window_w, 8 * height, background_bmp, 0, 0, 1, 1, 1.0, -1, nullptr);
     DLLrend_SetZBufferState(1);
   }
 
@@ -4682,10 +4640,10 @@ MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, uint8_t flags, 
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
-void ParseHostsFile(char *filename, tHostsNode **root) {
+void ParseHostsFile(const std::filesystem::path &filename, tHostsNode **root) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "rt");
 
@@ -4804,7 +4762,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       }
 
       // we now have a valid mask (s_mask) and a valid ip (s_ip)
-      mprintf(0, "IP: %s   Mask: %s\n", s_ip, s_mask);
+      LOG_INFO.printf("IP: %s   Mask: %s", s_ip, s_mask);
       ip_address = DLLnw_GetHostAddressFromNumbers(s_ip);
       mask = DLLnw_GetHostAddressFromNumbers(s_mask);
 
@@ -4816,7 +4774,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
         curr = curr->next;
       }
       if (curr) {
-        curr->next = NULL;
+        curr->next = nullptr;
         curr->ip = ip_address;
         curr->mask = mask;
       }
@@ -4825,7 +4783,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
     }
 
   error_parse:
-    mprintf(0, "Error parsing IP Address Mask: %s\n", save_buffer);
+    LOG_WARNING.printf("Error parsing IP Address Mask: %s", save_buffer);
 
   noerror_parse:;
   }
@@ -4837,26 +4795,23 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
 //
 //	Reads in the hosts.allow and hosts.deny files (if available)
 void DMFCBase::ReadInHostsAllowDeny(void) {
-  char allow_fn[_MAX_PATH], deny_fn[_MAX_PATH];
-  bool allow_exist, deny_exist;
-
   // build the path info here
-  DLLddio_MakePath(allow_fn, LocalD3Dir, "netgames", "hosts.allow", NULL);
-  DLLddio_MakePath(deny_fn, LocalD3Dir, "netgames", "hosts.deny", NULL);
+  std::filesystem::path allow_fn = std::filesystem::path(LocalD3Dir) / "netgames" / "hosts.allow";
+  std::filesystem::path deny_fn = std::filesystem::path(LocalD3Dir) / "netgames" / "hosts.deny";
 
-  allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
-  deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
+  bool allow_exist = (bool)(DLLcfexist(allow_fn) != 0);
+  bool deny_exist = (bool)(DLLcfexist(deny_fn) != 0);
 
-  m_DenyList = NULL;
-  m_AllowList = NULL;
+  m_DenyList = nullptr;
+  m_AllowList = nullptr;
 
   // parse away
   if (deny_exist) {
-    mprintf(0, "Parsing hosts.deny\n");
+    LOG_INFO << "Parsing hosts.deny";
     ParseHostsFile(deny_fn, &m_DenyList);
   }
   if (allow_exist) {
-    mprintf(0, "Parsing hosts.allow\n");
+    LOG_INFO << "Parsing hosts.allow";
     ParseHostsFile(allow_fn, &m_AllowList);
   }
 }
@@ -4865,7 +4820,7 @@ void DMFCBase::ReadInHostsAllowDeny(void) {
 //
 //	Frees all the memory allocated for the host allow/deny lists
 void DMFCBase::FreeHostsLists(void) {
-  tHostsNode *curr = NULL, *next;
+  tHostsNode *curr = nullptr, *next;
 
   curr = m_DenyList;
   while (curr) {
@@ -4911,7 +4866,7 @@ bool DMFCBase::IsPlayerAlive(int pnum) {
 //	Loads up the startup script and sets variables accordingly
 void DMFCBase::ParseStartupScript(void) {
   CFILE *file;
-  char path[_MAX_PATH];
+  std::filesystem::path path;
   char buffer[256];
   int size;
   bool ok_to_read;
@@ -4920,11 +4875,11 @@ void DMFCBase::ParseStartupScript(void) {
 
   if ((autoexec_arg = DLLFindArg("-autoexec", 1)) != 0) {
     // a specific autoexec.dmfc file was specified, use that
-    strcpy(path, GetGameArg(autoexec_arg + 1));
-    mprintf(0, "Override AUTOEXEC.DMFC to %s\n", path);
+    path = GetGameArg(autoexec_arg + 1);
+    LOG_INFO << "Override AUTOEXEC.DMFC to " << path;
   } else {
     // use the default autoexec.dmfc
-    DLLddio_MakePath(path, LocalD3Dir, "netgames", "autoexec.dmfc", NULL);
+    path = std::filesystem::path(LocalD3Dir) / "netgames" / "autoexec.dmfc";
   }
 
   DLLOpenCFILE(&file, path, "rt");
@@ -4946,7 +4901,7 @@ void DMFCBase::ParseStartupScript(void) {
     }
 
     if (!ok_to_read) {
-      mprintf(0, "AUTOEXEC.DMFC: Line too long\n");
+      LOG_WARNING << "AUTOEXEC.DMFC: Line too long";
     } else {
       if (buffer[1] == '$') {
         InputCommandHandle(&buffer[1]);
@@ -5241,7 +5196,7 @@ void DMFCBase::DisplayTauntIndicatorFrame(void) {
   DLLrend_SetZBufferState(0);
   DLLrend_SetTextureType(TT_LINEAR);
 
-  DLLrend_DrawScaledBitmap(x, y, x + bmw, y + bmh, bmp, 0, 0, 1, 1, 1, -1, NULL);
+  DLLrend_DrawScaledBitmap(x, y, x + bmw, y + bmh, bmp, 0, 0, 1, 1, 1, -1, nullptr);
   DLLrend_SetFiltering(1);
   DLLrend_SetZBufferState(1);
 
@@ -5328,9 +5283,9 @@ int DMFCBase::GetConnectingPlayerTeam(int slot) {
 
   int prec_num;
   if (IsMasterTrackerGame())
-    prec_num = PRec_FindPlayer(Players[slot].callsign, NULL, Players[slot].tracker_id);
+    prec_num = PRec_FindPlayer(Players[slot].callsign, nullptr, Players[slot].tracker_id);
   else
-    prec_num = PRec_FindPlayer(Players[slot].callsign, &NetPlayers[slot].addr, NULL);
+    prec_num = PRec_FindPlayer(Players[slot].callsign, &NetPlayers[slot].addr, nullptr);
 
   int team = -2;
 
@@ -5339,7 +5294,7 @@ int DMFCBase::GetConnectingPlayerTeam(int slot) {
 
     // we need to reconnect the player to the player records before we get the team
     if (!PRec_ReconnectPlayerToSlot(slot, prec_num, Players, NetPlayers)) {
-      mprintf(0, "Unable to reassign reconnecting player (%s) to Player Record slot #%d\n",
+      LOG_ERROR.printf("Unable to reassign reconnecting player (%s) to Player Record slot #%d",
               Players[slot].callsign,
               prec_num);
       Int3();
@@ -5364,7 +5319,7 @@ int DMFCBase::GetConnectingPlayerTeam(int slot) {
     }
   }
 
-  mprintf(0, "CONNECTING PLAYER (%s): Team assigned to %d\n", Players[slot].callsign, team);
+  LOG_INFO.printf("CONNECTING PLAYER (%s): Team assigned to %d", Players[slot].callsign, team);
 
   return team;
 }
@@ -5425,8 +5380,8 @@ void DMFCBase::DisplayTimelimitCountdown(void) {
 //	and create a new string for display.
 //	All tokens begin with $$ (i.e.  $$TEAMBASE)
 void DMFCBase::TranslateTextMacro(const char *src, char *destination, int dest_size) {
-  ASSERT(destination != NULL);
-  ASSERT(src != NULL);
+  ASSERT(destination != nullptr);
+  ASSERT(src != nullptr);
   ASSERT(dest_size >= 0);
 
   if (dest_size <= 0)
@@ -5478,7 +5433,7 @@ void DMFCBase::TranslateTextMacro(const char *src, char *destination, int dest_s
 
           // now replace the token...
           *token_string = '\0';
-          mprintf(0, "Looking for token for %s\n", token);
+          LOG_INFO.printf("Looking for token for %s", token);
           CallOnGetTokenString(token, token_string, 512);
 
           // make sure we don't go too far
@@ -5541,10 +5496,10 @@ int DMFCBase::GetCameraViewType(int window) {
 //	It returns NULL if an invalid id is given (or it's not used)
 object_info *DMFCBase::GetObjectInfo(int objinfo_id) {
   if (objinfo_id < 0 || objinfo_id >= MAX_OBJECT_IDS)
-    return NULL;
+    return nullptr;
 
   if (Object_info[objinfo_id].type == OBJ_NONE)
-    return NULL;
+    return nullptr;
 
   return &Object_info[objinfo_id];
 }

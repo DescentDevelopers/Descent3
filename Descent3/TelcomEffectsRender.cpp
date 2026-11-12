@@ -787,7 +787,7 @@ void RenderMovie(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_
               done = true;
       }*/
       EndMovie(tce->movieinfo.handle);
-      tce->movieinfo.handle = NULL;
+      tce->movieinfo.handle = nullptr;
       done = true;
     } else
       tce->age += 1.0f / tce->movieinfo.fps;

@@ -64,7 +64,7 @@ int FindFreeDynamicLightmap(int cl);
 
 // Applies dynamic lighting to the room faces based on the light coming from
 // an object
-void ApplyLightingToRooms(vector *, int, float, float, float, float, vector *light_direction = NULL,
+void ApplyLightingToRooms(vector *, int, float, float, float, float, vector *light_direction = nullptr,
                           float dot_range = 0);
 
 // Clears the used flag for the dynamic lightmaps
@@ -72,7 +72,7 @@ void ClearDynamicLightmaps();
 
 // Changes the terrain shading to approximate lighting
 void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float red_scale, float green_scale,
-                            float blue_scale, vector *light_direction = NULL, float dot_range = 0);
+                            float blue_scale, vector *light_direction = nullptr, float dot_range = 0);
 
 // Given a float, returns the index into the Ubyte_float_table that this number
 // corresponds to
@@ -84,7 +84,7 @@ extern float Ubyte_to_float[];
 void SetRoomPulse(room *rp, uint8_t pulse_time, uint8_t pulse_offset);
 
 // Returns the total number of bytes needed for volume lighting in this room
-int GetVolumeSizeOfRoom(room *rp, int *w = NULL, int *h = NULL, int *d = NULL);
+int GetVolumeSizeOfRoom(room *rp, int *w = nullptr, int *h = nullptr, int *d = nullptr);
 
 // Returns a lightmap that can be applied for specular lighting
 int GetSpecularLightmapForFace(vector *pos, room *rp, face *fp);

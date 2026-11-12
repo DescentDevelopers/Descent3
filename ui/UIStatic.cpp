@@ -88,11 +88,11 @@ void UIText::OnFormat() {
 }
 
 void UIStatic::Create(UIWindow *parent, UIItem *item, int x, int y, int w, int h, int flags) {
-  m_Background = NULL;
+  m_Background = nullptr;
   if (item)
     m_Title = item->CopyUIItem();
   else
-    m_Title = NULL;
+    m_Title = nullptr;
   UIGadget::Create(parent, -1, x, y, w, h, flags);
   UIGadget::Disable();
 }
@@ -100,7 +100,7 @@ void UIStatic::Create(UIWindow *parent, UIItem *item, int x, int y, int w, int h
 void UIStatic::SetBackground(UIPrimativeItem *item) {
   if (m_Background)
     delete m_Background;
-  m_Background = NULL;
+  m_Background = nullptr;
   if (item)
     m_Background = (UIPrimativeItem *)item->CopyUIItem();
 }
@@ -108,7 +108,7 @@ void UIStatic::SetBackground(UIPrimativeItem *item) {
 void UIStatic::SetTitle(UIItem *item) {
   if (m_Title)
     delete m_Title;
-  m_Title = NULL;
+  m_Title = nullptr;
   if (item)
     m_Title = item->CopyUIItem();
 }
@@ -147,8 +147,8 @@ void UIStatic::OnDestroy() {
   if (m_Background)
     delete m_Background;
 
-  m_Title = NULL;
-  m_Background = NULL;
+  m_Title = nullptr;
+  m_Background = nullptr;
 }
 
 //	----------------------------------------------------------------------------
@@ -159,7 +159,7 @@ void UIProgress::Create(UIWindow *parent, int x, int y, int w, int h, int flags)
   m_W = w;
   m_H = h;
   m_ProgressWidth = 0;
-  UIStatic::Create(parent, NULL, x, y, w, h, flags);
+  UIStatic::Create(parent, nullptr, x, y, w, h, flags);
 }
 
 //	inheritable operations

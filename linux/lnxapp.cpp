@@ -179,6 +179,8 @@ void oeLnxApplication::get_info(void *info) {
 unsigned oeLnxApplication::defer() {
   bool res = 0;
 
+  D3::ChronoTimer::Pump();
+
   if (m_DeferFunc) {
     res = 1;
     (*m_DeferFunc)(true);

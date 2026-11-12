@@ -139,9 +139,10 @@
 #ifndef __IDMFC_H_
 #define __IDMFC_H_
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdarg>
+#include <filesystem>
+
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "controls.h"
@@ -900,7 +901,7 @@ public:
   // DMFCBase::SetTimerInterval
   //
   //	Starts a timer event running
-  virtual int SetTimerInterval(void (*func)(void), float intval, float longevity, void (*onkill)(void) = NULL) = 0;
+  virtual int SetTimerInterval(void (*func)(void), float intval, float longevity, void (*onkill)(void) = nullptr) = 0;
 
   // DMFCBase::KillTimer
   //
@@ -1009,7 +1010,7 @@ public:
   //	Since one weapon may actually consist of many weapons, in order to save space you can create
   //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
   //  get the actual weapon.  End list of children with a NULL
-  virtual void AddWeaponHash(const char *parent, ...) = 0;
+  virtual void AddWeaponHash(const char *parent, ...) VA_SENTINEL = 0;
 
   // DMFCBase::AddWeaponHashArray
   //
@@ -1189,13 +1190,14 @@ public:
   //	Disables/Enables the autosaving of game stats to file on disconnect from the game
   virtual void EnableAutoSaveDisconnect(bool enable) = 0;
 
-  //	DMFCBase::GenerateStatFilename
-  //
-  //	Given the following information it will return a full path to what
-  //	the recommended filename to save stats to should be.
-  //	root = Multiplayer DLL Name (filename will start with this)
-  //	end_of_level = pass true if this is the end of a level stats
-  virtual void GenerateStatFilename(char *filename, const char *root, bool end_of_level) = 0;
+  /**
+   * Given the following information it will return a full path to what
+   * the recommended filename to save stats to should be.
+   * @param root Multiplayer DLL Name (filename will start with this)
+   * @param end_of_level pass true if this is the end of a level stats
+   * @return
+   */
+  virtual std::filesystem::path GenerateStatFilename(const char *root, bool end_of_level) = 0;
 
   //	DMFCBase::IsPlayerObserver
   //
@@ -1587,7 +1589,7 @@ public:
   virtual float GetGametime(void) = 0;
   // Gets the 'true' gametime...which maybe paused if the server is in the wait for players
   // dialog
-  virtual float GetRealGametime(bool *ispaused = NULL) = 0;
+  virtual float GetRealGametime(bool *ispaused = nullptr) = 0;
   // float *ShieldDelta;			//array of player's...server update's their shields based on this array
   virtual float *GetShieldDeltaArray(void) = 0;
   // float *Hud_aspect_x,*Hud_aspect_y;
@@ -1636,7 +1638,7 @@ public:
   // game_api API;??
   virtual tOSIRISModuleInit *GetOsirisModuleData(void) = 0;
   // get viseffect data
-  virtual vis_effect *GetVisEffectArray(int **Highviseptr = NULL) = 0;
+  virtual vis_effect *GetVisEffectArray(int **Highviseptr = nullptr) = 0;
   // get current level information (watch for NULL return), although it should never be
   virtual level_info *GetLevelInfo() = 0;
   // gets the argument at the index passed
@@ -1666,7 +1668,7 @@ public:
   virtual bool Down(void) = 0;
 
   virtual void Execute(void) = 0;
-  virtual void Draw(int x, int y, int height, int backgroundbmp, float *ratio = NULL) = 0;
+  virtual void Draw(int x, int y, int height, int backgroundbmp, float *ratio = nullptr) = 0;
 
   virtual void SetInputFocus(void) = 0;
   virtual void LoseInputFocus(void) = 0;
@@ -1726,7 +1728,7 @@ Class creation interface functions
 DLLEXPORT IDMFC DLLFUNCCALLPTR CreateDMFC(void);
 DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItem(void);
 DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(const char *title, char type, uint8_t flags, void (*fp)(int),
-                                                              tCustomMenu *custom_menu = NULL);
+                                                              tCustomMenu *custom_menu = nullptr);
 DLLEXPORT IDmfcStats DLLFUNCCALLPTR CreateDmfcStats(void);
 
 /***************************
@@ -1869,7 +1871,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_ClipString(IDMFC *instance, int width, char *st
 DLLEXPORT void DLLFUNCCALL IDMFC_DisplayOutrageLogo(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_KillAllTimers(IDMFC *instance);
 DLLEXPORT int DLLFUNCCALL IDMFC_SetTimerInterval(IDMFC *instance, void (*func)(void), float intval,
-                                                        float longevity, void (*onkill)(void) = NULL);
+                                                        float longevity, void (*onkill)(void) = nullptr);
 DLLEXPORT void DLLFUNCCALL IDMFC_KillTimer(IDMFC *instance, int handle);
 DLLEXPORT void DLLFUNCCALL IDMFC_SwitchShowHudCallsignLevel(IDMFC *instance, uint8_t level, bool announce = true);
 DLLEXPORT void DLLFUNCCALL IDMFC_SwitchServerHudCallsignLevel(IDMFC *instance, uint8_t level);
@@ -1922,7 +1924,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_EnableStatisticalMessages(IDMFC *instance, bool
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableOnScreenMenu(IDMFC *instance, bool turn_on);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableAutoSaveLevelEnd(IDMFC *instance, bool enable);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableAutoSaveDisconnect(IDMFC *instance, bool enable);
-DLLEXPORT void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, char *filename, const char *root,
+DLLEXPORT void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, const char *root, std::filesystem::path &filename,
                                                              bool end_of_level);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerObserver(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableOnScreenMenuBackground(IDMFC *instance, bool enable);
@@ -2145,7 +2147,7 @@ DLLEXPORT int DLLFUNCCALLPTR IDMFC_GetGameFontTranslateArray(IDMFC *instance);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetObserverModeBitmap(IDMFC *instance);
 DLLEXPORT float DLLFUNCCALL IDMFC_GetFrametime(IDMFC *instance);
 DLLEXPORT float DLLFUNCCALL IDMFC_GetGametime(IDMFC *instance);
-DLLEXPORT float DLLFUNCCALL IDMFC_GetRealGametime(IDMFC *instance, bool *ispaused = NULL);
+DLLEXPORT float DLLFUNCCALL IDMFC_GetRealGametime(IDMFC *instance, bool *ispaused = nullptr);
 DLLEXPORT float DLLFUNCCALLPTR IDMFC_GetShieldDeltaArray(IDMFC *instance);
 DLLEXPORT float DLLFUNCCALL IDMFC_GetHudAspectX(IDMFC *instance);
 DLLEXPORT float DLLFUNCCALL IDMFC_GetHudAspectY(IDMFC *instance);
@@ -2170,7 +2172,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_SetViewerObjectPtr(IDMFC *instance, object *v_o
 DLLEXPORT float DLLFUNCCALL IDMFC_GetRenderZoom(IDMFC *instance);
 DLLEXPORT IMenuItem DLLFUNCCALLPTR IDMFC_GetOnScreenMenu(IDMFC *instance);
 DLLEXPORT tOSIRISModuleInit DLLFUNCCALLPTR IDMFC_GetOsirisModuleData(IDMFC *instance);
-DLLEXPORT vis_effect DLLFUNCCALLPTR IDMFC_GetVisEffectArray(IDMFC *instance, int **Highviseptr = NULL);
+DLLEXPORT vis_effect DLLFUNCCALLPTR IDMFC_GetVisEffectArray(IDMFC *instance, int **Highviseptr = nullptr);
 DLLEXPORT level_info DLLFUNCCALLPTR IDMFC_GetLevelInfo(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_SelectNextCameraView(IDMFC *instance, int window);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetCameraViewType(IDMFC *instance, int window);
@@ -2191,7 +2193,7 @@ DLLEXPORT bool DLLFUNCCALL IMenuItem_Up(IMenuItem *instance);
 DLLEXPORT bool DLLFUNCCALL IMenuItem_Down(IMenuItem *instance);
 DLLEXPORT void DLLFUNCCALL IMenuItem_Execute(IMenuItem *instance);
 DLLEXPORT void DLLFUNCCALL IMenuItem_Draw(IMenuItem *instance, int x, int y, int height, int backgroundbmp,
-                                                 float *ratio = NULL);
+                                                 float *ratio = nullptr);
 DLLEXPORT void DLLFUNCCALL IMenuItem_SetInputFocus(IMenuItem *instance);
 DLLEXPORT void DLLFUNCCALL IMenuItem_LoseInputFocus(IMenuItem *instance);
 DLLEXPORT bool DLLFUNCCALL IMenuItem_GetFocus(IMenuItem *instance);

@@ -26,12 +26,7 @@
 
 #include "dip_gametrack.h"
 #include "httpclient.h"
-
-#if (defined(LOGGER) && (!defined(RELEASE)))
-#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
-#else
-#define DLLmprintf(...)
-#endif
+#include "log.h"
 
 typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
@@ -88,7 +83,7 @@ void DecodeApiAnswer(std::stringstream &data) {
 }
 
 void FetchApi() {
-  DLLmprintf(0, "fetch api.\n");
+  LOG_INFO << "fetch api.";
   D3::HttpClient http_client(TSETSEFLYAPI_HOST);
   std::stringstream input;
   auto result = http_client.Get(TSETSEFLYAPI_URI);

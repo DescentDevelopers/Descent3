@@ -245,6 +245,10 @@ extern int Max_window_w, Max_window_h;
 extern int Game_mode;
 extern int Difficulty_level;
 
+// Set from the command line (-lowmem, -superlowmem, -dedicated, -himem) to trade texture and lighting detail for memory
+extern bool Mem_low_memory_mode;
+extern bool Mem_superlow_memory_mode;
+
 extern int sound_override_force_field;
 extern int sound_override_glass_breaking;
 

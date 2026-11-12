@@ -42,7 +42,6 @@ target_link_libraries(renderer PRIVATE
   ddebug
   ddio
   logger
-  mem
   misc
   module
   rtperformance

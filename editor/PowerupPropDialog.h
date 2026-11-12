@@ -25,7 +25,7 @@
 class CPowerupPropDialog : public CDialog {
   // Construction
 public:
-  CPowerupPropDialog(CWnd *pParent = NULL); // standard constructor
+  CPowerupPropDialog(CWnd *pParent = nullptr); // standard constructor
 
   // Dialog Data
   //{{AFX_DATA(CPowerupPropDialog)

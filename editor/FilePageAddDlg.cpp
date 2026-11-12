@@ -40,8 +40,8 @@ CFilePageAddDlg::CFilePageAddDlg(CWnd *pParent /*=NULL*/) : CDialog(CFilePageAdd
   // NOTE: the ClassWizard will add member initialization here
   //}}AFX_DATA_INIT
   m_NumberOfSelectedFiles = 0;
-  m_SelectedFiles = NULL;
-  m_SelectedDestDir = NULL;
+  m_SelectedFiles = nullptr;
+  m_SelectedDestDir = nullptr;
   initial_path = "";
 }
 
@@ -134,7 +134,7 @@ BOOL CFileList::FillBox() {
       if (!FindNextFile(hSearch, &FileData)) {
 
         SetRedraw();
-        InvalidateRect(NULL);
+        InvalidateRect(nullptr);
         // Close the search handle.
         if (!FindClose(hSearch))
           return FALSE;
@@ -146,7 +146,7 @@ BOOL CFileList::FillBox() {
   }
 
   SetRedraw();
-  InvalidateRect(NULL);
+  InvalidateRect(nullptr);
 
   return TRUE;
 }
@@ -390,7 +390,7 @@ bool CFilePageAddDlg::Quit(void) {
 
   char temp[1024];
   sprintf(temp, "Are you sure you want to add these files to the data\\%s directory?", buffer);
-  if (MessageBox(temp, NULL, MB_YESNO) != IDYES) {
+  if (MessageBox(temp, nullptr, MB_YESNO) != IDYES) {
     return false;
   }
 
@@ -400,12 +400,12 @@ bool CFilePageAddDlg::Quit(void) {
   m_NumberOfSelectedFiles = list->GetSelCount();
 
   if (m_NumberOfSelectedFiles == 0) {
-    m_SelectedFiles = NULL;
+    m_SelectedFiles = nullptr;
   } else {
 
     m_SelectedFiles = mem_rmalloc<char *>(m_NumberOfSelectedFiles);
     if (!m_SelectedFiles) {
-      m_SelectedFiles = NULL;
+      m_SelectedFiles = nullptr;
       m_NumberOfSelectedFiles = 0;
       return true;
     }
@@ -413,7 +413,7 @@ bool CFilePageAddDlg::Quit(void) {
     int *sel_items = mem_rmalloc<int>(m_NumberOfSelectedFiles);
     if (!sel_items) {
       mem_free(m_SelectedFiles);
-      m_SelectedFiles = NULL;
+      m_SelectedFiles = nullptr;
       m_NumberOfSelectedFiles = 0;
       return true;
     }
@@ -430,7 +430,7 @@ bool CFilePageAddDlg::Quit(void) {
       list->GetText(cur_sel, temp);
 
       // ummm, figure out real path here
-      ddio_MakePath(buffer, drive, temp, NULL);
+      ddio_MakePath(buffer, drive, temp, nullptr);
 
       m_SelectedFiles[i] = mem_strdup(buffer);
     }

@@ -903,6 +903,8 @@ int GetScreenMode() { return Screen_mode; }
 //	use to sync to debug break handlers
 int rend_initted = 0;
 int Low_vidmem = 0;
+bool Mem_low_memory_mode = false;
+bool Mem_superlow_memory_mode = false;
 
 void SetScreenMode(int sm, bool force_res_change) {
   static int old_sm = SM_NULL;
@@ -969,7 +971,7 @@ void SetScreenMode(int sm, bool force_res_change) {
     } else {
       int t = FindArg("-ForceStateLimited");
       if (t) {
-        StateLimited = (atoi((const char *)GameArgs[t + 1]) != 0);
+        StateLimited = (atoi(GameArgs[t + 1]) != 0);
       }
 
       if (rend_initted == -1) {
@@ -1273,10 +1275,10 @@ void DoScreenshot() {
   screen_name << "screenshot-" << std::chrono::duration_cast<std::chrono::milliseconds>(now).count() << ".png";
   std::filesystem::path filename = screenshots_path / screen_name.str();
   // Now save it
-  screenshot->saveAsPNG((const char*)filename.u8string().c_str());
+  screenshot->saveAsPNG(PATH_TO_CSTR(filename));
 
   if (Demo_flags != DF_PLAYBACK) {
-    AddHUDMessage(TXT_SCRNSHT, filename.filename().u8string().c_str());
+    AddHUDMessage(TXT_SCRNSHT, PATH_TO_CSTR(filename.filename()));
   }
 
   StartTime();

@@ -39,7 +39,7 @@ static inline void opti_16s_mix(int16_t *cur_sample_16bit, const int num_write, 
 
 software_mixer::software_mixer() {
   m_init = false;
-  m_buffer = NULL;
+  m_buffer = nullptr;
 }
 
 software_mixer::~software_mixer() {
@@ -153,22 +153,22 @@ void software_mixer::StreamMixer(char *ptr, int len) {
         switch (cur_buf->play_info->m_stream_format) {
         case SIF_STREAMING_16_M:
           sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
-          sample_8bit = NULL;
+          sample_8bit = nullptr;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 2;
           break;
         case SIF_STREAMING_8_M:
-          sample_16bit = NULL;
+          sample_16bit = nullptr;
           sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size;
           break;
         case SIF_STREAMING_16_S:
           sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
-          sample_8bit = NULL;
+          sample_8bit = nullptr;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 4;
           f_mono = false;
           break;
         case SIF_STREAMING_8_S:
-          sample_16bit = NULL;
+          sample_16bit = nullptr;
           sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 2;
           f_mono = false;

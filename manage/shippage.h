@@ -63,7 +63,7 @@ int mng_SetAndLoadShip(mngs_ship_page *shippage, CFILE *infile);
 // Given a shippage and a ship handle, attempts to make ship n correspond to
 // to the shippage.
 // Returns 1 on success, 0 otherwise
-int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile = NULL);
+int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile = nullptr);
 
 // Copies values from a Ship into a ship_page
 void mng_AssignShipToShipPage(int n, mngs_ship_page *shippage);

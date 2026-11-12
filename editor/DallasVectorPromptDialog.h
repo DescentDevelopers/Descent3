@@ -31,7 +31,7 @@
 class CDallasVectorPromptDialog : public CDialog {
   // Construction
 public:
-  CDallasVectorPromptDialog(CWnd *pParent = NULL); // standard constructor
+  CDallasVectorPromptDialog(CWnd *pParent = nullptr); // standard constructor
 
   float m_PromptData1;
   float m_PromptData2;
