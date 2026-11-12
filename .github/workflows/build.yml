@@ -106,7 +106,7 @@ jobs:
       - uses: actions/setup-java@v4
         if: ${{ matrix.os.name == 'android' }}
         with:
-         java-version: '17'
+         java-version: '21'
          distribution: 'temurin'
 
       - name: Build APK
