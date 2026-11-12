@@ -120,7 +120,7 @@ jobs:
 
       - name: Build APK
         if: ${{ matrix.os.name == 'android' }}
-        run: ./gradlew build
+        run: ./gradlew assemble${{ matrix.build_type }}
 
       - name: Customize vcpkg to create macOS universal binary
         if: ${{ matrix.os.preset == 'mac' }}
