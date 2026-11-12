@@ -69,9 +69,9 @@
  */
 
 #include <cstdlib>
-#if defined(POSIX)
+#if defined(POSIX) && !defined(ANDROID)
 #include <termios.h>
-#else
+#elif defined(WIN32)
 #include "winsock.h"
 #endif
 
@@ -83,7 +83,7 @@
 #undef buttons
 #endif
 
-#if defined(POSIX)
+#if defined(POSIX) && !defined(ANDROID)
 static struct termios Linux_initial_terminal_settings;
 #endif
 
@@ -105,7 +105,7 @@ void LnxAppShutdown() {
   LinuxAppDontCallShutdown = true;
   if (LinuxAppFlags & OEAPP_CONSOLE) {
     con_Destroy();
-#if defined(POSIX)
+#if defined(POSIX) && !defined(ANDROID)
     tcsetattr(0, TCSANOW, &Linux_initial_terminal_settings);
 #endif
   }
@@ -117,7 +117,7 @@ oeLnxApplication::oeLnxApplication(unsigned flags) {
   m_AppActive = true;
 
   if (flags & OEAPP_CONSOLE) {
-#if defined(POSIX)
+#if defined(POSIX) && !defined(ANDROID)
     tcgetattr(0, &Linux_initial_terminal_settings);
 #endif
     con_Create(m_Flags);
@@ -133,7 +133,7 @@ oeLnxApplication::oeLnxApplication(unsigned flags) {
 
 //	Create object with a premade info
 oeLnxApplication::oeLnxApplication(tLnxAppInfo *appinfo) {
-#if defined(POSIX)
+#if defined(POSIX) && !defined(ANDROID)
   tcgetattr(0, &Linux_initial_terminal_settings);
 #endif
   m_Flags = appinfo->flags;

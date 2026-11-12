@@ -134,10 +134,7 @@ void (*GetUICallback())();
 int DoUI();
 
 // does one frame of UI input (returns result.)
-void DoUIFrame();
-
-//	does one frame of UI without polling input.
-void DoUIFrameWithoutInput();
+void DoUIFrame(bool do_input = true);
 
 //	gets frame result of ui input.
 int GetUIFrameResult();

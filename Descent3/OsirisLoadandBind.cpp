@@ -878,8 +878,25 @@ void Osiris_UnloadLevelModule(void) {
   }
 }
 
+#ifdef ANDROID
+#include "d3_bundled_scripts.h"
+
+// On Android, the first-party scripts aren't in PRIMARY_HOG: they're packaged in the APK as native
+// libraries, which dlopen() loads straight from the APK given just the library's name. Returns that
+// (case-sensitive) name if modfilename is one of them, or an empty path otherwise.
+static std::filesystem::path find_bundled_script(const std::filesystem::path &modfilename) {
+  const std::string filename = (const char *)modfilename.filename().u8string().c_str();
+  for (const char *bundled : D3_BUNDLED_SCRIPT_MODULES) {
+    if (stricmp(bundled, filename.c_str()) == 0) {
+      return bundled;
+    }
+  }
+  return {};
+}
+#endif
+
 //	returns:	-2 if not found
-//				-1 if it is in data\scripts
+//				-1 if it is in data\scripts (or, on Android, bundled with the app)
 //				0-x which extracted script id it is
 int get_full_path_to_module(const std::filesystem::path &module_name, std::filesystem::path &fullpath,
                             std::filesystem::path &basename) {
@@ -906,6 +923,15 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
   std::filesystem::path modfilename = mod_GetRealModuleName(adjusted_name);
 
   int exist = cfexist(modfilename);
+#ifdef ANDROID
+  if (exist != CFES_ON_DISK) {
+    std::filesystem::path bundled = find_bundled_script(modfilename);
+    if (!bundled.empty()) {
+      fullpath = bundled;
+      return -1;
+    }
+  }
+#endif
   switch (exist) {
   case CFES_ON_DISK:
     fullpath = LocalScriptDir / modfilename;

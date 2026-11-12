@@ -118,7 +118,7 @@ int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) 
 
     // check for bail
     int key = ddio_KeyInKey();
-    if (key == KEY_ESC) {
+    if (key == KEY_ESC || !ddio_GetCurrentTouches().empty()) {
       aborted = true;
       break;
     }

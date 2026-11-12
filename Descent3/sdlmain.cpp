@@ -28,12 +28,15 @@
 #include <filesystem>
 #include <map>
 
-#ifndef WIN32
+#ifdef WIN32
+#define SDL_MAIN_HANDLED
+#else
 #include <unistd.h>
 #include <csignal>
 #endif
 
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 
 #include "appdatabase.h"
 #include "application.h"
@@ -215,6 +218,7 @@ int main(int argc, char *argv[]) {
   setenv("SDL_VIDEODRIVER", "dummy", 1);
 #endif
 
+  SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (!rc) {
     LOG_FATAL.printf("SDL: SDL_Init() failed: %d: %s!", rc, SDL_GetError());

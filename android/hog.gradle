@@ -1,0 +1,67 @@
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+
+// Builds d3-android.hog, the game's PRIMARY_HOG on Android, and adds it to every variant's assets
+// under gamedata/, which MainActivity extracts at runtime (see BuiltinGameData) since the game
+// opens HOGs with plain fopen().
+//
+// Unlike on other platforms, the HOG only holds data files (string tables, images, ...): the
+// scripts and connection modules are loaded straight from the APK's native libraries. So it's
+// built here, from the same file list, rather than by CMake with HogMaker, which would need a
+// host-built tool.
+androidComponents {
+  onVariants(selector().all()) { variant ->
+    def hog = registerHogTask(
+      "generate${variant.name.capitalize()}GameDataAssets",
+      rootProject.file("scripts/data/fullhog/d3-android-fullhog.txt"),
+      "gamedata/d3-android.hog")
+    variant.sources.assets.addGeneratedSourceDirectory(hog.task, { hog.outputDir })
+  }
+}
+
+// Registers a task that builds a HOG from the files named in listFile (one per line, relative to
+// listFile's directory, like tools/HogMaker's input), writing it to hogPath inside the task's
+// output directory. Returns [task: <TaskProvider>, outputDir: <DirectoryProperty>]; the output
+// directory is left unset for the consumer (here, AGP) to choose.
+def registerHogTask(String name, File listFile, String hogPath) {
+  def files = listFile.readLines()*.trim().findAll { it }.collect { new File(listFile.parentFile, it) }
+  def outputDir = objects.directoryProperty()
+  def task = tasks.register(name) {
+    inputs.file(listFile)
+    inputs.files(files)
+    // Required: marks this task as outputDir's producer, so its consumers depend on it.
+    outputs.dir(outputDir)
+    doLast {
+      def dir = outputDir.get().asFile
+      dir.deleteDir()
+      writeHog(new File(dir, hogPath), files)
+    }
+  }
+  return [task: task, outputDir: outputDir]
+}
+
+// Writes a HOG2 archive the way tools/HogMaker does: a 68-byte header, a 48-byte index entry per
+// file (sorted case-insensitively, which cfile relies on), then the files' contents in that order.
+static void writeHog(File hog, List<File> files) {
+  files = files.sort(false) { it.name.toLowerCase(Locale.ROOT) }
+  hog.parentFile.mkdirs()
+  hog.withOutputStream { out ->
+    def header = ByteBuffer.allocate(68).order(ByteOrder.LITTLE_ENDIAN)
+    header.put('HOG2'.getBytes('US-ASCII')).putInt(files.size()).putInt(68 + 48 * files.size())
+    while (header.hasRemaining()) {
+      header.put((byte) 0xff)
+    }
+    out.write(header.array())
+    files.each { file ->
+      byte[] name = file.name.getBytes('US-ASCII')
+      if (name.length >= 36) {
+        throw new GradleException("Name too long for a HOG entry: ${file.name}")
+      }
+      def entry = ByteBuffer.allocate(48).order(ByteOrder.LITTLE_ENDIAN)
+      entry.put(name).position(36)
+      entry.putInt(0).putInt((int) file.length()).putInt(0) // flags, length, timestamp
+      out.write(entry.array())
+    }
+    files.each { file -> file.withInputStream { out << it } }
+  }
+}
