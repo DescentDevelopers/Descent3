@@ -22,6 +22,7 @@ import android.text.Html;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.nio.file.Files;
@@ -84,11 +85,12 @@ public class GameDataUploadActivity extends Activity {
       getAssets(),
       Constants.getUploadedGameDataDir(this),
       Constants.getUploadStagingDir(this),
-      () -> {
-        // TODO: there's gonna be a race here; should explicitly have the Success html trigger this?
+      // Called once the success response has been fully sent, since leaving this activity stops
+      // the server and would otherwise cut that response off.
+      () -> runOnUiThread(() -> {
         startActivity(new Intent(this, MainActivity.class));
         finish();
-      });
+      }));
   }
 
   @Override
@@ -122,13 +124,17 @@ public class GameDataUploadActivity extends Activity {
 
   private static class GameDataHttpServer extends NanoHTTPD {
     private static final String INTERNAL_ERROR_STRING =
-      "<html>" +
-        "<head><title>Internal Error</title></head>" +
-        "<body><center>" +
-        "<h1>Internal Error</h1>" +
-        "<div>%s</div>" +
-        "</center></body>" +
-        "</html>";
+      "<!doctype html><html lang=\"en\"><head>" +
+        "<meta charset=\"utf-8\">" +
+        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
+        "<title>Internal Error · Descent 3</title>" +
+        "<link href=\"/css/style.css\" rel=\"stylesheet\">" +
+        "</head><body><main class=\"card\">" +
+        "<p class=\"eyebrow\">Descent 3 for Android</p>" +
+        "<h1>Something went wrong</h1>" +
+        "<p><code>%s</code></p>" +
+        "<p><a class=\"button\" href=\"/\">Try again</a></p>" +
+        "</main></body></html>";
     private final AssetManager mAssetManager;
     private final Path mGameDataDir;
     private final Runnable mOnUploadSuccess;
@@ -184,8 +190,7 @@ public class GameDataUploadActivity extends Activity {
             }
 
             Files.move(base.get(), mGameDataDir);
-            mOnUploadSuccess.run();
-            return assetResponse(OK, "/success.html");
+            return assetResponse(OK, "/success.html", mOnUploadSuccess);
           }
           default:
             return assetResponse(METHOD_NOT_ALLOWED, "/errors/405.html");
@@ -199,15 +204,48 @@ public class GameDataUploadActivity extends Activity {
     }
 
     private Response assetResponse(Response.Status status, String uri) throws IOException {
+      return assetResponse(status, uri, null);
+    }
+
+    /** @param onSent if non-null, run once the response has been fully sent to the client. */
+    private Response assetResponse(Response.Status status, String uri, Runnable onSent)
+        throws IOException {
       uri = uri.substring(1);
       if (uri.isEmpty()) {
         uri = "index.html";
       }
 
-      return newChunkedResponse(
-        status,
-        getMimeTypeForFile(uri),
-        mAssetManager.open(uri, AssetManager.ACCESS_STREAMING));
+      String mimeType = getMimeTypeForFile(uri);
+      InputStream data = mAssetManager.open(uri, AssetManager.ACCESS_STREAMING);
+      return onSent == null
+        ? newChunkedResponse(status, mimeType, data)
+        : new NotifyingResponse(status, mimeType, data, onSent);
+    }
+
+    /**
+     * A chunked response that runs a callback once it has been sent. NanoHTTPD closes a response
+     * only after {@code send()} has written and flushed all of it.
+     */
+    private static class NotifyingResponse extends Response {
+      private final Runnable mOnSent;
+      private boolean mClosed;
+
+      NotifyingResponse(IStatus status, String mimeType, InputStream data, Runnable onSent) {
+        super(status, mimeType, data, -1);
+        mOnSent = onSent;
+      }
+
+      @Override
+      public void close() throws IOException {
+        try {
+          super.close();
+        } finally {
+          if (!mClosed) {
+            mClosed = true;
+            mOnSent.run();
+          }
+        }
+      }
     }
 
     private static class GameDataFile implements TempFile {
