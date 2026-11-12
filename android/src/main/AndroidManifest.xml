@@ -84,6 +84,11 @@
       <intent-filter>
         <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
       </intent-filter>
+    </activity>
+    <activity
+      android:name="com.descent3.droid.LauncherActivity"
+      android:exported="true"
+      android:theme="@android:style/Theme.NoDisplay">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

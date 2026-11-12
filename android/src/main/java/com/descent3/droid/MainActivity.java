@@ -26,6 +26,9 @@ public class MainActivity extends SDLActivity {
     mBuiltinGameData = Constants.getBuiltinGameDataDir(this);
     mTempDir = Constants.getTempDir(this);
 
+    // LauncherActivity normally makes sure the data is there first; this is only a fallback for
+    // other ways in (e.g. the USB device intent). Note SDLActivity exits the process if it's
+    // created again later in the same process.
     if (!Constants.isGameDataPresent(this)) {
       startActivity(new Intent(this, GameDataUploadActivity.class));
       finish();
@@ -40,6 +43,8 @@ public class MainActivity extends SDLActivity {
     try {
       FileUtils.deleteQuietly(mTempDir.toFile());
       Files.createDirectories(mTempDir);
+      // Anything left from an interrupted upload (e.g. NanoHTTPD's copy of the request body).
+      FileUtils.deleteQuietly(Constants.getUploadStagingDir(this).toFile());
       BuiltinGameData.extract(this, mBuiltinGameData);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
