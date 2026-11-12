@@ -83,7 +83,8 @@ public class GameDataUploadActivity extends Activity {
 
     mServer = new GameDataHttpServer(
       getAssets(),
-      Constants.getCacheGameDataDir(this),
+      Constants.getUploadedGameDataDir(this),
+      Constants.getUploadStagingDir(this),
       () -> {
         // TODO: there's gonna be a race here; should explicitly have the Success html trigger this?
         startActivity(new Intent(this, MainActivity.class));
@@ -133,15 +134,19 @@ public class GameDataUploadActivity extends Activity {
     private final Path mGameDataDir;
     private final Runnable mOnUploadSuccess;
 
-    GameDataHttpServer(AssetManager assetManager, Path gameDataDir, Runnable onUploadSuccess) {
+    GameDataHttpServer(
+        AssetManager assetManager, Path gameDataDir, Path stagingDir, Runnable onUploadSuccess) {
       super(null, 6464);
       mAssetManager = assetManager;
       mGameDataDir = gameDataDir;
       mOnUploadSuccess = onUploadSuccess;
 
+      // Clear out anything left behind by an interrupted upload.
+      deleteAll(stagingDir);
+
       setTempFileManagerFactory(() -> {
         try {
-          return new GameDataTempFileManager();
+          return new GameDataTempFileManager(stagingDir);
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
@@ -257,8 +262,9 @@ public class GameDataUploadActivity extends Activity {
     private static class GameDataTempFileManager implements TempFileManager {
       private final Path mBase;
 
-      GameDataTempFileManager() throws IOException {
-        mBase = Files.createTempDirectory("gamedata");
+      GameDataTempFileManager(Path stagingDir) throws IOException {
+        Files.createDirectories(stagingDir);
+        mBase = Files.createTempDirectory(stagingDir, "gamedata");
       }
 
       @Override

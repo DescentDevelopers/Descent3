@@ -2,20 +2,23 @@ package com.descent3.droid;
 
 import android.content.Context;
 
-import java.io.File;
 import java.nio.file.Path;
 
 public class Constants {
-  private static Path getGameDataDirFrom(File base) {
-    return base.toPath().resolve("gamedata");
+  /**
+   * Retail game data uploaded by the user (d3.hog, missions, ...). Kept in no-backup storage: it's
+   * far too big to back up, and unlike the cache dir the OS won't evict it under storage pressure.
+   */
+  public static Path getUploadedGameDataDir(Context ctx) {
+    return ctx.getNoBackupFilesDir().toPath().resolve("gamedata");
   }
 
-  public static Path getCacheGameDataDir(Context ctx) {
-    return getGameDataDirFrom(ctx.getCacheDir());
-  }
-
-  public static Path getFileGameDataDir(Context ctx) {
-    return getGameDataDirFrom(ctx.getFilesDir());
+  /**
+   * Staging area for in-progress uploads. Must be on the same filesystem as
+   * {@link #getUploadedGameDataDir}, so a finished upload can be moved into place with a rename.
+   */
+  public static Path getUploadStagingDir(Context ctx) {
+    return ctx.getNoBackupFilesDir().toPath().resolve("upload");
   }
 
   /** Game data extracted from the APK's assets; regenerable, so kept out of backups. */
@@ -24,6 +27,6 @@ public class Constants {
   }
 
   public static boolean isGameDataPresent(Context ctx) {
-    return getCacheGameDataDir(ctx).resolve("d3.hog").toFile().exists();
+    return getUploadedGameDataDir(ctx).resolve("d3.hog").toFile().exists();
   }
 }
