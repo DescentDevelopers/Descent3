@@ -317,6 +317,10 @@
 #include "directplay.h"
 #endif
 
+#ifdef ANDROID
+#include "d3_bundled_netcon.h"
+#endif
+
 void *callback = NULL;
 module MultiDLLHandle = {NULL};
 int SearchForLocalGamesTCP(uint32_t ask, uint16_t port);
@@ -580,8 +584,8 @@ void FreeMultiDLL() {
   if (DLLMultiClose)
     DLLMultiClose();
   mod_FreeModule(&MultiDLLHandle);
-  // Try deleting the file now!
-  if (!std::filesystem::remove(Multi_conn_dll_name)) {
+  // Try deleting the file now! (There's none if the module wasn't extracted from a .d3c.)
+  if (!Multi_conn_dll_name.empty() && !std::filesystem::remove(Multi_conn_dll_name)) {
     LOG_WARNING << "Couldn't delete the tmp dll";
   }
   DLLMultiCall = NULL;
@@ -617,6 +621,22 @@ int LoadMultiDLL(const char *name) {
   dll_name = name;
   dll_name.replace_extension(MODULE_EXT);
 
+#ifdef ANDROID
+  // On Android the connection modules aren't wrapped in online/*.d3c files: they're packaged in the
+  // APK as native libraries, which dlopen() loads straight from there given just their name. That
+  // name is case-sensitive, while the requested one may not be (e.g. "parallax online").
+  for (const char *bundled : D3_BUNDLED_NETCON_MODULES) {
+    if (stricmp(bundled, name) == 0) {
+      tmp_dll_name = std::string(bundled) + MODULE_EXT;
+      break;
+    }
+  }
+  if (tmp_dll_name.empty()) {
+    LOG_WARNING.printf("You are missing the DLL %s!", name);
+    return 0;
+  }
+  Multi_conn_dll_name.clear();
+#else
   // Open the hog file
   if (!cf_OpenLibrary(lib_name)) {
     tmp_dll_name = std::filesystem::path("online") / name;
@@ -636,6 +656,7 @@ int LoadMultiDLL(const char *name) {
   }
   Multi_conn_dll_name = tmp_dll_name;
 loaddll:
+#endif
 
   if (!mod_LoadModule(&MultiDLLHandle, tmp_dll_name)) {
     mod_GetLastError();

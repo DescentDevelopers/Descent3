@@ -346,6 +346,10 @@
 #include "directplay.h"
 #endif
 
+#ifdef ANDROID
+#include "d3_bundled_netcon.h"
+#endif
+
 #define MAIN_MULTI_MENU_W 384
 #define MAIN_MULTI_MENU_H 256
 #define MAIN_MULTI_MENU_X (320 - (MAIN_MULTI_MENU_W / 2))
@@ -443,21 +447,29 @@ int MainMultiplayerMenu() {
 
   std::vector<std::string> dllnames;
 
+  auto add_dllname = [&dllnames](std::string filename) {
+    std::replace(filename.begin(), filename.end(), '~', '/');
+
+    // Place PXO_NAME first in list
+    if (stricmp(filename.c_str(), PXO_NAME) == 0) {
+      dllnames.insert(dllnames.begin(), filename);
+    } else {
+      dllnames.push_back(filename);
+    }
+  };
+
+#ifdef ANDROID
+  // On Android the connection modules are packaged in the APK rather than as online/*.d3c files
+  // (see LoadMultiDLL()).
+  for (const char *module : D3_BUNDLED_NETCON_MODULES) {
+    add_dllname(module);
+  }
+#else
   for (const auto &online_directory : cf_LocateMultiplePaths("online")) {
     ddio_DoForeachFile(online_directory, std::regex(".*\\.d3c"),
-                       [&dllnames](const std::filesystem::path &path) {
-                         std::string filename = path.stem().string();
-
-                         std::replace(filename.begin(), filename.end(), '~', '/');
-
-                       // Place PXO_NAME first in list
-                       if (stricmp(filename.c_str(), PXO_NAME) == 0) {
-                         dllnames.insert(dllnames.begin(), filename);
-                       } else {
-                         dllnames.push_back(filename);
-                       }
-                     });
+                       [&add_dllname](const std::filesystem::path &path) { add_dllname(path.stem().string()); });
   }
+#endif
 
   for (auto const &name : dllnames) {
     lists->AddItem(name.c_str());

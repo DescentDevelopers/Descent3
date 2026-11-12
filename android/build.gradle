@@ -4,7 +4,7 @@ repositories {
   mavenCentral()
 }
 
-apply from: "host-tools.gradle"
+apply from: "hog.gradle" // Builds d3-android.hog into the assets
 
 android {
   namespace = "com.descent3.droid"
@@ -18,8 +18,7 @@ android {
       cmake {
         arguments "-DANDROID_APP_PLATFORM=android-19",
                   "-DANDROID_STL=c++_static",
-                  "-DENABLE_LOGGER=ON",
-                  "-DHOGMAKE_BINARY=${hogMakerBinary.get().asFile.absolutePath}"
+                  "-DENABLE_LOGGER=ON"
         // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         abiFilters 'arm64-v8a'
       }
@@ -48,31 +47,6 @@ android {
   }
   lint {
     abortOnError = false
-  }
-}
-
-// Copies the files CMake generates (d3-android.hog, online/*.d3c) into a generated assets
-// directory under "gamedata/". MainActivity extracts them to the filesystem at runtime, since
-// the game opens them with plain fopen().
-// NOTE: the HOG contains ABI-specific script libraries, so this only works with a single ABI in
-// abiFilters; multiple ABIs would need per-ABI asset paths.
-androidComponents {
-  onVariants(selector().all()) { variant ->
-    def cap = variant.name.capitalize()
-    def cmakeOutputDir = layout.buildDirectory.dir("intermediates/d3_generated/${variant.name}")
-    variant.externalNativeBuild.arguments.add(
-      cmakeOutputDir.map { "-DD3_GENERATED_FILES_OUTPUT_DIRECTORY=${it.asFile.absolutePath}" })
-
-    // AGP picks the location and sets this property; the Sync task writes into it.
-    def assetsDir = objects.directoryProperty()
-    def stage = tasks.register("stage${cap}GameDataAssets", Sync) {
-      dependsOn "externalNativeBuild${cap}"
-      from(cmakeOutputDir) { into "gamedata" }
-      into assetsDir
-      // Required: marks this task as assetsDir's producer, so AGP's merge task depends on it.
-      outputs.dir(assetsDir)
-    }
-    variant.sources.assets.addGeneratedSourceDirectory(stage, { assetsDir })
   }
 }
 

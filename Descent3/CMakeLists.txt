@@ -358,12 +358,17 @@ target_link_libraries(Descent3 PRIVATE
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib ${SDL3_INCLUDE_DIRS})
 target_link_options(Descent3 PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)
 set_target_properties(Descent3 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build")
+if(CMAKE_SYSTEM_NAME STREQUAL "Android")
+  # No HOGs are built on Android: the connection modules and scripts are packaged in the APK as
+  # native libraries (the Android Gradle plugin builds and packages every library target), and the
+  # Gradle build makes d3-android.hog itself.
+  set(D3_HOG_TARGETS Direct_TCP_IP Descent3_Online_TCP_IP Parallax_Online)
+else()
+  set(D3_HOG_TARGETS Direct_TCP_IP_Hog Descent3_Online_TCP_IP_Hog HogFull Parallax_Online_Hog)
+endif()
 add_dependencies(Descent3
   get_git_hash
-  Direct_TCP_IP_Hog
-  Descent3_Online_TCP_IP_Hog
-  HogFull
-  Parallax_Online_Hog
+  ${D3_HOG_TARGETS}
   anarchy
   coop
   ctf
