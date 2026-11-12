@@ -31,10 +31,6 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
-  applicationVariants.all { variant ->
-    tasks["merge${variant.name.capitalize()}Assets"]
-      .dependsOn("externalNativeBuild${variant.name.capitalize()}")
-  }
   sourceSets {
     main {
       jniLibs.srcDir 'libs'
@@ -48,6 +44,31 @@ android {
   }
   lint {
     abortOnError = false
+  }
+}
+
+// Copies the files CMake generates (d3-android.hog, online/*.d3c) into a generated assets
+// directory under "gamedata/". MainActivity extracts them to the filesystem at runtime, since
+// the game opens them with plain fopen().
+// NOTE: the HOG contains ABI-specific script libraries, so this only works with a single ABI in
+// abiFilters; multiple ABIs would need per-ABI asset paths.
+androidComponents {
+  onVariants(selector().all()) { variant ->
+    def cap = variant.name.capitalize()
+    def cmakeOutputDir = layout.buildDirectory.dir("intermediates/d3_generated/${variant.name}")
+    variant.externalNativeBuild.arguments.add(
+      cmakeOutputDir.map { "-DD3_GENERATED_FILES_OUTPUT_DIRECTORY=${it.asFile.absolutePath}" })
+
+    // AGP picks the location and sets this property; the Sync task writes into it.
+    def assetsDir = objects.directoryProperty()
+    def stage = tasks.register("stage${cap}GameDataAssets", Sync) {
+      dependsOn "externalNativeBuild${cap}"
+      from(cmakeOutputDir) { into "gamedata" }
+      into assetsDir
+      // Required: marks this task as assetsDir's producer, so AGP's merge task depends on it.
+      outputs.dir(assetsDir)
+    }
+    variant.sources.assets.addGeneratedSourceDirectory(stage, { assetsDir })
   }
 }
 

@@ -129,8 +129,11 @@ endif()
 
 # Get info about multi-config environment
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-# Properly determine output directory for generated files
-if(IS_MULTI_CONFIG)
+# Properly determine output directory for generated files (HOGs, netcon .d3c files).
+# May be overridden on the command line, e.g. by the Android Gradle build to package them as assets.
+if(D3_GENERATED_FILES_OUTPUT_DIRECTORY)
+  # Use the provided directory as-is
+elseif(IS_MULTI_CONFIG)
   set(D3_GENERATED_FILES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/$<CONFIG>")
 else ()
   set(D3_GENERATED_FILES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build")

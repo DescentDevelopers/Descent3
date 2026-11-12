@@ -18,6 +18,11 @@ public class Constants {
     return getGameDataDirFrom(ctx.getFilesDir());
   }
 
+  /** Game data extracted from the APK's assets; regenerable, so kept out of backups. */
+  public static Path getBuiltinGameDataDir(Context ctx) {
+    return ctx.getNoBackupFilesDir().toPath().resolve("builtin");
+  }
+
   public static boolean isGameDataPresent(Context ctx) {
     return getCacheGameDataDir(ctx).resolve("d3.hog").toFile().exists();
   }

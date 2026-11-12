@@ -15,6 +15,7 @@ public class MainActivity extends SDLActivity {
 
   private Path mFilesGameData;
   private Path mCacheGameData;
+  private Path mBuiltinGameData;
   private Path mTempDir;
 
   @Override
@@ -25,6 +26,7 @@ public class MainActivity extends SDLActivity {
       mFilesGameData = Constants.getFileGameDataDir(this);
       Files.createDirectories(mFilesGameData);
       mCacheGameData = Constants.getCacheGameDataDir(this);
+      mBuiltinGameData = Constants.getBuiltinGameDataDir(this);
       mTempDir = Files.createTempDirectory("d3");
     } catch (IOException ex) {
       throw new RuntimeException(ex);
@@ -34,6 +36,17 @@ public class MainActivity extends SDLActivity {
       startActivity(new Intent(this, GameDataUploadActivity.class));
       finish();
     }
+  }
+
+  @Override
+  protected void main() {
+    // Runs on the SDL thread, so the (large) extraction doesn't block the UI thread.
+    try {
+      BuiltinGameData.extract(this, mBuiltinGameData);
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+    super.main();
   }
 
   @Override
@@ -50,6 +63,8 @@ public class MainActivity extends SDLActivity {
     args.add(mFilesGameData.toAbsolutePath().toString());
     args.add("-additionaldir");
     args.add(mCacheGameData.toAbsolutePath().toString());
+    args.add("-additionaldir");
+    args.add(mBuiltinGameData.toAbsolutePath().toString());
     args.add("-tempdir");
     args.add(mTempDir.toAbsolutePath().toString());
     return args.toArray(new String[0]);
