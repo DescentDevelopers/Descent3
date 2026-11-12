@@ -26,6 +26,14 @@ public class Constants {
     return ctx.getNoBackupFilesDir().toPath().resolve("builtin");
   }
 
+  /**
+   * The game's -tempdir, where it extracts scripts and netcon modules before loading them.
+   * Emptied at the start of each game session.
+   */
+  public static Path getTempDir(Context ctx) {
+    return ctx.getCacheDir().toPath().resolve("d3tmp");
+  }
+
   public static boolean isGameDataPresent(Context ctx) {
     return getUploadedGameDataDir(ctx).resolve("d3.hog").toFile().exists();
   }

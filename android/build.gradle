@@ -75,4 +75,5 @@ androidComponents {
 dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   implementation 'org.nanohttpd:nanohttpd:2.2.0'
+  implementation 'commons-io:commons-io:2.18.0'
 }

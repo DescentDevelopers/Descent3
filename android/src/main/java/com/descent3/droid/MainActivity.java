@@ -3,6 +3,7 @@ package com.descent3.droid;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.apache.commons.io.FileUtils;
 import org.libsdl.app.SDLActivity;
 
 import java.io.IOException;
@@ -21,13 +22,9 @@ public class MainActivity extends SDLActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    try {
-      mUploadedGameData = Constants.getUploadedGameDataDir(this);
-      mBuiltinGameData = Constants.getBuiltinGameDataDir(this);
-      mTempDir = Files.createTempDirectory("d3");
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
-    }
+    mUploadedGameData = Constants.getUploadedGameDataDir(this);
+    mBuiltinGameData = Constants.getBuiltinGameDataDir(this);
+    mTempDir = Constants.getTempDir(this);
 
     if (!Constants.isGameDataPresent(this)) {
       startActivity(new Intent(this, GameDataUploadActivity.class));
@@ -37,8 +34,12 @@ public class MainActivity extends SDLActivity {
 
   @Override
   protected void main() {
-    // Runs on the SDL thread, so the (large) extraction doesn't block the UI thread.
+    // Runs on the SDL thread, once per game session, so the (large) extraction doesn't block the
+    // UI thread. It's also the one safe place to clear the temp dir: the game extracts scripts
+    // there at startup but loads them per level, and the activity can be recreated mid-session.
     try {
+      FileUtils.deleteQuietly(mTempDir.toFile());
+      Files.createDirectories(mTempDir);
       BuiltinGameData.extract(this, mBuiltinGameData);
     } catch (IOException ex) {
       throw new RuntimeException(ex);

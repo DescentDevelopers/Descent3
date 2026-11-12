@@ -19,7 +19,6 @@ import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.Html;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -28,13 +27,13 @@ import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import org.apache.commons.io.FileUtils;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -142,7 +141,7 @@ public class GameDataUploadActivity extends Activity {
       mOnUploadSuccess = onUploadSuccess;
 
       // Clear out anything left behind by an interrupted upload.
-      deleteAll(stagingDir);
+      FileUtils.deleteQuietly(stagingDir.toFile());
 
       setTempFileManagerFactory(() -> {
         try {
@@ -151,22 +150,6 @@ public class GameDataUploadActivity extends Activity {
           throw new RuntimeException(e);
         }
       });
-    }
-
-    private static void deleteAll(Path dir) {
-      if (!Files.exists(dir)) {
-        return;
-      }
-
-      try (Stream<Path> dirStream = Files.walk(dir)) {
-        dirStream
-          .sorted(Comparator.reverseOrder())
-          .map(Path::toFile)
-          .filter(f -> !f.delete())
-          .forEach(f -> Log.w("csarbora", "Failed to delete " + f.getAbsolutePath()));
-      } catch (IOException e) {
-        Log.e("csarbora", "unable to walk " + dir.toAbsolutePath(), e);
-      }
     }
 
     @Override
@@ -181,7 +164,7 @@ public class GameDataUploadActivity extends Activity {
             }
           }
           case POST: {
-            deleteAll(mGameDataDir);
+            FileUtils.deleteQuietly(mGameDataDir.toFile());
 
             HashMap<String, String> files = new HashMap<>();
             try {
@@ -269,7 +252,7 @@ public class GameDataUploadActivity extends Activity {
 
       @Override
       public void clear() {
-        deleteAll(mBase);
+        FileUtils.deleteQuietly(mBase.toFile());
       }
 
       @Override
