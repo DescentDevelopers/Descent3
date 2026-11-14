@@ -10,7 +10,9 @@ set(HEADERS
   DeathInfo.h
   DllWrappers.h
   Inventory.h
+  LocDB.h
   LoadLevel.h
+  MessageBank.h
   Mission.h
   NewPyroGauges.h
   ObjScript.h
@@ -207,10 +209,12 @@ set(CPPS
   LoadLevel.cpp
   loadstate.cpp
   localization.cpp
+  LocDB.cpp
   marker.cpp
   matcen.cpp
   megacell.cpp
   menu.cpp
+  MessageBank.cpp
   Mission.cpp
   mission_download.cpp
   mmItem.cpp

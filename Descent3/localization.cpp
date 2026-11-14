@@ -127,6 +127,20 @@ const char *_Error_string = "!!ERROR MISSING STRING!!";
 const char *_Empty_string = "\0";
 } // namespace
 
+static std::filesystem::path FixFilenameCase(const std::filesystem::path &filename);
+
+size_t LoadMessages(const std::string &name, const std::filesystem::path &message_file) {
+  return locdb->LoadBank(name, FixFilenameCase(message_file));
+}
+
+void FreeMessages(const std::string &name) {
+  locdb->FreeBank(name);
+}
+
+const char *GetMessageBank(const std::string &bank_name, const std::string &id) {
+  return locdb->GetMsg(bank_name, id)->c_str();
+}
+
 void Localization_SetLanguage(int type) {
   ASSERT(type >= 0 && type < Num_languages);
   Localization_language = type;
