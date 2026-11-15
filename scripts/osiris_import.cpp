@@ -1,3 +1,22 @@
+/*
+* Descent 3
+ * Copyright (C) 2024 Parallax Software
+ * Copyright (C) 2026 Descent Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "osiris_import.h"
 
 mprintf_fp mprintf;
@@ -124,9 +143,12 @@ AI_IsObjReachable_fp AI_IsObjReachable;
 Game_GetDiffLevel_fp Game_GetDiffLevel;
 Game_GetLanguage_fp Game_GetLanguage;
 Path_Value_fp Path_Value;
+LoadMessages_fp Loc_LoadMessages;
+FreeMessages_fp Loc_FreeMessages;
+GetMessage_fp Loc_GetMessageBank;
 
 void osicommon_Initialize(tOSIRISModuleInit *mi) {
-  // Keep it in sync with OsirisLoadandBind.cpp
+  // Keep it in sync with Descent3/OsirisLoadandBind.cpp
   mprintf = (mprintf_fp)mi->fp[0];
   MSafe_CallFunction = (MSafe_CallFunction_fp)mi->fp[1];
   MSafe_GetValue = (MSafe_GetValue_fp)mi->fp[2];
@@ -250,4 +272,7 @@ void osicommon_Initialize(tOSIRISModuleInit *mi) {
   Game_GetDiffLevel = (Game_GetDiffLevel_fp)mi->fp[120];
   Game_GetLanguage = (Game_GetLanguage_fp)mi->fp[121];
   Path_Value = (Path_Value_fp)mi->fp[122];
+  Loc_LoadMessages = (LoadMessages_fp)mi->fp[123];
+  Loc_FreeMessages = (FreeMessages_fp)mi->fp[124];
+  Loc_GetMessageBank = (GetMessage_fp)mi->fp[125];
 }
