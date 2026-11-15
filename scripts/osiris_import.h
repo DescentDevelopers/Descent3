@@ -17,6 +17,9 @@
 */
 #pragma once
 
+#include <filesystem>
+#include <string>
+
 #define OSIRISEXTERN extern
 
 #include "osiris_common.h"
@@ -690,6 +693,15 @@ OSIRISEXTERN Game_GetLanguage_fp Game_GetLanguage;
 //	for PV_ALL components, path_id and node_id MUST be valid.
 typedef void (*Path_Value_fp)(int path_id, int node_id, char op, int changes, void *ptr);
 OSIRISEXTERN Path_Value_fp Path_Value;
+
+typedef bool (*LoadMessages_fp)(const std::string &name, const std::filesystem::path &message_file);
+OSIRISEXTERN LoadMessages_fp Loc_LoadMessages;
+
+typedef void (*FreeMessages_fp)(const std::string &name);
+OSIRISEXTERN FreeMessages_fp Loc_FreeMessages;
+
+typedef const char *(*GetMessage_fp)(const std::string &bank_name, const std::string &id);
+OSIRISEXTERN GetMessage_fp Loc_GetMessageBank;
 
 // ===========================================================
 
