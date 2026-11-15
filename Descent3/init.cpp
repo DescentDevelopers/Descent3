@@ -1581,6 +1581,8 @@ bool MercInstalled() { return merc_hid > 0; }
 extern int Num_languages;
 void InitStringTable() {
 
+  locdb = std::make_unique<D3::LocDB>();
+
   int language = LANGUAGE_ENGLISH;
   Database->read("LanguageType", &language, sizeof(language));
 
@@ -1590,7 +1592,9 @@ void InitStringTable() {
   }
   Localization_SetLanguage(language);
 
-  int string_count = LoadStringTables();
+  locdb->SetLanguage("en_US");
+  locdb->LoadBank("d3", "D3.str");
+  size_t string_count = locdb->GetCount();
 
   if (string_count == 0)
     Error("Couldn't find the string table.");
