@@ -690,7 +690,7 @@ OSIRISEXTERN Game_GetLanguage_fp Game_GetLanguage;
 typedef void (*Path_Value_fp)(int path_id, int node_id, char op, int changes, void *ptr);
 OSIRISEXTERN Path_Value_fp Path_Value;
 
-typedef bool (*LoadMessages_fp)(const std::string &name, const std::filesystem::path &message_file);
+typedef size_t (*LoadMessages_fp)(const std::string &name, const std::filesystem::path &message_file);
 OSIRISEXTERN LoadMessages_fp Loc_LoadMessages;
 
 typedef void (*FreeMessages_fp)(const std::string &name);
