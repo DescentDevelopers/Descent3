@@ -41,20 +41,51 @@
 #ifndef __LOCALIZATION_H__
 #define __LOCALIZATION_H__
 
+#include "LocDB.h"
+
 #define LANGUAGE_ENGLISH 0
 #define LANGUAGE_GERMAN 1
 #define LANGUAGE_SPANISH 2
 #define LANGUAGE_ITALIAN 3
 #define LANGUAGE_FRENCH 4
+
+extern std::unique_ptr<D3::LocDB> locdb;
+
+/**
+ * Load messages into specified bank of messages
+ * @note This function only for compatibility with old API. Use locdb instance methods instead.
+ * @param name bank of messages
+ * @param message_file file containing messages
+ * @return true on success
+ */
+size_t LoadMessages(const std::string &name, const std::filesystem::path &message_file);
+
+/**
+ * Clear specified bank of messages
+ * @note This function only for compatibility with old API. Use locdb instance methods instead.
+ * @param name bank of messages
+ */
+void FreeMessages(const std::string &name);
+
+/**
+ * Gets message by bank name and id.
+ * @note This function only for compatibility with old API. Use locdb instance methods instead.
+ * On language change or Load/Free messages received output string should be reinitialized.
+ * @param bank_name bank name
+ * @param id id of messages
+ * @return return message; "Missing bank" or "Missing string" if there no such name
+ */
+const char *GetMessageBank(const std::string &bank_name, const std::string &id);
+
 void Localization_SetLanguage(int type);
-int Localization_GetLanguage(void);
+int Localization_GetLanguage();
 
 // Call this to load up the string tables into memory
 // Returns the number of strings loaded, if this is 0, then the program MUST not continue
-int LoadStringTables(void);
+int LoadStringTables();
 
 // Deallocates all the memory used for the string tables
-void FreeStringTables(void);
+void FreeStringTables();
 
 // Returns a pointer to the string at the index location from the string table
 // if it is a bad index given, then the pointer to the error string "ERROR MISSING STRING" is given
@@ -78,7 +109,7 @@ class GrowString {
 public:
   GrowString();
   ~GrowString();
-  void Destroy(void);
+  void Destroy();
   void operator+=(char *str);
   GrowString operator+(char *str);
   GrowString operator+(GrowString &gs);
@@ -86,7 +117,7 @@ public:
   void operator=(char *str);
   void operator=(GrowString &gs);
   void GetString(char **str);
-  int Length(void);
+  int Length();
 
 private:
   tbufferinfo root;

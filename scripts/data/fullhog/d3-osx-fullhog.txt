@@ -3,7 +3,7 @@ Anarchy.str
 Anarchyi.str
 CTF.str
 CTFi.str
-D3.STR
+D3.str
 DMFC.str
 DMFCi.str
 GENERIC.STR
