@@ -42,18 +42,9 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 }
 #endif
 
-int String_table_size = 0;
-char **String_table = nullptr;
-static const char *_Error_string = "!!ERROR MISSING STRING!!";
-static const char *_Empty_string = "";
-const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table_size))
-    return _Error_string;
-  if (!String_table[index])
-    return _Empty_string;
-  return String_table[index];
-}
-#define TXT(x) GetStringFromTable(x)
+static const char* mod_name;
+
+#define TXT(x) Loc_GetMessageBank(mod_name, std::to_string(x))
 #define TXT_DOORLOCKED TXT(0)     //"Door Locked!"
 #define TXT_RAPIDFIRE TXT(1)      //"Rapid Fire!"
 #define TXT_FORCEWALL TXT(2)      //"Force Wall!"
@@ -76,7 +67,7 @@ void AddHudMessage(int player_objhandle, int color, const char *format, ...);
 // Ammo Powerups
 #define GENERIC_POWERUP_SCRIPTID NUM_IDS
 //	Generic Door Script
-#define GENERIC_DOOR_SCRIPTID NUM_IDS + 1
+#define GENERIC_DOOR_SCRIPTID (NUM_IDS + 1)
 
 struct tScriptIDInfo {
   int id;
@@ -146,14 +137,11 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
     return 0;
   }
 
-  String_table_size = func_list->string_count;
-  String_table = func_list->string_table;
-
-  int i;
+  mod_name = func_list->script_identifier;
 
   // initialize rapid fire script data
-  for (i = 0; i < MAX_PLAYERS; i++) {
-    RapidFirePlayerTimers[i].timer_handle = -1;
+  for (auto & RapidFirePlayerTimer : RapidFirePlayerTimers) {
+    RapidFirePlayerTimer.timer_handle = -1;
   }
 
   return 1;

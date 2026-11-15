@@ -44,18 +44,9 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 }
 #endif
 
-static int String_table_size = 0;
-static char **String_table = nullptr;
-static const char *_Error_string = "!!ERROR MISSING STRING!!";
-static const char *_Empty_string = "";
-const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table_size))
-    return _Error_string;
-  if (!String_table[index])
-    return _Empty_string;
-  return String_table[index];
-}
-#define TXT(x) GetStringFromTable(x)
+static const char* mod_name;
+
+#define TXT(x) Loc_GetMessageBank(mod_name, std::to_string(x))
 
 //-------------------
 // Function prototypes
@@ -1483,9 +1474,7 @@ void DoNameLookups(void) {
 //	Note: You cannot call any imported functions until osicommon_Initialize() is called.
 //	Returns 1 if initialization went ok, 0 if there was an error and the DLL should not be loaded.
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
-  osicommon_Initialize((tOSIRISModuleInit *)func_list);
-  String_table_size = func_list->string_count;
-  String_table = func_list->string_table;
+  osicommon_Initialize(func_list);
 
   // Do name lookups
   DoNameLookups();
@@ -1497,6 +1486,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
     mprintf(0, "RECOMPILE YOUR SCRIPTS!!!\n");
     return 0;
   }
+  mod_name = func_list->script_identifier;
   return 1;
 }
 

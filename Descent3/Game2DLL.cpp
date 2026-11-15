@@ -542,8 +542,6 @@ void GetGameAPI(game_api *api) {
 
   api->osiris_functions = &Multi_d3m_osiris_funcs;
   Osiris_CreateModuleInitStruct(&Multi_d3m_osiris_funcs);
-  Multi_d3m_osiris_funcs.string_table = nullptr;
-  Multi_d3m_osiris_funcs.string_count = 0;
   Multi_d3m_osiris_funcs.module_identifier = 0xEDF7;
   Multi_d3m_osiris_funcs.module_is_static = false;
   Multi_d3m_osiris_funcs.game_checksum = Osiris_game_checksum;

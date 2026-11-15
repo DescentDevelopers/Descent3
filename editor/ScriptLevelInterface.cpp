@@ -2311,8 +2311,6 @@ bool IsScriptOutofSync(const std::filesystem::path &name) {
   std::filesystem::path filename = name.stem();
   sprintf(tempbuf, "%s", PATH_TO_CSTR(filename));
 
-  Osiris_module_init.string_count = 0;
-  Osiris_module_init.string_table = nullptr;
   Osiris_module_init.module_is_static = false;
   Osiris_module_init.module_identifier = 0;
   Osiris_module_init.script_identifier = tempbuf;
