@@ -1,4 +1,4 @@
-set(HEADERS roboAnarchy.h roboanarchystr.h)
+set(HEADERS roboanarchy.h roboanarchystr.h)
 set(CPPS roboanarchy.cpp)
 
 set(NETGAME_MODULE roboanarchy)

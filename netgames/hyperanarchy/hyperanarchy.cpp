@@ -59,7 +59,7 @@
 
 #include "gamedll_header.h"
 #include "idmfc.h"
-#include "HyperAnarchy.h"
+#include "hyperanarchy.h"
 #include "hyperstr.h"
 
 IDMFC *DMFCBase = nullptr;
@@ -107,19 +107,6 @@ static int Highlight_bmp = -1;
 static bool display_my_welcome = false;
 
 static void OnClientPlayerEntersGame(int player_num);
-
-///////////////////////////////////////////////
-// localization info
-static char **StringTable;
-static int StringTableSize = 0;
-static const char *_ErrorString = "Missing String";
-const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
-    return _ErrorString;
-  else
-    return StringTable[d];
-}
-///////////////////////////////////////////////
 
 static void SwitchHUDColor(int i);
 // handles a Hyper Anarchy Game State packet
@@ -234,8 +221,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   DMFCBase->Set_OnPlayerEntersObserver(OnPlayerEntersObserver);
   DMFCBase->Set_OnClientPlayerEntersGame(OnClientPlayerEntersGame);
 
-  DLLCreateStringTable("hyper.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  if (dmfcLoadMessages("hyper", "hyper.str") == 0) {
     *all_ok = 0;
     return;
   }
@@ -367,7 +353,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  dmfcFreeMessages("hyper");
   if (HyperOrbIcon > 0)
     DLLbm_FreeBitmap(HyperOrbIcon);
 

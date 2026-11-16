@@ -115,19 +115,6 @@ static bool compare_slots(int a, int b);
 
 static int Highlight_bmp = -1;
 
-///////////////////////////////////////////////
-// localization info
-static char **StringTable;
-static int StringTableSize = 0;
-static const char *_ErrorString = "Missing String";
-const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
-    return _ErrorString;
-  else
-    return StringTable[d];
-}
-///////////////////////////////////////////////
-
 void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
   if (!pr || pr->state == STATE_EMPTY) {
@@ -188,8 +175,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   dPlayers = DMFCBase->GetPlayers();
 
   DMFCBase->GameInit(NUM_TEAMS);
-  DLLCreateStringTable("tanarchy.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  if (dmfcLoadMessages("tanarchy", "tanarchy.str") == 0) {
     *all_ok = 0;
     return;
   }
@@ -297,7 +283,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  dmfcFreeMessages("tanarchy");
 
   if (dstat) {
     dstat->DestroyPointer();
