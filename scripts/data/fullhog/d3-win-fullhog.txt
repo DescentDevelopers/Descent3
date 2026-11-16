@@ -44,6 +44,7 @@ ipxclient.str
 ipxclienti.str
 lanclient.str
 lanclienti.str
+levelnames.msg
 monster.str
 monsteri.str
 mtclient.str

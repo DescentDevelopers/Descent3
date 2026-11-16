@@ -1237,10 +1237,12 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <cerrno>
 #include <cstring>
 #include <cstdlib>
-#include <cerrno>
-#include <algorithm>
+#include <memory>
+#include <string>
 
 #include "LoadLevel.h"
 
@@ -1307,7 +1309,7 @@
 
 MD5 *Level_md5 = nullptr;
 
-char *LocalizeLevelName(char *level);
+char *LocalizeLevelName(const char *level);
 
 #define LEVEL_FILE_TAG "D3LV"
 
@@ -3583,15 +3585,13 @@ static constexpr const char *New_door_names[] = {"MARK'S OLD DOOR",
 
 // Deals with some renamed doors.  Translates the old name to the new name, then looks up the id
 int SpecialFindDoorName(const char *name) {
-  int i, id;
-
   // Look up the old name, and return it if found
-  id = FindDoorName(name);
+  int id = FindDoorName(name);
   if (id != -1)
     return id;
 
   // Didn't find old name, so see if there's a new name, and look for that
-  for (i = 0; i < NUM_RENAMED_DOORS; i++) {
+  for (size_t i = 0; i < NUM_RENAMED_DOORS; i++) {
     if (stricmp(name, Old_door_names[i]) == 0)
       return FindDoorName(New_door_names[i]);
   }
@@ -5769,61 +5769,20 @@ int CountDataToPageIn() {
 
 #endif
 
-void Localization_SetLanguage(int type);
-
-int Localization_GetLanguage(void);
-
-char *LocalizeLevelName(char *level) {
+char *LocalizeLevelName(const char *level) {
   static char local_name[101];
-
-  char **english_names;
-  int num_english_names;
-
-  char **local_names;
-  int num_local_names;
-
   local_name[0] = 0;
 
-  // Don't waste our time if we're already in english
-  int save_lang = Localization_GetLanguage();
-  if (LANGUAGE_ENGLISH == save_lang) {
+  locdb->LoadBank("levelnames", "levelnames.msg");
+
+  const std::shared_ptr<std::string> message = locdb->GetMsg("levelnames", level);
+  if (message != D3::MessageBank::MISSING_BANK && message != D3::MessageBank::MISSING_STRING) {
+    strcpy(local_name, message->c_str());
+  } else {
+    // We didn't find it, so just use the original
     strcpy(local_name, level);
-    return local_name;
   }
 
-  Localization_SetLanguage(LANGUAGE_ENGLISH);
-  // Save the current language, then bash it to english
-  if (!CreateStringTable("level_names.str", &english_names, &num_english_names)) {
-    LOG_WARNING << "Couldn't open level_names stringtable!";
-    Localization_SetLanguage(save_lang);
-    strcpy(local_name, level);
-    return local_name;
-  }
-
-  // Restore the correct language
-  Localization_SetLanguage(save_lang);
-
-  if (!CreateStringTable("level_names.str", &local_names, &num_local_names)) {
-    LOG_WARNING << "Couldn't open level_names stringtable!";
-    // destroy the english stringtable...
-    DestroyStringTable(english_names, num_english_names);
-
-    strcpy(local_name, level);
-    return local_name;
-  }
-
-  // Now search for the correct level
-  for (int i = 0; i < num_english_names; i++) {
-    if (0 == stricmp(level, english_names[i])) {
-      // Ok, we found a match. So return the local text.
-      strcpy(local_name, local_names[i]);
-      DestroyStringTable(english_names, num_english_names);
-      DestroyStringTable(local_names, num_local_names);
-      return local_name;
-    }
-  }
-
-  // We didn't find it, so just use the english
-  strcpy(local_name, level);
+  locdb->FreeBank("levelnames");
   return local_name;
 }
