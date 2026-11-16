@@ -1,9 +1,5 @@
 AIGame.str
 AIGamei.str
-Anarchy.str
-Anarchyi.str
-CTF.str
-CTFi.str
 D3.str
 DMFC.str
 DMFCi.str
@@ -26,8 +22,12 @@ Level7i.str
 Level8i.str
 Level9i.str
 TrainingMissioni.STR
+anarchy.str
+anarchyi.str
 coop.str
 coopi.str
+ctf.str
+ctfi.str
 d3i.str
 dp_modem.str
 dp_modemi.str

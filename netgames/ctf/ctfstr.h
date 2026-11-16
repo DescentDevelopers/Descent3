@@ -16,10 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CTF_STR_H_
-#define __CTF_STR_H_
+#pragma once
 
-#define TXT(d) GetString(d)
+#define TXT(d) dmfcGetMessageBank("ctf", std::to_string(d))
 
 #define TXT_DEATH1 TXT(0)          //"%s got blasted by %s"
 #define TXT_DEATH2 TXT(1)          //"%s knows %s is his god"
@@ -68,5 +67,3 @@
 #define TXT_KILLS_SHORT TXT(43)    //"K"
 #define TXT_DEATHS_SHORT TXT(44)   //"D"
 #define TXT_SUICIDES_SHORT TXT(45) //"S"
-
-#endif

@@ -482,19 +482,9 @@
 #include "dmfcinputcommands.h"
 #include "log.h"
 
-char **DMFCStringTable;
-int DMFCStringTableSize = 0;
-const char *_DMFCErrorString = "DMFC Missing String";
 uint8_t seeds1[31] = {49, 73, 0,  44, 87, 253, 35, 74, 62, 250, 4,  247, 251, 72,  244, 30,
                     59, 61, 60, 52, 50, 237, 23, 48, 56, 55,  65, 232, 231, 230, 0};
 uint8_t seeds2[6] = {70, 95, 103, 102, 112, 0};
-
-const char *DMFCGetString(int d) {
-  if ((d < 0) || (d >= DMFCStringTableSize))
-    return _DMFCErrorString;
-  else
-    return DMFCStringTable[d];
-}
 
 DMFCBase::DMFCBase(void) {
   m_cPtrs = 0;
@@ -788,7 +778,7 @@ void DMFCBase::LoadFunctions(int *api_func) {
   GameVClips = (vclip *)API.GameVClips;
 
   // Do functions, variables
-  // Note, these must match the ordering on the D3 side (Game2DLL.cpp)
+  // Note, these must match the ordering on the D3 side (Descent3/Game2DLL.cpp)
   DLLAddHUDMessage = (AddHUDMessage_fp)API.fp[0];
   DLLMultiSendClientExecuteDLL = (MultiSendClientExecuteDLL_fp)API.fp[1];
   DLLFindObjectIDName = (FindObjectIDName_fp)API.fp[2];
@@ -869,8 +859,8 @@ void DMFCBase::LoadFunctions(int *api_func) {
   DLLMultiDisconnectPlayer = (MultiDisconnectPlayer_fp)API.fp[77];
   DLLnw_GetNumbersFromHostAddress = (nw_GetNumbersFromHostAddress_fp)API.fp[78];
   DLLnw_GetThisIP = (nw_GetThisIP_fp)API.fp[79];
-  DLLCreateStringTable = (CreateStringTable_fp)API.fp[80];
-  DLLDestroyStringTable = (DestroyStringTable_fp)API.fp[81];
+  // DLLCreateStringTable = (CreateStringTable_fp)API.fp[80];
+  // DLLDestroyStringTable = (DestroyStringTable_fp)API.fp[81];
   DLLRenderHUDTextFlags = (RenderHUDTextFlags_fp)API.fp[82];
   DLLPlayerSpewInventory = (PlayerSpewInventory_fp)API.fp[83];
   DLLPlayerSetHUDNameFOV = (PlayerSetHUDNameFOV_fp)API.fp[84];
@@ -1159,6 +1149,9 @@ void DMFCBase::LoadFunctions(int *api_func) {
   Inven_GetTypeIDCount = (dInven_GetTypeIDCount_fp)API.fp[367];
   Inven_FindPos = (dInven_FindPos_fp)API.fp[368];
   Inven_GetInventoryItemList = (dInven_GetInventoryItemList_fp)API.fp[369];
+  dmfcLoadMessages = (dmfcLoadMessages_fp)API.fp[370];
+  dmfcFreeMessages = (dmfcFreeMessages_fp)API.fp[371];
+  dmfcGetMessageBank = (dmfcGetMessageBank_fp)API.fp[372];
 
   // Do variables
   Player_num = (int *)API.vp[0];
@@ -1203,7 +1196,7 @@ void DMFCBase::GameInit(int teams) {
 
   LoadSettings();
 
-  DLLCreateStringTable("dmfc.str", &DMFCStringTable, &DMFCStringTableSize);
+  dmfcLoadMessages("dmfc", "DMFC.str");
 
   // initialize player records
   PRec_Init();
@@ -1535,7 +1528,7 @@ void DMFCBase::GameClose(void) {
   if (MenuBackgroundBMP > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(MenuBackgroundBMP);
 
-  DLLDestroyStringTable(DMFCStringTable, DMFCStringTableSize);
+  dmfcFreeMessages("dmfc");
 }
 
 void DMFCBase::DrawMenu(void) {

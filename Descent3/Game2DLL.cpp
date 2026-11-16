@@ -136,7 +136,7 @@ void GetGameAPI(game_api *api) {
   api->GameVClips = (int *)GameVClips;
 
   // Fill in function pointers here.  The order here must match the order on the
-  // DLL side (dmfcbase.cpp)
+  // DLL side (netgames/dmfc/dmfcbase.cpp)
 
   api->fp[0] = (int *)AddHUDMessage;
   api->fp[1] = (int *)MultiSendClientExecuteDLL;
@@ -218,8 +218,8 @@ void GetGameAPI(game_api *api) {
   api->fp[77] = (int *)MultiDisconnectPlayer;
   api->fp[78] = (int *)nw_GetNumbersFromHostAddress;
   api->fp[79] = (int *)nw_GetThisIP;
-  api->fp[80] = (int *)CreateStringTable;
-  api->fp[81] = (int *)DestroyStringTable;
+  api->fp[80] = (int *)nullptr; // CreateStringTable;
+  api->fp[81] = (int *)nullptr; // DestroyStringTable;
   api->fp[82] = (int *)RenderHUDTextFlags;
   api->fp[83] = (int *)PlayerSpewInventory;
   api->fp[84] = (int *)PlayerSetHUDNameFOV;
@@ -508,6 +508,9 @@ void GetGameAPI(game_api *api) {
   api->fp[367] = (int *)dInven_GetTypeIDCount;
   api->fp[368] = (int *)dInven_FindPos;
   api->fp[369] = (int *)dInven_GetInventoryItemList;
+  api->fp[370] = (int *)LoadMessages;
+  api->fp[371] = (int *)FreeMessages;
+  api->fp[372] = (int *)GetMessageBank;
 
   // Variable pointers
   api->vp[0] = (int *)&Player_num;

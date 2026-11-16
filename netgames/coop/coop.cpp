@@ -133,18 +133,6 @@ int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
   return count;
 }
 
-///////////////////////////////////////////////
-// localization info
-static char **StringTable;
-static int StringTableSize = 0;
-static const char *_ErrorString = "Missing String";
-const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
-    return _ErrorString;
-  else
-    return StringTable[d];
-}
-///////////////////////////////////////////////
 static int SortedPlayers[MAX_PLAYER_RECORDS];
 static bool DisplayScoreScreen = false;
 static bool FirstFrame = false;
@@ -215,8 +203,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   dPlayers = DMFCBase->GetPlayers();
 
-  DLLCreateStringTable("Coop.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  if (dmfcLoadMessages("coop", "coop.str") == 0) {
     *all_ok = 0;
     return;
   }
@@ -299,7 +286,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  dmfcFreeMessages("coop");
 
   if (dstat) {
     dstat->DestroyPointer();

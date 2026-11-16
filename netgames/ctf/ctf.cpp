@@ -90,7 +90,7 @@
 
 #include "idmfc.h"
 #include "ctf.h"
-#include "CTFstr.h"
+#include "ctfstr.h"
 
 IDMFC *DMFCBase;
 static IDmfcStats *dstat;
@@ -228,17 +228,6 @@ static bool GivePlayerFlag(int pnum, uint8_t team);
 // this function takes a flag away from the player, useful for when he scores, spews, disconnects, or observer modes
 static void LoseFlagForPlayer(int pnum, uint8_t team, bool remove_from_inven = true);
 
-///////////////////////////////////////////////
-// localization info/functions
-static char **StringTable;
-static int StringTableSize = 0;
-static const char *_ErrorString = "Missing String";
-const char *GetString(int d) {
-  if ((d < 0) || (d >= StringTableSize))
-    return _ErrorString;
-  else
-    return StringTable[d];
-}
 static void SaveStatsToFile(const std::filesystem::path &filename);
 static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
 static void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use);
@@ -352,8 +341,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   CTFNumOfTeams = num_teams_to_use;
 
   DMFCBase->GameInit(CTFNumOfTeams);
-  DLLCreateStringTable("CTF.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  if (dmfcLoadMessages("ctf", "ctf.str") == 0) {
     *all_ok = 0;
     return;
   }
@@ -554,7 +542,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  dmfcFreeMessages("ctf");
 
   if (dstat) {
     dstat->DestroyPointer();
