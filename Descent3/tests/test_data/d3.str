@@ -1,0 +1,40 @@
+!/! This is comment
+
+!/!0:A message
+!=!English message
+!G!Deutsche Botschaft
+!S!Mensaje en español
+!I!Messaggio italiano
+!F!Message en français
+
+!/!1:Multiline message
+!=!English
+Multiline message
+!G!Deutsche
+Multiline message
+!S!Español
+Multiline message
+!I!Italiano
+Multiline message
+!F!Français
+Multiline message
+
+!/!2:Escaped message
+!=!English\nEscaped\tmessage\32
+!G!Deutsche\nEscaped\tmessage\32
+!S!Español\nEscaped\tmessage\32
+!I!Italiano\nEscaped\tmessage\32
+!F!Français\nEscaped\tmessage\32
+
+!=!English message without comment
+!G!Deutsche message without comment
+!S!Español message without comment
+!I!Italiano message without comment
+!F!Français message without comment
+
+!/!4:Partial message
+!=!English Partial message
+
+!/!5:Partial message 2
+!=!English Partial message 2
+!G!Deutsche Partial message 2

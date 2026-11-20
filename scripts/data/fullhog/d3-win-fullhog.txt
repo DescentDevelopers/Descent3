@@ -1,12 +1,8 @@
-AIGAMEi.STR
-Anarchy.str
-Anarchyi.str
-CTF.str
-CTFi.str
-D3.STR
+AIGame.str
+AIGamei.str
+D3.str
 DMFC.str
 DMFCi.str
-GENERIC.STR
 Hyper.str
 LEVEL4i.STR
 LEVELS1i.STR
@@ -26,9 +22,12 @@ Level7i.str
 Level8i.str
 Level9i.str
 TrainingMissioni.STR
-aigame.str
+anarchy.str
+anarchyi.str
 coop.str
 coopi.str
+ctf.str
+ctfi.str
 d3i.str
 dp_modem.str
 dp_modemi.str
@@ -36,6 +35,7 @@ dp_serial.str
 dp_seriali.str
 entropy.str
 entropyi.str
+generic.str
 generici.str
 hoard.str
 hoardi.str
@@ -44,6 +44,7 @@ ipxclient.str
 ipxclienti.str
 lanclient.str
 lanclienti.str
+levelnames.msg
 monster.str
 monsteri.str
 mtclient.str

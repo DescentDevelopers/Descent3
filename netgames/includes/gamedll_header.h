@@ -526,12 +526,12 @@ DMFCDLLOUT(nw_GetThisIP_fp DLLnw_GetThisIP;)
 // Given a filename, pointer to a char * array and a pointer to an int,
 // it will load the string table and fill in the information
 // returns true on success
-typedef bool (*CreateStringTable_fp)(const char *filename, char ***table, int *size);
-DMFCDLLOUT(CreateStringTable_fp DLLCreateStringTable;)
+//typedef bool (*CreateStringTable_fp)(const char *filename, char ***table, int *size);
+//DMFCDLLOUT(CreateStringTable_fp DLLCreateStringTable;)
 
 // Given a string table and its count of strings, it will free up its memory
-typedef void (*DestroyStringTable_fp)(char **table, int size);
-DMFCDLLOUT(DestroyStringTable_fp DLLDestroyStringTable;)
+//typedef void (*DestroyStringTable_fp)(char **table, int size);
+//DMFCDLLOUT(DestroyStringTable_fp DLLDestroyStringTable;)
 
 //	renders text, scaled, alphaed, saturated,
 typedef void (*RenderHUDTextFlags_fp)(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
@@ -1752,5 +1752,14 @@ DMFCDLLOUT(dInven_FindPos_fp Inven_FindPos;)
 // returns the number of items filled in.
 typedef int (*dInven_GetInventoryItemList_fp)(Inventory *inven, tInvenList *list, int max_amount, int *cur_sel);
 DMFCDLLOUT(dInven_GetInventoryItemList_fp Inven_GetInventoryItemList;)
+
+typedef size_t (*dmfcLoadMessages_fp)(const std::string &name, const std::filesystem::path &message_file);
+DMFCDLLOUT(dmfcLoadMessages_fp dmfcLoadMessages;)
+
+typedef void (*dmfcFreeMessages_fp)(const std::string &name);
+DMFCDLLOUT(dmfcFreeMessages_fp dmfcFreeMessages;)
+
+typedef const char *(*dmfcGetMessageBank_fp)(const std::string &bank_name, const std::string &id);
+DMFCDLLOUT(dmfcGetMessageBank_fp dmfcGetMessageBank;)
 
 #endif

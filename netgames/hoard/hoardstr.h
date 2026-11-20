@@ -18,15 +18,12 @@
 
 // Defines for indexes into the string table for in-code strings
 
-#ifndef __STRING_TABLE____
-#define __STRING_TABLE____
+#pragma once
 
-#define TXT(index) GetStringFromTable(index)
+#define TXT(d) dmfcGetMessageBank("hoard", std::to_string(d))
 
 // Returns a pointer to the string at the index location from the string table
 // if it is a bad index given, then the pointer to the error string "ERROR MISSING STRING" is given
-
-const char *GetStringFromTable(int index);
 
 #define TXT_DEATH1 TXT(0)          //"%s got blasted by %s"
 #define TXT_DEATH2 TXT(1)          //"%s knows %s is his god"
@@ -83,4 +80,3 @@ const char *GetStringFromTable(int index);
 #define TXT_KILLS_SHORT TXT(50)    //"K"
 #define TXT_DEATHS_SHORT TXT(51)   //"D"
 #define TXT_SUICIDES_SHORT TXT(52) //"S"
-#endif

@@ -1,4 +1,5 @@
-aigame.str
+AIGame.str
+AIGame.so
 taurus.msn
 Taurus.ogf
 TheCore.ogf
@@ -12,7 +13,6 @@ BlastRingBlue.ogf
 aigame2.so
 AIGame3.so
 aigame4.so
-aigame.so
 AmbLightBuzzA.wav
 AmMonitorA.wav
 AmMonitorC.wav

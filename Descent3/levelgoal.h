@@ -89,10 +89,10 @@ public:
 
   void Reset(bool f_from_editor);
 
-  bool SetName(int handle, char *name);
-  bool SetItemName(char *iname);
-  bool SetDesc(char *desc);
-  bool SetCompletionMessage(char *message);
+  bool SetName(int handle, const char *name);
+  bool SetItemName(const char *iname);
+  bool SetDesc(const char *desc);
+  bool SetCompletionMessage(const char *message);
 
   int GetName(char *name, int buffer_size);
   int GetItemName(char *iname, int buffer_size);
@@ -135,9 +135,9 @@ public:
   bool GoalDeleteItem(int goal_index, int item_index);
   bool GoalItemInfo(int goal_index, int index, char operation, char *type, int *handle, bool *done);
 
-  bool GoalSetName(int goal_index, char *name);
-  bool GoalSetItemName(int goal_index, char *iname);
-  bool GoalSetDesc(int goal_index, char *desc);
+  bool GoalSetName(int goal_index, const char *name);
+  bool GoalSetItemName(int goal_index, const char *iname);
+  bool GoalSetDesc(int goal_index, const char *desc);
   bool GoalSetCompletionMessage(int goal_index, char *message);
 
   int GoalGetName(int goal_index, char *name, int buffer_size);

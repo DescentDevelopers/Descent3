@@ -56,7 +56,7 @@
 #include <filesystem>
 
 #include "idmfc.h"
-#include "Anarchy.h"
+#include "anarchy.h"
 #include "anarchystr.h"
 
 IDMFC *DMFCBase = nullptr;
@@ -81,21 +81,7 @@ static void DisplayWelcomeMessage(int player_num);
 static void SaveStatsToFile(const std::filesystem::path &filename);
 static void SwitchHUDColor(int i);
 static void SwitchAnarchyScores(int i);
-static const char *GetString(int d);
 static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
-
-///////////////////////////////////////////////
-// localization info
-static char **StringTable;
-static int StringTableSize = 0;
-static const char *_ErrorString = "Missing String";
-const char *GetString(int d) {
-  if ((d < 0) || (d >= StringTableSize))
-    return _ErrorString;
-  else
-    return StringTable[d];
-}
-///////////////////////////////////////////////
 
 void SwitchAnarchyScores(int i) {
   if (i < 0)
@@ -159,8 +145,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   DMFCBase->Set_OnDisconnectSaveStatsToFile(OnDisconnectSaveStatsToFile);
   DMFCBase->Set_OnPrintScores(OnPrintScores);
 
-  DLLCreateStringTable("Anarchy.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  if (dmfcLoadMessages("anarchy", "anarchy.str") == 0) {
     *all_ok = 0;
     return;
   }
@@ -213,7 +198,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  dmfcFreeMessages("anarchy");
 
   if (dstat) {
     dstat->DestroyPointer();

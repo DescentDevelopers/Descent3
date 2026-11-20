@@ -2387,11 +2387,10 @@ private:
   0x00004000 // Enabled: DMFC should NOT display the wait for players dialog on startup of a single player game
 #define DMFC_PRF_PAUSETIME 0x00008000 // Enabled: Real game time (used for endlevel) is not updated
 
-const char *DMFCGetString(int d);
-
 ///////////////////////////////////////////////
 // localization info
-#define DTXT(d) DMFCGetString(d)
+#define DTXT(d) dmfcGetMessageBank("dmfc", std::to_string(d))
+
 #define DTXT_KILLED1 DTXT(0)             //"%s was killed by %s"
 #define DTXT_SUICIDE1 DTXT(1)            //"%s blasts themself"
 #define DTXT_MNUSRVRCOMMAND DTXT(2)      //"Server Commands"

@@ -1,4 +1,4 @@
-set(HEADERS hoardaux.h Hoard.h hoardstr.h)
+set(HEADERS hoardaux.h hoard.h hoardstr.h)
 set(CPPS hoard.cpp hoard_ui.cpp)
 
 set(NETGAME_MODULE hoard)

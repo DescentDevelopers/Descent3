@@ -416,59 +416,62 @@ extern char Ctltext_PovBindings[][16];
 extern char Ctltext_MseBtnBindings[][32];
 extern char Ctltext_MseAxisBindings[][32];
 
+// TODO: WH: this function can be simplified
 void Localize_ctl_bindings() {
-  char **strtable;
-  int n_strings, i;
+  size_t  i;
 
   // keyboard translations.
   // no need to do for english!
   if (Localization_GetLanguage() == LANGUAGE_ENGLISH)
     return;
 
-  if (CreateStringTable("bindkey.str", &strtable, &n_strings)) {
+  size_t n_strings = locdb->LoadBank("bindkey", "bindkey.str");
+  if (n_strings > 0) {
     i = 0;
     while (key_binding_indices[i] != 0xff) {
       if (i >= n_strings) {
         break;
       }
-      strcpy(Ctltext_KeyBindings[key_binding_indices[i]], strtable[i]);
+      strcpy(Ctltext_KeyBindings[key_binding_indices[i]], locdb->GetMsg("bindkey", std::to_string(i))->c_str());
       i++;
     }
-    DestroyStringTable(strtable, n_strings);
+    locdb->FreeBank("bindkey");
   }
 
   // mouse translations.
-  if (CreateStringTable("bindmse.str", &strtable, &n_strings)) {
+  n_strings = locdb->LoadBank("bindmse", "bindmse.str");
+  if (n_strings > 0) {
     for (i = 0; i < 6; i++) {
       if (i >= n_strings) {
         break;
       }
-      strcpy(Ctltext_MseBtnBindings[i], strtable[i]);
+      strcpy(Ctltext_MseBtnBindings[i], locdb->GetMsg("bindmse", std::to_string(i))->c_str());
     }
     for (i = 0; i < 3; i++) {
       if ((i + 6) >= n_strings) {
         break;
       }
-      strcpy(Ctltext_MseAxisBindings[i], strtable[i + 6]);
+      strcpy(Ctltext_MseAxisBindings[i], locdb->GetMsg("bindmse", std::to_string(i + 6))->c_str());
     }
-    DestroyStringTable(strtable, n_strings);
+    locdb->FreeBank("bindmse");
   }
 
   // joystick translations.
-  if (CreateStringTable("bindjoy.str", &strtable, &n_strings)) {
+  n_strings = locdb->LoadBank("bindjoy", "bindjoy.str");
+  if (n_strings > 0) {
     for (i = 0; i < 6; i++) {
       if (i >= n_strings) {
         break;
       }
-      strcpy(Ctltext_AxisBindings[i + 1], strtable[i]);
+      strcpy(Ctltext_AxisBindings[i + 1], locdb->GetMsg("bindjoy", std::to_string(i))->c_str());
     }
     for (i = 0; i < 4; i++) {
       if ((i + 6) >= n_strings) {
         break;
       }
-      strcpy(Ctltext_PovBindings[i + 1], strtable[i + 6]);
+      strcpy(Ctltext_PovBindings[i + 1], locdb->GetMsg("bindjoy", std::to_string(i + 6))->c_str());
     }
-    DestroyStringTable(strtable, n_strings);
+    locdb->FreeBank("bindjoy");
   }
 }
 

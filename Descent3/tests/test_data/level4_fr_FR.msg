@@ -2,6 +2,7 @@
 // D.A.L.L.A.S. Generated Message Table File
 //////////////////////////////////////////////
 
-NEXT_MESSAGE_ID_NUMBER     1
+NEXT_MESSAGE_ID_NUMBER     3
 
 // Message List
+Debug2=Ca devrait SECOUER!

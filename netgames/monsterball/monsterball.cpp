@@ -267,19 +267,6 @@ static bool DisplayScoreScreen = false;
 static bool display_my_welcome = false;
 static bool monsterball_info_set = false;
 
-///////////////////////////////////////////////
-// localization info
-static char **StringTable;
-static int StringTableSize = 0;
-static const char *_ErrorString = "Missing String";
-const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
-    return _ErrorString;
-  else
-    return StringTable[d];
-}
-///////////////////////////////////////////////
-
 //////////////////////////////////
 // Prototypes
 static void DisplayHUDScores(struct tHUDItem *hitem);
@@ -417,7 +404,10 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   Netgame->flags |= (NF_TRACK_RANK);
 
   DMFCBase->GameInit(NumOfTeams);
-  DLLCreateStringTable("monster.str", &StringTable, &StringTableSize);
+  if (dmfcLoadMessages("monster", "monster.str") == 0) {
+    *all_ok = 0;
+    return;
+  }
 
   // add the death and suicide messages
   DMFCBase->AddDeathMessage(TXT_KILLEDA, true);
@@ -525,7 +515,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Monsterball_info.icon > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Monsterball_info.icon);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  dmfcFreeMessages("monster");
 
   if (dstat) {
     dstat->DestroyPointer();

@@ -20,14 +20,15 @@
 //
 #include <cfloat>
 #include <cstdint>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "osiris_vector.h"
 #include "DallasFuncs.h"
 
+#include "crossplat.h"
 #include "module.h"
 
 #ifdef __cplusplus
@@ -44,18 +45,9 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 }
 #endif
 
-static int String_table_size = 0;
-static char **String_table = nullptr;
-static const char *_Error_string = "!!ERROR MISSING STRING!!";
-static const char *_Empty_string = "";
-const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table_size))
-    return _Error_string;
-  if (!String_table[index])
-    return _Empty_string;
-  return String_table[index];
-}
-#define TXT(x) GetStringFromTable(x)
+static const char* mod_name;
+
+#define TXT(x) Loc_GetMessageBank(mod_name, std::to_string(x))
 #define TXT_GBM_RENAME 0            //"Rename GB Unit"
 #define TXT_GBM_REPAIR 1            //"Repair GB"
 #define TXT_GBM_EXITSHIP 2          //"Exit ship"
@@ -2411,15 +2403,14 @@ public:
 int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
-  osicommon_Initialize((tOSIRISModuleInit *)func_list);
+  osicommon_Initialize(func_list);
   if (func_list->game_checksum != CHECKSUM) {
     mprintf(0, "Game-Checksum FAIL!!! (%ul!=%ul)\n", func_list->game_checksum, CHECKSUM);
     mprintf(0, "RECOMPILE YOUR SCRIPTS!!!\n");
     return 0;
   }
   aigame_mod_id = func_list->module_identifier;
-  String_table_size = func_list->string_count;
-  String_table = func_list->string_table;
+  mod_name = func_list->script_identifier;
 
   return 1;
 }

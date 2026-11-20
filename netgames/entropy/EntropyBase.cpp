@@ -209,19 +209,6 @@ static void DoPlayerInEnemy(int pnum, float time);
 extern void DoServerConfigureDialog(void);
 static void OnPrintScores(int level);
 
-///////////////////////////////////////////////
-// localization info
-static char **StringTable;
-static int StringTableSize = 0;
-static const char *_ErrorString = "Missing String";
-const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
-    return _ErrorString;
-  else
-    return StringTable[d];
-}
-///////////////////////////////////////////////
-
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
   options->flags = DOF_MAXTEAMS | DOF_MINTEAMS;
@@ -299,8 +286,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   Netgame->flags |= (NF_TRACK_RANK);
 
   DMFCBase->GameInit(NUM_TEAMS);
-  DLLCreateStringTable("entropy.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  if (dmfcLoadMessages("entropy", "entropy.str") == 0) {
     *all_ok = 0;
     return;
   }
@@ -418,7 +404,7 @@ void DLLFUNCCALL DLLGameClose() {
     RoomList = nullptr;
   }
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  dmfcFreeMessages("entropy");
 
   if (dstat) {
     dstat->DestroyPointer();

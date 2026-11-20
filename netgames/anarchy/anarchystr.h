@@ -16,10 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ANARCHY_STRING_TABLE_H_
-#define __ANARCHY_STRING_TABLE_H_
+#pragma once
 
-#define TXT(d) GetString(d)
+#define TXT(d) dmfcGetMessageBank("anarchy", std::to_string(d))
 
 #define TXT_DEATH1 TXT(0)        //"%s got blasted by %s"
 #define TXT_DEATH2 TXT(1)        //"%s knows %s is his god"
@@ -69,5 +68,3 @@
 #define TXT_KILLS_SHORT TXT(44)     //"K"
 #define TXT_DEATHS_SHORT TXT(45)    //"D"
 #define TXT_SUICIDES_SHORT TXT(46)  //"S"
-
-#endif

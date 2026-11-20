@@ -1,4 +1,4 @@
-set(HEADERS HyperAnarchy.h hyperstr.h)
+set(HEADERS hyperanarchy.h hyperstr.h)
 set(CPPS hyperanarchy.cpp)
 
 set(NETGAME_MODULE hyperanarchy)
