@@ -501,10 +501,8 @@
 #include "multi_external.h" //defines and structs are in here
 
 extern bool Multi_bail_ui_menu;
-#if defined(DEMO)
+#ifdef DEMO
 #define MULTI_VERSION 7
-#elif defined(OEM)
-#define MULTI_VERSION 5
 #else
 // #define MULTI_VERSION	4
 //  Patch 1.1!

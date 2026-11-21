@@ -751,33 +751,6 @@ void mng_WriteNewWeaponPage(CFILE *outfile, mngs_weapon_page *weaponpage) {
   EndManagePage(outfile, offset);
 }
 
-#ifdef OEM
-void DoOEMNapalmBarrelHack(mngs_weapon_page *weaponpage) {
-  if (!strcmp(weaponpage->weapon_struct.name, "NapalmBarrelPart2")) {
-    LOG_DEBUG << "BASHING NAPALMBARRELPART2!!!!!!";
-    weaponpage->weapon_struct.flags |= (WF_SATURATE | WF_NO_ROTATE | WF_CUSTOM_SIZE | WF_NAPALM);
-    weaponpage->weapon_struct.custom_size = 6.0f;
-    weaponpage->weapon_struct.phys_info.mass = 0.6f;
-    weaponpage->weapon_struct.phys_info.drag = 0.01f;
-    weaponpage->weapon_struct.phys_info.rotdrag = 0.001f;
-
-    weaponpage->weapon_struct.phys_info.velocity.x() = 0;
-    weaponpage->weapon_struct.phys_info.velocity.y() = 0;
-    weaponpage->weapon_struct.phys_info.velocity.z() = 50.0f;
-
-  } else {
-    LOG_DEBUG << "BASHING NAPALMBARREL!!!!!!";
-    weaponpage->weapon_struct.flags |= (WF_INVISIBLE | WF_CUSTOM_SIZE | WF_NAPALM);
-    weaponpage->weapon_struct.custom_size = 1.0f;
-    weaponpage->weapon_struct.phys_info.flags |= PF_USES_PARENT_VELOCITY;
-
-    weaponpage->weapon_struct.phys_info.velocity.x() = 0;
-    weaponpage->weapon_struct.phys_info.velocity.y() = 0;
-    weaponpage->weapon_struct.phys_info.velocity.z() = 110.0f;
-  }
-}
-#endif
-
 // Given an open file pointer and a weapon_page struct, reads a weapon page
 int mng_ReadNewWeaponPage(CFILE *infile, mngs_weapon_page *weaponpage) {
   int i;
@@ -884,14 +857,6 @@ int mng_ReadNewWeaponPage(CFILE *infile, mngs_weapon_page *weaponpage) {
   cf_ReadString(weaponpage->icon_name, PAGENAME_LEN, infile);
 
   weaponpage->weapon_struct.used = 1;
-
-#ifdef OEM
-  if (!strcmp(weaponpage->weapon_struct.name, "NapalmBarrelPart2") ||
-      !strcmp(weaponpage->weapon_struct.name, "NapalmBarrel")) {
-    // Do OEM hack
-    DoOEMNapalmBarrelHack(weaponpage);
-  }
-#endif
 
   if (!stricmp(weaponpage->weapon_struct.name, "EMDBlob")) {
     weaponpage->weapon_struct.life_time = 1.7f;

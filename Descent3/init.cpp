@@ -1764,10 +1764,7 @@ void IntroScreen() {
 #ifdef DEMO
   ShowStaticScreen("tantrum.ogf", true, 3.0);
   ShowStaticScreen("outrage.ogf", true, 3.0);
-#else
-#endif
 
-#ifdef DEMO
   int bm_handle = bm_AllocLoadFileBitmap("demomenu.ogf", 0);
 #else
   int bm_handle = bm_AllocLoadFileBitmap("oemmenu.ogf", 0);

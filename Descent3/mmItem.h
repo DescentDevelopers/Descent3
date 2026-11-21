@@ -74,7 +74,7 @@
 #include "newui.h"
 #include "psclass.h"
 
-#if ((!defined(OEM)) && (!defined(DEMO)))
+#ifndef DEMO
 #define MOVIE_MENU
 #endif
 #define MMITEM_ALPHA 192                   // default alpha

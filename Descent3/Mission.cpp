@@ -787,7 +787,7 @@ void ResetMission() {
   }
 }
 
-#if (defined(OEM) || defined(DEMO))
+#ifdef DEMO
 bool DemoMission(int mode = 0) {
   tMission *msn = &Current_mission;
   msn->cur_level = 1;
@@ -802,16 +802,10 @@ bool DemoMission(int mode = 0) {
   case 0: {
     strcpy(msn->name, "Descent 3: Sol Ascent");
     msn->num_levels = 5;
-#ifdef DEMO
     msn->multiplayable = false;
     strcpy(msn->name, "Descent 3: Demo2");
     msn->num_levels = 1;
     msn->filename = mem_strdup("d3demo.mn3");
-#else
-    strcpy(msn->name, "Descent 3: Sol Ascent");
-    msn->num_levels = 5;
-    msn->filename = mem_strdup("d3oem.mn3");
-#endif
     // strncpy(msn->levels[0].name, "Search for Sweitzer", MSN_NAMELEN-1);
     msn->levels[0].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
     msn->levels[0].filename = mem_strdup("level1.d3l");
@@ -819,33 +813,6 @@ bool DemoMission(int mode = 0) {
     msn->levels[0].score = mem_strdup("level1.omf");
     msn->levels[0].progress = mem_strdup("l1load.ogf");
     msn->levels[0].moviename = mem_strdup("level1.mve");
-#ifndef DEMO
-    // strncpy(msn->levels[0].name, "Into the Heart of the Ship", MSN_NAMELEN-1);
-    msn->levels[1].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[1].filename = mem_strdup("level3.d3l");
-    msn->levels[1].briefname = mem_strdup("level2o.brf");
-    msn->levels[1].score = mem_strdup("level3.omf");
-    msn->levels[1].progress = mem_strdup("l3load.ogf");
-    // strncpy(msn->levels[0].name, "The Nomad Caves", MSN_NAMELEN-1);
-    msn->levels[2].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[2].filename = mem_strdup("level6.d3l");
-    msn->levels[2].briefname = mem_strdup("level3o.brf");
-    msn->levels[2].score = mem_strdup("level6.omf");
-    msn->levels[2].progress = mem_strdup("l6load.ogf");
-    // strncpy(msn->levels[0].name, "The Transmode Virus", MSN_NAMELEN-1);
-    msn->levels[3].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[3].filename = mem_strdup("level7.d3l");
-    msn->levels[3].briefname = mem_strdup("level4o.brf");
-    msn->levels[3].score = mem_strdup("level7.omf");
-    msn->levels[3].progress = mem_strdup("l7load.ogf");
-    // strncpy(msn->levels[0].name, "The Rescue", MSN_NAMELEN-1);
-    msn->levels[4].flags = LVLFLAG_BRIEFING | LVLFLAG_SCORE;
-    msn->levels[4].filename = mem_strdup("level11.d3l");
-    msn->levels[4].briefname = mem_strdup("level5o.brf");
-    msn->levels[4].score = mem_strdup("level11.omf");
-    msn->levels[4].progress = mem_strdup("l11load.ogf");
-    mn3_Open("d3oem.mn3");
-#endif
     break;
   }
   case 1: {
@@ -878,20 +845,6 @@ bool DemoMission(int mode = 0) {
     msn->levels[0].progress = mem_strdup("taurus.ogf");
     break;
   }
-#ifndef DEMO
-  case 4: {
-    strcpy(msn->name, "Pilot Training");
-    msn->filename = mem_strdup("training.mn3");
-    // strncpy(msn->levels[0].name, "Training", MSN_NAMELEN-1);
-    msn->levels[0].filename = mem_strdup("trainingmission.d3l");
-    msn->levels[0].briefname = nullptr; // mem_strdup("training.brf");
-    msn->levels[0].flags = 0;
-    msn->levels[0].lvlbranch0 = 0;
-    msn->levels[0].progress = mem_strdup("trainingload.ogf");
-    mn3_Open("training.mn3");
-    break;
-  }
-#endif
   default:
     return false;
   }
@@ -905,24 +858,15 @@ bool DemoMission(int mode = 0) {
 bool LoadMission(const std::filesystem::path& mssn) {
   Times_game_restored = 0;
   LOG_INFO << "In LoadMission()";
-#if (defined(OEM) || defined(DEMO))
-#ifdef OEM
-  if (stricmp(mssn, "d3oem.mn3") == 0)
-    return DemoMission(0);
-#elif defined(DEMO)
+#ifdef DEMO
   if (stricmp(mssn, "d3demo.mn3") == 0)
     return DemoMission(0);
-#endif
   else if (stricmp(mssn, "polaris.d3l") == 0)
     return DemoMission(1);
   else if (stricmp(mssn, "thecore.d3l") == 0)
     return DemoMission(2);
   else if (stricmp(mssn, "taurus.d3l") == 0)
     return DemoMission(3);
-#ifdef OEM
-  else if (stricmp(mssn, "training.mn3") == 0)
-    return DemoMission(4);
-#endif
 #else
 
   tMission *msn;

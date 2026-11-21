@@ -335,7 +335,6 @@ void SendCheaterAttemptText() {
 
 void DemoCheats(int key) {
   static int snd_cheat = -1;
-  int i;
   const char *cryptstring, *oldcryptstring;
 
   if (snd_cheat == -1) {
@@ -344,7 +343,7 @@ void DemoCheats(int key) {
 
   key = ddio_KeyToAscii(key);
 
-  for (i = 0; i < 15; i++) {
+  for (int i = 0; i < 15; i++) {
     CheatBuffer[i] = CheatBuffer[i + 1];
     OldCheatBuffer[i] = OldCheatBuffer[i + 1];
   }
@@ -355,7 +354,7 @@ void DemoCheats(int key) {
   cryptstring = jcrypt(&CheatBuffer[7]);
   oldcryptstring = oldjcrypt(&OldCheatBuffer[7]);
 
-  for (i = 0; i < N_LAMER_CHEATS; i++) {
+  for (int i = 0; i < N_LAMER_CHEATS; i++) {
     if (!(strcmp(oldcryptstring, LamerCheats[i]))) {
       if (snd_cheat != -1)
         Sound_system.Play2dSound(snd_cheat);
@@ -510,19 +509,11 @@ void DemoCheats(int key) {
     Players[Player_num].weapon_flags = HAS_FLAG(LASER_INDEX) | HAS_FLAG(VAUSS_INDEX) | HAS_FLAG(SUPER_LASER_INDEX) |
                                        HAS_FLAG(NAPALM_INDEX) | HAS_FLAG(CONCUSSION_INDEX) | HAS_FLAG(HOMING_INDEX) |
                                        HAS_FLAG(FRAG_INDEX) | HAS_FLAG(FLARE_INDEX);
-#elif OEM
-    Players[Player_num].weapon_flags =
-        HAS_FLAG(LASER_INDEX) | HAS_FLAG(VAUSS_INDEX) | HAS_FLAG(MICROWAVE_INDEX) | HAS_FLAG(PLASMA_INDEX) |
-        HAS_FLAG(SUPER_LASER_INDEX) | HAS_FLAG(MASSDRIVER_INDEX) | HAS_FLAG(NAPALM_INDEX) | HAS_FLAG(CONCUSSION_INDEX) |
-        HAS_FLAG(HOMING_INDEX) | HAS_FLAG(IMPACTMORTAR_INDEX) | HAS_FLAG(FRAG_INDEX) | HAS_FLAG(GUIDED_INDEX) |
-        HAS_FLAG(NAPALMROCKET_INDEX) | HAS_FLAG(CYCLONE_INDEX);
-
 #else
     Players[Player_num].weapon_flags = 0xFFFFFFFF;
 #endif
 
-    int i;
-    for (i = 0; i < MAX_PLAYER_WEAPONS; i++) {
+    for (int i = 0; i < MAX_PLAYER_WEAPONS; i++) {
       if (HAS_FLAG(i)) {
         Players[Player_num].weapon_ammo[i] = Ships[Players[Player_num].ship_index].max_ammo[i];
       }
@@ -556,20 +547,6 @@ void DemoCheats(int key) {
     p_pid = -1;
 
     amount = 12;
-#elif OEM
-    c_id = -1;
-    b_id = FindWeaponName("Betty");
-    s_id = FindWeaponName("SeekerMine");
-    g_id = FindWeaponName("Gunboy");
-    p_id = -1;
-
-    c_pid = -1;
-    b_pid = FindObjectIDName("Betty4pack");
-    s_pid = FindObjectIDName("Seeker3pack");
-    g_pid = FindObjectIDName("gunboypowerup");
-    p_pid = -1;
-
-    amount = 12;
 #else
     c_id = FindWeaponName("Chaff");
     b_id = FindWeaponName("Betty");
@@ -599,7 +576,7 @@ void DemoCheats(int key) {
       p_pid = FindObjectIDName("Shield");
 
     object *objp = &Objects[Players[Player_num].objnum];
-    for (i = 0; i < amount; i++) {
+    for (int i = 0; i < amount; i++) {
       if (c_id != -1)
         Players[Player_num].counter_measures.Add(OBJ_WEAPON, c_id, objp, OBJ_POWERUP, c_pid);
       if (b_id != -1)

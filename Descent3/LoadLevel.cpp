@@ -1495,14 +1495,8 @@ int FindValidID(int type) {
 // bash/converts generics, from those not allowed, to something that is allowed
 void ConvertObject(int *type, int *id) {
   // NOTE: Only type/id are valid at this point
-#if ((!defined(OEM)) && (!defined(DEMO)))
-  // Non-OEM build
-  return;
-#else
-#ifdef EDITOR
-  // Editor OEM?
-  return;
-#else
+#ifdef DEMO
+#ifndef EDITOR
   int new_type = *type, new_id = *id;
 
   bool is_multi = (Game_mode & GM_MULTI) ? true : false;

@@ -582,10 +582,7 @@ void MainLoop() {
     Players[a].counter_measures.Reset(false, INVRESET_ALL);
   }
 
-#if defined(OEM)
-  if (!Dedicated_server)
-    ShowStaticScreen("oemupsell.ogf");
-#elif defined(DEMO)
+#ifdef DEMO
   if (!Dedicated_server)
     ShowStaticScreen("upsell.ogf");
 #endif

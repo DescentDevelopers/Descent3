@@ -970,7 +970,6 @@ bool ProcessCommandLine() {
       exit_menu = 1;
     }
   }
-#ifndef OEM
   else if ((!Auto_connected) && (FindArg("+connect"))) {
     Auto_connected = true;
     int connarg = FindArg("+connect");
@@ -996,9 +995,7 @@ bool ProcessCommandLine() {
         exit_menu = 1;
       }
     }
-  }
-#endif
-  else if ((!Auto_connected) && (Directplay_lobby_launched_game)) {
+  } else if ((!Auto_connected) && (Directplay_lobby_launched_game)) {
     Auto_connected = true;
 #ifdef USE_DIRECTPLAY
     if (dp_AutoConnect()) {
@@ -1094,9 +1091,6 @@ static inline int generate_mission_listbox(newuiListBox *lb, std::vector<std::fi
   return c;
 }
 
-#define OEM_TRAINING_FILE "training.mn3"
-#define OEM_MISSION_FILE "d3oem.mn3"
-
 bool MenuNewGame() {
   newuiTiledWindow menu;
   newuiSheet *select_sheet;
@@ -1117,11 +1111,7 @@ bool MenuNewGame() {
   } else if (FirstGame) {
     // Already trained
     FirstGame = false;
-#ifdef OEM
-    mission_name = OEM_MISSION_FILE;
-#else
     mission_name = "d3.mn3";
-#endif // OEM
   }
 #endif // DEMO
 
@@ -1147,10 +1137,8 @@ bool MenuNewGame() {
   select_sheet->NewGroup(nullptr, 160, 280, NEWUI_ALIGN_HORIZ);
   select_sheet->AddButton(TXT_OK, UID_OK);
   select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
-#ifndef OEM
   select_sheet->AddButton(TXT_MSNINFO, UID_MSNINFO);
-#endif
-#ifndef OEM
+
   // generate real listbox now.
   n_missions = generate_mission_listbox(msn_lb, filelist, cf_LocateMultiplePaths("missions"));
 
@@ -1170,15 +1158,7 @@ bool MenuNewGame() {
     msn_lb->AddItem(TXT_MAINMISSION);
     n_missions++;
   }
-#else
-#define OEM_MISSION_NAME "Descent 3: Sol Ascent"
-#define OEM_TRAINING_NAME "Pilot Training"
-  n_missions = 2;
-  filelist.emplace_back(OEM_MISSION_NAME);
-  msn_lb->AddItem(OEM_MISSION_NAME);
-  filelist.emplace_back(OEM_TRAINING_NAME);
-  msn_lb->AddItem(OEM_TRAINING_NAME);
-#endif
+
   DoWaitMessage(false);
 redo_newgame_menu:
   // run menu
@@ -1186,7 +1166,7 @@ redo_newgame_menu:
 
   do {
     res = menu.DoUI();
-#ifndef OEM
+
     if (res == UID_MSNINFO) {
       tMissionInfo msninfo{};
       int index = msn_lb->GetCurrentIndex();
@@ -1219,7 +1199,6 @@ redo_newgame_menu:
         }
       }
     }
-#endif
   } while (res != UID_OK && res != UID_CANCEL && res != UID_MSNLB);
   menu.Close();
   // check stuff

@@ -797,7 +797,7 @@ struct pilot_edit_menu {
     sheet->AddLongButton(TXT_CUSTGAMEC, IDP_CONFIGCONT);
 
     sheet->NewGroup(TXT_MULTIPLAYERCONFIG, 55, 150);
-#if (!defined(OEM) && !defined(DEMO))
+#ifndef DEMO
     sheet->AddLongButton(TXT_SELPILOTPIC, IDP_CHOOSEPIC);
 #endif
     sheet->AddLongButton(TXT_SHIPCUSTOMIZE, IDP_SHIPCONFIG);

@@ -143,12 +143,7 @@
 
 // This is the port number assigned to "descent3" by the IANA (Internet Assigned Numbers Authority)
 // Don't arbitrarily change this number!
-#ifdef OEM
-// The port used for the OEM version isn't a legitimate IANA port number
 #define D3_DEFAULT_PORT 2092
-#else
-#define D3_DEFAULT_PORT 2092
-#endif
 
 class grScreen;
 class oeApplication;
