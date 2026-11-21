@@ -813,9 +813,8 @@ void FreeAllVisEffects() {
 
 // Creates a some sparks that go in random directions
 void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, uint16_t color, float force_scalar) {
-  // Make more sparks if Katmai
-  if (Katmai)
-    num_sparks *= 2;
+  // Make more sparks
+  num_sparks *= 2;
 
   // Create some sparks
   for (int i = 0; i < num_sparks; i++) {
@@ -852,9 +851,8 @@ void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, uint16_t c
 
 // Creates a some sparks that go in random directions
 void CreateRandomSparks(int num_sparks, vector *pos, int roomnum, int which_index, float force_scalar) {
-  // Make more sparks if Katmai
-  if (Katmai)
-    num_sparks *= 2;
+  // Make more sparks
+  num_sparks *= 2;
 
   // Create some sparks
   for (int i = 0; i < num_sparks; i++) {
@@ -1840,11 +1838,10 @@ void DrawVisEffect(vis_effect *vis) {
 
   float size = vis->size;
 
-  // Bigger explosions for Katmai
-  if (Katmai) {
-    if (vis->id == BIG_EXPLOSION_INDEX || vis->id == MED_EXPLOSION_INDEX || vis->id == MED_EXPLOSION_INDEX2 ||
-        vis->id == MED_EXPLOSION_INDEX3)
-      size *= 1.8f;
+  // Bigger explosions
+  if (vis->id == BIG_EXPLOSION_INDEX || vis->id == MED_EXPLOSION_INDEX || vis->id == MED_EXPLOSION_INDEX2 ||
+      vis->id == MED_EXPLOSION_INDEX3) {
+    size *= 1.8f;
   }
 
   int visnum = vis - VisEffects;

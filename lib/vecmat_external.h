@@ -303,11 +303,6 @@ using vector_array          = vector;
 using aligned_vector        = vec<scalar,3,align::vector>;
 using aligned_vector_array  = aligned_vector;
 
-using vector4               = vec<scalar,4>;
-using vector4_array         = vector4;
-using aligned_vector4       = vec<scalar,4,align::vector>; 
-using aligned_vector4_array = aligned_vector4;
-
 using angvec                = vec<angle,3>;
 using angvec_array          = angvec;
 using aligned_angvec        = vec<angle,3,align::vector>;
@@ -342,31 +337,6 @@ constexpr static inline const matrix ne()
 };
 
 constexpr matrix IDENTITY_MATRIX = matrix::id();
-
-struct alignas(alignof(vector4) * 4) matrix4 {
-constexpr static const size_t RIGHT_HAND = 0;
-constexpr static const size_t UP         = 1;
-constexpr static const size_t FORWARD    = 2;
-constexpr static const size_t POSITION   = 3;
-union {
-struct {
-  vector4 rvec;
-  vector4 uvec;
-  vector4 fvec;
-  vector4 pos;
-};
-  scalar a2d[4][4];
-  scalar a1d[16];
-};
-constexpr static inline const matrix4 id()
-{
-  return matrix4{ vector4::id(0), vector4::id(1), vector4::id(2), vector4::id(3) };
-}
-constexpr static inline const matrix4 ne()
-{
-  return matrix4{ vector4{}, vector4{}, vector4{}, vector4{} };
-}
-};
 
 // Adds 2 matrices
 static inline matrix operator+(matrix a, const matrix &b) {

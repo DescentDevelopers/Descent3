@@ -2607,15 +2607,6 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
   // RemoveDegenerateFaces(rp);
 #endif
 
-  if (Katmai) {
-    // If katmai, copy all of our verts into our verts4 array
-    for (i = 0; i < nverts; i++) {
-      rp->verts4[i].x() = rp->verts[i].x();
-      rp->verts4[i].y() = rp->verts[i].y();
-      rp->verts4[i].z() = rp->verts[i].z();
-    }
-  }
-
   return 1;
 }
 

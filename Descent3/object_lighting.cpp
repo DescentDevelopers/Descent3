@@ -365,9 +365,8 @@ void DoObjectLight(object *obj) {
   float light_distance = li->light_distance;
   vector *direction = nullptr;
 
-  // Make katmai lights bigger
-  if (Katmai)
-    light_distance *= 1.5;
+  // Make lights bigger
+  light_distance *= 1.5;
 
   if (light_distance > 0) {
     if (!IsLightPointVisible(&obj->pos, light_distance, obj))

@@ -426,8 +426,6 @@ oeAppDatabase *Database = nullptr; // Application database.
 
 bool Descent_overrided_intro = false;
 
-bool Katmai = true;
-
 std::filesystem::path Descent3_temp_directory; // temp directory to put temp files
 //	---------------------------------------------------------------------------
 //	Descent3: Choke 1

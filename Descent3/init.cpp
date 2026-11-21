@@ -1404,14 +1404,14 @@ void LoadGameSettings() {
 
   // Motion blur
   Use_motion_blur = 0;
-  if (Katmai || FindArg("-motionblur")) {
+  if (FindArg("-motionblur")) {
     if (!FindArg("-nomotionblur")) {
       Use_motion_blur = 1;
     }
   }
 
   Render_powerup_sparkles = false;
-  if (Katmai && !FindArg("-nosparkles")) {
+  if (!FindArg("-nosparkles")) {
     Render_powerup_sparkles = true;
   }
 }
