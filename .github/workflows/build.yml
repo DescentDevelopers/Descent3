@@ -56,6 +56,8 @@ jobs:
       # Debug builds use the mock clock. They are only built and tested, never installed, signed or uploaded.
       MOCK_CLOCK: ${{ matrix.build_type == 'Debug' && 'ON' || 'OFF' }}
       MACOS_AND_CODE_SIGNING: ${{ matrix.os.preset == 'mac' && matrix.build_type != 'Debug' && secrets.MACOS_SIGNING_IDENTITY != '' }}
+      # Define vcpkg binary cache
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg_cache,readwrite
 
     steps:
       - uses: actions/checkout@v4
@@ -98,6 +100,13 @@ jobs:
         if: ${{ startsWith(matrix.os.runner, 'windows-') }}
         with:
            arch: win64
+
+      - name: Cache vcpkg
+        uses: actions/cache@v6
+        with:
+          path: ${{ github.workspace }}/vcpkg_cache
+          key: vcpkg-${{ matrix.os.preset }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'overlays/**') }}
+          restore-keys: vcpkg-${{ matrix.os.preset }}-
 
       - uses: lukka/run-vcpkg@v11
         with:
