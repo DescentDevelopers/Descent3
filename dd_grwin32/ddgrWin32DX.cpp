@@ -48,9 +48,7 @@ bool ddgr_dx_Init(oeApplication *app) {
   DX_DATA(lpDD) = nullptr;
 
   //	Initialize DirectDraw system if we're going fullscreen, and GDIX system
-  HRESULT hres;
-
-  hres = DirectDrawCreate(nullptr, &DX_DATA(lpDD), nullptr);
+  HRESULT hres = DirectDrawCreate(nullptr, &DX_DATA(lpDD), nullptr);
   if (hres != DD_OK) {
     ddgr_PushError("Failure to initialize DirectDraw driver (%d)", LOWORD(hres));
     return false;
@@ -89,16 +87,14 @@ void ddgr_dx_Close() {
 
 //	Initializes the display for use with the DX subsystem.
 bool ddgr_dx_surf_InitVideo(ddgr_surface *sf) {
-  tDXSurface *dxsf;
   DDSURFACEDESC ddsd;
 
   //	we need to create a primary surface from the display mode we set, and possibly a backbuffer if
   //	requested.
   if (DX_DATA(vidrefs) == 0) {
-    HRESULT hres;
     DDSCAPS ddscaps;
 
-    hres = DX_DATA(lpDD)->SetDisplayMode(sf->w, sf->h, sf->bpp);
+    HRESULT hres = DX_DATA(lpDD)->SetDisplayMode(sf->w, sf->h, sf->bpp);
     if (hres != DD_OK) {
       ddgr_PushError("Unable to set DirectDraw display mode (%d)\n", LOWORD(hres));
       return false;
@@ -127,7 +123,7 @@ bool ddgr_dx_surf_InitVideo(ddgr_surface *sf) {
 
   DX_DATA(vidrefs)++; // increment vidref count
 
-  dxsf = new tDXSurface;
+  tDXSurface *dxsf = new tDXSurface;
   dxsf->lpdds = DX_DATA(vidsurf.lpdds);
 
   // this means that we are capturing the screen, not creating a screen.
@@ -177,10 +173,9 @@ void ddgr_dx_surf_CloseVideo(ddgr_surface *sf) {
 //	flips the buffers in a surface.  really only useful for video screens
 bool ddgr_dx_surf_FlipVideo(ddgr_surface *sf) {
   tDXSurface *bm = (tDXSurface *)sf->obj;
-  HRESULT hres;
 
   if (bm->backbuffer && (sf->flags & SURFFLAG_BACKBUFFER)) {
-    hres = bm->lpdds->Flip(nullptr, 0);
+    HRESULT hres = bm->lpdds->Flip(nullptr, 0);
     if (hres == DDERR_WASSTILLDRAWING || hres == DD_OK)
       return true;
     else
@@ -254,27 +249,24 @@ void ddgr_dx_surf_AttachHandle(ddgr_surface *sf, unsigned handle) {}
 //	clear
 //	blt.
 void ddgr_dx_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, int h) {
-  HRESULT hres;
   DDBLTFX ddbltfx;
   tDXSurface *dbm = (tDXSurface *)dsf->obj;
-  LPDIRECTDRAWSURFACE lpdds;
   RECT rect;
 
-  lpdds = (dbm->backbuffer) ? dbm->lpddsback : dbm->lpdds;
+  LPDIRECTDRAWSURFACE lpdds = (dbm->backbuffer) ? dbm->lpddsback : dbm->lpdds;
 
   memset(&ddbltfx, 0, sizeof(DDBLTFX));
   ddbltfx.dwSize = sizeof(ddbltfx);
   ddbltfx.dwFillColor = RGB(DDGR_COLOR_RED(col), DDGR_COLOR_GREEN(col), DDGR_COLOR_BLUE(col));
   SetRect(&rect, l, t, l + w - 1, t + h - 1);
 
-  hres = lpdds->Blt(&rect, // dest rect
+  lpdds->Blt(&rect, // dest rect
                     nullptr,  // src surface
                     nullptr,  // src rect
                     DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
 }
 
 bool ddgr_dx_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh) {
-  HRESULT hres;
   tDXSurface *sbm = (tDXSurface *)ssf->obj;
   tDXSurface *dbm = (tDXSurface *)dsf->obj;
   LPDIRECTDRAWSURFACE lpddsd;
@@ -294,7 +286,7 @@ bool ddgr_dx_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int 
   SetRect(&srect, sx, sy, sx + sw - 1, sy + sh - 1);
   SetRect(&drect, dx, dy, dx + sw - 1, dy + sh + 1);
 
-  hres = lpddsd->Blt(&drect, lpddss, &srect, DDBLT_WAIT, nullptr);
+  HRESULT hres = lpddsd->Blt(&drect, lpddss, &srect, DDBLT_WAIT, nullptr);
   if (hres != DD_OK) {
     ddgr_PushError("Unable to blt surface %s to DirectDraw surface %s(%d)\n", ssf->name, dsf->name, LOWORD(hres));
     return false;

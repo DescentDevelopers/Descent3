@@ -42,16 +42,19 @@
 #ifndef DDGRWIN32_H
 #define DDGRWIN32_H
 
+#include <cstdint>
+
 #include "ddgr.h"
-#include "pstypes.h"
 
 /*	Subsystem constants
 
         as of v2.0
 */
-const int DDGR_GDI_SUBSYSTEM = 1, // GDI subsystem
-    DDGR_GDIX_SUBSYSTEM = 2,      // GDIX subsystem (GDI+DirectX)
-    DDGR_DX_SUBSYSTEM = 3;        // DIRECTX subsystem
+enum {
+  DDGR_GDI_SUBSYSTEM = 1,   // GDI subsystem
+  DDGR_GDIX_SUBSYSTEM = 2,  // GDIX subsystem (GDI+DirectX)
+  DDGR_DX_SUBSYSTEM = 3,    // DIRECTX subsystem
+};
 
 /*	Internal Library Data
 
@@ -64,7 +67,7 @@ struct tDDGRInternalData {
 /*	Global externs
  */
 extern tDDGRInternalData DDGR_lib_data;
-extern char *DDGR_subsystem_names[];
+extern const char *DDGR_subsystem_names[];
 extern int DDGR_subsystems[];
 
 /*	Macros
@@ -72,12 +75,11 @@ extern int DDGR_subsystems[];
 #define LIB_DATA(_c) DDGR_lib_data._c
 
 inline unsigned DDGR_MAKERGB16(ddgr_color c) {
-  uint8_t r, g, b;
-  r = (uint8_t)((c & 0x00ff0000) >> 16);
-  g = (uint8_t)((c & 0x0000ff00) >> 8);
-  b = (uint8_t)(c & 0x000000ff);
+  uint8_t r = static_cast<uint8_t>((c & 0x00ff0000) >> 16);
+  uint8_t g = static_cast<uint8_t>((c & 0x0000ff00) >> 8);
+  uint8_t b = static_cast<uint8_t>(c & 0x000000ff);
 
-  return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
+  return ((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3);
 }
 
 inline int DDGR_COLOR_RED(ddgr_color c) {

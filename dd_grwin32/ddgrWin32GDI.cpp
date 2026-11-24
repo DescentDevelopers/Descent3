@@ -117,8 +117,7 @@ bool ddgr_gdi_Init(oeApplication *app, bool fullscreen, bool ddraw) {
       }
     } else {
       // grab all device modes for the current display device.
-      unsigned i;
-      for (i = 0; i < GDI_MAX_DEVMODES; i++) {
+      for (int i = 0; i < GDI_MAX_DEVMODES; i++) {
         if (EnumDisplaySettings(nullptr, i, &GDI_DATA(devmodes[i])) == FALSE) {
           break;
         }
@@ -192,7 +191,7 @@ void ddgr_gdi_Close() {
 //	to create a GDI bitmap for the back buffer, and our visible screen is the front buffer
 
 bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
-  tGDISurface *gdisf, *gdisf2;
+  tGDISurface *gdisf;
 
   //	we need to create a DC for our GDI bitmaps if this is first ref to video surface.
   if (GDI_DATA(vidrefs) == 0) {
@@ -201,25 +200,22 @@ bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
 
     if (GDI_DATA(fullscreen)) {
       if (GDI_DATA(ddraw)) {
-        HRESULT hres;
 
-        hres = GDI_DATA(lpDD)->SetDisplayMode(sf->w, sf->h, sf->bpp);
+        HRESULT hres = GDI_DATA(lpDD)->SetDisplayMode(sf->w, sf->h, sf->bpp);
         if (hres != DD_OK) {
           ddgr_PushError("Unable to set DirectDraw display mode in fullscreen (%d)\n", LOWORD(hres));
           return false;
         }
       } else {
         // grab all device modes for the current display device.
-        unsigned i;
-        for (i = 0; i < GDI_MAX_DEVMODES; i++) {
-          LONG lres;
+        for (int i = 0; i < GDI_MAX_DEVMODES; i++) {
           if ((int)GDI_DATA(devmodes[i].dmBitsPerPel) == sf->bpp && (int)GDI_DATA(devmodes[i].dmPelsWidth) == sf->w &&
               (int)GDI_DATA(devmodes[i].dmPelsHeight) == sf->h) {
             //	do a ChangeDisplaySettings to old mode.
             GDI_DATA(devmodes[i]).dmFields =
                 DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFLAGS | DM_DISPLAYFREQUENCY;
 
-            lres = ChangeDisplaySettings(&GDI_DATA(devmodes[i]), 0);
+            LONG lres = ChangeDisplaySettings(&GDI_DATA(devmodes[i]), 0);
             ASSERT(lres == DISP_CHANGE_SUCCESSFUL);
             break;
           }
@@ -264,7 +260,7 @@ bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
   //	specifying SURFFLAG_BACKBUFFER ensures that we create a GDI bitmap of size requested
   //	in 'sf' and it will be our renderable bitmap, or OUR primary render buffer
   if (sf->flags & SURFFLAG_BACKBUFFER) {
-    ddgr_surface back_sf;
+    ddgr_surface back_sf{};
     back_sf.w = sf->w;
     back_sf.h = sf->h;
     back_sf.bpp = sf->bpp;
@@ -277,7 +273,7 @@ bool ddgr_gdi_surf_InitVideo(ddgr_surface *sf) {
     }
 
     //	set our front buffer to this newly created surface and delete the gdi bitmap object
-    gdisf2 = (tGDISurface *)back_sf.obj;
+    tGDISurface *gdisf2 = (tGDISurface *)back_sf.obj;
     gdisf->hbm = gdisf2->hbm;
     gdisf->data = gdisf2->data;
     gdisf->rowsize = gdisf2->rowsize;
@@ -321,10 +317,7 @@ void ddgr_gdi_surf_CloseVideo(ddgr_surface *sf) {
 //	flip, does absolutely nothing
 
 bool ddgr_gdi_surf_FlipVideo(ddgr_surface *sf) {
-  HBITMAP old_bmp, h_sbm;
-  HDC hdc_dest;
   RECT rect;
-  int dw, dh;
   tGDISurface *bm = (tGDISurface *)sf->obj;
 
   ASSERT(bm->hwnd != nullptr);
@@ -333,7 +326,7 @@ bool ddgr_gdi_surf_FlipVideo(ddgr_surface *sf) {
   if (!bm->backbuffer)
     return true;
 
-  h_sbm = bm->hbm;
+  HBITMAP h_sbm = bm->hbm;
 
   //	if we associated another window with our screem, then make sure their DC is the dest.
   //	other wise, use our base window's DC for destination, and select our front buffer as the
@@ -343,14 +336,14 @@ bool ddgr_gdi_surf_FlipVideo(ddgr_surface *sf) {
   //		GetClientRect(GDI_DATA(hwnd),&rect);
   //	}
   //	else {
-  hdc_dest = GetDC(bm->hwnd);
+  HDC hdc_dest = GetDC(bm->hwnd);
   GetClientRect(bm->hwnd, &rect);
   //	}
 
-  dw = rect.right - rect.left;
-  dh = rect.bottom - rect.top;
+  int dw = rect.right - rect.left;
+  int dh = rect.bottom - rect.top;
 
-  old_bmp = (HBITMAP)SelectObject(GDI_DATA(hOffscreenDC), h_sbm);
+  HBITMAP old_bmp = (HBITMAP)SelectObject(GDI_DATA(hOffscreenDC), h_sbm);
 
   BOOL bltres = BitBlt(hdc_dest, 0, 0, dw, dh, GDI_DATA(hOffscreenDC), 0, 0, SRCCOPY);
 
@@ -365,17 +358,16 @@ bool ddgr_gdi_surf_FlipVideo(ddgr_surface *sf) {
 //	Creates a GDI DIBitmap
 
 bool ddgr_gdi_surf_Create(ddgr_surface *sf) {
-  tGDISurface *bm;
 
   //	set up bitmap header
   int nw = sf->w;
   if (nw % 4)
     nw = ((sf->w / 4) * 4) + 4;
 
-  bm = new tGDISurface;
+  tGDISurface *bm = new tGDISurface;
 
   if (sf->bpp == BPP_8) {
-    tDIBHeader8 header;
+    tDIBHeader8 header{};
 
     header.bmi.biSize = sizeof(BITMAPINFOHEADER);
     header.bmi.biWidth = nw;
@@ -391,7 +383,7 @@ bool ddgr_gdi_surf_Create(ddgr_surface *sf) {
 
     bm->hbm = CreateDIBSection(GDI_DATA(hOffscreenDC), (BITMAPINFO *)&header, DIB_RGB_COLORS, &bm->data, nullptr, 0);
   } else {
-    tDIBHeader header;
+    tDIBHeader header{};
     header.bmi.biSize = sizeof(BITMAPINFOHEADER);
     header.bmi.biWidth = nw;
     header.bmi.biHeight = -sf->h; // Always a top down bitmap!!
@@ -508,7 +500,6 @@ void ddgr_gdi_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w,
 //	supported.
 
 bool ddgr_gdi_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh) {
-  HBITMAP old_bmp;
   HBITMAP old_bmp2;
   HDC hdc_dest;
   tGDISurface *dbm = (tGDISurface *)dsf->obj;
@@ -526,7 +517,7 @@ bool ddgr_gdi_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int
     old_bmp2 = (HBITMAP)SelectObject(hdc_dest, dbm->hbm);
   }
 
-  old_bmp = (HBITMAP)SelectObject(GDI_DATA(hOffscreenDC), sbm->hbm);
+  HBITMAP old_bmp = (HBITMAP)SelectObject(GDI_DATA(hOffscreenDC), sbm->hbm);
 
   BOOL bltres = BitBlt(hdc_dest, dx, dy, sw, sh, GDI_DATA(hOffscreenDC), sx, sy, SRCCOPY);
 

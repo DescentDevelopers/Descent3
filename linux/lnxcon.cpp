@@ -184,7 +184,7 @@ void con_Defer() {
 
 bool con_Create(int flags) {
   // determine what type of console to open up
-  if (flags & APPFLAG_USESERVICE) {
+  if (flags & OEAPP_USESERVICE) {
     // use the NULL driver!
     Console_mode = Console_null;
   } else {

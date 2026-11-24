@@ -350,6 +350,7 @@ void ConfigureDisplayResolutions() {
   int display_count = 0;
   SDL_DisplayID *displays = SDL_GetDisplays(&display_count);
   if (!displays) {
+    LOG_WARNING.printf("Cannot enumerate displays: %s", SDL_GetError());
     return;
   }
 

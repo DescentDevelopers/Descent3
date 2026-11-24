@@ -232,14 +232,10 @@ int main(int argc, char *argv[]) {
     // check for a renderer
 
     if (FindArgChar("-nomousegrab", 'm')) {
-      flags |= APPFLAG_NOMOUSECAPTURE;
-    ddio_MouseSetGrab(false);
-      }
-
-    if (!FindArg("-sharedmemory")) {
-      flags |= APPFLAG_NOSHAREDMEMORY;
+        ddio_MouseSetGrab(false);
     }
-    flags |= APPFLAG_WINDOWEDMODE;
+
+    flags |= OEAPP_WINDOWED;
 
 
 #else
@@ -253,13 +249,13 @@ int main(int argc, char *argv[]) {
 
     // service flag overrides others here in the group
     if (FindArg("-service")) {
-      flags |= APPFLAG_USESERVICE;
+      flags |= OEAPP_USESERVICE;
     }
   }
 
   bool run_d3 = true;
 #if defined(POSIX)
-  if (flags & APPFLAG_USESERVICE) {
+  if (flags & OEAPP_USESERVICE) {
     run_d3 = false;
     pid_t np = fork();
     if (np == -1) {

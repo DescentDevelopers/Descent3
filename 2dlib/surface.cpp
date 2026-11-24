@@ -87,9 +87,10 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <cstring>
 
 #include "bitmap.h"
+#include "ddgr.h"
+#include "fix.h"
 #include "lib2d.h"
 #include "pserror.h"
 #include "renderer.h"
