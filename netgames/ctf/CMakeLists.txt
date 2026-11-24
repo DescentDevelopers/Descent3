@@ -1,4 +1,4 @@
-set(HEADERS ctf.h CTFstr.h)
+set(HEADERS ctf.h ctfstr.h)
 set(CPPS ctf.cpp)
 
 set(NETGAME_MODULE ctf)

@@ -63,12 +63,14 @@ set(HEADERS
     ../descent3/lighting.h
     ../descent3/lightmap_info.h
     ../descent3/list.h
+    ../descent3/LocDB.h
     ../descent3/LoadLevel.h
     ../descent3/localization.h
     ../descent3/marker.h
     ../descent3/matcen.h
     ../descent3/matcen_external.h
     ../descent3/menu.h
+    ../descent3/MessageBank.h
     ../descent3/Mission.h
     ../descent3/mission_download.h
     ../descent3/mmItem.h
@@ -349,6 +351,8 @@ set(SOURCE
     ../descent3/lightmap_info.cpp
     ../descent3/list.cpp
     ../descent3/LoadLevel.cpp
+    ../descent3/LocDB.cpp
+    ../descent3/MessageBank.cpp
     ../descent3/loadstate.cpp
     ../descent3/localization.cpp
     ../descent3/marker.cpp

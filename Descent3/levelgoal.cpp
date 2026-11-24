@@ -283,7 +283,7 @@ bool lgoal::ItemInfo(int index, char operation, char *type, int *handle, bool *d
   return false;
 }
 
-bool lgoal::SetName(int handle, char *name) {
+bool lgoal::SetName(int handle, const char *name) {
   if (!name)
     return false;
 
@@ -314,7 +314,7 @@ void lgoal::SendMultiUpdate(int handle) {
   msafe_CallFunction(MSAFE_MISC_LEVELGOAL, &mstruct);
 }
 
-bool lgoal::SetCompletionMessage(char *message) {
+bool lgoal::SetCompletionMessage(const char *message) {
   if (!message)
     return false;
 
@@ -325,7 +325,7 @@ bool lgoal::SetCompletionMessage(char *message) {
   return true;
 }
 
-bool lgoal::SetItemName(char *iname) {
+bool lgoal::SetItemName(const char *iname) {
   if (!iname)
     return false;
 
@@ -432,7 +432,7 @@ bool lgoal::GetStatus(int handle, char operation, int *value, bool f_save_load, 
   return false;
 }
 
-bool lgoal::SetDesc(char *desc) {
+bool lgoal::SetDesc(const char *desc) {
   if (!desc)
     return false;
 
@@ -655,21 +655,21 @@ bool levelgoals::GoalItemInfo(int goal_index, int index, char operation, char *t
   return m_goal[goal_index].ItemInfo(index, operation, type, handle, done);
 }
 
-bool levelgoals::GoalSetName(int goal_index, char *name) {
+bool levelgoals::GoalSetName(int goal_index, const char *name) {
   if (goal_index < 0 || goal_index >= m_num_goals)
     return false;
 
   return m_goal[goal_index].SetName(goal_index, name);
 }
 
-bool levelgoals::GoalSetItemName(int goal_index, char *iname) {
+bool levelgoals::GoalSetItemName(int goal_index, const char *iname) {
   if (goal_index < 0 || goal_index >= m_num_goals)
     return false;
 
   return m_goal[goal_index].SetItemName(iname);
 }
 
-bool levelgoals::GoalSetDesc(int goal_index, char *desc) {
+bool levelgoals::GoalSetDesc(int goal_index, const char *desc) {
   if (goal_index < 0 || goal_index >= m_num_goals)
     return false;
 

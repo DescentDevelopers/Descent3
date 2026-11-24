@@ -1200,20 +1200,19 @@ void FreeMission() {
 
 // Load the text (goal strings) for a level
 void LoadLevelText(const std::filesystem::path &level_filename) {
-  int n_strings;
+  const auto levelname = level_filename.filename().u8string();
   std::filesystem::path pathname = level_filename;
   pathname.replace_extension(".str");
-
-  char **goal_strings;
-  if (CreateStringTable(PATH_TO_CSTR(pathname), &goal_strings, &n_strings)) {
+  size_t n_strings = locdb->LoadBank(levelname, pathname);
+  if (n_strings > 0) {
     int n_goals = Level_goals.GetNumGoals();
     ASSERT(n_strings == (n_goals * 3));
     for (int i = 0; i < n_goals; i++) {
-      Level_goals.GoalSetName(i, goal_strings[i * 3]);
-      Level_goals.GoalSetItemName(i, goal_strings[i * 3 + 1]);
-      Level_goals.GoalSetDesc(i, goal_strings[i * 3 + 2]);
+      Level_goals.GoalSetName(i, locdb->GetMsg(levelname, std::to_string(i * 3))->c_str());
+      Level_goals.GoalSetItemName(i, locdb->GetMsg(levelname, std::to_string(i * 3 + 1))->c_str());
+      Level_goals.GoalSetDesc(i, locdb->GetMsg(levelname, std::to_string(i * 3 + 2))->c_str());
     }
-    DestroyStringTable(goal_strings, n_strings);
+    locdb->FreeBank(levelname);
   }
 }
 

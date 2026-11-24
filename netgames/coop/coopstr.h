@@ -18,15 +18,9 @@
 
 // Defines for indexes into the string table for in-code strings
 
-#ifndef __STRING_TABLE____
-#define __STRING_TABLE____
+#pragma once
 
-#define TXT(index) GetStringFromTable(index)
-
-// Returns a pointer to the string at the index location from the string table
-// if it is a bad index given, then the pointer to the error string "ERROR MISSING STRING" is given
-
-const char *GetStringFromTable(int index);
+#define TXT(d) dmfcGetMessageBank("coop", std::to_string(d))
 
 #define TXT_COOP TXT(0)          //"Coop"
 #define TXT_STATGAMENAME TXT(1)  //"Co-op Descent 3"
@@ -38,4 +32,3 @@ const char *GetStringFromTable(int index);
 #define TXT_WELCOME TXT(7)       //"Welcome to the Co-Op Game %s"
 #define TXT_JOINED TXT(8)        //"%s has joined the game"
 #define TXT_LEVELCOMPLETE TXT(9) //"Level Completed!"
-#endif

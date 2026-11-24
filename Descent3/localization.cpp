@@ -90,6 +90,7 @@
 #include <cstring>
 #include <cstdio>
 #include <filesystem>
+#include <memory>
 #include <string>
 
 #include "cfile.h"
@@ -98,6 +99,8 @@
 #include "log.h"
 #include "mem.h"
 #include "pserror.h"
+
+std::unique_ptr<D3::LocDB> locdb;
 
 struct tLangTag {
   const char *tag;
@@ -127,6 +130,20 @@ const char *_Error_string = "!!ERROR MISSING STRING!!";
 const char *_Empty_string = "\0";
 } // namespace
 
+static std::filesystem::path FixFilenameCase(const std::filesystem::path &filename);
+
+size_t LoadMessages(const std::string &name, const std::filesystem::path &message_file) {
+  return locdb->LoadBank(name, FixFilenameCase(message_file));
+}
+
+void FreeMessages(const std::string &name) {
+  locdb->FreeBank(name);
+}
+
+const char *GetMessageBank(const std::string &bank_name, const std::string &id) {
+  return locdb->GetMsg(bank_name, id)->c_str();
+}
+
 void Localization_SetLanguage(int type) {
   ASSERT(type >= 0 && type < Num_languages);
   Localization_language = type;
@@ -154,17 +171,7 @@ char *_parse_escape_chars(char *buffer);
 // Call this to load up the string tables into memory
 // Returns the number of strings loaded, if this is 0, then the program MUST not continue
 int LoadStringTables(void) {
-  static bool called = false;
-  int old_language;
-
-  if (called) {
-    // Only call this guy once
-    Int3();
-    return 0;
-  }
-  called = true;
-
-  old_language = Localization_language;
+  int old_language = Localization_language;
 
   int string_count = GetTotalStringCount();
   if (string_count == 0) {

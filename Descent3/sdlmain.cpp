@@ -192,7 +192,6 @@ int main(int argc, char *argv[]) {
   GatherArgs(argv);
   bool enable_winconsole = true;
 #endif
-  Current_pilot.initialize();
 
   orig_pwd = std::filesystem::current_path();
 

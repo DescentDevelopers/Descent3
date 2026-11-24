@@ -1,4 +1,4 @@
-set(HEADERS anarchystr.h Anarchy.h)
+set(HEADERS anarchystr.h anarchy.h)
 set(CPPS anarchy.cpp)
 
 set(NETGAME_MODULE anarchy)

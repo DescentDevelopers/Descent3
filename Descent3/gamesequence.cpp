@@ -1586,21 +1586,11 @@ void StartLevel() {
   // Initialize IGC
   Cinematic_LevelInit();
 
-  // Bash the language to english
-  int save_lang = Localization_GetLanguage();
-  Localization_SetLanguage(LANGUAGE_ENGLISH);
-
-  // Load the English text so the goal stuff will initialize correctly
+  // Load the text so the goal stuff will initialize correctly
   LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename);
-
-  // Restore the correct language
-  Localization_SetLanguage(save_lang);
 
   // Init the level scripts
   InitLevelScript();
-
-  // Load the localized text
-  LoadLevelText(Current_mission.levels[Current_mission.cur_level - 1].filename);
 
   Gametime = 0.0f;
   // Start the clock
