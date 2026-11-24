@@ -21,8 +21,15 @@
 // Platform-specific compile-time defined location of data files
 #define D3_DATADIR "@D3_DATADIR@"
 
-// Part of preference path (organization)
-#define D3_PREF_ORG "Outrage Entertainment"
+// Name of Descent 3's directory in system and user locations, such as /usr/share/descent3 or ~/.cache/descent3
+#define D3_SUBDIR "@D3_INSTALL_SUBDIR@"
 
-// Part of preference path (application)
-#define D3_PREF_APP "Descent 3"
+// Standard Descent 3 installation locations for the platform (Steam, GoG...), as a list of strings
+#define D3_STANDARD_PATHS @D3_STANDARD_PATHS_CPP@
+
+// Read-only base directories from the DEFAULT_ADDITIONAL_DIRS CMake option, as a list of strings
+#define D3_DEFAULT_ADDITIONAL_DIRS @D3_DEFAULT_ADDITIONAL_DIRS_CPP@
+
+// .hog file shipped with the game
+#define D3_PRIMARY_HOG "@D3_PRIMARY_HOG@"
+

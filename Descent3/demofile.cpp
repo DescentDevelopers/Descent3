@@ -359,9 +359,7 @@ void DemoToggleRecording() {
   if (DoEditDialog(TXT_DEMOFILENAME, szfile, 128)) {
     std::filesystem::path demo_directory = cf_GetWritableBaseDirectory() / "demo";
 
-    std::error_code ec;
-    std::filesystem::create_directories(demo_directory, ec);
-    if (ec) {
+    if (!ddio_CreateDirectories(demo_directory)) {
       LOG_ERROR << "Failed to create " << demo_directory << " directory. Unable to create demo file!";
       AddBlinkingHUDMessage(TXT_DEMOCANTCREATE);
       Demo_fname.clear();

@@ -55,7 +55,6 @@
 #endif
 
 #include "appdatabase.h"
-#include "d3_platform_path.h"
 #include "ddio.h"
 #include "linux/lnxdatabase.h"
 #include "log.h"
@@ -70,12 +69,19 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   // Open up the database file, for reading, read in all data and keep it in memory
   // then close the database
 
-  std::filesystem::path prefPath = ddio_GetPrefPath(D3_PREF_ORG, D3_PREF_APP);
-  if (prefPath.empty()) {
-    LOG_FATAL << "Couldn't find preference directory!";
+  std::filesystem::path configPath = ddio_GetConfigPath();
+  if (configPath.empty()) {
+    LOG_FATAL << "Couldn't find settings directory!";
     exit(43);
   }
-  std::filesystem::path fileName = prefPath / REGISTRY_FILENAME;
+  std::filesystem::path fileName = configPath / REGISTRY_FILENAME;
+
+  // Earlier versions kept the settings in the preference path, and ddio_GetPrefPath() has copied them there from
+  // their old preference folder
+  std::filesystem::path prefPath = ddio_GetPrefPath();
+  if (!prefPath.empty()) {
+    fileName = ddio_CopyLegacyPath(prefPath / REGISTRY_FILENAME, fileName);
+  }
 
   database = new CRegistry(PATH_TO_CSTR(fileName));
   database->Import();

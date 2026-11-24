@@ -98,6 +98,17 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 include(GNUInstallDirs)
+# Name of Descent 3's directory in system and user locations. On Linux and
+# OpenBSD, use the lower-case name that packaging conventions expect: data goes
+# into <prefix>/share/descent3, documentation into <prefix>/share/doc/descent3
+# and user files into directories such as ~/.config/descent3. Other platforms
+# keep the Descent3 name.
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+  set(D3_INSTALL_SUBDIR "descent3")
+else()
+  set(D3_INSTALL_SUBDIR "Descent3")
+endif()
+
 if(FORCE_PORTABLE_INSTALL)
   set(CMAKE_INSTALL_BINDIR ".")
   set(CMAKE_INSTALL_LIBDIR ".")
@@ -106,19 +117,13 @@ if(FORCE_PORTABLE_INSTALL)
 
   set(D3_DATADIR "${CMAKE_INSTALL_DATADIR}")
 else()
-  # On Linux and OpenBSD, use lower-case directory names to match packaging
-  # conventions: data goes into <prefix>/share/descent3 and documentation into
-  # <prefix>/share/doc/descent3. Other platforms keep the Descent3 name.
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
-    set(D3_INSTALL_SUBDIR "descent3")
     # GNUInstallDirs leaves the CMAKE_INSTALL_DOCDIR cache entry empty unless
     # the user sets it, and then defaults to share/doc/${PROJECT_NAME}. Replace
     # only that default, so an explicit value is kept.
     if("$CACHE{CMAKE_INSTALL_DOCDIR}" STREQUAL "")
       set(CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc/${D3_INSTALL_SUBDIR}")
     endif()
-  else()
-    set(D3_INSTALL_SUBDIR "Descent3")
   endif()
   set(CMAKE_INSTALL_DATADIR "${CMAKE_INSTALL_DATADIR}/${D3_INSTALL_SUBDIR}")
   # D3_DATADIR is compiled into the game as a data search path, so derive it
@@ -221,13 +226,28 @@ find_package(plog REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
   message("Building for Linux")
-  add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
+  add_compile_definitions(POSIX __LINUX__)
+  set(D3_PRIMARY_HOG "d3-linux.hog")
+  set(D3_STANDARD_PATHS
+    "~/.local/share/Steam/steamapps/common/Descent 3"          # Fedora, arch
+    "~/.steam/debian-installation/steamapps/common/Descent 3"  # Debian & derivatives
+  )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for macOS")
-  add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
+  add_compile_definitions(POSIX MACOSX=1)
+  set(D3_PRIMARY_HOG "d3-osx.hog")
+  set(D3_STANDARD_PATHS
+    "~/Library/Application Support/Steam/steamapps/common/Descent 3/Descent 3.app/Contents/Resources"
+  )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(D3_PRIMARY_HOG "d3-win.hog")
+  set(D3_STANDARD_PATHS
+    "C:\\\\Program Files (x86)\\\\Steam\\\\steamapps\\\\common\\\\Descent 3"
+    "C:\\\\Program Files (x86)\\\\GOG Galaxy\\\\Games\\\\Descent 3"
+  )
+
   # Windows.h defines to avoid as many issues as possible.
-  add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE PRIMARY_HOG=\"d3-win.hog\"
+  add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE
           #[[NOGDI]] # We need GDI for now, enable when GDI is actually not needed (or when all windows.h mentions are gone)
   )
 
@@ -264,6 +284,22 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
   add_compile_options("/MP")  # so msbuild builds with multiple processes
 endif()
+
+# Turns the list named list_var into quoted C++ strings for an initializer list in d3_platform_path.h, leaving out
+# empty items
+function(d3_cpp_path_list out_var list_var)
+  set(result "")
+  foreach(item IN LISTS ${list_var})
+    if(NOT item STREQUAL "")
+      string(APPEND result "\"${item}\", ")
+    endif()
+  endforeach()
+  set(${out_var} "${result}" PARENT_SCOPE)
+endfunction()
+
+set(DEFAULT_ADDITIONAL_DIRS "" CACHE STRING "A list of directories that Descent 3 will use as read-only base directories.")
+d3_cpp_path_list(D3_DEFAULT_ADDITIONAL_DIRS_CPP DEFAULT_ADDITIONAL_DIRS)
+d3_cpp_path_list(D3_STANDARD_PATHS_CPP D3_STANDARD_PATHS)
 
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
 add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)

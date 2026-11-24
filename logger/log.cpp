@@ -31,10 +31,8 @@
 #include "log.h"
 #include "pstypes.h"
 
-void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_console) {
-  std::filesystem::path log_file = "Descent3.log";
+void InitLog(plog::Severity log_level, const std::filesystem::path &log_file, bool enable_win_console) {
   static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
-  static plog::RollingFileAppender<plog::TxtFormatter> fileAppender(PATH_TO_CSTR(log_file));
 
 #ifdef WIN32
   static plog::DebugOutputAppender<plog::TxtFormatter> debugAppender;
@@ -49,12 +47,13 @@ void InitLog(plog::Severity log_level, bool enable_filelog, bool enable_win_cons
 #endif
 
   plog::init(log_level, &consoleAppender);
-  if (enable_filelog) {
+  if (!log_file.empty()) {
     if (std::filesystem::is_regular_file(log_file)) {
       // Delete old log
       std::error_code ec;
       std::filesystem::remove(log_file, ec);
     }
+    static plog::RollingFileAppender<plog::TxtFormatter> fileAppender(PATH_TO_CSTR(log_file));
     plog::get()->addAppender(&fileAppender);
   }
 #ifdef WIN32
