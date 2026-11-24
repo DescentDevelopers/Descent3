@@ -785,7 +785,7 @@ struct video_menu {
     std::string res = Video_res_list[Current_video_resolution_id].getName();
     auto alloc_size = std::max(res.size() + 1, static_cast<size_t>(15));
     resolution_string = sheet->AddChangeableText(alloc_size);
-    snprintf(resolution_string, alloc_size, res.c_str());
+    snprintf(resolution_string, alloc_size, "%s", res.c_str());
     sheet->AddLongButton("Change", IDV_CHANGE_RES_WINDOW);
 
     fullscreen = sheet->AddLongCheckBox("Fullscreen", Game_fullscreen);
@@ -905,7 +905,7 @@ struct video_menu {
           resolution_changed = true;
           Current_video_resolution_id = newindex;
           std::string res = Video_res_list[Current_video_resolution_id].getName();
-          snprintf(resolution_string, res.size() + 1, res.c_str());
+          snprintf(resolution_string, res.size() + 1, "%s", res.c_str());
         }
       }
 

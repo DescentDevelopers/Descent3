@@ -8,6 +8,7 @@ set(HEADERS
   lnxkey_sdl.h
   controller.h
   sdlcontroller.h
+  sdltouch.h
 )
 set(CPPS
   $<IF:$<BOOL:${ENABLE_MOCK_CLOCK}>,mock_timer.cpp,chrono_timer.cpp>
@@ -21,7 +22,8 @@ set(CPPS
   lnxmouse.cpp
   lnxkey_sdl.cpp
   sdlcontroller.cpp
-  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
+  sdltouch.cpp
+  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD,Android>:
     lnxfile.cpp
   >
   $<$<PLATFORM_ID:Windows>:
@@ -33,10 +35,12 @@ target_link_libraries(ddio PRIVATE
   SDL3::SDL3
   ddebug
   logger
+  renderer
 )
 target_include_directories(ddio PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/ddio
+  ${PROJECT_SOURCE_DIR}/renderer
   >
   ${SDL3_INCLUDE_DIRS}
 )

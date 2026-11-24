@@ -92,10 +92,12 @@ void cf_AddDefaultBaseDirectories() {
  * from this module.
  */
 void cf_AddBaseDirectory(const std::filesystem::path &base_directory) {
-  if (std::filesystem::exists(base_directory) && std::filesystem::is_directory(base_directory)) {
+  if (std::filesystem::exists(base_directory) &&
+      std::filesystem::is_directory(base_directory) &&
+      !(base_directory.has_root_directory() && base_directory.relative_path().empty())) {
     Base_directories.push_back(base_directory);
   } else {
-    LOG_WARNING << "Ignoring nonexistent base directory: " << base_directory;
+    LOG_WARNING << "Ignoring nonexistent (or root) base directory: " << base_directory;
   }
 }
 

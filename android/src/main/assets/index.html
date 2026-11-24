@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upload Game Data · Descent 3</title>
+  <link href="/css/style.css" rel="stylesheet">
+  <script src="/js/main.js" defer></script>
+</head>
+<body>
+<main class="card">
+  <p class="eyebrow">Descent 3 for Android</p>
+  <h1>Upload game data</h1>
+  <p>
+    Your device needs the data files from a Descent 3 installation. Choose the game's install
+    folder &mdash; the one that contains <code>d3.hog</code> &mdash; and upload it.
+  </p>
+
+  <!--
+    Standard install locations, mirroring D3_STANDARD_PATHS in CMakeLists.txt (plus the Linux
+    system data dirs from USAGE.md). main.js shows the visitor's platform first and adds copy
+    buttons; without JS, all platforms are listed.
+  -->
+  <section class="locations" id="locations" aria-labelledby="locations-heading">
+    <h2 id="locations-heading">Where to find it</h2>
+
+    <div class="platform" data-platform="windows">
+      <h3>Windows</h3>
+      <ul class="paths">
+        <li><span class="store">Steam</span><code class="path">C:\Program Files (x86)\Steam\steamapps\common\Descent 3</code></li>
+        <li><span class="store">GOG Galaxy</span><code class="path">C:\Program Files (x86)\GOG Galaxy\Games\Descent 3</code></li>
+      </ul>
+      <p class="tip">In the folder picker, paste the path into the address bar at the top and press Enter.</p>
+    </div>
+
+    <div class="platform" data-platform="mac">
+      <h3>macOS</h3>
+      <ul class="paths">
+        <li><span class="store">Steam</span><code class="path">~/Library/Application Support/Steam/steamapps/common/Descent 3/Descent 3.app/Contents/Resources</code></li>
+      </ul>
+      <p class="tip">In the folder picker, press <kbd>&#8984;</kbd><kbd>&#8679;</kbd><kbd>G</kbd>, paste the path and press Return. (The folder is inside the app bundle, so you can't click your way there.)</p>
+    </div>
+
+    <div class="platform" data-platform="linux">
+      <h3>Linux</h3>
+      <ul class="paths">
+        <li><span class="store">Steam (Fedora, Arch, &hellip;)</span><code class="path">~/.local/share/Steam/steamapps/common/Descent 3</code></li>
+        <li><span class="store">Steam (Debian, Ubuntu, &hellip;)</span><code class="path">~/.steam/debian-installation/steamapps/common/Descent 3</code></li>
+        <li><span class="store">System-wide install</span><code class="path">/usr/share/descent3</code></li>
+        <li><span class="store">Local install</span><code class="path">/usr/local/share/descent3</code></li>
+      </ul>
+      <p class="tip">In the folder picker, press <kbd>Ctrl</kbd><kbd>L</kbd>, paste the path and press Enter. (The Steam folders are hidden, so they won't show up when browsing.)</p>
+    </div>
+
+    <p class="muted small">
+      Installed somewhere else? In Steam, right-click Descent 3 &rarr; Manage &rarr; Browse local
+      files. In GOG Galaxy, open Descent 3 &rarr; the settings icon &rarr; Manage installation
+      &rarr; Show folder.
+    </p>
+  </section>
+
+  <form id="upload-form" action="/" method="post" enctype="multipart/form-data">
+    <input id="file" name="file" type="file" class="visually-hidden" webkitdirectory mozdirectory multiple>
+    <label id="picker" class="picker" for="file">
+      <span class="picker-title" id="picker-title">Choose folder&hellip;</span>
+      <span class="picker-sub" id="picker-sub">Nothing selected yet</span>
+    </label>
+
+    <label id="movies-option" class="option" hidden>
+      <input type="checkbox" id="include-movies" checked>
+      <span>
+        Include movies <span class="muted" id="movies-size"></span>
+        <span class="option-detail muted small">The intro and cutscene videos. Optional &mdash; skip them to save space and upload time.</span>
+      </span>
+    </label>
+
+    <div id="progress" class="progress" hidden>
+      <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+      <div class="progress-text">
+        <span id="progress-label"></span>
+        <span id="progress-detail"></span>
+      </div>
+    </div>
+
+    <div id="message" class="message" role="status" hidden></div>
+
+    <div class="actions">
+      <button id="submit" type="submit">Upload</button>
+    </div>
+  </form>
+</main>
+</body>
+</html>
