@@ -574,7 +574,7 @@ int VisEffectCreate(uint8_t type, uint8_t id, int roomnum, vector *pos) {
     return -1; // Dedicated servers don't need to create vis effects
 
   if (ROOMNUM_OUTSIDE(roomnum)) {
-    if (CELLNUM(roomnum) > TERRAIN_WIDTH * TERRAIN_DEPTH)
+    if (CELLNUM(roomnum) >= TERRAIN_WIDTH * TERRAIN_DEPTH)
       return -1;
     if (CELLNUM(roomnum) < 0)
       return -1;
@@ -582,7 +582,9 @@ int VisEffectCreate(uint8_t type, uint8_t id, int roomnum, vector *pos) {
     if (Gametime - Last_terrain_render_time > 5.0)
       return -1;
   } else {
-    ASSERT(roomnum >= 0 && roomnum <= Highest_room_index && Rooms[roomnum].used);
+    // Level scripts can choose the room.
+    if (roomnum < 0 || roomnum > Highest_room_index || !Rooms[roomnum].used)
+      return -1;
 
     // Don't create viseffects in rooms we haven't seen in a while
     if (Gametime - Rooms[roomnum].last_render_time > 5.0)
@@ -644,7 +646,7 @@ int VisEffectCreateControlled(uint8_t type, object *parent, uint8_t id, int room
     ASSERT(parent != nullptr); // You have a spew that has no parent object?
 
     if (ROOMNUM_OUTSIDE(roomnum)) {
-      if (CELLNUM(roomnum) > TERRAIN_WIDTH * TERRAIN_DEPTH)
+      if (CELLNUM(roomnum) >= TERRAIN_WIDTH * TERRAIN_DEPTH)
         return -1;
       if (CELLNUM(roomnum) < 0)
         return -1;
@@ -652,7 +654,8 @@ int VisEffectCreateControlled(uint8_t type, object *parent, uint8_t id, int room
       if (Gametime - Last_terrain_render_time > 5.0)
         return -1;
     } else {
-      ASSERT(roomnum >= 0 && roomnum <= Highest_room_index && Rooms[roomnum].used);
+      if (roomnum < 0 || roomnum > Highest_room_index || !Rooms[roomnum].used)
+        return -1;
 
       // Don't create real objects in rooms we haven't seen in a while
       if (Gametime - Rooms[roomnum].last_render_time > 5.0)

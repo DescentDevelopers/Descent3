@@ -422,7 +422,7 @@ void SpewClearEvent(int handle, bool force) {
 
   int slot = GET_SLOT(handle);
 
-  if ((slot < 0) || (slot > MAX_SPEW_EFFECTS))
+  if ((slot < 0) || (slot >= MAX_SPEW_EFFECTS))
     return;
 
   vis = &SpewEffects[slot];

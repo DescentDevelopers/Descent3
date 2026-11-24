@@ -1,0 +1,8 @@
+LIBRARY msvcrt.dll
+EXPORTS
+sprintf
+strlen
+malloc
+free
+sin
+qsort

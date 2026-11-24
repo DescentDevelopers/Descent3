@@ -1,0 +1,34 @@
+name: x86 sandbox generated code
+
+# x86sandbox/generated is checked in. This regenerates it from the guest sources
+# with the compiler it was made with, and fails if the result differs.
+
+on:
+  push:
+    paths:
+      - 'x86sandbox/**'
+      - 'third_party/tiny386/**'
+      - 'third_party/wasm2c/**'
+      - '.github/workflows/x86sandbox-generated.yml'
+  pull_request:
+    paths:
+      - 'x86sandbox/**'
+      - 'third_party/tiny386/**'
+      - 'third_party/wasm2c/**'
+      - '.github/workflows/x86sandbox-generated.yml'
+
+jobs:
+  check:
+    name: Check x86sandbox/generated
+    # Ubuntu 24.04's clang-18 is the compiler named in x86sandbox/generated/README.txt.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang 18, lld 18 and OpenSSL
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -qq --no-install-recommends clang-18 lld-18 cmake libssl-dev
+
+      - name: Regenerate and compare
+        run: CLANG=clang-18 WASM_LD=wasm-ld-18 x86sandbox/check_generated.sh

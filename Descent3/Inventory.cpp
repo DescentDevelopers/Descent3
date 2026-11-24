@@ -511,8 +511,22 @@ bool Inventory::Add(int type, int id, object *parent, int aux_type, int aux_id, 
     return false;
   }
 
+  // Level scripts choose the type and ids; the item's name, icon and flags come
+  // from Object_info or Weapons at those ids.
+  bool valid;
+  if (type == OBJ_WEAPON)
+    valid = id >= 0 && id < MAX_WEAPONS && Weapons[id].used;
+  else
+    valid = (type == OBJ_BUILDING || type == OBJ_ROBOT || type == OBJ_POWERUP || type == OBJ_CLUTTER) && id >= 0 &&
+            id < MAX_OBJECT_IDS && Object_info[id].type != OBJ_NONE;
+  if (valid && aux_id != -1)
+    valid = aux_id >= 0 && aux_id < MAX_OBJECT_IDS && Object_info[aux_id].type != OBJ_NONE;
+  if (!valid) {
+    LOG_WARNING.printf("Invalid item on add to inventory: type %d, id %d, aux id %d", type, id, aux_id);
+    return false;
+  }
+
   if (type != OBJ_WEAPON) {
-    ASSERT(type == OBJ_BUILDING || type == OBJ_ROBOT || type == OBJ_POWERUP || type == OBJ_CLUTTER);
     return AddObjectItem(type, id, (aux_type != -1) ? aux_type : type, (aux_id != -1) ? aux_id : id, flags,
                          description);
   } else {

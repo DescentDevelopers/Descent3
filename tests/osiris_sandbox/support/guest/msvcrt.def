@@ -1,0 +1,26 @@
+LIBRARY msvcrt.dll
+EXPORTS
+??2@YAPAXI@Z
+??3@YAXPAX@Z
+acos
+asin
+atexit
+cos
+free
+_initterm
+isspace
+malloc
+memset
+rand
+sin
+_splitpath
+sqrt
+srand
+strchr
+strcmp
+strcpy
+strlen
+strncmp
+strncpy
+time
+_vsnprintf

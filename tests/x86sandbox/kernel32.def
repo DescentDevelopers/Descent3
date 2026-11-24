@@ -1,0 +1,13 @@
+LIBRARY kernel32.dll
+EXPORTS
+CreateFileA@28
+GetDiskFreeSpaceA@20
+LoadLibraryA@4
+GetProcAddress@8
+GetModuleHandleA@4
+DebugBreak@0
+CompareStringA@24
+GetProcessHeap@0
+HeapAlloc@12
+HeapReAlloc@16
+IsBadReadPtr@8

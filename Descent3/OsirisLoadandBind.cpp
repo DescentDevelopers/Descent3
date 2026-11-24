@@ -420,6 +420,7 @@
 #include "multisafe.h"
 #include "objinfo.h"
 #include "osiris_predefs.h"
+#include "osiris_sandbox.h"
 #include "player.h"
 #include "pserror.h"
 #include "trigger.h"
@@ -438,28 +439,7 @@ bool Show_osiris_debug = false;
 #define OSIMF_INTEMPDIR 0x8    // the dll was extracted from a hog and it is in a temp file
 #define OSIMF_NOUNLOAD 0x10    // the dll should not be unloaded if the reference count is 0, only when the level ends
 
-// The exported DLL function call prototypes
-#if defined(POSIX)
-typedef char DLLFUNCCALL (*InitializeDLL_fp)(tOSIRISModuleInit *function_list);
-typedef void DLLFUNCCALL (*ShutdownDLL_fp)(void);
-typedef int DLLFUNCCALL (*GetGOScriptID_fp)(const char *name, uint8_t isdoor);
-typedef void DLLFUNCCALL *(*CreateInstance_fp)(int id);
-typedef void DLLFUNCCALL (*DestroyInstance_fp)(int id, void *ptr);
-typedef int16_t DLLFUNCCALL (*CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
-typedef int DLLFUNCCALL (*GetTriggerScriptID_fp)(int trigger_room, int trigger_face);
-typedef int DLLFUNCCALL (*GetCOScriptList_fp)(int **list, int **id_list);
-typedef int DLLFUNCCALL (*SaveRestoreState_fp)(void *file_ptr, uint8_t saving_state);
-#else
-typedef char(DLLFUNCCALL *InitializeDLL_fp)(tOSIRISModuleInit *function_list);
-typedef void(DLLFUNCCALL *ShutdownDLL_fp)(void);
-typedef int(DLLFUNCCALL *GetGOScriptID_fp)(const char *name, uint8_t isdoor);
-typedef void *(DLLFUNCCALL *CreateInstance_fp)(int id);
-typedef void(DLLFUNCCALL *DestroyInstance_fp)(int id, void *ptr);
-typedef int16_t(DLLFUNCCALL *CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
-typedef int(DLLFUNCCALL *GetTriggerScriptID_fp)(int trigger_room, int trigger_face);
-typedef int(DLLFUNCCALL *GetCOScriptList_fp)(int **list, int **id_list);
-typedef int(DLLFUNCCALL *SaveRestoreState_fp)(void *file_ptr, uint8_t saving_state);
-#endif
+// The exported DLL function call prototypes are in osiris_sandbox.h.
 
 struct tRefObj {
   int objnum;
@@ -492,6 +472,58 @@ struct tOSIRISModule {
 };
 
 static tOSIRISModule OSIRIS_loaded_modules[MAX_LOADED_MODULES];
+static_assert(MAX_LOADED_MODULES == OSIRIS_SANDBOX_MAX_SLOTS, "sandbox slots must match module slots");
+
+//	Osiris_BindModule
+//	Purpose:
+//		Loads the module file into slot `id` and fills in its entry points. A Win32 DLL
+//	from a mission (sandbox == true) is run in the x86 sandbox and is never loaded
+//	natively. Returns false if the module could not be loaded.
+static bool Osiris_BindModule(int id, const std::filesystem::path &fullpath, bool sandbox) {
+  tOSIRISModule *osm = &OSIRIS_loaded_modules[id];
+  if (sandbox) {
+    OsirisModuleExports ex{};
+    std::string error;
+    if (!Osiris_SandboxLoadModule(id, fullpath, &ex, &error)) {
+      LOG_ERROR.printf("OSIRIS: cannot run Win32 script %s: %s", PATH_TO_CSTR(fullpath.filename()), error.c_str());
+      return false;
+    }
+    osm->InitializeDLL = ex.InitializeDLL;
+    osm->ShutdownDLL = ex.ShutdownDLL;
+    osm->GetGOScriptID = ex.GetGOScriptID;
+    osm->GetTriggerScriptID = ex.GetTriggerScriptID;
+    osm->GetCOScriptList = ex.GetCOScriptList;
+    osm->CreateInstance = ex.CreateInstance;
+    osm->DestroyInstance = ex.DestroyInstance;
+    osm->CallInstanceEvent = ex.CallInstanceEvent;
+    osm->SaveRestoreState = ex.SaveRestoreState;
+    return true;
+  }
+
+  if (!mod_LoadModule(&osm->mod, fullpath))
+    return false;
+  module_t *mod = &osm->mod;
+  osm->InitializeDLL = (InitializeDLL_fp)mod_GetSymbol(mod, "InitializeDLL", 4);
+  osm->ShutdownDLL = (ShutdownDLL_fp)mod_GetSymbol(mod, "ShutdownDLL", 0);
+  osm->GetGOScriptID = (GetGOScriptID_fp)mod_GetSymbol(mod, "GetGOScriptID", 8);
+  osm->GetTriggerScriptID = (GetTriggerScriptID_fp)mod_GetSymbol(mod, "GetTriggerScriptID", 8);
+  osm->GetCOScriptList = (GetCOScriptList_fp)mod_GetSymbol(mod, "GetCOScriptList", 8);
+  osm->CreateInstance = (CreateInstance_fp)mod_GetSymbol(mod, "CreateInstance", 4);
+  osm->DestroyInstance = (DestroyInstance_fp)mod_GetSymbol(mod, "DestroyInstance", 8);
+  osm->CallInstanceEvent = (CallInstanceEvent_fp)mod_GetSymbol(mod, "CallInstanceEvent", 16);
+  osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
+  return true;
+}
+
+//	Osiris_UnbindModule
+//	Purpose:
+//		Releases what Osiris_BindModule loaded for slot `id`.
+static void Osiris_UnbindModule(int id) {
+  if (Osiris_SandboxIsLoaded(id))
+    Osiris_SandboxUnloadModule(id);
+  else
+    mod_FreeModule(&OSIRIS_loaded_modules[id].mod);
+}
 tOSIRISModuleInit Osiris_module_init;
 
 struct {
@@ -510,6 +542,7 @@ struct {
 
 #define OESF_USED 0x0001
 #define OESF_MISSION 0x0002 // mission dlls
+#define OESF_SANDBOX 0x0004 // Win32 DLL from a mission: only ever run in the x86 sandbox
 
 struct tExtractedScriptInfo {
   uint8_t flags = 0;
@@ -692,7 +725,7 @@ void Osiris_FreeModule(int id) {
       if (OSIRIS_loaded_modules[id].string_table != nullptr) {
         DestroyStringTable(OSIRIS_loaded_modules[id].string_table, OSIRIS_loaded_modules[id].strings_loaded);
       }
-      mod_FreeModule(&OSIRIS_loaded_modules[id].mod);
+      Osiris_UnbindModule(id);
     }
 
     if (tOSIRISCurrentMission.mission_loaded && id == tOSIRISCurrentMission.dll_id) {
@@ -882,7 +915,8 @@ void Osiris_UnloadLevelModule(void) {
 //				-1 if it is in data\scripts
 //				0-x which extracted script id it is
 int get_full_path_to_module(const std::filesystem::path &module_name, std::filesystem::path &fullpath,
-                            std::filesystem::path &basename) {
+                            std::filesystem::path &basename, bool &sandbox) {
+  sandbox = false;
   std::filesystem::path ppath;
   std::filesystem::path adjusted_name, adjusted_fname;
 
@@ -919,6 +953,7 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
     // search through our list of extracted files to find it...
     if (OSIRIS_Extracted_scripts.find(basename) != OSIRIS_Extracted_scripts.end()) {
       fullpath = OSIRIS_Extracted_script_dir / OSIRIS_Extracted_scripts[basename].temp_filename;
+      sandbox = (OSIRIS_Extracted_scripts[basename].flags & OESF_SANDBOX) != 0;
       return 0;
     }
 
@@ -927,6 +962,15 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
     return -2;
   } break;
   default:
+    // Not a native module. A Win32 DLL extracted from the mission runs in the sandbox.
+    if (!OSIRIS_Extracted_script_dir.empty()) {
+      auto it = OSIRIS_Extracted_scripts.find(basename);
+      if (it != OSIRIS_Extracted_scripts.end() && (it->second.flags & OESF_SANDBOX)) {
+        fullpath = OSIRIS_Extracted_script_dir / it->second.temp_filename;
+        sandbox = true;
+        return 0;
+      }
+    }
     fullpath.clear();
     return -2;
   };
@@ -981,7 +1025,8 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   OSIRIS_loaded_modules[loaded_id].flags = 0; // set this to 0 as we fill in the data
 
   std::filesystem::path fullpath, basename;
-  int ret_val = get_full_path_to_module(module_name, fullpath, basename);
+  bool sandbox = false;
+  int ret_val = get_full_path_to_module(module_name, fullpath, basename, sandbox);
   switch (ret_val) {
   case -2:
     // the module does not exist
@@ -1001,37 +1046,16 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   }
 
   // the module exists, now attempt to load it
-  if (!mod_LoadModule(&OSIRIS_loaded_modules[loaded_id].mod, fullpath)) {
+  if (!Osiris_BindModule(loaded_id, fullpath, sandbox)) {
     // there was an error trying to load the module
     LOG_FATAL.printf("OSIRIS: Osiris_LoadLevelModule(%s): Unable to load module", PATH_TO_CSTR(module_name));
-    Int3();
+    if (!sandbox)
+      Int3();
     return -3;
   }
 
-  // the module has loaded, attempt to import all the level functions
+  // the module has loaded and Osiris_BindModule imported its 9 functions
   tOSIRISModule *osm = &OSIRIS_loaded_modules[loaded_id];
-  module_t *mod = &osm->mod;
-
-  // there are 9 functions we need to import
-  // InitializeDLL@4
-  // ShutdownDLL@0
-  // GetGOScriptID@4
-  // GetTriggerScriptID@4
-  // GetCOScriptList@8
-  // CreateInstance@4
-  // DestroyInstance@8
-  // CallInstanceEvent@16
-  // SaveRestoreState@8
-
-  osm->InitializeDLL = (InitializeDLL_fp)mod_GetSymbol(mod, "InitializeDLL", 4);
-  osm->ShutdownDLL = (ShutdownDLL_fp)mod_GetSymbol(mod, "ShutdownDLL", 0);
-  osm->GetGOScriptID = (GetGOScriptID_fp)mod_GetSymbol(mod, "GetGOScriptID", 8);
-  osm->GetTriggerScriptID = (GetTriggerScriptID_fp)mod_GetSymbol(mod, "GetTriggerScriptID", 8);
-  osm->GetCOScriptList = (GetCOScriptList_fp)mod_GetSymbol(mod, "GetCOScriptList", 8);
-  osm->CreateInstance = (CreateInstance_fp)mod_GetSymbol(mod, "CreateInstance", 4);
-  osm->DestroyInstance = (DestroyInstance_fp)mod_GetSymbol(mod, "DestroyInstance", 8);
-  osm->CallInstanceEvent = (CallInstanceEvent_fp)mod_GetSymbol(mod, "CallInstanceEvent", 16);
-  osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
 
   osm->flags |= OSIMF_INUSE | OSIMF_LEVEL;
   osm->module_name = mem_strdup(PATH_TO_CSTR(basename));
@@ -1053,7 +1077,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     if (osm->module_name)
       mem_free(osm->module_name);
     osm->module_name = nullptr;
-    mod_FreeModule(mod);
+    Osiris_UnbindModule(loaded_id);
     return -3;
   }
 
@@ -1096,7 +1120,7 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
     osm->module_name = nullptr;
     osm->string_table = nullptr;
     osm->strings_loaded = 0;
-    mod_FreeModule(mod);
+    Osiris_UnbindModule(loaded_id);
     return -2;
   }
 
@@ -1177,7 +1201,8 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   OSIRIS_loaded_modules[loaded_id].flags = 0; // set this to 0 as we fill in the data
 
   std::filesystem::path fullpath, basename;
-  int ret_val = get_full_path_to_module(module_name, fullpath, basename);
+  bool sandbox = false;
+  int ret_val = get_full_path_to_module(module_name, fullpath, basename, sandbox);
   switch (ret_val) {
   case -2:
     // the module does not exist
@@ -1196,35 +1221,18 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   }
 
   // the module exists, now attempt to load it
-  if (!mod_LoadModule(&OSIRIS_loaded_modules[loaded_id].mod, fullpath)) {
+  if (!Osiris_BindModule(loaded_id, fullpath, sandbox)) {
     // there was an error trying to load the module
     LOG_FATAL.printf("OSIRIS: Osiris_LoadGameModule(%s): Unable to load module", PATH_TO_CSTR(module_name));
-    Int3();
+    if (!sandbox)
+      Int3();
     return -3;
   }
 
-  // the module has loaded, attempt to import all the level functions
+  // the module has loaded; a game module only needs 7 of the functions Osiris_BindModule imported
   tOSIRISModule *osm = &OSIRIS_loaded_modules[loaded_id];
-  module_t *mod = &osm->mod;
-
-  // there are 7 functions we need to import
-  // InitializeDLL@4
-  // ShutdownDLL@0
-  // GetGOScriptID@4
-  // CreateInstance@4
-  // DestroyInstance@8
-  // CallInstanceEvent@16
-  // SaveRestoreState@8
-
-  osm->InitializeDLL = (InitializeDLL_fp)mod_GetSymbol(mod, "InitializeDLL", 4);
-  osm->ShutdownDLL = (ShutdownDLL_fp)mod_GetSymbol(mod, "ShutdownDLL", 0);
-  osm->GetGOScriptID = (GetGOScriptID_fp)mod_GetSymbol(mod, "GetGOScriptID", 8);
   osm->GetTriggerScriptID = nullptr;
   osm->GetCOScriptList = nullptr;
-  osm->CreateInstance = (CreateInstance_fp)mod_GetSymbol(mod, "CreateInstance", 4);
-  osm->DestroyInstance = (DestroyInstance_fp)mod_GetSymbol(mod, "DestroyInstance", 8);
-  osm->CallInstanceEvent = (CallInstanceEvent_fp)mod_GetSymbol(mod, "CallInstanceEvent", 16);
-  osm->SaveRestoreState = (SaveRestoreState_fp)mod_GetSymbol(mod, "SaveRestoreState", 8);
 
   osm->flags |= OSIMF_INUSE;
   osm->module_name = mem_strdup(PATH_TO_CSTR(basename));
@@ -1245,7 +1253,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
     if (osm->module_name)
       mem_free(osm->module_name);
     osm->module_name = nullptr;
-    mod_FreeModule(mod);
+    Osiris_UnbindModule(loaded_id);
     return -3;
   }
 
@@ -1287,7 +1295,7 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
     if (osm->module_name)
       mem_free(osm->module_name);
     osm->module_name = nullptr;
-    mod_FreeModule(mod);
+    Osiris_UnbindModule(loaded_id);
     return -2;
   }
 
@@ -2835,8 +2843,10 @@ void Osiris_CloseMemoryManager(void) {
   curr = Osiris_mem_root;
   while (curr) {
     next = curr->next;
-    if (curr->memory)
+    if (curr->memory) {
+      Osiris_SandboxForgetMemoryChunk(curr->memory);
       mem_free(curr->memory);
+    }
     mem_free(curr);
     curr = next;
   }
@@ -2927,9 +2937,21 @@ void Osiris_FreeMemory(void *mem_ptr) {
   }
 
   // free the memory associated with tofree
-  if (tofree->memory)
+  if (tofree->memory) {
+    Osiris_SandboxForgetMemoryChunk(tofree->memory);
     mem_free(tofree->memory);
+  }
   mem_free(tofree);
+}
+
+//	Osiris_GetMemoryChunkSize
+//	Purpose:
+//		Returns the size of the chunk allocated by Osiris_AllocateMemory, or -1.
+int Osiris_GetMemoryChunkSize(void *memory) {
+  for (tOSIRISMEMNODE *curr = Osiris_mem_root; curr; curr = curr->next)
+    if (curr->memory == memory)
+      return curr->chunk_id.size;
+  return -1;
 }
 
 bool compareid(tOSIRISSCRIPTID *sid, tOSIRISSCRIPTID *oid) {
@@ -2967,15 +2989,19 @@ void Osiris_FreeMemoryForScript(tOSIRISSCRIPTID *sid) {
           // removing root
           Osiris_mem_root = curr->next;
 
-          if (curr->memory)
+          if (curr->memory) {
+            Osiris_SandboxForgetMemoryChunk(curr->memory);
             mem_free(curr->memory);
+          }
           mem_free(curr);
         } else {
           // remove from list and pull back
           prev->next = curr->next;
 
-          if (curr->memory)
+          if (curr->memory) {
+            Osiris_SandboxForgetMemoryChunk(curr->memory);
             mem_free(curr->memory);
+          }
           mem_free(curr);
         }
       } else {
@@ -3008,6 +3034,8 @@ void Osiris_SaveMemoryChunks(CFILE *file) {
       break;
     }
     cf_WriteInt(file, curr->chunk_id.id);
+    // a sandboxed script keeps its copy in guest memory
+    Osiris_SandboxSyncMemoryChunk(curr->memory, curr->chunk_id.size);
     cf_WriteBytes((uint8_t *)curr->memory, curr->chunk_id.size, file);
     curr = curr->next;
   }
@@ -3146,6 +3174,45 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   atexit(_clearextractedall);
 
+  return count;
+}
+
+//	Osiris_ExtractWin32ScriptsFromHog
+//	Purpose:
+//		Extracts the Win32 script DLLs from a mission hog. They are marked so that they
+//	only ever run in the x86 sandbox, on every platform. A name that is already
+//	extracted (a first-party script) keeps the first-party version.
+int Osiris_ExtractWin32ScriptsFromHog(int library_handle) {
+  if (library_handle == 0)
+    return 0;
+  if (OSIRIS_Extracted_script_dir.empty())
+    OSIRIS_Extracted_script_dir = Descent3_temp_directory;
+  std::filesystem::path tempdir = OSIRIS_Extracted_script_dir;
+
+  int count = cf_DoForeachFileInLibrary(library_handle, ".dll", [&tempdir](const std::filesystem::path &filename) {
+    std::string name = PATH_TO_CSTR(std::filesystem::path(filename).stem());
+    std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return std::tolower(c); });
+    if (OSIRIS_Extracted_scripts.count(name) != 0) {
+      LOG_DEBUG.printf("OSIRIS: mission script %s skipped; a script with that name is already loaded", name.c_str());
+      return;
+    }
+    std::filesystem::path temp_filename = ddio_GetTmpFileName(tempdir, "d3s");
+    if (temp_filename.empty() || !cf_CopyFile(temp_filename, filename))
+      return;
+    if (!Osiris_SandboxIsWin32Module(temp_filename)) {
+      LOG_WARNING.printf("OSIRIS: mission script %s is not a 32-bit Windows DLL; ignored", name.c_str());
+      std::error_code ec;
+      std::filesystem::remove(temp_filename, ec);
+      return;
+    }
+    tExtractedScriptInfo t;
+    t.flags = OESF_MISSION | OESF_SANDBOX;
+    t.temp_filename = temp_filename.filename();
+    OSIRIS_Extracted_scripts.insert_or_assign(name, t);
+    LOG_DEBUG.printf("OSIRIS: extracted Win32 mission script %s", name.c_str());
+  });
+
+  atexit(_clearextractedall);
   return count;
 }
 
