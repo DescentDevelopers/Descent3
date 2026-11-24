@@ -310,7 +310,7 @@ int SendD3PilotData(vmt_descent3_struct *d3_pilot) {
     d3_pilot->sliding_pct = INTEL_INT(d3_pilot->sliding_pct);
     d3_pilot->suicides = INTEL_INT(d3_pilot->suicides);
 
-#if (!(defined(OEM) || defined(DEMO)))
+#ifndef DEMO
     // This is the secret number we will use to determine if it's
     // a game where we want to update the player's rank or not.
     d3_pilot->lateral_thrust = INTEL_INT(0x142);

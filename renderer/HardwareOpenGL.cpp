@@ -1293,9 +1293,7 @@ int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state 
 
   LOG_DEBUG.printf("Renderer init is set to %d", Renderer_initted);
 
-#ifndef OEM_V3
   retval = opengl_Init(app, pref_state);
-#endif
 
 #endif // #ifdef DEDICATED_ONLY
 

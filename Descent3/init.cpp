@@ -1404,14 +1404,14 @@ void LoadGameSettings() {
 
   // Motion blur
   Use_motion_blur = 0;
-  if (Katmai || FindArg("-motionblur")) {
+  if (FindArg("-motionblur")) {
     if (!FindArg("-nomotionblur")) {
       Use_motion_blur = 1;
     }
   }
 
   Render_powerup_sparkles = false;
-  if (Katmai && !FindArg("-nosparkles")) {
+  if (!FindArg("-nosparkles")) {
     Render_powerup_sparkles = true;
   }
 }
@@ -1764,10 +1764,7 @@ void IntroScreen() {
 #ifdef DEMO
   ShowStaticScreen("tantrum.ogf", true, 3.0);
   ShowStaticScreen("outrage.ogf", true, 3.0);
-#else
-#endif
 
-#ifdef DEMO
   int bm_handle = bm_AllocLoadFileBitmap("demomenu.ogf", 0);
 #else
   int bm_handle = bm_AllocLoadFileBitmap("oemmenu.ogf", 0);

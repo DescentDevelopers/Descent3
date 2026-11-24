@@ -1495,14 +1495,8 @@ int FindValidID(int type) {
 // bash/converts generics, from those not allowed, to something that is allowed
 void ConvertObject(int *type, int *id) {
   // NOTE: Only type/id are valid at this point
-#if ((!defined(OEM)) && (!defined(DEMO)))
-  // Non-OEM build
-  return;
-#else
-#ifdef EDITOR
-  // Editor OEM?
-  return;
-#else
+#ifdef DEMO
+#ifndef EDITOR
   int new_type = *type, new_id = *id;
 
   bool is_multi = (Game_mode & GM_MULTI) ? true : false;
@@ -2606,15 +2600,6 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
   // Get rid of bogus faces
   // RemoveDegenerateFaces(rp);
 #endif
-
-  if (Katmai) {
-    // If katmai, copy all of our verts into our verts4 array
-    for (i = 0; i < nverts; i++) {
-      rp->verts4[i].x() = rp->verts[i].x();
-      rp->verts4[i].y() = rp->verts[i].y();
-      rp->verts4[i].z() = rp->verts[i].z();
-    }
-  }
 
   return 1;
 }

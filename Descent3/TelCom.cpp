@@ -734,7 +734,7 @@ void TelComMain(bool ingame, bool SelectShip) {
   TelcomStopSound(TCSND_TYPING);
 
   // see if we should display the Single Player Ship Selection
-#if (!defined(DEMO)) && (!defined(OEM))
+#ifndef DEMO
   if (SelectShip && !Telcom_exit_to_mainmenu)
     TelComSingleShipSelect(&Telcom_system);
 #endif

@@ -247,7 +247,7 @@ int RunServerConfigs() {
   }
 
   // Put in the correct mission names for the oem builds
-#if (defined(OEM) || defined(DEMO))
+#ifdef DEMO
   if (stricmp("polaris.d3l", Netgame.mission) == 0) {
     strcpy(Netgame.mission_name, "Polaris");
   } else if (stricmp("taurus.d3l", Netgame.mission) == 0) {

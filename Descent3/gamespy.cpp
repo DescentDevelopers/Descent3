@@ -74,8 +74,6 @@ typedef int socklen_t;
 #define THISGAMENAME "descent3"
 #ifdef DEMO
 #define THISGAMEVER "Demo2"
-#elif defined(OEM)
-#define THISGAMEVER "OEM"
 #else
 #define THISGAMEVER "Retail"
 #endif
@@ -107,7 +105,6 @@ void gspy_StartGame(char *name) {
 void gspy_EndGame() { gspy_game_running = false; }
 
 int gspy_Init() {
-#ifndef OEM
   std::filesystem::path cfgpath;
   std::filesystem::path gspy_cfgfilename;
   int argnum = FindArg("-gspyfile");
@@ -212,7 +209,6 @@ int gspy_Init() {
 
     cfclose(cfp);
   }
-#endif // #ifndef OEM
   return 1;
 }
 
@@ -237,7 +233,6 @@ bool gpsy_ValidateString(char *str, char *crypt) {
 }
 
 void gspy_DoFrame() {
-#ifndef OEM
   SOCKADDR_IN fromaddr{};
   int bytesin;
   socklen_t fromsize = sizeof(SOCKADDR_IN);
@@ -271,7 +266,6 @@ void gspy_DoFrame() {
       }
     }
   } while (bytesin > 0);
-#endif
 }
 
 // Sends the packet out to whoever it is that we are sending to

@@ -1526,10 +1526,8 @@ void RenderObject_DrawPolymodel(object *obj, float *normalized_times) {
       pe.glow_length_scalar += (.2 * adjustment);
 
       use_effect = 1;
-      // Make Katmai glows longer
-      if (Katmai) {
-        pe.glow_length_scalar *= 1.5;
-      }
+      // Make glows longer
+      pe.glow_length_scalar *= 1.5;
       // hack to make multiplayer demos work!
       if (is_multi_demo || (Game_mode & GM_MULTI)) {
         if (Num_teams > 1) {

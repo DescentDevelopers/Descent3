@@ -1167,7 +1167,10 @@ int StartMultiplayerGameMenu() {
   char buffer[_MAX_PATH];
 
   DLLListRemoveAll(script_list);
-#if (!(defined(OEM) || defined(DEMO)))
+#ifdef DEMO
+  dll_ui_items.insert_or_assign("Anarchy", DLLCreateNewUITextItem("Anarchy", UICOL_LISTBOX_LO, -1));
+  dll_ui_items.insert_or_assign("Capture The Flag", DLLCreateNewUITextItem("Capture The Flag", UICOL_LISTBOX_LO, -1));
+#else
   for (const auto &netgames_directory : DLLcf_LocateMultiplePaths("netgames")) {
     DLLddio_DoForeachFile(netgames_directory, std::regex(".+\\.d3m"),
                           [&dll_ui_items](const std::filesystem::path& path){
@@ -1176,16 +1179,13 @@ int StartMultiplayerGameMenu() {
                                 );
     } );
   }
-#else
-  dll_ui_items.insert_or_assign("Anarchy", DLLCreateNewUITextItem("Anarchy", UICOL_LISTBOX_LO, -1));
-  dll_ui_items.insert_or_assign("Capture The Flag", DLLCreateNewUITextItem("Capture The Flag", UICOL_LISTBOX_LO, -1));
 #endif
 
   for (auto const &item : dll_ui_items) {
     DLLListAddItem(script_list, item.second);
   }
 
-#if (!(defined(OEM) || defined(DEMO)))
+#ifndef DEMO
   msn_list *mi;
 
   std::vector<std::pair<std::filesystem::path, std::regex>> search_paths = { };
@@ -1250,7 +1250,7 @@ int StartMultiplayerGameMenu() {
   DLLNewUIWindowOpen(main_wnd);
   if (DLLMultiLoadSettings(DLLcf_GetWritableBaseDirectory() / "custom" / "settings" / "default.mps")) {
     DLLEditSetText(mission_name_edit, DLLNetgame->name);
-#if (!(defined(OEM) || defined(DEMO)))
+#ifndef DEMO
     p = DLLGetMissionName(DLLNetgame->mission);
     mi = FindMsnItem(p);
 
@@ -1279,7 +1279,7 @@ int StartMultiplayerGameMenu() {
       // Get Game name
       DLLEditGetText(mission_name_edit, DLLNetgame->name, NETGAME_NAME_LEN);
       // Get mission name
-#if (!(defined(OEM) || defined(DEMO)))
+#ifndef DEMO
       mi = FindMsnItem(DLLListGetItem(list_1, DLLListGetSelectedIndex(list_1)));
       if (!mi)
         break;
@@ -1321,7 +1321,7 @@ int StartMultiplayerGameMenu() {
           }
         }
 
-#if (defined(OEM) || defined(DEMO))
+#ifdef DEMO
         if (!stricmp(buffer, "Capture The Flag"))
           strcpy(buffer, "CTF");
 #endif
@@ -1334,7 +1334,7 @@ int StartMultiplayerGameMenu() {
       int teams = DLLCheckMissionForScript(DLLNetgame->mission, DLLNetgame->scriptname, 0);
       //			int teams = 1;
       if (teams >= 0)
-#if (!(defined(OEM) || defined(DEMO)))
+#ifndef DEMO
       {
         if (DLLLoadMission(DLLNetgame->mission))
 #else
@@ -1356,7 +1356,7 @@ int StartMultiplayerGameMenu() {
     } else if (res == save_button) {
       // Get Game name
       DLLEditGetText(mission_name_edit, DLLNetgame->name, NETGAME_NAME_LEN);
-#if (!(defined(OEM) || defined(DEMO)))
+#ifndef DEMO
       // Get mission name
       mi = FindMsnItem(DLLListGetItem(list_1, DLLListGetSelectedIndex(list_1)));
       if (!mi)
@@ -1380,7 +1380,7 @@ int StartMultiplayerGameMenu() {
     } else if (res == load_button) {
       // Get Game name
       DLLEditGetText(mission_name_edit, DLLNetgame->name, NETGAME_NAME_LEN);
-#if (!(defined(OEM) || defined(DEMO)))
+#ifndef DEMO
       // Get mission name
       mi = FindMsnItem(DLLListGetItem(list_1, DLLListGetSelectedIndex(list_1)));
       if (!mi)
@@ -1405,7 +1405,7 @@ int StartMultiplayerGameMenu() {
         DLLNetgame->flags = 0;
       }
       DLLEditSetText(mission_name_edit, DLLNetgame->name);
-#if (!(defined(OEM) || defined(DEMO)))
+#ifndef DEMO
       p = DLLGetMissionName(DLLNetgame->mission);
       mi = FindMsnItem(p);
 

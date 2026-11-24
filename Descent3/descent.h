@@ -143,12 +143,7 @@
 
 // This is the port number assigned to "descent3" by the IANA (Internet Assigned Numbers Authority)
 // Don't arbitrarily change this number!
-#ifdef OEM
-// The port used for the OEM version isn't a legitimate IANA port number
 #define D3_DEFAULT_PORT 2092
-#else
-#define D3_DEFAULT_PORT 2092
-#endif
 
 class grScreen;
 class oeApplication;
@@ -191,7 +186,6 @@ extern grScreen *Game_screen;                   // The Descent 3 screen.
 extern oeApplication *Descent;                  // The Descent object
 extern oeAppDatabase *Database;                 // The Database
 extern std::filesystem::path Descent3_temp_directory; // temp directory to put temp files
-extern bool Katmai;                             // whether or not katmai is detected
 //	---------------------------------------------------------------------------
 //	Functions
 

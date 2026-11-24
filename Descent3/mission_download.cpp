@@ -594,10 +594,7 @@ void msn_DoCurrMsnURLs(uint8_t *data, network_address *net_addr) {
 // If it does, return true
 // If it doesn't attempt to download it. On success return true
 // Otherwise return false
-int msn_CheckGetMission(network_address *net_addr, char *filename) {
-#ifdef OEM
-  return 1;
-#else
+int msn_CheckGetMission(network_address *net_addr, const char *filename) {
   // Don't download local missions
   std::filesystem::path pathname;
   pathname = D3MissionsDir / filename;
@@ -621,7 +618,6 @@ int msn_CheckGetMission(network_address *net_addr, char *filename) {
     DoMessageBox(TXT_ERROR, TXT_FMTCANTDNLD, MSGBOX_OK);
   }
   return 0;
-#endif
 }
 
 void msn_ClipURLToWidth(int width, char *string) {
@@ -817,8 +813,6 @@ static int msn_ExtractZipFile(const std::filesystem::path &zipfilename, const st
 }
 
 int CheckGetD3M(char *d3m) {
-#if !defined(OEM)
-
   char modurl[MAX_MISSION_URL_LEN + 1];
   char *lowurl;
   char *fixedd3m = nullptr;
@@ -857,7 +851,6 @@ int CheckGetD3M(char *d3m) {
   mem_free(lowurl);
   mem_free(fixedd3m);
   return 0;
-#endif
 }
 
 // Start downloading the file at the url specifies, showing a status screen

@@ -308,11 +308,7 @@ void mmInterface::Create() {
   mmItem::AttachInterface(this);
 
 #ifndef MOVIE_MENU
-#if defined(OEM)
-  if (!LoadLargeBitmap("oemmenu.ogf", &m_art)) {
-    Error("Unable to load main menu art oemmenu.ogf.");
-  }
-#elif defined(DEMO)
+#ifdef DEMO
   if (!LoadLargeBitmap("demomenu.ogf", &m_art)) {
     Error("Unable to load main menu art demomenu.ogf.");
   }
@@ -424,10 +420,6 @@ void mmInterface::CopyrightText() {
 
   if (PROGRAM(beta))
     strcpy(type, "Beta ");
-
-#ifdef OEM
-  strcat(type, "OEM ");
-#endif
 
   if (Program_version.version_type == DEVELOPMENT_VERSION) {
     strcat(type, "Dev");

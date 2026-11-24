@@ -67,15 +67,6 @@
 #include "editor\d3edit.h"
 #endif
 
-// #define KATMAI
-
-// Katmai enhanced rotate only in a release build, because not
-// everyone has the intel compiler!
-#if (defined(RELEASE) && defined(KATMAI))
-// Katmai version -- Rotates all the points in a room
-void RotateRoomPoints(room *rp, vector4 *world_vecs);
-#endif
-
 extern float GetFPS();
 extern uint8_t Outline_release_mode;
 // 3d point for each vertex for use during rendering a room
@@ -581,14 +572,7 @@ void MarkFacesForRendering(int roomnum, clip_wnd *wnd) {
   if (rp->wpb_index == -1) {
     rp->wpb_index = Global_buffer_index;
 
-    // Katmai enhanced rotate only in a release build, because not
-    // everyone has the intel compiler!
-#if (defined(RELEASE) && defined(KATMAI))
-    if (Katmai)
-      RotateRoomPoints(rp, rp->verts4);
-    else
-#endif
-      RotateRoomPoints(rp, rp->verts);
+    RotateRoomPoints(rp, rp->verts);
 
     Global_buffer_index += rp->num_verts;
   }
@@ -1109,15 +1093,7 @@ void BuildRoomList(int start_room_num) {
   // Get our points rotated, and update the global point list
   rp->wpb_index = Global_buffer_index;
 
-  // Katmai enhanced rotate only in a release build, because not
-  // everyone has the intel compiler!
-#if (defined(RELEASE) && defined(KATMAI))
-  if (Katmai)
-
-    RotateRoomPoints(rp, rp->verts4);
-  else
-#endif
-    RotateRoomPoints(rp, rp->verts);
+  RotateRoomPoints(rp, rp->verts);
 
   Global_buffer_index += rp->num_verts;
 
@@ -2143,14 +2119,8 @@ void RenderRoomSorted(room *rp) {
   // Rotate all the points
   if (rp->wpb_index == -1) {
     rp->wpb_index = Global_buffer_index;
-    // Katmai enhanced rotate only in a release build, because not
-    // everyone has the intel compiler!
-#if (defined(RELEASE) && defined(KATMAI))
-    if (Katmai)
-      RotateRoomPoints(rp, rp->verts4);
-    else
-#endif
-      RotateRoomPoints(rp, rp->verts);
+
+    RotateRoomPoints(rp, rp->verts);
 
     Global_buffer_index += rp->num_verts;
   }
@@ -2244,16 +2214,7 @@ void RenderRoomUnsorted(room *rp) {
   if (rp->wpb_index == -1) {
     rp->wpb_index = Global_buffer_index;
 
-// Katmai enhanced rotate only in a release build, because not
-// everyone has the intel compiler!
-#if (defined(RELEASE) && defined(KATMAI))
-    if (Katmai) {
-      RotateRoomPoints(rp, rp->verts4);
-    } else
-#endif
-    {
-      RotateRoomPoints(rp, rp->verts);
-    }
+    RotateRoomPoints(rp, rp->verts);
 
     Global_buffer_index += rp->num_verts;
   }
@@ -2849,9 +2810,6 @@ g3Point mirror_save_points[MAX_VERTS_PER_ROOM];
 // Renders a mirror flipped about the mirrored plane
 void RenderMirroredRoom(room *rp) {
   int i;
-#if (defined(RELEASE) && defined(KATMAI))
-  vector4 kat_vecs[MAX_VERTS_PER_ROOM];
-#endif
   uint16_t save_flags[MAX_FACES_PER_ROOM];
   bool restore_index = true;
 
@@ -2883,26 +2841,12 @@ void RenderMirroredRoom(room *rp) {
     float dist_from_mirror = vec->x() * norm->x() + vec->y() * norm->y() + vec->z() * norm->z() + mirror_dist;
     // dest_vecs contains the point on the other side of the mirror (ie the reflected point)
     mirror_dest_vecs[i] = *vec - (*norm * (dist_from_mirror * 2));
-#if (defined(RELEASE) && defined(KATMAI))
-    if (Katmai) {
-      kat_vecs[i].x() = mirror_dest_vecs[i].x();
-      kat_vecs[i].y() = mirror_dest_vecs[i].y();
-      kat_vecs[i].z() = mirror_dest_vecs[i].z();
-    }
-#endif
   }
   // Rotate our mirror points
   vector revnorm = -*norm;
   g3_SetCustomClipPlane(1, mirror_vec, &revnorm);
 
-  // Katmai enhanced rotate only in a release build, because not
-  // everyone has the intel compiler!
-#if (defined(RELEASE) && defined(KATMAI))
-  if (Katmai)
-    RotateRoomPoints(rp, kat_vecs);
-  else
-#endif
-    RotateRoomPoints(rp, mirror_dest_vecs);
+  RotateRoomPoints(rp, mirror_dest_vecs);
 
   // Mark facing faces
   int save_frame = Facing_visited[rp - Rooms];
